@@ -45,6 +45,7 @@
   decisions of the port to this machine.
  </P>
 
+ <H2 ALIGN=center>Design Goals</H2>
  <P>
   One objective of the EBCDIC port was to maintain enough backwards
   compatibility with the (EBCDIC) CERN server to make the transition to
@@ -60,6 +61,7 @@
   documents which must be converted.
  </P>
 
+ <H2 ALIGN=center>Technical Solution</H2>
  <P>
   Since all Apache input and output is based upon the BUFF data type
   and its methods, the easiest solution was to add the conversion to
@@ -85,7 +87,7 @@
   </UL>
  </P>
 
-<H1 ALIGN="CENTER">Porting Notes</H1>
+<H2 ALIGN=center>Porting Notes</H2>
  <P>
   <OL>
    <LI>
@@ -94,7 +96,7 @@
    <DL>
     <DT><CODE><STRONG>#ifdef CHARSET_EBCDIC</STRONG></CODE>
     <DD>Code which is needed for any EBCDIC based machine. This
-	includes character translations, differences in in
+	includes character translations, differences in
 	contiguity of the two character sets, flags which
 	indicate which part of the HTTP protocol has to be
 	converted and which part doesn't etc.
@@ -115,14 +117,14 @@
     raw file data. HTTP protocol strings are always encoded in
     ASCII (the GET request, any Header: lines, the chunking
     information etc.) whereas the file transfer parts (i.e., GIF
-    images, CGI output etc.) should usually be just "passed thru"
+    images, CGI output etc.) should usually be just "passed through"
     by the server. This separation between "protocol string" and
     "raw data" is reflected in the server code by functions like
     bgets() or rvputs() for strings, and functions like bwrite()
     for binary data. A global translation of everything would
     therefore be inadequate.<BR>
     (In the case of text files of course, provisions must be made so
-    that the documents are always served in ASCII format)
+    that EBCDIC documents are always served in ASCII)
    </LI><BR>
 
    <LI>
@@ -134,8 +136,7 @@
     already the binary encoding of the ASCII \n and \r and must
     not be converted to ASCII a second time. This exception is
     only relevant for server-generated strings; and <EM>external</EM>
-    EBCDIC documents always go through a bijective EBCDIC &lt;-&gt; ASCII
-    translation table.
+    EBCDIC documents are not expected to contain ASCII newline characters.
    </LI><BR>
 
    <LI>
@@ -143,16 +144,19 @@
     routines, I added an "ebcdic/ascii conversion layer" which
     would be crossed on every puts/write/get/gets, and a
     conversion flag which allowed enabling/disabling the
-    conversions on-the-fly. It is now possible to read the header
+    conversions on-the-fly. Usually, a document crosses this
+    layer twice from its origin source (a file or CGI output) to
+    its destination (the requesting client): <SAMP>file -&gt;
+    Apache</SAMP>, and <SAMP>Apache -&gt; client</SAMP>.<BR>
+    The server can now read the header
     lines of a CGI-script output in EBCDIC format, and then find
     out that the remainder of the script's output is in ASCII
     (like in the case of the output of a WWW Counter program: the
-    document body contains a GIF image). Likewise, the server
-    always generates its header lines in EBCDIC (and with ASCII
-    conversion enabled) and determines, based on the type of
-    document being served, whether the document body (except for
-    the chunking information, of course) is in ASCII already or
-    is converted from EBCDIC.
+    document body contains a GIF image). All header processing is
+    done in the native EBCDIC format; the server then determines,
+    based on the type of document being served, whether the
+    document body (except for the chunking information, of
+    course) is in ASCII already or must be converted from EBCDIC.
    </LI><BR>
 
    <LI>
@@ -195,6 +199,296 @@
    </LI><BR>
   </OL>
  </P>
+
+ <H2 ALIGN=center>Document Storage Notes</H2>
+  <H3 ALIGN=center>Binary Files</H3>
+   <P>
+    All files with a <SAMP>Content-Type:</SAMP> which does not
+    start with <SAMP>text/</SAMP> are regarded as <EM>binary files</EM>
+    by the server and are not subject to any conversion.
+    Examples for binary files are GIF images, gzip-compressed
+    files and the like.
+   </P>
+   <P>
+    When exchanging binary files between the mainframe host and a
+    Unix machine or Windows PC, be sure to use the ftp "binary"
+    (<SAMP>TYPE I</SAMP>) command, or use the
+    <SAMP>rcp&nbsp;-b</SAMP> command from the mainframe host
+    (the -b switch is not supported in unix rcp's).
+   </P>
+
+  <H3 ALIGN=center>Text Documents</H3>
+   <P>
+    The default assumption of the server is that Text Files
+    (i.e., all files whose <SAMP>Content-Type:</SAMP> starts with
+    <SAMP>text/</SAMP>) are stored in the native character
+    set of the host, EBCDIC.
+   </P>
+
+  <H3 ALIGN=center>Server Side Included Documents</H3>
+   <P>
+    SSI documents must currently be stored in EBCDIC only. No
+    provision is made to convert it from ASCII before processing.
+   </P>
+
+ <H2 ALIGN=center>Apache Modules' Status</H2>
+ <TABLE BORDER ALIGN=middle>
+  <TR>
+   <TH>Module
+   <TH>Status
+   <TH>Notes
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>http_core
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_access
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_actions
+   <TD ALIGN=center>?
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_alias
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_asis
+   <TD ALIGN=center>?
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_auth
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_auth_anon
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_auth_db
+   <TD ALIGN=center>?
+   <TD>with own libdb.a
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_auth_dbm
+   <TD ALIGN=center>?
+   <TD>with own libdb.a
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_autoindex
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_cern_meta
+   <TD ALIGN=center>?
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_cgi
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_digest
+   <TD ALIGN=center>-
+   <TD>MD5 not ported yet
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_dir
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_dld
+   <TD ALIGN=center>-
+   <TD>no shared libs
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_env
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_example
+   <TD ALIGN=center>-
+   <TD>not tried yet
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_expires
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_headers
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_imap
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_include
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_info
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_log_agent
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_log_config
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_log_referer
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_mime
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_mime_magic
+   <TD ALIGN=center>-
+   <TD>not tried yet
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_negotiation
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_proxy
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_rewrite
+   <TD ALIGN=center>?
+   <TD>untested
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_setenvif
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_speling
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_status
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_unique_id
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_userdir
+   <TD ALIGN=center>+
+   <TD>
+  </TR>
+
+  <TR>
+   <TD ALIGN=left>mod_usertrack
+   <TD ALIGN=center>?
+   <TD>untested
+  </TR>
+ </TABLE>
+
+ <H2 ALIGN=center>Third Party Modules' Status</H2>
+ <TABLE BORDER ALIGN=middle>
+  <TR>
+   <TH>Module
+   <TH>Status
+   <TH>Notes
+  </TR>
+
+  <TR>
+   <TD ALIGN=left><A HREF="http://java.apache.org/">mod_jserv</A>
+   <TD ALIGN=center>-
+   <TD>JAVA still being ported.
+  </TR>
+
+  <TR>
+   <TD ALIGN=left><A HREF="http://www.php.net/">mod_php</A>
+   <TD ALIGN=center>-
+   <TD>not ported yet
+  </TR>
+
+  <TR>
+   <TD ALIGN=left><A HREF="http://hpwww.ec-lyon.fr/~vincent/apache/mod_put.html">mod_put</A>
+   <TD ALIGN=center>?
+   <TD>untested
+  </TR>
+
+  <TR>
+   <TD ALIGN=left><A HREF="ftp://hachiman.vidya.com/pub/apache/">mod_session</A>
+   <TD ALIGN=center>-
+   <TD>untested
+  </TR>
+
+ </TABLE>
 
 <!--#include virtual="footer.html" -->
 </BODY>
