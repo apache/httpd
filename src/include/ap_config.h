@@ -507,6 +507,21 @@ typedef int rlim_t;
 #define JMP_BUF sigjmp_buf
 #define USE_FCNTL_SERIALIZED_ACCEPT
 
+#elif defined(NEWSOS)
+#define HAVE_SYS_RESOURCE_H
+#define HAVE_SHMGET
+#define USE_LONGJMP
+#define JMP_BUF jmp_buf
+#define NO_SETSID
+#define NO_USE_SIGACTION
+#define NEED_WAITPID
+#include <sys/time.h>
+#include <stdlib.h>
+#include <sys/types.h>
+typedef int pid_t;
+typedef int rlim_t;
+typedef int mode_t;
+
 #elif defined(WIN32)     
 /* Put your NT stuff here - Ambarish */
 

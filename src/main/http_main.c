@@ -1524,7 +1524,7 @@ void detach()
         fprintf(stderr,"httpd: setsid failed\n");
         exit(1);
     }
-#elif defined(NEXT)
+#elif defined(NEXT) || defined(NEWSOS)
     if(setpgrp(0,getpid()) == -1 || (pgrp = getpgrp(0)) == -1) {
         perror("setpgrp");
         fprintf(stderr,"httpd: setpgrp or getpgrp failed\n");

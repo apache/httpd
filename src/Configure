@@ -478,6 +478,16 @@ case "$PLAT" in
 	OS='Paragon OSF/1'
 	CFLAGS="$CFLAGS -DPARAGON"
 	;;
+    *DYNIX*)
+	DEF_WANTHSREGEX=yes
+	OS='SEQUENT'
+	CFLAGS="$CFLAGS -DSEQUENT"
+	;;
+    *NEWS-OS*)
+	DEF_WANTHSREGEX=yes
+	OS='SONY NEWS-OS'
+	CFLAGS="$CFLAGS -DNEWSOS"
+	;;
     *) # default: Catch systems we don't know about
     	echo Sorry, but we cannot grok \"$PLAT\"
 	echo uname -m
