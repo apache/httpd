@@ -397,7 +397,9 @@ static int bio_bucket_in_read(BIO *bio, char *in, int inl)
         }
 
         if (buf_len) {
-            if ((len + buf_len) >= inl) {
+            /* Protected against len > MAX_INT 
+             */
+            if ((len + (int)buf_len) >= inl || (int)buf_len < 0) {
                 /* we have enough to fill the buffer.
                  * append if we have already written to the buffer.
                  */
@@ -405,7 +407,7 @@ static int bio_bucket_in_read(BIO *bio, char *in, int inl)
                 char *value = (char *)buf+nibble;
 
                 int length = buf_len - nibble;
-                memcpy((void*)in+len, buf, nibble);
+                memcpy(in + len, buf, nibble);
 
                 char_buffer_write(&inbio->cbuf, value, length);
                 len += nibble;
@@ -416,7 +418,7 @@ static int bio_bucket_in_read(BIO *bio, char *in, int inl)
                 /* not enough data,
                  * save what we have and try to read more.
                  */
-                memcpy((void*)in+len, buf, buf_len);
+                memcpy(in + len, buf, buf_len);
                 len += buf_len;
             }
         }
@@ -623,8 +625,9 @@ static apr_status_t ssl_io_input_read(ssl_io_input_ctx_t *ctx,
                                       char *buf,
                                       apr_size_t *len)
 {
-    int wanted = *len;
-    int bytes = 0, rc;
+    apr_size_t wanted = *len;
+    apr_size_t bytes = 0;
+    int rc;
 
     *len = 0;
 
@@ -635,7 +638,7 @@ static apr_status_t ssl_io_input_read(ssl_io_input_ctx_t *ctx,
         }
     }
 
-    rc = ssl_io_hook_read(ctx->frec->pssl, buf+bytes, wanted-bytes);
+    rc = ssl_io_hook_read(ctx->frec->pssl, buf + bytes, wanted - bytes);
 
     if (rc > 0) {
         *len += rc;
@@ -747,8 +750,9 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
     }
 
     if (bytes > 0) {
+        /* Protected from truncation, bytes < MAX_SIZE_T */
         if (bytes < len) {
-            len = bytes;
+            len = (apr_size_t)bytes;
         }
         ctx->inbio.getline = 0;
         status = ssl_io_input_read(ctx, ctx->buffer, &len);
