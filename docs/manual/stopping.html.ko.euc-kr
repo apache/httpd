@@ -12,15 +12,11 @@
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/directives.html">지시어들</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p>
-<p class="apache">Apache HTTP Server Version 2.1</p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>중단과 재시작</h1>
-<div class="toplang">
-<p><span>가능한 언어: </span><a href="./de/stopping.html">&nbsp;de&nbsp;</a> | <a href="./en/stopping.html">&nbsp;en&nbsp;</a> | <a href="./ja/stopping.html">&nbsp;ja&nbsp;</a> | <a href="./ko/stopping.html">&nbsp;ko&nbsp;</a></p>
-</div>
-
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>중단과 재시작</h1>
     <p>이 문서는 유닉스류 시스템에서 아파치를 중단하고 재시작하는
     내용을 담고있다. 윈도우즈 NT, 2000, XP 사용자는 <a href="platform/windows.html#winsvc">서비스로 아파치
     실행하기</a>에서, 윈도우즈 9x와 ME 사용자는 <a href="platform/windows.html#wincons">콜솔 프로그램으로
@@ -187,9 +183,7 @@
     클라이언트가 깨진 그림이나 빈 문서없이 사이트를 성공적으로
     읽어들이길 기대하지 않는다면 문제가 안된다.</p>
 </div></div>
-<div class="bottomlang">
-<p><span>가능한 언어: </span><a href="./de/stopping.html">&nbsp;de&nbsp;</a> | <a href="./en/stopping.html">&nbsp;en&nbsp;</a> | <a href="./ja/stopping.html">&nbsp;ja&nbsp;</a> | <a href="./ko/stopping.html">&nbsp;ko&nbsp;</a></p>
-</div><div id="footer">
+<div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/directives.html">지시어들</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p></div>
 </body></html>

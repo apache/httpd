@@ -12,15 +12,11 @@
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/directives.html">지시어들</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p>
-<p class="apache">Apache HTTP Server Version 2.1</p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>suEXEC 지원</h1>
-<div class="toplang">
-<p><span>가능한 언어: </span><a href="./en/suexec.html">&nbsp;en&nbsp;</a> | <a href="./ja/suexec.html">&nbsp;ja&nbsp;</a> | <a href="./ko/suexec.html">&nbsp;ko&nbsp;</a></p>
-</div>
-
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>suEXEC 지원</h1>
     <p><strong>suEXEC</strong> 기능은 아파치가 <strong>CGI</strong>와
     <strong>SSI</strong> 프로그램을 웹서버를 실행한 사용자 ID가
     아닌 다른 사용자 ID로 실행하도록 한다. 보통 CGI나 SSI 프로그램을
@@ -447,7 +443,7 @@
 <h2><a name="jabberwock" id="jabberwock">다시 한번 조심하라: 경고와 예제</a></h2>
 
     <p><strong>주의!</strong> 이 섹션은 완전하지 않을 수 있다.
-    아파치그룹의 <a href="http://httpd.apache.org/docs-2.1/suexec.html">온라인
+    아파치그룹의 <a href="http://httpd.apache.org/docs-2.0/suexec.html">온라인
     문서</a>에서 이 문서의 최신판을 참고하라.</p>
 
     <p>wrapper가 서버 설정을 제약하는 몇가지 흥미로운 점이 있다.
@@ -493,9 +489,7 @@
     </ul>
 
 </div></div>
-<div class="bottomlang">
-<p><span>가능한 언어: </span><a href="./en/suexec.html">&nbsp;en&nbsp;</a> | <a href="./ja/suexec.html">&nbsp;ja&nbsp;</a> | <a href="./ko/suexec.html">&nbsp;ko&nbsp;</a></p>
-</div><div id="footer">
+<div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/directives.html">지시어들</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p></div>
 </body></html>

@@ -12,15 +12,11 @@
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
 <p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/directives.html">지시어들</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p>
-<p class="apache">Apache HTTP Server Version 2.1</p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>용어</h1>
-<div class="toplang">
-<p><span>가능한 언어: </span><a href="./en/glossary.html">&nbsp;en&nbsp;</a> | <a href="./ko/glossary.html">&nbsp;ko&nbsp;</a></p>
-</div>
-
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>용어</h1>
 <p>이 문서는 웹 서비스 일반에 대한, 특히 아파치와 관련된, 용어들을
 정의한다. 각 개념에 대한 자세한 정보는 링크를 참고하라.
 <span class="transnote">(<em>역주;</em> 현재 단어의 순서는 한글 순서가 아니라, 영문자
@@ -324,7 +320,7 @@ SSL 버전 3과 거의 유사하다.<br />
 Identifier</a>라고 하는 것의 일상적인 비공식 용어다. 보통 URL은
 <code>http</code>나 <code>https</code>같은 스킴(scheme), 호스트명,
 경로로 구성된다. 이 페이지의 URL은
-<code>http://httpd.apache.org/docs-2.1/glossary.html</code>이다.</dd>
+<code>http://httpd.apache.org/docs-2.0/glossary.html</code>이다.</dd>
 
 <dt><a name="uniformresourceidentifier">Uniform Resource Identifier</a>
 <a name="URI">(URI)</a></dt> <dd>추상적인 자원이나 실제 자원을
@@ -345,9 +341,7 @@ Telecommunication Union, ITU-T)이 권장하는 인증서 양식. SSL/TLS
 
 </dl>
 </div></div>
-<div class="bottomlang">
-<p><span>가능한 언어: </span><a href="./en/glossary.html">&nbsp;en&nbsp;</a> | <a href="./ko/glossary.html">&nbsp;ko&nbsp;</a></p>
-</div><div id="footer">
+<div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/directives.html">지시어들</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p></div>
 </body></html>

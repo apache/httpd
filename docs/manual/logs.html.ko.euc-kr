@@ -12,15 +12,11 @@
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/directives.html">지시어들</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p>
-<p class="apache">Apache HTTP Server Version 2.1</p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>로그파일</h1>
-<div class="toplang">
-<p><span>가능한 언어: </span><a href="./en/logs.html">&nbsp;en&nbsp;</a> | <a href="./ja/logs.html">&nbsp;ja&nbsp;</a> | <a href="./ko/logs.html">&nbsp;ko&nbsp;</a></p>
-</div>
-
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>로그파일</h1>
     <p>효율적으로 웹서버를 관리하려면 발생하는 문제와 함께 서버의
     활동과 성능에 대해 알아야 한다. 아파치 웹서버는 매우 종합적이고
     유연한 로그 기능을 제공한다. 이 문서는 로그 기능을 설정하는
@@ -507,9 +503,7 @@
       조절한다.</p>
     
   </div></div>
-<div class="bottomlang">
-<p><span>가능한 언어: </span><a href="./en/logs.html">&nbsp;en&nbsp;</a> | <a href="./ja/logs.html">&nbsp;ja&nbsp;</a> | <a href="./ko/logs.html">&nbsp;ko&nbsp;</a></p>
-</div><div id="footer">
+<div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/directives.html">지시어들</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p></div>
 </body></html>
