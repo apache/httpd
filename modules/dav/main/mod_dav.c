@@ -81,6 +81,7 @@
 */
 
 #include "apr_strings.h"
+#include "apr_lib.h"            /* for apr_is* */
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -686,7 +687,7 @@ static dav_error * dav_open_lockdb(request_rec *r, int ro, dav_lockdb **lockdb)
 }
 
 static int dav_parse_range(request_rec *r,
-                           off_t *range_start, off_t *range_end)
+                           apr_off_t *range_start, apr_off_t *range_end)
 {
     const char *range_c;
     char *range;
@@ -706,8 +707,11 @@ static int dav_parse_range(request_rec *r,
     }
 
     *dash = *slash = '\0';
+
+    /* ### atol may not be large enough for the apr_off_t */
     *range_start = atol(range + 6);
     *range_end = atol(dash + 1);
+
     if (*range_end < *range_start
         || (slash[1] != '*' && atol(slash + 1) <= *range_end)) {
         /* invalid range. ignore it (per S14.16 of RFC2616) */
@@ -811,8 +815,8 @@ static int dav_method_get(request_rec *r)
 	dav_error *err;
 	void *buffer;
         int has_range;
-        off_t range_start;
-        off_t range_end;
+        apr_off_t range_start;
+        apr_off_t range_end;
 
 	/* set up the HTTP headers for the response */
 	if ((err = (*resource->hooks->set_headers)(r, resource)) != NULL) {
@@ -835,8 +839,10 @@ static int dav_method_get(request_rec *r)
             r->status = HTTP_PARTIAL_CONTENT;
             apr_table_setn(r->headers_out,
                           "Content-Range",
-                          apr_psprintf(r->pool, "bytes %ld-%ld/*",
-                                      range_start, range_end));
+                          apr_psprintf(r->pool,
+                                       "bytes %" APR_OFF_T_FMT
+                                       "-%" APR_OFF_T_FMT "/*",
+                                       range_start, range_end));
             ap_set_content_length(r, range_end - range_start + 1);
         }
 
@@ -870,7 +876,7 @@ static int dav_method_get(request_rec *r)
 
 	buffer = apr_palloc(r->pool, DAV_READ_BLOCKSIZE);
 	while (1) {
-	    size_t amt;
+	    apr_size_t amt;
 
             if (!has_range)
                 amt = DAV_READ_BLOCKSIZE;
@@ -878,7 +884,7 @@ static int dav_method_get(request_rec *r)
                 amt = DAV_READ_BLOCKSIZE;
             else {
                 /* note: range_end - range_start is an ssize_t */
-                amt = (size_t)(range_end - range_start + 1);
+                amt = (apr_size_t)(range_end - range_start + 1);
             }
 
 	    if ((err = (*resource->hooks->read_stream)(stream, buffer,
@@ -954,8 +960,8 @@ static int dav_method_put(request_rec *r)
     dav_stream *stream;
     dav_response *multi_response;
     int has_range;
-    off_t range_start;
-    off_t range_end;
+    apr_off_t range_start;
+    apr_off_t range_end;
 
     if ((result = ap_setup_client_block(r, REQUEST_CHUNKED_DECHUNK)) != OK) {
 	return result;
