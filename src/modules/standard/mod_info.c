@@ -381,89 +381,137 @@ static int display_info(request_rec *r) {
 		}
 		rputs("<hr><dl>",r);
 		for(modp = top_module; modp; modp = modp->next) {
-			if(!r->args || !strcasecmp(modp->name,r->args)) {	
-				ap_snprintf(buf, sizeof(buf), "<dt><a name=\"%s\"><strong>Module Name:</strong> <font size=+1><tt>%s</tt></a></font>\n",modp->name,modp->name);
-				rputs(buf,r);
-				rputs("<dt><strong>Content-types affected:</strong>",r);	
-				hand = modp->handlers;
-				if(hand) {
-					while(hand) {
-						if(hand->content_type) {
-							ap_snprintf(buf, sizeof(buf), " <tt>%s</tt>\n",hand->content_type);	
-							rputs(buf,r);
-						} else break;
-						hand++;
-						if(hand && hand->content_type) rputs(",",r);
-					}
-				} else {
-					rputs("<tt> none</tt>",r);
+		    if(!r->args || !strcasecmp(modp->name,r->args)) {	
+			ap_snprintf(buf, sizeof(buf), "<dt><a name=\"%s\"><strong>Module Name:</strong> <font size=+1><tt>%s</tt></a></font>\n",modp->name,modp->name);
+			rputs(buf,r);
+			rputs("<dt><strong>Content handlers:</strong>",r);	
+			hand = modp->handlers;
+			if(hand) {
+			    while(hand) {
+				if(hand->content_type) {
+				    ap_snprintf(buf, sizeof(buf), " <tt>%s</tt>\n",hand->content_type);	
+						rputs(buf,r);
 				}
-				rputs("<dt><strong>Module Groups:</strong> \n",r);
-				if(modp->translate_handler) {
-					rputs("<tt>Translate Handler</tt>\n",r);
-					comma=1;
+				else {
+				    break;
 				}
-				if(modp->check_user_id) {
-					if(comma) rputs(", ",r);
-					rputs("<tt>User ID Checking</tt>\n",r);
-					comma=1;
-				}
-				if(modp->auth_checker) {
-					if(comma) rputs(", ",r);
-					rputs("<tt>Authentication Checking</tt>\n",r);
-					comma=1;
-				}
-				if(modp->access_checker) {
-					if(comma) rputs(", ",r);
-					rputs("<tt>Access Checking</tt>\n",r);
-					comma=1;
-				}
-				if(modp->type_checker) {
-					if(comma) rputs(", ",r);
-					rputs("<tt>Type Checking</tt>\n",r);
-					comma=1;
-				}
-				if(modp->fixer_upper) {
-					if(comma) rputs(", ",r);
-					rputs("<tt>Header Fixer</tt>\n",r);
-					comma=1;
-				}
-				if(modp->logger) {
-					if(comma) rputs(", ",r);
-					rputs("<tt>Logging</tt>\n",r);
-					comma=1;
-				}
-				if(!comma) rputs("<tt> none</tt>",r);
-				comma=0;
-				rputs("<dt><strong>Module Configuration Commands:</strong> ",r);
-				cmd = modp->cmds;
-				if(cmd) {
-					while(cmd) {
-						if(cmd->name) {
-							ap_snprintf(buf, sizeof(buf), "<dd><tt>%s - <i>",mod_info_html_cmd_string(cmd->name));	
-							rputs(buf,r);
-							if(cmd->errmsg) rputs(cmd->errmsg,r);
-							rputs("</i></tt>\n",r);
-						} else break;
-						cmd++;
-					}
-					rputs("<dt><strong>Current Configuration:</strong>\n",r);
-					mod_info_module_cmds(r,mod_info_cfg_httpd,modp->cmds,"httpd.conf");	
-					mod_info_module_cmds(r,mod_info_cfg_srm,modp->cmds,"srm.conf");
-					mod_info_module_cmds(r,mod_info_cfg_access,modp->cmds,"access.conf");
-				} else {
-					rputs("<tt> none</tt>\n",r);
-				}
-
-				more_info = find_more_info(serv, modp->name);
-				if (more_info) {
-				    rputs("<dt><strong>Additional Information:</strong>\n<dd>",r);
-				    rputs(more_info,r);
-				}
-
-				rputs("<dt><hr>\n",r);
-				if(r->args) break;
+				hand++;
+				if(hand && hand->content_type) rputs(",",r);
+			    }
 			}
+			else {
+			    rputs("<tt> <EM>none</EM></tt>",r);
+			}
+			rputs("<dt><strong>Configuration Phase Participation:</strong> \n",r);
+			if(modp->child_init) {
+			    rputs("<tt>Child Init</tt>",r);
+			    comma = 1;
+			}
+			if(modp->create_dir_config) {
+			    if(comma) rputs(", ",r);
+			    rputs("<tt>Create Directory Config</tt>",r);
+			    comma=1;
+			}
+			if(modp->merge_dir_config) {
+			    if(comma) rputs(", ",r);
+			    rputs("<tt>Merge Directory Configs</tt>",r);
+			    comma=1;
+			}
+			if(modp->create_server_config) {
+			    if(comma) rputs(", ",r);
+			    rputs("<tt>Create Server Config</tt>",r);
+			    comma=1;
+			}
+			if(modp->merge_server_config) {
+			    if(comma) rputs(", ",r);
+			    rputs("<tt>Merge Server Configs</tt>",r);
+			    comma=1;
+			}
+			if(modp->child_exit) {
+			    if(comma) rputs(", ",r);
+			    rputs("<tt>Child Exit</tt>",r);
+			    comma=1;
+			}
+			if(!comma) rputs("<tt> <EM>none</EM></tt>",r);
+			comma = 0;
+			rputs("<dt><strong>Request Phase Participation:</strong> \n",r);
+			if(modp->post_read_request) {
+			    rputs("<tt>Post-Read Request</tt>",r);
+			    comma=1;
+			}
+			if(modp->header_parser) {
+			    if(comma) rputs(", ",r);
+			    rputs("<tt>Header Parse</tt>",r);
+			    comma=1;
+			}
+			if(modp->translate_handler) {
+			    if(comma) rputs(", ",r);
+			    rputs("<tt>Translate Path</tt>",r);
+			    comma=1;
+			}
+			if(modp->access_checker) {
+			    if(comma) rputs(", ",r);
+			    rputs("<tt>Check Access</tt>",r);
+			    comma=1;
+			}
+			if(modp->check_user_id) {
+			    if(comma) rputs(", ",r);
+			    rputs("<tt>Verify User ID</tt>",r);
+			    comma=1;
+			}
+			if(modp->auth_checker) {
+			    if(comma) rputs(", ",r);
+			    rputs("<tt>Verify User Access</tt>",r);
+			    comma=1;
+			}
+			if(modp->type_checker) {
+			    if(comma) rputs(", ",r);
+			    rputs("<tt>Check Type</tt>",r);
+			    comma=1;
+			}
+			if(modp->fixer_upper) {
+			    if(comma) rputs(", ",r);
+			    rputs("<tt>Fixups</tt>",r);
+			    comma=1;
+			}
+			if(modp->logger) {
+			    if(comma) rputs(", ",r);
+			    rputs("<tt>Logging</tt>",r);
+			    comma=1;
+			}
+			if(!comma) rputs("<tt> <EM>none</EM></tt>",r);
+			comma=0;
+			rputs("<dt><strong>Module Directives:</strong> ",r);
+			cmd = modp->cmds;
+			if(cmd) {
+			    while(cmd) {
+				if(cmd->name) {
+				    ap_snprintf(buf, sizeof(buf), "<dd><tt>%s - <i>",mod_info_html_cmd_string(cmd->name));	
+				    rputs(buf,r);
+				    if(cmd->errmsg) rputs(cmd->errmsg,r);
+				    rputs("</i></tt>\n",r);
+				}
+				else {
+				    break;
+				}
+				cmd++;
+			    }
+			    rputs("<dt><strong>Current Configuration:</strong>\n",r);
+			    mod_info_module_cmds(r,mod_info_cfg_httpd,modp->cmds,"httpd.conf");	
+			    mod_info_module_cmds(r,mod_info_cfg_srm,modp->cmds,"srm.conf");
+			    mod_info_module_cmds(r,mod_info_cfg_access,modp->cmds,"access.conf");
+			}
+			else {
+			    rputs("<tt> none</tt>\n",r);
+			}
+			more_info = find_more_info(serv, modp->name);
+			if (more_info) {
+			    rputs("<dt><strong>Additional Information:</strong>\n<dd>",r);
+			    rputs(more_info,r);
+			}
+			rputs("<dt><hr>\n",r);
+			if(r->args) break;
+		    }
 		}
 		if(!modp && r->args && strcasecmp(r->args,"server")) rputs("<b>No such module</b>\n",r);
 	} else {
