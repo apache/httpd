@@ -1,4 +1,7 @@
 Changes with Apache 2.0.41
+  *) Fixes required to get quoted and escaped command args working in
+     mod_ext_filter. PR 11793 [Paul J. Reder]
+
   *) mod-proxy: handle proxied responses with no status lines
      [JD Silvester <jsilves@uwo.ca>, Brett Huttley <brett@huttley.net>]
 
