@@ -161,7 +161,7 @@ typedef struct {
 apr_status_t isapi_load(request_rec *r, isapi_loaded** isa);
 BOOL isapi_unload(isapi_loaded* isa, int force);
 
-static apr_status_t cleanup_server_config(void *sconfv)
+static apr_status_t cleanup_isapi_server_config(void *sconfv)
 {
     isapi_server_conf *sconf = sconfv;
     size_t n;
@@ -172,12 +172,13 @@ static apr_status_t cleanup_server_config(void *sconfv)
     while(n--) {
         if (isa->handle)
             isapi_unload(isa, TRUE); 
+        ++isa;
     }
     CloseHandle(sconf->lock);
     return APR_SUCCESS;
 }
 
-static void *create_server_config(apr_pool_t *p, server_rec *s)
+static void *create_isapi_server_config(apr_pool_t *p, server_rec *s)
 {
     isapi_server_conf *sconf = apr_palloc(p, sizeof(isapi_server_conf*));
     sconf->loaded = apr_make_array(p, 20, sizeof(isapi_loaded*));
@@ -187,6 +188,9 @@ static void *create_server_config(apr_pool_t *p, server_rec *s)
     sconf->LogNotSupported    = -1;
     sconf->AppendLogToErrors   = 0;
     sconf->AppendLogToQuery    = 0;
+
+    apr_register_cleanup(p, sconf, cleanup_isapi_server_config, 
+                                   apr_null_cleanup);
 
     return sconf;
 }
@@ -282,13 +286,6 @@ static apr_status_t isapi_load(request_rec *r, isapi_loaded** isa)
         (*isa)->refcount = 0;
         return rv;
     }
-
-    /* If we succeeded at caching this module - the first module needs to 
-     * register a cleanup to be polite.
-     */
-    /* if (!sconf->loaded->nelts)
-     *     apr_register_cleanup(p, sconf, cleanup_server_config, apr_null_cleanup);
-     */
 
     return APR_SUCCESS;
 }
@@ -1092,7 +1089,7 @@ module isapi_module = {
    STANDARD20_MODULE_STUFF,
    NULL,                        /* create per-dir config */
    NULL,                        /* merge per-dir config */
-   create_server_config,        /* server config */
+   create_isapi_server_config,  /* server config */
    NULL,                        /* merge server config */
    isapi_cmds,                  /* command apr_table_t */
    isapi_handlers,              /* handlers */
