@@ -48,6 +48,7 @@ dangerous both to your network and to the Internet at large.</p></td></tr></tabl
         proxy module?</a></li>
 
 <li><a href="#intranet">What other functions are useful for an intranet proxy server?</a></li>
+<li><a href="#envsettings">How can I make the proxy talk HTTP/1.0 and disable keepalives?</a></li>
 </ul>
 
 <h3><a name="forwardreverse">Forward and Reverse Proxies</a></h3>
@@ -219,6 +220,23 @@ is used and the server is <a href="#proxyrequests">configured for
 proxy service</a>, Apache can return a redirect response and send the client
 to the correct, fully qualified, server address. This is the preferred method
 since the user's bookmark files will then contain fully qualified hosts.</p>
+
+<h3><a name="envsettings">How can I make the proxy talk HTTP/1.0 and 
+disable keepalives?</a></h3>
+
+<p>For circumstances where you have a application server which doesn't implement
+keepalives or HTTP/1.1 properly, there are 2 environment variables which when
+set send a HTTP/1.0 with no keepalive. These are set via the  <a href="mod_env.html#setenv" class="directive"><code class="directive">SetEnv</code></a> directive.</p>
+<p>These are the 'force-proxy-request-1.0' and 'proxy-nokeepalive' notes.</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;location /buggyappserver/ &gt;<br>
+ProxyPass http://buggyappserver:7001/foo/<br>
+SetEnv force-proxy-request-1.0 1<br>
+SetEnv proxy-nokeepalive 1<br>
+&lt;/location&gt;
+</code></td></tr></table></blockquote>
+
 
 
 <hr/><h2><a name="AllowCONNECT">AllowCONNECT</a> <a name="allowconnect">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Ports that are allowed to CONNECT through
