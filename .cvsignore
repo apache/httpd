@@ -1,3 +1,4 @@
+config.nice
 configure
 missing
 install-sh
@@ -13,3 +14,6 @@ config.status
 modules.c
 config.cache
 config_vars.mk
+.libs
+httpd
+modules.lo
