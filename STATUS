@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/06 22:32:34 $]
+Last modified at [$Date: 2002/02/06 22:34:47 $]
 
 Release:
 
@@ -491,21 +491,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Questions; htdbm exists, time to kill dbmmanage, or does it remain
                    useful as a perl dbm management example?  If we keep it,
                    do we address the issue above?
-
-    * use apu_dbm in mod_auth_dbm
-        Status: Greg +1 (low-priority volunteer)
-        Justin says: "Seems like this is already there, so should we just 
-                      remove the other DBM code in that file?  If you want 
-                      to use gdbm, or dbm, etc, you should tell apr-util."
-        Will says: "bs - I may choose the fastest - most efficient native
-                    dbm implementation, for shared proc caches, ssl session
-                    caching, etc, but that has nothing to do with maintaining
-                    a userlist via dbm, which has to remain readable between
-                    builds/machines, etc.  The use-multiple database schema
-                    for apr-util would let us do this with just apr, though."
-        Ian says:  "multi-dbm is in, but it still has ndbm support hardcoded
-                    is this still required? isn't ndbm supported via gdbm?"
-
 
     * Integrate mod_dav.
         Some additional items remaining:
