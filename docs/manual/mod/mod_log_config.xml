@@ -107,6 +107,12 @@
     <tr><td><code>%...P</code></td>
         <td>The process ID of the child that serviced the request.</td></tr>
 
+    <tr><td><code>%...{<var>format</var>}P</code></td>
+        <td>The process ID or thread id of the child that serviced the 
+        request.  Valid formats are <code>pid</code> and <code>tid</code>.
+        (<em>Apache 2.0.46 and later</em>)
+        </td></tr>
+
     <tr><td><code>%...q</code></td>
         <td>The query string (prepended with a <code>?</code> if a query
         string exists, otherwise an empty string)</td></tr>

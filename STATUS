@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/13 23:45:30 $]
+Last modified at [$Date: 2003/05/14 03:20:49 $]
 
 Release:
 
@@ -219,13 +219,6 @@ PATCHES TO PORT FROM 2.1
               it's not his first one, he probably doesn't care about - IMHO :)
               An appropriate change-log entry should warn the rest of the
               people, shouldn't it?
-
-    * mod_log_config: be able to log the id of the thread that handled
-      the request
-      modules/loggers/mod_log_config.c: r1.102-1.104
-      docs/manual/mod/mod_log_config.xml.diff?r1=1.19&r2=1.22
-      +1: trawick, stoddard, nd
-      (the comment on top of the file still talks about %I; should be fixed :)
 
     * ap_get_mime_headers_core: allocate space for the trailing null
       when folding is in effect.

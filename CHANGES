@@ -1,5 +1,8 @@
 Changes with Apache 2.0.46
 
+  *) mod_log_config: Add the ability to log the id of the thread 
+     processing the request via new %P formats.  [Jeff Trawick]
+
   *) Use appropriate language code for Czech (cs) and Traditional Chinese
      (zh-tw) in default config files. PR 9427.  [André Malo]
 
