@@ -85,5 +85,5 @@ END {
     print "# Change this to SecureListen on specific IP addresses as shown below to "
     print "# prevent Apache from glomming onto all bound IP addresses (0.0.0.0)"
     print "#"
-    print "#SecureListen 443 \"SSL CertificateIP\""
+    print "#SecureListen 443 \"SSL CertificateDNS\""
 }
