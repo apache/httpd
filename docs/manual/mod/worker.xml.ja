@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.7 -->
+<!-- English revision: 1.8 -->
 <modulesynopsis>
 <name>worker</name>
 <description>マルチスレッドとマルチプロセスのハイブリッド型
@@ -31,7 +31,7 @@
 <seealso><a href="../bind.html">Apache 
 の使用するアドレスとポートの設定</a></seealso>
 
-<section><title>動作方法</title>
+<section id="how-it-works"><title>動作方法</title>
     <p>プロセスは決まった数のスレッドを持ちます。
     負荷への適応はプロセスの数を増減により対応します。</p>
 
@@ -42,7 +42,7 @@
     それから、個々のスレッドがコネクションに対して listen
     して、しかるべき時に動作します。</p>
 
-    <p>Apache は<em>スペアの</em>、つまりアイドルなサーバスレッドの
+    <p>Apache は<dfn>スペアの</dfn>、つまりアイドルなサーバスレッドの
     プールを常に維持していて、それらは入ってくるリクエストに
     答えられるように待機しています。
     このようにして、クライアントはリクエストの応答が得られるようになるために
@@ -73,12 +73,14 @@
     <p><module>worker</module> MPM の典型的なプロセス・スレッド制御の
     設定では、次のようになります。</p>
 
-<example><pre>StartServers         2
-MaxClients         150
-MinSpareThreads     25
-MaxSpareThreads     75
-ThreadsPerChild     25
-ServerLimit         16</pre></example>
+    <example>
+      StartServers         2<br />
+      MaxClients         150<br />
+      MinSpareThreads     25<br />
+      MaxSpareThreads     75<br />
+      ThreadsPerChild     25<br />
+      ServerLimit         16
+    </example>
 
     <p>通常 Unix では親プロセスは 80 番ポートにバインドするために
     root で起動されますが、子プロセスやスレッドは

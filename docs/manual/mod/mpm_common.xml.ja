@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.18 -->
+<!-- English revision: 1.21 -->
 
 <name>mpm_common</name>
 <description>二つ以上のマルチプロセッシングモジュール (MPM)
@@ -13,7 +13,7 @@
 <name>CoreDumpDirectory</name>
 <description>Apache がコアダンプする前に移動を試みるディレクトリ
 </description>
-<syntax>CoreDumpDirectory <em>directory</em></syntax>
+<syntax>CoreDumpDirectory <var>directory</var></syntax>
 <default>デフォルトの設定は説明文を読んでください</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
@@ -34,7 +34,7 @@
 <directivesynopsis>
 <name>Group</name>
 <description>リクエストに応答する際に所属するグループ</description>
-<syntax>Group <em>unix-group</em></syntax>
+<syntax>Group <var>unix-group</var></syntax>
 <default>Group #-1</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -47,7 +47,7 @@
     リクエストに応答する際に所属しておくグループを設定します。
     このディレクティブを使用するためには、スタンドアロン型の
     サーバは最初に root 権限で起動されている必要があります。
-    <em>unix-group</em> は次のうちのいずれかです:</p>
+    <var>unix-group</var> は次のうちのいずれかです:</p>
 
     <dl>
       <dt>グループ名</dt>
@@ -61,6 +61,8 @@
     <p>サーバを実行するために特定の新しいグループを設定することを
     お薦めします。<code>nobody</code> を使用する管理者もいますが、
     これは常に可能であったり望ましい訳ではありません。</p>
+
+    <example>Group www-group</example>
 
     <p>注意: サーバ開始を非 root ユーザで行った場合は、
     指定されたグループに変わることができなくて、代わりに
@@ -81,7 +83,7 @@
 <name>PidFile</name>
 <description>デーモンのプロセス ID
 をサーバが記録するためのファイル</description>
-<syntax>PidFile <em>filename</em></syntax>
+<syntax>PidFile <var>filename</var></syntax>
 <default>PidFile logs/httpd.pid</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
@@ -115,7 +117,7 @@
 <directivesynopsis>
 <name>Listen</name>
 <description>サーバが listen するIP アドレスとポート番号</description>
-<syntax>Listen [<em>IP-address</em>:]<em>portnumber</em></syntax>
+<syntax>Listen [<var>IP-address</var>:]<var>portnumber</var></syntax>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
 <module>prefork</module><module>mpm_winnt</module>
@@ -145,21 +147,26 @@
 
     <p>例えば、サーバが 80 番ポートと 8000 番ポートの両方の
     コネクションを受け入れる場合は、次のようにします。</p>
-<example>
-   Listen 80<br />
-   Listen 8000
-</example>
+
+    <example>
+       Listen 80<br />
+       Listen 8000
+    </example>
+
     <p>二つの特定のインターフェースとポート番号からのコネクションを
     受け入れるようにするには、次のようにします。</p>
-<example>
-   Listen 192.170.2.1:80<br />
-   Listen 192.170.2.5:8000
-</example>
+
+    <example>
+       Listen 192.170.2.1:80<br />
+       Listen 192.170.2.5:8000
+    </example>
+
     <p>IPv6 アドレスは角括弧で囲まなければなりません。
     例えば次の例のようにです。</p>
-<example>
-   Listen [fe80::a00:20ff:fea7:ccea]:80
-</example>
+
+    <example>
+       Listen [fe80::a00:20ff:fea7:ccea]:80
+    </example>
 </usage>
 
 <seealso><a href="../dns-caveats.html">DNS の問題</a></seealso>
@@ -170,7 +177,7 @@
 <directivesynopsis>
 <name>ListenBackLog</name>
 <description>保留状態のコネクションのキューの最大長</description>
-<syntax>ListenBacklog <em>backlog</em></syntax>
+<syntax>ListenBacklog <var>backlog</var></syntax>
 <default>ListenBacklog 511</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
@@ -196,7 +203,7 @@
 <directivesynopsis>
 <name>LockFile</name>
 <description>受付を直列化するためのロックファイルの位置</description>
-<syntax>LockFile <em>filename</em></syntax>
+<syntax>LockFile <var>filename</var></syntax>
 <default>LockFile logs/accept.lock</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
@@ -214,11 +221,13 @@
     からです。</strong>
     メインサーバプロセスの PID が自動的にファイル名に付加されます。</p>
 
-    <p><strong>セキュリティ:</strong> <code>/var/tmp</code>
+    <note type="warning"><title>セキュリティ:</title>
+    <p><code>/var/tmp</code>
     といった、誰でも書き込めるディレクトリにファイルを
     置かない方がよいです。なぜなら、サーバが起動時に作成する
     ロックファイルの作成自体を妨害することによって、
     誰でもサービス拒否アタックを引き起こすことができるからです。</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -226,7 +235,7 @@
 <name>MaxClients</name>
 <description>リクエストに応答するために作成される
 子プロセスの最大個数</description>
-<syntax>MaxClients <em>number</em></syntax>
+<syntax>MaxClients <var>number</var></syntax>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>prefork</module>
 </modulelist>
@@ -264,7 +273,7 @@
 <name>MaxMemFree</name>
 <description>主メモリアロケータが free() を呼ばずに保持し続けられるメモリの
 最大量</description>
-<syntax>MaxMemFree <em>number</em></syntax>
+<syntax>MaxMemFree <var>number</var></syntax>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>prefork</module>
 <module>mpm_netware</module>
@@ -280,7 +289,7 @@
 <directivesynopsis>
 <name>MaxRequestsPerChild</name>
 <description>個々の子サーバが稼働中に扱うリクエスト数の上限</description>
-<syntax>MaxRequestsPerChild <em>number</em></syntax>
+<syntax>MaxRequestsPerChild <var>number</var></syntax>
 <default>MaxRequestsPerChild 10000</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
@@ -306,17 +315,19 @@
       サーバ負荷が下がった時にプロセス数を少なくすることができる</li>
     </ul>
 
-    <p><strong>注意:</strong> <em>KeepAlive</em> リクエストの場合は、
+    <note><title>注意:</title>
+    <p><em>KeepAlive</em> リクエストの場合は、
     一つ目のリクエストだけがこの制限に該当します。
     実効的には、一つの子プロセスあたりの<em>コネクション</em>数を
     制限するように挙動が変化します。</p>
+    </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>MaxSpareThreads</name>
 <description>アイドルスレッドの最大数</description>
-<syntax>MaxSpareThreads <em>number</em></syntax>
+<syntax>MaxSpareThreads <var>number</var></syntax>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_netware</module>
 <module>perchild</module><module>worker</module>
@@ -351,7 +362,7 @@
 <directivesynopsis>
 <name>MaxThreadsPerChild</name>
 <description>子プロセス毎のスレッド数の最大数</description>
-<syntax>MaxThreadsPerChild <em>number</em></syntax>
+<syntax>MaxThreadsPerChild <var>number</var></syntax>
 <default>MaxThreadsPerChild 64</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
@@ -371,7 +382,7 @@
 <name>MinSpareThreads</name>
 <description>リクエストに応答することのできる
 アイドルスレッド数の最小数</description>
-<syntax>MinSpareServers <em>number</em></syntax>
+<syntax>MinSpareServers <var>number</var></syntax>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_netware</module>
 <module>perchild</module><module>worker</module>      
@@ -407,7 +418,7 @@
 <directivesynopsis>
 <name>NumServers</name>
 <description>同時に起動している子プロセスの総数</description>
-<syntax>NumServers <em>number</em></syntax>
+<syntax>NumServers <var>number</var></syntax>
 <default>NumServers 2</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>perchild</module></modulelist>
@@ -424,7 +435,7 @@
 <name>ScoreBoardFile</name>
 <description>子プロセスと連携するためのデータを保存する
 ファイルの位置</description>
-<syntax>ScoreBoardFile <em>file-path</em></syntax>
+<syntax>ScoreBoardFile <var>file-path</var></syntax>
 <default>ScoreBoardFile logs/apache_status</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
@@ -440,7 +451,7 @@
     は必ずディスクにファイルを生成します。</p>
 
     <example><title>例</title>
-    ScoreBoardFile /var/run/apache_status
+      ScoreBoardFile /var/run/apache_status
     </example>
 
     <p>ファイルベースの共有メモリは、サードパーティー製のアプリケーションで
@@ -459,7 +470,7 @@
 <directivesynopsis>
 <name>SendBufferSize</name>
 <description>TCP バッファサイズ</description>
-<syntax>SendBufferSize <em>bytes</em></syntax>
+<syntax>SendBufferSize <var>bytes</var></syntax>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
 <module>prefork</module><module>mpm_winnt</module>
@@ -476,7 +487,7 @@
 <directivesynopsis>
 <name>ServerLimit</name>
 <description>設定可能なサーバプロセス数の上限</description>
-<syntax>ServerLimit <em>number</em></syntax>
+<syntax>ServerLimit <var>number</var></syntax>
 <default>ServerLimit 256 (prefork), ServerLimit 16 (worker)</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>prefork</module>
@@ -527,7 +538,7 @@
 <directivesynopsis>
 <name>StartServers</name>
 <description>起動時に生成される子サーバプロセスの数</description>
-<syntax>StartServers <em>number</em></syntax>
+<syntax>StartServers <var>number</var></syntax>
 <default>StartServers 5</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module></modulelist>
@@ -545,7 +556,7 @@
 <directivesynopsis>
 <name>StartThreads</name>
 <description>起動時に生成されるスレッドの数</description>
-<syntax>StartThreads <em>number</em></syntax>
+<syntax>StartThreads <var>number</var></syntax>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_netware</module><module>perchild</module></modulelist>
 
@@ -570,7 +581,7 @@
 <name>ThreadLimit</name>
 <description>設定可能な子プロセス毎のスレッド数の上限を
 設定します</description>
-<syntax>ThreadLimit <em>number</em></syntax>
+<syntax>ThreadLimit <var>number</var></syntax>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_winnt</module><module>worker</module></modulelist>
 
@@ -608,7 +619,7 @@
 <directivesynopsis>
 <name>ThreadsPerChild</name>
 <description>子プロセスそれぞれに生成されるスレッド数</description>
-<syntax>ThreadsPerChild <em>number</em></syntax>
+<syntax>ThreadsPerChild <var>number</var></syntax>
 <default>ThreadsPerChild 50</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>mpm_winnt</module>
@@ -631,7 +642,7 @@
 <directivesynopsis>
 <name>User</name>
 <description>リクエストに応答する際に用いるユーザ ID</description>
-<syntax>User <em>unix-userid</em></syntax>
+<syntax>User <var>unix-userid</var></syntax>
 <default>User #-1</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -644,7 +655,7 @@
     サーバがリクエストに応答する際に用いるユーザ ID を設定します。
     このディレクティブを使用するためには、スタンドアロン型の
     サーバは最初に root 権限で起動されている必要があります。
-    <em>unix-userid</em> は次のどちらかです:</p>
+    <var>unix-userid</var> は次のどちらかです:</p>
 
     <dl>
       <dt>ユーザ名</dt>
