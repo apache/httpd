@@ -55,6 +55,7 @@ application/x-ustar		ustar
 application/x-wais-source	src
 application/zip			zip
 audio/basic			au snd
+audio/midi			mid midi kar
 audio/mpeg			mpga mp2
 audio/x-aiff			aif aiff aifc
 audio/x-pn-realaudio		ram
