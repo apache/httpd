@@ -465,6 +465,7 @@ typedef int rlim_t;
 #define NO_WRITEV
 #include <sys/time.h>
 #define HAVE_SYSLOG 1
+#undef HAVE_SYS_RESOURCE_H
 
 #elif defined(SCO5)
 
