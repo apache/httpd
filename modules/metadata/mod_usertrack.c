@@ -161,11 +161,11 @@ static void set_and_comp_regexp(cookie_dir_rec *dcfg,
                                 const char *cookie_name)
 {
     /* The goal is to end up with this regexp,
-     * ^cookie_name=([^;]+)|;[\t]+cookie_name=([^;]+)
+     * ^cookie_name=([^;,]+)|[;,][ \t]+cookie_name=([^;,]+)
      * with cookie_name obviously substituted either
      * with the real cookie name set by the user in httpd.conf, or with the
      * default COOKIE_NAME. */
-    dcfg->regexp_string = apr_pstrcat(p, "^", cookie_name, "=([^;]+)|;[ \t]+", cookie_name, "=([^;]+)", NULL);
+    dcfg->regexp_string = apr_pstrcat(p, "^", cookie_name, "=([^;,]+)|[;,][ \t]*", cookie_name, "=([^;,]+)", NULL);
 
     dcfg->regexp = ap_pregcomp(p, dcfg->regexp_string, REG_EXTENDED);
 }
