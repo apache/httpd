@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.46.2.38 $ -->
+<!-- $Revision: 1.46.2.39 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -953,9 +953,8 @@ in case of an error</description>
 <usage>
     <p>The <directive>ErrorLog</directive> directive sets the name of
     the file to which the server will log any errors it encounters. If
-    the <var>file-path</var> is not absolute (in general: does not begin
-    with a slash (/)) then it is assumed to be relative to the <directive
-    module="core">ServerRoot</directive>.</p>
+    the <var>file-path</var> is not absolute then it is assumed to be 
+    relative to the <directive module="core">ServerRoot</directive>.</p>
 
     <example><title>Example</title>
     ErrorLog /var/log/httpd/error_log
@@ -1384,9 +1383,8 @@ the server configuration files</description>
     files in a directory that can cause <code>httpd</code> to
     fail.</p>
 
-    <p>The file path specified may be an absolute path (i.e.
-    starting with a slash), or may be relative to the
-    <directive module="core">ServerRoot</directive> directory.</p>
+    <p>The file path specified may be an absolute path, or may be relative 
+    to the <directive module="core">ServerRoot</directive> directory.</p>
 
     <p>Examples:</p>
 
@@ -2129,7 +2127,7 @@ hosting</description>
       NameVirtualHost *
     </example>
 
-    <note><title>Argument to <directive  type="section">VirtualHost</directive>
+    <note><title>Argument to <directive type="section">VirtualHost</directive>
       directive</title>
       <p>Note that the argument to the <directive
        type="section">VirtualHost</directive> directive must
@@ -2290,7 +2288,6 @@ directory</description>
     <p>then the options <code>FollowSymLinks</code> and
     <code>Includes</code> are set for the <code>/web/docs/spec</code>
     directory.</p>
-
 
     <note><title>Note</title>
       <p>Using <code>-IncludesNOEXEC</code> or
@@ -2670,7 +2667,7 @@ itself</description>
 </usage>
 
 <seealso><a href="../dns-caveats.html">Issues Regarding DNS and
-Apache</a></seealso>
+    Apache</a></seealso>
 <seealso><a href="../vhosts/">Apache virtual host
     documentation</a></seealso>
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
