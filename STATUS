@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2001/10/26 15:10:23 $]
+  Last modified at [$Date: 2001/10/29 06:20:47 $]
 
 Release:
 
@@ -67,6 +67,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       set headers too (needed by mod_auth_digest)
         Message-ID: <199907080712.JAA28269@chill.innovation.ch>
         Status:
+
+    * Small patch to enable custom caching mechanisms.
+        Message-ID: <882CC83410624341AD0F775101849D3E082343@orion.spidercache.com>
+	Status: Greg +1
 
 
 Available Patches (Most likely, will be ported to 2.0 as appropriate):
