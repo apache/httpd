@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/09/24 23:23:02 $]
+Last modified at [$Date: 2002/09/26 17:10:11 $]
 
 Release:
 
@@ -513,6 +513,13 @@ EXPERIMENTAL MODULES:
       inclusion into httpd.conf.
 
     * mod_cache/mod_mem_cache/mod_disk_cache: Documentation.
+    
+    mod_auth_ldap/util_ldap:
+    
+    * implement cross-platform/cross-library TLS support
+    
+    * General stabilization and testing
+    
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
