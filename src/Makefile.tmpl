@@ -3,12 +3,17 @@
 # This is combined with the information in the "Configuration" file
 # by the configure script to make the actual Makefile.
 
+CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_FLAGS)
+LIBS=$(EXTRA_LIBS) $(LIBS1)
+INCLUDES=$(INCLUDES1) $(EXTRA_INCLUDES)
+LFLAGS=$(LFLAGS1) $(EXTRA_LFLAGS)
+
 OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
   http_log.o http_protocol.o rfc1413.o util.o util_script.o modules.o buff.o\
   md5c.o util_md5.o explain.o http_bprintf.o $(MODULES)
 
 .c.o:
-	$(CC) -c $(REGINC) $(CFLAGS) $(AUX_CFLAGS) $<
+	$(CC) -c $(INCLUDES) $(CFLAGS) $<
 
 all: Configuration httpd
 
@@ -19,11 +24,11 @@ Configuration: Configuration.tmpl
 	@echo "If not, you will at least have to touch Configuration."
 	@false
 
-httpd: $(REGLIBS) $(OBJS)
-	$(CC) $(LFLAGS) $(AUX_LFLAGS) -o httpd $(OBJS) $(REGLIBS) $(EXTRA_LIBS) $(AUX_LIBS)
+httpd: $(REGLIB) $(OBJS)
+	$(CC) $(LFLAGS)  -o httpd $(OBJS) $(REGLIB) $(LIBS)
 
 regex/libregex.a:
-	cd regex; make lib CC=$(CC) AUX_CFLAGS="$(CFLAGS) $(AUX_CFLAGS)" RANLIB=$(RANLIB)
+	cd regex; make lib CC=$(CC) AUX_CFLAGS="$(CFLAGS)" RANLIB=$(RANLIB)
 
 clean:
 	rm -f httpd $(OBJS) *pure*
@@ -38,7 +43,7 @@ dist.tar:
 
 # Work around broken compilers
 http_bprintf.o: http_bprintf.c
-	$(CC) -c $(REGINC) $(CFLAGS) $(AUX_CFLAGS) $(BROKEN_BPRINTF_FLAGS) http_bprintf.c
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(BROKEN_BPRINTF_FLAGS) http_bprintf.c
 
 #Dependencies
 #Core code

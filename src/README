@@ -144,7 +144,7 @@ alloc.c --- allocation of all resources which might have to be reclaimed
 List of various #defines used in the code:
 The Apache code, specifically in conf.h, uses a variety of #defines to
 control how the code is compiled and what options are available for each
-support OS. The following list provides a short list and description
+supported OS. The following list provides a short list and description
 of these #defines.
 
 --
@@ -221,7 +221,8 @@ of these #defines.
        Do not use the sigaction() call, even if we have it.
       NO_LINGCLOSE:
        Do not use Apache's soft, "lingering" close feature to
-       terminate connections.
+       terminate connections. The lingering_close function
+       can cause problems with nph- scripts on some platforms.
 --
 
   MISC #DEFINES:

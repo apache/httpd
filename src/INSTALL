@@ -13,8 +13,9 @@ To do this:
    lists the modules which have been compiled in, and also names the
    files containing them.  You will need to:
 
-   a) Select a compiler, and compilation options as appropriate to
-      your machine.
+   a) Select the PLATFORM that you will be compiling for. You may also
+      adjust the Rules and EXTRA_CFLAGS|LIBS|LFLAGS|INCLUDES if
+      you feel so inclined.
 
    b) Uncomment lines corresponding to those optional modules you wish
       to include (among the Module lines at the bottom of the file),
@@ -28,6 +29,7 @@ To do this:
 
       % Configure
       Using 'Configuration' as config file
+      Configured for <whatever> platform
       %
 
    This generates new versions of the Makefile and of modules.c.  (If
@@ -35,6 +37,7 @@ To do this:
 
       % Configure -file Configuration.ai
       Using alternate config file Configuration.ai
+      Configured for <whatever> platform
       % 
 
 3) Type "make".

@@ -1,185 +1,129 @@
 # Config file for the Apache httpd.
 
 # Configuration.tmpl is the template for Configuration. Configuration should
-# be edited to select system type. Configuration.tmpl should only be changed
-# when a new system or module is added, or an existing one modified.
+# be edited to select the modules to be included as well as various flags
+# for Makefile.
 
-# There are three types of lines here:
+# The template should only be changed when a new system or module is added,
+# or an existing one modified. This will also most likely require some minor
+# changes to Configure to recognize those changes.
+
+# There are 4 types of lines here:
 
 # '#' comments, distinguished by having a '#' as the first non-blank character
 #
-# Lines which set a Make option --- these are simply copied into the Makefile
+# Makefile options, such as CC=gcc, etc...
+#
+# Rules, distinquished by having "Rule" at the front. These are used to
+# control Configure's behavior as far as how to create Makefile.
 #
 # Module selection lines, distinguished by having 'Module' at the front.
 # These list the configured modules, in priority order (highest priority
 # first).  They're down at the bottom.
 
-# First, ordinary compile-time configuration.
 
-# What to call the compiler:  For normal machines with ANSI compilers
-# CC= cc
-# For Suns or other non-ANSI platforms. Please make sure your gcc is
-# 2.0 or later, as 1.40 seems to create bad code for the Sun 4.
-CC= gcc
-
-# CFLAGS, compile flags.
-
-# -DMINIMAL_DNS is now obsolete. Use httpd.conf settings of
-# HostnameLookups on
-# or
-# HostnameLookups off
+################################################################
+# Makefile configuration
 #
-# If you want to have more secure hostname resolution at the cost of some 
-# performance, use -DMAXIMUM_DNS.
-# If you want setting the xbit of a file to cause it to be treated as
-# server-included HTML (unless it is a CGI script), say -DXBITHACK.  Note
-# that this is a run-time option, per-directory, either way (via the XBITHACK
-# command); this option only sets the default.
+# These are added to the general flags determined by Configure.
+# Edit these to work around Configure if needed. The EXTRA_* family
+# will be added to the regular Makefile flags. For example, if you
+# want to compile with -Wall, then add that to EXTRA_CFLAGS. These
+# will be added to whatever flags Configure determines as appropriate
+# and needed for your platform.
+#
+# You can also set the compiler and Optimization used here as well.
+# Settings here have priority; If not set, Configure will assume
+# 'gcc' and '-O2'
+#
+EXTRA_CFLAGS=
+EXTRA_LFLAGS=
+EXTRA_LIBS=
+EXTRA_INCLUDES=
 
-# If you find that your OS can't cope with mmap (compiles OKAY but refuses
-# to run and moans "httpd: Could not mmap memory" .. or similar) try
-# disabling use of shared memory for process management (scoreboard with
-# -DNO_MMAP) by uncommenting the line below:
-#NOMMAPCFLAG= -DNO_MMAP
-
-# Status Instrumentation
-# In order for the status module to obtain full statistics Apache must
-# be modified to keep track of various information.  This is not
-# turned on by default. In order to enable full status details uncomment
-# the line below:
-#STATCFLAG= -DSTATUS
-
-# Using SOCKS
-# Apache can be compiled to work over a SOCKS firewall by 
-# uncommenting the line below:
-#SOCKSCFLAG= -Dconnect=Rconnect -Dselect=Rselect -Dgethostbyname=Rgethostbyname
+CC=gcc
+OPTIM=-O2
 
 #
-# Also add the following to the EXTRA_LIBS define:
-#
-#  -L/usr/local/lib -lsocks
-#
-# making sure that -L points to wherever you've put libsocks.a.
-
-# [Some other former Apache compile-time options are now treated differently;
-#  the virtual host code is always present; DBM auth is an optional module, and
-#  may be configured out by changing the module config below, though it still
-#  defaults in.  Note that this config file does not include DBM auth by
-#  default --- configure it in below if you need it].
-
-# What level of optimization?
-OPTMCFLAG= -O2
-
-# Add whatever other flags you'd like here... Like, maybe -Wall
-XTRACFLAG=
-
-# Apache requires a POSIX regex implementation. Some/most platforms provide
-# this capability, but for those that don't, Apache provides, simply for
-# convenience, a regex implementation. The regex code is NOT official
-# Apache code and the Apache team does not support or guarantee the code.
-# If you want to use the supplied regex package, uncomment the following
-# line (or set it equal to the regex lib on your system). ALSO: If
-# using this _regex_ package, be sure to also uncomment REGINC as well
-#REGLIBS=regex/libregex.a
-#REGINC= -Iregex
-
-# Default to using ranlib on libraries (for regex). Set this to something else
-# if ranlib kills your system (usually by setting it again in the OS specific
-# section below)
+# Set to 'true' for systems that lack or don't need ranlib.
 RANLIB=ranlib
 
-# Place here any flags you may need upon linking, such as a flag to
-# prevent dynamic linking (if desired)
-LFLAGS= 
-
-# Place here any extra libraries you may need to link to. 
-# -lndbm is commonly required for DBM auth, if that is configured in.
-EXTRA_LIBS=
-
-# Build CFLAGS
-CFLAGS= $(OPTMCFLAG) $(NOMMAPCFLAG) $(STATCFLAG) $(SOCKSCFLAG) $(XTRACFLAG)
-
+################################################################
+# Rules configuration
 #
-# AUX_CFLAGS are system-specific control flags.
-# NOTE: IF YOU DO NOT CHOOSE ONE OF THESE, EDIT httpd.h AND CHOOSE
-# SETTINGS FOR THE SYSTEM FLAGS. IF YOU DON'T, BAD THINGS WILL HAPPEN.
+# These are used to let Configure know that we want certain
+# functions. The format is: Rule RULE=value
+#
+# At present, only the following RULES are known: REGEX, SOCKS, STATUS
+# and BADMMAP.
+#
+# For all Rules, if set to "yes", then Configure knows we want that
+# capability and does what is required to add it in. If set to anything
+# else, or not present, then nothing is done.
+#
+# HSREGEX:
+#  Apache requires a POSIX regex implementation. Harry Spencer's
+#  excellent regex package is included with Apache and can be used
+#  if desired. If your OS has a decent regex, you can elect to
+#  not use this one by setting HSREGEX to 'no' or commenting
+#  out the Rule
+#
+# SOCKS:
+#  If SOCKS is set to 'yes', be sure that you add the sock library
+#  location to EXTRA_LIBS, otherwise Configure will assume
+#  "-L/usr/local/lib -lsocks"
+#
+# STATUS:
+#  If Configure determines that you are using the status_module,
+#  it will automatically enable full status information if set
+#  to 'yes'. If the status module is not included, having STATUS
+#  set to 'yes' has no impact.
+#
+# BADMMAP:
+#  If you find that your OS can't cope with mmap (compiles OKAY but refuses
+#  to run and moans "httpd: Could not mmap memory" .. or similar) set
+#  this to 'yes'.
+#  
+#
+Rule HSREGEX=yes
+Rule STATUS=yes
+Rule SOCKS=no
+Rule BADMMAP=no
 
-# For SunOS 4
-#AUX_CFLAGS= -DSUNOS4
-# For Solaris 2.
-#AUX_CFLAGS= -DSOLARIS2
-#AUX_LIBS= -lsocket -lnsl
-# For SGI IRIX. Use the AUX_LIBS line if you're using NIS and want
-# user-supported directories
-#AUX_CFLAGS= -DIRIX
-#AUX_LIBS= -lsun
-# For HP-UX       n.b. if you use the paid-for HP CC compiler, use flag -Ae
-#AUX_CFLAGS= -DHPUX
-# For HP-UX 10
-#AUX_CFLAGS= -DHPUX10
-# For AIX
-#AUX_CFLAGS= -DAIX -U__STR__
-# For Ultrix
-#AUX_CFLAGS= -DULTRIX
-# For DEC OSF/1
-#AUX_CFLAGS= -DOSF1
-# For NeXT
-#AUX_CFLAGS= -DNEXT
-# For Sequent
-#AUX_CFLAGS= -DSEQUENT
-# For Linux -m486 ONLY IF YOU HAVE 486 BINARY SUPPORT IN KERNEL
-#AUX_CFLAGS= -DLINUX
-# For A/UX
-#AUX_CFLAGS= -DAUX -D_POSIX_SOURCE
-#AUX_LIBS= -lposix -lbsd -s
-# For SCO ODT 3
-# libcrypt_i available from sosco.sco.com, files /SLS/lng225b.Z and
-# /SLS/lng225b.ltr.Z
-# the -Oe option causes cc to die compiling mod_imap (using 3.0.0a of the dev sys)
-#CFLAGS= -Oacgiltz
-#AUX_CFLAGS= -DSCO
-#AUX_LIBS= -lPW -lsocket -lmalloc -lcrypt_i
-# For SCO OpenServer Release 5
-# -K noinline is needed to work around an optimiser bug which appears in
-# http_bprintf.c
-#AUX_CFLAGS= -DSCO5
-#AUX_LIBS=-lsocket -lmalloc -lprot
-#BROKEN_BPRINTF_FLAGS=-K noinline
-#RANLIB=true
-# For SVR4
-# Some SVR4 implementations will require SO_LINGER option to be set in order
-# to guarantee buffer flushes. Dell, Esix, and UnixWare are a few of these.
-# Use -DNEED_LINGER in addition to other AUX_CFLAGS for these.
-#AUX_CFLAGS= -DSVR4
-#AUX_LIBS= -lsocket -lnsl -lc
-# For UnixWare 2.x, no longer just SVR4 (sigh) - use cc, not gcc
-# AUX_LIBS= -lsocket -lnsl -lcrypt
-# For Amdahl UTS 2.1
-# -Xa enables ANSI mode, -eft is expanded types
-#AUX_CFLAGS= -Xa -eft -DUTS21
-#AUX_LIBS= -lsocket -lbsd -la
-# For HP/Apollo Domain/OS
-#AUX_CFLAGS= -DAPOLLO
-# For NetBSD/FreeBSD/BSDI 2.x
-# -m486 only if you are running on Intel 486/586
-#AUX_CFLAGS= -m486
-# BSDI doesn't need -lcrypt
-#AUX_LIBS= -lcrypt
-# For QNX
-#AUX_CFLAGS= -DQNX
-#AUX_LFLAGS= -N 0x20000
-# For LynxOS
-#AUX_CFLAGS= -DLYNXOS
-#EXTRA_LIBS=-lbsd -ldes -lc_p
-# For DG/UX 5.4
-#AUX_CFLAGS= -DDGUX
-#AUX_LIBS=
+###############
+#
+# The platforms: Uncomment the line for your OS/platform
+#  PLATFORM:
+#
+###############
+#PLATFORM=SUNOS4	# SunOS4
+#PLATFORM=SOLARIS2	# Solaris 2
+#PLATFORM=IRIX		# SGI IRIX
+#PLATFORM=IRIXNIS	# SGI IRIX with NIS and user-supplied directories
+#PLATFORM=HP-UX		# HP-UX
+#PLATFORM=HP-UX10	# HP-UX 10
+#PLATFORM=AIX		# IBM AIX
+#PLATFORM=ULTRIX	# Ultrix
+#PLATFORM=OSF		# DEC OSF/1
+#PLATFORM=NeXT		# NeXT
+#PLATFORM=SEQUENT	# Sequent
+#PLATFORM=LINUX		# Linux with 486 support in kernel
+#PLATFORM=A/UX		# Apple A/UX
+#PLATFORM=SCO3		# SCO ODT 3
+#PLATFORM=SCO5		# SCO ODT 5
+#PLATFORM=SVR4		# SVR4 implementation (non Unixware)
+#PLATFORM=UNIXWARE	# Unixware
+#PLATFORM=UTS		# Amdahl UTS 2.1
+#PLATFORM=APOLLO	# HP / Apollo Domain/OS
+#PLATFROM=BSD		# FreeBSD/NetBSD
+#PLATFORM=BSD486	# FreeBSD/NetBSD on 486/586
+#PLATFORM=BSDI		# BSDI
+#PLATFORM=BSDI486	# BSDI on 486/586
+#PLATFORM=QNX		# QNX
+#PLATFORM=LYNXOS	# LynxOS
+#PLATFORM=DGUX		# DG/UX 5.4
+#PLATFORM=OS/2		# EMX OS/2 Port
 
-# For EMX OS/2 port
-#AUX_CFLAGS= -Zbsd-signals -Zbin-files
-#-DNO_KILLPG -DNEED_STRCASECMP -DNO_SETSID
-#-g
-#AUX_LIBS= -lsocket -llibufc -lgdbm -lbsd
 
 ################################################################
 # Module configuration
@@ -246,7 +190,7 @@ Module action_module       mod_actions.o
 
 ## The status module allows the server to display current details about 
 ## how well it is performing and what it is doing.  Consider also enabling 
-## -DSTATUS (see the CFLAGS section near the start of the file) to allow
+## :STATUS=yes (see the Rules section near the start of the file) to allow
 ## full status information.  Check conf/access.conf on how to enable this.
 
 # Module status_module	     mod_status.o
@@ -265,18 +209,20 @@ Module action_module       mod_actions.o
 
 ## db_auth and dbm_auth work with Berkeley DB files - make sure there
 ## is support for DBM files on your system.  You may need to grab the GNU
-## "gdbm" package if not.
+## "gdbm" package if not and possibly adjust EXTRA_LIBS. (This may be
+## done by Configure at a later date)
 
 # Module db_auth_module      mod_auth_db.o
 # Module dbm_auth_module     mod_auth_dbm.o
 
 ## msql_auth checks against an MSQL database.  You must have MSQL installed
 ## and an "msql.h" available for this to even compile.  Additionally,
-## you may need to add a couple entries to the CFLAGS line, like
+## you may need to add a couple entries to the EXTRA_LIBS line, like
 ##
 ##  -lmsql -L/usr/local/lib -L/usr/local/Minerva/lib
 ##
-## This depends on your installation of MSQL.
+## This depends on your installation of MSQL. (This may be done by Configure
+## at a later date)
 
 # Module msql_auth_module    mod_auth_msql.o
 

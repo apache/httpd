@@ -1,5 +1,10 @@
 Changes with Apache 1.2b1:
 
+  *) Somewhat cleaner Configure implementation
+      Only a simple selection of PLATFORM is required for Configure/
+      Configuration to work. Concept of "Rules" added to allow
+      for control of Configure's behavior.
+
   *) Add setuid/gid execution via setuid wrapper
       Apache can now execute CGI scripts as the User/Group of the
       virtualhost, or as the owner of the UserDir through ~user.
@@ -36,7 +41,7 @@ Changes with Apache 1.2b1:
       changed #tmpXXXX to tmpXXXX in temp file template, for broken link/unlink
       changed Expire to Expires in cache_update()
       added appropriate #defines for Next compile
-      added $Id: CHANGES,v 1.50 1996/08/02 21:23:26 randy Exp $ for RCS/CVS [Chuck Murcko]
+      added $Id: CHANGES,v 1.51 1996/08/05 01:17:20 jim Exp $ for RCS/CVS [Chuck Murcko]
 
   *) Fix ErrorDocument handling.  When ErrorDocument failed it used to 
      display filename instead of error message. [Paul Sutton]

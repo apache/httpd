@@ -5,13 +5,6 @@
    make sure that if the response handler sets an error code, then an
    error report winds up on the output...
 
-*) More complete scoreboard for child processes.  For each process, at least:
-   number of requests handled, start time, current request (first line and
-   client and server addresses).  Also an httpstat program to print this all
-   out readably (thereby giving you your first real shot at figuring out what
-   that CGI script which has been chewing up all your CPU for the past few
-   minutes thinks it's actually doing...).
-
 *) Assess efficiency cost of rputc() in includes.
 
 *) Varargs printf-like log_reason (would allow me to ditch most of the
