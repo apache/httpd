@@ -341,7 +341,7 @@ AC_DEFUN(APACHE_LAYOUT,[
         addtarget=yes
       fi
       if test "$addtarget" = "yes"; then
-        val="$val/apache"
+        val="$val/apache2"
       fi
     fi
     eval "$var='$val'"
