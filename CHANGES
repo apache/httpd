@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_rewrite: Support for recognizing SSL variables in RewriteCond
+     using the new "SSL:" format.  [Joe Orton, Madhusudan Mathihalli]
+
   *) mod_setenvif: Remove "support" for Remote_User variable which
      never worked at all. PR 25725.  [André Malo]
 
