@@ -1,5 +1,8 @@
 Changes with Apache 2.0.46
 
+  *) Add a delete flag to htpasswd.
+     [Thom May]
+
   *) Fix mod_rewrite's handling of absolute URIs. The escaping routines
      now work scheme dependent and the query string will only be
      appended if supported by the particular scheme.  [André Malo]

@@ -139,6 +139,7 @@
 #define APHTP_NEWFILE        1
 #define APHTP_NOFILE         2
 #define APHTP_NONINTERACTIVE 4
+#define APHTP_DELUSER        8
 
 apr_file_t *errfile;
 apr_file_t *ftemp = NULL;
@@ -245,8 +246,8 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
 static void usage(void)
 {
     apr_file_printf(errfile, "Usage:\n");
-    apr_file_printf(errfile, "\thtpasswd [-cmdps] passwordfile username\n");
-    apr_file_printf(errfile, "\thtpasswd -b[cmdps] passwordfile username "
+    apr_file_printf(errfile, "\thtpasswd [-cmdpsD] passwordfile username\n");
+    apr_file_printf(errfile, "\thtpasswd -b[cmdpsD] passwordfile username "
                     "password\n\n");
     apr_file_printf(errfile, "\thtpasswd -n[mdps] username\n");
     apr_file_printf(errfile, "\thtpasswd -nb[mdps] username password\n");
@@ -267,6 +268,7 @@ static void usage(void)
     apr_file_printf(errfile, " -s  Force SHA encryption of the password.\n");
     apr_file_printf(errfile, " -b  Use the password from the command line "
             "rather than prompting for it.\n");
+    apr_file_printf(errfile, " -D  Delete the specified user.\n");
     apr_file_printf(errfile,
             "On Windows, NetWare and TPF systems the '-m' flag is used by "
             "default.\n");
@@ -359,6 +361,9 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
                 *mask |= APHTP_NONINTERACTIVE;
                 args_left++;
             }
+            else if (*arg == 'D') {
+                *mask |= APHTP_DELUSER;
+            }
             else {
                 usage();
             }
@@ -367,6 +372,14 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
 
     if ((*mask & APHTP_NEWFILE) && (*mask & APHTP_NOFILE)) {
         apr_file_printf(errfile, "%s: -c and -n options conflict\n", argv[0]);
+        exit(ERR_SYNTAX);
+    }
+    if ((*mask & APHTP_NEWFILE) && (*mask & APHTP_DELUSER)) {
+        apr_file_printf(errfile, "%s: -c and -D options conflict\n", argv[0]);
+        exit(ERR_SYNTAX);
+    }
+    if ((*mask & APHTP_NOFILE) && (*mask & APHTP_DELUSER)) {
+        apr_file_printf(errfile, "%s: -n and -D options conflict\n", argv[0]);
         exit(ERR_SYNTAX);
     }
     /*
@@ -532,15 +545,17 @@ int main(int argc, const char * const argv[])
      * Any error message text is returned in the record buffer, since
      * the mkrecord() routine doesn't have access to argv[].
      */
-    i = mkrecord(user, record, sizeof(record) - 1,
-                 password, alg);
-    if (i != 0) {
-        apr_file_printf(errfile, "%s: %s\n", argv[0], record);
-        exit(i);
-    }
-    if (mask & APHTP_NOFILE) {
-        printf("%s\n", record);
-        exit(0);
+    if (!(mask & APHTP_DELUSER)) {
+        i = mkrecord(user, record, sizeof(record) - 1,
+                     password, alg);
+        if (i != 0) {
+            apr_file_printf(errfile, "%s: %s\n", argv[0], record);
+            exit(i);
+        }
+        if (mask & APHTP_NOFILE) {
+            printf("%s\n", record);
+            exit(0);
+        }
     }
 
     /*
@@ -597,18 +612,32 @@ int main(int argc, const char * const argv[])
                 continue;
             }
             else {
-                /* We found the user we were looking for, add him to the file.
-                 */
-                apr_file_printf(errfile, "Updating ");
-                putline(ftemp, record);
-                found++;
+                if (!(mask & APHTP_DELUSER)) {
+                    /* We found the user we were looking for.
+                     * Add him to the file.
+                    */
+                    apr_file_printf(errfile, "Updating ");
+                    putline(ftemp, record);
+                    found++;
+                }
+                else {
+                    /* We found the user we were looking for.
+                     * Delete them from the file.
+                     */
+                    apr_file_printf(errfile, "Deleting ");
+                    found++;
+                }
             }
         }
         apr_file_close(fpw);
     }
-    if (!found) {
+    if (!found && !(mask & APHTP_DELUSER)) {
         apr_file_printf(errfile, "Adding ");
         putline(ftemp, record);
+    }
+    else if (!found && (mask & APHTP_DELUSER)) {
+        apr_file_printf(errfile, "User %s not found\n", user);
+        exit(0);
     }
     apr_file_printf(errfile, "password for user %s\n", user);
 
