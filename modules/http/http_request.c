@@ -135,7 +135,7 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
      * about proxy authentication.  They treat it like normal auth, and then
      * we tweak the status.
      */
-    if (r->status == HTTP_UNAUTHORIZED && r->proxyreq) {
+    if (HTTP_UNAUTHORIZED == r->status && PROXYREQ_PROXY == r->proxyreq) {
         r->status = HTTP_PROXY_AUTHENTICATION_REQUIRED;
     }
 

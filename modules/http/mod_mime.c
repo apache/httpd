@@ -720,10 +720,7 @@ static int find_ct(request_rec *r)
 
         /* Check for a special handler, but not for proxy request */
         if ((type = apr_table_get(conf->handlers, ext))
-#if 0	
-	/* XXX fix me when the proxy code is updated */
-	    && r->proxyreq == NOT_PROXY) 
-#endif
+	    && (PROXYREQ_NONE == r->proxyreq) 
         ) {
             r->handler = type;
             found = 1;

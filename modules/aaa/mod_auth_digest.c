@@ -854,7 +854,7 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
     char *key, *value;
 
     auth_line = apr_table_get(r->headers_in,
-			     r->proxyreq ? "Proxy-Authorization"
+			     (PROXYREQ_PROXY == r->proxyreq) ? "Proxy-Authorization"
 					 : "Authorization");
     if (!auth_line) {
 	resp->auth_hdr_sts = NO_HEADER;
@@ -1322,7 +1322,7 @@ static void note_digest_auth_failure(request_rec *r,
     }
 
     apr_table_mergen(r->err_headers_out,
-		    r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate",
+		    (PROXYREQ_PROXY == r->proxyreq) ? "Proxy-Authenticate" : "WWW-Authenticate",
 		    apr_psprintf(r->pool, "Digest realm=\"%s\", nonce=\"%s\", "
 					 "algorithm=%s%s%s%s%s",
 				ap_auth_name(r), nonce, conf->algorithm,
@@ -2050,7 +2050,7 @@ static int add_auth_info(request_rec *r)
 
     if (ai && ai[0])
 	apr_table_mergen(r->headers_out,
-			r->proxyreq ? "Proxy-Authentication-Info"
+			(PROXYREQ_PROXY == r->proxyreq) ? "Proxy-Authentication-Info"
 				    : "Authentication-Info",
 			ai);
     return OK;
