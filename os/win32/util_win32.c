@@ -56,11 +56,12 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#include "httpd.h"
-#include "http_log.h"
 #include "apr_strings.h"
 #include "arch/win32/fileio.h"
 #include "arch/win32/misc.h"
+
+#include "httpd.h"
+#include "http_log.h"
 
 #include <stdarg.h>
 #include <time.h>
@@ -114,4 +115,114 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
     apr_procattr_t *attr, apr_pool_t *p)
 {
     return apr_proc_create(newproc, progname, args, env, attr, p);
+}
+
+
+/* This code is stolen from misc/win32/misc.c and apr_private.h
+ * This helper code resolves late bound entry points 
+ * missing from one or more releases of the Win32 API...
+ * but it sure would be nice if we didn't duplicate this code
+ * from the APR ;-)
+ */
+static const char* const lateDllName[DLL_defined] = {
+    "kernel32", "advapi32", "mswsock",  "ws2_32"  };
+static HMODULE lateDllHandle[DLL_defined] = {
+    NULL,       NULL,       NULL,       NULL      };
+
+
+FARPROC ap_load_dll_func(ap_dlltoken_e fnLib, char* fnName, int ordinal)
+{
+    if (!lateDllHandle[fnLib]) { 
+        lateDllHandle[fnLib] = LoadLibrary(lateDllName[fnLib]);
+        if (!lateDllHandle[fnLib])
+            return NULL;
+    }
+    if (ordinal)
+        return GetProcAddress(lateDllHandle[fnLib], (char *) ordinal);
+    else
+        return GetProcAddress(lateDllHandle[fnLib], fnName);
+}
+
+
+/* To share the semaphores with other processes, we need a NULL ACL
+ * Code from MS KB Q106387
+ */
+PSECURITY_ATTRIBUTES GetNullACL()
+{
+    PSECURITY_DESCRIPTOR pSD;
+    PSECURITY_ATTRIBUTES sa;
+
+    sa  = (PSECURITY_ATTRIBUTES) LocalAlloc(LPTR, sizeof(SECURITY_ATTRIBUTES));
+    sa->nLength = sizeof(sizeof(SECURITY_ATTRIBUTES));
+
+    pSD = (PSECURITY_DESCRIPTOR) LocalAlloc(LPTR, SECURITY_DESCRIPTOR_MIN_LENGTH);
+    sa->lpSecurityDescriptor = pSD;
+
+    if (pSD == NULL || sa == NULL) {
+        return NULL;
+    }
+    apr_set_os_error(0);
+    if (!InitializeSecurityDescriptor(pSD, SECURITY_DESCRIPTOR_REVISION)
+	|| apr_get_os_error()) {
+        LocalFree( pSD );
+        LocalFree( sa );
+        return NULL;
+    }
+    if (!SetSecurityDescriptorDacl(pSD, TRUE, (PACL) NULL, FALSE)
+	|| apr_get_os_error()) {
+        LocalFree( pSD );
+        LocalFree( sa );
+        return NULL;
+    }
+
+    sa->bInheritHandle = TRUE;
+    return sa;
+}
+
+
+void CleanNullACL(void *sa) 
+{
+    if (sa) {
+        LocalFree(((PSECURITY_ATTRIBUTES)sa)->lpSecurityDescriptor);
+        LocalFree(sa);
+    }
+}
+
+
+/*
+ * The Win32 call WaitForMultipleObjects will only allow you to wait for 
+ * a maximum of MAXIMUM_WAIT_OBJECTS (current 64).  Since the threading 
+ * model in the multithreaded version of apache wants to use this call, 
+ * we are restricted to a maximum of 64 threads.  This is a simplistic 
+ * routine that will increase this size.
+ */
+DWORD wait_for_many_objects(DWORD nCount, CONST HANDLE *lpHandles, 
+                            DWORD dwSeconds)
+{
+    time_t tStopTime;
+    DWORD dwRet = WAIT_TIMEOUT;
+    DWORD dwIndex=0;
+    BOOL bFirst = TRUE;
+  
+    tStopTime = time(NULL) + dwSeconds;
+  
+    do {
+        if (!bFirst)
+            Sleep(1000);
+        else
+            bFirst = FALSE;
+          
+        for (dwIndex = 0; dwIndex * MAXIMUM_WAIT_OBJECTS < nCount; dwIndex++) {
+            dwRet = WaitForMultipleObjects( 
+                min(MAXIMUM_WAIT_OBJECTS, nCount - (dwIndex * MAXIMUM_WAIT_OBJECTS)),
+                lpHandles + (dwIndex * MAXIMUM_WAIT_OBJECTS), 
+                0, 0);
+                                           
+            if (dwRet != WAIT_TIMEOUT) {                                          
+              break;
+            }
+        }
+    } while((time(NULL) < tStopTime) && (dwRet == WAIT_TIMEOUT));
+    
+    return dwRet;
 }
