@@ -1114,8 +1114,7 @@ apr_status_t ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t por
     if (rv == APR_SUCCESS) {
         rv = apr_connect(sock, destsa);
     }
-    if (rv != APR_SUCCESS)
-    {
+    else if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
             "proxy connect to %s port %d failed", host, port);
     }
