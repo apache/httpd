@@ -64,26 +64,24 @@ NT.</dd>
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a></p>
 <dl><dt><a href="mod_actions.html" id="A" name="A">mod_actions</a></dt><dd>이 모듈은 미디어종류나 요청메서드에 따라 CGI
 스크립트를 실행한다.</dd>
-<dt><a href="mod_alias.html">mod_alias</a></dt><dd>Provides for mapping different parts of the host
-    filesystem in the document tree and for URL redirection</dd>
+<dt><a href="mod_alias.html">mod_alias</a></dt><dd>파일시스템의 다른 부분들을 문서 계층구조에 포함하고,
+    URL 리다이렉션을 제공한다</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>HTTP 헤더를 포함한 파일을 보낸다</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic authentication</dd>
-<dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
-    Digest Authentication.</dd>
+<dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>MD5 Digest Authentication을 사용한 사용자인증.</dd>
 <dt><a href="mod_auth_ldap.html">mod_auth_ldap</a></dt><dd>Allows an LDAP directory to be used to store the database
 for HTTP Basic authentication.</dd>
-<dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>Allows "anonymous" user access to authenticated
-    areas</dd>
-<dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>User authentication using DBM files</dd>
-<dt><a href="mod_authn_default.html">mod_authn_default</a></dt><dd>Authentication fallback module</dd>
-<dt><a href="mod_authn_file.html">mod_authn_file</a></dt><dd>User authentication using text files</dd>
-<dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Group authorization using DBM files</dd>
-<dt><a href="mod_authz_default.html">mod_authz_default</a></dt><dd>Authorization fallback module</dd>
-<dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>Group authorization using plaintext files</dd>
-<dt><a href="mod_authz_host.html">mod_authz_host</a></dt><dd>Group authorizations based on host (name or IP
-address)</dd>
-<dt><a href="mod_authz_owner.html">mod_authz_owner</a></dt><dd>Authorization based on file ownership</dd>
-<dt><a href="mod_authz_user.html">mod_authz_user</a></dt><dd>User Authorization</dd>
+<dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>인증영역에 "익명(anonymous)" 사용자의 접근을
+허용한다</dd>
+<dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>DBM 파일을 사용한 사용자 인증</dd>
+<dt><a href="mod_authn_default.html">mod_authn_default</a></dt><dd>최후 인증모듈</dd>
+<dt><a href="mod_authn_file.html">mod_authn_file</a></dt><dd>문자파일을 이용한 사용자 인증</dd>
+<dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>DBM 파일을 사용한 그룹 인증</dd>
+<dt><a href="mod_authz_default.html">mod_authz_default</a></dt><dd>최후 권한부여모듈</dd>
+<dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>일반 문자파일을 이용한 그룹 권한부여</dd>
+<dt><a href="mod_authz_host.html">mod_authz_host</a></dt><dd>호스트 (이름이나 IP 주소)를 사용한 그룹 권한부여</dd>
+<dt><a href="mod_authz_owner.html">mod_authz_owner</a></dt><dd>파일 소유자를 이용한 권한부여</dd>
+<dt><a href="mod_authz_user.html">mod_authz_user</a></dt><dd>사용자 권한부여</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>자동으로 유닉스의 <code>ls</code> 명령어나 Win32의
     <code>dir</code> 쉘명령어와 유사한 디렉토리 목록을 만든다</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>Content cache keyed to URIs.</dd>
@@ -101,12 +99,12 @@ index 파일을 서비스한다</dd>
 <dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>프로토콜 모듈을 설명하기위한 간단한 echo 서버</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>CGI 스크립트나 SSI 페이지에 전달할 환경변수를
 수정한다</dd>
-<dt><a href="mod_example.html">mod_example</a></dt><dd>Illustrates the Apache module API</dd>
-<dt><a href="mod_expires.html">mod_expires</a></dt><dd>Generation of <code>Expires</code> HTTP headers according to
-user-specified criteria</dd>
-<dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>Pass the response body through an external program before
-delivery to the client</dd>
-<dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>Caches a static list of files in memory</dd>
+<dt><a href="mod_example.html">mod_example</a></dt><dd>아파치 모듈 API를 설명한다</dd>
+<dt><a href="mod_expires.html">mod_expires</a></dt><dd>사용자가 지정한 기준에 따라 <code>Expires</code>
+HTTP 헤더를 생성한다</dd>
+<dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>응답 내용을 외부 프로그램으로 처리한 후 클라이언트로
+보낸다</dd>
+<dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>메모리에 정적 파일들을 캐쉬</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>Customization of HTTP request and response
 headers</dd>
 <dt><a href="mod_ident.html" id="I" name="I">mod_ident</a></dt><dd>RFC 1413 ident lookups</dd>
@@ -119,7 +117,7 @@ configuration</dd>
 by other LDAP modules</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Logging of the requests made to the server</dd>
 <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Forensic Logging of the requests made to the server</dd>
-<dt><a href="mod_logio.html">mod_logio</a></dt><dd>Logging of input and output bytes per request</dd>
+<dt><a href="mod_logio.html">mod_logio</a></dt><dd>요청당 입출력 바이트수를 기록</dd>
 <dt><a href="mod_mem_cache.html" id="M" name="M">mod_mem_cache</a></dt><dd>Content cache keyed to URIs</dd>
 <dt><a href="mod_mime.html">mod_mime</a></dt><dd>Associates the requested filename's extensions
     with the file's behavior (handlers and filters)
@@ -138,22 +136,18 @@ by other LDAP modules</dd>
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_rewrite.html" id="R" name="R">mod_rewrite</a></dt><dd>Provides a rule-based rewriting engine to rewrite requested
 URLs on the fly</dd>
-<dt><a href="mod_setenvif.html" id="S" name="S">mod_setenvif</a></dt><dd>Allows the setting of environment variables based
-on characteristics of the request</dd>
-<dt><a href="mod_so.html">mod_so</a></dt><dd>Loading of executable code and
-modules into the server at start-up or restart time</dd>
-<dt><a href="mod_speling.html">mod_speling</a></dt><dd>Attempts to correct mistaken URLs that
-users might have entered by ignoring capitalization and by
-allowing up to one misspelling</dd>
+<dt><a href="mod_setenvif.html" id="S" name="S">mod_setenvif</a></dt><dd>요청의 성격에 따라 환경변수 설정을 변경한다</dd>
+<dt><a href="mod_so.html">mod_so</a></dt><dd>시작할때 혹은 재시작할때 실행가능한 코드와 모듈을
+서버로 읽어들인다</dd>
+<dt><a href="mod_speling.html">mod_speling</a></dt><dd>사용자가 대소문자를 잘못 사용하거나 맞춤법이 틀리는
+것을 한번까지 허용하여 잘못된 URL을 고치려고 시도한다</dd>
 <dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Strong cryptography using the Secure Sockets
 Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
-<dt><a href="mod_status.html">mod_status</a></dt><dd>Provides information on server activity and
-performance</dd>
-<dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>Allows CGI scripts to run as a specified user
-and Group</dd>
-<dt><a href="mod_unique_id.html" id="U" name="U">mod_unique_id</a></dt><dd>Provides an environment variable with a unique
-identifier for each request</dd>
-<dt><a href="mod_userdir.html">mod_userdir</a></dt><dd>User-specific directories</dd>
+<dt><a href="mod_status.html">mod_status</a></dt><dd>서버 활동과 성능에 대한 정보를 제공한다</dd>
+<dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>CGI 스크립트를 특정 사용자와 그룹 권한으로 실행한다</dd>
+<dt><a href="mod_unique_id.html" id="U" name="U">mod_unique_id</a></dt><dd>각 요청마다 유일한 식별자를 가지는 환경변수를
+제공한다</dd>
+<dt><a href="mod_userdir.html">mod_userdir</a></dt><dd>사용자별 디렉토리</dd>
 <dt><a href="mod_usertrack.html">mod_usertrack</a></dt><dd>
 <em>Clickstream</em> logging of user activity on a site
 </dd>

@@ -3,21 +3,21 @@
 <modulefilelist>
   <modulefile>core.xml</modulefile>
   <modulefile>mod_actions.xml.ko</modulefile>
-  <modulefile>mod_alias.xml</modulefile>
+  <modulefile>mod_alias.xml.ko</modulefile>
   <modulefile>mod_asis.xml.ko</modulefile>
-  <modulefile>mod_auth_basic.xml</modulefile>
-  <modulefile>mod_auth_digest.xml</modulefile>
+  <modulefile>mod_auth_basic.xml.ko</modulefile>
+  <modulefile>mod_auth_digest.xml.ko</modulefile>
   <modulefile>mod_auth_ldap.xml</modulefile>
-  <modulefile>mod_authn_anon.xml</modulefile>
-  <modulefile>mod_authn_dbm.xml</modulefile>
-  <modulefile>mod_authn_default.xml</modulefile>
-  <modulefile>mod_authn_file.xml</modulefile>
-  <modulefile>mod_authz_dbm.xml</modulefile>
-  <modulefile>mod_authz_default.xml</modulefile>
-  <modulefile>mod_authz_groupfile.xml</modulefile>
-  <modulefile>mod_authz_host.xml</modulefile>
-  <modulefile>mod_authz_owner.xml</modulefile>
-  <modulefile>mod_authz_user.xml</modulefile>
+  <modulefile>mod_authn_anon.xml.ko</modulefile>
+  <modulefile>mod_authn_dbm.xml.ko</modulefile>
+  <modulefile>mod_authn_default.xml.ko</modulefile>
+  <modulefile>mod_authn_file.xml.ko</modulefile>
+  <modulefile>mod_authz_dbm.xml.ko</modulefile>
+  <modulefile>mod_authz_default.xml.ko</modulefile>
+  <modulefile>mod_authz_groupfile.xml.ko</modulefile>
+  <modulefile>mod_authz_host.xml.ko</modulefile>
+  <modulefile>mod_authz_owner.xml.ko</modulefile>
+  <modulefile>mod_authz_user.xml.ko</modulefile>
   <modulefile>mod_autoindex.xml.ko</modulefile>
   <modulefile>mod_cache.xml.ko</modulefile>
   <modulefile>mod_cern_meta.xml.ko</modulefile>
@@ -31,10 +31,10 @@
   <modulefile>mod_disk_cache.xml.ko</modulefile>
   <modulefile>mod_echo.xml.ko</modulefile>
   <modulefile>mod_env.xml.ko</modulefile>
-  <modulefile>mod_example.xml</modulefile>
-  <modulefile>mod_expires.xml</modulefile>
-  <modulefile>mod_ext_filter.xml</modulefile>
-  <modulefile>mod_file_cache.xml</modulefile>
+  <modulefile>mod_example.xml.ko</modulefile>
+  <modulefile>mod_expires.xml.ko</modulefile>
+  <modulefile>mod_ext_filter.xml.ko</modulefile>
+  <modulefile>mod_file_cache.xml.ko</modulefile>
   <modulefile>mod_headers.xml</modulefile>
   <modulefile>mod_ident.xml</modulefile>
   <modulefile>mod_imap.xml</modulefile>
@@ -44,7 +44,7 @@
   <modulefile>mod_ldap.xml</modulefile>
   <modulefile>mod_log_config.xml</modulefile>
   <modulefile>mod_log_forensic.xml</modulefile>
-  <modulefile>mod_logio.xml</modulefile>
+  <modulefile>mod_logio.xml.ko</modulefile>
   <modulefile>mod_mem_cache.xml</modulefile>
   <modulefile>mod_mime.xml</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
@@ -55,14 +55,14 @@
   <modulefile>mod_proxy_ftp.xml</modulefile>
   <modulefile>mod_proxy_http.xml</modulefile>
   <modulefile>mod_rewrite.xml</modulefile>
-  <modulefile>mod_setenvif.xml</modulefile>
-  <modulefile>mod_so.xml</modulefile>
-  <modulefile>mod_speling.xml</modulefile>
+  <modulefile>mod_setenvif.xml.ko</modulefile>
+  <modulefile>mod_so.xml.ko</modulefile>
+  <modulefile>mod_speling.xml.ko</modulefile>
   <modulefile>mod_ssl.xml</modulefile>
-  <modulefile>mod_status.xml</modulefile>
-  <modulefile>mod_suexec.xml</modulefile>
-  <modulefile>mod_unique_id.xml</modulefile>
-  <modulefile>mod_userdir.xml</modulefile>
+  <modulefile>mod_status.xml.ko</modulefile>
+  <modulefile>mod_suexec.xml.ko</modulefile>
+  <modulefile>mod_unique_id.xml.ko</modulefile>
+  <modulefile>mod_userdir.xml.ko</modulefile>
   <modulefile>mod_usertrack.xml</modulefile>
   <modulefile>mod_version.xml</modulefile>
   <modulefile>mod_vhost_alias.xml</modulefile>
