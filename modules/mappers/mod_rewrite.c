@@ -134,6 +134,10 @@
 
 #include "mod_rewrite.h"
 
+#if !defined(OS2) && !defined(WIN32) && !defined(BEOS)  && !defined(NETWARE)
+#include "unixd.h"
+#define MOD_REWRITE_SET_MUTEX_PERMS /* XXX Apache should define something */
+#endif
 
 /*
  * in order to improve performance on running production systems, you
@@ -144,14 +148,10 @@
  * responsible for answering all the mod_rewrite questions out there.
  */
 #ifndef REWRITELOG_DISABLED
+
 #define rewritelog(x) do_rewritelog x
 #define REWRITELOG_MODE  ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
 #define REWRITELOG_FLAGS ( APR_WRITE | APR_APPEND | APR_CREATE )
-
-#if !defined(OS2) && !defined(WIN32) && !defined(BEOS)  && !defined(NETWARE)
-#include "unixd.h"
-#define MOD_REWRITE_SET_MUTEX_PERMS /* XXX Apache should define something */
-#endif
 
 #else /* !REWRITELOG_DISABLED */
 
