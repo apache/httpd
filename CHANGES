@@ -1,4 +1,9 @@
 Changes with Apache 2.0.19-dev
+  *) Fix seg faults and/or missing output from mod_include.  The
+     default_handler was using the subrequest pool for files and
+     MMAPs, even though the associated APR structures typically 
+     live longer than the subrequest. [Greg Ames]
+  
   *) Extend mod_setenvif to support specifying regular expressions
      on the SetEnvIf (and SetEnvIfNoCase) directive attribute field.
      Example:  SetEnvIf ^TS*  [a-z].* HAVE_TS 
