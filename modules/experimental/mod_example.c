@@ -1309,32 +1309,6 @@ static const command_rec x_cmds[] =
     ),
     {NULL}
 };
-
-/*--------------------------------------------------------------------------*/
-/*                                                                          */
-/* Now the list of content handlers available from this module.             */
-/*                                                                          */
-/*--------------------------------------------------------------------------*/
-/* 
- * List of content handlers our module supplies.  Each handler is defined by
- * two parts: a name by which it can be referenced (such as by
- * {Add,Set}Handler), and the actual routine name.  The list is terminated by
- * a NULL block, since it can be of variable length.
- *
- * Note that content-handlers are invoked on a most-specific to least-specific
- * basis; that is, a handler that is declared for "text/plain" will be
- * invoked before one that was declared for "text / *".  Note also that
- * if a content-handler returns anything except DECLINED, no other
- * content-handlers will be called.
- */
-#if 0
-static const handler_rec x_handlers[] =
-{
-    {"example-handler", x_handler},
-    {NULL}
-};
-#endif
-
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
 /* Finally, the list of callback routines and data structures that provide  */
