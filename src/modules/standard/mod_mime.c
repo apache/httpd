@@ -228,6 +228,14 @@ int find_ct(request_rec *r)
 	return OK;
     }
 
+    /* TM -- FIXME
+     * 
+     * if r->filename does not contain a '/', the following passes a null
+     * pointer to getword, causing a SEGV ..
+     */
+
+    if(fn == NULL) fn = r->filename;
+
     /* Parse filename extensions, which can be in any order */
     while ((ext = getword(r->pool, &fn, '.')) && *ext) {
       int found = 0;

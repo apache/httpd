@@ -73,21 +73,19 @@ Ben Laurie <ben@algroup.co.uk> 30 Mar 96
 
 More changes:
 
-0) tested w/SOCKS proxy for httpd
-
+0) tested w/SOCKS proxy for http
 1) fixed IP address formation in host2addr()
-
 2) fixed SIGALRM on big cache cleanup
-
 3) fixed temp files #tmp not removed
-
 4) changed PF_INET to AF_INET in socket() calls
+5) installed CONNECT code from Troy Morrison <spiffnet@zoom.com> for testing
+6) added NoCache config directive to disallow caching for selected hosts
 
-Chuck Murcko <chuck@telebase.com> 27 May 96
+Chuck Murcko <chuck@telebase.com> 2 Jun 96
 
 */
 
-#define TESTING	1
+#define TESTING	0
 
 #include "httpd.h"
 #include "http_config.h"
@@ -106,11 +104,13 @@ DEF_Explain
 #define	SEC_ONE_DAY		86400	/* one day, in seconds */
 #define	SEC_ONE_HR		3600	/* one hour, in seconds */
 
+#define	DEFAULT_FTP_DATA_PORT	20
 #define	DEFAULT_FTP_PORT	21
 #define	DEFAULT_GOPHER_PORT	70
 #define	DEFAULT_NNTP_PORT	119
 #define	DEFAULT_WAIS_PORT	210
 #define	DEFAULT_HTTPS_PORT	443
+#define	DEFAULT_SNEWS_PORT	563
 #define	DEFAULT_PROSPERO_PORT	1525	/* WARNING: conflict w/Oracle */
 
 /* Some WWW schemes and their default ports; this is basically /etc/services */
@@ -125,6 +125,7 @@ static struct
     { "nntp",     DEFAULT_NNTP_PORT},
     { "wais",     DEFAULT_WAIS_PORT},
     { "https",    DEFAULT_HTTPS_PORT},
+    { "snews",    DEFAULT_SNEWS_PORT},
     { "prospero", DEFAULT_PROSPERO_PORT},
     { NULL, -1}  /* unknown port */
 };
@@ -144,6 +145,9 @@ struct proxy_alias {
     char *fake;
 };
 
+struct nocache_entry {
+    char *name;
+};
 
 #define DEFAULT_CACHE_SPACE 5
 #define DEFAULT_CACHE_MAXEXPIRE SEC_ONE_DAY
@@ -169,6 +173,7 @@ typedef struct
     struct cache_conf cache;  /* cache configuration */
     array_header *proxies;
     array_header *aliases;
+    array_header *nocaches;
     int req;                 /* true if proxy requests are enabled */
 } proxy_server_conf;
 
@@ -220,10 +225,9 @@ static int ftp_canon(request_rec *r, char *url);
 
 static int http_handler(request_rec *r, struct cache_req *c, char *url,
 			const char *proxyhost, int proxyport);
-static int https_handler(request_rec *r, struct cache_req *c, char *url,
-			const char *proxyhost, int proxyport);
 static int ftp_handler(request_rec *r, struct cache_req *c, char *url);
 
+static int connect_handler(request_rec *r, struct cache_req *c, char *url);
 
 static BUFF *cache_error(struct cache_req *r);
 
@@ -325,10 +329,6 @@ proxy_fixup(request_rec *r)
 /* canonicalise each specific scheme */
     if (strncmp(url, "http:", 5) == 0)
 	return http_canon(r, url+5, "http", DEFAULT_PORT);
-# if 0
-    else if (strncmp(url, "https:", 6) == 0)
-	return http_canon(r, url+6, "https", DEFAULT_HTTPS_PORT);
-#endif
     else if (strncmp(url, "ftp:", 4) == 0) return ftp_canon(r, url+4);
     else return OK; /* otherwise; we've done the best we can */
 }
@@ -2158,7 +2158,7 @@ proxy_handler(request_rec *r)
  * give up??
  */
     /* handle the scheme */
-    if (strcmp(scheme, "https") == 0) return https_handler(r, cr, url, NULL, 0);
+    if (r->method_number == M_CONNECT) return connect_handler(r, cr, url);
     if (strcmp(scheme, "http") == 0) return http_handler(r, cr, url, NULL, 0);
     if (strcmp(scheme, "ftp") == 0) return ftp_handler(r, cr, url);
     else return NOT_IMPLEMENTED;
@@ -2260,7 +2260,7 @@ doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
 
     hard_timeout ("proxy connect", r);
     do	i = connect(sock, (struct sockaddr *)addr, sizeof(struct sockaddr_in));
-    while (i == -1 && errno == EINTR);	/* SHUDDER - cdm */
+    while (i == -1 && errno == EINTR);
     if (i == -1) log_uerror("connect", NULL, NULL, r->server);
     kill_timeout(r);
 
@@ -2518,7 +2518,7 @@ ftp_handler(request_rec *r, struct cache_req *c, char *url)
     hard_timeout ("proxy ftp data connect", r);
     len = sizeof(struct sockaddr_in);
     do csd = accept(dsock, (struct sockaddr *)&server, &len);
-    while (csd == -1 && errno == EINTR);
+    while (csd == -1 && errno == EINTR);	/* SHUDDER on SOCKS - cdm */
     if (csd == -1)
     {
 	log_uerror("accept", NULL, "proxy: failed to accept data connection",
@@ -2594,21 +2594,136 @@ ftp_handler(request_rec *r, struct cache_req *c, char *url)
     return OK;
 }
 
-/*
- * This handles http:// URLs, and other URLs using a remote proxy over http
- * If proxyhost is NULL, then contact the server directly, otherwise
- * go via the proxy.
- * Note that if a proxy is used, then URLs other than http: can be accessed,
- * also, if we have trouble which is clearly specific to the proxy, then
- * we return DECLINED so that we can try another proxy. (Or the direct
- * route.)
- */
+/*  
+ * This handles Netscape-SSL style "CONNECT" proxy requests.
+ * A connection is opened to the specified host and data is
+ * passed through between the WWW site and the browser.
+ * This code is based on the IETF document at
+ * http://www.netscape.com/docs/std/tunnelling_ssl.html.
+ *
+ * FIXME: this is bad, because it does its own socket I/O
+ *        instead of using the I/O in buff.c.  However,
+ *        the I/O in buff.c blocks on reads, and because
+ *        this function doesn't know how much data will
+ *        be sent either way (or when) it can't use blocking
+ *        I/O.  This may be very implementation-specific
+ *        (to Linux).  Any suggestions?
+ * FIXME: this doesn't log the number of bytes sent, but
+ *        that may be okay, since the data is supposed to
+ *        be transparent. In fact, this doesn't log at all
+ *	  yet. 8^)
+ * FIXME: doesn't check any headers initally sent from the
+ *        client.
+ * FIXME: should allow authentication, but hopefully the
+ *        generic proxy authentication is good enough.
+ * FIXME: no check for r->assbackwards, whatever that is.
+ */ 
+ 
 static int
-https_handler(request_rec *r, struct cache_req *c, char *url,
-	     const char *proxyhost, int proxyport)
+connect_handler(request_rec *r, struct cache_req *c, char *url)
 {
-    return NOT_IMPLEMENTED;
-}
+    struct sockaddr_in server;
+    const char *host, *err;
+    char *p;
+    int   port, sock;
+    char buffer[HUGE_STRING_LEN];
+    int  nbytes, i;
+    fd_set fds;
+
+    memset(&server, '\0', sizeof(server));
+    server.sin_family=AF_INET;
+ 
+    /* Break the URL into host:port pairs */
+
+    host = url;
+    p = strchr(url, ':');
+    if (p==NULL) port = DEFAULT_HTTPS_PORT;
+    else
+    {
+      port = atoi(p+1);
+      *p='\0';
+    }
+ 
+    switch (port)
+    {
+	case DEFAULT_HTTPS_PORT:
+	case DEFAULT_SNEWS_PORT:
+	    break;
+	default:
+	    return SERVICE_UNAVAILABLE;
+	    break;
+    }
+
+    Explain2("CONNECT to %s on port %d", host, port);
+ 
+    server.sin_port = htons(port);
+    err = host2addr(host, &server.sin_addr);
+    if (err != NULL) return proxyerror(r, err); /* give up */
+ 
+    sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);  
+    if (sock == -1)
+    {     
+        log_error("proxy: error creating socket", r->server);
+        return SERVER_ERROR;
+    }     
+    note_cleanups_for_fd(r->pool, sock);
+ 
+    i = doconnect(sock, &server, r);
+    if (i == -1 )
+        return proxyerror(r, "Could not connect to remote machine");
+ 
+    Explain0("Returning 200 OK Status");
+ 
+    rvputs(r, "HTTP/1.0 200 Connection established\015\012", NULL);
+    rvputs(r, "Proxy-agent: ", SERVER_VERSION, "\015\012\015\012", NULL);
+    bflush(r->connection->client);
+
+    while (1) /* Infinite loop until error (one side closes the connection) */
+    {
+      FD_ZERO(&fds);
+      FD_SET(sock, &fds);
+      FD_SET(r->connection->client->fd, &fds);
+    
+      Explain0("Going to sleep (select)");
+      i = select((r->connection->client->fd > sock ?
+	r->connection->client->fd+1 :
+	sock+1), &fds, NULL, NULL, NULL);
+      Explain1("Woke from select(), i=%d",i);
+    
+      if (i)
+      {
+        if (FD_ISSET(sock, &fds))
+        {
+           Explain0("sock was set");
+           if((nbytes=read(sock,buffer,HUGE_STRING_LEN))!=0)
+           {
+              if(nbytes==-1) break;
+              if(write(r->connection->client->fd, buffer, nbytes)==EOF)break;
+              Explain1("Wrote %d bytes to client", nbytes);
+           }
+           else break;
+        }
+        else if (FD_ISSET(r->connection->client->fd, &fds))
+        { 
+           Explain0("client->fd was set");
+           if((nbytes=read(r->connection->client->fd,buffer,
+		HUGE_STRING_LEN))!=0)   
+           {
+              if(nbytes==-1) break;
+              if(write(sock,buffer,nbytes)==EOF) break;
+              Explain1("Wrote %d bytes to server", nbytes);
+           }
+           else break;
+        }
+        else break; /* Must be done waiting */
+      }
+      else break;
+    }
+
+    pclosef(r->pool,sock);
+    
+    return OK;
+}     
 
 /*
  * This handles http:// URLs, and other URLs using a remote proxy over http
@@ -2634,6 +2749,12 @@ http_handler(request_rec *r, struct cache_req *c, char *url,
     char buffer[HUGE_STRING_LEN], inprotocol[9], outprotocol[9];
     pool *pool=r->pool;
     const long int zero=0L;
+
+    void *sconf = r->server->module_config;
+    proxy_server_conf *conf =
+        (proxy_server_conf *)get_module_config(sconf, &proxy_module);
+    struct nocache_entry *ent=(struct nocache_entry *)conf->nocaches->elts;
+    int nocache = 0;
 
     memset(&server, '\0', sizeof(server));
     server.sin_family = AF_INET;
@@ -2790,7 +2911,14 @@ http_handler(request_rec *r, struct cache_req *c, char *url,
 	    hdr[i].value = date_canon(pool, hdr[i].value);
     }
 
-    i = cache_update(c, resp_hdrs, inprotocol, 0);
+/* check if NoCache directive on this host */
+    for (i=0; i < conf->nocaches->nelts; i++)
+    {
+        if (ent[i].name != NULL && strstr(host, ent[i].name) != NULL)
+	    nocache = 1; 
+    }
+
+    i = cache_update(c, resp_hdrs, inprotocol, nocache);
     if (i != DECLINED)
     {
 	pclosef(pool, sock);
@@ -2862,6 +2990,7 @@ create_proxy_config(pool *p, server_rec *s)
 
   ps->proxies = make_array(p, 10, sizeof(struct proxy_remote));
   ps->aliases = make_array(p, 10, sizeof(struct proxy_alias));
+  ps->nocaches = make_array(p, 10, sizeof(struct nocache_entry));
   ps->req = 0;
 
   ps->cache.root = NULL;
@@ -3038,6 +3167,32 @@ set_cache_dirlength(cmd_parms *parms, char *struct_ptr, char *arg)
     return NULL;
 }
 
+static char *
+set_cache_exclude(cmd_parms *parms, void *dummy, char *arg)
+{
+    server_rec *s = parms->server;
+    proxy_server_conf *conf =
+	get_module_config (s->module_config, &proxy_module);
+    struct nocache_entry *new;
+    struct nocache_entry *list=(struct nocache_entry*)conf->nocaches->elts;
+    int found = 0;
+    int i;
+
+    /* Don't duplicate entries */
+    for (i=0; i < conf->nocaches->nelts; i++)
+    {
+	if (strcmp(arg, list[i].name) == 0)
+	    found = 1;
+    }
+
+    if (!found)
+    {
+	new = push_array (conf->nocaches);
+	new->name = arg;
+    }
+    return NULL;
+}
+
 static command_rec proxy_cmds[] = {
 { "ProxyRequests", set_proxy_req, NULL, RSRC_CONF, FLAG,
   "on if the true proxy requests should be accepted"},
@@ -3061,6 +3216,8 @@ static command_rec proxy_cmds[] = {
     "The number of levels of subdirectories in the cache" },
 { "CacheDirLength", set_cache_dirlength, NULL, RSRC_CONF, TAKE1,
     "The number of characters in subdirectory names" },
+{ "NoCache", set_cache_exclude, NULL, RSRC_CONF, ITERATE,
+    "A list of hosts or domains for which caching is *not* provided" },
 { NULL }
 };
 

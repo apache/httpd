@@ -443,6 +443,8 @@ request_rec *read_request (conn_rec *conn)
         r->method_number = M_PUT;
     else if(!strcmp(r->method,"DELETE")) 
         r->method_number = M_DELETE;
+    else if(!strcmp(r->method,"CONNECT"))
+        r->method_number = M_CONNECT;
     else 
         r->method_number = M_INVALID; /* Will eventually croak. */
 

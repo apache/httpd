@@ -487,6 +487,7 @@ char *limit (cmd_parms *cmd, void *dummy, char *arg)
 	else if(!strcasecmp(method,"PUT")) limited |= (1 << M_PUT);
 	else if(!strcasecmp(method,"POST")) limited |= (1 << M_POST);
 	else if(!strcasecmp(method,"DELETE")) limited |= (1 << M_DELETE);
+        else if(!strcasecmp(method,"CONNECT")) limited |= (1 << M_CONNECT);
 	else return "unknown method in <Limit>";
     }
 
@@ -873,6 +874,7 @@ int default_handler (request_rec *r)
     FILE *f;
     
     if (r->method_number != M_GET) return DECLINED;
+
     if (r->finfo.st_mode == 0 || (r->path_info && *r->path_info)) {
 	log_reason("File does not exist", r->filename, r);
 	return NOT_FOUND;

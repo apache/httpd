@@ -261,12 +261,13 @@
 #define SERVICE_UNAVAILABLE 503
 #define RESPONSE_CODES 10
 
-#define METHODS 5
+#define METHODS 6
 #define M_GET 0
 #define M_PUT 1
 #define M_POST 2
 #define M_DELETE 3
-#define M_INVALID 4
+#define M_CONNECT 4
+#define M_INVALID 5
 
 #define CGI_MAGIC_TYPE "application/x-httpd-cgi"
 #define INCLUDES_MAGIC_TYPE "text/x-server-parsed-html"
