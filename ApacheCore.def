@@ -222,7 +222,7 @@ EXPORTS
 	ap_send_fd_length   @215
 	ap_send_http_header   @216
 	ap_send_http_trace   @217
-	ap_send_mmap   @218
+;	ap_send_mmap   @218
 	ap_send_size   @219
 	ap_server_root_relative   @220
 	ap_set_byterange   @221
@@ -368,3 +368,10 @@ EXPORTS
 	ap_hook_fixups @363
         regerror @364
         ap_send_error_response @365
+	ap_start_shutdown @366
+;        ap_send_signal  @367
+        ap_pid_fname  @368
+        ap_read_config   @369
+	ap_server_pre_read_config  @370
+	ap_server_post_read_config @371
+	ap_setup_prelinked_modules @372

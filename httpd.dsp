@@ -218,10 +218,6 @@ SOURCE=.\os\win32\readdir.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\os\win32\registry.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\main\rfc1413.c
 # End Source File
 # Begin Source File
