@@ -4,7 +4,19 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Running Apache for Windows as a Service - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Running Apache for Windows as a Service</h1>
+      -->
+<title>Running Apache for Windows as a Service - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Running Apache for Windows as a Service</h1>
 
     <p>Apache can be run as a service on Windows NT/2000. (There is
     also some HIGHLY EXPERIMENTAL support for similar behavior on
@@ -66,7 +78,18 @@
 
     <p>to assure you are using the service's configuration.</p>
 
-  </div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#service">Running Apache for Windows as a Service</a></li><li><img alt="" src="../images/down.gif" /> <a href="#depends">Important Note on service dependencies:</a></li><li><img alt="" src="../images/down.gif" /> <a href="#account">User Account for Apache Service to Run As (NT/2000)</a></li><li><img alt="" src="../images/down.gif" /> <a href="#trouble">Troubleshooting Apache for Windows as a Service</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cmdline">Running Apache for Windows from the Command Line</a></li><li><img alt="" src="../images/down.gif" /> <a href="#signal">Controlling Apache as a Service</a></li><li><img alt="" src="../images/down.gif" /> <a href="#win95svc">HIGHLY EXPERIMENTAL Windows 95/98 Service</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="service" id="service">Running Apache for Windows as a Service</a></h2>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#service">Running Apache for Windows as a Service</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#depends">Important Note on service dependencies:</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#account">User Account for Apache Service to Run As (NT/2000)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#trouble">Troubleshooting Apache for Windows as a Service</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cmdline">Running Apache for Windows from the Command Line</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#signal">Controlling Apache as a Service</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#win95svc">HIGHLY EXPERIMENTAL Windows 95/98 Service</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="service" id="service">Running Apache for Windows as a Service</a></h2>
 
     
 
@@ -116,7 +139,9 @@
       apache -n "service name"
     </code></p></div>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="depends" id="depends">Important Note on service dependencies:</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="depends" id="depends">Important Note on service dependencies:</a></h2>
 
     
 
@@ -156,7 +181,9 @@
     DependOnService value, double click that value if it already
     exists, and add the Rpcss entry to the list.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="account" id="account">User Account for Apache Service to Run As (NT/2000)</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="account" id="account">User Account for Apache Service to Run As (NT/2000)</a></h2>
 
     
 
@@ -243,7 +270,9 @@
     that you need to review the "Log On As" configuration, since
     the server can't access a required network resource.</div>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="trouble" id="trouble">Troubleshooting Apache for Windows as a Service</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="trouble" id="trouble">Troubleshooting Apache for Windows as a Service</a></h2>
 
     
 
@@ -271,7 +300,9 @@
     Viewer in case of any problems, even if no error message pops
     up to warn you that an error occured.</strong></div>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="cmdline" id="cmdline">Running Apache for Windows from the Command Line</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="cmdline" id="cmdline">Running Apache for Windows from the Command Line</a></h2>
 
     
 
@@ -279,7 +310,9 @@
     line, please refer to <a href="windows.html#cmdline">console
     command line</a> section.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="signal" id="signal">Controlling Apache as a Service</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="signal" id="signal">Controlling Apache as a Service</a></h2>
 
     
 
@@ -316,7 +349,9 @@
     <p>Again, quotes are only required if the service name contains
     spaces.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="win95svc" id="win95svc">HIGHLY EXPERIMENTAL Windows 95/98 Service</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="win95svc" id="win95svc">HIGHLY EXPERIMENTAL Windows 95/98 Service</a></h2>
 
     
 
@@ -368,4 +403,8 @@
     developing web content and learning the Apache server, and
     perhaps as a intranet server on a secured, private network.</p>
 
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

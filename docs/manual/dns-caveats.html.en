@@ -4,13 +4,34 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Issues Regarding DNS and Apache - Apache HTTP Server</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Issues Regarding DNS and Apache</h1>
+      -->
+<title>Issues Regarding DNS and Apache - Apache HTTP Server</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Issues Regarding DNS and Apache</h1>
     <p>This page could be summarized with the statement: don't require Apache 
     to use DNS for any parsing of the configuration files. If Apache has to 
     use DNS to parse the configuration files then your server may be subject 
     to reliability problems (it might not boot), or denial and theft of 
     service attacks (including users able to steal hits from other users).</p>
-  </div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#example">A Simple Example</a></li><li><img alt="" src="./images/down.gif" /> <a href="#denial">Denial of Service</a></li><li><img alt="" src="./images/down.gif" /> <a href="#main">The "main server" Address</a></li><li><img alt="" src="./images/down.gif" /> <a href="#tips">Tips to Avoid These Problems</a></li><li><img alt="" src="./images/down.gif" /> <a href="#appendix">Appendix: Future Directions</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="example" id="example">A Simple Example</a></h2>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#example">A Simple Example</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#denial">Denial of Service</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#main">The "main server" Address</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#tips">Tips to Avoid These Problems</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#appendix">Appendix: Future Directions</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="example" id="example">A Simple Example</a></h2>
     
     
     <div class="example"><p><code>
@@ -61,7 +82,9 @@
       DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt;
     </code></p></div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="denial" id="denial">Denial of Service</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="denial" id="denial">Denial of Service</a></h2>
     
     
     <p>There are (at least) two forms that denial of service can
@@ -107,7 +130,9 @@
     this happens requires a more in-depth discussion of how Apache
     matches up incoming requests with the virtual host that will
     serve it. A rough document describing this <a href="vhosts/details.html">is available</a>.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="main" id="main">The "main server" Address</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="main" id="main">The "main server" Address</a></h2>
     
     
     <p>The addition of <a href="vhosts/name-based.html">name-based
@@ -136,7 +161,9 @@
     are using. It also affects CGIs unless you use 
     <code class="module"><a href="./mod/mod_env.html">mod_env</a></code> to control the environment. It's best 
     to consult the man pages or FAQs for your OS.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="tips" id="tips">Tips to Avoid These Problems</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="tips" id="tips">Tips to Avoid These Problems</a></h2>
     
     
     <ul>
@@ -158,7 +185,9 @@
       <li>create a <code>&lt;VirtualHost _default_:*&gt;</code>
       server that has no pages to serve</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="appendix" id="appendix">Appendix: Future Directions</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="appendix" id="appendix">Appendix: Future Directions</a></h2>
     
     
     <p>The situation regarding DNS is highly undesirable. For
@@ -191,4 +220,8 @@
     configuration. But as of March 1997 these features have not
     been deployed widely enough to be put into use on critical
     webservers.</p>
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+</body></html>

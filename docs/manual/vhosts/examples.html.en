@@ -4,7 +4,19 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>VirtualHost Examples - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Virtual Hosts</a></div><div id="page-content"><div id="preamble"><h1>VirtualHost Examples</h1>
+      -->
+<title>VirtualHost Examples - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Virtual Hosts</a></div><div id="page-content"><div id="preamble"><h1>VirtualHost Examples</h1>
 
     <p>This document attempts to answer the commonly-asked questions about
     setting up virtual hosts. These scenarios are those involving multiple
@@ -12,17 +24,31 @@
     coming soon about running sites on several servers behind a single
     proxy server.</p>
 
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#purename">Running several name-based web
-    sites on a single IP address.</a></li><li><img alt="" src="../images/down.gif" /> <a href="#twoips">Name-based hosts on more than one
-    IP address.</a></li><li><img alt="" src="../images/down.gif" /> <a href="#intraextra">Serving the same content on
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#purename">Running several name-based web
+    sites on a single IP address.</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#twoips">Name-based hosts on more than one
+    IP address.</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#intraextra">Serving the same content on
     different IP addresses (such as an internal and external
-    address).</a></li><li><img alt="" src="../images/down.gif" /> <a href="#port">Running different sites on different
-    ports.</a></li><li><img alt="" src="../images/down.gif" /> <a href="#ip">IP-based virtual hosting</a></li><li><img alt="" src="../images/down.gif" /> <a href="#ipport">Mixed port-based and ip-based virtual
-	hosts</a></li><li><img alt="" src="../images/down.gif" /> <a href="#mixed">Mixed name-based and IP-based
-    vhosts</a></li><li><img alt="" src="../images/down.gif" /> <a href="#default">Using <code>_default_</code>
-    vhosts</a></li><li><img alt="" src="../images/down.gif" /> <a href="#migrate">Migrating a name-based vhost to an
-    IP-based vhost</a></li><li><img alt="" src="../images/down.gif" /> <a href="#serverpath">Using the <code>ServerPath</code>
-	directive</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="purename" id="purename">Running several name-based web
+    address).</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#port">Running different sites on different
+    ports.</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ip">IP-based virtual hosting</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ipport">Mixed port-based and ip-based virtual
+	hosts</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mixed">Mixed name-based and IP-based
+    vhosts</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#default">Using <code>_default_</code>
+    vhosts</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#migrate">Migrating a name-based vhost to an
+    IP-based vhost</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#serverpath">Using the <code>ServerPath</code>
+	directive</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="purename" id="purename">Running several name-based web
     sites on a single IP address.</a></h2>
 
     <p>Your server has a single IP address, and multiple aliases (CNAMES)
@@ -107,7 +133,9 @@
     configuration will not work for, in fact, is when you are serving
     different content based on differing IP addresses or ports.</p>
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="twoips" id="twoips">Name-based hosts on more than one
+	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="twoips" id="twoips">Name-based hosts on more than one
     IP address.</a></h2>
 
   	<div class="note">
@@ -158,7 +186,9 @@
     unknown hostname, or no <code>Host:</code> header, will be served from
     <code>www.example1.com</code>.</p>
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="intraextra" id="intraextra">Serving the same content on
+	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="intraextra" id="intraextra">Serving the same content on
     different IP addresses (such as an internal and external
     address).</a></h2>
 
@@ -203,7 +233,9 @@
           respond the same on all addresses.</p>
     </div>
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="port" id="port">Running different sites on different
+	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="port" id="port">Running different sites on different
     ports.</a></h2>
 
     <p>You have multiple domains going to the same IP and also want to
@@ -250,7 +282,9 @@
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="ip" id="ip">IP-based virtual hosting</a></h2>
+	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ip" id="ip">IP-based virtual hosting</a></h2>
 
     <p>The server has two IP addresses (<code>172.20.30.40</code> and
     <code>172.20.30.50</code>) which resolve to the names
@@ -282,7 +316,9 @@
     <code>localhost</code>, for example) will go to the main server, if
     there is one.</p>
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="ipport" id="ipport">Mixed port-based and ip-based virtual
+	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ipport" id="ipport">Mixed port-based and ip-based virtual
 	hosts</a></h2>
 
     <p>The server machine has two IP addresses (<code>172.20.30.40</code> and
@@ -328,7 +364,9 @@
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="mixed" id="mixed">Mixed name-based and IP-based
+	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="mixed" id="mixed">Mixed name-based and IP-based
     vhosts</a></h2>
 
     <p>On some of my addresses, I want to do name-based virtual hosts, and
@@ -378,7 +416,9 @@
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="default" id="default">Using <code>_default_</code>
+	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="default" id="default">Using <code>_default_</code>
     vhosts</a></h2>
 
   	<h3><a name="defaultallports" id="defaultallports"><code>_default_</code> vhosts
@@ -462,7 +502,9 @@
     served from the main server.</p>
     
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="migrate" id="migrate">Migrating a name-based vhost to an
+	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="migrate" id="migrate">Migrating a name-based vhost to an
     IP-based vhost</a></h2>
 
     <p>The name-based vhost with the hostname
@@ -505,7 +547,9 @@
     IP-based vhost) and through the old address (as a name-based
     vhost).</p>
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="serverpath" id="serverpath">Using the <code>ServerPath</code>
+	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="serverpath" id="serverpath">Using the <code>ServerPath</code>
 	directive</a></h2>
 
     <p>We have a server with two name-based vhosts. In order to match the
@@ -571,4 +615,8 @@
     <code>Host:</code> header can use both URL variants, <em>i.e.</em>,
     with or without URL prefix.</p>
 
-	</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+	</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
