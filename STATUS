@@ -85,6 +85,7 @@ Available Patches:
 	Status: Doug +1, Randy +1, Dean would really prefer Ben's proposal
 	of httpd -M "config file directive" if it works.
 	Jim would prefer Ben's solution as well.
+	So would Ken (does it obviate -d and -f if present?)
 
     * Martin's [PATCH] <Location > within .htaccess?
 	<19980105152218.30720@deejai.mch.sni.de>
@@ -98,6 +99,7 @@ Available Patches:
 	<34AA4B95.36726117@Golux.Com>
 	Status: Ken +1, Jim +1
 	Gregory Lundberg says it's legally invalid
+	Alexei disagrees, citing past practice and investigation
 
     * Martin's [PATCH] 36kB: Make apache compile & run on an EBCDIC mainframe
 	<19971217184646.62136@deejai.mch.sni.de>
