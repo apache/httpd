@@ -76,7 +76,8 @@ ssl_ds_array *ssl_ds_array_make(apr_pool_t *p, int size)
     if ((a = (ssl_ds_array *)apr_palloc(p, sizeof(ssl_ds_array))) == NULL)
         return NULL;
     a->pPool = p;
-    if ((a->pSubPool = apr_pool_sub_make(p, NULL)) == NULL)
+    apr_pool_sub_make(&a->pSubPool, p, NULL);
+    if (a->pSubPool == NULL)
         return NULL;
     a->aData = apr_array_make(a->pSubPool, 2, size);
     return a;
@@ -130,7 +131,8 @@ ssl_ds_table *ssl_ds_table_make(apr_pool_t *p, int size)
     if ((t = (ssl_ds_table *)apr_palloc(p, sizeof(ssl_ds_table))) == NULL)
         return NULL;
     t->pPool = p;
-    if ((t->pSubPool = apr_pool_sub_make(p, NULL)) == NULL)
+    apr_pool_sub_make(&t->pSubPool, p, NULL);
+    if (t->pSubPool == NULL)
         return NULL;
     t->aKey  = apr_array_make(t->pSubPool, 2, MAX_STRING_LEN);
     t->aData = apr_array_make(t->pSubPool, 2, size);
