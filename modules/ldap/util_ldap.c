@@ -367,8 +367,8 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
  *
  * Returns 1 on compare failure, 0 otherwise.
  */
-int compare_client_certs(apr_array_header_t *srcs, apr_array_header_t *dests) {
-
+static int compare_client_certs(apr_array_header_t *srcs, apr_array_header_t *dests)
+{
     int i = 0;
     struct apr_ldap_opt_tls_cert_t *src, *dest;
 
