@@ -1,5 +1,8 @@
 Changes with Apache 1.3b3
 
+  *) Warn user that default path has changed if /usr/local/etc/httpd
+     is found on the system.  [Lars Eilebrecht]
+
   *) Various mod_mime_magic bug fixes and cleanups: Uncompression
      should work, it should work on WIN32, and a few resource
      leaks and abort conditions are fixed.
