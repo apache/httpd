@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) NetWare: Enabled CGI functionality and added mod_cgi as a built
+     in module for NetWare  [Brad Nicholes]
+
   *) Changed cgi and piped log behavior to accept 65536 characters
      on Win32 (matching Linux) before deadlocking between outputing
      client stdin, slurping the output from stdout and then the stderr
