@@ -173,7 +173,7 @@ unsigned long util_ald_hash_string(int nstr, ...)
 void util_ald_cache_purge(util_ald_cache_t *cache)
 {
     unsigned long i;
-    util_cache_node_t *p, *q;
+    util_cache_node_t *p, *q, **pp;
     apr_time_t t;
 
     if (!cache)
@@ -184,7 +184,8 @@ void util_ald_cache_purge(util_ald_cache_t *cache)
     cache->numpurges++;
 
     for (i=0; i < cache->size; ++i) {
-        p = cache->nodes[i];
+        pp = cache->nodes + i;
+        p = *pp;
         while (p != NULL) {
             if (p->add_time < cache->marktime) {
                 q = p->next;
@@ -192,10 +193,11 @@ void util_ald_cache_purge(util_ald_cache_t *cache)
                 util_ald_free(cache, p);
                 cache->numentries--;
                 cache->npurged++;
-                p = q;
+                p = *pp = q;
             }
             else {
-                p = p->next;
+                pp = &(p->next);
+                p = *pp;
             }
         }
     }
@@ -687,6 +689,9 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
                     break;
             }
 
+        }
+        else {
+            buf = "";
         }
     }
     else {

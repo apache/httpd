@@ -1,5 +1,8 @@
 Changes with Apache 2.0.53
 
+  *) Fix the re-linking issue when purging elements from the LDAP cache
+     PR 24801 [Jess Holle <jessh ptc.com>]
+      
   *) mod_disk_cache: Fix races in saving responses.  [Justin Erenkrantz]
 
   *) Fix Expires handling in mod_cache.  [Justin Erenkrantz]
