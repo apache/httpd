@@ -118,9 +118,6 @@
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif
-/* What are these here for? rbb */
-#include <fcntl.h>
-#include <errno.h>
 
 #define CORE_PRIVATE
 
@@ -133,18 +130,18 @@
 #include "apr_mmap.h"
 
 module MODULE_VAR_EXPORT file_cache_module;
-static ap_pool_t *context;
+static ap_pool_t *pconf;
 static int once_through = 0;
 
 typedef struct {
     ap_file_t *file;
     char *filename;
     ap_finfo_t finfo;
+    int is_mmapped;
 } a_file;
 
 typedef struct {
     ap_array_header_t *files;
-    ap_array_header_t *inode_sorted;
 } a_server_config;
 
 
@@ -153,12 +150,11 @@ static void *create_server_config(ap_pool_t *p, server_rec *s)
     a_server_config *sconf = ap_palloc(p, sizeof(*sconf));
 
     sconf->files = ap_make_array(p, 20, sizeof(a_file));
-    sconf->inode_sorted = NULL;
     return sconf;
 }
 
 static ap_status_t open_file(ap_file_t **file, char* filename, int flg1, int flg2, 
-                             ap_pool_t *context)
+                             ap_pool_t *p)
 {
     ap_status_t rv;
 #ifdef WIN32
@@ -174,19 +170,20 @@ static ap_status_t open_file(ap_file_t **file, char* filename, int flg1, int flg
                        FILE_FLAG_OVERLAPPED | FILE_FLAG_SEQUENTIAL_SCAN, /* file attributes */
                        NULL);            /* handle to file with attributes to copy */
     if (hFile != INVALID_HANDLE_VALUE) {
-        rv = ap_put_os_file(file, &hFile, context);
+        rv = ap_put_os_file(file, &hFile, p);
     }
     else {
         rv = GetLastError();
         *file = NULL;
     }
 #else
-    rv = ap_open(file, filename, flg1, flg2, context);
+    rv = ap_open(file, filename, flg1, flg2, p);
 #endif
 
     return rv;
 }
 
+#if APR_HAS_SENDFILE
 ap_status_t cleanup_file_cache(void *sconfv)
 {
     a_server_config *sconf = sconfv;
@@ -202,16 +199,35 @@ ap_status_t cleanup_file_cache(void *sconfv)
     }
     return APR_SUCCESS;
 }
+#endif
+#if APR_HAS_MMAP
+static ap_status_t cleanup_mmap(void *sconfv)
+{
+    a_server_config *sconf = sconfv;
+    size_t n;
+    a_file *file;
+
+    n = sconf->files->nelts;
+    file = (a_file *)sconf->files->elts;
+    while(n) {
+	    ap_mmap_delete(file->mm);
+	    ++file;
+	    --n;
+    }
+    return APR_SUCCESS;
+}
+#endif
 
 static const char *cachefile(cmd_parms *cmd, void *dummy, char *filename)
 {
+#if APR_HAS_SENDFILE
     a_server_config *sconf;
     a_file *new_file;
     a_file tmp;
     ap_file_t *fd = NULL;
     ap_status_t rc;
 
-    /* canonicalize the file name */
+    /* canonicalize the file name? */
     /* os_canonical... */
     if (ap_stat(&tmp.finfo, filename, NULL) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
@@ -243,8 +259,68 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, char *filename)
 	/* first one, register the cleanup */
 	ap_register_cleanup(cmd->pool, sconf, cleanup_file_cache, ap_null_cleanup);
     }
+
+    new_file->is_mmapped = FALSE;
+
     return NULL;
+#else
+    /* Sendfile not supported on this platform */
+    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
+                 "mod_file_cache: unable to cache file: %s. Sendfile is not supported on this OS", filename);
+    return NULL;
+#endif
 }
+
+static const char *mmapfile(cmd_parms *cmd, void *dummy, char *filename)
+{
+#if APR_HAS_MMAP
+    a_server_config *sconf;
+    a_file *new_file;
+    a_file tmp;
+    ap_file_t *fd = NULL;
+
+    if (ap_stat(&tmp.finfo, filename, pconf) != APR_SUCCESS) {
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
+	    "mod_file_cache: unable to stat(%s), skipping", filename);
+	return NULL;
+    }
+    if ((tmp.finfo.filetype) != APR_REG) {
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
+	    "mod_file_cache: %s isn't a regular file, skipping", filename);
+	return NULL;
+    }
+    if (ap_open(&fd, filename, APR_READ, APR_OS_DEFAULT, pconf) != APR_SUCCESS) {
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
+	    "mod_file_cache: unable to open(%s, O_RDONLY), skipping", filename);
+	return NULL;
+    }
+    if (ap_mmap_create(&tmp.mm, fd, 0, tmp.finfo.size, pconf) != APR_SUCCESS) {
+	int save_errno = errno;
+	ap_close(fd);
+	errno = save_errno;
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
+	    "mod_file_cache: unable to mmap %s, skipping", filename);
+	return NULL;
+    }
+    ap_close(fd);
+    tmp.filename = ap_pstrdup(cmd->pool, filename);
+    sconf = ap_get_module_config(cmd->server->module_config, &file_cache_module);
+    new_file = ap_push_array(sconf->files);
+    *new_file = tmp;
+    if (sconf->files->nelts == 1) {
+	/* first one, register the cleanup */
+	ap_register_cleanup(cmd->pool, sconf, cleanup_mmap, ap_null_cleanup);
+    }
+
+    new_file->is_mmapped = TRUE;
+
+    return NULL;
+#else
+    /* MMAP not supported on this platform*/
+    return NULL;
+#endif
+}
+
 
 static int file_compare(const void *av, const void *bv)
 {
@@ -261,7 +337,9 @@ static void file_cache_post_config(ap_pool_t *p, ap_pool_t *plog,
     a_file *elts;
     int nelts;
 
-    context = p;    
+    once_through++;
+    pconf = p;    
+
     /* sort the elements of the main_server, by filename */
     sconf = ap_get_module_config(s->module_config, &file_cache_module);
     elts = (a_file *)sconf->files->elts;
@@ -311,10 +389,79 @@ static int file_cache_xlat(request_rec *r)
 }
 
 
-static int file_cache_handler(request_rec *r)
+static int mmap_handler(request_rec *r, a_file *file, int rangestatus)
+{
+#if APR_HAS_MMAP
+    if (!rangestatus) {
+        ap_send_mmap (file->mm, r, 0, file->finfo.size);
+    }
+    else {
+        long length;
+        ap_off_t offset;
+        while (ap_each_byterange(r, &offset, &length)) {
+            ap_send_mmap(file->mm, r, offset, length);
+        }
+    }
+#endif
+    return OK;
+}
+
+
+static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
+{
+#if APR_HAS_SENDFILE
+    long length;
+    ap_off_t offset = 0;
+    struct iovec iov;
+    ap_hdtr_t hdtr;
+    ap_hdtr_t *phdtr = &hdtr;
+
+    /* 
+     * We want to send any data held in the client buffer on the
+     * call to iol_sendfile. So hijack it then set outcnt to 0
+     * to prevent the data from being sent to the client again
+     * when the buffer is flushed to the client at the end of the 
+     * request.
+     */
+    iov.iov_base = r->connection->client->outbase;
+    iov.iov_len =  r->connection->client->outcnt;
+    r->connection->client->outcnt = 0;
+
+    /* initialize the ap_hdtr_t struct */
+    phdtr->headers = &iov;
+    phdtr->numheaders = 1;
+    phdtr->trailers = NULL;
+    phdtr->numtrailers = 0;
+
+    if (!rangestatus) {
+        length = file->finfo.size;
+        iol_sendfile(r->connection->client->iol,
+                     file->file,
+                     phdtr,
+                     &offset,
+                     &length,
+                     0);
+    }
+    else {
+        while (ap_each_byterange(r, &offset, &length)) {
+            iol_sendfile(r->connection->client->iol, 
+                         file->file,
+                         phdtr,
+                         &offset,
+                         &length,
+                         0);
+            phdtr = NULL;
+        }
+    }
+#endif
+    return OK;
+}
+
+static int file_cache_handler(request_rec *r) 
 {
     a_file *match;
     int rangestatus, errstatus;
+    int rc = OK;
 
     /* we don't handle anything but GET */
     if (r->method_number != M_GET) return DECLINED;
@@ -346,65 +493,28 @@ static int file_cache_handler(request_rec *r)
     rangestatus = ap_set_byterange(r);
     ap_send_http_header(r);
 
-    if (!r->header_only) {
-        long length = match->finfo.size;
-        ap_off_t offset = 0;
-        struct iovec iov;
-        ap_hdtr_t hdtr;
-        ap_hdtr_t *phdtr = &hdtr;
-
-        /* 
-         * We want to send any data held in the client buffer on the
-         * call to iol_sendfile. So hijack it then set outcnt to 0
-         * to prevent the data from being sent to the client again
-         * when the buffer is flushed to the client at the end of the 
-         * request.
-         */
-        iov.iov_base = r->connection->client->outbase;
-        iov.iov_len =  r->connection->client->outcnt;
-        r->connection->client->outcnt = 0;
-
-        /* initialize the ap_hdtr_t struct */
-        phdtr->headers = &iov;
-        phdtr->numheaders = 1;
-        phdtr->trailers = NULL;
-        phdtr->numtrailers = 0;
-
-	if (!rangestatus) {
-            iol_sendfile(r->connection->client->iol,
-                         match->file,
-                         phdtr,
-                         &offset,
-                         &length,
-                         0);
-	}
-	else {
-	    while (ap_each_byterange(r, &offset, &length)) {
-                iol_sendfile(r->connection->client->iol, 
-                             match->file,
-                             phdtr,
-                             &offset,
-                             &length,
-                             0);
-                phdtr = NULL;
-	    }
-	}
+    /* Call appropriate handler */
+    if (!r->header_only) {    
+        if (match->is_mmapped == TRUE)
+            rc = mmap_handler(r, match, rangestatus);
+        else
+            rc = sendfile_handler(r, match, rangestatus);
     }
 
-    return OK;
+    return rc;
 }
 
-static command_rec mmap_cmds[] =
+static command_rec file_cache_cmds[] =
 {
     {"cachefile", cachefile, NULL, RSRC_CONF, ITERATE,
+     "A space seperated list of files to add to the file handle cache at config time"},
+    {"mmapfile", mmapfile, NULL, RSRC_CONF, ITERATE,
      "A space seperated list of files to mmap at config time"},
     {NULL}
 };
 
 static void register_hooks(void)
 {
-    /* static const char* const aszPre[]={"http_core.c",NULL}; */
-    /* ap_hook_pre_config(pre_config,NULL,NULL,AP_HOOK_MIDDLE); */
     ap_hook_post_config(file_cache_post_config, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_translate_name(file_cache_xlat, NULL, NULL, AP_HOOK_MIDDLE);
     /* This trick doesn't work apparently because the translate hooks
@@ -428,7 +538,7 @@ module MODULE_VAR_EXPORT file_cache_module =
     NULL,                     /* merge per-directory config structures */
     create_server_config,     /* create per-server config structure */
     NULL,                     /* merge per-server config structures */
-    mmap_cmds,                /* command handlers */
+    file_cache_cmds,          /* command handlers */
     file_cache_handlers,      /* handlers */
     register_hooks            /* register hooks */
 };
