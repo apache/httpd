@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/11/25 20:54:58 $]
+Last modified at [$Date: 2002/11/27 13:18:32 $]
 
 Release:
 
@@ -75,13 +75,13 @@ CURRENT VOTES:
       on APACHE_2_0_BRANCH (no vetoes, this is a straight vote.)
        R-T-C:   trawick, wrowe, jerenkrantz
        Abstain: 
-       C-T-R:   BrianP, aaron
+       C-T-R:   BrianP, aaron, jim
 
     * httpd-std.conf and friends;
 
       a) httpd-std.conf should be tailored by install (from src or
          binbuild) even if user has existing httpd.conf
-         +1:   trawick, slive, gregames, ianh, Ken, wrowe, jwoolley
+         +1:   trawick, slive, gregames, ianh, Ken, wrowe, jwoolley, jim
            wrowe - prefer httpd.default.conf to avoid ambiguity with cvs
 
       b) tailored httpd-std.conf should be copied by install to
@@ -96,9 +96,12 @@ CURRENT VOTES:
          doesn't make ANY sense at all.
          +1:   ianh - medium/big sites don't use 'standard config' anyway, as it
                       usually needs major customizations
-         -1:   Ken, wrowe, jwoolley
+         -1:   Ken, wrowe, jwoolley, jim
            wrowe - diff is wonderful when comparing old/new default configs,
                    even for customized sites that ianh mentions
+           jim - it makes sense assuming that the default configs
+                 include the updated directives and inline comments
+                 that explain the changes and make the 'diff' more useful.
 
     * If the parent process dies, should the remaining child processes
       "gracefully" self-terminate. Or maybe we should make it a runtime
@@ -108,10 +111,10 @@ CURRENT VOTES:
 
       Self-destruct: Ken, Martin
       Not self-destruct: BrianP, Ian, Cliff, BillS
-      Make it runtime configurable: Aaron, Justin, wrowe, rederpj
+      Make it runtime configurable: Aaron, Justin, wrowe, rederpj, jim
 
       /* The below was a concept on *how* to handle the problem */
-      Have 2 parents: +1: 
+      Have 2 parents: +1: jim
                       -1: Justin, wrowe, rederpj
                       +0: Martin (while standing by, could it do
                                   something useful?)
@@ -119,7 +122,7 @@ CURRENT VOTES:
     * Make the worker MPM the default MPM for threaded Unix boxes.
       +1:   Justin, Ian, Cliff, BillS, striker
       +0:   BrianP, Aaron (mutex contention is looking better with the
-            latest code, let's continue tuning and testing), rederpj
+            latest code, let's continue tuning and testing), rederpj, jim
       -0:   Lars, wrowe (let's make this defacto for the 2.2 release.)
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
