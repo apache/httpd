@@ -2063,7 +2063,7 @@ if [ "x$AP_TYPE_OFF_T" != "x$AP_TYPE_LONG" ]; then
 else
     echo "" >>$AP_CONFIG_AUTO_H
     echo "/* determine: is off_t a quad */" >>$AP_CONFIG_AUTO_H
-    echo "#ifndef AP_OFF_T_IS_QUAD" >>$AP_CONFIG_AUTO_H
+    echo "#ifdef AP_OFF_T_IS_QUAD" >>$AP_CONFIG_AUTO_H
     echo "#undef AP_OFF_T_IS_QUAD" >>$AP_CONFIG_AUTO_H
     echo "#endif" >>$AP_CONFIG_AUTO_H
 fi
@@ -2085,7 +2085,7 @@ if [ "x$AP_TYPE_VOID_P" = "x$AP_TYPE_QUAD" ]; then
 else
     echo "" >>$AP_CONFIG_AUTO_H
     echo "/* determine: is void * a quad */" >>$AP_CONFIG_AUTO_H
-    echo "#ifndef AP_VOID_P_IS_QUAD" >>$AP_CONFIG_AUTO_H
+    echo "#ifdef AP_VOID_P_IS_QUAD" >>$AP_CONFIG_AUTO_H
     echo "#undef AP_VOID_P_IS_QUAD" >>$AP_CONFIG_AUTO_H
     echo "#endif" >>$AP_CONFIG_AUTO_H
 fi

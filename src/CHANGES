@@ -1,4 +1,9 @@
 Changes with Apache 1.3.10
+
+  *) Fixed ap_config_auto.h generation in src/Configure: there for the ``quad
+     integer'' stuff ``#ifndef+#undef+#endif'' pairs were generated instead of
+     ``#ifdef+#undef+#endif'' pairs.
+     [Greg Siebers <gsiebers@vignette.com>] PR#5231
   
   *) EBCDIC: fix the hsregex package to correctly deal with [a-zA-Z] type
      character ranges (the alphabet is non-contiguous in EBCDIC) and with
