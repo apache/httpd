@@ -64,27 +64,27 @@
     $ make install
 
   This builds Apache 1.3 with the standard set of enabled modules
-  (automatically determined from src/Configuration.tmpl) with a GNU-conforming
-  subdirectory layout under /path/to/apache. For using the old Apache 1.2
-  subdirectory layout additionally use the --compat option:
+  (automatically determined from src/Configuration.tmpl) with an Apache 1.2
+  conforming subdirectory layout under /path/to/apache. For using the GNU
+  style subdirectory layout additionally use the --with-layout=GNU option:
 
-    $ ./configure --compat --prefix=/path/to/apache
+    $ ./configure --with-layout=GNU --prefix=/path/to/apache
     $ make
     $ make install
 
   If you are not sure which directory layout you want, you can use the
-  --layout option. It displays the directory layout which would be used but
-  immediately exits without configuring anything. Examples:
+  --show-layout option. It displays the directory layout which would be used
+  but immediately exits without configuring anything. Examples:
 
-    $ ./configure --layout
-    $ ./configure --prefix=/path/to/apache --layout
-    $ ./configure --compat --prefix=/path/to/apache --layout
+    $ ./configure --show-layout
+    $ ./configure --prefix=/path/to/apache --show-layout
+    $ ./configure --with-layout=GNU --prefix=/path/to/apache --show-layout
 
   Additionally if some of the shown paths still don't fit for your particular
   situation, you can use the --bindir, --sbindir, --libexecdir, --mandir,
   --sysconfdir, --datadir, --localstatedir, --runtimedir, --logfiledir and
   --proxycachedir options to adjust the layout as required. Always check with
-  --layout the resulting directory layout which would be used for
+  --show-layout the resulting directory layout which would be used for
   installation.
 
   suEXEC support
