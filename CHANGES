@@ -1,5 +1,10 @@
 Changes with Apache 2.0.30-dev
 
+  *) Fix the module identifer as shown in the docs for various core
+     modules (e.g., the identifer for mod_log_config was previously
+     listed as config_log_module).  PR #9338
+     [James Watson <ap2bug@sowega.org>]
+
   *) Fix LimitRequestBody directive by placing it in the HTTP
      filter.  [Justin Erenkrantz]
 
