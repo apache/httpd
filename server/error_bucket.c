@@ -69,7 +69,7 @@ static apr_status_t error_read(apr_bucket *b, const char **str,
 }
 
 static void error_destroy(void *data) {
-    ap_bucket_error *h;
+    ap_bucket_error *h = data;
     apr_sms_free(h->sms, h);
 }
 
