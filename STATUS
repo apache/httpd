@@ -404,3 +404,7 @@ Win32 specific issues:
 	- mod_mime_magic.c (needs access to mod_mime API stage...)
 
     * do something to disable bogus warnings
+
+    * double check the test_filename and os_canonical_name thing in
+	directory_walk ... Dean thinks it looks bogus, r->filename
+	isn't used for comparisons, test_filename is.
