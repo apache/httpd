@@ -1,0 +1,126 @@
+# Apache makefile template (well, suffix).
+
+# This is combined with the information in the "Configuration" file
+# by the configure script to make the actual Makefile.
+
+CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
+LIBS=$(EXTRA_LIBS) $(LIBS1)
+INCLUDES=$(INCLUDES1) $(EXTRA_INCLUDES)
+LFLAGS=$(LFLAGS1) $(EXTRA_LFLAGS)
+
+OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
+  http_log.o http_protocol.o rfc1413.o util.o util_script.o modules.o buff.o\
+  md5c.o util_md5.o explain.o http_bprintf.o util_date.o $(MODULES)
+
+.c.o:
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
+
+all: Configuration httpd
+
+Configuration: Configuration.tmpl
+	@echo "Configuration older than Configuration.tmpl, or doesn't exist."
+	@echo "Consider copying Configuration.tmpl to Configuration, editing and rerunning"
+	@echo "Configure."
+	@echo "If not, you will at least have to touch Configuration."
+	@false
+
+httpd: $(REGLIB) $(OBJS)
+	$(CC) $(LFLAGS)  -o httpd $(OBJS) $(REGLIB) $(LIBS)
+
+regex/libregex.a:
+	(cd regex; make lib CC=$(CC) AUX_CFLAGS="$(CFLAGS)" RANLIB=$(RANLIB))
+
+modules/proxy/libproxy.a:
+	(cd modules; \
+	make CC=$(CC) AUX_CFLAGS="$(CFLAGS)" RANLIB=$(RANLIB))
+
+clean:
+	rm -f httpd $(OBJS) *pure*
+	cd regex; make clean
+	cd modules; make clean
+
+dist.tar: 
+	# Assure a semi-sensible configuration going out...
+	cp Makefile.orig Makefile
+	cp modules.c.orig modules.c
+	tar cvf dist.tar README INSTALL CHANGES TODO API.html \
+		Configuration Configure Makefile.tmpl Makefile *.h *.c
+
+# Work around broken compilers
+http_bprintf.o: http_bprintf.c
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(BROKEN_BPRINTF_FLAGS) http_bprintf.c
+
+#Dependencies
+
+$(OBJS): Makefile
+
+alloc.o: conf.h alloc.h
+buff.o: conf.h alloc.h buff.h
+explain.o: explain.h
+http_bprintf.o: conf.h alloc.h buff.h
+http_config.o: httpd.h http_config.h http_core.h http_log.h http_request.h \
+               http_conf_globals.h explain.h
+http_core.o: httpd.h http_config.h http_core.h http_protocol.h scoreboard.h \
+             http_conf_globals.h http_main.h http_log.h rfc1413.h util_md5.h
+http_log.o: httpd.h http_config.h http_core.h http_log.h
+http_main.o: httpd.h http_config.h http_core.h http_log.h http_request.h \
+             http_conf_globals.h http_protocol.h http_main.h scoreboard.h \
+             explain.h
+http_protocol.o: httpd.h http_config.h http_core.h http_protocol.h \
+                 http_main.h http_log.h util_date.h
+http_request.o: httpd.h http_config.h http_request.h http_core.h \
+                http_protocol.h http_log.h http_main.h scoreboard.h
+md5c.o: md5.h
+mod_access.o: httpd.h http_core.h http_config.h http_log.h
+mod_actions.o: httpd.h http_config.h http_request.h http_core.h \
+               http_protocol.h http_main.h http_log.h util_script.h
+mod_alias.o: httpd.h http_config.h
+mod_asis.o: httpd.h http_config.h http_protocol.h http_log.h util_script.h \
+            http_main.h http_request.h
+mod_auth.o: httpd.h http_config.h http_core.h http_log.h http_protocol.h
+mod_auth_anon.o: httpd.h http_config.h http_core.h http_log.h http_protocol.h
+mod_auth_db.o: httpd.h http_config.h http_core.h http_log.h http_protocol.h
+mod_auth_dbm.o: httpd.h http_config.h http_core.h http_log.h http_protocol.h
+mod_auth_msql.o: httpd.h http_config.h http_core.h http_log.h http_protocol.h
+mod_browser.o: httpd.h http_config.h
+mod_cern_meta.o: httpd.h http_config.h util_script.h http_log.h
+mod_cgi.o: httpd.h http_config.h http_request.h http_core.h http_protocol.h \
+           http_main.h http_log.h util_script.h
+mod_digest.o: httpd.h http_config.h http_core.h http_log.h http_protocol.h \
+              util_md5.h
+mod_dir.o: httpd.h http_config.h http_core.h http_request.h http_protocol.h \
+           http_log.h http_main.h util_script.h
+mod_dld.o: httpd.h http_config.h http_conf_globals.h
+mod_env.o: httpd.h http_config.h
+mod_expires.o: httpd.h http_config.h http_log.h
+mod_fastcgi.o: httpd.h http_config.h http_request.h http_core.h http_log.h \
+               http_protocol.h http_main.h util_script.h http_conf_globals.h
+mod_headers.o: httpd.h http_config.h
+mod_imap.o: httpd.h http_config.h http_request.h http_core.h http_protocol.h \
+            http_main.h http_log.h util_script.h
+mod_include.o: httpd.h http_config.h http_request.h http_core.h http_log.h \
+               http_protocol.h http_main.h util_script.h
+mod_info.o: httpd.h http_config.h http_core.h http_log.h http_main.h \
+            http_protocol.h util_script.h
+mod_log_agent.o: httpd.h http_config.h
+mod_log_config.o: httpd.h http_config.h http_core.h
+mod_log_referer.o: httpd.h http_config.h
+mod_mime.o: httpd.h http_config.h
+mod_negotiation.o: httpd.h http_config.h http_request.h http_core.h http_log.h
+mod_rewrite.o: httpd.h http_config.h http_request.h http_core.h http_log.h \
+               mod_rewrite.h
+mod_status.o: httpd.h http_config.h http_core.h http_protocol.h http_main.h \
+              util_script.h scoreboard.h
+mod_userdir.o: httpd.h http_config.h
+mod_usertrack.o: httpd.h http_config.h http_core.h
+modules.o: httpd.h http_config.h
+rfc1413.o: httpd.h http_log.h rfc1413.h
+util.o: httpd.h http_conf_globals.h
+util_date.o: util_date.h
+util_md5.o: httpd.h util_md5.h
+util_script.o: httpd.h http_config.h http_conf_globals.h http_main.h \
+               http_log.h http_protocol.h http_core.h http_request.h \
+               util_script.h
+
+httpd.h: conf.h alloc.h buff.h
+util_md5.h: md5.h
