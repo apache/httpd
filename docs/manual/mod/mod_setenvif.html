@@ -338,6 +338,12 @@ REL="Help"
    scope.</STRONG>
   </BLOCKQUOTE>
   <P>
+  <EM>attribute</EM> may be a regular expression when used to match a request header.
+  If <EM>attribute</EM> is a regular expression and it doesn't match any of the
+  request's header names, then <EM>attribute</EM> is not tested against the request's
+  environment variable list.
+  </P>
+  <P>
   Example:
   </P>
   <PRE>
@@ -348,6 +354,8 @@ REL="Help"
    SetEnvIf Referer www\.mydomain\.com intra_site_referral
         :
    SetEnvIf object_is_image xbm XBIT_PROCESSING=1
+        :
+   SetEnvIf ^TS*  ^[a-z].*  HAVE_TS
   </PRE>
   <P>
   The first three will set the environment variable <SAMP>object_is_image</SAMP> if the
@@ -355,7 +363,11 @@ REL="Help"
   <SAMP>intra_site_referral</SAMP> if the referring page was somewhere
   on the <SAMP>www.mydomain.com</SAMP> Web site.
   </P>
-
+  <P>
+  The last example will set environment variable <SAMP>HAVE_TS</SAMP> if the request
+  contains any headers that begin with "TS" whose values begins with any character
+  in the set [a-z].
+  </P>
   <HR> <!-- the HR is part of the directive description -->
   <H2>
    <A NAME="SetEnvIfNoCase">SetEnvIfNoCase directive
