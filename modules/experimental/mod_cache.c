@@ -532,11 +532,11 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
              * We include 304 Not Modified here too as this is the origin server
              * telling us to serve the cached copy.
              */
-              reason = apr_pstrcat(p, "Response status %d", r->status);
+              reason = apr_psprintf(p, "Response status %d", r->status);
         } 
         else if (exps != NULL && exp == APR_DATE_BAD) {
             /* if a broken Expires header is present, don't cache it */
-            reason = apr_pstrcat(p, "Broken expires header %s", exp);
+            reason = apr_psprintf(p, "Broken expires header %s", exp);
         }
         else if (r->args && exps == NULL) {
             /* if query string present but no expiration time, don't cache it

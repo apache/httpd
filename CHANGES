@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cache: Fix PR 15113, a core dump in cache_in_filter when
+     a redirect occurs. The code was passing a format string and
+     integer to apr_pstrcat. Changed to apr_psprintf.
+     [Paul J. Reder]
+
   *) mod_mime: Workaround to prevent a segfault if r->filename=NULL
      [Brian Pane]
  
