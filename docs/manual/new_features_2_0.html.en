@@ -20,9 +20,9 @@
       <dt>New Build System</dt>
 
       <dd>The build system has been rewritten from scratch to be
-      based on autoconf and libtool. This makes Apache's
-      configuration system more similar to that of other
-      packages.</dd>
+      based on <code>autoconf</code> and <code>libtool</code>.
+      This makes Apache's configuration system more similar to
+      that of other packages.</dd>
 
       <dt>Multiprotocol Support</dt>
 
@@ -54,32 +54,32 @@
       <dd>On systems where IPv6 is supported by the underlying
       Apache Portable Runtime library, Apache gets IPv6 listening
       sockets by default. Additionally, the <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>, <code class="directive"><a href="./mod/core.html#namevirtualhost">NameVirtualHost</a></code>, and <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code> directives support
-      IPv6 numeric address strings (e.g., "Listen
-      [fe80::1]:8080").</dd>
+      IPv6 numeric address strings (e.g., "<code>Listen
+      [fe80::1]:8080</code>").</dd>
 
       <dt>Filtering</dt>
 
       <dd>Apache modules may now be written as filters which act on
       the stream of content as it is delivered to or from the
       server. This allows, for example, the output of CGI scripts to
-      be parsed for Server Side Include directives using the INCLUDES
-      filter in <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>.  The module
-      <code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code> allows external programs to act
-      as filters in much the same way that CGI programs can act as
+      be parsed for Server Side Include directives using the
+      <code>INCLUDES</code> filter in <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>. The
+      module <code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code> allows external programs to
+      act as filters in much the same way that CGI programs can act as
       handlers.</dd>
 
       <dt>Multilanguage Error Responses</dt>
 
-      <dd>Error response messages to the browser are now provided in 
-      several languages, using SSI documents. They may be customized 
+      <dd>Error response messages to the browser are now provided in
+      several languages, using SSI documents. They may be customized
       by the administrator to achieve a consistent look and feel.</dd>
 
       <dt>Simplified configuration</dt>
 
       <dd>Many confusing directives have been simplified. The often
-      confusing Port and BindAddress directives are gone; only the
-      <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> directive is
-      used for IP address binding; the <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> directive specifies the
+      confusing <code>Port</code> and <code>BindAddress</code> directives
+      are gone; only the <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+      directive is used for IP address binding; the <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> directive specifies the
       server name and port number only for redirection and vhost
       recognition.</dd>
 
@@ -87,10 +87,10 @@
 
       <dd>Apache 2.0 on Windows NT now uses utf-8 for all filename
       encodings. These directly translate to the underlying Unicode
-      file system, providing multilanguage support for all Windows 
+      file system, providing multilanguage support for all Windows
       NT-based installations, including Windows 2000 and Windows XP.
-      <em>This support does not extend to Windows 95, 98 or ME, which 
-      continue to use the machine's local codepage for filesystem 
+      <em>This support does not extend to Windows 95, 98 or ME, which
+      continue to use the machine's local codepage for filesystem
       access.</em></dd>
 
       <dt>Regular Expression Library Updated</dt>
@@ -143,8 +143,8 @@
       <dt><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></dt>
 
       <dd>New module in Apache 2.0. This module includes the
-      functionality of mod_mmap_static in Apache 1.3, plus adds
-      further caching abilities.</dd>
+      functionality of <code>mod_mmap_static</code> in Apache 1.3,
+      plus adds further caching abilities.</dd>
 
       <dt><code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code></dt>
 
@@ -159,10 +159,11 @@
       more reliable, HTTP/1.1 compliant proxy. In addition, new
       <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
       configuration sections provide more readable (and internally
-      faster) control of proxied sites; overloaded &lt;Directory
-      "proxy:..."&gt; configuration are not supported. The module is
-      now divided into specific protocol support modules including
-      proxy_connect, proxy_ftp and proxy_http.</dd>
+      faster) control of proxied sites; overloaded <code>&lt;Directory
+      "proxy:..."&gt;</code> configuration are not supported. The module
+      is now divided into specific protocol support modules including
+      <code>proxy_connect</code>, <code>proxy_ftp</code> and
+      <code>proxy_http</code>.</dd>
 
       <dt><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></dt>
 
@@ -175,7 +176,7 @@
 
       <dt><code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code></dt>
 
-      <dd>Autoindex'ed directory listings can now be configured to 
+      <dd>Autoindex'ed directory listings can now be configured to
       use HTML tables for cleaner formatting, and allow finer-grained
       control of sorting, including version-sorting, and wildcard
       filtering of the directory listing.</dd>
@@ -187,7 +188,8 @@
       to take place in the main configuration file rather than in the
       SSI document. Results from regular expression parsing and grouping
       (now based on Perl's regular expression syntax) can be retrieved
-      using mod_include's variables $0 .. $9.</dd>
+      using <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>'s variables <code>$0</code>
+      .. <code>$9</code>.</dd>
 
       <dt><code class="module"><a href="./mod/mod_auth_dbm.html">mod_auth_dbm</a></code></dt>
 
