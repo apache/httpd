@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.9 (outdated: 1.10) -->
+<!-- English Revision: 1.10 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -244,7 +244,7 @@
     次のようにタイプしてください。</p>
 
     <example>
-      htpasswd /usr/local/apache/passwd/password dpitts
+      htpasswd /usr/local/apache/passwd/passwords dpitts
     </example>
 
     <p>以前と同じ応答が返されますが、新しいファイルを
