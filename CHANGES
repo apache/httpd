@@ -1,4 +1,7 @@
 Changes with Apache 2.0.30-dev
+  
+  *) Get binary builds working when libapr and libaprutil are built
+     shared [Greg Ames]
 
   *) Get shared builds of libapr and libaprutil, as well as Apache DSOs,
      working on AIX.  [Aaron Bannert, Dick Dunbar <RLDunbar@pacbell.net>,

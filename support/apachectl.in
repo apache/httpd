@@ -30,6 +30,11 @@ PIDFILE=@prefix@/logs/@progname@.pid
 # the path to your httpd binary, including options if necessary
 HTTPD='@prefix@/bin/@progname@'
 #
+# the following lines are automatically uncommented for
+# binary builds
+#binbuild @SHLIBPATH_VAR@='@prefix@/lib/:$@SHLIBPATH_VAR@'
+#binbuild export @SHLIBPATH_VAR@
+#
 # a command that outputs a formatted text version of the HTML at the
 # url given on the command line.  Designed for lynx, however other
 # programs may work.  

@@ -137,6 +137,7 @@ sed -e "s%$BUILD_DIR%$DEFAULT_DIR%" \
 cp bindist/conf/httpd.conf bindist/conf/httpd-std.conf
 
 sed -e "s%$BUILD_DIR%$DEFAULT_DIR%" \
+    -e "s%^#binbuild %%" \
     bindist/bin/apachectl > bindist/bin/apachectl.tmp
 mv bindist/bin/apachectl.tmp bindist/bin/apachectl
 
