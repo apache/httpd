@@ -4410,13 +4410,13 @@ static void standalone_main(int argc, char **argv)
 	 * use by any of the children.
 	 */
 	++ap_my_generation;
+	ap_scoreboard_image->global.running_generation = ap_my_generation;
+	update_scoreboard_global();
+
 	if (is_graceful) {
 #ifndef SCOREBOARD_FILE
 	    int i;
 #endif
-	    ap_scoreboard_image->global.running_generation = ap_my_generation;
-	    update_scoreboard_global();
-
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
 			"SIGUSR1 received.  Doing graceful restart");
 
