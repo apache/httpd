@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<modulesynopsis>
+<!-- English revision: 1.2 -->
+
+<name>mod_echo</name>
+<description>プロトコルモジュールの概要を示すための単純なエコーサーバ
+</description>
+<status>Experimental</status>
+<sourcefile>mod_echo.c</sourcefile>
+<identifier>echo_module</identifier>
+<compatibility>Apache 2.0 以降</compatibility>
+
+<summary>
+    <p>本モジュールはコンセプトを伝えるためのプロトコルモジュールの
+    実装例となっています。単純なエコーサーバを提供します。
+    Telnet で接続し、文字列を送信すると、エコーを返します。</p>
+</summary>
+
+<directivesynopsis>
+
+<name>ProtocolEcho</name>
+<description>エコーサーバの有効無効を設定します。</description>
+<syntax>ProtocolEcho <em>On|Off</em></syntax>
+<contextlist><context>server config</context>
+<context>バーチャルホスト</context></contextlist>
+<compatibility>Apache 2.0 以降</compatibility>
+
+<usage>
+    <p><directive>ProtocolEcho</directive> ディレクティブで
+    エコーサーバの有効無効を設定します。</p>
+
+    <example>
+    <title>例</title>
+    ProtocolEcho On
+    </example>
+
+</usage>
+
+</directivesynopsis>
+</modulesynopsis>
+
