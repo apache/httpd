@@ -11,6 +11,7 @@
 -Tbuf_area
 -Tbuff_struct
 -Tbuffy
+-Tcache_req
 -Tcmd_how
 -Tcmd_parms
 -Tcommand_rec
@@ -19,10 +20,12 @@
 -Tcore_dir_config
 -Tcore_server_config
 -Tdir_maker_func
+-Tdirconn_entry
 -Tevent
 -Tglobals_s
 -Thandler_func
 -Thandler_rec
+-Tin_addr
 -Tjoblist_s
 -Tlisten_rec
 -Tmerger_func
@@ -31,12 +34,15 @@
 -Tmodule_struct
 -Tmutex
 -Tn_long
+-Toff_t
 -Tother_child_rec
 -Toverrides_t
 -Tparent_score
+-Tper_thread_data
 -Tpid_t
 -Tpiped_log
 -Tpool
+-Tproxy_alias
 -Trequest_rec
 -Trequire_line
 -Trlim_t
@@ -46,6 +52,8 @@
 -Tserver_rec
 -Tserver_rec_chain
 -Tshort_score
+-Tsockaddr
+-Tsockaddr_in
 -Ttable
 -Ttable_entry
 -Tthread

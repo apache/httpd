@@ -63,7 +63,7 @@
 #include "multithread.h"
 #include "http_log.h"
 #include "util_uri.h"
-#include "util_date.h"  /* get ap_checkmask() decl. */
+#include "util_date.h"          /* get ap_checkmask() decl. */
 
 static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
@@ -93,9 +93,9 @@ int ap_proxy_hex2c(const char *x)
     else
         i += ch - ('a' - 10);
     return i;
-#else /*CHARSET_EBCDIC*/
-    return (1 == sscanf(x, "%2x", &i)) ? os_toebcdic[i&0xFF] : 0;
-#endif /*CHARSET_EBCDIC*/
+#else                           /* CHARSET_EBCDIC */
+    return (1 == sscanf(x, "%2x", &i)) ? os_toebcdic[i & 0xFF] : 0;
+#endif                          /* CHARSET_EBCDIC */
 }
 
 void ap_proxy_c2hex(int ch, char *x)
@@ -115,14 +115,14 @@ void ap_proxy_c2hex(int ch, char *x)
         x[2] = ('A' - 10) + i;
     else
         x[2] = '0' + i;
-#else /*CHARSET_EBCDIC*/
-    static const char ntoa[] = { "0123456789ABCDEF" };
+#else                           /* CHARSET_EBCDIC */
+    static const char ntoa[] = {"0123456789ABCDEF"};
     ch = os_toascii[ch & 0xFF];
     x[0] = '%';
-    x[1] = ntoa[(ch>>4)&0x0F];
-    x[2] = ntoa[ch&0x0F];
+    x[1] = ntoa[(ch >> 4) & 0x0F];
+    x[2] = ntoa[ch & 0x0F];
     x[3] = '\0';
-#endif /*CHARSET_EBCDIC*/
+#endif                          /* CHARSET_EBCDIC */
 }
 
 /*
@@ -136,7 +136,7 @@ void ap_proxy_c2hex(int ch, char *x)
  * those which must not be touched.
  */
 char *ap_proxy_canonenc(pool *p, const char *x, int len, enum enctype t,
-                        enum proxyreqtype isenc)
+                             enum proxyreqtype isenc)
 {
     int i, j, ch;
     char *y;
@@ -145,7 +145,7 @@ char *ap_proxy_canonenc(pool *p, const char *x, int len, enum enctype t,
 
 /* N.B. in addition to :@&=, this allows ';' in an http path
  * and '?' in an ftp path -- this may be revised
- * 
+ *
  * Also, it makes a '+' character in a search string reserved, as
  * it may be form-encoded. (Although RFC 1738 doesn't allow this -
  * it only permits ; / ? : @ = & as reserved chars.)
@@ -213,7 +213,7 @@ char *ap_proxy_canonenc(pool *p, const char *x, int len, enum enctype t,
  */
 char *
      ap_proxy_canon_netloc(pool *p, char **const urlp, char **userp,
-                        char **passwordp, char **hostp, int *port)
+                                char **passwordp, char **hostp, int *port)
 {
     int i;
     char *strp, *host, *url = *urlp;
@@ -267,13 +267,14 @@ char *
         /* if (i == 0) the no port was given; keep default */
         if (strp[i] != '\0') {
             return "Bad port number in URL";
-        } else if (i > 0) {
+        }
+        else if (i > 0) {
             *port = atoi(strp);
             if (*port > 65535)
                 return "Port number in URL > 65535";
         }
     }
-    ap_str_tolower(host);                /* DNS names are case-insensitive */
+    ap_str_tolower(host);       /* DNS names are case-insensitive */
     if (*host == '\0')
         return "Missing host in URL";
 /* check hostname syntax */
@@ -299,7 +300,7 @@ char *
     return NULL;
 }
 
-static const char * const lwday[7] =
+static const char *const lwday[7] =
 {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 /*
@@ -391,7 +392,7 @@ static int proxy_getline(char *s, int n, BUFF *in, int fold)
     pos = s;
 
     do {
-        retval = ap_bgets(pos, n, in);     /* retval == -1 if error, 0 if EOF */
+        retval = ap_bgets(pos, n, in);  /* retval == -1 if error, 0 if EOF */
 
         if (retval <= 0)
             return ((retval < 0) && (total == 0)) ? -1 : total;
@@ -410,13 +411,14 @@ static int proxy_getline(char *s, int n, BUFF *in, int fold)
         else
             return total;       /* if not, input line exceeded buffer size */
 
-        /* Continue appending if line folding is desired and
-         * the last line was not empty and we have room in the buffer and
-         * the next line begins with a continuation character.
+        /*
+         * Continue appending if line folding is desired and the last line
+         * was not empty and we have room in the buffer and the next line
+         * begins with a continuation character.
          */
     } while (fold && (retval != 1) && (n > 1)
-                  && (ap_blookc(&next, in) == 1)
-                  && ((next == ' ') || (next == '\t')));
+             && (ap_blookc(&next, in) == 1)
+             && ((next == ' ') || (next == '\t')));
 
     return total;
 }
@@ -446,21 +448,23 @@ table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
      * the connection closes (EOF), or we timeout.
      */
     while ((len = proxy_getline(buffer, size, f, 1)) > 0) {
-        
-        if (!(value = strchr(buffer, ':'))) {     /* Find the colon separator */
 
-            /* Buggy MS IIS servers sometimes return invalid headers
-             * (an extra "HTTP/1.0 200, OK" line sprinkled in between
-             * the usual MIME headers). Try to deal with it in a sensible
-             * way, but log the fact.
-             * XXX: The mask check is buggy if we ever see an HTTP/1.10 */
+        if (!(value = strchr(buffer, ':'))) {   /* Find the colon separator */
+
+            /*
+             * Buggy MS IIS servers sometimes return invalid headers (an
+             * extra "HTTP/1.0 200, OK" line sprinkled in between the usual
+             * MIME headers). Try to deal with it in a sensible way, but log
+             * the fact. XXX: The mask check is buggy if we ever see an
+             * HTTP/1.10
+             */
 
             if (!ap_checkmask(buffer, "HTTP/#.# ###*")) {
                 /* Nope, it wasn't even an extra HTTP header. Give up. */
                 return NULL;
             }
 
-            ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, r->server,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_NOERRNO, r->server,
                          "proxy: Ignoring duplicate HTTP header "
                          "returned by %s (%s)", r->uri, r->method);
             continue;
@@ -468,26 +472,27 @@ table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
 
         *value = '\0';
         ++value;
-        /* XXX: RFC2068 defines only SP and HT as whitespace, this test is
+        /*
+         * XXX: RFC2068 defines only SP and HT as whitespace, this test is
          * wrong... and so are many others probably.
          */
         while (ap_isspace(*value))
             ++value;            /* Skip to start of value   */
 
         /* should strip trailing whitespace as well */
-        for (end = &value[strlen(value)-1]; end > value && ap_isspace(*end); --end)
+        for (end = &value[strlen(value) - 1]; end > value && ap_isspace(*end); --end)
             *end = '\0';
 
         /* make sure we add so as not to destroy duplicated headers */
         ap_table_add(resp_hdrs, buffer, value);
 
         /* the header was too long; at the least we should skip extra data */
-        if (len >= size - 1) { 
+        if (len >= size - 1) {
             while ((len = proxy_getline(field, MAX_STRING_LEN, f, 1))
-                    >= MAX_STRING_LEN - 1) {
+                   >= MAX_STRING_LEN - 1) {
                 /* soak up the extra data */
             }
-            if (len == 0) /* time to exit the larger loop as well */
+            if (len == 0)       /* time to exit the larger loop as well */
                 break;
         }
     }
@@ -501,16 +506,20 @@ table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
 
 long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int nowrite, size_t recv_buffer_size)
 {
-    int  ok;
+    int ok;
     char *buf;
     size_t buf_size;
     long total_bytes_rcvd;
     register int n, o, w;
     conn_rec *con = r->connection;
-    int alternate_timeouts = 1; /* 1 if we alternate between soft & hard timeouts */
+    int alternate_timeouts = 1; /* 1 if we alternate between soft & hard
+                                 * timeouts */
 
     /* allocate a buffer to store the bytes in */
-    /* make sure it is at least IOBUFSIZE, as recv_buffer_size may be zero for system default */
+    /*
+     * make sure it is at least IOBUFSIZE, as recv_buffer_size may be zero
+     * for system default
+     */
     buf_size = MAX(recv_buffer_size, IOBUFSIZE);
     buf = ap_palloc(r->pool, buf_size);
 
@@ -520,15 +529,16 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
 
 #ifdef CHARSET_EBCDIC
     /* The cache copy is ASCII, not EBCDIC, even for text/html) */
-    ap_bsetflag(f, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
+    ap_bsetflag(f, B_ASCII2EBCDIC | B_EBCDIC2ASCII, 0);
     if (c != NULL && c->fp != NULL)
-        ap_bsetflag(c->fp, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
-    ap_bsetflag(con->client, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
+        ap_bsetflag(c->fp, B_ASCII2EBCDIC | B_EBCDIC2ASCII, 0);
+    ap_bsetflag(con->client, B_ASCII2EBCDIC | B_EBCDIC2ASCII, 0);
 #endif
 
-    /* Since we are reading from one buffer and writing to another,
-     * it is unsafe to do a soft_timeout here, at least until the proxy
-     * has its own timeout handler which can set both buffers to EOUT.
+    /*
+     * Since we are reading from one buffer and writing to another, it is
+     * unsafe to do a soft_timeout here, at least until the proxy has its own
+     * timeout handler which can set both buffers to EOUT.
      */
 
     ap_kill_timeout(r);
@@ -538,12 +548,13 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
     ap_hard_timeout("proxy send body", r);
     alternate_timeouts = 0;
 #else
-    /* CHECKME! Since hard_timeout won't work in unix on sends with partial
-     * cache completion, we have to alternate between hard_timeout
-     * for reads, and soft_timeout for send.  This is because we need
-     * to get a return from ap_bwrite to be able to continue caching.
-     * BUT, if we *can't* continue anyway, just use hard_timeout.
-     * (Also, if no cache file is written, use hard timeouts)
+    /*
+     * CHECKME! Since hard_timeout won't work in unix on sends with partial
+     * cache completion, we have to alternate between hard_timeout for reads,
+     * and soft_timeout for send.  This is because we need to get a return
+     * from ap_bwrite to be able to continue caching. BUT, if we *can't*
+     * continue anyway, just use hard_timeout. (Also, if no cache file is
+     * written, use hard timeouts)
      */
 
     if (c == NULL || c->len <= 0 || c->cache_completion == 1.0) {
@@ -552,11 +563,12 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
     }
 #endif
 
-    /* Loop and ap_bread() while we can successfully read and write,
-     * or (after the client aborted) while we can successfully
-     * read and finish the configured cache_completion.
+    /*
+     * Loop and ap_bread() while we can successfully read and write, or
+     * (after the client aborted) while we can successfully read and finish
+     * the configured cache_completion.
      */
-    for (ok = 1; ok; ) {
+    for (ok = 1; ok;) {
         if (alternate_timeouts)
             ap_hard_timeout("proxy recv body from upstream server", r);
 
@@ -576,22 +588,23 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
         if (n == -1) {          /* input error */
             if (c != NULL) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
-                    "proxy: error reading from %s", c->url);
+                              "proxy: error reading from %s", c->url);
                 c = ap_proxy_cache_error(c);
             }
             break;
         }
         if (n == 0)
-            break;                /* EOF */
+            break;              /* EOF */
         o = 0;
         total_bytes_rcvd += n;
 
         /* if we've received everything... */
-        /* in the case of slow frontends and expensive backends,
-         * we want to avoid leaving a backend connection hanging
-         * while the frontend takes it's time to absorb the bytes.
-         * so: if we just read the last block, we close the backend
-         * connection now instead of later - it's no longer needed.
+        /*
+         * in the case of slow frontends and expensive backends, we want to
+         * avoid leaving a backend connection hanging while the frontend
+         * takes it's time to absorb the bytes. so: if we just read the last
+         * block, we close the backend connection now instead of later - it's
+         * no longer needed.
          */
         if (total_bytes_rcvd == len) {
             ap_bclose(f);
@@ -599,13 +612,17 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
         }
 
         /* Write to cache first. */
-        /*@@@ XXX FIXME: Assuming that writing the cache file won't time out?!!? */
+        /*
+         * @@@ XXX FIXME: Assuming that writing the cache file won't time
+         * out?!!?
+         */
         if (c != NULL && c->fp != NULL) {
             if (ap_bwrite(c->fp, &buf[0], n) != n) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
-                    "proxy: error writing to %s", c->tempfile);
+                              "proxy: error writing to %s", c->tempfile);
                 c = ap_proxy_cache_error(c);
-            } else {
+            }
+            else {
                 c->written += n;
             }
         }
@@ -624,18 +641,19 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
 
             if (w <= 0) {
                 if (c != NULL) {
-                    /* when a send failure occurs, we need to decide
-                     * whether to continue loading and caching the
-                     * document, or to abort the whole thing
+                    /*
+                     * when a send failure occurs, we need to decide whether
+                     * to continue loading and caching the document, or to
+                     * abort the whole thing
                      */
                     ok = (c->len > 0) &&
-                         (c->cache_completion > 0) &&
-                         (c->len * c->cache_completion < total_bytes_rcvd);
+                        (c->cache_completion > 0) &&
+                        (c->len * c->cache_completion < total_bytes_rcvd);
 
-                    if (! ok) {
-                        if (c->fp!=NULL) {
-                        ap_pclosef(c->req->pool, ap_bfileno(c->fp, B_WR));
-                        c->fp = NULL;
+                    if (!ok) {
+                        if (c->fp != NULL) {
+                            ap_pclosef(c->req->pool, ap_bfileno(c->fp, B_WR));
+                            c->fp = NULL;
                         }
                         unlink(c->tempfile);
                         c = NULL;
@@ -646,13 +664,13 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
             }
             n -= w;
             o += w;
-        } /* while client alive and more data to send */
+        }                       /* while client alive and more data to send */
 
         /* if we've received everything, leave now */
         if (total_bytes_rcvd == len)
             break;
 
-    } /* loop and ap_bread while "ok" */
+    }                           /* loop and ap_bread while "ok" */
 
     /* if the backend connection is still open, close it */
     if (f) {
@@ -677,11 +695,11 @@ void ap_proxy_write_headers(cache_req *c, const char *respline, table *t)
     /* write status line */
     if (respline && c->fp != NULL &&
         ap_bvputs(c->fp, respline, CRLF, NULL) == -1) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
-                          "proxy: error writing status line to %s", c->tempfile);
-            c = ap_proxy_cache_error(c);
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
+                      "proxy: error writing status line to %s", c->tempfile);
+        c = ap_proxy_cache_error(c);
         return;
-        }
+    }
 
     /* write response headers to the cache file */
     ap_table_do(ap_proxy_send_hdr_line, c, t, NULL);
@@ -706,7 +724,7 @@ int ap_proxy_liststr(const char *list, const char *key, char **val)
     int len, i;
     const char *p;
     char valbuf[HUGE_STRING_LEN];
-    valbuf[sizeof(valbuf)-1] = 0; /* safety terminating zero */
+    valbuf[sizeof(valbuf) - 1] = 0;     /* safety terminating zero */
 
     len = strlen(key);
 
@@ -734,7 +752,7 @@ int ap_proxy_liststr(const char *list, const char *key, char **val)
                 while (ap_isspace(*list)) {
                     list++;
                 }
-                strncpy(valbuf, list, MIN(p-list, sizeof(valbuf)-1));
+                strncpy(valbuf, list, MIN(p - list, sizeof(valbuf) - 1));
                 *val = valbuf;
             }
             return 1;
@@ -760,7 +778,7 @@ void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength)
     static const char enc_table[32] = "abcdefghijklmnopqrstuvwxyz012345";
 
     ap_MD5Init(&context);
-    ap_MD5Update(&context, (const unsigned char *) it, strlen(it));
+    ap_MD5Update(&context, (const unsigned char *)it, strlen(it));
     ap_MD5Final(digest, &context);
 
 /* encode 128 bits as 26 characters, using a modified uuencoding */
@@ -805,17 +823,19 @@ void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength)
     int i, k, d;
     unsigned int x;
 #if defined(MPE) || (defined(AIX) && defined(__ps2__))
-    /* Believe it or not, AIX 1.x does not allow you to name a file '@',
-     * so hack around it in the encoding. */
+    /*
+     * Believe it or not, AIX 1.x does not allow you to name a file '@', so
+     * hack around it in the encoding.
+     */
     static const char enc_table[64] =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_%";
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_%";
 #else
     static const char enc_table[64] =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_@";
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_@";
 #endif
 
     ap_MD5Init(&context);
-    ap_MD5Update(&context, (const unsigned char *) it, strlen(it));
+    ap_MD5Update(&context, (const unsigned char *)it, strlen(it));
     ap_MD5Final(digest, &context);
 
 /* encode 128 bits as 22 characters, using a modified uuencoding */
@@ -831,7 +851,7 @@ void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength)
     }
 /* one byte left */
     x = digest[15];
-    tmp[k++] = enc_table[x >> 2];        /* use up 6 bits */
+    tmp[k++] = enc_table[x >> 2];       /* use up 6 bits */
     tmp[k++] = enc_table[(x << 4) & 0x3f];
     /* now split into directory levels */
 
@@ -845,7 +865,7 @@ void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength)
     val[i + 22 - k] = '\0';
 }
 
-#endif /* CASE_BLIND_FILESYSTEM */
+#endif                          /* CASE_BLIND_FILESYSTEM */
 
 /*
  * Converts 16 hex digits to a time integer
@@ -867,9 +887,9 @@ int ap_proxy_hex2sec(const char *x)
     }
 /* no longer necessary, as the source hex is 8-byte int */
 /*    if (j == 0xffffffff)*/
-/*      return -1;*/            /* so that it works with 8-byte ints */
+    /*      return -1;*//* so that it works with 8-byte ints */
 /*    else */
-        return j;
+    return j;
 }
 
 /*
@@ -917,14 +937,14 @@ cache_req *ap_proxy_cache_error(cache_req *c)
 int ap_proxyerror(request_rec *r, int statuscode, const char *message)
 {
     ap_table_setn(r->notes, "error-notes",
-                  ap_pstrcat(r->pool, 
+                  ap_pstrcat(r->pool,
                              "The proxy server could not handle the request "
-                             "<EM><A HREF=\"", ap_escape_uri(r->pool, r->uri),
+                           "<EM><A HREF=\"", ap_escape_uri(r->pool, r->uri),
                              "\">", ap_escape_html(r->pool, r->method),
-                             "&nbsp;", 
-                             ap_escape_html(r->pool, r->uri), "</A></EM>.<P>\n"
+                             "&nbsp;",
+                          ap_escape_html(r->pool, r->uri), "</A></EM>.<P>\n"
                              "Reason: <STRONG>",
-                             ap_escape_html(r->pool, message), 
+                             ap_escape_html(r->pool, message),
                              "</STRONG>", NULL));
 
     /* Allow "error-notes" string to be printed by ap_send_error_response() */
@@ -938,7 +958,7 @@ int ap_proxyerror(request_rec *r, int statuscode, const char *message)
  * This routine returns its own error message
  */
 const char *
-     ap_proxy_host2addr(const char *host, struct hostent *reqhp)
+     ap_proxy_host2addr(const char *host, struct hostent * reqhp)
 {
     int i;
     struct hostent *hp;
@@ -955,14 +975,14 @@ const char *
     }
     else {
         ptd->ipaddr = ap_inet_addr(host);
-        hp = gethostbyaddr((char *) &ptd->ipaddr, sizeof(ptd->ipaddr), AF_INET);
+        hp = gethostbyaddr((char *)&ptd->ipaddr, sizeof(ptd->ipaddr), AF_INET);
         if (hp == NULL) {
             memset(&ptd->hpbuf, 0, sizeof(ptd->hpbuf));
             ptd->hpbuf.h_name = 0;
             ptd->hpbuf.h_addrtype = AF_INET;
             ptd->hpbuf.h_length = sizeof(ptd->ipaddr);
             ptd->hpbuf.h_addr_list = ptd->charpbuf;
-            ptd->hpbuf.h_addr_list[0] = (char *) &ptd->ipaddr;
+            ptd->hpbuf.h_addr_list[0] = (char *)&ptd->ipaddr;
             ptd->hpbuf.h_addr_list[1] = 0;
             hp = &ptd->hpbuf;
         }
@@ -985,13 +1005,14 @@ static const char *
         || url[1] != '/' || url[2] != '/')
         return NULL;
 
-    url = ap_pstrdup(r->pool, &url[1]); /* make it point to "//", which is what proxy_canon_netloc expects */
+    url = ap_pstrdup(r->pool, &url[1]); /* make it point to "//", which is
+                                         * what proxy_canon_netloc expects */
 
     err = ap_proxy_canon_netloc(r->pool, &url, &user, &password, &host, &port);
 
     if (err != NULL)
-        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
-                     "%s", err);
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+                      "%s", err);
 
     r->hostname = host;
 
@@ -1011,9 +1032,12 @@ int ap_proxy_is_ipaddr(struct dirconn_entry *This, pool *p)
     /* "partial" addresses (with less than 4 quads) correctly, i.e.  */
     /* 192.168.123 is parsed as 192.168.0.123, which is not what I want. */
     /* I therefore have to parse the IP address manually: */
-    /*if (proxy_readmask(This->name, &This->addr.s_addr, &This->mask.s_addr) == 0) */
+    /*
+     * if (proxy_readmask(This->name, &This->addr.s_addr, &This->mask.s_addr)
+     * == 0)
+     */
     /* addr and mask were set by proxy_readmask() */
-    /*return 1; */
+    /* return 1; */
 
     /* Parse IP addr manually, optionally allowing */
     /* abbreviated net addresses like 192.168. */
@@ -1070,7 +1094,10 @@ int ap_proxy_is_ipaddr(struct dirconn_entry *This, pool *p)
         while (quads > 0 && ip_addr[quads - 1] == 0)
             --quads;
 
-        /* "IP Address should be given in dotted-quad form, optionally followed by a netmask (e.g., 192.168.111.0/24)"; */
+        /*
+         * "IP Address should be given in dotted-quad form, optionally
+         * followed by a netmask (e.g., 192.168.111.0/24)";
+         */
         if (quads < 1)
             return 0;
 
@@ -1111,8 +1138,8 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
     const char *found;
     const char *host = proxy_get_host_of_request(r);
 
-    if (host == NULL)   /* oops! */
-       return 0;
+    if (host == NULL)           /* oops! */
+        return 0;
 
     memset(&addr, '\0', sizeof addr);
     memset(ip_addr, '\0', sizeof ip_addr);
@@ -1157,7 +1184,7 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 
         /* Try to deal with multiple IP addr's for a host */
         for (ip_listptr = the_host.h_addr_list; *ip_listptr; ++ip_listptr) {
-            ip_list = (struct in_addr *) *ip_listptr;
+            ip_list = (struct in_addr *)*ip_listptr;
             if (This->addr.s_addr == (ip_list->s_addr & This->mask.s_addr)) {
 #if DEBUGGING
                 fprintf(stderr, "3)IP-Match: %s[%s] <-> ", found, inet_ntoa(*ip_list));
@@ -1256,7 +1283,7 @@ int ap_proxy_is_hostname(struct dirconn_entry *This, pool *p)
     if (addr[i] != '\0' || ap_proxy_host2addr(addr, &host) != NULL)
         return 0;
 
-    This->hostentry = ap_pduphostent (p, &host);
+    This->hostentry = ap_pduphostent(p, &host);
 
     /* Strip trailing dots */
     for (i = strlen(addr) - 1; i > 0 && addr[i] == '.'; --i)
@@ -1275,7 +1302,7 @@ static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r)
     int h1_len;
 
     if (host == NULL || host2 == NULL)
-       return 0; /* oops! */
+        return 0;               /* oops! */
 
     h2_len = strlen(host2);
     h1_len = strlen(host);
@@ -1318,16 +1345,16 @@ int ap_proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
 
     ap_hard_timeout("proxy connect", r);
     do {
-        i = connect(sock, (struct sockaddr *) addr, sizeof(struct sockaddr_in));
+        i = connect(sock, (struct sockaddr *)addr, sizeof(struct sockaddr_in));
 #if defined(WIN32) || defined(NETWARE)
         if (i == SOCKET_ERROR)
             errno = WSAGetLastError();
-#endif /* WIN32 */
+#endif                          /* WIN32 */
     } while (i == -1 && errno == EINTR);
     if (i == -1) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-                     "proxy connect to %s port %d failed",
-                     inet_ntoa(addr->sin_addr), ntohs(addr->sin_port));
+                      "proxy connect to %s port %d failed",
+                      inet_ntoa(addr->sin_addr), ntohs(addr->sin_port));
     }
     ap_kill_timeout(r);
 
@@ -1342,16 +1369,17 @@ int ap_proxy_send_hdr_line(void *p, const char *key, const char *value)
 {
     cache_req *c = (cache_req *)p;
 
-      if (key == NULL || value == NULL || value[0] == '\0')
+    if (key == NULL || value == NULL || value[0] == '\0')
         return 1;
-      if (c->fp != NULL &&
+    if (c->fp != NULL &&
         ap_bvputs(c->fp, key, ": ", value, CRLF, NULL) == -1) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
-                    "proxy: error writing header to %s", c->tempfile);
-          c = ap_proxy_cache_error(c);
-            return 0; /* no need to continue, it failed already */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
+                      "proxy: error writing header to %s", c->tempfile);
+        c = ap_proxy_cache_error(c);
+        return 0;               /* no need to continue, it failed already */
     }
-    return 1; /* tell ap_table_do() to continue calling us for more headers */
+    return 1;                   /* tell ap_table_do() to continue calling us
+                                 * for more headers */
 }
 
 /* send a text line to one or two BUFF's; return line length */
@@ -1366,7 +1394,8 @@ unsigned ap_proxy_bputs2(const char *data, BUFF *client, cache_req *cache)
 /* do a HTTP/1.1 age calculation */
 time_t ap_proxy_current_age(cache_req *c, const time_t age_value)
 {
-    time_t apparent_age, corrected_received_age, response_delay, corrected_initial_age, resident_time, current_age;
+    time_t apparent_age, corrected_received_age, response_delay, corrected_initial_age,
+           resident_time, current_age;
 
     /* Perform an HTTP/1.1 age calculation. (RFC2616 13.2.3) */
 
@@ -1398,7 +1427,7 @@ BUFF *ap_proxy_open_cachefile(request_rec *r, char *filename)
                           "proxy: error opening cache file %s",
                           filename);
         else
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "File %s not found", filename);
+            ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, r->server, "File %s not found", filename);
 
     }
     return cachefp;
@@ -1432,10 +1461,10 @@ void ap_proxy_clear_connection(pool *p, table *headers)
     char *next = ap_pstrdup(p, ap_table_get(headers, "Connection"));
 
     ap_table_unset(headers, "Proxy-Connection");
-        if (!next) 
+    if (!next)
         return;
 
-    while (*next) { 
+    while (*next) {
         name = next;
         while (*next && !ap_isspace(*next) && (*next != ','))
             ++next;
@@ -1467,7 +1496,7 @@ void ap_proxy_clear_connection(pool *p, table *headers)
  */
 int ap_proxy_table_replace(table *base, table *overlay)
 {
-    table_entry *elts = (table_entry *) overlay->a.elts;
+    table_entry *elts = (table_entry *)overlay->a.elts;
     int i, q = 0;
     const char *val;
 
@@ -1523,21 +1552,21 @@ void ap_proxy_table_unmerge(pool *p, table *t, char *key)
 
 static DWORD tls_index;
 
-BOOL WINAPI DllMain (HINSTANCE dllhandle, DWORD reason, LPVOID reserved)
+BOOL WINAPI DllMain(HINSTANCE dllhandle, DWORD reason, LPVOID reserved)
 {
     LPVOID memptr;
 
     switch (reason) {
     case DLL_PROCESS_ATTACH:
         tls_index = TlsAlloc();
-    case DLL_THREAD_ATTACH: /* intentional no break */
-        TlsSetValue (tls_index, malloc (sizeof (struct per_thread_data)));
+    case DLL_THREAD_ATTACH:     /* intentional no break */
+        TlsSetValue(tls_index, malloc(sizeof(struct per_thread_data)));
         break;
     case DLL_THREAD_DETACH:
-        memptr = TlsGetValue (tls_index);
+        memptr = TlsGetValue(tls_index);
         if (memptr) {
-            free (memptr);
-            TlsSetValue (tls_index, 0);
+            free(memptr);
+            TlsSetValue(tls_index, 0);
         }
         break;
     }
@@ -1551,7 +1580,7 @@ static struct per_thread_data *get_per_thread_data(void)
 {
 #if defined(WIN32)
 
-    return (struct per_thread_data *) TlsGetValue (tls_index);
+    return (struct per_thread_data *)TlsGetValue(tls_index);
 
 #else
 
