@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/19 14:47:43 $]
+Last modified at [$Date: 2004/02/19 16:56:21 $]
 
 Release:
 
@@ -84,8 +84,9 @@ PATCHES TO BACKPORT FROM 2.1
       spurious failures in SSL functions later.
       PR: 21160
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_pphrase.c?r1=1.44&r2=1.45
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_pphrase.c?r1=1.49&r2=1.50
       +1: jorton, trawick (shouldn't comment be updated to indicate
-      that this isn't simply an aesthetic issue?)
+      that this isn't simply an aesthetic issue?) (yes, done in r1.50)
 
     * Fix file extensions for real media files and removed rpm extension
       from mime.types. PR 26079. (2.0 + 1.3)
