@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/14 17:49:04 $]
+Last modified at [$Date: 2004/03/15 20:12:36 $]
 
 Release:
 
@@ -70,6 +70,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) mod_cgid: Fix storage corruption caused by use of incorrect pool.
+         modules/generators/mod_cgid.c: r1.425
+       +1: trawick
 
     *) Use apr_temp_dir_get for htpasswd
        support/htpasswd.c: 1.75
