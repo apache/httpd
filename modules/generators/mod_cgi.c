@@ -175,8 +175,8 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
     if (!conf->logname ||
 	((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0)
 	 &&   (finfo.st_size > conf->logbytes)) ||
-          (ap_open(&f, r->pool, ap_server_root_relative(r->pool, conf->logname),
-                   APR_APPEND | APR_BUFFERED, APR_OS_DEFAULT) != APR_SUCCESS)) {
+          (ap_open(&f, ap_server_root_relative(r->pool, conf->logname),
+                   APR_APPEND | APR_BUFFERED, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
 	return ret;
     }
 
@@ -205,8 +205,8 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     if (!conf->logname ||
 	((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0)
 	 &&   (finfo.st_size > conf->logbytes)) ||
-         (ap_open(&f, r->pool, ap_server_root_relative(r->pool, conf->logname),
-                  APR_APPEND, APR_OS_DEFAULT) != APR_SUCCESS)) {
+         (ap_open(&f, ap_server_root_relative(r->pool, conf->logname),
+                  APR_APPEND, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
 	/* Soak up script output */
 	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
 	    continue;
