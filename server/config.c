@@ -1297,6 +1297,8 @@ void ap_process_resource_config(server_rec *s, const char *fname,
 	int current;
 	apr_array_header_t *candidates = NULL;
 	fnames *fnew;
+        apr_status_t rv;
+        char errmsg[120];
 
 	/*
 	 * first course of business is to grok all the directory
@@ -1304,10 +1306,11 @@ void ap_process_resource_config(server_rec *s, const char *fname,
 	 * for this.
 	 */
 	fprintf(stderr, "Processing config directory: %s\n", fname);
-	if (apr_dir_open(&dirp, fname, p) != APR_SUCCESS) {
-	    perror("fopen");
-	    fprintf(stderr, "%s: could not open config directory %s\n",
-		ap_server_argv0, fname);
+        rv = apr_dir_open(&dirp, fname, p);
+        if (rv != APR_SUCCESS) {
+	    fprintf(stderr, "%s: could not open config directory %s: %s\n",
+                    ap_server_argv0, fname,
+                    apr_strerror(rv, errmsg, sizeof errmsg));
 	    exit(1);
 	}
 	candidates = apr_make_array(p, 1, sizeof(fnames));
