@@ -880,6 +880,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p,
             }
         }
         break;
+
     case 'e':
     case 'E':
         if (!*key || !strcasecmp(key, "nv")) {             /* env */
@@ -895,24 +896,28 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p,
             }
         }
         break;
+
     case 'f':
     case 'F':
         if (!*key || !strcasecmp(key, "orbidden")) {       /* forbidden */
             cfg->flags |= RULEFLAG_FORBIDDEN;
         }
         break;
+
     case 'g':
     case 'G':
         if (!*key || !strcasecmp(key, "one")) {            /* gone */
             cfg->flags |= RULEFLAG_GONE;
         }
         break;
+
     case 'l':
     case 'L':
         if (!*key || !strcasecmp(key, "ast")) {            /* last */
             cfg->flags |= RULEFLAG_LASTRULE;
         }
         break;
+
     case 'n':
     case 'N':
         if (((*key == 'E' || *key == 'e') && !key[1])
@@ -931,6 +936,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p,
             cfg->flags |= RULEFLAG_NOCASE;
         }
         break;
+
     case 'p':
     case 'P':
         if (!*key || !strcasecmp(key, "roxy")) {           /* proxy */
@@ -941,6 +947,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p,
             cfg->flags |= RULEFLAG_PASSTHROUGH;
         }
         break;
+
     case 'q':
     case 'Q':
         if (   !strcasecmp(key, "QSA")
@@ -948,6 +955,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p,
             cfg->flags |= RULEFLAG_QSAPPEND;
         }
         break;
+
     case 'r':
     case 'R':
         if (!*key || !strcasecmp(key, "edirect")) {        /* redirect */
@@ -973,19 +981,22 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p,
             }
         }
         break;
-    case 't':
-    case 'T':
-        if (!*key || !strcasecmp(key, "ype")) {             /* type */
-            cfg->forced_mimetype = apr_pstrdup(p, val);
-            ap_str_tolower(cfg->forced_mimetype);
-        }
-        break;
+
     case 's':
     case 'S':
         if (!*key || !strcasecmp(key, "kip")) {            /* skip */
             cfg->skip = atoi(val);
         }
         break;
+
+    case 't':
+    case 'T':
+        if (!*key || !strcasecmp(key, "ype")) {            /* type */
+            cfg->forced_mimetype = apr_pstrdup(p, val);
+            ap_str_tolower(cfg->forced_mimetype);
+        }
+        break;
+
     default:
         return apr_pstrcat(p, "RewriteRule: unknown flag '", key, "'", NULL);
     }
