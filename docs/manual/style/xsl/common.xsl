@@ -916,11 +916,38 @@
 <!-- ==================================================================== -->
 <!-- Process everything else by just passing it through                   -->
 <!-- ==================================================================== -->
-<xsl:template match="*|@*">
+<xsl:template match="*">
+<xsl:message terminate="yes">
+    <xsl:text>Unknown element: </xsl:text>
+    <xsl:value-of select="local-name()" />&lf;
+    <xsl:text>Please fix style/xsl/common.xsl!</xsl:text>
+</xsl:message>
+</xsl:template>
+<xsl:template match="@*">
 <xsl:copy>
     <xsl:apply-templates select="*|@*|text()" />
 </xsl:copy>
 </xsl:template>
+<xsl:template match="br"><br /></xsl:template>
+<xsl:template match="tr"><tr><xsl:apply-templates select="*|@*|text()" /></tr></xsl:template>
+<xsl:template match="th"><th><xsl:apply-templates select="*|@*|text()" /></th></xsl:template>
+<xsl:template match="td"><td><xsl:apply-templates select="*|@*|text()" /></td></xsl:template>
+<xsl:template match="p"><p><xsl:apply-templates select="*|@*|text()" /></p></xsl:template>
+<xsl:template match="ul"><ul><xsl:apply-templates select="*|@*|text()" /></ul></xsl:template>
+<xsl:template match="li"><li><xsl:apply-templates select="*|@*|text()" /></li></xsl:template>
+<xsl:template match="dl"><dl><xsl:apply-templates select="*|@*|text()" /></dl></xsl:template>
+<xsl:template match="dt"><dt><xsl:apply-templates select="*|@*|text()" /></dt></xsl:template>
+<xsl:template match="dd"><dd><xsl:apply-templates select="*|@*|text()" /></dd></xsl:template>
+<xsl:template match="em"><em><xsl:apply-templates select="*|@*|text()" /></em></xsl:template>
+<xsl:template match="strong"><strong><xsl:apply-templates select="*|@*|text()" /></strong></xsl:template>
+<xsl:template match="pre"><pre><xsl:apply-templates select="*|@*|text()" /></pre></xsl:template>
+<xsl:template match="code"><code><xsl:apply-templates select="*|@*|text()" /></code></xsl:template>
+<xsl:template match="var"><var><xsl:apply-templates select="*|@*|text()" /></var></xsl:template>
+<xsl:template match="dfn"><dfn><xsl:apply-templates select="*|@*|text()" /></dfn></xsl:template>
+<xsl:template match="blockquote"><blockquote><xsl:apply-templates select="*|@*|text()" /></blockquote></xsl:template>
+<xsl:template match="q"><q><xsl:apply-templates select="*|@*|text()" /></q></xsl:template>
+<xsl:template match="cite"><cite><xsl:apply-templates select="*|@*|text()" /></cite></xsl:template>
+<xsl:template match="img"><img><xsl:apply-templates select="*|@*|text()" /></img></xsl:template>
 <!-- /pass through -->
 
 
