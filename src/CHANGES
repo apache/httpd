@@ -1,5 +1,9 @@
 Changes with Apache 1.3.5
 
+  *) Prevent apachectl from complaining if the PIDFILE exists but
+     does not contain a process id, as might occur if the server is
+     being rapidly restarted. [Wilfredo Sanchez]
+
   *) Win32: Add global symbols missing from ApacheCore.def. [Carl Olsen]
 
   *) Entity tag comparisons for If-Match and If-None-Match were not being

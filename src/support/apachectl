@@ -50,7 +50,7 @@ do
     # check for pidfile
     if [ -f $PIDFILE ] ; then
 	PID=`cat $PIDFILE`
-	if kill -0 $PID; then
+	if [ ! "x$PID" = "x" ] && kill -0 $PID; then
 	    STATUS="httpd (pid $PID) running"
 	    RUNNING=1
 	else
