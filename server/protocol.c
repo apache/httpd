@@ -485,7 +485,6 @@ static void get_mime_headers(request_rec *r)
 {
     char* field;
     char *value;
-    char *copy;
     int len;
     int fields_read = 0;
     apr_table_t *tmp_headers;
