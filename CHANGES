@@ -1,7 +1,7 @@
 Changes with Apache 2.0.36
 
   *) Fix generation of default httpd.conf when the layout paths are
-     disjoint.  PR 8227.  [Justin Erenkrantz]
+     disjoint.  PR 7979, 8227.  [Justin Erenkrantz]
 
   *) Swap downgrade-1.0 and force-response-1.0 conditional checks so
      that downgraded responses can have force-response.  PR 8357.
