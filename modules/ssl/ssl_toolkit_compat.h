@@ -53,6 +53,16 @@
 
 #define MODSSL_BIO_CB_ARG_TYPE char
 
+#if SSLC_VERSION < 0x2000
+
+#define X509_STORE_CTX_set_depth(st, d)    
+#define X509_CRL_get_lastUpdate(x) ((x)->crl->lastUpdate)
+#define X509_CRL_get_nextUpdate(x) ((x)->crl->nextUpdate)
+#define X509_CRL_get_REVOKED(x)    ((x)->crl->revoked)
+#define X509_REVOKED_get_serialNumber(xs) (xs->serialNumber)
+
+#endif
+
 #endif /* OPENSSL_VERSION_NUMBER */
 
 #endif /* SSL_TOOLKIT_COMPAT_H */
