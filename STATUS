@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/27 12:00:42 $]
+Last modified at [$Date: 2003/12/27 12:11:37 $]
 
 Release:
 
@@ -262,8 +262,8 @@ PATCHES TO BACKPORT FROM 2.1
                   (and ssi_tag_brigade is always NULL). Since they are only of
                   internal meaning I do not think that the change requires a
                   bump.
-      +1: nd, brianp
-      +1 (concept): trawick, jerenkrantz (on r2 below)
+      +1: nd, brianp, trawick
+      +1 (concept): jerenkrantz (on r2 below)
       jwoolley suggests: Hang onto it for 2.2 series.
       brianp asks: Do we have an alternate fix to eliminate 2.0's segfaults?
       nd adds: I've found some time over the weekend to create the following
