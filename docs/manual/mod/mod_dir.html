@@ -150,13 +150,17 @@ DefaultIcon /icon/unknown.xbm
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_dir<p>
 
-The DirectoryIndex directive sets the list of resources to look for, when
-the client requests an index of the directory by specifying a NULL file
-at the end of the a directory name. <em>Local-url</em> is the (%-encoded) URL
-of a document on the server relative to the requested directory; it is usually
-the name of a file in the directory. Several URLs may be given; the server
-will return the first one that it finds. If none of the resources exist,
-then the server will generate its own listing of the directory.
+The DirectoryIndex directive sets the list of resources to look for,
+when the client requests an index of the directory by specifying a /
+at the end of the a directory name. <em>Local-url</em> is the
+(%-encoded) URL of a document on the server relative to the requested
+directory; it is usually the name of a file in the directory. Several
+URLs may be given, in which case the server will return the first one
+that it finds. If none of the resources exist and the
+<CODE>Indexes</CODE> option is set, the server will generate its own
+listing of the directory.
+<P>
+
 Example:
 <blockquote><code>
 DirectoryIndex index.html
