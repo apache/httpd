@@ -1,10 +1,9 @@
 <html><head>
-<title>Apache Status Module</title>
+<title>Apache module mod_status</title>
 </head><body>
 
-<img src="../images/apache_sub.gif" alt="">
-<h1>Apache Status Module</h1>
-<hr>
+<!--#include virtual="header.html" -->
+<h1>Module mod_status</h1>
 
 The Status Module is only available in Apache 1.1 and later.<p>
 
@@ -76,19 +75,14 @@ difference.  If you do please contact <a href="mailto:mark@ukweb.com">
 mark@ukweb.com</a> and tell me your configuration.
 
 <p>
+
 Do this by adding the following to the AUX_CFLAGS line in the
 "Configuration" file and then recompiling as usual.
 <pre>
 	AUX_CFLAGS= (something) -DSTATUS
 </pre>
 
-
-
-
-<hr>
-<A HREF="../"><IMG SRC="../images/apache_home.gif" ALT="Home"></A>
-<A HREF="../"><IMG SRC="../images/apache_index.gif" ALT="Index"></A>
-
+<!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
 
