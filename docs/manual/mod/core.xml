@@ -2288,7 +2288,7 @@ is accessed by an incompatible browser</description>
 <directivesynopsis>
 <name>ServerTokens</name>
 <description>Configures the Server HTTP response header</description>
-<syntax>ServerTokens Major|Minimal|ProductOnly|OS|Full</syntax>
+<syntax>ServerTokens Major|Minor|Minimal|ProductOnly|OS|Full</syntax>
 <default>ServerTokens Full</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -2304,7 +2304,12 @@ is accessed by an incompatible browser</description>
       <dd>Server sends (<em>e.g.</em>): <code>Server:
       Apache</code></dd>
 
-      <dt><code>ServerTokens Maj[or]</code></dt>
+      <dt><code>ServerTokens Major</code></dt>
+
+      <dd>Server sends (<em>e.g.</em>): <code>Server:
+      Apache/2</code></dd>
+
+      <dt><code>ServerTokens Minor</code></dt>
 
       <dd>Server sends (<em>e.g.</em>): <code>Server:
       Apache/2.0</code></dd>

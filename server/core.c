@@ -2286,8 +2286,9 @@ static char *server_version = NULL;
 static int version_locked = 0;
 
 enum server_token_type {
-    SrvTk_MAJ,          /* eg: Apache/2.0 */
-    SrvTk_MIN,          /* eg: Apache/2.0.41 */
+    SrvTk_MAJOR,        /* eg: Apache/2 */
+    SrvTk_MINOR,        /* eg. Apache/2.0 */
+    SrvTk_MINIMAL,      /* eg: Apache/2.0.41 */
     SrvTk_OS,           /* eg: Apache/2.0.41 (UNIX) */
     SrvTk_FULL,         /* eg: Apache/2.0.41 (UNIX) PHP/4.2.2 FooBar/1.2b */
     SrvTk_PRODUCT_ONLY  /* eg: Apache */
@@ -2340,10 +2341,13 @@ static void ap_set_version(apr_pool_t *pconf)
     if (ap_server_tokens == SrvTk_PRODUCT_ONLY) {
         ap_add_version_component(pconf, AP_SERVER_BASEPRODUCT);
     }
-    else if (ap_server_tokens == SrvTk_MIN) {
+    else if (ap_server_tokens == SrvTk_MINIMAL) {
         ap_add_version_component(pconf, AP_SERVER_BASEVERSION);
     }
-    else if (ap_server_tokens == SrvTk_MAJ) {
+    else if (ap_server_tokens == SrvTk_MINOR) {
+        ap_add_version_component(pconf, AP_SERVER_BASEPRODUCT "/" AP_SERVER_MINORREVISION);
+    }
+    else if (ap_server_tokens == SrvTk_MAJOR) {
         ap_add_version_component(pconf, AP_SERVER_BASEPRODUCT "/" AP_SERVER_MAJORVERSION);
     }
     else {
@@ -2372,10 +2376,13 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy,
         ap_server_tokens = SrvTk_OS;
     }
     else if (!strcasecmp(arg, "Min") || !strcasecmp(arg, "Minimal")) {
-        ap_server_tokens = SrvTk_MIN;
+        ap_server_tokens = SrvTk_MINIMAL;
     }
-    else if (!strcasecmp(arg, "Maj") || !strcasecmp(arg, "Major")) {
-        ap_server_tokens = SrvTk_MAJ;
+    else if (!strcasecmp(arg, "Major")) {
+        ap_server_tokens = SrvTk_MAJOR;
+    }
+    else if (!strcasecmp(arg, "Minor") ) {
+        ap_server_tokens = SrvTk_MINOR;
     }
     else if (!strcasecmp(arg, "Prod") || !strcasecmp(arg, "ProductOnly")) {
         ap_server_tokens = SrvTk_PRODUCT_ONLY;
