@@ -983,7 +983,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
      */
     ap_run_create_request(rnew);
 
-    fdir = ap_make_dirstr_parent(rnew->pool, dirent->name);
+    fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
 
     /*
      * Special case: we are looking at a relative lookup in the same directory. 
