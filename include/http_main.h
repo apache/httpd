@@ -89,7 +89,9 @@ extern AP_DECLARE_DATA apr_array_header_t *ap_server_post_read_config;
  *  effect the server based on command line options */
 extern AP_DECLARE_DATA apr_array_header_t *ap_server_config_defines;
 
+#ifndef WIN32 /* A -feature- (?) macro is needed here */
 extern void *ap_ugly_hack;
+#endif
 
 #ifdef __cplusplus
 }
