@@ -1345,7 +1345,7 @@ static apr_status_t connection_constructor(void **resource, void *params,
 {
     apr_pool_t *ctx;
     proxy_conn_rec *conn;
-    server_rec *s = (server_rec *)params;
+    proxy_worker *worker = (proxy_worker *)params;
     
     /* Create the subpool for each connection
      * This keeps the memory consumption constant
@@ -1354,11 +1354,9 @@ static apr_status_t connection_constructor(void **resource, void *params,
     apr_pool_create(&ctx, pool);
     conn = apr_pcalloc(ctx, sizeof(proxy_conn_rec));
 
-    conn->pool = ctx;
+    conn->pool   = ctx;
+    conn->worker = worker;
     *resource = conn;
-
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "proxy: socket is constructed");
 
     return APR_SUCCESS;
 }
@@ -1404,7 +1402,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                                 worker->min, worker->smax,
                                 worker->hmax, worker->ttl,
                                 connection_constructor, connection_destructor,
-                                s, worker->cp->pool);
+                                worker, worker->cp->pool);
 
         apr_pool_cleanup_register(worker->cp->pool, (void *)worker,
                                   conn_pool_cleanup,
@@ -1424,7 +1422,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
 #endif
     {
         
-        rv = connection_constructor((void **)&(worker->cp->conn), s, worker->cp->pool);
+        rv = connection_constructor((void **)&(worker->cp->conn), worker, worker->cp->pool);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "proxy: initialized single connection worker for (%s)",
                       worker->hostname);
@@ -1489,7 +1487,7 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
     {
         /* create the new connection if the previous was destroyed */
         if (!worker->cp->conn)
-            connection_constructor((void **)conn, s, worker->cp->pool);
+            connection_constructor((void **)conn, worker, worker->cp->pool);
         else {
             *conn = worker->cp->conn;
             worker->cp->conn = NULL;
