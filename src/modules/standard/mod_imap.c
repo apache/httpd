@@ -196,86 +196,35 @@ static int pointincircle(const double point[2], double coords[MAXVERTS][2])
     return (radius2 <= radius1);
 }
 
+#define fmin(a,b) (((a)>(b))?(b):(a))
+#define fmax(a,b) (((a)>(b))?(a):(b))
+
 static int pointinpoly(const double point[2], double pgon[MAXVERTS][2])
 {
-    int i, numverts, inside_flag, xflag0;
-    int crossings;
-    double *p;
-    const double *stop;
-    double tx, ty, y;
+    int i, numverts, crossings = 0;
+    double x = point[X], y = point[Y];
 
-    for (i = 0; pgon[i][X] != -1 && i < MAXVERTS; i++);
-
-    numverts = i;
-    crossings = 0;
-
-    tx = point[X];
-    ty = point[Y];
-    y = pgon[numverts - 1][Y];
-
-    p = (double *) pgon + 1;
-    if ((y >= ty) != (*p >= ty)) {
-
-	xflag0 = (pgon[numverts - 1][X] >= tx);
-        if (xflag0 == (*(double *) pgon >= tx)) {
-            if (xflag0) {
-                crossings++;
-	    }
-        }
-        else {
-            crossings += (pgon[numverts - 1][X] - (y - ty) *
-                          (*(double *) pgon - pgon[numverts - 1][X]) /
-                          (*p - y)) >= tx;
-        }
+    for (numverts = 0; pgon[numverts][X] != -1 && numverts < MAXVERTS;
+	numverts++) {
+	/* just counting the vertexes */
     }
 
-    stop = pgon[numverts];
+    for (i = 0; i < numverts; i++) {
+        double x1=pgon[i][X];
+        double y1=pgon[i][Y];
+        double x2=pgon[(i + 1) % numverts][X];
+        double y2=pgon[(i + 1) % numverts][Y];
+        double d=(y - y1) * (x2 - x1) - (x - x1) * (y2 - y1);
 
-    for (y = *p, p += 2; p < stop; y = *p, p += 2) {
-
-        if (y >= ty) {
-
-            while ((p < stop) && (*p >= ty)) {
-                p += 2;
-	    }
-
-            if (p >= stop) {
-                break;
-            }
-	    if ((xflag0 = (*(p - 3) >= tx)) == (*(p - 1) >= tx)) {
-
-                if (xflag0) {
-                    crossings++;
-		}
-            }
-            else {
-                crossings += (*(p - 3) - (*(p - 2) - ty) *
-                              (*(p - 1) - *(p - 3)) / (*p - *(p - 2))) >= tx;
-            }
-        }
-        else {
-            while ((p < stop) && (*p < ty)) {
-                p += 2;
-	    }
-
-            if (p >= stop) {
-                break;
-	    }
-
-            if ((xflag0 = (*(p - 3) >= tx)) == (*(p - 1) >= tx)) {
-                if (xflag0) {
-                    crossings++;
-		}
-            }
-            else {
-                crossings += (*(p - 3) - (*(p - 2) - ty) *
-                              (*(p - 1) - *(p - 3)) / (*p - *(p - 2))) >= tx;
-            }
-        }
+        if ((y1 >= y) != (y2 >= y)) {
+	    crossings +=y2 - y1 >= 0 ? d >= 0 : d <= 0;
+	}
+        if (!d && fmin(x1,x2) <= x && x <= fmax(x1,x2)
+	    && fmin(y1,y2) <= y && y <= fmax(y1,y2)) {
+	    return 1;
+	}
     }
-
-    inside_flag = crossings & 0x01;
-    return (inside_flag);
+    return crossings & 0x01;
 }
 
 

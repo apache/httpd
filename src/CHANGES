@@ -1,5 +1,9 @@
 Changes with Apache 1.3b6
 
+  *) The "poly" directive in image maps did not include the borders of the
+     polygon, whereas the "rect" directive does.  Fix this inconsistency.
+     [Konstantin Morshnev <moko@design.ru>] PR#1771
+
   *) Make \\ behave as expected.  [Ronald.Tschalaer@psi.ch]
 
   *) Add `Rule HIDE' to Configuration to hide the Apache symbol
