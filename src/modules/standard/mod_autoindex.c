@@ -1365,35 +1365,33 @@ static int index_directory(request_rec *r,
 
     /*
      * Figure out what sort of indexing (if any) we're supposed to use.
+     *
+     * If no QUERY_STRING was specified or column sorting has been
+     * explicitly disabled, we use the default specified by the
+     * IndexOrderDefault directive (if there is one); otherwise,
+     * we fall back to ascending by name.
      */
-    if (autoindex_opts & SUPPRESS_COLSORT) {
+    qstring = r->args;
+    if ((autoindex_opts & SUPPRESS_COLSORT)
+	|| ((qstring == NULL) || (*qstring == '\0'))) {
+	qstring = autoindex_conf->default_order;
+    }
+    /*
+     * If there is no specific ordering defined for this directory,
+     * default to ascending by filename.
+     */
+    if ((qstring == NULL) || (*qstring == '\0')) {
 	keyid = K_NAME;
 	direction = D_ASCENDING;
     }
     else {
-	qstring = r->args;
-
-	/*
-	 * If no QUERY_STRING was specified, we use the default specified
-	 * by the IndexOrderDefault directive (if there is one); otherwise,
-	 * we fall back to ascending by name.
-	 */
-	if ((qstring == NULL) || (*qstring == '\0')) {
-	    qstring = autoindex_conf->default_order;
-	}
-	if ((qstring == NULL) || (*qstring == '\0')) {
-	    keyid = K_NAME;
-	    direction = D_ASCENDING;
+	keyid = *qstring;
+	ap_getword(r->pool, &qstring, '=');
+	if (qstring != '\0') {
+	    direction = *qstring;
 	}
 	else {
-	    keyid = *qstring;
-	    ap_getword(r->pool, &qstring, '=');
-	    if (qstring != '\0') {
-		direction = *qstring;
-	    }
-	    else {
-		direction = D_ASCENDING;
-	    }
+	    direction = D_ASCENDING;
 	}
     }
 

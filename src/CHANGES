@@ -1,5 +1,11 @@
 Changes with Apache 1.3.4
 
+  *) IndexOptions SuppressColumnSorting only turned off making
+     the column headers anchors; you could still change the display
+     order by manually adding a '?N=A' or similar query string to the
+     URL.  Now SuppressColumnSorting locks in the sort order so
+     it can't be overridden this way.  [Ken Coar]
+
   *) Added IndexOrderDefault directive to supply a default sort order
      for FancyIndexed directory listings.  [Ken Coar] PR#1699
 
