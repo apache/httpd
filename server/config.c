@@ -111,6 +111,7 @@ APR_HOOK_STRUCT(
 	       APR_HOOK_LINK(open_logs)
 	       APR_HOOK_LINK(child_init)
 	       APR_HOOK_LINK(handler)
+               APR_HOOK_LINK(quick_handler)
 	       APR_HOOK_LINK(optional_fn_retrieve)
 )
 
@@ -129,6 +130,8 @@ AP_IMPLEMENT_HOOK_VOID(child_init,
                        (apr_pool_t *pchild, server_rec *s),(pchild,s))
 
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,handler,(request_rec *r),
+			    (r),DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,quick_handler,(request_rec *r),
 			    (r),DECLINED)
 
 AP_IMPLEMENT_HOOK_VOID(optional_fn_retrieve,(void),())
