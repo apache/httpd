@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/05/29 09:41:57 $]
+Last modified at [$Date: 2000/05/29 11:54:11 $]
 
 Release:
 
@@ -54,6 +54,9 @@ RELEASE SHOWSTOPPERS:
     * We need a thread-safe resolver, at least on Unix.
         Status: The best known candidate would be something from
 	BIND v9.
+
+    * The wrong line number is reported for configuration file syntax 
+      errors.  If this isn't fixed, the bug database will explode.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * OS/2: Get loadable modules working again. Requires shared core support
@@ -130,6 +133,9 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * add SDBM into src/lib/sdbm/ as a default/fallback DBM implementation.
       SDBM is used by Perl, mod_dav, mod_sssl, others for basic DBM support.
       Status: Greg +1 (volunteers)
+
+    * Get mod_mmap_static working on 2.0.  Greg Ames posted a patch on 
+      05/26/2000 to get it running and to improve performance.
 
 Other bugs that need fixing:
 
