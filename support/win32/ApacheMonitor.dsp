@@ -104,10 +104,6 @@ SOURCE=.\ApacheMonitor.ico
 # End Source File
 # Begin Source File
 
-SOURCE=.\ApacheMonitor.rc
-# End Source File
-# Begin Source File
-
 SOURCE=.\aprun.ico
 # End Source File
 # Begin Source File
@@ -149,6 +145,12 @@ InputPath=..\..\build\win32\win32ver.awk
 # End Custom Build
 
 !ENDIF 
+
+# Begin Custom Build - Creating Version Resource
+SOURCE=.\ApacheMonitor.rc
+# End Source File
+# Begin Source File
+# End Custom Build
 
 # End Source File
 # End Group
