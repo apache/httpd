@@ -38,8 +38,7 @@ static int process_echo_connection(conn_rec *c)
 
     for( ; ; )
 	{
-	int w;
-	int r;
+	ap_ssize_t r, w;
         (void) ap_bread(c->client,buf,sizeof buf,&r);
 	if(r <= 0)
 	    break;

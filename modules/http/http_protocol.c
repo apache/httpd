@@ -2337,7 +2337,8 @@ API_EXPORT(int) ap_rprintf(request_rec *r, const char *fmt,...)
 API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r,...)
 {
     va_list args;
-    int i, j, k;
+    ap_ssize_t i;
+    int j, k;
     const char *x;
     BUFF *fb = r->connection->client;
     ap_status_t rv;
