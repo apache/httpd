@@ -89,6 +89,15 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     int one = 1;
     apr_status_t stat;
 
+    stat = apr_setsocketopt(s, APR_SO_REUSEADDR, one);
+    if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
+                    "make_sock: for address %pI, setsockopt: (SO_REUSEADDR)", 
+                     server->bind_addr);
+        apr_socket_close(s);
+        return stat;
+    }
+    
     stat = apr_setsocketopt(s, APR_SO_KEEPALIVE, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
