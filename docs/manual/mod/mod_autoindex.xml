@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.24 $ -->
+<!-- $Revision: 1.25 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -651,6 +651,12 @@ indexing</description>
       given by <directive module="mod_autoindex">AddDescription</directive>
       then httpd will read the document for the value of the
       <code>title</code> element. This is CPU and disk intensive.</dd>
+
+      <dt><a name="indexoptions.showforbidden"
+               id="indexoptions.showforbidden">ShowForbidden</a></dt>
+
+      <dd>If specified, Apache will show files normally hidden because
+      the subrequest returned HTTP_UNAUTHORIZED or HTTP_FORBIDDEN</dd>
 
       <dt><a name="indexoptions.suppresscolumnsorting"
                id="indexoptions.suppresscolumnsorting"

@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_autoindex: Add ShowForbidden to IndexOptions to list files
+     that are not shown because the subrequest returned 401 or 403. 
+     PR 10575.  [Paul Querna]
+
   *) util_ldap: Switched the lock types on the shared memory cache 
      from thread reader/writer locks to global mutexes in order to 
      provide cross process cache protection. [Brad Nicholes]

@@ -69,6 +69,7 @@ module AP_MODULE_DECLARE_DATA autoindex_module;
 #define IGNORE_CLIENT       (1 << 15)
 #define IGNORE_CASE         (1 << 16)
 #define EMIT_XHTML          (1 << 17)
+#define SHOW_FORBIDDEN      (1 << 18)
 
 #define K_NOADJUST 0
 #define K_ADJUST 1
@@ -382,6 +383,9 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
         }
         else if (!strcasecmp(w, "XHTML")) {
             option = EMIT_XHTML;
+        }
+        else if (!strcasecmp(w, "ShowForbidden")) {
+            option = SHOW_FORBIDDEN;
         }
         else if (!strcasecmp(w, "None")) {
             if (action != '\0') {
@@ -1267,6 +1271,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
 {
     request_rec *rr;
     struct ent *p;
+    int show_forbidden = 0;
 
     /* Dot is ignored, Parent is handled by make_parent_entry() */
     if ((dirent->name[0] == '.') && (!dirent->name[1]
@@ -1297,9 +1302,15 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
         return (NULL);
     }
 
+    if((autoindex_opts & SHOW_FORBIDDEN)  
+        && (rr->status == HTTP_UNAUTHORIZED || rr->status == HTTP_FORBIDDEN)) {
+        show_forbidden = 1;
+    }
+
     if ((rr->finfo.filetype != APR_DIR && rr->finfo.filetype != APR_REG)
         || !(rr->status == OK || ap_is_HTTP_SUCCESS(rr->status)
-                              || ap_is_HTTP_REDIRECT(rr->status))) {
+                              || ap_is_HTTP_REDIRECT(rr->status)
+                              || show_forbidden == 1)) {
         ap_destroy_sub_req(rr);
         return (NULL);
     }
