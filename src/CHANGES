@@ -1,5 +1,8 @@
 Changes with Apache 1.3.5
 
+  *) Added PassAllEnv; makes server's entire environment available
+     to CGIs and SSIs executed within directive's scope.  [Ken Coar]
+
   *) ap_uuencode() always added two trailing '='s and encoding of
      8 bit characters on a machine with signed char may produced
      incorrect results. Additionally ap_uuencode() should now
