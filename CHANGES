@@ -4,9 +4,9 @@ Changes with Apache 2.0b1
      and the server dropped the connection unexpectedly.
      [Jeff Trawick]
 
-  *) Fix a segfault in ap_http_filter().  I hit the segfault while 
-     discarding the body of a request, but it could affect other paths.
-     [Jeff Trawick]
+  *) Fix a segfault while handling request bodies in ap_http_filter().  
+     This problem has been seen with mod_dav usage as well as with 
+     requests where the body was just being discarded.  [Jeff Trawick]
 
   *) Some adjustment on the handling and automatic setting (via
      hints.m4) of various compilation flags (eg: CFLAGS). Also,
