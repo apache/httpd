@@ -95,7 +95,7 @@
      * But we have to stat the file for the mtime,
      * so we also need to know the file extension
      */
-#if HAS_NDBM_LIB
+#ifndef NO_DBM_REWRITEMAP
 #include <ndbm.h>
 #if (__FreeBSD__)
 #define NDBM_FILE_SUFFIX ".db"
@@ -379,7 +379,7 @@ static void  expand_map_lookups(request_rec *r, char *uri, int uri_len);
     /* rewrite map support functions */
 static char *lookup_map(request_rec *r, char *name, char *key);
 static char *lookup_map_txtfile(request_rec *r, char *file, char *key);
-#if HAS_NDBM_LIB
+#ifndef NO_DBM_REWRITEMAP
 static char *lookup_map_dbmfile(request_rec *r, char *file, char *key);
 #endif
 static char *lookup_map_program(request_rec *r, int fpin,

@@ -157,6 +157,21 @@
 **         or not!
 */
 
+    /* The section for the Configure script:
+     * MODULE-DEFINITION-START
+     * Name: rewrite_module
+     * ConfigStart
+    if ./helpers/TestCompile func dbm_open; then
+        echo "      enabling DBM support for mod_rewrite"
+    else
+        echo "      disabling DBM support for mod_rewrite"
+        echo "      (perhaps you need to add -ldbm, -lndbm or -lgdbm to EXTRA_LIBS)"
+        CFLAGS="$CFLAGS -DNO_DBM_REWRITEMAP"
+    fi
+     * ConfigEnd
+     * MODULE-DEFINITION-END
+     */
+
     /* the table of commands we provide */
 static command_rec command_table[] = {
     { "RewriteEngine",   cmd_rewriteengine,   NULL, OR_FILEINFO, FLAG,
@@ -472,7 +487,7 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
         new->checkfile = a2+4;
     }
     else if (strncmp(a2, "dbm:", 4) == 0) {
-#ifdef HAS_NDBM_LIB
+#ifndef NO_DBM_REWRITEMAP
         new->type      = MAPTYPE_DBM;
         new->datafile  = a2+4;
         new->checkfile = pstrcat(cmd->pool, a2+4, NDBM_FILE_SUFFIX, NULL);
@@ -2519,13 +2534,13 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                 }
             }
             else if (s->type == MAPTYPE_DBM) {
-#if HAS_NDBM_LIB
+#ifndef NO_DBM_REWRITEMAP
                 if (stat(s->checkfile, &st) == -1) {
-                    aplog_error(APLOG_MARK, APLOG_ERROR, r->server,
-                                "mod_rewrite: can't access dbm RewriteMap "
-                                "file %s: %s", s->checkfile);
+                    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+                                "mod_rewrite: can't access DBM RewriteMap "
+                                "file %s", s->checkfile);
                     rewritelog(r, 1,
-                               "can't open RewriteMap file, see error log");
+                               "can't open DBM RewriteMap file, see error log");
                     return NULL;
                 }
                 value = get_cache_string(cachep, s->name, CACHEMODE_TS,
@@ -2660,7 +2675,7 @@ static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
     return value;
 }
 
-#if HAS_NDBM_LIB
+#ifndef NO_DBM_REWRITEMAP
 static char *lookup_map_dbmfile(request_rec *r, char *file, char *key)
 {
     DBM *dbmfp = NULL;
