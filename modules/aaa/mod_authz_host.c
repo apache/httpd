@@ -65,7 +65,7 @@
 
 #include "apr_strings.h"
 #include "apr_network_io.h"
-#include "apr_lib.h"
+#include "apr_md5.h"
 
 #define APR_WANT_STRFUNC
 #define APR_WANT_BYTEFUNC
@@ -108,15 +108,15 @@ typedef struct {
     int order[METHODS];
     apr_array_header_t *allows;
     apr_array_header_t *denys;
-} access_dir_conf;
+} authz_host_dir_conf;
 
-module AP_MODULE_DECLARE_DATA access_module;
+module AP_MODULE_DECLARE_DATA authz_host_module;
 
-static void *create_access_dir_config(apr_pool_t *p, char *dummy)
+static void *create_authz_host_dir_config(apr_pool_t *p, char *dummy)
 {
     int i;
-    access_dir_conf *conf =
-        (access_dir_conf *)apr_pcalloc(p, sizeof(access_dir_conf));
+    authz_host_dir_conf *conf =
+        (authz_host_dir_conf *)apr_pcalloc(p, sizeof(authz_host_dir_conf));
 
     for (i = 0; i < METHODS; ++i) {
         conf->order[i] = DENY_THEN_ALLOW;
@@ -129,21 +129,21 @@ static void *create_access_dir_config(apr_pool_t *p, char *dummy)
 
 static const char *order(cmd_parms *cmd, void *dv, const char *arg)
 {
-    access_dir_conf *d = (access_dir_conf *) dv;
+    authz_host_dir_conf *d = (authz_host_dir_conf *) dv;
     int i, o;
 
     if (!strcasecmp(arg, "allow,deny"))
-	o = ALLOW_THEN_DENY;
+        o = ALLOW_THEN_DENY;
     else if (!strcasecmp(arg, "deny,allow"))
-	o = DENY_THEN_ALLOW;
+        o = DENY_THEN_ALLOW;
     else if (!strcasecmp(arg, "mutual-failure"))
-	o = MUTUAL_FAILURE;
+        o = MUTUAL_FAILURE;
     else
-	return "unknown order";
+        return "unknown order";
 
     for (i = 0; i < METHODS; ++i)
-	if (cmd->limited & (AP_METHOD_BIT << i))
-	    d->order[i] = o;
+        if (cmd->limited & (AP_METHOD_BIT << i))
+            d->order[i] = o;
 
     return NULL;
 }
@@ -151,7 +151,7 @@ static const char *order(cmd_parms *cmd, void *dv, const char *arg)
 static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from, 
                              const char *where_c)
 {
-    access_dir_conf *d = (access_dir_conf *) dv;
+    authz_host_dir_conf *d = (authz_host_dir_conf *) dv;
     allowdeny *a;
     char *where = apr_pstrdup(cmd->pool, where_c);
     char *s;
@@ -159,19 +159,19 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
     apr_status_t rv;
 
     if (strcasecmp(from, "from"))
-	return "allow and deny must be followed by 'from'";
+        return "allow and deny must be followed by 'from'";
 
     a = (allowdeny *) apr_array_push(cmd->info ? d->allows : d->denys);
     a->x.from = where;
     a->limited = cmd->limited;
 
     if (!strncasecmp(where, "env=", 4)) {
-	a->type = T_ENV;
-	a->x.from += 4;
+        a->type = T_ENV;
+        a->x.from += 4;
 
     }
     else if (!strcasecmp(where, "all")) {
-	a->type = T_ALL;
+        a->type = T_ALL;
     }
     else if ((s = strchr(where, '/'))) {
         *s++ = '\0';
@@ -194,7 +194,7 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
         a->type = T_IP;
     }
     else { /* no slash, didn't look like an IP address => must be a host */
-	a->type = T_HOST;
+        a->type = T_HOST;
     }
 
     return NULL;
@@ -202,7 +202,7 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
 
 static char its_an_allow;
 
-static const command_rec access_cmds[] =
+static const command_rec authz_host_cmds[] =
 {
     AP_INIT_TAKE1("order", order, NULL, OR_LIMIT,
                   "'allow,deny', 'deny,allow', or 'mutual-failure'"),
@@ -219,21 +219,25 @@ static int in_domain(const char *domain, const char *what)
     int wl = strlen(what);
 
     if ((wl - dl) >= 0) {
-	if (strcasecmp(domain, &what[wl - dl]) != 0)
-	    return 0;
+        if (strcasecmp(domain, &what[wl - dl]) != 0) {
+            return 0;
+        }
 
-	/* Make sure we matched an *entire* subdomain --- if the user
-	 * said 'allow from good.com', we don't want people from nogood.com
-	 * to be able to get in.
-	 */
+        /* Make sure we matched an *entire* subdomain --- if the user
+         * said 'allow from good.com', we don't want people from nogood.com
+         * to be able to get in.
+         */
 
-	if (wl == dl)
-	    return 1;		/* matched whole thing */
-	else
-	    return (domain[0] == '.' || what[wl - dl - 1] == '.');
+        if (wl == dl) {
+            return 1;                /* matched whole thing */
+        }
+        else {
+            return (domain[0] == '.' || what[wl - dl - 1] == '.');
+        }
     }
-    else
-	return 0;
+    else {
+        return 0;
+    }
 }
 
 static int find_allowdeny(request_rec *r, apr_array_header_t *a, int method)
@@ -246,46 +250,52 @@ static int find_allowdeny(request_rec *r, apr_array_header_t *a, int method)
     const char *remotehost = NULL;
 
     for (i = 0; i < a->nelts; ++i) {
-	if (!(mmask & ap[i].limited))
-	    continue;
+        if (!(mmask & ap[i].limited)) {
+            continue;
+        }
 
-	switch (ap[i].type) {
-	case T_ENV:
-	    if (apr_table_get(r->subprocess_env, ap[i].x.from)) {
-		return 1;
-	    }
-	    break;
+        switch (ap[i].type) {
+        case T_ENV:
+            if (apr_table_get(r->subprocess_env, ap[i].x.from)) {
+                return 1;
+            }
+            break;
 
-	case T_ALL:
-	    return 1;
+        case T_ALL:
+            return 1;
 
-	case T_IP:
+        case T_IP:
             if (apr_ipsubnet_test(ap[i].x.ip, r->connection->remote_addr)) {
                 return 1;
             }
             break;
 
-	case T_HOST:
-	    if (!gothost) {
+        case T_HOST:
+            if (!gothost) {
                 int remotehost_is_ip;
 
-		remotehost = ap_get_remote_host(r->connection, r->per_dir_config,
-                                                REMOTE_DOUBLE_REV, &remotehost_is_ip);
+                remotehost = ap_get_remote_host(r->connection,
+                                                r->per_dir_config,
+                                                REMOTE_DOUBLE_REV,
+                                                &remotehost_is_ip);
 
-		if ((remotehost == NULL) || remotehost_is_ip)
-		    gothost = 1;
-		else
-		    gothost = 2;
-	    }
+                if ((remotehost == NULL) || remotehost_is_ip) {
+                    gothost = 1;
+                }
+                else {
+                    gothost = 2;
+                }
+            }
 
-	    if ((gothost == 2) && in_domain(ap[i].x.from, remotehost))
-		return 1;
-	    break;
+            if ((gothost == 2) && in_domain(ap[i].x.from, remotehost)) {
+                return 1;
+            }
+            break;
 
-	case T_FAIL:
-	    /* do nothing? */
-	    break;
-	}
+        case T_FAIL:
+            /* do nothing? */
+            break;
+        }
     }
 
     return 0;
@@ -295,28 +305,34 @@ static int check_dir_access(request_rec *r)
 {
     int method = r->method_number;
     int ret = OK;
-    access_dir_conf *a = (access_dir_conf *)
-        ap_get_module_config(r->per_dir_config, &access_module);
+    authz_host_dir_conf *a = (authz_host_dir_conf *)
+        ap_get_module_config(r->per_dir_config, &authz_host_module);
 
     if (a->order[method] == ALLOW_THEN_DENY) {
         ret = HTTP_FORBIDDEN;
-        if (find_allowdeny(r, a->allows, method))
+        if (find_allowdeny(r, a->allows, method)) {
             ret = OK;
-        if (find_allowdeny(r, a->denys, method))
+        }
+        if (find_allowdeny(r, a->denys, method)) {
             ret = HTTP_FORBIDDEN;
+        }
     }
     else if (a->order[method] == DENY_THEN_ALLOW) {
-        if (find_allowdeny(r, a->denys, method))
+        if (find_allowdeny(r, a->denys, method)) {
             ret = HTTP_FORBIDDEN;
-        if (find_allowdeny(r, a->allows, method))
+        }
+        if (find_allowdeny(r, a->allows, method)) {
             ret = OK;
+        }
     }
     else {
         if (find_allowdeny(r, a->allows, method)
-            && !find_allowdeny(r, a->denys, method))
+            && !find_allowdeny(r, a->denys, method)) {
             ret = OK;
-        else
+        }
+        else {
             ret = HTTP_FORBIDDEN;
+        }
     }
 
     if (ret == HTTP_FORBIDDEN
@@ -331,16 +347,17 @@ static int check_dir_access(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
+    /* This can be access checker since we don't require r->user to be set. */
     ap_hook_access_checker(check_dir_access,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA access_module =
+module AP_MODULE_DECLARE_DATA authz_host_module =
 {
     STANDARD20_MODULE_STUFF,
-    create_access_dir_config,	/* dir config creater */
-    NULL,			/* dir merger --- default is to override */
-    NULL,			/* server config */
-    NULL,			/* merge server config */
-    access_cmds,
-    register_hooks		/* register hooks */
+    create_authz_host_dir_config,   /* dir config creater */
+    NULL,                           /* dir merger --- default is to override */
+    NULL,                           /* server config */
+    NULL,                           /* merge server config */
+    authz_host_cmds,
+    register_hooks                  /* register hooks */
 };

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.41
 
+  *) Rewrite of aaa modules to an authn/authz model.
+     [Dirk-Willem van Gulik, Justin Erenkrantz]
+  
   *) Update OpenSSL detection to work on Darwin.
      [Sander Temme <sctemme@covalent.net>]
 

@@ -74,7 +74,7 @@
 #include "apr_want.h"
 #include "apr_strings.h"
 #include "apr_dbm.h"
-#include "apr_md5.h"            /* for apr_password_validate */
+#include "apr_md5.h"
 
 #include "httpd.h"
 #include "http_config.h"
@@ -83,103 +83,81 @@
 #include "http_protocol.h"
 #include "http_request.h"   /* for ap_hook_(check_user_id | auth_checker)*/
 
-
 typedef struct {
-    char *auth_dbmpwfile;
-    char *auth_dbmgrpfile;
-    char *auth_dbmtype;
-    int auth_dbmauthoritative;
-} dbm_auth_config_rec;
+    char *grpfile;
+    char *dbmtype;
+    int authoritative;
+} authz_dbm_config_rec;
 
-static void *create_dbm_auth_dir_config(apr_pool_t *p, char *d)
-{
-    dbm_auth_config_rec *conf = apr_palloc(p, sizeof(*conf));
-
-    conf->auth_dbmpwfile = NULL;
-    conf->auth_dbmgrpfile = NULL;
-    conf->auth_dbmtype = "default";
-    conf->auth_dbmauthoritative = 1;  /* fortress is secure by default */
-
-    return conf;
-}
-
-static const char *set_dbm_slot(cmd_parms *cmd, void *offset,
-                                const char *f, const char *t)
-{
-    if (!t || strcmp(t, "dbm"))
-        return DECLINE_CMD;
-
-    return ap_set_file_slot(cmd, offset, f);
-}
-
-static const char *set_dbm_type(cmd_parms *cmd, 
-                                void *dir_config, 
-                                const char *arg)
-{
-    dbm_auth_config_rec *conf = dir_config;
-   
-    conf->auth_dbmtype = apr_pstrdup(cmd->pool, arg);
-    return NULL;
-}
-
-static const command_rec dbm_auth_cmds[] =
-{
-    AP_INIT_TAKE1("AuthDBMUserFile", ap_set_file_slot,
-     (void *)APR_OFFSETOF(dbm_auth_config_rec, auth_dbmpwfile),
-     OR_AUTHCFG, "dbm database file containing user IDs and passwords"),
-    AP_INIT_TAKE1("AuthDBMGroupFile", ap_set_file_slot,
-     (void *)APR_OFFSETOF(dbm_auth_config_rec, auth_dbmgrpfile),
-     OR_AUTHCFG, "dbm database file containing group names and member user IDs"),
-    AP_INIT_TAKE12("AuthUserFile", set_dbm_slot,
-     (void *)APR_OFFSETOF(dbm_auth_config_rec, auth_dbmpwfile),
-     OR_AUTHCFG, NULL),
-    AP_INIT_TAKE12("AuthGroupFile", set_dbm_slot,
-     (void *)APR_OFFSETOF(dbm_auth_config_rec, auth_dbmgrpfile),
-     OR_AUTHCFG, NULL),
-    AP_INIT_TAKE1("AuthDBMType", set_dbm_type,
-     NULL,
-     OR_AUTHCFG, "what type of DBM file the user file is"),
-    AP_INIT_FLAG("AuthDBMAuthoritative", ap_set_flag_slot,
-     (void *)APR_OFFSETOF(dbm_auth_config_rec, auth_dbmauthoritative),
-     OR_AUTHCFG, "Set to 'no' to allow access control to be passed along to lower modules, if the UserID is not known in this module"),
-    {NULL}
-};
-
-module AP_MODULE_DECLARE_DATA auth_dbm_module;
-
-static char *get_dbm_pw(request_rec *r, 
-                        char *user, 
-                        char *auth_dbmpwfile, 
-                        char *dbtype)
+/* This should go into APR; perhaps with some nice
+ * caching/locking/flocking of the open dbm file.
+ *
+ * Duplicated in mod_auth_dbm.c
+ */
+static apr_status_t get_dbm_entry_as_str(request_rec *r, char *user,
+                                         char *auth_dbmfile, char *dbtype,
+                                         char ** str)
 {
     apr_dbm_t *f;
     apr_datum_t d, q;
     char *pw = NULL;
     apr_status_t retval;
     q.dptr = user;
+
 #ifndef NETSCAPE_DBM_COMPAT
     q.dsize = strlen(q.dptr);
 #else
     q.dsize = strlen(q.dptr) + 1;
 #endif
 
-    retval = apr_dbm_open_ex(&f, dbtype, auth_dbmpwfile, APR_DBM_READONLY, 
+    retval = apr_dbm_open_ex(&f, dbtype, auth_dbmfile, APR_DBM_READONLY, 
                              APR_OS_DEFAULT, r->pool);
+
     if (retval != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, retval, r,
-                      "could not open dbm (type %s) auth file: %s", dbtype, 
-                      auth_dbmpwfile);
-        return NULL;
+        return retval;
     }
+
+    *str = NULL;
+
     if (apr_dbm_fetch(f, q, &d) == APR_SUCCESS && d.dptr) {
-        pw = apr_palloc(r->pool, d.dsize + 1);
+        *str = apr_palloc(r->pool, d.dsize + 1);
         strncpy(pw, d.dptr, d.dsize);
-        pw[d.dsize] = '\0'; /* Terminate the string */
+        *str[d.dsize] = '\0'; /* Terminate the string */
     }
 
     apr_dbm_close(f);
-    return pw;
+
+    return retval;
 }
+
+static void *create_authz_dbm_dir_config(apr_pool_t *p, char *d)
+{
+    authz_dbm_config_rec *conf = apr_palloc(p, sizeof(*conf));
+
+    conf->grpfile = NULL;
+    conf->dbmtype = "default";
+    conf->authoritative = 1;  /* fortress is secure by default */
+
+    return conf;
+}
+
+static const command_rec authz_dbm_cmds[] =
+{
+    AP_INIT_TAKE1("AuthzDBMGroupFile", ap_set_file_slot,
+     (void *)APR_OFFSETOF(authz_dbm_config_rec, grpfile),
+     OR_AUTHCFG, "database file containing group names and member user IDs"),
+    AP_INIT_TAKE1("AuthzDBMType", ap_set_string_slot,
+     (void *)APR_OFFSETOF(authz_dbm_config_rec, dbmtype),
+     OR_AUTHCFG, "what type of DBM file the group file is"),
+    AP_INIT_FLAG("AuthzDBMAuthoritative", ap_set_flag_slot,
+     (void *)APR_OFFSETOF(authz_dbm_config_rec, authoritative),
+     OR_AUTHCFG, "Set to 'no' to allow access control to be passed along to "
+     "lower modules, if the group required is not found or empty, or the user "
+     " is not in the required groups. (default is yes.)"),
+    {NULL}
+};
+
+module AP_MODULE_DECLARE_DATA authz_dbm_module;
 
 /* We do something strange with the group file.  If the group file
  * contains any : we assume the format is
@@ -192,117 +170,110 @@ static char *get_dbm_pw(request_rec *r,
  * mark@telescope.org, 22Sep95
  */
 
-static char *get_dbm_grp(request_rec *r, char *user, char *auth_dbmgrpfile, 
-                         char *dbtype)
+static apr_status_t get_dbm_grp(request_rec *r, char *user, char *dbmgrpfile, 
+                                char *dbtype, const char ** out)
 {
-    char *grp_data = get_dbm_pw(r, user, auth_dbmgrpfile,dbtype);
+    char *grp_data;
     char *grp_colon;
     char *grp_colon2;
 
-    if (grp_data == NULL)
-        return NULL;
+    apr_status_t status = get_dbm_entry_as_str(r, user, dbmgrpfile,
+                                               dbtype, &grp_data);
+
+    if (status != APR_SUCCESS) {
+        return status;
+    }
+
+    *out = NULL;
+
+    if (grp_data == NULL) {
+        return APR_SUCCESS;
+    }
 
     if ((grp_colon = strchr(grp_data, ':')) != NULL) {
         grp_colon2 = strchr(++grp_colon, ':');
-        if (grp_colon2)
+        if (grp_colon2) {
             *grp_colon2 = '\0';
-        return grp_colon;
+        }
+        *out = grp_colon;
+        return APR_SUCCESS;
     }
-    return grp_data;
-}
 
-static int dbm_authenticate_basic_user(request_rec *r)
-{
-    dbm_auth_config_rec *conf = ap_get_module_config(r->per_dir_config,
-                                                     &auth_dbm_module);
-    const char *sent_pw;
-    char *real_pw, *colon_pw;
-    apr_status_t invalid_pw;
-    int res;
-
-    if ((res = ap_get_basic_auth_pw(r, &sent_pw)))
-        return res;
-
-    if (!conf->auth_dbmpwfile)
-        return DECLINED;
-
-    if (!(real_pw = get_dbm_pw(r, r->user, conf->auth_dbmpwfile,
-                               conf->auth_dbmtype))) {
-        if (!(conf->auth_dbmauthoritative))
-            return DECLINED;
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "DBM user %s not found: %s", r->user, r->filename);
-        ap_note_basic_auth_failure(r);
-        return HTTP_UNAUTHORIZED;
-    }
-    /* Password is up to first : if exists */
-    colon_pw = strchr(real_pw, ':');
-    if (colon_pw) {
-        *colon_pw = '\0';
-    }
-    invalid_pw = apr_password_validate(sent_pw, real_pw);
-    if (invalid_pw != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "DBM user %s: authentication failure for \"%s\": "
-                      "Password Mismatch",
-                      r->user, r->uri);
-        ap_note_basic_auth_failure(r);
-        return HTTP_UNAUTHORIZED;
-    }
-    return OK;
+    return APR_SUCCESS;
 }
 
 /* Checking ID */
-
 static int dbm_check_auth(request_rec *r)
 {
-    dbm_auth_config_rec *conf = ap_get_module_config(r->per_dir_config,
-                                                     &auth_dbm_module);
+    authz_dbm_config_rec *conf = ap_get_module_config(r->per_dir_config,
+                                                      &authz_dbm_module);
     char *user = r->user;
     int m = r->method_number;
-
+    int required = 0;
     const apr_array_header_t *reqs_arr = ap_requires(r);
     require_line *reqs = reqs_arr ? (require_line *) reqs_arr->elts : NULL;
-
     register int x;
     const char *t;
     char *w;
+    apr_status_t status;
 
-    if (!conf->auth_dbmgrpfile)
+    if (!conf->grpfile) {
         return DECLINED;
-    if (!reqs_arr)
+    }
+
+    if (!reqs_arr) {
         return DECLINED;
+    }
 
     for (x = 0; x < reqs_arr->nelts; x++) {
 
-        if (!(reqs[x].method_mask & (AP_METHOD_BIT << m)))
+        required |= 1;
+
+        if (!(reqs[x].method_mask & (AP_METHOD_BIT << m))) {
             continue;
+        }
 
         t = reqs[x].requirement;
         w = ap_getword_white(r->pool, &t);
-
-        if (!strcmp(w, "group") && conf->auth_dbmgrpfile) {
+ 
+        if (!strcmp(w, "group")) {
             const char *orig_groups, *groups;
             char *v;
 
-            if (!(groups = get_dbm_grp(r, user, conf->auth_dbmgrpfile,
-                                       conf->auth_dbmtype))) {
-                if (!(conf->auth_dbmauthoritative))
+            required |= 2;
+
+            status = get_dbm_grp(r, user, conf->grpfile, conf->dbmtype,
+                                 &groups);
+
+            if (status != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                      "could not open dbm (type %s) group access file: %s", 
+                        conf->dbmtype, conf->grpfile);
+                return HTTP_INTERNAL_SERVER_ERROR;
+           }
+
+           if (groups == NULL) {
+                if (!conf->authoritative) {
                     return DECLINED;
+                }
+
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "user %s not in DBM group file %s: %s",
-                            user, conf->auth_dbmgrpfile, r->filename);
+                            user, conf->grpfile, r->filename);
+
                 ap_note_basic_auth_failure(r);
                 return HTTP_UNAUTHORIZED;
             }
+
             orig_groups = groups;
             while (t[0]) {
                 w = ap_getword_white(r->pool, &t);
                 groups = orig_groups;
                 while (groups[0]) {
                     v = ap_getword(r->pool, &groups, ',');
-                    if (!strcmp(v, w))
+                    if (!strcmp(v, w)) {
                         return OK;
+                    }
                 }
             }
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -318,18 +289,16 @@ static int dbm_check_auth(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_check_user_id(dbm_authenticate_basic_user, NULL, NULL,
-                          APR_HOOK_MIDDLE);
     ap_hook_auth_checker(dbm_check_auth, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA auth_dbm_module =
+module AP_MODULE_DECLARE_DATA authz_dbm_module =
 {
     STANDARD20_MODULE_STUFF,
-    create_dbm_auth_dir_config, /* dir config creater */
-    NULL,                       /* dir merger --- default is to override */
-    NULL,                       /* server config */
-    NULL,                       /* merge server config */
-    dbm_auth_cmds,              /* command apr_table_t */
-    register_hooks              /* register hooks */
+    create_authz_dbm_dir_config, /* dir config creater */
+    NULL,                        /* dir merger --- default is to override */
+    NULL,                        /* server config */
+    NULL,                        /* merge server config */
+    authz_dbm_cmds,              /* command apr_table_t */
+    register_hooks               /* register hooks */
 };
