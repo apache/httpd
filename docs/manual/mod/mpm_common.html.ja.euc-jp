@@ -25,8 +25,6 @@
 <a href="../en/mod/mpm_common.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mpm_common.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>二つ以上のマルチプロセッシングモジュール (MPM)
 で実装されているディレクティブのコレクション</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>MPM</td></tr></table>
@@ -35,6 +33,7 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#acceptmutex">AcceptMutex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#enableexceptionhook">EnableExceptionHook</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#group">Group</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listen">Listen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listenbacklog">ListenBackLog</a></li>
@@ -52,6 +51,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#startthreads">StartThreads</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#threadlimit">ThreadLimit</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#threadsperchild">ThreadsPerChild</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#threadstacksize">ThreadStackSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#user">User</a></li>
 </ul>
 </div>
@@ -153,6 +153,28 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
       <code class="directive">CoreDumpDirectory</code> を明示的に設定したときに
       限ります。</p>
     </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="EnableExceptionHook" id="EnableExceptionHook">EnableExceptionHook</a> <a name="enableexceptionhook" id="enableexceptionhook">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クラッシュの後に例外ハンドラを実行するフックを有効にする</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>EnableExceptionHook On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>EnableExceptionHook Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.49 以降</td></tr>
+</table>
+    <p>安全上の理由から、<code>--enable-exception-hook</code> configure
+    オプションを有効にした場合にのみ、このディレクティブを利用できます。
+    外部モジュールをプラグインして、子がクラッシュした後に何か実行できるような
+    フックを有効にします。</p>
+    
+    <p>このような外部モジュールは、既に二つ存在していて、
+    <code>mod_whatkilledus</code> と <code>mod_backtrace</code>
+    がこのフックを活用します。これらの詳細については Jeff Trawick 
+    さんの <a href="http://www.apache.org/~trawick/exception_hook.html">EnableExceptionHook site</a> を参照してください。</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -693,7 +715,8 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
     よろいも大きな値に設定する必要があるときにのみ使用してください。</p>
 
     <div class="note"><h3>注意</h3>
-      <p><code>ServerLimit 20000</code> という制限付きでコンパイルされています。
+      <p><code>ServerLimit 20000</code> という制限付きでコンパイルされています
+      (<code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM では <code>200000</code>) 。
       これはスペルミスによって誤って酷い状況になるのを、
       回避するための処置です。</p>
     </div>
@@ -825,6 +848,49 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
     <p><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>での <code class="directive">ThreadsPerChild</code>
     のデフォルト値は <code>64</code> で、他の場合は
     <code>25</code> です。</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ThreadStackSize" id="ThreadStackSize">ThreadStackSize</a> <a name="threadstacksize" id="threadstacksize">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クライアントのコネクションを受け持つスレッドが使用する
+スタックのバイト数</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ThreadStackSize <var>size</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>NetWare では 65536。他の OS では違った値</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.1 以降</td></tr>
+</table>
+    <p>クライアントコネクションを受け持ち、コネクション処理に必要なモジュールの
+    呼び出しを行なっているスレッドの、(自動変数用の) スタックサイズは
+    <code class="directive">ThreadStackSize</code> ディレクティブで指定します。
+    大抵の場合 OS の指定しているスタックサイズのデフォルト値は
+    適切なものですが、調整が必要になる場合もあります:</p>
+
+    <ul>
+      <li>スレッドスタックサイズのデフォルト値が比較的小さく設定されている
+      プラットホーム (例えば HP-UX) では、自動変数用の領域で大きな容量を
+      使用するサードパーティ製モジュールのために Apache がクラッシュする
+      場合もあります。そのモジュールは他のプラットホームでは
+      スタックサイズが大きいために、快調に動作するかもしれません。
+      このタイプのクラッシュは、<code class="directive">ThreadStackSize</code>
+      で OS のデフォルト値より大きな値を指定することで解決します。
+      サードパーティ製モジュールでこの処置が必要であると記載されている
+      場合か、Apache の出力するメッセージでスレッドスタックサイズが
+      小さすぎると指摘されている場合にのみ、この調整をしてください。</li>
+
+      <li>デフォルトスレッドスタックサイズが、Web サーバ用途に必要な量よりも
+      明らかに大きすぎる場合、<code class="directive">ThreadStackSize</code> 
+      を OS のデフォルト値よりも小さな値にすることで、子プロセスあたりの
+      スレッド数をより多く持たせられるようになります。
+      このタイプの調整は、テスト環境でウェブサーバを完全に
+      テストできる場合に限って行なうべきです。
+      まれに多数のスタックが要求されるリクエストを受けることがあるかも
+      しれないからです。
+      Web サーバの設定を変更すると、現在の <code class="directive">ThreadStackSize</code> 
+      の設定が取り消される場合があります。</li>
+    </ul>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
