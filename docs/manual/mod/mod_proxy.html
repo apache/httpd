@@ -9,9 +9,9 @@
 <H1>Apache module mod_proxy</h1>
 
 This module is contained in the <code>mod_proxy.c</code> file for Apache 1.1.x,
-or the <code>modules/proxy/libproxy.a</code> library for Apache 1.2, and
-is not compiled in by default. It provides for a caching proxy server.
-It is only available in Apache 1.1 and later. Common configuration
+or the <code>modules/proxy</code> subdirectory for Apache 1.2, and
+is not compiled in by default. It provides for an <b>HTTP 1.0</b> caching proxy
+server. It is only available in Apache 1.1 and later. Common configuration
 questions are addressed <a href="#configs">here</a>.
 
 <h3>Note:</h3>
@@ -296,17 +296,17 @@ disables caching completely.<p>
 
 <a name="access"><h2>Controlling access to your proxy</h2>
 
-You can control who can access your proxy via the normal &lt;Files&gt;
+You can control who can access your proxy via the normal &lt;Directory&gt;
 control block using the following example:<p>
 
 <pre>
-&lt;Files proxy:*&gt;
+&lt;Directory proxy:*&gt;
 &lt;Limit GET&gt;
 order deny,allow
 deny from [machines you'd like *not* to allow by IP address or name]
 allow from [machines you'd like to allow by IP address or name]
 &lt;/Limit&gt;
-&lt;/Files&gt;
+&lt;/Directory&gt;
 </pre><p>
 
 <a name="shortname"><h2>Using Netscape hostname shortcuts</h2>
