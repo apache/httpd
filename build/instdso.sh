@@ -43,6 +43,11 @@ case $SYS in
         echo $CMD
         $CMD || exit $?
         ;;
+    OS/2)
+        CMD="$SH_LIBTOOL --mode=install cp $DSOARCHIVE $TARGETDIR/"
+        echo $CMD
+        $CMD || exit $?
+        ;;
     *)
         CMD="cp .libs/$TARGET_NAME $TARGETDIR/$TARGET_NAME"
         echo $CMD
