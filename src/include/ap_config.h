@@ -791,7 +791,7 @@ typedef int rlim_t;
 /* Add some drive name support */
 #define chdir _chdir2
 #include <sys/time.h>
-#define MAXSOCKETS 4096
+#define MAXSOCKETS 2048
 #define USE_OS2_SCOREBOARD
 #define NO_RELIABLE_PIPED_LOGS
 #define USE_OS2SEM_SERIALIZED_ACCEPT
