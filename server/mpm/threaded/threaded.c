@@ -168,6 +168,7 @@ static apr_lock_t *worker_thread_count_mutex;
 
 /* Locks for accept serialization */
 static apr_lock_t *accept_mutex;
+static apr_lockmech_e_np accept_lock_mech = APR_LOCK_DEFAULT;
 static const char *lock_fname;
 
 #ifdef NO_SERIALIZED_ACCEPT
@@ -1095,14 +1096,13 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     lock_fname = apr_psprintf(_pconf, "%s.%" APR_OS_PROC_T_FMT,
                              ap_server_root_relative(_pconf, lock_fname),
                              ap_my_pid);
-    rv = apr_lock_create(&accept_mutex, APR_MUTEX, APR_LOCKALL,
-                   lock_fname, _pconf);
+    rv = apr_lock_create_np(&accept_mutex, APR_MUTEX, APR_LOCKALL,
+                            accept_lock_mech, lock_fname, _pconf);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                      "Couldn't create accept lock");
         return 1;
     }
-
 
     if (!is_graceful) {
         ap_create_scoreboard(pconf, SB_SHARED);
@@ -1440,6 +1440,56 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *set_accept_lock_mech(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (!strcasecmp(arg, "default")) {
+        accept_lock_mech = APR_LOCK_DEFAULT;
+    }
+#if APR_HAS_FLOCK_SERIALIZE
+    else if (!strcasecmp(arg, "flock")) {
+        accept_lock_mech = APR_LOCK_FLOCK;
+    }
+#endif
+#if APR_HAS_FCNTL_SERIALIZE
+    else if (!strcasecmp(arg, "fcntl")) {
+        accept_lock_mech = APR_LOCK_FCNTL;
+    }
+#endif
+#if APR_HAS_SYSVSEM_SERIALIZE
+    else if (!strcasecmp(arg, "sysvsem")) {
+        accept_lock_mech = APR_LOCK_SYSVSEM;
+    }
+#endif
+#if APR_HAS_PROC_PTHREAD_SERIALIZE
+    else if (!strcasecmp(arg, "proc_pthread")) {
+        accept_lock_mech = APR_LOCK_PROC_PTHREAD;
+    }
+#endif
+    else {
+        return apr_pstrcat(cmd->pool, arg, " is an invalid mutex mechanism; valid "
+                           "ones for this platform are: default"
+#if APR_HAS_FLOCK_SERIALIZE
+                           ", flock"
+#endif
+#if APR_HAS_FCNTL_SERIALIZE
+                           ", fcntl"
+#endif
+#if APR_HAS_SYSVSEM_SERIALIZE
+                           ", sysvsem"
+#endif
+#if APR_HAS_PROC_PTHREAD_SERIALIZE
+                           ", proc_pthread"
+#endif
+                           , NULL);
+    }
+    return NULL;
+}
+
 static const command_rec threaded_cmds[] = {
 UNIX_DAEMON_COMMANDS
 LISTEN_COMMANDS
@@ -1463,6 +1513,8 @@ AP_INIT_TAKE1("MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF,
   "Maximum number of requests a particular child serves before dying."),
 AP_INIT_TAKE1("CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF,
   "The location of the directory Apache changes to before dumping core"),
+AP_INIT_TAKE1("AcceptMutex", set_accept_lock_mech, NULL, RSRC_CONF,
+              "The system mutex implementation to use for the accept mutex"),
 { NULL }
 };
 
