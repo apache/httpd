@@ -12,3 +12,5 @@ XMLParseD
 XMLParseR
 XMLTokD
 XMLTokR
+xmlparse.mak
+xmltok.mak
