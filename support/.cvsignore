@@ -19,3 +19,4 @@ vc*.idb
 *.opt
 *.plg
 *.pdb
+apachectl
