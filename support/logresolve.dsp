@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "../lib/apr/include" /I "../include" /I "../os/win32" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_STATIC" /D "API_STATIC" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "../lib/apr/include" /I "../include" /I "../os/win32" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "AP_DECLARE_STATIC" /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "../lib/apr/include" /I "../include" /I "../os/win32" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_STATIC" /D "API_STATIC" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "../lib/apr/include" /I "../include" /I "../os/win32" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "AP_DECLARE_STATIC" /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
