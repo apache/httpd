@@ -65,6 +65,34 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Time-out della richiesta!"
+--><!--#include virtual="include/top.html" -->
+
+    Il server ha chiuso la connessione in quanto &egrave; stato
+    superato il limite di tempo entro il quale il browser avrebbe
+    dovuto eseguire la richiesta.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="요청 시간 초과!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    브라우저가 너무 오랫동안 요청을 끝내지 않아서 서버가 네트워크 연결을
+    강제로 끊었습니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -91,34 +119,6 @@ Body:----------pl--
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
-
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Request time-out!"
---><!--#include virtual="include/top.html" -->
-
-    Servern st&auml;ngde f&ouml;rbindelsen d&auml;rf&ouml;r att
-    webbl&auml;saren inte avslutade f&ouml;rfr&aring;gan inom
-    f&ouml;rbest&auml;md tid.
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Time-out della richiesta!"
---><!--#include virtual="include/top.html" -->
-
-    Il server ha chiuso la connessione in quanto &egrave; stato
-    superato il limite di tempo entro il quale il browser avrebbe
-    dovuto eseguire la richiesta.
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
 
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
@@ -147,16 +147,16 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="요청 시간 초과!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Request time-out!"
 --><!--#include virtual="include/top.html" -->
 
-    브라우저가 너무 오랫동안 요청을 끝내지 않아서 서버가 네트워크 연결을
-    강제로 끊었습니다.
+    Servern st&auml;ngde f&ouml;rbindelsen d&auml;rf&ouml;r att
+    webbl&auml;saren inte avslutade f&ouml;rfr&aring;gan inom
+    f&ouml;rbest&auml;md tid.
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--

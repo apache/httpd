@@ -65,6 +65,35 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Campo Content-Length non valido!"
+--><!--#include virtual="include/top.html" -->
+
+    Una richiesta con il metodo
+    <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    richiede che venga specificato un header <code>Content-Length</code>
+    valido.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="잘못된 Content-Length!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"--> 방식을 쓰는
+    요청은 올바른 <code>Content-Length</code> 헤더도 함께 보내야만 합니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -91,34 +120,6 @@ Body:----------pl--
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
-
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Felaktig Content-Length!"
---><!--#include virtual="include/top.html" -->
-
-    En f&ouml;rfr&aring;gan med <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    metoden kr&auml;ver ett korrekt <code>Content-Length</code> huvud.
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Campo Content-Length non valido!"
---><!--#include virtual="include/top.html" -->
-
-    Una richiesta con il metodo
-    <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    richiede che venga specificato un header <code>Content-Length</code>
-    valido.
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
 
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
@@ -147,16 +148,15 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="잘못된 Content-Length!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Felaktig Content-Length!"
 --><!--#include virtual="include/top.html" -->
 
-    <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"--> 방식을 쓰는
-    요청은 올바른 <code>Content-Length</code> 헤더도 함께 보내야만 합니다.
+    En f&ouml;rfr&aring;gan med <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    metoden kr&auml;ver ett korrekt <code>Content-Length</code> huvud.
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--

@@ -62,6 +62,32 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Criteri di precondizione non soddisfatti!"
+--><!--#include virtual="include/top.html" -->
+
+    I criteri di precondizione per consentire l'invio dell'URL
+    richiesto non sono stati soddisfatti.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="주어진 조건 실패!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    미리 주어진 조건이 만족되지 않아서 URL 요청을 처리할 수 없습니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -86,33 +112,6 @@ Body:----------pl--
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
-
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="N&ouml;dv&auml;ndig f&ouml;ruts&auml;ttning misslyckades!"
---><!--#include virtual="include/top.html" -->
-
-    Den n&ouml;dv&auml;ndiga f&ouml;ruts&auml;ttningen f&ouml;r
-    adressf&ouml;rfr&aring;gan passerade inte utv&auml;rderingen
-    med acceptabelt resultat.
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Criteri di precondizione non soddisfatti!"
---><!--#include virtual="include/top.html" -->
-
-    I criteri di precondizione per consentire l'invio dell'URL
-    richiesto non sono stati soddisfatti.
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
 
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
@@ -139,15 +138,16 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="주어진 조건 실패!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="N&ouml;dv&auml;ndig f&ouml;ruts&auml;ttning misslyckades!"
 --><!--#include virtual="include/top.html" -->
 
-    미리 주어진 조건이 만족되지 않아서 URL 요청을 처리할 수 없습니다.
+    Den n&ouml;dv&auml;ndiga f&ouml;ruts&auml;ttningen f&ouml;r
+    adressf&ouml;rfr&aring;gan passerade inte utv&auml;rderingen
+    med acceptabelt resultat.
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--

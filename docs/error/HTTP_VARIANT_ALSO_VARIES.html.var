@@ -66,6 +66,34 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->  
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="La versione variante varia essa stessa!"
+--><!--#include virtual="include/top.html" -->
+
+    Non &egrave; possibile accedere all'entit&agrave;
+    richiesta perch&eacute; &grave; essa stessa
+    una risorsa negoziabile.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="형태를 결정할 수 없음!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    요청한 객체의 형태 또한 여러 형태를 가지고 있어서
+    접근이 불가능합니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -93,34 +121,6 @@ Body:----------pl--
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
-
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Variant also varies!"
---><!--#include virtual="include/top.html" -->
-
-    En variant av den f&ouml;rfr&aring;gade enheten &auml;r i
-    sig sj&auml;lv en giltig resurs. &Aring;tkomst &auml;r inte
-    m&ouml;jlig.
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="La versione variante varia essa stessa!"
---><!--#include virtual="include/top.html" -->
-
-    Non &egrave; possibile accedere all'entit&agrave;
-    richiesta perch&eacute; &grave; essa stessa
-    una risorsa negoziabile.
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
 
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
@@ -150,16 +150,16 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="형태를 결정할 수 없음!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Variant also varies!"
 --><!--#include virtual="include/top.html" -->
 
-    요청한 객체의 형태 또한 여러 형태를 가지고 있어서
-    접근이 불가능합니다.
+    En variant av den f&ouml;rfr&aring;gade enheten &auml;r i
+    sig sj&auml;lv en giltig resurs. &Aring;tkomst &auml;r inte
+    m&ouml;jlig.
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--

@@ -66,6 +66,33 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="URI troppo lungo!"
+--><!--#include virtual="include/top.html" -->
+
+    La lunghezza dell'indirizzo (URL) trasmesso supera il
+    limite massimo imposto da questo server.
+    La richiesta non pu&ograve; essere soddisfatta.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="너무 긴 URI!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    요청한 URL이 너무 길어서 이 서버가 처리할 수 없습니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -92,34 +119,6 @@ Body:----------pl--
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
-
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Efterfr&aring;gad URI f&ouml;r stor!"
---><!--#include virtual="include/top.html" -->
-
-    L&auml;ngden p&aring; adressen som efterfr&aring;gas &ouml;verskrider
-    kapacitetsgr&auml;nsen f&ouml;r denna server. F&ouml;rfr&aring;gan kan
-    inte verkst&auml;llas.
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="URI troppo lungo!"
---><!--#include virtual="include/top.html" -->
-
-    La lunghezza dell'indirizzo (URL) trasmesso supera il
-    limite massimo imposto da questo server.
-    La richiesta non pu&ograve; essere soddisfatta.
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
 
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
@@ -148,15 +147,16 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="너무 긴 URI!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Efterfr&aring;gad URI f&ouml;r stor!"
 --><!--#include virtual="include/top.html" -->
 
-    요청한 URL이 너무 길어서 이 서버가 처리할 수 없습니다.
+    L&auml;ngden p&aring; adressen som efterfr&aring;gas &ouml;verskrider
+    kapacitetsgr&auml;nsen f&ouml;r denna server. F&ouml;rfr&aring;gan kan
+    inte verkst&auml;llas.
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--

@@ -88,6 +88,42 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->   
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Gateway errato!"
+--><!--#include virtual="include/top.html" -->
+
+    Il server proxy ha ricevuto una risposta
+    non valida dal server precedente.
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    <!--#include virtual="include/spacer.html" -->
+    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="잘못된 게이트웨이!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    프록시 서버가 더 윗쪽의 서버로부터 잘못된 응답을 받았습니다.
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    <!--#include virtual="include/spacer.html" -->
+    <!--#echo  encoding="none" var="REDIRECT_ERROR_NOTES" -->
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -125,42 +161,6 @@ Body:----------pl--
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
 
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Felaktig Gateway!"
---><!--#include virtual="include/top.html" -->
-
-    Proxyservern mottog ett felaktigt svar fr&aring;n
-    en tidigare server.
-
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
-    <!--#include virtual="include/spacer.html" -->
-    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
-  <!--#endif -->
-
-<!--#include virtual="include/bottom.html" -->   
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Gateway errato!"
---><!--#include virtual="include/top.html" -->
-
-    Il server proxy ha ricevuto una risposta
-    non valida dal server precedente.
-
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
-    <!--#include virtual="include/spacer.html" -->
-    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
-  <!--#endif -->
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
-
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
 Body:-------pt-br--
@@ -197,20 +197,20 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="잘못된 게이트웨이!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Felaktig Gateway!"
 --><!--#include virtual="include/top.html" -->
 
-    프록시 서버가 더 윗쪽의 서버로부터 잘못된 응답을 받았습니다.
+    Proxyservern mottog ett felaktigt svar fr&aring;n
+    en tidigare server.
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
     <!--#include virtual="include/spacer.html" -->
-    <!--#echo  encoding="none" var="REDIRECT_ERROR_NOTES" -->
+    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
 
-<!--#include virtual="include/bottom.html" -->
-----------ko--
+<!--#include virtual="include/bottom.html" -->   
+----------sv--

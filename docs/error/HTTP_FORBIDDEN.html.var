@@ -115,6 +115,51 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Accesso negato!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
+
+   Non disponi dei permessi necessari per accedere alla
+   directory richiesta oppure non esiste il documento indice.
+
+  <!--#else -->
+
+   Non disponi dei permessi necessari per accedere all'oggetto
+   richiesto, oppure l'oggetto non pu&ograve; essere letto dal server.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="접근이 거부됨!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
+
+   요청한 디렉토리에 접근할 수 있는 권한이 없습니다.
+   디렉토리에 첫 페이지가 없거나 아니면 읽기 보호가 되어 있습니다.
+
+  <!--#else -->
+
+   요청한 객체에 접근할 수 있는 권한이 없습니다.
+   읽기 보호가 되어 있거나 웹서버가 읽을 수 없도록 되어 있습니다.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -159,52 +204,6 @@ Body:----------pl--
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
-
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="&Aring;tkomst f&ouml;rbjuden!"
---><!--#include virtual="include/top.html" -->
-
-  <!--#if expr="$REDIRECT_URL = /\/$/" -->
-
-    Du har inte tillr&auml;ckliga r&auml;ttigheter f&ouml;r att f&aring;
-    tillg&aring;ng till den &ouml;nskade katalogen. Det existerar inget
-    indexdokument eller s&aring; &auml;r katalogen l&auml;sskyddad.
-
-  <!--#else -->
-
-    Du har inte tillr&auml;ckliga r&auml;ttigheter f&ouml;r att f&aring;
-    tillg&aring;ng till det &ouml;nskade objektet. Objektet &auml;r
-    l&auml;sskyddat eller inte l&auml;sbart f&ouml;r servern.
-
-  <!--#endif -->
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Accesso negato!"
---><!--#include virtual="include/top.html" -->
-
-  <!--#if expr="$REDIRECT_URL = /\/$/" -->
-
-   Non disponi dei permessi necessari per accedere alla
-   directory richiesta oppure non esiste il documento indice.
-
-  <!--#else -->
-
-   Non disponi dei permessi necessari per accedere all'oggetto
-   richiesto, oppure l'oggetto non pu&ograve; essere letto dal server.
-
-  <!--#endif -->
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
 
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
@@ -253,25 +252,26 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="접근이 거부됨!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="&Aring;tkomst f&ouml;rbjuden!"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_URL = /\/$/" -->
 
-   요청한 디렉토리에 접근할 수 있는 권한이 없습니다.
-   디렉토리에 첫 페이지가 없거나 아니면 읽기 보호가 되어 있습니다.
+    Du har inte tillr&auml;ckliga r&auml;ttigheter f&ouml;r att f&aring;
+    tillg&aring;ng till den &ouml;nskade katalogen. Det existerar inget
+    indexdokument eller s&aring; &auml;r katalogen l&auml;sskyddad.
 
   <!--#else -->
 
-   요청한 객체에 접근할 수 있는 권한이 없습니다.
-   읽기 보호가 되어 있거나 웹서버가 읽을 수 없도록 되어 있습니다.
+    Du har inte tillr&auml;ckliga r&auml;ttigheter f&ouml;r att f&aring;
+    tillg&aring;ng till det &ouml;nskade objektet. Objektet &auml;r
+    l&auml;sskyddat eller inte l&auml;sbart f&ouml;r servern.
 
   <!--#endif -->
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--

@@ -63,6 +63,33 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->  
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Richiesta incomprensibile!"
+--><!--#include virtual="include/top.html" -->
+
+    Il tuo browser (o il proxy) ha inviato a
+    questo server una richiesta incomprensibile.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="잘못된 요청!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    브라우저 또는 프록시가
+    이 서버가 처리할 수 없는 잘못된 요청을 보냈습니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -90,32 +117,6 @@ Body:----------pl--
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
 
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Felaktig f&ouml;rfr&aring;gan!"
---><!--#include virtual="include/top.html" -->
-
-    Din webbl&auml;sare eller proxy skickade en f&ouml;rfr&aring;gan
-    som denna server inte kunde f&ouml;rst&aring;.
-
-<!--#include virtual="include/bottom.html" -->  
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Richiesta incomprensibile!"
---><!--#include virtual="include/top.html" -->
-
-    Il tuo browser (o il proxy) ha inviato a
-    questo server una richiesta incomprensibile.
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
-
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
 Body:-------pt-br--
@@ -142,16 +143,15 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="잘못된 요청!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Felaktig f&ouml;rfr&aring;gan!"
 --><!--#include virtual="include/top.html" -->
 
-    브라우저 또는 프록시가
-    이 서버가 처리할 수 없는 잘못된 요청을 보냈습니다.
+    Din webbl&auml;sare eller proxy skickade en f&ouml;rfr&aring;gan
+    som denna server inte kunde f&ouml;rst&aring;.
 
-<!--#include virtual="include/bottom.html" -->
-----------ko--
+<!--#include virtual="include/bottom.html" -->  
+----------sv--

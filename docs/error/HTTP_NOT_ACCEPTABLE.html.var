@@ -65,6 +65,32 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->  
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Nessun oggetto accettabile!"
+--><!--#include virtual="include/top.html" -->
+
+    Questo server non riesce a trovare una rappresentazione
+    appropriata per la risorsa richiesta.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="적당한 객체 없음!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    요청한 객체의 적당한 형태를 이 서버에서 찾을 수 없습니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -92,32 +118,6 @@ Body:----------pl--
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
 
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Inget acceptabelt objekt hittat!"
---><!--#include virtual="include/top.html" -->
-
-    En l&auml;mplig representation av den efterfr&aring;gade
-    resursen kunde inte hittas p&aring; denna server.
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Nessun oggetto accettabile!"
---><!--#include virtual="include/top.html" -->
-
-    Questo server non riesce a trovare una rappresentazione
-    appropriata per la risorsa richiesta.
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
-
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
 Body:-------pt-br--
@@ -144,15 +144,15 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="적당한 객체 없음!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Inget acceptabelt objekt hittat!"
 --><!--#include virtual="include/top.html" -->
 
-    요청한 객체의 적당한 형태를 이 서버에서 찾을 수 없습니다.
+    En l&auml;mplig representation av den efterfr&aring;gade
+    resursen kunde inte hittas p&aring; denna server.
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--

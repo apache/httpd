@@ -73,6 +73,35 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Servizio non disponibile!"
+--><!--#include virtual="include/top.html" -->
+
+    Il server in questo momento non &egrave; in grado di
+    soddisfare la richiesta per motivi di manutenzione
+    o di sovraccarico del sistema.
+    Per favore, riprova pi&ugrave; tardi.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="서비스 일시중지!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    관리 작업이나 용량 문제로 서버가 잠시동안 요청을 처리할 수 없습니다.
+    나중에 다시 시도해주시기 바랍니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -102,36 +131,6 @@ Body:----------pl--
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
 
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Tj&auml;nsten ej tillg&auml;nglig!"
---><!--#include virtual="include/top.html" -->
-
-    Servern &auml;r f&ouml;r tillf&auml;llet of&ouml;rm&ouml;gen att
-    utf&ouml;ra din f&ouml;rfr&aring;gan p&aring; grund av underh&aring;ll
-    eller kapacitetsbegr&auml;nsningar. V&auml;nligen f&ouml;rs&ouml;k
-    igen senare.
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Servizio non disponibile!"
---><!--#include virtual="include/top.html" -->
-
-    Il server in questo momento non &egrave; in grado di
-    soddisfare la richiesta per motivi di manutenzione
-    o di sovraccarico del sistema.
-    Per favore, riprova pi&ugrave; tardi.
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
-
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
 Body:-------pt-br--
@@ -160,16 +159,17 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="서비스 일시중지!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Tj&auml;nsten ej tillg&auml;nglig!"
 --><!--#include virtual="include/top.html" -->
 
-    관리 작업이나 용량 문제로 서버가 잠시동안 요청을 처리할 수 없습니다.
-    나중에 다시 시도해주시기 바랍니다.
+    Servern &auml;r f&ouml;r tillf&auml;llet of&ouml;rm&ouml;gen att
+    utf&ouml;ra din f&ouml;rfr&aring;gan p&aring; grund av underh&aring;ll
+    eller kapacitetsbegr&auml;nsningar. V&auml;nligen f&ouml;rs&ouml;k
+    igen senare.
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--
