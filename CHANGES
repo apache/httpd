@@ -1,6 +1,10 @@
 
 Changes with Apache 2.0.40
 
+  *) Fixed a mod_include error case in which no HTTP response was sent
+     to the client if an shtml document contained an unterminated SSI
+     directive [Brian Pane]
+
   *) Improve ap_get_client_block implementation by using APR-util brigade
      helper functions and relying on current filter assumptions.
      [Justin Erenkrantz]
