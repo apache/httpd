@@ -8,7 +8,7 @@
 
 <!-- Some strings might be used in other contexts, than stated in the -->
 <!-- comments...                                                      -->
-<messages lang="ru">
+<messages lang="ru" langname="Russian">
  <!-- Used for the moduleindex -->
  <message name="corefeatures">Особенности ядра и мульти-процессные модули</message>
  <message name="othermodules">Другие модули</message>
@@ -70,4 +70,5 @@
 
  <!-- footer line -->
  <message name="maintainedby">Поддержка осуществляется</message>
+ <message name="langavail">Available Languages</message>
 </messages>

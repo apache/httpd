@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE messages [ <!ENTITY nbsp "&#160;"> ]>
-<!-- English revision: 1.6.2.2 -->
+<!-- English revision: 1.6.2.4 -->
 
 <!--                   -->
 <!-- Language: German  -->
@@ -8,7 +8,7 @@
 
 <!-- Some strings might be used in other contexts, than stated in the -->
 <!-- comments...                                                      -->
-<messages lang="de">
+<messages lang="de" langname="Deutsch">
  <!-- Used for the moduleindex -->
  <message name="corefeatures">Kernfunktionen und Multi-Processing-Module</message>
  <message name="othermodules">Andere Module</message>
@@ -85,4 +85,5 @@
 
  <!-- footer line -->
  <message name="maintainedby">Gepflegt durch das</message>
+ <message name="langavail">Verfügbare Sprachen</message>
 </messages>

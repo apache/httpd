@@ -277,6 +277,10 @@
 <!-- page bottom                                                          -->
 <!-- ==================================================================== -->
 <xsl:template name="bottom">
+<xsl:call-template name="langavail">
+    <xsl:with-param name="position" select="'bottom'" />
+</xsl:call-template>
+
 <div id="footer">&lf;
     <p class="apache">
         <xsl:value-of select="$messages/message[@name='maintainedby']"/>
@@ -294,6 +298,64 @@
 </div> <!-- /footer -->
 </xsl:template>
 <!-- /bottom -->
+
+
+<!-- ==================================================================== -->
+<!-- build an "available languages" section                               -->
+<!-- ==================================================================== -->
+<xsl:template name="langavail">
+<xsl:param name="position" select="'top'" />
+<xsl:variable name="metafile" select="document(/*/@metafile)/metafile" />
+
+<xsl:if test="not($is-chm)">
+<div class="{$position}lang">&lf;
+    <p>
+        <span>
+            <xsl:value-of select="$messages/message[@name='langavail']" />
+            <xsl:text>: </xsl:text>
+        </span>
+
+        <xsl:for-each select="$metafile/variants/variant">
+        <xsl:sort select="." />
+
+            <a href="{$path}/{.}{$metafile/path}{$metafile/basename}.html">
+                <xsl:if test="$metafile/basename = 'index'">
+                    <xsl:attribute name="href">
+                        <xsl:value-of
+                            select="concat($path, '/', ., $metafile/path)" />
+                    </xsl:attribute>
+                </xsl:if>
+                <xsl:if test="$messages/@lang != .">
+                    <xsl:attribute name="hreflang">
+                        <xsl:value-of select="." />
+                    </xsl:attribute>
+                    <xsl:attribute name="rel">alternate</xsl:attribute>
+                </xsl:if>
+                <xsl:attribute name="title">
+                    <xsl:choose>
+                    <xsl:when test=". != 'fr'"> <!-- no language file avail. -->
+                        <xsl:value-of select="document(concat('../lang/', ., '.xml'))
+                                              /messages/@langname" />
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text>Fran&#231;ais</xsl:text>
+                    </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:attribute>
+
+                &nbsp;
+                <xsl:value-of select="." />
+                &nbsp;
+            </a>
+            <xsl:if test="position() != last()">
+                <xsl:text> |&#xA;</xsl:text>
+            </xsl:if>
+        </xsl:for-each>
+    </p>&lf;
+</div> <!-- /.{$position}lang -->
+</xsl:if>
+</xsl:template>
+<!-- /langavail -->
 
 
 <!-- ==================================================================== -->

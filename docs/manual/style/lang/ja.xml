@@ -8,7 +8,7 @@
 
 <!-- Some strings might be used in other contexts, than stated in the -->
 <!-- comments...                                                      -->
-<messages lang="ja">
+<messages lang="ja" langname="Japanese">
  <!-- Used for the moduleindex -->
  <message name="corefeatures">コア機能と MPM</message>
  <message name="othermodules">他のモジュール</message>
@@ -76,4 +76,5 @@
 
  <!-- footer line -->
  <message name="maintainedby">Maintained by the</message>
+ <message name="langavail">Available Languages</message>
 </messages>
