@@ -1,8 +1,14 @@
 Changes with Apache 1.3.24
 
+  *) Add 'IgnoreCase' keyword to the DirectoryIndex directive;
+     if active, upper- and lower-case letters are insignificant
+     in ordering.  In other words, all A* and a* files will be
+     listed together, rather than the a* ones after all the [A-Z]*
+     ones.  [Tullio Andreatta <tullio@logicom.it>]
+
   *) NetWare: Implemented the real ap_os_case_canonical_filename()
-      function that retrieves the accurately cased path and file
-      name from the file system. [Brad Nicholes bnicholes@novell.com]
+     function that retrieves the accurately cased path and file
+     name from the file system. [Brad Nicholes bnicholes@novell.com]
 
   *) Fix the longstanding bug that errors (returned by src/Configure)
      would not be noticed by the top level configure script.
