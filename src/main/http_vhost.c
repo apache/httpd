@@ -670,7 +670,7 @@ static void fix_hostname(request_rec *r)
     src = r->hostname;
     dst = host;
     while (*src) {
-	if (!isalnum(*src) && *src != '.' && *src != '-') {
+	if (!ap_isalnum(*src) && *src != '.' && *src != '-') {
 	    if (*src == ':')
 		break;
 	    else
@@ -682,7 +682,7 @@ static void fix_hostname(request_rec *r)
     /* check the port part */
     if (*src++ == ':') {
 	while (*src) {
-	    if (!isdigit(*src++)) {
+	    if (!ap_isdigit(*src++)) {
 		goto bad;
 	    }
 	}
