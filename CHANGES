@@ -1,4 +1,8 @@
 Changes with Apache 2.0.44
+  
+  *) Fix a bug where 416 "Range not satisfiable" was being
+     returned for content that should have been redirected.
+     [Greg Ames]
 
   *) Fix memory leak in mod_ssl from internal SSL library allocations
      within SSL_get_peer_certificate and X509_get_pubkey.
