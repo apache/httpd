@@ -183,6 +183,22 @@ typedef struct include_filter_ctx {
     }                                                             \
 }
 
+/* Make sure to check the return code rc. If it is anything other
+ *   than APR_SUCCESS, then you should return this value up the
+ *   call chain.
+ */
+#define SPLIT_AND_PASS_PRETAG_BUCKETS(brgd, cntxt, next, rc)      \
+if ((APR_BRIGADE_EMPTY(cntxt->ssi_tag_brigade)) &&                \
+    (cntxt->head_start_bucket != NULL)) {                         \
+    apr_bucket_brigade *tag_plus;                                 \
+                                                                  \
+    tag_plus = apr_brigade_split(brgd, cntxt->head_start_bucket); \
+    rc = ap_pass_brigade(next, brgd);                             \
+    cntxt->bytes_parsed = 0;                                      \
+    brgd = tag_plus;                                              \
+}
+
+
 typedef int (include_handler_fn_t)(include_ctx_t *ctx, apr_bucket_brigade **bb,
                        request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
                        apr_bucket **inserted_head);
