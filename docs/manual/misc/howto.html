@@ -60,13 +60,14 @@ what they gave in the original URL, they'll be sent to
 "http://www.apache.org".
 
 The second option is to set up a <CODE>ScriptAlias</CODE> pointing to
-a <STRONG>cgi script</STRONG> which outputs a 301 or 302 status and the
+a <STRONG>CGI script</STRONG> which outputs a 301 or 302 status and the
 location
 of the other server.</P>
 
-<P>By using a <STRONG>cgi-script</STRONG> you can intercept various requests
+<P>By using a <STRONG>CGI script</STRONG> you can intercept various requests
 and
-treat them specially, <EM>e.g.</EM>, you might want to intercept <STRONG>POST</STRONG>
+treat them specially, <EM>e.g.</EM>, you might want to intercept
+<STRONG>POST</STRONG>
 requests, so that the client isn't redirected to a script on the other
 server which expects POST information (a redirect will lose the POST
 information.) You might also want to use a CGI script if you don't
@@ -108,7 +109,8 @@ characters.</P>
 <P>The correct procedure is to move the logfile, then signal Apache to tell
 it to reopen the logfiles.</P>
 
-<P>Apache is signaled using the <STRONG>SIGHUP</STRONG> (-1) signal. <EM>e.g.</EM>
+<P>Apache is signaled using the <STRONG>SIGHUP</STRONG> (-1) signal.
+<EM>e.g.</EM>
 <BLOCKQUOTE><CODE>
 mv access_log access_log.old<BR>
 kill -1 `cat httpd.pid`
