@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) WIN32: Allocate the correct amount of memory for the scoreboard.
+     [Dean Gaudet]
+
   *) WIN32: Only lowercase the part of the path that is real. [Ben Laurie]
 
   *) Fix problems with timeouts in inetd mode and -X mode.  [Dean Gaudet]

@@ -1248,7 +1248,8 @@ static int reap_other_child(int pid, int status)
 void reinit_scoreboard(pool *p)
 {
     ap_assert(!scoreboard_image);
-    scoreboard_image = (scoreboard *) calloc(HARD_SERVER_LIMIT, sizeof(short_score));
+    scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
+    memset(scoreboard_image, 0, SCOREBOARD_SIZE);
 }
 
 void cleanup_scoreboard()
