@@ -529,8 +529,10 @@ API_EXPORT(int) ap_bnonblock(BUFF *fb, int direction)
     fd = (direction == B_RD) ? fb->fd_in : fb->fd;
 #if defined(O_NONBLOCK)
     return fcntl(fd, F_SETFL, O_NONBLOCK);
-#elif defined(F_NDELAY)
-    return fcntl(fd, F_SETFL, F_NDELAY);
+#elif defined(O_NDELAY)
+    return fcntl(fd, F_SETFL, O_NDELAY);
+#elif defined(FNDELAY)
+    return fcntl(fd, F_SETFL, FNDELAY);
 #else
     /* XXXX: this breaks things, but an alternative isn't obvious...*/
     return 0;
