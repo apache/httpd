@@ -62,6 +62,7 @@
 #include "http_request.h"
 #include "http_core.h"
 #include "http_log.h"
+#include "util_script.h"
 
 /* define TCN_02 to allow for Holtman I-D transparent negotiation.
  * This file currently implements the draft-02, except for
@@ -1875,9 +1876,13 @@ int handle_map_file (request_rec *r)
     if (na_result == na_not_applied)
         set_neg_headers(r, neg, na_not_applied);
 
+    if (r->path_info && *r->path_info) {
+        r->uri[find_path_info(r->uri, r->path_info)] = '\0';
+    }
     udir = make_dirstr (r->pool, r->uri, count_dirs (r->uri));
     udir = escape_uri(r->pool, udir);
-    internal_redirect (make_full_path (r->pool, udir, best->file_name), r);
+    internal_redirect(pstrcat(r->pool, udir, best->file_name, r->path_info,
+                              NULL), r);
     return OK;
 }
 

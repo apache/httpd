@@ -61,6 +61,7 @@ char **create_argv(request_rec *r, char *av0, ...);
 char **create_argv_cmd(pool *p, char *av0, const char *args, char *path);
 #endif
 char **create_environment(pool *p, table *t);
+int find_path_info(char *uri, char *path_info);
 void add_cgi_vars(request_rec *r);
 void add_common_vars(request_rec *r);
 #define scan_script_header(a1,a2) scan_script_header_err(a1,a2,NULL)
