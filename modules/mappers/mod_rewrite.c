@@ -243,7 +243,6 @@ static cache *cachep;
 
     /* whether proxy module is available or not */
 static int proxy_available;
-static int once_through = 0;
 
 static const char *lockname;
 static apr_lock_t *rewrite_mapr_lock = NULL;
@@ -989,6 +988,16 @@ static void init_module(apr_pool_t *p,
                         server_rec *s)
 {
     apr_status_t rv;
+    void *data;
+    int first_time = 0;
+    const char *userdata_key = "rewrite_init_module";
+
+    apr_get_userdata(&data, userdata_key, s->process->pool);
+    if (!data) {
+        first_time = 1;
+        apr_set_userdata((const void *)1, userdata_key,
+                         apr_null_cleanup, s->process->pool);
+    }
 
     /* check if proxy module is available */
     proxy_available = (ap_find_linked_module("mod_proxy.c") != NULL);
@@ -1010,11 +1019,9 @@ static void init_module(apr_pool_t *p,
      */
     for (; s; s = s->next) {
         open_rewritelog(s, p);
-        if (once_through > 0)
+        if (!first_time)
            run_rewritemap_programs(s, p);
     }
-
-    once_through++;
 }
 
 
