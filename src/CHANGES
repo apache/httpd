@@ -9,7 +9,7 @@ Changes with Apache 1.3.20
      cleared by the operator to resume operation.  This vulnerability
      introduced no identified means of compromising the server's data.
      Reported by Auriemma Luigi <kaino3@genie.it>.
-     [William Rowe, Brian Harvard]
+     [William Rowe, Brian Havard]
 
   *) Resolve the Win32 SSI exec cmd bug, where cmd was not executed
      appropriately against the shell.  [William Rowe]
@@ -427,7 +427,7 @@ Changes with Apache 1.3.13 [not released]
 
   *) Add support for /, //, //servername and //server/sharename 
      parsing of <Directory > blocks under Win32 and OS2.
-     [Tim Costello, William Rowe, Brian Harvard]
+     [Tim Costello, William Rowe, Brian Havard]
 
   *) Expand dbmmanage to allow -d -m -s -p options for Crypt, MD5,
      SHA1 and plaintext password encodings.  Make feature tests a
