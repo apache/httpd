@@ -404,8 +404,8 @@ DefaultType text/plain
 HostnameLookups Off
 
 #
-# LogRotateDaily: If set to 'on' logfiles rotate daily.
-# LogRotateInterval s: If set, logfiles rotate after s seconds.
+# LogRotateDaily: If set to 'on' log files rotate daily.
+# LogRotateInterval n: If set, log files rotate after n minutes.
 # The LogRotateDaily and LogRotateInterval directives are mutually
 # exclusive.  The rotated log file name adds the date suffix of 
 # YYYYMMDD to identify when the log was rotated.
