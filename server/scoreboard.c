@@ -85,8 +85,14 @@ AP_DECLARE_DATA int ap_extended_status = 0;
 AP_DECLARE_DATA apr_time_t ap_restart_time = 0;
 
 #if APR_HAS_SHARED_MEMORY
+
 #include "apr_shm.h"
-static apr_shm_t *scoreboard_shm = NULL;
+
+#ifndef WIN32
+static /* but must be exported to mpm_winnt */
+#endif
+        apr_shm_t *ap_scoreboard_shm = NULL;
+
 #endif
 
 APR_HOOK_STRUCT(
@@ -118,7 +124,7 @@ static apr_status_t ap_cleanup_shared_mem(void *d)
 #if APR_HAS_SHARED_MEMORY
     free(ap_scoreboard_image);
     ap_scoreboard_image = NULL;
-    apr_shm_destroy(scoreboard_shm);
+    apr_shm_destroy(ap_scoreboard_shm);
 #endif
     return APR_SUCCESS;
 }
@@ -165,7 +171,7 @@ static apr_status_t open_scoreboard(apr_pool_t *p)
     char *fname = NULL;
 
 #ifndef WIN32
-    rv = apr_shm_create(&scoreboard_shm, scoreboard_size, fname, p);
+    rv = apr_shm_create(&ap_scoreboard_shm, scoreboard_size, fname, p);
     if ((rv != APR_SUCCESS) && (rv != APR_ENOTIMPL)) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
                      "Fatal error: could not create scoreboard "
@@ -179,7 +185,7 @@ static apr_status_t open_scoreboard(apr_pool_t *p)
         if (ap_scoreboard_fname) {
             fname = ap_server_root_relative(p, ap_scoreboard_fname);
         }
-        rv = apr_shm_create(&scoreboard_shm, scoreboard_size, fname, p);
+        rv = apr_shm_create(&ap_scoreboard_shm, scoreboard_size, fname, p);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
                          "Fatal error: could not open(create) scoreboard");
@@ -203,20 +209,12 @@ apr_status_t reopen_scoreboard(apr_pool_t *p, int detached)
     if (!detached) {
         return APR_SUCCESS;
     }
-    if (ap_scoreboard_fname) {
-        fname = ap_server_root_relative(p, ap_scoreboard_fname);
-    }
-    rv = apr_shm_attach(&scoreboard_shm, fname, p);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                     "Fatal error: could not open(create) scoreboard");
-        return rv;
-    }
-    if (apr_shm_size_get(scoreboard_shm) < scoreboard_size) {
+    if (apr_shm_size_get(ap_scoreboard_shm) < scoreboard_size) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
                      "Fatal error: shared scoreboard too small for child!");
-        apr_shm_detach(scoreboard_shm);
-        scoreboard_shm = NULL;
+        apr_shm_detach(ap_scoreboard_shm);
+        ap_scoreboard_shm = NULL;
+        return APR_EINVAL;
     }
     /* everything will be cleared shortly */
 #endif
@@ -259,7 +257,7 @@ void ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
         if (sb_type == SB_SHARED) {
             void *sb_shared;
             rv = open_scoreboard(p);
-            if (rv || !(sb_shared = apr_shm_baseaddr_get(scoreboard_shm))) {
+            if (rv || !(sb_shared = apr_shm_baseaddr_get(ap_scoreboard_shm))) {
                 exit(APEXIT_INIT); /* XXX need to return an error from this function */
             }
             memset(sb_shared, 0, scoreboard_size);
@@ -268,7 +266,7 @@ void ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
         else if (sb_type == SB_SHARED_CHILD) {
             void *sb_shared;
             rv = reopen_scoreboard(p, 1);
-            if (rv || !(sb_shared = apr_shm_baseaddr_get(scoreboard_shm))) {
+            if (rv || !(sb_shared = apr_shm_baseaddr_get(ap_scoreboard_shm))) {
                 exit(APEXIT_INIT); /* XXX need to return an error from this function */
             }
             ap_init_scoreboard(sb_shared);
@@ -291,10 +289,10 @@ void ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
     if (sb_type != SB_SHARED_CHILD) {
         ap_scoreboard_image->global->sb_type = sb_type;
         ap_scoreboard_image->global->running_generation = running_gen;
-        ap_restart_time = apr_time_now();
         apr_pool_cleanup_register(p, NULL, ap_cleanup_scoreboard,
                                   apr_pool_cleanup_null);
     }
+    ap_restart_time = apr_time_now();
 }
 
 /* Routines called to deal with the scoreboard image
