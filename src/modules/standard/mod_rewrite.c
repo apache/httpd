@@ -1562,7 +1562,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
             return 1;
         }
 
-        /* if this is a implicit redirect in a per-dir rule */
+        /* if this is an implicit redirect in a per-dir rule */
         i = strlen(output);
         if (perdir != NULL
             && (   (i > 7 && strncmp(output, "http://", 7) == 0)
@@ -1594,10 +1594,9 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
             return 1;
         }
 
-        /* add the previously stripped perdir prefix 
-           if the new URI is not a new one (i.e.
-           prefixed by a slash which means that is 
-           no for this per-dir context) */
+        /* add again the previously stripped perdir prefix if the new 
+           URI is not a new one (i.e. prefixed by a slash which means 
+           that it is not for this per-dir context)                    */
         if (prefixstrip && output[0] != '/') {
             rewritelog(r, 3, "[per-dir %s] add per-dir prefix: %s -> %s%s", perdir, output, perdir, output);
             output = pstrcat(r->pool, perdir, output, NULL);
@@ -2403,10 +2402,10 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
         ap_snprintf(redir, sizeof(redir), "/redir#%d", i);
 
     ap_snprintf(str3, sizeof(str3),
-	"%s %s [%s/sid#%lx][rid#%lx/%s%s] (%d) %s\n", str1,
-	current_logtime(r), r->server->server_hostname,
-	(unsigned long)(r->server), (unsigned long)r,
-	type, redir, level, str2);
+                "%s %s [%s/sid#%lx][rid#%lx/%s%s] (%d) %s\n", str1,
+                current_logtime(r), r->server->server_hostname,
+                (unsigned long)(r->server), (unsigned long)r,
+                type, redir, level, str2);
 
     fd_lock(conf->rewritelogfp);
     write(conf->rewritelogfp, str3, strlen(str3));
