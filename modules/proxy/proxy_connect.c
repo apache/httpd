@@ -131,7 +131,9 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
     char buffer[HUGE_STRING_LEN];
     apr_socket_t *client_socket = ap_get_module_config(r->connection->conn_config, &core_module);
     int failed;
-    apr_pollfd_t *pollfd;
+    apr_pollset_t *pollset;
+    apr_pollfd_t pollfd;
+    const apr_pollfd_t *signalled;
     apr_int32_t pollcnt;
     apr_int16_t pollevent;
     apr_sockaddr_t *uri_addr, *connect_addr;
@@ -305,24 +307,28 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
 
 /*    r->sent_bodyct = 1;*/
 
-    if((rv = apr_poll_setup(&pollfd, 2, r->pool)) != APR_SUCCESS)
+    if ((rv = apr_pollset_create(&pollset, 2, r->pool, 0)) != APR_SUCCESS)
     {
 	apr_socket_close(sock);
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-            "proxy: CONNECT: error apr_poll_setup()");
+            "proxy: CONNECT: error apr_pollset_create()");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /* Add client side to the poll */
-    apr_poll_socket_add(pollfd, client_socket, APR_POLLIN);
+    pollfd.p = r->pool;
+    pollfd.desc_type = APR_POLL_SOCKET;
+    pollfd.reqevents = APR_POLLIN;
+    pollfd.desc.s = client_socket;
+    pollfd.client_data = NULL;
+    apr_pollset_add(pollset, &pollfd);
 
     /* Add the server side to the poll */
-    apr_poll_socket_add(pollfd, sock, APR_POLLIN);
+    pollfd.desc.s = sock;
+    apr_pollset_add(pollset, &pollfd);
 
     while (1) { /* Infinite loop until error (one side closes the connection) */
-/*	ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, "proxy: CONNECT: going to sleep (poll)");*/
-        if ((rv = apr_poll(pollfd, 2, &pollcnt, -1)) != APR_SUCCESS)
-        {
+        if ((rv = apr_pollset_poll(pollset, -1, &pollcnt, &signalled)) != APR_SUCCESS) {
 	    apr_socket_close(sock);
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "proxy: CONNECT: error apr_poll()");
             return HTTP_INTERNAL_SERVER_ERROR;
@@ -330,62 +336,66 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
 /*	ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: CONNECT: woke from select(), i=%d", pollcnt);*/
 
-        if (pollcnt) {
-	    apr_poll_revents_get(&pollevent, sock, pollfd);
-            if (pollevent & APR_POLLIN) {
+        for (i = 0; i < pollcnt; i++) {
+            const apr_pollfd_t *cur = &signalled[i];
+
+            if (cur->desc.s == sock) {
+                pollevent = cur->rtnevents;
+                if (pollevent & APR_POLLIN) {
 /*		ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                              "proxy: CONNECT: sock was set");*/
-                nbytes = sizeof(buffer);
-                if (apr_socket_recv(sock, buffer, &nbytes) == APR_SUCCESS) {
-                    o = 0;
-                    i = nbytes;
-                    while(i > 0)
-                    {
-                        nbytes = i;
+                    nbytes = sizeof(buffer);
+                    if (apr_socket_recv(sock, buffer, &nbytes) == APR_SUCCESS) {
+                        o = 0;
+                        i = nbytes;
+                        while(i > 0)
+                        {
+                            nbytes = i;
     /* This is just plain wrong.  No module should ever write directly
      * to the client.  For now, this works, but this is high on my list of
      * things to fix.  The correct line is:
      * if ((nbytes = ap_rwrite(buffer + o, nbytes, r)) < 0)
      * rbb
      */
-                        if (apr_socket_send(client_socket, buffer + o, &nbytes) != APR_SUCCESS)
-			    break;
-                        o += nbytes;
-                        i -= nbytes;
+                            if (apr_socket_send(client_socket, buffer + o, &nbytes) != APR_SUCCESS)
+                                break;
+                            o += nbytes;
+                            i -= nbytes;
+                        }
                     }
+                    else
+                        break;
                 }
-                else
+                else if ((pollevent & APR_POLLERR) || (pollevent & APR_POLLHUP))
                     break;
             }
-            else if ((pollevent & APR_POLLERR) || (pollevent & APR_POLLHUP))
-		break;
-
-
-            apr_poll_revents_get(&pollevent, client_socket, pollfd);
-            if (pollevent & APR_POLLIN) {
+            else if (cur->desc.s == client_socket) {
+                pollevent = cur->rtnevents;
+                if (pollevent & APR_POLLIN) {
 /*		ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                              "proxy: CONNECT: client was set");*/
-                nbytes = sizeof(buffer);
-                if (apr_socket_recv(client_socket, buffer, &nbytes) == APR_SUCCESS) {
-                    o = 0;
-                    i = nbytes;
-                    while(i > 0)
-                    {
-			nbytes = i;
-			if (apr_socket_send(sock, buffer + o, &nbytes) != APR_SUCCESS)
-			    break;
-                        o += nbytes;
-                        i -= nbytes;
+                    nbytes = sizeof(buffer);
+                    if (apr_socket_recv(client_socket, buffer, &nbytes) == APR_SUCCESS) {
+                        o = 0;
+                        i = nbytes;
+                        while(i > 0)
+                        {
+                            nbytes = i;
+                            if (apr_socket_send(sock, buffer + o, &nbytes) != APR_SUCCESS)
+                                break;
+                            o += nbytes;
+                            i -= nbytes;
+                        }
                     }
+                    else
+                        break;
                 }
-                else
+                else if ((pollevent & APR_POLLERR) || (pollevent & APR_POLLHUP))
                     break;
             }
-            else if ((pollevent & APR_POLLERR) || (pollevent & APR_POLLHUP))
-		break;
+            else
+                break;
         }
-        else
-            break;
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
