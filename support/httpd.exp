@@ -455,6 +455,7 @@ apr_lstat
 apr_make_array
 apr_make_dir
 apr_make_hash
+apr_make_os_sock
 apr_make_sub_pool
 apr_make_table
 apr_month_snames
