@@ -190,7 +190,7 @@ int main (int argc, const char * const argv[])
                     nWrite = strlen(errbuf);
                     apr_file_trunc(nLogFD, 0);
                     if (apr_file_write(nLogFD, errbuf, &nWrite) != APR_SUCCESS) {
-                        fprintf(stderr, "Error witing to the file %s\n", buf2);
+                        fprintf(stderr, "Error writing to the file %s\n", buf2);
                         exit(2);
                     }
                 }
