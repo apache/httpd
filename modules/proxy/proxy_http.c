@@ -446,7 +446,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     ap_proxy_clear_connection(p, r->headers_in);
     if (p_conn->close) {
         apr_table_setn(r->headers_in, "Connection", "close");
-        origin->keepalive = 0;
+        origin->keepalive = AP_CONN_CLOSE;
     }
 
     if ( apr_table_get(r->subprocess_env,"force-proxy-request-1.0")) {
@@ -456,7 +456,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     }
     if ( apr_table_get(r->subprocess_env,"proxy-nokeepalive")) {
         apr_table_unset(r->headers_in, "Connection");
-        origin->keepalive = 0;
+        origin->keepalive = AP_CONN_CLOSE;
     }
     ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
@@ -798,7 +798,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             /* cancel keepalive if HTTP/1.0 or less */
             if ((major < 1) || (minor < 1)) {
                 p_conn->close += 1;
-                origin->keepalive = 0;
+                origin->keepalive = AP_CONN_CLOSE;
             }
         } else {
             /* an http/0.9 response */

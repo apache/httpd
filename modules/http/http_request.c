@@ -143,7 +143,7 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
      * connection, be sure that the request body (if any) has been read.
      */
     if (ap_status_drops_connection(r->status)) {
-        r->connection->keepalive = 0;
+        r->connection->keepalive = AP_CONN_CLOSE;
     }
 
     /*
@@ -216,7 +216,7 @@ static void check_pipeline_flush(request_rec *r)
      */
     /* ### shouldn't this read from the connection input filters? */
     /* ### is zero correct? that means "read one line" */
-    if (!r->connection->keepalive || 
+    if (r->connection->keepalive == AP_CONN_CLOSE || 
         ap_get_brigade(r->input_filters, bb, AP_MODE_EATCRLF, 
                        APR_NONBLOCK_READ, 0) != APR_SUCCESS) {
         apr_bucket *e = apr_bucket_flush_create(c->bucket_alloc);

@@ -3293,7 +3293,7 @@ static int net_time_filter(ap_filter_t *f, apr_bucket_brigade *b,
                            ap_input_mode_t mode, apr_read_type_e block,
                            apr_off_t readbytes)
 {
-    int keptalive = f->c->keepalive == 1;
+    int keptalive = f->c->keepalive == AP_CONN_KEEPALIVE;
     apr_socket_t *csd = ap_get_module_config(f->c->conn_config, &core_module);
     int *first_line = f->ctx;
 
@@ -3755,7 +3755,8 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
              && (nbytes + flen < AP_MIN_BYTES_TO_WRITE)
              && !APR_BUCKET_IS_FLUSH(last_e))
             || (nbytes + flen < AP_MIN_BYTES_TO_WRITE 
-                && APR_BUCKET_IS_EOS(last_e) && c->keepalive)) {
+                && APR_BUCKET_IS_EOS(last_e)
+                && c->keepalive == AP_CONN_KEEPALIVE)) {
 
             /* NEVER save an EOS in here.  If we are saving a brigade with
              * an EOS bucket, then we are doing keepalive connections, and
@@ -3824,7 +3825,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
             }
 
 #if APR_HAS_SENDFILE
-            if (!c->keepalive && APR_BUCKET_IS_EOS(last_e)) {
+            if (c->keepalive == AP_CONN_CLOSE && APR_BUCKET_IS_EOS(last_e)) {
                 /* Prepare the socket to be reused */
                 flags |= APR_SENDFILE_DISCONNECT_SOCKET;
             }

@@ -223,7 +223,7 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
      *
      * Note that the condition evaluation order is extremely important.
      */
-    if ((r->connection->keepalive != -1)
+    if ((r->connection->keepalive != AP_CONN_CLOSE)
         && ((r->status == HTTP_NOT_MODIFIED)
             || (r->status == HTTP_NO_CONTENT)
             || r->header_only
@@ -247,7 +247,7 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
             || (r->proto_num >= HTTP_VERSION(1,1)))) {
         int left = r->server->keep_alive_max - r->connection->keepalives;
 
-        r->connection->keepalive = 1;
+        r->connection->keepalive = AP_CONN_KEEPALIVE;
         r->connection->keepalives++;
 
         /* If they sent a Keep-Alive token, send one back */
@@ -281,7 +281,7 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
         apr_table_mergen(r->headers_out, "Connection", "close");
     }
 
-    r->connection->keepalive = 0;
+    r->connection->keepalive = AP_CONN_CLOSE;
 
     return 0;
 }
@@ -1162,7 +1162,7 @@ static void basic_http_header_check(request_rec *r,
     if (r->proto_num == HTTP_VERSION(1,0)
         && apr_table_get(r->subprocess_env, "force-response-1.0")) {
         *protocol = "HTTP/1.0";
-        r->connection->keepalive = -1;
+        r->connection->keepalive = AP_CONN_CLOSE;
     }
     else {
         *protocol = AP_SERVER_PROTOCOL;
@@ -1835,7 +1835,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
         /* if we actually fail here, we want to just return and
          * stop trying to read data from the client.
          */
-        r->connection->keepalive = -1;
+        r->connection->keepalive = AP_CONN_CLOSE;
         return -1;
     }
 
@@ -1882,8 +1882,8 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
      *
      * This function is also a no-op on a subrequest.
      */
-    if (r->main || !r->connection->keepalive
-                || ap_status_drops_connection(r->status)) {
+    if (r->main || r->connection->keepalive == AP_CONN_CLOSE ||
+        ap_status_drops_connection(r->status)) {
         return OK;
     }
 
