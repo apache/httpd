@@ -1541,7 +1541,7 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
                          proxy_function, worker->hostname);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-        worker->status = PROXY_WORKER_INITIALIZED;
+        worker->status |= PROXY_WORKER_INITIALIZED;
     }
 
     if (!PROXY_WORKER_IS_USABLE(worker)) {
