@@ -1321,6 +1321,14 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
         return (NULL);
     }
 
+    if (rr->finfo.filetype == APR_DIR) {
+        /* ap_sub_req_lookup_dirent() adds '/' to end of any directory,
+         * but that messes up our attempt to find relevant
+         * AddDescription directives.
+         */
+        rr->filename[strlen(rr->filename) - 1] = '\0';
+    }
+
     p = (struct ent *) apr_pcalloc(r->pool, sizeof(struct ent));
     if (dirent->filetype == APR_DIR) {
         p->name = apr_pstrcat(r->pool, dirent->name, "/", NULL);
