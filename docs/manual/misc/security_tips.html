@@ -20,17 +20,20 @@
 
       <li><a href="#ssi">Server Side Includes</a></li>
 
+      <li><a href="#cgi">CGI in General</a></li>
+
       <li><a href="#nsaliasedcgi">Non Script Aliased CGI</a></li>
 
       <li><a href="#saliasedcgi">Script Aliased CGI</a></li>
 
-      <li><a href="#cgi">CGI in General</a></li>
-
-      <li><a href="#systemsettings">Protecting System
+     <li><a href="#systemsettings">Protecting System
       Settings</a></li>
 
       <li><a href="#protectserverfiles">Protect Server Files by
       Default</a></li>
+
+      <li><a href="#watchyourlogs">Watching Your Logs</a></li>
+
     </ul>
     <hr />
 
@@ -140,6 +143,29 @@
 
     <hr />
 
+    <h2><a id="cgi" name="cgi">CGI in General</a></h2>
+
+    <p>First of all, you always have to remember that you must trust
+    the writers of the CGI scripts/programs or your ability to spot
+    potential security holes in CGI, whether they were deliberate or
+    accidental.  CGI scripts can run essentially arbitrary commands
+    on your system with the permissions of the web server user and can
+    therefore be extremely dangerous if they are not carefully
+    checked.</p>
+
+    <p>All the CGI scripts will run as the same user, so they have
+    potential to conflict (accidentally or deliberately) with other
+    scripts <em>e.g.</em> User A hates User B, so he writes a
+    script to trash User B's CGI database. One program which can be
+    used to allow scripts to run as different users is <a
+    href="../suexec.html">suEXEC</a> which is included with Apache
+    as of 1.2 and is called from special hooks in the Apache server
+    code. Another popular way of doing this is with <a
+    href="http://wwwcgi.umr.edu/~cgiwrap/">CGIWrap</a>.</p>
+
+    <p></p>
+    <hr />
+
     <h2><a id="nsaliasedcgi" name="nsaliasedcgi">Non Script Aliased
     CGI</a></h2>
 
@@ -172,25 +198,6 @@
 
     <p>Most sites choose this option over the non script aliased
     CGI approach.</p>
-
-    <p></p>
-    <hr />
-
-    <h2><a id="cgi" name="cgi">CGI in General</a></h2>
-
-    <p>Always remember that you must trust the writers of the CGI
-    script/programs or your ability to spot potential security
-    holes in CGI, whether they were deliberate or accidental.</p>
-
-    <p>All the CGI scripts will run as the same user, so they have
-    potential to conflict (accidentally or deliberately) with other
-    scripts <em>e.g.</em> User A hates User B, so he writes a
-    script to trash User B's CGI database. One program which can be
-    used to allow scripts to run as different users is <a
-    href="../suexec.html">suEXEC</a> which is included with Apache
-    as of 1.2 and is called from special hooks in the Apache server
-    code. Another popular way of doing this is with <a
-    href="http://wwwcgi.umr.edu/~cgiwrap/">CGIWrap</a>.</p>
 
     <p></p>
     <hr />
@@ -276,6 +283,56 @@
     <dl>
       <dd><samp>UserDir&nbsp;disabled&nbsp;root</samp></dd>
     </dl>
+
+    <p></p>
+    <hr />
+
+    <h2><a id="watchyourlogs" name="watchyourlogs">
+    Watching Your Logs</a></h2>
+
+    <p>To keep up-to-date with what is actually going on against your
+    server you have to check the <a href="../logs.html">Log Files</a>.
+    Even though the log files only reports what has already happend,
+    they will give you some understanding of what attacks is thrown
+    against the server and allows you to check if the necessary level
+    of security is present.</p>
+
+    <p>A couple of examples:</p>
+   <ol>
+   <li><samp>grep -c "/jsp/source.jsp?/jsp/ /jsp/source.jsp??"
+   access_log</samp></li> <li><samp>grep "client denied" error_log |
+   tail -n 10 </samp></li>
+    </ol>
+
+   <p>The first example will list the number of attacks trying to
+   exploit the <a
+   href="http://online.securityfocus.com/bid/4876/info/">Apache Tomcat
+   Source.JSP Malformed Request Information Disclosure
+   Vulnerability</a>, the second example will list the ten last denied
+   clients, for example:</p>
+
+  <dl>
+  <dd><samp>[Thu Jul 11 17:18:39 2002] [error] [client foo.bar.com]
+  client denied by server configuration:
+  /usr/local/apache/htdocs/.htpasswd</samp></dd>
+  </dl>
+
+    <p>As you can see, the log files only report what already has
+    happend, so if the client had been able to access the
+    <samp>.htpasswd</samp> file you would have seen something similar
+    to <samp>foo.bar.com - - [12/Jul/2002:01:59:13 +0200] "GET
+    /.htpasswd HTTP/1.1"</samp> in your <a
+    href="../logs.html#accesslog">Access Log</a>. This means you
+    probably commented out the following in your server configuration
+    file:</p>
+
+   <pre>
+   &lt;Files ~ "^\.ht"&gt;
+    Order allow,deny
+    Deny from all
+   &lt;/Files&gt;
+   </pre>
+
     <hr />
 
     <p>Please send any other useful security tips to The Apache
@@ -288,4 +345,6 @@
     <p><!--#include virtual="footer.html" --></p>
   </body>
 </html>
+
+
 
