@@ -915,6 +915,13 @@ table div.warning {
     margin-right: 1em;
 }
 
+div.outofdate {
+    background-color: #ffffe0;
+    color: #036;
+    padding: 0.5em;
+    margin: 1em 2em 1em 1em;
+}
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * quotations, indented paragraphs, forms and figures
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */

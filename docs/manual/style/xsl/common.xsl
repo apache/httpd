@@ -47,7 +47,8 @@
 </xsl:variable>
 
 <!-- relative path to /manual/ -->
-<xsl:variable name="path" select="document(/*/@metafile)/metafile/relpath" />
+<xsl:variable name="metafile" select="document(/*/@metafile)/metafile" />
+<xsl:variable name="path"     select="$metafile/relpath" />
 
 <!-- load outsourced page types -->
 <xsl:include href="moduleindex.xsl" />
@@ -248,6 +249,19 @@
 
 
 <!-- ==================================================================== -->
+<!-- out of date                                                          -->
+<!-- ==================================================================== -->
+<xsl:template name="outofdate">
+<xsl:if test="$metafile/variants/variant[.=$messages/@lang]/@outdated = 'yes'">
+    &lf;
+    <div class="outofdate">
+        <xsl:value-of select="$messages/message[@name='outofdate']"/>
+    </div>
+</xsl:if>
+</xsl:template>
+
+
+<!-- ==================================================================== -->
 <!-- page bottom                                                          -->
 <!-- ==================================================================== -->
 <xsl:template name="bottom">
@@ -283,7 +297,6 @@
 <!-- ==================================================================== -->
 <xsl:template name="langavail">
 <xsl:param name="position" select="'top'" />
-<xsl:variable name="metafile" select="document(/*/@metafile)/metafile" />
 
 <xsl:if test="not($is-chm or $is-zip)">
 <div class="{$position}lang">&lf;
@@ -332,6 +345,11 @@
     </p>&lf;
 </div> <!-- /.{$position}lang -->
 </xsl:if>
+
+<xsl:if test="$position = 'top'">
+    <xsl:call-template name="outofdate" />
+</xsl:if>
+
 </xsl:template>
 <!-- /langavail -->
 
