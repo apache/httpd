@@ -470,7 +470,7 @@ require valid-user
       </li>
 
       <li>
-        The next example is similar to the previous one, but is
+        The next example is similar to the previous one, but it
         uses the common name instead of the UID. Note that this
         could be problematical if multiple people in the directory
         share the same <code>cn</code>, because a search on <code>cn</code>
@@ -512,7 +512,7 @@ require valid-user
         new LDAP group and ensure that the group's members remain
         synchronized with the pager users. This becomes trivial
         with filters. The goal is to grant access to anyone who has
-        a filter, plus grant access to Joe Manager, who doesn't
+        a pager, plus grant access to Joe Manager, who doesn't
         have a pager, but does need to access the same
         resource:</p>
 <div class="example"><p><code>
@@ -522,11 +522,7 @@ require valid-user
 
         <p>This last may look confusing at first, so it helps to
         evaluate what the search filter will look like based on who
-        connects, as shown below. The text in blue is the part that
-        is filled in using the attribute specified in the URL. The
-        text in red is the part that is filled in using the filter
-        specified in the URL. The text in green is filled in using
-        the information that is retrieved from the HTTP client. If
+        connects, as shown below.  If
         Fred User connects as <code>fuser</code>, the filter would look
         like</p>
 
