@@ -224,6 +224,12 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     for (s = base_server; s; s = s->next) {
         sc = mySrvConfig(s);
 
+        /*
+         * Create the server host:port string because we need it a lot
+         */
+        sc->szVHostID = ssl_util_vhostid(p, s);
+        sc->nVHostID_length = strlen(sc->szVHostID);
+
         /* Fix up stuff that may not have been set */
         if (sc->bEnabled == UNSET) {
             sc->bEnabled = FALSE;
@@ -300,9 +306,8 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
             continue;
         }
 
-        ssl_log(s, SSL_LOG_INFO,
-                "Init: Configuring server %s for SSL protocol",
-                ssl_util_vhostid(p, s));
+        ssl_log(s, SSL_LOG_INFO|SSL_INIT,
+                "Configuring server for SSL protocol");
 
         /*
          * Read the server certificate and key
@@ -366,7 +371,6 @@ static SSL_CTX *ssl_init_ctx(server_rec *s,
                              SSLSrvConfigRec *sc)
 {
     SSL_CTX *ctx = NULL;
-    const char *vhost_id = sc->szVHostID;
     char *cp;
     int protocol = sc->nProtocol;
 
@@ -374,9 +378,8 @@ static SSL_CTX *ssl_init_ctx(server_rec *s,
      *  Create the new per-server SSL context
      */
     if (protocol == SSL_PROTOCOL_NONE) {
-        ssl_log(s, SSL_LOG_ERROR,
-                "Init: (%s) No SSL protocols available [hint: SSLProtocol]",
-                vhost_id);
+        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
+                "No SSL protocols available [hint: SSLProtocol]");
         ssl_die();
     }
 
@@ -387,9 +390,8 @@ static SSL_CTX *ssl_init_ctx(server_rec *s,
                      NULL);
     cp[strlen(cp)-2] = NUL;
 
-    ssl_log(s, SSL_LOG_TRACE,
-            "Init: (%s) Creating new SSL context (protocols: %s)",
-            vhost_id, cp);
+    ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
+            "Creating new SSL context (protocols: %s)", cp);
 
     if (protocol == SSL_PROTOCOL_SSLV2) {
         ctx = SSL_CTX_new(SSLv2_server_method());  /* only SSLv2 is left */
@@ -454,7 +456,6 @@ static void ssl_init_verify(server_rec *s,
                             SSLSrvConfigRec *sc)
 {
     SSL_CTX *ctx = sc->pSSLCtx;
-    const char *vhost_id = sc->szVHostID;
 
     int verify = SSL_VERIFY_NONE;
     STACK_OF(X509_NAME) *ca_list;
@@ -486,16 +487,16 @@ static void ssl_init_verify(server_rec *s,
      * Configure Client Authentication details
      */
     if (sc->szCACertificateFile || sc->szCACertificatePath) {
-        ssl_log(s, SSL_LOG_TRACE,
-                "Init: (%s) Configuring client authentication", vhost_id);
+        ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
+                "Configuring client authentication");
 
         if (!SSL_CTX_load_verify_locations(ctx,
                                            sc->szCACertificateFile,
                                            sc->szCACertificatePath))
         {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                    "Init: (%s) Unable to configure verify locations "
-                    "for client authentication", vhost_id);
+            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+                    "Unable to configure verify locations "
+                    "for client authentication");
             ssl_die();
         }
 
@@ -503,10 +504,9 @@ static void ssl_init_verify(server_rec *s,
                                       sc->szCACertificateFile,
                                       sc->szCACertificatePath);
         if (!ca_list) {
-            ssl_log(s, SSL_LOG_ERROR,
-                    "Init: (%s) Unable to determine list of available "
-                    "CA certificates for client authentication",
-                    vhost_id);
+            ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
+                    "Unable to determine list of available "
+                    "CA certificates for client authentication");
             ssl_die();
         }
 
@@ -535,7 +535,6 @@ static void ssl_init_cipher_suite(server_rec *s,
                                   SSLSrvConfigRec *sc)
 {
     SSL_CTX *ctx = sc->pSSLCtx;
-    const char *vhost_id = sc->szVHostID;
     const char *suite = sc->szCipherSuite;
 
     /*
@@ -545,14 +544,13 @@ static void ssl_init_cipher_suite(server_rec *s,
         return;
     }
 
-    ssl_log(s, SSL_LOG_TRACE,
-            "Init: (%s) Configuring permitted SSL ciphers [%s]", 
-            vhost_id, suite);
+    ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
+            "Configuring permitted SSL ciphers [%s]", 
+            suite);
 
     if (!SSL_CTX_set_cipher_list(ctx, suite)) {
-        ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                "Init: (%s) Unable to configure permitted SSL ciphers",
-                vhost_id);
+        ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+                "Unable to configure permitted SSL ciphers");
         ssl_die();
     }
 }
@@ -562,8 +560,6 @@ static void ssl_init_crl(server_rec *s,
                          apr_pool_t *ptemp,
                          SSLSrvConfigRec *sc)
 {
-    const char *vhost_id = sc->szVHostID;
-
     /*
      * Configure Certificate Revocation List (CRL) Details
      */
@@ -572,19 +568,17 @@ static void ssl_init_crl(server_rec *s,
         return;
     }
 
-    ssl_log(s, SSL_LOG_TRACE,
-            "Init: (%s) Configuring certificate revocation facility",
-            vhost_id);
+    ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
+            "Configuring certificate revocation facility");
 
     sc->pRevocationStore =
         SSL_X509_STORE_create((char *)sc->szCARevocationFile,
                               (char *)sc->szCARevocationPath);
 
     if (!sc->pRevocationStore) {
-        ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                "Init: (%s) Unable to configure X.509 CRL storage "
-                "for certificate revocation",
-                vhost_id);
+        ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+                "Unable to configure X.509 CRL storage "
+                "for certificate revocation");
         ssl_die();
     }
 }
@@ -599,7 +593,8 @@ void ssl_init_ConfigureServer(server_rec *s,
 {
     SSLModConfigRec *mc = myModConfig(s);
     char *cp;
-    const char *vhost_id, *rsa_id, *dsa_id;
+    const char *rsa_id, *dsa_id;
+    const char *vhost_id = sc->szVHostID;
     EVP_PKEY *pkey;
     SSL_CTX *ctx;
     ssl_asn1_t *asn1;
@@ -609,19 +604,12 @@ void ssl_init_ConfigureServer(server_rec *s,
     int i, n;
 
     /*
-     * Create the server host:port string because we need it a lot
-     */
-    sc->szVHostID = vhost_id = ssl_util_vhostid(p, s);
-    sc->nVHostID_length = strlen(sc->szVHostID);
-
-    /*
      * Now check for important parameters and the
      * possibility that the user forgot to set them.
      */
     if (!sc->szPublicCertFiles[0]) {
-        ssl_log(s, SSL_LOG_ERROR,
-                "Init: (%s) No SSL Certificate set [hint: SSLCertificateFile]",
-                vhost_id);
+        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
+                "No SSL Certificate set [hint: SSLCertificateFile]");
         ssl_die();
     }
 
@@ -631,9 +619,9 @@ void ssl_init_ConfigureServer(server_rec *s,
     if (sc->pPublicCert[SSL_AIDX_RSA] ||
         sc->pPublicCert[SSL_AIDX_DSA])
     {
-        ssl_log(s, SSL_LOG_ERROR,
-                "Init: (%s) Illegal attempt to re-initialise SSL for server "
-                "(theoretically shouldn't happen!)", vhost_id);
+        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
+                "Illegal attempt to re-initialise SSL for server "
+                "(theoretically shouldn't happen!)");
         ssl_die();
     }
 
@@ -662,24 +650,21 @@ void ssl_init_ConfigureServer(server_rec *s,
     dsa_id = ssl_asn1_table_keyfmt(ptemp, vhost_id, SSL_AIDX_DSA);
 
     if ((asn1 = ssl_asn1_table_get(mc->tPublicCert, rsa_id))) {
-        ssl_log(s, SSL_LOG_TRACE,
-                "Init: (%s) Configuring RSA server certificate",
-                vhost_id);
+        ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
+                "Configuring RSA server certificate");
 
         ptr = asn1->cpData;
         if (!(sc->pPublicCert[SSL_AIDX_RSA] =
               d2i_X509(NULL, &ptr, asn1->nData)))
         {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                    "Init: (%s) Unable to import RSA server certificate",
-                    vhost_id);
+            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+                    "Unable to import RSA server certificate");
             ssl_die();
         }
 
         if (SSL_CTX_use_certificate(ctx, sc->pPublicCert[SSL_AIDX_RSA]) <= 0) {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                    "Init: (%s) Unable to configure RSA server certificate",
-                    vhost_id);
+            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+                    "Unable to configure RSA server certificate");
             ssl_die();
         }
 
@@ -687,24 +672,21 @@ void ssl_init_ConfigureServer(server_rec *s,
     }
 
     if ((asn1 = ssl_asn1_table_get(mc->tPublicCert, dsa_id))) {
-        ssl_log(s, SSL_LOG_TRACE,
-                "Init: (%s) Configuring DSA server certificate",
-                vhost_id);
+        ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
+                "Configuring DSA server certificate");
 
         ptr = asn1->cpData;
         if (!(sc->pPublicCert[SSL_AIDX_DSA] =
               d2i_X509(NULL, &ptr, asn1->nData)))
         {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                    "Init: (%s) Unable to import DSA server certificate",
-                    vhost_id);
+            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+                    "Unable to import DSA server certificate");
             ssl_die();
         }
 
         if (SSL_CTX_use_certificate(ctx, sc->pPublicCert[SSL_AIDX_DSA]) <= 0) {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                    "Init: (%s) Unable to configure DSA server certificate",
-                    vhost_id);
+            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+                    "Unable to configure DSA server certificate");
             ssl_die();
         }
 
@@ -712,13 +694,11 @@ void ssl_init_ConfigureServer(server_rec *s,
     }
 
     if (!ok) {
-        ssl_log(s, SSL_LOG_ERROR,
-                "Init: (%s) Oops, no RSA or DSA server certificate found?!",
-                vhost_id);
-        ssl_log(s, SSL_LOG_ERROR,
-                "Init: (%s) You have to perform a *full* server restart "
-                "when you added or removed a certificate and/or key file",
-                vhost_id);
+        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
+                "Oops, no RSA or DSA server certificate found?!");
+        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
+                "You have to perform a *full* server restart "
+                "when you added or removed a certificate and/or key file");
         ssl_die();
     }
 
@@ -728,27 +708,27 @@ void ssl_init_ConfigureServer(server_rec *s,
     for (i = 0; i < SSL_AIDX_MAX; i++) {
         if (sc->pPublicCert[i]) {
             if (SSL_X509_isSGC(sc->pPublicCert[i])) {
-                ssl_log(s, SSL_LOG_INFO,
-                        "Init: (%s) %s server certificate enables "
+                ssl_log(s, SSL_LOG_INFO|SSL_INIT,
+                        "%s server certificate enables "
                         "Server Gated Cryptography (SGC)", 
-                        vhost_id, ssl_asn1_keystr(i));
+                        ssl_asn1_keystr(i));
             }
 
             if (SSL_X509_getBC(sc->pPublicCert[i], &is_ca, &pathlen)) {
                 if (is_ca) {
-                    ssl_log(s, SSL_LOG_WARN,
-                            "Init: (%s) %s server certificate "
+                    ssl_log(s, SSL_LOG_WARN|SSL_INIT,
+                            "%s server certificate "
                             "is a CA certificate "
                             "(BasicConstraints: CA == TRUE !?)",
-                            vhost_id, ssl_asn1_keystr(i));
+                            ssl_asn1_keystr(i));
                 }
 
                 if (pathlen > 0) {
-                    ssl_log(s, SSL_LOG_WARN,
-                            "Init: (%s) %s server certificate "
+                    ssl_log(s, SSL_LOG_WARN|SSL_INIT,
+                            "%s server certificate "
                             "is not a leaf certificate "
                             "(BasicConstraints: pathlen == %d > 0 !?)",
-                            vhost_id, ssl_asn1_keystr(i), pathlen);
+                            ssl_asn1_keystr(i), pathlen);
                 }
             }
 
@@ -759,18 +739,18 @@ void ssl_init_ConfigureServer(server_rec *s,
                     (apr_fnmatch(cp, s->server_hostname,
                                  fnm_flags) == FNM_NOMATCH))
                 {
-                    ssl_log(s, SSL_LOG_WARN,
-                            "Init: (%s) %s server certificate "
+                    ssl_log(s, SSL_LOG_WARN|SSL_INIT,
+                            "%s server certificate "
                             "wildcard CommonName (CN) `%s' "
                             "does NOT match server name!?",
-                            vhost_id, ssl_asn1_keystr(i), cp);
+                            ssl_asn1_keystr(i), cp);
                 }
                 else if (strNE(s->server_hostname, cp)) {
-                    ssl_log(s, SSL_LOG_WARN,
-                            "Init: (%s) %s server certificate "
+                    ssl_log(s, SSL_LOG_WARN|SSL_INIT,
+                            "%s server certificate "
                             "CommonName (CN) `%s' "
                             "does NOT match server name!?",
-                            vhost_id, ssl_asn1_keystr(i), cp);
+                            ssl_asn1_keystr(i), cp);
                 }
             }
         }
@@ -782,24 +762,21 @@ void ssl_init_ConfigureServer(server_rec *s,
     ok = FALSE;
 
     if ((asn1 = ssl_asn1_table_get(mc->tPrivateKey, rsa_id))) {
-        ssl_log(s, SSL_LOG_TRACE,
-                "Init: (%s) Configuring RSA server private key",
-                vhost_id);
+        ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
+                "Configuring RSA server private key");
 
         ptr = asn1->cpData;
         if (!(sc->pPrivateKey[SSL_AIDX_RSA] = 
               d2i_PrivateKey(EVP_PKEY_RSA, NULL, &ptr, asn1->nData)))
         {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                    "Init: (%s) Unable to import RSA server private key",
-                    vhost_id);
+            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+                    "Unable to import RSA server private key");
             ssl_die();
         }
 
         if (SSL_CTX_use_PrivateKey(ctx, sc->pPrivateKey[SSL_AIDX_RSA]) <= 0) {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                    "Init: (%s) Unable to configure RSA server private key",
-                    vhost_id);
+            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+                    "Unable to configure RSA server private key");
             ssl_die();
         }
 
@@ -807,24 +784,21 @@ void ssl_init_ConfigureServer(server_rec *s,
     }
 
     if ((asn1 = ssl_asn1_table_get(mc->tPrivateKey, dsa_id))) {
-        ssl_log(s, SSL_LOG_TRACE,
-                "Init: (%s) Configuring DSA server private key",
-                vhost_id);
+        ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
+                "Configuring DSA server private key");
 
         ptr = asn1->cpData;
         if (!(sc->pPrivateKey[SSL_AIDX_DSA] = 
               d2i_PrivateKey(EVP_PKEY_DSA, NULL, &ptr, asn1->nData)))
         {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                    "Init: (%s) Unable to import DSA server private key",
-                    vhost_id);
+            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+                    "Unable to import DSA server private key");
             ssl_die();
         }
 
         if (SSL_CTX_use_PrivateKey(ctx, sc->pPrivateKey[SSL_AIDX_DSA]) <= 0) {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                    "Init: (%s) Unable to configure DSA server private key",
-                    vhost_id);
+            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+                    "Unable to configure DSA server private key");
             ssl_die();
         }
 
@@ -832,9 +806,8 @@ void ssl_init_ConfigureServer(server_rec *s,
     }
 
     if (!ok) {
-        ssl_log(s, SSL_LOG_ERROR,
-                "Init: (%s) Oops, no RSA or DSA server private key found?!",
-                vhost_id);
+        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
+                "Oops, no RSA or DSA server private key found?!");
         ssl_die();
     }
 
@@ -883,16 +856,15 @@ void ssl_init_ConfigureServer(server_rec *s,
                                           (char *)sc->szCertificateChain, 
                                           skip_first, NULL);
         if (n < 0) {
-            ssl_log(s, SSL_LOG_ERROR,
-                    "Init: (%s) Failed to configure CA certificate chain!",
-                    vhost_id);
+            ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
+                    "Failed to configure CA certificate chain!");
             ssl_die();
         }
 
-        ssl_log(s, SSL_LOG_TRACE,
-                "Init: (%s) Configuring server certificate chain "
+        ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
+                "Configuring server certificate chain "
                 "(%d CA certificate%s)",
-                vhost_id, n, n == 1 ? "" : "s");
+                n, n == 1 ? "" : "s");
     }
 }
 
@@ -1046,8 +1018,8 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
         apr_int32_t finfo_flags = APR_FINFO_MIN|APR_FINFO_NAME;
 
         if (apr_dir_open(&dir, ca_path, ptemp) != APR_SUCCESS) {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
-                    "Init: Failed to open SSLCACertificatePath `%s'",
+            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO|SSL_INIT,
+                    "Failed to open SSLCACertificatePath `%s'",
                     ca_path);
             ssl_die();
         }
