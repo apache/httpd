@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Hook mod_rewrite's type checker before mod_mime's one. That way the
+     RewriteRule [T=...] Flag should work as expected now. PR 19626.
+     [André Malo]
+
   *) Fix a problem with namespace mappings being dropped in mod_dav_fs; 
      if any property values were set which defined namespaces these 
      came out mangled in the PROPFIND response.  PR 11637.
