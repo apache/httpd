@@ -561,7 +561,7 @@ static const char *set_qop(cmd_parms *cmd, void *config, const char *op)
     memcpy(tmp, conf->qop_list, cnt*sizeof(char*));
     tmp[cnt]   = ap_pstrdup(cmd->pool, op);
     tmp[cnt+1] = NULL;
-    conf->qop_list = tmp;
+    conf->qop_list = (const char **)tmp;
 
     return NULL;
 }
