@@ -88,6 +88,25 @@ document, or in the <CODE>src/CHANGES</CODE> file.
     </PRE>
     </P>
     This change was made for consistency in the config language.
+  <LI><STRONG>As of Apache 1.3.1, methods listed in <SAMP>&lt;Limit&gt;</SAMP>
+    directives must be uppercase.</STRONG>  Method names, such as
+    <SAMP>GET</SAMP>, <SAMP>POST</SAMP>, and <SAMP>PUT</SAMP> are
+    defined as being case-sensitive.  That is, a <SAMP>GET</SAMP>
+    request is different from a <SAMP>get</SAMP> request.  Prior
+    to Apache 1.3.1, the <SAMP>&lt;Limit&gt;</SAMP> directive
+    parser incorrectly treated both of these as being the same.
+    Apache's built-in method limit processing currently only understands
+    uppercase method names, so if you've used clauses such as
+    "<SAMP>&lt;Limit&nbsp;Get&nbsp;post&gt;</SAMP>" in your configuration
+    files, you need to correct them to use uppercase names.
+    <P>
+    Unrecognised method names in the server configuration files will
+    result in the server logging an error message and failing to start.
+    In <SAMP>.htaccess</SAMP> files, unknown methods will cause the
+    server to log an error to its error log and return an 'Internal
+    Server Error' page to the client.
+    </P>
+  </LI>
   <LI><STRONG>The default Apache ServerRoot directory changed</STRONG>
     from the NCSA-compatible <SAMP>/usr/local/etc/httpd/</SAMP> to
     <SAMP>/usr/local/apache/</SAMP>. This change covers only the default
