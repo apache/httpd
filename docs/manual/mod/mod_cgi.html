@@ -28,6 +28,7 @@
     <h2>Summary</h2>
     <!-- XXX: Should have references to CGI definition/RFC -->
     <!-- XXX: Should mention Options ExecCGI  -->
+    <!-- XXX: Should mention AcceptPathInfo   -->
 
     <p>Any file that has the mime type
     <code>application/x-httpd-cgi</code> or handler
@@ -75,6 +76,18 @@
     specification</a>, with the following provisions: 
 
     <dl>
+      <dt>PATH_INFO</dt>
+
+      <dd>This will not be available if the <a
+      href="core.html#acceptpathinfo"><code>AcceptPathInfo</code></a>
+      directive is explicitly set to <code>off</code>.  The default
+      behavior, if AcceptPathInfo is not given, is that mod_cgi will
+      accept path info (trailing /more/path/info following the script
+      filename in the URI), while the core server will return a 404
+      NOT FOUND error for requests with additional path info.  
+      Omitting the AcceptPathInfo directive has the same effect as 
+      setting it <code>on</code> for mod_cgi requests.</dd>
+
       <dt>REMOTE_HOST</dt>
 
       <dd>This will only be set if <a
