@@ -104,6 +104,7 @@ if test "$ac_cv_func_select_arg1" != "int" \
         [Define if arguments to select() aren't what we expect])
 fi
 
+AM_DISABLE_SHARED
 AM_PROG_LIBTOOL
 
 dnl ## Checking command-line options
