@@ -744,7 +744,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
 AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb)
 {
     char *last_field = NULL;
-    apr_size_t last_len;
+    apr_size_t last_len = 0;
     apr_size_t alloc_len = 0;
     char *field;
     char *value;
