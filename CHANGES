@@ -1,16 +1,10 @@
-Changes with Apache 2.0.25-dev
+Changes with Apache 2.0.24
 
   *) Fix a couple of issues in mod_include when the tag appeared at
      offsets near 8192 in the file being parsed.  [Jeff Trawick]
 
-  *) Fix --enable-modules=all breakage with mod_auth_db and mod_auth_digest
-     by allowing a module to disable itself if its prerequisites are not
-     met.  [Justin Erenkrantz]
-
   *) Fix an assertion failure in mod_ssl when the keepalive timeout is  
      reached.  [Jeff Trawick]
-
-Changes with Apache 2.0.24
 
   *) Numerous improvements to the Win32 build system.  Introduced command line
      builds without requiring .mak files for MSVC 6.0 and later versions.
