@@ -424,6 +424,7 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
             SSL_set_shutdown(pRec->pssl, SSL_RECEIVED_SHUTDOWN);
             SSL_smart_shutdown(pRec->pssl);
             SSL_free(pRec->pssl);
+            pRec->pssl = NULL; /* so filters know we've been shutdown */
             apr_table_setn(c->notes, "ssl", NULL);
             c->aborted = 1;
             return APR_EGENERAL;
