@@ -568,6 +568,11 @@
     <p>This directive changes the string that mod_include looks for 
     to mark the end of an include element.</p>
 
+    <example>
+    <title>Example</title>
+    SSIEndTag "%&gt;"
+    </example>
+
 </usage>
 <seealso><directive module="mod_include">SSIStartTag</directive></seealso>
 </directivesynopsis>
@@ -586,6 +591,12 @@ an unset variable is echoed</description>
 <usage>
     <p>This directive changes the string that mod_include displays
     when a variable is not set and &quot;echoed&quot;.</p>
+
+    <example>
+    <title>Example</title>
+    SSIUndefinedEcho "[ No Value ]"
+    </example>
+
 </usage>
 </directivesynopsis>
 
@@ -614,6 +625,11 @@ an unset variable is echoed</description>
     <p>This directive has the same effect as the <code>&lt;!--#config
     errmsg=<em>message</em> --&gt;</code> element.</p>
 
+    <example>
+    <title>Example</title>
+    SSIErrorMsg "&lt;!-- Error --&gt;"
+    </example>
+
 </usage>
 </directivesynopsis>
 
@@ -637,6 +653,21 @@ include element</syntax>
     <p>You may want to use this option if you have 2 servers parsing the
     output of a file each processing different commands (possibly at
     different times).</p> 
+
+    <example>
+    <title>Example</title>
+    SSIStartTag "&lt;%"
+    </example>
+
+    <p>The example given above, in conjunction with a matching
+    <directive module="mod_include">SSIEndTag</directive>, will 
+    allow you to use SSI directives as shown in the example 
+    below:</p>
+
+    <example>
+    <title>SSI directives with alternate start and end tags</title>
+    &lt;%#printenv %&gt;
+    </example>
 
 </usage>
 <seealso><directive module="mod_include">SSIEndTag</directive></seealso>
@@ -664,6 +695,15 @@ displayed</description>
 
     <p>This directive has the same effect as the <code>&lt;!--#config
     timefmt=<em>formatstring</em> --&gt;</code> element.</p>
+
+    <example>
+    <title>Example</title>
+    SSITimeFormat "%R, %B %d, %Y"
+    </example>
+
+    <p>The above directive would cause times to be displayed in the
+    format "22:26, June 14, 2002".</p>
+
 </usage>
 </directivesynopsis>
 

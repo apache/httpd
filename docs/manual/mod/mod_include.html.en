@@ -2,7 +2,7 @@
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 This file is generated from xml source: DO NOT EDIT
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>mod_include- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_include</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Server-parsed html documents (Server Side Includes)</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>include_module</td></tr></table></td></tr></table><h2>Summary</h2>
+        --><title>mod_include- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_include</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:</span></td><td>Server-parsed html documents (Server Side Includes)</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>include_module</td></tr></table></td></tr></table><h2>Summary</h2>
 
     <p>This module provides a filter which will process files
     before they are sent to the client. The processing is
@@ -528,6 +528,11 @@
     <p>This directive changes the string that mod_include looks for 
     to mark the end of an include element.</p>
 
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+    
+    SSIEndTag "%&gt;"
+    </code></td></tr></table></blockquote>
+
 <p><strong>See also </strong></p><ul><li><a href="#ssistarttag" class="directive"><code class="directive">SSIStartTag</code></a></li></ul><hr/><h2><a name="SSIErrorMsg">SSIErrorMsg</a> <a name="ssierrormsg">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Error message displayed when there is an SSI error</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSIErrorMsg <em>message</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSIErrorMsg 
 "[an error occurred while processing this directive]"</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>All</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_include</td></tr><tr><td nowrap="nowrap" align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in version 2.0.30 and later.</td></tr></table></td></tr></table>
     <p>The SSIErrorMsg directive changes the error message displayed
@@ -539,6 +544,11 @@
     <p>This directive has the same effect as the <code>&lt;!--#config
     errmsg=<em>message</em> --&gt;</code> element.</p>
 
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+    
+    SSIErrorMsg "&lt;!-- Error --&gt;"
+    </code></td></tr></table></blockquote>
+
 <hr/><h2><a name="SSIStartTag">SSIStartTag</a> <a name="ssistarttag">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>String that starts an include element</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>Changes the string that mod_include looks for to start an
 include element</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSIStartTag "&lt;!--"</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_include</td></tr><tr><td nowrap="nowrap" align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in version 2.0.30 and later.</td></tr></table></td></tr></table>
 
@@ -549,6 +559,21 @@ include element</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#De
     output of a file each processing different commands (possibly at
     different times).</p> 
 
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+    
+    SSIStartTag "&lt;%"
+    </code></td></tr></table></blockquote>
+
+    <p>The example given above, in conjunction with a matching
+    <a href="#ssiendtag" class="directive"><code class="directive">SSIEndTag</code></a>, will 
+    allow you to use SSI directives as shown in the example 
+    below:</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>SSI directives with alternate start and end tags</strong></p><code>
+    
+    &lt;%#printenv %&gt;
+    </code></td></tr></table></blockquote>
+
 <p><strong>See also </strong></p><ul><li><a href="#ssiendtag" class="directive"><code class="directive">SSIEndTag</code></a></li></ul><hr/><h2><a name="SSITimeFormat">SSITimeFormat</a> <a name="ssitimeformat">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Configures the format in which date strings are 
 displayed</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSITimeFormat <em>formatstring</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSITimeFormat "%A, %d-%b-%Y %H:%M:%S %Z"</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>All</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_include</td></tr><tr><td nowrap="nowrap" align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in version 2.0.30 and later.</td></tr></table></td></tr></table>
 <p>This directive changes the format in which date strings are displayed 
@@ -557,11 +582,26 @@ displayed</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" 
 
     <p>This directive has the same effect as the <code>&lt;!--#config
     timefmt=<em>formatstring</em> --&gt;</code> element.</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+    
+    SSITimeFormat "%R, %B %d, %Y"
+    </code></td></tr></table></blockquote>
+
+    <p>The above directive would cause times to be displayed in the
+    format "22:26, June 14, 2002".</p>
+
 <hr/><h2><a name="SSIUndefinedEcho">SSIUndefinedEcho</a> <a name="ssiundefinedecho">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>String displayed when
 an unset variable is echoed</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSIUndefinedEcho <em>tag</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSIUndefinedEcho "&lt;!-- undef --&gt;"</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_include</td></tr><tr><td nowrap="nowrap" align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in version 2.0.34 and later.
 </td></tr></table></td></tr></table>
     <p>This directive changes the string that mod_include displays
     when a variable is not set and "echoed".</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+    
+    SSIUndefinedEcho "[ No Value ]"
+    </code></td></tr></table></blockquote>
+
 <hr/><h2><a name="XBitHack">XBitHack</a> <a name="xbithack">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Parse SSI directives in files with the execute 
 bit set</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>XBitHack on|off|full</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>XBitHack off</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>Options</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_include</td></tr></table></td></tr></table>
     <p>The XBitHack directives controls the parsing of ordinary
