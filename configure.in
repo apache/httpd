@@ -235,6 +235,8 @@ case $host in
       ;;
 esac
 
+APR_SETVAR(AP_NONBLOCK_WHEN_MULTI_LISTEN, [1])
+
 dnl
 dnl Process command line arguments. This is done early in the process so the
 dnl user can get feedback quickly in case of an error.
@@ -484,6 +486,11 @@ AC_DEFINE(AP_USING_AUTOCONF, 1,
 if test "$SINGLE_LISTEN_UNSERIALIZED_ACCEPT" = "1"; then
     AC_DEFINE(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, 1, 
               [This platform doesn't suffer from the thundering herd problem])
+fi
+
+if test "$AP_NONBLOCK_WHEN_MULTI_LISTEN" = "1"; then
+    AC_DEFINE(AP_NONBLOCK_WHEN_MULTI_LISTEN, 1, 
+              [Listening sockets are non-blocking when there are more than 1])
 fi
 
 AC_DEFINE_UNQUOTED(AP_SIG_GRACEFUL, SIG$AP_SIG_GRACEFUL, [Signal used to gracefully restart])

@@ -531,6 +531,19 @@ AP_DECLARE(apr_status_t) unixd_accept(void **accepted, ap_listen_rec *lr,
 #ifdef ENETUNREACH
         case ENETUNREACH:
 #endif
+        /* EAGAIN/EWOULDBLOCK can be returned on BSD-derived
+         * TCP stacks when the connection is aborted before
+         * we call connect, but only because our listener
+         * sockets are non-blocking (AP_NONBLOCK_WHEN_MULTI_LISTEN)
+         */
+#ifdef EAGAIN
+        case EAGAIN:
+#endif
+#ifdef EWOULDBLOCK
+#if !defined(EAGAIN) || EAGAIN != EWOULDBLOCK
+        case EWOULDBLOCK:
+#endif
+#endif
             break;
 #ifdef ENETDOWN
         case ENETDOWN:
