@@ -80,7 +80,7 @@ extern "C" {
 #undef HAVE_UNISTD_H
 #endif
 
-/* Have to include sys/stat.h before ../os/win32/os.h so we can override
+/* Have to include sys/stat.h before ../win32/os.h so we can override
 stat() properly */
 #ifndef NETWARE
 #include <sys/types.h>
@@ -111,11 +111,7 @@ stat() properly */
 #define ENUM_BITFIELD(e,n,w)  e n : w
 #endif
 
-#ifdef WIN32
-#include "../os/win32/os.h"
-#else
 #include "os.h"
-#endif
 
 /* Define one of these according to your system. */
 #if defined(MINT)
