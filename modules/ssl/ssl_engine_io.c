@@ -502,8 +502,9 @@ static int ssl_io_hook_read(SSL *ssl, char *buf, int len)
              * Log SSL errors
              */
             conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
-            ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+            ssl_log(c->base_server, SSL_LOG_ERROR,
                     "SSL error on reading data");
+            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
         }
     }
 
@@ -534,8 +535,9 @@ static int ssl_io_hook_write(SSL *ssl, unsigned char *buf, int len)
              * Log SSL errors
              */
             conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
-            ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+            ssl_log(c->base_server, SSL_LOG_ERROR,
                     "SSL error on writing data");
+            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
         }
         /*
          * XXX - Just trying to reflect the behaviour in 
@@ -763,9 +765,10 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
     switch (status) {
       case HTTP_BAD_REQUEST:
             /* log the situation */
-            ssl_log(f->c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+            ssl_log(f->c->base_server, SSL_LOG_ERROR,
                     "SSL handshake failed: HTTP spoken on HTTPS port; "
                     "trying to send HTML error page");
+            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, f->c->base_server);
 
             /* fake the request line */
             bucket = HTTP_ON_HTTPS_PORT_BUCKET(f->c->bucket_alloc);

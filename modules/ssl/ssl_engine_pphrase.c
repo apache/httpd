@@ -230,8 +230,9 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                 ssl_die();
             }
             if ((pX509Cert = SSL_read_X509(szPath, NULL, NULL)) == NULL) {
-                ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                ssl_log(s, SSL_LOG_ERROR,
                         "Init: Unable to read server certificate from file %s", szPath);
+                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
                 ssl_die();
             }
 
@@ -242,8 +243,9 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             at = ssl_util_algotypeof(pX509Cert, NULL);
             an = ssl_util_algotypestr(at);
             if (algoCert & at) {
-                ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                ssl_log(s, SSL_LOG_ERROR,
                         "Init: Multiple %s server certificates not allowed", an);
+                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
                 ssl_die();
             }
             algoCert |= at;
@@ -409,8 +411,9 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                 }
 #ifdef WIN32
                 if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN) {
-                    ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                    ssl_log(s, SSL_LOG_ERROR,
                             "Init: PassPhraseDialog BuiltIn not supported in server private key from file %s", szPath);
+                    ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
                     ssl_die();
                 }
 #endif /* WIN32 */
@@ -422,12 +425,14 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     if (nPassPhraseDialogCur && pkey_mtime &&
                         !(isterm = isatty(fileno(stdout)))) /* XXX: apr_isatty() */
                     {
-                        ssl_log(pServ, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                        ssl_log(pServ, SSL_LOG_ERROR,
                                 "Init: Unable read passphrase "
                                 "[Hint: key introduced or changed before restart?]");
+                        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, pServ);
                     }
                     else {
-                        ssl_log(pServ, SSL_LOG_ERROR|SSL_ADD_SSLERR, "Init: Private key not found");
+                        ssl_log(pServ, SSL_LOG_ERROR, "Init: Private key not found");
+                        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, pServ);
                     }
                     if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN
                           || sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
@@ -436,7 +441,9 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     }
                 }
                 else {
-                    ssl_log(pServ, SSL_LOG_ERROR|SSL_ADD_SSLERR, "Init: Pass phrase incorrect");
+                    ssl_log(pServ, SSL_LOG_ERROR, "Init: Pass phrase incorrect");
+                    ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, pServ);
+
                     if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN
                           || sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
                         apr_file_printf(writetty, "Apache:mod_ssl:Error: Pass phrase incorrect.\n");
@@ -447,8 +454,9 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             }
 
             if (pPrivateKey == NULL) {
-                ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                ssl_log(s, SSL_LOG_ERROR,
                         "Init: Unable to read server private key from file %s [Hint: Perhaps it is in a separate file?  See SSLCertificateKeyFile]", szPath);
+                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
                 ssl_die();
             }
 
@@ -459,8 +467,9 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             at = ssl_util_algotypeof(NULL, pPrivateKey);
             an = ssl_util_algotypestr(at);
             if (algoKey & at) {
-                ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                ssl_log(s, SSL_LOG_ERROR,
                         "Init: Multiple %s server private keys not allowed", an);
+                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
                 ssl_die();
             }
             algoKey |= at;

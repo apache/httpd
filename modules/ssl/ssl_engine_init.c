@@ -549,9 +549,10 @@ static void ssl_init_ctx_verify(server_rec *s,
                                            mctx->auth.ca_cert_file,
                                            mctx->auth.ca_cert_path))
         {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+            ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
                     "Unable to configure verify locations "
                     "for client authentication");
+            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
             ssl_die();
         }
 
@@ -604,8 +605,9 @@ static void ssl_init_ctx_cipher_suite(server_rec *s,
             suite);
 
     if (!SSL_CTX_set_cipher_list(ctx, suite)) {
-        ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
                 "Unable to configure permitted SSL ciphers");
+        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
         ssl_die();
     }
 }
@@ -631,9 +633,10 @@ static void ssl_init_ctx_crl(server_rec *s,
                               (char *)mctx->crl_path);
 
     if (!mctx->crl) {
-        ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
                 "Unable to configure X.509 CRL storage "
                 "for certificate revocation");
+        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
         ssl_die();
     }
 }
@@ -730,14 +733,16 @@ static int ssl_server_import_cert(server_rec *s,
 
     ptr = asn1->cpData;
     if (!(cert = d2i_X509(NULL, &ptr, asn1->nData))) {
-        ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
                 "Unable to import %s server certificate", type);
+        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
         ssl_die();
     }
 
     if (SSL_CTX_use_certificate(mctx->ssl_ctx, cert) <= 0) {
-        ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
                 "Unable to configure %s server certificate", type);
+        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
         ssl_die();
     }
 
@@ -768,14 +773,16 @@ static int ssl_server_import_key(server_rec *s,
     ptr = asn1->cpData;
     if (!(pkey = d2i_PrivateKey(pkey_type, NULL, &ptr, asn1->nData)))
     {
-        ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
                 "Unable to import %s server private key", type);
+        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
         ssl_die();
     }
 
     if (SSL_CTX_use_PrivateKey(mctx->ssl_ctx, pkey) <= 0) {
-        ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
                 "Unable to configure %s server private key", type);
+        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
         ssl_die();
     }
 
@@ -788,8 +795,9 @@ static int ssl_server_import_key(server_rec *s,
 
         if (pubkey && EVP_PKEY_missing_parameters(pubkey)) {
             EVP_PKEY_copy_parameters(pubkey, pkey);
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+            ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
                     "Copying DSA parameters from private key to certificate");
+            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
         }
     }
 
