@@ -17,7 +17,7 @@
 <H1 ALIGN="CENTER">Using Apache With Microsoft Windows</H1>
 
 <P>This document explains how to install, configure and run
-   Apache 1.3b6 and later under Microsoft Windows. Please note that at
+   Apache 1.3 under Microsoft Windows. Please note that at
    this time, Windows support is entirely experimental, and is
    recommended only for experienced users. The Apache Group does not
    guarantee that this software will work as documented, or even at
@@ -129,19 +129,6 @@ file will be installed either). This should mean it a safe to install
 Apache over an existing installation (but you will have to stop the
 existing server running before doing the installation, then start the
 new one after the installation is finished).
-
-<P>
-
-<BLOCKQUOTE>
-<STRONG>Important note for 1.3b6 installs</STRONG>: the above only
-applies for 1.3b7 and later. In 1.3b6 the installer would overwrite
-any existing <SAMP>httpd.conf</SAMP>, <SAMP>access.conf</SAMP>,
-<SAMP>srm.conf</SAMP> or <SAMP>mime.types</SAMP> files in the
-<SAMP>conf</SAMP>, and will also overwrite your
-<SAMP>index.html</SAMP> file in the <SAMP>htdocs</SAMP> directory. You
-should copy these files or directories before installing Apache 1.3b6
-or install into a new directory.
-</BLOCKQUOTE>
 
 <P>
 
@@ -269,8 +256,8 @@ The main differences in Apache for Windows are:
 
 <H2><A NAME="cmdline">Running Apache for Windows from the Command Line</A></H2>
 
-The Start menu icons and the NT Service manager can provide an simple
-interafce for administering Apache. But in some cases it is easier to
+The Start menu icons and the NT Service manager can provide a simple
+interface for administering Apache. But in some cases it is easier to
 work from the command line.
 
 <P>
@@ -295,27 +282,27 @@ Your current working directory when Apache is started up has no
 effect on Apache's behavior.
 
 <P>
-Under windows, when invoked from the start menu or the Service Manager Apache is
-usually passed no arguments.  So using the registry entry is the perfered
+When invoked from the start menu or the Service Manager, Apache is
+usually passed no arguments, so using the registry entry is the preferred
 technique.
 
 <P>
 During a binary installation, a registry key will have
 been installed, for example:
 <PRE>
-  HKEY_LOCAL_MACHINE\Software\Apache Group\Apache\1.3.1\ServerRoot
+  HKEY_LOCAL_MACHINE\Software\Apache Group\Apache\1.3.4\ServerRoot
 </PRE>
 
 <P>
 This key is compiled into the server and can enable you to test 
 new versions without affecting the current version.  Of course
 you must take care not to install the new version on top of the
-old version in the file system.  You can not run two invocations
+old version in the file system.  You cannot run two invocations
 of Apache on Windows simultaneously.
 
 <P>
 If you did not do a binary install then Apache will in some
-senarios complain that about the missing registry key.  This
+scenarios complain that about the missing registry key.  This
 warning can be ignored if it otherwise was able to find it's
 configuration files.
 
@@ -344,7 +331,7 @@ prevents Apache waiting to see if Apache is running as a service.)
 
 <P>
 
-To install Apache as a Windows NT service as follows:
+You can install Apache as a Windows NT service as follows:
 
 <PRE>
     apache -i
@@ -359,7 +346,7 @@ and to remove the Apache service, use
 
 <H2><A NAME="signal">Signalling Apache when running</A></H2>
 
-On Windows 95 Apache runs as a console application. You can tell a
+On Windows 95, Apache runs as a console application. You can tell a
 running Apache to stop by opening another console window and running
 
 <PRE>
@@ -410,11 +397,17 @@ line option used, <CODE>-k</CODE>, was chosen as a reminder of the
    <CODE>src</CODE> subdirectory of the Apache distribution.</P>
 
 <P>The master Apache makefile instructions are contained in the
-   <CODE>Makefile.nt</CODE> file. To compile Apache, simply use one of
-   the following commands:
+   <CODE>Makefile.nt</CODE> file. To compile Apache on Windows NT, simply
+   use one of the following commands:
 <UL>
 <LI><CODE>nmake /f Makefile.nt _apacher</CODE> (release build)
 <LI><CODE>nmake /f Makefile.nt _apached</CODE> (debug build)
+</UL>
+
+<P><em>(1.3.4 and later)</em> To compile Apache on Windows 95, use one of
+<UL>
+<LI><CODE>nmake /f Makefile_win32.txt</CODE> (release build)
+<LI><CODE>nmake /f Makefile_win32_debug.txt</CODE> (debug build)
 </UL>
 
 <P>These will both compile Apache. The latter will include debugging
@@ -454,8 +447,15 @@ line option used, <CODE>-k</CODE>, was chosen as a reminder of the
 <LI><CODE>nmake /f Makefile.nt installd INSTDIR=<EM>dir</EM></CODE>
  (for debug build)
 </UL>
+or, for Windows 95 (1.3.4 and later), use one of:
+<UL>
+<LI><CODE>nmake /f Makefile_win32.txt install INSTDIR=<EM>dir</EM></CODE>
+ (for release build)
+<LI><CODE>nmake /f Makefile_win32_debug.txt install INSTDIR=<EM>dir</EM></CODE>
+ (for debug build)
+</UL>
 
-The dir argument to INSTDIR gives the installation directory. The can
+The dir argument to INSTDIR gives the installation directory; it can
 be omitted if Apache is to be installed into <SAMP>\Apache</SAMP>.
 
 <P>This will install the following:</P>
