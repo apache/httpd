@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+ <HEAD>
+  <TITLE>Testside for Apache Installasjon på Webside</TITLE>
+ </HEAD>
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+ <BODY
+  BGCOLOR="#FFFFFF"
+  TEXT="#000000"
+  LINK="#0000FF"
+  VLINK="#000080"
+  ALINK="#FF0000"
+ >
+  <H1 ALIGN="CENTER">
+   Det gikk bra! Det Apache Web Server Er Nå Installert her!
+  </H1>
+  <P>
+  Hvis du kan se denne siden, det betyr at de som eier denne domene (domain)
+  har nettopp greid å installere <A HREF="http://www.apache.org/">Apache Web server</A>
+  software.  De må tilføye innhold til denne katalog og erstatte denne 
+  plassholder siden, ellers peke serveren til de virkelige innhold.
+  </P>
+  <HR>
+  <BLOCKQUOTE>
+  Hvis du ser denne siden istedenfor den du ventet for, vennligst 
+  <STRONG>ta kontakt med websever administratøren.</STRONG>
+   (Prøv å sende e-post til <SAMP>&lt;Webmaster@<EM>domene</EM>&gt;</SAMP>.)
+   Selv om denne hjemmesiden driver med Apache software, har den ingen annen 
+   tilknytting til Apache Gruppen. Vennligst ikke send post angående denne hjemmesiden eller 
+   dets innhold til Apache programmerere. Hvis du gjør det, din beskjed blir 
+   <STRONG><BIG>oversett</BIG></STRONG>.
+  </BLOCKQUOTE>
+  <HR>
+  <P>
+  Den Apache
+  <A
+   HREF="manual/index.html"
+  >dokumentasjon</A>
+  er inkludert i denne distribusjonen.
+  </P>
+  <P>
+  Denne sidens Webmaster kan bruke det grafikk nedenfør på en Apache-drevet Webserver.
+  Takk for at du bruker Apache!
+  </P>
+  <DIV ALIGN="CENTER">
+   <IMG SRC="apache_pb.gif" ALT="">
+  </DIV>
+ </BODY>
+</HTML>

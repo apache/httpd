@@ -667,7 +667,8 @@ ServerSignature On
     #
     # Danish (da) - Dutch (nl) - English (en) - Estonian (ee)
     # French (fr) - German (de) - Greek-Modern (el)
-    # Italian (it) - Portugese (pt) - Luxembourgeois* (ltz)
+    # Italian (it) - Korean (kr) - Norwegian (no)
+    # Portugese (pt) - Luxembourgeois* (ltz)
     # Spanish (es) - Swedish (sv) - Catalan (ca) - Czech(cz)
     # Polish (pl) - Brazilian Portuguese (pt-br) - Japanese (ja)
     #
@@ -681,6 +682,9 @@ ServerSignature On
     AddLanguage it .it
     AddLanguage ja .ja
     AddCharset ISO-2022-JP .jis
+    AddLanguage kr .kr
+    AddCharset ISO-2022-KR .iso-kr
+    AddLanguage no .no
     AddLanguage pl .po
     AddCharset ISO-8859-2 .iso-pl
     AddLanguage pt .pt
@@ -698,7 +702,7 @@ ServerSignature On
     # more or less alphabetized them here. You probably want to change this.
     #
     <IfModule mod_negotiation.c>
-        LanguagePriority en da nl et fr de el it ja pl pt pt-br ltz ca es sv
+        LanguagePriority en da nl et fr de el it ja kr no pl pt pt-br ltz ca es sv
     </IfModule>
 
     #
