@@ -33,19 +33,27 @@ APR_CONFIG_NICE(config.nice)
 
 nl='
 '
+
+dnl XXX we can't just use AC_PREFIX_DEFAULT because that isn't subbed in
+dnl by configure until it is too late.  Is that how it should be or not?
+dnl Something seems broken here.
+AC_PREFIX_DEFAULT(/usr/local/apache2)
+test "$prefix" = "NONE" && prefix='/usr/local/apache2'
+test "$exec_prefix" = "NONE" && exec_prefix='${prefix}'
+
 dnl ## Run configure for packages Apache uses
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime library ...${nl}"
 
-APR_SUBDIR_CONFIG(srclib/apr, "$apache_apr_flags --disable-shared")
+APR_SUBDIR_CONFIG(srclib/apr, "$apache_apr_flags --disable-shared --prefix=$prefix")
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
-APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --disable-shared")
+APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --disable-shared --prefix=$prefix")
 
 echo $ac_n "${nl}Configuring PCRE regular expression library ...${nl}"
 
-APR_SUBDIR_CONFIG(srclib/pcre)
+APR_SUBDIR_CONFIG(srclib/pcre, "--prefix=$prefix")
 
 echo $ac_n "${nl}Configuring Apache httpd ...${nl}"
 
@@ -65,13 +73,6 @@ EXTRA_CPPFLAGS=
 EXTRA_LDFLAGS=
 EXTRA_LIBS=
 EXTRA_INCLUDES=
-
-dnl XXX we can't just use AC_PREFIX_DEFAULT because that isn't subbed in
-dnl by configure until it is too late.  Is that how it should be or not?
-dnl Something seems broken here.
-AC_PREFIX_DEFAULT(/usr/local/apache2)
-test "$prefix" = "NONE" && prefix='/usr/local/apache2'
-test "$exec_prefix" = "NONE" && exec_prefix='${prefix}'
 
 dnl Absolute source/build directory
 abs_srcdir=`(cd $srcdir && pwd)`
