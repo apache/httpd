@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/04/14 18:08:05 $]
+Last modified at [$Date: 2000/04/14 23:36:12 $]
 
 Release:
 
@@ -16,11 +16,6 @@ RELEASE SHOWSTOPPERS:
             default cgi module on Unix with a threaded MPM is the cgid
             module.  This should be override-able of course.
           Status: Jim Jagielski is looking into this.
-
-    * Put buffered file I/O back into APR.  This should be done using the
-      buffering logic from the OS/2 directory.  stdio FILE *'s should not be
-      used on Unix because of the limitations these impose on some platforms,
-      for example the 256 File * limit on Solaris.
 
     * Fix SAFEREAD.
 	see <Pine.LNX.4.21.0004101511380.7822-100000@twinlark.arctic.org>
