@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_rewrite: Perform child initialization on the rewrite log lock.
+     This fixes a log corruption issue when flock-based serialization
+     is used (e.g., FreeBSD).  [Jeff Trawick]
+
   *) Don't respect the Server header field as set by modules and CGIs.
      As with 1.3, for proxy requests any such field is from the origin 
      server; otherwise it will have our server info as controlled by
