@@ -2859,7 +2859,7 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
             handle_func = 
                 (include_handler_fn_t *)apr_hash_get(include_hash, 
                                                      ctx->combined_tag, 
-                                                     ctx->directive_length+1);
+                                                     ctx->directive_length);
             if (handle_func != NULL) {
                 rv = (*handle_func)(ctx, bb, r, f, dptr, &content_head);
                 if ((rv != 0) && (rv != 1)) {
@@ -3116,7 +3116,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
 static void ap_register_include_handler(char *tag, include_handler_fn_t *func)
 {
-    apr_hash_set(include_hash, tag, strlen(tag) + 1, (const void *)func);
+    apr_hash_set(include_hash, tag, strlen(tag), (const void *)func);
 }
 
 static int include_post_config(apr_pool_t *p, apr_pool_t *plog,
