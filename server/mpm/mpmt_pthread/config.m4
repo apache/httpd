@@ -11,6 +11,4 @@ if test "$MPM_NAME" = "mpmt_pthread" ; then
 dnl Obsolete scoreboard code uses this.
     AC_CHECK_HEADERS(sys/times.h)
     AC_CHECK_FUNCS(times)
-
-    EXTRA_CFLAGS="$EXTRA_CFLAGS -DMPMT_PTHREAD"
 fi
