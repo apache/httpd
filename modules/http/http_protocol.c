@@ -877,7 +877,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             ctx->remaining = get_chunk_size(line);
             /* Detect chunksize error (such as overflow) */
             if (ctx->remaining < 0) {
-                bb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
+                apr_brigade_cleanup(bb);
                 e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
                                            f->r->pool,
                                            f->c->bucket_alloc);
