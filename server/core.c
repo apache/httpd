@@ -228,7 +228,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     if (conf->response_code_strings == NULL) {
 	conf->response_code_strings = new->response_code_strings;
     }
-    else (new->response_code_strings != NULL) {
+    else if (new->response_code_strings != NULL) {
         /* If we merge, the merge-result must have it's own array 
          */
 	conf->response_code_strings = apr_palloc(a,
@@ -286,7 +286,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     if (!conf->sec_file) {
         conf->sec_file = new->sec_file;
     }
-    else if (new->sec_file)
+    else if (new->sec_file) {
         /* If we merge, the merge-result must have it's own array 
          */
         conf->sec_file = apr_array_append(a, base->sec_file, new->sec_file);
