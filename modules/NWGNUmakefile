@@ -6,6 +6,7 @@
 
 SUBDIRS = \
 	aaa \
+	cache \
 	dav\main \
 	dav\fs \
 	dav\lock \
