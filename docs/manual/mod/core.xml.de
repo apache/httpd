@@ -319,7 +319,7 @@ erlaubt sind.</description>
     <note><title>Nur in &lt;Directory&gt;-Abschnitten verf&uuml;gbar</title>
     <directive>AllowOverride</directive> ist nur in <directive
     type="section" module="core">Directory</directive>-Abschnitten
-    g&uuml;ltig, die ohne regul&auml;re Ausdr&uuml;ke definiert wurden, nicht
+    g&uuml;ltig, die ohne regul&auml;re Ausdr&uuml;cke definiert wurden, nicht
     in <directive type="section" module="core">Location</directive>-, 
     <directive module="core" type="section">DirectoryMatch</directive>- oder
     <directive type="section" module="core">Files</directive>-Abschnitten.
