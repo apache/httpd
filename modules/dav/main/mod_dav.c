@@ -3220,8 +3220,9 @@ static int dav_type_checker(request_rec *r)
 	** ### this isn't quite right... taking over the response can break
 	** ### things like mod_negotiation. need to look into this some more.
 	*/
-	if (!conf->handle_get)
+	if (!conf->handle_get) {
 	    return DECLINED;
+        }
     }
 
     /* ### we should (instead) trap the ones that we DO understand */
@@ -3247,7 +3248,7 @@ static int dav_type_checker(request_rec *r)
 static void register_hooks(void)
 {
     ap_hook_post_config(dav_init_handler, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_hook_type_checker(dav_type_checker, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_type_checker(dav_type_checker, NULL, NULL, AP_HOOK_FIRST);
 }
 
 /*---------------------------------------------------------------------------
