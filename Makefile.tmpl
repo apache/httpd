@@ -292,8 +292,7 @@ install-config:
          echo "##"; \
 		 echo ""; \
 		 cat $(ROOT)/conf/$$conf-dist ) |\
-    	sed -e '/#LoadModule/d' \
-    	    -e '/_before_ they are used./r .install.conf' \
+    	sed -e '/# LoadModule/r .install.conf' \
     	    -e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
     	    -e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
         	-e 's;@@ServerRoot@@/icons;$(datadir)/icons;' \

@@ -12,7 +12,8 @@
 # as a shared object you have to place corresponding `LoadModule'
 # lines at this location so the directives contained in it are
 # actually available _before_ they are used. 
-#LoadModule config_log_module libexec/mod_log_config.so
+# Example:
+# LoadModule foo_module libexec/mod_foo.so
 
 # ServerType is either inetd, or standalone.
 
