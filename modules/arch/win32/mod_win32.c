@@ -359,7 +359,7 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp, const c
     }
 
     if (!argtaken) {
-        char *cgiarg = cgiargs;
+        const char *cgiarg = cgiargs;
         for (;;) {
             char *w = ap_getword_nulls(p, &cgiarg, '+');
             if (!*w)
