@@ -4,12 +4,12 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       --><title>mpm_winnt - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mpm_winnt</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
                       </span></td><td>Windows NT
-向けに最適化されたマルチプロセッシングモジュール</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
-                      </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">モジュール識別子:
+向けに最適化されたマルチプロセッシングモジュール</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
+                      </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">モジュール識別子:
                         </a></td><td>mpm_winnt_module</td></tr></table></td></tr></table><h2>概要</h2>
-    <p>このマルチプロセッシングモジュール (MPM)
+    <p>このマルチプロセッシングモジュール (MPM)
     は Windows NT でのデフォルトになります。
     一つの制御用プロセスを用い、これが一つの子プロセスを起動し、
     そして子プロセスがリクエストを取り扱うためにスレッドを
     起動します。</p>
-<h2>ディレクティブ</h2><ul><li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li><li><a href="mpm_common.html#listen">Listen</a></li><li><a href="mpm_common.html#listenbacklog">ListenBacklog</a></li><li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="mpm_common.html#pidfile">PidFile</a></li><li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li><li><a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li></ul><hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="索引"></a><a href="../"><img src="../images/home.gif" alt="ホーム"></a></body></html>
+<h2>ディレクティブ</h2><ul><li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li><li><a href="mpm_common.html#listen">Listen</a></li><li><a href="mpm_common.html#listenbacklog">ListenBacklog</a></li><li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="mpm_common.html#pidfile">PidFile</a></li><li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li><li><a href="mpm_common.html#threadlimit">ThreadLimit</a></li><li><a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li></ul><hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="索引"></a><a href="../"><img src="../images/home.gif" alt="ホーム"></a></body></html>

@@ -29,6 +29,8 @@
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>SendBufferSize</name>
 </directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadLimit</name>
+</directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
 </directivesynopsis>
 
