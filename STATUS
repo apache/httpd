@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/06/09 18:23:38 $]
+  Last modified at [$Date: 1999/06/11 13:18:57 $]
 
 Release:
 
@@ -91,6 +91,11 @@ Documentation that needs writing:
 
 Available Patches:
 
+    * Mathijs Maassen <mathijs@xs4all.nl> path to disable the initial
+      check/stat of DocumentRoot.
+        Message-ID: <19990611145033.B25977@xs4all.nl>
+	Status: Jim +1 (will add to docs)
+
     * Stipe Tolj's Cygwin32 port
 	PR#: 2936
         Status: Lars +1 (on concept)
@@ -111,9 +116,10 @@ Available Patches:
     * Tony Finch's patch to support mass virtual hosting
 	Message-ID: <E10kXMV-00011I-00@fanf.noc.demon.net>
 	Message-ID: <E10qzDF-0005Ab-00@fanf.noc.demon.net>
-	Status: Dean +1, Randy +1, Lars +1 (if someone writes the docs)
-                Jim +1
-		(On hold until Tony revamps the mass-vhosting docco)
+	Message-ID: <E10s7G2-0000PE-00@fanf.noc.demon.net>
+	Status: Dean +1, Randy +1, Jim +1
+	Previous Status: Dean +1, Randy +1, Jim +1,
+	        Lars +1 (if someone writes the docs)
 
     * Brian Havard's patch to remove dependency of mod_auth_dbm on mod_auth.
       (PR#2598)
