@@ -99,7 +99,7 @@ NLM_NAME		= logreslv
 # This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= Apache Logresolve Utility for NetWare
+NLM_DESCRIPTION	= Apache $(VERSION_STR) Logresolve Utility for NetWare
 
 #
 # This is used by the '-threadname' directive.  If left blank,

@@ -109,7 +109,7 @@ NLM_NAME		= mod_cach
 # This is used by the link '-desc ' directive. 
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= Apache Cache module
+NLM_DESCRIPTION	= Apache $(VERSION_STR) Cache module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
