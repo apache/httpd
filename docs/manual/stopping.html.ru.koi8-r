@@ -24,6 +24,8 @@
 <a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/stopping.html" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+ English version for recent changes.</div>
 
     <p>Этот документ рассматривает вопросы остановки и перезапуска Apache на
     Unix-подобных системах. Пользователям Windows NT, 2000 и XP следует читать раздел

@@ -21,6 +21,8 @@
 <p><span>가능한 언어: </span><a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./ko/glossary.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+ English version for recent changes.</div>
 
 <p>이 문서는 웹 서비스 일반에 대한, 특히 아파치와 관련된, 용어들을
 정의한다. 각 개념에 대한 자세한 정보는 링크를 참고하라.

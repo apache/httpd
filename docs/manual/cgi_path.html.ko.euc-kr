@@ -22,6 +22,8 @@
 <a href="./ja/cgi_path.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/cgi_path.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+ English version for recent changes.</div>
 
     <p>아파치 1.1.1과 그 이전 버전의 경우 CGI 환경에서
     PATH_INFO를 만드는 방법이 직관적이지 않고 어떤 경우 서버를

@@ -23,6 +23,8 @@
 <a href="./ko/handler.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/handler.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+ English version for recent changes.</div>
 
     <p>이 문서는 아파치에서 핸들러를 사용하는 방법을 설명한다.</p>
   </div>

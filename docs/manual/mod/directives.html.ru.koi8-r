@@ -24,6 +24,8 @@
 <a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../ru/mod/directives.html" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+ English version for recent changes.</div>
 
     <p>Здесь приводится список всех директив, которые доступны
     в стандартном дистрибутиве Apache. Для каждой директивы
