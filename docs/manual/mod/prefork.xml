@@ -96,14 +96,6 @@
 </directivesynopsis>
 
 <directivesynopsis location="mpm_common">
-<name>MaxSpareServers</name>
-</directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>MinSpareServers</name>
-</directivesynopsis>
-
-<directivesynopsis location="mpm_common">
 <name>ScoreBoardFile</name>
 </directivesynopsis>
 
