@@ -167,14 +167,14 @@ static int spot_cookie(request_rec *r)
     cookie_dir_rec *dcfg = ap_get_module_config(r->per_dir_config,
 						&usertrack_module);
     const char *cookie;
-    char *value;
+    const char *value;
 
     if (!dcfg->enabled) {
         return DECLINED;
     }
 
     if ((cookie = apr_table_get(r->headers_in, "Cookie")))
-        if ((value = strstr(cookie, dcfg->cookie_name))) {
+        if ((value = ap_strstr_c(cookie, dcfg->cookie_name))) {
             char *cookiebuf, *cookieend;
 
             value += strlen(dcfg->cookie_name) + 1;  /* Skip over the '=' */
@@ -287,7 +287,7 @@ static const char *set_cookie_exp(cmd_parms *parms, void *dummy, const char *arg
     return NULL;
 }
 
-static const char *set_cookie_name(cmd_parms *cmd, void *mconfig, char *name)
+static const char *set_cookie_name(cmd_parms *cmd, void *mconfig, const char *name)
 {
     cookie_dir_rec *dcfg = (cookie_dir_rec *) mconfig;
 
@@ -296,12 +296,12 @@ static const char *set_cookie_name(cmd_parms *cmd, void *mconfig, char *name)
 }
 
 static const command_rec cookie_log_cmds[] = {
-    {"CookieExpires", set_cookie_exp, NULL, RSRC_CONF, TAKE1,
-     "an expiry date code"},
-    {"CookieTracking", set_cookie_enable, NULL, OR_FILEINFO, FLAG,
-     "whether or not to enable cookies"},
-    {"CookieName", set_cookie_name, NULL, OR_FILEINFO, TAKE1,
-     "name of the tracking cookie"},
+    AP_INIT_TAKE1("CookieExpires", set_cookie_exp, NULL, RSRC_CONF,
+                  "an expiry date code"),
+    AP_INIT_FLAG("CookieTracking", set_cookie_enable, NULL, OR_FILEINFO,
+                 "whether or not to enable cookies"),
+    AP_INIT_TAKE1("CookieName", set_cookie_name, NULL, OR_FILEINFO,
+                  "name of the tracking cookie"),
     {NULL}
 };
 static void register_hooks(void)

@@ -170,9 +170,9 @@
 module MODULE_VAR_EXPORT cern_meta_module;
 
 typedef struct {
-    char *metadir;
-    char *metasuffix;
-    char *metafiles;
+    const char *metadir;
+    const char *metasuffix;
+    int metafiles;
 } cern_meta_dir_config;
 
 static void *create_cern_meta_dir_config(apr_pool_t *p, char *dummy)
@@ -201,20 +201,26 @@ static void *merge_cern_meta_dir_configs(apr_pool_t *p, void *basev, void *addv)
     return new;
 }
 
-static const char *set_metadir(cmd_parms *parms, cern_meta_dir_config * dconf, char *arg)
+static const char *set_metadir(cmd_parms *parms, void *in_dconf, const char *arg)
 {
+    cern_meta_dir_config *dconf = in_dconf;
+
     dconf->metadir = arg;
     return NULL;
 }
 
-static const char *set_metasuffix(cmd_parms *parms, cern_meta_dir_config * dconf, char *arg)
+static const char *set_metasuffix(cmd_parms *parms, void *in_dconf, const char *arg)
 {
+    cern_meta_dir_config *dconf = in_dconf;
+
     dconf->metasuffix = arg;
     return NULL;
 }
 
-static const char *set_metafiles(cmd_parms *parms, cern_meta_dir_config * dconf, char *arg)
+static const char *set_metafiles(cmd_parms *parms, void *in_dconf, int arg)
 {
+    cern_meta_dir_config *dconf = in_dconf;
+
     dconf->metafiles = arg;
     return NULL;
 }
@@ -222,12 +228,12 @@ static const char *set_metafiles(cmd_parms *parms, cern_meta_dir_config * dconf,
 
 static const command_rec cern_meta_cmds[] =
 {
-    {"MetaFiles", set_metafiles, NULL, DIR_CMD_PERMS, FLAG,
-    "Limited to 'on' or 'off'"},
-    {"MetaDir", set_metadir, NULL, DIR_CMD_PERMS, TAKE1,
-     "the name of the directory containing meta files"},
-    {"MetaSuffix", set_metasuffix, NULL, DIR_CMD_PERMS, TAKE1,
-     "the filename suffix for meta files"},
+    AP_INIT_FLAG("MetaFiles", set_metafiles, NULL, DIR_CMD_PERMS,
+                 "Limited to 'on' or 'off'"),
+    AP_INIT_TAKE1("MetaDir", set_metadir, NULL, DIR_CMD_PERMS,
+                  "the name of the directory containing meta files"),
+    AP_INIT_TAKE1("MetaSuffix", set_metasuffix, NULL, DIR_CMD_PERMS,
+                  "the filename suffix for meta files"),
     {NULL}
 };
 
