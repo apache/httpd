@@ -906,7 +906,7 @@ menu_bail:
 
 static int imap_handler(request_rec *r)
 {
-    /* Optimizatoin: skip the allocation of large local variables on the
+    /* Optimization: skip the allocation of large local variables on the
      * stack (in imap_handler_internal()) on requests that aren't using
      * imagemaps
      */
