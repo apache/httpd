@@ -54,6 +54,12 @@
    shell implementation (/bin/sh) on FreeBSD.  Be sure to use v2.13
    of autoconf.
 
+   Threaded MPMs are not supported on FreeBSD 4.x.  Current releases of
+   FreeBSD 5.x (5.2 or later) support threaded MPMs correctly.  You must pass
+   '--enable-threads=yes' to APR's configure in order to enable threads.
+   Additionally, you must use libthr or libkse via libmap.conf as the default
+   libc_r is still broken as of this writing.  Please consult the man page for
+   libmap.conf for more details about configuring libthr or libkse.
 ================
   HP-UX:
    The dlopen() system call in HP-UX has problems when loading/unloading

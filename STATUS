@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/20 16:12:28 $]
+Last modified at [$Date: 2003/12/12 10:24:59 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -284,38 +284,15 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       lost.  This might be an APR issue with how it deals with
       the child_init hook (i.e. the fcntl lock needs to be resynced).
       More examination and analysis is required.
-        Status: This has also been reported on Cygwin.  
+        Status: This has also been reported on Cygwin.
                 FreeBSD 4.7 was reputed to have 'fixed' threads.  Not.
+                FreeBSD 5.2-RC is a confirmed fix w/either libkse or libthr.
+                [libc_r, still the default, does not serve any pages w/worker;
+                 so on FreeBSD 5.2, you must use libmap.conf (see man page).]
+                Work needs to be done to get APR to try to be knowledgable that
+                libkse/libthr are acceptable.  Still not recommended for the
+                default since libc_r is still broken.
         Message-ID: <3C2CC514.8EF3BED1@wapme-systems.de> (cygnus)
-
-      Aaron says: I spent some time disecting this and have come to
-              the conclusion that it is not a problem in the worker MPM
-              (or at least, it is not isolated to a problem in worker).
-              I'll list some of the problems I'm seeing in case someone
-              else wants to pick up where I've left off:
-               - Delivery of just about any signal to one of the child
-                 processes will send it into an infinite loop as well.
-               - Even though the parent is spinning out of control,
-                 at first the child or children will appear to work
-                 properly. At times it is possible to get it into a state,
-                 however, where a request will hang until another concurrent
-                 request "kicks" the first, at which point the second will
-                 hang. My theory is that this has to do with the
-                 pthread_cond_*() implementation in FreeBSD, but it's still
-                 possible that it is in APR.
-      
-      Justin adds: Oh, FreeBSD threads are implemented entirely with 
-                   select()/poll()/longjmp().  Welcome to the nightmare.
-                   So, that means a ktrace output also has the thread 
-                   scheduling internals in it (since it is all the same to 
-                   the kernel).  Which makes it hard to distinguish between 
-                   our select() calls and their select() calls.  
-                   *bangs head on wall repeatedly*  But, some of the libc_r 
-                   files have a DBG_MSG #define.  This is moderately helpful
-                   when used with -DNO_DETACH.  The kernel scheduler isn't 
-                   waking up the threads on a select().  Yum.  And, I bet 
-                   those decrementing select calls have to do with the 
-                   scheduler.  Time to brush up on our OS fundamentals.
 
     * There is increasing demand from module writers for an API
       that will allow them to control the server à la apachectl.
