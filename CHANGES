@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix the global mutex crash when the global mutex is never allocated due
+     to disabled/empty caches. [Jess Holle <jessh ptc.com>]
+
   *) Fix a segfault in the LDAP cache purge. [Jess Holle <jessh ptc.com>]
 
   *) mod_rewrite: Handle per-location rules when r->filename is unset.
