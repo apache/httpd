@@ -2,7 +2,7 @@ Changes with Apache 1.2b2:
 
   *) Added PORTING information file.  [Jim Jagielski]
 
-  *) Added definitions for S_IWGRP and S_IWOTH to conf.h
+  *) Added definitions for S_IWGRP and S_IWOTH to conf.h [Ben Laurie]
 
   *) Changed default group to "nogroup" instead of "nobody"
 
@@ -29,10 +29,12 @@ Changes with Apache 1.2b2:
      for better portability.
 
   *) Updated helpers/GuessOS for ... 
-        SCO      (braindamaged uname, whatever-whatever-unixware2)
-        IRIX64   (-sgi-irix64)
-        ULTRIX   (-unknown-ultrix)
-        SINIX    (-whatever-sysv4)
+        SCO 5            (recognize minor releases)
+        SCO Unixware     (braindamaged uname, whatever-whatever-unixware2)
+        IRIX64           (-sgi-irix64)
+        ULTRIX           (-unknown-ultrix)
+        SINIX            (-whatever-sysv4)
+        NCR Unix         (-ncr-sysv4)
      and fixed something in helpers/PrintPath  [Ben Laurie]
 
 
