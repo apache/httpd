@@ -12,7 +12,7 @@ Name: httpd
 Version: APACHE_VERSION
 Release: APACHE_RELEASE
 URL: http://httpd.apache.org/
-Vendor: Red Hat, Inc.
+Vendor: Apache Software Foundation
 Source0: http://www.apache.org/dist/httpd/httpd-%{version}.tar.gz
 License: Apache Software License
 Group: System Environment/Daemons
