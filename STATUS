@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/15 14:03:19 $]
+Last modified at [$Date: 2003/05/15 18:11:14 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -28,8 +28,27 @@ CURRENT VOTES:
     * Promote mod_cache from experimental to non-experimental
       status (keep issues noted below in EXPERIMENTAL MODULES as
       items to be addressed as a supported module).
-      +1: jim, stoddard, bnicholes
+      +1: jim, bnicholes
       -0: jerenkrantz
+      -1: stoddard
+          There are a couple of problems that need to be resolved
+      before this module is moved out of experimental. 
+      1) We need to at least review and comment on the RFC violations
+      2) Resolve issue of how to cache page fragements (or perhaps -if- we
+      want to cache page fragements). Today, mod_cache/mod_mem_cache
+      will cache #include 'virtual' requests (but not #include 'file' 
+      requests). This was accomplished by making CACHE_IN a
+      CONTENT_SET-1 filter to force it to run before the SUBREQ_CORE
+      filter.  But now responses cannot be cached that include the
+      effects of having been run through CONTENT_SET filters
+      (mod_deflate, mod_expires, etc).  We could rerun all the
+      CONTENT_SET filters on the cached response, but this will not
+      work in all cases. For example, mod_expires relies on installing
+      the EXPIRATION filter during fixups. Contents served out of
+      mod_cache (out of the quick_handler) bypass -all- the request
+      line server hooks (Ryan really hated this. It is great for
+      performance, but bad because of the complications listed above).
+ 
 
       jerenkrantz: There are a slew of RFC compliance bugs filed in Bugzilla
                    for mod_cache (see 'RFC 2616 violations' below).  I think
