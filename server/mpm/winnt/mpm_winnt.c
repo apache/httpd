@@ -1819,7 +1819,8 @@ void winnt_rewrite_args(process_rec *process)
         /* WARNING: There is an implict assumption here that the
          * executable resides in the ServerRoot!
          */
-        ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), NULL, 
+        rv = GetLastError();
+        ap_log_error(APLOG_MARK,APLOG_ERR, rv, NULL, 
                      "Failed to get the running module's file name");
         exit(1);
     }
@@ -1923,14 +1924,14 @@ void winnt_rewrite_args(process_rec *process)
             rv = mpm_merge_service_args(process->pool, mpm_new_argv, 
                                         fixed_args);
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK,APLOG_ERR, rv, server_conf,
+                ap_log_error(APLOG_MARK,APLOG_ERR, rv, NULL,
                              "%s: ConfigArgs are missing from the registry.",
                              display_name);
             }
         }
         else
         {
-            ap_log_error(APLOG_MARK,APLOG_ERR, APR_BADARG, server_conf,
+            ap_log_error(APLOG_MARK,APLOG_ERR, APR_BADARG, NULL,
                  "%s: No installed service by that name.", display_name);
             exit(1);
         }
@@ -1939,7 +1940,7 @@ void winnt_rewrite_args(process_rec *process)
     {
         if (service_named == APR_SUCCESS) 
         {
-            ap_log_error(APLOG_MARK,APLOG_ERR, APR_BADARG, server_conf,
+            ap_log_error(APLOG_MARK,APLOG_ERR, APR_BADARG, NULL,
                  "%s: Service is already installed.", display_name);
             exit(1);
         }
@@ -1970,8 +1971,8 @@ static void winnt_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp
     if (!strcasecmp(signal_arg, "runservice")
             && (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
             && (service_to_start_success != APR_SUCCESS)) {
-        ap_log_error(APLOG_MARK,APLOG_ERR, service_to_start_success, 
-                     server_conf, "%s: Unable to start the service manager.",
+        ap_log_error(APLOG_MARK,APLOG_ERR, service_to_start_success, NULL, 
+                     "%s: Unable to start the service manager.",
                      display_name);
         exit(1);
     }
@@ -2013,18 +2014,18 @@ static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptem
      */
 
     if (!strcasecmp(signal_arg, "install")) {
-        mpm_service_install(ptemp, inst_argc, inst_argv);
-        exit(rv);
+        rv = mpm_service_install(ptemp, inst_argc, inst_argv);
+        exit (rv);
     }
 
     if (!strcasecmp(signal_arg, "start")) {
         rv = mpm_service_start(ptemp, inst_argc, inst_argv);
-        exit(rv);
+        exit (rv);
     }
 
     if (!strcasecmp(signal_arg, "restart")) {
         mpm_signal_service(ptemp, ap_pid_fname, 1);
-        exit(0);
+        exit (rv);
     }
 
     // TODO: This Stinks - but we needed the ap_pid_fname entry from 
@@ -2146,7 +2147,7 @@ API_EXPORT(int) ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s )
             const char *pidfile = ap_server_root_relative (pconf, ap_pid_fname);
 
             if (pidfile != NULL && unlink(pidfile) == 0) {
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,APR_SUCCESS,
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS,
                              server_conf, "removed PID file %s (pid=%ld)",
                              pidfile, GetCurrentProcessId());
             }
