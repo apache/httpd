@@ -362,7 +362,7 @@ static int dav_find_liveprop_provider(dav_propdb *propdb,
 static void dav_find_liveprop(dav_propdb *propdb, ap_xml_elem *elem)
 {
     const char *ns_uri;
-    dav_elem_private *priv = elem->private;
+    dav_elem_private *priv = elem->priv;
     const dav_hooks_liveprop *hooks;
 
 
@@ -546,7 +546,7 @@ static dav_error * dav_insert_liveprop(dav_propdb *propdb,
 				       ap_text_header *phdr,
 				       dav_prop_insert *inserted)
 {
-    dav_elem_private *priv = elem->private;
+    dav_elem_private *priv = elem->priv;
 
     *inserted = DAV_PROP_INSERT_NOTDEF;
 
@@ -1178,10 +1178,10 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, ap_xml_doc *doc)
         ** the property, then try looking it up in the propdb.
         */
 
-	if (elem->private == NULL) {
-	    elem->private = apr_pcalloc(propdb->p, sizeof(*priv));
+	if (elem->priv == NULL) {
+	    elem->priv = apr_pcalloc(propdb->p, sizeof(*priv));
 	}
-	priv = elem->private;
+	priv = elem->priv;
 
 	/* cache the propid; dav_get_props() could be called many times */
 	if (priv->propid == 0)
@@ -1367,7 +1367,7 @@ void dav_prop_validate(dav_prop_ctx *ctx)
     ap_xml_elem *prop = ctx->prop;
     dav_elem_private *priv;
 
-    priv = ctx->prop->private = apr_pcalloc(propdb->p, sizeof(*priv));
+    priv = ctx->prop->priv = apr_pcalloc(propdb->p, sizeof(*priv));
 
     /*
     ** Check to see if this is a live property, and fill the fields
@@ -1455,7 +1455,7 @@ void dav_prop_exec(dav_prop_ctx *ctx)
     dav_propdb *propdb = ctx->propdb;
     dav_error *err = NULL;
     dav_rollback_item *rollback;
-    dav_elem_private *priv = ctx->prop->private;
+    dav_elem_private *priv = ctx->prop->priv;
 
     rollback = apr_pcalloc(propdb->p, sizeof(*rollback));
     ctx->rollback = rollback;
@@ -1526,7 +1526,7 @@ void dav_prop_exec(dav_prop_ctx *ctx)
 
 void dav_prop_commit(dav_prop_ctx *ctx)
 {
-    dav_elem_private *priv = ctx->prop->private;
+    dav_elem_private *priv = ctx->prop->priv;
 
     /*
     ** Note that a commit implies ctx->err is NULL. The caller should assume
@@ -1544,7 +1544,7 @@ void dav_prop_commit(dav_prop_ctx *ctx)
 void dav_prop_rollback(dav_prop_ctx *ctx)
 {
     dav_error *err = NULL;
-    dav_elem_private *priv = ctx->prop->private;
+    dav_elem_private *priv = ctx->prop->priv;
 
     /* do nothing if there is no rollback information. */
     if (ctx->rollback == NULL)
