@@ -196,10 +196,7 @@ typedef struct {
  */
 int ap_max_daemons_limit = -1;
 
-static apr_file_t *pipe_of_death_in = NULL;
-static apr_file_t *pipe_of_death_out = NULL;
-/* insures that a child process only consumes one character */
-static apr_thread_mutex_t *pipe_of_death_mutex;
+static ap_pod_t *pod;
 
 /* *Non*-shared http_main globals... */
 
@@ -237,8 +234,8 @@ static apr_thread_mutex_t *worker_thread_count_mutex;
 /* Locks for accept serialization */
 static apr_proc_mutex_t *accept_mutex;
 
-#ifdef NO_SERIALIZED_ACCEPT
-#define SAFE_ACCEPT(stmt) APR_SUCCESS
+#ifdef SINGLE_LISTEN_UNSERIALIZED_ACCEPT
+#define SAFE_ACCEPT(stmt) (ap_listeners->next ? (stmt) : APR_SUCCESS)
 #else
 #define SAFE_ACCEPT(stmt) (stmt)
 #endif
@@ -588,35 +585,6 @@ static void check_infinite_requests(void)
     }
 }
 
-/* Sets workers_may_exit if we received a character on the pipe_of_death */
-static apr_status_t check_pipe_of_death(void **csd, ap_listen_rec *lr, 
-                                        apr_pool_t *ptrans)
-{
-    *csd = NULL;
-    apr_thread_mutex_lock(pipe_of_death_mutex);
-    if (!workers_may_exit) {
-        apr_status_t ret;
-        char pipe_read_char;
-        apr_size_t n = 1;
-
-        ret = apr_recv(lr->sd, &pipe_read_char, &n);
-        if (APR_STATUS_IS_EAGAIN(ret)) {
-            /* It lost the lottery. It must continue to suffer
-             * through a life of servitude. */
-        }
-        else {
-            /* It won the lottery (or something else is very
-             * wrong). Embrace death with open arms. */
-            signal_workers();
-        }
-    }
-    apr_thread_mutex_unlock(pipe_of_death_mutex);
-    /* This is a hack to get us back to the top of the accept loop.
-     * we should probably have a better way to do this though.
-     */
-    return APR_EINTR;
-}
-
 static void *listener_thread(apr_thread_t *thd, void * dummy)
 {
     proc_info * ti = dummy;
@@ -657,31 +625,30 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             signal_workers();
         }
 
-        while (!workers_may_exit) {
-            apr_status_t ret;
-            apr_int16_t event;
+        if (!ap_listeners->next) {
+            /* Only one listener, so skip the poll */
+            lr = ap_listeners;
+        }
+        else {
+            while (!workers_may_exit) {
+                apr_status_t ret;
+                apr_int16_t event;
 
-            ret = apr_poll(pollset, &n, -1);
-            if (ret != APR_SUCCESS) {
-                if (APR_STATUS_IS_EINTR(ret)) {
-                    continue;
+                ret = apr_poll(pollset, &n, -1);
+                if (ret != APR_SUCCESS) {
+                    if (APR_STATUS_IS_EINTR(ret)) {
+                        continue;
+                    }
+
+                    /* apr_poll() will only return errors in catastrophic
+                     * circumstances. Let's try exiting gracefully, for now. */
+                    ap_log_error(APLOG_MARK, APLOG_ERR, ret, (const server_rec *)
+                                 ap_server_conf, "apr_poll: (listen)");
+                    signal_workers();
                 }
 
-                /* apr_poll() will only return errors in catastrophic
-                 * circumstances. Let's try exiting gracefully, for now. */
-                ap_log_error(APLOG_MARK, APLOG_ERR, ret, (const server_rec *)
-                             ap_server_conf, "apr_poll: (listen)");
-                signal_workers();
-            }
+                if (workers_may_exit) break;
 
-            if (workers_may_exit) break;
-
-            if (ap_listeners->next == NULL) {
-                /* only one listener */
-                lr = ap_listeners;
-                goto got_fd;
-            }
-            else {
                 /* find a listener */
                 lr = last_lr;
                 do {
@@ -727,6 +694,10 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                                  "ap_queue_push failed with error code %d",
                                  rv);
                 }
+            }
+            if (ap_mpm_pod_check(pod) == APR_SUCCESS) {
+                signal_workers();
+                break;
             }
         }
         else {
@@ -951,8 +922,6 @@ static void child_main(int child_num_arg)
     worker_thread_count = 0;
     apr_thread_mutex_create(&worker_thread_count_mutex,
                             APR_THREAD_MUTEX_DEFAULT, pchild);
-    apr_thread_mutex_create(&pipe_of_death_mutex,
-                            APR_THREAD_MUTEX_DEFAULT, pchild);
 
     ts = (thread_starter *)apr_palloc(pchild, sizeof(*ts));
 
@@ -1071,15 +1040,7 @@ static void wake_up_and_die(void)
     apr_size_t one = 1;
     apr_status_t rv;
     
-    for (i = 0; i < ap_daemons_limit;) {
-        if ((rv = apr_file_write(pipe_of_death_out, &char_of_death, &one)) 
-                                 != APR_SUCCESS) {
-            if (APR_STATUS_IS_EINTR(rv)) continue;
-            ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, 
-                         "write pipe_of_death");
-        }
-        i++;
-    }
+    ap_mpm_pod_killpg(pod, ap_daemons_limit);
 }
 
 /* start up a bunch of children */
@@ -1202,13 +1163,8 @@ static void perform_idle_server_maintenance(void)
     ap_max_daemons_limit = last_non_dead + 1;
 
     if (idle_thread_count > max_spare_threads) {
-        char char_of_death = '!';
         /* Kill off one child */
-        if ((rv = apr_file_write(pipe_of_death_out, &char_of_death, 
-                                 &one)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, 
-                         "write pipe_of_death");
-        }
+        ap_mpm_pod_signal(pod);
         idle_spawn_rate = 1;
     }
     else if (idle_thread_count < min_spare_threads) {
@@ -1334,41 +1290,6 @@ static void server_main_loop(int remaining_children_to_start)
     }
 }
 
-static void make_pipe_of_death(int *num_listeners, apr_pool_t *p)
-{
-    ap_listen_rec *lr = apr_palloc(p, sizeof(*lr));
-    int filedes;
-    apr_socket_t *sd = NULL;
-    apr_status_t rv;
-
-    rv = apr_file_pipe_create(&pipe_of_death_in, &pipe_of_death_out, p);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv,
-                     (const server_rec*) ap_server_conf,
-                     "apr_file_pipe_create (pipe_of_death)");
-        exit(1);
-    }
-
-    if ((rv = apr_file_pipe_timeout_set(pipe_of_death_in, 0)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv,
-                     (const server_rec*) ap_server_conf,
-                     "apr_file_pipe_timeout_set (pipe_of_death)");
-        exit(1);
-    }
-
-    apr_os_file_get(&filedes, pipe_of_death_in);
-    apr_os_sock_put(&sd, &filedes, p);
-
-    lr->sd = sd;
-    lr->active = 1;
-    lr->accept_func = check_pipe_of_death;
-    /* We are not bound to a real address.  So, indicate that. */
-    lr->bind_addr = 0;
-    lr->next = ap_listeners;
-    ap_listeners = lr;
-    (*num_listeners)++;
-}
-
 int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
@@ -1391,7 +1312,13 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             "no listening sockets available, shutting down");
         return 1;
     }
-    make_pipe_of_death(&num_listensocks, pconf);
+
+    if ((rv = ap_mpm_pod_open(pconf, &pod))) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                     "Could not open pipe-of-death.");
+        return 1;
+    }
+
     ap_log_pid(pconf, ap_pid_fname);
 
     /* Initialize cross-process accept lock */
@@ -1532,10 +1459,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
                     "SIGHUP received.  Attempting to restart");
     }
-
-    /* get the pipe of death out of the listen_rec list */
-    ap_assert(ap_listeners->bind_addr == 0);
-    ap_listeners = ap_listeners->next;
 
     return 0;
 }

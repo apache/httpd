@@ -1,5 +1,8 @@
 Changes with Apache 2.0.31-dev
 
+  *) Added single-listener unserialized accept support to the
+     worker MPM [Brian Pane]
+
   *) New Directive for mod_proxy: 'ProxyPreserveHost'. This passes
      the incoming host header through to the proxied server
      [Geoff <g.russell@ieee.org>]

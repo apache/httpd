@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/28 00:41:31 $]
+Last modified at [$Date: 2002/01/30 06:33:18 $]
 
 Release:
 
@@ -286,10 +286,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                 treat shmem directly as a dbm via APR routines).  Justin 
                 also thinks that the https filter logic may be sufficiently
                 decoupled now, but isn't really sure.
-
-    * Performance: Get the SINGLE_LISTEN_UNSERIALIZED_ACCEPT
-      optimization working in worker.  prefork's new design for how
-      to notice data on the pod should be sufficient.
 
     * Performance & Debug: Eliminate most (and perhaps all) of the 
       malloc/free calls in the bucket brigade code.  Need some 
