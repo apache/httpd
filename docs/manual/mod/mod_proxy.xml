@@ -373,6 +373,137 @@
       </indent>
       &lt;/Proxy&gt;
     </example>
+
+    <p>New in Apache 2.1, is the ability to set the various connection
+    parameters to a backend server. The connection parameters are in
+    the form <code>key=value</code>.
+    </p>
+    <table>
+    <tr><th>Parameter</th>
+        <th>Default</th>
+        <th>Description</th></tr>
+    <tr><td>min</td>
+        <td>0</td>
+        <td>Minumum number of connections that will always
+            be open to the backend server.</td></tr>
+    <tr><td>max</td>
+        <td>1...n</td>
+        <td>Hard Maximum number of connections that will be
+    allowed to the backend server. The default for a Hard Maximum
+    for the number of connections is the number of threads per process in the 
+    active MPM. In the Prefork MPM, this is always 1, while with the Worker MPM
+    it is controlled by the <directive>ThreadsPerChild</directive>.
+    Apache will never create more than the Hard Maximum connections
+    to the backend server.</td></tr>
+    <tr><td>smax</td>
+        <td>max</td>
+        <td>Upto the Soft Maximum
+    number of connections will be created on demand. Any connections above 
+    <code>smax</code> are subject to a time to live or <code>ttl</code>.
+    </td></tr>
+    <tr><td>ttl</td>
+        <td>-</td>
+        <td>Time To Live for the inactive connections above the
+        <code>smax</code> connections in seconds. Apache will close all
+        connections that has not been used inside that time period.
+        If not set the Apache will wait until the free connection
+        is available. This directive is used for limiting the number
+        of connections to the backend server together with <code>max</code>
+        parameter.
+    </td></tr>
+    <tr><td>timeout</td>
+        <td><directive>Timeout</directive></td>
+        <td>Connection timeout in seconds.
+    </td></tr>
+    <tr><td>acquire</td>
+        <td>-</td>
+        <td>If set this will be the maximum time to wait for a free
+    connection in the connection pool. If there is no free connections
+    in the pool the Apache will return <code>SERVER_BUSY</code> status to
+    the client.
+    </td></tr>
+    <tr><td>keepalive</td>
+        <td>Off</td>
+        <td>This parameter should be used when you have a firewall between your
+    Apache and the backend server, who tend to drop inactive connections.
+    This flag will told Operating System to send <code>KEEP_ALIVE</code> message
+    on inactive connections (interval depend on global OS settings,
+    generally 120ms), and thus prevent the firewall to cut the connection.
+    To enable keepalive set this property value to the <code>On</code>. 
+    </td></tr>
+    <tr><td>retry</td>
+        <td>60</td>
+        <td>Connection pool worker retry timeout in seconds.
+    If the connection pool worker to the backend server is in the error state,
+    the Apache will not forward any request to that servers untill that timeout
+    expires. This enables to shut down the backend server for maintenance,
+    and bring it back online.
+    </td></tr>
+    <tr><td>loadfactor</td>
+        <td>1</td>
+        <td>Worker load factor. Used with BalancerMamber.
+         It is a number between 1 and 100 and defined the load aplied to
+         the worker.
+    </td></tr>
+    <tr><td>route</td>
+        <td>-</td>
+        <td>Route of the worker when used inside load balancer.
+        The route is a value appended to seesion id.
+    </td></tr>
+    <tr><td>redirect</td>
+        <td>-</td>
+        <td>Redirection Route of the worker. This value is usually
+        set dynamically to enable safe removal of the node from
+        the cluster. If set all requests without session id will be
+        redirected to the BalancerMember that has route parametar
+        equal as this value.
+    </td></tr>
+
+    </table>
+
+    <p>If the Proxy directive scheme starts with the
+    <code>balancer://</code> then a virtual worker that does not really
+    communicate with the backend server will be created. Instead it is responsible
+    for the management of several "real" workers. In that case the special set of
+    parameters can be add to this virtual worker.
+    </p>
+    <table>
+    <tr><th>Parameter</th>
+        <th>Default</th>
+        <th>Description</th></tr>
+    <tr><td>stickysession</td>
+        <td>-</td>
+        <td>Balancer sticky session name. The value is usually set to something
+        like <code>JSESSIONID</code> or <code>PHPSESSIONID</code>,
+        and it depends on the backend application server that support sessions.
+    </td></tr>
+    <tr><td>nofailover</td>
+        <td>Off</td>
+        <td>If set to <code>On</code> the session will break if the worker is in
+        error state or disabled. Set this value to On if backend servers do not
+        support session replication.
+    </td></tr>
+    <tr><td>timeout</td>
+        <td>0</td>
+        <td>Balancer timeout in seconds. If set this will be the maximum time
+        to wait for a free worker. Default is not to wait. 
+    </td></tr>
+    <tr><td>maxattempts</td>
+        <td>1</td>
+        <td>Maximum number of failover attempts before giving up. 
+    </td></tr>
+    
+    </table>
+    <example>
+      &lt;Proxy balancer://mycluster stickysession=jsessionid nofailover=On&gt;<br />
+      <indent>
+        BalancerMember http://1.2.3.4:8009<br />
+        BalancerMember http://1.2.3.5:8009<br />
+        BalancerMember http://1.2.3.6:8009<br />
+      </indent>
+      &lt;/Proxy&gt;
+    </example>
+    
 </usage>
 </directivesynopsis>
 
@@ -584,18 +715,12 @@ expressions</description>
     be open to the backend server. Upto the Soft Maximum or <code>smax</code> 
     number of connections will be created on demand. Any connections above 
     <code>smax</code> are subject to a time to live or <code>ttl</code>.  Apache
-    will never create more than the Hard Maximum or <code>hmax</code> connections
+    will never create more than the Hard Maximum or <code>max</code> connections
     to the backend server.</p>
 
     <example>
-        ProxyPass /example http://backend.example.com min=0 smax=5 hmax=20 ttl=60
+        ProxyPass /example http://backend.example.com smax=5 max=20 ttl=120 retry=300
     </example>
-
-    <!-- Still to be documented:
-             retry acquire timeout 
-             iobuffersize receivebuffersize 
-             keepalive route redirect 
-         See modules/proxy/mod_proxy.c set_worker_param() for details.  -->
 
     <p>When used inside a <directive type="section" module="core"
     >Location</directive> section, the first argument is omitted and the local
