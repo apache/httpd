@@ -293,14 +293,18 @@ int digest_check_auth (request_rec *r) {
     
     register int x;
     char *t, *w;
-    array_header *reqs_arr = requires (r);
+    array_header *reqs_arr;
     require_line *reqs;
 
-    /* BUG FIX: tadc, 11-Nov-1995.  If there is no "requires" directive, 
+    if (!(t = auth_type(r)) || strcasecmp(t, "Digest"))
+      return DECLINED;
+
+    reqs_arr = requires (r);
+    /* If there is no "requires" directive, 
      * then any user will do.
      */
     if (!reqs_arr)
-        return DECLINED;
+        return OK;
     reqs = (require_line *)reqs_arr->elts;
 
     for(x=0; x < reqs_arr->nelts; x++) {
