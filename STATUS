@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/03/06 23:12:10 $]
+Last modified at [$Date: 2001/03/07 00:10:19 $]
 
 Release:
 
@@ -17,14 +17,21 @@ Release:
 
 DAEDALUS 2.0 PROBLEMS:
 
-    * seg fault involving dir_cleanup() 
-      core dump: /usr/local/apache2/corefiles/httpd.core.1 
-        Status: Bill S may have fixed this, need to verify
+    * seg fault involving dir_cleanup() on invalid directories
+      core dumps: /usr/local/apache2/corefiles/httpd.core.[12358]
+        Status: Bill S probably fixed this with rev. 1.54 of
+                /apr/file_io/unix/dir.c, need to verify
     
-    * assert pops in ap_setup_client_block()
-      getline() is implicated
-      core dump: /usr/local/apache2/corefiles/httpd.core.4
+    * assert pops in ap_setup_client_block(). ap_getline() is
+      apparently failing to completely empty req_cfg->bb in some cases.
+      core dumps: /usr/local/apache2/corefiles/httpd.core.[49]
+      see message: <NEBBKBPPOLLGMBILHACFCEHGCBAA.cliffwoolley@yahoo.com>
         Status: Cliff did some analysis of this
+
+    * seg fault involving null server_addr_rec pointer in check_hostalias()
+      core dump: /usr/local/apache2/corefiles/httpd.core.7
+      see message: <NEBBKBPPOLLGMBILHACFOEHJCBAA.cliffwoolley@yahoo.com>
+        Status: Not yet analyzed
 
     * access log entries are sometimes split (multiple lines)
       seems to be related to FrontPage and/or DAV
