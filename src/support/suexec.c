@@ -161,12 +161,13 @@ static void err_output(const char *fmt, va_list ap)
     time_t timevar;
     struct tm *lt;
 
-    if (!log)
+    if (!log) {
 	if ((log = fopen(LOG_EXEC, "a")) == NULL) {
 	    fprintf(stderr, "failed to open log file\n");
 	    perror("fopen");
 	    exit(1);
 	}
+    }
 
     time(&timevar);
     lt = localtime(&timevar);
@@ -215,7 +216,8 @@ static void clean_env(void)
 	}
 	else {
 	    for (idx = 0; safe_env_lst[idx]; idx++) {
-		if (!strncmp(*ep, safe_env_lst[idx], strlen(safe_env_lst[idx]))) {
+		if (!strncmp(*ep, safe_env_lst[idx],
+			     strlen(safe_env_lst[idx]))) {
 		    cleanenv[cidx] = *ep;
 		    cidx++;
 		    break;
@@ -239,8 +241,8 @@ int main(int argc, char *argv[])
     char *target_uname;		/* target user name          */
     char *target_gname;		/* target group name         */
     char *target_homedir;	/* target home directory     */
-    char *actual_uname;		/* actual user name            */
-    char *actual_gname;		/* actual group name           */
+    char *actual_uname;		/* actual user name          */
+    char *actual_gname;		/* actual group name         */
     char *prog;			/* name of this program      */
     char *cmd;			/* command to be executed    */
     char cwd[AP_MAXPATH];	/* current working directory */
@@ -249,8 +251,6 @@ int main(int argc, char *argv[])
     struct group *gr;		/* group entry holder        */
     struct stat dir_info;	/* directory info holder     */
     struct stat prg_info;	/* program info holder       */
-
-
 
     /*
      * If there are a proper number of arguments, set
@@ -476,7 +476,8 @@ int main(int argc, char *argv[])
 	(gid != dir_info.st_gid) ||
 	(uid != prg_info.st_uid) ||
 	(gid != prg_info.st_gid)) {
-	log_err("target uid/gid (%ld/%ld) mismatch with directory (%ld/%ld) or program (%ld/%ld)\n",
+	log_err("target uid/gid (%ld/%ld) mismatch "
+		"with directory (%ld/%ld) or program (%ld/%ld)\n",
 		uid, gid,
 		dir_info.st_uid, dir_info.st_gid,
 		prg_info.st_uid, prg_info.st_gid);
