@@ -125,31 +125,31 @@
 
     <table class="bordered">
     <tr><th>要素</th><th>説明</th></tr>
-    <tr><td><code><a href="#element:config">config</a></code></td>
+    <tr><td><code><a href="#element.config">config</a></code></td>
         <td>configure output formats</td></tr>
-    <tr><td><code><a href="#element:echo">echo</a></code></td>
+    <tr><td><code><a href="#element.echo">echo</a></code></td>
         <td>print variables</td></tr>
-    <tr><td><code><a href="#element:exec">exec</a></code></td>
+    <tr><td><code><a href="#element.exec">exec</a></code></td>
         <td>execute external programs</td></tr>
-    <tr><td><code><a href="#element:fsize">fsize</a></code></td>
+    <tr><td><code><a href="#element.fsize">fsize</a></code></td>
         <td>print size of a file</td></tr>
-    <tr><td><code><a href="#element:flastmod">flastmod</a></code></td>
+    <tr><td><code><a href="#element.flastmod">flastmod</a></code></td>
         <td>print last modification time of a file</td></tr>
-    <tr><td><code><a href="#element:include">include</a></code></td>
+    <tr><td><code><a href="#element.include">include</a></code></td>
         <td>include a file</td></tr>
-    <tr><td><code><a href="#element:printenv">printenv</a></code></td>
+    <tr><td><code><a href="#element.printenv">printenv</a></code></td>
         <td>print all available variables</td></tr>
-    <tr><td><code><a href="#element:set">set</a></code></td>
+    <tr><td><code><a href="#element.set">set</a></code></td>
         <td>set a value of a variable</td></tr>
     </table>
 
     <p>SSI 要素は <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> 以外のモジュールで
     定義されることもあります。実際、
-    <code><a href="#element:exec">exec</a></code> 要素は
+    <code><a href="#element.exec">exec</a></code> 要素は
     <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> で提供されていて、このモジュールが
     ロードされる場合にのみ利用可能となります。</p>
 
-    <h3><a name="element_config" id="element_config">config 要素</a></h3>
+    <h3><a name="element.config" id="element.config">config 要素</a></h3>
       <p>次のコマンドは解析の様々な側面を制御します。属性は次の通りです。</p>
 
       <dl>
@@ -170,7 +170,7 @@
       </dl>
      
 
-    <h3><a name="element_echo" id="element_echo">echo 要素</a></h3>
+    <h3><a name="element.echo" id="element.echo">echo 要素</a></h3>
       <p>このコマンドは以下で定義されている <a href="#includevars">include
       変数</a> を表示します。変数が設定されていない場合は <code class="directive"><a href="#ssiundefinedecho">SSIUndefinedEcho</a></code> ディレクティブで
       決定される結果となります。日付はその時点での <code>timefmt</code> に従って
@@ -207,7 +207,7 @@
       </dl>
      
 
-    <h3><a name="element_exec" id="element_exec">exec 要素</a></h3>
+    <h3><a name="element.exec" id="element.exec">exec 要素</a></h3>
       <p><code>exec</code> コマンドは指定されたシェルコマンドや CGI スクリプトを
       実行します。<code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> がサーバに組み込まれているいなければ
       なりません。<code class="directive"><a href="../mod/core.html#option">Option</a></code> 
@@ -274,7 +274,7 @@
       </dl>
      
 
-    <h3><a name="element_fsize" id="element_fsize">fsize 要素</a></h3>
+    <h3><a name="element.fsize" id="element.fsize">fsize 要素</a></h3>
       <p>このコマンドは指定されたファイルの大きさを <code>sizefmt</code> の
       書式指定に基づいて出力します。属性は次の通りです。</p>
 
@@ -291,13 +291,13 @@
       </dl>
      
 
-    <h3><a name="element_flastmod" id="element_flastmod">flastmod 要素</a></h3>
+    <h3><a name="element.flastmod" id="element.flastmod">flastmod 要素</a></h3>
       <p>このコマンドは指定されたファイルの最終修正時刻を
       <code>timefmt</code> 書式指定に従って表示します。
       指定可能な属性は <code>fsize</code> コマンドと同じです。</p>
      
 
-    <h3><a name="element_include" id="element_include">include 要素</a></h3>
+    <h3><a name="element.include" id="element.include">include 要素</a></h3>
       <p>このコマンドは別の文書やファイルのテキストを解析しているファイルに
       挿入します。挿入されるファイルはアクセス制御の管理下にあります。
       解析しているファイルの存在するディレクトリに
@@ -346,9 +346,9 @@
       </dl>
      
 
-    <h3><a name="element_printenv" id="element_printenv">printenv 要素</a></h3>
+    <h3><a name="element.printenv" id="element.printenv">printenv 要素</a></h3>
       <p>これは、存在するすべての変数とその値を表示します。Apache 1.3.12 から、
-      特別な文字は出力される前にエンティティエンコード (詳細は <a href="#element:echo"><code>echo</code></a> 要素を参照)
+      特別な文字は出力される前にエンティティエンコード (詳細は <a href="#element.echo"><code>echo</code></a> 要素を参照)
       されるようになりました。属性はありません。</p>
 
       <div class="example"><h3>例</h3><p><code>
@@ -356,7 +356,7 @@
       </code></p></div>
      
 
-    <h3><a name="element_set" id="element_set">set 要素</a></h3>
+    <h3><a name="element.set" id="element.set">set 要素</a></h3>
       <p>これは変数の値を設定します。属性は次の通りです。</p>
 
       <dl>

@@ -71,7 +71,7 @@
     the link if a imagemap menu is generated. Lines beginning with '#' are
     comments.</p>
 
-    <section id="imapfile:directives"><title>Imagemap File Directives</title>
+    <section id="imapfile.directives"><title>Imagemap File Directives</title>
       <p>There are six directives allowed in the imagemap file. The
       directives can come in any order, but are processed in the
       order they are found in the imagemap file.</p>
@@ -129,7 +129,7 @@
       </dl>
     </section>
 
-    <section id="imapfile:values"><title>Values</title>
+    <section id="imapfile.values"><title>Values</title>
 
       <p>The values for each of the directives can any of the following:</p>
 
@@ -173,7 +173,7 @@
       </dl>
     </section>
 
-    <section id="imapfile:coords"><title>Coordinates</title>
+    <section id="imapfile.coords"><title>Coordinates</title>
 
       <dl>
       <dt><code>0,0 200,200</code></dt>
@@ -188,7 +188,7 @@
 
     </section>
 
-    <section id="imapfile:quotedtext"><title>Quoted Text</title>
+    <section id="imapfile.quotedtext"><title>Quoted Text</title>
 
       <dl>
       <dt><code>"<var>Menu Text</var>"</code></dt>
