@@ -57,12 +57,12 @@ include $(top_srcdir)/build/special.mk
 #   (we really don't expect end users to use these targets!)
 #
 
-ssl_expr_scan.c: ssl_expr_scan.l ssl_expr_parse.h
-	flex -Pssl_expr_yy -s -B ssl_expr_scan.l
+ssl_expr_scan.c: $(top_srcdir)/modules/ssl/ssl_expr_scan.l ssl_expr_parse.h
+	flex -Pssl_expr_yy -s -B $(top_srcdir)/modules/ssl/ssl_expr_scan.l
 	sed -e '/$$Header:/d' <lex.ssl_expr_yy.c >ssl_expr_scan.c && rm -f lex.ssl_expr_yy.c
 
-ssl_expr_parse.c ssl_expr_parse.h: ssl_expr_parse.y
-	yacc -d ssl_expr_parse.y
+ssl_expr_parse.c ssl_expr_parse.h: $(top_srcdir)/modules/ssl/ssl_expr_parse.y
+	yacc -d $(top_srcdir)/modules/ssl/ssl_expr_parse.y
 	sed -e 's;yy;ssl_expr_yy;g' \
 	    -e '/#if defined(c_plusplus) || defined(__cplusplus)/,/#endif/d' \
 	    <y.tab.c >ssl_expr_parse.c && rm -f y.tab.c
