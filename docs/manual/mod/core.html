@@ -1252,12 +1252,14 @@
 
     <p>In the former case, the directives between the start and end
     markers are only processed if the module named <em>module
-    name</em> is compiled in to Apache. The second format reverses
-    the test, and only processes the directives if <em>module
-    name</em> is <strong>not</strong> compiled in.</p>
+    name</em> is included in Apache -- either compiled in or
+    dynamically loaded using <a
+    href="mod_so.html#loadmodule">LoadModule</a>. The second format
+    reverses the test, and only processes the directives if <em>module
+    name</em> is <strong>not</strong> included.</p>
 
-    <p>The <em>module name</em> argument is a module name as given
-    as the file name of the module, at the time it was compiled.
+    <p>The <em>module name</em> argument is the file name of the
+    module, at the time it was compiled.
     For example, <code>mod_rewrite.c</code>.</p>
 
     <p>&lt;IfModule&gt; sections are nest-able, which can be used
