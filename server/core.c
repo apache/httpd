@@ -2918,7 +2918,7 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
                     != APR_SUCCESS) {
             return HTTP_FORBIDDEN;
         }
-        r->canonical_filename == r->filename;
+        r->canonical_filename = r->filename;
     }
     else {
 	/*
@@ -2933,7 +2933,7 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
                     != APR_SUCCESS) {
             return HTTP_FORBIDDEN;
         }
-        r->canonical_filename == r->filename;
+        r->canonical_filename = r->filename;
     }
 
     return OK;
