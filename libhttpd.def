@@ -289,7 +289,7 @@ EXPORTS
 	ap_rprintf   @282
 	ap_rvputs   @283
 
-	ap_send_header_field   @285
+
 	ap_server_argv0   @286
 	ap_server_root   @287
 	ap_set_file_slot  @288
