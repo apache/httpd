@@ -3,7 +3,7 @@
 <modulesynopsis>
 
 <name>mod_charset_lite</name>
-<description>specify character set translation or recoding</description>
+<description>Specify character set translation or recoding</description>
 <status>Experimental</status>
 <sourcefile>mod_charset_lite.c</sourcefile>
 <identifier>charset_lite_module</identifier>
@@ -70,6 +70,7 @@
 
 <directivesynopsis>
 <name>CharsetSourceEnc</name>
+<description>Source charset of files</description>
 <syntax>CharsetSourceEnc <em>charset</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -99,6 +100,7 @@
 
 <directivesynopsis>
 <name>CharsetDefault</name>
+<description>Charset to translate into</description>
 <syntax>CharsetDefault <em>charset</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -127,6 +129,7 @@
 
 <directivesynopsis>
 <name>CharsetOptions</name>
+<description>Configures charset tranlation behavior</description>
 <syntax>CharsetOptions <em>option</em> [<em>option</em>] ...</syntax>
 <default>CharsetOptions <em>DebugLevel=0</em> 
 <em>NoImplicitAdd</em></default>

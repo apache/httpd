@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<!DOCTYPE xml:manual [ <!ENTITY nbsp "&#160;"> ]>
+<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<modulesynopsis>
+
+<name>mod_dav</name> 
+<description>Distributed Authoring and Versioning
+(<a href="http://www.webdav.org/">WebDAV</a>) functionality.</description>
+<status>Extension</status>
+<sourcefile>mod_dav.c</sourcefile>
+<identifier>dav_module</identifier>
+
+<summary>
+    <p>This module provides class 1 and class 2 <a
+    href="http://www.webdav.org">WebDAV</a> ('Web-based Distributed
+    Authoring and Versioning') functionality for Apache. This
+    extension to the HTTP protocol allows creating, moving,
+    copying, and deleting resources and collections on a remote web
+    server.</p>
+
+    <p>To enable mod_dav, add the following to a container in your
+    <code>httpd.conf</code> file:</p>
+
+<example>Dav On</example>
+
+    <p>Also, specify a valid filename for the DAV lock database by
+    adding the following to the global section in your
+    <code>httpd.conf</code> file:</p>
+
+<example>DavLockDB /tmp/DavLock&nbsp;&nbsp;&nbsp;&nbsp;
+      <em>(Any web-server writable filename, without an
+      extension)</em>
+</example>
+</summary>
+
+<directivesynopsis>
+<name>Dav</name>
+<description>Enable WebDAV HTTP methods</description>
+<syntax>Dav on|off</syntax>
+<default>Dav off</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>Use the <directive>Dav</directive> directive to enable the
+    WebDAV HTTP methods for the given container. You may wish to add a
+    <directive module="core" type="section">Limit</directive> clause
+    inside the <directive module="core"
+    type="section">location</directive> directive to limit access to
+    DAV-enabled locations.</p>
+
+<example><title>Example</title>
+        DavLockDB /tmp/DavLock<br />
+        <br />
+         &lt;Location /foo&gt;<br />
+         Dav On<br />
+        <br />
+         AuthType Basic<br />
+         AuthName DAV<br />
+         AuthUserFile user.passwd<br />
+        <br />
+         &nbsp;&nbsp;&lt;LimitExcept GET HEAD OPTIONS&gt;<br />
+         &nbsp;&nbsp;require user admin<br />
+         &nbsp;&nbsp;&lt;/LimitExcept&gt;<br />
+         &lt;/Location&gt;<br />
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<description>Location of the DAV lock database</description>
+<name>DavLockDB</name>
+<syntax>DavLockDB <em>file-path</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Use the <directive>DavLockDB</directive> directive to specify
+    the full path to the lock database, excluding an extension. The
+    default (file system) implementation of mod_dav uses a SDBM
+    database to track user locks. The utility
+    <code>modules/dav/util/lockview</code> can be used from the server
+    to display all locks in a lock database.</p>
+
+<example><title>Example</title>
+DavLockDB /tmp/DavLock
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DavMinTimeout</name>
+<description>Minimum amount of time the server holds a lock on
+a DAV resource</description>
+<syntax>DavMinTimeout <em>seconds</em></syntax>
+<default>DavMinTimeout 0</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>When a client requests a DAV resource lock, it can also
+    specify a time when the lock will be automatically removed by
+    the server. This value is only a request, and the server can
+    ignore it or inform the client of an arbitrary value.</p>
+
+    <p>Use the <directive>DavMinTimeout</directive> directive to specify, in
+    seconds, the minimum lock timeout to return to a client.
+    Microsoft Web Folders defaults to a timeout of 120 seconds; the
+    <directive>DavMinTimeout</directive> can override this to a higher value
+    (like 600 seconds) to reduce the chance of the client losing
+    the lock due to network latency.</p>
+
+<example><title>Example</title>
+         &lt;Location /MSWord&gt;<br />
+         DavMinTimeout 600<br />
+         &lt;/Location&gt;<br />
+</example>
+</usage>     
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DavDepthInfinity</name>
+<description>Allow PROPFIND, Depth: Infinity requests</description>
+<syntax>DavDepthInfinity on|off</syntax>
+<default>DavDepthInfinity off</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>Use the <directive>DavDepthInfinity</directive> directive to
+    allow the processing of PROPFIND requests containing the header
+    'Depth: Infinity'. Because this type of request could constitute a
+    denial-of-service attack, by default it is not allowed.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+
+
