@@ -235,24 +235,33 @@ header.</description>
 
 <directivesynopsis>
 <name>CacheIgnoreCacheControl</name>
-<description>Ignore the fact that the client requested the content not be
-cached.</description>
+<description>Ignore request to not serve cached content to client</description>
 <syntax>CacheIgnoreCacheControl On|Off</syntax>
 <default>CacheIgnoreCacheControl Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>Ordinarily, documents with no-cache or no-store header values will not be stored in the cache.
-    The <directive>CacheIgnoreCacheControl</directive> directive allows this behavior to be overridden.
-    <directive>CacheIgnoreCacheControl</directive> On tells the server to attempt to cache the document
-    even if it contains no-cache or no-store header values. Documents requiring authorization will
-    <em>never</em> be cached.</p>
+    <p>Ordinarily, requests containing a Cache-Control: no-cache or
+    Pragma: no-cache header value will not be served from the cache.  The
+    <directive>CacheIgnoreCacheControl</directive> directive allows this
+    behavior to be overridden.  <directive>CacheIgnoreCacheControl</directive>
+    On tells the server to attempt to serve the resource from the cache even
+    if the request contains no-cache header values.  Resources requiring
+    authorization will <em>never</em> be cached.</p>
 
     <example>
       CacheIgnoreCacheControl On
     </example>
+
+    <note type="warning"><title>Warning:</title>
+       This directive will allow serving from the cache even if the client has
+       requested that the document not be served from the cache.  This might
+       result in stale content being served.
+    </note>
 </usage>
+<seealso><directive module="mod_cache">CacheStorePrivate</directive></seealso>
+<seealso><directive module="mod_cache">CacheStoreNoStore</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -343,4 +352,66 @@ LastModified date.</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>CacheStorePrivate</name>
+<description>Attempt to cache responses that the server has marked as private</description>
+<syntax>CacheStorePrivate On|Off</syntax>
+<default>CacheStorePrivate Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Ordinarily, responses with Cache-Control: private header values will not
+       be stored in the cache.  The <directive>CacheStorePrivate</directive>
+       directive allows this behavior to be overridden.
+       <directive>CacheStorePrivate</directive> On
+       tells the server to attempt to cache the resource even if it contains
+       private header values.  Resources requiring authorization will
+       <em>never</em> be cached.</p>
+
+    <example>
+      CacheStorePrivate On
+    </example>
+
+    <note type="warning"><title>Warning:</title>
+       This directive will allow caching even if the upstream server has
+       requested that the resource not be cached.  This directive is only
+       ideal for a 'private' cache.
+    </note>
+</usage>
+<seealso><directive module="mod_cache">CacheIgnoreCacheControl</directive></seealso>
+<seealso><directive module="mod_cache">CacheStoreNoStore</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheStoreNoStore</name>
+<description>Attempt to cache requests or responses that have been marked as no-store.</description>
+<syntax>CacheStoreNoStore On|Off</syntax>
+<default>CacheStoreNoStore Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Ordinarily, requests or responses with Cache-Control: no-store header
+       values will not be stored in the cache.  The
+       <directive>CacheStoreNoCache</directive> directive allows this
+       behavior to be overridden.  <directive>CacheStoreNoCache</directive> On
+       tells the server to attempt to cache the resource even if it contains
+       no-store header values.  Resources requiring authorization will
+       <em>never</em> be cached.</p>
+
+    <example>
+      CacheStoreNoStore On
+    </example>
+
+    <note type="warning"><title>Warning:</title>
+       As described in RFC 2616, the no-store directive is intended to
+       "prevent the inadvertent release or retention of sensitive information
+       (for example, on backup tapes)."  Enabling this option could store
+       sensitive information in the cache.  You are hereby warned.
+    </note>
+</usage>
+<seealso><directive module="mod_cache">CacheIgnoreCacheControl</directive></seealso>
+<seealso><directive module="mod_cache">CacheStorePrivate</directive></seealso>
+</directivesynopsis>
 </modulesynopsis>

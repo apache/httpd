@@ -2,6 +2,9 @@ Changes with Apache 2.1.3
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cache: Add CacheStorePrivate and CacheStoreNoStore directive.
+     [Justin Erenkrantz]
+
   *) Remove compiled-in upper limit on LimitRequestFieldSize.
      [Bill Stoddard]
 
