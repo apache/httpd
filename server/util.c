@@ -342,21 +342,24 @@ AP_DECLARE(char *) ap_strcasestr(const char *s1, const char *s2)
  * can use standard pointer comparisons in the calling function
  * (eg: test if ap_stripprefix(a,b) == a)
  */
-AP_DECLARE(char *) ap_stripprefix(const char *bigstring, const char *prefix)
+AP_DECLARE(const char *) ap_stripprefix(const char *bigstring,
+                                        const char *prefix)
 {
-    char *p1;
-    if (*prefix == '\0') {
-        return( (char *)bigstring);
-    }
-    p1 = (char *)bigstring;
-    while(*p1 && *prefix) {
+    const char *p1;
+
+    if (*prefix == '\0')
+        return bigstring;
+
+    p1 = bigstring;
+    while (*p1 && *prefix) {
         if (*p1++ != *prefix++)
-            return( (char *)bigstring);
+            return bigstring;
     }
     if (*prefix == '\0')
-        return(p1);
-    else /* hit the end of bigstring! */
-        return( (char *)bigstring);
+        return p1;
+
+    /* hit the end of bigstring! */
+    return bigstring;
 }
 
 /* 
