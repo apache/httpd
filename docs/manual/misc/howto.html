@@ -57,11 +57,11 @@ If that module is compiled in, the following lines
 RewriteRule /.* http://www.apache.org/ [R]
 </PRE></BLOCKQUOTE>
 
-This will send an HTTP 302 Redirect back to the client, and no matter
+will send an HTTP 302 Redirect back to the client, and no matter
 what they gave in the original URL, they'll be sent to
-"http://www.apache.org".
+"http://www.apache.org/".
 
-The second option is to set up a <CODE>ScriptAlias</CODE> pointing to
+<p>The second option is to set up a <CODE>ScriptAlias</CODE> pointing to
 a <STRONG>CGI script</STRONG> which outputs a 301 or 302 status and the
 location
 of the other server.</P>
@@ -89,7 +89,7 @@ print "Status: 302 Moved Temporarily\r\n" .
       "Location: http://www.some.where.else.com/\r\n" .
       "\r\n";
 
-</PRE></BLOCKQUOTE></P>
+</PRE></BLOCKQUOTE>
 
 <HR>
 
@@ -118,7 +118,6 @@ it to reopen the logfiles.</P>
 mv access_log access_log.old<BR>
 kill -1 `cat httpd.pid`
 </CODE></BLOCKQUOTE>
-</P>
 
 <P>Note: <CODE>httpd.pid</CODE> is a file containing the
 <STRONG>p</STRONG>rocess <STRONG>id</STRONG>
@@ -135,7 +134,7 @@ nightly or weekly basis.</P>
 <CODE>robots.txt</CODE> which you don't have, and never did have?</P>
 
 <P>These clients are called <STRONG>robots</STRONG> (also known as crawlers,
-spiders and other cute name) - special automated clients which
+spiders and other cute names) - special automated clients which
 wander around the web looking for interesting resources.</P>
 
 <P>Most robots are used to generate some kind of <EM>web index</EM> which
@@ -155,7 +154,7 @@ will want to stop.</P>
 
 <P>Another reason some webmasters want to block access to robots, is to
 stop them indexing dynamic information. Many search engines will use the
-data collected from your pages for months to come - not much use if your
+data collected from your pages for months to come - not much use if you're
 serving stock quotes, news, weather reports or anything else that will be
 stale by the time people find it in a search engine.</P>
 
@@ -194,7 +193,7 @@ to set the directive ProxyRemote differently. Here are my settings:
 </PRE>
 <P>
 Requests on port 80 of my proxy <SAMP>nicklas</SAMP> are forwarded to
-proxy<SAMP>.mayn.franken.de:8080</SAMP>, while requests on port 443 are
+<SAMP>proxy.mayn.franken.de:8080</SAMP>, while requests on port 443 are
 forwarded to <SAMP>proxy.mayn.franken.de:443</SAMP>.
 If the remote proxy is not set up to
 handle port 443, then the last directive can be left out. SSL requests
