@@ -792,26 +792,26 @@ command_rec mod_auth_ldap_cmds[] = {
                   "search on the branch <b>ou=People, o=Airius</b>."),
 
     AP_INIT_TAKE1("AuthLDAPBindDN", ap_set_string_slot,
-                  (void *)APR_XtOffsetOf(mod_auth_ldap_config_t, binddn), OR_AUTHCFG,
+                  (void *)APR_OFFSETOF(mod_auth_ldap_config_t, binddn), OR_AUTHCFG,
                   "DN to use to bind to LDAP server. If not provided, will do an anonymous bind."),
 
     AP_INIT_TAKE1("AuthLDAPBindPassword", ap_set_string_slot,
-                  (void *)APR_XtOffsetOf(mod_auth_ldap_config_t, bindpw), OR_AUTHCFG,
+                  (void *)APR_OFFSETOF(mod_auth_ldap_config_t, bindpw), OR_AUTHCFG,
                   "Password to use to bind to LDAP server. If not provided, will do an anonymous bind."),
 
     AP_INIT_FLAG("AuthLDAPRemoteUserIsDN", ap_set_flag_slot,
-                 (void *)APR_XtOffsetOf(mod_auth_ldap_config_t, user_is_dn), OR_AUTHCFG,
+                 (void *)APR_OFFSETOF(mod_auth_ldap_config_t, user_is_dn), OR_AUTHCFG,
                  "Set to 'on' to set the REMOTE_USER environment variable to be the full "
                  "DN of the remote user. By default, this is set to off, meaning that "
                  "the REMOTE_USER variable will contain whatever value the remote user sent."),
 
     AP_INIT_FLAG("AuthLDAPAuthoritative", ap_set_flag_slot,
-                 (void *)APR_XtOffsetOf(mod_auth_ldap_config_t, auth_authoritative), OR_AUTHCFG,
+                 (void *)APR_OFFSETOF(mod_auth_ldap_config_t, auth_authoritative), OR_AUTHCFG,
                  "Set to 'off' to allow access control to be passed along to lower modules if "
                  "the UserID and/or group is not known to this module"),
 
     AP_INIT_FLAG("AuthLDAPCompareDNOnServer", ap_set_flag_slot,
-                 (void *)APR_XtOffsetOf(mod_auth_ldap_config_t, compare_dn_on_server), OR_AUTHCFG,
+                 (void *)APR_OFFSETOF(mod_auth_ldap_config_t, compare_dn_on_server), OR_AUTHCFG,
                  "Set to 'on' to force auth_ldap to do DN compares (for the \"require dn\" "
                  "directive) using the server, and set it 'off' to do the compares locally "
                  "(at the expense of possible false matches). See the documentation for "
@@ -822,7 +822,7 @@ command_rec mod_auth_ldap_cmds[] = {
                     "member and uniquemember"),
 
     AP_INIT_FLAG("AuthLDAPGroupAttributeIsDN", ap_set_flag_slot,
-                 (void *)APR_XtOffsetOf(mod_auth_ldap_config_t, group_attrib_is_dn), OR_AUTHCFG,
+                 (void *)APR_OFFSETOF(mod_auth_ldap_config_t, group_attrib_is_dn), OR_AUTHCFG,
                  "If set to 'on', auth_ldap uses the DN that is retrieved from the server for"
                  "subsequent group comparisons. If set to 'off', auth_ldap uses the string"
                  "provided by the client directly. Defaults to 'on'."),
@@ -833,16 +833,16 @@ command_rec mod_auth_ldap_cmds[] = {
                   "Defaults to always."),
 
     AP_INIT_FLAG("AuthLDAPEnabled", ap_set_flag_slot,
-                 (void *)APR_XtOffsetOf(mod_auth_ldap_config_t, enabled), OR_AUTHCFG,
+                 (void *)APR_OFFSETOF(mod_auth_ldap_config_t, enabled), OR_AUTHCFG,
                  "Set to off to disable auth_ldap, even if it's been enabled in a higher tree"),
  
     AP_INIT_FLAG("AuthLDAPFrontPageHack", ap_set_flag_slot,
-                 (void *)APR_XtOffsetOf(mod_auth_ldap_config_t, frontpage_hack), OR_AUTHCFG,
+                 (void *)APR_OFFSETOF(mod_auth_ldap_config_t, frontpage_hack), OR_AUTHCFG,
                  "Set to 'on' to support Microsoft FrontPage"),
 
 #ifdef APU_HAS_LDAP_STARTTLS
     AP_INIT_FLAG("AuthLDAPStartTLS", ap_set_flag_slot,
-                 (void *)APR_XtOffsetOf(mod_auth_ldap_config_t, starttls), OR_AUTHCFG,
+                 (void *)APR_OFFSETOF(mod_auth_ldap_config_t, starttls), OR_AUTHCFG,
                  "Set to 'on' to start TLS after connecting to the LDAP server."),
 #endif /* APU_HAS_LDAP_STARTTLS */
 
