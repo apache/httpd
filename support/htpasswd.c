@@ -236,6 +236,7 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
     strcpy(record, user);
     strcat(record, ":");
     strcat(record, cpw);
+    strcat(record, "\n");
     return 0;
 }
 
