@@ -485,7 +485,7 @@ extern char *crypt();
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
 #define HAVE_SHMGET
-#define USE_SHMGET_SCOREBOARD
+#undef USE_SHMGET_SCOREBOARD	/* force use of mmap() scoreboard */
 #define HAVE_CRYPT_H
 #define HAVE_SYS_SELECT_H
 #define HAVE_SYS_RESOURCE_H
