@@ -2700,7 +2700,7 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
                   ap_escape_shell_cmd(r->pool, arg_copy));
     }
 
-    while (dptr != APR_BRIGADE_SENTINEL(*bb) || !APR_BUCKET_IS_EOS(dptr)) {
+    while (dptr != APR_BRIGADE_SENTINEL(*bb) && !APR_BUCKET_IS_EOS(dptr)) {
         /* State to check for the STARTING_SEQUENCE. */
         if ((ctx->state == PRE_HEAD) || (ctx->state == PARSE_HEAD)) {
             int do_cleanup = 0;
