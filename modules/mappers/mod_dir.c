@@ -84,7 +84,7 @@ static const char *add_index(cmd_parms *cmd, void *dummy, const char *arg)
     dir_config_rec *d = dummy;
 
     if (!d->index_names) {
-	d->index_names = apr_array_make(cmd->pool, 2, sizeof(char *));
+        d->index_names = apr_array_make(cmd->pool, 2, sizeof(char *));
     }
     *(const char **)apr_array_push(d->index_names) = arg;
     return NULL;
@@ -99,8 +99,7 @@ static const command_rec dir_cmds[] =
 
 static void *create_dir_config(apr_pool_t *p, char *dummy)
 {
-    dir_config_rec *new =
-    (dir_config_rec *) apr_pcalloc(p, sizeof(dir_config_rec));
+    dir_config_rec *new = apr_pcalloc(p, sizeof(dir_config_rec));
 
     new->index_names = NULL;
     return (void *) new;
@@ -108,9 +107,9 @@ static void *create_dir_config(apr_pool_t *p, char *dummy)
 
 static void *merge_dir_configs(apr_pool_t *p, void *basev, void *addv)
 {
-    dir_config_rec *new = (dir_config_rec *) apr_pcalloc(p, sizeof(dir_config_rec));
-    dir_config_rec *base = (dir_config_rec *) basev;
-    dir_config_rec *add = (dir_config_rec *) addv;
+    dir_config_rec *new = apr_pcalloc(p, sizeof(dir_config_rec));
+    dir_config_rec *base = (dir_config_rec *)basev;
+    dir_config_rec *add = (dir_config_rec *)addv;
 
     new->index_names = add->index_names ? add->index_names : base->index_names;
     return new;
@@ -134,7 +133,7 @@ static int fixup_dir(request_rec *r)
         r->handler = DIR_MAGIC_TYPE;
     }
 
-    /* Never tollerate path_info on dir requests */
+    /* Never tolerate path_info on dir requests */
     if (r->path_info && *r->path_info) {
         return DECLINED;
     }
@@ -148,29 +147,31 @@ static int fixup_dir(request_rec *r)
          * that this browser cannot handle redirs on non-GET requests 
          * (such as Microsoft's WebFolders). 
          */
-        if (r->method_number != M_GET
+        if ((r->method_number != M_GET)
                 && apr_table_get(r->subprocess_env, "redirect-carefully")) {
             return DECLINED;
         }
 
-        if (r->args != NULL)
+        if (r->args != NULL) {
             ifile = apr_pstrcat(r->pool, ap_escape_uri(r->pool, r->uri),
                                 "/", "?", r->args, NULL);
-        else
+        }
+        else {
             ifile = apr_pstrcat(r->pool, ap_escape_uri(r->pool, r->uri),
                                 "/", NULL);
+        }
 
         apr_table_setn(r->headers_out, "Location",
                        ap_construct_url(r->pool, ifile, r));
         return HTTP_MOVED_PERMANENTLY;
     }
 
-    if (strcmp(r->handler,DIR_MAGIC_TYPE)) {
+    if (strcmp(r->handler, DIR_MAGIC_TYPE)) {
         return DECLINED;
     }
 
-    d = (dir_config_rec *) ap_get_module_config(r->per_dir_config,
-                                                &dir_module);
+    d = (dir_config_rec *)ap_get_module_config(r->per_dir_config,
+                                               &dir_module);
 
     if (d->index_names) {
         names_ptr = (char **)d->index_names->elts;
@@ -193,8 +194,9 @@ static int fixup_dir(request_rec *r)
          * determine if name_ptr is our viable index, and therefore set them
          * up correctly on redirect.
          */
-        if (r->args != NULL)
+        if (r->args != NULL) {
             name_ptr = apr_pstrcat(r->pool, name_ptr, "?", r->args, NULL);
+        }
 
         rr = ap_sub_req_lookup_uri(name_ptr, r, NULL);
 
@@ -206,17 +208,17 @@ static int fixup_dir(request_rec *r)
             
         /* If the request returned a redirect, propagate it to the client */
 
-        if (ap_is_HTTP_REDIRECT(rr->status) ||
-            (rr->status == HTTP_NOT_ACCEPTABLE && num_names == 1) ||
-            (rr->status == HTTP_UNAUTHORIZED && num_names == 1)) {
+        if (ap_is_HTTP_REDIRECT(rr->status)
+            || (rr->status == HTTP_NOT_ACCEPTABLE && num_names == 1)
+            || (rr->status == HTTP_UNAUTHORIZED && num_names == 1)) {
 
             apr_pool_join(r->pool, rr->pool);
             error_notfound = rr->status;
             r->notes = apr_table_overlay(r->pool, r->notes, rr->notes);
             r->headers_out = apr_table_overlay(r->pool, r->headers_out,
-                                            rr->headers_out);
+                                               rr->headers_out);
             r->err_headers_out = apr_table_overlay(r->pool, r->err_headers_out,
-                                                rr->err_headers_out);
+                                                   rr->err_headers_out);
             return error_notfound;
         }
 
@@ -229,8 +231,10 @@ static int fixup_dir(request_rec *r)
          * exist, we return the last error response we got, instead
          * of a directory listing.
          */
-        if (rr->status && rr->status != HTTP_NOT_FOUND && rr->status != HTTP_OK)
+        if (rr->status && rr->status != HTTP_NOT_FOUND
+                && rr->status != HTTP_OK) {
             error_notfound = rr->status;
+        }
 
         ap_destroy_sub_req(rr);
     }
@@ -240,7 +244,6 @@ static int fixup_dir(request_rec *r)
     }
 
     /* nothing for us to do, pass on through */
-
     return DECLINED;
 }
 
@@ -251,10 +254,10 @@ static void register_hooks(apr_pool_t *p)
 
 module AP_MODULE_DECLARE_DATA dir_module = {
     STANDARD20_MODULE_STUFF,
-    create_dir_config,		/* create per-directory config structure */
-    merge_dir_configs,		/* merge per-directory config structures */
-    NULL,			/* create per-server config structure */
-    NULL,			/* merge per-server config structures */
-    dir_cmds,			/* command apr_table_t */
-    register_hooks		/* register hooks */
+    create_dir_config,          /* create per-directory config structure */
+    merge_dir_configs,          /* merge per-directory config structures */
+    NULL,                       /* create per-server config structure */
+    NULL,                       /* merge per-server config structures */
+    dir_cmds,                   /* command apr_table_t */
+    register_hooks              /* register hooks */
 };
