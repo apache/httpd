@@ -34,7 +34,7 @@ mod_proxy and will be incorporated into a new module, mod_cache.</p>
 dangerous both to your network and to the Internet at large.</p></td></tr></table></blockquote>
 
 
-<h2>Directives</h2><ul><li><a href="#allowconnect">AllowCONNECT</a></li><li><a href="#noproxy">NoProxy</a></li><li><a href="#proxyblock">ProxyBlock</a></li><li><a href="#proxydomain">ProxyDomain</a></li><li><a href="#proxyerroroverride">ProxyErrorOverride</a></li><li><a href="#proxymaxforwards">ProxyMaxForwards</a></li><li><a href="#proxypass">ProxyPass</a></li><li><a href="#proxypassreverse">ProxyPassReverse</a></li><li><a href="#proxypreservehost">ProxyPreserveHost</a></li><li><a href="#proxyreceivebuffersize">ProxyReceiveBufferSize</a></li><li><a href="#proxyremote">ProxyRemote</a></li><li><a href="#proxyrequests">ProxyRequests</a></li><li><a href="#proxytimeout">ProxyTimeout</a></li><li><a href="#proxyvia">ProxyVia</a></li></ul><h2><a name="configs">Common configuration topics</a></h2>
+<h2>Directives</h2><ul><li><a href="#allowconnect">AllowCONNECT</a></li><li><a href="#noproxy">NoProxy</a></li><li><a href="#proxy">Proxy</a></li><li><a href="#proxyblock">ProxyBlock</a></li><li><a href="#proxydomain">ProxyDomain</a></li><li><a href="#proxyerroroverride">ProxyErrorOverride</a></li><li><a href="#proxyiobuffersize">ProxyIOBufferSize</a></li><li><a href="#proxymatch">ProxyMatch</a></li><li><a href="#proxymaxforwards">ProxyMaxForwards</a></li><li><a href="#proxypass">ProxyPass</a></li><li><a href="#proxypassreverse">ProxyPassReverse</a></li><li><a href="#proxypreservehost">ProxyPreserveHost</a></li><li><a href="#proxyreceivebuffersize">ProxyReceiveBufferSize</a></li><li><a href="#proxyremote">ProxyRemote</a></li><li><a href="#proxyremotematch">ProxyRemoteMatch</a></li><li><a href="#proxyrequests">ProxyRequests</a></li><li><a href="#proxytimeout">ProxyTimeout</a></li><li><a href="#proxyvia">ProxyVia</a></li></ul><h2><a name="configs">Common configuration topics</a></h2>
 
 <ul>
 <li><a href="#forwardreverse">Forward and Reverse Proxies</a></li>
@@ -88,22 +88,17 @@ enabled using mod_cache as with the forward proxy.</p>
 
 <h3><a name="access">Controlling access to your proxy</a></h3>
 
-
-
-<p>You can control who can access your proxy via the normal <a href="core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a>
+<p>You can control who can access your proxy via the 
+<a href="#proxy" class="directive"><code class="directive">&lt;Proxy&gt;</code></a>
 control block using the following example:</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-&lt;Directory proxy:*&gt;<br>
+&lt;Proxy *&gt;<br>
 Order Deny,Allow<br>
 Deny from all<br>
 Allow from 192.168.0<br>
-&lt;/Directory&gt;
+&lt;/Proxy&gt;
 </code></td></tr></table></blockquote>
-
-<p>A <a href="core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a> block
-will also work, and is the only method known to work for all possible
-URLs in Apache versions earlier than 1.2b10.</p>
 
 <p>When configuring a reverse proxy, access control takes on the
 attributes of the normal server <a href="core.html#directory" class="directive"><code class="directive">&lt;directory&gt;</code></a> configuration.</p>
@@ -226,7 +221,8 @@ to the correct, fully qualified, server address. This is the preferred method
 since the user's bookmark files will then contain fully qualified hosts.</p>
 
 
-<hr/><h2><a name="AllowCONNECT">AllowCONNECT</a> <a name="allowconnect">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AllowCONNECT <em>port</em> [<em>port</em>] ...</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>AllowCONNECT 443 563</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
+<hr/><h2><a name="AllowCONNECT">AllowCONNECT</a> <a name="allowconnect">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Ports that are allowed to CONNECT through
+the proxy</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AllowCONNECT <em>port</em> [<em>port</em>] ...</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>AllowCONNECT 443 563</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
 <p>The <code class="directive">AllowCONNECT</code> directive specifies a list
 of port numbers to which the proxy <code>CONNECT</code> method may
 connect.  Today's browsers use this method when a <em>https</em>
@@ -235,7 +231,8 @@ effect.<br> By default, only the default https port (443) and the
 default snews port (563) are enabled. Use the
 <code class="directive">AllowCONNECT</code> directive to overrride this default and
 allow connections to the listed ports only.</p>
-<hr/><h2><a name="NoProxy">NoProxy</a> <a name="noproxy">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>NoProxy 
+<hr/><h2><a name="NoProxy">NoProxy</a> <a name="noproxy">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Hosts, domains, or networks that will be connected
+to directly</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>NoProxy 
  <em>Domain</em>|
  <em>SubNet</em>|
  <em>IpAddr</em>| 
@@ -337,7 +334,35 @@ always served directly, without forwarding to the configured
         and <code>www.mydomain.com.</code> (note the trailing period) are
         considered equal.</dd>
 </dl>
-<p><strong>See also </strong></p><ul><li><a href="../dns-caveats.html">DNS Issues</a></li></ul><hr/><h2><a name="ProxyBlock">ProxyBlock</a> <a name="proxyblock">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyBlock *|<em>word|host|domain</em>
+<p><strong>See also </strong></p><ul><li><a href="../dns-caveats.html">DNS Issues</a></li></ul><hr/><h2><a name="Proxy">&lt;Proxy&gt;</a> <a name="proxy">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Container for directives applied to proxied 
+resources</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>&lt;Proxy <em>wildcard-url</em>&gt; ...&lt;/Proxy&gt;</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
+<p>Directives placed in <code class="directive">&lt;Proxy&gt;</code>
+sections apply only to matching proxied content.  Shell-style
+wildcards are allowed.</p>
+
+<p>For example, the following will allow only hosts in
+<code>yournetwork.example.com</code> to access content via your
+proxy server:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;Proxy *&gt;<br>
+&nbsp;&nbsp;Order Deny,Allow<br>
+&nbsp;&nbsp;Deny from all<br>
+&nbsp;&nbsp;Allow from yournetwork.example.com<br>
+&lt;Proxy&gt;
+</code></td></tr></table></blockquote>
+
+<p>The following example will process all files in the
+<code>foo</code> directory of <code>example.com</code> through the
+<code>INCLUDES</code> filter when they are sent through the proxy
+server:</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;Proxy http://example.com/foo/*&gt;<br>
+&nbsp;&nbsp;SetOutputFilter INCLUDES<br>
+&lt;Proxy&gt;
+</code></td></tr></table></blockquote>
+<hr/><h2><a name="ProxyBlock">ProxyBlock</a> <a name="proxyblock">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Words, hosts, or domains that are banned from being
+proxied</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyBlock *|<em>word|host|domain</em>
 [<em>word|host|domain</em>] ...</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
 <p>The <code class="directive">ProxyBlock</code> directive specifies a list of
 words, hosts and/or domains, separated by spaces.  HTTP, HTTPS, and
@@ -365,7 +390,7 @@ ProxyBlock *
 
 <p>blocks connections to all sites.</p>
 
-<hr/><h2><a name="ProxyDomain">ProxyDomain</a> <a name="proxydomain">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyDomain <em>Domain</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
+<hr/><h2><a name="ProxyDomain">ProxyDomain</a> <a name="proxydomain">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Default domain name for proxied requests</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyDomain <em>Domain</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
 <p>This directive is only useful for Apache proxy servers within
 intranets.  The <code class="directive">ProxyDomain</code> directive specifies
 the default domain which the apache proxy server will belong to. If a
@@ -378,14 +403,23 @@ will be generated.</p>
   NoProxy         .mycompany.com 192.168.112.0/21<br>
   ProxyDomain     .mycompany.com
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="ProxyErrorOverride">ProxyErrorOverride</a> <a name="proxyerroroverride">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyErrorOverride On|Off</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyErrorOverride Off</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in version 2.0 and later</td></tr></table></td></tr></table>
+<hr/><h2><a name="ProxyErrorOverride">ProxyErrorOverride</a> <a name="proxyerroroverride">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Override error pages for proxied content</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyErrorOverride On|Off</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyErrorOverride Off</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in version 2.0 and later</td></tr></table></td></tr></table>
 <p>This directive is useful for reverse-proxy setups, where you want to 
 have a common look and feel on the error pages seen by the end user. 
 This also allows for included files (via mod_include's SSI) to get
 the error code and act accordingly (default behavior would display
 the error page of the proxied server, turning this on shows the SSI
 Error message).</p>
-<hr/><h2><a name="ProxyMaxForwards">ProxyMaxForwards</a> <a name="proxymaxforwards">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyMaxForwards <em>number</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyMaxForwards 10</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in Apache 2.0 and later</td></tr></table></td></tr></table>
+<hr/><h2><a name="ProxyIOBufferSize">ProxyIOBufferSize</a> <a name="proxyiobuffersize">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>IO buffer size for outgoing HTTP and FTP 
+connections</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyIOBufferSize <em>bytes</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
+
+<hr/><h2><a name="ProxyMatch">&lt;ProxyMatch&gt;</a> <a name="proxymatch">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Container for directives applied to regular-expression-matched 
+proxied resources</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>&lt;Proxy <em>regex</em>&gt; ...&lt;/Proxy&gt;</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
+<p>The <code class="directive">&lt;ProxyMatch&gt;</code> directive is
+identical to the <a href="#proxy" class="directive"><code class="directive">&lt;Proxy&gt;</code></a> directive, except it matches URLs
+using regular expressions.</p>
+<hr/><h2><a name="ProxyMaxForwards">ProxyMaxForwards</a> <a name="proxymaxforwards">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maximium number of proxies that a request can be forwarded
+through</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyMaxForwards <em>number</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyMaxForwards 10</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in Apache 2.0 and later</td></tr></table></td></tr></table>
 <p>The <code class="directive">ProxyMaxForwards</code> directive specifies the
 maximum number of proxies through which a request may pass. This is
 set to prevent infinite proxy loops, or a DoS attack.</p>
@@ -393,8 +427,8 @@ set to prevent infinite proxy loops, or a DoS attack.</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
   ProxyMaxForwards 10
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="ProxyPass">ProxyPass</a> <a name="proxypass">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyPass [<em>path</em>] !|<em>url</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
-
+<hr/><h2><a name="ProxyPass">ProxyPass</a> <a name="proxypass">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maps remote servers into the local server 
+URL-space</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyPass [<em>path</em>] !|<em>url</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
 <p>This directive allows remote servers to be mapped into the space of
 the local server; the local server does not act as a proxy in the
 conventional sense, but appears to be a mirror of the remote
@@ -420,8 +454,11 @@ a subdirectory. eg.</p>
 <p>will proxy all requests to /mirror/foo to foo.com EXCEPT requests made to /mirror/foo/i</p>
 
 <blockquote><table><tr><td bgcolor="#e0e5f5">NB: order is important. you need to put the exclusions BEFORE the general proxypass directive</td></tr></table></blockquote>
-<hr/><h2><a name="ProxyPassReverse">ProxyPassReverse</a> <a name="proxypassreverse">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyPassReverse [<em>path</em>] <em>url</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
 
+<p>When used inside a <a href="core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a> section, the first argument is
+ommitted and the local directory is obtained from the <a href="core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a>.</p>
+<hr/><h2><a name="ProxyPassReverse">ProxyPassReverse</a> <a name="proxypassreverse">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Adjusts the URL in HTTP response headers sent from
+a reverse proxied server</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyPassReverse [<em>path</em>] <em>url</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
 <p>This directive lets Apache adjust the URL in the <code>Location</code>,
 <code>Content-Location</code> and <code>URI</code> headers on
 HTTP redirect responses. This is essential when Apache is used as
@@ -454,14 +491,20 @@ also be used in conjunction with the proxy pass-through feature
 <code><a href="mod_rewrite.html">mod_rewrite</a></code> because its doesn't depend on a
 corresponding <a href="#proxypass" class="directive"><code class="directive">ProxyPass</code></a>
 directive.</p>
-<hr/><h2><a name="ProxyPreserveHost">ProxyPreserveHost</a> <a name="proxypreservehost">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyPreserveHost on|off</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyPreserveHost Off</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in
+
+<p>When used inside a <a href="core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a> section, the first argument is
+ommitted and the local directory is obtained from the <a href="core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a>.</p>
+
+<hr/><h2><a name="ProxyPreserveHost">ProxyPreserveHost</a> <a name="proxypreservehost">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Use incoming Host HTTP request header for
+proxy request</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyPreserveHost on|off</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyPreserveHost Off</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in
 Apache 2.0.31 and later.</td></tr></table></td></tr></table>
 <p>When enabled, this option will pass the Host: line from the
 incoming request to the proxied host, instead of the hostname
 specified in the proxypass line.
 </p>
 <p>This option should normally be turned 'off'.</p>
-<hr/><h2><a name="ProxyReceiveBufferSize">ProxyReceiveBufferSize</a> <a name="proxyreceivebuffersize">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyReceiveBufferSize <em>bytes</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
+<hr/><h2><a name="ProxyReceiveBufferSize">ProxyReceiveBufferSize</a> <a name="proxyreceivebuffersize">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Network buffer size for outgoing HTTP and FTP 
+connections</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyReceiveBufferSize <em>bytes</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
 <p>The <code class="directive">ProxyReceiveBufferSize</code> directive
 specifies an explicit network buffer size for outgoing HTTP and FTP
 connections, for increased throughput.  It has to be greater than 512
@@ -470,7 +513,7 @@ be used.</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
   ProxyReceiveBufferSize 2048
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="ProxyRemote">ProxyRemote</a> <a name="proxyremote">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyRemote <em>match remote-server</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
+<hr/><h2><a name="ProxyRemote">ProxyRemote</a> <a name="proxyremote">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Remote proxy used to handle certain requests</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyRemote <em>match remote-server</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
 <p>This defines remote proxies to this proxy. <em>match</em> is either the
 name of a URL-scheme that the remote server supports, or a partial URL
 for which the remote server should be used, or '*' to indicate the
@@ -499,7 +542,13 @@ them.</p>
 <p>This option also supports reverse proxy configuration - a backend
 webserver can be embedded within a virtualhost URL space even if that
 server is hidden by another forward proxy.</p>
-<hr/><h2><a name="ProxyRequests">ProxyRequests</a> <a name="proxyrequests">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyRequests on|off</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyRequests Off</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
+<hr/><h2><a name="ProxyRemoteMatch">ProxyRemoteMatch</a> <a name="proxyremotematch">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Remote proxy used to handle requests
+matched by regular expressions</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyRemote <em>regex remote-server</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
+<p>The <code class="directive">ProxyRemoteMatch</code> is identical
+to the <a href="#proxyremote" class="directive"><code class="directive">ProxyRemote</code></a>
+directive, except the first argument is a regular expression
+match against the requested URL.</p>
+<hr/><h2><a name="ProxyRequests">ProxyRequests</a> <a name="proxyrequests">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Enables forward (standard) proxy requests</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyRequests on|off</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyRequests Off</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
 <p>This allows or prevents Apache from functioning as a forward proxy
 server. (Setting ProxyRequests to 'off' does not disable use of the 
 <a href="#proxypass" class="directive"><code class="directive">ProxyPass</code></a> directive.)</p>
@@ -511,14 +560,15 @@ server. (Setting ProxyRequests to 'off' does not disable use of the
 <a href="#access">secured your server</a>.  Open proxy servers are
 dangerous both to your network and to the Internet at large.</p></td></tr></table></blockquote>
 
-<hr/><h2><a name="ProxyTimeout">ProxyTimeout</a> <a name="proxytimeout">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyTimeout <em>seconds</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyTimeout 300</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in
+<hr/><h2><a name="ProxyTimeout">ProxyTimeout</a> <a name="proxytimeout">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Network timeout for proxied requests</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyTimeout <em>seconds</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyTimeout 300</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in
 Apache 2.0.31 and later</td></tr></table></td></tr></table>
 <p>This directive allows a user to specifiy a timeout on proxy requests.
 This is usefull when you have a slow/buggy appserver which hangs,
 and you would rather just return a timeout and fail gracefully instead
 of waiting however long it takes the server to return
 </p>
-<hr/><h2><a name="ProxyVia">ProxyVia</a> <a name="proxyvia">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyVia on|off|full|block</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyVia off</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
+<hr/><h2><a name="ProxyVia">ProxyVia</a> <a name="proxyvia">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Information provided in the Via HTTP response
+header for proxied requests</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyVia on|off|full|block</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyVia off</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
 <p>This directive controls the use of the <code>Via:</code> HTTP
 header by the proxy. Its intended use is to control the flow of of
 proxy requests along a chain of proxy servers.  See RFC2068 (HTTP/1.1)

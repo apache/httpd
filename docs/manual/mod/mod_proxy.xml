@@ -99,23 +99,17 @@ enabled using mod_cache as with the forward proxy.</p>
 
 <section id="access"><title>Controlling access to your proxy</title>
 
-<!-- XXX: This is completely wrong... There is a proxy block
-in 2.0 -->
-
-<p>You can control who can access your proxy via the normal <directive module="core" type="section">Directory</directive>
+<p>You can control who can access your proxy via the 
+<directive module="mod_proxy" type="section">Proxy</directive>
 control block using the following example:</p>
 
 <example>
-&lt;Directory proxy:*&gt;<br />
+&lt;Proxy *&gt;<br />
 Order Deny,Allow<br />
 Deny from all<br />
 Allow from 192.168.0<br />
-&lt;/Directory&gt;
+&lt;/Proxy&gt;
 </example>
-
-<p>A <directive module="core" type="section">Files</directive> block
-will also work, and is the only method known to work for all possible
-URLs in Apache versions earlier than 1.2b10.</p>
 
 <p>When configuring a reverse proxy, access control takes on the
 attributes of the normal server <directive module="core"
@@ -264,8 +258,65 @@ since the user's bookmark files will then contain fully qualified hosts.</p>
 
 </section>
 
+<directivesynopsis type="section">
+<name>Proxy</name>
+<syntax>&lt;Proxy <em>wildcard-url</em>&gt; ...&lt;/Proxy&gt;</syntax>
+<description>Container for directives applied to proxied 
+resources</description>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>Directives placed in <directive type="section">Proxy</directive>
+sections apply only to matching proxied content.  Shell-style
+wildcards are allowed.</p>
+
+<p>For example, the following will allow only hosts in
+<code>yournetwork.example.com</code> to access content via your
+proxy server:</p>
+
+<example>
+&lt;Proxy *&gt;<br />
+&nbsp;&nbsp;Order Deny,Allow<br />
+&nbsp;&nbsp;Deny from all<br />
+&nbsp;&nbsp;Allow from yournetwork.example.com<br />
+&lt;Proxy&gt;
+</example>
+
+<p>The following example will process all files in the
+<code>foo</code> directory of <code>example.com</code> through the
+<code>INCLUDES</code> filter when they are sent through the proxy
+server:</p>
+<example>
+&lt;Proxy http://example.com/foo/*&gt;<br />
+&nbsp;&nbsp;SetOutputFilter INCLUDES<br />
+&lt;Proxy&gt;
+</example>
+</usage>
+</directivesynopsis>
+
+
+<directivesynopsis type="section">
+<name>ProxyMatch</name>
+<syntax>&lt;Proxy <em>regex</em>&gt; ...&lt;/Proxy&gt;</syntax>
+<description>Container for directives applied to regular-expression-matched 
+proxied resources</description>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>The <directive type="section">ProxyMatch</directive> directive is
+identical to the <directive module="mod_proxy"
+type="section">Proxy</directive> directive, except it matches URLs
+using regular expressions.</p>
+</usage>
+</directivesynopsis>
+
+
 <directivesynopsis>
 <name>ProxyPreserveHost</name>
+<description>Use incoming Host HTTP request header for
+proxy request</description>
 <syntax>ProxyPreserveHost on|off</syntax>
 <default>ProxyPreserveHost Off</default>
 <contextlist><context>server config</context>
@@ -285,6 +336,7 @@ specified in the proxypass line.
 
 <directivesynopsis>
 <name>ProxyRequests</name>
+<description>Enables forward (standard) proxy requests</description>
 <syntax>ProxyRequests on|off</syntax>
 <default>ProxyRequests Off</default>
 <contextlist><context>server config</context>
@@ -309,6 +361,7 @@ dangerous both to your network and to the Internet at large.</p></note>
 
 <directivesynopsis>
 <name>ProxyRemote</name>
+<description>Remote proxy used to handle certain requests</description>
 <syntax>ProxyRemote <em>match remote-server</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -347,15 +400,32 @@ server is hidden by another forward proxy.</p>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>ProxyRemoteMatch</name>
+<description>Remote proxy used to handle requests
+matched by regular expressions</description>
+<syntax>ProxyRemote <em>regex remote-server</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+</contextlist>
+
+<usage>
+<p>The <directive>ProxyRemoteMatch</directive> is identical
+to the <directive module="mod_proxy">ProxyRemote</directive>
+directive, except the first argument is a regular expression
+match against the requested URL.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ProxyPass</name>
+<description>Maps remote servers into the local server 
+URL-space</description>
 <syntax>ProxyPass [<em>path</em>] !|<em>url</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 </contextlist>
 
 <usage>
-<!-- XXX: Need to document that the path is not used when placed in
-a location section -->
 <p>This directive allows remote servers to be mapped into the space of
 the local server; the local server does not act as a proxy in the
 conventional sense, but appears to be a mirror of the remote
@@ -381,19 +451,25 @@ a subdirectory. eg.</p>
 <p>will proxy all requests to /mirror/foo to foo.com EXCEPT requests made to /mirror/foo/i</p>
 
 <note>NB: order is important. you need to put the exclusions BEFORE the general proxypass directive</note>
+
+<p>When used inside a <directive type="section"
+module="core">Location</directive> section, the first argument is
+ommitted and the local directory is obtained from the <directive
+type="section" module="core">Location</directive>.</p>
 </usage>
+
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyPassReverse</name>
+<description>Adjusts the URL in HTTP response headers sent from
+a reverse proxied server</description>
 <syntax>ProxyPassReverse [<em>path</em>] <em>url</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 </contextlist>
 
 <usage>
-<!-- XXX: Need to document that the path is not used when placed in
-a location section -->
 <p>This directive lets Apache adjust the URL in the <code>Location</code>,
 <code>Content-Location</code> and <code>URI</code> headers on
 HTTP redirect responses. This is essential when Apache is used as
@@ -426,11 +502,19 @@ also be used in conjunction with the proxy pass-through feature
 <module>mod_rewrite</module> because its doesn't depend on a
 corresponding <directive module="mod_proxy">ProxyPass</directive>
 directive.</p>
+
+<p>When used inside a <directive type="section"
+module="core">Location</directive> section, the first argument is
+ommitted and the local directory is obtained from the <directive
+type="section" module="core">Location</directive>.</p>
+
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AllowCONNECT</name>
+<description>Ports that are allowed to <code>CONNECT</code> through
+the proxy</description>
 <syntax>AllowCONNECT <em>port</em> [<em>port</em>] ...</syntax>
 <default>AllowCONNECT 443 563</default>
 <contextlist><context>server config</context>
@@ -451,6 +535,8 @@ allow connections to the listed ports only.</p>
 
 <directivesynopsis>
 <name>ProxyBlock</name>
+<description>Words, hosts, or domains that are banned from being
+proxied</description>
 <syntax>ProxyBlock *|<em>word|host|domain</em>
 [<em>word|host|domain</em>] ...</syntax>
 <contextlist><context>server config</context>
@@ -489,6 +575,8 @@ ProxyBlock *
 
 <directivesynopsis>
 <name>ProxyReceiveBufferSize</name>
+<description>Network buffer size for outgoing HTTP and FTP 
+connections</description>
 <syntax>ProxyReceiveBufferSize <em>bytes</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -507,7 +595,23 @@ be used.</p>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>ProxyIOBufferSize</name>
+<description>IO buffer size for outgoing HTTP and FTP 
+connections</description>
+<syntax>ProxyIOBufferSize <em>bytes</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+</contextlist>
+
+<usage>
+<!-- XXX: content needed -->
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ProxyMaxForwards</name>
+<description>Maximium number of proxies that a request can be forwarded
+through</description>
 <syntax>ProxyMaxForwards <em>number</em></syntax>
 <default>ProxyMaxForwards 10</default>
 <contextlist><context>server config</context>
@@ -528,6 +632,8 @@ set to prevent infinite proxy loops, or a DoS attack.</p>
 
 <directivesynopsis>
 <name>NoProxy</name>
+<description>Hosts, domains, or networks that will be connected
+to directly</description>
 <syntax>NoProxy 
  <em>Domain</em>|
  <em>SubNet</em>|
@@ -643,6 +749,7 @@ always served directly, without forwarding to the configured
 
 <directivesynopsis>
 <name>ProxyTimeout</name>
+<description>Network timeout for proxied requests</description>
 <syntax>ProxyTimeout <em>seconds</em></syntax>
 <default>ProxyTimeout 300</default>
 <contextlist><context>server config</context>
@@ -662,6 +769,7 @@ of waiting however long it takes the server to return
 
 <directivesynopsis>
 <name>ProxyDomain</name>
+<description>Default domain name for proxied requests</description>
 <syntax>ProxyDomain <em>Domain</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -685,6 +793,8 @@ will be generated.</p>
 
 <directivesynopsis>
 <name>ProxyVia</name>
+<description>Information provided in the <code>Via</code> HTTP response
+header for proxied requests</description>
 <syntax>ProxyVia on|off|full|block</syntax>
 <default>ProxyVia off</default>
 <contextlist><context>server config</context>
@@ -719,6 +829,7 @@ removed. No new <code>Via:</code> header will be generated.</li>
 
 <directivesynopsis>
 <name>ProxyErrorOverride</name>
+<description>Override error pages for proxied content</description>
 <syntax>ProxyErrorOverride On|Off</syntax>
 <default>ProxyErrorOverride Off</default>
 <contextlist><context>server config</context>
@@ -735,4 +846,6 @@ the error page of the proxied server, turning this on shows the SSI
 Error message).</p>
 </usage>
 </directivesynopsis>
+
+
 </modulesynopsis>
