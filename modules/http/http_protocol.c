@@ -1354,9 +1354,6 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
         return HTTP_UNAUTHORIZED;
     }
 
-    /* APACHE_XLATE Issue's here ?!? Compare with 32/9 instead
-     * as we are operating on an octed stream ?
-     */
     while (*auth_line== ' ' || *auth_line== '\t')
         auth_line++;
 
