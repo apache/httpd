@@ -1493,18 +1493,20 @@ comma-separated list of the following flags:
 <LI>'<STRONG><CODE>proxy|P</CODE></STRONG>' (force <STRONG>p</STRONG>roxy)<BR>
     This flag forces the substitution part to be internally forced as a proxy
     request and immediately (i.e. rewriting rule processing stops here) put
-    through the proxy module. You have to make sure that the substitution
-    string is a valid URI (e.g. typically <CODE>http://</CODE>) which can
-    be handled by the Apache proxy module. If not you get an error from
-    the proxy module. Use this flag to achieve a more powerful implementation
-    of the <CODE>mod_proxy</CODE> directive <CODE>ProxyPass</CODE>, to map
-    some remote stuff into the namespace of the local server.
+    through the <A HREF="mod_proxy.html">proxy module</A>. You have to make
+    sure that the substitution string is a valid URI (e.g.  typically starting
+    with <CODE>http://</CODE><EM>hostname</EM>) which can be handled by the
+    Apache proxy module. If not you get an error from the proxy module. Use
+    this flag to achieve a more powerful implementation of the <A
+    HREF="mod_proxy.html#proxypass">ProxyPass</A> directive, to map some
+    remote stuff into the namespace of the local server.
     <P>
-    Notice: <STRONG>You really have to put <CODE>ProxyRequests On</CODE> into your
-    server configuration to prevent proxy requests from leading to core-dumps
-    inside the Apache kernel. If you have not compiled in the proxy module,
-    then there is no core-dump problem, because mod_rewrite checks for
-    existence of the proxy module and if lost forbids proxy URLs.  </STRONG>
+    Notice: To use this functionality make sure you have the proxy module
+    compiled into your Apache server program.  If you don't know please check
+    whether <CODE>mod_proxy.c</CODE> is part of the ``<CODE>httpd -l</CODE>''
+    output. If yes, this functionality is available to mod_rewrite. If not,
+    then you first have to rebuild the ``<CODE>httpd</CODE>'' program with
+    mod_proxy enabled.
 <P>
 <LI>'<STRONG><CODE>last|L</CODE></STRONG>' (<STRONG>l</STRONG>ast rule)<BR>
     Stop the rewriting process here and
