@@ -6666,7 +6666,7 @@ int REALMAIN(int argc, char *argv[])
     }
 #else
     if(!GetCurrentDirectory(sizeof(cwd),cwd)) {
-       ap_log_error(APLOG_MARK,APLOG_WIN32ERROR, NULL,
+       ap_log_error(APLOG_MARK,APLOG_EMERG|APLOG_WIN32ERROR, NULL,
        "GetCurrentDirectory() failure");
        return -1;
     }
