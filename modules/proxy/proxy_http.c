@@ -177,11 +177,10 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     char server_portstr[32];
     apr_socket_t *sock;
     int i, len, backasswards, close=0, failed=0, new=0;
-    apr_status_t err;
+    apr_status_t err, rv;
     apr_array_header_t *headers_in_array;
     apr_table_entry_t *headers_in;
     char buffer[HUGE_STRING_LEN];
-    char *response;
     char *buf;
     conn_rec *origin;
     apr_bucket *e;
@@ -550,65 +549,49 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 
     rp = make_fake_req(origin, r);
 
-    apr_brigade_destroy(bb);
-    bb = apr_brigade_create(p);
-    
-    /* Tell http_filter to grab the data one line at a time. */
-    origin->remain = 0;
+    apr_brigade_cleanup(bb);
 
-    ap_get_brigade(origin->input_filters, bb, AP_MODE_BLOCKING);
-    e = APR_BRIGADE_FIRST(bb);
-    i = 5;
-    len = 0;
-    while (!len && i--) {
-	apr_bucket_read(e, (const char **)&response, &len, APR_BLOCK_READ);
-    }
-    if (len == -1) {
+    if (APR_SUCCESS != (rv = ap_proxy_string_read(origin, bb, buffer, sizeof(buffer)))) {
 	apr_socket_close(sock);
 	conf->client_socket = NULL;
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-	     "proxy: error reading from remote server %s (length %d) using ap_get_brigade()",
-	     connectname, len);
+	     "proxy: error reading from remote server %s using ap_proxy_string_read()",
+	     connectname);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
-    } else if (len == 0) {
-	apr_socket_close(sock);
-	conf->client_socket = NULL;
-	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-			     "No response data from server");
     }
-    APR_BUCKET_REMOVE(e);
-    apr_bucket_destroy(e);
+    len = strlen(buffer);
 
     /* Is it an HTTP/1 response?  This is buggy if we ever see an HTTP/1.10 */
-    if (ap_checkmask(response, "HTTP/#.# ###*")) {
+    if (ap_checkmask(buffer, "HTTP/#.# ###*")) {
 	int major, minor;
-	if (2 != sscanf(response, "HTTP/%u.%u", &major, &minor)) {
+
+	if (2 != sscanf(buffer, "HTTP/%u.%u", &major, &minor)) {
 	    major = 1;
 	    minor = 1;
 	}
 
         /* If not an HTTP/1 message or if the status line was > 8192 bytes */
-	if (response[5] != '1' || response[len - 1] != '\n') {
+	else if ((buffer[5] != '1') || (len >= sizeof(buffer)-1)) {
 	    apr_socket_close(sock);
 	    conf->client_socket = NULL;
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-				 apr_pstrcat(p, "Corrupt status line returned by remote server: ", response, NULL));
+				 apr_pstrcat(p, "Corrupt status line returned by remote server: ", buffer, NULL));
 	}
 	backasswards = 0;
-	response[--len] = '\0';
+	buffer[--len] = '\0';
 
-	response[12] = '\0';
-	r->status = atoi(&response[9]);
+	buffer[12] = '\0';
+	r->status = atoi(&buffer[9]);
 
-	response[12] = ' ';
-	r->status_line = apr_pstrdup(p, &response[9]);
+	buffer[12] = ' ';
+	r->status_line = apr_pstrdup(p, &buffer[9]);
 
         /* read the headers. */
         /* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers */
         /* Also, take care with headers with multiple occurences. */
 
-	r->headers_out = ap_proxy_read_headers(r, rp, buffer, HUGE_STRING_LEN, origin);
+	r->headers_out = ap_proxy_read_headers(r, rp, buffer, sizeof(buffer), origin);
 	if (r->headers_out == NULL) {
 	    ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r->server,
 			 "proxy: bad HTTP/%d.%d header returned by %s (%s)",
