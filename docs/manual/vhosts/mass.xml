@@ -4,7 +4,7 @@
 
 <manualpage>
 <relativepath href=".."/>
-
+<parentdocument href="./">Virtual Hosts</parentdocument>
    <title>Dynamically configured mass virtual hosting</title>
 
 <summary>
