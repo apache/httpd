@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.12 -->
+<!-- English revision: 1.14 -->
 <modulesynopsis>
 <name>mod_autoindex</name>
 
@@ -651,6 +651,14 @@ MIME タイプによって選択</description>
       このオプションに何も値が与えられなければ、Apache
       ソフトウェアで提供されているアイコンの標準の高さが
       デフォルトなります。</dd>
+
+      <dt><a name="indexoptions:ignorecase"
+               id="indexoptions:ignorecase">IgnoreCase</a></dt>
+
+      <dd>このオプションが有効であると、ファイル名は大文字小文字を区別せずにソートされます。
+      例えばファイル名が昇順でソートされ、IgnoreCase が有効であれば、
+      Zeta は alfa の後にリストされます
+      (注意: GAMMA は常に gamma の前になります)。</dd>
 
       <dt><a name="indexoptions:ignoreclient"
                id="indexoptions:ignoreclient">IgnoreClient</a></dt>

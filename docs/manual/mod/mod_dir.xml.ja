@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.3 -->
+<!-- English revision: 1.4 -->
 
 <name>mod_dir</name>
 <description>「最後のスラッシュ」のリダイレクトと、ディレクトリの
@@ -44,13 +44,10 @@
 <description>クライアントがディレクトリをリクエストしたときに調べる
 リソースのリスト</description>
 <syntax>DirectoryIndex
-    <em>local-url</em> [<em>local-url</em>] ...</syntax>
+    <var>local-url</var> [<var>local-url</var>] ...</syntax>
 <default>DirectoryIndex index.html</default>
-<contextlist><context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
 
 <usage>
@@ -58,7 +55,7 @@
     クライアントが、ディレクトリ名の最後に「/」
     を指定してディレクトリインデックスを要求する場合に探すリソースのリストを
     <directive>DirectoryIndex</directive> ディレクティブで設定します。
-    <em>Local-url</em>
+    <var>Local-url</var>
     は、リクエストされたディレクトリに対応する、サーバ上のドキュメントの
     (% エンコードされた) URL で、普通はディレクトリ中のファイルの名前です。
     複数の URL が設定された場合には、最初に見つかったものを返します。
@@ -66,9 +63,9 @@
     オプションがセットされている場合、ディレクトリのリストを生成します。
     </p>
 
-<example><title>例</title>
-DirectoryIndex index.html
-</example>
+    <example><title>例</title>
+      DirectoryIndex index.html
+    </example>
 
     <p><code>http://myserver/docs/</code> へのアクセスがあり、
     <code>http://myserver/docs/index.html</code>
@@ -78,7 +75,10 @@ DirectoryIndex index.html
     <p>注: ドキュメントが同じディレクトリ内に存在するは必要ありません。
     </p>
 
-<example>DirectoryIndex index.html index.txt  /cgi-bin/index.pl</example>
+    <example>
+      DirectoryIndex index.html index.txt  /cgi-bin/index.pl
+    </example>
+
     <p>とした場合、<code>index.html</code> と <code>index.txt</code>
     のどちらもディレクトリ内に存在しない場合、CGI スクリプト
     <code>/cgi-bin/index.pl</code> が実行されます。</p>
