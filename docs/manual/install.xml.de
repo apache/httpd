@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English revision: 1.11 -->
+<!-- English revision: 1.13 -->
 
 <manualpage>
 <relativepath href="."/>
@@ -25,8 +25,8 @@
     sieht.</p>
 </summary>
 
-<seealso><a href="invoking.html">Starten</a></seealso>
-<seealso><a href="stopping.html">Stoppen oder Neustarten</a></seealso>
+<seealso><a href="invoking.html">Apache starten</a></seealso>
+<seealso><a href="stopping.html">Beenden und Neustarten</a></seealso>
 
 <section id="overview"><title>&#220;berblick f&#252;r die Ungeduldigen</title>
 
@@ -150,34 +150,25 @@
 <section id="download"><title>Download</title>
 
     <p>Der Apache kann von der <a
-    href="http://www.apache.org/dist/httpd/">Apache Software
-    Foundation Downloadseite</a> oder von einem <a
-    href="http://www.apache.org/dyn/closer.cgi">nahegelegenen
-    Mirror</a> heruntergeladen werden.</p>
-
-    <p>Versionsnummern, die auf <code>alpha</code> enden, zeigen
-    fr&#252;he Entwicklungsversionen an, die m&#246;glicherweise nicht
-    funktionieren. Versionsnummern, die auf <code>beta</code> enden,
-    zeigen verl&#228;&#223;lichere Ausgaben an, die jedoch noch weitere
-    Tests oder Bugfixes ben&#246;tigen. Wenn Sie die beste verf&#252;gbare
-    Produktivversion des Apache HTTP Servers herunterladen wollen, sollten
-    Sie die letzte Version w&#228;hlen, die weder <code>alpha</code>,
-    noch <code>beta</code> in ihrem Dateinamen enth&#228;lt.</p>
+    href="http://httpd.apache.org/download.cgi">Apache HTTP Server
+    Downloadseite</a> heruntergeladen werden, auf der verschiedene
+    Spiegelserver angegeben sind. Sie finden hier die jeweils aktuelle
+    stabile Version.</p>
 
     <p>Nach dem Download, insbesondere, wenn ein Mirror benutzt wurde, ist es
     wichtig, zu pr&#252;fen, dass Sie eine vollst&#228;ndige, nicht
     modifizierte Version des Apache HTTP Servers erhalten haben. Dies kann
     durch Pr&#252;fen des heruntergeladenen Tarballs gegen die PGP-Signatur
     erreicht werden. Dies ist wiederum ein Zweischrittverfahren. Zuerst
-    m&#252;ssen Sie die <code>KEYS</code>-Datei von der <a
-    href="http://www.apache.org/dist/httpd/">Apache Distributionsseite</a>
-    beziehen. (Um sicherzustellen, dass die <code>KEYS</code>-Datei selbst
-    nicht ver&#228;ndert wurde, ist es sinnvoll, eine Datei aus einer
-    fr&#252;heren Distribution des Apache zu verwenden, oder den
-    Schl&#252;ssel von einem &#246;ffentlichen Schl&#252;sselserver zu
-    importieren.) Die Schl&#252;ssel werden mit einem der folgenden Befehle
-    (abh&#228;ngig von Ihrer PGP Version) zu Ihrem pers&#246;nlichen
-    Schl&#252;sselring hinzugef&#252;gt:</p>
+    m&#252;ssen Sie die <code>KEYS</code>-Datei ebenfalls von der <a
+    href="http://httpd.apache.org/download.cgi">Apache HTTP
+    Server Downloadseite</a> beziehen. (Um sicherzustellen, dass die
+    <code>KEYS</code>-Datei selbst nicht ver&#228;ndert wurde, ist
+    es sinnvoll, eine Datei aus einer fr&#252;heren Distribution des
+    Apache zu verwenden, oder den Schl&#252;ssel von einem &#246;ffentlichen
+    Schl&#252;sselserver zu importieren.) Die Schl&#252;ssel werden mit einem
+    der folgenden Befehle (abh&#228;ngig von Ihrer PGP Version) zu Ihrem
+    pers&#246;nlichen Schl&#252;sselring hinzugef&#252;gt:</p>
 
   <example>$ pgp &lt; KEYS</example>
 
@@ -187,11 +178,12 @@
 
     <p>Der n&#228;chste Schritt ist das Testen des Tarballs gegen
     die PGP-Signatur, die immer von der <a
-    href="http://www.apache.org/dist/httpd/">Apache Originalseite</a>
-    bezogen werden sollte. Die Signaturdatei hat den gleichen Dateinamen
-    wie der Tarball, aber zus&#228;tzlich die Endung <code>.asc</code>. Nun
-    k&#246;nnen Sie die Distribution mit einem der folgenden Befehle
-    (wiederum abh&#228;ngig von Ihrer PGP Version) pr&#252;fen:</p>
+    href="http://httpd.apache.org/download.cgi">Apache
+    Originalseite</a> bezogen werden sollte. Die Signaturdatei hat den
+    gleichen Dateinamen wie der Tarball, aber zus&#228;tzlich die
+    Endung <code>.asc</code>. Nun k&#246;nnen Sie die Distribution mit
+    einem der folgenden Befehle (wiederum abh&#228;ngig von Ihrer PGP
+    Version) pr&#252;fen:</p>
 
   <example>$ pgp httpd-2_1_<em>NN</em>.tar.gz.asc</example>
 

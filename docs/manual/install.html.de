@@ -40,7 +40,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#install">Installieren</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#customize">Anpassen</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#test">Testen</a></li>
-</ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="invoking.html">Starten</a></li><li><a href="stopping.html">Stoppen oder Neustarten</a></li></ul></div>
+</ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="invoking.html">Apache starten</a></li><li><a href="stopping.html">Beenden und Neustarten</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">Überblick für die Ungeduldigen</a></h2>
@@ -162,32 +162,24 @@
 <div class="section">
 <h2><a name="download" id="download">Download</a></h2>
 
-    <p>Der Apache kann von der <a href="http://www.apache.org/dist/httpd/">Apache Software
-    Foundation Downloadseite</a> oder von einem <a href="http://www.apache.org/dyn/closer.cgi">nahegelegenen
-    Mirror</a> heruntergeladen werden.</p>
-
-    <p>Versionsnummern, die auf <code>alpha</code> enden, zeigen
-    frühe Entwicklungsversionen an, die möglicherweise nicht
-    funktionieren. Versionsnummern, die auf <code>beta</code> enden,
-    zeigen verläßlichere Ausgaben an, die jedoch noch weitere
-    Tests oder Bugfixes benötigen. Wenn Sie die beste verfügbare
-    Produktivversion des Apache HTTP Servers herunterladen wollen, sollten
-    Sie die letzte Version wählen, die weder <code>alpha</code>,
-    noch <code>beta</code> in ihrem Dateinamen enthält.</p>
+    <p>Der Apache kann von der <a href="http://httpd.apache.org/download.cgi">Apache HTTP Server
+    Downloadseite</a> heruntergeladen werden, auf der verschiedene
+    Spiegelserver angegeben sind. Sie finden hier die jeweils aktuelle
+    stabile Version.</p>
 
     <p>Nach dem Download, insbesondere, wenn ein Mirror benutzt wurde, ist es
     wichtig, zu prüfen, dass Sie eine vollständige, nicht
     modifizierte Version des Apache HTTP Servers erhalten haben. Dies kann
     durch Prüfen des heruntergeladenen Tarballs gegen die PGP-Signatur
     erreicht werden. Dies ist wiederum ein Zweischrittverfahren. Zuerst
-    müssen Sie die <code>KEYS</code>-Datei von der <a href="http://www.apache.org/dist/httpd/">Apache Distributionsseite</a>
-    beziehen. (Um sicherzustellen, dass die <code>KEYS</code>-Datei selbst
-    nicht verändert wurde, ist es sinnvoll, eine Datei aus einer
-    früheren Distribution des Apache zu verwenden, oder den
-    Schlüssel von einem öffentlichen Schlüsselserver zu
-    importieren.) Die Schlüssel werden mit einem der folgenden Befehle
-    (abhängig von Ihrer PGP Version) zu Ihrem persönlichen
-    Schlüsselring hinzugefügt:</p>
+    müssen Sie die <code>KEYS</code>-Datei ebenfalls von der <a href="http://httpd.apache.org/download.cgi">Apache HTTP
+    Server Downloadseite</a> beziehen. (Um sicherzustellen, dass die
+    <code>KEYS</code>-Datei selbst nicht verändert wurde, ist
+    es sinnvoll, eine Datei aus einer früheren Distribution des
+    Apache zu verwenden, oder den Schlüssel von einem öffentlichen
+    Schlüsselserver zu importieren.) Die Schlüssel werden mit einem
+    der folgenden Befehle (abhängig von Ihrer PGP Version) zu Ihrem
+    persönlichen Schlüsselring hinzugefügt:</p>
 
   <div class="example"><p><code>$ pgp &lt; KEYS</code></p></div>
 
@@ -196,11 +188,12 @@
   <div class="example"><p><code>$ gpg --import KEYS</code></p></div>
 
     <p>Der nächste Schritt ist das Testen des Tarballs gegen
-    die PGP-Signatur, die immer von der <a href="http://www.apache.org/dist/httpd/">Apache Originalseite</a>
-    bezogen werden sollte. Die Signaturdatei hat den gleichen Dateinamen
-    wie der Tarball, aber zusätzlich die Endung <code>.asc</code>. Nun
-    können Sie die Distribution mit einem der folgenden Befehle
-    (wiederum abhängig von Ihrer PGP Version) prüfen:</p>
+    die PGP-Signatur, die immer von der <a href="http://httpd.apache.org/download.cgi">Apache
+    Originalseite</a> bezogen werden sollte. Die Signaturdatei hat den
+    gleichen Dateinamen wie der Tarball, aber zusätzlich die
+    Endung <code>.asc</code>. Nun können Sie die Distribution mit
+    einem der folgenden Befehle (wiederum abhängig von Ihrer PGP
+    Version) prüfen:</p>
 
   <div class="example"><p><code>$ pgp httpd-2_1_<em>NN</em>.tar.gz.asc</code></p></div>
 
