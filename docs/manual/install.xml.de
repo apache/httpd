@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English revision: 1.11.2.7 -->
+<!-- English revision: 1.11.2.12 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -38,6 +38,10 @@
     <code>libtool</code> und <code>autoconf</code>, um eine Umgebung zu
     schaffen, die der vieler anderer Open Source Projekte &#228;hnlich
     sieht.</p>
+
+    <p>Wenn Sie von einer Unterversion auf die n&auml;chste aktualisieren (z.B.
+    von 2.0.50 auf 2.0.51), springen Sie bitte zum Abschnitt <a
+    href="#upgrading">Upgrade</a>.</p>
 </summary>
 
 <seealso><a href="invoking.html">Apache starten</a></seealso>
@@ -46,12 +50,11 @@
 <section id="overview"><title>&#220;berblick f&#252;r die Ungeduldigen</title>
 
     <table>
+      <columnspec><column width=".13"/><column width=".80"/></columnspec>
       <tr>
         <td><a href="#download">Download</a></td>
 
-        <td><code>$ lynx
-        http://www.apache.org/dist/httpd/httpd-2_0_<em>NN</em>.tar.gz</code>
-        </td>
+        <td><code>$ lynx http://httpd.apache.org/download.cgi</code></td>
       </tr>
 
       <tr>
@@ -331,7 +334,7 @@
       <dd>Suchverzeichnisse f&#252;r Header-Dateien
       ("<code>-I<em>Verzeichnis</em></code>").</dd>
 
-      <dt><code>TARGET=...</code> [Default: <code>apache</code>]</dt>
+      <dt><code>TARGET=...</code> [Default: <code>httpd</code>]</dt>
 
       <dd>Name der lauff&#228;higen Datei, die erstellt wird.</dd>
 
@@ -635,6 +638,55 @@
     Ausf&#252;hren von:</p>
 
   <example>$ <em>PREFIX</em>/bin/apachectl stop</example>
+</section>
+
+<section id="upgrading"><title>Upgrade</title>
+
+    <p>Der erste Schritt beim Aktualisieren besteht darin, die
+    Versionsank&uuml;ndigung sowie die <code>CHANGES</code>-Datei in der
+    Quelltextdistribution zu lesen, um &Auml;nderungen zu finden, die Ihr
+    System m&ouml;glicherweise betreffen. Wenn Sie einen gr&ouml;&szlig;eren
+    Versionssprung durchf&uuml;hren (z.B. vom 1.3 auf 2.0 oder von 2.0 auf
+    2.2), wird es wahrscheinlich auch gr&ouml;&szlig;ere Unterschiede in der
+    Kompilier- und Laufzeitkonfiguration geben, die manuelle Nacharbeiten
+    erfordern. Au&szlig;erdem m&uuml;ssen alle Module aktualisiert
+    werden, um den &Auml;nderungen der Modul-API gerecht zu werden.</p>
+
+    <p>Die Aktualisierung einer Unterversion auf eine andere (z.B. von 2.0.55
+    auf 2.0.57) ist einfacher. <code>make install</code> &uuml;berschreibt
+    keine der bereits existierenden Dokumente, Log- und Konfigurationsdateien.
+    Ausserdem bem&uuml;hen sich die Entwickler, inkompatible &Auml;nderungen
+    der <code>configure</code>-Optionen, der Laufzeitkonfiguration sowie der
+    Modul-API zu vermeiden. In den meisten F&auml;llen sollten Sie in der
+    Lage sein, den gleichen <code>configure</code>-Befehl, die gleiche
+    Konfiguration und die gleichen Module wieder zu verwenden. (Das gilt erst
+    seit Version 2.0.41 -- fr&uuml;here Versionen enthielten noch inkompatible
+    &Auml;nderungen).</p>
+
+    <p>Wenn Sie den Quellcode von Ihrer letzten Installation aufgehoben haben,
+    ist ein Upgrade sogar noch einfacher. Die Datei <code>config.nice</code> im
+    Wurzelverzeichnis des alten Quelltextbaums enth&auml;lt den genauen
+    <code>configure</code>-Befehl, der verwendet wurde, um den Quellcode
+    zu konfigurieren. Um jetzt von einer Version auf die n&auml;chste zu
+    aktualisieren, kopieren Sie einfach die <code>config.nice</code> in das
+    Verzeichnis der neuen Version, passen sie bei Bedarf an, und
+    f&uuml;hren Sie sie aus:</p>
+
+    <example>
+      $ ./config.nice<br />
+      $ make<br />
+      $ make install<br />
+      $ <var>PREFIX</var>/bin/apachectl stop<br />
+      $ <var>PREFIX</var>/bin/apachectl start<br />
+    </example>
+
+    <note type="warning">Sie sollten jede neue Version immer in Ihrer Umgebung
+    testen, bevor Sie sie produktiv schalten. Beispielsweise k&ouml;nnen Sie
+    die neue Version neben der alten installieren, indem Sie ein anderes
+    <code>--prefix</code> und einen anderen Port w&auml;hlen (durch Anpassen der
+    <directive module="mpm_common">Listen</directive>-Direktive). So
+    k&ouml;nnen Sie auf eventuelle Inkompatibilit&auml;ten testen, bevor Sie
+    endg&uuml;ltig die neue Version verwenden.</note>
 </section>
 
 </manualpage>
