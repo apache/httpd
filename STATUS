@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/01/11 12:47:10 $]
+  Last modified at [$Date: 2000/01/11 14:41:56 $]
 
 Release:
 
@@ -37,6 +37,12 @@ RELEASE SHOWSTOPPERS:
 	 out. Jim has done this. With this fix, we no longer
 	 consider this a show-stopper, but we are leaving this here
 	 so people look at this and double check.
+
+    * HPUX build failure without -Ae provided to HPUX compiler as a CFLAG.
+      The error message states this flag is required for "long long" types
+      to be recognized by HPUX's compiler
+        Ryan submitted a patch for this problem
+        STATUS:  Ryan +1
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
