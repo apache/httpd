@@ -66,7 +66,7 @@
 
 #include <ctype.h>
 
-static const char s_szCaseFilterName[]="CaseFilterIn";
+static const char s_szCaseFilterName[] = "CaseFilterIn";
 module AP_MODULE_DECLARE_DATA case_filter_in_module;
 
 typedef struct
@@ -79,11 +79,11 @@ typedef struct
     apr_bucket_brigade *pbbTmp;
 } CaseFilterInContext;
 
-static void *CaseFilterInCreateServerConfig(apr_pool_t *p,server_rec *s)
+static void *CaseFilterInCreateServerConfig(apr_pool_t *p, server_rec *s)
 {
-    CaseFilterInConfig *pConfig=apr_pcalloc(p,sizeof *pConfig);
+    CaseFilterInConfig *pConfig = apr_pcalloc(p, sizeof *pConfig);
 
-    pConfig->bEnabled=0;
+    pConfig->bEnabled = 0;
 
     return pConfig;
 }
@@ -91,16 +91,17 @@ static void *CaseFilterInCreateServerConfig(apr_pool_t *p,server_rec *s)
 static void CaseFilterInInsertFilter(request_rec *r)
 {
     CaseFilterInConfig *pConfig=ap_get_module_config(r->server->module_config,
-						     &case_filter_in_module);
+                                                     &case_filter_in_module);
     if(!pConfig->bEnabled)
-	return;
+        return;
 
     ap_add_input_filter(s_szCaseFilterName,NULL,r,NULL);
 }
 
 static apr_status_t CaseFilterInFilter(ap_filter_t *f,
-				       apr_bucket_brigade *pbbOut,
-				       ap_input_mode_t eMode,apr_off_t *nBytes)
+                                       apr_bucket_brigade *pbbOut,
+                                       ap_input_mode_t eMode,
+                                       apr_off_t *nBytes)
 {
     request_rec *r = f->r;
     CaseFilterInContext *pCtx;
@@ -112,54 +113,55 @@ static apr_status_t CaseFilterInFilter(ap_filter_t *f,
     }
 
     if (APR_BRIGADE_EMPTY(pCtx->pbbTmp)) {
-        ret = ap_get_brigade(f->next,pCtx->pbbTmp,eMode,nBytes);
+        ret = ap_get_brigade(f->next, pCtx->pbbTmp, eMode, nBytes);
 
-        if(eMode == AP_MODE_PEEK || ret != APR_SUCCESS)
+        if (eMode == AP_MODE_PEEK || ret != APR_SUCCESS)
             return ret;
     }
 
     while(!APR_BRIGADE_EMPTY(pCtx->pbbTmp)) {
-	apr_bucket *pbktIn=APR_BRIGADE_FIRST(pCtx->pbbTmp);
-	apr_bucket *pbktOut;
-	const char *data;
-	apr_size_t len;
-	char *buf;
-	int n;
+        apr_bucket *pbktIn = APR_BRIGADE_FIRST(pCtx->pbbTmp);
+        apr_bucket *pbktOut;
+        const char *data;
+        apr_size_t len;
+        char *buf;
+        int n;
 
-	/* It is tempting to do this...
+        /* It is tempting to do this...
          * APR_BUCKET_REMOVE(pB);
          * APR_BRIGADE_INSERT_TAIL(pbbOut,pB);
          * and change the case of the bucket data, but that would be wrong
          * for a file or socket buffer, for example...
          */
 
-	if(APR_BUCKET_IS_EOS(pbktIn)) {
-	    APR_BUCKET_REMOVE(pbktIn);
-	    APR_BRIGADE_INSERT_TAIL(pbbOut,pbktIn);
-	    break;
-	}
+        if(APR_BUCKET_IS_EOS(pbktIn)) {
+            APR_BUCKET_REMOVE(pbktIn);
+            APR_BRIGADE_INSERT_TAIL(pbbOut, pbktIn);
+            break;
+        }
 
-	ret=apr_bucket_read(pbktIn,&data,&len,eMode);
-	if(ret != APR_SUCCESS)
-	    return ret;
+        ret=apr_bucket_read(pbktIn, &data, &len, eMode);
+        if(ret != APR_SUCCESS)
+            return ret;
 
-	buf=malloc(len);
-	for(n=0 ; n < len ; ++n)
-	    buf[n]=toupper(data[n]);
+        buf = malloc(len);
+        for(n=0 ; n < len ; ++n)
+            buf[n] = toupper(data[n]);
 
-	pbktOut = apr_bucket_heap_create(buf, len, 0);
-	APR_BRIGADE_INSERT_TAIL(pbbOut,pbktOut);
-	apr_bucket_delete(pbktIn);
+        pbktOut = apr_bucket_heap_create(buf, len, 0);
+        APR_BRIGADE_INSERT_TAIL(pbbOut, pbktOut);
+        apr_bucket_delete(pbktIn);
     }
 
     return APR_SUCCESS;
 }
-	    
-	
+            
+        
 static const char *CaseFilterInEnable(cmd_parms *cmd, void *dummy, int arg)
 {
     CaseFilterInConfig *pConfig
-      =ap_get_module_config(cmd->server->module_config,&case_filter_in_module);
+      = ap_get_module_config(cmd->server->module_config,
+                             &case_filter_in_module);
     pConfig->bEnabled=arg;
 
     return NULL;
@@ -175,9 +177,10 @@ static const command_rec CaseFilterInCmds[] =
 
 static void CaseFilterInRegisterHooks(apr_pool_t *p)
 {
-    ap_hook_insert_filter(CaseFilterInInsertFilter,NULL,NULL,APR_HOOK_MIDDLE);
-    ap_register_input_filter(s_szCaseFilterName,CaseFilterInFilter,
-			      AP_FTYPE_CONTENT);
+    ap_hook_insert_filter(CaseFilterInInsertFilter, NULL, NULL, 
+                          APR_HOOK_MIDDLE);
+    ap_register_input_filter(s_szCaseFilterName, CaseFilterInFilter,
+                             AP_FTYPE_CONTENT);
 }
 
 module AP_MODULE_DECLARE_DATA case_filter_in_module =
