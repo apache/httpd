@@ -297,10 +297,16 @@ static char *try_alias_list(request_rec *r, array_header *aliases, int doesc, in
 
 	if (p->regexp) {
 	    if (!regexec(p->regexp, r->uri, p->regexp->re_nsub + 1, regm, 0)) {
-		found = pregsub(r->pool, p->real, r->uri,
-				p->regexp->re_nsub + 1, regm);
-		if (found && doesc) {
-		    found = escape_uri(r->pool, found);
+		if (p->real) {
+		    found = pregsub(r->pool, p->real, r->uri,
+				    p->regexp->re_nsub + 1, regm);
+		    if (found && doesc) {
+			found = escape_uri(r->pool, found);
+		    }
+		}
+		else {
+		    /* need something non-null */
+		    found = pstrdup(r->pool, "");
 		}
 	    }
 	}

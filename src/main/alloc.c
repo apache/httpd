@@ -553,11 +553,9 @@ char *pstrcat(pool *a,...)
 
     /* Allocate the required string */
 
-    if (len == 0) {
-	return NULL;
-    }
     res = (char *) palloc(a, len + 1);
     cp = res;
+    *cp = '\0';
 
     /* Pass two --- copy the argument strings into the result space */
 
