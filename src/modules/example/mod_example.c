@@ -160,6 +160,13 @@ module example_module;
  */
 
 /*
+ * Command handler for a FLAG directive.  The single parameter is passed in
+ * "bool", which is either zero or not for Off or On respectively.
+ *
+ * static const char *handle_FLAG(cmd_parms *cmd, void *mconfig, int bool);
+ */
+
+/*
  * Command handler for a TAKE1 directive.  The single parameter is passed in
  * "word1".
  *
