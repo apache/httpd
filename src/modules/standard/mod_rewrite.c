@@ -1834,7 +1834,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     const char *vary;
     char newuri[MAX_STRING_LEN];
     regex_t *regexp;
-    regmatch_t regmatch[MAX_NMATCH];
+    regmatch_t regmatch[AP_MAX_REG_MATCH];
     backrefinfo *briRR = NULL;
     backrefinfo *briRC = NULL;
     int prefixstrip;
@@ -1891,7 +1891,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
         rewritelog(r, 3, "[per-dir %s] applying pattern '%s' to uri '%s'",
                    perdir, p->pattern, uri);
     }
-    rc = (ap_regexec(regexp, uri, regexp->re_nsub+1, regmatch, 0) == 0);
+    rc = (ap_regexec(regexp, uri, AP_MAX_REG_MATCH, regmatch, 0) == 0);
     if (! (( rc && !(p->flags & RULEFLAG_NOTMATCH)) ||
            (!rc &&  (p->flags & RULEFLAG_NOTMATCH))   ) ) {
         return 0;
@@ -2179,7 +2179,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
     char input[MAX_STRING_LEN];
     struct stat sb;
     request_rec *rsub;
-    regmatch_t regmatch[MAX_NMATCH];
+    regmatch_t regmatch[AP_MAX_REG_MATCH];
     int rc;
 
     /*
@@ -2283,8 +2283,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
     }
     else {
         /* it is really a regexp pattern, so apply it */
-        rc = (ap_regexec(p->regexp, input,
-                         p->regexp->re_nsub+1, regmatch,0) == 0);
+        rc = (ap_regexec(p->regexp, input, AP_MAX_REG_MATCH, regmatch,0) == 0);
 
         /* if it isn't a negated pattern and really matched
            we update the passed-through regex subst info structure */
@@ -2442,7 +2441,7 @@ static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
 		bri = briRC;
 	    }
 	    /* see ap_pregsub() in src/main/util.c */
-            if (bri && n <= bri->nsub &&
+            if (bri && n < AP_MAX_REG_MATCH &&
 		bri->regmatch[n].rm_eo > bri->regmatch[n].rm_so) {
 		span = bri->regmatch[n].rm_eo - bri->regmatch[n].rm_so;
 		if (span > space) {

@@ -1,5 +1,10 @@
 Changes with Apache 1.3.29
 
+  *) SECURITY: CAN-2003-0542 (cve.mitre.org)
+     Fix buffer overflows in mod_alias and mod_rewrite which occurred if
+     one configured a regular expression with more than 9 captures.
+     [André Malo]
+
   *) Within ap_bclose(), ap_pclosesocket() is now called consistently
      for sockets and ap_pclosef() for files. Also, closesocket()
      is used consistenly to close socket fd's. The previous

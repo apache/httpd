@@ -274,6 +274,9 @@ extern "C" {
 /* The size of the server's internal read-write buffers */
 #define IOBUFSIZE 8192
 
+/* The max number of regex captures that can be expanded by ap_pregsub */
+#define AP_MAX_REG_MATCH 10
+
 /* Number of servers to spawn off by default --- also, if fewer than
  * this free when the caretaker checks, it will spawn more.
  */
@@ -428,7 +431,7 @@ extern "C" {
 
 #define SERVER_BASEVENDOR   "Apache Group"
 #define SERVER_BASEPRODUCT  "Apache"
-#define SERVER_BASEREVISION "1.3.29-dev"
+#define SERVER_BASEREVISION "1.3.29"
 #define SERVER_BASEVERSION  SERVER_BASEPRODUCT "/" SERVER_BASEREVISION
 
 #define SERVER_PRODUCT  SERVER_BASEPRODUCT
@@ -449,7 +452,7 @@ API_EXPORT(const char *) ap_get_server_built(void);
  * Always increases along the same track as the source branch.
  * For example, Apache 1.4.2 would be '10402100', 2.5b7 would be '20500007'.
  */
-#define APACHE_RELEASE 10329000
+#define APACHE_RELEASE 10329100
 
 #define SERVER_PROTOCOL "HTTP/1.1"
 #ifndef SERVER_SUPPORT

@@ -1,42 +1,39 @@
 
                    Apache HTTP Server 1.3.29 freigegeben
 
-   Wir, die Apache Software Foundation und das Apache Server Projekt, freuen
-   uns, die Freigabe der Version 1.3.29 des Apache HTTP Servers ("Apache")
-   bekannt zu geben. Diese Ankündigung führt die wesentlichen Änderungen von
-   1.3.29 gegenüber 1.3.28 auf. Die Ankündigung ist auch in englischer Sprache
-   unter http://www.apache.org/dist/httpd/Announcement.txt verfügbar.
+   Wir, die Apache Software Foundation und das Apache HTTP Server Projekt, 
+   freuen uns, die Freigabe der Version 1.3.29 des Apache HTTP Servers 
+   ("Apache") bekannt zu geben. Diese Ankündigung führt die wesentlichen 
+   Änderungen von 1.3.29 gegenüber 1.3.28 auf. Die Ankündigung ist auch in 
+   englischer Sprache unter http://www.apache.org/dist/httpd/Announcement.txt 
+   verfügbar.
 
-   Diese Version des Apache ist vornehmlich ein Bug-Fix-Update. 
-   Eine kurze Zusammenfassung der Bug-Fixes ist am Ende des Dokumentes
+   Diese Version des Apache ist vornehmlich ein Bug-Fix- und Sicherheits-
+   Update. Eine kurze Zusammenfassung der Bug-Fixes ist am Ende des Dokumentes
    aufgeführt. Die vollständige Liste der Änderungen ist in der CHANGES-
-   Datei zu finden.
+   Datei zu finden. Apache 1.3.29 behebt insbesondere 1 Sicherheitslücke.
+
+     o CAN-2003-0542 (cve.mitre.org)
+       Behebung von Pufferüberläufen in mod_alias und mod_rewrite, welche
+       auftraten, falls reguläre Ausdrücke mit mehr als 9 speichernden
+       Klammernpaaren angewendet wurden.
 
    Wir betrachten den Apache 1.3.29 als die beste verfügbare Version des
    Apache 1.3 und wir empfehlen Benutzern älterer Versionen, insbesondere
    der Familien 1.1.x und 1.2.x, umgehend die Aufrüstung. Für die 1.2.x-
    Familie werden keine weiteren Releases mehr erstellt.
 
-   Apache 1.3.29 steht unter
+   Apache 1.3.29 steht unter folgender Adresse zum Download bereit:
 
        http://httpd.apache.org/download.cgi
-                - oder -
-       http://www.apache.org/dist/httpd/
 
-   zum Download bereit.
-
-   Für eine vollständige Liste der Änderungen lesen Sie bitte die Datei
-   CHANGES_1.3 im gleichen Verzeichnis.
-
-   Binärdistributionen sind verfügbar unter
-
-       http://www.apache.org/dist/httpd/binaries/
-
-   Die Quelltexte und Binärdistributionen sind ebenso über jeden unter
+   Dieser Service nutzt das Mirror-Netzwerk, welches unter folgender
+   Adresse aufgeführt wird:
 
        http://www.apache.org/mirrors/
 
-   aufgeführten Mirror erhältlich.
+   Eine vollständige Auflistung aller bisherigen Änderungen finden Sie in
+   der Datei CHANGES_1.3.
 
    Seit Apache 1.3.12 enthalten Binärdistributionen alle Apache-Standard-
    module als Shared Objects (sofern es von der Plattform unterstützt
@@ -74,39 +71,45 @@
    Allgemeinen nicht die Unix-Version.
 
    Der Apache 2.0 wurde durch die Einführung der Apache Portability Library
-   und MPM-Module von Anfang an für mehrere Betriebssysteme konstruiert.
+   und der MPM-Module von Anfang an für mehrere Betriebssysteme konstruiert.
    Nutzer von nicht-Unix-Plattformen sind dringend angehalten, aufgrund der
    besseren Performance, Stabilität und Sicherheit auf den Apache 2.0 zu
    wechseln.
 
                Wesentliche Änderungen des Apache 1.3.29
 
+   Sicherheitslücken
+
+      o CAN-2003-0542 (cve.mitre.org)
+        Behebung von Pufferüberläufen in mod_alias und mod_rewrite, welche
+        auftraten, falls reguläre Ausdrücke mit mehr als 9 speichernden
+        Klammernpaaren angewendet wurden.
+
    Neue Features
 
-   Neue Features, die sich auf bestimmte Plattformen beziehen:
+    Neue Features, die sich auf bestimmte Plattformen beziehen:
 
-     * Die ident-Funktionalität gemäß RFC1413 ist nun sowohl für
-       Windows- wie auch für NetWare-Plattformen verfügbar. Dies 
-       beinhaltet auch eine alternative Thread-sichere Implementation der
-       Socket-Timeout-Funktionalität bei der Abfrage des identd-Daemons.
+      * Die ident-Funktionalität gemäß RFC1413 ist nun sowohl für
+        Windows- wie auch für NetWare-Plattformen verfügbar. Dies 
+        beinhaltet auch eine alternative Thread-sichere Implementation der
+        Socket-Timeout-Funktionalität bei der Abfrage des identd-Daemons.
 
    Behobene Fehler
 
-   Die folgenden nennenswerten Fehler wurden im Apache 1.3.28 (oder
-   früher) gefunden und im Apache 1.3.29 behoben:
+    Die folgenden nennenswerten Fehler wurden im Apache 1.3.28 (oder
+    früher) gefunden und im Apache 1.3.29 behoben:
 
-     * Innerhalb von ap_bclose() wird nun durchweg ap_pclosesocket() für
-       Sockets und sp_pclosef() für Dateien aufgerufen. Ebenso wird nun 
-       einheitlich closesocket() zum Schließen der (Dateideskriptoren von) 
-       Sockets verwendet. Das vorherige Durcheinander von Dateideskriptoren
-       für Sockets und Dateien würde bei einigen Applikationen Probleme 
-       verursachen, jetzt wo wir vorsorglich Dateideskriptoren schließen, 
-       um Lecks zu vermeiden. PR 22805
- 
-     * Korrektur von mod_usertrack, um keine fälschlich zutreffenden
-       Übereinstimmungen mit dem Namen des user-tracking-Cookies zu
-       erhalten. PR 16661.
+      * Innerhalb von ap_bclose() wird nun durchweg ap_pclosesocket() für
+        Sockets und sp_pclosef() für Dateien aufgerufen. Ebenso wird nun 
+        einheitlich closesocket() zum Schließen der (Dateideskriptoren von) 
+        Sockets verwendet. Das vorherige Durcheinander von Dateideskriptoren
+        für Sockets und Dateien würde bei einigen Applikationen Probleme 
+        verursachen, jetzt wo wir vorsorglich Dateideskriptoren schließen, 
+        um Lecks zu vermeiden. PR 22805.
 
-     * Die Bildung von Subprozess-Zombies bei der Verwendung von CGI-Wrappern
-       wie suExec und cgiwrap wird verhindert. PR 21737. [Numerous]
+      * Korrektur von mod_usertrack, um keine fälschlich zutreffenden
+        Übereinstimmungen mit dem Namen des user-tracking-Cookies zu
+        erhalten. PR 16661.
 
+      * Die Bildung von Subprozess-Zombies bei der Verwendung von CGI-Wrappern
+        wie suEXEC und cgiwrap wird verhindert. PR 21737.

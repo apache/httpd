@@ -253,8 +253,6 @@
 
 #define MAX_ENV_FLAGS 15
 
-#define MAX_NMATCH    10
-
 /* default maximum number of internal redirects */
 #define REWRITE_REDIRECT_LIMIT 10
 
@@ -368,7 +366,7 @@ typedef struct cache {
 typedef struct backrefinfo {
     char *source;
     int nsub;
-    regmatch_t regmatch[10];
+    regmatch_t regmatch[AP_MAX_REG_MATCH];
 } backrefinfo;
 
 
