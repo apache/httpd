@@ -519,9 +519,8 @@ AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, void *struct_pt
  */
 AP_DECLARE_NONSTD(const char *) ap_set_deprecated(cmd_parms *cmd, void *struct_ptr, const char *arg);
 /**
- * For modules which need to read config files, open logs, etc. ...
- * this returns the fname argument if it begins with '/'; otherwise
- * it relativizes it wrt server_root.
+ * For modules which need to read config files, open logs, etc. this returns
+ * the canonical form of fname made absolute to ap_server_root.
  * @param p pool to allocate data from
  * @param fname The file name
  */
