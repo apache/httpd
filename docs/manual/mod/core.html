@@ -1634,6 +1634,10 @@ process will kill off the excess processes.<P>
 Tuning of this parameter should only be necessary on very busy sites.
 Setting this parameter to a large number is almost always a bad idea.<P>
 
+This directive has no effect on Microsoft Windows.
+
+<P>
+
 See also <A HREF="#minspareservers">MinSpareServers</A> and
 <A HREF="#startservers">StartServers</A>.<P><HR>
 
@@ -1663,6 +1667,10 @@ process creates new children at a maximum rate of 1 per second.<P>
 
 Tuning of this parameter should only be necessary on very busy sites.
 Setting this parameter to a large number is almost always a bad idea.<P>
+
+This directive has no effect on Microsoft Windows.
+
+<P>
 
 See also <A HREF="#maxspareservers">MaxSpareServers</A> and
 <A HREF="#startservers">StartServers</A>.<P><HR>
@@ -2462,10 +2470,15 @@ The StartServers directive sets the number of child server processes created
 on startup. As the number of processes is dynamically controlled depending
 on the load, there is usually little reason to adjust this parameter.<P>
 
-<P>When running with Microsoft Windows, this directive sets the total
-   number of child processes running. Since the Windows version of Apache
-   is multithreaded, one processes handles all the requests. The rest are
-   held in reserve until the main processes dies.
+<P>When running under Microsoft Windows, this directive has no effect.
+   There is always one child which handles all requests. Within the
+   child requests are handled by separate threads. The
+   <A HREF="#threadsperchild">ThreadsPerChild</A> directive controls 
+   the maximum number of child threads handling requests, which will
+   have a similar effect to the setting of <SAMP>StartServers</SAMP>
+   on Unix.
+
+<P>
 
 See also <A HREF="#minspareservers">MinSpareServers</A> and
 <A HREF="#maxspareservers">MaxSpareServers</A>.<P><HR>
@@ -2494,6 +2507,10 @@ with Windows
    is the maximum number of connections the server can handle at once; be
    sure and set this number high enough for your site if you get a lot of
    hits.
+
+<P>
+
+This directive has no effect on Unix systems.
 
 <P>See also <A HREF="#startservers">StartServers</A> and <A
    HREF="#maxrequestsperchild">MaxRequestsPerChild</A>.</P>
