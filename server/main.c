@@ -67,14 +67,6 @@
 #include "apr_getopt.h"
 #include "ap_mpm.h"
 
-const char *ap_server_argv0;
-
-const char *ap_server_root;
-
-ap_array_header_t *ap_server_pre_read_config;
-ap_array_header_t *ap_server_post_read_config;
-ap_array_header_t *ap_server_config_defines;
-
 /* XXX - We should be able to grab the per-MPM settings here too */
 static void show_compile_settings(void)
 {
@@ -280,8 +272,6 @@ static void usage(process_rec *process)
     destroy_and_exit_process(process, 1);
 }
 
-ap_pool_t *g_pHookPool;
-
 #ifdef WIN32
 API_EXPORT(int) apache_main(int argc, char *argv[])
 #else
@@ -317,8 +307,6 @@ API_EXPORT(int)        main(int argc, char *argv[])
 
     ap_util_uri_init();
 
-    g_pHookPool=pconf;
-
     ap_setup_prelinked_modules(process);
 
     ap_create_pool(&pcommands, pglobal);
@@ -326,7 +314,9 @@ API_EXPORT(int)        main(int argc, char *argv[])
     ap_server_post_read_config = ap_make_array(pcommands, 1, sizeof(char *));
     ap_server_config_defines   = ap_make_array(pcommands, 1, sizeof(char *));
 
-    while (ap_getopt(argc, argv, "C:c:d:f:k:vVlLth", &c, pcommands) == APR_SUCCESS) {
+    ap_run_rewrite_args(process);
+
+    while (ap_getopt(argc, argv, "C:c:D:d:f:vVlLth?", &c, pcommands) == APR_SUCCESS) {
         char **new;
         switch (c) {
  	case 'c':
@@ -339,6 +329,10 @@ API_EXPORT(int)        main(int argc, char *argv[])
 	    break;
 	case 'd':
 	    def_server_root = ap_optarg;
+	    break;
+	case 'D':
+	    new = (char **)ap_push_array(ap_server_config_defines);
+	    *new = ap_pstrdup(pcommands, ap_optarg);
 	    break;
 	case 'f':
 	    confname = ap_optarg;
@@ -359,9 +353,8 @@ API_EXPORT(int)        main(int argc, char *argv[])
 	case 't':
 	    configtestonly = 1;
 	    break;
-	case 'h':
-	    usage(process);
 	case '?':
+	case 'h':
 	    usage(process);
 	}
     }

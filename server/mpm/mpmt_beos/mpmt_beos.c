@@ -1261,6 +1261,7 @@ LISTEN_COMMANDS
 
 module MODULE_EXPORT_VAR mpm_mpmt_beos_module = {
     MPM20_MODULE_STUFF,
+    NULL,                       /* hook to run before apache parses args */
     mpmt_beos_pre_config,       /* hook run before the configuration is read */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
