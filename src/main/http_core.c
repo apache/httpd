@@ -2629,6 +2629,7 @@ static const char *set_limit_req_body(cmd_parms *cmd, core_dir_config *conf,
     return NULL;
 }
 
+#ifdef WIN32
 static const char *set_interpreter_source(cmd_parms *cmd, core_dir_config *d,
                                                 char *arg)
 {
@@ -2641,6 +2642,7 @@ static const char *set_interpreter_source(cmd_parms *cmd, core_dir_config *d,
     }
     return NULL;
 }
+#endif
 
 /* Note --- ErrorDocument will now work from .htaccess files.  
  * The AllowOverride of Fileinfo allows webmasters to turn it off
@@ -2858,8 +2860,10 @@ static const command_rec core_cmds[] = {
   (void*)XtOffsetOf(core_dir_config, limit_req_body),
   OR_ALL, TAKE1,
   "Limit (in bytes) on maximum size of request message body" },
+#ifdef WIN32
 { "Win32InterpreterSource", set_interpreter_source, NULL, OR_FILEINFO, TAKE1,
   "Where to find interpreter to run Win32 scripts (Registry or script shebang line)" },
+#endif
 { NULL },
 };
 
