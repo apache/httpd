@@ -1,5 +1,10 @@
 Changes with Apache 2.0.43
 
+  *) Ensure that output already available is flushed to the network
+     when the content-length filter realizes that no new output will
+     be available for a while.  This helps some streaming CGIs as
+     well as some other dynamically-generated content.  [Jeff Trawick]
+
   *) Fix a mutex problem in mod_ssl session cache support which
      could lead to an infinite loop.  PR 12705  
      [amund.elstad@ergo.no (Amund Elstad), Jeff Trawick]
