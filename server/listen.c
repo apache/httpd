@@ -340,6 +340,8 @@ static int ap_listen_open(apr_pool_t *pool, apr_port_t port)
     ap_listen_rec *lr;
     ap_listen_rec *next;
     int num_open;
+    const char *userdata_key = "ap_listen_open";
+    void *data;
 
     /* Don't allocate a default listener.  If we need to listen to a
      * port, then the user needs to have a Listen directive in their
@@ -370,8 +372,17 @@ static int ap_listen_open(apr_pool_t *pool, apr_port_t port)
     }
     old_listeners = NULL;
 
-    apr_pool_cleanup_register(pool, NULL, apr_pool_cleanup_null,
-                              close_listeners_on_exec);
+    /* we come through here on both passes of the open logs phase
+     * only register the cleanup once... otherwise we try to close
+     * listening sockets twice when cleaning up prior to exec
+     */
+    apr_pool_userdata_get(&data, userdata_key, pool);
+    if (!data) {
+        apr_pool_userdata_set((const void *)1, userdata_key,
+                              apr_pool_cleanup_null, pool);
+        apr_pool_cleanup_register(pool, NULL, apr_pool_cleanup_null,
+                                  close_listeners_on_exec);
+    }
 
     return num_open ? 0 : -1;
 }
