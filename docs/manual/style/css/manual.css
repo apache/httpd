@@ -534,6 +534,10 @@ ol.up-A {
     list-style-type: upper-alpha;
 }
 
+ol.lo-A {
+    list-style-type: lower-alpha;
+}
+
 dd.separate {
     margin-bottom: 2em;
 }
@@ -917,6 +921,10 @@ table div.warning {
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 p.letters {
     margin: 1em 0 0 0;
+}
+
+p.centered {
+    text-align: center;
 }
 
 .letters {
