@@ -11,8 +11,8 @@ PROGRAM_DEPENDENCIES = \
   os/$(OS_DIR)/libos.la \
   ap/libap.la \
   lib/apr/$(LIBPRE)apr.a \
-  lib/pcre/libpcreposix.la \
-  lib/pcre/libpcre.la
+  lib/pcre/libpcreposix.a \
+  lib/pcre/libpcre.a
 
 PROGRAMS        = $(PROGRAM_NAME)
 targets         = $(PROGRAMS)
