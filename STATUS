@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/16 15:14:16 $]
+Last modified at [$Date: 2003/04/16 17:12:11 $]
 
 Release:
 
@@ -235,6 +235,19 @@ PATCHES TO PORT FROM 2.1
 
       jerenkrantz says: Um, like mod_authn_default.c doesn't exist in 2.0.
                         Not sure if its counterpart in 2.0 needs it.  Jeff?
+
+    * Enable coredumps on Linux 2.4+ if CoreDumpDirectory is coded
+      os/unix/unixd.c                 r1.57
+      configure.in                    r1.245   
+      docs/manual/mod/mpm_common.xml  r1.23
+      include/mpm_common.h            r1.41
+      server/mpm_common.c             r1.104
+      +1: gregames
+
+    * ap_get_mime_headers_core: alloc space for null terminator
+      while folding
+      server/protocol.c r1.128
+      +1: gregames
 
 CURRENT RELEASE NOTES:
 
