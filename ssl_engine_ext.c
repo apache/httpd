@@ -61,14 +61,13 @@
                                            -- Unknown             */
 #include "mod_ssl.h"
 
-#if 0 /* XXX */
-
 /*  _________________________________________________________________
 **
 **  SSL Extensions
 **  _________________________________________________________________
 */
 
+#if 0 /* XXX */
 static void  ssl_ext_mlc_register(void);
 static void  ssl_ext_mlc_unregister(void);
 static void  ssl_ext_mr_register(void);
@@ -77,24 +76,31 @@ static void  ssl_ext_mp_register(void);
 static void  ssl_ext_mp_unregister(void);
 static void  ssl_ext_ms_register(void);
 static void  ssl_ext_ms_unregister(void);
+#endif /* XXX */
 
 void ssl_ext_register(void)
 {
+#if 0 /* XXX */
     ssl_ext_mlc_register();
     ssl_ext_mr_register();
     ssl_ext_mp_register();
     ssl_ext_ms_register();
+#endif /* XXX */
     return;
 }
 
 void ssl_ext_unregister(void)
 {
+#if 0 /* XXX */
     ssl_ext_mlc_unregister();
     ssl_ext_mr_unregister();
     ssl_ext_mp_unregister();
     ssl_ext_ms_unregister();
+#endif /* XXX */
     return;
 }
+
+#if 0 /* XXX */
 
 /*  _________________________________________________________________
 **

@@ -62,30 +62,36 @@
                                             -- Unknown    */
 #include "mod_ssl.h"
 
-#if 0 /* XXX */
-
 /*  _________________________________________________________________
 **
 **  I/O Hooks
 **  _________________________________________________________________
 */
 
+#if 0 /* XXX */
 static int ssl_io_hook_read(BUFF *fb, char *buf, int len);
 static int ssl_io_hook_write(BUFF *fb, char *buf, int len);
+#endif /* XXX */
 
 void ssl_io_register(void)
 {
+#if 0 /* XXX */
     ap_hook_register("ap::buff::read",   ssl_io_hook_read,  AP_HOOK_NOCTX);
     ap_hook_register("ap::buff::write",  ssl_io_hook_write, AP_HOOK_NOCTX);
+#endif /* XXX */
     return;
 }
 
 void ssl_io_unregister(void)
 {
+#if 0 /* XXX */
     ap_hook_unregister("ap::buff::read",   ssl_io_hook_read);
     ap_hook_unregister("ap::buff::write",  ssl_io_hook_write);
+#endif /* XXX */
     return;
 }
+
+#if 0 /* XXX */
 
 static int ssl_io_hook_read(BUFF *fb, char *buf, int len)
 {

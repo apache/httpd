@@ -543,6 +543,8 @@ int ssl_hook_Handler(request_rec *r)
     char *thisport;
     char *thisurl;
 
+    if (strNE(r->handler, "mod_ssl:content-handler"))
+        return DECLINED;
     if (strNEn(r->uri, "/mod_ssl:", 9))
         return DECLINED;
 
