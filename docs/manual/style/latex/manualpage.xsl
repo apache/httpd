@@ -17,7 +17,7 @@ select="$metafile/basename"/>
 
 
    <xsl:if test="seealso">
-   <xsl:text>\bigskip\noindent\textbf{</xsl:text>
+   <xsl:text>\medskip\noindent\textbf{</xsl:text>
    <xsl:value-of select="$messages/message[@name='seealso']" />
    <xsl:text>}
    \begin{itemize}</xsl:text>

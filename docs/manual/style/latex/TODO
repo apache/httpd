@@ -13,13 +13,6 @@ Some things that need to be done with the LaTeX transforms:
   <table><columnlist><column width="20%"/><column width="80%"/></columnlist>
   <tr><td>...
 
-- href
-
-  External hrefs should be transformed to \footnote{}s, but it's not
-  working at the moment.  It is easy enough just to <value-of> the @href,
-  but this won't work because the result needs to be run through the
-  escaping routines or LaTeX will barf.
-
 - Images
 
   A quick search makes me believe that pdftex will not handle gifs.

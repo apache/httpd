@@ -20,8 +20,10 @@
 <xsl:template match="sitemap">
 <xsl:text>
 \documentclass[11pt]{book}
-\usepackage{fullpage,hyperref}
+\usepackage{times}
+\usepackage{fullpage}
 \usepackage{style/latex/atbeginend}
+\usepackage[colorlinks=true,letterpaper=true]{hyperref}
 
 % Let LaTeX be lenient about very-bad line wrapping.
 \tolerance=9999 
@@ -30,7 +32,7 @@
 % Keep paragraphs flush left (rather than the default of indenting
 % the first line) and put a space between paragraphs.
 \setlength{\parindent}{0ex}
-\addtolength{\parskip}{1.5ex}
+\addtolength{\parskip}{1.2ex}
 
 % Shrink the inter-item spaces
 \AfterBegin{itemize}{\addtolength{\itemsep}{-.8\baselineskip}}
@@ -145,7 +147,7 @@
    </xsl:call-template>
  </xsl:when>
  <xsl:otherwise>
-   <xsl:value-of select="."/>
+   <xsl:value-of select="$string"/>
  </xsl:otherwise>
  </xsl:choose>
 </xsl:variable>

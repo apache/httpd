@@ -59,7 +59,7 @@ select="$metafile/basename"/>
 <!-- ==================================================================== -->
 
 <xsl:template match="example">
-<xsl:text>\par\medskip\begin{center}</xsl:text>
+<xsl:text>\par\smallskip\begin{center}</xsl:text>
 <xsl:if test="not(pre)"><xsl:text>\fbox{</xsl:text></xsl:if>
 <xsl:text>\begin{minipage}{.8\textwidth}\begin{flushleft}</xsl:text>
 <xsl:apply-templates select="title" mode="print" />
@@ -68,7 +68,7 @@ select="$metafile/basename"/>
 <xsl:if test="not(pre)"><xsl:text>}</xsl:text></xsl:if>
 <xsl:text>\end{flushleft}\end{minipage}</xsl:text>
 <xsl:if test="not(pre)"><xsl:text>}</xsl:text></xsl:if>
-<xsl:text>\end{center}\par\medskip</xsl:text>
+<xsl:text>\end{center}\par\smallskip</xsl:text>
 </xsl:template>
 
 <xsl:template match="example/title" mode="print">
@@ -91,12 +91,12 @@ select="$metafile/basename"/>
 <!-- <note>                                                               -->
 <!-- ==================================================================== -->
 <xsl:template match="note">
-<xsl:text>\par\medskip
+<xsl:text>\par\smallskip
 {\Huge $\Longrightarrow$}\begin{minipage}[t]{.8\textwidth}
 \noindent </xsl:text>
 <xsl:apply-templates select="title" mode="print" />
 <xsl:apply-templates/>
-<xsl:text>\end{minipage}\par\medskip</xsl:text>
+<xsl:text>\end{minipage}\par\smallskip</xsl:text>
 </xsl:template>
 
 <xsl:template match="note/title" mode="print">
@@ -165,7 +165,7 @@ select="$metafile/basename"/>
 <xsl:text>
 \end{minipage}
 \end{tabular}}
-\medskip
+\smallskip
 </xsl:text>
 </xsl:template>
 

@@ -133,6 +133,25 @@ interpreted in pre -->
 </xsl:text>
 </xsl:template>
 
+
+<!--
+   This is a horrible hack, but it seems to mostly work.  It does a
+   few things:
+
+   1. Transforms references starting in http:// to footnotes with the
+      appropriate hyperref macro to make them clickable.  (This needs
+      to be expanded to deal with news: and needs to be adjusted to
+      deal with "#", which is creating bad links at the moment.)
+
+   2. For intra-document references, constructs the appropriate absolute
+      reference using a latex \pageref.  
+      This involves applying a simplified version of the
+      general URL resolution rules to deal with ../.  It only works for
+      one level of subdirectory.
+
+   3. It is also necessary to deal with the fact that index pages
+      get references as "/".
+-->
 <xsl:template match="a">
 <xsl:apply-templates/>
 <xsl:if test="@href">
@@ -151,13 +170,13 @@ interpreted in pre -->
 <xsl:choose>
 <xsl:when test="starts-with(@href, 'http:')">
   <xsl:if test="not(.=@href)">
-    <xsl:text>\footnote{</xsl:text>
+    <xsl:text>\footnote{\href{</xsl:text>
+      <xsl:value-of select="@href"/>
+    <xsl:text>}{</xsl:text>
       <xsl:call-template name="ltescape">
-        <xsl:with-param name="string">
-          <xsl:value-of select="string(@href)"/>
-        </xsl:with-param>
+        <xsl:with-param name="string" select="@href"/>
       </xsl:call-template>
-    <xsl:text>}</xsl:text>
+    <xsl:text>}}</xsl:text>
   </xsl:if>
 </xsl:when>
 <xsl:when test="starts-with(@href, '#')">
