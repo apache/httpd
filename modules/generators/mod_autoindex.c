@@ -205,8 +205,8 @@ static void emit_preamble(request_rec *r, char *title)
 	      "</TITLE>\n </HEAD>\n <BODY>\n", NULL);
 }
 
-static void push_item(ap_array_header_t *arr, char *type, char *to, char *path,
-		      char *data)
+static void push_item(ap_array_header_t *arr, char *type, const char *to,
+		      const char *path, const char *data)
 {
     struct item *p = (struct item *) ap_push_array(arr);
 
@@ -232,7 +232,8 @@ static void push_item(ap_array_header_t *arr, char *type, char *to, char *path,
     }
 }
 
-static const char *add_alt(cmd_parms *cmd, void *d, const char *alt, const char *to)
+static const char *add_alt(cmd_parms *cmd, void *d, const char *alt,
+			   const char *to)
 {
     if (cmd->info == BY_PATH) {
         if (!strcmp(to, "**DIRECTORY**")) {
@@ -240,7 +241,9 @@ static const char *add_alt(cmd_parms *cmd, void *d, const char *alt, const char 
 	}
     }
     if (cmd->info == BY_ENCODING) {
-	ap_str_tolower(to);
+        char *tmp = ap_pstrdup(cmd->pool, to);
+	ap_str_tolower(tmp);
+	to = tmp;
     }
 
     push_item(((autoindex_config_rec *) d)->alt_list, cmd->info, to,
@@ -248,7 +251,8 @@ static const char *add_alt(cmd_parms *cmd, void *d, const char *alt, const char 
     return NULL;
 }
 
-static const char *add_icon(cmd_parms *cmd, void *d, const char *icon, const char *to)
+static const char *add_icon(cmd_parms *cmd, void *d, const char *icon,
+			    const char *to)
 {
     char *iconbak = ap_pstrdup(cmd->pool, icon);
 
@@ -269,7 +273,9 @@ static const char *add_icon(cmd_parms *cmd, void *d, const char *icon, const cha
 	}
     }
     if (cmd->info == BY_ENCODING) {
-	ap_str_tolower(to);
+        char *tmp = ap_pstrdup(cmd->pool, to);
+	ap_str_tolower(tmp);
+	to = tmp;
     }
 
     push_item(((autoindex_config_rec *) d)->icon_list, cmd->info, to,
@@ -299,14 +305,15 @@ static const char *add_icon(cmd_parms *cmd, void *d, const char *icon, const cha
 #define WILDCARDS_REQUIRED 0
 #endif
 
-static const char *add_desc(cmd_parms *cmd, void *d, const char *desc, const char *to)
+static const char *add_desc(cmd_parms *cmd, void *d, const char *desc,
+			    const char *to)
 {
     autoindex_config_rec *dcfg = (autoindex_config_rec *) d;
     ai_desc_t *desc_entry;
     char *prefix = "";
 
     desc_entry = (ai_desc_t *) ap_push_array(dcfg->desc_list);
-    desc_entry->full_path = (strchr(to, '/') == NULL) ? 0 : 1;
+    desc_entry->full_path = (ap_strchr_c(to, '/') == NULL) ? 0 : 1;
     desc_entry->wildcards = (WILDCARDS_REQUIRED
 			     || desc_entry->full_path
 			     || ap_is_fnmatch(to));
