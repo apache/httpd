@@ -75,15 +75,17 @@ changes on a per-directory basis.</p>
       </example>
     </note>
 
-    <p>What you can put in these files is determined by the <directive
-    module="core">AllowOverride</directive>
-    directive. This directive specifies, in categories, what directives
-    will be honored if they are found in a <code>.htaccess</code> file. If
-    a directive is permitted in a <code>.htaccess</code> file, the
+    <p>In general, <code>.htaccess</code> files use the same syntax as
+    the <a href="../configuring.html#syntax">main configuration
+    files</a>.  What you can put in these files is determined by the
+    <directive module="core">AllowOverride</directive> directive. This
+    directive specifies, in categories, what directives will be
+    honored if they are found in a <code>.htaccess</code> file. If a
+    directive is permitted in a <code>.htaccess</code> file, the
     documentation for that directive will contain an Override section,
     specifying what value must be in <directive 
-    module="core">AllowOverride</directive> in order
-    for that directive to be permitted.</p>
+    module="core">AllowOverride</directive> in order for that
+    directive to be permitted.</p>
 
     <p>For example, if you look at the documentation for the <directive
     module="core">AddDefaultCharset</directive>
