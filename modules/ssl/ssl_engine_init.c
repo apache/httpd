@@ -561,7 +561,11 @@ void ssl_init_ConfigureServer(server_rec *s, apr_pool_t *p, SSLSrvConfigRec *sc)
     SSL_CTX_sess_set_remove_cb(ctx,   ssl_callback_DelSessionCacheEntry);
     SSL_CTX_set_tmp_rsa_callback(ctx, ssl_callback_TmpRSA);
     SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
-    SSL_CTX_set_info_callback(ctx,    ssl_callback_LogTracingState);
+
+    if (sc->nLogLevel >= SSL_LOG_INFO) {
+        /* this callback only logs if SSLLogLevel >= info */
+        SSL_CTX_set_info_callback(ctx,ssl_callback_LogTracingState);
+    }
 
     /*
      *  Configure SSL Cipher Suite
