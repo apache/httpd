@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/31 05:28:43 $]
+Last modified at [$Date: 2002/01/31 15:01:00 $]
 
 Release:
 
@@ -105,7 +105,7 @@ RELEASE SHOWSTOPPERS:
         Message-ID: <20020116000226.GA15991@ebuilt.com>
 
     * Redirected autoindex requests no longer work. Example:
-      http://jakarta.apache.org/tomcat/  mod_dir is a suspect.
+      http://jakarta.apache.org/builds/tomcat/  mod_dir is a suspect.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
