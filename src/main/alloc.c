@@ -1480,8 +1480,8 @@ API_EXPORT(table *) ap_overlay_tables(pool *p, const table *overlay, const table
  * Note that rec is simply passed-on to the comp function, so that the
  * caller can pass additional info for the task.
  */
-API_EXPORT(void) ap_table_do(int (*comp) (void *, const char *, const char *), void *rec,
-	      const table *t,...)
+API_EXPORT_NONSTD(void) ap_table_do(int (*comp) (void *, const char *, const char *), 
+	                            void *rec, const table *t,...)
 {
     va_list vp;
     char *argp;
