@@ -65,7 +65,7 @@
 
       <dt><code>-n</code></dt>
       <dt><code>--no-create</code></dt>
-      <dd>The <code>configure</code> script is running normally but does
+      <dd>The <code>configure</code> script is run normally but does
         not create output files. This is useful to check the test results
         before generating makefiles for compilation.</dd>
 
@@ -208,7 +208,7 @@
   
   <section id="systemtypes"><title>System types</title>
 
-    <p>These options are used to crosscompile the Apache HTTP Server to run on
+    <p>These options are used to cross-compile the Apache HTTP Server to run on
       another system. In normal cases, when building and running the server on
       the same system, these options are not used.</p>
 
