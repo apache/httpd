@@ -75,15 +75,17 @@
 #else
 #define HTTPD_ROOT "/usr/local/etc/httpd"
 #endif
-#endif
+#endif /* HTTPD_ROOT */
 
 /* Root of server */
+#ifndef DOCUMENT_LOCATION
 #ifdef __EMX__
 /* Set default for OS/2 file system */ 
 #define DOCUMENT_LOCATION "/os2httpd/docs"
 #else
 #define DOCUMENT_LOCATION "/usr/local/etc/httpd/htdocs"
 #endif
+#endif /* DOCUMENT_LOCATION */
 
 /* Max. number of dynamically loaded modules */
 #define DYNAMIC_MODULE_LIMIT 64
@@ -115,39 +117,59 @@
 #endif
 
 /* The name of the log files */
+#ifndef DEFAULT_XFERLOG
 #ifdef __EMX__
 /* Set default for OS/2 file system */ 
 #define DEFAULT_XFERLOG "logs/access.log"
 #else
 #define DEFAULT_XFERLOG "logs/access_log"
 #endif
+#endif /* DEFAULT_XFERLOG */
+
+#ifndef DEFAULT_ERRORLOG
 #ifdef __EMX__
 /* Set default for OS/2 file system */ 
 #define DEFAULT_ERRORLOG "logs/error.log"
 #else
 #define DEFAULT_ERRORLOG "logs/error_log"
 #endif
+#endif /* DEFAULT_ERRORLOG */
+
+#ifndef DEFAULT_PIDLOG
 #define DEFAULT_PIDLOG "logs/httpd.pid"
+#endif
+#ifndef DEFAULT_SCOREBOARD
 #define DEFAULT_SCOREBOARD "logs/apache_runtime_status"
+#endif
+#ifndef DEFAULT_LOCKFILE
 #define DEFAULT_LOCKFILE "logs/accept.lock"
+#endif
 
 /* Define this to be what your HTML directory content files are called */
+#ifndef DEFAULT_INDEX
 #define DEFAULT_INDEX "index.html"
+#endif
 
 /* Define this to 1 if you want fancy indexing, 0 otherwise */
+#ifndef DEFAULT_INDEXING
 #define DEFAULT_INDEXING 0
+#endif
 
 /* Define this to be what type you'd like returned for files with unknown */
 /* suffixes */
+#ifndef DEFAULT_TYPE
 #define DEFAULT_TYPE "text/plain"
+#endif
 
 /* Define this to be what your per-directory security files are called */
+#ifndef DEFAULT_ACCESS_FNAME
 #ifdef __EMX__
 /* Set default for OS/2 file system */ 
 #define DEFAULT_ACCESS_FNAME "htaccess"
 #else
 #define DEFAULT_ACCESS_FNAME ".htaccess"
 #endif
+#endif /* DEFAULT_ACCESS_FNAME */
 
 /* The name of the server config file */
 #ifndef SERVER_CONFIG_FILE
@@ -155,18 +177,28 @@
 #endif
 
 /* The name of the document config file */
+#ifndef RESOURCE_CONFIG_FILE
 #define RESOURCE_CONFIG_FILE "conf/srm.conf"
+#endif
 
 /* The name of the MIME types file */
+#ifndef TYPES_CONFIG_FILE
 #define TYPES_CONFIG_FILE "conf/mime.types"
+#endif
 
 /* The name of the access file */
+#ifndef ACCESS_CONFIG_FILE
 #define ACCESS_CONFIG_FILE "conf/access.conf"
+#endif
 
 /* Whether we should enable rfc1413 identity checking */
+#ifndef DEFAULT_RFC1413
 #define DEFAULT_RFC1413 0
+#endif
 /* The default directory in user's home dir */
+#ifndef DEFAULT_USER_DIR
 #define DEFAULT_USER_DIR "public_html"
+#endif
 
 /* The default path for CGI scripts if none is currently set */
 #ifndef DEFAULT_PATH
@@ -181,7 +213,7 @@
 #else
 #define SHELL_PATH "/bin/sh"
 #endif
-#endif
+#endif /* SHELL_PATH */
 
 /* The path to the suExec wrapper, can be overridden in Configuration */
 #ifndef SUEXEC_BIN
@@ -193,13 +225,19 @@
 #define HUGE_STRING_LEN 8192
 
 /* The timeout for waiting for messages */
+#ifndef DEFAULT_TIMEOUT
 #define DEFAULT_TIMEOUT 300
+#endif
 
 /* The timeout for waiting for keepalive timeout until next request */
+#ifndef DEFAULT_KEEPALIVE_TIMEOUT
 #define DEFAULT_KEEPALIVE_TIMEOUT 15
+#endif
 
 /* The number of requests to entertain per connection */
+#ifndef DEFAULT_KEEPALIVE
 #define DEFAULT_KEEPALIVE 100
+#endif
 
 /* The size of the server's internal read-write buffers */
 #define IOBUFSIZE 8192
@@ -207,17 +245,23 @@
 /* Number of servers to spawn off by default --- also, if fewer than
  * this free when the caretaker checks, it will spawn more.
  */
+#ifndef DEFAULT_START_DAEMON
 #define DEFAULT_START_DAEMON 5
+#endif
 
 /* Maximum number of *free* server processes --- more than this, and
  * they will die off.
  */
 
+#ifndef DEFAULT_MAX_FREE_DAEMON
 #define DEFAULT_MAX_FREE_DAEMON 10
+#endif
 
 /* Minimum --- fewer than this, and more will be created */
 
+#ifndef DEFAULT_MIN_FREE_DAEMON
 #define DEFAULT_MIN_FREE_DAEMON 5
+#endif
 
 /* Limit on the total --- clients will be locked out if more servers than
  * this are needed.  It is intended solely to keep the server from crashing
@@ -254,10 +298,16 @@
  * interested in finding and stanching leaks.
  */
 
+#ifndef DEFAULT_MAX_REQUESTS_PER_CHILD
 #define DEFAULT_MAX_REQUESTS_PER_CHILD 0
+#endif
 
+#ifndef DEFAULT_THREADS_PER_CHILD
 #define DEFAULT_THREADS_PER_CHILD 50
+#endif
+#ifndef DEFAULT_EXCESS_REQUESTS_PER_CHILD
 #define DEFAULT_EXCESS_REQUESTS_PER_CHILD 0
+#endif
 
 /* The maximum length of the queue of pending connections, as defined
  * by listen(2).  Under some systems, it should be increased if you
@@ -268,7 +318,9 @@
  * 255 when truncated.
  */
 
+#ifndef DEFAULT_LISTENBACKLOG
 #define DEFAULT_LISTENBACKLOG 511
+#endif
 
 /* If you have altered Apache and wish to change the SERVER_VERSION
  * identifier below, please keep to the HTTP specification.  This states that
