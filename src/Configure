@@ -1,6 +1,6 @@
 #!/bin/sh
-# $Id: Configure,v 1.31 1996/10/23 17:13:04 jim Exp $
-trap 'rm $tmpfile; exit' 0 1 2 3 15
+# $Id: Configure,v 1.32 1996/10/24 21:17:34 jim Exp $
+trap 'rm -f $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
 # Dont like it?  Inspired to do something better?  Go for it.
@@ -295,27 +295,37 @@ echo "###############" >> Makefile
 # Now that _that's_ done, get on with it
 #
 
-echo "Configured for $OS platform"
+echo " + configured for $OS platform"
 
 #
-# Handle the setting of CC and OPTIM. The values in Configure
-# have priority. If not set there, then we check if they were
-# set above. If so, then we honor that; if not, then we set some
-# defaults (gcc and -O2)
+# Now we determine the C-compiler and optimization level
+# to use. Settings of CC and OPTIM in Configuration have
+# the highest precedence; next comes any settings from
+# the above "OS-specific" section. If still unset,
+# then we look for some popular compilers in our $PATH
+# and set a "safe" optimization level
 #
-if COMPILER=`./helpers/GuessWhere gcc`; then : ;
-else
-    if COMPILER=`./helpers/GuessWhere cc`; then : ;
-    else
-    	COMPILER="no-compiler-found"
+for compilers in "gcc" "cc" "acc" "c89"
+do
+    lookedfor="$lookedfor $compilers"
+    if COMPILER=`./helpers/GuessWhere $compilers`; then
+    	break
     fi
-fi
+done
 
 if grep "CC=" Makefile > /dev/null; then
     CC=""	# clear it just in case
 else
-    if [ "x$CC" = "x" ]; then CC=$COMPILER; fi
-    echo "Setting C compiler to $CC"
+    if [ "x$CC" = "x" ]; then
+    	if [ "x$COMPILER" = "x" ]; then
+	    echo "Error: could not find any of these C compilers"
+	    echo " anywhere in your PATH: $lookedfor"
+	    echo "Configure terminated"
+	    exit 1
+	fi
+	CC=$COMPILER
+    fi
+    echo " + setting C compiler to $CC"
 fi
 
 #
@@ -324,7 +334,10 @@ fi
 if  grep "OPTIM=" Makefile > /dev/null; then
     OPTIM=""	# ditto
 else
-    if [ "x$OPTIM" = "x" ]; then OPTIM="-O2"; fi
+    if [ "x$OPTIM" = "x" ]; then
+	OPTIM="-O2"
+    fi
+    echo " + setting C compiler optimization-level to $OPTIM"
 fi
 
 #
@@ -401,3 +414,4 @@ echo "#### End of Configure created section ####">> Makefile
 echo >> Makefile
 
 cat Makefile.tmpl >> Makefile
+

@@ -1,4 +1,4 @@
-$Id: INSTALL,v 1.8 1996/10/22 00:03:07 jim Exp $
+$Id: INSTALL,v 1.9 1996/10/24 21:17:34 jim Exp $
 
 This release of Apache supports the notion of "optional modules".
 However, the server has to know which modules are compiled into it, in
@@ -30,8 +30,9 @@ To do this:
 
       % Configure
       Using 'Configuration' as config file
-      Configured for <whatever> platform
-      Setting C compiler to <whatever>
+       + configured for <whatever> platform
+       + setting C compiler to <whatever> *
+       + setting C compiler optimization-level to <whatever> *
       %
 
    This generates new versions of the Makefile and of modules.c.  (If
@@ -39,9 +40,13 @@ To do this:
 
       % Configure -file Configuration.ai
       Using alternate config file Configuration.ai
-      Configured for <whatever> platform
-      Setting C compiler to <whatever>
+       + configured for <whatever> platform
+       + setting C compiler to <whatever> *
+       + setting C compiler optimization-level to <whatever> *
       % 
+
+   (*: Depending on Configuration and your system, Configure
+       make not print these lines. That's OK)
 
 3) Type "make".
 
@@ -55,3 +60,4 @@ core Apache code.
 
 
  
+
