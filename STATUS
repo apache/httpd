@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/07 02:49:45 $]
+Last modified at [$Date: 2004/01/08 13:42:18 $]
 
 Release:
 
@@ -77,6 +77,28 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    * mod_ssl: Fix ssl_var_lookup for non-SSL requests, and logging of SSL
+      variables from non-SSL connections.
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_vars.c?r1=1.24&r2=1.25
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_vars.c?r1=1.26&r2=1.28
+      PR: 22741, 20852  (<= not 23956 as the commit message says)
+      +1: jorton 
+
+    * mod_ssl: Determine library version string at run-time rather than compile-time.
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_vars.c?r1=1.25&r2=1.26
+      PR: 23956
+      +1: jorton
+
+    * Fix parallel make (e.g. GNU make -j<N>).
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/Makefile.in?r1=1.86&r2=1.87
+      PR: 24643
+      +1: jorton
+
+    * mod_dav: Reject requests including fragment part in the Request-URI.
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.102&r2=1.103
+      PR: 21779
+      +1: jorton
 
     * Move SSLRandomSeed out of the <IfDefine SSL> container to support
       starting without SSL on platforms with no /dev/random equivalent
