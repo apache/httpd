@@ -10,7 +10,7 @@
 <blockquote>
 <p>The wise man doesn't give the right answers,
 he poses the right questions.</p>
-<p class="cite">--<cite>Claude Levi-Strauss</cite></p>
+<p class="cite">-- <cite>Claude Levi-Strauss</cite></p>
 
 </blockquote>
 <p>This chapter is a collection of frequently asked questions (FAQ) and
@@ -400,8 +400,10 @@ installed Apache+mod_ssl server via HTTPS?</title>
     enabled for the context of your CGI/SSI requests.</p>
 </section>
 
-<section id="relative"><title>How can I use relative hyperlinks to switch between HTTP and HTTPS?</title>
-<p>Usually you have to use fully-qualified hyperlinks because
+<section id="relative">
+<title>How can I use relative hyperlinks to switch between HTTP and
+HTTPS?</title>
+    <p>Usually you have to use fully-qualified hyperlinks because
     you have to change the URL scheme. But with the help of some URL
     manipulations through mod_rewrite you can achieve the same effect while
     you still can use relative URLs:</p>
@@ -411,8 +413,8 @@ installed Apache+mod_ssl server via HTTPS?</title>
     RewriteRule   ^/(.*):NOSSL$ http://%{SERVER_NAME}/$1  [R,L]
     </example>
 
-    This rewrite ruleset lets you use hyperlinks of the form
-    <example>&lt;a href="document.html:SSL"&gt;</example>
+    <p>This rewrite ruleset lets you use hyperlinks of the form
+    <code>&lt;a href="document.html:SSL"&gt;</code></p>
 </section>
 </section>
 <!-- configuration -->
