@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/22 15:13:14 $]
+Last modified at [$Date: 2002/03/22 15:22:24 $]
 
 Release:
 
@@ -115,6 +115,9 @@ CURRENT VOTES:
       -0:   Aaron (premature decision, needs more discussion), Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Rewrite core_output_filter. It is nearly impossible to support
+      it with predictable results as it is implemented now.
 
     * Convert all instances of the old apr_lock_t type to the new
       types.
