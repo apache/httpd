@@ -268,12 +268,12 @@ endif
 STDMOD		= $(AP_WORK)/modules
 NWOS		= $(AP_WORK)/os/netware
 SERVER		= $(AP_WORK)/server
-SRC			= $(AP_WORK)
-APR			= $(AP_WORK)/srclib/apr
-APRUTIL		= $(AP_WORK)/srclib/apr-util
+SRC		= $(AP_WORK)
+APR		= $(APR_WORK)
+APRUTIL		= $(APR_WORK)/../apr-util
 SUPMOD		= $(AP_WORK)/support
 PCRE		= $(AP_WORK)/srclib/pcre
-APRTEST		= $(AP_WORK)/srclib/apr/test
+APRTEST		= $(APR_WORK)/test
 HTTPD		= $(AP_WORK)/modules/http
 XML			= $(AP_WORK)/srclib/apr-util/xml
 

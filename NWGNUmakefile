@@ -3,7 +3,7 @@
 #
 
 SUBDIRS = \
-	srclib\apr \
+	$(APR_WORK) \
 	build \
 	support \
 	modules \
@@ -28,9 +28,8 @@ include $(AP_WORK)\build\NWGNUhead.inc
 # INCDIRS
 #
 XINCDIRS	+= \
-			$(AP_WORK)/srclib/apr/include \
-			$(AP_WORK)/srclib/include/arch/NetWare \
-			$(AP_WORK)/srclib/apr-util/include \
+			$(APR)/include \
+			$(APRUTIL)/include \
 			$(AP_WORK)/include \
 			$(AP_WORK)/modules/filters/ \
 			$(AP_WORK)/modules/generators/ \
