@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/04 22:19:39 $]
+Last modified at [$Date: 2002/02/04 22:49:10 $]
 
 Release:
 
@@ -86,6 +86,9 @@ RELEASE SHOWSTOPPERS:
             * Madhu reports that the worker MPM doesn't shutdown nicely
               after a stress test.
 
+            * mod_autoindex displays the wrong icon for subdirectories
+              on Unix
+
     * ap_directory_walk skips some per-dir config merge functions
       if there is no "<Directory />" block in the configuration
         Message-ID: <m3itbdiijq.fsf@rdu163-40-092.nc.rr.com>
@@ -125,7 +128,7 @@ RELEASE SHOWSTOPPERS:
         Justin says: "Is this really a showstopper?  This has been here
                       forever.  What's wrong?  Does this have to do with
                       autoconf or m4?"
-        Not a showstopper: Justin, BrianP, trawick
+        Not a showstopper: Justin, BrianP, trawick, gregames
 
     * Convert all instances of the old apr_lock_t type to the new
       types (once they are fully supported in APR).
@@ -153,6 +156,10 @@ RELEASE SHOWSTOPPERS:
         Status: Aaron volunteers: I'll commit a patch to allow all
                 the support binaries to be built statically against
                 libapr/libaprutil/etc and then enable it in binbuild.
+        gregames says: what about httpd?  yeah, it works at the moment
+                       if you use apachectl.  But I've already heard
+                       complaints about not being able to execute 
+                       httpd directly.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -163,13 +170,14 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       filename extensions.  At minimum, some sort of +-[0-10] syntax seems
       like the quickest fix for a 2.0 gold release.
         Justin says: "Could we delay this for a point release or 2.1?"
-        Not a showstopper: justin, wrowe, trawick, stoddard, Jim, Ian, Aaron
+        Not a showstopper: justin, wrowe, trawick, stoddard, Jim, Ian, Aaron,
+                           gregames
 
     * Should we always build binaries statically unless otherwise
       indicated?
         Message-ID: <20020129210006.B23512@Lithium.MeepZor.Com>
 
-      +1:  
+      +1:  gregames
       -1:  Justin, Ian
         
     * If the parent process dies, should the remaining child processes
@@ -185,6 +193,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                       -1: Justin
                       +0: Martin (while standing by, could it do
 		                  something useful?)
+      look at accept() error handling first: gregames
 
     * Make some modifications to the scoreboard creation routines,
       prefer anonymous shared memory, and allow a configuration
@@ -199,13 +208,16 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Message-ID: <20020111115006.K1529@clove.org>
        Vote: Is a non-portable perchild going to hold up a GA release?
         Yes: Ken
-         No: Aaron, Justin, trawick, stoddard, Jim, Ian, BrianP
+         No: Aaron, Justin, trawick, stoddard, Jim, Ian, BrianP, gregames
 
     * Recent changes to ap_rgetline may have broken EBCDIC boxes.
         Message-ID: <20020122072605.GF28051@ebuilt.com>
         Justin says: "I don't have an EBCDIC box to test on.  A potential
                       solution is to split out ap_rgetline into two
                       functions as described in this message."
+        gregames says: I see the breakage now, and volunteer to fix it
+                       when things calm down a little.  It looks OK when 
+                       there are complete lines and no mime continuations.
 
     * Modify the worker MPM so that it doesn't need to create and
       destroy a pool for each request--possibly by adopting a
