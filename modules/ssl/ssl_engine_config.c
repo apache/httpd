@@ -200,14 +200,11 @@ static void modssl_ctx_init_server(SSLSrvConfigRec *sc,
     memset(mctx->pks->keys, 0, sizeof(mctx->pks->keys));
 }
 
-/*
- *  Create per-server SSL configuration
- */
-void *ssl_config_server_create(apr_pool_t *p, server_rec *s)
+static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
 {
     SSLSrvConfigRec *sc = apr_palloc(p, sizeof(*sc));
 
-    sc->mc                     = ssl_config_global_create(s);
+    sc->mc                     = NULL;
     sc->enabled                = UNSET;
     sc->vhost_id               = NULL;  /* set during module init */
     sc->vhost_id_len           = 0;     /* set during module init */
@@ -219,6 +216,18 @@ void *ssl_config_server_create(apr_pool_t *p, server_rec *s)
     modssl_ctx_init_proxy(sc, p);
 
     modssl_ctx_init_server(sc, p);
+
+    return sc;
+}
+
+/*
+ *  Create per-server SSL configuration
+ */
+void *ssl_config_server_create(apr_pool_t *p, server_rec *s)
+{
+    SSLSrvConfigRec *sc = ssl_config_server_new(p);
+
+    sc->mc = ssl_config_global_create(s);
 
     return sc;
 }
@@ -281,11 +290,7 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
 {
     SSLSrvConfigRec *base = (SSLSrvConfigRec *)basev;
     SSLSrvConfigRec *add  = (SSLSrvConfigRec *)addv;
-    SSLSrvConfigRec *mrg  = (SSLSrvConfigRec *)apr_palloc(p, sizeof(*mrg));
-
-    modssl_ctx_init_proxy(mrg, p);
-
-    modssl_ctx_init_server(mrg, p);
+    SSLSrvConfigRec *mrg  = ssl_config_server_new(p);
 
     cfgMerge(mc, NULL);
     cfgMergeBool(enabled);
