@@ -304,6 +304,11 @@ APACHE_HELP_STRING(--with-program-name,alternate executable name),[
   progname="httpd"] )
 
 # SuExec parameters
+AC_ARG_WITH(suexec-bin,
+APACHE_HELP_STRING(--with-suexec-bin,Path to suexec binary),[
+  AC_DEFINE_UNQUOTED(SUEXEC_BIN, "$withval", [Path to suexec binary] )
+] )
+
 AC_ARG_WITH(suexec-caller,
 APACHE_HELP_STRING(--with-suexec-caller,User allowed to call SuExec),[
   AC_DEFINE_UNQUOTED(AP_HTTPD_USER, "$withval", [User allowed to call SuExec] ) ] )
