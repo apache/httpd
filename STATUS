@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/03 16:28:40 $]
+Last modified at [$Date: 2002/02/03 18:25:41 $]
 
 Release:
 
@@ -161,7 +161,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
       Self-destruct: Ken
       Not self-destruct: BrianP, Ian, Cliff, BillS
-      Make it runtime configurable: Jim, Justin
+      Make it runtime configurable: Aaron, Jim, Justin
       Have 2 parents: +1: Jim
                       -1: Justin
 
