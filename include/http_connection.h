@@ -70,6 +70,7 @@ conn_rec *ap_new_apr_connection(ap_pool_t *p, server_rec *server, BUFF *inout,
 			    const ap_socket_t *conn_socket, long id);
 CORE_EXPORT(void) ap_process_connection(conn_rec *);
 int ap_process_http_connection(conn_rec *);
+void ap_lingering_close(conn_rec *);
 #endif
 
   /* Hooks */
