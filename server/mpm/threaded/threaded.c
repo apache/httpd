@@ -1359,6 +1359,44 @@ static void threaded_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t 
 {
     static int restart_num = 0;
     int no_detach, debug;
+    ap_directive_t *pdir;
+    ap_directive_t *max_clients = NULL;
+
+    /* make sure that "ThreadsPerChild" gets set before "MaxClients" */
+    for (pdir = ap_conftree; pdir != NULL; pdir = pdir->next) {
+        if (strncasecmp(pdir->directive, "ThreadsPerChild", 15) == 0) {
+            if (!max_clients) {
+                break; /* we're in the clear, got ThreadsPerChild first */
+            }
+            else {
+                /* now to swap the data */
+                ap_directive_t temp;
+ 
+                temp.directive = pdir->directive;
+                temp.args = pdir->args;
+                /* Make sure you don't change 'next', or you may get loops! */
+                /* XXX: first_child, parent, and data can never be set
+                 * for these directives, right? -aaron */
+                temp.filename = pdir->filename;
+                temp.line_num = pdir->line_num;
+ 
+                pdir->directive = max_clients->directive;
+                pdir->args = max_clients->args;
+                pdir->filename = max_clients->filename;
+                pdir->line_num = max_clients->line_num;
+ 
+                max_clients->directive = temp.directive;
+                max_clients->args = temp.args;
+                max_clients->filename = temp.filename;
+                max_clients->line_num = temp.line_num;
+                break;
+            }
+        }
+        else if (!max_clients
+                && strncasecmp(pdir->directive, "MaxClients", 10) == 0) {
+            max_clients = pdir;
+        }
+    }
 
     debug = ap_exists_config_define("DEBUG");
 
@@ -1452,27 +1490,58 @@ static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy,
 static const char *set_server_limit (cmd_parms *cmd, void *dummy,
 				     const char *arg) 
 {
+    int max_clients;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
-
-    ap_daemons_limit = atoi(arg);
+ 
+    /* It is ok to use ap_threads_per_child here because we are
+     * sure that it gets set before MaxClients in the pre_config stage. */
+    max_clients = atoi(arg);
+    if (max_clients < ap_threads_per_child) {
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                    "WARNING: MaxClients (%d) must be at least as large",
+                    max_clients);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                    " large as ThreadsPerChild (%d). Automatically",
+                    ap_threads_per_child);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                    " increasing MaxClients to %d.",
+                    ap_threads_per_child);
+       max_clients = ap_threads_per_child;
+    }
+    ap_daemons_limit = max_clients / ap_threads_per_child;
+    if ((max_clients > 0) && (max_clients % ap_threads_per_child)) {
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                    "WARNING: MaxClients (%d) is not an integer multiple",
+                    max_clients);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                    " of ThreadsPerChild (%d), lowering MaxClients to %d",
+                    ap_threads_per_child,
+                    ap_daemons_limit * ap_threads_per_child);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                    " for a maximum of %d child processes,",
+                    ap_daemons_limit);
+    }
     if (ap_daemons_limit > HARD_SERVER_LIMIT) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                    "WARNING: MaxClients of %d exceeds compile time limit "
-                    "of %d servers,", ap_daemons_limit, HARD_SERVER_LIMIT);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                    " lowering MaxClients to %d.  To increase, please "
-                    "see the", HARD_SERVER_LIMIT);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                    " HARD_SERVER_LIMIT define in %s.",
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                    "WARNING: MaxClients of %d would require %d servers,",
+                    max_clients, ap_daemons_limit);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                    " and would exceed the compile time limit of %d.",
+                    HARD_SERVER_LIMIT);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                    " Automatically lowering MaxClients to %d.  To increase,",
+                    HARD_SERVER_LIMIT);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                    " please see the HARD_SERVER_LIMIT define in %s.",
                     AP_MPM_HARD_LIMITS_FILE);
        ap_daemons_limit = HARD_SERVER_LIMIT;
-    } 
+    }
     else if (ap_daemons_limit < 1) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "WARNING: Require MaxClients > 0, setting to 1");
-	ap_daemons_limit = 1;
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "WARNING: Require MaxClients > 0, setting to 1");
+        ap_daemons_limit = 1;
     }
     return NULL;
 }
