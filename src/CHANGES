@@ -1,5 +1,14 @@
 Changes with Apache 1.3b3
 
+  *) WIN32: Fix the code so CGIs can use socket calls on Windows.  
+     The problem was that certain environment variables needed for
+     sockets to work under Win32 were not being passed.
+     [Frank Faubert <frank@sane.com>]
+
+  *) Add a "-V" command line flag to the httpd binary.  This 
+     flag shows some of the defines that Apache was compiled with.
+     It is useful for debugging purposes.  [Martin Kraemer]
+
   *) Start separating the ap_*() routines into their own library, so they
      can be used by items in src/support among other things.  PR#512, 905,
      1252, 1308 [Ken Coar]
@@ -10,9 +19,9 @@ Changes with Apache 1.3b3
   *) Remove strtoul() use from mod_proxy because it isn't available
      on all platforms.   [Marc Slemko] PR#1214
 
-  *) Some Win32 systems terminated all responses after 16 kB. This turns
-     out to be a bug in Winsock - select() doesn't always return the
-	 correct status.  [Ben Laurie]
+  *) WIN32: Some Win32 systems terminated all responses after 16 kB. 
+     This turns out to be a bug in Winsock - select() doesn't always 
+     return the correct status.  [Ben Laurie]
 
   *) Directives owned by http_core can now use the new check_cmd_context()
      routine to ensure that they're not being used within a container
@@ -64,7 +73,7 @@ Changes with Apache 1.3b3
      by default.  [Ken Coar]
 
   *) Add a "SuppressColumnSorting" option to the IndexOptions list,
-     which will keep the column heading from beling links for sorting
+     which will keep the column heading from being links for sorting
      the display.  [Ken Coar, suggested by Brian Tiemann <btman@pacific.net>]
      PR #1261
 
