@@ -716,7 +716,7 @@ static void winnt_accept(void *listen_socket)
             if (setsockopt(pCompContext->accept_socket, SOL_SOCKET,
                            SO_UPDATE_ACCEPT_CONTEXT, (char *)&nlsd,
                            sizeof(nlsd))) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(), ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), ap_server_conf,
                              "setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed.");
                 /* Not a failure condition. Keep running. */
             }
@@ -883,7 +883,7 @@ static void worker_main(int thread_num)
             if (requests_this_child > ap_max_requests_per_child) {
                 SetEvent(max_requests_per_child_event);
             }
-	}
+        }
 
         sockinfo.os_sock = &context->accept_socket;
         sockinfo.local   = context->sa_server;
@@ -990,10 +990,10 @@ static void child_main()
      */
     status = apr_lock_acquire(start_mutex);
     if (status != APR_SUCCESS) {
-	ap_log_error(APLOG_MARK,APLOG_ERR, status, ap_server_conf,
+        ap_log_error(APLOG_MARK,APLOG_ERR, status, ap_server_conf,
                      "Child %d: Failed to acquire the start_mutex. Process will exit.", my_pid);
         ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
-	exit(0);
+        exit(0);
     }
     ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, ap_server_conf, 
                  "Child %d: Acquired the start mutex.", my_pid);
@@ -1147,10 +1147,10 @@ static void child_main()
     end_time = time(NULL) + 180;
     while (nthreads) {
         rv = wait_for_many_objects(nthreads, child_handles, end_time - time(NULL));
-	if (rv != WAIT_TIMEOUT) {
-	    rv = rv - WAIT_OBJECT_0;
-	    ap_assert((rv >= 0) && (rv < nthreads));
-	    cleanup_thread(child_handles, &nthreads, rv);
+        if (rv != WAIT_TIMEOUT) {
+            rv = rv - WAIT_OBJECT_0;
+            ap_assert((rv >= 0) && (rv < nthreads));
+            cleanup_thread(child_handles, &nthreads, rv);
             continue;
         }
         break;
@@ -1775,11 +1775,11 @@ void winnt_rewrite_args(process_rec *process)
                              "Using ConfigArgs of the installed service "
                              "\"%s\".", service_name);
             }
-	    else  {
+            else  {
                 ap_log_error(APLOG_MARK,APLOG_WARNING, rv, NULL,
                              "No installed ConfigArgs for the service "
                              "\"%s\", using Apache defaults.", service_name);
-	    }
+            }
         }
         else
         {
