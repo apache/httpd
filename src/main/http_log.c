@@ -339,18 +339,6 @@ static void log_error_core(const char *file, int line, int level,
 	    return;
 	logf = s->error_log;
     }
-#ifdef TPF
-    else if (tpf_child) {
-    /*
-     * If we are doing normal logging, don't log messages that are
-     * above the server log level unless it is a startup/shutdown notice
-     */
-    if (((level & APLOG_LEVELMASK) != APLOG_NOTICE) &&
-        ((level & APLOG_LEVELMASK) > s->loglevel))
-        return;
-    logf = stderr;
-    }
-#endif /* TPF */
     else {
 	/*
 	 * If we are doing syslog logging, don't log messages that are

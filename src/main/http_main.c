@@ -5438,15 +5438,23 @@ int REALMAIN(int argc, char *argv[])
         tpf_server_name[INETD_SERVNAME_LENGTH + 1] = '\0';
         ap_open_logs(server_conf, plog);
         ap_tpf_zinet_checks(ap_standalone, tpf_server_name, server_conf);
+        ap_tpf_save_argv(argc, argv);    /* save argv parms for children */
     }
     if (ap_standalone) {
         ap_set_version();
         ap_init_modules(pconf, server_conf);
         version_locked++;
         if(tpf_child) {
+           server_conf->error_log = stderr;
+#ifdef HAVE_SYSLOG
+            /* if ErrorLog is syslog call ap_open_logs from the child since
+               syslog isn't redirected to stderr by the Apache parent */
+            if (strncasecmp(server_conf->error_fname, "syslog", 6) == 0) {
+               ap_open_logs(server_conf, plog);
+            }
+#endif /* HAVE_SYSLOG */
             copy_listeners(pconf);
             reset_tpf_listeners(&input_parms.child);
-            server_conf->error_log = NULL;
 #ifdef SCOREBOARD_FILE
             scoreboard_fd = input_parms.child.scoreboard_fd;
             ap_scoreboard_image = &_scoreboard_image;

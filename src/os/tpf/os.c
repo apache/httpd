@@ -75,6 +75,7 @@ static TPF_FD_LIST *tpf_fds = NULL;
 
 void *tpf_shm_static_ptr = NULL;
 unsigned short zinet_model;
+char *argv_ptr = NULL;
 
 static FILE *sock_fp;
 
@@ -394,7 +395,7 @@ pid_t os_fork(server_rec *s, int slot)
     fork_input.prog_type = TPF_FORK_NAME;
     fork_input.istream = TPF_FORK_IS_BALANCE;
     fork_input.ebw_data_length = sizeof(input_parms);
-    fork_input.parm_data = "-x";
+    fork_input.parm_data = argv_ptr;
 #ifdef TPF_FORK_EXTENDED
     return tpf_fork(&fork_input, NULL, NULL);
 #else
@@ -477,6 +478,23 @@ void os_note_additional_cleanups(pool *p, int sd) {
     /* arrange to close on exec or restart */
     ap_note_cleanups_for_file(p, sock_fp);
     fcntl(sd,F_SETFD,FD_CLOEXEC);
+}
+
+void ap_tpf_save_argv(int argc, char **argv) {
+
+    int i, len = 3;      /* 3 for "-x "   */
+
+    for (i = 1; i < argc; i++) {    /* find len for calloc */
+         len += strlen (argv[i]);
+         ++len;                     /* 1 for blank */
+    }
+
+    argv_ptr = malloc(len + 1);
+    strcpy(argv_ptr, "-x");
+    for (i = 1; i < argc; i++) {
+         strcat(argv_ptr, " ");
+         strcat(argv_ptr, argv[i]);
+    }
 }
 
 void os_tpf_child(APACHE_TPF_INPUT *input_parms) {
@@ -794,6 +812,10 @@ void show_os_specific_compile_settings(void)
  
 #ifdef TPF_HAVE_NSD
     printf(" -D TPF_HAVE_NSD\n");
+#endif
+ 
+#ifdef HAVE_SYSLOG
+    printf(" -D HAVE_SYSLOG\n");
 #endif
 
 }

@@ -76,6 +76,10 @@
 #undef HAVE_ISNAN
 #endif
 
+#ifdef HAVE_ISINF
+#undef HAVE_ISINF
+#endif
+
 #if !defined(INLINE) && defined(USE_GNU_INLINE)
 /* Compiler supports inline, so include the inlineable functions as
  * part of the header
@@ -193,6 +197,7 @@ extern int scoreboard_fd;
 #ifdef NSIG
 #undef NSIG
 #endif
+void ap_tpf_save_argv(int argc, char **argv);
 
 /* various #defines for ServerType/ZINET model checks: */
 
