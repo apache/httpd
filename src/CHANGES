@@ -1,5 +1,10 @@
 Changes with Apache 1.3.15
 
+  *) Linux 2.2.x and later do not need a serialised single listener,
+     and sysv semaphores scale better than fcntl.  Updated GuessOS
+     to distinguish 2.0.x from 2.2.x -- 2.0.x will still use fcntl.
+     [Andrew Morton <andrewm@uow.edu.au>, Dean Gaudet]
+
   *) Eliminate caching problems of mod_autoindex results, so the last
      modified date of the directory is returned as the Last-Modified 
      and ETag HTTP header tags are sent if IndexOptions TrackModified

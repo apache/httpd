@@ -429,10 +429,16 @@ case "$PLAT" in
 	    CFLAGS="$CFLAGS -DIRIX"
 	fi
 	;;
-    *-linux2)
+    *-linux20)
 	DEF_WANTHSREGEX=yes
 	OS='Linux'
-	CFLAGS="$CFLAGS -DLINUX=2"
+	CFLAGS="$CFLAGS -DLINUX=20"
+	LIBS="$LIBS -lm"
+	;;
+    *-linux22)
+	DEF_WANTHSREGEX=yes
+	OS='Linux'
+	CFLAGS="$CFLAGS -DLINUX=22"
 	LIBS="$LIBS -lm"
 	;;
     *-GNU*)

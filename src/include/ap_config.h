@@ -522,12 +522,15 @@ typedef int pid_t;
 #define HAVE_MMAP 1
 #define USE_MMAP_FILES
 
-/* flock is faster ... but hasn't been tested on 1.x systems */
-/* PR#3531 indicates flock() may not be stable, probably depends on
- * kernel version.  Go back to using fcntl, but provide a way for
- * folks to tweak their Configuration to get flock.
+#if LINUX > 20
+/* see Pine.LNX.4.21.0011041233550.1897-100000@twinlark.arctic.org
+ * in new-httpd archives for performance numbers indicating these
+ * are the right choices for linux 2.2.x and later
  */
-#ifndef USE_FLOCK_SERIALIZED_ACCEPT
+#define USE_SYSVSEM_SERIALIZED_ACCEPT
+#define SINGLE_LISTEN_UNSERIALIZED_ACCEPT 
+#define NEED_UNION_SEMUN
+#else
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #endif
 
