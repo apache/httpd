@@ -1,0 +1,11 @@
+Configuration
+Makefile
+modules.c
+httpd
+Makefile.config
+*.mdp
+*.ncb
+Release
+Debug
+CoreD
+LaunchD

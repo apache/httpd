@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache HTTP Server Project</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Known Bugs in Apache</H1>
+
+The most up-to-date resource for bug tracking and information is the
+<A HREF="http://www.apache.org/bugdb.cgi">Apache bug database</A>.
+Significant bugs at release time will also be noted there.
+If you are running a 1.2 beta release or version 1.1.3 or earlier
+and thing you have found a bug, please upgrade to 1.2. Many bugs
+in early versions have been fixed in 1.2.
+
+<P>See Also: <A HREF="compat_notes.html">Compatibility notes</A></P>
+<HR>
+
+<H2>Apache 1.3a1 Bugs</H2>
+
+<OL>
+  <LI>The <code><a href="../mod/core.html#listen">Listen</a></code>
+      directive does not work when running under Windows.
+  <LI>For some reason, <a href="../mod/mod_isapi.html">mod_isapi</a>
+      does not work (with Windows) when compiled using the
+      <code>Release</code> setting; it will crash the server whenever you
+      access an ISA DLL. It works fine when the server is compiled with
+      <code>Debug</code>.
+</OL>
+      
+<H2>Apache 1.2 Bugs</H2>
+
+<OL>
+    <LI><b>Exists in 1.2.1 only.</b>
+    On Solaris 2.x the server will stop running after receiving a
+    SIGHUP.  Four workarounds exist (choose one):<p>
+    <ul>
+	<li>Retrieve <a href="http://www.apache.org/dist/patches/apply_to_1.2.1/solaris_hup.patch">this patch</a>.
+	<code>cd</code> to your <code>apache_1.2.1</code> directory, and
+	type <code>patch -s -p1 < /path/to/patchfile</code>.  Then rebuild
+	Apache.<p>
+	<li>Use SIGUSR1 instead of SIGHUP, see <a href="../stopping.html">
+	Stopping and Restarting Apache</a> for more details.<p>
+	<li>Add <code>-DNO_SLACK</code> to
+	<code>EXTRA_CFLAGS</code> in
+	your <code>Configuration</code> file, re-run <code>Configure</code>
+	and rebuild your server.  This disables the
+	<a href="descriptors.html">descriptor slack workaround</a><p>
+	<li>(Least preferable) Use Apache 1.2.0 instead of 1.2.1.<p>
+    </ul>
+    This problem will be tracked as
+    <a href="http://www.apache.org/bugdb.cgi/full/832">PR#832</a>.<p>
+    </li>
+
+    <LI>(Exists in 1.2.0 and in 1.2.1 after either of the
+    <code>NO_SLACK</code> or patch provided by the previous bug are applied.)
+    Solaris 2.5.1 (and probably other versions of Solaris) appear to have
+    a race condition completely unrelated to all the others.  It is possible
+    during a SIGHUP that the server will fail to start because it will not
+    be able to re-open its sockets.  To our knowledge this has only shown
+    up during testing when we pummel the server with as many SIGHUP requests
+    per second as we can.  This appears unrelated to the similar sounding bug
+    described in <a href="http://www.apache.org/bugdb.cgi/full/832">PR#832</a>.
+    <p>
+
+    <LI><a name="listenbug">On some architectures</A>
+    if your configuration uses multiple
+    <a href="../mod/core.html#listen">Listen</a> directives then it is possible
+    that the server will starve one of the sockets while serving hits on
+    another.  The work-around is to add
+    <code>-DUSE_FLOCK_SERIALIZED_ACCEPT</code> to the
+    <code>EXTRA_CFLAGS</code> line in your Configuration and rebuild.
+    (If you encounter problems with that, you can also try
+    <code>-DUSE_FCNTL_SERIALIZED_ACCEPT</code>.)
+    This affects any architecture that doesn't use one of the
+    <code>USE_xxxxx_SERIALIZED_ACCEPT</code> definitions, see the
+    source file <code>conf.h</code> for your architecture.
+    This will be tracked as
+    <a href="http://www.apache.org/bugdb.cgi/full/467">PR#467</a>.
+    <P></LI>
+
+    <LI><b>Fixed in 1.2.1.</b>
+    <a name="cnegbug">Apache's</A> <A HREF="../content-negotiation.html">Content
+    Negotiation</A> should pick the smallest variant if there
+    are several that are equally acceptable. A bug in 1.2 means it no
+    longer does this unless all the variants have character sets.
+    This <A HREF="../../dist/contrib/patches/1.2/conneg-bug.patch">patch</A>
+    fixes this problem. It also fixes the problem which makes Apache
+    pick the last equally acceptable variant instead of the first.
+    This will be tracked as
+    <a href="http://www.apache.org/bugdb.cgi/full/94">PR#94</a>.
+    <P></LI>
+
+    <LI>
+    The PATH_INFO part of a request URI cannot include the sequence
+    <CODE>%2f</CODE>. This will be tracked as
+    <A HREF="http://www.apache.org/bugdb.cgi/full/543">PR#543</A>.
+    <P></LI>
+
+    <LI>Users of early 1.2 betas reported problems with many
+    connections stuck in the FIN_WAIT_2 state due to server
+    timeouts. Several changes were made during the beta testing of 1.2
+    to reduce this problem as much as possible, although you may still
+    see sockets in FIN_WAIT_2 state due to network or operating system
+    issues outside the control of Apache. See our <A
+    HREF="fin_wait_2.html">FIN_WAIT_2</A> page for more details.
+
+    <P>SunOS4 has a kernel bug in the allocation of memory for the mbuf table.
+    When it fills up, the result is a Panic the next time any routine tries
+    to set something in an imaginary mbuf beyond the range of the table.
+    Due to buggy browser behavior and the lack of a FIN_WAIT_2 timeout
+    on SunOS4, "KeepAlive Off" is necessary to avoid filling up the mbuf
+    table on busy sites.
+    <P></LI>
+
+    <LI>Compilation fails on SCO3 when using gcc instead of cc, complaining
+    with "<CODE>gcc: noinline: No such file or directory</CODE>". Fix
+    is given in <a href="http://www.apache.org/bugdb.cgi/full/695">PR#695</A>.
+    <P></LI>
+
+    <LI>If compilation fails complaining about "unknown symbol __inet_ntoa()"
+    then you have probably installed version 8 of bind. You will need to
+    explicitly link with the bind library by adding <CODE>-lbind</CODE>
+    to <CODE>EXTRA_LDFLAGS</CODE> in <CODE>Configuration</CODE>. See
+    <A HREF="http://www.apache.org/bugdb.cgi/full/616">PR#616</A>
+    and the
+    <A HREF="FAQ.html#bind8.1">Apache FAQ</A>.
+    <P></LI>
+
+    <LI>The message "<CODE>created shared memory segment #730499</CODE>"
+    in error_log is not an error and should be ignored. See
+    <a href="http://www.apache.org/bugdb.cgi/full/696">PR#696</A>.
+    <P></LI>
+
+    <LI>
+    Compiling on Solaris 2 with SunSoft's C compiler gives the warning
+    <CODE>"mod_include.c", line 1123: warning: end-of-loop code not
+    reached</CODE>. This is a bogus warning and can be ignored.
+    See <A HREF="http://www.apache.org/bugdb.cgi/full/681">PR#681</A>.
+    <P></LI>
+
+    <LI><a href="descriptors.html"><b>Workaround available in 1.2.1.</b></a>
+    There appears to be a problem on BSDI 2.1 with large numbers of
+    virtual hosts. This appears similar to a file-descriptor limit
+    but BSDI should not have this problem. This will be tracked as
+    <A HREF="http://www.apache.org/bugdb.cgi/full/611">PR#611</A>.
+    See also the <A HREF="FAQ.html#fdlim">Apache FAQ</A>.
+    <P></LI>
+
+    <LI><a href="descriptors.html"><b>Workaround available in 1.2.1.</b></a>
+    Solaris 2 has problems with large numbers of virtual hosts. This is
+    because of an operating system limit of 256 file pointers, not due
+    to Apache.   See also the <A HREF="FAQ.html#fdlim">Apache FAQ</A>.
+    <P></LI>
+
+</OL>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+

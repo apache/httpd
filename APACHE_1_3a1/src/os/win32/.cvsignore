@@ -1,0 +1,14 @@
+*.mdp
+*.ncb
+*.opt
+*.plg
+*.dsw
+ApacheModuleAuthAnonD
+ApacheModuleCERNMetaD
+ApacheModuleDigestD
+ApacheModuleExpiresD
+ApacheModuleHeadersD
+ApacheModuleInfoD
+ApacheModuleRewriteD
+ApacheModuleStatusD
+ApacheModuleUserTrackD
