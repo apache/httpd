@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English revision: 1.6 -->
+<!-- English Revision: 1.6 (outdated: 1.10) -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
