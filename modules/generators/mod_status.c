@@ -108,10 +108,10 @@ static pid_t child_pid;
 #endif
 
 /* Implement 'ap_run_status_hook'. */
-AP_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(int,status_hook,
-                                   (request_rec *r, int flags),
-                                   (r, flags),
-                                   OK, DECLINED)
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap, STATUS, int, status_hook,
+                                    (request_rec *r, int flags),
+                                    (r, flags),
+                                    OK, DECLINED)
 
 /*
  * command-related code. This is here to prevent use of ExtendedStatus
