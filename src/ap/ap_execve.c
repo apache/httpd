@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 1995-1998 The Apache Group.  All rights reserved.
+ * Copyright (c) 1998 The Apache Group.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -74,7 +74,7 @@ static const char **hashbang(const char *filename, char **argv);
  * local argv[] array. The va_arg logic makes sure we do the right thing.
  * XXX: malloc() is used because we expect to be overlaid soon.
  */
-int ap_execle(const char *filename, const char *arg,...)
+int ap_execle(const char *filename, const char *arg, ...)
 {
     va_list adummy;
     char **envp;
@@ -83,16 +83,18 @@ int ap_execle(const char *filename, const char *arg,...)
 
     /* First pass: Count arguments on stack */
     va_start(adummy, arg);
-    for (argc = 0; va_arg(adummy, char *) != NULL; ++argc)
+    for (argc = 0; va_arg(adummy, char *) != NULL; ++argc) {
 	continue;
+    }
     va_end(adummy);
 
     argv = (char **) malloc((argc + 2) * sizeof(*argv));
 
     /* Pass two --- copy the argument strings into the result space */
     va_start(adummy, arg);
-    for (argc = 0; (argv[argc] = va_arg(adummy, char *)) != NULL; ++argc)
+    for (argc = 0; (argv[argc] = va_arg(adummy, char *)) != NULL; ++argc) {
 	continue;
+    }
     envp = va_arg(adummy, char **);
     va_end(adummy);
 
@@ -103,13 +105,14 @@ int ap_execle(const char *filename, const char *arg,...)
 }
 
 int ap_execve(const char *filename, const char *argv[],
-		    const char *envp[])
+	      const char *envp[])
 {
     const char *argv0 = argv[0];
     extern char **environ;
 
-    if (envp == NULL)
+    if (envp == NULL) {
 	envp = (const char **) environ;
+    }
 
     /* Try to execute the file directly first: */
     execve(filename, argv, envp);
@@ -120,7 +123,8 @@ int ap_execve(const char *filename, const char *argv[],
      * EACCES Execute permission is denied for the file.
      * EACCES Search  permission  is denied on a component of the path prefix.
      * EPERM  The file system is mounted noexec.
-     * EPERM  The file system is mounted nosuid and the file  has an SUID or SGID bit set.
+     * EPERM  The file system is mounted nosuid and the file  has an SUID
+     *        or SGID bit set.
      * E2BIG  The argument list is too big.
      * ENOEXEC The magic number in the file is incorrect.
      * EFAULT filename  points  outside  your  accessible address space.
@@ -141,14 +145,16 @@ int ap_execve(const char *filename, const char *argv[],
 	&& (argv = hashbang(filename, argv)) != NULL) {
 
         aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, NULL,
-                        "Script %s needs interpreter %s to exec", filename, argv[0]);
+                    "Script %s needs interpreter %s to exec", filename,
+                    argv[0]);
 
 	/* new filename is the interpreter to call */
 	filename = argv[0];
 
 	/* Restore argv[0] as on entry */
-	if (argv0 != NULL)
+	if (argv0 != NULL) {
 	    argv[0] = argv0;
+	}
 
 	execve(filename, argv, envp);
 
@@ -184,8 +190,9 @@ static const char **hashbang(const char *filename, char **argv)
     int first_word = 0;
 #endif /* WIN32 */
 
-    if ((fd = open(filename, O_RDONLY)) == -1)
+    if ((fd = open(filename, O_RDONLY)) == -1) {
 	return NULL;
+    }
 
     if (read(fd, (char *) lbuf, 2) != 2
 	|| lbuf[0] != '#' || lbuf[1] != '!'
@@ -198,7 +205,7 @@ static const char **hashbang(const char *filename, char **argv)
 
     ws = NULL;			/* word started = 0 */
 
-    for (p = lbuf; p < &lbuf[HACKBUFSZ];)
+    for (p = lbuf; p < &lbuf[HACKBUFSZ];) {
 	switch (*p) {
 	case ' ':
 	case '\t':
@@ -208,14 +215,16 @@ static const char **hashbang(const char *filename, char **argv)
 	    if (ws) {		/* a blank after a word.. save it */
 		*p = '\0';
 #ifndef WIN32
-		if (sargc < HACKVECSZ - 1)
+		if (sargc < HACKVECSZ - 1) {
 		    sargv[sargc++] = ws;
+		}
 		ws = NULL;
 #else /* WIN32 */
 		if (sargc < HACKVECSZ - 1) {
 		    sargv[sargc] = first_word ? NULL : hb_subst(ws);
-		    if (sargv[sargc] == NULL)
+		    if (sargv[sargc] == NULL) {
 			sargv[sargc] = ws;
+		    }
 		    sargc++;
 		}
 		ws = NULL;
@@ -237,24 +246,28 @@ static const char **hashbang(const char *filename, char **argv)
 		   ws) {	/* terminate the last word */
 		*p = '\0';
 #ifndef WIN32
-		if (sargc < HACKVECSZ - 1)
+		if (sargc < HACKVECSZ - 1) {
 		    sargv[sargc++] = ws;
+		}
 #else /* WIN32 */
 		if (sargc < HACKVECSZ - 1) {	/* deal with the 1-word case */
 		    sargv[sargc] = first_word ? NULL : hb_subst(ws);
-		    if (sargv[sargc] == NULL)
+		    if (sargv[sargc] == NULL) {
 			sargv[sargc] = ws;
+		    }
 		    sargc++;
 		}
 #endif /* !WIN32 */
 		sargv[sargc] = NULL;
 	    }
 	    /* Count number of entries in the old argv vector */
-	    for (i = 0; argv[i] != NULL; ++i)
+	    for (i = 0; argv[i] != NULL; ++i) {
 		continue;
+	    }
 	    ++i;
 
-	    newargv = (char **) malloc((p - lbuf + 1) + (i + sargc + 1) * sizeof(*newargv));
+	    newargv = (char **) malloc((p - lbuf + 1)
+                      + (i + sargc + 1) * sizeof(*newargv));
 	    ws = &((char *) newargv)[(i + sargc + 1) * sizeof(*newargv)];
 
 	    /* Copy entries to allocated memory */
@@ -265,8 +278,11 @@ static const char **hashbang(const char *filename, char **argv)
 	    newargv[sargc] = filename;
 
 	    /* Append the old array. The old argv[0] is skipped. */
-	    if (i > 1)
-		memcpy(&newargv[sargc + 1], &argv[1], (i - 1) * sizeof(*newargv));
+	    if (i > 1) {
+		memcpy(&newargv[sargc + 1], &argv[1],
+                       (i - 1) * sizeof(*newargv));
+	    }
+	
 	    newargv[sargc + i] = NULL;
 
 	    ws = NULL;
@@ -274,11 +290,13 @@ static const char **hashbang(const char *filename, char **argv)
 	    return newargv;
 
 	default:
-	    if (!ws)		/* Start a new word? */
+	    if (!ws) {		/* Start a new word? */
 		ws = p;
+	    }
 	    p++;
 	    break;
 	}
+    }
     return NULL;
 }
 #else

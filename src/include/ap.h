@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 1995-1998 The Apache Group.  All rights reserved.
+ * Copyright (c) 1998 The Apache Group.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -62,5 +62,6 @@ int ap_slack(int, int);
 API_EXPORT(char *) ap_escape_quotes(pool *, const char *);
 API_EXPORT(int) ap_snprintf(char *, size_t, const char *, ...);
 API_EXPORT(int) ap_vsnprintf(char *, size_t, const char *, va_list ap);
-
+int ap_execle(const char *, const char *, ...);
+int ap_execve(const char *, const char *argv[], const char *envp[]);
 #endif	/* !APACHE_AP_H */
