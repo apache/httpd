@@ -111,6 +111,7 @@ static int ap_daemons_to_start=0;
 static int min_spare_threads=0;
 static int max_spare_threads=0;
 static int ap_daemons_limit=0;
+static int dying = 0;
 static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listensocks = 0;
@@ -123,6 +124,15 @@ typedef struct {
     int sd;
     apr_pool_t *tpool; /* "pthread" would be confusing */
 } proc_info;
+
+/* Structure used to pass information to the thread responsible for 
+ * creating the rest of the threads.
+ */
+typedef struct {
+    apr_thread_t **threads;
+    int child_num_arg;
+    apr_threadattr_t *threadattr;
+} thread_starter;
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
@@ -633,8 +643,9 @@ static void * worker_thread(void * dummy)
     }
 
     apr_pool_destroy(tpool);
-    ap_update_child_status(process_slot, thread_slot, SERVER_DEAD,
+    ap_update_child_status(process_slot, thread_slot, (dying) ? SERVER_DEAD : SERVER_GRACEFUL,
         (request_rec *) NULL);
+    dying = 1;
     apr_lock_acquire(worker_thread_count_mutex);
     worker_thread_count--;
     if (worker_thread_count == 0) {
@@ -657,16 +668,80 @@ static int check_signal(int signum)
     return 0;
 }
 
-static void child_main(int child_num_arg)
+static void *start_threads(void * dummy)
 {
-    apr_thread_t **threads;
-    apr_threadattr_t *thread_attr;
+    thread_starter *ts = dummy;
+    apr_thread_t **threads = ts->threads;
+    apr_threadattr_t *thread_attr = ts->threadattr;
+    int child_num_arg = ts->child_num_arg;
     int i;
     int my_child_num = child_num_arg;
     proc_info *my_info = NULL;
     ap_listen_rec *lr;
     apr_status_t rv;
+    int threads_created = 0;
 
+    while (1) {
+        for (i=0; i < ap_threads_per_child; i++) {
+            int status = ap_scoreboard_image->servers[child_num_arg][i].status;
+
+            if (status != SERVER_GRACEFUL && status != SERVER_DEAD) {
+                continue;
+            }
+
+   	    my_info = (proc_info *)malloc(sizeof(proc_info));
+            if (my_info == NULL) {
+                ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
+		             "malloc: out of memory");
+                clean_child_exit(APEXIT_CHILDFATAL);
+            }
+	    my_info->pid = my_child_num;
+            my_info->tid = i;
+	    my_info->sd = 0;
+	    apr_pool_create(&my_info->tpool, pchild);
+	
+  	    /* We are creating threads right now */
+	    (void) ap_update_child_status(my_child_num, i, SERVER_STARTING, 
+	  			          (request_rec *) NULL);
+	    /* We let each thread update it's own scoreboard entry.  This is 
+             * done because it let's us deal with tid better.
+	     */
+	    if ((rv = apr_thread_create(&threads[i], thread_attr, worker_thread, my_info, pchild))) {
+	        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
+			     "apr_thread_create: unable to create worker thread");
+                /* In case system resources are maxxed out, we don't want
+                   Apache running away with the CPU trying to fork over and
+                   over and over again if we exit. */
+                sleep(10);
+	        clean_child_exit(APEXIT_CHILDFATAL);
+	    }
+            threads_created++;
+        }
+        if (workers_may_exit || threads_created == ap_threads_per_child) {
+            break;
+        }
+        sleep(1);
+    }
+    
+    /* What state should this child_main process be listed as in the scoreboard...?
+     *  ap_update_child_status(my_child_num, i, SERVER_STARTING, (request_rec *) NULL);
+     * 
+     *  This state should be listed separately in the scoreboard, in some kind
+     *  of process_status, not mixed in with the worker threads' status.   
+     *  "life_status" is almost right, but it's in the worker's structure, and 
+     *  the name could be clearer.   gla
+     */
+}
+
+static void child_main(int child_num_arg)
+{
+    apr_thread_t **threads;
+    int i;
+    proc_info *my_info = NULL;
+    ap_listen_rec *lr;
+    apr_status_t rv;
+    thread_starter *ts;
+    apr_threadattr_t *thread_attr;
 
     ap_my_pid = getpid();
     apr_pool_create(&pchild, pconf);
@@ -727,47 +802,25 @@ static void child_main(int child_num_arg)
                     NULL, pchild);
     apr_lock_create(&pipe_of_death_mutex, APR_MUTEX, APR_INTRAPROCESS, 
                     NULL, pchild);
+
+    ts = apr_palloc(pchild, sizeof(*ts));
+
     apr_threadattr_create(&thread_attr, pchild);
     apr_threadattr_detach_set(thread_attr, 0);    /* 0 means PTHREAD_CREATE_JOINABLE */
 
-    for (i=0; i < ap_threads_per_child; i++) {
+    ts->threads = threads;
+    ts->child_num_arg = child_num_arg;
+    ts->threadattr = thread_attr;
 
-	my_info = (proc_info *)malloc(sizeof(proc_info));
-        if (my_info == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
-		         "malloc: out of memory");
-            clean_child_exit(APEXIT_CHILDFATAL);
-        }
-	my_info->pid = my_child_num;
-        my_info->tid = i;
-	my_info->sd = 0;
-	apr_pool_create(&my_info->tpool, pchild);
-	
-	/* We are creating threads right now */
-	(void) ap_update_child_status(my_child_num, i, SERVER_STARTING, 
-				      (request_rec *) NULL);
-	if ((rv = apr_thread_create(&threads[i], thread_attr, worker_thread, my_info, pchild))) {
-	    ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
-			 "apr_thread_create: unable to create worker thread");
-            /* In case system resources are maxxed out, we don't want
-               Apache running away with the CPU trying to fork over and
-               over and over again if we exit. */
-            sleep(10);
-	    clean_child_exit(APEXIT_CHILDFATAL);
-	}
-	/* We let each thread update it's own scoreboard entry.  This is done
-	 * because it let's us deal with tid better.
-	 */
+    if ((rv = apr_thread_create(&threads[i], thread_attr, start_threads, ts, pchild))) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
+                     "apr_thread_create: unable to create worker thread");
+        /* In case system resources are maxxed out, we don't want
+           Apache running away with the CPU trying to fork over and
+           over and over again if we exit. */
+        sleep(10);
+        clean_child_exit(APEXIT_CHILDFATAL);
     }
-    
-    /* What state should this child_main process be listed as in the scoreboard...?
-     *  ap_update_child_status(my_child_num, i, SERVER_STARTING, (request_rec *) NULL);
-     * 
-     *  This state should be listed separately in the scoreboard, in some kind
-     *  of process_status, not mixed in with the worker threads' status.   
-     *  "life_status" is almost right, but it's in the worker's structure, and 
-     *  the name could be clearer.   gla
-     */
 
     apr_signal_thread(check_signal);
 
@@ -784,7 +837,7 @@ static void child_main(int child_num_arg)
         apr_thread_join(&rv, threads[i]);
     }
 
-    free (threads);
+    free(threads);
 
     clean_child_exit(0);
 }
@@ -802,10 +855,6 @@ static int make_child(server_rec *s, int slot)
         ap_scoreboard_image->parent[slot].pid = getpid();
 	child_main(slot);
     }
-
-    /* Tag this slot as occupied so that perform_idle_server_maintenance
-     * doesn't try to steal it */
-    (void) ap_update_child_status(slot, 0, SERVER_STARTING, (request_rec *) NULL);
 
     if ((pid = fork()) == -1) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, s, "fork: Unable to fork new process");
@@ -923,7 +972,6 @@ static void perform_idle_server_maintenance(void)
 	 * that ap_threads_per_child is always > 0 */
 	int status = SERVER_DEAD;
 	int any_dying_threads = 0;
-	int all_dead_threads = 1;
 	int idle_thread_addition = 0;
 
 	if (i >= ap_max_daemons_limit && free_length == idle_spawn_rate)
@@ -932,9 +980,7 @@ static void perform_idle_server_maintenance(void)
             ws = &ap_scoreboard_image->servers[i][j];
 	    status = ws->status;
 
-	    any_dying_threads = any_dying_threads || (status == SERVER_DEAD)
-                                    || (status == SERVER_GRACEFUL);
-	    all_dead_threads = all_dead_threads && (status == SERVER_DEAD);
+	    any_dying_threads = any_dying_threads || (status == SERVER_GRACEFUL);
 
 	    /* We consider a starting server as idle because we started it
 	     * at least a cycle ago, and if it still hasn't finished starting
@@ -946,14 +992,12 @@ static void perform_idle_server_maintenance(void)
 	        ++idle_thread_addition;
 	    }
 	}
-	if (all_dead_threads && free_length < idle_spawn_rate) {
+	if (any_dying_threads && free_length < idle_spawn_rate) {
 	    free_slots[free_length] = i;
 	    ++free_length;
 	}
-	if (!all_dead_threads) {
+	if (!any_dying_threads) {
             last_non_dead = i;
-	}
-        if (!any_dying_threads) {
             ++total_non_dead;
 	    idle_thread_count += idle_thread_addition;
         }
@@ -1218,13 +1262,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * gracefully dealing with existing request.
          */
 	
-	for (i = 0; i < ap_daemons_limit; ++i) {
-  	    for (j = 0; j < ap_threads_per_child; j++) { 
-	        if (ap_scoreboard_image->servers[i][j].status != SERVER_DEAD) {
-		    ap_scoreboard_image->servers[i][j].status = SERVER_GRACEFUL;
-		}
-	    } 
-	}
     }
     else {
       /* Kill 'em all.  Since the child acts the same on the parents SIGTERM 
