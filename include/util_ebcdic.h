@@ -66,11 +66,25 @@ extern "C" {
 #endif
 
 #include "apr_xlate.h"
+#include "httpd.h"
 #include "util_charset.h"
 
-apr_status_t ap_init_ebcdic(apr_pool_t *);
+/**
+ * @package Utilities for EBCDIC conversion
+ */
 
-apr_xlate_t *ap_checkconv(struct request_rec *);
+/**
+ * Setup all of the global translation handlers
+ * @param pool pool to allocate out of
+ */
+apr_status_t ap_init_ebcdic(apr_pool_t *pool);
+
+/**
+ * Check the Content-Type to decide if conversion is needed 
+ * @param r The current request
+ * @return The translation handle to use for the conversion if one is needed
+ */
+apr_xlate_t *ap_checkconv(request_rec *r);
 
 #ifdef __cplusplus
 }
