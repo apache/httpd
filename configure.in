@@ -1,18 +1,18 @@
-dnl ## Process this file with autoconf to produce a configure script
+dnl
+dnl Autoconf configuration for Apache httpd
+dnl
+dnl     Use ./buildconf to produce a configure script
+dnl
 
 AC_PREREQ(2.13)
-AC_INIT(acinclude.m4)
+AC_INIT(ABOUT_APACHE)
 
 AC_CONFIG_HEADER(include/ap_config_auto.h)
 AC_CONFIG_AUX_DIR(srclib/apr/build)
  
-dnl ## This is the central place where Apache's version should be kept.
-dnl AM_INIT_AUTOMAKE(apache, 2.0-dev)
-
-VERSION="apache-2.0-dev"
-	
-APACHE_VERSION=$VERSION
-APACHE_SUBST(APACHE_VERSION)
+dnl Generate ./config.nice for reproducing runs of configure
+dnl
+APACHE_CONFIG_NICE(config.nice)
 
 test "$exec_prefix" = "NONE" && exec_prefix='${prefix}'
 test "$prefix" = "NONE" && prefix='/usr/local'
@@ -23,8 +23,6 @@ abs_builddir=`pwd`
 aprbuild=$abs_srcdir/srclib/apr/build
 
 MKDIR=$abs_srcdir/srclib/apr/build/mkdir.sh
-
-APACHE_CONFIG_NICE(config.nice)
 
 dnl If the source dir is not equal to the build dir, 
 dnl then we are running in VPATH mode.
