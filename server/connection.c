@@ -64,6 +64,12 @@
 #include "http_config.h"
 #include "http_vhost.h"
 
+HOOK_STRUCT(
+	    HOOK_LINK(pre_connection)
+);
+
+IMPLEMENT_VOID_HOOK(pre_connection,(conn_rec *c),(c),1)
+
 /* TODO: re-implement the lingering close stuff */
 #define NO_LINGCLOSE
 
@@ -188,7 +194,7 @@ CORE_EXPORT(void) ap_process_connection(conn_rec *c)
 
     ap_update_vhost_given_ip(c);
 
-    ap_run_pre_connection(c);
+    run_pre_connection(c);
 
     /*
      * Read and process each request found on our connection
