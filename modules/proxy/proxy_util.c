@@ -1355,6 +1355,31 @@ static apr_status_t connection_destructor(void *resource, void *params,
     return APR_SUCCESS;
 }
 
+static apr_status_t init_conn_worker(proxy_worker *worker, server_rec *s)
+{
+    apr_status_t rv;
+#if APR_HAS_THREADS
+    if (worker->hmax) {
+        rv = apr_reslist_create(&(worker->cp->res),
+                                worker->min, worker->smax,
+                                worker->hmax, worker->ttl,
+                                connection_constructor, connection_destructor,
+                                s, worker->cp->pool);
+    }
+    else
+#endif
+    {
+        worker->cp->conn = apr_pcalloc(worker->cp->pool, sizeof(proxy_conn));
+        /* register the pool cleanup */
+        apr_pool_cleanup_register(worker->cp->pool, (void *)worker->cp->conn,
+                                  proxy_conn_cleanup, apr_pool_cleanup_null);      
+
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                     "proxy: socket is created");
+        rv = APR_SUCCESS;
+    }
+    return rv;
+}
 
 PROXY_DECLARE(apr_status_t)
 ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
