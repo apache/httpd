@@ -87,10 +87,6 @@
 #define MODULE_VAR_EXPORT       __declspec(dllexport)
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #ifdef WIN32
 #include "os.h"
 #else
@@ -106,7 +102,6 @@ extern "C" {
 
 /* ap_ versions of ctype macros to make sure they deal with 8-bit chars */
 #include "ap_ctype.h"
-
 
 /* XXX - This probably doesn't handle OS/2 */
 #ifdef SELECT_NEEDS_CAST
