@@ -324,26 +324,32 @@ if ($opt_q) {
 }
 
 my $apr_bindir = get_vars("APR_BINDIR");
+my $apr_version = get_vars("APR_VERSION");
+$apr_version =~ s/(\d+)\.(\d).(\d)/$1/;
+my $apr_config="$apr_bindir/apr-$apr_version-config";
 
-if (! -x "$apr_bindir/apr-config") {
+if (! -x "$apr_config") {
     error("$apr_bindir/apr-config not found!");
     exit(1);
 }
 
 my $apu_bindir = get_vars("APU_BINDIR");
+my $apu_version = get_vars("APU_VERSION");
+$apu_version =~ s/(\d+)\.(\d).(\d)/$1/;
+my $apu_config="$apu_bindir/apu-$apu_version-config";
 
-if (! -x "$apu_bindir/apu-config") {
-    error("$apu_bindir/apu-config not found!");
+if (! -x "$apu_config") {
+    error("$apu_config not found!");
     exit(1);
 }
 
-my $libtool = `$apr_bindir/apr-config --installbuilddir`;
+my $libtool = `$apr_config --installbuilddir`;
 chomp($libtool);
 $libtool = "$libtool/libtool";
 
-my $apr_includedir = `$apr_bindir/apr-config --includes`;
+my $apr_includedir = `$apr_config --includes`;
 chomp($apr_includedir);
-my $apu_includedir = `$apu_bindir/apu-config --includes`;
+my $apu_includedir = `$apu_config --includes`;
 chomp($apu_includedir);
 
 if ($opt_c) {
@@ -435,15 +441,15 @@ if ($opt_c) {
 
     if ($opt_p == 1) {
         
-        my $apr_libs=`$apr_bindir/apr-config --cflags --ldflags --link-libtool --libs`;
+        my $apr_libs=`$apr_config --cflags --ldflags --link-libtool --libs`;
         chomp($apr_libs);
-        my $apu_libs=`$apu_bindir/apu-config --ldflags --link-libtool --libs`;
+        my $apu_libs=`$apu_config --ldflags --link-libtool --libs`;
         chomp($apu_libs);
         
         $opt .= " ".$apu_libs." ".$apr_libs;
     }
     else {
-        my $apr_ldflags=`$apr_bindir/apr-config --ldflags`;
+        my $apr_ldflags=`$apr_config --ldflags`;
         chomp($apr_ldflags);
         $opt .= " -rpath $CFG_LIBEXECDIR -module -avoid-version $apr_ldflags";
     }
