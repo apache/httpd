@@ -181,7 +181,8 @@ typedef struct accept_rec {
 typedef struct var_rec {
     request_rec *sub_req;       /* May be NULL (is, for map files) */
     char *mime_type;            /* MUST be lowercase */
-    char *file_name;
+    char *file_name;            /* Set to 'this' (for map file body content) */
+    apr_off_t body;             /* Only for map file body content */
     const char *content_encoding;
     apr_array_header_t *content_languages;   /* list of languages for this variant */
     char *content_charset;
@@ -258,6 +259,7 @@ static void clean_var_rec(var_rec *mime_info)
     mime_info->sub_req = NULL;
     mime_info->mime_type = "";
     mime_info->file_name = "";
+    mime_info->body = 0;
     mime_info->content_encoding = NULL;
     mime_info->content_languages = NULL;
     mime_info->content_charset = "";
@@ -509,6 +511,10 @@ static negotiation_state *parse_accept_headers(request_rec *r)
     new->accept_charsets =
         do_header_line(r->pool, apr_table_get(hdrs, "Accept-Charset"));
 
+    /* This is possibly overkill for some servers, heck, we have 
+     * only 33 index.html variants in docs/docroot (today).
+     * Make this configurable?
+     */
     new->avail_vars = apr_array_make(r->pool, 40, sizeof(var_rec));
 
     return new;
@@ -679,6 +685,12 @@ static enum header_state get_header_line(char *buffer, int len, apr_file_t *map)
 
     cp += strlen(cp);
 
+    /* We need to shortcut the rest of this block following the Body:
+     * tag - we will not look for continutation after this line.
+     */
+    if (!strncasecmp(buffer, "Body:", 5))
+        return header_seen;
+
     while (apr_file_getc(&c, map) != APR_EOF) {
         if (c == '#') {
             /* Comment line */
@@ -724,6 +736,47 @@ static enum header_state get_header_line(char *buffer, int len, apr_file_t *map)
     return header_seen;
 }
 
+static apr_off_t get_body(char *buffer, apr_size_t *len, const char *tag, 
+                          apr_file_t *map)
+{
+    char *endbody;
+    int bodylen;
+    apr_off_t pos;
+
+    /* We are at the first character following a body:tag\n entry 
+     * Suck in the body, then backspace to the first char after the 
+     * closing tag entry.  If we fail to read, find the tag or back
+     * up then we have a hosed file, so give up already
+     */
+    if (apr_file_read(map, buffer, len) != APR_SUCCESS) {
+        return -1;
+    }      
+    endbody = strstr(buffer, tag);
+    if (!endbody) {
+        return -1;
+    }
+    bodylen = endbody - buffer;
+    endbody += strlen(tag);
+    /* Skip all the trailing cruft after the end tag to the next line */
+    while (*endbody) {
+        if (*endbody == '\n') {
+            ++endbody;
+            break;
+        }
+        ++endbody;
+    }
+
+    pos = -(apr_off_t)(*len - (endbody - buffer));
+    if (apr_file_seek(map, APR_CUR, &pos) != APR_SUCCESS) {
+        return -1;
+    }
+
+    /* Give the caller back the actual body's offset and length */
+    *len = bodylen;
+    return pos - (endbody - buffer);
+}
+
+
 /* Stripping out RFC822 comments */
 
 static void strip_paren_comments(char *hdr)
@@ -766,7 +819,8 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
 
     if (!*cp) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                      "Syntax error in type map --- no ':': %s", r->filename);
+                      "Syntax error in type map, no ':' in %s for header %s", 
+                      r->filename, header);
         return NULL;
     }
 
@@ -776,28 +830,31 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
 
     if (!*cp) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                      "Syntax error in type map --- no header body: %s",
-                      r->filename);
+                      "Syntax error in type map --- no header body: %s for %s",
+                      r->filename, header);
         return NULL;
     }
 
     return cp;
 }
 
-static int read_type_map(negotiation_state *neg, request_rec *rr)
+static int read_type_map(apr_file_t **map, negotiation_state *neg, request_rec *rr)
 {
     request_rec *r = neg->r;
-    apr_file_t *map = NULL;
+    apr_file_t *map_ = NULL;
     apr_status_t status;
     char buffer[MAX_STRING_LEN];
     enum header_state hstate;
     struct var_rec mime_info;
     int has_content;
 
+    if (!map)
+        map = &map_;
+
     /* We are not using multiviews */
     neg->count_multiviews_variants = 0;
 
-    if ((status = apr_file_open(&map, rr->filename, APR_READ,
+    if ((status = apr_file_open(map, rr->filename, APR_READ,
                 APR_OS_DEFAULT, neg->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
                       "cannot access type map file: %s", rr->filename);
@@ -808,7 +865,7 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
     has_content = 0;
 
     do {
-        hstate = get_header_line(buffer, MAX_STRING_LEN, map);
+        hstate = get_header_line(buffer, MAX_STRING_LEN, *map);
 
         if (hstate == header_seen) {
             char *body1 = lcase_header_name_return_body(buffer, neg->r);
@@ -854,6 +911,22 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
                 if (cp>desc) *(cp-1)=0;
                 mime_info.description = desc;
             }
+            else if (!strncmp(buffer, "body:", 5)) {
+                char *tag = apr_pstrdup(neg->pool, body);
+                char *eol = strchr(tag, '\0');
+                apr_size_t len = MAX_STRING_LEN;
+                while (--eol >= tag && apr_isspace(*eol)) 
+                    *eol = '\0';
+                if ((mime_info.body = get_body(buffer, &len, tag, *map)) < 0) {
+                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                                  "Syntax error in type map, no end tag '%s'"
+                                  "found in %s for Body: content.", 
+                                  tag, r->filename);
+                     break;
+                }
+                mime_info.bytes = len;
+                mime_info.file_name = rr->filename;
+            }
         }
         else {
             if (*mime_info.file_name && has_content) {
@@ -867,7 +940,8 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
         }
     } while (hstate != header_eof);
 
-    apr_file_close(map);
+    if (map_)
+        apr_file_close(map_);
 
     set_vlist_validator(r, rr);
 
@@ -1040,7 +1114,7 @@ static int read_types_multi(negotiation_state *neg)
             if (sub_req->status != HTTP_OK) {
                 return sub_req->status;
             }
-            return read_type_map(neg, sub_req);
+            return read_type_map(NULL, neg, sub_req);
         }
 
         /* Have reasonable variant --- gather notes. */
@@ -2638,6 +2712,7 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
 static int handle_map_file(request_rec *r)
 {
     negotiation_state *neg;
+    apr_file_t *map;
     var_rec *best;
     int res;
     char *udir;
@@ -2646,20 +2721,64 @@ static int handle_map_file(request_rec *r)
 	return DECLINED;
 
     neg = parse_accept_headers(r);
-    if ((res = read_type_map(neg, r))) {
+    if ((res = read_type_map(&map, neg, r))) {
         return res;
     }
 
     res = do_negotiation(r, neg, &best, 0);
     if (res != 0) return res;
 
+    if (best->body)
+    {
+        apr_bucket_brigade *bb;
+        apr_bucket *e;
+
+        ap_allow_methods(r, REPLACE_ALLOW, "GET", "OPTIONS", "POST", NULL);
+        if ((res = ap_discard_request_body(r)) != OK) {
+            return res;
+        }
+        //if (r->method_number == M_OPTIONS) {
+        //    return ap_send_http_options(r);
+        //}
+        if (r->method_number != M_GET && r->method_number != M_POST) {
+            return HTTP_METHOD_NOT_ALLOWED;
+        }
+
+        /* ### These may be implemented by adding some 'extra' info
+         *     of the file offset onto the etag
+         * ap_update_mtime(r, r->finfo.mtime);
+         * ap_set_last_modified(r);
+         * ap_set_etag(r);
+         */
+        apr_table_setn(r->headers_out, "Accept-Ranges", "bytes");
+        ap_set_content_length(r, best->bytes); 
+        if ((res = ap_meets_conditions(r)) != OK) {
+            return res;
+        }
+
+        bb = apr_brigade_create(r->pool);
+        e = apr_bucket_file_create(map, best->body, 
+                                   (apr_size_t)best->bytes, r->pool);
+        APR_BRIGADE_INSERT_TAIL(bb, e);
+        e = apr_bucket_eos_create();
+        APR_BRIGADE_INSERT_TAIL(bb, e);
+
+        return ap_pass_brigade(r->output_filters, bb);
+    }
+
+    /* XXX This looks entirely bogus.  Why can't negotiated content
+     *     have additional path_info?  Just because I choose a given
+     *     script based on content type doesn't mean I don't want it
+     *     to run the same set of actions (think three languages of
+     *     viewcvs.cgi.xx, all serving the same repository.)
+     */
     if (r->path_info && *r->path_info) {
         r->uri[ap_find_path_info(r->uri, r->path_info)] = '\0';
     }
     udir = ap_make_dirstr_parent(r->pool, r->uri);
     udir = ap_escape_uri(r->pool, udir);
     ap_internal_redirect(apr_pstrcat(r->pool, udir, best->file_name,
-                                    r->path_info, NULL), r);
+                                     r->path_info, NULL), r);
     return OK;
 }
 
