@@ -494,14 +494,14 @@ a directory</description>
 <usage>
     <p>The <directive>IndexIgnore</directive> directive adds to the
     list of files to hide when listing a directory. <var>File</var> is a
-    file extension, partial filename, wildcard expression or full
-    filename for files to ignore. Multiple IndexIgnore directives add
+    shell-style wildcard expression or full
+    filename. Multiple IndexIgnore directives add
     to the list, rather than the replacing the list of ignored
     files. By default, the list contains <code>.</code> (the current
     directory).</p>
 
     <example>
-      IndexIgnore README .htaccess *~
+      IndexIgnore README .htaccess *.bak *~
     </example>
 </usage>
 </directivesynopsis>
