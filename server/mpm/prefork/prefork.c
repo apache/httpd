@@ -171,7 +171,7 @@ int tpf_child = 0;
 char tpf_server_name[INETD_SERVNAME_LENGTH+1];
 #endif /* TPF */
 
-static scoreboard *ap_scoreboard_image = NULL;
+API_VAR_EXPORT scoreboard *ap_scoreboard_image = NULL;
 static new_scoreboard *ap_new_scoreboard_image = NULL;
 
 #ifdef GPROF
