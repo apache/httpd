@@ -40,10 +40,7 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-    * DB1.x vs. DB2.x problem: we should add DB2.x support to mod_auth_db.c to
-      get rid of glibc2 problems (and FreeBSD ports problems in case the DB2.x
-      package is installed)
-      Status: Under construction by Dan Jacobowitz <drow@false.org>
+    * DB1.x vs. DB2.x:
       Jim: We need to make sure that db2 is backwards compatible with
            db1 or else make sure that people know to update their DB
 	   files (or are we calling db2 files different names?)
