@@ -1,5 +1,9 @@
 Changes with Apache 2.0.27-dev
 
+  *) Fix a truncation bug in how we print the port on the Via: header. 
+     The routine that prints the Via: header now takes a length for
+     the port string.  [Zvi Har'El <rl@math.technion.ac.il>]
+
   *) Some syntax errors in mod_mime_magic's magic file can result
      in a 500 error, which previously was unlogged.  Now we log the
      error.  [Jeff Trawick]
