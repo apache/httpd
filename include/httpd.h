@@ -1559,16 +1559,6 @@ extern int os_init_job_environment(server_rec *s, const char *user_name, int one
  */
 char *ap_get_local_host(apr_pool_t *p);
 
-/**
- * Parses a host of the form <address>[:port] :port is permitted if 'port' 
- * is not NULL
- * @param hostname The hostname to parse
- * @param port The port found in the hostname
- * @return The address of the server
- * @deffunc unsigned long ap_get_virthost_addr(char *hostname, apr_port_t *port)
- */
-unsigned long ap_get_virthost_addr(char *hostname, apr_port_t *port);
-
 /*
  * Redefine assert() to something more useful for an Apache...
  *
