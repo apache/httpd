@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/09/17 02:33:40 $]
+Last modified at [$Date: 2001/09/17 11:22:52 $]
 
 Release:
 
@@ -107,6 +107,29 @@ RELEASE SHOWSTOPPERS:
 
         This builds mod_headers as a DSO (good) but builds mod_mime
         as a compiled-in module (bad).
+
+    * revamp the input filter semantics, per discussions since
+      February (and especially at the hackathon last
+      April). Specifically, ap_get_brigade will return a brigade with
+      *up to* a specific number of bytes, or a "line" of data. The
+      read may be blocking or nonblocking. ap_getline() will be
+      refactored into apr_brigade_getline(), and then DECHUNK can use
+      f->next (ap_getline will always read "top of input stack"). Also 
+      fix the bug where request body content will end up closing the
+      connection (buggering up persistent conns).
+
+      - socket bucket and core input filter changes. see end of
+        message ID (Feb 27): <20010227075326.S2297@lyra.org>
+
+      - fix up ap_get_brigade() semantics, fix bug in DECHUNK /
+        ap_getline. many messages (plus their threads) (Apr/May):
+          Message-ID: <20010402101207.J27539@lyra.org>
+          Message-ID: <3AF7F921.D2EEC41A@algroup.co.uk>
+          Message-ID: <20010508190029.E18404@lyra.org>
+
+      - further work with combining/tweaking the builtin filters:
+          Message-ID: <20010509115445.D1374@lyra.org>
+
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
