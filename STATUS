@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/23 13:07:19 $]
+Last modified at [$Date: 2003/06/23 13:15:20 $]
 
 Release:
 
@@ -212,10 +212,6 @@ PATCHES TO PORT FROM 2.1
         modules/dav/main/mod_dav.c r1.94 r1.95 r1.96
         modules/dav/main/mod_dav.h 1.67
         +1: striker, gstein
-
-    * winnt MPM: fix some invalid ap_log_error() invocations
-        server/mpm/winnt/child.c 1.15
-        +1: trawick, wrowe, brianp, stoddard
 
     * handle switching between libtools and unwritable ltconfig/ltmain.sh
         buildconf 1.36, 1.37

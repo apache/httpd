@@ -875,7 +875,7 @@ void child_main(apr_pool_t *pconf)
                 ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                              "Child %d: _beginthreadex failed. Unable to create all worker threads. "
                              "Created %d of the %d threads requested with the ThreadsPerChild configuration directive.", 
-                             threads_created, ap_threads_per_child);
+                             my_pid, threads_created, ap_threads_per_child);
                 ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
                 goto shutdown;
             }
@@ -942,7 +942,7 @@ void child_main(apr_pool_t *pconf)
             if (rv == WAIT_FAILED) {
             /* Something serious is wrong */
             ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                         "Child %d: WAIT_FAILED -- shutting down server");
+                         "Child %d: WAIT_FAILED -- shutting down server", my_pid);
             break;
         }
         else if (cld == 0) {
