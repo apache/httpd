@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/11/19 18:59:48 $]
+Last modified at [$Date: 1999/11/23 08:30:21 $]
 
 Release:
 
@@ -19,6 +19,8 @@ RELEASE SHOWSTOPPERS:
     * Pipes to CGI scripts are not being timed out
         Status: code has been added to APR to support timing out pipes.
                 This needs to be used in Apache now.
+
+    * Put back resource limit code
 
     * Port mod_rewrite
         Status: Paul Reder <rederpj@raleigh.ibm.com> is working on this.
