@@ -701,7 +701,7 @@ struct request_rec {
     /** The Range: header */
     const char *range;
     /** The "real" content length */
-    long clength;
+    apr_off_t clength;
 
     /** bytes left to read */
     long remaining;

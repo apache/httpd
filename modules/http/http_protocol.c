@@ -180,7 +180,8 @@ static const char *make_content_type(request_rec *r, const char *type)
     return type;
 }
 
-static int parse_byterange(char *range, long clength, long *start, long *end)
+static int parse_byterange(char *range, apr_off_t clength,
+                           apr_off_t *start, apr_off_t *end)
 {
     char *dash = strchr(range, '-');
 
@@ -214,13 +215,18 @@ static int parse_byterange(char *range, long clength, long *start, long *end)
     return (*start > 0 || *end < clength - 1);
 }
 
-static int internal_byterange(int, long *, request_rec *, const char **,
-			      apr_off_t *, apr_size_t *);
+/* forward declare */
+static int internal_byterange(int realreq, apr_off_t *tlength, request_rec *r,
+                              const char **r_range, apr_off_t *offset,
+                              apr_size_t *length);
 
 AP_DECLARE(int) ap_set_byterange(request_rec *r)
 {
-    const char *range, *if_range, *match;
-    long range_start, range_end;
+    const char *range;
+    const char *if_range;
+    const char *match;
+    apr_off_t range_start;
+    apr_off_t range_end;
 
     if (!r->clength || r->assbackwards)
         return 0;
@@ -266,22 +272,26 @@ AP_DECLARE(int) ap_set_byterange(request_rec *r)
         r->byterange = 1;
 
         apr_table_setn(r->headers_out, "Content-Range",
-	    apr_psprintf(r->pool, "bytes %ld-%ld/%ld",
-		range_start, range_end, r->clength));
+                       apr_psprintf(r->pool,
+                                    "bytes %" APR_OFF_T_FMT "-%" APR_OFF_T_FMT
+                                    "/%" APR_OFF_T_FMT,
+                                    range_start, range_end, r->clength));
         apr_table_setn(r->headers_out, "Content-Length",
-	    apr_psprintf(r->pool, "%ld", range_end - range_start + 1));
+                       apr_psprintf(r->pool, "%" APR_OFF_T_FMT,
+                                    range_end - range_start + 1));
     }
     else {
         /* a multiple range */
         const char *r_range = apr_pstrdup(r->pool, range + 6);
-        long tlength = 0;
+        apr_off_t tlength = 0;
 
         r->byterange = 2;
         r->boundary = apr_psprintf(r->pool, "%qx%lx",
 				r->request_time, (long) getpid());
-        while (internal_byterange(0, &tlength, r, &r_range, NULL, NULL));
+        while (internal_byterange(0, &tlength, r, &r_range, NULL, NULL))
+            continue;
         apr_table_setn(r->headers_out, "Content-Length",
-	    apr_psprintf(r->pool, "%ld", tlength));
+                       apr_psprintf(r->pool, "%" APR_OFF_T_FMT, tlength));
     }
 
     r->status = HTTP_PARTIAL_CONTENT;
@@ -306,11 +316,12 @@ AP_DECLARE(int) ap_each_byterange(request_rec *r, apr_off_t *offset,
  * Either case will return 1 if it should be called again, and 0
  * when done.
  */
-static int internal_byterange(int realreq, long *tlength, request_rec *r,
+static int internal_byterange(int realreq, apr_off_t *tlength, request_rec *r,
                               const char **r_range, apr_off_t *offset,
-			      apr_size_t *length)
+                              apr_size_t *length)
 {
-    long range_start, range_end;
+    apr_off_t range_start;
+    apr_off_t range_end;
     char *range;
 
     if (!**r_range) {
@@ -332,17 +343,19 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
     }
 
     range = ap_getword(r->pool, r_range, ',');
-    if (!parse_byterange(range, r->clength, &range_start, &range_end))
+    if (!parse_byterange(range, r->clength, &range_start, &range_end)) {
         /* Skip this one */
         return internal_byterange(realreq, tlength, r, r_range, offset,
                                   length);
+    }
 
     if (r->byterange > 1) {
         const char *ct = make_content_type(r, r->content_type);
         char ts[MAX_STRING_LEN];
 
-        apr_snprintf(ts, sizeof(ts), "%ld-%ld/%ld", range_start, range_end,
-                    r->clength);
+        apr_snprintf(ts, sizeof(ts),
+                     "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT "/%" APR_OFF_T_FMT,
+                     range_start, range_end, r->clength);
         if (realreq)
             (void) checked_bputstrs(r, CRLF "--", r->boundary,
                                     CRLF "Content-type: ", ct,
@@ -355,7 +368,9 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
 
     if (realreq) {
         *offset = range_start;
-        *length = range_end - range_start + 1;
+
+        /* ### we need to change ap_each_byterange() to fix this */
+        *length = (apr_size_t) (range_end - range_start + 1);
     }
     else {
         *tlength += range_end - range_start + 1;
@@ -363,11 +378,11 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
     return 1;
 }
 
-AP_DECLARE(int) ap_set_content_length(request_rec *r, long clength)
+AP_DECLARE(void) ap_set_content_length(request_rec *r, apr_off_t clength)
 {
     r->clength = clength;
-    apr_table_setn(r->headers_out, "Content-Length", apr_psprintf(r->pool, "%ld", clength));
-    return 0;
+    apr_table_setn(r->headers_out, "Content-Length",
+                   apr_psprintf(r->pool, "%" APR_OFF_T_FMT, clength));
 }
 
 AP_DECLARE(int) ap_set_keepalive(request_rec *r)
