@@ -246,25 +246,25 @@ union record {
 /*
  * file-function prototypes
  */
-static int ascmagic(request_rec *, unsigned char *, int);
-static int is_tar(unsigned char *, int);
-static int softmagic(request_rec *, unsigned char *, int);
-static void tryit(request_rec *, unsigned char *, int, int);
-static int zmagic(request_rec *, unsigned char *, int);
+static int ascmagic(request_rec *, unsigned char *, apr_size_t);
+static int is_tar(unsigned char *, apr_size_t);
+static int softmagic(request_rec *, unsigned char *, apr_size_t);
+static void tryit(request_rec *, unsigned char *, apr_size_t, int);
+static int zmagic(request_rec *, unsigned char *, apr_size_t);
 
 static int getvalue(server_rec *, struct magic *, char **);
 static int hextoint(int);
 static char *getstr(server_rec *, char *, char *, int, int *);
 static int parse(server_rec *, apr_pool_t *p, char *, int);
 
-static int match(request_rec *, unsigned char *, int);
+static int match(request_rec *, unsigned char *, apr_size_t);
 static int mget(request_rec *, union VALUETYPE *, unsigned char *,
-		struct magic *, int);
+		struct magic *, apr_size_t);
 static int mcheck(request_rec *, union VALUETYPE *, struct magic *);
 static void mprint(request_rec *, union VALUETYPE *, struct magic *);
 
 static int uncompress(request_rec *, int, 
-		      unsigned char **, int);
+		      unsigned char **, apr_size_t);
 static long from_oct(int, char *);
 static int fsmagic(request_rec *r, const char *fn);
 
@@ -856,7 +856,7 @@ static int magic_process(request_rec *r)
 {
     apr_file_t *fd = NULL;
     unsigned char buf[HOWMANY + 1];	/* one extra for terminating '\0' */
-    int nbytes = 0;		/* number of bytes read from a datafile */
+    apr_size_t nbytes = 0;		/* number of bytes read from a datafile */
     int result;
 
     /*
@@ -905,7 +905,7 @@ static int magic_process(request_rec *r)
 }
 
 
-static void tryit(request_rec *r, unsigned char *buf, int nb, int checkzmagic)
+static void tryit(request_rec *r, unsigned char *buf, apr_size_t nb, int checkzmagic)
 {
     /*
      * Try compression stuff
@@ -1512,7 +1512,7 @@ static int fsmagic(request_rec *r, const char *fn)
  * apprentice.c). Passed the name and FILE * of one file to be typed.
  */
 		/* ARGSUSED1 *//* nbytes passed for regularity, maybe need later */
-static int softmagic(request_rec *r, unsigned char *buf, int nbytes)
+static int softmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
 {
     if (match(r, buf, nbytes))
 	return 1;
@@ -1546,7 +1546,7 @@ static int softmagic(request_rec *r, unsigned char *buf, int nbytes)
  * If a continuation matches, we bump the current continuation level so that
  * higher-level continuations are processed.
  */
-static int match(request_rec *r, unsigned char *s, int nbytes)
+static int match(request_rec *r, unsigned char *s, apr_size_t nbytes)
 {
 #if MIME_MAGIC_DEBUG
     int rule_counter = 0;
@@ -1803,7 +1803,7 @@ static int mconvert(request_rec *r, union VALUETYPE *p, struct magic *m)
 
 
 static int mget(request_rec *r, union VALUETYPE *p, unsigned char *s,
-		struct magic *m, int nbytes)
+		struct magic *m, apr_size_t nbytes)
 {
     long offset = m->offset;
 
@@ -1989,7 +1989,7 @@ static int mcheck(request_rec *r, union VALUETYPE *p, struct magic *m)
 /* an optimization over plain strcmp() */
 #define    STREQ(a, b)    (*(a) == *(b) && strcmp((a), (b)) == 0)
 
-static int ascmagic(request_rec *r, unsigned char *buf, int nbytes)
+static int ascmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
 {
     int has_escapes = 0;
     unsigned char *s;
@@ -2108,7 +2108,7 @@ static struct {
 
 static int ncompr = sizeof(compr) / sizeof(compr[0]);
 
-static int zmagic(request_rec *r, unsigned char *buf, int nbytes)
+static int zmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
 {
     unsigned char *newbuf;
     int newsize;
@@ -2191,7 +2191,7 @@ static int uncompress_child(struct uncompress_parms *parm, apr_pool_t *cntxt,
 }
 
 static int uncompress(request_rec *r, int method, 
-		      unsigned char **newch, int n)
+		      unsigned char **newch, apr_size_t n)
 {
     struct uncompress_parms parm;
     apr_file_t *pipe_out = NULL;
@@ -2246,7 +2246,7 @@ static int uncompress(request_rec *r, int method,
  * old UNIX tar file, 2 for Unix Std (POSIX) tar file.
  */
 
-static int is_tar(unsigned char *buf, int nbytes)
+static int is_tar(unsigned char *buf, apr_size_t nbytes)
 {
     register union record *header = (union record *) buf;
     register int i;
