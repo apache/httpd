@@ -458,7 +458,7 @@ require valid-user
       </li>
 
       <li>
-        The next example is similar to the previous one, but is
+        The next example is similar to the previous one, but it
         uses the common name instead of the UID. Note that this
         could be problematical if multiple people in the directory
         share the same <code>cn</code>, because a search on <code>cn</code>
