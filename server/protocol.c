@@ -717,7 +717,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                  */
                 apr_size_t fold_len = last_len + len + 1; /* trailing null */
 
-                if ((fold_len - 1) > r->server->limit_req_fieldsize) {
+                if (fold_len > r->server->limit_req_fieldsize + 1) {
                     r->status = HTTP_BAD_REQUEST;
                     /* report what we have accumulated so far before the
                      * overflow (last_field) as the field with the problem
