@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/03 11:07:48 $]
+Last modified at [$Date: 2004/03/04 14:13:09 $]
 
 Release:
 
@@ -97,8 +97,10 @@ PATCHES TO BACKPORT FROM 2.1
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/Makefile.in?r1=1.91&r2=1.92
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/connection.c?r1=1.114&r2=1.116
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.261&r2=1.263
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/eoc_bucket.c (new file)
-      +1: madhum, jerenkrantz
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/eoc_bucket.c (new file) 
+      PR: 27428
+      +1: madhum, jerenkrantz, jorton
+      (jorton: needs libhttpd.dsp change for Win32 too)
 
     * mod_ssl: Fix nasty memory leak for each plain-HTTP-on-SSL-port request.
       PR: 27106
