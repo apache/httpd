@@ -1079,7 +1079,7 @@ static void child_main()
     }
 
     /* Setting is_graceful will cause keep-alive connections to be closed
-     * rather then block on the next network read.
+     * rather than block on the next network read.
      */
     is_graceful = 1;
 
@@ -1129,11 +1129,13 @@ static void child_main()
             Sleep(1000);
         }
         /* Empty the accept queue of completion contexts */
+        apr_lock_acquire(qlock);
         while (qhead) {
             CloseHandle(qhead->Overlapped.hEvent);
             closesocket(qhead->accept_socket);
             qhead = qhead->next;
         }
+        apr_lock_release(qlock);
     }
 
     /* Give busy worker threads a chance to service their connections */
