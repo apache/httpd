@@ -102,10 +102,10 @@ INCLUDES=\$(INCLUDES1) \$(EXTRA_INCLUDES)
 LDFLAGS=\$(LDFLAGS1) \$(EXTRA_LDFLAGS)
 
 dummy:
-	\$(CC) \$(CFLAGS) \$(INCLUDES) \$(LDFLAGS) dummy.c -o dummy $TLIB \$(LIBS)
+	cd ..; \$(CC) \$(CFLAGS) \$(INCLUDES) \$(LDFLAGS) helpers/dummy.c -o helpers/dummy $TLIB \$(LIBS)
 
 testfunc:
-	\$(CC) \$(CFLAGS) \$(INCLUDES) \$(LDFLAGS) testfunc.c -o testfunc \$(LIBS)
+	cd ..; \$(CC) \$(CFLAGS) \$(INCLUDES) \$(LDFLAGS) helpers/testfunc.c -o helpers/testfunc \$(LIBS)
 EOF
 
 # Now run that Makefile
