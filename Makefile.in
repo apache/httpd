@@ -93,7 +93,7 @@ install-support:
 
 
 install-other:
-	@test -d $(logdir) || $(MKINSTALLDIRS) $(logdir)
+	@test -d $(logfiledir) || $(MKINSTALLDIRS) $(logfiledir)
 	@for ext in dll x; do \
 		file=apachecore.$$ext; \
 		if test -f $$file; then \
