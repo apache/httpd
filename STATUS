@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/31 00:59:56 $]
+Last modified at [$Date: 2002/05/31 05:23:26 $]
 
 Release:
 
@@ -114,13 +114,6 @@ CURRENT VOTES:
       -0:   Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
-
-    * 413 (invalid chunk size) followed by another request segfaults.
-      (Only when mod_bucketeer is enabled.)
-      Message-ID: <m31ybt4zyt.fsf@rdu88-251-253.nc.rr.com>
-      Status: Justin is completely confounded by this.  It looks like a
-              bucket lifetime bug, but somehow an operation on one
-              brigade is altering another brigade and corrupting it.
 
     * "apxs -g" support is broken in a binbuild (tested 2.0.36 on
       Solaris).  At least the following is necessary to make the
