@@ -3548,8 +3548,8 @@ static void setup_listeners(pool *p)
 	else {
 	    ap_note_cleanups_for_socket(p, fd);
 	}
-	if (fd >= 0) /* avoid negative offsets ;-) */
-	    FD_SET(fd, &listenfds);
+	/* if we get here, (fd >= 0) && (fd < FD_SETSIZE) */
+	FD_SET(fd, &listenfds);
 	if (fd > listenmaxfd)
 	    listenmaxfd = fd;
 	lr->fd = fd;
