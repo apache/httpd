@@ -190,6 +190,8 @@ ThreadsPerChild 50
 # the order below without expert advice.
 #
 #LoadModule anon_auth_module modules/ApacheModuleAuthAnon.dll
+#LoadModule dbm_auth_module modules/ApacheModuleAuthDBM.dll
+#LoadModule digest_auth_module modules/ApacheModuleAuthDigest.dll
 #LoadModule cern_meta_module modules/ApacheModuleCERNMeta.dll
 #LoadModule digest_module modules/ApacheModuleDigest.dll
 #LoadModule expires_module modules/ApacheModuleExpires.dll
