@@ -8,9 +8,12 @@
 
 <summary>
     <p>This document covers stopping and restarting Apache on
-    Unix-like systems. Windows users should see <a
-    href="platform/windows.html#signal">Signaling Apache when
-    running</a>.</p>
+    Unix-like systems. Windows NT, 2000 and XP users should see
+    <a href="platform/windows.html#winsvc">Running Apache as a
+    Service</a> and Windows 9x and ME users should see <a
+    href="platform/windows.html#wincons">Running Apache as a
+    Console Application</a> for information on how to control
+    Apache on those platforms.</p>
 </summary>
 
 <seealso><a href="programs/httpd.html">httpd</a></seealso>
