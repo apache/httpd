@@ -122,6 +122,7 @@
  * %...f:  filename
  * %...h:  remote host
  * %...a:  remote IP-address
+ * %...A:  local IP-address
  * %...{Foobar}i:  The contents of Foobar: header line(s) in the request
  *                 sent to the client.
  * %...l:  remote logname (from identd, if supplied)
@@ -289,6 +290,11 @@ static const char *log_remote_address(request_rec *r, char *a)
     return r->connection->remote_ip;
 }
 
+static const char *log_local_address(request_rec *r, char *a)
+{
+    return r->connection->local_ip;
+}
+
 static const char *log_remote_logname(request_rec *r, char *a)
 {
     return ap_get_remote_logname(r);
@@ -445,6 +451,9 @@ static struct log_item_list {
     },
     {   
         'a', log_remote_address, 0 
+    },
+    {   
+        'A', log_local_address, 0 
     },
     {
         'l', log_remote_logname, 0

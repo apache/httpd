@@ -3068,6 +3068,8 @@ static conn_rec *new_connection(pool *p, server_rec *server, BUFF *inout,
 
     conn->pool = p;
     conn->local_addr = *saddr;
+    conn->local_ip = ap_pstrdup(conn->pool,
+				inet_ntoa(conn->local_addr.sin_addr));
     conn->server = server; /* just a guess for now */
     ap_update_vhost_given_ip(conn);
     conn->base_server = conn->server;

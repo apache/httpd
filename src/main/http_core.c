@@ -130,7 +130,7 @@ static void *create_core_dir_config(pool *a, char *dir)
 
     conf->content_md5 = 2;
 
-    conf->use_canonical_name = 1 | 2;	/* 2 = unset, default on */
+    conf->use_canonical_name = USE_CANONICAL_NAME_UNSET;
 
     conf->hostname_lookups = HOSTNAME_LOOKUP_UNSET;
     conf->do_rfc1413 = DEFAULT_RFC1413 | 2; /* set bit 1 to indicate default */
@@ -242,7 +242,7 @@ static void *merge_core_dir_configs(pool *a, void *basev, void *newv)
     if ((new->content_md5 & 2) == 0) {
         conf->content_md5 = new->content_md5;
     }
-    if ((new->use_canonical_name & 2) == 0) {
+    if (new->use_canonical_name != USE_CANONICAL_NAME_UNSET) {
 	conf->use_canonical_name = new->use_canonical_name;
     }
 
@@ -672,17 +672,47 @@ API_EXPORT(const char *) ap_get_remote_logname(request_rec *r)
  * name" as supplied by a possible Host: header or full URI.  We never
  * trust the port passed in the client's headers, we always use the
  * port of the actual socket.
+ *
+ * The DNS option to UseCanonicalName causes this routine to do a
+ * reverse lookup on the local IP address of the connectiona and use
+ * that for the ServerName. This makes its value more reliable while
+ * at the same time allowing Demon's magic virtual hosting to work.
+ * The assumption is that DNS lookups are sufficiently quick...
+ * -- fanf 1998-10-03
  */
-API_EXPORT(const char *) ap_get_server_name(const request_rec *r)
+API_EXPORT(const char *) ap_get_server_name(request_rec *r)
 {
+    conn_rec *conn = r->connection;
     core_dir_config *d;
 
     d = (core_dir_config *)ap_get_module_config(r->per_dir_config,
 						&core_module);
-    if (d->use_canonical_name & 1) {
-	return r->server->server_hostname;
+
+    if (d->use_canonical_name == USE_CANONICAL_NAME_OFF) {
+        return r->hostname ? r->hostname : r->server->server_hostname;
     }
-    return r->hostname ? r->hostname : r->server->server_hostname;
+    if (d->use_canonical_name == USE_CANONICAL_NAME_DNS) {
+        if (conn->local_host == NULL) {
+	    struct in_addr *iaddr;
+	    struct hostent *hptr;
+            int old_stat;
+	    old_stat = ap_update_child_status(conn->child_num, SERVER_BUSY_DNS, r);
+	    iaddr = &(conn->local_addr.sin_addr);
+	    hptr = gethostbyaddr((char *)iaddr, sizeof(struct in_addr), AF_INET);
+	    if (hptr != NULL) {
+	        conn->local_host = ap_pstrdup(conn->pool, (void *)hptr->h_name);
+		ap_str_tolower(conn->local_host);
+	    }
+	    else {
+	        conn->local_host = ap_pstrdup(conn->pool,
+					      r->server->server_hostname);
+	    }
+	    (void) ap_update_child_status(conn->child_num, old_stat, r);
+	}
+	return conn->local_host;
+    }
+    /* default */
+    return r->server->server_hostname;
 }
 
 API_EXPORT(unsigned) ap_get_server_port(const request_rec *r)
@@ -693,38 +723,21 @@ API_EXPORT(unsigned) ap_get_server_port(const request_rec *r)
     
     port = r->server->port ? r->server->port : ap_default_port(r);
 
-    if (d->use_canonical_name & 1) {
-	return port;
+    if (d->use_canonical_name == USE_CANONICAL_NAME_OFF
+     || d->use_canonical_name == USE_CANONICAL_NAME_DNS) {
+        return r->hostname ? ntohs(r->connection->local_addr.sin_port)
+			   : port;
     }
-    return r->hostname ? ntohs(r->connection->local_addr.sin_port)
-		       : port;
+    /* default */
+    return port;
 }
 
 API_EXPORT(char *) ap_construct_url(pool *p, const char *uri,
-				    const request_rec *r)
+				    request_rec *r)
 {
-    unsigned port;
-    const char *host;
-    core_dir_config *d =
-      (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
+    unsigned port = ap_get_server_port(r);
+    const char *host = ap_get_server_name(r);
 
-    if (d->use_canonical_name & 1) {
-	port = r->server->port ? r->server->port : ap_default_port(r);
-	host = r->server->server_hostname;
-    }
-    else {
-        if (r->hostname) {
-            port = ntohs(r->connection->local_addr.sin_port);
-	}
-        else if (r->server->port) {
-            port = r->server->port;
-	}
-        else {
-            port = ap_default_port(r);
-	}
-
-	host = r->hostname ? r->hostname : r->server->server_hostname;
-    }
     if (ap_is_default_port(port, r)) {
 	return ap_pstrcat(p, ap_http_method(r), "://", host, uri, NULL);
     }
@@ -2124,15 +2137,25 @@ static const char *set_content_md5(cmd_parms *cmd, core_dir_config *d, int arg)
 }
 
 static const char *set_use_canonical_name(cmd_parms *cmd, core_dir_config *d, 
-					  int arg)
+					  char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
-
     if (err != NULL) {
 	return err;
     }
-    
-    d->use_canonical_name = arg != 0;
+
+    if (!strcasecmp(arg, "on")) {
+        d->use_canonical_name = USE_CANONICAL_NAME_ON;
+    }
+    else if (!strcasecmp(arg, "off")) {
+        d->use_canonical_name = USE_CANONICAL_NAME_OFF;
+    }
+    else if (!strcasecmp(arg, "dns")) {
+        d->use_canonical_name = USE_CANONICAL_NAME_DNS;
+    }
+    else {
+        return "parameter must be 'on', 'off', or 'dns'";
+    }
     return NULL;
 }
 
@@ -2813,9 +2836,8 @@ static const command_rec core_cmds[] = {
 { "ContentDigest", set_content_md5, NULL, OR_OPTIONS,
   FLAG, "whether or not to send a Content-MD5 header with each request" },
 { "UseCanonicalName", set_use_canonical_name, NULL,
-  OR_OPTIONS, FLAG,
-  "Whether or not to always use the canonical ServerName : Port when "
-  "constructing URLs" },
+  RSRC_CONF, TAKE1,
+  "How to work out the ServerName : Port when constructing URLs" },
 { "StartServers", set_daemons_to_start, NULL, RSRC_CONF, TAKE1,
   "Number of child processes launched at server startup" },
 { "MinSpareServers", set_min_free_servers, NULL, RSRC_CONF, TAKE1,

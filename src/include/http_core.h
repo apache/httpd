@@ -128,8 +128,8 @@ API_EXPORT(const char *) ap_get_remote_logname(request_rec *r);
 /* Used for constructing self-referencing URLs, and things like SERVER_PORT,
  * and SERVER_NAME.
  */
-API_EXPORT(char *) ap_construct_url(pool *p, const char *uri, const request_rec *r);
-API_EXPORT(const char *) ap_get_server_name(const request_rec *r);
+API_EXPORT(char *) ap_construct_url(pool *p, const char *uri, request_rec *r);
+API_EXPORT(const char *) ap_get_server_name(request_rec *r);
 API_EXPORT(unsigned) ap_get_server_port(const request_rec *r);
 API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r);
 API_EXPORT(void) ap_custom_response(request_rec *r, int status, char *string);
@@ -230,7 +230,11 @@ typedef struct {
 
     signed int content_md5 : 2;  /* calculate Content-MD5? */
 
-    unsigned use_canonical_name : 2; /* bit 0 = on/off, bit 1 = unset/set */
+#define USE_CANONICAL_NAME_OFF   (0)
+#define USE_CANONICAL_NAME_ON    (1)
+#define USE_CANONICAL_NAME_DNS   (2)
+#define USE_CANONICAL_NAME_UNSET (3)
+    unsigned use_canonical_name : 2;
 
     /* since is_fnmatch(conf->d) was being called so frequently in
      * directory_walk() and its relatives, this field was created and

@@ -265,6 +265,7 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
     ap_table_addn(e, "SERVER_SIGNATURE", ap_psignature("", r));
     ap_table_addn(e, "SERVER_SOFTWARE", ap_get_server_version());
     ap_table_addn(e, "SERVER_NAME", ap_get_server_name(r));
+    ap_table_addn(e, "SERVER_ADDR", r->connection->local_ip);	/* Apache */
     ap_table_addn(e, "SERVER_PORT",
 		  ap_psprintf(r->pool, "%u", ap_get_server_port(r)));
     host = ap_get_remote_host(c, r->per_dir_config, REMOTE_HOST);

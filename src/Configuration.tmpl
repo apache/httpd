@@ -214,6 +214,13 @@ Rule WANTHSREGEX=default
 
 # AddModule modules/experimental/mod_mmap_static.o
 
+## mod_vhost_alias provides support for mass virtual hosting
+## by dynamically changing the document root and CGI directory
+## based on the host header or local IP address of the request.
+## See "../htdocs/manual/vhosts/mass.html".
+
+# AddModule modules/extra/mod_vhost_alias.o
+
 ##
 ## Config manipulation modules
 ##

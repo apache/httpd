@@ -3614,6 +3614,9 @@ static char *lookup_variable(request_rec *r, char *var)
     else if (strcasecmp(var, "SERVER_NAME") == 0) {
         result = ap_get_server_name(r);
     }
+    else if (strcasecmp(var, "SERVER_ADDR") == 0) { /* non-standard */
+        result = r->connection->local_ip;
+    }
     else if (strcasecmp(var, "SERVER_PORT") == 0) {
         ap_snprintf(resultbuf, sizeof(resultbuf), "%u", ap_get_server_port(r));
         result = resultbuf;

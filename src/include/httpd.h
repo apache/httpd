@@ -827,6 +827,10 @@ struct conn_rec {
 				 * "" if it has and no address was found.
 				 * N.B. Only access this though
 				 * get_remote_host() */
+    char *local_ip;		/* server IP address */
+    char *local_host;		/* used for ap_get_server_name when
+				 * UseCanonicalName is set to DNS
+				 * (ignores setting of HostnameLookups) */
     char *remote_logname;	/* Only ever set if doing rfc1413 lookups.
 				 * N.B. Only access this through
 				 * get_remote_logname() */

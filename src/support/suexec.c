@@ -145,6 +145,7 @@ char *safe_env_lst[] =
     "SCRIPT_URL",
     "SERVER_ADMIN",
     "SERVER_NAME",
+    "SERVER_ADDR",
     "SERVER_PORT",
     "SERVER_PROTOCOL",
     "SERVER_SOFTWARE",
