@@ -206,6 +206,15 @@ typedef struct arg_item {
     apr_size_t        value_len;
 } arg_item_t;
 
+#define MAX_NMATCH 10
+
+typedef struct {
+    const char *source;
+    const char *rexp;
+    apr_size_t  nsub;
+    regmatch_t  match[MAX_NMATCH];
+} backref_t;
+
 struct ssi_internal_ctx {
     parse_state_t state;
     int           seen_eos;
@@ -227,8 +236,7 @@ struct ssi_internal_ctx {
     arg_item_t   *current_arg;   /* currently parsed argument */
     arg_item_t   *argv;          /* all arguments */
 
-    char         *re_string;
-    regmatch_t   (*re_result)[10];
+    backref_t    *re;            /* NULL if there wasn't a regex yet */
 };
 
 
@@ -445,32 +453,45 @@ static const char *add_include_vars_lazy(request_rec *r, const char *var)
 static const char *get_include_var(const char *var, include_ctx_t *ctx)
 {
     const char *val;
+    request_rec *r = ctx->intern->r;
+
     if (apr_isdigit(*var) && !var[1]) {
+        int idx = *var - '0';
+        backref_t *re = ctx->intern->re;
+
         /* Handle $0 .. $9 from the last regex evaluated.
          * The choice of returning NULL strings on not-found,
          * v.s. empty strings on an empty match is deliberate.
          */
-        if (!ctx->intern->re_result || !ctx->intern->re_string) {
+        if (!re) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, "regex capture $%d "
+                          "refers to no regex in %s", idx, r->filename);
             return NULL;
         }
         else {
-            int idx = atoi(var);
-            apr_size_t len = (*ctx->intern->re_result)[idx].rm_eo
-                           - (*ctx->intern->re_result)[idx].rm_so;
-            if (    (*ctx->intern->re_result)[idx].rm_so < 0
-                 || (*ctx->intern->re_result)[idx].rm_eo < 0) {
+            if (re->nsub < idx) {
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                              "regex capture $%d is out of range (last regex "
+                              "was: '%s') in %s", idx, re->rexp, r->filename);
                 return NULL;
             }
-            val = apr_pstrmemdup(ctx->dpool, ctx->intern->re_string
-                                 + (*ctx->intern->re_result)[idx].rm_so, len);
+
+            if (re->match[idx].rm_so < 0 || re->match[idx].rm_eo < 0) {
+                return NULL;
+            }
+
+            val = apr_pstrmemdup(ctx->dpool, re->source + re->match[idx].rm_so,
+                                 re->match[idx].rm_eo - re->match[idx].rm_so);
         }
     }
     else {
-        val = apr_table_get(ctx->intern->r->subprocess_env, var);
+        val = apr_table_get(r->subprocess_env, var);
 
-        if (val == LAZY_VALUE)
-            val = add_include_vars_lazy(ctx->intern->r, var);
+        if (val == LAZY_VALUE) {
+            val = add_include_vars_lazy(r, var);
+        }
     }
+
     return val;
 }
 
@@ -701,26 +722,30 @@ static char *ap_ssi_parse_string(include_ctx_t *ctx, const char *in, char *out,
  * +-------------------------------------------------------+
  */
 
-static int re_check(request_rec *r, include_ctx_t *ctx, 
-                    char *string, char *rexp)
+static APR_INLINE int re_check(include_ctx_t *ctx, char *string, char *rexp)
 {
     regex_t *compiled;
-    const apr_size_t nres = sizeof(*ctx->intern->re_result) / sizeof(regmatch_t);
-    int regex_error;
+    backref_t *re = ctx->intern->re;
+    int rc;
 
-    compiled = ap_pregcomp(r->pool, rexp, REG_EXTENDED | REG_NOSUB);
-    if (compiled == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "unable to compile pattern \"%s\"", rexp);
+    compiled = ap_pregcomp(ctx->dpool, rexp, REG_EXTENDED);
+    if (!compiled) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->intern->r, "unable to "
+                      "compile pattern \"%s\"", rexp);
         return -1;
     }
-    if (!ctx->intern->re_result) {
-        ctx->intern->re_result = apr_pcalloc(r->pool, sizeof(*ctx->intern->re_result));
+
+    if (!re) {
+        re = ctx->intern->re = apr_palloc(ctx->pool, sizeof(*re));
     }
-    ctx->intern->re_string = string;
-    regex_error = ap_regexec(compiled, string, nres, *ctx->intern->re_result, 0);
-    ap_pregfree(r->pool, compiled);
-    return (!regex_error);
+
+    re->source = string;
+    re->rexp = rexp;
+    re->nsub = compiled->re_nsub;
+    rc = !ap_regexec(compiled, string, MAX_NMATCH, re->match, 0);
+
+    ap_pregfree(ctx->dpool, compiled);
+    return rc;
 }
 
 enum token_type {
@@ -1362,7 +1387,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                                       current->right->token.value);
 #endif
                 current->value =
-                    re_check(r, ctx, current->left->token.value,
+                    re_check(ctx, current->left->token.value,
                              current->right->token.value);
             }
             else {
@@ -3646,7 +3671,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
         }
 
         ctx->if_nesting_level = 0;
-        intern->re_string = NULL;
+        intern->re = NULL;
 
         ctx->error_str = conf->default_error_msg;
         ctx->time_str = conf->default_time_fmt;
