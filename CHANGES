@@ -1,3 +1,5 @@
+Changes with Apache 2.0.30-dev
+
 Changes with Apache 2.0.29
 
   *) Add buffering in core_output_filter to ensure that long
