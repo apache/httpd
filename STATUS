@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/11 08:07:07 $]
+Last modified at [$Date: 2002/01/11 08:42:20 $]
 
 Release:
 
@@ -39,6 +39,20 @@ on related projects:
     * docs/STATUS
 
 RELEASE SHOWSTOPPERS:
+
+    * win32 scoreboard should _not_ use anon with no scoreboard name, it
+      should revert to the old method if scoreboard name is null (use the
+      NOT_SHARED bit that we do in -X).  At this moment Win32 doesn't 
+      -need- to have a shared score, until we create multiple processes,
+      or unless a module in the parent wants scoreboard data from the child.
+      If such a module is installed [for the moment] they aught to configure
+      the ScoreboardFile directive.
+
+    * mod_rewrite's locks (win32) were broken by recent changes to the 
+      apr_lock_t api (which we were deprecating in the first place, so
+      I'm far from certain why it changed.)  It has to do with creating
+      the rewrite logs mutex.  The solution is to find the brokenness in 
+      apr_lock_t, but if it goes away, why waste the time?
 
     * ap_directory_walk skips some per-dir config merge functions
       if there is no "<Directory />" block in the configuration
