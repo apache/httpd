@@ -643,7 +643,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 #endif
 
         /*
-         * We must play our own mimi-merge game here, for the few
+         * We must play our own mini-merge game here, for the few
          * running dir_config values we care about within dir_walk.
          * We didn't start the merge from r->per_dir_config, so we
          * accumulate opts and override as we merge, from the globals.
