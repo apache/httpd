@@ -1,5 +1,9 @@
 Changes with Apache 2.0.41
 
+  *) Fix a null pointer dereference in the merge_env_dir_configs
+     function of the mod_env module. PR 11791
+     [Paul J. Reder]
+
   *) New option to ServerTokens 'maj[or]'. Only show the major version
      Also Surfaced this directive in the standard config (default FULL)
      [Ian Holsman]
