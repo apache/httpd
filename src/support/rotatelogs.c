@@ -28,6 +28,12 @@ int main (int argc, char **argv)
     time_t now;
     char *szLogRoot;
 
+#ifdef TPF
+    /* set up signal handling to avoid default OPR-I007777 dump */
+    signal(SIGPIPE, exit);
+    signal(SIGTERM, exit);
+#endif
+
     if (argc < 3) {
         fprintf(stderr,
                 "Usage: %s <logfile> <rotation time in seconds> "

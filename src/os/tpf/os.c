@@ -203,7 +203,10 @@ int ap_tpf_spawn_child(pool *p, int (*func) (void *, child_info *),
    array_header             *env_arr = ap_table_elts ((array_header *) cld->subprocess_env);
    table_entry              *elts = (table_entry *) env_arr->elts;
 #ifdef TPF_FORK_EXTENDED
-   char                     *args[2];
+#define WHITE " \t\n"
+#define MAXARGC 49
+   char                     *arguments;
+   char                     *args[MAXARGC + 1];
    char                     **envp = NULL;
    pool                     *subpool = NULL;
 
@@ -267,8 +270,15 @@ int ap_tpf_spawn_child(pool *p, int (*func) (void *, child_info *),
    fork_input.parm_data = NULL;
 
 #ifdef TPF_FORK_EXTENDED
-   args[0] = cld->filename;
-   args[1] = NULL;
+   /* use a copy of cld->filename because strtok is destructive */
+   arguments = ap_pstrdup(p, cld->filename);
+   args[0] = strtok(arguments, WHITE);
+   args[MAXARGC + 1] = NULL;
+
+   for (i = 0; i < MAXARGC && args[i] ; i++) {
+       args[i + 1] = strtok(NULL, WHITE);
+   }
+
    if ((pid = tpf_fork(&fork_input,
                        (const char **)args,
                        (const char **)envp)) < 0) {
