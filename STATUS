@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/06 02:08:46 $]
+Last modified at [$Date: 2002/02/06 02:35:20 $]
 
 Release:
 
@@ -87,6 +87,9 @@ RELEASE SHOWSTOPPERS:
             * seg faults in core_input_filter when the client goes away
               before any POST body bytes are received.
                 Jeff committed a fix with server/core.c revision 1.144.
+                Justin committed a fix with server/protocol.c revision 1.78
+                (server/protocol.c revision 1.79 demotes a potentially
+                 annoying error message)
 
             * FirstBill reports problem [re]starting as-a-service, shared
               score is suspect.  OtherBill is investigating... has found
