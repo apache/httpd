@@ -535,22 +535,16 @@ static int status_handler(request_rec *r)
             if (no_table_report)
                 ap_rputs("<hr /><h2>Server Details</h2>\n\n", r);
             else
-#ifndef HAVE_TIMES
-                /* Allow for OS/2 not having CPU stats */
                 ap_rputs("\n\n<table border=\"0\"><tr>"
                          "<th>Srv</th><th>PID</th><th>Acc</th>"
-                         "<th>M\n</th><th>SS</th><th>Req</th>"
-                         "<th>Conn</th><th>Child</th><th>Slot</th>"
-                         "<th>Client</th><th>VHost</th>"
-                         "<th>Request</th></tr>\n\n", r);
-#else
-                ap_rputs("\n\n<table border=\"0\"><tr>"
-                         "<th>Srv</th><th>PID</th><th>Acc</th>"
-                         "<th>M</th><th>CPU\n</th><th>SS</th><th>Req</th>"
-                         "<th>Conn</th><th>Child</th><th>Slot</th>"
-                         "<th>Client</th><th>VHost</th>"
-                         "<th>Request</th></tr>\n\n", r);
+                         "<th>M</th>"
+#ifdef HAVE_TIMES
+                         "<th>CPU\n</th>"
 #endif
+                         "<th>SS</th><th>Req</th>"
+                         "<th>Conn</th><th>Child</th><th>Slot</th>"
+                         "<th>Client</th><th>VHost</th>"
+                         "<th>Request</th></tr>\n\n", r);
         }
 
         for (i = 0; i < server_limit; ++i) {
@@ -633,11 +627,13 @@ static int status_handler(request_rec *r)
                             ap_rputs("?STATE?", r);
                             break;
                         }
-#ifndef HAVE_TIMES
-                        /* Allow for OS/2 not having CPU stats */
-                        ap_rprintf(r, "]\n %ld %ld (",
-#else
-                        ap_rprintf(r, "] u%g s%g cu%g cs%g\n %ld %ld (",
+
+                        ap_rprintf(r, "] "
+#ifdef HAVE_TIMES
+                                   "u%g s%g cu%g cs%g"
+#endif
+                                   "\n %ld %ld (",
+#ifdef HAVE_TIMES
                                    ws_record.times.tms_utime / tick,
                                    ws_record.times.tms_stime / tick,
                                    ws_record.times.tms_cutime / tick,
@@ -715,12 +711,14 @@ static int status_handler(request_rec *r)
                             ap_rputs("</td><td>?", r);
                             break;
                         }
-                        
-#ifndef HAVE_TIMES
-                        /* Allow for OS/2 not having CPU stats */
-                        ap_rprintf(r, "\n</td><td>%ld</td><td>%ld",
-#else
-                        ap_rprintf(r, "\n</td><td>%.2f</td><td>%ld</td><td>%ld",
+
+                        ap_rprintf(r,
+                                   "\n</td>"
+#ifdef HAVE_TIMES
+                                   "<td>%.2f</td>"
+#endif
+                                   "<td>%ld</td><td>%ld",
+#ifdef HAVE_TIMES
                                    (ws_record.times.tms_utime +
                                     ws_record.times.tms_stime +
                                     ws_record.times.tms_cutime +
@@ -752,36 +750,24 @@ static int status_handler(request_rec *r)
         } /* for (i...) */
 
         if (!(short_report || no_table_report)) {
-#ifndef HAVE_TIMES
             ap_rputs("</table>\n \
 <hr /> \
 <table>\n \
 <tr><th>Srv</th><td>Child Server number - generation</td></tr>\n \
 <tr><th>PID</th><td>OS process ID</td></tr>\n \
 <tr><th>Acc</th><td>Number of accesses this connection / this child / this slot</td></tr>\n \
-<tr><th>M</th><td>Mode of operation</td></tr>\n \
-<tr><th>SS</th><td>Seconds since beginning of most recent request</td></tr>\n \
-<tr><th>Req</th><td>Milliseconds required to process most recent request</td></tr>\n \
-<tr><th>Conn</th><td>Kilobytes transferred this connection</td></tr>\n \
-<tr><th>Child</th><td>Megabytes transferred this child</td></tr>\n \
-<tr><th>Slot</th><td>Total megabytes transferred this slot</td></tr>\n \
-</table>\n", r);
-#else
-            ap_rputs("</table>\n \
-<hr /> \
-<table>\n \
-<tr><th>Srv</th><td>Child Server number - generation</td></tr>\n \
-<tr><th>PID</th><td>OS process ID</td></tr>\n \
-<tr><th>Acc</th><td>Number of accesses this connection / this child / this slot</td></tr>\n \
-<tr><th>M</th><td>Mode of operation</td></tr>\n \
-<tr><th>CPU</th><td>CPU usage, number of seconds</td></tr>\n \
-<tr><th>SS</th><td>Seconds since beginning of most recent request</td></tr>\n \
-<tr><th>Req</th><td>Milliseconds required to process most recent request</td></tr>\n \
-<tr><th>Conn</th><td>Kilobytes transferred this connection</td></tr>\n \
-<tr><th>Child</th><td>Megabytes transferred this child</td></tr>\n \
-<tr><th>Slot</th><td>Total megabytes transferred this slot</td></tr>\n \
-</table>\n", r);
+<tr><th>M</th><td>Mode of operation</td></tr>\n"
+
+#ifdef HAVE_TIMES
+"<tr><th>CPU</th><td>CPU usage, number of seconds</td></tr>\n"
 #endif
+
+"<tr><th>SS</th><td>Seconds since beginning of most recent request</td></tr>\n \
+<tr><th>Req</th><td>Milliseconds required to process most recent request</td></tr>\n \
+<tr><th>Conn</th><td>Kilobytes transferred this connection</td></tr>\n \
+<tr><th>Child</th><td>Megabytes transferred this child</td></tr>\n \
+<tr><th>Slot</th><td>Total megabytes transferred this slot</td></tr>\n \
+</table>\n", r);
         }
     }
     else {
