@@ -13,8 +13,8 @@ Apache 1.3b2 under UNIX has undergone extensive testing, but there are
 known issues in the current release. The Windows port has not undergone
 as strenuous a workout. At present, the Windows port should be considered
 a ``developers version'' including only the source and no pre-compiled
-binaries. It is anticipated that a binary-release will be available for
-1.3b3.
+binaries at present. It is anticipated that a binary-release will be
+available ``shortly''.
 
 Apache has been the most popular web server on the Internet since April
 of 1996. The September 1997 WWW server site survey by Netcraft (see:
