@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/02 20:10:44 $]
+Last modified at [$Date: 2002/02/02 21:03:50 $]
 
 Release:
 
@@ -63,20 +63,6 @@ RELEASE SHOWSTOPPERS:
             * hasn't run for 3 days on Daedalus 
             * the release has underscores instead of periods.
 
-    * Runtime startup failures don't reliably set the exit status.
-      For instance, try listening to port 80 and starting as non-root;
-      server fails with make_sock and 'no listening sockets' errors
-      but exits with 0 status.  Even with -DONE_PROCESS -DNO_DETACH.
-        Justin says: "Is this really a showstopper?  Most people won't
-                      be using -DNO_DETACH and will look at the error
-                      logs anyway."
-        Ken says: "Yes, it's a showstopper -- because it exits with
-                  a 0 status on startup failure, whether it spawns
-                  or not, before doing any work.  A script will
-                  incorrectly think it successfully daemonised."
-        Showstopper: Ken
-        Not a showstopper: trawick, stoddard, Jim, Justin
-
     * ap_directory_walk skips some per-dir config merge functions
       if there is no "<Directory />" block in the configuration
         Message-ID: <m3itbdiijq.fsf@rdu163-40-092.nc.rr.com>
@@ -111,15 +97,6 @@ RELEASE SHOWSTOPPERS:
                       forever.  What's wrong?  Does this have to do with
                       autoconf or m4?"
 
-    * The Add...Filter and Set...Filter directives do not allow the
-      administrator to order filters, beyond the order of filename (mime)
-      extensions.  It isn't clear if Set...Filter(s) should be inserted 
-      before or after the Add...Filter(s) which are ordered by sequence of
-      filename extensions.  At minimum, some sort of +-[0-10] syntax seems
-      like the quickest fix for a 2.0 gold release.
-        Justin says: "Could we delay this for a point release or 2.1?"
-        Not a showstopper: justin, wrowe, trawick, stoddard, Jim, Ian
-
     * Convert all instances of the old apr_lock_t type to the new
       types (once they are fully supported in APR).
         Status: Aaron is working on converting INTRAPROCESS
@@ -145,6 +122,29 @@ RELEASE SHOWSTOPPERS:
                 libapr/libaprutil/etc and then enable it in binbuild.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Runtime startup failures don't reliably set the exit status.
+      For instance, try listening to port 80 and starting as non-root;
+      server fails with make_sock and 'no listening sockets' errors
+      but exits with 0 status.  Even with -DONE_PROCESS -DNO_DETACH.
+        Justin says: "Is this really a showstopper?  Most people won't
+                      be using -DNO_DETACH and will look at the error
+                      logs anyway."
+        Ken says: "Yes, it's a showstopper -- because it exits with
+                  a 0 status on startup failure, whether it spawns
+                  or not, before doing any work.  A script will
+                  incorrectly think it successfully daemonised."
+        Showstopper: Ken
+        Not a showstopper: trawick, stoddard, Jim, Justin, Aaron
+
+    * The Add...Filter and Set...Filter directives do not allow the
+      administrator to order filters, beyond the order of filename (mime)
+      extensions.  It isn't clear if Set...Filter(s) should be inserted 
+      before or after the Add...Filter(s) which are ordered by sequence of
+      filename extensions.  At minimum, some sort of +-[0-10] syntax seems
+      like the quickest fix for a 2.0 gold release.
+        Justin says: "Could we delay this for a point release or 2.1?"
+        Not a showstopper: justin, wrowe, trawick, stoddard, Jim, Ian, Aaron
 
     * Should we always build binaries statically unless otherwise
       indicated?
