@@ -15,14 +15,16 @@
 
      <p>In general, <code>httpd</code> should not be invoked directly,
      but rather should be invoked via <a
-     href="apachectl.html">apachectl</a> on unix systems or as an NT
-     service under win32.</p>
+     href="apachectl.html">apachectl</a> on Unix-based systems or <a
+     href="../platform/windows.html#winsvc">as a service on Windows NT,
+     2000 and XP</a> and <a href="../platform/windows.html#wincons">as
+     a console application on Windows 9x and ME</a>.</p>
 </summary>
 
 <seealso><a href="../invoking.html">Starting Apache</a></seealso>
 <seealso><a href="../stopping.html">Stopping Apache</a></seealso>
 <seealso><a href="../configuring.html">Configuration Files</a></seealso>
-<seealso><a href="../platform/">Platform Docs</a></seealso>
+<seealso><a href="../platform/">Platform-specific Documentation</a></seealso>
 <seealso><a href="apachectl.html">apachectl</a></seealso>
 
 <section id="synopsis"><title>Synopsis</title>
@@ -39,7 +41,7 @@
      -<strong>t </strong>] [ -<strong>v </strong>] [ -<strong>V
      </strong>] [ -<strong>X </strong>]</code></p>
 
-     <p>On <a href="../platform/windows.html">Win32 systems</a>, the
+     <p>On <a href="../platform/windows.html">Windows systems</a>, the
      following additional arguments are available:</p>
 
      <p><code><strong>httpd </strong> [ -<strong>k </strong>
@@ -152,7 +154,7 @@ server will not detach from the console.</dd>
 </dl>
 
 <p>The following arguments are available only on the <a
-href="../platform/windows.html">win32 platform</a>:</p>
+href="../platform/windows.html">Windows platform</a>:</p>
 
 <dl>
 
@@ -167,7 +169,7 @@ the Apache service; and uninstall the Apache service.</dd>
 
 <dt><code>-w</code></dt>
 
-<dd>Hold the console window open on error so that the error message can 
+<dd>Keep the console window open on error so that the error message can 
 be read.</dd>
 
 </dl>
