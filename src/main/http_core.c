@@ -892,7 +892,7 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
     }
     else {
         /* Check to see if it's a executable */
-        IMAGE_DOS_HEADER *hdr = (IMAGE_DOS_HEADER*)interpreter;
+        IMAGE_DOS_HEADER *hdr = (IMAGE_DOS_HEADER*)buffer;
         if (hdr->e_magic == IMAGE_DOS_SIGNATURE && hdr->e_cblp < 512) {
             fileType = FileTypeEXE;
         }
