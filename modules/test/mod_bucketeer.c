@@ -141,10 +141,11 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
             continue;
         }
 
-        if (AP_BUCKET_IS_ERROR(e)) {     
-            apr_bucket *err_copy;
-            apr_bucket_copy(e, &err_copy);
-            APR_BRIGADE_INSERT_TAIL(ctx->bb, err_copy);
+        if (e->length == 0) {
+            /* metadata bucket */
+            apr_bucket *cpy;
+            apr_bucket_copy(e, &cpy);
+            APR_BRIGADE_INSERT_TAIL(ctx->bb, cpy);
             continue;
         }
 
