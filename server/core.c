@@ -1552,11 +1552,21 @@ static const char *require(cmd_parms *cmd, void *c_, const char *arg)
     return NULL;
 }
 
+/*
+ * Report a missing-'>' syntax error.
+ */
+static char *unclosed_directive(cmd_parms *cmd)
+{
+    return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                       "> directive missing closing '>'", NULL);
+}
+
 AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd,
                                                       void *dummy,
                                                       const char *arg)
 {
-    const char *limited_methods = ap_getword(cmd->pool, &arg, '>');
+    const char *endp = ap_strrchr_c(arg, '>');
+    const char *limited_methods;
     void *tog = cmd->cmd->cmd_data;
     apr_int64_t limited = 0;
     const char *errmsg;
@@ -1565,6 +1575,12 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd,
     if (err != NULL) {
         return err;
     }
+
+    if (endp == NULL) {
+        return unclosed_directive(cmd);
+    }
+
+    limited_methods = apr_pstrndup(cmd->pool, arg, endp - arg);
 
     while (limited_methods[0]) {
         char *method = ap_getword_conf(cmd->pool, &limited_methods);
@@ -1609,15 +1625,6 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd,
 #else
 #define USE_ICASE 0
 #endif
-
-/*
- * Report a missing-'>' syntax error.
- */
-static char *unclosed_directive(cmd_parms *cmd)
-{
-    return apr_pstrcat(cmd->pool, cmd->cmd->name,
-                       "> directive missing closing '>'", NULL);
-}
 
 static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
 {
