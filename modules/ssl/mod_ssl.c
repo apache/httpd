@@ -335,7 +335,8 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
         return DECLINED; /* XXX */
     }
 
-    vhost_md5 = ap_md5_binary(c->pool, sc->vhost_id, sc->vhost_id_len);
+    vhost_md5 = ap_md5_binary(c->pool, (unsigned char *)sc->vhost_id,
+                              sc->vhost_id_len);
 
     if (!SSL_set_session_id_context(ssl, (unsigned char *)vhost_md5,
                                     MD5_DIGESTSIZE*2))

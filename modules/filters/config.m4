@@ -49,7 +49,7 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , no, [
     fi
     APR_ADDTO(LIBS, [-lz])
     AC_MSG_CHECKING([for zlib library])
-    AC_TRY_LINK([#include <zlib.h>], [return Z_OK;], 
+    AC_TRY_LINK([#include <zlib.h>], [int i = Z_OK;], 
     [AC_MSG_RESULT(found) 
      AC_CHECK_HEADERS(zutil.h)],
     [AC_MSG_RESULT(not found)

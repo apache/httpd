@@ -2086,7 +2086,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 break;
             }
             /* Percolate upwards */
-            while (current != (struct parse_node *) NULL) {
+            if (current != (struct parse_node *) NULL) {
                 switch (current->token.type) {
                 case token_not:
                 case token_eq:
@@ -2106,7 +2106,6 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                     *was_error = 1;
                     return retval;
                 }
-                break;
             }
             if (current == (struct parse_node *) NULL) {
                 new->left = root;
@@ -2215,7 +2214,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 break;
             }
             /* Percolate upwards */
-            while (current != (struct parse_node *) NULL) {
+            if (current != (struct parse_node *) NULL) {
                 switch (current->token.type) {
                 case token_not:
                 case token_eq:
@@ -2238,7 +2237,6 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                     *was_error = 1;
                     return retval;
                 }
-                break;
             }
             if (current == (struct parse_node *) NULL) {
                 new->left = root;
