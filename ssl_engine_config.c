@@ -664,7 +664,7 @@ const char *ssl_cmd_SSLSessionCache(
             return "SSLSessionCache: shared memory cache not useable on this platform";
 #endif
         mc->nSessionCacheMode      = SSL_SCMODE_SHMHT;
-        cp = strchr(arg, ':');
+        cp = ap_strchr_c(arg, ':');
         mc->szSessionCacheDataFile = (char *)apr_pstrdup(mc->pPool,
                                      ap_server_root_relative(cmd->pool, cp+1));
         mc->tSessionCacheDataTable = NULL;
