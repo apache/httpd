@@ -206,7 +206,7 @@ void increment_counts(int child_num, int thread_num, request_rec *r)
 API_EXPORT(int) find_child_by_pid(ap_proc_t *pid)
 {
     int i;
-    int actual_pid;
+    pid_t actual_pid;
 
     int max_daemons_limit = ap_get_max_daemons();
     ap_get_os_proc(&actual_pid, pid);
