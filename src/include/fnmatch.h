@@ -35,6 +35,8 @@
 
 /* This file has been modified by the Apache Group. */
 
+#include "conf.h"
+
 #ifndef	_FNMATCH_H_
 #define	_FNMATCH_H_
 
@@ -44,9 +46,9 @@
 #define	FNM_PATHNAME	0x02	/* Slash must be matched by slash. */
 #define	FNM_PERIOD	0x04	/* Period must be matched by period. */
 
-int fnmatch(const char *, const char *, int);
+API_EXPORT(int) fnmatch(const char *, const char *, int);
 
 /* this function is an Apache addition */
-extern int is_fnmatch(const char *);
+API_EXPORT(extern int) is_fnmatch(const char *);
 
 #endif /* !_FNMATCH_H_ */

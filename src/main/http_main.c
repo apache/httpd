@@ -1210,7 +1210,7 @@ static void lingering_close(request_rec *r)
  */
 
 #ifndef NO_OTHER_CHILD
-void register_other_child(int pid,
+API_EXPORT(void) register_other_child(int pid,
 		       void (*maintenance) (int reason, void *, int status),
 			  void *data, int write_fd)
 {
@@ -1229,7 +1229,7 @@ void register_other_child(int pid,
  * scanning the other_children list, all scanners should protect themself
  * by loading ocr->next before calling any maintenance function.
  */
-void unregister_other_child(void *data)
+API_EXPORT(void) unregister_other_child(void *data)
 {
     other_child_rec **pocr, *nocr;
 

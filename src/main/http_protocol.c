@@ -575,7 +575,7 @@ static int getline(char *s, int n, BUFF *in, int fold)
  * - sets r->uri to request uri (without r->args part)
  * - sets r->hostname (if not set already) from request (scheme://host:port)
  */
-void parse_uri(request_rec *r, const char *uri)
+API_EXPORT(void) parse_uri(request_rec *r, const char *uri)
 {
     int status = HTTP_OK;
 
