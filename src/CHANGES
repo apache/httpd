@@ -1,5 +1,10 @@
 Changes with Apache 1.3.5
 
+  *) OS/2 ap_os_canonical_filename()'s behaviour is improved: ap_assert()
+     is removed. This allows <Directory proxy:*> directives to work and
+     prevents invalid requests from killing the process.
+     [Brian Havard <brianh@kheldar.apana.org.au>]
+
   *) Reorganised FAQ document.
      [Joshua Slive <slive@finance.commerce.ubc.ca>]
 
