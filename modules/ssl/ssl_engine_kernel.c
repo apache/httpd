@@ -785,7 +785,7 @@ int ssl_hook_Access(request_rec *r)
                               ssl_expr_get_error());
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r, 
                           "access to %s failed for %s, reason: %s", r->filename,
-                          ap_get_remote_host(r->connection, r->per_dir_config, 1, NULL), cp);
+                          ap_get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME, NULL), cp);
             /* remember forbidden access for strict require option */
             apr_table_setn(r->notes, "ssl-access-forbidden", (void *)1);
             return HTTP_FORBIDDEN;
@@ -798,7 +798,7 @@ int ssl_hook_Access(request_rec *r)
                     "Failed expression: %s", pRequirement->cpExpr);
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r, 
                 "access to %s failed for %s, reason: %s", r->filename,
-                ap_get_remote_host(r->connection, r->per_dir_config, 1, NULL),
+                ap_get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME, NULL),
                 "SSL requirement expression not fulfilled "
                 "(see SSL logfile for more details)");
             /* remember forbidden access for strict require option */
