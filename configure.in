@@ -204,6 +204,7 @@ dnl ## APRVARS before Apache generates it's Makefiles and the related files.
 dnl ## This allows APR to detect libraries like dl and tell Apache that it
 dnl ## needs to include or not include them.
 RUN_SUBDIR_CONFIG_NOW(lib/apr)
+RUN_SUBDIR_CONFIG_NOW(lib/pcre)
 . ./lib/apr/APRVARS
 
 APACHE_GEN_CONFIG_VARS

@@ -1,7 +1,8 @@
 LTLIBRARY_NAME = libpcre.la
 LTLIBRARY_SOURCES = maketables.c get.c study.c pcre.c pcreposix.c
 
-CLEANFILES = dftables config.h chartables.c
+CLEANFILES = dftables chartables.c
+DISTCLEANFILES = config.h $(CLEANFILES)
 
 include $(top_srcdir)/build/ltlib.mk
 
