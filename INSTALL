@@ -76,7 +76,7 @@
         under all operating systems therefore you cannot use the DSO mechanism
         on all platforms. And Apache currently has only limited built-in
         knowledge on how to compile shared objects because this is heavily
-        platform-dependend. The current state is this:
+        platform-dependent. The current state is this:
 
         o Out-of-the-box supported platforms are:
            - Linux     - SunOS         - UnixWare    
