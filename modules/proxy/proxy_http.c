@@ -794,11 +794,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     apr_bucket *e;
     apr_bucket_brigade *bb;
     int len, backasswards;
-    int received_continue = 1; /* flag to indicate if we should
-                                * loop over response parsing logic
-                                * in the case that the origin told us
-                                * to HTTP_CONTINUE
-                                */
+    int interim_response; /* non-zero whilst interim 1xx responses
+                           * are being read. */
 
     bb = apr_brigade_create(p, c->bucket_alloc);
 
@@ -812,7 +809,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
      */
     rp->proxyreq = PROXYREQ_RESPONSE;
 
-    while (received_continue) {
+    do {
         apr_brigade_cleanup(bb);
 
         len = ap_getline(buffer, sizeof(buffer), rp, 0);
@@ -935,11 +932,11 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             p_conn->close += 1;
         }
 
-        if ( r->status != HTTP_CONTINUE ) {
-            received_continue = 0;
-        } else {
+        interim_response = ap_is_HTTP_INFO(r->status);
+        if (interim_response) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
-                         "proxy: HTTP: received 100 CONTINUE");
+                         "proxy: HTTP: received interim %d response",
+                         r->status);
         }
 
         /* we must accept 3 kinds of date, but generate only 1 kind of date */
@@ -999,7 +996,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
         /* send body - but only if a body is expected */
         if ((!r->header_only) &&                   /* not HEAD request */
-            (!ap_is_HTTP_INFO(r->status)) &&       /* not any 1xx response */
+            !interim_response &&                   /* not any 1xx response */
             (r->status != HTTP_NO_CONTENT) &&      /* not 204 */
             (r->status != HTTP_RESET_CONTENT) &&   /* not 205 */
             (r->status != HTTP_NOT_MODIFIED)) {    /* not 304 */
@@ -1078,7 +1075,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: header only");
         }
-    }
+    } while (interim_response);
 
     if ( conf->error_override ) {
         /* the code above this checks for 'OK' which is what the hook expects */
@@ -1092,8 +1089,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             int status = r->status;
             r->status = HTTP_OK;
             /* Discard body, if one is expected */
-            if ((status > 199) && /* not any 1xx response */
-                (status != HTTP_NO_CONTENT) && /* not 204 */
+            if ((status != HTTP_NO_CONTENT) && /* not 204 */
                 (status != HTTP_RESET_CONTENT) && /* not 205 */
                 (status != HTTP_NOT_MODIFIED)) { /* not 304 */
                ap_discard_request_body(rp);
