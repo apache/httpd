@@ -712,7 +712,7 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
     return pl;
 }
 
-#else
+#else /* !AP_HAVE_RELIABLE_PIPED_LOGS */
 
 static apr_status_t piped_log_cleanup(void *data)
 {
