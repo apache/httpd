@@ -2568,7 +2568,7 @@ static void usr1_handler(int sig)
 static int volatile shutdown_pending;
 static int volatile restart_pending;
 static int volatile is_graceful;
-int volatile ap_my_generation;
+ap_generation_t volatile ap_my_generation;
 
 #ifdef WIN32
 /*
