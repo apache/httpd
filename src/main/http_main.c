@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_main.c,v 1.72 1996/09/25 20:07:50 chuck Exp $ */
+/* $Id: http_main.c,v 1.73 1996/09/30 20:47:59 brian Exp $ */
 
 /*
  * httpd.c: simple http daemon for answering WWW file requests
@@ -1932,10 +1932,10 @@ main(int argc, char *argv[])
             break;
           case 'v':
             printf("Server version %s.\n",SERVER_VERSION);
-            exit(1);
+            exit(0);
           case 'h':
 	    show_directives();
-	    exit(1);
+	    exit(0);
 	  case 'X':
 	    ++one_process;	/* Weird debugging mode. */
 	    break;
