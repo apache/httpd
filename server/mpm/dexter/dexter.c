@@ -162,7 +162,7 @@ static other_child_rec *other_children;
 static ap_context_t *pconf;		/* Pool for config stuff */
 static ap_context_t *pchild;		/* Pool for httpd child stuff */
 static ap_context_t *thread_pool_parent; /* Parent of per-thread pools */
-static pthread_mutex_t thread_pool_create_mutex;
+static pthread_mutex_t thread_pool_parent_mutex;
 
 static int child_num;
 static int my_pid; /* Linux getpid() doesn't work except in main thread. Use
@@ -852,9 +852,9 @@ static void *worker_thread(void *arg)
     int thread_num = *((int *) arg);
     long conn_id = child_num * HARD_THREAD_LIMIT + thread_num;
 
-    pthread_mutex_lock(&thread_pool_create_mutex);
+    pthread_mutex_lock(&thread_pool_parent_mutex);
     ap_create_context(&tpool, thread_pool_parent);
-    pthread_mutex_unlock(&thread_pool_create_mutex);
+    pthread_mutex_unlock(&thread_pool_parent_mutex);
     ap_create_context(&ptrans, tpool);
 
     while (!workers_may_exit) {
@@ -918,7 +918,7 @@ static void *worker_thread(void *arg)
                     /* XXX: Should we check for POLLERR? */
                     if (listenfds[curr_pollfd].revents & POLLIN) {
                         last_pollfd = curr_pollfd;
-                        ap_put_os_sock(&sd, &listenfds[curr_pollfd].fd, tpool);
+                        ap_put_os_sock(&sd, &listenfds[curr_pollfd].fd, ptrans);
                         goto got_fd;
                     }
                 } while (curr_pollfd != last_pollfd);
@@ -956,7 +956,9 @@ static void *worker_thread(void *arg)
         ap_clear_pool(ptrans);
     }
 
-    ap_destroy_pool(tpool);
+    pthread_mutex_lock(&thread_pool_parent_mutex);
+    ap_destroy_context(tpool);
+    pthread_mutex_unlock(&thread_pool_parent_mutex);
     pthread_mutex_lock(&worker_thread_count_mutex);
     worker_thread_count--;
     worker_thread_free_ids[worker_thread_count] = thread_num;
@@ -1026,7 +1028,7 @@ static void child_main(int child_num_arg)
         worker_thread_free_ids[i] = i;
     }
     ap_create_context(&thread_pool_parent, pchild);
-    pthread_mutex_init(&thread_pool_create_mutex, NULL);
+    pthread_mutex_init(&thread_pool_parent_mutex, NULL);
     pthread_mutex_init(&idle_thread_count_mutex, NULL);
     pthread_mutex_init(&worker_thread_count_mutex, NULL);
     pthread_mutex_init(&pipe_of_death_mutex, NULL);
