@@ -182,11 +182,11 @@
 <example>RedirectMatch permanent ^/$
       http://www.example.com/startpage.html</example>
 
-    <p>Alternatively, to temporarily redirect all pages on a site
-    to one particular page, use the following:</p>
+    <p>Alternatively, to temporarily redirect all pages on one site
+    to a particular page on another site, use the following:</p>
 
 <example>RedirectMatch temp .*
-      http://www.example.com/startpage.html</example>
+      http://othersite.example.com/startpage.html</example>
 </section>
 
 <section id="proxy"><title>Reverse Proxy</title>
