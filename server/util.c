@@ -1950,7 +1950,7 @@ char *ap_get_local_host(apr_pool_t *a)
     if (!server_hostname) 
         server_hostname = apr_pstrdup(a, "127.0.0.1");
 
-    ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, NULL,
+    ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO|APLOG_STARTUP, 0, NULL,
                  "%s: Could not find determine the server's fully qualified "
                  "domain name, using %s for ServerName",
                  ap_server_argv0, server_hostname);
