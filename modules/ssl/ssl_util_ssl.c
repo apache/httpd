@@ -317,6 +317,7 @@ char *SSL_make_ciphersuite(apr_pool_t *p, SSL *ssl)
 /* check whether cert contains extended key usage with a SGC tag */
 BOOL SSL_X509_isSGC(X509 *cert)
 {
+#ifdef HAVE_SSL_X509V3_EXT_d2i
     X509_EXTENSION *ext;
     int ext_nid;
     STACK *sk;
@@ -339,11 +340,15 @@ BOOL SSL_X509_isSGC(X509 *cert)
         }
     }
     return is_sgc;
+#else
+    return FALSE;
+#endif
 }
 
 /* retrieve basic constraints ingredients */
 BOOL SSL_X509_getBC(X509 *cert, int *ca, int *pathlen)
 {
+#ifdef HAVE_SSL_X509V3_EXT_d2i
     X509_EXTENSION *ext;
     BASIC_CONSTRAINTS *bc;
     int idx;
@@ -370,6 +375,9 @@ BOOL SSL_X509_getBC(X509 *cert, int *ca, int *pathlen)
     }
     BASIC_CONSTRAINTS_free(bc);
     return TRUE;
+#else
+    return FALSE;
+#endif
 }
 
 /* retrieve subject CommonName of certificate */
