@@ -1,4 +1,7 @@
 Changes with Apache 1.3b1
+  
+  *) mod_include would use uninitialized data when parsing certain
+     expressions involving && and ||. [Brian Slesinsky] PR#1139
 
   *) mod_imap should only handle GET methods.  [Jay Bloodworth]
 

@@ -1569,6 +1569,7 @@ static int parse_expr(request_rec *r, char *expr, char *error)
                     strncpy(current->left->token.value, buffer,
                             MAX_STRING_LEN - 1);
                     current->left->token.value[MAX_STRING_LEN - 1] = '\0';
+		    current->left->value = (current->left->token.value[0] != '\0');
                     current->left->done = 1;
                     break;
                 default:
@@ -1584,6 +1585,7 @@ static int parse_expr(request_rec *r, char *expr, char *error)
                     strncpy(current->right->token.value, buffer,
                             MAX_STRING_LEN - 1);
                     current->right->token.value[MAX_STRING_LEN - 1] = '\0';
+		    current->right->value = (current->right->token.value[0] != '\0');
                     current->right->done = 1;
                     break;
                 default:
