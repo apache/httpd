@@ -1,65 +1,84 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Converting Modules from Apache 1.3 to Apache 2.0</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<!--#include virtual="header.html" -->
+    <title>Converting Modules from Apache 1.3 to Apache 2.0</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<H1 ALIGN="CENTER">From Apache 1.3 to Apache 2.0<br>Modules</H1>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<p>
-This is a first attempt at writing the lessons I learned when trying to convert the mod_mmap_static module to Apache 2.0.  It's by no means definitive and probably won't even be correct in some ways, but it's a start.
-</p>
-<hr>
-<h2>The easier changes...
-</h2>
+    <h1 align="CENTER">From Apache 1.3 to Apache 2.0<br />
+     Modules</h1>
 
-<h3>Cleanup Routines</h3>
-<p>
-These now need to be of type apr_status_t and return a value of that type.  Normally the return value will be APR_SUCCESS unless there is some need to signal an error in the cleanup.  Be aware that even though you signal an error not all code yet checks and acts upon the error.
-</p>
+    <p>This is a first attempt at writing the lessons I learned
+    when trying to convert the mod_mmap_static module to Apache
+    2.0. It's by no means definitive and probably won't even be
+    correct in some ways, but it's a start.</p>
+    <hr />
 
-<h3>Initialisation Routines</h3>
+    <h2>The easier changes...</h2>
 
-<p>
-These should now be renamed to better signify where they sit in the overall process.  So the name gets a small change from mmap_init to mmap_post_config.  The arguments passed have undergone a radical change and now look like
-</p>
-<ul style="list-style:none">
-<li>apr_pool_t *p,</li>
-<li>apr_pool_t *plog,</li>
-<li>apr_pool_t *ptemp,</li>
-<li>server_rec *s</li>
-</ul>
+    <h3>Cleanup Routines</h3>
 
-<h3>Data Types</h3>
-<p>
-A lot of the data types have been moved into the APR.  This means that some have had a name change, such as the one shown above.  The following is a brief list of some of the changes that you are likely to have to make.
-<ul style="list-style:none">
-<li>pool becomes apr_pool_t</li>
-<li>table becomes apr_table_t</li>
-</ul>
-<hr>
+    <p>These now need to be of type apr_status_t and return a value
+    of that type. Normally the return value will be APR_SUCCESS
+    unless there is some need to signal an error in the cleanup. Be
+    aware that even though you signal an error not all code yet
+    checks and acts upon the error.</p>
 
-<h2>
-The <em>messier</em> changes...
-</h2>
-<h3>Register Hooks</h3>
-<p>
-The new architecture uses a series of hooks to provide for calling your functions.  These you'll need to add to your module by way of a new function, static void register_hooks(void).  The function is really reasonably straightforward once you understand what needs to be done.  Each function that needs calling at some stage in the processing of a request needs to be registered, handlers do not.  There are a number of phases where functions can be added, and for each you can specify with a high degree of control the relative order that the function will be called in.
-</p>
-<p>
-This is the code that was added to mod_mmap_static:
-</p>
+    <h3>Initialisation Routines</h3>
+
+    <p>These should now be renamed to better signify where they sit
+    in the overall process. So the name gets a small change from
+    mmap_init to mmap_post_config. The arguments passed have
+    undergone a radical change and now look like</p>
+
+    <ul style="list-style:none">
+      <li>apr_pool_t *p,</li>
+
+      <li>apr_pool_t *plog,</li>
+
+      <li>apr_pool_t *ptemp,</li>
+
+      <li>server_rec *s</li>
+    </ul>
+
+    <h3>Data Types</h3>
+
+    <p>A lot of the data types have been moved into the APR. This
+    means that some have had a name change, such as the one shown
+    above. The following is a brief list of some of the changes
+    that you are likely to have to make.</p>
+
+    <ul style="list-style:none">
+      <li>pool becomes apr_pool_t</li>
+
+      <li>table becomes apr_table_t</li>
+    </ul>
+    <hr />
+
+    <h2>The <em>messier</em> changes...</h2>
+
+    <h3>Register Hooks</h3>
+
+    <p>The new architecture uses a series of hooks to provide for
+    calling your functions. These you'll need to add to your module
+    by way of a new function, static void register_hooks(void). The
+    function is really reasonably straightforward once you
+    understand what needs to be done. Each function that needs
+    calling at some stage in the processing of a request needs to
+    be registered, handlers do not. There are a number of phases
+    where functions can be added, and for each you can specify with
+    a high degree of control the relative order that the function
+    will be called in.</p>
+
+    <p>This is the code that was added to mod_mmap_static:</p>
 <pre>
 static void register_hooks(void)
 {
@@ -68,31 +87,43 @@ static void register_hooks(void)
     ap_hook_translate_name(mmap_static_xlat,aszPre,NULL,HOOK_LAST);
 };
 </pre>
-<p>
-This registers 2 functions that need to be called, one in the post_config stage (virtually every module will need this one) and one for the translate_name phase.  note that while there are different function names the format of each is identical.  So what is the format?
-</p>
-<p><strong>
-ap_hook_[phase_name](function_name, predecessors, successors, position);
-</strong></p>
-<p>
-There are 3 hook positions defined...
-</p>
-<ul style="list-style:none">
-<li>HOOK_FIRST</li>
-<li>HOOK_MIDDLE</li>
-<li>HOOK_LAST</li>
-</ul>
-<p>
-To define the position you use the position and then modify it with the predecessors and successors.  each of the modifiers can be a list of functions that should be called, either before the function is run (predecessors) or after the function has run (successors).
-</p>
-<p>
-In the mod_mmap_static case I didn't care about the post_config stage, but the mmap_static_xlat MUST be called after the core module had done it's name translation, hence the use of the aszPre to define a modifier to the position HOOK_LAST.
-</p>
-<h3>Module Definition</h3>
 
-<p>
-There are now a lot fewer stages to worry about when creating your module definition.  The old defintion looked like
-</p>
+    <p>This registers 2 functions that need to be called, one in
+    the post_config stage (virtually every module will need this
+    one) and one for the translate_name phase. note that while
+    there are different function names the format of each is
+    identical. So what is the format?</p>
+
+    <p><strong>ap_hook_[phase_name](function_name, predecessors,
+    successors, position);</strong></p>
+
+    <p>There are 3 hook positions defined...</p>
+
+    <ul style="list-style:none">
+      <li>HOOK_FIRST</li>
+
+      <li>HOOK_MIDDLE</li>
+
+      <li>HOOK_LAST</li>
+    </ul>
+
+    <p>To define the position you use the position and then modify
+    it with the predecessors and successors. each of the modifiers
+    can be a list of functions that should be called, either before
+    the function is run (predecessors) or after the function has
+    run (successors).</p>
+
+    <p>In the mod_mmap_static case I didn't care about the
+    post_config stage, but the mmap_static_xlat MUST be called
+    after the core module had done it's name translation, hence the
+    use of the aszPre to define a modifier to the position
+    HOOK_LAST.</p>
+
+    <h3>Module Definition</h3>
+
+    <p>There are now a lot fewer stages to worry about when
+    creating your module definition. The old defintion looked
+    like</p>
 <pre>
 module MODULE_VAR_EXPORT [module_name]_module =
 {
@@ -117,9 +148,8 @@ module MODULE_VAR_EXPORT [module_name]_module =
     /* post read-request */
 };
 </pre>
-<p>
-The new structure is a great deal simpler...
-</p>
+
+    <p>The new structure is a great deal simpler...</p>
 <pre>
 module MODULE_VAR_EXPORT [module_name]_module =
 {
@@ -133,107 +163,96 @@ module MODULE_VAR_EXPORT [module_name]_module =
     /* register hooks */
  };
 </pre>
-<p>
-Some of these read directly across, some don't.  I'll try to summarise what should be done below.
-</p>
-<p>
-The stages that read directly across :
-</p>
-<ul style="list-style:none">
-<li>
-/* dir config creater */ ==> /* create per-directory config structures */
-</li>
-<li>
-/* server config */ ==> /* create per-server config structures    */
-</li>
-<li>
-/* dir merger */ ==> /* merge per-directory config structures  */
-</li>
-<li>
-/* merge server config */ ==> /* merge per-server config structures     */
-</li>
-<li>
-/* command table */ ==> /* command apr_table_t */
-</li>
-<li>
-/* handlers */ ==> /* handlers */
-</li>
-</ul>
-<P>
-The remainder of the old functions should be registered as hooks.  There are the following hook stages defined so far...
-</P>
 
-<ul style="list-style:none">
-<li>
-ap_hook_post_config  <em>(this is where the old _init routines get registered)</em>
-</li>
-<li>
-ap_hook_http_method  <em>(retrieve the http method from a request.  (legacy))</em>
-</li>
-<li>
-ap_hook_open_logs  <em>(open any specified logs)</em>
-</li>
-<li>
-ap_hook_auth_checker  <em>(check if the resource requires authorization)</em>
-</li>
-<li>
-ap_hook_access_checker  <em>(check for module-specific restrictions)</em>
-</li>
-<li>
-ap_hook_check_user_id  <em>(check the user-id and password)</em>
-</li>
-<li>
-ap_hook_default_port  <em>(retrieve the default port for the server)</em>
-</li>
-<li>
-ap_hook_pre_connection  <em>(do any setup required just before processing, but after accepting)</em>
-</li>
-<li>
-ap_hook_process_connection  <em>(run the correct protocol)</em>
-</li>
-<li>
-ap_hook_child_init  <em>(call as soon as the child is started)</em>
-</li>
-<li>
-ap_hook_create_request  <em>(??)</em>
-</li>
-<li>
-ap_hook_fixups  <em>(last chance to modify things before generating content)</em>
-</li>
-<li>
-ap_hook_handler  <em>(generate the content)</em>
-</li>
-<li>
-ap_hook_header_parser  <em>(let's modules look at the headers, not used by most modules, because they use post_read_request for this.)</em>
-</li>
-<li>
-ap_hook_insert_filter  <em>(to insert filters into the filter chain)</em>
-</li>
-<li>
-ap_hook_log_transaction  <em>(log information about the request)</em>
-</li>
-<li>
-ap_hook_optional_fn_retrieve  <em>(retrieve any functions registered as optional)</em>
-</li>
-<li>
-ap_hook_post_read_request  <em>(called after reading the request, before any other phase)</em>
-</li>
-<li>
-ap_hook_quick_handler  <em>(??)</em>
-</li>
-<li>
-ap_hook_translate_name  <em>(translate the URI into a filename)</em>
-</li>
-<li>
-ap_hook_type_checker  <em>(determine and/or set the doc type)</em>
+    <p>Some of these read directly across, some don't. I'll try to
+    summarise what should be done below.</p>
 
+    <p>The stages that read directly across :</p>
 
-<!--#include virtual="footer.html" -->
+    <ul style="list-style:none">
+      <li>/* dir config creater */ ==&gt; /* create per-directory
+      config structures */</li>
 
-</body>
+      <li>/* server config */ ==&gt; /* create per-server config
+      structures */</li>
+
+      <li>/* dir merger */ ==&gt; /* merge per-directory config
+      structures */</li>
+
+      <li>/* merge server config */ ==&gt; /* merge per-server
+      config structures */</li>
+
+      <li>/* command table */ ==&gt; /* command apr_table_t */</li>
+
+      <li>/* handlers */ ==&gt; /* handlers */</li>
+    </ul>
+
+    <p>The remainder of the old functions should be registered as
+    hooks. There are the following hook stages defined so
+    far...</p>
+
+    <ul style="list-style:none">
+      <li>ap_hook_post_config <em>(this is where the old _init
+      routines get registered)</em></li>
+
+      <li>ap_hook_http_method <em>(retrieve the http method from a
+      request. (legacy))</em></li>
+
+      <li>ap_hook_open_logs <em>(open any specified logs)</em></li>
+
+      <li>ap_hook_auth_checker <em>(check if the resource requires
+      authorization)</em></li>
+
+      <li>ap_hook_access_checker <em>(check for module-specific
+      restrictions)</em></li>
+
+      <li>ap_hook_check_user_id <em>(check the user-id and
+      password)</em></li>
+
+      <li>ap_hook_default_port <em>(retrieve the default port for
+      the server)</em></li>
+
+      <li>ap_hook_pre_connection <em>(do any setup required just
+      before processing, but after accepting)</em></li>
+
+      <li>ap_hook_process_connection <em>(run the correct
+      protocol)</em></li>
+
+      <li>ap_hook_child_init <em>(call as soon as the child is
+      started)</em></li>
+
+      <li>ap_hook_create_request <em>(??)</em></li>
+
+      <li>ap_hook_fixups <em>(last chance to modify things before
+      generating content)</em></li>
+
+      <li>ap_hook_handler <em>(generate the content)</em></li>
+
+      <li>ap_hook_header_parser <em>(let's modules look at the
+      headers, not used by most modules, because they use
+      post_read_request for this.)</em></li>
+
+      <li>ap_hook_insert_filter <em>(to insert filters into the
+      filter chain)</em></li>
+
+      <li>ap_hook_log_transaction <em>(log information about the
+      request)</em></li>
+
+      <li>ap_hook_optional_fn_retrieve <em>(retrieve any functions
+      registered as optional)</em></li>
+
+      <li>ap_hook_post_read_request <em>(called after reading the
+      request, before any other phase)</em></li>
+
+      <li>ap_hook_quick_handler <em>(??)</em></li>
+
+      <li>ap_hook_translate_name <em>(translate the URI into a
+      filename)</em></li>
+
+      <li>ap_hook_type_checker <em>(determine and/or set the doc
+      type)</em> <!--#include virtual="footer.html" -->
+      </li>
+    </ul>
+  </body>
 </html>
-
-
-
-
 
