@@ -14,9 +14,6 @@ Changes with Apache 2.1.0-dev
      search filter.
      [Brad Nicholes]
 
-  *) SECURITY: CAN-2004-0942, Fix for memory consumption DoS.
-     [Joe Orton]
-
   *) mod_usertrack: Run the fixups hook before other modules.
      PR 29755. [Paul Querna]
 
@@ -53,11 +50,6 @@ Changes with Apache 2.1.0-dev
 
   *) mod_rewrite: Removed the MaxRedirects option in favor of the
      core LimitInternalRecursion directive.  [André Malo]
-
-  *) SECURITY: CAN-2004-0885 (cve.mitre.org)
-     mod_ssl: Fix a bug which allowed an SSLCipherSuite setting to be
-     bypassed during an SSL renegotiation.  PR 31505.  
-     [Hartmut Keil <Hartmut.Keil adnovum.ch>, Joe Orton]
 
   *) mod_auth_ldap: Handle the inconsistent way in which the MS LDAP
      library handles special characters. PR 24437 [Jess Holle]
@@ -460,6 +452,19 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.53
+
+  *) SECURITY: CAN-2004-0942 (cve.mitre.org)
+     Fix for memory consumption DoS in handling of MIME folded request
+     headers.  [Joe Orton]
+
+  *) SECURITY: CAN-2004-0885 (cve.mitre.org)
+     mod_ssl: Fix a bug which allowed an SSLCipherSuite setting to be
+     bypassed during an SSL renegotiation.  PR 31505.  
+     [Hartmut Keil <Hartmut.Keil adnovum.ch>, Joe Orton]
+
+  *) mod_ssl: Fail at startup rather than segfault at runtime if a
+     client cert is configured with an encrypted private key.
+     PR 24030.  [Joe Orton]
 
   *) apxs: fix handling of -Wc/-Wl and "-o mod_foo.so". PR 31448
      [Joe Orton]
@@ -1157,13 +1162,15 @@ Changes with Apache 2.0.49
 
 Changes with Apache 2.0.48
 
-  *) SECURITY [CAN-2003-0789]: mod_cgid: Resolve some mishandling of
-     the AF_UNIX socket used to communicate with the cgid daemon and
-     the CGI script.  [Jeff Trawick]
+  *) SECURITY: CAN-2003-0789 (cve.mitre.org)
+     mod_cgid: Resolve some mishandling of the AF_UNIX socket used to
+     communicate with the cgid daemon and the CGI script.
+     [Jeff Trawick]
 
-  *) SECURITY [CAN-2003-0542]: Fix buffer overflows in mod_alias and 
-     mod_rewrite which occurred if one configured a regular expression 
-     with more than 9 captures.  [André Malo]
+  *) SECURITY: CAN-2003-0542 (cve.mitre.org)
+     Fix buffer overflows in mod_alias and mod_rewrite which occurred
+     if one configured a regular expression with more than 9 captures.
+     [André Malo]
 
   *) mod_include: fix segfault which occured if the filename was not
      set, for example, when processing some error conditions.
@@ -1314,21 +1321,22 @@ Changes with Apache 2.0.48
 
 Changes with Apache 2.0.47
 
-  *) SECURITY [CAN-2003-0192]: Fixed a bug whereby certain sequences
-     of per-directory renegotiations and the SSLCipherSuite directive
-     being used to upgrade from a weak ciphersuite to a strong one
-     could result in the weak ciphersuite being used in place of the
-     strong one.  [Ben Laurie]
+  *) SECURITY: CAN-2003-0192 (cve.mitre.org)
+     Fixed a bug whereby certain sequences of per-directory
+     renegotiations and the SSLCipherSuite directive being used to
+     upgrade from a weak ciphersuite to a strong one could result in
+     the weak ciphersuite being used in place of the strong one.  
+     [Ben Laurie]
 
-  *) SECURITY [CAN-2003-0253]: Fixed a bug in prefork MPM causing
-     temporary denial of service when accept() on a rarely accessed port
-     returns certain errors.  Reported by Saheed Akhtar
-     <S.Akhtar talis.com>.  [Jeff Trawick]
+  *) SECURITY: CAN-2003-0253 (cve.mitre.org)
+     Fixed a bug in prefork MPM causing temporary denial of service
+     when accept() on a rarely accessed port returns certain errors.
+     Reported by Saheed Akhtar <S.Akhtar talis.com>.  [Jeff Trawick]
 
-  *) SECURITY [CAN-2003-0254]: Fixed a bug in ftp proxy causing denial
-     of service when target host is IPv6 but proxy server can't create
-     IPv6 socket.  Fixed by the reporter.  [Yoshioka Tsuneo
-     <tsuneo.yoshioka f-secure.com>]
+  *) SECURITY: CAN-2003-0254 (cve.mitre.org)
+     Fixed a bug in ftp proxy causing denial of service when target
+     host is IPv6 but proxy server can't create IPv6 socket.  Fixed by
+     the reporter.  [Yoshioka Tsuneo <tsuneo.yoshioka f-secure.com>]
 
   *) SECURITY [VU#379828] Prevent the server from crashing when entering
      infinite loops. The new LimitInternalRecursion directive configures
@@ -1360,16 +1368,17 @@ Changes with Apache 2.0.47
 
 Changes with Apache 2.0.46
 
-  *) SECURITY [CAN-2003-0245]: Fixed a bug causing apr_pvsprintf() to crash 
-     by sending an overly long string.  This can be triggered remotely 
-     through mod_dav, mod_ssl, and other mechanisms.  Reported by David
-     Endler <DEndler iDefense.com>.
-     [Joe Orton <jorton redhat.com>]
+  *) SECURITY: CAN-2003-0245 (cve.mitre.org)
+     Fixed a bug causing apr_pvsprintf() to crash by sending an overly
+     long string.  This can be triggered remotely through mod_dav,
+     mod_ssl, and other mechanisms.
+     Reported by David Endler <DEndler iDefense.com>.  [Joe Orton]
 
-  *) SECURITY [CAN-2003-0189]: Fixed a denial-of-service vulnerability
-     affecting basic authentication on Unix platforms related to
-     thread-safety in apr_password_validate().  The problem was reported
-     by John Hughes <john.hughes entegrity.com>.
+  *) SECURITY: CAN-2003-0189 (cve.mitre.org)
+     Fixed a denial-of-service vulnerability affecting basic
+     authentication on Unix platforms related to thread-safety in
+     apr_password_validate().
+     Reported by John Hughes <john.hughes entegrity.com>.
 
   *) Fix for mod_dav.  Call the 'can_be_activity' callback, if provided,
      when a MKACTIVITY request comes in.
@@ -1497,10 +1506,11 @@ Changes with Apache 2.0.46
   *) Fixed a segfault when multiple ProxyBlock directives were used.
      PR: 19023 [Sami Tikka <sami.tikka f-secure.com>]
 
-  *) SECURITY [CAN-2003-0134] OS2: Fix a Denial of Service vulnerability 
-     identified and reported by Robert Howard <rihoward rawbw.com> that 
-     where device names faulted the running OS2 worker process.
-     The fix is actually in APR 0.9.4.  [Brian Havard]
+  *) SECURITY: CAN-2003-0134 (cve.mitre.org)
+     OS2: Fix a Denial of Service vulnerability identified and
+     reported by Robert Howard <rihoward rawbw.com> that where device
+     names faulted the running OS2 worker process.  The fix is
+     actually in APR 0.9.4.  [Brian Havard]
 
   *) Forward port: Escape special characters (especially control
      characters) in mod_log_config to make a clear distinction between
@@ -1518,11 +1528,12 @@ Changes with Apache 2.0.45
   *) Fix possible segfaults under obscure error conditions within the
      cgid daemon.  [Jeff Trawick, William Rowe]
 
-  *) SECURITY [CAN-2003-0132]: Close a Denial of Service vulnerability
-     identified by David Endler <DEndler iDefense.com> on all platforms.
-     An unlimited stream of newlines were acceptable between requests
-     where each <lf> would allocate an 80 byte buffer, leading very
-     quickly to memory exahustion.  [Brian Pane]
+  *) SECURITY: CAN-2003-0132 (cve.mitre.org)
+     Close a Denial of Service vulnerability identified by David
+     Endler <DEndler iDefense.com> on all platforms.  An unlimited
+     stream of newlines were acceptable between requests where each
+     <lf> would allocate an 80 byte buffer, leading very quickly to
+     memory exahustion.  [Brian Pane]
 
   *) Added an rpm build script.
      [Graham Leggett, Joe Orton <jorton redhat.com>]
@@ -1966,14 +1977,14 @@ Changes with Apache 2.0.44
 
 Changes with Apache 2.0.43
 
-  *) SECURITY [CVE-2002-0840]: HTML-escape the address produced by 
-     ap_server_signature() against this cross-site scripting 
-     vulnerability exposed by the directive 'UseCanonicalName Off'.  
-     Also HTML-escape the SERVER_NAME environment variable for CGI 
-     and SSI requests.  It's safe to escape as only the '<', '>', 
-     and '&' characters are affected, which won't appear in a valid 
-     hostname.  Reported by Matthew Murphy <mattmurphy kc.rr.com>.
-     [Brian Pane]
+  *) SECURITY: CVE-2002-0840 (cve.mitre.org)
+     HTML-escape the address produced by ap_server_signature() against
+     this cross-site scripting vulnerability exposed by the directive
+     'UseCanonicalName Off'.  Also HTML-escape the SERVER_NAME
+     environment variable for CGI and SSI requests.  It's safe to
+     escape as only the '<', '>', and '&' characters are affected,
+     which won't appear in a valid hostname.  Reported by Matthew
+     Murphy <mattmurphy kc.rr.com>.  [Brian Pane]
 
   *) Fix a core dump in mod_cache when it attemtped to store uncopyable
      buckets. This happened, for instance, when a file to be cached
@@ -1989,7 +2000,7 @@ Changes with Apache 2.0.43
      could lead to an infinite loop.  PR 12705  
      [Amund Elstad <amund.elstad ergo.no>, Jeff Trawick]
 
-  *) SECURITY [CVE-2002-1156] (cve.mitre.org):
+  *) SECURITY: CVE-2002-1156 (cve.mitre.org)
      Fix the exposure of CGI source when a POST request is sent to 
      a location where both DAV and CGI are enabled. [Ryan Bloom]
 
@@ -2167,7 +2178,7 @@ Changes with Apache 2.0.41
 
 Changes with Apache 2.0.40
 
-  *) SECURITY [CAN-2002-0661] (cve.mitre.org): 
+  *) SECURITY: CAN-2002-0661 (cve.mitre.org) 
      Close a very significant security hole that 
      applies only to the Win32, OS2 and Netware platforms.  Unix was not 
      affected, Cygwin may be affected.  Certain URIs will bypass security
@@ -2179,7 +2190,7 @@ Changes with Apache 2.0.40
      Reported by Auriemma Luigi <bugtest sitoverde.com>.
      [Brad Nicholes]
 
-  *) SECURITY [CAN-2002-0654] (cve.mitre.org):
+  *) SECURITY: CAN-2002-0654 (cve.mitre.org)
      Close a path-revealing exposure in multiview type
      map negotiation (such as the default error documents) where the
      module would report the full path of the typemapped .var file when
@@ -2187,7 +2198,7 @@ Changes with Apache 2.0.40
      negotiation.  Reported by Auriemma Luigi <bugtest sitoverde.com>.
      [William Rowe]
 
-  *) SECURITY [CAN-2002-0654] (cve.mitre.org):
+  *) SECURITY: CAN-2002-0654 (cve.mitre.org)
      Close a path-revealing exposure in cgi/cgid when we 
      fail to invoke a script.  The modules would report "couldn't create 
      child process /path-to-script/script.pl" revealing the full path
@@ -2496,7 +2507,7 @@ Changes with Apache 2.0.37
      the pipes and spawning functionality working.
      [Brad Nicholes]
 
-  *) SECURITY [CVE-2002-0392] (cve.mitre.org) [CERT VU#944335]:
+  *) SECURITY: CVE-2002-0392 (cve.mitre.org) [CERT VU#944335]
      Detect overflow when reading the hex bytes forming a chunk line.
      [Aaron Bannert]
 
@@ -6147,7 +6158,7 @@ Changes with Apache 2.0a7
      multiple places and allows for an SSL module to be added much
      simpler. [Ryan Bloom]
 
-  *) SECURITY [CVE-2000-0913] (cve.mitre.org):
+  *) SECURITY: CVE-2000-0913 (cve.mitre.org)
      Fix a security problem that affects certain configurations of
      mod_rewrite. If the result of a RewriteRule is a filename that
      contains expansion specifiers, especially regexp backreferences
@@ -6537,7 +6548,7 @@ Changes with Apache 2.0a5
      container is VirtualHost or Directory or whatever.
      [Jeff Trawick]
 
-  *) SECURITY [CAN-2000-1204] (cve.mitre.org):
+  *) SECURITY: CAN-2000-1204 (cve.mitre.org)
      Prevent the source code for CGIs from being revealed when 
      using mod_vhost_alias and the CGI directory is under the document root
      and a user makes a request like http://www.example.com//cgi-bin/cgi
@@ -8951,12 +8962,11 @@ Changes with Apache 1.3.2
      run-time configurable using the ExtendedStatus directive.
      [Jim Jagielski]
 
-  *) SECURITY [CVE-1999-1199] (cve.mitre.org): 
+  *) SECURITY: CVE-1999-1199 (cve.mitre.org) 
      Eliminate O(n^2) space DoS attacks (and other O(n^2)
      cpu time attacks) in header parsing.  Add ap_overlap_tables(),
      a function which can be used to perform bulk update operations
-     on tables in a more efficient manner.
-     [Dean Gaudet]
+     on tables in a more efficient manner.  [Dean Gaudet]
 
   *) SECURITY: Added compile-time and configurable limits for
      various aspects of reading a client request to avoid some simple
