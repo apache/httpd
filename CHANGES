@@ -1,10 +1,13 @@
 Changes with Apache 2.0.45
 
+  *) mod_rewrite: Allow "RewriteEngine Off" even if no "Options FollowSymlinks"
+     (or SymlinksIfOwnermatch) is set. PR 12395.  [André Malo]
+
   *) apxs: Include any special APR ld flags when linking the DSO.
      This resolves problems on AIX when building a DSO with apxs+gcc.
      [Jeff Trawick]
 
-   *) Added character set support to mod_auth_LDAP to allow it to 
+  *) Added character set support to mod_auth_LDAP to allow it to 
      convert extended characters used in the user ID to UTF-8 
      before authenticating against the LDAP directory. The new
      directive AuthLDAPCharsetConfig is used to specify the config
