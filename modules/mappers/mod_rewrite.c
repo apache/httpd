@@ -2960,10 +2960,12 @@ static char *lookup_map_program(request_rec *r, ap_file_t *fpin,
     char buf[LONG_STRING_LEN];
     char c;
     int i;
-    int size_val;
+    ap_size_t nbytes;
+
 #ifndef NO_WRITEV
     ap_iovec_t *iov;
     struct iovec iova[2];
+    ap_size_t niov;
 #endif
 
     /* when `RewriteEngine off' was used in the per-server
@@ -2989,21 +2991,21 @@ static char *lookup_map_program(request_rec *r, ap_file_t *fpin,
     iova[1].iov_len = 1;
 
     ap_make_iov(&iov, iova, r->pool);
-    size_val = 2;
-    ap_writev(fpin, iov, &size_val);
+    niov = 2;
+    ap_writev(fpin, iov, niov, &nbytes);
 #endif
 
     /* read in the response value */
     i = 0;
-    size_val = 1;
-    ap_read(fpout, &c, &size_val);
-    while (size_val == 1 && (i < LONG_STRING_LEN-1)) {
+    nbytes = 1;
+    ap_read(fpout, &c, &nbytes);
+    while (nbytes == 1 && (i < LONG_STRING_LEN-1)) {
         if (c == '\n') {
             break;
         }
         buf[i++] = c;
 
-        ap_read(fpout, &c, &size_val);
+        ap_read(fpout, &c, &nbytes);
     }
     buf[i] = '\0';
 
@@ -3189,7 +3191,8 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     char type[20];
     char redir[20];
     va_list ap;
-    int i, size_val;
+    int i;
+    ap_size_t nbytes;
     request_rec *req;
     char *ruser;
     const char *rhost;
@@ -3258,8 +3261,8 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
                 type, redir, level, str2);
 
     fd_lock(r, conf->rewritelogfp);
-    size_val = strlen(str3);
-    ap_write(conf->rewritelogfp, str3, &size_val);
+    nbytes = strlen(str3);
+    ap_write(conf->rewritelogfp, str3, &nbytes);
     fd_unlock(r, conf->rewritelogfp);
 
     va_end(ap);
