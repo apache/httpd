@@ -1,5 +1,13 @@
 Changes with Apache 1.3b6
 
+  *) PORT: Add the SCO_SV port. [Jim Jagielski] PR#1962
+
+  *) PORT: IRIX needs the -n32 flag iff using the 'cc' compiler
+     [Jim Jagielski] PR#1901
+
+  *) BUG: Configure was using TCC and CC inconsistantly. Make sure
+     Configure knows which CC we are using. [Jim Jagielski]
+
   *) "Options +Includes" wasn't corrently merged if "+IncludesNoExec"
      was defined in a parent directory. [Lars Eilebrecht]
 
