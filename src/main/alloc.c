@@ -1146,7 +1146,7 @@ API_EXPORT(int) pclosesocket(pool *a, int sock)
     block_alarms();
     res = closesocket(sock);
 #ifdef WIN32
-    errno = WSAGetLastError() - WSABASEERR;
+    errno = WSAGetLastError();
 #endif /* WIN32 */
     save_errno = errno;
     kill_cleanup(a, (void *) (long) sock, socket_cleanup);

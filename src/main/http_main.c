@@ -3928,7 +3928,7 @@ void worker_main()
 	srv = ap_select(listenmaxfd + 1, &main_fds, NULL, NULL, &tv);
 #ifdef WIN32
 	if (srv == SOCKET_ERROR)
-	    errno = WSAGetLastError() - WSABASEERR;
+	    errno = WSAGetLastError();
 #endif /* WIN32 */
 
 	if (srv < 0 && errno != EINTR)
@@ -3958,7 +3958,7 @@ void worker_main()
 #ifdef WIN32
 	    if (csd == INVALID_SOCKET) {
 		csd = -1;
-		errno = WSAGetLastError() - WSABASEERR;
+		errno = WSAGetLastError();
 	    }
 #endif /* WIN32 */
 	} while (csd < 0 && errno == EINTR);

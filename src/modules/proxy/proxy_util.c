@@ -1173,7 +1173,7 @@ int proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
 	i = connect(sock, (struct sockaddr *) addr, sizeof(struct sockaddr_in));
 #ifdef WIN32
 	if (i == SOCKET_ERROR)
-	    errno = WSAGetLastError() - WSABASEERR;
+	    errno = WSAGetLastError();
 #endif /* WIN32 */
     } while (i == -1 && errno == EINTR);
     if (i == -1) {

@@ -123,15 +123,19 @@ int sendwithtimeout(int sock, const char *buf, int len, int flags)
 	    FD_SET(sock, &fdset);
 	    tv.tv_usec = 0;
 	    rv = select(FD_SETSIZE, NULL, &fdset, NULL, &tv);
-	    if (rv == 0) {
+	    if (rv == SOCKET_ERROR)
+		err = WSAGetLastError();
+	    else if (rv == 0) {
 		ioctlsocket(sock, FIONBIO, &iostate);
 		check_alarm();
 		WSASetLastError(WSAEWOULDBLOCK);
 		return (SOCKET_ERROR);
 	    }
-	    rv = send(sock, buf, len, flags);
-	    if (rv == SOCKET_ERROR)
-		err = WSAGetLastError();
+	    else {
+		rv = send(sock, buf, len, flags);
+		if (rv == SOCKET_ERROR)
+		    err = WSAGetLastError();
+	    }
 	}
     }
     ioctlsocket(sock, FIONBIO, &iostate);
@@ -191,7 +195,7 @@ static ap_inline int buff_read(BUFF *fb, void *buf, int nbyte)
     if (fb->flags & B_SOCKET) {
 	rv = recvwithtimeout(fb->fd_in, buf, nbyte, 0);
 	if (rv == SOCKET_ERROR)
-	    errno = WSAGetLastError() - WSABASEERR;
+	    errno = WSAGetLastError();
     }
     else
 	rv = read(fb->fd_in, buf, nbyte);
@@ -210,7 +214,7 @@ static ap_inline int buff_write(BUFF *fb, const void *buf, int nbyte)
     if (fb->flags & B_SOCKET) {
 	rv = sendwithtimeout(fb->fd, buf, nbyte, 0);
 	if (rv == SOCKET_ERROR)
-	    errno = WSAGetLastError() - WSABASEERR;
+	    errno = WSAGetLastError();
     }
     else
 	rv = write(fb->fd, buf, nbyte);
