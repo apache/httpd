@@ -276,7 +276,9 @@ static BIO_METHOD bio_bucket_method = {
     bio_bucket_ctrl,
     bio_bucket_new,
     bio_bucket_free,
-    NULL,
+#ifdef OPENSSL_VERSION_NUMBER
+    NULL /* sslc does not have the callback_ctrl field */
+#endif
 };
 
 static BIO_METHOD *BIO_s_bucket(void)
@@ -442,7 +444,9 @@ static BIO_METHOD bio_bucket_in_method = {
     NULL,                       /* ctrl is never called */
     bio_bucket_new,
     bio_bucket_free,
-    NULL,
+#ifdef OPENSSL_VERSION_NUMBER
+    NULL /* sslc does not have the callback_ctrl field */
+#endif
 };
 
 static BIO_METHOD *BIO_s_in_bucket(void)
