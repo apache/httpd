@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/16 17:12:11 $]
+Last modified at [$Date: 2003/04/16 17:28:29 $]
 
 Release:
 
@@ -247,7 +247,7 @@ PATCHES TO PORT FROM 2.1
     * ap_get_mime_headers_core: alloc space for null terminator
       while folding
       server/protocol.c r1.128
-      +1: gregames
+      +1: gregames, jerenkrantz
 
 CURRENT RELEASE NOTES:
 
