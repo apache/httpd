@@ -597,11 +597,14 @@ API_EXPORT(int) ap_call_exec(request_rec *r, char *argv0, char **env, int shellc
 
 #endif
 
+#ifndef WIN32
     /* the fd on r->server->error_log is closed, but we need somewhere to
      * put the error messages from the log_* functions. So, we use stderr,
-     * since that is better than allowing errors to go unnoticed.
+     * since that is better than allowing errors to go unnoticed.  Don't do
+     * this on Win32, though, since we haven't fork()'d.
      */
     r->server->error_log = stderr;
+#endif
 
 #ifdef RLIMIT_CPU
     if (conf->limit_cpu != NULL)
