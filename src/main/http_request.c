@@ -1219,7 +1219,7 @@ request_rec *internal_internal_redirect(const char *new_uri, request_rec *r)
     new->headers_in      = r->headers_in;
     new->headers_out     = make_table(r->pool, 5);
     new->err_headers_out = r->err_headers_out;
-    new->subprocess_env  = rename_original_env(r->pool, r->subprocess_env);
+    new->subprocess_env  = rename_original_env(new->pool, r->subprocess_env);
     new->notes           = make_table(r->pool, 5);
 
     new->htaccess        = r->htaccess;
