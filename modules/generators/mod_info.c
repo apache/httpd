@@ -249,7 +249,7 @@ static hook_lookup_t request_hooks[] = {
     {"Create Request", ap_hook_get_create_request},
     {"Post-Read Request", ap_hook_get_post_read_request},
     {"Header Parse", ap_hook_get_header_parser},
-    {"HTTP Method", ap_hook_get_http_method},
+    {"HTTP Scheme", ap_hook_get_http_scheme},
     {"Default Port", ap_hook_get_default_port},
     {"Translate Path", ap_hook_get_translate_name},
     {"Map to Storage", ap_hook_get_map_to_storage},

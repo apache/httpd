@@ -396,7 +396,7 @@ int ssl_init_ssl_connection(conn_rec *c)
     return APR_SUCCESS;
 }
 
-static const char *ssl_hook_http_method(const request_rec *r)
+static const char *ssl_hook_http_scheme(const request_rec *r)
 {
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
 
@@ -476,7 +476,7 @@ static void ssl_register_hooks(apr_pool_t *p)
     ap_hook_pre_connection(ssl_hook_pre_connection,NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_test_config   (ssl_hook_ConfigTest,    NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config   (ssl_init_Module,        NULL,NULL, APR_HOOK_MIDDLE);
-    ap_hook_http_method   (ssl_hook_http_method,   NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_http_scheme   (ssl_hook_http_scheme,   NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_default_port  (ssl_hook_default_port,  NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_config    (ssl_hook_pre_config,    NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init    (ssl_init_Child,         NULL,NULL, APR_HOOK_MIDDLE);

@@ -735,7 +735,7 @@ static void reduce_uri(request_rec *r)
     char *cp;
     apr_size_t l;
 
-    cp = (char *)ap_http_method(r);
+    cp = (char *)ap_http_scheme(r);
     l  = strlen(cp);
     if (   strlen(r->filename) > l+3
         && strncasecmp(r->filename, cp, l) == 0
@@ -807,7 +807,7 @@ static void fully_qualify_uri(request_rec *r)
                    : apr_psprintf(r->pool, ":%u", port);
 
         r->filename = apr_psprintf(r->pool, "%s://%s%s%s%s",
-                                   ap_http_method(r), thisserver, thisport,
+                                   ap_http_scheme(r), thisserver, thisport,
                                    (*r->filename == '/') ? "" : "/",
                                    r->filename);
     }
@@ -4184,7 +4184,7 @@ static int hook_uri2file(request_rec *r)
     thisurl = apr_table_get(r->subprocess_env, ENVVAR_SCRIPT_URL);
 
     /* set the variable */
-    var = apr_pstrcat(r->pool, ap_http_method(r), "://", thisserver, thisport,
+    var = apr_pstrcat(r->pool, ap_http_scheme(r), "://", thisserver, thisport,
                       thisurl, NULL);
     apr_table_setn(r->subprocess_env, ENVVAR_SCRIPT_URI, var);
 

@@ -95,7 +95,7 @@ static const command_rec http_cmds[] = {
     { NULL }
 };
 
-static const char *http_method(const request_rec *r)
+static const char *http_scheme(const request_rec *r)
 {
     return "http";
 }
@@ -224,7 +224,7 @@ static void register_hooks(apr_pool_t *p)
     }
 
     ap_hook_map_to_storage(ap_send_http_trace,NULL,NULL,APR_HOOK_MIDDLE);
-    ap_hook_http_method(http_method,NULL,NULL,APR_HOOK_REALLY_LAST);
+    ap_hook_http_scheme(http_scheme,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_default_port(http_port,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_create_request(http_create_request, NULL, NULL, APR_HOOK_REALLY_LAST);
     ap_http_input_filter_handle =

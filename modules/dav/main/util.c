@@ -204,7 +204,7 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r,
         /* ### not sure this works if the current request came in via https: */
         scheme = r->parsed_uri.scheme;
         if (scheme == NULL)
-            scheme = ap_http_method(r);
+            scheme = ap_http_scheme(r);
 
         /* insert a port if the URI did not contain one */
         if (comp.port == 0)

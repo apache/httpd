@@ -608,13 +608,13 @@ AP_DECLARE_HOOK(int,post_read_request,(request_rec *r))
 AP_DECLARE_HOOK(int,log_transaction,(request_rec *r))
 
 /**
- * This hook allows modules to retrieve the http method from a request.  This
- * allows Apache modules to easily extend the methods that Apache understands
+ * This hook allows modules to retrieve the http scheme for a request.  This
+ * allows Apache modules to easily extend the schemes that Apache understands
  * @param r The current request
- * @return The http method from the request
- * @deffunc const char *ap_run_http_method(const request_rec *r)
+ * @return The http scheme from the request
+ * @deffunc const char *ap_run_http_scheme(const request_rec *r)
  */
-AP_DECLARE_HOOK(const char *,http_method,(const request_rec *r))
+AP_DECLARE_HOOK(const char *,http_scheme,(const request_rec *r))
 
 /**
  * Return the default port from the current request

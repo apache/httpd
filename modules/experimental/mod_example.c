@@ -913,7 +913,7 @@ static void x_child_init(apr_pool_t *p, server_rec *s)
  * phase.
  */
 #if 0
-static const char *x_http_method(const request_rec *r)
+static const char *x_http_scheme(const request_rec *r)
 {
     x_cfg *cfg;
 
@@ -921,8 +921,8 @@ static const char *x_http_method(const request_rec *r)
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, NULL, cfg, "x_http_method()");
-    return "foo";
+    trace_add(r->server, NULL, cfg, "x_http_scheme()");
+    return "example";
 }
 
 /*
@@ -1285,7 +1285,7 @@ static void x_register_hooks(apr_pool_t *p)
                               APR_HOOK_MIDDLE);
     ap_hook_log_transaction(x_logger, NULL, NULL, APR_HOOK_MIDDLE);
 #if 0
-    ap_hook_http_method(x_http_method, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_http_scheme(x_http_scheme, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_default_port(x_default_port, NULL, NULL, APR_HOOK_MIDDLE);
 #endif
     ap_hook_translate_name(x_translate_handler, NULL, NULL, APR_HOOK_MIDDLE);

@@ -759,7 +759,7 @@ static int nwssl_hook_Fixup(request_rec *r)
     return DECLINED;
 }
 
-static const char *nwssl_hook_http_method (const request_rec *r)
+static const char *nwssl_hook_http_scheme(const request_rec *r)
 {
     if (isSecure(r) && !isSecureUpgraded(r))
         return "https";
@@ -854,7 +854,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
             if (strcEQ(var, "REQUEST_METHOD")) 
                 result = r->method;
             else if (strcEQ(var, "REQUEST_SCHEME"))
-                result = ap_http_method(r);
+                result = ap_http_scheme(r);
             else if (strcEQ(var, "REQUEST_URI"))
                 result = r->uri;
             else if (strcEQ(var, "REQUEST_FILENAME"))
@@ -1105,9 +1105,9 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_pre_connection(nwssl_pre_connection, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(nwssl_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_fixups(nwssl_hook_Fixup, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_http_method(nwssl_hook_http_method,   NULL,NULL, APR_HOOK_MIDDLE);
-    ap_hook_default_port  (nwssl_hook_default_port,  NULL,NULL, APR_HOOK_MIDDLE);
-    ap_hook_insert_filter (ssl_hook_Insert_Filter, NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_http_scheme(nwssl_hook_http_scheme, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_default_port(nwssl_hook_default_port, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_insert_filter(ssl_hook_Insert_Filter, NULL, NULL, APR_HOOK_MIDDLE);
 
     APR_REGISTER_OPTIONAL_FN(ssl_is_https);
     APR_REGISTER_OPTIONAL_FN(ssl_var_lookup);
