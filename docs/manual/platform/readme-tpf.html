@@ -1,206 +1,206 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<html>
-<head>
-<title>The Apache TPF Port</title>
-</head>
+<HTML>
+<HEAD>
+<TITLE>The Apache TPF Port</TITLE>
+</HEAD>
+<BODY>
+<A NAME="top"></A>
+<H1 align="center">Overview of the Apache TPF Port</H1>
+<HR>
+<CENTER>[&nbsp;<A HREF="#configuration_files">Configuration Files</A>
+   &nbsp;|&nbsp;<A HREF="#auto_generated_files">Auto Generated Files</A>
+   &nbsp;|&nbsp;<A HREF="#whats_available">What's Available</A>
+   &nbsp;|&nbsp;<A HREF="#porting_notes">Porting Notes</A>&nbsp;]
+</CENTER>
+<HR>
+<BR>
 
-<a name="top"></a>
-<h1 align="center">Overview of the Apache TPF Port</h1>
-<hr>
-<center>[&nbsp<a href="#configuration_files">Configuration Files</a>
-   &nbsp|&nbsp<a href="#auto_generated_files">Auto Generated Files</a>
-   &nbsp|&nbsp<a href="#whats_available">What's Available</a>
-   &nbsp|&nbsp<a href="#porting_notes">Porting Notes</a>&nbsp]
-</center>
-<hr>
-<br>
-
-<p>
+<P>
    This version of Apache includes changes allowing it to run on
    IBM's EBCDIC-based
-   <a href="http://www.s390.ibm.com/products/tpf/tpfhp.html">TPF</a>
+   <A HREF="http://www.s390.ibm.com/products/tpf/tpfhp.html">TPF</A>
    (Transaction Processing Facility) operating system.
    Unless otherwise noted TPF version 4.1 PUT08 and APAR PJ25589 are required.
-   <br><br>
-   Refer to htdocs/manual/<a href="install-tpf.html">install-tpf.html</a>
+   <BR><BR>
+   Refer to htdocs/manual/<A HREF="install-tpf.html">install-tpf.html</A>
    for step-by-step installation instructions.
-   <br><br>
+   <BR><BR>
    As this is the first cut at making Apache run on TPF,
    performance tuning has not been done.
-   <br><br>
-   This port builds upon the <a href="ebcdic.html">EBCDIC changes</a>
+   <BR><BR>
+   This port builds upon the <A HREF="ebcdic.html">EBCDIC changes</A>
    previously made to Apache.
-   <br>
-</p>
+   <BR>
+</P>
 
-<a name="configuration_files">&nbsp;</a>
-<h2 align=center>Apache Configuration Files</h2>
-<p>
+<A NAME="configuration_files">&nbsp;</A>
+<H2 align=center>Apache Configuration Files</H2>
+<P>
    The distributed configuration files (httpd.conf-dist and
    mime.types, both located in the conf subdirectory)
    work on TPF with only a couple of operating system specific changes
-   to httpd.conf:<br>
-   <ul>
-   <li>ServerType needs to be "inetd" since TPF does not yet support
+   to httpd.conf:<BR>
+   <UL>
+   <LI>ServerType needs to be "inetd" since TPF does not yet support
        "standalone" mode.
-   <li>Performance considerations may dictate setting KeepAlive to "Off"
+   <LI>Performance considerations may dictate setting KeepAlive to "Off"
        (the default is "On") or lowering the Timeout value from the default
        300 seconds (5 minutes) in order to reduce the number of active ECBs on your system.
-   </ul>
-</p>
+   </UL>
+</P>
 
-<a name="whats_available">&nbsp;</a>
-<h2 align=center>What's Available in this Version</h2>
+<A NAME="whats_available">&nbsp;</A>
+<H2 align=center>What's Available in this Version</H2>
 
    (The Apache organization provides
-   <a href="http://www.apache.org/docs/">online documentation</a>
+   <A HREF="http://www.apache.org/docs/">online documentation</A>
    describing the various modules and components of the server.)
 
-<h3>Components/modules tested on TPF:</h3>
+<H3>Components/modules tested on TPF:</H3>
 
-   <multicol COLS=3><ul>
-   <li>alloc.c
-   <li>ap_cpystrn.c
-   <li>ap_fnmatch.c
-   <li>ap_signal.c
-   <li>ap_slack.c
-   <li>ap_snprintf.c
-   <li>buff.c
-   <li>buildmark.c
-   <li>ebcdic.c
-   <li>http_config.c
-   <li>http_core.c
-   <li>http_log.c
-   <li>http_main.c
-   <li>http_protocol.c
-   <li>http_request.c
-   <li>http_vhost.c <a href="#note_2">*</a>
-   <li>mod_access.c
-   <li>mod_alias.c
-   <li>mod_asis.c
-   <li>mod_autoindex.c
-   <li>mod_cern_meta.c
-   <li>mod_dir.c
-   <li>mod_example.c
-   <li>mod_expires.c
-   <li>mod_headers.c
-   <li>mod_imap.c
-   <li>mod_info.c
-   <li>mod_log_agent.c
-   <li>mod_log_config.c
-   <li>mod_log_referer.c
-   <li>mod_mime.c
-   <li>mod_negotiation.c
-   <li>mod_setenvif.c
-   <li>mod_speling.c
-   <li>mod_userdir.c
-   <li>mod_usertrack.c
-   <li>os.c
-   <li>os-inline.c
-   <li>regular expression parser
-   <li>util.c
-   <li>util_date.c
-   <li>util_uri.c
-   </ul></multicol>
+   <multicol COLS=3><UL>
+   <LI>alloc.c
+   <LI>ap_cpystrn.c
+   <LI>ap_fnmatch.c
+   <LI>ap_signal.c
+   <LI>ap_slack.c
+   <LI>ap_snprintf.c
+   <LI>buff.c
+   <LI>buildmark.c
+   <LI>ebcdic.c
+   <LI>http_config.c
+   <LI>http_core.c
+   <LI>http_log.c
+   <LI>http_main.c
+   <LI>http_protocol.c
+   <LI>http_request.c
+   <LI>http_vhost.c <A HREF="#note_2">*</A>
+   <LI>mod_access.c
+   <LI>mod_alias.c
+   <LI>mod_asis.c
+   <LI>mod_autoindex.c
+   <LI>mod_cern_meta.c
+   <LI>mod_dir.c
+   <LI>mod_example.c
+   <LI>mod_expires.c
+   <LI>mod_headers.c
+   <LI>mod_imap.c
+   <LI>mod_info.c
+   <LI>mod_log_agent.c
+   <LI>mod_log_config.c
+   <LI>mod_log_referer.c
+   <LI>mod_mime.c
+   <LI>mod_negotiation.c
+   <LI>mod_setenvif.c
+   <LI>mod_speling.c
+   <LI>mod_userdir.c
+   <LI>mod_usertrack.c
+   <LI>os.c
+   <LI>os-inline.c
+   <LI>regular expression parser
+   <LI>util.c
+   <LI>util_date.c
+   <LI>util_uri.c
+   </UL></MULTICOL>
    Please keep in mind that some major pieces are not yet in place including
    standalone mode, pipes, password/group files, CGI scripts, and MD5 support.
-   <br>
-   <a name="note_2">&nbsp;</a>
-   <br>
+   <BR>
+   <A NAME="note_2">&nbsp;</A>
+   <BR>
    * virtual hosting requires TPF version 4.1 PUT09
 
-<h3>Components/modules not (yet?) supported on TPF:</h3>
+<H3>Components/modules not (yet?) supported on TPF:</H3>
 
-   <multicol COLS=3><ul>
-   <li>htpasswd.c
-   <li>md5c.c
-   <li>mod_actions.c
-   <li>mod_auth.c
-   <li>mod_auth_anon.c
-   <li>mod_cgi.c
-   <li>mod_digest.c
-   <li>mod_env.c
-   <li>mod_include.c
-   <li>mod_mime_magic.c
-   <li>mod_proxy.c
-   <li>mod_rewrite.c
-   <li>mod_status.c
-   <li>mod_unique_id.c
-   <li>proxy_cache.c
-   <li>proxy_connect.c
-   <li>proxy_ftp.c
-   <li>proxy_http.c
-   <li>proxy_util.c
-   <li>rfc1413.c
-   <li>util_md5.c
-   <li>util_script.c
-   </ul></multicol>
+   <multicol COLS=3><UL>
+   <LI>htpasswd.c
+   <LI>md5c.c
+   <LI>mod_actions.c
+   <LI>mod_auth.c
+   <LI>mod_auth_anon.c
+   <LI>mod_cgi.c
+   <LI>mod_digest.c
+   <LI>mod_env.c
+   <LI>mod_include.c
+   <LI>mod_mime_magic.c
+   <LI>mod_proxy.c
+   <LI>mod_rewrite.c
+   <LI>mod_status.c
+   <LI>mod_unique_id.c
+   <LI>proxy_cache.c
+   <LI>proxy_connect.c
+   <LI>proxy_ftp.c
+   <LI>proxy_http.c
+   <LI>proxy_util.c
+   <LI>rfc1413.c
+   <LI>util_md5.c
+   <LI>util_script.c
+   </UL></MULTICOL>
 
-<h3>Components/modules that don't apply or that probably won't ever be available on TPF:</h3>
+<H3>Components/modules that don't apply or that probably won't ever be available on TPF:</H3>
 
-   <multicol COLS=3><ul>
-   <li>gen_test.char.c
-   <li>gen_uri_delims.c
-   <li>mod_auth_db.c
-   <li>mod_auth_dbm.c
-   <li>mod_auth_db.module
-   <li>mod_mmap_static.c
-   <li>mod_so.c
-   </ul></multicol>
+   <multicol COLS=3><UL>
+   <LI>gen_test.char.c
+   <LI>gen_uri_delims.c
+   <LI>mod_auth_db.c
+   <LI>mod_auth_dbm.c
+   <LI>mod_auth_db.module
+   <LI>mod_mmap_static.c
+   <LI>mod_so.c
+   </UL></MULTICOL>
 
-<a name="porting_notes">&nbsp;</a>
-<h2 align=center>Porting Notes</h2>
-<p>
-   <h3>Changes made due to differences between UNIX and
-   TPF's process models:</h3>
-   <ul>
-   <li><b>Signals</b>: On TPF a signal that is sent to a process
+<A NAME="porting_notes">&nbsp;</A>
+<H2 align=center>Porting Notes</H2>
+<P>
+   <H3>Changes made due to differences between UNIX and
+   TPF's process models:</H3>
+   <UL>
+   <LI><STRONG>Signals</STRONG>: On TPF a signal that is sent to a process
       remains unhandled until the process explicitly requests that signals
-      be handled using the <code>tpf_process_signals()</code> function.
+      be handled using the <CODE>tpf_process_signals()</CODE> function.
       Additionally, the default action for an alarm on TPF is to take
       an OPR-7777 dump and exit.  (On UNIX the default is the equivalent
-      of <code>exit()</code> with no dump taken.)
+      of <CODE>exit()</CODE> with no dump taken.)
       These differences necessitated a few modifications:
-      <br><br>
-      <ul>
-      <li>bypass the use of <code>ap_block_alarms()</code> &amp;
-         <code>ap_unblock_alarms()</code>
-      <li>add <code>tpf_process_signals()</code> calls
-      <li>add <code>select()</code> calls in buff.c to prevent blocking.
-      </ul>
-   <br>
-   </ul>
+      <BR><BR>
+      <UL>
+      <LI>bypass the use of <CODE>ap_block_alarms()</CODE> &amp;
+         <CODE>ap_unblock_alarms()</CODE>
+      <LI>add <CODE>tpf_process_signals()</CODE> calls
+      <LI>add <CODE>select()</CODE> calls in buff.c to prevent blocking.
+      </UL>
+   <BR>
+   </UL>
 
-   <h3>Find that function...</h3>
-   <p>Some simple functions &amp; definitions needed to be added
-      on TPF, such as <code>FD_SET()</code>.
+   <H3>Find that function...</H3>
+   <P>Some simple functions &amp; definitions needed to be added
+      on TPF, such as <CODE>FD_SET()</CODE>.
       We've put these in src/os/tpf/os.h for now.
-   </p>
+   </P>
 
-   <h3>EBCDIC changes:</h3>
-   <p>TPF-specific conversion tables between US-ASCII and
+   <H3>EBCDIC changes:</H3>
+   <P>TPF-specific conversion tables between US-ASCII and
       EBCDIC (character set IBM-1047 to be exact) were created
       and put into ebcdic.c in the src/os/tpf directory.
-   </p>
+   </P>
 
-   <h3>Miscellaneous, minor changes:</h3>
-   <p>Various minor changes (such as casting) were made due to
+   <H3>Miscellaneous, minor changes:</H3>
+   <P>Various minor changes (such as casting) were made due to
       differences in how some functions are implemented on TPF.
-   </p>
+   </P>
 
-   <h3>Temporary changes:</h3>
-   <p>Lastly, we needed to bypass sections of Apache processing
+   <H3>Temporary changes:</H3>
+   <P>Lastly, we needed to bypass sections of Apache processing
       since this first cut for TPF doesn't include
       Standalone mode, pipes, forking, et cetera.
-   </p>
+   </P>
 
-<hr>
-<center>[&nbsp<a href="#top">top</a>
-   &nbsp|&nbsp<a href="#configuration_files">Configuration Files</a>
-   &nbsp|&nbsp<a href="#auto_generated_files">Auto Generated Files</a>
-   &nbsp|&nbsp<a href="#whats_available">What's Available</a>
-   &nbsp|&nbsp<a href="#porting_notes">Porting Notes</a>&nbsp]
-</center>
+<HR>
+<CENTER>[&nbsp;<A HREF="#top">top</A>
+   &nbsp;|&nbsp;<A HREF="#configuration_files">Configuration Files</A>
+   &nbsp;|&nbsp;<A HREF="#auto_generated_files">Auto Generated Files</A>
+   &nbsp;|&nbsp;<A HREF="#whats_available">What's Available</A>
+   &nbsp;|&nbsp;<A HREF="#porting_notes">Porting Notes</A>&nbsp;]
+</CENTER>
 
-</body>
-</html>
+</BODY>
+</HTML>
