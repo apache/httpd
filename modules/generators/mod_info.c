@@ -269,7 +269,9 @@ static int display_info(request_rec *r)
     const char *cfname;
     const char *more_info;
     const command_rec *cmd = NULL;
+#ifdef NEVERMORE
     const handler_rec *hand = NULL;
+#endif
     server_rec *serv = r->server;
     int comma = 0;
 
@@ -328,6 +330,7 @@ static int display_info(request_rec *r)
                             "<font size=+1><tt>%s</tt></a></font>\n",
                             modp->name, modp->name);
                 ap_rputs("<dt><strong>Content handlers:</strong>", r);
+#ifdef NEVERMORE
                 hand = modp->handlers;
                 if (hand) {
                     while (hand) {
@@ -346,6 +349,9 @@ static int display_info(request_rec *r)
                 else {
                     ap_rputs("<tt> <EM>none</EM></tt>", r);
                 }
+#else
+                ap_rputs("<tt> <EM>(code broken)</EM></tt>", r);
+#endif
                 ap_rputs("<dt><strong>Configuration Phase Participation:</strong> \n",
                       r);
                 if (modp->create_dir_config) {
@@ -454,11 +460,10 @@ static const command_rec info_cmds[] =
     {NULL}
 };
 
-static const handler_rec info_handlers[] =
+static void register_hooks(void)
 {
-    {"server-info", display_info},
-    {NULL}
-};
+    ap_hook_handler(display_info, NULL, NULL, AP_HOOK_MIDDLE);
+}
 
 module AP_MODULE_DECLARE_DATA info_module =
 {
@@ -468,6 +473,5 @@ module AP_MODULE_DECLARE_DATA info_module =
     create_info_config,         /* server config */
     merge_info_config,          /* merge server config */
     info_cmds,                  /* command apr_table_t */
-    info_handlers,              /* handlers */
-    NULL,                       /* filename translation */
+    register_hooks
 };
