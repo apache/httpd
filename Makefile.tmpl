@@ -424,11 +424,11 @@ clean-std:
 #   clean additional support stuff
 clean-support:
 	@echo "===> $(SRC)/support"; \
-	    cd $(TOP)/$(SRC)/support; $(MAKE) $(MFLAGS) clean; \
-	    if [ ".$(suexec)" = .1 ]; then \
-	        echo "$(RM) suexec"; \
-	        $(RM) suexec; \
-	    fi; \
+	cd $(TOP)/$(SRC)/support; $(MAKE) $(MFLAGS) clean; \
+	if [ ".$(suexec)" = .1 ]; then \
+		echo "$(RM) suexec"; \
+		$(RM) suexec; \
+	fi; \
 	echo "<=== $(SRC)/support"
 
 #   cleanup the source tree by removing anything which was
