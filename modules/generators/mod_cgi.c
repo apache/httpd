@@ -989,8 +989,9 @@ static void cgi_post_config(apr_pool_t *p, apr_pool_t *plog,
 
 static void register_hooks(apr_pool_t *p)
 {
+    static const char * const aszPre[] = { "mod_include.c", NULL };
     ap_hook_handler(cgi_handler, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_post_config(cgi_post_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
+    ap_hook_post_config(cgi_post_config, aszPre, NULL, APR_HOOK_REALLY_FIRST);
 }
 
 module AP_MODULE_DECLARE_DATA cgi_module =
