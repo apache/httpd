@@ -50,8 +50,6 @@
  *
  */
   
-/* $Id: http_protocol.c,v 1.58 1996/10/19 17:02:16 ben Exp $ */
-
 /*
  * http_protocol.c --- routines which directly communicate with the
  * client.
@@ -1081,7 +1079,7 @@ void finalize_request_protocol (request_rec *r) {
  *    the module should assume that the input is of a non-entity type
  *    (e.g. a GET request). This step also sends a 100 Continue response
  *    to HTTP/1.1 clients, so should not be called until the module
- *    is *defenitely* ready to read content. (otherwise, the point of the
+ *    is *definitely* ready to read content. (otherwise, the point of the
  *    100 response is defeated). Never call this function more than once.
  *
  * 3. Finally, call get_client_block in a loop. Pass it a buffer and its

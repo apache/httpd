@@ -110,9 +110,6 @@ long send_fd_length(FILE *f, request_rec *r, long length);
  * definitions of the macros would get a whole lot hairier.
  */
      
-#if 0
-long rprintf (request_rec *r, char *s, ...);     
-#endif
 int rputc (int c, request_rec *r);     
 int rputs(const char *str, request_rec *r);
 int rvputs(request_rec *r, ...);
