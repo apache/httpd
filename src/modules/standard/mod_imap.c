@@ -422,11 +422,13 @@ static void imap_url(request_rec *r, char *base, char *value, char *url)
     return;  
   }
 
-  strncpy(my_base, base, sizeof(my_base)-1);  /* must be a relative URL to be combined with base */
+  /* must be a relative URL to be combined with base */
+  strncpy(my_base, base, sizeof(my_base)-1);
   my_base[sizeof(my_base)-1] = '\0';
   if (strchr(my_base, '/') == NULL && (!strncmp(value, "../", 3) || !strcmp(value, "..")) ) {
     url[0] = '\0';
-    log_reason("invalid base directive in map file", r->uri, r);
+    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		"invalid base directive in map file: %s", r->uri);
     return;
   }
   string_pos = my_base; 
@@ -477,7 +479,8 @@ static void imap_url(request_rec *r, char *base, char *value, char *url)
 	  value += 2;      /* jump over the '..' that we found in the value */
       } else if (directory) {
 	url[0] = '\0';
-	log_reason("invalid directory name in map file", r->uri, r);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "invalid directory name in map file: %s", r->uri);
 	return;
       }
       
