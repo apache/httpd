@@ -43,7 +43,7 @@
 
       <dd>Em sistemas Unix com suporte a threads POSIX, o Apache pode
       funcionar em modo híbrido multiprocesso e multithread. Não funciona
-      com todas configurações, mas melhora a escabilidade em muitas.</dd>
+      em todas configurações, mas melhora a escalabilidade em muitas.</dd>
 
       <dt>Novo Sistema de Compilação</dt>
 
@@ -52,7 +52,7 @@
       configuração do sistema Apache mais similar a de outros
       pacotes.</dd>
 
-      <dt>Suporte Multiprotocolo</dt>
+      <dt>Suporte Multi-protocolo</dt>
 
       <dd>O Apache possui agora uma infraestrutura feita para suportar
       múltiplos protocolos. O módulo <code class="module"><a href="./mod/mod_echo.html">mod_echo</a></code> é  um
@@ -80,7 +80,7 @@
 
       <dd>Em sistemas onde o IPv6 é suportado pela biblioteca de base
       Apache Portable Runtime, o Apache monitora por padrão
-      as interfaces IPv6. Adicionalmente as diretrizes  <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>, <code class="directive"><a href="./mod/core.html#namevirtualhost">NameVirtualHost</a></code> e <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code>, suportam correntes (strings) de
+      as interfaces IPv6. Em adição as diretrizes  <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>, <code class="directive"><a href="./mod/core.html#namevirtualhost">NameVirtualHost</a></code> e <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code>, suportam correntes (strings) de
       endereços numéricos do tipo IPv6. (ex. "<code>Listen
       [fe80::1]:8080</code>").</dd>
 
@@ -94,7 +94,7 @@
       como filtros do mesmo modo que aplicações CGI funcionam como
       manipuladores.</dd>
 
-      <dt>Respostas de Erro Multilinguais</dt>
+      <dt>Respostas de Erro Multi-linguais</dt>
 
       <dd>Mensagens de erro para o navegador agora são fornecidas em
       diversas línguas, usando documentos SSI. Podem ser personalizadas
@@ -106,7 +106,7 @@
       <dd>Muitas diretrizes confusas foram simplificadas. Entre elas,
       <code>Port</code> e <code>BindAddress</code> não existem
       mais; apenas a diretriz <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
-      é usada para direcionamento de endereços IP; a diretriz <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> especifica o nome do servidor
+      é usada para direcionar endereços IP; a diretriz <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> especifica o nome do servidor
       e o número da porta apenas para redirecionamento e reconhecimento
       de hospedeiros virtuais.</dd>
 
@@ -114,7 +114,7 @@
 
       <dd>O Apache 2.0 para Windows NT agora usa utf-8 para codificação
       de todos os nomes de arquivos. A tradução para o sistema
-      base Unicode, torna possível o suporte multilingual para todas
+      base Unicode, torna possível o suporte multi-lingual para todas
       as instalações da família NT, incluindo o Windows 2000 e Windows XP.
       <em>Esse suporte não se estende ao Windows 95, 98 ou ME, que
       continuam usando o código de páginas da máquina local para o
@@ -155,8 +155,8 @@
 
       <dt><code class="module"><a href="./mod/mod_auth_ldap.html">mod_auth_ldap</a></code></dt>
 
-      <dd>Nono módulo no Apache 2.0.41.  Esse módulo permite que 
-      bancos de dados LDAP sejam usados para armazenar credendiciais
+      <dd>Novo módulo no Apache 2.0.41. Este módulo permite que 
+      bancos de dados LDAP sejam usados para armazenar credenciais
       para Autenticação Básica HTTP. Um módulo que o acompanha <code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>, fornece a conciliação de conexões e armazenamento
       de resultados.</dd>
 
@@ -168,7 +168,7 @@
       <dt><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code></dt>
 
       <dd>Novo módulo no Apache 2.0. Este modo experimental permite a
-      tradução de tabelas de caracteres ou recodificação.</dd>
+      tradução de tabelas de caracteres ou re-codificação.</dd>
 
       <dt><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></dt>
 
@@ -185,7 +185,7 @@
 
       <dd>O módulo proxy foi totalmente reescrito para levar vantagem
       da nova infraestrutura de filtro e implementar um proxy mais fiel e 
-      concordante com o padrão HTTP/1.1. Adicionalmente, uma nova seção
+      de acordo com o padrão HTTP/1.1. Além disso, uma nova seção
       de configuração <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> fornece controles mais legíveis (e internamente
       mais rápidos) para sites com proxies; configurações
       sobrecarregadas <code>&lt;Directory "proxy:..."&gt;</code>, não
@@ -197,7 +197,7 @@
 
       <dd>A nova diretriz <code class="directive"><a href="./mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></code> pode ser usada para assegurar que
       o cliente receba um único documento em todos os casos, ao invés de
-      respostas NOT ACCEPTABLE ou MULTIPLE CHOICES. Novos algoritmos
+      respostas "NOT ACCEPTABLE" ou "MULTIPLE CHOICES". Novos algoritmos
       de negociação e visões múltiplas (MultiViews) foram organizados para
       obter resultados mais consistentes e uma nova forma de tipo de mapa
       (map type) que podem incluir o conteúdo de documentos é fornecido.</dd>
@@ -208,7 +208,7 @@
       configuradas para usar tabelas HTML para formatações mais limpas
       e permitir controles mais acurados de classificação, incluindo
       ordenação por versão e filtro da lista de
-      diretórios através de caracteres-curinga.</dd>
+      diretórios através de caracteres-coringa.</dd>
 
       <dt><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></dt>
 
