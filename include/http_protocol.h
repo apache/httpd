@@ -252,6 +252,69 @@ API_EXPORT(long) ap_send_fb_length(BUFF *f, request_rec *r, long length);
 API_EXPORT(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
                              size_t length);
 
+/**
+ * Create a new method list with the specified number of preallocated
+ * slots for extension methods.
+ *
+ * @param   p       Pointer to a pool in which the structure should be
+ *                  allocated.
+ * @param   nelts   Number of preallocated extension slots
+ * @return  Pointer to the newly created structure.
+ * @deffunc ap_method_list_t ap_make_method_list(apr_pool_t *p, int nelts)
+ */
+API_EXPORT(ap_method_list_t *) ap_make_method_list(apr_pool_t *p, int nelts);
+API_EXPORT(void) ap_copy_method_list(ap_method_list_t *dest,
+				     ap_method_list_t *src);
+API_EXPORT(void) ap_method_list_do(int (*comp) (void *urec, const char *mname,
+						int mnum),
+				   void *rec,
+				   const ap_method_list_t *ml, ...);
+API_EXPORT(void) ap_method_list_vdo(int (*comp) (void *urec, const char *mname,
+						 int mnum),
+				    void *rec, const ap_method_list_t *ml,
+				    va_list vp);
+/**
+ * Search for an HTTP method name in an ap_method_list_t structure, and
+ * return true if found.
+ *
+ * @param   method  String containing the name of the method to check.
+ * @param   l       Pointer to a method list, such as cmd->methods_limited.
+ * @return  1 if method is in the list, otherwise 0
+ * @deffunc int ap_method_in_list(const char *method, ap_method_list_t *l)
+ */
+API_EXPORT(int) ap_method_in_list(ap_method_list_t *l, const char *method);
+
+/**
+ * Add an HTTP method name to an ap_method_list_t structure if it isn't
+ * already listed.
+ *
+ * @param   method  String containing the name of the method to check.
+ * @param   l       Pointer to a method list, such as cmd->methods_limited.
+ * @return  None.
+ * @deffunc void ap_method_in_list(ap_method_list_t *l, const char *method)
+ */
+API_EXPORT(void) ap_method_list_add(ap_method_list_t *l, const char *method);
+    
+/**
+ * Remove an HTTP method name from an ap_method_list_t structure.
+ *
+ * @param   l       Pointer to a method list, such as cmd->methods_limited.
+ * @param   method  String containing the name of the method to remove.
+ * @return  None.
+ * @deffunc void ap_method_list_remove(ap_method_list_t *l, const char *method)
+ */
+API_EXPORT(void) ap_method_list_remove(ap_method_list_t *l,
+				       const char *method);
+
+/**
+ * Reset a method list to be completely empty.
+ *
+ * @param   l       Pointer to a method list, such as cmd->methods_limited.
+ * @return  None.
+ * @deffunc void ap_clear_method_list(ap_method_list_t *l)
+ */
+API_EXPORT(void) ap_clear_method_list(ap_method_list_t *l);
+    
 /* Hmmm... could macrofy these for now, and maybe forever, though the
  * definitions of the macros would get a whole lot hairier.
  */

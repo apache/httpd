@@ -1181,6 +1181,8 @@ request_rec *ap_read_request(conn_rec *conn)
     r->user            = NULL;
     r->ap_auth_type    = NULL;
 
+    r->allowed_methods = ap_make_method_list(p, 2);
+
     r->headers_in      = apr_make_table(r->pool, 50);
     r->subprocess_env  = apr_make_table(r->pool, 50);
     r->headers_out     = apr_make_table(r->pool, 12);
@@ -1645,40 +1647,210 @@ static void terminate_header(request_rec *r)
     (void) checked_bputs(CRLF, r);  /* Send the terminating empty line */
 }
 
+/*
+ * Create a new method list with the specified number of preallocated
+ * extension slots.
+ */
+API_EXPORT(ap_method_list_t *) ap_make_method_list(apr_pool_t *p, int nelts)
+{
+    ap_method_list_t *ml;
+
+    ml = (ap_method_list_t *) apr_palloc(p, sizeof(ap_method_list_t));
+    ml->method_mask = 0;
+    ml->method_list = apr_make_array(p, sizeof(char *), nelts);
+    return ml;
+}
+
+/*
+ * Make a copy of a method list (primarily for subrequests that may
+ * subsequently change it; don't want them changing the parent's, too!).
+ */
+API_EXPORT(void) ap_copy_method_list(ap_method_list_t *dest,
+				     ap_method_list_t *src)
+{
+    int i;
+    char **imethods;
+    char **omethods;
+
+    dest->method_mask = src->method_mask;
+    imethods = (char **) src->method_list->elts;
+    for (i = 0; i < src->method_list->nelts; ++i) {
+	omethods = (char **) apr_push_array(dest->method_list);
+	*omethods = apr_pstrdup(dest->method_list->cont, imethods[i]);
+    }
+}
+
+/*
+ * Invoke a callback routine for each method in the specified list.
+ */
+API_EXPORT(void) ap_method_list_do(int (*comp) (void *urec, const char *mname,
+						int mnum),
+				   void *rec,
+				   const ap_method_list_t *ml, ...)
+{
+    va_list vp;
+    va_start(vp, ml);
+    ap_method_list_vdo(comp, rec, ml, vp);
+    va_end(vp);  
+}
+
+API_EXPORT(void) ap_method_list_vdo(int (*comp) (void *mrec,
+						 const char *mname,
+						 int mnum),
+				    void *rec, const ap_method_list_t *ml,
+				    va_list vp)
+{
+    
+}
+
+/*
+ * Return true if the specified HTTP method is in the provided
+ * method list.
+ */
+API_EXPORT(int) ap_method_in_list(ap_method_list_t *l, const char *method)
+{
+    int methnum;
+    int i;
+    char **methods;
+
+    /*
+     * If it's one of our known methods, use the shortcut and check the
+     * bitmask.
+     */
+    methnum = ap_method_number_of(method);
+    if (methnum != M_INVALID) {
+	return (l->method_mask & (1 << methnum));
+    }
+    /*
+     * Otherwise, see if the method name is in the array or string names
+     */
+    if ((l->method_list = NULL) || (l->method_list->nelts == 0)) {
+	return 0;
+    }
+    for (i = 0; i < l->method_list->nelts; ++i) {
+	if (strcmp(method, methods[i]) == 0) {
+	    return 1;
+	}
+    }
+    return 0;
+}
+    
+/*
+ * Add the specified method to a method list (if it isn't already there).
+ */
+API_EXPORT(void) ap_method_list_add(ap_method_list_t *l, const char *method)
+{
+    int methnum;
+    int i;
+    const char **xmethod;
+    char **methods;
+
+    /*
+     * If it's one of our known methods, use the shortcut and use the
+     * bitmask.
+     */
+    methnum = ap_method_number_of(method);
+    l->method_mask |= (1 << methnum);
+    if (methnum != M_INVALID) {
+	return;
+    }
+    /*
+     * Otherwise, see if the method name is in the array of string names.
+     */
+    if (l->method_list->nelts != 0) {
+	for (i = 0; i < l->method_list->nelts; ++i) {
+	    if (strcmp(method, methods[i]) == 0) {
+		return;
+	    }
+	}
+    }
+    xmethod = (const char **) apr_push_array(l->method_list);
+    *xmethod = method;
+}
+    
+/*
+ * Remove the specified method from a method list.
+ */
+API_EXPORT(void) ap_method_list_remove(ap_method_list_t *l,
+				       const char *method)
+{
+    int methnum;
+    const char **xmethod;
+    char **methods;
+
+    /*
+     * If it's one of our known methods, use the shortcut and use the
+     * bitmask.
+     */
+    methnum = ap_method_number_of(method);
+    l->method_mask |= ~(1 << methnum);
+    if (methnum != M_INVALID) {
+	return;
+    }
+    /*
+     * Otherwise, see if the method name is in the array of string names.
+     */
+    if (l->method_list->nelts != 0) {
+	register int i, j, k;
+	for (i = 0; i < l->method_list->nelts; ) {
+	    if (strcmp(method, methods[i]) == 0) {
+		for (j = i, k = i + 1; k < l->method_list->nelts; ++j, ++k) {
+		    methods[j] = methods[k];
+		}
+		--l->method_list->nelts;
+	    }
+	    else {
+		++i;
+	    }
+	}
+    }
+}
+
+/*
+ * Reset a method list to be completely empty.
+ */
+API_EXPORT(void) ap_clear_method_list(ap_method_list_t *l)
+{
+    l->method_mask = 0;
+    l->method_list->nelts = 0;
+}
+
 /* Build the Allow field-value from the request handler method mask.
  * Note that we always allow TRACE, since it is handled below.
  */
 static char *make_allow(request_rec *r)
 {
     char *list;
+    int mask;
 
+    mask = r->allowed_methods->method_mask;
     list = apr_pstrcat(r->pool,
-		       (r->allowed & (1 << M_GET))       ? ", GET, HEAD" : "",
-		       (r->allowed & (1 << M_POST))      ? ", POST"      : "",
-		       (r->allowed & (1 << M_PUT))       ? ", PUT"       : "",
-		       (r->allowed & (1 << M_DELETE))    ? ", DELETE"    : "",
-		       (r->allowed & (1 << M_CONNECT))   ? ", CONNECT"   : "",
-		       (r->allowed & (1 << M_OPTIONS))   ? ", OPTIONS"   : "",
-		       (r->allowed & (1 << M_PATCH))     ? ", PATCH"     : "",
-		       (r->allowed & (1 << M_PROPFIND))  ? ", PROPFIND"  : "",
-		       (r->allowed & (1 << M_PROPPATCH)) ? ", PROPPATCH" : "",
-		       (r->allowed & (1 << M_MKCOL))     ? ", MKCOL"     : "",
-		       (r->allowed & (1 << M_COPY))      ? ", COPY"      : "",
-		       (r->allowed & (1 << M_MOVE))      ? ", MOVE"      : "",
-		       (r->allowed & (1 << M_LOCK))      ? ", LOCK"      : "",
-		       (r->allowed & (1 << M_UNLOCK))    ? ", UNLOCK"    : "",
+		       (mask & (1 << M_GET))	   ? ", GET, HEAD" : "",
+		       (mask & (1 << M_POST))	   ? ", POST"      : "",
+		       (mask & (1 << M_PUT))	   ? ", PUT"       : "",
+		       (mask & (1 << M_DELETE))	   ? ", DELETE"    : "",
+		       (mask & (1 << M_CONNECT))   ? ", CONNECT"   : "",
+		       (mask & (1 << M_OPTIONS))   ? ", OPTIONS"   : "",
+		       (mask & (1 << M_PATCH))	   ? ", PATCH"     : "",
+		       (mask & (1 << M_PROPFIND))  ? ", PROPFIND"  : "",
+		       (mask & (1 << M_PROPPATCH)) ? ", PROPPATCH" : "",
+		       (mask & (1 << M_MKCOL))	   ? ", MKCOL"     : "",
+		       (mask & (1 << M_COPY))	   ? ", COPY"      : "",
+		       (mask & (1 << M_MOVE))	   ? ", MOVE"      : "",
+		       (mask & (1 << M_LOCK))	   ? ", LOCK"      : "",
+		       (mask & (1 << M_UNLOCK))	   ? ", UNLOCK"    : "",
 		       ", TRACE",
 		       NULL);
-    if ((r->allowed & (1 << M_INVALID))
-	&& (r->allowed_xmethods != NULL)
-	&& (r->allowed_xmethods->nelts != 0)) {
+    if ((mask & (1 << M_INVALID))
+	&& (r->allowed_methods->method_list != NULL)
+	&& (r->allowed_methods->method_list->nelts != 0)) {
 	int i;
-	char **xmethod = (char **) r->allowed_xmethods->elts;
+	char **xmethod = (char **) r->allowed_methods->method_list->elts;
 
 	/*
-	 * Append all of the elements of r->allowed_xmethods
+	 * Append all of the elements of r->allowed_methods->method_list
 	 */
-	for (i = 0; i < r->allowed_xmethods->nelts; ++i) {
+	for (i = 0; i < r->allowed_methods->method_list->nelts; ++i) {
 	    list = apr_pstrcat(r->pool, list, ", ", xmethod[i], NULL);
 	}
     }

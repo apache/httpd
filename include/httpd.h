@@ -484,6 +484,16 @@ API_EXPORT(const char *) ap_get_server_built(void);
 
 #define METHODS     16
 
+/*
+ * Structure for handling HTTP methods.  Methods known to the server are
+ * accessed via a bitmask shortcut; extension methods are handled by
+ * an array.
+ */
+typedef struct {
+    int method_mask;
+    apr_array_header_t *method_list;
+} ap_method_list_t;
+
 #define CGI_MAGIC_TYPE "application/x-httpd-cgi"
 #define INCLUDES_MAGIC_TYPE "text/x-server-parsed-html"
 #define INCLUDES_MAGIC_TYPE3 "text/x-server-parsed-html3"
@@ -668,6 +678,7 @@ struct request_rec {
      */
     int allowed;		/* Allowed methods - for 405, OPTIONS, etc */
     apr_array_header_t *allowed_xmethods; /* Array of extension methods */
+    ap_method_list_t *allowed_methods; /* List of allowed methods */
 
     /** byte count in stream is for body */
     int sent_bodyct;

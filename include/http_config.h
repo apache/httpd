@@ -287,6 +287,7 @@ struct cmd_parms_struct {
     /** Which methods are <Limit>ed */
     int limited;
     apr_array_header_t *limited_xmethods;
+    ap_method_list_t *xlimited;
 
     /** Config file structure. */
     configfile_t *config_file;
