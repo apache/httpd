@@ -25,9 +25,6 @@
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Ständig verfügbare Kernfunktionen des Apache HTTP
 Servers</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Core</td></tr></table>
@@ -1066,9 +1063,9 @@ Fehlermeldungen</a></li>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 </table>
     <p>Die Direktive <code class="directive">ErrorLog</code> bestimmt den Namen
-    der Datei, in welcher der Server alle auftretenden Fehler protokolliert.
-    Wenn <var>Dateiname</var> nicht absolut ist (im Allgemeinen: nicht mit
-    einem Schrägstrich (/) beginnt), wird er relativ zu <code class="directive"><a href="#serverroot">ServerRoot</a></code> betrachtet.</p>
+    der Datei, in welcher der Server alle auftretenden Fehler protokolliert
+    werden. Wenn <var>Dateiname</var> nicht absolut ist, wird er relativ zu
+    <code class="directive"><a href="#serverroot">ServerRoot</a></code> betrachtet.</p>
 
     <div class="example"><h3>Beispiel</h3><p><code>
     ErrorLog /var/log/httpd/error_log
@@ -1514,8 +1511,9 @@ Server-Konfigurationsdatei ein</td></tr>
     versehentlich in einem Verzeichnis zurückgelassen werden, was
     <code>httpd</code> scheitern lassen kann.</p>
 
-    <p>Der angegebene Dateiname kann ein absoluter Pfad (d.h., er
-    beginnt mit einem Schrägstrich) sein oder relativ zum <code class="directive"><a href="#serverroot">ServerRoot</a></code>-Verzeichnis angegeben werden.</p>
+  <p>Der angegebene Dateiname kann ein absoluter Pfad sein oder relativ zum
+    <code class="directive"><a href="#serverroot">ServerRoot</a></code>-Verzeichnis angegeben
+    werden.</p>
 
     <p>Beispiele:</p>
 

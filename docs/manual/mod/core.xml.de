@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 1.46.2.38 (outdated: 1.46.2.39) -->
+<!-- English Revision: 1.46.2.39 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -1014,10 +1014,9 @@ Fehlermeldungen</a></seealso>
 
 <usage>
     <p>Die Direktive <directive>ErrorLog</directive> bestimmt den Namen
-    der Datei, in welcher der Server alle auftretenden Fehler protokolliert.
-    Wenn <var>Dateiname</var> nicht absolut ist (im Allgemeinen: nicht mit
-    einem Schr&auml;gstrich (/) beginnt), wird er relativ zu <directive
-    module="core">ServerRoot</directive> betrachtet.</p>
+    der Datei, in welcher der Server alle auftretenden Fehler protokolliert
+    werden. Wenn <var>Dateiname</var> nicht absolut ist, wird er relativ zu
+    <directive module="core">ServerRoot</directive> betrachtet.</p>
 
     <example><title>Beispiel</title>
     ErrorLog /var/log/httpd/error_log
@@ -1473,9 +1472,9 @@ Server-Konfigurationsdatei ein</description>
     versehentlich in einem Verzeichnis zur&uuml;ckgelassen werden, was
     <code>httpd</code> scheitern lassen kann.</p>
 
-    <p>Der angegebene Dateiname kann ein absoluter Pfad (d.h., er
-    beginnt mit einem Schr&auml;gstrich) sein oder relativ zum <directive
-    module="core">ServerRoot</directive>-Verzeichnis angegeben werden.</p>
+  <p>Der angegebene Dateiname kann ein absoluter Pfad sein oder relativ zum
+    <directive module="core">ServerRoot</directive>-Verzeichnis angegeben
+    werden.</p>
 
     <p>Beispiele:</p>
 
