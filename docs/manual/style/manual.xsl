@@ -28,10 +28,10 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     <img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]" /> 
     <h3>Apache HTTP Server Version 2.0</h3>
    </div>
-   <h1 align="center"><xsl:value-of select="$messages/message[@name='apachemodule']"/>&nbsp; <xsl:value-of select="name"/></h1>
+   <h1 align="center"><xsl:value-of select="$messages/message[@name='apachemodule']"/><xsl:text> </xsl:text> <xsl:value-of select="name"/></h1>
    <!-- Description and module-headers -->
-   <table width="100%" bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td>
-    <table  width="100%" bgcolor="#ffffff">
+   <table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td>
+    <table bgcolor="#ffffff">
      <tr><td valign="top"><span class="help"><xsl:value-of select="$messages/message[@name='description']"/>:</span> </td>
          <td><xsl:apply-templates select="description"/></td></tr>
      <tr><td><a class="help" href="module-dict.html#Status"><xsl:value-of select="$messages/message[@name='status']"/>:</a> </td>
@@ -176,12 +176,12 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       name="{$lowername}">Directive</a></h2>
 
 <!-- Directive header -->
-<table  width="100%" bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1">
+<table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1">
 <tr><td>
-<table bgcolor="#ffffff" width="100%">
+<table bgcolor="#ffffff">
   <tr><td><strong><xsl:value-of select="$messages/message[@name='description']"/>: </strong></td>
     <td><xsl:value-of select="description"/></td></tr>
-  <tr><td><a class="help" href="directive-dict.html#Syntax"><xsl:value-of select="$messages/message[@name='description']"/>:</a> </td>
+  <tr><td><a class="help" href="directive-dict.html#Syntax"><xsl:value-of select="$messages/message[@name='syntax']"/>:</a> </td>
     <td><xsl:apply-templates select="syntax"/></td></tr>
   <xsl:if test="default">
     <tr><td><a class="help" href="directive-dict.html#Default"
@@ -242,7 +242,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
   <xsl:template match="example">
   <blockquote>
-  <table  width="100%" cellpadding="10"><tr><td bgcolor="#eeeeee">
+  <table cellpadding="10"><tr><td bgcolor="#eeeeee">
      <xsl:apply-templates select="title" mode="print"/>
      <code><xsl:apply-templates/></code>
   </td></tr></table>
@@ -256,7 +256,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
   <xsl:template match="note">
   <blockquote>
-  <table  width="100%"><tr><td>
+  <table><tr><td>
    <xsl:choose>
     <xsl:when test="@type='warning'">
      <xsl:attribute name="bgcolor">#ffe5f5</xsl:attribute>
@@ -274,7 +274,6 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   </xsl:template>
 
   <xsl:template match="directive">
-    <code class="directive">
     <xsl:if test="@module">
       <xsl:variable name="module">
         <xsl:value-of select="./@module"/>
@@ -284,16 +283,15 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       </xsl:variable>
       <xsl:variable name="lowerdirective" select="translate($directive, $uppercase, $lowercase)" />
       <xsl:if test="@module=/modulesynopsis/name">
-        <a class="directive" href="#{$lowerdirective}"><xsl:if test="./@type='section'">&lt;</xsl:if><xsl:value-of select="."/><xsl:if test="./@type='section'">&gt;</xsl:if></a>
+        <code class="directive"><a class="directive" href="#{$lowerdirective}"><xsl:if test="./@type='section'">&lt;</xsl:if><xsl:value-of select="."/><xsl:if test="./@type='section'">&gt;</xsl:if></a></code>
       </xsl:if>
       <xsl:if test="@module!=/modulesynopsis/name">
-        <a class="directive" href="{$module}.html#{$lowerdirective}"><xsl:if test="./@type='section'">&lt;</xsl:if><xsl:value-of select="."/><xsl:if test="./@type='section'">&gt;</xsl:if></a>
+        <code class="directive"><a class="directive" href="{$module}.html#{$lowerdirective}"><xsl:if test="./@type='section'">&lt;</xsl:if><xsl:value-of select="."/><xsl:if test="./@type='section'">&gt;</xsl:if></a></code>
       </xsl:if>
     </xsl:if>
     <xsl:if test="not(@module)">
-       <xsl:if test="./@type='section'">&lt;</xsl:if><xsl:value-of select="."/><xsl:if test="./@type='section'">&gt;</xsl:if>
+       <code class="directive"><xsl:if test="./@type='section'">&lt;</xsl:if><xsl:value-of select="."/><xsl:if test="./@type='section'">&gt;</xsl:if></code>
     </xsl:if>
-    </code>
   </xsl:template>
 
   <xsl:template match="module">
