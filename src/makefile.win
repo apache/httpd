@@ -63,8 +63,10 @@ _build:
 #	echo LONG $(LONG) SHORT $(SHORT) x
 	cd os\win32
 	 $(MAKE) $(MAKEOPT) -f ApacheOS.mak CFG="ApacheOS - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f Win9xConHook.mak CFG="Win9xConHook - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
+        cd os\win32\win9xconhook
+	 $(MAKE) $(MAKEOPT) -f Win9xConHook.mak CFG="Win9xConHook - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..\..
 	cd regex
 	 $(MAKE) $(MAKEOPT) -f regex.mak CFG="regex - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
