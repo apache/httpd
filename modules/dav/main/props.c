@@ -972,7 +972,8 @@ dav_error *dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
     propdb->db_hooks = DAV_GET_HOOKS_PROPDB(r);
     propdb->vsn_hooks = DAV_GET_HOOKS_VSN(r);
 
-    propdb->liveprop = dav_get_provider_hooks(r, DAV_DYN_TYPE_LIVEPROP);
+    /* ### this will need to change */
+    propdb->liveprop = dav_get_liveprop_hooks(r);
 
     propdb->lockdb = lockdb;
 

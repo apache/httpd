@@ -97,5 +97,7 @@ const char *dav_get_lockdb_path(const request_rec *r);
 
 int dav_fs_hook_get_resource(request_rec *r, const char *root_dir,
                              const char *workspace);
+const dav_hooks_locks *dav_fs_get_lock_hooks(request_rec *r);
+const dav_hooks_propdb *dav_fs_get_propdb_hooks(request_rec *r);
 
 #endif /* _DAV_FS_REPOS_H_ */
