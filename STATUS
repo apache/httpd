@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/09/07 02:34:56 $]
+Last modified at [$Date: 2001/09/07 13:53:13 $]
 
 Release:
 
@@ -33,6 +33,13 @@ on related projects:
     * docs/STATUS
 
 RELEASE SHOWSTOPPERS:
+
+    * mod_negotiation (?): Marc's message on 23 August 2001 about
+      the .var files being read one byte at a time.
+      [Charles Randall <crandall@matchlogic.com>]
+
+    * threaded MPM broken on FreeBSD
+      [Charles Randall <crandall@matchlogic.com>]
 
     * There is a bug in how we sort some hooks, at least the pre-config
       hook.  The first time we call the hooks, they are in the correct 
