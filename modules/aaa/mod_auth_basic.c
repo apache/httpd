@@ -150,7 +150,7 @@ static const char *add_authn_provider(cmd_parms *cmd, void *config,
 
 static const command_rec auth_basic_cmds[] =
 {
-    AP_INIT_ITERATE("AuthBasicProvider", add_authn_provider, NULL, ACCESS_CONF,
+    AP_INIT_ITERATE("AuthBasicProvider", add_authn_provider, NULL, OR_AUTHCFG,
                     "specify the auth providers for a directory or location"),
     AP_INIT_FLAG("AuthBasicAuthoritative", ap_set_flag_slot,
                  (void *)APR_OFFSETOF(auth_basic_config_rec, authoritative),
