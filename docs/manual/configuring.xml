@@ -83,8 +83,6 @@ HTTP server.</p>
         <module>mod_so</module>
       </modulelist>
       <directivelist>
-        <directive module="core">AddModule</directive>
-        <directive module="core">ClearModuleList</directive>
         <directive module="core" type="section">IfModule</directive>
         <directive module="mod_so">LoadModule</directive>
       </directivelist>
