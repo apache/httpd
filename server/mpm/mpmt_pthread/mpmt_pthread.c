@@ -1469,11 +1469,11 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
 		    "SIGWINCH received.  Doing graceful restart");
 
-	/* kill off the idle ones */
-        for (i = 0; i < ap_daemons_limit; ++i) {
-            if (write(pipe_of_death[1], &char_of_death, 1) == -1) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "write pipe_of_death");
-            }
+        /* give the children the signal to die. Sending more bytes than
+         * children is okay, because the pipe is recreated for every
+         * generation */
+        if (write(pipe_of_death[1], &char_of_death, ap_daemons_limit) == -1) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "write pipe_of_death");
         }
 
 	/* This is mostly for debugging... so that we know what is still

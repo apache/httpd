@@ -1419,11 +1419,9 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
 	        ap_scoreboard_image[i].status = SERVER_DYING;
 	    } 
 	}
-	/* kill off the idle ones */
-        for (i = 0; i < num_daemons; ++i) {
-            if (write(pipe_of_death[1], &char_of_death, 1) == -1) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "write pipe_of_death");
-            }
+	/* give the children the signal to die */
+        if (write(pipe_of_death[1], &char_of_death, num_daemons) == -1) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, server_conf, "write pipe_of_death");
         }
     }
     else {
