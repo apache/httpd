@@ -665,6 +665,10 @@ void update_child_status (int child_num, int status)
 
 #if defined(STATUS_INSTRUMENTATION)
     new_score_rec.last_used=time(NULL);
+    if (status == SERVER_DEAD) {
+	new_score_rec.access_count = 0;
+	new_score_rec.bytes_served = 0;
+    }
 #endif
 
 #if defined(HAVE_MMAP) || defined(HAVE_SHMGET)
