@@ -71,6 +71,7 @@
 #include "apr_dbm.h"
 #include "apr_md5.h"        /* for apr_password_validate */
 
+#include "ap_provider.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
