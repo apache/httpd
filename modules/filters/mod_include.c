@@ -3184,19 +3184,20 @@ static int xbithack_handler(request_rec *r)
 #else
     include_dir_config *conf;
  
-    if (ap_strcmp_match(r->handler, "text/html")) {
-        return DECLINED;
-    }
-    if (!(r->finfo.protection & APR_UEXECUTE)) {
-        return DECLINED;
-    }
- 
     conf = (include_dir_config *) ap_get_module_config(r->per_dir_config,
                                                 &include_module);
  
     if (*conf->xbithack == xbithack_off) {
         return DECLINED;
     }
+
+    if (strcmp(r->handler, "text/html")) {
+        return DECLINED;
+    }
+    if (!(r->finfo.protection & APR_UEXECUTE)) {
+        return DECLINED;
+    }
+ 
     /* We always return declined, because the default handler will actually
      * serve the file.  All we have to do is add the filter.
      */
