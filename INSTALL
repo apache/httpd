@@ -165,6 +165,8 @@
        [INCLUDES=...]  [LDFLAGS_SHLIB_EXPORT=...] 
        [LDFLAGS=...]   [RANLIB=...]  
        [LIBS=...]      [DEPS=...]
+       [NOTEST_CFLAGS=...]
+       [NOTEST_LDFLAGS=...]
        ./configure
            [--quiet]         [--prefix=DIR]            [--enable-NAME=(shared)]
            [--verbose]       [--exec-prefix=PREFIX]    [--disable-NAME]
@@ -190,9 +192,10 @@
 
      Use the CC, OPTIM, CFLAGS, INCLUDES, LDFLAGS, LIBS, CFLAGS_SHLIB,
      LD_SHLIB, LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT, RANLIB, DEPS and
-     TARGET environment variables to override the corresponding
-     default entries in the src/Configuration.tmpl file (see there for
-     more information about their usage).
+     TARGET environment variables to override and expand the corresponding
+     default entries as determined by configure. Use NOTEST_CFLAGS
+     and NOTEST_LDFLAGS to add entries that should be used only during
+     the actual build and compilation of Apache, such as -Werror.
 
      Use the --prefix=PREFIX and --exec-prefix=EPREFIX options to
      configure Apache to use a particular installation prefix. The
