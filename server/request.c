@@ -418,6 +418,7 @@ typedef struct core_opts_t {
         allow_options_t add;
         allow_options_t remove;
         overrides_t override;
+        overrides_t override_opts;
 } core_opts_t;
 
 static void core_opts_merge(const ap_conf_vector_t *sec, core_opts_t *opts)
@@ -443,6 +444,9 @@ static void core_opts_merge(const ap_conf_vector_t *sec, core_opts_t *opts)
 
     if (!(this_dir->override & OR_UNSET)) {
         opts->override = this_dir->override;
+    }
+    if (!(this_dir->override_opts & OR_UNSET)) {
+        opts->override_opts = this_dir->override_opts;
     }
 }
 
@@ -821,6 +825,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 }
 
                 res = ap_parse_htaccess(&htaccess_conf, r, opts.override,
+					opts.override_opts,
                                         apr_pstrdup(r->pool, r->filename),
                                         sconf->access_name);
                 if (res) {

@@ -412,6 +412,7 @@ typedef struct {
     allow_options_t opts_add;
     allow_options_t opts_remove;
     overrides_t override;
+    allow_options_t override_opts;
     
     /* MIME typing --- the core doesn't do anything at all with this,
      * but it does know what to slap on a request for a document which
