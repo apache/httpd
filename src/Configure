@@ -1109,7 +1109,7 @@ case "$OS" in
 	    ;;
 	esac
 	;;
-    'AIX 4.[123]')
+    IBM?AIX?4.[123])
 	case $CC in
 	    */cc|cc ) 
 		CFLAGS="$CFLAGS -qnogenpcomp -qnousepcomp"
