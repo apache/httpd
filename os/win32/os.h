@@ -88,8 +88,7 @@ extern "C" {
  * status.  This header must only be included from modules linked into
  * the ApacheCore.dll - since it's a horrible behavior to exit() from
  * any module outside the main() block, and we -will- assume it's a
- * fatal error.  No dynamically linked module will ever be able to find
- * the real_exit_code, and _will_ GP fault if it tries this macro.
+ * fatal error.
  */
 
 AP_DECLARE_DATA extern int real_exit_code;
