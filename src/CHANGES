@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) "Options +Includes" wasn't corrently merged if "+IncludesNoExec"
+     was defined in a parent directory. [Lars Eilebrecht]
+
   *) API: ap_snprintf() code mutated into apapi_vformatter(), which is
      a generic printf-style routine that can call arbitrary output
      routines.  Use this to replace http_bprintf.c.  Add new routines

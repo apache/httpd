@@ -166,6 +166,8 @@ static void *merge_core_dir_configs (pool *a, void *basev, void *newv)
 	conf->opts_add = (conf->opts_add & ~new->opts_remove) | new->opts_add;
 	conf->opts_remove = (conf->opts_remove & ~new->opts_add) | new->opts_remove;
 	conf->opts = (conf->opts & ~conf->opts_remove) | conf->opts_add;
+        if ((base->opts & OPT_INCNOEXEC) && (new->opts & OPT_INCLUDES))
+          conf->opts = (conf->opts & ~OPT_INCNOEXEC) | OPT_INCLUDES;
     }
     else {
 	/* otherwise we just copy, because an explicit opts setting
