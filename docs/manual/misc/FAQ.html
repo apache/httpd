@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.63 $ ($Date: 1997/06/04 11:42:55 $)
+  $Revision: 1.64 $ ($Date: 1997/06/08 01:33:29 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -61,16 +61,12 @@
 <!--   HTTP/1.1 browsers?                                           -->
 <!-- - Is there an Apache for W95/WNT?                              -->
 <!-- - Why does Apache die when a vhost can't be DNS-resolved?      -->
-<!-- - How do I setup an access restriction so that people from     -->
-<!--   this domain don't have to authenticate, and all others can   -->
-<!--   do so via a username and password?                           -->
 <!-- - Why do I get "send lost connection" messages in my error     -->
 <!--   log?                                                         -->
 <!--   - specifically consider .pdf files which seem to cause this  -->
 <!--     a lot when accessed via the plugin ... and also mention    -->
 <!--     how range-requests can cause bytes served < file size      -->
-<!-- - Why does http://host/~user not work but http://host/~user/   -->
-<!--   works properly?                                              -->
+<!-- - Why do directory indexes appear as garbage?  (A: -lucb)      -->
 <!-- - How do I add a footer to all pages offered by my server?     -->
 <UL>
  <LI><STRONG>Background</STRONG>
@@ -181,6 +177,20 @@
    <LI><A HREF="#addlog">How do I add browsers and referrers to my
     logs?</A>
    </LI>
+   <LI><A HREF="#bind8.1">Why do I get an error about an undefined 
+    reference to "__inet_ntoa" or other __inet_* symbols?</A>
+   </LI>
+   <LI><A HREF="#set-servername">Why does accessing directories only work
+    when I include the trailing "/" (eg. <CODE>http://foo.domain.com/~user/
+    </CODE>) but not when I omit it (eg. <CODE>http://foo.domain.com/~user
+    </CODE>)?</A>
+   </LI>
+   <LI><A HREF="#user-authentication">How do I setup Apache to require
+    a username and password to access certain documents?</A>
+   </LI>
+   <LI><A HREF="#remote-auth-only">How do I setup Apache to allow access
+    to certain documents only if a site is either a local site <EM>or
+    </EM> the user supplies a password and username?</A>
   </OL>
  </LI>
 </UL>
@@ -1275,7 +1285,7 @@
  <LI><A NAME="cantbuild">
        <STRONG>Why won't Apache compile with my system's
        <SAMP>cc</SAMP>?</STRONG>
-      </A>
+     </A>
   <P>
   If the server won't compile on your system, it is probably due to one
   of the following causes:
@@ -1370,7 +1380,7 @@
  </LI>
  <LI><A NAME="jdk1.x">
       <STRONG>Why do Java applets and applications not work
-      with documents on my Apache server?</A></STRONG>
+      with documents on my Apache server?</STRONG>
      </A>
   <P>
   The Java Development Kit (JDK) libraries versions 1.0.2 and 1.1 do not
@@ -1385,12 +1395,110 @@
   adding the following lines to their configuration files:
   </P>
   <DL>
-   <DD>BrowserMatch&nbsp;Java1.0&nbsp;force-response-1.0</CODE>
+   <DD><CODE>BrowserMatch&nbsp;Java1.0&nbsp;force-response-1.0</CODE>
    </DD>
   </DL>
   <HR>
-  <!-- Don't forget to add HR tags at the end of each list item.. -->
  </LI>
+ <LI><A NAME="bind8.1">
+      <STRONG>Why do I get an error about an undefined reference to 
+      "__inet_ntoa" or other __inet_* symbols?</STRONG>
+     </A>
+  <P>
+  If you have installed <A HREF="http://www.isc.org/bind.html">BIND-8</A>
+  then this is normally due to a conflict between your include files
+  and your libraries.  BIND-8 installs its include files and libraries 
+  <CODE>/usr/local/include/</CODE> and <CODE>/usr/local/lib/</CODE>, while
+  the resolver that comes with your system is probably installed in
+  <CODE>/usr/include/</CODE> and <CODE>/usr/lib/</CODE>.  If
+  your system uses the header files in <CODE>/usr/local/include/</CODE>
+  before those in <CODE>/usr/include/</CODE> but you do not use the new
+  resolver library, then the two versions will conflict.  
+  </P>
+  <P>
+  To resolve this, you can either make sure you use the include files
+  and libraries that came with your system or make sure to use the
+  new include files and libraries.  Adding <CODE>-lbind</CODE> to the
+  <CODE>EXTRA_LFLAGS</CODE> line in your <CODE>Configuration</CODE> 
+  file, then re-running <CODE>Configure</CODE> should resolve the
+  problem.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="set-servername">
+      <STRONG>Why does accessing directories only work when I include 
+      the trailing "/" (eg.  <CODE>http://foo.domain.com/~user/</CODE>) 
+      but not when I omit it 
+      (eg. <CODE>http://foo.domain.com/~user</CODE>)?</STRONG>
+     </A>
+  <P>
+  When you access a directory without a trailing "/", Apache needs
+  to send what is called a redirect to the client to tell it to
+  add the trailing slash.  If it did not do so, relative URLs would
+  not work properly.  When it sends the redirect, it needs to know 
+  the name of the server so that it can include it in the redirect.
+  There are two ways for Apache to find this out; either it can guess,
+  or you can tell it.  If your DNS is configured correctly, it can
+  normally guess without any problems.  If it is not, however, then
+  you need to tell it.  
+  </P>
+  <P>
+  Add a <A HREF="../mod/core.html#servername"> ServerName</A> directive 
+  to the config file to tell it what the domain name of the server is.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="user-authentication">
+      <STRONG>How do I setup Apache to require a username and 
+      password to access certain documents?</STRONG>
+     </A>
+  <P>
+  There are several ways to do this; some of the more popular 
+  ones are to use the <A HREF="../mod/mod_auth.html">mod_auth</A>,
+  <A HREF="../mod/mod_auth_db.html">mod_auth_db</A> or <A HREF=
+  "../mod/mod_auth_dbm.html">mod_auth_dbm</A> modules.
+  </P>
+  <P>
+  For an explaination on how to implement these restrictions, see
+  ApacheWeek's <A HREF="http://www.apacheweek.com/features/userauth">
+  Using User Authentication</A> or 
+  <A HREF="http://www.apacheweek.com/features/dbmauth">
+  DBM User Authentication</A> tutorials.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="remote-auth-only">
+      <STRONG>How do I setup Apache to allow access to certain 
+      documents only if a site is either a local site <EM>or</EM>
+      the user supplies a password and username?</STRONG>
+     </A>
+  <P>
+  Use the <A HREF="../mod/core.html#satisfy">Satsify</A> directive,
+  in particular the <CODE>Satsify Any</CODE> directive to require
+  that only one of the access restrictions be met.  For example,
+  adding the following configuration to a <CODE>.htaccess</CODE>
+  or server configuration file would restrict access to people who
+  either are accessing the site from a host under domain.com or
+  who can supply a valid username and password:
+  </P>
+<PRE>
+     deny from all
+     allow from .domain.com
+     AuthType Basic
+     AuthUserFile /usr/local/etc/httpd/conf/htpasswd.users
+     AuthName special directory
+     require valid-user
+     satisfy any
+</PRE>
+  <P>See the <A HREF="#user-authentication">user authentication</A>
+  question and the <A HREF="../mod/mod_access.html">mod_access</A>
+  module for details on how the above directives work.
+  </P>
+  <HR>
+ </LI>
+
+  <!-- Don't forget to add HR tags at the end of each list item.. -->
+
 </OL>
  <!--#include virtual="footer.html" -->
 </BODY>
