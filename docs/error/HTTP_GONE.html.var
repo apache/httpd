@@ -180,3 +180,29 @@ Body:----------it--
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="TITLE" value="Recurso n&atilde;o dispon&iacute;vel!" -->
+<!--#include virtual="include/top.html" -->
+
+   A URL solicitada n&atilde;o est&aacute; dispon&iacute;vel neste servidor
+   e n&atilde;o existe um endere&ccedil;o alternativo.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+   Por favor informe o autor da
+   <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">p&aacute;gina
+   referida</a> que a URL est&aacute; desatualizada.
+
+  <!--#else -->
+
+   Se voc&ecirc; seguiu um "link" de uma p&aacute;gina externa, por favor
+   entre em contato com o autor desta p&aacute;gina e o informe sobre a
+   mudan&ccedil;a do "link".
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--

@@ -84,3 +84,15 @@ Body:----------it--
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="TITLE" value="A requisi&ccedil;&atilde;o n&atilde;o pode ser processada!" -->
+<!--#include virtual="include/top.html" -->
+
+   O servidor n&atilde;o suporta a a&ccedil;&atilde;o requisitada pelo
+   seu "browser".
+
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--

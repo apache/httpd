@@ -122,3 +122,20 @@ Body:----------it--
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="TITLE" value="Gateway inv&aacute;lido!" -->
+<!--#include virtual="include/top.html" -->
+
+    O servidor proxy recebeu uma resposta
+    inv&aacute;lida do servidor destino.
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    <!--#include virtual="include/spacer.html" -->
+    <!--#echo  encoding="none" var="REDIRECT_ERROR_NOTES" -->
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--

@@ -101,3 +101,16 @@ Body:----------it--
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="TITLE" value="Servi&ccedil;o indispon&iacute;vel!" -->
+<!--#include virtual="include/top.html" -->
+
+    O servidor est&aacute; temporariamente fora de servi&ccedil;o
+    para manutan&ccedil;&atilde;o ou devido a problemas de capacidade.
+    Por favor tente acessar mais tarde.
+
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--

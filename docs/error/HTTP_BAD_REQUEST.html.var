@@ -87,3 +87,15 @@ Body:----------it--
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="TITLE" value="Requisi&ccedil;&atilde;o Inv&aacute;lida!" -->
+<!--#include virtual="include/top.html" -->
+
+    Seu "browser" (ou o servidor proxy) enviou uma
+    requisi&ccedil;&atilde;o inv&aacute;lida ao servidor.
+
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--

@@ -77,3 +77,16 @@ Body:----------it--
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="TITLE" value="Content-Length Inv&aacute;lido!" -->
+<!--#include virtual="include/top.html" -->
+
+    Uma requisi&ccedil;&atilde;o 
+    do m&eacute;todo <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
+    requer um cabe&ccedil;alho <code>Content-Length</code> v&aacute;lido.
+
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--
