@@ -83,6 +83,7 @@
 #include "apr_strings.h"
 #include "apr_errno.h"
 #include "apr_file_io.h"
+#include "apr_general.h"
 
 #if APR_HAVE_STDIO_H
 #include <stdio.h>
