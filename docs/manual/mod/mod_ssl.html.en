@@ -1271,8 +1271,8 @@ SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/ \<br />
             and %{TIME_HOUR} &gt;= 8 and %{TIME_HOUR} &lt;= 20       ) \<br />
            or %{REMOTE_ADDR} =~ m/^192\.76\.162\.[0-9]+$/
 </code></p></div>
-<table class="bordered"><tr><td>
-<em>Standard CGI/1.0 and Apache variables:</em>
+
+<p><em>Standard CGI/1.0 and Apache variables:</em></p>
 <pre>
 HTTP_USER_AGENT        PATH_INFO             AUTH_TYPE
 HTTP_REFERER           QUERY_STRING          SERVER_SOFTWARE
@@ -1288,7 +1288,7 @@ REQUEST_SCHEME         REMOTE_ADDR           TIME
 REQUEST_URI            REMOTE_USER           ENV:<strong>variablename</strong>
 REQUEST_FILENAME
 </pre>
-<em>SSL-related variables:</em>
+<p><em>SSL-related variables:</em></p>
 <pre>
 HTTPS                  SSL_CLIENT_M_VERSION   SSL_SERVER_M_VERSION
                        SSL_CLIENT_M_SERIAL    SSL_SERVER_M_SERIAL
@@ -1328,7 +1328,6 @@ SSL_VERSION_INTERFACE  SSL_CLIENT_S_DN_OU     SSL_SERVER_S_DN_OU
                        SSL_CLIENT_CERT_CHAIN<strong>n</strong>
                        SSL_CLIENT_VERIFY
 </pre>
-</td></tr></table>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
