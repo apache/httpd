@@ -10,6 +10,7 @@ cache_util.lo dnl
 " 
 APACHE_MODULE(cache, dynamic file caching, $cache_objs, , no)
 APACHE_MODULE(disk_cache, disk caching module, , , no)
+APACHE_MODULE(mem_cache, memory caching module, , , no)
 APACHE_MODULE(example, example and demo module, , , no)
 APACHE_MODULE(ext_filter, external filter module, , , no)
 APACHE_MODULE(case_filter, example uppercase conversion filter, , , no)

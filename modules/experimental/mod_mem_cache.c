@@ -59,6 +59,7 @@
 #define CORE_PRIVATE
 
 #include "mod_cache.h"
+#include "ap_mpm.h"
 #define MAX_CACHE 5000
 module AP_MODULE_DECLARE_DATA mem_cache_module;
 
@@ -170,6 +171,8 @@ static apr_status_t cleanup_cache_mem(void *sconfv)
 }
 static void *create_cache_config(apr_pool_t *p, server_rec *s)
 {
+    int threaded_mpm;
+
     sconf = apr_pcalloc(p, sizeof(mem_cache_conf));
     sconf->space = DEFAULT_CACHE_SPACE;
 #if 0
@@ -177,7 +180,10 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
     sconf->defaultexpire = DEFAULT_CACHE_EXPIRE;
 #endif
 
-    apr_lock_create(&sconf->lock, APR_MUTEX, APR_INTRAPROCESS, "foo", p);
+    ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded_mpm);
+    if (threaded_mpm) {
+        apr_lock_create(&sconf->lock, APR_MUTEX, APR_INTRAPROCESS, "foo", p);
+    }
     sconf->cacheht = apr_hash_make(p);
     apr_pool_cleanup_register(p, NULL, cleanup_cache_mem, apr_pool_cleanup_null);
 
@@ -245,10 +251,14 @@ static int create_entity(cache_handle **hp, const char *type, char *key, apr_siz
     /* Mark the cache object as incomplete and put it into the cache */
     obj->complete = 0;
 
-    /* XXX Need a way to insert into the cache w/o sch coarse grained locking */
-    apr_lock_acquire(sconf->lock);
+    /* XXX Need a way to insert into the cache w/o such coarse grained locking */
+    if (sconf->lock) {
+        apr_lock_acquire(sconf->lock);
+    }
     apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), obj);
-    apr_lock_release(sconf->lock);
+    if (sconf->lock) {
+        apr_lock_release(sconf->lock);
+    }
 
     return OK;
 }
@@ -262,9 +272,13 @@ static int open_entity(cache_handle **hp, const char *type, char *key)
     if (strcasecmp(type, "mem")) {
         return DECLINED;
     }
-    apr_lock_acquire(sconf->lock);
+    if (sconf->lock) {
+        apr_lock_acquire(sconf->lock);
+    }
     obj = (cache_object_t *) apr_hash_get(sconf->cacheht, key, APR_HASH_KEY_STRING);
-    apr_lock_release(sconf->lock);
+    if (sconf->lock) {
+        apr_lock_release(sconf->lock);
+    }
 
     if (!obj || !(obj->complete)) {
         return DECLINED;
@@ -292,9 +306,13 @@ static int remove_entity(cache_handle *h)
 {
     cache_object_t *obj = (cache_object_t *) h->cache_obj;
 
-    apr_lock_acquire(sconf->lock);
+    if (sconf->lock) {
+        apr_lock_acquire(sconf->lock);
+    }
     apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
-    apr_lock_release(sconf->lock);
+    if (sconf->lock) {
+        apr_lock_release(sconf->lock);
+    }
 
     cleanup_cache_object(obj);
     
@@ -303,6 +321,7 @@ static int remove_entity(cache_handle *h)
 
     /* The caller should free the cache_handle ? */
     free(h);
+    return OK;
 }
 
 /* Define request processing hook handlers */
@@ -321,18 +340,26 @@ static int remove_url(const char *type, char *key)
      */
 
     /* First, find the object in the cache */
-    apr_lock_acquire(sconf->lock);
+    if (sconf->lock) {
+        apr_lock_acquire(sconf->lock);
+    }
     obj = (cache_object_t *) apr_hash_get(sconf->cacheht, key, APR_HASH_KEY_STRING);
-    apr_lock_release(sconf->lock);
+    if (sconf->lock) {
+        apr_lock_release(sconf->lock);
+    }
 
     if (!obj) {
         return DECLINED;
     }
 
     /* Found it. Now take it out of the cache and free it. */
-    apr_lock_acquire(sconf->lock);
+    if (sconf->lock) {
+        apr_lock_acquire(sconf->lock);
+    }
     apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
-    apr_lock_release(sconf->lock);
+    if (sconf->lock) {
+        apr_lock_release(sconf->lock);
+    }
 
     cleanup_cache_object(obj);
 
@@ -385,7 +412,6 @@ static int write_headers(cache_handle *h, request_rec *r, cache_info *info)
 static int write_body(cache_handle *h, apr_bucket_brigade *b) 
 {
     apr_status_t rv;
-    apr_size_t idx = 0;
     cache_object_t *obj = (cache_object_t *) h->cache_obj;
     apr_read_type_e eblock = APR_BLOCK_READ;
     apr_bucket *e;
@@ -425,7 +451,7 @@ static int write_body(cache_handle *h, apr_bucket_brigade *b)
 }
 
 static const char 
-*set_cache_size(cmd_parms *parms, char *struct_ptr, char *arg)
+*set_cache_size(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
     int val;
 
