@@ -86,6 +86,7 @@
  */
 
 #include "apr_strings.h"
+#include "apr_lib.h" /* apr_isspace */
 
 #include "ap_config.h"
 #include "httpd.h"
@@ -148,6 +149,7 @@ static apr_status_t groups_for_user(apr_pool_t *p, char *user, char *grpfile,
     char l[MAX_STRING_LEN];
     const char *group_name, *ll, *w;
     apr_status_t status;
+    apr_size_t group_len;
 
     if ((status = ap_pcfg_openfile(&f, p, grpfile)) != APR_SUCCESS) {
         return status ;
@@ -163,11 +165,17 @@ static apr_status_t groups_for_user(apr_pool_t *p, char *user, char *grpfile,
         apr_pool_clear(sp);
 
         group_name = ap_getword(sp, &ll, ':');
+        group_len = strlen(group_name);
+
+        while (group_len && apr_isspace(*(group_name + group_len - 1))) {
+            --group_len;
+        }
 
         while (ll[0]) {
             w = ap_getword_conf(sp, &ll);
             if (!strcmp(w, user)) {
-                apr_table_setn(grps, apr_pstrdup(p, group_name), "in");
+                apr_table_setn(grps, apr_pstrmemdup(p, group_name, group_len),
+                               "in");
                 break;
             }
         }
