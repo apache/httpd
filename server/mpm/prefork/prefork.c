@@ -1804,9 +1804,9 @@ static void process_child_status(ap_proc_t *pid, ap_wait_t status)
     if ((WIFEXITED(status)) &&
 	WEXITSTATUS(status) == APEXIT_CHILDFATAL) {
 	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, ap_server_conf,
-			"Child %d returned a Fatal error... \n"
+			"Child %ld returned a Fatal error... \n"
 			"Apache is exiting!",
-			pid->pid);
+			(long)pid->pid);
 	exit(APEXIT_CHILDFATAL);
     }
     if (WIFSIGNALED(status)) {
@@ -1822,9 +1822,9 @@ static void process_child_status(ap_proc_t *pid, ap_wait_t status)
 	    if (WCOREDUMP(status)) {
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
 			     0, ap_server_conf,
-			     "child pid %d exit signal %s (%d), "
+			     "child pid %ld exit signal %s (%d), "
 			     "possible coredump in %s",
-			     pid->pid, (WTERMSIG(status) >= NumSIG) ? "" : 
+			     (long)pid->pid, (WTERMSIG(status) >= NumSIG) ? "" : 
 			     SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status),
 			     ap_coredump_dir);
 	    }
@@ -1832,7 +1832,7 @@ static void process_child_status(ap_proc_t *pid, ap_wait_t status)
 #endif
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
 			     0, ap_server_conf,
-			     "child pid %d exit signal %s (%d)", pid->pid,
+			     "child pid %ld exit signal %s (%d)", (long)pid->pid,
 			     SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status));
 #ifdef WCOREDUMP
 	    }
@@ -1840,8 +1840,8 @@ static void process_child_status(ap_proc_t *pid, ap_wait_t status)
 #else
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
 			 ap_server_conf,
-			 "child pid %d exit signal %d",
-			 pid->pid, WTERMSIG(status));
+			 "child pid %ld exit signal %d",
+			 (long)pid->pid, WTERMSIG(status));
 #endif
 	}
     }
@@ -1994,7 +1994,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 		    */
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 
                             0, ap_server_conf,
-			    "long lost child came home! (pid %d)", pid.pid);
+			    "long lost child came home! (pid %ld)", (long)pid.pid);
 	    }
 	    /* Don't perform idle maintenance when a child dies,
 		* only do it when there's a timeout.  Remember only a
