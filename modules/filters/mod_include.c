@@ -223,7 +223,7 @@ static ap_bucket *find_string(ap_bucket *dptr, const char *str, ap_bucket *end)
                      * that we catch cases like <<--#.  This makes the 
                      * second check after the original check fails.
                      */
-                     if (*c == buf[state]) {
+                     if (*c == str[state]) {
                          state++;
                      }
                 }
@@ -347,9 +347,10 @@ static char *get_tag(apr_pool_t *p, ap_bucket *in, char *tag, int tagbuf_len, in
     --tagbuf_len;
 
     /* Remove all whitespace */
-    while (dptr) { 
+    do {
         ap_bucket_read(dptr, &str, &length, 0);
         c = str + *offset;
+        *offset = 0;
         while (c - str < length) {
             if (!apr_isspace(*c)) {
                 break;
@@ -359,7 +360,7 @@ static char *get_tag(apr_pool_t *p, ap_bucket *in, char *tag, int tagbuf_len, in
             break;
         }
         dptr = AP_BUCKET_NEXT(dptr);
-    }
+    } while (dptr);
 
     /* tags can't start with - */
     if (*c == '-') {
@@ -2423,7 +2424,7 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
                     ap_rputs(error, r);
                 }
             }
-/*            AP_BRIGADE_UNSPLICE(dptr, AP_BUCKET_PREV(endsec)); */
+            *bb = ap_brigade_split(tag_and_after, endsec); 
             dptr = AP_BUCKET_PREV(endsec);
         }
         else {
