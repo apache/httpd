@@ -1,5 +1,7 @@
 Changes with Apache 1.2b7
 
+  *) Port to  UXP/DS(V20) [Toshiaki Nomura <nom@yk.fujitsu.co.jp>]
+
   *) unset Content-Length if chunked (RFC-2068) [Petr Lampa]
 
   *) mod_negotiation fixes [Petr Lampa] PR#157, PR#158, PR#159

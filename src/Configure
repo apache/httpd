@@ -367,6 +367,12 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=yes
 	LIBS="$LIBS -lsocket -lnsl -lc"
 	;;
+    DS/90\ 7000-*-sysv4*)
+	OS='UXP/DS'
+	CFLAGS="$CFLAGS -DUXPDS"
+	LIBS="$LIBS -lsocket -lnsl"
+	DEF_WANTHSREGEX=yes
+	;;
     *-sysv4*)
 	OS='SVR4'
 	CFLAGS="$CFLAGS -DSVR4"
@@ -376,11 +382,6 @@ case "$PLAT" in
 	OS='Amdahl UTS'
 	CFLAGS="$CFLAGS -Xa -eft -DUTS21"
 	LIBS="$LIBS -lsocket -lbsd -la"
-	;;
-    UXPDS)
-	OS='UXP/DS'
-	CFLAGS="$CFLAGS -DUXPDS"
-	LIBS="$LIBS -lsocket -lnsl"
 	;;
     *-ultrix)
 	OS='ULTRIX'
