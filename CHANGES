@@ -1,5 +1,12 @@
 Changes with Apache 2.0b1
 
+  *) Fix an output truncation error when on an HTTP >= 1.0 request an
+     object of size between DEFAULT_BUCKET_SIZE and AP_MIN_BYTES_TO_WRITE 
+     was served through mod_charset_lite (or anything else that would
+     create a transient bucket in this size range).  ap_bucket_make_heap()
+     silently failed (fixed), transient_setaside() discovered it, but
+     ap_save_brigade() ignored it (fixed). [Jeff Trawick]
+     
   *) Ignore \r\n or \n when using PEEK mode for input filters.  The problem
      is that some browsers send extra lines at the end of POST requests, and
      we don't want to delay sending data back to the user just because the
