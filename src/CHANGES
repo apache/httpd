@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) Fixed ordering of argument checks for RewriteBase directive.
+     [Todd Eigenschink <eigenstr@mixi.net>, PR#2045]
+
   *) Change Win32 IS_MODULE to SHARED_MODULE to match Unix' method of
      indicating that a module is being compiled for dynamic loading. Also
      remove #define IS_MODULE from modules and add SHARED_MODULE define

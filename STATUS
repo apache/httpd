@@ -155,6 +155,7 @@ Committed Code Changes:
     * Ralf's add of the query (-q) option to apxs
     * Ralf's initial doc and Configuration.tmpl entry for mod_mmap_static
     * OS/2 tweak to deal with multiple .exe targets. [Brian Havard]
+    * Fixed ordering of argument checks for RewriteBase directive, PR#2045
 
 Available Patches:
 
