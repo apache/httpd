@@ -27,7 +27,9 @@
             <table class="module">
               <tr>
                 <th>
-                  <xsl:value-of select="$messages/message[@name='description']"/>:
+                  <a href="module-dict.html#Description">
+                    <xsl:value-of select="$messages/message[@name='description']"/>:
+                  </a>
                 </th>
                 <td>
                   <xsl:apply-templates select="description"/>
@@ -54,6 +56,19 @@
                 </th>
                 <td>
                   <xsl:value-of select="identifier"/>
+                </td>
+              </tr>
+              </xsl:if>
+
+              <xsl:if test="sourcefile">
+              <tr>
+                <th>
+                  <a href="module-dict.html#SourceFile">
+                    <xsl:value-of select="$messages/message[@name='sourcefile']"/>:
+                  </a> 
+                </th>
+                <td>
+                  <xsl:value-of select="sourcefile"/>
                 </td>
               </tr>
               </xsl:if>
@@ -202,7 +217,9 @@
         <table class="directive">
           <tr>
             <th>
-              <xsl:value-of select="$messages/message[@name='description']"/>: 
+              <a href="directive-dict.html#Description">
+                <xsl:value-of select="$messages/message[@name='description']"/>: 
+              </a>
             </th>
             <td>
               <xsl:value-of select="description"/>
