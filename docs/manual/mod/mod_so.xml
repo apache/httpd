@@ -4,14 +4,11 @@
 <modulesynopsis>
 
 <name>mod_so</name>
-<description>
- This module provides for loading of executable code and
- modules into the server at start-up or restart time.
-</description>
-<status>Base (Windows>; Optional (Unix)</status>
+<description>Loading of executable code and
+modules into the server at start-up or restart time</description>
+<status>Base (Windows); Optional (Unix)</status>
 <sourcefile>mod_so.c</sourcefile>
 <identifier>so_module</identifier>
-<compatibility>Available in Apache 1.3 and later.</compatibility>
 
 <summary>
 
@@ -23,14 +20,8 @@
     <p>On Unix, the loaded code typically comes from shared object
     files (usually with <code>.so</code> extension), on Windows
     this may either the <code>.so</code> or <code>.dll</code>
-    extension. This module is only available in Apache 1.3 and
-    up.</p>
+    extension.</p>
 
-    <p>In previous releases, the functionality of this module was
-    provided for Unix by mod_dld, and for Windows by mod_dll. On
-    Windows, mod_dll was used in beta release 1.3b1 through 1.3b5.
-    mod_so combines these two modules into a single module for all
-    operating systems.</p>
     <note type="warning"><title>Warning</title>
     <p>Apache 1.3 modules cannot be directly used
     with Apache 2.0 - the module must be modified to dynamically
@@ -44,6 +35,7 @@
     <p>The module name format changed for Windows
     with Apache 1.3.15 and 2.0 - the modules are now named as
     mod_foo.so</p>
+
     <p>While mod_so still loads modules with
     ApacheModuleFoo.dll names, the new naming convention is
     preferred; if you are converting your loadable module for 2.0,
@@ -113,7 +105,6 @@
 <name>LoadFile</name>
 <description>Link in the named object file or library</description>
 <syntax>LoadFile <em>filename</em> [<em>filename</em>] ...</syntax>
-<default>none</default>
 <contextlist>
 <context>server config</context>
 </contextlist>
@@ -138,7 +129,6 @@
 <description>Links in the object file or library, and adds to the list
 of active modules</description>
 <syntax>LoadModule <em>module filename</em></syntax>
-<default>none</default>
 <contextlist>
 <context>server config</context>
 </contextlist>
