@@ -1,3 +1,7 @@
+Changes with Apache 1.2b3:
+
+  *) Remove rlim_t typedef for NetBSD. Do older versions need this?
+
 Changes with Apache 1.2b2:
   
   *) Update set_signals() to use sigaction() for setting handlers.

@@ -320,7 +320,6 @@ extern char *getwd();
 #define JMP_BUF sigjmp_buf
 #define DEFAULT_USER "nobody"
 #define DEFAULT_GROUP "nogroup"
-typedef quad_t rlim_t;
 
 #elif defined(UTS21)
 #undef HAVE_GMTOFF
