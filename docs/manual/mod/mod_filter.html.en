@@ -382,7 +382,7 @@
     <table class="bordered"><tr class="header"><th>Character</th><th>Description</th></tr>
 <tr><td><em>(none)</em></td><td>exact match</td></tr>
 <tr class="odd"><td><code>$</code></td><td>substring match</td></tr>
-<tr><td><code>/</code></td><td>regexp match (delimited by a second <code>/</code></td></tr>
+<tr><td><code>/</code></td><td>regexp match (delimited by a second <code>/</code>)</td></tr>
 <tr class="odd"><td><code>=</code></td><td>integer equality</td></tr>
 <tr><td><code>&lt;</code></td><td>integer less-than</td></tr>
 <tr class="odd"><td><code>&lt;=</code></td><td>integer less-than or equal</td></tr>

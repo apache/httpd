@@ -30,12 +30,12 @@
   <modulefile>mod_deflate.xml.ja</modulefile>
   <modulefile>mod_dir.xml.ja</modulefile>
   <modulefile>mod_disk_cache.xml.ja</modulefile>
-  <modulefile>mod_dumpio.xml</modulefile>
+  <modulefile>mod_dumpio.xml.ja</modulefile>
   <modulefile>mod_echo.xml.ja</modulefile>
   <modulefile>mod_env.xml.ja</modulefile>
   <modulefile>mod_example.xml</modulefile>
   <modulefile>mod_expires.xml.ja</modulefile>
-  <modulefile>mod_ext_filter.xml</modulefile>
+  <modulefile>mod_ext_filter.xml.ja</modulefile>
   <modulefile>mod_file_cache.xml</modulefile>
   <modulefile>mod_filter.xml</modulefile>
   <modulefile>mod_headers.xml.ja</modulefile>
