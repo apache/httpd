@@ -83,15 +83,16 @@ extern "C" {
 #define AP_FILTER_ERROR         -3
 
 /**
- * input filtering modes 
+ * input filtering modes
+ * @see apr_read_type_e in apr_buckets.h -- this is a superset of it
  */
 typedef enum {
     /** The filter shouldn't return until data is received or EOF is hit
      *  or an error occurs. */
-    AP_MODE_BLOCKING,
+    AP_MODE_BLOCKING = APR_BLOCK_READ,
     /** The filter should process any available data/status as normal,
      *  but will not wait for additional data. */
-    AP_MODE_NONBLOCKING,
+    AP_MODE_NONBLOCKING = APR_NONBLOCK_READ,
     /** The filter should return ::APR_SUCCESS if data is available or
      *  ::APR_EOF otherwise.  The filter must not return any buckets of
      *  data.  Data returned on a subsequent call, when mode is
