@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/16 16:47:53 $]
+Last modified at [$Date: 2003/05/16 18:31:37 $]
 
 Release:
 
@@ -215,7 +215,7 @@ PATCHES TO PORT FROM 2.1
     * Fix a VPATH build install bug - the special.mk file was never installed 
       (because we didn't rewrite it to the VPATH from the sourcepath), so copy 
       any sourcepath\build\*.mk files along with the vpath\build\*.mk files.
-      Makefile.in r1.130
+      Makefile.in r1.130, 1.131 (undid minor breakage)
       +1: wrowe
 
     * Assure that we block on the read BIO when we invoke the read BIO for both
