@@ -239,7 +239,7 @@ int anon_authenticate_basic_user (request_rec *r)
 	      (strpbrk(".",send_pw) != NULL))
 	  ) 
 	) {
-      if (sec->auth_anon_logemail) {
+      if (sec->auth_anon_logemail && r->prev == NULL && r->main == NULL) {
 	ap_snprintf(errstr, sizeof(errstr), "Anonymous: Passwd <%s> Accepted", 
 			send_pw ? send_pw : "\'none\'");
 	log_error (errstr, r->server );
