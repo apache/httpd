@@ -216,15 +216,17 @@
                chosen paths via the --layout option.
 
      Use the --with-layout=[F:]ID option to select a particular installation
-     path base-layout. You always _HAVE_ to select a base-layout. There are
-     many layouts pre-defined in the file config.layout: `Apache' for
-     the classical Apache path layout, `GNU' for a path layout conforming
-     to the GNU `standards' document, and others that conform to vendor-
-     specific layout standards. You can browse the available layouts by
-     looking in the config.layout file. When you want to use your own custom
-     layout FOO, either add a corresponding "<Layout FOO>...</Layout>" section
-     to config.layout and use --with-layout=FOO or place it into your own
-     file, say config.mypaths, and use --with-layout=config.mypaths:FOO.
+     path base-layout. There are many layouts pre-defined in the file
+     config.layout. Except on MacOS(X) configure defaults to the `Apache'
+     classical path layout. You can get an overview of the existing layouts
+     by using the command:
+
+     grep "^<Layout" config.layout
+
+     When you want to use your own custom layout FOO, either add a
+     corresponding "<Layout FOO>...</Layout>" section to config.layout and
+     use --with-layout=FOO or place it into your own file, say config.mypaths,
+     and use --with-layout=config.mypaths:FOO.
  
      Use the --show-layout option to check the final installation path layout
      while fiddling with the options above.
