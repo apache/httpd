@@ -61,7 +61,7 @@ TOUCH_FILES = mkinstalldirs install-sh missing
 LT_TARGETS = ltconfig ltmain.sh config.guess config.sub
 
 config_h_in = include/ap_config_auto.h.in
-apr_private.h_in = srclib/apr/include/apr_private.h.in
+apr_private.h_in = srclib/apr/include/arch/unix/apr_private.h.in
 apr_configure = srclib/apr/configure
 mm_configure = srclib/apr/shmem/unix/mm/configure
 pcre_configure = srclib/pcre/configure
