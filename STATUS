@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/10 21:39:53 $]
+Last modified at [$Date: 2003/11/11 19:20:32 $]
 
 Release:
 
@@ -324,12 +324,14 @@ PATCHES TO BACKPORT FROM 2.1
 
     * LDAP cache fixes from Matthieu Estrade; see PR 18756
         include/util_ldap.h r1.12
-        modules/experimental/util_ldap.c r1.15
-        modules/experimental/util_ldap_cache.c r1.9
-        modules/experimental/util_ldap_cache.h r1.7
-        modules/experimental/util_ldap_cache_mgr.c r1.6, r1.7
+        modules/experimental/util_ldap.c r1.15, r1.16
+        modules/experimental/util_ldap_cache.c r1.9, r1.10
+        modules/experimental/util_ldap_cache.h r1.7, r1.8
+        modules/experimental/util_ldap_cache_mgr.c r1.6, r1.7, r1.8
       +1: trawick (this stuff can sure use more eyes, but some users 
-        have already tested the patch successfully)
+                   have already tested the patch successfully)
+	  bnicholes (looks good on Netware but then NetWare does not
+	             use shared memory.)
 
 CURRENT RELEASE NOTES:
 
