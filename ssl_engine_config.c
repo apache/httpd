@@ -525,11 +525,11 @@ const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd, void *ctx,
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
 
-    if (!(cmd->path || dc)) {
-        sc->szCipherSuite = arg;
+    if (cmd->path) {
+        dc->szCipherSuite = (char *)arg;
     }
     else {
-        dc->szCipherSuite = (char *)arg;
+        sc->szCipherSuite = arg;
     }
 
     return NULL;
@@ -676,11 +676,11 @@ const char *ssl_cmd_SSLCACertificatePath(cmd_parms *cmd, void *ctx,
     }
 
 #ifdef SSL_EXPERIMENTAL_PERDIRCA
-    if (!(cmd->path || dc)) {
-        sc->szCACertificatePath = arg;
+    if (cmd->path) {
+        dc->szCACertificatePath = arg;
     }
     else {
-        dc->szCACertificatePath = arg;
+        sc->szCACertificatePath = arg;
     }
 #else
     sc->szCACertificatePath = arg;
@@ -703,11 +703,11 @@ const char *ssl_cmd_SSLCACertificateFile(cmd_parms *cmd, void *ctx,
     }
 
 #ifdef SSL_EXPERIMENTAL_PERDIRCA
-    if (!(cmd->path || dc)) {
-        sc->szCACertificateFile = arg;
+    if (cmd->path) {
+        dc->szCACertificateFile = arg;
     }
     else {
-        dc->szCACertificateFile = arg;
+        sc->szCACertificateFile = arg;
     }
 #else
     sc->szCACertificateFile = arg;
@@ -783,11 +783,11 @@ const char *ssl_cmd_SSLVerifyClient(cmd_parms *cmd, void *ctx,
         return err;
     }
     
-    if (!(cmd->path || dc)) {
-        sc->nVerifyClient = id;
+    if (cmd->path) {
+        dc->nVerifyClient = id;
     }
     else {
-        dc->nVerifyClient = id;
+        sc->nVerifyClient = id;
     }
 
     return NULL;
@@ -818,11 +818,11 @@ const char *ssl_cmd_SSLVerifyDepth(cmd_parms *cmd, void *ctx,
         return err;
     }
 
-    if (!(cmd->path || dc)) {
-        sc->nVerifyDepth = depth;
+    if (cmd->path) {
+        dc->nVerifyDepth = depth;
     }
     else {
-        dc->nVerifyDepth = depth;
+        sc->nVerifyDepth = depth;
     }
 
     return NULL;
