@@ -538,8 +538,6 @@ int status_handler (request_rec *r)
 
 #else /* !defined(STATUS) */
 
-Rule STATUS=yes      
-
     rputs("<hr>To obtain a full report with current status information and",r)
     rputs(" DNS and LOGGING status codes \n",r);
     rputs("you need to recompile Apache after adding the line <pre>",r);
