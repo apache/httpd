@@ -258,8 +258,7 @@ int ap_process_http_connection(conn_rec *c)
 
 conn_rec *ap_new_connection(pool *p, server_rec *server, BUFF *inout,
 			    const struct sockaddr_in *remaddr,
-			    const struct sockaddr_in *saddr,
-			    int child_num, int thread_num)
+			    const struct sockaddr_in *saddr)
 {
     conn_rec *conn = (conn_rec *) ap_pcalloc(p, sizeof(conn_rec));
 
@@ -268,9 +267,6 @@ conn_rec *ap_new_connection(pool *p, server_rec *server, BUFF *inout,
      */
 
     conn->conn_config=ap_create_conn_config(p);
-
-    conn->child_num = child_num;
-    conn->thread_num = thread_num;
 
     conn->pool = p;
     conn->local_addr = *saddr;
