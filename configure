@@ -124,6 +124,29 @@ if [ ".$perlpath" != . ]; then
 fi
 
 ##
+##  look for deadly broken echo commands which interpret escape
+##  sequences `\XX' *per default*. For those we first try the -E option
+##  and if it then is still broken we give a warning message.
+##  If it works set the `Safe Echo Option' (SEO) variable.
+##
+
+SEO='' # CHANGE THIS VARIABLE HERE IF YOU HAVE PROBLEMS WITH ECHO!
+bytes=`echo $SEO '\1' | wc -c | awk '{ printf("%s", $1); }'`
+if [ ".$bytes" != .3 ]; then
+    bytes=`echo -E '\1' | wc -c | awk '{ printf("%s", $1); }'`
+    if [ ".$bytes" != .3 ]; then
+        echo " + Warning: Your 'echo' command is slightly broken."
+        echo " + It interprets escape sequences per default. We already"
+        echo " + tried 'echo -E' but had no real success. If errors occur"
+        echo " + please set the SEO variable in 'configure' manually to"
+        echo " + the required 'echo' options, i.e. those which force your"
+        echo " + 'echo' to not interpret escape sequences per default."
+    else
+        SEO='-E'
+    fi
+fi
+
+##
 ##  look for the best Awk we can find because some
 ##  standard Awks are really braindead and cause 
 ##  problems for our scripts under some platforms.
@@ -266,7 +289,7 @@ done
 if [ $# -eq 0 ]; then
     echo "./configure" >>$configstatus
 else
-    echo "./configure \\" >>$configstatus
+    echo $SEO "./configure \\" >>$configstatus
     for arg
     do
         echo "$arg" |\
@@ -968,10 +991,10 @@ for var in CC OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LD_SHLIB LDFLAGS_SHLIB \
     if [ ".$val" != . ]; then
         case $var in 
             CFLAGS|LDFLAGS|LIBS|INCLUDES|DEPS) 
-                echo "s%^#*\\(EXTRA_$var=\\).*%\\1$val%g" >>$sedsubst
+                echo $SEO "s%^#*\\(EXTRA_$var=\\).*%\\1$val%g" >>$sedsubst
                 ;;
             *)
-                echo "s%^#*\\($var=\\).*%\\1$val%g" >>$sedsubst
+                echo $SEO "s%^#*\\($var=\\).*%\\1$val%g" >>$sedsubst
                 ;;
         esac
         eval "$var=\"\"; export $var"
@@ -984,7 +1007,7 @@ OIFS="$IFS" IFS=':'
 for rule in $rules; do
     name="`echo $rule | tr "a-z" "A-Z"`"
     eval "val=\$rule_$rule"
-    echo "s%^\\(Rule $name=\\).*%\\1$val%g" >>$sedsubst
+    echo $SEO "s%^\\(Rule $name=\\).*%\\1$val%g" >>$sedsubst
     if [ $verbose = yes ]; then
         echo " + Rule $name=$val"
     fi
@@ -1020,17 +1043,17 @@ OIFS="$IFS" IFS=':'
 for module in $modules; do
     eval "add=\$module_$module"
     if [ $add = yes ]; then
-        echo "s%^.*\\(AddModule.*$module\\..*\\)%\\1%g" >>$sedsubst
-        echo "s%^.*\\(SharedModule.*$module\\..*\\)%\\1%g" >>$sedsubst
+        echo $SEO "s%^.*\\(AddModule.*$module\\..*\\)%\\1%g" >>$sedsubst
+        echo $SEO "s%^.*\\(SharedModule.*$module\\..*\\)%\\1%g" >>$sedsubst
         m="yes [static]"
     else
-        echo "s%^.*\\(AddModule.*$module\\..*\\)%# \\1%g" >>$sedsubst
-        echo "s%^.*\\(SharedModule.*$module\\..*\\)%# \\1%g" >>$sedsubst
+        echo $SEO "s%^.*\\(AddModule.*$module\\..*\\)%# \\1%g" >>$sedsubst
+        echo $SEO "s%^.*\\(SharedModule.*$module\\..*\\)%# \\1%g" >>$sedsubst
         m=no
     fi
     eval "share=\$shared_$module"
     if [ $share = yes ]; then
-        echo "s%^\\(.*\\)AddModule\\(.*$module\\.\\)[oa]\\(.*\\)%\\1SharedModule\\2so\\3%g" >>$sedsubst
+        echo $SEO "s%^\\(.*\\)AddModule\\(.*$module\\.\\)[oa]\\(.*\\)%\\1SharedModule\\2so\\3%g" >>$sedsubst
         m="yes [shared]"
     fi
     if [ $verbose = yes ]; then

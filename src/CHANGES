@@ -1,5 +1,9 @@
 Changes with Apache 1.3.2
 
+  *) Add workaround to top-level `configure' script for brain dead 
+     `echo' commands which interpet escape sequences per default.
+     [Ralf S. Engelschall] PR#2654
+
   *) Make sure that the path to the Perl interpreter is correctly
      adjusted under `make install' also for the printenv CGI script.
      [Ralf S. Engelschall] PR#2595
