@@ -6130,7 +6130,7 @@ int main(int argc, char *argv[], char *envp[])
     if (execve(prog, argv, envp) == -1) {
 	fprintf(stderr, 
 		"%s: Unable to exec Shared Core Executable Program `%s'\n",
-		ap_server_argv0, prog);
+		argv[0], prog);
 	return 1;
     }
     else
