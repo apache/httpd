@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/22 08:57:30 $]
+Last modified at [$Date: 2004/09/22 10:48:15 $]
 
 Release:
 
@@ -157,7 +157,10 @@ PATCHES TO BACKPORT FROM 2.1
        The HTTP and the APR patches are available at:
        <http://www.apache.org/~clar/detach-addrspace_HTTP_2_0.patch>
        <http://www.apache.org/~clar/detach-addrspace_APR_0_9.patch>
-       +1: jjclar, bnicholes
+       +1: jjclar, bnicholes, trawick
+       trawick notes: some folks want feature checks for uses of new APR
+                      functions in httpd 2.0; I dunno how to check for
+                      availability of apr_procattr_addrspace_set()
 
     *) mod_ssl: Remove some unused functions (after CAN-2004-0488 fix is applied)
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_util.c?r1=1.46&r2=1.47
