@@ -7,6 +7,8 @@ OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
   http_log.o http_protocol.o rfc1413.o util.o util_script.o modules.o buff.o\
   md5c.o util_md5.o explain.o http_bprintf.o $(MODULES)
 
+LIBS= regex/libregex.a
+
 .c.o:
 	$(CC) -c $(CFLAGS) $(AUX_CFLAGS) $<
 
@@ -19,11 +21,15 @@ Configuration: Configuration.tmpl
 	@echo "If not, you will at least have to touch Configuration."
 	@false
 
-httpd: $(OBJS)
-	$(CC) $(LFLAGS) $(AUX_LFLAGS) -o httpd $(OBJS) $(EXTRA_LIBS) $(AUX_LIBS)
+httpd: $(LIBS) $(OBJS)
+	$(CC) $(LFLAGS) $(AUX_LFLAGS) -o httpd $(OBJS) $(LIBS) $(EXTRA_LIBS) $(AUX_LIBS)
+
+regex/libregex.a:
+	cd regex; make lib CC=$(CC)
 
 clean:
 	rm -f httpd $(OBJS) *pure*
+	cd regex; make clean
 
 dist.tar: 
 	# Assure a semi-sensible configuration going out...
