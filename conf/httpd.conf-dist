@@ -361,7 +361,10 @@ AccessFileName .htaccess
 # .htaccess files.  If you change the AccessFileName directive above,
 # be sure to make the corresponding changes here.
 #
-<Files .htaccess>
+# Also, folks tend to use names such as .htpasswd for password
+# files, so this will protect those as well.
+#
+<Files ~ "^\.ht">
     Order allow,deny
     Deny from all
 </Files>
