@@ -84,8 +84,8 @@ char *crypt(char *pw, char *salt); /* why aren't these prototyped in include */
 void add_password(char *user, FILE *f) {
     char *pw, *cpw, salt[3];
 
-    pw = strd(getpass("New password:"));
-    if(strcmp(pw,getpass("Re-type new password:"))) {
+    pw = strd((char *) getpass("New password:"));
+    if(strcmp(pw,(char *) getpass("Re-type new password:"))) {
         fprintf(stderr,"They don't match, sorry.\n");
         if(tn)
             unlink(tn);
