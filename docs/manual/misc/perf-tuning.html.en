@@ -386,6 +386,100 @@
 
     
 
+    <h3>Choosing an MPM</h3>
+
+      
+
+      <p>Apache 2.x supports pluggable concurrency models, called
+      <a href="../mpm.html">Multi-Processing Modules</a> (MPMs).
+      When building Apache, you must choose an MPM to use.  There
+      are platform-specific MPMs for some platforms:
+      <code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>,
+      <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, and <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>.  For
+      general Unix-type systems, there are several MPMs from which
+      to choose.  The choice of MPM can affect the speed and scalability
+      of the httpd:</p>
+
+      <ul>
+
+        <li>The <code class="module"><a href="../mod/worker.html">worker</a></code> MPM uses multiple child
+        processes with many threads each.  Each thread handles
+        one connection at a time.  Worker generally is a good
+        choice for high-traffic servers because it has a smaller
+        memory footprint than the prefork MPM.</li>
+
+        <li>The <code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM uses multiple child
+        processes with one thread each.  Each process handles
+        one connection at a time.  On many systems, prefork is
+        comparable in speed to worker, but it uses more memory.
+        Prefork's threadless design has advantages over worker
+        in some situations: it can be used with non-thread-safe
+        third-party modules, and it is easier to debug on platforms
+        with poor thread debugging support.</li>
+
+      </ul>
+
+      <p>For more information on these and other MPMs, please
+      see the MPM <a href="../mpm.html">documentation</a>.</p>
+
+    
+
+    <h3>Atomic Operations</h3>
+
+      
+
+      <p>Some modules, such as <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> and
+      recent development builds of the worker MPM, use APR's
+      atomic API.  This API provides atomic operations that can
+      be used for lightweight thread synchronization.</p>
+
+      <p>By default, APR implements these operations using the
+      most efficient mechanism available on each target
+      OS/CPU platform.  Many modern CPUs, for example, have
+      an instruction that does an atomic compare-and-swap (CAS)
+      operation in hardware.  On some platforms, however, APR
+      defaults to a slower, mutex-based implementation of the
+      atomic API in order to ensure compatibility with older
+      CPU models that lack such instructions.  If you are
+      building Apache for one of these platforms, and you plan
+      to run only on newer CPUs, you can select a faster atomic
+      implementation at build time by configuring Apache with
+      the <code>--enable-nonportable-atomics</code> option:</p>
+
+      <div class="example"><p><code>
+        ./buildconf<br />
+        ./configure --with-mpm=worker --enable-nonportable-atomics=yes
+      </code></p></div>
+
+      <p>The <code>--enable-nonportable-atomics</code> option is
+      relevant for the following platforms:</p>
+
+      <ul>
+
+        <li>Solaris on SPARC<br />
+            By default, APR uses mutex-based atomics on Solaris/SPARC.
+            If you configure with <code>--enable-nonportable-atomics</code>,
+            however, APR generates code that uses a SPARC v8plus opcode for
+            fast hardware compare-and-swap.  If you configure Apache with
+            this option, the atomic operations will be more efficient
+            (allowing for lower CPU utilization and higher concurrency),
+            but the resulting executable will run only on UltraSPARC
+            chips.
+        </li>
+
+        <li>Linux on x86<br />
+            By default, APR uses mutex-based atomics on Linux.  If you
+            configure with <code>--enable-nonportable-atomics</code>,
+            however, APR generates code that uses a 486 opcode for fast
+            hardware compare-and-swap.  This will result in more efficient
+            atomic operations, but the resulting executable will run only
+            on 486 and later chips (and not on 386).
+        </li>
+
+      </ul>
+
+    
+
     <h3>mod_status and ExtendedStatus On</h3>
 
       
