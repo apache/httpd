@@ -113,7 +113,7 @@ static mem_cache_conf *sconf;
 #define DEFAULT_MAX_CACHE_SIZE 100*1024
 #define DEFAULT_MIN_CACHE_OBJECT_SIZE 0
 #define DEFAULT_MAX_CACHE_OBJECT_SIZE 10000
-#define DEFAULT_MAX_OBJECT_CNT 1000
+#define DEFAULT_MAX_OBJECT_CNT 1009
 #define CACHEFILE_LEN 20
 
 /* Forward declarations */
@@ -289,8 +289,6 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
     if (threaded_mpm) {
         apr_thread_mutex_create(&sconf->lock, APR_THREAD_MUTEX_DEFAULT, p);
     }
-    /* Todo: determine hash table size from max_cache_object_cnt */
-    sconf->cacheht = cache_hash_make(512);
 
     sconf->min_cache_object_size = DEFAULT_MIN_CACHE_OBJECT_SIZE;
     sconf->max_cache_object_size = DEFAULT_MAX_CACHE_OBJECT_SIZE;
@@ -849,6 +847,15 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
     }
     return APR_SUCCESS;
 }
+/**
+ * Configuration and start-up
+ */
+static int mem_cache_post_config(apr_pool_t *p, apr_pool_t *plog,
+                                 apr_pool_t *ptemp, server_rec *s)
+{
+    sconf->cacheht = cache_hash_make(sconf->max_object_cnt);
+    return OK;
+}
 
 static const char 
 *set_max_cache_size(cmd_parms *parms, void *in_struct_ptr, const char *arg)
@@ -910,8 +917,9 @@ static const command_rec cache_cmds[] =
 
 static void register_hooks(apr_pool_t *p)
 {
+    ap_hook_post_config(mem_cache_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     /* cache initializer */
-/*    cache_hook_cache_init(cache_init, NULL, NULL, AP_HOOK_FIRST); */
+    /* cache_hook_cache_init(cache_init, NULL, NULL, AP_HOOK_FIRST); */
     cache_hook_create_entity(create_entity, NULL, NULL, APR_HOOK_MIDDLE);
     cache_hook_open_entity(open_entity,  NULL, NULL, APR_HOOK_MIDDLE);
     cache_hook_remove_url(remove_url, NULL, NULL, APR_HOOK_MIDDLE);
