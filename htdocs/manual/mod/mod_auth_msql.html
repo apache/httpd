@@ -52,7 +52,7 @@ Auth_MSQLpwd_table &lt; mSQL table name &gt
         Normally this table is compulsory, but it is
         possible to use a fall-through to other methods
         and use the mSQL module for group control only.
-        See the <a href="#Authorative"><code>Auth_MSQL_Authorative</code></a>
+        See the <a href="#Authoritative"><code>Auth_MSQL_Authoritative</code></a>
         directive below.
 </dd>
 
@@ -109,7 +109,7 @@ Auth_MSQL_nopasswd &lt; on | off &gt
 </dd>
 
 <code><dt>
-<a name="Authorative">Auth_MSQL_Authorative &lt; on | off &gt</a>
+<a name="Authoritative">Auth_MSQL_Authoritative &lt; on | off &gt</a>
 </code></dt><dd>
         Default is 'on'. When set 'on', there is no
         fall-through to other authorization methods. So if a
@@ -239,7 +239,7 @@ Auth_MSQLgrp_field   Xgroup       <br>
 
 <code><dt>
 Auth_MSQL_nopasswd           off <br>
-Auth_MSQL_Authorative        on  <br>
+Auth_MSQL_Authoritative        on  <br>
 Auth_MSQL_EncryptedPasswords on  <br>
 </code></dt><dd>
                 These three optional fields (all set to the sensible defaults,
@@ -415,7 +415,7 @@ This version: 23 Nov 1995, 24 Feb 1996, 16 May 1996.
         spotting this one.
     </dd>
 <dt>Version 0.8<br></dt>
-    <dd>Authorative directive added. See above.
+    <dd>Authoritative directive added. See above.
     </dd>
 <dt>Version 0.9<br></dt>
     <dd><code>palloc</code> return code check(s), should be
