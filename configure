@@ -583,7 +583,7 @@ do
                     ;;
             esac
             #   determine GNU platform triple
-            gnutriple=`$aux/GuessOS | sed -e 's:/:-:g' | $AWK '{ printf("%s",$1); }'`
+            gnutriple=`echo "$PLATFORM" | sed -e 's:/:-:g' | $AWK '{ printf("%s",$1); }'`
             #   create Makefile wrapper (the first time only)
             if [ "x`ls $top/src.* 2>/dev/null`" = "x" ]; then
                 if [ "x$quiet" = "xno" ]; then
