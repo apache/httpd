@@ -96,56 +96,24 @@
  *       *** configuration carefully before accepting this        ***
  *       *** version of the module in a live webserver which used ***
  *       *** older versions of the module.                        ***
- * 20.Mar.1999 Added PassAllEnv to allow copying of the entire parent
- *           process environment to CGIs and SSIs.
  */
 
 #include "httpd.h"
 #include "http_config.h"
 
-#ifdef WIN32
-__declspec(dllimport) char **environ;
-#else
-#include <unistd.h>
-extern char **environ;
-#endif
-
-/*
- * Server-wide config info for this module
- */
-typedef struct env_server_config_rec {
+typedef struct {
     table *vars;
-    table *parent_env;
     char *unsetenv;
     int vars_present;
 } env_server_config_rec;
 
-/*
- * Per-directory config info
- */
-typedef struct env_dir_config_rec {
-    int passall;
-} env_dir_config_rec;
-
 module MODULE_VAR_EXPORT env_module;
-
-static void *create_env_dir_config(pool *p, char *dspec)
-{
-    env_dir_config_rec *dconf;
-
-    dconf = ap_palloc(p, sizeof(env_dir_config_rec));
-    dconf->passall = 0;
-    return dconf;
-}
 
 static void *create_env_server_config(pool *p, server_rec *dummy)
 {
-    env_server_config_rec *new;
-
-    new = (env_server_config_rec *) ap_palloc(p,
-					      sizeof(env_server_config_rec));
+    env_server_config_rec *new =
+    (env_server_config_rec *) ap_palloc(p, sizeof(env_server_config_rec));
     new->vars = ap_make_table(p, 50);
-    new->parent_env = NULL;
     new->unsetenv = "";
     new->vars_present = 0;
     return (void *) new;
@@ -155,7 +123,9 @@ static void *merge_env_server_configs(pool *p, void *basev, void *addv)
 {
     env_server_config_rec *base = (env_server_config_rec *) basev;
     env_server_config_rec *add = (env_server_config_rec *) addv;
-    env_server_config_rec *new;
+    env_server_config_rec *new =
+    (env_server_config_rec *) ap_palloc(p, sizeof(env_server_config_rec));
+
     table *new_table;
     table_entry *elts;
     array_header *arr;
@@ -163,8 +133,6 @@ static void *merge_env_server_configs(pool *p, void *basev, void *addv)
     int i;
     const char *uenv, *unset;
 
-    new = (env_server_config_rec *) ap_palloc(p,
-					      sizeof(env_server_config_rec));
     /* 
      * new_table = copy_table( p, base->vars );
      * foreach $element ( @add->vars ) {
@@ -235,8 +203,7 @@ static const char *add_env_module_vars_set(cmd_parms *cmd, char *struct_ptr,
 
 
     if ((*name == '\0') || (*arg != '\0')) {
-        return "SetEnv takes one or two arguments.  An environment "
-	    "variable name and an optional value to pass to CGI.";
+        return "SetEnv takes one or two arguments.  An environment variable name and an optional value to pass to CGI.";
     }
 
     sconf->vars_present = 1;
@@ -248,64 +215,11 @@ static const char *add_env_module_vars_set(cmd_parms *cmd, char *struct_ptr,
 static const char *add_env_module_vars_unset(cmd_parms *cmd, char *struct_ptr,
                                              char *arg)
 {
-    env_server_config_rec *sconf;
-
-    sconf = ap_get_module_config(cmd->server->module_config, &env_module);
-    sconf->unsetenv = sconf->unsetenv
-	? ap_pstrcat(cmd->pool, sconf->unsetenv, " ", arg, NULL)
-	: arg;
-    return NULL;
-}
-
-/*
- * Set up to make the entire server environment available through
- * r->subprocess_env.
- */
-static const char *add_env_module_passall(cmd_parms *cmd, void *mconfig,
-					  int enable)
-{
-    env_dir_config_rec *dconf = (env_dir_config_rec *) mconfig;
-
-    dconf->passall = enable;
-    if (enable) {
-	env_server_config_rec *sconf;
-
-	sconf = (env_server_config_rec *) ap_get_module_config(cmd->server->module_config,
-							       &env_module);
-	/*
-	 * If we've copied the entire server environment before, it's
-	 * in the server config record.  Otherwise, do so now.
-	 */
-	if (sconf->parent_env == NULL) {
-	    char **e = environ;
-	    char *lhs;
-	    char *rhs;
-
-	    sconf->parent_env = ap_make_table(cmd->pool, 30);
-	    while (*e != NULL) {
-		/*
-		 * Make a copy of the environment entry so we can split
-		 * it into a key/value pair with '\0'.
-		 */
-		lhs = ap_pstrdup(cmd->pool, *e);
-		rhs = strchr(lhs, '=');
-		if (rhs == NULL) {
-		    rhs = "";
-		}
-		else {
-		    *rhs = '\0';
-		    rhs++;
-		}
-		ap_table_setn(sconf->parent_env, lhs, rhs);
-		e++;
-	    }
-	}
-	/*
-	 * Note that there are variables to be copied during the fixup
-	 * phase.
-	 */
-	sconf->vars_present++;
-    }
+    env_server_config_rec *sconf =
+    ap_get_module_config(cmd->server->module_config, &env_module);
+    sconf->unsetenv = sconf->unsetenv ?
+        ap_pstrcat(cmd->pool, sconf->unsetenv, " ", arg, NULL) :
+         arg;
     return NULL;
 }
 
@@ -313,12 +227,10 @@ static const command_rec env_module_cmds[] =
 {
     {"PassEnv", add_env_module_vars_passed, NULL,
      RSRC_CONF, RAW_ARGS, "a list of environment variables to pass to CGI."},
-    {"SetEnv", add_env_module_vars_set, NULL, RSRC_CONF, RAW_ARGS,
-     "an environment variable name and a value to pass to CGI."},
-    {"UnsetEnv", add_env_module_vars_unset, NULL, RSRC_CONF, RAW_ARGS,
-     "a list of variables to remove from the CGI environment."},
-    {"PassAllEnv", add_env_module_passall, NULL, ACCESS_CONF, FLAG,
-     "On or Off  to control passing of entire server environment."},
+    {"SetEnv", add_env_module_vars_set, NULL,
+     RSRC_CONF, RAW_ARGS, "an environment variable name and a value to pass to CGI."},
+    {"UnsetEnv", add_env_module_vars_unset, NULL,
+     RSRC_CONF, RAW_ARGS, "a list of variables to remove from the CGI environment."},
     {NULL},
 };
 
@@ -327,30 +239,13 @@ static int fixup_env_module(request_rec *r)
     table *e = r->subprocess_env;
     server_rec *s = r->server;
     env_server_config_rec *sconf = ap_get_module_config(s->module_config,
-							&env_module);
-    env_dir_config_rec *dconf = ap_get_module_config(r->per_dir_config,
-						     &env_module);
+                                                     &env_module);
     table *vars = sconf->vars;
 
-    if (!sconf->vars_present) {
+    if (!sconf->vars_present)
         return DECLINED;
-    }
 
-    /*
-     * If the entire environment is supposed to be copied, do it.
-     */
-    if (dconf->passall) {
-	r->subprocess_env = ap_overlay_tables(r->pool, r->subprocess_env,
-					      sconf->parent_env);
-    }
-    else {
-	/*
-	 * If we just copied the entire environment, we don't need to
-	 * deal with the PassEnv settings because they were automatically
-	 * included.  Otherwise, do them now.
-	 */
-	r->subprocess_env = ap_overlay_tables(r->pool, e, vars);
-    }
+    r->subprocess_env = ap_overlay_tables(r->pool, e, vars);
 
     return OK;
 }
@@ -359,7 +254,7 @@ module MODULE_VAR_EXPORT env_module =
 {
     STANDARD_MODULE_STUFF,
     NULL,                       /* initializer */
-    create_env_dir_config,      /* dir config creater */
+    NULL,                       /* dir config creater */
     NULL,                       /* dir merger --- default is to override */
     create_env_server_config,   /* server config */
     merge_env_server_configs,   /* merge server configs */

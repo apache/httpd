@@ -1,7 +1,8 @@
 Changes with Apache 1.3.6
 
+  *) Removed new PassAllEnv code due to DSO problems. [Lars Eilebrecht]
 
-Changes with Apache 1.3.5
+Changes with Apache 1.3.5 [not released]
 
   *) M_INVALID needed a value within the scope of METHODS so that unknown
      methods can be access controlled.  [Roy Fielding] PR#3821
