@@ -133,6 +133,7 @@ extern module DAV_DECLARE_DATA dav_module;
 /* DAV methods */
 enum {
     DAV_M_BIND = 0,
+    DAV_M_SEARCH,
     DAV_M_LAST
 };
 static int dav_methods[DAV_M_LAST];
@@ -145,6 +146,7 @@ static int dav_init_handler(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
 
     /* Register DAV methods */
     dav_methods[DAV_M_BIND] = ap_method_register(p, "BIND");
+    dav_methods[DAV_M_SEARCH] = ap_method_register(p, "SEARCH");
 
     ap_add_version_component(p, "DAV/2");
 
@@ -263,6 +265,11 @@ const dav_hooks_vsn *dav_get_vsn_hooks(request_rec *r)
 const dav_hooks_binding *dav_get_binding_hooks(request_rec *r)
 {
     return dav_get_provider(r)->binding;
+}
+
+const dav_hooks_search *dav_get_search_hooks(request_rec *r)
+{
+    return dav_get_provider(r)->search;
 }
 
 /*
@@ -1427,12 +1434,69 @@ static dav_error *dav_gen_supported_reports(request_rec *r,
     return NULL;
 }
 
+
+/* handle the SEARCH method */
+static int dav_method_search(request_rec *r)
+{
+    const dav_hooks_search *search_hooks = DAV_GET_HOOKS_SEARCH(r);
+    dav_resource *resource;
+    dav_error *err;
+    dav_response *multi_status;
+
+    /* If no search provider, decline the request */
+    if (search_hooks == NULL)
+        return DECLINED;
+
+    /* This method should only be called when the resource is not
+     * visible to Apache. We will fetch the resource from the repository,
+     * then create a subrequest for Apache to handle.
+     */
+    err = dav_get_resource(r, 1 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
+
+    if (!resource->exists) {
+        /* Apache will supply a default error for this. */
+        return HTTP_NOT_FOUND;
+    }
+
+    /* set up the HTTP headers for the response */
+    if ((err = (*resource->hooks->set_headers)(r, resource)) != NULL) {
+        err = dav_push_error(r->pool, err->status, 0,
+                             "Unable to set up HTTP headers.",
+                             err);
+        return dav_handle_err(r, err, NULL);
+    }
+
+    if (r->header_only) {
+        return DONE;
+    }
+
+    /* okay... time to search the content */
+    /* Let's validate XML and process walk function
+     * in the hook function
+     */
+    if ((err = (*search_hooks->search_resource)(r, &multi_status)) != NULL) {
+        /* ### add a higher-level description? */
+        return dav_handle_err(r, err, NULL);
+    }
+
+    /* We have results in multi_status */
+    /* Should I pass namespace?? */
+    dav_send_multistatus(r, HTTP_MULTI_STATUS, multi_status, NULL);
+
+    return DONE;
+}
+
+
 /* handle the OPTIONS method */
 static int dav_method_options(request_rec *r)
 {
     const dav_hooks_locks *locks_hooks = DAV_GET_HOOKS_LOCKS(r);
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     const dav_hooks_binding *binding_hooks = DAV_GET_HOOKS_BINDING(r);
+    const dav_hooks_search *search_hooks = DAV_GET_HOOKS_SEARCH(r);
     dav_resource *resource;
     const char *dav_level;
     char *allow;
@@ -1617,6 +1681,11 @@ static int dav_method_options(request_rec *r)
         apr_table_addn(methods, "BIND", "");
     }
 
+    /* If there is a search provider, set SEARCH in option */
+    if (search_hooks != NULL) {
+        apr_table_addn(methods, "SEARCH", "");
+    }
+
     /* Generate the Allow header */
     arr = apr_table_elts(methods);
     elts = (const apr_table_entry_t *)arr->elts;
@@ -1645,6 +1714,19 @@ static int dav_method_options(request_rec *r)
     }
 
     apr_table_setn(r->headers_out, "Allow", allow);
+
+
+    /* If there is search set_option_head function, set head */
+    /* DASL: <DAV:basicsearch>
+     * DASL: <http://foo.bar.com/syntax1>
+     * DASL: <http://akuma.com/syntax2>
+     */
+    if (search_hooks != NULL
+        && *search_hooks->set_option_head != NULL) {
+        if ((err = (*search_hooks->set_option_head)(r)) != NULL) {
+            return dav_handle_err(r, err, NULL);
+        }
+    }
 
     /* if there was no request body, then there is no response body */
     if (doc == NULL) {
@@ -4513,7 +4595,12 @@ static int dav_handler(request_rec *r)
         return dav_method_bind(r);
     }
 
-    /* ### add'l methods for Advanced Collections, ACLs, DASL */
+    /* DASL method */
+    if (r->method_number == dav_methods[DAV_M_SEARCH]) {
+        return dav_method_search(r);
+    }
+
+    /* ### add'l methods for Advanced Collections, ACLs */
 
     return DECLINED;
 }
