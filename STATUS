@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/27 18:13:12 $]
+Last modified at [$Date: 2003/09/27 18:17:09 $]
 
 Release:
 
@@ -64,12 +64,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
-
-    * The cache code should be able to cache a response if it has an
-      Expires header but no Etag or Last-Modified headers. This submitted
-      patch (by bjorn@exoweb.net) resolves PR 23130.
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_cache.c.diff?r1=1.76&r2=1.77
-      +1: rederpj, fielding, brianp
 
     * Modifies the cache code to be header-location agnostic. Also
       fixes a number of other cache code bugs related to PR 15852
