@@ -933,6 +933,8 @@ int fprintf(FILE *, char *,...);
 int fputs(char *, FILE *);
 int fread(char *, int, int, FILE *);
 int fwrite(char *, int, int, FILE *);
+int fgetc(FILE *);
+char *fgets(char *s, int, FILE*);
 int fflush(FILE *);
 int fclose(FILE *);
 int ungetc(int, FILE *);
