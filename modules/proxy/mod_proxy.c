@@ -293,7 +293,7 @@ static int proxy_handler(request_rec *r)
     const char *maxfwd_str;
     const char *pragma, *auth, *imstr;
 
-    if (r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
+    if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
 	return DECLINED;
 
     if (r->method_number == M_TRACE &&
