@@ -535,7 +535,7 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
  *         0 on failure (bad file or wrong URL)
  *        -1 on UNIX error
  */
-static int rdcache(pool *p, BUFF *cachefp, struct cache_req *c)
+static int rdcache(pool *p, BUFF *cachefp, cache_req *c)
 {
     char urlbuff[1034], *strp;
     int len;
@@ -544,7 +544,7 @@ static int rdcache(pool *p, BUFF *cachefp, struct cache_req *c)
  * date SP lastmod SP expire SP count SP content-length CRLF
  * dates are stored as hex seconds since 1970
  */
-    len = ap_bgets(urlbuff, 1034, cachefp);
+    len = ap_bgets(urlbuff, sizeof urlbuff, cachefp);
     if (len == -1)
 	return -1;
     if (len == 0 || urlbuff[len - 1] != '\n')
@@ -562,7 +562,7 @@ static int rdcache(pool *p, BUFF *cachefp, struct cache_req *c)
     c->len = ap_proxy_hex2sec(urlbuff + 36);
 
 /* check that we have the same URL */
-    len = ap_bgets(urlbuff, 1034, cachefp);
+    len = ap_bgets(urlbuff, sizeof urlbuff, cachefp);
     if (len == -1)
 	return -1;
     if (len == 0 || strncmp(urlbuff, "X-URL: ", 7) != 0 ||
@@ -573,7 +573,7 @@ static int rdcache(pool *p, BUFF *cachefp, struct cache_req *c)
 	return 0;
 
 /* What follows is the message */
-    len = ap_bgets(urlbuff, 1034, cachefp);
+    len = ap_bgets(urlbuff, sizeof urlbuff, cachefp);
     if (len == -1)
 	return -1;
     if (len == 0 || urlbuff[len - 1] != '\n')
@@ -586,16 +586,13 @@ static int rdcache(pool *p, BUFF *cachefp, struct cache_req *c)
 	return 0;
 
     c->status = atoi(strp);
-    c->hdrs = ap_proxy_read_headers(p, urlbuff, 1034, cachefp);
+    c->hdrs = ap_proxy_read_headers(p, urlbuff, sizeof urlbuff, cachefp);
     if (c->hdrs == NULL)
 	return -1;
     if (c->len != -1) {		/* add a content-length header */
-	struct hdr_entry *q;
-	q = ap_proxy_get_header(c->hdrs, "Content-Length");
-	if (q == NULL) {
-	    strp = ap_palloc(p, 15);
-	    ap_snprintf(strp, 15, "%lu", (unsigned long)c->len);
-	    ap_proxy_add_header(c->hdrs, "Content-Length", strp, HDR_REP);
+	if (ap_table_get(c->hdrs, "Content-Length") == NULL) {
+	    ap_table_set(c->hdrs, "Content-Length",
+			 ap_psprintf(p, "%lu", (unsigned long)c->len));
 	}
     }
     return 1;
@@ -617,11 +614,11 @@ static int rdcache(pool *p, BUFF *cachefp, struct cache_req *c)
  *            last modified date to request
  */
 int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
-		      struct cache_req **cr)
+		      cache_req **cr)
 {
     char hashfile[66];
     const char *imstr, *pragma, *auth;
-    struct cache_req *c;
+    cache_req *c;
     time_t now;
     BUFF *cachefp;
     int cfd, i;
@@ -630,7 +627,7 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
     proxy_server_conf *pconf =
     (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
-    c = ap_pcalloc(r->pool, sizeof(struct cache_req));
+    c = ap_pcalloc(r->pool, sizeof(cache_req));
     *cr = c;
     c->req = r;
     c->url = ap_pstrdup(r->pool, url);
@@ -696,7 +693,7 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 /* fixed?  in this case, we want to get the headers from the remote server
    it will be handled later if we don't do this (I hope ;-)
     if (cachefp == NULL)
-	c->hdrs = ap_make_array(r->pool, 2, sizeof(struct hdr_entry));
+	c->hdrs = ap_make_table(r->pool, 20);
 */
     /* FIXME: Shouldn't we check the URL somewhere? */
     now = time(NULL);
@@ -708,16 +705,12 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 /* has the cached file changed since this request? */
 	    if (c->date == BAD_DATE || c->date > c->ims) {
 /* No, but these header values may have changed, so we send them with the
- * 304 response
+ * 304 HTTP_NOT_MODIFIED response
  */
-		/* CHECKME: surely this was wrong? (Ben)
-		   p = table_get(r->headers_in, "Expires");
-		 */
-		struct hdr_entry *q;
+		const char *q;
 
-		q = ap_proxy_get_header(c->hdrs, "Expires");
-		if (q != NULL && q->value != NULL)
-		    ap_table_set(r->headers_out, "Expires", q->value);
+		if ((q = ap_table_get(c->hdrs, "Expires")) != NULL)
+		    ap_table_set(r->headers_out, "Expires", q);
 	    }
 	    ap_pclosef(r->pool, cachefp->fd);
 	    Explain0("Use local copy, cached file hasn't changed");
@@ -736,7 +729,7 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
 	r->sent_bodyct = 1;
 	if (!r->header_only)
-	    ap_proxy_send_fb(cachefp, r, NULL, NULL);
+	    ap_proxy_send_fb(cachefp, r, NULL);
 	ap_pclosef(r->pool, cachefp->fd);
 	return OK;
     }
@@ -751,13 +744,11 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
  * from the cache
  */
 	if (c->ims == BAD_DATE || c->ims < c->lmod) {
-	    struct hdr_entry *q;
+	    const char *q;
 
-	    q = ap_proxy_get_header(c->hdrs, "Last-Modified");
-
-	    if (q != NULL && q->value != NULL)
+	    if ((q = ap_table_get(c->hdrs, "Last-Modified")) != NULL)
 		ap_table_set(r->headers_in, "If-Modified-Since",
-			  (char *) q->value);
+			  (char *) q);
 	}
     }
     c->fp = cachefp;
@@ -779,7 +770,7 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
  *  from the cache, maybe updating the header line
  *  otherwise, delete the old cached file and open a new temporary file
  */
-int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
+int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
 		       const int is_HTTP1, int nocache)
 {
 #ifdef ULTRIX_BRAIN_DEATH
@@ -788,7 +779,7 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
     request_rec *r = c->req;
     char *p;
     int i;
-    struct hdr_entry *expire, *dates, *lmods, *clen;
+    const char *expire, *lmods, *dates, *clen;
     time_t expc, date, lmod, now;
     char buff[46];
     void *sconf = r->server->module_config;
@@ -802,21 +793,20 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 /* read expiry date; if a bad date, then leave it so the client can
  * read it
  */
-    expire = ap_proxy_get_header(resp_hdrs, "Expires");
+    expire = ap_table_get(resp_hdrs, "Expires");
     if (expire != NULL)
-	expc = ap_parseHTTPdate(expire->value);
+	expc = ap_parseHTTPdate(expire);
     else
 	expc = BAD_DATE;
 
 /*
  * read the last-modified date; if the date is bad, then delete it
  */
-    lmods = ap_proxy_get_header(resp_hdrs, "Last-Modified");
+    lmods = ap_table_get(resp_hdrs, "Last-Modified");
     if (lmods != NULL) {
-	lmod = ap_parseHTTPdate(lmods->value);
+	lmod = ap_parseHTTPdate(lmods);
 	if (lmod == BAD_DATE) {
 /* kill last modified date */
-	    lmods->value = NULL;
 	    lmods = NULL;
 	}
     }
@@ -826,16 +816,18 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 /*
  * what responses should we not cache?
  * Unknown status responses and those known to be uncacheable
- * 304 response when we have no valid cache file, or
- * 200 response from HTTP/1.0 and up without a Last-Modified header, or
+ * 304 HTTP_NOT_MODIFIED response when we have no valid cache file, or
+ * 200 HTTP_OK response from HTTP/1.0 and up without a Last-Modified header, or
  * HEAD requests, or
  * requests with an Authorization header, or
  * protocol requests nocache (e.g. ftp with user/password)
  */
-    if ((r->status != 200 && r->status != 301 && r->status != 304) ||
+/* @@@ XXX FIXME: is the test "r->status != HTTP_MOVED_PERMANENTLY" corerct?
+ * or shouldn't it be "is_HTTP_REDIRECT(r->status)" ? -MnKr */
+    if ((r->status != HTTP_OK && r->status != HTTP_MOVED_PERMANENTLY && r->status != HTTP_NOT_MODIFIED) ||
 	(expire != NULL && expc == BAD_DATE) ||
-	(r->status == 304 && c->fp == NULL) ||
-	(r->status == 200 && lmods == NULL && is_HTTP1) ||
+	(r->status == HTTP_NOT_MODIFIED && (c == NULL || c->fp == NULL)) ||
+	(r->status == HTTP_OK && lmods == NULL && is_HTTP1) ||
 	r->header_only ||
 	ap_table_get(r->headers_in, "Authorization") != NULL ||
 	nocache) {
@@ -855,9 +847,9 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 /*
  * Read the date. Generate one if one is not supplied
  */
-    dates = ap_proxy_get_header(resp_hdrs, "Date");
+    dates = ap_table_get(resp_hdrs, "Date");
     if (dates != NULL)
-	date = ap_parseHTTPdate(dates->value);
+	date = ap_parseHTTPdate(dates);
     else
 	date = BAD_DATE;
 
@@ -868,8 +860,8 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 /* add one; N.B. use the time _now_ rather than when we were checking the cache
  */
 	date = now;
-	p = ap_gm_timestr_822(r->pool, now);
-	dates = ap_proxy_add_header(resp_hdrs, "Date", p, HDR_REP);
+	dates = ap_gm_timestr_822(r->pool, now);
+	ap_table_set(resp_hdrs, "Date", dates);
 	Explain0("Added date header");
     }
 
@@ -878,7 +870,7 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 /* if its in the future, then replace by date */
     {
 	lmod = date;
-	lmods->value = dates->value;
+	lmods = dates;
 	Explain0("Last modified is in the future, replacing with now");
     }
 /* if the response did not contain the header, then use the cached version */
@@ -889,9 +881,9 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 
 /* we now need to calculate the expire data for the object. */
     if (expire == NULL && c->fp != NULL) {	/* no expiry data sent in response */
-	expire = ap_proxy_get_header(c->hdrs, "Expires");
+	expire = ap_table_get(c->hdrs, "Expires");
 	if (expire != NULL)
-	    expc = ap_parseHTTPdate(expire->value);
+	    expc = ap_parseHTTPdate(expire);
     }
 /* so we now have the expiry date */
 /* if no expiry date then
@@ -915,11 +907,11 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
     }
 
 /* get the content-length header */
-    clen = ap_proxy_get_header(resp_hdrs, "Content-Length");
+    clen = ap_table_get(resp_hdrs, "Content-Length");
     if (clen == NULL)
 	c->len = -1;
     else
-	c->len = atoi(clen->value);
+	c->len = atoi(clen);
 
     ap_proxy_sec2hex(date, buff);
     buff[8] = ' ';
@@ -934,7 +926,7 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
     buff[45] = '\0';
 
 /* if file not modified */
-    if (r->status == 304) {
+    if (r->status == HTTP_NOT_MODIFIED) {
 	if (c->ims != BAD_DATE && lmod != BAD_DATE && lmod <= c->ims) {
 /* set any changed headers somehow */
 /* update dates and version, but not content-length */
@@ -967,7 +959,7 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 	    ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
 	    r->sent_bodyct = 1;
 	    if (!r->header_only)
-		ap_proxy_send_fb(c->fp, r, NULL, NULL);
+		ap_proxy_send_fb(c->fp, r, NULL);
 /* set any changed headers somehow */
 /* update dates and version, but not content-length */
 	    if (lmod != c->lmod || expc != c->expire || date != c->date) {
@@ -1030,13 +1022,15 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
     return DECLINED;
 }
 
-void ap_proxy_cache_tidy(struct cache_req *c)
+void ap_proxy_cache_tidy(cache_req *c)
 {
-    server_rec *s = c->req->server;
+    server_rec *s;
     long int bc;
 
-    if (c->fp == NULL)
+    if (c == NULL || c->fp == NULL)
 	return;
+
+    s = c->req->server;
 
 /* don't care how much was sent, but rather how much was written to cache
     ap_bgetopt(c->req->connection->client, BO_BYTECT, &bc);

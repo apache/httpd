@@ -165,26 +165,28 @@ static void clear_connection(pool *p, table *headers)
  * we return DECLINED so that we can try another proxy. (Or the direct
  * route.)
  */
-int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
+int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 		       const char *proxyhost, int proxyport)
 {
     const char *strp;
     char *strp2;
     const char *err, *desthost;
     int i, j, sock, len, backasswards;
-    array_header *reqhdrs_arr, *resp_hdrs;
+    array_header *reqhdrs_arr;
+    table *resp_hdrs;
     table_entry *reqhdrs;
     struct sockaddr_in server;
     struct in_addr destaddr;
     struct hostent server_hp;
-    BUFF *f, *cache;
-    struct hdr_entry *hdr;
+    BUFF *f;
     char buffer[HUGE_STRING_LEN];
     pool *p = r->pool;
     const long int zero = 0L;
     int destport = 0;
     char *destportstr = NULL;
     const char *urlptr = NULL;
+    const char *datestr;
+    struct tbl_do_args tdo;
 
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
@@ -313,7 +315,7 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	if (reqhdrs[i].key == NULL || reqhdrs[i].val == NULL
 	/* Clear out headers not to send */
 	    || !strcasecmp(reqhdrs[i].key, "Host")	/* Already sent */
-	    ||!strcasecmp(reqhdrs[i].key, "Proxy-Authorization"))
+	    || !strcasecmp(reqhdrs[i].key, "Proxy-Authorization"))
 	    continue;
 	ap_bvputs(f, reqhdrs[i].key, ": ", reqhdrs[i].val, CRLF, NULL);
     }
@@ -322,7 +324,7 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 /* send the request data, if any. N.B. should we trap SIGPIPE ? */
 
     if (ap_should_client_block(r)) {
-	while ((i = ap_get_client_block(r, buffer, HUGE_STRING_LEN)) > 0)
+	while ((i = ap_get_client_block(r, buffer, sizeof buffer)) > 0)
 	    ap_bwrite(f, buffer, i);
     }
     ap_bflush(f);
@@ -330,7 +332,7 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 
     ap_hard_timeout("proxy receive", r);
 
-    len = ap_bgets(buffer, HUGE_STRING_LEN - 1, f);
+    len = ap_bgets(buffer, sizeof buffer - 1, f);
     if (len == -1 || len == 0) {
 	ap_bclose(f);
 	ap_kill_timeout(r);
@@ -368,7 +370,7 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	r->status_line = "200 OK";
 
 /* no headers */
-	resp_hdrs = ap_make_array(p, 2, sizeof(struct hdr_entry));
+	resp_hdrs = ap_make_table(p, 20);
     }
 
     c->hdrs = resp_hdrs;
@@ -379,20 +381,17 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
  * HTTP/1.0 requires us to accept 3 types of dates, but only generate
  * one type
  */
+    if ((datestr = ap_table_get(resp_hdrs, "Date")) != NULL)
+	ap_table_set(resp_hdrs, "Date", ap_proxy_date_canon(p, datestr));
+    if ((datestr = ap_table_get(resp_hdrs, "Last-Modified")) != NULL)
+	ap_table_set(resp_hdrs, "Last-Modified", ap_proxy_date_canon(p, datestr));
+    if ((datestr = ap_table_get(resp_hdrs, "Expires")) != NULL)
+	ap_table_set(resp_hdrs, "Expires", ap_proxy_date_canon(p, datestr));
 
-    hdr = (struct hdr_entry *) resp_hdrs->elts;
-    for (i = 0; i < resp_hdrs->nelts; i++) {
-	if (hdr[i].value[0] == '\0')
-	    continue;
-	strp = hdr[i].field;
-	if (strcasecmp(strp, "Date") == 0 ||
-	    strcasecmp(strp, "Last-Modified") == 0 ||
-	    strcasecmp(strp, "Expires") == 0)
-	    hdr[i].value = ap_proxy_date_canon(p, hdr[i].value);
-	if (strcasecmp(strp, "Location") == 0 ||
-	    strcasecmp(strp, "URI") == 0)
-	    hdr[i].value = proxy_location_reverse_map(r, hdr[i].value);
-    }
+    if ((datestr = ap_table_get(resp_hdrs, "Location")) != NULL)
+	ap_table_set(resp_hdrs, "Location", proxy_location_reverse_map(r, datestr));
+    if ((datestr = ap_table_get(resp_hdrs, "URI")) != NULL)
+	ap_table_set(resp_hdrs, "URI", proxy_location_reverse_map(r, datestr));
 
 /* check if NoCache directive on this host */
     for (i = 0; i < conf->nocaches->nelts; i++) {
@@ -407,49 +406,32 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	return i;
     }
 
-    cache = c->fp;
-
     ap_hard_timeout("proxy receive", r);
 
 /* write status line */
     if (!r->assbackwards)
 	ap_rvputs(r, "HTTP/1.0 ", r->status_line, CRLF, NULL);
-    if (cache != NULL)
-	if (ap_bvputs(cache, "HTTP/1.0 ", r->status_line, CRLF, NULL) == -1)
-	    cache = ap_proxy_cache_error(c);
+    if (c != NULL && c->fp != NULL &&
+	ap_bvputs(c->fp, "HTTP/1.0 ", r->status_line, CRLF, NULL) == -1)
+	c = ap_proxy_cache_error(c);
 
 /* send headers */
-    for (i = 0; i < resp_hdrs->nelts; i++) {
-	if (hdr[i].field == NULL || hdr[i].value == NULL ||
-	    hdr[i].value[0] == '\0')
-	    continue;
-	if (!r->assbackwards) {
-	    ap_rvputs(r, hdr[i].field, ": ", hdr[i].value, CRLF, NULL);
-	    /* XXX: can't this be ap_table_setn? -djg */
-	    ap_table_set(r->headers_out, hdr[i].field, hdr[i].value);
-	    /* XXX: regardless, there's an O(n^2) attack here, which
-	     * could be fixed with ap_overlap_tables */
-	}
-	if (cache != NULL)
-	    if (ap_bvputs(cache, hdr[i].field, ": ", hdr[i].value, CRLF,
-		       NULL) == -1)
-		cache = ap_proxy_cache_error(c);
-    }
+    tdo.req = r;
+    tdo.cache = c;
+    ap_table_do(ap_proxy_send_hdr_line, &tdo, resp_hdrs, NULL);
 
     if (!r->assbackwards)
 	ap_rputs(CRLF, r);
-    if (cache != NULL)
-	if (ap_bputs(CRLF, cache) == -1)
-	    cache = ap_proxy_cache_error(c);
+    if (c != NULL && c->fp != NULL && ap_bputs(CRLF, c->fp) == -1)
+	c = ap_proxy_cache_error(c);
 
     ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
     r->sent_bodyct = 1;
 /* Is it an HTTP/0.9 respose? If so, send the extra data */
     if (backasswards) {
 	ap_bwrite(r->connection->client, buffer, len);
-	if (cache != NULL)
-	    if (ap_bwrite(f, buffer, len) != len)
-		cache = ap_proxy_cache_error(c);
+	if (c != NULL && c->fp != NULL && ap_bwrite(c->fp, buffer, len) != len)
+	    c = ap_proxy_cache_error(c);
     }
     ap_kill_timeout(r);
 
@@ -467,7 +449,7 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     if (!r->header_only) {
 /* we need to set this for ap_proxy_send_fb()... */
 	c->cache_completion = conf->cache.cache_completion;
-	ap_proxy_send_fb(f, r, cache, c);
+	ap_proxy_send_fb(f, r, c);
     }
 
     ap_proxy_cache_tidy(c);

@@ -292,7 +292,7 @@ static int proxy_handler(request_rec *r)
     array_header *proxies = conf->proxies;
     struct proxy_remote *ents = (struct proxy_remote *) proxies->elts;
     int i, rc;
-    struct cache_req *cr;
+    cache_req *cr;
     int direct_connect = 0;
     const char *maxfwd_str;
 

@@ -66,6 +66,7 @@
  *
  * MODULE_MAGIC_NUMBER_MINOR
  * Minor API changes that do not cause binary compatibility problems.
+ * Should be reset to 0 when upgrading MODULE_MAGIC_NUMBER_MAJOR.
  *
  * See the MODULE_MAGIC_AT_LEAST macro below for an example.
  */
@@ -164,12 +165,18 @@
  *			  ap_get_limit_req_body() to get its value.
  * 19980812 (1.3.2-dev)	- split off MODULE_MAGIC_NUMBER
  * 19980812.2           - add ap_overlap_tables()
+ * 19980816 (1.3.2-dev)	- change proxy to use tables for headers, change
+ *                        struct cache_req to typedef cache_req.
+ *                        Delete ap_proxy_get_header(), ap_proxy_add_header(),
+ *                        ap_proxy_del_header(). Change interface of 
+ *                        ap_proxy_send_fb() and ap_proxy_cache_error(). 
+ *                        Add ap_proxy_send_hdr_line() and ap_proxy_bputs2().
  */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 19980812
+#define MODULE_MAGIC_NUMBER_MAJOR 19980816
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 2
+#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
 
 /* Useful for testing for features. */

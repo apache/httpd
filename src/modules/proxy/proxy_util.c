@@ -359,89 +359,118 @@ const char *
     return q;
 }
 
+
+/* NOTE: This routine is taken from http_protocol::getline()
+ * because the old code found in the proxy module was too
+ * difficult to understand and maintain.
+ */
+/* Get a line of protocol input, including any continuation lines
+ * caused by MIME folding (or broken clients) if fold != 0, and place it
+ * in the buffer s, of size n bytes, without the ending newline.
+ *
+ * Returns -1 on error, or the length of s.
+ *
+ * Note: Because bgets uses 1 char for newline and 1 char for NUL,
+ *       the most we can get is (n - 2) actual characters if it
+ *       was ended by a newline, or (n - 1) characters if the line
+ *       length exceeded (n - 1).  So, if the result == (n - 1),
+ *       then the actual input line exceeded the buffer length,
+ *       and it would be a good idea for the caller to puke 400 or 414.
+ */
+static int proxy_getline(char *s, int n, BUFF *in, int fold)
+{
+    char *pos, next;
+    int retval;
+    int total = 0;
+
+    pos = s;
+
+    do {
+        retval = ap_bgets(pos, n, in);     /* retval == -1 if error, 0 if EOF */
+
+        if (retval <= 0)
+            return ((retval < 0) && (total == 0)) ? -1 : total;
+
+        /* retval is the number of characters read, not including NUL      */
+
+        n -= retval;            /* Keep track of how much of s is full     */
+        pos += (retval - 1);    /* and where s ends                        */
+        total += retval;        /* and how long s has become               */
+
+        if (*pos == '\n') {     /* Did we get a full line of input?        */
+            *pos = '\0';
+            --total;
+            ++n;
+        }
+        else
+            return total;       /* if not, input line exceeded buffer size */
+
+        /* Continue appending if line folding is desired and
+         * the last line was not empty and we have room in the buffer and
+         * the next line begins with a continuation character.
+         */
+    } while (fold && (retval != 1) && (n > 1)
+                  && (ap_blookc(&next, in) == 1)
+                  && ((next == ' ') || (next == '\t')));
+
+    return total;
+}
+
+
 /*
  * Reads headers from a buffer and returns an array of headers.
  * Returns NULL on file error
+ * This routine tries to deal with too long lines and continuation lines.
+ * @@@: XXX: FIXME: currently the headers are passed thru un-merged. 
+ * Is that okay, or should they be collapsed where possible?
  */
-array_header *
-             ap_proxy_read_headers(pool *p, char *buffer, int size, BUFF *f)
+table *ap_proxy_read_headers(pool *p, char *buffer, int size, BUFF *f)
 {
-    int gotcr, len, i, j;
-    array_header *resp_hdrs;
-    struct hdr_entry *hdr;
-    char *strp;
-    const char *strcp;
+    table *resp_hdrs;
+    int len;
+    char *value, *end;
+    char field[MAX_STRING_LEN];
 
-    resp_hdrs = ap_make_array(p, 10, sizeof(struct hdr_entry));
-    hdr = NULL;
+    resp_hdrs = ap_make_table(p, 20);
 
-    gotcr = 1;
-    for (;;) {
-	len = ap_bgets(buffer, size, f);
-	if (len == -1)
+    /*
+     * Read header lines until we get the empty separator line, a read error,
+     * the connection closes (EOF), or we timeout.
+     */
+    while ((len = proxy_getline(buffer, size, f, 1)) > 0) {
+	
+	if (!(value = strchr(buffer, ':'))) {     /* Find the colon separator */
 	    return NULL;
-	if (len == 0)
-	    break;
-	if (buffer[len - 1] == '\n') {
-	    buffer[--len] = '\0';
-	    i = 1;
 	}
-	else
-	    i = 0;
 
-	if (!gotcr || buffer[0] == ' ' || buffer[0] == '\t') {
-	    /* a continuation header */
-	    if (hdr == NULL) {
-		/* error!! */
-		if (!i) {
-		    i = ap_bskiplf(f);
-		    if (i == -1)
-			return NULL;
-		}
-		gotcr = 1;
-		continue;
+        *value = '\0';
+        ++value;
+	/* XXX: RFC2068 defines only SP and HT as whitespace, this test is
+	 * wrong... and so are many others probably.
+	 */
+        while (ap_isspace(*value))
+            ++value;            /* Skip to start of value   */
+
+	/* should strip trailing whitespace as well */
+	for (end = &value[strlen(value)-1]; end > value && ap_isspace(*end); --end)
+	    *end = '\0';
+
+        ap_table_add(resp_hdrs, buffer, value);
+
+	/* the header was too long; at the least we should skip extra data */
+	if (len >= size - 1) { 
+	    while ((len = proxy_getline(field, MAX_STRING_LEN, f, 1))
+		    >= MAX_STRING_LEN - 1) {
+		/* soak up the extra data */
 	    }
-	    hdr->value = ap_pstrcat(p, hdr->value, buffer, NULL);
-	}
-	else if (gotcr && len == 0)
-	    break;
-	else {
-	    strp = strchr(buffer, ':');
-	    if (strp == NULL) {
-		/* error!! */
-		if (!gotcr) {
-		    i = ap_bskiplf(f);
-		    if (i == -1)
-			return NULL;
-		}
-		gotcr = 1;
-		hdr = NULL;
-		continue;
-	    }
-	    hdr = ap_push_array(resp_hdrs);
-	    *(strp++) = '\0';
-	    hdr->field = ap_pstrdup(p, buffer);
-	    while (*strp == ' ' || *strp == '\t')
-		strp++;
-	    hdr->value = ap_pstrdup(p, strp);
-	    gotcr = i;
+	    if (len == 0) /* time to exit the larger loop as well */
+		break;
 	}
     }
-
-    hdr = (struct hdr_entry *) resp_hdrs->elts;
-    for (i = 0; i < resp_hdrs->nelts; i++) {
-	strcp = hdr[i].value;
-	j = strlen(strcp);
-	while (j > 0 && (strcp[j - 1] == ' ' || strcp[j - 1] == '\t'))
-	    j--;
-	/* Note that this is OK, coz we created the header above */
-	((char *)strcp)[j] = '\0';
-    }
-
     return resp_hdrs;
 }
 
-long int ap_proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
+long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c)
 {
     int  ok = 1;
     char buf[IOBUFSIZE];
@@ -457,8 +486,8 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c
 #ifdef CHARSET_EBCDIC
     /* The cache copy is ASCII, not EBCDIC, even for text/html) */
     ap_bsetflag(f, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
-    if (f2 != NULL)
-	ap_bsetflag(f2, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
+    if (c != NULL && c->fp != NULL)
+	ap_bsetflag(c->fp, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
     ap_bsetflag(con->client, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
 #endif
 
@@ -492,10 +521,11 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c
     }
 #endif
 
-    while (ok && f != NULL) {
+    while (ok) {
         if (alt_to)
             ap_hard_timeout("proxy send body", r);
 
+	/* Read block from server */
 	n = ap_bread(f, buf, IOBUFSIZE);
 
         if (alt_to)
@@ -504,8 +534,8 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c
             ap_reset_timeout(r);
 
 	if (n == -1) {		/* input error */
-	    if (f2 != NULL)
-		f2 = ap_proxy_cache_error(c);
+	    if (c != NULL)
+		c = ap_proxy_cache_error(c);
 	    break;
 	}
 	if (n == 0)
@@ -513,14 +543,16 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c
 	o = 0;
 	total_bytes_rcv += n;
 
-        if (f2 != NULL) {
-            if (ap_bwrite(f2, &buf[0], n) != n) {
-                f2 = ap_proxy_cache_error(c);
+	/* Write to cache first. */
+        if (c != NULL && c->fp != NULL) {
+            if (ap_bwrite(c->fp, &buf[0], n) != n) {
+                c = ap_proxy_cache_error(c);
             } else {
                 c->written += n;
             }
         }
 
+	/* Write the block to the client, detect aborted transfers */
         while (n && !con->aborted) {
             if (alt_to)
                 ap_soft_timeout("proxy send body", r);
@@ -533,7 +565,7 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c
                 ap_reset_timeout(r);
 
             if (w <= 0) {
-                if (f2 != NULL) {
+                if (c != NULL) {
                     /* when a send failure occurs, we need to decide
                      * whether to continue loading and caching the
                      * document, or to abort the whole thing
@@ -545,8 +577,8 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c
                     if (! ok) {
                         ap_pclosef(c->req->pool, c->fp->fd);
                         c->fp = NULL;
-                        f2 = NULL;
                         unlink(c->tempfile);
+			c = NULL;
                     }
                 }
                 con->aborted = 1;
@@ -565,85 +597,28 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c
 }
 
 /*
- * Read a header from the array, returning the first entry
- */
-struct hdr_entry *
-          ap_proxy_get_header(array_header *hdrs_arr, const char *name)
-{
-    struct hdr_entry *hdrs;
-    int i;
-
-    hdrs = (struct hdr_entry *) hdrs_arr->elts;
-    for (i = 0; i < hdrs_arr->nelts; i++)
-	if (hdrs[i].field != NULL && strcasecmp(name, hdrs[i].field) == 0)
-	    return &hdrs[i];
-
-    return NULL;
-}
-
-/*
- * Add to the header reply, either concatenating, or replacing existin
- * headers. It stores the pointers provided, so make sure the data
- * is not subsequently overwritten
- */
-struct hdr_entry *
-          ap_proxy_add_header(array_header *hdrs_arr, const char *field, const char *value,
-			   int rep)
-{
-    int i;
-    struct hdr_entry *hdrs;
-
-    hdrs = (struct hdr_entry *) hdrs_arr->elts;
-    if (rep)
-	for (i = 0; i < hdrs_arr->nelts; i++)
-	    if (hdrs[i].field != NULL && strcasecmp(field, hdrs[i].field) == 0) {
-		hdrs[i].value = value;
-		return hdrs;
-	    }
-
-    hdrs = ap_push_array(hdrs_arr);
-    hdrs->field = field;
-    hdrs->value = value;
-
-    return hdrs;
-}
-
-void ap_proxy_del_header(array_header *hdrs_arr, const char *field)
-{
-    int i;
-    struct hdr_entry *hdrs;
-
-    hdrs = (struct hdr_entry *) hdrs_arr->elts;
-
-    for (i = 0; i < hdrs_arr->nelts; i++)
-	if (hdrs[i].field != NULL && strcasecmp(field, hdrs[i].field) == 0)
-	    hdrs[i].value = NULL;
-}
-
-/*
  * Sends response line and headers.  Uses the client fd and the 
  * headers_out array from the passed request_rec to talk to the client
  * and to properly set the headers it sends for things such as logging.
  * 
  * A timeout should be set before calling this routine.
  */
-void ap_proxy_send_headers(request_rec *r, const char *respline, array_header *hdrs_arr)
+void ap_proxy_send_headers(request_rec *r, const char *respline, table *t)
 {
-    struct hdr_entry *hdrs;
     int i;
     BUFF *fp = r->connection->client;
-
-    hdrs = (struct hdr_entry *) hdrs_arr->elts;
+    table_entry *elts = (table_entry *) ap_table_elts(t)->elts;
 
     ap_bputs(respline, fp);
     ap_bputs(CRLF, fp);
-    for (i = 0; i < hdrs_arr->nelts; i++) {
-	if (hdrs[i].field == NULL)
-	    continue;
-	ap_bvputs(fp, hdrs[i].field, ": ", hdrs[i].value, CRLF, NULL);
-	/* XXX: can't this be ap_table_setn? -djg */
-	ap_table_set(r->headers_out, hdrs[i].field, hdrs[i].value);
-	/* XXX: another O(n^2) attack, fixed by ap_overlap_tables */
+
+    for (i = 0; i < ap_table_elts(t)->nelts; ++i) {
+	if (elts[i].key != NULL) {
+	    ap_bvputs(fp, elts[i].key, ": ", elts[i].val, CRLF, NULL);
+	    /* FIXME: @@@ This used to be ap_table_set(), but I think
+	     * ap_table_addn() is correct. MnKr */
+	    ap_table_addn(r->headers_out, elts[i].key, elts[i].val);
+	}
     }
 
     ap_bputs(CRLF, fp);
@@ -829,8 +804,8 @@ void ap_proxy_sec2hex(int t, char *y)
     y[8] = '\0';
 }
 
-BUFF *
-     ap_proxy_cache_error(struct cache_req *c)
+
+cache_req *ap_proxy_cache_error(cache_req *c)
 {
     ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
 		 "proxy: error writing to cache file %s", c->tempfile);
@@ -1253,3 +1228,30 @@ int ap_proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
 
     return i;
 }
+
+/* This function is called by ap_table_do() for all header lines */
+/* (from proxy_http.c and proxy_ftp.c) */
+/* It is passed a table_do_args struct pointer and a MIME field and value pair */
+int ap_proxy_send_hdr_line(void *p, const char *key, const char *value)
+{
+    struct tbl_do_args *parm = (struct tbl_do_args *)p;
+
+    if (key == NULL || value == NULL || value[0] == '\0')
+	return 1;
+    if (!parm->req->assbackwards)
+	ap_rvputs(parm->req, key, ": ", value, CRLF, NULL);
+    if (parm->cache != NULL && parm->cache->fp != NULL &&
+	ap_bvputs(parm->cache->fp, key, ": ", value, CRLF, NULL) == -1)
+	    parm->cache = ap_proxy_cache_error(parm->cache);
+    return 1; /* tell ap_table_do() to continue calling us for more headers */
+}
+
+/* send a text line to one or two BUFF's; return line length */
+unsigned ap_proxy_bputs2(const char *data, BUFF *client, cache_req *cache)
+{
+    unsigned len = ap_bputs(data, client);
+    if (cache != NULL && cache->fp != NULL)
+	ap_bputs(data, cache->fp);
+    return len;
+}
+

@@ -55,6 +55,9 @@
  *
  */
 
+#ifndef MOD_PROXY_H
+#define MOD_PROXY_H 
+
 /*
  * Main include file for the Apache proxy
  */
@@ -218,7 +221,7 @@ struct hdr_entry {
 };
 
 /* caching information about a request */
-struct cache_req {
+typedef struct {
     request_rec *req;		/* the request */
     char *url;			/* the URL requested */
     char *filename;		/* name of the cache file, or NULL if no cache */
@@ -237,35 +240,41 @@ struct cache_req {
     unsigned int written;	/* total *content* bytes written to cache */
     float cache_completion;	/* specific to this request */
     char *resp_line;		/* the whole status like (protocol, code + message) */
-    array_header *hdrs;		/* the HTTP headers of the file */
+    table *hdrs;		/* the HTTP headers of the file */
+} cache_req;
+
+/* Additional information passed to the function called by ap_table_do() */
+struct tbl_do_args {
+    request_rec *req;
+    cache_req *cache;
 };
 
 /* Function prototypes */
 
 /* proxy_cache.c */
 
-void ap_proxy_cache_tidy(struct cache_req *c);
+void ap_proxy_cache_tidy(cache_req *c);
 int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
-		      struct cache_req **cr);
-int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
+		      cache_req **cr);
+int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
 		       const int is_HTTP1, int nocache);
 void ap_proxy_garbage_coll(request_rec *r);
 
 /* proxy_connect.c */
 
-int ap_proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
+int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
 			  const char *proxyhost, int proxyport);
 
 /* proxy_ftp.c */
 
 int ap_proxy_ftp_canon(request_rec *r, char *url);
-int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url);
+int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url);
 
 /* proxy_http.c */
 
 int ap_proxy_http_canon(request_rec *r, char *url, const char *scheme,
 		     int def_port);
-int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
+int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 		       const char *proxyhost, int proxyport);
 
 /* proxy_util.c */
@@ -277,19 +286,14 @@ char *ap_proxy_canonenc(pool *p, const char *x, int len, enum enctype t,
 char *ap_proxy_canon_netloc(pool *p, char **const urlp, char **userp,
 			 char **passwordp, char **hostp, int *port);
 const char *ap_proxy_date_canon(pool *p, const char *x);
-array_header *ap_proxy_read_headers(pool *p, char *buffer, int size, BUFF *f);
-long int ap_proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c);
-struct hdr_entry *ap_proxy_get_header(array_header *hdrs_arr, const char *name);
-struct hdr_entry *ap_proxy_add_header(array_header *hdrs_arr, const char *field,
-				      const char *value, int rep);
-void ap_proxy_del_header(array_header *hdrs_arr, const char *field);
-void ap_proxy_send_headers(request_rec *r, const char *respline,
-			array_header *hdrs_arr);
+table *ap_proxy_read_headers(pool *p, char *buffer, int size, BUFF *f);
+long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c);
+void ap_proxy_send_headers(request_rec *r, const char *respline, table *hdrs);
 int ap_proxy_liststr(const char *list, const char *val);
 void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength);
 int ap_proxy_hex2sec(const char *x);
 void ap_proxy_sec2hex(int t, char *y);
-BUFF *ap_proxy_cache_error(struct cache_req *r);
+cache_req *ap_proxy_cache_error(cache_req *r);
 int ap_proxyerror(request_rec *r, const char *message);
 const char *ap_proxy_host2addr(const char *host, struct hostent *reqhp);
 int ap_proxy_is_ipaddr(struct dirconn_entry *This, pool *p);
@@ -298,3 +302,8 @@ int ap_proxy_is_hostname(struct dirconn_entry *This, pool *p);
 int ap_proxy_is_word(struct dirconn_entry *This, pool *p);
 int ap_proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r);
 int ap_proxy_garbage_init(server_rec *, pool *);
+/* This function is called by ap_table_do() for all header lines */
+int ap_proxy_send_hdr_line(void *p, const char *key, const char *value);
+unsigned ap_proxy_bputs2(const char *data, BUFF *client, cache_req *cache);
+
+#endif /*MOD_PROXY_H*/

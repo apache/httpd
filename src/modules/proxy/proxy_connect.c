@@ -97,7 +97,7 @@ DEF_Explain
  * FIXME: no check for r->assbackwards, whatever that is.
  */
 
-int ap_proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
+int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
 			  const char *proxyhost, int proxyport)
 {
     struct sockaddr_in server;
