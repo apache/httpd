@@ -541,6 +541,14 @@ AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold);
 
 /**
  * Get the next line of input for the request
+ *
+ * Note: on ASCII boxes, ap_rgetline is a macro which simply calls 
+ *       ap_rgetline_core to get the line of input.
+ * 
+ *       on EBCDIC boxes, ap_rgetline is a wrapper function which
+ *       translates ASCII protocol lines to the local EBCDIC code page
+ *       after getting the line of input.
+ *       
  * @param s Pointer to the pointer to the buffer into which the line
  *          should be read; if *s==NULL, a buffer of the necessary size
  *          to hold the data will be allocated from the request pool
@@ -552,9 +560,17 @@ AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold);
  *         APR_ENOSPC, if the line is too big to fit in the buffer
  *         Other errors where appropriate
  */
-AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n, apr_size_t *read,
+#if APR_CHARSET_EBCDIC
+AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n, 
+                                     apr_size_t *read,
                                      request_rec *r, int fold);
-
+#else /* ASCII box */
+#define ap_rgetline(s, n, read, r, fold) \
+        ap_rgetline_core((s), (n), (read), (r), (fold))
+#endif
+AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n, 
+                                          apr_size_t *read,
+                                          request_rec *r, int fold);
 /**
  * Get the method number associated with the given string, assumed to
  * contain an HTTP method.  Returns M_INVALID if not recognized.

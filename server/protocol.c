@@ -187,7 +187,7 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  * caused by MIME folding (or broken clients) if fold != 0, and place it
  * in the buffer s, of size n bytes, without the ending newline.
  *
- * If s is NULL, ap_rgetline will allocate necessary memory from r->pool.
+ * If s is NULL, ap_rgetline_core will allocate necessary memory from r->pool.
  *
  * Returns APR_SUCCESS if there are no problems and sets *read to be
  * the full length of s.
@@ -204,9 +204,9 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  *        If no LF is detected on the last line due to a dropped connection 
  *        or a full buffer, that's considered an error.
  */
-AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n, 
-                                     apr_size_t *read, request_rec *r, 
-                                     int fold)
+AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n, 
+                                          apr_size_t *read, request_rec *r, 
+                                          int fold)
 {
     apr_status_t rv;
     apr_bucket_brigade *b;
@@ -323,7 +323,7 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
 
             next_size = n - bytes_handled;
 
-            rv = ap_rgetline(&tmp, next_size, &next_len, r, fold);
+            rv = ap_rgetline_core(&tmp, next_size, &next_len, r, fold);
 
             if (rv != APR_SUCCESS) {
                 return rv;
@@ -456,7 +456,7 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
 
                 next_size = n - bytes_handled;
 
-                rv = ap_rgetline(&tmp, next_size, &next_len, r, fold);
+                rv = ap_rgetline_core(&tmp, next_size, &next_len, r, fold);
 
                 if (rv != APR_SUCCESS) {
                     return rv;
@@ -483,11 +483,32 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
         }
     }
 
-    /* FIXME: Can we optimize this at all by placing it a different layer? */
-    ap_xlate_proto_from_ascii(*s, bytes_handled);
     *read = bytes_handled;
     return APR_SUCCESS;
 }
+ 
+#if APR_CHARSET_EBCDIC
+AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
+                                     apr_size_t *read, request_rec *r,
+                                     int fold)
+{
+    /* on ASCII boxes, ap_rgetline is a macro which simply invokes 
+     * ap_rgetline_core with the same parms
+     *
+     * on EBCDIC boxes, each complete http protocol input line needs to be
+     * translated into the code page used by the compiler.  Since 
+     * ap_rgetline_core uses recursion, we do the translation in a wrapper
+     * function to insure that each input character gets translated only once.
+     */
+    apr_status_t rv;
+
+    rv = ap_rgetline_core(s, n, read, r, fold);
+    if (rv == APR_SUCCESS) {
+        ap_xlate_proto_from_ascii(*s, *read);
+    }
+    return rv;
+}
+#endif
 
 AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
 {
