@@ -601,7 +601,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
         if (reason) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "cache: response not cached. Reason: %s", reason);
+                         "cache: %s not cached. Reason: %s", url, reason);
             /* remove this object from the cache 
              * BillS Asks.. Why do we need to make this call to remove_url?
              * leave it in for now..
