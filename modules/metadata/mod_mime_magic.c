@@ -124,6 +124,7 @@
  *
  */
 
+#include "apr_strings.h"
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
@@ -132,9 +133,6 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "util_script.h"
-#ifdef HAVE_SYS_STAT_H
-#include <sys/stat.h>
-#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -489,7 +487,7 @@ typedef struct magic_rsl_s {
 
 /* per-server info */
 typedef struct {
-    char *magicfile;		/* where magic be found */
+    const char *magicfile;		/* where magic be found */
     struct magic *magic;	/* head of magic config list */
     struct magic *last;
 } magic_server_config_rec;
@@ -526,7 +524,7 @@ static void *merge_magic_server_config(ap_pool_t *p, void *basev, void *addv)
     return new;
 }
 
-static const char *set_magicfile(cmd_parms *cmd, char *d, char *arg)
+static const char *set_magicfile(cmd_parms *cmd, void *dummy, const char *arg)
 {
     magic_server_config_rec *conf = (magic_server_config_rec *)
     ap_get_module_config(cmd->server->module_config,
@@ -545,8 +543,8 @@ static const char *set_magicfile(cmd_parms *cmd, char *d, char *arg)
 
 static const command_rec mime_magic_cmds[] =
 {
-    {"MimeMagicFile", set_magicfile, NULL, RSRC_CONF, TAKE1,
-     "Path to MIME Magic file (in file(1) format)"},
+    AP_INIT_TAKE1("MimeMagicFile", set_magicfile, NULL, RSRC_CONF,
+     "Path to MIME Magic file (in file(1) format)"),
     {NULL}
 };
 
@@ -1456,19 +1454,18 @@ static int hextoint(int c)
  */
 static int fsmagic(request_rec *r, const char *fn)
 {
-    switch (r->finfo.protection & S_IFMT) {
-    case S_IFDIR:
+    switch (r->finfo.filetype) {
+    case APR_DIR:
 	magic_rsl_puts(r, DIR_MAGIC_TYPE);
 	return DONE;
-    case S_IFCHR:
+    case APR_CHR:
 	/*
 	 * (void) magic_rsl_printf(r,"character special (%d/%d)",
 	 * major(sb->st_rdev), minor(sb->st_rdev));
 	 */
 	(void) magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
 	return DONE;
-#ifdef S_IFBLK
-    case S_IFBLK:
+    case APR_BLK:
 	/*
 	 * (void) magic_rsl_printf(r,"block special (%d/%d)",
 	 * major(sb->st_rdev), minor(sb->st_rdev));
@@ -1476,32 +1473,23 @@ static int fsmagic(request_rec *r, const char *fn)
 	(void) magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
 	return DONE;
 	/* TODO add code to handle V7 MUX and Blit MUX files */
-#endif
-#ifdef    S_IFIFO
-    case S_IFIFO:
+    case APR_PIPE:
 	/*
 	 * magic_rsl_puts(r,"fifo (named pipe)");
 	 */
 	(void) magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
 	return DONE;
-#endif
-#ifdef    S_IFLNK
-    case S_IFLNK:
+    case APR_LNK:
 	/* We used stat(), the only possible reason for this is that the
 	 * symlink is broken.
 	 */
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, 0, r,
 		    MODNAME ": broken symlink (%s)", fn);
 	return HTTP_INTERNAL_SERVER_ERROR;
-#endif
-#ifdef    S_IFSOCK
-#ifndef __COHERENT__
-    case S_IFSOCK:
+    case APR_SOCK:
 	magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
 	return DONE;
-#endif
-#endif
-    case S_IFREG:
+    case APR_REG:
 	break;
     default:
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, 0, r,
