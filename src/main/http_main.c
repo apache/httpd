@@ -2879,7 +2879,7 @@ static void signal_parent(int type)
  * variables are no longer used to pass on the required action to the parent.
  */
 
-void ap_start_shutdown(void)
+API_EXPORT(void) ap_start_shutdown(void)
 {
 #ifndef WIN32
     if (shutdown_pending == 1) {
@@ -2896,7 +2896,7 @@ void ap_start_shutdown(void)
 }
 
 /* do a graceful restart if graceful == 1 */
-void ap_start_restart(int graceful)
+API_EXPORT(void) ap_start_restart(int graceful)
 {
 #ifndef WIN32
     if (restart_pending == 1) {

@@ -112,8 +112,8 @@ extern "C" {
  * reset_timeout() resets the timeout in progress.
  */
 
-void ap_start_shutdown(void);
-void ap_start_restart(int);
+API_EXPORT(void) ap_start_shutdown(void);
+API_EXPORT(void) ap_start_restart(int);
 API_EXPORT(void) ap_hard_timeout(char *, request_rec *);
 void ap_keepalive_timeout(char *, request_rec *);
 API_EXPORT(void) ap_soft_timeout(char *, request_rec *);

@@ -365,3 +365,5 @@ EXPORTS
 	ap_registry_get_server_root @360
 	ap_registry_get_service_conf @361
 	ap_registry_set_service_conf @362
+	ap_start_shutdown @363
+	ap_start_restart @364
