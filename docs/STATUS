@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/02/10 19:17:08 $
+Last modified: $Date: 2003/03/02 02:41:10 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -32,9 +32,11 @@ Decisions pending
       for this.)
     - Perhaps we can use the newly created Wiki for this. (SubWiki,
       with the possibility to get nice commit mails.)
-
-         someone should try to convince me, what the heck is
+       * someone should try to convince me, what the heck is
          so cool with wikis -- nd
+       * it lowers the entry barrier and therefore users are able to
+         contribute (handy for a FAQ, see PHP site) -- erik
+
 
 Things That Need Fixing
 =======================
@@ -89,7 +91,6 @@ Things That Need Fixing
        docs included in 2.0 work
      - misc/perf-tuning.html - needs major rewrite for 2.0
      - misc/tutorials.html - mostly not relevant to 2.0
-     - misc/stopping.html
      - misc/rewriteguide.html - needs cleaning in 1.3 and 2.0
      - misc/known_client_problems.html - mostly ancient
      - platform/ebcdic.xml - needs major rework for 2.0
@@ -177,11 +178,6 @@ http://httpd.apache.org/docs-project/docsformat.html
 
 index.html.en                      # leave in html?
 howto/auth.html.en
-misc/custom_errordocs.html         # obsolete?
-misc/descriptors.html              # obsolete?
-misc/fin_wait_2.html               # obsolete?
-misc/known_client_problems.html    # obsolete?
-misc/tutorials.html                # obsolete?
 expand.pl                          # delete after finishing everything
 
 # These will require manual.xsl changes
