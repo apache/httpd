@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/22 14:34:13 $]
+Last modified at [$Date: 2002/03/22 15:05:21 $]
 
 Release:
 
@@ -68,6 +68,12 @@ FINAL RELEASE SHOWSTOPPERS:
         simple check in default_handler to see if dir/file_walk has
         been done (a footprint left by dir/file_walk doesn't have to
         be in request_rec; a better place is core_request_config)
+        
+        gregames says: can this happen somehow without a broken module
+            being involved?  If not, why waste cycles trying to defend against
+            potential broken modules?  It seems futile.  Please vote.
+          not a showstopper: gregames
+          showstopper:
 
     * API changes planned for 2.0 that should happen before the
       GA release:
