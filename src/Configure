@@ -1002,6 +1002,7 @@ if [ "x$using_shlib" = "x1" ] ; then
     DEF_SHARED_CORE=no
     DEF_SHARED_CHAIN=no
     SHLIB_SUFFIX_NAME=so
+    SHMOD_SUFFIX_NAME=so
     SHLIB_SUFFIX_DEPTH=all
     SHLIB_EXPORT_FILES=no
     SHARED_CORE_EP='lib$(TARGET).ep'
@@ -1244,7 +1245,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_SHLIB="-b"
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred"
-#	    SHLIB_SUFFIX_NAME=sl
+	    SHLIB_SUFFIX_NAME=sl
 	    ;;
 	*-hp-hpux10.*|*-hp-hpux11.*)
 	    case $CC in
@@ -1254,7 +1255,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_SHLIB="-b"
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred -Wl,+s"
-#	    SHLIB_SUFFIX_NAME=sl
+	    SHLIB_SUFFIX_NAME=sl
 	    ;;
 	*-ibm-aix*)
 	    case $CC in
@@ -1288,6 +1289,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_SHLIB="`echo $LDFLAGS|sed -e s/-Zexe//` -Zdll"
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    SHLIB_SUFFIX_NAME=dll
+	    SHMOD_SUFFIX_NAME=dll
 	    SHLIB_SUFFIX_DEPTH=0
 	    LD_SHLIB=$CC
 	    LD_SHCORE_DEF="ApacheCoreOS2.def"
@@ -1689,7 +1691,7 @@ for modfile in $MODFILES ; do
 		    modlibs="$modlibs $modlibs1"
 		fi
 		rm -f $tmpfile2 $tmpfile3
-		if [ "x$ext" != "x$SHLIB_SUFFIX_NAME" ]; then
+		if [ "x$ext" != "x$SHMOD_SUFFIX_NAME" ]; then
 		    ext=o
 		fi
 	fi
@@ -1697,11 +1699,11 @@ for modfile in $MODFILES ; do
 		modname=`echo $modbase | sed 's/^.*\///' | \
 			sed 's/^mod_//' | sed 's/^lib//' | sed 's/$/_module/'`
 	fi
-	if [ "x$ext" != "x$SHLIB_SUFFIX_NAME" ]; then
+	if [ "x$ext" != "x$SHMOD_SUFFIX_NAME" ]; then
 		echo "Module $modname $modbase.$ext" >>$tmpfile
 	fi
 	#   optionally generate export file for some linkers 
-	if [ "x$ext" = "x$SHLIB_SUFFIX_NAME" -a "x$SHLIB_EXPORT_FILES" = "xyes" ]; then
+	if [ "x$ext" = "x$SHMOD_SUFFIX_NAME" -a "x$SHLIB_EXPORT_FILES" = "xyes" ]; then
 		echo "$modname" >$modbase.exp
 	fi
 done
@@ -1959,6 +1961,7 @@ echo "" >>Makefile
 echo "SUBDIRS=$SUBDIRS lib modules" >> Makefile
 echo "SUBTARGET=$SUBTARGET" >> Makefile
 echo "SHLIB_SUFFIX_NAME=$SHLIB_SUFFIX_NAME" >> Makefile
+echo "SHMOD_SUFFIX_NAME=$SHMOD_SUFFIX_NAME" >> Makefile
 echo "SHLIB_SUFFIX_LIST=$SHLIB_SUFFIX_LIST" >> Makefile
 echo "SHLIB_EXPORT_FILES=$SHLIB_EXPORT_FILES" >> Makefile
 echo "" >> Makefile
