@@ -277,10 +277,6 @@ SOURCE=.\modules\generators\mod_cgi.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\http\mod_core.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\modules\mappers\mod_dir.c
 # End Source File
 # Begin Source File
