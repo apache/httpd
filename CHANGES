@@ -1,5 +1,8 @@
 Changes with Apache 2.0.51
 
+  *) Satisfy directives now can be influenced by a surrounding <Limit>
+     container.  PR 14726.  [André Malo]
+
   *) mod_rewrite now officially supports RewriteRules in <Proxy> sections.
      PR 27985.  [André Malo]
 

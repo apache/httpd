@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/26 21:53:23 $]
+Last modified at [$Date: 2004/08/26 22:16:52 $]
 
 Release:
 
@@ -197,12 +197,6 @@ PATCHES TO BACKPORT FROM 2.1
          jerenkrantz: They already did drop it.  Note that this really isn't
                       a correctness fix; just a perf. fix.  We'd send the EOS
                       later without it.
-
-    *) Allow Satisfy directives to be influenced by <Limit>.
-       PR: 14726
-         include/http_core.h: r1.81
-         server/core.c: r1.266
-       +1: nd, trawick, stoddard
 
     *) Provide TLS/SSL upgrade functionality in mod_ssl allowing an unsecure
        connection to be upgraded to a secure connection upon request by the

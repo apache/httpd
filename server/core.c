@@ -98,6 +98,7 @@ static char errordocument_default;
 static void *create_core_dir_config(apr_pool_t *a, char *dir)
 {
     core_dir_config *conf;
+    int i;
 
     conf = (core_dir_config *)apr_pcalloc(a, sizeof(core_dir_config));
 
@@ -114,7 +115,10 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
 
     conf->hostname_lookups = HOSTNAME_LOOKUP_UNSET;
     conf->do_rfc1413 = DEFAULT_RFC1413 | 2; /* set bit 1 to indicate default */
-    conf->satisfy = SATISFY_NOSPEC;
+    conf->satisfy = apr_palloc(a, sizeof(*conf->satisfy) * METHODS);
+    for (i = 0; i < METHODS; ++i) {
+        conf->satisfy[i] = SATISFY_NOSPEC;
+    }
 
 #ifdef RLIMIT_CPU
     conf->limit_cpu = NULL;
@@ -347,8 +351,10 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     /* Otherwise we simply use the base->sec_file array
      */
 
-    if (new->satisfy != SATISFY_NOSPEC) {
-        conf->satisfy = new->satisfy;
+    for (i = 0; i < METHODS; ++i) {
+        if (new->satisfy[i] != SATISFY_NOSPEC) {
+            conf->satisfy[i] = new->satisfy[i];
+        }
     }
 
     if (new->server_signature != srv_sig_unset) {
@@ -680,7 +686,7 @@ AP_DECLARE(int) ap_satisfies(request_rec *r)
     conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
                                                    &core_module);
 
-    return conf->satisfy;
+    return conf->satisfy[r->method_number];
 }
 
 /* Should probably just get rid of this... the only code that cares is
@@ -1516,15 +1522,23 @@ static const char *set_enable_sendfile(cmd_parms *cmd, void *d_,
 static const char *satisfy(cmd_parms *cmd, void *c_, const char *arg)
 {
     core_dir_config *c = c_;
+    int satisfy = SATISFY_NOSPEC;
+    int i;
 
     if (!strcasecmp(arg, "all")) {
-        c->satisfy = SATISFY_ALL;
+        satisfy = SATISFY_ALL;
     }
     else if (!strcasecmp(arg, "any")) {
-        c->satisfy = SATISFY_ANY;
+        satisfy = SATISFY_ANY;
     }
     else {
         return "Satisfy either 'any' or 'all'.";
+    }
+
+    for (i = 0; i < METHODS; ++i) {
+        if (cmd->limited & (AP_METHOD_BIT << i)) {
+            c->satisfy[i] = satisfy;
+        }
     }
 
     return NULL;
