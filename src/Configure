@@ -1801,7 +1801,8 @@ TEXTRA_CFLAGS=`egrep '^EXTRA_CFLAGS=' Makefile.config | tail -1 |\
                sed -e 's;^EXTRA_CFLAGS=;;' -e 's;\`.*\`;;'`
 tmpstr=`echo $CFLAGS $TEXTRA_CFLAGS |\
         sed -e 's;[ 	]-;!-;g' -e 's/\\\"/\"/g' -e 's/\([^\\]\)"/\1/g'`
-OIFS="$IFS" IFS='!'
+OIFS="$IFS"
+IFS='!'
 for cflag in $tmpstr; do
     echo "$cflag" >>$tmpconfig
 done
