@@ -3562,6 +3562,8 @@ static void register_hooks(apr_pool_t *p)
                               AP_FTYPE_CONTENT);
     ap_register_output_filter("CHUNK", chunk_filter, AP_FTYPE_TRANSCODE);
     ap_register_output_filter("COALESCE", coalesce_filter, AP_FTYPE_CONTENT);
+    ap_register_output_filter("OLD_WRITE", ap_old_write_filter,
+                              AP_FTYPE_CONTENT - 1);
 }
 
 AP_DECLARE_DATA module core_module = {

@@ -2945,28 +2945,146 @@ AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
 }
 #endif /* APR_HAS_MMAP */
 
+typedef struct {
+    char *buf;
+    char *cur;
+    apr_size_t avail;
+} old_write_filter_ctx;
+
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_old_write_filter(
+    ap_filter_t *f, apr_bucket_brigade *bb)
+{
+    old_write_filter_ctx *ctx = f->ctx;
+
+    AP_DEBUG_ASSERT(ctx);
+
+    if (ctx->buf != NULL) {
+        apr_size_t nbyte = ctx->cur - ctx->buf;
+
+        if (nbyte != 0) {
+            /* whatever is coming down the pipe (we don't care), we
+               can simply insert our buffered data at the front and
+               pass the whole bundle down the chain. */
+            apr_bucket *b = apr_bucket_create_heap(ctx->buf, nbyte, 0, NULL);
+            APR_BRIGADE_INSERT_HEAD(bb, b);
+            ctx->buf = NULL;
+        }
+    }
+
+    return ap_pass_brigade(f->next, bb);
+}
+
+static apr_status_t flush_buffer(request_rec *r, old_write_filter_ctx *ctx,
+                                 const char *extra, apr_size_t extra_len)
+{
+    apr_bucket_brigade *bb = apr_brigade_create(r->pool);
+    apr_size_t nbyte = ctx->cur - ctx->buf;
+    apr_bucket *b = apr_bucket_create_heap(ctx->buf, nbyte, 0, NULL);
+
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+    ctx->buf = NULL;
+
+    /* if there is extra data, then send that, too */
+    if (extra != NULL) {
+        b = apr_bucket_create_transient(extra, extra_len);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+    }
+
+    return ap_pass_brigade(r->output_filters, bb);
+}
+
+static apr_status_t buffer_output(request_rec *r,
+                                  const char *str, apr_size_t len)
+{
+    ap_filter_t *f;
+    old_write_filter_ctx *ctx;
+    apr_size_t amt;
+    apr_status_t status;
+
+    if (len == 0)
+        return APR_SUCCESS;
+
+    /* ### future optimization: record some flags in the request_rec to
+       ### say whether we've added our filter, and whether it is first. */
+
+    /* this will typically exit on the first test */
+    for (f = r->output_filters; f != NULL; f = f->next)
+        if (strcmp("OLD_WRITE", f->frec->name) == 0)
+            break;
+    if (f == NULL) {
+        /* our filter hasn't been added yet */
+        ctx = apr_pcalloc(r->pool, sizeof(*ctx));
+        ap_add_output_filter("OLD_WRITE", ctx, r, r->connection);
+    }
+
+    /* if the first filter is not our buffering filter, then we have to
+       deliver the content through the normal filter chain */
+    if (strcmp("OLD_WRITE", r->output_filters->frec->name) != 0) {
+        apr_bucket_brigade *bb = apr_brigade_create(r->pool);
+        apr_bucket *b = apr_bucket_create_transient(str, len);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+
+        return ap_pass_brigade(r->output_filters, bb);
+    }
+
+    /* grab the context from our filter */
+    ctx = r->output_filters->ctx;
+
+    /* if there isn't a buffer in the context yet, put one there. */
+    if (ctx->buf == NULL) {
+        /* use the heap so it will get free'd after being flushed */
+        ctx->avail = AP_MIN_BYTES_TO_WRITE;
+        ctx->buf = ctx->cur = malloc(ctx->avail);
+    }
+
+    /* squeeze the data into the existing buffer */
+    if (len <= ctx->avail) {
+        memcpy(ctx->cur, str, len);
+        ctx->cur += len;
+        if ((ctx->avail -= len) == 0)
+            return flush_buffer(r, ctx, NULL, 0);
+        return APR_SUCCESS;
+    }
+
+    /* the new content can't fit in the existing buffer */
+
+    if (len >= AP_MIN_BYTES_TO_WRITE) {
+        /* it is really big. send what we have, and the new stuff. */
+        return flush_buffer(r, ctx, str, len);
+    }
+
+    /* the new data is small. put some into the current buffer, flush it,
+       and then drop the remaining into a new buffer. */
+    amt = ctx->avail;
+    memcpy(ctx->cur, str, amt);
+    ctx->cur += amt;
+    ctx->avail = 0;
+    if ((status = flush_buffer(r, ctx, NULL, 0)) != APR_SUCCESS)
+        return status;
+
+    ctx->buf = malloc(AP_MIN_BYTES_TO_WRITE);
+    memcpy(ctx->buf, str + amt, len - amt);
+    ctx->cur = ctx->buf + (len - amt);
+    ctx->avail = AP_MIN_BYTES_TO_WRITE - (len - amt);
+
+    return APR_SUCCESS;
+}
+
 AP_DECLARE(int) ap_rputc(int c, request_rec *r)
 {
-    apr_bucket_brigade *bb = NULL;
-    apr_bucket *b;
     char c2 = (char)c;
 
     if (r->connection->aborted) {
 	return EOF;
     }
 
-    bb = apr_brigade_create(r->pool);
-    b = apr_bucket_create_transient(&c2, 1);
-    APR_BRIGADE_INSERT_TAIL(bb, b);
-    ap_pass_brigade(r->output_filters, bb);
+    (void) buffer_output(r, &c2, 1);
 
     return c;
 }
 
 AP_DECLARE(int) ap_rputs(const char *str, request_rec *r)
 {
-    apr_bucket_brigade *bb = NULL;
-    apr_bucket *b;
     apr_size_t len;
 
     if (r->connection->aborted)
@@ -2974,50 +3092,36 @@ AP_DECLARE(int) ap_rputs(const char *str, request_rec *r)
     if (*str == '\0')
         return 0;
 
-    len = strlen(str);
-    bb = apr_brigade_create(r->pool);
-    b = apr_bucket_create_transient(str, len);
-    APR_BRIGADE_INSERT_TAIL(bb, b);
-    ap_pass_brigade(r->output_filters, bb);
+    (void) buffer_output(r, str, len = strlen(str));
 
     return len;
 }
 
 AP_DECLARE(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
 {
-    apr_bucket_brigade *bb = NULL;
-    apr_bucket *b;
-
     if (r->connection->aborted)
         return EOF;
-    if (nbyte == 0)
-        return 0;
 
-    bb = apr_brigade_create(r->pool);
-    b = apr_bucket_create_transient(buf, nbyte);
-    APR_BRIGADE_INSERT_TAIL(bb, b);
-    ap_pass_brigade(r->output_filters, bb);
+    (void) buffer_output(r, buf, nbyte);
+
     return nbyte;
 }
 
 AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
 {
-    apr_bucket_brigade *bb = NULL;
+    char buf[4096];
     apr_size_t written;
 
     if (r->connection->aborted)
         return EOF;
 
-    bb = apr_brigade_create(r->pool);
-    written = apr_brigade_vprintf(bb, fmt, va);
-    if (written != 0)
-        ap_pass_brigade(r->output_filters, bb);
+    /* ### fix this mechanism to allow more than 4K of output */
+    written = apr_vsnprintf(buf, sizeof(buf), fmt, va);
+    (void) buffer_output(r, buf, written);
+
     return written;
 }
 
-/* TODO:  Make ap pa_bucket_vprintf that printfs directly into a
- * bucket.
- */
 AP_DECLARE_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt, ...)
 {
     va_list va;
@@ -3035,24 +3139,37 @@ AP_DECLARE_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt, ...)
 
 AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r, ...)
 {
-    apr_bucket_brigade *bb = NULL;
-    apr_size_t written;
     va_list va;
+    const char *s;
+    apr_size_t len;
+    apr_size_t written;
 
     if (r->connection->aborted)
         return EOF;
-    bb = apr_brigade_create(r->pool);
+
+    /* ### TODO: if the total output is large, put all the strings
+       ### into a single brigade, rather than flushing each time we
+       ### fill the buffer */
     va_start(va, r);
-    written = apr_brigade_vputstrs(bb, va);
+    while (1) {
+        s = va_arg(va, const char *);
+        if (s == NULL)
+            break;
+
+        len = strlen(s);
+        if (buffer_output(r, s, len) != APR_SUCCESS) {
+            return -1;
+        }
+
+        written += len;
+    }
     va_end(va);
-    if (written != 0)
-        ap_pass_brigade(r->output_filters, bb);
+
     return written;
 }
 
 AP_DECLARE(int) ap_rflush(request_rec *r)
 {
-    /* we should be using a flush bucket to flush the stack, not buff code. */
     apr_bucket_brigade *bb;
     apr_bucket *b;
 
