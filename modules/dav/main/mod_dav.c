@@ -985,56 +985,49 @@ static int dav_method_put(request_rec *r)
 
         bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
-        if (!bb) {
-            err = dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
-                                "Could not create bucket brigade");
-        }
-        else {
-            do {
-                apr_status_t rc;
+        do {
+            apr_status_t rc;
 
-                rc = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
-                                    APR_BLOCK_READ, DAV_READ_BLOCKSIZE);
+            rc = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
+                                APR_BLOCK_READ, DAV_READ_BLOCKSIZE);
 
-                if (rc != APR_SUCCESS) {
-                    err = dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
-                                        "Could not get next bucket brigade");
+            if (rc != APR_SUCCESS) {
+                err = dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
+                                    "Could not get next bucket brigade");
+                break;
+            }
+
+            APR_BRIGADE_FOREACH(b, bb) {
+                const char *data;
+                apr_size_t len;
+
+                if (APR_BUCKET_IS_EOS(b)) {
+                    seen_eos = 1;
                     break;
                 }
 
-                APR_BRIGADE_FOREACH(b, bb) {
-                    const char *data;
-                    apr_size_t len;
-
-                    if (APR_BUCKET_IS_EOS(b)) {
-                        seen_eos = 1;
-                        break;
-                    }
-
-                    if (APR_BUCKET_IS_METADATA(b)) {
-                        continue;
-                    }
-
-                    rc = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
-                    if (rc != APR_SUCCESS) {
-                        err = dav_new_error(r->pool, HTTP_BAD_REQUEST, 0,
-                                            "An error occurred while reading "
-                                            "the request body.");
-                        break;
-                    }
-
-                    if (err == NULL) {
-                        /* write whatever we read, until we see an error */
-                        err = (*resource->hooks->write_stream)(stream, data,
-                                                               len);
-                    }
+                if (APR_BUCKET_IS_METADATA(b)) {
+                    continue;
                 }
 
-                apr_brigade_cleanup(bb);
-            } while (!seen_eos);
+                rc = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
+                if (rc != APR_SUCCESS) {
+                    err = dav_new_error(r->pool, HTTP_BAD_REQUEST, 0,
+                                        "An error occurred while reading "
+                                        "the request body.");
+                    break;
+                }
 
-            apr_brigade_destroy(bb);
-        }
+                if (err == NULL) {
+                    /* write whatever we read, until we see an error */
+                    err = (*resource->hooks->write_stream)(stream, data, len);
+                }
+            }
+
+            apr_brigade_cleanup(bb);
+        } while (!seen_eos);
+
+        apr_brigade_destroy(bb);
 
         err2 = (*resource->hooks->close_stream)(stream,
                                                 err == NULL /* commit */);
