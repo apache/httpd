@@ -100,7 +100,7 @@ EXPORTS
 	ap_find_token   @93
 	ap_get_basic_auth_pw   @94
 	ap_get_client_block   @95
-	ap_get_gmtoff   @96
+;	ap_get_gmtoff   @96
 	ap_get_limit_req_body   @97
 	ap_get_remote_host   @98
 	ap_get_remote_logname   @99
@@ -108,7 +108,7 @@ EXPORTS
 	ap_get_server_name   @101
 	ap_get_server_port   @102
 	;ap_get_server_version   @103
-	ap_get_time   @104
+;	ap_get_time   @104
 	ap_get_token   @105
 	ap_getparents   @106
 	ap_getword   @107
@@ -119,7 +119,7 @@ EXPORTS
 	ap_getword_nulls_nc   @112
 	ap_getword_white   @113
 	ap_getword_white_nc   @114
-	ap_gm_timestr_822   @115
+;	ap_gm_timestr_822   @115
 	ap_gname2id   @116
 	ap_handle_command   @117
 	;ap_hard_timeout   @118
@@ -250,7 +250,7 @@ EXPORTS
 ;	ap_table_set   @243
 ;	ap_table_setn   @244
 ;	ap_table_unset   @245
-	ap_tm2sec   @246
+;	ap_tm2sec   @246
 	ap_uname2id   @247
 	;ap_unblock_alarms   @248
 	ap_unescape_url   @249
@@ -274,14 +274,14 @@ EXPORTS
 	alias_module   @267
 	ap_bprintf   @268
 	ap_bvputs   @269
-	ap_day_snames @270  
+;	ap_day_snames @270  
 	;ap_extended_status  @271   
 	ap_limit_section   @272
 	ap_loaded_modules   @273
 	ap_log_error   @274
 	ap_log_printf   @275
 	ap_log_rerror   @276
-	ap_month_snames  @277
+;	ap_month_snames  @277
 ;	ap_null_cleanup   @278
 ;	ap_psprintf   @279
 ;	ap_pstrcat   @280

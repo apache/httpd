@@ -2014,15 +2014,10 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
  */
 API_EXPORT(long) ap_send_fd(ap_file_t *fd, request_rec *r)
 {
-    long len;
+    long len = r->finfo.size;
 #ifdef HAVE_SENDFILE
     if (!r->chunked) {
         ap_bflush(r->connection->client);
-        if (ap_get_filesize(&len, fd) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                          "ap_send_fd: ap_get_filesize failed.");
-            return 0;
-        }
         if (iol_sendfile(r->connection->client->iol, fd, len,
                          NULL, 0, 0) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
