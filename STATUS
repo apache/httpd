@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/08/27 19:02:51 $]
+Last modified at [$Date: 1999/08/28 02:44:09 $]
 
 Release:
 
@@ -57,6 +57,8 @@ Other features that need writing:
 
     * Finish infrastructure in core for async MPMs
         Status: ?
+
+    * TODO in source -- just do an egrep on "TODO" and see what's there
 
     * Work on other MPMs. Possible MPMs discussed or in progress include:
 
