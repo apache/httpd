@@ -361,13 +361,6 @@ API_EXPORT(void) ap_add_cgi_vars(request_rec *r)
 	request_rec *pa_req = ap_sub_req_lookup_uri(escape_uri(r->pool, r->path_info),
 						 r);
 
-	/* Don't bother destroying pa_req --- it's only created in
-	 * child processes which are about to jettison their address
-	 * space anyway.  BTW, we concatenate filename and path_info
-	 * from the sub_request to be compatible in case the PATH_INFO
-	 * is pointing to an object which doesn't exist.
-	 */
-
 	if (pa_req->filename) {
 #ifdef WIN32
 	    char buffer[HUGE_STRING_LEN];
@@ -382,6 +375,7 @@ API_EXPORT(void) ap_add_cgi_vars(request_rec *r)
 	    ap_table_setn(e, "PATH_TRANSLATED", pt);
 #endif
 	}
+	ap_destroy_sub_req(pa_req);
     }
 }
 

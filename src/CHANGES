@@ -1,5 +1,8 @@
 Changes with Apache 1.3b8
 
+  *) Call ap_destroy_sub_req() in ap_add_cgi_vars() to reclaim some
+     memory.  [Rob Saccoccio <robs@InfiniteTechnology.com>] PR#2252
+
   *) Fix src/support/httpd.exp (DSO export file which is currently only
      used under AIX) because of recent changes to function names.
      [Ralf S. Engelschall]
