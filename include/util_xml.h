@@ -62,6 +62,9 @@ extern "C" {
 #include "httpd.h"
 #include "apr_lib.h"
 
+/**
+ * @package Apache XML library
+ */
 
 /* -------------------------------------------------------------------- */
 
