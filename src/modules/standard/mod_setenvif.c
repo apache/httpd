@@ -52,7 +52,6 @@
  *                     (analogous to SERVER_ADDR set in ap_add_common_vars())
  *   remote_host        Remote host name (if available)
  *   remote_addr        Remote IP address
- *   remote_user        Remote authenticated user (if any)
  *   request_method     Request method (GET, POST, etc)
  *   request_uri        Requested URI
  *
@@ -83,7 +82,6 @@ enum special {
     SPECIAL_NOT,
     SPECIAL_REMOTE_ADDR,
     SPECIAL_REMOTE_HOST,
-    SPECIAL_REMOTE_USER,
     SPECIAL_REQUEST_URI,
     SPECIAL_REQUEST_METHOD,
     SPECIAL_REQUEST_PROTOCOL,
@@ -227,9 +225,6 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 	else if (!strcasecmp(fname, "remote_host")) {
 	    new->special_type = SPECIAL_REMOTE_HOST;
 	}
-	else if (!strcasecmp(fname, "remote_user")) {
-	    new->special_type = SPECIAL_REMOTE_USER;
-	}
 	else if (!strcasecmp(fname, "request_uri")) {
 	    new->special_type = SPECIAL_REQUEST_URI;
 	}
@@ -366,9 +361,6 @@ static int match_headers(request_rec *r)
 	    case SPECIAL_REMOTE_HOST:
 		val =  ap_get_remote_host(r->connection, r->per_dir_config,
 					  REMOTE_NAME);
-		break;
-	    case SPECIAL_REMOTE_USER:
-		val = r->connection->user;
 		break;
 	    case SPECIAL_REQUEST_URI:
 		val = r->uri;
