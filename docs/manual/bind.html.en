@@ -18,7 +18,8 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>Binding</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./en/bind.html" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Available Languages: </span><a href="./de/bind.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/bind.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/bind.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
@@ -54,7 +55,7 @@
     directive, the server
     listens to the given port on all interfaces. If an IP address
     is given as well as a port, the server will listen on the given
-    port and interface. Multiple Listen directives may be used to
+    port and interface. Multiple <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> directives may be used to
     specify a number of addresses and ports to listen on. The
     server will respond to requests from any of the listed
     addresses and ports.</p>
@@ -103,8 +104,7 @@
     <strong>only</strong> way to handle both IPv6 and IPv4 is to use 
     mapped addresses. If you want Apache to handle IPv4 and IPv6 connections 
     with a minimum of sockets, which requires using IPv4-mapped IPv6 
-    addresses, specify the <code>--enable-v4-mapped</code> configure 
-    option.</p>
+    addresses, specify the <code>--enable-v4-mapped</code> <a href="programs/configure.html">configure</a> option.</p>
 
     <p><code>--enable-v4-mapped</code> is the default on all platforms but 
     FreeBSD, NetBSD, and OpenBSD, so this is probably how your Apache was 
@@ -112,7 +112,8 @@
 
     <p>If you want Apache to handle IPv4 connections only, regardless of 
     what your platform and APR will support, specify an IPv4 address on all 
-    Listen directives, as in the following examples:</p>
+    <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> directives, as in the
+    following examples:</p>
 
     <div class="example"><p><code>
       Listen 0.0.0.0:80<br />
@@ -121,15 +122,16 @@
 
     <p>If your platform supports it and you want Apache to handle IPv4 and 
     IPv6  connections on separate sockets (i.e., to disable IPv4-mapped 
-    addresses), specify the <code>--disable-v4-mapped</code> configure 
-    option. <code>--disable-v4-mapped</code> is the default on FreeBSD, 
+    addresses), specify the <code>--disable-v4-mapped</code> <a href="programs/configure.html">configure</a> option. 
+    <code>--disable-v4-mapped</code> is the default on FreeBSD, 
     NetBSD, and OpenBSD.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="virtualhost" id="virtualhost">How This Works With Virtual Hosts</a></h2>
     
 
-    <p>Listen does not implement Virtual Hosts. It only tells the
+    <p> <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> does not implement 
+    Virtual Hosts. It only tells the
     main server what addresses and ports to listen to. If no
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     directives are used, the server will behave
@@ -147,7 +149,8 @@
     server is not listening to, it cannot be accessed.</p>
   </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./en/bind.html" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Available Languages: </span><a href="./de/bind.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/bind.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/bind.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
