@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/03 03:19:41 $]
+Last modified at [$Date: 2002/02/03 04:23:19 $]
 
 Release:
 
@@ -163,6 +163,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       -1:  BrianP (but +0 if it's a configurable option like Aaron
            has suggested), Ian, Cliff (why is the parent dying?  let's fix
            the bug(s) rather than patching around it)
+	   BillS
 
     * Make some modifications to the scoreboard creation routines,
       prefer anonymous shared memory, and allow a configuration
