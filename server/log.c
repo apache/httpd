@@ -690,19 +690,6 @@ static void piped_log_maintenance(int reason, void *data, apr_wait_t status)
 }
 
 
-static apr_status_t piped_log_cleanup(void *data)
-{
-    piped_log *pl = data;
-
-    if (pl->pid != NULL) {
-        apr_proc_kill(pl->pid, SIGTERM);
-    }
-    apr_file_close(ap_piped_log_read_fd(pl));
-    apr_file_close(ap_piped_log_write_fd(pl));
-    return APR_SUCCESS;
-}
-
-
 static apr_status_t piped_log_cleanup_for_exec(void *data)
 {
     piped_log *pl = data;
@@ -711,6 +698,18 @@ static apr_status_t piped_log_cleanup_for_exec(void *data)
     apr_file_close(ap_piped_log_write_fd(pl));
     return APR_SUCCESS;
 }
+
+
+static apr_status_t piped_log_cleanup(void *data)
+{
+    piped_log *pl = data;
+
+    if (pl->pid != NULL) {
+        apr_proc_kill(pl->pid, SIGTERM);
+    }
+    return piped_log_cleanup_for_exec(data);
+}
+
 
 AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
 {
