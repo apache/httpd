@@ -4,25 +4,48 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>suEXEC サポート - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>suEXEC サポート</h1>
+      -->
+<title>suEXEC サポート - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>suEXEC サポート</h1>
     <p><strong>suEXEC</strong>
-    機能により、Apache ユーザは Web サーバを実行しているユーザ ID とは
+    機能により、Apache ユーザは Web サーバを実行しているユーザ ID とは
     異なるユーザ ID で <strong>CGI</strong> プログラムや <strong>SSI</strong> 
-    プログラムを実行することができます。CGI プログラムまたは SSI
+    プログラムを実行することができます。CGI プログラムまたは SSI
     プログラムを実行する場合、通常は web サーバと同じユーザで実行されます。
     </p>
 
     <p>適切に使用すると、この機能によりユーザが個別の CGI
-    や SSI プログラムを開発し実行することで生じるセキュリティ上の危険を、
+    や SSI プログラムを開発し実行することで生じるセキュリティ上の危険を、
     かなり減らすことができます。しかし、suEXEC の設定が不適切だと、
     多くの問題が生じ、あなたのコンピュータに新しいセキュリティホールを
     作ってしまう可能性があります。あなたが root に setuid
     されたプログラムと、それらから生じるセキュリティ上の問題の管理に
     詳しくないようなら、suEXEC の使用を検討しないように強く推奨します。
     </p>
-  </div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#before">始める前に</a></li><li><img alt="" src="./images/down.gif" /> <a href="#model">suEXEC セキュリティモデル</a></li><li><img alt="" src="./images/down.gif" /> <a href="#install">suEXEC
-    の設定とインストール</a></li><li><img alt="" src="./images/down.gif" /> <a href="#enable">suEXEC
-    の有効化と無効化</a></li><li><img alt="" src="./images/down.gif" /> <a href="#usage">suEXEC の使用</a></li><li><img alt="" src="./images/down.gif" /> <a href="#debug">suEXEC のデバッグ</a></li><li><img alt="" src="./images/down.gif" /> <a href="#jabberwock">とかげに注意: 警告と事例</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="before" id="before">始める前に</a></h2>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#before">始める前に</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#model">suEXEC セキュリティモデル</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#install">suEXEC
+    の設定とインストール</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#enable">suEXEC
+    の有効化と無効化</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#usage">suEXEC の使用</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#debug">suEXEC のデバッグ</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#jabberwock">とかげに注意: 警告と事例</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="before" id="before">始める前に</a></h2>
 
     <p>この文書の先頭に飛ぶ前に、Apache
     グループとこの文書での仮定を知っておくべきでしょう。
@@ -63,12 +86,14 @@
     機能の使用中にシステムセキュリティを適切に保つために、
     管理者によって慎重に決定され指定されることが必要です。
     この詳細な手順により、Apache グループは、suEXEC
-    のインストールについて、注意深く十分に検討してそれを使用することを
+    のインストールについて、注意深く十分に検討してそれを使用することを
     決定した場合に限っていただきたいと考えています。
     </p>
 
     <p>それでも進みますか? よろしい。では、先へ進みましょう!</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="model" id="model">suEXEC セキュリティモデル</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="model" id="model">suEXEC セキュリティモデル</a></h2>
 
     <p>suEXEC の設定とインストールを始める前に、
     まず実装しようとしているセキュリティモデルについて論じておきます。
@@ -204,7 +229,7 @@
         <p class="indent">
           ここで、setuid と setgid
           の起動によりプログラムは対象となるユーザとグループになります。
-          グループアクセスリストは、
+          グループアクセスリストは、
           ユーザが属しているすべてのグループで初期化されます。
         </p>
       </li>
@@ -313,7 +338,9 @@
     関するより詳しい情報については、<a href="#jabberwock">"とかげに注意"
     (Beware the Jabberwock)</a> の章を参照してください。
     </p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="install" id="install">suEXEC
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="install" id="install">suEXEC
     の設定とインストール</a></h2>
 
     <p>ここから楽しくなります。</p>
@@ -431,7 +458,9 @@
     でのセットユーザ ID
     ビットをそのファイルのモードに設定しなければなりません。
     </p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="enable" id="enable">suEXEC
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="enable" id="enable">suEXEC
     の有効化と無効化</a></h2>
 
     <p>起動時に、Apache は "sbin" ディレクトリで
@@ -453,7 +482,9 @@
     <p>suEXEC を無効にする場合は、"suexec" ファイルを削除してから
     Apache を kill して再起動します。
     </p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="usage" id="usage">suEXEC の使用</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="usage" id="usage">suEXEC の使用</a></h2>
 
     <p><strong>仮想ホスト:</strong><br />
     suEXEC wrapper の使い方として、
@@ -475,14 +506,18 @@
     この機能を動作させるために必要なことは、CGI
     をそのユーザで実行できること、そのスクリプトが上記の<a href="#model">セキュリティ検査</a>をパスできることです。
     </p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="debug" id="debug">suEXEC のデバッグ</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="debug" id="debug">suEXEC のデバッグ</a></h2>
 
     <p>suEXEC wrapper は、上記で述べた --with-suexec-logfile
     オプションで指定されたファイルにログ情報を記録します。
     wrapper を適切に設定、インストールできていると思う場合、
     どこで迷っているか見ようとするならこのログとサーバの
     エラーログを見るとよいでしょう。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="jabberwock" id="jabberwock">とかげに注意: 警告と事例</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="jabberwock" id="jabberwock">とかげに注意: 警告と事例</a></h2>
 
     <p><strong>注意!</strong>
     この章は完全ではありません。この章の最新改訂版については、
@@ -534,4 +569,8 @@
         </p>
       </li>
     </ul>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>

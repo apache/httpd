@@ -4,29 +4,53 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>コンテントネゴシエーション - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>コンテントネゴシエーション</h1>
+      -->
+<title>コンテントネゴシエーション - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>コンテントネゴシエーション</h1>
 
-    <p>Apache は HTTP/1.1 の規格に記述されているコンテントネゴシエーションを
+    <p>Apache は HTTP/1.1 の規格に記述されているコンテントネゴシエーションを
     サポートしています。
-    ブラウザにより提供されたメディアタイプ、
-    言語、文字セット、エンコーディングの優先傾向に基づいて、
+    ブラウザにより提供されたメディアタイプ、
+    言語、文字セット、エンコーディングの優先傾向に基づいて、
     最適なリソースの表現を選択できます。
     また、不完全なネゴシエーション情報を送ってくるブラウザからのリクエストを
     もっと賢く取り扱えるよう、いくつか機能も実装してあります。</p>
 
-    <p>コンテントネゴシエーションは
+    <p>コンテントネゴシエーションは
     <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>
     モジュールによって
     提供されていて、デフォルトで組み込まれています。</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#about">コンテントネゴシエーションについて</a></li><li><img alt="" src="./images/down.gif" /> <a href="#negotiation">Apache におけるネゴシエーション</a></li><li><img alt="" src="./images/down.gif" /> <a href="#methods">ネゴシエーション方法</a></li><li><img alt="" src="./images/down.gif" /> <a href="#better">品質の値を変える</a></li><li><img alt="" src="./images/down.gif" /> <a href="#extensions">Transparent Content Negotiation
-の拡張</a></li><li><img alt="" src="./images/down.gif" /> <a href="#naming">リンクと名前の変換に関する注意点</a></li><li><img alt="" src="./images/down.gif" /> <a href="#caching">キャッシュに関する注意事項</a></li><li><img alt="" src="./images/down.gif" /> <a href="#more">追加情報</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="about" id="about">コンテントネゴシエーションについて</a></h2>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#about">コンテントネゴシエーションについて</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#negotiation">Apache におけるネゴシエーション</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#methods">ネゴシエーション方法</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#better">品質の値を変える</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#extensions">Transparent Content Negotiation
+の拡張</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#naming">リンクと名前の変換に関する注意点</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#caching">キャッシュに関する注意事項</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#more">追加情報</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="about" id="about">コンテントネゴシエーションについて</a></h2>
 
     <p>リソースは、幾つか異なった表現で利用できる場合があります。
-    例えば、異なる言語や異なるメディアタイプ、
+    例えば、異なる言語や異なるメディアタイプ、
     またはそれらの組み合わせで利用できるかも知れません。
     もっとも適した選択をする方法の一つには、インデックスページを
     ユーザに見せて、ユーザに選んでもらう方法があります。
-    しかし、サーバが自動的に選ぶことができる場合が多くあります。
+    しかし、サーバが自動的に選ぶことができる場合が多くあります。
     これは、ブラウザがリクエスト情報毎の情報の一部に、
     どの表現を嗜好するかを送ることで動作しています。
     例えばブラウザは、可能ならフランス語で情報を見たい、
@@ -46,7 +70,7 @@
     そして様々なメディアタイプを受け付けるが、
     プレインテキストや他のタイプよりは HTML を好む、
     他のメディアタイプよりは GIF や JPEG を好む、しかし最終手段として
-    他のメディアタイプも受け付ける、と設定されています。</p>
+    他のメディアタイプも受け付ける、と設定されています。</p>
 
 <div class="example"><p><code>
   Accept-Language: fr; q=1.0, en; q=0.5<br />
@@ -63,7 +87,7 @@
     これらの RFCで定義されている 'feature negotiation'
     はサポートしていません。</p>
 
-    <p><strong>リソース</strong>とは URI
+    <p><strong>リソース</strong>とは URI
     で特定される概念上のもののことです (RFC 2396)。 Apache
     のような HTTP サーバは、その名前空間の中での
     リソースの<strong>表現</strong>へのアクセスを提供します。
@@ -77,7 +101,9 @@
     ネゴシエーション可能なリソースの variant が異なる、
     その状態を指して、
     ネゴシエーションの<strong>次元</strong>と呼びます。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="negotiation" id="negotiation">Apache におけるネゴシエーション</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="negotiation" id="negotiation">Apache におけるネゴシエーション</a></h2>
 
     <p>リソースをネゴシエーションするためには、
     サーバは variant それぞれについての情報を知っておく必要があります。
@@ -218,7 +244,9 @@
     ハンドラ、フィルタ、他のファイル拡張子タイプのどれが
     MultiViews ネゴシエーションで使用できるかを決定します。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="methods" id="methods">ネゴシエーション方法</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="methods" id="methods">ネゴシエーション方法</a></h2>
 
     <p>Apache はリソースの variant の一覧を、タイプマップファイルか
     ディレクトリ内のファイル名からかで取得した後、
@@ -264,8 +292,8 @@
         <td>メディアタイプ</td>
 
         <td>ブラウザは Accept 
-	ヘッダフィールドで優先傾向を指定します。
-	アイテムそれぞれは、関連した品質数値を持つことができます。
+	ヘッダフィールドで優先傾向を指定します。
+	アイテムそれぞれは、関連した品質数値を持つことができます。
 	variant の説明も品質数値を持つことができます
 	("qs" パラメータをご覧下さい)。</td>
       </tr>
@@ -274,7 +302,7 @@
         <td>言語</td>
 
 	<td>ブラウザは Accept-Language
-	ヘッダフィールドで優先傾向を指定します。
+	ヘッダフィールドで優先傾向を指定します。
 	要素それぞれに品質数値を持たせることができます。
 	variants は 0 か 1 つかそれ以上の言語と
 	関連づけることができます。</td>
@@ -386,7 +414,9 @@
       相違の次元を示す HTTP Vary ヘッダも設定されます。</li>
     </ol>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="better" id="better">品質の値を変える</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="better" id="better">品質の値を変える</a></h2>
 
     <p>上記の Apaceh ネゴシエーションアルゴリズムの厳格な解釈で
     得られるであろう値から、Apache は品質数値を時々変えます。
@@ -491,7 +521,9 @@
     適切に設定されたクライアントともきちんと動作するために
     必要です。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="extensions" id="extensions">Transparent Content Negotiation
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="extensions" id="extensions">Transparent Content Negotiation
 の拡張</a></h2> 
 
 <p>Apache は transparent content negotiation プロトコル
@@ -506,7 +538,9 @@ Accept-Encoding リクエストヘッダに従って許容される
 RVSA/1.0 アルゴリズム (RFC 2296) の実装が拡張されました。
 RVSA/1.0 の実装では、最適な variant が見つかるまで、
 計算した品質数値は小数点以下 5 桁まで丸めません。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="naming" id="naming">リンクと名前の変換に関する注意点</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="naming" id="naming">リンクと名前の変換に関する注意点</a></h2>
 
     <p>言語ネゴシエーションを使っている場合は、
     ファイルが一つ以上の拡張子を持てて、
@@ -538,7 +572,7 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
       <tr>
         <th>ファイル名</th>
 
-        <th>使えるリンク</th>
+        <th>使えるリンク</th>
 
         <th>使えないリンク</th>
       </tr>
@@ -614,7 +648,9 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
     (エンコーディング拡張子もあればそれも含めて)
     MIME タイプ拡張子の右側になければなりません
     (<em>例えば</em> <code>foo.html.en</code>)。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="caching" id="caching">キャッシュに関する注意事項</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="caching" id="caching">キャッシュに関する注意事項</a></h2>
 
     <p>キャッシュが一つの表現を保存しているときは、
     リクエスト URL と関連づけられています。
@@ -637,11 +673,17 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
     このディレクティブは、サーバ設定ファイルやバーチャルホストに書くことができ、
     引数をとりません。
     HTTP/1.1 クライアントからのリクエストには効力を持ちません。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="more" id="more">追加情報</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="more" id="more">追加情報</a></h2>
 
     <p>コンテントネゴシエーションに関する追加情報は、
     Alan J. Flavell さんの<a href="http://ppewww.ph.gla.ac.uk/~flavell/www/lang-neg.html">Language
     Negotiation Notes</a> をご覧下さい。ですが、
     Apache 2.0 での変更点を含むためには更新されていないかもしれない
     ということに注意してください。</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>

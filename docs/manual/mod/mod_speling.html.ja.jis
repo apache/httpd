@@ -75,7 +75,7 @@
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_speling</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>CheckSpelling は Apache 1.1 では別配布のモジュールで、
 大文字小文字の間違いのみの機能でした。Apache 1.3 で Apache の配布に
-含まれるようになりました。Apache 1.3.2 より前では CheckSpelling
+含まれるようになりました。Apache 1.3.2 より前では <code>CheckSpelling</code>
 ディレクティブは「サーバ」と「バーチャルホスト」コンテキストでのみ
 使用可能でした</td></tr>
 </table>

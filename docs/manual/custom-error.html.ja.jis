@@ -4,18 +4,37 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>カスタムエラーレスポンス - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>カスタムエラーレスポンス</h1>
+      -->
+<title>カスタムエラーレスポンス - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>カスタムエラーレスポンス</h1>
     <p>ウェブマスターが何らかのエラーや問題に対する
     Apache の反応を設定できるようにする追加機能を提供します。</p>
 
     <p>サーバがエラーや問題を発見した場合の反応を、
-    カスタマイズして定義することができます。</p>
+    カスタマイズして定義することができます。</p>
 
     <p>スクリプトの実行が失敗して "500 Server Error"
     を発生させたとします。この場合の反応を、より好ましいテキストや、別の
-    URL (内部及び外部) へのリダイレクションに置き換えることができます。
+    URL (内部及び外部) へのリダイレクションに置き換えることができます。
     </p>
-  </div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#behavior">動作</a></li><li><img alt="" src="./images/down.gif" /> <a href="#configuration">設定</a></li><li><img alt="" src="./images/down.gif" /> <a href="#custom">カスタムエラーレスポンスとリダイレクト</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="behavior" id="behavior">動作</a></h2>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#behavior">動作</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#configuration">設定</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#custom">カスタムエラーレスポンスとリダイレクト</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="behavior" id="behavior">動作</a></h2>
     
 
     <h3>古い動作</h3>
@@ -23,7 +42,7 @@
 
       <p>NCSA httpd 1.3 は、古くて退屈なエラー/問題メッセージを
       返していました。それはしばしばユーザには無意味であり、
-      またそれを発生させた原因を記録する方法も提供していませんでした。</p>
+      またそれを発生させた原因を記録する方法も提供していませんでした。</p>
     
 
     <h3>新しい動作</h3>
@@ -73,7 +92,9 @@
         のような体系名から始まるすべてのもの。たとえ同じホストを指していても)
         ならば、これらは<strong>まったく</strong>設定されません。</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="configuration" id="configuration">設定</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="configuration" id="configuration">設定</a></h2>
     
 
     <p><code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> が適切に設定されていれば、
@@ -107,7 +128,9 @@
 
           <li>リダイレクト先のローカル URL </li>
         </ol>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="custom" id="custom">カスタムエラーレスポンスとリダイレクト</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="custom" id="custom">カスタムエラーレスポンスとリダイレクト</a></h2>
     
 
       <p>スクリプト/SSI に追加の環境変数が利用可能になるように、
@@ -155,4 +178,8 @@
     特定のエラーコンディションを扱うためだけに使われる場合は、
     代わりに特定のコードとエラーテキストを使用することができます。</p>
     
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>

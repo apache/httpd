@@ -4,22 +4,47 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Apache Tutorial: CGI による動的コンテンツ - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>Apache Tutorial: CGI による動的コンテンツ</h1></div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">はじめに</a></li><li><img alt="" src="../images/down.gif" /> <a href="#configuring">CGI を許可するように Apache を設定する</a></li><li><img alt="" src="../images/down.gif" /> <a href="#writing">CGI プログラムを書く</a></li><li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">しかし、まだ動かない !</a></li><li><img alt="" src="../images/down.gif" /> <a href="#behindscenes">裏で何が起こっているのか?</a></li><li><img alt="" src="../images/down.gif" /> <a href="#libraries">CGI モジュール/ライブラリ</a></li><li><img alt="" src="../images/down.gif" /> <a href="#moreinfo">更なる情報</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="intro" id="intro">はじめに</a></h2>
+      -->
+<title>Apache Tutorial: CGI による動的コンテンツ - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>Apache Tutorial: CGI による動的コンテンツ</h1></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">はじめに</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#configuring">CGI を許可するように Apache を設定する</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#writing">CGI プログラムを書く</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">しかし、まだ動かない !</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#behindscenes">裏で何が起こっているのか?</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#libraries">CGI モジュール/ライブラリ</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#moreinfo">更なる情報</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="intro" id="intro">はじめに</a></h2>
     
 
     <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li></ul></td></tr></table>
 
     <p>CGI (Common Gateway Interface) は、ウェブサーバが
-    コンテンツ生成をする外部プログラムと協調して動作するための方法を
+    コンテンツ生成をする外部プログラムと協調して動作するための方法を
     定義しています。そのプログラムはしばしば CGI プログラムや
     CGI スクリプトと呼ばれます。CGI は、ウェブサイトに動的な
     コンテンツを置くための最も簡単で一般的な方法です。このドキュメントは、
     Apache ウェブサーバで CGI を設定し、
     CGI プログラムを書き始めるための入門書となるでしょう。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="configuring" id="configuring">CGI を許可するように Apache を設定する</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="configuring" id="configuring">CGI を許可するように Apache を設定する</a></h2>
     
 
-    <p>CGI プログラムを正しく動作させるには、CGI を許可するように
+    <p>CGI プログラムを正しく動作させるには、CGI を許可するように
     Apache の設定を行う必要があります。
     これを行なうための方法がいくつかあります。</p>
 
@@ -42,7 +67,7 @@
       <p>デフォルト位置に Apache をインストールしたならば、
       この例はデフォルト状態の <code>httpd.conf</code>
       設定ファイルに含まれています。<code>ScriptAlias</code>
-      ディレクティブは、URL の前に付加するディレクトリを定義する
+      ディレクティブは、URL の前に付加するディレクトリを定義する
       <code>Alias</code> ディレクティブとかなり似ています。
       <code>Alias</code> と <code>ScriptAlias</code> は通常、
       <code>DocumentRoot</code>
@@ -58,7 +83,7 @@
       <p>例えば、URL <code>http://dev.rcbowen.com/cgi-bin/test.pl</code>
       が要求された場合、Apache は ファイル
       <code>/usr/local/apache/cgi-bin/test.pl</code>
-      を実行し、その出力を返すことを試みます。
+      を実行し、その出力を返すことを試みます。
       もちろん、ファイルが存在し、実行可能であり、決められた方法で出力を返します。
       そうでなければ、Apache はエラーメッセージを返します。</p>
     
@@ -127,7 +152,9 @@
       <p>この設定では、このディレクトリにおける CGI
       プログラムの実行を許可するよう Apache に伝えます。</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="writing" id="writing">CGI プログラムを書く</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="writing" id="writing">CGI プログラムを書く</a></h2>
     
 
     <p>「通常の」プログラミングと CGI
@@ -183,7 +210,9 @@
       しかし、これがうまく動けば、
       他のどのようなものでも動かすことができるようになります。</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="troubleshoot" id="troubleshoot">しかし、まだ動かない !</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="troubleshoot" id="troubleshoot">しかし、まだ動かない !</a></h2>
     
 
     <p>ウェブから CGI プログラムへのアクセスを行なったとき、
@@ -254,7 +283,7 @@
 
       <p>コマンドラインからプログラムを実行するとき、
       意識しなくてもシェルに渡される情報があります。
-      例えば、参照するファイルのためにどこを検索したらよいかを
+      例えば、参照するファイルのためにどこを検索したらよいかを
       シェルに伝えるパスがあります。</p>
 
       <p>プログラムが CGI プログラムとしてウェブサーバによって実行されるとき、
@@ -294,7 +323,9 @@
       エラーログの読み方を学ぶことで、ほとんど全ての問題が迅速に確認され、
       迅速に解決されるということが分かるでしょう。</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="behindscenes" id="behindscenes">裏で何が起こっているのか?</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="behindscenes" id="behindscenes">裏で何が起こっているのか?</a></h2>
     
 
     <p>CGI プログラミングに熟達すると、
@@ -381,7 +412,9 @@
       幸いにも、そのデータ処理を助けるライブラリやモジュールが存在します。
       これらは、CGI プログラムの他の面でも同様に役に立ちます。</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="libraries" id="libraries">CGI モジュール/ライブラリ</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="libraries" id="libraries">CGI モジュール/ライブラリ</a></h2>
     
 
     <p>CGI プログラムを書くとき、面倒な仕事の大部分をしてくれる
@@ -396,7 +429,9 @@
     <p>C で CGI プログラムを書いているなら、いろいろな
     オプションがあります。これらの内の一つは <a href="http://www.boutell.com/cgic/">http://www.boutell.com/cgic/</a>
     で提供されている CGIC ライブラリです。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="moreinfo" id="moreinfo">更なる情報</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="moreinfo" id="moreinfo">更なる情報</a></h2>
     
 
     <p>CGI に関する情報はウェブで数多く提供されています。CGI
@@ -425,4 +460,8 @@
     CGI の問題に関する質問を Apache
     バグデータベースに<strong>送るべきでない</strong>
     ことに注目してください。</p>
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>

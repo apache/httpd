@@ -4,26 +4,46 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>動的共有オブジェクト (DSO) サポート - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>動的共有オブジェクト (DSO) サポート</h1>
-    <p>Apache HTTP サーバはモジュール化されたプログラムで、
-    管理者がモジュールを選択することでサーバに組み込む機能を選ぶことができます。
-    モジュールはサーバがビルドされるときに <code>httpd</code> バイナリに
+      -->
+<title>動的共有オブジェクト (DSO) サポート - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>動的共有オブジェクト (DSO) サポート</h1>
+    <p>Apache HTTP サーバはモジュール化されたプログラムで、
+    管理者がモジュールを選択することでサーバに組み込む機能を選ぶことができます。
+    モジュールはサーバがビルドされるときに <code>httpd</code> バイナリに
     静的に組み込むことができます。もしくは、<code>httpd</code> バイナリとは
     別に存在する動的共有オブジェクト (訳注: Dynamic Shared Object)
-    (DSO) としてコンパイルすることも
+    (DSO) としてコンパイルすることも
     できます。DSO モジュールはサーバがビルドされるときにコンパイルしたり、
     Apache 拡張ツール (<a href="programs/apxs.html">apxs</a>) を
     使って後でコンパイルして追加したりできます。</p>
 
-    <p>この文書は DSO モジュールの使い方と、仕組みについて
+    <p>この文書は DSO モジュールの使い方と、仕組みについて
     説明します。</p>
-  </div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#implementation">実装</a></li><li><img alt="" src="./images/down.gif" /> <a href="#usage">使用法の概要</a></li><li><img alt="" src="./images/down.gif" /> <a href="#background">背景</a></li><li><img alt="" src="./images/down.gif" /> <a href="#advantages">利点と欠点</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="implementation" id="implementation">実装</a></h2>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#implementation">実装</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#usage">使用法の概要</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#background">背景</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#advantages">利点と欠点</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="implementation" id="implementation">実装</a></h2>
 
 <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
     <p>個々の Apache モジュールをロードするための DSO サポートは
     <code class="module"><a href="./mod/mod_so.c.html">mod_so.c</a></code> というモジュールの機能に基づいています。
-    このモジュール は Apache のコアに静的に組み込まれている必要があります。
+    このモジュール は Apache のコアに静的に組み込まれている必要があります。
     それは <code class="module"><a href="./mod/core.c.html">core.c</a></code> 以外では DSO にできない唯一の
     モジュールです。事実上、他のすべての Apache のモジュールは、
     <a href="install.html">インストールの文書</a>で説明されているように、
@@ -39,7 +59,7 @@
     <p>Apache モジュール用の (特にサードパーティモジュールの) DSO ファイルの
     作成を簡単にするために、<a href="programs/apxs.html">apxs</a>
     (<em>APache eXtenSion</em>) という新しいサポートプログラムがあります。
-    Apache のソースツリーの<em>外で</em> DSO モジュールをビルドするために
+    Apache のソースツリーの<em>外で</em> DSO モジュールをビルドするために
     使うことができます。発想は単純です: Apache のインストール時の
     <code>configure</code>、<code>make install</code> のときに Apache の
     C ヘッダをインストールし、DSO ビルド用のプラットフォーム依存の
@@ -48,7 +68,9 @@
     DSO サポートのためのプラットフォーム依存のコンパイラやリンカの
     フラグをいじることなく Apache のモジュールのソースをコンパイル
     できるようになります。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="usage" id="usage">使用法の概要</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="usage" id="usage">使用法の概要</a></h2>
 
     <p>Apache 2.0 の DSO 機能の概略を知ることができるための、
     短く簡潔な概要です:</p>
@@ -102,7 +124,9 @@ $ apxs -i -a -n foo mod_foo.la
     <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>
     ディレクティブを使って Apache がモジュールを使用するように
     しなければなりません。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="background" id="background">背景</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="background" id="background">背景</a></h2>
 
     <p>最近の Unix 系の OS には <em>動的共有オブジェクト</em> (DSO)
     の動的リンク/ロードという気のきいた機構が
@@ -161,7 +185,7 @@ $ apxs -i -a -n foo mod_foo.la
     <code>dlsym()</code> を使っていくつかのシンボルを解決します。
     すなわち: 実行プログラムは必要なすべてのシンボルを手動で解決しなければ
     なりません。この機構の利点はプログラムのオプショナルな部分は
-    必要になるまでロードする必要がない (だからメモリも消費しない)
+    必要になるまでロードする必要がない (だからメモリも消費しない)
     ことです。必要ならば、基本プログラムの機能を拡張するために
     これらの部分を動的にロードすることができます。</p>
 
@@ -192,7 +216,9 @@ $ apxs -i -a -n foo mod_foo.la
     バージョン 1.3 から、Apache も DSO 機構を使う仲間になりました。
     Apache は実行時に DSO を使ってモジュールをロードするようにすでに
     運命付けられていたのです。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="advantages" id="advantages">利点と欠点</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="advantages" id="advantages">利点と欠点</a></h2>
 
     <p>上記の DSO に基づいた機能は以下の利点があります:</p>
 
@@ -231,7 +257,7 @@ $ apxs -i -a -n foo mod_foo.la
 
       <li>位置非依存コード (PIC) (訳注 position independent code) は
       相対アドレスのために複雑なアセンブラのトリックが必要なことがあり、
-      それは必ずしも絶対アドレスと同じくらいの速度がでるわけではありませんので、
+      それは必ずしも絶対アドレスと同じくらいの速度がでるわけではありませんので、
       プラットフォームによってはサーバの実行速度が約 5% 遅くなります。</li>
 
       <li>DSO モジュールはすべてのプラットフォームで他の DSO に基づいた
@@ -250,4 +276,8 @@ $ apxs -i -a -n foo mod_foo.la
      どちらかしかありません。</li>
     </ul>
 
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>

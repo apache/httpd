@@ -435,11 +435,11 @@
 
 <div class="example"><p><code>
     &lt;!--#if expr="\"$DOCUMENT_URI\" = \"/foo/file.html\"" --&gt;<br />
-??    in foo<br />
+&nbsp;&nbsp;    in foo<br />
     &lt;!--#elif expr="\"$DOCUMENT_URI\" = \"/bar/file.html\"" --&gt;<br />
-??    in bar<br />
+&nbsp;&nbsp;    in bar<br />
     &lt;!--#else --&gt;<br />
-??    in neither<br />
+&nbsp;&nbsp;    in neither<br />
     &lt;!--#endif --&gt;
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

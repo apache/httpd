@@ -4,17 +4,43 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>URL からファイルシステム上の位置へのマップ - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>URL からファイルシステム上の位置へのマップ</h1>
+      -->
+<title>URL からファイルシステム上の位置へのマップ - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>URL からファイルシステム上の位置へのマップ</h1>
     <p>この文書は Apache がリクエストの URL から送信するファイルの
-    ファイルシステム上の位置を決定する方法を説明します。</p>
-  </div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#related">関連するモジュールとディレクティブ</a></li><li><img alt="" src="./images/down.gif" /> <a href="#documentroot">DocumentRoot</a></li><li><img alt="" src="./images/down.gif" /> <a href="#outside">DocumentRoot 外のファイル</a></li><li><img alt="" src="./images/down.gif" /> <a href="#user">ユーザディレクトリ</a></li><li><img alt="" src="./images/down.gif" /> <a href="#redirect">URL リダイレクション</a></li><li><img alt="" src="./images/down.gif" /> <a href="#proxy">リバースプロキシ</a></li><li><img alt="" src="./images/down.gif" /> <a href="#rewrite">リライトエンジン</a></li><li><img alt="" src="./images/down.gif" /> <a href="#notfound">File Not Found</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="related" id="related">関連するモジュールとディレクティブ</a></h2>
+    ファイルシステム上の位置を決定する方法を説明します。</p>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#related">関連するモジュールとディレクティブ</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#documentroot">DocumentRoot</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#outside">DocumentRoot 外のファイル</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#user">ユーザディレクトリ</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#redirect">URL リダイレクション</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#proxy">リバースプロキシ</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#rewrite">リライトエンジン</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#notfound">File Not Found</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="related" id="related">関連するモジュールとディレクティブ</a></h2>
 
 <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li><li><code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code></li><li><code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code></li><li><code class="module"><a href="./mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_alias.html#alias">Alias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_speling.html#checkspelling">CheckSpelling</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code></li><li><code class="directive"><a href="./mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirectmatch">RedirectMatch</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritematch">RewriteMatch</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code></li></ul></td></tr></table>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="documentroot" id="documentroot">DocumentRoot</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="documentroot" id="documentroot">DocumentRoot</a></h2>
 
     <p>リクエストに対してどのファイルを送信するかを決定するときの
     Apache のデフォルトの動作は、リクエストの URL-Path (URL のホスト名と
-    ポート番号の後に続く部分) を取り出して設定ファイルで指定されている
+    ポート番号の後に続く部分) を取り出して設定ファイルで指定されている
     <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> 
     の最後に追加する、というものです。ですから、
     <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> 
@@ -29,13 +55,15 @@
     モジュールにより提供されるディレクティブを使って、
     送信するためのコンテンツの場所をリクエストされた IP
     アドレスやホスト名から動的に決めることもできます。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="outside" id="outside">DocumentRoot 外のファイル</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="outside" id="outside">DocumentRoot 外のファイル</a></h2>
 
     <p>ファイルシステム上の、
     厳密には <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>
     の下にはない部分へのウェブアクセスを許可する必要がある
     場合がよくあります。Apache はこのために複数の方法を用意しています。
-    Unix システムでは、ファイルシステムの他の部分をシンボリックリンクを
+    Unix システムでは、ファイルシステムの他の部分をシンボリックリンクを
     使って <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>
     の下に持ってくることができます。セキュリティ上の理由により、
     Apache は該当するディレクトリの
@@ -69,7 +97,9 @@
     リクエストを <code>/home/user/cgi-bin/script.cgi</code> というパスへ
     マップし、このマップの結果としてのファイルを CGI スクリプトとして
     扱います。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="user" id="user">ユーザディレクトリ</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="user" id="user">ユーザディレクトリ</a></h2>
 
     <p>伝統的に Unix システムではユーザ <em>user</em> のホームディレクトリを
     <code>~user/</code> として参照できます。<code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code> 
@@ -105,7 +135,9 @@
 
 <div class="example"><p><code>AliasMatch ^/upages/([a-zA-Z0-9]*)/?(.*)
       /home/$1/public_html/$2</code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="redirect" id="redirect">URL リダイレクション</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="redirect" id="redirect">URL リダイレクション</a></h2>
 
     <p>上の節で説明した設定用のディレクティブは Apache に
     ファイルシステムの特定の場所からコンテンツを取ってきて
@@ -143,7 +175,9 @@
 
 <div class="example"><p><code>RedirectMatch temp .*
       http://www.example.com/startpage.html</code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="proxy" id="proxy">リバースプロキシ</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="proxy" id="proxy">リバースプロキシ</a></h2>
 
 <p>Apache は遠隔地にあるドキュメントをローカルのサーバの URL 空間に
 持ってくることもできます。この手法は<em>リバースプロキシ</em>と呼ばれています。
@@ -153,7 +187,7 @@
 プロキシとは異なります。</p>
 
 <p>次の例では、クライアントが <code>/foo/</code> ディレクトリの下にある
-ドキュメントをリクエストすると、サーバが <code>internal.example.com</code> の
+ドキュメントをリクエストすると、サーバが <code>internal.example.com</code> の
 <code>/bar/</code> ディレクトリから取得して、さもローカルサーバからの
 ドキュメントのようにしてクライアントに返します。</p>
 
@@ -171,7 +205,9 @@ ProxyPassReverse /foo/ http://internal.example.com/bar/
 ですから、<code>internal.example.com</code> への絶対パスによるリンクでは、
 クライアントがプロキシサーバを抜け出して <code>internal.example.com</code> に
 直接リクエストを送る、ということになります。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="rewrite" id="rewrite">リライトエンジン</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rewrite" id="rewrite">リライトエンジン</a></h2>
 
     <p>より一層強力な置換が必要なときは、<code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>
     が提供するリライトエンジンが役に立つでしょう。
@@ -184,7 +220,9 @@ ProxyPassReverse /foo/ http://internal.example.com/bar/
     外部のリダイレクト、プロキシです。mod_rewrite を使う多くの実用的な例は
     <a href="misc/rewriteguide.html">URL リライトガイド</a>
     で説明されています。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="notfound" id="notfound">File Not Found</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="notfound" id="notfound">File Not Found</a></h2>
 
     <p>必ず、リクエストされた URL に対応するファイルがファイルシステムに
     無いという場合が発生します。これが起こるのにはいくつかの理由があります。
@@ -221,5 +259,9 @@ ProxyPassReverse /foo/ http://internal.example.com/bar/
     ディレクティブで制御され、
     <a href="custom-error.html">カスタムエラーレスポンス</a> と
     <a href="misc/custom_errordocs.html">国際化サーバエラーレスポンス</a> で
-    説明されているように、柔軟な設定を行なうことができます。</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
+    説明されているように、柔軟な設定を行なうことができます。</p>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>
