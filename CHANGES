@@ -5,10 +5,6 @@ Changes with Apache 2.1.0-dev
   *) Allow LimitRequestBody to be reset to unlimited. PR 29106
      [André Malo]
 
-  *) Fix a segfault when requests for shared memory fails and returns
-     NULL. Fix a segfault caused by a lack of bounds checking on the
-     cache. PR 24801 [Graham Leggett]
-
   *) Small fix to allow reverse proxying to an ftp server. Previously
      an attempt to do this would try and connect to 0.0.0.0, regardless
      of the server specified. PR 24922
@@ -383,6 +379,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.50
+
+  *) Fix a segfault when requests for shared memory fails and returns
+     NULL. Fix a segfault caused by a lack of bounds checking on the
+     cache. PR 24801 [Graham Leggett]
 
   *) Throw an error message if an attempt is made to use the LDAPTrustedCA
      or LDAPTrustedCAType directives in a VirtualHost. PR 26390
