@@ -9,6 +9,7 @@
 
 #include "httpd.h"
 #include "http_log.h"
+#include "http_main.h"
 #include "multithread.h"
 #include "service.h"
 
