@@ -566,7 +566,7 @@ static void log_xlate_error(ap_filter_t *f, apr_status_t rv)
         rv = 0;
         strcpy(msgbuf, "xlate filter - incomplete char at end of input - ");
         cur = 0;
-        while (cur < ctx->saved) {
+        while ((apr_size_t)cur < ctx->saved) {
             apr_snprintf(msgbuf + strlen(msgbuf), sizeof(msgbuf) - strlen(msgbuf), 
                          "%02X", (unsigned)ctx->buf[cur]);
             ++cur;
