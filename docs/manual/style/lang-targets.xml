@@ -22,9 +22,9 @@
 <!-- ==================================================================== -->
 <project name="lang-targets">
 
-<target description="- builds all HTML files and nroff man pages" name="all" depends="de, en, es, ja, ko, ru"/>
-<target description="- builds all zip download packages" name="zip-all" depends="zip-de, zip-en, zip-es, zip-ja, zip-ko, zip-ru"/>
-<target description="- builds all war download packages" name="war-all" depends="war-de, war-en, war-es, war-ja, war-ko, war-ru"/>
+<target description="- builds all HTML files and nroff man pages" name="all" depends="de, en, es, fr, ja, ko, ru"/>
+<target description="- builds all zip download packages" name="zip-all" depends="zip-de, zip-en, zip-es, zip-fr, zip-ja, zip-ko, zip-ru"/>
+<target description="- builds all war download packages" name="war-all" depends="war-de, war-en, war-es, war-fr, war-ja, war-ko, war-ru"/>
 
 <!-- German                                                               -->
 <!-- ==================================================================== -->
@@ -100,6 +100,26 @@
 </target>
 <target description="- builds the Spanish CHM file" name="chm-es">
     <chm.generic lang="es"/>
+</target>
+
+<!-- French                                                               -->
+<!-- ==================================================================== -->
+<property value=".xml.fr" name="inputext.fr"/>
+<property value=".html.fr" name="outputext.fr"/>
+
+<target description="- builds French HTML files" name="fr">
+    <html.generic lang="fr"/>
+</target>
+<target unless="-off.fr.done" depends="metafiles" name="-off-fr">
+    <dependencies.offline dir="_off" style="zip" lang="fr"/>
+    <offline.generic dir="_off" style="zip" lang="fr"/>
+    <property value="yes" name="-off.fr.done"/>
+</target>
+<target description="- builds the French zipped download package" depends="-off-fr" name="zip-fr">
+    <zip.generic lang="fr"/>
+</target>
+<target description="- builds the French Konqueror Web Archive" depends="-off-fr" name="war-fr">
+    <war.generic lang="fr"/>
 </target>
 
 <!-- Japanese                                                             -->
@@ -179,6 +199,7 @@
             <include name="**/*.xml.de"/>
             <include name="**/*.xml"/>
             <include name="**/*.xml.es"/>
+            <include name="**/*.xml.fr"/>
             <include name="**/*.xml.ja"/>
             <include name="**/*.xml.ko"/>
             <include name="**/*.xml.ru"/>
