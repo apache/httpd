@@ -181,7 +181,7 @@ void clean_env()
     int idx;
     
 
-    if ((cleanenv = (char **)calloc(AP_ENVBUF, AP_ENVBUF * (sizeof(char *)))) == NULL) {
+    if ((cleanenv = (char **)calloc(AP_ENVBUF, sizeof(char *))) == NULL) {
 	log_err("failed to malloc env mem\n");
 	exit(120);
     }
