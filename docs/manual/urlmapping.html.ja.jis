@@ -170,11 +170,11 @@
 <div class="example"><p><code>RedirectMatch permanent ^/$
       http://www.example.com/startpage.html</code></p></div>
 
-    <p>あるいは、一時的にサイトのすべてのページを一つのページへリダイレクトする
-    ときは、以下を使います:</p>
+    <p>あるいは、一時的にサイトのすべてのページを他のサイトの特定の
+    ページへリダイレクトするときは、以下を使います:</p>
 
 <div class="example"><p><code>RedirectMatch temp .*
-      http://www.example.com/startpage.html</code></p></div>
+      http://othersite.example.com/startpage.html</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="proxy" id="proxy">リバースプロキシ</a></h2>
@@ -186,8 +186,8 @@
 リバースプロキシサーバから送られてきているように見える点が通常の
 プロキシとは異なります。</p>
 
-<p>次の例では、クライアントが <code>/foo/</code> ディレクトリの下にある
-ドキュメントをリクエストすると、サーバが <code>internal.example.com</code> の
+<p>次の例では、クライアントが <code>/foo/</code> ディレクトリの下にある
+ドキュメントをリクエストすると、サーバが <code>internal.example.com</code> の
 <code>/bar/</code> ディレクトリから取得して、さもローカルサーバからの
 ドキュメントのようにしてクライアントに返します。</p>
 
@@ -227,7 +227,7 @@ ProxyPassReverse /foo/ http://internal.example.com/bar/
     <p>必ず、リクエストされた URL に対応するファイルがファイルシステムに
     無いという場合が発生します。これが起こるのにはいくつかの理由があります。
     場合によっては、ドキュメントを別の場所に移動した結果であることがあります。
-    この場合は、クライアントにリソースの新しい位置を知らせるために
+    この場合は、クライアントにリソースの新しい位置を知らせるために
     <a href="#redirect">URL リダイレクション</a>を使うのが最善の方法です。
     そうすることによって、リソースは新しい位置に移動しているけれども、
     古いブックマークやリンクが動作し続けるようにすることができます。</p>
@@ -259,7 +259,7 @@ ProxyPassReverse /foo/ http://internal.example.com/bar/
     ディレクティブで制御され、
     <a href="custom-error.html">カスタムエラーレスポンス</a> と
     <a href="misc/custom_errordocs.html">国際化サーバエラーレスポンス</a> で
-    説明されているように、柔軟な設定を行なうことができます。</p>
+    説明されているように、柔軟な設定を行なうことができます。</p>
 </div></div>
 <div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>

@@ -1,224 +1,82 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<!-- English revision: 1.44 -->
-
-<title>Apache HTTP サーバ バージョン 2.0 ドキュメント</title><link
-href="./style/css/manual.css" rel="stylesheet" media="all"
-type="text/css" title="Main stylesheet" />
-<style type="text/css" media="all">
-<!--
-/* undo move content left */
-div#page-content {
-    margin-right: 2em;
-    padding-right: 0px;
-    margin-left: 2em;
-}
-
-th {
-    background-color: #e5ecf3;
-}
-
-td {
-    padding-top: .4em;
-}
--->
-</style>
-
-<link
-href="./images/favicon.ico" rel="shortcut icon" /></head><body
-id="manual-page"><div id="page-header"><p class="menu"><a
-href="./mod/">モジュール</a> | <a
-href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a>
-| <a href="./glossary.html">用語</a> | <a
-href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP
-Server Version 2.0</p><img alt="" src="./images/feather.gif"
-/></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-"
-src="./images/left.gif" /></a></div><div id="path"><a
-href="http://www.apache.org/">Apache</a> &gt; <a
-href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a
-href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a
-href="./">バージョン 2.0</a></div>
-
-<div id="page-content">
-<h1>Apache HTTP サーバ バージョン 2.0 ドキュメント</h1>
-
-
-
-<div align="center"><form method="post" action="http://search.apache.org/">
-              <input type="hidden" name="what"
-              value="httpd.apache.org" /> <input type="hidden"
-              name="results" value="20" /> <input type="hidden"
-              name="version" value="2" /> <input type="text"
-              name="keyword" size="20" /> <input type="submit"
-              value="Search" />
-            </form></div>
-
-
-<table style="border: 0">
-<tr><td style="width: 33%">
-
-<table style="width: 100%">
-<tr>
-<th>リリースノート</th>
-</tr>
-<tr><td>
-<a href="new_features_2_0.html">Apache 2.0 の新機能</a></td></tr>
-              
-<tr><td><a href="upgrading.html">Apache 2.0
-                 へのアップグレード</a> </td></tr>
-              
-<tr><td><a href="license.html">Apache のライセンス</a> </td>
-
-</tr>
-<tr><td>&nbsp;</td></tr>
-<tr>
-<th>リファレンスマニュアル</th>
-</tr>
-
-                <tr><td><a href="install.html">コンパイルとインストール
-                </a> </td></tr>
-              
-                <tr><td><a href="invoking.html">起動</a> </td></tr>
-              
-                <tr><td><a href="stopping.html">終了と再起動
-                </a> </td></tr>
-              
-                <tr><td><a href="mod/directives.html">実行の設定用ディレクティブ
-                </a> </td></tr>
-              
-                <tr><td><a href="mod/quickreference.html">ディレクティブ
-                クイックリファレンス</a></td></tr>
-
-                <tr><td><a href="mod/">モジュール</a> </td></tr>
-              
-                <tr><td><a href="mpm.html">マルチプロセッシングモジュール
-                (MPM)</a> </td></tr>
-              
-                <tr><td><a href="filter.html">フィルタ</a> </td></tr>
-              
-                <tr><td><a href="handler.html">ハンドラ</a> </td></tr>
-              
-                <tr><td><a href="programs/">サーバとサポートプログラム
-                </a> </td></tr>
-              
-                <tr><td><a href="glossary.html">用語集</a> </td></tr>
-</table>
-</td>
-
-<td style="width: 33%">
-<table style="width: 100%">
-<tr>
-<th>ユーザの手引</th>
-</tr>
-
-                <tr><td><a href="bind.html">アドレスとポートのバインド</a></td></tr>
-              
-                <tr><td><a href="configuring.html">設定ファイル
-                </a> </td></tr>
-
-                <tr><td><a href="sections.html">セクションの設定
-                </a></td></tr>
-              
-                <tr><td><a href="content-negotiation.html">
-		コンテントネゴシエーション</a> </td></tr>
-              
-                <tr><td><a href="dso.html">動的共有オブジェクト
-                (DSO)</a> </td></tr>
-              
-                <tr><td><a href="env.html">環境変数</a>
-                </td></tr>
-              
-              
-                <tr><td><a href="logs.html">ログファイル</a> </td></tr>
-              
-                <tr><td><a href="urlmapping.html">URL
-                をファイルシステムにマップする</a> </td></tr>
-              
-                <tr><td><a href="misc/perf-tuning.html">性能に関するヒント
-                </a> </td></tr>
-              
-                <tr><td><a href="misc/security_tips.html">セキュリティ情報
-                </a> </td></tr>
-              
-                <tr><td><a href="server-wide.html">サーバ全体の設定
-                </a> </td></tr>
-              
-                <tr><td><a href="ssl/">SSL/TLS による暗号化</a></td></tr>
-              
-                <tr><td><a href="suexec.html">CGI の Suexec
-                実行</a> </td></tr>
-              
-                <tr><td><a href="misc/rewriteguide.html">URL Rewriting
-                のガイド</a> </td></tr>
-              
-                <tr><td><a href="vhosts/">バーチャルホスト</a> </td></tr>
-
-</table>
-</td>
-<td style="width: 33%">
-<table style="width: 100$">
-<tr>
-<th>How-To / チュートリアル</th>
-</tr>
-
-                <tr><td><a href="howto/auth.html">
-                認証、承認、アクセス制御</a></td></tr>
-              
-                <tr><td><a href="howto/cgi.html">CGI
-		による動的コンテンツ</a> </td></tr>
-
-                <tr><td><a
-                href="howto/htaccess.html"><code>.htaccess</code> ファイル</a>
-                </td></tr>
-
-                <tr><td><a href="howto/ssi.html">Server Side
-                Includes (SSI)</a> </td></tr>
-              
-                <tr><td><a href="howto/public_html.html">ユーザ専用ディレクトリ
-		(<code>public_html</code>)</a> </td></tr>
-              
-
-<tr><td>&nbsp;</td></tr>
-<tr>
-<th>プラットフォーム固有の情報</th>
-</tr>
-                <tr><td><a href="platform/windows.html">Microsoft
-                Windows</a> </td></tr>
-
-                <tr><td><a href="platform/netware.html">Novell NetWare
-                </a> </td></tr>
-
-                <tr><td><a href="platform/ebcdic.html">EBCDIC 版
-                </a> </td></tr>
-
-<tr><td>&nbsp;</td></tr>
-<tr>
-<th>その他</th>
-</tr>
-
-                <tr><td><a href="faq/">よくある質問 (FAQ)</a>
-                </td></tr>
-              
-                <tr><td><a href="sitemap.html">サイトマップ</a>
-                </td></tr>
-              
-                <tr><td><a href="misc/tutorials.html">チュートリアル</a>
-                </td></tr>
-              
-                <tr><td><a href="developer/">開発者のためのドキュメント
-                </a> </td></tr>
-              
-                <tr><td><a href="misc/">その他</a> </td></tr>
-</table>
-
-</td></tr></table>
-
-</div>    
-<div id="footer"><p class="apache">Maintained by the <a
-href="http://httpd.apache.org/docs-project/">Apache HTTP Server
-Documentation Project</a></p><p class="menu"><a
-href="./mod/">モジュール</a> | <a
-href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a>
-| <a href="./glossary.html">用語</a> | <a
-href="./sitemap.html">サイトマップ</a></p></div></body></html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Apache HTTP サーバ バージョン 2.0 ドキュメント - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="index-page">
+<div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="http://httpd.apache.org/docs-project/"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a></div>
+<div id="page-content"><h1>Apache HTTP サーバ バージョン 2.0 ドキュメント</h1>
+<form method="get" action="http://www.google.com/search"><p><input name="as_q" value="" type="text" /> <input value="Google Search" type="submit" /><input value="10" name="num" type="hidden" /><input value="ja" name="hl" type="hidden" /><input value="iso-2022-jp" name="ie" type="hidden" /><input value="Google Search" name="btnG" type="hidden" /><input name="as_epq" value="Apache 2.0" type="hidden" /><input name="as_oq" value="" type="hidden" /><input name="as_eq" value="&quot;List-Post&quot;" type="hidden" /><input value="" name="lr" type="hidden" /><input value="i" name="as_ft" type="hidden" /><input value="" name="as_filetype" type="hidden" /><input value="all" name="as_qdr" type="hidden" /><input value="any" name="as_occt" type="hidden" /><input value="i" name="as_dt" type="hidden" /><input value="httpd.apache.org" name="as_sitesearch" type="hidden" /><input value="off" name="safe" type="hidden" /></p></form>
+<table id="indextable"><tr><td class="col1"><div class="category"><h2><a name="release" id="release">リリースノート</a></h2>
+<ul><li><a href="new_features_2_0.html">Apache 2.0 の新機能</a></li>
+<li><a href="upgrading.html">1.3 から 2.0 へのアップグレード</a></li>
+<li><a href="license.html">Apache ライセンス</a></li>
+</ul>
+</div><div class="category"><h2><a name="manual" id="manual">リファレンスマニュアル</a></h2>
+<ul><li><a href="install.html">コンパイルとインストール</a></li>
+<li><a href="invoking.html">起動</a></li>
+<li><a href="stopping.html">終了と再起動</a></li>
+<li><a href="mod/directives.html">実行の設定用ディレクティブ</a></li>
+<li><a href="mod/quickreference.html">ディレクティブ クイックリファレンス</a></li>
+<li><a href="mod/">モジュール</a></li>
+<li><a href="mpm.html">マルチプロセッシングモジュール (MPM)</a></li>
+<li><a href="filter.html">フィルタ</a></li>
+<li><a href="handler.html">ハンドラ</a></li>
+<li><a href="programs/">サーバとサポートプログラム</a></li>
+<li><a href="glossary.html">用語集</a></li>
+</ul>
+</div></td><td><div class="category"><h2><a name="usersguide" id="usersguide">ユーザの手引</a></h2>
+<ul><li><a href="bind.html">アドレスとポートのバインド</a></li>
+<li><a href="configuring.html">設定ファイル</a></li>
+<li><a href="sections.html">セクションの設定</a></li>
+<li><a href="content-negotiation.html">コンテントネゴシエーション</a></li>
+<li><a href="dso.html">動的共有オブジェクト (DSO)</a></li>
+<li><a href="env.html">環境変数</a></li>
+<li><a href="logs.html">ログファイル</a></li>
+<li><a href="urlmapping.html">URL をファイルシステムにマップする</a></li>
+<li><a href="misc/perf-tuning.html">性能に関する調整</a></li>
+<li><a href="misc/security_tips.html">セキュリティ情報</a></li>
+<li><a href="server-wide.html">サーバ全体の設定</a></li>
+<li><a href="ssl/">SSL/TLS による暗号化</a></li>
+<li><a href="suexec.html">CGI の Suexec 実行</a></li>
+<li><a href="misc/rewriteguide.html">URL Rewriting の手引き</a></li>
+<li><a href="vhosts/">バーチャルホスト</a></li>
+</ul>
+</div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">How-To / チュートリアル</a></h2>
+<ul><li><a href="howto/auth.html">認証、承認、アクセス制御
+    </a></li>
+<li><a href="howto/cgi.html">CGI: 動的コンテンツ</a></li>
+<li><a href="howto/htaccess.html">.htaccess ファイル</a></li>
+<li><a href="howto/ssi.html">Server Side Includes (SSI)</a></li>
+<li><a href="howto/public_html.html">ユーザ専用ディレクトリ
+    (public_html)</a></li>
+</ul>
+</div><div class="category"><h2><a name="platform" id="platform">プラットフォーム固有の情報</a></h2>
+<ul><li><a href="platform/windows.html">Microsoft Windows</a></li>
+<li><a href="platform/netware.html">Novell NetWare</a></li>
+<li><a href="platform/ebcdic.html">EBCDIC 版</a></li>
+</ul>
+</div><div class="category"><h2><a name="other" id="other">その他</a></h2>
+<ul><li><a href="faq/">よくある質問 (FAQ)</a></li>
+<li><a href="sitemap.html">サイトマップ</a></li>
+<li><a href="developer/">開発者のためのドキュメント</a></li>
+<li><a href="misc/">その他</a></li>
+</ul>
+</div></td></tr></table></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>

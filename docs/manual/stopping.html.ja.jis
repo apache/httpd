@@ -18,11 +18,11 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>停止と再起動</h1>
     <p>この文書では Unix に類似したシステムでの
-    Apache の停止と再起動について扱っています。Windows で Apache を制御するための
-    情報として、Windows NT, 2000, XP の
-    ユーザは <a href="platform/windows.html#winsvc">Apache をサービスとして実行する</a>を、
-    Windows 9x と ME のユーザは <a href="platform/windows.html#wincons">Apache をコンソールアプリとして
-    実行する</a>を参照してください。</p>
+    Apache の停止と再起動について扱っています。
+    Windows NT, 2000, XP ユーザは<a href="platform/windows.html#winsvc">サービスとして
+    Apache を実行する</a>で、Windows 9x, MEユーザは<a href="platform/windows.html#wincons">コンソールアプリケーションとして
+    Apache を実行する</a>で、
+    これらのプラットホームでの使用方法をご覧下さい。</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">イントロダクション</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#term">急な停止</a></li>
@@ -47,7 +47,9 @@
     に書かれています。これはつまり、親以外のプロセスに
     シグナルを送る必要すらない、ということです。
     親プロセスに送ることができる 3 種類のシグナルがあります:
-    <code>TERM</code>, <code>HUP</code>, <code>USR1</code>
+    <code><a href="#term">TERM</a></code>,
+    <code><a href="#hup">HUP</a></code>, 
+    <code><a href="#graceful">USR1</a></code>
     です。これらの説明については続きをご覧下さい。</p>
 
     <p>親プロセスにシグナルを送るには、
@@ -57,7 +59,7 @@
 
     <p><code>httpd</code> プロセスにシグナルを送る 2 番目の方法は
     <code>-k</code> というコマンドライン引数を使用することです。
-    下で説明されているように、<code>stop</code>, <code>restart</code>,
+    下で説明されているように、<code>stop</code>, <code>restart</code>, 
     <code>graceful</code> を指定できます。
     これらは <a href="programs/httpd.html">httpd</a> の引数ですが、
     制御用のスクリプト <a href="programs/apachectl.html">apachectl</a> を
@@ -65,7 +67,7 @@
     <code>httpd</code> に渡します。</p>
 
     <p><code>httpd</code> にシグナルを送った後、
-    実行状況を次のコマンドで読むことができます:</p>
+    実行状況を次のコマンドで読むことができます:</p>
 
 <div class="example"><p><code>tail -f /usr/local/apache2/logs/error_log</code></p></div>
     <p>ここに挙げた例は、各自の
@@ -103,21 +105,22 @@
     子プロセスが徐々になくなるに従って、
     新しい<em>世代</em>の設定による子プロセスに置き換えていきます。
     そして、これらが新たなリクエストに即座に応答し始めます。</p>
-    <div class="note">特定のプラットホームでは <code>USR1</code> を緩やかな再起動のために
-    使うことができませんが、代わりのシグナル
-    (例えば <code>WINCH</code>) が使用できるでしょう。
+
+    <div class="note">特定のプラットホームでは <code>USR1</code>
+    を緩やかな再起動のために使うことができませんが、代わりのシグナル
+    (例えば WINCH) が使用できるでしょう。
     <code>apachectl graceful</code>
     というコマンドはプラットホームに合ったシグナルを送ります。</div>
 
     <p>このコードは常に
     MPM のプロセス制御ディレクティブの設定を重視しますので、
     クライアントのリクエストを扱うプロセスとスレッドの数を再起動の処理中も
-    適切な値に維持されます。また、次のようにして
+    適切な値に維持されます。。また、次のようにして
     <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code>
     を守ります:
     少なくとも 1 秒後に <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code> 個の新しい子プロセスが
     生成されていなければ、その数になるように適宜プロセスを生成します。
-    この挙動は現在の負荷に対して適切な子プロセスの数と
+    この挙動は現在の負荷に対して適切な子プロセスの数と
     <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code> パラメータでの
     希望の数の両方を維持しようとしています。</p>
 
@@ -157,10 +160,11 @@
     (<a href="programs/httpd.html">httpd</a> をご覧下さい)
     を使って検証することができます。
     設定ファイルの意味的な内容を構文と同様に検証したい場合は、
-    非 root ユーザで <code>httpd</code> を起動しようとすればわかります。
+    非 root ユーザで <code>httpd</code> を起動しようとすればわかります。
     もしエラーがなければ、ソケットやログを開こうとして
     root でないため
-    (もしくは <code>httpd</code> が既に必要なポートにバインドしているため)
+    (もしくは実行中の <code>httpd</code>
+    が既に必要なポートにバインドしているため)
     に失敗するでしょう。
     これ以外の理由で起動に失敗したのであれば、
     それは設定ファイルのエラーで、
@@ -207,7 +211,7 @@
     "bind: Address already in use" (<code>HUP</code> 後) や
     "long lost child came home!" (<code>USR1</code> 後)
     といった結果になります。
-    前者は致命的なエラーですが、
+    前者は致命的なエラーですが、
     後者はスコアボードスロットを失うだけです。
     ですから緩やかな再起動は、たまに確実な再起動 (HUP)
     も併用して使った方が良いでしょう。

@@ -28,7 +28,7 @@
 <h2><a name="overview" id="overview">概要</a></h2>
     
     
-    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
     
     
     <p>Apache は起動時に、ローカルマシンのあるポートあよびアドレス
@@ -79,47 +79,69 @@
 <h2><a name="ipv6" id="ipv6">IPv6 の特記事項</a></h2>
     
 
-    <p>APR が IPv6 をサポートする場合は、Apache はデフォルトで IPv6
-    を listen するソケットを作ります (例えば Listen ディレクティブで
-    IP アドレスが無指定の場合)。
-    つまり、APR が IPv6 をサポートしている場合、</p>
+    <p>多くのプラットホームで IPv6 がサポートされてきていて、
+    APR はこれらのほとんどで IPv6 をサポートしているので、
+    Apache は IPv6 ソケットを割り当てて IPv6
+    経由で送られてきたリクエストを扱うことができます。</p>
+
+    <p>IPv6 ソケットが IPv4 と IPv6 コネクションの両方を扱うことができるか
+    どうかは、Apache 管理者にとって厄介な問題です。
+    IPv4 コネクションを IPv6 ソケットで扱う場合は、
+    IPv4 マップされた IPv6 アドレスを使用していて、
+    ほとんどのプラットホームではデフォルトで使用可能ですが、
+    FreeBSD, NetBSD, OpenBSD では、システム全体としてのポリシーとの整合性から、
+    デフォルトでは使用不可に設定されています。
+    これらのデフォルトで使用不可のプラットホームであっても、
+    特別な設定パラメータで Apache の挙動を変化させることができます。</p>
+
+    <p>IPv4 と IPv6 のコネクションを最小限のソケットで扱いたいのであれば、
+    IPv4 マップの IPv6 アドレスを使用する必要があり、
+    <code>--enable-v4-mapped</code> configure オプションを指定して、単純に
+    <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> 
+    ディレクティブで次のように設定します。</p>
 
     <div class="example"><p><code>
       Listen 80
     </code></p></div>
 
-    <p>は、次と同じ意味になります。</p>
+    <p><code>--enable-v4-mapped</code> では、Apache
+    の生成するデフォルトの設定ファイル中の
+    <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+    ディレクティブはこの形式を使用しています。
+    <code>--enable-v4-mapped</code> は、
+    FreeBSD, NetBSD, OpenBSD 以外の全てのプラットホームでのデフォルトです。
+    ですから、おそらくお手元の Apache はこの設定でビルドされているでしょう。</p>
 
-    <div class="example"><p><code>
-      Listen [::]:80
-    </code></p></div>
-
-    <p>APR が IPv6 をサポートしていない場合は、</p>
-
-    <div class="example"><p><code>
-      Listen 80
-    </code></p></div>
-
-    <p>は、次と同じ意味になります。</p>
-
-    <div class="example"><p><code>
-      Listen 0.0.0.0:80
-    </code></p></div>
-
-    <p>NetBSD 等のいくつかのプラットホームでは、IPv6
-    のワイルドカードアドレス (「::」) のバインドでは IPv4
-    インターフェースにコネクションを張れません。
-    このような状況では、次のように複数の Listen ディレクティブが必要になります。
-    </p>
+    <p>プラットフォームや APR が何をサポートするかに関わらず、
+    IPv4 コネクションのみを扱うようにしたい場合は、
+    次の例のように全ての
+    <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> ディレクティブで
+    IPv4 アドレスを指定してください。</p>
 
     <div class="example"><p><code>
       Listen 0.0.0.0:80<br />
-      Listen [::]:0
+      Listen 192.170.2.1:80
     </code></p></div>
 
-    <p>Apache は現在これを自動検出することができないので、
-    そのような場合は
-    Listen 命令文は管理者が手動で編集しないといけません。</p>
+    <p>IPv4 と IPv6 のコネクションを個別のソケットで扱うようにしたい場合
+    (つまり IPv4 マップのアドレスを無効にしたい場合)
+    は、<code>--disable-v4-mapped</code> configure
+    オプションを指定して、次のように個別指定の
+    <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+    ディレクティブを使用してください。</p>
+
+    <div class="example"><p><code>
+       Listen [::]:80<br />
+       Listen 0.0.0.0:80
+    </code></p></div>
+
+    <p><code>--disable-v4-mapped</code> では、Apache
+    の生成するデフォルトの設定ファイル中の
+    <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+    ディレクティブはこの形式を使用しています。
+    <code>--disable-v4-mapped</code> は、
+    FreeBSD, NetBSD, OpenBSD プラットホームでのデフォルトです。</p>
+
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="virtualhost" id="virtualhost">バーチャルホストに対してどう働くのか</a></h2>

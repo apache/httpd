@@ -199,16 +199,17 @@
 <h3><a name="multiviews" id="multiviews">Multiviews</a></h3>
 
     <p><code>MultiViews</code> はディレクトリ毎のオプションで、
+    <code>httpd.conf</code>ファイルの
     <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, 
     <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, 
     <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>
-    や、(<code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code>
+    セクション中や、(<code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code>
     が適切な値に 設定されていると) <code>.htaccess</code>
     ファイルで <code class="directive"><a href="./mod/core.html#options">Options</a></code>
     ディレクティブによって設定することができます。
     <code>Options All</code> は
     <code>MultiViews</code>
-    をセットしないことに注意してください。明示的に
+    をセットしないことに注意してください。明示的に
     その名前を書く必要があります。</p>
 
     <p><code>MultiViews</code> の効果は以下のようになります:
@@ -253,7 +254,7 @@
     「最適な」 variant を決定するために二つの方法の
     どちらかを起動します。
     Apache のコンテントネゴシエーションの機能を使うために、
-    どのようにしてこの調停が行われるか詳細を知る必要はありません。
+    どのようにしてこの調停が行われるか詳細を知る必要はありません。
     しかしながら、この文書の残りでは関心のある人のために、
     使用されている方法について説明しています。</p>
 
@@ -305,7 +306,7 @@
 	ヘッダフィールドで優先傾向を指定します。
 	要素それぞれに品質数値を持たせることができます。
 	variants は 0 か 1 つかそれ以上の言語と
-	関連づけることができます。</td>
+	関連づけることができます。</td>
       </tr>
 
       <tr valign="top">
@@ -363,7 +364,7 @@
 	  <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code> 
 	  ディレクティブの言語順で最適な言語の variant を選びます。</li>
 
-	  <li>最高「レベル」のメディアパラメータ
+	  <li>最高「レベル」のメディアパラメータ
 	  (text/html メディアタイプのバージョンを与えるために使われます)
 	  を持つ variant を選びます。</li>
 
@@ -406,7 +407,7 @@
       ブラウザやキャッシュはこの情報を使うことができます)。
       以上で終わり。</li>
 
-      <li>ここに来たということは、variant が一つも選択されなかった
+      <li>ここに来たということは、variant が一つも選択されなかった
       (ブラウザが許容するものがなかったため) ということです。
       406 ステータス ("No Acceptable representation" を意味する)
       が、利用可能な variant のリストのついた HTML 
@@ -450,8 +451,8 @@
 </code></p></div>
     <p>こうすることの狙いは、明示的にリストしているタイプが優先されるけれども、
     異なる表現が利用可能であればそれでも良い、ということです。
-    しかしながら、上の基本的なアルゴリズムでは、
-    */* ワイルドカードは他の全てのタイプと全く同等なので優先されません。
+    しかしながら、上の基本的なアルゴリズムでは、
+    */* ワイルドカードは他の全てのタイプと全く同等なので優先されません。
     ブラウザは */* にもっと低い品質 (優先) 
     値を付けてリクエストを送るべきなのです。例えば:</p>
 <div class="example"><p><code>
@@ -486,7 +487,7 @@
     か "Multiple Choices" レスポンスをクライアントに返します。
     これらのエラーメッセージを返さないように、
     このような場合には Apache が Accept-Language を無視して、
-    クライアントのリクエストに明示的には合致しないドキュメントを
+    クライアントのリクエストに明示的には合致しないドキュメントを
     提供するように設定できます。
     <code class="directive"><a href="./mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></code>
     ディレクティブは、これらのエラーの一つか両方をオーバーライドするために
@@ -661,8 +662,8 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
     間違った応答を返してしまうということになりかねません。
     これを防ぐために、Apache はコンテントネゴシエーションの
     後に返された応答全てに、HTTP/1.0 クライアントでは
-    キャッシュ不可能の印をつけます。
-    また、ネゴシエーションされた応答のキャッシュを可能にする
+    キャッシュ不可能の印をつけます。
+    また、ネゴシエーションされた応答のキャッシュを可能にする
     HTTP/1.1 プロトコルの機能も Apache はサポートします。</p>
 
     <p>HTTP/1.0 準拠のクライアントからのリクエストに対しては、

@@ -140,7 +140,7 @@
 <section id="download"><title>ダウンロード</title>
 
     <p>Apache は <a
-    href="http://www.apache.org/dist/httpd/">Apache Software
+    href="http://httpd.apache.org/download.cgi">Apache Software
     Foundation ダウンロードサイト</a>からダウンロードできますし、
     同じ場所に幾つかのミラーサイトもリストしています。
     ここから最新の安定版が手に入ります。</p>
@@ -579,7 +579,7 @@
 
     <p><a href="./">docs/manual/</a> の Apache マニュアルをざっと見てください。
     または、<a
-    href="http://httpd.apache.org/docs-2.1/">http://httpd.apache.org/docs-2.1/</a>
+    href="http://httpd.apache.org/docs-2.0/">http://httpd.apache.org/docs-2.0/</a>
     にあるマニュアル最新版、<a
     href="mod/directives.html">設定ディレクティブ</a>に当たってみてください。</p>
 </section>
