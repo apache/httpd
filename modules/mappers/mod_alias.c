@@ -160,8 +160,8 @@ static const char *add_alias_regex(cmd_parms *cmd, void *dummy, char *f, char *r
 }
 
 static const char *add_redirect_internal(cmd_parms *cmd, alias_dir_conf * dirconf,
-					 char *arg1, char *arg2, char *arg3,
-					 int use_regex)
+					 const char *arg1, const char *arg2, 
+                                         const char *arg3, int use_regex)
 {
     alias_entry *new;
     server_rec *s = cmd->server;
@@ -216,8 +216,8 @@ static const char *add_redirect_internal(cmd_parms *cmd, alias_dir_conf * dircon
     return NULL;
 }
 
-static const char *add_redirect(cmd_parms *cmd, alias_dir_conf * dirconf, char *arg1,
-				char *arg2, char *arg3)
+static const char *add_redirect(cmd_parms *cmd, alias_dir_conf * dirconf, 
+                                const char *arg1, const char *arg2, const char *arg3)
 {
     return add_redirect_internal(cmd, dirconf, arg1, arg2, arg3, 0);
 }
@@ -230,26 +230,28 @@ static const char *add_redirect_regex(cmd_parms *cmd, alias_dir_conf * dirconf,
 
 static const command_rec alias_cmds[] =
 {
-    {"Alias", add_alias, NULL, RSRC_CONF, TAKE2,
-     "a fakename and a realname"},
-    {"ScriptAlias", add_alias, "cgi-script", RSRC_CONF, TAKE2,
-     "a fakename and a realname"},
-    {"Redirect", add_redirect, (void *) HTTP_MOVED_TEMPORARILY,
-     OR_FILEINFO, TAKE23,
-  "an optional status, then document to be redirected and destination URL"},
-    {"AliasMatch", add_alias_regex, NULL, RSRC_CONF, TAKE2,
-     "a regular expression and a filename"},
-    {"ScriptAliasMatch", add_alias_regex, "cgi-script", RSRC_CONF, TAKE2,
-     "a regular expression and a filename"},
-    {"RedirectMatch", add_redirect_regex, (void *) HTTP_MOVED_TEMPORARILY,
-     OR_FILEINFO, TAKE23,
-     "an optional status, then a regular expression and destination URL"},
-    {"RedirectTemp", add_redirect, (void *) HTTP_MOVED_TEMPORARILY,
-     OR_FILEINFO, TAKE2,
-     "a document to be redirected, then the destination URL"},
-    {"RedirectPermanent", add_redirect, (void *) HTTP_MOVED_PERMANENTLY,
-     OR_FILEINFO, TAKE2,
-     "a document to be redirected, then the destination URL"},
+    AP_INIT_TAKE2("Alias", add_alias, NULL, RSRC_CONF,
+                  "a fakename and a realname"),
+    AP_INIT_TAKE2("ScriptAlias", add_alias, "cgi-script", RSRC_CONF,
+                  "a fakename and a realname"),
+    AP_INIT_TAKE23("Redirect", add_redirect, (void *) HTTP_MOVED_TEMPORARILY,
+                   OR_FILEINFO,
+                   "an optional status, then document to be redirected and "
+                   "destination URL"),
+    AP_INIT_TAKE2("AliasMatch", add_alias_regex, NULL, RSRC_CONF,
+                  "a regular expression and a filename"),
+    AP_INIT_TAKE2("ScriptAliasMatch", add_alias_regex, "cgi-script", RSRC_CONF,
+                  "a regular expression and a filename"),
+    AP_INIT_TAKE23("RedirectMatch", add_redirect_regex, 
+                   (void *) HTTP_MOVED_TEMPORARILY, OR_FILEINFO,
+                   "an optional status, then a regular expression and "
+                   "destination URL"),
+    AP_INIT_TAKE2("RedirectTemp", add_redirect, (void *) HTTP_MOVED_TEMPORARILY,
+                  OR_FILEINFO,
+                  "a document to be redirected, then the destination URL"),
+    AP_INIT_TAKE2("RedirectPermanent", add_redirect, 
+                  (void *) HTTP_MOVED_PERMANENTLY, OR_FILEINFO,
+                  "a document to be redirected, then the destination URL"),
     {NULL}
 };
 

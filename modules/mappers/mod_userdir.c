@@ -194,8 +194,10 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
 }
 
 static const command_rec userdir_cmds[] = {
-    {"UserDir", set_user_dir, NULL, RSRC_CONF, RAW_ARGS,
-    "the public subdirectory in users' home directories, or 'disabled', or 'disabled username username...', or 'enabled username username...'"},
+    AP_INIT_RAW_ARGS("UserDir", set_user_dir, NULL, RSRC_CONF,
+                     "the public subdirectory in users' home directories, or "
+                     "'disabled', or 'disabled username username...', or "
+                     "'enabled username username...'"),
     {NULL}
 };
 

@@ -232,7 +232,7 @@ static void push_item(ap_array_header_t *arr, char *type, char *to, char *path,
     }
 }
 
-static const char *add_alt(cmd_parms *cmd, void *d, char *alt, char *to)
+static const char *add_alt(cmd_parms *cmd, void *d, const char *alt, const char *to)
 {
     if (cmd->info == BY_PATH) {
         if (!strcmp(to, "**DIRECTORY**")) {
@@ -248,7 +248,7 @@ static const char *add_alt(cmd_parms *cmd, void *d, char *alt, char *to)
     return NULL;
 }
 
-static const char *add_icon(cmd_parms *cmd, void *d, char *icon, char *to)
+static const char *add_icon(cmd_parms *cmd, void *d, const char *icon, const char *to)
 {
     char *iconbak = ap_pstrdup(cmd->pool, icon);
 
@@ -299,7 +299,7 @@ static const char *add_icon(cmd_parms *cmd, void *d, char *icon, char *to)
 #define WILDCARDS_REQUIRED 0
 #endif
 
-static const char *add_desc(cmd_parms *cmd, void *d, char *desc, char *to)
+static const char *add_desc(cmd_parms *cmd, void *d, const char *desc, const char *to)
 {
     autoindex_config_rec *dcfg = (autoindex_config_rec *) d;
     ai_desc_t *desc_entry;
@@ -322,20 +322,20 @@ static const char *add_desc(cmd_parms *cmd, void *d, char *desc, char *to)
     return NULL;
 }
 
-static const char *add_ignore(cmd_parms *cmd, void *d, char *ext)
+static const char *add_ignore(cmd_parms *cmd, void *d, const char *ext)
 {
     push_item(((autoindex_config_rec *) d)->ign_list, 0, ext, cmd->path, NULL);
     return NULL;
 }
 
-static const char *add_header(cmd_parms *cmd, void *d, char *name)
+static const char *add_header(cmd_parms *cmd, void *d, const char *name)
 {
     push_item(((autoindex_config_rec *) d)->hdr_list, 0, NULL, cmd->path,
 	      name);
     return NULL;
 }
 
-static const char *add_readme(cmd_parms *cmd, void *d, char *name)
+static const char *add_readme(cmd_parms *cmd, void *d, const char *name)
 {
     push_item(((autoindex_config_rec *) d)->rdme_list, 0, NULL, cmd->path,
 	      name);
@@ -498,8 +498,8 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
     return NULL;
 }
 
-static const char *set_default_order(cmd_parms *cmd, void *m, char *direction,
-				     char *key)
+static const char *set_default_order(cmd_parms *cmd, void *m, const char *direction,
+				     const char *key)
 {
     char temp[4];
     autoindex_config_rec *d_cfg = (autoindex_config_rec *) m;
@@ -544,33 +544,35 @@ static const char *set_default_order(cmd_parms *cmd, void *m, char *direction,
 
 static const command_rec autoindex_cmds[] =
 {
-    {"AddIcon", add_icon, BY_PATH, DIR_CMD_PERMS, ITERATE2,
-     "an icon URL followed by one or more filenames"},
-    {"AddIconByType", add_icon, BY_TYPE, DIR_CMD_PERMS, ITERATE2,
-     "an icon URL followed by one or more MIME types"},
-    {"AddIconByEncoding", add_icon, BY_ENCODING, DIR_CMD_PERMS, ITERATE2,
-     "an icon URL followed by one or more content encodings"},
-    {"AddAlt", add_alt, BY_PATH, DIR_CMD_PERMS, ITERATE2,
-     "alternate descriptive text followed by one or more filenames"},
-    {"AddAltByType", add_alt, BY_TYPE, DIR_CMD_PERMS, ITERATE2,
-     "alternate descriptive text followed by one or more MIME types"},
-    {"AddAltByEncoding", add_alt, BY_ENCODING, DIR_CMD_PERMS, ITERATE2,
-     "alternate descriptive text followed by one or more content encodings"},
-    {"IndexOptions", add_opts, NULL, DIR_CMD_PERMS, RAW_ARGS,
-     "one or more index options"},
-    {"IndexOrderDefault", set_default_order, NULL, DIR_CMD_PERMS, TAKE2,
-     "{Ascending,Descending} {Name,Size,Description,Date}"},
-    {"IndexIgnore", add_ignore, NULL, DIR_CMD_PERMS, ITERATE,
-     "one or more file extensions"},
-    {"AddDescription", add_desc, BY_PATH, DIR_CMD_PERMS, ITERATE2,
-     "Descriptive text followed by one or more filenames"},
-    {"HeaderName", add_header, NULL, DIR_CMD_PERMS, TAKE1, "a filename"},
-    {"ReadmeName", add_readme, NULL, DIR_CMD_PERMS, TAKE1, "a filename"},
-    {"FancyIndexing", fancy_indexing, NULL, DIR_CMD_PERMS, FLAG,
-     "Limited to 'on' or 'off' (superseded by IndexOptions FancyIndexing)"},
-    {"DefaultIcon", ap_set_string_slot,
-     (void *) XtOffsetOf(autoindex_config_rec, default_icon),
-     DIR_CMD_PERMS, TAKE1, "an icon URL"},
+    AP_INIT_ITERATE2("AddIcon", add_icon, BY_PATH, DIR_CMD_PERMS, 
+                     "an icon URL followed by one or more filenames"),
+    AP_INIT_ITERATE2("AddIconByType", add_icon, BY_TYPE, DIR_CMD_PERMS,
+                     "an icon URL followed by one or more MIME types"),
+    AP_INIT_ITERATE2("AddIconByEncoding", add_icon, BY_ENCODING, DIR_CMD_PERMS,
+                     "an icon URL followed by one or more content encodings"),
+    AP_INIT_ITERATE2("AddAlt", add_alt, BY_PATH, DIR_CMD_PERMS,
+                     "alternate descriptive text followed by one or more filenames"),
+    AP_INIT_ITERATE2("AddAltByType", add_alt, BY_TYPE, DIR_CMD_PERMS,
+                     "alternate descriptive text followed by one or more MIME types"),
+    AP_INIT_ITERATE2("AddAltByEncoding", add_alt, BY_ENCODING, DIR_CMD_PERMS,
+                     "alternate descriptive text followed by one or more content encodings"),
+    AP_INIT_RAW_ARGS("IndexOptions", add_opts, NULL, DIR_CMD_PERMS,
+                     "one or more index options"),
+    AP_INIT_TAKE2("IndexOrderDefault", set_default_order, NULL, DIR_CMD_PERMS,
+                  "{Ascending,Descending} {Name,Size,Description,Date}"),
+    AP_INIT_ITERATE("IndexIgnore", add_ignore, NULL, DIR_CMD_PERMS,
+                    "one or more file extensions"),
+    AP_INIT_ITERATE2("AddDescription", add_desc, BY_PATH, DIR_CMD_PERMS,
+                     "Descriptive text followed by one or more filenames"),
+    AP_INIT_TAKE1("HeaderName", add_header, NULL, DIR_CMD_PERMS,
+                  "a filename"),
+    AP_INIT_TAKE1("ReadmeName", add_readme, NULL, DIR_CMD_PERMS,
+                  "a filename"),
+    AP_INIT_FLAG("FancyIndexing", fancy_indexing, NULL, DIR_CMD_PERMS,
+                 "Limited to 'on' or 'off' (superseded by IndexOptions FancyIndexing)"),
+    AP_INIT_TAKE1("DefaultIcon", ap_set_string_slot,
+                  (void *) XtOffsetOf(autoindex_config_rec, default_icon),
+                  DIR_CMD_PERMS, "an icon URL"),
     {NULL}
 };
 

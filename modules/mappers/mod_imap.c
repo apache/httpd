@@ -155,15 +155,17 @@ static void *merge_imap_dir_configs(ap_pool_t *p, void *basev, void *addv)
 
 static const command_rec imap_cmds[] =
 {
-    {"ImapMenu", ap_set_string_slot,
-     (void *) XtOffsetOf(imap_conf_rec, imap_menu), OR_INDEXES, TAKE1,
- "the type of menu generated: none, formatted, semiformatted, unformatted"},
-    {"ImapDefault", ap_set_string_slot,
-     (void *) XtOffsetOf(imap_conf_rec, imap_default), OR_INDEXES, TAKE1,
-     "the action taken if no match: error, nocontent, referer, menu, URL"},
-    {"ImapBase", ap_set_string_slot,
-     (void *) XtOffsetOf(imap_conf_rec, imap_base), OR_INDEXES, TAKE1,
-     "the base for all URL's: map, referer, URL (or start of)"},
+    AP_INIT_TAKE1("ImapMenu", ap_set_string_slot,
+                  (void *) XtOffsetOf(imap_conf_rec, imap_menu), OR_INDEXES,
+                  "the type of menu generated: none, formatted, semiformatted, "
+                  "unformatted"),
+    AP_INIT_TAKE1("ImapDefault", ap_set_string_slot,
+                  (void *) XtOffsetOf(imap_conf_rec, imap_default), OR_INDEXES,
+                  "the action taken if no match: error, nocontent, referer, "
+                  "menu, URL"),
+    AP_INIT_TAKE1("ImapBase", ap_set_string_slot,
+                  (void *) XtOffsetOf(imap_conf_rec, imap_base), OR_INDEXES,
+                  "the base for all URL's: map, referer, URL (or start of)"),
     {NULL}
 };
 
