@@ -121,10 +121,6 @@
  * %...B:  bytes sent, excluding HTTP headers.
  * %...b:  bytes sent, excluding HTTP headers in CLF format, i.e. a '-'
  *         when no bytes where sent (rather than a '0'.
- * %...c:  Status of the connection.
- *         'X' = connection aborted before the response completed.
- *         '+' = connection may be kept alive after the response is sent.
- *         '-' = connection will be closed after the response is sent.
  * %...{FOOBAR}C:  The contents of the HTTP cookie FOOBAR
  * %...{FOOBAR}e:  The contents of the environment variable FOOBAR
  * %...f:  filename
@@ -153,7 +149,13 @@
  * %...m:  the request method
  * %...H:  the request protocol
  * %...q:  the query string prepended by "?", or empty if no query string
- *
+ * %...X:  Status of the connection.
+ *         'X' = connection aborted before the response completed.
+ *         '+' = connection may be kept alive after the response is sent.
+ *         '-' = connection will be closed after the response is sent.
+           (This directive was %...c in late versions of Apache 1.3, but
+            this conflicted with the historical ssl %...{var}c syntax.)
+*
  * The '...' can be nothing at all (e.g. "%h %u %r %s %b"), or it can
  * indicate conditions for inclusion of the item (which will cause it
  * to be replaced with '-' if the condition is not met).  Note that
@@ -1203,7 +1205,7 @@ static void log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         log_pfn_register(p, "H", log_request_protocol, 0);
         log_pfn_register(p, "m", log_request_method, 0);
         log_pfn_register(p, "q", log_request_query, 0);
-        log_pfn_register(p, "c", log_connection_status, 0);
+        log_pfn_register(p, "X", log_connection_status, 0);
         log_pfn_register(p, "C", log_cookie, 0);
         log_pfn_register(p, "r", log_request_line, 1);
         log_pfn_register(p, "D", log_request_duration_microseconds, 1);

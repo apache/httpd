@@ -83,10 +83,6 @@ by the values as follows:</p>
 %...B:          Bytes sent, excluding HTTP headers.
 %...b:          Bytes sent, excluding HTTP headers. In CLF format
 		i.e. a '-' rather than a 0 when no bytes are sent.
-%...c:          Connection status when response is completed.
-                'X' = connection aborted before the response completed.
-                '+' = connection may be kept alive after the response is sent.
-                '-' = connection will be closed after the response is sent.
 %...{Foobar}C:	The contents of cookie "Foobar" in the request sent to the
                 server.
 %...D:          The time taken to serve the request, in microseconds.
@@ -115,6 +111,12 @@ by the values as follows:</p>
 %...U:          The URL path requested, not including any query string.
 %...v:          The canonical ServerName of the server serving the request.
 %...V:          The server name according to the UseCanonicalName setting.
+%...X:          Connection status when response is completed.
+                'X' = connection aborted before the response completed.
+                '+' = connection may be kept alive after the response is sent.
+                '-' = connection will be closed after the response is sent.
+                (This directive was %...c in late versions of Apache 1.3, but
+                 this conflicted with the historical ssl %...{var}c syntax.)
 </PRE>
 
 <p>The "..." can be nothing at all (<EM>e.g.</EM>, <CODE>"%h %u %r %s
