@@ -562,8 +562,12 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
         *len = bytes;
         if (inctx->mode == AP_MODE_SPECULATIVE) {
             /* We want to rollback this read. */
-            inctx->cbuf.value -= bytes;
-            inctx->cbuf.length += bytes;
+            if (inctx->cbuf.length > 0) {
+                inctx->cbuf.value -= bytes;
+                inctx->cbuf.length += bytes;
+            } else {
+                char_buffer_write(&inctx->cbuf, buf, (int)bytes);
+            }
             return APR_SUCCESS;
         }
         /* This could probably be *len == wanted, but be safe from stray

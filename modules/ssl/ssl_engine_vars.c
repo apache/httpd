@@ -47,8 +47,15 @@ static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, conn_rec *c, char *var);
 static void  ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algkeysize);
 static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var);
 
+static int ssl_is_https(conn_rec *c)
+{
+    SSLConnRec *sslconn = myConnConfig(c);
+    return sslconn && sslconn->ssl;
+}
+
 void ssl_var_register(void)
 {
+    APR_REGISTER_OPTIONAL_FN(ssl_is_https);
     APR_REGISTER_OPTIONAL_FN(ssl_var_lookup);
     return;
 }

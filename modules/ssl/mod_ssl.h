@@ -665,6 +665,10 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
                          conn_rec *, request_rec *,
                          char *));
 
+/* An optional function which returns non-zero if the given connection
+ * is using SSL/TLS. */
+APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
+
 /* Proxy Support */
 int ssl_proxy_enable(conn_rec *c);
 int ssl_engine_disable(conn_rec *c);

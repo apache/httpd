@@ -73,6 +73,14 @@
 #include "http_protocol.h"
 #include "mod_rewrite.h"
 
+/* mod_ssl.h is not safe for inclusion in 2.0, so duplicate the
+ * optional function declarations. */
+APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
+                        (apr_pool_t *, server_rec *,
+                         conn_rec *, request_rec *,
+                         char *));
+APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
+
 #if !defined(OS2) && !defined(WIN32) && !defined(BEOS)  && !defined(NETWARE)
 #include "unixd.h"
 #define MOD_REWRITE_SET_MUTEX_PERMS /* XXX Apache should define something */
@@ -134,6 +142,10 @@ static int proxy_available;
 static const char *lockname;
 static apr_global_mutex_t *rewrite_mapr_lock_acquire = NULL;
 static apr_global_mutex_t *rewrite_log_lock = NULL;
+
+/* Optional functions imported from mod_ssl when loaded: */
+static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *rewrite_ssl_lookup = NULL;
+static APR_OPTIONAL_FN_TYPE(ssl_is_https) *rewrite_is_https = NULL;
 
 /*
 ** +-------------------------------------------------------+
@@ -1018,6 +1030,10 @@ static int post_config(apr_pool_t *p,
             }
         }
     }
+
+    rewrite_ssl_lookup = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
+    rewrite_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
+
     return OK;
 }
 
@@ -3902,6 +3918,11 @@ static char *lookup_variable(request_rec *r, char *var)
             result = getenv(var+4);
         }
     }
+    else if (strlen(var) > 4 && !strncasecmp(var, "SSL:", 4) 
+             && rewrite_ssl_lookup) {
+        result = rewrite_ssl_lookup(r->pool, r->server, r->connection, r, 
+                                    var + 4);
+    }
 
 #define LOOKAHEAD(subrecfunc) \
         if ( \
@@ -3949,6 +3970,9 @@ static char *lookup_variable(request_rec *r, char *var)
         if (r->finfo.valid & APR_FINFO_GROUP) {
             apr_group_name_get((char **)&result, r->finfo.group, r->pool);
         }
+    } else if (strcasecmp(var, "HTTPS") == 0) {
+        int flag = rewrite_is_https && rewrite_is_https(r->connection);
+        result = flag ? "on" : "off";
     }
 
     if (result == NULL) {

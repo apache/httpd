@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/26 22:21:33 $]
+Last modified at [$Date: 2004/08/27 09:03:22 $]
 
 Release:
 
@@ -82,28 +82,6 @@ PATCHES TO BACKPORT FROM 2.1
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/generators/mod_cgi.c?r1=1.167&r2=1.168
        +1: stoddard, trawick
        nd: I'd like to add 1.169
-
-    *) [SECURITY] mod_ssl: Fix potential input filter segfaults in SPECULATIVE mode.
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.125&r2=1.126
-       PR: 30134
-       +1: jorton, trawick, jerenkrantz
-
-    *) unixd_accept: Eliminate now-unnecessary apr_os_sock_get() call.
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/os/unix/unixd.c?r1=1.66&r2=1.67
-       +1: jorton, trawick, jerenkrantz
-
-    *) Prevent byterange filter doing its thang for a CGI which returns a Content-Range
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_script.c?r1=1.89&r2=1.90
-       +1: jorton, trawick, nd, jerenkrantz
-
-    *) mod_ssl: Add ssl_is_https optional hook.
-       http://www.apache.org/~jorton/mod_ssl-2.0-ishttps.diff
-       +1: jorton, stoddard, trawick, nd
-
-    *) mod_rewrite: Add %{SSL:...} and %{HTTPS} support (regression from 1.3/mod_ssl).
-       http://www.apache.org/~jorton/mod_rewrite-2.0-sslvar.diff
-       PR: 30464
-       +1: jorton, stoddard, nd
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
          modules/experimental/mod_auth_ldap.c: 1.28

@@ -1,5 +1,18 @@
 Changes with Apache 2.0.51
 
+  *) SECURITY: CAN-2004-0751 (cve.mitre.org)
+     mod_ssl: Fix a segfault in the SSL input filter which could be
+     triggered if using "speculative" mode, for instance by a 
+     proxy request to an SSL server.  PR 30134.  [Joe Orton]
+
+  *) mod_rewrite: Add %{SSL:...} and %{HTTPS} variable lookups.
+     PR 30464.  [Joe Orton]
+
+  *) mod_ssl: Add new 'ssl_is_https' optional function.  [Joe Orton]
+
+  *) Prevent CGI script output which includes a Content-Range header
+     from being passed through the byterange filter.  [Joe Orton]
+
   *) Satisfy directives now can be influenced by a surrounding <Limit>
      container.  PR 14726.  [André Malo]
 
