@@ -1,10 +1,10 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/02/16 18:29:20 $]
+Last modified at [$Date: 2000/02/22 23:00:53 $]
 
 Release:
 
     Vague plan, assuming more features aren't demanded for the 2.0 release
-    2.0a1/b1: January 2000
+    2.0a1   : March 2000
     2.0     : later in 2000
 
 RELEASE SHOWSTOPPERS:
@@ -59,6 +59,10 @@ RELEASE SHOWSTOPPERS:
         resolver calls,
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Win32: Reuse accept socket after transmitfile/close
+	This is not a bug, but would be nice to get this feature in 
+	before ship.
 
     * Win32: Enable the winnt MPM to use the new scoreboard API
 
