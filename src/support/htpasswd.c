@@ -214,6 +214,8 @@ int main(int argc, char *argv[])
     int found;
     int use_md5 = 0;
     int newfile = 0;
+    int currarg = 1;
+    int filearg;
 
     tn = NULL;
     signal(SIGINT, (void (*)(int)) interrupted);
@@ -225,9 +227,6 @@ int main(int argc, char *argv[])
     if (argc < 3) {
 	    usage();
     }
-    else {
-        strcpy(filename, argv[argc - 2]);
-    }
 
     /* I would rather use getopt, but Windows and UNIX seem to handle getopt
      * differently, so I am doing the argument checking by hand.
@@ -235,14 +234,24 @@ int main(int argc, char *argv[])
     
     if (!strcmp(argv[1],"-c") || !strcmp(argv[2],"-c")) {
         newfile = 1;
+        currarg++;
     }
     if (!strcmp(argv[1],"-m") || !strcmp(argv[2],"-m")) {
         use_md5 = 1;
+        currarg++;
     }
 
     if (!strcmp(argv[1], "-cm") || !strcmp(argv[2], "-mc")) {
         use_md5 = 1;
         newfile = 1;
+        currarg++;
+    }
+
+    strcpy(filename, argv[currarg]);
+    filearg = currarg++;
+
+    if (argc <= filearg + 1) {
+        usage();
     }
 
 #ifdef WIN32
@@ -258,8 +267,8 @@ int main(int argc, char *argv[])
 	    perror("fopen");
 	    exit(1);
 	}
-	printf("Adding password for %s.\n", argv[argc-1]);
-	add_password(argv[argc - 1], tfp, use_md5);
+	printf("Adding password for %s.\n", argv[currarg]);
+	add_password(argv[currarg], tfp, use_md5);
 	fclose(tfp);
 	return(0);
     }
@@ -270,15 +279,15 @@ int main(int argc, char *argv[])
 	exit(1);
     }
 
-    if (!(f = fopen(argv[argc - 2], "r+"))) {
+    if (!(f = fopen(argv[filearg], "r+"))) {
         fprintf(stderr, "Could not open password file %s for reading.\n",
-                argv[argc - 2]);
+                argv[filearg]);
         fprintf(stderr, "Use -c option to create a new one\n");
 	fclose(tfp);
 	unlink(tn);
 	exit(1);
     }
-    strcpy(user, argv[argc - 1]);
+    strcpy(user, argv[currarg]);
 
     found = 0;
     while (!(getline(line, MAX_STRING_LEN, f))) {
