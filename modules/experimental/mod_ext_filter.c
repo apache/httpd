@@ -84,7 +84,10 @@ typedef struct ef_server_t {
 typedef struct ef_filter_t {
     const char *name;
     enum {INPUT_FILTER=1, OUTPUT_FILTER} mode;
+    ap_filter_type ftype;
     const char *command;
+    const char *enable_env;
+    const char *disable_env;
     int numArgs;
     char *args[30];
     const char *intype;             /* list of IMTs we process (well, just one for now) */
@@ -246,6 +249,7 @@ static const char *define_filter(cmd_parms *cmd, void *dummy, const char *args)
     filter = (ef_filter_t *)apr_pcalloc(conf->p, sizeof(ef_filter_t));
     filter->name = name;
     filter->mode = OUTPUT_FILTER;
+    filter->ftype = AP_FTYPE_RESOURCE;
     apr_hash_set(conf->h, name, APR_HASH_KEY_STRING, filter);
 
     while (*args) {
@@ -286,6 +290,27 @@ static const char *define_filter(cmd_parms *cmd, void *dummy, const char *args)
             continue;
         }
 
+        if (!strncasecmp(args, "ftype=", 6)) {
+            args += 6;
+            token = ap_getword_white(cmd->pool, &args);
+            filter->ftype = atoi(token);
+            continue;
+        }
+
+        if (!strncasecmp(args, "enableenv=", 10)) {
+            args += 10;
+            token = ap_getword_white(cmd->pool, &args);
+            filter->enable_env = token;
+            continue;
+        }
+        
+        if (!strncasecmp(args, "disableenv=", 11)) {
+            args += 11;
+            token = ap_getword_white(cmd->pool, &args);
+            filter->disable_env = token;
+            continue;
+        }
+        
         if (!strncasecmp(args, "intype=", 7)) {
             args += 7;
             filter->intype = ap_getword_white(cmd->pool, &args);
@@ -314,7 +339,7 @@ static const char *define_filter(cmd_parms *cmd, void *dummy, const char *args)
      */
     if (filter->mode == OUTPUT_FILTER) {
         /* XXX need a way to ensure uniqueness among all filters */
-        ap_register_output_filter(filter->name, ef_output_filter, NULL, AP_FTYPE_RESOURCE);
+        ap_register_output_filter(filter->name, ef_output_filter, NULL, filter->ftype);
     }
 #if 0              /* no input filters yet */
     else if (filter->mode == INPUT_FILTER) {
@@ -549,6 +574,16 @@ static apr_status_t init_filter_instance(ap_filter_t *f)
                 ctx->noop = 1;
             }
         }
+    }
+    if (ctx->filter->enable_env &&
+        !apr_table_get(f->r->subprocess_env, ctx->filter->enable_env)) {
+        /* an environment variable that enables the filter isn't set; bail */
+        ctx->noop = 1;
+    }
+    if (ctx->filter->disable_env &&
+        apr_table_get(f->r->subprocess_env, ctx->filter->disable_env)) {
+        /* an environment variable that disables the filter is set; bail */
+        ctx->noop = 1;
     }
     if (!ctx->noop) {
         rv = init_ext_filter_process(f);
