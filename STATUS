@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/24 18:18:29 $]
+Last modified at [$Date: 2003/01/24 18:57:27 $]
 
 Release:
 
@@ -71,7 +71,7 @@ PATCHES TO PORT FROM 2.1
 
     * Allow RewriteEngine Off even if Options -FollowSymlinks. PR 12395.
       modules/mappers/mod_rewrite.c r1.136
-      +1: nd, jerenkrantz, +1
+      +1: nd, jerenkrantz, trawick
 
     * Use saner default config values for suexec. PR 15713.
       support/suexec.h r1.8
