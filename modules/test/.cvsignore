@@ -3,3 +3,5 @@ Makefile
 *.lo
 *.so
 modules.mk
+Debug
+Release
