@@ -1070,7 +1070,7 @@ static int mem_cache_post_config(apr_pool_t *p, apr_pool_t *plog,
     }
     if (sconf->max_streaming_buffer_size < sconf->min_cache_object_size) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
-                     "MCacheMaxStreamingBuffer must be less than or equal to MCacheMaxObjectSize. "
+                     "MCacheMaxStreamingBuffer must be greater than or equal to MCacheMinObjectSize. "
                      "Resetting MCacheMaxStreamingBuffer to MCacheMinObjectSize.");
         sconf->max_streaming_buffer_size = sconf->min_cache_object_size;
     }
