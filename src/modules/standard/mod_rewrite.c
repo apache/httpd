@@ -2372,7 +2372,7 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     if (conn->user == NULL) {
         ruser = "-";
     }
-    else if (strlen (conn->user) != 0) {
+    else if (strlen(conn->user) != 0) {
         ruser = conn->user;
     }
     else {
@@ -3235,7 +3235,7 @@ static char **resolv_ipaddr_list(request_rec *r, char *name)
 
 static int is_proxy_available(server_rec *s)
 {
-    return find_linked_module ("mod_proxy") != NULL;
+    return (find_linked_module("mod_proxy") != NULL);
 }
 
 
