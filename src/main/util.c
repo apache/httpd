@@ -95,7 +95,8 @@ char *gm_timestr_822(pool *p, time_t sec) {
     tms = gmtime(&sec);
 
 /* RFC date format; as strftime '%a, %d %b %Y %T GMT' */
-    sprintf(ts, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", days[tms->tm_wday],
+    ap_snprintf(ts, sizeof(ts), 
+	    "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", days[tms->tm_wday],
 	    tms->tm_mday, month_snames[tms->tm_mon], tms->tm_year + 1900,
 	    tms->tm_hour, tms->tm_min, tms->tm_sec);
 
@@ -758,12 +759,13 @@ unescape_url(char *url) {
 }
 
 char *construct_server(pool *p, const char *hostname, int port) {
-    char portnum[10];		/* Long enough.  Really! */
+    char portnum[22];		
+	/* Long enough, even if port > 16 bits for some reason */
   
     if (port == 80)
 	return (char *)hostname;
     else {
-        sprintf (portnum, "%d", port);
+        ap_snprintf (portnum, sizeof(portnum), "%d", port);
 	return pstrcat (p, hostname, ":", portnum, NULL);
     }
 }
@@ -1307,7 +1309,7 @@ void os2pathname(char *path) {
     int offset;
 
     offset = 0;
-    for (loop=0; loop < (strlen(path) + 1); loop++) {
+    for (loop=0; loop < (strlen(path) + 1) && loop < sizeof(newpath)-1; loop++) {
         if (path[loop] == '/') {
             newpath[offset] = '\\';
             /*

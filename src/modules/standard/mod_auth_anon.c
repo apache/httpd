@@ -239,14 +239,15 @@ int anon_authenticate_basic_user (request_rec *r)
 	  ) 
 	) {
       if (sec->auth_anon_logemail) {
-	sprintf(errstr,"Anonymous: Passwd <%s> Accepted", 
+	ap_snprintf(errstr, sizeof(errstr), "Anonymous: Passwd <%s> Accepted", 
 			send_pw ? send_pw : "\'none\'");
 	log_error (errstr, r->server );
       }
       return OK;
     } else {
         if (sec->auth_anon_authoritative) {
-	sprintf(errstr,"Anonymous: Authoritative, Passwd <%s> not accepted",
+	ap_snprintf(errstr, sizeof(errstr),
+		"Anonymous: Authoritative, Passwd <%s> not accepted",
 		send_pw ? send_pw : "\'none\'");
 	log_error(errstr,r->server);
 	return AUTH_REQUIRED;

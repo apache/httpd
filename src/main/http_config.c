@@ -236,7 +236,7 @@ char *ShowMethod(module *modp,int offset)
     for(n=0 ; aMethods[n].offset >= 0 ; ++n)
 	if(aMethods[n].offset == offset)
 	    break;
-    sprintf(buf,"%s:%s",modp->name,aMethods[n].method);
+    ap_snprintf(buf, sizeof(buf), "%s:%s",modp->name,aMethods[n].method);
     return buf;
     }
 #else

@@ -1,5 +1,9 @@
 Changes with Apache 1.2b5
 
+  *) Migration from sprintf() to snprintf() to avoid buffer
+     overflows. Provide portable snprintf() implementation
+     (ap_snprintf). [Marc Slemko, jj]
+
   *) Remove mod_fastcgi.c from the distribution. This module appears
      to be maintained more through the Open Market channels and should
      continue to be easily available at http://www.fastcgi.com/

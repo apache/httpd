@@ -88,18 +88,23 @@ extern module *top_module;
 
 char *mod_info_html_cmd_string(char *string) {
 	char *s,*t;
-	static char ret[64];  /* What is the max size of a command? */
+	static char ret[256];  /* What is the max size of a command? */
 
 	ret[0]='\0';
 	s = string;
 	t=ret;	
-	while(*s) {
-		if(*s=='<') { strcat(t,"&lt;"); t+=4*sizeof(char); }
-		else if(*s=='>') { strcat(t,"&gt;"); t+=4*sizeof(char); }
+	while((*s) && (strlen(t) < 256)) {
+		if(*s=='<') { 
+			strncat(t,"&lt;", sizeof(ret)-strlen(ret));
+			t+=4*sizeof(char);
+		} else if(*s=='>') {
+			strncat(t,"&gt;", sizeof(ret)-strlen(ret));
+			t+=4*sizeof(char);
+		}
 		else *t++=*s;
 		s++;
-		*t='\0';
 	}
+	*t='\0';
 	return(ret);
 }
 
@@ -244,7 +249,7 @@ void mod_info_module_cmds(request_rec *r, mod_info_config_lines *cfg, command_re
 
 int display_info(request_rec *r) {
 	module *modp = NULL;
-	char buf[256], *cfname;
+	char buf[512], *cfname;
 	command_rec *cmd=NULL;
 	handler_rec *hand=NULL;
 	server_rec *serv = r->server;
@@ -286,7 +291,7 @@ int display_info(request_rec *r) {
 		if(!r->args) {
 			rputs("<tt><a href=\"#server\">Server Settings</a>, ",r);
 			for(modp = top_module; modp; modp = modp->next) {
-				sprintf(buf,"<a href=\"#%s\">%s</a>",modp->name,modp->name);
+				ap_snprintf(buf, sizeof(buf), "<a href=\"#%s\">%s</a>",modp->name,modp->name);
 				rputs(buf, r);
 				if(modp->next) rputs(", ",r);
 			}
@@ -294,42 +299,42 @@ int display_info(request_rec *r) {
 
 		}
 		if(!r->args || !strcasecmp(r->args,"server")) {	
-			sprintf(buf,"<a name=\"server\"><strong>Server Version:</strong> <font size=+1><tt>%s</tt></a></font><br>\n",SERVER_VERSION);
+			ap_snprintf(buf, sizeof(buf), "<a name=\"server\"><strong>Server Version:</strong> <font size=+1><tt>%s</tt></a></font><br>\n",SERVER_VERSION);
 			rputs(buf,r);
-			sprintf(buf,"<strong>API Version:</strong> <tt>%d</tt><br>\n",MODULE_MAGIC_NUMBER);
+			ap_snprintf(buf, sizeof(buf), "<strong>API Version:</strong> <tt>%d</tt><br>\n",MODULE_MAGIC_NUMBER);
 			rputs(buf,r);
-			sprintf(buf,"<strong>Run Mode:</strong> <tt>%s</tt><br>\n",standalone?"standalone":"inetd");
+			ap_snprintf(buf, sizeof(buf), "<strong>Run Mode:</strong> <tt>%s</tt><br>\n",standalone?"standalone":"inetd");
 			rputs(buf,r);
-			sprintf(buf,"<strong>User/Group:</strong> <tt>%s(%d)/%d</tt><br>\n",user_name,(int)user_id,(int)group_id);
+			ap_snprintf(buf, sizeof(buf), "<strong>User/Group:</strong> <tt>%s(%d)/%d</tt><br>\n",user_name,(int)user_id,(int)group_id);
 			rputs(buf,r);
-			sprintf(buf,"<strong>Hostname/port:</strong> <tt>%s:%d</tt><br>\n",serv->server_hostname,serv->port);
+			ap_snprintf(buf, sizeof(buf), "<strong>Hostname/port:</strong> <tt>%s:%d</tt><br>\n",serv->server_hostname,serv->port);
 			rputs(buf,r);
-			sprintf(buf,"<strong>Daemons:</strong> <tt>start: %d &nbsp;&nbsp; min idle: %d &nbsp;&nbsp; max idle: %d &nbsp;&nbsp; max: %d</tt><br>\n",daemons_to_start,daemons_min_free,daemons_max_free,daemons_limit);
+			ap_snprintf(buf, sizeof(buf), "<strong>Daemons:</strong> <tt>start: %d &nbsp;&nbsp; min idle: %d &nbsp;&nbsp; max idle: %d &nbsp;&nbsp; max: %d</tt><br>\n",daemons_to_start,daemons_min_free,daemons_max_free,daemons_limit);
 			rputs(buf,r);
-			sprintf(buf,"<strong>Max Requests:</strong> <tt>per child: %d &nbsp;&nbsp; per connection: %d</tt><br>\n",max_requests_per_child,serv->keep_alive);
+			ap_snprintf(buf, sizeof(buf), "<strong>Max Requests:</strong> <tt>per child: %d &nbsp;&nbsp; per connection: %d</tt><br>\n",max_requests_per_child,serv->keep_alive);
 			rputs(buf,r);
-			sprintf(buf,"<strong>Timeouts:</strong> <tt>connection: %d &nbsp;&nbsp; keep-alive: %d</tt><br>",serv->timeout,serv->keep_alive_timeout);
+			ap_snprintf(buf, sizeof(buf), "<strong>Timeouts:</strong> <tt>connection: %d &nbsp;&nbsp; keep-alive: %d</tt><br>",serv->timeout,serv->keep_alive_timeout);
 			rputs(buf,r);
-			sprintf(buf,"<strong>Server Root:</strong> <tt>%s</tt><br>\n",server_root);
+			ap_snprintf(buf, sizeof(buf), "<strong>Server Root:</strong> <tt>%s</tt><br>\n",server_root);
 			rputs(buf,r);
-			sprintf(buf,"<strong>Config File:</strong> <tt>%s</tt><br>\n",server_confname);
+			ap_snprintf(buf, sizeof(buf), "<strong>Config File:</strong> <tt>%s</tt><br>\n",server_confname);
 			rputs(buf,r);
-			sprintf(buf,"<strong>PID File:</strong> <tt>%s</tt><br>\n",pid_fname);
+			ap_snprintf(buf, sizeof(buf), "<strong>PID File:</strong> <tt>%s</tt><br>\n",pid_fname);
 			rputs(buf,r);
-			sprintf(buf,"<strong>Scoreboard File:</strong> <tt>%s</tt><br>\n",scoreboard_fname);
+			ap_snprintf(buf, sizeof(buf), "<strong>Scoreboard File:</strong> <tt>%s</tt><br>\n",scoreboard_fname);
 			rputs(buf,r);
 		}
 		rputs("<hr><dl>",r);
 		for(modp = top_module; modp; modp = modp->next) {
 			if(!r->args || !strcasecmp(modp->name,r->args)) {	
-				sprintf(buf,"<dt><a name=\"%s\"><strong>Module Name:</strong> <font size=+1><tt>%s</tt></a></font>\n",modp->name,modp->name);
+				ap_snprintf(buf, sizeof(buf), "<dt><a name=\"%s\"><strong>Module Name:</strong> <font size=+1><tt>%s</tt></a></font>\n",modp->name,modp->name);
 				rputs(buf,r);
 				rputs("<dt><strong>Content-types affected:</strong>",r);	
 				hand = modp->handlers;
 				if(hand) {
 					while(hand) {
 						if(hand->content_type) {
-							sprintf(buf," <tt>%s</tt>\n",hand->content_type);	
+							ap_snprintf(buf, sizeof(buf), " <tt>%s</tt>\n",hand->content_type);	
 							rputs(buf,r);
 						} else break;
 						hand++;
@@ -380,7 +385,7 @@ int display_info(request_rec *r) {
 				if(cmd) {
 					while(cmd) {
 						if(cmd->name) {
-							sprintf(buf,"<dd><tt>%s - <i>",mod_info_html_cmd_string(cmd->name));	
+							ap_snprintf(buf, sizeof(buf), "<dd><tt>%s - <i>",mod_info_html_cmd_string(cmd->name));	
 							rputs(buf,r);
 							if(cmd->errmsg) rputs(cmd->errmsg,r);
 							rputs("</i></tt>\n",r);

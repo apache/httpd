@@ -194,7 +194,7 @@ static int sub_garbage_coll(request_rec *r,array_header *files,
     struct gc_ent *fent;
     int nfiles=0;
 
-    sprintf(cachedir,"%s%s",cachebasedir,cachesubdir);
+    ap_snprintf(cachedir, sizeof(cachedir), "%s%s",cachebasedir,cachesubdir);
     Explain1("GC Examining directory %s",cachedir);
     dir = opendir(cachedir);
     if (dir == NULL)
@@ -251,10 +251,12 @@ static int sub_garbage_coll(request_rec *r,array_header *files,
 	    {
 	    char newcachedir[HUGE_STRING_LEN];
 	    close(fd);
-	    sprintf(newcachedir,"%s%s/",cachesubdir,ent->d_name);
+	    ap_snprintf(newcachedir, sizeof(newcachedir),
+		"%s%s/",cachesubdir,ent->d_name);
 	    if(!sub_garbage_coll(r,files,cachebasedir,newcachedir))
 		{
-		sprintf(newcachedir,"%s%s",cachedir,ent->d_name);
+		ap_snprintf(newcachedir, sizeof(newcachedir), 
+			"%s%s",cachedir,ent->d_name);
 #if TESTING
 		fprintf(stderr,"Would remove directory %s\n",newcachedir);
 #else
@@ -383,7 +385,7 @@ rdcache(pool *pool, BUFF *cachefp, struct cache_req *c)
 	if (q == NULL)
 	{
 	    p = palloc(pool, 15);
-	    sprintf(p, "%u", c->len);
+	    ap_snprintf(p, 15, "%u", c->len);
 	    proxy_add_header(c->hdrs, "Content-Length", p, HDR_REP);
 	}
     }

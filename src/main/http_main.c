@@ -193,14 +193,15 @@ static int lock_fd=-1;
 void
 accept_mutex_init(pool *p)
     {
-    char lock_fname[30];
+    char lock_fname[256];
 
 #ifdef __MACHTEN__
-    strcpy(lock_fname, "/var/tmp/htlock.XXXXXX");
+    strncpy(lock_fname, "/var/tmp/htlock.XXXXXX", sizeof(lock_fname)-1);
 #else
-    strcpy(lock_fname, "/usr/tmp/htlock.XXXXXX");
+    strncpy(lock_fname, "/usr/tmp/htlock.XXXXXX", sizeof(lock_fname)-1);
 #endif
-    
+    lock_fname[sizeof(lock_fname)-1] = '\0';
+
     if (mktemp(lock_fname) == NULL || lock_fname[0] == '\0')
     {
 	fprintf (stderr, "Cannot assign name to lock file!\n");
@@ -251,9 +252,10 @@ static int lock_fd=-1;
 void
 accept_mutex_init(pool *p)
 {
-    char lock_fname[30];
+    char lock_fname[256];
 
-    strcpy(lock_fname, "/usr/tmp/htlock.XXXXXX");
+    strncpy(lock_fname, "/usr/tmp/htlock.XXXXXX", sizeof(lock_fname)-1);
+    lock_fname[sizeof(lock_fname)-1] = '\0';
     
     if (mktemp(lock_fname) == NULL || lock_fname[0] == '\0')
     {
@@ -411,11 +413,11 @@ int sig;
     if (timeout_req != NULL) dirconf = timeout_req->per_dir_config;
     else dirconf = current_conn->server->lookup_defaults;
     if (sig == SIGPIPE) {
-        sprintf(errstr,"%s lost connection to client %s",
+        ap_snprintf(errstr, sizeof(errstr), "%s lost connection to client %s",
 	    timeout_name ? timeout_name : "request",
 	    get_remote_host(current_conn, dirconf, REMOTE_NAME));
     } else {
-        sprintf(errstr,"%s timed out for %s",
+        ap_snprintf(errstr, sizeof(errstr), "%s timed out for %s",
 	    timeout_name ? timeout_name : "request",
 	    get_remote_host(current_conn, dirconf, REMOTE_NAME));
     }
@@ -606,7 +608,7 @@ static void setup_shared_mem(void)
 	exit(1);
     }
 
-    sprintf(errstr, "created shared memory segment #%d", shmid);
+    ap_snprintf(errstr, sizeof(errstr), "created shared memory segment #%d", shmid);
     log_error(errstr, server_conf);
 
 #ifdef MOVEBREAK
@@ -658,7 +660,7 @@ static void setup_shared_mem(void)
     if (shmctl(shmid, IPC_RMID, NULL) != 0) {
 	perror("shmctl");
 	fprintf(stderr, "httpd: Could not delete segment #%d\n", shmid);
-	sprintf(errstr, "could not remove shared memory segment #%d", shmid);
+	ap_snprintf(errstr, sizeof(errstr), "could not remove shared memory segment #%d", shmid);
 	log_unixerr("shmctl","IPC_RMID",errstr, server_conf);
     }
     if (scoreboard_image == BADSHMAT)	/* now bailout */
@@ -2020,16 +2022,20 @@ main(int argc, char *argv[])
     ptrans = make_sub_pool(pconf);
 
     server_argv0 = argv[0];
-    strcpy (server_root, HTTPD_ROOT);
-    strcpy (server_confname, SERVER_CONFIG_FILE);
+    strncpy (server_root, HTTPD_ROOT, sizeof(server_root)-1);
+    server_root[sizeof(server_root)-1] = '\0';
+    strncpy (server_confname, SERVER_CONFIG_FILE, sizeof(server_root)-1);
+    server_confname[sizeof(server_confname)-1] = '\0';
 
     while((c = getopt(argc,argv,"Xd:f:vhl")) != -1) {
         switch(c) {
           case 'd':
-            strcpy (server_root, optarg);
+            strncpy (server_root, optarg, sizeof(server_root)-1);
+            server_root[sizeof(server_root)-1] = '\0';
             break;
           case 'f':
-            strcpy (server_confname, optarg);
+            strncpy (server_confname, optarg, sizeof(server_confname)-1);
+            server_confname[sizeof(server_confname)-1] = '\0';
             break;
           case 'v':
             printf("Server version %s.\n",SERVER_VERSION);

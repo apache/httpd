@@ -98,7 +98,7 @@ void add_include_vars(request_rec *r, char *timefmt)
       table_set(e, "USER_NAME", pw->pw_name);
     } else {
       char uid[16];
-      sprintf(uid, "user#%lu", (unsigned long)r->finfo.st_uid);
+      ap_snprintf(uid, sizeof(uid), "user#%lu", (unsigned long)r->finfo.st_uid);
       table_set(e, "USER_NAME", uid);
     }
 
@@ -261,7 +261,8 @@ get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode) {
 		GET_CHAR(in,c,NULL,p);
 	    } while (isspace(c));
             if(c == '>') {
-                strcpy(tag,"done");
+                strncpy(tag,"done", tagbuf_len-1);
+		tag[tagbuf_len-1] = '\0';
                 return tag;
             }
         }
@@ -462,7 +463,7 @@ int handle_include(FILE *in, request_rec *r, char *error, int noexec) {
 	    if (tag[0] == 'f')
 	    { /* be safe; only files in this directory or below allowed */
 		char tmp[MAX_STRING_LEN+2];
-		sprintf(tmp, "/%s/", parsed_string);
+		ap_snprintf(tmp, sizeof(tmp), "/%s/", parsed_string);
 		if (parsed_string[0] == '/' || strstr(tmp, "/../") != NULL)
 		    error_fmt = "unable to include file %s in parsed file %s";
 		else
@@ -567,8 +568,9 @@ void include_cmd_child (void *arg)
 #ifdef DEBUG_INCLUDE_CMD    
     fprintf (dbg, "Exec failed\n");
 #endif    
-    sprintf(err_string, "httpd: exec of %s failed, errno is %d\n",
-	    SHELL_PATH,errno);
+    ap_snprintf(err_string, sizeof(err_string),
+	"httpd: exec of %s failed, errno is %d\n",
+	SHELL_PATH,errno);
     write (2, err_string, strlen(err_string));
     exit(0);
 }
@@ -653,6 +655,9 @@ int handle_echo (FILE *in, request_rec *r, char *error) {
     }
 }
 
+/* error and tf must point to a string with room for at 
+ * least MAX_STRING_LEN characters 
+ */
 int handle_config(FILE *in, request_rec *r, char *error, char *tf,
                   int *sizefmt) {
     char tag[MAX_STRING_LEN];
@@ -665,11 +670,13 @@ int handle_config(FILE *in, request_rec *r, char *error, char *tf,
             return 1;
         if(!strcmp(tag,"errmsg")) {
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
-            strcpy(error,parsed_string);
+            strncpy(error,parsed_string,MAX_STRING_LEN-1);
+	    error[MAX_STRING_LEN-1] = '\0';
         } else if(!strcmp(tag,"timefmt")) {
   	    time_t date = r->request_time;
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
-            strcpy(tf,parsed_string);
+            strncpy(tf,parsed_string,MAX_STRING_LEN-1);
+	    tf[MAX_STRING_LEN-1] = '\0';
             table_set (env, "DATE_LOCAL", ht_time(r->pool,date,tf,0));
             table_set (env, "DATE_GMT", ht_time(r->pool,date,tf,1));
             table_set (env, "LAST_MODIFIED", ht_time(r->pool,r->finfo.st_mtime,tf,0));
@@ -759,9 +766,10 @@ int handle_fsize(FILE *in, request_rec *r, char *error, int sizefmt)
                 else {
                     int l,x;
 #if defined(BSD) && BSD > 199305
-                    sprintf(tag,"%qd",finfo.st_size);
+		    /* ap_snprintf can't handle %qd */
+                    sprintf(tag,"%qd", finfo.st_size);
 #else
-                    sprintf(tag,"%ld",finfo.st_size);
+                    ap_snprintf(tag, sizeof(tag), "%ld",finfo.st_size);
 #endif
                     l = strlen(tag); /* grrr */
                     for(x=0;x<l;x++) {
@@ -964,8 +972,10 @@ int parse_expr(request_rec *r, char *expr, char *error)
             switch(current->token.type) {
               case token_string:
                 if (current->token.value[0] != '\0')
-                    strncat(current->token.value, " ", MAX_STRING_LEN-1);
-                strncat(current->token.value, new->token.value, MAX_STRING_LEN-1);
+                    strncat(current->token.value, " ", 
+			MAX_STRING_LEN-strlen(current->token.value)-1);
+                strncat(current->token.value, new->token.value, 
+			MAX_STRING_LEN-strlen(current->token.value)-1);
                 break;
               case token_eq:
               case token_ne:
@@ -1188,6 +1198,7 @@ rputs("     Evaluate string\n", r);
 #endif
             parse_string(r, current->token.value, buffer, MAX_STRING_LEN, 0);
             strncpy(current->token.value, buffer, MAX_STRING_LEN-1);
+	    current->token.value[MAX_STRING_LEN-1] = '\0';
             current->value = (current->token.value[0] != '\0');
             current->done = 1;
             current = current->parent;
@@ -1212,6 +1223,7 @@ rputs("     Evaluate and/or\n", r);
                             buffer, MAX_STRING_LEN, 0);
                     strncpy(current->left->token.value, buffer,
                             MAX_STRING_LEN-1);
+		    current->left->token.value[MAX_STRING_LEN-1] = '\0';
                     current->left->done = 1;
                     break;
                   default:
@@ -1226,6 +1238,7 @@ rputs("     Evaluate and/or\n", r);
                             buffer, MAX_STRING_LEN, 0);
                     strncpy(current->right->token.value, buffer,
                             MAX_STRING_LEN-1);
+		    current->right->token.value[MAX_STRING_LEN-1] = '\0';
                     current->right->done = 1;
                     break;
                   default:
@@ -1267,9 +1280,11 @@ rputs("     Evaluate eq/ne\n", r);
             parse_string(r, current->left->token.value,
                          buffer, MAX_STRING_LEN, 0);
             strncpy(current->left->token.value, buffer, MAX_STRING_LEN-1);
+	    current->left->token.value[MAX_STRING_LEN-1] = '\0';
             parse_string(r, current->right->token.value,
                          buffer, MAX_STRING_LEN, 0);
             strncpy(current->right->token.value, buffer, MAX_STRING_LEN-1);
+	    current->right->token.value[MAX_STRING_LEN-1] = '\0';
             if (current->right->token.value[0] == '/') {
                 int len;
                 len = strlen(current->right->token.value);
@@ -1537,8 +1552,10 @@ void send_parsed_content(FILE *f, request_rec *r)
     int printing;
     int conditional_status;
 
-    strcpy(error,DEFAULT_ERROR_MSG);
-    strcpy(timefmt,DEFAULT_TIME_FORMAT);
+    strncpy(error,DEFAULT_ERROR_MSG, sizeof(error)-1);
+    error[sizeof(error)-1] = '\0';
+    strncpy(timefmt,DEFAULT_TIME_FORMAT, sizeof(timefmt)-1);
+    timefmt[sizeof(timefmt)-1] = '\0';
     sizefmt = SIZEFMT_KMG;
 
 /*  Turn printing on */

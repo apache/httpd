@@ -158,7 +158,7 @@ proxy_ftp_canon(request_rec *r, char *url)
 
 /* now, rebuild URL */
 
-    if (port != DEFAULT_FTP_PORT) sprintf(sport, ":%d", port);
+    if (port != DEFAULT_FTP_PORT) ap_snprintf(sport, sizeof(sport), ":%d", port);
     else sport[0] = '\0';
 
     r->filename = pstrcat(pool, "proxy:ftp://", (user != NULL) ? user : "",
@@ -221,12 +221,12 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
     char buf[IOBUFSIZE];
     char buf2[IOBUFSIZE];
     char *filename;
-    char urlptr[100];
+    char urlptr[HUGE_STRING_LEN];
     long total_bytes_sent;
     register int n, o, w;
     conn_rec *con = r->connection;
 
-    sprintf(buf,"<HTML><HEAD><TITLE>%s</TITLE></HEAD><BODY><H1>Directory %s</H1><HR><PRE>", url, url);
+    ap_snprintf(buf, sizeof(buf), "<HTML><HEAD><TITLE>%s</TITLE></HEAD><BODY><H1>Directory %s</H1><HR><PRE>", url, url);
     bwrite(con->client, buf, strlen(buf));
     if (f2 != NULL) bwrite(f2, buf, strlen(buf));
     total_bytes_sent=strlen(buf);
@@ -248,9 +248,10 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
             do filename--; while (filename[0]!=' ');
             *(filename++)=0;
             *(link++)=0;
-            sprintf(urlptr, "%s%s%s",url,(url[strlen(url)-1]=='/' ? "" : "/"), filename);
-            sprintf(buf2, "%s <A HREF=\"%s\">%s %s</A>\015\012", buf, urlptr, filename, link);
-            strcpy(buf, buf2);
+            ap_snprintf(urlptr, sizeof(urlptr), "%s%s%s",url,(url[strlen(url)-1]=='/' ? "" : "/"), filename);
+            ap_snprintf(buf2, sizeof(urlptr), "%s <A HREF=\"%s\">%s %s</A>\015\012", buf, urlptr, filename, link);
+            strncpy(buf, buf2, sizeof(buf)-1);
+	    buf[sizeof(buf)-1] = '\0';
             n=strlen(buf);
         }
         else if(buf[0]=='d' || buf[0]=='-' || buf[0]=='l')
@@ -261,8 +262,8 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
             /* Special handling for '.' and '..' */
             if (!strcmp(filename, "."))
             {
-                sprintf(urlptr, "%s",url);
-                sprintf(buf2, "%s <A HREF=\"%s\">%s</A>\015\012", buf, urlptr, filename);
+                ap_snprintf(urlptr, sizeof(urlptr), "%s",url);
+                ap_snprintf(buf2, sizeof(buf2), "%s <A HREF=\"%s\">%s</A>\015\012", buf, urlptr, filename);
             }
             else if (!strcmp(filename, ".."))
             {
@@ -270,7 +271,8 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
                 char newpath[200];
                 char *method, *host, *path, *newfile;
    
-                strcpy(temp,url);
+                strncpy(temp, url, sizeof(temp)-1);
+		temp[sizeof(temp)-1] = '\0';
                 method=temp;
 
                 host=strchr(method,':');
@@ -282,20 +284,22 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
                 if (path == NULL) path="";
                 else *(path++)=0;
                 
-                strcpy(newpath,path);
+                strncpy(newpath, path, sizeof(newpath)-1);
+		newpath[sizeof(newpath)-1] = '\0';
                 newfile=strrchr(newpath,'/');
                 if (newfile) *(newfile)=0;
                 else newpath[0]=0;
 
-                sprintf(urlptr,"%s://%s/%s",method,host,newpath);
-                sprintf(buf2, "%s <A HREF=\"%s\">%s</A>\015\012", buf, urlptr, filename);
+                ap_snprintf(urlptr, sizeof(urlptr), "%s://%s/%s",method,host,newpath);
+                ap_snprintf(buf2, sizeof(buf2), "%s <A HREF=\"%s\">%s</A>\015\012", buf, urlptr, filename);
             }
             else 
             {
-                sprintf(urlptr, "%s%s%s",url,(url[strlen(url)-1]=='/' ? "" : "/"), filename);
-                sprintf(buf2, "%s <A HREF=\"%s\">%s</A>\015\012", buf, urlptr, filename);
+                ap_snprintf(urlptr, sizeof(urlptr), "%s%s%s",url,(url[strlen(url)-1]=='/' ? "" : "/"), filename);
+                ap_snprintf(buf2, sizeof(buf2), "%s <A HREF=\"%s\">%s</A>\015\012", buf, urlptr, filename);
             }
-            strcpy(buf, buf2);
+            strncpy(buf, buf2, sizeof(buf));
+	    buf[sizeof(buf)-1] = '\0';
             n=strlen(buf);
         }      
 
@@ -314,7 +318,7 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
             o+=w;
         }
     }
-    sprintf(buf,"</PRE><HR><I><A HREF=\"http://www.apache.org\">%s</A></I></BODY></HTML>", SERVER_VERSION);
+    ap_snprintf(buf, sizeof(buf), "</PRE><HR><I><A HREF=\"http://www.apache.org\">%s</A></I></BODY></HTML>", SERVER_VERSION);
     bwrite(con->client, buf, strlen(buf));
     if (f2 != NULL) bwrite(f2, buf, strlen(buf));
     total_bytes_sent+=strlen(buf);
@@ -660,7 +664,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
         {
 	    char buff[22];
 
-	    sprintf(buff, "%s:%d", inet_ntoa(server.sin_addr), server.sin_port);
+	    ap_snprintf(buff, sizeof(buff), "%s:%d", inet_ntoa(server.sin_addr), server.sin_port);
 	    proxy_log_uerror("bind", buff,
 	        "proxy: error binding to ftp data socket", r->server);
     	    pclosef(pool, sock);

@@ -140,11 +140,11 @@ int set_byterange (request_rec *r)
 
 	r->byterange = 1;
 
-	sprintf(ts, "bytes %ld-%ld/%ld", range_start, range_end,
+	ap_snprintf(ts, sizeof(ts), "bytes %ld-%ld/%ld", range_start, range_end,
 		r->clength);
 	table_set(r->headers_out, "Content-Range",
 		  pstrdup(r->pool, ts));
-	sprintf(ts, "%ld", range_end - range_start + 1);
+	ap_snprintf(ts, sizeof(ts), "%ld", range_end - range_start + 1);
 	table_set(r->headers_out, "Content-Length", ts);
     }
     else {
@@ -153,7 +153,7 @@ int set_byterange (request_rec *r)
 	
 	r->byterange = 2;
 	table_unset(r->headers_out, "Content-Length");
-	sprintf(boundary, "%lx%lx", r->request_time, (long)getpid());
+	ap_snprintf(boundary, sizeof(boundary), "%lx%lx", r->request_time, (long)getpid());
 	r->boundary = pstrdup(r->pool, boundary);
     }
     
@@ -181,7 +181,7 @@ int each_byterange (request_rec *r, long *offset, long *length) {
 	char *ct = r->content_type ? r->content_type : default_type(r);
 	char ts[MAX_STRING_LEN];
 
-	sprintf(ts, "%ld-%ld/%ld", range_start, range_end, r->clength);
+	ap_snprintf(ts, sizeof(ts), "%ld-%ld/%ld", range_start, range_end, r->clength);
 	rvputs(r, "\015\012--", r->boundary, "\015\012Content-type: ",
 	       ct, "\015\012Content-range: bytes ", ts, "\015\012\015\012",
 	       NULL);
@@ -198,7 +198,7 @@ int set_content_length (request_rec *r, long clength)
 
     r->clength = clength;
 
-    sprintf (ts, "%ld", clength);
+    ap_snprintf (ts, sizeof(ts), "%ld", clength);
     table_set (r->headers_out, "Content-Length", pstrdup (r->pool, ts));
 
     return 0;
@@ -225,7 +225,7 @@ int set_keepalive(request_rec *r)
 	 * that sets the output to chunked encoding if it is not already
 	 * length-delimited.  It is not a bug, though it is annoying.
 	 */
-	char header[26];
+	char header[256];
 	int left = r->server->keep_alive - r->connection->keepalives;
 	
 	r->connection->keepalive = 1;
@@ -233,7 +233,7 @@ int set_keepalive(request_rec *r)
 	
 	/* If they sent a Keep-Alive token, send one back */
 	if (ka_sent) {
-	    sprintf(header, "timeout=%d, max=%d",
+	    ap_snprintf(header, sizeof(header), "timeout=%d, max=%d",
 		    r->server->keep_alive_timeout, left);
 	    rputs("Connection: Keep-Alive\015\012", r);
 	    rvputs(r, "Keep-Alive: ", header, "\015\012", NULL);
@@ -280,10 +280,12 @@ int set_last_modified(request_rec *r, time_t mtime)
      */
 
     if (r->finfo.st_mode != 0)
-        sprintf(weak_etag, "W/\"%lx-%lx-%lx\"", (unsigned long)r->finfo.st_ino,
+        ap_snprintf(weak_etag, sizeof(weak_etag), "W/\"%lx-%lx-%lx\"", 
+		(unsigned long)r->finfo.st_ino,
 		(unsigned long)r->finfo.st_size, (unsigned long)mtime);
     else
-        sprintf(weak_etag, "W/\"%lx\"", (unsigned long)mtime);
+        ap_snprintf(weak_etag, sizeof(weak_etag), "W/\"%lx\"",
+		(unsigned long)mtime);
 
     etag = weak_etag + ((r->request_time - mtime > 1) ? 2 : 0);
     table_set (r->headers_out, "ETag", etag);
@@ -752,9 +754,9 @@ void note_basic_auth_failure(request_rec *r)
 
 void note_digest_auth_failure(request_rec *r)
 {
-    char nonce[10];
+    char nonce[256];
 
-    sprintf(nonce, "%lu", r->request_time);
+    ap_snprintf(nonce, sizeof(nonce), "%lu", r->request_time);
     table_set (r->err_headers_out, "WWW-Authenticate",
                pstrcat(r->pool, "Digest realm=\"", auth_name(r),
                        "\", nonce=\"", nonce, "\"", NULL));
@@ -1251,7 +1253,7 @@ long get_client_block (request_rec *r, char *buffer, int bufsiz)
         if (len_to_read == 0) {      /* Last chunk indicated, get footers */
             if (r->read_body == REQUEST_CHUNKED_DECHUNK) {
                 get_mime_headers(r);
-                sprintf(buffer, "%ld", r->read_length);
+                ap_snprintf(buffer, bufsiz, "%ld", r->read_length);
                 table_unset(r->headers_in, "Transfer-Encoding");
                 table_set(r->headers_in, "Content-Length", buffer);
                 return 0;
@@ -1659,8 +1661,9 @@ void send_error_response (request_rec *r, int recursive_error)
 
         if (recursive_error) {
 	    char x[80];
-	    sprintf (x, "Additionally, an error of type %d was encountered\n",
-		     recursive_error);
+	    ap_snprintf (x, sizeof(x), 
+		"Additionally, an error of type %d was encountered\n",
+		recursive_error);
 	    bputs(x, fd);
 	    bputs("while trying to use an ErrorDocument to\n", fd);
 	    bputs("handle the request.\n", fd);

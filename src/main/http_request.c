@@ -999,7 +999,7 @@ table *rename_original_env (pool *p, table *t)
 request_rec *internal_internal_redirect (const char *new_uri, request_rec *r)
 {
     request_rec *new = (request_rec *)pcalloc(r->pool, sizeof(request_rec));
-    char t[10];			/* Long enough... */
+    char t[256];		/* Long enough... */
   
     new->connection = r->connection;
     new->server = r->server;
@@ -1045,7 +1045,7 @@ request_rec *internal_internal_redirect (const char *new_uri, request_rec *r)
 				  */
     new->no_local_copy = r->no_local_copy;
 
-    sprintf (t, "%d", r->status);
+    ap_snprintf (t, sizeof(t), "%d", r->status);
     table_set (new->subprocess_env, "REDIRECT_STATUS", pstrdup (r->pool, t));
 
     return new;

@@ -100,7 +100,7 @@ proxy_http_canon(request_rec *r, char *url, const char *scheme, int def_port)
     } else
 	search = NULL;
 
-    if (port != def_port) sprintf(sport, ":%d", port);
+    if (port != def_port) ap_snprintf(sport, sizeof(sport), ":%d", port);
     else sport[0] = '\0';
 
     r->filename = pstrcat(r->pool, "proxy:", scheme, "://", host, sport, "/",

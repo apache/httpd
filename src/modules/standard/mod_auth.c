@@ -198,14 +198,14 @@ int authenticate_basic_user (request_rec *r)
     if (!(real_pw = get_pw(r, c->user, sec->auth_pwfile))) {
 	if (!(sec->auth_authoritative))
 	    return DECLINED;
-        sprintf(errstr,"user %s not found",c->user);
+        ap_snprintf(errstr, sizeof(errstr), "user %s not found",c->user);
 	log_reason (errstr, r->uri, r);
 	note_basic_auth_failure (r);
 	return AUTH_REQUIRED;
     }
     /* anyone know where the prototype for crypt is? */
     if(strcmp(real_pw,(char *)crypt(sent_pw,real_pw))) {
-        sprintf(errstr,"user %s: password mismatch",c->user);
+        ap_snprintf(errstr, sizeof(errstr), "user %s: password mismatch",c->user);
 	log_reason (errstr, r->uri, r);
 	note_basic_auth_failure (r);
 	return AUTH_REQUIRED;

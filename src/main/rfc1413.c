@@ -143,7 +143,7 @@ get_rfc1413(int sock, const struct sockaddr_in *our_sin,
 	return -1;
 
 /* send the data */
-    sprintf(buffer, "%u,%u\r\n", ntohs(rmt_sin->sin_port),
+    ap_snprintf(buffer, sizeof(buffer), "%u,%u\r\n", ntohs(rmt_sin->sin_port),
 	    ntohs(our_sin->sin_port));
     do i = write(sock, buffer, strlen(buffer));
     while (i == -1 && errno == EINTR);

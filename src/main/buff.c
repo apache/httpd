@@ -481,7 +481,7 @@ int bcwrite(BUFF *fb, const void *buf, int nbyte) {
     if (fb->flags & B_CHUNK) {
 	char chunksize[16];	/* Big enough for practically anything */
 
-	sprintf(chunksize, "%x\015\012", nbyte);
+	ap_snprintf(chunksize, sizeof(chunksize), "%x\015\012", nbyte);
 	write(fb->fd, chunksize, strlen(chunksize));
     }
     r = write(fb->fd, buf, nbyte);

@@ -321,7 +321,7 @@ char *check_code( pool *pool, const char *code, char **real_code )
 	word = getword_conf( pool, &code );
     };
 
-    sprintf( foo, "%c%d", base, modifier );
+    ap_snprintf(foo, sizeof(foo), "%c%d", base, modifier );
     *real_code = pstrdup( pool, foo );
 
     return NULL;

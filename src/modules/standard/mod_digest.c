@@ -277,14 +277,14 @@ int authenticate_digest_user (request_rec *r)
         return DECLINED;
 	
     if (!(a1 = get_hash(r, c->user, sec->pwfile))) {
-        sprintf(errstr,"user %s not found",c->user);
+        ap_snprintf(errstr, sizeof(errstr), "user %s not found",c->user);
 	log_reason (errstr, r->uri, r);
 	note_digest_auth_failure (r);
 	return AUTH_REQUIRED;
     }
     /* anyone know where the prototype for crypt is? */
     if(strcmp(response->digest, find_digest(r, response, a1))) {
-        sprintf(errstr,"user %s: password mismatch",c->user);
+        ap_snprintf(errstr, sizeof(errstr), "user %s: password mismatch",c->user);
 	log_reason (errstr, r->uri, r);
 	note_digest_auth_failure (r);
 	return AUTH_REQUIRED;

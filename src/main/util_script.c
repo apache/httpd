@@ -93,6 +93,7 @@ char **create_argv(request_rec *r, char *av0, ...)
 	av[idx] = escape_shell_cmd(r->pool, t);
 	av[idx] = t;
 	idx++;
+	if (idx >= APACHE_ARG_MAX-1) break;
 	
 	while ((t = strtok(NULL, "+")) != NULL) {
 	    unescape_url(t);
@@ -100,12 +101,13 @@ char **create_argv(request_rec *r, char *av0, ...)
 	    av[idx] = escape_shell_cmd(r->pool, t);
 	    av[idx] = t;
 	    idx++;
+	    if (idx >= APACHE_ARG_MAX-1) break;
 	}
 	va_end(args);
     }
     va_end(args);
 
-    av[idx] = NULL;
+    av[idx] = '\0';
     return av;
 }
 
@@ -177,7 +179,7 @@ void add_common_vars(request_rec *r)
 	    table_set (e, http2env (r->pool, hdrs[i].key), hdrs[i].val);
     }
     
-    sprintf(port, "%d", s->port);
+    ap_snprintf(port, sizeof(port), "%d", s->port);
 
     if(!(env_path = getenv("PATH")))
         env_path=DEFAULT_PATH;
@@ -193,7 +195,7 @@ void add_common_vars(request_rec *r)
     table_set (e, "SERVER_ADMIN", s->server_admin); /* Apache */
     table_set (e, "SCRIPT_FILENAME", r->filename); /* Apache */
     
-    sprintf(port, "%d", ntohs(c->remote_addr.sin_port));
+    ap_snprintf(port, sizeof(port), "%d", ntohs(c->remote_addr.sin_port));
     table_set (e, "REMOTE_PORT", port);            /* Apache */
 
     if (c->user) table_set(e, "REMOTE_USER", c->user);
@@ -389,11 +391,11 @@ void send_size(size_t size, request_rec *r) {
     else if(size < 1024) 
         strcpy(ss, "   1k");
     else if(size < 1048576)
-        sprintf(ss, "%4dk", (size + 512) / 1024);
+        ap_snprintf(ss, sizeof(ss), "%4dk", (size + 512) / 1024);
     else if(size < 103809024)
-	sprintf(ss, "%4.1fM", size / 1048576.0);
+	ap_snprintf(ss, sizeof(ss), "%4.1fM", size / 1048576.0);
     else
-        sprintf(ss, "%4dM", (size + 524288) / 1048576);
+        ap_snprintf(ss, sizeof(ss), "%4dM", (size + 524288) / 1048576);
     rputs(ss, r);
 }
 
@@ -473,7 +475,7 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
         program = fopen (r->filename, "r");
         if (!program) {
             char err_string[HUGE_STRING_LEN];
-            sprintf(err_string, "open of %s failed, errno is %d\n", r->filename, errno);
+            ap_snprintf(err_string, sizeof(err_string), "open of %s failed, errno is %d\n", r->filename, errno);
             /* write(2, err_string, strlen(err_string)); */
             /* exit(0); */
             log_unixerr("fopen", NULL, err_string, r->server);

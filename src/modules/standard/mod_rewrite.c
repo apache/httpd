@@ -891,7 +891,7 @@ static int hook_uri2file(request_rec *r)
 #endif 
         thisport = "";
     else {
-        sprintf(buf, ":%d", r->server->port);
+        ap_snprintf(buf, sizeof(buf), ":%d", r->server->port);
         thisport = pstrdup(r->pool, buf);
     }
     thisurl = table_get(r->subprocess_env, ENVVAR_SCRIPT_URL);
@@ -1026,7 +1026,8 @@ static int hook_uri2file(request_rec *r)
             n = prefix_stat(r->filename, &finfo);
             if (n == 0) {
                 if ((cp = document_root(r)) != NULL) {
-                    strcpy(docroot, cp);
+                    strncpy(docroot, cp, sizeof(docroot)-1);
+		    docroot[sizeof(docroot)-1] = '\0';
 
                     /* allways NOT have a trailing slash */
                     l = strlen(docroot);
@@ -1471,19 +1472,21 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
         if (p->flags & RULEFLAG_PROXY) {
             if (p->flags & RULEFLAG_NOTMATCH) {
                 output = pstrcat(r->pool, "proxy:", output, NULL);
-                strcpy(newuri, output);
-                expand_variables_inbuffer(r, newuri);                /* expand %{...} */
-                expand_map_lookups(r, newuri);                       /* expand ${...} */
+                strncpy(newuri, output, sizeof(newuri)-1);
+		newuri[sizeof(newuri)-1] = '\0';
+                expand_variables_inbuffer(r, newuri, sizeof(newuri));/* expand %{...} */
+                expand_map_lookups(r, newuri, sizeof(newuri));       /* expand ${...} */
             }
             else {
                 output = pstrcat(r->pool, "proxy:", output, NULL);
 #ifdef HAS_APACHE_REGEX_LIB
-                strcpy(newuri, pregsub(r->pool, output, uri, regexp->re_nsub+1, regmatch));    /* substitute in output */
+                strncpy(newuri, pregsub(r->pool, output, uri, regexp->re_nsub+1, regmatch), sizeof(newuri)-1);    /* substitute in output */
+		newuri[sizeof(newuri)-1] = '\0';
 #else
                 regsub(regexp, output, newuri);                      /* substitute in output */
 #endif
-                expand_variables_inbuffer(r, newuri);                /* expand %{...} */
-                expand_map_lookups(r, newuri);                       /* expand ${...} */
+                expand_variables_inbuffer(r, newuri, sizeof(newuri));   /* expand %{...} */
+                expand_map_lookups(r, newuri, sizeof(newuri));          /* expand ${...} */
             }
             if (perdir == NULL)
                 rewritelog(r, 2, "rewrite %s -> %s", r->filename, newuri);
@@ -1503,18 +1506,20 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
         if (perdir != NULL && strncmp(output, "http://", 7) == 0) {
 #endif
             if (p->flags & RULEFLAG_NOTMATCH) {
-                strcpy(newuri, output);
-                expand_variables_inbuffer(r, newuri);                /* expand %{...} */
-                expand_map_lookups(r, newuri);                       /* expand ${...} */
+                strncpy(newuri, output, sizeof(newuri)-1);
+		newuri[sizeof(newuri)-1] = '\0';
+                expand_variables_inbuffer(r, newuri, sizeof(newuri));/* expand %{...} */
+                expand_map_lookups(r, newuri, sizeof(newuri));       /* expand ${...} */
             }
             else {
 #ifdef HAS_APACHE_REGEX_LIB
-                strcpy(newuri, pregsub(r->pool, output, uri, regexp->re_nsub+1, regmatch));    /* substitute in output */
+                strncpy(newuri, pregsub(r->pool, output, uri, regexp->re_nsub+1, regmatch), sizeof(newuri)-1);    /* substitute in output */
+		newuri[sizeof(newuri)-1] = '\0';
 #else
                 regsub(regexp, output, newuri);                      /* substitute in output */
 #endif
-                expand_variables_inbuffer(r, newuri);                /* expand %{...} */
-                expand_map_lookups(r, newuri);                       /* expand ${...} */
+                expand_variables_inbuffer(r, newuri, sizeof(newuri));/* expand %{...} */
+                expand_map_lookups(r, newuri, sizeof(newuri));       /* expand ${...} */
             }
             rewritelog(r, 2, "[per-dir %s] redirect %s -> %s", perdir, r->filename, newuri);
             r->filename = pstrdup(r->pool, newuri);
@@ -1532,18 +1537,20 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
 
         if (p->flags & RULEFLAG_NOTMATCH) {
             /* just overtake the URI */
-            strcpy(newuri, output);
+            strncpy(newuri, output, sizeof(newuri)-1);
+	    newuri[sizeof(newuri)-1] = '\0';
         }
         else {
             /* substitute in output */
 #ifdef HAS_APACHE_REGEX_LIB
-            strcpy(newuri, pregsub(r->pool, output, uri, regexp->re_nsub+1, regmatch));    /* substitute in output */
+            strncpy(newuri, pregsub(r->pool, output, uri, regexp->re_nsub+1, regmatch), sizeof(newuri)-1);    /* substitute in output */
+	    newuri[sizeof(newuri-1)] = '\0'; 
 #else
             regsub(regexp, output, newuri);                      /* substitute in output */
 #endif
         }
-        expand_variables_inbuffer(r, newuri);  /* expand %{...} */
-        expand_map_lookups(r, newuri);         /* expand ${...} */
+        expand_variables_inbuffer(r, newuri, sizeof(newuri));  /* expand %{...} */
+        expand_map_lookups(r, newuri, sizeof(newuri));   /* expand ${...} */
 
         if (perdir == NULL)
             rewritelog(r, 2, "rewrite %s -> %s", uri, newuri);
@@ -1586,18 +1593,18 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
 #endif
                     strcpy(port, "");
                 else 
-                    sprintf(port, ":%d", r->server->port);
+                    ap_snprintf(port, sizeof(port), ":%d", r->server->port);
                 if (r->filename[0] == '/')
 #ifdef APACHE_SSL
-                    sprintf(newuri, "%s://%s%s%s", http_method(r), r->server->server_hostname, port, r->filename);
+                    ap_snprintf(newuri, sizeof(newuri), "%s://%s%s%s", http_method(r), r->server->server_hostname, port, r->filename);
 #else
-                    sprintf(newuri, "http://%s%s%s", r->server->server_hostname, port, r->filename);
+                    ap_snprintf(newuri, sizeof(newuri), "http://%s%s%s", r->server->server_hostname, port, r->filename);
 #endif
                 else
 #ifdef APACHE_SSL
-                    sprintf(newuri, "%s://%s%s/%s", http_method(r), r->server->server_hostname, port, r->filename);
+                    ap_snprintf(newuri, sizeof(newuri), "%s://%s%s/%s", http_method(r), r->server->server_hostname, port, r->filename);
 #else
-                    sprintf(newuri, "http://%s%s/%s", r->server->server_hostname, port, r->filename);
+                    ap_snprintf(newuri, sizeof(newuri), "http://%s%s/%s", r->server->server_hostname, port, r->filename);
 #endif
                 if (perdir == NULL) 
                     rewritelog(r, 2, "prepare forced redirect %s -> %s", r->filename, newuri);
@@ -1653,12 +1660,13 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
         rc = (regexec(p->regexp, input, 0, NULL, 0) == 0);
 #else
         if (p->flags & CONDFLAG_NOCASE) {
-            for (i = 0; input[i] != '\0'; i++)
+            for (i = 0; input[i] != '\0' && i < sizeof(inputbuf)-1 ; i++)
                 inputbuf[i] = tolower(input[i]);
             inputbuf[i] = '\0';
         }
         else {
-            strcpy(inputbuf, input);
+            strncpy(inputbuf, input, sizeof(inputbuf)-1);
+	    inputbuf[sizeof(inputbuf)-1] = '\0';
         }
         rc = (regexec(p->regexp, inputbuf) != 0);
 #endif
@@ -1743,17 +1751,19 @@ static void reduce_uri(request_rec *r)
 
         /* cut the hostname and port out of the URI */
 #ifdef APACHE_SSL
-        strcpy(buf, r->filename+strlen(http_method(r))+3);
+        strncpy(buf, r->filename+strlen(http_method(r))+3, sizeof(buf)-1);
 #else
-        strcpy(buf, r->filename+7);
+        strncpy(buf, r->filename+7, sizeof(buf)-1);
 #endif
+	buf[sizeof(buf)-1] = '\0';
         hostp = buf;
         for (cp = hostp; *cp != '\0' && *cp != '/' && *cp != ':'; cp++)
             ;
         if (*cp == ':') {
             /* set host */
             *cp++ = '\0';
-            strcpy(host, hostp);
+            strncpy(host, hostp, sizeof(host)-1);
+	    host[sizeof(host)-1] = '\0';
             /* set port */
             portp = cp;
             for (; *cp != '\0' && *cp != '/'; cp++)
@@ -1768,7 +1778,8 @@ static void reduce_uri(request_rec *r)
         else if (*cp == '/') {
             /* set host */
             *cp = '\0';
-            strcpy(host, hostp);
+            strncpy(host, hostp, sizeof(host)-1);
+	    host[sizeof(host)-1] = '\0';
             *cp = '/';
             /* set port */
             port = 80;
@@ -1777,7 +1788,8 @@ static void reduce_uri(request_rec *r)
         }
         else {
             /* set host */
-            strcpy(host, hostp);
+            strncpy(host, hostp, sizeof(host)-1);
+	    host[sizeof(host)-1] = '\0';
             /* set port */
             port = 80;
             /* set remaining url */
@@ -1812,7 +1824,7 @@ static char *expand_tildepaths(request_rec *r, char *uri)
     newuri = uri;
     if (uri != NULL && strlen(uri) > 2 && uri[0] == '/' && uri[1] == '~') {
         /* cut out the username */
-        for (j = 0, i = 2; uri[i] != '\0' && 
+        for (j = 0, i = 2; j < sizeof(user)-1 && uri[i] != '\0' && 
                        (   (uri[i] >= '0' && uri[i] <= '9')
                         || (uri[i] >= 'a' && uri[i] <= 'z')
                         || (uri[i] >= 'A' && uri[i] <= 'Z')); )
@@ -1846,7 +1858,8 @@ static char *expand_tildepaths(request_rec *r, char *uri)
 **
 */
 
-static void expand_map_lookups(request_rec *r, char *uri)
+#define limit_length(n)	(n > LONG_STRING_LEN-1 ? LONG_STRING_LEN-1 : n)
+static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
 {
     char newuri[MAX_STRING_LEN];
     char *cpI;
@@ -1876,27 +1889,27 @@ static void expand_map_lookups(request_rec *r, char *uri)
 
             cpT = strchr(cpI, ':');
             n = cpT-cpI;
-            memcpy(mapname, cpI, n);
-            mapname[n] = '\0';
+            memcpy(mapname, cpI, limit_length(n));
+            mapname[limit_length(n)] = '\0';
             cpI += n+1;
 
             cpT2 = strchr(cpI, '|');
             cpT = strchr(cpI, '}');
             if (cpT2 != NULL && cpT2 < cpT) {
                 n = cpT2-cpI;
-                memcpy(mapkey, cpI, n);
-                mapkey[n] = '\0';
+                memcpy(mapkey, cpI, limit_length(n));
+                mapkey[limit_length(n)] = '\0';
                 cpI += n+1;
 
                 n = cpT-cpI;
-                memcpy(defaultvalue, cpI, n);
-                defaultvalue[n] = '\0';
+                memcpy(defaultvalue, cpI, limit_length(n));
+                defaultvalue[limit_length(n)] = '\0';
                 cpI += n+1;
             }
             else {
                 n = cpT-cpI;
-                memcpy(mapkey, cpI, n);
-                mapkey[n] = '\0';
+                memcpy(mapkey, cpI, limit_length(n));
+                mapkey[limit_length(n)] = '\0';
                 cpI += n+1;
 
                 defaultvalue[0] = '\0';
@@ -1905,11 +1918,19 @@ static void expand_map_lookups(request_rec *r, char *uri)
             cpT = lookup_map(r, mapname, mapkey);
             if (cpT != NULL) {
                 n = strlen(cpT);
+		if (cpO + n >= newuri + sizeof(newuri)) {
+		    log_printf(r->server, "insufficient space in expand_map_lookups, aborting");
+		    return;
+		}
                 memcpy(cpO, cpT, n);
                 cpO += n;
             }
             else {
                 n = strlen(defaultvalue);
+		if (cpO + n >= newuri + sizeof(newuri)) {
+		    log_printf(r->server, "insufficient space in expand_map_lookups, aborting");
+		    return;
+		}
                 memcpy(cpO, defaultvalue, n);
                 cpO += n;
             }
@@ -1919,15 +1940,21 @@ static void expand_map_lookups(request_rec *r, char *uri)
             if (cpT == NULL)
                 cpT = cpI+strlen(cpI);
             n = cpT-cpI;
+	    if (cpO + n >= newuri + sizeof(newuri)) {
+		log_printf(r->server, "insufficient space in expand_map_lookups, aborting");
+		return;
+	    }
             memcpy(cpO, cpI, n);
             cpO += n;
             cpI += n;
         }
     }
     *cpO = '\0';
-    strcpy(uri, newuri);
+    strncpy(uri, newuri, uri_len-1);
+    uri[uri_len-1] = '\0';
     return;
 }
+#undef limit_length
 
 
 
@@ -2034,7 +2061,8 @@ static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
     if ((fp = pfopen(r->pool, file, "r")) == NULL)
         return NULL;
 
-    strcpy(output,  MAPFILE_OUTPUT);
+    strncpy(output,  MAPFILE_OUTPUT, sizeof(output)-1);
+    output[sizeof(output)-1] = '\0';
     while (fgets(line, sizeof(line), fp) != NULL) {
         if (line[strlen(line)-1] == '\n')
             line[strlen(line)-1] = '\0';
@@ -2044,7 +2072,8 @@ static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
         if (regexec(lookup_map_txtfile_regexp, line) != 0) {
 #endif
 #ifdef HAS_APACHE_REGEX_LIB
-            strcpy(result, pregsub(r->pool, output, line, lookup_map_txtfile_regexp->re_nsub+1, lookup_map_txtfile_regmatch)); /* substitute in output */
+            strncpy(result, pregsub(r->pool, output, line, lookup_map_txtfile_regexp->re_nsub+1, lookup_map_txtfile_regmatch), sizeof(result)-1); /* substitute in output */
+	    result[sizeof(result)-1] = '\0';
 #else
             regsub(lookup_map_txtfile_regexp, output, result);
 #endif
@@ -2073,7 +2102,7 @@ static char *lookup_map_dbmfile(request_rec *r, char *file, char *key)
     char buf[MAX_STRING_LEN];
 
     dbmkey.dptr  = key;
-    dbmkey.dsize = strlen(key);
+    dbmkey.dsize = strlen(key) < sizeof(buf) - 1 : strlen(key) ? sizeof(buf)-1;
     if ((dbmfp = dbm_open(file, O_RDONLY, 0666)) != NULL) {
         dbmval = dbm_fetch(dbmfp, dbmkey);
         if (dbmval.dptr != NULL) {
@@ -2099,7 +2128,7 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key)
 
     /* read in the response value */
     i = 0;
-    while (read(fpout, &c, 1) == 1 && (i < LONG_STRING_LEN)) {
+    while (read(fpout, &c, 1) == 1 && (i < LONG_STRING_LEN-1)) {
         if (c == '\n')
             break;
         buf[i++] = c;
@@ -2216,21 +2245,24 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
                             (connect->remote_logname != NULL ? connect->remote_logname : "-"), " ",
                             ruser,
                             NULL);
-    vsprintf(str2, text, ap);
+    ap_vsnprintf(str2, sizeof(str2), text, ap);
 
-    if (r->main == NULL)
-        strcpy(type, "initial");
-    else
-        strcpy(type, "subreq");
+    if (r->main == NULL) {
+        strncpy(type, "initial", sizeof(type)-1);
+	type[sizeof(type)-1] = '\0';
+    } else {
+        strncpy(type, "subreq", sizeof(type)-1);
+	type[sizeof(type)-1] = '\0';
+    }
 
     for (i = 0, req = r->prev; req != NULL; req = req->prev) 
         ;
     if (i == 0)
         strcpy(redir, "");
     else
-        sprintf(redir, "/redir#%d", i);
+        ap_snprintf(redir, sizeof(redir), "/redir#%d", i);
 
-    sprintf(str3, "%s %s [%s/sid#%x][rid#%x/%s%s] (%d) %s\n", str1, current_logtime(r), r->server->server_hostname, (unsigned int)(r->server), (unsigned int)r, type, redir, level, str2);
+    ap_snprintf(str3, sizeof(str3), "%s %s [%s/sid#%x][rid#%x/%s%s] (%d) %s\n", str1, current_logtime(r), r->server->server_hostname, (unsigned int)(r->server), (unsigned int)r, type, redir, level, str2);
 
     write(conf->rewritelogfp, str3, strlen(str3));
 
@@ -2254,12 +2286,12 @@ static char *current_logtime(request_rec *r)
     if(timz < 0) 
         timz = -timz;
 
-    strftime(tstr, MAX_STRING_LEN,"[%d/%b/%Y:%H:%M:%S ",t);
+    strftime(tstr, 80,"[%d/%b/%Y:%H:%M:%S ",t);
 
 #ifdef IS_APACHE_12
-    sprintf(tstr + strlen(tstr), "%c%.2d%.2d]", sign, timz/60, timz%60);
+    ap_snprintf(tstr + strlen(tstr), 80-strlen(tstr), "%c%.2d%.2d]", sign, timz/60, timz%60);
 #else
-    sprintf(tstr + strlen(tstr), "%c%02ld%02ld]", sign, timz/3600, timz%3600);
+    ap_snprintf(tstr + strlen(tstr), 80-strlen(tstr), "%c%02ld%02ld]", sign, timz/3600, timz%3600);
 #endif
 
     return pstrdup(r->pool, tstr);
@@ -2341,12 +2373,14 @@ static void rewritemap_program_child(void *cmd)
 */
 
 
-static void expand_variables_inbuffer(request_rec *r, char *buf)
+static void expand_variables_inbuffer(request_rec *r, char *buf, int buf_len)
 {
     char *newbuf;
     newbuf = expand_variables(r, buf);
-    if (strcmp(newbuf, buf) != 0)
-        strcpy(buf, newbuf);
+    if (strcmp(newbuf, buf) != 0) {
+        strncpy(buf, newbuf, buf_len-1);
+	buf[buf_len-1] = '\0';
+    }
     return;
 }
 
@@ -2359,25 +2393,26 @@ static char *expand_variables(request_rec *r, char *str)
     char *cp3;
     int expanded;
 
-    strcpy(input, str);
+    strncpy(input, str, sizeof(input)-1);
+    input[sizeof(input)-1] = '\0';
     output[0] = '\0';
     expanded = 0;
     for (cp = input; cp < input+MAX_STRING_LEN; ) {
         if ((cp2 = strstr(cp, "%{")) != NULL) {
             if ((cp3 = strstr(cp2, "}")) != NULL) {
                 *cp2 = '\0';
-                strcpy(&output[strlen(output)], cp);
-
+                strncpy(&output[strlen(output)], cp, sizeof(output)-strlen(output)-1);
                 cp2 += 2;
                 *cp3 = '\0';
-                strcpy(&output[strlen(output)], lookup_variable(r, cp2));
+                strncpy(&output[strlen(output)], lookup_variable(r, cp2), sizeof(output)-strlen(output)-1);
 
                 cp = cp3+1;
                 expanded = 1;
                 continue;
             }
         }
-        strcpy(&output[strlen(output)], cp);
+        strncpy(&output[strlen(output)], cp, sizeof(output)-strlen(output)-1);
+	output[sizeof(output)-1] = '\0';
         break;
     }
     return expanded ? pstrdup(r->pool, output) : str;
@@ -2468,7 +2503,7 @@ static char *lookup_variable(request_rec *r, char *var)
         result = r->server->server_hostname;
     }
     else if (strcasecmp(var, "SERVER_PORT") == 0) {
-        sprintf(resultbuf, "%d", r->server->port);
+        ap_snprintf(resultbuf, sizeof(resultbuf), "%d", r->server->port);
         result = resultbuf;
     }
     else if (strcasecmp(var, "SERVER_PROTOCOL") == 0) {
@@ -2478,7 +2513,7 @@ static char *lookup_variable(request_rec *r, char *var)
         result = pstrdup(r->pool, SERVER_VERSION);
     }
     else if (strcasecmp(var, "API_VERSION") == 0) { /* non-standard */
-        sprintf(resultbuf, "%d", MODULE_MAGIC_NUMBER);
+        ap_snprintf(resultbuf, sizeof(resultbuf), "%d", MODULE_MAGIC_NUMBER);
         result = resultbuf;
     }
 
@@ -2486,13 +2521,13 @@ static char *lookup_variable(request_rec *r, char *var)
     else if (strcasecmp(var, "TIME_YEAR") == 0) {
         tc = time(NULL); 
         tm = localtime(&tc); 
-        sprintf(resultbuf, "%02d%02d", (tm->tm_year / 100) + 19, tm->tm_year % 100);
+        ap_snprintf(resultbuf, sizeof(resultbuf), "%02d%02d", (tm->tm_year / 100) + 19, tm->tm_year % 100);
         result = resultbuf;
     }
 #define MKTIMESTR(format, tmfield) \
     tc = time(NULL); \
     tm = localtime(&tc); \
-    sprintf(resultbuf, format, tm->tmfield); \
+    ap_snprintf(resultbuf, sizeof(resultbuf), format, tm->tmfield); \
     result = resultbuf;
     else if (strcasecmp(var, "TIME_MON") == 0) {
         MKTIMESTR("%02d", tm_mon+1)
@@ -2684,7 +2719,9 @@ static char *subst_prefix_path(request_rec *r, char *input, char *match, char *s
     output = input;
 
     /* first, remove the local directory prefix */
-    strcpy(matchbuf, match);
+    strncpy(matchbuf, match, sizeof(matchbuf)-1);
+    matchbuf[sizeof(matchbuf)-1] = '\0';
+
     /* allways have a trailing slash */
     l = strlen(matchbuf);
     if (matchbuf[l-1] != '/') {
@@ -2697,7 +2734,8 @@ static char *subst_prefix_path(request_rec *r, char *input, char *match, char *s
         output = pstrdup(r->pool, output+l); 
 
         /* and now add the base-URL as replacement prefix */
-        strcpy(substbuf, subst);
+        strncpy(substbuf, subst, sizeof(substbuf)-1);
+	substbuf[sizeof(substbuf)-1] = '\0';
         /* allways have a trailing slash */
         l = strlen(substbuf);
         if (substbuf[l-1] != '/') {
@@ -2806,7 +2844,8 @@ static int prefix_stat(const char *path, struct stat *sb)
     char curpath[LONG_STRING_LEN];
     char *cp;
 
-    strcpy(curpath, path);
+    strncpy(curpath, path, sizeof(curpath)-1);
+    curpath[sizeof(curpath)-1] = '\0';
     if (curpath[0] != '/') 
         return 0;
     if ((cp = strchr(curpath+1, '/')) != NULL)

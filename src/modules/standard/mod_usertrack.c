@@ -121,8 +121,9 @@ void make_cookie(request_rec *r)
     cookie_log_state *cls = get_module_config (r->server->module_config,
 					       &usertrack_module);
     struct timeval tv;
-    char *new_cookie = palloc( r->pool, 100);	/* 100 = blurgh */
-    char *cookiebuf = palloc( r->pool, 100);
+    /* 1024 == hardcoded constants */
+    char *new_cookie = palloc( r->pool, 1024);	
+    char *cookiebuf = palloc( r->pool, 1024);
     char *dot;
     const char *rname = pstrdup(r->pool, 
 		       	    get_remote_host(r->connection, r->per_dir_config,
@@ -133,7 +134,7 @@ void make_cookie(request_rec *r)
     if ((dot = strchr(rname,'.'))) *dot='\0';	/* First bit of hostname */
     gettimeofday(&tv, &tz);
 
-    sprintf(cookiebuf, "%s%d%ld%d", rname, (int)getpid(),
+    ap_snprintf(cookiebuf, 1024, "%s%d%ld%d", rname, (int)getpid(),
 	      (long)tv.tv_sec, (int)tv.tv_usec/1000);	    
 
     if (cls->expires) {
@@ -154,7 +155,7 @@ void make_cookie(request_rec *r)
       tms = gmtime(&when);
 
       /* Cookie with date; as strftime '%a, %d-%h-%y %H:%M:%S GMT' */
-      sprintf(new_cookie,
+      ap_snprintf(new_cookie, 1024,
 	   "%s%s; path=/; expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
 	      COOKIE_NAME, cookiebuf, days[tms->tm_wday],
 	      tms->tm_mday, month_snames[tms->tm_mon],
@@ -162,7 +163,7 @@ void make_cookie(request_rec *r)
 	      tms->tm_hour, tms->tm_min, tms->tm_sec);
     }
     else
-      sprintf(new_cookie,"%s%s; path=/", COOKIE_NAME, cookiebuf);
+      ap_snprintf(new_cookie, 1024, "%s%s; path=/", COOKIE_NAME, cookiebuf);
 
     table_set(r->headers_out,"Set-Cookie",new_cookie);
     table_set(r->notes, "cookie", cookiebuf); /* log first time */

@@ -1653,9 +1653,9 @@ void set_neg_headers(request_rec *r, negotiation_state *neg, int na_result)
         char *rec;
         char qstr[6];
         long len;
-        char lenstr[20];                /* is this long enough? */
+        char lenstr[22];                /* enough for 2^64 */
 
-        sprintf(qstr, "%1.3f", variant->type_quality);
+        ap_snprintf(qstr, sizeof(qstr), "%1.3f", variant->type_quality);
 
         /* Strip trailing zeros (saves those valuable network bytes) */
         if (qstr[4] == '0') {
@@ -1699,7 +1699,7 @@ void set_neg_headers(request_rec *r, negotiation_state *neg, int na_result)
                 vary_by_charset = 1;
         }
         if ((len = find_content_length(neg, variant)) != 0) {
-            sprintf(lenstr, "%ld", len);
+            ap_snprintf(lenstr, sizeof(lenstr), "%ld", len);
             rec = pstrcat(r->pool, rec, " {length ", lenstr, "}", NULL);
         }
         

@@ -333,7 +333,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
 static void  splitout_queryargs(request_rec *r);
 static void  reduce_uri(request_rec *r);
 static char *expand_tildepaths(request_rec *r, char *uri);
-static void  expand_map_lookups(request_rec *r, char *uri);
+static void  expand_map_lookups(request_rec *r, char *uri, int uri_len);
 
     /* DBM hashfile support functions */
 static char *lookup_map(request_rec *r, char *name, char *key);
@@ -354,7 +354,7 @@ static void  run_rewritemap_programs(server_rec *s, pool *p);
 static void  rewritemap_program_child(void *cmd);
 
     /* env variable support */
-static void  expand_variables_inbuffer(request_rec *r, char *buf);
+static void  expand_variables_inbuffer(request_rec *r, char *buf, int buf_len);
 static char *expand_variables(request_rec *r, char *str);
 static char *lookup_variable(request_rec *r, char *var);
 static char *lookup_header(request_rec *r, const char *name);

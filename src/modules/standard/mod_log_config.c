@@ -224,7 +224,7 @@ typedef struct {
 char *format_integer(pool *p, int i)
 {
     char dummy[40];
-    sprintf (dummy, "%d", i);
+    ap_snprintf (dummy, sizeof(dummy), "%d", i);
     return pstrdup (p, dummy);
 }
 
@@ -271,7 +271,7 @@ char *log_bytes_sent (request_rec *r, char *a)
 	long int bs;
 	char dummy[40];
 	bgetopt(r->connection->client, BO_BYTECT, &bs);
-	sprintf(dummy, "%ld", bs);
+	ap_snprintf(dummy, sizeof(dummy), "%ld", bs);
 	return pstrdup(r->pool, dummy);
     }
 }
@@ -309,8 +309,8 @@ char *log_request_time (request_rec *r, char *a)
 	if(timz < 0) timz = -timz;
 
 	strftime(tstr,MAX_STRING_LEN,"[%d/%b/%Y:%H:%M:%S ",t);
-	sprintf (tstr + strlen(tstr), "%c%.2d%.2d]",
-		 sign, timz/60, timz%60);
+	ap_snprintf (tstr + strlen(tstr), sizeof(tstr)-strlen(tstr), 
+		"%c%.2d%.2d]", sign, timz/60, timz%60);
     }
 
     return pstrdup (r->pool, tstr);
@@ -319,7 +319,7 @@ char *log_request_time (request_rec *r, char *a)
 char *log_request_duration (request_rec *r, char *a) {
     char duration[22];	/* Long enough for 2^64 */
 
-    sprintf(duration, "%ld", time(NULL) - r->request_time);
+    ap_snprintf(duration, sizeof(duration), "%ld", time(NULL) - r->request_time);
     return pstrdup(r->pool, duration);
 }
 
@@ -328,15 +328,15 @@ char *log_virtual_host (request_rec *r, char *a) {
 }
 
 char *log_server_port (request_rec *r, char *a) {
-    char portnum[10];
+    char portnum[22];
 
-    sprintf(portnum, "%d", r->server->port);
+    ap_snprintf(portnum, sizeof(portnum), "%d", r->server->port);
     return pstrdup(r->pool, portnum);
 }
 
 char *log_child_pid (request_rec *r, char *a) {
-    char pidnum[10];
-    sprintf(pidnum, "%ld", (long)getpid());
+    char pidnum[22];
+    ap_snprintf(pidnum, sizeof(pidnum), "%ld", (long)getpid());
     return pstrdup(r->pool, pidnum);
 }
 /*****************************************************************

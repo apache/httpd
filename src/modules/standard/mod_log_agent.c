@@ -170,7 +170,7 @@ int agent_log_transaction(request_rec *orig)
     agent = table_get(orig->headers_in, "User-Agent");
     if(agent != NULL) 
       {
-	sprintf(str, "%s\n", agent);
+	ap_snprintf(str, sizeof(str), "%s\n", agent);
 	write(cls->agent_fd, str, strlen(str));
       }
     

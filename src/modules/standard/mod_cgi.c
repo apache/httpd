@@ -331,7 +331,7 @@ void cgi_child (void *child_stuff)
      * now, so that's what we use).
      */
     
-    sprintf(err_string,
+    ap_snprintf(err_string, sizeof(err_string),
 	    "exec of %s failed, errno is %d\n", r->filename, errno);
     write(2, err_string, strlen(err_string));
     exit(0);

@@ -189,7 +189,7 @@ int dbm_authenticate_basic_user (request_rec *r)
     if(!(real_pw = get_dbm_pw(r, c->user, sec->auth_dbmpwfile))) {
 	if (!(sec->auth_dbmauthoritative))
 	    return DECLINED;
-        sprintf(errstr,"DBM user %s not found", c->user);
+        ap_snprintf(errstr, sizeof(errstr), "DBM user %s not found", c->user);
 	log_reason (errstr, r->filename, r);
 	note_basic_auth_failure (r);
 	return AUTH_REQUIRED;
@@ -199,7 +199,8 @@ int dbm_authenticate_basic_user (request_rec *r)
     if (colon_pw) *colon_pw='\0';   
     /* anyone know where the prototype for crypt is? */
     if(strcmp(real_pw,(char *)crypt(sent_pw,real_pw))) {
-        sprintf(errstr,"user %s: password mismatch",c->user);
+        ap_snprintf(errstr, sizeof(errstr), 
+		"user %s: password mismatch",c->user);
 	log_reason (errstr, r->uri, r);
 	note_basic_auth_failure (r);
 	return AUTH_REQUIRED;
@@ -241,8 +242,9 @@ int dbm_check_auth(request_rec *r) {
            if (!(groups = get_dbm_grp(r, user, sec->auth_dbmgrpfile))) {
 	       if (!(sec->auth_dbmauthoritative))
 	           return DECLINED;
-               sprintf(errstr,"user %s not in DBM group file %s",
-		       user, sec->auth_dbmgrpfile);
+               ap_snprintf(errstr, sizeof(errstr), 
+			"user %s not in DBM group file %s",
+			user, sec->auth_dbmgrpfile);
 	       log_reason (errstr, r->filename, r);
 	       note_basic_auth_failure (r);
 	       return AUTH_REQUIRED;
@@ -257,7 +259,8 @@ int dbm_check_auth(request_rec *r) {
                        return OK;
                }
            }
-           sprintf(errstr,"user %s not in right group",user);
+           ap_snprintf(errstr, sizeof(errstr), 
+		"user %s not in right group",user);
 	   log_reason (errstr, r->filename, r);
            note_basic_auth_failure(r);
 	   return AUTH_REQUIRED;

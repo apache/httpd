@@ -354,7 +354,9 @@ int read_quoted(char *string, char *quoted_part)
   return(string - starting_pos); /* return the total characters read */
 }
 
-
+/*
+ * url needs to point to a string with at least SMALLBUF memory allocated
+ */
 void imap_url(request_rec *r, char *base, char *value, char *url) 
 {
 /* translates a value into a URL. */
@@ -366,24 +368,27 @@ void imap_url(request_rec *r, char *base, char *value, char *url)
 
   if ( ! strcasecmp(value, "map" ) || ! strcasecmp(value, "menu") ) {
     if (r->server->port == 80 ) { 
-      sprintf(url, "http://%s%s", r->server->server_hostname, r->uri);
+      ap_snprintf(url, SMALLBUF,
+		"http://%s%s", r->server->server_hostname, r->uri);
     }
     else {
-      sprintf(url, "http://%s:%d%s", r->server->server_hostname,
+      ap_snprintf(url, SMALLBUF, "http://%s:%d%s", r->server->server_hostname,
 	      r->server->port, r->uri);      
     }
     return;  
   }
 
   if ( ! strcasecmp(value, "nocontent") || ! strcasecmp(value, "error") ) {
-    strncpy(url, value, SMALLBUF);
+    strncpy(url, value, SMALLBUF-1);
+    url[SMALLBUF-1] = '\0';
     return;    /* these are handled elsewhere, so just copy them */
   }
 
   if ( ! strcasecmp(value, "referer" ) ) {
     referer = table_get(r->headers_in, "Referer");
     if ( referer && *referer ) {
-      strncpy(url, referer, SMALLBUF);
+      strncpy(url, referer, SMALLBUF-1);
+      url[SMALLBUF-1] = '\0';
       return;
     }
     else {
@@ -395,27 +400,30 @@ void imap_url(request_rec *r, char *base, char *value, char *url)
   while ( isalpha(*string_pos) )
     string_pos++;    /* go along the URL from the map until a non-letter */
   if ( *string_pos == ':' ) { 
-    strncpy(url, value, SMALLBUF);        /* if letters and then a colon (like http:) */
+    strncpy(url, value, SMALLBUF-1);        /* if letters and then a colon (like http:) */
+    url[SMALLBUF-1] = '\0';
     return;                    /* it's an absolute URL, so use it! */
   }
 
   if ( ! base || ! *base ) {
     if ( value && *value ) {  
-      strncpy(url, value, SMALLBUF);   /* no base: use what is given */
+      strncpy(url, value, SMALLBUF-1);   /* no base: use what is given */
+      url[SMALLBUF-1] = '\0';
     }         
     else {                  
       if (r->server->port == 80 ) {  
-	sprintf(url, "http://%s/", r->server->server_hostname);
+	ap_snprintf(url, SMALLBUF, "http://%s/", r->server->server_hostname);
       }            
       if (r->server->port != 80 ) {
-	sprintf(url, "http://%s:%d/", r->server->server_hostname, 
-		r->server->port);
+	ap_snprintf(url, SMALLBUF, "http://%s:%d/",
+		r->server->server_hostname, r->server->port);
       }                     /* no base, no value: pick a simple default */
     }
     return;  
   }
 
-  strncpy(my_base, base, SMALLBUF);  /* must be a relative URL to be combined with base */
+  strncpy(my_base, base, sizeof(my_base)-1);  /* must be a relative URL to be combined with base */
+  my_base[sizeof(my_base)-1] = '\0';
   string_pos = my_base; 
   while (*string_pos) {  
     if (*string_pos == '/' && *(string_pos+1) == '/') {
@@ -473,10 +481,10 @@ void imap_url(request_rec *r, char *base, char *value, char *url)
   }                   /* by this point, value does not start with '..' */
 
   if ( value && *value ) {
-    sprintf(url, "%s%s", my_base, value);   
+    ap_snprintf(url, SMALLBUF, "%s%s", my_base, value);   
   }
   else {
-    sprintf(url, "%s", my_base);   
+    ap_snprintf(url, SMALLBUF, "%s", my_base);   
   }
   return;
 }
@@ -600,6 +608,9 @@ void menu_footer(request_rec *r)
 int imap_handler(request_rec *r)
 {
   char input[LARGEBUF] = {'\0'};
+	/* size of input can not be lowered without changing hard-coded
+	 * checks
+	 */
   char href_text[SMALLBUF] = {'\0'};
   char base[SMALLBUF] = {'\0'};
   char redirect[SMALLBUF] = {'\0'};
@@ -675,7 +686,7 @@ int imap_handler(request_rec *r)
     } /* blank lines and comments are ignored if we aren't printing a menu */
 
 
-    if (sscanf(input, "%s %s", directive, value) != 2) {
+    if (sscanf(input, "%.200s %.200s", directive, value) != 2) {
       continue;                           /* make sure we read two fields */
     }
     /* Now skip what we just read... we can't use ANSIism %n */
@@ -698,7 +709,8 @@ int imap_handler(request_rec *r)
       imap_url(r, NULL, value, mapdflt);
       if (showmenu) {              /* print the default if there's a menu */
 	if (! *href_text) {           /* if we didn't find a "href text" */
-	  strncpy(href_text, mapdflt, SMALLBUF); /* use the href itself as text */
+	  strncpy(href_text, mapdflt, sizeof(href_text)-1); /* use the href itself as text */
+	  href_text[sizeof(href_text)-1] = '\0';
 	}
 	imap_url(r, base, mapdflt, redirect); 
 	menu_default(r, imap_menu, redirect, href_text);
@@ -729,7 +741,8 @@ int imap_handler(request_rec *r)
     if (showmenu) {
       read_quoted(string_pos, href_text); /* href text could be here instead */
       if (! *href_text) {           /* if we didn't find a "href text" */
-	strncpy(href_text, value, SMALLBUF);  /* use the href itself in the menu */
+	strncpy(href_text, value, sizeof(href_text)-1);  /* use the href itself in the menu */
+	href_text[sizeof(href_text)-1] = '\0';
       }
       imap_url(r, base, value, redirect); 
       menu_directive(r, imap_menu, redirect, href_text);
@@ -774,7 +787,8 @@ int imap_handler(request_rec *r)
     if ( ! strcasecmp(directive, "point" ) ) {         /* point */
       
       if (is_closer(testpoint, pointarray, &closest_yet) ) {
-	strncpy(closest, value, SMALLBUF);  /* if the closest point yet save it */
+	strncpy(closest, value, sizeof(closest)-1);  /* if the closest point yet save it */
+	closest[sizeof(closest)-1] = '\0';
       }
       
       continue;    

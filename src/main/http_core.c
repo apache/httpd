@@ -884,7 +884,8 @@ const char *set_group (cmd_parms *cmd, void *dummy, char *arg)
 
 const char *set_server_root (cmd_parms *cmd, void *dummy, char *arg) {
     if (!is_directory (arg)) return "ServerRoot must be a valid directory";
-    strcpy (server_root, arg);
+    strncpy (server_root, arg, sizeof(server_root)-1);
+    server_root[sizeof(server_root)-1] = '\0';
     return NULL;
 }
 
