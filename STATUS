@@ -109,6 +109,9 @@ In progress:
 
 Needs patch:
 
+    * TestCompile creates bogus code with "void main(...".  main 
+      always returns an int.
+
     * Ralf: mod_so doesn't correctly initialise modules. For instance
       the handlers of mod_perl are not initialised. 
       An ap_init_modules() could be done from mod_so but this is too much.
