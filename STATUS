@@ -141,12 +141,6 @@ PATCHES TO BACKPORT FROM 2.1
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/include/http_log.h?r1=1.46&r2=1.48
        +1: trawick, stoddard
 
-    *) mod_auth_ldap: Handle the inconsistent way in which the MS LDAP
-       library handles special characters.
-         http://issues.apache.org/bugzilla/showattachment.cgi?attach_id=12919
-       PR 24437
-       +1: minfrin, wrowe, jim
-
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
        +1: jorton, trawick
