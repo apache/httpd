@@ -861,6 +861,7 @@ request_rec *ap_read_request(conn_rec *conn)
 
     apr_pool_create(&p, conn->pool);
     r = apr_pcalloc(p, sizeof(request_rec));
+    apr_pool_tag(p, "request");
     r->pool            = p;
     r->connection      = conn;
     r->server          = conn->base_server;
