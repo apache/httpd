@@ -381,13 +381,15 @@ static const char *log_env_var(request_rec *r, char *a)
 static const char *log_request_time(request_rec *r, char *a)
 {
     int timz;
-    struct tm *t;
+    ap_int32_t mday, year, hour, min, sec, month;
+    ap_time_t *t;
     char tstr[MAX_STRING_LEN];
 
-    t = ap_get_gmtoff(&timz);
+    ap_make_time(&t, r->pool);
+    ap_get_gmtoff(&timz, t, r->pool);
 
     if (a && *a) {              /* Custom format */
-        strftime(tstr, MAX_STRING_LEN, a, t);
+        ap_strftime(tstr, MAX_STRING_LEN, a, t);
     }
     else {                      /* CLF format */
         char sign = (timz < 0 ? '-' : '+');
@@ -395,9 +397,15 @@ static const char *log_request_time(request_rec *r, char *a)
         if (timz < 0) {
             timz = -timz;
         }
+        ap_get_mday(t, &mday);
+        ap_get_year(t, &year);
+        ap_get_hour(t, &month);
+        ap_get_hour(t, &hour);
+        ap_get_min(t, &min);
+        ap_get_sec(t, &sec);
         ap_snprintf(tstr, sizeof(tstr), "[%02d/%s/%d:%02d:%02d:%02d %c%.2d%.2d]",
-                t->tm_mday, ap_month_snames[t->tm_mon], t->tm_year+1900, 
-                t->tm_hour, t->tm_min, t->tm_sec,
+                mday, ap_month_snames[month], year+1900, 
+                hour, min, sec,
                 sign, timz / 60, timz % 60);
     }
 
