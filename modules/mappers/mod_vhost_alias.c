@@ -75,6 +75,7 @@
  * both written by James Grinter <jrg@blodwen.demon.co.uk>.
  */
 
+#include "apr_strings.h"
 #include "ap_hooks.h"
 #include "httpd.h"
 #include "http_config.h"
@@ -98,8 +99,8 @@ typedef enum {
  * Per-server module config record.
  */
 typedef struct mva_sconf_t {
-    char *doc_root;
-    char *cgi_root;
+    const char *doc_root;
+    const char *cgi_root;
     mva_mode_e doc_root_mode;
     mva_mode_e cgi_root_mode;
 } mva_sconf_t;
@@ -152,12 +153,12 @@ static int vhost_alias_set_doc_root_ip,
     vhost_alias_set_doc_root_name,
     vhost_alias_set_cgi_root_name;
 
-static const char *vhost_alias_set(cmd_parms *cmd, void *dummy, char *map)
+static const char *vhost_alias_set(cmd_parms *cmd, void *dummy, const char *map)
 {
     mva_sconf_t *conf;
     mva_mode_e mode, *pmode;
-    char **pmap;
-    char *p;
+    const char **pmap;
+    const char *p;
   
     conf = (mva_sconf_t *) ap_get_module_config(cmd->server->module_config,
 						&vhost_alias_module);
@@ -249,14 +250,18 @@ static const char *vhost_alias_set(cmd_parms *cmd, void *dummy, char *map)
 
 static const command_rec mva_commands[] =
 {
-    {"VirtualScriptAlias", vhost_alias_set, &vhost_alias_set_cgi_root_name,
-     RSRC_CONF, TAKE1, "how to create a ScriptAlias based on the host"},
-    {"VirtualDocumentRoot", vhost_alias_set, &vhost_alias_set_doc_root_name,
-     RSRC_CONF, TAKE1, "how to create the DocumentRoot based on the host"},
-    {"VirtualScriptAliasIP", vhost_alias_set, &vhost_alias_set_cgi_root_ip,
-     RSRC_CONF, TAKE1, "how to create a ScriptAlias based on the host"},
-    {"VirtualDocumentRootIP", vhost_alias_set, &vhost_alias_set_doc_root_ip,
-     RSRC_CONF, TAKE1, "how to create the DocumentRoot based on the host"},
+    AP_INIT_TAKE1("VirtualScriptAlias", vhost_alias_set, 
+                  &vhost_alias_set_cgi_root_name, RSRC_CONF, 
+                  "how to create a ScriptAlias based on the host"),
+    AP_INIT_TAKE1("VirtualDocumentRoot", vhost_alias_set, 
+                  &vhost_alias_set_doc_root_name, RSRC_CONF, 
+                  "how to create the DocumentRoot based on the host"),
+    AP_INIT_TAKE1("VirtualScriptAliasIP", vhost_alias_set, 
+                  &vhost_alias_set_cgi_root_ip, RSRC_CONF, 
+                  "how to create a ScriptAlias based on the host"),
+    AP_INIT_TAKE1("VirtualDocumentRootIP", vhost_alias_set, 
+                  &vhost_alias_set_doc_root_ip, RSRC_CONF, 
+                  "how to create the DocumentRoot based on the host"),
     { NULL }
 };
 
