@@ -253,8 +253,9 @@ int directory_walk (request_rec *r)
     int num_sec = sec_array->nelts;
     char *test_filename = pstrdup (r->pool, r->filename);
     char *test_dirname;
-    int num_dirs, res;
-    int i, j, test_filename_len;
+    int res;
+    unsigned i,num_dirs;
+    int j, test_filename_len;
 
     /* Are we dealing with a file? If not, we can (hopefuly) safely assume
      * we have a handler that doesn't require one, but for safety's sake,

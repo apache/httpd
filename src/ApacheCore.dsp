@@ -109,6 +109,10 @@ SOURCE=.\explain.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\fnmatch.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\nt\getopt.c
 # End Source File
 # Begin Source File
@@ -169,10 +173,6 @@ SOURCE=.\mod_autoindex.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_browser.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\mod_cgi.c
 # End Source File
 # Begin Source File
@@ -210,6 +210,10 @@ SOURCE=.\mod_mime.c
 # Begin Source File
 
 SOURCE=.\mod_negotiation.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\mod_setenvif.c
 # End Source File
 # Begin Source File
 

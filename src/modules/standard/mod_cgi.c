@@ -458,7 +458,7 @@ static int cgi_handler (request_rec *r)
 	    }
 	    reset_timeout(r);
 	    if (bwrite(script_out, argsbuffer, len_read)
-	            < (size_t)len_read) {
+	            < len_read) {
 	        /* silly script stopped reading, soak up remaining message */
 	        while (get_client_block(r, argsbuffer, HUGE_STRING_LEN) > 0)
 	            ; /* dump it */

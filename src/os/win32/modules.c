@@ -22,7 +22,7 @@ extern module config_log_module;
 extern module asis_module;
 extern module imap_module;
 extern module action_module;
-extern module browser_module;
+extern module setenvif_module;
 extern module isapi_module;
 
 module *prelinked_modules[] = {
@@ -43,7 +43,7 @@ module *prelinked_modules[] = {
   &asis_module,
   &imap_module,
   &action_module,
-  &browser_module,
+  &setenvif_module,
   &isapi_module,
   NULL
 };
@@ -65,7 +65,7 @@ module *preloaded_modules[] = {
   &asis_module,
   &imap_module,
   &action_module,
-  &browser_module,
+  &setenvif_module,
   &isapi_module,
   NULL
 };
