@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/02/25 03:44:44 $]
+Last modified at [$Date: 2000/03/02 08:07:21 $]
 
 Release:
 
@@ -71,6 +71,20 @@ RELEASE SHOWSTOPPERS:
         resolver calls,
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * "make distclean" leaves (at least these) turds:
+	lib/.deps
+	lib/apr/.deps
+	lib/apr/shmem/unix/mm/config.log
+	lib/apr/shmem/unix/mm/mm_conf.h
+	lib/apr/shmem/unix/mm/libtool
+	lib/apr/shmem/unix/mm/config.status
+	lib/apr/shmem/unix/mm/Makefile
+	lib/apr/shmem/unix/mm/mm-config
+	main/a
+	modules/.deps
+	modules/mpm/.deps
+	os/.deps
 
     * Win32: Reuse accept socket after transmitfile/close
 	This is not a bug, but would be nice to get this feature in 
