@@ -81,11 +81,6 @@ PATCHES TO BACKPORT FROM 2.1
        PR: 32699
        +1: jorton, jerenkrantz
 
-    *) mod_proxy: abort if client-connection is aborted.
-       http://issues.apache.org/bugzilla/attachment.cgi?id=14046
-       PR: 32443
-       +1: jorton, stoddard, jerenkrantz
-
     *) mod_ssl: fix to access mod_ssl-specific X509_STORE_CTX userdata
        using the proper accessor function; matters only in some
        pathological cases with OpenSSL global variables not getting
