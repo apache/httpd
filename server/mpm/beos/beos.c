@@ -442,8 +442,9 @@ static int32 worker_thread(void * dummy)
         }
     got_fd:
         if (!this_worker_should_exit) {
+            rv = apr_accept(&csd, sd, ptrans);
             apr_unlock(accept_mutex);
-            if ((rv = apr_accept(&csd, sd, ptrans)) != APR_SUCCESS) {
+            if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
                   "apr_accept");
             } else {
@@ -591,7 +592,7 @@ static void perform_idle_server_maintenance(void)
 static void server_main_loop(int remaining_threads_to_start)
 {
     int child_slot;
-    apr_wait_t status;
+    ap_wait_t status;
     apr_proc_t pid;
     int i;
 
@@ -599,7 +600,7 @@ static void server_main_loop(int remaining_threads_to_start)
         ap_wait_or_timeout(&status, &pid, pconf);
          
         if (pid.pid >= 0) {
-            ap_process_child_status(pid.pid, status);
+            ap_process_child_status(&pid, status);
             /* non-fatal death... note that it's gone in the scoreboard. */
             child_slot = -1;
             for (i = 0; i < ap_max_child_assigned; ++i) {

@@ -191,7 +191,7 @@ apr_array_header_t *ap_get_connection_keys(apr_pool_t *p, long conn_id)
             break;
         }
         array_slot = apr_push_array(key_list);
-        *array_slot = apr_pstrdup(p, ss->key);
+        *array_slot = (char*)apr_pstrdup(p, ss->key);
         i++;
     }
     return key_list;
