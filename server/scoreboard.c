@@ -88,7 +88,7 @@ static apr_status_t ap_cleanup_shared_mem(void *d)
     return APR_SUCCESS;
 }
 
-AP_DECLARE(int) ap_calc_scoreboard_size(void)
+AP_DECLARE(apr_size_t) ap_calc_scoreboard_size(void)
 {
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &server_limit);

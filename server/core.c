@@ -2298,7 +2298,7 @@ static const char *set_serverpath(cmd_parms *cmd, void *dummy,
     }
 
     cmd->server->path = arg;
-    cmd->server->pathlen = (int)strlen(arg);
+    cmd->server->pathlen = strlen(arg);
     return NULL;
 }
 
@@ -3009,19 +3009,20 @@ void ap_add_output_filters_by_type(request_rec *r)
 }
 
 static apr_status_t writev_it_all(apr_socket_t *s,
-                                  struct iovec *vec, int nvec,
+                                  struct iovec *vec, apr_size_t nvec,
                                   apr_size_t len, apr_size_t *nbytes)
 {
     apr_size_t bytes_written = 0;
     apr_status_t rv;
     apr_size_t n = len;
-    int i = 0;
+    apr_size_t i = 0;
 
     *nbytes = 0;
 
     /* XXX handle checking for non-blocking socket */
     while (bytes_written != len) {
-        rv = apr_socket_sendv(s, vec + i, nvec - i, &n);
+        /* Cast to eliminate 64 bit warning */
+        rv = apr_socket_sendv(s, vec + i, (apr_int32_t)(nvec - i), &n);
         *nbytes += n;
         bytes_written += n;
         if (rv != APR_SUCCESS)
@@ -3793,7 +3794,7 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
     core_net_rec *net = f->ctx;
     core_ctx_t *ctx = net->in_ctx;
     const char *str;
-    apr_size_t len;
+    apr_ssize_t len;
 
     if (mode == AP_MODE_INIT) {
         /*
@@ -4288,12 +4289,14 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
             memset(&hdtr, '\0', sizeof(hdtr));
             if (nvec) {
-                hdtr.numheaders = nvec;
+                /* Cast to eliminate 64 bit warning */
+                hdtr.numheaders = (int)nvec;
                 hdtr.headers = vec;
             }
 
             if (nvec_trailers) {
-                hdtr.numtrailers = nvec_trailers;
+                /* Cast to eliminate 64 bit warning */
+                hdtr.numtrailers = (int)nvec_trailers;
                 hdtr.trailers = vec_trailers;
             }
 

@@ -338,9 +338,9 @@ AP_DECLARE(int) ap_rputc(int c, request_rec *r);
  * @param str The string to output
  * @param r The current request
  * @return The number of bytes sent
- * @deffunc int ap_rputs(const char *str, request_rec *r)
+ * @deffunc apr_ssize_t ap_rputs(const char *str, request_rec *r)
  */
-AP_DECLARE(int) ap_rputs(const char *str, request_rec *r);
+AP_DECLARE(apr_ssize_t) ap_rputs(const char *str, request_rec *r);
 
 /**
  * Write a buffer for the current request
@@ -357,9 +357,9 @@ AP_DECLARE(int) ap_rwrite(const void *buf, int nbyte, request_rec *r);
  * @param r The current request
  * @param ... The strings to write
  * @return The number of bytes sent
- * @deffunc int ap_rvputs(request_rec *r, ...)
+ * @deffunc apr_ssize_t ap_rvputs(request_rec *r, ...)
  */
-AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r,...);
+AP_DECLARE_NONSTD(apr_ssize_t) ap_rvputs(request_rec *r,...);
 
 /**
  * Output data to the client in a printf format
@@ -367,9 +367,9 @@ AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r,...);
  * @param fmt The format string
  * @param vlist The arguments to use to fill out the format string
  * @return The number of bytes sent
- * @deffunc int ap_vrprintf(request_rec *r, const char *fmt, va_list vlist)
+ * @deffunc apr_ssize_t ap_vrprintf(request_rec *r, const char *fmt, va_list vlist)
  */
-AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list vlist);
+AP_DECLARE(apr_ssize_t) ap_vrprintf(request_rec *r, const char *fmt, va_list vlist);
 
 /**
  * Output data to the client in a printf format
@@ -377,9 +377,9 @@ AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list vlist);
  * @param fmt The format string
  * @param ... The arguments to use to fill out the format string
  * @return The number of bytes sent
- * @deffunc int ap_rprintf(request_rec *r, const char *fmt, ...)
+ * @deffunc apr_ssize_t ap_rprintf(request_rec *r, const char *fmt, ...)
  */
-AP_DECLARE_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt,...)
+AP_DECLARE_NONSTD(apr_ssize_t) ap_rprintf(request_rec *r, const char *fmt,...)
 				__attribute__((format(printf,2,3)));
 /**
  * Flush all of the data for the current request to the client
@@ -443,9 +443,9 @@ AP_DECLARE(int) ap_should_client_block(request_rec *r);
  * @param bufsiz The size of the buffer
  * @return Number of bytes inserted into the buffer.  When done reading, 0
  *         if EOF, or -1 if there was an error
- * @deffunc long ap_get_client_block(request_rec *r, char *buffer, apr_size_t bufsiz)
+ * @deffunc apr_ssize_t ap_get_client_block(request_rec *r, char *buffer, apr_size_t bufsiz)
  */
-AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bufsiz);
+AP_DECLARE(apr_ssize_t) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bufsiz);
 
 /**
  * In HTTP/1.1, any method can have a body.  However, most GET handlers

@@ -1213,7 +1213,8 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
         /* We start now_merged from NULL since we want to build
          * a locations list that can be merged to any vhost.
          */
-        int len, sec_idx;
+        apr_size_t len;
+        int sec_idx;
         int matches = cache->walked->nelts;
         walk_walked_t *last_walk = (walk_walked_t*)cache->walked->elts;
         cache->cached = entry_uri;

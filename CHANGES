@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) WIN64: API changes to clean up Windows 64bit compile warnings
+     [Allan Edwards]
+
   *) mod_cache: CacheDisable will only disable the URLs it was meant to 
      disable, not all caching. PR 31128.
      [Edward Rudd <eddie omegaware.com>, Paul Querna]
