@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/05/27 22:32:44 $]
+Last modified at [$Date: 2000/05/29 09:41:57 $]
 
 Release:
 
@@ -56,6 +56,11 @@ RELEASE SHOWSTOPPERS:
 	BIND v9.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+    * OS/2: Get loadable modules working again. Requires shared core support
+      which doesn't appear to be catered for in the current build system.
+
+    * OS/2: Make mod_status work for spmt_os2 MPM.
+
     * Build scripts do not recognise AIX 4.2.1 pthreads, so the
       pthread MPMs will not build.
 
