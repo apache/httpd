@@ -170,7 +170,7 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
     struct stat finfo;
 
     ap_log_error(APLOG_MARK, show_errno|APLOG_ERR, r->server, 
-		"%s, reason: %s", error, r->filename);
+		"%s: %s", error, r->filename);
 
     if (!conf->logname ||
 	((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0)
