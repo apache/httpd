@@ -145,7 +145,6 @@ API_EXPORT(char *) ap_os_canonical_filename(ap_pool_t *p, const char *file);
 API_EXPORT(char *) ap_os_case_canonical_filename(ap_pool_t *pPool, const char *szFile);
 API_EXPORT(char *) ap_os_systemcase_filename(ap_pool_t *pPool, const char *szFile);
 API_EXPORT(int) ap_os_is_filename_valid(const char *file);
-API_EXPORT(int) os_strftime(char *, size_t , const char *, const struct tm *);
 
 #define ap_os_dso_error()   ""	/* for now */
 /* Other ap_os_ routines not used by this platform */
