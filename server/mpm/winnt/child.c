@@ -390,9 +390,6 @@ static void win9x_accept(void * dummy)
 	do {
             clen = sizeof(sa_client);
             csd = accept(nsd, (struct sockaddr *) &sa_client, &clen);
-            if (csd == INVALID_SOCKET) {
-                csd = -1;
-            }
         } while (csd < 0 && APR_STATUS_IS_EINTR(apr_get_netos_error()));
 
 	if (csd < 0) {
