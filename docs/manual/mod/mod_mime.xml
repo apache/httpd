@@ -492,6 +492,8 @@ responses from the server</description>
     without a leading dot.</p>
 
 </usage>
+
+<seealso><directive module="mod_mime">RemoveOutputFilter</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -837,7 +839,13 @@ extensions</description>
 
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
+
+    <example><title>Example</title>
+    RemoveOutputFilter shtml
+    </example>
 </usage>
+
+<seealso><directive module="mod_mime">AddOutputFilter</directive></seealso>
 </directivesynopsis>
 
 
