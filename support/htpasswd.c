@@ -100,6 +100,15 @@
 #if APR_HAVE_CRYPT_H
 #include <crypt.h>
 #endif
+#if APR_HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+#if APR_HAVE_STRING_H
+#include <string.h>
+#endif
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 #ifdef WIN32
 #include <conio.h>
