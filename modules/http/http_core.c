@@ -635,8 +635,10 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
 	&& conn->remote_host == NULL
 	&& (type == REMOTE_DOUBLE_REV
 	    || hostname_lookups != HOSTNAME_LOOKUP_OFF)) {
-	if (apr_get_hostname(&conn->remote_host, APR_REMOTE, conn->client_socket)
-            == APR_SUCCESS){
+        apr_sockaddr_t *remote_addr;
+
+        apr_get_sockaddr(&remote_addr, APR_REMOTE, conn->client_socket);
+	if (apr_getnameinfo(&conn->remote_host, remote_addr, 0) == APR_SUCCESS) {
 	    ap_str_tolower(conn->remote_host);
 	   
 	    if (hostname_lookups == HOSTNAME_LOOKUP_DOUBLE) {
@@ -703,7 +705,7 @@ AP_DECLARE(const char *) ap_get_remote_logname(request_rec *r)
  * port of the actual socket.
  *
  * The DNS option to UseCanonicalName causes this routine to do a
- * reverse lookup on the local IP address of the connectiona and use
+ * reverse lookup on the local IP address of the connection and use
  * that for the ServerName. This makes its value more reliable while
  * at the same time allowing Demon's magic virtual hosting to work.
  * The assumption is that DNS lookups are sufficiently quick...
@@ -722,10 +724,14 @@ AP_DECLARE(const char *) ap_get_server_name(request_rec *r)
     }
     if (d->use_canonical_name == USE_CANONICAL_NAME_DNS) {
         if (conn->local_host == NULL) {
-            if (apr_get_hostname(&conn->local_host, APR_LOCAL, conn->client_socket) != APR_SUCCESS)
+            apr_sockaddr_t *local_addr;
+
+            apr_get_sockaddr(&local_addr, APR_LOCAL, conn->client_socket);
+            if (apr_getnameinfo(&conn->local_host, local_addr, 0) != APR_SUCCESS)
                 conn->local_host = apr_pstrdup(conn->pool, r->server->server_hostname);
-            else
+            else {
                 ap_str_tolower(conn->local_host);
+            }
         }
 	return conn->local_host;
     }
