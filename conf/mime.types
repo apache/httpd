@@ -25,13 +25,13 @@ application/wita
 application/wordperfect5.1
 application/x-bcpio		bcpio
 application/x-cdlink		vcd
-application/x-compress		Z
+application/x-compress
 application/x-cpio		cpio
 application/x-csh		csh
 application/x-director		dcr dir dxr
 application/x-dvi		dvi
 application/x-gtar		gtar
-application/x-gzip		gz
+application/x-gzip
 application/x-hdf		hdf
 application/x-httpd-cgi		cgi
 application/x-koan		skp skd skt skm
