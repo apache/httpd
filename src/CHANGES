@@ -1,5 +1,14 @@
 Changes with Apache 1.2
 
+  *) The method for determining PATH_INFO has been restored to the pre-1.2b
+     (and NCSA httpd) definition wherein it was the extra path info beyond
+     the CGI script filename.  The environment variable FILEPATH_INFO has
+     been removed, and instead we supply the original REQUEST_URI to any
+     script that wants to be Apache-specific and needs the real URI path.
+     This solves a problem with existing scripts that use extra path info
+     in the ScriptAlias directive to pass options to the CGI script.
+     [Roy Fielding]
+
   *) The _default_ change in 1.2b10 will change the behaviour on configs
      that use multiple Listen statements for listening on multiple ports.
      But that change is necessary to make _default_ consistent with other
@@ -705,6 +714,7 @@ Changes with Apache 1.2b3:
   *) Add FILEPATH_INFO variable to CGI environment, which is equal to
      PATH_INFO from previous versions of Apache (in certain situations,
      Apache 1.2's PATH_INFO will be different than 1.1's). [Alexei Kosut]
+     [later removed in 1.2b11]
 
   *) Add rwrite() function to API to allow for sending strings of
      arbitrary length. [Doug MacEachern]

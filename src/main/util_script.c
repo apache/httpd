@@ -238,6 +238,20 @@ int find_path_info (char *uri, char *path_info)
     return lu;
 }
 
+static char *original_uri(request_rec *r)
+{
+    char *last;
+    char *first = r->the_request;
+
+    while (*first && !isspace(*first)) ++first;
+    while (isspace(*first)) ++first;
+
+    last = first;
+    while (*last && !isspace(*last)) ++last;
+    
+    return pstrndup(r->pool, first, last - first);
+}
+
 void add_cgi_vars(request_rec *r)
 {
     table *e = r->subprocess_env;
@@ -246,7 +260,8 @@ void add_cgi_vars(request_rec *r)
     table_set (e, "SERVER_PROTOCOL", r->protocol);
     table_set (e, "REQUEST_METHOD", r->method);
     table_set (e, "QUERY_STRING", r->args ? r->args : "");
-    
+    table_set (e, "REQUEST_URI", original_uri(r));
+
     /* Note that the code below special-cases scripts run from includes,
      * because it "knows" that the sub_request has been hacked to have the
      * args and path_info of the original request, and not any that may have
@@ -264,20 +279,10 @@ void add_cgi_vars(request_rec *r)
 
 	table_set (e, "SCRIPT_NAME", pstrndup(r->pool, r->uri,
 					      path_info_start));
-	table_set (e, "PATH_INFO", r->uri + path_info_start);
+
+	table_set (e, "PATH_INFO", r->path_info);
     }
 	
-    /* Some CGI apps need the old-style PATH_INFO (taken from the
-     * filename, not the URL), so we provide it in a different env
-     * variable. CGI scripts can use something like (in Perl)
-     * $path_info = $ENV{'FILEPATH_INFO'} || $ENV{'PATH_INFO'};
-     * to get the right information with both old and new
-     * versions of Apache (and other servers).
-     */
-
-    if (r->path_info && *r->path_info)
-	table_set (e, "FILEPATH_INFO", r->path_info);
-
     if (r->path_info && r->path_info[0]) {
 	/*
  	 * To get PATH_TRANSLATED, treat PATH_INFO as a URI path.
