@@ -1,5 +1,8 @@
 Changes with Apache 1.3.30
 
+  *) UseCanonicalName off was ignoring the client provided
+     port information. [Jim Jagielski]
+
 Changes with Apache 1.3.29
 
   *) SECURITY: CAN-2003-0542 (cve.mitre.org)

@@ -826,16 +826,27 @@ API_EXPORT(const char *) ap_get_server_name(request_rec *r)
 API_EXPORT(unsigned) ap_get_server_port(const request_rec *r)
 {
     unsigned port;
+    unsigned cport = ntohs(r->connection->local_addr.sin_port);
     core_dir_config *d =
       (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
     
-    port = r->server->port ? r->server->port : ap_default_port(r);
-
     if (d->use_canonical_name == USE_CANONICAL_NAME_OFF
-	|| d->use_canonical_name == USE_CANONICAL_NAME_DNS) {
-        return r->hostname ? ntohs(r->connection->local_addr.sin_port)
-			   : port;
+        || d->use_canonical_name == USE_CANONICAL_NAME_DNS) {
+        
+        /* With UseCanonicalName Off Apache will form self-referential
+         * URLs using the hostname and port supplied by the client if
+         * any are supplied (otherwise it will use the canonical name).
+         */
+        port = r->parsed_uri.port_str ? r->parsed_uri.port : 
+          cport ? cport :
+            r->server->port ? r->server->port :
+              ap_default_port(r);
+    } else { /* d->use_canonical_name == USE_CANONICAL_NAME_ON */
+        port = r->server->port ? r->server->port : 
+          cport ? cport :
+            ap_default_port(r);
     }
+
     /* default */
     return port;
 }
