@@ -6,6 +6,7 @@ mod_core.h
 mod_dav.h
 mod_include.h
 mod_proxy.h
+mod_so.h
 mpm.h
 mpm_default.h
 os.h
