@@ -1,4 +1,11 @@
 Changes with Apache 1.3.10
+
+  *) Fix SHARED_CORE feature for HPUX by backing-out a change (comitted
+     between 1.3.7 and 1.3.9) which changed the DSO extension from `sl' to
+     `so'. This worked only for modules (where we load the DSO manually), but
+     horribly fails under HPUX for DSO-based/shared libraries (where our
+     $SHLIB_SUFFIX_NAME is used, too).
+     [Gary Silverman <gary.silverman@abnamro.com>] PR#4974
  
   *) Added support for Berkeley-DB/3.x to mod_auth_db.
      [Steve Atkins <steve@blighty.com>, Ralf S. Engelschall] PR#5382
