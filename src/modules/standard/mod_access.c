@@ -204,12 +204,14 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, char *from, char *where)
 	/* legacy syntax for ip addrs: a.b.c. ==> a.b.c.0/24 for example */
 	int shift;
 	char *t;
+	int octet;
 
 	a->type = T_IP;
 	/* parse components */
 	s = where;
 	a->x.ip.net = 0;
-	shift = 0;
+	a->x.ip.mask = 0;
+	shift = 24;
 	while (*s) {
 	    t = s;
 	    if (!isdigit(*t)) {
@@ -226,11 +228,21 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, char *from, char *where)
 		a->type = T_FAIL;
 		return "invalid ip address";
 	    }
-	    a->x.ip.net |= atoi(s) << shift;
+	    if (shift < 0) {
+		return "invalid ip address, only 4 octets allowed";
+	    }
+	    octet = atoi(s);
+	    if (octet < 0 || octet > 255) {
+		a->type = T_FAIL;
+		return "each octet must be between 0 and 255 inclusive";
+	    }
+	    a->x.ip.net |= octet << shift;
 	    a->x.ip.mask |= 0xFFUL << shift;
-	    shift += 8;
 	    s = t;
+	    shift -= 8;
 	}
+	a->x.ip.net = ntohl(a->x.ip.net);
+	a->x.ip.mask = ntohl(a->x.ip.mask);
     }
     else {
 	a->type = T_HOST;

@@ -1,5 +1,9 @@
 Changes with Apache 1.3b3
 
+  *) Fix a byte ordering problem in mod_access which prevented
+     the old-style syntax (i.e. "a.b.c." to match a class C)
+     from working properly. [Dean Gaudet] PR#1248, 1328, 1384
+
   *) Fix problem with USE_FLOCK_SERIALIZED_ACCEPT not working
      properly. Each child needs to open the lockfile instead
      of using the passed file-descriptor from the parent. PR#1056
