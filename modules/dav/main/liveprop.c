@@ -103,7 +103,7 @@ int dav_get_liveprop_ns_count(void)
 
 void dav_add_all_liveprop_xmlns(apr_pool_t *p, ap_text_header *phdr)
 {
-    apr_hash_index_t *idx = apr_hash_first(dav_liveprop_uris);
+    apr_hash_index_t *idx = apr_hash_first(p, dav_liveprop_uris);
 
     for ( ; idx != NULL; idx = apr_hash_next(idx) ) {
         const void *key;
