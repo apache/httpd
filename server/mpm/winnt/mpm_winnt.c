@@ -608,12 +608,23 @@ globals allowed_globals =
 {NULL, NULL, NULL, NULL, 0};
 #define MAX_SELECT_ERRORS 100
 #define PADDED_ADDR_SIZE sizeof(SOCKADDR_IN)+16
-/*
- * add_job()/remove_job() - add or remove an accepted socket from the
- * list of sockets connected to clients. allowed_globals.jobmutex protects
- * against multiple concurrent access to the linked list of jobs.
+
+/* Windows 9x specific code...
+ * Accept processing for on Windows 95/98 uses a producer/consumer queue 
+ * model. A single thread accepts connections and queues the accepted socket 
+ * to the accept queue for consumption by a pool of worker threads.
+ *
+ * win9x_get_connection()
+ *    Calls remove_job() to pull a job from the accept queue. All the worker 
+ *    threads block on remove_job.
+ * accept_and_queue_connections()
+ *    The accept threads runs this function, which accepts connections off 
+ *    the network and calls add_job() to queue jobs to the accept_queue.
+ * add_job()/remove_job()
+ *    Add or remove an accepted socket from the list of sockets 
+ *    connected to clients. allowed_globals.jobmutex protects
+ *    against multiple concurrent access to the linked list of jobs.
  */
-#if 0
 static void add_job(int sock)
 {
     joblist *new_job;
@@ -669,10 +680,8 @@ static void accept_and_queue_connections(void * dummy)
     struct timeval tv;
     fd_set main_fds;
     int wait_time = 1;
-//    int csd;
-    ap_socket_t *csd = NULL;
-//    int sd = -1;
-    ap_socket_t *sd = NULL;
+    int csd;
+    int nsd = INVALID_SOCKET;
     struct sockaddr_in sa_client;
     int count_select_errors = 0;
     int rc;
@@ -687,7 +696,8 @@ static void accept_and_queue_connections(void * dummy)
 	tv.tv_usec = 0;
 	memcpy(&main_fds, &listenfds, sizeof(fd_set));
 
-	rc = ap_select(listenmaxfd + 1, &main_fds, NULL, NULL, &tv);
+//	rc = ap_select(listenmaxfd + 1, &main_fds, NULL, NULL, &tv);
+	rc = select(listenmaxfd + 1, &main_fds, NULL, NULL, &tv);
 
         if (rc == 0 || (rc == SOCKET_ERROR && h_errno == WSAEINTR)) {
             count_select_errors = 0;    /* reset count of errors */            
@@ -712,17 +722,18 @@ static void accept_and_queue_connections(void * dummy)
 
 	    lr = find_ready_listener(&main_fds);
 	    if (lr != NULL) {
-		sd = lr->sd;
+                /* fetch the native socket descriptor */
+                ap_get_os_sock(&nsd, lr->sd);
 	    }
 	}
 
 	do {
-	    clen = sizeof(sa_client);
-	    csd = accept(sd, (struct sockaddr *) &sa_client, &clen);
-	    if (csd == INVALID_SOCKET) {
-		csd = -1;
-	    }
-	} while (csd < 0 && h_errno == WSAEINTR);
+            clen = sizeof(sa_client);
+            csd = accept(nsd, (struct sockaddr *) &sa_client, &clen);
+            if (csd == INVALID_SOCKET) {
+                csd = -1;
+            }
+        } while (csd < 0 && h_errno == WSAEINTR);
 
 	if (csd < 0) {
             if (h_errno != WSAECONNABORTED) {
@@ -740,38 +751,60 @@ static void accept_and_queue_connections(void * dummy)
 static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
 {
     int len;
-    while (1) {
-        context->accept_socket = remove_job();
-        if (context->accept_socket == -1) {
-            CloseHandle(context->Overlapped.hEvent); /* TODO: Clean up in the caller not here */
+
+    if (context == NULL) {
+        /* allocate the completion context and the transaction pool */
+        context = ap_pcalloc(pconf, sizeof(COMP_CONTEXT));
+        if (!context) {
+            ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
+                         "win9x_get_connection: ap_pcalloc() failed. Process will exit.");
             return NULL;
         }
+        ap_create_context(&context->ptrans, pconf);
+    }
+    
 
+    while (1) {
+        ap_clear_pool(context->ptrans);        
+        context->accept_socket = remove_job();
+        if (context->accept_socket == -1) {
+            return NULL;
+        }
+	//ap_note_cleanups_for_socket(ptrans, csd);
         len = sizeof(struct sockaddr);
+        context->sa_server = ap_palloc(context->ptrans, len);
         if (getsockname(context->accept_socket, 
-                        &context->sa_server, &len)== SOCKET_ERROR) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, h_errno, server_conf, 
-                         "getsockname failed with error %d\n", WSAGetLastError());
+                        context->sa_server, &len)== SOCKET_ERROR) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, WSAGetLastError(), server_conf, 
+                         "getsockname failed");
             continue;
         }
-        
         len = sizeof(struct sockaddr);
+        context->sa_client = ap_palloc(context->ptrans, len);
         if ((getpeername(context->accept_socket,
-                         &context->sa_client, &len)) == SOCKET_ERROR) {
+                         context->sa_client, &len)) == SOCKET_ERROR) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, h_errno, server_conf, 
                          "getpeername failed with error %d\n", WSAGetLastError());
             memset(&context->sa_client, '\0', sizeof(context->sa_client));
         }
 
+        context->conn_io = ap_bcreate(context->ptrans, B_RDWR);
+
+        /* do we NEED_DUPPED_CSD ?? */
+        
         return context;
     }
 }
-#endif
+
 /* 
- * Windows NT specific code...
- * TODO: Insert a discussion of 'completion contexts' here ...
+ * Windows 2000/NT specific code...
+ * create_and_queue_acceptex_context()
+ * requeue_acceptex_context()
+ * winnt_get_connection()
+ *
+ * TODO: Insert a discussion of 'completion contexts' and what these function do here...
  */
-static int create_and_queue_completion_context(ap_context_t *p, ap_listen_rec *lr) 
+static int create_and_queue_acceptex_context(ap_context_t *_pconf, ap_listen_rec *lr) 
 {
     PCOMP_CONTEXT context;
     DWORD BytesRead;
@@ -779,10 +812,10 @@ static int create_and_queue_completion_context(ap_context_t *p, ap_listen_rec *l
     int lasterror;
     
     /* allocate the completion context */
-    context = ap_pcalloc(p, sizeof(COMP_CONTEXT));
+    context = ap_pcalloc(_pconf, sizeof(COMP_CONTEXT));
     if (!context) {
         ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
-                     "create_and_queue_completion_context: ap_pcalloc() failed. Process will exit.");
+                     "create_and_queue_acceptex_context: ap_pcalloc() failed. Process will exit.");
         return -1;
     }
 
@@ -791,16 +824,16 @@ static int create_and_queue_completion_context(ap_context_t *p, ap_listen_rec *l
     context->Overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL); 
     if (context->Overlapped.hEvent == NULL) {
         ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
-                     "create_and_queue_completion_context: CreateEvent() failed. Process will exit.");
+                     "create_and_queue_acceptex_context: CreateEvent() failed. Process will exit.");
         return -1;
     }
     context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (context->accept_socket == INVALID_SOCKET) {
         ap_log_error(APLOG_MARK,APLOG_ERR, WSAGetLastError(), server_conf,
-                     "create_and_queue_completion_context: socket() failed. Process will exit.");
+                     "create_and_queue_acceptex_context: socket() failed. Process will exit.");
         return -1;
     }
-    ap_create_context(&context->ptrans, p);
+    ap_create_context(&context->ptrans, _pconf);
     context->conn_io = ap_bcreate(context->ptrans, B_RDWR);
     context->recv_buf = context->conn_io->inbase;
     context->recv_buf_size = context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE;
@@ -816,7 +849,7 @@ static int create_and_queue_completion_context(ap_context_t *p, ap_listen_rec *l
         lasterror = WSAGetLastError();
         if (lasterror != ERROR_IO_PENDING) {
             ap_log_error(APLOG_MARK,APLOG_ERR, WSAGetLastError(), server_conf,
-                         "create_and_queue_completion_context: AcceptEx failed. Process will exit.");
+                         "create_and_queue_acceptex_context: AcceptEx failed. Process will exit.");
             return -1;
         }
     }
@@ -824,7 +857,7 @@ static int create_and_queue_completion_context(ap_context_t *p, ap_listen_rec *l
 
     return 0;
 }
-static ap_inline int reset_completion_context(PCOMP_CONTEXT context) 
+static ap_inline int requeue_acceptex_context(PCOMP_CONTEXT context) 
 {
     DWORD BytesRead;
     SOCKET nsd;
@@ -836,12 +869,12 @@ static ap_inline int reset_completion_context(PCOMP_CONTEXT context)
 
     if (context->accept_socket == INVALID_SOCKET) {
         ap_log_error(APLOG_MARK,APLOG_ERR, WSAGetLastError(), server_conf,
-                     "reset_completion_context: socket() failed. Process will exit.");
+                     "requeue_acceptex_context: socket() failed. Process will exit.");
         return -1;
     }
 
     ap_clear_pool(context->ptrans);
-    context->conn_io =  ap_bcreate(context->ptrans, B_RDWR);
+    context->conn_io = ap_bcreate(context->ptrans, B_RDWR);
     context->recv_buf = context->conn_io->inbase;
     context->recv_buf_size = context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE;
     ap_get_os_sock(&nsd, context->lr->sd);
@@ -854,7 +887,7 @@ static ap_inline int reset_completion_context(PCOMP_CONTEXT context)
         lasterror = WSAGetLastError();
         if (lasterror != ERROR_IO_PENDING) {
             ap_log_error(APLOG_MARK,APLOG_ERR, WSAGetLastError(), server_conf,
-                         "reset_completion_context: AcceptEx failed. Leaving the process running.");
+                         "requeue_acceptex_context: AcceptEx failed. Leaving the process running.");
             return -1;
         }
     }
@@ -871,8 +904,12 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 
     if (context != NULL) {
         context->accept_socket = -1; /* Don't reuse the socket */
-        if (reset_completion_context(context) == -1)
+        if (requeue_acceptex_context(context) == -1) {
+            if (context->accept_socket != -1)
+                closesocket(context->accept_socket);
+            CloseHandle(context->Overlapped.hEvent);
             return NULL;
+        }
     }
 
     rc = GetQueuedCompletionStatus(AcceptExCompPort,
@@ -893,9 +930,11 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 
     context->lr->count--;
     if (context->lr->count < 2) {
-        if (create_and_queue_completion_context(pconf, context->lr) == -1) {
+        if (create_and_queue_acceptex_context(pconf, context->lr) == -1) {
             ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
                          "Unable to create an AcceptEx completion context -- process will exit");
+            closesocket(context->accept_socket);
+            CloseHandle(context->Overlapped.hEvent);
             return NULL;
         }
     }
@@ -941,15 +980,13 @@ static void child_main(int child_num)
 {
     PCOMP_CONTEXT context = NULL;
 
-//    ap_create_context(&(lpCompContext->ptrans), pconf);
-
     while (1) {
         conn_rec *current_conn;
         ap_iol *iol;
 
         /* Grab a connection off the network */
         if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
-//            context = win9x_get_connection(context);
+            context = win9x_get_connection(context);
         }
         else {
             context = winnt_get_connection(context);
@@ -958,7 +995,8 @@ static void child_main(int child_num)
         if (!context)
             break;
 
-//        ap_note_cleanups_for_socket(context->ptrans, context->accept_socket);
+        /* TODO: Register cleanups for our sockets.*/
+        /* ap_note_cleanups_for_socket(context->ptrans, context->accept_socket); */
 
 	sock_disable_nagle(context->accept_socket);
 
@@ -1069,16 +1107,14 @@ static void worker_main()
 
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
         /* Win9X (Windows 95/98)
-         * In the Win9x environment, on accept thread produces to a queue (via add_job())which
-         * is consumed (via remove_job()) by a pool of worker threads 
-         * First, create the worker thread pool... */
+         * Create the worker thread pool... */
         child_handles = (thread *) alloca(nthreads * sizeof(int));
         for (i = 0; i < nthreads; i++) {
             child_handles[i] = create_thread((void (*)(void *)) child_main, (void *) i);
         }
-        /* Now, create the accept thread */
-//        create_thread((void (*)(void *)) accept_and_queue_connections, (void *) NULL);
-    }
+        /* Create the accept thread */
+        create_thread((void (*)(void *)) accept_and_queue_connections, (void *) NULL);
+    } /* Windows 95/98 */
     else {
         /* Windows NT/2000 
          * Windows NT/2000 have nifty network I/O routines not available in 
@@ -1126,7 +1162,7 @@ static void worker_main()
          * AcceptEx completion port. */
         for (lr = ap_listeners; lr != NULL; lr = lr->next) {
             for(i=0; i<2; i++) {
-                if (create_and_queue_completion_context(pconf, lr) == -1) {
+                if (create_and_queue_acceptex_context(pconf, lr) == -1) {
                     ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
                                  "Unable to create an AcceptEx completion context -- process will exit");
                     ap_destroy_context(pchild);
@@ -1134,7 +1170,7 @@ static void worker_main()
                 }
             }
         }
-    }
+    } /* Windows 2000/NT */
 
     rv = WaitForSingleObject(exit_event, INFINITE);
     printf("exit event signalled \n");
@@ -1150,7 +1186,7 @@ static void worker_main()
         /* Windows 95/98
          * Tell the workers to stop */
         for (i = 0; i < nthreads; i++) {
-//            add_job(-1);
+            add_job(-1);
         }
     }
     else {
