@@ -166,21 +166,26 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
     }
     else {
         /*
-         * If the first (only?) value isn't one of our keywords, just copy
-         * the string to the userdir string.
+         * If the first (only?) value isn't one of our keywords, look at each
+         * config 'word' for validity and copy the entire arg to the userdir 
+         * if all paths are valid.
          */
-        if (!ap_os_is_path_absolute(arg) && !strchr(arg, ':'))
+        char *userdirs = arg;
+        while (*userdirs) {
+            char *thisdir = ap_getword_conf(cmd->pool, &userdirs);
+            if (!ap_os_is_path_absolute(thisdir) && !strchr(thisdir, ':'))
 #if defined(WIN32) || defined(NETWARE)
-            return "UserDir must specify an absolute redirect or absolute "
-                   "file path";
+                return "UserDir must specify an absolute redirect "
+                       "or absolute file path";
 #else
-            if (strchr(arg, '*'))
-                 return "UserDir cannot specify '*' substitution within a "
-                        "relative path";
+                if (strchr(thisdir, '*'))
+                     return "UserDir cannot specify '*' substitution within "
+                            "a relative path";
 #endif
+        }
         s_cfg->userdir = ap_pstrdup(cmd->pool, arg);
 #if defined(WIN32) || defined(OS2) || defined(NETWARE)
-        /* This is an incomplete path, so we cannot canonicalize it yet.
+        /* These are incomplete paths, so we cannot canonicalize them yet.
          * but any backslashes will confuse the parser, later, so simply
          * change them to slash form.
          */
