@@ -487,7 +487,6 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     apr_brigade_length(header_brigade, 0, &transfered);
     if (transfered != -1)
         conn->worker->s->transfered += transfered;
-    conn->worker->s->transfered += transfered;
     if (send_chunks) {
         status = ap_pass_brigade(origin->output_filters, header_brigade);
 
