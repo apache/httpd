@@ -1,5 +1,8 @@
 Changes with Apache 2.0.36
 
+  *) fix possible infinite loop in mod_ssl triggered by certain
+     netscape clients [Doug MacEachern]
+
   *) fix ProxyPass when frontend is https and backend is http
      [Doug MacEachern]
 
