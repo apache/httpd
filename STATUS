@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/01/19 03:01:14 $]
+Last modified at [$Date: 2001/01/19 19:31:02 $]
 
 Release:
 
@@ -707,6 +707,4 @@ Open issues:
    * What do we do about mod_proxy?
 
    * Which MPMs will be included with Apache 2.0?
-
-   * Is conf/highperformance.conf-dist obsolete?  It looks obsolete.
 
