@@ -233,8 +233,64 @@
      enabling or disabling all modules and "most" for enabling or disabling
      only these modules which are useable on all platforms (currently this is
      "all" minus the modules auth_db, log_agent, log_referer, example, so and
-     mmap_static).
- 
+     mmap_static). For a compact overview of available modules see the
+     following list (remove the "mod_" prefix to get the NAME).
+
+     _________________________________________________________________________
+     LIST OF AVAILABLE MODULE
+
+     Environment creation
+      (+) mod_env .......... Set environment variables for CGI/SSI scripts
+      (+) mod_setenvif ..... Set environment variables based on HTTP headers
+      (-) mod_unique_id .... Generate unique identifiers for request
+     Content type decisions
+      (+) mod_mime ......... Content type/encoding determination (configured)
+      (-) mod_mime_magic ... Content type/encoding determination (automatic)
+      (+) mod_negotiation .. Content selection based on the HTTP Accept* headers
+     URL mapping
+      (+) mod_alias ........ Simple   URL translation and redirection
+      (-) mod_rewrite ...... Advanced URL translation and redirection
+      (+) mod_userdir ...... Selection of resource directories by username
+      (-) mod_speling ...... Correction of misspelled URLs
+     Directory Handling
+      (+) mod_dir .......... Directory and directory default file handling
+      (+) mod_auto_index ... Automated directory index file generation
+     Access Control
+      (+) mod_access ....... Access Control (user, host, network)
+      (+) mod_auth ......... HTTP Basic Authentication (user, passwd)
+      (-) mod_auth_dbm ..... HTTP Basic Authentication via Unix NDBM files
+      (-) mod_auth_db ...... HTTP Basic Authentication via Berkeley-DB files
+      (-) mod_auth_anon .... HTTP Basic Authentication for Anonymous-style users
+      (-) mod_digest ....... HTTP Digest Authentication
+     HTTP response
+      (-) mod_headers ...... Arbitrary HTTP response headers (configured)
+      (-) mod_cern_meta .... Arbitrary HTTP response headers (CERN-style files)
+      (+) mod_asis ......... Raw HTTP responses 
+     Scripting
+      (+) mod_include ...... Server Side Includes (SSI) support
+      (+) mod_cgi .......... Common Gateway Interface (CGI) support
+      (+) mod_actions ...... Map CGI scripts to act as internal `handlers'
+     Internal Content Handlers
+      (-) mod_status ....... Content handler for server run-time status
+      (-) mod_info ......... Content handler for server configuration summary
+     Request Logging
+      (+) mod_log_config ... Customizable logging of requests
+      (-) mod_log_agent .... Specialized HTTP User-Agent logging (deprecated)
+      (-) mod_log_refer .... Specialized HTTP Referrer logging   (deprecated)
+      (-) mod_usertrack .... Logging of user click-trails via HTTP Cookies
+     Miscellaneous
+      (+) mod_imap ......... Server-side Image Map support
+      (-) mod_proxy ........ Caching Proxy Module (HTTP, HTTPS, FTP)
+     Experimental
+      (-) mod_so ........... Dynamic Shared Object (DSO) bootstrapping
+      (-) mod_mmap_static .. Caching of frequently served pages via mmap()
+     Development
+      (-) mod_example ...... Apache API demonstration (developers only)
+     _________________________________________________________________________
+                    (+) = enabled  per default [disable with --disable-module]
+                    (-) = disabled per default [enable  with --enable-module ]
+
+
      Use the --enable-shared=NAME and --disable-shared=NAME options to enable
      or disable the shared object support for a particular module from the
      Apache src/Configuration.tmpl file. The defaults (yes=enabled,
