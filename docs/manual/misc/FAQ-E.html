@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.3 $ ($Date: 1999/07/04 01:51:16 $)
+  $Revision: 1.4 $ ($Date: 1999/07/04 16:33:00 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -567,13 +567,15 @@
        whenever I try to access a particular directory?</STRONG></A>
    <P>
    This message is generally caused because either
+   </P>
    <UL>
     <LI>The underlying file system permissions do not allow the
-    User/Group under which Apache is running to access the necessary
-    files; or
+     User/Group under which Apache is running to access the necessary
+     files; or
     <LI>The Apache configuration has some access restrictions in 
-    place which forbid access to the files.
+     place which forbid access to the files.
    </UL>
+   <P>
    You can determine which case applies to your situation by checking the
    error log.
    </P>
