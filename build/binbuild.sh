@@ -222,7 +222,7 @@ cp README.bindist ../apache_$VER-$OS.README
   echo "	-e \"s;\@libexecdir\@;\$SR/libexec;\" -e \"s;\@includedir\@;\$SR/include;\" \\" && \
   echo "	-e \"s;\@sysconfdir\@;\$SR/conf;\" bindist/bin/apxs > \$SR/bin/apxs" && \
   echo "sed -e \"s;^#!/.*;#!\$PERL;\" bindist/bin/dbmmanage > \$SR/bin/dbmmanage" && \
-  echo "sed -e \"s%/usr/local/apache%\$SR/%\" \$SR/conf/httpd.conf.default > \$SR/conf/httpd.conf" && \
+  echo "sed -e \"s%/usr/local/apache%\$SR%\" \$SR/conf/httpd.conf.default > \$SR/conf/httpd.conf" && \
   echo "sed -e \"s%PIDFILE=%PIDFILE=\$SR/%\" -e \"s%HTTPD=%HTTPD=\\\"\$SR/%\" -e \"s%httpd\$%httpd -d \$SR\\\"%\" bindist/bin/apachectl > \$SR/bin/apachectl" && \
   echo " " && \
   echo "echo \"Ready.\"" && \
@@ -246,9 +246,10 @@ cp README.bindist ../apache_$VER-$OS.README
 ) > install-bindist.sh
 chmod 755 install-bindist.sh
 
-sed -e "s%\"/htdocs%\"/usr/local/apache/htdocs%" \
-    -e "s%\"/icons%\"/usr/local/apache/icons%" \
-    -e "s%\"/cgi-bin%\"/usr/local/apache/cgi-bin%" \
+sed -e "s%\"htdocs%\"/usr/local/apache/htdocs%" \
+    -e "s%\"icons%\"/usr/local/apache/icons%" \
+    -e "s%\"cgi-bin%\"/usr/local/apache/cgi-bin%" \
+    -e "s%\"proxy%\"/usr/local/apache/proxy%" \
     -e "s%^ServerAdmin.*%ServerAdmin you@your.address%" \
     -e "s%#ServerName.*%#ServerName localhost%" \
     -e "s%Port 8080%Port 80%" \
