@@ -38,8 +38,8 @@
       <dt><strong>Multi-Protokoll-Unterst&uuml;tzung</strong></dt>
 
       <dd>Apache stellt jetzt die notwendigen Grundfunktionalit&auml;ten bereit um mehrere
-      Protokolle unterst&uuml;tzen und verarbeiten zu können.
-      mod_echo wurde hierfür als Beispiel geschrieben.</dd>
+      Protokolle unterst&uuml;tzen und verarbeiten zu k&ouml;nnen.
+      mod_echo wurde hierf&uuml;r als Beispiel geschrieben.</dd>
 
       <dt><strong>Bessere Unterst&uuml;tzung von nicht-Unix-Plattformen</strong></dt>
 
@@ -54,10 +54,10 @@
 
       <dd>Das API f&uuml;r Module hat sich in 2.0 stark ver&auml;ndert.
       Die meisten der Sortierungs-/Priorit&auml;tsprobleme von Modulen bei 1.3 sollten nun
-      verschwunden sein. In 2.0 wird hiervon vieles automatisch durchgeführt. Die
-      Modulsortierung wird jetzt über einen pre-hook vorgenommen, um mehr Flexibilit&auml;t
+      verschwunden sein. In 2.0 wird hiervon vieles automatisch durchgef&uuml;hrt. Die
+      Modulsortierung wird jetzt &uuml;ber einen pre-hook vorgenommen, um mehr Flexibilit&auml;t
       zu bieten. Au&szlig;erdem wurden neue API-Calls hinzugef&uuml;gt, die zus&auml;tzliche
-      Modulf&auml;higkeiten zur Verfügung stellen, ohne den Apache-Kern anpassen
+      Modulf&auml;higkeiten zur Verf&uuml;gung stellen, ohne den Apache-Kern anpassen
       zu m&uuml;ssen.</dd>
 
       <dt><strong>IPv6-Unterst&uuml;tzung</strong></dt>
@@ -73,7 +73,7 @@
       <dd>Apache-Module k&ouml;nnen jetzt als Filter entwickelt und zur Filterung
       des rein- und rausgehenden Datenstroms des Servers eingesetzt werden.
       Hierdurch kann beispielsweise die Ausgabe von CGI-Skripten durch den INCLUDES-Filter
-      von mod_include bearbeitet werden und so Server-Side Include-Anweisungen ausgeführt
+      von mod_include bearbeitet werden und so Server-Side Include-Anweisungen ausgef&uuml;hrt
       werden.</dd>
 
       <dt><strong>Mehrsprachige Fehlermeldungen</strong></dt>
@@ -85,11 +85,11 @@
       <dt><strong>Vereinfachte Konfiguration</strong></dt>
 
       <dd>Viele der verwirrenden Konfigurationsanweisungen wurden vereinfacht.
-      Die oft für Verwirrung sorgenden Port- und BindAddress-Anweisungen wurden
+      Die oft f&uuml;r Verwirrung sorgenden Port- und BindAddress-Anweisungen wurden
       entfernt. Ausschlie&szlig;lich ie Listen-Anweisung wird nun zum Setzen von
       IP-Addressen und Portnummern benutzt. Der Servername und Portnummer die
-      für Weiterleitungen und Erkennung virtueller Server verwendet werden, werden
-      über die ServerName-Anweisung konfiguriert.</dd>
+      f&uuml;r Weiterleitungen und Erkennung virtueller Server verwendet werden, werden
+      &uuml;ber die ServerName-Anweisung konfiguriert.</dd>
 
       <dt><strong>Native Windows NT Unicode-Unterst&uuml;tzung</strong></dt>
 
@@ -97,9 +97,9 @@
       Dateinamen-Kodierungen. Diese werden direkt auf das zugrundeliegenden
       Unicode-Dateisystem abgebildet, wodurch Mehrsprach-Unterst&uuml;tzung
       f&uuml; alle Windows NT-basierte Installationen, inklusive Windows 2000 und
-      Windows XP, zur Verfügung gestellt wird.
-      <em>Diese Unterst&uuml;tzung ist nicht auf Windows 95, 98 oder ME verfügbar.
-      Hier wird weiterhin die jeweils lokale Codepage des Rechners für den
+      Windows XP, zur Verf&uuml;gung gestellt wird.
+      <em>Diese Unterst&uuml;tzung ist nicht auf Windows 95, 98 oder ME verf&uuml;gbar.
+      Hier wird weiterhin die jeweils lokale Codepage des Rechners f&uuml;r den
       Zugriff auf das Dateisystem verwendet.</em></dd>
 
     </dl>
@@ -128,8 +128,8 @@
       <dt><strong>mod_charset_lite</strong></dt>
 
       <dd>Neues Modul in Apache 2.0.
-      Dieses experimentelle Modul erlaubt Zeichensatz-&Uuml;bersetungen oder
-      -Umschlüsselung.</dd>
+      Dieses experimentelle Modul erlaubt Zeichensatz-&Uuml;bersetzungen oder
+      -Umschl&uuml;sselung.</dd>
 
       <dt><strong>mod_file_cache</strong></dt>
 
@@ -139,12 +139,12 @@
       <dt><strong>mod_headers</strong></dt>
 
       <dd>Dieses Modul ist in Apache 2.0 deutlich flexibler geworden. Es kann jetzt
-      die von mod_proxy genutzten Request-Header manipulieren und es ist möglich
-      Response-Header auf Basis von definierten Bedingungen zu verändern.</dd>
+      die von mod_proxy genutzten Request-Header manipulieren und es ist m&ouml;glich
+      Response-Header auf Basis von definierten Bedingungen zu ver&auml;ndern.</dd>
 
       <dt><strong>mod_proxy</strong></dt>
 
-      <dd>Das Proxy Modul wurde komplett neu geschrieben um die Möglichkeiten der
+      <dd>Das Proxy Modul wurde komplett neu geschrieben um die M&ouml;glichkeiten der
       neuen Filter-Funktionalit&auml;t auszusch&ouml;pfen und um einen
       zuverl&auml;ssigen Proxy zu haben, der den HTTP/1.1-Spezifikationen
       entspricht.</dd>
@@ -158,7 +158,7 @@
       bekommt. Zus&auml;tzlich wurden die Negotiation- und Multiview-Algorithmen
       angepasst um einheitlichere Ergebnisse zu liefern. Au&szlig;erdem wird eine
       neue Form von Type-Maps bereitgestellt, die direkt den Inhalt von Dokumenten
-      umfassen können.</dd>
+      umfassen k&ouml;nnen.</dd>
 
       <dt><strong>mod_autoindex</strong></dt>
 
@@ -174,7 +174,7 @@
       Fehlermeldungen und Zeitangaben nun ebenfalls in der Serverkonfiguration
       vorgenommen werden. Auf die Ergebnisse der Auswertung und Gruppierung von
       regul&auml;ren Ausdr&uuml;cken (jetzt auf Basis der Perl's Regular Expression
-      Syntax) kann über die mod_include Variablen $0 bis $9 zugegriffen werden.</dd>
+      Syntax) kann &uuml;ber die mod_include Variablen $0 bis $9 zugegriffen werden.</dd>
 
       <dt><strong>mod_auth_dbm</strong></dt>
 
