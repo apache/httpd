@@ -393,6 +393,75 @@ AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f);
 AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **save_to,
                                          apr_bucket_brigade **b);    
 
+/**
+ * Flush function for apr_brigade_* calls.  This calls ap_pass_brigade
+ * to flush the brigade if the brigade buffer overflows.
+ * @param bb The brigade to flush
+ * @param ctx The filter to pass the brigade to
+ * @deffunc apr_status_t filter_flush(apr_bucket_brigade *bb, void *ctx)
+ */
+apr_status_t filter_flush(apr_bucket_brigade *bb, void *ctx);
+
+/**
+ * Flush the current brigade down the filter stack
+ * @param f the next filter in the stack
+ * @param bb The brigade to flush
+ * @deffunc int ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb)
+ */
+AP_DECLARE(int) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
+
+/**
+ * Write a buffer for the current filter, buffering if possible.
+ * @param f the filter to write to
+ * @param bb The brigade to buffer into
+ * @param str The string to write
+ * @param byte The number of characters in the string
+ * @deffunc int ap_fwrite(ap_filter_t *f, apr_bucket_brigade *bb, const char *str, apr_ssize_t byte);
+ */
+#define ap_fwrite(f, bb, str, byte) \
+	apr_brigade_write(bb, filter_flush, f->next, str, byte)
+
+/**
+ * Write a buffer for the current filter, buffering if possible.
+ * @param f the filter to write to
+ * @param bb The brigade to buffer into
+ * @param str The string to write
+ * @deffunc int ap_fputs(ap_filter_t *f, apr_bucket_brigade *bb, const char *str);
+ */
+#define ap_fputs(f, bb, str) \
+	apr_brigade_puts(bb, filter_flush, f->next, str)
+
+/**
+ * Write a character for the current filter, buffering if possible.
+ * @param f the filter to write to
+ * @param bb The brigade to buffer into
+ * @param str The character to write
+ * @deffunc int ap_fputc(ap_filter_t *f, apr_bucket_brigade *bb, char str);
+ */
+#define ap_fputc(f, bb, str) \
+	apr_brigade_putc(bb, filter_flush, f->next, str)
+
+/**
+ * Write an unspecified number of strings to the current filter
+ * @param f the filter to write to
+ * @param bb The brigade to buffer into
+ * @param ... The strings to write
+ * @deffunc int ap_fputs(ap_filter_t *f, apr_bucket_brigade *bb, ...);
+ */
+#define ap_fvputs(f, bb, args...) \
+	apr_brigade_putstrs(bb, filter_flush, f->next, ##args)
+
+/**
+ * Output data to the filter in printf format
+ * @param f the filter to write to
+ * @param bb The brigade to buffer into
+ * @param fmt The format string
+ * @param ... The argumets to use to fill out the format string
+ * @deffunc int ap_fputs(ap_filter_t *f, apr_bucket_brigade *bb, const char *fmt, ...);
+ */
+#define ap_fprintf(f, bb, fmt, args...) \
+	apr_brigade_printf(bb, filter_flush, f->next, fmt, ##args)
+
 #ifdef __cplusplus
 }
 #endif

@@ -1,5 +1,9 @@
 Changes with Apache 2.0b1
 
+  *) Allow filters to buffer data using the ap_f* functions.  These have
+     become macros that resolve directly to apr_brigade_*.  
+     [Ryan Bloom]
+
   *) Get the Unix MPM's to do a graceful restart again.  If we are going
      to register a cleanup with ap_cleanup_scoreboard, then we have to
      kill the cleanup with the same function,  and that function can't be

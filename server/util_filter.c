@@ -265,3 +265,22 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **sa
     APR_BRIGADE_CONCAT(*saveto, *b);
     return APR_SUCCESS;
 }
+
+apr_status_t filter_flush(apr_bucket_brigade *bb, void *ctx)
+{
+    ap_filter_t *f = ctx;
+
+    return ap_pass_brigade(f, bb);
+}
+
+AP_DECLARE(int) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb)
+{
+    apr_bucket *b;
+
+    b = apr_bucket_flush_create();
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+    if (ap_pass_brigade(f->next, bb) != APR_SUCCESS)
+        return -1;
+    return 0;
+}
+
