@@ -829,8 +829,11 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
          * RFC 2616 Section 4.4 note 5 states that connection-close
          * is invalid for a request entity - request bodies must be
          * denoted by C-L or T-E: chunked.
+         *
+         * Note that since the proxy uses this filter to handle the
+         * proxied *response*, proxy responses MUST be exempt.
          */
-        if (ctx->state == BODY_NONE) {
+        if (ctx->state == BODY_NONE && f->r->proxyreq != PROXYREQ_RESPONSE) {
             e = apr_bucket_eos_create(f->r->connection->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(b, e);
             return APR_SUCCESS;
