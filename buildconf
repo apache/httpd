@@ -103,10 +103,10 @@ config_h_in="include/ap_config_auto.h.in"
 cross_compile_warning="warning: AC_TRY_RUN called without default to allow cross compiling"
 
 echo rebuilding $apr_configure
-(cd srclib/apr && ./buildconf)
+(cd srclib/apr && ./buildconf) || exit 1
 
 echo rebuilding $aprutil_configure
-(cd srclib/apr-util && ./buildconf.sh)
+(cd srclib/apr-util && ./buildconf.sh) || exit 1
 
 echo rebuilding $pcre_configure
 (cd srclib/pcre && autoconf)
