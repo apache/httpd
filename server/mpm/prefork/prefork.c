@@ -203,7 +203,10 @@ static void chdir_for_gprof(void)
 	if(*(dir + len) == '%') {
 	    dir[len] = '\0';
 	    apr_snprintf(buf, sizeof(buf), "%sgprof.%d", dir, (int)getpid());
-	} 
+	}
+        else {
+            buf[0] = '\0';
+        }
 	use_dir = ap_server_root_relative(pconf, buf[0] ? buf : dir);
 	res = apr_dir_make(use_dir,
                            APR_UREAD | APR_UWRITE | APR_UEXECUTE |
