@@ -151,7 +151,7 @@ static int get_rfc1413(apr_socket_t *sock, const char *local_ip,
     apr_get_port(&sav_rmt_port, APR_REMOTE, sock);
 
 /* send the data */
-    buflen = apr_snprintf(buffer, sizeof(buffer), "%u,%u\r\n", sav_rmt_port,
+    buflen = apr_snprintf(buffer, sizeof(buffer), "%hu,%hu\r\n", sav_rmt_port,
 		sav_our_port);
     ap_xlate_proto_to_ascii(buffer, buflen);
 
@@ -203,7 +203,7 @@ static int get_rfc1413(apr_socket_t *sock, const char *local_ip,
 
 /* RFC1413_USERLEN = 512 */
     ap_xlate_proto_from_ascii(buffer, i);
-    if (sscanf(buffer, "%u , %u : USERID :%*[^:]:%512s", &rmt_port, &our_port,
+    if (sscanf(buffer, "%hu , %hu : USERID :%*[^:]:%512s", &rmt_port, &our_port,
 	       user) != 3 || sav_rmt_port != rmt_port
 	|| sav_our_port != our_port)
 	return -1;
