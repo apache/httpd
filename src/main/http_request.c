@@ -1093,10 +1093,11 @@ void process_request_internal(request_rec *r)
         break;
     }
 
-    if ((access_status = find_types(r)) != 0) {
-        decl_die(access_status, "find types", r);
-        return;
-    }
+    if (!r->proxyreq)
+      if ((access_status = find_types(r)) != 0) {
+          decl_die(access_status, "find types", r);
+          return;
+      }
 
     if ((access_status = run_fixups(r)) != 0) {
         die(access_status, r);

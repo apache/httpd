@@ -1,5 +1,11 @@
 Changes with Apache 1.3b3
 
+  *) Preserve handler value on ProxyPass'ed requests by not
+     calling find_types on a proxy'd request; fixes problems
+     where some ProxyPass'ed URLs weren't actually passed
+     to the proxy.
+     [Lars Eilebrecht] PR#870
+
   *) Fix a byte ordering problem in mod_access which prevented
      the old-style syntax (i.e. "a.b.c." to match a class C)
      from working properly. [Dean Gaudet] PR#1248, 1328, 1384

@@ -140,11 +140,12 @@ static int proxy_trans(request_rec *r)
 
 	for (i = 0; i < conf->aliases->nelts; i++) {
 	    len = alias_match(r->uri, ent[i].fake);
-
+	    
 	    if (len > 0) {
 		r->filename = pstrcat(r->pool, "proxy:", ent[i].real,
 				      r->uri + len, NULL);
 		r->handler = "proxy-server";
+		r->proxyreq = 1;
 		return OK;
 	    }
 	}
