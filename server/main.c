@@ -298,10 +298,6 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
     ap_context_t *ptemp; /* Pool for temporary config stuff, reset often */
     ap_context_t *pcommands; /* Pool for -C and -c switches */
 
-#ifdef WIN32
-    char *signal = NULL;
-#endif
-
     ap_server_argv0 = process->short_name;
     
     ap_util_uri_init();
@@ -334,11 +330,6 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
 	case 'f':
 	    confname = ap_optarg;
 	    break;
-#ifdef WIN32
-        case 'k':
-	    signal = ap_optarg;
-            break;
-#endif
 	case 'v':
 	    printf("Server version: %s\n", ap_get_server_version());
 	    printf("Server built:   %s\n", ap_get_server_built());
@@ -377,12 +368,6 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Syntax OK\n");
 	destroy_and_exit_process(process, 0);
     }
-#ifdef WIN32
-    if (signal) {
-        ap_signal_parent(pconf, signal, ap_server_root);
-        destroy_and_exit_process(process, 0);
-    }
-#endif
     ap_clear_pool(plog);
     ap_run_open_logs(pconf, plog, ptemp, server_conf);
     ap_post_config_hook(pconf, plog, ptemp, server_conf);
