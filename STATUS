@@ -13,7 +13,7 @@ FINAL RELEASE SHOWSTOPPERS:
 
     * proxy security fixes from 1.2.5 need to be brought forward.
       Note: off-by-one error in ap_proxy_date_canon() in
-            proxy_util.c was fixed.
+            proxy_util.c was fixed.  any others???
 
     * Someone other than Dean has to do a security/correctness review on
       psprintf(), bprintf(), and ap_snprintf().  In particular these routines
@@ -26,7 +26,9 @@ FINAL RELEASE SHOWSTOPPERS:
       A device checker patch had been sent to the list a while ago.
       PATCH: Make the code wrapped by unvoted_DISALLOW_DEVICE_ACCESS
              the default in ap_pcfg_openfile()
-      Status: Martin +1, Jim +1, Brian +1
+      Status: Martin +1, Jim +1
+      -- This still doesn't fix it for htpasswd files... how about other files
+         like the mime types file?
 
     * get_path_info bug; ap_get_remote_host should be ap_vformatter instead.
       See: <Pine.LNX.3.96dg4.980427034301.16648P-100000@twinlark.arctic.org>
@@ -136,7 +138,7 @@ Needs patch:
     * proxy_*_canon routines use r->proxyreq incorrectly.  See
 	<Pine.LNX.3.96dg4.980304030057.13656O-100000@twinlark.arctic.org>
 
-     * LynxOS has system-level conf.h file
+    * LynxOS has system-level conf.h file
 	Seems that Lynx has a system level conf.h file that ours overrules,
 	so it doesn't compile correctly. To accomodate, we would need to
 	rename our conf.h to something "safe". Possible choices:
@@ -201,16 +203,6 @@ Open issues:
 	    Status: Rasmus +1, Paul +1, Jim +1, 
 	            Martin +1, Ralf +1, Ken +1
 
-    * Don't wait for WIN32:  It's been quite some time and WIN32 doesn't seem
-      to be progressing, and Unix seems quite stable.  It would be in Apache's
-      best interest to continue to support Unix to its utmost, and not delay
-      a release of 1.3.0 waiting for WIN32 issues to be resolved.
-
-            Notes:
-            Randy: I would also argue that 1.3b6 is _not_ stable. I've been 
-                   having real fits keeping it alive on a dual processor
-                   machine. Could be OS problems..
-
     * Should we re-enable nagle now that we're non-buffering CGIs?  See
       various messages from Marc in March 98.
   
@@ -225,12 +217,12 @@ Open issues:
 
 	 o Do we want to scrap -DSERVER_SUBVERSION if modules can add
 	   their contribution strings at run-time?
-	     +1: 
+	     +1: Brian
 	     -1: Ken
 
 	 o Debate:
 	    Unix:Win32:OS/2 in '()' comment
-	     +1: Jim, Martin, Alexei, Ken
+	     +1: Jim, Martin, Alexei, Ken, Brian
 	    Irix:AIX:FreeBSD in '()' comment
 
 Win32 specific issues:
@@ -375,10 +367,22 @@ Delayed until after 1.3.0, unless someone happens to get to it:
       possible that it'll do something completely bogus when it's 
       used for read-only things. - Dean Gaudet
 
+    * ap_pcfg_openfile doesn't use pfopen() to open the file.  Consider
+     .htaccess parsing, if a timeout occurs the file may not be closed.  I
+     can't imagine that a timeout would be set during this stage... but it'd
+     probably be good to just clean this up. - Dean Gaudet
+
     * Okay, so our negotiation strategy needs a bit of refinement.  See
       <Pine.LNX.3.96dg4.980429182338.15569d-100000@twinlark.arctic.org>.
       In general, we need to go through and clean up the negotiation
       module to make it compliant with the final HTTP/1.1 draft, and at the
       very least we should make it more copacetic to the idea of transferring
       gzipped variants of files when both variants exist on the server.
+
+    * Roy's HTTP/1.1 Wishlist items:
+        1) New status codes?
+        2) Expect
+        3) byte range error handling
+        4) update the Accept-Encoding parser to allow q-values
+        5) would be nice if the proxy used Via and Max-Forwards, even as HTTP/1.0
 
