@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/08/12 18:56:43 $]
+Last modified at [$Date: 2000/08/15 14:57:21 $]
 
 Release:
 
@@ -11,6 +11,13 @@ Release:
     2.0a1   : released March 10, 2000
 
 RELEASE SHOWSTOPPERS:
+    * Need to reintroduce the notion of MMAP_SEGMENT_SIZE which was
+      lost with the creation of ap_bucket_mmap_create. Apache's
+      timeout model is a timeout per-write. If we try to mmap
+      an entire file and send it to a slow client, the write
+      will timeout before the send is complete. Ditto for sendfile
+      support.
+
     * All of the bucket types must be implemented.  The list can be found
       in src/include/ap_buckets.h
 
