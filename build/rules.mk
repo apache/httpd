@@ -223,7 +223,7 @@ distclean-p depend-p clean-p:
 
 depend: depend-recursive
 	if test "`echo $(srcdir)/*.c`" != "$(srcdir)'/*.c'"; then \
-	    gcc -MM $(ALL_CPPFLAGS) $(ALL_INCLUDES) $(srcdir)/*.c | sed 's/\.o:/.lo:/' > $(builddir)/.deps || true;           \
+		$(CC) -MM $(ALL_CPPFLAGS) $(ALL_INCLUDES) $(srcdir)/*.c | sed 's/\.o:/.lo:/' > $(builddir)/.deps || true;           \
 	fi
 #	    test "`echo *.c`" = '*.c' || perl $(top_srcdir)/build/mkdep.perl $(CPP) $(ALL_CPPFLAGS) $(ALL_INCLUDES) *.c > .deps
 
