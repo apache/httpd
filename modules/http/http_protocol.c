@@ -2809,18 +2809,6 @@ static int ap_set_byterange(request_rec *r)
         return 0;
     }
 
-    /* is content already a single range? */
-    if (apr_table_get(r->headers_out, "Content-Range")) {
-       return 0;
-    }
-
-    /* is content already a multiple range? */
-    if ((ct = apr_table_get(r->headers_out, "Content-Type"))
-        && (!strncasecmp(ct, "multipart/byteranges", 20)
-            || !strncasecmp(ct, "multipart/x-byteranges", 22))) {
-       return 0;
-    }
-
     /* Check for Range request-header (HTTP/1.1) or Request-Range for
      * backwards-compatibility with second-draft Luotonen/Franks
      * byte-ranges (e.g. Netscape Navigator 2-3).
@@ -2837,6 +2825,18 @@ static int ap_set_byterange(request_rec *r)
 
     if (!range || strncasecmp(range, "bytes=", 6)) {
         return 0;
+    }
+
+    /* is content already a single range? */
+    if (apr_table_get(r->headers_out, "Content-Range")) {
+       return 0;
+    }
+
+    /* is content already a multiple range? */
+    if ((ct = apr_table_get(r->headers_out, "Content-Type"))
+        && (!strncasecmp(ct, "multipart/byteranges", 20)
+            || !strncasecmp(ct, "multipart/x-byteranges", 22))) {
+       return 0;
     }
 
     /* Check the If-Range header for Etag or Date.
