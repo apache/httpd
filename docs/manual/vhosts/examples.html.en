@@ -78,9 +78,9 @@
     Listen 80<br />
     <br />
     # Listen for virtual host requests on all IP addresses<br />
-    NameVirtualHost *<br />
+    NameVirtualHost *:80<br />
     <br />
-    &lt;VirtualHost *&gt;<br />
+    &lt;VirtualHost *:80&gt;<br />
     <span class="indent">
       DocumentRoot /www/example1<br />
       ServerName www.example1.com<br />
@@ -90,7 +90,7 @@
     </span>
     &lt;/VirtualHost&gt;<br />
     <br />
-    &lt;VirtualHost *&gt;<br />
+    &lt;VirtualHost *:80&gt;<br />
     <span class="indent">
       DocumentRoot /www/example2<br />
       ServerName www.example2.org<br />

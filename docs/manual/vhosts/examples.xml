@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.2.2.6 $ -->
+<!-- $Revision: 1.2.2.7 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -60,9 +60,9 @@
     Listen 80<br />
     <br />
     # Listen for virtual host requests on all IP addresses<br />
-    NameVirtualHost *<br />
+    NameVirtualHost *:80<br />
     <br />
-    &lt;VirtualHost *&gt;<br />
+    &lt;VirtualHost *:80&gt;<br />
     <indent>
       DocumentRoot /www/example1<br />
       ServerName www.example1.com<br />
@@ -72,7 +72,7 @@
     </indent>
     &lt;/VirtualHost&gt;<br />
     <br />
-    &lt;VirtualHost *&gt;<br />
+    &lt;VirtualHost *:80&gt;<br />
     <indent>
       DocumentRoot /www/example2<br />
       ServerName www.example2.org<br />
