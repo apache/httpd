@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/03 01:50:15 $]
+Last modified at [$Date: 2004/06/03 19:46:18 $]
 
 Release:
 
@@ -103,7 +103,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) Allow LimitRequestBody to be reset to unlimited. PR 29106
          server/core.c: r1.279
-       +1: nd, trawick
+       +1: nd, trawick, bnicholes
        +1: kess (on concept)
 
     *) Small fix to allow reverse proxying to an ftp server. Previously
@@ -139,11 +139,11 @@ PATCHES TO BACKPORT FROM 2.1
          server/mpm/winnt/mpm_winnt.c: 1.311
        +1: nd, trawick
 
-    *) export ap_set_sub_req_protocol and ap_finalize_sub_req_protocol on Win32.
+    *) export ap_set_sub_req_protocol and ap_finalize_sub_req_protocol on Win32 and NetWare.
        (should be a minor MMN bump). PR 28523.
          server/protocol.c: r1.147
          include/http_protocol.h: r1.91
-       +1: nd, trawick
+       +1: nd, trawick, bnicholes
 
     *) allow symlinks on directories to be processed by Include directives
        and stop possible recursion by a counter. PR 28492
@@ -158,6 +158,12 @@ PATCHES TO BACKPORT FROM 2.1
     *) mod_headers: Backport ErrorHeader directive (regression from 1.3)
          modules/metadata/mod_headers.c: r1.44, 1.45, 1.51
        +1: nd, trawick
+       0: bnicholes 
+             ErrorHeader seems to be confusing since the defined header
+	     appears for both successful as well as error responses.  Maybe
+	     the directive should be renamed or a "persist" option added
+	     to the Header directive that allows a standard header definition
+	     to appear for all response types.
 
     *) mod_headers: Allow conditional RequestHeader directives. PR 27951
          modules/metadata/mod_headers.c: r1.52
