@@ -229,14 +229,14 @@ static int find_code_page(request_rec *r)
     rv = ap_xlate_open(&output_xlate, dc->charset_default, dc->charset_source, r->pool);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                     "can't open translation %s->%s, error %d\n",
-                     dc->charset_source, dc->charset_default, rv);
+                     "can't open translation %s->%s",
+                     dc->charset_source, dc->charset_default);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     rv = ap_set_content_xlate(r, 1, output_xlate);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                     "can't set content output translation, error %d\n", rv);
+                     "can't set content output translation");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -251,14 +251,14 @@ static int find_code_page(request_rec *r)
                            dc->charset_default, r->pool);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                         "can't open translation %s->%s, error %d\n",
-                         dc->charset_default, dc->charset_source, rv);
+                         "can't open translation %s->%s",
+                         dc->charset_default, dc->charset_source);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
         rv = ap_set_content_xlate(r, 0, input_xlate);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                         "can't set content input translation, error %d\n", rv);
+                         "can't set content input translation");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
     }

@@ -1893,7 +1893,7 @@ char *ap_get_local_host(ap_pool_t *a)
 #endif
     {
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_WARNING, 0, NULL,
-                     "%s: gethostname() failed to detemine ServerName\n",
+                     "%s: gethostname() failed to detemine ServerName",
                      ap_server_argv0);
     }
     else 
@@ -1919,7 +1919,7 @@ char *ap_get_local_host(ap_pool_t *a)
 
     ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, NULL,
                  "%s: Could not find determine the server's fully qualified "
-                 "domain name, using %s for ServerName\n",
+                 "domain name, using %s for ServerName",
                  ap_server_argv0, server_hostname);
              
     return server_hostname;

@@ -885,7 +885,7 @@ int ap_proxy_is_ipaddr(struct dirconn_entry *This, ap_pool_t *p)
     This->mask.s_addr = htonl(INADDR_NONE << (32 - bits));
 
     if (*addr == '\0' && (This->addr.s_addr & ~This->mask.s_addr) != 0) {
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Warning: NetMask and IP-Addr disagree in %s/%ld\n",
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Warning: NetMask and IP-Addr disagree in %s/%ld",
         inet_ntoa(This->addr), bits);
     This->addr.s_addr &= This->mask.s_addr;
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 

@@ -991,7 +991,7 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, const cha
     if (ap_threads_per_child > HARD_THREAD_LIMIT) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                      "WARNING: ThreadsPerChild of %d exceeds compile time"
-                     "limit of %d threads,\n", ap_threads_per_child,
+                     "limit of %d threads,", ap_threads_per_child,
                      HARD_THREAD_LIMIT);
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                      " lowering ThreadsPerChild to %d. To increase, please"

@@ -1077,7 +1077,7 @@ API_EXPORT(const char *) ap_build_config(cmd_parms *parms,
 	while (curr_parent != NULL) {
 	    errmsg = ap_psprintf(p, "%s%s%s:%u: %s> was not closed.",
 				 errmsg,
-				 *errmsg == '\0' ? "" : "\n",
+				 *errmsg == '\0' ? "" : APR_EOL_STR,
 				 curr_parent->filename,
 				 curr_parent->line_num,
 				 curr_parent->directive);
@@ -1273,7 +1273,8 @@ static void process_command_config(server_rec *s, ap_array_header_t *arr,
     errmsg = ap_build_config(&parms, p, ptemp, conftree);
     if (errmsg) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                     "Syntax error in -C/-c directive:\n%s", errmsg);
+                     "Syntax error in -C/-c directive:" APR_EOL_STR "%s", 
+                     errmsg);
         exit(1);
     }
 
