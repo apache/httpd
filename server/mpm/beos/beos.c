@@ -237,7 +237,7 @@ static void tell_workers_to_exit(void)
     int i, code = 99;
 
     for (i=0;i<ap_max_child_assigned;i++) {
-        if (ap_child_table[i].status != SERVER_DEAD)
+        if (ap_child_table[i].pid)
             write_port(port_of_death, code, NULL, 0);
     }
 }
@@ -520,7 +520,7 @@ static void startup_threads(int number_to_start)
     int i;
 
     for (i = 0; number_to_start && i < ap_thread_limit; ++i) {
-	if (ap_child_table[i].status  != SERVER_DEAD) {
+	if (ap_child_table[i].pid) {
 	    continue;
 	}
 	if (make_worker(ap_server_conf, i, 0) < 0) {
@@ -555,7 +555,7 @@ static void perform_idle_server_maintenance(void)
     free_length = 0;
 
     for (i = 0; i < ap_thread_limit; ++i) {
-        if (ap_child_table[i].status == SERVER_DEAD) {
+        if (ap_child_table[i].pid == 0) {
             if (free_length < spawn_rate) {
                 free_slots[free_length] = i;
                 ++free_length;
@@ -614,7 +614,7 @@ static void server_main_loop(int remaining_threads_to_start)
                 }
             }
             if (child_slot >= 0) {
-                ap_child_table[child_slot].status = SERVER_DEAD;
+                ap_child_table[child_slot].pid = 0;
                 
 		if (remaining_threads_to_start
 		    && child_slot < ap_thread_limit) {
