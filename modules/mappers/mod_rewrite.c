@@ -1038,30 +1038,6 @@ static char *rewrite_mapfunc_unescape(request_rec *r, char *key)
     return key;
 }
 
-static void rewrite_rand_init(void)
-{
-    if (!rewrite_rand_init_done) {
-        srand((unsigned)(getpid()));
-        rewrite_rand_init_done = 1;
-    }
-    return;
-}
-
-static int rewrite_rand(int l, int h)
-{
-    /* XXX: In order to be clean, this should be wrapped into a thread mutex,
-     * shouldn't it? Though it probably doesn't care very much...
-     */
-    rewrite_rand_init();
-
-    /* Get [0,1) and then scale to the appropriate range. Note that using
-     * a floating point value ensures that we use all bits of the rand()
-     * result. Doing an integer modulus would only use the lower-order bits
-     * which may not be as uniformly random.
-     */
-    return (int)(((double)(rand() % RAND_MAX) / RAND_MAX) * (h - l + 1) + l);
-}
-
 static char *select_random_value_part(request_rec *r, char *value)
 {
     char *p = value;
@@ -1074,7 +1050,20 @@ static char *select_random_value_part(request_rec *r, char *value)
     }
 
     if (n > 1) {
-        n = rewrite_rand(1, n);
+        /* initialize random generator
+         *
+         * XXX: Probably this should be wrapped into a thread mutex,
+         * shouldn't it? Is it worth the effort?
+         */
+        if (!rewrite_rand_init_done) {
+            srand((unsigned)(getpid()));
+            rewrite_rand_init_done = 1;
+        }
+
+        /* select a random subvalue */
+        n = (int)(((double)(rand() % RAND_MAX) / RAND_MAX) * n + 1);
+
+        /* extract it from the whole string */
         while (--n && (value = ap_strchr(value, '|')) != NULL) {
             ++value;
         }
