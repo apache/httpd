@@ -2618,6 +2618,15 @@ static int dav_method_copymove(request_rec *r, int is_move)
         return dav_error_response(r, lookup.err.status, lookup.err.desc);
     }
     if (lookup.rnew->status != HTTP_OK) {
+        const char *auth = apr_table_get(lookup.rnew->err_headers_out,
+                                        "WWW-Authenticate");
+        if (lookup.rnew->status == HTTP_UNAUTHORIZED && auth != NULL) {
+            /* propagate the WWW-Authorization header up from the
+             * subreq so the client sees it. */
+            apr_table_set(r->err_headers_out, "WWW-Authenticate",
+                          apr_pstrdup(r->pool, auth));
+        }
+
         /* ### how best to report this... */
         return dav_error_response(r, lookup.rnew->status,
                                   "Destination URI had an error.");
