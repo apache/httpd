@@ -322,6 +322,7 @@ install :: nlms FORCE
 	-copy CHANGES                   $(INSTALL)\Apache2\*.*
 	-copy support\dbmmanage.in      $(INSTALL)\Apache2\bin\dbmmanage.pl
 	-copy support\logresolve.pl.in  $(INSTALL)\Apache2\bin\logresolve.pl
+	-copy support\check_forensic    $(INSTALL)\Apache2\bin\check_forensic
 	-awk  -f build\mkconfnw.awk docs\conf\httpd-std.conf.in >$(INSTALL)\Apache2\conf\httpd.conf
 	-copy docs\conf\magic           $(INSTALL)\Apache2\conf\magic
 	-copy docs\conf\mime.types      $(INSTALL)\Apache2\conf\mime.types
