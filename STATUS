@@ -139,13 +139,6 @@ Needs patch:
 	documentation... we should handle it in the case the user doesn't ever
 	supply a dot-notation address.
 
-	- The proxy now asks http_vhost "is this hostname:port the same as
-	r->server?"  Which means if it's not the same as r->server, but is another
-	server on the same machine then the proxy may make a request to itself.
-	In particular if you're so silly as to combine NameVirtualHosts with the
-	proxy on the same IP address you may end up with some fun results.
-	(which means: test namevhosts + proxy)
-
 Closed issues:
 
     * Removal of inetd mode
