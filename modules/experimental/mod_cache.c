@@ -1009,7 +1009,7 @@ static void register_hooks(apr_pool_t *p)
     ap_register_output_filter("CACHE_IN", 
                               cache_in_filter, 
                               NULL,
-                              AP_FTYPE_CONTENT_SET);
+                              AP_FTYPE_CONTENT_SET-1);
     /* CACHE_OUT must go into the filter chain before SUBREQ_CORE to
      * handle subrequsts. Decrementing filter type by 1 ensures this 
      * happens.
