@@ -7,7 +7,7 @@
       --><title>mpm_common - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mpm_common</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
                   </a></th><td>二つ以上のマルチプロセッシングモジュール (MPM)
 で実装されているディレクティブのコレクション</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
-                  </a></th><td>MPM</td></tr></table></div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li><li><img alt="" src="../images/down.gif" /> <a href="#group">Group</a></li><li><img alt="" src="../images/down.gif" /> <a href="#listen">Listen</a></li><li><img alt="" src="../images/down.gif" /> <a href="#listenbacklog">ListenBackLog</a></li><li><img alt="" src="../images/down.gif" /> <a href="#lockfile">LockFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxclients">MaxClients</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxrequestsperchild">MaxRequestsPerChild</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxsparethreads">MaxSpareThreads</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxthreadsperchild">MaxThreadsPerChild</a></li><li><img alt="" src="../images/down.gif" /> <a href="#minsparethreads">MinSpareThreads</a></li><li><img alt="" src="../images/down.gif" /> <a href="#numservers">NumServers</a></li><li><img alt="" src="../images/down.gif" /> <a href="#pidfile">PidFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#scoreboardfile">ScoreBoardFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#sendbuffersize">SendBufferSize</a></li><li><img alt="" src="../images/down.gif" /> <a href="#serverlimit">ServerLimit</a></li><li><img alt="" src="../images/down.gif" /> <a href="#startservers">StartServers</a></li><li><img alt="" src="../images/down.gif" /> <a href="#startthreads">StartThreads</a></li><li><img alt="" src="../images/down.gif" /> <a href="#threadlimit">ThreadLimit</a></li><li><img alt="" src="../images/down.gif" /> <a href="#threadsperchild">ThreadsPerChild</a></li><li><img alt="" src="../images/down.gif" /> <a href="#user">User</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory" id="coredumpdirectory">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+                  </a></th><td>MPM</td></tr></table></div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li><li><img alt="" src="../images/down.gif" /> <a href="#group">Group</a></li><li><img alt="" src="../images/down.gif" /> <a href="#listen">Listen</a></li><li><img alt="" src="../images/down.gif" /> <a href="#listenbacklog">ListenBackLog</a></li><li><img alt="" src="../images/down.gif" /> <a href="#lockfile">LockFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxclients">MaxClients</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxmemfree">MaxMemFree</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxrequestsperchild">MaxRequestsPerChild</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxsparethreads">MaxSpareThreads</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxthreadsperchild">MaxThreadsPerChild</a></li><li><img alt="" src="../images/down.gif" /> <a href="#minsparethreads">MinSpareThreads</a></li><li><img alt="" src="../images/down.gif" /> <a href="#numservers">NumServers</a></li><li><img alt="" src="../images/down.gif" /> <a href="#pidfile">PidFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#scoreboardfile">ScoreBoardFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#sendbuffersize">SendBufferSize</a></li><li><img alt="" src="../images/down.gif" /> <a href="#serverlimit">ServerLimit</a></li><li><img alt="" src="../images/down.gif" /> <a href="#startservers">StartServers</a></li><li><img alt="" src="../images/down.gif" /> <a href="#startthreads">StartThreads</a></li><li><img alt="" src="../images/down.gif" /> <a href="#threadlimit">ThreadLimit</a></li><li><img alt="" src="../images/down.gif" /> <a href="#threadsperchild">ThreadsPerChild</a></li><li><img alt="" src="../images/down.gif" /> <a href="#user">User</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory" id="coredumpdirectory">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>Apache がコアダンプする前に移動を試みるディレクトリ
 </td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>CoreDumpDirectory <em>directory</em></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
@@ -179,6 +179,16 @@
     を 16 プロセス以上必要な値まで増加させたい場合は、
     <code class="directive"><a href="#serverlimit">ServerLimit</a></code>
     も増加させる必要があります。</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MaxMemFree" id="MaxMemFree">MaxMemFree</a> <a name="maxmemfree" id="maxmemfree">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+              </a></th><td>主メモリアロケータが free() を呼ばずに保持し続けられるメモリの
+最大量</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+              </a></th><td>MaxMemFree <em>number</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
+              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code></td></tr></table>
+    <p><code class="directive">MaxMemFree</code> ディレクティブは free() を呼ばずに
+    主アロケータが保持できる空のメモリの最大値をキロバイト単位で設定します。
+    設定されていないか、零に設定されているときは、無制限になります。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MaxRequestsPerChild" id="MaxRequestsPerChild">MaxRequestsPerChild</a> <a name="maxrequestsperchild" id="maxrequestsperchild">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>個々の子サーバが稼働中に扱うリクエスト数の上限</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>MaxRequestsPerChild <em>number</em></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
@@ -245,7 +255,7 @@
     子プロセス毎にスレッド数変化する MPM では、
     このディレクティブは、子プロセス内に生成されるスレッド数の
     最大値を設定します。デフォルト値よりも大きい値にするのであれば、
-    コンパイル時に定義された <code>HARD_THREAD_LIMIT</code>
+    コンパイル時に定義された <code>HARD_THREAD_LIMIT</code>
     を変更して、サーバを再コンパイルする必要があります。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MinSpareThreads" id="MinSpareThreads">MinSpareThreads</a> <a name="minsparethreads" id="minsparethreads">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>リクエストに応答することのできる
@@ -256,7 +266,7 @@
               </a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr></table>
     <p>リクエストに応答するスレッド数の最小値です。
     異なる MPM ではそれぞれ、
-    このディレクティブは異なる取り扱われ方をします。</p>
+    このディレクティブは異なる取り扱われ方をします。</p>
 
     <p><code class="module"><a href="../mod/perchild.html">perchild</a></code> では、
     デフォルトは <code>MinSpareThreads 5</code> で、
@@ -375,7 +385,7 @@
     は再起動中に修正することができます。</p>
 
     <p>このディレクティブを使用する際は特に注意してください。
-    <code class="directive">ServerLimit</code> が必要以上に大きな値に
+    <code class="directive">ServerLimit</code> が必要以上に大きな値に
     設定された場合は、余計な未使用共有メモリが割り当てられます。
     <code class="directive">ServerLimit</code> と
     <code class="directive"><a href="#maxclients">MaxClients</a></code>
