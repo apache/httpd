@@ -96,8 +96,7 @@ void ssl_config_global_create(void)
         mc->tSessionCacheDataTable = NULL;
         mc->nMutexMode             = SSL_MUTEXMODE_UNSET;
         mc->szMutexFile            = NULL;
-        mc->nMutexFD               = -1;
-        mc->nMutexSEMID            = -1;
+        mc->pMutex                 = NULL;
         mc->aRandSeed              = ap_make_array(pPool, 4, sizeof(ssl_randseed_t));
         mc->tPrivateKey            = ssl_ds_table_make(pPool, sizeof(ssl_asn1_t));
         mc->tPublicCert            = ssl_ds_table_make(pPool, sizeof(ssl_asn1_t));
@@ -324,21 +323,18 @@ const char *ssl_cmd_SSLMutex(
         return err;
     if (ssl_config_global_isfixed())
         return NULL;
-    if (strcEQ(arg, "none")) {
+    if (strcEQ(arg, "none") || strcEQ(arg, "no")) {
         mc->nMutexMode  = SSL_MUTEXMODE_NONE;
     }
     else if (strlen(arg) > 5 && strcEQn(arg, "file:", 5)) {
-        mc->nMutexMode  = SSL_MUTEXMODE_FILE;
+        mc->nMutexMode  = SSL_MUTEXMODE_USED;
         mc->szMutexFile = ap_psprintf(mc->pPool, "%s.%lu",
                                       ap_server_root_relative(cmd->pool, "mutex", arg+5),
                                       (unsigned long)getpid());
     }
-    else if (strcEQ(arg, "sem")) {
-#ifdef SSL_CAN_USE_SEM
-        mc->nMutexMode  = SSL_MUTEXMODE_SEM;
-#else
-        return "SSLMutex: Semaphores not available on this platform";
-#endif
+    else if (strcEQ(arg, "sem") || strcEQ(arg, "yes")) {
+        mc->nMutexMode  = SSL_MUTEXMODE_USED;
+        mc->szMutexFile = NULL; /* APR determines temporary filename */
     }
     else
         return "SSLMutex: Invalid argument";

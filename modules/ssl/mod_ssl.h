@@ -227,65 +227,6 @@
 #endif
 
 /*
- * Support for file locking: Try to determine whether we should use fcntl() or
- * flock().  Would be better ap_config.h could provide this... :-(
-  */
-#if defined(USE_FCNTL_SERIALIZED_ACCEPT)
-#define SSL_USE_FCNTL 1
-#include <fcntl.h>
-#endif
-#if defined(USE_FLOCK_SERIALIZED_ACCEPT)
-#define SSL_USE_FLOCK 1
-#include <sys/file.h>
-#endif
-#if !defined(SSL_USE_FCNTL) && !defined(SSL_USE_FLOCK)
-#define SSL_USE_FLOCK 1
-#if !defined(MPE)
-#include <sys/file.h>
-#endif
-#ifndef LOCK_UN
-#undef SSL_USE_FLOCK
-#define SSL_USE_FCNTL 1
-#include <fcntl.h>
-#endif
-#endif
-#ifdef AIX
-#undef SSL_USE_FLOCK
-#define SSL_USE_FCNTL 1
-#include <fcntl.h>
-#endif
-
-/*
- * Support for Mutex
- */
-#define SSL_MUTEX_LOCK_MODE ( S_IRUSR|S_IWUSR )
-#if defined(USE_SYSVSEM_SERIALIZED_ACCEPT) ||\
-    (defined(__FreeBSD__) && defined(__FreeBSD_version) &&\
-     __FreeBSD_version >= 300000) ||\
-    (defined(LINUX) && defined(__GLIBC__) && defined(__GLIBC_MINOR__) &&\
-     LINUX >= 2 && __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 1) ||\
-    defined(SOLARIS2) || defined(__hpux) ||\
-    (defined (__digital__) && defined (__unix__))
-#define SSL_CAN_USE_SEM
-#define SSL_HAVE_IPCSEM
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/sem.h>
-/* 
- * Some platforms have a `union semun' pre-defined but Single Unix
- * Specification (SUSv2) says in semctl(2): `If required, it is of
- * type union semun, which the application program must explicitly
- * declare'. So we define it always ourself to avoid problems (but under
- * a different name to avoid a namespace clash).
- */
-union ssl_ipc_semun {
-    long val;
-    struct semid_ds *buf;
-    unsigned short int *array;
-};
-#endif
-
-/*
  * Support for MM library
  */
 #define SSL_MM_FILE_MODE ( S_IRUSR|S_IWUSR )
@@ -430,8 +371,7 @@ typedef enum {
 typedef enum {
     SSL_MUTEXMODE_UNSET  = UNSET,
     SSL_MUTEXMODE_NONE   = 0,
-    SSL_MUTEXMODE_FILE   = 1,
-    SSL_MUTEXMODE_SEM    = 2
+    SSL_MUTEXMODE_USED   = 1
 } ssl_mutexmode_t;
 
 /*
@@ -488,8 +428,7 @@ typedef struct {
     table_t        *tSessionCacheDataTable;
     ssl_mutexmode_t nMutexMode;
     char           *szMutexFile;
-    int             nMutexFD;
-    int             nMutexSEMID;
+    apr_lock_t     *pMutex;
     array_header   *aRandSeed;
     ssl_ds_table   *tTmpKeys;
     void           *pTmpKeys[SSL_TKPIDX_MAX];
@@ -710,21 +649,13 @@ void          ssl_ds_table_wipeout(ssl_ds_table *);
 void          ssl_ds_table_kill(ssl_ds_table *);
 
 /*  Mutex Support  */
-void         ssl_mutex_init(server_rec *, pool *);
-void         ssl_mutex_reinit(server_rec *, pool *);
-void         ssl_mutex_on(server_rec *);
-void         ssl_mutex_off(server_rec *);
-void         ssl_mutex_kill(server_rec *s);
-void         ssl_mutex_file_create(server_rec *, pool *);
-void         ssl_mutex_file_open(server_rec *, pool *);
-void         ssl_mutex_file_remove(void *);
-BOOL         ssl_mutex_file_acquire(void);
-BOOL         ssl_mutex_file_release(void);
-void         ssl_mutex_sem_create(server_rec *, pool *);
-void         ssl_mutex_sem_open(server_rec *, pool *);
-void         ssl_mutex_sem_remove(void *);
-BOOL         ssl_mutex_sem_acquire(void);
-BOOL         ssl_mutex_sem_release(void);
+#endif /* XXX */
+int          ssl_mutex_init(server_rec *, apr_pool_t *);
+int          ssl_mutex_reinit(server_rec *, apr_pool_t *);
+int          ssl_mutex_on(server_rec *);
+int          ssl_mutex_off(server_rec *);
+int          ssl_mutex_kill(server_rec *);
+#if 0 /* XXX */
 
 /*  Logfile Support  */
 void         ssl_log_open(server_rec *, server_rec *, pool *);
