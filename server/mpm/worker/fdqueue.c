@@ -317,8 +317,10 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p)
     elem = &queue->data[--queue->nelts];
     *sd = elem->sd;
     *p = elem->p;
+#ifdef AP_DEBUG
     elem->sd = NULL;
     elem->p = NULL;
+#endif /* AP_DEBUG */
 
     rv = apr_thread_mutex_unlock(queue->one_big_mutex);
     return rv;
