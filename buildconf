@@ -3,4 +3,6 @@
 BUILD_BASE=`pwd`
 export BUILD_BASE
 
+rm -f generated_lists
+
 ${MAKE:-make} -f build/build.mk ${1+"$@"}
