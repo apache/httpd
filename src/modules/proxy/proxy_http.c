@@ -195,7 +195,7 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 
     urlptr = strstr(url, "://");
     if (urlptr == NULL)
-	return BAD_REQUEST;
+	return HTTP_BAD_REQUEST;
     urlptr += 3;
     destport = DEFAULT_HTTP_PORT;
     strp = strchr(urlptr, '/');
@@ -441,6 +441,14 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 		cache = proxy_cache_error(c);
     }
     kill_timeout(r);
+
+#ifdef CHARSET_EBCDIC
+    /* What we read/write after the header should not be modified
+     * (i.e., the cache copy is ASCII, not EBCDIC, even for text/html)
+     */
+    bsetflag(f, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
+    bsetflag(r->connection->client, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
+#endif
 
 /* send body */
 /* if header only, then cache will be NULL */

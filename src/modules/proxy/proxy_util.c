@@ -430,6 +430,14 @@ long int proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
 
     total_bytes_sent = 0;
 
+#ifdef CHARSET_EBCDIC
+    /* The cache copy is ASCII, not EBCDIC, even for text/html) */
+    bsetflag(f, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
+    if (f2 != NULL)
+	bsetflag(f2, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
+    bsetflag(con->client, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
+#endif
+
     /* Since we are reading from one buffer and writing to another,
      * it is unsafe to do a soft_timeout here, at least until the proxy
      * has its own timeout handler which can set both buffers to EOUT.
