@@ -94,6 +94,8 @@ _build:
          $(MAKE) $(MAKEOPT) -f mod_auth_dbm.mak CFG="mod_auth_dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_auth_digest.mak CFG="mod_auth_digest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_cern_meta.mak CFG="mod_cern_meta - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_dav.mak CFG="mod_dav - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_dav_fs.mak CFG="mod_dav_fs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_expires.mak CFG="mod_expires - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_file_cache.mak CFG="mod_file_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_headers.mak CFG="mod_headers - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -127,6 +129,8 @@ _install:
 	copy os\win32\mod_auth_dbm$(SHORT)\mod_auth_dbm.dll $(INSTDIR)\modules
 	copy os\win32\mod_auth_digest$(SHORT)\mod_auth_digest.dll $(INSTDIR)\modules
 	copy os\win32\mod_cern_meta$(SHORT)\mod_cern_meta.dll $(INSTDIR)\modules
+        copy os\win32\mod_dav$(SHORT)\mod_dav.dll $(INSTDIR)\modules
+        copy os\win32\mod_dav_fs$(SHORT)\mod_dav_fs.dll $(INSTDIR)\modules
 	copy os\win32\mod_expires$(SHORT)\mod_expires.dll $(INSTDIR)\modules
 	copy os\win32\mod_file_cache$(SHORT)\mod_file_cache.dll $(INSTDIR)\modules
 	copy os\win32\mod_headers$(SHORT)\mod_headers.dll $(INSTDIR)\modules
@@ -134,7 +138,7 @@ _install:
         copy os\win32\mod_rewrite$(SHORT)\mod_rewrite.dll $(INSTDIR)\modules
 	copy os\win32\mod_speling$(SHORT)\mod_speling.dll $(INSTDIR)\modules
         copy os\win32\mod_status$(SHORT)\mod_status.dll $(INSTDIR)\modules
-	copy os\win32\mod_user_track$(SHORT)\mod_user_track.dll $(INSTDIR)\modules
+	copy os\win32\mod_usertrack$(SHORT)\mod_usertrack.dll $(INSTDIR)\modules
 #       copy os\win32\mod_proxy$(SHORT)\mod_proxy.dll $(INSTDIR)\modules
         copy support\$(LONG)\ab.exe $(INSTDIR)\bin
         copy support\$(LONG)\htpasswd.exe $(INSTDIR)\bin
