@@ -145,8 +145,8 @@ static const char *set_speling(cmd_parms *cmd, void *mconfig, int arg)
  */
 static const command_rec speling_cmds[] =
 {
-    { "CheckSpelling", set_speling, NULL, OR_OPTIONS, FLAG,
-      "whether or not to fix miscapitalized/misspelled requests" },
+    AP_INIT_FLAG("CheckSpelling", set_speling, NULL, OR_OPTIONS,
+                 "whether or not to fix miscapitalized/misspelled requests"),
     { NULL }
 };
 
