@@ -13,18 +13,15 @@
 <body id="manual-page">
 <div id="page-header">
 <p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/directives.html">지시어들</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p>
-<p class="apache">Apache HTTP Server Version 2.1</p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div>
 <div id="page-content"><div id="preamble"><h1>사이트맵</h1>
-<div class="toplang">
-<p><span>가능한 언어: </span><a href="./de/sitemap.html">&nbsp;de&nbsp;</a> | <a href="./en/sitemap.html">&nbsp;en&nbsp;</a> | <a href="./ja/sitemap.html">&nbsp;ja&nbsp;</a> | <a href="./ko/sitemap.html">&nbsp;ko&nbsp;</a></p>
-</div>
 
 <p>이 페이지는 현재
-<a href="./">Apache HTTP Server Version 2.1 문서</a> 목록을
+<a href="./">Apache HTTP Server Version 2.0 문서</a> 목록을
 보여준다.</p>
 </div>
 <div id="quickview"><ul id="toc">
@@ -105,6 +102,7 @@
 <li><a href="howto/ssi.html">Server Side Includes 소개</a></li>
 <li><a href="howto/htaccess.html">.htaccess 파일</a></li>
 <li><a href="howto/public_html.html">사용자별 웹디렉토리</a></li>
+<li><a href="misc/tutorials.html">아파치 투토리얼</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="platform" id="platform">플래폼별 설명</a></h2>
@@ -137,6 +135,11 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="misc" id="misc">기타 아파치 문서</a></h2>
 <ul><li class="separate"><a href="misc/">개요</a></li>
+<li><a href="misc/custom_errordocs.html">다국어 사용자정의 서버 오류문</a></li>
+<li><a href="misc/fin_wait_2.html">FIN_WAIT_2 상태 연결과 아파치</a></li>
+<li><a href="misc/known_client_problems.html">클라이언트의 이미
+알려진 문제점</a></li>
+<li><a href="misc/descriptors.html">파일기술자와 아파치</a></li>
 <li><a href="cgi_path.html">CGI 환경에서 PATH_INFO의 변화</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -155,22 +158,15 @@
 <li><a href="mod/threadpool.html">아파치 MPM threadpool</a></li>
 <li><a href="mod/mpm_winnt.html">아파치 MPM winnt</a></li>
 <li><a href="mod/worker.html">아파치 MPM worker</a></li>
-</ul><ul><li><a href="mod/mod_actions.html">아파치 모듈 mod_actions</a></li>
+</ul><ul><li><a href="mod/mod_access.html">아파치 모듈 mod_access</a></li>
+<li><a href="mod/mod_actions.html">아파치 모듈 mod_actions</a></li>
 <li><a href="mod/mod_alias.html">아파치 모듈 mod_alias</a></li>
 <li><a href="mod/mod_asis.html">아파치 모듈 mod_asis</a></li>
-<li><a href="mod/mod_auth_basic.html">아파치 모듈 mod_auth_basic</a></li>
+<li><a href="mod/mod_auth.html">아파치 모듈 mod_auth</a></li>
+<li><a href="mod/mod_auth_anon.html">아파치 모듈 mod_auth_anon</a></li>
+<li><a href="mod/mod_auth_dbm.html">아파치 모듈 mod_auth_dbm</a></li>
 <li><a href="mod/mod_auth_digest.html">아파치 모듈 mod_auth_digest</a></li>
 <li><a href="mod/mod_auth_ldap.html">아파치 모듈 mod_auth_ldap</a></li>
-<li><a href="mod/mod_authn_anon.html">아파치 모듈 mod_authn_anon</a></li>
-<li><a href="mod/mod_authn_dbm.html">아파치 모듈 mod_authn_dbm</a></li>
-<li><a href="mod/mod_authn_default.html">아파치 모듈 mod_authn_default</a></li>
-<li><a href="mod/mod_authn_file.html">아파치 모듈 mod_authn_file</a></li>
-<li><a href="mod/mod_authz_dbm.html">아파치 모듈 mod_authz_dbm</a></li>
-<li><a href="mod/mod_authz_default.html">아파치 모듈 mod_authz_default</a></li>
-<li><a href="mod/mod_authz_groupfile.html">아파치 모듈 mod_authz_groupfile</a></li>
-<li><a href="mod/mod_authz_host.html">아파치 모듈 mod_authz_host</a></li>
-<li><a href="mod/mod_authz_owner.html">아파치 모듈 mod_authz_owner</a></li>
-<li><a href="mod/mod_authz_user.html">아파치 모듈 mod_authz_user</a></li>
 <li><a href="mod/mod_autoindex.html">아파치 모듈 mod_autoindex</a></li>
 <li><a href="mod/mod_cache.html">아파치 모듈 mod_cache</a></li>
 <li><a href="mod/mod_cern_meta.html">아파치 모듈 mod_cern_meta</a></li>
@@ -189,7 +185,6 @@
 <li><a href="mod/mod_ext_filter.html">아파치 모듈 mod_ext_filter</a></li>
 <li><a href="mod/mod_file_cache.html">아파치 모듈 mod_file_cache</a></li>
 <li><a href="mod/mod_headers.html">아파치 모듈 mod_headers</a></li>
-<li><a href="mod/mod_ident.html">아파치 모듈 mod_ident</a></li>
 <li><a href="mod/mod_imap.html">아파치 모듈 mod_imap</a></li>
 <li><a href="mod/mod_include.html">아파치 모듈 mod_include</a></li>
 <li><a href="mod/mod_info.html">아파치 모듈 mod_info</a></li>
@@ -240,9 +235,7 @@
 <li>사이트맵 (이 문서)</li>
 </ul>
 </div></div>
-<div class="bottomlang">
-<p><span>가능한 언어: </span><a href="./de/sitemap.html">&nbsp;de&nbsp;</a> | <a href="./en/sitemap.html">&nbsp;en&nbsp;</a> | <a href="./ja/sitemap.html">&nbsp;ja&nbsp;</a> | <a href="./ko/sitemap.html">&nbsp;ko&nbsp;</a></p>
-</div><div id="footer">
+<div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/directives.html">지시어들</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p></div>
 </body></html>
