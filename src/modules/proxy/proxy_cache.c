@@ -670,7 +670,7 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	    ap_bpushfd(cachefp, cfd, cfd);
 	}
 	else if (errno != ENOENT)
-	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 			 "proxy: error opening cache file %s",
 			 c->filename);
 #ifdef EXPLAIN
@@ -682,11 +682,11 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
     if (cachefp != NULL) {
 	i = rdcache(r->pool, cachefp, c);
 	if (i == -1)
-	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 			 "proxy: error reading cache file %s", 
 			 c->filename);
 	else if (i == 0)
-	    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
 			 "proxy: bad (short?) cache file: %s", c->filename);
 	if (i != 1) {
 	    ap_pclosef(r->pool, cachefp->fd);
@@ -941,11 +941,11 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 	    if (lmod != c->lmod || expc != c->expire || date != c->date) {
 		off_t curpos = lseek(c->fp->fd, 0, SEEK_SET);
 		if (curpos == -1)
-		    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+		    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 				 "proxy: error seeking on cache file %s",
 				 c->filename);
 		else if (write(c->fp->fd, buff, 35) == -1)
-		    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+		    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 				 "proxy: error updating cache file %s",
 				 c->filename);
 	    }
@@ -974,11 +974,11 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 		off_t curpos = lseek(c->fp->fd, 0, SEEK_SET);
 
 		if (curpos == -1)
-		    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+		    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 				 "proxy: error seeking on cache file %s",
 				 c->filename);
 		else if (write(c->fp->fd, buff, 35) == -1)
-		    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+		    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 				 "proxy: error updating cache file %s",
 				 c->filename);
 	    }
@@ -1011,7 +1011,7 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 
     i = open(c->tempfile, O_WRONLY | O_CREAT | O_EXCL | O_BINARY, 0622);
     if (i == -1) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		     "proxy: error creating cache file %s",
 		     c->tempfile);
 	return DECLINED;
@@ -1021,7 +1021,7 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
     ap_bpushfd(c->fp, -1, i);
 
     if (ap_bvputs(c->fp, buff, "X-URL: ", c->url, "\n", NULL) == -1) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		     "proxy: error writing cache file(%s)", c->tempfile);
 	ap_pclosef(r->pool, c->fp->fd);
 	unlink(c->tempfile);

@@ -430,7 +430,7 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 
 	if ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data) == 0) {
 	    ap_kill_timeout(r);
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 			 "Premature end of script headers: %s", r->filename);
 	    return SERVER_ERROR;
 	}
@@ -486,7 +486,7 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	    }
 
 	    ap_kill_timeout(r);
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 			 "%s: %s", malformed, r->filename);
 	    return SERVER_ERROR;
 	}
@@ -704,7 +704,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 
 	program = fopen(r->filename, "rt");
 	if (!program) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server, "fopen(%s) failed",
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r, "fopen(%s) failed",
 			 r->filename);
 	    return (pid);
 	}
@@ -819,13 +819,13 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
             if (!is_exe) {
                 program = fopen(r->filename, "rb");
                 if (!program) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                                  "fopen(%s) failed", r->filename);
                     return (pid);
                 }
                 sz = fread(interpreter, 1, sizeof(interpreter) - 1, program);
                 if (sz < 0) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                                  "fread of %s failed", r->filename);
                     fclose(program);
                     return (pid);
@@ -857,7 +857,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
              * file this is by now..
              */
             if (!is_exe && !is_script && !is_binary) {
-                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
                              "%s is not executable; ensure interpreted scripts have "
                              "\"#!\" first line", 
                              r->filename);
@@ -1058,7 +1058,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 	    }
 
 	    if ((pw = getpwnam(username)) == NULL) {
-		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+		ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 			     "getpwnam: invalid username %s", username);
 		return (pid);
 	    }
@@ -1079,7 +1079,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 	}
 	else {
 	    if ((pw = getpwuid(r->server->server_uid)) == NULL) {
-		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+		ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 			     "getpwuid: invalid userid %ld",
 			     (long) r->server->server_uid);
 		return (pid);
@@ -1087,7 +1087,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 	    execuser = ap_pstrdup(r->pool, pw->pw_name);
 
 	    if ((gr = getgrgid(r->server->server_gid)) == NULL) {
-		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+		ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 			     "getgrgid: invalid groupid %ld",
 			     (long) r->server->server_gid);
 		return (pid);

@@ -86,9 +86,28 @@ extern "C" {
 #define OPT_ALL (OPT_INDEXES|OPT_INCLUDES|OPT_SYM_LINKS|OPT_EXECCGI)
 
 /* options for get_remote_host() */
+/* REMOTE_HOST returns the hostname, or NULL if the hostname
+ * lookup fails.  It will force a DNS lookup according to the
+ * HostnameLookups setting.
+ */
 #define REMOTE_HOST (0)
+
+/* REMOTE_NAME returns the hostname, or the dotted quad if the
+ * hostname lookup fails.  It will force a DNS lookup according
+ * to the HostnameLookups setting.
+ */
 #define REMOTE_NAME (1)
+
+/* REMOTE_NOLOOKUP is like REMOTE_NAME except that a DNS lookup is
+ * never forced.
+ */
 #define REMOTE_NOLOOKUP (2)
+
+/* REMOTE_DOUBLE_REV will always force a DNS lookup, and also force
+ * a double reverse lookup, regardless of the HostnameLookups
+ * setting.  The result is the (double reverse checked) hostname,
+ * or NULL if any of the lookups fail.
+ */
 #define REMOTE_DOUBLE_REV (3)
 
 #define SATISFY_ALL 0

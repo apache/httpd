@@ -830,7 +830,7 @@ void ap_proxy_sec2hex(int t, char *y)
 BUFF *
      ap_proxy_cache_error(struct cache_req *c)
 {
-    ap_log_error(APLOG_MARK, APLOG_ERR, c->req->server,
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
 		 "proxy: error writing to cache file %s", c->tempfile);
     ap_pclosef(c->req->pool, c->fp->fd);
     c->fp = NULL;
@@ -908,7 +908,7 @@ static const char *
     err = ap_proxy_canon_netloc(r->pool, &url, &user, &password, &host, &port);
 
     if (err != NULL)
-	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
 		     "%s", err);
 
     r->hostname = host;
@@ -1243,7 +1243,7 @@ int ap_proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
 #endif /* WIN32 */
     } while (i == -1 && errno == EINTR);
     if (i == -1) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		     "proxy connect to %s port %d failed",
 		     inet_ntoa(addr->sin_addr), ntohs(addr->sin_port));
     }

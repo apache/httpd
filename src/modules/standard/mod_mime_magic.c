@@ -575,7 +575,7 @@ static int magic_rsl_add(request_rec *r, char *str)
 
     /* make sure we have a list to put it in */
     if (!req_dat) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r,
 		    MODNAME ": request config should not be NULL");
 	if (!(req_dat = magic_set_config(r))) {
 	    /* failure */
@@ -677,7 +677,7 @@ static char *rsl_strdup(request_rec *r, int start_frag, int start_pos, int len)
     /* clean up and return */
     result[res_pos] = 0;
 #if MIME_MAGIC_DEBUG
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 	     MODNAME ": rsl_strdup() %d chars: %s", res_pos - 1, result);
 #endif
     return result;
@@ -749,7 +749,7 @@ static int magic_rsl_to_request(request_rec *r)
 		else {
 		    /* should not be possible */
 		    /* abandon malfunctioning module */
-		    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+		    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r,
 				MODNAME ": bad state %d (ws)", state);
 		    return DECLINED;
 		}
@@ -793,7 +793,7 @@ static int magic_rsl_to_request(request_rec *r)
 		else {
 		    /* should not be possible */
 		    /* abandon malfunctioning module */
-		    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+		    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r,
 				MODNAME ": bad state %d (ns)", state);
 		    return DECLINED;
 		}
@@ -868,7 +868,7 @@ static int magic_process(request_rec *r)
 
     if ((fd = ap_popenf(r->pool, r->filename, O_RDONLY, 0)) < 0) {
 	/* We can't open it, but we were able to stat it. */
-	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		    MODNAME ": can't read `%s'", r->filename);
 	/* let some other handler decide what the problem is */
 	return DECLINED;
@@ -878,7 +878,7 @@ static int magic_process(request_rec *r)
      * try looking at the first HOWMANY bytes
      */
     if ((nbytes = read(fd, (char *) buf, sizeof(buf) - 1)) == -1) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		    MODNAME ": read failed: %s", r->filename);
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -1479,7 +1479,7 @@ static int fsmagic(request_rec *r, const char *fn)
 	/* We used stat(), the only possible reason for this is that the
 	 * symlink is broken.
 	 */
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r,
 		    MODNAME ": broken symlink (%s)", fn);
 	return HTTP_INTERNAL_SERVER_ERROR;
 #endif
@@ -1493,7 +1493,7 @@ static int fsmagic(request_rec *r, const char *fn)
     case S_IFREG:
 	break;
     default:
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r,
 		    MODNAME ": invalid mode 0%o.", (unsigned int)r->finfo.st_mode);
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -1560,7 +1560,7 @@ static int match(request_rec *r, unsigned char *s, int nbytes)
     struct magic *m;
 
 #if MIME_MAGIC_DEBUG
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 		MODNAME ": match conf=%x file=%s m=%s m->next=%s last=%s",
 		conf,
 		conf->magicfile ? conf->magicfile : "NULL",
@@ -1575,7 +1575,7 @@ static int match(request_rec *r, unsigned char *s, int nbytes)
 	    ap_isprint((((unsigned long) m) >> 16) & 255) &&
 	    ap_isprint((((unsigned long) m) >> 8) & 255) &&
 	    ap_isprint(((unsigned long) m) & 255)) {
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 			MODNAME ": match: POINTER CLOBBERED! "
 			"m=\"%c%c%c%c\"",
 			(((unsigned long) m) >> 24) & 255,
@@ -1590,7 +1590,7 @@ static int match(request_rec *r, unsigned char *s, int nbytes)
     for (m = conf->magic; m; m = m->next) {
 #if MIME_MAGIC_DEBUG
 	rule_counter++;
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 		    MODNAME ": line=%d desc=%s", m->lineno, m->desc);
 #endif
 
@@ -1610,7 +1610,7 @@ static int match(request_rec *r, unsigned char *s, int nbytes)
 	    while (m_cont && (m_cont->cont_level != 0)) {
 #if MIME_MAGIC_DEBUG
 		rule_counter++;
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 			MODNAME ": line=%d mc=%x mc->next=%x cont=%d desc=%s",
 			    m_cont->lineno, m_cont,
 			    m_cont->next, m_cont->cont_level,
@@ -1629,7 +1629,7 @@ static int match(request_rec *r, unsigned char *s, int nbytes)
 	/* if we get here, the main entry rule was a match */
 	/* this will be the last run through the loop */
 #if MIME_MAGIC_DEBUG
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 		    MODNAME ": rule matched, line=%d type=%d %s",
 		    m->lineno, m->type,
 		    (m->type == STRING) ? m->value.s : "");
@@ -1653,7 +1653,7 @@ static int match(request_rec *r, unsigned char *s, int nbytes)
 	m = m->next;
 	while (m && (m->cont_level != 0)) {
 #if MIME_MAGIC_DEBUG
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 			MODNAME ": match line=%d cont=%d type=%d %s",
 			m->lineno, m->cont_level, m->type,
 			(m->type == STRING) ? m->value.s : "");
@@ -1697,13 +1697,13 @@ static int match(request_rec *r, unsigned char *s, int nbytes)
 	    m = m->next;
 	}
 #if MIME_MAGIC_DEBUG
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 		    MODNAME ": matched after %d rules", rule_counter);
 #endif
 	return 1;		/* all through */
     }
 #if MIME_MAGIC_DEBUG
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 		MODNAME ": failed after %d rules", rule_counter);
 #endif
     return 0;			/* no match at all */
@@ -1750,7 +1750,7 @@ static void mprint(request_rec *r, union VALUETYPE *p, struct magic *m)
 	(void) magic_rsl_printf(r, m->desc, pp);
 	return;
     default:
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r,
 		    MODNAME ": invalid m->type (%d) in mprint().",
 		    m->type);
 	return;
@@ -1796,7 +1796,7 @@ static int mconvert(request_rec *r, union VALUETYPE *p, struct magic *m)
 	    ((p->hl[3] << 24) | (p->hl[2] << 16) | (p->hl[1] << 8) | (p->hl[0]));
 	return 1;
     default:
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r,
 		    MODNAME ": invalid type %d in mconvert().", m->type);
 	return 0;
     }
@@ -1848,7 +1848,7 @@ static int mcheck(request_rec *r, union VALUETYPE *p, struct magic *m)
     int matched;
 
     if ((m->value.s[0] == 'x') && (m->value.s[1] == '\0')) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r,
 		    MODNAME ": BOINK");
 	return 1;
     }
@@ -1893,7 +1893,7 @@ static int mcheck(request_rec *r, union VALUETYPE *p, struct magic *m)
 	break;
     default:
 	/*  bogosity, pretend that it just wasn't a match */
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r,
 		    MODNAME ": invalid type %d in mcheck().", m->type);
 	return 0;
     }
@@ -1903,7 +1903,7 @@ static int mcheck(request_rec *r, union VALUETYPE *p, struct magic *m)
     switch (m->reln) {
     case 'x':
 #if MIME_MAGIC_DEBUG
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 		    "%lu == *any* = 1", v);
 #endif
 	matched = 1;
@@ -1912,7 +1912,7 @@ static int mcheck(request_rec *r, union VALUETYPE *p, struct magic *m)
     case '!':
 	matched = v != l;
 #if MIME_MAGIC_DEBUG
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 		    "%lu != %lu = %d", v, l, matched);
 #endif
 	break;
@@ -1920,7 +1920,7 @@ static int mcheck(request_rec *r, union VALUETYPE *p, struct magic *m)
     case '=':
 	matched = v == l;
 #if MIME_MAGIC_DEBUG
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 		    "%lu == %lu = %d", v, l, matched);
 #endif
 	break;
@@ -1929,14 +1929,14 @@ static int mcheck(request_rec *r, union VALUETYPE *p, struct magic *m)
 	if (m->flag & UNSIGNED) {
 	    matched = v > l;
 #if MIME_MAGIC_DEBUG
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 			"%lu > %lu = %d", v, l, matched);
 #endif
 	}
 	else {
 	    matched = (long) v > (long) l;
 #if MIME_MAGIC_DEBUG
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 			"%ld > %ld = %d", v, l, matched);
 #endif
 	}
@@ -1946,14 +1946,14 @@ static int mcheck(request_rec *r, union VALUETYPE *p, struct magic *m)
 	if (m->flag & UNSIGNED) {
 	    matched = v < l;
 #if MIME_MAGIC_DEBUG
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 			"%lu < %lu = %d", v, l, matched);
 #endif
 	}
 	else {
 	    matched = (long) v < (long) l;
 #if MIME_MAGIC_DEBUG
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 			"%ld < %ld = %d", v, l, matched);
 #endif
 	}
@@ -1962,7 +1962,7 @@ static int mcheck(request_rec *r, union VALUETYPE *p, struct magic *m)
     case '&':
 	matched = (v & l) == l;
 #if MIME_MAGIC_DEBUG
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 		    "((%lx & %lx) == %lx) = %d", v, l, l, matched);
 #endif
 	break;
@@ -1970,7 +1970,7 @@ static int mcheck(request_rec *r, union VALUETYPE *p, struct magic *m)
     case '^':
 	matched = (v & l) != l;
 #if MIME_MAGIC_DEBUG
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 		    "((%lx & %lx) != %lx) = %d", v, l, l, matched);
 #endif
 	break;
@@ -1978,7 +1978,7 @@ static int mcheck(request_rec *r, union VALUETYPE *p, struct magic *m)
     default:
 	/* bogosity, pretend it didn't match */
 	matched = 0;
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r,
 		    MODNAME ": mcheck: can't happen: invalid relation %d.",
 		    m->reln);
 	break;
@@ -2153,7 +2153,7 @@ static int uncompress_child(void *data, child_info *pinfo)
     return (child_pid);
 #else
     execvp(compr[parm->method].argv[0], compr[parm->method].argv);
-    ap_log_error(APLOG_MARK, APLOG_ERR, parm->r->server,
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, parm->r,
 		MODNAME ": could not execute `%s'.",
 		compr[parm->method].argv[0]);
     return -1;
@@ -2179,14 +2179,14 @@ static int uncompress(request_rec *r, int method, const unsigned char *old,
 
     if (!ap_bspawn_child(sub_pool, uncompress_child, &parm, kill_always,
 			 &bin, &bout, NULL)) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		    MODNAME ": couldn't spawn uncompress process: %s", r->uri);
 	return -1;
     }
 
     if (ap_bwrite(bin, old, n) != n) {
 	ap_destroy_pool(sub_pool);
-	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		    MODNAME ": write failed.");
 	return -1;
     }
@@ -2194,7 +2194,7 @@ static int uncompress(request_rec *r, int method, const unsigned char *old,
     *newch = (unsigned char *) ap_palloc(r->pool, n);
     if ((n = ap_bread(bout, *newch, n)) <= 0) {
 	ap_destroy_pool(sub_pool);
-	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 	    MODNAME ": read failed %s", r->filename);
 	return -1;
     }
@@ -2301,7 +2301,7 @@ static int revision_suffix(request_rec *r)
     request_rec *sub;
 
 #if MIME_MAGIC_DEBUG
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 		MODNAME ": revision_suffix checking %s", r->filename);
 #endif /* MIME_MAGIC_DEBUG */
 
@@ -2320,7 +2320,7 @@ static int revision_suffix(request_rec *r)
     result = 0;
     sub_filename = ap_pstrndup(r->pool, r->filename, suffix_pos);
 #if MIME_MAGIC_DEBUG
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 		MODNAME ": subrequest lookup for %s", sub_filename);
 #endif /* MIME_MAGIC_DEBUG */
     sub = ap_sub_req_lookup_file(sub_filename, r);
@@ -2329,7 +2329,7 @@ static int revision_suffix(request_rec *r)
     if (sub->content_type) {
 	r->content_type = ap_pstrdup(r->pool, sub->content_type);
 #if MIME_MAGIC_DEBUG
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r,
 		    MODNAME ": subrequest %s got %s",
 		    sub_filename, r->content_type);
 #endif /* MIME_MAGIC_DEBUG */

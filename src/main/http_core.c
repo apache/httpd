@@ -2506,7 +2506,7 @@ static int core_translate(request_rec *r)
         return HTTP_FORBIDDEN;
     }
     if ((r->uri[0] != '/') && strcmp(r->uri, "*")) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 		     "Invalid URI in request %s", r->the_request);
 	return BAD_REQUEST;
     }
@@ -2571,7 +2571,7 @@ static int default_handler(request_rec *r)
     r->allowed |= (1 << M_GET) | (1 << M_OPTIONS);
 
     if (r->method_number == M_INVALID) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 		    "Invalid method in request %s", r->the_request);
 	return NOT_IMPLEMENTED;
     }
@@ -2583,7 +2583,7 @@ static int default_handler(request_rec *r)
     }
 
     if (r->finfo.st_mode == 0 || (r->path_info && *r->path_info)) {
-	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server, 
+	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r, 
                     "File does not exist: %s", 
 		     r->path_info 
 		         ? ap_pstrcat(r->pool, r->filename, r->path_info, NULL)
@@ -2602,7 +2602,7 @@ static int default_handler(request_rec *r)
 #endif
 
     if (f == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		     "file permissions deny server access: %s", r->filename);
         return FORBIDDEN;
     }
@@ -2625,7 +2625,7 @@ static int default_handler(request_rec *r)
 	mm = mmap(NULL, r->finfo.st_size, PROT_READ, MAP_PRIVATE,
 		  fileno(f), 0);
 	if (mm == (caddr_t)-1) {
-	    ap_log_error(APLOG_MARK, APLOG_CRIT, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_CRIT, r,
 			 "default_handler: mmap failed: %s", r->filename);
 	}
     }

@@ -103,7 +103,7 @@ static int check_safe_file(request_rec *r)
         || S_ISLNK(r->finfo.st_mode)) {
         return OK;
     }
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                 "object is not a file, directory or symlink: %s",
                 r->filename);
     return HTTP_FORBIDDEN;
@@ -246,10 +246,8 @@ static int get_path_info(request_rec *r)
 #if defined(EACCES)
             if (errno != EACCES)
 #endif
-                ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-                            "access to %s failed for %s", r->uri,
-                            ap_get_remote_host(r->connection, r->per_dir_config,
-                                            REMOTE_NOLOOKUP));
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+                            "access to %s failed", r->uri);
             return HTTP_FORBIDDEN;
         }
 #else
@@ -408,7 +406,7 @@ static int directory_walk(request_rec *r)
          */
 
         if ((res = check_symlinks(test_dirname, core_dir->opts))) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                         "Symbolic link not allowed: %s", test_dirname);
             return res;
         }
@@ -503,7 +501,7 @@ static int directory_walk(request_rec *r)
      */
     if (!S_ISDIR(r->finfo.st_mode)
         && (res = check_symlinks(r->filename, ap_allow_options(r)))) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                     "Symbolic link not allowed: %s", r->filename);
         return res;
     }
@@ -797,7 +795,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
         }
         else {
             if ((res = check_symlinks(rnew->filename, ap_allow_options(rnew)))) {
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, rnew->server,
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, rnew,
                             "Symbolic link not allowed: %s", rnew->filename);
                 rnew->status = res;
                 return rnew;
@@ -971,7 +969,7 @@ void ap_die(int type, request_rec *r)
              * dying with a recursive server error...
              */
             recursive_error = SERVER_ERROR;
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                         "Invalid error redirection directive: %s",
                         custom_response);
         }
@@ -982,7 +980,7 @@ void ap_die(int type, request_rec *r)
 static void decl_die(int status, char *phase, request_rec *r)
 {
     if (status == DECLINED) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, r,
                     "configuration error:  couldn't %s: %s", phase, r->uri);
         ap_die(SERVER_ERROR, r);
     }
@@ -1025,7 +1023,7 @@ static void process_request_internal(request_rec *r)
          * headers!  Have to dink things even to make sure the error message
          * comes through...
          */
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                     "client sent illegal HTTP/0.9 request: %s", r->uri);
         r->header_only = 0;
         ap_die(BAD_REQUEST, r);
@@ -1041,7 +1039,7 @@ static void process_request_internal(request_rec *r)
 	 * HTTP/1.1 mentions twice (S9, S14.23) that a request MUST contain
 	 * a Host: header, and the server MUST respond with 400 if it doesn't.
          */
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                "client sent HTTP/1.1 request without hostname (see RFC2068 section 9, and 14.23): %s", r->uri);
         ap_die(BAD_REQUEST, r);
         return;

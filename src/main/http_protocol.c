@@ -796,10 +796,8 @@ request_rec *ap_read_request(conn_rec *conn)
         ap_kill_timeout(r);
         if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
 
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                         "request failed for %s, reason: URI too long",
-                         ap_get_remote_host(r->connection, r->per_dir_config,
-                                            REMOTE_NAME));
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+                         "request failed: URI too long");
             ap_send_error_response(r, 0);
             ap_bflush(r->connection->client);
             ap_log_transaction(r);
@@ -812,10 +810,8 @@ request_rec *ap_read_request(conn_rec *conn)
         get_mime_headers(r);
         ap_kill_timeout(r);
         if (r->status != HTTP_REQUEST_TIME_OUT) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                         "request failed for %s: error reading the headers",
-                         ap_get_remote_host(r->connection, r->per_dir_config, 
-                                            REMOTE_NAME));
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+                         "request failed: error reading the headers");
             ap_send_error_response(r, 0);
             ap_bflush(r->connection->client);
             ap_log_transaction(r);
@@ -926,8 +922,8 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
         return DECLINED;
 
     if (!ap_auth_name(r)) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
-		    r->server, "need AuthName: %s", r->uri);
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
+		    r, "need AuthName: %s", r->uri);
         return SERVER_ERROR;
     }
 
@@ -938,7 +934,7 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 
     if (strcasecmp(ap_getword(r->pool, &auth_line, ' '), "Basic")) {
         /* Client tried to authenticate using wrong auth scheme */
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                     "client used wrong authentication scheme: %s", r->uri);
         ap_note_basic_auth_failure(r);
         return AUTH_REQUIRED;
@@ -1367,12 +1363,12 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
 
     if (tenc) {
         if (strcasecmp(tenc, "chunked")) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                         "Unknown Transfer-Encoding %s", tenc);
             return HTTP_NOT_IMPLEMENTED;
         }
         if (r->read_body == REQUEST_CHUNKED_ERROR) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                         "chunked Transfer-Encoding forbidden: %s", r->uri);
             return (lenp) ? HTTP_BAD_REQUEST : HTTP_LENGTH_REQUIRED;
         }
@@ -1385,7 +1381,7 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
         while (ap_isdigit(*pos) || ap_isspace(*pos))
             ++pos;
         if (*pos != '\0') {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                         "Invalid Content-Length %s", lenp);
             return HTTP_BAD_REQUEST;
         }
@@ -1395,7 +1391,7 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
 
     if ((r->read_body == REQUEST_NO_BODY) &&
         (r->read_chunked || (r->remaining > 0))) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                     "%s with body is not allowed for %s", r->method, r->uri);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
@@ -1669,11 +1665,8 @@ API_EXPORT(long) ap_send_fd_length(FILE *f, request_rec *r, long length)
                 else if (errno == EAGAIN)
                     continue;
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_INFO, r->server,
-                     "%s client stopped connection before send body completed",
-                                ap_get_remote_host(r->connection,
-                                                r->per_dir_config,
-                                                REMOTE_NAME));
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+                     "client stopped connection before send body completed");
                     ap_bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
                     break;
@@ -1786,11 +1779,8 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
                 else if (errno == EAGAIN)
                     continue;
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_INFO, r->server,
-                     "%s client stopped connection before send body completed",
-                                ap_get_remote_host(r->connection,
-                                                r->per_dir_config,
-                                                REMOTE_NAME));
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+                     "client stopped connection before send body completed");
                     ap_bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
                     break;
@@ -1854,11 +1844,8 @@ API_EXPORT(size_t) ap_send_mmap(void *mm, request_rec *r, size_t offset,
                 else if (errno == EAGAIN)
                     continue;
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_INFO, r->server,
-                     "%s client stopped connection before send mmap completed",
-                                ap_get_remote_host(r->connection,
-                                                r->per_dir_config,
-                                                REMOTE_NAME));
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+                     "client stopped connection before send mmap completed");
                     ap_bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
                     break;

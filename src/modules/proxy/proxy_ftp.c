@@ -570,7 +570,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 
     sock = ap_psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock == -1) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		     "proxy: error creating socket");
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -579,7 +579,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	if (setsockopt(sock, SOL_SOCKET, SO_RCVBUF,
 		       (const char *) &conf->recv_buffer_size, sizeof(int))
 	    == -1) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 			 "setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
 	}
     }
@@ -587,7 +587,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (void *) &one,
 		   sizeof(one)) == -1) {
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */
-	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		     "proxy: error setting reuseaddr option: setsockopt(SO_REUSEADDR)");
 	ap_pclosesocket(p, sock);
 	return HTTP_INTERNAL_SERVER_ERROR;
@@ -771,7 +771,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 /* try to set up PASV data connection first */
     dsock = ap_psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (dsock == -1) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		     "proxy: error creating PASV socket");
 	ap_bclose(f);
 	ap_kill_timeout(r);
@@ -781,7 +781,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     if (conf->recv_buffer_size) {
 	if (setsockopt(dsock, SOL_SOCKET, SO_RCVBUF,
 	       (const char *) &conf->recv_buffer_size, sizeof(int)) == -1) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 			 "setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
 	}
     }
@@ -793,7 +793,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     i = ap_bgets(pasv, sizeof(pasv), f);
 
     if (i == -1) {
-	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
 		     "PASV: control connection is toast");
 	ap_pclosesocket(p, dsock);
 	ap_bclose(f);
@@ -848,7 +848,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     if (!pasvmode) {		/* set up data connection */
 	clen = sizeof(struct sockaddr_in);
 	if (getsockname(sock, (struct sockaddr *) &server, &clen) < 0) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 			 "proxy: error getting socket address");
 	    ap_bclose(f);
 	    ap_kill_timeout(r);
@@ -857,7 +857,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 
 	dsock = ap_psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (dsock == -1) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 			 "proxy: error creating socket");
 	    ap_bclose(f);
 	    ap_kill_timeout(r);
@@ -867,7 +867,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	if (setsockopt(dsock, SOL_SOCKET, SO_REUSEADDR, (void *) &one,
 		       sizeof(one)) == -1) {
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */
-	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 			 "proxy: error setting reuseaddr option");
 	    ap_pclosesocket(p, dsock);
 	    ap_bclose(f);
@@ -881,7 +881,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    char buff[22];
 
 	    ap_snprintf(buff, sizeof(buff), "%s:%d", inet_ntoa(server.sin_addr), server.sin_port);
-	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 			 "proxy: error binding to ftp data socket %s", buff);
 	    ap_bclose(f);
 	    ap_pclosesocket(p, dsock);
@@ -1048,7 +1048,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    csd = accept(dsock, (struct sockaddr *) &server, &clen);
 	while (csd == -1 && errno == EINTR);
 	if (csd == -1) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 			 "proxy: failed to accept data connection");
 	    ap_pclosesocket(p, dsock);
 	    ap_bclose(f);

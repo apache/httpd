@@ -169,7 +169,7 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
     FILE *f;
     struct stat finfo;
 
-    ap_log_error(APLOG_MARK, show_errno|APLOG_ERR, r->server, 
+    ap_log_rerror(APLOG_MARK, show_errno|APLOG_ERR, r, 
 		"%s: %s", error, r->filename);
 
     if (!conf->logname ||
@@ -431,7 +431,7 @@ static int cgi_handler(request_rec *r)
     if (!ap_bspawn_child(r->main ? r->main->pool : r->pool, cgi_child,
 			 (void *) &cld, kill_after_timeout,
 			 &script_out, &script_in, &script_err)) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		    "couldn't spawn child process: %s", r->filename);
 	return SERVER_ERROR;
     }

@@ -275,10 +275,10 @@ API_EXPORT(void) ap_error_log2stderr (server_rec *s) {
         dup2(fileno(s->error_log),STDERR_FILENO);
 }
 
-API_EXPORT(void) ap_log_error (const char *file, int line, int level,
-			      const server_rec *s, const char *fmt, ...)
+static void log_error_core (const char *file, int line, int level,
+			   const server_rec *s, const request_rec *r,
+			   const char *fmt, va_list args)
 {
-    va_list args;
     char errstr[MAX_STRING_LEN];
     size_t len;
     int save_errno = errno;
@@ -346,6 +346,15 @@ API_EXPORT(void) ap_log_error (const char *file, int line, int level,
 	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
 		"%s(%d): ", file, line);
     }
+    if (r) {
+	/* XXX: TODO: add a method of selecting whether logged client
+	 * addresses are in dotted quad or resolved form... dotted
+	 * quad is the most secure, which is why I'm implementing it
+	 * first. -djg
+	 */
+	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
+		"(client %s): ", r->connection->remote_ip);
+    }
     if (!(level & APLOG_NOERRNO)
 	&& (save_errno != 0)
 #ifdef WIN32
@@ -399,9 +408,7 @@ API_EXPORT(void) ap_log_error (const char *file, int line, int level,
     }
 #endif
 
-    va_start(args, fmt);
     len += ap_vsnprintf(errstr + len, sizeof(errstr) - len, fmt, args);
-    va_end(args);
 
     /* NULL if we are logging to syslog */
     if (logf) {
@@ -416,6 +423,25 @@ API_EXPORT(void) ap_log_error (const char *file, int line, int level,
 #endif
 }
     
+API_EXPORT(void) ap_log_error (const char *file, int line, int level,
+			      const server_rec *s, const char *fmt, ...)
+{
+    va_list args;
+
+    va_start(args, fmt);
+    log_error_core(file, line, level, s, NULL, fmt, args);
+    va_end(args);
+}
+
+API_EXPORT(void) ap_log_rerror (const char *file, int line, int level,
+			      const request_rec *r, const char *fmt, ...)
+{
+    va_list args;
+
+    va_start(args, fmt);
+    log_error_core(file, line, level, r->server, r, fmt, args);
+    va_end(args);
+}
 
 void ap_log_pid (pool *p, char *fname)
 {

@@ -1089,7 +1089,7 @@ static int index_directory(request_rec *r, autoindex_config_rec * autoindex_conf
     char direction;
 
     if (!(d = ap_popendir(r->pool, name))) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		    "Can't open directory for index: %s", r->filename);
 	return HTTP_FORBIDDEN;
     }
@@ -1223,7 +1223,7 @@ static int handle_autoindex(request_rec *r)
 	return index_directory(r, d);
     }
     else {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 		     "Directory index forbidden by rule: %s", r->filename);
 	return HTTP_FORBIDDEN;
     }

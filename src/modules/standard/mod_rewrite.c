@@ -1097,7 +1097,7 @@ static int hook_uri2file(request_rec *r)
              * we can actually use it!
              */
             if (!proxy_available) {
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                              "attempt to make remote request from mod_rewrite "
                              "without proxy enabled: %s", r->filename);
                 return FORBIDDEN;
@@ -1334,7 +1334,7 @@ static int hook_fixup(request_rec *r)
      */
     if (!(ap_allow_options(r) & (OPT_SYM_LINKS | OPT_SYM_OWNER))) {
         /* FollowSymLinks is mandatory! */
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                      "Options FollowSymLinks or SymLinksIfOwnerMatch is off "
                      "which implies that RewriteRule directive is forbidden: "
                      "%s", r->filename);
@@ -2614,8 +2614,8 @@ static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
             if (cpT != NULL) {
                 n = strlen(cpT);
                 if (cpO + n >= newuri + sizeof(newuri)) {
-                    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
-                                 r->server, "insufficient space in "
+                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
+                                 r, "insufficient space in "
                                  "expand_map_lookups, aborting");
                     return;
                 }
@@ -2625,8 +2625,8 @@ static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
             else {
                 n = strlen(defaultvalue);
                 if (cpO + n >= newuri + sizeof(newuri)) {
-                    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 
-                                 r->server, "insufficient space in "
+                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 
+                                 r, "insufficient space in "
                                  "expand_map_lookups, aborting");
                     return;
                 }
@@ -2640,8 +2640,8 @@ static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
                 cpT = cpI+strlen(cpI);
             n = cpT-cpI;
             if (cpO + n >= newuri + sizeof(newuri)) {
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 
-                             r->server, "insufficient space in "
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 
+                             r, "insufficient space in "
                              "expand_map_lookups, aborting");
                 return;
             }
@@ -2691,7 +2691,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
         if (strcmp(s->name, name) == 0) {
             if (s->type == MAPTYPE_TXT) {
                 if (stat(s->checkfile, &st) == -1) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                                  "mod_rewrite: can't access text RewriteMap "
                                  "file %s", s->checkfile);
                     rewritelog(r, 1, "can't open RewriteMap file, "
@@ -2726,7 +2726,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             else if (s->type == MAPTYPE_DBM) {
 #ifndef NO_DBM_REWRITEMAP
                 if (stat(s->checkfile, &st) == -1) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                                  "mod_rewrite: can't access DBM RewriteMap "
                                  "file %s", s->checkfile);
                     rewritelog(r, 1, "can't open DBM RewriteMap file, "
@@ -2786,7 +2786,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             }
             else if (s->type == MAPTYPE_RND) {
                 if (stat(s->checkfile, &st) == -1) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                                  "mod_rewrite: can't access text RewriteMap "
                                  "file %s", s->checkfile);
                     rewritelog(r, 1, "can't open RewriteMap file, "
@@ -4092,7 +4092,7 @@ static void fd_lock(request_rec *r, int fd)
 #endif
 
     if (rc < 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                      "mod_rewrite: failed to lock file descriptor");
         exit(1);
     }
@@ -4122,7 +4122,7 @@ static void fd_unlock(request_rec *r, int fd)
 #endif
 
     if (rc < 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                      "mod_rewrite: failed to unlock file descriptor");
         exit(1);
     }

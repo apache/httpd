@@ -406,7 +406,7 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
     /* must be a relative URL to be combined with base */
     if (strchr(base, '/') == NULL && (!strncmp(value, "../", 3)
         || !strcmp(value, ".."))) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                     "invalid base directive in map file: %s", r->uri);
         return NULL;
     }
@@ -466,7 +466,7 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
                                    value */
         }
         else if (directory) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                         "invalid directory name in map file: %s", r->uri);
             return NULL;
         }
@@ -867,7 +867,7 @@ static int imap_handler(request_rec *r)
                                                  we failed. They lose! */
 
 need_2_fields:
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 		"map file %s, line %d syntax error: requires at "
                 "least two fields", r->uri, imap->line_number);
     /* fall through */

@@ -681,7 +681,7 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
     }
 
     if (!*cp) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                     "Syntax error in type map --- no ':': %s", r->filename);
         return NULL;
     }
@@ -691,7 +691,7 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
     } while (*cp && ap_isspace(*cp));
 
     if (!*cp) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                     "Syntax error in type map --- no header body: %s",
                     r->filename);
         return NULL;
@@ -713,7 +713,7 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
 
     map = ap_pfopen(neg->pool, rr->filename, "r");
     if (map == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                     "cannot access type map file: %s", rr->filename);
         return HTTP_FORBIDDEN;
     }
@@ -805,7 +805,7 @@ static int read_types_multi(negotiation_state *neg)
     dirp = ap_popendir(neg->pool, neg->dir_name);
 
     if (dirp == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                     "cannot read directory for multi: %s", neg->dir_name);
         return HTTP_FORBIDDEN;
     }
@@ -2052,7 +2052,7 @@ static int handle_map_file(request_rec *r)
     }
 
     if (!best) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                     "no acceptable variant: %s", r->filename);
 
         set_neg_headers(r, neg, na_result);
@@ -2139,7 +2139,7 @@ static int handle_multi(request_rec *r)
     }
 
     if (!best) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                     "no acceptable variant: %s", r->filename);
 
         set_neg_headers(r, neg, na_result);

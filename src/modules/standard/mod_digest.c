@@ -112,7 +112,7 @@ static char *get_hash(request_rec *r, char *user, char *auth_pwfile)
     char *w, *x;
 
     if (!(f = ap_pcfg_openfile(r->pool, auth_pwfile))) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		    "Could not open password file: %s", auth_pwfile);
 	return NULL;
     }
@@ -148,7 +148,7 @@ static int get_digest_rec(request_rec *r, digest_header_rec * response)
 	return DECLINED;
 
     if (!ap_auth_name(r)) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 		    "need AuthName: %s", r->uri);
 	return SERVER_ERROR;
     }
@@ -160,7 +160,7 @@ static int get_digest_rec(request_rec *r, digest_header_rec * response)
 
     if (strcasecmp(ap_getword(r->pool, &auth_line, ' '), "Digest")) {
 	/* Client tried to authenticate using wrong auth scheme */
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 		    "client used wrong authentication scheme: %s", r->uri);
 	ap_note_digest_auth_failure(r);
 	return AUTH_REQUIRED;
@@ -297,13 +297,13 @@ static int authenticate_digest_user(request_rec *r)
 	return DECLINED;
 
     if (!(a1 = get_hash(r, c->user, sec->pwfile))) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 		    "user %s not found: %s", c->user, r->uri);
 	ap_note_digest_auth_failure(r);
 	return AUTH_REQUIRED;
     }
     if (strcmp(response->digest, find_digest(r, response, a1))) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 		    "user %s: password mismatch: %s", c->user, r->uri);
 	ap_note_digest_auth_failure(r);
 	return AUTH_REQUIRED;

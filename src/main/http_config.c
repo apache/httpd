@@ -510,7 +510,7 @@ int ap_invoke_handler(request_rec *r)
     }
 
     if (result == NOT_IMPLEMENTED && r->handler) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
             "handler \"%s\" not found for: %s", r->handler, r->filename);
     }
 
@@ -1243,7 +1243,7 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
 	ap_cfg_closefile(f);
 
 	if (errmsg) {
-	    ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, r->server, "%s: %s",
+	    ap_log_rerror(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, r, "%s: %s",
                         filename, errmsg);
             return HTTP_INTERNAL_SERVER_ERROR;
 	}
@@ -1254,7 +1254,7 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
 	if (errno == ENOENT || errno == ENOTDIR)
 	    dc = NULL;
 	else {
-	    ap_log_error(APLOG_MARK, APLOG_CRIT, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_CRIT, r,
 			"%s pcfg_openfile: unable to check htaccess file, ensure it is readable",
 			filename);
 	    return HTTP_FORBIDDEN;

@@ -252,7 +252,7 @@ static int anon_authenticate_basic_user(request_rec *r)
 	       || ((strpbrk("@", sent_pw) != NULL)
 		   && (strpbrk(".", sent_pw) != NULL)))) {
 	if (sec->auth_anon_logemail && ap_is_initial_req(r)) {
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r,
 			"Anonymous: Passwd <%s> Accepted",
 			sent_pw ? sent_pw : "\'none\'");
 	}
@@ -260,7 +260,7 @@ static int anon_authenticate_basic_user(request_rec *r)
     }
     else {
 	if (sec->auth_anon_authoritative) {
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 			"Anonymous: Authoritative, Passwd <%s> not accepted",
 			sent_pw ? sent_pw : "\'none\'");
 	    return AUTH_REQUIRED;
