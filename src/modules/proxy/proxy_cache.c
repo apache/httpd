@@ -103,7 +103,6 @@ typedef struct {
 static long block_size = 512;	/* this must be a power of 2 */
 static long61_t curbytes, cachesize;
 static time_t garbage_now, garbage_expire;
-static char *filename;
 static mutex *garbage_mutex = NULL;
 
 
@@ -348,10 +347,11 @@ static void help_proxy_garbage_coll(request_rec *r)
     const struct cache_conf *conf = &pconf->cache;
     array_header *files;
     struct gc_ent *fent;
+    char *filename;
     int i;
-    char *filename = ap_palloc(r->pool, strlen(cachedir) + HASH_LEN + 2);
 
     cachedir = conf->root;
+    filename = ap_palloc(r->pool, strlen(cachedir) + HASH_LEN + 2);
     /* configured size is given in kB. Make it bytes, convert to long61_t: */
     cachesize.lower = cachesize.upper = 0;
     add_long61(&cachesize, conf->space << 10);
@@ -416,8 +416,10 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 #endif
     struct gc_ent *fent;
     int nfiles = 0;
+    char *filename;
 
     ap_snprintf(cachedir, sizeof(cachedir), "%s%s", cachebasedir, cachesubdir);
+    filename = ap_palloc(r->pool, strlen(cachedir) + HASH_LEN + 2);
     Explain1("GC Examining directory %s", cachedir);
     dir = opendir(cachedir);
     if (dir == NULL) {
