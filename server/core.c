@@ -2041,7 +2041,7 @@ static const char *set_timeout(cmd_parms *cmd, void *dummy, const char *arg)
         return err;
     }
 
-    cmd->server->timeout = atoi(arg);
+    cmd->server->timeout = apr_time_from_sec(atoi(arg));
     return NULL;
 }
 
@@ -3310,14 +3310,14 @@ static int net_time_filter(ap_filter_t *f, apr_bucket_brigade *b,
         if (*first_line) {
             apr_setsocketopt(csd, APR_SO_TIMEOUT,
                              (int)(keptalive
-                      ? f->c->base_server->keep_alive_timeout * APR_USEC_PER_SEC
-                      : f->c->base_server->timeout * APR_USEC_PER_SEC));
+                      ? f->c->base_server->keep_alive_timeout
+                      : f->c->base_server->timeout));
             *first_line = 0;
         }
         else {
             if (keptalive) {
                 apr_setsocketopt(csd, APR_SO_TIMEOUT,
-                         (int)(f->c->base_server->timeout * APR_USEC_PER_SEC));
+                                 (int)(f->c->base_server->timeout));
             }
         }
     }

@@ -604,7 +604,7 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
                 
                 rv = apr_poll(ctx->pollset,
                               &num_events,
-                              f->r->server->timeout * APR_USEC_PER_SEC);
+                              f->r->server->timeout);
                 if (rv || dc->debug >= DBGLVL_GORY) {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG,
                                   rv, f->r, "apr_poll()");
@@ -696,7 +696,7 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
          * timeout; we don't care if we don't return from apr_file_read() for a while... 
          */
         rv = apr_file_pipe_timeout_set(ctx->proc->out, 
-                                  r->server->timeout * APR_USEC_PER_SEC);
+                                       r->server->timeout);
         if (rv) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "apr_file_pipe_timeout_set(child output)");

@@ -395,7 +395,8 @@ static int display_info(request_rec *r)
             ap_rprintf(r, "<dt><strong>Timeouts:</strong> "
                         "<tt>connection: %d &nbsp;&nbsp; "
                         "keep-alive: %d</tt></dt>",
-                        serv->timeout, serv->keep_alive_timeout);
+                        (int)(apr_time_sec(serv->timeout)), 
+                        (int)(apr_time_sec(serv->timeout)));
             ap_mpm_query(AP_MPMQ_MAX_DAEMON_USED, &max_daemons);
             ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded);
             ap_mpm_query(AP_MPMQ_IS_FORKED, &forked);

@@ -91,7 +91,7 @@ static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    cmd->server->keep_alive_timeout = atoi(arg);
+    cmd->server->keep_alive_timeout = apr_time_from_sec(atoi(arg));
     return NULL;
 }
 
