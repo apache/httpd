@@ -1,5 +1,8 @@
 Changes with Apache 2.0.44
 
+  *) mod_cgid: Terminate CGI scripts when the client connection 
+     drops.  PR 8388  [Jeff Trawick]
+
   *) Rearrange OpenSSL engine initialization to support RAND 
      redirection on crypto accelerator. 
      [Frederic DONNAT <frederic.donnat@zencod.com>]

@@ -151,8 +151,9 @@ static int is_scriptaliased(request_rec *r)
 #define DEFAULT_BUFBYTES 1024 
 #define DEFAULT_SOCKET  DEFAULT_REL_RUNTIMEDIR "/cgisock"
 
-#define CGI_REQ 1
-#define SSI_REQ 2
+#define CGI_REQ    1
+#define SSI_REQ    2
+#define GETPID_REQ 3 /* get the pid of script created for prior request */
 
 /* DEFAULT_CGID_LISTENBACKLOG controls the max depth on the unix socket's
  * pending connection queue.  If a bunch of cgi requests arrive at about
@@ -266,7 +267,8 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
 }
 #endif
 
-static int get_req(int fd, request_rec *r, char **argv0, char ***env, int *req_type) 
+static int get_req(int fd, request_rec *r, char **argv0, char ***env, int *req_type,
+                   unsigned long *conn_id) 
 { 
     int i, len, j, rc; 
     unsigned char *data; 
@@ -281,6 +283,14 @@ static int get_req(int fd, request_rec *r, char **argv0, char ***env, int *req_t
     if (rc != sizeof(int)) {
         return 1;
     }
+    rc = read(fd, conn_id, sizeof(*conn_id));
+    if (rc != sizeof(*conn_id)) {
+        return 1;
+    }
+    if (*req_type == GETPID_REQ) {
+        return 0;
+    }
+
     rc = read(fd, &j, sizeof(int));
     if (rc != sizeof(int)) {
         return 1;
@@ -410,11 +420,21 @@ static void send_req(int fd, request_rec *r, char *argv0, char **env, int req_ty
                      "write to cgi daemon process");
     }
 
+    /* Write the connection id.  The daemon will use this
+     * as a hash value to find the script pid when it is
+     * time for that process to be cleaned up.
+     */
+
+    if (write(fd, &r->connection->id, sizeof(r->connection->id)) < 0) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r, 
+                     "write to cgi daemon process"); 
+    }
+
     /* Write the number of entries in the environment. */
     if (write(fd, &i, sizeof(int)) < 0) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r, 
                      "write to cgi daemon process"); 
-        }     
+    }
 
     for (i = 0; env[i]; i++) { 
         data = apr_pstrcat(r->pool, data, env[i], "\n", NULL); 
@@ -511,6 +531,7 @@ static int cgid_server(void *data)
     server_rec *main_server = data;
     cgid_server_conf *sconf = ap_get_module_config(main_server->module_config,
                                                    &cgid_module); 
+    apr_hash_t *script_hash = apr_hash_make(pcgi);
 
     apr_pool_create(&ptrans, pcgi); 
 
@@ -574,6 +595,7 @@ static int cgid_server(void *data)
         apr_procattr_t *procattr = NULL;
         apr_proc_t *procnew = NULL;
         apr_file_t *inout;
+        unsigned long conn_id;
 
         apr_pool_clear(ptrans);
 
@@ -591,7 +613,7 @@ static int cgid_server(void *data)
         r = apr_pcalloc(ptrans, sizeof(request_rec)); 
         procnew = apr_pcalloc(ptrans, sizeof(*procnew));
         r->pool = ptrans; 
-        rc = get_req(sd2, r, &argv0, &env, &req_type); 
+        rc = get_req(sd2, r, &argv0, &env, &req_type, &conn_id); 
         if (rc) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                          main_server,
@@ -599,6 +621,20 @@ static int cgid_server(void *data)
             close(sd2);
             continue;
         }
+
+        if (req_type == GETPID_REQ) {
+            pid_t pid;
+
+            pid = (pid_t)apr_hash_get(script_hash, &conn_id, sizeof(conn_id));
+            if (write(sd2, &pid, sizeof(pid)) != sizeof(pid)) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0,
+                             main_server,
+                             "Error writing pid %" APR_PID_T_FMT " to handler", pid);
+            }
+            close(sd2);
+            continue;
+        }
+
         apr_os_file_put(&r->server->error_log, &errfileno, 0, r->pool);
         apr_os_file_put(&inout, &sd2, 0, r->pool);
 
@@ -657,22 +693,10 @@ static int cgid_server(void *data)
                               "couldn't create child process: %d: %s", rc, 
                               apr_filename_of_pathname(r->filename));
             }
+            else {
+                apr_hash_set(script_hash, &conn_id, sizeof(conn_id), (void *)procnew->pid);
+            }
         }
-        /* SNAFU: no call to apr_pool_note_subprocess() to cause the
-         *        CGI to be cleaned up when the request ends (in case
-         *        client drops connection)...  can't write the pid back
-         *        to cgid_handler() because by the time we know the pid
-         *        the new CGI is already started and potentially writing
-         *        headers and body back to the handler...
-         *        perhaps cgid_handler() needs to provide a key with
-         *        a request to which cgid daemon will associate the
-         *        CGI pid...  at request_rec cleanup time, that key
-         *        gets sent back to cgid_handler() telling it to kill
-         *        whatever pid is associated with the key...
-         *        2 flows per request, which isn't cool...  but 
-         *        having the CGI running after client killed connection
-         *        isn't cool either...
-         */
     } 
     return -1; 
 } 
@@ -1029,6 +1053,84 @@ static void discard_script_output(apr_bucket_brigade *bb)
  * 
  * Actual cgid handling... 
  */ 
+
+struct cleanup_script_info {
+    request_rec *r;
+    unsigned long conn_id;
+    cgid_server_conf *conf;
+};
+
+static apr_status_t dead_yet(pid_t pid, apr_interval_time_t max_wait)
+{
+    apr_interval_time_t interval = 10000; /* 10 ms */
+    apr_interval_time_t total = 0;
+
+    do {
+        if (kill(pid, 0) < 0) {
+            return APR_SUCCESS;
+        }
+        apr_sleep(interval);
+        total = total + interval;
+        if (interval < 500000) {
+            interval *= 2;
+        }
+    } while (total < max_wait);
+    return APR_EGENERAL;
+}
+
+static apr_status_t cleanup_nonchild_process(request_rec *r, pid_t pid)
+{
+    kill(pid, SIGTERM); /* in case it isn't dead yet */
+    if (dead_yet(pid, apr_time_from_sec(3)) == APR_SUCCESS) {
+        return APR_SUCCESS;
+    }
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                  "CGI process %" APR_PID_T_FMT " didn't exit, sending SIGKILL",
+                  pid);
+    kill(pid, SIGKILL);
+    if (dead_yet(pid, apr_time_from_sec(3)) == APR_SUCCESS) {
+        return APR_SUCCESS;
+    }
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                  "CGI process %" APR_PID_T_FMT " didn't exit, sending SIGKILL again",
+                  pid);
+    kill(pid, SIGKILL);
+
+    return APR_EGENERAL;
+}
+
+static apr_status_t cleanup_script(void *vptr)
+{
+    struct cleanup_script_info *info = vptr;
+    int sd;
+    int rc;
+    int req_type = GETPID_REQ;
+    pid_t pid;
+
+    rc = connect_to_daemon(&sd, info->r, info->conf);
+    if (rc != OK) {
+        return APR_EGENERAL;
+    }
+    if (write(sd, &req_type, sizeof(req_type)) != sizeof(req_type)) {
+        close(sd);
+        return APR_EGENERAL;
+    }
+    if (write(sd, &info->conn_id, sizeof(info->conn_id)) != sizeof(info->conn_id)) {
+        close(sd);
+        return APR_EGENERAL;
+    }
+    /* wait for pid of script */
+    if (read(sd, &pid, sizeof(pid)) != sizeof(pid)) {
+        close(sd);
+        return APR_EGENERAL;
+    }
+    close(sd);
+
+    cleanup_nonchild_process(info->r, pid);
+
+    return APR_SUCCESS;
+}
+
 static int cgid_handler(request_rec *r) 
 { 
     conn_rec *c = r->connection;
@@ -1042,6 +1144,7 @@ static int cgid_handler(request_rec *r)
     int sd;
     char **env; 
     apr_file_t *tempsock;
+    struct cleanup_script_info *info;
 
     if (strcmp(r->handler,CGI_MAGIC_TYPE) && strcmp(r->handler,"cgi-script"))
         return DECLINED;
@@ -1111,6 +1214,13 @@ static int cgid_handler(request_rec *r)
 
     send_req(sd, r, argv0, env, CGI_REQ); 
 
+    info = apr_palloc(r->pool, sizeof(struct cleanup_script_info));
+    info->r = r;
+    info->conn_id = r->connection->id;
+    info->conf = conf;
+    apr_pool_cleanup_register(r->pool, info,
+                              cleanup_script,
+                              apr_pool_cleanup_null);
     /* We are putting the socket discriptor into an apr_file_t so that we can
      * use a pipe bucket to send the data to the client.
      * Note that this does not register a cleanup for the socket.  We did
@@ -1417,6 +1527,7 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
     apr_file_t *tempsock = NULL;
     cgid_server_conf *conf = ap_get_module_config(r->server->module_config,
                                                   &cgid_module); 
+    struct cleanup_script_info *info;
 
     add_ssi_vars(r, f->next);
     env = ap_create_environment(r->pool, r->subprocess_env);
@@ -1432,6 +1543,17 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
 
     send_req(sd, r, command, env, SSI_REQ); 
 
+    info = apr_palloc(r->pool, sizeof(struct cleanup_script_info));
+    info->r = r;
+    info->conn_id = r->connection->id;
+    info->conf = conf;
+    /* for this type of request, the script is invoked through an
+     * intermediate shell process...  cleanup_script is only able 
+     * to knock out the shell process, not the actual script
+     */
+    apr_pool_cleanup_register(r->pool, info,
+                              cleanup_script,
+                              apr_pool_cleanup_null);
     /* We are putting the socket discriptor into an apr_file_t so that we can
      * use a pipe bucket to send the data to the client.
      * Note that this does not register a cleanup for the socket.  We did
