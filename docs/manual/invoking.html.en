@@ -32,11 +32,27 @@ The following options are recognized on the httpd command line:
 <EM>serverroot</EM>. This can be overridden by the ServerRoot command in the
 configuration file. The default is <CODE>/usr/local/apache</CODE>.
 
+<DT><CODE>-D</CODE> <EM>name</EM>
+<DD>Define a name for use in in 
+<A HREF="mod/core.html#ifdefine">IfDefine</A> directives.
+This option can be used to optionally enable certain functionality in the
+configuration file, or to use a common configuration for
+several independent hosts, where host specific information is enclosed in
+&lt;IfDefine&gt; sections.
+
 <DT><CODE>-f</CODE> <EM>config</EM>
 <DD>Execute the commands in the file <EM>config</EM> on startup. If
 <EM>config</EM> does not begin with a <CODE>/</CODE>, then it is taken to be a
 path relative to the <A HREF="mod/core.html#serverroot">ServerRoot</A>. The
 default is <CODE>conf/httpd.conf</CODE>.
+
+<DT><CODE>-C</CODE> <EM>"directive"</EM>
+<DD>Process the given apache "directive" (just as if it had been part of a
+configuration file) <STRONG>before</STRONG> actually reading the regular configuration files.
+
+<DT><CODE>-c</CODE> <EM>"directive"</EM>
+<DD>Process the given apache "directive" <STRONG>after</STRONG> reading
+all the regular configuration files.
 
 <DT><CODE>-X</CODE>
 <DD>Run in single-process mode, for internal debugging purposes only; the
@@ -47,7 +63,7 @@ use this mode to provide ordinary web service.
 <DD>Print the version of httpd and its build date, and then exit.
 
 <DT><A NAME="version"><CODE>-V</CODE></A>
-<DD>Print the base version of httpd, its sub-version if defined, its
+<DD>Print the base version of httpd, its
 build date, and a list of compile time settings which influence the
 behavior and performance of the apache server (<EM>e.g.</EM>,
 <SAMP>-DUSE_MMAP_FILES</SAMP>),
@@ -63,6 +79,12 @@ places where the directive is valid. (New in Apache 1.2)
 <DT><CODE>-S</CODE>
 <DD>Show the settings as parsed from the config file (currently only
 shows a breakdown of the vhost settings).
+
+<DT><CODE>-t</CODE>
+<DD>Test the configuration file syntax (i.e., read all configuration files
+and interpret them) but do not start the server. If the configuration contains
+errors, display an error message and exit with a non-zero exit status,
+otherwise display "Syntax OK" and terminate with a zero exit status.
 
 <DT><CODE>-?</CODE>
 <DD>Print a list of the httpd options, and then exit.
