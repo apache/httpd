@@ -811,26 +811,44 @@ API_EXPORT(int) ap_method_number_of(const char *method)
     return M_INVALID;
 }
 
+/*
+ * Turn a known method number into a name.  Doesn't work for
+ * extension methods, obviously.
+ */
 API_EXPORT(const char *) ap_method_name_of(int methnum) {
-    static const char *AP_HTTP_METHODS[] = {
-	[M_GET]       = "GET",
-	[M_PUT]       = "PUT",
-	[M_POST]      = "POST",
-	[M_DELETE]    = "DELETE",
-	[M_CONNECT]   = "CONNECT",
-	[M_OPTIONS]   = "OPTIONS",
-	[M_TRACE]     = "TRACE",
-	[M_PATCH]     = "PATCH",
-	[M_PROPFIND]  = "PROPFIND",
-	[M_PROPPATCH] = "PROPPATCH",
-	[M_MKCOL]     = "MKCOL",
-	[M_COPY]      = "COPY",
-	[M_MOVE]      = "MOVE",
-	[M_LOCK]      = "LOCK",
-	[M_UNLOCK]    = "UNLOCK",
-	[M_INVALID]   = NULL
-    };
-    
+    static const char *AP_HTTP_METHODS[METHODS] = { NULL };
+
+    /*
+     * This is ugly, but the previous incantation made Windows C
+     * varf.  I'm not even sure it was ANSI C.  However, ugly as it
+     * is, this works, and we only have to do it once.
+     */
+    if (AP_HTTP_METHODS[0] == NULL) {
+	AP_HTTP_METHODS[M_GET]       = "GET";
+	AP_HTTP_METHODS[M_PUT]       = "PUT";
+	AP_HTTP_METHODS[M_POST]      = "POST";
+	AP_HTTP_METHODS[M_DELETE]    = "DELETE";
+	AP_HTTP_METHODS[M_CONNECT]   = "CONNECT";
+	AP_HTTP_METHODS[M_OPTIONS]   = "OPTIONS";
+	AP_HTTP_METHODS[M_TRACE]     = "TRACE";
+	AP_HTTP_METHODS[M_PATCH]     = "PATCH";
+	AP_HTTP_METHODS[M_PROPFIND]  = "PROPFIND";
+	AP_HTTP_METHODS[M_PROPPATCH] = "PROPPATCH";
+	AP_HTTP_METHODS[M_MKCOL]     = "MKCOL";
+	AP_HTTP_METHODS[M_COPY]      = "COPY";
+	AP_HTTP_METHODS[M_MOVE]      = "MOVE";
+	AP_HTTP_METHODS[M_LOCK]      = "LOCK";
+	AP_HTTP_METHODS[M_UNLOCK]    = "UNLOCK";
+	AP_HTTP_METHODS[M_INVALID]   = NULL;
+	/*
+	 * Since we're using symbolic names, make sure we only do
+	 * this once by forcing a value into the first slot IFF it's
+	 * still NULL.
+	 */
+	if (AP_HTTP_METHODS[0] == NULL) {
+	    AP_HTTP_METHODS[0] = "INVALID";
+	}
+    }
 
     if ((methnum == M_INVALID) || (methnum >= METHODS)) {
 	return NULL;
