@@ -455,17 +455,17 @@ static apr_status_t serialize_table(cache_header_tbl_t **obj,
                                     apr_ssize_t *nelts, 
                                     apr_table_t *table)
 {
-   apr_table_entry_t *elts = (apr_table_entry_t *) table->a.elts;
-   apr_ssize_t i;
-   apr_size_t len = 0;
-   apr_size_t idx = 0;
-   char *buf;
+    apr_table_entry_t *elts = (apr_table_entry_t *) table->a.elts;
+    apr_ssize_t i;
+    apr_size_t len = 0;
+    apr_size_t idx = 0;
+    char *buf;
    
-   *nelts = table->a.nelts;
-   if (*nelts == 0 ) {
-       *obj=NULL;
-       return APR_SUCCESS;
-   }
+    *nelts = table->a.nelts;
+    if (*nelts == 0 ) {
+        *obj=NULL;
+        return APR_SUCCESS;
+    }
     *obj = calloc(1, sizeof(cache_header_tbl_t) * table->a.nelts);
     if (NULL == *obj) {
         return APR_ENOMEM;
