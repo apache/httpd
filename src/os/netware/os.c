@@ -226,23 +226,9 @@ int ap_os_is_filename_valid(const char *file)
      */
 
 	colonpos = strchr (file, ':');
-	fslashpos = strchr (file, '/');
-	bslashpos = strchr (file, '\\');
 
-	// The path must contain a volume specifier and the volume
-	//  specifier must appear before in slashes.
-	if (colonpos) {
-		// If a slash appears before the colon then the path
-		//  is invalid until we support remotes server file
-		//  access
-		if (fslashpos && (fslashpos < colonpos))
-			return 0;
-		if (bslashpos && (bslashpos < colonpos))
-			return 0;
-	}
-	else {
+	if (!colonpos)
 		return 0;
-	}
 
 	pos = ++colonpos;
    	if (!*pos) {
