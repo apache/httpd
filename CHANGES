@@ -1,5 +1,7 @@
 Changes with Apache 2.0.48
 
+  *) ab: Work over non-loopback on Unix again. PR 21495. [Jeff Trawick]
+
   *) Fix a misleading message from the some of the threaded MPMs when 
      MaxClients has to be lowered due to the setting of ServerLimit.  
      [Jeff Trawick]

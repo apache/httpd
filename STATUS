@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/15 11:49:19 $]
+Last modified at [$Date: 2003/09/15 15:40:05 $]
 
 Release:
 
@@ -274,17 +274,9 @@ PATCHES TO PORT FROM 2.1
         modules/generators/mod_autoindex.c r1.120
       +1: nd, trawick
 
-    * ab: Handle conditions where connect() on non-blocking socket
-      doesn't complete immediately (i.e., restore functionality when
-      benchmarking non-local targets).  This doesn't resolve some
-      serious flaws in state-handling within ab; it is simply a
-      minimal change to get it going again, as fixing it correctly is
-      potentially destabilizing and may take some iterations in
-      2.1-dev before it is ready for prime time.
-        support/ab.c: r1.128
-      +1: trawick, stoddard, brianp
-
-      More fixes
+    * More ab fixes; r1.129 fixes what looks like a trivial error in the 
+      SSL support; r1.130 adds some state-handling fixes related to
+      ab's breakage in 2.0.47
         support/ab.c: r1.129, r1.130
       +1: trawick, brianp
 

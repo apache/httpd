@@ -1256,7 +1256,7 @@ static void start_connect(struct connection * c)
 	    c->state = STATE_CONNECTING;
 	    c->rwrite = 0;
             new_pollfd.desc_type = APR_POLL_SOCKET;
-            new_pollfd.reqevents = APR_POLLIN;
+            new_pollfd.reqevents = APR_POLLOUT | APR_POLLIN;
             new_pollfd.desc.s = c->aprsock;
             new_pollfd.client_data = c;
 	    apr_pollset_add(readbits, &new_pollfd);
@@ -1777,14 +1777,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.121.2.3 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.121.2.4 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.121.2.3 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.121.2.4 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
