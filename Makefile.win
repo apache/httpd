@@ -125,6 +125,7 @@ _install:
 	copy os\win32\ApacheModuleSpeling$(SHORT)\ApacheModuleSpeling.dll $(INSTDIR)\modules
 	copy os\win32\ApacheModuleUserTrack$(SHORT)\ApacheModuleUserTrack.dll $(INSTDIR)\modules
 #       copy modules\proxy\$(LONG)\ApacheModuleProxy.dll $(INSTDIR)\modules
+        copy support\$(LONG)\ab.exe $(INSTDIR)\bin
         copy support\$(LONG)\htpasswd.exe $(INSTDIR)\bin
 	copy support\$(LONG)\htdigest.exe $(INSTDIR)\bin
 	copy support\$(LONG)\logresolve.exe $(INSTDIR)\bin

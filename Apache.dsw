@@ -323,6 +323,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name logresolve
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ab
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -335,6 +338,12 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name aprlib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ap
+    End Project Dependency
 }}}
 
 ###############################################################################
