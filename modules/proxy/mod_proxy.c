@@ -553,16 +553,15 @@ static const char *
 
     /* Don't duplicate entries */
     for (i = 0; i < conf->noproxies->nelts; i++) {
-	if (strcasecmp(arg, list[i].name) == 0) /* ignore case for host names */
+	if (apr_strnatcasecmp(arg, list[i].name) == 0) { /* ignore case for host names */
 	    found = 1;
+	}
     }
 
     if (!found) {
 	new = apr_array_push(conf->noproxies);
 	new->name = arg;
-	/* Don't do name lookups on things that aren't dotted */
-        if (ap_strchr_c(arg, '.') != NULL &&
-   	    apr_sockaddr_info_get(&addr, new->name, APR_UNSPEC, 0, 0, parms->pool)) {
+	if (APR_SUCCESS == apr_sockaddr_info_get(&addr, new->name, APR_UNSPEC, 0, 0, parms->pool)) {
 	    new->addr = addr;
 	}
 	else {

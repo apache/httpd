@@ -156,6 +156,7 @@ struct proxy_alias {
 
 struct dirconn_entry {
     char *name;
+//    struct apr_sockaddr_t *addr;
     struct in_addr addr, mask;
     struct hostent *hostentry;
     int (*matcher) (struct dirconn_entry * This, request_rec *r);
@@ -250,6 +251,7 @@ int ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p);
+int ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, apr_sockaddr_t *uri_addr);
 apr_status_t ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t port, request_rec *r);
 /* This function is called by ap_table_do() for all header lines */
 int ap_proxy_send_hdr_line(void *p, const char *key, const char *value);
