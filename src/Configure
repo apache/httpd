@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Configure,v 1.17 1996/09/13 21:02:16 jim Exp $
+# $Id: Configure,v 1.18 1996/09/14 19:08:44 jim Exp $
 trap 'rm $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
@@ -176,7 +176,7 @@ case "$PLAT" in
 	    CFLAGS="$CFLAGS -DIRIX"
 	fi
 	;;
-    *-linux-*)
+    *-linux*)
 	OS='Linux'
 	CFLAGS="$CFLAGS -DLINUX"
 	;;
