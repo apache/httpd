@@ -13,9 +13,6 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-    * need to stop error messages sent to the client from revealing 
-      error log information by default
-
     * How should an Apache binary release tarball look?
 
       1. The "old" way where it is just a source release tarball
