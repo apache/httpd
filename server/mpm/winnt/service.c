@@ -253,6 +253,10 @@ static void stop_console_handler(void)
 
 void mpm_start_console_handler(void)
 {
+    // TODO: Win9x will ignore the CLOSE and SHUTDOWN events,
+    //       we don't get to see them... possible solution in
+    //       psdk docs "Reading Input Buffer Events", by using
+    //       the menu item therein.
     SetConsoleCtrlHandler(console_control_handler, TRUE);
     atexit(stop_console_handler);
 }
@@ -289,11 +293,6 @@ static BOOL CALLBACK child_control_handler(DWORD ctrl_type)
     return FALSE;
 }
 
-// TODO: We really need to play the RegisterServiceProcess game 
-//       if this is the child of the Win9x service process...
-//       and if that isn't bad enought... a shutdown thread window
-//       is really the ticket...  ick.
-
 static void stop_child_console_handler(void)
 {
     SetConsoleCtrlHandler(child_control_handler, FALSE);
@@ -301,8 +300,19 @@ static void stop_child_console_handler(void)
 
 void mpm_start_child_console_handler(void)
 {
-    SetConsoleCtrlHandler(child_control_handler, TRUE);
-    atexit(stop_child_console_handler);
+    if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT) {
+        FreeConsole();
+    }
+    else
+    {
+        // TODO: We really need to play the RegisterServiceProcess 
+        //       game if this is the child of a Win9x service process
+        //       We also have a huge problem here.  This won't handle
+        //       the close window, but if we FreeConsole() to detach,
+        //       the Win9x console will ALWAYS close.  ick.
+        SetConsoleCtrlHandler(child_control_handler, TRUE);
+        atexit(stop_child_console_handler);
+    }
 }
 
 

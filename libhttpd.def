@@ -399,8 +399,7 @@ EXPORTS
         ap_run_http_method @394
         ap_bread_core @395
         ap_bwrite_core @396
-	ap_mpm_init_complete @397
-
+	
 ;       Exclusively provided for http_main.c
         ap_register_hooks @398
         ap_prelinked_modules @399

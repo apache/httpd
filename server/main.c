@@ -278,11 +278,7 @@ static void usage(process_rec *process)
     destroy_and_exit_process(process, 1);
 }
 
-#ifdef WIN32
-int apache_main(int argc, char *argv[])
-#else
-API_EXPORT(int)        main(int argc, char *argv[])
-#endif
+int main(int argc, char *argv[])
 {
     int c;
     int configtestonly = 0;
@@ -298,9 +294,7 @@ API_EXPORT(int)        main(int argc, char *argv[])
     module **mod;
     ap_directive_t *conftree = NULL;
 
-#ifndef WIN32 /* done in main_win32.c */
     ap_initialize();
-#endif
     process = create_process(argc, (char *const *)argv);
     pglobal = process->pool;
     pconf = process->pconf;

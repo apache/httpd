@@ -41,8 +41,8 @@ RSC=rc.exe
 # PROP Intermediate_Dir ".\ApacheR"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /YX /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "./include" /I "./os/win32" /I "./lib/apr/include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "SHARED_MODULE" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /YX /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "./include" /I "./os/win32" /I "./lib/apr/include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
 # ADD RSC /l 0x809 /d "NDEBUG"
@@ -50,8 +50,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 aprlib.lib ApacheCore.lib kernel32.lib advapi32.lib /nologo /subsystem:console /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"CoreR"
-# ADD LINK32 aprlib.lib ApacheCore.lib kernel32.lib advapi32.lib user32.lib /nologo /subsystem:console /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"CoreR"
+# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:console /map /machine:I386
+# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:console /map /machine:I386
 
 !ELSEIF  "$(CFG)" == "Apache - Win32 Debug"
 
@@ -66,8 +66,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir ".\ApacheD"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /YX /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "./include" /I "./os/win32" /I "./lib/apr/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "SHARED_MODULE" /FD /c
+# ADD BASE CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /YX /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "./include" /I "./os/win32" /I "./lib/apr/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
@@ -75,8 +75,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 aprlib.lib ApacheCore.lib kernel32.lib advapi32.lib /nologo /subsystem:console /map /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"CoreD"
-# ADD LINK32 aprlib.lib ApacheCore.lib kernel32.lib advapi32.lib user32.lib /nologo /subsystem:console /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"CoreD"
+# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:console /map /debug /machine:I386
+# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:console /debug /machine:I386
 # SUBTRACT LINK32 /incremental:no /map
 
 !ENDIF 
@@ -85,45 +85,6 @@ LINK32=link.exe
 
 # Name "Apache - Win32 Release"
 # Name "Apache - Win32 Debug"
-# Begin Group "Source Files"
-
-# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
-# Begin Source File
-
-SOURCE=.\main\http_main.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\os\win32\main_win32.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\os\win32\registry.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\os\win32\service.c
-# End Source File
-# End Group
-# Begin Group "Header Files"
-
-# PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
-# Begin Source File
-
-SOURCE=.\OS\WIN32\main_win32.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\os\win32\registry.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\os\win32\service.h
-# End Source File
-# End Group
-# Begin Group "Resource Files"
-
-# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
 # Begin Source File
 
 SOURCE=.\os\win32\apache.ico
@@ -131,14 +92,10 @@ SOURCE=.\os\win32\apache.ico
 # Begin Source File
 
 SOURCE=.\os\win32\apache.rc
-
-!IF  "$(CFG)" == "Apache - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "Apache - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
-# End Group
+# Begin Source File
+
+SOURCE=.\main\http_main.c
+# End Source File
 # End Target
 # End Project
