@@ -740,8 +740,7 @@ ServerSignature On
     AddLanguage sv .sv
     AddLanguage cz .cz
     AddLanguage ru .ru
-    AddLanguage zh-tw .tw
-    AddLanguage tw .tw
+    AddLanguage zh-TW .zh-tw
     AddCharset Big5         .Big5    .big5
     AddCharset WINDOWS-1251 .cp-1251
     AddCharset CP866        .cp866
