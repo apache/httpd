@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/03 16:26:07 $]
+Last modified at [$Date: 2004/10/03 16:47:56 $]
 
 Release:
 
@@ -75,29 +75,35 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) mod_ldap: fix a bogus error message to tell the user which file
+       is causing a potential problem with the LDAP shared memory cache.
+         modules/ldap/util_ldap.c: 1.14
+       PR 31431
+       +1: minfrin
+
     *) mod_ldap: prevent the possiblity of an infinite loop in the LDAP
        statistics display.
-       modules/ldap/util_ldap_cache_mgr.c: 1.11
+         modules/ldap/util_ldap_cache_mgr.c: 1.11
        PR 29216
        +1: minfrin
 
     *) apxs: fix handling of -Wc/-Wl and "-o mod_foo.so".
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/apxs.in?r1=1.62&r2=1.64
+         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/apxs.in?r1=1.62&r2=1.64
        PR: 31448
        +1: jorton, jerenkrantz
 
     *) Fix ap_save_brigade's handling of ENOTIMPL setaside functions.
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_filter.c?r1=1.100&r2=1.101
+         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_filter.c?r1=1.100&r2=1.101
        PR: 31247
        jerenkrantz comments: This needs the final patch posted to dev@httpd?
        +1: jorton
 
     *) Correctly store cache content type. PR 30278
-       modules/experimental/mod_disk_cache.c?r1=1.62&r2=1.63
+         modules/experimental/mod_disk_cache.c?r1=1.62&r2=1.63
        +1: stoddard, jerenkrantz, minfrin
 
     *) Do not store aborted content. PR 21492.
-       modules/experimental/mod_disk_cache.c?r1=1.63&r2=1.64
+         modules/experimental/mod_disk_cache.c?r1=1.63&r2=1.64
        +1: stoddard, jerenkrantz, minfrin
 
     *) Try to correctly follow RFC 2616 13.3 on validating stale cache
