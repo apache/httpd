@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+ <HEAD>
+  <TITLE>Apache module mod_foobar</TITLE>
+ </HEAD>
+<!-- read and delete all blockquotes, and this comment -->
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+ <BODY
+  BGCOLOR="#FFFFFF"
+  TEXT="#000000"
+  LINK="#0000FF"
+  VLINK="#000080"
+  ALINK="#FF0000"
+ >
+<!--#include virtual="header.html" -->
+  <H1 ALIGN="CENTER">Module mod_foobar</H1>
+
+<BLOCKQUOTE><EM>Add this file as a link in mod/index.html</EM></BLOCKQUOTE>
+
+  <P>
+  This module is contained in the <CODE>mod_foobar.c</CODE> file, and
+  <STRONG>is/is not</STRONG> compiled in by default. It provides for
+  <STRONG>the foobar feature</STRONG>. Any document with the mime type
+  <SAMP>foo/bar</SAMP> will be processed by this module.
+  </P>
+
+<BLOCKQUOTE><EM>Add the magic mime type to the list in
+magic_types.html</EM></BLOCKQUOTE>
+
+  <H2>Summary</H2>
+  <P>
+  <EM>General module documentation here.</EM>
+  </P>
+
+  <H2>Directives</H2>
+  <UL>
+   <LI><A HREF="#adirective">ADirective</A>
+   </LI>
+  </UL>
+
+<BLOCKQUOTE><EM>Add these directives to the list in
+directives.html</EM></BLOCKQUOTE>
+
+  <HR> <!-- the HR is part of the directive description -->
+  <H2><A NAME="adirective">ADirective directive</A></H2>
+  <P>
+  <A
+   HREF="directive-dict.html#Syntax"
+   REL="Help"
+  ><STRONG>Syntax:</STRONG></A> ADirective <EM>some args</EM>
+  <BR>
+  <A
+   HREF="directive-dict.html#Default"
+   REL="Help"
+  ><STRONG>Default:</STRONG></A> <SAMP>ADirective default value</SAMP>
+  <BR>
+  <A
+   HREF="directive-dict.html#Context"
+   REL="Help"
+  ><STRONG>Context:</STRONG></A> context-list
+  <BR>
+
+<BLOCKQUOTE><EM>context-list is where this directive can appear;
+allowed: server config, virtual host, directory, .htaccess</EM></BLOCKQUOTE>
+
+  <A
+   HREF="directive-dict.html#Override"
+   REL="Help"
+  ><STRONG>Override:</STRONG></A> override
+  <BR>
+
+<BLOCKQUOTE><EM>required if the directive is allowed in .htaccess files;
+the AllowOverride option that allows the directive.</EM></BLOCKQUOTE>
+
+  <A
+   HREF="directive-dict.html#Status"
+   REL="Help"
+  ><STRONG>Status:</STRONG></A> status
+  <BR>
+
+<BLOCKQUOTE><EM>Core if in core apache, Base if in one of the standard
+modules, Extension if in an extension module (not compiled in by default)
+or Experimental</EM></BLOCKQUOTE>
+
+  <A
+   HREF="directive-dict.html#Module"
+   REL="Help"
+  ><STRONG>Module:</STRONG></A> mod_foobar
+  <BR>
+  <A
+   HREF="directive-dict.html#Compatibility"
+   REL="Help"
+  ><STRONG>Compatibility:</STRONG></A> compatibility notes
+
+<BLOCKQUOTE>
+ <EM>Describe any compatibility issues, such as "Only available in Apache
+  1.2 or later," or "The Apache syntax for this directive is not
+  compatible with the NCSA directive of the same name."</EM>
+</BLOCKQUOTE>
+  </P>
+
+  <P>
+  The ADirective directive does something.
+  </P>
+
+<!--#include virtual="footer.html" -->
+ </BODY>
+</HTML>

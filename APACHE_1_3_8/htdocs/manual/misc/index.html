@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+ <HEAD>
+  <TITLE>Apache Miscellaneous Documentation</TITLE>
+ </HEAD>
+
+ <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+ <BODY
+  BGCOLOR="#FFFFFF"
+  TEXT="#000000"
+  LINK="#0000FF"
+  VLINK="#000080"
+  ALINK="#FF0000"
+ >
+  <!--#include virtual="header.html" -->
+  <H1 ALIGN="CENTER">Apache Miscellaneous Documentation</H1>
+
+  <P>
+  Below is a list of additional documentation pages that apply to the
+  Apache web server development project.
+  </P>
+  <DL>
+   <DT><A
+        HREF="API.html"
+       >API</A>
+   </DT>
+   <DD>Description of Apache's Application Programming Interface.
+   </DD>
+   <DT><A
+        HREF="FAQ.html"
+       >FAQ</A>
+   </DT>
+   <DD>Frequently-Asked Questions concerning the Apache project and server.
+   </DD>
+   <DT><A
+        HREF="client_block_api.html"
+       >Reading Client Input in Apache 1.2</A>
+   </DT>
+   <DD>Describes differences between Apache 1.1 and 1.2 in how modules
+    read information from the client.
+   </DD>
+   <DT><A
+        HREF="compat_notes.html"
+       >Compatibility with NCSA</A>
+   </DT>
+   <DD>Notes about Apache's compatibility with the NCSA server.
+   </DD>
+   <DT><A HREF="custom_errordocs.html">How to use XSSI and Negotiation 
+	for custom ErrorDocuments</A>
+   </DT>
+   <DD>Describes a solution which uses XSSI and negotiation
+    to custom-tailor the Apache ErrorDocuments to taste, adding the
+    advantage of returning internationalized versions of the error
+    messages depending on the client's language preferences.
+   </DD>
+   <DT><A HREF="descriptors.html">File Descriptor use in Apache</A>
+   <DD>Describes how Apache uses file descriptors and talks about various
+    limits imposed on the number of descriptors available by various 
+    operating systems.
+   </DD>
+   <DT><A
+        HREF="fin_wait_2.html"
+       ><SAMP>FIN_WAIT_2</SAMP></A>
+   </DT>
+   <DD>A description of the causes of Apache processes going into the
+    <SAMP>FIN_WAIT_2</SAMP> state, and what you can do about it.
+   </DD>
+   <DT><A
+        HREF="howto.html"
+       >&quot;How-To&quot;</A>
+   </DT>
+   <DD>Instructions about how to accomplish some commonly-desired server
+    functionality changes.
+   </DD>
+   <DT><A HREF="HTTP_Features.tsv">HTTP Features list</A></DT>
+     <DD>A tab-separate table of HTTP features implemented and tested in Apache.
+     </DD> 
+   <DT><A
+        HREF="known_client_problems.html"
+       >Known Client Problems</A>
+   </DT>
+   <DD>A list of problems in HTTP clients which can be mitigated by Apache.
+   </DD>
+   <DT><A
+        HREF="nopgp.html"
+       >No PGP</A>
+   </DT>
+   <DD>Why we took PEM and PGP support out of the base Apache distribution.
+   </DD>
+   <DT><A
+        HREF="perf-bsd44.html"
+       >Performance Notes (BSD 4.4)</A>
+   </DT>
+   <DD>Some notes about ways to improve/optimize Apache performance on
+    BSD 4.4 systems.
+   </DD>
+   <DT><A
+        HREF="perf-dec.html"
+       >Performance Notes (Digital UNIX)</A>
+   </DT>
+   <DD>Extracts of USENET postings describing how to optimize Apache
+    performance on Digital UNIX systems.
+   </DD>
+   <DT><A
+        HREF="perf-hp.html"
+       >Performance Notes (HPUX)</A>
+   </DT>
+   <DD>Email from an HP engineer on how to optimize HP-UX 10.20.
+   </DD>
+   <DT><A
+        HREF="perf.html"
+       >Performance Notes (General)</A>
+   </DT>
+   <DD>Some generic notes about how to improve the performance of your
+       machine/OS.
+   </DD>
+   <DT><A
+        HREF="perf-tuning.html"
+       >Performance Notes -- Apache Tuning</A>
+   </DT>
+   <DD>Notes about how to (run-time and compile-time) configure
+       Apache for highest performance.  Notes explaining why Apache does
+       some things, and why it doesn't do other things (which make it
+       slower/faster).
+   </DD>
+   <DT><A
+        HREF="security_tips.html"
+       >Security Tips</A>
+   </DT>
+   <DD>Some &quot;do&quot;s  - and &quot;don't&quot;s - for keeping your
+    Apache web site secure.
+   </DD>
+   <DT><A
+        HREF="vif-info.html"
+       >Virtual Hosts (IP-based)</A>
+   </DT>
+   <DD>Excerpts and notes about configuring and using Apache IP-based virtual
+    hosts.
+   </DD>
+   <DT><A
+        HREF="windoz_keepalive.html"
+       >Windows Bug with Web Keepalive</A>
+   </DT>
+   <DD>A brief description of a known problem with Microsoft Windows and
+    web sites accessed using keepalive connections.
+   </DD>
+  </DL>
+
+  <!--#include virtual="footer.html" -->
+ </BODY>
+</HTML>
