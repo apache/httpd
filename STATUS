@@ -132,6 +132,7 @@ Committed Code Changes:
     * [PORT] Add function to emulate the execution of #! scripts
       for OS's which don't support starting them automatically
       (enable with #define NEED_HASHBANG_EMUL)
+    * more mod_mime_magic cleanup
 
 Available Patches:
 
