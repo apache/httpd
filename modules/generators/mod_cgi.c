@@ -436,15 +436,16 @@ static ap_status_t build_argv_list(char ***argv, request_rec *r, ap_pool_t *p)
     return APR_SUCCESS;
 }
 
-static ap_status_t build_command_line(char **c, request_rec *r, ap_pool_t *p)
+static ap_status_t build_command_line(char **cmd, request_rec *r, ap_pool_t *p)
 {
 #ifdef WIN32
     char *quoted_filename = NULL;
     char *interpreter = NULL;
+    char *arguments = NULL;
     file_type_e fileType;
 
-    *c = NULL;
-    fileType = ap_get_win32_interpreter(r, &interpreter);
+    *cmd = NULL;
+    fileType = ap_get_win32_interpreter(r, &interpreter, &arguments);
 
     if (fileType == eFileTypeUNKNOWN) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
@@ -459,13 +460,20 @@ static ap_status_t build_command_line(char **c, request_rec *r, ap_pool_t *p)
      */
     quoted_filename = ap_pstrcat(p, "\"", r->filename, "\"", NULL);
     if (interpreter && *interpreter) {
-        *c = ap_pstrcat(p, interpreter, " ", quoted_filename, " ", NULL);
+        if (arguments && *arguments)
+            *cmd = ap_pstrcat(p, interpreter, " ", quoted_filename, " ", 
+                              arguments, NULL);
+        else
+            *cmd = ap_pstrcat(p, interpreter, " ", quoted_filename, " ", NULL);
+    }
+    else if (arguments && *arguments) {
+        *cmd = ap_pstrcat(p, quoted_filename, " ", arguments, NULL);
     }
     else {
-        *c = ap_pstrcat(p, quoted_filename, " ", NULL);
+        *cmd = ap_pstrcat(p, quoted_filename, NULL);
     }
 #else
-    *c = ap_pstrcat(p, r->filename, NULL);
+    *cmd = ap_pstrcat(p, r->filename, NULL);
 #endif
     return APR_SUCCESS;
 }
