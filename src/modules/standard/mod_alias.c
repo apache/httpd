@@ -137,10 +137,15 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy, char *f, char
 	new->regexp = ap_pregcomp(cmd->pool, f, REG_EXTENDED);
 	if (new->regexp == NULL)
 	    return "Regular expression could not be compiled.";
+        new->real = r;
     }
-
-    new->fake = f;
+#ifndef OS2
+    else
+        new->real = ap_os_canonical_filename(cmd->pool, r);
+#else
     new->real = r;
+#endif
+    new->fake = f;
     new->handler = cmd->info;
 
     return NULL;
@@ -233,7 +238,7 @@ static const command_rec alias_cmds[] =
      "a fakename and a realname"},
     {"Redirect", add_redirect, (void *) HTTP_MOVED_TEMPORARILY,
      OR_FILEINFO, TAKE23,
-  "an optional status, then document to be redirected and destination URL"},
+     "an optional status, then document to be redirected and destination URL"},
     {"AliasMatch", add_alias_regex, NULL, RSRC_CONF, TAKE2,
      "a regular expression and a filename"},
     {"ScriptAliasMatch", add_alias_regex, "cgi-script", RSRC_CONF, TAKE2,
@@ -339,7 +344,6 @@ static char *try_alias_list(request_rec *r, array_header *aliases, int doesc, in
 
 	    return found;
 	}
-
     }
 
     return NULL;

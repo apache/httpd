@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/11/02 18:03:14 $]
+  Last modified at [$Date: 2000/11/03 00:44:01 $]
 
 Release:
 
@@ -34,22 +34,6 @@ RELEASE SHOWSTOPPERS:
       Bug report 6787 and others are very confused that these bugs
       don't appear until requests to the invalid hostname are
       rejected in http_protocol.c - wasting bug reviewers time.
-
-    * This shouldn't be, but it is since non-core modules install
-      with backslashes in the Win32 httpd.conf file.  Need to either
-      (#1) accept backslashes back into the core, or (#2) always
-      canonicalize the elements before testing if an absolute paths
-      when concatinating them to the ServerRoot.  See the thread 
-      titled: [Patch] 1.3.15 ap_os_is_path_absolute
-        Status #1: OtherBill -1, Brian Harvard +1
-        Status #2: OtherBill +1, Brian Harvard -1
-
-    * Likewise, mod_alias paths are never canonicalized today.  Needs
-      a fix to canonicalize all but perhaps the regex Aliases, and
-      while we are at it, additional feature to accept Alias relative
-      to ServerRoot could be good.  See the above showstopper and the
-      thread titled: Resolution - 1.3.15 ap_os_is_path_absolute
-        Status: Patch proposed; won't work for OS2; still in review.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 

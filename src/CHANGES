@@ -1,5 +1,16 @@
 Changes with Apache 1.3.15
 
+  *) Corrected file path arguments from server conf directives to
+     their canonical form (excluding OS2 - which uses alternate 
+     logic.)  Resolves a long list of PRs reporting that Win32 paths
+     of the syntax x:\foo were mis-concatinated to the server root.
+     [William Rowe]
+
+  *) Correct an issue with Alias and ScriptAlias directives that 
+     file path arguments were not normalized in canonical form.
+     This correction makes no attempt to normalize regular expression
+     forms of Alias or ScriptAlias.  [William Rowe]
+
   *) Add a new LogFormat directive, %c, that will log connection
      status at the end of the response as follows:
      'X' - connection aborted before the response completed.
