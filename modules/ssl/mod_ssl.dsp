@@ -153,12 +153,10 @@ SOURCE=.\ssl_expr_eval.c
 # Begin Source File
 
 SOURCE=.\ssl_expr_parse.c
-# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
 SOURCE=.\ssl_expr_scan.c
-# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
