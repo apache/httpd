@@ -365,6 +365,9 @@ Win32 specific issues:
       Looks like a code path that isn't run anywhere else that has
       something not quite right...  A PR or two on it.
 
+    * proxy module doesn't load on Win95.  Why?  Good question.
+	PR#1462.
+
 WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
 
     * CGIs
