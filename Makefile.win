@@ -56,7 +56,7 @@ tryssl:
 	cd ..\..
 	cd support
         $(MAKE) $(MAKEOPT) -f abs.mak CFG="abs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..
+	cd ..
 !ELSE
 	msdev Apache.dsw /MAKE\
 		"mod_ssl - Win32 $(LONG)"\
