@@ -3772,8 +3772,10 @@ static int core_create_req(request_rec *r)
     }
     else {
         req_cfg->bb = apr_brigade_create(r->pool);
+	if (!r->prev) {
         ap_add_input_filter_handle(ap_net_time_filter_handle,
                                    NULL, r, r->connection);
+	}
     }
     ap_set_module_config(r->request_config, &core_module, req_cfg);
 
