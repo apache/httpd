@@ -5,7 +5,7 @@ Body:----------de--
 <!--#include virtual="include/top.html" -->
 
     Der Proxy-Server erhielt eine fehlerhafte Antwort
-    eines übergeordneten Servers oder Proxies. 
+    eines &uuml;bergeordneten Servers oder Proxies. 
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
     <!--#include virtual="include/spacer.html" -->
@@ -52,7 +52,7 @@ Body:----------es--
 Content-language: fr
 Content-type: text/html
 Body:----------fr--
-<!--#set var="TITLE" value="Gateway incorrect!" -->
+<!--#set var="TITLE" value="Gateway incorrecte!" -->
 <!--#include virtual="include/top.html" -->
 
     Le serveur proxy a re&ccedil;u une r&eacute;ponse incorrecte de la part d'un serveur sup&eacute;rieur. 

@@ -1,12 +1,12 @@
 Content-language: de
 Content-type: text/html
 Body:----------de--
-<!--#set var="TITLE" value="Objekt nicht mehr verfügbar!" -->
+<!--#set var="TITLE" value="Objekt nicht mehr verf&uuml;gbar!" -->
 <!--#include virtual="include/top.html" -->
 
     Der angeforderte URL existiert auf dem Server nicht mehr
     und wurde dauerhaft entfernt.
-    Eine Weiterleitungsadresse ist nicht verfügbar.
+    Eine Weiterleitungsadresse ist nicht verf&uuml;gbar.
 
   <!--#if expr="$HTTP_REFERER" -->
 
@@ -17,7 +17,7 @@ Body:----------de--
   <!--#else -->
 
     Falls Sie einem Link von einer anderen Seite gefolgt sind,
-    informieren Sie bitte den Autor der Seite hierüber.
+    informieren Sie bitte den Autor dieser Seite hier&uuml;ber.
 
   <!--#endif -->
 

@@ -1,12 +1,12 @@
 Content-language: de
 Content-type: text/html
 Body:----------de--
-<!--#set var="TITLE" value="Übergebener URI zu groß!" -->
+<!--#set var="TITLE" value="&Uuml;bergebener URI zu gro&szlig;!" -->
 <!--#include virtual="include/top.html" -->
 
-    Der bei der Anfrage übermittelnde URI überschreitet
-    die maximale Länge.
-    Die Anfrage kann nicht ausgeführt werden.
+    Der bei der Anfrage &uuml;bermittelte URI &uuml;berschreitet
+    die maximale L&auml;nge.
+    Die Anfrage kann nicht ausgef&uuml;hrt werden.
     
 <!--#include virtual="include/bottom.html" -->
 ----------de--

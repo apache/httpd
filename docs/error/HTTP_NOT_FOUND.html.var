@@ -13,12 +13,12 @@ Body:----------de--
     Seite</a> scheint falsch oder nicht mehr aktuell zu sein.
     Bitte informieren Sie den Autor
     <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">dieser Seite</a>
-    über den Fehler.
+    &uuml;ber den Fehler.
 
   <!--#else -->
 
     Sofern Sie den URL manuell eingegeben haben,
-    überprüfen Sie bitte die Schreibweise und versuchen es erneut.
+    &uuml;berpr&uuml;fen Sie bitte die Schreibweise und versuchen Sie es erneut.
 
   <!--#endif -->
 

@@ -1,11 +1,11 @@
 Content-language: de
 Content-type: text/html
 Body:----------de--
-<!--#set var="TITLE" value="Variante ebenfalls veränderlich!" -->
+<!--#set var="TITLE" value="Variante ebenfalls ver&auml;nderlich!" -->
 <!--#include virtual="include/top.html" -->
 
     Ein Zugriff auf das angeforderte Objekt bzw. einer
-    Variante dieses Objektes ist nicht möglich, da es ebenfalls
+    Variante dieses Objektes ist nicht m&ouml;glich, da es ebenfalls
     ein variables Objekt darstellt.
 
 <!--#include virtual="include/bottom.html" -->

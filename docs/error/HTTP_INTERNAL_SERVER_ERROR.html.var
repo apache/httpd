@@ -19,8 +19,8 @@ Body:----------de--
 
     Die Anfrage kann nicht beantwortet werden, da im Server
     ein interner Fehler aufgetreten ist.
-    Der Server ist entweder überlastet oder ein Fehler in
-    einem CGI-Script ist aufgetreten.
+    Der Server ist entweder &uuml;berlastet oder ein Fehler in
+    einem CGI-Skript ist aufgetreten.
 
   <!--#endif -->
 

@@ -7,13 +7,13 @@ Body:----------de--
     Der Server konnte nicht verifizieren, ob Sie authorisiert sind,
     auf den URL "<!--#echo encoding="url" var="REDIRECT_URL"-->" zuzugreifen.
     Entweder wurden falsche Referenzen (z.B. ein falsches Passwort)
-    angeben oder ihr Browser versteht nicht, wie die geforderten
-    Referenzen zu übermitteln sind.
+    angegeben oder ihr Browser versteht nicht, wie die geforderten
+    Referenzen zu &uuml;bermitteln sind.
 
 <!--#include virtual="include/spacer.html" -->
 
-    Sofern Sie für den Zugriff berechtigt sind, überprüfen Sie bitte
-    die eingegebene User-ID und das Passwort und versuchen es erneut.  
+    Sofern Sie f&uuml;r den Zugriff berechtigt sind, &uuml;berpr&uuml;fen Sie bitte
+    die eingegebene User-ID und das Passwort und versuchen Sie es erneut.  
 
 <!--#include virtual="include/bottom.html" -->
 ----------de--

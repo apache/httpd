@@ -1,11 +1,11 @@
 Content-language: de
 Content-type: text/html
 Body:----------de--
-<!--#set var="TITLE" value="Nicht unterstütztes Format!" -->
+<!--#set var="TITLE" value="Nicht unterst&uuml;tztes Format!" -->
 <!--#include virtual="include/top.html" -->
 
-    Das bei der Anfrage übermittelte Format (media type)
-    wird vom Server nicht unterstützt.
+    Das bei der Anfrage &uuml;bermittelte Format (Media Type)
+    wird vom Server nicht unterst&uuml;tzt.
     
 <!--#include virtual="include/bottom.html" -->
 ----------de--
@@ -36,7 +36,7 @@ Body:----------es--
 Content-language: fr
 Content-type: text/html
 Body:----------fr--
-<!--#set var="TITLE" value="type de m&eacute;dia invalide!" -->
+<!--#set var="TITLE" value="Type de m&eacute;dia invalide!" -->
 <!--#include virtual="include/top.html" -->
 
 Le serveur ne supporte pas le type de m&eacute;dia utilis&eacute; dans votre requ&ecirc;te. 
