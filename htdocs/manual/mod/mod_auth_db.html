@@ -18,6 +18,7 @@ available in Apache 1.1 and later.
 <menu>
 <li><A HREF="#authdbgroupfile">AuthDBGroupFile</A>
 <li><A HREF="#authdbuserfile">AuthDBUserFile</A>
+<li><A HREF="#authdbauthoritative">AuthDBAuthoritative</A>
 </menu>
 <hr>
 
@@ -103,6 +104,30 @@ part of the problem. <p>
 See also <A HREF="core.html#authname">AuthName</A>,
 <A HREF="core.html#authtype">AuthType</A> and
 <A HREF="#authdbgroupfile">AuthDBGroupFile</A>.<p>
+<hr>
+<A name="authdbauthoritative"><h2>AuthDBAuthoritative</h2></A>
+<!--%plaintext &lt;?INDEX {\tt AuthDBAuthoritative} directive&gt; -->
+<strong>Syntax:</strong> AuthDBAuthoritative &lt; <strong> on</strong>(default) | off &gt; <br>
+<Strong>Context:</strong> directory, .htaccess<br>
+<Strong>Override:</strong> AuthConfig<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_auth<p>
+
+Setting the AuthDBAuthoritative directive explicitly to <b>'off'</b> allows for both authentification and authorization to be passed on to lower level modules (as defined in the <code>Configuration</code> and <code>modules.c</code> file if there is <b>no userID</b> or <b>rule</b> matching the supplied userID. If there is a userID and/or rule specified; the usual password and access checks will be applied and a failure will give an Authorization Required reply.
+<p>
+So if a userID appears in the database of more than one module; or if a valid require directive applies to more than one module; then the first module will verify the credentials; and no access is passed on; regardless of the AuthAuthoritative setting.
+<p>
+A common use for this is in conjection with one of the basic auth modules; such
+as <a href="mod_auth.c"><code>mod_auth.c</code></a>. Whereas this DB module supplies the bulk of the user credential checking; a few (administrator) related accesses fall through to a lower level with a well protected .htpasswd file.
+<p>
+<b>Default:</b> By default; control is not passed on; and an unkown userID or rule will result in an Authorization Required reply. Not setting it thus keeps the system secure; and forces an NSCA compliant behaviour.
+<p>
+Security: Do consider the implications of allowing a user to allow fall-through in his .htaccess file; and verify that this is really what you want; Generally it is easier to just secure a single .htpasswd file, than it is to secure a database which might have more access interfaces. 
+
+<p>
+See also <A HREF="core.html#authname">AuthName</A>,
+<A HREF="core.html#authtype">AuthType</A> and
+<A HREF="#authgroupfile">AuthGroupFile</A>.<p>
 
 <!--#include virtual="footer.html" -->
 </BODY>
