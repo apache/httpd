@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) Add iconsdir, htdocsdir, and cgidir to config.layout.
+     [Wilfredo Sanchez]
+
   *) Fix minor but annoying bug with the test for Configuration.tmpl
      being newer than Configuration so that it is less likely to fail
      when using APACI and shadow sources. [Wilfredo Sanchez]

@@ -385,6 +385,11 @@ typedef int pid_t;
 #define HAVE_SYSLOG 1
 
 #elif defined(MAC_OS) || defined(MAC_OS_X_SERVER) /* Mac OS (>= 10.0) and Mac OS X Server (<= 5.x) */
+#ifdef MAC_OS_X_SERVER
+#define PLATFORM "Mac OS X Server"
+#else
+#define PLATFORM "Mac OS"
+#endif
 #define HAVE_DYLD
 #ifdef MAC_OS_X_SERVER
 #define DYLD_CANT_UNLOAD
