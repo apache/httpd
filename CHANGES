@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_authnz_ldap: Added the directive "Requires ldap-filter" that
+     allows the module to authorize a user based on a complex LDAP
+     search filter.
+     [Brad Nicholes]
+     
   *) SECURITY: CAN-2004-0942, Fix for memory consumption DoS.
      [Joe Orton]
 
