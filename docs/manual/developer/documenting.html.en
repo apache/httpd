@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Documenting Apache 2.0 - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>Documenting Apache 2.0</h1>
+    <p>Apache 2.0 uses <a href="http://www.doxygen.org/">Doxygen</a> to
+    document the APIs and global variables in the the code. This will explain
+    the basics of how to document using Doxygen.</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="brief" id="brief">Brief Description</a></h2>
+    <p>To start a documentation block, use <code>/**</code><br />
+    To end a documentation block, use <code>*/</code></p>
+
+    <p>In the middle of the block, there are multiple tags we can
+    use:</p>
+
+    <div class="example"><p><code>
+      Description of this functions purpose<br />
+      @param parameter_name description<br />
+      @return description<br />
+      @deffunc signature of the function<br />
+    </code></p></div>
+      
+    <p>The <code>deffunc</code> is not always necessary. DoxyGen does not
+    have a full parser  in it, so any prototype that use a macro in the
+    return type declaration is too complex for scandoc. Those functions
+    require a <code>deffunc</code>. An example (using &amp;gt; rather
+    than &gt;):</p>
+
+    <div class="example"><p><code>
+      /**<br />
+  * return the final element of the pathname<br />
+  * @param pathname The path to get the final element of<br />
+  * @return the final element of the path<br />
+  * @tip Examples:<br />
+  * &lt;pre&gt;<br />
+  *                 "/foo/bar/gum"   -&amp;gt; "gum"<br />
+  *                 "/foo/bar/gum/"  -&amp;gt; ""<br />
+  *                 "gum"            -&amp;gt; "gum"<br />
+  *                 "wi\\n32\\stuff" -&amp;gt; "stuff"<br />
+  * &lt;/pre&gt;<br />
+  * @deffunc const char * ap_filename_of_pathname(const char *pathname)<br />
+  */
+    </code></p></div>
+
+    <p>At the top of the header file, always include:</p>
+    <div class="example"><p><code>
+      /**<br />
+  * @package Name of library header<br />
+  */
+    </code></p></div>
+
+    <p>Doxygen uses a new HTML file for each package. The HTML files are named
+    {Name_of_library_header}.html, so try to be concise with your names.</p>
+
+    <p>For a further discussion of the possibilities please refer to
+    <a href="http://www.doxygen.org/">the Doxygen site</a>.</p>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
