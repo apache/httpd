@@ -91,6 +91,7 @@
 #include "http_conf_globals.h" 
 #include "ap_mpm.h"
 #include "unixd.h"
+#include "mod_suexec.h"
 #include <sys/stat.h>
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
@@ -148,11 +149,6 @@ typedef struct {
     long logbytes; 
     int bufbytes; 
 } cgid_server_conf; 
-
-typedef struct {
-    ap_unix_identity_t ugid;
-    int active;
-} suexec_config_t;
 
 /* If a request includes query info in the URL (stuff after "?"), and
  * the query info does not contain "=" (indicative of a FORM submission),
@@ -273,15 +269,11 @@ static void get_req(int fd, request_rec *r, char **filename, char **argv0, char 
 
     if (suexec_mod) {
         suexec_config_t *suexec_cfg = apr_pcalloc(r->pool, sizeof(*suexec_cfg));
-        int temp;
 
         read(fd, &i, sizeof(int));
-        read(fd, &temp, sizeof(uid_t));
-        suexec_cfg->ugid.uid = temp;
-        read(fd, &temp, sizeof(gid_t));
-        suexec_cfg->ugid.gid = temp;
-        read(fd, &temp, sizeof(int));
-        suexec_cfg->active = temp;
+        read(fd, &suexec_cfg->ugid.uid, sizeof(uid_t));
+        read(fd, &suexec_cfg->ugid.gid, sizeof(gid_t));
+        read(fd, &suexec_cfg->active, sizeof(int));
         dconf[i] = (void *)suexec_cfg;
     }
 
