@@ -232,7 +232,12 @@ static void mod_info_module_cmds(request_rec * r, const command_rec * cmds,
 						    sizeof(buf), 1));
 		block_start--;
 	    }
-	    tmptree = tmptree->parent->next;
+            if (tmptree->parent) {
+                tmptree = tmptree->parent->next;
+            }
+            else {
+                tmptree = NULL;
+            }
 	    nest--;
 	}
 
