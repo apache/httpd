@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/11 18:14:47 $]
+Last modified at [$Date: 2003/03/12 01:33:30 $]
 
 Release:
 
@@ -188,7 +188,11 @@ PATCHES TO PORT FROM 2.1
     * mod_negotiation: parse quality values independent from
       the current locale and level values as integers. PR 17564.
       (essentially: get a rid of atof()) (2.0 + 1.3)
-      +1 :nd
+      +1: nd
+
+    * get out-of-tree APR builds to work for libtool 1.3.x users
+      buildconf: r1.32
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
