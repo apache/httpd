@@ -219,7 +219,7 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
     tmp.file = fd;
     tmp.filename = apr_pstrdup(cmd->pool, filename);
     apr_rfc822_date(tmp.mtimestr, tmp.finfo.mtime);
-    apr_snprintf(tmp.sizestr, sizeof tmp.sizestr, "%lu", tmp.finfo.size);
+    apr_snprintf(tmp.sizestr, sizeof tmp.sizestr, "%" APR_OFF_T_FMT, tmp.finfo.size);
     sconf = ap_get_module_config(cmd->server->module_config, &file_cache_module);
     new_file = apr_array_push(sconf->files);
     *new_file = tmp;
@@ -277,7 +277,7 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
     apr_file_close(fd);
     tmp.filename = fspec;
     apr_rfc822_date(tmp.mtimestr, tmp.finfo.mtime);
-    apr_snprintf(tmp.sizestr, sizeof tmp.sizestr, "%lu", tmp.finfo.size);
+    apr_snprintf(tmp.sizestr, sizeof tmp.sizestr, "%" APR_OFF_T_FMT, tmp.finfo.size);
     sconf = ap_get_module_config(cmd->server->module_config, &file_cache_module);
     new_file = apr_array_push(sconf->files);
     *new_file = tmp;
