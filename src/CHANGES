@@ -1,5 +1,15 @@
 Changes with Apache 1.2b2:
 
+  *) changes for DEC AXP running OSF/1 v3.0. [Marc Evans]
+
+  *) proxy_http.c bugfixes:  [Chuck Murcko]
+        1) fixes possible NULL pointer reference w/NoCache
+        2) fixes NoCache behavior when using ProxyRemote (ProxyRemote
+           host would cache nothing if it was in the local domain,
+           and the local domain was in the NoCache list)
+        3) Adds Host: header when not available
+        4) Some code cleanup and clarification
+
   *) mod_include.c bugfixes:
 	1) Fixed an ommission that caused include variables to not 
 	   be parsed in config errmsg directives [Howard Fear]
