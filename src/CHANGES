@@ -1,5 +1,9 @@
 Changes with Apache 1.3.2
 
+  *) Fixed problem with buffered response message not being sent for
+     the read_request error conditions of URI-too-long (414) and
+     malformed header fields (400).  [Roy Fielding] PR#2646
+
   *) Add support for the Max-Forwards: header line required by RFC2068 for
      the TRACE method. This allows apache to TRACE along a chain of proxies
      up to a predetermined depth. [Martin Kraemer]

@@ -656,20 +656,9 @@ static int read_request_line(request_rec *r)
     /* we've probably got something to do, ignore graceful restart requests */
 #ifdef SIGUSR1
     signal(SIGUSR1, SIG_IGN);
-#endif                          /* SIGUSR1 */
+#endif
+
     ap_bsetflag(conn->client, B_SAFEREAD, 0);
-    if (len == (HUGE_STRING_LEN - 1)) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                    "request failed for %s, reason: URI too long",
-            ap_get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME));
-	/* hack to deal with the HTTP_REQUEST_TIME_OUT setting up above: */
-	if (r->status == HTTP_REQUEST_TIME_OUT) {
-	    r->status = HTTP_OK;
-	}
-	r->request_time = time(NULL);
-	ap_die (HTTP_REQUEST_URI_TOO_LARGE, r);
-        return 0;
-    }
 
     r->request_time = time(NULL);
     r->the_request = ap_pstrdup(r->pool, l);
@@ -700,8 +689,16 @@ static int read_request_line(request_rec *r)
 
     ap_parse_uri(r, uri);
 
+    if (len == (HUGE_STRING_LEN - 1)) {
+        r->status    = HTTP_REQUEST_URI_TOO_LARGE;
+        r->proto_num = HTTP_VERSION(1,0);
+        r->protocol  = ap_pstrdup(r->pool, "HTTP/1.0");
+        return 0;
+    }
+
     r->assbackwards = (ll[0] == '\0');
     r->protocol = ap_pstrdup(r->pool, ll[0] ? ll : "HTTP/0.9");
+
     if (2 == sscanf(r->protocol, "HTTP/%u.%u", &major, &minor)
       && minor < HTTP_VERSION(1,0))	/* don't allow HTTP/0.1000 */
 	r->proto_num = HTTP_VERSION(major, minor);
@@ -725,23 +722,15 @@ static void get_mime_headers(request_rec *r)
     while ((len = getline(field, MAX_STRING_LEN, c->client, 1)) > 0) {
         char *copy = ap_palloc(r->pool, len + 1);
         memcpy(copy, field, len + 1);
-	
-	if (!(value = strchr(copy, ':'))) {     /* Find the colon separator */
-	    /* if there's none, this request is screwed up.
-	     * a hack to deal with how we set HTTP_REQUEST_TIME_OUT earlier.*/
-	    if (r->status == HTTP_REQUEST_TIME_OUT)
-		r->status = HTTP_OK;
-	    
-	    ap_die (HTTP_BAD_REQUEST, r);
-	    return;
-	}
+
+        if (!(value = strchr(copy, ':'))) {     /* Find the colon separator */
+            r->status = HTTP_BAD_REQUEST;       /* or abort the bad request */
+            return;
+        }
 
         *value = '\0';
         ++value;
-	/* XXX: RFC2068 defines only SP and HT as whitespace, this test is
-	 * wrong... and so are many others probably.
-	 */
-        while (ap_isspace(*value))
+        while (*value == ' ' || *value == '\t')
             ++value;            /* Skip to start of value   */
 
 	/* XXX: should strip trailing whitespace as well */
@@ -754,7 +743,7 @@ static void get_mime_headers(request_rec *r)
 		    >= MAX_STRING_LEN - 1) {
 		/* soak up the extra data */
 	    }
-	    if (len == 0) /* time to exit the larger loop as well */
+	    if (len <= 0) /* time to exit the larger loop as well */
 		break;
 	}
     }
@@ -796,34 +785,47 @@ request_rec *ap_read_request(conn_rec *conn)
     r->status          = HTTP_REQUEST_TIME_OUT;  /* Until we get a request */
     r->the_request     = NULL;
 
-    /* Get the request... */
-
 #ifdef CHARSET_EBCDIC
     ap_bsetflag(r->connection->client, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 1);
-#endif /* CHARSET_EBCDIC */
+#endif
+
+    /* Get the request... */
+
     ap_keepalive_timeout("read request line", r);
     if (!read_request_line(r)) {
         ap_kill_timeout(r);
-	if (r->status != HTTP_REQUEST_TIME_OUT) {
-	    /* we must have had an error.*/
-	    ap_log_transaction(r);
-	}
+        if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
+
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+                         "request failed for %s, reason: URI too long",
+                         ap_get_remote_host(r->connection, r->per_dir_config,
+                                            REMOTE_NAME));
+            ap_send_error_response(r, 0);
+            ap_bflush(r->connection->client);
+            ap_log_transaction(r);
+        }
+        r->connection->aborted = 1;
         return NULL;
     }
     if (!r->assbackwards) {
         ap_hard_timeout("read request headers", r);
         get_mime_headers(r);
-        if (r->status != HTTP_REQUEST_TIME_OUT) {/* we must have had an error.*/
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-		         "request failed for %s: error reading the headers",
-		         ap_get_remote_host(r->connection, r->per_dir_config, 
-					    REMOTE_NAME));
-	    ap_log_transaction(r);
-	    return NULL;
-	}
-
+        ap_kill_timeout(r);
+        if (r->status != HTTP_REQUEST_TIME_OUT) {
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+                         "request failed for %s: error reading the headers",
+                         ap_get_remote_host(r->connection, r->per_dir_config, 
+                                            REMOTE_NAME));
+            ap_send_error_response(r, 0);
+            ap_bflush(r->connection->client);
+            ap_log_transaction(r);
+            r->connection->aborted = 1;
+            return NULL;
+        }
     }
-    ap_kill_timeout(r);
+    else {
+        ap_kill_timeout(r);
+    }
 
     r->status = HTTP_OK;                         /* Until further notice. */
 
@@ -839,7 +841,7 @@ request_rec *ap_read_request(conn_rec *conn)
 
     if ((access_status = ap_run_post_read_request(r))) {
         ap_die(access_status, r);
-	ap_log_transaction(r);
+        ap_log_transaction(r);
         return NULL;
     }
 
