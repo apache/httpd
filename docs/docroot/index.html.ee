@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+ <HEAD>
+  <TITLE>Apache veebiserveri installatsiooni testlehek&uuml;lg</TITLE>
+  <!-- Original translation: Ahti Heinla, ahti@ahti.bluemoon.ee, Thu Aug 19 12:57:48 GMT 1999 -->
+ </HEAD>
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+ <BODY
+  BGCOLOR="#FFFFFF"
+  TEXT="#000000"
+  LINK="#0000FF"
+  VLINK="#000080"
+  ALINK="#FF0000"
+ >
+  <H1 ALIGN="CENTER">
+   Kujuta pilti, k&auml;ima l&auml;ks!  Apache veebiserver on installeeritud!
+  </H1>
+  <P>
+  Kui Sa n&auml;ed seda lehek&uuml;lge, siis selle domeeni omanikud on
+  edukalt hakkama saanud <A HREF="http://httpd.apache.org/">Apache veebiserveri</A>
+  installeerimisega. J&auml;rgmiseks peaks nad selle lehek&uuml;lje asendama
+  misiganes materjaliga, mida nad oma veebisaidis n&auml;idata tahavad,
+  v&otilde;i siis juhatama veebiserverile k&auml;tte tegeliku materjali
+  asukoha.
+  </P>
+  <HR>
+  <BLOCKQUOTE>
+   Kui Sa ootasid siin lehek&uuml;ljel n&auml;ha hoopis midagi muud,
+   siis palun <STRONG>v&otilde;ta &uuml;hendust selle veebisaidi
+   administraatoriga.</STRONG> (V&otilde;id n&auml;iteks kirjutada aadressil
+   <SAMP>&lt;Webmaster@<EM>domain</EM>&gt;</SAMP>.) Kuigi see veebisait
+   kasutab Apache tarkvara, pole ta peaaegu kindlasti mitte Apache Group'iga
+   mingil muul moel seotud. Seega, palun &auml;ra kirjuta selle saidi
+   asjus Apache autoritele. Kui sa seda teed, siis sinu kirja
+   <STRONG><BIG>ignoreeritakse</BIG></STRONG>.
+  </BLOCKQUOTE>
+  <HR>
+  <P>
+  Ka Apache
+  <A
+   HREF="manual/index.html"
+  >dokumentatsioon</A>
+  on selles distributsioonis olemas.
+  </P>
+  <P>
+  Kohalik veebmeister v&otilde;ib vabalt kasutada allpool olevat
+  pilti oma Apache veebiserveril. Ait&auml;h Apachet kasutamast!
+  </P>
+  <DIV ALIGN="CENTER">
+   <IMG SRC="apache_pb.gif" ALT="">
+  </DIV>
+ </BODY>
+</HTML>

@@ -18,7 +18,7 @@
   <P>
    Wenn Sie diese Seite sehen, dann bedeutet das, dass die
    Eigent&uuml;mer dieser Dom&auml;ne soeben einen neuen
-   <A HREF="http://www.apache.org/httpd">Apache Web-Server</A>
+   <A HREF="http://httpd.apache.org/">Apache Web-Server</A>
    erfolgreich installiert haben. Jetzt muss noch der
    richtige Web-Inhalt zugef&uuml;gt und diese Platzhalter-Seite
    ersetzt werden (oder der Web-Server f&uuml;r den Zugriff auf den
