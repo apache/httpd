@@ -50,7 +50,7 @@
  *
  */
   
-/* $Id: http_protocol.c,v 1.48 1996/09/28 02:01:02 brian Exp $ */
+/* $Id: http_protocol.c,v 1.49 1996/09/28 02:35:53 brian Exp $ */
 
 /*
  * http_protocol.c --- routines which directly communicate with the
@@ -1369,7 +1369,7 @@ void send_error_response (request_rec *r, int recursive_error)
 	case MULTIPLE_CHOICES: 
 	    {
 		char *list;
-		if (list = table_get (r->notes, "variant-list"))
+		if ((list = table_get (r->notes, "variant-list")))
 		    bputs(list, fd);
 	    }
 	    break;
