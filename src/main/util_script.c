@@ -214,7 +214,8 @@ API_EXPORT(void) add_common_vars(request_rec *r)
 	 * in the environment with "ps -e".  But, if you must...
 	 */
 #ifndef SECURITY_HOLE_PASS_AUTHORIZATION
-	else if (!strcasecmp(hdrs[i].key, "Authorization"))
+	else if (!strcasecmp(hdrs[i].key, "Authorization") ||
+                 !strcasecmp(hdrs[i].key, "Proxy-Authorization"))
 	    continue;
 #endif
 	else

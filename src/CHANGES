@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) Hide Proxy-Authorization from CGI/SSI/etc just like Authorization is
+     hidden. [Alvaro Martinez Echevarria]
+
   *) Apache will, when started with the -X (single process) debugging flag,
      honor the SIGINT or SIGQUIT signals again now. This capability got lost
      a while ago during OS/2 signal handling changes.
