@@ -70,6 +70,9 @@ export_vars.h: export_files
 # wtf does this have to be explicit????
 exports.lo: exports.c
 
+# Needed to allow exports.c to be generated in a parallel build successfully
+.NOTPARALLEL: $(top_builddir)/server/exports.c
+
 # Rule to make def file for OS/2 core dll
 ApacheCoreOS2.def: exports.c export_vars.h $(top_srcdir)/os/$(OS_DIR)/core_header.def
 	cat $(top_srcdir)/os/$(OS_DIR)/core_header.def > $@
