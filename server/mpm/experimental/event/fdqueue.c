@@ -307,9 +307,10 @@ apr_status_t ap_queue_init(fd_queue_t * queue, int queue_capacity,
 }
 
 /**
- * Push a new socket onto the queue. Blocks if the queue is full. Once
- * the push operation has completed, it signals other threads waiting
- * in ap_queue_pop() that they may continue consuming sockets.
+ * Push a new socket onto the queue. 
+ *
+ * precondition: ap_queue_info_wait_for_idler has already been called
+ *               to reserve an idle worker thread
  */
 apr_status_t ap_queue_push(fd_queue_t * queue, apr_socket_t * sd,
                            conn_state_t * cs, apr_pool_t * p)
