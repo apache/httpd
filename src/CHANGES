@@ -1,6 +1,8 @@
 Changes with Apache 1.2b7
 
-  *) mod_negotiation fixes [Petr Lampa]
+  *) unset Content-Length if chunked (RFC-2068) [Petr Lampa]
+
+  *) mod_negotiation fixes [Petr Lampa] PR#157, PR#158, PR#159
      - replace protocol response numbers with symbols
      - save variant-list into main request notes
      - free allocated memory from subrequests

@@ -1102,8 +1102,12 @@ void send_http_header(request_rec *r)
     if (!table_get(r->subprocess_env, "nokeepalive"))
         set_keepalive (r);
 
-    if (r->chunked)
+    if (r->chunked) {
 	bputs("Transfer-Encoding: chunked\015\012", fd);
+	/* RFC2068 #4.4: Messages MUST NOT include both a Content-Length
+	 * header field and the "chunked" transfer coding. */
+        table_unset(r->headers_out, "Content-Length");
+    }
 
     if (r->byterange > 1)
         bvputs(fd, "Content-Type: multipart/",
