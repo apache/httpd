@@ -652,10 +652,10 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                              ctx->state = PARSE_TAIL;
                              ctx->tail_start_bucket = dptr;
                              ctx->tail_start_index = c - buf;
-                             ctx->tag_length += ctx->parse_pos;
                              ctx->parse_pos = 1;
                          }
                          else {
+                             ctx->tag_length++;
                              if (ctx->tag_length > ctx->directive_length) {
                                  ctx->state = PARSE_TAG;
                              }
@@ -665,7 +665,6 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                              }
                              ctx->tail_start_bucket = NULL;
                              ctx->tail_start_index = 0;
-                             ctx->tag_length += ctx->parse_pos;
                              ctx->parse_pos = 0;
                          }
                     }
@@ -867,6 +866,10 @@ static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
     char  term = '\0';
 
     *tag_val = NULL;
+    if (ctx->curr_tag_pos - ctx->combined_tag > ctx->tag_length) {
+        *tag = NULL;
+        return;
+    }
     SKIP_TAG_WHITESPACE(c);
     *tag = c;             /* First non-whitespace character (could be NULL). */
 
@@ -1179,8 +1182,12 @@ static int is_only_below(const char *path)
             return 0;
 #endif
         path += dots;
-        while (*path && *(path+1) != '/')
+        while (*path && (*path != '/')) {
             ++path;
+        }
+        if (*path == '/') {
+            ++path;
+        }
     }
     return 1;
 }
