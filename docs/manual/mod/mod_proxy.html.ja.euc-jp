@@ -24,8 +24,6 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>HTTP/1.1 プロキシ/ゲートウェイサーバ</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>proxy_module</td></tr>
@@ -101,6 +99,7 @@
 <li><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li>
 <li><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

@@ -23,8 +23,6 @@
 <a href="./ja/mpm.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
 <p>この文書ではマルチプロセッシングモジュールがどのようなもので、
 Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
@@ -71,7 +69,7 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
 
       <li>サーバは特定のサイト向けに、より上手にカスタマイズできます。
       例えば、非常に大きなスケーラビリティを必要とするサイトでは、
-      <code class="module"><a href="./mod/worker.html">worker</a></code> といったスレッド化された
+      <code class="module"><a href="./mod/worker.html">worker</a></code> や <code class="module"><a href="./mod/event.html">event</a></code> といったスレッド化された
       MPM を利用できる一方で、安定性や古いソフトウェアとの互換性を
       必要とするサイトでは <code class="module"><a href="./mod/prefork.html">prefork</a></code>
       が利用できます。また、

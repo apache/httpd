@@ -25,8 +25,6 @@
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>常に使用可能な Apache HTTP サーバのコア機能</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Core</td></tr></table>
 </div>
@@ -1755,7 +1753,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     クライアントの実装によって大きく異なり、
     詳細なコンテントネゴシエーションをサポートするかどうかの、
     ブラウザの設定にも影響されたりします。
-    SPENGO 認証ヘッダでは 12392 バイトにまで及ぶことすらあります。</p>
+    SPNEGO 認証ヘッダでは 12392 バイトにまで及ぶことすらあります。</p>
 
     <p>このディレクティブは、
     管理者にクライアントからの異常なリクエストを制御できるようにし、
