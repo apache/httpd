@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/12/07 18:02:47 $]
+Last modified at [$Date: 2001/12/07 18:10:25 $]
 
 Release:
 
@@ -94,6 +94,9 @@ RELEASE SHOWSTOPPERS:
 
     * Sending httpd a SIGHUP with worker MPM causes a segfault 
       when we started as root and switch to a different user.
+        Aaron Says: I've only been able to reproduce this on
+                    Solaris, works fine for Linux. Also, it appears
+                    to be happening in the parent.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
