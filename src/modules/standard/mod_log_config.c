@@ -222,11 +222,12 @@ typedef struct {
 } multi_log_state;
 
 /*
- * config_log_state holds the status of a single log file. fname cannot
- * be NULL. format might be NULL, in which case the default_format from
- * the multi_log_state should be used, or if that is NULL as well, use
- * the CLF. log_fd is -1 before the log file is opened and set to a valid
- * fd after it is opened.
+ * config_log_state holds the status of a single log file. fname might
+ * be NULL, which means this module does no logging for this
+ * request. format might be NULL, in which case the default_format
+ * from the multi_log_state should be used, or if that is NULL as
+ * well, use the CLF. log_fd is -1 before the log file is opened and
+ * set to a valid fd after it is opened.
  */
 
 typedef struct {
