@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/13 11:47:58 $]
+Last modified at [$Date: 2004/04/14 14:45:28 $]
 
 Release:
 
@@ -139,7 +139,7 @@ PATCHES TO BACKPORT FROM 2.1
        it is bound to the original user DN specified by ldc->binddn when in 
        fact it is bound to a completely different user DN who may not have 
        sufficient rights to complete the requested search.
-         modules/experimental/util_ldap.c: r1.22
+         modules/experimental/util_ldap.c: r1.22, r1.24
        +1: bnicholes, minfrin
     
     *) mod_ssl: Fix segfaults when doing shutdown from a cleanup.
