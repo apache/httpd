@@ -282,7 +282,13 @@ dnl If we are running on BSD/OS, we need to use the BSD .include syntax.
 BSD_MAKEFILE=no
 case "$host_alias" in
 *bsdi*)
-    BSD_MAKEFILE=yes;;
+    # Check whether they've installed GNU make
+    if make --version > /dev/null 2>&1; then
+        true
+    else
+        BSD_MAKEFILE=yes
+    fi
+    ;;
 esac
 
 AC_OUTPUT($APACHE_OUTPUT_FILES support/apxs support/apachectl,,[
