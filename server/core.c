@@ -1628,7 +1628,7 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     conf->r = r;
     conf->d = cmd->path;
-    conf->d_is_fnmatch = (apr_is_fnmatch(conf->d) != 0);
+    conf->d_is_fnmatch = (apr_fnmatch_test(conf->d) != 0);
 
     /* Make this explicit - the "/" root has 0 elements, that is, we
      * will always merge it, and it will always sort and merge first.
@@ -1694,7 +1694,7 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
         return errmsg;
 
     conf->d = apr_pstrdup(cmd->pool, cmd->path);     /* No mangling, please */
-    conf->d_is_fnmatch = apr_is_fnmatch(conf->d) != 0;
+    conf->d_is_fnmatch = apr_fnmatch_test(conf->d) != 0;
     conf->r = r;
 
     ap_add_per_url_conf(cmd->server, new_url_conf);
@@ -1766,7 +1766,7 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
         return errmsg;
 
     conf->d = cmd->path;
-    conf->d_is_fnmatch = apr_is_fnmatch(conf->d) != 0;
+    conf->d_is_fnmatch = apr_fnmatch_test(conf->d) != 0;
     conf->r = r;
 
     ap_add_file_conf(c, new_file_conf);

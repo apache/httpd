@@ -307,7 +307,7 @@ static const char *add_desc(cmd_parms *cmd, void *d, const char *desc,
     desc_entry->full_path = (ap_strchr_c(to, '/') == NULL) ? 0 : 1;
     desc_entry->wildcards = (WILDCARDS_REQUIRED
                              || desc_entry->full_path
-                             || apr_is_fnmatch(to));
+                             || apr_fnmatch_test(to));
     if (desc_entry->wildcards) {
         prefix = desc_entry->full_path ? "*/" : "*";
         desc_entry->pattern = apr_pstrcat(dcfg->desc_list->pool,
