@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/05 22:59:14 $]
+Last modified at [$Date: 2003/09/10 12:00:20 $]
 
 Release:
 
@@ -276,6 +276,10 @@ PATCHES TO PORT FROM 2.1
         support/ab.c: r1.128
       +1: trawick, stoddard
 
+      More fixes
+        support/ab.c: r1.129, r1.130
+      +1: trawick
+
     * mod_rewrite: more or less cosmetic fix. If a .htaccess in DocumentRoot
       configures:
         RewriteBase /
@@ -373,7 +377,7 @@ PATCHES TO PORT FROM 2.1
     * Fix EOS handling in ap_get_client_block.
         modules/http/http_protocol.c: r1.471
       See Message-ID: <3EC0B430.4010008@stason.org>
-      +1: jerenkrantz
+      +1: jerenkrantz, trawick
 
 CURRENT RELEASE NOTES:
 
