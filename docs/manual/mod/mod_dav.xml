@@ -35,7 +35,8 @@
     
     <p>In addition, a location for the DAV lock database must be
     specified in the global section of your <code>httpd.conf</code>
-    file:</p>
+    file using the <directive module="mod_dav_fs">DavLockDB</directive>
+    directive:</p>
 
     <example>
       DavLockDB /usr/local/apache2/var/DavLock
@@ -44,12 +45,7 @@
     <p>The directory containing the lock database file must be
     writable by the <directive module="mpm_common">User</directive>
     and <directive module="mpm_common" >Group</directive> under which
-    Apache is running.  For security reasons, you should create a
-    directory for this purpose rather than changing the permissions on
-    an existing directory.  In the above example, Apache will create
-    files in the <code>/usr/local/apache2/var/</code> directory
-    with the base filename <code>DavLock</code> and extension name
-    chosen by the server.</p>
+    Apache is running.</p>
 
     <p>You may wish to add a <directive module="core" type="section"
     >Limit</directive> clause inside the <directive module="core"
@@ -62,7 +58,7 @@
     requests.</p>
 
     <example><title>Full Example</title>
-      DavLockDB /tmp/DavLock<br />
+      DavLockDB /usr/local/apache2/var/DavLock<br />
       <br />
        &lt;Location /foo&gt;<br />
        <indent>
