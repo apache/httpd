@@ -2232,12 +2232,12 @@ static int uncompress(request_rec *r, int method,
     *newch = (unsigned char *) ap_palloc(r->pool, n);
     rv = ap_bread(bout, *newch, n, &n);
     if (n == 0) {
-	ap_destroy_context(sub_context);
+	ap_destroy_pool(sub_context);
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 	    MODNAME ": read failed %s", r->filename);
 	return -1;
     }
-    ap_destroy_context(sub_context);
+    ap_destroy_pool(sub_context);
     return n;
 }
 
