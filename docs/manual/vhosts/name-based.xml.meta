@@ -8,5 +8,6 @@
   <variants>
     <variant>en</variant>
     <variant htmlonly="yes">ja</variant>
+    <variant>ko</variant>
   </variants>
 </metafile>
