@@ -98,7 +98,10 @@ AP_DECLARE_DATA extern int real_exit_code;
                                                  : ((real_exit_code = 0), (status))))
 
 
-/* Defined in util_win32.c
+#ifdef AP_DECLARE_EXPORT
+
+/* Defined in util_win32.c and available only to the core module for
+ * win32 MPM design.
  */
 
 AP_DECLARE(apr_status_t) ap_os_proc_filepath(char **binpath, apr_pool_t *p);
@@ -153,6 +156,7 @@ AP_DECLARE_LATE_DLL_FUNC(AP_DLL_WINBASEAPI, DWORD, WINAPI, RegisterServiceProces
     (dwProcessId, dwType));
 #define RegisterServiceProcess ap_winapi_RegisterServiceProcess
 
+#endif /* def AP_DECLARE_EXPORT */
 
 #ifdef __cplusplus
 }
