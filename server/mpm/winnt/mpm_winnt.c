@@ -1331,7 +1331,7 @@ static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *p
         if (WSADuplicateSocket(nsd, pi.dwProcessId,
                                lpWSAProtocolInfo) == SOCKET_ERROR) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), server_conf,
-                         "Parent: WSADuplicateSocket failed for socket %d.", lr->sd );
+                         "Parent: WSADuplicateSocket failed for socket %d. Check the FAQ.", lr->sd );
             return -1;
         }
 
