@@ -1222,9 +1222,14 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
 
     ap_listen_rec *lr;
     DWORD BytesWritten;
-    HANDLE hPipeRead = NULL;
-    HANDLE hPipeWrite = NULL;
-    SECURITY_ATTRIBUTES sa = {0};  
+    HANDLE hPipeRead;
+    HANDLE hPipeWrite;
+    HANDLE hPipeWriteDup;
+    HANDLE hNullOutput;
+    HANDLE hShareError;
+    HANDLE hShareErrorDup;
+    HANDLE hCurrentProcess = GetCurrentProcess();
+    SECURITY_ATTRIBUTES sa = {sizeof(SECURITY_ATTRIBUTES), NULL, TRUE};
 
     LPWSAPROTOCOL_INFO  lpWSAProtocolInfo;
 
@@ -1284,6 +1289,42 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         return -1;
     }
 
+    /* Make our end of the handle non-inherited */
+    if (DuplicateHandle(hCurrentProcess, hPipeWrite, hCurrentProcess,
+                        &hPipeWriteDup, 0, FALSE, DUPLICATE_SAME_ACCESS))
+    {
+        CloseHandle(hPipeWrite);
+        hPipeWrite = hPipeWriteDup;
+    }
+
+    /* Open a null handle to soak info from the child */
+    hNullOutput = CreateFile("nul", GENERIC_READ | GENERIC_WRITE, 
+                             FILE_SHARE_READ | FILE_SHARE_WRITE, 
+                             &sa, OPEN_EXISTING, 0, NULL);
+    if (hNullOutput == INVALID_HANDLE_VALUE) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, APR_FROM_OS_ERROR(rv), ap_server_conf,
+                     "Parent: Unable to create null output pipe for child process.\n");
+        return -1;
+    }
+
+    /* Child's initial stderr -> our main server error log (or, failing that, stderr) */
+    if (ap_server_conf->error_log) {
+        rv = apr_os_file_get(&hShareError, ap_server_conf->error_log);
+        if (rv == APR_SUCCESS && hShareError != INVALID_HANDLE_VALUE) {
+            if (DuplicateHandle(hCurrentProcess, hShareError, 
+                                hCurrentProcess, &hShareErrorDup, 
+                                0, TRUE, DUPLICATE_SAME_ACCESS)) {
+                hShareError = hShareErrorDup;
+            }
+            else {
+                rv = apr_get_os_error();
+            }
+        }
+        if (rv != APR_SUCCESS || hShareError == INVALID_HANDLE_VALUE) {
+            hShareError = GetStdHandle(STD_ERROR_HANDLE);
+        }
+    }
+
     /* Give the read end of the pipe (hPipeRead) to the child as stdin. The 
      * parent will write the socket data to the child on this pipe.
      */
@@ -1293,6 +1334,8 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     si.dwFlags     = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
     si.wShowWindow = SW_HIDE;
     si.hStdInput   = hPipeRead;
+    si.hStdOutput  = hNullOutput;
+    si.hStdError   = hShareError;
 
     if (!CreateProcess(NULL, pCommand, NULL, NULL, 
                        TRUE,               /* Inherit handles */
@@ -1306,10 +1349,18 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
          * We must close the handles to the new process and its main thread
          * to prevent handle and memory leaks.
          */ 
+        CloseHandle(hPipeWrite);
+        CloseHandle(hPipeRead);
+        CloseHandle(hNullOutput);
+        CloseHandle(hShareError);
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
         return -1;
     }
+
+    CloseHandle(hPipeRead);
+    CloseHandle(hNullOutput);
+    CloseHandle(hShareError);
 
     ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
                  "Parent: Created child process %d", pi.dwProcessId);
@@ -1325,6 +1376,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     if (!(*child_exit_event)) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                      "Parent: Could not create exit event for child process");
+        CloseHandle(hPipeWrite);
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
         return -1;
@@ -1370,7 +1422,6 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
                      "Parent: BytesWritten = %d WSAProtocolInfo = %x20", BytesWritten, *lpWSAProtocolInfo);
     }
 
-    CloseHandle(hPipeRead);
     CloseHandle(hPipeWrite);        
 
     return 0;
