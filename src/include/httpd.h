@@ -568,7 +568,7 @@ typedef struct server_addr_rec server_addr_rec;
 struct server_addr_rec {
     server_addr_rec *next;
     struct in_addr host_addr;	/* The bound address, for this server */
-    short host_port;         	/* The bound port, for this server */   
+    unsigned short host_port;	/* The bound port, for this server */   
     char *virthost;		/* The name given in <VirtualHost> */
 };
 
@@ -586,7 +586,7 @@ struct server_rec {
   
     char *server_admin;
     char *server_hostname;
-    short port;                    /* for redirects, etc. */
+    unsigned short port;           /* for redirects, etc. */
   
     /* Log files --- note that transfer log is now in the modules... */
   

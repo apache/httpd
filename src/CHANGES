@@ -1,5 +1,7 @@
 Changes with Apache 1.2b8
 
+  *) Host port changed to unsigned short. [Ken Coar] PR #276
+
   *) Fix typo in command definition of AuthAuthoritative. [Ken Coar] PR #246
 
   *) Defined HAVE_SHMGET for shared memory on Linux.  [Dean Gaudet]
