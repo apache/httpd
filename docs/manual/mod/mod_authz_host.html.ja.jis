@@ -10,14 +10,15 @@
                   </a></th><td>authz_host_module</td></tr><tr><th><a href="module-dict.html#SourceFile">ソースファイル:
                   </a></th><td>mod_authz_host.c</td></tr><tr><th><a href="module-dict.html#Compatibility">互換性:
                   </a></th><td>Apache 2.0.44 以降</td></tr></table><h3>概要</h3>
-    <p>mod_authz_host により提供されるディレクティブはサーバの特定の部分への
+    <p><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> により提供されるディレクティブは
+    サーバの特定の部分への
     アクセスを制御するために <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     と <code><a href="core.html#accessfilename">.htaccess</a></code> ファイルで使用されます。クライアントのホスト名、IP
     アドレスや <a href="../env.html">環境変数</a>として取得された、その他のリクエストの特徴に基づいて
     アクセス制御を行なうことができます。<code class="directive"><a href="#allow">Allow</a></code> と
     <code class="directive"><a href="#deny">Deny</a></code> ディレクティブは
     どのようなクライアントにアクセスを
-    許可する、しないかを指定するために使用されます。一方、
+    許可する、しないかを指定するために使用されます。一方、
     <code class="directive"><a href="#order">Order</a></code> ディレクティブは
     デフォルトのアクセス状態と、
     <code class="directive"><a href="#allow">Allow</a></code> ディレクティブと
@@ -25,7 +26,7 @@
     ディレクティブとのお互いへの影響の仕方を設定します。
     </p>
 
-    <p>ホストによるアクセス制限とパスワードによる認証を同時に
+    <p>ホストによるアクセス制限とパスワードによる認証を同時に
     行なうことが可能です。その場合、その二つの制限の関係を指定するために
     <code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code>
     ディレクティブを使用します。</p>
@@ -52,7 +53,7 @@
     <p><code class="directive">Allow</code> ディレクティブはどのホストが
     サーバのある領域をアクセスできるかに影響を与えます。
     アクセスはホスト名、IP アドレス、IP アドレスの範囲や、
-    環境変数として取得された、その他のクライアントのリクエストの
+    環境変数として取得された、その他のクライアントのリクエストの
     特徴によって制御することができます。</p> 
 
     <p>このディレクティブの最初の引数は常に <code>from</code> です。
@@ -73,7 +74,7 @@
       各部分が完全に合うものだけに適用されますので、上の例は
       <code>foo.apache.org</code> にはマッチしますが、
       <code>fooapache.org</code> にはマッチしません。
-      この設定をすると、サーバは
+      この設定をすると、サーバは
       <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code>
       の設定に関わらず、クライアントの IP アドレスに対して
       DNS の逆引きを行ないます。</dd>
