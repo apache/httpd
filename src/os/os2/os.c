@@ -7,6 +7,7 @@
 #define INCL_DOS
 #include <os2.h>
 #include <stdio.h>
+#include <string.h>
 
 static int rc=0;
 static char errorstr[20];
