@@ -235,6 +235,7 @@ struct proxy_worker {
     char                recv_buffer_size_set;
     apr_size_t          io_buffer_size;
     char                io_buffer_size_set;
+    char                keepalive;
     proxy_conn_pool *cp;        /* Connection pool to use */
     void            *opaque;    /* per scheme worker data */
 };
@@ -343,6 +344,7 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *c
 PROXY_DECLARE(int) ap_proxy_pre_http_request(conn_rec *c, request_rec *r);
 PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buff, size_t bufflen, int *eos);
 PROXY_DECLARE(void) ap_proxy_table_unmerge(apr_pool_t *p, apr_table_t *t, char *key);
+/* DEPRECATED (will be replaced with ap_proxy_connect_backend */
 PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **, const char *, apr_sockaddr_t *, const char *, proxy_server_conf *, server_rec *, apr_pool_t *);
 PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c);
 PROXY_DECLARE(int) ap_proxy_ssl_disable(conn_rec *c);
@@ -359,7 +361,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_connection(apr_pool_t *p, request
                                                           char *server_portstr, int server_portstr_size);
 PROXY_DECLARE(apr_status_t) ap_proxy_destroy_connection(proxy_conn_rec *conn);
 PROXY_DECLARE(apr_status_t) ap_proxy_close_connection(proxy_conn_rec *conn);
-
+PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function, proxy_conn_rec *conn, proxy_worker *worker,
+                                            proxy_server_conf *conf, server_rec *s);
 
 /* For proxy_util */
 extern module PROXY_DECLARE_DATA proxy_module;

@@ -1242,6 +1242,7 @@ PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
     return access_status;
 }
 
+/* DEPRECATED */
 PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
                                                const char *proxy_function,
                                                apr_sockaddr_t *backend_addr,
@@ -1536,7 +1537,7 @@ static int is_socket_connected(apr_socket_t *sock)
     char test_buffer[1]; 
     apr_status_t socket_status;
     apr_interval_time_t current_timeout;
-
+    
     /* save timeout */
     apr_socket_timeout_get(sock, &current_timeout);
     /* set no timeout */
@@ -1548,4 +1549,96 @@ static int is_socket_connected(apr_socket_t *sock)
         return 0;
     else
         return 1;
+}
+
+PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
+                                            proxy_conn_rec *conn,
+                                            proxy_worker *worker,
+                                            proxy_server_conf *conf,
+                                            server_rec *s)
+{
+    apr_status_t rv;
+    int connected = 0;
+    int loglevel;
+    apr_sockaddr_t *backend_addr = worker->cp->addr;
+    apr_socket_t *newsock;
+    
+    if (conn->sock) {
+        /* This increases the connection pool size
+         * but the number of dropped connections is
+         * relatively small compared to connection lifetime
+         */
+        if (!(connected = is_socket_connected(conn->sock))) {        
+            apr_socket_close(conn->sock);
+            conn->sock = NULL;
+        }
+    }
+
+    while (backend_addr && !connected) {
+        if ((rv = apr_socket_create(&newsock, backend_addr->family,
+                                SOCK_STREAM, 0, conn->pool)) != APR_SUCCESS) {
+            loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
+            ap_log_error(APLOG_MARK, loglevel, rv, s,
+                         "proxy: %s: error creating fam %d socket for target %s",
+                         proxy_function,
+                         backend_addr->family,
+                         worker->hostname);
+            /* this could be an IPv6 address from the DNS but the
+             * local machine won't give us an IPv6 socket; hopefully the
+             * DNS returned an additional address to try
+             */
+            backend_addr = backend_addr->next;
+            continue;
+        }
+
+#if !defined(TPF) && !defined(BEOS)
+        if (conf->recv_buffer_size > 0 &&
+            (rv = apr_socket_opt_set(newsock, APR_SO_RCVBUF,
+                                     conf->recv_buffer_size))) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                         "apr_socket_opt_set(SO_RCVBUF): Failed to set "
+                         "ProxyReceiveBufferSize, using default");
+        }
+#endif
+
+        /* Set a timeout on the socket */
+        if (worker->timeout_set == 1) {
+            apr_socket_timeout_set(newsock, worker->timeout);
+        }
+        else {
+             apr_socket_timeout_set(newsock, s->timeout);
+        }
+        /* Set a keepalive option */
+        if (worker->keepalive) {
+            if ((rv = apr_socket_opt_set(newsock, 
+                            APR_SO_KEEPALIVE, 1)) != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                             "apr_socket_opt_set(SO_KEEPALIVE): Failed to set"
+                             " Keepalive");
+            }
+        }
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                     "proxy: %s: fam %d socket created to connect to %s",
+                     proxy_function, backend_addr->family, worker->hostname);
+
+        /* make the connection out of the socket */
+        rv = apr_socket_connect(newsock, backend_addr);
+
+        /* if an error occurred, loop round and try again */
+        if (rv != APR_SUCCESS) {
+            apr_socket_close(newsock);
+            loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
+            ap_log_error(APLOG_MARK, loglevel, rv, s,
+                         "proxy: %s: attempt to connect to %pI (%s) failed",
+                         proxy_function,
+                         backend_addr,
+                         worker->hostname);
+            backend_addr = backend_addr->next;
+            continue;
+        }
+        conn->sock   = newsock;
+        conn->worker = worker;
+        connected    = 1;
+    }
+    return connected ? 0 : 1;
 }
