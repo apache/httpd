@@ -967,7 +967,7 @@ static int connect_to_daemon(int *sdptr, request_rec *r,
                               connect_tries);
                 close(sd);
                 apr_sleep(sliding_timer);
-                if (sliding_timer < APR_TIME_FROM_SEC(2)) {
+                if (sliding_timer < apr_time_from_sec(2)) {
                     sliding_timer *= 2;
                 }
             }
