@@ -1,15 +1,28 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/04/04 22:28:49 $]
+Last modified at [$Date: 2000/04/10 17:04:08 $]
 
 Release:
 
-    Vague plan, assuming more features aren't demanded for the 2.0 release
+    2.0a2   : vague plans to release in April sometime.
+    2.0a2   : released March 31, 2000
     2.0a1   : released March 10, 2000
-    2.0     : later in 2000
 
 RELEASE SHOWSTOPPERS:
+    * Re-work configuration for top level Apache.  Work should start with
+      trying to clean the autoconf stuff.  If and only if this proves
+      impossible to do (very unlikely), autoconf should be removed and we
+      will roll our own config implementation.
+          Status: Jim Jagielski is looking into this.
 
-    * Fix SAFEREAD
+    * Put buffered file I/O back into APR.  This should be done using the
+      buffering logic from the OS/2 directory.  stdio FILE *'s should not be
+      used on Unix because of the limitations these impose on some platforms,
+      for example the 256 File * limit on Solaris.
+
+    * There is a bug in ap_create_process on Linux at least.  Currently CGI
+      processes are not working at all.
+
+    * Fix SAFEREAD.  Can somebody detail what is wrong with SAFEREAD?
 
     * Fix lingering close
         Status:
@@ -72,7 +85,10 @@ RELEASE SHOWSTOPPERS:
 	BIND v9.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
-
+    * Configuration Modules.  Allow a new module type that reads 
+      a config file and sets up an internal tree structure for
+      configuration.
+    
     * "make distclean" leaves (at least these) turds:
 	lib/.deps
 	lib/apr/.deps
@@ -149,7 +165,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
             for threading
 
     * Use APR to get rid of more platform dependancies.
-        Status: Ryan Bloom <rbb@raleigh.ibm.com> is working on this.
+        Status: Ryan Bloom <rbb@covalenet.net> is working on this.
 
     * The connection status table is not very efficient. Also, very few stats
       are exported to the connection status table (easy to fix), and mod_status
@@ -178,6 +194,7 @@ Other features that need writing:
     * TODO in source -- just do an egrep on "TODO" and see what's there
 
 Documentation that needs writing:
+    * Mod_status docs are needed.
 
     * The concept of MPMs, especially if we ship more than one MPM for a
       given platform
