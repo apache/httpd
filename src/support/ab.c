@@ -123,6 +123,9 @@
 #define ap_select       select
 #else				/* (!)NO_APACHE_INCLUDES */
 #include "ap_config.h"
+#ifdef CHARSET_EBCDIC
+#include "ebcdic.h"
+#endif
 #include <fcntl.h>
 #include <sys/time.h>
 
