@@ -1213,7 +1213,7 @@ void ap_process_request(request_rec *r)
 
 static table *rename_original_env(pool *p, table *t)
 {
-    array_header *env_arr = table_elts(t);
+    array_header *env_arr = ap_table_elts(t);
     table_entry *elts = (table_entry *) env_arr->elts;
     table *new = ap_make_table(p, env_arr->nalloc);
     int i;

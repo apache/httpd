@@ -152,7 +152,7 @@ static char *http2env(pool *a, char *w)
 
 API_EXPORT(char **) ap_create_environment(pool *p, table *t)
 {
-    array_header *env_arr = table_elts(t);
+    array_header *env_arr = ap_table_elts(t);
     table_entry *elts = (table_entry *) env_arr->elts;
     char **env = (char **) ap_palloc(p, (env_arr->nelts + 2) * sizeof(char *));
     int i, j;
@@ -200,7 +200,7 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
 #endif
     const char *host;
 
-    array_header *hdrs_arr = table_elts(r->headers_in);
+    array_header *hdrs_arr = ap_table_elts(r->headers_in);
     table_entry *hdrs = (table_entry *) hdrs_arr->elts;
     int i;
 

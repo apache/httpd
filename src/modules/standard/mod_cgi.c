@@ -195,7 +195,7 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
 static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
 		  char *dbuf, const char *sbuf, BUFF *script_in, BUFF *script_err)
 {
-    array_header *hdrs_arr = table_elts(r->headers_in);
+    array_header *hdrs_arr = ap_table_elts(r->headers_in);
     table_entry *hdrs = (table_entry *) hdrs_arr->elts;
     char argsbuffer[HUGE_STRING_LEN];
     FILE *f;
@@ -233,7 +233,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     }
 
     fputs("%response\n", f);
-    hdrs_arr = table_elts(r->err_headers_out);
+    hdrs_arr = ap_table_elts(r->err_headers_out);
     hdrs = (table_entry *) hdrs_arr->elts;
 
     for (i = 0; i < hdrs_arr->nelts; ++i) {

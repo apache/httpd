@@ -2047,7 +2047,7 @@ static int handle_printenv(FILE *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
-    array_header *arr = table_elts(r->subprocess_env);
+    array_header *arr = ap_table_elts(r->subprocess_env);
     table_entry *elts = (table_entry *) arr->elts;
     int i;
 

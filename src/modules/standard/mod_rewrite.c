@@ -3703,7 +3703,7 @@ static char *lookup_header(request_rec *r, const char *name)
     table_entry *hdrs;
     int i;
 
-    hdrs_arr = table_elts(r->headers_in);
+    hdrs_arr = ap_table_elts(r->headers_in);
     hdrs = (table_entry *)hdrs_arr->elts;
     for (i = 0; i < hdrs_arr->nelts; ++i) {
         if (hdrs[i].key == NULL) {

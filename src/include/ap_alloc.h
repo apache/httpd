@@ -197,8 +197,8 @@ API_EXPORT(table *) ap_overlay_tables(pool *p, const table *overlay, const table
  * placing it here we are able to get compile-time diagnostics from modules
  * written which assume that a table is the same as an array_header. -djg
  */
-#define table_elts(t) ((array_header *)(t))
-#define is_empty_table(t) (((t) == NULL)||(((array_header *)(t))->nelts == 0))
+#define ap_table_elts(t) ((array_header *)(t))
+#define ap_is_empty_table(t) (((t) == NULL)||(((array_header *)(t))->nelts == 0))
 
 /* routines to remember allocation of other sorts of things...
  * generic interface first.  Note that we want to have two separate

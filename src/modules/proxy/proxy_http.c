@@ -307,7 +307,7 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     else
 	ap_bputs(CRLF, f);
 
-    reqhdrs_arr = table_elts(r->headers_in);
+    reqhdrs_arr = ap_table_elts(r->headers_in);
     reqhdrs = (table_entry *) reqhdrs_arr->elts;
     for (i = 0; i < reqhdrs_arr->nelts; i++) {
 	if (reqhdrs[i].key == NULL || reqhdrs[i].val == NULL

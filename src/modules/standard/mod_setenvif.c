@@ -361,7 +361,7 @@ static int match_headers(request_rec *r)
         }
 
         if (!regexec(b->preg, val, 0, NULL, 0)) {
-	    array_header *arr = table_elts(b->features);
+	    array_header *arr = ap_table_elts(b->features);
             elts = (table_entry *) arr->elts;
 
             for (j = 0; j < arr->nelts; ++j) {

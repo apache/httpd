@@ -1224,7 +1224,7 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
      * header field tables into a single table.  If we don't do this, our
      * later attempts to set or unset a given fieldname might be bypassed.
      */
-    if (!is_empty_table(r->err_headers_out))
+    if (!ap_is_empty_table(r->err_headers_out))
         r->headers_out = ap_overlay_tables(r->pool, r->err_headers_out,
                                         r->headers_out);
 
@@ -1967,7 +1967,7 @@ void ap_send_error_response(request_rec *r, int recursive_error)
      * message body.  Note that being assbackwards here is not an option.
      */
     if (status == HTTP_NOT_MODIFIED) {
-        if (!is_empty_table(r->err_headers_out))
+        if (!ap_is_empty_table(r->err_headers_out))
             r->headers_out = ap_overlay_tables(r->pool, r->err_headers_out,
                                                r->headers_out);
         ap_hard_timeout("send 304", r);

@@ -145,7 +145,7 @@ static void *merge_env_server_configs(pool *p, void *basev, void *addv)
 
     new_table = ap_copy_table(p, base->vars);
 
-    arr = table_elts(add->vars);
+    arr = ap_table_elts(add->vars);
     elts = (table_entry *)arr->elts;
 
     for (i = 0; i < arr->nelts; ++i) {
