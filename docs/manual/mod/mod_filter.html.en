@@ -385,7 +385,9 @@
 <tr><td><code>/</code></td><td>regexp match</td></tr>
 <tr class="odd"><td><code>=</code></td><td>integer equality</td></tr>
 <tr><td><code>&lt;</code></td><td>integer less-than</td></tr>
-<tr class="odd"><td><code>&gt;</code></td><td>integer greater-than</td></tr>
+<tr class="odd"><td><code>&lt;=</code></td><td>integer less-than or equal</td></tr>
+<tr><td><code>&gt;</code></td><td>integer greater-than</td></tr>
+<tr class="odd"><td><code>&gt;=</code></td><td>integer greater-than or equal</td></tr>
 <tr><td><code>*</code></td><td>Unconditional match</td></tr>
 </table>
 
