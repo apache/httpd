@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/07/23 14:08:26 $]
+Last modified at [$Date: 2002/07/23 16:57:00 $]
 
 Release:
 
@@ -61,6 +61,16 @@ RELEASE SHOWSTOPPERS:
       reference to iconv.
 
 CURRENT VOTES:
+
+    * httpd-std.conf and friends
+
+      a) httpd-std.conf should be tailored by install (from src or
+         binbuild) even if user has existing httpd.conf
+         +1:   trawick
+
+      b) tailored httpd-std.conf should be copied by install to
+         sysconfdir 
+         +1:   trawick (haven't seen a place I like better *yet*)
 
     * apachectl should revert to just being an init script and
       httpd.sh should be the wrapper for httpd which sources envvars
