@@ -676,6 +676,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
     char *udir;
 
     rnew = make_sub_request(r);
+    rnew->hostname       = r->hostname;
     rnew->request_time   = r->request_time;
     rnew->connection     = r->connection;
     rnew->server         = r->server;
@@ -753,6 +754,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     char *fdir;
 
     rnew = make_sub_request(r);
+    rnew->hostname       = r->hostname;
     rnew->request_time   = r->request_time;
     rnew->connection     = r->connection;
     rnew->server         = r->server;
