@@ -702,6 +702,12 @@ Result:
              Treats the <em>TestString</em> as a pathname and tests
             if it exists and is a symbolic link.</li>
 
+            <li>'<strong>-x</strong>' (has e<strong>x</strong>ecutable
+            permissions)<br />
+            Treats the <em>TestString</em> as a pathname and tests
+            if it exists and has execution permissions. These permissions
+            are determined depending on the underlying OS.</li>
+
             <li>'<strong>-F</strong>' (is existing file via
             subrequest)<br />
              Checks if <em>TestString</em> is a valid file and
