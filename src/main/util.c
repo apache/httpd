@@ -1937,7 +1937,7 @@ char *ap_get_local_host(pool *a)
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN 256
 #endif
-    char str[MAXHOSTNAMELEN + 1];
+    char str[MAXHOSTNAMELEN];
     char *server_hostname;
     struct hostent *p;
 
@@ -1949,7 +1949,7 @@ char *ap_get_local_host(pool *a)
 	perror("Unable to gethostname");
 	exit(1);
     }
-    str[MAXHOSTNAMELEN] = '\0';
+    str[sizeof(str) - 1] = '\0';
     if ((!(p = gethostbyname(str))) || (!(server_hostname = find_fqdn(a, p)))) {
 	fprintf(stderr, "%s: cannot determine local host name.\n",
 		ap_server_argv0);
