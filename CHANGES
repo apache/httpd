@@ -22,10 +22,6 @@ Changes with Apache 2.1.0-dev
   *) mod_proxy: If a request has a blank body and has a 0 Content-Length
      headers, pass that to the proxy.  [Justin Erenkrantz]
 
-  *) Fix the handling of URIs containing %2F when AllowEncodedSlashes
-     is enabled.  Previously, such urls would still be rejected with
-     404.  [Jeff Trawick, Bill Stoddard]
-
   *) mod_rewrite: Fix query string handling for proxied URLs. PR 14518.
      [michael teitler <michael.teitler cetelem.fr>,
       Jan Kratochvil <rcpt-dev.AT.httpd.apache.org jankratochvil.net>]
@@ -408,6 +404,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.52
+
+  *) Fix the handling of URIs containing %2F when AllowEncodedSlashes
+     is enabled.  Previously, such urls would still be rejected.
+     [Jeff Trawick, Bill Stoddard]
 
   *) mod_mem_cache: Fixed race condition causing segfault because of memory being
      freed twice, or reused after being freed.
