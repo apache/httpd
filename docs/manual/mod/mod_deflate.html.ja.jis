@@ -25,8 +25,6 @@
 <a href="../ja/mod/mod_deflate.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>クライアントへ送られる前にコンテンツを圧縮する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>deflate_module</td></tr>
@@ -47,7 +45,7 @@
 </ul>
 <h3>トピック</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#recommended">推奨設定</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#recommended">サンプル設定</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">圧縮を有効にする</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxies">Proxy サーバでの扱い</a></li>
 </ul><h3>参照</h3>
@@ -56,13 +54,15 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="recommended" id="recommended">推奨設定</a></h2>
-    <p>下にせっかちな人向けの設定例を示します。しかしぜひ時間を取って
-    下記の詳細もお読み下さい!</p>
+<h2><a name="recommended" id="recommended">サンプル設定</a></h2>
+    <p>下にせっかちな人向けの簡単な設定例を示します。</p>
 
     <div class="example"><h3>数タイプのみ圧縮する</h3><p><code>
       AddOutputFilterByType DEFLATE text/html text/plain text/xml
     </code></p></div>
+
+    <p>以下の設定はコンテンツをより圧縮しますが、ずっと複雑な設定になります。
+    設定の隅々までよく理解しないで使わないでください。</p>
 
     <div class="example"><h3>画像以外全て圧縮する</h3><p><code>
       &lt;Location /&gt;<br />
@@ -128,7 +128,7 @@
         &lt;/Directory&gt;
       </code></p></div>
 
-      <p>全てのファイルタイプでの圧縮に問題を抱えているブラウザに対しては、
+      <p>全てのファイルタイプでの圧縮に問題を抱えているブラウザに対しては、
       <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code>
       ディレクティブを使用して、特定のブラウザに <code>no-gzip</code>
       ノートをセットし、圧縮が行なわれないようにします。
@@ -163,9 +163,36 @@
         フィルタの後になります。
         DEFLATE フィルタは内部的なサブリクエストを関知しません。
       </div>
-    
+      <div class="note"><h3>注</h3>
+        <code class="directive"><a href="../mod/core.html#setenv">SetEnv</a></code> で設定される
+        <code>force-gzip</code> 環境変数がありますが、これは
+        ブラウザの accept-encoding 設定を無視し、圧縮した出力をします。
+      </div>
 
-    <h3><a name="input" id="input">入力の伸張</a></h3>
+    
+    <h3><a name="inflate" id="inflate">出力の伸長</a></h3>
+      <p><code class="module"><a href="../mod/mod_defulate.html">mod_defulate</a></code> モジュールは、gzip 圧縮されたレスポンス
+      本文を inflate/uncompress するフィルタも提供しています。
+      この機能を有効にするには、<code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>
+      や <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> を使って、
+      <code>INFLATE</code> フィルタを出力フィルタチェインに挿入します。
+      例えば次のようにします。</p>
+
+      <div class="example"><p><code>
+        &lt;Location /dav-area&gt;<br />
+        <span class="indent">
+          ProxyPass http://example.com/<br />
+          SetOutputFilter INFLATE<br />
+        </span>
+        &lt;/Location&gt;
+      </code></p></div>
+
+      <p>この例では、example.com からの gzip 圧縮された出力を伸長し、
+      その他のフィルタがさらにその出力を処理できるようにします。
+      </p>
+      
+    
+    <h3><a name="input" id="input">入力の伸張</a></h3>
       <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> モジュールは、gzip
       で圧縮されたリクエスト本体を伸張するフィルタも提供しています。
       この機能を有効にするには、<code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>
@@ -182,7 +209,7 @@
       </code></p></div>
       
       <p>この設定であれば、<code>Content-Encoding: gzip</code>
-      ヘッダを含むリクエストが来ると、本体は自動的に伸張されます。
+      ヘッダを含むリクエストが来ると、本体は自動的に伸張されます。
       gzip リクエスト本体を送信するブラウザはあまりありません。
       しかし、例えば <a href="http://www.webdav.org">WebDAV</a>
       クライアントの幾つかなど、特別なアプリケーションでリクエストの
@@ -323,7 +350,7 @@
 </table>
     <p><code class="directive">DeflateMemLevel</code> ディレクティブは
     zlib が圧縮に使うメモリのレベルを設定します (1 から 9 の間の値)。
-    (訳注: 2 を底とする対数の値になります。
+    (訳注: 2 を底とする対数の値になります。
     8 程度が良いでしょう。)</p>
 
 </div>
