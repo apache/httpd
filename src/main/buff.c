@@ -1193,8 +1193,14 @@ API_EXPORT(int) ap_bwrite(BUFF *fb, const void *buf, int nbyte)
 #ifdef CHARSET_EBCDIC
     static char *cbuf = NULL;
     static int csize = 0;
+#endif /*CHARSET_EBCDIC*/
 
-    /* XXX: martin don't you want to do this after the error tests below? */
+    if (fb->flags & (B_WRERR | B_EOUT))
+	return -1;
+    if (nbyte == 0)
+	return 0;
+
+#ifdef CHARSET_EBCDIC
     if (ap_bgetflag(fb, B_EBCDIC2ASCII)) {
         if (nbyte > csize) {
             if (cbuf != NULL)
@@ -1207,11 +1213,6 @@ API_EXPORT(int) ap_bwrite(BUFF *fb, const void *buf, int nbyte)
         buf = (cbuf) ? cbuf : buf;
     }
 #endif /*CHARSET_EBCDIC*/
-
-    if (fb->flags & (B_WRERR | B_EOUT))
-	return -1;
-    if (nbyte == 0)
-	return 0;
 
     if (!(fb->flags & B_WR)) {
 /* unbuffered write -- have to use bcwrite since we aren't taking care
