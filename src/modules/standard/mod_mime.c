@@ -73,7 +73,7 @@
  * defined it's not always right for our needs.  Roll our own that
  * we can rely on.
  */
-#define ap_isascii(c) ((OS_ASC(c) & ~0177) != 0)
+#define ap_isascii(c) ((OS_ASC(c) & 0x80) == 0)
 
 typedef struct handlers_info {
     char *name;
