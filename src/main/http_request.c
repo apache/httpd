@@ -246,6 +246,9 @@ static int get_path_info(request_rec *r)
         else {
             errno = 0;
             rv = stat(path, &r->finfo);
+#ifdef OS2
+            r->finfo.st_ino = 0;
+#endif
         }
 
         if (cp != end)
