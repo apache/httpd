@@ -154,7 +154,7 @@
   of the modules, you can use:
 
     $ ./configure --prefix=/path/to/apache \
-                  --enable-modules=most \
+                  --enable-module=most \
                   --enable-shared=max
     $ make
     $ make install
