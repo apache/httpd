@@ -320,8 +320,6 @@ static int open_error_log(server_rec *s, apr_pool_t *p)
                          ap_server_argv0, fname);
             return DONE;
         }
-
-        apr_file_inherit_set(s->error_log);
     }
 
     return OK;

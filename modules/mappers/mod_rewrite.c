@@ -3429,7 +3429,6 @@ static void open_rewritelog(server_rec *s, apr_pool_t *p)
                          "file %s", fname);
             exit(1);
         }
-        apr_file_inherit_set(conf->rewritelogfp);
     }
     return;
 }

@@ -1300,7 +1300,6 @@ static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
                             "could not open transfer log file %s.", fname);
             return NULL;
         }
-        apr_file_inherit_set(fd);
         return fd;
     }
 }
