@@ -492,23 +492,19 @@ static void process_socket(ap_pool_t *p, ap_socket_t *sock, int my_child_num, in
 
     (void) ap_get_os_sock(&csd, sock);
 
+    if (csd >= FD_SETSIZE) {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
+                     "new file descriptor %d is too large; you probably need "
+                     "to rebuild Apache with a larger FD_SETSIZE "
+                     "(currently %d)", 
+                     csd, FD_SETSIZE);
+        ap_close_socket(sock);
+        return;
+    }
+
     sock_disable_nagle(csd);
 
     iol = unix_attach_socket(sock);
-    if (iol == NULL) {
-        if (errno == EBADF) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
-                "filedescriptor (%u) larger than FD_SETSIZE (%u) "
-                "found, you probably need to rebuild Apache with a "
-                "larger FD_SETSIZE", csd, FD_SETSIZE);
-        }
-        else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, NULL,
-                "error attaching to socket");
-        }
-        ap_close_socket(sock);
-	return;
-    }
 
     (void) ap_update_child_status(my_child_num, my_thread_num,  
 				  SERVER_BUSY_READ, (request_rec *) NULL);
