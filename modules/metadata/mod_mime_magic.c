@@ -2145,32 +2145,25 @@ struct uncompress_parms {
 static int uncompress_child(void *data, child_info *pinfo)
 {
     struct uncompress_parms *parm = data;
-	char *new_argv[4];
-
-	new_argv[0] = compr[parm->method].argv[0];
-	new_argv[1] = compr[parm->method].argv[1];
-	new_argv[2] = parm->r->filename;
-	new_argv[3] = NULL;
-
-#if defined(WIN32)
     int child_pid;
-#endif
+    char *new_argv[4];
+
+    new_argv[0] = compr[parm->method].argv[0];
+    new_argv[1] = compr[parm->method].argv[1];
+    new_argv[2] = parm->r->filename;
+    new_argv[3] = NULL;
 
     if (compr[parm->method].silent) {
 	close(STDERR_FILENO);
     }
 
-#if defined(WIN32)
-    child_pid = spawnvp(compr[parm->method].argv[0],
+    child_pid = ap_spawnvp(compr[parm->method].argv[0],
 			new_argv);
-    return (child_pid);
-#else
-    execvp(compr[parm->method].argv[0], new_argv);
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, parm->r,
+    if (child_pid == -1)
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, parm->r,
 		MODNAME ": could not execute `%s'.",
 		compr[parm->method].argv[0]);
-    return -1;
-#endif
+    return (child_pid);
 }
 
 
