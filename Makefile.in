@@ -32,6 +32,13 @@ install-conf:
 	if [ ! -d $(DESTDIR)$(sysconfdir) ]; then \
 	    $(MKINSTALLDIRS) $(DESTDIR)$(sysconfdir) ; \
 	fi ; \
+	if [ ! -d $(DESTDIR)$(sysconfdir)/extra ]; then \
+	    $(MKINSTALLDIRS) $(DESTDIR)$(sysconfdir)/extra ; \
+	fi ; \
+	if [ ! -d $(DESTDIR)$(sysconfdir)/original ]; then \
+	    $(MKINSTALLDIRS) $(DESTDIR)$(sysconfdir)/original ; \
+	    $(MKINSTALLDIRS) $(DESTDIR)$(sysconfdir)/original/extra ; \
+	fi ; \
 	cd $(top_srcdir)/docs/conf; \
 	for i in mime.types magic; do \
 	    if test ! -f $(DESTDIR)$(sysconfdir)/$$i; then \
@@ -40,7 +47,7 @@ install-conf:
 	done; \
 	for j in $(top_srcdir)/docs/conf $(top_builddir)/docs/conf ; do \
 	    cd $$j ; \
-	    for i in *-std*.conf; do \
+	    for i in httpd.conf extra/httpd-*.conf; do \
 	    	( \
 	    		n_lm=`awk 'BEGIN {n=0} /@@LoadModule@@/ {n+=1} END {print n}' < $$i`; \
 	    		if test $$n_lm -eq 0 -o "x$(DSO_MODULES)" = "x"; then \
@@ -55,14 +62,8 @@ install-conf:
 	    				-e 'p' \
 	    				< $$i; \
 	    			for j in $(DSO_MODULES) "^EOL^"; do \
-	    				if test "x$$j" = "xssl"; then \
-	    					echo "<IfDefine SSL>"; \
-	    				fi; \
 	    				if test $$j != "^EOL^"; then \
 	    					echo "LoadModule $${j}_module $(rel_libexecdir)/mod_$${j}.so"; \
-	    				fi; \
-	    				if test "x$$j" = "xssl"; then \
-	    					echo "</IfDefine>"; \
 	    				fi; \
 	    			done; \
 	    			sed -e '1,/@@LoadModule@@/d' \
@@ -71,14 +72,13 @@ install-conf:
 	    				-e 's#@@Port@@#$(PORT)#g' \
 	    				< $$i; \
 	    		fi \
-	    	) > $(DESTDIR)$(sysconfdir)/$$i; \
-	    	chmod 0644 $(DESTDIR)$(sysconfdir)/$$i; \
-	    	file=`echo $$i|sed s/-std//`; \
-	    	if [ "$$file" = "httpd.conf" ]; then \
-	    		file=`echo $$file|sed s/.*.conf/$(PROGRAM_NAME).conf/`; \
+	    	) > $(DESTDIR)$(sysconfdir)/original/$$i; \
+	    	chmod 0644 $(DESTDIR)$(sysconfdir)/original/$$i; \
+	    	if [ "$$i" = "httpd.conf" ]; then \
+	    		file=`echo $$i|sed s/.*.conf/$(PROGRAM_NAME).conf/`; \
 	    	fi; \
-	    	if test "$$file" != "$$i" && test ! -f $(DESTDIR)$(sysconfdir)/$$file; then \
-	    		$(INSTALL_DATA) $(DESTDIR)$(sysconfdir)/$$i $(DESTDIR)$(sysconfdir)/$$file; \
+	    	if test ! -f $(DESTDIR)$(sysconfdir)/$$i; then \
+	    		$(INSTALL_DATA) $(DESTDIR)$(sysconfdir)/original/$$i $(DESTDIR)$(sysconfdir)/$$i; \
 	    	fi; \
 	    done ; \
 	done ; \
