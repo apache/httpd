@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/06/02 00:22:19 $]
+Last modified at [$Date: 2001/06/04 14:20:20 $]
 
 Release:
 
@@ -83,6 +83,37 @@ RELEASE SHOWSTOPPERS:
 
     WARNING: ALWAYS check srclib/apr/STATUS and srclib/apr-util/STATUS
 
+    * File handle caching in mod_file_cache is broken in the multi
+      threaded MPMs. The original intent of caching file handles 
+      was that these handles would ONLY be used in an apr_sendfile()
+      call.  With recent optimizations added to core_output_filter
+      to pipeline output byte streams, we actually read bytes from
+      these cached file handles into buffers. The problem is that
+      while it is okay for multiple threads to share a file handle
+      for use on a sendfile call (because the filepointer is not used, 
+      in sendfile) it is NOT okay for threads to share a file handle
+      for reads or writes (because the filepointer is used in reads
+      and writes).
+
+      You can share a file handle across threads in Windows if you
+      open the file for OVERLAPPED io. A file opened for overlapped
+      io does not have a file pointer; each thread must manage
+      tracking its location in the file explicity. This is a cool
+      feature IMHO.  APR would need to be expanded to handle 
+      reading and writing to files opened for overlapped io 
+      (specifically to manage a per-thread file pointer and handle
+      async io events internal to APR). This doesn't fix the problem
+      under *ix though. 
+
+      Potential Solutions:
+      1. We either need to ensure that a cached file handle is only
+      used on a sendfile call (Bill prefers this solution. I think.).
+      2. Cliff Wooley has some ideas about special purpose buckets
+      that would recognise when an apr_file_t is cached (thus shared)
+      and do the right thing (locking, whatever) to ensure that the
+      filepointer does not get trashed.
+      3.?
+
     * There is a big leak of MMAPs that occurs in modules such as
       mod_file_cache that needs to be taken care of.  Several
       potential solutions were tossed about on new-httpd and apr-dev
@@ -94,6 +125,12 @@ RELEASE SHOWSTOPPERS:
             and its apr_bucket_file in the request pool.
           - add an extra parameter to apr_bucket_file_create() which is the
             pool that an MMAP (if any) for that file should be created in
+      [Bill says that this memory leak has been fixed in
+      mod_file_cache. We now create a new apr_file_t in the request pool that 
+      we send on the ap_send_fd in mod_file_cache. There are other significant
+      problems (see above)]
+
+
 
     * There is a bug in how we sort some hooks, at least the pre-config
       hook.  The first time we call the hooks, they are in the correct 
