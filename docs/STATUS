@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/02/15 18:56:56 $
+Last modified: $Date: 2002/02/17 21:09:03 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -103,13 +103,20 @@ Help with the conversion is needed.
     [Need this clarified --jsl]
 
 
-
 New User documentation
 ======================
 
 * Directory Handling (mod_dir/mod_autoindex/etc)
 
 * Sections (<Directory>/<Files>/<Location>)
+
+* public_html - tutorial covering what is involved in helping users set
+  up web serving out of their home directory.
+
+* .htaccess - Perhaps as simple as an auto-generated listing of what
+  directives are permitted in .htaccess files. Would be nice if common
+  examples (authentication, adding SSI or CGI capabilities, etc) could
+  be given as well.
 
 
 Documentation improvements
@@ -127,6 +134,12 @@ Documentation improvements
   - We'll need to audit these and find out which ones need munging, as
     some of it looks ok.  --jsl
 
+  - Every directive should have at least one example of usage, except
+    those directives which list all possible usages in the Syntax
+    description. Some module docs have been reviewed for this, and
+    mod/core.html has been checked up through the <Limit> directive.
+    --rcb
+
 * Making site-specific enhancements easier, including a documented
   and robust way for 3P module docco to be added -- and have it
   survive a server docco upgrade
@@ -136,3 +149,6 @@ Documentation improvements
     script in the support directory that scans the files there and
     updates the manual indices.  (We do something like that now for
     httpd.conf file with apxs [LoadModule, etc.].)
+
+
+
