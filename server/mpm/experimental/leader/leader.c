@@ -72,7 +72,6 @@
 #include "apr_thread_cond.h"
 #include "apr_thread_mutex.h"
 #include "apr_proc_mutex.h"
-#include "apr_atomic.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
@@ -111,6 +110,8 @@
 
 #include <signal.h>
 #include <limits.h>             /* for INT_MAX */
+
+#include "apr_atomic.h"
 
 /* Limit on the total --- clients will be locked out if more servers than
  * this are needed.  It is intended solely to keep the server from crashing
