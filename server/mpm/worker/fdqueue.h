@@ -66,7 +66,9 @@
 #include <apr_thread_mutex.h>
 #include <apr_thread_cond.h>
 #include <sys/types.h>
+#if APR_HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
+#endif
 #include <apr_errno.h>
 
 #define FD_QUEUE_SUCCESS 0
