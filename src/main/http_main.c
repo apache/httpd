@@ -145,14 +145,14 @@ pid_t pgrp;
 
 int one_process = 0;
 
-#ifdef FCNTL_SERIALIZED_ACCEPT
+#if defined(FCNTL_SERIALIZED_ACCEPT)
 static struct flock lock_it = { F_WRLCK, 0, 0, 0 };
 static struct flock unlock_it = { F_UNLCK, 0, 0, 0 };
 
 static int lock_fd=-1;
 
 /*
- * Initialise mutex lock.
+ * Initialize mutex lock.
  * Must be safe to call this on a restart.
  */
 void
@@ -172,7 +172,7 @@ accept_mutex_init(pool *p)
     if (lock_fd == -1)
     {
 	perror ("open");
-	fprintf (stderr, "Cannot open lcok file\n");
+	fprintf (stderr, "Cannot open lock file\n");
 	exit (1);
     }
     unlink(lock_fname);
@@ -197,6 +197,60 @@ void accept_mutex_off()
     if (fcntl (lock_fd, F_SETLKW, &unlock_it) < 0)
     {
 	log_unixerr("fcntl", "F_SETLKW", "Error freeing accept lock. Exiting!",
+		    server_conf);
+	exit(1);
+    }
+}
+#elif defined(FLOCK_SERIALIZED_ACCEPT)
+
+static int lock_fd=-1;
+
+/*
+ * Initialize mutex lock.
+ * Must be safe to call this on a restart.
+ */
+void
+accept_mutex_init(pool *p)
+{
+    char lock_fname[30];
+
+    strcpy(lock_fname, "/usr/tmp/htlock.XXXXXX");
+    
+    if (mktemp(lock_fname) == NULL || lock_fname[0] == '\0')
+    {
+	fprintf (stderr, "Cannot assign name to lock file!\n");
+	exit (1);
+    }
+
+    lock_fd = popenf(p, lock_fname, O_CREAT | O_WRONLY, 0644);
+    if (lock_fd == -1)
+    {
+	perror ("open");
+	fprintf (stderr, "Cannot open lock file\n");
+	exit (1);
+    }
+    unlink(lock_fname);
+}
+
+void accept_mutex_on()
+{
+    int ret;
+    
+    while ((ret = flock(lock_fd, LOCK_EX)) < 0 && errno == EINTR)
+	continue;
+
+    if (ret < 0) {
+	log_unixerr("flock", "LOCK_EX", "Error getting accept lock. Exiting!",
+		    server_conf);
+	exit(1);
+    }
+}
+
+void accept_mutex_off()
+{
+    if (flock (lock_fd, LOCK_UN) < 0)
+    {
+	log_unixerr("flock", "LOCK_UN", "Error freeing accept lock. Exiting!",
 		    server_conf);
 	exit(1);
     }
@@ -1022,7 +1076,14 @@ void child_main(int child_num_arg)
 	
 	update_child_status (child_num, SERVER_BUSY);
 	conn_io = bcreate(ptrans, B_RDWR);
-	bpushfd(conn_io, csd, csd);
+	dupped_csd = csd;
+#if defined(NEED_DUPPED_CSD)
+	if ((dupped_csd = dup(csd)) < 0) {
+	    log_unixerr("dup", NULL, "couldn't duplicate csd", server_conf);
+	    dupped_csd = csd;   /* Oh well... */
+	}
+#endif
+	bpushfd(conn_io, csd, dupped_csd);
 
 	current_conn = new_connection (ptrans, server_conf, conn_io,
 				       (struct sockaddr_in *)&sa_client,

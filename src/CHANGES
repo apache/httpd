@@ -1,3 +1,14 @@
+  *) Added FLOCK_SERIALIZED_ACCEPT for those systems, like A/UX,
+     that need mutex-capability but using fcntl-locking is
+     expensive. [Jim Jagielski]
+
+  *) Fixed translate_userdir(): return NOT_FOUND when at the end
+     of the UserDir list (was returning OK and junk in the filename).
+     [Jim Jagielski]
+
+  *) Added in Cliff Skolnick's read_client_block patch (check for
+     no reads and break) [Jim Jagielski]
+
   *) If there was no default MIME type defined, Apache sent Content-type:
      without a newline, thus swallowing the next header. Changed to send no
      Content-type: at all. [Ben Laurie]

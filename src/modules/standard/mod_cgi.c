@@ -306,6 +306,8 @@ int cgi_handler (request_rec *r)
 	    if (len_to_read > HUGE_STRING_LEN) len_to_read = HUGE_STRING_LEN;
 	    
 	    len_read = read_client_block (r, argsbuffer, len_to_read);
+	    if (len_read == 0)
+		break;
 	    fwrite (argsbuffer, 1, len_read, script_out);
 	    remaining -= len_read;
 	}

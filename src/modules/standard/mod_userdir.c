@@ -173,11 +173,14 @@ int translate_userdir (request_rec *r)
 
       }
 
-      /* Now see if it exists, or we're at the last entry */
-      if (!*userdirs || stat(filename, &r->finfo) != -1) {
+      /* Now see if it exists */
+      if (stat(filename, &r->finfo) != -1) {
 	r->filename = pstrcat(r->pool, filename, dname, NULL);
 	return OK;
       }
+      /* At last entry? Then NOT_FOUND */
+      if (!*userdirs) 
+	return NOT_FOUND;
     }
 
   return DECLINED;    
