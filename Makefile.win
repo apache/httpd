@@ -68,6 +68,10 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f aprlib.mak CFG="aprlib - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f aprlibdll.mak CFG="aprlibdll - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
+	cd lib\expat-lite
+	 $(MAKE) $(MAKEOPT) -f xmltok.mak CFG="xmltok - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f xmlparse.mak CFG="xmlparse - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
 	cd lib\pcre
 	 $(MAKE) $(MAKEOPT) -f dftables.mak CFG="dftables - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f pcre.mak CFG="pcre - Win32 $(LONG)" RECURSE=0 $(CTARGET)
