@@ -422,7 +422,10 @@ static int file_cache_handler(request_rec *r)
     int errstatus;
     int rc = OK;
 
-    if (strcmp(r->handler, "*.*")) {
+    /* XXX: not sure if this is right yet
+     * see comment in http_core.c:default_handler
+     */
+    if (ap_strcmp_match(r->handler, "*/*")) {
         return DECLINED;
     }
 
