@@ -1088,11 +1088,13 @@ static int setup_listeners(server_rec *s)
     listenmaxfd = -1;
     FD_ZERO(&listenfds);
     for (lr = ap_listeners; lr; lr = lr->next) {
-        apr_os_sock_get(&sockdes, lr->sd);
-	FD_SET(sockdes, &listenfds);
-	if (sockdes > listenmaxfd) {
-	    listenmaxfd = sockdes;
-	}
+        if (lr->active) {
+            apr_os_sock_get(&sockdes, lr->sd);
+            FD_SET(sockdes, &listenfds);
+            if (sockdes > listenmaxfd) {
+                listenmaxfd = sockdes;
+            }
+        }
     }
     return 0;
 }
