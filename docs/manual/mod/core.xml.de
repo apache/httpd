@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.46.2.13 -->
+<!-- English revision: 1.46.2.19 -->
 
 <modulesynopsis metafile="core.xml.meta">
 
@@ -1827,10 +1827,27 @@ URLs an</description>
     der Reihenfolge ausgef&uuml;hrt, in der sie in der Konfigurationsdatei
     erscheinen.</p>
 
-    <p>Beachten Sie, dass URLs keineswegs mit dem Dateisystem
-    &uuml;bereinstimmen m&uuml;ssen. Um es nochmal zu betonen,
-    <directive type="section">Location</directive> operiert vollst&auml;ndig
-    au&szlig;erhalb des Dateisystems.</p>
+    <p><directive type="section">Location</directive>-Abschnitte operieren
+      vollst&auml;ndig au&szlig;erhalb des Dateisystems. Dies hat mehrere
+      Konsequenzen. An Wichtigsten, <directive
+      type="section">Location</directive>-Anweisungen sollten nicht daf&uuml;r
+      verwendet werden, den Zugriff zu Teilen des Dateisystems zu steuern. Da
+      mehrere unterschiedliche URLs auf die gleiche Stelle des Dateisystems
+      zeigen k&ouml;nnen, k&ouml;nnte eine solche Zugriffskontrolle u.U.
+      umgangen werden.</p>
+      
+    <note><title>Wann sollte<directive
+      type="section">Location</directive> verwendet werden</title>
+
+      <p>Verwenden Sie <directive type="section">Location</directive>, um
+        Anweisungen auf Inhalte anzuwenden, die au&szlig;erhalb des Dateisystems
+        abgelegt sind. Benutzen Sie <directive
+        type="section" module="core">Directory</directive> und <directive
+        type="section" module="core">Files</directive> f&uuml;r Inhalte, die
+        innerhalb des Dateisystems abgelegt sind. Eine Ausnahme bildet 
+        <code>&lt;Location /&gt;</code>, welches ein einfacher Weg ist, um eine 
+        Konfiguration auf den gesamten Server anzuwenden.</p>
+    </note>
 
     <p>F&uuml;r alle nicht-Proxy-Anfragen ist die entsprechende URL
     ein URL-Pfad in der Form <code>/path/</code>. Es d&uuml;rfen weder ein
@@ -2191,7 +2208,8 @@ bestimmten Verzeichnis verf&uuml;gbar sind</description>
 
       <dt><code>ExecCGI</code></dt>
 
-      <dd>Die Ausf&uuml;hrung von CGI-Skripts ist erlaubt.</dd>
+      <dd>Die Ausf&uuml;hrung von CGI-Skripten, welche <module>mod_cgi</module>
+        verwenden, ist erlaubt.</dd>
 
       <dt><code>FollowSymLinks</code></dt>
 
@@ -2209,43 +2227,49 @@ bestimmten Verzeichnis verf&uuml;gbar sind</description>
       <dt><code>Includes</code></dt>
 
       <dd>
-      Server Side Includes sind erlaubt.</dd>
+      Server Side Includes, die von <module>mod_include</module> bereitgestellt
+      werden, sind erlaubt.</dd>
 
       <dt><code>IncludesNOEXEC</code></dt>
 
       <dd>Server Side Includes sind erlaubt, <code>#exec cmd</code>
       und <code>#exec cgi</code> sind jedoch deaktiviert. Es ist aber noch
       m&ouml;glich, CGI-Skripte aus
-      <directive>ScriptAlias</directive>-Verzeichnissen mittels
+      <directive module="mod_cgi">ScriptAlias</directive>-Verzeichnissen mittels
       <code>#include virtual</code> einzubinden.</dd>
 
       <dt><code>Indexes</code></dt>
 
       <dd>Wenn eine URL, die auf ein Verzeichnis zeigt, in dem sich keine durch
-      <directive>DirectoryIndex</directive> definierte Indexdatei
-      (<em>z.B.</em> <code>index.html</code>) befindet, dann liefert der Server
-      eine formatierte Auflistung des Verzeichnisses zur&uuml;ck.</dd>
+        <directive module="mod_dir">DirectoryIndex</directive> definierte 
+        Indexdatei (<em>z.B.</em> <code>index.html</code>) befindet, dann liefert 
+        <module>mod_autoindex</module> eine formatierte Auflistung des 
+        Verzeichnisses zur&uuml;ck.</dd>
 
       <dt><code>MultiViews</code></dt>
 
-      <dd>"MultiViews" sind erlaubt (siehe <a
-      href="../content-negotiation.html">Content-Negotiation</a>).</dd>
+      <dd>"MultiViews" sind bei der Verwendung von 
+        <module>mod_negotiation</module> erlaubt (siehe <a 
+        href="../content-negotiation.html">Content-Negotiation</a>).</dd>
 
       <dt><code>SymLinksIfOwnerMatch</code></dt>
 
       <dd>Der Server folgt nur symbolischen Links, bei denen die Zieldatei
       bzw. das Zielverzeichnis der gleichen Benutzerkennung geh&ouml;rt, wie
-      der Link.<br />
-      <strong>Achtung</strong>: diese Option wird innerhalb eines
+      der Link.
+      <note><title>Anmerkung</title> Diese Option wird innerhalb eines
       <directive module="core" type="section">Location</directive>-Abschnitts
-      ignoriert.</dd>
+      ignoriert.</note></dd>
     </dl>
 
     <p>Wenn mehrere <directive>Options</directive> auf ein Verzeichnis
-    angewandt werden, dann greift normalerweise die
-    spezifischste Option <transnote>Gemeint ist die zuletzt
-    ausgef&uuml;hrte Option.</transnote>. Wenn jedoch <em>allen</em> Optionen
-    der <directive>Options</directive>-Anweisung eines der Zeichen
+    angewandt werden k&ouml;nnen, dann wird normalerweise die
+    spezifischste <transnote>Gemeint ist die zuletzt
+    ausgef&uuml;hrte Option.</transnote> verwendet und alle anderen werden
+    ignoriert; die Optionen werden nicht vermischt. (Siehe auch <a
+    href="../sections.html#mergin">Wie Abschnitte zusammengef&uuml;hrt 
+    werden.</a>.) Wenn jedoch <em>allen</em> Optionen der 
+    <directive>Options</directive>-Anweisung eines der Zeichen
     <code>+</code> oder <code>-</code> vorangestellt wird, werden die Optionen
     zusammengemischt. Jede Option mit vorangestelltem <code>+</code> wird
     zu den momentan g&uuml;ltigen Optionen hinzugef&uuml;gt und jede Option
@@ -2579,7 +2603,7 @@ Anfragen einem namensbasierten virtuellen Host zugeordnet werden</description>
 <usage>
     <p>Die Direktive <directive>ServerAlias</directive> bestimmt die
     alternativen Namen eines Hosts zur Verwendung mit <a
-    href="../vhosts/name-based.html">namensbasierten virtuelle Hosts</a>.</p>
+    href="../vhosts/name-based.html">namensbasierten virtuellen Hosts</a>.</p>
 
     <example>
       &lt;VirtualHost *&gt;<br />
@@ -3009,7 +3033,7 @@ IP-Adressen angewendet werden</description>
     von Direktiven zusammenzufassen, die nur auf einen bestimmten virtuellen
     Host angewendet werden. Jede Direktive, die im Virtual-Host-Kontext
     zul&auml;ssig ist, kann verwendet werden. Wenn der Server eine Anfrage
-    f&uuml;r ein bestimmtes Dokument eines bestimmten virtuellen Host
+    f&uuml;r ein bestimmtes Dokument eines bestimmten virtuellen Hosts
     empf&auml;ngt, dann benutzt er die im
     <directive type="section">VirtualHost</directive>-Container enthaltenen
     Konfigurationsanweisungen. <var>Adresse</var> kann sein:</p>

@@ -1872,10 +1872,23 @@ URLs an</td></tr>
     der Reihenfolge ausgeführt, in der sie in der Konfigurationsdatei
     erscheinen.</p>
 
-    <p>Beachten Sie, dass URLs keineswegs mit dem Dateisystem
-    übereinstimmen müssen. Um es nochmal zu betonen,
-    <code class="directive">&lt;Location&gt;</code> operiert vollständig
-    außerhalb des Dateisystems.</p>
+    <p><code class="directive">&lt;Location&gt;</code>-Abschnitte operieren
+      vollständig außerhalb des Dateisystems. Dies hat mehrere
+      Konsequenzen. An Wichtigsten, <code class="directive">&lt;Location&gt;</code>-Anweisungen sollten nicht dafür
+      verwendet werden, den Zugriff zu Teilen des Dateisystems zu steuern. Da
+      mehrere unterschiedliche URLs auf die gleiche Stelle des Dateisystems
+      zeigen können, könnte eine solche Zugriffskontrolle u.U.
+      umgangen werden.</p>
+      
+    <div class="note"><h3>Wann sollte<code class="directive">&lt;Location&gt;</code> verwendet werden</h3>
+
+      <p>Verwenden Sie <code class="directive">&lt;Location&gt;</code>, um
+        Anweisungen auf Inhalte anzuwenden, die außerhalb des Dateisystems
+        abgelegt sind. Benutzen Sie <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> und <code class="directive"><a href="#files">&lt;Files&gt;</a></code> für Inhalte, die
+        innerhalb des Dateisystems abgelegt sind. Eine Ausnahme bildet 
+        <code>&lt;Location /&gt;</code>, welches ein einfacher Weg ist, um eine 
+        Konfiguration auf den gesamten Server anzuwenden.</p>
+    </div>
 
     <p>Für alle nicht-Proxy-Anfragen ist die entsprechende URL
     ein URL-Pfad in der Form <code>/path/</code>. Es dürfen weder ein
@@ -2237,7 +2250,8 @@ bestimmten Verzeichnis verfügbar sind</td></tr>
 
       <dt><code>ExecCGI</code></dt>
 
-      <dd>Die Ausführung von CGI-Skripts ist erlaubt.</dd>
+      <dd>Die Ausführung von CGI-Skripten, welche <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>
+        verwenden, ist erlaubt.</dd>
 
       <dt><code>FollowSymLinks</code></dt>
 
@@ -2254,42 +2268,47 @@ bestimmten Verzeichnis verfügbar sind</td></tr>
       <dt><code>Includes</code></dt>
 
       <dd>
-      Server Side Includes sind erlaubt.</dd>
+      Server Side Includes, die von <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> bereitgestellt
+      werden, sind erlaubt.</dd>
 
       <dt><code>IncludesNOEXEC</code></dt>
 
       <dd>Server Side Includes sind erlaubt, <code>#exec cmd</code>
       und <code>#exec cgi</code> sind jedoch deaktiviert. Es ist aber noch
       möglich, CGI-Skripte aus
-      <code class="directive">ScriptAlias</code>-Verzeichnissen mittels
+      <code class="directive"><a href="../mod/mod_cgi.html#scriptalias">ScriptAlias</a></code>-Verzeichnissen mittels
       <code>#include virtual</code> einzubinden.</dd>
 
       <dt><code>Indexes</code></dt>
 
       <dd>Wenn eine URL, die auf ein Verzeichnis zeigt, in dem sich keine durch
-      <code class="directive">DirectoryIndex</code> definierte Indexdatei
-      (<em>z.B.</em> <code>index.html</code>) befindet, dann liefert der Server
-      eine formatierte Auflistung des Verzeichnisses zurück.</dd>
+        <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> definierte 
+        Indexdatei (<em>z.B.</em> <code>index.html</code>) befindet, dann liefert 
+        <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> eine formatierte Auflistung des 
+        Verzeichnisses zurück.</dd>
 
       <dt><code>MultiViews</code></dt>
 
-      <dd>"MultiViews" sind erlaubt (siehe <a href="../content-negotiation.html">Content-Negotiation</a>).</dd>
+      <dd>"MultiViews" sind bei der Verwendung von 
+        <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code> erlaubt (siehe <a href="../content-negotiation.html">Content-Negotiation</a>).</dd>
 
       <dt><code>SymLinksIfOwnerMatch</code></dt>
 
       <dd>Der Server folgt nur symbolischen Links, bei denen die Zieldatei
       bzw. das Zielverzeichnis der gleichen Benutzerkennung gehört, wie
-      der Link.<br />
-      <strong>Achtung</strong>: diese Option wird innerhalb eines
+      der Link.
+      <div class="note"><h3>Anmerkung</h3> Diese Option wird innerhalb eines
       <code class="directive"><a href="#location">&lt;Location&gt;</a></code>-Abschnitts
-      ignoriert.</dd>
+      ignoriert.</div></dd>
     </dl>
 
     <p>Wenn mehrere <code class="directive">Options</code> auf ein Verzeichnis
-    angewandt werden, dann greift normalerweise die
-    spezifischste Option <span class="transnote">(<em>Anm.d.Ü.:</em> Gemeint ist die zuletzt
-    ausgeführte Option.)</span>. Wenn jedoch <em>allen</em> Optionen
-    der <code class="directive">Options</code>-Anweisung eines der Zeichen
+    angewandt werden können, dann wird normalerweise die
+    spezifischste <span class="transnote">(<em>Anm.d.Ü.:</em> Gemeint ist die zuletzt
+    ausgeführte Option.)</span> verwendet und alle anderen werden
+    ignoriert; die Optionen werden nicht vermischt. (Siehe auch <a href="../sections.html#mergin">Wie Abschnitte zusammengeführt 
+    werden.</a>.) Wenn jedoch <em>allen</em> Optionen der 
+    <code class="directive">Options</code>-Anweisung eines der Zeichen
     <code>+</code> oder <code>-</code> vorangestellt wird, werden die Optionen
     zusammengemischt. Jede Option mit vorangestelltem <code>+</code> wird
     zu den momentan gültigen Optionen hinzugefügt und jede Option
@@ -2635,7 +2654,7 @@ Anfragen einem namensbasierten virtuellen Host zugeordnet werden</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 </table>
     <p>Die Direktive <code class="directive">ServerAlias</code> bestimmt die
-    alternativen Namen eines Hosts zur Verwendung mit <a href="../vhosts/name-based.html">namensbasierten virtuelle Hosts</a>.</p>
+    alternativen Namen eines Hosts zur Verwendung mit <a href="../vhosts/name-based.html">namensbasierten virtuellen Hosts</a>.</p>
 
     <div class="example"><p><code>
       &lt;VirtualHost *&gt;<br />
@@ -3085,7 +3104,7 @@ IP-Adressen angewendet werden</td></tr>
     von Direktiven zusammenzufassen, die nur auf einen bestimmten virtuellen
     Host angewendet werden. Jede Direktive, die im Virtual-Host-Kontext
     zulässig ist, kann verwendet werden. Wenn der Server eine Anfrage
-    für ein bestimmtes Dokument eines bestimmten virtuellen Host
+    für ein bestimmtes Dokument eines bestimmten virtuellen Hosts
     empfängt, dann benutzt er die im
     <code class="directive">&lt;VirtualHost&gt;</code>-Container enthaltenen
     Konfigurationsanweisungen. <var>Adresse</var> kann sein:</p>
