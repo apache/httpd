@@ -209,7 +209,7 @@ int ap_proxy_connect_handler(request_rec *r, ap_cache_el  *c, char *url,
             "Returning 200 OK Status");
         ap_rvputs(r, "HTTP/1.0 200 Connection established" CRLF, NULL);
         ap_rvputs(r, "Proxy-agent: ", ap_get_server_version(), CRLF CRLF, NULL);
-        ap_bflush(r->connection->client);
+        ap_rflush(r);
     }
 
     sock_buff = ap_bcreate(r->pool, B_RDWR);
@@ -262,7 +262,8 @@ int ap_proxy_connect_handler(request_rec *r, ap_cache_el  *c, char *url,
                     int o = 0;
                     while(nbytes)
                     {
-                        ap_bwrite(r->connection->client, buffer + o, nbytes, &i);
+                        i = nbytes;
+                        apr_send(r->connection->client_socket, buffer + o, &i);
                         o += i;
                         nbytes -= i;
                     }
@@ -276,8 +277,8 @@ int ap_proxy_connect_handler(request_rec *r, ap_cache_el  *c, char *url,
             if (pollevent & APR_POLLIN) {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                              "client was set");
-                if(ap_bread(r->connection->client, buffer, HUGE_STRING_LEN,
-                  &nbytes) == APR_SUCCESS) {
+                nbytes = HUGE_STRING_LEN;
+                if(apr_recv(r->connection->client_socket, buffer, &nbytes) == APR_SUCCESS) {
                     int o = 0;
                     while(nbytes)
                     {
