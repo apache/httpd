@@ -973,7 +973,7 @@ static char *status_lines[] = {
    "401 Authorization Required",
    "402 Payment Required",
    "403 Forbidden",
-   "404 File Not Found",
+   "404 Not Found",
    "405 Method Not Allowed",
    "406 Not Acceptable",
    "407 Proxy Authentication Required",
