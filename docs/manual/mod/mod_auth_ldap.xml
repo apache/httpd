@@ -619,7 +619,7 @@ AuthLDAPFrontPageHack  on
 </directivesynopsis>
 
 <directivesynopsis>
-<name>AuthLDAPEnabled directive</name>
+<name>AuthLDAPEnabled</name>
 <syntax> AuthLDAPEnabled on|off</syntax>
 <default>AuthLDAPEnabled on</default>
 <contextlist><context>directory</context><context>.htaccess</context>

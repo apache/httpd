@@ -26,7 +26,7 @@ for HTTP Basic authentication.</td></tr><tr><td nowrap="nowrap"><a href="module-
       <li>Support for LDAP over SSL (requires the Netscape SDK) or
       TLS (requires the OpenLDAP 2.x SDK).</li>
     </ul>
-<h2>Directives</h2><ul><li><a href="#authldapauthoritative">AuthLDAPAuthoritative</a></li><li><a href="#authldapbinddn">AuthLDAPBindDN</a></li><li><a href="#authldapbindpassword">AuthLDAPBindPassword</a></li><li><a href="#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></li><li><a href="#authldapdereferencealiases">AuthLDAPDereferenceAliases</a></li><li><a href="#authldapenabled directive">AuthLDAPEnabled directive</a></li><li><a href="#authldapfrontpagehack">AuthLDAPFrontPageHack</a></li><li><a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></li><li><a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li><li><a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li><li><a href="#authldapstarttls directive">AuthLDAPStartTLS directive</a></li><li><a href="#authldapurl">AuthLDAPUrl</a></li></ul><h2><a name="contents">Contents</a></h2>
+<h2>Directives</h2><ul><li><a href="#authldapauthoritative">AuthLDAPAuthoritative</a></li><li><a href="#authldapbinddn">AuthLDAPBindDN</a></li><li><a href="#authldapbindpassword">AuthLDAPBindPassword</a></li><li><a href="#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></li><li><a href="#authldapdereferencealiases">AuthLDAPDereferenceAliases</a></li><li><a href="#authldapenabled">AuthLDAPEnabled</a></li><li><a href="#authldapfrontpagehack">AuthLDAPFrontPageHack</a></li><li><a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></li><li><a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li><li><a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li><li><a href="#authldapstarttls directive">AuthLDAPStartTLS directive</a></li><li><a href="#authldapurl">AuthLDAPUrl</a></li></ul><h2><a name="contents">Contents</a></h2>
 
     <ul>
       <li>
@@ -550,7 +550,7 @@ AuthLDAPFrontPageHack  on
     <p>This directive specifies when <code><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> will
     de-reference aliases during LDAP operations. The default is
     <code>always</code>.</p>
-<hr><h2><a name="AuthLDAPEnabled directive">AuthLDAPEnabled directive</a> <a name="authldapenabled directive">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AuthLDAPEnabled">AuthLDAPEnabled</a> <a name="authldapenabled">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td> AuthLDAPEnabled on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>AuthLDAPEnabled on</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
