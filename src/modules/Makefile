@@ -50,7 +50,7 @@
 # 
 # simple Makefile for modules in src/modules
 # 
-# $Id: Makefile,v 1.1 1996/10/09 14:51:48 chuck Exp $
+# $Id: Makefile,v 1.2 1996/10/09 17:12:45 chuck Exp $
 #
 
 SHELL = /bin/sh
@@ -58,13 +58,13 @@ SHELL = /bin/sh
 MODULES=proxy
 
 default:
-	(for dir in $(MODULES); do; \
+	(for dir in $(MODULES); do \
 		cd $$dir; \
 		$(MAKE) CC=$(CC) AUX_CFLAGS="$(AUX_CFLAGS)" RANLIB=$(RANLIB); \
 	done)
 
 clean:	
-	(for dir in $(MODULES); do; \
+	(for dir in $(MODULES); do \
 		cd $$dir; $(MAKE) clean; \
 	done)
 	
