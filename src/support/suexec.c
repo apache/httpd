@@ -109,7 +109,7 @@ int initgroups(const char *name, gid_t basegid)
 #define AP_ENVBUF 256
 
 extern char **environ;
-static FILE *log;
+static FILE *log = NULL;
 
 char *safe_env_lst[] =
 {
@@ -500,10 +500,16 @@ int main(int argc, char *argv[])
     /* 
      * Be sure to close the log file so the CGI can't
      * mess with it.  If the exec fails, it will be reopened 
-     * automatically when log_err is called.
+     * automatically when log_err is called.  Note that the log
+     * might not actually be open if LOG_EXEC isn't defined.
+     * However, the "log" cell isn't ifdef'd so let's be defensive
+     * and assume someone might have done something with it
+     * outside an ifdef'd LOG_EXEC block.
      */
-    fclose(log);
-    log = NULL;
+    if (log != NULL) {
+	fclose(log);
+	log = NULL;
+    }
 
     /*
      * Execute the command, replacing our image with its own.

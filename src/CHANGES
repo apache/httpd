@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
 
+  *) Fixed problem of fclose() on an unopened file in suexec if LOG_EXEC
+     wasn't defined.  [Rick Franchuk <rickf@transpect.net>]
+
   *) Removed recently introduced bugs and disfigurements in APACI:
      o fixed argument line processing: using $args was broken: It was not
        initialized and using args="$args $apc_option" and even args="$args
