@@ -1301,6 +1301,7 @@ static void setup_shared_mem(void)
 }
 
 #else
+#define SCOREBOARD_FILE
 static scoreboard _scoreboard_image;
 static int scoreboard_fd;
 
