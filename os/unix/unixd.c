@@ -230,7 +230,8 @@ void unixd_pre_config(apr_pool_t *ptemp)
 
     /* Check for suexec */
     unixd_config.suexec_enabled = 0;
-    if ((apr_stat(&wrapper, SUEXEC_BIN, ptemp)) != APR_SUCCESS) {
+    if ((apr_stat(&wrapper, SUEXEC_BIN, 
+                  APR_FINFO_NORM, ptemp)) != APR_SUCCESS) {
         return;
     }
 

@@ -1284,7 +1284,7 @@ void ap_process_resource_config(server_rec *s, const char *fname,
     if ((ap_server_pre_read_config->nelts
 	 || ap_server_post_read_config->nelts)
 	&& !(strcmp(fname, ap_server_root_relative(p, SERVER_CONFIG_FILE)))) {
-	if (apr_stat(&finfo, fname, p) != APR_SUCCESS)     
+	if (apr_stat(&finfo, fname, APR_FINFO_NORM, p) != APR_SUCCESS)
 	    return;
     }
 

@@ -194,10 +194,12 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
                   "%s: %s", error, r->filename);
 
     if (!conf->logname ||
-        ((apr_stat(&finfo, ap_server_root_relative(r->pool, conf->logname), r->pool) == APR_SUCCESS)
+        ((apr_stat(&finfo, ap_server_root_relative(r->pool, conf->logname),
+                   APR_FINFO_NORM, r->pool) == APR_SUCCESS)
          &&  (finfo.size > conf->logbytes)) ||
           (apr_open(&f, ap_server_root_relative(r->pool, conf->logname),
-                   APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
+                   APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool)
+              != APR_SUCCESS)) {
 	return ret;
     }
 
@@ -244,7 +246,8 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     char time_str[APR_CTIME_LEN];
 
     if (!conf->logname ||
-        ((apr_stat(&finfo, ap_server_root_relative(r->pool, conf->logname), r->pool) == APR_SUCCESS)
+        ((apr_stat(&finfo, ap_server_root_relative(r->pool, conf->logname),
+                   APR_FINFO_NORM, r->pool) == APR_SUCCESS)
          &&  (finfo.size > conf->logbytes)) ||
          (apr_open(&f, ap_server_root_relative(r->pool, conf->logname),
                   APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
@@ -553,8 +556,8 @@ static int cgi_handler(request_rec *r)
         apr_status_t rv;
 
         newfile = apr_pstrcat(r->pool, r->filename, ".EXE", NULL);
-        if (((rv = apr_stat(&finfo, newfile, r->pool)) != APR_SUCCESS) || 
-            (finfo.filetype != APR_REG)) {
+        if (((rv = apr_stat(&finfo, newfile, APR_FINFO_TYPE, r->pool))
+                != APR_SUCCESS) || (finfo.filetype != APR_REG)) {
             return log_scripterror(r, conf, HTTP_NOT_FOUND, rv,
                                    "script not found or unable to stat");
         } else {

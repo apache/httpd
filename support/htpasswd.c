@@ -357,7 +357,7 @@ static int exists(char *fname)
     apr_finfo_t sbuf;
     apr_status_t check;
 
-    check = apr_stat(&sbuf, fname, NULL);
+    check = apr_stat(&sbuf, fname, APR_FINFO_NORM, NULL);
     return (check ? 0 : 1);
 }
 

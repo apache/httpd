@@ -1469,7 +1469,8 @@ static float find_content_length(negotiation_state *neg, var_rec *variant)
         char *fullname = ap_make_full_path(neg->pool, neg->dir_name,
                                            variant->file_name);
 
-        if (apr_stat(&statb, fullname, neg->pool) == APR_SUCCESS) {
+        if (apr_stat(&statb, fullname,
+                     APR_FINFO_NORM, neg->pool) == APR_SUCCESS) {
             /* Note, precision may be lost */
             variant->bytes = (float) statb.size;
         }

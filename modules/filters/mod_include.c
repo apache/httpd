@@ -1268,6 +1268,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
     request_rec *rr = NULL;
     int ret=0;
     char *error_fmt = NULL;
+    apr_status_t rv = APR_SUCCESS;
 
     if (!strcmp(tag, "file")) {
         /* be safe; only files in this directory or below allowed */
@@ -1284,7 +1285,8 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 
             if (rr->status == HTTP_OK && rr->finfo.protection != 0) {
                 to_send = rr->filename;
-                if (apr_stat(finfo, to_send, rr->pool) != APR_SUCCESS) {
+                if (apr_stat(finfo, to_send, 
+                             APR_FINFO_NORM, rr->pool) != APR_SUCCESS) {
                     error_fmt = "unable to get information about \"%s\" "
                         "in parsed file %s";
                 }
@@ -1297,10 +1299,8 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 
         if (error_fmt) {
             ret = -1;
-            /* TODO: pass APLOG_NOERRNO if no apr_stat() failure; pass rv from apr_stat()
-             * otherwise
-             */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, error_fmt, to_send, r->filename);
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | (rv ? 0 : APLOG_NOERRNO),
+                          rv, r, error_fmt, to_send, r->filename);
         }
 
         if (rr) ap_destroy_sub_req(rr);

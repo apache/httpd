@@ -497,7 +497,8 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
     newmap->fpout = NULL;
 
     if (newmap->checkfile && (sconf->state == ENGINE_ENABLED)
-        && (apr_stat(&st, newmap->checkfile, cmd->pool) != APR_SUCCESS)) {
+        && (apr_stat(&st, newmap->checkfile, APR_FINFO_NORM, 
+                     cmd->pool) != APR_SUCCESS)) {
         return apr_pstrcat(cmd->pool,
                           "RewriteMap: map file or program not found:",
                           newmap->checkfile, NULL);
@@ -2119,14 +2120,14 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
 
     rc = 0;
     if (strcmp(p->pattern, "-f") == 0) {
-        if (apr_stat(&sb, input, r->pool) == APR_SUCCESS) {
+        if (apr_stat(&sb, input, APR_FINFO_NORM, r->pool) == APR_SUCCESS) {
             if (sb.filetype == APR_REG) {
                 rc = 1;
             }
         }
     }
     else if (strcmp(p->pattern, "-s") == 0) {
-        if (apr_stat(&sb, input, r->pool) == APR_SUCCESS) {
+        if (apr_stat(&sb, input, APR_FINFO_NORM, r->pool) == APR_SUCCESS) {
             if ((sb.filetype == APR_REG) && sb.size > 0) {
                 rc = 1;
             }
@@ -2134,7 +2135,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
     }
     else if (strcmp(p->pattern, "-l") == 0) {
 #if !defined(OS2)
-        if (apr_lstat(&sb, input, r->pool) == APR_SUCCESS) {
+        if (apr_lstat(&sb, input, APR_FINFO_NORM, r->pool) == APR_SUCCESS) {
             if (sb.filetype == APR_LNK) {
                 rc = 1;
             }
@@ -2142,7 +2143,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
 #endif
     }
     else if (strcmp(p->pattern, "-d") == 0) {
-        if (apr_stat(&sb, input, r->pool) == APR_SUCCESS) {
+        if (apr_stat(&sb, input, APR_FINFO_NORM, r->pool) == APR_SUCCESS) {
             if (sb.filetype == APR_DIR) {
                 rc = 1;
             }
@@ -2179,7 +2180,8 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
             /* file exists for any result up to 2xx, no redirects */
             if (rsub->status < 300 &&
                 /* double-check that file exists since default result is 200 */
-                apr_stat(&sb, rsub->filename, r->pool) == APR_SUCCESS) {
+                apr_stat(&sb, rsub->filename, APR_FINFO_NORM, 
+                         r->pool) == APR_SUCCESS) {
                 rc = 1;
             }
 
@@ -2661,7 +2663,8 @@ static char *lookup_map(request_rec *r, char *name, char *key)
         s = &entries[i];
         if (strcmp(s->name, name) == 0) {
             if (s->type == MAPTYPE_TXT) {
-                if ((rv = apr_stat(&st, s->checkfile, r->pool)) != APR_SUCCESS) {
+                if ((rv = apr_stat(&st, s->checkfile, 
+                                   APR_FINFO_NORM, r->pool)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                                  "mod_rewrite: can't access text RewriteMap "
                                  "file %s", s->checkfile);
@@ -2698,7 +2701,8 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             }
             else if (s->type == MAPTYPE_DBM) {
 #ifndef NO_DBM_REWRITEMAP
-                if ((rv = apr_stat(&st, s->checkfile, r->pool)) != APR_SUCCESS) {
+                if ((rv = apr_stat(&st, s->checkfile,
+                                   APR_FINFO_NORM, r->pool)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                                  "mod_rewrite: can't access DBM RewriteMap "
                                  "file %s", s->checkfile);
@@ -2760,7 +2764,8 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                 }
             }
             else if (s->type == MAPTYPE_RND) {
-                if ((rv = apr_stat(&st, s->checkfile, r->pool)) != APR_SUCCESS) {
+                if ((rv = apr_stat(&st, s->checkfile,
+                                   APR_FINFO_NORM, r->pool)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                                  "mod_rewrite: can't access text RewriteMap "
                                  "file %s", s->checkfile);
@@ -3596,7 +3601,8 @@ static char *lookup_variable(request_rec *r, char *var)
             }
         }
         else {
-            if (apr_stat(&finfo, r->filename, r->pool) == APR_SUCCESS) {
+            if (apr_stat(&finfo, r->filename,
+                         APR_FINFO_NORM, r->pool) == APR_SUCCESS) {
                 if ((pw = getpwuid(finfo.user)) != NULL) {
                     result = pw->pw_name;
                 }
@@ -3611,7 +3617,8 @@ static char *lookup_variable(request_rec *r, char *var)
             }
         }
         else {
-            if (apr_stat(&finfo, r->filename, r->pool) == 0) {
+            if (apr_stat(&finfo, r->filename,
+                         APR_FINFO_NORM, r->pool) == 0) {
                 if ((gr = getgrgid(finfo.group)) != NULL) {
                     result = gr->gr_name;
                 }
@@ -4034,7 +4041,7 @@ static int prefix_stat(const char *path, apr_finfo_t *sb)
     if ((cp = strchr(curpath+1, '/')) != NULL) {
         *cp = '\0';
     }
-    if (apr_stat(sb, curpath, NULL) == 0) {
+    if (apr_stat(sb, curpath, APR_FINFO_NORM, NULL) == APR_SUCCESS) {
         return 1;
     }
     else {

@@ -176,7 +176,7 @@ static int check_symlinks(char *d, int opts, apr_pool_t *p)
     else
         lastp = NULL;
 
-    res = apr_lstat(&lfi, d, p);
+    res = apr_lstat(&lfi, d, APR_FINFO_NORM, p);
 
     if (lastp)
         *lastp = '/';
@@ -194,10 +194,11 @@ static int check_symlinks(char *d, int opts, apr_pool_t *p)
     if (!(opts & OPT_SYM_OWNER))
         return HTTP_FORBIDDEN;
 
-    if (apr_stat(&fi, d, p) < 0)
+    if (apr_stat(&fi, d, APR_FINFO_NORM, p) != APR_SUCCESS)
         return HTTP_FORBIDDEN;
 
-    return (fi.user == lfi.user) ? OK : HTTP_FORBIDDEN;
+    return ((fi.valid & lfi.valid & APR_FINFO_OWNER)
+            && (fi.user == lfi.user)) ? OK : HTTP_FORBIDDEN;
 
 #endif
 }
@@ -271,7 +272,7 @@ static int get_path_info(request_rec *r)
          * an APR_PATHINCOMPLETE result to indicate that we are staring at
          * an partial virtual root.  Only OS2/Win32/Netware need apply it :-)
          */
-        rv = apr_stat(&r->finfo, path, r->pool);
+        rv = apr_stat(&r->finfo, path, APR_FINFO_NORM, r->pool);
 
         if (cp != end)
             *cp = '/';
@@ -283,8 +284,8 @@ static int get_path_info(request_rec *r)
              * argument starts with the component after that.
              */
             if (r->finfo.filetype == APR_DIR && last_cp) {
-                r->finfo.protection = 0;   /* No such file... */
-                r->finfo.filetype = APR_NOFILE;   /* No such file... */
+                r->finfo.protection = 0;  /* XXX: Wrong test for no such file... */
+                r->finfo.filetype = APR_NOFILE;  /* No such file... */
                 cp = last_cp;
             }
 
@@ -967,7 +968,8 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
         rnew->filename = ap_make_full_path(rnew->pool, fdir, new_file);
         ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
 
-        if (apr_stat(&rnew->finfo, rnew->filename, rnew->pool) != APR_SUCCESS) {
+        if (apr_stat(&rnew->finfo, rnew->filename,
+                     APR_FINFO_NORM, rnew->pool) != APR_SUCCESS) {
             rnew->finfo.protection = 0;
         }
 
