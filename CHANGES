@@ -1,5 +1,10 @@
 Changes with Apache 2.0.49
 
+  *) Fix some piped log problems: bogus "piped log program '(null)'
+     failed" messages during restart and problem with the logger
+     respawning again after Apache is stopped.  PR 21648, PR 24805.
+     [Jeff Trawick]
+
   *) Fixed file extensions for real media files and removed rpm extension
      from mime.types. PR 26079.  [Allan Sandfeld <kde carewolf.com>]
 
