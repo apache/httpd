@@ -19,7 +19,7 @@
 -->
 
 <modulesynopsis metafile="mod_authz_groupfile.xml.meta">
-<!-- English Revision: 1.8 -->
+<!-- English Revision: 103423 -->
 
 <name>mod_authz_groupfile</name>
 <description>プレーンテキストファイルを用いたグループ承認</description>

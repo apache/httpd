@@ -19,7 +19,7 @@
 -->
 
 <modulesynopsis metafile="mod_authn_dbm.xml.meta">
-<!-- English Revision: 1.10 -->
+<!-- English Revision: 103423 -->
 
 <name>mod_authn_dbm</name>
 <description>DBM ファイルを用いたユーザ認証</description>
