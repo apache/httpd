@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/27 15:28:17 $]
+Last modified at [$Date: 2003/02/28 01:24:53 $]
 
 Release:
 
@@ -197,7 +197,7 @@ CURRENT VOTES:
     * Develop in Review-Then-Commit or Commit-Then-Review mode 
       on APACHE_2_0_BRANCH (no vetoes, this is a straight vote.)
        R-T-C:   trawick, wrowe, jerenkrantz, stoddard, rederpj, striker, nd,
-                gregames(lazy consensus OK for mainline)
+                gregames(lazy consensus OK for mainline), jwoolley
        Abstain: 
        C-T-R:   BrianP, aaron, jim, gstein, bnicholes
        
