@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Remove an extra bit of unnecessary code from the recently
+     committed fix for PR 13946 (in mod_rewrite). Reported by
+     Andre Malo. [Paul J. Reder]
+
   *) mod_ssl: Fix a problem setting variables that represent the
      client certificate chain.  PR 21397  [Jeff Trawick]
 
