@@ -2103,6 +2103,9 @@ static int socket_magic_cleanup(void *fpv)
 
 API_EXPORT(void) ap_note_cleanups_for_socket_ex(pool *p, int fd, int domagic)
 {
+#ifdef TPF
+    domagic = 0; /* skip magic (fcntl) for TPF sockets, at least for now */
+#endif
     ap_register_cleanup_ex(p, (void *) (long) fd, socket_cleanup,
                            socket_cleanup,
                            domagic ? socket_magic_cleanup : NULL);
