@@ -1,4 +1,3 @@
-#if 0 /* XXX */
 #define yy_create_buffer ssl_expr_yy_create_buffer
 #define yy_delete_buffer ssl_expr_yy_delete_buffer
 #define yy_scan_buffer ssl_expr_yy_scan_buffer
@@ -456,53 +455,51 @@ char *yytext;
 **  Expression Scanner
 */
 /* ====================================================================
- * Copyright (c) 1998-2001 Ralf S. Engelschall. All rights reserved.
+ * The Apache Software License, Version 1.1
+ *
+ * Copyright (c) 2000-2001 The Apache Software Foundation.  All rights
+ * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following
- *    disclaimer in the documentation and/or other materials
- *    provided with the distribution.
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
  *
- * 3. All advertising materials mentioning features or use of this
- *    software must display the following acknowledgment:
- *    "This product includes software developed by 
- *     Ralf S. Engelschall <rse@engelschall.com> for use in the
- *     mod_ssl project (http://www.modssl.org/)."
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:
+ *       "This product includes software developed by the
+ *        Apache Software Foundation (http://www.apache.org/)."
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "mod_ssl" must not be used to endorse or promote
- *    products derived from this software without prior written
- *    permission. For written permission, please contact
- *    rse@engelschall.com.
+ * 4. The names "Apache" and "Apache Software Foundation" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written
+ *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "mod_ssl"
- *    nor may "mod_ssl" appear in their names without prior
- *    written permission of Ralf S. Engelschall.
+ * 5. Products derived from this software may not be called "Apache",
+ *    nor may "Apache" appear in their name, without prior written
+ *    permission of the Apache Software Foundation.
  *
- * 6. Redistributions of any form whatsoever must retain the following
- *    acknowledgment:
- *    "This product includes software developed by 
- *     Ralf S. Engelschall <rse@engelschall.com> for use in the
- *     mod_ssl project (http://www.modssl.org/)."
- *
- * THIS SOFTWARE IS PROVIDED BY RALF S. ENGELSCHALL ``AS IS'' AND ANY
- * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL RALF S. ENGELSCHALL OR
- * HIS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
  * ====================================================================
  */
 /* ``Killing for peace is 
@@ -513,7 +510,7 @@ like fucking for virginity.''
 **  Expression Scanner
 **  _________________________________________________________________
 */
-#line 73 "ssl_expr_scan.l"
+#line 70 "ssl_expr_scan.l"
 #include "mod_ssl.h"
 
 #include "ssl_expr_parse.h"
@@ -533,7 +530,7 @@ int yyinput(char *buf, int max_size);
 #define regex 2
 #define regex_flags 3
 
-#line 537 "lex.ssl_expr_yy.c"
+#line 535 "lex.ssl_expr_yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -684,7 +681,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 94 "ssl_expr_scan.l"
+#line 91 "ssl_expr_scan.l"
 
   
   char  caStr[MAX_STR_LEN];
@@ -696,7 +693,7 @@ YY_DECL
  /*
   * Whitespaces
   */
-#line 700 "lex.ssl_expr_yy.c"
+#line 698 "lex.ssl_expr_yy.c"
 
 	if ( yy_init )
 		{
@@ -777,7 +774,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 105 "ssl_expr_scan.l"
+#line 102 "ssl_expr_scan.l"
 { 
     /* NOP */
 }
@@ -787,7 +784,7 @@ YY_RULE_SETUP
   */
 case 2:
 YY_RULE_SETUP
-#line 112 "ssl_expr_scan.l"
+#line 109 "ssl_expr_scan.l"
 {
     cpStr = caStr;
     BEGIN(str);
@@ -795,24 +792,24 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 116 "ssl_expr_scan.l"
+#line 113 "ssl_expr_scan.l"
 {
     BEGIN(INITIAL);
     *cpStr = NUL;
-    yylval.cpVal = ap_pstrdup(ssl_expr_info.pool, caStr);
+    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, caStr);
     return T_STRING;
 }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 122 "ssl_expr_scan.l"
+#line 119 "ssl_expr_scan.l"
 {
     yyerror("Unterminated string");
 }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 125 "ssl_expr_scan.l"
+#line 122 "ssl_expr_scan.l"
 {
     int result;
 
@@ -825,46 +822,46 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 134 "ssl_expr_scan.l"
+#line 131 "ssl_expr_scan.l"
 {
     yyerror("Bad escape sequence");
 }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 137 "ssl_expr_scan.l"
+#line 134 "ssl_expr_scan.l"
 { *cpStr++ = '\n'; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 138 "ssl_expr_scan.l"
+#line 135 "ssl_expr_scan.l"
 { *cpStr++ = '\r'; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 139 "ssl_expr_scan.l"
+#line 136 "ssl_expr_scan.l"
 { *cpStr++ = '\t'; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 140 "ssl_expr_scan.l"
+#line 137 "ssl_expr_scan.l"
 { *cpStr++ = '\b'; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 141 "ssl_expr_scan.l"
+#line 138 "ssl_expr_scan.l"
 { *cpStr++ = '\f'; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 142 "ssl_expr_scan.l"
+#line 139 "ssl_expr_scan.l"
 {
     *cpStr++ = yytext[1];
 }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 145 "ssl_expr_scan.l"
+#line 142 "ssl_expr_scan.l"
 {
     char *cp = yytext;
     while (*cp != NUL)
@@ -873,7 +870,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 150 "ssl_expr_scan.l"
+#line 147 "ssl_expr_scan.l"
 {
     *cpStr++ = yytext[1];
 }
@@ -883,7 +880,7 @@ YY_RULE_SETUP
   */
 case 15:
 YY_RULE_SETUP
-#line 157 "ssl_expr_scan.l"
+#line 154 "ssl_expr_scan.l"
 {
     cRegexDel = yytext[1];
     cpRegex = caRegex;
@@ -892,7 +889,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 162 "ssl_expr_scan.l"
+#line 159 "ssl_expr_scan.l"
 {
     if (yytext[0] == cRegexDel) {
         *cpRegex = NUL;
@@ -905,27 +902,27 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 171 "ssl_expr_scan.l"
+#line 168 "ssl_expr_scan.l"
 {
-    yylval.cpVal = ap_pstrdup(ssl_expr_info.pool, caRegex);
+    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, caRegex);
     BEGIN(INITIAL);
     return T_REGEX_I;
 }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 176 "ssl_expr_scan.l"
+#line 173 "ssl_expr_scan.l"
 {
-    yylval.cpVal = ap_pstrdup(ssl_expr_info.pool, caRegex);
+    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, caRegex);
     yyless(0);
     BEGIN(INITIAL);
     return T_REGEX;
 }
 	YY_BREAK
 case YY_STATE_EOF(regex_flags):
-#line 182 "ssl_expr_scan.l"
+#line 179 "ssl_expr_scan.l"
 {
-    yylval.cpVal = ap_pstrdup(ssl_expr_info.pool, caRegex);
+    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, caRegex);
     BEGIN(INITIAL);
     return T_REGEX;
 }
@@ -935,107 +932,107 @@ case YY_STATE_EOF(regex_flags):
   */
 case 19:
 YY_RULE_SETUP
-#line 191 "ssl_expr_scan.l"
+#line 188 "ssl_expr_scan.l"
 { return T_OP_EQ; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 192 "ssl_expr_scan.l"
+#line 189 "ssl_expr_scan.l"
 { return T_OP_EQ; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 193 "ssl_expr_scan.l"
+#line 190 "ssl_expr_scan.l"
 { return T_OP_NE; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 194 "ssl_expr_scan.l"
+#line 191 "ssl_expr_scan.l"
 { return T_OP_NE; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 195 "ssl_expr_scan.l"
+#line 192 "ssl_expr_scan.l"
 { return T_OP_LT; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 196 "ssl_expr_scan.l"
+#line 193 "ssl_expr_scan.l"
 { return T_OP_LT; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 197 "ssl_expr_scan.l"
+#line 194 "ssl_expr_scan.l"
 { return T_OP_LE; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 198 "ssl_expr_scan.l"
+#line 195 "ssl_expr_scan.l"
 { return T_OP_LE; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 199 "ssl_expr_scan.l"
+#line 196 "ssl_expr_scan.l"
 { return T_OP_GT; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 200 "ssl_expr_scan.l"
+#line 197 "ssl_expr_scan.l"
 { return T_OP_GT; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 201 "ssl_expr_scan.l"
+#line 198 "ssl_expr_scan.l"
 { return T_OP_GE; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 202 "ssl_expr_scan.l"
+#line 199 "ssl_expr_scan.l"
 { return T_OP_GE; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 203 "ssl_expr_scan.l"
+#line 200 "ssl_expr_scan.l"
 { return T_OP_REG; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 204 "ssl_expr_scan.l"
+#line 201 "ssl_expr_scan.l"
 { return T_OP_NRE; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 205 "ssl_expr_scan.l"
+#line 202 "ssl_expr_scan.l"
 { return T_OP_AND; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 206 "ssl_expr_scan.l"
+#line 203 "ssl_expr_scan.l"
 { return T_OP_AND; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 207 "ssl_expr_scan.l"
+#line 204 "ssl_expr_scan.l"
 { return T_OP_OR; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 208 "ssl_expr_scan.l"
+#line 205 "ssl_expr_scan.l"
 { return T_OP_OR; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 209 "ssl_expr_scan.l"
+#line 206 "ssl_expr_scan.l"
 { return T_OP_NOT; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 210 "ssl_expr_scan.l"
+#line 207 "ssl_expr_scan.l"
 { return T_OP_NOT; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 211 "ssl_expr_scan.l"
+#line 208 "ssl_expr_scan.l"
 { return T_OP_IN; }
 	YY_BREAK
 /*
@@ -1043,7 +1040,7 @@ YY_RULE_SETUP
   */
 case 40:
 YY_RULE_SETUP
-#line 216 "ssl_expr_scan.l"
+#line 213 "ssl_expr_scan.l"
 { return T_FUNC_FILE; }
 	YY_BREAK
 /*
@@ -1051,12 +1048,12 @@ YY_RULE_SETUP
   */
 case 41:
 YY_RULE_SETUP
-#line 221 "ssl_expr_scan.l"
+#line 218 "ssl_expr_scan.l"
 { return T_TRUE; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 222 "ssl_expr_scan.l"
+#line 219 "ssl_expr_scan.l"
 { return T_FALSE; }
 	YY_BREAK
 /*
@@ -1064,9 +1061,9 @@ YY_RULE_SETUP
   */
 case 43:
 YY_RULE_SETUP
-#line 227 "ssl_expr_scan.l"
+#line 224 "ssl_expr_scan.l"
 {
-    yylval.cpVal = ap_pstrdup(ssl_expr_info.pool, yytext);
+    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, yytext);
     return T_DIGIT;
 }
 	YY_BREAK
@@ -1075,9 +1072,9 @@ YY_RULE_SETUP
   */
 case 44:
 YY_RULE_SETUP
-#line 235 "ssl_expr_scan.l"
+#line 232 "ssl_expr_scan.l"
 {
-    yylval.cpVal = ap_pstrdup(ssl_expr_info.pool, yytext);
+    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, yytext);
     return T_ID;
 }
 	YY_BREAK
@@ -1086,17 +1083,17 @@ YY_RULE_SETUP
   */
 case 45:
 YY_RULE_SETUP
-#line 243 "ssl_expr_scan.l"
+#line 240 "ssl_expr_scan.l"
 { 
     return yytext[0];
 }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 247 "ssl_expr_scan.l"
+#line 244 "ssl_expr_scan.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1100 "lex.ssl_expr_yy.c"
+#line 1098 "lex.ssl_expr_yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(str):
 case YY_STATE_EOF(regex):
@@ -1985,7 +1982,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 247 "ssl_expr_scan.l"
+#line 244 "ssl_expr_scan.l"
 
 
 int yyinput(char *buf, int max_size)
@@ -2000,4 +1997,4 @@ int yyinput(char *buf, int max_size)
     ssl_expr_info.inputptr += n;
     return n;
 }
-#endif /* XXX */
+
