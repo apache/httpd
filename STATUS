@@ -160,12 +160,13 @@ Available Patches:
 	<Pine.LNX.3.95dg3.971121113953.29532D-100000@twinlark.arctic.org>
 	Status: Dean +1, Martin +1, Alexei -1 (shared lib concerns)
 
-    * Ralf's variant of Jay Soffian <jay@cimedia.com>'s patch to add
-      case-translations to mod_rewrite in order to provide the last missing
-      part for virtual host support without <VirtualHost>
-      ``mod_rewrite/1631: support for case conversion added to mod_rewrite''
-      <199802081319.OAA20902@en1.engelschall.com>
-      Status (for 1.3b6-dev): Ralf +1, Dean +1
+    * Ralf's [PATCH] New RewriteMap types for mod_rewrite
+      <199802121518.QAA27349@en1.engelschall.com>
+      Status (for 1.3b6-dev): Ralf +1
+
+    * Ralf's [PATCH] Apache as a Reverse Proxy
+      <199802121503.QAA25633@en1.engelschall.com>
+      Status (for 1.3b6-dev): Ralf +1
 
 Concepts:
 
