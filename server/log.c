@@ -193,7 +193,7 @@ static int log_child(ap_pool_t *p, const char *progname,
     
         if (rc == APR_SUCCESS) {
             ap_note_subprocess(p, &procnew, kill_after_timeout);
-            (*fpin) = procnew.stdin;
+            (*fpin) = procnew.in;
         }
     }
 

@@ -352,7 +352,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
             ap_note_subprocess(p, &procnew, kill_after_timeout);
 
             /* Fill in BUFF structure for parents pipe to child's stdout */
-            file = procnew.stdout;
+            file = procnew.out;
             iol = ap_create_file_iol(file);
             if (!iol)
                 return APR_EBADF;
@@ -361,7 +361,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
             ap_bsetopt(*script_in, BO_TIMEOUT, &r->server->timeout);
 
             /* Fill in BUFF structure for parents pipe to child's stdin */
-            file = procnew.stdin;
+            file = procnew.in;
             iol = ap_create_file_iol(file);
             if (!iol)
                 return APR_EBADF;
@@ -370,7 +370,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
             ap_bsetopt(*script_out, BO_TIMEOUT, &r->server->timeout);
 
             /* Fill in BUFF structure for parents pipe to child's stderr */
-            file = procnew.stderr;
+            file = procnew.err;
             iol = ap_create_file_iol(file);
             if (!iol)
                 return APR_EBADF;
