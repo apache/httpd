@@ -233,7 +233,12 @@ static char *ssl_expr_eval_func_file(request_rec *r, char *filename)
         return "";
     }
     apr_file_info_get(&finfo, APR_FINFO_SIZE, fp);
-    len = finfo.size;
+    if ((finfo.size + 1) != ((apr_size_t)finfo.size + 1)) {
+        ssl_expr_error = "Huge file cannot be read";
+        apr_file_close(fp);
+        return "";
+    }
+    len = (apr_size_t)finfo.size;
     if (len == 0) {
         buf = (char *)apr_palloc(r->pool, sizeof(char) * 1);
         *buf = NUL;
