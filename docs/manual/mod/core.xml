@@ -217,6 +217,36 @@ response without an explicit character set</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>AllowEncodedSlashes</name>
+<description>Determine whether encoded path separators in URLs are allowed to
+be passed through</description>
+<syntax>AllowEncodedSlashes On|Off</syntax>
+<default>AllowEncodedSlashes Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Available in Apache 2.0.46 and later</compatibility>
+
+<usage>
+    <p>The <directive>AllowEncodedSlashes</directive> directive allows URLs
+    which contain encoded path separators (<code>%2F</code> for <code>/</code>
+    and additionally <code>%5C</code> for <code>\</code> on according systems)
+    to be used. Normally such URLs are refused with a 404 (Not found) error.</p>
+
+    <p>Turning <directive>AllowEncodedSlashes</directive> <code>On</code> is
+    mostly useful when used in conjunction with <code>PATH_INFO</code>.</p>
+
+    <note><title>Note</title>
+      <p>Allowing encoded slashes does <em>not</em> imply <em>decoding</em>.
+      Occurences of <code>%2F</code> or <code>%5C</code> (<em>only</em> on
+      according systems) will be left as such in the otherwise decoded URL
+      string.</p>
+    </note>
+</usage>
+<seealso><directive module="core">AcceptPathInfo</directive></seealso>
+</directivesynopsis>
+
+
+<directivesynopsis>
 <name>AllowOverride</name>
 <description>Types of directives that are allowed in
 <code>.htaccess</code> files</description>
