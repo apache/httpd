@@ -410,7 +410,7 @@ if ($opt_i) {
         my $dir = $CFG_LIBEXECDIR;
         $dir =~ s|^$CFG_PREFIX/?||;
         $dir =~ s|(.)$|$1/|;
-        push(@lmd, "LoadModule ${name}_module $dir$t");
+        push(@lmd, sprintf("LoadModule %-18s %s", "${name}_module", "$dir$t"));
     }
 
     #   execute the commands
