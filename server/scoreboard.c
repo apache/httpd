@@ -82,7 +82,6 @@
 AP_DECLARE_DATA scoreboard *ap_scoreboard_image = NULL;
 AP_DECLARE_DATA const char *ap_scoreboard_fname = NULL;
 AP_DECLARE_DATA int ap_extended_status = 0;
-AP_DECLARE_DATA apr_time_t ap_restart_time = 0;
 
 #if APR_HAS_SHARED_MEMORY
 
@@ -319,7 +318,7 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
     }
     ap_scoreboard_image->global->sb_type = sb_type;
     ap_scoreboard_image->global->running_generation = running_gen;
-    ap_restart_time = apr_time_now();
+    ap_scoreboard_image->global->restart_time = apr_time_now();
     apr_pool_cleanup_register(p, NULL, ap_cleanup_scoreboard, apr_pool_cleanup_null);
     return OK;
 }

@@ -358,7 +358,7 @@ static int status_handler(request_rec *r)
     }
 
     /* up_time in seconds */
-    up_time = (apr_uint32_t) ((nowtime - ap_restart_time)/APR_USEC_PER_SEC);
+    up_time = (apr_uint32_t) ((nowtime - ap_scoreboard_image->global->restart_time)/APR_USEC_PER_SEC);
 
     if (!short_report) {
 	ap_rputs(DOCTYPE_HTML_3_2
@@ -373,7 +373,7 @@ static int status_handler(request_rec *r)
 	ap_rvputs(r, "<dt>Current Time: ",
 	  ap_ht_time(r->pool, nowtime, DEFAULT_TIME_FORMAT, 0), "</dt>\n", NULL);
 	ap_rvputs(r, "<dt>Restart Time: ",
-	  ap_ht_time(r->pool, ap_restart_time, DEFAULT_TIME_FORMAT, 0), 
+	  ap_ht_time(r->pool, ap_scoreboard_image->global->restart_time, DEFAULT_TIME_FORMAT, 0), 
 	  "</dt>\n", NULL);
 	ap_rprintf(r, "<dt>Parent Server Generation: %d</dt>\n", (int) ap_my_generation);
 	ap_rputs("<dt>Server uptime: ", r);

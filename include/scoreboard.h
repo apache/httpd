@@ -162,6 +162,7 @@ typedef struct {
     ap_scoreboard_e sb_type;
     ap_generation_t running_generation;	/* the generation of children which
                                          * should still be serving requests. */
+    apr_time_t restart_time;
 } global_score;
 
 /* stuff which the parent generally writes and the children rarely read */
@@ -214,7 +215,6 @@ AP_DECLARE(global_score *) ap_get_scoreboard_global(void);
 AP_DECLARE_DATA extern scoreboard *ap_scoreboard_image;
 AP_DECLARE_DATA extern const char *ap_scoreboard_fname;
 AP_DECLARE_DATA extern int ap_extended_status;
-AP_DECLARE_DATA extern apr_time_t ap_restart_time;
 
 AP_DECLARE_DATA extern ap_generation_t volatile ap_my_generation;
 
