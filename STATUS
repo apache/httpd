@@ -93,6 +93,13 @@ PATCHES TO BACKPORT FROM TRUNK:
     identify exactly what the proposed changes are! ]
   [ please append new backports at the end of this list not the top. ]
 
+    *) mod_ssl: Set r->user from SSLUsername earlier so that it's
+       actually useful.
+       http://svn.apache.org/viewcvs.cgi?rev=153280&view=rev
+       http://svn.apache.org/viewcvs.cgi?rev=151493&view=rev
+       PR: 31418
+       +1: jorton
+
     *) Add a build script to create a solaris package.
        svn rev 124104
        +1: minfrin
