@@ -2930,14 +2930,14 @@ static apr_status_t pass_chunk(ap_filter_t *f, ap_bucket_brigade *b,
     }
     hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr), "%qx" CRLF, bytes);
     e = ap_bucket_create_transient(chunk_hdr, hdr_len);
-    AP_RING_INSERT_HEAD(&b->list, e, link);
+    AP_RING_INSERT_HEAD(&b->list, e, ap_bucket, link);
     if (eos) {
 	/* any trailer should go between the last two CRLFs */
 	e = ap_bucket_create_immortal(CRLF "0" CRLF CRLF, 7);
 	AP_RING_INSERT_BEFORE(AP_RING_LAST(&b->list), e, link);
     } else {
 	e = ap_bucket_create_immortal(CRLF, 2);
-	AP_RING_INSERT_TAIL(&b->list, e, link);
+	AP_RING_INSERT_TAIL(&b->list, e, ap_bucket, link);
     }
     return ap_pass_brigade(f->next, b);
 }
