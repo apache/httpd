@@ -465,6 +465,7 @@ typedef struct {
 #define SSLConnLogApplies(sslconn, level) (sslconn->log_level >= level)
 
 typedef struct {
+    pid_t           pid;
     apr_pool_t     *pPool;
     BOOL            bFixed;
     int             nInitCount;

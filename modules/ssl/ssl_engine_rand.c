@@ -136,7 +136,7 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
                 /*
                  * seed in the current process id (usually just 4 bytes)
                  */
-                pid = getpid();
+                pid = mc->pid;
                 l = sizeof(pid_t);
                 RAND_seed((unsigned char *)&pid, l);
                 nDone += l;
