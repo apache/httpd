@@ -162,8 +162,6 @@ __inline int ap_os_is_path_absolute(const char *file)
   return file[0] == '/' || file[1] == ':';
 }
 
-#define stat(f,ps)  os_stat(f,ps)
-
 #define _spawnv(mode,cmdname,argv)	    os_spawnv(mode,cmdname,argv)
 #define spawnv(mode,cmdname,argv)	    os_spawnv(mode,cmdname,argv)
 #define _spawnve(mode,cmdname,argv,envp)    os_spawnve(mode,cmdname,argv,envp)
@@ -172,7 +170,8 @@ __inline int ap_os_is_path_absolute(const char *file)
 #define spawnle				    os_spawnle
 
 /* OS-dependent filename routines in util_win32.c */
-
+int ap_os_is_filename_valid(const char *file);
+int os_strftime(char *, size_t , const char *, const struct tm *);
 
 /* Abstractions for dealing with shared object files (DLLs on Win32).
  * These are used by mod_so.c
