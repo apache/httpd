@@ -4,11 +4,12 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_access - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_access</h1><table class="module"><tr><th>説明:
-                </th><td>クライアントのホスト名、IP アドレス、その他のクライアント
+      --><title>mod_access - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_access</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
+                  </a></th><td>クライアントのホスト名、IP アドレス、その他のクライアント
 のリクエストの特徴に基づいたアクセス制御機能を提供する</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
                   </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
-                  </a></th><td>access_module</td></tr></table><h3>概要</h3>
+                  </a></th><td>access_module</td></tr><tr><th><a href="module-dict.html#SourceFile">:
+                  </a></th><td>mod_access.c</td></tr></table><h3>概要</h3>
     <p>mod_access により提供されるディレクティブはサーバの特定の部分への
     アクセスを制御するために <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     と <code><a href="core.html#accessfilename">.htaccess</a></code> ファイルで使用されます。クライアントのホスト名、IP
@@ -35,8 +36,8 @@
     しかし、<code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code>
     セクションの中にディレクティブを書くことで、
     一部のメソッドにのみ制限をかけることもできます。</p>
-</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#allow">Allow</a></li><li><img alt="" src="../images/down.gif" /> <a href="#deny">Deny</a></li><li><img alt="" src="../images/down.gif" /> <a href="#order">Order</a></li></ul><h3>参照</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
-            </th><td>サーバのある領域にアクセスできるホストを制御する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#allow">Allow</a></li><li><img alt="" src="../images/down.gif" /> <a href="#deny">Deny</a></li><li><img alt="" src="../images/down.gif" /> <a href="#order">Order</a></li></ul><h3>参照</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+              </a></th><td>サーバのある領域にアクセスできるホストを制御する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td> Allow from
     all|<em>host</em>|env=<em>env-variable</em>
     [<em>host</em>|env=<em>env-variable</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
@@ -137,8 +138,8 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
     で始まるブラウザのみがアクセスを許可され、
     他のものはアクセスを拒否されます。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Deny" id="Deny">Deny</a> <a name="deny" id="deny">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
-            </th><td>サーバがアクセスを拒否するホストを制御する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Deny" id="Deny">Deny</a> <a name="deny" id="deny">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+              </a></th><td>サーバがアクセスを拒否するホストを制御する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td> Deny from
     all|<em>host</em>|env=<em>env-variable</em>
     [<em>host</em>|env=<em>env-variable</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
@@ -150,8 +151,8 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
     アドレス、環境変数に基づいてサーバへのアクセスを制限します。
     <code class="directive">Deny</code> ディレクティブの引数は <code class="directive"><a href="#allow">Allow</a></code>
     ディレクティブとまったく同じです。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Order" id="Order">Order</a> <a name="order" id="order">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
-            </th><td>デフォルトのアクセス可能な状態と、Allow と
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Order" id="Order">Order</a> <a name="order" id="order">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+              </a></th><td>デフォルトのアクセス可能な状態と、Allow と
 Deny が評価される順番を制御する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td> Order <em>ordering</em></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
               </a></th><td><code>Order Deny,Allow</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:

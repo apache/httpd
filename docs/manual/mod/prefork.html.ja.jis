@@ -4,11 +4,12 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>prefork - Apache HTTP $B%5!<%P(B</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">$B%b%8%e!<%k(B</a> | <a href="../mod/directives.html">$B%G%#%l%/%F%#%V(B</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">$BMQ8l(B</a> | <a href="../sitemap.html">$B%5%$%H%^%C%W(B</a></p><p class="apache">Apache HTTP $B%5!<%P(B $B%P!<%8%g%s(B 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP $B%5!<%P(B</a> &gt; <a href="http://httpd.apache.org/docs-project/">$B%I%-%e%a%s%F!<%7%g%s(B</a> &gt; <a href="../">$B%P!<%8%g%s(B 2.0</a> &gt; <a href="./">$B%b%8%e!<%k(B</a></div><div id="page-content"><div id="preamble"><h1>Apache $B%b%8%e!<%k(B prefork</h1><table class="module"><tr><th>$B@bL@(B:
-                </th><td>$B%9%l%C%I$r;H$o$:!"@h9T$7$F(B fork $B$r9T$J(B$B$&%&%'%V%5!<%P$r<BAu(B
+      --><title>prefork - Apache HTTP $B%5!<%P(B</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">$B%b%8%e!<%k(B</a> | <a href="../mod/directives.html">$B%G%#%l%/%F%#%V(B</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">$BMQ8l(B</a> | <a href="../sitemap.html">$B%5%$%H%^%C%W(B</a></p><p class="apache">Apache HTTP $B%5!<%P(B $B%P!<%8%g%s(B 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP $B%5!<%P(B</a> &gt; <a href="http://httpd.apache.org/docs-project/">$B%I%-%e%a%s%F!<%7%g%s(B</a> &gt; <a href="../">$B%P!<%8%g%s(B 2.0</a> &gt; <a href="./">$B%b%8%e!<%k(B</a></div><div id="page-content"><div id="preamble"><h1>Apache $B%b%8%e!<%k(B prefork</h1><table class="module"><tr><th><a href="module-dict.html#Description">$B@bL@(B:
+                  </a></th><td>$B%9%l%C%I$r;H$o$:!"@h9T$7$F(B fork $B$r9T$J(B$B$&%&%'%V%5!<%P$r<BAu(B
 </td></tr><tr><th><a href="module-dict.html#Status">$B%9%F!<%?%9(B:
                   </a></th><td>MPM</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">$B%b%8%e!<%k<1JL;R(B:
-                  </a></th><td>mpm_prefork_module</td></tr></table><h3>$B35MW(B</h3>
+                  </a></th><td>mpm_prefork_module</td></tr><tr><th><a href="module-dict.html#SourceFile">:
+                  </a></th><td>prefork.c</td></tr></table><h3>$B35MW(B</h3>
     <p>$B$3$N%^%k%A%W%m%;%C%7%s%0%b(B$B%8%e!<%k(B (MPM) $B$O!"(B
     Unix $B>e$G$N(B Apache 1.3 $B$N%G%U%)%k%H$N5sF0$HHs>o$K$h$/;w$?J}K!$G(B
     $B%j%/%(%9%H$r=hM}$9$k!"%9%l%C%I$r;H$o$:!"@h9T$7$F(B fork $B$r9T$J$&(B
@@ -68,8 +69,8 @@
     <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
     $B$O!"8E$$%W%m%;%9$rDd;_$7$F?7$7$$%W%m%;%9(B$B$r5/F0$9$k$3$H$K$h$C$F!"(B
     $B$I$NDxEY$NIQEY$G%5!<%P$,%W%m%;%9$r%j%5%$%/%k$9$k$+$r@)8f$7$^$9!#(B</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AcceptMutex" id="AcceptMutex">AcceptMutex</a> <a name="acceptmutex" id="acceptmutex">$B%G%#%l%/%F%#%V(B</a></h2><table class="directive"><tr><th>$B@bL@(B: 
-            </th><td>$BJ#?t$N;R%W%m%;%9$,%M%C%H%o!<%/%=%1%C%H$G%j%/%(%9%H$r(B
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AcceptMutex" id="AcceptMutex">AcceptMutex</a> <a name="acceptmutex" id="acceptmutex">$B%G%#%l%/%F%#%V(B</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">$B@bL@(B: 
+              </a></th><td>$BJ#?t$N;R%W%m%;%9$,%M%C%H%o!<%/%=%1%C%H$G%j%/%(%9%H$r(B
 accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$?$a$K(B
 $B;H$&J}K!(B</td></tr><tr><th><a href="directive-dict.html#Syntax">$B9=J8(B:
               </a></th><td>AcceptMutex default|<em>method</em></td></tr><tr><th><a href="directive-dict.html#Default">$B%G%U%)%k%H(B: 
@@ -116,8 +117,8 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
       <dd>POSIX Threads (PThreads) $B5,3J$G<BAu$5$l$F$$$k(B
       POSIX $BGSB>=hM}$r;H$$$^$9!#(B</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a> <a name="maxspareservers" id="maxspareservers">$B%G%#%l%/%F%#%V(B</a></h2><table class="directive"><tr><th>$B@bL@(B: 
-            </th><td>$B%"%$%I%k$J;R%5!<%P%W%m%;%9$N:GBg8D?t(B</td></tr><tr><th><a href="directive-dict.html#Syntax">$B9=J8(B:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a> <a name="maxspareservers" id="maxspareservers">$B%G%#%l%/%F%#%V(B</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">$B@bL@(B: 
+              </a></th><td>$B%"%$%I%k$J;R%5!<%P%W%m%;%9$N:GBg8D?t(B</td></tr><tr><th><a href="directive-dict.html#Syntax">$B9=J8(B:
               </a></th><td>MaxSpareServers <em>number</em><br /></td></tr><tr><th><a href="directive-dict.html#Default">$B%G%U%)%k%H(B: 
               </a></th><td><code>MaxSpareServers 10</code></td></tr><tr><th><a href="directive-dict.html#Context">$B%3%s%F%-%9%H(B:
               </a></th><td>$B%5!<%P@_Dj%U%!%$%k(B</td></tr><tr><th><a href="directive-dict.html#Status">$B%9%F!<%?%9(B:
@@ -131,8 +132,8 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 
     <p>$BHs>o$K:.$s$G$$$k%5%$%H$G$N$_!"$3$N%Q%i%a!<%?$r%A%e!<%K%s%0$9$k$Y$-$G$9!#(B
     $B$3$N%Q%i%a!<%?$rBg$-$/$9$k$H$$$&$3$H$O!"BgDq$N>l9g$O0-$$H/A[$G$9!#(B</p>
-<h3>$B;2>H(B</h3><ul><li><code class="directive"><a href="#minspareservers">MinSpareServers</a></code></li><li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MinSpareServers" id="MinSpareServers">MinSpareServers</a> <a name="minspareservers" id="minspareservers">$B%G%#%l%/%F%#%V(B</a></h2><table class="directive"><tr><th>$B@bL@(B: 
-            </th><td>$B%"%$%I%k$J;R%5!<%P%W%m%;%9$N:G>.8D?t(B</td></tr><tr><th><a href="directive-dict.html#Syntax">$B9=J8(B:
+<h3>$B;2>H(B</h3><ul><li><code class="directive"><a href="#minspareservers">MinSpareServers</a></code></li><li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MinSpareServers" id="MinSpareServers">MinSpareServers</a> <a name="minspareservers" id="minspareservers">$B%G%#%l%/%F%#%V(B</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">$B@bL@(B: 
+              </a></th><td>$B%"%$%I%k$J;R%5!<%P%W%m%;%9$N:G>.8D?t(B</td></tr><tr><th><a href="directive-dict.html#Syntax">$B9=J8(B:
               </a></th><td>MinSpareServers <em>number</em></td></tr><tr><th><a href="directive-dict.html#Default">$B%G%U%)%k%H(B: 
               </a></th><td><code>MinSpareServers  5</code></td></tr><tr><th><a href="directive-dict.html#Context">$B%3%s%F%-%9%H(B:
               </a></th><td>$B%5!<%P@_Dj%U%!%$%k(B</td></tr><tr><th><a href="directive-dict.html#Status">$B%9%F!<%?%9(B:
