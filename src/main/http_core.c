@@ -1872,18 +1872,6 @@ static const char *set_bs2000_authfile (cmd_parms *cmd, void *dummy, char *name)
 #endif /*_OSD_POSIX*/
 
 /*
- * Handle a request to add an arbitrary string to the Server-Version response
- * header field (the AddVersionComponent directive).
- */
-
-static const char *add_version_component(cmd_parms *cmd, void *mconfig, 
-					 char *word1)
-{
-    ap_add_version_component((const char *)word1);
-    return NULL;
-}
-
-/*
  * Handle a request to include the server's OS platform in the Server-Version
  * response header field (the AddVersionPlatform directive).  Unfortunately
  * this requires a new global in order to communicate the setting back to
@@ -2038,10 +2026,8 @@ static const command_rec core_cmds[] = {
 { "BS2000AuthFile", set_bs2000_authfile, NULL, RSRC_CONF, TAKE1,
   "server User's bs2000 logon password file (read-protected)" },
 #endif
-{ "AddVersionComponent", add_version_component, NULL, RSRC_CONF, TAKE1,
-  "String to be added to the Server-Version text" },
 { "AddVersionPlatform", enable_platform_announcement, NULL, RSRC_CONF, FLAG,
-  "Set to 'on' to include server OS platform in Server-Version text" },
+  "Set to 'off' to not include server OS platform in Server identity text" },
 { NULL },
 };
 

@@ -28,13 +28,13 @@ Changes with Apache 1.3b7
        Makefille.<gnutriple> and directories src.<gnutriple>
      [Ralf S. Engelschall]
 
-  *) Added the AddVersionComponent and AddVersionPlatform core directives.
-     The first allows the addition of arbitrary text to the Server-Version
-     response header field value, augmenting the SERVER_SUBVERSION define in
-     the Configuration file with run-time settings (more useful in
-     a loadable-module environment).  AddVersionPlatform inserts a comment
-     such as "(UNIX)" or "(Win32)" into the server version string.
-     [Ken Coar] PR#2056
+  *) Added the ap_add_version_component() API routine and the
+     AddVersionPlatform core directive.  The first allows modules to
+     declare themselves in the Server response header field value,
+     augmenting the SERVER_SUBVERSION define in the Configuration file
+     with run-time settings (more useful in a loadable-module environment).
+     AddVersionPlatform inserts a comment such as "(UNIX)" or "(Win32)"
+     into the server version string.  [Ken Coar] PR#2056
 
   *) Minor stability tweaks to avoid core dumps in ap_snprintf.
      [Martin Kraemer]
