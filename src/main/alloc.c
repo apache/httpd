@@ -189,7 +189,6 @@ union block_hdr *new_block (int min_size)
 
   while (blok != NULL) {
     if (min_size <= blok->h.endp - blok->h.first_avail) {
-      
       *lastptr = blok->h.next;
       blok->h.next = NULL;
       return blok;

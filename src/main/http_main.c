@@ -1417,7 +1417,7 @@ void default_server_hostnames(server_rec *s)
 		    s->server_hostname = pstrdup (pconf, (char *)h->h_name);
 		else
 		    {
-		    fprintf(stderr,"Failed to resolve server name (check DNS)\n");
+		    fprintf(stderr,"Failed to resolve server name for %s (check DNS)\n",inet_ntoa(s->addrs->host_addr));
 		    exit(0);
 		    }
 	    }
@@ -1635,7 +1635,7 @@ void child_main(int child_num_arg)
 				       (struct sockaddr_in *)&sa_client,
 				       (struct sockaddr_in *)&sa_server,
 				       child_num);
-	
+
 	r = read_request (current_conn);
 	(void)update_child_status (child_num, SERVER_BUSY_WRITE, r);
 	if (r) process_request (r); /* else premature EOF --- ignore */
@@ -2018,7 +2018,7 @@ main(int argc, char *argv[])
     init_alloc();
     pconf = permanent_pool;
     ptrans = make_sub_pool(pconf);
-    
+
     server_argv0 = argv[0];
     strcpy (server_root, HTTPD_ROOT);
     strcpy (server_confname, SERVER_CONFIG_FILE);

@@ -3,6 +3,7 @@
 #  will print out the full pathname unless
 #  called with the '-s' option
 #
+
 if [ "x$1" = "x-s" ]; then
     shift
 else
@@ -15,7 +16,7 @@ for path in `echo $PATH |
       s/:$/:./
       s/:/ /g' `
 do
-    if [ -r $path/$1 ] && [ ! -d $path/$1 ]; then
+    if [ $CONF_TEST_EXECUTABLE $path/$1 ] && [ ! -d $path/$1 ]; then
         if [ "$echo" = "yes" ]; then
 	    echo $path/$1
 	fi
