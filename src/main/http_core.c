@@ -2977,14 +2977,14 @@ static int core_translate(request_rec *r)
 static int do_nothing(request_rec *r) { return OK; }
 
 #ifdef USE_MMAP_FILES
-struct mmap {
+struct mmap_rec {
     void *mm;
     size_t length;
 };
 
 static void mmap_cleanup(void *mmv)
 {
-    struct mmap *mmd = mmv;
+    struct mmap_rec *mmd = mmv;
 
     if (munmap(mmd->mm, mmd->length) == -1) {
         ap_log_error(APLOG_MARK, APLOG_ERR, NULL,
@@ -3147,7 +3147,7 @@ static int default_handler(request_rec *r)
 #ifdef USE_MMAP_FILES
     }
     else {
-	struct mmap *mmd;
+	struct mmap_rec *mmd;
 
 	mmd = ap_palloc(r->pool, sizeof(*mmd));
 	mmd->mm = mm;
