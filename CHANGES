@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix memory corruption problem with ap_custom_response() function.
+     The core per-dir config would later point to request pool data
+     that would be reused for different purposes on different requests.
+     [Jeff Trawick, based on an old 1.3 patch submitted by Will Lowe]
+
   *) work around MSIE Digest auth bug - if AuthDigestEnableQueryStringHack
      is set in r->subprocess_env allow mismatched query strings to pass.
      PR 27758.  [Paul Querna <chip force-elite.com>, Geoffrey Young]
