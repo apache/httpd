@@ -1028,8 +1028,18 @@ static int make_child(server_rec *s, int slot, time_t now) /* ZZZ */
 	child_main(slot);
     }
 
+    /* Tag this slot as occupied so that perform_idle_server_maintenance
+     * doesn't try to steal it */
+    (void) ap_update_child_status(slot, 0, SERVER_STARTING, (request_rec *) NULL);
+
     if ((pid = fork()) == -1) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, s, "fork: Unable to fork new process");
+
+        /* fork didn't succeed. Fix the scoreboard or else
+         * it will say SERVER_STARTING forever and ever
+         */
+        (void) ap_update_child_status(slot, 0, SERVER_DEAD, (request_rec *) NULL);
+
 	/* In case system resources are maxxed out, we don't want
 	   Apache running away with the CPU trying to fork over and
 	   over and over again. */
