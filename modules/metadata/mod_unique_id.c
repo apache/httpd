@@ -385,7 +385,7 @@ static int gen_unique_id(request_rec *r)
     return DECLINED;
 }
 
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(unique_id_global_init, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_child_init(unique_id_child_init, NULL, NULL, AP_HOOK_MIDDLE);

@@ -56,10 +56,7 @@
 #include "apr_hash.h"
 #include "apr_errno.h"
 #include "apr_strings.h"
-
-#include "ap_hooks.h"   /* ### for ap_global_hook_pool */
 #include "util_xml.h"   /* for ap_text_header */
-
 #include "mod_dav.h"
 
 
@@ -77,9 +74,6 @@ static apr_status_t dav_cleanup_liveprops(void *ctx)
 static void dav_register_liveprop_namespace(apr_pool_t *p, const char *uri)
 {
     int value;
-
-    /* ### ignore the pool; it is NULL right now */
-    p = ap_global_hook_pool;
 
     if (dav_liveprop_uris == NULL) {
         dav_liveprop_uris = apr_make_hash(p);

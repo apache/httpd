@@ -3065,7 +3065,7 @@ static const command_rec includes_cmds[] =
     {NULL}
 };
 
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(include_post_config, NULL, NULL, AP_HOOK_REALLY_FIRST);
     ap_register_output_filter("INCLUDES", includes_filter, AP_FTYPE_CONTENT);

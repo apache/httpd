@@ -452,7 +452,7 @@ static int match_headers(request_rec *r)
     return DECLINED;
 }
 
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     ap_hook_header_parser(match_headers, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_post_read_request(match_headers, NULL, NULL, AP_HOOK_MIDDLE);

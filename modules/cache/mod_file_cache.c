@@ -167,6 +167,7 @@ static apr_status_t open_file(apr_file_t **file, const char *filename, int flg1,
      * support.
      */
     HANDLE hFile;
+    /* XXX: This is wrong for unicode FS ... and it doesn't belong in httpd */
     hFile = CreateFile(filename,          /* pointer to name of the file */
                        GENERIC_READ,      /* access (read-write) mode */
                        FILE_SHARE_READ,   /* share mode */
@@ -498,7 +499,7 @@ AP_INIT_ITERATE("mmapfile", mmapfile, NULL, RSRC_CONF,
     {NULL}
 };
 
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     ap_hook_handler(file_cache_handler, NULL, NULL, AP_HOOK_LAST);
     ap_hook_post_config(file_cache_post_config, NULL, NULL, AP_HOOK_MIDDLE);

@@ -1119,7 +1119,7 @@ static const command_rec cmds[] =
     {NULL}
 };
 
-static void charset_register_hooks(void)
+static void charset_register_hooks(apr_pool_t *p)
 {
     ap_hook_fixups(find_code_page, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_insert_filter(xlate_insert_filter, NULL, NULL, AP_HOOK_MIDDLE);

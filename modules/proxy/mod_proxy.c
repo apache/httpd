@@ -744,7 +744,7 @@ static const command_rec proxy_cmds[] =
     {NULL}
 };
 
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     /* [2] filename-to-URI translation */
     ap_hook_translate_name(proxy_trans, NULL, NULL, AP_HOOK_FIRST);

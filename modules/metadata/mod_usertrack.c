@@ -308,10 +308,12 @@ static const command_rec cookie_log_cmds[] = {
                   "name of the tracking cookie"),
     {NULL}
 };
-static void register_hooks(void)
+
+static void register_hooks(apr_pool_t *p)
 {
     ap_hook_fixups(spot_cookie,NULL,NULL,AP_HOOK_MIDDLE);
 }
+
 module AP_MODULE_DECLARE_DATA usertrack_module = {
     STANDARD20_MODULE_STUFF,
     make_cookie_dir,            /* dir config creater */

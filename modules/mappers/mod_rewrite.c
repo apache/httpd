@@ -184,53 +184,8 @@
      * MODULE-DEFINITION-END
      */
 
-    /* the apr_table_t of commands we provide */
-static const command_rec command_table[] = {
-    AP_INIT_FLAG(    "RewriteEngine",   cmd_rewriteengine,  NULL, OR_FILEINFO,
-                     "On or Off to enable or disable (default) the whole "
-                     "rewriting engine"),
-    AP_INIT_ITERATE( "RewriteOptions",  cmd_rewriteoptions,  NULL, OR_FILEINFO,
-                     "List of option strings to set"),
-    AP_INIT_TAKE1(   "RewriteBase",     cmd_rewritebase,     NULL, OR_FILEINFO, 
-                     "the base URL of the per-directory context"),
-    AP_INIT_RAW_ARGS("RewriteCond",     cmd_rewritecond,     NULL, OR_FILEINFO,
-                     "an input string and a to be applied regexp-pattern"),
-    AP_INIT_RAW_ARGS("RewriteRule",     cmd_rewriterule,     NULL, OR_FILEINFO,
-                     "an URL-applied regexp-pattern and a substitution URL"),
-    AP_INIT_TAKE2(   "RewriteMap",      cmd_rewritemap,      NULL, RSRC_CONF,
-                     "a mapname and a filename"),
-    AP_INIT_TAKE1(   "RewriteLock",     cmd_rewritelock,     NULL, RSRC_CONF,
-                     "the filename of a lockfile used for inter-process "
-                     "synchronization"),
-    AP_INIT_TAKE1(   "RewriteLog",      cmd_rewritelog,      NULL, RSRC_CONF,
-                     "the filename of the rewriting logfile"),
-    AP_INIT_TAKE1(   "RewriteLogLevel", cmd_rewriteloglevel, NULL, RSRC_CONF,
-                     "the level of the rewriting logfile verbosity "
-                     "(0=none, 1=std, .., 9=max)"),
-    { NULL }
-};
-
-static void register_hooks(void)
-{
-    ap_hook_handler(handler_redirect, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_hook_post_config(init_module,NULL,NULL,AP_HOOK_MIDDLE);
-    ap_hook_child_init(init_child,NULL,NULL,AP_HOOK_MIDDLE);
-
-    ap_hook_fixups(hook_fixup,NULL,NULL,AP_HOOK_FIRST);
-    ap_hook_translate_name(hook_uri2file,NULL,NULL,AP_HOOK_FIRST);
-    ap_hook_type_checker(hook_mimetype,NULL,NULL,AP_HOOK_MIDDLE);
-}
-
-    /* the main config structure */
-module AP_MODULE_DECLARE_DATA rewrite_module = {
-   STANDARD20_MODULE_STUFF,
-   config_perdir_create,        /* create per-dir    config structures */
-   config_perdir_merge,         /* merge  per-dir    config structures */
-   config_server_create,        /* create per-server config structures */
-   config_server_merge,         /* merge  per-server config structures */
-   command_table,               /* apr_table_t of config file commands  */
-   register_hooks               /* register hooks                      */
-};
+    /* the module (predeclaration) */
+module AP_MODULE_DECLARE_DATA rewrite_module;
 
     /* the cache */
 static cache *cachep;
@@ -4144,5 +4099,53 @@ int main(int argc, char *argv[])
     ExitThread(TSR_THREAD, 0);
 }
 #endif
+
+    /* the apr_table_t of commands we provide */
+static const command_rec command_table[] = {
+    AP_INIT_FLAG(    "RewriteEngine",   cmd_rewriteengine,  NULL, OR_FILEINFO,
+                     "On or Off to enable or disable (default) the whole "
+                     "rewriting engine"),
+    AP_INIT_ITERATE( "RewriteOptions",  cmd_rewriteoptions,  NULL, OR_FILEINFO,
+                     "List of option strings to set"),
+    AP_INIT_TAKE1(   "RewriteBase",     cmd_rewritebase,     NULL, OR_FILEINFO, 
+                     "the base URL of the per-directory context"),
+    AP_INIT_RAW_ARGS("RewriteCond",     cmd_rewritecond,     NULL, OR_FILEINFO,
+                     "an input string and a to be applied regexp-pattern"),
+    AP_INIT_RAW_ARGS("RewriteRule",     cmd_rewriterule,     NULL, OR_FILEINFO,
+                     "an URL-applied regexp-pattern and a substitution URL"),
+    AP_INIT_TAKE2(   "RewriteMap",      cmd_rewritemap,      NULL, RSRC_CONF,
+                     "a mapname and a filename"),
+    AP_INIT_TAKE1(   "RewriteLock",     cmd_rewritelock,     NULL, RSRC_CONF,
+                     "the filename of a lockfile used for inter-process "
+                     "synchronization"),
+    AP_INIT_TAKE1(   "RewriteLog",      cmd_rewritelog,      NULL, RSRC_CONF,
+                     "the filename of the rewriting logfile"),
+    AP_INIT_TAKE1(   "RewriteLogLevel", cmd_rewriteloglevel, NULL, RSRC_CONF,
+                     "the level of the rewriting logfile verbosity "
+                     "(0=none, 1=std, .., 9=max)"),
+    { NULL }
+};
+
+static void register_hooks(apr_pool_t *p)
+{
+    ap_hook_handler(handler_redirect, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_post_config(init_module,NULL,NULL,AP_HOOK_MIDDLE);
+    ap_hook_child_init(init_child,NULL,NULL,AP_HOOK_MIDDLE);
+
+    ap_hook_fixups(hook_fixup,NULL,NULL,AP_HOOK_FIRST);
+    ap_hook_translate_name(hook_uri2file,NULL,NULL,AP_HOOK_FIRST);
+    ap_hook_type_checker(hook_mimetype,NULL,NULL,AP_HOOK_MIDDLE);
+}
+
+    /* the main config structure */
+module AP_MODULE_DECLARE_DATA rewrite_module = {
+   STANDARD20_MODULE_STUFF,
+   config_perdir_create,        /* create per-dir    config structures */
+   config_perdir_merge,         /* merge  per-dir    config structures */
+   config_server_create,        /* create per-server config structures */
+   config_server_merge,         /* merge  per-server config structures */
+   command_table,               /* apr_table_t of config file commands  */
+   register_hooks               /* register hooks                      */
+};
  
 /*EOF*/

@@ -65,7 +65,7 @@ static int ExportLogTransaction(request_rec *r)
     return ap_run_generic_hook_test(r->the_request);
 }
 
-static void ExportRegisterHooks(void)
+static void ExportRegisterHooks(apr_pool_t *p)
 {
     ap_hook_log_transaction(ExportLogTransaction,NULL,NULL,AP_HOOK_MIDDLE);
 }

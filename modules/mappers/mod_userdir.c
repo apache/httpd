@@ -384,7 +384,7 @@ static ap_unix_identity_t *get_suexec_id_doer(const request_rec *r)
 }
 #endif /* HAVE_UNIX_SUEXEC */
 
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     static const char * const aszSucc[]={ "mod_alias.c",NULL };
 

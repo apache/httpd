@@ -153,7 +153,7 @@ static int disk_cache(request_rec *r, ap_bucket_brigade *bb, void **cf)
     return OK;	
 }
 
-static void disk_cache_register_hook(void)
+static void disk_cache_register_hook(apr_pool_t *p)
 {
     ap_hook_store_cache(disk_cache, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_serve_cache(disk_serve, NULL, NULL, AP_HOOK_MIDDLE);

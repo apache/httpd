@@ -931,7 +931,7 @@ static int cgid_handler(request_rec *r)
     return OK; /* NOT r->status, even if it has changed. */ 
 } 
 
-static void register_hook(void)
+static void register_hook(apr_pool_t *p)
 {
     ap_hook_post_config(cgid_init, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_handler(cgid_handler, NULL, NULL, AP_HOOK_MIDDLE);

@@ -250,10 +250,12 @@ static int fixup_headers(request_rec *r)
 
     return DECLINED;
 }
-static void register_hooks(void)
+
+static void register_hooks(apr_pool_t *p)
 {
     ap_hook_fixups(fixup_headers,NULL,NULL,AP_HOOK_MIDDLE);
 } 
+
 module AP_MODULE_DECLARE_DATA headers_module =
 {
     STANDARD20_MODULE_STUFF,

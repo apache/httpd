@@ -840,7 +840,7 @@ static void mime_insert_filter(request_rec *r)
     apr_table_do(filter_chain, r, conf->filter_names, r->content_type, NULL);
 }
 
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     ap_hook_type_checker(find_ct,NULL,NULL,AP_HOOK_MIDDLE);
     ap_hook_post_config(mime_post_config,NULL,NULL,AP_HOOK_MIDDLE);
