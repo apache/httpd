@@ -554,7 +554,7 @@ static int include_cgi(char *s, request_rec *r)
 {
     request_rec *rr = sub_req_lookup_uri(s, r);
 
-    if (rr->status != 200) {
+    if (rr->status != HTTP_OK) {
         return -1;
     }
 
@@ -623,7 +623,7 @@ static int handle_include(FILE *in, request_rec *r, char *error, int noexec)
                 rr = sub_req_lookup_uri(parsed_string, r);
             }
 
-            if (!error_fmt && rr->status != 200) {
+            if (!error_fmt && rr->status != HTTP_OK) {
                 error_fmt = "unable to include \"%s\" in parsed file %s";
             }
 
@@ -958,7 +958,7 @@ static int find_file(request_rec *r, char *directive, char *tag,
     else if (!strcmp(tag, "virtual")) {
         request_rec *rr = sub_req_lookup_uri(tag_val, r);
 
-        if (rr->status == 200 && rr->finfo.st_mode != 0) {
+        if (rr->status == HTTP_OK && rr->finfo.st_mode != 0) {
             memcpy((char *) finfo, (const char *) &rr->finfo,
                    sizeof(struct stat));
             destroy_sub_req(rr);
@@ -2181,13 +2181,13 @@ static int send_parsed_file(request_rec *r)
                     (r->path_info
                      ? pstrcat(r->pool, r->filename, r->path_info, NULL)
                      : r->filename));
-        return NOT_FOUND;
+        return HTTP_NOT_FOUND;
     }
 
     if (!(f = pfopen(r->pool, r->filename, "r"))) {
         aplog_error(APLOG_MARK, APLOG_ERR, r->server,
                     "file permissions deny server access: %s", r->filename);
-        return FORBIDDEN;
+        return HTTP_FORBIDDEN;
     }
 
     if ((*state == xbithack_full)
