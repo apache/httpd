@@ -12,14 +12,6 @@ performance</description>
 
 
 <summary>
-
-<note>
-  <strong>Warning:</strong> This document has not been updated
-  to take into account changes made in the 2.0 version of the
-  Apache HTTP Server. Some of the information may still be
-  relevant, but please use it with care.
-</note>
-
     <p>The Status module allows a server administrator to find out
     how well their server is performing. A HTML page is presented
     that gives the current server statistics in an easily readable
@@ -30,13 +22,13 @@ performance</description>
     <p>The details given are:</p>
 
     <ul>
-      <li>The number of children serving requests</li>
+      <li>The number of worker serving requests</li>
 
-      <li>The number of idle children</li>
+      <li>The number of idle worker</li>
 
-      <li>The status of each child, the number of requests that
-      child has performed and the total number of bytes served by
-      the child (*)</li>
+      <li>The status of each worker, the number of requests that
+      worker has performed and the total number of bytes served by
+      the worker (*)</li>
 
       <li>A total number of accesses and byte count served (*)</li>
 
@@ -47,7 +39,7 @@ performance</description>
       number of bytes served per second and the average number of
       bytes per request (*)</li>
 
-      <li>The current percentage CPU used by each child and in
+      <li>The current percentage CPU used by each worker and in
       total by Apache (*)</li>
 
       <li>The current hosts and requests being processed (*)</li>
@@ -77,11 +69,6 @@ performance</description>
     <p>You can now access server statistics by using a Web browser
     to access the page
     <code>http://your.server.name/server-status</code></p>
-
-    <note><p>Note that <module>mod_status</module> will only work
-    when you are running Apache in <a 
-    href="core.html#servertype">standalone</a> mode and not
-    <a href="core.html#servertype">inetd</a> mode.</p></note>
 </section>
 
 <section id="autoupdate">
