@@ -166,7 +166,7 @@ EVP_PKEY *SSL_read_PrivateKey(char* filename, EVP_PKEY **key, int (*cb)(char*,in
     /* 1. try PEM (= DER+Base64+headers) */
        if ((bioS=BIO_new_file(filename, "r")) == NULL)
                return NULL;
-       rc = PEM_read_bio_PrivateKey(bioS, key, cb, s);
+       rc = modssl_PEM_read_bio_PrivateKey(bioS, key, cb, s);
        BIO_free(bioS);
 
     if (rc == NULL) {
