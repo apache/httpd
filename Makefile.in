@@ -50,7 +50,7 @@ htdocs-srcdir = docs/docroot
 
 docs::
 	mkdir -p ./docs/api
-	srclib/apr/build/scandoc -isrclib/apr/build/default.pl -p./docs/api/ ./include/*.h
+	srclib/apr/build/scandoc.pl -i./build/default.pl -p./docs/api/ ./include/*.h
 
 dox::
 	$(HOME)/software/unpacked/doxygen-1.2.5/bin/doxygen docs/doxygen.conf
