@@ -1,5 +1,10 @@
 Changes with Apache 1.2
 
+  *) Configure changes: Allow for whitespace at the start of a
+     Module declaration. Also, be more understanding about the
+     CC=/OPTIM= format in Configuration. Finally, fix compiler
+     flags if using HP-UX's cc compiler. [Jim Jagielski]
+
   *) Subrequests and internal redirect now inherit the_request from the
      original request-line. [Roy Fielding]
 

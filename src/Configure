@@ -45,12 +45,14 @@ if [ ! -r $file ]; then
 fi
 
 # First, strip comments and blank lines and then change Rules to comments
+# and then remove whitespace before Module declarations
 
 sed 's/#.*//' $file | \
  sed '/^[ 	]*$/d' | \
  sed 's/[ 	]*$//' | \
- sed 's/^Rule[ 	]*/##Rule:/' \
- > $tmpfile
+ sed 's/^Rule[ 	]*/##Rule:/' | \
+ sed 's/^[ 	]*Module/Module/' | \
+ sed 's/^[        ]*%Module/%Module/' > $tmpfile
 
 # Check for syntax errors...
 
@@ -169,7 +171,7 @@ fi
 
 #
 # We now look for popular compilers. As with ranlib, we
-# do this early but because some options may depend
+# do this early because some options may depend
 # on which compiler we use/find
 #
 for compilers in "gcc" "cc" "acc" "c89"
@@ -494,7 +496,7 @@ echo " + configured for $OS platform"
 # and set a "safe" optimization level
 #
 
-if grep "CC=" Makefile > /dev/null; then
+if egrep "^CC[ 	]*=" Makefile > /dev/null; then
     CC=""	# clear it just in case
 else
     if [ "x$CC" = "x" ]; then
@@ -512,7 +514,7 @@ fi
 #
 # Ditto for optimization
 #
-if  grep "OPTIM=" Makefile > /dev/null; then
+if  egrep "^OPTIM[ 	]*=" Makefile > /dev/null; then
     OPTIM=""	# ditto
 else
     if [ "x$OPTIM" = "x" ]; then
