@@ -87,7 +87,6 @@ char *crypt(char *pw, char *salt);
 #undef HAS_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
-#define NEED_STRINGS_H
 #define JMP_BUF sigjmp_buf
 #define FCNTL_SERIALIZED_ACCEPT
 #define HAVE_SHMGET
@@ -212,7 +211,6 @@ typedef int pid_t;
 consts. Sigh. */
 extern int strcasecmp(const char *,const char *);
 extern int strncasecmp(const char *,const char *,unsigned);
-extern char *rindex(const char *,char);
 
 #elif defined(CONVEXOS)
 #define HAS_GMTOFF
@@ -340,9 +338,6 @@ extern char *rindex(const char *,char);
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef NEED_STRINGS_H
-#include <strings.h>
-#endif
 #include <sys/stat.h>
 #include <sys/file.h>
 #include <sys/socket.h>

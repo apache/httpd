@@ -261,7 +261,7 @@ int add_cern_meta_data(request_rec *r)
     scrap_book = pstrdup( r->pool, r->filename );
     /* skip leading slash, recovered in later processing */
     scrap_book++;
-    last_slash = rindex( scrap_book, '/' );
+    last_slash = strrchr( scrap_book, '/' );
     if ( last_slash != NULL ) {
 	/* skip over last slash */
 	real_file = last_slash;
