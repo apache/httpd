@@ -1511,38 +1511,7 @@ static const char *strip_white(const char *s, apr_pool_t *pool)
     return s;
 }
 
-#define DAV_WORKSPACE_HDR "Workspace"
 #define DAV_TARGET_SELECTOR_HDR "Target-Selector"
-
-/* see mod_dav.h for docco */
-int dav_get_workspace(request_rec *r, const char **workspace)
-{
-    const char *ws_uri;
-
-    *workspace = NULL;
-    ws_uri = apr_table_get(r->headers_in, DAV_WORKSPACE_HDR);
-
-    if (ws_uri != NULL) {
-	dav_lookup_result lookup;
-
-	/* make the URI server-relative */
-	lookup = dav_lookup_uri(ws_uri, r);
-	if (lookup.rnew == NULL) {
-	    if (lookup.err.status == HTTP_BAD_REQUEST) {
-		/* This supplies additional information for the default message. */
-		ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-			      lookup.err.desc);
-		return HTTP_BAD_REQUEST;
-	    }
-
-	    return lookup.err.status;
-	}
-
-	*workspace = lookup.rnew->uri;
-    }
-
-    return OK;
-}
 
 /* see mod_dav.h for docco */
 int dav_get_target_selector(request_rec *r,
@@ -1603,17 +1572,8 @@ void dav_add_vary_header(request_rec *in_req,
     /* Only versioning headers require a Vary response header,
      * so only do this check if there is a versioning provider */
     if (vsn_hooks != NULL) {
-	const char *workspace = apr_table_get(in_req->headers_in, DAV_WORKSPACE_HDR);
 	const char *target = apr_table_get(in_req->headers_in, DAV_TARGET_SELECTOR_HDR);
 	const char *vary = apr_table_get(out_req->headers_out, "Vary");
-
-        /* If Workspace header specified, add it to Vary header */
-	if (workspace != NULL) {
-	    if (vary == NULL)
-		vary = DAV_WORKSPACE_HDR;
-	    else
-		vary = apr_pstrcat(out_req->pool, vary, "," DAV_WORKSPACE_HDR, NULL);
-	}
 
         /* If Target-Selector specified, add it to the Vary header */
 	if (target != NULL) {
@@ -1621,10 +1581,9 @@ void dav_add_vary_header(request_rec *in_req,
 		vary = DAV_TARGET_SELECTOR_HDR;
 	    else
 		vary = apr_pstrcat(out_req->pool, vary, "," DAV_TARGET_SELECTOR_HDR, NULL);
-	}
 
-	if (workspace != NULL || target != NULL)
 	    apr_table_setn(out_req->headers_out, "Vary", vary);
+	}
     }
 }
 
@@ -1640,10 +1599,6 @@ dav_error *dav_ensure_resource_writable(request_rec *r,
 
     /* Initialize results */
     memset(av_info, 0, sizeof(*av_info));
-
-    if (!parent_only) {
-        av_info->resource_created = !resource->exists;
-    }
 
     /* check parent resource if requested or if resource must be created */
     if (!resource->exists || parent_only) {
@@ -1702,7 +1657,7 @@ dav_error *dav_ensure_resource_writable(request_rec *r,
 
 	/* if not just checking parent, create new child resource */
         if (!parent_only) {
-	    if ((err = (*vsn_hooks->mkresource)(resource)) != NULL) {
+	    if ((err = (*vsn_hooks->vsn_control)(resource, NULL)) != NULL) {
 	        body = apr_psprintf(r->pool,
                                     "Unable to create versioned resource %s.",
                                     ap_escape_html(r->pool, resource->uri));

@@ -279,6 +279,9 @@ static const char * const dav_core_props[] =
     "lockdiscovery",
     "resourcetype",
     "supportedlock",
+    "supported-method-set",
+    "supported-live-property-set",
+    "supported-report-set",
 
     NULL	/* sentinel */
 };
@@ -288,6 +291,9 @@ enum {
     DAV_PROPID_CORE_lockdiscovery,
     DAV_PROPID_CORE_resourcetype,
     DAV_PROPID_CORE_supportedlock,
+    DAV_PROPID_CORE_supported_method_set,
+    DAV_PROPID_CORE_supported_live_property_set,
+    DAV_PROPID_CORE_supported_report_set,
 
     DAV_PROPID_CORE_UNKNOWN
 };
@@ -372,7 +378,10 @@ static int dav_rw_liveprop(dav_propdb *propdb, dav_elem_private *priv)
 	|| propid == DAV_PROPID_CORE_getcontenttype
 	|| propid == DAV_PROPID_CORE_getcontentlanguage
 #endif
-	|| propid == DAV_PROPID_CORE_supportedlock) {
+	|| propid == DAV_PROPID_CORE_supportedlock
+	|| propid == DAV_PROPID_CORE_supported_method_set
+	|| propid == DAV_PROPID_CORE_supported_live_property_set
+	|| propid == DAV_PROPID_CORE_supported_report_set) {
 
 	return 0;
     }
@@ -419,6 +428,7 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 				       int *inserted)
 {
     const char *value = NULL;
+    dav_error *err;
 
     *inserted = 0;
 
@@ -430,8 +440,13 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 
     case DAV_PROPID_CORE_resourcetype:
         switch (propdb->resource->type) {
-        case DAV_RESOURCE_TYPE_REGULAR:
         case DAV_RESOURCE_TYPE_VERSION:
+            if (propdb->resource->baselined) {
+	        value = "<D:baseline/>";
+                break;
+            }
+            /* fall through */
+        case DAV_RESOURCE_TYPE_REGULAR:
         case DAV_RESOURCE_TYPE_WORKING:
             if (propdb->resource->collection) {
 	        value = "<D:collection/>";
@@ -451,9 +466,6 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
         case DAV_RESOURCE_TYPE_ACTIVITY:
 	    value = "<D:activity/>";
             break;
-        case DAV_RESOURCE_TYPE_BASELINE:
-	    value = "<D:baseline/>";
-            break;
 
         default:
 	    /* ### bad juju */
@@ -463,7 +475,6 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 
     case DAV_PROPID_CORE_lockdiscovery:
         if (propdb->lockdb != NULL) {
-	    dav_error *err;
 	    dav_lock *locks;
 
 	    if ((err = dav_lock_query(propdb->lockdb, propdb->resource,
@@ -498,6 +509,43 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 	    value = (*propdb->lockdb->hooks->get_supportedlock)(propdb->resource);
         }
 	break;
+
+    case DAV_PROPID_CORE_supported_method_set:
+        /* ### leverage code from dav_method_options ### */
+        break;
+
+    case DAV_PROPID_CORE_supported_live_property_set:
+        /* ### insert all live property names ### */
+        break;
+
+    case DAV_PROPID_CORE_supported_report_set:
+        if (propdb->vsn_hooks != NULL) {
+            const dav_report_elem *reports;
+
+            if ((err = (*propdb->vsn_hooks->avail_reports)(propdb->resource, &reports)) != NULL) {
+	        return dav_push_error(propdb->r->pool, err->status, 0,
+			              "DAV:supported-report-set could not be determined "
+                                      "due to a problem fetching the available reports "
+                                      "for this resource.",
+			              err);
+            }
+
+            if (reports == NULL)
+                break;
+
+            value = "";
+
+            for (; reports->nmspace != NULL; ++reports) {
+                /* Note: we presume reports->namespace is properly XML/URL quoted */
+                char *v = apr_psprintf(propdb->p, "<%s xmlns=\"%s\"/>" DEBUG_CR,
+                                       reports->name, reports->nmspace);
+                /* This isn't very memory-efficient, but there should only be a small
+                 * number of reports
+                 */
+                value = apr_pstrcat(propdb->p, value, v, NULL);
+            }
+        }
+        break;
 
     case DAV_PROPID_CORE_getcontenttype:
 	if (propdb->subreq == NULL) {
@@ -1128,6 +1176,15 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, int getvals)
 			      getvals, &hdr, &unused_inserted);
     (void)dav_insert_coreprop(propdb,
 			      DAV_PROPID_CORE_lockdiscovery, "lockdiscovery",
+			      getvals, &hdr, &unused_inserted);
+    (void)dav_insert_coreprop(propdb,
+			      DAV_PROPID_CORE_supported_method_set, "supported-method-set",
+			      getvals, &hdr, &unused_inserted);
+    (void)dav_insert_coreprop(propdb,
+			      DAV_PROPID_CORE_supported_live_property_set, "supported-live-property-set",
+			      getvals, &hdr, &unused_inserted);
+    (void)dav_insert_coreprop(propdb,
+			      DAV_PROPID_CORE_supported_report_set, "supported-report-set",
 			      getvals, &hdr, &unused_inserted);
 
     /* if the resourcetype wasn't stored, then prepare one */
