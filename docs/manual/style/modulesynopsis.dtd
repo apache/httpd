@@ -59,17 +59,17 @@ usage?, seealso*)>
 <!ELEMENT usage %Block;>
 
 <!-- Used in index.xml -->
-<!ELEMENT moduleindex (title, summary, seealso*, modulefilelist)>
+<!ELEMENT moduleindex (title, summary, seealso*)>
 
 <!ATTLIST moduleindex metafile CDATA  #REQUIRED>
 
 <!-- Used in directive.xml -->
-<!ELEMENT directiveindex (title | summary | modulefilelist)+>
+<!ELEMENT directiveindex (title | summary)+>
 
 <!ATTLIST directiveindex metafile CDATA  #REQUIRED>
 
 <!-- Used in quickreference.xml -->
-<!ELEMENT quickreference (title | summary | legend | modulefilelist)+>
+<!ELEMENT quickreference (title | summary | legend)+>
 <!ATTLIST quickreference metafile CDATA  #REQUIRED>
 
 <!ELEMENT legend (table, table)>
