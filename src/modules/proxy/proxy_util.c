@@ -1267,8 +1267,10 @@ int ap_proxy_send_hdr_line(void *p, const char *key, const char *value)
 {
     struct tbl_do_args *parm = (struct tbl_do_args *)p;
 
-    if (key == NULL || value == NULL || value[0] == '\0')
+    if (key == NULL)
 	return 1;
+    if (value == NULL)
+	value = "";
     if (!parm->req->assbackwards)
 	ap_rvputs(parm->req, key, ": ", value, CRLF, NULL);
     if (parm->cache != NULL && parm->cache->fp != NULL &&
