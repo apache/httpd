@@ -279,6 +279,36 @@ typedef struct {
     interpreter_source_e script_interpreter_source;
 #endif    
     
+#ifdef CHARSET_EBCDIC
+    /* Configurable EBCDIC Conversion stuff */
+    /* Direction specific conversion: */
+#define dir_Out 0               /* 0utput (returned contents in a GET or POST) */
+#define dir_In  1               /* 1nput  (uploaded contents in a PUT / POST) */
+
+    /* Conversion Enabled/Disabled: */
+#define conv_Unset '?'          /* Conversion unconfigured */
+#define conv_Off   '0'          /* BINARY or ASCII file (no conversion) */
+#define conv_On    '1'          /* TEXT file (EBCDIC->ASCII for dir_Out; ASCII->EBCDIC for dir_In) */
+
+    /* The configuration args {On|Off}[={In|Out|InOut}] are currently stored
+     * as character strings ("0" = conv_Off, "1" = conv_On)
+     */
+    table *ebcdicconversion_by_ext_in;
+    table *ebcdicconversion_by_ext_out;
+    table *ebcdicconversion_by_type_in;
+    table *ebcdicconversion_by_type_out;
+
+#define LEGACY_KLUDGE 1 /* After a couple of versions this legacy kludge should be set to 0 */
+#ifndef ASCIITEXT_MAGIC_TYPE_PREFIX
+#define ASCIITEXT_MAGIC_TYPE_PREFIX "text/x-ascii-"     /* Text files whose content-type starts with this are passed thru unconverted */
+#endif
+    int x_ascii_magic_kludge;   /* whether to handle the text/x-ascii- kludge */
+
+#if ADD_EBCDICCONVERT_DEBUG_HEADER
+    int ebcdicconversion_debug_header; /* whether to add an X-EBCDIC-Debug-{In,Out} header to the response */
+#endif
+#endif /* CHARSET_EBCDIC */
+
 } core_dir_config;
 
 /* Per-server core configuration */

@@ -445,9 +445,13 @@ static int cgi_handler(request_rec *r)
 #endif   /* TPF */
 
 #ifdef CHARSET_EBCDIC
-    /* XXX:@@@ Is the generated/included output ALWAYS in text/ebcdic format? */
-    /* Or must we check the Content-Type first? */
-    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, 1);
+    /* The included MIME headers must ALWAYS be in text/ebcdic format.
+     * Only after reading the MIME headers, we check the Content-Type
+     * and switch to the necessary conversion mode.
+     * Until then (and in case an nph- script was called), use the
+     * configured default conversion:
+     */
+    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, r->ebcdic.conv_out);
 #endif /*CHARSET_EBCDIC*/
 
     /*
@@ -515,11 +519,6 @@ static int cgi_handler(request_rec *r)
 	if ((ret = ap_scan_script_header_err_buff(r, script_in, sbuf))) {
 	    return log_script(r, conf, ret, dbuf, sbuf, script_in, script_err);
 	}
-
-#ifdef CHARSET_EBCDIC
-        /* Now check the Content-Type to decide if conversion is needed */
-        ap_checkconv(r);
-#endif /*CHARSET_EBCDIC*/
 
 	location = ap_table_get(r->headers_out, "Location");
 

@@ -1,7 +1,6 @@
-#include <sys/types.h>
+#ifndef EBCDIC_H
+#define EBCDIC_H  "$Id: ebcdic.h,v 1.3 2001/03/09 10:10:50 martin Exp $"
 
-extern const unsigned char os_toascii[256];
-extern const unsigned char os_toebcdic[256];
-void ebcdic2ascii(void *dest, const void *srce, size_t count);
-void ascii2ebcdic(void *dest, const void *srce, size_t count);
+#include <ap_ebcdic.h>
 
+#endif /*EBCDIC_H*/

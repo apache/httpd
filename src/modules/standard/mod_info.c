@@ -443,6 +443,10 @@ static int display_info(request_rec *r)
     if (r->header_only) {
         return 0;
     }
+#ifdef CHARSET_EBCDIC
+    /* Server-generated response, converted */
+    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, r->ebcdic.conv_out = 1);
+#endif
     ap_hard_timeout("send server info", r);
 
     ap_rputs(DOCTYPE_HTML_3_2

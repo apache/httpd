@@ -1,5 +1,12 @@
 Changes with Apache 1.3.20
 
+  *) Make EBCDIC conversion fully configurable. Until now, apache relied
+     on some (incomplete) heuristics, and would fail to correctly serve
+     text files when they had a MIME type of application/anything, like
+     application/x-javascript. The new conversion directives allow
+     defining the conversion based on MIME type or file suffix.
+     [Martin Kraemer]
+
   *) Add a -V flag to suexec, which causes it to display the
      compile-time settings with which it was built.  (Only
      usable by root or the HTTPD_USER username.)  [Ken Coar]

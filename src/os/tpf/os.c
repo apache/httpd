@@ -78,51 +78,6 @@ unsigned short zinet_model;
 
 static FILE *sock_fp;
 
-/* Check the Content-Type to decide if conversion is needed */
-int ap_checkconv(struct request_rec *r)
-{
-    int convert_to_ascii;
-    const char *type;
-
-    /* To make serving of "raw ASCII text" files easy (they serve faster 
-     * since they don't have to be converted from EBCDIC), a new
-     * "magic" type prefix was invented: text/x-ascii-{plain,html,...}
-     * If we detect one of these content types here, we simply correct
-     * the type to the real text/{plain,html,...} type. Otherwise, we
-     * set a flag that translation is required later on.
-     */
-
-    type = (r->content_type == NULL) ? ap_default_type(r) : r->content_type;
-
-    /* If no content type is set then treat it as (ebcdic) text/plain */
-    convert_to_ascii = (type == NULL);
-
-    /* Conversion is applied to text/ files only, if ever. */
-    if (type && (strncasecmp(type, "text/", 5) == 0 ||
-		 strncasecmp(type, "message/", 8) == 0)) {
-	if (strncasecmp(type, ASCIITEXT_MAGIC_TYPE_PREFIX,
-                        sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1) == 0){
-	    r->content_type = ap_pstrcat(r->pool, "text/",
-                   type+sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1, NULL);
-            if (r->method_number == M_PUT)
-                   ap_bsetflag(r->connection->client, B_ASCII2EBCDIC, 0);
-            }
-
-        else
-	    /* translate EBCDIC to ASCII */
-	    convert_to_ascii = 1;
-    }
-    else{
-           if (r->method_number == M_PUT)
-               ap_bsetflag(r->connection->client, B_ASCII2EBCDIC, 0);
-               /* don't translate non-text files to EBCDIC */
-    }
-    /* Enable conversion if it's a text document */
-    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, convert_to_ascii);
-
-    return convert_to_ascii;
-}
-
 int tpf_select(int maxfds, fd_set *reads, fd_set *writes, fd_set *excepts, struct timeval *tv)
 {
 /* We're going to force our way through select.  We're only interested reads and TPF allows

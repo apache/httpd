@@ -93,7 +93,7 @@
 #include "ap_sha1.h"
 #include "ap.h"
 #ifdef CHARSET_EBCDIC
-#include "ebcdic.h"
+#include "ap_ebcdic.h"
 #endif /*CHARSET_EBCDIC*/
 
 /* a bit faster & bigger, if defined */

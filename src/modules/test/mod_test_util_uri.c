@@ -271,6 +271,10 @@ static int test_util_uri(request_rec *r)
 
     r->content_type = "text/html";		
     ap_send_http_header(r);
+#ifdef CHARSET_EBCDIC
+    /* Server-generated response, converted */
+    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, r->ebcdic.conv_out = 1);
+#endif
     if(r->header_only) {
 	return 0;
     }

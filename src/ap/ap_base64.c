@@ -68,7 +68,7 @@
 #include "ap.h"
 
 #ifdef CHARSET_EBCDIC
-#include "ebcdic.h"
+#include "ap_ebcdic.h"
 #endif				/* CHARSET_EBCDIC */
 
 /* aaaack but it's fast and const should make it shared text page. */

@@ -6,7 +6,7 @@ LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 LIB=libap.a
 
 OBJS=ap_cpystrn.o ap_execve.o ap_fnmatch.o ap_getpass.o ap_md5c.o ap_signal.o \
-     ap_slack.o ap_snprintf.o ap_sha1.o ap_checkpass.o ap_base64.o
+     ap_slack.o ap_snprintf.o ap_sha1.o ap_checkpass.o ap_base64.o ap_ebcdic.o
 
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $<

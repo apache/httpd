@@ -42,10 +42,22 @@ typedef struct {
 extern int _rini(_rini_struct *);
 #endif /* !defined(_POSIX_SOURCE) && !defined(_XOPEN_SOURCE) */
 
-/* Sorry if this is ugly, but the include order doesn't allow me
- * to use request_rec here... */
-struct request_rec;
-extern int ap_checkconv(struct request_rec *r);
 extern pid_t os_fork(const char *user);
+#ifdef _OSD_POSIX
+struct pool;
+extern const char *os_set_account(struct pool *p, const char *account);
+struct server_rec;
+extern int os_init_job_environment(struct server_rec *s, const char *user_name, int one_process);
+#endif
+
+#ifdef HAVE_DLFCN_H
+#include <dlfcn.h>
+#define     ap_os_dso_handle_t  void *
+void        ap_os_dso_init(void);
+void *      ap_os_dso_load(const char *);
+void        ap_os_dso_unload(void *);
+void *      ap_os_dso_sym(void *, const char *);
+const char *ap_os_dso_error(void);
+#endif
 
 #endif /*! APACHE_OS_H*/

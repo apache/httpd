@@ -95,12 +95,17 @@
 #define POP_EBCDIC_INPUTCONVERSION_STATE(_buff) \
         ap_bsetflag(_buff, B_ASCII2EBCDIC, _convert_in);
 
-#define PUSH_EBCDIC_OUTPUTCONVERSION_STATE(_buff, _onoff) \
-        int _convert_out = ap_bgetflag(_buff, B_EBCDIC2ASCII); \
-        ap_bsetflag(_buff, B_EBCDIC2ASCII, _onoff);
+#define PUSH_EBCDIC_INPUTCONVERSION_STATE_r(_req, _onoff) \
+        ap_bsetflag(_req->connection->client, B_ASCII2EBCDIC, _onoff);
 
-#define POP_EBCDIC_OUTPUTCONVERSION_STATE(_buff) \
-        ap_bsetflag(_buff, B_EBCDIC2ASCII, _convert_out);
+#define POP_EBCDIC_INPUTCONVERSION_STATE_r(_req) \
+        ap_bsetflag(_req->connection->client, B_ASCII2EBCDIC, _req->ebcdic.conv_in);
+
+#define PUSH_EBCDIC_OUTPUTCONVERSION_STATE_r(_req, _onoff) \
+        ap_bsetflag(_req->connection->client, B_EBCDIC2ASCII, _onoff);
+
+#define POP_EBCDIC_OUTPUTCONVERSION_STATE_r(_req) \
+        ap_bsetflag(_req->connection->client, B_EBCDIC2ASCII, _req->ebcdic.conv_out);
 
 #endif /*CHARSET_EBCDIC*/
 
@@ -238,7 +243,7 @@ static int byterange_boundary(request_rec *r, long start, long end, int output)
      * set to ON (protocol strings MUST be converted)
      * and reset to original setting before returning
      */
-    PUSH_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client, 1);
+    PUSH_EBCDIC_OUTPUTCONVERSION_STATE_r(r, 1);
 #endif /*CHARSET_EBCDIC*/
 
     if (start < 0 || end < 0) {
@@ -262,7 +267,7 @@ static int byterange_boundary(request_rec *r, long start, long end, int output)
     }
 
 #ifdef CHARSET_EBCDIC
-    POP_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client);
+    POP_EBCDIC_OUTPUTCONVERSION_STATE_r(r);
 #endif /*CHARSET_EBCDIC*/
 
     return length;
@@ -1106,7 +1111,8 @@ request_rec *ap_read_request(conn_rec *conn)
     r->the_request     = NULL;
 
 #ifdef CHARSET_EBCDIC
-    ap_bsetflag(r->connection->client, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 1);
+    ap_bsetflag(r->connection->client, B_ASCII2EBCDIC, r->ebcdic.conv_in  = 1);
+    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, r->ebcdic.conv_out = 1);
 #endif
 
     /* Get the request... */
@@ -1322,8 +1328,8 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
         return AUTH_REQUIRED;
     }
 
-    /* CHARSET_EBCDIC Issue's here ?!? Compare with 32/9 instead
-     * as we are operating on an octed stream ?
+    /* No CHARSET_EBCDIC Issue here because the line has already
+     * been converted to native text.
      */
     while (*auth_line== ' ' || *auth_line== '\t')
         auth_line++;
@@ -1481,7 +1487,7 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
         protocol = SERVER_PROTOCOL;
 
 #ifdef CHARSET_EBCDIC
-    { PUSH_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client, 1);
+    PUSH_EBCDIC_OUTPUTCONVERSION_STATE_r(r, 1);
 #endif /*CHARSET_EBCDIC*/
 
     /* Output the HTTP/1.x Status-Line and the Date and Server fields */
@@ -1494,7 +1500,7 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
     ap_table_unset(r->headers_out, "Date");        /* Avoid bogosity */
     ap_table_unset(r->headers_out, "Server");
 #ifdef CHARSET_EBCDIC
-    POP_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client); }
+    POP_EBCDIC_OUTPUTCONVERSION_STATE_r(r);
 #endif /*CHARSET_EBCDIC*/
 }
 
@@ -1565,6 +1571,10 @@ API_EXPORT(int) ap_send_http_trace(request_rec *r)
 
     r->content_type = "message/http";
     ap_send_http_header(r);
+#ifdef CHARSET_EBCDIC
+    /* Server-generated response, converted */
+    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, r->ebcdic.conv_out = 1);
+#endif
 
     /* Now we recreate the request, and echo it back */
 
@@ -1702,6 +1712,11 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
     int i;
     const long int zero = 0L;
 
+#ifdef CHARSET_EBCDIC
+    /* Use previously determined conversion (output): */
+    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, ap_checkconv(r));
+#endif /*CHARSET_EBCDIC*/
+
     if (r->assbackwards) {
         if (!r->main)
             ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
@@ -1737,7 +1752,7 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
     ap_basic_http_header(r);
 
 #ifdef CHARSET_EBCDIC
-    { PUSH_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client, 1);
+    PUSH_EBCDIC_OUTPUTCONVERSION_STATE_r(r, 1);
 #endif /*CHARSET_EBCDIC*/
 
     ap_set_keepalive(r);
@@ -1790,7 +1805,7 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
     if (r->chunked)
         ap_bsetflag(r->connection->client, B_CHUNK, 1);
 #ifdef CHARSET_EBCDIC
-    POP_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client); }
+    POP_EBCDIC_OUTPUTCONVERSION_STATE_r(r);
 #endif /*CHARSET_EBCDIC*/
 }
 
@@ -1803,7 +1818,7 @@ API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
 {
     if (r->chunked && !r->connection->aborted) {
 #ifdef CHARSET_EBCDIC
-	PUSH_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client, 1);
+        PUSH_EBCDIC_OUTPUTCONVERSION_STATE_r(r, 1);
 #endif
         /*
          * Turn off chunked encoding --- we can only do this once.
@@ -1818,7 +1833,7 @@ API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
         ap_kill_timeout(r);
 
 #ifdef CHARSET_EBCDIC
-	POP_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client);
+        POP_EBCDIC_OUTPUTCONVERSION_STATE_r(r);
 #endif /*CHARSET_EBCDIC*/
     }
 }
@@ -1917,18 +1932,11 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
 
 #ifdef CHARSET_EBCDIC
     {
-        /* @@@ Temporary kludge for guessing the conversion @@@
-         * from looking at the MIME header. 
+        /* Determine the EBCDIC conversion for the uploaded content
+         * by looking at the Content-Type MIME header. 
          * If no Content-Type header is found, text conversion is assumed.
          */
-        const char *typep = ap_table_get(r->headers_in, "Content-Type");
-        int convert_in = (typep == NULL ||
-                          strncasecmp(typep, "text/", 5) == 0 ||
-                          strncasecmp(typep, "message/", 8) == 0 ||
-                          strncasecmp(typep, "multipart/", 10) == 0 ||
-                          strcasecmp (typep, "application/x-www-form-urlencoded") == 0
-                         );
-        ap_bsetflag(r->connection->client, B_ASCII2EBCDIC, convert_in);
+        ap_bsetflag(r->connection->client, B_ASCII2EBCDIC, ap_checkconv_in(r));
     }
 #endif
 
@@ -1959,6 +1967,7 @@ static long get_chunk_size(char *b)
     while (ap_isxdigit(*b)) {
         int xvalue = 0;
 
+	/* This works even on EBCDIC. */
         if (*b >= '0' && *b <= '9')
             xvalue = *b - '0';
         else if (*b >= 'A' && *b <= 'F')
@@ -2118,7 +2127,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     if (r->remaining == 0) {    /* End of chunk, get trailing CRLF */
 #ifdef CHARSET_EBCDIC
         /* Chunk end is Protocol stuff! Set conversion = 1 to read CR LF: */
-        PUSH_EBCDIC_INPUTCONVERSION_STATE(r->connection->client, 1);
+        PUSH_EBCDIC_INPUTCONVERSION_STATE_r(r, 1);
 #endif /*CHARSET_EBCDIC*/
 
         if ((c = ap_bgetc(r->connection->client)) == CR) {
@@ -2127,7 +2136,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 
 #ifdef CHARSET_EBCDIC
         /* restore ASCII->EBCDIC conversion state */
-        POP_EBCDIC_INPUTCONVERSION_STATE(r->connection->client);
+        POP_EBCDIC_INPUTCONVERSION_STATE_r(r);
 #endif /*CHARSET_EBCDIC*/
 
         if (c != LF) {
@@ -2590,6 +2599,10 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
     int idx = ap_index_of_response(status);
     char *custom_response;
     const char *location = ap_table_get(r->headers_out, "Location");
+#ifdef CHARSET_EBCDIC
+    /* Error Responses (builtin / string literal / redirection) are TEXT! */
+    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, r->ebcdic.conv_out = 1);
+#endif
 
     /*
      * It's possible that the Location field might be in r->err_headers_out
@@ -2676,6 +2689,11 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
             return;
         }
     }
+
+#ifdef CHARSET_EBCDIC
+    /* Server-generated response, converted */
+    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, r->ebcdic.conv_out = 1);
+#endif
 
     ap_hard_timeout("send error body", r);
 

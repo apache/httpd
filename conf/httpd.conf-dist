@@ -499,6 +499,29 @@ CustomLog logs/access_log common
 #
 ServerSignature On
 
+# EBCDIC configuration:
+# (only for mainframes using the EBCDIC codeset, currently one of:
+# Fujitsu-Siemens' BS2000/OSD, IBM's OS/390 and IBM's TPF)!!
+# The following default configuration assumes that "text files"
+# are stored in EBCDIC (so that you can operate on them using the
+# normal POSIX tools like grep and sort) while "binary files" are
+# stored with identical octets as on an ASCII machine.
+#
+# The directives are evaluated in configuration file order, with
+# the EBCDICConvert directives applied before EBCDICConvertByType.
+#
+# If you want to have ASCII HTML documents and EBCDIC HTML documents
+# at the same time, you can use the file extension to force
+# conversion off for the ASCII documents:
+# > AddType       text/html .ahtml
+# > EBCDICConvert Off=InOut .ahtml
+#
+# EBCDICConvertByType  On=InOut text/* message/* multipart/*
+# EBCDICConvertByType  On=In    application/x-www-form-urlencoded
+# EBCDICConvertByType  On=InOut application/postscript model/vrml
+# EBCDICConvertByType Off=InOut */*
+
+
 #
 # Aliases: Add here as many aliases as you need (with no limit). The format is 
 # Alias fakename realname

@@ -299,6 +299,10 @@ static int status_handler(request_rec *r)
     }
 
     ap_send_http_header(r);
+#ifdef CHARSET_EBCDIC
+    /* Server-generated response, converted */
+    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, r->ebcdic.conv_out = 1);
+#endif
 
     if (r->header_only)
 	return 0;

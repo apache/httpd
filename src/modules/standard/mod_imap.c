@@ -507,6 +507,10 @@ static void menu_header(request_rec *r, char *menu)
 {
     r->content_type = "text/html";
     ap_send_http_header(r);
+#ifdef CHARSET_EBCDIC
+    /* Server-generated response, converted */
+    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, r->ebcdic.conv_out = 1);
+#endif
     ap_hard_timeout("send menu", r);       /* killed in menu_footer */
 
     ap_rvputs(r, DOCTYPE_HTML_3_2, "<html><head>\n<title>Menu for ", r->uri,

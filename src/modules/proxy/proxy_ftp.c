@@ -1137,9 +1137,16 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     ap_table_setn(resp_hdrs, "Date", ap_gm_timestr_822(r->pool, r->request_time));
     ap_table_setn(resp_hdrs, "Server", ap_get_server_version());
 
-    if (parms[0] == 'd')
+    if (parms[0] == 'd') {
 	ap_table_setn(resp_hdrs, "Content-Type", "text/html");
+#ifdef CHARSET_EBCDIC
+	r->ebcdic.conv_out = 1; /* server-generated */
+#endif
+    }
     else {
+#ifdef CHARSET_EBCDIC
+	r->ebcdic.conv_out = 0; /* do not convert what we read from the ftp server */
+#endif
 	if (r->content_type != NULL) {
 	    ap_table_setn(resp_hdrs, "Content-Type", r->content_type);
 	    Explain1("FTP: Content-Type set to %s", r->content_type);
@@ -1232,6 +1239,9 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 
     ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
     r->sent_bodyct = 1;
+#ifdef CHARSET_EBCDIC
+    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, r->ebcdic.conv_out);
+#endif
 /* send body */
     if (!r->header_only) {
 	if (parms[0] != 'd') {

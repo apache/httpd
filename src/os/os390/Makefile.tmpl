@@ -3,7 +3,7 @@ LIBS=$(EXTRA_LIBS) $(LIBS1)
 INCLUDES=$(INCLUDES1) $(INCLUDES0) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 
-OBJS=   os.o os-inline.o ebcdic.o
+OBJS=   os.o os-inline.o
 
 LIB=	libos.a
 
@@ -39,14 +39,6 @@ $(OBJS): Makefile
 
 # DO NOT REMOVE
 
-ebcdic.o: ebcdic.c
-ebcdic.o: $(INCDIR)/ap_config.h
-ebcdic.o: $(INCDIR)/ap_mmn.h
-ebcdic.o: $(INCDIR)/ap_config_auto.h
-ebcdic.o: os.h
-ebcdic.o: $(INCDIR)/ap_ctype.h
-ebcdic.o: $(INCDIR)/hsregex.h
-ebcdic.o: ebcdic.h
 os-inline.o: os-inline.c
 os-inline.o: $(INCDIR)/ap_config.h
 os-inline.o: $(INCDIR)/ap_mmn.h
