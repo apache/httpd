@@ -1,5 +1,8 @@
 Changes with Apache 2.0b1
 
+   *) Update highperformance.conf to work with either prefork or
+      pthreads mpms.  [Greg Ames] 
+
   *) Stop checking to see if this is a pipelined request if we know
      for a fact that it isn't.  Basically, if r->connection->keepalive == 0.
      This keeps us from making an extra read call when serving a 1.0
