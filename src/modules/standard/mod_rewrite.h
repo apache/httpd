@@ -209,6 +209,10 @@
 #define RULEFLAG_GONE               1<<10
 #define RULEFLAG_QSAPPEND           1<<11
 #define RULEFLAG_NOCASE             1<<12
+#define RULEFLAG_NOESCAPE           1<<13
+
+#define ACTION_NORMAL               1<<0
+#define ACTION_NOESCAPE             1<<1
 
 #define MAPTYPE_TXT                 1<<0
 #define MAPTYPE_DBM                 1<<1

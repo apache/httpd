@@ -1,5 +1,13 @@
 Changes with Apache 1.3.20
 
+  *) Added NOESCAPE (NS) flag to RewriteRule and enabled use of
+     '\' to allow escaping of special characters.  Previously
+     there was no way to embed either '$' or '%' in the output
+     of a RewriteRule; now 'foo\$1' will result in a literal
+     'foo$1' appearing in the result rather than 'foo\<value of $1>'.
+     Note that [NS] disables *all* normal URI escaping, so incautious
+     use can give unexpected results.  [Ken Coar]
+
   *) Add support for Win32 apxs.  Note that cygwin builders must use a
      cygwin perl to avoid the MSWin32 handling.  [William Rowe]
 
@@ -13,8 +21,8 @@ Changes with Apache 1.3.20
      for Win32 systems, see http://www.cygwin.com)
      [Stipe Tolj <tolj@wapme-systems.de>]
 
-  *) Changes to 'ab'; fixed int overrun's, added statistics, output in
-     csv/gnuplot format, rudimentary ssl support and various other tweaks
+  *) Changes to 'ab': fixed int overruns, added statistics, output in
+     csv/gnuplot format, rudimentary SSL support and various other tweaks
      to make results more true to what is measured. The upshot of this it
      turns out that 'ab' has often underreported the true performance of
      apache. Often by a order of magnitude :-) See talk/paper of Sander 
