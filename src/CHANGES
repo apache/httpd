@@ -1,5 +1,10 @@
 Changes with Apache 1.3.10
   
+  *) EBCDIC: fix the hsregex package to correctly deal with [a-zA-Z] type
+     character ranges (the alphabet is non-contiguous in EBCDIC) and with
+     the special [:cntrl:] range (the control character class is determined
+     dynamically at run time). [Martin Kraemer]
+
   *) Add --with-port option to APACI. [Ian Kallen <spidaman@salon.com>]
 
   *) Fixed QUERY_STRING handling for `RewriteRule ... [P]'
