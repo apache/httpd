@@ -165,14 +165,27 @@ void ap_init_scoreboard(void *shared_score)
  * a scoreboard shared between processes using any IPC technique, 
  * not just a shared memory segment
  */
-static apr_status_t open_scoreboard(apr_pool_t *p)
+static apr_status_t open_scoreboard(apr_pool_t *pconf)
 {
 #if APR_HAS_SHARED_MEMORY
     apr_status_t rv;
     char *fname = NULL;
+    apr_pool_t *global_pool;
+
+    /* We don't want to have to recreate the scoreboard after
+     * restarts, so we'll create a global pool and never clean it.
+     */
+    rv = apr_pool_create(&global_pool, NULL);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                     "Fatal error: unable to create global pool "
+                     "for use with by the scoreboard");
+        return rv;
+    }
 
 #ifndef WIN32
-    rv = apr_shm_create(&ap_scoreboard_shm, scoreboard_size, fname, p);
+    rv = apr_shm_create(&ap_scoreboard_shm, scoreboard_size, fname,
+                        global_pool);
     if ((rv != APR_SUCCESS) && (rv != APR_ENOTIMPL)) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
                      "Fatal error: could not create scoreboard "
@@ -184,9 +197,13 @@ static apr_status_t open_scoreboard(apr_pool_t *p)
     {
 #endif
         if (ap_scoreboard_fname) {
-            fname = ap_server_root_relative(p, ap_scoreboard_fname);
+            fname = ap_server_root_relative(global_pool, ap_scoreboard_fname);
+            /* make sure the file doesn't exist before trying 
+             * to create the segment. */
+            apr_file_remove(fname, global_pool);
         }
-        rv = apr_shm_create(&ap_scoreboard_shm, scoreboard_size, fname, p);
+        rv = apr_shm_create(&ap_scoreboard_shm, scoreboard_size, fname,
+                            global_pool);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
                          "Fatal error: could not open(create) scoreboard");
