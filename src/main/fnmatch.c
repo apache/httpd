@@ -140,9 +140,12 @@ API_EXPORT(int) ap_fnmatch(const char *pattern, const char *string, int flags)
 	    }
 	    /* FALLTHROUGH */
 	default:
-	    if (c != *string++) {
+	    if ((c != *string)
+		|| ((flags & FNM_CASE_BLIND)
+		    && (toupper(c) != toupper(*string)))) {
 		return (FNM_NOMATCH);
 	    }
+	    string++;
 	    break;
 	}
     /* NOTREACHED */
@@ -180,11 +183,16 @@ static const char *rangematch(const char *pattern, int test, int flags)
 	    if (c2 == EOS) {
 		return (NULL);
 	    }
-	    if (c <= test && test <= c2) {
+	    if ((c <= test && test <= c2)
+		|| ((flags & FNM_CASE_BLIND)
+		    && ((toupper(c) <= toupper(test))
+			&& (toupper(test) <= toupper(c2))))) {
 		ok = 1;
 	    }
 	}
-	else if (c == test) {
+	else if ((c == test)
+		 || ((flags & FNM_CASE_BLIND)
+		     && (toupper(c) == toupper(test)))) {
 	    ok = 1;
 	}
     }
