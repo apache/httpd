@@ -2497,13 +2497,6 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
                 return;
             }
 
-            /* Even if I don't generate any content, I know at this point that
-             *   I will at least remove the discovered SSI tag, thereby making
-             *   the content shorter than it was. This is the safest point I can
-             *   find to unset this field.
-             */
-            apr_table_unset(f->r->headers_out, "Content-Length");
-
             /* Can't destroy the tag buckets until I'm done processing
              *  because the combined_tag might just be pointing to
              *  the contents of a single bucket!
@@ -2776,6 +2769,15 @@ static int includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
      * fix this, except to put alarm support into BUFF. -djg
      */
 
+
+    /* Always unset the content-length.  There is no way to know if
+     * the content will be modified at some point by send_parsed_content.
+     * It is very possible for us to not find any content in the first
+     * 9k of the file, but still have to modify the content of the file.
+     * If we are going to pass the file through send_parsed_content, then
+     * the content-length should just be unset.
+     */
+    apr_table_unset(f->r->headers_out, "Content-Length");
 
     send_parsed_content(&b, r, f);
 
