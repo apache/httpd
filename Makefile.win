@@ -184,7 +184,7 @@ _install:
         gsub( /\\/, "/", serverroot );
         while ( ( getline < srcfl ) > 0 ) {
             gsub( /@@ServerRoot@@/, serverroot );
-            print $$0 >> dstfl;
+            print $$0 > dstfl;
         }
     }
 <<
