@@ -353,6 +353,13 @@ typedef struct {
 typedef unsigned char allow_options_t;
 typedef unsigned char overrides_t;
 
+typedef enum {
+    srv_sig_unset,
+    srv_sig_off,
+    srv_sig_on,
+    srv_sig_withmail
+} server_signature_e;
+
 typedef struct {
     /* path of the directory/regex/etc.  see also d_is_fnmatch below */
     char *d;
@@ -439,8 +446,9 @@ typedef struct {
     long limit_xml_body;           /* limit on bytes in XML request msg body */
 
     /* logging options */
-    enum { srv_sig_unset, srv_sig_off, srv_sig_on,
-	    srv_sig_withmail } server_signature;
+
+    server_signature_e server_signature;
+
     int loglevel;
     
     /* Access control */
