@@ -1394,39 +1394,6 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-struct ap_thread_mutex {
-    be_mutex_t mutex;
-};
-
-API_EXPORT(ap_thread_mutex *) ap_thread_mutex_new(void)
-{
-    ap_thread_mutex *mtx;
-
-    mtx = malloc(sizeof(ap_thread_mutex));
-    be_mutex_init(&(mtx->mutex), NULL);
-    return mtx;
-}
-
-API_EXPORT(void) ap_thread_mutex_lock(ap_thread_mutex *mtx)
-{
-    /* Ignoring error conditions here. :( */
-    be_mutex_lock(&(mtx->mutex));
-}
-
-API_EXPORT(void) ap_thread_mutex_unlock(ap_thread_mutex *mtx)
-{
-    /* Here too. */
-    be_mutex_unlock(&(mtx->mutex));
-}
-
-API_EXPORT(void) ap_thread_mutex_destroy(ap_thread_mutex *mtx)
-{
-    /* Here too. */
-    be_mutex_destroy(&(mtx->mutex));
-    free(mtx);
-}
-
-
 static const command_rec mpmt_beos_cmds[] = {
 UNIX_DAEMON_COMMANDS
 LISTEN_COMMANDS

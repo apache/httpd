@@ -68,9 +68,7 @@
 
     The MPM may or may not be multithreaded.  In the event that it is
     multithreaded, at any instant it guarantees a 1:1 mapping of threads
-    ap_process_connection invocations.  The only primitives the MPM
-    provides for synchronization between threads are the ap_thread_mutex
-    stuff below.
+    ap_process_connection invocations.  
 
     Note: In the future it will be possible for ap_process_connection
     to return to the MPM prior to finishing the entire connection; and
@@ -113,13 +111,6 @@ API_EXPORT(int) ap_mpm_run(ap_context_t *pconf, ap_context_t *plog, server_rec *
 /* predicate indicating if a graceful stop has been requested ...
    used by the connection loop */
 API_EXPORT(int) ap_graceful_stop_signalled(void);
-
-/* a mutex which synchronizes threads within one process */
-typedef struct ap_thread_mutex ap_thread_mutex;
-API_EXPORT(ap_thread_mutex *) ap_thread_mutex_new(void);
-API_EXPORT(void) ap_thread_mutex_lock(ap_thread_mutex *);
-API_EXPORT(void) ap_thread_mutex_unlock(ap_thread_mutex *);
-API_EXPORT(void) ap_thread_mutex_destroy(ap_thread_mutex *);
 
 #ifdef HAS_OTHER_CHILD
 /*
