@@ -1,5 +1,16 @@
 Changes with Apache 1.2b3:
 
+  *) Changes to suexec wrapper to fix the following problems:
+     1.  symlinked homedirs will kill ~userdirs.
+     2.  initgroups() on Linux 2.0.x clobbers gr->grid.
+     3.  CGI command lines paramters problems
+     4.  pw-pwdir for "docroot check" still the httpd user's pw record.
+    [Randy Terbush, Jason Dour]
+
+  *) Change create_argv() to accept variable arguments. This fixes
+     a problem where arguments were not getting passed to the CGI via
+     argv[] when the suexec wrapper was active. [Randy Terbush, Jake Buchholz]
+
   *) Collapse multiple slashes in path URLs to properly apply
      handlers defined by <Location>. [Alexei Kosut]
 
