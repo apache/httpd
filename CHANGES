@@ -1,5 +1,7 @@
 Changes with Apache 2.0.35
 
+  *) Fix some mod_include segfaults [Cliff Woolley, Brian Pane, Brad Nicholes]
+
   *) Update the Redhat Layout to match Redhat version 7. PR BZ-7422
      [Joe Orton] 
 
