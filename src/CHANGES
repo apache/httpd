@@ -1,5 +1,12 @@
 Changes with Apache 1.3.28
 
+  *) Make sure the accept mutex is released before calling child exit
+     hooks and cleanups.  Otherwise, modules can segfault in such code
+     and, with pthread mutexes, leave the server deadlocked.  Even if
+     the module doesn't segfault, if it performs extensive processing
+     it can temporarily prevent the server from accepting new
+     connections.  [Jeff Trawick]
+
   *) Fix mod_rewrite's handling of absolute URIs. The escaping routines
      now work scheme dependent and the query string will only be
      appended if supported by the particular scheme.  [André Malo]

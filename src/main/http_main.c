@@ -372,6 +372,7 @@ static pool *pconf;		/* Pool for config stuff */
 static pool *plog;		/* Pool for error-logging files */
 static pool *ptrans;		/* Pool for per-transaction stuff */
 static pool *pchild;		/* Pool for httpd child stuff */
+static pool *pmutex;            /* Pool for accept mutex in child */
 static pool *pcommands;	/* Pool for -C and -c switches */
 
 #ifndef NETWARE
@@ -515,6 +516,14 @@ static void clean_child_exit(int code) __attribute__ ((noreturn));
 static void clean_child_exit(int code)
 {
     if (pchild) {
+        /* make sure the accept mutex is released before calling child
+         * exit hooks and cleanups...  otherwise, modules can segfault
+         * in such code and, depending on the mutex mechanism, leave
+         * the server deadlocked...  even if the module doesn't segfault,
+         * if it performs extensive processing it can temporarily prevent
+         * the server from accepting new connections
+         */
+        ap_clear_pool(pmutex);
 	ap_child_exit_modules(pchild, server_conf);
 	ap_destroy_pool(pchild);
     }
@@ -4255,10 +4264,15 @@ static void child_main(int child_num_arg)
      * we can have cleanups occur when the child exits.
      */
     pchild = ap_make_sub_pool(pconf);
+    /* associate accept mutex cleanup with a subpool of pchild so we can
+     * make sure the mutex is released before calling module code at
+     * termination
+     */
+    pmutex = ap_make_sub_pool(pchild);
 
     /* needs to be done before we switch UIDs so we have permissions */
     reopen_scoreboard(pchild);
-    SAFE_ACCEPT(accept_mutex_child_init(pchild));
+    SAFE_ACCEPT(accept_mutex_child_init(pmutex));
 
     set_group_privs();
 #ifdef MPE
