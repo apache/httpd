@@ -345,19 +345,6 @@ EXPORTS
 	ap_regerror
 	ap_regexec
 	ap_field_noparam
-	ap_pbase64decode
-	ap_pbase64encode
-	ap_base64encode
-	ap_base64encode_binary
-	ap_base64encode_len
-	ap_base64decode
-	ap_base64decode_binary
-	ap_base64decode_len
-	ap_SHA1Init
-	ap_SHA1Update_binary
-	ap_SHA1Update
-	ap_SHA1Final
-	ap_sha1_base64
 	ap_show_hook
 	ap_hook_sort_register
 	ap_hook_process_connection
@@ -429,26 +416,5 @@ EXPORTS
        ap_xml_quote_string
        ap_xml_quote_elem
        ap_xml_insert_uri
-;
-; buckets
-       ap_bucket_create_transient
-       ap_bucket_split_shared
-       ap_bucket_make_shared
-       ap_bucket_destroy_shared
-       ap_bucket_create_pool
 
        ap_os_create_privileged_process
-
-;
-; apu_dbm symbols
-;
-        apu_dbm_open
-        apu_dbm_geterror
-        apu_dbm_close
-        apu_dbm_fetch
-        apu_dbm_store
-        apu_dbm_delete
-        apu_dbm_exists
-        apu_dbm_firstkey
-        apu_dbm_nextkey
-        apu_dbm_freedatum
