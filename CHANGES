@@ -1,4 +1,5 @@
 Changes with Apache 2.0.51
+  *) Prevent Win32 pool corruption at startup [Allan Edwards]
 
   *) mod_ssl: Add "SSLUserName" directive to set r->user based on a
      chosen SSL environment variable.  PR 20957. 
