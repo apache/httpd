@@ -141,7 +141,7 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
             continue;
         }
 
-        if (e->length == 0) {
+        if (APR_BUCKET_IS_METADATA(e)) {
             /* metadata bucket */
             apr_bucket *cpy;
             apr_bucket_copy(e, &cpy);

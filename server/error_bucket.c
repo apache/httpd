@@ -86,6 +86,7 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error,
     h->data = (buf) ? apr_pstrdup(p, buf) : NULL;
 
     b = apr_bucket_shared_make(b, h, 0, 0);
+    b->is_metadata = 1;
     b->type = &ap_bucket_type_error;
     return b;
 }
