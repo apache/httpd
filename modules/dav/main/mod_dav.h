@@ -158,13 +158,10 @@ typedef struct dav_error {
 
     int save_errno;		/* copy of errno causing the error */
 
-    struct dav_error *prev;	/* previous error (in stack) */
+    const char *namespace;      /* [optional] namespace of error */
+    const char *tagname;        /* name of error-tag */
 
-    /* deferred computation of the description */
-    void (*compute_desc)(struct dav_error *err, apr_pool_t *p);
-    int ctx_i;
-    const char *ctx_s;
-    void *ctx_p;
+    struct dav_error *prev;	/* previous error (in stack) */
 
 } dav_error;
 
@@ -174,6 +171,18 @@ typedef struct dav_error {
 */
 DAV_DECLARE(dav_error*) dav_new_error(apr_pool_t *p, int status, 
                                       int error_id, const char *desc);
+
+
+/*
+** Create a new error structure with tagname and (optional) namespace;
+** namespace may be NULL, which means "DAV:". save_errno will be
+** filled with the current errno value.
+*/
+DAV_DECLARE(dav_error*) dav_new_error_tag(apr_pool_t *p, int status, 
+                                          int error_id, const char *desc,
+                                          const char *namespace,
+                                          const char *tagname);
+
 
 /*
 ** Push a new error description onto the stack of errors.
