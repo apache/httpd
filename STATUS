@@ -4,7 +4,7 @@ Release:
 
     2.0  : In pre-alpha development
 	    see: <http://www.arctic.org/~dgaudet/apache/2.0/process-model>
-    1.3b5: In development, a release is planned for the week of 2/9/98
+    1.3b5: Tagged APACHE_1_3b5
     1.3b4: Internal version... not tagged or released.
     1.3b3: Released and announced
     1.3b1: There is no 1.3b1
@@ -15,15 +15,6 @@ Current Modes:
     o Commit-Then-Review (see <http://dev.apache.org/guidelines.html#ctr>
 
 Plan:
-
-    Let's shoot for release of 1.3b5.
-    Concern: Should we hold off on any new code changes
-     in order to try to get 1.3.0 out the door asap? Once
-     that's done, we can split off 2.0 from the present CVS
-     tree and start working on that, while putting some
-     patches into 1.3.1b1-dev. Let's get 1.3.0 out soon so
-     we can really start playing with the code, which isn't
-     wise when we're trying to push a release out.
 
 Showstoppers:
 
