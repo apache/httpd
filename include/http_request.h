@@ -58,6 +58,8 @@
 #ifndef APACHE_HTTP_REQUEST_H
 #define APACHE_HTTP_REQUEST_H
 
+#include "ap_hooks.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -109,6 +111,14 @@ API_EXPORT(time_t) ap_update_mtime(request_rec *r, time_t dependency_mtime);
 void ap_process_request(request_rec *);
 API_EXPORT(void) ap_die(int type, request_rec *r);
 #endif
+
+  /* Hooks */
+DECLARE_HOOK(int,translate_name,(request_rec *))
+DECLARE_HOOK(int,check_user_id,(request_rec *))
+DECLARE_HOOK(int,fixups,(request_rec *))
+DECLARE_HOOK(int,type_checker,(request_rec *))
+DECLARE_HOOK(int,access_checker,(request_rec *))
+DECLARE_HOOK(int,auth_checker,(request_rec *))
 
 #ifdef __cplusplus
 }

@@ -58,6 +58,8 @@
 #ifndef APACHE_HTTP_PROTOCOL_H
 #define APACHE_HTTP_PROTOCOL_H
 
+#include "ap_hooks.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -215,6 +217,16 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri);
  * contain an HTTP method.  Returns M_INVALID if not recognized.
  */
 API_EXPORT(int) ap_method_number_of(const char *method);
+
+  /* Hooks */
+  /*
+   * post_read_request --- run right after read_request or internal_redirect,
+   *                  and not run during any subrequests.
+   */
+DECLARE_HOOK(int,post_read_request,(request_rec *))
+DECLARE_HOOK(int,log_transaction,(request_rec *))
+DECLARE_HOOK(const char *,http_method,(const request_rec *))
+DECLARE_HOOK(unsigned short,default_port,(const request_rec *))
 
 #ifdef __cplusplus
 }

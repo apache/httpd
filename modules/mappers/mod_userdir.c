@@ -92,6 +92,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "http_request.h"
 
 module userdir_module;
 
@@ -326,24 +327,20 @@ static int translate_userdir(request_rec *r)
     return DECLINED;
 }
 
+static void register_hooks(void)
+{
+    static const char * const aszSucc[]={ "mod_alias.c",NULL };
+
+    ap_hook_translate_name(translate_userdir,NULL,aszSucc,HOOK_MIDDLE);
+}
+
 module userdir_module = {
-    STANDARD_MODULE_STUFF,
-    NULL,                       /* initializer */
+    STANDARD20_MODULE_STUFF,
     NULL,                       /* dir config creater */
     NULL,                       /* dir merger --- default is to override */
     create_userdir_config,      /* server config */
     NULL,                       /* merge server config */
     userdir_cmds,               /* command table */
     NULL,                       /* handlers */
-    translate_userdir,          /* filename translation */
-    NULL,                       /* check_user_id */
-    NULL,                       /* check auth */
-    NULL,                       /* check access */
-    NULL,                       /* type_checker */
-    NULL,                       /* fixups */
-    NULL,                       /* logger */
-    NULL,                       /* header parser */
-    NULL,                       /* child_init */
-    NULL,                       /* child_exit */
-    NULL                        /* post read-request */
+    register_hooks              /* register hooks */
 };

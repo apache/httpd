@@ -587,23 +587,21 @@ static const handler_rec cgi_handlers[] =
 
 module MODULE_VAR_EXPORT cgi_module =
 {
-    STANDARD_MODULE_STUFF,
-    NULL,			/* initializer */
+    STANDARD20_MODULE_STUFF,
+    NULL,			/* pre_config */
+    NULL,			/* post_config */
+    NULL,			/* open_logs */
+    NULL,			/* child initializer */
     NULL,			/* dir config creater */
     NULL,			/* dir merger --- default is to override */
     create_cgi_config,		/* server config */
     merge_cgi_config,		/* merge server config */
     cgi_cmds,			/* command table */
     cgi_handlers,		/* handlers */
-    NULL,			/* filename translation */
-    NULL,			/* check_user_id */
     NULL,			/* check auth */
     NULL,			/* check access */
     NULL,			/* type_checker */
     NULL,			/* fixups */
     NULL,			/* logger */
-    NULL,			/* header parser */
-    NULL,			/* child_init */
-    NULL,			/* child_exit */
-    NULL			/* post read-request */
+    NULL			/* register hooks */
 };

@@ -71,11 +71,28 @@
 #include "http_request.h"
 #include "http_core.h"
 #include "http_protocol.h"
-#include "http_conf_globals.h"	/* for ap_extended_status */
 #include "http_log.h"
 #include "http_main.h"
+#if 0
 #include "scoreboard.h"
+#endif
 #include "fnmatch.h"
+
+HOOK_STRUCT(
+	    HOOK_LINK(translate_name)
+	    HOOK_LINK(check_user_id)
+	    HOOK_LINK(fixups)
+	    HOOK_LINK(type_checker)
+	    HOOK_LINK(access_checker)
+	    HOOK_LINK(auth_checker)
+)
+
+IMPLEMENT_HOOK_RUN_FIRST(int,translate_name,(request_rec *r),(r),DECLINED)
+IMPLEMENT_HOOK_RUN_FIRST(int,check_user_id,(request_rec *r),(r),DECLINED)
+IMPLEMENT_HOOK_RUN_ALL(int,fixups,(request_rec *r),(r),OK,DECLINED)
+IMPLEMENT_HOOK_RUN_FIRST(int,type_checker,(request_rec *r),(r),DECLINED)
+IMPLEMENT_HOOK_RUN_ALL(int,access_checker,(request_rec *r),(r),OK,DECLINED)
+IMPLEMENT_HOOK_RUN_FIRST(int,auth_checker,(request_rec *r),(r),DECLINED)
 
 /*****************************************************************
  *
@@ -229,33 +246,34 @@ static int get_path_info(request_rec *r)
 
         *cp = '\0';
 
-        /* We must not stat() filenames that may cause os-specific system
-         * problems, such as "/file/aux" on DOS-abused filesystems.
-         * So pretend that they do not exist by returning an ENOENT error.
-         * This will force us to drop that part of the path and keep
-         * looking back for a "real" file that exists, while still allowing
-         * the "invalid" path parts within the PATH_INFO.
-         */
-        if (!ap_os_is_filename_valid(path)) {
-            errno = ENOENT;
-            rv = -1;
-        }
-        else {
-            errno = 0;
-            rv = stat(path, &r->finfo);
-        }
+         /* We must not stat() filenames that may cause os-specific system
+          * problems, such as "/file/aux" on DOS-abused filesystems.
+          * So pretend that they do not exist by returning an ENOENT error.
+          * This will force us to drop that part of the path and keep
+          * looking back for a "real" file that exists, while still allowing
+          * the "invalid" path parts within the PATH_INFO.
+          */
+         if (!ap_os_is_filename_valid(path)) {
+             errno = ENOENT;
+             rv = -1;
+         }
+         else {
+             errno = 0;
+	     /* ZZZ change to AP func for File Info */
+             rv = stat(path, &r->finfo);
+         }
 
         if (cp != end)
             *cp = '/';
 
-        if (!rv) {
+        if (!rv) {    /* ZZZ AP Status check here */
 
             /*
              * Aha!  Found something.  If it was a directory, we will search
              * contents of that directory for a multi_match, so the PATH_INFO
              * argument starts with the component after that.
              */
-
+	  /* ZZZ use AP file type checking defines */
             if (S_ISDIR(r->finfo.st_mode) && last_cp) {
                 r->finfo.st_mode = 0;   /* No such file... */
                 cp = last_cp;
@@ -764,7 +782,7 @@ API_EXPORT(request_rec *) ap_sub_req_method_uri(const char *method,
         return rnew;
     }
 
-    res = ap_translate_name(rnew);
+    res = ap_run_translate_name(rnew);
     if (res) {
         rnew->status = res;
         return rnew;
@@ -786,16 +804,16 @@ API_EXPORT(request_rec *) ap_sub_req_method_uri(const char *method,
         || (res = location_walk(rnew))
         || ((ap_satisfies(rnew) == SATISFY_ALL
              || ap_satisfies(rnew) == SATISFY_NOSPEC)
-            ? ((res = ap_check_access(rnew))
+            ? ((res = ap_run_access_checker(rnew))
                || (ap_some_auth_required(rnew)
-                   && ((res = ap_check_user_id(rnew))
-                       || (res = ap_check_auth(rnew)))))
-            : ((res = ap_check_access(rnew))
+                   && ((res = ap_run_check_user_id(rnew))
+                       || (res = ap_run_auth_checker(rnew)))))
+            : ((res = ap_run_access_checker(rnew))
                && (!ap_some_auth_required(rnew)
-                   || ((res = ap_check_user_id(rnew))
-                       || (res = ap_check_auth(rnew)))))
+                   || ((res = ap_run_check_user_id(rnew))
+                       || (res = ap_run_auth_checker(rnew)))))
            )
-        || (res = ap_find_types(rnew))
+        || (res = ap_run_type_checker(rnew))
         || (res = ap_run_fixups(rnew))
        ) {
         rnew->status = res;
@@ -877,7 +895,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
                 return rnew;
             }
             if (rnew->per_dir_config == r->per_dir_config) {
-                if ((res = ap_find_types(rnew)) || (res = ap_run_fixups(rnew))) {
+                if ((res = ap_run_type_checker(rnew)) || (res = ap_run_fixups(rnew))) {
                     rnew->status = res;
                 }
                 return rnew;
@@ -906,16 +924,16 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     if (res
         || ((ap_satisfies(rnew) == SATISFY_ALL
              || ap_satisfies(rnew) == SATISFY_NOSPEC)
-            ? ((res = ap_check_access(rnew))
+            ? ((res = ap_run_access_checker(rnew))
                || (ap_some_auth_required(rnew)
-                   && ((res = ap_check_user_id(rnew))
-                       || (res = ap_check_auth(rnew)))))
-            : ((res = ap_check_access(rnew))
+                   && ((res = ap_run_check_user_id(rnew))
+                       || (res = ap_run_auth_checker(rnew)))))
+            : ((res = ap_run_access_checker(rnew))
                && (!ap_some_auth_required(rnew)
-                   || ((res = ap_check_user_id(rnew))
-                       || (res = ap_check_auth(rnew)))))
+                   || ((res = ap_run_check_user_id(rnew))
+                       || (res = ap_run_auth_checker(rnew)))))
            )
-        || (res = ap_find_types(rnew))
+        || (res = ap_run_type_checker(rnew))
         || (res = ap_run_fixups(rnew))
        ) {
         rnew->status = res;
@@ -1103,7 +1121,7 @@ static void process_request_internal(request_rec *r)
         return;
     }
 
-    if ((access_status = ap_translate_name(r))) {
+    if ((access_status = ap_run_translate_name(r))) {
         decl_die(access_status, "translate", r);
         return;
     }
@@ -1146,7 +1164,7 @@ static void process_request_internal(request_rec *r)
         return;
     }
 
-    if ((access_status = ap_header_parse(r))) {
+    if ((access_status = ap_run_header_parser(r))) {
         ap_die(access_status, r);
         return;
     }
@@ -1154,18 +1172,18 @@ static void process_request_internal(request_rec *r)
     switch (ap_satisfies(r)) {
     case SATISFY_ALL:
     case SATISFY_NOSPEC:
-        if ((access_status = ap_check_access(r)) != 0) {
+        if ((access_status = ap_run_access_checker(r)) != 0) {
             decl_die(access_status, "check access", r);
             return;
         }
         if (ap_some_auth_required(r)) {
-            if (((access_status = ap_check_user_id(r)) != 0) || !ap_auth_type(r)) {
+            if (((access_status = ap_run_check_user_id(r)) != 0) || !ap_auth_type(r)) {
                 decl_die(access_status, ap_auth_type(r)
 		    ? "check user.  No user file?"
 		    : "perform authentication. AuthType not set!", r);
                 return;
             }
-            if (((access_status = ap_check_auth(r)) != 0) || !ap_auth_type(r)) {
+            if (((access_status = ap_run_auth_checker(r)) != 0) || !ap_auth_type(r)) {
                 decl_die(access_status, ap_auth_type(r)
 		    ? "check access.  No groups file?"
 		    : "perform authentication. AuthType not set!", r);
@@ -1174,20 +1192,20 @@ static void process_request_internal(request_rec *r)
         }
         break;
     case SATISFY_ANY:
-        if (((access_status = ap_check_access(r)) != 0) || !ap_auth_type(r)) {
+        if (((access_status = ap_run_access_checker(r)) != 0) || !ap_auth_type(r)) {
             if (!ap_some_auth_required(r)) {
                 decl_die(access_status, ap_auth_type(r)
 		    ? "check access"
 		    : "perform authentication. AuthType not set!", r);
                 return;
             }
-            if (((access_status = ap_check_user_id(r)) != 0) || !ap_auth_type(r)) {
+            if (((access_status = ap_run_check_user_id(r)) != 0) || !ap_auth_type(r)) {
                 decl_die(access_status, ap_auth_type(r)
 		    ? "check user.  No user file?"
 		    : "perform authentication. AuthType not set!", r);
                 return;
             }
-            if (((access_status = ap_check_auth(r)) != 0) || !ap_auth_type(r)) {
+            if (((access_status = ap_run_auth_checker(r)) != 0) || !ap_auth_type(r)) {
                 decl_die(access_status, ap_auth_type(r)
 		    ? "check access.  No groups file?"
 		    : "perform authentication. AuthType not set!", r);
@@ -1200,7 +1218,7 @@ static void process_request_internal(request_rec *r)
     if (! (r->proxyreq 
 	   && r->parsed_uri.scheme != NULL
 	   && strcmp(r->parsed_uri.scheme, "http") == 0) ) {
-	if ((access_status = ap_find_types(r)) != 0) {
+	if ((access_status = ap_run_type_checker(r)) != 0) {
 	    decl_die(access_status, "find types", r);
 	    return;
 	}
@@ -1222,15 +1240,7 @@ static void process_request_internal(request_rec *r)
 
 void ap_process_request(request_rec *r)
 {
-    int old_stat;
-
-    if (ap_extended_status)
-	ap_time_process_request(r->connection->child_num, START_PREQUEST);
-
     process_request_internal(r);
-
-    old_stat = ap_update_child_status(r->connection->child_num,
-                                   SERVER_BUSY_LOG, r);
 
     /*
      * We want to flush the last packet if this isn't a pipelining connection
@@ -1239,12 +1249,9 @@ void ap_process_request(request_rec *r)
      * this packet, then it'll appear like the link is stalled when really
      * it's the application that's stalled.
      */
-    ap_bhalfduplex(r->connection->client);
-    ap_log_transaction(r);
-
-    (void) ap_update_child_status(r->connection->child_num, old_stat, r);
-    if (ap_extended_status)
-	ap_time_process_request(r->connection->child_num, STOP_PREQUEST);
+    /* TODO: re-implement ap_bhalfduplex... not sure how yet */
+    /* //ap_bhalfduplex(r->connection->client); */
+    ap_run_log_transaction(r);
 }
 
 static table *rename_original_env(pool *p, table *t)

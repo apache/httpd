@@ -173,6 +173,7 @@
 #include "http_config.h"
 #include "http_core.h"          /* For REMOTE_NAME */
 #include "http_log.h"
+#include "http_protocol.h"
 #include <limits.h>
 
 module MODULE_VAR_EXPORT config_log_module;
@@ -999,7 +1000,7 @@ static config_log_state *open_config_log(server_rec *s, pool *p,
         cls->log_fd = ap_piped_log_write_fd(pl);
     }
     else {
-        char *fname = ap_server_root_relative(p, cls->fname);
+        const char *fname = ap_server_root_relative(p, cls->fname);
         if ((cls->log_fd = ap_popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, s,
                          "could not open transfer log file %s.", fname);
@@ -1067,7 +1068,7 @@ static config_log_state *open_multi_logs(server_rec *s, pool *p)
     return NULL;
 }
 
-static void init_config_log(server_rec *s, pool *p)
+static void init_config_log(pool *pc, pool *p, pool *pt, server_rec *s)
 {
     /* First, do "physical" server, which gets default log fd and format
      * for the virtual servers, if they don't override...
@@ -1080,10 +1081,14 @@ static void init_config_log(server_rec *s, pool *p)
     for (s = s->next; s; s = s->next) {
         open_multi_logs(s, p);
     }
+#ifdef BUFFERED_LOGS
+	/* Now register the last buffer flush with the cleanup engine */
+	ap_register_cleanup(p , s, flush_all_logs, flush_all_logs);
+#endif
 }
 
 #ifdef BUFFERED_LOGS
-static void flush_all_logs(server_rec *s, pool *p)
+static void flush_all_logs(server_rec *s)
 {
     multi_log_state *mls;
     array_header *log_list;
@@ -1109,29 +1114,20 @@ static void flush_all_logs(server_rec *s, pool *p)
 }
 #endif
 
+static void register_hooks(void)
+{
+    ap_hook_open_logs(init_config_log,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_log_transaction(multi_log_transaction,NULL,NULL,HOOK_MIDDLE);
+}
+
 module MODULE_VAR_EXPORT config_log_module =
 {
-    STANDARD_MODULE_STUFF,
-    init_config_log,            /* initializer */
+    STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-dir config */
     NULL,                       /* merge per-dir config */
     make_config_log_state,      /* server config */
     merge_config_log_state,     /* merge server config */
     config_log_cmds,            /* command table */
     NULL,                       /* handlers */
-    NULL,                       /* filename translation */
-    NULL,                       /* check_user_id */
-    NULL,                       /* check auth */
-    NULL,                       /* check access */
-    NULL,                       /* type_checker */
-    NULL,                       /* fixups */
-    multi_log_transaction,      /* logger */
-    NULL,                       /* header parser */
-    NULL,                       /* child_init */
-#ifdef BUFFERED_LOGS
-    flush_all_logs,             /* child_exit */
-#else
-    NULL,
-#endif
-    NULL                        /* post read-request */
+    register_hooks              /* register hooks */
 };
