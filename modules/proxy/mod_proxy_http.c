@@ -1267,6 +1267,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                         mode = APR_BLOCK_READ;
                         continue;
                     }
+                    else if (rv == APR_EOF) {
+                        break;
+                    }
                     else if (rv != APR_SUCCESS) {
                         ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
                                       "proxy: error reading response");
