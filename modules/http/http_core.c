@@ -93,31 +93,6 @@
  */
 #define MIN_SIZE_TO_WRITE  9000
 
-/* Allow Apache to use ap_mmap */
-#ifdef AP_USE_MMAP_FILES
-#include "apr_mmap.h"
-
-/* mmap support for static files based on ideas from John Heidemann's
- * patch against 1.0.5.  See
- * <http://www.isi.edu/~johnh/SOFTWARE/APACHE/index.html>.
- */
-
-/* Files have to be at least this big before they're mmap()d.  This is to deal
- * with systems where the expense of doing an mmap() and an munmap() outweighs
- * the benefit for small files.  It shouldn't be set lower than 1.
- */
-#ifndef MMAP_THRESHOLD
-#  ifdef SUNOS4
-#  define MMAP_THRESHOLD		(8*1024)
-#  else
-#  define MMAP_THRESHOLD		1
-#  endif /* SUNOS4 */
-#endif /* MMAP_THRESHOLD */
-#ifndef MMAP_LIMIT
-#define MMAP_LIMIT              (4*1024*1024)
-#endif
-#endif /* AP_USE_MMAP_FILES */
-
 /* LimitXMLRequestBody handling */
 #define AP_LIMIT_UNSET                  ((long) -1)
 #define AP_DEFAULT_LIMIT_XML_BODY       ((size_t)1000000)
@@ -2915,9 +2890,6 @@ static int default_handler(request_rec *r)
     int errstatus;
     apr_file_t *fd = NULL;
     apr_status_t status;
-#ifdef AP_USE_MMAP_FILES
-    apr_mmap_t *mm = NULL;
-#endif
     /* XXX if/when somebody writes a content-md5 filter we either need to
      *     remove this support or coordinate when to use the filter vs.
      *     when to use this code
@@ -2957,7 +2929,7 @@ static int default_handler(request_rec *r)
         return HTTP_METHOD_NOT_ALLOWED;
     }
 	
-    if ((status = apr_open(&fd, r->filename, APR_READ | APR_BINARY, 0, r->pool)) != APR_SUCCESS) {
+    if ((status = apr_open(&fd, r->filename, APR_READ | APR_BINARY, 0, r->connection->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		     "file permissions deny server access: %s", r->filename);
         return HTTP_FORBIDDEN;
@@ -2972,61 +2944,18 @@ static int default_handler(request_rec *r)
         return errstatus;
     }
 
-#ifdef AP_USE_MMAP_FILES
-    if ((r->finfo.size >= MMAP_THRESHOLD)
-	&& (r->finfo.size < MMAP_LIMIT)
-	&& (!r->header_only || bld_content_md5)) {
-	/* we need to protect ourselves in case we die while we've got the
- 	 * file mmapped */
-        apr_status_t status;
-        if ((status = apr_mmap_create(&mm, fd, 0, r->finfo.size, r->connection->pool)) != APR_SUCCESS) {
-	    ap_log_rerror(APLOG_MARK, APLOG_CRIT, status, r,
-			 "default_handler: mmap failed: %s", r->filename);
-	    mm = NULL;
-	}
-    }
-    else {
-	mm = NULL;
+    if (bld_content_md5) {
+        apr_table_setn(r->headers_out, "Content-MD5",
+                       ap_md5digest(r->pool, fd));
     }
 
-    if (mm == NULL) {
-#endif
-
-        if (bld_content_md5) {
-	    apr_table_setn(r->headers_out, "Content-MD5",
-                           ap_md5digest(r->pool, fd));
-	}
-
-	ap_send_http_header(r);
+    ap_send_http_header(r);
 	
-	if (!r->header_only) {
-            apr_size_t nbytes;
+    if (!r->header_only) {
+        apr_size_t nbytes;
 
-            ap_send_fd(fd, r, 0, r->finfo.size, &nbytes);
-	}
-
-#ifdef AP_USE_MMAP_FILES
+        ap_send_fd(fd, r, 0, r->finfo.size, &nbytes);
     }
-    else {
-	unsigned char *addr;
-        apr_mmap_offset((void**)&addr, mm ,0);
-
-	if (bld_content_md5) {
-	    apr_md5_ctx_t context;
-	    
-	    apr_MD5Init(&context);
-	    apr_MD5Update(&context, addr, (unsigned int)r->finfo.size);
-	    apr_table_setn(r->headers_out, "Content-MD5",
-			  ap_md5contextTo64(r->pool, &context));
-	}
-
-	ap_send_http_header(r);
-	
-	if (!r->header_only) {
-            ap_send_mmap(mm, r, 0, r->finfo.size);
-	}
-    }
-#endif
 
     apr_close(fd);
     return OK;
