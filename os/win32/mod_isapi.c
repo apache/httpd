@@ -816,7 +816,8 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
         /* Map a URL to a filename */
         char *file = (char *)lpvBuffer;
         DWORD len;
-        subreq = ap_sub_req_lookup_uri(apr_pstrndup(r->pool, file, *lpdwSize), r);
+        subreq = ap_sub_req_lookup_uri(apr_pstrndup(r->pool, file, *lpdwSize),
+                                       r, NULL);
 
         len = apr_cpystrn(file, subreq->filename, *lpdwSize) - file;
 
@@ -996,7 +997,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
         LPHSE_URL_MAPEX_INFO info = (LPHSE_URL_MAPEX_INFO) lpdwDataType;
         char* test_uri = apr_pstrndup(r->pool, (char *)lpvBuffer, *lpdwSize);
 
-        subreq = ap_sub_req_lookup_uri(test_uri, r);
+        subreq = ap_sub_req_lookup_uri(test_uri, r, NULL);
         info->cchMatchingURL = strlen(test_uri);        
         info->cchMatchingPath = apr_cpystrn(info->lpszPath, subreq->filename, 
                                             MAX_PATH) - info->lpszPath;

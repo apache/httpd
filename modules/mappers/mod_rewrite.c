@@ -2190,7 +2190,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
         if (strlen(input) > 0 && subreq_ok(r)) {
 
             /* run a URI-based subrequest */
-            rsub = ap_sub_req_lookup_uri(input, r);
+            rsub = ap_sub_req_lookup_uri(input, r, NULL);
 
             /* URI exists for any result up to 3xx, redirects allowed */
             if (rsub->status < 400)
@@ -2211,7 +2211,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
             /* process a file-based subrequest:
              * this differs from -U in that no path translation is done.
              */
-            rsub = ap_sub_req_lookup_file(input, r);
+            rsub = ap_sub_req_lookup_file(input, r, NULL);
 
             /* file exists for any result up to 2xx, no redirects */
             if (rsub->status < 300 &&
@@ -3595,7 +3595,7 @@ static char *lookup_variable(request_rec *r, char *var)
                         /*   ...and sub and main paths differ */ \
                         && strcmp(r->main->uri, r->uri) != 0))) { \
             /* process a file-based subrequest */ \
-            rsub = subrecfunc(r->filename, r); \
+            rsub = subrecfunc(r->filename, r, NULL); \
             /* now recursively lookup the variable in the sub_req */ \
             result = lookup_variable(rsub, var+5); \
             /* copy it up to our scope before we destroy sub_req's apr_pool_t */ \

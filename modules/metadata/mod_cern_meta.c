@@ -359,7 +359,7 @@ static int add_cern_meta_data(request_rec *r)
      * A better solution might be a "safe open" feature of pfopen to avoid
      * pipes, symlinks, and crap like that.
      */
-    rr = ap_sub_req_lookup_file(metafilename, r);
+    rr = ap_sub_req_lookup_file(metafilename, r, NULL);
     if (rr->status != HTTP_OK) {
 	ap_destroy_sub_req(rr);
 	return DECLINED;
