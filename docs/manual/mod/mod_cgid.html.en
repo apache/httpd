@@ -12,15 +12,15 @@
                   </a></th><td>mod_cgid.c</td></tr><tr><th><a href="module-dict.html#Compatibility">Compatibility:
                   </a></th><td>Unix threaded MPMs only</td></tr></table><h3>Summary</h3>
     <p>Except for the optimizations and the additional <code class="directive"><a href="#scriptsock">ScriptSock</a></code> directive noted below,
-    mod_cgid behaves similarly to mod_cgi.  <strong>See the
-    <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> Summary for additional details about
-    Apache and CGI.</strong></p>
+    <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code> behaves similarly to <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>.
+    <strong>See the <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> summary for additional details
+    about Apache and CGI.</strong></p>
 
     <p>On certain unix operating systems, forking a process from a
     multi-threaded server is a very expensive operation because the
     new process will replicate all the threads of the parent
     process. In order to avoid incurring this expense on each CGI
-    invocation, mod_cgid creates an external daemon that is
+    invocation, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code> creates an external daemon that is
     responsible for forking child processes to run CGI scripts. The
     main server communicates with this daemon using a unix domain
     socket.</p>
@@ -37,9 +37,10 @@
 <li><img alt="" src="../images/right.gif" /> <a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mod_cgi.html#scriptloglength">ScriptLogLength</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptsock">ScriptSock</a></li>
-</ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptSock" id="ScriptSock">ScriptSock</a> <a name="scriptsock" id="scriptsock">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ScriptSock <em>file-path</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+</ul><h3>See also</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><a href="../suexec.html">Running CGI programs under different user IDs</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptSock" id="ScriptSock">ScriptSock</a> <a name="scriptsock" id="scriptsock">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>The name of the socket to use for communication with
+the cgi daemon</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td><code>ScriptSock <var>file-path</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ScriptSock logs/cgisock</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -52,7 +53,7 @@
     write in the directory where the socket is located.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-    ScriptSock /var/run/cgid.sock
+      ScriptSock /var/run/cgid.sock
     </code></p></div>
 
 </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
