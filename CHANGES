@@ -1,5 +1,8 @@
 Changes with Apache 2.0b1
 
+  *) Relax the syntax checking of Host: headers in order to support
+     iDNS. PR#6635 [Tony Finch]
+
   *) Cleanup the byterange filter to use the apr_brigade_partition
      and apr_bucket_copy functions.  This removes a lot of very messy
      code, and hopefully makes this filter more stable.
