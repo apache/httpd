@@ -7,14 +7,14 @@
 
 API_EXPORT(char *)ap_os_case_canonical_filename(pool *pPool, const char *szFile)
 {
-    char buf[HUGE_STRING_LEN];
-    char buf2[HUGE_STRING_LEN];
+    char *buf;
+    char buf2[CCHMAXPATH];
     int rc, len; 
     char *pos;
     
 /* Remove trailing slash unless it's a root directory */
-    strcpy(buf, szFile);
-    len = strlen(buf);
+    len = strlen(szFile);
+    buf = ap_pstrndup(pPool, szFile, len);
     
     if (len > 3 && buf[len-1] == '/')
         buf[--len] = 0;
@@ -26,7 +26,7 @@ API_EXPORT(char *)ap_os_case_canonical_filename(pool *pPool, const char *szFile)
         }
     }
 
-    rc = DosQueryPathInfo(buf, FIL_QUERYFULLNAME, buf2, HUGE_STRING_LEN);
+    rc = DosQueryPathInfo(buf, FIL_QUERYFULLNAME, buf2, sizeof(buf2));
 
     if (rc) {
         if ( rc != ERROR_INVALID_NAME ) {

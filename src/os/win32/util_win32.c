@@ -83,140 +83,185 @@ static BOOL OnlyDots(char *pString)
     return TRUE;
 }
 
+
 /* Accepts as input a pathname, and tries to match it to an 
  * existing path and return the pathname in the case that
  * is present on the existing path.  This routine also
  * converts alias names to long names.
+ *
+ * WARNING: Folding to systemcase fails when /path/to/foo/../bar
+ * is given and foo does not exist, is not a directory.
  */
 API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool, 
                                              const char *szFile)
 {
-    char buf[HUGE_STRING_LEN];
-    char *pInputName;
-    char *p, *q, *t;
+    char *buf, *t, *r;
+    const char *q, *p;
     BOOL bDone = FALSE;
     BOOL bFileExists = TRUE;
     HANDLE hFind;
     WIN32_FIND_DATA wfd;
+    size_t buflen;
+    int slack = 0;
 
-    if (!szFile || strlen(szFile) == 0 || strlen(szFile) >= sizeof(buf))
+    if (!szFile || strlen(szFile) == 0)
         return ap_pstrdup(pPool, "");
 
-    t = buf;
-    pInputName = ap_pstrdup(pPool, szFile);
+    buflen = strlen(szFile);
+    t = buf = ap_palloc(pPool, buflen + 1);
+    q = szFile;
 
-    /* First convert all slashes to \ so Win32 calls work OK */
-    for (p = pInputName; *p; p++) {
-        if (*p == '/')
-            *p = '\\';
-    }
-    
-    q = p = pInputName;
     /* If there is drive information, copy it over. */ 
-    if (pInputName[1] == ':') {
-        /* This is correct - if systemcase is used for
+    if (szFile[1] == ':') {
+        /* Lowercase, so that when systemcase is used for
          * comparison, d: designations will match
-         */                    
-        *(t++) = tolower(*p++);
-        *(t++) = *p++;
-        q = p;
-
-        /* If all we have is a drive letter, then we are done */
-        if (!*p)
-            bDone = TRUE;
-    }    
-
-    if (*p == '\\') {
-        ++p;
-        if (*p == '\\')  /* UNC name */
+         */                 
+        *(t++) = tolower(*(q++));
+        *(t++) = *(q++);
+    }
+    else if ((*q == '/') || (*q == '\\')) {
+        /* Get past the root path (/ or //foo/bar/) so we can go
+         * on to normalize individual path elements.
+         */
+        *(t++) = '\\', ++q;
+        if ((*q == '/') || (*q == '\\'))  /* UNC name */
         {
-            /* Get past the machine name.  FindFirstFile */
-            /* will not find a machine name only */
-            *(t++) = '\\';
-            ++q;
-            p = strchr(p + 1, '\\'); 
-            if (p)
+                /* Lower-case the machine name, so compares match.
+                 * FindFirstFile won't parse \\machine alone
+                 */
+            *(t++) = '\\', ++q;
+            for (p = q; *p && (*p != '/') && (*p != '\\'); ++p)
+                /* continue */ ;
+            if (*p || p > q) 
             {
-                p++;
-                /* Get past the share name.  FindFirstFile */
-                /* will not find a \\machine\share name only */
-                p = strchr(p, '\\'); 
-                if (p) {
-                    /* This was faulty - as of 1.3.13 \\machine\share 
-                     * name is now always lowercased
-                     */
-                    strncpy(t,q,p-q);
-                    strlwr(t);
-                    t += p - q;
-                    q = p;
-                    p++;
+                /* Lower-case the machine name, so compares match.
+                 * FindFirstFile won't parse \\machine\share alone
+                 */
+                memcpy(t, q, p - q);
+                t[p - q] = '\0';
+                strlwr(t);
+                t += p - q;
+                q = p;
+                if (*p) {
+                    *(t++) = '\\', ++q;
+                    for (p = q; *p && (*p != '/') && (*p != '\\'); ++p)
+                        /* continue */ ;
+                    if (*p || p > q) 
+                    {
+                        /* Copy the lower-cased share name.  FindFirstFile 
+                         * cannot not find a \\machine\share name only 
+                         */
+                        memcpy(t, q, p - q);
+                        t[p - q] = '\0';
+                        strlwr(t);
+                        t += p - q;
+                        q = p;
+                        if (*p)
+                            *(t++) = '\\', ++q;
+                        else
+                            bFileExists = FALSE;
+                    }
+                    else
+                        bFileExists = FALSE;
                 }
+                else
+                    bFileExists = FALSE;
             }
-
-            if (!p) {
+            else
                 bFileExists = FALSE;
-                p = q;
-            }
         }
     }
 
-    p = strchr(p, '\\');
+    while (bFileExists) {
 
-    while (!bDone) {
-        if (p)
-            *p = '\0';
+        /* parse past any leading slashes */
+        for (; (*q == '/') || (*q == '\\'); ++q)
+            *(t++) = '\\';
 
-        if (strchr(q, '*') || strchr(q, '?'))
-            bFileExists = FALSE;
+        /* break on end of string */
+        if (!*q)
+            break;
+
+        /* get to the end of this path segment */
+        for (p = q; *p && (*p != '/') && (*p != '\\'); ++p)
+            /* continue */ ;
+                
+        /* copy the segment */
+        memcpy(t, q, p - q);
+        t[p - q] = '\0';
+
+        /* Test for nasties that can exhibit undesired effects */
+        if (strpbrk(t, "?\"<>*|:")) {
+            t += p - q;
+            q = p;
+            break;
+        }
 
         /* If the path exists so far, call FindFirstFile
          * again.  However, if this portion of the path contains
          * only '.' charaters, skip the call to FindFirstFile
          * since it will convert '.' and '..' to actual names.
-         * Note: in the call to OnlyDots, we may have to skip
-         *       a leading slash.
+         * On win32, '...' is an alias for '..', so we gain 
+         * a bit of slack.
          */
-        if (bFileExists && !OnlyDots((*q == '.' ? q : q+1))) {            
-            hFind = FindFirstFile(pInputName, &wfd);
-            
-            if (hFind == INVALID_HANDLE_VALUE) {
-                bFileExists = FALSE;
+        if (*t == '.' && OnlyDots(t)) {
+            if (p - q == 3) {
+                t += 2;
+                q = p;
+                ++slack;
             }
             else {
-                FindClose(hFind);
-
-                if (*q == '\\')
-                    *(t++) = '\\';
-                t = strchr(strcpy(t, wfd.cFileName), '\0');
+                t += p - q;
+                q = p;
             }
-        }
-        
-        if (!bFileExists || OnlyDots((*q == '.' ? q : q+1))) {
-            /* XXX: Comparison could be faulty ...\unknown
-             * names may not match!
-             */
-            strcpy(t, q);
-            t = strchr(t, '\0');
-        }
-        
-        if (p) {
-            q = p;
-            *p++ = '\\';
-            p = strchr(p, '\\');
+            /* Paths of 4 dots or more are invalid */
+            if (p - q > 3)
+                break;
         }
         else {
-            bDone = TRUE;
+            if ((hFind = FindFirstFile(buf, &wfd)) == INVALID_HANDLE_VALUE) {
+                t += p - q;
+                q = p;
+                break;
+            }
+            else {
+                size_t fnlen = strlen(wfd.cFileName);
+                FindClose(hFind);
+                /* the string length just changed, could have shrunk
+                 * (trailing spaces or dots) or could have grown 
+                 * (longer filename aliases).  Realloc as necessary
+                 */
+                slack -= fnlen - (p - q);
+                if (slack < 0) {
+                    char *n;
+                    slack += buflen + fnlen - (p - q);
+                    buflen += buflen + fnlen - (p - q);
+                    n = ap_palloc(pPool, buflen + 1);
+                    memcpy (n, buf, t - buf);
+                    t = n + (t - buf);
+                    buf = n;
+                }
+                memcpy(t, wfd.cFileName, fnlen);
+                t += fnlen;
+                q = p;
+                if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+                    break;
+            }
         }
     }
-    *t = '\0';
-    
-    /* Finally, convert all slashes to / so server code handles it ok */
-    for (p = buf; *p; p++) {
-        if (*p == '\\')
-            *p = '/';
+
+    /* Convert all parsed '\'s to '/' for canonical form (doesn't touch
+     * the non-existant portion of the path whatsoever.)
+     */
+    for (r = buf; r < t; ++r) {
+        if (*r == '\\')
+            *r = '/';
     }
 
-    return ap_pstrdup(pPool, buf);
+    /* Copy the non-existant portion (minimally nul-terminates the string) */
+    strcpy(t, q);
+    
+    return buf;
 }
 
 
@@ -293,56 +338,15 @@ API_EXPORT(char *) ap_os_case_canonical_filename(pool *pPool,
      *  simply truncated, with no embedded '~'.  Further, this behavior
      *  can be modified on WinNT volumes.  This was not a safe test,
      *  therefore exclude the '~' pretest.
-     */     
+     */
 #ifdef WIN32_SHORT_FILENAME_INSECURE_BEHAVIOR
      p = strchr(pNewStr, '~');
      if (p != NULL)
 #endif
-     {
-        char *pConvertedName, *pQstr, *pPstr;
-        char buf[HUGE_STRING_LEN];
-        /* We potentially have a short name.  Call 
-         * ap_os_systemcase_filename to examine the filesystem
-         * and possibly extract the long name.
-         */
-        pConvertedName = ap_os_systemcase_filename(pPool, pNewStr);
-
-        /* Since we want to preserve the incoming case as much
-         * as we can, compare for differences in the string and
-         * only substitute in the path names that changed.
-         */
-        if (stricmp(pNewStr, pConvertedName)) {
-            buf[0] = '\0';
-
-            q = pQstr = pConvertedName;
-            p = pPstr = pNewStr;
-            do {
-                q = strchr(q,'/');
-                p = strchr(p,'/');
-
-                if (p != NULL) {
-                    *q = '\0';
-                    *p = '\0';
-                }
-
-                if (stricmp(pQstr, pPstr)) 
-                    strcat(buf, pQstr);   /* Converted name */
-                else 
-                    strcat(buf, pPstr);   /* Original name  */
-
-
-                if (p != NULL) {
-                    pQstr = q;
-                    pPstr = p;
-                    *q++ = '/';
-                    *p++ = '/';
-                }
-
-            } while (p != NULL); 
-
-            pNewStr = ap_pstrdup(pPool, buf);
-        }
-    }
+    /* ap_os_systemcase_filename now changes the case of only
+     * the pathname elements that are found.
+     */
+        pNewStr = ap_os_systemcase_filename(pPool, pNewStr);
 
     return pNewStr;
 }

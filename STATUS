@@ -1,9 +1,10 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2001/04/02 09:22:02 $]
+  Last modified at [$Date: 2001/05/10 04:07:54 $]
 
 Release:
 
-   1.3.20-dev: Current version.
+   1.3.20: In development - security exploit demands a release ASAP.
+           Will offers to RM, tag and roll 5/10 9:00pm PST.
    1.3.19: Tagged and rolled Feb 26, 2001. Announced Mar 01, 2001.
    1.3.18: Not released.
              (Pulled because of an incorrect unescaping fix. t/r Feb 19, 2001)
@@ -255,7 +256,8 @@ Open issues:
       the filename (think win32, or samba-mounted filesystems).  There are
       several PR's to this and I don't see for security reasons why we can't
       accomodate it, though it does add complexity to suexec.c.
-      Accepting quoted executable names solves that issue.
+      Accepting quoted executable names solves that issue, except that the
+      exec cmd="" parsing needs to accept escaped quotes.
       PR #1120
       Brian: +1
       
@@ -303,24 +305,15 @@ Win32 specific issues:
 	- mod_log_referer.c
 	- mod_mime_magic.c (needs access to mod_mime API stage...)
 
-    * do something to disable bogus warnings
+    * do something to disable bogus warnings ... Will asks "Which warnings?"
 
     * rfc1413.c has static storage which won't work multithreaded
-
-    * mod_include --> exec cgi, exec cmd, etc. don't work right.
-      Looks like a code path that isn't run anywhere else that has
-      something not quite right...  A PR or two on it.
-
-    * Currently if you double click on the conf files or the
-      log files you get a useless dialog offering the set of all
-      executables, usually after a very long pause.  Ought
-      to stuff .conf in the registry mapping it to text.
 
     * apparently either "BrowserMatch" or the "nokeepalive" variable
       cause instability - see PR#1729.
 
 
-Binaries (1.3.19):
+Binaries (1.3.20):
 
  Platform                      Avail.  Volunteer
  ------------------------------------------------------------------------------
@@ -350,7 +343,7 @@ Binaries (1.3.19):
  i386-unknown-netBSD-1.3.2     no      Lars Eilebrecht, Randy Terbush
  i386-unknown-sco3             no      Ben Laurie
  i386-unknown-sco5             no      Ben Laurie
- i386-siemens-sinix5.4         yes     Martin Kraemer
+ i386-siemens-sinix5.4         no      Martin Kraemer
  i386-dg-dgux5.4R2.01          no      Randy Terbush
  x86-qnx-4.x                   no      Randy Terbush
  x86-bsdos-3.x                 no      Randy Terbush
@@ -364,9 +357,9 @@ Binaries (1.3.19):
  mips-sgi-irix5.3              no      Mark Imbrianco, Randy Terbush
  mips-sgi-irix6.2              no      Lars Eilebrecht, Randy Terbush
  mips-sgi-irix6.4              no      Lars Eilebrecht
- mips-siemens-reliantunix5.4   yes     Martin Kraemer
- netware                       yes     Brad Nicholes <bnicholes@novell.com>
- OS/2                          yes     Brian Havard
+ mips-siemens-reliantunix5.4   no      Martin Kraemer
+ netware                       no      Brad Nicholes <bnicholes@novell.com>
+ OS/2                          no      Brian Havard
  OS/390-09.00-02               no                     
  powerpc+i386-apple-darwin1.2  no      Wilfredo Sanchez
  powerpc-apple-rhapsody5.5     no      Wilfredo Sanchez
@@ -379,4 +372,4 @@ Binaries (1.3.19):
  sparc-sun-solaris2.7          no      Cliff Skolnick
  sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
  sparc-unknown-linux           no      Lars Eilebrecht, Randy Terbush
- win32                         yes     William Rowe
+ win32                         no      William Rowe
