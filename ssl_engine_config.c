@@ -334,8 +334,9 @@ const char *ssl_cmd_SSLPassPhraseDialog(
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
 
-    if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY)) != NULL)
+    if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY)) != NULL) {
         return err;
+    }
     if (strcEQ(arg, "builtin")) {
         sc->nPassPhraseDialogType  = SSL_PPTYPE_BUILTIN;
         sc->szPassPhraseDialogPath = NULL;
@@ -347,6 +348,10 @@ const char *ssl_cmd_SSLPassPhraseDialog(
         if (!ssl_util_path_check(SSL_PCM_EXISTS, sc->szPassPhraseDialogPath, cmd->pool))
             return ((const char *)apr_pstrcat(cmd->pool, "SSLPassPhraseDialog: file '",
                     sc->szPassPhraseDialogPath, "' does not exist",NULL));
+    }
+    else if (strlen(arg) > 1 && (arg[0] == '|')) {
+        sc->nPassPhraseDialogType  = SSL_PPTYPE_PIPE;
+        sc->szPassPhraseDialogPath = arg + 1;
     }
     else
         return "SSLPassPhraseDialog: Invalid argument";
