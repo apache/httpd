@@ -93,31 +93,31 @@ LINK32=link.exe
 # Name "expatlib - Win32 Debug"
 # Begin Source File
 
-SOURCE="..\..\lib\expat-lite\hashtable.c"
+SOURCE=".\hashtable.c"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\lib\expat-lite\xmlparse.c"
+SOURCE=".\xmlparse.c"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\lib\expat-lite\xmlparse.h"
+SOURCE=".\xmlparse.h"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\lib\expat-lite\dllmain.c"
+SOURCE=".\dllmain.c"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\lib\expat-lite\xmlrole.c"
+SOURCE=".\xmlrole.c"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\lib\expat-lite\xmltok.c"
+SOURCE=".\xmltok.c"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\lib\expat-lite\expatlib.def"
+SOURCE=".\expatlib.def"
 # End Source File
 
 # End Target

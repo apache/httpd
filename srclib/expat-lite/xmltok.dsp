@@ -93,19 +93,19 @@ LINK32=link.exe
 # Name "xmltok - Win32 Debug"
 # Begin Source File
 
-SOURCE="..\..\lib\expat-lite\dllmain.c"
+SOURCE=".\dllmain.c"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\lib\expat-lite\xmlrole.c"
+SOURCE=".\xmlrole.c"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\lib\expat-lite\xmltok.c"
+SOURCE=".\xmltok.c"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\lib\expat-lite\xmltok.def"
+SOURCE=".\xmltok.def"
 # PROP Exclude_From_Build 1
 # End Source File
 # End Target
