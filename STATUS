@@ -2,7 +2,9 @@ Apache 1.3 STATUS:
 
 Release:
 
-    1.3.1: In development
+    1.3.1: In development. Plan to release on June 19, 1998 to
+           incorporate the latest additions plus WIN32 compile problems.
+           Jim offers to be RM.
 
     1.3.0: Tagged and rolled on June 1. Announced and Released on the 6th.
            
