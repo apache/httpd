@@ -1107,7 +1107,7 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
  * and must be listed in order.
  */
 
-static char *status_lines[] = {
+static char *status_lines[RESPONSE_CODES] = {
     "100 Continue",
     "101 Switching Protocols",
     "102 Processing",
@@ -1162,11 +1162,11 @@ static char *status_lines[] = {
     "503 Service Temporarily Unavailable",
     "504 Gateway Time-out",
     "505 HTTP Version Not Supported",
-    "506 Variant Also Negotiates"
-    "507 Insufficient Storage"
+    "506 Variant Also Negotiates",
+    "507 Insufficient Storage",
     "508 unused",
     "509 unused",
-    "510 Not Extended",
+    "510 Not Extended"
 };
 
 /* The index is found by its offset from the x00 code of each level.
