@@ -233,11 +233,6 @@ int spawn_child_err (pool *, void (*)(void *), void *,
                  FILE **pipe_err);
 #define spawn_child(p,f,v,k,in,out) spawn_child_err(p,f,v,k,in,out,NULL)
 
-#ifdef __EMX__
-int spawn_child_os2 (pool *, void (*)(void *), void *,
-         enum kill_conditions, FILE **pipe_in, FILE **pipe_out, char *buffer, int lenp);
-#endif
-
 /* magic numbers --- only one so far, min free bytes in a new pool block */
 
 #define BLOCK_MINFREE 8192     

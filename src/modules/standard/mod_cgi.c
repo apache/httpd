@@ -388,35 +388,17 @@ int cgi_handler (request_rec *r)
     cld.argv0 = argv0; cld.r = r; cld.nph = nph;
     cld.debug = conf->logname ? 1 : 0;
     
+    if (!spawn_child (r->connection->pool, cgi_child, (void *)&cld,
+		      nph ? just_wait : kill_after_timeout,
 #ifdef __EMX__
-    if (should_client_block (r)) {
-
-        read_client_block (r, argsbuffer, HUGE_STRING_LEN);
-
-        if (!spawn_child_os2 (r->connection->pool, cgi_child, (void *)&cld,
-                  nph ? just_wait : kill_after_timeout, 
-                  &script_out, &script_in, argsbuffer, atoi(lenp))) { 
-            log_reason ("couldn't spawn child process", r->filename, r);
-            return SERVER_ERROR;
-        }
-    } else {
-        if (!spawn_child (r->connection->pool, cgi_child, (void *)&cld,
-                  nph ? just_wait : kill_after_timeout,
-                  &script_out, &script_in)) {
-            log_reason ("couldn't spawn child process", r->filename, r);
-            return SERVER_ERROR;
-        }
-    }
-    
+		      &script_out, &script_in, &script_err)) {
 #else
-    if (!spawn_child_err (r->connection->pool, cgi_child, (void *)&cld,
-			  nph ? just_wait : kill_after_timeout, 
-			  &script_out, nph ? NULL : &script_in,
-			  &script_err)) {
+                      &script_out, nph ? NULL : &script_in,
+                      &script_err)) {
+#endif
         log_reason ("couldn't spawn child process", r->filename, r);
         return SERVER_ERROR;
     }
-#endif
 
     /* Transfer any put/post args, CERN style...
      * Note that if a buggy script fails to read everything we throw
@@ -427,7 +409,6 @@ int cgi_handler (request_rec *r)
      * spurious newline).
      */
     
-#ifndef __EMX__
      if (should_client_block(r)) {
         void (*handler)();
 	int dbsize, len_read;
@@ -458,7 +439,6 @@ int cgi_handler (request_rec *r)
 	
 	kill_timeout (r);
     }
-#endif    
     
     pfclose (r->connection->pool, script_out);
     
