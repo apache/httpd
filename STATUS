@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/17 17:14:04 $]
+Last modified at [$Date: 2003/05/17 18:27:42 $]
 
 Release:
 
@@ -198,11 +198,6 @@ PATCHES TO PORT FROM 2.1
       modules/ssl/ssl_engine_io.c r1.106, r1.107 (minor breakage)
       +1: wrowe, jerenkrantz
       
-    * Add another check for already compressed content in mod_deflate.
-      PR 19913.
-      modules/filters/mod_deflate.c: r1.34
-      +1: nd, trawick, jerenkrantz
-
 CURRENT RELEASE NOTES:
 
     * Backwards compatibility is expected of future Apache 2.0 releases,
