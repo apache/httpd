@@ -92,6 +92,12 @@ httpd \- Apache hypertext transfer protocol server
 [
 .B \-S
 ] 
+[
+.B \-t
+] 
+[
+.B \-T
+]
 
 .SH DESCRIPTION
 .B httpd
@@ -163,6 +169,11 @@ virtualhost settings).
 Run syntax tests for configuration files only. The program immediately exits
 after these syntax parsing with either a return code of 0 (Syntax OK) or
 return code not equal to 0 (Syntax Error).
+.TP
+.B \-T
+Same as option 
+.B \-t
+but does not check the configured document roots. 
 .TP
 .B \-X
 Run in single-process mode, for internal debugging purposes only; the daemon

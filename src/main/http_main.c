@@ -1034,7 +1034,7 @@ static void usage(char *bin)
     fprintf(stderr, "Usage: %s [-D name] [-d directory] [-f file]\n", bin);
 #endif
     fprintf(stderr, "       %s [-C \"directive\"] [-c \"directive\"]\n", pad);
-    fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-L] [-S] [-t]\n", pad);
+    fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-L] [-S] [-t] [-T]\n", pad);
 #ifdef WIN32
     fprintf(stderr, "       %s [-n service] [-k signal] [-i] [-u]\n", pad);
 #endif
@@ -1053,7 +1053,8 @@ static void usage(char *bin)
     fprintf(stderr, "  -l               : list compiled-in modules\n");
     fprintf(stderr, "  -L               : list available configuration directives\n");
     fprintf(stderr, "  -S               : show parsed settings (currently only vhost settings)\n");
-    fprintf(stderr, "  -t               : run syntax test for configuration files only\n");
+    fprintf(stderr, "  -t               : run syntax check for config files (with docroot check)\n");
+    fprintf(stderr, "  -T               : run syntax check for config files (without docroot check)\n");
 #ifdef WIN32
     fprintf(stderr, "  -n name          : set service name and use its ServerConfigFile\n");
     fprintf(stderr, "  -k shutdown      : tell running Apache to shutdown\n");
