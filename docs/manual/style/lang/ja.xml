@@ -40,8 +40,10 @@
         <!-- Used for the moduleindex -->
         <message id="corefeatures">コア機能と MPM</message>
         <message id="othermodules">他のモジュール</message>
+        <message id="obsoletemodules">旧式のモジュール</message>
 
         <!-- Used for the modulesynopsis and sitemap -->
+        <message id="obsoleteapachemodule">旧式の Apache Module</message>
         <message id="apachemodule">Apache モジュール</message>
         <message id="apachecore">Apache コア機能</message>
         <message id="apachempmcommon">Apache MPM 共通ディレクティブ</message>
@@ -76,14 +78,21 @@
 
         <!-- Used for directive lists -->
         <message id="directives">ディレクティブ</message>
+        <!-- the optional attribute replace-space-with takes a string.
+             if present, the space between <directive name> and 'Directive'
+             in directivesynopsis headings will be replaced by the given string.
+             (see de.xml for an example) -->
         <message id="directive">ディレクティブ</message>
         <message id="nodirectives">このモジュールにディレクティブはありません。</message>
 
         <!-- Used in summaries -->
         <message id="summary">概要</message>
 
+        <!-- Used for translation notes -->
+        <message id="transnote">訳注:</message>
+
         <!-- Used for glossary link titles -->
-        <message id="glossarylink">see glossary</message>
+        <message id="glossarylink">用語集を参照</message>
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Apache HTTP サーバ</message>
