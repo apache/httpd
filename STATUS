@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/06/06 01:07:48 $]
+  Last modified at [$Date: 1999/06/06 01:17:41 $]
 
 Release:
 
@@ -100,7 +100,7 @@ Available Patches:
     * Salvador Ortiz Garcia <sog@msg.com.mx>' patch to allow DirectoryIndex
       to refer to URIs for non-static resources.
 	Message-ID: <Pine.LNX.4.10.9906041415330.15776-100000@xiomara.msg.com.mx>
-	Status: Ken +1 (on concept)
+	Status: Ken +1 (on concept), Lars +1 (on concept)
 
     * Ralf's [PATCH] to add EAPI (ctx, hook, mm, etc.) to the base package
 	Message-ID: <19990414134729.A93825@engelschall.com>
@@ -109,25 +109,25 @@ Available Patches:
 
     * Tony Finch's patch to support mass virtual hosting
 	Message-ID: <E10kXMV-00011I-00@fanf.noc.demon.net>
-	Status: Dean +1, Randy +1
+	Status: Dean +1, Randy +1, Lars +1 (if someone writes the docs)
 
     * Brian Havard's patch to remove dependency of mod_auth_dbm on mod_auth.
       (PR#2598)
 	Message-ID: <199905170830.SAA31549@silk.apana.org.au>
-	Status:
+	Status: Lars +1 (on concept)
 
     * Aidan Cully's patch to allow assignment of 'ownership' of resources
       to either the server UID or the file's owner.
 	Message-ID: <37306CB4.8EA9D76C@Golux.Com>
-	Status: Ken +1, Dean +1, Randy +1
+	Status: Ken +1, Dean +1, Randy +1, Lars +0
 
     * John Giannadrea's patch for ceiling on file size for mmap (PR#4122)
 	Message-ID: <19990325094501.5997.qmail@hyperreal.org>
-	Status: Ken +1, Dean +1, Randy +1
+	Status: Ken +1, Dean +1, Randy +1, Lars +1
 
     * Keith Wannamaker's NT multiple services patch
 	Message-ID: <85256730.0073D841.00@d54mta06.raleigh.ibm.com>
-	Status: Bill +1 (on concept)
+	Status: Bill +1 (on concept), Lars +1 (on concept)
 
     * Jun-ichiro itojun Hagino's [PATCH] IPv6 enable patch
       ftp://ftp.kame.net/pub/kame/misc/apache-134-v6-19990118.diff.gz
