@@ -560,11 +560,11 @@ static content_type *analyze_ct(request_rec *r, const char *s)
 	return (NULL);
     }
     for (tmp = ctp->type; *tmp; tmp++) {
-      if ((*tmp == ';') || (*tmp == ' ') || (*tmp == '\t')) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
-		     "Cannot get media subtype.");
-	return (NULL);
-      }
+        if ((*tmp == ';') || (*tmp == ' ') || (*tmp == '\t')) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                         "Cannot get media subtype.");
+            return (NULL);
+        }
     }
 
     /* getting a subtype */
@@ -580,11 +580,11 @@ static content_type *analyze_ct(request_rec *r, const char *s)
 	return (NULL);
     }
     for (tmp = ctp->subtype; *tmp; tmp++) {
-      if ((*tmp == ' ') || (*tmp == '\t')) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
-		     "Cannot get media subtype.");
-	return (NULL);
-      }
+        if ((*tmp == ' ') || (*tmp == '\t')) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                         "Cannot get media subtype.");
+            return (NULL);
+        }
     }
     if (*cp == '\0') {
         return (ctp);
