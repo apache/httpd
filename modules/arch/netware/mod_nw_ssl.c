@@ -556,6 +556,14 @@ static const char *nwssl_hook_http_method (const request_rec *r)
     return NULL;
 }
 
+static apr_port_t nwssl_hook_default_port(const request_rec *r)
+{
+    if (isSecure(r))
+        return DEFAULT_HTTPS_PORT;
+
+    return 0;
+}
+
 int ssl_proxy_enable(conn_rec *c)
 {
     apr_table_set(c->notes, "nwconv-ssl", "Y");
@@ -585,6 +593,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_post_config(nwssl_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_fixups(nwssl_hook_Fixup, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_http_method(nwssl_hook_http_method,   NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_default_port  (nwssl_hook_default_port,  NULL,NULL, APR_HOOK_MIDDLE);
 
     APR_REGISTER_OPTIONAL_FN(ssl_proxy_enable);
     APR_REGISTER_OPTIONAL_FN(ssl_engine_disable);
