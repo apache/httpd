@@ -746,6 +746,7 @@ typedef int rlim_t;
 #define NO_KILLPG
 #define NEED_STRCASECMP
 #define NEED_STRNCASECMP
+#define NEED_PROCESS_H
 #define NO_SETSID
 #define NO_TIMES
 #define CASE_BLIND_FILESYSTEM

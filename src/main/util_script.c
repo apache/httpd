@@ -695,7 +695,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 
 #endif
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(OS2)
     /* the fd on r->server->error_log is closed, but we need somewhere to
      * put the error messages from the log_* functions. So, we use stderr,
      * since that is better than allowing errors to go unnoticed.  Don't do
@@ -770,52 +770,30 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 	}
 
 	if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) {
-	    int emxloop;
-	    char *emxtemp;
-
-	    /* For OS/2 place the variables in the current
-	     * environment then it will be inherited. This way
-	     * the program will also get all of OS/2's other SETs.
-	     */
-	    for (emxloop = 0; ((emxtemp = env[emxloop]) != NULL); emxloop++) {
-		putenv(emxtemp);
-	    }
-
 	    /* More additions by Alec Kloss for OS/2 */
 	    if (is_script) {
 		/* here's the stuff to run the interpreter */
-		execl(interpreter + 2, interpreter + 2, r->filename, NULL);
+		pid = spawnle(P_NOWAIT, interpreter + 2, interpreter + 2, r->filename, NULL, env);
 	    }
 	    else if (strstr(strupr(r->filename), ".CMD") > 0) {
 		/* Special case to allow use of REXX commands as scripts. */
 		os2pathname(r->filename);
-		execl(SHELL_PATH, SHELL_PATH, "/C", r->filename, NULL);
+		pid = spawnle(P_NOWAIT, SHELL_PATH, SHELL_PATH, "/C", r->filename, NULL, env);
 	    }
 	    else {
-		execl(r->filename, argv0, NULL);
+		pid = spawnle(P_NOWAIT, r->filename, argv0, NULL, env);
 	    }
 	}
 	else {
-	    int emxloop;
-	    char *emxtemp;
-
-	    /* For OS/2 place the variables in the current
-	     * environment so that they will be inherited. This way
-	     * the program will also get all of OS/2's other SETs.
-	     */
-	    for (emxloop = 0; ((emxtemp = env[emxloop]) != NULL); emxloop++) {
-		putenv(emxtemp);
-	    }
-
 	    if (strstr(strupr(r->filename), ".CMD") > 0) {
 		/* Special case to allow use of REXX commands as scripts. */
 		os2pathname(r->filename);
-		execv(SHELL_PATH, create_argv_cmd(r->pool, argv0, r->args,
-						  r->filename));
+		pid = spawnve(P_NOWAIT, SHELL_PATH, create_argv_cmd(r->pool, argv0, r->args,
+						  r->filename), env);
 	    }
 	    else {
-		execv(r->filename,
-		      create_argv(r->pool, NULL, NULL, NULL, argv0, r->args));
+		pid = spawnve(P_NOWAIT, r->filename,
+		      create_argv(r->pool, NULL, NULL, NULL, argv0, r->args), env);
 	    }
 	}
 	return (pid);

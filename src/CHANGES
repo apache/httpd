@@ -1,4 +1,6 @@
 Changes with Apache 1.3.7
+  *) OS/2: Rework CGI handling to use spawn*() instead of fork/exec, achieving
+     a roughly 5 fold speed up. [Brian Havard]
 
   *) proxy ftp: instead of using the hardwired string "text/plain" as
      a fallback type for files served by the ftp proxy, use the

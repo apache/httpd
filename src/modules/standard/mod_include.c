@@ -822,7 +822,7 @@ static int include_cmd_child(void *arg, child_info *pinfo)
     /* set shellcmd flag to pass arg to SHELL_PATH */
     child_pid = ap_call_exec(r, pinfo, s, ap_create_environment(r->pool, env),
 			     1);
-#ifdef WIN32
+#if defined(WIN32) || defined(OS2)
     return (child_pid);
 #else
     /* Oh, drat.  We're still here.  The log file descriptors are closed,

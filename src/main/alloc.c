@@ -1671,9 +1671,9 @@ static void cleanup_pool_for_exec(pool *p)
 
 API_EXPORT(void) ap_cleanup_for_exec(void)
 {
-#ifndef WIN32
+#if !defined(WIN32) && !defined(OS2)
     /*
-     * Don't need to do anything on NT, because I
+     * Don't need to do anything on NT or OS/2, because I
      * am actually going to spawn the new process - not
      * exec it. All handles that are not inheritable, will
      * be automajically closed. The only problem is with
@@ -2140,6 +2140,54 @@ static pid_t spawn_child_core(pool *p, int (*func) (void *, child_info *),
 	 * unblock alarms and return the pid
 	 */
 
+    }
+#elif defined(OS2)
+    {
+        int save_in=-1, save_out=-1, save_err=-1;
+        
+        if (pipe_out) {
+            save_out = dup(STDOUT_FILENO);
+            dup2(out_fds[1], STDOUT_FILENO);
+            close(out_fds[1]);
+        }
+
+        if (pipe_in) {
+            save_in = dup(STDIN_FILENO);
+            dup2(in_fds[0], STDIN_FILENO);
+            close(in_fds[0]);
+        }
+
+        if (pipe_err) {
+            save_err = dup(STDERR_FILENO);
+            dup2(err_fds[1], STDERR_FILENO);
+            close(err_fds[1]);
+        }
+    
+        pid = func(data, NULL);
+    
+        if ( pid )
+            ap_note_subprocess(p, pid, kill_how);
+
+        if (pipe_out) {
+            close(STDOUT_FILENO);
+            dup2(save_out, STDOUT_FILENO);
+            close(save_out);
+            *pipe_out = out_fds[0];
+        }
+
+        if (pipe_in) {
+            close(STDIN_FILENO);
+            dup2(save_in, STDIN_FILENO);
+            close(save_in);
+            *pipe_in = in_fds[1];
+        }
+
+        if (pipe_err) {
+            close(STDERR_FILENO);
+            dup2(save_err, STDERR_FILENO);
+            close(save_err);
+            *pipe_err = err_fds[0];
+        }
     }
 #else
 

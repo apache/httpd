@@ -328,7 +328,7 @@ static int cgi_child(void *child_stuff, child_info *pinfo)
     ap_cleanup_for_exec();
 
     child_pid = ap_call_exec(r, pinfo, argv0, env, 0);
-#ifdef WIN32
+#if defined(WIN32) || defined(OS2)
     return (child_pid);
 #else
 
