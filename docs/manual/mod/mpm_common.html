@@ -99,7 +99,7 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> MPM<br />
      <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> threaded, perchild,
+    rel="Help"><strong>Module:</strong></a> worker, perchild,
     prefork, mpm_winnt</p>
 
     <p>This controls the directory to which Apache attempts to
@@ -126,7 +126,7 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> MPM<br />
      <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> threaded, perchild,
+    rel="Help"><strong>Module:</strong></a> worker, perchild,
     prefork</p>
     The Group directive sets the group under which the server will
     answer requests. In order to use this directive, the
@@ -173,7 +173,7 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> MPM<br />
      <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> threaded, perchild,
+    rel="Help"><strong>Module:</strong></a> worker, perchild,
     prefork, mpm_winnt</p>
 
     <p>The PidFile directive sets the file to which the server
@@ -203,7 +203,7 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> MPM<br />
      <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> threaded, perchild,
+    rel="Help"><strong>Module:</strong></a> worker, perchild,
     prefork, mpm_winnt</p>
 
     <p>The Listen directive instructs Apache to listen to only
@@ -260,7 +260,7 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> MPM<br />
      <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> threaded, perchild,
+    rel="Help"><strong>Module:</strong></a> worker, perchild,
     prefork, mpm_winnt</p>
 
     <p>The maximum length of the queue of pending connections.
@@ -290,7 +290,7 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> MPM<br />
      <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> threaded, perchild,
+    rel="Help"><strong>Module:</strong></a> worker, perchild,
     prefork</p>
 
     <p>The LockFile directive sets the path to the lockfile used
@@ -326,7 +326,7 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> MPM<br />
      <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> threaded, prefork</p>
+    rel="Help"><strong>Module:</strong></a> worker, prefork</p>
 
     <p>The MaxClients directive sets the limit on the number of
     child processes that will be created to serve requests. When
@@ -363,7 +363,7 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> MPM<br />
      <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> threaded, prefork,
+    rel="Help"><strong>Module:</strong></a> worker, prefork,
     perchild, mpm_winnt</p>
 
     <p>The MaxRequestsPerChild directive sets the limit on the
@@ -397,21 +397,21 @@
     <em>number</em><br />
      <a href="directive-dict.html#Default"
     rel="Help"><strong>Default:</strong></a> <code>MaxSpareThreads
-    10 (Perchild) or 500 (threaded)</code><br />
+    10 (Perchild) or 500 (worker)</code><br />
      <a href="directive-dict.html#Context"
     rel="Help"><strong>Context:</strong></a> server config<br />
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core<br />
      <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> threaded, perchild</p>
+    rel="Help"><strong>Module:</strong></a> worker, perchild</p>
 
     <p>Maximum number of idle threads. Different MPMs deal with
-    this directive differently. Perchild monitor the number of idle
+    this directive differently. Perchild monitors the number of idle
     threads on a per-child basis. If there are too many idle
     threads in that child, the server will begin to kill threads
     within that child.</p>
 
-    <p>threaded deals with idle threads on a server-wide basis. If
+    <p>worker deals with idle threads on a server-wide basis. If
     there are too many idle threads in the server then child
     processes are killed until the number of idle threads is less
     than this number.</p>
@@ -434,7 +434,7 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core<br />
      <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> threaded, perchild</p>
+    rel="Help"><strong>Module:</strong></a> worker, perchild</p>
 
     <p>Maximum number of threads per child. For MPMs with a
     variable number of threads per child, this directive sets the
@@ -453,21 +453,21 @@
     <em>number</em><br />
      <a href="directive-dict.html#Default"
     rel="Help"><strong>Default:</strong></a> <code>MaxSpareThreads
-    5 (Perchild) or 250 (threaded)</code><br />
+    5 (Perchild) or 250 (worker)</code><br />
      <a href="directive-dict.html#Context"
     rel="Help"><strong>Context:</strong></a> server config<br />
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core<br />
      <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> threaded, perchild</p>
+    rel="Help"><strong>Module:</strong></a> worker, perchild</p>
 
     <p>Minimum number of idle threads to handle request spikes.
     Different MPMs deal with this directive differently. Perchild
-    monitor the number of idle threads on a per-child basis. If
+    monitors the number of idle threads on a per-child basis. If
     there aren't enough idle threads in that child, the server will
     begin to create new threads within that child.</p>
 
-    <p>threaded deals with idle threads on a server-wide basis. If
+    <p>worker deals with idle threads on a server-wide basis. If
     there aren't enough idle threads in the server then child
     processes are created until the number of idle threads is
     greater than number.</p>
@@ -513,7 +513,7 @@
     rel="Help"><strong>Status:</strong></a> MPM<br />
      <a href="directive-dict.html#Compatibility" rel="Help"></a> <a
     href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> threaded, perchild,
+    rel="Help"><strong>Module:</strong></a> worker, perchild,
     prefork</p>
 
     <p>The ScoreBoardFile directive is required on some
@@ -546,7 +546,7 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> MPM<br />
      <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> threaded, perchild,
+    rel="Help"><strong>Module:</strong></a> worker, perchild,
     prefork, mpm_winnt</p>
     The server will set the TCP buffer size to the number of bytes
     specified. Very useful to increase past standard OS defaults on
@@ -569,7 +569,7 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> MPM<br />
      <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> threaded, prefork</p>
+    rel="Help"><strong>Module:</strong></a> worker, prefork</p>
 
     <p>The StartServers directive sets the number of child server
     processes created on startup. As the number of processes is
@@ -616,14 +616,14 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> MPM<br />
      <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> threaded, mpm_winnt</p>
+    rel="Help"><strong>Module:</strong></a> worker, mpm_winnt</p>
 
     <p>This directive sets the number of threads created by each
     child process. The child creates these threads at startup and
     never creates more. if using an MPM like mpmt_winnt, where
     there is only one child process, this number should be high
     enough to handle the entire load of the server. If using an MPM
-    like threaded, where there are multiple child processes, the
+    like worker, where there are multiple child processes, the
     total number of threads should be high enough to handle the
     common load on the server.</p>
     <hr />
@@ -643,7 +643,7 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core<br />
      <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> threaded, perchild,
+    rel="Help"><strong>Module:</strong></a> worker, perchild,
     prefork</p>
     The User directive sets the userid as which the server will
     answer requests. In order to use this directive, the standalone
