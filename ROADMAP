@@ -1,6 +1,6 @@
 APACHE 2.x ROADMAP
 ==================
-Last modified at [$Date: 2002/10/28 04:16:40 $]
+Last modified at [$Date: 2002/10/28 07:37:29 $]
 
 
 WORKS IN PROGRESS
@@ -68,6 +68,16 @@ WORKS IN PROGRESS
            available for the life of the request, so a complete 
            async implementation would need to happen 3.0 release.
 
+        Brian notes that async writes will provide a bigger
+        scalability win than async reads for most servers.
+        We may want to try a hybrid sync-read/async-write MPM
+        as a next step.  This should be relatively easy to
+        build: start with the current worker or leader/followers
+        model, but hand off each response brigade to a "completion
+        thread" that multiplexes writes on many connections, so
+        that the worker thread doesn't have to wait around for
+        the sendfile to complete.
+
     * Add a string "class" that combines a char* with a length
       and a reference count.  This will help reduce the number
       of strlen and strdup operations during request processing.
@@ -75,6 +85,11 @@ WORKS IN PROGRESS
       of reallocation we do today, in terms of string manipulation.
 
         OtherBill asks if this is really an APR issue, not an HTTPD issue?
+
+        Brian notes that the performance optimization work in 2.0
+        has all but eliminated the original motiviation for this
+        idea.  The httpd doesn't spend that much time in strlen
+        calls any more.
 
 
 MAKING APACHE REPOSITORY-AGNOSTIC
