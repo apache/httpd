@@ -139,14 +139,11 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	;;
 
     QNX:*)
-	case "$VERSION" in
-	    423)
-		echo "${MACHINE}-qssl-qnx32"
-		;;
-	    *)
-		echo "${MACHINE}-qssl-qnx"
-		;;
-	esac
+	if [ "$VERSION" -gt 422 ]; then
+	    echo "${MACHINE}-qssl-qnx32"
+	else
+	    echo "${MACHINE}-qssl-qnx"
+	fi
 	exit 0
 	;;
 
