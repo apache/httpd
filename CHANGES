@@ -404,6 +404,12 @@ Changes with Apache 2.1.0-dev
   [Apache 2.1.0-dev includes those bug fixes and changes with the
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
+Changes with Apache 2.0.52
+
+  *) mod_mem_cache: Fixed race condition causing segfault because of memory being
+     freed twice, or reused after being freed.
+     [J. Clar, W. Stoddard, G. Ames]
+
 Changes with Apache 2.0.51
 
   *) Add -l option to rotatelogs to let it use local time rather than
