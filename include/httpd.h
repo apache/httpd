@@ -1450,18 +1450,18 @@ AP_DECLARE(int) ap_is_matchexp(const char *str);
 /**
  * Determine if a string matches a patterm containing the wildcards '?' or '*'
  * @param str The string to check
- * @param exp The pattern to match against
+ * @param expected The pattern to match against
  * @return 1 if the two strings match, 0 otherwise
  */
-AP_DECLARE(int) ap_strcmp_match(const char *str, const char *exp);
+AP_DECLARE(int) ap_strcmp_match(const char *str, const char *expected);
 /**
  * Determine if a string matches a patterm containing the wildcards '?' or '*',
  * ignoring case
  * @param str The string to check
- * @param exp The pattern to match against
+ * @param expected The pattern to match against
  * @return 1 if the two strings match, 0 otherwise
  */
-AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *exp);
+AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *expected);
 
 /**
  * Find the first occurrence of the substring s2 in s1, regardless of case
