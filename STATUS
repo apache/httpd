@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/11/15 12:06:53 $]
+Last modified at [$Date: 2001/11/16 18:57:48 $]
 
 Release:
 
@@ -320,6 +320,14 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       autoconf function or come up with some other autoconf checks to
       search for libssl and libcrypto and properly add them to mod_ssl's
       link flags.
+
+    * Remove the threaded MPM.
+      +1:   Ryan, Justin, Jeff, Ian
+      +0:
+      -1:
+
+    * Make the worker MPM the default MPM for threaded Unix boxes.
+      +1:   Justin, Jeff, Ian
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
