@@ -1,3 +1,6 @@
+Changes with Apache 2.0.41
+
+
 Changes with Apache 2.0.40
 
   *) SECURITY: [CAN-2002-0661] Close a very significant security hole that 
