@@ -971,9 +971,7 @@ API_EXPORT(void) pclosedir (pool *p, DIR *d)
 
 static void socket_cleanup (void *fdv)
 {
-    int rv;
-    
-    rv = closesocket((int)(long)fdv);
+    closesocket((int)(long)fdv);
 }
 
 API_EXPORT(void) note_cleanups_for_socket (pool *p, int fd) {
