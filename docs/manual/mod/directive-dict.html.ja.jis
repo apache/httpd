@@ -11,7 +11,7 @@
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.1</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -22,8 +22,6 @@
 <a href="../ja/mod/directive-dict.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directive-dict.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p>この文書は各 Apache <a href="directives.html">設定ディレクティブ</a>
     を説明するために使われている用語を説明します。</p>
@@ -87,7 +85,7 @@
       のように、
       ルートディレクトリから始まるローカルのファイルシステム上のファイルへのパス。
       通常、スラッシュで始まらない <em>file-path</em> は <a href="core.html#serverroot">ServerRoot</a>
-      からの相対パスとして 扱われます。</dd>
+      からの相対パスとして 扱われます。</dd>
 
       <dt><em>directory-path</em></dt>
 
@@ -103,9 +101,8 @@
 
       <dt><em>regex</em></dt>
 
-      <dd>正規表現で、
-      テキストのマッチのパターンを表します。ディレクティブの定義が
-      <em>regex</em>
+      <dd>Perl 互換の<a href="../glossary.html#regex">正規表現</a>です。
+      ディレクティブの定義が <em>regex</em>
       が何に対してマッチを行なうのかを指定します。</dd>
 
       <dt><em>extension</em></dt>
@@ -142,7 +139,7 @@
     (<em>すなわち</em>、設定ファイルから
     省略されていても、Apache
     ウェブサーバは特定の値に設定されているかのように
-    動作します) がある場合はここに記述されます。
+    動作します) がある場合はここに記述されます。
     デフォルト値の無い場合、ここは "<em>None</em>" と
     書かれます。ここで書かれているデフォルトはサーバと共に配布されている
     デフォルトの httpd.conf
@@ -201,7 +198,7 @@
     <p>
     ディレクティブの有効な位置は、実際は挙げられているコンテキストの
     論理和 (訳注: Boolen OR)
-    になります。言い換えると、
+    になります。言い換えると、
     "<code>サーバ設定ファイル、.htaccess</code>" で有効だと
     記されているディレクティブは <code>httpd.conf</code>
     ファイルと <code>.htaccess</code>
@@ -255,7 +252,7 @@
 
       <dd>"Base" のディレクティブは
       デフォルトでサーバに組み込まれている標準モジュールの中の一つでサ
-      ポートされていて、わざわざ設定からモジュールを削除したときを除いて、
+      ポートされていて、わざわざ設定からモジュールを削除したときを除いて、
       通常では使用可能であることを示します。</dd>
 
       <dt>Extension</dt>
@@ -300,5 +297,5 @@
 <a href="../ko/mod/directive-dict.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 1999-2004 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
 </body></html>
