@@ -62,7 +62,7 @@
 #include "util_uri.h" 
 #include "ap_mpm.h"
 
-char *ap_server_argv0;
+const char *ap_server_argv0;
 
 API_VAR_EXPORT const char *ap_server_root;
 
@@ -201,8 +201,6 @@ static void destroy_and_exit_process(process_rec *process, int process_exit_valu
     exit(process_exit_value);
 }
 
-#define PATHSEPARATOR '/'  /* Belongs in some apr os include file */
-
 static process_rec *create_process(int argc, const char **argv)
 {
     process_rec *process;
@@ -217,11 +215,7 @@ static process_rec *create_process(int argc, const char **argv)
     ap_create_context(&process->pconf, process->pool);
     process->argc = argc;
     process->argv = argv;
-    {
-        char *s = strrchr(argv[0], PATHSEPARATOR);
-
-	process->short_name = s ? ++s : argv[0];
-    }
+    process->short_name = ap_filename_of_pathname(argv[0]);
     return process;
 }
 
@@ -285,19 +279,12 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
     server_rec *server_conf;
     ap_context_t *pglobal = process->pool;
     ap_context_t *pconf = process->pconf;
-    ap_context_t *plog;			/* Pool for error-logging files */
-    ap_context_t *ptemp;		/* Pool for temporary config stuff */
-    ap_context_t *pcommands;		/* Pool for -C and -c switches */
+    ap_context_t *plog; /* Pool of log streams, reset _after_ each read of conf */
+    ap_context_t *ptemp; /* Pool for temporary config stuff, reset often */
+    ap_context_t *pcommands; /* Pool for -C and -c switches */
 
-#ifndef WIN32
-    if ((ap_server_argv0 = strrchr(argv[0], '/')) != NULL)
-#else
-    if ((ap_server_argv0 = strrchr(argv[0], '\\')) != NULL)
-#endif
-        ++ap_server_argv0;
-    else
-	ap_server_argv0 = argv[0];
-
+    ap_server_argv0 = process->short_name;
+    
     ap_util_uri_init();
 
     g_pHookPool=pglobal;
@@ -352,18 +339,18 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
     ap_create_context(&plog, pglobal);
     ap_create_context(&ptemp, pconf);
 
-    /* for legacy reasons, we read the configuration twice before
-	we actually serve any requests */
+    /* Note that we preflight the config file once
+       before reading it _again_ in the main loop.
+       This allows things, log files configuration 
+       for example, to settle down. */
 
     ap_server_root = def_server_root;
     ap_run_pre_config(pconf, plog, ptemp);
     server_conf = ap_read_config(process, ptemp, confname);
-
     if (configtestonly) {
 	fprintf(stderr, "Syntax OK\n");
 	destroy_and_exit_process(process, 0);
     }
-
     ap_clear_pool(plog);
     ap_run_open_logs(pconf, plog, ptemp, server_conf);
     ap_post_config_hook(pconf, plog, ptemp, server_conf);
