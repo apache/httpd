@@ -27,25 +27,15 @@
  * GET /server-info?list - Returns quick list of included modules
  * GET /server-info?config - Returns full configuration
  *
- * Rasmus Lerdorf <rasmus@vex.net>, May 1996
+ * Original Author: 
+ *   Rasmus Lerdorf <rasmus vex.net>, May 1996
  *
- * 05.01.96 Initial Version
+ * Modified By: 
+ *   Lou Langholtz <ldl usi.utah.edu>, July 1997
  *
- * Lou Langholtz <ldl@usi.utah.edu>, July 1997
- *
- * 07.11.97 Addition of the AddModuleInfo directive
- *
- * Ryan Morgan <rmorgan@covalent.net>
+ * Apache 2.0 Port:
+ *   Ryan Morgan <rmorgan covalent.net>, August 2000
  * 
- * 8.11.00 Port to Apache 2.0.  Read configuation from the configuration
- * tree rather than reparse the entire configuation file.
- * 
- * Rici Lake <rici@ricilake.net>
- *
- * 2004-08-28 Rewrote config tree walk using recursion the way God intended.
- * Added ?config option. Added printout of config filename and line numbers.
- * Fixed indentation.
- *
  */
 
 #define CORE_PRIVATE
@@ -98,13 +88,22 @@ static void *merge_info_config(apr_pool_t * p, void *basev, void *overridesv)
     return new;
 }
 
-static void mod_info_indent(request_rec *r, int nest, const char *thisfn,
-                            int linenum)
+static void put_int_flush_right(request_rec *r, int i, int field)
+{
+    if (field > 1 || i > 9)
+        put_int_flush_right(r, i / 10, field - 1);
+    if (i)
+        ap_rputc('0' + i % 10, r);
+    else
+        ap_rputs("&nbsp;", r);
+}
+
+static void mod_info_indent(request_rec *r, int nest,
+                            const char *thisfn, int linenum)
 {
     int i;
     const char *prevfn =
         ap_get_module_config(r->request_config, &info_module);
-    char buf[32];
     if (thisfn == NULL)
         thisfn = "*UNKNOWN*";
     if (prevfn == NULL || 0 != strcmp(prevfn, thisfn)) {
@@ -113,17 +112,14 @@ static void mod_info_indent(request_rec *r, int nest, const char *thisfn,
                    thisfn);
         ap_set_module_config(r->request_config, &info_module, thisfn);
     }
+
     ap_rputs("<dd><tt>", r);
-    if (linenum > 0)
-        sprintf(buf, "%d", linenum);
-    else
-        buf[0] = '\0';
-    for (i = strlen(buf); i < 4; ++i)
-        ap_rputs("&nbsp;", r);
-    ap_rputs(buf, r);
+    put_int_flush_right(r, linenum > 0 ? linenum : 0, 4);
     ap_rputs(":&nbsp;", r);
-    for (i = 1; i <= nest; ++i)
+
+    for (i = 1; i <= nest; ++i) {
         ap_rputs("&nbsp;&nbsp;", r);
+    }
 }
 
 static void mod_info_show_cmd(request_rec *r, const ap_directive_t * dir,
