@@ -62,6 +62,7 @@
                                   yourself in the foot for free.''
                                                  -- Unknown         */
 #include "mod_ssl.h"
+#include "mod_status.h"
 
 /*  _________________________________________________________________
 **
@@ -147,17 +148,6 @@ void ssl_scache_remove(server_rec *s, UCHAR *id, int idlen)
     return;
 }
 
-void ssl_scache_status(server_rec *s, apr_pool_t *p, void (*func)(char *, void *), void *arg)
-{
-    SSLModConfigRec *mc = myModConfig(s);
-
-    if (mc->nSessionCacheMode == SSL_SCMODE_DBM)
-        ssl_scache_dbm_status(s, p, func, arg);
-    else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
-        ssl_scache_shmcb_status(s, p, func, arg);
-    return;
-}
-
 void ssl_scache_expire(server_rec *s)
 {
     SSLModConfigRec *mc = myModConfig(s);
@@ -174,43 +164,33 @@ void ssl_scache_expire(server_rec *s)
 **  SSL Extension to mod_status
 **  _________________________________________________________________
 */
-#if 0 /* NOT YET */
-static void ssl_ext_ms_display(request_rec *, int, int);
-
-void ssl_scache_status_register(apr_pool_t *p)
-{
-    /* XXX point mod_status to this update, when it grows the opt fn */
-#if 0
-    ap_hook_register("ap::mod_status::display", ssl_ext_ms_display, AP_HOOK_NOCTX);
-#endif
-    return;
-}
-
-static void ssl_ext_ms_display_cb(char *str, void *_r)
-{
-    request_rec *r = (request_rec *)_r;
-    if (str != NULL)
-        ap_rputs(str, r);
-    return;
-}
-
-static void ssl_ext_ms_display(request_rec *r, int no_table_report, int short_report)
+static int ssl_ext_status_hook(request_rec *r, int flags)
 {
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
 
-    if (sc == NULL)
-        return;
-    if (short_report)
-        return;
+    if (sc == NULL || flags & AP_STATUS_SHORT)
+        return OK;
+
     ap_rputs("<hr>\n", r);
     ap_rputs("<table cellspacing=0 cellpadding=0>\n", r);
     ap_rputs("<tr><td bgcolor=\"#000000\">\n", r);
     ap_rputs("<b><font color=\"#ffffff\" face=\"Arial,Helvetica\">SSL/TLS Session Cache Status:</font></b>\r", r);
     ap_rputs("</td></tr>\n", r);
     ap_rputs("<tr><td bgcolor=\"#ffffff\">\n", r);
-    ssl_scache_status(r->server, r->pool, ssl_ext_ms_display_cb, r);
+
+    if (sc->mc->nSessionCacheMode == SSL_SCMODE_DBM)
+        ssl_scache_dbm_status(r, flags, r->pool);
+    else if (sc->mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
+        ssl_scache_shmcb_status(r, flags, r->pool);
+    
     ap_rputs("</td></tr>\n", r);
     ap_rputs("</table>\n", r);
-    return;
+    return OK;
 }
-#endif
+
+void ssl_scache_status_register(apr_pool_t *p)
+{
+    APR_OPTIONAL_HOOK(ap, status_hook, ssl_ext_status_hook, NULL, NULL,
+                      APR_HOOK_MIDDLE);
+}
+
