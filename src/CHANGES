@@ -15,9 +15,9 @@ Changes with Apache 1.3b8
   *) [SECURITY] A possible buffer overflow in the ftp proxy was fixed.
      [Martin Kraemer]
 
-  *) Transform the configure message "You need root priviledges for suEXEC"
+  *) Transform the configure message "You need root privileges for suEXEC"
      from a fatal error into a (more friendly) warning because the building
-     ("make") of Apache we can allow, of course. Root priviledges are needed
+     ("make") of Apache we can allow, of course. Root privileges are needed
      only for the installation step ("make install"). So make sure the
      user is aware of this fact but let him proceed as long as he can.
      [Ralf S. Engelschall] PR#2288

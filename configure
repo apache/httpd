@@ -684,7 +684,7 @@ fi
 if [ ".$suexec" = .1 ]; then
     if [ ".`id | grep root`" = . ]; then
         echo " + Warning: You enabled the suEXEC feature. Be aware that you need" 1>&2
-        echo " + root priviledges for this, at the latest at the installation step." 1>&2
+        echo " + root privileges for this, at the latest at the installation step." 1>&2
     fi
 fi
 if [ ".$PERL" = .no-perl-on-this-system ]; then
