@@ -122,8 +122,6 @@ static int is_scriptaliased(request_rec *r)
 #define DEFAULT_LOGBYTES 10385760
 #define DEFAULT_BUFBYTES 1024
 
-#define ERRFN_USERDATA_KEY         "CGICHILDERRFN"
-
 typedef struct {
     const char *logname;
     long        logbytes;
@@ -385,13 +383,15 @@ static void add_ssi_vars(request_rec *r)
 static void cgi_child_errfn(apr_pool_t *pool, apr_status_t err,
                             const char *description)
 {
-    request_rec *r;
-    void *vr;
+    apr_file_t *stderr_log;
+    char errbuf[200];
 
-    apr_pool_userdata_get(&vr, ERRFN_USERDATA_KEY, pool);
-    r = vr;
-
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, err, r, "%s", description);
+    apr_file_open_stderr(&stderr_log, pool);
+    apr_file_printf(stderr_log,
+                    "(%d)%s: %s\n",
+                    err,
+                    apr_strerror(err, errbuf, sizeof(errbuf)),
+                    description);
 }
 
 static apr_status_t run_cgi_child(apr_file_t **script_out,
@@ -473,8 +473,6 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
                       "couldn't set child process attributes: %s", r->filename);
     }
     else {
-        apr_pool_userdata_set(r, ERRFN_USERDATA_KEY, apr_pool_cleanup_null, p);
-
         procnew = apr_pcalloc(p, sizeof(*procnew));
         if (e_info->prog_type == RUN_AS_SSI) {
             SPLIT_AND_PASS_PRETAG_BUCKETS(*(e_info->bb), e_info->ctx,

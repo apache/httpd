@@ -1,5 +1,10 @@
 Changes with Apache 2.0.49
 
+  *) Fix the inability to log errors like exec failure in
+     mod_ext_filter/mod_cgi script children.  This was broken after 
+     such children stopped inheriting the error log handle.  
+     [Jeff Trawick]
+
   *) Fix mod_info to use the real config file name, not the default
      config file name.  [Aryeh Katz <aryeh secured-services.com>]
 
