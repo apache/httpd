@@ -107,10 +107,10 @@
 	fi
     fi
     if [ "$RULE_DEV_RANDOM" = "truerand" ]; then
-	echo "    o mod_auth_digest using truerand library (-lrand) for the random seed"
+	echo "      using truerand library (-lrand) for the random seed"
 	LIBS="$LIBS -L/usr/local/lib -lrand"
     else
-	echo "    o mod_auth_digest using $RULE_DEV_RANDOM for the random seed"
+	echo "      using $RULE_DEV_RANDOM for the random seed"
 	CFLAGS="$CFLAGS -DDEV_RANDOM=$RULE_DEV_RANDOM"
     fi
 
