@@ -1,5 +1,12 @@
 Changes with Apache 1.3.27
 
+  *) Relaxed mod_digest its parsing in order to make it work
+     with iCal's "WebDAVFS/1.2 (01208000) Darwin/6.0 (Power Macintosh)"
+     User-Agent. Apache (incorrectly) insisted on a quoted URI's
+     in the uri field of the Authorization client header. Not
+     yet done for EBCDIC plaforms. 
+     [Dirk-Willem van Gulik]
+
   *) Back out an older patch for PR 9932, which had some incorrect
      behavior. Instead, use a backport of the APR fix. This has
      the nice effect that ap_snprintf() can now distinguish between
