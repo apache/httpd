@@ -451,7 +451,7 @@ server. Some admins use user <code>nobody</code>, but this is not always
 possible or desirable.<p>
 
 Note: if you start the server as a non-root user, it will fail to change
-to the specified, and will instead continue to run as the group of the
+to the specified group, and will instead continue to run as the group of the
 original user. <p>
 
 Special note: Use of this directive in &lt;VirtualHost&gt; requires a
@@ -472,7 +472,7 @@ for each connection, where the client machine runs identd or something similar.
 This information is logged in the access log. <em>Boolean</em> is either
 <code>on</code> or <code>off</code>.<p>
 
-The information should not trusted in any way except for rudimentary usage
+The information should not be trusted in any way except for rudimentary usage
 tracking.<p><hr>
 
 <A NAME="ifmodule"><H2>&lt;IfModule&gt;</H2></A>
@@ -885,7 +885,7 @@ httpd.conf file. <em>Filename</em> is relative to the
 This feature can be disabled using:
 <blockquote><code>ResourceConfig /dev/null</code></blockquote>
 Historically, this file contained most directives except for server
-configuration directives and <A HREF="#directory">&lt;Directory&gt;</A>.
+configuration directives and <A HREF="#directory">&lt;Directory&gt;</A>
 sections; in fact it can now contain any server directive allowed in the
 <em>server config</em> context.<p>
 
