@@ -581,10 +581,16 @@ start_over:
     else {
         if (curl) {
             /* compare successful - add to the compare cache */
-            LDAP_CACHE_RDLOCK();
+            LDAP_CACHE_WRLOCK();
             newnode.reqdn = (char *)reqdn;
             newnode.dn = (char *)dn;
-            util_ald_cache_insert(curl->dn_compare_cache, &newnode);
+            
+            node = util_ald_cache_fetch(curl->dn_compare_cache, &newnode);
+            if ((node == NULL) || 
+                (strcmp(reqdn, node->reqdn) != 0) || (strcmp(dn, node->dn) != 0)) {
+
+                util_ald_cache_insert(curl->dn_compare_cache, &newnode);
+            }
             LDAP_CACHE_UNLOCK();
         }
         ldc->reason = "DN Comparison TRUE (checked on server)";
@@ -702,7 +708,21 @@ start_over:
             LDAP_CACHE_WRLOCK();
             the_compare_node.lastcompare = curtime;
             the_compare_node.result = result;
-            util_ald_cache_insert(curl->compare_cache, &the_compare_node);
+
+            /* If the node doesn't exist then insert it, otherwise just update it with
+               the last results */
+            compare_nodep = util_ald_cache_fetch(curl->compare_cache, &the_compare_node);
+            if ((compare_nodep == NULL) || 
+                (strcmp(the_compare_node.dn, compare_nodep->dn) != 0) || 
+                (strcmp(the_compare_node.attrib, compare_nodep->attrib) != 0) || 
+                (strcmp(the_compare_node.value, compare_nodep->value) != 0)) {
+
+                util_ald_cache_insert(curl->compare_cache, &the_compare_node);
+            }
+            else {
+                compare_nodep->lastcompare = curtime;
+                compare_nodep->result = result;
+            }
             LDAP_CACHE_UNLOCK();
         }
         if (LDAP_COMPARE_TRUE == result) {
@@ -920,7 +940,18 @@ start_over:
         the_search_node.bindpw = bindpw;
         the_search_node.lastbind = apr_time_now();
         the_search_node.vals = vals;
-        util_ald_cache_insert(curl->search_cache, &the_search_node);
+
+        /* Search again to make sure that another thread didn't ready insert this node
+           into the cache before we got here. If it does exist then update the lastbind */
+        search_nodep = util_ald_cache_fetch(curl->search_cache, &the_search_node);
+        if ((search_nodep == NULL) || 
+            (strcmp(*binddn, search_nodep->dn) != 0) || (strcmp(bindpw, search_nodep->bindpw) != 0)) {
+
+            util_ald_cache_insert(curl->search_cache, &the_search_node);
+        }
+        else {
+            search_nodep->lastbind = the_search_node.lastbind;
+        }
         LDAP_CACHE_UNLOCK();
     }
     ldap_msgfree(res);
