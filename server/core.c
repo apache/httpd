@@ -2659,6 +2659,9 @@ static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd,
                 o += bytes_sent;       /* o is where we are in the buffer */
                 *nbytes += bytes_sent;
                 togo -= bytes_sent;    /* track how much of the file we've sent */
+            } else {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
+                             "Failed to send data in send_the_file");
             }
         }
     }
