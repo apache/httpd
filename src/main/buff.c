@@ -221,7 +221,17 @@ int recvwithtimeout(int sock, char *buf, int len, int flags)
 
 #endif /* WIN32 */
 
+
 /* the lowest level reading primitive */
+static int ap_read(BUFF *fb, void *buf, int nbyte)
+{
+    int rv;
+    
+    rv = read(fb->fd_in, buf, nbyte);
+    
+    return rv;
+}
+
 static ap_inline int buff_read(BUFF *fb, void *buf, int nbyte)
 {
     int rv;
@@ -241,6 +251,19 @@ static ap_inline int buff_read(BUFF *fb, void *buf, int nbyte)
 }
 
 /* the lowest level writing primitive */
+static int ap_write(BUFF *fb, const void *buf, int nbyte)
+{
+    int rv;
+    
+#if defined (B_SFIO)
+    rv = sfwrite(fb->sf_out, buf, nbyte);
+#else
+    rv = write(fb->fd, buf, nbyte);
+#endif
+    
+    return rv;
+}
+
 static ap_inline int buff_write(BUFF *fb, const void *buf, int nbyte)
 {
     int rv;

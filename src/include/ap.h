@@ -57,8 +57,6 @@
 #ifndef APACHE_AP_H
 #define APACHE_AP_H
 
-API_EXPORT(int) ap_read(BUFF *fb, void *buf, int nbyte);
-API_EXPORT(int) ap_write(BUFF *fb, const void *buf, int nbyte);
 API_EXPORT(char *) ap_cpystrn(char *, const char *, size_t);
 int ap_slack(int, int);
 API_EXPORT(char *) ap_escape_quotes(pool *, const char *);
