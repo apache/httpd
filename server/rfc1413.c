@@ -147,7 +147,8 @@ static apr_status_t rfc1413_connect(apr_socket_t **newsock, conn_rec *conn,
     }
 
     if ((rv = apr_setsocketopt(*newsock, APR_SO_TIMEOUT, 
-                               ap_rfc1413_timeout * APR_USEC_PER_SEC)) 
+                               (apr_int32_t)(ap_rfc1413_timeout 
+                                              * APR_USEC_PER_SEC)))
         != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, srv,
                      "rfc1413: error setting query socket timeout");
@@ -188,11 +189,11 @@ static apr_status_t rfc1413_query(apr_socket_t *sock, conn_rec *conn,
 {
     apr_port_t rmt_port, our_port;
     apr_port_t sav_rmt_port, sav_our_port;
-    size_t i;
+    apr_size_t i;
     char *cp;
     char buffer[RFC1413_MAXDATA + 1];
     char user[RFC1413_USERLEN + 1];	/* XXX */
-    int buflen;
+    apr_size_t buflen;
     apr_sockaddr_t *localsa;
 
     apr_socket_addr_get(&localsa, APR_LOCAL, sock);
