@@ -63,6 +63,8 @@ stat() properly */
 #include <sys/stat.h>
 
 #ifdef WIN32
+/* include process.h first so we can override spawn[lv]e* properly */
+#include <process.h>
 #include "../os/win32/os.h"
 #else
 #include "os.h"

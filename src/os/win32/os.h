@@ -21,7 +21,7 @@
 #define NO_USE_SIGACTION
 #define NO_TIMES
 #define NO_GETTIMEOFDAY
-#define NEED_PROCESS_H
+//#define NEED_PROCESS_H    although we do, this is specially handled in conf.h
 #define USE_LONGJMP
 #define HAVE_MMAP
 #define MULTITHREAD
@@ -82,3 +82,13 @@ __inline int os_is_path_absolute(char *file)
 
 #define stat(f,ps)  os_stat(f,ps)
 API_EXPORT(int) os_stat(const char *szPath,struct stat *pStat);
+
+#define _spawnv(mode,cmdname,argv)	    os_spawnv(mode,cmdname,argv)
+#define spawnv(mode,cmdname,argv)	    os_spawnv(mode,cmdname,argv)
+API_EXPORT(int) os_spawnv(int mode,const char *cmdname,const char *const *argv);
+#define _spawnve(mode,cmdname,argv,envp)    os_spawnve(mode,cmdname,argv,envp)
+#define spawnve(mode,cmdname,argv,envp)	    os_spawnve(mode,cmdname,argv,envp)
+API_EXPORT(int) os_spawnve(int mode,const char *cmdname,const char *const *argv,const char *const *envp);
+#define _spawnle			    os_spawnle
+#define spawnle				    os_spawnle
+API_EXPORT(int) os_spawnle(int mode,const char *cmdname,...);

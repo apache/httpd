@@ -18,10 +18,11 @@ _apacher:
 	 set CFG=regex - Win32 Release
 	 nmake /nologo -f regex.mak
 	cd ..
-	set CFG=ApacheCore - Win32 Release
-	nmake /nologo -f ApacheCore.mak
-	set CFG=Apache - Win32 Release
-	nmake /nologo -f Apache.mak
+	 del CoreR\buildmark.obj
+	 set CFG=ApacheCore - Win32 Release
+	 nmake /nologo -f ApacheCore.mak
+	 set CFG=Apache - Win32 Release
+	 nmake /nologo -f Apache.mak
 	cd os\win32
 	 set CFG=ApacheModuleStatus - Win32 Release
 	 nmake /nologo -f ApacheModuleStatus.mak
@@ -56,6 +57,7 @@ _apached:
 	 set CFG=regex - Win32 Debug
 	 nmake /nologo -f regex.mak
 	cd ..
+	 del CoreD\buildmark.obj
 	 set CFG=ApacheCore - Win32 Debug
 	 nmake /nologo -f ApacheCore.mak
 	 set CFG=Apache - Win32 Debug

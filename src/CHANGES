@@ -1,8 +1,11 @@
 Changes with Apache 1.3b3
 
+  *) WIN32: Work around brain-damaged spawn calls that can't deal
+     with spaces and slashes.  [Ben Laurie]
+
   *) WIN32: Fix the code so CGIs can use socket calls on Windows.  
-     The problem was that certain environment variables needed for
-     sockets to work under Win32 were not being passed.
+     The problem was that certain undocumented environment variables
+	 needed for sockets to work under Win32 were not being passed.
      [Frank Faubert <frank@sane.com>]
 
   *) Add a "-V" command line flag to the httpd binary.  This 
@@ -158,9 +161,9 @@ Changes with Apache 1.3b3
 
   *) Make single-exe Windows install. [Ben Laurie and Eric Esselink]
 
-  *) Make CGI work under Win95. [Ben Laurie and Paul Sutton]
+  *) WIN32: Make CGI work under Win95. [Ben Laurie and Paul Sutton]
 
-  *) Make index.html and friends work under Win95. [Ben Laurie]
+  *) WIN32: Make index.html and friends work under Win95. [Ben Laurie]
 
   *) PORT: Solaris 2.4 needs Spencer regex, the system regex is broken.
 	[John Line <jml4@cam.ac.uk>] PR#1321
@@ -413,7 +416,7 @@ Changes with Apache 1.3b2 (there is no 1.3b1)
   *) Further enhance aplog_error() to not log filename, line number, and
      errno information when it isn't applicable. [Ken Coar, Dean Gaudet]
 
-  *) Canonicalise filenames under Win32. Short filenames are
+  *) WIN32: Canonicalise filenames under Win32. Short filenames are
      converted to long ones. Backslashes are converted to forward
      slashes. Case is converted to lower. Parts of URLs that do not
      correspond to files are left completely alone. [Ben Laurie]
@@ -821,7 +824,7 @@ Changes with Apache 1.3a1
      if there is one.  If there isn't one, the behaviour is unchanged.
      [Ken Coar, Roy Fielding, Andrey A. Chernov]
 
-  *) On Win32, modules can now be dynamically loaded DLLs using the
+  *) WIN32: Modules can now be dynamically loaded DLLs using the
      LoadModule/LoadFile directives. Note that module DLLs must be
      compiled with the multithreaded DLL version of the runtime library.
      [Alexei Kosut and Ben Laurie]

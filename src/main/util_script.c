@@ -680,7 +680,6 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	int i, sz;
 	char *dot;
 	char *exename;
-	char *s;
 	int is_exe = 0;
 
 	interpreter[0] = 0;
@@ -745,12 +744,6 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 
 	    }
 	}
-	/* FIXME: Probably ought to do this in another buffer - Ben
-	 * This really annoys me - Win95 (and not NT) spawn[vl]e don't 
-         * like '/'! - Ben */
-	for (s = r->filename; *s; ++s)
-	    if (*s == '/')
-		*s = '\\';
 
 	if ((!r->args) || (!r->args[0]) || (ind(r->args, '=') >= 0)) {
 	    if (is_exe || is_binary) {

@@ -2647,9 +2647,7 @@ static void show_compile_settings(void)
 #else
     printf("Server version \"%s\"\n", SERVER_VERSION);
 #endif
-#ifndef WIN32
     printf("Server built:  %s\n", SERVER_BUILT);
-#endif
     printf("Server compiled with....\n");
 #ifdef BIG_SECURITY_HOLE
     printf(" -D BIG_SECURITY_HOLE\n");
@@ -4325,9 +4323,7 @@ __declspec(dllexport)
 	    break;
 	case 'v':
 	    printf("Server version %s.\n", SERVER_VERSION);
-#ifndef WIN32
 	    printf("Server built:  %s\n", SERVER_BUILT);
-#endif
 	    exit(0);
 	case 'V':
 	    show_compile_settings();
