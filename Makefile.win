@@ -403,6 +403,9 @@ A
 	xcopy include\*.h "$(INSTDIR)\include" /d < <<
 A
 <<
+	xcopy os\win32\*.h "$(INSTDIR)\include" /d < <<
+A
+<<
         xcopy docs\icons "$(INSTDIR)\icons" /s /d < <<
 A
 <<
