@@ -1760,7 +1760,7 @@ static void mprint(request_rec *r, union VALUETYPE *p, struct magic *m)
     case DATE:
     case BEDATE:
     case LEDATE:
-        apr_ctime(time_str, APR_USEC_PER_SEC * (apr_time_t)*(time_t *)&p->l);
+        apr_ctime(time_str, apr_time_from_sec(*(time_t *)&p->l));
         pp = time_str;
 	(void) magic_rsl_printf(r, m->desc, pp);
 	return;

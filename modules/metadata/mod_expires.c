@@ -423,6 +423,7 @@ static int add_expires(request_rec *r)
     apr_time_t base;
     apr_time_t additional;
     apr_time_t expires;
+    int additional_sec;
     char *timestr;
 
     if (ap_is_HTTP_ERROR(r->status))       /* Don't add Expires headers to errors */
@@ -477,14 +478,16 @@ static int add_expires(request_rec *r)
 	    return DECLINED;
 	}
 	base = r->finfo.mtime;
-        additional = atoi(&code[1]) * APR_USEC_PER_SEC;
+        additional_sec = atoi(&code[1]);
+        additional = apr_time_from_sec(additional_sec);
         break;
     case 'A':
         /* there's been some discussion and it's possible that 
          * 'access time' will be stored in request structure
          */
         base = r->request_time;
-        additional = atoi(&code[1]) * APR_USEC_PER_SEC;
+        additional_sec = atoi(&code[1]);
+        additional = apr_time_from_sec(additional_sec);
         break;
     default:
         /* expecting the add_* routines to be case-hardened this 
@@ -498,8 +501,7 @@ static int add_expires(request_rec *r)
     expires = base + additional;
     apr_table_mergen(r->headers_out, "Cache-Control",
 		    apr_psprintf(r->pool, "max-age=%qd",
-				(expires - r->request_time)
-				    / APR_USEC_PER_SEC));
+                                 apr_time_sec(expires - r->request_time)));
     timestr = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
     apr_rfc822_date(timestr, expires);
     apr_table_setn(r->headers_out, "Expires", timestr);
