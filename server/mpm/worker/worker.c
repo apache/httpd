@@ -659,7 +659,16 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                 signal_workers();
             }
             if (csd != NULL) {
-                ap_queue_push(worker_queue, csd, ptrans);
+                rv = ap_queue_push(worker_queue, csd, ptrans);
+                if (rv) {
+                    /* trash the connection; we couldn't queue the connected
+                     * socket to a worker 
+                     */
+                    apr_socket_close(csd);
+                    ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf,
+                                 "ap_queue_push failed with error code %d",
+                                 rv);
+                }
             }
         }
         else {
