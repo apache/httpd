@@ -275,7 +275,7 @@ static int proxy_fixup(request_rec *r)
     char *url, *p;
     int access_status;
 
-    if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
+    if (!r->proxyreq || !r->filename || strncmp(r->filename, "proxy:", 6) != 0)
         return DECLINED;
 
     /* XXX: Shouldn't we try this before we run the proxy_walk? */
@@ -351,7 +351,7 @@ static int proxy_handler(request_rec *r)
     long maxfwd;
 
     /* is this for us? */
-    if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
+    if (!r->proxyreq || !r->filename || strncmp(r->filename, "proxy:", 6) != 0)
         return DECLINED;
 
     /* handle max-forwards / OPTIONS / TRACE */
