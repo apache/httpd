@@ -249,14 +249,12 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
             return;
         }
         apr_file_close(fd);
-        /* We want to cache an apr_mmap_t that's marked as "non-owner"
-         * to pass to each request so that mmap_setaside()'s call to
-         * apr_mmap_dup() will never try to move the apr_mmap_t to a
-         * different pool.  This apr_mmap_t is already going to live
-         * longer than any request, but mmap_setaside() has no way to
-         * know that because it's allocated out of cmd->pool,
-         * which is disjoint from r->pool.
-         */
+        /* We want to cache a duplicate apr_mmap_t to pass to each
+         * request so that nothing in the request will ever think that
+         * it's allowed to delete the mmap, since the "refcount" will
+         * never reach zero. */
+        /* XXX: the transfer_ownership flag on this call
+         * will go away soon.. it's ignored right now. */
         apr_mmap_dup(&new_file->mm, mm, cmd->pool, 0);
         new_file->is_mmapped = TRUE;
     }
