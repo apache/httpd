@@ -801,7 +801,7 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
                 status = atoi(val);
             if (!is_HTTP_REDIRECT(status))
                 return "RewriteRule: invalid HTTP response code "
-			"for flag 'R'";
+                       "for flag 'R'";
             cfg->forced_responsecode = status;
         }
     }
@@ -820,7 +820,7 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
     else if (   strcasecmp(key, "type") == 0
              || strcasecmp(key, "T") == 0   ) {
         cfg->forced_mimetype = pstrdup(p, val);
-	str_tolower(cfg->forced_mimetype);
+        str_tolower(cfg->forced_mimetype);
     }
     else if (   strcasecmp(key, "env") == 0
              || strcasecmp(key, "E") == 0   ) {
@@ -3439,7 +3439,7 @@ static char *lookup_variable(request_rec *r, char *var)
 
     /* file stuff */
     else if (strcasecmp(var, "SCRIPT_USER") == 0) {
-	result = "<unknown>";
+        result = "<unknown>";
         if (r->finfo.st_mode != 0) {
             if ((pw = getpwuid(r->finfo.st_uid)) != NULL) {
                 result = pw->pw_name;
@@ -3454,7 +3454,7 @@ static char *lookup_variable(request_rec *r, char *var)
         }
     }
     else if (strcasecmp(var, "SCRIPT_GROUP") == 0) {
-	result = "<unknown>";
+        result = "<unknown>";
         if (r->finfo.st_mode != 0) {
             if ((gr = getgrgid(r->finfo.st_gid)) != NULL) {
                 result = gr->gr_name;
