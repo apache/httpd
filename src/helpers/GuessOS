@@ -197,6 +197,10 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
     UNIX_SV:*:*:maxion)
 	echo "${MACHINE}-ccur-sysv4"; exit 0;
 	;;
+    
+    NonStop-UX:4.[02]*:[BC]*:*)
+	echo "${MACHINE}-tandem-sysv4"; exit 0;
+	;;
 
 esac
 

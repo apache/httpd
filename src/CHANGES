@@ -8,6 +8,8 @@ Changes with Apache 1.3
 
 Changes with Apache 1.2.1
   
+  *) Port to NonStop-UX [Joachim Schmitz <schmitz_joachim@tandem.com>] PR#327
+  
   *) Update ConvexOS support for 11.5.  [David DeSimone <fox@convex.com>]
      PR#399
 
