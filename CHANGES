@@ -1,5 +1,13 @@
 Changes with Apache 2.0.26-dev
 
+  *) Cured what's ailed mime for quite some time ... if an AddSomething
+     was given in the configuration (Language, Charset, Handler or
+     Encoding) Apache would set the content type as given by AddType, 
+     but refused to check the mime.types file if AddType wasn't given 
+     for that specific extension.  Setting the AddHandler for .html 
+     without setting the AddType text/html html would cause Apache to 
+     use the default content type.  [William Rowe]
+
   *) Added some bulletproofing to memory allocation in the LDAP cache
      code. [Graham Leggett]
 

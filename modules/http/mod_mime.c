@@ -116,8 +116,6 @@ typedef struct {
 
     apr_array_header_t *remove_mappings; /* A simple list, walked once */
 
-    char *type;                 /* Type forced with ForceType  */
-    char *handler;              /* Handler forced with SetHandler */
     char *default_language;     /* Language if no AddLanguage ext found */
 	                        /* Due to the FUD about JS and charsets 
                                  * default_charset is actually in src/main */
@@ -151,8 +149,6 @@ static void *create_mime_dir_config(apr_pool_t *p, char *dummy)
     new->extension_mappings = NULL;
     new->remove_mappings = NULL;
 
-    new->type = NULL;
-    new->handler = NULL;
     new->default_language = NULL;
 
     return new;
@@ -262,8 +258,6 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
     }
     new->remove_mappings = NULL;
 
-    new->type = add->type ? add->type : base->type;
-    new->handler = add->handler ? add->handler : base->handler;
     new->default_language = add->default_language ?
         add->default_language : base->default_language;
 
@@ -350,22 +344,19 @@ AP_INIT_ITERATE2("AddHandler", add_extension_info,
      "a handler name followed by one or more file extensions"),
 AP_INIT_ITERATE2("AddInputFilter", add_extension_info, 
          (void *)APR_XtOffsetOf(extension_info, input_filters), OR_FILEINFO,
-     "a handler name followed by one or more file extensions"),
+     "input filter name (or ; delimited names) followed by one or more file extensions"),
 AP_INIT_ITERATE2("AddLanguage", add_extension_info, 
          (void *)APR_XtOffsetOf(extension_info, language_type), OR_FILEINFO,
      "a language (e.g., fr), followed by one or more file extensions"),
 AP_INIT_ITERATE2("AddOutputFilter", add_extension_info, 
          (void *)APR_XtOffsetOf(extension_info, output_filters), OR_FILEINFO, 
-     "a mime type followed by one or more file extensions"),
+     "output filter name (or ; delimited names) followed by one or more file extensions"),
 AP_INIT_ITERATE2("AddType", add_extension_info, 
          (void *)APR_XtOffsetOf(extension_info, forced_type), OR_FILEINFO, 
      "a mime type followed by one or more file extensions"),
 AP_INIT_TAKE1("DefaultLanguage", ap_set_string_slot,
        (void*)APR_XtOffsetOf(mime_dir_config, default_language), OR_FILEINFO,
      "language to use for documents with no other language file extension"),
-AP_INIT_TAKE1("ForceType", ap_set_string_slot_lower, 
-       (void *)APR_XtOffsetOf(mime_dir_config, type), OR_FILEINFO,
-     "a media type"),
 AP_INIT_ITERATE("RemoveCharset", remove_extension_info, 
         (void *)APR_XtOffsetOf(extension_info, charset_type), OR_FILEINFO,
      "one or more file extensions"),
@@ -387,9 +378,6 @@ AP_INIT_ITERATE("RemoveOutputFilter", remove_extension_info,
 AP_INIT_ITERATE("RemoveType", remove_extension_info, 
         (void *)APR_XtOffsetOf(extension_info, forced_type), OR_FILEINFO,
      "one or more file extensions"),
-AP_INIT_TAKE1("SetHandler", ap_set_string_slot_lower, 
-       (void *)APR_XtOffsetOf(mime_dir_config, handler), OR_FILEINFO,
-     "a handler name"),
 AP_INIT_TAKE1("TypesConfig", set_types_config, NULL, RSRC_CONF,
      "the MIME types config file"),
     {NULL}
@@ -740,19 +728,21 @@ static int find_ct(request_rec *r)
                                                    ext, APR_HASH_KEY_STRING);
         }
 
-        if (exinfo == NULL) {
+        if (exinfo == NULL || !exinfo->forced_type) {
             if ((type = apr_hash_get(mime_type_extensions, ext,
                                      APR_HASH_KEY_STRING)) != NULL) {
                 r->content_type = type;
                 found = 1;
             }
         }
-        else {
+
+        if (exinfo != NULL) {
 
             if (exinfo->forced_type) {
                 r->content_type = exinfo->forced_type;
                 found = 1;
             }
+
             if (exinfo->charset_type) {
                 charset = exinfo->charset_type;
                 found = 1;
@@ -873,13 +863,6 @@ static int find_ct(request_rec *r)
         new = (const char **) apr_array_push(r->content_languages);
         *new = conf->default_language;
     }
-
-    /* Check for overrides with ForceType/SetHandler */
-
-    if (conf->type && strcmp(conf->type, "none"))
-        r->content_type = conf->type;
-    if (conf->handler && strcmp(conf->handler, "none"))
-        r->handler = conf->handler;
 
     if (!r->content_type)
         return DECLINED;
