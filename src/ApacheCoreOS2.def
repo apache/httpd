@@ -428,3 +428,5 @@ EXPORTS
 	ap_caret_escape_args @437
 	ap_double_quotes @438
 	ap_escape_logitem @441
+	ap_popenf_ex @442
+	ap_psocket_ex @443
