@@ -124,15 +124,15 @@
 #include "http_log.h"
 #include "scoreboard.h"
 #include "util_md5.h"
+#include "apr.h"
 #include "apr_fnmatch.h"
+#include "apr_strings.h"
 #undef CORE_PRIVATE
 
 /* mod_ssl headers */
-#if 0 /* XXX */
 #include "ssl_expr.h"
 #include "ssl_util_ssl.h"
 #include "ssl_util_table.h"
-#endif /* XXX */
 
 /*
  * Provide reasonable default for some defines
@@ -200,18 +200,7 @@
 
 #define myCtxVarSet(mc,num,val)  mc->rCtx.pV##num = val
 #define myCtxVarGet(mc,num,type) (type)(mc->rCtx.pV##num)
-#endif /* XXX */
 
-#define AP_ALL_CMD(name, args, desc) \
-        { "SSL"#name, ssl_cmd_SSL##name, NULL, RSRC_CONF|OR_AUTHCFG, args, desc },
-#define AP_SRV_CMD(name, args, desc) \
-        { "SSL"#name, ssl_cmd_SSL##name, NULL, RSRC_CONF, args, desc },
-#define AP_DIR_CMD(name, type, args, desc) \
-        { "SSL"#name, ssl_cmd_SSL##name, NULL, OR_##type, args, desc },
-#define AP_END_CMD \
-        { NULL }
-
-#if 0 /* XXX */
 /*
  * SSL Logging
  */
@@ -588,15 +577,15 @@ typedef struct {
 /*  API glue structures  */
 extern module MODULE_VAR_EXPORT ssl_module;
 
+#endif /* XXX */
 /*  configuration handling   */
 void         ssl_config_global_create(void);
 void         ssl_config_global_fix(void);
 BOOL         ssl_config_global_isfixed(void);
-void        *ssl_config_server_create(pool *, server_rec *);
-void        *ssl_config_server_merge(pool *, void *, void *);
-void        *ssl_config_perdir_create(pool *, char *);
-void        *ssl_config_perdir_merge(pool *, void *, void *);
-#endif /* XXX */
+void        *ssl_config_server_create(apr_pool_t *, server_rec *);
+void        *ssl_config_server_merge(apr_pool_t *, void *, void *);
+void        *ssl_config_perdir_create(apr_pool_t *, char *);
+void        *ssl_config_perdir_merge(apr_pool_t *, void *, void *);
 const char  *ssl_cmd_SSLMutex(cmd_parms *, char *, char *);
 const char  *ssl_cmd_SSLPassPhraseDialog(cmd_parms *, char *, char *);
 const char  *ssl_cmd_SSLCryptoDevice(cmd_parms *, char *, char *);
@@ -646,8 +635,6 @@ void         ssl_init_ChildKill(void *);
 void         ssl_init_ModuleKill(void *);
 
 /*  Apache API hooks  */
-void         ssl_hook_AddModule(module *);
-void         ssl_hook_RemoveModule(module *);
 void         ssl_hook_NewConnection(conn_rec *);
 void         ssl_hook_TimeoutConnection(int);
 void         ssl_hook_CloseConnection(conn_rec *);

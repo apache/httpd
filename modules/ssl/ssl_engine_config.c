@@ -70,32 +70,6 @@
 **  _________________________________________________________________
 */
 
-void ssl_hook_AddModule(module *m)
-{
-    if (m == &ssl_module) {
-        /*
-         * Link ourself into the Apache kernel
-         */
-        ssl_var_register();
-        ssl_ext_register();
-        ssl_io_register();
-    }
-    return;
-}
-
-void ssl_hook_RemoveModule(module *m)
-{
-    if (m == &ssl_module) {
-        /*
-         * Unlink ourself from the Apache kernel
-         */
-        ssl_var_unregister();
-        ssl_ext_unregister();
-        ssl_io_unregister();
-    }
-    return;
-}
-
 void ssl_config_global_create(void)
 {
     pool *pPool;
@@ -155,6 +129,7 @@ BOOL ssl_config_global_isfixed(void)
     return (mc->bFixed);
 }
 
+#endif /* XXX */
 
 /*  _________________________________________________________________
 **
@@ -165,8 +140,9 @@ BOOL ssl_config_global_isfixed(void)
 /*
  *  Create per-server SSL configuration
  */
-void *ssl_config_server_create(pool *p, server_rec *s)
+void *ssl_config_server_create(apr_pool_t *p, server_rec *s)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc;
 
     ssl_config_global_create();
@@ -209,13 +185,16 @@ void *ssl_config_server_create(pool *p, server_rec *s)
     (void)memset(sc->pPrivateKey, 0, SSL_AIDX_MAX*sizeof(EVP_PKEY *));
 
     return sc;
+#endif /* XXX */
+    return NULL;
 }
 
 /*
  *  Merge per-server SSL configurations
  */
-void *ssl_config_server_merge(pool *p, void *basev, void *addv)
+void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *base = (SSLSrvConfigRec *)basev;
     SSLSrvConfigRec *add  = (SSLSrvConfigRec *)addv;
     SSLSrvConfigRec *new  = (SSLSrvConfigRec *)ap_palloc(p, sizeof(SSLSrvConfigRec));
@@ -260,13 +239,16 @@ void *ssl_config_server_merge(pool *p, void *basev, void *addv)
 #endif
 
     return new;
+#endif /* XXX */
+    return NULL;
 }
 
 /*
  *  Create per-directory SSL configuration
  */
-void *ssl_config_perdir_create(pool *p, char *dir)
+void *ssl_config_perdir_create(apr_pool_t *p, char *dir)
 {
+#if 0 /* XXX */
     SSLDirConfigRec *dc = ap_palloc(p, sizeof(SSLDirConfigRec));
 
     dc->bSSLRequired  = FALSE;
@@ -284,13 +266,16 @@ void *ssl_config_perdir_create(pool *p, char *dir)
 #endif
 
     return dc;
+#endif /* XXX */
+    return NULL;
 }
 
 /*
  *  Merge per-directory SSL configurations
  */
-void *ssl_config_perdir_merge(pool *p, void *basev, void *addv)
+void *ssl_config_perdir_merge(apr_pool_t *p, void *basev, void *addv)
 {
+#if 0 /* XXX */
     SSLDirConfigRec *base = (SSLDirConfigRec *)basev;
     SSLDirConfigRec *add  = (SSLDirConfigRec *)addv;
     SSLDirConfigRec *new  = (SSLDirConfigRec *)ap_palloc(p,
@@ -319,9 +304,10 @@ void *ssl_config_perdir_merge(pool *p, void *basev, void *addv)
 #endif
 
     return new;
+#endif /* XXX */
+    return NULL;
 }
 
-#endif /* XXX */
 
 /*
  *  Configuration functions for particular directives

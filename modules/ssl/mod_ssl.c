@@ -59,121 +59,125 @@
 
 #include "mod_ssl.h"
 
-/*  _________________________________________________________________
-**
-**  Apache API glue structures
-**  _________________________________________________________________
-*/
-
 /*
  *  the table of configuration directives we provide
  */
+
+#define SSL_CMD_ALL(name, args, desc) \
+        AP_INIT_##args("SSL"#name, ssl_cmd_SSL##name, NULL, RSRC_CONF|OR_AUTHCFG, desc),
+#define SSL_CMD_SRV(name, args, desc) \
+        AP_INIT_##args("SSL"#name, ssl_cmd_SSL##name, NULL, RSRC_CONF, desc),
+#define SSL_CMD_DIR(name, type, args, desc) \
+        AP_INIT_##args("SSL"#name, ssl_cmd_SSL##name, NULL, OR_##type, desc),
+#define AP_END_CMD { NULL }
+
 static const command_rec ssl_config_cmds[] = {
+
     /*
      * Global (main-server) context configuration directives
      */
-    AP_SRV_CMD(Mutex, TAKE1,
-               "SSL lock for handling internal mutual exclusions "
-               "(`none', `file:/path/to/file')")
-    AP_SRV_CMD(PassPhraseDialog, TAKE1,
-               "SSL dialog mechanism for the pass phrase query "
-               "(`builtin', `exec:/path/to/program')")
-    AP_SRV_CMD(SessionCache, TAKE1,
-               "SSL Session Cache storage "
-               "(`none', `dbm:/path/to/file')")
+    SSL_CMD_SRV(Mutex, TAKE1,
+                "SSL lock for handling internal mutual exclusions "
+                "(`none', `file:/path/to/file')")
+    SSL_CMD_SRV(PassPhraseDialog, TAKE1,
+                "SSL dialog mechanism for the pass phrase query "
+                "(`builtin', `exec:/path/to/program')")
+    SSL_CMD_SRV(SessionCache, TAKE1,
+                "SSL Session Cache storage "
+                "(`none', `dbm:/path/to/file')")
 #ifdef SSL_EXPERIMENTAL_ENGINE
-    AP_SRV_CMD(CryptoDevice, TAKE1,
-               "SSL external Crypto Device usage "
-               "(`builtin', `...')")
+    SSL_CMD_SRV(CryptoDevice, TAKE1,
+                "SSL external Crypto Device usage "
+                "(`builtin', `...')")
 #endif
-    AP_SRV_CMD(RandomSeed, TAKE23,
-               "SSL Pseudo Random Number Generator (PRNG) seeding source "
-               "(`startup|connect builtin|file:/path|exec:/path [bytes]')")
+    SSL_CMD_SRV(RandomSeed, TAKE23,
+                "SSL Pseudo Random Number Generator (PRNG) seeding source "
+                "(`startup|connect builtin|file:/path|exec:/path [bytes]')")
 
     /*
      * Per-server context configuration directives
      */
-    AP_SRV_CMD(Engine, FLAG,
-               "SSL switch for the protocol engine "
-               "(`on', `off')")
-    AP_ALL_CMD(CipherSuite, TAKE1,
-               "Colon-delimited list of permitted SSL Ciphers "
-               "(`XXX:...:XXX' - see manual)")
-    AP_SRV_CMD(CertificateFile, TAKE1,
-               "SSL Server Certificate file "
-               "(`/path/to/file' - PEM or DER encoded)")
-    AP_SRV_CMD(CertificateKeyFile, TAKE1,
-               "SSL Server Private Key file "
-               "(`/path/to/file' - PEM or DER encoded)")
-    AP_SRV_CMD(CertificateChainFile, TAKE1,
-               "SSL Server CA Certificate Chain file "
-               "(`/path/to/file' - PEM encoded)")
+    SSL_CMD_SRV(Engine, FLAG,
+                "SSL switch for the protocol engine "
+                "(`on', `off')")
+    SSL_CMD_ALL(CipherSuite, TAKE1,
+                "Colon-delimited list of permitted SSL Ciphers "
+                "(`XXX:...:XXX' - see manual)")
+    SSL_CMD_SRV(CertificateFile, TAKE1,
+                "SSL Server Certificate file "
+                "(`/path/to/file' - PEM or DER encoded)")
+    SSL_CMD_SRV(CertificateKeyFile, TAKE1,
+                "SSL Server Private Key file "
+                "(`/path/to/file' - PEM or DER encoded)")
+    SSL_CMD_SRV(CertificateChainFile, TAKE1,
+                "SSL Server CA Certificate Chain file "
+                "(`/path/to/file' - PEM encoded)")
 #ifdef SSL_EXPERIMENTAL_PERDIRCA
-    AP_ALL_CMD(CACertificatePath, TAKE1,
-               "SSL CA Certificate path "
-               "(`/path/to/dir' - contains PEM encoded files)")
-    AP_ALL_CMD(CACertificateFile, TAKE1,
-               "SSL CA Certificate file "
-               "(`/path/to/file' - PEM encoded)")
+    SSL_CMD_ALL(CACertificatePath, TAKE1,
+                "SSL CA Certificate path "
+                "(`/path/to/dir' - contains PEM encoded files)")
+    SSL_CMD_ALL(CACertificateFile, TAKE1,
+                "SSL CA Certificate file "
+                "(`/path/to/file' - PEM encoded)")
 #else
-    AP_SRV_CMD(CACertificatePath, TAKE1,
-               "SSL CA Certificate path "
-               "(`/path/to/dir' - contains PEM encoded files)")
-    AP_SRV_CMD(CACertificateFile, TAKE1,
-               "SSL CA Certificate file "
-               "(`/path/to/file' - PEM encoded)")
+    SSL_CMD_SRV(CACertificatePath, TAKE1,
+                "SSL CA Certificate path "
+                "(`/path/to/dir' - contains PEM encoded files)")
+    SSL_CMD_SRV(CACertificateFile, TAKE1,
+                "SSL CA Certificate file "
+                "(`/path/to/file' - PEM encoded)")
 #endif
-    AP_SRV_CMD(CARevocationPath, TAKE1,
-               "SSL CA Certificate Revocation List (CRL) path "
-               "(`/path/to/dir' - contains PEM encoded files)")
-    AP_SRV_CMD(CARevocationFile, TAKE1,
-               "SSL CA Certificate Revocation List (CRL) file "
-               "(`/path/to/file' - PEM encoded)")
-    AP_ALL_CMD(VerifyClient, TAKE1,
-               "SSL Client verify type "
-               "(`none', `optional', `require', `optional_no_ca')")
-    AP_ALL_CMD(VerifyDepth, TAKE1,
-               "SSL Client verify depth "
-               "(`N' - number of intermediate certificates)")
-    AP_SRV_CMD(SessionCacheTimeout, TAKE1,
-               "SSL Session Cache object lifetime "
-               "(`N' - number of seconds)")
-    AP_SRV_CMD(Log, TAKE1,
-               "SSL logfile for SSL-related messages "
-               "(`/path/to/file', `|/path/to/program')")
-    AP_SRV_CMD(LogLevel, TAKE1,
-               "SSL logfile verbosity level "
-               "(`none', `error', `warn', `info', `debug')")
-    AP_SRV_CMD(Protocol, RAW_ARGS,
-               "Enable or disable various SSL protocols"
-               "(`[+-][SSLv2|SSLv3|TLSv1] ...' - see manual)")
+    SSL_CMD_SRV(CARevocationPath, TAKE1,
+                "SSL CA Certificate Revocation List (CRL) path "
+                "(`/path/to/dir' - contains PEM encoded files)")
+    SSL_CMD_SRV(CARevocationFile, TAKE1,
+                "SSL CA Certificate Revocation List (CRL) file "
+                "(`/path/to/file' - PEM encoded)")
+    SSL_CMD_ALL(VerifyClient, TAKE1,
+                "SSL Client verify type "
+                "(`none', `optional', `require', `optional_no_ca')")
+    SSL_CMD_ALL(VerifyDepth, TAKE1,
+                "SSL Client verify depth "
+                "(`N' - number of intermediate certificates)")
+    SSL_CMD_SRV(SessionCacheTimeout, TAKE1,
+                "SSL Session Cache object lifetime "
+                "(`N' - number of seconds)")
+    SSL_CMD_SRV(Log, TAKE1,
+                "SSL logfile for SSL-related messages "
+                "(`/path/to/file', `|/path/to/program')")
+    SSL_CMD_SRV(LogLevel, TAKE1,
+                "SSL logfile verbosity level "
+                "(`none', `error', `warn', `info', `debug')")
+    SSL_CMD_SRV(Protocol, RAW_ARGS,
+                "Enable or disable various SSL protocols"
+                "(`[+-][SSLv2|SSLv3|TLSv1] ...' - see manual)")
 
 #ifdef SSL_EXPERIMENTAL_PROXY
     /* 
      * Proxy configuration for remote SSL connections
      */
-    AP_SRV_CMD(ProxyProtocol, RAW_ARGS,
+    SSL_CMD_SRV(ProxyProtocol, RAW_ARGS,
                "SSL Proxy: enable or disable SSL protocol flavors "
                "(`[+-][SSLv2|SSLv3|TLSv1] ...' - see manual)")
-    AP_SRV_CMD(ProxyCipherSuite, TAKE1,
+    SSL_CMD_SRV(ProxyCipherSuite, TAKE1,
                "SSL Proxy: colon-delimited list of permitted SSL ciphers "
                "(`XXX:...:XXX' - see manual)")
-    AP_SRV_CMD(ProxyVerify, FLAG,
+    SSL_CMD_SRV(ProxyVerify, FLAG,
                "SSL Proxy: whether to verify the remote certificate "
                "(`on' or `off')")
-    AP_SRV_CMD(ProxyVerifyDepth, TAKE1,
+    SSL_CMD_SRV(ProxyVerifyDepth, TAKE1,
                "SSL Proxy: maximum certificate verification depth "
                "(`N' - number of intermediate certificates)")
-    AP_SRV_CMD(ProxyCACertificateFile, TAKE1,
+    SSL_CMD_SRV(ProxyCACertificateFile, TAKE1,
                "SSL Proxy: file containing server certificates "
                "(`/path/to/file' - PEM encoded certificates)")
-    AP_SRV_CMD(ProxyCACertificatePath, TAKE1,
+    SSL_CMD_SRV(ProxyCACertificatePath, TAKE1,
                "SSL Proxy: directory containing server certificates "
                "(`/path/to/dir' - contains PEM encoded certificates)")
-    AP_SRV_CMD(ProxyMachineCertificateFile, TAKE1,
+    SSL_CMD_SRV(ProxyMachineCertificateFile, TAKE1,
                "SSL Proxy: file containing client certificates "
                "(`/path/to/file' - PEM encoded certificates)")
-    AP_SRV_CMD(ProxyMachineCertificatePath, TAKE1,
+    SSL_CMD_SRV(ProxyMachineCertificatePath, TAKE1,
                "SSL Proxy: directory containing client certificates "
                "(`/path/to/dir' - contains PEM encoded certificates)")
 #endif
@@ -181,71 +185,140 @@ static const command_rec ssl_config_cmds[] = {
     /*
      * Per-directory context configuration directives
      */
-    AP_DIR_CMD(Options, OPTIONS, RAW_ARGS,
+    SSL_CMD_DIR(Options, OPTIONS, RAW_ARGS,
                "Set one of more options to configure the SSL engine"
                "(`[+-]option[=value] ...' - see manual)")
-    AP_DIR_CMD(RequireSSL, AUTHCFG, NO_ARGS,
+    SSL_CMD_DIR(RequireSSL, AUTHCFG, NO_ARGS,
                "Require the SSL protocol for the per-directory context "
                "(no arguments)")
-    AP_DIR_CMD(Require, AUTHCFG, RAW_ARGS,
+    SSL_CMD_DIR(Require, AUTHCFG, RAW_ARGS,
                "Require a boolean expresion to evaluate to true for granting access"
                "(arbitrary complex boolean expression - see manual)")
 
     AP_END_CMD
 };
 
-#if 0 /* XXX */
+/*
+ *  the various processing hooks
+ */
 
-static const handler_rec ssl_config_handler[] = {
-    { "mod_ssl:content-handler", ssl_hook_Handler },
-    { NULL, NULL }
-};
+static void ssl_hook_pre_config(
+    apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
+{
+    /* unused */
+    return;
+}
+
+
+static void ssl_hook_post_config(
+    apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
+{
+    /* ssl_init_Module() */
+    return;
+}
+
+static int ssl_hook_pre_connection(conn_rec *r)
+{
+    /* unused */
+    return;
+}
+
+static int ssl_hook_process_connection(conn_rec *r)
+{
+    /* call ssl_hook_NewConnection */
+    /* hook ssl_hook_CloseConnection() */
+    return;
+}
+
+static int ssl_hook_handler(request_rec *r)
+{
+    /* ssl_hook_Handler() */
+    return;
+}
+
+static int ssl_hook_translate_name(request_rec *r)
+{
+    /* ssl_hook_Translate() */
+    return;
+}
+
+static void ssl_hook_init_child(apr_pool_t *pchild, server_rec *s)
+{
+    /* ssl_init_Child() */
+    return;
+}
+
+static int ssl_hook_auth_checker(request_rec *r)
+{
+    /* ssl_hook_Auth() */
+    return;
+}
+
+static int ssl_hook_check_user_id(request_rec *r)
+{
+    /* ssl_hook_UserCheck */
+    return;
+}
+
+static int ssl_hook_access_checker(request_rec *r)
+{
+    /* ssl_hook_Access() */
+    return;
+}
+
+static int ssl_hook_fixups(request_rec *r)
+{
+    /* ssl_hook_Fixup() */
+    return;
+}
+
+static int ssl_hook_post_read_request(request_rec *r)
+{
+    /* ssl_hook_ReadReq() */
+    return;
+}
+
+static void ssl_hook_child_init(apr_pool_t *pchild, server_rec *s)
+{
+    /* ssl_init_Child() */
+    return;
+}
 
 /*
- *  the main Apache API config structure
+ *  the module registration phase
  */
-module MODULE_VAR_EXPORT ssl_module = {
-    STANDARD_MODULE_STUFF,
+static void ssl_register_hooks(apr_pool_t *p)
+{
+    ap_hook_pre_config        (ssl_hook_pre_config,         NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_config       (ssl_hook_post_config,        NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_handler           (ssl_hook_handler,            NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_translate_name    (ssl_hook_translate_name,     NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_child_init        (ssl_hook_child_init,         NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_auth_checker      (ssl_hook_auth_checker,       NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_check_user_id     (ssl_hook_check_user_id,      NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_access_checker    (ssl_hook_access_checker,     NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_fixups            (ssl_hook_fixups,             NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_read_request (ssl_hook_post_read_request,  NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_pre_connection    (ssl_hook_pre_connection,     NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_process_connection(ssl_hook_process_connection, NULL, NULL, APR_HOOK_MIDDLE);
 
-    /* Standard API (always present) */
+    ssl_var_register();
+    ssl_ext_register();
+    ssl_io_register();
 
-    ssl_init_Module,          /* module initializer                  */
-    ssl_config_perdir_create, /* create per-dir    config structures */
-    ssl_config_perdir_merge,  /* merge  per-dir    config structures */
-    ssl_config_server_create, /* create per-server config structures */
-    ssl_config_server_merge,  /* merge  per-server config structures */
-    ssl_config_cmds,          /* table of config file commands       */
-    ssl_config_handler,       /* [#8] MIME-typed-dispatched handlers */
-    ssl_hook_Translate,       /* [#1] URI to filename translation    */
-    ssl_hook_Auth,            /* [#4] validate user id from request  */
-    ssl_hook_UserCheck,       /* [#5] check if the user is ok _here_ */
-    ssl_hook_Access,          /* [#3] check access by host address   */
-    NULL,                     /* [#6] determine MIME type            */
-    ssl_hook_Fixup,           /* [#7] pre-run fixups                 */
-    NULL,                     /* [#9] log a transaction              */
-    NULL,                     /* [#2] header parser                  */
-    ssl_init_Child,           /* child_init                          */
-    NULL,                     /* child_exit                          */
-    ssl_hook_ReadReq,         /* [#0] post read-request              */
+    return;
+}
 
-    /* Extended API (forced to be enabled with mod_ssl) */
-
-    ssl_hook_AddModule,       /* after modules was added to core     */
-    ssl_hook_RemoveModule,    /* before module is removed from core  */
-    ssl_hook_RewriteCommand,  /* configuration command rewriting     */
-    ssl_hook_NewConnection,   /* socket connection open              */
-    ssl_hook_CloseConnection  /* socket connection close             */
-};
-
-#endif /* XXX */
-
+/*
+ *  the main module structure
+ */
 module AP_MODULE_DECLARE_DATA ssl_module = {
     STANDARD20_MODULE_STUFF,
-    NULL,                       /* create per-directory config structure */
-    NULL,                       /* merge per-directory config structures */
-    NULL,                       /* create per-server config structure */
-    NULL,                       /* merge per-server config structures */
-    ssl_config_cmds,            /* command apr_table_t */
-    NULL                        /* register hooks */
+    ssl_config_perdir_create,   /* create per-dir    config structures */
+    ssl_config_perdir_merge,    /* merge  per-dir    config structures */
+    ssl_config_server_create,   /* create per-server config structures */
+    ssl_config_server_merge,    /* merge  per-server config structures */
+    ssl_config_cmds,            /* table of configuration directives   */
+    ssl_register_hooks          /* register hooks */
 };
 
