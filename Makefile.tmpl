@@ -135,6 +135,7 @@ suexec_userdir  = @suexec_userdir@
 suexec_uidmin   = @suexec_uidmin@
 suexec_gidmin   = @suexec_gidmin@
 suexec_safepath = @suexec_safepath@
+suexec_umask    = @suexec_umask@
 
 #   some substituted configuration parameters
 conf_user        = @conf_user@
@@ -200,7 +201,8 @@ build-support:
 			-DUSERDIR_SUFFIX=\"$(suexec_userdir)\" \
 			-DLOG_EXEC=\"$(suexec_logexec)\" \
 			-DDOC_ROOT=\"$(suexec_docroot)\" \
-			-DSAFE_PATH=\"$(suexec_safepath)\" ' \
+			-DSAFE_PATH=\"$(suexec_safepath)\" \
+			$(suexec_umask)' \
 		suexec; \
 	fi
 	@echo "<=== $(SRC)/support"

@@ -1,5 +1,9 @@
 Changes with Apache 1.3.10
 
+  *) Add --suexec-umask option to configure, and severity levels
+     to suexec log messages.  Also clarify a couple of those messages,
+     which were perhaps a bit too cryptic.  [Ken Coar] PR#4178
+
   *) The end_chunk() code forgot to convert the trailing CRLF pair
      from EBCDIC to ASCII. Fixed. [Martin Kraemer]
 

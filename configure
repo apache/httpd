@@ -240,6 +240,8 @@ suexec_userdir=public_html
 suexec_uidmin=100
 suexec_gidmin=100
 suexec_safepath="/usr/local/bin:/usr/bin:/bin"
+# if the umask is undefined, we don't change it
+#suexec_umask=0755
 
 #   the installation flags
 iflags_program="-m 755 -s"
@@ -449,6 +451,7 @@ do
             echo " --suexec-uidmin=UID    set the suEXEC minimal allowed UID [$suexec_uidmin]"
             echo " --suexec-gidmin=GID    set the suEXEC minimal allowed GID [$suexec_gidmin]"
             echo " --suexec-safepath=PATH set the suEXEC safe PATH [$suexec_safepath]"
+            echo " --suexec-umask=UMASK   set the umask for the suEXEC'd script [server's umask]"
             echo ""
             echo "Deprecated options:"
             echo " --layout               backward compat only: use --show-layout"
@@ -976,6 +979,11 @@ do
             suexec_safepath="$apc_optarg"
             suexec_ok=1
             ;;
+        --suexec-umask=*)
+            suexec_umask_val="$apc_optarg"
+            suexec_umask="-DSUEXEC_UMASK=$apc_optarg"
+            suexec_ok=1
+            ;;
         --server-uid=*)
             conf_user="$apc_optarg"
 	    # protect the '#' against interpretation as comment
@@ -1085,7 +1093,7 @@ IFS="$DIFS"
 for var in prefix exec_prefix bindir sbindir libexecdir mandir \
            sysconfdir datadir iconsdir htdocsdir cgidir includedir \
            localstatedir runtimedir logfiledir proxycachedir \
-           suexec_docroot suexec_logexec; do
+           suexec_docroot suexec_logexec ; do
     eval "val=\"\$$var\"";
     val=`echo $val | sed -e 's:\(.\)/*$:\1:'`
     eval "$var=\"$val\""
@@ -1240,6 +1248,11 @@ if [ "x$show_layout" = "x1" ]; then
         echo "            caller ID: $suexec_caller"
         echo "      minimum user ID: $suexec_uidmin"
         echo "     minimum group ID: $suexec_gidmin"
+        if [ "x$suexec_umask" != "x" ]; then
+            echo "                umask: $suexec_umask_val"
+	else
+            echo "                umask: running server's"
+        fi
         echo ""
     fi
     exit 0
@@ -1290,6 +1303,7 @@ sed <Makefile.tmpl >$mkf \
 -e "s%@suexec_uidmin@%$suexec_uidmin%g" \
 -e "s%@suexec_gidmin@%$suexec_gidmin%g" \
 -e "s%@suexec_safepath@%$suexec_safepath%g" \
+-e "s%@suexec_umask@%$suexec_umask%g" \
 -e "s%@conf_user@%$conf_user%g" \
 -e "s%@conf_group@%$conf_group%g" \
 -e "s%@conf_port@%$conf_port%g" \

@@ -69,6 +69,18 @@
  ***********************************************************************
  *
  *
+ * Error messages in the suexec logfile are prefixed with severity values
+ * similar to those used by the main server:
+ *
+ *  Sev     Meaning
+ * emerg:  Failure of some basic system function
+ * alert:  Bug in the way Apache is communicating with suexec
+ * crit:   Basic information is missing, invalid, or incorrect
+ * error:  Script permission/configuration error
+ * warn:   
+ * notice: Some issue of which the sysadmin/webmaster ought to be aware
+ * info:   Normal activity message
+ * debug:  Self-explanatory
  */
 
 #include "ap_config.h"
@@ -206,7 +218,7 @@ static void clean_env(void)
 
 
     if ((cleanenv = (char **) calloc(AP_ENVBUF, sizeof(char *))) == NULL) {
-        log_err("failed to malloc memory for environment\n");
+        log_err("emerg: failed to malloc memory for environment\n");
 	exit(120);
     }
 
@@ -261,7 +273,7 @@ int main(int argc, char *argv[])
      */
     prog = argv[0];
     if (argc < 4) {
-	log_err("too few arguments\n");
+	log_err("alert: too few arguments\n");
 	exit(101);
     }
     target_uname = argv[1];
@@ -274,7 +286,7 @@ int main(int argc, char *argv[])
      */
     uid = getuid();
     if ((pw = getpwuid(uid)) == NULL) {
-	log_err("invalid uid: (%ld)\n", uid);
+	log_err("crit: invalid uid: (%ld)\n", uid);
 	exit(102);
     }
 
@@ -286,15 +298,17 @@ int main(int argc, char *argv[])
 #ifdef _OSD_POSIX
     /* User name comparisons are case insensitive on BS2000/OSD */
     if (strcasecmp(HTTPD_USER, pw->pw_name)) {
-        log_err("user mismatch (%s instead of %s)\n", pw->pw_name, HTTPD_USER);
+        log_err("crit: calling user mismatch (%s instead of %s)\n",
+		pw->pw_name, HTTPD_USER);
 	exit(103);
     }
-#else  /*_OSD_POSIX*/
+#else  /* _OSD_POSIX */
     if (strcmp(HTTPD_USER, pw->pw_name)) {
-        log_err("user mismatch (%s instead of %s)\n", pw->pw_name, HTTPD_USER);
+        log_err("crit: calling user mismatch (%s instead of %s)\n",
+		pw->pw_name, HTTPD_USER);
 	exit(103);
     }
-#endif /*_OSD_POSIX*/
+#endif /* _OSD_POSIX */
 
     /*
      * Check for a leading '/' (absolute path) in the command to be executed,
@@ -304,7 +318,7 @@ int main(int argc, char *argv[])
      */
     if ((cmd[0] == '/') || (!strncmp(cmd, "../", 3))
 	|| (strstr(cmd, "/../") != NULL)) {
-        log_err("invalid command (%s)\n", cmd);
+        log_err("error: invalid command (%s)\n", cmd);
 	exit(104);
     }
 
@@ -322,7 +336,7 @@ int main(int argc, char *argv[])
      * Error out if the target username is invalid.
      */
     if ((pw = getpwnam(target_uname)) == NULL) {
-	log_err("invalid target user name: (%s)\n", target_uname);
+	log_err("crit: invalid target user name: (%s)\n", target_uname);
 	exit(105);
     }
 
@@ -331,7 +345,7 @@ int main(int argc, char *argv[])
      */
     if (strspn(target_gname, "1234567890") != strlen(target_gname)) {
 	if ((gr = getgrnam(target_gname)) == NULL) {
-	    log_err("invalid target group name: (%s)\n", target_gname);
+	    log_err("crit: invalid target group name: (%s)\n", target_gname);
 	    exit(106);
 	}
 	gid = gr->gr_gid;
@@ -353,7 +367,8 @@ int main(int argc, char *argv[])
 	switch (pid = ufork(target_uname))
 	{
 	case -1:	/* Error */
-	    log_err("failed to setup bs2000 environment for user %s: %s\n",
+	    log_err("emerg: failed to setup bs2000 environment for user "
+		    "%s: %s\n",
 		    target_uname, strerror(errno));
 	    exit(150);
 	case 0:	/* Child */
@@ -362,12 +377,13 @@ int main(int argc, char *argv[])
 	    while (pid != waitpid(pid, &status, 0))
 		;
 	    /* @@@ FIXME: should we deal with STOP signals as well? */
-	    if (WIFSIGNALED(status))
+	    if (WIFSIGNALED(status)) {
 		kill (getpid(), WTERMSIG(status));
+	    }
 	    exit(WEXITSTATUS(status));
 	}
     }
-#endif /*_OSD_POSIX*/
+#endif /* _OSD_POSIX */
 
     /*
      * Save these for later since initgroups will hose the struct
@@ -380,7 +396,7 @@ int main(int argc, char *argv[])
      * Log the transaction here to be sure we have an open log 
      * before we setuid().
      */
-    log_err("uid: (%s/%s) gid: (%s/%s) cmd: %s\n",
+    log_err("info: (target/actual) uid: (%s/%s) gid: (%s/%s) cmd: %s\n",
 	    target_uname, actual_uname,
 	    target_gname, actual_gname,
 	    cmd);
@@ -390,7 +406,7 @@ int main(int argc, char *argv[])
      * a UID less than UID_MIN.  Tsk tsk.
      */
     if ((uid == 0) || (uid < UID_MIN)) {
-	log_err("cannot run as forbidden uid (%d/%s)\n", uid, cmd);
+	log_err("crit: cannot run as forbidden uid (%d/%s)\n", uid, cmd);
 	exit(107);
     }
 
@@ -399,7 +415,7 @@ int main(int argc, char *argv[])
      * or as a GID less than GID_MIN.  Tsk tsk.
      */
     if ((gid == 0) || (gid < GID_MIN)) {
-	log_err("cannot run as forbidden gid (%d/%s)\n", gid, cmd);
+	log_err("crit: cannot run as forbidden gid (%d/%s)\n", gid, cmd);
 	exit(108);
     }
 
@@ -410,7 +426,7 @@ int main(int argc, char *argv[])
      * and setgid() to the target group. If unsuccessful, error out.
      */
     if (((setgid(gid)) != 0) || (initgroups(actual_uname, gid) != 0)) {
-	log_err("failed to setgid (%ld: %s)\n", gid, cmd);
+	log_err("emerg: failed to setgid (%ld: %s)\n", gid, cmd);
 	exit(109);
     }
 
@@ -418,7 +434,7 @@ int main(int argc, char *argv[])
      * setuid() to the target user.  Error out on fail.
      */
     if ((setuid(uid)) != 0) {
-	log_err("failed to setuid (%ld: %s)\n", uid, cmd);
+	log_err("emerg: failed to setuid (%ld: %s)\n", uid, cmd);
 	exit(110);
     }
 
@@ -431,7 +447,7 @@ int main(int argc, char *argv[])
      * directories.  Yuck.
      */
     if (getcwd(cwd, AP_MAXPATH) == NULL) {
-	log_err("cannot get current working directory\n");
+	log_err("emerg: cannot get current working directory\n");
 	exit(111);
     }
 
@@ -440,7 +456,8 @@ int main(int argc, char *argv[])
 	    ((chdir(USERDIR_SUFFIX)) != 0) ||
 	    ((getcwd(dwd, AP_MAXPATH)) == NULL) ||
 	    ((chdir(cwd)) != 0)) {
-	    log_err("cannot get docroot information (%s)\n", target_homedir);
+	    log_err("emerg: cannot get docroot information (%s)\n",
+		    target_homedir);
 	    exit(112);
 	}
     }
@@ -448,13 +465,13 @@ int main(int argc, char *argv[])
 	if (((chdir(DOC_ROOT)) != 0) ||
 	    ((getcwd(dwd, AP_MAXPATH)) == NULL) ||
 	    ((chdir(cwd)) != 0)) {
-	    log_err("cannot get docroot information (%s)\n", DOC_ROOT);
+	    log_err("emerg: cannot get docroot information (%s)\n", DOC_ROOT);
 	    exit(113);
 	}
     }
 
     if ((strncmp(cwd, dwd, strlen(dwd))) != 0) {
-	log_err("command not in docroot (%s/%s)\n", cwd, cmd);
+	log_err("error: command not in docroot (%s/%s)\n", cwd, cmd);
 	exit(114);
     }
 
@@ -462,7 +479,7 @@ int main(int argc, char *argv[])
      * Stat the cwd and verify it is a directory, or error out.
      */
     if (((lstat(cwd, &dir_info)) != 0) || !(S_ISDIR(dir_info.st_mode))) {
-	log_err("cannot stat directory: (%s)\n", cwd);
+	log_err("error: cannot stat directory: (%s)\n", cwd);
 	exit(115);
     }
 
@@ -470,7 +487,7 @@ int main(int argc, char *argv[])
      * Error out if cwd is writable by others.
      */
     if ((dir_info.st_mode & S_IWOTH) || (dir_info.st_mode & S_IWGRP)) {
-	log_err("directory is writable by others: (%s)\n", cwd);
+	log_err("error: directory is writable by others: (%s)\n", cwd);
 	exit(116);
     }
 
@@ -478,7 +495,7 @@ int main(int argc, char *argv[])
      * Error out if we cannot stat the program.
      */
     if (((lstat(cmd, &prg_info)) != 0) || (S_ISLNK(prg_info.st_mode))) {
-	log_err("cannot stat program: (%s)\n", cmd);
+	log_err("error: cannot stat program: (%s)\n", cmd);
 	exit(117);
     }
 
@@ -486,7 +503,7 @@ int main(int argc, char *argv[])
      * Error out if the program is writable by others.
      */
     if ((prg_info.st_mode & S_IWOTH) || (prg_info.st_mode & S_IWGRP)) {
-	log_err("file is writable by others: (%s/%s)\n", cwd, cmd);
+	log_err("error: file is writable by others: (%s/%s)\n", cwd, cmd);
 	exit(118);
     }
 
@@ -494,7 +511,7 @@ int main(int argc, char *argv[])
      * Error out if the file is setuid or setgid.
      */
     if ((prg_info.st_mode & S_ISUID) || (prg_info.st_mode & S_ISGID)) {
-	log_err("file is either setuid or setgid: (%s/%s)\n", cwd, cmd);
+	log_err("error: file is either setuid or setgid: (%s/%s)\n", cwd, cmd);
 	exit(119);
     }
 
@@ -506,7 +523,7 @@ int main(int argc, char *argv[])
 	(gid != dir_info.st_gid) ||
 	(uid != prg_info.st_uid) ||
 	(gid != prg_info.st_gid)) {
-	log_err("target uid/gid (%ld/%ld) mismatch "
+	log_err("error: target uid/gid (%ld/%ld) mismatch "
 		"with directory (%ld/%ld) or program (%ld/%ld)\n",
 		uid, gid,
 		dir_info.st_uid, dir_info.st_gid,
@@ -519,10 +536,20 @@ int main(int argc, char *argv[])
      * "[error] Premature end of script headers: ..."
      */
     if (!(prg_info.st_mode & S_IXUSR)) {
-	log_err("file has no execute permission: (%s/%s)\n", cwd, cmd);
+	log_err("error: file has no execute permission: (%s/%s)\n", cwd, cmd);
 	exit(121);
     }
 
+#ifdef SUEXEC_UMASK
+    /*
+     * umask() uses inverse logic; bits are CLEAR for allowed access.
+     */
+    if ((~SUEXEC_UMASK) & 0022) {
+	log_err("notice: SUEXEC_UMASK of %03o allows "
+		"write permission to group and/or other\n", SUEXEC_UMASK);
+    }
+    umask(SUEXEC_UMASK);
+#endif /* SUEXEC_UMASK */
     clean_env();
 
     /* 
@@ -561,6 +588,6 @@ int main(int argc, char *argv[])
      *
      * Oh well, log the failure and error out.
      */
-    log_err("(%d)%s: exec failed (%s)\n", errno, strerror(errno), cmd);
+    log_err("emerg: (%d)%s: exec failed (%s)\n", errno, strerror(errno), cmd);
     exit(255);
 }
