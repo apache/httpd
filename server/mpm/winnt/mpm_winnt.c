@@ -121,18 +121,14 @@ static apr_pool_t *pchild = NULL;
 static int workers_may_exit = 0;
 static int shutdown_in_progress = 0;
 static unsigned int g_blocked_threads = 0;
+static int ap_max_requests_per_child=0;
 
 static char *ap_pid_fname = NULL;
-int ap_threads_per_child = 0;
 
-static int max_requests_per_child = 0;
 static HANDLE shutdown_event;	/* used to signal the parent to shutdown */
 static HANDLE restart_event;	/* used to signal the parent to restart */
 static HANDLE exit_event;       /* used by parent to signal the child to exit */
 static HANDLE maintenance_event;
-
-static struct fd_set listenfds;
-static SOCKET listenmaxfd = INVALID_SOCKET;
 
 static char ap_coredump_dir[MAX_STRING_LEN];
 
@@ -141,13 +137,12 @@ static char const* signal_arg;
 
 OSVERSIONINFO osver; /* VER_PLATFORM_WIN32_NT */
 
-int ap_max_requests_per_child=0;
-int ap_daemons_to_start=0;
-
-
 apr_lock_t *start_mutex;
-DWORD my_pid;
-DWORD parent_pid;
+static DWORD my_pid;
+static DWORD parent_pid;
+
+int ap_threads_per_child = 0;
+int ap_daemons_to_start=0;
 
 /* ap_get_max_daemons and ap_my_generation are used by the scoreboard
  * code
@@ -159,7 +154,6 @@ ap_generation_t volatile ap_my_generation=0; /* Used by the scoreboard */
  * but it sure would be nice if we didn't duplicate this code
  * from the APR ;-)
  */
-
 static const char* const lateDllName[DLL_defined] = {
     "kernel32", "advapi32", "mswsock",  "ws2_32"  };
 static HMODULE lateDllHandle[DLL_defined] = {
@@ -537,6 +531,8 @@ static void win9x_accept(void * dummy)
     int rc;
     int clen;
     ap_listen_rec *lr;
+    struct fd_set listenfds;
+    SOCKET listenmaxfd = INVALID_SOCKET;
 
     /* Setup the listeners 
      * ToDo: Use apr_poll()
@@ -1780,7 +1776,7 @@ static void winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
     ap_daemons_to_start = DEFAULT_NUM_DAEMON;
     ap_threads_per_child = DEFAULT_START_THREAD;
     ap_pid_fname = DEFAULT_PIDLOG;
-    max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
+    ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
@@ -2016,7 +2012,7 @@ static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg)
         return err;
     }
 
-    max_requests_per_child = atoi(arg);
+    ap_max_requests_per_child = atoi(arg);
 
     return NULL;
 }
