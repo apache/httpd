@@ -5,8 +5,8 @@ If a file has already been indent'd, or doesn't need it, mark it as DONE
 ./main:				STATUS
    alloc.c
    alloc.h
-   buff.c
-   buff.h
+   buff.c			RESERVED by Dean
+   buff.h			RESERVED by Dean
    conf.h
    dummy.c
    explain.c
@@ -22,7 +22,7 @@ If a file has already been indent'd, or doesn't need it, mark it as DONE
    http_log.c
    http_log.h
    http_main.c			DONE by Dean
-   http_main.h			RESERVED by Dean
+   http_main.h			DONE by Dean
    http_protocol.c		DONE by Roy
    http_protocol.h		DONE by Roy
    http_request.c		RESERVED while Roy is working on it
