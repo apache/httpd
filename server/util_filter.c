@@ -202,12 +202,12 @@ static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt,
 
 AP_DECLARE(void) ap_remove_input_filter(ap_filter_t *f)
 {
-    return remove_any_filter(f, f->r ? &f->r->input_filters : NULL, &f->c->input_filters);
+    remove_any_filter(f, f->r ? &f->r->input_filters : NULL, &f->c->input_filters);
 }
 
 AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)
 {
-    return remove_any_filter(f, f->r ? &f->r->output_filters : NULL, &f->c->output_filters);
+    remove_any_filter(f, f->r ? &f->r->output_filters : NULL, &f->c->output_filters);
 }
 
 /* 
