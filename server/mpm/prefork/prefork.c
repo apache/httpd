@@ -591,6 +591,7 @@ static void child_main(int child_num_arg)
     apr_pool_create_ex(&pchild, pconf, NULL, APR_POOL_FNEW_ALLOCATOR);
 
     apr_pool_create(&ptrans, pchild);
+    apr_pool_tag(ptrans, "transaction");
 
     /* needs to be done before we switch UIDs so we have permissions */
     reopen_scoreboard(pchild, 0);
