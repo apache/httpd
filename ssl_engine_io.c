@@ -640,11 +640,16 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
              */
             if (APR_STATUS_IS_EAGAIN(inctx->rc)
                     || APR_STATUS_IS_EINTR(inctx->rc)) {
-                /* Already read something, return APR_SUCCESS instead. */
-                if (*len > 0) {
-                    inctx->rc = APR_SUCCESS;
+                /* Already read something, return APR_SUCCESS instead. 
+                 * On win32 in particular, but perhaps on other kernels,
+                 * a blocking call isn't 'always' blocking.
+                 */
+                if (inctx->block == APR_NONBLOCK_READ) {
+                    if (*len > 0) {
+                        inctx->rc = APR_SUCCESS;
+                    }
+                    break;
                 }
-                break;
             }
             else {
                 if (*len > 0) {
@@ -684,10 +689,13 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                 if (APR_STATUS_IS_EAGAIN(inctx->rc)
                         || APR_STATUS_IS_EINTR(inctx->rc)) {
                     /* Already read something, return APR_SUCCESS instead. */
-                    if (*len > 0) {
-                        inctx->rc = APR_SUCCESS;
+                    if (inctx->block == APR_NONBLOCK_READ) {
+                        if (*len > 0) {
+                            inctx->rc = APR_SUCCESS;
+                        }
+                        break;
                     }
-                    break;
+                    continue;
                 }
                 else {
                     ap_log_error(APLOG_MARK, APLOG_ERR, inctx->rc, c->base_server,
