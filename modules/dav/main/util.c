@@ -247,7 +247,7 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r,
 
         /* insert a port if the URI did not contain one */
         if (comp.port == 0)
-            comp.port = apr_uri_default_port_for_scheme(comp.scheme);
+            comp.port = apr_uri_port_of_scheme(comp.scheme);
 
         /* now, verify that the URI uses the same scheme as the current.
            request. the port must match our port.
