@@ -60,7 +60,7 @@
     <code class="directive"><a href="../mod/core.html#options">Options</a></code>
     ディレクティブをご覧下さい。</p>
 
-    <p>もし <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>オプションが
+    <p>もし <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>オプションが
     <code class="directive"><a href="../mod/autoindex.html#indexoptions">IndexOptions</a></code>
     ディレクティブに与えられているならば、
     列の先頭は表示の順番を制御するリンクになります。
@@ -110,7 +110,7 @@
     新しいクエリーオプションのグループを導入しました。
     出力に対するクライアントのすべての制御を効率的に抹消
     できるように、
-    <code><a href="#indexoptions:ignoreclient">IndexOptions
+    <code><a href="#indexoptions.ignoreclient">IndexOptions
     IgnoreClient</a></code> が導入されました。</p>
 
     <p>コラムソートのヘッダそれ自体が、
@@ -221,7 +221,7 @@
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code class="directive">AddAlt</code> は、<code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
+    <p><code class="directive">AddAlt</code> は、<code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
     において、アイコンの代わりに表示する代替テキストを提供します。
     <var>file</var> は、説明するファイルのファイル拡張子、
     ファイル名の一部、ワイルドカード表現、完全なファイル名の
@@ -251,7 +251,7 @@
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p><code class="directive">AddAltByEncoding</code> は、
-    <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
+    <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
     において、アイコンの代わりに表示する代替文字列を提供します。
     <var>MIME-encoding</var> は有効な符号化、例えば
     <code>x-compress</code>
@@ -280,7 +280,7 @@
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p><code class="directive">AddAltByType</code> は、
-    <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
+    <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
     において、アイコンの代わりに表示する代替文字列を設定します。
     <var>MIME-type</var> は有効なタイプ、例えば
     <code>text/html</code>
@@ -306,7 +306,7 @@
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
+    <p><code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
     において、ファイルに対して表示する説明を設定します。
     <var>file</var> は説明するファイルのファイル拡張子、
     ファイル名の一部、ワイルドカード表現、完全なファイル名の
@@ -321,18 +321,18 @@
     </code></p></div>
 
     <p>通常のデフォルトの説明領域は 23 バイトの幅です。
-    <code><a href="#indexoptions:suppressicon">IndexOptions SuppressIcon</a></code>
+    <code><a href="#indexoptions.suppressicon">IndexOptions SuppressIcon</a></code>
     オプションで 6 バイト追加、
-    <code><a href="#indexoptions:suppresssize">IndexOptions SuppressSize</a></code>
+    <code><a href="#indexoptions.suppresssize">IndexOptions SuppressSize</a></code>
     オプションで 7 バイト追加、
-    <code><a href="#indexoptions:suppresslastmodified">IndexOptions SuppressLastModified</a></code>
+    <code><a href="#indexoptions.suppresslastmodified">IndexOptions SuppressLastModified</a></code>
     オプションで 19 バイト追加されます。
     ですから、デフォルトの説明コラムの最大幅は
     55 バイトになります。</p>
 
     <p>このコラムの大きさを上書きしたり、
     説明が無制限長でもよいようにするための詳細に関しては、
-    <a href="#indexoptions:descriptionwidth">DescriptionWidth</a>
+    <a href="#indexoptions.descriptionwidth">DescriptionWidth</a>
     という
     <code class="directive"><a href="#indexoptions">IndexOptions</a></code> 
     のキーワードをご覧下さい。</p>
@@ -358,7 +358,7 @@
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
+    <p><code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
     において、
     <var>name</var> で終わるファイルの隣に表示するアイコンを設定します。
     <var>icon</var> は、(% でエスケープされた) アイコンへの相対 URL
@@ -397,7 +397,7 @@
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
+    <p><code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
     において、ファイルの隣に表示するアイコンを設定します。
     <var>icon</var> は、(% でエスケープされた) アイコンへの相対 URL
     か、他の書式 (<var>alttext</var>, <var>url</var>) です。
@@ -425,7 +425,7 @@ MIME タイプによって選択</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
+    <p><code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
     において、ファイルの隣に表示するアイコンを設定します。
     <var>icon</var> は、(% でエスケープされた) アイコンへの相対 URL
     か、他の書式 <code>(<var>alttext</var>, <var>url</var>)</code> です。
@@ -452,7 +452,7 @@ MIME タイプによって選択</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
+    <p><code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
     において、
     特定のアイコンがない場合にファイルに表示するアイコンを設定します。
     <var>url-path</var> は、(% でエスケープされた) アイコンへの相対 URL
@@ -529,7 +529,7 @@ MIME タイプによって選択</td></tr>
     <p>もし <code class="directive">HeaderName</code> で指定されたファイルが
     HTML ドキュメントの開始部分 (&lt;HTML&gt;, &lt;HEAD&gt;, 
     等) を含んでいたら、
-    <a href="#indexoptions:suppresshtmlpreamble"><code>IndexOptions
+    <a href="#indexoptions.suppresshtmlpreamble"><code>IndexOptions
     +SuppressHTMLPreamble</code></a>
     を設定して、これらのタグが繰り返されないようにしたいと思うでしょう。</p>
 
@@ -574,7 +574,7 @@ MIME タイプによって選択</td></tr>
     <var>option</var> は次のどれかです:</p>
 
     <dl>
-      <dt><a name="indexoptions:descriptionwidth" id="indexoptions:descriptionwidth">DescriptionWidth=[<var>n</var> | *]</a>
+      <dt><a name="indexoptions.descriptionwidth" id="indexoptions.descriptionwidth">DescriptionWidth=[<var>n</var> | *]</a>
       (<em>2.0.23 以降</em>)</dt>
 
       <dd><code>DescriptionWidth</code> 
@@ -593,11 +593,11 @@ MIME タイプによって選択</td></tr>
       <code class="directive"><a href="#adddescription">AddDescription</a></code>
       セクションをお読み下さい。</strong></dd>
 
-      <dt><a name="indexoptions:fancyindexing" id="indexoptions:fancyindexing">FancyIndexing</a></dt>
+      <dt><a name="indexoptions.fancyindexing" id="indexoptions.fancyindexing">FancyIndexing</a></dt>
 
       <dd>飾り付きインデックスをオンにします。</dd>
 
-      <dt><a name="indexoptions:foldersfirst" id="indexoptions:foldersfirst">FoldersFirst</a>
+      <dt><a name="indexoptions.foldersfirst" id="indexoptions.foldersfirst">FoldersFirst</a>
       (<em>2.0.23 以降</em>)</dt>
 
       <dd>このオプションが有効になった場合、サブディレクトリの一覧は
@@ -611,10 +611,10 @@ MIME タイプによって選択</td></tr>
       <code>Beta</code> よりも前にリストされ、通常のファイル
       <code>Gamma</code> や <code>Alpha</code>
       よりも前にリストされます。<strong>このオプションは
-      <a href="#indexoptions:fancyindexing"><code>FancyIndexing</code></a>
+      <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
       も有効になっているときにのみ、効果があります。</strong></dd>
 
-      <dt><a name="indexoptions:htmltable" id="indexoptions:htmltable">HTMLTable</a> <em>(実験的、
+      <dt><a name="indexoptions.htmltable" id="indexoptions.htmltable">HTMLTable</a> <em>(実験的、
       Apache 2.0.23 以降)</em></dt>
 
       <dd>この実験的なオプションは FancyIndexing とともに指定することで、
@@ -624,12 +624,12 @@ MIME タイプによって選択</td></tr>
       が有効なプラットホームのように、ファイル名や説明テキストが
       右読みになったり左読みになりえる場合は特に必要です。</dd>
 
-      <dt><a name="indexoptions:iconsarelinks" id="indexoptions:iconsarelinks">IconsAreLinks</a></dt>
+      <dt><a name="indexoptions.iconsarelinks" id="indexoptions.iconsarelinks">IconsAreLinks</a></dt>
 
       <dd>これは、FancyIndexing において、
       アイコンもファイル名へのリンクの一部にします。</dd>
 
-      <dt><a name="indexoptions:iconheight" id="indexoptions:iconheight">IconHeight[=<var>pixels</var>]</a></dt>
+      <dt><a name="indexoptions.iconheight" id="indexoptions.iconheight">IconHeight[=<var>pixels</var>]</a></dt>
 
       <dd>このオプションが、IconWidth とともに使われている場合は、
       サーバはファイルアイコンのための <code>img</code>
@@ -641,7 +641,7 @@ MIME タイプによって選択</td></tr>
       ソフトウェアで提供されているアイコンの標準の高さが
       デフォルトなります。</dd>
 
-      <dt><a name="indexoptions:iconwidth" id="indexoptions:iconwidth">IconWidth[=<var>pixels</var>]</a></dt>
+      <dt><a name="indexoptions.iconwidth" id="indexoptions.iconwidth">IconWidth[=<var>pixels</var>]</a></dt>
 
       <dd>このオプションが、IconHeightとともに使われている場合は、
       サーバはファイルアイコンのための <code>img</code>
@@ -653,22 +653,22 @@ MIME タイプによって選択</td></tr>
       ソフトウェアで提供されているアイコンの標準の高さが
       デフォルトなります。</dd>
 
-      <dt><a name="indexoptions:ignorecase" id="indexoptions:ignorecase">IgnoreCase</a></dt>
+      <dt><a name="indexoptions.ignorecase" id="indexoptions.ignorecase">IgnoreCase</a></dt>
 
       <dd>このオプションが有効であると、ファイル名は大文字小文字を区別せずにソートされます。
       例えばファイル名が昇順でソートされ、IgnoreCase が有効であれば、
       Zeta は alfa の後にリストされます
       (注意: GAMMA は常に gamma の前になります)。</dd>
 
-      <dt><a name="indexoptions:ignoreclient" id="indexoptions:ignoreclient">IgnoreClient</a></dt>
+      <dt><a name="indexoptions.ignoreclient" id="indexoptions.ignoreclient">IgnoreClient</a></dt>
 
       <dd>このオプションで <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> は、
       クライアントからの全てのクエリー変数を無視するようになります。
       これはソート順も含みます。
-      (つまり <code><a href="#indexoptions:suppresscolumnsorting">SuppressColumnSorting</a></code>
+      (つまり <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code>
       を暗に意味します。)</dd>
 
-      <dt><a name="indexoptions:namewidth" id="indexoptions:namewidth">NameWidth=[<var>n</var> 
+      <dt><a name="indexoptions.namewidth" id="indexoptions.namewidth">NameWidth=[<var>n</var> 
 	       | *]</a></dt>
 
       <dd><code>NameWidth</code> キーワードでファイル名コラムの幅をバイト数で
@@ -683,7 +683,7 @@ MIME タイプによって選択</td></tr>
       <dd><code>NameWidth=*</code>
       は、必要な長さまでコラムを延ばします。</dd>
 
-      <dt><a name="indexoptions:scanhtmltitles" id="indexoptions:scanhtmltitles">ScanHTMLTitles</a></dt>
+      <dt><a name="indexoptions.scanhtmltitles" id="indexoptions.scanhtmltitles">ScanHTMLTitles</a></dt>
 
       <dd>FancyIndexing のために、
        HTML ドキュメントからタイトルを取り出すことを可能にします。
@@ -693,7 +693,7 @@ MIME タイプによって選択</td></tr>
       httpd は <code>title</code> タグの値を読むためにドキュメントを読み始めます。
       これは CPU や disk に負荷をかけます。</dd>
 
-      <dt><a name="indexoptions:suppresscolumnsorting" id="indexoptions:suppresscolumnsorting">SuppressColumnSorting</a></dt>
+      <dt><a name="indexoptions.suppresscolumnsorting" id="indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></dt>
 
       <dd>もし指定されていれば、Apache は
       FancyIndexing で表示されているディレクトリ一覧での
@@ -705,10 +705,10 @@ MIME タイプによって選択</td></tr>
       ソート文字列のためのクエリー引数の解析も無効にします。
       </strong>
       この挙動は Apache 2.0.23 では
-      <a href="#indexoptions:ignoreclient">IndexOptions
+      <a href="#indexoptions.ignoreclient">IndexOptions
       IgnoreClient</a> で制御されるようになっています。</dd>
 
-      <dt><a name="indexoptions:suppressdescription" id="indexoptions:suppressdescription">SuppressDescription</a></dt>
+      <dt><a name="indexoptions.suppressdescription" id="indexoptions.suppressdescription">SuppressDescription</a></dt>
 
       <dd>これは FancyIndexing におけるファイルの説明を消去します。
       デフォルトでは、説明は定義されておらず、
@@ -716,10 +716,10 @@ MIME タイプによって選択</td></tr>
       文字の空白を稼ぐことができます。 ファイルの説明に関する情報は、
       <code class="directive"><a href="#adddescription">AddDescription</a></code> 
       をご覧下さい。また、説明のコラムサイズを制限する
-      <code><a href="#indexoptions:descriptionwidth">DescriptionWidth</a></code>
+      <code><a href="#indexoptions.descriptionwidth">DescriptionWidth</a></code>
       インデックスオプションもご覧下さい。</dd>
 
-      <dt><a name="indexoptions:suppresshtmlpreamble" id="indexoptions:suppresshtmlpreamble">SuppressHTMLPreamble</a></dt>
+      <dt><a name="indexoptions.suppresshtmlpreamble" id="indexoptions.suppresshtmlpreamble">SuppressHTMLPreamble</a></dt>
 
       <dd>通常、
       <code class="directive"><a href="#headername">HeaderName</a></code>
@@ -735,7 +735,7 @@ MIME タイプによって選択</td></tr>
       ヘッダーファイルが存在しない場合は、プリアンブルは通常通り
       生成されます。</dd>
 
-      <dt><a name="indexoptions:suppressicon" id="indexoptions:suppressicon">SuppressIcon</a> (<em>Apache
+      <dt><a name="indexoptions.suppressicon" id="indexoptions.suppressicon">SuppressIcon</a> (<em>Apache
       2.0.23 以降</em>)</dt>
 
       <dd>
@@ -746,11 +746,11 @@ MIME タイプによって選択</td></tr>
       が <code>pre</code> ブロックに入る (FancyIndexing 一覧で書式に使われています) 
       ことを禁止しています。</dd>
 
-      <dt><a name="indexoptions:suppresslastmodified" id="indexoptions:suppresslastmodified">SuppressLastModified</a></dt>
+      <dt><a name="indexoptions.suppresslastmodified" id="indexoptions.suppresslastmodified">SuppressLastModified</a></dt>
 
       <dd>FancyIndexing 一覧において最終更新日時の表示を消去します。</dd>
 
-      <dt><a name="indexoptions:suppressrules" id="indexoptions:suppressrules">SuppressRules</a>
+      <dt><a name="indexoptions.suppressrules" id="indexoptions.suppressrules">SuppressRules</a>
        (<em>Apache 2.0.23 以降</em>) </dt>
 
       <dd>ディレクトリ一覧において水平区切り線 (<code>hr</code> タグ) を消去します。
@@ -760,11 +760,11 @@ MIME タイプによって選択</td></tr>
       が <code>pre</code> ブロックに入る (FancyIndexing 一覧で書式に使われています) 
       ことを禁止しています。</dd>
 
-      <dt><a name="indexoptions:suppresssize" id="indexoptions:suppresssize">SuppressSize</a></dt>
+      <dt><a name="indexoptions.suppresssize" id="indexoptions.suppresssize">SuppressSize</a></dt>
 
       <dd>FancyIndexing 一覧においてファイルサイズの表示を消去します。</dd>
 
-      <dt><a name="indexoptions:trackmodified" id="indexoptions:trackmodified">TrackModified</a>
+      <dt><a name="indexoptions.trackmodified" id="indexoptions.trackmodified">TrackModified</a>
 	       (<em>Apache 2.0.23 以降</em>)</dt>
 
       <dd>これは HTTP ヘッダ中に、
@@ -787,7 +787,7 @@ MIME タイプによって選択</td></tr>
       もしこれが重要であれば、
       このオプションを無効のままにしてください。</dd>
 
-      <dt><a name="indexoptions:versionsort" id="indexoptions:versionsort">VersionSort</a>
+      <dt><a name="indexoptions.versionsort" id="indexoptions.versionsort">VersionSort</a>
       (<em>Apache 2.0a3 以降</em>)</dt>
 
       <dd><code>VersionSort</code> キーワードはバージョン番号を含んだファイルが
@@ -893,7 +893,7 @@ Name|Date|Size|Description</code></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p><code class="directive">IndexOrderDefault</code> ディレクティブは
-    <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
+    <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
     インデックスオプションと併せて用いれれます。
     デフォルトでは、FancyIndexing 
     のディレクトリ一覧はファイル名の昇順で表示されます。
@@ -908,7 +908,7 @@ Name|Date|Size|Description</code></td></tr>
     のいずれか一つのキーワードであって、プライマリキーを指定します。
     二つ目のキーは<em>常に</em>ファイル名の昇順になります。</p>
 
-    <p>このディレクティブと <code><a href="#indexoptions:suppresscolumnsorting">SuppressColumnSorting</a></code>
+    <p>このディレクティブと <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code>
     インデックスオプションとを組み合わせることで、
     ディレクトリ一覧をある特定の順番でのみ表示するようにできます。
     これは、

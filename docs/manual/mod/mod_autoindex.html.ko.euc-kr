@@ -54,7 +54,7 @@
     지시어를 참고하라.</p>
 
     <p><code class="directive"><a href="#indexoptions">IndexOptions</a></code>
-    지시어에 <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code> 옵션을 주면, 열 이름을 출력할
+    지시어에 <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code> 옵션을 주면, 열 이름을 출력할
     순서를 바꾸는 링크로 만든다. 이름 링크를 선택하면 그 열의
     값 순서로 목록을 다시 만든다. 같은 이름을 반복해서 선택하면
     오름차순과 내림차순 사이를 오간다. <code class="directive"><a href="#indexoptions">IndexOptions</a></code> 지시어의
@@ -93,7 +93,7 @@
 
     <p>아파치 2.0.23는 열순서에 대한 요청 아규먼트를 정리하고,
     새로운 옵션들을 추가했다. 출력을 클라이언트가 조절할 수
-    없도록 만드는 <code><a href="#indexoptions:ignoreclient">IndexOptions
+    없도록 만드는 <code><a href="#indexoptions.ignoreclient">IndexOptions
     IgnoreClient</a></code> 옵션이 추가되었다.</p>
 
     <p>열순서 이름은 아래 나온 순서 요청 옵션을 더한 자기참조
@@ -187,7 +187,7 @@
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code class="directive">AddAlt</code>는 <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>에서
+    <p><code class="directive">AddAlt</code>는 <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>에서
     파일에 대한 아이콘대신 보일 글을 지정한다. <var>File</var>에는
     설명할 파일의 파일 확장자, 파일명 일부, 와일드카드 표현,
     전체 파일명을 사용할 수 있다. <var>String</var>에 공백이
@@ -213,7 +213,7 @@
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code class="directive">AddAltByEncoding</code>은 <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>에서
+    <p><code class="directive">AddAltByEncoding</code>은 <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>에서
     파일에 대한 아이콘대신 보일 글을 지정한다. <var>MIME-encoding</var>은
     <code>x-compress</code>와 같은 유효한 content-encoding이다.
     <var>String</var>에 공백이 들어간다면 따옴표(<code>"</code>
@@ -238,7 +238,7 @@
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code class="directive">AddAltByType</code>은 <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>에서
+    <p><code class="directive">AddAltByType</code>은 <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>에서
     파일에 대한 아이콘대신 보일 글을 지정한다. <var>MIME-type</var>은
     <code>text/html</code>과 같은 유효한 content-type이다.
     <var>String</var>에 공백이 들어간다면 따옴표(<code>"</code>
@@ -261,7 +261,7 @@
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p>이 지시어는 <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>에서 파일에 대한 설명을 지정한다.
+    <p>이 지시어는 <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>에서 파일에 대한 설명을 지정한다.
     <var>File</var>에는 설명할 파일의 파일 확장자, 파일명 일부,
     와일드카드 표현, 전체 파일명을 사용할 수 있다. <var>String</var>은
     따옴표(<code>"</code>)로 묶어야 한다.</p>
@@ -270,14 +270,14 @@
       AddDescription "The planet Mars" /web/pics/mars.gif
     </code></p></div>
 
-    <p>전형적인 기본 설명 필드폭은 23 바이트다. <code><a href="#indexoptions:suppressicon">IndexOptions
+    <p>전형적인 기본 설명 필드폭은 23 바이트다. <code><a href="#indexoptions.suppressicon">IndexOptions
     SuppressIcon</a></code> 옵션을 사용하면 기본폭에 6 바이트를
-    더 추가하고, <code><a href="#indexoptions:suppresssize">IndexOptions SuppressSize</a></code> 옵션은 7 바이트를,
-    <code><a href="#indexoptions:suppresslastmodified">IndexOptions SuppressLastModified</a></code> 옵션은 19
+    더 추가하고, <code><a href="#indexoptions.suppresssize">IndexOptions SuppressSize</a></code> 옵션은 7 바이트를,
+    <code><a href="#indexoptions.suppresslastmodified">IndexOptions SuppressLastModified</a></code> 옵션은 19
     바이트를 더 추가한다. 그러므로 가장 넓은 설명폭은 55 바이트다.</p>
 
     <p>이 필드의 폭를 바꾸거나 설명의 길이를 무한대로 만드려면
-    <a href="#indexoptions:descriptionwidth">DescriptionWidth</a> <code class="directive"><a href="#indexoptions">IndexOptions</a></code> 키워드를 참고하라.</p>
+    <a href="#indexoptions.descriptionwidth">DescriptionWidth</a> <code class="directive"><a href="#indexoptions">IndexOptions</a></code> 키워드를 참고하라.</p>
 
     <div class="note"><h3>조심</h3>
       <p><code class="directive">AddDescription</code>으로 지정한 설명글에
@@ -299,7 +299,7 @@
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p>이 지시어는 <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>에서 <var>name</var>으로 끝나는
+    <p>이 지시어는 <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>에서 <var>name</var>으로 끝나는
     파일 옆에 보여줄 아이콘을 지정한다. <var>Icon</var>은
     아이콘의 (%-escaped) 상대 URL 혹은
     <code>(<var>alttext</var>,<var>url</var>)</code> 형식이다.
@@ -331,7 +331,7 @@
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p>이 지시어는 <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>에서
+    <p>이 지시어는 <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>에서
     파일 옆에 보여줄 아이콘을 지정한다. <var>Icon</var>은
     아이콘의 (%-escaped) 상대 URL 혹은
     <code>(<var>alttext</var>,<var>url</var>)</code> 형식이다.
@@ -357,7 +357,7 @@
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p>이 지시어는 <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>에서
+    <p>이 지시어는 <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>에서
     <var>MIME-type</var>의 파일 옆에 보여줄 아이콘을 지정한다.
     <var>Icon</var>은 아이콘의 (%-escaped) 상대 URL 혹은
     <code>(<var>alttext</var>,<var>url</var>)</code> 형식이다.
@@ -382,7 +382,7 @@
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code class="directive">DefaultIcon</code> 지시어는 <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>에서
+    <p><code class="directive">DefaultIcon</code> 지시어는 <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>에서
     특정 아이콘을 설정하지않은 파일 옆에 나올 아이콘이다.
     <var>Icon</var>은 아이콘의 (%-escaped) 상대 URL이다.</p>
 
@@ -440,7 +440,7 @@
 
     <p><code class="directive">HeaderName</code>으로 지정한 파일에
     (&lt;html&gt;, &lt;head&gt;, 등) HTML 문서 시작부분이 포함되있다면
-    <a href="#indexoptions:suppresshtmlpreamble"><code>IndexOptions
+    <a href="#indexoptions.suppresshtmlpreamble"><code>IndexOptions
     +SuppressHTMLPreamble</code></a>을 사용하여 이 부분을 추가하지않는
     것이 좋다.</p>
 
@@ -482,7 +482,7 @@
     목록을 설정한다. <var>Option</var>은 다음 중 하나이다</p>
 
     <dl>
-      <dt><a name="indexoptions:descriptionwidth" id="indexoptions:descriptionwidth">DescriptionWidth=[<var>n</var> | *]</a> (<em>아파치
+      <dt><a name="indexoptions.descriptionwidth" id="indexoptions.descriptionwidth">DescriptionWidth=[<var>n</var> | *]</a> (<em>아파치
       2.0.23 이후</em>)</dt>
 
       <dd><code>DescriptionWidth</code> 키워드를 사용하여 문자단위로
@@ -501,11 +501,11 @@
       <dd><strong>설정이 짤릴 수 있는 문제는 <code class="directive"><a href="#adddescription">AddDescription</a></code>
       절을 참고하라.</strong></dd>
 
-      <dt><a name="indexoptions:fancyindexing" id="indexoptions:fancyindexing">FancyIndexing</a></dt>
+      <dt><a name="indexoptions.fancyindexing" id="indexoptions.fancyindexing">FancyIndexing</a></dt>
 
       <dd>디렉토리의 fancy 목록을 만든다.</dd>
 
-      <dt><a name="indexoptions:foldersfirst" id="indexoptions:foldersfirst">FoldersFirst</a>
+      <dt><a name="indexoptions.foldersfirst" id="indexoptions.foldersfirst">FoldersFirst</a>
                (<em>아파치 2.0.23 이후</em>)</dt>
 
       <dd>이 옵션을 사용하면 하위디렉토리 목록이 <em>항상</em>
@@ -516,10 +516,10 @@
       사용한다면 하위디렉토리 <code>Zed</code>가 하위디렉토리
       <code>Beta</code> 앞에 나오고, 하위디렉토리 <code>Beta</code>는
       일반 파일 <code>Gamma</code>와 <code>Alpha</code> 앞에
-      나온다. <strong>이 옵션은 <a href="#indexoptions:fancyindexing"><code>FancyIndexing</code></a>을 함께 사용할때만 효과가
+      나온다. <strong>이 옵션은 <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>을 함께 사용할때만 효과가
       있다.</strong></dd>
 
-      <dt><a name="indexoptions:htmltable" id="indexoptions:htmltable">HTMLTable</a> (<em>실험적,
+      <dt><a name="indexoptions.htmltable" id="indexoptions.htmltable">HTMLTable</a> (<em>실험적,
       아파치 2.0.23 이후</em>)</dt>
 
       <dd>이 실험적인 FancyIndexing 옵션은 간단한 HTML 표로
@@ -528,11 +528,11 @@
       utf-8 사용 플래폼에서 파일명이나 설명문의 읽기 순서(왼쪽에서
       오른쪽 혹은 오른쪽에서 왼쪽으로)가 다를때 특별히 유용하다.</dd>
 
-      <dt><a name="indexoptions:iconsarelinks" id="indexoptions:iconsarelinks">IconsAreLinks</a></dt>
+      <dt><a name="indexoptions.iconsarelinks" id="indexoptions.iconsarelinks">IconsAreLinks</a></dt>
 
       <dd>fancy 목록에서 파일명 링크에 아이콘을 포함한다.</dd>
 
-      <dt><a name="indexoptions:iconheight" id="indexoptions:iconheight">IconHeight[=<var>pixels</var>]</a></dt>
+      <dt><a name="indexoptions.iconheight" id="indexoptions.iconheight">IconHeight[=<var>pixels</var>]</a></dt>
 
       <dd>이 옵션을 IconWidth와 같이 사용하면 서버는 파일 아이콘의
       <code>img</code> 태그에 <code>height</code>와 <code>width</code>
@@ -540,7 +540,7 @@
       상황에서도 페이지 구성을 미리 계산할 수 있다. 옵션에 값을
       주지않으면 아파치가 제공하는 아이콘의 표준 높이를 사용한다.</dd>
 
-      <dt><a name="indexoptions:iconwidth" id="indexoptions:iconwidth">IconWidth[=<var>pixels</var>]</a></dt>
+      <dt><a name="indexoptions.iconwidth" id="indexoptions.iconwidth">IconWidth[=<var>pixels</var>]</a></dt>
 
       <dd>이 옵션을 <code>IconHeight</code>와 같이 사용하면
       서버는 파일 아이콘의 <code>img</code> 태그에
@@ -549,20 +549,20 @@
       구성을 미리 계산할 수 있다. 옵션에 값을 주지않으면 아파치가
       제공하는 아이콘의 표준 폭을 사용한다.</dd>
 
-      <dt><a name="indexoptions:ignorecase" id="indexoptions:ignorecase">IgnoreCase</a></dt>
+      <dt><a name="indexoptions.ignorecase" id="indexoptions.ignorecase">IgnoreCase</a></dt>
 
       <dd>이 옵션을 사용하면 대소문자 구별하지않고 이름을 정렬한다.
       예를 들어, 이름으로 오름차순이고 IgnoreCase를 사용하면
       파일 Zeta는 파일 alfa 뒤에 나온다 (주의: 파일 GAMMA는
       항상 파일 gamma 앞에 나온다). </dd>
 
-      <dt><a name="indexoptions:ignoreclient" id="indexoptions:ignoreclient">IgnoreClient</a></dt>
+      <dt><a name="indexoptions.ignoreclient" id="indexoptions.ignoreclient">IgnoreClient</a></dt>
 
       <dd>이 옵션을 사용하면 <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>는
       순서를 포함하여 클라이언트가 보내는 모든 질의변수를 무시한다.
-      (<code><a href="#indexoptions:suppresscolumnsorting">SuppressColumnSorting</a></code>을 가정한다.)</dd>
+      (<code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code>을 가정한다.)</dd>
 
-      <dt><a name="indexoptions:namewidth" id="indexoptions:namewidth">NameWidth=[<var>n</var>
+      <dt><a name="indexoptions.namewidth" id="indexoptions.namewidth">NameWidth=[<var>n</var>
                | *]</a></dt>
 
       <dd><code>NameWidth</code> 키워드는 바이트단위로 파일명
@@ -577,33 +577,33 @@
 
       <dd><code>NameWidth=*</code>은 열의 폭을 필요한만큼 늘린다.</dd>
 
-      <dt><a name="indexoptions:scanhtmltitles" id="indexoptions:scanhtmltitles">ScanHTMLTitles</a></dt>
+      <dt><a name="indexoptions.scanhtmltitles" id="indexoptions.scanhtmltitles">ScanHTMLTitles</a></dt>
 
       <dd>fancy 목록에서 HTML 문서의 title을 뽑는다. 파일에
       <code class="directive"><a href="#adddescription">AddDescription</a></code>로
       지정한 설명이 없다면 웹서버는 문서의 <code>title</code>
       요소값을 읽어들인다. 이 작업은 CPU와 디스크를 많이 사용한다.</dd>
 
-      <dt><a name="indexoptions:suppresscolumnsorting" id="indexoptions:suppresscolumnsorting">SuppressColumnSorting</a></dt>
+      <dt><a name="indexoptions.suppresscolumnsorting" id="indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></dt>
 
       <dd>이 옵션을 사용하면 아파치는 FancyIndexed 디렉토리
       목록에서 열 이름을 순서를 바꾸는 링크로 만들지 않는다.
       보통은 열 이름을 링크로 만들어서, 열 이름을 선택하면 그
       열에 있는 값순서로 디렉토리 목록을 만든다. <strong>아파치
       2.0.23 이전에는 순서 아규먼트도 읽지 않았다.</strong>
-      아파치 2.0.23에서는 <a href="#indexoptions:ignoreclient">IndexOptions
+      아파치 2.0.23에서는 <a href="#indexoptions.ignoreclient">IndexOptions
       IgnoreClient</a>를 사용하여 순서 아규먼트를 읽지 않는다.</dd>
 
-      <dt><a name="indexoptions:suppressdescription" id="indexoptions:suppressdescription">SuppressDescription</a></dt>
+      <dt><a name="indexoptions.suppressdescription" id="indexoptions.suppressdescription">SuppressDescription</a></dt>
 
       <dd>fancy 목록에서 파일 설명을 포함하지 않는다. 기본적으로
       어떤 파일 설명도 정의되있지않고, 이 옵션을 사용하면 23
       문자 공간을 다른 용도로 사용한다. 파일 설명을 지정하는
       방법은 <code class="directive"><a href="#adddescription">AddDescription</a></code>을 참고하라. 설명열의 크기를
-      지정하는 <code><a href="#indexoptions:descriptionwidth">DescriptionWidth</a></code>
+      지정하는 <code><a href="#indexoptions.descriptionwidth">DescriptionWidth</a></code>
       옵션도 참고하라.</dd>
 
-      <dt><a name="indexoptions:suppresshtmlpreamble" id="indexoptions:suppresshtmlpreamble">SuppressHTMLPreamble</a></dt>
+      <dt><a name="indexoptions.suppresshtmlpreamble" id="indexoptions.suppresshtmlpreamble">SuppressHTMLPreamble</a></dt>
 
       <dd>디렉토리에 <code class="directive"><a href="#headername">HeaderName</a></code> 지시어로
       지정한 파일이 있는 경우 모듈은 보통 표준 HTML 시작부분
@@ -614,7 +614,7 @@
       HTML 명령이 있어야 한다. header 파일이 없다면 일반적인
       시작부분이 만들어진다.</dd>
 
-      <dt><a name="indexoptions:suppressicon" id="indexoptions:suppressicon">SuppressIcon</a>
+      <dt><a name="indexoptions.suppressicon" id="indexoptions.suppressicon">SuppressIcon</a>
                (<em>아파치 2.0.23 이후</em>)</dt>
 
       <dd>fancy 목록에서 아이콘을 뺀다. <code>SuppressIcon</code>과
@@ -623,11 +623,11 @@
       <code>hr</code> 요소 사용을 금지한 마지막 표준인 HTML 3.2에
       알맞은 출력이 된다.</dd>
 
-      <dt><a name="indexoptions:suppresslastmodified" id="indexoptions:suppresslastmodified">SuppressLastModified</a></dt>
+      <dt><a name="indexoptions.suppresslastmodified" id="indexoptions.suppresslastmodified">SuppressLastModified</a></dt>
 
       <dd>fancy 목록에서 마지막 수정일을 표시하지 않는다.</dd>
 
-      <dt><a name="indexoptions:suppressrules" id="indexoptions:suppressrules">SuppressRules</a>
+      <dt><a name="indexoptions.suppressrules" id="indexoptions.suppressrules">SuppressRules</a>
       (<em>아파치 2.0.23 이후</em>)</dt>
 
       <dd>디렉토리 목록에서 수평줄을 (<code>hr</code> 요소)
@@ -637,11 +637,11 @@
       <code>hr</code> 요소 사용을 금지한 마지막 표준인 HTML 3.2에
       알맞은 출력이 된다.</dd>
 
-      <dt><a name="indexoptions:suppresssize" id="indexoptions:suppresssize">SuppressSize</a></dt>
+      <dt><a name="indexoptions.suppresssize" id="indexoptions.suppresssize">SuppressSize</a></dt>
 
       <dd>fancy 목록에서 파일크기를 표시하지 않는다.</dd>
 
-      <dt><a name="indexoptions:trackmodified" id="indexoptions:trackmodified">TrackModified</a>
+      <dt><a name="indexoptions.trackmodified" id="indexoptions.trackmodified">TrackModified</a>
                (<em>아파치 2.0.23 이후</em>)</dt>
 
       <dd>디렉토리 목록의 HTTP 헤더에 Last-Modified와 ETag 값을
@@ -657,7 +657,7 @@
       바뀌지않는다.</strong> 이런 변화가 중요하다면 이 옵션을
       사용하지 마라.</dd>
 
-      <dt><a name="indexoptions:versionsort" id="indexoptions:versionsort">VersionSort</a>
+      <dt><a name="indexoptions.versionsort" id="indexoptions.versionsort">VersionSort</a>
                (<em>아파치 2.0a3 이후</em>)</dt>
 
       <dd><code>VersionSort</code> 키워드는 버전 번호를 포함한
@@ -751,7 +751,7 @@ Name|Date|Size|Description</code></td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code class="directive">IndexOrderDefault</code> 지시어는 <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
+    <p><code class="directive">IndexOrderDefault</code> 지시어는 <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
     목록 옵션과 함께 사용한다. 기본적으로 fancyindexed 디렉토리
     목록은 파일명 오름차순이다. <code class="directive">IndexOrderDefault</code>는
     이 초기 순서를 변경할 수 있다.</p>
@@ -763,7 +763,7 @@ Name|Date|Size|Description</code></td></tr>
     <code>Date</code>, <code>Size</code>, <code>Description</code>
     중 하나다. 이차 순서는 <em>항상</em> 파일명 오름차순이다.</p>
 
-    <p>이 지시어와 <code><a href="#indexoptions:suppresscolumnsorting">SuppressColumnSorting</a></code> 목록 옵션을 같이 사용하면
+    <p>이 지시어와 <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code> 목록 옵션을 같이 사용하면
     특정 순서로만 디렉토리 목록을 만든다. 이 경우 클라이언트는
     다른 순서로 디렉토리 목록을 요청하지 못한다.</p>
 
