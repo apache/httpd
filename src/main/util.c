@@ -1502,7 +1502,7 @@ static char x2c(const char *what)
  * Failure is due to
  *   bad % escape       returns BAD_REQUEST
  *
- *   decoding %00 -> \0
+ *   decoding %00 -> \0  (the null character)
  *   decoding %2f -> /   (a special character)
  *                      returns NOT_FOUND
  */

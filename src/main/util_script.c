@@ -90,11 +90,6 @@
  * group are the first three arguments to be passed; if not, all three
  * must be NULL.  The query info is split into separate arguments, where
  * "+" is the separator between keyword arguments.
- *
- * XXXX: note that the WIN32 code uses one of the suexec strings 
- * to pass an interpreter name.  Remember this if changing the way they
- * are handled in create_argv.
- *
  */
 static char **create_argv(pool *p, char *path, char *user, char *group,
 			  char *av0, const char *args)
@@ -730,40 +725,6 @@ API_EXPORT(void) ap_send_size(size_t size, request_rec *r)
 	ap_rprintf(r, "%4dM", (int)((size + 524288) / 1048576));
     }
 }
-
-#if defined(WIN32)
-static char **create_argv_cmd(pool *p, char *av0, const char *args, char *path)
-{
-    register int x, n;
-    char **av;
-    char *w;
-
-    for (x = 0, n = 2; args[x]; x++) {
-        if (args[x] == '+') {
-	    ++n;
-	}
-    }
-
-    /* Add extra strings to array. */
-    n = n + 2;
-
-    av = (char **) ap_palloc(p, (n + 1) * sizeof(char *));
-    av[0] = av0;
-
-    /* Now insert the extra strings we made room for above. */
-    av[1] = strdup("/C");
-    av[2] = strdup(path);
-
-    for (x = (1 + 2); x < n; x++) {
-	w = ap_getword(p, &args, '+');
-	ap_unescape_url(w);
-	av[x] = ap_escape_shell_cmd(p, w);
-    }
-    av[n] = NULL;
-    return av;
-}
-#endif
-
 
 API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 			     char **env, int shellcmd)
