@@ -83,8 +83,8 @@
       <dt><strong>config</strong></dt>
 
       <dd>
-        This command controls various aspects of the parsing. The
-        valid attributes are: 
+        <p>This command controls various aspects of the parsing. The
+        valid attributes are:</p>
 
         <dl>
           <dt><strong>errmsg</strong></dt>
@@ -151,17 +151,17 @@
       <dt><strong>exec</strong></dt>
 
       <dd>
-        The exec command executes a given shell command or CGI
+        <p>The exec command executes a given shell command or CGI
         script. It requires <module>mod_cgi</module> to be present
         in the server.  The IncludesNOEXEC <directive
         module="core">Option</directive> disables this command
-        completely. The valid attributes are: 
+        completely. The valid attributes are: </p>
 
         <dl>
           <dt><strong>cgi</strong></dt>
 
           <dd>
-            The value specifies a (%-encoded) URL-path to
+            <p>The value specifies a (%-encoded) URL-path to
             the CGI script. If the path does not begin with a slash (/),
             then it is taken to be relative to the current
             document. The document referenced by this path is
@@ -169,7 +169,7 @@
             normally recognize it as such. However, the directory
             containing the script must be enabled for CGI scripts
             (with <directive module="mod_alias">ScriptAlias</directive>
-            or the ExecCGI <directive module="core">Option</directive>). 
+            or the ExecCGI <directive module="core">Option</directive>).</p>
 
             <p>The CGI script is given the PATH_INFO and query
             string (QUERY_STRING) of the original request from the
@@ -234,9 +234,9 @@
       <dt><strong>fsize</strong></dt>
 
       <dd>
-        This command prints the size of the specified file, subject
+        <p>This command prints the size of the specified file, subject
         to the <code>sizefmt</code> format specification.
-        Attributes: 
+        Attributes:</p>
 
         <dl>
           <dt><strong>file</strong></dt>
@@ -262,7 +262,7 @@
       <dt><strong>include</strong></dt>
 
       <dd>
-        This command inserts the text of another document or file
+        <p>This command inserts the text of another document or file
         into the parsed file. Any included file is subject to the
         usual access control. If the directory containing the
         parsed file has the <a href="core.html#options">Option</a>
@@ -271,7 +271,7 @@
         included; this prevents the execution of CGI scripts.
         Otherwise CGI scripts are invoked as normal using the
         complete URL given in the command, including any query
-        string. 
+        string. </p>
 
         <p>An attribute defines the location of the document; the
         inclusion is done for each attribute given to the include
