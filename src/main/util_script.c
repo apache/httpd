@@ -433,10 +433,11 @@ char **create_argv_cmd(pool *p, char *av0, const char *args, char *path) {
 void call_exec (request_rec *r, char *argv0, char **env, int shellcmd) 
 {
     char *execuser;
+    char *grpname;
+    char *useruri;
     core_dir_config *conf;
     struct passwd *pw;
     struct group *gr;
-    char *grpname;
     
     conf = (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
 
@@ -543,24 +544,25 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
     if ( suexec_enabled &&
 	 ((r->server->server_uid != user_id) ||
 	  (r->server->server_gid != group_id) ||
-	  (!strncmp("/~",r->uri,2))) ) {
+	  (!strncmp("/~", r->uri, 2))) ) {
 
         if (!strncmp("/~",r->uri,2)) {
-            r->uri += 2;
-            if ((pw = getpwnam (getword_nc (r->pool, &r->uri, '/'))) == NULL) {
+            useruri = r->uri;
+            useruri += 2;
+            if ((pw = getpwnam (getword_nc (r->pool, &useruri, '/'))) == NULL) {
 		log_unixerr("getpwnam", NULL, "invalid username", r->server);
 		return;
 	    }
-            r->uri -= 2;
+            useruri -= 2;
             if ((gr = getgrgid (pw->pw_gid)) == NULL) {
 		if ((grpname = palloc (r->pool, 16)) == NULL) 
 		    return;
 		else
-		    ap_snprintf(grpname, sizeof(grpname), "%d\0", pw->pw_gid);
+		    ap_snprintf(grpname, sizeof(grpname), "%d", pw->pw_gid);
 	    }
-	    else
+            else
 		grpname = gr->gr_name;
-            execuser = (char *) palloc (r->pool, (sizeof(pw->pw_name) + 1));
+
             execuser = pstrcat (r->pool, "~", pw->pw_name, NULL);
         }
 	else {
@@ -572,7 +574,8 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 		log_unixerr("getgrgid", NULL, "invalid groupid", r->server);
 		return;
 	    }
-            execuser = (char *) palloc (r->pool, sizeof(pw->pw_name));
+
+            grpname = gr->gr_name;
             execuser = pw->pw_name;
         }
   
