@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/03 22:14:41 $]
+Last modified at [$Date: 2003/06/05 17:02:46 $]
 
 Release:
 
@@ -201,6 +201,9 @@ PATCHES TO PORT FROM 2.1
         modules/dav/main/mod_dav.h 1.67
         +1: gstein, sander
 
+    * winnt MPM: fix some invalid ap_log_error() invocations
+        server/mpm/winnt/child.c 1.15
+        +1: trawick
 
 CURRENT RELEASE NOTES:
 
