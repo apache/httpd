@@ -22,10 +22,11 @@ Changes with Apache 1.3b7
      second by making sure the "avoid-bristling-suffix" /apache is not
      appended to sysconfdir, datadir, localstatedir and includedir when
      --compat is used. [Ralf S. Engelschall, Lars Eilebrecht]
+  *) NeXT required strdup() in support/logresolve.c
+     [Francisco Tomei <fatomei@sandburg.unm.edu>] PR#2082
 
-  *) NeXT requires strdup() in support/logresolve.c. PR#2082
-
-  *) AIX requires <sys/select.h> in support/ab.c PR#2081
+  *) AIX required sys/select.h in support/ab.c
+     [Jens Schleusener <Jens.Schleusener@dlr.de>] PR#2081
 
   *) Fix the path to the MimeMagicFile in the install-config target, too.
      [Ralf S. Engelschall] PR#2089
