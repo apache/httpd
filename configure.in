@@ -401,7 +401,7 @@ case $host in
     ;;
 esac
 
-AC_OUTPUT($APACHE_OUTPUT_FILES support/apxs support/apachectl support/dbmmanage support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile,,[
+AC_OUTPUT($APACHE_OUTPUT_FILES support/apxs support/apachectl support/dbmmanage support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile build/rules.mk,,[
   APACHE_GEN_MAKEFILES
 ])
 
