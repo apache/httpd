@@ -111,14 +111,14 @@ static const char *set_auth_slot(cmd_parms *cmd, void *offset, const char *f,
 static const command_rec auth_cmds[] =
 {
     AP_INIT_TAKE12("AuthUserFile", set_auth_slot,
-                   (void *) APR_XtOffsetOf(auth_config_rec, auth_pwfile),
+                   (void *)APR_OFFSETOF(auth_config_rec, auth_pwfile),
                    OR_AUTHCFG, "text file containing user IDs and passwords"),
     AP_INIT_TAKE12("AuthGroupFile", set_auth_slot,
-                   (void *) APR_XtOffsetOf(auth_config_rec, auth_grpfile),
+                   (void *)APR_OFFSETOF(auth_config_rec, auth_grpfile),
                    OR_AUTHCFG,
                    "text file containing group names and member user IDs"),
     AP_INIT_FLAG("AuthAuthoritative", ap_set_flag_slot,
-                 (void *) APR_XtOffsetOf(auth_config_rec, auth_authoritative),
+                 (void *)APR_OFFSETOF(auth_config_rec, auth_authoritative),
                  OR_AUTHCFG,
                  "Set to 'no' to allow access control to be passed along to "
                  "lower modules if the UserID is not known to this module"),
