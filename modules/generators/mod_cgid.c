@@ -210,7 +210,7 @@ static char **create_argv(apr_pool_t *p, char *path, char *user, char *group,
 static void cgid_maint(int reason, void *data, apr_wait_t status)
 {
 #if APR_HAS_OTHER_CHILD
-    int *sd = data;
+    pid_t *sd = data;
     switch (reason) {
         case APR_OC_REASON_DEATH:
         case APR_OC_REASON_LOST:
@@ -558,12 +558,12 @@ static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
             cgid_server(main_server);
             exit(-1);
         } 
-        procnew = apr_pcalloc(p, sizeof(*procnew));        
+        procnew = apr_pcalloc(p, sizeof(*procnew));
         procnew->pid = pid;
         procnew->err = procnew->in = procnew->out = NULL;
         apr_note_subprocess(p, procnew, kill_after_timeout);
 #if APR_HAS_OTHER_CHILD
-        apr_register_other_child(procnew, cgid_maint, NULL, NULL, p);
+        apr_register_other_child(procnew, cgid_maint, &procnew->pid, NULL, p);
 #endif
     }
 } 
