@@ -22,6 +22,7 @@ FINAL RELEASE SHOWSTOPPERS:
       A device checker patch had been sent to the list a while ago.
       PATCH: <199805081628.MAA12929@devsys.jaguNET.com>
       Status: Jim +1
+        Dean: -0 I really don't like the API change.
 
 WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
 
@@ -137,6 +138,15 @@ Open issues:
       STATUS:
        o Scrap it now that modules can use ap_add_version_component
          Jim +1 (make sure this is clear :) ), Brian +1, Ken +1
+      Dean: -1, and I am also vetoing the new AddVersionComponent
+	directive.  My reason is: if a module is "significant" then
+	it will ap_add_version_component(); if a patch is
+	"significant" then it can modify SERVER_SUBVERSION.  There are
+	no other *code* changes possible that the admin should be
+	noting.  If folks really want to play the customized server
+	version game they can recompile, or build a module to do it.
+	If we put it in the default server we'll end up seeing lots of
+	funny (read: annoying) false things start to appear.
 
     * Paul would like to see a 'gdbm' option because he uses
       it a lot.
