@@ -28,7 +28,7 @@ if [ "x$SCO" != "x" ]; then
    	3\.2v4\.2)
 	    echo "whatever-whatever-sco3"; exit 0
 	    ;;
-	3\.2v5\.0\.0)
+	3\.2v5\.0*)
 	    echo "whatever-whatever-sco5"; exit 0
 	    ;;
 	4\.2MP)
@@ -141,6 +141,10 @@ else
 
 	SINIX*)
 	    echo "${MACHINE}-whatever-sysv4"; exit 0
+	    ;;
+
+	library:*)
+	    echo "${MACHINE}-ncr-sysv4"; exit 0
 	    ;;
 
     esac
