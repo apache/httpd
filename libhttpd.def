@@ -121,7 +121,7 @@ EXPORTS
 	ap_getword_white_nc   @114
 ;	ap_gm_timestr_822   @115
 	ap_gname2id   @116
-	ap_handle_command   @117
+;	ap_handle_command   @117
 	;ap_hard_timeout   @118
 	ap_ht_time   @119
 	ap_ind   @120
@@ -235,7 +235,7 @@ EXPORTS
 	;ap_soft_timeout   @228
 	ap_some_auth_required   @229
 ;	ap_spawn_child   @230
-	ap_srm_command_loop   @231
+;	ap_srm_command_loop   @231
 	ap_str_tolower   @232
 	ap_strcasecmp_match   @233
 	ap_strcmp_match   @234
