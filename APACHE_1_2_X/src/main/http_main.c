@@ -1971,6 +1971,32 @@ int make_child(server_rec *server_conf, int child_num)
     return 0;
 }
 
+
+static void sock_bind (int s, const struct sockaddr_in *server)
+{
+#ifdef MPE
+/* MPE requires CAP=PM and GETPRIVMODE to bind to ports less than 1024 */
+    if (ntohs(server->sin_port) < 1024) GETPRIVMODE();
+#endif
+    if(bind(s, (struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1)
+    {
+        perror("bind");
+#ifdef MPE
+        if (ntohs(server->sin_port) < 1024) GETUSERMODE();
+#endif
+	if (server->sin_addr.s_addr != htonl(INADDR_ANY))
+	    fprintf(stderr,"httpd: could not bind to address %s port %d\n",
+		    inet_ntoa(server->sin_addr), ntohs(server->sin_port));
+	else
+	    fprintf(stderr,"httpd: could not bind to port %d\n",
+		    ntohs(server->sin_port));
+        exit(1);
+    }
+#ifdef MPE
+    if (ntohs(server->sin_port) < 1024) GETUSERMODE();
+#endif
+}
+
 static int make_sock(pool *pconf, const struct sockaddr_in *server)
 {
     int s;
@@ -1982,6 +2008,10 @@ static int make_sock(pool *pconf, const struct sockaddr_in *server)
         exit(1);
     }
 
+#ifdef SOLARIS2
+    sock_bind (s, server);
+#endif
+	
     s = ap_slack(s, AP_SLACK_HIGH);
 
     note_cleanups_for_fd(pconf, s); /* arrange to close on exec or restart */
@@ -2031,27 +2061,10 @@ static int make_sock(pool *pconf, const struct sockaddr_in *server)
 	}
     }
 
-#ifdef MPE
-/* MPE requires CAP=PM and GETPRIVMODE to bind to ports less than 1024 */
-    if (ntohs(server->sin_port) < 1024) GETPRIVMODE();
+#ifndef SOLARIS2
+    sock_bind (s, server);
 #endif
-    if(bind(s, (struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1)
-    {
-        perror("bind");
-#ifdef MPE
-        if (ntohs(server->sin_port) < 1024) GETUSERMODE();
-#endif
-	if (server->sin_addr.s_addr != htonl(INADDR_ANY))
-	    fprintf(stderr,"httpd: could not bind to address %s port %d\n",
-		    inet_ntoa(server->sin_addr), ntohs(server->sin_port));
-	else
-	    fprintf(stderr,"httpd: could not bind to port %d\n",
-		    ntohs(server->sin_port));
-        exit(1);
-    }
-#ifdef MPE
-    if (ntohs(server->sin_port) < 1024) GETUSERMODE();
-#endif
+
     listen(s, 512);
     return s;
 }
