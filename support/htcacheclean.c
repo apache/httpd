@@ -746,6 +746,7 @@ int main(int argc, const char * const argv[])
     realclean = 0;
     benice = 0;
     intelligent = 0;
+    previous = 0; /* avoid compiler warning */
     proxypath = NULL;
 
     if (apr_app_initialize(&argc, &argv, NULL) != APR_SUCCESS) {
