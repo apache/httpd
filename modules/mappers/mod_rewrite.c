@@ -109,7 +109,7 @@
 #include <sys/types.h>
 #endif
 #endif
-#ifdef HAVE_SYS_UIO_H
+#ifdef APR_HAVE_SYS_UIO_H
 #include <sys/uio.h>
 #endif
 #endif
