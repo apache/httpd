@@ -528,7 +528,15 @@ static apr_status_t emulate_sendfile(core_net_rec *c, apr_file_t *fd,
     return rv;
 }
 
+#ifndef APR_MAX_IOVEC_SIZE 
 #define MAX_IOVEC_TO_WRITE 16
+#else
+#if APR_MAX_IOVEC_SIZE > 16
+#define MAX_IOVEC_TO_WRITE 16
+#else
+#define MAX_IOVEC_TO_WRITE APR_MAX_IOVEC_SIZE
+#endif
+#endif
 
 /* Optional function coming from mod_logio, used for logging of output
  * traffic
