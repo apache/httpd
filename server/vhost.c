@@ -194,13 +194,16 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
 
     w = apr_pstrdup(p, w_);
     /* apr_parse_addr_port() doesn't understand ":*" so handle that first. */
-    wlen = strlen(w);
-    if (wlen > 2 && w[wlen - 1] == '*' && w[wlen - 2] == ':') {
-        w[wlen - 2] = '\0';
-        wild_port = 1;
-    }
-    else {
-        wild_port = 0;
+    wlen = strlen(w);                    /* wlen must be > 0 at this point */
+    wild_port = 0;
+    if (w[wlen - 1] == '*') {
+        if (wlen < 2) {
+            wild_port = 1;
+        }
+        else if (w[wlen - 2] == ':') {
+            w[wlen - 2] = '\0';
+            wild_port = 1;
+        }
     }
     rv = apr_parse_addr_port(&host, &scope_id, &port, w, p);
     if (rv != APR_SUCCESS) {
