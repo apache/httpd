@@ -66,7 +66,7 @@ install-modules:
 	has_mod_so=`echo $$builtin|sed 's/^.*mod_so.*$$/has_mod_so/'`; \
 	if [ "x$$has_mod_so" = "xhas_mod_so" ]; then \
 		$(MKINSTALLDIRS) $(libexecdir); \
-		@list='$(shared)'; \
+		list='$(shared)'; \
 		for i in $$list; do \
 			$(SH_LIBTOOL) --mode=install cp $$i $(libexecdir); \
 		done; \
