@@ -72,6 +72,8 @@
 #define CORE_PRIVATE
 
 #include "apr_strings.h"
+#include "ap_buckets.h"
+#include "util_filter.h"
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
@@ -209,12 +211,12 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
 
 /* Soak up stderr from a script and redirect it to the error log. 
  */
-static void log_script_err(request_rec *r, BUFF *script_err)
+static void log_script_err(request_rec *r, apr_file_t *script_err)
 {
     char argsbuffer[HUGE_STRING_LEN];
     char *newline;
 
-    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
+    while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_err) == 0) {
         newline = strchr(argsbuffer, '\n');
         if (newline) {
             *newline = '\0';
@@ -225,7 +227,8 @@ static void log_script_err(request_rec *r, BUFF *script_err)
 }
 
 static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
-		  char *dbuf, const char *sbuf, BUFF *script_in, BUFF *script_err)
+		  char *dbuf, const char *sbuf, apr_file_t *script_in, 
+                  apr_file_t *script_err)
 {
     apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in);
     apr_table_entry_t *hdrs = (apr_table_entry_t *) hdrs_arr->elts;
@@ -241,7 +244,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
          (apr_open(&f, ap_server_root_relative(r->pool, conf->logname),
                   APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
 	/* Soak up script output */
-	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
+	while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_in) == 0)
 	    continue;
 
         log_script_err(r, script_err);
@@ -279,29 +282,29 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     if (sbuf && *sbuf)
 	apr_fprintf(f, "%s\n", sbuf);
 
-    if (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) {
+    if (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_in) == 0) {
 	apr_puts("%stdout\n", f);
 	apr_puts(argsbuffer, f);
-	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
+	while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_in) == 0)
 	    apr_puts(argsbuffer, f);
 	apr_puts("\n", f);
     }
 
-    if (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
+    if (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_err) == 0) {
 	apr_puts("%stderr\n", f);
 	apr_puts(argsbuffer, f);
-	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
+	while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_err) == 0)
 	    apr_puts(argsbuffer, f);
 	apr_puts("\n", f);
     }
 
-    ap_bclose(script_in);
-    ap_bclose(script_err);
+    apr_close(script_in);
+    apr_close(script_err);
 
     apr_close(f);
     return ret;
 }
-static apr_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **script_err, 
+static apr_status_t run_cgi_child(apr_file_t **script_out, apr_file_t **script_in, apr_file_t **script_err, 
                                  char *command, char *const argv[], request_rec *r, apr_pool_t *p)
 {
     char **env;
@@ -377,49 +380,28 @@ static apr_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **sc
         else {
             apr_note_subprocess(p, procnew, kill_after_timeout);
 
-            /* Fill in BUFF structure for parents pipe to child's stdout */
-            file = procnew->out;
-            if (!file)
+            *script_in = procnew->out;
+            if (!script_in)
                 return APR_EBADF;
-            /* XXX This is a hack.  The correct solution is to create a
-             * pipe bucket, and just pass it down.  Since that bucket type
-             * hasn't been written, we can hack it for the moment.
-             */
-            apr_socket_from_file(&sock, file);
+            apr_set_pipe_timeout(*script_in, 
+                                 r->server->timeout * APR_USEC_PER_SEC);
 
-            *script_in = ap_bcreate(p, B_RD);
-            ap_bpush_socket(*script_in, sock);
-            ap_bsetopt(*script_in, BO_TIMEOUT, &r->server->timeout);
-
-            /* Fill in BUFF structure for parents pipe to child's stdin */
-            file = procnew->in;
-            if (!file)
+            *script_out = procnew->in;
+            if (!*script_out)
                 return APR_EBADF;
-            /* XXX This is a hack.  The correct solution is to create a
-             * pipe bucket, and just pass it down.  Since that bucket type
-             * hasn't been written, we can hack it for the moment.
-             */
-            apr_socket_from_file(&sock, file);
-            *script_out = ap_bcreate(p, B_WR);
-            ap_bpush_socket(*script_out, sock);
-            ap_bsetopt(*script_out, BO_TIMEOUT, &r->server->timeout);
+            apr_set_pipe_timeout(*script_out, 
+                                 r->server->timeout * APR_USEC_PER_SEC);
 
-            /* Fill in BUFF structure for parents pipe to child's stderr */
-            file = procnew->err;
-            if (!file)
+            *script_err = procnew->err;
+            if (!*script_err)
                 return APR_EBADF;
-            /* XXX This is a hack.  The correct solution is to create a
-             * pipe bucket, and just pass it down.  Since that bucket type
-             * hasn't been written, we can hack it for the moment.
-             */
-            apr_socket_from_file(&sock, file);
-            *script_err = ap_bcreate(p, B_RD);
-            ap_bpush_socket(*script_err, sock);
-            ap_bsetopt(*script_err, BO_TIMEOUT, &r->server->timeout);
+            apr_set_pipe_timeout(*script_err, 
+                                 r->server->timeout * APR_USEC_PER_SEC);
         }
     }
     return (rc);
 }
+
 static apr_status_t build_argv_list(char ***argv, request_rec *r, apr_pool_t *p)
 {
     int numwords, x, idx;
@@ -504,7 +486,8 @@ static int cgi_handler(request_rec *r)
     char *command;
     char **argv = NULL;
 
-    BUFF *script_out = NULL, *script_in = NULL, *script_err = NULL;
+    apr_file_t *script_out = NULL, *script_in = NULL, *script_err = NULL;
+    ap_bucket_brigade *bb = NULL;
     char argsbuffer[HUGE_STRING_LEN];
     int is_included = !strcmp(r->protocol, "INCLUDED");
     void *sconf = r->server->module_config;
@@ -616,7 +599,8 @@ static int cgi_handler(request_rec *r)
 		memcpy(dbuf + dbpos, argsbuffer, dbsize);
 		dbpos += dbsize;
 	    }
-            (void) ap_bwrite(script_out, argsbuffer, len_read, &bytes_written);
+            bytes_written = len_read;
+            (void) apr_write(script_out, argsbuffer, &bytes_written);
 	    if (bytes_written < len_read) {
 		/* silly script stopped reading, soak up remaining message */
 		while (ap_get_client_block(r, argsbuffer, HUGE_STRING_LEN) > 0) {
@@ -625,10 +609,10 @@ static int cgi_handler(request_rec *r)
 		break;
 	    }
 	}
-	ap_bflush(script_out);
+	apr_flush(script_out);
     }
 
-    ap_bclose(script_out);
+    apr_close(script_out);
 
     /* Handle script return... */
     if (script_in && !nph) {
@@ -636,7 +620,7 @@ static int cgi_handler(request_rec *r)
 	char sbuf[MAX_STRING_LEN];
 	int ret;
 
-	if ((ret = ap_scan_script_header_err_buff(r, script_in, sbuf))) {
+	if ((ret = ap_scan_script_header_err(r, script_in, sbuf))) {
 	    return log_script(r, conf, ret, dbuf, sbuf, script_in, script_err);
 	}
 
@@ -645,7 +629,7 @@ static int cgi_handler(request_rec *r)
 	if (location && location[0] == '/' && r->status == 200) {
 
 	    /* Soak up all the script output */
-	    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) {
+	    while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_in) == 0) {
 		continue;
 	    }
             log_script_err(r, script_err);
@@ -673,18 +657,22 @@ static int cgi_handler(request_rec *r)
 
 	ap_send_http_header(r);
 	if (!r->header_only) {
-	    ap_send_fb(script_in, r);
+            bb = ap_brigade_create(r->pool);
+            ap_brigade_append_buckets(bb, ap_bucket_create_pipe(script_in));
+            ap_brigade_append_buckets(bb, ap_bucket_create_eos());
 	}
-	ap_bclose(script_in);
 
         log_script_err(r, script_err);
-	ap_bclose(script_err);
+	apr_close(script_err);
     }
 
     if (script_in && nph) {
-	ap_send_fb(script_in, r);
+        bb = ap_brigade_create(r->pool);
+        ap_brigade_append_buckets(bb, ap_bucket_create_pipe(script_in));
+        ap_brigade_append_buckets(bb, ap_bucket_create_eos());
     }
 
+    ap_pass_brigade(r->filters, bb);
     return OK;			/* NOT r->status, even if it has changed. */
 }
 
