@@ -219,6 +219,24 @@ MIME-typing</A></STRONG>
 
 <DT><STRONG>mod_proxy enhancements:</STRONG>
 <UL>
+<LI>Easier and safer authentification for ftp proxy logins:
+    When no ftp user name and/or password is specified in the
+    URL, but the destination ftp server requires one, apache now
+    returns a "[401] Authorization Required" status. This status code
+    usually makes the client browser pop up an "Enter user name and
+    password" dialog, and the request is retried with the given user
+    authentification. That is slightly more secure than specifying
+    the authentication information as part of the request URL,
+    where it could be logged in plaintext by older proxy servers.
+<LI>The proxy now supports the HTTP/1.1 "Via:" header as specified in
+    RFC2068. The new
+    <A HREF="mod/mod_proxy.html#proxyvia"><CODE>ProxyVia</CODE>
+    directive allows switching "Via:" support off or on, or
+    suppressing outgoing "Via:" header lines altogether for privacy
+    reasons.
+<LI>The "Max-Forwards:" TRACE header specified in HTTP/1.1 is now
+    supported. With it, you can trace the path of a request along a
+    chain of proxies (if they, too, support it).
 <LI><A
     HREF="mod/mod_proxy.html#noproxy"><CODE>NoProxy</CODE></A> and <A
     HREF="mod/mod_proxy.html#proxydomain"><CODE>ProxyDomain</CODE></A>
