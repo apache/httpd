@@ -3885,7 +3885,7 @@ static void register_hooks(apr_pool_t *p)
                                  AP_FTYPE_NETWORK);
     ap_net_time_filter_handle =
         ap_register_input_filter("NET_TIME", net_time_filter,
-                                 AP_FTYPE_CONTENT);
+                                 AP_FTYPE_HTTP_HEADER);
     ap_content_length_filter_handle =
         ap_register_output_filter("CONTENT_LENGTH", ap_content_length_filter, 
                                   AP_FTYPE_HTTP_HEADER);
