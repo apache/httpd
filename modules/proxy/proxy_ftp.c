@@ -811,7 +811,6 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el  *c, char *url)
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     else {
-<<<<<<< proxy_ftp.c
         pasv[i - 1] = '\0';
         pstr = strtok(pasv, " ");    /* separate result code */
         if (pstr != NULL) {
@@ -842,44 +841,8 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el  *c, char *url)
 
             if (ap_proxy_doconnect(dsock, inet_ntoa(destaddr), pport, r) == -1) {
                 return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-=======
-	pasv[i - 1] = '\0';
-	pstr = strtok(pasv, " ");	/* separate result code */
-	if (pstr != NULL) {
-	    presult = atoi(pstr);
-	    if (*(pstr + strlen(pstr) + 1) == '=')
-	        pstr += strlen(pstr) + 2;
-	    else
-	    {
-	        pstr = strtok(NULL, "(");  /* separate address & port params */
-		if (pstr != NULL)
-		    pstr = strtok(NULL, ")");
-	    }
-	}
-	else
-	    presult = atoi(pasv);
-
-	Explain1("FTP: returned status %d", presult);
-
-	if (presult == 227 && pstr != NULL && (sscanf(pstr,
-		 "%d,%d,%d,%d,%d,%d", &h3, &h2, &h1, &h0, &p1, &p0) == 6)) {
-	    /* pardon the parens, but it makes gcc happy */
-	    paddr = (((((h3 << 8) + h2) << 8) + h1) << 8) + h0;
-	    pport = (p1 << 8) + p0;
-	    Explain5("FTP: contacting host %d.%d.%d.%d:%d",
-		     h3, h2, h1, h0, pport);
-	    data_addr.sin_family = AF_INET;
-	    data_addr.sin_addr.s_addr = htonl(paddr);
-	    data_addr.sin_port = htons(pport);
-	    i = ap_proxy_doconnect(dsock, &data_addr, r);
-
-	    if (i == -1) {
-                char buf[120];
-		return ap_proxyerror(r, HTTP_BAD_GATEWAY,
->>>>>>> 1.8
                                      ap_pstrcat(r->pool,
                                                 "Could not connect to remote machine: ",
-<<<<<<< proxy_ftp.c
                                                 strerror(errno), NULL));
             }
             else {
@@ -904,38 +867,6 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el  *c, char *url)
         ap_set_local_ipaddr(dsock, npaddr);
         
         if (ap_setsocketopt(dsock, APR_SO_REUSEADDR, one) != APR_SUCCESS) {
-=======
-                                                ap_strerror(errno, buf, 
-                                                          sizeof(buf)), NULL));
-	    }
-	    else {
-		pasvmode = 1;
-	    }
-	}
-	else
-	    ap_pclosesocket(p, dsock);	/* and try the regular way */
-    }
-
-    if (!pasvmode) {		/* set up data connection */
-	clen = sizeof(struct sockaddr_in);
-	if (getsockname(sock, (struct sockaddr *) &server, &clen) < 0) {
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-			 "proxy: error getting socket address");
-	    ap_bclose(f);
-	    return HTTP_INTERNAL_SERVER_ERROR;
-	}
-
-	dsock = ap_psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (dsock == -1) {
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-			 "proxy: error creating socket");
-	    ap_bclose(f);
-	    return HTTP_INTERNAL_SERVER_ERROR;
-	}
-
-	if (setsockopt(dsock, SOL_SOCKET, SO_REUSEADDR, (void *) &one,
-		       sizeof(one)) == -1) {
->>>>>>> 1.8
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "proxy: error setting reuseaddr option");
