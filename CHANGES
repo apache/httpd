@@ -1,5 +1,11 @@
 Changes with Apache 2.0b1
 
+  *) The prefork MPM wasn't killing child processes correctly if a restart
+     signal was received while the process was serving a request.  The child
+     process would become the equivalent of a second parent process.  If
+     we break out of the accept loop, then we need to do die after cleaning
+     up after ourselves.  [Ryan Bloom]
+
   *) Change the Prefork MPM to use SIGWINCH instead of SIGUSR1 for graceful
      restarts.  [Ryan Bloom]
 

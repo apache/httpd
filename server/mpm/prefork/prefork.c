@@ -1052,6 +1052,7 @@ static void child_main(int child_num_arg)
 	ap_process_connection(current_conn);
         ap_lingering_close(current_conn);
     }
+    clean_child_exit(0);
 }
 
 
