@@ -117,7 +117,21 @@ AddEncoding x-compress Z
 </CODE></BLOCKQUOTE>
 
 This will cause files ending in .gz to be marked as encoded using the x-gzip
-encoding, and .Z files to be marked as encoded with x-compress.<P><HR>
+encoding, and .Z files to be marked as encoded with x-compress.<P>
+
+Old clients expect <code>x-gzip</code> and <code>x-compress</code>,
+however the standard dictates that they're equivalent to <code>gzip</code>
+and <code>compress</code> respectively.  Apache does content encoding
+comparisons by ignoring any leading <code>x-</code>.  When responding
+with an encoding Apache will use whatever form (i.e. <code>x-foo</code>
+or <code>foo</code>) the client requested.  If the client didn't
+specifically request a particular form Apache will use the form given by
+the <code>AddEncoding</code> directive.  To make this long story short,
+you should always use <code>x-gzip</code> and <code>x-compress</code>
+for these two specific encodings.  More recent encodings, such as
+<code>deflate</code> should be specified without the <code>x-</code>.
+
+<P><HR>
 
 <H2><A name="addhandler">AddHandler</A></H2>
 
