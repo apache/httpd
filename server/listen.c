@@ -395,8 +395,13 @@ static int ap_listen_open(apr_pool_t *pool, apr_port_t port)
                         ap_listeners = lr->next;
                     }
 
-                    /* So that previous becomes NULL in the next iteration */
-                    lr = NULL;
+                    /* Although we've removed ourselves from the list,
+                     * we need to make sure that the next iteration won't
+                     * consider "previous" a working IPv6 '::' socket.
+                     * Changing the family is enough to make sure the
+                     * conditions before make_sock() fail.
+                     */
+                    lr->bind_addr->family = AF_INET;
 
                     continue;
                 }
