@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/14 02:38:41 $]
+Last modified at [$Date: 2002/02/14 02:42:10 $]
 
 Release:
 
@@ -45,9 +45,11 @@ CURRENT RELEASE NOTES:
     * 32 status:
       Proposed tag is JRE_1.  A proposed tarball is at:
         http://www.apache.org/~jerenkrantz/2.0.32-jre/httpd-2.0.32-JRE-1-alpha.tar.gz
-      Tested on: Linux 2.4, Win2K,
+      Tested on: Linux 2.4, Win2K, FreeBSD 3.4, AIX 
       Make JRE_1 .32:
-        +1: Justin, WRowe
+        +1: Justin, WRowe, trawick
+      Release JRE_1 as beta:
+        +1: trawick
 
 FINAL RELEASE SHOWSTOPPERS:
 
