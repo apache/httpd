@@ -357,14 +357,6 @@ SOURCE=.\include\util_charset.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\server\util_date.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\util_date.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\include\util_ebcdic.h
 # End Source File
 # Begin Source File
