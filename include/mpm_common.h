@@ -285,6 +285,11 @@ int ap_signal_server(int *, apr_pool_t *);
 void ap_mpm_rewrite_args(process_rec *);
 #endif
 
+#ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
+extern apr_uint32_t ap_max_mem_free;
+extern const char *ap_mpm_set_max_mem_free(cmd_parms *cmd, void *dummy);
+#endif
+
 #ifdef __cplusplus
 }
 #endif
