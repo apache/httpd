@@ -404,9 +404,9 @@ void RemoveService(char *display_name)
 
 BOOL isProcessService() {
     if( !AllocConsole() ) 
-        return APR_FALSE;
+        return FALSE;
     FreeConsole();
-    return APR_TRUE;
+    return TRUE;
 }
 
 /* Determine is service_name is a valid service
@@ -423,13 +423,13 @@ BOOL isValidService(char *display_name) {
     if (!(schSCM = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), NULL,
                      "OpenSCManager failed");
-       return APR_FALSE;
+       return FALSE;
     }
 
     if ((schSVC = OpenService(schSCM, service_name, SERVICE_ALL_ACCESS))) {
         CloseServiceHandle(schSVC);
         CloseServiceHandle(schSCM);
-        return APR_TRUE;
+        return TRUE;
     }
 
     Err = GetLastError();
@@ -437,14 +437,14 @@ BOOL isValidService(char *display_name) {
         ap_log_error(APLOG_MARK, APLOG_ERR, Err, NULL,
                      "OpenService failed");
 
-    return APR_FALSE;
+    return FALSE;
 }
 
 int send_signal_to_service(char *display_name, char *sig) {
     SC_HANDLE   schService;
     SC_HANDLE   schSCManager;
     char service_name[256];
-    int success = APR_FALSE;
+    int success = FALSE;
 
     enum                        { start,      restart,      stop, unknown } action;
     static char *param[] =      { "start",    "restart",    "shutdown" };
@@ -457,7 +457,7 @@ int send_signal_to_service(char *display_name, char *sig) {
 
     if (action == unknown) {
         printf("signal must be start, restart, or shutdown\n");
-        return APR_FALSE;
+        return FALSE;
     }
 
     /* Remove spaces from display name to create service name */
@@ -525,8 +525,8 @@ int ap_stop_service(SC_HANDLE schService)
     }
     if (QueryServiceStatus(schService, &globdat.ssStatus))
         if (globdat.ssStatus.dwCurrentState == SERVICE_STOPPED)
-            return APR_TRUE;
-    return APR_FALSE;
+            return TRUE;
+    return FALSE;
 }
 
 int ap_start_service(SC_HANDLE schService) {
@@ -541,8 +541,8 @@ int ap_start_service(SC_HANDLE schService) {
     }
     if (QueryServiceStatus(schService, &globdat.ssStatus))
         if (globdat.ssStatus.dwCurrentState == SERVICE_RUNNING)
-            return APR_TRUE;
-    return APR_FALSE;
+            return TRUE;
+    return FALSE;
 }
            
 #endif /* WIN32 */
