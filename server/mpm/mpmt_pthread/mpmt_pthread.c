@@ -1261,7 +1261,7 @@ static void mpmt_pthread_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t
 	is_graceful = 0;
 
 	if (!one_process) {
-	    unixd_detach();
+	    ap_detach();
 	}
 	ap_my_pid = getpid();
     }

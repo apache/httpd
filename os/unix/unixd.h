@@ -83,7 +83,6 @@ typedef struct {
 } unixd_config_rec;
 extern unixd_config_rec unixd_config;
 
-void unixd_detach(void);
 int unixd_setup_child(void);
 void unixd_pre_config(void);
 const char *unixd_set_user(cmd_parms *cmd, void *dummy, const char *arg);

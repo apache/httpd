@@ -1601,7 +1601,7 @@ static void prefork_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
 	is_graceful = 0;
 
 	if (!one_process) {
-	    unixd_detach();
+	    ap_detach();
 	}
 
 	ap_my_pid = getpid();
