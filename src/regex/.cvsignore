@@ -1,3 +1,6 @@
 *.ih
 re
-
+Debug
+Release
+regex.mdp
+regex.ncb
