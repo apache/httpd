@@ -132,15 +132,6 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   <xsl:apply-templates select="summary"/>
 </xsl:if>
 
-<xsl:if test="seealso">
- <p><strong><xsl:value-of select="$messages/message[@name='seealso']"/></strong></p>
- <ul>
-  <xsl:for-each select="seealso">
-   <li><xsl:apply-templates/></li>
-  </xsl:for-each>
- </ul>
-</xsl:if>
-
 <!-- Index of directives, automatically generated from
      directivesynopsis/name -->
 
@@ -171,6 +162,15 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 </xsl:if>
 <xsl:if test="not(directivesynopsis)">
   <p>This module provides no directives.</p>
+</xsl:if>
+
+<xsl:if test="seealso">
+ <p><strong><xsl:value-of select="$messages/message[@name='seealso']"/></strong></p>
+ <ul>
+  <xsl:for-each select="seealso">
+   <li><xsl:apply-templates/></li>
+  </xsl:for-each>
+ </ul>
 </xsl:if>
 
 <!-- Sections of documentation about the module as a whole -->
