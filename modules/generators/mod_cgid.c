@@ -90,18 +90,7 @@
 #include "ap_mpm.h"
 #include "iol_socket.h"
 #include "unixd.h"
-
-#ifndef UNIX_PATH_MAX
-#define UNIX_PATH_MAX 108
-#endif
-
-#ifndef sockaddr_un
-struct sockaddr_un {
-    unsigned short sun_family;
-    char sun_path[UNIX_PATH_MAX];
-};
-#endif
-
+#include <sys/un.h> /* for sockaddr_un */
 
 module MODULE_VAR_EXPORT cgid_module; 
 
