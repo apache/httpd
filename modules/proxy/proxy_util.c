@@ -465,115 +465,6 @@ apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, conn_
     return resp_hdrs;
 }
 
-#if 0
-long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r, ap_cache_el *c)
-{
-    int  ok;
-    char buf[IOBUFSIZE];
-    long total_bytes_rcvd, in_buffer;
-    apr_ssize_t cntr;
-    register int n, o;
-    conn_rec *con = r->connection;
-    int alternate_timeouts = 1;	/* 1 if we alternate between soft & hard timeouts */
-    apr_file_t *cachefp = NULL;
-    int written = 0, wrote_to_cache;
-	
-    total_bytes_rcvd = 0;
-    if (c) ap_cache_el_data(c, &cachefp);
-
-#if APR_CHARSET_EBCDIC
-    /* The cache copy is ASCII, not EBCDIC, even for text/html) */
-    ap_bsetflag(f, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
-    if (c != NULL && c->fp != NULL)
-		ap_bsetflag(c->fp, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
-    ap_bsetflag(con->client, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
-#endif
-
-    /* Since we are reading from one buffer and writing to another,
-     * it is unsafe to do a soft_timeout here, at least until the proxy
-     * has its own timeout handler which can set both buffers to EOUT.
-     */
-
-#if defined(WIN32) || defined(TPF) || defined(NETWARE)
-    /* works fine under win32, so leave it */
-    alternate_timeouts = 0;
-#else
-    /* CHECKME! Since hard_timeout won't work in unix on sends with partial
-     * cache completion, we have to alternate between hard_timeout
-     * for reads, and soft_timeout for send.  This is because we need
-     * to get a return from ap_bwrite to be able to continue caching.
-     * BUT, if we *can't* continue anyway, just use hard_timeout.
-     * (Also, if no cache file is written, use hard timeouts)
-     */
-
-    if (!completion || completion->content_length > 0
-      || completion->cache_completion == 1.0) {
-        alternate_timeouts = 0;
-    }
-#endif
-
-    /* Loop and ap_bread() while we can successfully read and write,
-     * or (after the client aborted) while we can successfully
-     * read and finish the configured cache_completion.
-     */
-    for (ok = 1; ok; cntr = 0) {
-	/* Read block from server */
-	if (ap_bread(f, buf, IOBUFSIZE, &cntr) != APR_SUCCESS && !cntr)
-        {
-            if (c != NULL) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                    "proxy: error reading from %s", c->name);
-                ap_proxy_cache_error(&c);
-            }
-            break;
-	}
-        else if(cntr == 0) break;
-
-	/* Write to cache first. */
-	/*@@@ XXX FIXME: Assuming that writing the cache file won't time out?!!? */
-        wrote_to_cache = cntr;
-        if (cachefp && apr_file_write(cachefp, &buf[0], &wrote_to_cache) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-		"proxy: error writing to cache");
-            ap_proxy_cache_error(&c);
-        } else {
-            written += n;
-        }
-
-        o = 0;
-        total_bytes_rcvd += cntr;
-        in_buffer = cntr;
-
-	/* Write the block to the client, detect aborted transfers */
-        while (!con->aborted && in_buffer > 0) {
-            if ((cntr = ap_rwrite(&buf[o], in_buffer, r))) {
-                if (completion) {
-                    /* when a send failure occurs, we need to decide
-                     * whether to continue loading and caching the
-                     * document, or to abort the whole thing
-                     */
-                    ok = (completion->content_length > 0) &&
-                        (completion->cache_completion > 0) &&
-                        (completion->content_length * completion->cache_completion < total_bytes_rcvd);
-
-                    if (!ok)
-                        ap_proxy_cache_error(&c);
-                }
-                con->aborted = 1;
-                break;
-            }
-            in_buffer -= cntr;
-            o += cntr;
-        } /* while client alive and more data to send */
-    } /* loop and ap_bread while "ok" */
-
-    if (!con->aborted)
-	ap_rflush(r);
-
-    return total_bytes_rcvd;
-}
-#endif /* 0, ap_proxy_send_fb */
-
 /*
  * Sends response line and headers.  Uses the client fd and the 
  * headers_out array from the passed request_rec to talk to the client
@@ -678,17 +569,6 @@ void ap_proxy_sec2hex(int t, char *y)
 	    y[i] = ch + '0';
     }
     y[8] = '\0';
-}
-
-
-void ap_proxy_cache_error(ap_cache_el **c)
-{
-    if (c && *c) {
-        const char *name = (*c)->name;
-        ap_cache_el_finalize((*c));
-        ap_cache_remove((*c)->cache, name);
-        *c = NULL;
-    }
 }
 
 int ap_proxyerror(request_rec *r, int statuscode, const char *message)
@@ -1091,14 +971,6 @@ int ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p)
     /* rfc1035 says DNS names must consist of "[-a-zA-Z0-9]" and '.' */
     for (i = 0; apr_isalnum(addr[i]) || addr[i] == '-' || addr[i] == '.'; ++i);
 
-#if 0
-    if (addr[i] == ':') {
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                     "@@@@ handle optional port in proxy_is_hostname()");
-	/* @@@@ handle optional port */
-    }
-#endif
-
     if (addr[i] != '\0' || ap_proxy_host2addr(addr, &host) != NULL)
 	return 0;
 
@@ -1187,19 +1059,6 @@ int ap_proxy_send_hdr_line(void *p, const char *key, const char *value)
     return 1; /* tell ap_table_do() to continue calling us for more headers */
 }
 
-/* send a text line to one or two BUFF's; return line length */
-unsigned ap_proxy_bputs2(const char *data, apr_socket_t *client, ap_cache_el *cache)
-{
-    unsigned len = strlen(data);
-    apr_file_t *cachefp = NULL;
-
-    apr_send(client, data, &len);
-
-    if (ap_cache_el_data(cache, &cachefp) == APR_SUCCESS)
-	apr_file_puts(data, cachefp);
-    return len;
-}
-
 #if defined WIN32
 
 static DWORD tls_index;
@@ -1230,94 +1089,5 @@ BOOL WINAPI DllMain (HINSTANCE dllhandle, DWORD reason, LPVOID reserved)
 
 static struct per_thread_data *get_per_thread_data(void)
 {
-#if 0
-#if defined(WIN32)
-
-    return (struct per_thread_data *) TlsGetValue (tls_index);
-
-#else
-
-    static APACHE_TLS struct per_thread_data sptd;
-    return &sptd;
-
-#endif
-#endif
     return NULL;
-}
-
-/* This function is completely bogus.  This should become a part of the
- * cache filter when it is finished. RBB
- */
-int ap_proxy_cache_send(request_rec *r, ap_cache_el *c)
-{
-    apr_file_t *cachefp = NULL;
-    apr_socket_t *fp = r->connection->client_socket;
-    char buffer[500];
-    apr_size_t len;
-    apr_off_t offset = 0;
-    apr_finfo_t finfo;
-    
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
-                 "Sending cache file for %s", c->name);
-    if(ap_cache_el_data(c, &cachefp) != APR_SUCCESS)
-        return HTTP_INTERNAL_SERVER_ERROR;
-    /* send the response */
-    if(apr_file_gets(buffer, sizeof(buffer), cachefp)) {
-        len = strlen(buffer);
-        apr_send(fp, buffer, &len);
-        offset +=len;
-    }
-    /* send headers */
-    ap_cache_el_header_walk(c, ap_proxy_send_hdr_line, r, NULL);
-    len = 2;
-    apr_send(fp, CRLF, &len);
-    /* send data */
-    apr_file_info_get(&finfo, APR_FINFO_MIN, cachefp);
-    if(!r->header_only && ap_send_fd(cachefp, r, offset, finfo.size, &len))
-        return HTTP_INTERNAL_SERVER_ERROR;
-    return OK;
-}
-
-int ap_proxy_cache_should_cache(request_rec *r, apr_table_t *resp_hdrs, const int is_HTTP1)
-{
-    const char *expire = apr_table_get(resp_hdrs, "Expires");
-    time_t expc;
-    if (expire != NULL)
-        expc = ap_parseHTTPdate(expire);
-    else
-        expc = BAD_DATE;
-    if((r->status != HTTP_OK && r->status != HTTP_MOVED_PERMANENTLY && r->status != HTTP_NOT_MODIFIED) ||
-       (r->status == HTTP_NOT_MODIFIED) ||
-       r->header_only ||
-       apr_table_get(r->headers_in, "Authorization") != NULL ||
-       (expire != NULL && expc == BAD_DATE) ||
-       (r->status == HTTP_OK && !apr_table_get(resp_hdrs, "Last-Modified") && is_HTTP1))
-    {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
-                     "proxy: Response is not cacheable: %s", r->unparsed_uri);
-        return 0;
-    }
-    return 1;
-}
-    
-/*
- * what responses should we not cache?
- * Unknown status responses and those known to be uncacheable
- * 304 HTTP_NOT_MODIFIED response when we have no valid cache file, or
- * 200 HTTP_OK response from HTTP/1.0 and up without a Last-Modified header, or
- * HEAD requests, or
- * requests with an Authorization header, or
- * protocol requests nocache (e.g. ftp with user/password)
- */
-/* @@@ XXX FIXME: is the test "r->status != HTTP_MOVED_PERMANENTLY" correct?
- * or shouldn't it be "ap_is_HTTP_REDIRECT(r->status)" ? -MnKr */
-int ap_proxy_cache_update(ap_cache_el *c)
-{
-    ap_cache_handle_t *h = c ? c->cache : NULL;
-    if(!h) return DECLINED;
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
-                 "proxy: Cache finalized: %s", c->name);
-    ap_cache_el_finalize(c);
-    ap_cache_garbage_collect(h);
-    return DECLINED;
 }

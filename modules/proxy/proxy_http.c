@@ -459,38 +459,6 @@ int ap_proxy_http_handler(request_rec *r, char *url,
  * one type
  */
 
-#if 0
-    if (ap_cache_el_header(c, "Date", &datestr) == APR_SUCCESS)
-        ap_cache_el_header_set(c, "Date", ap_proxy_date_canon(p, datestr));
-    if (ap_cache_el_header(c, "Last-Modified", &datestr) == APR_SUCCESS)
-        ap_cache_el_header_set(c, "Last-Modified", ap_proxy_date_canon(p, datestr));
-    if (ap_cache_el_header(c, "Expires", &datestr) == APR_SUCCESS)
-        ap_cache_el_header_set(c, "Expires", ap_proxy_date_canon(p, datestr));
-
-    if (ap_cache_el_header(c, "Location", &datestr) == APR_SUCCESS)
-        ap_cache_el_header_set(c, "Location", proxy_location_reverse_map(r, datestr));
-    if (ap_cache_el_header(c, "URI", &datestr) == APR_SUCCESS)
-        ap_cache_el_header_set(c, "URI", proxy_location_reverse_map(r, datestr));
-#endif
-
-/* write status line */
-#if 0
-    if (!r->assbackwards)
-	ap_rvputs(r, "HTTP/1.0 ", r->status_line, CRLF, NULL);
-
-    if (cachefp && apr_file_puts(apr_pstrcat(r->pool, "HTTP/1.0 ",
-        r->status_line, CRLF, NULL), cachefp) != APR_SUCCESS) {
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-		"proxy: error writing status line to cache");
-	    ap_proxy_cache_error(&c);
-            cachefp = NULL;
-    }
-#endif
-
-#if 0
-/* send headers */
-    ap_cache_el_header_walk(c, ap_proxy_send_hdr_line, r, NULL);
-#endif
 /*
     if (!r->assbackwards)
 	ap_rputs(CRLF, r);

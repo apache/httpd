@@ -79,8 +79,6 @@
 
    2. HTTP/1.1
 
-   3. Cache issues
-
    Chuck Murcko <chuck@topsail.org> 02-06-01
 
  */
@@ -108,7 +106,6 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_protocol.h"
-#include "proxy_cache.h"
 
 
 extern module AP_MODULE_DECLARE_DATA proxy_module;
@@ -195,7 +192,6 @@ typedef struct {
     char viaopt_set;
     size_t recv_buffer_size;
     char recv_buffer_size_set;
-    ap_cache_handle_t *cache;
 } proxy_server_conf;
 
 struct per_thread_data {
@@ -219,8 +215,10 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
 
 /* proxy_ftp.c */
 
+#if FTP
 int ap_proxy_ftp_canon(request_rec *r, char *url);
 int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url);
+#endif
 
 /* proxy_http.c */
 
@@ -245,20 +243,13 @@ void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength);
 int ap_proxy_hex2sec(const char *x);
 void ap_proxy_sec2hex(int t, char *y);
 const char *ap_proxy_host2addr(const char *host, struct hostent *reqhp);
-int ap_proxy_cache_send(request_rec *r, ap_cache_el *c);
-int ap_proxy_cache_should_cache(request_rec *r, apr_table_t *resp_hdrs,
-                                const int is_HTTP1);
-int ap_proxy_cache_update(ap_cache_el *c);
-void ap_proxy_cache_error(ap_cache_el **r);
 int ap_proxyerror(request_rec *r, int statuscode, const char *message);
 int ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p);
 apr_status_t ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t port, request_rec *r);
-int ap_proxy_garbage_init(server_rec *, apr_pool_t *);
 /* This function is called by ap_table_do() for all header lines */
 int ap_proxy_send_hdr_line(void *p, const char *key, const char *value);
-unsigned ap_proxy_bputs2(const char *data, apr_socket_t *client, ap_cache_el *cache);
 
 #endif /*MOD_PROXY_H*/
