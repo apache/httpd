@@ -295,7 +295,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, " -D AP_DOC_ROOT=\"%s\"\n", AP_DOC_ROOT);
 #endif
 #ifdef AP_GID_MIN
-        fprintf(stderr, " -D AP_GID_MID=%d\n", AP_GID_MIN);
+        fprintf(stderr, " -D AP_GID_MIN=%d\n", AP_GID_MIN);
 #endif
 #ifdef AP_HTTPD_USER
         fprintf(stderr, " -D AP_HTTPD_USER=\"%s\"\n", AP_HTTPD_USER);
@@ -310,7 +310,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, " -D AP_SUEXEC_UMASK=%03o\n", AP_SUEXEC_UMASK);
 #endif
 #ifdef AP_UID_MIN
-        fprintf(stderr, " -D AP_UID_MID=%d\n", AP_UID_MIN);
+        fprintf(stderr, " -D AP_UID_MIN=%d\n", AP_UID_MIN);
 #endif
 #ifdef AP_USERDIR_SUFFIX
         fprintf(stderr, " -D AP_USERDIR_SUFFIX=\"%s\"\n", AP_USERDIR_SUFFIX);
