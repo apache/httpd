@@ -55,13 +55,14 @@ int ap_proxy_ajp_canon(request_rec *r, char *url)
              "proxy: AJP: canonicalising URL %s", url);
 
     /* ap_port_of_scheme() */
-    if (strncasecmp(url, "http:", 5) == 0) {
+    if (strncasecmp(url, "ajp:", 4) == 0) {
+        url += 4;
+        scheme = "ajp";
+    }    
+    /* XXX This is probably faulty */ 
+    else if (strncasecmp(url, "ajps:", 5) == 0) {
         url += 5;
-        scheme = "http";
-    }
-    else if (strncasecmp(url, "https:", 6) == 0) {
-        url += 6;
-        scheme = "https";
+        scheme = "ajps";
     }
     else {
         return DECLINED;
