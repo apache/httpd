@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 1.9 (outdated: 1.12) -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -19,7 +20,6 @@
 -->
 
 <manualpage metafile="cgi.xml.meta">
-<!-- English Revision: 1.9 (outdated: 1.11) -->
   <parentdocument href="./">How-To / チュートリアル</parentdocument>
 
   <title>Apache Tutorial: CGI による動的コンテンツ</title>
