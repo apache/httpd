@@ -902,6 +902,9 @@ static void worker_main(int thread_num)
             if (!disconnected) {
                 context->accept_socket = INVALID_SOCKET;
             }
+            else {
+                apr_pool_cleanup_kill(context->ptrans, c, ap_lingering_close);
+            }
         }
         else {
             /* ap_new_connection closes the socket on failure */
