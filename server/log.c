@@ -428,8 +428,8 @@ static void log_error_core(const char *file, int line, int level,
     /* NULL if we are logging to syslog */
     if (logf) {
         /* Truncate for the terminator (as ap_snprintf does) */
-        if (len > MAX_STRING_LEN - 2)
-            len = MAX_STRING_LEN - 2;
+        if (len > MAX_STRING_LEN - sizeof(APR_EOL_STR))
+            len = MAX_STRING_LEN - sizeof(APR_EOL_STR);
         strcpy(errstr + len, APR_EOL_STR);
         ap_puts(errstr, logf);
 	ap_flush(logf);
