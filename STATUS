@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/05 15:52:16 $]
+Last modified at [$Date: 2002/06/05 19:42:19 $]
 
 Release:
 
@@ -47,9 +47,8 @@ on related projects:
 
 CURRENT RELEASE NOTES:
 
-    * 37 status: Cliff tagged JCW_PRE2_2037 on Wednesday, May 29.  Some
-      showstoppers remain, so there will be a PRE3 as well at some
-      point in the future.  Just wanted an intermediate milestone.
+    * 37 status: Cliff is aiming to have this thing wrapped up by the
+      end of the week (ie, by Friday 6/7).  Doable?  We'll see.
 
 RELEASE SHOWSTOPPERS:
 
@@ -67,10 +66,6 @@ RELEASE SHOWSTOPPERS:
       Message-ID: <m37kltilb3.fsf@rdu88-251-253.nc.rr.com>
       BrianP says:  how about "ap_apachectl()"?
       Justin says to BrianP: "Eww."
-
-    * server pushed CGI's not working.  (Is this a showstopper??)
-      PR: 8482
-      Message-ID: <3CE15B85.2FF45121@apache.org>
 
     * Chunked trailer support is broken.
       Message-ID: <20020531142047.W19485@apache.org>
@@ -123,6 +118,10 @@ CURRENT VOTES:
       -0:   Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * server pushed CGI's not working.  (Is this a showstopper??)
+      PR: 8482
+      Message-ID: <3CE15B85.2FF45121@apache.org>
 
     * HP/UX 10.20: compile breakage in APR.  Looks like it should be easy
       to fix, probably just some extraneous #include's that are fouling
