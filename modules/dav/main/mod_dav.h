@@ -1671,6 +1671,12 @@ typedef struct dav_walker_ctx
 
     /* ### client data... phasing out this big glom */
 
+    /* this brigade buffers data being sent to r->output_filters */ 
+    apr_bucket_brigade *bb;
+
+    /* a scratch pool, used to stream responses and iteratively cleared. */
+    apr_pool_t *scratchpool;
+
     request_rec *r;                 /* original request */
 
     /* for PROPFIND operations */
