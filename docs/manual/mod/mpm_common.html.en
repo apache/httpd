@@ -404,11 +404,10 @@ the child processes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.htm
 <hr><h2><a name="ThreadLimit">ThreadLimit</a> <a name="threadlimit">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sets the upper limit on the configurable number of threads
 per child process</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>ThreadLimit <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
-                    </a></td><td><code>ThreadLimit 64</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>ThreadLimit <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
                   </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td><code><a href="../mod/worker.html">worker</a></code></td></tr></table></td></tr></table>
+                  </a></td><td><code><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code><a href="../mod/worker.html">worker</a></code></td></tr></table></td></tr></table>
     <p>This directive sets the maximum configured value for <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> for the lifetime
     of the Apache process.  Any attempts to change this directive
     during a restart will be ignored, but <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> can be modified
@@ -420,15 +419,17 @@ per child process</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#
     extra unused shared memory will be allocated.  If both
     <code class="directive">ThreadLimit</code> and <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> are set to values
     higher than the system can handle, Apache may not start or the
-    system may become unstable.</p>
+    system may become unstable. Do not set the value of this directive
+    any higher than your greatest predicted setting of <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> for the
+    current run of Apache.</p>
 
-    <p>Use this directive only if you need to set <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> higher than 64.  Do
-    not set the value of this directive any higher than what you might
-    want to set <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> to.</p>
+    <p>The default value for <code class="directive">ThreadLimit</code> is
+    64 when used with <code><a href="../mod/worker.html">worker</a></code> and 1920 when used
+    with <code><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>.</p>
+
 <hr><h2><a name="ThreadsPerChild">ThreadsPerChild</a> <a name="threadsperchild">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Number of threads created by each child process</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>ThreadsPerChild <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
-                    </a></td><td><code>ThreadsPerChild 50</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>ThreadsPerChild <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
                   </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td><code><a href="../mod/worker.html">worker</a></code>, <code><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr></table></td></tr></table>
@@ -440,6 +441,11 @@ per child process</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#
     like worker, where there are multiple child processes, the
     total number of threads should be high enough to handle the
     common load on the server.</p>
+
+    <p>The default value for this directive is 25 when used with
+    <code><a href="../mod/worker.html">worker</a></code> and 64 when used with
+    <code><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>.</p>
+
 <hr><h2><a name="User">User</a> <a name="user">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>The userid under which the server will answer
 requests</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
