@@ -19,7 +19,9 @@ clean:
 $(OBJS): Makefile
 
 $(LIB): $(OBJS)
-	ar cr $(LIB) $(OBJS)
+	rm -f $@
+	ar cr $@ $(OBJS)
+	$(RANLIB) $@
 
 # dependencies
 ap_signal.o: $(INCDIR)/httpd.h
