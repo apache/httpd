@@ -6,7 +6,7 @@
 ## are met:
 ##
 ## 1. Redistributions of source code must retain the above copyright
-##    notice, this list of conditions and the following disclaimer. 
+##    notice, this list of conditions and the following disclaimer.
 ##
 ## 2. Redistributions in binary form must reproduce the above copyright
 ##    notice, this list of conditions and the following disclaimer in
@@ -63,7 +63,7 @@
 ##
 
 ## ==================================================================
-##                              Options  
+##                              Options
 ## ==================================================================
 
 #   safe environment
@@ -126,7 +126,7 @@ access_module|\
 setenvif_module
 
 ## ==================================================================
-##                              Targets  
+##                              Targets
 ## ==================================================================
 
 #   default target
@@ -137,7 +137,7 @@ all: build
 ## ------------------------------------------------------------------
 
 #   build the package
-build: 
+build:
 	@echo "===> $(SRC)"
 	@$(MAKE) -f $(MKF) $(MFLAGS) build-std $(build-support)
 	@touch $(SRC)/.apaci.build.ok
@@ -159,7 +159,7 @@ build-support:
 	echo "<=== $(SRC)/support"
 
 ## ------------------------------------------------------------------
-##                       Installation Targets  
+##                       Installation Targets
 ## ------------------------------------------------------------------
 
 #   the install target for installing the complete Apache
@@ -170,28 +170,28 @@ install:
 	    $(MAKE) -f $(MKF) $(MFLAGS) build; \
 	fi
 	@$(MAKE) -f $(MKF) $(MFLAGS) \
-	    install-mktree install-programs $(install-support) \
+		install-mktree install-programs $(install-support) \
 		install-include install-docroot install-config
 	-@rm -f .install.tmp
 	-@rm -f .install.conf
 	-@if [ ".$(QUIET)" != .1 ]; then \
-	    echo "+--------------------------------------------------------+"; \
-	    echo "| You now have successfully built and installed the      |"; \
-	    echo "| Apache 1.3 HTTP server. To verify that Apache actually |"; \
-	    echo "| works correctly you can immediately try to fire it up  |"; \
-	    echo "| the first time by running:                             |"; \
-	    echo "|                                                        |"; \
-	    echo "|   $(sbindir)/apachectl start"; \
-	    echo "|                                                        |"; \
-	    echo "| Then you should additionally adjust the configuration  |"; \
-	    echo "| files which can be found under the following paths:    |"; \
-	    echo "|                                                        |"; \
-	    echo "|   $(sysconfdir)/{httpd,access,srm}.conf"; \
-	    echo "|                                                        |"; \
-	    echo "| Thanks for running Apache.                             |"; \
-	    echo "|                                The Apache Group        |"; \
-	    echo "|                                http://www.apache.org/  |"; \
-	    echo "+--------------------------------------------------------+"; \
+		echo "+--------------------------------------------------------+"; \
+		echo "| You now have successfully built and installed the      |"; \
+		echo "| Apache 1.3 HTTP server. To verify that Apache actually |"; \
+		echo "| works correctly you can immediately try to fire it up  |"; \
+		echo "| the first time by running:                             |"; \
+		echo "|                                                        |"; \
+		echo "|   $(sbindir)/apachectl start"; \
+		echo "|                                                        |"; \
+		echo "| Then you should additionally adjust the configuration  |"; \
+		echo "| files which can be found under the following paths:    |"; \
+		echo "|                                                        |"; \
+		echo "|   $(sysconfdir)/{httpd,access,srm}.conf"; \
+		echo "|                                                        |"; \
+		echo "| Thanks for running Apache.                             |"; \
+		echo "|                                The Apache Group        |"; \
+		echo "|                                http://www.apache.org/  |"; \
+		echo "+--------------------------------------------------------+"; \
 	fi
 
 #   the non-verbose variant for package maintainers
@@ -231,7 +231,7 @@ install-programs:
 			echo "rm -f $(libexecdir)/libhttpd.so.*"; \
 			rm -f $(libexecdir)/libhttpd.so.*; \
 			for suffix in $$SHLIB_SUFFIX_LIST ""; do \
-			    [ ".$$suffix" = . ] && continue; \
+				[ ".$$suffix" = . ] && continue; \
 				echo "ln $(libexecdir)/libhttpd.so $(libexecdir)/libhttpd.so.$$suffix"; \
 				ln $(libexecdir)/libhttpd.so $(libexecdir)/libhttpd.so.$$suffix; \
 			done; \
@@ -240,18 +240,18 @@ install-programs:
 	$(INSTALL_DATA) $(SRC)/support/httpd.8 $(mandir)/man8/httpd.8
 	-@rm -f .install.conf; touch .install.conf
 	-@if [ ".`grep '^[ 	]*SharedModule' $(SRC)/Configuration.apaci`" != . ]; then \
-        for mod in `egrep '^[ 	]*SharedModule' $(SRC)/Configuration.apaci |\
+		for mod in `egrep '^[ 	]*SharedModule' $(SRC)/Configuration.apaci |\
 	                sed -e 's/^[ 	]*SharedModule[ 	]*//'`; do \
-	        file=`echo $$mod | sed -e 's;^.*/\([^/]*\);\1;'`; \
-	        echo "$(INSTALL_SCRIPT) $(SRC)/$$mod $(libexecdir)/$$file"; \
-	        $(INSTALL_SCRIPT) $(SRC)/$$mod $(libexecdir)/$$file; \
-	        name=`$(AUX)/fmn.sh $(SRC)/$$mod`; \
+			file=`echo $$mod | sed -e 's;^.*/\([^/]*\);\1;'`; \
+			echo "$(INSTALL_SCRIPT) $(SRC)/$$mod $(libexecdir)/$$file"; \
+			$(INSTALL_SCRIPT) $(SRC)/$$mod $(libexecdir)/$$file; \
+			name=`$(AUX)/fmn.sh $(SRC)/$$mod`; \
 			prefix="#"; case $$name in $(so_mods_in_conf) ) prefix="" ;; esac; \
 			echo dummy | awk '{ printf("%sLoadModule %-18s %s\n", \
-			    prefix, modname, modpath); }' \
-			    prefix="$$prefix" modname="$$name" \
-				modpath="$(libexecdir_relative)$$file" >>.install.conf; \
-        done; \
+			prefix, modname, modpath); }' \
+			prefix="$$prefix" modname="$$name" \
+			modpath="$(libexecdir_relative)$$file" >>.install.conf; \
+		done; \
 	fi
 	@echo "<=== [programs]"
 
@@ -261,17 +261,17 @@ install-support:
 	$(INSTALL_PROGRAM) $(SRC)/support/ab $(sbindir)/ab
 	$(INSTALL_DATA) $(SRC)/support/ab.1 $(mandir)/man1/ab.1
 	sed -e 's;PIDFILE=.*;PIDFILE=$(localstatedir)/$(localstatesubdir_run)/httpd.pid;' \
-    	-e 's;HTTPD=.*;HTTPD=$(sbindir)/httpd;' \
-    	< $(SRC)/support/apachectl > .install.tmp && \
-    	$(INSTALL_SCRIPT) .install.tmp $(sbindir)/apachectl
+		-e 's;HTTPD=.*;HTTPD=$(sbindir)/httpd;' \
+		< $(SRC)/support/apachectl > .install.tmp && \
+		$(INSTALL_SCRIPT) .install.tmp $(sbindir)/apachectl
 	$(INSTALL_DATA) $(SRC)/support/apachectl.1 $(mandir)/man1/apachectl.1
 	$(INSTALL_PROGRAM) $(SRC)/support/htpasswd $(bindir)/htpasswd
 	$(INSTALL_DATA) $(SRC)/support/htpasswd.1 $(mandir)/man1/htpasswd.1
 	$(INSTALL_PROGRAM) $(SRC)/support/htdigest $(bindir)/htdigest
 	$(INSTALL_DATA) $(SRC)/support/htdigest.1 $(mandir)/man1/htdigest.1
 	sed -e 's;^#!/.*;#!$(PERL);' \
-    	< $(SRC)/support/dbmmanage > .install.tmp && \
-    	$(INSTALL_SCRIPT) .install.tmp $(bindir)/dbmmanage
+		< $(SRC)/support/dbmmanage > .install.tmp && \
+		$(INSTALL_SCRIPT) .install.tmp $(bindir)/dbmmanage
 	$(INSTALL_DATA) $(SRC)/support/dbmmanage.1 $(mandir)/man1/dbmmanage.1
 	$(INSTALL_PROGRAM) $(SRC)/support/logresolve $(sbindir)/logresolve
 	$(INSTALL_DATA) $(SRC)/support/logresolve.8 $(mandir)/man8/logresolve.8
@@ -283,8 +283,8 @@ install-support:
 		-e 's;\@libexecdir\@;$(libexecdir);' \
 		-e 's;\@includedir\@;$(includedir);' \
 		-e 's;\@sysconfdir\@;$(sysconfdir);' \
-    	< $(SRC)/support/apxs > .install.tmp && \
-    	$(INSTALL_SCRIPT) .install.tmp $(sbindir)/apxs
+		< $(SRC)/support/apxs > .install.tmp && \
+		$(INSTALL_SCRIPT) .install.tmp $(sbindir)/apxs
 	$(INSTALL_DATA) $(SRC)/support/apxs.8 $(mandir)/man8/apxs.8
 	-@if [ ".$(suexec)" = .1 ]; then \
 	    echo "$(INSTALL_PROGRAM) $(SRC)/support/suexec $(sbindir)/suexec"; \
@@ -298,7 +298,7 @@ install-support:
 	fi
 	@echo "<=== [support]"
 
-#   install the Apache C header files 
+#   install the Apache C header files
 install-include:
 	@echo "===> [include: Installing Apache C header files]"
 	$(CP) $(SRC)/include/*.h $(includedir)/
@@ -329,23 +329,23 @@ install-docroot:
 install-config:
 	@echo "===> [config: Installing Apache configuration files]"
 	-@for conf in httpd.conf access.conf srm.conf; do \
-        (echo "##"; \
-         echo "## $$conf -- Apache HTTP server configuration file"; \
-         echo "##"; \
+		(echo "##"; \
+		 echo "## $$conf -- Apache HTTP server configuration file"; \
+		 echo "##"; \
 		 echo ""; \
 		 cat $(ROOT)/conf/$$conf-dist ) |\
-    	sed -e '/# LoadModule/r .install.conf' \
-    	    -e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
-    	    -e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
-        	-e 's;@@ServerRoot@@/icons;$(datadir)/icons;' \
-        	-e 's;@@ServerRoot@@/cgi-bin;$(datadir)/cgi-bin;' \
-        	-e 's;@@ServerRoot@@/proxy;$(localstatedir)/proxy;' \
-        	-e 's;@@ServerRoot@@;$(prefix);' \
-        	-e 's;logs/accept.lock;$(localstatedir)/$(localstatesubdir_run)/httpd.lock;' \
-        	-e 's;logs/apache_status;$(localstatedir)/$(localstatesubdir_run)/httpd.scoreboard;' \
-        	-e 's;logs/httpd.pid;$(localstatedir)/$(localstatesubdir_run)/httpd.pid;' \
-        	-e 's;logs/access_log;$(localstatedir)/$(localstatesubdir_logs)/access_log;' \
-        	-e 's;logs/error_log;$(localstatedir)/$(localstatesubdir_logs)/error_log;' \
+		 sed -e '/# LoadModule/r .install.conf' \
+			-e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
+			-e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
+			-e 's;@@ServerRoot@@/icons;$(datadir)/icons;' \
+			-e 's;@@ServerRoot@@/cgi-bin;$(datadir)/cgi-bin;' \
+			-e 's;@@ServerRoot@@/proxy;$(localstatedir)/proxy;' \
+			-e 's;@@ServerRoot@@;$(prefix);' \
+			-e 's;logs/accept.lock;$(localstatedir)/$(localstatesubdir_run)/httpd.lock;' \
+			-e 's;logs/apache_status;$(localstatedir)/$(localstatesubdir_run)/httpd.scoreboard;' \
+			-e 's;logs/httpd.pid;$(localstatedir)/$(localstatesubdir_run)/httpd.pid;' \
+			-e 's;logs/access_log;$(localstatedir)/$(localstatesubdir_logs)/access_log;' \
+			-e 's;logs/error_log;$(localstatedir)/$(localstatesubdir_logs)/error_log;' \
         	>.install.tmp && \
 		echo "$(INSTALL_DATA) .install.tmp $(sysconfdir)/$$conf.default"; \
 		$(INSTALL_DATA) .install.tmp $(sysconfdir)/$$conf.default; \
@@ -362,9 +362,9 @@ install-config:
 
 
 ## ------------------------------------------------------------------
-##                       Cleanup Targets  
+##                       Cleanup Targets
 ## ------------------------------------------------------------------
-    
+
 #   cleanup the source tree by removing anything which was
 #   created by the build target
 clean:
