@@ -328,7 +328,9 @@ DocumentRoot "@@ServerRoot@@/htdocs"
 # UserDir: The name of the directory which is appended onto a user's home
 # directory if a ~user request is received.
 #
+<IfModule mod_userdir.c>
 UserDir public_html
+</IfModule>
 
 #
 # Control access to UserDir directories.  The following is an example
@@ -351,7 +353,9 @@ UserDir public_html
 # DirectoryIndex: Name of the file or files to use as a pre-written HTML
 # directory index.  Separate multiple entries with spaces.
 #
+<IfModule mod_dir.c>
 DirectoryIndex index.html
+</IfModule>
 
 #
 # AccessFileName: The name of the file to look for in each directory
@@ -397,7 +401,9 @@ UseCanonicalName On
 # TypesConfig describes where the mime.types file (or equivalent) is
 # to be found.
 #
+<IfModule mod_mime.c>
 TypesConfig conf/mime.types
+</IfModule>
 
 #
 # DefaultType is the default MIME type the server will use for a document
@@ -495,6 +501,9 @@ ServerSignature On
 # Aliases: Add here as many aliases as you need (with no limit). The format is 
 # Alias fakename realname
 #
+<IfModule mod_alias.c>
+
+#
 # Note that if you include a trailing / on fakename then the server will
 # require it to be present in the URL.  So "/icons" isn't aliased in this
 # example, only "/icons/"..
@@ -529,6 +538,9 @@ ScriptAlias /cgi-bin/ "@@ServerRoot@@/cgi-bin/"
     Allow from all
 </Directory>
 
+</IfModule>
+# End of aliases.
+
 #
 # Redirect allows you to tell clients about documents which used to exist in
 # your server's namespace, but do not anymore. This allows you to tell the
@@ -539,6 +551,7 @@ ScriptAlias /cgi-bin/ "@@ServerRoot@@/cgi-bin/"
 #
 # Directives controlling the display of server-generated directory listings.
 #
+<IfModule mod_autoindex.c>
 
 #
 # FancyIndexing is whether you want fancy directory indexing or standard
@@ -615,6 +628,14 @@ HeaderName HEADER
 #
 IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
 
+</IfModule>
+# End of indexing directives.
+
+#
+# Document types.
+#
+<IfModule mod_mime.c>
+
 #
 # AddEncoding allows you to have certain browsers (Mosaic/X 2.1+) uncompress
 # information on the fly. Note: Not all browsers support this.
@@ -669,7 +690,9 @@ AddLanguage cz .cz
 # Just list the languages in decreasing order of preference. We have
 # more or less alphabetized them here. You probably want to change this.
 #
+<IfModule mod_negotiation.c>
 LanguagePriority en da nl et fr de el it pt ltz ca es sv
+</IfModule>
 
 #
 # AddType allows you to tweak mime.types without actually editing it, or to
@@ -722,6 +745,9 @@ AddType application/x-tar .tgz
 #
 #AddHandler type-map var
 
+</IfModule>
+# End of document types.
+
 #
 # Action lets you define media types that will execute a script whenever
 # a matching file is called. This eliminates the need for repeated URL
@@ -763,6 +789,11 @@ AddType application/x-tar .tgz
 #  request will *not* be available to such a script.
 
 #
+# Customize behaviour based on the browser
+#
+<IfModule mod_setenvif.c>
+
+#
 # The following directives modify normal HTTP response behavior.
 # The first directive disables keepalive for Netscape 2.x and browsers that
 # spoof it. There are known problems with these browser implementations.
@@ -781,6 +812,8 @@ BrowserMatch "MSIE 4\.0b2;" nokeepalive downgrade-1.0 force-response-1.0
 BrowserMatch "RealPlayer 4\.0" force-response-1.0
 BrowserMatch "Java/1\.0" force-response-1.0
 BrowserMatch "JDK/1\.0" force-response-1.0
+
+</IfModule>
 
 #
 # Allow server status reports, with the URL of http://servername/server-status
