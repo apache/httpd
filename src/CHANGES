@@ -1,5 +1,9 @@
 Changes with Apache 1.3.5
 
+  *) Let src/Configure be aware of CFLAGS options starting with plus
+     signs as it's the case for the HP/UX's compiler.
+     [Doug Yatcilla <yatcilda@umdnj.edu>] PR#3681
+
   *) Remove the hard-wire of TAR=tar (we now check for gtar and gnutar first)
      and check to see if the tar we wind up with supports '-h'.
      [Jim Jagielski] PR#3671
