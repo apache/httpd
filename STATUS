@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/10 02:32:42 $]
+Last modified at [$Date: 2003/12/10 03:14:49 $]
 
 Release:
 
@@ -68,7 +68,7 @@ RELEASE SHOWSTOPPERS:
         include/httpd.h: r1.203
         server/log.c: r1.136
         server/util.c: r1.143
-      +1: nd
+      +1: nd, erikabele
 
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
@@ -79,7 +79,7 @@ PATCHES TO BACKPORT FROM 2.1
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/filters/mod_include.c?r1=1.290&r2=1.291
       and removing the filter itself
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/filters/mod_include.c?r1=1.291&r2=1.292
-      +1: stas, nd
+      +1: stas, nd, erikabele
 
     * mod_dav: Return a WWW-Auth header for MOVE/COPY requests where
       the destination resource gives a 401.
@@ -112,7 +112,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * Better descriptions for the configure --help output for some modules
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/config9.m4.diff?r1=1.17&r2=1.18
-      +1: kess, trawick, nd
+      +1: kess, trawick, nd, erikabele
 
     * Modifies the cache code to be header-location agnostic. Also
       fixes a number of other cache code bugs related to PR 15852
