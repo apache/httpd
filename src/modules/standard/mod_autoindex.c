@@ -706,7 +706,7 @@ static char *terminate_description(autoindex_config_rec * d, char *desc,
     if (autoindex_opts & SUPPRESS_SIZE)
 	maxsize += 7;
 
-    for (x = 0; desc[x] && maxsize; x++) {
+    for (x = 0; desc[x] && (maxsize > 0 || desc[x]=='<'); x++) {
 	if (desc[x] == '<') {
 	    while (desc[x] != '>') {
 		if (!desc[x]) {
