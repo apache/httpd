@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.27 $ ($Date: 1997/04/20 15:40:06 $)
+$Revision: 1.28 $ ($Date: 1997/04/21 13:43:28 $)
 </P>
 <P>
 If you are reading a text-only version of this FAQ, you may find numbers
@@ -30,6 +30,20 @@ do not appear, and are not needed, for the hypertext version.
 <!--   and double-check that rDNS resolves to name expected	    -->
 <!-- - mod_auth & passwd lines "user:pw:.*" - ++1st colon onward is -->
 <!--   treated as pw, not just ++1st to --2nd.			    -->
+<!-- - SSL:							    -->
+<!--   Can I use Apache-SSL for free in Canada?			    -->
+<!--   Why doesn't Apache include SSL?				    -->
+<!--   Why can I use Apache-SSL in the U.S.?			    -->
+<!-- - How can I found out how many visitors my site gets?	    -->
+<!-- - How do I add a counter?					    -->
+<!-- - How do I configure Apache as a proxy?			    -->
+<!-- - What browsers support HTTP/1.1?				    -->
+<!-- - What's the point of vhosts-by-name is there aren't any	    -->
+<!--   HTTP/1.1 brwsers?					    -->
+<!-- - Is there an Apache for W95/WNT?				    -->
+<!-- - Why does Apache die when a vhost can't be DNS-resolved?	    -->
+<!-- - How do I add browsers ands referrers to my logs?		    -->
+<!-- - Why was FastCGI removed from the 1.2 beta versions?	    -->
 <UL>
  <LI><STRONG>Background</STRONG>
   <OL START=1>
@@ -99,6 +113,9 @@ do not appear, and are not needed, for the hypertext version.
    </LI>
    <LI><A HREF="#cookies2">Why don't my cookies work, I even compiled in 
     mod_cookies?</A>
+   </LI>
+   <LI><A HREF="#jdk102">Why do my Java app[let]s give me plain text
+    when I request an URL from an Apache server?</A>
    </LI>
   </OL>
  </LI>
@@ -814,7 +831,8 @@ do not appear, and are not needed, for the hypertext version.
  </LI>
  <LI><A NAME="cookies2">
       <STRONG>Why don't my cookies work, I even compiled in mod_cookies?
-      </STRONG></A>
+      </STRONG>
+     </A>
   <P>
   Firstly, you do <EM>not</EM> need to compile in mod_cookies in order
   for your scripts to work (see the <A HREF="#cookies1">previous question</A>
@@ -822,6 +840,36 @@ do not appear, and are not needed, for the hypertext version.
   fine, with or without this module. If cookies do not work it will
   be because your script does not work properly or your browser does
   not use cookies or is not set-up to accept them.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="jdk102">
+      <STRONG>Why do my Java app[let]s give me plain text when I request
+      an URL from an Apache server?</STRONG>
+     </A>
+  <P>
+  As of version 1.2, Apache is an HTTP/1.1 (HyperText Transfer Protocol
+  version 1.1) server.  This fact is reflected in the protocol version
+  that's included in the response headers sent to a client when
+  processing a request.  Unfortunately, the Java Development Kit (JDK)
+  version 1.0.2 URL methods (URLConnection and friends) expect to see
+  the version string &quot;HTTP/1.0&quot; and do not correctly interpret
+  the &quot;HTTP/1.1&quot; value Apache is sending.  The result is that
+  the JDK methods do not correctly parse the headers, and include them
+  with the document content by mistake.
+  </P>
+  <P>
+  This is definitely a bug in the JDK, but it's unclear when (or
+  whether) it will be fixed.  In the meantime, a workaround is to tell
+  Apache to &quot;fake&quot; an HTTP/1.0 response to requests that come
+  from the JDK methods; this can be done by including a line such as the
+  following in your server configuration files:
+  </P>
+  <P>
+  <DL>
+   <DD><CODE>BrowserMatch HotJava/1.0 force-response-1.0</CODE>
+   </DD>
+  </DL>
   </P>
  </LI>
 </OL>
