@@ -440,6 +440,7 @@ void *create_msql_auth_dir_config (pool *p, char *d)
     return sec;
 }
 
+static
 char *set_passwd_flag (cmd_parms *cmd, msql_auth_config_rec *sec, int arg) {
     sec->auth_msql_nopasswd=arg;
     return NULL;
@@ -651,7 +652,7 @@ char *do_msql_query(request_rec *r, char *query, msql_auth_config_rec *sec, int 
 	/* if we have a it, try to get it
 	*/
         if ( hit )  {
-		if (currow=msqlFetchRow(results)) {
+		if ((currow=msqlFetchRow(results))) {
 			/* copy the first matching field value */
 			if (!(result=palloc(r->pool,strlen(currow[0])+1))) {
 				sprintf (msql_errstr,"mSQL: Could not get memory for mSQL %s (%s) with [%s]",
@@ -766,7 +767,7 @@ int msql_authenticate_basic_user (request_rec *r)
       (msql_auth_config_rec *)get_module_config (r->per_dir_config,
 						&msql_auth_module);
     conn_rec *c = r->connection;
-    char *sent_pw, *real_pw, *colon_pw;
+    char *sent_pw, *real_pw;
     int res;
 
 
@@ -860,7 +861,7 @@ int msql_check_auth (request_rec *r) {
     array_header *reqs_arr = requires (r);
     require_line *reqs = reqs_arr ? (require_line *)reqs_arr->elts : NULL;
 
-    register int x,res;
+    register int x;
     char *t, *w;
 
 
