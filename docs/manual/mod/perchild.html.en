@@ -29,7 +29,7 @@ make it functional.
     The individual threads then
     listen for connections and serve them when they arrive.</p>
 
-    <p>Apache always tries to maintain a pool of <em>spare</em> or
+    <p>Apache always tries to maintain a pool of <dfn>spare</dfn> or
     idle server threads, which stand ready to serve incoming
     requests. In this way, clients do not need to wait for new
     threads to be created. For each child process, Apache assesses
@@ -60,9 +60,6 @@ make it functional.
     server recycles processes by killing old ones and launching new
     ones.</p>
 
-    <p>See also: <a href="../bind.html">Setting which addresses and
-    ports Apache uses</a>.</p>
-
     <p>In addition it adds the extra ability to specify that
     specific processes should serve requests under different
     userids. These processes can then be associated with specific
@@ -85,9 +82,11 @@ make it functional.
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startthreads">StartThreads</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li>
-</ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AssignUserId" id="AssignUserId">AssignUserId</a> <a name="assignuserid" id="assignuserid">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../bind.html">Setting which addresses and
+    ports Apache uses</a>
+</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AssignUserId" id="AssignUserId">AssignUserId</a> <a name="assignuserid" id="assignuserid">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>AssignUserID <em>user_id</em> <em>group_id</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AssignUserID <var>user_id</var> <var>group_id</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>perchild</td></tr></table>
@@ -96,8 +95,8 @@ the virtual host where this directive appears will be served by the process
 running with the specified user and group id.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ChildPerUserId" id="ChildPerUserId">ChildPerUserId</a> <a name="childperuserid" id="childperuserid">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ChildPerUserID <em>user_id</em>
-<em>group_id</em> <em>num_children</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ChildPerUserID <var>user_id</var>
+<var>group_id</var> <var>num_children</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>perchild</td></tr></table>
