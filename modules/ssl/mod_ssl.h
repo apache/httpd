@@ -196,6 +196,10 @@
 #define cfgMergeBool(el)    cfgMerge(el, UNSET)
 #define cfgMergeInt(el)     cfgMerge(el, UNSET)
 
+#define myConnConfig(c) \
+(SSLConnRec *)ap_get_module_config(c->conn_config, &ssl_module)
+#define myConnConfigSet(c, val) \
+ap_set_module_config(c->conn_config, &ssl_module, val)
 #define myModConfig(srv) (SSLModConfigRec *)ssl_util_getmodconfig(srv, "ssl_module")
 #define mySrvConfig(srv) (SSLSrvConfigRec *)ap_get_module_config(srv->module_config,  &ssl_module)
 #define myDirConfig(req) (SSLDirConfigRec *)ap_get_module_config(req->per_dir_config, &ssl_module)
@@ -445,6 +449,10 @@ typedef struct {
     apr_bucket_brigade *rawb;               /* encrypted input */
     apr_bucket_brigade *b;                  /* decrypted input */
 } SSLFilterRec;
+
+typedef struct {
+    SSL *ssl;
+} SSLConnRec;
 
 typedef struct {
     apr_pool_t     *pPool;
