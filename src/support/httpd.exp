@@ -337,8 +337,6 @@ ap_table_do
 ap_table_get
 ap_table_merge
 ap_table_mergen
-ap_table_mergen_unique_token
-ap_table_merge_unique_token
 ap_table_set
 ap_table_setn
 ap_table_unset

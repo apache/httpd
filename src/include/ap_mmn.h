@@ -220,7 +220,6 @@
  * 19990320.3           - add ap_regexec()
  * 19990604.4           - add ap_field_noparam()
  * 19990621.5           - add local_ip/host to conn_rec for mass-vhost
- * 19990728.6           - add ap_table_merge[n]_unique_token
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
@@ -228,7 +227,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 19990320
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 6                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 5                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
 
 /* Useful for testing for features. */

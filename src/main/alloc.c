@@ -1346,32 +1346,6 @@ API_EXPORT(void) ap_table_unset(table *t, const char *key)
     }
 }
 
-/*
- * Merge an HTTP token into a table entry IFF it isn't already in there.
- * (Intended primarily to avoid "Vary: host, host".)
- */
-API_EXPORT(void) ap_table_merge_unique_token(table *t, const char *key,
-					     const char *val)
-{
-    const char *curval;
-
-    curval = ap_table_get(t, key);
-    if ((curval == NULL) || (!ap_find_token(t->a.pool, curval, val))) {
-	ap_table_merge(t, key, val);
-    }
-}
-
-API_EXPORT(void) ap_table_mergen_unique_token(table *t, const char *key,
-					      const char *val)
-{
-    const char *curval;
-
-    curval = ap_table_get(t, key);
-    if ((curval == NULL) || (!ap_find_token(t->a.pool, curval, val))) {
-	ap_table_mergen(t, key, val);
-    }
-}
-
 API_EXPORT(void) ap_table_merge(table *t, const char *key, const char *val)
 {
     table_entry *elts = (table_entry *) t->a.elts;

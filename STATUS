@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/07/28 17:37:05 $]
+  Last modified at [$Date: 1999/07/29 17:53:36 $]
 
 Release:
 
@@ -64,9 +64,23 @@ Binaries (1.3.6):
  mips-dec-ultrix4.4            no      Sameer Parekh
  mips-unknown-linux            yes     Lars Eilebrecht
 
+    * The Vary header field stuff is still broken (multiple
+      entries occur, etc.).  The result is that some browsers (AFAIK at least
+      MSIE) are horribly confused by the responses.
+      Status: It should be fixed before 1.3.7 went out. For details
+              how it should be done, please look at new-httpd mailing list
+              archive: Ken, Ralf and Roy have already found consensus in the
+              past there.
 
 RELEASE SHOWSTOPPERS:
 
+    * The Vary header field stuff is still broken (multiple
+      entries occur, etc.).  The result is that some browsers (AFAIK at least
+      MSIE) are horribly confused by the responses.
+      Status: It should be fixed before 1.3.7 went out. For details
+              how it should be done, please look at new-httpd mailing list
+              archive: Ken, Ralf and Roy have already found consensus in the
+              past there.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 

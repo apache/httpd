@@ -213,17 +213,7 @@ static void do_headers_fixup(request_rec *r, array_header *headers)
             ap_table_addn(r->headers_out, hdr->header, hdr->value);
             break;
         case hdr_append:
-	    /*
-	     * "Vary" is particularly sensitive to duplicate tokens;
-	     * they break some browsers.
-	     */
-	    if (strcasecmp(hdr->header, "Vary") == 0) {
-		ap_table_mergen_unique_token(r->headers_out, hdr->header,
-					     hdr->value);
-	    }
-	    else {
-		ap_table_mergen(r->headers_out, hdr->header, hdr->value);
-	    }
+            ap_table_mergen(r->headers_out, hdr->header, hdr->value);
             break;
         case hdr_set:
             ap_table_setn(r->headers_out, hdr->header, hdr->value);
