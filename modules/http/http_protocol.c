@@ -809,6 +809,33 @@ API_EXPORT(int) ap_method_number_of(const char *method)
     return M_INVALID;
 }
 
+API_EXPORT(const char *) ap_method_name_of(int methnum) {
+    static const char *AP_HTTP_METHODS[] = {
+	[M_GET]       = "GET",
+	[M_PUT]       = "PUT",
+	[M_POST]      = "POST",
+	[M_DELETE]    = "DELETE",
+	[M_CONNECT]   = "CONNECT",
+	[M_OPTIONS]   = "OPTIONS",
+	[M_TRACE]     = "TRACE",
+	[M_PATCH]     = "PATCH",
+	[M_PROPFIND]  = "PROPFIND",
+	[M_PROPPATCH] = "PROPPATCH",
+	[M_MKCOL]     = "MKCOL",
+	[M_COPY]      = "COPY",
+	[M_MOVE]      = "MOVE",
+	[M_LOCK]      = "LOCK",
+	[M_UNLOCK]    = "UNLOCK",
+	[M_INVALID]   = NULL
+    };
+    
+
+    if ((methnum == M_INVALID) || (methnum >= METHODS)) {
+	return NULL;
+    }
+    return AP_HTTP_METHODS[methnum];
+}
+
 /* Get a line of protocol input, including any continuation lines
  * caused by MIME folding (or broken clients) if fold != 0, and place it
  * in the buffer s, of size n bytes, without the ending newline.
