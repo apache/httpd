@@ -603,7 +603,7 @@ named file-system directory and sub-directories</description>
 file-system directories matching a regular expression and their
 subdirectories</description>
 <syntax>&lt;DirectoryMatch <var>regex</var>&gt;
-... &lt;/Directory&gt;</syntax>
+... &lt;/DirectoryMatch&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -1264,15 +1264,20 @@ the server configuration files</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
+<compatibility>Wildcard matching available in 2.0.41 and later</compatibility>
 
 <usage>
     <p>This directive allows inclusion of other configuration files
     from within the server configuration files.</p>
 
-    <p>If <directive>Include</directive> points to a directory, rather than a
-    file, Apache will read all files in that directory and any
-    subdirectory in alphabetical order, and parse those as configuration
-    files.</p>
+    <p>Shell-style (fnmatch) wildcard characters can be used to
+    include several files at once, in alphabetical order.  In
+    addition, if <directive>Include</directive> points to a directory,
+    rather than a file, Apache will read all files in that directory
+    and any subdirectory.  But including entire directories is not
+    recommended, because it is easy to accidentally leave temporary
+    files in a directory that can cause <code>httpd</code> to
+    fail.</p>
 
     <p>The file path specified may be a fully qualified path (i.e.
     starting with a slash), or may be relative to the 
@@ -1281,36 +1286,29 @@ the server configuration files</description>
     <p>Examples:</p>
 
     <example>
-      Include /usr/local/apache/conf/ssl.conf<br />
-      Include /usr/local/apache/conf/vhosts/
+      Include /usr/local/apache2/conf/ssl.conf<br />
+      Include /usr/local/apache2/conf/vhosts/*.conf
     </example>
 
-    <p>Or, providing paths relative to your <code>ServerRoot</code>
-    directory:</p>
+    <p>Or, providing paths relative to your <directive
+    module="core">ServerRoot</directive> directory:</p>
 
     <example>
       Include conf/ssl.conf<br />
-      Include conf/vhosts/
+      Include conf/vhosts/*.conf
     </example>
 
-    <p>Make sure that an included directory does not contain any stray
-    files, such as editor temporary files, for example, as Apache will
-    attempt to read them in and use the contents as configuration
-    directives, which may cause the server to fail on start up.
-    Running <code>apachectl configtest</code> will give you a list of
-    the files that are being processed during the configuration
+    <p>Running <code>apachectl configtest</code> will give you a list
+    of the files that are being processed during the configuration
     check:</p>
 
     <example>
       root@host# apachectl configtest<br />
-      Processing config directory: /usr/local/apache/conf/vhosts<br />
-      Processing config file: /usr/local/apache/conf/vhosts/vhost1<br />
-      Processing config file: /usr/local/apache/conf/vhosts/vhost2<br />
+      Processing config file: /usr/local/apache2/conf/ssl.conf<br />
+      Processing config file: /usr/local/apache2/conf/vhosts/vhost1.conf<br />
+      Processing config file: /usr/local/apache2/conf/vhosts/vhost2.conf<br />
       Syntax OK
     </example>
-
-    <p>This will help in verifying that you are getting only the files
-    that you intended as part of your configuration.</p>
 </usage>
 
 <seealso><a href="../programs/apachectl.html">apachectl</a></seealso>
@@ -2514,7 +2512,8 @@ is accessed by an incompatible browser</description>
     document.</p>
 
     <p>After version 2.0.44, the details of the server version number
-    presented are controlled by the ServerTokens directive.</p>
+    presented are controlled by the <directive
+    module="core">ServerTokens</directive> directive.</p>
 </usage>
 <seealso><directive module="core">ServerTokens</directive></seealso>
 </directivesynopsis>
@@ -2568,7 +2567,8 @@ is accessed by an incompatible browser</description>
     enabled or disabled on a virtualhost-by-virtualhost basis.</p>
 
     <p>After version 2.0.44, this directive also controls the
-    information presented by the ServerSignature directive.</p>
+    information presented by the <directive
+    module="core">ServerSignature</directive> directive.</p>
 </usage>
 <seealso><directive module="core">ServerSignature</directive></seealso>
 </directivesynopsis>

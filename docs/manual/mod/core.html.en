@@ -549,7 +549,7 @@ named file-system directory and sub-directories</td></tr><tr><th><a href="direct
 file-system directories matching a regular expression and their
 subdirectories</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>&lt;DirectoryMatch <var>regex</var>&gt;
-... &lt;/Directory&gt;</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+... &lt;/DirectoryMatch&gt;</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
@@ -1102,14 +1102,19 @@ the server configuration files</td></tr><tr><th><a href="directive-dict.html#Syn
               </a></th><td><code>Include <var>file-path</var>|<var>directory-path</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>core</td></tr></table>
+              </a></th><td>core</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
+              </a></th><td>Wildcard matching available in 2.0.41 and later</td></tr></table>
     <p>This directive allows inclusion of other configuration files
     from within the server configuration files.</p>
 
-    <p>If <code class="directive">Include</code> points to a directory, rather than a
-    file, Apache will read all files in that directory and any
-    subdirectory in alphabetical order, and parse those as configuration
-    files.</p>
+    <p>Shell-style (fnmatch) wildcard characters can be used to
+    include several files at once, in alphabetical order.  In
+    addition, if <code class="directive">Include</code> points to a directory,
+    rather than a file, Apache will read all files in that directory
+    and any subdirectory.  But including entire directories is not
+    recommended, because it is easy to accidentally leave temporary
+    files in a directory that can cause <code>httpd</code> to
+    fail.</p>
 
     <p>The file path specified may be a fully qualified path (i.e.
     starting with a slash), or may be relative to the 
@@ -1118,36 +1123,28 @@ the server configuration files</td></tr><tr><th><a href="directive-dict.html#Syn
     <p>Examples:</p>
 
     <div class="example"><p><code>
-      Include /usr/local/apache/conf/ssl.conf<br />
-      Include /usr/local/apache/conf/vhosts/
+      Include /usr/local/apache2/conf/ssl.conf<br />
+      Include /usr/local/apache2/conf/vhosts/*.conf
     </code></p></div>
 
-    <p>Or, providing paths relative to your <code>ServerRoot</code>
-    directory:</p>
+    <p>Or, providing paths relative to your <code class="directive"><a href="#serverroot">ServerRoot</a></code> directory:</p>
 
     <div class="example"><p><code>
       Include conf/ssl.conf<br />
-      Include conf/vhosts/
+      Include conf/vhosts/*.conf
     </code></p></div>
 
-    <p>Make sure that an included directory does not contain any stray
-    files, such as editor temporary files, for example, as Apache will
-    attempt to read them in and use the contents as configuration
-    directives, which may cause the server to fail on start up.
-    Running <code>apachectl configtest</code> will give you a list of
-    the files that are being processed during the configuration
+    <p>Running <code>apachectl configtest</code> will give you a list
+    of the files that are being processed during the configuration
     check:</p>
 
     <div class="example"><p><code>
       root@host# apachectl configtest<br />
-      Processing config directory: /usr/local/apache/conf/vhosts<br />
-      Processing config file: /usr/local/apache/conf/vhosts/vhost1<br />
-      Processing config file: /usr/local/apache/conf/vhosts/vhost2<br />
+      Processing config file: /usr/local/apache2/conf/ssl.conf<br />
+      Processing config file: /usr/local/apache2/conf/vhosts/vhost1.conf<br />
+      Processing config file: /usr/local/apache2/conf/vhosts/vhost2.conf<br />
       Syntax OK
     </code></p></div>
-
-    <p>This will help in verifying that you are getting only the files
-    that you intended as part of your configuration.</p>
 <h3>See also</h3><ul><li><a href="../programs/apachectl.html">apachectl</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="KeepAlive" id="KeepAlive">KeepAlive</a> <a name="keepalive" id="keepalive">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Enables HTTP persistent connections</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>KeepAlive on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
@@ -2167,7 +2164,7 @@ is accessed by an incompatible browser</td></tr><tr><th><a href="directive-dict.
     document.</p>
 
     <p>After version 2.0.44, the details of the server version number
-    presented are controlled by the ServerTokens directive.</p>
+    presented are controlled by the <code class="directive"><a href="#servertokens">ServerTokens</a></code> directive.</p>
 <h3>See also</h3><ul><li><code class="directive"><a href="#servertokens">ServerTokens</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerTokens" id="ServerTokens">ServerTokens</a> <a name="servertokens" id="servertokens">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Configures the Server HTTP response header</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>ServerTokens Major|Minor|Minimal|ProductOnly|OS|Full</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
@@ -2216,7 +2213,7 @@ is accessed by an incompatible browser</td></tr><tr><th><a href="directive-dict.
     enabled or disabled on a virtualhost-by-virtualhost basis.</p>
 
     <p>After version 2.0.44, this directive also controls the
-    information presented by the ServerSignature directive.</p>
+    information presented by the <code class="directive"><a href="#serversignature">ServerSignature</a></code> directive.</p>
 <h3>See also</h3><ul><li><code class="directive"><a href="#serversignature">ServerSignature</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetHandler" id="SetHandler">SetHandler</a> <a name="sethandler" id="sethandler">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Forces all matching files to be processed by a
 handler</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
