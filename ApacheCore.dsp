@@ -54,7 +54,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386
-# ADD LINK32 os\win32\ApacheOSR\ApacheOS.lib regex\release\regex.lib ap\Release\ap.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ws2_32.lib /nologo /subsystem:windows /dll /machine:I386
+# ADD LINK32 os\win32\ApacheOSR\ApacheOS.lib regex\release\regex.lib ap\Release\ap.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /machine:I386
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386
-# ADD LINK32 os\win32\ApacheOSD\ApacheOS.lib regex\debug\regex.lib ap\Debug\ap.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ws2_32.lib /nologo /subsystem:windows /dll /debug /machine:I386
+# ADD LINK32 os\win32\ApacheOSD\ApacheOS.lib regex\debug\regex.lib ap\Debug\ap.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /debug /machine:I386
 # SUBTRACT LINK32 /map
 
 !ENDIF 
@@ -118,6 +118,10 @@ SOURCE=.\main\http_config.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\main\http_connection.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\main\http_core.c
 # End Source File
 # Begin Source File
@@ -139,6 +143,14 @@ SOURCE=.\main\http_request.c
 # Begin Source File
 
 SOURCE=.\main\http_vhost.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\os\win32\iol_socket.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\main\listen.c
 # End Source File
 # Begin Source File
 
@@ -166,10 +178,6 @@ SOURCE=.\modules\standard\mod_autoindex.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_cgi.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\modules\standard\mod_dir.c
 # End Source File
 # Begin Source File
@@ -179,14 +187,6 @@ SOURCE=.\modules\standard\mod_env.c
 # Begin Source File
 
 SOURCE=.\modules\standard\mod_imap.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\standard\mod_include.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\os\win32\mod_isapi.c
 # End Source File
 # Begin Source File
 
@@ -206,19 +206,11 @@ SOURCE=.\modules\standard\mod_setenvif.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_so.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\modules\standard\mod_userdir.c
 # End Source File
 # Begin Source File
 
 SOURCE=.\os\win32\modules.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\os\win32\multithread.c
 # End Source File
 # Begin Source File
 
@@ -231,10 +223,6 @@ SOURCE=.\os\win32\registry.c
 # Begin Source File
 
 SOURCE=.\main\rfc1413.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\os\win32\service.c
 # End Source File
 # Begin Source File
 
@@ -260,6 +248,10 @@ SOURCE=.\main\util_uri.c
 
 SOURCE=.\os\win32\util_win32.c
 # End Source File
+# Begin Source File
+
+SOURCE=.\modules\mpm\winnt\winnt.c
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -271,6 +263,18 @@ SOURCE=.\include\alloc.h
 # Begin Source File
 
 SOURCE=.\include\ap.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_hooks.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_iol.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_listen.h
 # End Source File
 # Begin Source File
 
@@ -310,6 +314,10 @@ SOURCE=.\include\http_config.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\http_connection.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\http_core.h
 # End Source File
 # Begin Source File
@@ -338,11 +346,15 @@ SOURCE=.\include\httpd.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\os\win32\iol_socket.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\modules\standard\mod_mime.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\multithread.h
+SOURCE=.\modules\mpm\winnt\mpm_default.h
 # End Source File
 # Begin Source File
 
@@ -359,10 +371,6 @@ SOURCE=.\os\win32\registry.h
 # Begin Source File
 
 SOURCE=.\include\rfc1413.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\scoreboard.h
 # End Source File
 # Begin Source File
 
@@ -383,6 +391,10 @@ SOURCE=.\include\util_script.h
 # Begin Source File
 
 SOURCE=.\include\util_uri.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\mpm\winnt\winnt.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
