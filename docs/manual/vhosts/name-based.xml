@@ -112,19 +112,17 @@
 	Then you simply add the following to <code>httpd.conf</code>:</p>
 
 	<example>
-<pre>
-    NameVirtualHost *
-
-    &lt;VirtualHost *&gt;
-    ServerName www.domain.tld
-    DocumentRoot /www/domain
-    &lt;/VirtualHost&gt;
-
-    &lt;VirtualHost *&gt;
-    ServerName www.otherdomain.tld
-    DocumentRoot /www/otherdomain
-    &lt;/VirtualHost&gt;
-</pre>
+    NameVirtualHost *<br />
+    <br />
+    &lt;VirtualHost *&gt;<br />
+    ServerName www.domain.tld<br />
+    DocumentRoot /www/domain<br />
+    &lt;/VirtualHost&gt;<br />
+    <br />
+    &lt;VirtualHost *&gt;<br />
+    ServerName www.otherdomain.tld<br />
+    DocumentRoot /www/otherdomain<br />
+    &lt;/VirtualHost&gt;<br />
 	</example>
 
 	<p>You can alternatively specify an explicit IP address in place of

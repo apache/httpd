@@ -82,19 +82,19 @@
 	<code>www.otherdomain.tld</code>, which points at the same IP address.
 	Then you simply add the following to <code>httpd.conf</code>:</p>
 
-	<div class="example"><pre>
-    NameVirtualHost *
-
-    &lt;VirtualHost *&gt;
-    ServerName www.domain.tld
-    DocumentRoot /www/domain
-    &lt;/VirtualHost&gt;
-
-    &lt;VirtualHost *&gt;
-    ServerName www.otherdomain.tld
-    DocumentRoot /www/otherdomain
-    &lt;/VirtualHost&gt;
-</pre></div>
+	<div class="example"><p><code>
+    NameVirtualHost *<br />
+    <br />
+    &lt;VirtualHost *&gt;<br />
+    ServerName www.domain.tld<br />
+    DocumentRoot /www/domain<br />
+    &lt;/VirtualHost&gt;<br />
+    <br />
+    &lt;VirtualHost *&gt;<br />
+    ServerName www.otherdomain.tld<br />
+    DocumentRoot /www/otherdomain<br />
+    &lt;/VirtualHost&gt;<br />
+	</code></p></div>
 
 	<p>You can alternatively specify an explicit IP address in place of
 	the * in both the <code>NameVirtualHost</code> and
