@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/08/16 05:04:38 $]
+Last modified at [$Date: 2001/08/16 08:24:18 $]
 
 Release:
 
@@ -227,11 +227,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * when prefork bails out due to an initialization error in the detached
       process (e.g., mutex init failure), other children (cgid, at least) 
       are left hanging around
-
-    * Win32 should grow version info on all .dll/.so/.exe binaries.  Pretty
-      simple with the right script (awk or perl), we just don't need to grow
-      dozens of new files in the repository to do so.
-      Suggested by: Jerker Back <info.jelmar@telia.com> PR 7388
 
     * Win32: Get Apache working on Windows 95/98. The following work
 	(at least) needs to be done:
