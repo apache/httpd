@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Configure,v 1.19 1996/09/18 16:52:46 chuck Exp $
+# $Id: Configure,v 1.20 1996/09/23 10:14:59 ben Exp $
 trap 'rm $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
@@ -131,6 +131,10 @@ RULE_IRIXNIS=`./CutRule IRIXNIS`
 #
 
 PLAT=`./GuessOS`
+
+# Preset DBM_LIB. Can be overridden on a per-platform basis.
+
+DBM_LIB="-ldbm"
 
 case "$PLAT" in
     *-apple-aux3*)
@@ -307,7 +311,8 @@ echo "Configured for $OS platform"
 if grep "CC=" Makefile > /dev/null; then
     CC=""	# clear it just in case
 else
-    if [ "x$CC" = "x" ]; then CC="gcc"; fi
+    if [ "x$CC" = "x" ]; then CC=`GuessCC`; fi
+    echo "Setting C compiler to $CC"
 fi
 
 #
@@ -328,6 +333,13 @@ if grep "$STAT_MOD" Makefile > /dev/null; then
     if [ "$RULE_STATUS" = "yes" ]; then
 	CFLAGS="$CFLAGS -DSTATUS"
     fi
+fi
+
+#
+# Are they using dbm auth? If so, add DBM library.
+#
+if grep mod_auth_dbm Makefile > /dev/null; then
+    LIBS="$LIBS $DBM_LIB"
 fi
 
 #
