@@ -113,30 +113,30 @@ void add_include_vars(request_rec *r, char *timefmt)
 
     table_set(e, "DATE_LOCAL", ht_time(r->pool, date, timefmt, 0));
     table_set(e, "DATE_GMT", ht_time(r->pool, date, timefmt, 1));
-    table_set(e, "LAST_MODIFIED",ht_time(r->pool,r->finfo.st_mtime,timefmt,0));
+    table_set(e, "LAST_MODIFIED", ht_time(r->pool, r->finfo.st_mtime, timefmt, 0));
     table_set(e, "DOCUMENT_URI", r->uri);
     table_set(e, "DOCUMENT_PATH_INFO", r->path_info);
 #ifndef WIN32
     pw = getpwuid(r->finfo.st_uid);
     if (pw) {
-      table_set(e, "USER_NAME", pw->pw_name);
+        table_set(e, "USER_NAME", pw->pw_name);
     } else {
-      char uid[16];
-      ap_snprintf(uid, sizeof(uid), "user#%lu", (unsigned long)r->finfo.st_uid);
-      table_set(e, "USER_NAME", uid);
+        char uid[16];
+        ap_snprintf(uid, sizeof(uid), "user#%lu", (unsigned long)r->finfo.st_uid);
+        table_set(e, "USER_NAME", uid);
     }
 #endif /* ndef WIN32 */
 
-    if((t = strrchr(r->filename, '/')))
+    if ((t = strrchr(r->filename, '/')))
         table_set (e, "DOCUMENT_NAME", ++t);
     else
         table_set (e, "DOCUMENT_NAME", r->uri);
     if (r->args) {
-	char *arg_copy = pstrdup (r->pool, r->args);
+        char *arg_copy = pstrdup (r->pool, r->args);
 
         unescape_url (arg_copy);
-	  table_set (e, "QUERY_STRING_UNESCAPED",
-		   escape_shell_cmd (r->pool, arg_copy));
+          table_set (e, "QUERY_STRING_UNESCAPED",
+                   escape_shell_cmd (r->pool, arg_copy));
     }
 }
 
@@ -152,8 +152,10 @@ void add_include_vars(request_rec *r, char *timefmt)
  */
 #define PUT_CHAR(c,r) \
  { \
-   outbuf[outind++] = c; \
-   if (outind == OUTBUFSIZE) { FLUSH_BUF(r) }; \
+    outbuf[outind++] = c; \
+    if (outind == OUTBUFSIZE) { \
+        FLUSH_BUF(r) \
+    }; \
  } 
 
 /* there SHOULD be some error checking on the return value of
@@ -180,39 +182,39 @@ void add_include_vars(request_rec *r, char *timefmt)
 #define GET_CHAR(f,c,ret,r) \
  { \
    int i = getc(f); \
-   if(i == EOF) { /* either EOF or error -- needs error handling if latter */ \
+   if (i == EOF) { /* either EOF or error -- needs error handling if latter */ \
        if (ferror(f)) \
-	   fprintf(stderr, "encountered error in GET_CHAR macro, mod_include.\n"); \
+           fprintf(stderr, "encountered error in GET_CHAR macro, mod_include.\n"); \
        FLUSH_BUF(r); \
-       pfclose(r->pool,f); \
+       pfclose(r->pool, f); \
        return ret; \
    } \
    c = (char)i; \
  }
 
-int find_string(FILE *in,char *str, request_rec *r, int printing) {
-    int x,l=strlen(str),p;
+int find_string(FILE *in, char *str, request_rec *r, int printing) {
+    int x, l = strlen(str), p;
     char outbuf[OUTBUFSIZE];
     int outind = 0;
     char c;
 
-    p=0;
-    while(1) {
-        GET_CHAR(in,c,1,r);
-        if(c == str[p]) {
-            if((++p) == l) {
-		FLUSH_BUF(r);
+    p = 0;
+    while (1) {
+        GET_CHAR(in, c, 1, r);
+        if (c == str[p]) {
+            if ((++p) == l) {
+                FLUSH_BUF(r);
                 return 0;
-	    }
+            }
         }
         else {
             if (printing) {
-                for(x=0;x<p;x++) {
-                    PUT_CHAR(str[x],r);
+                for (x = 0; x < p; x++) {
+                    PUT_CHAR(str[x], r);
                 }
-                PUT_CHAR(c,r);
+                PUT_CHAR(c, r);
             }
-            p=0;
+            p = 0;
         }
     }
 }
@@ -223,10 +225,10 @@ int find_string(FILE *in,char *str, request_rec *r, int printing) {
 #define GET_CHAR(f,c,r,p) \
  { \
    int i = getc(f); \
-   if(i == EOF) { /* either EOF or error -- needs error handling if latter */ \
+   if (i == EOF) { /* either EOF or error -- needs error handling if latter */ \
        if (ferror(f)) \
-	   fprintf(stderr, "encountered error in GET_CHAR macro, mod_include.\n"); \
-       pfclose(p,f); \
+           fprintf(stderr, "encountered error in GET_CHAR macro, mod_include.\n"); \
+       pfclose(p, f); \
        return r; \
    } \
    c = (char)i; \
@@ -252,19 +254,19 @@ static void
 decodehtml(char *s)
 {
     int val, i, j;
-    char *p=s;
+    char *p = s;
     char *ents;
-    static char *entlist[MAXENTLEN+1]={
-	NULL,  /* 0 */
-	NULL,  /* 1 */
-	"lt\074gt\076", /* 2 */
-	"amp\046ETH\320eth\360", /* 3 */
-	"quot\042Auml\304Euml\313Iuml\317Ouml\326Uuml\334auml\344euml\353\
+    static char *entlist[MAXENTLEN+1] = {
+        NULL,  /* 0 */
+        NULL,  /* 1 */
+        "lt\074gt\076", /* 2 */
+        "amp\046ETH\320eth\360", /* 3 */
+        "quot\042Auml\304Euml\313Iuml\317Ouml\326Uuml\334auml\344euml\353\
 iuml\357ouml\366uuml\374yuml\377", /* 4 */
-	"Acirc\302Aring\305AElig\306Ecirc\312Icirc\316Ocirc\324Ucirc\333\
+        "Acirc\302Aring\305AElig\306Ecirc\312Icirc\316Ocirc\324Ucirc\333\
 THORN\336szlig\337acirc\342aring\345aelig\346ecirc\352icirc\356ocirc\364\
 ucirc\373thorn\376", /* 5 */
-	"Agrave\300Aacute\301Atilde\303Ccedil\307Egrave\310Eacute\311\
+        "Agrave\300Aacute\301Atilde\303Ccedil\307Egrave\310Eacute\311\
 Igrave\314Iacute\315Ntilde\321Ograve\322Oacute\323Otilde\325Oslash\330\
 Ugrave\331Uacute\332Yacute\335agrave\340aacute\341atilde\343ccedil\347\
 egrave\350eacute\351igrave\354iacute\355ntilde\361ograve\362oacute\363\
@@ -272,45 +274,45 @@ otilde\365oslash\370ugrave\371uacute\372yacute\375" /* 6 */
     };
 
     for (; *s != '\0'; s++, p++) {
-	if (*s != '&') {
-	    *p = *s;
-	    continue;
-	}
-	/* find end of entity */
-	for (i=1; s[i] != ';' && s[i] != '\0'; i++)
-	    continue;
+        if (*s != '&') {
+            *p = *s;
+            continue;
+        }
+        /* find end of entity */
+        for (i = 1; s[i] != ';' && s[i] != '\0'; i++)
+            continue;
 
-	if (s[i] == '\0') {	/* treat as normal data */
-	    *p = *s;
-	    continue;
-	}
+        if (s[i] == '\0') {     /* treat as normal data */
+            *p = *s;
+            continue;
+        }
 
-	/* is it numeric ? */
-	if (s[1] == '#') {
-	    for (j=2, val=0; j < i && isdigit(s[j]); j++)
-		val = val * 10 + s[j] - '0';
-	    s += i;
-	    if (j < i || val <= 8 || (val >= 11 && val <= 31) ||
-		(val >= 127 && val <= 160) || val >= 256)
-		p--;  /* no data to output */
-	    else
-		*p = val;
-	} else{
-	    j = i-1;
-	    if (i-1 > MAXENTLEN || entlist[i-1] == NULL) { /* wrong length */
-		*p = '&';
-		continue;  /* skip it */
-	    }
-	    for (ents=entlist[i-1]; *ents != '\0'; ents += i)
-		if (strncmp(s+1, ents, i-1) == 0) break;
+        /* is it numeric ? */
+        if (s[1] == '#') {
+            for (j = 2, val = 0; j < i && isdigit(s[j]); j++)
+                val = val * 10 + s[j] - '0';
+            s += i;
+            if (j < i || val <= 8 || (val >= 11 && val <= 31) ||
+                (val >= 127 && val <= 160) || val >= 256)
+                p--;  /* no data to output */
+            else
+                *p = val;
+        } else{
+            j = i - 1;
+            if (i - 1 > MAXENTLEN || entlist[i - 1] == NULL) { /* wrong length */
+                *p = '&';
+                continue;  /* skip it */
+            }
+            for (ents = entlist[i - 1]; *ents != '\0'; ents += i)
+                if (strncmp(s + 1, ents, i - 1) == 0) break;
 
-	    if (*ents == '\0')
-		*p = '&';  /* unknown */
-	    else {
-		*p = ((const unsigned char *)ents)[i-1];
-		s += i;
-	    }
-	}
+            if (*ents == '\0')
+                *p = '&';  /* unknown */
+            else {
+                *p = ((const unsigned char *)ents)[i - 1];
+                s += i;
+            }
+        }
     }
 
     *p = '\0';
@@ -330,70 +332,74 @@ get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode) {
     n = 0;
 
     do { /* skip whitespace */
-	GET_CHAR(in,c,NULL,p);
+        GET_CHAR(in, c, NULL, p);
     } while (isspace(c));
 
     /* tags can't start with - */
-    if(c == '-') {
-        GET_CHAR(in,c,NULL,p);
-        if(c == '-') {
+    if (c == '-') {
+        GET_CHAR(in, c, NULL, p);
+        if (c == '-') {
             do {
-		GET_CHAR(in,c,NULL,p);
-	    } while (isspace(c));
-            if(c == '>') {
-                strncpy(tag,"done", tagbuf_len-1);
-		tag[tagbuf_len-1] = '\0';
+                GET_CHAR(in, c, NULL, p);
+            } while (isspace(c));
+            if (c == '>') {
+                strncpy(tag, "done", tagbuf_len - 1);
+                tag[tagbuf_len - 1] = '\0';
                 return tag;
             }
         }
-	return NULL; /* failed */
+        return NULL; /* failed */
     }
 
     /* find end of tag name */
-    while(1) {
-        if(++n == tagbuf_len) {
+    while (1) {
+        if (++n == tagbuf_len) {
             t[tagbuf_len - 1] = '\0';
             return NULL;
         }
-	if(c == '=' || isspace(c)) break;
-	*(t++) = tolower(c);
-        GET_CHAR(in,c,NULL,p);
+        if (c == '=' || isspace(c))
+            break;
+        *(t++) = tolower(c);
+        GET_CHAR(in, c, NULL, p);
     }
 
     *t++ = '\0';
     tag_val = t;
 
-    while (isspace(c)) GET_CHAR(in, c, NULL,p); /* space before = */
+    while (isspace(c)) GET_CHAR(in, c, NULL, p); /* space before = */
     if (c != '=') {
         ungetc(c, in);
         return NULL;
     }
 
     do {
-	GET_CHAR(in,c,NULL,p);  /* space after = */
+        GET_CHAR(in, c, NULL, p);  /* space after = */
     } while (isspace(c));
 
     /* we should allow a 'name' as a value */
     
-    if (c != '"' && c != '\'') return NULL;
+    if (c != '"' && c != '\'')
+        return NULL;
     term = c;
-    while(1) {
-	GET_CHAR(in,c,NULL,p);
-	if(++n == tagbuf_len) {
-	    t[tagbuf_len - 1] = '\0';
-	    return NULL;
-	}
+    while (1) {
+        GET_CHAR(in, c, NULL, p);
+        if (++n == tagbuf_len) {
+            t[tagbuf_len - 1] = '\0';
+            return NULL;
+        }
 /* Want to accept \" as a valid character within a string. */
-	if (c == '\\') {
-	    *(t++) = c; /* Add backslash */
-	    GET_CHAR(in,c,NULL,p);
-	    if (c == term) /* Only if */
-		*(--t) = c; /* Replace backslash ONLY for terminator */
-	} else if (c == term) break;
-	*(t++) = c;
+        if (c == '\\') {
+            *(t++) = c; /* Add backslash */
+            GET_CHAR(in, c, NULL, p);
+            if (c == term) /* Only if */
+                *(--t) = c; /* Replace backslash ONLY for terminator */
+        } else if (c == term)
+            break;
+        *(t++) = c;
     }
     *t = '\0';
-    if (dodecode) decodehtml(tag_val);
+    if (dodecode)
+        decodehtml(tag_val);
     return pstrdup (p, tag_val);
 }
 
@@ -402,16 +408,16 @@ get_directive(FILE *in, char *d, pool *p) {
     char c;
 
     /* skip initial whitespace */
-    while(1) {
-        GET_CHAR(in,c,1,p);
-        if(!isspace(c))
+    while (1) {
+        GET_CHAR(in, c, 1, p);
+        if (!isspace(c))
             break;
     }
     /* now get directive */
-    while(1) {
+    while (1) {
         *d++ = tolower(c);
-        GET_CHAR(in,c,1,p);
-        if(isspace(c))
+        GET_CHAR(in, c, 1, p);
+        if (isspace(c))
             break;
     }
     *d = '\0';
@@ -431,17 +437,17 @@ void parse_string(request_rec *r, char *in, char *out, int length,
     while ((ch = *in++) != '\0') {
         switch(ch) {
           case '\\':
-	    if(*in == '$')
-		*next++=*in++;
-	    else
-		*next++=ch;
+            if (*in == '$')
+                *next++ = *in++;
+            else
+                *next++ = ch;
             break;
           case '$':
           {
             char var[MAX_STRING_LEN];
             char vtext[MAX_STRING_LEN];
             char *val;
-            int braces=0;
+            int braces = 0;
             int vlen, vtlen;
             /* 
              * Keep the $ and { around because we do no substitution
@@ -449,20 +455,27 @@ void parse_string(request_rec *r, char *in, char *out, int length,
              */
             vlen = vtlen = 0;
             vtext[vtlen++] = ch;
-            if (*in == '{') { braces = 1; vtext[vtlen++] = *in++; }
+            if (*in == '{') {
+                braces = 1;
+                vtext[vtlen++] = *in++;
+            }
             while (*in != '\0') {
-                if (vlen == (MAX_STRING_LEN - 1)) continue;
+                if (vlen == (MAX_STRING_LEN - 1))
+                    continue;
                 if (braces == 1) {
-                    if (*in == '}') break;
+                    if (*in == '}')
+                        break;
                 }
-                else if (! (isalpha((int)*in) || (*in == '_') || isdigit((int)*in)) ) break;
-                if (vtlen < (MAX_STRING_LEN - 1)) vtext[vtlen++] = *in;
+                else if (! (isalpha((int)*in) || (*in == '_') || isdigit((int)*in)) )
+                    break;
+                if (vtlen < (MAX_STRING_LEN - 1))
+                    vtext[vtlen++] = *in;
                 var[vlen++] = *in++;
             }
             var[vlen] = vtext[vtlen] = '\0';
             if (braces == 1) {
                 if (*in != '}') {
-                    log_printf(r->server, "Invalid variable \"%s%s\"", vtext,in);
+                    log_printf(r->server, "Invalid variable \"%s%s\"", vtext, in);
                     *next = '\0';
                     return;
                 } else
@@ -479,7 +492,8 @@ void parse_string(request_rec *r, char *in, char *out, int length,
             }
             while ((val != (char *)NULL) && (*val != '\0')) {
                 *next++ = *val++;
-                if (++numchars == (length -1)) break;
+                if (++numchars == (length - 1))
+                    break;
             }
             break;
           }
@@ -487,7 +501,8 @@ void parse_string(request_rec *r, char *in, char *out, int length,
             *next++ = ch;
             break;
         }
-        if (++numchars == (length -1)) break;
+        if (++numchars == (length - 1))
+            break;
     }
     *next = '\0';
     return;
@@ -499,12 +514,15 @@ int include_cgi(char *s, request_rec *r)
 {
     request_rec *rr = sub_req_lookup_uri (s, r);
     
-    if (rr->status != 200) return -1;
+    if (rr->status != 200)
+        return -1;
     
     /* No hardwired path info or query allowed */
     
-    if ((rr->path_info && rr->path_info[0]) || rr->args) return -1;
-    if (rr->finfo.st_mode == 0) return -1;
+    if ((rr->path_info && rr->path_info[0]) || rr->args)
+        return -1;
+    if (rr->finfo.st_mode == 0)
+        return -1;
 
     /* Script gets parameters of the *document*, for back compatibility */
     
@@ -522,7 +540,7 @@ int include_cgi(char *s, request_rec *r)
     if (run_sub_req (rr) == REDIRECT) {
         char *location = table_get (rr->headers_out, "Location");
         location = escape_html(rr->pool, location);
-	rvputs(r,"<A HREF=\"", location, "\">", location, "</A>", NULL);
+        rvputs(r, "<A HREF=\"", location, "\">", location, "</A>", NULL);
     }
     
     destroy_sub_req (rr);
@@ -536,54 +554,55 @@ int handle_include(FILE *in, request_rec *r, char *error, int noexec) {
     char parsed_string[MAX_STRING_LEN];
     char *tag_val;
 
-    while(1) {
-        if(!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
+    while (1) {
+        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
             return 1;
-        if(!strcmp(tag,"file") || !strcmp (tag, "virtual")) {
-	    request_rec *rr=NULL;
-	    char *error_fmt = NULL;
+        if (!strcmp(tag, "file") || !strcmp (tag, "virtual")) {
+            request_rec *rr = NULL;
+            char *error_fmt = NULL;
 
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
-	    if (tag[0] == 'f')
-	    { /* be safe; only files in this directory or below allowed */
-		char tmp[MAX_STRING_LEN+2];
-		ap_snprintf(tmp, sizeof(tmp), "/%s/", parsed_string);
-		if (parsed_string[0] == '/' || strstr(tmp, "/../") != NULL)
-		    error_fmt = "unable to include file \"%s\" in parsed file %s";
-		else
-		    rr = sub_req_lookup_file (parsed_string, r);
-	    } else
-		rr = sub_req_lookup_uri (parsed_string, r);
-	    
-	    if (!error_fmt && rr->status != 200)
-	        error_fmt = "unable to include \"%s\" in parsed file %s";
+            if (tag[0] == 'f') {
+             /* be safe; only files in this directory or below allowed */
+                char tmp[MAX_STRING_LEN+2];
+                ap_snprintf(tmp, sizeof(tmp), "/%s/", parsed_string);
+                if (parsed_string[0] == '/' || strstr(tmp, "/../") != NULL)
+                    error_fmt = "unable to include file \"%s\" in parsed file %s";
+                else
+                    rr = sub_req_lookup_file (parsed_string, r);
+            } else
+                rr = sub_req_lookup_uri (parsed_string, r);
+            
+            if (!error_fmt && rr->status != 200)
+                error_fmt = "unable to include \"%s\" in parsed file %s";
 
-	    if (!error_fmt && noexec && rr->content_type
-		&& (strncmp (rr->content_type, "text/", 5)))
-	        error_fmt =
-		  "unable to include potential exec \"%s\" in parsed file %s";
-            if (error_fmt == NULL)
-            {
+            if (!error_fmt && noexec && rr->content_type
+                && (strncmp (rr->content_type, "text/", 5)))
+                error_fmt =
+                  "unable to include potential exec \"%s\" in parsed file %s";
+            if (error_fmt == NULL) {
                 request_rec *p;
 
-                for (p=r; p != NULL; p=p->main)
-                    if (strcmp(p->filename, rr->filename) == 0) break;
+                for (p = r; p != NULL; p = p->main)
+                    if (strcmp(p->filename, rr->filename) == 0)
+                        break;
                 if (p != NULL)
                     error_fmt = "Recursive include of \"%s\" in parsed file %s";
             }
-	    
-	    if (!error_fmt && run_sub_req (rr))
-	        error_fmt = "unable to include \"%s\" in parsed file %s";
-	    chdir_file(r->filename);
-		    
+            
+            if (!error_fmt && run_sub_req (rr))
+                error_fmt = "unable to include \"%s\" in parsed file %s";
+            chdir_file(r->filename);
+                    
             if (error_fmt) {
                 log_printf(r->server, error_fmt, tag_val, r->filename);
                 rputs(error, r);
             }            
 
-	    if (rr != NULL) destroy_sub_req (rr);
+            if (rr != NULL)
+                destroy_sub_req (rr);
         } 
-        else if(!strcmp(tag,"done"))
+        else if (!strcmp(tag, "done"))
             return 0;
         else {
             log_printf(r->server, "unknown parameter \"%s\" to tag include in %s",
@@ -620,26 +639,25 @@ int include_cmd_child (void *arg)
 #endif    
 #endif    
 
-    if (r->path_info && r->path_info[0] != '\0')
-    {
-	request_rec *pa_req;
+    if (r->path_info && r->path_info[0] != '\0') {
+        request_rec *pa_req;
 
-	table_set (env, "PATH_INFO", escape_shell_cmd (r->pool, r->path_info));
-	
-	pa_req = sub_req_lookup_uri(escape_uri(r->pool, r->path_info), r);
-	if (pa_req->filename)
-	    table_set(env, "PATH_TRANSLATED",
-		      pstrcat(r->pool, pa_req->filename, pa_req->path_info,
-			      NULL));
+        table_set (env, "PATH_INFO", escape_shell_cmd (r->pool, r->path_info));
+        
+        pa_req = sub_req_lookup_uri(escape_uri(r->pool, r->path_info), r);
+        if (pa_req->filename)
+            table_set(env, "PATH_TRANSLATED",
+                      pstrcat(r->pool, pa_req->filename, pa_req->path_info,
+                              NULL));
     }
 
     if (r->args) {
-	char *arg_copy = pstrdup (r->pool, r->args);
+        char *arg_copy = pstrdup (r->pool, r->args);
 
         table_set (env, "QUERY_STRING", r->args);
-	unescape_url (arg_copy);
-	table_set (env, "QUERY_STRING_UNESCAPED",
-		   escape_shell_cmd (r->pool, arg_copy));
+        unescape_url (arg_copy);
+        table_set (env, "QUERY_STRING_UNESCAPED",
+                   escape_shell_cmd (r->pool, arg_copy));
     }
     
     error_log2stderr (r->server);
@@ -661,8 +679,8 @@ int include_cmd_child (void *arg)
     fprintf (dbg, "Exec failed\n");
 #endif    
     ap_snprintf(err_string, sizeof(err_string),
-	"httpd: exec of %s failed, reason: %s (errno = %d)\n",
-	SHELL_PATH, strerror(errno), errno);
+        "httpd: exec of %s failed, reason: %s (errno = %d)\n",
+        SHELL_PATH, strerror(errno), errno);
     write (STDERR_FILENO, err_string, strlen(err_string));
     exit(0);
     /* NOT REACHED */
@@ -677,13 +695,13 @@ int include_cmd(char *s, request_rec *r) {
     arg.r = r; arg.s = s;
 
     if (!spawn_child (r->pool, include_cmd_child, &arg,
-		      kill_after_timeout, NULL, &f))
+                      kill_after_timeout, NULL, &f))
         return -1;
     
-    send_fd(f,r);
-    pfclose(r->pool, f);	/* will wait for zombie when
-				 * r->pool is cleared
-				 */
+    send_fd(f, r);
+    pfclose(r->pool, f);        /* will wait for zombie when
+                                 * r->pool is cleared
+                                 */
     return 0;
 }
 
@@ -695,12 +713,12 @@ int handle_exec(FILE *in, request_rec *r, char *error)
     char *file = r->filename;
     char parsed_string[MAX_STRING_LEN];
 
-    while(1) {
-        if(!(tag_val = get_tag (r->pool, in, tag, MAX_STRING_LEN, 1)))
+    while (1) {
+        if (!(tag_val = get_tag (r->pool, in, tag, MAX_STRING_LEN, 1)))
             return 1;
-        if(!strcmp(tag,"cmd")) {
+        if (!strcmp(tag, "cmd")) {
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 1);
-            if(include_cmd(parsed_string, r) == -1) {
+            if (include_cmd(parsed_string, r) == -1) {
                 log_printf(r->server, "execution failure for parameter \"%s\" to tag exec in file %s", 
                 tag, r->filename);
                 rputs(error, r);
@@ -708,16 +726,16 @@ int handle_exec(FILE *in, request_rec *r, char *error)
             /* just in case some stooge changed directories */
             chdir_file(r->filename);
         } 
-        else if(!strcmp(tag,"cgi")) {
+        else if (!strcmp(tag, "cgi")) {
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
-            if(include_cgi(parsed_string, r) == -1) {
-                log_printf(r->server, "invalid CGI ref \"%s\" in %s",tag_val,file);
+            if (include_cgi(parsed_string, r) == -1) {
+                log_printf(r->server, "invalid CGI ref \"%s\" in %s", tag_val, file);
                 rputs(error, r);
             }
             /* grumble groan */
             chdir_file(r->filename);
         }
-        else if(!strcmp(tag,"done"))
+        else if (!strcmp(tag, "done"))
             return 0;
         else {
             log_printf(r->server, "unknown parameter \"%s\" to tag exec in %s",
@@ -732,15 +750,16 @@ int handle_echo (FILE *in, request_rec *r, char *error) {
     char tag[MAX_STRING_LEN];
     char *tag_val;
 
-    while(1) {
-        if(!(tag_val = get_tag (r->pool, in, tag, MAX_STRING_LEN, 1)))
+    while (1) {
+        if (!(tag_val = get_tag (r->pool, in, tag, MAX_STRING_LEN, 1)))
             return 1;
-        if(!strcmp(tag,"var")) {
-	    char *val = table_get (r->subprocess_env, tag_val);
+        if (!strcmp(tag, "var")) {
+            char *val = table_get (r->subprocess_env, tag_val);
 
-	    if (val) rputs(val, r);
-	    else rputs("(none)", r);
-        } else if(!strcmp(tag,"done"))
+            if (val)
+                rputs(val, r);
+            else rputs("(none)", r);
+        } else if (!strcmp(tag, "done"))
             return 0;
         else {
             log_printf(r->server, "unknown parameter \"%s\" to tag echo in %s",
@@ -759,17 +778,17 @@ int handle_perl (FILE *in, request_rec *r, char *error) {
     if (!(allow_options (r) & OPT_INCLUDES)) {
         log_printf(r->server,
             "httpd: #perl SSI disallowed by IncludesNoExec in %s", r->filename);
-	return DECLINED;
+        return DECLINED;
     }
-    while(1) {
-	if(!(tag_val = get_tag (r->pool, in, tag, MAX_STRING_LEN, 1))) 
-	    break;
-	if(strnEQ(tag, "sub", 3)) 
-	    sub = newSVpv(tag_val,0);
-	else if(strnEQ(tag, "arg", 3)) 
-	    av_push(av, newSVpv(tag_val,0));	
-	else if(strnEQ(tag,"done", 4))
-	    break;
+    while (1) {
+        if (!(tag_val = get_tag (r->pool, in, tag, MAX_STRING_LEN, 1))) 
+            break;
+        if (strnEQ(tag, "sub", 3)) 
+            sub = newSVpv(tag_val, 0);
+        else if (strnEQ(tag, "arg", 3)) 
+            av_push(av, newSVpv(tag_val, 0));    
+        else if (strnEQ(tag, "done", 4))
+            break;
     }
     perl_stdout2client(r);
     perl_call_handler(sub, r, av);
@@ -787,34 +806,34 @@ int handle_config(FILE *in, request_rec *r, char *error, char *tf,
     char parsed_string[MAX_STRING_LEN];
     table *env = r->subprocess_env;
 
-    while(1) {
-        if(!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 0)))
+    while (1) {
+        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 0)))
             return 1;
-        if(!strcmp(tag,"errmsg")) {
+        if (!strcmp(tag, "errmsg")) {
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
-            strncpy(error,parsed_string,MAX_STRING_LEN-1);
-	    error[MAX_STRING_LEN-1] = '\0';
-        } else if(!strcmp(tag,"timefmt")) {
-  	    time_t date = r->request_time;
+            strncpy(error, parsed_string, MAX_STRING_LEN - 1);
+            error[MAX_STRING_LEN - 1] = '\0';
+        } else if (!strcmp(tag, "timefmt")) {
+            time_t date = r->request_time;
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
-            strncpy(tf,parsed_string,MAX_STRING_LEN-1);
-	    tf[MAX_STRING_LEN-1] = '\0';
-            table_set (env, "DATE_LOCAL", ht_time(r->pool,date,tf,0));
-            table_set (env, "DATE_GMT", ht_time(r->pool,date,tf,1));
-            table_set (env, "LAST_MODIFIED", ht_time(r->pool,r->finfo.st_mtime,tf,0));
+            strncpy(tf, parsed_string, MAX_STRING_LEN - 1);
+            tf[MAX_STRING_LEN - 1] = '\0';
+            table_set (env, "DATE_LOCAL", ht_time(r->pool, date, tf, 0));
+            table_set (env, "DATE_GMT", ht_time(r->pool, date, tf, 1));
+            table_set (env, "LAST_MODIFIED", ht_time(r->pool, r->finfo.st_mtime, tf, 0));
         }
-        else if(!strcmp(tag,"sizefmt")) {
+        else if (!strcmp(tag, "sizefmt")) {
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
-	    decodehtml(parsed_string);
-            if(!strcmp(parsed_string,"bytes"))
+            decodehtml(parsed_string);
+            if (!strcmp(parsed_string, "bytes"))
                 *sizefmt = SIZEFMT_BYTES;
-            else if(!strcmp(parsed_string,"abbrev"))
+            else if (!strcmp(parsed_string, "abbrev"))
                 *sizefmt = SIZEFMT_KMG;
         } 
-        else if(!strcmp(tag,"done"))
+        else if (!strcmp(tag, "done"))
             return 0;
         else {
-            log_printf(r->server,"unknown parameter \"%s\" to tag config in %s",
+            log_printf(r->server, "unknown parameter \"%s\" to tag config in %s",
                     tag, r->filename);
             rputs(error, r);
         }
@@ -829,10 +848,10 @@ int find_file(request_rec *r, char *directive, char *tag,
     char *dir = "./";
     char *to_send;
 
-    if(!strcmp(tag,"file")) {
+    if (!strcmp(tag, "file")) {
         getparents(tag_val); /* get rid of any nasties */
         to_send = make_full_path (r->pool, dir, tag_val);
-        if(stat(to_send,finfo) == -1) {
+        if (stat(to_send, finfo) == -1) {
             log_printf(r->server,
                     "unable to get information about \"%s\" in parsed file %s",
                     to_send, r->filename);
@@ -841,24 +860,24 @@ int find_file(request_rec *r, char *directive, char *tag,
         }
         return 0;
     }
-    else if(!strcmp(tag,"virtual")) {
-	request_rec *rr = sub_req_lookup_uri (tag_val, r);
-	
-	if (rr->status == 200 && rr->finfo.st_mode != 0) {
-	    memcpy ((char*)finfo, (const char *)&rr->finfo, sizeof (struct stat));
-	    destroy_sub_req (rr);
-	    return 0;
+    else if (!strcmp(tag, "virtual")) {
+        request_rec *rr = sub_req_lookup_uri (tag_val, r);
+        
+        if (rr->status == 200 && rr->finfo.st_mode != 0) {
+            memcpy ((char*)finfo, (const char *)&rr->finfo, sizeof (struct stat));
+            destroy_sub_req (rr);
+            return 0;
         } else {
             log_printf(r->server,
                     "unable to get information about \"%s\" in parsed file %s",
                     tag_val, r->filename);
             rputs(error, r);
-	    destroy_sub_req (rr);
+            destroy_sub_req (rr);
             return -1;
         }
     }
     else {
-        log_printf(r->server,"unknown parameter \"%s\" to tag %s in %s",
+        log_printf(r->server, "unknown parameter \"%s\" to tag %s in %s",
                 tag, directive, r->filename);
         rputs(error, r);
         return -1;
@@ -873,31 +892,31 @@ int handle_fsize(FILE *in, request_rec *r, char *error, int sizefmt)
     struct stat finfo;
     char parsed_string[MAX_STRING_LEN];
 
-    while(1) {
-        if(!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
+    while (1) {
+        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
             return 1;
-        else if(!strcmp(tag,"done"))
+        else if (!strcmp(tag, "done"))
             return 0;
         else {
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
-            if(!find_file(r,"fsize",tag,parsed_string,&finfo,error)) {
-                if(sizefmt == SIZEFMT_KMG) {
+            if (!find_file(r, "fsize", tag, parsed_string, &finfo, error)) {
+                if (sizefmt == SIZEFMT_KMG) {
                     send_size(finfo.st_size, r);
                 }
                 else {
-                    int l,x;
+                    int l, x;
 #if defined(BSD) && BSD > 199305
-		    /* ap_snprintf can't handle %qd */
-                    sprintf(tag,"%qd", finfo.st_size);
+                    /* ap_snprintf can't handle %qd */
+                    sprintf(tag, "%qd", finfo.st_size);
 #else
-                    ap_snprintf(tag, sizeof(tag), "%ld",finfo.st_size);
+                    ap_snprintf(tag, sizeof(tag), "%ld", finfo.st_size);
 #endif
                     l = strlen(tag); /* grrr */
-                    for(x=0;x<l;x++) {
-                        if(x && (!((l-x) % 3))) {
+                    for (x = 0; x < l; x++) {
+                        if (x && (!((l - x) % 3))) {
                             rputc(',', r);
                         }
-                        rputc (tag[x],r);
+                        rputc (tag[x], r);
                     }
                 }
             }
@@ -912,14 +931,14 @@ int handle_flastmod(FILE *in, request_rec *r, char *error, char *tf)
     struct stat finfo;
     char parsed_string[MAX_STRING_LEN];
 
-    while(1) {
-        if(!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
+    while (1) {
+        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
             return 1;
-        else if(!strcmp(tag,"done"))
+        else if (!strcmp(tag, "done"))
             return 0;
         else {
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
-            if(!find_file(r,"flastmod",tag,parsed_string,&finfo,error))
+            if (!find_file(r, "flastmod", tag, parsed_string, &finfo, error))
                 rputs(ht_time(r->pool, finfo.st_mtime, tf, 0), r);
         }
     }
@@ -942,7 +961,8 @@ int re_check(request_rec *r, char *string, char *rexp)
 
 enum token_type { token_string,
     token_and, token_or, token_not, token_eq, token_ne,
-    token_rbrace, token_lbrace, token_group
+    token_rbrace, token_lbrace, token_group,
+    token_ge, token_le, token_gt, token_lt
 };
 struct token {
     enum token_type type;
@@ -951,14 +971,17 @@ struct token {
 
 char *get_ptoken(request_rec *r, char *string, struct token *token) {
     char ch;
-    int next=0;
-    int qs=0;
+    int next = 0;
+    int qs = 0;
 
     /* Skip leading white space */
-    if (string == (char *)NULL) return (char *)NULL;
+    if (string == (char *)NULL)
+        return (char *)NULL;
     while ((ch = *string++))
-        if (!isspace(ch)) break;
-    if (ch == '\0') return (char *)NULL;
+        if (!isspace(ch))
+            break;
+    if (ch == '\0')
+        return (char *)NULL;
 
     switch(ch) {
       case '(':
@@ -992,12 +1015,29 @@ char *get_ptoken(request_rec *r, char *string, struct token *token) {
             token->type = token_and;
             return(string+1);
         }
+      case '>':
+        if (*string == '=') {
+            token->type = token_ge;
+            return(string+1);
+        } else {
+            token->type = token_gt;
+            return(string);
+        }
+      case '<':
+        if (*string == '=') {
+            token->type = token_le;
+            return(string+1);
+        } else {
+            token->type = token_lt;
+            return(string);
+        }
       default:
         token->type = token_string;
         break;
     }
     /* We should only be here if we are in a string */
-    if (!qs) token->value[next++] = ch;
+    if (!qs)
+        token->value[next++] = ch;
 
     /* 
      * Yes I know that goto's are BAD.  But, c doesn't allow me to
@@ -1010,29 +1050,50 @@ char *get_ptoken(request_rec *r, char *string, struct token *token) {
      */ 
     for (ch = *string; ch != '\0'; ch = *++string) {
         if (ch == '\\') {
-            if ((ch = *++string) == '\0') goto TOKEN_DONE;
+            if ((ch = *++string) == '\0')
+                goto TOKEN_DONE;
             token->value[next++] = ch;
             continue;
         }
         if (!qs) {
-            if (isspace(ch)) goto TOKEN_DONE;
+            if (isspace(ch))
+                goto TOKEN_DONE;
             switch(ch) {
-              case '(': goto TOKEN_DONE;
-              case ')': goto TOKEN_DONE;
-              case '=': goto TOKEN_DONE;
-              case '!': goto TOKEN_DONE;
-              case '|': if (*(string+1) == '|') goto TOKEN_DONE;
-              case '&': if (*(string+1) == '&') goto TOKEN_DONE;
+              case '(':
+                goto TOKEN_DONE;
+              case ')':
+                goto TOKEN_DONE;
+              case '=':
+                goto TOKEN_DONE;
+              case '!':
+                goto TOKEN_DONE;
+              case '|':
+                if (*(string+1) == '|')
+                    goto TOKEN_DONE;
+              case '&':
+                if (*(string+1) == '&')
+                    goto TOKEN_DONE;
+              case '<':
+                goto TOKEN_DONE;
+              case '>': goto
+                TOKEN_DONE;
             }
             token->value[next++] = ch;
         } else {
-            if (ch == '\'') { qs=0; ++string; goto TOKEN_DONE; }
+            if (ch == '\'') {
+                qs = 0;
+                ++string;
+                goto TOKEN_DONE;
+            }
             token->value[next++] = ch;
         }
     }
 TOKEN_DONE:
     /* If qs is still set, I have an unmatched ' */
-    if (qs) { rputs("\nUnmatched '\n", r); next=0; }
+    if (qs) {
+        rputs("\nUnmatched '\n", r);
+        next = 0;
+    }
     token->value[next] = '\0';
     return(string);
 }
@@ -1057,7 +1118,8 @@ int parse_expr(request_rec *r, char *expr, char *error)
     struct pool *expr_pool;
     int retval = 0;
 
-    if ((parse = expr) == (char *)NULL) return(0);
+    if ((parse = expr) == (char *)NULL)
+        return(0);
     root = current = (struct parse_node*)NULL;
     if ((expr_pool = make_sub_pool(r->pool)) == (struct pool *)NULL) {
         log_printf(r->server, "out of memory processing file %s", r->filename);
@@ -1069,7 +1131,7 @@ int parse_expr(request_rec *r, char *expr, char *error)
     while (1) {
         new = (struct parse_node*)palloc(expr_pool, sizeof (struct parse_node));
         if (new == (struct parse_node*)NULL) {
-            log_printf(r->server,"out of memory processing file %s", r->filename);
+            log_printf(r->server, "out of memory processing file %s", r->filename);
             rputs(error, r);
             goto RETURN;
         }
@@ -1081,7 +1143,7 @@ int parse_expr(request_rec *r, char *expr, char *error)
 
           case token_string:
 #ifdef DEBUG_INCLUDE
-            rvputs(r,"     Token: string (", new->token.value, ")\n", NULL);
+            rvputs(r, "     Token: string (", new->token.value, ")\n", NULL);
 #endif
             if (current == (struct parse_node*)NULL) {
                 root = current = new;
@@ -1091,9 +1153,9 @@ int parse_expr(request_rec *r, char *expr, char *error)
               case token_string:
                 if (current->token.value[0] != '\0')
                     strncat(current->token.value, " ", 
-			MAX_STRING_LEN-strlen(current->token.value)-1);
+                        MAX_STRING_LEN - strlen(current->token.value) - 1);
                 strncat(current->token.value, new->token.value, 
-			MAX_STRING_LEN-strlen(current->token.value)-1);
+                        MAX_STRING_LEN - strlen(current->token.value) - 1);
                 break;
               case token_eq:
               case token_ne:
@@ -1101,6 +1163,10 @@ int parse_expr(request_rec *r, char *expr, char *error)
               case token_or:
               case token_lbrace:
               case token_not:
+              case token_ge:
+              case token_gt:
+              case token_le:
+              case token_lt:
                 new->parent = current;
                 current = current->right = new;
                 break;
@@ -1133,6 +1199,10 @@ rputs ("     Token: and/or\n", r);
                   case token_ne:
                   case token_and:
                   case token_or:
+                  case token_ge:
+                  case token_gt:
+                  case token_le:
+                  case token_lt:
                     current = current->parent;
                     continue;
                   case token_lbrace:
@@ -1175,6 +1245,10 @@ rputs("     Token: not\n", r);
                   case token_and:
                   case token_or:
                   case token_lbrace:
+                  case token_ge:
+                  case token_gt:
+                  case token_le:
+                  case token_lt:
                     break;
                   default:
                     log_printf(r->server,
@@ -1199,8 +1273,12 @@ rputs("     Token: not\n", r);
 
           case token_eq:
           case token_ne:
+          case token_ge:
+          case token_gt:
+          case token_le:
+          case token_lt:
 #ifdef DEBUG_INCLUDE
-rputs("     Token: eq/ne\n", r);
+rputs("     Token: eq/ne/ge/gt/le/lt\n", r);
 #endif
             if (current == (struct parse_node*)NULL) {
                 log_printf(r->server,
@@ -1222,6 +1300,10 @@ rputs("     Token: eq/ne\n", r);
                   case token_not:
                   case token_eq:
                   case token_ne:
+                  case token_ge:
+                  case token_gt:
+                  case token_le:
+                  case token_lt:
                   default:
                     log_printf(r->server, 
                         "Invalid expression \"%s\" in file %s", 
@@ -1256,7 +1338,7 @@ rputs("     Token: rbrace\n", r);
                 current = current->parent;
             }
             if (current == (struct parse_node*)NULL) {
-                log_printf(r->server,"Unmatched ')' in %s", expr, r->filename);
+                log_printf(r->server, "Unmatched ')' in %s", expr, r->filename);
                 rputs(error, r);
                 goto RETURN;
             }
@@ -1279,13 +1361,17 @@ rputs("     Token: lbrace\n", r);
                   case token_and:
                   case token_or:
                   case token_lbrace:
+                  case token_ge:
+                  case token_gt:
+                  case token_le:
+                  case token_lt:
                     break;
                   case token_string:
                   case token_group:
                   default:
                     log_printf(r->server,
                         "Invalid expression \"%s\" in file %s", 
-			expr, r->filename);
+                        expr, r->filename);
                     rputs(error, r);
                     goto RETURN;
                 }
@@ -1303,8 +1389,8 @@ rputs("     Token: lbrace\n", r);
             }
             current = new;
             break;
-	  default:
-	    break;
+          default:
+            break;
         }
     }
 
@@ -1317,8 +1403,8 @@ rputs("     Token: lbrace\n", r);
 rputs("     Evaluate string\n", r);
 #endif
             parse_string(r, current->token.value, buffer, MAX_STRING_LEN, 0);
-            strncpy(current->token.value, buffer, MAX_STRING_LEN-1);
-	    current->token.value[MAX_STRING_LEN-1] = '\0';
+            strncpy(current->token.value, buffer, MAX_STRING_LEN - 1);
+            current->token.value[MAX_STRING_LEN - 1] = '\0';
             current->value = (current->token.value[0] != '\0');
             current->done = 1;
             current = current->parent;
@@ -1342,8 +1428,8 @@ rputs("     Evaluate and/or\n", r);
                     parse_string(r, current->left->token.value,
                             buffer, MAX_STRING_LEN, 0);
                     strncpy(current->left->token.value, buffer,
-                            MAX_STRING_LEN-1);
-		    current->left->token.value[MAX_STRING_LEN-1] = '\0';
+                            MAX_STRING_LEN - 1);
+                    current->left->token.value[MAX_STRING_LEN - 1] = '\0';
                     current->left->done = 1;
                     break;
                   default:
@@ -1357,8 +1443,8 @@ rputs("     Evaluate and/or\n", r);
                     parse_string(r, current->right->token.value,
                             buffer, MAX_STRING_LEN, 0);
                     strncpy(current->right->token.value, buffer,
-                            MAX_STRING_LEN-1);
-		    current->right->token.value[MAX_STRING_LEN-1] = '\0';
+                            MAX_STRING_LEN - 1);
+                    current->right->token.value[MAX_STRING_LEN - 1] = '\0';
                     current->right->done = 1;
                     break;
                   default:
@@ -1367,8 +1453,8 @@ rputs("     Evaluate and/or\n", r);
                 }
             }
 #ifdef DEBUG_INCLUDE
-rvputs(r,"     Left: ", current->left->value ? "1" : "0", "\n", NULL);
-rvputs(r,"     Right: ", current->right->value ? "1" : "0", "\n", NULL);
+rvputs(r, "     Left: ", current->left->value ? "1" : "0", "\n", NULL);
+rvputs(r, "     Right: ", current->right->value ? "1" : "0", "\n", NULL);
 #endif
             if (current->token.type == token_and)
                 current->value =
@@ -1377,7 +1463,7 @@ rvputs(r,"     Right: ", current->right->value ? "1" : "0", "\n", NULL);
                 current->value =
                     current->left->value || current->right->value;
 #ifdef DEBUG_INCLUDE
-rvputs(r,"     Returning ", current->value ? "1" : "0", "\n", NULL);
+rvputs(r, "     Returning ", current->value ? "1" : "0", "\n", NULL);
 #endif
             current->done = 1;
             current = current->parent;
@@ -1399,25 +1485,25 @@ rputs("     Evaluate eq/ne\n", r);
             }
             parse_string(r, current->left->token.value,
                          buffer, MAX_STRING_LEN, 0);
-            strncpy(current->left->token.value, buffer, MAX_STRING_LEN-1);
-	    current->left->token.value[MAX_STRING_LEN-1] = '\0';
+            strncpy(current->left->token.value, buffer, MAX_STRING_LEN - 1);
+            current->left->token.value[MAX_STRING_LEN - 1] = '\0';
             parse_string(r, current->right->token.value,
                          buffer, MAX_STRING_LEN, 0);
-            strncpy(current->right->token.value, buffer, MAX_STRING_LEN-1);
-	    current->right->token.value[MAX_STRING_LEN-1] = '\0';
+            strncpy(current->right->token.value, buffer, MAX_STRING_LEN - 1);
+            current->right->token.value[MAX_STRING_LEN - 1] = '\0';
             if (current->right->token.value[0] == '/') {
                 int len;
                 len = strlen(current->right->token.value);
-                if (current->right->token.value[len-1] == '/') {
-                    current->right->token.value[len-1] = '\0';
+                if (current->right->token.value[len - 1] == '/') {
+                    current->right->token.value[len - 1] = '\0';
                 } else {
-                    log_printf(r->server,"Invalid rexp \"%s\" in file %s",
+                    log_printf(r->server, "Invalid rexp \"%s\" in file %s",
                             current->right->token.value, r->filename);
                     rputs(error, r);
                     goto RETURN;
                 }
 #ifdef DEBUG_INCLUDE
-rvputs(r,"     Re Compare (", current->left->token.value,
+rvputs(r, "     Re Compare (", current->left->token.value,
          ") with /", &current->right->token.value[1], "/\n", NULL);
 #endif
                 current->value =
@@ -1425,7 +1511,7 @@ rvputs(r,"     Re Compare (", current->left->token.value,
                             &current->right->token.value[1]);
             } else {
 #ifdef DEBUG_INCLUDE
-rvputs(r,"     Compare (", current->left->token.value,
+rvputs(r, "     Compare (", current->left->token.value,
          ") with (", current->right->token.value, ")\n", NULL);
 #endif
                 current->value =
@@ -1435,7 +1521,51 @@ rvputs(r,"     Compare (", current->left->token.value,
             if (current->token.type == token_ne)
                 current->value = !current->value;
 #ifdef DEBUG_INCLUDE
-rvputs(r,"     Returning ", current->value ? "1" : "0", "\n", NULL);
+rvputs(r, "     Returning ", current->value ? "1" : "0", "\n", NULL);
+#endif
+            current->done = 1;
+            current = current->parent;
+            break;
+          case token_ge:
+          case token_gt:
+          case token_le:
+          case token_lt:
+#ifdef DEBUG_INCLUDE
+rputs("     Evaluate ge/gt/le/lt\n", r);
+#endif
+            if ((current->left == (struct parse_node*)NULL) ||
+                        (current->right == (struct parse_node*)NULL) ||
+                        (current->left->token.type != token_string) ||
+                        (current->right->token.type != token_string)) {
+                log_printf(r->server,
+                    "Invalid expression %s", expr, r->filename);
+                rputs(error, r);
+                goto RETURN;
+            }
+            parse_string(r, current->left->token.value,
+                         buffer, MAX_STRING_LEN, 0);
+            strncpy(current->left->token.value, buffer, MAX_STRING_LEN - 1);
+            parse_string(r, current->right->token.value,
+                         buffer, MAX_STRING_LEN, 0);
+            strncpy(current->right->token.value, buffer, MAX_STRING_LEN - 1);
+#ifdef DEBUG_INCLUDE
+rvputs(r, "     Compare (", current->left->token.value,
+         ") with (", current->right->token.value, ")\n", NULL);
+#endif
+            current->value =
+                        strcmp(current->left->token.value,
+                         current->right->token.value);
+            if (current->token.type == token_ge)
+                current->value = current->value >= 0;
+            else if (current->token.type == token_gt)
+                current->value = current->value > 0;
+            else if (current->token.type == token_le)
+                current->value = current->value <= 0;
+            else if (current->token.type == token_lt)
+                current->value = current->value < 0;
+            else current->value = 0; /* Don't return -1 if unknown token */
+#ifdef DEBUG_INCLUDE
+rvputs(r, "     Returning ", current->value ? "1" : "0", "\n", NULL);
 #endif
             current->done = 1;
             current = current->parent;
@@ -1452,7 +1582,7 @@ rvputs(r,"     Returning ", current->value ? "1" : "0", "\n", NULL);
                 current->value = 0;
             }
 #ifdef DEBUG_INCLUDE
-rvputs(r,"     Evaluate !: ", current->value ? "1" : "0", "\n", NULL);
+rvputs(r, "     Evaluate !: ", current->value ? "1" : "0", "\n", NULL);
 #endif
             current->done = 1;
             current = current->parent;
@@ -1469,26 +1599,26 @@ rvputs(r,"     Evaluate !: ", current->value ? "1" : "0", "\n", NULL);
                 current->value = 1;
             }
 #ifdef DEBUG_INCLUDE
-rvputs(r,"     Evaluate (): ", current->value ? "1" : "0", "\n", NULL);
+rvputs(r, "     Evaluate (): ", current->value ? "1" : "0", "\n", NULL);
 #endif
             current->done = 1;
             current = current->parent;
             break;
 
           case token_lbrace:
-            log_printf(r->server,"Unmatched '(' in %s in file %s", 
-		expr, r->filename);
+            log_printf(r->server, "Unmatched '(' in %s in file %s", 
+                expr, r->filename);
             rputs(error, r);
             goto RETURN;
 
           case token_rbrace:
-            log_printf(r->server,"Unmatched ')' in %s in file %s\n", 
-		expr, r->filename);
+            log_printf(r->server, "Unmatched ')' in %s in file %s\n", 
+                expr, r->filename);
             rputs(error, r);
             goto RETURN;
 
           default:
-            log_printf(r->server,"bad token type");
+            log_printf(r->server, "bad token type");
             rputs(error, r);
             goto RETURN;
         }
@@ -1507,23 +1637,23 @@ int handle_if(FILE *in, request_rec *r, char *error,
     char *tag_val = '\0';
     char *expr = '\0';
 
-    while(1) {
+    while (1) {
         tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 0);
-        if(*tag == '\0')
+        if (*tag == '\0')
             return 1;
-        else if(!strcmp(tag,"done")) {
+        else if (!strcmp(tag, "done")) {
             *printing = *conditional_status = parse_expr(r, expr, error);
 #ifdef DEBUG_INCLUDE
-rvputs(r,"**** if conditional_status=\"", *conditional_status ? "1" : "0", "\"\n", NULL);
+rvputs(r, "**** if conditional_status=\"", *conditional_status ? "1" : "0", "\"\n", NULL);
 #endif
             return 0;
-        } else if(!strcmp(tag,"expr")) {
-	    expr = tag_val;
+        } else if (!strcmp(tag, "expr")) {
+            expr = tag_val;
 #ifdef DEBUG_INCLUDE
-rvputs(r,"**** if expr=\"", expr, "\"\n", NULL);
+rvputs(r, "**** if expr=\"", expr, "\"\n", NULL);
 #endif
         } else {
-            log_printf(r->server,"unknown parameter \"%s\" to tag if in %s",
+            log_printf(r->server, "unknown parameter \"%s\" to tag if in %s",
                     tag, r->filename);
             rputs(error, r);
         }
@@ -1537,13 +1667,13 @@ int handle_elif(FILE *in, request_rec *r, char *error,
     char *tag_val = '\0';
     char *expr = '\0';
 
-    while(1) {
+    while (1) {
         tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 0);
-        if(*tag == '\0')
+        if (*tag == '\0')
             return 1;
-        else if(!strcmp(tag,"done")) {
+        else if (!strcmp(tag, "done")) {
 #ifdef DEBUG_INCLUDE
-rvputs(r,"**** elif conditional_status=\"", *conditional_status ? "1" : "0", "\"\n", NULL);
+rvputs(r, "**** elif conditional_status=\"", *conditional_status ? "1" : "0", "\"\n", NULL);
 #endif
             if (*conditional_status) {
                 *printing = 0;
@@ -1551,16 +1681,16 @@ rvputs(r,"**** elif conditional_status=\"", *conditional_status ? "1" : "0", "\"
             }
             *printing = *conditional_status = parse_expr(r, expr, error);
 #ifdef DEBUG_INCLUDE
-rvputs(r,"**** elif conditional_status=\"", *conditional_status ? "1" : "0", "\"\n", NULL);
+rvputs(r, "**** elif conditional_status=\"", *conditional_status ? "1" : "0", "\"\n", NULL);
 #endif
             return 0;
-        } else if(!strcmp(tag,"expr")) {
-	    expr = tag_val;
+        } else if (!strcmp(tag, "expr")) {
+            expr = tag_val;
 #ifdef DEBUG_INCLUDE
-rvputs(r,"**** if expr=\"", expr, "\"\n", NULL);
+rvputs(r, "**** if expr=\"", expr, "\"\n", NULL);
 #endif
         } else {
-            log_printf(r->server,"unknown parameter \"%s\" to tag if in %s",
+            log_printf(r->server, "unknown parameter \"%s\" to tag if in %s",
                     tag, r->filename);
             rputs(error, r);
         }
@@ -1573,18 +1703,19 @@ int handle_else(FILE *in, request_rec *r, char *error,
     char tag[MAX_STRING_LEN];
     char *tag_val;
 
-    if(!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
+    if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
         return 1;
-    else if(!strcmp(tag,"done")) {
+    else if (!strcmp(tag, "done")) {
 #ifdef DEBUG_INCLUDE
-rvputs(r,"**** else conditional_status=\"", *conditional_status ? "1" : "0", "\"\n", NULL);
+rvputs(r, "**** else conditional_status=\"", *conditional_status ? "1" : "0", "\"\n", NULL);
 #endif
         *printing = !(*conditional_status);
         *conditional_status = 1;
         return 0;
     } else {
         log_printf(r->server, "else directive does not take tags");
-        if (*printing) rputs(error, r);
+        if (*printing)
+            rputs(error, r);
         return -1;
     }
 }    
@@ -1595,11 +1726,11 @@ int handle_endif(FILE *in, request_rec *r, char *error,
     char tag[MAX_STRING_LEN];
     char *tag_val;
 
-    if(!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+    if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
         return 1;
-    } else if(!strcmp(tag,"done")) {
+    } else if (!strcmp(tag, "done")) {
 #ifdef DEBUG_INCLUDE
-rvputs(r,"**** endif conditional_status=\"", *conditional_status ? "1" : "0", "\"\n", NULL);
+rvputs(r, "**** endif conditional_status=\"", *conditional_status ? "1" : "0", "\"\n", NULL);
 #endif
         *conditional_status = 1;
         return 0;
@@ -1619,13 +1750,13 @@ int handle_set(FILE *in, request_rec *r, char *error)
 
     var = (char *)NULL;
     while (1) {
-        if(!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
+        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
             return 1;
-        else if(!strcmp(tag,"done"))
+        else if (!strcmp(tag, "done"))
             return 0;
-        else if (!strcmp(tag,"var")) {
+        else if (!strcmp(tag, "var")) {
             var = tag_val;
-        } else if (!strcmp(tag,"value")) {
+        } else if (!strcmp(tag, "value")) {
             if (var == (char *)NULL) {
                 log_printf(r->server,
                     "variable must precede value in set directive");
@@ -1645,9 +1776,9 @@ int handle_printenv(FILE *in, request_rec *r, char *error)
     table_entry *elts = (table_entry *) r->subprocess_env->elts;
     int i;
 
-    if(!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
+    if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
         return 1;
-    else if(!strcmp(tag,"done")) {
+    else if (!strcmp(tag, "done")) {
             for (i = 0; i < r->subprocess_env->nelts; ++i)
                 rvputs(r, elts[i].key, "=", elts[i].val, "\n", NULL);
             return 0;
@@ -1674,10 +1805,10 @@ void send_parsed_content(FILE *f, request_rec *r)
     int printing;
     int conditional_status;
 
-    strncpy(error,DEFAULT_ERROR_MSG, sizeof(error)-1);
-    error[sizeof(error)-1] = '\0';
-    strncpy(timefmt,DEFAULT_TIME_FORMAT, sizeof(timefmt)-1);
-    timefmt[sizeof(timefmt)-1] = '\0';
+    strncpy(error, DEFAULT_ERROR_MSG, sizeof(error) - 1);
+    error[sizeof(error) - 1] = '\0';
+    strncpy(timefmt, DEFAULT_TIME_FORMAT, sizeof(timefmt) - 1);
+    timefmt[sizeof(timefmt) - 1] = '\0';
     sizefmt = SIZEFMT_KMG;
 
 /*  Turn printing on */
@@ -1686,7 +1817,7 @@ void send_parsed_content(FILE *f, request_rec *r)
 
     chdir_file (r->filename);
     if (r->args) { /* add QUERY stuff to env cause it ain't yet */
-	char *arg_copy = pstrdup (r->pool, r->args);
+        char *arg_copy = pstrdup (r->pool, r->args);
 
         table_set (r->subprocess_env, "QUERY_STRING", r->args);
         unescape_url (arg_copy);
@@ -1694,72 +1825,75 @@ void send_parsed_content(FILE *f, request_rec *r)
                 escape_shell_cmd (r->pool, arg_copy));
     }
 
-    while(1) {
-        if(!find_string(f,STARTING_SEQUENCE,r,printing)) {
-            if(get_directive(f,directive,r->pool))
+    while (1) {
+        if (!find_string(f, STARTING_SEQUENCE, r, printing)) {
+            if (get_directive(f, directive, r->pool))
                 return;
-            if(!strcmp(directive,"if")) {
+            if (!strcmp(directive, "if")) {
                 if (!printing) {
                     if_nesting++;
                 } else {
-                    ret=handle_if(f, r, error, &conditional_status, &printing);
+                    ret = handle_if(f, r, error, &conditional_status, &printing);
                     if_nesting = 0;
                 }
                 continue;
-            } else if(!strcmp(directive,"else")) {
+            } else if (!strcmp(directive, "else")) {
                 if (!if_nesting)
-                    ret=handle_else(f, r, error, &conditional_status, &printing);
+                    ret = handle_else(f, r, error, &conditional_status, &printing);
                 continue;
-            } else if(!strcmp(directive,"elif")) {
+            } else if (!strcmp(directive, "elif")) {
                 if (!if_nesting)
                     ret = handle_elif(f, r, error, &conditional_status, &printing);
                 continue;
-            } else if(!strcmp(directive,"endif")) {
+            } else if (!strcmp(directive, "endif")) {
                 if (!if_nesting) {
-                    ret=handle_else(f, r, error, &conditional_status, &printing);
+                    ret = handle_else(f, r, error, &conditional_status, &printing);
                     printing = 1;
                 } else {
                     if_nesting--;
                 }
                 continue;
             } 
-            if (!printing) continue;
-            if(!strcmp(directive,"exec")) {
-                if(noexec) {
-                    log_printf(r->server,"httpd: exec used but not allowed in %s",
+            if (!printing)
+                continue;
+            if (!strcmp(directive, "exec")) {
+                if (noexec) {
+                    log_printf(r->server, "httpd: exec used but not allowed in %s",
                             r->filename);
-                    if (printing) rputs(error, r);
-                    ret = find_string(f,ENDING_SEQUENCE,r,0);
+                    if (printing)
+                        rputs(error, r);
+                    ret = find_string(f, ENDING_SEQUENCE, r, 0);
                 } else 
-                    ret=handle_exec(f, r, error);
-            } else if(!strcmp(directive,"config"))
-                ret=handle_config(f, r, error, timefmt, &sizefmt);
-            else if(!strcmp(directive,"set"))
-                ret=handle_set(f, r, error);
-            else if(!strcmp(directive,"include"))
-                ret=handle_include(f, r, error, noexec);
-            else if(!strcmp(directive,"echo"))
-                ret=handle_echo(f, r, error);
-            else if(!strcmp(directive,"fsize"))
-                ret=handle_fsize(f, r, error, sizefmt);
-            else if(!strcmp(directive,"flastmod"))
-                ret=handle_flastmod(f, r, error, timefmt);
-            else if(!strcmp(directive,"printenv"))
-                ret=handle_printenv(f, r, error);
+                    ret = handle_exec(f, r, error);
+            } else if (!strcmp(directive, "config"))
+                ret = handle_config(f, r, error, timefmt, &sizefmt);
+            else if (!strcmp(directive, "set"))
+                ret = handle_set(f, r, error);
+            else if (!strcmp(directive, "include"))
+                ret = handle_include(f, r, error, noexec);
+            else if (!strcmp(directive, "echo"))
+                ret = handle_echo(f, r, error);
+            else if (!strcmp(directive, "fsize"))
+                ret = handle_fsize(f, r, error, sizefmt);
+            else if (!strcmp(directive, "flastmod"))
+                ret = handle_flastmod(f, r, error, timefmt);
+            else if (!strcmp(directive, "printenv"))
+                ret = handle_printenv(f, r, error);
 #ifdef USE_PERL_SSI
-            else if(!strcmp(directive,"perl")) 
-                ret=handle_perl(f, r, error);
+            else if (!strcmp(directive, "perl")) 
+                ret = handle_perl(f, r, error);
 #endif
             else {
                 log_printf(r->server,
                         "httpd: unknown directive \"%s\" in parsed doc %s",
-                        directive,r->filename);
-                if (printing) rputs(error, r);
-                ret=find_string(f,ENDING_SEQUENCE,r,0);
+                        directive, r->filename);
+                if (printing)
+                    rputs(error, r);
+                ret = find_string(f, ENDING_SEQUENCE, r, 0);
             }
-            if(ret) {
-                log_printf(r->server,"httpd: premature EOF in parsed file %s",
-			r->filename);
+            if (ret) {
+                log_printf(r->server, "httpd: premature EOF in parsed file %s",
+                        r->filename);
                 return;
             }
         } else 
@@ -1776,7 +1910,7 @@ void send_parsed_content(FILE *f, request_rec *r)
 module includes_module;
 enum xbithack { xbithack_off, xbithack_on, xbithack_full };
 
-#ifdef XBITHACK	
+#ifdef XBITHACK 
 #define DEFAULT_XBITHACK xbithack_full
 #else
 #define DEFAULT_XBITHACK xbithack_off
@@ -1791,12 +1925,15 @@ void *create_includes_dir_config (pool *p, char *dummy)
 
 const char *set_xbithack (cmd_parms *cmd, void *xbp, char *arg)
 {
-   enum xbithack *state = (enum xbithack *)xbp;
+    enum xbithack *state = (enum xbithack *)xbp;
 
-   if (!strcasecmp (arg, "off")) *state = xbithack_off;
-   else if (!strcasecmp (arg, "on")) *state = xbithack_on;
-   else if (!strcasecmp (arg, "full")) *state = xbithack_full;
-   else return "XBitHack must be set to Off, On, or Full";
+    if (!strcasecmp (arg, "off"))
+        *state = xbithack_off;
+    else if (!strcasecmp (arg, "on"))
+        *state = xbithack_on;
+    else if (!strcasecmp (arg, "full"))
+        *state = xbithack_full;
+    else return "XBitHack must be set to Off, On, or Full";
 
    return NULL;
 }
@@ -1805,51 +1942,53 @@ int send_parsed_file(request_rec *r)
 {
     FILE *f;
     enum xbithack *state =
-	(enum xbithack *)get_module_config(r->per_dir_config,&includes_module);
+        (enum xbithack *)get_module_config(r->per_dir_config, &includes_module);
     int errstatus;
 
-    if (!(allow_options (r) & OPT_INCLUDES)) return DECLINED;
-    if (r->method_number != M_GET) return DECLINED;
+    if (!(allow_options (r) & OPT_INCLUDES))
+        return DECLINED;
+    if (r->method_number != M_GET)
+        return DECLINED;
     if (r->finfo.st_mode == 0) {
         log_reason("File does not exist",
             r->path_info ? pstrcat(r->pool, r->filename, r->path_info, NULL)
                 : r->filename, r);
-	return NOT_FOUND;
+        return NOT_FOUND;
     }
 
-    if(!(f=pfopen(r->pool, r->filename, "r"))) {
+    if (!(f = pfopen(r->pool, r->filename, "r"))) {
         log_reason("file permissions deny server access", r->filename, r);
-	return FORBIDDEN;
+        return FORBIDDEN;
     }
 
     if (*state == xbithack_full
 #if !defined(__EMX__) && !defined(WIN32)
     /*  OS/2 dosen't support Groups. */
-	&& (r->finfo.st_mode & S_IXGRP)
+        && (r->finfo.st_mode & S_IXGRP)
 #endif
-	&& (errstatus = set_last_modified (r, r->finfo.st_mtime)))
+        && (errstatus = set_last_modified (r, r->finfo.st_mtime)))
         return errstatus;
 
     send_http_header(r);
 
     if (r->header_only) {
-	pfclose (r->pool, f);
-	return OK;
+        pfclose (r->pool, f);
+        return OK;
     }
    
     if (r->main) {
-	/* Kludge --- for nested includes, we want to keep the
-	 * subprocess environment of the base document (for compatibility);
-	 * that means torquing our own last_modified date as well so that
-	 * the LAST_MODIFIED variable gets reset to the proper value if
-	 * the nested document resets <!--#config timefmt-->
-	 */
-	r->subprocess_env = r->main->subprocess_env;
-	r->finfo.st_mtime= r->main->finfo.st_mtime;
+        /* Kludge --- for nested includes, we want to keep the
+         * subprocess environment of the base document (for compatibility);
+         * that means torquing our own last_modified date as well so that
+         * the LAST_MODIFIED variable gets reset to the proper value if
+         * the nested document resets <!--#config timefmt-->
+         */
+        r->subprocess_env = r->main->subprocess_env;
+        r->finfo.st_mtime = r->main->finfo.st_mtime;
     } else { 
-	add_common_vars (r);
-	add_cgi_vars(r);
-	add_include_vars (r, DEFAULT_TIME_FORMAT);
+        add_common_vars (r);
+        add_cgi_vars(r);
+        add_include_vars (r, DEFAULT_TIME_FORMAT);
     }
     hard_timeout("send SSI", r);
 
@@ -1872,45 +2011,47 @@ int xbithack_handler (request_rec *r)
     return DECLINED;
 #else
     enum xbithack *state;
-	
-    if (!(r->finfo.st_mode & S_IXUSR)) return DECLINED;
+        
+    if (!(r->finfo.st_mode & S_IXUSR))
+        return DECLINED;
 
     state = (enum xbithack *)get_module_config(r->per_dir_config,
-					       &includes_module);
+                                               &includes_module);
     
-    if (*state == xbithack_off) return DECLINED;
+    if (*state == xbithack_off)
+        return DECLINED;
     return send_parsed_file (r);
 #endif
 }
 
 command_rec includes_cmds[] = {
-{ "XBitHack", set_xbithack, NULL, OR_OPTIONS, TAKE1, "Off, On, or Full" },
-{ NULL }    
+    { "XBitHack", set_xbithack, NULL, OR_OPTIONS, TAKE1, "Off, On, or Full" },
+    { NULL }    
 };
 
 handler_rec includes_handlers[] = {
-{ INCLUDES_MAGIC_TYPE, send_shtml_file },
-{ INCLUDES_MAGIC_TYPE3, send_shtml_file },
-{ "server-parsed", send_parsed_file },
-{ "text/html", xbithack_handler },
-{ NULL }
+    { INCLUDES_MAGIC_TYPE, send_shtml_file },
+    { INCLUDES_MAGIC_TYPE3, send_shtml_file },
+    { "server-parsed", send_parsed_file },
+    { "text/html", xbithack_handler },
+    { NULL }
 };
 
 module includes_module = {
-   STANDARD_MODULE_STUFF,
-   NULL,			/* initializer */
-   create_includes_dir_config,	/* dir config creater */
-   NULL,			/* dir merger --- default is to override */
-   NULL,			/* server config */
-   NULL,			/* merge server config */
-   includes_cmds,		/* command table */
-   includes_handlers,		/* handlers */
-   NULL,			/* filename translation */
-   NULL,			/* check_user_id */
-   NULL,			/* check auth */
-   NULL,			/* check access */
-   NULL,			/* type_checker */
-   NULL,			/* fixups */
-   NULL,			/* logger */
-   NULL				/* header parser */
+    STANDARD_MODULE_STUFF,
+    NULL,                        /* initializer */
+    create_includes_dir_config,  /* dir config creater */
+    NULL,                        /* dir merger --- default is to override */
+    NULL,                        /* server config */
+    NULL,                        /* merge server config */
+    includes_cmds,               /* command table */
+    includes_handlers,           /* handlers */
+    NULL,                        /* filename translation */
+    NULL,                        /* check_user_id */
+    NULL,                        /* check auth */
+    NULL,                        /* check access */
+    NULL,                        /* type_checker */
+    NULL,                        /* fixups */
+    NULL,                        /* logger */
+    NULL                         /* header parser */
 };
