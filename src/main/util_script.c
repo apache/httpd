@@ -79,8 +79,7 @@ char **create_argv(request_rec *r, char *av0, ...)
     char *t, *arg;
     va_list args;
 
-    if ((av = (char **)palloc(r->pool, APACHE_ARG_MAX)) == NULL)
-	log_unixerr("malloc", NULL, "failed to allocate memory for arg list", r->server);
+    av = (char **)palloc(r->pool, APACHE_ARG_MAX);
     
     av[0] = av0;
     idx = 1;
