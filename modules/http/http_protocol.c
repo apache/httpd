@@ -1063,6 +1063,8 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
 static int getline(char *s, int n, conn_rec *c, int fold)
 {
     char *pos = s;
+    char *last_char;
+    char *beyond_buff = s + n;
     const char *temp;
     int retval;
     int total = 0;
@@ -1093,7 +1095,8 @@ static int getline(char *s, int n, conn_rec *c, int fold)
             break;
         }
 
-        if (length <= n) {
+        last_char = pos + length - 1;
+        if (last_char < beyond_buff) {
             memcpy(pos, temp, length);
             AP_BUCKET_REMOVE(e);
             ap_bucket_destroy(e);
@@ -1115,18 +1118,12 @@ static int getline(char *s, int n, conn_rec *c, int fold)
  *	     && (retval = e->read(e, ) 
  *	     && ((next == ' ') || (next == '\t')));
  */
-        /* length is the number of characters read, not including NUL    */
-
-        n -= length;            /* Keep track of how much of s is full   */
-        pos += (length - 1);    /* and where s ends                      */
-        total += length;        /* and how long s has become             */
+        pos = last_char;        /* Point at the last character           */
 
         if (*pos == '\n') {     /* Did we get a full line of input?      */
                 
             if (pos > s && *(pos - 1) == '\r') {
                 --pos;          /* zap optional CR before LF             */
-                --total;
-                ++n;
             }
                 
             /*
@@ -1138,16 +1135,16 @@ static int getline(char *s, int n, conn_rec *c, int fold)
             while (pos > (s + 1) && (*(pos - 1) == ' '
 				     || *(pos - 1) == '\t')) {
                 --pos;          /* trim extra trailing spaces or tabs    */
-                --total;        /* but not one at the beginning of line  */
-                ++n;
             }
-            *pos = '\0';
-            --total;
-            ++n;
+            *pos = '\0';        /* zap end of string                     */
+            total = pos - s; 
             break;
         }
         else {
-            pos++;              /* bump past end of incomplete line      */
+            /* bump past last character read,   
+             * and set total in case we bail before finding a LF   
+             */
+            total = ++pos - s;    
         }
     }
     ap_brigade_destroy(b);
