@@ -719,7 +719,6 @@ static void winnt_accept(void *listen_socket)
             continue;
         }
 
-
     again:            
         /* Create and initialize the accept socket */
         if (pCompContext->accept_socket == INVALID_SOCKET) {
@@ -729,15 +728,6 @@ static void winnt_accept(void *listen_socket)
                 ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_netos_error(), ap_server_conf,
                              "winnt_accept: socket() failed. Process will exit.");
                 // return -1;
-            }
-
-            /* SO_UPDATE_ACCEPT_CONTEXT is required for shutdown() to work */
-            if (setsockopt(pCompContext->accept_socket, SOL_SOCKET,
-                           SO_UPDATE_ACCEPT_CONTEXT, (char *)&nlsd,
-                           sizeof(nlsd))) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), ap_server_conf,
-                             "setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed.");
-                /* Not a failure condition. Keep running. */
             }
         }
 
@@ -775,6 +765,16 @@ static void winnt_accept(void *listen_socket)
             WaitForSingleObject(pCompContext->Overlapped.hEvent, INFINITE);
         }
 
+        /* Inherit the listen socket settings. Required for 
+         * shutdown() to work 
+         */
+        if (setsockopt(pCompContext->accept_socket, SOL_SOCKET,
+                       SO_UPDATE_ACCEPT_CONTEXT, (char *)&nlsd,
+                       sizeof(nlsd))) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), ap_server_conf,
+                         "setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed.");
+            /* Not a failure condition. Keep running. */
+        }
         /* When a connection is received, send an io completion notification to
          * the ThreadDispatchIOCP. This function could be replaced by
          * mpm_post_completion_context(), but why do an extra function call...
