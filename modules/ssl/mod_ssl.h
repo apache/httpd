@@ -108,6 +108,8 @@
 #include "apr_fnmatch.h"
 #include "apr_strings.h"
 #include "apr_dbm.h"
+#include "apr_rmm.h"
+#include "apr_shm.h"
 #include "apr_optional.h"
 
 /* OpenSSL headers */
@@ -488,9 +490,8 @@ typedef struct {
     int             nSessionCacheMode;
     char           *szSessionCacheDataFile;
     int             nSessionCacheDataSize;
-#if 0 /* XXX */
-    AP_MM          *pSessionCacheDataMM;
-#endif
+    apr_shm_t      *pSessionCacheDataMM;
+    apr_rmm_t      *pSessionCacheDataRMM;
     apr_table_t    *tSessionCacheDataTable;
     ssl_mutexmode_t nMutexMode;
     char           *szMutexFile;
@@ -679,22 +680,22 @@ SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *, UCHAR *, int);
 void         ssl_scache_dbm_remove(server_rec *, UCHAR *, int);
 void         ssl_scache_dbm_expire(server_rec *);
 void         ssl_scache_dbm_status(server_rec *, apr_pool_t *, void (*)(char *, void *), void *);
-#if 0 /* XXX */
-void         ssl_scache_shmht_init(server_rec *, pool *);
+
+void         ssl_scache_shmht_init(server_rec *, apr_pool_t *);
 void         ssl_scache_shmht_kill(server_rec *);
 BOOL         ssl_scache_shmht_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
 SSL_SESSION *ssl_scache_shmht_retrieve(server_rec *, UCHAR *, int);
 void         ssl_scache_shmht_remove(server_rec *, UCHAR *, int);
 void         ssl_scache_shmht_expire(server_rec *);
-void         ssl_scache_shmht_status(server_rec *, pool *, void (*)(char *, void *), void *);
-void         ssl_scache_shmcb_init(server_rec *, pool *);
+void         ssl_scache_shmht_status(server_rec *, apr_pool_t *, void (*)(char *, void *), void *);
+
+void         ssl_scache_shmcb_init(server_rec *, apr_pool_t *);
 void         ssl_scache_shmcb_kill(server_rec *);
 BOOL         ssl_scache_shmcb_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
 SSL_SESSION *ssl_scache_shmcb_retrieve(server_rec *, UCHAR *, int);
 void         ssl_scache_shmcb_remove(server_rec *, UCHAR *, int);
 void         ssl_scache_shmcb_expire(server_rec *);
-void         ssl_scache_shmcb_status(server_rec *, pool *, void (*)(char *, void *), void *);
-#endif
+void         ssl_scache_shmcb_status(server_rec *, apr_pool_t *, void (*)(char *, void *), void *);
 
 /*  Pass Phrase Support  */
 void         ssl_pphrase_Handle(server_rec *, apr_pool_t *);
@@ -768,4 +769,5 @@ char        *ssl_util_algotypestr(ssl_algo_t);
 char        *ssl_util_ptxtsub(apr_pool_t *, const char *, const char *, char *);
 void         ssl_util_thread_setup(server_rec *, apr_pool_t *);
 
+#define APR_SHM_MAXSIZE (64 * 1024 * 1024)
 #endif /* __MOD_SSL_H__ */
