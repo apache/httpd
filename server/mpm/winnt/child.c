@@ -321,7 +321,7 @@ static SOCKET remove_job(void)
 }
 
 
-static void win9x_accept(void * dummy)
+static unsigned int __stdcall win9x_accept(void * dummy)
 {
     struct timeval tv;
     fd_set main_fds;
@@ -406,6 +406,7 @@ static void win9x_accept(void * dummy)
 	}
     }
     SetEvent(exit_event);
+    return 0;
 }
 
 
@@ -483,7 +484,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
  *    connections to service.
  */
 #define MAX_ACCEPTEX_ERR_COUNT 100
-static void winnt_accept(void *lr_) 
+static unsigned int __stdcall winnt_accept(void *lr_) 
 {
     ap_listen_rec *lr = (ap_listen_rec *)lr_;
     apr_os_sock_info_t sockinfo;
@@ -502,7 +503,7 @@ static void winnt_accept(void *lr_)
     if (getsockname(nlsd, (struct sockaddr *)&ss_listen, &namelen) == SOCKET_ERROR) { 
         ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_netos_error(), ap_server_conf,
                     "winnt_accept: getsockname error on listening socket, is IPv6 available?");
-        return;
+        return 1;
    }
 #endif
 
@@ -674,6 +675,7 @@ static void winnt_accept(void *lr_)
     }
     ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
                  "Child %d: Accept thread exiting.", my_pid);
+    return 0;
 }
 
 
@@ -729,15 +731,15 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
  * Main entry point for the worker threads. Worker threads block in 
  * win*_get_connection() awaiting a connection to service.
  */
-static void worker_main(long *thread_num_)
+static unsigned int __stdcall worker_main(void *thread_num_val)
 {
     static int requests_this_child = 0;
     PCOMP_CONTEXT context = NULL;
-    long thread_num = *thread_num_;
+    int thread_num = (int)thread_num_val;
     ap_sb_handle_t *sbh;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf,
-                 "Child %d: Worker thread %ld starting.", my_pid, thread_num);
+                 "Child %d: Worker thread %d starting.", my_pid, thread_num);
     while (1) {
         conn_rec *c;
         apr_int32_t disconnected;
@@ -799,7 +801,8 @@ static void worker_main(long *thread_num_)
                                         (request_rec *) NULL);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf,
-                 "Child %d: Worker thread %ld exiting.", my_pid, thread_num);
+                 "Child %d: Worker thread %d exiting.", my_pid, thread_num);
+    return 0;
 }
 
 
@@ -826,7 +829,7 @@ static void create_listener_thread()
     int tid;
     int num_listeners = 0;
     if (!use_acceptex) {
-        _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) win9x_accept,
+        _beginthreadex(NULL, 0, win9x_accept,
                        NULL, 0, &tid);
     } else {
         /* Start an accept thread per listener 
@@ -849,7 +852,7 @@ static void create_listener_thread()
         /* Now start a thread per listener */
         for (lr = ap_listeners; lr; lr = lr->next) {
             if (lr->sd != NULL) {
-                _beginthreadex(NULL, 1000, (LPTHREAD_START_ROUTINE) winnt_accept,
+                _beginthreadex(NULL, 1000, winnt_accept,
                                (void *) lr, 0, &tid);
             }
         }
@@ -869,7 +872,7 @@ void child_main(apr_pool_t *pconf)
     HANDLE *child_handles;
     int rv;
     time_t end_time;
-    long i;
+    int i;
     int cld;
 
     apr_pool_create(&pchild, pconf);
@@ -942,8 +945,7 @@ void child_main(apr_pool_t *pconf)
             }
             ap_update_child_status_from_indexes(0, i, SERVER_STARTING, NULL);
             child_handles[i] = (HANDLE) _beginthreadex(NULL, (unsigned)ap_thread_stacksize,
-                                                       (LPTHREAD_START_ROUTINE) worker_main,
-                                                       (void *) &i, 0, &tid);
+                                                       worker_main, (void *) i, 0, &tid);
             if (child_handles[i] == 0) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                              "Child %d: _beginthreadex failed. Unable to create all worker threads. "
