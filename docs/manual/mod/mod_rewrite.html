@@ -632,6 +632,8 @@ Treats the <i>CondPattern</i> as a plain string and compares it
 lexicographically to <i>TestString</i> and results in a true expression if
 <i>TestString</i> is lexicographically equal to <i>CondPattern</i>, i.e the
 two strings are exactly equal (character by character).
+If <i>CondPattern<I> is just <samp>""</samp> (two quotation marks) this
+compares <i>TestString</i> against the empty string.
 <p>
 <li>'<b>-d</b>' (is <b>d</b>irectory)<br>
 Treats the <i>TestString</i> as a pathname and
