@@ -198,7 +198,7 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
 
 AP_DECLARE(int) ap_meets_conditions(request_rec *r)
 {
-    const char *etag = apr_table_get(r->headers_out, "ETag");
+    const char *etag;
     const char *if_match, *if_modified_since, *if_unmodified, *if_nonematch;
     apr_time_t mtime;
 
@@ -216,6 +216,8 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
     if (!ap_is_HTTP_SUCCESS(r->status) || r->no_local_copy) {
         return OK;
     }
+
+    etag = apr_table_get(r->headers_out, "ETag");
 
     /* XXX: we should define a "time unset" constant */
     mtime = (r->mtime != 0) ? r->mtime : apr_time_now();
