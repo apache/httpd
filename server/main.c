@@ -226,12 +226,14 @@ static process_rec *create_process(int argc, const char * const *argv)
         exit(1);
     }
 
+    apr_pool_tag(cntx, "process");
     ap_open_stderr_log(cntx);
 
     process = apr_palloc(cntx, sizeof(process_rec));
     process->pool = cntx;
 
     apr_pool_create(&process->pconf, process->pool);
+    apr_pool_tag(process->pconf, "pconf");
     process->argc = argc;
     process->argv = argv;
     process->short_name = apr_filename_of_pathname(argv[0]);
@@ -324,6 +326,7 @@ int main(int argc, const char * const argv[])
     ap_setup_prelinked_modules(process);
 
     apr_pool_create(&pcommands, pglobal);
+    apr_pool_tag(pcommands, "pcommands");
     ap_server_pre_read_config  = apr_array_make(pcommands, 1, sizeof(char *));
     ap_server_post_read_config = apr_array_make(pcommands, 1, sizeof(char *));
     ap_server_config_defines   = apr_array_make(pcommands, 1, sizeof(char *));
@@ -389,6 +392,7 @@ int main(int argc, const char * const argv[])
     }
 
     apr_pool_create(&plog, pglobal);
+    apr_pool_tag(plog, "plog");
     apr_pool_create(&ptemp, pconf);
 
     /* Note that we preflight the config file once
