@@ -183,9 +183,9 @@ typedef struct {
     unsigned int division_offset;
     unsigned int division_size;
     unsigned int queue_size;
-    unsigned char index_num;
-    unsigned char index_offset;
-    unsigned char index_size;
+    unsigned int index_num;
+    unsigned int index_offset;
+    unsigned int index_size;
     unsigned int cache_data_offset;
     unsigned int cache_data_size;
     unsigned long num_stores;
@@ -208,10 +208,10 @@ typedef struct {
     unsigned int queue_size;
     unsigned int cache_data_offset;
     unsigned int cache_data_size;
+    unsigned int index_num;
+    unsigned int index_offset;
+    unsigned int index_size;
     unsigned char division_mask;
-    unsigned char index_num;
-    unsigned char index_offset;
-    unsigned char index_size;
 #endif
 } SHMCBHeader;
 
@@ -456,7 +456,7 @@ void ssl_scache_shmcb_kill(server_rec *s)
     return;
 }
 
-BOOL ssl_scache_shmcb_store(server_rec *s, UCHAR * id, int idlen,
+BOOL ssl_scache_shmcb_store(server_rec *s, UCHAR *id, int idlen,
                            time_t timeout, SSL_SESSION * pSession)
 {
     SSLModConfigRec *mc = myModConfig();
@@ -478,7 +478,7 @@ BOOL ssl_scache_shmcb_store(server_rec *s, UCHAR * id, int idlen,
     return to_return;
 }
 
-SSL_SESSION *ssl_scache_shmcb_retrieve(server_rec *s, UCHAR * id, int idlen)
+SSL_SESSION *ssl_scache_shmcb_retrieve(server_rec *s, UCHAR *id, int idlen)
 {
     SSLModConfigRec *mc = myModConfig();
     void *shm_segment;
@@ -499,14 +499,16 @@ SSL_SESSION *ssl_scache_shmcb_retrieve(server_rec *s, UCHAR * id, int idlen)
     return pSession;
 }
 
-void ssl_scache_shmcb_remove(server_rec *s, UCHAR * id, int idlen)
+void ssl_scache_shmcb_remove(server_rec *s, UCHAR *id, int idlen)
 {
     SSLModConfigRec *mc = myModConfig();
     void *shm_segment;
 
     /* We've kludged our pointer into the other cache's member variable. */
     shm_segment = (void *) mc->tSessionCacheDataTable;
+    ssl_mutex_on(s);
     shmcb_remove_session(s, shm_segment, id, idlen);
+    ssl_mutex_off(s);
 }
 
 void ssl_scache_shmcb_expire(server_rec *s)
@@ -705,7 +707,7 @@ static BOOL shmcb_init_memory(
 }
 
 static BOOL shmcb_store_session(
-    server_rec *s, void *shm_segment, UCHAR * id,
+    server_rec *s, void *shm_segment, UCHAR *id,
     int idlen, SSL_SESSION * pSession,
     time_t timeout)
 {
@@ -755,7 +757,7 @@ static BOOL shmcb_store_session(
 
 static SSL_SESSION *shmcb_retrieve_session(
     server_rec *s, void *shm_segment,
-    UCHAR * id, int idlen)
+    UCHAR *id, int idlen)
 {
     SHMCBHeader *header;
     SHMCBQueue queue;
@@ -795,7 +797,7 @@ static SSL_SESSION *shmcb_retrieve_session(
 
 static BOOL shmcb_remove_session(
     server_rec *s, void *shm_segment,
-    UCHAR * id, int idlen)
+    UCHAR *id, int idlen)
 {
     SHMCBHeader *header;
     SHMCBQueue queue;
@@ -992,7 +994,7 @@ static SHMCBIndex *shmcb_get_index(
     const SHMCBQueue *queue, unsigned int idx)
 {
     /* bounds check */
-    if (idx > (unsigned int) queue->header->index_num)
+    if (idx > queue->header->index_num)
         return NULL;
 
     /* Return a pointer to the index. NB: I am being horribly pendantic

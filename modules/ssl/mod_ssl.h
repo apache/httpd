@@ -513,6 +513,7 @@ typedef struct {
     char           *szMutexFile;
     apr_lock_t     *pMutex;
     apr_array_header_t   *aRandSeed;
+    int             nScoreboardSize; /* used for builtin random seed */
     ssl_ds_table   *tTmpKeys;
     void           *pTmpKeys[SSL_TKPIDX_MAX];
     ssl_ds_table   *tPublicCert;
@@ -675,7 +676,11 @@ int          ssl_callback_SSLVerify_CRL(int, X509_STORE_CTX *, server_rec *);
 int          ssl_callback_NewSessionCacheEntry(SSL *, SSL_SESSION *);
 SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *, unsigned char *, int, int *);
 void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
+#if SSL_LIBRARY_VERSION >= 0x00907000
+void         ssl_callback_LogTracingState(const SSL *, int, int);
+#else
 void         ssl_callback_LogTracingState(SSL *, int, int);
+#endif
 
 /*  Session Cache Support  */
 void         ssl_scache_init(server_rec *, apr_pool_t *);

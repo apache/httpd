@@ -225,10 +225,10 @@ $dhinfo = "\n\/\*\n$dhinfo\*\/\n\n";
 
 #   generate C source from DH params
 my $dhsource = '';
-open(FP, "openssl dh -noout -C -in dh512.pem | indent | expand -8 |") || die;
+open(FP, "openssl dh -noout -C -in dh512.pem | indent | expand |") || die;
 $dhsource .= $_ while (<FP>);
 close(FP);
-open(FP, "openssl dh -noout -C -in dh1024.pem | indent | expand -8 |") || die;
+open(FP, "openssl dh -noout -C -in dh1024.pem | indent | expand |") || die;
 $dhsource .= $_ while (<FP>);
 close(FP);
 $dhsource =~ s|(DH\s+\*get_dh)|static $1|sg;

@@ -81,6 +81,7 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
     int nReq, nDone;
     apr_file_t *fp;
     int i, n, l;
+    int m;
 
     mc = myModConfig(s);
     nReq  = 0;
@@ -154,18 +155,21 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
                 RAND_seed(stackdata+n, 128);
                 nDone += 128;
 
-#if XXX_SBENTROPY_SOLVED
                 /*
-                 * XXX: This is entirely borked, sizeof(scoreboard) < 1024
+                 * seed in data extracted from the current scoreboard
                  *
-                 * seed in an 1KB extract of the current scoreboard
+                 * XXX: this assumes that the entire scoreboard is
+                 * allocated in one big block of memory that begins at
+                 * the location pointed to by ap_scoreboard_image->global
                  */
-                if (ap_scoreboard_image != NULL) {
-                    n = ssl_rand_choosenum(0,ap_calc_scoreboard_size()-1024-1);
-                    RAND_seed(((unsigned char *)ap_scoreboard_image)+n, 1024);
-                    nDone += 1024;
+                if (ap_scoreboard_image != NULL && mc->nScoreboardSize > 16)
+                {
+                    m = ((mc->nScoreboardSize / 2) - 1);
+                    n = ssl_rand_choosenum(0, m);
+                    RAND_seed(
+                        ((unsigned char *)ap_scoreboard_image->global)+n, m);
+                    nDone += m;
                 }
-#endif
             }
         }
     }
