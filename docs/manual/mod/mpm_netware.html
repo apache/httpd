@@ -1,33 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="Microsoft FrontPage 4.0" />
-
-    <title>Apache MPM prefork</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="CENTER">Multi-Processing Module NetWare</h1>
-
-    <p>This Multi-Processing Module implements an exclusively threaded web
-    server optimized for Novell NetWare.</p>
-
-    <p><a href="module-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> MPM<br />
-     <a href="module-dict.html#SourceFile"
-    rel="Help"><strong>Source File:</strong></a>  mpm_netware.c<br />
-     <a href="module-dict.html#ModuleIdentifier"
-    rel="Help"><strong>Module Identifier:</strong></a>
-    mpm_netware_module</p>
-
-    <h2>Summary</h2>
-
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     This file is generated from xml source: DO NOT EDIT
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+--><title>mpm_netware - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mpm_netware</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>Multi-Processing Module implementing an exclusively threaded web
+    server optimized for Novell NetWare</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>mpm_netware_module</td></tr></table></td></tr></table><h2>Summary</h2><summary>
     <p>This Multi-Processing Module (MPM) implements an exclusively threaded web server
     that has been optimized for Novell NetWare.</p>
 
@@ -49,8 +25,7 @@
     sites with limited memory may need to decrease
     <code>MaxThreads</code> to keep the server from thrashing (spawning and
     terminating idle threads). More information about
-    tuning process creation is provided in the <a
-    href="../misc/perf-tuning.html">performance hints</a>
+    tuning process creation is provided in the <a href="../misc/perf-tuning.html">performance hints</a>
     documentation.</p>
 
     <p><code>MaxRequestsPerChild</code> controls how frequently the
@@ -61,139 +36,33 @@
 
     <p>See also: <a href="../bind.html">Setting which addresses and
     ports Apache uses</a>.</p>
+</summary><h2>Directives</h2><ul><li><a href="mpm_common.html#listen">Listen</a></li><li><a href="mpm_common.html#listenbacklog">ListenBacklog</a></li><li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="#maxsparethreads">MaxSpareThreads</a></li><li><a href="#maxthreads">MaxThreads</a></li><li><a href="#minsparethreads">MinSpareThreads</a></li><li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li><li><a href="#startthreads">StartThreads</a></li><li><a href="#threadstacksize">ThreadStackSize</a></li></ul><hr/><h2><a name="MaxSpareThreads">MaxSpareThreads</a> <a name="maxsparethreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>MaxSpareThreads <em>number</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>MaxSpareThreads 100</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mpm_netware</td></tr></table></td></tr></table><usage>
+    <p>The <code class="directive">MaxSpareThreads</code> directive sets the
+    desired maximum number of <em>idle</em> worker threads. An idle
+    worker thread is one which is not handling a request. If there are
+    more than MaxSpareThreads idle, then the main thread will kill off
+    the excess worker threads.</p>
 
-    <h2>Directives</h2>
-
-    <ul>
-
-      <li><a href="mpm_common.html#listen">Listen</a></li>
-
-      <li><a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
-
-      <li><a href="#maxthreads">MaxThreads</a></li>
-
-      <li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
-
-      <li><a href="#maxsparethreads">MaxSpareThreads</a></li>
-
-      <li><a href="#minsparethreads">MinSpareThreads</a></li>
-
-      <li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
-
-      <li><a href="#startthreads">StartThreads</a></li>
-
-      <li><a href="#threadstacksize">ThreadStackSize</a></li>
-
-    </ul>
-    <hr />
-
-    <h2><a id="maxthreads"
-    name="maxthreads">MaxThreads directive</a></h2>
-    <!--%plaintext &lt;?INDEX {\tt MaxThreads} directive&gt; -->
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a>  MaxThreads
-    <em>number</em><br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> <code>MaxThreads 250</code><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> core<p>The MaxThreads directive sets the desired maximum
+    <p>Tuning of this parameter should only be necessary on very
+    busy sites. Setting this parameter to a large number is almost
+    always a bad idea.</p>
+</usage><hr/><h2><a name="MaxThreads">MaxThreads</a> <a name="maxthreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>MaxThreads <em>number</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>MaxThreads 250</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mpm_netware</td></tr></table></td></tr></table><usage>
+<p>The MaxThreads directive sets the desired maximum
     number worker threads allowable.</p>
-
-    <p>See also <a href="#minsparethreads">MinSpareThreads</a>, <a href="#maxsparethreads">MaxSpareThreads</a> and
-    <a href="#startthreads">StartThreads</a>.</p>
-    <hr />
-
-    <h2><a id="maxsparethreads"
-    name="maxspareservers">MaxSpareThreads directive</a></h2>
-    <!--%plaintext &lt;?INDEX {\tt MaxSpareServers} directive&gt; -->
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a>  MaxSpareThreads
-    <em>number</em><br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> <code>MaxSpareThreads 100</code><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> core 
-
-    <p>The MaxSpareThreads directive sets the desired maximum
-    number of <em>idle</em>  worker threads. An idle worker thread
-    is one which is not handling a request. If there are more than
-    MaxSpareThreads idle, then the main thread will kill off the
-    excess worker threads.</p>
+</usage><hr/><h2><a name="MinSpareThreads">MinSpareThreads</a> <a name="minsparethreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>MinSpareThreads <em>number</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>MinSpareThreads 10</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mpm_netware</td></tr></table></td></tr></table><usage>
+<p>The <code class="directive">MinSpareThreads</code> directive sets the
+desired minimum number of <em>idle</em> worker threads. An idle worker
+thread is one which is not handling a request. If there are fewer than
+MinSpareThreads idle, then the main thread spawns new worker.</p>
 
     <p>Tuning of this parameter should only be necessary on very
     busy sites. Setting this parameter to a large number is almost
     always a bad idea.</p>
-
-    <p>See also <a href="#minsparethreads">MinSpareThreads</a>, <a href="#maxthreads">MaxThreads</a> and
-    <a href="#startthreads">StartThreads</a>.</p>
-    <hr />
-
-    <h2><a id="minsparethreads"
-    name="minspareservers">MinSpareThreads directive</a></h2>
-    <!--%plaintext &lt;?INDEX {\tt MinSpareServers} directive&gt; -->
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a>  MinSpareThreads
-    <em>number</em><br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a>  <code>MinSpareThreads 10</code><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> core<p>The MinSpareThreads directive sets the desired minimum
-    number of <em>idle</em>  worker threads. An idle worker thread
-    is one which is not handling a request. If there are fewer than MinSpareThreads idle, then the
-    main thread spawns new worker.</p>
-
-    <p>Tuning of this parameter should only be necessary on very
-    busy sites. Setting this parameter to a large number is almost
-    always a bad idea.</p>
-
-    <p>See also <a href="#maxsparethreads">MaxSpareThreads</a>, <a href="#maxthreads">MaxThreads</a> and 
-    <a href="#startthreads">StartThreads</a>. 
-    <hr />
-
-    <h2><a id="startthreads"
-    name="startthreads">StartThreads directive</a></h2>
-    <!--%plaintext &lt;?INDEX {\tt StartThreads} directive&gt; -->
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> StartThreads
-    <em>number</em><br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> <code>StartThreads
-    50</code><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> core<p>The StartThreads directive sets the desired
-    number of worker threads to spawn and startup.&nbsp;</p>
-
-    <p>See also <a href="#maxsparethreads">MaxSpareThreads</a>,&nbsp; <a href="#minsparethreads">MinSpareThreads</a>
-    and <a href="#maxthreads">MaxThreads</a>. 
-    <hr />
-
-    <h2><a id="threadstacksize"
-    name="threadstacksize">ThreadStackSize</a></h2>
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> ThreadStackSize
-    <em>number</em><br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> <code>ThreadStackSize
-    65536</code><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> core
+</usage><hr/><h2><a name="StartThreads">StartThreads</a> <a name="startthreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>StartThreads <em>number</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>StartThreads 50</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mpm_netware</td></tr></table></td></tr></table><usage>
+<p>The StartThreads directive sets the desired
+    number of worker threads to spawn and startup</p>
+</usage><hr/><h2><a name="ThreadStackSize">ThreadStackSize</a> <a name="threadstacksize">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ThreadStackSize <em>number</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ThreadStackSize 65536</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mpm_netware</td></tr></table></td></tr></table><usage>
     <p>This directive tells the server what stack size to use for
     each of the running threads. If you ever get a stack overflow
     you will need to bump this number to a higher setting.</p>
-
-    <hr />
-    
-    <!--#include virtual="footer.html" -->
-  </body>
-</html>
-
+</usage><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
