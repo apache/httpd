@@ -784,7 +784,6 @@ static void child_main(void *child_num_arg)
     signal(SIGTERM, just_die);
 
     while (!ap_stop_signalled()) {
-        BUFF *conn_io;
         int srv;
         apr_socket_t *sd;
 
@@ -969,10 +968,7 @@ static void child_main(void *child_num_arg)
 	(void) ap_update_child_status(THREAD_GLOBAL(child_num), SERVER_BUSY_READ,
 				   (request_rec *) NULL);
 
-	conn_io = ap_bcreate(ptrans, B_RDWR);
-        ap_bpush_socket(conn_io, csd);
-
-	current_conn = ap_new_apr_connection(ptrans, ap_server_conf, conn_io, csd,
+	current_conn = ap_new_apr_connection(ptrans, ap_server_conf, csd,
                                              THREAD_GLOBAL(child_num));
 
 	ap_process_connection(current_conn);

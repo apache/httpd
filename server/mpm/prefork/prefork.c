@@ -787,7 +787,6 @@ static void child_main(int child_num_arg)
 #endif
 
     while (!ap_graceful_stop_signalled()) {
-	BUFF *conn_io;
 
 	/* Prepare to receive a SIGUSR1 due to graceful restart so that
 	 * we can exit cleanly.
@@ -1023,11 +1022,7 @@ static void child_main(int child_num_arg)
 	(void) ap_update_child_status(my_child_num, SERVER_BUSY_READ,
 				   (request_rec *) NULL);
 
-	conn_io = ap_bcreate(ptrans, B_RDWR);
-
-	ap_bpush_socket(conn_io, csd);
-
-	current_conn = ap_new_apr_connection(ptrans, ap_server_conf, conn_io, csd,
+	current_conn = ap_new_apr_connection(ptrans, ap_server_conf, csd,
 					 my_child_num);
 
 	ap_process_connection(current_conn);

@@ -392,7 +392,6 @@ int ap_graceful_stop_signalled(void)
 
 static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num, int my_thread_num)
 {
-    BUFF *conn_io;
     conn_rec *current_conn;
     long conn_id = my_child_num * HARD_THREAD_LIMIT + my_thread_num;
     int csd;
@@ -413,10 +412,8 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num, 
 
     (void) ap_update_child_status(my_child_num, my_thread_num,  
 				  SERVER_BUSY_READ, (request_rec *) NULL);
-    conn_io = ap_bcreate(p, B_RDWR);
-    ap_bpush_socket(conn_io, sock);
 
-    current_conn = ap_new_apr_connection(p, ap_server_conf, conn_io, sock,
+    current_conn = ap_new_apr_connection(p, ap_server_conf, sock,
                                          conn_id);
 
     ap_process_connection(current_conn);
