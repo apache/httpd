@@ -16,7 +16,7 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>Apache チュートリアル: Server Side Includes 入門</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a> &gt; <a href="./">How-To / チュートリアル</a></div><div id="page-content"><div id="preamble"><h1>Apache チュートリアル: Server Side Includes 入門</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/howto/ssi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/howto/ssi.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
@@ -77,7 +77,7 @@
         Options +Includes
 </code></p></div>
 
-    <p>この指定は、ファイルを SSI
+    <p>この指定は、ファイルを SSI
     ディレクティブで解析させることを許可するということを Apache
     に伝えます。ほとんどの設定ではお互いを上書きできる、複数の
     <code class="directive"><a href="../mod/core.html#options">Options</a></code> があることに
@@ -121,7 +121,7 @@
     <p>行なうべきではないことに関する短いコメント。時々誰かが、全ての
     <code>.html</code> ファイルを SSI で解析するよう Apache に伝えれば、
     わざわざ <code>.shtml</code> というファイル名にする必要がないといって
-    薦めるのを見ることでしょう。こういう人たちは、おそらく
+    薦めるのを見ることでしょう。こういう人たちは、おそらく
     <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>
     について聞いたことがないのでしょう。
     この方法について注意することは、たとえ SSI
@@ -165,7 +165,7 @@
     ディレクティブはその結果と置き換えられます。</p>
 
     <p>element はたくさんあるものから一つ指定することができます。
-    指定できるものの大多数については、次回もう少し詳しく説明します。
+    指定できるものの大多数については、次回もう少し詳しく説明します。
     ここでは、SSI で行なうことができる例をいくつか示します。</p>
 
 <h3><a name="todaysdate" id="todaysdate">今日の日付</a></h3>
@@ -269,7 +269,7 @@
     を含むことができないことを意味します。<code>virtual</code>
     属性は、おそらくより便利だと思いますが、提供するドキュメントからの相対
     URL で指定すべきです。それは / で始めることができますが、
-    提供するファイルと同じサーバ上に存在しなくてはなりません。</p>
+    提供するファイルと同じサーバ上に存在しなくてはなりません。</p>
 <div class="example"><p><code>
         &lt;!--#include virtual="/footer.html" --&gt;
 </code></p></div>
@@ -319,8 +319,8 @@
     を使用する記事を出したいと考えています。ここではそれとは別に、
     <code>exec</code> 要素によって行なうことができることを示します。
     SSI にシェル (正確には <code>/bin/sh</code>。Win32 ならば DOS シェル)
-    を使用してコマンドを実行させることができます。
-    下記の例では、ディレクトリリスト出力を行ないます。</p>
+    を使用してコマンドを実行させることができます。
+    下記の例では、ディレクトリリスト出力を行ないます。</p>
 <div class="example"><p><code>
         &lt;pre&gt;<br />
         &lt;!--#exec cmd="ls" --&gt;<br />
@@ -375,8 +375,8 @@
 
     <p>このように単純に文字どおりに設定することに加え、
     例えば環境変数や前の記事で述べた変数
-    (例えば <code>LAST_MODIFIED</code> のような)
-    を含む他のあらゆる変数を値を設定するのに使用することができます。
+    (例えば <code>LAST_MODIFIED</code> のような)
+    を含む他のあらゆる変数を値を設定するのに使用することができます。
     変数名の前にドル記号 ($) を使用することで、
     それがリテラル文字列ではなくて変数であることを示します。</p>
 <div class="example"><p><code>
@@ -425,7 +425,7 @@
     はあらゆる種類の論理的比較をすることができます。
     値を比較したり、その値が ``真'' かどうかを評価します
     (空でないなら与えられた文字列は真です)。
-    利用可能な比較演算子の全てのリストについては、
+    利用可能な比較演算子の全てのリストについては、
     <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> ドキュメンテーションを参照してください。
     ここでは、この構造をどう使用するかの例をいくつか示します。</p>
 

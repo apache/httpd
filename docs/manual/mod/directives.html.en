@@ -197,6 +197,7 @@
 <li><a href="mod_autoindex.html#indexignore">IndexIgnore</a></li>
 <li><a href="mod_autoindex.html#indexoptions">IndexOptions</a></li>
 <li><a href="mod_autoindex.html#indexorderdefault">IndexOrderDefault</a></li>
+<li><a href="mod_autoindex.html#indexstylesheet">IndexStyleSheet</a></li>
 <li><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors</a></li>
 <li><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery</a></li>
 <li><a href="mod_isapi.html#isapicachefile">ISAPICacheFile</a></li>
