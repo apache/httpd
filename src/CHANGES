@@ -1,5 +1,9 @@
 Changes with Apache 1.3.30
 
+  *) The whole codebase was relicensed and is now available under
+     the Apache License, Version 2.0 (http://www.apache.org/licenses).
+     [Apache Software Foundation]
+
   *) Add mod_whatkilledus and mod_backtrace (experimental) for
      reporting diagnostic information after a child process crash.
      See source code for documentation.
