@@ -2230,19 +2230,6 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     }
 
     /*
-     *  Now we are sure it is not a fully qualified URL.  But
-     *  there is still one special case left: A local rewrite in
-     *  per-directory context, i.e. a substitution URL which is not
-     *  an absolute path. Here we add again the initially
-     *  stripped per-directory prefix.
-     */
-    if (prefixstrip && !ap_os_is_path_absolute(r->pool, r->filename)) {
-        rewritelog(r, 3, "[per-dir %s] add per-dir prefix: %s -> %s%s",
-                   perdir, r->filename, perdir, r->filename);
-        r->filename = apr_pstrcat(r->pool, perdir, r->filename, NULL);
-    }
-
-    /*
      *  Finally we had to remember if a MIME-type should be
      *  forced for this URL (`RewriteRule .. .. [T=<type>]')
      *  Later in the API processing phase this is forced by our
