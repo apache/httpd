@@ -403,9 +403,11 @@ start_over:
                       "user %s authentication failed; URI %s [%s][%s]",
                       getpid(), user, r->uri, ldc->reason, ldap_err2string(result));
 
-        return (LDAP_NO_SUCH_OBJECT == result) ? AUTH_USER_NOT_FOUND: \
-               (LDAP_SECURITY_ERROR(result)) ? AUTH_DENIED: \
-               AUTH_GENERAL_ERROR;
+        return (LDAP_NO_SUCH_OBJECT == result) ? AUTH_USER_NOT_FOUND
+#ifdef LDAP_SECURITY_ERROR
+                 : (LDAP_SECURITY_ERROR(result)) ? AUTH_DENIED
+#endif
+                 : AUTH_GENERAL_ERROR;
     }
 
     /* mark the user and DN */
@@ -478,7 +480,6 @@ static int authz_ldap_check_user_access(request_rec *r)
     const char *dn = NULL;
     const char **vals = NULL;
     const char *type = ap_auth_type(r);
-    char *tmpuser;
 
 /*
     if (!sec->enabled) {
