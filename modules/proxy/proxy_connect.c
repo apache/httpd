@@ -292,8 +292,10 @@ int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "proxy: CONNECT: error apr_poll()");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-/*	ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "proxy: CONNECT: woke from select(), i=%d", pollcnt);*/
+#ifdef DEBUGGING
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "proxy: CONNECT: woke from select(), i=%d", pollcnt);
+#endif
 
         for (i = 0; i < pollcnt; i++) {
             const apr_pollfd_t *cur = &signalled[i];
@@ -301,10 +303,13 @@ int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
             if (cur->desc.s == sock) {
                 pollevent = cur->rtnevents;
                 if (pollevent & APR_POLLIN) {
-/*		ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                             "proxy: CONNECT: sock was set");*/
+#ifdef DEBUGGING
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                                 "proxy: CONNECT: sock was set");
+#endif
                     nbytes = sizeof(buffer);
-                    if (apr_socket_recv(sock, buffer, &nbytes) == APR_SUCCESS) {
+                    rv = apr_socket_recv(sock, buffer, &nbytes);
+                    if (rv == APR_SUCCESS) {
                         o = 0;
                         i = nbytes;
                         while(i > 0)
@@ -316,7 +321,8 @@ int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
      * if ((nbytes = ap_rwrite(buffer + o, nbytes, r)) < 0)
      * rbb
      */
-                            if (apr_socket_send(client_socket, buffer + o, &nbytes) != APR_SUCCESS)
+                            rv = apr_socket_send(client_socket, buffer + o, &nbytes);
+                            if (rv != APR_SUCCESS)
                                 break;
                             o += nbytes;
                             i -= nbytes;
@@ -331,16 +337,24 @@ int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
             else if (cur->desc.s == client_socket) {
                 pollevent = cur->rtnevents;
                 if (pollevent & APR_POLLIN) {
-/*		ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                             "proxy: CONNECT: client was set");*/
+#ifdef DEBUGGING
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                                 "proxy: CONNECT: client was set");
+#endif
                     nbytes = sizeof(buffer);
-                    if (apr_socket_recv(client_socket, buffer, &nbytes) == APR_SUCCESS) {
+                    rv = apr_socket_recv(client_socket, buffer, &nbytes);
+                    if (rv == APR_SUCCESS) {
                         o = 0;
                         i = nbytes;
+#ifdef DEBUGGING
+                        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                                     "proxy: CONNECT: read %d from client", i);
+#endif
                         while(i > 0)
                         {
                             nbytes = i;
-                            if (apr_socket_send(sock, buffer + o, &nbytes) != APR_SUCCESS)
+                            rv = apr_socket_send(sock, buffer + o, &nbytes);
+                            if (rv != APR_SUCCESS)
                                 break;
                             o += nbytes;
                             i -= nbytes;
@@ -354,6 +368,9 @@ int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
             }
             else
                 break;
+        }
+        if (rv != APR_SUCCESS) {
+            break;
         }
     }
 
