@@ -873,10 +873,10 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
     cmd->path = ap_getword_conf(cmd->pool, &arg);
     cmd->override = OR_ALL|ACCESS_CONF;
 
-    if (strncasecmp(cmd->path, "proxy:", 6))
+    if (!strncasecmp(cmd->path, "proxy:", 6))
         cmd->path += 6;
 
-    /* XXX Ignore case?  What if we proxy a case-insenstive server?!? 
+    /* XXX Ignore case?  What if we proxy a case-insensitive server?!? 
      * While we are at it, shouldn't we also canonicalize the entire
      * scheme?  See proxy_fixup()
      */
