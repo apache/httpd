@@ -56,7 +56,7 @@
  */ 
  
 #define CORE_PRIVATE 
- 
+#include "apr_portable.h"
 #include "httpd.h" 
 #include "http_main.h" 
 #include "http_log.h" 
@@ -82,9 +82,9 @@ static int ap_threads_per_child = 0;
 static int workers_may_exit = 0;
 static int max_requests_per_child = 0;
 
-static struct pollfd *listenfds;
+static struct fd_set listenfds;
 static int num_listenfds = 0;
-int listenmaxfd = -1;
+int listenmaxfd = 500;
 
 static ap_context_t *pconf;		/* Pool for config stuff */
 
@@ -97,10 +97,102 @@ static int one_process = 0;
 
 static OSVERSIONINFO osver; /* VER_PLATFORM_WIN32_NT */
 event *exit_event;
-mutex *start_mutex;
+//mutex *start_mutex;
+ap_lock_t *start_mutex;
 int my_pid;
 int parent_pid;
 
+
+/* A bunch or routines from os/win32/multithread.c that need to be merged into APR
+ * or thrown out entirely...
+ */
+
+static int
+map_rv(int rv)
+{
+    switch(rv)
+    {
+    case WAIT_OBJECT_0:
+    case WAIT_ABANDONED:
+        return(MULTI_OK);
+    case WAIT_TIMEOUT:
+        return(MULTI_TIMEOUT);
+    case WAIT_FAILED:
+        return(MULTI_ERR);
+    default:
+        ap_assert(0);
+    }
+
+    ap_assert(0);
+    return(0);
+}
+
+typedef void semaphore;
+typedef void event;
+
+static semaphore *
+create_semaphore(int initial)
+{
+    return(CreateSemaphore(NULL, initial, 1000000, NULL));
+}
+
+static int acquire_semaphore(semaphore *semaphore_id)
+{
+    int rv;
+    
+    rv = WaitForSingleObject(semaphore_id, INFINITE);
+    
+    return(map_rv(rv));
+}
+
+static int release_semaphore(semaphore *semaphore_id)
+{
+    return(ReleaseSemaphore(semaphore_id, 1, NULL));
+}
+
+static void destroy_semaphore(semaphore *semaphore_id)
+{
+    CloseHandle(semaphore_id);
+}
+
+
+static event *
+create_event(int manual, int initial, char *name)
+{
+    return(CreateEvent(NULL, manual, initial, name));
+}
+
+static event *
+open_event(char *name)
+{
+    return(OpenEvent(EVENT_ALL_ACCESS, FALSE, name));
+}
+
+
+static int acquire_event(event *event_id)
+{
+    int rv;
+    
+    rv = WaitForSingleObject(event_id, INFINITE);
+    
+    return(map_rv(rv));
+}
+
+static int set_event(event *event_id)
+{
+    return(SetEvent(event_id));
+}
+
+static int reset_event(event *event_id)
+{
+    return(ResetEvent(event_id));
+}
+
+
+static void destroy_event(event *event_id)
+{
+    CloseHandle(event_id);
+}
 
 /*
  * Signalling Apache on NT.
@@ -256,9 +348,11 @@ static ap_listen_rec *head_listener;
 static ap_inline ap_listen_rec *find_ready_listener(fd_set * main_fds)
 {
     ap_listen_rec *lr;
+    SOCKET native_socket;
 
     for (lr = head_listener; lr ; lr = lr->next) {
-	if (FD_ISSET(lr->fd, main_fds)) {
+        ap_get_os_sock(lr->sd, &native_socket);
+	if (FD_ISSET(native_socket, main_fds)) {
 	    head_listener = lr->next;
             if (head_listener == NULL)
                 head_listener = ap_listeners;
@@ -272,9 +366,10 @@ static int setup_listeners(ap_context_t *pconf, server_rec *s)
 {
     ap_listen_rec *lr;
     int num_listeners = 0;
+    SOCKET nsd;
 
     /* Setup the listeners */
-    listenmaxfd = -1;
+//    listenmaxfd = -1;
     FD_ZERO(&listenfds);
 
     if (ap_listen_open(pconf, s->port)) {
@@ -282,10 +377,16 @@ static int setup_listeners(ap_context_t *pconf, server_rec *s)
     }
     for (lr = ap_listeners; lr; lr = lr->next) {
         num_listeners++;
-        if (lr->fd >= 0) {
-            FD_SET(lr->fd, &listenfds);
-            if (lr->fd > listenmaxfd)
-                listenmaxfd = lr->fd;
+        if (lr->sd != NULL) {
+            ap_get_os_sock(lr->sd, &nsd);
+            FD_SET(nsd, &listenfds);
+            listenmaxfd == nsd;
+#if 0
+            if (listenmaxfd == -1)
+                listenmaxfd == nsd;
+            else if (nsd > listenmaxfd)
+                listenmaxfd = nsd;
+#endif
         }
     }
 
@@ -301,24 +402,22 @@ static int setup_inherited_listeners(ap_context_t *p, server_rec *s)
     ap_listen_rec *lr;
     DWORD BytesRead;
     int num_listeners = 0;
-    int fd;
+    int native_socket;
 
     /* Setup the listeners */
     listenmaxfd = -1;
     FD_ZERO(&listenfds);
 
     /* Set up a default listener if necessary */
+
     if (ap_listeners == NULL) {
-        struct sockaddr_in local_addr;
-        ap_listen_rec *new;
-        local_addr.sin_family = AF_INET;
-        local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	local_addr.sin_port = htons(s->port ? s->port : DEFAULT_HTTP_PORT);
-        new = malloc(sizeof(ap_listen_rec));
-        new->local_addr = local_addr;
-        new->fd = -1;
-        new->next = ap_listeners;
-        ap_listeners = new;
+        ap_listen_rec *lr;
+        lr = malloc(sizeof(ap_listen_rec));
+        if (!lr)
+            return 0;
+        lr->sd = NULL;
+        lr->next = ap_listeners;
+        ap_listeners = lr;
     }
 
     /* Open the pipe to the parent process to receive the inherited socket
@@ -335,22 +434,23 @@ static int setup_inherited_listeners(ap_context_t *p, server_rec *s)
         }
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
                          "BytesRead = %d WSAProtocolInfo = %x20", BytesRead, WSAProtocolInfo);
-        fd = WSASocket(FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO,
-                       &WSAProtocolInfo, 0, 0);
-        if (fd == INVALID_SOCKET) {
+        native_socket = WSASocket(FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO,
+                                  &WSAProtocolInfo, 0, 0);
+        if (native_socket == INVALID_SOCKET) {
             ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
                          "setup_inherited_listeners: WSASocket failed to open the inherited socket.");
             signal_parent(0);	/* tell parent to die */
             exit(1);
         }
-        if (fd >= 0) {
-            FD_SET(fd, &listenfds);
-            if (fd > listenmaxfd)
-                listenmaxfd = fd;
+        if (native_socket >= 0) {
+            FD_SET(native_socket, &listenfds);
+            if (listenmaxfd == -1)
+                listenmaxfd = native_socket;
+            else if (native_socket > listenmaxfd)
+                listenmaxfd = native_socket;
         }
-        ap_note_cleanups_for_socket(p, fd);
-
-        lr->fd = fd;
+//        ap_register_cleanup(p, (void *)lr->sd, socket_cleanup, NULL);
+        ap_put_os_sock(&lr->sd, &native_socket, pconf);
     }
     CloseHandle(pipe);
 
@@ -464,19 +564,20 @@ typedef struct globals_s {
     semaphore *jobsemaphore;
     joblist *jobhead;
     joblist *jobtail;
-    CRITICAL_SECTION jobmutex;
+    ap_lock_t *jobmutex;
     int jobcount;
 } globals;
 
 globals allowed_globals =
 {NULL, NULL, NULL, NULL, 0};
-
+#define MAX_SELECT_ERRORS 100
+#define PADDED_ADDR_SIZE sizeof(SOCKADDR_IN)+16
 /*
  * add_job()/remove_job() - add or remove an accepted socket from the
  * list of sockets connected to clients. allowed_globals.jobmutex protects
  * against multiple concurrent access to the linked list of jobs.
  */
-
+#if 0
 static void add_job(int sock)
 {
     joblist *new_job;
@@ -489,7 +590,8 @@ static void add_job(int sock)
     new_job->next = NULL;
     new_job->sock = sock;
 
-    EnterCriticalSection(&allowed_globals.jobmutex);
+    ap_lock(allowed_globals.jobmutex);
+
     if (allowed_globals.jobtail != NULL)
 	allowed_globals.jobtail->next = new_job;
     allowed_globals.jobtail = new_job;
@@ -497,7 +599,8 @@ static void add_job(int sock)
 	allowed_globals.jobhead = new_job;
     allowed_globals.jobcount++;
     release_semaphore(allowed_globals.jobsemaphore);
-    LeaveCriticalSection(&allowed_globals.jobmutex);
+
+    ap_unlock(allowed_globals.jobmutex);
 }
 
 static int remove_job(void)
@@ -506,10 +609,10 @@ static int remove_job(void)
     int sock;
 
     acquire_semaphore(allowed_globals.jobsemaphore);
-    EnterCriticalSection(&allowed_globals.jobmutex);
+    ap_lock(allowed_globals.jobmutex);
 
     if (workers_may_exit && !allowed_globals.jobhead) {
-        LeaveCriticalSection(&allowed_globals.jobmutex);
+        ap_unlock(allowed_globals.jobmutex);
 	return (-1);
     }
     job = allowed_globals.jobhead;
@@ -517,22 +620,23 @@ static int remove_job(void)
     allowed_globals.jobhead = job->next;
     if (allowed_globals.jobhead == NULL)
 	allowed_globals.jobtail = NULL;
-    LeaveCriticalSection(&allowed_globals.jobmutex);
+    ap_unlock(allowed_globals.jobmutex);
     sock = job->sock;
     free(job);
 
     return (sock);
 }
-#define MAX_SELECT_ERRORS 100
-#define PADDED_ADDR_SIZE sizeof(SOCKADDR_IN)+16
+
 static void accept_and_queue_connections(void * dummy)
 {
     int requests_this_child = 0;
     struct timeval tv;
     fd_set main_fds;
     int wait_time = 1;
-    int csd;
-    int sd = -1;
+//    int csd;
+    ap_socket_t *csd = NULL;
+//    int sd = -1;
+    ap_socket_t *sd = NULL;
     struct sockaddr_in sa_client;
     int count_select_errors = 0;
     int rc;
@@ -561,7 +665,7 @@ static void accept_and_queue_connections(void * dummy)
             ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_WIN32ERROR, server_conf, "select failed with errno %d", h_errno);
             count_select_errors++;
             if (count_select_errors > MAX_SELECT_ERRORS) {
-                workers_may_exit = 1;      
+                workers_may_exit = 1;
                 ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, server_conf,
                              "Too many errors in select loop. Child process exiting.");
                 break;
@@ -571,7 +675,7 @@ static void accept_and_queue_connections(void * dummy)
 
 	    lr = find_ready_listener(&main_fds);
 	    if (lr != NULL) {
-		sd = lr->fd;
+		sd = lr->sd;
 	    }
 	}
 
@@ -625,6 +729,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         return context;
     }
 }
+#endif
 static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 {
     int requests_this_child = 0;
@@ -632,13 +737,13 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
     struct timeval tv;
     fd_set main_fds;
     int wait_time = 1;
-    int sd = -1;
+    SOCKET nsd;
     int rc;
 
     /* AcceptEx needs a pre-allocated accept socket */
     context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-    EnterCriticalSection(&allowed_globals.jobmutex);    
+    ap_lock(allowed_globals.jobmutex);
 
     while (!workers_may_exit) {
         workers_may_exit |= ((ap_max_requests_per_child != 0) && (requests_this_child > ap_max_requests_per_child));
@@ -663,7 +768,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
             ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_WIN32ERROR, server_conf, "select failed with errno %d", h_errno);
             count_select_errors++;
             if (count_select_errors > MAX_SELECT_ERRORS) {
-                workers_may_exit = 1;      
+                workers_may_exit = 1;
                 ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, server_conf,
                              "Too many errors in select loop. Child process exiting.");
                 break;
@@ -675,7 +780,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
             
             lr = find_ready_listener(&main_fds);
             if (lr != NULL) {
-                sd = lr->fd;
+                ap_get_os_sock(lr->sd, &nsd);
             }
             else {
                 ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, server_conf,
@@ -683,7 +788,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
                 break;
             }
 
-            rc = AcceptEx(sd, context->accept_socket,
+            rc = AcceptEx(nsd, context->accept_socket,
                           context->conn_io->inbase,
                           context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE,
                           PADDED_ADDR_SIZE,
@@ -715,13 +820,12 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
                                  &context->sa_client,
                                  &context->sa_client_len);
 
-
-            LeaveCriticalSection(&allowed_globals.jobmutex);
+            ap_unlock(allowed_globals.jobmutex);
             return context;
         }
     }
     CloseHandle(context->Overlapped.hEvent);
-    LeaveCriticalSection(&allowed_globals.jobmutex);
+    ap_unlock(allowed_globals.jobmutex);
     SetEvent(exit_event);
     return NULL;
 }
@@ -744,7 +848,6 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
  *  - block in remove_job, and when unblocked we have an already
  *    accepted socket, instead of blocking on a mutex or select().
  */
-//#define QUEUED_ACCEPT  for Windows 95 TODO: Make this a run time check
 static void child_main(int child_num)
 {
     PCOMP_CONTEXT lpCompContext;
@@ -755,7 +858,7 @@ static void child_main(int child_num)
      */
     lpCompContext = ap_pcalloc(pconf, sizeof(COMP_CONTEXT));
     lpCompContext->Overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL); 
-    lpCompContext->ptrans = ap_make_sub_pool(pconf);
+    ap_create_context(&(lpCompContext->ptrans), pconf);
 
 #if 0
     (void) ap_update_child_status(child_num, SERVER_READY, (request_rec *) NULL);
@@ -774,8 +877,9 @@ static void child_main(int child_num)
         /* Grab a connection off the network */
         if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
             lpCompContext = winnt_get_connection(lpCompContext);
-        else
-            lpCompContext = win9x_get_connection(lpCompContext);
+        else {
+//            lpCompContext = win9x_get_connection(lpCompContext);
+        }
 
 
         if (!lpCompContext)
@@ -785,7 +889,7 @@ static void child_main(int child_num)
         ptrans = lpCompContext->ptrans;
         csd = lpCompContext->accept_socket;
 
-	ap_note_cleanups_for_socket(ptrans, csd);
+//	ap_note_cleanups_for_socket(ptrans, csd);
 
 #if 0
 	(void) ap_update_child_status(child_num, SERVER_BUSY_READ,
@@ -896,11 +1000,12 @@ static void worker_main()
 
     thread **child_handles;
     int rv;
+    ap_status_t status;
     time_t end_time;
     int i;
     ap_context_t *pchild;
 
-    pchild = ap_make_sub_pool(pconf);
+    ap_create_context(&pchild, pconf);
 
 //    ap_restart_time = time(NULL);
 
@@ -915,8 +1020,8 @@ static void worker_main()
      * in case we (this child) is told to die before we get a chance to
      * serve any requests.
      */
-    rv = WaitForSingleObject(start_mutex,0);
-    if (rv == WAIT_FAILED) {
+    status = ap_lock(start_mutex);
+    if (status != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_WIN32ERROR, server_conf,
                      "Waiting for start_mutex or exit_event -- process will exit");
 
@@ -950,7 +1055,7 @@ static void worker_main()
     }
 
     allowed_globals.jobsemaphore = create_semaphore(0);
-    InitializeCriticalSection(&allowed_globals.jobmutex);
+    ap_create_lock(pchild, APR_MUTEX, APR_INTRAPROCESS, NULL, &allowed_globals.jobmutex);
 
     /* spawn off the worker threads */
     child_handles = (thread *) alloca(nthreads * sizeof(int));
@@ -959,16 +1064,16 @@ static void worker_main()
     }
 
     /* spawn off accept thread (WIN9x only) */
-    if (osver.dwPlatformId != VER_PLATFORM_WIN32_NT)
-        create_thread((void (*)(void *)) accept_and_queue_connections, (void *) NULL);
+//    if (osver.dwPlatformId != VER_PLATFORM_WIN32_NT)
+//        create_thread((void (*)(void *)) accept_and_queue_connections, (void *) NULL);
 
     rv = WaitForSingleObject(exit_event, INFINITE);
     printf("exit event signalled \n");
     workers_may_exit = 1;      
 
     /* Get ready to shutdown and exit */
-    ap_release_mutex(start_mutex);
-
+    ap_unlock(start_mutex);
+#if 0
     if (osver.dwPlatformId != VER_PLATFORM_WIN32_NT) {
         /* This is only needed for platforms that use the accept queue code 
          * (WIN9x only). It should work on NT but not as efficiently as the 
@@ -978,7 +1083,7 @@ static void worker_main()
             add_job(-1);
         }
     }
-
+#endif
     /* Wait for all your children */
     end_time = time(NULL) + 180;
     while (nthreads) {
@@ -999,7 +1104,7 @@ static void worker_main()
     }
 
     destroy_semaphore(allowed_globals.jobsemaphore);
-    DeleteCriticalSection(&allowed_globals.jobmutex);
+    ap_destroy_lock(allowed_globals.jobmutex);
 
     ap_destroy_pool(pchild);
 
@@ -1161,14 +1266,16 @@ static int create_process(ap_context_t *p, HANDLE *handles, HANDLE *events, int 
          * for the target process then send the WSAPROTOCOL_INFO 
          * (returned by dup socket) to the child */
         for (lr = ap_listeners; lr; lr = lr->next) {
+            int native_socket;
             lpWSAProtocolInfo = ap_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
             ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, server_conf,
-                         "Parent: Duplicating socket %d and sending it to child process %d", lr->fd, pi.dwProcessId);
-            if (WSADuplicateSocket(lr->fd, 
+                         "Parent: Duplicating socket %d and sending it to child process %d", lr->sd, pi.dwProcessId);
+            ap_get_os_sock(lr->sd,&native_socket);
+            if (WSADuplicateSocket(native_socket, 
                                    pi.dwProcessId,
                                    lpWSAProtocolInfo) == SOCKET_ERROR) {
                 ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
-                             "Parent: WSADuplicateSocket failed for socket %d.", lr->fd );
+                             "Parent: WSADuplicateSocket failed for socket %d.", lr->sd );
                 return -1;
             }
 
@@ -1176,7 +1283,7 @@ static int create_process(ap_context_t *p, HANDLE *handles, HANDLE *events, int 
                            &BytesWritten,
                            (LPOVERLAPPED) NULL)) {
                 ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
-                             "Parent: Unable to write duplicated socket %d to the child.", lr->fd );
+                             "Parent: Unable to write duplicated socket %d to the child.", lr->sd );
                 return -1;
             }
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
@@ -1418,12 +1525,11 @@ API_EXPORT(int) ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec 
         exit_event_name = ap_psprintf(pconf, "apC%d", my_pid);
         setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
         if (one_process) {
-            start_mutex = ap_create_mutex(signal_name_prefix);        
+            ap_create_lock(pconf,APR_MUTEX, APR_CROSS_PROCESS,signal_name_prefix,&start_mutex);
             exit_event = create_exit_event(exit_event_name);
-
         }
         else {
-            start_mutex = ap_open_mutex(signal_name_prefix);
+            ap_child_init_lock(&start_mutex, pconf, signal_name_prefix);
             exit_event = open_event(exit_event_name);
         }
         ap_assert(start_mutex);
@@ -1475,7 +1581,7 @@ API_EXPORT(int) ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec 
              * Ths start mutex is used during a restart to prevent more than one 
              * child process from entering the accept loop at once.
              */
-            start_mutex = ap_create_mutex(signal_name_prefix);        
+            ap_create_lock(pconf,APR_MUTEX, APR_CROSS_PROCESS,signal_name_prefix,&start_mutex);
             /* TODO: Add some code to detect failure */
         }
 
@@ -1491,7 +1597,7 @@ API_EXPORT(int) ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec 
                              server_conf,
                              "removed PID file %s (pid=%ld)",
                              pidfile, (long)getpid());
-            ap_destroy_mutex(start_mutex);
+            ap_destroy_lock(start_mutex);
 
             CloseHandle(restart_event);
             CloseHandle(shutdown_event);
@@ -1581,66 +1687,6 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
     }
     ap_cpystrn(ap_coredump_dir, fname, sizeof(ap_coredump_dir));
     return NULL;
-}
-/*
-static int
-map_rv(int rv)
-{
-    switch(rv)
-    {
-    case WAIT_OBJECT_0:
-    case WAIT_ABANDONED:
-        return(MULTI_OK);
-    case WAIT_TIMEOUT:
-        return(MULTI_TIMEOUT);
-    case WAIT_FAILED:
-        return(MULTI_ERR);
-    default:
-        assert(0);
-    }
-
-    assert(0);
-    return(0);
-}
-*/
-
-/*
-API_EXPORT(mutex *) ap_open_mutex(char *name)
-{
-    return(OpenMutex(MUTEX_ALL_ACCESS, FALSE, name));
-}
-*/
-
-struct ap_thread_mutex {
-    CRITICAL_SECTION _mutex;
-};
-
-
-API_EXPORT(ap_thread_mutex *) ap_thread_mutex_new(void)
-{
-    ap_thread_mutex *mtx;
-
-    mtx = malloc(sizeof(ap_thread_mutex));
-    InitializeCriticalSection(&(mtx->_mutex));
-    return mtx;
-}
-
-
-API_EXPORT(void) ap_thread_mutex_lock(ap_thread_mutex *mtx)
-{
-    EnterCriticalSection(&(mtx->_mutex));
-}
-
-
-API_EXPORT(void) ap_thread_mutex_unlock(ap_thread_mutex *mtx)
-{
-    LeaveCriticalSection(&(mtx->_mutex));
-}
-
-API_EXPORT(void) ap_thread_mutex_destroy(ap_thread_mutex *mtx)
-{
-    DeleteCriticalSection(&(mtx->_mutex));
-    free(mtx);
 }
 
 static const command_rec winnt_cmds[] = {
