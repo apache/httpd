@@ -266,7 +266,7 @@ static int translate_userdir(request_rec *r)
     while (*userdirs) {
         const char *userdir = ap_getword_conf(r->pool, &userdirs);
         char *filename = NULL;
-#if defined(NETWARE)
+#if defined(NETWARE) || defined(HAVE_DRIVE_LETTERS)
         int is_absolute = ap_os_is_path_absolute(userdir);
 #endif		
 
@@ -275,16 +275,8 @@ static int translate_userdir(request_rec *r)
 
 	if (userdir[0] == '\0' || userdir[0] == '/') {
             if (x) {
-#if defined(NETWARE)
+#if defined(NETWARE) || defined(HAVE_DRIVE_LETTERS)
                 if (strchr(x, ':') && !is_absolute )
-#elif defined(HAVE_DRIVE_LETTERS)
-                /*
-                 * Crummy hack. Need to figure out whether we have been
-                 * redirected to a URL or to a file on some drive. Since I
-                 * know of no protocols that are a single letter, if the : is
-                 * the second character, I will assume a file was specified
-                 */
-                if ((strlen(x) > 1) && strchr(x + 2, ':'))
 #else /* !(NETWARE || HAVE_DRIVE_LETTERS) */
                 if (strchr(x, ':'))
 #endif
@@ -299,12 +291,8 @@ static int translate_userdir(request_rec *r)
             else
                 filename = ap_pstrcat(r->pool, userdir, "/", w, NULL);
         }
-#if defined(NETWARE)
+#if defined(NETWARE) || defined(HAVE_DRIVE_LETTERS)
         else if (strchr(userdir, ':') && !is_absolute ) {
-#elif defined(HAVE_DRIVE_LETTERS)
-        /* Same Crummy hack here
-         */
-        else if ((strlen(userdir) > 1) && strchr(userdir + 2, ':')) {
 #else /* !(NETWARE || HAVE_DRIVE_LETTERS) */
         else if (strchr(userdir, ':')) {
 #endif
