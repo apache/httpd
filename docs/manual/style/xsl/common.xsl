@@ -396,6 +396,17 @@
 
 
   <!--                                                    -->
+  <!-- indent                                             -->
+  <!--                                                    -->
+  <xsl:template match="indent">
+    <span class="indent">
+      <xsl:apply-templates/>
+    </span>
+  </xsl:template> 
+  <!-- /indent -->
+
+
+  <!--                                                    -->
   <!-- <note>                                             -->
   <!-- Notes are placed in a table. Uses different back-  -->
   <!-- ground colors, depending on type of note.          -->
