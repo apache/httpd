@@ -1,4 +1,10 @@
 Changes with Apache 1.3.1
+
+  *) Let mod_mmap_static be more reserved unless at least one "mmapfile"
+     directive is present in the configuration. Because this experimental
+     module has to do some black magic to operate inside the current API and
+     thus forces side-effects for other modules under some circumstances.
+     [Ralf S. Engelschall]
  
   *) Add conservative ticks around more egrep arguments in top-level configure
      to avoid problems under brain-dead platforms like Digital Unix (OSF1).

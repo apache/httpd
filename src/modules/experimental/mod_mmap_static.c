@@ -280,12 +280,17 @@ static int mmap_static_xlat(request_rec *r)
     a_file *match;
     int res;
 
+    sconf = ap_get_module_config(r->server->module_config, &mmap_static_module);
+
+    /* we only operate when at least one mmapfile directive was used */
+    if (ap_is_empty_table(sconf->files))
+	return DECLINED;
+
     /* we require other modules to first set up a filename */
     res = core_module.translate_handler(r);
     if (res == DECLINED || !r->filename) {
 	return res;
     }
-    sconf = ap_get_module_config(r->server->module_config, &mmap_static_module);
     tmp.filename = r->filename;
     match = (a_file *)bsearch(&tmp, sconf->files->elts, sconf->files->nelts,
 	sizeof(a_file), file_compare);
