@@ -1,5 +1,10 @@
 Changes with Apache 1.3a2
 
+  *) Check for titles in server-parsed HTML files.
+     Ignore leading newlines and returns in titles.  The old behavior
+     of replacing a newline after <title> with a space causes the
+     title to be misaligned in the listing. [David J. MacKenzie]
+
   *) Change mod_cern_meta to be configurable on a per-directory basis.
      [David J. MacKenzie]
 

@@ -583,7 +583,11 @@ static char *find_title(request_rec *r) {
     if (r->status != HTTP_OK) {
         return NULL;
     }
-    if (r->content_type && !strcmp(r->content_type, "text/html") && !r->content_encoding) {
+    if (r->content_type
+	&& (!strcmp(r->content_type,"text/html")
+	    || !strcmp(r->content_type,INCLUDES_MAGIC_TYPE))
+	&& !r->content_encoding)
+    {
         if (!(thefile = pfopen(r->pool, r->filename, "r")))
             return NULL;
         n = fread(titlebuf, sizeof(char), MAX_STRING_LEN - 1, thefile);
@@ -596,7 +600,10 @@ static char *find_title(request_rec *r) {
                     /* Scan for line breaks for Tanmoy's secretary */
                     for (y = x; titlebuf[y]; y++)
                         if ((titlebuf[y] == CR) || (titlebuf[y] == LF))
-                            titlebuf[y] = ' ';
+			    if (y==x)
+				x++;
+			    else
+				titlebuf[y] = ' ';
                     pfclose (r->pool, thefile);
                     return pstrdup(r->pool, &titlebuf[x]);
                 }
