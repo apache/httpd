@@ -116,10 +116,6 @@ InputPath=.\config.hw
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\pcre.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\pcre.hw
 
 !IF  "$(CFG)" == "pcreposix - Win32 Release"
@@ -146,6 +142,10 @@ InputPath=.\pcre.hw
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=.\pcreposix.h
 # End Source File
 # End Group
 # End Target
