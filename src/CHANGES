@@ -1,5 +1,9 @@
 Changes with Apache 1.3a2
 
+  *) Enable ``=""'' for RewriteCond directives to match against
+     the empty string. This is the preferred way instead of ``^$''.
+     [Ralf S. Engelschall]
+
   *) Fixed an infinite loop in mod_imap for references above the server root
      [Dean Gaudet] PR#748
 
