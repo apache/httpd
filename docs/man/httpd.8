@@ -109,19 +109,10 @@ compiled into
 .B httpd.
 .SH OPTIONS
 .TP 12
-.BI \-R " libexecdir"
-This option is only available if Apache was built with
-the 
-.I SHARED_CORE
-rule enabled which forces the Apache core code to be
-placed into a dynamic shared object (DSO) file. This file
-is searched in a hardcoded path under ServerRoot per default. Use this
-option if you want to override it.
-.TP 12
 .BI \-d " serverroot"
 Set the initial value for the ServerRoot directive to \fIserverroot\fP. This
 can be overridden by the ServerRoot command in the configuration file. The
-default is \fB/usr/local/apache\fP.
+default is \fB/usr/local/apache2\fP.
 .TP
 .BI \-f " config"
 Execute the commands in the file \fIconfig\fP on startup. If \fIconfig\fP
@@ -160,11 +151,6 @@ return code not equal to 0 (Syntax Error).  If
 .BI \-D " DUMP_VHOSTS"
 is also set, details of the virtual host configuration will be printed.
 .TP
-.B \-T
-Same as option 
-.B \-t
-but does not check the configured document roots. 
-.TP
 .B \-v
 Print the version of 
 .B httpd
@@ -174,16 +160,22 @@ Print the version of
 Print the version and build parameters of 
 .B httpd
 , and then exit.
+.TP
+.B \-X
+Run
+.B httpd
+in debug mode.  Only one worker will be started and the server will not detach
+from the console.
 .SH FILES
 .PD 0
-.B /usr/local/apache/conf/httpd.conf
+.B /usr/local/apache2/conf/httpd.conf
 .br
-.B /usr/local/apache/conf/mime.types
+.B /usr/local/apache2/conf/mime.types
 .br
-.B /usr/local/apache/conf/magic
+.B /usr/local/apache2/conf/magic
 .br
-.B /usr/local/apache/logs/error_log
+.B /usr/local/apache2/logs/error_log
 .br
-.B /usr/local/apache/logs/access_log
+.B /usr/local/apache2/logs/access_log
 .br
-.B /usr/local/apache/logs/httpd.pid
+.B /usr/local/apache2/logs/httpd.pid
