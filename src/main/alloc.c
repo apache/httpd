@@ -1178,7 +1178,7 @@ API_EXPORT(void) ap_table_setn(table *t, const char *key, const char *val)
 	    abort();
 	}
 	if (!ap_pool_is_ancestor(ap_find_pool(val), t->a.pool)) {
-	    fprintf(stderr, "table_set: key not in ancestor pool of t\n");
+	    fprintf(stderr, "table_set: val not in ancestor pool of t\n");
 	    abort();
 	}
     }
