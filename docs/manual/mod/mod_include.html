@@ -335,6 +335,9 @@ is set, then set the Last-modified date of the returned file to be the
 last modified time of the file. If it is not set, then no last-modified date
 is sent. Setting this bit allows clients and proxies to cache the result of
 the request.
+<p><b>Note:</b> you would not want to use this, for example, when you
+<code>#include</code> a CGI that produces different output on each hit
+(or potentially depends on the hit).
 </dl>
 <p>
 
