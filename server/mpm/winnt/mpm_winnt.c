@@ -225,6 +225,7 @@ AP_DECLARE(void) mpm_recycle_completion_context(PCOMP_CONTEXT pCompContext)
         apr_lock_release(qlock);
     }
 }
+
 AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
 {
     PCOMP_CONTEXT pCompContext = NULL;
@@ -268,6 +269,7 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
     }
     return pCompContext;
 }
+
 AP_DECLARE(apr_status_t) mpm_post_completion_context(PCOMP_CONTEXT pCompContext, 
                                                      io_state_e state)
 {
@@ -1128,7 +1130,7 @@ static void child_main()
     /* Initialize the child_events */
     max_requests_per_child_event = CreateEvent(NULL, TRUE, FALSE, NULL);
     if (!max_requests_per_child_event) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, status, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                      "Child %d: Failed to create a max_requests event.", my_pid);
         exit(APEXIT_CHILDINIT);
     }
@@ -1678,15 +1680,19 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
 static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_event)
 {
     int rv, cld;
-    int restart_pending = 0;
-    int shutdown_pending = 0;
-
-    HANDLE child_handle;
+    int restart_pending;
+    int shutdown_pending;
     HANDLE child_exit_event;
     HANDLE event_handles[NUM_WAIT_HANDLES];
 
+    restart_pending = shutdown_pending = 0;
+
+    event_handles[SHUTDOWN_HANDLE] = shutdown_event;
+    event_handles[RESTART_HANDLE] = restart_event;
+
     /* Create a single child process */
-    rv = create_process(pconf, &child_handle, &child_exit_event);
+    rv = create_process(pconf, &event_handles[CHILD_HANDLE], 
+                        &child_exit_event);
     if (rv < 0) 
     {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
@@ -1695,16 +1701,11 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         goto die_now;
     }
     
-    restart_pending = shutdown_pending = 0;
-
     if (!strcasecmp(signal_arg, "runservice")) {
         mpm_service_started();
     }
 
     /* Wait for shutdown or restart events or for child death */
-    event_handles[CHILD_HANDLE] = child_handle;
-    event_handles[SHUTDOWN_HANDLE] = shutdown_event;
-    event_handles[RESTART_HANDLE] = restart_event;
     rv = WaitForMultipleObjects(NUM_WAIT_HANDLES, (HANDLE *) event_handles, FALSE, INFINITE);
     cld = rv - WAIT_OBJECT_0;
     if (rv == WAIT_FAILED) {
