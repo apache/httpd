@@ -279,6 +279,7 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
     SSL *ssl;
     SSLConnRec *sslconn = myConnConfig(c);
+    char *vhost_md5;
     modssl_ctx_t *mctx;
 
     /*
@@ -334,12 +335,13 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
         return DECLINED; /* XXX */
     }
 
-    if (!SSL_set_session_id_context(ssl,
-                                    (unsigned char *)sc->vhost_id,
-                                    sc->vhost_id_len))
+    vhost_md5 = ap_md5_binary(c->pool, sc->vhost_id, sc->vhost_id_len);
+
+    if (!SSL_set_session_id_context(ssl, (unsigned char *)vhost_md5,
+                                    MD5_DIGESTSIZE*2))
     {
         ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                "Unable to set session id context to `%s'", sc->vhost_id);
+                "Unable to set session id context to `%s'", vhost_md5);
 
         c->aborted = 1;
 
