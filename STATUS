@@ -142,6 +142,11 @@ In progress:
     
 Needs patch:
 
+    * Jim's/Ken's move of main/util_snprintf.c to ap/ap_snprintf.c
+	<199712231545.KAA22158@devsys.jaguNET.com>
+	(Concept only)
+	Status: Jim +1, Ken +1, Dean +1
+
     * Dean's "locale" project
 	See <Pine.LNX.3.95dg3.971219001345.7010F-100000@twinlark.arctic.org>
 	Status: Jim'll look into it
