@@ -124,7 +124,7 @@ void ap_reclaim_child_processes(int terminate)
                 continue;
 
             proc.pid = pid;
-            waitret = apr_proc_wait(&proc, APR_NOWAIT);
+            waitret = apr_proc_wait(&proc, NULL, APR_NOWAIT);
             if (waitret != APR_CHILD_NOTDONE) {
                 MPM_NOTE_CHILD_KILLED(i);
                 continue;
