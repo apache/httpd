@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.4 -->
+<!-- English revision: 1.5 -->
 
 <name>mod_asis</name>
 <description>自分用の HTTP ヘッダの書かれているファイルを送信する</description>
@@ -25,13 +25,14 @@
 
 <seealso><module>mod_headers</module></seealso>
 <seealso><module>mod_cern_meta</module></seealso>
+<seealso><a href="../handler.html">Apache のハンドラの使用</a></seealso>
 
-<section><title>使用法</title>
+<section id="usage"><title>使用法</title>
 
     <p>サーバ設定ファイルで、ファイルと <code>send-as-is</code>
     ハンドラを例えば以下のように関連付けてください。</p>
 
-<example>AddHandler send-as-is asis</example>
+    <example>AddHandler send-as-is asis</example>
 
     <p>拡張子が <code>.asis</code> のすべてのファイルの内容は Apache
     からクライアントへほとんど変更無く送られます。クライアントには
@@ -43,30 +44,32 @@
     <em>as is</em> (そのまま) で送られるファイルの内容の例です。
     </p>
 
-<example>Status: 301 Now where did I leave that URL<br />
-       Location: http://xyz.abc.com/foo/bar.html<br />
-       Content-type: text/html<br />
-      <br />
-       &lt;HTML&gt;<br />
-       &lt;HEAD&gt;<br />
-       &lt;TITLE&gt;Lame excuses'R'us&lt;/TITLE&gt;<br />
-       &lt;/HEAD&gt;<br />
-       &lt;BODY&gt;<br />
-       &lt;H1&gt;Fred's exceptionally wonderful page has moved
-      to<br />
-       &lt;A
-      HREF="http://xyz.abc.com/foo/bar.html"&gt;Joe's&lt;/A&gt;
-      site.<br />
-       &lt;/H1&gt;<br />
-       &lt;/BODY&gt;<br />
-       &lt;/HTML&gt;
-</example>
 
-    <p>注意: サーバはクライアントに返されるデータに常に Date: と Server:
-    ヘッダを追加しますので、それらがファイルに書かれていてはいけません。
-    サーバは Last-Modified ヘッダを追加<em>しません</em>。
-    おそらくはそうすべきでしょうけれど。
-    </p>
+    <example>
+      Status: 301 Now where did I leave that URL<br />
+      Location: http://xyz.abc.com/foo/bar.html<br />
+      Content-type: text/html<br />
+      <br />
+      &lt;html&gt;<br />
+      &lt;head&gt;<br />
+      &lt;title&gt;Lame excuses'R'us&lt;/title&gt;<br />
+      &lt;/head&gt;<br />
+      &lt;body&gt;<br />
+      &lt;h1&gt;Fred's exceptionally wonderful page has moved to<br />
+      &lt;a href="http://xyz.abc.com/foo/bar.html"&gt;Joe's&lt;/a&gt;
+      site.<br />
+      &lt;/h1&gt;<br />
+      &lt;/body&gt;<br />
+      &lt;/html&gt;
+    </example>
+
+    <note><title>注意</title>
+    <p>注意: サーバはクライアントに返されるデータに常に <code>Date:</code>
+    と <code>Server:</code> ヘッダを追加しますので、
+    それらがファイルに書かれていてはいけません。
+    サーバは <code>Last-Modified</code> ヘッダを追加<em>しません</em>。
+    おそらくはそうすべきでしょうけれど。</p>
+    </note>
 </section>
 
 </modulesynopsis>

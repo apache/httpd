@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.5 -->
+<!-- English revision: 1.7 -->
 
 <name>mod_actions</name> 
 
@@ -24,14 +24,15 @@ CGI スクリプトを実行する機能を提供</description>
     これはファイルを処理するスクリプトの実行をずっと簡単にします。</p>
 </summary>
 
+<seealso><module>mod_cgi</module></seealso>
+<seealso><a href="../howto/cgi.html">CGI による動的コンテンツ</a></seealso>
+<seealso><a href="../handler.html">Apache のハンドラの使用</a></seealso>
+
 <directivesynopsis>
-
 <name>Action</name>
-
 <description>特定のハンドラやコンテントタイプに対して CGI を実行するように
 設定</description>
-
-<syntax>Action <em>action-type cgi-script</em></syntax>
+<syntax>Action <var>action-type</var> <var>cgi-script</var></syntax>
 <contextlist>
 <context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -39,28 +40,26 @@ CGI スクリプトを実行する機能を提供</description>
 <override>FileInfo</override>
 
 <usage>
-    <p>このディレクティブは <em>action-type</em>
-    がリクエストされたときに <em>cgi-script</em>
-    が実行されるという動作を追加します。<em>cgi-script</em> は
+    <p>このディレクティブは <var>action-type</var>
+    がリクエストされたときに <var>cgi-script</var>
+    が実行されるという動作を追加します。<var>cgi-script</var> は
     <directive module="mod_alias">ScriptAlias</directive> や
     <directive module="mod_mime">AddHandler</directive> によって
     CGI スクリプトに設定されたリソースへの URL-path です。
-    <em>Action-type</em> には
+    <var>Action-type</var> には
     <a href="../handler.html">handler</a> か MIME
     コンテントタイプを指定できます。リクエストされたドキュメントの URL
     とファイルのパスは標準 CGI 環境変数 PATH_INFO と PATH_TRANSLATED
     を使って伝えられます。</p>
 
-<example>
-<title>例</title>
-
-    # Requests for files of a particular type:<br />
-    Action image/gif /cgi-bin/images.cgi<br />
-<br />
-    # Files of a particular file extension<br />
-    AddHandler my-file-type .xyz<br />
-    Action my-file-type /cgi-bin/program.cgi<br />
-</example>
+    <example><title>例</title>
+      # Requests for files of a particular type:<br />
+      Action image/gif /cgi-bin/images.cgi<br />
+      <br />
+      # Files of a particular file extension<br />
+      AddHandler my-file-type .xyz<br />
+      Action my-file-type /cgi-bin/program.cgi<br />
+    </example>
 
     <p>最初の例では、MIME コンテントタイプが <code>image/gif</code>
     のファイルへのリクエストは、そのファイルの代わりに指定されたスクリプト
@@ -72,36 +71,33 @@ CGI スクリプトを実行する機能を提供</description>
 </usage>
 
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
-
 </directivesynopsis>
 
 <directivesynopsis>
-
 <name>Script</name>
-
 <description>特定のリクエストメソッドに対して CGI スクリプトを
 実行するように設定</description>
-<syntax> Script <em>method cgi-script</em></syntax>
+<syntax>Script <var>method</var> <var>cgi-script</var></syntax>
 <contextlist>
 <context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 <usage>
-    <p>このディレクティブは <em>method</em>
+    <p>このディレクティブは <var>method</var>
     というメソッドを使ってリクエストが行なわれたときに
-    <em>cgi-script</em> を実行するという動作を追加します。
-    <em>cgi-script</em> は
+    <var>cgi-script</var> を実行するという動作を追加します。
+    <var>cgi-script</var> は
     <directive module="mod_alias">ScriptAlias</directive> や
     <directive module="mod_mime">AddHandler</directive> によって
     CGI スクリプトに設定されたリソースへの URL-path です。
     リクエストされたドキュメントの URL とファイルのパスは標準 CGI
     環境変数 PATH_INFO と PATH_TRANSLATED を使って伝えられます。</p>
 
-<note>
+    <note>
       任意のメソッド名を使用することができます。
       <strong>メソッド名は大文字小文字を区別します</strong>。ですから、
-      <code>Script&nbsp;PUT</code> と <code>Script&nbsp;put</code>
+      <code>Script PUT</code> と <code>Script put</code>
       はまったく違った効果になります。
-</note>
+    </note>
 
     <p>Script コマンドはデフォルトの動作を追加するだけであることに
     注意してください。もし CGI スクリプトが呼ばれたり、リクエストされた
@@ -110,15 +106,14 @@ CGI スクリプトを実行する機能を提供</description>
     (<em>たとえば</em>、foo.html?hi) 呼ばれるということにも注意してください。
     そうでない場合は、リクエストは通常通り処理されます。</p>
 
-<example>
-<title>例</title>
-    # For &lt;ISINDEX&gt;-style searching<br />
-    Script GET /cgi-bin/search<br />
-    # A CGI PUT handler<br />
-    Script PUT /~bob/put.cgi<br />
-</example>
+    <example><title>例</title>
+      # For &lt;ISINDEX&gt;-style searching<br />
+      Script GET /cgi-bin/search<br />
+      <br />
+      # A CGI PUT handler<br />
+      Script PUT /~bob/put.cgi<br />
+    </example>
 </usage>
-
 </directivesynopsis>
 
 </modulesynopsis>
