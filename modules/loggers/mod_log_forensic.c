@@ -177,7 +177,7 @@ typedef struct hlog {
     char *pos;
     char *end;
     apr_pool_t *p;
-    size_t count;
+    apr_size_t count;
 } hlog;
 
 static int count_string(const char *p)
