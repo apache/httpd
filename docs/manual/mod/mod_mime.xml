@@ -560,7 +560,7 @@ searching for a matching file with MultiViews</description>
     <a href="mod_negotiation.html">mod_negotiation</a>'s Multiviews 
     feature.  Multiviews allows a request for a file, e.g. index.html,
     to match any negotiated extensions following the base request,
-    e.g. index.html.en, index.html,fr, or index.html.gz.</p>
+    e.g. index.html.en, index.html.fr, or index.html.gz.</p>
 
     <p>The NegotiatedOnly option provides that every extension following
     the base name must correlate to a recognized mod_mime extension for
@@ -628,7 +628,7 @@ specified language</description>
     to have no language attribute.</p>
 
 <example><title>Example</title>
-DeafaultLanguage en
+DefaultLanguage en
 </example>
 
 </usage>

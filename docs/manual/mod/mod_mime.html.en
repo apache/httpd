@@ -2,10 +2,10 @@
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 This file is generated from xml source: DO NOT EDIT
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>mod_mime- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_mime</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Associates the requested filename's extensions
+        --><title>mod_mime- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_mime</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:</span></td><td>Associates the requested filename's extensions
     with the file's behavior (handlers and filters)
     and content (mime-type, language, character set and
-    encoding)</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>mime_module</td></tr></table></td></tr></table><h2>Summary</h2>
+    encoding)</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>mime_module</td></tr></table></td></tr></table><h2>Summary</h2>
     <p>This module is used to associate various bits of "meta
     information" with files by their filename extensions. This
     information relates the filename of the document to it's
@@ -393,7 +393,7 @@ specified language</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html
     to have no language attribute.</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
-DeafaultLanguage en
+DefaultLanguage en
 </code></td></tr></table></blockquote>
 
 <p><strong>See also </strong></p><ul><li><code><a href="mod_negotiation.html">mod_negotiation</a></code></li></ul><hr/><h2><a name="MultiviewsMatch">MultiviewsMatch</a> <a name="multiviewsmatch">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>The types of files that will be included when 
@@ -405,7 +405,7 @@ searching for a matching file with MultiViews</td></tr><tr><td nowrap="nowrap"><
     <a href="mod_negotiation.html">mod_negotiation</a>'s Multiviews 
     feature.  Multiviews allows a request for a file, e.g. index.html,
     to match any negotiated extensions following the base request,
-    e.g. index.html.en, index.html,fr, or index.html.gz.</p>
+    e.g. index.html.en, index.html.fr, or index.html.gz.</p>
 
     <p>The NegotiatedOnly option provides that every extension following
     the base name must correlate to a recognized mod_mime extension for
