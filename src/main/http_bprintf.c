@@ -286,7 +286,10 @@ int vbprintf(BUFF *bp, const char *format, va_list arg)
 		    else
 			{
 			p = memchr(charPtrArg, '\0', precision);
-			buffReqd=(p == NULL) ? precision : p - charPtrArg;
+			if (p == NULL)
+				buffReqd = precision;
+			else
+				buffReqd = p - charPtrArg;
 			}
 		    break;
 
