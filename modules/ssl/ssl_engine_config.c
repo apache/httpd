@@ -1413,7 +1413,7 @@ const char *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *cmd,
         return err;
     }
 
-    sc->proxy->pkp->cert_file = arg;
+    sc->proxy->pkp->cert_path = arg;
 
     return NULL;
 }
