@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/03 22:32:37 $]
+Last modified at [$Date: 2004/05/05 06:17:47 $]
 
 Release:
 
@@ -71,6 +71,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) Readd suexec setuid and user check (now APR supports it)
+         os/unix/unixd.c: r1.69
+       +1: nd
 
     *) Prevent Win32 pool corruption at startup
          server/mpm/winnt/child.c: r1.36 
