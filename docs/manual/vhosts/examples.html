@@ -159,8 +159,9 @@ wrong site</li>
                 <tr>
                   <td bgcolor="#eeeeee">
 <pre>
-    NameVirtualHost 12.34.56.78
-    &lt;VirtualHost 12.34.56.78&gt;
+    NameVirtualHost 172.20.30.40
+
+    &lt;VirtualHost 172.20.30.40&gt;
         # etc ...
 </pre>
                   </td>
@@ -201,9 +202,9 @@ wrong site</li>
     </blockquote>
     <strong>Setup 1:</strong> 
 
-    <p>The server has two IP addresses. On one (<samp>1.2.3.4</samp>), we
-    will serve the "main" server, and on the other (<samp>5.6.7.8</samp>),
-    we will serve two or more virtual hosts.</p>
+    <p>The server has two IP addresses. On one (<samp>172.20.30.40</samp>), we
+    will serve the "main" server, <samp>server.domain.com</samp> and on the
+    other (<samp>172.20.30.50</samp>), we will serve two or more virtual hosts.</p>
 
     <p><strong>Server configuration:</strong></p>
 
@@ -214,14 +215,14 @@ wrong site</li>
 <pre>
     Listen 80
 
-    # This is the "main" server
+    # This is the "main" server running on 172.20.30.40
     ServerName server.domain.com
     DocumentRoot /www/mainserver
 
     # This is the other address
-    NameVirtualHost 5.6.7.8
+    NameVirtualHost 172.20.30.50
 
-    &lt;VirtualHost 5.6.7.8&gt;
+    &lt;VirtualHost 172.20.30.50&gt;
         DocumentRoot /www/example1
         ServerName www.example1.com
     
@@ -229,7 +230,7 @@ wrong site</li>
 
     &lt;/VirtualHost&gt;
     
-    &lt;VirtualHost 5.6.7.8&gt;
+    &lt;VirtualHost 172.20.30.50&gt;
         DocumentRoot /www/example2
         ServerName www.example2.org
     
@@ -242,8 +243,8 @@ wrong site</li>
       </table>
     </blockquote>
 
-    <p>Any request to an address other than <samp>5.6.7.8</samp> will be
-    served from the main server. A request to <samp>5.6.7.8</samp> with an
+    <p>Any request to an address other than <samp>172.20.30.50</samp> will be
+    served from the main server. A request to <samp>172.20.30.50</samp> with an
     unknown hostname, or no <code>Host:</code> header, will be served from
     <samp>www.example1.com</samp>.</p>
 
@@ -254,10 +255,10 @@ wrong site</li>
     <strong>Setup:</strong> 
 
     <p>The server machine has two IP addresses (<samp>192.168.1.1</samp>
-    and <samp>11.22.33.44</samp>). The machine is sitting between an
+    and <samp>172.20.30.40</samp>). The machine is sitting between an
     internal (intranet) network and an external (internet) network. Outside
     of the network, the name <samp>server.example.com</samp> resolves to
-    the external address (<samp>111.22.33.55</samp>), but inside the
+    the external address (<samp>172.20.30.40</samp>), but inside the
     network, that same name resolves to the internal address
     (<samp>192.168.1.1</samp>).</p>
 
@@ -273,9 +274,9 @@ wrong site</li>
           <td bgcolor="#eeeeee">
 <pre>
     NameVirtualHost 192.168.1.1
-    NameVirtualHost 11.22.33.44
+    NameVirtualHost 172.20.30.40
 
-    &lt;VirtualHost 192.168.1.1 11.22.33.44&gt;
+    &lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
         DocumentRoot /www/server1
         ServerName server.example.com
         ServerAlias server
@@ -292,12 +293,18 @@ wrong site</li>
     <blockquote>
       <table>
         <tr>
-          <td bgcolor="#e0e5f5"><strong>Note:</strong> On the internal
+          <td bgcolor="#e0e5f5">
+          
+          <p><strong>Note:</strong> On the internal
           network, one can just use the name <code>server</code> rather
-          than the fully qualified host name <code>server.example.com. Note
-          also that, in the above example, you can replace the list of IP
-          addresses with</code> *, which will cause the server to respond
-          the same on all addresses.</td>
+          than the fully qualified host name 
+          <code>server.example.com</code>.</p>
+          
+          <p>Note also that, in the above example, you can replace the list
+          of IP addresses with <code>*</code>, which will cause the server to
+          respond the same on all addresses.</p>
+          
+          </td>
         </tr>
       </table>
     </blockquote>
@@ -324,26 +331,26 @@ wrong site</li>
     Listen 80
     Listen 8080
 
-    NameVirtualHost 11.22.33.44:80
-    NameVirtualHost 11.22.33.44:8080
+    NameVirtualHost 172.20.30.40:80
+    NameVirtualHost 172.20.30.40:8080
 
-    &lt;VirtualHost 11.22.33.44:80&gt;
-        ServerName www.domain.tld
+    &lt;VirtualHost 172.20.30.40:80&gt;
+        ServerName www.example1.com
         DocumentRoot /www/domain-80
     &lt;/VirtualHost&gt;
 
-    &lt;VirtualHost 11.22.33.44:8080&gt;
-        ServerName www.domain.tld
+    &lt;VirtualHost 172.20.30.40:8080&gt;
+        ServerName www.example1.com
         DocumentRoot /www/domain-8080
     &lt;/VirtualHost&gt;
 
-    &lt;VirtualHost 11.22.33.44:80&gt;
-        ServerName www.otherdomain.tld
+    &lt;VirtualHost 172.20.30.40:80&gt;
+        ServerName www.example2.org
         DocumentRoot /www/otherdomain-80
     &lt;/VirtualHost&gt;
 
-    &lt;VirtualHost 11.22.33.44:8080&gt;
-        ServerName www.otherdomain.tld
+    &lt;VirtualHost 172.20.30.40:8080&gt;
+        ServerName www.example2.org
         DocumentRoot /www/otherdomain-8080
     &lt;/VirtualHost&gt;
 </pre>
@@ -357,8 +364,8 @@ wrong site</li>
 
     <p><strong>Setup:</strong></p>
 
-    <p>The server has two IP addresses (<samp>1.2.3.4</samp> and
-    <samp>5.6.7.8</samp>) which resolve to the names
+    <p>The server has two IP addresses (<samp>172.20.30.40</samp> and
+    <samp>172.20.30.50</samp>) which resolve to the names
     <samp>www.example1.com</samp> and <samp>www.example2.org</samp>
     respectively.</p>
 
@@ -371,12 +378,12 @@ wrong site</li>
 <pre>
     Listen 80
 
-    &lt;VirtualHost 1.2.3.4&gt;
+    &lt;VirtualHost 172.20.30.40&gt;
         DocumentRoot /www/example1
         ServerName www.example1.com
     &lt;/VirtualHost&gt;
    
-    &lt;VirtualHost 5.6.7.8&gt;
+    &lt;VirtualHost 172.20.30.50&gt;
         DocumentRoot /www/example2
         ServerName www.example2.org
     &lt;/VirtualHost&gt;
@@ -397,8 +404,8 @@ wrong site</li>
 
     <p><strong>Setup:</strong></p>
 
-    <p>The server machine has two IP addresses (<samp>1.2.3.4</samp> and
-    <samp>5.6.7.8</samp>) which resolve to the names
+    <p>The server machine has two IP addresses (<samp>172.20.30.40</samp> and
+    <samp>172.20.30.50</samp>) which resolve to the names
     <samp>www.example1.com</samp> and <samp>www.example2.org</samp>
     respectively. In each case, we want to run hosts on ports 80 and
     8080.</p>
@@ -408,27 +415,27 @@ wrong site</li>
         <tr>
           <td bgcolor="#eeeeee">
 <pre>
-    Listen 1.2.3.4:80
-    Listen 1.2.3.4:8080
-    Listen 5.6.7.8:80
-    Listen 5.6.7.8:8080
+    Listen 172.20.30.40:80
+    Listen 172.20.30.40:8080
+    Listen 172.20.30.50:80
+    Listen 172.20.30.50:8080
     
-    &lt;VirtualHost 1.2.3.4:80&gt;
+    &lt;VirtualHost 172.20.30.40:80&gt;
         DocumentRoot /www/example1-80
         ServerName www.example1.com
     &lt;/VirtualHost&gt;
 
-    &lt;VirtualHost 1.2.3.4:8080&gt;
+    &lt;VirtualHost 172.20.30.40:8080&gt;
         DocumentRoot /www/example1-8080
         ServerName www.example1.com
     &lt;/VirtualHost&gt;
     
-    &lt;VirtualHost 5.6.7.8:80&gt;
+    &lt;VirtualHost 172.20.30.50:80&gt;
         DocumentRoot /www/example2-80
         ServerName www.example1.org
     &lt;/VirtualHost&gt;
 
-    &lt;VirtualHost 5.6.7.8:8080&gt;
+    &lt;VirtualHost 172.20.30.50:8080&gt;
         DocumentRoot /www/example2-8080
         ServerName www.example2.org
     &lt;/VirtualHost&gt;
@@ -456,30 +463,30 @@ wrong site</li>
 <pre>
     Listen 80
 
-    NameVirtualHost 1.2.3.4
+    NameVirtualHost 172.20.30.40
 
-    &lt;VirtualHost 1.2.3.4&gt;
+    &lt;VirtualHost 172.20.30.40&gt;
         DocumentRoot /www/example1
         ServerName www.example1.com
     &lt;/VirtualHost&gt;
    
-    &lt;VirtualHost 1.2.3.4&gt;
+    &lt;VirtualHost 172.20.30.40&gt;
         DocumentRoot /www/example2
         ServerName www.example2.org
     &lt;/VirtualHost&gt; 
     
-    &lt;VirtualHost 1.2.3.4&gt;
+    &lt;VirtualHost 172.20.30.40&gt;
         DocumentRoot /www/example3
         ServerName www.example3.net
     &lt;/VirtualHost&gt; 
 
     # IP-based
-    &lt;VirtualHost 5.6.7.8&gt;
+    &lt;VirtualHost 172.20.30.50&gt;
         DocumentRoot /www/example4
         ServerName www.example4.edu
     &lt;/VirtualHost&gt; 
     
-    &lt;VirtualHost 9.8.7.6&gt;
+    &lt;VirtualHost 172.20.30.60&gt;
         DocumentRoot /www/example5
         ServerName www.example5.gov
     &lt;/VirtualHost&gt;     
@@ -595,13 +602,13 @@ wrong site</li>
     <p><strong>Setup:</strong></p>
 
     <p>The name-based vhost with the hostname
-    <samp>www.otherdomain.tld</samp> (from our <a
+    <samp>www.example2.org</samp> (from our <a
     href="#name">name-based</a> example, setup 2) should get its own IP
     address. To avoid problems with name servers or proxies who cached the
     old IP address for the name-based vhost we want to provide both
     variants during a migration phase.<br />
      The solution is easy, because we can simply add the new IP address
-    (<samp>111.22.33.66</samp>) to the <code>VirtualHost</code>
+    (<samp>172.20.30.50</samp>) to the <code>VirtualHost</code>
     directive.</p>
 
     <p><strong>Server configuration:</strong></p>
@@ -612,21 +619,21 @@ wrong site</li>
           <td bgcolor="#eeeeee">
 <pre>
     Listen 80
-    ServerName www.domain.tld
-    DocumentRoot /www/domain
+    ServerName www.example1.com
+    DocumentRoot /www/example1
 
-    NameVirtualHost 111.22.33.55
+    NameVirtualHost 172.20.30.40
 
-    &lt;VirtualHost 111.22.33.55 111.22.33.66&gt;
-        DocumentRoot /www/otherdomain
-        ServerName www.otherdomain.tld
+    &lt;VirtualHost 172.20.30.40 172.20.30.50&gt;
+        DocumentRoot /www/example2
+        ServerName www.example2.org
         # ...
     &lt;/VirtualHost&gt;
    
-    &lt;VirtualHost 111.22.33.55&gt;
-        DocumentRoot /www/subdomain
-        ServerName www.sub.domain.tld
-        ServerAlias *.sub.domain.tld
+    &lt;VirtualHost 172.20.30.40&gt;
+        DocumentRoot /www/example3
+        ServerName www.example3.net
+        ServerAlias *.example3.net
         # ...
     &lt;/VirtualHost&gt;
 </pre>
@@ -661,9 +668,9 @@ wrong site</li>
         <tr>
           <td bgcolor="#eeeeee">
 <pre>
-    NameVirtualHost 111.22.33.44
+    NameVirtualHost 172.20.30.40
 
-    &lt;VirtualHost 111.22.33.44&gt;
+    &lt;VirtualHost 172.20.30.40&gt;
         # primary vhost
         DocumentRoot /www/subdomain
         RewriteEngine On
@@ -671,7 +678,7 @@ wrong site</li>
         # ...
     &lt;/VirtualHost&gt;
 
-    &lt;VirtualHost 111.22.33.44&gt;
+    &lt;VirtualHost 172.20.30.40&gt;
     DocumentRoot /www/subdomain/sub1
         ServerName www.sub1.domain.tld
         ServerPath /sub1/
@@ -680,7 +687,7 @@ wrong site</li>
         # ...
     &lt;/VirtualHost&gt;
 
-    &lt;VirtualHost 111.22.33.44&gt;
+    &lt;VirtualHost 172.20.30.40&gt;
         DocumentRoot /www/subdomain/sub2
         ServerName www.sub2.domain.tld
         ServerPath /sub2/
