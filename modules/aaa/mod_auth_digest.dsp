@@ -93,10 +93,6 @@ SOURCE=.\mod_auth_digest.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\auth_provider.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\mod_auth_digest.rc
 # End Source File
 # Begin Source File
