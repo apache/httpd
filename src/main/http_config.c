@@ -653,7 +653,7 @@ server_rec *init_virtual_host (pool *p, char *hostname)
     s->access_confname = NULL;
     s->timeout = 0;
     s->keep_alive_timeout = 0;
-    s->keep_alive = 0;
+    s->keep_alive = -1;
     s->host_addr.s_addr = get_virthost_addr (hostname, &s->host_port);
     s->port = s->host_port;  /* set them the same, by default */
     s->next = NULL;
@@ -703,7 +703,7 @@ void fixup_virtual_hosts (pool *p, server_rec *main_server)
 	if (virt->keep_alive_timeout == 0)
 	    virt->keep_alive_timeout = main_server->keep_alive_timeout;
 
-	if (virt->keep_alive == 0)
+	if (virt->keep_alive == -1)
 	    virt->keep_alive = main_server->keep_alive;
     }
 }

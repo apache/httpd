@@ -1,3 +1,6 @@
+  *) Make virtual hosts default to main server keepalive parameters.
+     [Alexei Kosut, Ben Laurie]
+
   *) Allow ScanHTMLTitles to work with lowercase <title> tags. [Alexei Kosut]
 
   *) Bugs which were fixed:
