@@ -543,4 +543,41 @@ deal_with_host:
     hostinfo = s + 1;
     goto deal_with_host;
 }
+
+/* Special case for CONNECT parsing: it comes with the hostinfo part only */
+/* See the INTERNET-DRAFT document "Tunneling SSL Through a WWW Proxy"
+ * currently at http://www.mcom.com/newsref/std/tunneling_ssl.html
+ * for the format of the "CONNECT host:port HTTP/1.0" request
+ */
+API_EXPORT(int) parse_hostinfo_components(pool *p, const char *hostinfo, uri_components *uptr)
+{
+    const char *s;
+    char *endstr;
+
+    /* Initialize the structure. parse_uri() and parse_uri_components()
+     * can be called more than once per request.
+     */
+    memset (uptr, '\0', sizeof(*uptr));
+    uptr->is_initialized = 1;
+    uptr->hostinfo = pstrdup(p, hostinfo);
+
+    /* We expect hostinfo to point to the first character of
+     * the hostname.  There must be a port, separated by a colon
+     */
+    s = strchr(hostinfo, ':');
+    if (s == NULL) {
+	return HTTP_BAD_REQUEST;
+    }
+    uptr->hostname = pstrndup(p, hostinfo, s - hostinfo);
+    ++s;
+    uptr->port_str = pstrdup(p, s);
+    if (*s != '\0') {
+	uptr->port = strtol(uptr->port_str, &endstr, 10);
+	if (*endstr == '\0') {
+	    return HTTP_OK;
+	}
+	/* Invalid characters after ':' found */
+    }
+    return HTTP_BAD_REQUEST;
+}
 #endif

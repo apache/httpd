@@ -112,6 +112,7 @@ API_EXPORT(struct hostent *) pgethostbyname(pool *p, const char *hostname);
 API_EXPORT(char *) unparse_uri_components(pool *p, const uri_components *uptr,
     unsigned flags);
 API_EXPORT(int) parse_uri_components(pool *p, const char *uri, uri_components *uptr);
+API_EXPORT(int) parse_hostinfo_components(pool *p, const char *hostinfo, uri_components *uptr);
 /* called by the core in main() */
 extern void util_uri_init(void);
 

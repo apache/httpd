@@ -581,13 +581,19 @@ void parse_uri(request_rec *r, const char *uri)
 
     r->unparsed_uri = pstrdup(r->pool, uri);
 
-    /* Simple syntax Errors in URLs are trapped by parse_uri_components(). */
-    status = parse_uri_components(r->pool, uri, &r->parsed_uri);
+    if (r->method_number == M_CONNECT) {
+	status = parse_hostinfo_components(r->pool, uri, &r->parsed_uri);
+    } else {
+	/* Simple syntax Errors in URLs are trapped by parse_uri_components(). */
+	status = parse_uri_components(r->pool, uri, &r->parsed_uri);
+    }
 
     if (is_HTTP_SUCCESS(status)) {
 	/* if it has a scheme we may need to do absoluteURI vhost stuff */
 	if (r->parsed_uri.scheme
 	    && !strcasecmp(r->parsed_uri.scheme, http_method(r))) {
+	    r->hostname = r->parsed_uri.hostname;
+	} else if (r->method_number == M_CONNECT) {
 	    r->hostname = r->parsed_uri.hostname;
 	}
 	r->args = r->parsed_uri.query;
@@ -664,6 +670,29 @@ static int read_request_line(request_rec *r)
     r->the_request = pstrdup(r->pool, l);
     r->method = getword_white(r->pool, &ll);
     uri = getword_white(r->pool, &ll);
+
+    /* Provide quick information about the request method as soon as known */
+    if (!strcmp(r->method, "HEAD")) {
+        r->header_only = 1;
+        r->method_number = M_GET;
+    }
+    else if (!strcmp(r->method, "GET"))
+        r->method_number = M_GET;
+    else if (!strcmp(r->method, "POST"))
+        r->method_number = M_POST;
+    else if (!strcmp(r->method, "PUT"))
+        r->method_number = M_PUT;
+    else if (!strcmp(r->method, "DELETE"))
+        r->method_number = M_DELETE;
+    else if (!strcmp(r->method, "CONNECT"))
+        r->method_number = M_CONNECT;
+    else if (!strcmp(r->method, "OPTIONS"))
+        r->method_number = M_OPTIONS;
+    else if (!strcmp(r->method, "TRACE"))
+        r->method_number = M_TRACE;
+    else
+        r->method_number = M_INVALID;   /* Will eventually croak. */
+
     parse_uri(r, uri);
 
     r->assbackwards = (ll[0] == '\0');

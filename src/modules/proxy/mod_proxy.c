@@ -155,6 +155,15 @@ static int proxy_detect(request_rec *r)
 	    r->handler = "proxy-server";
         }
     }
+    /* We need special treatment for CONNECT proxying: it has no scheme part */
+    else if (conf->req && r->method_number == M_CONNECT
+	     && r->parsed_uri.hostname
+	     && r->parsed_uri.port_str) {
+	    r->proxyreq = 1;
+	    r->uri = r->unparsed_uri;
+	    r->filename = pstrcat(r->pool, "proxy:", r->uri, NULL);
+	    r->handler = "proxy-server";
+    }
     return DECLINED;
 }
 
