@@ -4860,6 +4860,7 @@ int main(int argc, char *argv[])
     }
 
     server_conf = read_config(pconf, ptrans, server_confname);
+    log_pid(pconf, pid_fname);
     init_modules(pconf, server_conf);
     suexec_enabled = init_suexec();
     open_logs(server_conf, pconf);

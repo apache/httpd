@@ -1,4 +1,6 @@
 Changes with Apache 1.3b4
+  
+  *) WIN32 deserves a pid file.  [Ben Hyde]
 
   *) suexec errors now include the errno/description.  [Marc Slemko] PR#1543
 
