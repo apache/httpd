@@ -773,6 +773,9 @@ responses.</A><P><HR>
 The error log directive sets the name of the file to which the server will log
 any errors it encounters. If the filename does not begin with a slash (/)
 then it is assumed to be relative to the <A HREF="#serverroot">ServerRoot</A>.
+If the filename begins with a pipe (|) then it is assumed to be a command to
+spawn to handle the error log.
+<p>
 Example:
 <BLOCKQUOTE><CODE>ErrorLog /dev/null</CODE></BLOCKQUOTE>
 This effectively turns off error logging.<P>
