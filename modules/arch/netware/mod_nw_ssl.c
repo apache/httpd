@@ -478,7 +478,7 @@ static const char *set_secure_listener(cmd_parms *cmd, void *dummy,
     if (!port) 
 	    return "Port must be numeric";
 	    
-    apr_table_set(sc->sltable, ports, addr);
+    apr_table_add(sc->sltable, ports, addr);
     
     new->local_addr.sin_port = htons(port);
     new->fd = -1;
@@ -677,20 +677,29 @@ static void *nwssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     return merged;
 }
 
+static int compare_ipports(void *rec, const char *key, const char *value)
+{
+    conn_rec *c = (conn_rec*)rec;
+
+    if (value && 
+        ((strcmp(value, "0.0.0.0") == 0) || (strcmp(value, c->local_ip) == 0))) 
+    {
+        return 0;
+    }
+    return 1;
+}
+
 static int isSecureConnEx (const server_rec *s, const conn_rec *c, const apr_table_t *t)
 {
-    NWSSLSrvConfigRec *sc = get_nwssl_cfg(s);
-    const char *s_secure = NULL;
     char port[8];
-    int ret = 0;
 
     itoa((c->local_addr)->port, port, 10);
-    s_secure = apr_table_get(t, port); 
-    if (s_secure && 
-        ((strcmp(s_secure, "0.0.0.0") == 0) || (strcmp(s_secure, c->local_ip) == 0)))
-        ret = 1;
+    if (!apr_table_do(compare_ipports, (void*)c, t, port, NULL))
+    {
+        return 1;
+    }
 
-    return ret;
+    return 0;
 }
 
 static int isSecureConn (const server_rec *s, const conn_rec *c)
