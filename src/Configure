@@ -130,6 +130,7 @@ RULE_STATUS=`./helpers/CutRule STATUS $file`
 RULE_SOCKS4=`./helpers/CutRule SOCKS4 $file`
 RULE_IRIXNIS=`./helpers/CutRule IRIXNIS $file`
 RULE_IRIXN32=`./helpers/CutRule IRIXN32 $file`
+RULE_PARANOID=`./helpers/CutRule PARANOID $file`
 
 ####################################################################
 # Preset some "constants"; can be overridden on a per-platform basis below.
@@ -769,6 +770,10 @@ for modfile in $MODFILES ; do
 		 && grep "ConfigEnd" $tmpfile2 > /dev/null; then
 		    sed '1,/ConfigStart/d;/ConfigEnd/,$d' $tmpfile2 > \
 		     $tmpfile3
+		    echo "    o $modname uses ConfigStart/End:"
+		    if [ "$RULE_PARANOID" = "yes" ]; then
+			sed 's/^/>> /' $tmpfile3
+		    fi
 		    . ./$tmpfile3
 		fi
 		rm -f $tmpfile2 $tmpfile3
