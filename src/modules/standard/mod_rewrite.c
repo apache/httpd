@@ -1116,7 +1116,7 @@ static int hook_uri2file(request_rec *r)
                                          r->path_info, NULL);
             }
             if (r->args != NULL &&
-                r->uri != r->unparsed_uri) {
+                r->uri == r->unparsed_uri) {
                 /* see proxy_http:proxy_http_canon() */
                 r->filename = ap_pstrcat(r->pool, r->filename,
                                          "?", r->args, NULL);
