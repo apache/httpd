@@ -268,7 +268,7 @@ static char *parse_misc_string(apr_pool_t *p, format_tag *tag, const char **sa)
                 *d++ = '\n';
                 s++;
                 break;
-            case 't':	
+            case 't':   
                 *d++ = '\t';
                 s++;
                 break;
@@ -725,5 +725,5 @@ module AP_MODULE_DECLARE_DATA headers_module =
     create_headers_config,      /* server config */
     merge_headers_config,       /* merge server configs */
     headers_cmds,               /* command apr_table_t */
-    register_hooks		/* register hooks */
+    register_hooks              /* register hooks */
 };
