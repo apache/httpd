@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.15 $ ($Date: 1997/04/09 19:23:02 $)
+$Revision: 1.16 $ ($Date: 1997/04/11 03:25:04 $)
 </P>
 <H2>The Questions</H2>
 <!-- Stuff to Add:						    -->
@@ -23,6 +23,8 @@ $Revision: 1.15 $ ($Date: 1997/04/09 19:23:02 $)
 <!-- - disable Apache buffering of script output by using nph-	    -->
 <!-- - access control based on DNS name really needs MAXIMUM_DNS    -->
 <!--   and double-check that rDNS resolves to name expected	    -->
+<!-- - add stuff about using XBitHack Full to generate a	    -->
+<!--   Last-Modified header [section on caching SSL]		    -->
 <UL>
  <LI><STRONG>Background</STRONG>
   <OL START=1>
@@ -56,6 +58,9 @@ $Revision: 1.15 $ ($Date: 1997/04/09 19:23:02 $)
    </LI>
    <LI><A HREF="#compatible">How compatible is Apache with my existing
     NCSA 1.3 setup?</A>
+   </LI>
+   <LI><A HREF="#CGIoutsideScriptAlias">How do I enable CGI execution
+        in directories other than the ScriptAlias?</A>
    </LI>
    <LI><A HREF="#premature-script-headers">What does it mean when my
         CGIs fail with &quot;Premature end of script headers&quot;?</A>
@@ -363,6 +368,50 @@ $Revision: 1.15 $ ($Date: 1997/04/09 19:23:02 $)
   that fundamental feature enhancments stay consistent between the two
   servers for the foreseeable future.
   </P>
+  <HR>
+ </LI>
+ <LI><A
+      NAME="CGIoutsideScriptAlias"
+     ><STRONG>How do I enable CGI execution in directories other than
+      the ScriptAlias?</STRONG></A>
+  <P>
+  </P>
+  <P>
+  Apache recognises all files in a directory named as a
+  <A
+   HREF="../mod/mod_alias.html#scriptalias"
+  >ScriptAlias</A>
+  as being eligible for execution rather than processing as normal
+  documents.  This applies regardless of the file name, so scripts in a
+  ScriptAlias directory don't need to be named
+  &quot;<SAMP>*.cgi</SAMP>&quot; or &quot;<SAMP>*.pl</SAMP>&quot; or
+  whatever.  In other words, <EM>all</EM> files in a ScriptAlias
+  directory are scripts, as far as Apache is concerned.
+  </P>
+  <P>
+  To persuade Apache to execute scripts in other locations, such as in
+  directories where normal documents may also live, you must tell it how
+  to recognise them - and also that it's okey to execute them.
+  </P>
+  <OL>
+   <LI>In an appropriate section of your server configuration files, add
+    a line such as
+    <PRE>
+     <A
+      HREF="../mod/mod_mime.html#addhandler"
+     >AddHandler</A> cgi-script .cgi
+    </PRE>
+    The server will then recognise that all files in that location (and
+    its logical descendants) that end in &quot;<SAMP>.cgi</SAMP>&quot;
+    are script files, not documents.
+   </LI>
+   <LI>Make sure that the directory location is covered by an
+    <A
+     HREF="../mod/core.html#options"
+    >Options</A>
+    declaration that includes the <SAMP>ExecCGI</SAMP> option.
+   </LI>
+  </OL>
   <HR>
  </LI>
  <LI><A
