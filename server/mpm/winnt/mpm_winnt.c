@@ -1466,7 +1466,7 @@ static void child_main()
     CloseHandle(exit_event);
 }
 
-static int send_handles_to_child(apr_pool_t *p, HANDLE child_exit_event, HANDLE hProcess, HANDLE hPipeWrite)
+static int send_handles_to_child(apr_pool_t *p, HANDLE child_exit_event, HANDLE hProcess, apr_file_t *child_in)
 {
     apr_status_t rv;
     HANDLE hScore;
@@ -1480,10 +1480,9 @@ static int send_handles_to_child(apr_pool_t *p, HANDLE child_exit_event, HANDLE 
                      "Parent: Unable to duplicate the exit event handle for the child");
         return -1;
     }
-    if (!WriteFile(hPipeWrite, &hDup, sizeof(hDup),
-                   &BytesWritten, (LPOVERLAPPED) NULL)
-            || (BytesWritten != sizeof(hDup))) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+    if ((rv = apr_file_write_full(child_in, &hDup, sizeof(hDup), &BytesWritten))
+            != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
                      "Parent: Unable to send the exit event handle to the child");
         return -1;
     }
@@ -1499,10 +1498,9 @@ static int send_handles_to_child(apr_pool_t *p, HANDLE child_exit_event, HANDLE 
                      "Parent: Unable to duplicate the scoreboard handle to the child");
         return -1;
     }
-    if (!WriteFile(hPipeWrite, &hDup, sizeof(hDup),
-                   &BytesWritten, (LPOVERLAPPED) NULL)
-            || (BytesWritten != sizeof(hDup))) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+    if ((rv = apr_file_write_full(child_in, &hDup, sizeof(hDup), &BytesWritten))
+            != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
                      "Parent: Unable to send the scoreboard handle to the child");
         return -1;
     }
@@ -1512,8 +1510,10 @@ static int send_handles_to_child(apr_pool_t *p, HANDLE child_exit_event, HANDLE 
     return 0;
 }
 
-static int send_listeners_to_child(apr_pool_t *p, DWORD dwProcessId, HANDLE hPipeWrite)
+static int send_listeners_to_child(apr_pool_t *p, DWORD dwProcessId, 
+                                   apr_file_t *child_in)
 {
+    apr_status_t rv;
     int lcnt = 0;
     ap_listen_rec *lr;
     LPWSAPROTOCOL_INFO  lpWSAProtocolInfo;
@@ -1537,11 +1537,10 @@ static int send_listeners_to_child(apr_pool_t *p, DWORD dwProcessId, HANDLE hPip
             return -1;
         }
 
-        if (!WriteFile(hPipeWrite, lpWSAProtocolInfo, (DWORD) sizeof(WSAPROTOCOL_INFO),
-                       &BytesWritten,
-                       (LPOVERLAPPED) NULL)
-                || BytesWritten != sizeof(WSAPROTOCOL_INFO)) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+        if ((rv = apr_file_write_full(child_in, lpWSAProtocolInfo, 
+                                      sizeof(WSAPROTOCOL_INFO), &BytesWritten))
+                != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
                          "Parent: Unable to write duplicated socket %d to the child.", lr->sd );
             return -1;
         }
@@ -1555,21 +1554,22 @@ static int send_listeners_to_child(apr_pool_t *p, DWORD dwProcessId, HANDLE hPip
 static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_event, 
                           DWORD *child_pid)
 {
-    apr_pool_t *ptemp;
-    char *cmd;
-    HANDLE hExitEvent;
-    HANDLE hPipeWrite;
-    apr_status_t rv;
-    apr_procattr_t *attr;
-    apr_file_t *child_out;
-    apr_file_t *child_err;
-    apr_proc_t new_child;
     /* These NEVER change for the lifetime of this parent 
      */
     static char **args = NULL;
     static char **env = NULL;
     static char pidbuf[28];
+
+    apr_status_t rv;
+    apr_pool_t *ptemp;
+    apr_procattr_t *attr;
+    apr_file_t *child_out;
+    apr_file_t *child_err;
+    apr_proc_t new_child;
+    HANDLE hExitEvent;
+    char *cmd;
     char *cwd;
+
     apr_pool_sub_make(&ptemp, p, NULL);
 
     /* Build the command line. Should look something like this:
@@ -1685,10 +1685,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                  "Parent: Created child process %d", new_child.pid);
 
-    /* Temporary until send_handles and send_listeners accept an apr_file_t */
-    apr_os_file_get(&hPipeWrite, new_child.in);
-
-    if (send_handles_to_child(p, hExitEvent, new_child.hproc, hPipeWrite)) {
+    if (send_handles_to_child(ptemp, hExitEvent, new_child.hproc, new_child.in)) {
         /*
          * This error is fatal, mop up the child and move on
          * We toggle the child's exit event to cause this child 
@@ -1711,7 +1708,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
      */
     Sleep(1000);
 
-    if (send_listeners_to_child(p, new_child.pid, hPipeWrite)) {
+    if (send_listeners_to_child(ptemp, new_child.pid, new_child.in)) {
         /*
          * This error is fatal, mop up the child and move on
          * We toggle the child's exit event to cause this child 
