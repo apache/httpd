@@ -1,5 +1,10 @@
 Changes with Apache 2.0.36
 
+  *) Add HTTP chunked input trailer support.  [Justin Erenkrantz]
+
+  *) Rename and export get_mime_headers as ap_get_mime_headers.
+     [Justin Erenkrantz]
+
   *) Allow empty Host: header arguments.  PR 7441.  [Justin Erenkrantz]
 
   *) Properly substitute sbindir as httpd's location in apachectl.  PR 7840.
