@@ -124,6 +124,8 @@ CACHE_DECLARE(const char *)ap_cache_get_cachetype(request_rec *r,
     }
 
     /* then loop through all the cachedisable entries */
+    /* Looking for urls that contain the full cachedisable url and possibly more. */
+    /*   This means we are disabling cachedisable url and below... */
     for (i = 0; i < conf->cachedisable->nelts; i++) {
         struct cache_disable *ent = 
                                (struct cache_disable *)conf->cachedisable->elts;

@@ -333,6 +333,14 @@ static int create_entity(cache_handle_t *h, request_rec *r,
 	return DECLINED;
     }
 
+    if (len < conf->minfs || len > conf->maxfs) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "cache_disk: URL %s failed the size check, "
+                     "or is incomplete", 
+                     key);
+        return DECLINED;
+    }
+
     /* Allocate and initialize cache_object_t and disk_cache_object_t */
     obj = apr_pcalloc(r->pool, sizeof(*obj));
     obj->vobj = dobj = apr_pcalloc(r->pool, sizeof(*dobj));
@@ -678,6 +686,7 @@ static void *create_config(apr_pool_t *p, server_rec *s)
     conf->space = DEFAULT_CACHE_SIZE;
     conf->maxfs = DEFAULT_MAX_FILE_SIZE;
     conf->minfs = DEFAULT_MIN_FILE_SIZE;
+    conf->expirychk = 1;
 
     conf->cache_root = NULL;
     conf->cache_root_len = 0;
@@ -753,10 +762,10 @@ static const char
 static const char
 *set_cache_exchk(cmd_parms *parms, void *in_struct_ptr, int flag)
 {
-    /* XXX 
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
                                                  &disk_cache_module);
-    */
+    conf->expirychk = flag;
+
     return NULL;
 }
 static const char

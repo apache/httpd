@@ -1,5 +1,9 @@
 Changes with Apache 2.0.44
 
+  *) Added code to process min and max file size directives and to
+     init the expirychk flag in mod_disk_cache. Added a clarifying
+     comment to cache_util.   [Paul J. Reder]
+
   *) The value emitted by ServerSignature now mimics the Server HTTP
      header as controlled by ServerTokens.  [Francis Daly <deva@daoine.org>]
 
