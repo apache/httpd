@@ -69,6 +69,7 @@
 #include "multithread.h"
 #include "../os/win32/getopt.h"
 #include "mpm_default.h"
+#include "../os/win32/iol_socket.h"
 /*
  * Actual definitions of WINNT MPM specific config globals
  */
@@ -76,7 +77,6 @@ int ap_max_requests_per_child=0;
 int ap_daemons_to_start=0;
 static char *mpm_pid_fname=NULL;
 static int ap_threads_per_child = 0;
-//static int ap_max_threads_per_child = 0;
 static int workers_may_exit = 0;
 static int max_requests_per_child = 0;
 static int requests_this_child;
@@ -187,109 +187,7 @@ static void restart(int sig)
     ap_start_restart(1);
 }
 
-/*
- * Find a listener which is ready for accept().  This advances the
- * head_listener global.
- */
-static ap_listen_rec *head_listener;
-static ap_inline ap_listen_rec *find_ready_listener(fd_set * main_fds)
-//static ap_listen_rec *find_ready_listener(fd_set * main_fds)
-{
-    ap_listen_rec *lr;
 
-    lr = head_listener;
-    do {
-	if (FD_ISSET(lr->fd, main_fds)) {
-	    head_listener = lr->next;
-	    return (lr);
-	}
-	lr = lr->next;
-    } while (lr != head_listener);
-    return NULL;
-}
-static int setup_listeners(pool *pconf, server_rec *s)
-{
-    ap_listen_rec *lr;
-    int num_listeners = 0;
-
-    if (ap_listen_open(pconf, s->port)) {
-       return 0;
-    }
-    for (lr = ap_listeners; lr; lr = lr->next) {
-        num_listeners++;
-    }
-
-    /* Should we turn the list into a ring ?*/
-    head_listener = ap_listeners;
-
-    return num_listeners;
-}
-
-static int setup_inherited_listeners(pool *p, server_rec *s)
-{
-    WSAPROTOCOL_INFO WSAProtocolInfo;
-    HANDLE pipe;
-    ap_listen_rec *lr;
-    DWORD BytesRead;
-    int num_listeners = 0;
-    int fd;
-
-    /* Setup the listeners */
-    listenmaxfd = -1;
-    FD_ZERO(&listenfds);
-
-    /* Set up a default listener if necessary */
-    if (ap_listeners == NULL) {
-        struct sockaddr_in local_addr;
-        ap_listen_rec *new;
-        local_addr.sin_family = AF_INET;
-        local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	local_addr.sin_port = htons(s->port ? s->port : DEFAULT_HTTP_PORT);
-        new = malloc(sizeof(ap_listen_rec));
-        new->local_addr = local_addr;
-        new->fd = -1;
-        new->next = ap_listeners;
-        ap_listeners = new;
-    }
-
-    /* Open the pipe to the parent process to receive the inherited socket
-     * data. The sockets have been set to listening in the parent process.
-     */
-    pipe = GetStdHandle(STD_INPUT_HANDLE);
-    for (lr = ap_listeners; lr; lr = lr->next) {
-        if (!ReadFile(pipe, &WSAProtocolInfo, sizeof(WSAPROTOCOL_INFO), 
-                      &BytesRead, (LPOVERLAPPED) NULL)) {
-            ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
-                         "setup_inherited_listeners: Unable to read socket data from parent");
-            exit(1);
-        }
-        fd = WSASocket(FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO,
-                       &WSAProtocolInfo, 0, 0);
-        if (fd == INVALID_SOCKET) {
-            ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
-                         "setup_inherited_listeners: WSASocket failed to get inherit the socket.");
-            exit(1);
-        }
-        if (fd >= 0) {
-            FD_SET(fd, &listenfds);
-            if (fd > listenmaxfd)
-                listenmaxfd = fd;
-        }
-        ap_note_cleanups_for_socket(p, fd);
-    }
-    CloseHandle(pipe);
-
-
-    for (lr = ap_listeners; lr; lr = lr->next) {
-        num_listeners++;
-    }
-
-    /* turn the list into a ring ?*/
-//    lr->next = ap_listeners;
-    head_listener = ap_listeners;
-
-    return num_listeners;
-}
 
 
 /*
@@ -395,6 +293,155 @@ API_EXPORT(int) ap_graceful_stop_signalled(void)
 {
     /* XXX - Does this really work? - Manoj */
     return is_graceful;
+}
+
+static int s_iInitCount = 0;
+static int AMCSocketInitialize(void)
+{
+    int iVersionRequested;
+    WSADATA wsaData;
+    int err;
+
+    if (s_iInitCount > 0) {
+	s_iInitCount++;
+	return (0);
+    }
+    else if (s_iInitCount < 0)
+	return (s_iInitCount);
+
+    /* s_iInitCount == 0. Do the initailization */
+    iVersionRequested = MAKEWORD(1, 1);
+    err = WSAStartup((WORD) iVersionRequested, &wsaData);
+    if (err) {
+	s_iInitCount = -1;
+	return (s_iInitCount);
+    }
+    if (LOBYTE(wsaData.wVersion) != 1 ||
+	HIBYTE(wsaData.wVersion) != 1) {
+	s_iInitCount = -2;
+	WSACleanup();
+	return (s_iInitCount);
+    }
+
+    s_iInitCount++;
+    return (s_iInitCount);
+
+}
+
+
+static void AMCSocketCleanup(void)
+{
+    if (--s_iInitCount == 0)
+	WSACleanup();
+    return;
+}
+
+
+/*
+ * Find a listener which is ready for accept().  This advances the
+ * head_listener global.
+ */
+static ap_listen_rec *head_listener;
+static ap_inline ap_listen_rec *find_ready_listener(fd_set * main_fds)
+{
+    ap_listen_rec *lr;
+
+    for (lr = head_listener; lr ; lr = lr->next) {
+	if (FD_ISSET(lr->fd, main_fds)) {
+	    head_listener = lr->next;
+            if (head_listener == NULL)
+                head_listener = ap_listeners;
+
+	    return (lr);
+	}
+    }
+    return NULL;
+}
+static int setup_listeners(pool *pconf, server_rec *s)
+{
+    ap_listen_rec *lr;
+    int num_listeners = 0;
+
+    if (ap_listen_open(pconf, s->port)) {
+       return 0;
+    }
+    for (lr = ap_listeners; lr; lr = lr->next) {
+        num_listeners++;
+    }
+
+    head_listener = ap_listeners;
+
+    return num_listeners;
+}
+
+static int setup_inherited_listeners(pool *p, server_rec *s)
+{
+    WSAPROTOCOL_INFO WSAProtocolInfo;
+    HANDLE pipe;
+    ap_listen_rec *lr;
+    DWORD BytesRead;
+    int num_listeners = 0;
+    int fd;
+
+    /* Setup the listeners */
+    listenmaxfd = -1;
+    FD_ZERO(&listenfds);
+
+    /* Set up a default listener if necessary */
+    if (ap_listeners == NULL) {
+        struct sockaddr_in local_addr;
+        ap_listen_rec *new;
+        local_addr.sin_family = AF_INET;
+        local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	local_addr.sin_port = htons(s->port ? s->port : DEFAULT_HTTP_PORT);
+        new = malloc(sizeof(ap_listen_rec));
+        new->local_addr = local_addr;
+        new->fd = -1;
+        new->next = ap_listeners;
+        ap_listeners = new;
+    }
+
+    /* Open the pipe to the parent process to receive the inherited socket
+     * data. The sockets have been set to listening in the parent process.
+     */
+    pipe = GetStdHandle(STD_INPUT_HANDLE);
+    for (lr = ap_listeners; lr; lr = lr->next) {
+        if (!ReadFile(pipe, &WSAProtocolInfo, sizeof(WSAPROTOCOL_INFO), 
+                      &BytesRead, (LPOVERLAPPED) NULL)) {
+            ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
+                         "setup_inherited_listeners: Unable to read socket data from parent");
+            signal_parent(0);	/* tell parent to die */
+            exit(1);
+        }
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
+                         "BytesRead = %d WSAProtocolInfo = %x20", BytesRead, WSAProtocolInfo);
+        fd = WSASocket(FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO,
+                       &WSAProtocolInfo, 0, 0);
+        if (fd == INVALID_SOCKET) {
+            ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
+                         "setup_inherited_listeners: WSASocket failed to open the inherited socket.");
+            signal_parent(0);	/* tell parent to die */
+            exit(1);
+        }
+        if (fd >= 0) {
+            FD_SET(fd, &listenfds);
+            if (fd > listenmaxfd)
+                listenmaxfd = fd;
+        }
+        ap_note_cleanups_for_socket(p, fd);
+
+        lr->fd = fd;
+    }
+    CloseHandle(pipe);
+
+
+    for (lr = ap_listeners; lr; lr = lr->next) {
+        num_listeners++;
+    }
+
+    head_listener = ap_listeners;
+
+    return num_listeners;
 }
 
 
@@ -622,7 +669,7 @@ static void child_sub_main(int child_num)
     pool *ptrans;
     int requests_this_child = 0;
     int csd = -1;
-    int dupped_csd = -1;
+    ap_iol *iol;
     int srv = 0;
 
     /* Note: current_conn used to be a defined at file scope as follows... Since the signal code is
@@ -707,27 +754,29 @@ static void child_sub_main(int child_num)
 	(void) ap_update_child_status(child_num, SERVER_BUSY_READ,
 				   (request_rec *) NULL);
 #endif
+        iol = win32_attach_socket(csd);
+        if (iol == NULL) {
+            if (errno == EBADF) {
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
+                             "filedescriptor (%u) larger than FD_SETSIZE (%u) "
+                             "found, you probably need to rebuild Apache with a "
+                             "larger FD_SETSIZE", csd, FD_SETSIZE);
+            }
+            else {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+                             "error attaching to socket");
+            }
+            close(csd);
+            return;
+        }
 
-/* ZZZ . This will break CGIs since they need to know whether a fd is a socket or
-   a file handle... Fix with APR
-*/
-	conn_io = ap_bcreate(ptrans, B_RDWR | B_SOCKET);
-//	conn_io = ap_bcreate(ptrans, B_RDWR);
-	dupped_csd = csd;
-#if defined(NEED_DUPPED_CSD)
-	if ((dupped_csd = dup(csd)) < 0) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
-			"dup: couldn't duplicate csd");
-	    dupped_csd = csd;	/* Oh well... */
-	}
-	ap_note_cleanups_for_socket(ptrans, dupped_csd);
-#endif
-        ap_bpushfd(conn_io, csd); /* ap_bpushfd(conn_io, csd, dupped_csd); why did we drop duped fd? */
+	conn_io = ap_bcreate(ptrans, B_RDWR);
+
+        ap_bpush_iol(conn_io, iol);
         
 	current_conn = ap_new_connection(ptrans, server_conf, conn_io,
                                          (struct sockaddr_in *) &sa_client,
-                                         (struct sockaddr_in *) &sa_server,
-                                         child_num);
+                                         (struct sockaddr_in *) &sa_server);
         
         ap_process_connection(current_conn);
     }        
@@ -745,7 +794,6 @@ void child_main(int child_num_arg)
      */
     child_sub_main(child_num_arg);
 }
-
 
 
 void cleanup_thread(thread **handles, int *thread_cnt, int thread_to_clean)
@@ -852,11 +900,7 @@ void worker_main(void)
 //    sd = -1; ?? this variable is global in 1.3.x!
     nthreads = ap_threads_per_child;
 
-    if (nthreads <= 0) /* maybe this is not needed... Should be checked in config... */
-	nthreads = 1;
-
     my_pid = getpid();
-
 
 //    ap_restart_time = time(NULL);
 
@@ -907,8 +951,6 @@ void worker_main(void)
     }
 //    set_signals();
 
-//    ap_child_init_modules(pconf, server_conf);
-
     allowed_globals.jobsemaphore = create_semaphore(0);
     allowed_globals.jobmutex = ap_create_mutex(NULL);
 
@@ -938,15 +980,10 @@ void worker_main(void)
 
 	memcpy(&main_fds, &listenfds, sizeof(fd_set));
 	srv = ap_select(listenmaxfd + 1, &main_fds, NULL, NULL, &tv);
-#ifdef WIN32
 	if (srv == SOCKET_ERROR) {
 	    /* Map the Win32 error into a standard Unix error condition */
 	    errno = WSAGetLastError();
-	    srv = -1;
-	}
-#endif /* WIN32 */
 
-	if (srv < 0) {
 	    /* Error occurred - if EINTR, loop around with problem */
 	    if (errno != EINTR) {
 		/* A "real" error occurred, log it and increment the count of
@@ -957,7 +994,7 @@ void worker_main(void)
 		count_select_errors++;
 		if (count_select_errors > MAX_SELECT_ERRORS) {
 		    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, server_conf,
-			"Too many errors in select loop. Child process exiting.");
+                                 "Too many errors in select loop. Child process exiting.");
 		    break;
 		}
 	    }
@@ -966,9 +1003,7 @@ void worker_main(void)
 	count_select_errors = 0;    /* reset count of errors */
 	if (srv == 0) {
             continue;
-	}
-
-	{
+	} else {
 	    ap_listen_rec *lr;
 
 	    lr = find_ready_listener(&main_fds);
@@ -979,12 +1014,10 @@ void worker_main(void)
 	do {
 	    clen = sizeof(sa_client);
 	    csd = accept(sd, (struct sockaddr *) &sa_client, &clen);
-#ifdef WIN32
 	    if (csd == INVALID_SOCKET) {
 		csd = -1;
 		errno = WSAGetLastError();
 	    }
-#endif /* WIN32 */
 	} while (csd < 0 && errno == EINTR);
 
 	if (csd < 0) {
@@ -1101,96 +1134,99 @@ static void cleanup_process(HANDLE *handles, HANDLE *events, int position, int *
 }
 
 static int create_process(pool *p, HANDLE *handles, HANDLE *events, int *processes)
-{
+ {
 
-    int rv;
-    char buf[1024];
-    char *pCommand;
-    char *pEnvBlock;
+     int rv;
+     char buf[1024];
+     char *pCommand;
+     char *pEnvBlock;
 
-    STARTUPINFO si;           /* Filled in prior to call to CreateProcess */
-    PROCESS_INFORMATION pi;   /* filled in on call to CreateProces */
+     STARTUPINFO si;           /* Filled in prior to call to CreateProcess */
+     PROCESS_INFORMATION pi;   /* filled in on call to CreateProces */
 
-    ap_listen_rec *lr;
-    DWORD BytesWritten;
-    HANDLE hPipeRead = NULL;
-    HANDLE hPipeWrite = NULL;
-    SECURITY_ATTRIBUTES sa = {0};  
+     ap_listen_rec *lr;
+     DWORD BytesWritten;
+     HANDLE hPipeRead = NULL;
+     HANDLE hPipeWrite = NULL;
+     SECURITY_ATTRIBUTES sa = {0};  
 
-    sa.nLength = sizeof(sa);
-    sa.bInheritHandle = TRUE;
-    sa.lpSecurityDescriptor = NULL;
+     sa.nLength = sizeof(sa);
+     sa.bInheritHandle = TRUE;
+     sa.lpSecurityDescriptor = NULL;
 
-    /* Build the command line. Should look something like this:
-     * C:/apache/bin/apache.exe -f ap_server_confname 
-     * First, get the path to the executable...
-     */
-    rv = GetModuleFileName(NULL, buf, sizeof(buf));
-    if (rv == sizeof(buf)) {
-        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
-                     "Parent: Path to Apache process too long");
-        return -1;
-    } else if (rv == 0) {
-        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
-                     "Parent: GetModuleFileName() returned NULL for current process.");
-        return -1;
-    }
-    
-//    pCommand = ap_psprintf(p, "\"%s\" -f \"%s\"", buf, ap_server_confname);  
-    pCommand = ap_psprintf(p, "\"%s\" -f \"%s\"", buf, SERVER_CONFIG_FILE);  
+     /* Build the command line. Should look something like this:
+      * C:/apache/bin/apache.exe -f ap_server_confname 
+      * First, get the path to the executable...
+      */
+     rv = GetModuleFileName(NULL, buf, sizeof(buf));
+     if (rv == sizeof(buf)) {
+         ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                      "Parent: Path to Apache process too long");
+         return -1;
+     } else if (rv == 0) {
+         ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                      "Parent: GetModuleFileName() returned NULL for current process.");
+         return -1;
+     }
 
-    /* Create a pipe to send socket info to the child */
-    if (!CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) {
-        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
-                     "Parent: Unable to create pipe to child process.\n");
-        return -1;
-    }
+ //    pCommand = ap_psprintf(p, "\"%s\" -f \"%s\"", buf, ap_server_confname);  
+     pCommand = ap_psprintf(p, "\"%s\" -f \"%s\"", buf, SERVER_CONFIG_FILE);  
 
-    pEnvBlock = ap_psprintf(p, "AP_PARENT_PID=%d\0\0",parent_pid);
+     /* Create a pipe to send socket info to the child */
+     if (!CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) {
+         ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                      "Parent: Unable to create pipe to child process.\n");
+         return -1;
+     }
 
-    /* Give the read in of the pipe (hPipeRead) to the child as stdin. The 
-     * parent will write the socket data to the child on this pipe.
-     */
-    memset(&si, 0, sizeof(si));
-    memset(&pi, 0, sizeof(pi));
-    si.cb = sizeof(si);
-    si.dwFlags     = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-    si.wShowWindow = SW_HIDE;
-    si.hStdInput   = hPipeRead;
+//     pEnvBlock = ap_psprintf(p, "AP_PARENT_PID=%d\0",parent_pid);
+     SetEnvironmentVariable("AP_PARENT_PID",ap_psprintf(p,"%d",parent_pid));
 
-    if (!CreateProcess(NULL, pCommand, NULL, NULL, 
-                       TRUE,               /* Inherit handles */
-                       CREATE_SUSPENDED,   /* Creation flags */
-                       pEnvBlock,          /* Environment block */
-                       NULL,
-                       &si, &pi)) {
-        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
-                     "Parent: Not able to create the child process.");
-        /*
-         * We must close the handles to the new process and its main thread
-         * to prevent handle and memory leaks.
-         */ 
-        CloseHandle(pi.hProcess);
-        CloseHandle(pi.hThread);
+     /* Give the read in of the pipe (hPipeRead) to the child as stdin. The 
+      * parent will write the socket data to the child on this pipe.
+      */
+     memset(&si, 0, sizeof(si));
+     memset(&pi, 0, sizeof(pi));
+     si.cb = sizeof(si);
+     si.dwFlags     = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+     si.wShowWindow = SW_HIDE;
+     si.hStdInput   = hPipeRead;
 
-        return -1;
-    }
-    else {
-        HANDLE kill_event;
-        LPWSAPROTOCOL_INFO  lpWSAProtocolInfo;
+     if (!CreateProcess(NULL, pCommand, NULL, NULL, 
+                        TRUE,               /* Inherit handles */
+                        CREATE_SUSPENDED,   /* Creation flags */ // checkout DETACHED_PROCESS here and in the CGI
+                        NULL,          /* Environment block */
+                        NULL,
+                        &si, &pi)) {
+         ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                      "Parent: Not able to create the child process.");
+         /*
+          * We must close the handles to the new process and its main thread
+          * to prevent handle and memory leaks.
+          */ 
+         CloseHandle(pi.hProcess);
+         CloseHandle(pi.hThread);
 
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, server_conf,
-                     "Parent: Created child process %d", pi.dwProcessId);
+         return -1;
+     }
+     else {
+         HANDLE kill_event;
+         LPWSAPROTOCOL_INFO  lpWSAProtocolInfo;
 
-        /* Create the exit_event, apCHILD_PID */
-        kill_event = CreateEvent(NULL, TRUE, FALSE, 
-                                 ap_psprintf(pconf,"ap%d", pi.dwProcessId));
-        if (!kill_event) {
-            ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
-                         "Parent: Could not create exit event for child process");
-            CloseHandle(pi.hProcess);
-            CloseHandle(pi.hThread);
-            return -1;
+         ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, server_conf,
+                      "Parent: Created child process %d", pi.dwProcessId);
+
+         SetEnvironmentVariable("AP_PARENT_PID",NULL);
+
+         /* Create the exit_event, apCHILD_PID */
+         kill_event = CreateEvent(NULL, TRUE, FALSE, 
+                                  ap_psprintf(pconf,"ap%d", pi.dwProcessId));
+         if (!kill_event) {
+             ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                          "Parent: Could not create exit event for child process");
+             CloseHandle(pi.hProcess);
+             CloseHandle(pi.hThread);
+             return -1;
         }
         
         /* Assume the child process lives. Update the process and event tables */
@@ -1205,8 +1241,7 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events, int *process
         /* Run the chain of open sockets. For each socket, duplicate it 
          * for the target process then send the WSAPROTOCOL_INFO 
          * (returned by dup socket) to the child */
-        lr = ap_listeners;
-        while (lr != NULL) {
+        for (lr = ap_listeners; lr; lr = lr->next) {
             lpWSAProtocolInfo = ap_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
             ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, server_conf,
                          "Parent: Duplicating socket %d and sending it to child process %d", lr->fd, pi.dwProcessId);
@@ -1225,10 +1260,8 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events, int *process
                              "Parent: Unable to write duplicated socket %d to the child.", lr->fd );
                 return -1;
             }
-
-            lr = lr->next;
-            if (lr == ap_listeners)
-                break;
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
+                         "BytesWritten = %d WSAProtocolInfo = %x20", BytesWritten, *lpWSAProtocolInfo);
         }
     }
     CloseHandle(hPipeRead);
@@ -1291,13 +1324,15 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     HANDLE process_handles[MAX_PROCESSES];
     HANDLE process_kill_events[MAX_PROCESSES];
 
+    setup_listeners(pconf, s);
+
     /* Create child process 
      * Should only be one in this version of Apache for WIN32 
      */
     while (remaining_children_to_start--) {
         if (create_process(pconf, process_handles, process_kill_events, 
                            &current_live_processes) < 0) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO, server_conf,
                          "master_main: create child process failed. Exiting.");
             shutdown_pending = 1;
             goto die_now;
@@ -1334,14 +1369,8 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
             ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, s,
                          "ResetEvent(shutdown_event)");
         }
-        /* Signal each child processes to die */
-        for (i = 0; i < current_live_processes; i++) {
-//                APD3("master_main: signalling child %d, handle %d to die", i, process_handles[i]);
-            if (SetEvent(process_kill_events[i]) == 0)
-                ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_WIN32ERROR, server_conf,
-                             "master_main: SetEvent for child process in slot #%d failed", i);
-        }
-    } 
+
+    }
     else if (cld == current_live_processes+1) {
         /* restart_event signalled */
         int children_to_kill = current_live_processes;
@@ -1387,6 +1416,14 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
 die_now:
     if (shutdown_pending) {
         int tmstart = time(NULL);
+        /* Signal each child processes to die */
+        for (i = 0; i < current_live_processes; i++) {
+//                APD3("master_main: signalling child %d, handle %d to die", i, process_handles[i]);
+            if (SetEvent(process_kill_events[i]) == 0)
+                ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_WIN32ERROR, server_conf,
+                             "master_main: SetEvent for child process in slot #%d failed", i);
+        }
+
         while (current_live_processes && ((tmstart+60) > time(NULL))) {
             rv = WaitForMultipleObjects(current_live_processes, (HANDLE *)process_handles, FALSE, 2000);
             if (rv == WAIT_TIMEOUT)
@@ -1409,7 +1446,6 @@ die_now:
 
 /* 
  * winnt_pre_config()
- * Gets called twice at startup. 
  */
 static void winnt_pre_config(pool *pconf, pool *plog, pool *ptemp) 
 {
@@ -1418,6 +1454,7 @@ static void winnt_pre_config(pool *pconf, pool *plog, pool *ptemp)
 
     /* Track parent/child pids... */
     pid = getenv("AP_PARENT_PID");
+    printf("pid = %d\n", pid);
     if (pid) {
         /* AP_PARENT_PID is only valid in the child */
         parent_pid = atoi(pid);
@@ -1436,6 +1473,8 @@ static void winnt_pre_config(pool *pconf, pool *plog, pool *ptemp)
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
 
     ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
+
+    AMCSocketInitialize();
 }
 
 /*
