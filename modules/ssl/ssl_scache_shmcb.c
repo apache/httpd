@@ -269,13 +269,10 @@ static void shmcb_set_safe_time_ex(unsigned char *, const unsigned char *);
 
 /* This is necessary simply so that the size passed to memset() is not a
  * compile-time constant, preventing the compiler from optimising it. */
-#if 0
-/* XXX: this isn't used, is it needed? */
 static void shmcb_safe_clear(void *ptr, size_t size)
 {
 	memset(ptr, 0, size);
 }
-#endif
 
 /* Underlying functions for session-caching */
 static BOOL shmcb_init_memory(server_rec *, void *, unsigned int);
@@ -385,8 +382,10 @@ void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
                              mc->nSessionCacheDataSize, 
                              mc->szSessionCacheDataFile,
                              mc->pPool)) != APR_SUCCESS) {
+        char buf[100];
         ssl_log(s, SSL_LOG_ERROR,
-                "Cannot allocate shared memory: %d", rv);
+                "Cannot allocate shared memory: (%d)%s", rv,
+                apr_strerror(rv, buf, sizeof(buf)));
         ssl_die();
     }
 
@@ -394,8 +393,10 @@ void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
                              apr_shm_baseaddr_get(mc->pSessionCacheDataMM),
                              mc->nSessionCacheDataSize,
                              mc->pPool)) != APR_SUCCESS) {
+        char buf[100];
         ssl_log(s, SSL_LOG_ERROR,
-                "Cannot initialize rmm: %d", rv);
+                "Cannot initialize rmm: (%d)%s", rv,
+                apr_strerror(rv, buf, sizeof(buf)));
         ssl_die();
     }
 
@@ -1179,7 +1180,7 @@ static BOOL shmcb_insert_encoded_session(
                 "internal error");
         return FALSE;
     }
-    memset(idx, 0, sizeof(SHMCBIndex));
+    shmcb_safe_clear(idx, sizeof(SHMCBIndex));
     shmcb_set_safe_time(&(idx->expires), expiry_time);
     shmcb_set_safe_uint(&(idx->offset), new_offset);
 

@@ -1,5 +1,10 @@
 Changes with Apache 2.0.37
 
+  *) Synced with remaining changes from mod_ssl 2.8.8-1.3.24:
+     - Avoid SIGBUS on sparc machines with SHMCB session caches
+     - Allow whitespace between the pipe and the name of the
+     program in SSLLog "| /path/to/program".  [Cliff Woolley]
+
   *) Introduce mod_ext_filter and mod_deflate experimental modules
      to the Win32 build (zlib sources must be in srclib\zlib.)
      [William Rowe]
