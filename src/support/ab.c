@@ -627,18 +627,19 @@ static void output_results(void)
 	    meand = stats[requests / 2].time - stats[requests / 2].ctime;
 
 	qsort(stats, requests, sizeof(struct data),
+	      (int (*) (const void *, const void *)) compwait);
+	if ((requests > 1) && (requests % 2))
+	    meanwait = (stats[requests / 2].waittime + stats[requests / 2 + 1].waittime) / 2;
+	else
+	    meanwait = stats[requests / 2].waittime;
+
+	qsort(stats, requests, sizeof(struct data),
 	      (int (*) (const void *, const void *)) comprando);
 	if ((requests > 1) && (requests % 2))
 	    meantot = (stats[requests / 2].time + stats[requests / 2 + 1].time) / 2;
 	else
 	    meantot = stats[requests / 2].time;
 
-	qsort(stats, requests, sizeof(struct data),
-	      (int (*) (const void *, const void *)) compwait);
-	if ((requests > 1) && (requests % 2))
-	    meanwait = (stats[requests / 2].waittime + stats[requests / 2 + 1].waittime) / 2;
-	else
-	    meanwait = stats[requests / 2].waittime;
 
 	printf("\nConnnection Times (ms)\n");
 
@@ -1322,14 +1323,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.47 $> apache-1.3");
+	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.48 $> apache-1.3");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.47 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.48 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
