@@ -113,8 +113,6 @@ typedef struct mem_cache_object {
 typedef struct {
     apr_thread_mutex_t *lock;
     cache_cache_t *cache_cache;
-    apr_size_t cache_size;
-    apr_size_t object_cnt;
 
     /* Fields set by config directives */
     apr_size_t min_cache_object_size;   /* in bytes */
@@ -348,8 +346,6 @@ static apr_status_t decrement_refcount(void *arg)
          */
         if (!obj->cleanup) {
             cache_remove(sconf->cache_cache, obj);
-            sconf->object_cnt--;
-            sconf->cache_size -= mobj->m_len;
             obj->cleanup = 1;
         }
         if (sconf->lock) {
@@ -432,10 +428,8 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
     sconf->max_cache_object_size = DEFAULT_MAX_CACHE_OBJECT_SIZE;
     /* Number of objects in the cache */
     sconf->max_object_cnt = DEFAULT_MAX_OBJECT_CNT;
-    sconf->object_cnt = 0;
     /* Size of the cache in bytes */
     sconf->max_cache_size = DEFAULT_MAX_CACHE_SIZE;
-    sconf->cache_size = 0;
     sconf->cache_cache = NULL;
     sconf->cache_remove_algorithm = memcache_gdsf_algorithm;
     sconf->max_streaming_buffer_size = DEFAULT_MAX_STREAMING_BUFFER_SIZE;
@@ -550,9 +544,6 @@ static int create_entity(cache_handle_t *h, request_rec *r,
 
     if (!tmp_obj) {
         cache_insert(sconf->cache_cache, obj);     
-        sconf->object_cnt++;
-        /* Safe cast: Must fit in cache_size or alloc would have failed */
-        sconf->cache_size += (apr_size_t)len;
     }
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
@@ -657,8 +648,6 @@ static int remove_entity(cache_handle_t *h)
     if (!obj->cleanup) {
         mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
         cache_remove(sconf->cache_cache, obj);
-        sconf->object_cnt--;
-        sconf->cache_size -= mobj->m_len;
         obj->cleanup = 1;
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL, "gcing a cache entry");
     }
@@ -753,8 +742,6 @@ static int remove_url(const char *type, const char *key)
         mem_cache_object_t *mobj;
         cache_remove(sconf->cache_cache, obj);
         mobj = (mem_cache_object_t *) obj->vobj;
-        sconf->object_cnt--;
-        sconf->cache_size -= mobj->m_len;
 
 #ifdef USE_ATOMICS
         /* Refcount increment in this case MUST be made under 
@@ -1053,8 +1040,6 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
                       (cache_object_t *) cache_find(sconf->cache_cache, obj->key);
                     if (tmp_obj) {
                         cache_remove(sconf->cache_cache, tmp_obj);
-                        sconf->object_cnt--;
-                        sconf->cache_size -= mobj->m_len;
                         tmp_obj->cleanup = 1;
                         if (!tmp_obj->refcount) {
                             cleanup_cache_object(tmp_obj);
@@ -1067,7 +1052,6 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
                 }
                 mobj->m_len = obj->count;
                 cache_insert(sconf->cache_cache, obj);                
-                sconf->cache_size -= (mobj->m_len - obj->count);
                 if (sconf->lock) {
                     apr_thread_mutex_unlock(sconf->lock);
                 }
