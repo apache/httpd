@@ -1,5 +1,13 @@
 Changes with Apache 2.0.30-dev
 
+  *) The POD no longer assumes the child is listening on 127.0.0.1
+     and now pulls the first hostname in the list of listeners to
+     perform the dummy connect on. This fixes a bug when the user
+     had configured the Listen directive for an IP other than
+     127.0.0.1. This would result in undead children and error
+     messages such as "Connection refused: connect to listener".
+     [Aaron Bannert]
+
   *) The worker MPM now respects the LockFile setting, needed to
      avoid locking problems with NFS.  [Jeff Trawick]
 
