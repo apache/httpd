@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/11/20 03:14:05 $]
+Last modified at [$Date: 2001/11/20 03:49:50 $]
 
 Release:
 
@@ -79,7 +79,13 @@ RELEASE SHOWSTOPPERS:
       to make it agree with the operation of the StartServers
       directive.
 
-    * revamp the input filter semantics, per discussions since
+    * revamp the input filter syntax to provide for ordering of
+      filters created with the Set{Input|Output}Filter and the
+      Add{Input|Output}Filter directives.  At minimum, some sort
+      of insert first v.s. append to end or 'relative to x' is
+      probably needed.
+
+    * revamp the input filter behavior, per discussions since
       February (and especially at the hackathon last
       April). Specifically, ap_get_brigade will return a brigade with
       *up to* a specific number of bytes, or a "line" of data. The
