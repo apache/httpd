@@ -85,7 +85,6 @@
 
 typedef struct {
     char *pwfile;
-    int authoritative;
 } authn_file_config_rec;
 
 static void *create_authn_file_dir_config(apr_pool_t *p, char *d)
@@ -93,7 +92,6 @@ static void *create_authn_file_dir_config(apr_pool_t *p, char *d)
     authn_file_config_rec *conf = apr_palloc(p, sizeof(*conf));
 
     conf->pwfile = NULL;     /* just to illustrate the default really */
-    conf->authoritative = 1; /* keep the fortress secure by default */
     return conf;
 }
 
@@ -112,12 +110,6 @@ static const command_rec authn_file_cmds[] =
     AP_INIT_TAKE12("AuthUserFile", set_authn_file_slot,
                    (void *)APR_OFFSETOF(authn_file_config_rec, pwfile),
                    OR_AUTHCFG, "text file containing user IDs and passwords"),
-    AP_INIT_FLAG("AuthUserFileAuthoritative", ap_set_flag_slot,
-                 (void *)APR_OFFSETOF(authn_file_config_rec, authoritative),
-                 OR_AUTHCFG,
-                 "Set to 'no' to allow access control to be passed along to "
-                 "other modules if the BasicAuth username is not in "
-                 "AuthUserFile. (default is yes)." ),
     {NULL}
 };
 
