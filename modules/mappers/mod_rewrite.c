@@ -4345,7 +4345,7 @@ static int parseargline(char *str, char **a1, char **a2, char **a3)
     CHECK_QUOTATION(cp, isquoted);
     *a3 = cp;
     DETERMINE_NEXTSTRING(cp, isquoted);
-    *cp++ = '\0';
+    *cp = '\0';
 
     return 0;
 }
