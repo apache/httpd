@@ -262,11 +262,10 @@ API_EXPORT(void) ap_register_filter(const char *name,
  * Add a filter to the current request.  Filters are added in a FIFO manner.
  * The first filter added will be the first filter called.
  * @param name The name of the filter to add
- * @param ctx Any filter specific data to associate with the filter
  * @param r The request to add this filter for.
- * @deffunc void ap_add_filter(const char *name, void *ctx, request_rec *r)
+ * @deffunc void ap_add_filter(const char *name, request_rec *r)
  */
-API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r);
+API_EXPORT(void) ap_add_filter(const char *name, request_rec *r);
 
 /* The next two filters are for abstraction purposes only.  They could be
  * done away with, but that would require that we break modules if we ever
