@@ -87,6 +87,7 @@
 
 #define CORE_PRIVATE
 
+#include "apr_portable.h"
 #include "httpd.h"
 #include "mpm_default.h"
 #include "http_main.h"
@@ -135,7 +136,7 @@ static char ap_coredump_dir[MAX_STRING_LEN];
 /* *Non*-shared http_main globals... */
 
 static server_rec *server_conf;
-static int sd;
+static ap_socket_t *sd;
 static fd_set listenfds;
 static int listenmaxfd;
 
@@ -528,7 +529,7 @@ static int lock_fd = -1;
  */
 static void accept_mutex_init(ap_context_t *p)
 {
-
+    ap_file_t *tempfile;
     lock_it.l_whence = SEEK_SET;	/* from current point */
     lock_it.l_start = 0;		/* -"- */
     lock_it.l_len = 0;			/* until end of file */
@@ -541,7 +542,9 @@ static void accept_mutex_init(ap_context_t *p)
     unlock_it.l_pid = 0;		/* pid not actually interesting */
 
     expand_lock_fname(p);
-    lock_fd = ap_popenf(p, ap_lock_fname, O_CREAT | O_WRONLY | O_EXCL, 0644);
+    ap_open(p, ap_lock_fname, APR_CREATE | APR_WRITE | APR_EXCL,
+            APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD, &tempfile);
+    ap_get_os_file(tempfile, &lock_fd);
     if (lock_fd == -1) {
 	perror("open");
 	fprintf(stderr, "Cannot open lock file: %s\n", ap_lock_fname);
@@ -1903,7 +1906,7 @@ static void sock_disable_nagle(int s)
  */
 
 static int srv;
-static int csd;
+static ap_socket_t *csd;
 static int requests_this_child;
 static fd_set main_fds;
 
@@ -1934,9 +1937,11 @@ static void child_main(int child_num_arg)
     ap_context_t *ptrans;
     conn_rec *current_conn;
     ap_iol *iol;
+    ap_status_t stat;
+    int sockdes;
 
     my_pid = getpid();
-    csd = -1;
+    csd = NULL;
     my_child_num = child_num_arg;
     requests_this_child = 0;
     last_lr = NULL;
@@ -2034,7 +2039,8 @@ static void child_main(int child_num_arg)
 		}
 		first_lr=lr;
 		do {
-		    if (FD_ISSET(lr->fd, &main_fds))
+                    ap_get_os_sock(lr->sd, &sockdes);
+		    if (FD_ISSET(sockdes, &main_fds))
 			goto got_listener;
 		    lr = lr->next;
 		    if (!lr)
@@ -2047,11 +2053,11 @@ static void child_main(int child_num_arg)
 		continue;
 	got_listener:
 		last_lr = lr;
-		sd = lr->fd;
+		sd = lr->sd;
 	    }
 	    else {
 		/* only one socket, just pretend we did the other stuff */
-		sd = ap_listeners->fd;
+		sd = ap_listeners->sd;
 	    }
 
 	    /* if we accept() something we don't want to die, so we have to
@@ -2064,12 +2070,12 @@ static void child_main(int child_num_arg)
 		    clean_child_exit(0);
 		}
 		clen = sizeof(sa_client);
-		csd = ap_accept(sd, &sa_client, &clen);
-		if (csd >= 0 || errno != EINTR)
+		stat = ap_accept(sd, &csd);
+		if (stat == APR_SUCCESS || stat != APR_EINTR)
 		    break;
 	    }
 
-	    if (csd >= 0)
+	    if (stat == APR_SUCCESS)
 		break;		/* We have a socket ready for reading */
 	    else {
 
@@ -2192,28 +2198,30 @@ static void child_main(int child_num_arg)
 	 * socket options, file descriptors, and read/write buffers.
 	 */
 
+        ap_get_os_sock(csd, &sockdes);
+
 	clen = sizeof(sa_server);
-	if (getsockname(csd, &sa_server, &clen) < 0) {
+	if (getsockname(sockdes, &sa_server, &clen) < 0) {
 	    ap_log_error(APLOG_MARK, APLOG_ERR, server_conf, "getsockname");
-	    close(csd);
+	    ap_close_socket(csd);
 	    continue;
 	}
 
-	sock_disable_nagle(csd);
+	sock_disable_nagle(sockdes);
 
-	iol = unix_attach_socket(csd);
+	iol = unix_attach_socket(sockdes);
 	if (iol == NULL) {
 	    if (errno == EBADF) {
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
 		    "filedescriptor (%u) larger than FD_SETSIZE (%u) "
 		    "found, you probably need to rebuild Apache with a "
-		    "larger FD_SETSIZE", csd, FD_SETSIZE);
+		    "larger FD_SETSIZE", sockdes, FD_SETSIZE);
 	    }
 	    else {
 		ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
 		    "error attaching to socket");
 	    }
-	    close(csd);
+	    ap_close_socket(csd);
 	    continue;
 	}
 
@@ -2517,6 +2525,7 @@ static void process_child_status(int pid, ap_wait_t status)
 static int setup_listeners(ap_context_t *p, server_rec *s)
 {
     ap_listen_rec *lr;
+    int sockdes;
 
     if (ap_listen_open(p, s->port)) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
@@ -2527,9 +2536,10 @@ static int setup_listeners(ap_context_t *p, server_rec *s)
     listenmaxfd = -1;
     FD_ZERO(&listenfds);
     for (lr = ap_listeners; lr; lr = lr->next) {
-	FD_SET(lr->fd, &listenfds);
-	if (lr->fd > listenmaxfd) {
-	    listenmaxfd = lr->fd;
+        ap_get_os_sock(lr->sd, &sockdes);
+	FD_SET(sockdes, &listenfds);
+	if (sockdes > listenmaxfd) {
+	    listenmaxfd = sockdes;
 	}
     }
     return 0;
@@ -2547,7 +2557,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     pconf = _pconf;
 
     server_conf = s;
-
+ 
     ap_log_pid(pconf, ap_pid_fname);
 
     if (setup_listeners(pconf, s)) {

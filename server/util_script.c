@@ -688,6 +688,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, ap_child_info_t *pinfo, char *argv0
 			     char **env, int shellcmd)
 {
     int pid = 0;
+    int errfileno = STDERR_FILENO;
 
 #if !defined(WIN32) && !defined(OS2)
     /* the fd on r->server->error_log is closed, but we need somewhere to
@@ -695,7 +696,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, ap_child_info_t *pinfo, char *argv0
      * since that is better than allowing errors to go unnoticed.  Don't do
      * this on Win32, though, since we haven't fork()'d.
      */
-    r->server->error_log = stderr;
+    ap_put_os_file(r->pool, &r->server->error_log, &errfileno);
 #endif
 
     /* TODO: all that RLimit stuff should become part of the spawning API,

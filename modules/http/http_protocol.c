@@ -1997,12 +1997,12 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
 /*
  * Send the body of a response to the client.
  */
-API_EXPORT(long) ap_send_fd(APRFile fd, request_rec *r)
+API_EXPORT(long) ap_send_fd(int fd, request_rec *r)
 {
     return ap_send_fd_length(fd, r, -1);
 }
 
-API_EXPORT(long) ap_send_fd_length(APRFile fd, request_rec *r, long length)
+API_EXPORT(long) ap_send_fd_length(int fd, request_rec *r, long length)
 {
     char buf[IOBUFSIZE];
     long total_bytes_sent = 0;

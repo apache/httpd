@@ -58,12 +58,12 @@
 #ifndef AP_LISTEN_H
 #define AP_LISTEN_H
 
+#include "apr_network_io.h"
+
 typedef struct ap_listen_rec ap_listen_rec;
 struct ap_listen_rec {
     ap_listen_rec *next;
-    struct sockaddr_in local_addr;	/* local IP address and port */
-/* TODO: replace the fd with APR stuff */
-    int fd;
+    ap_socket_t *sd;
 /* more stuff here, like which protocol is bound to the port */
 };
 

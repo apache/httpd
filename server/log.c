@@ -65,6 +65,7 @@
 
 #define CORE_PRIVATE
 #include "apr_lib.h"
+#include "apr_portable.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -190,6 +191,7 @@ static void open_error_log(server_rec *s, ap_context_t *p)
 
     if (*s->error_fname == '|') {
 	FILE *dummy;
+        int dummyno;
 #ifdef TPF
         TPF_FORK_CHILD cld;
         cld.filename = s->error_fname+1;
@@ -206,7 +208,8 @@ static void open_error_log(server_rec *s, ap_context_t *p)
 	    exit(1);
 	}
 
-	s->error_log = dummy;
+        dummyno = fileno(dummy);
+	ap_put_os_file(p, &s->error_log, &dummyno);
     }
 
 #ifdef HAVE_SYSLOG
@@ -233,7 +236,8 @@ static void open_error_log(server_rec *s, ap_context_t *p)
     else {
 	fname = ap_server_root_relative(p, s->error_fname);
 	/*  Change to AP funcs. */
-        if (!(s->error_log = ap_pfopen(p, fname, "a"))) {
+        if (ap_open(p, fname, APR_BUFFERED | APR_APPEND | APR_READ | APR_WRITE, 
+                      APR_OS_DEFAULT, &s->error_log) != APR_SUCCESS) {
             perror("fopen");
             fprintf(stderr, "%s: could not open error log file %s.\n",
 		    ap_server_argv0, fname);
@@ -246,6 +250,7 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
 {
     server_rec *virt, *q;
     int replace_stderr;
+    int errfile;
 
     open_error_log(s_main, p);
 
@@ -253,7 +258,8 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
     if (s_main->error_log) {
 	/* replace stderr with this new log */
 	fflush(stderr);
-	if (dup2(fileno(s_main->error_log), STDERR_FILENO) == -1) {
+        ap_get_os_file(s_main->error_log, &errfile);
+	if (dup2(errfile, STDERR_FILENO) == -1) {
 	    ap_log_error(APLOG_MARK, APLOG_CRIT, s_main,
 		"unable to replace stderr with error_log");
 	} else {
@@ -287,9 +293,12 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
 }
 
 API_EXPORT(void) ap_error_log2stderr(server_rec *s) {
+    int errfile;
+
+    ap_get_os_file(s->error_log, &errfile);
     if (   s->error_log != NULL
-        && fileno(s->error_log) != STDERR_FILENO)
-        dup2(fileno(s->error_log), STDERR_FILENO);
+        && errfile != STDERR_FILENO)
+        dup2(errfile, STDERR_FILENO);
 }
 
 static void log_error_core(const char *file, int line, int level,
@@ -300,7 +309,8 @@ static void log_error_core(const char *file, int line, int level,
     size_t len;
     /* change to AP errno funcs. */
     int save_errno = errno;
-    FILE *logf;
+    ap_file_t *logf = NULL;
+    int errfileno = STDERR_FILENO;
 
     if (s == NULL) {
 	/*
@@ -311,7 +321,7 @@ static void log_error_core(const char *file, int line, int level,
 	if (((level & APLOG_LEVELMASK) != APLOG_NOTICE) &&
 	    ((level & APLOG_LEVELMASK) > DEFAULT_LOGLEVEL))
 	    return;
-	logf = stderr;
+	ap_put_os_file(NULL, &logf, &errfileno);
     }
     else if (s->error_log) {
 	/*
@@ -448,9 +458,9 @@ static void log_error_core(const char *file, int line, int level,
     if (logf) {
       /* ZZZ let's just use AP funcs to Write to the error log.  If failure,
 	 can we output a message to the console??? */
-	fputs(errstr, logf);
-	fputc('\n', logf);
-	fflush(logf);
+	ap_puts(logf, errstr);
+	ap_putc(logf, '\n');
+	ap_flush(logf);
     }
 #ifdef HAVE_SYSLOG
     else {
@@ -514,11 +524,11 @@ void ap_log_pid(ap_context_t *p, const char *fname)
        *      that may screw up scripts written to do something
        *      based on the last modification time of the pid file.
        */
-      ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
-		   ap_psprintf(p,
-			       "pid file %s overwritten -- Unclean shutdown of previous Apache run?",
-			       fname)
-		   );
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
+		     ap_psprintf(p,
+                                 "pid file %s overwritten -- Unclean shutdown of previous Apache run?",
+                     fname)
+			       );
     }
 
     if(!(pid_file = fopen(fname, "w"))) {
@@ -664,8 +674,8 @@ static void piped_log_cleanup(void *data)
 	kill(pl->pid, SIGTERM);
     }
     ap_unregister_other_child(pl);
-    close(pl->fds[0]);
-    close(pl->fds[1]);
+    ap_close(pl->fds[0]);
+    ap_close(pl->fds[1]);
 }
 
 
@@ -673,8 +683,8 @@ static void piped_log_cleanup_for_exec(void *data)
 {
     piped_log *pl = data;
 
-    close(pl->fds[0]);
-    close(pl->fds[1]);
+    ap_close(pl->fds[0]);
+    ap_close(pl->fds[1]);
 }
 
 
@@ -686,7 +696,7 @@ API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
     pl->p = p;
     pl->program = ap_pstrdup(p, program);
     pl->pid = -1;
-    if (pipe(pl->fds) == -1) {
+    if (ap_create_pipe(p, &pl->fds[0], &pl->fds[1]) != APR_SUCCESS) {
 	int save_errno = errno;
 	errno = save_errno;
 	return NULL;
@@ -695,8 +705,8 @@ API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
     if (piped_log_spawn(pl) == -1) {
 	int save_errno = errno;
 	ap_kill_cleanup(p, pl, piped_log_cleanup);
-	close(pl->fds[0]);
-	close(pl->fds[1]);
+	ap_close(pl->fds[0]);
+	ap_close(pl->fds[1]);
 	errno = save_errno;
 	return NULL;
     }
@@ -743,6 +753,7 @@ API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
 {
     piped_log *pl;
     FILE *dummy;
+    int dummyno;
 #ifdef TPF
     TPF_FORK_CHILD cld;
     cld.filename = (char *)program;
@@ -761,7 +772,8 @@ API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
     }
     pl = ap_palloc(p, sizeof (*pl));
     pl->p = p;
-    pl->write_f = dummy;
+    dummyno = fileno(dummy);
+    ap_put_os_file(p, &pl->write_f, &dummyno);
 
     return pl;
 }
@@ -769,6 +781,6 @@ API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
 
 API_EXPORT(void) ap_close_piped_log(piped_log *pl)
 {
-    ap_pfclose(pl->p, pl->write_f);
+    ap_close(pl->write_f);
 }
 #endif

@@ -178,12 +178,12 @@
 
 module MODULE_VAR_EXPORT config_log_module;
 
-static int xfer_flags = (O_WRONLY | O_APPEND | O_CREAT);
+static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE);
 #if defined(OS2) || defined(WIN32)
 /* OS/2 dosen't support users and groups */
 static mode_t xfer_mode = (S_IREAD | S_IWRITE);
 #else
-static mode_t xfer_mode = (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+static mode_t xfer_mode = (APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD);
 #endif
 
 /* POSIX.1 defines PIPE_BUF as the maximum number of bytes that is
@@ -229,7 +229,7 @@ typedef struct {
  * be NULL, which means this module does no logging for this
  * request. format might be NULL, in which case the default_format
  * from the multi_log_state should be used, or if that is NULL as
- * well, use the CLF. log_fd is -1 before the log file is opened and
+ * well, use the CLF. log_fd is NULL before the log file is opened and
  * set to a valid fd after it is opened.
  */
 
@@ -237,7 +237,7 @@ typedef struct {
     char *fname;
     char *format_string;
     ap_array_header_t *format;
-    int log_fd;
+    ap_file_t *log_fd;
     char *condition_var;
 #ifdef BUFFERED_LOGS
     int outcnt;
@@ -723,8 +723,8 @@ static const char *process_item(request_rec *r, request_rec *orig,
 #ifdef BUFFERED_LOGS
 static void flush_log(config_log_state *cls)
 {
-    if (cls->outcnt && cls->log_fd != -1) {
-        write(cls->log_fd, cls->outbuf, cls->outcnt);
+    if (cls->outcnt && cls->log_fd != NULL) {
+        ap_write(cls->log_fd, cls->outbuf, cls->outcnt);
         cls->outcnt = 0;
     }
 }
@@ -797,7 +797,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
             memcpy(s, strs[i], strl[i]);
             s += strl[i];
         }
-        write(cls->log_fd, str, len);
+        ap_write(cls->log_fd, str, len);
     }
     else {
         for (i = 0, s = &cls->outbuf[cls->outcnt]; i < format->nelts; ++i) {
@@ -814,7 +814,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
         s += strl[i];
     }
 
-    write(cls->log_fd, str, len);
+    ap_write(cls->log_fd, str, &len);
 #endif
 
     return OK;
@@ -949,7 +949,7 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn,
     else {
         cls->format = parse_log_string(cmd->pool, fmt, &err_string);
     }
-    cls->log_fd = -1;
+    cls->log_fd = NULL;
 
     return err_string;
 }
@@ -982,7 +982,7 @@ static config_log_state *open_config_log(server_rec *s, ap_context_t *p,
                                          config_log_state *cls,
                                          ap_array_header_t *default_format)
 {
-    if (cls->log_fd > 0) {
+    if (cls->log_fd != NULL) {
         return cls;             /* virtual config shared w/main server */
     }
 
@@ -1001,7 +1001,7 @@ static config_log_state *open_config_log(server_rec *s, ap_context_t *p,
     }
     else {
         const char *fname = ap_server_root_relative(p, cls->fname);
-        if ((cls->log_fd = ap_popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
+        if (ap_open(p, fname, xfer_flags, xfer_mode, &cls->log_fd) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, s,
                          "could not open transfer log file %s.", fname);
             exit(1);

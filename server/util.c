@@ -803,38 +803,37 @@ API_EXPORT(int) ap_cfg_closefile(configfile_t *cfp)
     return (cfp->close == NULL) ? 0 : cfp->close(cfp->param);
 }
 
-/* Common structure that holds the file and ap_context_t for ap_pcfg_openfile */
-typedef struct {
-    ap_context_t *pool;
-    FILE *file;
-} poolfile_t;
-
-static int cfg_close(void *param)
+static ap_status_t cfg_close(void *param)
 {
-    poolfile_t *cfp = (poolfile_t *) param;
-    return (ap_pfclose(cfp->pool, cfp->file));
+    ap_file_t *cfp = (ap_file_t *) param;
+    return (ap_close(cfp));
 }
 
 static int cfg_getch(void *param)
 {
-    poolfile_t *cfp = (poolfile_t *) param;
-    return (fgetc(cfp->file));
+    char ch;
+    ap_file_t *cfp = (ap_file_t *) param;
+    if (ap_getc(cfp, &ch) == APR_SUCCESS)
+        return ch;
+    return (int)EOF;
 }
 
 static void *cfg_getstr(void *buf, size_t bufsiz, void *param)
 {
-    poolfile_t *cfp = (poolfile_t *) param;
-    return (fgets(buf, bufsiz, cfp->file));
+    ap_file_t *cfp = (ap_file_t *) param;
+    if (ap_gets(cfp, buf, bufsiz) == APR_SUCCESS)
+        return buf;
+    return NULL;
 }
 
 /* Open a configfile_t as FILE, return open configfile_t struct pointer */
 API_EXPORT(configfile_t *) ap_pcfg_openfile(ap_context_t *p, const char *name)
 {
     configfile_t *new_cfg;
-    poolfile_t *new_pfile;
-    FILE *file;
-    struct stat stbuf;
+    ap_file_t *file;
     int saved_errno;
+    ap_status_t stat;
+    ap_filetype_e type;
 
     if (name == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
@@ -850,41 +849,37 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(ap_context_t *p, const char *name)
         return NULL;
     }
  
-    /* ZZZ bopenf and use AP defines for flags. */
-    file = ap_pfopen(p, name, "r");
+    stat = ap_open(p, name, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, &file);
 #ifdef DEBUG
     saved_errno = errno;
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, NULL,
                 "Opening config file %s (%s)",
-                name, (file == NULL) ? strerror(errno) : "successful");
+                name, (stat != APR_SUCCESS) ? strerror(errno) : "successful");
     errno = saved_errno;
 #endif
-    if (file == NULL)
+    if (stat != APR_SUCCESS)
         return NULL;
 
-    if (fstat(fileno(file), &stbuf) == 0 &&
-        !S_ISREG(stbuf.st_mode) &&
+    if (ap_get_filetype(file, &type) == APR_SUCCESS &&
+        type == APR_REG &&
 #if defined(WIN32) || defined(OS2)
         !(strcasecmp(name, "nul") == 0 ||
           (strlen(name) >= 4 &&
            strcasecmp(name + strlen(name) - 4, "/nul") == 0))) {
 #else
-        strcmp(name, "/dev/null") != 0) {
+        strcmp(name, "/dev/null") == 0) {
 #endif /* WIN32 || OS2 */
 	saved_errno = errno;
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
                     "Access to file %s denied by server: not a regular file",
                     name);
-        ap_pfclose(p, file);
+        ap_close(file);
 	errno = saved_errno;
         return NULL;
     }
 
     new_cfg = ap_palloc(p, sizeof(*new_cfg));
-    new_pfile = ap_palloc(p, sizeof(*new_pfile));
-    new_pfile->file = file;
-    new_pfile->pool = p;
-    new_cfg->param = new_pfile;
+    new_cfg->param = file;
     new_cfg->name = ap_pstrdup(p, name);
     new_cfg->getch = (int (*)(void *)) cfg_getch;
     new_cfg->getstr = (void *(*)(void *, size_t, void *)) cfg_getstr;

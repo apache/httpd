@@ -59,6 +59,7 @@
 #define APACHE_HTTP_PROTOCOL_H
 
 #include "ap_hooks.h"
+#include "apr_portable.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -133,8 +134,8 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r);
  * (Ditto the send_header stuff).
  */
 
-API_EXPORT(long) ap_send_fd(APRFile fd, request_rec *r);
-API_EXPORT(long) ap_send_fd_length(APRFile fd, request_rec *r, long length);
+API_EXPORT(long) ap_send_fd(int fd, request_rec *r);
+API_EXPORT(long) ap_send_fd_length(int fd, request_rec *r, long length);
 
 API_EXPORT(long) ap_send_fb(BUFF *f, request_rec *r);
 API_EXPORT(long) ap_send_fb_length(BUFF *f, request_rec *r, long length);

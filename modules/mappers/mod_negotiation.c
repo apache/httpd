@@ -635,16 +635,16 @@ enum header_state {
     header_eof, header_seen, header_sep
 };
 
-static enum header_state get_header_line(char *buffer, int len, FILE *map)
+static enum header_state get_header_line(char *buffer, int len, ap_file_t *map)
 {
     char *buf_end = buffer + len;
     char *cp;
-    int c;
+    char c;
 
     /* Get a noncommented line */
 
     do {
-        if (fgets(buffer, MAX_STRING_LEN, map) == NULL) {
+        if (ap_gets(map, buffer, MAX_STRING_LEN) != APR_SUCCESS) {
             return header_eof;
         }
     } while (buffer[0] == '#');
@@ -665,10 +665,10 @@ static enum header_state get_header_line(char *buffer, int len, FILE *map)
 
     cp += strlen(cp);
 
-    while ((c = getc(map)) != EOF) {
+    while (ap_getc(map, &c) != APR_EOF) {
         if (c == '#') {
             /* Comment line */
-            while ((c = getc(map)) != EOF && c != '\n') {
+            while (ap_getc(map, &c) != EOF && c != '\n') {
                 continue;
             }
         }
@@ -679,10 +679,10 @@ static enum header_state get_header_line(char *buffer, int len, FILE *map)
              */
 
             while (c != EOF && c != '\n' && ap_isspace(c)) {
-                c = getc(map);
+                ap_getc(map, &c);
             }
 
-            ungetc(c, map);
+            ap_ungetc(map, c);
 
             if (c == '\n') {
                 return header_seen;     /* Blank line */
@@ -690,7 +690,7 @@ static enum header_state get_header_line(char *buffer, int len, FILE *map)
 
             /* Continuation */
 
-            while (cp < buf_end - 2 && (c = getc(map)) != EOF && c != '\n') {
+            while (cp < buf_end - 2 && (ap_getc(map, &c)) != EOF && c != '\n') {
                 *cp++ = c;
             }
 
@@ -701,7 +701,7 @@ static enum header_state get_header_line(char *buffer, int len, FILE *map)
 
             /* Line beginning with something other than whitespace */
 
-            ungetc(c, map);
+            ap_ungetc(map, c);
             return header_seen;
         }
     }
@@ -772,7 +772,7 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
 static int read_type_map(negotiation_state *neg, request_rec *rr)
 {
     request_rec *r = neg->r;
-    FILE *map;
+    ap_file_t *map;
     char buffer[MAX_STRING_LEN];
     enum header_state hstate;
     struct var_rec mime_info;
@@ -781,8 +781,8 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
     /* We are not using multiviews */
     neg->count_multiviews_variants = 0;
 
-    map = ap_pfopen(neg->pool, rr->filename, "r");
-    if (map == NULL) {
+    if (ap_open(neg->pool, rr->filename, APR_READ | APR_BUFFERED,
+                APR_OS_DEFAULT, &map) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                       "cannot access type map file: %s", rr->filename);
         return HTTP_FORBIDDEN;
@@ -851,7 +851,7 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
         }
     } while (hstate != header_eof);
 
-    ap_pfclose(neg->pool, map);
+    ap_close(map);
 
     set_vlist_validator(r, rr);
 
@@ -889,8 +889,7 @@ static int read_types_multi(negotiation_state *neg)
 
     char *filp;
     int prefix_len;
-    DIR *dirp;
-    struct DIR_TYPE *dir_entry;
+    ap_dir_t *dirp;
     struct var_rec mime_info;
     struct accept_rec accept_info;
     void *new_var;
@@ -908,23 +907,23 @@ static int read_types_multi(negotiation_state *neg)
     ++filp;
     prefix_len = strlen(filp);
 
-    dirp = ap_popendir(neg->pool, neg->dir_name);
-
-    if (dirp == NULL) {
+    if (ap_opendir(neg->pool, neg->dir_name, &dirp) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                     "cannot read directory for multi: %s", neg->dir_name);
         return HTTP_FORBIDDEN;
     }
 
-    while ((dir_entry = readdir(dirp))) {
+    while (ap_readdir(dirp) == APR_SUCCESS) {
         request_rec *sub_req;
+        char *d_name;
 
+        ap_get_dir_filename(dirp, &d_name);
         /* Do we have a match? */
 
-        if (strncmp(dir_entry->d_name, filp, prefix_len)) {
+        if (strncmp(d_name, filp, prefix_len)) {
             continue;
         }
-        if (dir_entry->d_name[prefix_len] != '.') {
+        if (d_name[prefix_len] != '.') {
             continue;
         }
 
@@ -933,7 +932,7 @@ static int read_types_multi(negotiation_state *neg)
          * which we'll be slapping default_type on later).
          */
 
-        sub_req = ap_sub_req_lookup_file(dir_entry->d_name, r);
+        sub_req = ap_sub_req_lookup_file(d_name, r);
 
         /* If it has a handler, we'll pretend it's a CGI script,
          * since that's a good indication of the sort of thing it
@@ -957,7 +956,7 @@ static int read_types_multi(negotiation_state *neg)
             ((sub_req->handler) &&
              !strcmp(sub_req->handler, "type-map"))) {
 
-            ap_pclosedir(neg->pool, dirp);
+            ap_closedir(dirp);
             neg->avail_vars->nelts = 0;
             if (sub_req->status != HTTP_OK) {
                 return sub_req->status;
@@ -968,7 +967,7 @@ static int read_types_multi(negotiation_state *neg)
         /* Have reasonable variant --- gather notes. */
 
         mime_info.sub_req = sub_req;
-        mime_info.file_name = ap_pstrdup(neg->pool, dir_entry->d_name);
+        mime_info.file_name = ap_pstrdup(neg->pool, d_name);
         if (sub_req->content_encoding) {
             mime_info.content_encoding = sub_req->content_encoding;
         }
@@ -987,7 +986,7 @@ static int read_types_multi(negotiation_state *neg)
         clean_var_rec(&mime_info);
     }
 
-    ap_pclosedir(neg->pool, dirp);
+    ap_closedir(dirp);
 
     set_vlist_validator(r, r);
 

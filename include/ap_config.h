@@ -1206,12 +1206,6 @@ int ap_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, st
 	select(_a, _b, _c, _d, _e)
 #endif
 
-#ifdef USE_TPF_ACCEPT
-#define ap_accept(_fd, _sa, _ln)	tpf_accept(_fd, _sa, _ln)
-#else
-#define ap_accept(_fd, _sa, _ln)	accept(_fd, _sa, _ln)
-#endif
-
 #ifdef NEED_SIGNAL_INTERRUPT
 #define ap_check_signals()	tpf_process_signals()
 #else

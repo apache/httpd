@@ -68,9 +68,9 @@ API_EXPORT(char *) ap_md5(ap_context_t *a, const unsigned char *string);
 API_EXPORT(char *) ap_md5_binary(ap_context_t *a, const unsigned char *buf, int len);
 API_EXPORT(char *) ap_md5contextTo64(ap_context_t *p, AP_MD5_CTX * context);
 #ifdef CHARSET_EBCDIC
-API_EXPORT(char *) ap_md5digest(ap_context_t *p, FILE *infile, int convert);
+API_EXPORT(char *) ap_md5digest(ap_context_t *p, int infile, int convert);
 #else
-API_EXPORT(char *) ap_md5digest(ap_context_t *p, APRFile infile);
+API_EXPORT(char *) ap_md5digest(ap_context_t *p, int infile);
 #endif /* CHARSET_EBCDIC */
 
 #ifdef __cplusplus

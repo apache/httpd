@@ -55,6 +55,7 @@
  *
  */
 
+#include "apr_network_io.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "ap_listen.h"
@@ -66,50 +67,28 @@ static int ap_listenbacklog;
 static int send_buffer_size;
 
 /* TODO: make_sock is just begging and screaming for APR abstraction */
-static int make_sock(const struct sockaddr_in *server)
+static ap_status_t make_sock(ap_context_t *p, ap_listen_rec *server)
 {
-    int s;
+    ap_socket_t *s = server->sd;
     int one = 1;
     char addr[512];
+    ap_status_t stat;
 
-    if (server->sin_addr.s_addr != htonl(INADDR_ANY))
-	ap_snprintf(addr, sizeof(addr), "address %s port %d",
-		inet_ntoa(server->sin_addr), ntohs(server->sin_port));
-    else
-	ap_snprintf(addr, sizeof(addr), "port %d", ntohs(server->sin_port));
-
-#ifdef WIN32
-    s = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
-    if (s == INVALID_SOCKET) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
-                     "make_sock: failed to get a socket for %s", addr);
-	return -1;
-    }
-#else
-    if ((s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
-		    "make_sock: failed to get a socket for %s", addr);
-	return -1;
-    }
-#endif
-
-#ifdef SO_REUSEADDR
-    if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *) &one, sizeof(int)) < 0) {
+    stat = ap_setsocketopt(s, APR_SO_REUSEADDR, one);
+    if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
 		    "make_sock: for %s, setsockopt: (SO_REUSEADDR)", addr);
-	close(s);
-	return -1;
+	ap_close_socket(s);
+	return stat;
     }
-#endif
-    one = 1;
-#ifdef SO_KEEPALIVE
-    if (setsockopt(s, SOL_SOCKET, SO_KEEPALIVE, (char *) &one, sizeof(int)) < 0) {
+    
+    stat = ap_setsocketopt(s, APR_SO_KEEPALIVE, one);
+    if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
 		    "make_sock: for %s, setsockopt: (SO_KEEPALIVE)", addr);
-	close(s);
-	return -1;
+	ap_close_socket(s);
+	return stat;
     }
-#endif
 
     /*
      * To send data over high bandwidth-delay connections at full
@@ -130,33 +109,32 @@ static int make_sock(const struct sockaddr_in *server)
      *
      * If no size is specified, use the kernel default.
      */
-#ifdef SO_SNDBUF
     if (send_buffer_size) {
-	if (setsockopt(s, SOL_SOCKET, SO_SNDBUF,
-		(char *) &send_buffer_size, sizeof(int)) < 0) {
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+	stat = ap_setsocketopt(s, SO_SNDBUF,  send_buffer_size);
+        if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
 			"make_sock: failed to set SendBufferSize for %s, "
 			"using default", addr);
 	    /* not a fatal error */
 	}
     }
-#endif
 
-    if (bind(s, (struct sockaddr *) server, sizeof(struct sockaddr_in)) == -1) {
+    if ((stat = ap_bind(s)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
 	    "make_sock: could not bind to %s", addr);
-	close(s);
-	return -1;
+	ap_close_socket(s);
+	return stat;
     }
 
-    if (listen(s, ap_listenbacklog) == -1) {
+    if ((stat = ap_listen(s, ap_listenbacklog)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_ERR, NULL,
 	    "make_sock: unable to listen for connections on %s", addr);
-	close(s);
-	return -1;
+	ap_close_socket(s);
+	return stat;
     }
 
-    return s;
+    server->sd = s;
+    return APR_SUCCESS;
 }
 
 
@@ -165,20 +143,24 @@ static ap_status_t close_listeners_on_exec(void *v)
     ap_listen_rec *lr;
 
     for (lr = ap_listeners; lr; lr = lr->next) {
-	close(lr->fd);
+	ap_close_socket(lr->sd);
     }
     return APR_SUCCESS;
 }
 
 
-static void alloc_listener(struct sockaddr_in *local_addr)
+static void alloc_listener(char *addr, unsigned int port)
 {
     ap_listen_rec **walk;
     ap_listen_rec *new;
+    char *oldaddr;
+    unsigned int oldport;
 
     /* see if we've got an old listener for this address:port */
     for (walk = &old_listeners; *walk; walk = &(*walk)->next) {
-	if (!memcmp(&(*walk)->local_addr, local_addr, sizeof(local_addr))) {
+        ap_getport((*walk)->sd, &oldport);
+        ap_getipaddr((*walk)->sd, &oldaddr);
+	if (!strcmp(oldaddr, addr) && port == oldport) {
 	    /* re-use existing record */
 	    new = *walk;
 	    *walk = new->next;
@@ -190,8 +172,13 @@ static void alloc_listener(struct sockaddr_in *local_addr)
 
     /* this has to survive restarts */
     new = malloc(sizeof(ap_listen_rec));
-    new->local_addr = *local_addr;
-    new->fd = -1;
+    if (ap_create_tcp_socket(NULL, &new->sd) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
+                 "make_sock: failed to get a socket for %s", addr);
+        return;
+    }
+    ap_setport(new->sd, port);
+    ap_setipaddr(new->sd, addr);
     new->next = ap_listeners;
     ap_listeners = new;
 }
@@ -202,31 +189,25 @@ int ap_listen_open(ap_context_t *pconf, unsigned port)
     ap_listen_rec *lr;
     ap_listen_rec *next;
     int num_open;
-    struct sockaddr_in local_addr;
-
+    ap_status_t stat;
     /* allocate a default listener if necessary */
     if (ap_listeners == NULL) {
-	local_addr.sin_family = AF_INET;
-	local_addr.sin_addr.s_addr = htonl(INADDR_ANY); /* XXX */
-	local_addr.sin_port = htons(port ? port : DEFAULT_HTTP_PORT);
-	alloc_listener(&local_addr);
+	alloc_listener(APR_ANYADDR, port ? port : DEFAULT_HTTP_PORT);
     }
 
     num_open = 0;
     for (lr = ap_listeners; lr; lr = lr->next) {
-	if (lr->fd < 0) {
-	    lr->fd = make_sock(&lr->local_addr);
-	}
-	if (lr->fd >= 0) {
+	stat = make_sock(pconf, lr);
+	if (stat == APR_SUCCESS) {
 	    ++num_open;
 	}
     }
 
     /* close the old listeners */
     for (lr = old_listeners; lr; lr = next) {
-	close(lr->fd);
+	ap_close_socket(lr->sd);
 	next = lr->next;
-	free(lr);
+/*	free(lr);*/
     }
     old_listeners = NULL;
 
@@ -248,7 +229,6 @@ const char *ap_set_listener(cmd_parms *cmd, void *dummy, char *ips)
 {
     char *ports;
     unsigned short port;
-    struct sockaddr_in local_addr;
 
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -269,20 +249,18 @@ const char *ap_set_listener(cmd_parms *cmd, void *dummy, char *ips)
 	ports = ips;
     }
 
-    local_addr.sin_family = AF_INET;
-    if (ports == ips) { /* no address */
-	local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    }
-    else {
-	local_addr.sin_addr.s_addr = ap_get_virthost_addr(ips, NULL);
-    }
     port = atoi(ports);
     if (!port) {
 	return "Port must be numeric";
     }
-    local_addr.sin_port = htons(port);
 
-    alloc_listener(&local_addr);
+    if (ports == ips) { /* no address */
+        alloc_listener(APR_ANYADDR, port);
+    }
+    else {
+        ips[(ports - ips) - 1] = '\0';
+	alloc_listener(ips, port);
+    }
 
     return NULL;
 }

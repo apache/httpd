@@ -57,6 +57,7 @@
  
 #define CORE_PRIVATE 
  
+#include "apr_portable.h"
 #include "httpd.h" 
 #include "http_main.h" 
 #include "http_log.h" 
@@ -677,7 +678,6 @@ static int setup_listeners(ap_context_t *pconf, server_rec *s)
 {
     ap_listen_rec *lr;
     int num_listeners = 0;
-
     if (ap_listen_open(pconf, s->port)) {
        return 0;
     }
@@ -800,12 +800,12 @@ static void * worker_thread(void * dummy)
     int thread_slot = ti->tid;
     ap_context_t *tpool = ti->tpool;
     struct sockaddr sa_client;
-    int csd = -1;
+    ap_socket_t *csd = NULL;
     ap_context_t *ptrans;		/* Pool for per-transaction stuff */
-    int sd = -1;
+    ap_socket_t *sd = NULL;
     int srv;
     int curr_pollfd, last_pollfd = 0;
-    size_t len = sizeof(struct sockaddr);
+    int thesock;
 
     free(ti);
 
@@ -853,7 +853,7 @@ static void * worker_thread(void * dummy)
             }
 
             if (num_listenfds == 1) {
-                sd = ap_listeners->fd;
+                sd = ap_listeners->sd;
                 goto got_fd;
             }
             else {
@@ -867,7 +867,7 @@ static void * worker_thread(void * dummy)
                     /* XXX: Should we check for POLLERR? */
                     if (listenfds[curr_pollfd].revents & POLLIN) {
                         last_pollfd = curr_pollfd;
-                        sd = listenfds[curr_pollfd].fd;
+                        ap_put_os_sock(tpool, &sd, &listenfds[curr_pollfd].fd); 
                         goto got_fd;
                     }
                 } while (curr_pollfd != last_pollfd);
@@ -875,7 +875,7 @@ static void * worker_thread(void * dummy)
         }
     got_fd:
         if (!workers_may_exit) {
-            csd = ap_accept(sd, &sa_client, &len);
+            ap_accept(sd, &csd);
             SAFE_ACCEPT(accept_mutex_off(0));
             SAFE_ACCEPT(intra_mutex_off(0));
         }
@@ -884,7 +884,8 @@ static void * worker_thread(void * dummy)
             SAFE_ACCEPT(intra_mutex_off(0));
             break;
         }
-        process_socket(ptrans, &sa_client, csd, process_slot, thread_slot);
+        ap_get_os_sock(csd, &thesock);
+        process_socket(ptrans, &sa_client, thesock, process_slot, thread_slot);
         ap_clear_pool(ptrans);
         requests_this_child--;
     }
@@ -948,7 +949,7 @@ static void child_main(int child_num_arg)
     listenfds[0].events = POLLIN;
     listenfds[0].revents = 0;
     for (lr = ap_listeners, i = 1; i <= num_listenfds; lr = lr->next, ++i) {
-        listenfds[i].fd = lr->fd;
+        ap_get_os_sock(lr->sd, &listenfds[i].fd);
         listenfds[i].events = POLLIN; /* should we add POLLPRI ?*/
         listenfds[i].revents = 0;
     }
@@ -1288,8 +1289,13 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
                      "pipe: (pipe_of_death)");
         exit(1);
     }
+/*  XXXXXX  Removed because these functions don't exist anymore.  When
+    These pipes are changed to apr_types, these functions won't be needed
+    anyway.
     ap_note_cleanups_for_fd(pconf, pipe_of_death[0]);
     ap_note_cleanups_for_fd(pconf, pipe_of_death[1]);
+*/
+
     if (fcntl(pipe_of_death[0], F_SETFD, O_NONBLOCK) == -1) {
         ap_log_error(APLOG_MARK, APLOG_ERR,
                      (const server_rec*) server_conf,
@@ -1310,7 +1316,6 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     }
 
     set_signals();
-
     /* Don't thrash... */
     if (max_spare_threads < min_spare_threads + ap_threads_per_child)
 	max_spare_threads = min_spare_threads + ap_threads_per_child;

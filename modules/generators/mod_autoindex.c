@@ -884,17 +884,19 @@ static int ignore_entry(autoindex_config_rec *d, char *path)
 /*
  * emit a plain text file
  */
-static void do_emit_plain(request_rec *r, FILE *f)
+static void do_emit_plain(request_rec *r, ap_file_t *f)
 {
     char buf[IOBUFSIZE + 1];
     int i, n, c, ch;
+    ap_status_t stat;
 
     ap_rputs("<PRE>\n", r);
-    while (!feof(f)) {
+    while (!ap_eof(f)) {
 	do {
-	    n = fread(buf, sizeof(char), IOBUFSIZE, f);
+            n = sizeof(char) * IOBUFSIZE;
+	    stat = ap_read(f, buf, &n);
 	}
-	while (n == -1 && ferror(f) && errno == EINTR);
+	while (stat != APR_SUCCESS && stat == EINTR);
 	if (n == -1 || n == 0) {
 	    break;
 	}
@@ -936,7 +938,7 @@ static void do_emit_plain(request_rec *r, FILE *f)
 static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 		      char *title)
 {
-    FILE *f;
+    ap_file_t *f;
     request_rec *rr = NULL;
     int emit_amble = 1;
     int emit_H1 = 1;
@@ -984,11 +986,12 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 		 * the file's contents, any HTML header it had won't end up
 		 * where it belongs.
 		 */
-		if ((f = ap_pfopen(r->pool, rr->filename, "r")) != 0) {
+		if (ap_open(r->pool, rr->filename, APR_READ | APR_BUFFERED,
+                            APR_OS_DEFAULT, &f) == APR_SUCCESS) {
 		    emit_preamble(r, title);
 		    emit_amble = 0;
 		    do_emit_plain(r, f);
-		    ap_pfclose(r->pool, f);
+		    ap_close(f);
 		    emit_H1 = 0;
 		}
 	    }
@@ -1018,7 +1021,7 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
  */
 static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
 {
-    FILE *f;
+    ap_file_t *f;
     request_rec *rr = NULL;
     int suppress_post = 0;
     int suppress_sig = 0;
@@ -1051,9 +1054,10 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
 		/*
 		 * If we can open the file, suppress the signature.
 		 */
-		if ((f = ap_pfopen(r->pool, rr->filename, "r")) != 0) {
+		if (ap_open(r->pool, rr->filename, APR_READ | APR_BUFFERED,
+                            APR_OS_DEFAULT, &f) == APR_SUCCESS) {
 		    do_emit_plain(r, f);
-		    ap_pfclose(r->pool, f);
+		    ap_close(f);
 		    suppress_sig = 1;
 		}
 	    }
@@ -1075,7 +1079,7 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
 static char *find_title(request_rec *r)
 {
     char titlebuf[MAX_STRING_LEN], *find = "<TITLE>";
-    FILE *thefile = NULL;
+    ap_file_t *thefile = NULL;
     int x, y, n, p;
 
     if (r->status != HTTP_OK) {
@@ -1086,12 +1090,14 @@ static char *find_title(request_rec *r)
 			"text/html")
 	    || !strcmp(r->content_type, INCLUDES_MAGIC_TYPE))
 	&& !r->content_encoding) {
-        if (!(thefile = ap_pfopen(r->pool, r->filename, "r"))) {
+        if (ap_open(r->pool, r->filename, APR_READ | APR_BUFFERED,
+                    APR_OS_DEFAULT, &thefile) != APR_SUCCESS) {
 	    return NULL;
 	}
-	n = fread(titlebuf, sizeof(char), MAX_STRING_LEN - 1, thefile);
+        n = sizeof(char) * (MAX_STRING_LEN - 1);
+	ap_read(thefile, titlebuf, &n);
 	if (n <= 0) {
-	    ap_pfclose(r->pool, thefile);
+	    ap_close(thefile);
 	    return NULL;
 	}
 	titlebuf[n] = '\0';
@@ -1112,7 +1118,7 @@ static char *find_title(request_rec *r)
 			    }
 			}
 		    }
-		    ap_pfclose(r->pool, thefile);
+		    ap_close(thefile);
 		    return ap_pstrdup(r->pool, &titlebuf[x]);
 		}
 	    }
@@ -1120,7 +1126,7 @@ static char *find_title(request_rec *r)
 		p = 0;
 	    }
 	}
-	ap_pfclose(r->pool, thefile);
+	ap_close(thefile);
     }
     return NULL;
 }
@@ -1498,8 +1504,7 @@ static int index_directory(request_rec *r,
     char *title_endp;
     char *name = r->filename;
 
-    DIR *d;
-    struct DIR_TYPE *dstruct;
+    ap_dir_t *d;
     int num_ent = 0, x;
     struct ent *head, *p;
     struct ent **ar = NULL;
@@ -1508,7 +1513,7 @@ static int index_directory(request_rec *r,
     char keyid;
     char direction;
 
-    if (!(d = ap_popendir(r->pool, name))) {
+    if (ap_opendir(r->pool, name, &d) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		    "Can't open directory for index: %s", r->filename);
 	return HTTP_FORBIDDEN;
@@ -1519,7 +1524,7 @@ static int index_directory(request_rec *r,
     ap_send_http_header(r);
 
     if (r->header_only) {
-	ap_pclosedir(r->pool, d);
+	ap_closedir(d);
 	return 0;
     }
 
@@ -1571,8 +1576,10 @@ static int index_directory(request_rec *r,
      * linked list and then arrayificate them so qsort can use them. 
      */
     head = NULL;
-    while ((dstruct = readdir(d))) {
-	p = make_autoindex_entry(dstruct->d_name, autoindex_opts,
+    while (ap_readdir(d)) {
+        char *d_name;
+        ap_get_dir_filename(d, &d_name);
+	p = make_autoindex_entry(d_name, autoindex_opts,
 				 autoindex_conf, r, keyid, direction);
 	if (p != NULL) {
 	    p->next = head;
@@ -1595,7 +1602,7 @@ static int index_directory(request_rec *r,
     }
     output_directories(ar, num_ent, autoindex_conf, r, autoindex_opts, keyid,
 		       direction);
-    ap_pclosedir(r->pool, d);
+    ap_closedir(d);
 
     if (autoindex_opts & FANCY_INDEXING) {
 	ap_rputs("<HR>\n", r);
