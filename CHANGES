@@ -1,5 +1,7 @@
 Changes with Apache 2.0.14-dev
 
+  *) Get mod_info building and loading on Win32.  [William Rowe]
+
   *) Begin to move protocol independant functions out of mod_http.  The goal
      is to have only functions that are HTTP specific in the http directory.
      [Ryan Bloom]
