@@ -58,7 +58,7 @@ static int workers_may_exit = 0;
 static unsigned int g_blocked_threads = 0;
 static HANDLE max_requests_per_child_event;
 
-
+static apr_thread_mutex_t  *child_lock;
 static apr_thread_mutex_t  *qlock;
 static PCOMP_CONTEXT qhead = NULL;
 static PCOMP_CONTEXT qtail = NULL;
@@ -145,6 +145,7 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
                  */
                 apr_allocator_t *allocator;
 
+                apr_thread_mutex_lock(child_lock);
                 context = (PCOMP_CONTEXT) apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
   
                 context->Overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -152,6 +153,8 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
                     /* Hopefully this is a temporary condition ... */
                     ap_log_error(APLOG_MARK,APLOG_WARNING, apr_get_os_error(), ap_server_conf,
                                  "mpm_get_completion_context: CreateEvent failed.");
+
+                    apr_thread_mutex_unlock(child_lock);
                     return NULL;
                 }
  
@@ -163,6 +166,8 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
                     ap_log_error(APLOG_MARK,APLOG_WARNING, rv, ap_server_conf,
                                  "mpm_get_completion_context: Failed to create the transaction pool.");
                     CloseHandle(context->Overlapped.hEvent);
+
+                    apr_thread_mutex_unlock(child_lock);
                     return NULL;
                 }
                 apr_allocator_owner_set(allocator, context->ptrans);
@@ -171,6 +176,8 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
                 context->accept_socket = INVALID_SOCKET;
                 context->ba = apr_bucket_alloc_create(pchild);
                 apr_atomic_inc32(&num_completion_contexts); 
+
+                apr_thread_mutex_unlock(child_lock);
                 break;
             }
         } else {
@@ -419,6 +426,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
     if (context == NULL) {
         /* allocate the completion context and the transaction pool */
         apr_allocator_t *allocator;
+        apr_thread_mutex_lock(child_lock);
         context = apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
         apr_allocator_create(&allocator);
         apr_allocator_max_free_set(allocator, ap_max_mem_free);
@@ -426,6 +434,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         apr_allocator_owner_set(allocator, context->ptrans);
         apr_pool_tag(context->ptrans, "transaction");
         context->ba = apr_bucket_alloc_create(pchild);
+        apr_thread_mutex_unlock(child_lock);
     }
     
     while (1) {
@@ -920,6 +929,8 @@ void child_main(apr_pool_t *pconf)
     ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
                  "Child %d: Starting %d worker threads.", my_pid, ap_threads_per_child);
     child_handles = (HANDLE) apr_pcalloc(pchild, ap_threads_per_child * sizeof(int));
+    apr_thread_mutex_create(&child_lock, APR_THREAD_MUTEX_DEFAULT, pchild);
+
     while (1) {
         for (i = 0; i < ap_threads_per_child; i++) {
             int *score_idx;
@@ -943,9 +954,11 @@ void child_main(apr_pool_t *pconf)
             /* Save the score board index in ht keyed to the thread handle. We need this 
              * when cleaning up threads down below...
              */
+            apr_thread_mutex_lock(child_lock);
             score_idx = apr_pcalloc(pchild, sizeof(int));
             *score_idx = i;
             apr_hash_set(ht, &child_handles[i], sizeof(HANDLE), score_idx);
+            apr_thread_mutex_unlock(child_lock);
         }
         /* Start the listener only when workers are available */
         if (!listener_started && threads_created) {
@@ -1128,8 +1141,10 @@ void child_main(apr_pool_t *pconf)
 
     CloseHandle(allowed_globals.jobsemaphore);
     apr_thread_mutex_destroy(allowed_globals.jobmutex);
+    apr_thread_mutex_destroy(child_lock);
+
     if (use_acceptex) {
-    	apr_thread_mutex_destroy(qlock);
+        apr_thread_mutex_destroy(qlock);
         CloseHandle(qwait_event);
     }
 
