@@ -720,9 +720,11 @@ start_over:
 }
 
 int util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
-                              const char *url, const char *basedn, int scope, 
-                              const char *filter, const char *bindpw, const char **binddn)
+                              const char *url, const char *basedn, int scope, char **attrs,
+                              const char *filter, const char *bindpw, const char **binddn,
+                              const char ***retvals)
 {
+    const char **vals = NULL;
     int result = 0;
     LDAPMessage *res, *entry;
     char *dn;
@@ -737,7 +739,6 @@ int util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
     util_ldap_state_t *st = 
         (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
         &ldap_module);
-
 
     /* read lock this function */
     if (!util_ldap_cache_lock) {
@@ -776,6 +777,7 @@ int util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
         else {
             /* ...and entry is valid */
             *binddn = search_nodep->dn;
+            *retvals = search_nodep->vals;
             apr_lock_release(util_ldap_cache_lock);
             ldc->reason = "Authentication successful (cached)";
             return LDAP_SUCCESS;
@@ -803,7 +805,7 @@ start_over:
     /* try do the search */
     if ((result = ldap_search_ext_s(ldc->ldap,
 				    basedn, scope, 
-				    filter, NULL, 1, 
+				    filter, attrs, 0, 
 				    NULL, NULL, NULL, -1, &res)) == LDAP_SERVER_DOWN) {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
         goto start_over;
@@ -864,7 +866,29 @@ start_over:
         return result;
     }
 
-    ldap_msgfree(res);
+    /*
+     * Get values for the provided attributes.
+     */
+    if (attrs) {
+        int k = 0;
+        int i = 0;
+        while (attrs[k++]);
+        vals = apr_pcalloc(r->pool, sizeof(char *) * (k+1));
+        while (attrs[i]) {
+            char **values;
+            int j = 0;
+            char *str = NULL;
+            /* get values */
+            values = ldap_get_values(ldc->ldap, entry, attrs[i]);
+            while (values && values[j]) {
+                str = str ? apr_pstrcat(r->pool, str, "; ", values[j], NULL) : apr_pstrdup(r->pool, values[j]);
+                j++;
+            }
+            vals[i] = str;
+            i++;
+        }
+        *retvals = vals;
+    }
 
     /* 		
      * Add the new username to the search cache.
@@ -874,7 +898,9 @@ start_over:
     the_search_node.dn = *binddn;
     the_search_node.bindpw = bindpw;
     the_search_node.lastbind = apr_time_now();
+    the_search_node.vals = vals;
     util_ald_cache_insert(curl->search_cache, &the_search_node);
+    ldap_msgfree(res);
     apr_lock_release(util_ldap_cache_lock);
 
     ldc->reason = "Authentication successful";
