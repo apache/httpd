@@ -413,10 +413,6 @@ static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
  * notify the service control manager of the name change.
  */
 
-/* ChangeServiceConfig2() prototype:
- */
-typedef WINADVAPI BOOL (WINAPI *CSD_T)(SC_HANDLE, DWORD, LPCVOID);
-
 /* Windows 2000 alone supports ChangeServiceConfig2 in order to
  * register our server_version string... so we need some fixups
  * to avoid binding to that function if we are on WinNT/9x.
@@ -425,8 +421,6 @@ static void set_service_description(void)
 {
     const char *full_description;
     SC_HANDLE schSCManager;
-    CSD_T ChangeServiceDescription = NULL;
-    HANDLE hwin2000scm;
     BOOL ret = 0;
 
     /* Nothing to do if we are a console
@@ -438,19 +432,22 @@ static void set_service_description(void)
      */
     full_description = ap_get_server_version();
 
-    if ((osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
-     && (hwin2000scm = GetModuleHandle("ADVAPI32.DLL"))
-     && (ChangeServiceDescription = (CSD_T) GetProcAddress(hwin2000scm, 
-                                                "ChangeServiceConfig2A"))
-     && (schSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS)))
+    if ((osver.dwPlatformId == VER_PLATFORM_WIN32_NT) 
+          && (osver.dwMajorVersion > 4) 
+          && (ChangeServiceConfig2)
+          && (schSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS)))
     {    
         SC_HANDLE schService = OpenService(schSCManager, mpm_service_name,
                                                SERVICE_ALL_ACCESS);
         if (schService) {
-            if (ChangeServiceDescription(schService,
-                                         1 /* SERVICE_CONFIG_DESCRIPTION */,
-                                         &full_description))
+            /* Cast is necessary, ChangeServiceConfig2 handles multiple
+             * object types, some volatile, some not.
+             */
+            if (ChangeServiceConfig2(schService,
+                                     1 /* SERVICE_CONFIG_DESCRIPTION */,
+                                     (LPVOID) &full_description)) {
                 full_description = NULL;
+            }
             CloseServiceHandle(schService);
         }
         CloseServiceHandle(schSCManager);
@@ -584,8 +581,12 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
     HANDLE hPipeReadDup;
     HANDLE thread;
     DWORD  threadid;
-    SECURITY_ATTRIBUTES sa = {0};  
+    SECURITY_ATTRIBUTES sa;
     const char *ignored;
+
+    sa.nLength = sizeof(sa);
+    sa.bInheritHandle = TRUE;
+    sa.lpSecurityDescriptor = NULL;
 
     /* args and service names live in the same pool */
     mpm_service_set_name(mpm_new_argv->pool, &ignored, argv[0]);
@@ -603,9 +604,8 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
         return;
     }
 
-    ReportStatusToSCMgr(globdat.ssStatus.dwCurrentState, // service state
-                        NO_ERROR,              // exit code
-                        3000);                 // wait hint, 3 seconds more
+    /* Report status, no errors, and buy 3 more seconds */
+    ReportStatusToSCMgr(globdat.ssStatus.dwCurrentState, NO_ERROR, 3000);
     
     /* Create a pipe to send stderr messages to the system error log */
     hCurrentProcess = GetCurrentProcess();
@@ -620,18 +620,17 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
                                   (LPVOID) hPipeRead, 0, &threadid);
             if (thread)
             {
-                int fh;
-                FILE *fl;
                 CloseHandle(thread);
-            	fflush(stderr);
-		SetStdHandle(STD_ERROR_HANDLE, hPipeWrite);
-				
-                fh = _open_osfhandle((long) STD_ERROR_HANDLE, 
-                                     _O_WRONLY | _O_BINARY);
-                dup2(fh, STDERR_FILENO);
-                fl = _fdopen(STDERR_FILENO, "wcb");
-                memcpy(stderr, fl, sizeof(FILE));
-            }
+ 		SetStdHandle(STD_ERROR_HANDLE, hPipeWrite);
+	
+/* XXX: To support stderr, we need some code like this.
+ * but not this specific code, turned out to be very buggy.
+ *              fh = _open_osfhandle((long) STD_ERROR_HANDLE, 
+ *                                   _O_WRONLY | _O_BINARY);
+ *              dup2(fh, STDERR_FILENO);
+ *              fl = _fdopen(STDERR_FILENO, "wcb");
+ *              memcpy(stderr, fl, sizeof(FILE));
+ */         }
             else
             {
                 CloseHandle(hPipeRead);
