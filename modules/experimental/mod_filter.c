@@ -40,6 +40,43 @@
 
 module AP_MODULE_DECLARE_DATA filter_module;
 
+/**
+ * ap_filter_provider_t is a filter provider, as defined and implemented
+ * by mod_filter.  The struct is a linked list, with dispatch criteria
+ * defined for each filter.  The provider implementation itself is a
+ * (2.0-compatible) ap_filter_rec_t* frec.
+ */
+struct ap_filter_provider_t {
+    /** How to match this provider to filter dispatch criterion */
+    enum {
+        STRING_MATCH,
+        STRING_CONTAINS,
+        REGEX_MATCH,
+        INT_EQ,
+        INT_LT,
+        INT_LE,
+        INT_GT,
+        INT_GE,
+        DEFINED
+    } match_type;
+
+    /** negation on match_type */
+    int not;
+
+    /** The dispatch match itself - union member depends on match_type */
+    union {
+        const char *string;
+        regex_t    *regex;
+        int         number;
+    } match;
+
+    /** The filter that implements this provider */
+    ap_filter_rec_t *frec;
+
+    /** The next provider in the list */
+    ap_filter_provider_t *next;
+};
+
 typedef struct {
     ap_out_filter_func func;
     void *fctx;
