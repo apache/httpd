@@ -183,8 +183,8 @@ API_EXPORT(const server_rec *) ap_get_server_conf(void)
 }
 
 /* a clean exit from a child with proper cleanup 
-   static void clean_child_exit(int code) __attribute__ ((noreturn)); */
-static void clean_child_exit(int code)
+   static void ap_clean_child_exit(int code) __attribute__ ((noreturn)); */
+void ap_clean_child_exit(int code)
 {
     if (pchild) {
 	ap_destroy_pool(pchild);
@@ -456,7 +456,7 @@ static void sig_coredump(int sig)
 
 static void just_die(int sig)
 {
-    clean_child_exit(0);
+    ap_clean_child_exit(0);
 }
 
 /*****************************************************************
@@ -986,7 +986,7 @@ static void child_main(int child_num_arg)
     SAFE_ACCEPT(accept_mutex_child_init(pchild));
 
     if (unixd_setup_child()) {
-	clean_child_exit(APEXIT_CHILDFATAL);
+	ap_clean_child_exit(APEXIT_CHILDFATAL);
     }
 
     ap_child_init_hook(pchild, server_conf);
