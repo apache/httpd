@@ -1591,9 +1591,7 @@ from the client</td></tr>
 </table>
     <p>This directive specifies the number of <var>bytes</var> from 0
     (meaning unlimited) to 2147483647 (2GB) that are allowed in a
-    request body. The default value is defined by the compile-time
-    constant <code>DEFAULT_LIMIT_REQUEST_BODY</code> (0 as
-    distributed).</p>
+    request body.</p>
 
     <p>The <code class="directive">LimitRequestBody</code> directive allows
     the user to set a limit on the allowed size of an HTTP request
