@@ -1291,41 +1291,23 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 root = current = new;
                 break;
             }
-            /* Percolate upwards */
-            if (current) {
-                switch (current->token.type) {
-                case TOKEN_NOT:
-                case TOKEN_EQ:
-                case TOKEN_NE:
-                case TOKEN_AND:
-                case TOKEN_OR:
-                case TOKEN_LBRACE:
-                case TOKEN_GE:
-                case TOKEN_GT:
-                case TOKEN_LE:
-                case TOKEN_LT:
-                    break;
 
-                default:
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                  "Invalid expression \"%s\" in file %s",
-                                  expr, r->filename);
-                    *was_error = 1;
-                    return retval;
-                }
+            switch (current->token.type) {
+            case TOKEN_STRING:
+            case TOKEN_RE:
+            case TOKEN_RBRACE:
+            case TOKEN_GROUP:
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "Invalid expression "
+                              "\"%s\" in file %s", expr, r->filename);
+                *was_error = 1;
+                return retval;
+
+            default:
+                break;
             }
 
-            if (!current) {
-                new->left = root;
-                new->left->parent = new;
-                new->parent = NULL;
-                root = new;
-            }
-            else {
-                new->left = current->right;
-                current->right = new;
-                new->parent = current;
-            }
+            current->right = new;
+            new->parent = current;
             current = new;
             break;
 
