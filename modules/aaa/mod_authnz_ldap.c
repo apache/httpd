@@ -291,7 +291,7 @@ static void *create_authnz_ldap_dir_config(apr_pool_t *p, char *d)
     sec->frontpage_hack = 0;
 */
 
-    sec->secure = 0;
+    sec->secure = -1;   /*Initialize to unset*/
 
     sec->user_is_dn = 0;
     sec->compare_dn_on_server = 0;
@@ -803,7 +803,8 @@ static int authz_ldap_check_user_access(request_rec *r)
  */
 static const char *mod_auth_ldap_parse_url(cmd_parms *cmd, 
                                     void *config,
-                                    const char *url)
+                                    const char *url,
+                                    const char *mode)
 {
     int rc;
     apr_ldap_url_desc_t *urld;
@@ -885,24 +886,40 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
         sec->filter = "objectclass=*";
     }
 
+    if (mode) {
+        if (0 == strcasecmp("NONE", mode)) {
+            sec->secure = APR_LDAP_NONE;
+        }
+        else if (0 == strcasecmp("SSL", mode)) {
+            sec->secure = APR_LDAP_SSL;
+        }
+        else if (0 == strcasecmp("TLS", mode) || 0 == strcasecmp("STARTTLS", mode)) {
+            sec->secure = APR_LDAP_STARTTLS;
+        }
+        else {
+            return "Invalid LDAP connection mode setting: must be one of NONE, "
+                   "SSL, or TLS/STARTTLS";
+        }
+    }
+
       /* "ldaps" indicates secure ldap connections desired
       */
     if (strncasecmp(url, "ldaps", 5) == 0)
     {
-        sec->secure = 1;
+        sec->secure = APR_LDAP_SSL;
         sec->port = urld->lud_port? urld->lud_port : LDAPS_PORT;
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server,
                      "LDAP: auth_ldap using SSL connections");
     }
     else
     {
-        sec->secure = 0;
         sec->port = urld->lud_port? urld->lud_port : LDAP_PORT;
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
                      "LDAP: auth_ldap not using SSL connections");
     }
 
     sec->have_ldap_url = 1;
+
     return NULL;
 }
 
@@ -952,7 +969,7 @@ static const char *set_charset_config(cmd_parms *cmd, void *config, const char *
 
 static const command_rec authnz_ldap_cmds[] =
 {
-    AP_INIT_TAKE1("AuthLDAPURL", mod_auth_ldap_parse_url, NULL, OR_AUTHCFG, 
+    AP_INIT_TAKE12("AuthLDAPURL", mod_auth_ldap_parse_url, NULL, OR_AUTHCFG, 
                   "URL to define LDAP connection. This should be an RFC 2255 complaint\n"
                   "URL of the form ldap://host[:port]/basedn[?attrib[?scope[?filter]]].\n"
                   "<ul>\n"
