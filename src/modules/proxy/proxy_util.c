@@ -452,7 +452,7 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
     int ok, end_of_chunk;
     char *buf;
     size_t buf_size;
-    size_t remaining = 0;
+    long remaining = 0;
     long total_bytes_rcvd;
     register int n = 0, o, w;
     conn_rec *con = r->connection;
