@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd"  
-  [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml"> ]
+  [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml.es"> ]
 >
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
 <!-- English Revision: 1.12.2.18  -->
