@@ -856,6 +856,33 @@ API_EXPORT(const char *) ap_method_name_of(int methnum)
     return AP_HTTP_METHODS[methnum];
 }
 
+int http_filter(ap_filter_t *f, ap_bucket_brigade *b)
+{
+#define ASCII_CR '\015'
+#define ASCII_LF '\012'
+    ap_bucket *e;
+    char *buff;
+    int length;
+    char *pos;
+
+    ap_get_brigade(f->next, b);
+
+    AP_BRIGADE_FOREACH(e, b) {
+
+        e->read(e, (const char **)&buff, &length, 0);
+
+        pos = buff + 1;
+        while (pos < buff + length) {
+            if ((*pos == ASCII_LF) && (*(pos - 1) == ASCII_CR)) {
+                *(pos - 1) = ASCII_LF;
+                *pos = '\0';
+            }
+            pos++;
+        }
+    }
+    return APR_SUCCESS;
+}
+
 /* Get a line of protocol input, including any continuation lines
  * caused by MIME folding (or broken clients) if fold != 0, and place it
  * in the buffer s, of size n bytes, without the ending newline.
@@ -880,8 +907,6 @@ static int getline(char *s, int n, conn_rec *c, int fold)
     ap_bucket_brigade *b;
     ap_bucket *e;
     
-#define ASCII_CR '\015'
-#define ASCII_LF '\012'
     
 #ifdef APACHE_XLATE_XXX
     /* When getline() is called, the HTTP protocol is in a state
@@ -938,18 +963,9 @@ static int getline(char *s, int n, conn_rec *c, int fold)
 	 */
         if ((toss = ap_strchr_c(temp, ASCII_LF)) != NULL) { 
             length = toss - temp + 1;
-            e->split(e, length);
+            e->split(e, length + 1);
             apr_cpystrn(pos, temp, length + 1);
 	    
-	    /* get rid of optional \r, again using ascii encoding */
-	    
-	    /*** XXX need 2 sentinels in front of pos 
-	     ***     which are never ASCII_CR, in case length < 2
-	     */
-	    if (pos[length - 2] == ASCII_CR) {
-                pos[length - 2] = ASCII_LF;
-                pos[--length] = '\0';
-	    }
             AP_BUCKET_REMOVE(e);
             e->destroy(e);
         }
