@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English revision: 1.19 -->
+<!-- English revision: 1.21 -->
 
 <sitemap>
   <relativepath href="."/>
@@ -139,6 +139,7 @@ HPUX betreiben</page>
   <modulefile>mod_authz_default.xml</modulefile>
   <modulefile>mod_authz_groupfile.xml</modulefile>
   <modulefile>mod_authz_host.xml</modulefile>
+  <modulefile>mod_authz_owner.xml</modulefile>
   <modulefile>mod_authz_user.xml</modulefile>
   <modulefile>mod_auth_ldap.xml</modulefile>
   <modulefile>mod_autoindex.xml</modulefile>
@@ -159,6 +160,7 @@ HPUX betreiben</page>
   <modulefile>mod_ext_filter.xml</modulefile>
   <modulefile>mod_file_cache.xml</modulefile>
   <modulefile>mod_headers.xml</modulefile>
+  <modulefile>mod_ident.xml</modulefile>
   <modulefile>mod_imap.xml</modulefile>
   <modulefile>mod_include.xml</modulefile>
   <modulefile>mod_info.xml</modulefile>
