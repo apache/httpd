@@ -278,7 +278,7 @@ if [ ".$help" = .no ]; then
     echo "##  restoring your configuration. Additional parameters can be supplied." >>$configstatus
     echo "##" >>$configstatus
     echo "" >>$configstatus
-    for var in CC OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LD_SHLIB LDFLAGS_SHLIB \
+    for var in CC CPP OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LD_SHLIB LDFLAGS_SHLIB \
                LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB; do
         eval "val=\"\$$var\""
         if [ ".$val" != . ]; then
@@ -954,7 +954,7 @@ touch $sedsubst
 
 #   generate settings from imported environment variables
 OIFS="$IFS" IFS="$DIFS"
-for var in CC OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LD_SHLIB LDFLAGS_SHLIB \
+for var in CC CPP OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LD_SHLIB LDFLAGS_SHLIB \
            LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB DEPS; do
     eval "val=\"\$$var\"";
     if [ ".$val" != . ]; then

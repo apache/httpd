@@ -1,5 +1,17 @@
 Changes with Apache 1.3.2
 
+  *) Fix the recently introduced C header file checking: We now use the C
+     pre-processor pass only (and no longer the complete compiler pass) to
+     determine whether a C header file exists or not. Because only this way
+     we're safe against inter-header dependencies (which caused horrible
+     portability problems). The only drawback is that we now have a CPP
+     configuration variable which has to be determined first (we do a similar
+     approach as GNU Autoconf does here). When all fails the user still has
+     the possibility to override it manually via APACI or src/Configuration.
+     As a fallback for the header check itself we can directly check the
+     existance of the file under /usr/include, too.
+     [Ralf S. Engelschall] PR????
+
   *) PORT: Added RHAPSODY (Mac OS X Server) support. MAP_TMPFILE defined
      as an alternate mechanism for mmap'd shared memory for RHAPSODY.
      ap_private_extern defined to hide symbols that conflict with loaded

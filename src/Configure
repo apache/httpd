@@ -799,6 +799,63 @@ else
 fi
 
 ####################################################################
+## Now check how we can _directly_ run the C pre-processor
+##
+TCPP=`egrep '^CPP=' Makefile.config | tail -1 | awk -F= '{print $2}'`
+if [ ".$TCPP" != . ]; then
+    CPP=`CC=$CC CPP=$TCPP ./helpers/findcpp.sh`
+else
+    CPP=`CC=$CC ./helpers/findcpp.sh`
+fi
+if [ ".$TCPP" = . ]; then
+    echo "CPP=$CPP" >> Makefile.config
+fi 
+echo " + setting C pre-processor to $CPP"
+
+####################################################################
+## Now check for existance of non-standard system header files
+## and start generation of the ap_config_auto.h header
+##
+AP_CONFIG_AUTO_H="include/ap_config_auto.h"
+echo "/*" >$AP_CONFIG_AUTO_H
+echo " *  ap_config_auto.h -- Automatically determined configuration stuff" >>$AP_CONFIG_AUTO_H
+echo " *  THIS FILE WAS AUTOMATICALLY GENERATED - DO NOT EDIT!" >>$AP_CONFIG_AUTO_H
+echo " */" >>$AP_CONFIG_AUTO_H
+echo "" >>$AP_CONFIG_AUTO_H
+echo "#ifndef AP_CONFIG_AUTO_H" >>$AP_CONFIG_AUTO_H
+echo "#define AP_CONFIG_AUTO_H" >>$AP_CONFIG_AUTO_H
+
+echo " + checking for system header files"
+CHECK_FOR_HEADERS="dlfcn.h dl.h bstring.h crypt.h unistd.h sys/resource.h sys/select.h sys/processor.h"
+for header in $CHECK_FOR_HEADERS; do
+    echo "" >>$AP_CONFIG_AUTO_H
+    echo "/* check: #include <$header> */" >>$AP_CONFIG_AUTO_H
+    name="`echo $header | sed -e 's:/:_:g' -e 's:\.:_:g' | tr '[a-z]' '[A-Z]'`"
+    CPP=$CPP ./helpers/checkheader.sh $header
+    if [ $? -eq 0 ]; then
+        echo "#ifndef HAVE_${name}" >>$AP_CONFIG_AUTO_H
+        echo "#define HAVE_${name} 1" >>$AP_CONFIG_AUTO_H
+        echo "#endif" >>$AP_CONFIG_AUTO_H
+    else
+        echo "#ifdef HAVE_${name}" >>$AP_CONFIG_AUTO_H
+        echo "#undef HAVE_${name}" >>$AP_CONFIG_AUTO_H
+        echo "#endif" >>$AP_CONFIG_AUTO_H
+    fi
+done
+
+####################################################################
+# Special AIX 4.x support: need to check for sys/processor.h
+# to decide whether the Processor Binding can be used or not
+case "$PLAT" in
+    *-ibm-aix*)
+        CPP=$CPP ./helpers/checkheader.sh sys/processor.h
+        if [ $? -eq 0 ]; then
+            CFLAGS="$CFLAGS -DAIX_BIND_PROCESSOR"
+        fi
+        ;;
+esac
+
+####################################################################
 ## Look for OPTIM and save for later
 ##
 TOPTIM=`egrep '^OPTIM=' Makefile.config | tail -1 | awk -F= '{print $2}'`
@@ -1238,17 +1295,6 @@ if [ "$RULE_SOCKS5" = "yes" ]; then
             ;;
     esac
 fi
-
-# AIX 4.x support: Special Case: need to check for sys/processor.h
-# before we usually would.
-# Processor Binding
-case "$PLAT" in
-    *-ibm-aix*)
-        if ./helpers/TestCompile header sys/processor.h ; then
-            CFLAGS="$CFLAGS -DAIX_BIND_PROCESSOR"
-        fi
-        ;;
-esac
 
 ####################################################################
 ## Find out what modules we want and try and configure things for them
@@ -1700,35 +1746,6 @@ if [ "x$using_shlib" = "x1" ] ; then
 fi
 
 ####################################################################
-## Now check for existance of non-standard system header files
-## and start generation of the ap_config_auto.h header
-##
-AP_CONFIG_AUTO_H="include/ap_config_auto.h"
-echo "/*" >$AP_CONFIG_AUTO_H
-echo " *  ap_config_auto.h -- Automatically determined configuration stuff" >>$AP_CONFIG_AUTO_H
-echo " *  THIS FILE WAS AUTOMATICALLY GENERATED - DO NOT EDIT!" >>$AP_CONFIG_AUTO_H
-echo " */" >>$AP_CONFIG_AUTO_H
-echo "" >>$AP_CONFIG_AUTO_H
-echo "#ifndef AP_CONFIG_AUTO_H" >>$AP_CONFIG_AUTO_H
-echo "#define AP_CONFIG_AUTO_H" >>$AP_CONFIG_AUTO_H
-
-echo " + checking for system header files"
-CHECK_FOR_HEADERS="dlfcn.h dl.h bstring.h crypt.h unistd.h sys/resource.h sys/select.h sys/processor.h"
-for header in $CHECK_FOR_HEADERS; do
-    echo "" >>$AP_CONFIG_AUTO_H
-    echo "/* check: #include <$header> */" >>$AP_CONFIG_AUTO_H
-    name="`echo $header | sed -e 's:/:_:g' -e 's:\.:_:g' | tr '[a-z]' '[A-Z]'`"
-    if ./helpers/TestCompile header $header; then
-        echo "#ifndef HAVE_${name}" >>$AP_CONFIG_AUTO_H
-        echo "#define HAVE_${name} 1" >>$AP_CONFIG_AUTO_H
-        echo "#endif" >>$AP_CONFIG_AUTO_H
-    else
-        echo "#ifdef HAVE_${name}" >>$AP_CONFIG_AUTO_H
-        echo "#undef HAVE_${name}" >>$AP_CONFIG_AUTO_H
-        echo "#endif" >>$AP_CONFIG_AUTO_H
-    fi
-done
-
 ## Finish building ap_config_auto.h
 ##
 ## We pick out all -D's from CFLAGS and insert them as defines into
