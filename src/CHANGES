@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
 
+  *) Fix inheritance of IndexOptions NameWidth and remove unintended
+     restriction on +NameWidth, +IconHeight, and +IconWidth.  [Ken Coar]
+
   *) Fix per-directory config merging for cases in which a 500 error
      is encountered in an .htaccess file somewhere down the tree.
      [Ken Coar]  PR#2409

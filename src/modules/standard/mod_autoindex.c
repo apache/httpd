@@ -98,6 +98,10 @@ module MODULE_VAR_EXPORT autoindex_module;
 #define K_PAD 1
 #define K_NOPAD 0
 
+#define K_NOADJUST 0
+#define K_ADJUST 1
+#define K_UNSET 2
+
 /*
  * Define keys for sorting.
  */
@@ -368,8 +372,8 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 	    }
 	}
 	else if (!strncasecmp(w, "IconWidth=", 10)) {
-	    if (action != '\0') {
-		return "Cannot combine '+' or '-' with IconWidth=n";
+	    if (action == '-') {
+		return "Cannot combine '-' with IconWidth=n";
 	    }
 	    d_cfg->icon_width = atoi(&w[10]);
 	}
@@ -382,8 +386,8 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 	    }
 	}
 	else if (!strncasecmp(w, "IconHeight=", 11)) {
-	    if (action != '\0') {
-		return "Cannot combine '+' or '-' with IconHeight=n";
+	    if (action == '-') {
+		return "Cannot combine '-' with IconHeight=n";
 	    }
 	    d_cfg->icon_height = atoi(&w[11]);
 	}
@@ -393,14 +397,14 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 		       "'-NameWidth'";
 	    }
 	    d_cfg->name_width = DEFAULT_NAME_WIDTH;
-	    d_cfg->name_adjust = 0;
+	    d_cfg->name_adjust = K_NOADJUST;
 	}
 	else if (!strncasecmp(w, "NameWidth=", 10)) {
-	    if (action != '\0') {
-		return "Cannot combine '+' or '-' with NameWidth=n";
+	    if (action == '-') {
+		return "Cannot combine '-' with NameWidth=n";
 	    }
 	    if (w[10] == '*') {
-		d_cfg->name_adjust = 1;
+		d_cfg->name_adjust = K_ADJUST;
 	    }
 	    else {
 		int width = atoi(&w[10]);
@@ -409,6 +413,7 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 		    return "NameWidth value must be greater than 1";
 		}
 		d_cfg->name_width = width;
+		d_cfg->name_adjust = K_NOADJUST;
 	    }
 	}
 	else {
@@ -477,7 +482,7 @@ static void *create_autoindex_config(pool *p, char *dummy)
     new->icon_width = 0;
     new->icon_height = 0;
     new->name_width = DEFAULT_NAME_WIDTH;
-    new->name_adjust = 0;
+    new->name_adjust = K_UNSET;
     new->icon_list = ap_make_array(p, 4, sizeof(struct item));
     new->alt_list = ap_make_array(p, 4, sizeof(struct item));
     new->desc_list = ap_make_array(p, 4, sizeof(struct item));
@@ -551,8 +556,19 @@ static void *merge_autoindex_configs(pool *p, void *basev, void *addv)
 	new->opts |= new->incremented_opts;
 	new->opts &= ~new->decremented_opts;
     }
-    new->name_width = add->name_width;
-    new->name_adjust = add->name_adjust;
+    /*
+     * Inherit the NameWidth settings if there aren't any specific to
+     * the new location; otherwise we'll end up using the defaults set in the
+     * config-rec creation routine.
+     */
+    if (add->name_adjust == K_UNSET) {
+	new->name_width = base->name_width;
+	new->name_adjust = base->name_adjust;
+    }
+    else {
+	new->name_width = add->name_width;
+	new->name_adjust = add->name_adjust;
+    }
 
     return new;
 }
@@ -1030,7 +1046,7 @@ static void output_directories(struct ent **ar, int n,
     }
 
     name_width = d->name_width;
-    if (d->name_adjust) {
+    if (d->name_adjust == K_ADJUST) {
 	for (x = 0; x < n; x++) {
 	    int t = strlen(ar[x]->name);
 	    if (t > name_width) {
