@@ -401,7 +401,7 @@ static apr_status_t brigade_consume(apr_bucket_brigade *bb,
                                     char *c, apr_size_t *len)
 {
     apr_size_t actual = 0;
-    apr_status_t status;
+    apr_status_t status = APR_SUCCESS;
  
     while (!APR_BRIGADE_EMPTY(bb)) {
         apr_bucket *b = APR_BRIGADE_FIRST(bb);
@@ -450,9 +450,7 @@ static apr_status_t brigade_consume(apr_bucket_brigade *bb,
 
             c += consume;
             actual += consume;
-        }
 
-        if (b->start >= 0) {
             if (consume >= b->length) {
                 /* This physical bucket was consumed */
                 apr_bucket_delete(b);
@@ -462,6 +460,9 @@ static apr_status_t brigade_consume(apr_bucket_brigade *bb,
                 b->start += consume;
                 b->length -= consume;
             }
+        }
+        else if (b->length == 0) {
+            apr_bucket_delete(b);
         }
 
         /* This could probably be actual == *len, but be safe from stray
@@ -955,13 +956,6 @@ static apr_status_t ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
         type = "abortive";
     }
     else switch (sslconn->shutdown_type) {
-      case SSL_SHUTDOWN_TYPE_UNSET:
-      case SSL_SHUTDOWN_TYPE_STANDARD:
-        /* send close notify, but don't wait for clients close notify
-           (standard compliant and safe, so it's the DEFAULT!) */
-        shutdown_type = SSL_RECEIVED_SHUTDOWN;
-        type = "standard";
-        break;
       case SSL_SHUTDOWN_TYPE_UNCLEAN:
         /* perform no close notify handshake at all
            (violates the SSL/TLS standard!) */
@@ -973,6 +967,16 @@ static apr_status_t ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
            (standard compliant, but usually causes connection hangs) */
         shutdown_type = 0;
         type = "accurate";
+        break;
+      default:
+        /*
+         * case SSL_SHUTDOWN_TYPE_UNSET:
+         * case SSL_SHUTDOWN_TYPE_STANDARD:
+         */
+        /* send close notify, but don't wait for clients close notify
+           (standard compliant and safe, so it's the DEFAULT!) */
+        shutdown_type = SSL_RECEIVED_SHUTDOWN;
+        type = "standard";
         break;
     }
 
