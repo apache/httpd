@@ -252,7 +252,11 @@ case "$*" in
     *--with-layout=* ) 
         ;;
     * ) 
-        set -- '--with-layout=Apache' "$@"
+        if [ "x$@" = x ]; then
+            set -- '--with-layout=Apache'
+        else
+            set -- '--with-layout=Apache' "$@"
+        fi
         ;;
 esac
 
