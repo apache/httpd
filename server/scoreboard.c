@@ -151,7 +151,7 @@ static apr_status_t create_namebased_scoreboard(apr_pool_t *pool,
 
     /* The shared memory file must not exist before we create the
      * segment. */
-    apr_file_remove(fname, pool); /* ignore errors */
+    apr_shm_remove(fname, pool); /* ignore errors */
 
     rv = apr_shm_create(&ap_scoreboard_shm, scoreboard_size, fname, pool);
     if (rv != APR_SUCCESS) {
