@@ -4,11 +4,11 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_autoindex - Apache HTTP Server</title><link href="../style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="../style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="../style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="../style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="../style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="../style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="../style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="../style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_autoindex</h1><table class="module"><tr><th>説明:
+      --><title>mod_autoindex - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_autoindex</h1><table class="module"><tr><th>説明:
                 </th><td>Unix の <em>ls</em> コマンドや
     Win32 の <em>dir</em> シェルコマンドに似た
-    ディレクトリインデックスを生成する</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
-                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
+    ディレクトリインデックスを生成する</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
+                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
                   </a></th><td>autoindex_module</td></tr></table><h3>概要</h3> 
       <p>ディレクトリのインデックスは二つの情報源のうちの
       一つから生成できます:</p>
@@ -17,7 +17,7 @@
       <li>普通は <code>index.html</code> と呼ばれる
       ユーザによって書かれたファイル。
       <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>
-      ディレクティブでこのファイル名を設定します。
+      ディレクティブでこのファイル名を設定します。
       これは <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> で制御されます。</li>
 
       <li>もしくは、サーバによって生成された一覧。
@@ -26,7 +26,7 @@
       <code class="directive"><a href="#addiconbytype">AddIconByType</a></code>
       を使うことで、様々なファイルタイプに対してアイコン一覧を
       セットします。つまり、リストされたファイル毎に、
-      ファイルにマッチした一番最初のアイコンが表示されます。
+      ファイルにマッチした一番最初のアイコンが表示されます。
       これらは <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> で制御されます。</li>
     </ul>
     <p>望むならば、自動インデックス生成を完全に除去 (あるいは置換)
@@ -51,7 +51,7 @@
     <code>SuppressColumnSorting</code>
     オプションで消すことができます。</p>
 
-    <p>"Size" でソートした場合は、用いられるのは
+    <p>"Size" でソートした場合は、用いられるのは
     <em>実際の</em>ファイルのサイズであって、
     表示の値ではないことに注意してください -
     たとえ両方ともが "1K" と表示されていたとしても、
@@ -77,19 +77,19 @@
       <li><code>C=N</code> は、ファイル名でソートします。</li>
 
       <li><code>C=M</code> は、更新日時、
-      ディレクトリ、ファイル名の順でソートします。</li>
+      ディレクトリ、ファイル名の順でソートします。</li>
 
       <li><code>C=S</code> は、サイズ、
       ディレクトリ、ファイル名の順でソートします。</li>
 
       <li><code>C=D</code> は、説明、
       ディレクトリ、ファイル名の順でソートします。<br />
-       ?</li>
+       &#160;</li>
 
       <li><code>O=A</code> は、昇順で表をソートします。</li>
 
       <li><code>O=D</code> は、降順で表をソートします。<br />
-       ?</li>
+       &#160;</li>
 
       <li><code>F=0</code> は、単純な表の書式にします。
       (FancyIndex ではありません。)</li>
@@ -99,21 +99,21 @@
 
       <li><code>F=2</code> は、表を HTML 
       のテーブルを使った FancyIndex の書式にします。<br />
-       ?</li>
+       &#160;</li>
 
       <li><code>V=0</code> 
       は、バージョンによるソートを無効にします。</li>
 
       <li><code>V=1</code> 
       は、バージョンによるソートを有効にします。<br />
-       ?</li>
+       &#160;</li>
 
       <li><code>P=<em>パターン</em></code> 
       は、与えられた<em>パターン</em>
       に適合したファイルのみを表示します。</li>
     </ul>
 
-    <p>"P (パターンの P)" クエリー引数は、
+    <p>"P (パターンの P)" クエリー引数は、
     通常の IndexIgnore
     ディレクティブが処理された<em>後</em>に検査され、
     ファイル名全てが、他の autoindex
@@ -133,27 +133,27 @@
 
 <div class="example"><p><code>
 &lt;FORM METHOD="GET"&gt;<br />
-??Show me a &lt;SELECT NAME="F"&gt;<br />
-????&lt;OPTION VALUE="0"&gt; Plain list <br />
-????&lt;OPTION VALUE="1" SELECTED&gt; Fancy list<br />
-????&lt;OPTION VALUE="2"&gt; Table list<br />
-??&lt;/SELECT&gt;<br />
-??Sorted by &lt;SELECT NAME="C"&gt;<br />
-????&lt;OPTION VALUE="N" SELECTED&gt; Name<br />
-????&lt;OPTION VALUE="M"&gt; Date Modified<br />
-????&lt;OPTION VALUE="S"&gt; Size<br />
-????&lt;OPTION VALUE="D"&gt; Description<br />
-??&lt;/SELECT&gt;<br />
-??&lt;SELECT NAME="O"&gt;<br />
-????&lt;OPTION VALUE="A" SELECTED&gt; Ascending<br />
-????&lt;OPTION VALUE="D"&gt; Descending<br />
-??&lt;/SELECT&gt;<br />
-??&lt;SELECT NAME="V"&gt;<br />
-????&lt;OPTION VALUE="0" SELECTED&gt; in Normal order<br />
-????&lt;OPTION VALUE="1"&gt; in Version order<br />
-??&lt;/SELECT&gt;<br />
-??Matching &lt;INPUT TYPE="text" NAME="P" VALUE="*"&gt;<br />
-??&lt;INPUT TYPE="submit" NAME="X" VALUE="Go"&gt;<br />
+&#160;&#160;Show me a &lt;SELECT NAME="F"&gt;<br />
+&#160;&#160;&#160;&#160;&lt;OPTION VALUE="0"&gt; Plain list <br />
+&#160;&#160;&#160;&#160;&lt;OPTION VALUE="1" SELECTED&gt; Fancy list<br />
+&#160;&#160;&#160;&#160;&lt;OPTION VALUE="2"&gt; Table list<br />
+&#160;&#160;&lt;/SELECT&gt;<br />
+&#160;&#160;Sorted by &lt;SELECT NAME="C"&gt;<br />
+&#160;&#160;&#160;&#160;&lt;OPTION VALUE="N" SELECTED&gt; Name<br />
+&#160;&#160;&#160;&#160;&lt;OPTION VALUE="M"&gt; Date Modified<br />
+&#160;&#160;&#160;&#160;&lt;OPTION VALUE="S"&gt; Size<br />
+&#160;&#160;&#160;&#160;&lt;OPTION VALUE="D"&gt; Description<br />
+&#160;&#160;&lt;/SELECT&gt;<br />
+&#160;&#160;&lt;SELECT NAME="O"&gt;<br />
+&#160;&#160;&#160;&#160;&lt;OPTION VALUE="A" SELECTED&gt; Ascending<br />
+&#160;&#160;&#160;&#160;&lt;OPTION VALUE="D"&gt; Descending<br />
+&#160;&#160;&lt;/SELECT&gt;<br />
+&#160;&#160;&lt;SELECT NAME="V"&gt;<br />
+&#160;&#160;&#160;&#160;&lt;OPTION VALUE="0" SELECTED&gt; in Normal order<br />
+&#160;&#160;&#160;&#160;&lt;OPTION VALUE="1"&gt; in Version order<br />
+&#160;&#160;&lt;/SELECT&gt;<br />
+&#160;&#160;Matching &lt;INPUT TYPE="text" NAME="P" VALUE="*"&gt;<br />
+&#160;&#160;&lt;INPUT TYPE="submit" NAME="X" VALUE="Go"&gt;<br />
 &lt;/FORM&gt;
 </code></p></div>
 
@@ -251,11 +251,11 @@
       /web/pics/mars.gif</code></p></div>
 
     <p>通常のデフォルトの説明領域は 23 バイトの幅です。
-    <code>IndexOptions?SuppressIcon</code>
+    <code>IndexOptions&#160;SuppressIcon</code>
     オプションで 6 バイト追加、
-    <code>IndexOptions?SuppressSize</code>
+    <code>IndexOptions&#160;SuppressSize</code>
     オプションで 7 バイト追加、
-    <code>IndexOptions?SuppressLastModified</code>
+    <code>IndexOptions&#160;SuppressLastModified</code>
     オプションで 19 バイト追加されます。
     ですから、デフォルトの説明コラムの最大幅は
     55 バイトになります。</p>
@@ -709,7 +709,7 @@ foo-1.04
 	  <code class="directive">IndexOptions</code> 
 	  ディレクティブは、現在では一つにマージされます。
 	  上の例の結果は、
-          <code>IndexOptions?FancyIndexing?ScanHTMLTitles</code>
+          <code>IndexOptions&#160;FancyIndexing&#160;ScanHTMLTitles</code>
 	  と同一になります。</li>
 
           <li>増減構文
@@ -730,7 +730,7 @@ foo-1.04
            IndexOptions +SuppressSize<br />
 </code></p></div>
 	中身の効果は
-        <code>IndexOptions?FancyIndexing?+SuppressSize</code>
+        <code>IndexOptions&#160;FancyIndexing&#160;+SuppressSize</code>
 	と同一です。
 	接頭辞の付かない <code>FancyIndexing</code>
 	でそれ以前の増減キーワードを無効にされて、

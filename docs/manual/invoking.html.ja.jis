@@ -4,23 +4,23 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Apache の起動 - Apache HTTP Server</title><link href="./style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="./style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="./style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="./style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="./style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="./style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="./style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="./style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Apache の起動</h1>
-    <p>Windows 上では、Apache は通常は
-    Windows NT ではサービスとして、Windows 95 
-    ではコンソールアプリケーションとして実行されます。
+      --><title>Apache の起動 - Apache HTTP Server</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Apache の起動</h1>
+    <p>Windows 上では、Apache は通常は
+    Windows NT ではサービスとして、Windows 95 
+    ではコンソールアプリケーションとして実行されます。
     詳細に関しては、「<a href="platform/windows.html#run">
     Windows で Apache を実行する</a>」をご覧下さい。</p>
 
     <p>Unixでは、<a href="programs/httpd.html">httpd</a> 
     プログラムが、バックグラウンドで常にリクエスト処理を行う
     デーモンとして実行されます。この文書ではどのように
-    <code>httpd</code> を起動するかについて記述しています。</p>
+    <code>httpd</code> を起動するかについて記述しています。</p>
 </div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">Apache の起動方法</a></li><li><img alt="" src="./images/down.gif" /> <a href="#errors">起動時のエラー</a></li><li><img alt="" src="./images/down.gif" /> <a href="#boot">ブート時の起動</a></li><li><img alt="" src="./images/down.gif" /> <a href="#info">追加情報</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="startup" id="startup">Apache の起動方法</a></h2>
 
     <p>もし、設定ファイル中で指定されている
     <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
     がデフォルトの 80 (もしくは 1024 以下の他のポート)
-    である場合は、Apache を起動するためには root
+    である場合は、Apache を起動するためには root
     権限が必要になりますが、
     これはこの特権ポートにバインドするためです。
     起動して、一度ログファイルを開くといった準備のための
@@ -47,7 +47,7 @@
     といった簡単なコマンドで、
     デーモンプロセスを制御するのに使えます。</p>
 
-    <p>スタートアップが万事上手くいったら、サーバはターミナルから
+    <p>スタートアップが万事上手くいったら、サーバはターミナルから
     切り離されて、コマンドプロンプトが即座に戻ってくるでしょう。
     これはサーバが起動している状態を示しています。
     その後はブラウザでサーバに接続して、
@@ -70,7 +70,7 @@
 
       <li>同じポートに既にバインドされている Apache
       がもう一つあるときや他のウェブサーバが存在している時に、
-      サーバを開始しようとした。</li>
+      サーバを開始しようとした。</li>
     </ul>
 
     <p>より多くの問題解決の方策の説明は、
@@ -95,7 +95,7 @@
     <a href="programs/apachectl.html">apachectl</a>
     、サーバに含まれていたその他補助プログラムの、
     コマンドラインオプションに関する追加情報は、
-    <a href="programs/">サーバと補助プログラム</a>ページに
+    <a href="programs/">サーバと補助プログラム</a>ページに
     記載されています。
     Apache 配布に含まれている全<a href="mod/">モジュール</a>、
     それによって提供される<a href="mod/directives.html">ディレクティブ</a>

@@ -4,11 +4,11 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mpm_common - Apache HTTP Server</title><link href="../style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="../style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="../style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="../style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="../style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="../style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="../style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="../style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mpm_common</h1><table class="module"><tr><th>説明:
-                </th><td>二つ以上のマルチプロセッシングモジュール (MPM)
+      --><title>mpm_common - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mpm_common</h1><table class="module"><tr><th>説明:
+                </th><td>二つ以上のマルチプロセッシングモジュール (MPM)
 で実装されているディレクティブのコレクション</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
                   </a></th><td>MPM</td></tr></table></div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li><li><img alt="" src="../images/down.gif" /> <a href="#group">Group</a></li><li><img alt="" src="../images/down.gif" /> <a href="#listen">Listen</a></li><li><img alt="" src="../images/down.gif" /> <a href="#listenbacklog">ListenBackLog</a></li><li><img alt="" src="../images/down.gif" /> <a href="#lockfile">LockFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxclients">MaxClients</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxrequestsperchild">MaxRequestsPerChild</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxsparethreads">MaxSpareThreads</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxthreadsperchild">MaxThreadsPerChild</a></li><li><img alt="" src="../images/down.gif" /> <a href="#minsparethreads">MinSpareThreads</a></li><li><img alt="" src="../images/down.gif" /> <a href="#numservers">NumServers</a></li><li><img alt="" src="../images/down.gif" /> <a href="#pidfile">PidFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#scoreboardfile">ScoreBoardFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#sendbuffersize">SendBufferSize</a></li><li><img alt="" src="../images/down.gif" /> <a href="#serverlimit">ServerLimit</a></li><li><img alt="" src="../images/down.gif" /> <a href="#startservers">StartServers</a></li><li><img alt="" src="../images/down.gif" /> <a href="#startthreads">StartThreads</a></li><li><img alt="" src="../images/down.gif" /> <a href="#threadlimit">ThreadLimit</a></li><li><img alt="" src="../images/down.gif" /> <a href="#threadsperchild">ThreadsPerChild</a></li><li><img alt="" src="../images/down.gif" /> <a href="#user">User</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory" id="coredumpdirectory">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
-            </th><td>Apache がコアダンプする前に移動を試みるディレクトリ
+            </th><td>Apache がコアダンプする前に移動を試みるディレクトリ
 </td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>CoreDumpDirectory <em>directory</em></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
               </a></th><td><code>デフォルトの設定は説明文を読んでください</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
@@ -20,7 +20,7 @@
     デフォルト値は <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>
     ディレクトリですが、このディレクトリはサーバの実行されているユーザ権限で
     書き込み可能であるべきではないので、通常はコアダンプは書き込まれません。
-    デバッグのためにコアダンプが必要であれば、
+    デバッグのためにコアダンプが必要であれば、
     このディレクティブを使って他の位置にコアダンプを書き出すようにできます。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Group" id="Group">Group</a> <a name="group" id="group">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
             </th><td>リクエストに応答する際に所属するグループ</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
@@ -53,7 +53,7 @@
     起動を行ったユーザの所属するグループとして実行され続けます。</p>
 
     <p>特記事項: このディレクティブを &lt;VirtualHost&gt;
-    で使用することはサポートされなくなりました。Apache 2.0 で
+    で使用することはサポートされなくなりました。Apache 2.0 で
     <a href="../suexec.html">suEXEC ラッパー</a>を実現したい場合は、
     <code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code>
     を使用してください。
@@ -73,7 +73,7 @@
     もし設定ファイルになければ、サーバは起動に失敗します。
     これは以前のバージョンの Apache から変更のあった部分です。</p>
 
-    <p>Listen ディレクティブでは、特定のポートあるいは
+    <p>Listen ディレクティブでは、特定のポートあるいは
     アドレスとポートの組み合わせから入ってくるリクエストに対して
     応答するように指定します。
     もしポート番号だけが指定された場合は、サーバは全インターフェースの
@@ -164,7 +164,7 @@
 
     <p>スレッドを用いないサーバ (すなわち <code class="module"><a href="../mod/prefork.html">prefork</a></code>)
     では、<code class="directive">MaxClients</code>
-    は、リクエストに応答するために起動される
+    は、リクエストに応答するために起動される
     子プロセスの最大数となります。
     デフォルト値は 256 で、これを増加させたい場合は、
     <code class="directive"><a href="#serverlimit">ServerLimit</a></code>
@@ -256,7 +256,7 @@
               </a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr></table>
     <p>リクエストに応答するスレッド数の最小値です。
     異なる MPM ではそれぞれ、
-    このディレクティブは異なる取り扱われ方をします。</p>
+    このディレクティブは異なる取り扱われ方をします。</p>
 
     <p><code class="module"><a href="../mod/perchild.html">perchild</a></code> では、
     デフォルトは <code>MinSpareThreads 5</code> で、
@@ -306,7 +306,7 @@
 
     <p>サーバが <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>
     や TransferLog を閉じて開き直したり、設定ファイルを
-    再読込したりさせるために、サーバにシグナルを送ることができると
+    再読込したりさせるために、サーバにシグナルを送ることができると
     便利なことがあります。
     これは SIGHUP (kill -1) シグナルを PidFile
     に書かれているプロセス ID に送ることでできます。</p>
