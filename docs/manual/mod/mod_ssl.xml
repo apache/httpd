@@ -1208,7 +1208,7 @@ SSLProxyMachineCertificatePath /usr/local/apache/conf/ssl.crt/
 
 <usage>
 <p>
-This directive sets the directory where you keep the certificates of
+This directive sets the all-in-one file where you keep the certificates of
 Certification Authorities (CAs) whose proxy client certificates are used for
 authentication of the proxy server to remote servers.
 </p>
