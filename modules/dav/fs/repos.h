@@ -99,7 +99,8 @@ const dav_hooks_locks *dav_fs_get_lock_hooks(request_rec *r);
 const dav_hooks_propdb *dav_fs_get_propdb_hooks(request_rec *r);
 
 void dav_fs_gather_propsets(apr_array_header_t *uris);
-int dav_fs_find_liveprop(request_rec *r, const char *ns_uri, const char *name,
+int dav_fs_find_liveprop(const dav_resource *resource,
+                         const char *ns_uri, const char *name,
                          const dav_hooks_liveprop **hooks);
 void dav_fs_insert_all_liveprops(request_rec *r, const dav_resource *resource,
                                  int insvalue, ap_text_header *phdr);
