@@ -72,6 +72,9 @@
 #if APR_HAVE_SYS_WAIT_H
 #include <sys/wait.h> 
 #endif
+#ifdef HAVE_SYS_PROCESSOR_H
+#include <sys/processor.h> /* for bindprocessor() */
+#endif
 
 #if !APR_HAS_THREADS
 #error The threaded MPM requires APR threads, but they are unavailable.
@@ -803,18 +806,16 @@ static int make_child(server_rec *s, int slot)
     }
 
     if (!pid) {
-#ifdef HAVE_SYS_PROCESSOR_H
-      /* By default, AIX binds to a single processor.  This bit unbinds
-	 children which will then bind to another CPU.
-      */
-#include <sys/processor.h>
+#ifdef HAVE_BINDPROCESSOR
+        /* By default, AIX binds to a single processor.  This bit unbinds
+	 * children which will then bind to another CPU.
+         */
         int status = bindprocessor(BINDPROCESS, (int)getpid(),
 			       PROCESSOR_CLASS_ANY);
 	if (status != OK)
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, errno, ap_server_conf,
 			 "processor unbind failed %d", status);
 #endif
-
         RAISE_SIGSTOP(MAKE_CHILD);
 
         apr_signal(SIGTERM, just_die);
