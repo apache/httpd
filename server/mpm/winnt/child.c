@@ -468,7 +468,8 @@ static void winnt_accept(void *lr_)
     int rv, err_count = 0;
 
     apr_os_sock_get(&nlsd, lr->sd);
-
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+                 "Child %d: Starting thread to listen on port %d.", my_pid, lr->bind_addr->port);
     while (!shutdown_in_progress) {
         if (!context) {
             context = mpm_get_completion_context();
