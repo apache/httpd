@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<modulesynopsis>
+
+<!-- English revision: 1.5 -->
+<name>mod_so</name>
+<description>起動時や再起動時に実行コードとモジュールをサーバにロードする
+</description>
+<status>Base (Windows); Optional (Unix)</status>
+<sourcefile>mod_so.c</sourcefile>
+<identifier>so_module</identifier>
+
+<summary>
+
+    <p>いくつかのオペレーティングシステムでは、サーバの再コンパイルをする代わりに、
+    このモジュールを使用して
+    <a href="../dso.html">動的共有オブジェクト</a>
+    (DSO) 機構により、実行時に Apache にモジュールを読み込ませることが
+    できます。</p>
+
+    <p>Unix 上では、読み込まれるコードは通常は共有オブジェクトファイル
+    (普通 <code>.so</code> という拡張子が付いています) からです。
+    Windows 上ではこのモジュールの拡張子は <code>.so</code> か <code>.dll</code>
+    です。</p>
+
+    <note type="warning"><title>警告</title>
+    <p>Apache 1.3 のモジュールを直接 Apache 2.0 で使うことはできません
+    ― モジュールは Apache 2.0 用に動的にロードされるか、
+    直接組み込まれるために修正されなければなりません。</p>
+    </note>
+</summary>
+
+<section><title>Windows 用のロード可能なモジュールを作成する</title>
+
+    <note><title>注</title>
+    <p>Apache 1.3.15 と 2.0 とで Windows のモジュール名の形式は変更されました
+    ― モジュールは mod_foo.so という名前になりました。</p>
+
+    <p>まだ mod_so で ApacheModuleFoo.dll という名前のモジュールも
+    ロードされますが、新しい名前の付け方を使う方が好まれます。モジュールを
+    2.0 用に移植しているのであれば、2.0 の習慣に合うように名前を
+    修正してください。</p></note>
+
+    <p>Apache のモジュール API は UNIX と Windows 間では変更されていません。
+    多くのモジュールは全く変更なし、もしくは簡単な変更により Windows 
+    で実行できるようになります。ただし、それ以外の Windows には無い Unix
+    アーキテクチャーの機能に依存したモジュールは動作しません。</p>
+
+    <p>モジュールが実際に動作するときは、
+    二つの方法のどちらかでサーバに追加することができます。まず、Unix
+    と同様にサーバにコンパイルして組み込むことができます。Windows
+    用の Apache は Unix 用の Apache にある <code>Configure</code>
+    プログラムがありませんので、モジュールのソースファイルを
+    ApacheCore プロジェクトファイルに追加し、シンボルを
+    <code>os\win32\modules.c</code> ファイルに追加する必要があります。</p>
+
+    <p>二つ目はモジュールを DLL としてコンパイルする方法です。
+    DLL は共有ライブラリで、実行時に
+    <code><directive>LoadModule</directive></code>
+    ディレクティブによりサーバに読み込むことができます。これらのモジュール
+    DLL はそのまま配布することが可能で、サーバを再コンパイルすることなく、Windows
+    用の Apache のすべてのインストールで実行することができます。</p>
+
+    <p>モジュール DLL を作成するためには、
+    モジュールの作成に小さな変更を行なう必要があります。
+    つまり、モジュールのレコード (これは後で作成されます。
+    以下を参照してください) が DLL からエクスポートされなければなりません。
+    これを行なうには、<code>AP_MODULE_DECLARE_DATA</code> (Apache
+    のヘッダファイルで定義されています) をモジュールのモジュールレコード
+    定義の部分に追加してください。たとえば、モジュールに</p>
+<example>
+    module foo_module;
+</example>
+
+    <p>があるとすると、それを次のもので置き換えてください。</p>
+<example>
+    module AP_MODULE_DECLARE_DATA foo_module;
+</example>
+
+    <p>Unix 上でもこのモジュールを
+    変更無しで使い続けられるように、このマクロは Windows
+    上でのみ効力を持ちます。<code>.DEF</code>
+    ファイルの方を良く知っているという場合は、
+    代わりにそれを使ってモジュールレコードを
+    エクスポートすることもできます。</p>
+    <p>さあ、あなたのモジュールの DLL を作成しましょう。これを、
+    libhttpd.lib 共有ライブラリがコンパイルされたときに作成された
+    ibhttpd.lib エクスポートライブラリとリンクしてください。この時に、
+    Apache のヘッダファイルが正しい位置にあるように、
+    コンパイラの設定を変える必要があるかもしれません。
+    このライブラリはサーバルートの modules ディレクトリにあります。
+    ビルド環境が正しく設定されるように、既存のモジュール用の .dsp を
+    取ってくるのが一番良いでしょう。もしくは、あなたの .dsp と
+    コンパイラとリンクのオプションを比較する、というものでも良いです。</p>
+
+    <p>これで DLL 版のモジュールが作成されているはずです。
+    サーバルートの <code>modules</code>
+    ディレクトリにモジュールを置いて、
+    <code><directive>LoadModule</directive></code>
+    ディレクティブを使って読み込んでください。</p>
+</section>
+
+<directivesynopsis>
+<name>LoadFile</name>
+<description>指定されたオブジェクトファイルやライブラリをリンクする</description>
+<syntax>LoadFile <em>filename</em> [<em>filename</em>] ...</syntax>
+<contextlist>
+<context>サーバ設定ファイル</context>
+</contextlist>
+
+<usage>
+
+    <p>LoadFile ディレクティブは、サーバが起動されたときや再起動されたときに、
+    指定されたオブジェクトファイルやライブラリをリンクします。
+    これはモジュールが動作するために必要になるかもしれない追加の
+    コードを読み込むために使用されます。<em>Filename</em> は絶対パスか、<a
+    href="core.html#serverroot">ServerRoot</a> からの相対パスです。</p>
+
+    <p>例:</p>
+
+    <example>LoadFile libexec/libxmlparse.so</example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LoadModule</name>
+<description>オブジェクトファイルやライブラリをリンクし、使用モジュールの
+リストに追加する</description>
+<syntax>LoadModule <em>module filename</em></syntax>
+<contextlist>
+<context>サーバ設定ファイル</context>
+</contextlist>
+
+<usage>
+
+    <p>LoadModule ディレクティブは <em>filename</em>
+    というオブジェクトファイルおよびライブラリをリンクし、<em>module</em>
+    という名前のモジュールの構造をアクティブなモジュールのリストに追加します。
+    <em>Module</em> はファイル中の <code>module</code>
+    型の外部変数の名前で、モジュールのドキュメントに
+    <a href="module-dict.html#moduleidentifier"
+    >モジュール識別子</a>として書かれているものです。例 :</p>
+
+    <example>
+      LoadModule status_module modules/mod_status.so
+    </example>
+
+    <p>これは ServerRoot の modules サブディレクトリから指定された名前の
+    モジュールをロードします。</p>
+</usage>
+
+</directivesynopsis>
+</modulesynopsis>
