@@ -108,6 +108,9 @@ Package=<4>
     Project_Dep_Name mod_expires
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_file_cache
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_headers
     End Project Dependency
     Begin Project Dependency
