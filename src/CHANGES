@@ -47,6 +47,9 @@ Changes with Apache 1.2b8
   *) Remove unnecessary call to va_end() in create_argv() which
      caused a SEGV on some systems.
 
+  *) Use proper MAXHOSTNAMELEN symbol for limiting length of server name.
+     [Dean Gaudet]
+
 Changes with Apache 1.2b7
 
   *) Port to  UXP/DS(V20) [Toshiaki Nomura <nom@yk.fujitsu.co.jp>]

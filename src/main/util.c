@@ -1192,12 +1192,18 @@ static char *find_fqdn(pool *a, struct hostent *p) {
 
 char *get_local_host(pool *a)
 {
-    char str[128];
-    int len = 128;
+#ifndef MAXHOSTNAMELEN
+#define MAXHOSTNAMELEN 256
+#endif
+    char str[MAXHOSTNAMELEN+1];
     char *server_hostname;
-
     struct hostent *p;
-    gethostname(str, len);
+
+    if( gethostname( str, sizeof( str ) - 1 ) != 0 ) {
+	perror( "Unable to gethostname" );
+	exit(1);
+    }
+    str[MAXHOSTNAMELEN] = '\0';
     if((!(p=gethostbyname(str))) || (!(server_hostname = find_fqdn(a, p)))) {
         fprintf(stderr,"httpd: cannot determine local host name.\n");
 	fprintf(stderr,"Use ServerName to set it manually.\n");
