@@ -2529,7 +2529,7 @@ later</td></tr>
       #!C:/Perl/bin/perl.exe
     </code></p></div>
 
-    <p>or, if perl is in the <code>PATH</code>, simply:</p>
+    <p>or, if <code>perl</code> is in the <code>PATH</code>, simply:</p>
 
     <div class="example"><p><code>
       #!perl

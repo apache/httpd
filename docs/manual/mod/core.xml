@@ -2481,7 +2481,7 @@ later</compatibility>
       #!C:/Perl/bin/perl.exe
     </example>
 
-    <p>or, if perl is in the <code>PATH</code>, simply:</p>
+    <p>or, if <code>perl</code> is in the <code>PATH</code>, simply:</p>
 
     <example>
       #!perl
