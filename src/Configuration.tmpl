@@ -154,7 +154,7 @@ Module cgi_module          mod_cgi.o
 Module userdir_module      mod_userdir.o
 Module alias_module        mod_alias.o
 Module env_module          mod_env.o
-Module common_log_module   mod_log_common.o
+Module config_log_module   mod_log_config.o
 
 ## The asis module implemented ".asis" file types, which allow the embedding
 ## of HTTP headers at the beginning of the document.  mod_imap handles internal 
@@ -172,16 +172,6 @@ Module action_module       mod_actions.o
 
 # Module agent_log_module    mod_log_agent.o
 # Module referer_log_module  mod_log_referer.o
-
-## This is a *replacement* for mod_log_common which supports a
-## LogFormat directive which allows you to specify what goes into 
-## the TransferLog (if you want Referer, etc.)  source code for docs.
-##
-## If you play with this, remember to drop the standard
-## mod_log_common --- a server with both will work, but you'll get
-## very confused trying to figure out what's going on...
-
-# Module config_log_module   mod_log_config.o
 
 ## cern_meta mimicks the behavior of the CERN web server with regards to 
 ## metainformation files.  
