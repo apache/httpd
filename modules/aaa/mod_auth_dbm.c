@@ -77,6 +77,8 @@
 #include "http_protocol.h"
 #include "http_request.h"   /* for ap_hook_(check_user_id | auth_checker)*/
 #include "apr_lib.h"
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #if defined(AP_AUTH_DBM_USE_APR)
 #include "apr_dbm.h"

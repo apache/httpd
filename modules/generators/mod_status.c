@@ -109,6 +109,8 @@
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #ifdef NEXT
 #if (NX_CURRENT_COMPILER_RELEASE == 410)

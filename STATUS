@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/02/10 00:33:36 $]
+Last modified at [$Date: 2001/02/10 22:21:22 $]
 
 Release:
 
@@ -177,6 +177,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       building Apache modules).
 
     * shift stuff to mod_core.h
+
+    * APR-ize resolver stuff in mod_unique_id (Jeff volunteers)
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
