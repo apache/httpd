@@ -128,7 +128,7 @@
       server machine, in order that this activity not adversely affect
       server performance.</p>
 
-      If you use any <code><directive module="access">Allow</directive> 
+      <p>If you use any <code><directive module="access">Allow</directive> 
       from domain</code> or <code><directive 
       module="access">Deny</directive> from domain</code> 
       directives (i.e., using a hostname, or a domain name, rather than
@@ -474,7 +474,7 @@
         <p>An associated question that arises here is, of course, what
         modules you need, and which ones you don't. The answer here
         will, of course, vary from one web site to another. However, the
-        <i>minimal</i> list of modules which you can get by with tends
+        <em>minimal</em> list of modules which you can get by with tends
         to include <module>mod_mime</module>, <module>mod_dir</module>,
         and <module>mod_log_config</module>. <code>mod_log_config</code> is,
         of course, optional, as you can run a web site without log
