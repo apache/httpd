@@ -692,6 +692,12 @@ static void check_hostalias (request_rec *r) {
     const char *names;
     server_addr_rec *sar;
 
+    if (s->addrs == NULL) {
+	/* this server has been disabled because of DNS screwups during
+	    configuration */
+	continue;
+    }
+
     if ((!strcasecmp(host, s->server_hostname)) && (port == s->port)) {
       r->server = r->connection->server = s;
       if (r->hostlen && !strncmp(r->uri, "http://", 7)) {
@@ -739,7 +745,7 @@ void check_serverpath (request_rec *r) {
    */
 
   for (s = r->server->next; s; s = s->next) {
-    if (s->path && !strncmp(r->uri, s->path, s->pathlen) &&
+    if (s->addrs && s->path && !strncmp(r->uri, s->path, s->pathlen) &&
 	(s->path[s->pathlen - 1] == '/' ||
 	 r->uri[s->pathlen] == '/' ||
 	 r->uri[s->pathlen] == '\0'))

@@ -1434,7 +1434,7 @@ void default_server_hostnames(server_rec *s)
     char *def_hostname;
     int n;
     server_addr_rec *sar;
-    int has_inaddr_any;
+    int has_default_vhost_addr;
     int mainport = s->port;
     int from_local=0;  
 
@@ -1473,14 +1473,14 @@ void default_server_hostnames(server_rec *s)
     
     for (s = s->next; s; s = s->next) {
 	/* Check to see if we might be a HTTP/1.1 virtual host - same IP */
-	has_inaddr_any = 0;
+	has_default_vhost_addr = 0;
 	for (n = 0; n < num_addr; n++) {
 	    for(sar = s->addrs; sar; sar = sar->next) {
 		if (sar->host_addr.s_addr == main_addr[n].s_addr &&
 		    s->port == mainport)
 		    s->is_virtual = 2;
-		if( sar->host_addr.s_addr == htonl(INADDR_ANY) ) {
-		    has_inaddr_any = 1;
+		if( sar->host_addr.s_addr == DEFAULT_VHOST_ADDR ) {
+		    has_default_vhost_addr = 1;
 		}
 	    }
 	}
@@ -1489,21 +1489,33 @@ void default_server_hostnames(server_rec *s)
 	    the presence of multiple addresses on the <VirtualHost>
 	    directive.  It should issue warnings here perhaps. -djg */
         if (!s->server_hostname) {
-	    if (s->is_virtual == 2)
-	        s->server_hostname = s->addrs->virthost;
-	    else if (has_inaddr_any)
+	    if (s->is_virtual == 2) {
+		if (s->addrs) {
+		    s->server_hostname = s->addrs->virthost;
+		} else {
+		    /* what else can we do?  at this point this vhost has
+			no configured name, probably because they used
+			DNS in the VirtualHost statement.  It's disabled
+			anyhow by the host matching code.  -djg */
+		    s->server_hostname = "bogus_host_without_forward_dns";
+		}
+	    } else if (has_default_vhost_addr) {
 		s->server_hostname = def_hostname;
-	    else
-	    {
-		h = gethostbyaddr ((char *)&(s->addrs->host_addr),
-				   sizeof (struct in_addr), AF_INET);
-		if (h != NULL)
+	    } else {
+		if (s->addrs
+		    && (h = gethostbyaddr ((char *)&(s->addrs->host_addr),
+				   sizeof (struct in_addr), AF_INET))) {
 		    s->server_hostname = pstrdup (pconf, (char *)h->h_name);
-		else
-		    {
-		    fprintf(stderr,"Failed to resolve server name for %s (check DNS)\n",inet_ntoa(s->addrs->host_addr));
-		    exit(0);
+		} else {
+		    /* again, what can we do?  They didn't specify a
+			ServerName, and their DNS isn't working. -djg */
+		    if (s->addrs) {
+			fprintf(stderr, "Failed to resolve server name "
+			    "for %s (check DNS)\n",
+			    inet_ntoa(s->addrs->host_addr));
 		    }
+		    s->server_hostname = "bogus_host_without_reverse_dns";
+		}
 	    }
 	}
     }

@@ -902,8 +902,9 @@ static void get_addresses (pool *p, char *w, server_addr_rec ***paddr, int port)
     hep = gethostbyname(w);
 
     if ((!hep) || (hep->h_addrtype != AF_INET || !hep->h_addr_list[0])) {
-	fprintf (stderr, "Cannot resolve host name %s --- exiting!\n", w);
-	exit(1);
+	fprintf (stderr, "Cannot resolve host name %s --- ignoring!\n", w);
+	if (t != NULL) *t = ':';
+	return;
     }
 
     for( i = 0; hep->h_addr_list[i]; ++i ) {
@@ -953,11 +954,9 @@ server_rec *init_virtual_host (pool *p, const char *hostname,
     }
     /* terminate the list */
     *addrs = NULL;
-    if( s->addrs == NULL ) {
-	fprintf( stderr, "virtual host must have at least one address\n" );
-	exit(1);
+    if( s->addrs ) {
+	s->port = s->addrs->host_port;  /* set them the same, by default */
     }
-    s->port = s->addrs->host_port;  /* set them the same, by default */
     s->next = NULL;
 
     s->is_virtual = 1;

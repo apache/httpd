@@ -245,6 +245,8 @@ This option can be used as an alternative method for supporting
 <A HREF="#virtualhost">&lt;VirtualHost&gt;</A> sections.
 
 <p><strong>See Also:</strong>
+<a href="../dns-caveats.html">DNS Issues</a><br>
+<strong>See Also:</strong>
 <a href="../bind.html">Setting which addresses and ports Apache uses</a></p>
 
 <hr>
@@ -620,7 +622,9 @@ address or port; by default it responds to requests on all IP
 interfaces, but only on the port given by the <a href="#port">Port</a>
 directive.</p>
 
-<p><strong>See Also</strong>:
+<p><strong>See Also:</strong>
+<a href="../dns-caveats.html">DNS Issues</a><br>
+<strong>See Also:</strong>
 <a href="../bind.html">Setting which addresses and ports Apache uses</a></p>
 <hr>
 
@@ -1105,8 +1109,10 @@ as users do not always mention that they are talking about the server!<p><hr>
 The ServerAlias directive sets the alternate names for a host, for use
 with
 <a href="../host.html">Host-header based virtual hosts</a>.
+<p><strong>See Also</strong>:
+<a href="../vhosts-in-depth.html">In-depth description of Virtual Host matching</a></p>
 
-<p><hr>
+<hr>
 
 <A name="servername"><h2>ServerName directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt ServerName} directive&gt; -->
@@ -1120,7 +1126,10 @@ server attempts to deduce it from its own IP address; however this may
 not work reliably, or may not return the preferred hostname. For example:
 <blockquote><code>ServerName www.wibble.com</code></blockquote>
 would be used if the canonical (main) name of the actual machine
-were <code>monster.wibble.com</code>.<p><hr>
+were <code>monster.wibble.com</code>.<p>
+<p><strong>See Also</strong>:
+<a href="../dns-caveats.html">DNS Issues</a></p>
+<hr>
 
 <A name="serverpath"><h2>ServerPath directive</h2></A>
 
@@ -1132,6 +1141,8 @@ were <code>monster.wibble.com</code>.<p><hr>
 
 The ServerPath directive sets the legacy URL pathname for a host, for
 use with <a href="../host.html">Host-header based virtual hosts</a>.
+<p><strong>See Also</strong>:
+<a href="../vhosts-in-depth.html">In-depth description of Virtual Host matching</a></p>
 <hr>
 
 <A name="serverroot"><h2>ServerRoot directive</h2></A>
@@ -1260,12 +1271,14 @@ dangers are.<p><hr>
 
 <A name="virtualhost"><h2>&lt;VirtualHost&gt; directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt VirtualHost} section directive&gt; -->
-<strong>Syntax:</strong> &lt;VirtualHost <em>addr</em>[:<em>port</em>]&gt; ...
+<strong>Syntax:</strong> &lt;VirtualHost <em>addr</em>[:<em>port</em>] ...&gt; ...
 &lt;/VirtualHost&gt; <br>
 <strong>Context:</strong> server config<br>
 <strong>Status:</strong> Core.<br>
-<strong>Compatibility:</strong> Non-IP address-based Virtual Hosting is
-only available in Apache 1.2 and later.<p>
+<strong>Compatibility:</strong> Non-IP address-based Virtual Hosting only
+available in Apache 1.1 and later.<br>
+<strong>Compatibility:</strong> Multiple address support only available in
+Apache 1.2 and later.<p>
 
 &lt;VirtualHost&gt; and &lt;/VirtualHost&gt; are used to enclose a group of
 directives which will apply only to a particular virtual host.
@@ -1296,16 +1309,27 @@ then this can be accomplished with the <code>ifconfig alias</code>
 command (if your OS supports it), or with kernel patches like <A
 HREF="../misc/vif-info.html">VIF</A> (for SunOS(TM) 4.1.x)).<p>
 
-SECURITY: See the <A HREF="../misc/security_tips.html">security tips</A> 
+The special name <code>_default_</code> can be specified in which case
+this virtual host will match any ip address that is not explicitly listed
+in another virtual host.  In the absence of any _default_ virtual host
+the "main" server config, consisting of all those definitions outside
+any VirtualHost section, is used when no match occurs.<p>
+
+<strong>SECURITY</strong>: See the
+<A HREF="../misc/security_tips.html">security tips</A> 
 document for details on why your security could be compromised if
 the directory where logfiles are stored is writable by anyone other
 than the user that starts the server.
 
 <p><strong>See also:</strong>
+<A HREF="../dns-caveats.html">Warnings about DNS and Apache</a><br>
+<strong>See also:</strong>
 <A HREF="../virtual-host.html">Information on Virtual Hosts.
 (multihome)</A><br>
 <strong>See also:</strong>
-<a href="../host.html">Non-IP address-based Virtual Hosts</a>
+<a href="../host.html">Non-IP address-based Virtual Hosts</a><br>
+<strong>See also:</strong>
+<a href="../vhosts-in-depth.html">In-depth description of Virtual Host matching</a>
 </p>
 
 <!--#include virtual="footer.html" -->

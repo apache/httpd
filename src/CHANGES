@@ -45,6 +45,12 @@ Changes with Apache 1.2b8
 
   *) Fixed server status updating of per-connection counters. [Roy Fielding]
 
+  *) Add documentation for DNS issues (reliability and security), and try
+     to explain the virtual host matching process.  [Dean Gaudet]
+
+  *) Try to continue gracefully by disabling the vhost if a DNS lookup
+     fails while parsing the configuration file.  [Dean Gaudet]
+
   *) Workaround to a compiler bug that causes SunOS 4.1.x to panic.
      [Roy Fielding]
 
