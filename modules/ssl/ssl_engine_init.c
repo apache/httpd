@@ -529,6 +529,34 @@ static void ssl_init_verify(server_rec *s,
     }
 }
 
+static void ssl_init_cipher_suite(server_rec *s,
+                                  apr_pool_t *p,
+                                  apr_pool_t *ptemp,
+                                  SSLSrvConfigRec *sc)
+{
+    SSL_CTX *ctx = sc->pSSLCtx;
+    const char *vhost_id = sc->szVHostID;
+    const char *suite = sc->szCipherSuite;
+
+    /*
+     *  Configure SSL Cipher Suite
+     */
+    if (!suite) {
+        return;
+    }
+
+    ssl_log(s, SSL_LOG_TRACE,
+            "Init: (%s) Configuring permitted SSL ciphers [%s]", 
+            vhost_id, suite);
+
+    if (!SSL_CTX_set_cipher_list(ctx, suite)) {
+        ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                "Init: (%s) Unable to configure permitted SSL ciphers",
+                vhost_id);
+        ssl_die();
+    }
+}
+
 /*
  * Configure a particular server
  */
@@ -583,6 +611,8 @@ void ssl_init_ConfigureServer(server_rec *s,
 
     ssl_init_verify(s, p, ptemp, sc);
 
+    ssl_init_cipher_suite(s, p, ptemp, sc);
+
     SSL_CTX_set_tmp_rsa_callback(ctx, ssl_callback_TmpRSA);
     SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
 
@@ -590,23 +620,6 @@ void ssl_init_ConfigureServer(server_rec *s,
         /* this callback only logs if SSLLogLevel >= info */
         SSL_CTX_set_info_callback(ctx, ssl_callback_LogTracingState);
     }
-
-    /*
-     *  Configure SSL Cipher Suite
-     */
-    if (sc->szCipherSuite) {
-        ssl_log(s, SSL_LOG_TRACE,
-                "Init: (%s) Configuring permitted SSL ciphers [%s]", 
-                vhost_id, sc->szCipherSuite);
-
-        if (!SSL_CTX_set_cipher_list(ctx, sc->szCipherSuite)) {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                    "Init: (%s) Unable to configure permitted SSL ciphers",
-                    vhost_id);
-            ssl_die();
-        }
-    }
-
 
     /*
      * Configure Certificate Revocation List (CRL) Details
