@@ -1222,8 +1222,8 @@ static int hook_uri2file(request_rec *r)
 #endif
             rewritelog(r, 2, "local path result: %s", r->filename);
 
-            /* the filename has to start with a slash! */
-            if (r->filename[0] != '/') {
+            /* the filename must be an absolute path! */
+            if (!ap_os_is_path_absolute(r->pool, r->filename)) {
                 return HTTP_BAD_REQUEST;
             }
 
@@ -1508,7 +1508,7 @@ static int hook_fixup(request_rec *r)
             }
 
             /* the filename has to start with a slash! */
-            if (r->filename[0] != '/') {
+            if (!ap_os_is_path_absolute(r->pool, r->filename)) {
                 return HTTP_BAD_REQUEST;
             }
 
@@ -1990,7 +1990,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *   location, i.e. if it's not starting with either a slash
      *   or a fully qualified URL scheme.
      */
-    if (prefixstrip && r->filename[0] != '/'
+    if (prefixstrip && !ap_os_is_path_absolute(r->pool, r->filename)
 	&& !is_absolute_uri(r->filename)) {
         rewritelog(r, 3, "[per-dir %s] add per-dir prefix: %s -> %s%s",
                    perdir, r->filename, perdir, r->filename);
@@ -2077,7 +2077,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  not start with a slash. Here we add again the initially
      *  stripped per-directory prefix.
      */
-    if (prefixstrip && r->filename[0] != '/') {
+    if (prefixstrip && !ap_os_is_path_absolute(r->pool, r->filename)) {
         rewritelog(r, 3, "[per-dir %s] add per-dir prefix: %s -> %s%s",
                    perdir, r->filename, perdir, r->filename);
         r->filename = apr_pstrcat(r->pool, perdir, r->filename, NULL);
