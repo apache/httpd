@@ -464,8 +464,6 @@ typedef struct {
 #define HOSTNAME_LOOKUP_UNSET	3
     unsigned int hostname_lookups : 4;
 
-    signed int do_rfc1413 : 2;   /* See if client is advertising a username? */
-
     signed int content_md5 : 2;  /* calculate Content-MD5? */
 
 #define USE_CANONICAL_NAME_OFF   (0)
@@ -634,6 +632,14 @@ AP_DECLARE_HOOK(int, get_mgmt_items,
 
 APR_DECLARE_OPTIONAL_FN(void, ap_logio_add_bytes_out,
                         (conn_rec *c, apr_off_t bytes));
+
+/* ----------------------------------------------------------------------
+ *
+ * ident lookups with mod_ident
+ */
+
+APR_DECLARE_OPTIONAL_FN(const char *, ap_ident_lookup,
+                        (request_rec *r));
 
 /* ---------------------------------------------------------------------- */
 
