@@ -583,7 +583,7 @@ AddEncoding x-gzip gz tgz
 # Danish (da) - Dutch (nl) - English (en) - Estonian (ee)
 # French (fr) - German (de) - Greek-Modern (el)
 # Italian (it) -Portugese (pt) - Luxembourgeois* (ltz)
-# Spanish (es) - Swedish (sv) - Catalan (ca)
+# Spanish (es) - Swedish (sv) - Catalan (ca) - Czech(cz)
 #
 AddLanguage da .dk
 AddLanguage nl .nl
@@ -598,6 +598,7 @@ AddLanguage ltz .lu
 AddLanguage ca .ca
 AddLanguage es .es
 AddLanguage sv .se
+AddLanguage cz .cz
 
 # LanguagePriority allows you to give precedence to some languages
 # in case of a tie during content negotiation.
