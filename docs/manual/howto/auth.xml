@@ -1,45 +1,41 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
-        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-              This file is generated from xml source: DO NOT EDIT
-        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      -->
-<title>Authentication, Authorization and Access Control - Apache HTTP Server</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
-<body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
-<p class="apache">Apache HTTP Server Version 2.0</p>
-<img alt="" src="../images/feather.gif" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
-<div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Authentication, Authorization and Access Control</h1>
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
+<manualpage>
+<relativepath href=".." />
+<parentdocument href="./">How-To / Tutorials</parentdocument>
+
+<title>Authentication, Authorization and Access Control</title>
+
+<summary>
     <p>Authentication is any process by which you verify that
     someone is who they claim they are. Authorization is any
     process by which someone is allowed to be where they want to
     go, or to have information that they want to have.</p>
-</div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Related Modules and Directives</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#theprerequisites">The Prerequisites</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#gettingitworking">Getting it working</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#lettingmorethanonepersonin">Letting more than one
-person in</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#possibleproblems">Possible problems</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#whatotherneatstuffcanido">What other neat stuff can I
-do?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">More information</a></li>
-</ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="related" id="related">Related Modules and Directives</a></h2>
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code></li><li><code class="module"><a href="../mod/mod_access.html">mod_access</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_access.html#allow">Allow</a></code></li><li><code class="directive"><a href="../mod/mod_auth.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/mod_auth.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_access.html#deny">Deny</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li></ul></td></tr></table>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a></h2>
+</summary>
+  
+<section id="related"><title>Related Modules and Directives</title>
+    <related>
+      <modulelist>
+        <module>mod_auth</module>
+        <module>mod_access</module>
+      </modulelist>
+
+      <directivelist>
+        <directive module="mod_access">Allow</directive>
+        <directive module="mod_auth">AuthGroupFile</directive>
+        <directive module="core">AuthName</directive>
+        <directive module="core">AuthType</directive>
+        <directive module="mod_auth">AuthUserFile</directive>
+        <directive module="mod_access">Deny</directive>
+        <directive module="core">Options</directive>
+        <directive module="core">Require</directive>
+      </directivelist>
+    </related>
+</section>
+
+<section id="introduction"><title>Introduction</title>
     <p>If you have information on your web site that is sensitive
     or intended for only a small group of people, the techniques in
     this article will help you make sure that the people that see
@@ -47,28 +43,28 @@ do?</a></li>
 
     <p>This article covers the "standard" way of protecting parts
     of your web site that most of you are going to use.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="theprerequisites" id="theprerequisites">The Prerequisites</a></h2>
+</section>
+
+<section id="theprerequisites"><title>The Prerequisites</title>
     <p>The directives discussed in this article will need to go
     either in your main server configuration file (typically in a
-    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section), or
+    <directive module="core" type="section">Directory</directive> section), or
     in per-directory configuration files (<code>.htaccess</code> files).</p>
 
     <p>If you plan to use <code>.htaccess</code> files, you will
     need to have a server configuration that permits putting
     authentication directives in these files. This is done with the
-    <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> directive, which
+    <directive module="core">AllowOverride</directive> directive, which
     specifies which directives, if any, may be put in per-directory
     configuration files.</p>
 
     <p>Since we're talking here about authentication, you will need
-    an <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> directive like the
+    an <directive module="core">AllowOverride</directive> directive like the
     following:</p>
 
-    <div class="example"><p><code>
+    <example>
       AllowOverride AuthConfig
-    </code></p></div>
+    </example>
 
     <p>Or, if you are just going to put the directives directly in
     your main server configuration file, you will of course need to
@@ -78,9 +74,9 @@ do?</a></li>
     structure of your server, in order to know where some files are
     kept. This should not be terribly difficult, and I'll try to
     make this clear when we come to that point.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="gettingitworking" id="gettingitworking">Getting it working</a></h2>
+</section>
+
+<section id="gettingitworking"><title>Getting it working</title>
     <p>Here's the basics of password protecting a directory on your
     server.</p>
 
@@ -91,23 +87,24 @@ do?</a></li>
     might want to put the password file(s) in
     <code>/usr/local/apache/passwd</code>.</p>
 
-    <p>To create the file, use the <a href="../programs/htpasswd.html">htpasswd</a> utility that came
+    <p>To create the file, use the <a
+    href="../programs/htpasswd.html">htpasswd</a> utility that came
     with Apache. This be located in the <code>bin</code> directory
     of wherever you installed Apache. To create the file, type:</p>
 
-    <div class="example"><p><code>
+    <example>
       htpasswd -c /usr/local/apache/passwd/passwords rbowen
-    </code></p></div>
+    </example>
 
     <p><code>htpasswd</code> will ask you for the password, and
     then ask you to type it again to confirm it:</p>
 
-    <div class="example"><p><code>
+    <example>
       # htpasswd -c /usr/local/apache/passwd/passwords rbowen<br />
       New password: mypassword<br />
       Re-type new password: mypassword<br />
       Adding password for user rbowen
-    </code></p></div>
+    </example>
 
     <p>If <code>htpasswd</code> is not in your path, of course
     you'll have to type the full path to the file to get it to run.
@@ -125,24 +122,26 @@ do?</a></li>
     placed in <code>httpd.conf</code> inside a &lt;Directory
     /usr/local/apache/apache/htdocs/secret&gt; section.</p>
 
-    <div class="example"><p><code>
+    <example>
       AuthType Basic<br />
       AuthName "Restricted Files"<br />
       AuthUserFile /usr/local/apache/passwd/passwords<br />
       Require user rbowen
-    </code></p></div>
+    </example>
 
-    <p>Let's examine each of those directives individually. The <code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code> directive selects
+    <p>Let's examine each of those directives individually. The <directive
+    module="core">AuthType</directive> directive selects
     that method that is used to authenticate the user. The most
     common method is <code>Basic</code>, and this is the method
-    implemented by <code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code>. It is important to be aware,
+    implemented by <module>mod_auth</module>. It is important to be aware,
     however, that Basic authentication sends the password from the client to
     the browser unencrypted. This method should therefore not be used for
     highly sensitive data. Apache supports one other authentication method:
-    <code>AuthType Digest</code>. This method is implemented by <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> and is much more secure. Only the most recent
+    <code>AuthType Digest</code>. This method is implemented by <module
+    >mod_auth_digest</module> and is much more secure. Only the most recent
     versions of clients are known to support Digest authentication.</p>
 
-    <p>The <code class="directive"><a href="../mod/core.html#authname">AuthName</a></code> directive sets
+    <p>The <directive module="core">AuthName</directive> directive sets
     the <dfn>Realm</dfn> to be used in the authentication. The realm serves
     two major functions. First, the client often presents this information to
     the user as part of the password dialog box. Second, it is used by the
@@ -159,31 +158,35 @@ do?</a></li>
     will always need to ask again for the password whenever the
     hostname of the server changes.</p>
 
-    <p>The <code class="directive"><a href="../mod/mod_auth.html#authuserfile">AuthUserFile</a></code>
+    <p>The <directive module="mod_auth">AuthUserFile</directive>
     directive sets the path to the password file that we just
     created with <code>htpasswd</code>. If you have a large number
     of users, it can be quite slow to search through a plain text
     file to authenticate the user on each request. Apache also has
     the ability to store user information in fast database files.
-    The <code class="module"><a href="../mod/mod_auth_dbm.html">mod_auth_dbm</a></code> module provides the <code class="directive"><a href="../mod/mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code> directive. These
-    files can be created and manipulated with the <a href="../programs/dbmmanage.html">dbmmanage</a> program. Many
+    The <module>mod_auth_dbm</module> module provides the <directive
+    module="mod_auth_dbm">AuthDBMUserFile</directive> directive. These
+    files can be created and manipulated with the <a
+    href="../programs/dbmmanage.html">dbmmanage</a> program. Many
     other types of authentication options are available from third
-    party modules in the <a href="http://modules.apache.org/">Apache Modules
+    party modules in the <a
+    href="http://modules.apache.org/">Apache Modules
     Database</a>.</p>
 
-    <p>Finally, the <code class="directive"><a href="../mod/core.html#require">Require</a></code>
+    <p>Finally, the <directive module="core">Require</directive>
     directive provides the authorization part of the process by
     setting the user that is allowed to access this region of the
     server. In the next section, we discuss various ways to use the
-    <code class="directive"><a href="../mod/core.html#require">Require</a></code> directive.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">Letting more than one
-person in</a></h2>
+    <directive module="core">Require</directive> directive.</p>
+</section>
+
+<section id="lettingmorethanonepersonin"><title>Letting more than one
+person in</title>
     <p>The directives above only let one person (specifically
     someone with a username of <code>rbowen</code>) into the
     directory. In most cases, you'll want to let more than one
-    person in. This is where the <code class="directive"><a href="../mod/mod_auth.html#authgroupfile">AuthGroupFile</a></code> comes in.</p>
+    person in. This is where the <directive module="mod_auth"
+    >AuthGroupFile</directive> comes in.</p>
 
     <p>If you want to let more than one person in, you'll need to
     create a group file that associates group names with a list of
@@ -191,9 +194,9 @@ person in</a></h2>
     and you can create it with your favorite editor. The contents
     of the file will look like this:</p>
 
-   <div class="example"><p><code>
+   <example>
      GroupName: rbowen dpitts sungo rshersey
-   </code></p></div>
+   </example>
 
     <p>That's just a list of the members of the group in a long
     line separated by spaces.</p>
@@ -201,9 +204,9 @@ person in</a></h2>
     <p>To add a user to your already existing password file,
     type:</p>
 
-    <div class="example"><p><code>
+    <example>
       htpasswd /usr/local/apache/passwd/password dpitts
-    </code></p></div>
+    </example>
 
     <p>You'll get the same response as before, but it will be
     appended to the existing file, rather than creating a new file.
@@ -213,13 +216,13 @@ person in</a></h2>
     <p>Now, you need to modify your <code>.htaccess</code> file to
     look like the following:</p>
 
-    <div class="example"><p><code>
+    <example>
       AuthType Basic<br />
       AuthName "By Invitation Only"<br />
       AuthUserFile /usr/local/apache/passwd/passwords<br />
       AuthGroupFile /usr/local/apache/passwd/groups<br />
       Require group GroupName
-    </code></p></div>
+    </example>
 
     <p>Now, anyone that is listed in the group <code>GroupName</code>,
     and has an entry in the <code>password</code> file, will be let in, if
@@ -229,9 +232,9 @@ person in</a></h2>
     specific. Rather than creating a group file, you can just use
     the following directive:</p>
 
-    <div class="example"><p><code>
+    <example>
       Require valid-user
-    </code></p></div>
+    </example>
 
     <p>Using that rather than the <code>Require user rbowen</code>
     line will allow anyone in that is listed in the password file,
@@ -241,10 +244,10 @@ person in</a></h2>
     Apache only has to check one file, rather than two. The
     disadvantage is that you have to maintain a bunch of password
     files, and remember to reference the right one in the
-    <code class="directive"><a href="../mod/mod_auth.html#authuserfile">AuthUserFile</a></code> directive.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="possibleproblems" id="possibleproblems">Possible problems</a></h2>
+    <directive module="mod_auth">AuthUserFile</directive> directive.</p>
+</section>
+
+<section id="possibleproblems"><title>Possible problems</title>
     <p>Because of the way that Basic authentication is specified,
     your username and password must be verified every time you
     request a document from the server. This is even if you're
@@ -262,28 +265,28 @@ person in</a></h2>
     server machine, but you can expect to see slowdowns once you
     get above a few hundred entries, and may wish to consider a
     different authentication method at that time.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="whatotherneatstuffcanido" id="whatotherneatstuffcanido">What other neat stuff can I
-do?</a></h2>
+</section>
+
+<section id="whatotherneatstuffcanido"><title>What other neat stuff can I
+do?</title>
     <p>Authentication by username and password is only part of the
     story. Frequently you want to let people in based on something
     other than who they are. Something such as where they are
     coming from.</p>
 
-    <p>The <code class="directive"><a href="../mod/mod_access.html#allow">Allow</a></code> and
-    <code class="directive"><a href="../mod/mod_access.html#deny">Deny</a></code> directives let
+    <p>The <directive module="mod_access">Allow</directive> and
+    <directive module="mod_access">Deny</directive> directives let
     you allow and deny access based on the host name, or host
     address, of the machine requesting a document. The
-    <code class="directive"><a href="../mod/mod_access.html#order">Order</a></code> directive goes
+    <directive module="mod_access">Order</directive> directive goes
     hand-in-hand with these two, and tells Apache in which order to
     apply the filters.</p>
 
     <p>The usage of these directives is:</p>
 
-    <div class="example"><p><code>
+    <example>
       Allow from <var>address</var>
-    </code></p></div>
+    </example>
 
     <p>where <var>address</var> is an IP address (or a partial IP
     address) or a fully qualified domain name (or a partial domain
@@ -294,50 +297,48 @@ do?</a></h2>
     board, and you want to keep them out, you could do the
     following:</p>
 
-    <div class="example"><p><code>
+    <example>
       Deny from 205.252.46.165
-    </code></p></div>
+    </example>
 
     <p>Visitors coming from that address will not be able to see
     the content covered by this directive. If, instead, you have a
     machine name, rather than an IP address, you can use that.</p>
 
-    <div class="example"><p><code>
+    <example>
       Deny from <var>host.example.com</var>
-    </code></p></div>
+    </example>
 
     <p>And, if you'd like to block access from an entire domain,
     you can specify just part of an address or domain name:</p>
 
-    <div class="example"><p><code>
+    <example>
       Deny from <var>192.101.205</var><br />
       Deny from <var>cyberthugs.com</var> <var>moreidiots.com</var><br />
       Deny from ke
-    </code></p></div>
+    </example>
 
-    <p>Using <code class="directive"><a href="../mod/mod_access.html#order">Order</a></code> will let you be
+    <p>Using <directive module="mod_access">Order</directive> will let you be
     sure that you are actually restricting things to the group that you want
-    to let in, by combining a <code class="directive"><a href="../mod/mod_access.html#deny">Deny</a></code>
-    and an <code class="directive"><a href="../mod/mod_access.html#allow">Allow</a></code> directive:</p>
+    to let in, by combining a <directive module="mod_access">Deny</directive>
+    and an <directive module="mod_access">Allow</directive> directive:</p>
 
-    <div class="example"><p><code>
+    <example>
       Order deny,allow<br />
       Deny from all<br />
       Allow from <var>dev.example.com</var>
-    </code></p></div>
+    </example>
 
-    <p>Listing just the <code class="directive"><a href="../mod/mod_access.html#allow">Allow</a></code>
+    <p>Listing just the <directive module="mod_access">Allow</directive>
     directive would not do what you want, because it will let folks from that
     host in, in addition to letting everyone in. What you want is to let
     <em>only</em> those folks in.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="moreinformation" id="moreinformation">More information</a></h2>
-    <p>You should also read the documentation for <code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code>
-    and <code class="module"><a href="../mod/mod_access.html">mod_access</a></code> which contain some more information
+</section>
+
+<section id="moreinformation"><title>More information</title>
+    <p>You should also read the documentation for <module>mod_auth</module>
+    and <module>mod_access</module> which contain some more information
     about how this all works.</p>
-</div></div>
-<div id="footer">
-<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
-</body></html>
+</section>
+</manualpage>
+
