@@ -535,8 +535,8 @@ static LRESULT WINAPI RegisterWindows9xService(BOOL set_service)
         /* Unload the kernel library */
         FreeLibrary(hkernel);
         register_service_process = NULL;
-        return rv;
     }
+    return rv;
 }
 
 
