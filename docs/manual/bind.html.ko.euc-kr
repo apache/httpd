@@ -22,8 +22,6 @@
 <a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
- English version for recent changes.</div>
 
     <p>아파치가 특정 주소와 포트에서 서비스하도록 설정하기.</p>
   </div>
@@ -92,18 +90,17 @@
 	시스템이라도 아파치를 위해 특별한 설정 파라미터로 변경할
 	수 있다.</p>
 
-    <p>아파치가 최소한의 소켓을 사용하여 IPv4 연결과 IPv6 연결을
-	모두 받도록하려면 IPv4-대응 IPv6 주소를 사용해야 한다. 그러기위해서
-	컴파일때 구성 옵션 <code>--enable-v4-mapped</code>를 사용하고,
-	다음과 같이 일반적인 Listen 지시어를 사용한다:</p>
+    <p>반면 리눅스와 Tru64 같은 일부 플래폼에서 IPv4와 IPv6을
+    모두 처리하려면 대응 주소를 <strong>사용해야만</strong>
+    한다. 아파치가 최소한의 소켓을 사용하여 IPv4 연결과 IPv6
+    연결을 모두 받도록하려면, IPv4-대응 IPv6 주소를 사용하고
+	구성 옵션 <code>--enable-v4-mapped</code>를 지정한다.</p>
 
     <div class="example"><p><code>
       Listen 80
     </code></p></div>
 
-    <p><code>--enable-v4-mapped</code>를 사용할때 아파치가 만드는
-	기본 설정파일의 Listen 지시어는 위와 같다.
-	<code>--enable-v4-mapped</code>는 FreeBSD, NetBSD, OpenBSD를
+    <p><code>--enable-v4-mapped</code>는 FreeBSD, NetBSD, OpenBSD를
 	제외한 모든 플래폼에서 기본값이고, 아마도 당신의 아파치도
 	마찬가지일 것이다.</p>
 
@@ -116,19 +113,11 @@
       Listen 192.170.2.1:80
     </code></p></div>
 
-    <p>IPv4 연결과 IPv6 연결을 서로 다른 소켓으로 받으려면,
-	컴파일때 구성 옵션 <code>--disable-v4-mapped</code>를 사용하고
-	다음과 같이 Listen 지시어를 따로 사용한다:</p>
-
-    <div class="example"><p><code>
-      Listen [::]:80<br />
-      Listen 0.0.0.0:80
-    </code></p></div>
-
-    <p><code>--disable-v4-mapped</code>를 사용할때 아파치가 만드는
-	기본 설정파일의 Listen 지시어는 위와 같다.
-    <code>--disable-v4-mapped</code>는 FreeBSD, NetBSD, OpenBSD에서
-	기본값이다.</p>
+    <p>플래폼에서 지원하며 아파치가 서로 다른 소켓으로 IPv4
+    연결과 IPv6 연결을 받도록하려면 (즉 IPv4-대응 주소를 사용하지
+    않으려면), 구성 옵션 <code>--disable-v4-mapped</code>를
+    지정한다. <code>--disable-v4-mapped</code>는 FreeBSD, NetBSD,
+    OpenBSD에서 기본값이다.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

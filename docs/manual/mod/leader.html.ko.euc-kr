@@ -25,8 +25,6 @@
 <a href="../en/mod/leader.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/mod/leader.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
- English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td>표준 <code class="module"><a href="../mod/worker.html">worker</a></code> MPM의 실험적인 변형</td></tr>
 <tr><th><a href="module-dict.html#Status">상태:</a></th><td>MPM</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">모듈명:</a></th><td>mpm_leader_module</td></tr>
@@ -41,14 +39,15 @@
     변형이다. 이 모듈은 쓰레드간의 협동을 위해 Leader/Followers
     디자인패턴을 사용한다. 더 자세한 정보는 <a href="http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf">http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf</a>를 참고하라.</p>
 
-    <p><code class="module"><a href="../mod/leader.html">leader</a></code> MPM을 사용하려면, httpd를 컴파일할때
-    구성스크립트 아규먼트에 <code>--with-mpm=leader</code>를
-    사용한다.</p>
+    <p><code class="module"><a href="../mod/leader.html">leader</a></code> MPM을 사용하려면,
+      <code>httpd</code>를 컴파일할때 <code>configure</code>
+      스크립트 아규먼트에 <code>--with-mpm=leader</code>를
+      사용한다.</p>
   
     <p>이 MPM은 쓰레드 동기를 위해 APR의 atomic compare-and-swap
     명령을 사용한다. x86용으로 컴파일하지만 386을 지원할 필요가
     없거나, SPARC용으로 컴파일하지만 UltraSPARC 칩 이전에서
-    실행하지 않는다면, 구성스크립트 아규먼트에
+    실행하지 않는다면, <code>configure</code> 스크립트 아규먼트에
     <code>--enable-nonportable-atomics=yes</code>를 사용하라.
     그러면 APR이 오래된 CPU에는 없는 더 효율적인 명령어를 사용하여
     atomic 명령을 구현한다.</p>
@@ -57,6 +56,7 @@
 <ul id="toc">
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#acceptmutex">AcceptMutex</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#enableexceptionhook">EnableExceptionHook</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#group">Group</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
@@ -73,6 +73,7 @@
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startservers">StartServers</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadlimit">ThreadLimit</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li>
 </ul>
 </div>

@@ -22,8 +22,6 @@
 <a href="./es/glossary.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./ko/glossary.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
- English version for recent changes.</div>
 
 <p>이 문서는 웹 서비스 일반에 대한, 특히 아파치와 관련된, 용어들을
 정의한다. 각 개념에 대한 자세한 정보는 링크를 참고하라.
@@ -59,10 +57,10 @@ apxs</a></dd>
 
 <dt><a name="certificate">인증서 (Certificate)</a></dt>
 <dd>서버나 클라이언트와 같은 네트웍 실체를 인증하는 자료.
-    인증서에는 소유자 (subject라고 함), 서명 <em>인증기관
-    (Certificate Authority)</em> (issuer라고 함), 소유자의
-    공개키, CA가 만든 서명 등에 대한 X.509 정보가 있다.
-    네트웍 실체는 CA 인증서를 사용하여 서명을 검사한다.<br />
+    인증서에는 소유자 (subject라고 함), 서명 <a href="#certificationauthority">인증기관 (Certificate
+    Authority)</a> (issuer라고 함), 소유자의 <a href="#publickey">공개키</a>, CA가 만든 서명 등에 대한
+    X.509 정보가 있다. 네트웍 실체는 CA 인증서를 사용하여
+    서명을 검사한다.<br />
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="certificationauthority">인증기관 (Certification
@@ -73,10 +71,11 @@ Authority</a>, <a name="ca">CA)</a></dt> <dd>안전한 방법으로
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="certificatsigningrequest">인증 서명 요청 (Certificate
-Signing Request</a>, <a name="csr">CSR)</a></dt> <dd><em>인증기관
-(Certification Authority)</em>에 제출하여 CA <em>인증서
-(Certificate)</em>의 <em>개인키 (Private Key)</em>로 서명될
-아직 서명되지않은 인증서. CSR이 서명되면 실제 인증서가 된다.<br />
+Signing Request</a>, <a name="csr">CSR)</a></dt> <dd><a href="#certificationauthority">인증기관 (Certification
+Authority)</a>에 제출하여 CA <em>인증서 (Certificate)</em>의
+<a href="#privatekey">개인키 (Private Key)</a>로 서명될 아직
+서명되지않은 <a href="#certificate">인증서</a>. CSR이 서명되면
+실제 인증서가 된다.<br />
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 
@@ -116,9 +115,9 @@ SSL 프로토콜 등 다른 프로토콜을 감싸기위해 사용한다.</dd>
 사용한 용어정의</a></dd>
 
 <dt><a name="digitalsignature">전자서명 (Digital Signature)</a></dt>
-<dd>인증서나 다른 파일을 검사하는 암호화된 문자들. <em>인증기관
-    (Certification Authority)</em>은 <em>인증서 (Certificate)</em>에
-    포함된 <em>공개키 (Public Key)</em>를 해쉬한 결과를 자신의
+<dd>인증서나 다른 파일을 검사하는 암호화된 문자들. <a href="#certificationauthority">인증기관 (Certification
+    Authority)</a>은 <em>인증서 (Certificate)</em>에 포함된
+    <em>공개키 (Public Key)</em>를 해쉬한 결과를 자신의
     <em>개인키 (Private Key)</em>로 암호화하여 서명을 만든다.
     오직 CA의 공개키만이 서명을 풀 수 있기때문에, CA가 <em>인증서
     (Certificate)</em>를 가진 네트웍 실체를 인증했음을 증명할

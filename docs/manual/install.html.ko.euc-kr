@@ -24,8 +24,6 @@
 <a href="./ja/install.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/install.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
- English version for recent changes.</div>
 
 
     <p>이 문서는 유닉스와 유닉스류 시스템에서 아파치를 컴파일하고
@@ -39,6 +37,10 @@
     만들기위해 <code>libtool</code>과 <code>autoconf</code>를
     사용한다.</p>
 
+    <p>만약 작은 버전을 한단계 업그레이드한다면 (예를 들어,
+    2.0.50에서 2.0.51), <a href="#upgrading">업그레이드</a>
+    장으로 바로 가길 바란다.</p>
+
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">성미 급한 사람을 위한 개요</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#requirements">요구사항</a></li>
@@ -49,17 +51,18 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#install">설치</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#customize">설정</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#test">검사</a></li>
-</ul><h3>참고</h3><ul class="seealso"><li><a href="invoking.html">아파치 시작</a></li><li><a href="stopping.html">아파치 중단과 재시작</a></li></ul></div>
+<li><img alt="" src="./images/down.gif" /> <a href="#upgrading">업그레이드</a></li>
+</ul><h3>참고</h3><ul class="seealso"><li><a href="programs/configure.html">소스 트리 구성</a></li><li><a href="invoking.html">아파치 시작</a></li><li><a href="stopping.html">아파치 중단과 재시작</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">성미 급한 사람을 위한 개요</a></h2>
 
     <table>
+      
       <tr>
         <td><a href="#download">다운로드</a></td>
 
-        <td><code>$ lynx
-        http://www.apache.org/dist/httpd/httpd-2_1_<em>NN</em>.tar.gz</code>
+        <td><code>$ lynx http://httpd.apache.org/download.cgi</code>
         </td>
       </tr>
 
@@ -138,7 +141,7 @@
       <code>ntpdate</code>나 <code>xntpd</code>를 사용한다.
       NTP 소프트웨어와 공개 시간 서버에 대한 정보는 뉴스그룹
       <a href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a>와
-      <a href="http://www.eecis.udel.edu/~ntp/">NTP 홈페이지</a>를
+      <a href="http://www.ntp.org">NTP 홈페이지</a>를
       참고하라.</dd>
 
       <dt><a href="http://www.perl.org/">Perl 5</a>
@@ -159,48 +162,19 @@
 <h2><a name="download" id="download">다운로드</a></h2>
 
     <p>아파치는 여러 미러 목록이 있는 <a href="http://httpd.apache.org/download.cgi">아파치 웹서버
-    다운로드 사이트</a>에서 다운로드할 수 있다. 그곳에서 최신
-    안정판을 찾을 수 있다.</p>
+    다운로드 사이트</a>에서 다운로드할 수 있다. 유닉스류 시스템을
+    사용한다면 소스코드를 다운받아서 컴파일하는 편이 낫다. 쉽게
+    (아래에서 설명) 컴파일할 수 있고, 자신의 용도에 알맞게 서버를
+    맞출 수 있다. 또, 최신 버전 바이너리 배포본이 없는 경우도
+    많다. 바이너리를 다운받는다면 배포본에 있는
+    <code>INSTALL.bindist</code> 파일의 지시를 따르라.</p>
 
-    <p>다운로드후, 특히 미러 사이트를 사용했다면, 완전하고
+    <p>다운로드후 다운받은 파일이 완전하고
     변경되지않은 아파치 웹서버임을 확인하는 것이 중요하다.
     PGP 서명을 가지고 다운로드한 타볼(tarball)을 검사하여 확인한다.
-    이 과정은 두 단계를 거친다. 먼저 아파치 웹서버 다운로드
-    사이트에서 <a href="http://www.apache.org/dist/httpd/KEYS"><code>KEYS</code></a>
-    파일을 얻는다. (<code>KEYS</code> 파일 자체가 수정되지
-    않았음을 확인하기위해 이전 아파치 버전의 파일을 사용하거나
-    공개 키 서버에서 키를 가져오는 것이 좋다.) 키를 (pgp 버전에
-    따라 다름) 다음 명령어 중 하나로 개인 키 링에 포함한다:</p>
-
-<div class="example"><p><code>$ pgp &lt; KEYS</code></p></div>
-
-    <p>혹은 </p>
-
-<div class="example"><p><code>$ gpg --import KEYS</code></p></div>
-
-    <p>다음 단계는 <a href="http://httpd.apache.org/download.cgi">아파치
-    웹사이트</a>에서 얻은 PGP 서명을 가지고 타볼을 검사하는
-    일이다. 서명 파일에 대한 링크는 해당 다운로드 링크 아래나
-    <a href="http://www.apache.org/dist/httpd/">아파치 배포본
-    사이트</a>의 특정 디렉토리에서 찾을 수 있다. 서명파일 이름은
-    소스 타볼 파일명뒤에 <code>.asc</code>가 붙은 것이다. (또,
-    pgp 버전에 따라 다름) 다음 명령어중 하나로 배포본을 확인할
-    수 있다:</p>
-
-<div class="example"><p><code>$ pgp httpd-2_1_<em>NN</em>.tar.gz.asc</code></p></div>
-
-    <p>혹은</p>
-
-<div class="example"><p><code>$ gpg --verify httpd-2_1_<em>NN</em>.tar.gz.asc</code></p></div>
-
-    <p>다음과 같은 메세지가 나와야 한다.</p>
-
-<div class="example"><p><code>Good signature from user "Martin Kraemer
-      &lt;martin@apache.org&gt;".</code></p></div>
-
-    <p>키 링에 포함된 신뢰관계에 따라 키와 키 서명자 사이의
-    관계를 확인할 수 없다는 문구가 나올 수도 있다. 그러나 당신이
-    <code>KEYS</code> 파일를 신뢰한다면 문제가 아니다.</p>
+    자세한 방법은 <a href="http://httpd.apache.org/download.cgi#verify">다운로드
+    페이지</a>에 있고, <a href="http://httpd.apache.org/dev/verification.html">PGP
+    사용법</a>을 설명하는 상세한 예도 있다.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -210,8 +184,8 @@
     tar를 푸는 것이다:</p>
 
 <div class="example"><p><code>
-      $ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
-       $ tar xvf httpd-2_1_<em>NN</em>.tar
+$ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
+$ tar xvf httpd-2_1_<em>NN</em>.tar
 </code></p></div>
 
     <p>그러면 현재 디렉토리 아래에 배포본의 소스코드를 담은
@@ -223,7 +197,8 @@
 
     <p>다음 과정은 특정 플래폼과 개인적인 필요에 따라 아파치
     소스 트리를 구성하는 일이다. 이를 위해 배포본의 최상위 디렉토리에
-    있는 <code>configure</code> 스크립트를 사용한다. (아파치
+    있는 <code><a href="programs/configure.html">configure</a></code>
+    스크립트를 사용한다. (아파치
     소스 트리의 CVS 버전을 다운로드한 개발자는 이미
     <code>autoconf</code>와 <code>libtool</code>가 설치되있고,
     다음 과정으로 넘어가기 전에 <code>buildconf</code>를 실행해야
@@ -231,12 +206,32 @@
 
     <p>모두 기본 옵션을 사용하여 소스 트리를 구성하려면 간단히
     <code>./configure</code>를 입력하면된다. 기본 옵션을 수정하려면
-    <code>./configure</code>에 여러 변수와 명령행 옵션을 사용한다.
-    다른 옵션은 <code>./configure</code> 명령어 뒤에 위치하지만,
-    환경변수는 일반적으로 앞에 나온다. 여기서 가장 중요한 옵션은
-    아파치가 정상적으로 작동하기위해 구성되는 장소이자 아파치가
-    설치될 장소인 prefix다. 그러나 입맛에 맞는 다른 다양한
-    옵션들이 있다.</p>
+    <code>./configure</code>에 여러 변수와 명령행 옵션을 사용한다.</p>
+
+    <p>가장 중요한 옵션은 아파치가 정상적으로 작동하기위해 아파치를
+    구성하고 설치할 장소인 <code>--prefix</code>다. 다른 <a href="programs/configure.html#installationdirectories">configure
+    옵션들</a>을 사용하여 파일의 위치를 더 자세히 설정할 수도
+    있다.</p>
+
+    <p><a href="mod/">모듈</a>을 포함하거나 빼서 아파치에 포함할
+    <a href="programs/configure.html#optionalfeatures">기능</a>을
+    선택한다. <a href="mod/module-dict.html#Status">Base</a>
+    상태인 모듈은 기본적으로 아파치에 포함된다. 다른 상태의
+    모듈은 <code>--enable-<var>module</var></code> 옵션을 사용하여
+    포함한다. 여기서 <em>module</em>은 모듈 이름에서
+    <code>mod_</code>를 빼고 밑줄을 빼기기호로 변경한 결과다.
+    <code>--enable-<var>module</var>=shared</code> 옵션을 사용하면
+    모듈을 실행중에 포함하거나 뺄 수 있는 <a href="dso.html">공유객체(shared object, DSO)</a>로 컴파일한다.
+    또, <code>--disable-<var>module</var></code> 옵션을 사용하여
+    Base 모듈을 뺄 수 있다. 지정한 모듈이 없어도
+    <code>configure</code>가 경고하지않고 그냥 무시하기때문에
+    모듈 이름을 정확히 입력하라.</p>
+
+    <p>가끔 <code>configure</code> 스크립트에게 컴파일러,
+    라이브러리, 헤더파일 등의 위치를 알려줘야 할 경우가 있다.
+    이 정보는 환경변수나 <code>configure</code>의 명령행 옵션을
+    사용하여 전달한다. 자세한 내용은 <a href="programs/configure.html">configure manpage</a>를
+    참고하라.</p>
 
     <p>여러분이 선택할 수 있는 가능성을 보여주기위해 다음은
     특정 컴파일러와 플래그를 사용하고 나중에 DSO로 읽어들일
@@ -256,255 +251,7 @@
     검사하여 나중에 서버를 컴파일할때 사용할 Makefile들을
     만든다.</p>
 
-    <p>아파치의 모든 구성 옵션들을 볼 수 있는 가장 쉬운 방법은
-    <code>./configure --help</code>이다. 다음은 대부분의 아규먼트와
-    환경변수에 대한 간단한 설명이다.</p>
-
-<h3><a name="environment" id="environment">환경변수</a></h3>
-
-    <p><code>autoconf</code>는 컴파일 환경을 구성하기위해 여러
-    환경변수를 사용한다. 일반적으로 이 환경변수들은 서버의 기능이
-    아니라 아파치를 컴파일하는 방법에 영향을 미친다. 이 변수를
-    <code>configure</code>를 실행하기 전에 환경에 넣을 수도
-    있지만, 위의 예와 같이 <code>configure</code> 명령행에 써주는
-    것이 더 쉽다.</p>
-
-    <dl>
-      <dt><code>CC=...</code></dt>
-
-      <dd>C 컴파일러 명령어 이름.</dd>
-
-      <dt><code>CPPFLAGS=...</code></dt>
-
-      <dd>기타 C 선처리기와 컴파일러 옵션.</dd>
-
-      <dt><code>CFLAGS=...</code></dt>
-
-      <dd>C 컴파일러의 디버깅과 최적화 옵션.</dd>
-
-      <dt><code>LDFLAGS=...</code></dt>
-
-      <dd>기타 링커에 넘겨줄 옵션.</dd>
-
-      <dt><code>LIBS=...</code></dt>
-
-      <dd>링커에 넘겨줄 라이브러리 위치 정보 ("<code>-L</code>"과
-      "<code>-l</code>" 옵션).</dd>
-
-      <dt><code>INCLUDES=...</code></dt>
-
-      <dd>헤더파일을 찾을 디렉토리들 ("<code>-I<em>dir</em></code>").</dd>
-
-      <dt><code>TARGET=...</code> [기본값: <code>apache</code>]</dt>
-
-      <dd>만들 실행파일 이름.</dd>
-
-      <dt><code>NOTEST_CPPFLAGS=...</code></dt>
-
-      <dt><code>NOTEST_CFLAGS=...</code></dt>
-
-      <dt><code>NOTEST_LDFLAGS=...</code></dt>
-
-      <dt><code>NOTEST_LIBS=...</code></dt>
-
-      <dd>이 변수들은 <code>NOTEST</code>가 안붙은 것들과 같은
-      기능을 한다. 단, 이 변수들은 autoconf가 기능 검사를 마친후
-      컴파일 과정에만 영향을 미친다. 그래서 기능 검사중에는
-      문제를 일으키지만 마지막 컴파일때는 사용해야할 옵션을
-      포함한다.</dd>
-
-      <dt><code>SHLIB_PATH=...</code></dt>
-
-      <dd>컴파일러와 링커가 사용할 공유라이브러리 경로를 지정하는
-      옵션.</dd>
-    </dl>
-
-
-<h3><a name="output" id="output">autoconf 출력 옵션</a></h3>
-
-    <dl>
-      <dt><code>--help</code></dt>
-
-      <dd>모든 옵션과 사용법을 출력한다. 실제 구성을
-      하지는 않는다.</dd>
-
-      <dt><code>--quiet</code></dt>
-
-      <dd>일반적인 "<code>checking...</code>" 문구를 출력하지
-      않는다.</dd>
-
-      <dt><code>--verbose</code></dt>
-
-      <dd>구성 과정중 사용하는 모든 파일명을 포함하여 매우 자세한
-      정보를 출력한다.</dd>
-    </dl>
-
-
-<h3><a name="pathnames" id="pathnames">경로명</a></h3>
-
-    <p>아파치가 설치될 경로명을 지정하는 방법은 현재 두가지다.
-    첫번째는 디렉토리를 지정하고, 아파치가 그 장소 밑에
-    설치하는 방법이다.</p>
-
-    <dl>
-      <dt><code>--prefix=<em>PREFIX</em></code> [기본값:
-      <code>/usr/local/apache2</code>]</dt>
-
-      <dd>아파치 파일들이 설치될 디렉토리를 지정한다.</dd>
-    </dl>
-
-    <p>아키텍쳐 특유의 파일들을 다른 디렉토리에 설치할 수도
-    있다.</p>
-
-    <dl>
-      <dt><code>--exec-prefix=<em>EPREFIX</em></code> [기본값:
-      <code><em>PREFIX</em></code>]</dt>
-
-      <dd>아키텍쳐 특유의 파일들이 위치할 디렉토리를 지정한다.</dd>
-    </dl>
-
-    <p>두번째로 아파치 설치 경로 위치를 구성하는 더 유연한
-    방법은 <code>config.layout</code> 파일을 사용하는 것이다.
-    이 방법을 사용하면 파일의 종류마다 위치를 따로 지정할 수
-    있다. <code>config.layout</code> 파일은 여러 구성 예를
-    담고있고, 이를 참고하여 자신만의 구성을 만들 수도 있다.
-    이 파일 내용은 <code>&lt;Layout FOO&gt;...&lt;/Layout&gt;</code>로
-    구분되며 <code>FOO</code>와 같은 이름으로 지칭한다.</p>
-
-    <dl>
-      <dt><code>--enable-layout=<em>LAYOUT</em></code></dt>
-
-      <dd><code>config.layout</code>의 해당 레이아웃을 사용하여
-      설치 경로를 지정한다.</dd>
-    </dl>
-
-
-
-<h3><a name="modules" id="modules">모듈</a></h3>
-
-    <p>아파치는 모듈로 구성된 서버다. 서버 핵심에는 가장 기본적인
-    기능만이 포함되있다. 여러 모듈은 확장 기능을 제공한다.
-    구성 과정중에 서버에서 사용하기위해 컴파일할 모듈을 선택해야
-    한다. 문서에 포함된 <a href="mod/">모듈 목록</a>을
-    참고하라. <a href="mod/module-dict.html#Status">상태</a>가
-    "Base"인 모듈은 (예, <code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code>) 서버에 기본적으로
-    포함되므로, 원하지 않는다면 명시적으로 빼줘야 한다. 다른
-    상태의 모듈은 (예, <code class="module"><a href="./mod/mod_expires.html">mod_expires</a></code>) 사용하길
-    원한다면 명시적으로 넣어줘야 한다.</p>
-
-    <p>모듈을 컴파일하고 사용하는 방법은 두 가지다. <em>정적으로
-    컴파일된</em> 모듈은 아파치 실행파일에 영구히 포함된다.
-    이외에 운영체제가 동적공유객체(Dynamic Shared Objects, DSO)를
-    지원하고 <code>autoconf</code>가 이 사실을 알아낸다면 모듈을
-    <em>동적으로 컴파일할</em> 수도 있다. DSO 모듈은 아파치
-    실행파일에 직접 포함되지는 않지만, <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>가 제공하는
-    설정 지시어를 사용하여 실행중에 서버에 포함하거나 뺄 수 있다.
-    컴파일때 동적 모듈을 포함하면 mod_so는 자동으로 서버에 포함된다.
-    동적 모듈을 같이 컴파일하지 않고 서버가 DSO를 읽어들일 수 있게
-    하려면 <code>--enable-so</code> 옵션을 직접 사용해야 한다.</p>
-
-    <dl>
-      <dt><code>--enable-<em>MODULE</em>[=shared]</code></dt>
-
-      <dd>모듈 <em>MODULE</em>을 컴파일하여 포함한다.
-      <em>MODULE</em>은 모듈 문서에서 나온 <a href="mod/module-dict.html#ModuleIdentifier">모듈명</a>에서
-      "_module"을 뺀 이름이다. 모듈을 DSO로 컴파일하려면
-      <code>=shared</code> 옵션을 붙인다.</dd>
-
-      <dt><code>--disable-<em>MODULE</em></code></dt>
-
-      <dd>이 옵션을 사용하지 않으면 컴파일하여 포함되었을 모듈
-      <em>MODULE</em>을 제거한다.</dd>
-
-      <dt><code>--enable-modules=<em>MODULE-LIST</em></code></dt>
-
-      <dd>공백으로 구분한 <em>MODULE-LIST</em>에 나온 모듈들을
-      컴파일하여 포함한다.</dd>
-
-      <dt>
-      <code>--enable-mods-shared=<em>MODULE-LIST</em></code></dt>
-
-      <dd>공백으로 구분한 <em>MODULE-LIST</em>에 나온 모듈들을
-      동적으로 읽어들일 수 있는 (DSO) 모듈로 컴파일하여 포함한다.</dd>
-    </dl>
-
-    <p><code>--enable-modules</code>와
-    <code>--enable-mods-shared</code> 옵션에서 <em>MODULE-LIST</em>는
-    모듈명들을 공백으로 구분한 목록이다. 예를 들어
-    <code class="module"><a href="./mod/mod_dav.html">mod_dav</a></code>와 <code class="module"><a href="./mod/mod_info.html">mod_info</a></code>를
-    포함하려면 아래 두 가지 모두 가능하다.</p>
-
-<div class="example"><p><code>./configure --enable-dav --enable-info</code></p></div>
-
-    <p>나</p>
-
-<div class="example"><p><code>./configure --enable-modules="dav info"</code></p></div>
-
-    <p>또, 특별한 키워드 <code>all</code>이나 <code>most</code>를
-    사용하여 한번에 모든 혹은 대부분의 모듈을 포함할 수 있다.
-    그런후 원하지 않는 모듈은 <code>--disable-<em>MODULE</em></code>
-    옵션으로 제거한다. 예를 들어 <code class="module"><a href="./mod/mod_info.html">mod_info</a></code>를
-    제외한 모든 모듈을 DSO로 포함하려면,</p>
-
-<div class="example"><p><code>
-      ./configure --enable-mods-shared=all
-      --disable-info
-</code></p></div>
-
-    <p>표준 모듈들외에 아파치 2.0은 <a href="mpm.html">다중처리
-    모듈</a> (MPM)을 선택할 수 있다. 오직 한 MPM만을 컴파일
-    과정에 포함할 수 있다. 각 플래폼의 기본 MPM은
-    <a href="mpm.html">MPM 문서 페이지</a>에 나와있으나,
-    <code>configure</code> 명령행에서 변경할 수 있다.</p>
-
-    <dl>
-      <dt><code>--with-mpm=<em>NAME</em></code></dt>
-
-      <dd>mpm <em>NAME</em>을 선택한다.</dd>
-    </dl>
-
-    <p><var>mpm_name</var>이라는 MPM을 사용한다면, 다음과 같다.</p>
-
-<div class="example"><p><code>
-     ./configure --with-mpm=<var>mpm_name</var>
-</code></p></div>
-
-
-
-<h3><a name="dbm" id="dbm">DBM</a></h3>
-
-    <p>
-    <code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code>과 <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>의
-    DBM <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>같은
-    여러 아파치 기능은 정보를 빨리 찾아보기위해 키와 값으로된
-    간단한 데이터베이스를 사용한다. 아파치는 소스코드에 SDBM을
-    포함하여, 이 데이터베이스는 항상 사용할 수 있다. 만약 다른
-    데이터베이스를 사용하려면 다음 <code>configure</code> 옵션을
-    사용한다:</p>
-
-<dl>
-<dt><code>--with-gdbm[=<em>path</em>]</code></dt>
-<dt><code>--with-ndbm[=<em>path</em>]</code></dt>
-<dt><code>--with-berkeley-db[=<em>path</em>]</code></dt>
-
-<dd><em>path</em>를 지정하지않으면 아파치는 일상적인 검색 경로에서
-헤더파일과 라이브러리를 찾는다. 직접 <em>path</em>를 알려주면
-아파치가 <em>path</em><code>/lib</code>와
-<em>path</em><code>/include</code>에서 필요한 파일을 찾게 된다.
-마지막으로 <em>path</em>에 헤더파일 경로와 라이브러리 경로를
-콜론으로 구분하여 적을 수도 있다.</dd>
-</dl>
-
-
-
-<h3><a name="suexec" id="suexec">Suexec</a></h3>
-
-    <p>아파치는 사용자 CGI 프로그램을 격리하여 실행할 수
-    있는 <a href="suexec.html">suexec</a>라는 지원 프로그램을
-    포함한다. 그러나 suexec를 잘못 설정하면 심각한 보안 문제가
-    생길 수 있다. 그러므로 이 기능을 사용하기 전에 <a href="suexec.html">suexec 문서</a>를 주의있게 읽고 고민해야
-    한다.</p>
-
+    <p><code>configure</code> 옵션들에 대한 자세한 설명은 <a href="programs/configure.html">configure manpage</a>에 있다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="compile" id="compile">컴파일</a></h2>
@@ -555,6 +302,47 @@
     다음 명령어로 다시 서버를 <a href="stopping.html">중단</a>한다:</p>
 
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl stop</code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="upgrading" id="upgrading">업그레이드</a></h2>
+
+    <p>업그레이드한다면 먼저 사이트에 영향을 줄 수 있는 변화가
+    있는지 알아보기위해 발표문과 소스 배포본의 <code>CHANGES</code>
+    파일을 읽는다. (예를 들어, 1.3에서 2.0이나 2.0에서 2.2와
+    같은) 큰 버전이 변한 경우 컴파일 옵션과 설정을 직접 수정해야할
+    정도의 큰 변화가 있을 것이다. 모든 모듈도 모듈 API의 변화에
+    알맞게 업그레이드해야 한다.</p>
+
+    <p>작은 버전을 한단계 업그레이드하는 것은 (예를 들어,
+    2.0.55에서 2.0.57) 쉽다. <code>make install</code> 작업은
+    기존의 문서, 로그파일, 설정파일을 수정하지 않는다. 또,
+    개발자는 작은 버전간에 <code>configure</code> 옵션, 설정,
+    모듈 API의 호환성없는 변화를 최대한 막는다. 대부분의 경우
+    동일한 <code>configure</code> 명령행, 동일한 설정파일을
+    사용할 수 있고, 모듈들도 모두 계속 동작할 것이다. (이 말은
+    2.0.41이후 버전에만 해당한다. 이전 버전들에는 호환성없는
+    변화가 있다.)</p>
+
+    <p>이전에 설치했던 소스를 가지고 있다면, 업그레이드가 더
+    쉬워진다. 이전 소스 최상위에 있는 <code>config.nice</code>
+    파일에는 소스를 구성할 때 사용했던 <code>configure</code>
+    명령행 옵션이 그대로 있다. 그래서 다음 버전으로 업그레이드한다면
+    새로운 버전 소스로 <code>config.nice</code> 파일을 복사하고,
+    원한다면 조금 수정을 한 후, 다음과 같이 실행한다:</p>
+
+    <div class="example"><p><code>
+    $ ./config.nice<br />
+    $ make<br />
+    $ make install<br />
+    $ <em>PREFIX</em>/bin/apachectl stop<br />
+    $ <em>PREFIX</em>/bin/apachectl start<br />
+    </code></p></div>
+
+    <div class="warning">새로운 버전을 사용하기 전에 항상 검사해봐야
+    한다. 예를 들어, 업그레이드를 마치기 전에 호환성 문제가
+    있는지 알아보기위해 다른 <code>--prefix</code>와 (<code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> 지시어로) 다른 포트를
+    사용하여 새로운 버전을 설치한후 이전 버전과 같이 실행해볼
+    수 있다.</div>
 </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

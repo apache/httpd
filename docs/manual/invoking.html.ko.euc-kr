@@ -24,8 +24,6 @@
 <a href="./ja/invoking.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/invoking.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
- English version for recent changes.</div>
 
     <p>보통 아파치는 Windows NT, 2000, XP에서는 서비스로,
     Windows 95과 ME에서는 콘솔 프로그램으로 실행된다. 자세한
