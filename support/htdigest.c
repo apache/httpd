@@ -122,7 +122,7 @@ static int getline(char *s, int n, apr_file_t *f)
 {
     register int i = 0;
     char ch;
-    apr_status_t rv;
+    apr_status_t rv = APR_EINVAL;
 
     while (i < (n - 1) && 
            ((rv = apr_file_getc(&ch, f)) == APR_SUCCESS) && (ch != '\n')) {
