@@ -69,7 +69,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
                              char *url, const char *proxyhost,
                              apr_port_t proxyport);
 apr_status_t ap_proxy_send_dir_filter(ap_filter_t * f,
-                                                   apr_bucket_brigade * bb);
+                                                   apr_bucket_brigade *bb);
 
 
 /*
@@ -211,7 +211,7 @@ int ap_proxy_ftp_canon(request_rec *r, char *url)
  * Reads response lines, returns both the ftp status code and
  * remembers the response message in the supplied buffer
  */
-static int ftp_getrc_msg(conn_rec *c, apr_bucket_brigade * bb, char *msgbuf, int msglen)
+static int ftp_getrc_msg(conn_rec *ftp_ctrl, apr_bucket_brigade *bb, char *msgbuf, int msglen)
 {
     int status;
     char response[MAX_LINE_LEN];
@@ -220,9 +220,13 @@ static int ftp_getrc_msg(conn_rec *c, apr_bucket_brigade * bb, char *msgbuf, int
     apr_status_t rv;
     int eos;
 
-    if (APR_SUCCESS != (rv = ap_proxy_string_read(c, bb, response, sizeof(response), &eos))) {
+    if (APR_SUCCESS != (rv = ap_proxy_string_read(ftp_ctrl, bb, response, sizeof(response), &eos))) {
         return -1;
     }
+/*
+    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, NULL,
+                 "proxy: <FTP: %s", response);
+*/
     if (!apr_isdigit(response[0]) || !apr_isdigit(response[1]) ||
     !apr_isdigit(response[2]) || (response[3] != ' ' && response[3] != '-'))
         status = 0;
@@ -235,7 +239,7 @@ static int ftp_getrc_msg(conn_rec *c, apr_bucket_brigade * bb, char *msgbuf, int
         memcpy(buff, response, 3);
         buff[3] = ' ';
         do {
-            if (APR_SUCCESS != (rv = ap_proxy_string_read(c, bb, response, sizeof(response), &eos))) {
+            if (APR_SUCCESS != (rv = ap_proxy_string_read(ftp_ctrl, bb, response, sizeof(response), &eos))) {
                 return -1;
             }
             mb = apr_cpystrn(mb, response + (' ' == response[0] ? 1 : 4), me - mb);
@@ -262,7 +266,7 @@ typedef struct {
     }    state;
 }      proxy_dir_ctx_t;
 
-apr_status_t ap_proxy_send_dir_filter(ap_filter_t * f, apr_bucket_brigade * in)
+apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     request_rec *r = f->r;
     apr_pool_t *p = r->pool;
@@ -302,11 +306,12 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t * f, apr_bucket_brigade * in)
 
         /* print "ftp://host/" */
         str = apr_psprintf(p, DOCTYPE_HTML_3_2
-                           "\n\n<HTML>\n<HEAD>\n<TITLE>%s%s</TITLE>\n"
-                           "<BASE HREF=\"%s%s\">\n</HEAD>\n\n"
-                           "<BODY>\n\n<H2>Directory of "
-                           "<A HREF=\"/\">%s</A>/",
-                           site, path, site, path, site);
+                           "\n\n<html>\n<head>\n<title>%s%s</title>\n"
+                           "<base href=\"%s%s\">\n</head>\n\n"
+                           "<body>\n\n<h2>Directory of "
+                           "<a href=\"/\">%s</a>/",
+                           site, ap_escape_uri(p, path),
+                           site, ap_escape_html(p, path), site);
 
         e = apr_bucket_pool_create(str, strlen(str), p);
         APR_BRIGADE_INSERT_TAIL(out, e);
@@ -318,7 +323,9 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t * f, apr_bucket_brigade * in)
             else
                 ++reldir;
             /* print "path/" component */
-            str = apr_psprintf(p, "<A HREF=\"/%s/\">%s</A>/", path + 1, reldir);
+            str = apr_psprintf(p, "<a href=\"/%s/\">%s</a>/",
+                               ap_escape_uri(p, path + 1),
+                               ap_escape_html(p, reldir));
             e = apr_bucket_pool_create(str, strlen(str), p);
             APR_BRIGADE_INSERT_TAIL(out, e);
             *dir = '/';
@@ -326,18 +333,18 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t * f, apr_bucket_brigade * in)
         /* If the caller has determined the current directory, and it differs */
         /* from what the client requested, then show the real name */
         if (pwd == NULL || strncmp(pwd, path, strlen(pwd)) == 0) {
-            str = apr_psprintf(p, "</H2>\n\n<HR></HR>\n\n<PRE>");
+            str = apr_psprintf(p, "</h2>\n\n<hr />\n\n<pre>");
         }
         else {
-            str = apr_psprintf(p, "</H2>\n\n(%s)\n\n<HR></HR>\n\n<PRE>", pwd);
+            str = apr_psprintf(p, "</h2>\n\n(%s)\n\n<hr />\n\n<pre>", pwd);
         }
         e = apr_bucket_pool_create(str, strlen(str), p);
         APR_BRIGADE_INSERT_TAIL(out, e);
 
         /* print README */
         if (readme) {
-            str = apr_psprintf(p, "%s\n</PRE>\n\n<HR></HR>\n\n<PRE>\n",
-                               readme);
+            str = apr_psprintf(p, "%s\n</pre>\n\n<hr />\n\n<pre>\n",
+                               ap_escape_html(p, readme));
 
             e = apr_bucket_pool_create(str, strlen(str), p);
             APR_BRIGADE_INSERT_TAIL(out, e);
@@ -378,7 +385,6 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t * f, apr_bucket_brigade * in)
                 if ((response + len) != (pos + 1)) {
                     len = pos - response + 1;
                     apr_bucket_split(e, pos - response + 1);
-
                 }
                 found = 1;
             }
@@ -410,12 +416,17 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t * f, apr_bucket_brigade * in)
 
             do {
                 filename--;
-            } while (filename[0] != ' ');
-            *(filename++) = '\0';
+            } while (filename[0] != ' ' && filename > ctx->buffer);
+            if (filename > ctx->buffer)
+                *(filename++) = '\0';
             *(link_ptr++) = '\0';
             if ((n = strlen(link_ptr)) > 1 && link_ptr[n - 1] == '\n')
                 link_ptr[n - 1] = '\0';
-            str = apr_psprintf(p, "%s <A HREF=\"%s\">%s %s</A>\n", ctx->buffer, filename, filename, link_ptr);
+            str = apr_psprintf(p, "%s <a href=\"%s\">%s %s</a>\n",
+                               ap_escape_html(p, ctx->buffer),
+                               ap_escape_uri(p, filename),
+                               ap_escape_html(p, filename),
+                               ap_escape_html(p, link_ptr));
         }
 
         /* a directory/file? */
@@ -449,16 +460,20 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t * f, apr_bucket_brigade * in)
 
             /* Special handling for '.' and '..' */
             if (!strcmp(filename, ".") || !strcmp(filename, "..") || ctx->buffer[0] == 'd') {
-                str = apr_psprintf(p, "%s <A HREF=\"%s/\">%s</A>\n",
-                                   ctx->buffer, filename, filename);
+                str = apr_psprintf(p, "%s <a href=\"%s/\">%s</a>\n",
+                                   ap_escape_html(p, ctx->buffer),
+                                   ap_escape_uri(p, filename),
+                                   ap_escape_html(p, filename));
             }
             else {
-                str = apr_psprintf(p, "%s <A HREF=\"%s\">%s</A>\n",
-                                   ctx->buffer, filename, filename);
+                str = apr_psprintf(p, "%s <a href=\"%s\">%s</a>\n",
+                                   ap_escape_html(p, ctx->buffer),
+                                   ap_escape_uri(p, filename),
+                                   ap_escape_html(p, filename));
             }
         }
         else {
-            str = apr_pstrdup(p, ctx->buffer);
+            str = ap_escape_html(p, ctx->buffer);
         }
 
         /* erase buffer for next time around */
@@ -476,7 +491,7 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t * f, apr_bucket_brigade * in)
     }
 
     if (FOOTER == ctx->state) {
-        str = apr_psprintf(p, "</PRE>\n\n<HR></HR>\n\n%s\n\n</BODY>\n</HTML>\n", ap_psignature("", r));
+        str = apr_psprintf(p, "</pre>\n\n<hr />\n\n%s\n\n</body>\n</html>\n", ap_psignature("", r));
         e = apr_bucket_pool_create(str, strlen(str), p);
         APR_BRIGADE_INSERT_TAIL(out, e);
 
@@ -539,10 +554,10 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     apr_pool_t *p = r->pool;
     conn_rec *c = r->connection;
     proxy_conn_rec *backend;
-    apr_socket_t *sock, *local_sock, *remote_sock = NULL;
+    apr_socket_t *sock, *local_sock, *data_sock = NULL;
     apr_sockaddr_t *connect_addr;
     apr_status_t rv;
-    conn_rec *origin, *remote;
+    conn_rec *origin, *data;
     int err;
     apr_bucket *e;
     apr_bucket_brigade *bb = apr_brigade_create(p);
@@ -591,7 +606,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
     /*
      * I: Who Do I Connect To? -----------------------
-     * 
+     *
      * Break up the URL to determine the host to connect to
      */
 
@@ -661,7 +676,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
     /*
      * II: Make the Connection -----------------------
-     * 
+     *
      * We have determined who to connect to. Now make the connection.
      */
 
@@ -711,7 +726,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
      * machine to connect to. If configured, reorder this list so that the
      * "best candidate" is first try. "best candidate" could mean the least
      * loaded server, the fastest responding server, whatever.
-     * 
+     *
      * For now we do nothing, ie we get DNS round robin. XXX FIXME
      */
 
@@ -770,7 +785,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
     /*
      * III: Send Control Request -------------------------
-     * 
+     *
      * Log into the ftp server, send the username & password, change to the
      * correct directory...
      */
@@ -791,7 +806,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     if (rc == 120) {
         /*
          * RFC2616 states: 14.37 Retry-After
-         * 
+         *
          * The Retry-After response-header field can be used with a 503 (Service
          * Unavailable) response to indicate how long the service is expected
          * to be unavailable to the requesting client. [...] The value of
@@ -975,7 +990,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
     /*
      * IV: Make Data Connection? -------------------------
-     * 
+     *
      * Try EPSV, if that fails... try PASV, if that fails... try PORT.
      */
 /* this temporarily switches off EPSV/PASV */
@@ -983,9 +998,9 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
     /* set up data connection - EPSV */
     {
-        apr_sockaddr_t *remote_addr;
-        char *remote_ip;
-        apr_port_t remote_port;
+        apr_sockaddr_t *data_addr;
+        char *data_ip;
+        apr_port_t data_port;
 
         /*
          * The EPSV command replaces PASV where both IPV4 and IPV6 is
@@ -1038,20 +1053,20 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
             if (pstr) {
                 apr_sockaddr_t *epsv_addr;
-                remote_port = atoi(pstr + 3);
+                data_port = atoi(pstr + 3);
 
                 ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
                        "proxy: FTP: EPSV contacting remote host on port %d",
-                             remote_port);
+                             data_port);
 
-                if ((rv = apr_socket_create(&remote_sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
+                if ((rv = apr_socket_create(&data_sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                                   "proxy: FTP: error creating EPSV socket");
                     return HTTP_INTERNAL_SERVER_ERROR;
                 }
 
 #if !defined (TPF) && !defined(BEOS)
-                if (conf->recv_buffer_size > 0 && (rv = apr_setsocketopt(remote_sock, APR_SO_RCVBUF,
+                if (conf->recv_buffer_size > 0 && (rv = apr_setsocketopt(data_sock, APR_SO_RCVBUF,
                                                  conf->recv_buffer_size))) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                                   "proxy: FTP: setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
@@ -1059,10 +1074,10 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 #endif
 
                 /* make the connection */
-                apr_socket_addr_get(&remote_addr, APR_REMOTE, sock);
-                apr_sockaddr_ip_get(&remote_ip, remote_addr);
-                apr_sockaddr_info_get(&epsv_addr, remote_ip, APR_INET, remote_port, 0, p);
-                rv = apr_connect(remote_sock, epsv_addr);
+                apr_socket_addr_get(&data_addr, APR_REMOTE, sock);
+                apr_sockaddr_ip_get(&data_ip, data_addr);
+                apr_sockaddr_info_get(&epsv_addr, data_ip, APR_INET, data_port, 0, p);
+                rv = apr_connect(data_sock, epsv_addr);
                 if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                                  "proxy: FTP: EPSV attempt to connect to %pI failed - Firewall/NAT?", epsv_addr);
@@ -1075,7 +1090,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
             }
             else {
                 /* and try the regular way */
-                apr_socket_close(remote_sock);
+                apr_socket_close(data_sock);
             }
         }
     }
@@ -1139,14 +1154,14 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
                           "proxy: FTP: PASV contacting host %d.%d.%d.%d:%d",
                              h3, h2, h1, h0, pasvport);
 
-                if ((rv = apr_socket_create(&remote_sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
+                if ((rv = apr_socket_create(&data_sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                                   "proxy: error creating PASV socket");
                     return HTTP_INTERNAL_SERVER_ERROR;
                 }
 
 #if !defined (TPF) && !defined(BEOS)
-                if (conf->recv_buffer_size > 0 && (rv = apr_setsocketopt(remote_sock, APR_SO_RCVBUF,
+                if (conf->recv_buffer_size > 0 && (rv = apr_setsocketopt(data_sock, APR_SO_RCVBUF,
                                                  conf->recv_buffer_size))) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                                   "proxy: FTP: setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
@@ -1155,7 +1170,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
                 /* make the connection */
                 apr_sockaddr_info_get(&pasv_addr, apr_psprintf(p, "%d.%d.%d.%d", h3, h2, h1, h0), APR_INET, pasvport, 0, p);
-                rv = apr_connect(remote_sock, pasv_addr);
+                rv = apr_connect(data_sock, pasv_addr);
                 if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                                  "proxy: FTP: PASV attempt to connect to %pI failed - Firewall/NAT?", pasv_addr);
@@ -1168,7 +1183,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
             }
             else {
                 /* and try the regular way */
-                apr_socket_close(remote_sock);
+                apr_socket_close(data_sock);
             }
         }
     }
@@ -1263,7 +1278,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
     /*
      * V: Set The Headers -------------------
-     * 
+     *
      * Get the size of the request, set up the environment for HTTP.
      */
 
@@ -1537,7 +1552,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     /* wait for connection */
     if (use_port) {
         for (;;) {
-            rv = apr_accept(&remote_sock, local_sock, r->pool);
+            rv = apr_accept(&data_sock, local_sock, r->pool);
             if (rv == APR_EINTR) {
                 continue;
             }
@@ -1553,8 +1568,8 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* the transfer socket is now open, create a new connection */
-    remote = ap_new_connection(p, r->server, remote_sock, r->connection->id, r->connection->sbh);
-    if (!remote) {
+    data = ap_new_connection(p, r->server, data_sock, r->connection->id, r->connection->sbh);
+    if (!data) {
         /*
          * the peer reset the connection already; ap_new_connection() closed
          * the socket
@@ -1565,12 +1580,12 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* set up the connection filters */
-    ap_proxy_pre_http_connection(remote);
+    ap_proxy_pre_http_connection(data);
 
 
     /*
      * VI: Receive the Response ------------------------
-     * 
+     *
      * Get response from the remote ftp socket, and pass it up the filter chain.
      */
 
@@ -1589,7 +1604,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
                      "proxy: FTP: start body send");
 
         /* read the body, pass it to the output filters */
-        while (ap_get_brigade(remote->input_filters, bb, AP_MODE_EXHAUSTIVE,
+        while (ap_get_brigade(data->input_filters, bb, AP_MODE_EXHAUSTIVE,
                               APR_BLOCK_READ, 0) == APR_SUCCESS) {
             if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
                 ap_pass_brigade(r->output_filters, bb);
@@ -1602,8 +1617,8 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
             apr_brigade_cleanup(bb);
         }
     }
-    ap_flush_conn(remote);
-    apr_socket_close(remote_sock);
+    ap_flush_conn(data);
+    apr_socket_close(data_sock);
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
                  "proxy: FTP: Closing Data connection.");
     rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
@@ -1615,7 +1630,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
     /*
      * VII: Clean Up -------------
-     * 
+     *
      * If there are no KeepAlives, or if the connection has been signalled to
      * close, close the socket and clean up
      */
@@ -1642,7 +1657,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     return OK;
 }
 
-static void ap_proxy_ftp_register_hook(apr_pool_t * p)
+static void ap_proxy_ftp_register_hook(apr_pool_t *p)
 {
     /* hooks */
     proxy_hook_scheme_handler(ap_proxy_ftp_handler, NULL, NULL, APR_HOOK_MIDDLE);
