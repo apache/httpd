@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/* HTTP routines for Apache proxy */
+/* AJP routines for Apache proxy */
 
 #include "mod_proxy.h"
 #include "ajp.h"
@@ -34,7 +34,7 @@ typedef struct {
     void           *data;  /* To store ajp data */
 } proxy_ajp_conn_t;
 
-static apr_status_t ap_proxy_http_cleanup(request_rec *r,
+static apr_status_t ap_proxy_ajp_cleanup(request_rec *r,
                                           proxy_ajp_conn_t *p_conn,
                                           proxy_conn_rec *backend);
 
@@ -278,7 +278,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
          * For now we do nothing, ie we get DNS round robin.
          * XXX FIXME
          */
-        failed = ap_proxy_connect_to_backend(&p_conn->sock, "HTTP",
+        failed = ap_proxy_connect_to_backend(&p_conn->sock, "AJP",
                                              p_conn->addr, p_conn->name,
                                              conf, r->server, c->pool);
 
@@ -513,19 +513,18 @@ apr_status_t ap_proxy_ajp_process_response(apr_pool_t * p, request_rec *r,
 }
 
 static
-apr_status_t ap_proxy_http_cleanup(request_rec *r, proxy_ajp_conn_t *p_conn,
+apr_status_t ap_proxy_ajp_cleanup(request_rec *r, proxy_ajp_conn_t *p_conn,
                                    proxy_conn_rec *backend) {
-    /* If there are no KeepAlives, or if the connection has been signalled
+    /* If the connection has been signalled
      * to close, close the socket and clean up
      */
 
     /* if the connection is < HTTP/1.1, or Connection: close,
      * we close the socket, otherwise we leave it open for KeepAlive support
      */
-    if (p_conn->close || (r->proto_num < HTTP_VERSION(1,1))) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "ap_proxy_http_cleanup closing %d %d %d %s",
-                       p_conn->sock, p_conn->close, r->proto_num, apr_table_get(r->headers_out, "Connection"));
+    if (p_conn->close) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                      "ap_proxy_ajp_cleanup closing");
         if (p_conn->sock) {
             apr_socket_close(p_conn->sock);
             p_conn->sock = NULL;
@@ -641,6 +640,8 @@ int ap_proxy_ajp_handler(request_rec *r, proxy_server_conf *conf,
     status = ap_proxy_ajp_request(p, r, p_conn, origin, conf, uri, url,
                                    server_portstr);
     if ( status != OK ) {
+        p_conn->close++;
+        ap_proxy_ajp_cleanup(r, p_conn, backend);
         return status;
     }
 
@@ -649,12 +650,13 @@ int ap_proxy_ajp_handler(request_rec *r, proxy_server_conf *conf,
                                             server_portstr);
     if ( status != OK ) {
         /* clean up even if there is an error */
-        ap_proxy_http_cleanup(r, p_conn, backend);
+        p_conn->close++;
+        ap_proxy_ajp_cleanup(r, p_conn, backend);
         return status;
     }
 
     /* Step Five: Clean Up */
-    status = ap_proxy_http_cleanup(r, p_conn, backend);
+    status = ap_proxy_ajp_cleanup(r, p_conn, backend);
     if ( status != OK ) {
         return status;
     }
