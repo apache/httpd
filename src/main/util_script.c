@@ -306,6 +306,7 @@ int scan_script_header_err(request_rec *r, FILE *f, char *buffer)
     while(1) {
 
 	if (fgets(w, MAX_STRING_LEN-1, f) == NULL) {
+	    kill_timeout (r);
 	    log_reason ("Premature end of script headers", r->filename, r);
 	    return SERVER_ERROR;
         }
