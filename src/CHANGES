@@ -1,7 +1,9 @@
 Changes with Apache 1.3.3
  
-  *) Non-existant .htaccess files being returned as FORBIDDEN instead
-     of not-existing. [Roy Fielding]
+  *) The ap_pfopen and ap_pfdopen routines were failing to protect the
+     errno on an error, which leads to one error being mistaken for
+     another when reading non-existant .htaccess files.
+     [Jim Jagielski, Roy Fielding]
 
   *) OS/2: The new header tests get things right, need to update
      ap_config.h.  [Brian Havard]
