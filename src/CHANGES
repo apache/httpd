@@ -1,5 +1,14 @@
 Changes with Apache 1.3b8
- 
+
+  *) Propagate environment to CGI scripts correctly in Win32.
+     [W G Stoddard <wgstodda@us.ibm.com>] PR#2294
+
+  *) Some symbol renaming:
+     ap_spawn_child_err became ap_spawn_child
+     ap_spawn_child_err_buff became ap_bspawn_child
+     spawn_child was obsoleted and moved to compat.h
+     [Brian Behlendorf]
+
   *) Upgrade the child spawning code in mod_rewrite for the RewriteMap
      programs: ap_spawn_child_err() is used and the Win32 case now uses
      CreateProcess() instead of a low-level execl() (which caused problems in
