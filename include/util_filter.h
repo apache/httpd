@@ -71,6 +71,8 @@ extern "C" {
  * @package Apache filter library
  */
 
+#define AP_NOBODY_WROTE         -1;
+
 /*
  * FILTER CHAIN
  *

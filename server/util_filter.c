@@ -153,7 +153,10 @@ API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
  */
 API_EXPORT(int) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *bb)
 {
-    return next->filter_func(next, bb);
+    if (next) {
+        return next->filter_func(next, bb);
+    }
+    return AP_NOBODY_WROTE;
 }
 
 API_EXPORT(ap_bucket_brigade *) ap_get_saved_data(ap_filter_t *f, 
