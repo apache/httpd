@@ -1,6 +1,6 @@
 Changes with Apache 1.3b6
 
-  *) Now mod_proxy uses the reponse string (in addition to the response status
+  *) Now mod_proxy uses the response string (in addition to the response status
      code) from the already used FTP SIZE command to setup the Content-Length
      header if available. [Ralf S. Engelschall, PR#1183]
 
