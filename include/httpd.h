@@ -365,24 +365,15 @@ extern "C" {
 #define APEXIT_CHILDINIT	0x3
 #define APEXIT_CHILDFATAL	0xf
 
-/* TODO: re-implement the server token/version stuff -- it's part of http_core
- * it should be possible to do without touching http_main at all. (or else
- * we haven't got enough module hooks)
- */
-
 enum server_token_type {
     SrvTk_MIN,		/* eg: Apache/1.3.0 */
     SrvTk_OS,		/* eg: Apache/1.3.0 (UNIX) */
-    SrvTk_FULL		/* eg: Apache/1.3.0 (UNIX) PHP/3.0 FooBar/1.2b */
+    SrvTk_FULL,		/* eg: Apache/1.3.0 (UNIX) PHP/3.0 FooBar/1.2b */
+    SrvTk_PRODUCT_ONLY	/* eg: Apache */
 };
 
-#if 0
 API_EXPORT(const char *) ap_get_server_version(void);
-API_EXPORT(void) ap_add_version_component(const char *component);
-#else
-#define ap_get_server_version()	(AP_SERVER_BASEVERSION)
-#define ap_add_version_component(x) ((void)0)
-#endif
+API_EXPORT(void) ap_add_version_component(ap_pool_t pconf, const char *component);
 API_EXPORT(const char *) ap_get_server_built(void);
 
 /* Numeric release version identifier: MMNNFFRBB: major minor fix final beta

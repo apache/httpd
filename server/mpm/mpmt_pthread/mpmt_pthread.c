@@ -161,10 +161,6 @@ static char *lock_fname;
 #define SAFE_ACCEPT(stmt) (stmt)
 #endif
 
-
-/* Global, alas, so http_core can talk to us */
-enum server_token_type ap_server_tokens = SrvTk_FULL;
-
 API_EXPORT(const server_rec *) ap_get_server_conf(void)
 {
     return (ap_server_conf);

@@ -164,9 +164,6 @@ static ap_lock_t *process_accept_mutex;
 static char *lock_fname;
 static pthread_mutex_t thread_accept_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-/* Global, alas, so http_core can talk to us */
-enum server_token_type ap_server_tokens = SrvTk_FULL;
-
 API_EXPORT(const server_rec *) ap_get_server_conf(void)
 {
     return (ap_server_conf);
