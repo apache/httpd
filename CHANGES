@@ -1,4 +1,9 @@
 Changes with Apache 2.0.18-dev
+
+  *) Prevent a hang when a cgi handled by mod_cgid tries to read a
+     request body from its stdin but no reqest body is being written to 
+     the cgi.  [Jeff Trawick]
+
   *) mod_log_config: %c connection status incorrectly logged
      as "-" (non-keepalive) when MaxKeepAliveRequests is set to 0.
      [Bill Stoddard]
