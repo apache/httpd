@@ -141,13 +141,4 @@ extern int ap_os_is_path_absolute(const char *file);
  */
 #define ap_os_is_filename_valid(f)          (1)
 
-/**
- * Send a signal to a specified process
- * @param pid the process to send the signal to
- * @param sig the signal to send
- * @return On success 0, on error -1
- * @deffunc int ap_os_kill(pid_t pid, int sig)
- */
-#define ap_os_kill(pid, sig)                kill(pid, sig)
-
 #endif	/* !APACHE_OS_H */
