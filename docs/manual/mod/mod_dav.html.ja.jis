@@ -48,7 +48,9 @@
 </ul>
 <h3>トピック</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#example">WebDAV を有効にする</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#example">Enabling WebDAV</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#security">セキュリティの問題</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#complex">複雑な設定</a></li>
 </ul><h3>参照</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code></li>
@@ -57,7 +59,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">WebDAV を有効にする</a></h2>
+<h2><a name="example" id="example">Enabling WebDAV</a></h2>
     <p>mod_dav を有効にするには、<code>httpd.conf</code>
     ファイル中のコンテナに次を加えます:</p>
 
@@ -70,13 +72,17 @@
     <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>
     を使用して実行時にロードされている必要があります。</p>
     
-    <p>動作させるには、<code>httd.conf</code> ファイルの
-    グローバルセクションに次を加えて、ウェブサーバが書き込みできる
-    DAV ロックデータベースファイル名を指定します。</p>
+    <p>さらに、DAV ロックデータベースの場所が
+    <code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code> ディレクティブを使って
+    <code>httd.conf</code> ファイルのグローバルセクションに指定されている
+    必要があります。</p>
 
     <div class="example"><p><code>
-      DavLockDB /tmp/DavLock
+      DavLockDB /usr/local/apache2/var/DavLock
     </code></p></div>
+
+    <p>ロックデータベースファイルのあるディレクトリは Apache が実行されている
+    <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> と <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> に書き込み権限がある必要があります。</p>
 
     <p><code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code>
     節を <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
@@ -89,7 +95,7 @@
     ディレクティブは DAV リクエストに対しては効力を持ちません。</p>
 
     <div class="example"><h3>完全な例</h3><p><code>
-      DavLockDB /tmp/DavLock<br />
+      DavLockDB /usr/local/apache2/var/DavLock<br />
       <br />
        &lt;Location /foo&gt;<br />
        <span class="indent">
@@ -99,7 +105,7 @@
          AuthName DAV<br />
          AuthUserFile user.passwd<br />
          <br />
-         &lt;LimitExcept GET HEAD OPTIONS&gt;<br />
+         &lt;LimitExcept GET OPTIONS&gt;<br />
          <span class="indent">
            require user admin<br />
          </span>
@@ -108,13 +114,68 @@
        &lt;/Location&gt;<br />
     </code></p></div>
 
-    <div class="warning"><h3>セキュリティ</h3>
-      <p>HTTP 基本認証の使用は推奨できません。少なくとも 
-      <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> モジュールで提供される HTTP 
-      ダイジェスト認証を用いるべきです。WebDAV クライアントのほとんどは
-      この認証方法に対応しています。もちろん、<a href="../ssl/">SSL</a>
-      が有効なコネクションを通した基本認証でもセキュリティが確保できます。</p>
-    </div>
+    <p><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> は Greg Stein さんの <a href="http://www.webdav.org/mod_dav/">Apache 1.3 用の mod_dav</a> に
+    由来するものです。そのサイトからより多くの情報を手に入れることができます。</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="security" id="security">セキュリティの問題</a></h2>
+
+    <p>DAV のアクセスメソッドは遠隔クライアントがサーバのファイルを
+    操作することを可能にしますので、 <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> を使用する
+    前に、サーバが安全であることを特に注意して確認しなければなりません。</p>
+
+    <p>サーバ上の DAV が使用可能になっている場所はすべて認証で保護してください。
+    HTTP 基本認証の使用は推奨できません。少なくとも 
+    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> モジュールで提供される HTTP 
+    ダイジェスト認証を用いるべきです。WebDAV クライアントのほとんどは
+    この認証方法に対応しています。代わりに、<a href="../ssl/">SSL</a> が
+    有効なコネクションを通した基本認証を使うこともできます。</p>
+
+    <p><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> がファイルを操作できるようにするためには、
+    管理下のディレクトリとファイルとに Apache が実行されている <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> と <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> で書き込み可能である必要があります。
+    新しく作成されるファイルもこの <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>
+    と <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> に所有される
+    ことになります。この理由から、そのアカウントへのアクセスを制御することは
+    重要です。DAV リポジトリは Apache 専用のものだとみなされています。
+    Apache 以外の方法でファイルを修正すること (例えば FTP やファイルシステム
+    用のツールなどを使って) は許可されていません。</p>
+
+    <p><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> はいろいろな種類のサービス拒否攻撃にさらされる
+    かもしれません。<code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code> ディレクティブを使うと
+    大きな DAV リクエストを解析するときに消費されるメモリの量を制限することが
+    できます。<code class="directive"><a href="#davdepthinfinity">DavDepthInfinity</a></code> ディレクティブは
+    <code>PROPFIND</code> リクエストが巨大リポジトリで大量のメモリを消費するのを
+    防ぐことができます。他のサービス拒否攻撃には単純に使用可能なディスク領域を
+    多くの大きなファイルで埋めてしまうんものがあります。これを直接防ぐ方法は
+    Apache にはありませんので、信用できないユーザに DAV アクセスを提供するのは
+    避けた方が良いでしょう。</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="complex" id="complex">複雑な設定</a></h2>
+
+    <p>よくある要求に、<code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> を使って動的なファイル
+    (PHP スクリプト、CGI スクリプトなど) を操作したいというものがあります。
+    これの実現は、<code>GET</code> リクエストはスクリプトの内容をダウンロードさせる
+    代わりに、スクリプトを常に実行させてしまうので難しくなっています。
+    これを回避する方法には、二つの違う URL を同じコンテンツにマップし、
+    一つはスクリプトを実行させ、もう一つはダウンロードさせたり、DAV から
+    操作されたりするように設定するというものがあります。</p>
+
+<div class="example"><p><code>
+Alias /phparea /home/gstein/php_files<br />
+Alias /php-source /home/gstein/php_files<br />
+&lt;Location /php-source&gt;
+<span class="indent">
+    DAV On<br />
+    ForceType text/plain<br />
+</span>
+&lt;/Location&gt;
+</code></p></div>
+
+    <p>この設定により、<code>http://example.com/phparea</code> を PHP スクリプトの
+    出力をアクセスするために使うことができ、
+    <code>http://example.com/php-source</code> を DAV クライアントによる
+    が操作のために使うことができます。</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Dav" id="Dav">Dav</a> <a name="dav" id="dav">ディレクティブ</a></h2>

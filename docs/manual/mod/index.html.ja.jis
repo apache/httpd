@@ -33,9 +33,9 @@
 <div id="quickview"><ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#core">コア機能と MPM</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">他のモジュール</a></li></ul><h3>参照</h3>
 <ul class="seealso">
-<li><a href="../mpm.html">マルチプロセッシングモジュール (MPM)</a>
+<li><a href="../mpm.html">マルチプロセッシングモジュール (MPMs)</a>
   </li>
-<li><a href="quickreference.html">ディレクティブクイックリファレンス</a>
+<li><a href="quickreference.html">ディレクティブ クイックリファレンス</a>
   </li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -101,7 +101,7 @@ for HTTP Basic authentication.</dd>
 <dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>プロトコルモジュールの概要を示すための単純なエコーサーバ
 </dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>CGI スクリプト及び SSI
-    ページに渡される環境変数を変更する機能を提供する</dd>
+ページに渡される環境変数を変更する機能を提供する</dd>
 <dt><a href="mod_example.html">mod_example</a></dt><dd>Illustrates the Apache module API</dd>
 <dt><a href="mod_expires.html">mod_expires</a></dt><dd>Generation of <code>Expires</code> HTTP headers according to
 user-specified criteria</dd>

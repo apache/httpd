@@ -44,8 +44,7 @@
     </code></p></div>
 
     <p><code>filesystem</code> は <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>
-    のデフォルトプロバイダになっていますから、<code>filesystem</code>
-    の代わりに単に
+    のデフォルトプロバイダになっていますから、代わりに単に
     <code>On</code> と指定することもできます。</p>
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
@@ -69,7 +68,7 @@
     <p>ロックデータベースへのフルパスを、拡張子を除いた形で
     指定するには、<code class="directive">DavLockDB</code>
     を使います。パスが絶対パスでなければ、<code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> からの相対パスと解釈されます。
-    <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> の実装では、ユーザロックを
+    <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> 実装では、ユーザロックを
     追跡するために SDBM データベースを使います。</p>
 
     

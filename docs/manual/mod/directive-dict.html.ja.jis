@@ -175,11 +175,10 @@
       <dt>ディレクトリ</dt>
 
       <dd>これは、サーバ設定ファイルの
-      <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>、
-      <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>、
-      <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>
-      の中で、 <a href="../sections.html">Directory、Location、Files
-      セクションの機能</a>
+      <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, 
+      <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, 
+      <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> 
+      コンテナの中で、 <a href="../sections.html">Directory, Location, Files セクションの動作方法</a>
       で説明されている制限の下で使用できることを示します。</dd>
 
       <dt>.htaccess</dt>
@@ -253,7 +252,7 @@
 
       <dd>"Base" のディレクティブは
       デフォルトでサーバに組み込まれている標準モジュールの中の一つでサ
-      ポートされていて、わざわざ設定からモジュールを削除したときを除いて、
+      ポートされていて、わざわざ設定からモジュールを削除したときを除いて、
       通常では使用可能であることを示します。</dd>
 
       <dt>Extension</dt>
