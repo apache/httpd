@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/02 22:40:21 $]
+Last modified at [$Date: 2004/06/03 01:50:15 $]
 
 Release:
 
@@ -75,7 +75,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) mod_deflate: Fix memory consumption proportional to response size.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/filters/mod_deflate.c?r1=1.48&r2=1.49
        PR: 29318
-       +1: jorton
+       +1: jorton, trawick
 
     *) mod_ssl: Fix buffer overflow in FakeBasicAuth support (CVE CAN-2004-0488)
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_kernel.c?r1=1.105&r2=1.106
@@ -103,7 +103,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) Allow LimitRequestBody to be reset to unlimited. PR 29106
          server/core.c: r1.279
-       +1: nd
+       +1: nd, trawick
        +1: kess (on concept)
 
     *) Small fix to allow reverse proxying to an ftp server. Previously
@@ -227,13 +227,13 @@ PATCHES TO BACKPORT FROM 2.1
     *) mod_dav: Fix a segfault in an autoversioning error path.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.106&r2=1.107
        PR: 29148
-       +1: jorton
+       +1: jorton, trawick
 
     *) mod_dav: Fix a 2518 compliance issue which affects Eclipse; give a 409 
        rather than a 403 for a MKCOL with a missing intermediate collection
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/fs/repos.c?r1=1.80&r2=1.81
        PR: 29034
-       +1: jorton
+       +1: jorton, trawick
 
     *) mod_dav: Send an EOS at the end of the multistatus brigade.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.105&r2=1.106
