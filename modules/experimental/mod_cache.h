@@ -179,6 +179,9 @@ typedef struct {
     /** ignore client's requests for uncached responses */
     int ignorecachecontrol;
     int ignorecachecontrol_set;
+    /* maximum amount of data to buffer on a streamed response where
+     * we haven't yet seen EOS */
+    apr_off_t max_streaming_buffer_size;
 } cache_server_conf;
 
 /* cache info information */
@@ -237,6 +240,11 @@ typedef struct {
     int fresh;				/* is the entitey fresh? */
     cache_handle_t *handle;		/* current cache handle */
     int in_checked;			/* CACHE_IN must cache the entity */
+    apr_bucket_brigade *saved_brigade;  /* copy of partial response */
+    apr_off_t saved_size;               /* length of saved_brigade */
+    apr_time_t exp;                     /* expiration */
+    apr_time_t lastmod;                 /* last-modified time */
+    cache_info *info;                   /* current cache info */
 } cache_request_rec;
 
 
