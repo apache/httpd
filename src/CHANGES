@@ -1,4 +1,8 @@
 Changes with Apache 1.3.4
+
+  *) Make sure under ELF-based NetBSD (now) and OpenBSD (future) we don't
+     search for an underscore on dlsym() (as it's already the case
+     for FreeBSD 3.0). [Todd Vierling <tv@pobox.com>] PR#2462
   
   *) Small fix for mod_env.html: The module was documented as to be _not_
      compiled into Apache per default, although it _IS_ compiled into 

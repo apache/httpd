@@ -124,8 +124,9 @@ const char *dlerror(void);
 #define RTLD_GLOBAL 0
 #endif
 
-#if (defined(__FreeBSD__) && !defined(__ELF__)) || \
-    defined(__OpenBSD__) || defined(__NetBSD__)
+#if (defined(__FreeBSD__) ||\
+     defined(__OpenBSD__) ||\
+     defined(__NetBSD__)     ) && !defined(__ELF__)
 #define DLSYM_NEEDS_UNDERSCORE
 #endif
 
