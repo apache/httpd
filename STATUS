@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/21 14:03:21 $]
+Last modified at [$Date: 2003/01/21 16:57:00 $]
 
 Release:
 
@@ -77,7 +77,7 @@ PATCHES TO PORT FROM 2.1
     * Insure that ap_get_mime_headers passes a null terminated string
       to ap_escape_html if ap_rgetline exits abnormally (e.g. header too long).
       The patch is r1.123 thru r1.125 of server/protocol.c.
-      +1: gregames, trawick
+      +1: gregames, trawick, jerenkrantz
 
 CURRENT RELEASE NOTES:
 
@@ -103,7 +103,7 @@ CURRENT VOTES:
 
     * APACHE_2_0_BRANCH uses a level of apr and apr-util code branched
       from the APACHE_2_0_44 tag.
-      yes:   trawick
+      yes:   trawick, jerenkrantz
 
     * APACHE_2_0_BRANCH uses a level of APR code versioned 0.9.2-dev
         or later (to 0.9.9), so long it remains binary compatible.
