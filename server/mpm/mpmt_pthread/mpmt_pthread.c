@@ -879,15 +879,15 @@ static void * worker_thread(void * dummy)
             ap_accept(&csd, sd, ptrans);
             SAFE_ACCEPT(accept_mutex_off(0));
             SAFE_ACCEPT(intra_mutex_off(0));
+            process_socket(ptrans, csd, process_slot, thread_slot);
+            requests_this_child--;
         }
         else {
             SAFE_ACCEPT(accept_mutex_off(0));
             SAFE_ACCEPT(intra_mutex_off(0));
             break;
         }
-        process_socket(ptrans, csd, process_slot, thread_slot);
         ap_clear_pool(ptrans);
-        requests_this_child--;
     }
 
     ap_destroy_pool(tpool);
