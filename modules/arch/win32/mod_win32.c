@@ -136,6 +136,44 @@ static const char *set_interpreter_source(cmd_parms *cmd, void *dv,
     return NULL;
 }
 
+/* XXX: prep_string should translate the string into unicode,
+ * such that it is compatible with whatever codepage the client
+ * will read characters 80-ff.  For the moment, use the unicode
+ * values 0080-00ff.  This isn't trivial, since the code page
+ * varies between msdos and Windows applications.
+ */ 
+static void prep_string(const char ** str, apr_pool_t *p)
+{
+    const char *ch = *str;
+    char *ch2;
+    int widen = 0;
+    if (!ch) {
+        return;
+    }
+    while (*ch) {
+        if (*(ch++) & 0x80) {
+            ++widen;
+        }
+    }
+    if (!widen) {
+        return;
+    }
+    widen += (ch - *str) + 1;
+    ch = *str;
+    *str = ch2 = apr_palloc(p, widen);
+    while (*ch) {
+        if (*ch & 0x80) {
+            /* sign extension won't hurt us here */
+            *(ch2++) = 0xC0 | ((*ch >> 6) & 0x03);
+            *(ch2++) = 0x80 | (*(ch++) & 0x3f);
+        }
+        else {
+            *(ch2++) = *(ch++);
+        }
+    }
+    *(ch2++) = '\0';
+}
+
 /* Pretty unexciting ... yank a registry value, and explode any envvars
  * that the system has configured (e.g. %SystemRoot%/someapp.exe)
  *
@@ -294,7 +332,7 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp,
 
     while (*ch) {
         /* Skip on through Deep Space */
-        if (isspace(*ch)) {
+        if (apr_isspace(*ch)) {
             ++ch; continue;
         }
         /* One Arg */
@@ -307,6 +345,7 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp,
                     break;
                 }
                 ap_unescape_url(w);
+                prep_string(&w, p);
                 arg = (const char**)apr_array_push(args);
                 *arg = ap_escape_shell_cmd(p, w);
             }
@@ -352,7 +391,7 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp,
         *arg = d;
         inquo = 0;
         while (*ch) {
-            if (isspace(*ch) && !inquo) {
+            if (apr_isspace(*ch) && !inquo) {
                 ++ch; break;
             }
             /* Get 'em backslashes */
@@ -373,7 +412,7 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp,
                 }
                 /* Flip quote state */
                 inquo = !inquo;
-                if (isspace(*ch) && !inquo) {
+                if (apr_isspace(*ch) && !inquo) {
                     ++ch; break;
                 }
                 /* All other '"'s are Munched */
@@ -399,6 +438,7 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp,
                 break;
             }
             ap_unescape_url(w);
+            prep_string(&w, p);
             arg = (const char**)apr_array_push(args);
             *arg = ap_escape_shell_cmd(p, w);
         }
@@ -415,28 +455,33 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
                                          request_rec *r, apr_pool_t *p, 
                                          cgi_exec_info_t *e_info)
 {
+    const apr_table_entry_t *elts = (apr_table_entry_t *)r->subprocess_env->a.elts;
     const char *ext = NULL;
     const char *interpreter = NULL;
     win32_dir_conf *d;
     apr_file_t *fh;
     const char *args = "";
+    int i;
 
     d = (win32_dir_conf *)ap_get_module_config(r->per_dir_config, 
                                                &win32_module);
 
     if (e_info->cmd_type) {
-        /* Handle the complete file name, we DON'T want to follow suexec, since
-         * an unrooted command is as predictable as shooting craps in Win32.
-         *
-         * Notice that unlike most mime extension parsing, we have to use the
-         * win32 parsing here, therefore the final extension is the only one
-         * we will consider
+        /* We have to consider that the client gets any QUERY_ARGS
+         * without any charset interpretation, use prep_string to
+         * create a string of the literal QUERY_ARGS bytes.
          */
         *cmd = r->filename;
         if (r->args && r->args[0] && !ap_strchr_c(r->args, '=')) {
             args = r->args;
         }
     }
+    /* Handle the complete file name, we DON'T want to follow suexec, since
+     * an unrooted command is as predictable as shooting craps in Win32.
+     * Notice that unlike most mime extension parsing, we have to use the
+     * win32 parsing here, therefore the final extension is the only one
+     * we will consider.
+     */
     ext = strrchr(apr_filename_of_pathname(*cmd), '.');
     
     /* If the file has an extension and it is not .com and not .exe and
@@ -496,7 +541,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
             }
             if (i < sizeof(buffer)) {
                 interpreter = buffer + 2;
-                while (isspace(*interpreter)) {
+                while (apr_isspace(*interpreter)) {
                     ++interpreter;
                 }
                 if (e_info->cmd_type != APR_SHELLCMD) {
@@ -532,6 +577,21 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
 
     e_info->detached = 1;
 
+    /* XXX: Must fix r->subprocess_env to follow utf-8 conventions from
+     * the client's octets so that win32 apr_proc_create is happy.
+     * The -best- way is to determine if the .exe is unicode aware
+     * (using 0x0080-0x00ff) or is linked as a command or windows
+     * application (following the OEM or Ansi code page in effect.)
+     */
+    for (i = 0; i < r->subprocess_env->a.nelts; ++i) {
+        if (elts[i].key && *elts[i].key 
+                && (strncmp(elts[i].key, "HTTP_", 5) == 0
+                 || strncmp(elts[i].key, "SERVER_", 7) == 0
+                 || strncmp(elts[i].key, "REQUEST_", 8) == 0
+                 || strcmp(elts[i].key, "QUERY_STRING") == 0)) {
+            prep_string((const char**) &elts[i].val, r->pool);
+        }
+    }
     return APR_SUCCESS;
 }
 
