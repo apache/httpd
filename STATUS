@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/09/07 14:01:26 $]
+Last modified at [$Date: 2001/09/07 20:05:06 $]
 
 Release:
 
@@ -142,12 +142,15 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       longer needed. Enabling simple debugging features like guard
       bands, double free detection, etc. would be cool but certainly
       not a hard requirement.
-        Status: Cliff, David, et al have discussed using the blocks SMS
-	        for this.  First step is to s/malloc/apr_sms_malloc/g, etc.
-		We could then have a thread-private SMS that is pointed
-		to by the conn_rec's or something so that all calls to
-		the bucket create functions can pass in that SMS.  No locks
-		required.  Should be fast... 
+
+          Status: Cliff started to implement this using SMS as has
+                  been discussed at length for months, but since
+                  SMS is not being used anywhere else in the server,
+                  several people expressed the opinion that we should
+                  get rid of it entirely, meaning that the buckets
+                  need their own memory management (free list) functions.
+                  Cliff will implement that this weekend so we at least
+                  have something to look at/compare with.
 
     * Eliminate unnecessary creation of pipes in mod_cgid
 
