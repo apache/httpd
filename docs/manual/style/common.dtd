@@ -36,7 +36,7 @@
 <!-- Generic tag entities -->
 
 <!ENTITY % inlinetags "em | strong | code | a | br | directive | module | img
-| cite | q | dfn | var | transnote">
+| cite | q | dfn | var | transnote | glossary | phonetic">
 
 <!ENTITY % blocktags "p | example | note | table | ul | ol | dl | pre
 | blockquote">
