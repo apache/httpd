@@ -230,16 +230,22 @@ static char *getpass(const char *prompt)
  * indicates success; failure means that the output buffer contains an
  * error message instead.
  */
-static int mkrecord(char *user, char *record, size_t rlen, int alg)
+static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
+		    int alg)
 {
     char *pw;
     char cpw[120];
     char salt[9];
 
-    pw = strd((char *) getpass("New password: "));
-    if (strcmp(pw, (char *) getpass("Re-type new password: "))) {
-	ap_cpystrn(record, "password verification error", (rlen - 1));
-	return ERR_PWMISMATCH;
+    if (passwd != NULL) {
+	pw = passwd;
+    }
+    else {
+	pw = strd((char *) getpass("New password: "));
+	if (strcmp(pw, (char *) getpass("Re-type new password: "))) {
+	    ap_cpystrn(record, "password verification error", (rlen - 1));
+	    return ERR_PWMISMATCH;
+	}
     }
     (void) srand((int) time((time_t *) NULL));
     to64(&salt[0], rand(), 8);
@@ -254,11 +260,14 @@ static int mkrecord(char *user, char *record, size_t rlen, int alg)
 	ap_cpystrn(cpw, (char *)crypt(pw, salt), sizeof(cpw) - 1);
 	break;
     }
+    fprintf(stderr, "Yow!\n");
     /*
      * Now that we have the smashed password, we don't need the
      * plaintext one any more.
      */
-    free(pw);
+    if (passwd == NULL) {
+	free(pw);
+    }
     /*
      * Check to see if the buffer is large enough to hold the username,
      * hash, and delimiters.
@@ -275,9 +284,13 @@ static int mkrecord(char *user, char *record, size_t rlen, int alg)
 
 static int usage(void)
 {
-    fprintf(stderr, "Usage: htpasswd [-cm] passwordfile username\n");
-    fprintf(stderr, "The -c flag creates a new file.\n");
-    fprintf(stderr, "The -m flag forces MD5 encryption of the password.\n");
+    fprintf(stderr, "Usage:\n");
+    fprintf(stderr, "\thtpasswd [-cm] passwordfile username\n");
+    fprintf(stderr, "\thtpasswd -b[cm] passwordfile username password\n\n");
+    fprintf(stderr, " -c  Create a new file.\n");
+    fprintf(stderr, " -m  Force MD5 encryption of the password.\n");
+    fprintf(stderr, " -b  Use the password from the command line rather ");
+    fprintf(stderr, "than prompting for it.\n");
     fprintf(stderr, "On Windows systems the -m flag is used by default.\n");
     return ERR_SYNTAX;
 }
@@ -365,6 +378,7 @@ int main(int argc, char *argv[])
     FILE *ftemp = NULL;
     FILE *fpw = NULL;
     char user[MAX_STRING_LEN];
+    char password[MAX_STRING_LEN];
     char record[MAX_STRING_LEN];
     char line[MAX_STRING_LEN];
     char pwfilename[MAX_STRING_LEN];
@@ -372,7 +386,9 @@ int main(int argc, char *argv[])
     int found = 0;
     int alg = ALG_CRYPT;
     int newfile = 0;
+    int noninteractive = 0;
     int i;
+    int args_left = 2;
 
     tempfilename = NULL;
     signal(SIGINT, (void (*)(int)) interrupted);
@@ -402,6 +418,10 @@ int main(int argc, char *argv[])
 	    else if (*arg == 'm') {
 		alg = ALG_APMD5;
 	    }
+	    else if (*arg == 'b') {
+		noninteractive++;
+		args_left++;
+	    }
 	    else {
 		return usage();
 	    }
@@ -409,10 +429,11 @@ int main(int argc, char *argv[])
     }
 
     /*
-     * Make sure we still have exactly two arguments left (the filename
-     * and the username).
+     * Make sure we still have exactly the right number of arguments left
+     # (the filename, the username, and possibly the password if -b was
+     # specified).
      */
-    if ((argc - i) != 2) {
+    if ((argc - i) != args_left) {
 	return usage();
     }
     if (strlen(argv[i]) > (sizeof(pwfilename) - 1)) {
@@ -425,6 +446,13 @@ int main(int argc, char *argv[])
 	return ERR_OVERFLOW;
     }
     strcpy(user, argv[i + 1]);
+    if (noninteractive) {
+	if (strlen(argv[i + 2]) > (sizeof(password) - 1)) {
+	    fprintf(stderr, "%s: password too long\n", argv[0]);
+	    return ERR_OVERFLOW;
+	}
+	strcpy(password, argv[i + 2]);
+    }
 
 #ifdef WIN32
     if (alg == ALG_CRYPT) {
@@ -481,7 +509,10 @@ int main(int argc, char *argv[])
      * Any error message text is returned in the record buffer, since
      * the mkrecord() routine doesn't have access to argv[].
      */
-    if ((i = mkrecord(user, record, sizeof(record) - 1, alg)) != 0) {
+    i = mkrecord(user, record, sizeof(record) - 1,
+		 noninteractive ? password : NULL,
+		 alg);
+    if (i != 0) {
 	fprintf(stderr, "%s: %s\n", argv[0], record);
 	exit(i);
     }
