@@ -2,7 +2,8 @@
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <manualpage metafile="ssi.xml.meta">
-<!-- English revision: 1.4 -->
+<parentdocument href="./">How-To / チュートリアル</parentdocument>
+<!-- English revision: 1.8 -->
 
 <title>Apache チュートリアル: Server Side Includes 入門</title>
 
