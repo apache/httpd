@@ -672,6 +672,7 @@ typedef int rlim_t;
 #define USE_OS2_SCOREBOARD
 #define NO_RELIABLE_PIPED_LOGS
 #define USE_OS2SEM_SERIALIZED_ACCEPT
+#define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 
 #elif defined(__MACHTEN__)
 typedef int rlim_t;
