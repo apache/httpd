@@ -2221,7 +2221,7 @@ AP_DECLARE(void) ap_send_http_header(request_rec *r)
 {
 }
 
-AP_CORE_DECLARE(int) ap_http_header_filter(ap_filter_t *f, ap_bucket_brigade *b)
+AP_CORE_DECLARE_NONSTD(int) ap_http_header_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
     int i;
     const long int zero = 0L;
@@ -2266,8 +2266,8 @@ AP_CORE_DECLARE(int) ap_http_header_filter(ap_filter_t *f, ap_bucket_brigade *b)
         apr_table_mergen(r->headers_out, "Transfer-Encoding", "chunked");
         apr_table_unset(r->headers_out, "Content-Length");
         /* Disable the buffer filter because it may be masking bugs in the 
-         * bucket brigade code 
-         * ap_add_output_filter("COALESCE", NULL, r, r->connection); */
+         * bucket brigade code  */
+        ap_add_output_filter("COALESCE", NULL, r, r->connection);
         ap_add_output_filter("CHUNK", NULL, r, r->connection);
     }
 
