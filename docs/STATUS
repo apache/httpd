@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2001/08/10 18:54:09 $
+Last modified: $Date: 2001/08/10 19:02:02 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -19,6 +19,8 @@ tutorial on how to get started with making your contribution.
       appears to have been removed from mod_include, but it is still
       present in mod_negotiation, mod_autoindex, and httpd.h.
       Should it be removed from the docs for mod_include?
+    - mod_status: updates for 2.0
+    - mod_example: updates for 2.0
 
 - man pages
     - Some of the man pages need to be updated for 2.0.  At least
@@ -73,6 +75,9 @@ tutorial on how to get started with making your contribution.
    - This will probably require more input from new-httpd, since
      not many people here follow the development process close
      enough to know what is going on.
+
+- API documentation
+    Status: Ben Laurie has written some hooks documentation
 
 - Translations
     We appear to have people working on translation into the following
