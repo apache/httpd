@@ -349,7 +349,7 @@ static void *config_perdir_merge(pool *p, void *basev, void *overridesv)
 **
 */
 
-static char *cmd_rewriteengine(cmd_parms *cmd, rewrite_perdir_conf *dconf, int flag)
+const char *cmd_rewriteengine(cmd_parms *cmd, rewrite_perdir_conf *dconf, int flag)
 {
     rewrite_server_conf *sconf;
 
@@ -362,7 +362,7 @@ static char *cmd_rewriteengine(cmd_parms *cmd, rewrite_perdir_conf *dconf, int f
     return NULL;
 }
 
-static char *cmd_rewriteoptions(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *option)
+const char *cmd_rewriteoptions(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *option)
 {
     rewrite_server_conf *sconf;
     char *err;
@@ -385,7 +385,7 @@ static char *cmd_rewriteoptions_setoption(pool *p, int *options, char *name)
     return NULL;
 }
 
-static char *cmd_rewritelog(cmd_parms *cmd, void *dconf, char *a1)
+const char *cmd_rewritelog(cmd_parms *cmd, void *dconf, char *a1)
 {
     rewrite_server_conf *sconf;
 
@@ -395,7 +395,7 @@ static char *cmd_rewritelog(cmd_parms *cmd, void *dconf, char *a1)
     return NULL;
 }
 
-static char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1)
+const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1)
 {
     rewrite_server_conf *sconf;
 
@@ -405,7 +405,7 @@ static char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1)
     return NULL;
 }
 
-static char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1, char *a2)
+const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1, char *a2)
 {
     rewrite_server_conf *sconf;
     rewritemap_entry *new;
@@ -449,7 +449,7 @@ static char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1, char *a2)
     return NULL;
 }
 
-static char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *a1)
+const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *a1)
 {
     if (cmd->path == NULL || dconf == NULL)
         return "RewriteBase: only valid in per-directory config files";
@@ -463,7 +463,7 @@ static char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *a
     return NULL;
 }
 
-static char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str)
+const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str)
 {
     rewrite_server_conf *sconf;
     rewritecond_entry *new;
@@ -597,7 +597,7 @@ static char *cmd_rewritecond_setflag(pool *p, rewritecond_entry *cfg, char *key,
     return NULL;
 }
 
-char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str)
+const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str)
 {
     rewrite_server_conf *sconf;
     rewriterule_entry *new;
@@ -2711,7 +2711,7 @@ static int is_this_our_host(request_rec *r, char *testhost)
     char **cppHNLtest;
     char *ourhostname;
     char *ourhostip;
-    char *names;
+    const char *names;
     char *name;
     int i, j;
 
