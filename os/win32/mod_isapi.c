@@ -135,6 +135,7 @@ typedef struct {
 /* Our loaded isapi module description structure */
 
 typedef struct {
+    const char *filename;
     HINSTANCE handle;
     HSE_VERSION_INFO *pVer;
     PFN_GETEXTENSIONVERSION GetExtensionVersion;
@@ -158,20 +159,19 @@ typedef struct {
     HANDLE complete;
 } isapi_cid;
 
-apr_status_t isapi_load(request_rec *r, isapi_loaded** isa);
-BOOL isapi_unload(isapi_loaded* isa, int force);
+static BOOL isapi_unload(isapi_loaded* isa, int force);
 
 static apr_status_t cleanup_isapi_server_config(void *sconfv)
 {
     isapi_server_conf *sconf = sconfv;
     size_t n;
-    isapi_loaded *isa;
+    isapi_loaded **isa;
  
     n = sconf->loaded->nelts;
-    isa = (isapi_loaded *)sconf->loaded->elts;
+    isa = (isapi_loaded **)sconf->loaded->elts;
     while(n--) {
-        if (isa->handle)
-            isapi_unload(isa, TRUE); 
+        if ((*isa)->handle)
+            isapi_unload(*isa, TRUE); 
         ++isa;
     }
     CloseHandle(sconf->lock);
@@ -180,7 +180,7 @@ static apr_status_t cleanup_isapi_server_config(void *sconfv)
 
 static void *create_isapi_server_config(apr_pool_t *p, server_rec *s)
 {
-    isapi_server_conf *sconf = apr_palloc(p, sizeof(isapi_server_conf*));
+    isapi_server_conf *sconf = apr_palloc(p, sizeof(isapi_server_conf));
     sconf->loaded = apr_make_array(p, 20, sizeof(isapi_loaded*));
     sconf->lock = CreateMutex(NULL, FALSE, NULL);
 
@@ -195,10 +195,73 @@ static void *create_isapi_server_config(apr_pool_t *p, server_rec *s)
     return sconf;
 }
 
-static apr_status_t isapi_load(request_rec *r, isapi_loaded** isa)
+static int compare_loaded(const void *av, const void *bv)
 {
+    const isapi_loaded **a = av;
+    const isapi_loaded **b = bv;
+
+    return strcmp((*a)->filename, (*b)->filename);
+}
+
+static void isapi_post_config(apr_pool_t *p, apr_pool_t *plog,
+                              apr_pool_t *ptemp, server_rec *s)
+{
+    isapi_server_conf *sconf = ap_get_module_config(s->module_config, 
+                                                    &isapi_module);
+    isapi_loaded **elts = (isapi_loaded **)sconf->loaded->elts;
+    int nelts = sconf->loaded->nelts;
+
+    /* sort the elements of the main_server, by filename */
+    qsort(elts, nelts, sizeof(isapi_loaded*), compare_loaded);
+
+    /* and make the virtualhosts share the same thing */
+    for (s = s->next; s; s = s->next) {
+	ap_set_module_config(s->module_config, &isapi_module, sconf);
+    }
+}
+
+static apr_status_t isapi_load(apr_pool_t *p, isapi_server_conf *sconf, 
+                               request_rec *r, const char *fpath, 
+                               isapi_loaded** isa)
+{
+    isapi_loaded **found = (isapi_loaded **)sconf->loaded->elts;
     char *fspec;
-    char *p;
+    char *ch;
+    int n;
+
+    for (n = 0; n < sconf->loaded->nelts; ++n) {
+        if (strcasecmp(fpath, (*found)->filename) == 0) {
+            break;
+        }
+        ++found;
+    }
+    
+    if (n < sconf->loaded->nelts) 
+    {
+        *isa = *found;
+        if ((*isa)->handle) 
+        {
+            ++(*isa)->refcount;
+            return APR_SUCCESS;
+        }
+        /* Otherwise we fall through and have to reload the resource
+         * into this existing mod_isapi cache bucket.
+         */
+    }
+    else
+    {
+        *isa = apr_pcalloc(p, sizeof(isapi_module));
+        (*isa)->filename = fpath;
+        (*isa)->pVer = apr_pcalloc(p, sizeof(HSE_VERSION_INFO));
+    
+        /* TODO: These need to become overrideable, so that we
+         * assure a given isapi can be fooled into behaving well.
+         */
+        (*isa)->timeout = INFINITE; /* microsecs */
+        (*isa)->fakeasync = TRUE;
+        (*isa)->reportversion = MAKELONG(0, 5); /* Revision 5.0 */
+    }
+        
     /* Per PR2555, the LoadLibraryEx function is very picky about slashes.
      * Debugging on NT 4 SP 6a reveals First Chance Exception within NTDLL.
      * LoadLibrary in the MS PSDK also reveals that it -explicitly- states
@@ -206,41 +269,21 @@ static apr_status_t isapi_load(request_rec *r, isapi_loaded** isa)
      *
      * Transpose '\' for '/' in the filename.
      */
-    p = fspec = apr_pstrdup(r->pool, r->filename);
-    while (*p) {
-        if (*p == '/')
-            *p = '\\';
-        ++p;
+    ch = fspec = apr_pstrdup(p, fpath);
+    while (*ch) {
+        if (*ch == '/')
+            *ch = '\\';
+        ++ch;
     }
 
-    /* TODO: Critical section
-     *
-     * Warning: cid should not be allocated from pool if we 
-     * cache the isapi process in-memory.
-     *
-     * This code could use cacheing... everything that follows
-     * should only be performed on the first isapi dll invocation, 
-     * not with every HttpExtensionProc()
-     */
-    *isa = apr_pcalloc(r->pool, sizeof(isapi_module));
-    (*isa)->pVer = apr_pcalloc(r->pool, sizeof(HSE_VERSION_INFO));
-    (*isa)->refcount = 1;
+    (*isa)->handle = LoadLibraryEx(fspec, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
 
-    /* TODO: These may need to become overrideable, so that we
-     * assure a given isapi can be fooled into behaving well.
-     */
-    (*isa)->timeout = INFINITE; /* microsecs */
-    (*isa)->fakeasync = TRUE;
-    (*isa)->reportversion = MAKELONG(0, 5); /* Revision 5.0 */
-    
-    if (!((*isa)->handle = LoadLibraryEx(r->filename, NULL,
-                                         LOAD_WITH_ALTERED_SEARCH_PATH))) 
+    if (!(*isa)->handle)
     {
         apr_status_t rv = GetLastError();
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, GetLastError(), r,
-                      "ISAPI %s failed to load", r->filename);
+                      "ISAPI %s failed to load", fpath);
         (*isa)->handle = NULL;
-        (*isa)->refcount = 0;
         return rv;
     }
 
@@ -250,10 +293,9 @@ static apr_status_t isapi_load(request_rec *r, isapi_loaded** isa)
         apr_status_t rv = GetLastError();
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
                       "ISAPI %s is missing GetExtensionVersion()",
-                      r->filename);
+                      fpath);
         FreeLibrary((*isa)->handle);
         (*isa)->handle = NULL;
-        (*isa)->refcount = 0;
         return rv;
     }
 
@@ -263,10 +305,9 @@ static apr_status_t isapi_load(request_rec *r, isapi_loaded** isa)
         apr_status_t rv = GetLastError();
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
                       "ISAPI %s is missing HttpExtensionProc()",
-                      r->filename);
+                      fpath);
         FreeLibrary((*isa)->handle);
         (*isa)->handle = NULL;
-        (*isa)->refcount = 0;
         return rv;
     }
 
@@ -280,12 +321,13 @@ static apr_status_t isapi_load(request_rec *r, isapi_loaded** isa)
         apr_status_t rv = GetLastError();
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
                       "ISAPI %s call GetExtensionVersion() failed", 
-                      r->filename);
+                      fpath);
         FreeLibrary((*isa)->handle);
         (*isa)->handle = NULL;
-        (*isa)->refcount = 0;
         return rv;
     }
+
+    ++(*isa)->refcount;
 
     return APR_SUCCESS;
 }
@@ -312,6 +354,8 @@ static int isapi_unload(isapi_loaded* isa, int force)
 
 apr_status_t isapi_handler (request_rec *r)
 {
+    isapi_server_conf *sconf = ap_get_module_config(r->server->module_config, 
+                                                    &isapi_module);
     apr_table_t *e = r->subprocess_env;
     apr_status_t rv;
     isapi_loaded *isa;
@@ -332,8 +376,10 @@ apr_status_t isapi_handler (request_rec *r)
     if (r->finfo.filetype != APR_REG)
         return HTTP_FORBIDDEN;
 
-    /* Load and cache or retrieve the cached extention */
-    if (isapi_load(r, &isa) != APR_SUCCESS)
+    /* Load the isapi extention without caching (sconf == NULL) 
+     * but note that we will recover an existing cached module.
+     */
+    if (isapi_load(r->pool, sconf, r, r->filename, &isa) != APR_SUCCESS)
         return HTTP_INTERNAL_SERVER_ERROR;
         
     /* Set up variables */
@@ -1068,15 +1114,60 @@ static const char *isapi_cmd_appendlogtoquery(cmd_parms *cmd, void *config,
     return NULL;
 }
 
+static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy, 
+                                       const char *filename)
+
+{
+    isapi_server_conf *sconf = ap_get_module_config(cmd->server->module_config, 
+                                                    &isapi_module);
+    isapi_loaded *isa, **newisa;
+    apr_finfo_t tmp;
+    apr_status_t rv;
+    char *fspec;
+    
+    fspec = ap_os_case_canonical_filename(cmd->pool, filename);
+    if (apr_stat(&tmp, fspec, cmd->temp_pool) != APR_SUCCESS) { 
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
+	    "ISAPI: unable to stat(%s), skipping", filename);
+	return NULL;
+    }
+    if (tmp.filetype != APR_REG) {
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
+	    "ISAPI: %s isn't a regular file, skipping", filename);
+	return NULL;
+    }
+
+    /* Load the extention as cached (passing sconf) */
+    rv = isapi_load(cmd->pool, sconf, NULL, fspec, &isa); 
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, cmd->server,
+                     "ISAPI: unable to cache %s, skipping", filename);
+	return NULL;
+    }
+
+    /* Add to cached list of loaded modules */
+    newisa = apr_push_array(sconf->loaded);
+    *newisa = isa;
+    
+    return NULL;
+}
+
+static void isapi_hooks(void)
+{
+    ap_hook_post_config(isapi_post_config, NULL, NULL, AP_HOOK_MIDDLE);
+}
+
 static const command_rec isapi_cmds[] = {
-{ "ISAPIReadAheadBuffer", isapi_cmd_readaheadbuffer, NULL, RSRC_CONF, TAKE1, 
-  "Maximum bytes to initially pass to the ISAPI handler" },
-{ "ISAPILogNotSupported", isapi_cmd_lognotsupported, NULL, RSRC_CONF, TAKE1, 
-  "Log requests not supported by the ISAPI server" },
-{ "ISAPIAppendLogToErrors", isapi_cmd_appendlogtoerrors, NULL, RSRC_CONF, TAKE1, 
-  "Send all Append Log requests to the error log" },
-{ "ISAPIAppendLogToQuery", isapi_cmd_appendlogtoquery, NULL, RSRC_CONF, TAKE1, 
-  "Append Log requests are concatinated to the query args" },
+AP_INIT_TAKE1("ISAPIReadAheadBuffer", isapi_cmd_readaheadbuffer, NULL, RSRC_CONF,
+  "Maximum bytes to initially pass to the ISAPI handler"),
+AP_INIT_TAKE1("ISAPILogNotSupported", isapi_cmd_lognotsupported, NULL, RSRC_CONF,
+  "Log requests not supported by the ISAPI server"),
+AP_INIT_TAKE1("ISAPIAppendLogToErrors", isapi_cmd_appendlogtoerrors, NULL, RSRC_CONF,
+  "Send all Append Log requests to the error log"),
+AP_INIT_TAKE1("ISAPIAppendLogToQuery", isapi_cmd_appendlogtoquery, NULL, RSRC_CONF,
+  "Append Log requests are concatinated to the query args"),
+AP_INIT_ITERATE("ISAPICacheFile", isapi_cmd_cachefile, NULL, RSRC_CONF,
+  "Cache the specified ISAPI extension in-process"),
 { NULL }
 };
 
@@ -1093,5 +1184,5 @@ module isapi_module = {
    NULL,                        /* merge server config */
    isapi_cmds,                  /* command apr_table_t */
    isapi_handlers,              /* handlers */
-   NULL                         /* register hooks */
+   isapi_hooks                  /* register hooks */
 };
