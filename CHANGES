@@ -1,4 +1,9 @@
-Changes with Apache 2.0.38
+Changes with Apache 2.0.37
+
+  *) Ensure that apr_brigade_write() flushes in all of the cases that
+     it should to avoid conditions in some modules that could cause
+     large amounts of data to be buffered.  [Cliff Woolley]
+
   *) Fix problem where mod_cache/mod_disk_cache was incorrectly
      stripping the content_type from cached responses.
      [Bill Stoddard]
@@ -7,8 +12,6 @@ Changes with Apache 2.0.38
      should be used in preference to httpd since it ensures that any
      appropriate environment variables have been set up.
      [Jeff Trawick]
-
-Changes with Apache 2.0.37
 
   *) Fix the combination of mod_cgid, mod_setuexec, and mod_userdir.
      PR 7810  [Colm MacCarthaigh <colmmacc@redbrick.dcu.ie>]
