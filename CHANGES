@@ -20,22 +20,12 @@ Changes with Apache 2.1.0-dev
   *) mod_usertrack: Run the fixups hook before other modules.
      PR 29755.  [Paul Querna]
 
-  *) mod_authnz_ldap: Added the directive "Requires ldap-attribute" that
-     allows the module to only authorize a user if the attribute value
-     specified matches the value of the user object. PR 31913
-     [Ryan Morgan <rmorgan pobox.com>]
-
   *) Allow mod_authnz_ldap authorization functionality to be used 
      without requiring the user to also be authenticated through 
      mod_authnz_ldap. This allows other authentication modules to 
      take advantage of LDAP authorization only [PR 28253]
      [Jari Ahonen jah progress.com, Brad Nicholes]
      
-  *) Util_ldap: Implemented the util_ldap_cache_getuserdn() API so that 
-     the ldap authorization only modules have access to the util_ldap 
-     user cache without have to require ldap authentication as well.  
-     [PR 31898] [Jari Ahonen jah progress.com, Brad Nicholes]
-
   *) Log the client IP address when an error occurs disabling nagle on a
      connection, but log at a severity of debug since this error 
      generally means that the connection was dropped before data was
@@ -455,6 +445,16 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.53
+
+  *) Util_ldap: Implemented the util_ldap_cache_getuserdn() API so that 
+     ldap authorization only modules have access to the util_ldap 
+     user cache without having to require ldap authentication as well.  
+     [PR 31898] [Jari Ahonen jah progress.com, Brad Nicholes]
+
+  *) mod_auth_ldap: Added the directive "Requires ldap-attribute" that
+     allows the module to only authorize a user if the attribute value
+     specified matches the value of the user object. PR 31913
+     [Ryan Morgan <rmorgan pobox.com>]
 
   *) SECURITY: CAN-2004-0942 (cve.mitre.org)
      Fix for memory consumption DoS in handling of MIME folded request
