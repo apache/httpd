@@ -569,6 +569,7 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
     r->uri = rr->uri;
     r->args = rr->args;
     r->filename = rr->filename;
+    r->canonical_filename = rr->canonical_filename;
     r->handler = rr->handler;
     r->content_type = rr->content_type;
     r->content_encoding = rr->content_encoding;
