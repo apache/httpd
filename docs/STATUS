@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/05/31 22:00:27 $
+Last modified: $Date: 2003/06/01 20:48:54 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -25,7 +25,7 @@ Decisions pending
       </Files>
 
      - Backport to 2.0
-       +1: wrowe, slive, nd
+       +1: wrowe, slive, nd, erik
 
 - Figure out what to do about the 2.0 FAQ
     - Copy important stuff from 1.3?
@@ -34,13 +34,17 @@ Decisions pending
       with the possibility to get nice commit mails.)
        nd: someone should try to convince me, what the heck is
            so cool with wikis
-       erik: it lowers the entry barrier and therefore users are able to
-             contribute (handy for a FAQ, see PHP site)
+       erik: it lowers the entry barrier and therefore users are able
+             to contribute without all the build hassles (see PHP site)
        nd: yes, good bad example. The PHP docs would mostly be
            better without these comments. I don't want to censor
            the entries, but also don't want to leave them without
            control. IMHO it's better to incorporate changes into the
            static docs. We need some better way of feedback, anyway.
+       erik: yes, the plan could be to have the wiki as some sort of
+             scratch_pad (clearly stated on the relevant pages) and
+             finally incorporate the useful info in it into the static
+             documentation
 
 Things That Need Fixing
 =======================
@@ -64,14 +68,6 @@ Things That Need Fixing
     - mod_rewrite: explain, when what variables are actually available
       (PR 16402)
     
-- man pages
-    - Convert from nroff to our xml format.  See list at bottom.
-    - Then if someone gets creative, they can try to find an automatic
-      way to convert back to nroff.
-      - An example: http://cyberelk.net/tim/data/xmlto/db2man/
-        This is designed for docbook, but it could be adapted.
-        I'm not sure what the license is.
-
 - MPM documentation
      - explain what the following command line options do
        (perhaps in the developer/debugging docs):
@@ -127,23 +123,18 @@ Documentation improvements
     - in progress
   - add letter links to glossary and quickreference, 
     perhaps also a term overview (sidebar)
-  - cross references between the different languages,
-    at least links from non-en docs to the originals.
-    - Javascript?
-    - post processing (s&r, XML::Parser, ...)?
-    - pre processing ([kind of] type maps
-      generated from sitemap entries like:
-      <page><variant lang="en" href="">title</variant>)?
-    - looking for other good ideas ;-)
   - remove <pre> elements. Use <br /> and <indent> elements to get
     a similar effect.
 
 * Autogeneration of PDF
-  - André is working on this, Erik volunteers to help out
+  - AndrÃ© is working on this, Erik volunteers to help out
+
+* Improving the documentation of the documentations' build system
+  itself (requirements, procedures)
 
 * Improving the "security docs"
-  - More content and better organisation.
-    - mod_dav ressources are owned by the httpd
+  - More content and better organisation
+  - mod_dav ressources are owned by the httpd
 
 * General cleaning and improving of module docs
 
