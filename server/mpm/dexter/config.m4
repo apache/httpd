@@ -6,5 +6,4 @@ if test "$MPM_NAME" = "dexter" ; then
 
     APACHE_FAST_OUTPUT(modules/mpm/$MPM_NAME/Makefile)
     APACHE_MPM_PTHREAD
-    APACHE_MPM_CHECK_SHMEM
 fi
