@@ -896,14 +896,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.47 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.48 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.47 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.48 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
@@ -985,10 +985,14 @@ static int open_postfile(const char *pfile)
     apr_finfo_t finfo;
     apr_fileperms_t mode = APR_OS_DEFAULT;
     apr_size_t length;
+    apr_status_t rv;
+    char errmsg[120];
 
-    if (apr_open(&postfd, pfile, APR_READ, mode, cntxt) != APR_SUCCESS) {
-        printf("Invalid postfile name (%s)\n", pfile);
-        return ENOENT;
+    rv = apr_open(&postfd, pfile, APR_READ, mode, cntxt);
+    if (rv != APR_SUCCESS) {
+        printf("Invalid postfile name (%s): %s\n", pfile,
+               apr_strerror(rv, errmsg, sizeof errmsg));
+        return rv;
     }
 
     apr_getfileinfo(&finfo, postfd);
@@ -996,13 +1000,19 @@ static int open_postfile(const char *pfile)
     postdata = (char *)malloc(postlen);
     if (!postdata) {
         printf("Can\'t alloc postfile buffer\n");
-        return ENOMEM;
+        return APR_ENOMEM;
     }
     length = postlen;
-    if (apr_read(postfd, postdata, &length) != APR_SUCCESS &&
-        length != postlen) {
-        printf("error reading postfilen");
-        return EIO;
+    rv = apr_read(postfd, postdata, &length);
+    if (rv != APR_SUCCESS) {
+        printf("error reading postfile: %s\n",
+               apr_strerror(rv, errmsg, sizeof errmsg));
+        return rv;
+    }
+    if (length != postlen) {
+        printf("error reading postfile: read only %d bytes",
+               length);
+        return APR_EINVAL;
     }
     return 0;
 }
