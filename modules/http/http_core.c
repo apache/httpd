@@ -3251,19 +3251,33 @@ static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b)
     char *buff;
     apr_size_t length = HUGE_STRING_LEN;
     apr_socket_t *csock = NULL;
+    apr_status_t rv;
     ap_bucket *e;
 
     /* As soon as we have pool buckets, this should become a palloc. */
     buff = apr_palloc(f->c->pool, HUGE_STRING_LEN);
     ap_bpop_socket(&csock, f->c->client);
 
-    if (apr_recv(csock, buff, &length) == APR_SUCCESS) {
-        /* This should probably be a pool bucket, but using a transient is 
-         * actually okay here too.  We know the pool we are using will always 
-         * be available as long as the connection is open.
-         */
-        e = ap_bucket_create_transient(buff, length);
-        AP_BRIGADE_INSERT_TAIL(b, e); 
+    rv = apr_recv(csock, buff, &length);
+    if (rv == APR_SUCCESS) {
+        if (length > 0) {
+            /* This should probably be a pool bucket, but using a transient is 
+             * actually okay here too.  We know the pool we are using will always 
+             * be available as long as the connection is open.
+             */
+            e = ap_bucket_create_transient(buff, length);
+            AP_BRIGADE_INSERT_TAIL(b, e);
+        }
+        else {
+            /* XXX need to trigger EOS/EOF processing;
+             * for now, return empty brigade because that is what
+             * getline() looks for */
+        }
+    }
+    else {
+        /* XXX need to trigger error processing */
+        /* leave the brigade empty for now; return error code
+         * in the future */
     }
     return length;
 } 
