@@ -382,29 +382,40 @@ In the event of a problem or error, Apache can be configured to do
 one of four things,
 
 <OL>
-<LI>behave like NCSA httpd 1.3
+<LI>output a simple hardcoded error message
 <LI>output a customized message
 <LI>redirect to a local URL to handle the problem/error
 <LI>redirect to an external URL to handle the problem/error
 </OL>
 
-<P>2-4 are configured using <CODE>ErrorDocument</CODE>, which
-is followed by the HTTP response code and a message or URL.
+<P>The first option is the default, while options 2-4 are configured 
+using the <CODE>ErrorDocument</CODE> directive, which is followed by 
+the HTTP response code and a message or URL.
 
-<P><em>Messages</em> in this context, begin with a single quote
-(<code>"</code>), which does not form part of the message itself. Apache will
-sometime offer additional information regarding the problem/error. 
+<P><em>Messages</em> in this context begin with a single quote
+(<code>"</code>), which does not form part of the message itself. 
+Apache will sometimes offer additional information regarding the 
+problem/error. 
 
-<P>URLs will begin with a slash (/) for local URLs, or will be a full
+<P>URLs can begin with a slash (/) for local URLs, or be a full
 URL which the client can resolve. Examples:
 <blockquote><code>
-ErrorDocument 500 /cgi-bin/tester<br>
+ErrorDocument 500 http://foo.example.com/cgi-bin/tester<br>
 ErrorDocument 404 /cgi-bin/bad_urls.pl<br>
-ErrorDocument 401 http://www2.foo.bar/subscription_info.html<br>
+ErrorDocument 401 /subscription_info.html<br>
 ErrorDocument 403 "Sorry can't allow you access today
 </code></blockquote>
 
-See Also: <A HREF="../custom-error.html">documentation of customizable
+<P>Note that when you specify an <CODE>ErrorDocument</CODE> that 
+points to a remote URL (ie. anything with a method such as "http" in 
+front of it) Apache will send a redirect to the client to tell it
+where to find the document, even if the document ends up being 
+on the same server..  This has several implications, the
+most important being that <STRONG>if you use an "ErrorDocument 401"
+directive then it must refer to a local document.</STRONG>  This results
+from the nature of the HTTP basic authentication scheme.
+
+<P>See Also: <A HREF="../custom-error.html">documentation of customizable
 responses.</A><p><hr>
 
 <A name="errorlog"><h2>ErrorLog directive</h2></A>
