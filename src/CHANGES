@@ -1,3 +1,13 @@
+  *) Add case_preserved_filename field to the request_rec structure.
+     On systems with case insensitive file systems (Windows, OS/2, etc.), 
+     r->filename is case canonicalized (folded to either lower or upper 
+     case, depending on the specific system) to accomodate file access
+     checking. case_preserved_filename is the same as r->filename 
+     except case is preserved. There is at least one instance where Apache 
+     needs access to the case preserved filename: Java class files published 
+     with WebDAV need to preserve filename case to make the Java compiler 
+     happy. [Bill Stoddard]
+
   *) Put in Korean and Norwegian index.html pages (2.0 and 1.3)
      which where donated by Lee Kuk Hyun and Lorant Czaran [dirkx].
 

@@ -816,6 +816,17 @@ struct request_rec {
  */
     const struct htaccess_result *htaccess;
 
+    /* On systems with case insensitive file systems (Windows, OS/2, etc.), 
+     * r->filename is case canonicalized (folded to either lower or upper 
+     * case, depending on the specific system) to accomodate file access
+     * checking. case_preserved_filename is the same as r->filename 
+     * except case is preserved. There is at least one instance where Apache 
+     * needs access to the case preserved filename: Java class files published 
+     * with WebDAV need to preserve filename case to make the Java compiler 
+     * happy.
+     */
+    char *case_preserved_filename;
+
 /* Things placed at the end of the record to avoid breaking binary
  * compatibility.  It would be nice to remember to reorder the entire
  * record to improve 64bit alignment the next time we need to break

@@ -398,6 +398,8 @@ static int directory_walk(request_rec *r)
         return res;
     }
 
+    r->case_preserved_filename = r->filename;
+
     r->filename   = ap_os_canonical_filename(r->pool, r->filename);
 
     test_filename = ap_pstrdup(r->pool, r->filename);
