@@ -68,6 +68,7 @@
 				 */
 #include "util_date.h"          /* For parseHTTPdate and BAD_DATE */
 #include <stdarg.h>
+#include "http_conf_globals.h"
 
 #define SET_BYTES_SENT(r) \
   do { if (r->sent_bodyct) \
@@ -692,6 +693,7 @@ static void check_hostalias (request_rec *r) {
   unsigned port = (*hostname) ? atoi(hostname) : 80;
   server_rec *s;
   int l;
+  server_rec_chain *src;
 
   if (port && (port != r->server->port))
     return;
@@ -703,15 +705,17 @@ static void check_hostalias (request_rec *r) {
 
   r->hostname = host;
 
-  for (s = r->server->next; s; s = s->next) {
+  for (src = vhash_table[VHASH_MAIN_BUCKET]; src; src = src->next) {
     const char *names;
     server_addr_rec *sar;
 
-    if (s->addrs == NULL) {
-	/* this server has been disabled because of DNS screwups during
-	    configuration */
-	continue;
-    }
+    s = src->server;
+
+    /* s->addrs != NULL because it's in a hash bucket */
+
+    /* Note that default_server_hostnames has ensured that each name-vhost
+     * appears only once in the VHASH_MAIN_BUCKET.
+     */
 
     if ((!strcasecmp(host, s->server_hostname)) && (port == s->port)) {
       r->server = r->connection->server = s;
@@ -754,19 +758,39 @@ static void check_hostalias (request_rec *r) {
 
 void check_serverpath (request_rec *r) {
   server_rec *s;
+  server_rec_chain *src;
 
   /* This is in conjunction with the ServerPath code in
    * http_core, so we get the right host attached to a non-
    * Host-sending request.
    */
 
-  for (s = r->server->next; s; s = s->next) {
+  for (src = vhash_table[VHASH_MAIN_BUCKET]; src; src = src->next) {
+    s = src->server;
     if (s->addrs && s->path && !strncmp(r->uri, s->path, s->pathlen) &&
 	(s->path[s->pathlen - 1] == '/' ||
 	 r->uri[s->pathlen] == '/' ||
 	 r->uri[s->pathlen] == '\0'))
       r->server = r->connection->server = s;
   }
+}
+
+
+static void check_default_server (request_rec *r)
+{
+    server_addr_rec *sar;
+    server_rec_chain *trav;
+    unsigned port;
+
+    port = ntohs (r->connection->local_addr.sin_port);
+    for (trav = vhash_table[VHASH_DEFAULT_BUCKET]; trav; trav = trav->next) {
+	sar = trav->sar;
+	if (sar->host_port == 0 || sar->host_port == port) {
+	    /* match! */
+	    r->server = r->connection->server = trav->server;
+	    return;
+	}
+    }
 }
 
 request_rec *read_request (conn_rec *conn)
@@ -815,12 +839,18 @@ request_rec *read_request (conn_rec *conn)
 
     r->status = HTTP_OK;                /* Until further notice. */
 
-    /* handle Host header here, to get virtual server */
-
-    if (r->hostname || (r->hostname = table_get(r->headers_in, "Host")))
-      check_hostalias(r);
-    else
-      check_serverpath(r);
+    /* if it's the main server so far, we have to do name-vhost style lookups */
+    if (r->server->is_virtual == 0) {
+	if (r->hostname || (r->hostname = table_get(r->headers_in, "Host")))
+	    check_hostalias(r);
+	else
+	    check_serverpath(r);
+	/* if that failed, then look for a default server */
+	if (r->server->is_virtual == 0) {
+	    check_default_server (r);
+	}
+    }
+    /* we have finished the search for a vhost */
     
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;

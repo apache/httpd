@@ -1154,6 +1154,11 @@ void init_config_globals (pool *p)
     bind_address.s_addr = htonl(INADDR_ANY);
     listeners = NULL;
     listenbacklog = DEFAULT_LISTENBACKLOG;
+
+    /* Global virtual host hash bucket pointers.  Init to null. */
+    memset (vhash_table, 0,
+	(VHASH_TABLE_SIZE + VHASH_EXTRA_SLOP) * sizeof (vhash_table[0]));
+
     strncpy(coredump_dir, server_root, sizeof(coredump_dir)-1);
     coredump_dir[sizeof(coredump_dir)-1] = '\0';
 }

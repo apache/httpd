@@ -293,6 +293,19 @@
 #define SCOREBOARD_MAINTENANCE_INTERVAL 1000000
 #endif
 
+/* This defines the size of the hash table used for hashing ip addresses
+ * of virtual hosts.  It must be a power of two.
+ */
+#ifndef VHASH_TABLE_SIZE
+#define VHASH_TABLE_SIZE 256
+#endif
+/* bucket where _default_ entries are stored */
+#define VHASH_DEFAULT_BUCKET	(VHASH_TABLE_SIZE)
+/* bucket where name-vhosts are stored */
+#define VHASH_MAIN_BUCKET	((VHASH_TABLE_SIZE)+1)
+/* number of magic buckets */
+#define VHASH_EXTRA_SLOP	2
+
 /* Number of requests to try to handle in a single process.  If <= 0,
  * the children don't die off.  That's the default here, since I'm still
  * interested in finding and stanching leaks.
@@ -498,7 +511,6 @@ struct htaccess_result
     const struct htaccess_result *next;
 };
 
-
 typedef struct conn_rec conn_rec;
 typedef struct server_rec server_rec;
 typedef struct request_rec request_rec;
@@ -677,6 +689,16 @@ struct server_addr_rec {
     char *virthost;		/* The name given in <VirtualHost> */
 };
 
+/* Meta linear list for hashes.  Each server_rec can be in possibly multiple
+ * hash chains since it can have multiple ips
+ */
+typedef struct server_rec_chain server_rec_chain;
+struct server_rec_chain {
+    server_rec_chain *next;
+    server_rec *server;
+    server_addr_rec *sar;	/* the record causing it to be in
+    				 * this chain */
+};
 
 struct server_rec {
 

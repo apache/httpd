@@ -1,5 +1,19 @@
 Changes with Apache 1.3a2
 
+  *) ip-based vhosts are stored and queried using a hashing function, which
+     has been shown to improve performance on servers with many ip-vhosts.
+     Some other changes had to be made to accomodate this:
+	- the * address for vhosts now behaves like _default_
+	- the matching process now is:
+	    - match an ip-vhost directly via hash (possibly matches main
+		server)
+	    - if that fails, just pretend it matched the main server
+	    - if so far only the main server has been matched, perform
+		name-based lookups (ServerName, ServerAlias, ServerPath)
+		*only on name-based vhosts*
+	    - if they fail, look for _default_ vhosts
+     [Dean Gaudet, Dave Hankins <dhankins@sugarat.net>]
+
   *) dbmmanage overhaul:
      - merge dbmmanage and dbmmanage.new functionality, remove dbmmanage.new 
      - tie() to AnyDBM_File which will use one of DB_File, NDBM_File or
