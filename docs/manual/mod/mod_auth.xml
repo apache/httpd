@@ -93,7 +93,7 @@ passwords for authentication</description>
     initial ID. It will prompt for the password:</p>
     <example>htpasswd -c Filename username</example>
 
-    <p>Add or modify 'username' in the password file 'Filename':</p>
+    <p>Add or modify 'username2' in the password file 'Filename':</p>
     <example>htpasswd Filename username2</example>
 
     <p>Note that searching large text files is <em>very</em>
