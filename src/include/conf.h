@@ -205,6 +205,8 @@ typedef int pid_t;
 #define JMP_BUF sigjmp_buf
 #define SIGURG SIGUSR1
 #define NEED_SELECT_H
+#define FCNTL_SERIALIZED_ACCEPT
+#define HAVE_MMAP
 
 /* Although SCO 5 defines these in <strings.h> (note the "s") they don't have
 consts. Sigh. */

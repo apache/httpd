@@ -1,3 +1,8 @@
+  *) Add HAVE_MMAP to SCO 5.
+
+  *) SCO 5 reportedly (by Jay Thorne <jay@result.com>) requires
+     FCNTL_SERIALIZED_ACCEPT. Added to conf.h. [Ben Laurie]
+
   *) Clear up some nasty (int)NULLs. [Ben Laurie]
 
   *) Clean code to warning level 3 under SCO 5. [Ben Laurie]
