@@ -221,7 +221,7 @@ static apr_status_t churn(TLSFilterCtx *pCtx,apr_read_type_e eReadType,apr_size_
 
 	if(len == 0) {
 	    /* Lazy frickin browsers just reset instead of shutting down. */
-	    if(ret == APR_EOF || ret == APR_ECONNRESET) {
+	    if(ret == APR_EOF || APR_STATUS_IS_ECONNRESET(ret))
 		if(APR_BRIGADE_EMPTY(pCtx->pbbPendingInput))
 		    return APR_EOF;
 		else
