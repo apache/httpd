@@ -353,7 +353,7 @@ static void reclaim_child_processes(int terminate)
 	    case 6:     /* 344ms */
 	    case 7:     /* 1.4sec */
 		/* ok, now it's being annoying */
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, errno,
 			    server_conf,
 		   "child process %d still did not exit, sending a SIGTERM",
 			    pid);
@@ -361,7 +361,8 @@ static void reclaim_child_processes(int terminate)
 		break;
 	    case 8:     /*  6 sec */
 		/* die child scum */
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, errno,
+                             server_conf,
 		   "child process %d still did not exit, sending a SIGKILL",
 			    pid);
 		kill(pid, SIGKILL);
@@ -372,7 +373,8 @@ static void reclaim_child_processes(int terminate)
 		 * exited, we will likely fail to bind to the port
 		 * after the restart.
 		 */
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, errno,
+                             server_conf,
 			    "could not make child process %d exit, "
 			    "attempting to continue anyway", pid);
 		break;
@@ -544,46 +546,46 @@ static void set_signals(void)
 	sa.sa_flags = SA_RESETHAND;
 #endif
 	if (sigaction(SIGSEGV, &sa, NULL) < 0)
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGSEGV)");
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGSEGV)");
 #ifdef SIGBUS
 	if (sigaction(SIGBUS, &sa, NULL) < 0)
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGBUS)");
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGBUS)");
 #endif
 #ifdef SIGABORT
 	if (sigaction(SIGABORT, &sa, NULL) < 0)
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGABORT)");
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGABORT)");
 #endif
 #ifdef SIGABRT
 	if (sigaction(SIGABRT, &sa, NULL) < 0)
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGABRT)");
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGABRT)");
 #endif
 #ifdef SIGILL
 	if (sigaction(SIGILL, &sa, NULL) < 0)
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGILL)");
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGILL)");
 #endif
 	sa.sa_flags = 0;
     }
     sa.sa_handler = sig_term;
     if (sigaction(SIGTERM, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGTERM)");
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGTERM)");
 #ifdef SIGINT
     if (sigaction(SIGINT, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGINT)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGINT)");
 #endif
 #ifdef SIGXCPU
     sa.sa_handler = SIG_DFL;
     if (sigaction(SIGXCPU, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGXCPU)");
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGXCPU)");
 #endif
 #ifdef SIGXFSZ
     sa.sa_handler = SIG_DFL;
     if (sigaction(SIGXFSZ, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGXFSZ)");
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGXFSZ)");
 #endif
 #ifdef SIGPIPE
     sa.sa_handler = SIG_IGN;
     if (sigaction(SIGPIPE, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGPIPE)");
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGPIPE)");
 #endif
 
     /* we want to ignore HUPs and WINCH while we're busy processing one */
@@ -591,9 +593,9 @@ static void set_signals(void)
     sigaddset(&sa.sa_mask, SIGWINCH);
     sa.sa_handler = restart;
     if (sigaction(SIGHUP, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGHUP)");
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGHUP)");
     if (sigaction(SIGWINCH, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGWINCH)");
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGWINCH)");
 #else
     if (!one_process) {
 	signal(SIGSEGV, sig_coredump);
@@ -638,7 +640,7 @@ static void process_child_status(int pid, ap_wait_t status)
 	*/
     if ((WIFEXITED(status)) &&
 	WEXITSTATUS(status) == APEXIT_CHILDFATAL) {
-	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, errno, server_conf,
 			"Child %d returned a Fatal error... \n"
 			"Apache is exiting!",
 			pid);
@@ -655,7 +657,7 @@ static void process_child_status(int pid, ap_wait_t status)
 #ifdef SYS_SIGLIST
 #ifdef WCOREDUMP
 	    if (WCOREDUMP(status)) {
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno,
 			     server_conf,
 			     "child pid %d exit signal %s (%d), "
 			     "possible coredump in %s",
@@ -665,7 +667,7 @@ static void process_child_status(int pid, ap_wait_t status)
 	    }
 	    else {
 #endif
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno,
 			     server_conf,
 			     "child pid %d exit signal %s (%d)", pid,
 			     SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status));
@@ -673,7 +675,7 @@ static void process_child_status(int pid, ap_wait_t status)
 	    }
 #endif
 #else
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno,
 			 server_conf,
 			 "child pid %d exit signal %d",
 			 pid, WTERMSIG(status));
@@ -716,7 +718,7 @@ static void sock_disable_nagle(int s) /* ZZZ abstract */
 
     if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char *) &just_say_no,
 		   sizeof(int)) < 0) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf,
 		    "setsockopt: (TCP_NODELAY)");
     }
 }
@@ -745,7 +747,7 @@ static void process_socket(ap_context_t *p, struct sockaddr *sa_client, int csd,
     ap_iol *iol;
 
     if (getsockname(csd, &sa_server, &len) < 0) { 
-	ap_log_error(APLOG_MARK, APLOG_ERR, server_conf, "getsockname");
+	ap_log_error(APLOG_MARK, APLOG_ERR, errno, server_conf, "getsockname");
 	close(csd);
 	return;
     }
@@ -755,13 +757,13 @@ static void process_socket(ap_context_t *p, struct sockaddr *sa_client, int csd,
     iol = unix_attach_socket(csd);
     if (iol == NULL) {
         if (errno == EBADF) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, errno, NULL,
                 "filedescriptor (%u) larger than FD_SETSIZE (%u) "
                 "found, you probably need to rebuild Apache with a "
                 "larger FD_SETSIZE", csd, FD_SETSIZE);
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, NULL,
                 "error attaching to socket");
         }
         close(csd);
@@ -790,7 +792,7 @@ static int start_thread(void)
     if (worker_thread_count < max_threads) {
         if (pthread_create(&thread, &worker_thread_attr, worker_thread,
 	  &worker_thread_free_ids[worker_thread_count])) {
-            ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, server_conf,
                          "pthread_create: unable to create worker thread");
             /* In case system resources are maxxed out, we don't want
                Apache running away with the CPU trying to fork over and
@@ -808,7 +810,7 @@ static int start_thread(void)
         static int reported = 0;
         
         if (!reported) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, errno, server_conf,
                          "server reached MaxThreadsPerChild setting, consider raising the"
                          " MaxThreadsPerChild or NumServers settings");
             reported = 1;
@@ -896,7 +898,7 @@ static void *worker_thread(void *arg)
 
                 /* poll() will only return errors in catastrophic
                  * circumstances. Let's try exiting gracefully, for now. */
-                ap_log_error(APLOG_MARK, APLOG_ERR, (const server_rec *)
+                ap_log_error(APLOG_MARK, APLOG_ERR, errno, (const server_rec *)
                              ap_get_server_conf(), "poll: (listen)");
                 workers_may_exit = 1;
             }
@@ -1001,7 +1003,8 @@ static void child_main(int child_num_arg)
     sigfillset(&sig_mask);
 
     if (pthread_sigmask(SIG_SETMASK, &sig_mask, NULL) != 0) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf, "pthread_sigmask");
+        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, server_conf,
+                     "pthread_sigmask");
     }
 
     requests_this_child = max_requests_per_child;
@@ -1054,7 +1057,7 @@ static void child_main(int child_num_arg)
             just_die(signal_received);
             break;
         default:
-            ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, server_conf,
             "received impossible signal: %d", signal_received);
             just_die(SIGTERM);
     }
@@ -1076,7 +1079,8 @@ static int make_child(server_rec *s, int slot, time_t now) /* ZZZ */
     }
 
     if ((pid = fork()) == -1) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, s, "fork: Unable to fork new process");
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, s,
+                     "fork: Unable to fork new process");
 	/* In case system resources are maxxed out, we don't want
 	   Apache running away with the CPU trying to fork over and
 	   over and over again. */
@@ -1094,8 +1098,8 @@ static int make_child(server_rec *s, int slot, time_t now) /* ZZZ */
         int status = bindprocessor(BINDPROCESS, (int)getpid(),
 			       PROCESSOR_CLASS_ANY);
 	if (status != OK)
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, server_conf,
-			 "processor unbind failed %d", status);
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, errno, 
+                         server_conf, "processor unbind failed %d", status);
 #endif
 
         RAISE_SIGSTOP(MAKE_CHILD);
@@ -1242,7 +1246,8 @@ static void server_main_loop(int remaining_children_to_start)
 		 * child table.  Somehow we don't know about this
 		 * child.
 		 */
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, server_conf,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, errno, 
+                             server_conf,
 			    "long lost child came home! (pid %d)", pid);
 	    }
 	    /* Don't perform idle maintenance when a child dies,
@@ -1286,7 +1291,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     pconf = _pconf;
     server_conf = s;
     if (pipe(pipe_of_death) == -1) {
-        ap_log_error(APLOG_MARK, APLOG_ERR,
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno,
                      (const server_rec*) server_conf,
                      "pipe: (pipe_of_death)");
         exit(1);
@@ -1294,7 +1299,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     ap_register_cleanup(pconf, &pipe_of_death[0], cleanup_fd, cleanup_fd);
     ap_register_cleanup(pconf, &pipe_of_death[1], cleanup_fd, cleanup_fd);
     if (fcntl(pipe_of_death[0], F_SETFD, O_NONBLOCK) == -1) {
-        ap_log_error(APLOG_MARK, APLOG_ERR,
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno,
                      (const server_rec*) server_conf,
                      "fcntl: O_NONBLOCKing (pipe_of_death)");
         exit(1);
@@ -1302,7 +1307,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     server_conf = s;
     if ((num_listenfds = setup_listeners(server_conf)) < 1) {
         /* XXX: hey, what's the right way for the mpm to indicate a fatal error? */
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, errno, s,
             "no listening sockets available, shutting down");
         return 1;
     }
@@ -1339,10 +1344,10 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 	hold_off_on_exponential_spawning = 10;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno, server_conf,
 		"%s configured -- resuming normal operations",
 		ap_get_server_version());
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, errno, server_conf,
 		"Server built: %s", ap_get_server_built());
     restart_pending = shutdown_pending = 0;
 
@@ -1353,7 +1358,8 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
          * Kill child processes, tell them to call child_exit, etc...
          */
         if (ap_killpg(getpgrp(), SIGTERM) < 0) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "killpg SIGTERM");
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf,
+                         "killpg SIGTERM");
         }
         reclaim_child_processes(1);		/* Start with SIGTERM */
     
@@ -1362,14 +1368,14 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
             const char *pidfile = NULL;
             pidfile = ap_server_root_relative (pconf, ap_pid_fname);
             if ( pidfile != NULL && unlink(pidfile) == 0)
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, errno,
             		 server_conf,
             		 "removed PID file %s (pid=%ld)",
             		 pidfile, (long)getpid());
         }
     
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
-            "caught SIGTERM, shutting down");
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno,
+                     server_conf, "caught SIGTERM, shutting down");
     
 	return 1;
     }
@@ -1385,7 +1391,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     if (is_graceful) {
         char char_of_death = '!';
 
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno, server_conf,
 		    "SIGWINCH received.  Doing graceful restart");
 
 	/* This is mostly for debugging... so that we know what is still
@@ -1401,7 +1407,8 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
         for (i = 0; i < num_daemons;) {
             if (write(pipe_of_death[1], &char_of_death, 1) == -1) {
                 if (errno == EINTR) continue;
-                ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "write pipe_of_death");
+                ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf,
+                             "write pipe_of_death");
             }
             i++;
         }
@@ -1412,11 +1419,12 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
        * pthreads are stealing signals from us left and right.
        */
 	if (ap_killpg(getpgrp(), SIGTERM) < 0) {
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "killpg SIGTERM");
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf,
+                         "killpg SIGTERM");
 	}
         reclaim_child_processes(1);		/* Start with SIGTERM */
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
-		    "SIGHUP received.  Attempting to restart");
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno,
+                     server_conf, "SIGHUP received.  Attempting to restart");
     }
     return 0;
 }

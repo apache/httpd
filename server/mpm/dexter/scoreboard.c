@@ -343,18 +343,19 @@ static void setup_shared_mem(ap_context_t *p)
     if ((shmid = shmget(shmkey, SCOREBOARD_SIZE, IPC_CREAT | SHM_R | SHM_W)) == -1) {
 #ifdef LINUX
 	if (errno == ENOSYS) {
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, server_conf,
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, errno,
+                         server_conf,
 			 "Your kernel was built without CONFIG_SYSVIPC\n"
 			 "%s: Please consult the Apache FAQ for details",
 			 ap_server_argv0);
 	}
 #endif
-	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_EMERG, errno, server_conf,
 		    "could not call shmget");
 	exit(APEXIT_INIT);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, errno, server_conf,
 		"created shared memory segment #%d", shmid);
 
 #ifdef MOVEBREAK
@@ -368,28 +369,29 @@ static void setup_shared_mem(ap_context_t *p)
      * attach the segment and then move break back down. Ugly
      */
     if ((obrk = sbrk(MOVEBREAK)) == (char *) -1) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_ERR, errno, server_conf,
 	    "sbrk() could not move break");
     }
 #endif
 
 #define BADSHMAT	((scoreboard *)(-1))
     if ((ap_scoreboard_image = (scoreboard *) shmat(shmid, 0, 0)) == BADSHMAT) {
-	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf, "shmat error");
+	ap_log_error(APLOG_MARK, APLOG_EMERG, errno, server_conf,
+                     "shmat error");
 	/*
 	 * We exit below, after we try to remove the segment
 	 */
     }
     else {			/* only worry about permissions if we attached the segment */
 	if (shmctl(shmid, IPC_STAT, &shmbuf) != 0) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+	    ap_log_error(APLOG_MARK, APLOG_ERR, errno, server_conf,
 		"shmctl() could not stat segment #%d", shmid);
 	}
 	else {
 	    shmbuf.shm_perm.uid = unixd_config.user_id;
 	    shmbuf.shm_perm.gid = unixd_config.group_id;
 	    if (shmctl(shmid, IPC_SET, &shmbuf) != 0) {
-		ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+		ap_log_error(APLOG_MARK, APLOG_ERR, errno, server_conf,
 		    "shmctl() could not set segment #%d", shmid);
 	    }
 	}
@@ -399,7 +401,7 @@ static void setup_shared_mem(ap_context_t *p)
      * (small) tables.
      */
     if (shmctl(shmid, IPC_RMID, NULL) != 0) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf,
 		"shmctl: IPC_RMID: could not remove shared memory segment #%d",
 		shmid);
     }
@@ -410,7 +412,7 @@ static void setup_shared_mem(ap_context_t *p)
     if (obrk == (char *) -1)
 	return;			/* nothing else to do */
     if (sbrk(-(MOVEBREAK)) == (char *) -1) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_ERR, errno, server_conf,
 	    "sbrk() could not move break back");
     }
 #endif
