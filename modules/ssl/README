@@ -185,6 +185,7 @@
     transactions, and more often if possible."
  o ssl_var_lookup could be rewritten to be MUCH faster
  o CRL callback should be pluggable
+ o session cache store should be pluggable
  o init functions should return status code rather than ssl_die()
  o ssl_engine_pphrase.c needs to be reworked so it is generic enough
    to also decrypt proxy keys
