@@ -37,6 +37,10 @@ Available Patches:
       <199802121503.QAA25633@en1.engelschall.com>
       Status (for 1.3b6-dev): Ralf +1
 
+    * Doug's [PATCH] unbind cpu option for aix
+      <34EA1E72.E79AA3D2@telebusiness.co.nz>
+      Status: Doug +1
+
 Concepts:
 
    * Jim's [CONCEPT] platform.h header file. Instead of lumping
