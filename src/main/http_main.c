@@ -164,6 +164,7 @@ int daemons_max_free;
 int daemons_limit;
 time_t restart_time;
 int suexec_enabled = 0;
+int listenbacklog;
 
 char server_root[MAX_STRING_LEN];
 char server_confname[MAX_STRING_LEN];
@@ -1882,7 +1883,7 @@ static int make_sock(pool *pconf, const struct sockaddr_in *server)
 #ifdef MPE
     if (ntohs(server->sin_port) < 1024) GETUSERMODE();
 #endif
-    listen(s, 512);
+    listen(s, listenbacklog);
     return s;
 }
 

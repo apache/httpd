@@ -1044,6 +1044,7 @@ void init_config_globals (pool *p)
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     bind_address.s_addr = htonl(INADDR_ANY);
     listeners = NULL;
+    listenbacklog = DEFAULT_LISTENBACKLOG;
 }
 
 server_rec *init_server_config(pool *p)

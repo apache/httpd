@@ -71,6 +71,7 @@ extern int daemons_min_free;
 extern int daemons_max_free;
 extern int daemons_limit;
 extern int suexec_enabled;
+extern int listenbacklog;
 
 extern char *pid_fname;
 extern char *scoreboard_fname;

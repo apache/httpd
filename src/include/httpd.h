@@ -241,6 +241,17 @@
 #define DEFAULT_THREADS_PER_CHILD 50
 #define DEFAULT_EXCESS_REQUESTS_PER_CHILD 0
 
+/* The maximum length of the queue of pending connections, as defined
+ * by listen(2).  Under some systems, it should be increased if you
+ * are experiencing a heavy TCP SYN flood attack.
+ *
+ * It defaults to 511 instead of 512 because some systems store it 
+ * as an 8-bit datatype; 512 truncated to 8-bits is 0, while 511 is 
+ * 255 when truncated.
+ */
+
+#define DEFAULT_LISTENBACKLOG 511
+
 /* If you have altered Apache and wish to change the SERVER_VERSION
  * identifier below, please keep to the HTTP specification.  This states that
  * the identification string should consist of product tokens with an optional

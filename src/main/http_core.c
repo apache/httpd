@@ -1175,6 +1175,17 @@ const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
     return NULL;
 }
 
+const char *set_listenbacklog (cmd_parms *cmd, void *dummy, char *arg) {
+    int b;
+
+    if (cmd->server->is_virtual) 
+        return "ListenBacklog not allowed in <VirtualHost>";
+    b = atoi (arg);
+    if (b < 1) return "ListenBacklog must be > 0";
+    listenbacklog = b;
+    return NULL;
+}
+
 /* Note --- ErrorDocument will now work from .htaccess files.  
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
@@ -1292,6 +1303,7 @@ command_rec core_cmds[] = {
 { "ClearModuleList", clear_module_list_command, NULL, RSRC_CONF, NO_ARGS, NULL },
 { "ThreadsPerChild", set_threads, NULL, RSRC_CONF, TAKE1, "Number of threads a child creates" },
 { "ExcessRequestsPerChild", set_excess_requests, NULL, RSRC_CONF, TAKE1, "Maximum number of requests a particular child serves after it is ready to die." },
+{ "ListenBacklog", set_listenbacklog, NULL, RSRC_CONF, TAKE1, "maximum length of the queue of pending connections, as used by listen(2)" },
 { NULL },
 };
 
