@@ -307,9 +307,8 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
     ap_listeners = new;
 }
 
-static int ap_listen_open(process_rec *process, apr_port_t port)
+static int ap_listen_open(apr_pool_t *pool, apr_port_t port)
 {
-    apr_pool_t *pconf = process->pconf;
     ap_listen_rec *lr;
     ap_listen_rec *next;
     int num_open;
@@ -324,7 +323,7 @@ static int ap_listen_open(process_rec *process, apr_port_t port)
             ++num_open;
         }
         else {
-            if (make_sock(pconf, lr) == APR_SUCCESS) {
+            if (make_sock(pool, lr) == APR_SUCCESS) {
                 ++num_open;
                 lr->active = 1;
             }
@@ -343,7 +342,7 @@ static int ap_listen_open(process_rec *process, apr_port_t port)
     }
     old_listeners = NULL;
 
-    apr_pool_cleanup_register(pconf, NULL, apr_pool_cleanup_null,
+    apr_pool_cleanup_register(pool, NULL, apr_pool_cleanup_null,
                               close_listeners_on_exec);
 
     return num_open ? 0 : -1;
@@ -354,7 +353,7 @@ int ap_setup_listeners(server_rec *s)
     ap_listen_rec *lr;
     int num_listeners = 0;
 
-    if (ap_listen_open(s->process, s->port)) {
+    if (ap_listen_open(s->process->pool, s->port)) {
        return 0;
     }
 
