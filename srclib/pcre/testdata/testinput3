@@ -1689,4 +1689,36 @@
     <a href=\"abcd xyz pqr\" cats
     <a href       =       \'abcd xyz pqr\' cats
 
-/ End of test input /       
+/((Z)+|A)*/
+    ZABCDEFG
+
+/(Z()|A)*/
+    ZABCDEFG
+
+/(Z(())|A)*/
+    ZABCDEFG
+
+/((?>Z)+|A)*/
+    ZABCDEFG
+
+/((?>)+|A)*/
+    ZABCDEFG
+
+/a*/g
+    abbab
+
+/^[a-\d]/
+    abcde
+    -things
+    0digit
+    *** Failers
+    bcdef    
+
+/^[\d-a]/
+    abcde
+    -things
+    0digit
+    *** Failers
+    bcdef    
+
+/ End of testinput3 /       
