@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.13 (outdated: 1.14) -->
+<!-- English Revision: 1.14 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -182,7 +182,7 @@ href="http://www.pcre.org/">Perl 호환 정규표현식</a>이다.
 
     <p>첫번째 형태는 값으로 "1"을 사용한다. 두번째 형태는 변수가
     이미 정의된 경우 변수를 제거하고, 세번째는 변수의 값으로
-    <code><em>value</em></code>를 설정한다. 아파치 2.1부터
+    <code><em>value</em></code>를 설정한다. 아파치 2.0.51부터
     <var>value</var>에 있는 <code>$1</code>..<code>$9</code>를
     <var>regex</var>의 괄호친 하위표현식으로 대체한다.</p>
 

@@ -22,7 +22,7 @@
 <modulesynopsis metafile="mod_cache.xml.meta">
 
 <name>mod_cache</name>
-<description>Content cache keyed to URIs.</description>
+<description>URI를 키로 사용하여 내용을 캐쉬한다.</description>
 <status>Experimental</status>
 <sourcefile>mod_cache.c</sourcefile>
 <identifier>cache_module</identifier>
