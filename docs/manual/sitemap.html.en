@@ -98,7 +98,6 @@
 <li><a href="howto/ssi.html">Introduction to Server Side Includes</a></li>
 <li><a href="howto/htaccess.html">.htaccess files</a></li>
 <li><a href="howto/public_html.html">Per-user web directories</a></li>
-<li><a href="misc/tutorials.html">Apache Tutorials</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="platform" id="platform">Platform-specific Notes</a></h2>
@@ -130,10 +129,6 @@ Server on HPUX</a></li>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="misc" id="misc">Apache Miscellaneous Documentation</a></h2>
 <ul><li class="separate"><a href="misc/">Overview</a></li>
-<li><a href="misc/custom_errordocs.html">International Customized Server Error Messages</a></li>
-<li><a href="misc/fin_wait_2.html">Connections in FIN_WAIT_2 and Apache</a></li>
-<li><a href="misc/known_client_problems.html">Known Client Problems</a></li>
-<li><a href="misc/descriptors.html">Descriptors and Apache</a></li>
 <li><a href="cgi_path.html">PATH_INFO Changes in the CGI Environment</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

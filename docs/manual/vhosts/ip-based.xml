@@ -43,9 +43,8 @@
       module="mpm_common">Listen</directive>, and <directive
       module="core">ServerRoot</directive> settings.</li>
 
-      <li>You can afford the memory and <a
-      href="../misc/descriptors.html">file descriptor
-      requirements</a> of listening to every IP alias on the
+      <li>You can afford the memory and file descriptor
+      requirements of listening to every IP alias on the
       machine. It's only possible to <directive
       module="mpm_common">Listen</directive> to the "wildcard"
       address, or to specific addresses. So if you have a need to

@@ -22,42 +22,6 @@
     to the Apache web server development project.</p>
 
     <dl>
-      <dt><a href="custom_errordocs.html">How to use XSSI and
-      Negotiation for custom ErrorDocuments</a></dt>
-
-      <dd>
-        <p>Describes a solution which uses XSSI and negotiation to
-        custom-tailor the Apache ErrorDocuments to taste, adding the
-        advantage of returning internationalized versions of the
-        error messages depending on the client's language
-        preferences.</p>
-      </dd>
-
-      <dt><a href="descriptors.html">File Descriptor use in
-      Apache</a></dt>
-
-      <dd>
-        <p>Describes how Apache uses file descriptors and talks
-        about various limits imposed on the number of descriptors
-        available by various operating systems.</p>
-      </dd>
-
-      <dt><a href="fin_wait_2.html"><code>FIN_WAIT_2</code></a></dt>
-
-      <dd>
-        <p>A description of the causes of Apache processes going
-        into the <code>FIN_WAIT_2</code> state, and what you can do
-        about it.</p>
-      </dd>
-
-      <dt><a href="known_client_problems.html">Known Client
-      Problems</a></dt>
-
-      <dd>
-        <p>A list of problems in HTTP clients which can be mitigated
-        by Apache.</p>
-      </dd>
-
       <dt><a href="perf-tuning.html">Performance Notes - Apache
       Tuning</a></dt>
 

@@ -59,12 +59,6 @@
       </li>
     </ul>
 
-    <p>Please see the <a
-    href="../misc/descriptors.html">Descriptors and Apache</a>
-    document containing further details about file descriptor
-    problems and how they can be solved on your operating
-    system.</p>
-
 </summary>
 
 <section id="splitlogs"><title>Splitting up your log files</title>

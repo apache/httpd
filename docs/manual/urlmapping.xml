@@ -272,9 +272,8 @@ breaking out of the proxy server and requesting directly from
     appearance of this page is controlled with the
     <directive module="core">ErrorDocument</directive> directive
     and can be customized in a flexible manner as discussed in the
-    <a href="custom-error.html">Custom error responses</a> and <a
-    href="misc/custom_errordocs.html">International Server Error
-    Responses</a> documents.</p>
+    <a href="custom-error.html">Custom error responses</a>
+    document.</p>
 </section>
 
 </manualpage>

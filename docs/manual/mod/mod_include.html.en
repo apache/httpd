@@ -56,8 +56,6 @@
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></li>
-<li><a href="../misc/custom_errordocs.html">International Customized
-Server Error Messages</a></li>
 <li><a href="../filter.html">Filters</a></li>
 <li><a href="../howto/ssi.html">SSI Tutorial</a></li>
 </ul></div>

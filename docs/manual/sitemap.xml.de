@@ -77,7 +77,6 @@
 <page href="howto/ssi.html">Einf&#252;hrung in Server Side Includes</page>
 <page href="howto/htaccess.html">.htaccess-Dateien</page>
 <page href="howto/public_html.html">Web-Verzeichnisse f&#252;r Benutzer</page>
-<page href="misc/tutorials.html">Apache-Tutorials</page>
 </category>
 
 <category id="platform">
@@ -112,10 +111,6 @@ HPUX betreiben</page>
 <category id="misc">
 <title>Weitere Apache-Dokumentationen</title>
 <page separate="yes" href="misc/">&#220;bersicht</page>
-<page href="misc/custom_errordocs.html">International angepa&#223;te Server-Fehlermeldungen</page>
-<page href="misc/fin_wait_2.html">Verbindungen im FIN_WAIT_2 und Apache</page>
-<page href="misc/known_client_problems.html">Bekannte Client-Probleme</page>
-<page href="misc/descriptors.html">Deskriptoren und Apache</page>
 <page href="cgi_path.html">PATH_INFO-&#196;nderungen in der CGI-Umgebung</page>
 </category>
 
