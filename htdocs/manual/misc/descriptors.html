@@ -26,7 +26,7 @@ network socket that it listens on, plus a handful of others.  Libraries
 that Apache uses may also require descriptors.  Normal programs don't
 open up many descriptors at all, and so there are some latent problems
 that you may experience should you start running Apache with many
-descriptors (i.e. with many virtual hosts).
+descriptors (<EM>i.e.</EM>, with many virtual hosts).
 
 <P>The operating system enforces a limit on the number of descriptors
 that a program can have open at a time.  There are typically three limits

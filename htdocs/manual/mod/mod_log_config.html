@@ -130,7 +130,7 @@ by the values as follows:
 %...v:          The canonical ServerName of the server serving the request.
 </PRE>
 
-The `...' can be nothing at all (e.g. <CODE>"%h %u %r %s %b"</CODE>), or it can
+The `...' can be nothing at all (<EM>e.g.</EM>, <CODE>"%h %u %r %s %b"</CODE>), or it can
 indicate conditions for inclusion of the item (which will cause it
 to be replaced with `-' if the condition is not met).  Note that
 there is no escaping performed on the strings from %r, %...i and
@@ -151,7 +151,7 @@ requests which did <STRONG>not</STRONG> return some sort of normal status.
 
 Note that the common log format is defined by the string <CODE>"%h %l
 %u %t \"%r\" %s %b"</CODE>, which can be used as the basis for
-extending for format if desired (e.g. to add extra fields at the end).
+extending for format if desired (<EM>e.g.</EM>, to add extra fields at the end).
 NCSA's extended/combined log format would be <CODE>"%h %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\""</CODE>.
 
 <P>

@@ -467,7 +467,7 @@ The arguments to the NoProxy directive are one of the following type list:
     <DD>A <EM>Domain</EM> is a partially qualified DNS domain name, preceded
         by a period.
         It represents a list of hosts which logically belong to the same DNS
-        domain or zone (i.e. the suffixes of the hostnames are all ending in 
+        domain or zone (<EM>i.e.</EM>, the suffixes of the hostnames are all ending in 
         <EM>Domain</EM>).<BR>
 		Examples: <SAMP>.com</SAMP>   <SAMP>.apache.org.</SAMP><BR>
         To distinguish <EM>Domain</EM>s from <A HREF="#hostname"><EM>Hostname</EM></A>s (both
@@ -722,7 +722,7 @@ Apache 1.1 and later.<P>
 
 Sets the name of the directory to contain cache files; this must be
 writable by the httpd server.
-(see the <A href="core.html#user"><CODE>User</CODE></a> directive</a>).<BR>
+(see the <A HREF="core.html#user"><CODE>User</CODE></A> directive</A>).<BR>
 Setting <CODE>CacheRoot</CODE> enables proxy cacheing; without defining
 a <CODE>CacheRoot</CODE>, proxy functionality will be available
 if <CODE>ProxyRequests</CODE> are set to <CODE>On</CODE>, but no
