@@ -16,8 +16,8 @@ AND don't forget to run expand on the file after it has been indent'd.
    fnmatch.h
    http_bprintf.c
    http_conf_globals.h
-   http_config.c
-   http_config.h
+   http_config.c		RESERVED by Dean
+   http_config.h		RESERVED by Dean
    http_core.c			RESERVED by Randy
    http_core.h			RESERVED by Randy
    http_log.c			RESERVED by Randy
