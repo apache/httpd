@@ -794,7 +794,8 @@ please avoid that.
  HREF="directive-dict.html#Compatibility"
  REL="Help"
 ><STRONG>Compatibility:</STRONG></A> The directory and .htaccess contexts
-are only available in Apache 1.1 and later.<P>
+are only available in Apache 1.1 and later. The quoting syntax prior to
+Apache 2.0 was different.<P>
 
 In the event of a problem or error, Apache can be configured to do
 one of four things,
@@ -808,30 +809,30 @@ one of four things,
 
 <P>The first option is the default, while options 2-4 are configured
 using the <CODE>ErrorDocument</CODE> directive, which is followed by
-the HTTP response code and a message or URL.
-
-<P><EM>Messages</EM> in this context begin with a single quote
-(<CODE>"</CODE>), which does not form part of the message itself.
-Apache will sometimes offer additional information regarding the
-problem/error.
+the HTTP response code and a URL or a message. Apache will sometimes
+offer additional information regarding the problem/error.
 
 <P>URLs can begin with a slash (/) for local URLs, or be a full
-URL which the client can resolve. Examples:
+URL which the client can resolve. Alternatively, a message can be
+provided to be displayed by the browser. Examples:
 <BLOCKQUOTE><CODE>
 ErrorDocument 500 http://foo.example.com/cgi-bin/tester<BR>
 ErrorDocument 404 /cgi-bin/bad_urls.pl<BR>
 ErrorDocument 401 /subscription_info.html<BR>
-ErrorDocument 403 "Sorry can't allow you access today
+ErrorDocument 403 &quot;Sorry can't allow you access today&quot;
 </CODE></BLOCKQUOTE>
 
 <P>Note that when you specify an <CODE>ErrorDocument</CODE> that
 points to a remote URL (ie. anything with a method such as "http" in
 front of it) Apache will send a redirect to the client to tell it
-where to find the document, even if the document ends up being
-on the same server..  This has several implications, the
-most important being that <STRONG>if you use an "ErrorDocument 401"
-directive then it must refer to a local document.</STRONG>  This results
-from the nature of the HTTP basic authentication scheme.
+where to find the document, even if the document ends up being on the
+same server. This has several implications, the most important being
+that <STRONG>if you use an "ErrorDocument 401" directive then it must
+refer to a local document.</STRONG> This results from the nature of
+the HTTP basic authentication scheme.
+
+<P>Prior to version 2.0, messages were indicated by prefixing them
+with a single unmatched double quote character.
 
 <P>See Also: <A HREF="../custom-error.html">documentation of customizable
 responses.</A><P><HR>
