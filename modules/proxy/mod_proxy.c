@@ -1065,17 +1065,17 @@ static const char *
 
     if (ap_proxy_is_ipaddr(New, parms->pool)) {
 #if DEBUGGING
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                         "Parsed addr %s", inet_ntoa(New->addr));
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                         "Parsed mask %s", inet_ntoa(New->mask));
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                     "Parsed addr %s", inet_ntoa(New->addr));
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                     "Parsed mask %s", inet_ntoa(New->mask));
 #endif
     }
     else if (ap_proxy_is_domainname(New, parms->pool)) {
-            ap_str_tolower(New->name);
+        ap_str_tolower(New->name);
 #if DEBUGGING
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                         "Parsed domain %s", New->name);
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                     "Parsed domain %s", New->name);
 #endif
         }
         else if (ap_proxy_is_hostname(New, parms->pool)) {
@@ -1407,7 +1407,7 @@ static const char *
 static void ap_add_per_proxy_conf(server_rec *s, ap_conf_vector_t *dir_config)
 {
     proxy_server_conf *sconf = ap_get_module_config(s->module_config,
-                                &proxy_module);
+                                                    &proxy_module);
     void **new_space = (void **)apr_array_push(sconf->sec_proxy);
     
     *new_space = dir_config;
@@ -1721,9 +1721,9 @@ module AP_MODULE_DECLARE_DATA proxy_module =
     STANDARD20_MODULE_STUFF,
     create_proxy_dir_config,    /* create per-directory config structure */
     merge_proxy_dir_config,     /* merge per-directory config structures */
-    create_proxy_config,    /* create per-server config structure */
-    merge_proxy_config,     /* merge per-server config structures */
-    proxy_cmds,         /* command table */
+    create_proxy_config,        /* create per-server config structure */
+    merge_proxy_config,         /* merge per-server config structures */
+    proxy_cmds,                 /* command table */
     register_hooks
 };
 
@@ -1757,5 +1757,5 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, post_request,
                                        proxy_server_conf *conf),(worker,
                                        balancer,r,conf),DECLINED)
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, fixups,
-                    (request_rec *r), (r),
-                    OK, DECLINED)
+                                    (request_rec *r), (r),
+                                    OK, DECLINED)
