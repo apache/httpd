@@ -1,4 +1,9 @@
 Changes with Apache 2.0.22-dev
+
+  *) Use new APR number conversion functions to reduce CPU consumption 
+     when setting the content length, and in mod_log_config.
+     [Brian Pane]
+     
   *) Fix problem reported by Taketo Kabe <kabe@sra-tohoku.co.jp>
      where HEAD response headers were being repeated twice for
      files greater than 32K bytes (4*AP_MIN_BYTES_TO_WRITE). This

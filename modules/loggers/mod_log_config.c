@@ -284,7 +284,7 @@ typedef struct {
 
 static char *format_integer(apr_pool_t *p, int i)
 {
-    return apr_psprintf(p, "%d", i);
+    return apr_itoa(p, i);
 }
 
 static char *pfmt(apr_pool_t *p, int i)
@@ -381,7 +381,7 @@ static const char *clf_log_bytes_sent(request_rec *r, char *a)
         return "-";
     }
     else {
-	return apr_psprintf(r->pool, "%ld", r->bytes_sent);
+	return apr_ltoa(r->pool, r->bytes_sent);
     }
 }
 
