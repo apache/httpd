@@ -200,7 +200,8 @@ static int spot_cookie(request_rec *r)
     const char *cookie;
     const char *value;
 
-    if (!dcfg->enabled) {
+    /* Do not run in subrequests */
+    if (!dcfg->enabled || r->main) {
         return DECLINED;
     }
 

@@ -1,5 +1,9 @@
 Changes with Apache 2.0.45
 
+  *) mod_usertrack: don't set the cookie in subrequests. This works
+     around the problem that cookies were set twice during fast internal
+     redirects. PR 13211.  [André Malo]
+
   *) mod_autoindex no longer forgets output format and enabled version
      sort in linked column headers.  [André Malo]
 
