@@ -128,6 +128,7 @@ static APR_OPTIONAL_FN_TYPE(ap_ssi_parse_string) *cgid_pfn_ps;
 static apr_pool_t *pcgi; 
 static int total_modules = 0;
 static pid_t daemon_pid;
+static int daemon_should_exit = 0;
 
 /* KLUDGE --- for back-combatibility, we don't have to check Execcgid 
  * in ScriptAliased directories, which means we need to know if this 
@@ -256,7 +257,7 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
             /* we get here when pcgi is cleaned up; pcgi gets cleaned
              * up when pconf gets cleaned up
              */
-            kill(*sd, SIGHUP);
+            kill(*sd, SIGHUP); /* send signal to daemon telling it to die */
             break;
     }
 }
@@ -481,6 +482,13 @@ static void send_req(int fd, request_rec *r, char *argv0, char **env, int req_ty
 #endif 
 } 
 
+static void daemon_signal_handler(int sig)
+{
+    if (sig == SIGHUP) {
+        ++daemon_should_exit;
+    }
+}
+
 static int cgid_server(void *data) 
 { 
     struct sockaddr_un unix_addr;
@@ -495,6 +503,8 @@ static int cgid_server(void *data)
     apr_pool_create(&ptrans, pcgi); 
 
     apr_signal(SIGCHLD, SIG_IGN); 
+    apr_signal(SIGHUP, daemon_signal_handler);
+
     if (unlink(sconf->sockname) < 0 && errno != ENOENT) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
                      "Couldn't unlink unix domain socket %s",
@@ -538,7 +548,8 @@ static int cgid_server(void *data)
     }
     
     unixd_setup_child(); /* if running as root, switch to configured user/group */
-    while (1) {
+
+    while (!daemon_should_exit) {
         int errfileno = STDERR_FILENO;
         char *argv0; 
         char **env; 
@@ -659,6 +670,7 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
         for (m = ap_preloaded_modules; *m != NULL; m++)
             total_modules++;
 
+        daemon_should_exit = 0; /* clear setting from previous generation */
         if ((daemon_pid = fork()) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
                          "Couldn't spawn cgid daemon process"); 
