@@ -58,6 +58,54 @@
 #ifndef AP_MMN_H
 #define AP_MMN_H
 
+/*
+    The MPM, "multi-processing model" provides an abstraction of the
+    interface with the OS for distributing incoming connections to
+    threads/process for processing.  http_main invokes the MPM, and
+    the MPM runs until a shutdown/restart has been indicated.
+    The MPM calls out to the apache core via the ap_process_connection
+    function when a connection arrives.
+
+    The MPM may or may not be multithreaded.  In the event that it is
+    multithreaded, at any instant it guarantees a 1:1 mapping of threads
+    ap_process_connection invocations.  The only primitives the MPM
+    provides for synchronization between threads are the ap_thread_mutex
+    stuff below.
+
+    Note: In the future it will be possible for ap_process_connection
+    to return to the MPM prior to finishing the entire connection; and
+    the MPM will proceed with asynchronous handling for the connection;
+    in the future the MPM may call ap_process_connection again -- but
+    does not guarantee it will occur on the same thread as the first call.
+
+    The MPM further guarantees that no asynchronous behaviour such as
+    longjmps and signals will interfere with the user code that is
+    invoked through ap_process_connection.  The MPM may reserve some
+    signals for its use (i.e. SIGUSR1), but guarantees that these signals
+    are ignored when executing outside the MPM code itself.  (This
+    allows broken user code that does not handle EINTR to function
+    properly.)
+
+    The suggested server restart and stop behaviour will be "graceful".
+    However the MPM may choose to terminate processes when the user
+    requests a non-graceful restart/stop.  When this occurs, the MPM kills
+    all threads with extreme prejudice, and destroys the pchild pool.
+    User cleanups registered in the pchild pool will be invoked at
+    this point.  (This can pose some complications, the user cleanups
+    are asynchronous behaviour not unlike longjmp/signal... but if the
+    admin is asking for a non-graceful shutdown, how much effort should
+    we put into doing it in a nice way?)
+
+    unix/posix notes:
+    - The MPM does not set a SIGALRM handler, user code may use SIGALRM.
+	But the preferred method of handling timeouts is to use the
+	timeouts provided by the BUFF/iol abstraction.
+    - The proper setting for SIGPIPE is SIG_IGN, if user code changes it
+        for any of their own processing, it must be restored to SIG_IGN
+	prior to executing or returning to any apache code.
+    TODO: add SIGPIPE debugging check somewhere to make sure its SIG_IGN
+*/
+
 /* run until a restart/shutdown is indicated, return 1 for shutdown
    0 otherwise */
 API_EXPORT(int) ap_mpm_run(pool *pconf, pool *plog, server_rec *server_conf);
