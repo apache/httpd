@@ -1,6 +1,10 @@
 
 mod_proxy changes for httpd 2.0.18-dev
 
+  *) Remove result code check for FTP QUIT command. Some servers send
+     nothing at all back in response to QUIT.
+     [Chuck Murcko <chuck@topsail.org>]
+
   *) Reverse previous patch since the core reverted.
      [Chuck Murcko <chuck@topsail.org>]
 
