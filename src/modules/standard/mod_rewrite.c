@@ -3148,7 +3148,7 @@ static char **resolv_ipaddr_list(request_rec *r, char *name)
 **
 */
 
-int is_proxy_available(server_rec *s)
+static int is_proxy_available(server_rec *s)
 {
     extern module *preloaded_modules[];
     command_rec *c;
