@@ -2,6 +2,15 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Restructured mod_auth_ldap to fit the new authentication model.
+     The module is now called authnz_ldap and has been moved out of
+     the modules/experimental area and into modules/aaa with the other
+     auth modules.  Both the authn_ldap provider and the authz_ldap
+     handler are contained within the authnz_ldap module.  The 
+     authz_ldap handler introduces 3 new "requires" values for handling
+     authorization.  These handlers are ldap-user, ldap-group and 
+     ldap-dn. [Brad Nicholes]
+
   *) Fix some compiler warnings in proxy
      [Geoffrey Young <geoff@modperlcookbook.org>]
 
