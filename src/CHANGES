@@ -3,8 +3,9 @@ Changes with Apache 1.3.24
   *) The Location: response header field, used for external
      redirect, *must* be an absoluteURI.  The Redirect directive
      tested for that, but RedirectMatch didn't -- it would allow
-     almost anything through.  Now it, too, will correctly varf
-     if the redirection target isn't an absoluteURI.  [Ken Coar]
+     almost anything through.  Now it will try to turn an abs_path
+     into an absoluteURI, but it will correctly varf like Redirect
+     if the final redirection target isn't an absoluteURI.  [Ken Coar]
 
   *) apxs: fix bug that prevented -S option from containing quotes.
      [Ben Laurie]
