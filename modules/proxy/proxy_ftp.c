@@ -1638,6 +1638,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     ap_pass_brigade(origin->output_filters, bb);
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                  "proxy: FTP: QUIT");
+
     /* responses: 221, 500 */
     /* 221 Service closing control connection. */
     /* 500 Syntax error, command unrecognized. */
