@@ -1,5 +1,8 @@
 Changes with Apache 1.3b3
 
+  *) Fix a year formatting bug in mod_usertrack.
+     [Paul Eggert <eggert@twinsun.com>] PR#1342
+
   *) A mild SIGTERM/SIGALRM race condition was eliminated.
      [Dean Gaudet] PR#1211
 

@@ -194,7 +194,7 @@ void make_cookie(request_rec *r)
                 "%s%s; path=/; expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
                     COOKIE_NAME, cookiebuf, days[tms->tm_wday],
                     tms->tm_mday, month_names[tms->tm_mon],
-                  (tms->tm_year >= 100) ? tms->tm_year - 100 : tms->tm_year,
+		    tms->tm_year % 100,
                     tms->tm_hour, tms->tm_min, tms->tm_sec);
     }
     else
