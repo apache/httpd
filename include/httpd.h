@@ -1646,12 +1646,12 @@ AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r);
 #undef strstr
 # define strstr(s, c)  ap_strstr(s,c)
 
-char *ap_strchr(char *s, int c);
-const char *ap_strchr_c(const char *s, int c);
-char *ap_strrchr(char *s, int c);
-const char *ap_strrchr_c(const char *s, int c);
-char *ap_strstr(char *s, const char *c);
-const char *ap_strstr_c(const char *s, const char *c);
+AP_DECLARE(char *) ap_strchr(char *s, int c);
+AP_DECLARE(const char *) ap_strchr_c(const char *s, int c);
+AP_DECLARE(char *) ap_strrchr(char *s, int c);
+AP_DECLARE(const char *) ap_strrchr_c(const char *s, int c);
+AP_DECLARE(char *) ap_strstr(char *s, const char *c);
+AP_DECLARE(const char *) ap_strstr_c(const char *s, const char *c);
 
 #else
 
