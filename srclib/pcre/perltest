@@ -9,7 +9,7 @@
 sub pchars {
 my($t) = "";
 
-foreach $c (split(//, @_[0]))
+foreach $c (split(//, $_[0]))
   {
   if (ord $c >= 32 && ord $c < 127) { $t .= $c; }
     else { $t .= sprintf("\\x%02x", ord $c); }
