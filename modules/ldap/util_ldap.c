@@ -182,14 +182,9 @@ int util_ldap_handler(request_rec *r)
 
 
 /*
- * Closes an LDAP connection by unbinding. Sets the boundas value for the
- * http connection config record and clears the bound dn string in the
- * global connection record. The next time util_ldap_connection_open() is
- * called, the connection will be recreated.
- *
- * If the log parameter is set, adds a debug entry to the log that the
- * server was down and it's reconnecting.
- *
+ * Closes an LDAP connection by unlocking it. The next time
+ * util_ldap_connection_find() is called this connection will be
+ * available for reuse.
  */
 void util_ldap_connection_close(util_ldap_connection_t *ldc)
 {
@@ -205,19 +200,32 @@ void util_ldap_connection_close(util_ldap_connection_t *ldc)
      * we don't have to...
      */
 
-    /* unbinding from the LDAP server */
-/* FIXME: add this to pool cleanup instead */ 
+    /* mark our connection as available for reuse */
+    apr_lock_release(ldc->lock);
+
+}
+
+
 /*
+ * Destroys an LDAP connection by unbinding. This function is registered
+ * with the pool cleanup function - causing the LDAP connections to be
+ * shut down cleanly on thread exit.
+ */
+apr_status_t util_ldap_connection_destroy(void *param)
+{
+    util_ldap_connection_t *ldc = param;
+
+    /* unbinding from the LDAP server */
     if (ldc->ldap) {
         ldap_unbind_s(ldc->ldap);
         ldc->bound = 0;
         ldc->ldap = NULL;
     }
-*/
 
-    /* mark our connection as available for reuse */
+    /* release the lock we were using */
     apr_lock_release(ldc->lock);
 
+    return APR_SUCCESS;
 }
 
 
@@ -226,8 +234,6 @@ void util_ldap_connection_close(util_ldap_connection_t *ldc)
  * connected (i.e. ldc->ldap is non-NULL.) Does not bind if already bound.
  *
  * Returns LDAP_SUCCESS on success; and an error code on failure
- * XXX FIXME: Make these APR error codes, not LDAP error codes
- *
  */
 int util_ldap_connection_open(util_ldap_connection_t *ldc)
 {
@@ -250,6 +256,11 @@ start_over:
             ldc->reason = "ldap_init() failed";
             return -1;
         }
+
+	/* add the cleanup to the pool */
+        apr_pool_cleanup_register(ldc->pool, ldc,
+                                  util_ldap_connection_destroy,
+                                  apr_pool_cleanup_null);
 
         /* Set the alias dereferencing option */
 #if LDAP_VERSION_MAX == 2
@@ -443,6 +454,7 @@ util_ldap_connection_t *util_ldap_connection_find(request_rec *r, const char *ho
         l = apr_pcalloc(st->pool, sizeof(util_ldap_connection_t));
         apr_lock_create(&l->lock, APR_MUTEX, APR_INTRAPROCESS, NULL, st->pool);
         apr_lock_acquire(l->lock);
+        l->pool = st->pool;
         l->bound = 0;
         l->host = apr_pstrdup(st->pool, host);
         l->port = port;
