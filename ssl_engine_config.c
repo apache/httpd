@@ -107,9 +107,13 @@ void ssl_config_global_create(server_rec *s)
         (void)memset(mc->pTmpKeys, 0, SSL_TKPIDX_MAX*sizeof(void *));
 
         /*
-         * And push it into Apache's global context
+         * And push it into Apache's server config recs
          */
-        ssl_util_setmodconfig(s, "ssl_module", mc);
+        while (s) {
+            SSLSrvConfigRec *sc = mySrvConfig(s);
+            sc->mc = mc;
+            s = s->next;
+        }
     }
     return;
 }
