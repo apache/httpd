@@ -405,7 +405,7 @@ if ($opt_i or $opt_e) {
     my @cmds = ();
     my $f;
     foreach $f (@args) {
-        if ($f !~ m|\.la$|) {
+        if ($f !~ m#(\.so$|\.la$)#) {
             print STDERR "apxs:Error: file $f is not a shared object\n";
             exit(1);
         }
