@@ -204,6 +204,9 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	return ap_proxyerror(r, HTTP_BAD_REQUEST,
 			     apr_pstrcat(p,"URI cannot be parsed: ", url, NULL));
     }
+    if (!uri.port) {
+	uri.port = ap_default_port_for_scheme(uri.scheme);
+    }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		 "proxy: HTTP connecting %s to %s:%d", url, uri.hostname, uri.port);
