@@ -69,15 +69,4 @@
   #endif
 #endif
 
-/*
- * This file is included in all Apache source code. It contains definitions
- * of facilities available on _this_ operating system (HAVE_* macros),
- * and prototypes of OS specific functions defined in os.c or os-inline.c
- */
-
-extern int ap_os_is_path_absolute(const char *file);
-#define ap_os_canonical_filename(p,f)  (f)
-#define ap_os_case_canonical_filename(p,f)  (f)
-#define ap_os_systemcase_filename(p,f)  (f)
-
 #endif	/* !APACHE_OS_H */

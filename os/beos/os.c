@@ -68,11 +68,6 @@
 #include "ap_mpm.h" /* needed for definition of 
                      * ap_os_create_privileged_process */
 
-int ap_os_is_path_absolute(const char *file)
-{
-  return file[0] == '/';
-}
-
 AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
     const request_rec *r,
     apr_proc_t *newproc, const char *progname,

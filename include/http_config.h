@@ -525,7 +525,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_deprecated(cmd_parms *cmd, void *struct_p
  * @param p pool to allocate data from
  * @param fname The file name
  */
-AP_DECLARE(const char *) ap_server_root_relative(apr_pool_t *p, const char *fname);
+AP_DECLARE(char *) ap_server_root_relative(apr_pool_t *p, const char *fname);
 
 /* Finally, the hook for dynamically loading modules in... */
 
