@@ -1,5 +1,9 @@
 Changes with Apache 2.0.45
 
+  *) mod_auth_digest no longer tries to guess AuthDigestDomain, if it's
+     not specified. Now it assumes "/" as already documented. PR 16937.
+     [André Malo]
+
   *) Try to log an error if a piped log program fails.  Try to
      restart a piped log program in more failure situations.  Fix an
      existing problem with error handling in piped_log_spawn().  Use
