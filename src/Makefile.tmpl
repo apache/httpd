@@ -62,12 +62,17 @@ depend:
 	    && $(CC) -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
 	    && mv Makefile.tmpl Makefile.tmpl.bak \
 	    && mv Makefile.new Makefile.tmpl
-
+	for i in $(SUBDIRS); do \
+	    ( cd $$i && $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)' depend) || exit 1; \
+	done
 
 #Dependencies
 
 $(OBJS): Makefile
 
 # DO NOT REMOVE
-modules.o: modules.c include/httpd.h include/conf.h include/alloc.h \
-	include/buff.h include/http_config.h
+buildmark.o: buildmark.c
+modules.o: modules.c include/httpd.h include/conf.h os/unix/os.h \
+ include/hsregex.h include/alloc.h include/buff.h include/ap.h \
+ include/http_config.h
+tt.o: tt.c

@@ -54,6 +54,9 @@ $(REGEXH):	$(REGEXHSRC) mkh
 #	cmp -s regex.tmp regex.h 2>/dev/null || cp regex.tmp regex.h
 #	rm -f regex.tmp
 
+# no automatic dependencies here
+depend:
+
 # dependencies
 $(OBJPRODN) debug.o:	utils.h $(REGEXH) regex2.h
 regcomp.o:	cclass.h cname.h regcomp.ih

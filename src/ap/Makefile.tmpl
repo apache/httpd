@@ -24,10 +24,30 @@ $(LIB): $(OBJS)
 	ar cr $@ $(OBJS)
 	$(RANLIB) $@
 
-# dependencies
-ap_signal.o: $(INCDIR)/httpd.h
-ap_slack.o: $(INCDIR)/httpd.h $(INCDIR)/http_log.h
-ap_snprintf.o: $(INCDIR)/conf.h
-ap_strings.o: $(INCDIR)/httpd.h
-ap_cpystrn.o: $(INCDIR)/httpd.h
-ap_execve.o: $(INCDIR)/httpd.h $(INCDIR)/http_log.h
+# We really don't expect end users to use this rule.  It works only with
+# gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
+# using it.
+depend:
+	sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
+	    && $(CC) -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
+	    && mv Makefile.tmpl Makefile.tmpl.bak \
+	    && mv Makefile.new Makefile.tmpl
+
+# DO NOT REMOVE
+ap_cpystrn.o: ap_cpystrn.c ../include/httpd.h ../include/conf.h \
+ ../os/unix/os.h ../include/hsregex.h ../include/alloc.h \
+ ../include/buff.h ../include/ap.h
+ap_execve.o: ap_execve.c ../include/httpd.h ../include/conf.h \
+ ../os/unix/os.h ../include/hsregex.h ../include/alloc.h \
+ ../include/buff.h ../include/ap.h ../include/http_log.h
+ap_signal.o: ap_signal.c ../include/httpd.h ../include/conf.h \
+ ../os/unix/os.h ../include/hsregex.h ../include/alloc.h \
+ ../include/buff.h ../include/ap.h
+ap_slack.o: ap_slack.c ../include/httpd.h ../include/conf.h \
+ ../os/unix/os.h ../include/hsregex.h ../include/alloc.h \
+ ../include/buff.h ../include/ap.h ../include/http_log.h
+ap_snprintf.o: ap_snprintf.c ../include/conf.h ../os/unix/os.h \
+ ../include/hsregex.h
+ap_strings.o: ap_strings.c ../include/httpd.h ../include/conf.h \
+ ../os/unix/os.h ../include/hsregex.h ../include/alloc.h \
+ ../include/buff.h ../include/ap.h
