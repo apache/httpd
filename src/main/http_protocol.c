@@ -943,7 +943,7 @@ API_EXPORT(int) get_basic_auth_pw(request_rec *r, char **pw)
         return AUTH_REQUIRED;
     }
 
-    if (strcmp(getword(r->pool, &auth_line, ' '), "Basic")) {
+    if (strcasecmp(getword(r->pool, &auth_line, ' '), "Basic")) {
         /* Client tried to authenticate using wrong auth scheme */
         aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "client used wrong authentication scheme: %s", r->uri);

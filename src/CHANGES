@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) "basic" auth needs a case-insensitive comparison.
+     [Ronald.Tschalaer@psi.ch] PR#1666
+
   *) For maximum portability, the environment passed to CGIs should
      only contain variables whose names match the regex
      /[a-zA-Z][a-zA-Z0-9_]*/.  This is now enforced by stamping

@@ -87,6 +87,7 @@ Committed Code Changes:
     * Martin's [PORT] Make apache compile & run on an EBCDIC mainframe
     * Martin's [PATCH] mod_speling [300] Multiple Choices bug (Take 2)
     * Dean's [PATCH] protect the environment
+    * general/1666: Apache uses a case sensitive match for "Basic" auth scheme
 
 Available Patches:
 
