@@ -26,7 +26,7 @@
     각 사용자는 자신의 홈디렉토리 안에 웹사이트를 만들 수 있다.
     URL <code>http://example.com/~username/</code>에 접근하면
     사용자 "<code>username</code>"의 홈디렉토리에서 <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> 지시어로 지정한
-    하위디렉토리에 있는 내용을 가져오게 된다.</p>
+    하위디렉토리에 있는 페이지를 가져오게 된다.</p>
 
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">사용자별 웹디렉토리</a></li>
@@ -46,7 +46,7 @@
     
 
     <p><code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>
-    지시어는 사용자별 내용을 가져올 디렉토리를 지정한다. 이
+    지시어는 사용자별 페이지를 가져올 디렉토리를 지정한다. 이
     지시어의 사용법은 여러가지다.</p>
 
     <p>슬래쉬로 시작하지않는 경로를 지정하면 각 사용자의

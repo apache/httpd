@@ -22,8 +22,6 @@
 <a href="./ja/suexec.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/suexec.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
     <p><strong>suEXEC</strong> 기능은 아파치가 <strong>CGI</strong>와
     <strong>SSI</strong> 프로그램을 웹서버를 실행한 사용자 ID가
@@ -380,23 +378,6 @@
       <dd>CGI 실행파일에 넘겨질 안전한 PATH 환경변수를 정의한다.
       기본값은 "/usr/local/bin:/usr/bin:/bin"이다.</dd>
     </dl>
-
-    <p><strong>suEXEC 구성을 점검하라</strong><br />
-     suEXEC wrapper를 컴파일하고 설치하기 전에 <code>--layout</code>
-    옵션을 사용하여 설정을 점검할 수 있다.<br />
-     출력예:</p>
-
-<div class="example"><p><code>
-    suEXEC setup:<br />
-            suexec binary: /usr/local/apache2/sbin/suexec<br />
-            document root: /usr/local/apache2/share/htdocs<br />
-           userdir suffix: public_html<br />
-                  logfile: /usr/local/apache2/var/log/suexec_log<br />
-                safe path: /usr/local/bin:/usr/bin:/bin<br />
-                caller ID: www<br />
-          minimum user ID: 100<br />
-         minimum group ID: 100<br />
-</code></p></div>
 
     <p><strong>suEXEC wrapper를 컴파일하고 설치하기</strong><br />
     <code>--enable-suexec</code> 옵션으로 suEXEC 기능을 가능하게한

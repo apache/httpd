@@ -100,7 +100,7 @@ href="#plaintext">평문 (Plaintext)</a>을 <a href="#cipher">암호기
 href="http://hoohoo.ncsa.uiuc.edu/cgi/overview.html">NCSA</a>가
 정의했지만, <a href="http://cgi-spec.golux.com/">RFC
 프로젝트</a>이기도 하다.<br />
-참고: <a href="howto/cgi.html">CGI로 동적 내용 생성</a></dd>
+참고: <a href="howto/cgi.html">CGI로 동적 페이지 생성</a></dd>
 
 
 <dt><a name="configurationdirective">설정 지시어 (Configuration

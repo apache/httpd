@@ -93,7 +93,7 @@
 <title>지침서, 투토리얼, HowTo</title>
 <page separate="yes" href="howto/">개요</page>
 <page href="howto/auth.html">인증</page>
-<page href="howto/cgi.html">CGI로 동적 내용</page>
+<page href="howto/cgi.html">CGI로 페이지 내용</page>
 <page href="howto/ssi.html">Server Side Includes 소개</page>
 <page href="howto/htaccess.html">.htaccess 파일</page>
 <page href="howto/public_html.html">사용자별 웹디렉토리</page>

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.13 -->
+<!-- English Revision: 1.5.2.9 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -33,8 +33,7 @@
     <related>
         <modulelist>
             <module>core</module>
-            <module>mod_authn_file</module>
-            <module>mod_authz_groupfile</module>
+            <module>mod_auth</module>
             <module>mod_cgi</module>
             <module>mod_include</module>
             <module>mod_mime</module>
@@ -48,8 +47,8 @@
             <directive module="core">SetHandler</directive>
             <directive module="core">AuthType</directive>
             <directive module="core">AuthName</directive>
-            <directive module="mod_authn_file">AuthUserFile</directive>
-            <directive module="mod_authz_groupfile">AuthGroupFile</directive>
+            <directive module="mod_auth">AuthUserFile</directive>
+            <directive module="mod_auth">AuthGroupFile</directive>
             <directive module="core">Require</directive>
         </directivelist>
 
@@ -154,12 +153,12 @@
     그래서 <code>/www/htdocs/example</code> 디렉토리에 있는
     파일을 요청하면, 아파치는 다음 파일들을 찾아야 한다.</p>
 
-    <example>
+   <example>
       /.htaccess<br />
       /www/.htaccess<br />
       /www/htdocs/.htaccess<br />
       /www/htdocs/example/.htaccess
-    </example>
+   </example>
 
     <p>그래서 그 디렉토리에 있는 파일을 접근할 때마다 설정파일이
     전혀 없어도 파일시스템을 4번 더 접근해야 한다.
@@ -262,14 +261,17 @@
     <p>앞에서 말했지만 아직도 <code>.htaccess</code> 파일이
     필요하다고 생각되면 아래 설정이 도움이 될 것이다.</p>
 
+    <p>이 지시어가 동작하려면 "<code>AllowOverride AuthConfig</code>"가
+    있어야 한다.</p>
+
     <p><code>.htaccess</code> 파일 내용.</p>
 
     <example>
-      AuthType Basic<br />
-      AuthName "암호가 필요합니다"<br />
-      AuthUserFile /www/passwords/password.file<br />
-      AuthGroupFile /www/passwords/group.file<br />
-      Require Group admins
+          AuthType Basic<br />
+           AuthName "Password Required"<br />
+           AuthUserFile /www/passwords/password.file<br />
+           AuthGroupFile /www/passwords/group.file<br />
+           Require Group admins
     </example>
 
     <p>이 지시어가 동작하기위해서는

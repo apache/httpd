@@ -40,7 +40,7 @@
 </summary>
 
 <seealso><module>mod_cgi</module></seealso>
-<seealso><a href="../howto/cgi.html">CGI로 동적 내용</a></seealso>
+<seealso><a href="../howto/cgi.html">CGI로 페이지 내용</a></seealso>
 <seealso><a href="../handler.html">아파치에서 핸들러 사용</a></seealso>
 
 <directivesynopsis>

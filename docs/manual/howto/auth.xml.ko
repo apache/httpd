@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.10 -->
+<!-- English Revision: 1.1.2.8 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -34,19 +34,17 @@
 <section id="related"><title>관련 모듈과 지시어</title>
     <related>
       <modulelist>
-        <module>mod_auth_basic</module>
-        <module>mod_authn_file</module>
-        <module>mod_authz_groupfile</module>
-        <module>mod_authz_host</module>
+        <module>mod_auth</module>
+        <module>mod_access</module>
       </modulelist>
 
       <directivelist>
-        <directive module="mod_authz_host">Allow</directive>
-        <directive module="mod_authz_groupfile">AuthGroupFile</directive>
+        <directive module="mod_access">Allow</directive>
+        <directive module="mod_auth">AuthGroupFile</directive>
         <directive module="core">AuthName</directive>
         <directive module="core">AuthType</directive>
-        <directive module="mod_authn_file">AuthUserFile</directive>
-        <directive module="mod_authz_host">Deny</directive>
+        <directive module="mod_auth">AuthUserFile</directive>
+        <directive module="mod_access">Deny</directive>
         <directive module="core">Options</directive>
         <directive module="core">Require</directive>
       </directivelist>
@@ -145,7 +143,7 @@
     <p>지시어를 하나씩 살펴보자. <directive
     module="core">AuthType</directive> 지시어는 사용자를 인증할
     방법을 선택한다. 가장 일반적인 방법은 <code>Basic</code>으로,
-    <module>mod_auth_basic</module>이 구현한다. 그러나 Basic
+    <module>mod_auth</module>가 구현한다. 그러나 Basic
     인증은 브라우저가 서버로 암호를 암호화하지 않고 보낸다.
     그러므로 기밀 자료를 보호하기위해 이 방법을 사용하면 안된다.
     아파치는 <code>AuthType Digest</code>라는 인증 방법도 지원한다.
@@ -167,13 +165,13 @@
     보안상 이유로 클라이언트는 서버의 호스트명이 다르면 항상
     새로 암호를 물어본다.</p>
 
-    <p><directive module="mod_authn_file">AuthUserFile</directive>
+    <p><directive module="mod_auth">AuthUserFile</directive>
     지시어는 우리가 방금 <code>htpasswd</code>로 만든 암호파일의
     경로를 설정한다. 사용자가 많다면 요청마다 매번 사용자를
     인증하기위해 일반 문서파일을 검색하는데 시간이 상당히 많이
     걸릴 수 있다. 아파치는 빠른 데이타베이스 파일에 사용자 정보를
-    저장할 수 있다. <module>mod_authn_dbm</module> 모듈은 <directive
-    module="mod_authn_dbm">AuthDBMUserFile</directive> 지시어를
+    저장할 수 있다. <module>mod_auth_dbm</module> 모듈은 <directive
+    module="mod_auth_dbm">AuthDBMUserFile</directive> 지시어를
     제공한다. <a href="../programs/dbmmanage.html">dbmmanage</a>
     프로그램을 사용하여 암호파일을 만들고 다룬다. <a
     href="http://modules.apache.org/">아파치 모듈
@@ -190,7 +188,7 @@
     <p>위의 지시어는 디렉토리로 (사용자명이 <code>rbowen</code>인)
     한 사람만을 들여보낸다. 대부분의 경우 여러 사람을 들여보내고
     싶을 것이다. 이제 <directive
-    module="mod_authz_groupfile">AuthGroupFile</directive>을
+    module="mod_auth">AuthGroupFile</directive>을
     사용할 때다.</p>
 
     <p>여러 사람을 들여보내고 싶다면 그룹명과 그 그룹에 어떤
@@ -240,7 +238,7 @@
     효과를 얻을 수도 있다. 이 경우 아파치가 파일 두개(암호파일과
     그룹파일)가 아닌 파일 한개(암호파일)만 검사하면 된다는 것이
     장점이다. 그러나 여러 암호파일을 관리해야 하고, <directive
-    module="mod_authn_file">AuthUserFile</directive> 지시어에
+    module="mod_auth">AuthUserFile</directive> 지시어에
     정확한 암호파일을 지정해야 하는 것은 단점이다.</p>
 </section>
 
@@ -264,11 +262,11 @@
     장소와 같은 다른 정보를 가지고 사용자를 들여보내고 싶을
     때가 있다.</p>
 
-    <p><directive module="mod_authz_host">Allow</directive>와
-    <directive module="mod_authz_host">Deny</directive> 지시어는
+    <p><directive module="mod_access">Allow</directive>와
+    <directive module="mod_access">Deny</directive> 지시어는
     문서를 요청한 컴퓨터의 호스트명 혹은 호스트 주소를 가지고
     접근을 허용하거나 거부한다. <directive
-    module="mod_authz_host">Order</directive> 지시어는 이 두
+    module="mod_access">Order</directive> 지시어는 이 두
     지시어와 같이 사용하여, 아파치에게 어떤 순서로 규칙을 적용할지
     알린다.</p>
 
@@ -306,9 +304,9 @@
       Deny from ke
     </example>
 
-    <p><directive module="mod_authz_host">Order</directive>를
-    <directive module="mod_authz_host">Deny</directive>와 <directive
-    module="mod_authz_host">Allow</directive> 지시어와 같이
+    <p><directive module="mod_auth">Order</directive>를
+    <directive module="mod_auth">Deny</directive>와 <directive
+    module="mod_auth">Allow</directive> 지시어와 같이
     사용하여 실제로 원하는 대상을 막을 수 있다.</p>
 
     <example>
@@ -317,17 +315,16 @@
       Allow from <var>dev.example.com</var>
     </example>
 
-    <p><directive module="mod_authz_host">Allow</directive>
+    <p><directive module="mod_auth">Allow</directive>
     지시어만 사용하면, 해당 호스트의 사용자를 허용하고 거기에
     추가로 모든 사람을 허용하므로 원하는 결과를 얻지 못한다.
     당신은 특정 사람<em>만</em> 허용하길 원한다.</p>
 </section>
 
 <section id="moreinformation"><title>더 많은 정보</title>
-    <p><module>mod_auth_basic</module>과
-    <module>mod_authz_host</module> 문서에 접근제어가 동작하는
+    <p><module>mod_auth</module>와
+    <module>mod_access</module> 문서에 접근제어가 동작하는
     방법에 대한 더 많은 정보가 있다.</p>
 </section>
-
 </manualpage>
 
