@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_negotiation.c,v 1.17 1996/08/20 11:51:17 paul Exp $ */
+/* $Id: mod_negotiation.c,v 1.18 1996/09/24 12:44:59 mjc Exp $ */
 
 /*
  * mod_negotiation.c: keeps track of MIME types the client is willing to
@@ -64,6 +64,15 @@
 #include "http_request.h"
 #include "http_core.h"
 #include "http_log.h"
+
+/* define HOLTMAN to allow for Holtman I-D transparent negotiation.
+ * This file currently implements the draft-02, except for
+ * anything to do with features and cache-control (max-age etc)
+ *
+ * Since the draft is just that, and we don't yet implement
+ * everything, regard the transparent negotiation stuff as experimental.
+ */
+/*#define HOLTMAN*/
 
 /* Commands --- configuring document caching on a per (virtual?)
  * server basis...
@@ -136,19 +145,13 @@ typedef struct accept_rec {
     float quality;
     float max_bytes;
     float level;
+    char *charset;              /* for content-type only */
 } accept_rec;
 
 /* Record of available info on a particular variant
  *
  * Note that a few of these fields are updated by the actual negotiation
  * code.  These are:
- *
- * quality --- initialized to the value of qs, and subsequently jiggered
- *             to reflect the client's preferences.  In particular, it
- *             gets zeroed out if the variant has an unacceptable content
- *             encoding, or if it is in a language which the client
- *             doesn't accept and some other variant *is* in a language
- *             the client accepts.
  *
  * level_matched --- initialized to zero.  Set to the value of level
  *             if the client actually accepts this media type at that
@@ -157,22 +160,39 @@ typedef struct accept_rec {
  */
 
 typedef struct var_rec {
-    request_rec *sub_req;	/* May be NULL (is, for map files) */
+    request_rec *sub_req;       /* May be NULL (is, for map files) */
     char *type_name;
     char *file_name;
     char *content_encoding;
     char *content_language;
-    float level;		/* Auxiliary to content-type... */
-    float qs;
-    float bytes;
-    int lang_index;
-    int is_pseudo_html;		/* text/html, *or* the INCLUDES_MAGIC_TYPEs */
+    char *content_charset;
+    char *description;
+
+    /* The next five items give the quality values for the dimensions
+     * of negotiation for this variant. They are obtained from the
+     * appropriate header lines, except for accept_type_quality, which
+     * is obtained from the variant itself (the 'qs' parameter value
+     * from the variant's mime-type). Apart from type_quality,
+     * these values are set when we find the quality for each variant
+     * (see best_match()). type_quality is set from the 'qs' parameter
+     * of the variant description or mime type: see set_mime_fields().
+     */
+    float lang_quality;         /* quality of this variant's language */
+    int   encoding_quality;     /* ditto encoding (1 or 0 only) */
+    float charset_quality;      /* ditto charset */
+    float accept_type_quality;  /* ditto media type */
+    float type_quality;         /* quality of source for this type */
+
+    /* Now some special values */
+    float level;                /* Auxiliary to content-type... */
+    float bytes;		/* content length, if known */
+    int lang_index;             /* pre HTTP/1.1 language priority stuff */
+    int is_pseudo_html;         /* text/html, *or* the INCLUDES_MAGIC_TYPEs */
 
     /* Above are all written-once properties of the variant.  The
-     * three fields below are changed during negotiation:
+     * two fields below are changed during negotiation:
      */
     
-    float quality;	
     float level_matched;
     int mime_stars;
 } var_rec;
@@ -185,12 +205,20 @@ typedef struct {
     pool *pool;
     request_rec *r;
     char *dir_name;
-    int accept_q;	/* Do any of the Accept: headers have a q-value ? */
-    
-    array_header *accepts;	/* accept_recs */
-    array_header *accept_encodings;	/* accept_recs */
-    array_header *accept_langs;	/* accept_recs */
-    array_header *avail_vars;	/* available variants */
+    int accept_q;		/* 1 if an Accept item has a q= param */
+    float default_lang_quality;	/* fiddle lang q for variants with no lang */
+
+   
+    array_header *accepts;      /* accept_recs */
+    int have_accept_header;	/* 1 if Accept-Header present */
+    array_header *accept_encodings; /* accept_recs */
+    array_header *accept_charsets; /* accept_recs */
+    array_header *accept_langs; /* accept_recs */
+    array_header *avail_vars;   /* available variants */
+
+    int ua_can_negotiate;       /* 1 if ua can do transparent negotiate */
+    int use_transparent_neg;    /* 1 if we are using transparent neg */
+    int short_accept_headers;   /* 1 if ua does trans neg & sent short accpt */
 } negotiation_state;
 
 /* A few functions to manipulate var_recs.
@@ -204,15 +232,21 @@ void clean_var_rec (var_rec *mime_info)
     mime_info->file_name = "";
     mime_info->content_encoding = "";
     mime_info->content_language = "";
+    mime_info->content_charset = "";
+    mime_info->description = "";
 
     mime_info->is_pseudo_html = 0;
     mime_info->level = 0.0;
     mime_info->level_matched = 0.0;
-    mime_info->qs = 0.0;
-    mime_info->quality = 0.0;
     mime_info->bytes = 0;
     mime_info->lang_index = -1;
     mime_info->mime_stars = 0;
+
+    mime_info->charset_quality = 1.0;
+    mime_info->type_quality = 1.0;
+    mime_info->encoding_quality = 1;
+    mime_info->lang_quality = 1.0;
+    mime_info->accept_type_quality = 1.0;
 }
 
 /* Initializing the relevant fields of a variant record from the
@@ -222,9 +256,9 @@ void clean_var_rec (var_rec *mime_info)
 void set_mime_fields (var_rec *var, accept_rec *mime_info)
 {
     var->type_name = mime_info->type_name;
-    var->qs = mime_info->quality;
-    var->quality = mime_info->quality; /* Initial quality is just qs */
+    var->type_quality = mime_info->quality;
     var->level = mime_info->level;
+    var->content_charset = mime_info->charset;
 
     var->is_pseudo_html = 
 	(!strcmp (var->type_name, "text/html")
@@ -248,6 +282,7 @@ char *get_entry (pool *p, accept_rec *result, char *accept_line)
     result->quality = 1.0;
     result->max_bytes = 0.0;
     result->level = 0.0;
+    result->charset = "";
     
     /* Note that this handles what I gather is the "old format",
      *
@@ -282,6 +317,7 @@ char *get_entry (pool *p, accept_rec *result, char *accept_line)
 
 	char *parm;
 	char *cp;
+	char *end;
 	    
 	++accept_line;
 	parm = get_token (p, &accept_line, 1);
@@ -297,7 +333,20 @@ char *get_entry (pool *p, accept_rec *result, char *accept_line)
 	while (*cp && (isspace(*cp) || *cp == '='))
 	    ++cp;
 
-	if (*cp == '"') ++cp;
+	if (*cp == '"') {
+	    ++cp;
+	    for (end = cp; *end && 
+		     *end != '\n' && *end != '\r' && *end != '\"';
+		 end++)
+		;
+	}
+	else {
+	    for (end = cp; *end && !isspace(*end); end++)
+		;
+	}
+	if (*end)
+	    *end = '\0';	/* strip ending quote or return */
+	str_tolower(cp);
 	
 	if (parm[0] == 'q'
 	    && (parm[1] == '\0' || (parm[1] == 's' && parm[2] == '\0')))
@@ -307,17 +356,26 @@ char *get_entry (pool *p, accept_rec *result, char *accept_line)
 	    result->max_bytes = atof(cp);
 	else if (parm[0] == 'l' && !strcmp (&parm[1], "evel"))
 	    result->level = atof(cp);
+	else if (!strcmp(parm, "charset"))
+	    result->charset = cp;
     }
 
     if (*accept_line == ',') ++accept_line;
 
     return accept_line;
 }
-		 
-
+                 
 /*****************************************************************
  *
  * Dealing with header lines ...
+ *
+ * Accept, Accept-Charset, Accept-Language and Accept-Encoding
+ * are handled by do_header_line() - they all have the same
+ * basic structure of a list of items of the format
+ *    name; q=N; charset=TEXT
+ *
+ * where q is only valid in Accept, Accept-Charset and Accept-Languages,
+ * and charset is only valid in Accept.
  */
 
 array_header *do_header_line (pool *p, char *accept_line)
@@ -345,30 +403,60 @@ negotiation_state *parse_accept_headers (request_rec *r)
         (negotiation_state *)pcalloc (r->pool, sizeof (negotiation_state));
     accept_rec *elts;
     table *hdrs = r->headers_in;
-    
-    int i;
+    int i;   
+    char *hdr;
 
     new->pool = r->pool;
     new->r = r;
     new->dir_name = make_dirstr(r->pool, r->filename, count_dirs(r->filename));
     
     new->accepts = do_header_line (r->pool, table_get (hdrs, "Accept"));
-    new->accept_encodings =
-      do_header_line (r->pool, table_get (hdrs, "Accept-encoding"));
+
+    hdr = table_get (hdrs, "Accept-encoding");
+    if (hdr)
+      new->have_accept_header = 1;
+    new->accept_encodings = do_header_line (r->pool, hdr);
+
     new->accept_langs =
       do_header_line (r->pool, table_get (hdrs, "Accept-language"));
+    new->accept_charsets =
+      do_header_line (r->pool, table_get (hdrs, "Accept-charset"));
     new->avail_vars = make_array (r->pool, 40, sizeof (var_rec));
 
-    /* Now we check for q-values. If they're all 1.0, we assume the
-     * client is "broken", and we are allowed to fiddle with the
-     * values later. Otherwise, we leave them alone.
-     */
+#ifdef HOLTMAN
+    if (table_get(r->headers_in, "Negotiate")) {
+        /* Negotiate: header tells us UA does transparent negotiation
+         * We have to decide whether we want to ... for now, yes,
+         * we do */
+
+        new->ua_can_negotiate = 1;
+        if (r->method_number == M_GET)
+            new->use_transparent_neg = 1; /* should be configurable */
+
+        /* Check for 'Short Accept', ie either no Accept: header,
+         * or just "Accept: * / *" */
+        if (new->accepts->nelts == 0 || 
+            (new->accepts->nelts == 1 &&
+            (!strcmp(((accept_rec *)new->accepts->elts)[0].type_name, 
+                                               "*/*")))) {
+            /* Using short accept header */
+            new->short_accept_headers = 1;
+        }
+    }
+#endif
+
+    if (!new->use_transparent_neg) {
+        /* Now we check for q-values. If they're all 1.0, we assume the
+         * client is "broken", and we are allowed to fiddle with the
+         * values later. Otherwise, we leave them alone.
+         */
     
-    elts = (accept_rec *)new->accepts->elts;
-
-    for (i = 0; i < new->accepts->nelts; ++i)
-	if (elts[i].quality < 1.0) new->accept_q = 1;
-
+        elts = (accept_rec *)new->accepts->elts;
+    
+        for (i = 0; i < new->accepts->nelts; ++i)
+            if (elts[i].quality < 1.0) new->accept_q = 1;
+    }
+    
     return new;
 }
 
@@ -449,7 +537,7 @@ enum header_state get_header_line (char *buffer, int len, FILE *map)
 	     */
 	    
 	    while (c != EOF && c != '\n' && isspace(c))
-	        c = getc(map);
+		c = getc(map);
 
 	    ungetc (c, map);
 	    
@@ -458,7 +546,7 @@ enum header_state get_header_line (char *buffer, int len, FILE *map)
 	    /* Continuation */
 
 	    while (cp < buf_end - 2 && (c = getc(map)) != EOF && c != '\n')
-	        *cp++ = c;
+		*cp++ = c;
 
 	    *cp++ = '\n';
 	    *cp = '\0';
@@ -487,7 +575,7 @@ void strip_paren_comments (char *hdr)
 	    ++hdr;
 	}
 	else if (*hdr == '(') {
-	    while (*hdr && *hdr != ')')	*hdr++ = ' ';
+	    while (*hdr && *hdr != ')') *hdr++ = ' ';
 	    
 	    if (*hdr) *hdr++ = ' ';
 	}
@@ -547,7 +635,7 @@ int read_type_map (negotiation_state *neg, char *map_name)
 	    strip_paren_comments (body);
 	    
 	    if (!strncmp (buffer, "uri:", 4)) {
-	        mime_info.file_name = get_token (neg->pool, &body, 0);
+		mime_info.file_name = get_token (neg->pool, &body, 0);
 	    }
 	    else if (!strncmp (buffer, "content-type:", 13)) {
 		struct accept_rec accept_info;
@@ -566,11 +654,19 @@ int read_type_map (negotiation_state *neg, char *map_name)
 		mime_info.content_encoding = get_token (neg->pool, &body, 0);
 		str_tolower (mime_info.content_encoding);
 	    }
-	} else {
-	    if (mime_info.quality > 0) {
-	        void *new_var = push_array (neg->avail_vars);
-		memcpy (new_var, (void *)&mime_info, sizeof (var_rec));
+	    else if (!strncmp (buffer, "description:", 12)) {
+		mime_info.description = get_token (neg->pool, &body, 0);
 	    }
+	} else {
+#ifdef NOTDEF
+	    if (mime_info.quality > 0)
+#endif
+	    if (*mime_info.file_name)
+		{
+		    void *new_var = push_array (neg->avail_vars);
+		    memcpy (new_var, (void *)&mime_info, sizeof (var_rec));
+		}
+
 	    
 	    clean_var_rec(&mime_info);
 	}
@@ -615,7 +711,7 @@ int read_types_multi (negotiation_state *neg)
     }
 
     while ((dir_entry = readdir (dirp))) {
-	
+        
         request_rec *sub_req;
       
 	/* Do we have a match? */
@@ -623,7 +719,7 @@ int read_types_multi (negotiation_state *neg)
 	if (strncmp (dir_entry->d_name, filp, prefix_len)) continue;
 	if (dir_entry->d_name[prefix_len] != '.') continue;
 	
-	/* Yep.  See if it's something which we have access to, and 
+	/* Yep.	 See if it's something which we have access to, and 
 	 * which has a known type and encoding (as opposed to something
 	 * which we'll be slapping default_type on later).
 	 */
@@ -658,9 +754,15 @@ int read_types_multi (negotiation_state *neg)
 	
 	mime_info.sub_req = sub_req;
 	mime_info.file_name = pstrdup(neg->pool, dir_entry->d_name);
-	mime_info.content_encoding = sub_req->content_encoding;
-	mime_info.content_language = sub_req->content_language;
-	
+	if (sub_req->content_encoding) {
+	    mime_info.content_encoding = sub_req->content_encoding;
+	    str_tolower(mime_info.content_encoding);
+	}
+	if (sub_req->content_language) {
+	    mime_info.content_language = sub_req->content_language;
+	    str_tolower(mime_info.content_language);
+	}
+
 	get_entry (neg->pool, &accept_info, sub_req->content_type);
 	set_mime_fields (&mime_info, &accept_info);
 	
@@ -698,16 +800,16 @@ int mime_match (accept_rec *accept, var_rec *avail)
     char *avail_type = avail->type_name;
     int len = strlen(accept_type);
   
-    if (accept_type[0] == '*')	{ /* Anything matches star/star */
+    if (accept_type[0] == '*')  { /* Anything matches star/star */
         if (avail->mime_stars < 1)
-	  avail->mime_stars = 1;
-	return 1; 
+          avail->mime_stars = 1;
+        return 1; 
     }
     else if ((accept_type[len - 1] == '*') &&
-	     !strncmp (accept_type, avail_type, len - 2)) {
+             !strncmp (accept_type, avail_type, len - 2)) {
         if (avail->mime_stars < 2)
-	  avail->mime_stars = 2;
-	return 1;
+          avail->mime_stars = 2;
+        return 1;
     }
     else if (!strcmp (accept_type, avail_type)
 	     || (!strcmp (accept_type, "text/html")
@@ -753,10 +855,10 @@ int level_cmp (var_rec *var1, var_rec *var2)
     /* Levels are only comparable between matching media types */
 
     if (var1->is_pseudo_html && !var2->is_pseudo_html)
-	return 0;
+        return 0;
     
     if (!var1->is_pseudo_html && strcmp (var1->type_name, var2->type_name))
-	return 0;
+        return 0;
     
     /* Take highest level that matched, if either did match. */
     
@@ -773,12 +875,23 @@ int level_cmp (var_rec *var1, var_rec *var2)
     return 0;
 }
 
-/* Finding languages.  Note that we only match the substring specified
- * by the Accept: line --- this is to allow "en" to match all subvariants
- * of English. We then do it in the other direction, so that all
- * subvariants of English match "en".
+/* Finding languages.  The main entry point is set_language_quality()
+ * which is called for each variant. It sets two elements in the
+ * variant record:
+ *    language_quality  - the 'q' value of the 'best' matching language
+ *                        from Accept-Language: header (HTTP/1.1)
+ *    lang_index    -     Pre HTTP/1.1 language priority, using
+ *                        position of language on the Accept-Language:
+ *                        header, if present, else LanguagePriority
+ *                        directive order.
  *
- * Again, strcmp() is legit because we've ditched case already.
+ * When we do the variant checking for best variant, we use language
+ * quality first, and if a tie, language_index next (this only
+ * applies when _not_ using the network algorithm). If using
+ * network algorithm, lang_index is never used.
+ *
+ * set_language_quality() calls find_lang_index() and find_default_index()
+ * to set lang_index.
  */
 
 int find_lang_index (array_header *accept_langs, char *lang)
@@ -787,18 +900,15 @@ int find_lang_index (array_header *accept_langs, char *lang)
     int i;
 
     if (!lang)
-	return -1;
+        return -1;
 
     accs = (accept_rec *)accept_langs->elts;
 
-    for (i = 0; i < accept_langs->nelts; ++i) {
-	if (!strncmp (lang, accs[i].type_name, strlen(accs[i].type_name)))
-	    return i;
-	if (!strncmp (lang, accs[i].type_name, strlen(lang)))
-	    return i;
-    }
-	    
-    return -1;		
+    for (i = 0; i < accept_langs->nelts; ++i)
+        if (!strncmp (lang, accs[i].type_name, strlen(accs[i].type_name)))
+            return i;
+            
+    return -1;          
 }
 
 /* This function returns the priority of a given language
@@ -814,7 +924,7 @@ int find_default_index (neg_dir_config *conf, char *lang)
     int i;
 
     if (!lang)
-	return -1;
+        return -1;
 
     arr = conf->language_priority;
     nelts = arr->nelts;
@@ -822,89 +932,158 @@ int find_default_index (neg_dir_config *conf, char *lang)
 
     for (i = 0; i < nelts; ++i)
         if (!strcasecmp (elts[i], lang))
-	    return i;
+            return i;
 
     return -1;
 }
 
-void find_lang_indexes (negotiation_state *neg)
-{
-    var_rec *var_recs = (var_rec*)neg->avail_vars->elts;
-    int i;
-    int found_any = 0;
-    neg_dir_config *conf = NULL;
-    int naccept = neg->accept_langs->nelts;
-
-    if (naccept == 0)
-	conf = (neg_dir_config *) get_module_config (neg->r->per_dir_config,
-						     &negotiation_module);
-
-    for (i = 0; i < neg->avail_vars->nelts; ++i)
-	if (var_recs[i].quality > 0) {
-	    int index;
-	    if (naccept == 0)		/* Client doesn't care */
-		index = find_default_index (conf,
-					    var_recs[i].content_language);
-	    else			/* Client has Accept-Language */
-		index = find_lang_index (neg->accept_langs,
-					 var_recs[i].content_language);
-
-	    var_recs[i].lang_index = index;
-	    if (index >= 0) found_any = 1;
-	}
-
-    /* If we have any variants in a language acceptable to the client,
-     * blow away everything that isn't.
-     */
-    
-    if (found_any)
-	for (i = 0; i < neg->avail_vars->nelts; ++i) 
-	    if (var_recs[i].lang_index < 0)
-		var_recs[i].quality = 0;
-}
-
-/* Finding content encodings.  Note that we assume that the client
- * accepts the trivial encodings.  Strcmp() is legit because... aw, hell.
+/* set_default_lang_quality() sets the quality we apply to variants
+ * which have no language assigned to them. If none of the variants
+ * have a language, we are not negotiating on language, so all are
+ * acceptable, and we set the default q value to 1.0. However if
+ * some of the variants have languages, we set this default to 0.001.
+ * The value of this default will be applied to all variants with
+ * no explicit language -- which will have the effect of making them
+ * acceptable, but only if no variants with an explicit language
+ * are acceptable. The default q value set here is assigned to variants
+ * with no language type in set_language_quality().
  */
 
-int is_identity_encoding (char *enc)
+void set_default_lang_quality(negotiation_state *neg)
 {
-    return (!enc || !enc[0] || !strcmp (enc, "7bit") || !strcmp (enc, "8bit")
-	    || !strcmp (enc, "binary"));
+    var_rec *avail_recs = (var_rec *)neg->avail_vars->elts;
+    int j;
+
+    for (j = 0; j < neg->avail_vars->nelts; ++j) {
+        var_rec *variant = &avail_recs[j];
+	if (variant->content_language && *variant->content_language) {
+	    neg->default_lang_quality = 0.001;
+	    return;
+	}
+    }
+	  
+    neg->default_lang_quality = 1.0;
 }
 
-int find_encoding (array_header *accept_encodings, char *enc)
+/* Set the language_quality value in the variant record. Also
+ * assigns lang_index for back-compat. 
+ *
+ * To find the language_quality value, we look for the 'q' value
+ * of the 'best' matching language on the Accept-Language:
+ * header. The'best' match is the language on Accept-Language:
+ * header which matches the language of this variant either fully,
+ * or as far as the prefix marker (-). If two or more languages
+ * match, use the longest string from the Accept-Language: header
+ * (see HTTP/1.1 [14.4])
+ *
+ * If the variant has no language and we have no Accept-Language
+ * items, leave the quality at 1.0 and return.
+ *
+ * If the variant has no language, we use the default as set by
+ * set_default_lang_quality() (1.0 if we are not negotiating on
+ * language, 0.001 if we are).
+ *
+ * Following the setting of the language quality, we drop through to
+ * set the old 'lang_index'. This is set based on either the order
+ * of the languages on the Accept-Language header, or the
+ * order on the LanguagePriority directive. This is only used
+ * in the negotiation if the language qualities tie.
+ */
+
+void set_language_quality(negotiation_state *neg, var_rec *variant)
 {
-    accept_rec *accs = (accept_rec *)accept_encodings->elts;
+    accept_rec *accs, *best = NULL, *star = NULL;
     int i;
+    char *lang = variant->content_language;
+    int prefixlen;
+    char *p;
+    int naccept = neg->accept_langs->nelts;
+    int index;
+    neg_dir_config *conf;
+    int longest_lang_range_len = 0;
+    int len;
 
-    if (is_identity_encoding(enc)) return 1;
+    if (naccept == 0)
+        conf = (neg_dir_config *) get_module_config (neg->r->per_dir_config,
+                                                     &negotiation_module);
 
-    for (i = 0; i < accept_encodings->nelts; ++i)
-	if (!strcmp (enc, accs[i].type_name))
-	    return 1;
+    if (naccept == 0 && (!lang || !*lang))
+        return;                 /* variant has no assigned language */
 
-    return 0;
-}
+    p = strchr(lang, '-');      /* find prefix part (if any) */
+    if (p)
+        prefixlen = p - lang; 
 
-void do_encodings (negotiation_state *neg)
-{
-    var_rec *var_recs = (var_rec*)neg->avail_vars->elts;
-    int i;
+    if (!lang || !*lang) {
+        /* This variant has no content-language, so use the default
+	 * quality factor for variants with no content-language
+	 * (previously set by set_default_lang_quality()). */
+        variant->lang_quality = neg->default_lang_quality;
+    }
+    else if (naccept) {
+	float fiddle_q = 0.0;
 
-    /* If no Accept-Encoding is present, everything is acceptable */
+        accs = (accept_rec *)neg->accept_langs->elts;
 
-    if (!neg->accept_encodings->nelts)
-	return;
+        for (i = 0; i < neg->accept_langs->nelts; ++i) {
+            if (!strcmp(accs[i].type_name, "*")) {
+                star = &accs[i];
+                continue;
+            }
+            
+            /* Find language. We match if either the variant language
+	     * tag exactly matches, or the prefix of the tag up to the
+	     * '-' character matches the whole of the language in the
+	     * Accept-Language header */
+            if ((!strcmp (lang, accs[i].type_name) ||
+                 (prefixlen &&
+                  !strncmp(lang, accs[i].type_name, prefixlen) &&
+		  (accs[i].type_name[prefixlen] == '\0'))) &&
+                ((len = strlen(accs[i].type_name)) > 
+                                     longest_lang_range_len)) {
+                longest_lang_range_len = len;
+                best = &accs[i];
+            }
 
-    /* Lose any variant with an unacceptable content encoding */
-    
-    for (i = 0; i < neg->avail_vars->nelts; ++i)
-	if (var_recs[i].quality > 0
-	    && !find_encoding (neg->accept_encodings,
-			       var_recs[i].content_encoding))
-	    
-	    var_recs[i].quality = 0;
+	    if (! best) {
+	        /* The next bit is a fiddle. Some browsers might be
+		 * configured to send more specific language ranges
+		 * than desirable. For example, an Accept-Language of
+		 * en-US should never match variants with languages en
+		 * or en-GB. But US English speakers might pick en-US
+		 * as their language choice.  So this fiddle checks if
+		 * the language range has a prefix, and if so, it
+		 * matches variants which match that prefix with a
+		 * priority of 0.001. So a request for en-US would
+		 * match variants of types en and en-GB, but at much
+		 * lower priority than matches of en-US directly, or
+		 * of any other language listed on the Accept-Language
+		 * header
+		 */
+	        if (p = strchr(accs[i].type_name, '-')) {
+		    int plen = p - accs[i].type_name;
+		    if (!strncmp(lang, accs[i].type_name, plen))
+			fiddle_q = 0.001;
+		}
+	    }
+            
+        }
+	
+        variant->lang_quality = best ? best->quality : 
+	                     (star ? star->quality : fiddle_q);
+    }
+
+    /* Now set the old lang_index field */
+    index = 0;
+    if (naccept == 0)           /* Client doesn't care */
+        index = find_default_index (conf,
+                                    variant->content_language);
+    else                        /* Client has Accept-Language */
+        index = find_lang_index (neg->accept_langs,
+                                 variant->content_language);
+    variant->lang_index = index;
+
+    return;             
 }
 
 /* Determining the content length --- if the map didn't tell us,
@@ -921,164 +1100,610 @@ int find_content_length(negotiation_state *neg, var_rec *variant)
 
     if (variant->bytes == 0) {
         char *fullname = make_full_path (neg->pool, neg->dir_name,
-					 variant->file_name);
-	
-	if (stat (fullname, &statb) >= 0) variant->bytes = statb.st_size;
+                                         variant->file_name);
+        
+        if (stat (fullname, &statb) >= 0) variant->bytes = statb.st_size;
     }
 
     return variant->bytes;
 }
 
-/* The main event. */
+/* For a given variant, find the best matching Accept: header
+ * and assign the Accept: header's quality value to the
+ * accept_type_quality field of the variant, for later use in
+ * determining the best matching variant.
+ */
 
-var_rec *best_match(negotiation_state *neg)
+void set_accept_quality(negotiation_state *neg, var_rec *variant)
 {
-    int i, j;
-    var_rec *best = NULL;
-    float best_quality = 0.0;
-    int levcmp;
-    
+    int i;
     accept_rec *accept_recs = (accept_rec *)neg->accepts->elts;
-    var_rec *avail_recs = (var_rec *)neg->avail_vars->elts;
+    float q = 0.0;
 
-    /* Nuke variants which are unsuitable due to a content encoding,
-     * or possibly a language, which the client doesn't accept.
-     * (If we haven't *got* a variant in a language the client accepts,
-     * find_lang_indexes keeps 'em all, so we still wind up serving
-     * something...).
+    /* if no Accept: header, leave quality alone (will
+     * remain at the default value of 1) */
+    if (!neg->accepts || neg->accepts->nelts == 0) 
+        return;
+
+    /*
+     * Go through each of the ranges on the Accept: header,
+     * looking for the 'best' match with this variant's
+     * content-type. We use the best match's quality
+     * value (from the Accept: header) for this variant's
+     * accept_type_quality field.
+     *
+     * The best match is determined like this:
+     *    type/type is better than type/ * is better than * / *
+     *    if match is type/type, use the level mime param if available
      */
-    
-    do_encodings (neg);
-    find_lang_indexes (neg);
-    
     for (i = 0; i < neg->accepts->nelts; ++i) {
 
-	accept_rec *type = &accept_recs[i];
-	
-	for (j = 0; j < neg->avail_vars->nelts; ++j) {
-	    
-	    var_rec *variant = &avail_recs[j];
-	    float q, quality = type->quality;
+        accept_rec *type = &accept_recs[i];
+        int prev_mime_stars;
+            
+        prev_mime_stars = variant->mime_stars;
 
-	    /* If we've already rejected this variant, don't waste time */
-	    
-	    if (variant->quality == 0.0) continue;	
-	    
-	    /* If media types don't match, forget it.
-	     * (This includes the level check).
-	     */
-	    
-	    if (!mime_match(type, variant)) continue;
+        if (!mime_match(type, variant)) 
+            continue;           /* didn't match the content type at all */
+        else 
+            /* did match - see if there were less or more stars than
+             * in previous match
+             */
+            if (prev_mime_stars == variant->mime_stars)
+                continue;       /* more stars => not as good a match */
 
-	    /* If we are allowed to mess with the q-values,
-	     * make wildcards very low, so we have a low chance
-	     * of ending up with them if there's something better.
-	     */
-	    
-	    if (!neg->accept_q && variant->mime_stars == 1) quality = 0.01;
-	    if (!neg->accept_q && variant->mime_stars == 2) quality = 0.02;
+        /* Check maxbytes -- not in HTTP/1.1 or Holtman */
+                
+        if (type->max_bytes > 0
+            && (find_content_length(neg, variant)
+                > type->max_bytes))
+            continue;
+        
+        /* If we are allowed to mess with the q-values,
+         * make wildcards very low, so we have a low chance
+         * of ending up with them if there's something better.
+         */
 
-	    q = quality * variant->quality;
-
-	    /* Check maxbytes */
-		
-	    if (type->max_bytes > 0
-		&& (find_content_length(neg, variant)
-		    > type->max_bytes))
-		continue;
-		
-	    /* If it lasted this far, consider it ---
-	     * If better quality than our current best, take it.
-	     * If equal quality, *maybe* take it.
-	     *
-	     * Note that the current http draft specifies no particular
-	     * behavior for variants which tie in quality; the server
-	     * can, at its option, return a 300 response listing all
-	     * of them (and perhaps the others), or choose one of the
-	     * tied variants by whatever means it likes.  This server
-	     * breaks ties as follows, in order:
-	     *
-	     * By perferring non-wildcard entries to those with
-	     * wildcards. The spec specifically says we should
-	     * do this, and it makes a lot of sense.
-	     *
-	     * By order of languages in Accept-language, to give the
-	     * client a way to specify a language preference.  I'd prefer
-	     * to give this precedence over media type, but the standard
-	     * doesn't allow for that.
-	     *
-	     * By level preference, as defined by level_cmp above.
-	     *
-	     * By order of Accept: header matched, so that the order in
-	     * which media types are named by the client functions as a
-	     * preference order, if the client didn't give us explicit
-	     * quality values.
-	     *
-	     * Finally, by content_length, so that among variants which
-	     * have the same quality, language and content_type (including
-	     * level) we ship the one that saps the least bandwidth.
-	     */
-		
-	    if (q > best_quality
-		|| (q == best_quality
-		    && ((variant->mime_stars > best->mime_stars)
-			|| (variant->lang_index < best->lang_index
-			    || (variant->lang_index == best->lang_index
-				&& ((levcmp = level_cmp (variant, best)) == 1
-				    || (levcmp == 0
-					&& (find_content_length(neg, variant)
-					    <
-				         find_content_length(neg, best)))))))))
-	    {
-		best = variant;
-		best_quality = q;
-	    }
-	}
+        if (!neg->accept_q && variant->mime_stars == 1) q = 0.01;
+        else if (!neg->accept_q && variant->mime_stars == 2) q = 0.02;
+        else q = type->quality;
     }
+    variant->accept_type_quality = q;
 
-    return best;
+    /* if the _best_ quality we got for this variant was 0.0,
+     * eliminate it now */
 }
 
-char *set_vary (pool *p, negotiation_state *neg)
+/* For a given variant, find the 'q' value of the charset given
+ * on the Accept-Charset line. If not charsets are listed,
+ * assume value of '1'.
+ */
+
+void set_charset_quality(negotiation_state *neg, var_rec *variant)
 {
-    var_rec *var_recs = (var_rec*)neg->avail_vars->elts;
     int i;
-    int accept_type, accept_enc, accept_lang;
-    char *type, *enc, *lang;
-    char *last_type, *last_enc, *last_lang;
+    accept_rec *accept_recs = (accept_rec *)neg->accept_charsets->elts;
+    float q = 0.0;
+    char *charset = variant->content_charset;
 
-    accept_type = accept_enc = accept_lang = 0;
-    last_type = last_enc = last_lang = NULL;
+    if (!charset)
+        return;                 /* variant has no charset */
 
-    /* Go through each variant and check for a differing
-     * type, encoding or type.
+    /* if no Accept-Charset: header, leave quality alone (will
+     * remain at the default value of 1) */
+    if (!neg->accept_charsets || neg->accept_charsets->nelts == 0) 
+        return;
+
+    if (!*charset || !strcmp(charset, "iso-8859-1"))
+        return;                 /* default charset always ok */
+
+
+    /*
+     * Go through each of the items on the Accept-Charset: header,
+     * looking for a match with this variant's charset. If none
+     * match, charset is unacceptable, so set quality to 0.
      */
+    for (i = 0; i < neg->accept_charsets->nelts; ++i) {
 
-    for (i = 0; i < neg->avail_vars->nelts; ++i) {
-	/* Ideally, we wouldn't have to do this, but strcmp(NULL, NULL)
-	 * isn't legal
-	 */
-	type = var_recs[i].type_name ? var_recs[i].type_name : "";
-        enc = var_recs[i].content_encoding ? var_recs[i].content_encoding : "";
-       lang = var_recs[i].content_language ? var_recs[i].content_language : "";
+        accept_rec *type = &accept_recs[i];
+            
+        if (!strcmp(type->type_name, charset)) {
+            variant->charset_quality = type->quality;
+            return;
+        }
+    }
+    variant->charset_quality = 0.0;
+}
 
-	if (!accept_type && last_type && strcmp(last_type, type))
-	    accept_type = 1;
-	else if (!accept_type && !last_type) last_type = type;
+/* For a given variant, find the best matching Accept: header
+ * and assign the Accept: header's quality value to the
+ * accept_type_quality field of the variant, for later use in
+ * determining the best matching variant.
+ */
 
-	if (!accept_enc && last_enc && strcmp(last_enc, enc))
-	    accept_enc = 1;
-	else if (!accept_enc && !last_enc) last_enc = enc;
+/* is_identity_encoding is included for back-compat, but does anyone
+ * use 7bit, 8bin or binary in their var files??
+ */
 
-	if (!accept_lang && last_lang && strcmp(last_lang, lang))
-	    accept_lang = 1;
-	else if (!accept_lang && !last_lang) last_lang = lang;
+int is_identity_encoding (char *enc)
+{
+    return (!enc || !enc[0] || !strcmp (enc, "7bit") || !strcmp (enc, "8bit")
+            || !strcmp (enc, "binary"));
+}
+
+void set_encoding_quality(negotiation_state *neg, var_rec *variant)
+{
+    int i;
+    accept_rec *accept_recs = (accept_rec *)neg->accept_encodings->elts;
+    char *enc = variant->content_encoding;
+
+    if (!enc || is_identity_encoding(enc))
+        return;
+    
+
+    /* if no Accept: header, leave quality alone (will
+     * remain at the default value of 1) */
+    if (neg->accept_encodings->nelts == 0) {
+        /* If we had an empty Accept-Encoding header, assume that
+	 * no encodings are acceptable, else all encodings are ok */
+        variant->encoding_quality = neg->have_accept_header ? 0 : 1;
+        return;
     }
 
-    if (!accept_type && !accept_enc && !accept_lang) return NULL;
-    else return 2 + pstrcat(p, accept_type ? ", Accept" : "",
-			    accept_enc ? ", Accept-Encoding" : "",
-			    accept_lang ? ", Accept-Language" : "", NULL);
+    /* Go through each of the encodings on the Accept-Encoding: header,
+     * looking for a match with our encoding
+     */
+    for (i = 0; i < neg->accept_encodings->nelts; ++i) {
+        char *name = accept_recs[i].type_name;
+
+        if (!strcmp(name, enc)) {
+            variant->encoding_quality = 1;
+            return;
+        }
+    }
+
+    /* Encoding not found on Accept-Encoding: header, so it is
+     * _not_ acceptable */
+    variant->encoding_quality = 0;
+}
+
+/* Possible results of the network algorithm */
+enum algorithm_results {
+    na_not_applied = -1,        /* net algorithm not used */
+    na_choice = 1,              /* choose variant */
+    na_list                     /* list variants */
+};
+
+/*
+ * This is a heavily-rewritten 'best_match' function. For a start, it
+ * now returns an int, which has one of the three values: na_not_applied,
+ * na_choice or na_list, which give the result of the network algorithm
+ * (if it was not applied, the return value is na_not_applied).
+ * The best variable is returned in *pbest. It also has two possible
+ * algorithms for determining the best match: the network algorithm,
+ * and the standard Apache algorithm. These are split out into
+ * separate functions (is_variant_better_na() and is_variant_better()).
+ *
+ * Previously, best_match iterated first through the content_types
+ * in the Accept: header, then checked each variant, and eliminated
+ * those that didn't match the variant's type. We cannot do this because
+ * we need full information, including language, charset, etc
+ * quality for _every_ variant, for the Alternates: header,
+ * and (possibly) the human-readable choice responses or 406 errors.
+ *
+ * After the 'best' (if any) is determined, the overall result of
+ * the negotiation is obtained. If the network algorithm was not
+ * in use, the result is na_not_applied. Else the result is
+ * na_list if 'short accept header' is in use, else na_list
+ * if _no_ best match was found, or na_choice if a best match
+ * was found.
+ */
+
+/* Firstly, the negotiation 'network algorithm' from Holtman.
+ */
+
+int is_variant_better_na(negotiation_state *neg, var_rec *variant, var_rec *best, float *p_bestq)
+{
+    float bestq = *p_bestq, q;
+
+    /* Note: Encoding is not negotiated in the Holtman
+     * transparent neg draft, so we ignored it here. But
+     * it does mean we could return encodings the UA
+     * or proxy cannot handle. Eek. */
+    
+    q = variant->accept_type_quality *
+        variant->type_quality *
+        variant->charset_quality *
+        variant->lang_quality;
+    
+#ifdef NEG_DEBUG
+    fprintf(stderr, "Variant: file=%s type=%s lang=%s acceptq=%1.3f langq=%1.3f typeq=%1.3f q=%1.3f\n",
+            variant->file_name ? variant->file_name : "",
+            variant->type_name ? variant->type_name : "",
+            variant->content_language ? variant->content_language : "",
+            variant->accept_type_quality,
+            variant->lang_quality,
+            variant->type_quality,
+            q
+            );
+#endif
+    
+    if (q > bestq) {
+        *p_bestq = q;
+        return 1;
+    }
+    return 0;
+}    
+
+/* Negotiation algorithm as used by previous versions of Apache
+ * (just about). 
+ */
+
+float is_variant_better(negotiation_state *neg, var_rec *variant, var_rec *best, float *p_bestq)
+{
+    float bestq = *p_bestq, q;
+    int levcmp;
+
+    /*
+     * For non-transparent negotiation, server can choose how
+     * to handle the negotiation. We'll use the following in
+     * order: content-type, language, content-type level, charset,
+     * content length.
+     *
+     * For each check, we have three possible outcomes:
+     *   This variant is worse than current best: return 0
+     *   This variant is better than the current best:
+     *          assign this variant's q to *p_bestq, and return 1
+     *   This variant is just as desirable as the current best:
+     *          drop through to the next test.
+     *
+     * This code is written in this long-winded way to allow future
+     * customisation, either by the addition of additional
+     * checks, or to allow the order of the checks to be determined
+     * by configuration options (e.g. we might prefer to check
+     * language quality _before_ content type).
+     */
+
+    /* First though, eliminate this variant if it is not
+     * acceptable by type, charset, encoding or language.
+     */
+
+    if (variant->encoding_quality == 0 ||
+        variant->lang_quality == 0 ||
+        variant->type_quality == 0 ||
+        variant->charset_quality == 0 ||
+        variant->accept_type_quality == 0)
+        return 0;               /* don't consider unacceptables */
+    
+    q = variant->accept_type_quality * variant->type_quality;
+    if (q == 0.0 || q < bestq) return 0;
+    if (q > bestq || !best) {
+        *p_bestq = q;
+        return 1;
+    }
+    
+    /* language */
+    if (variant->lang_quality < best->lang_quality)
+        return 0;
+    if (variant->lang_quality > best->lang_quality) {
+        *p_bestq = q;
+        return 1;
+    }
+    
+    /* if language qualities were equal, try the LanguagePriority
+     * stuff */
+    if (variant->lang_index > best->lang_index)
+        return 0;
+    if (variant->lang_index < best->lang_index) {
+        *p_bestq = q;
+        return 1;
+    }
+    
+    /* content-type level (text/html only?) */
+    levcmp = level_cmp (variant, best);
+    if (levcmp == -1) return 0;
+    if (levcmp == 1) {
+        *p_bestq = q;
+        return 1;
+    }
+    
+    /* encoding -- can only be 1 or 0, and if 0 we eliminated this
+     * variant at the start of this function. However we 
+     * prefer variants with no encoding over those with encoding */
+    if (!*best->content_encoding && *variant->content_encoding)
+	return 0;
+    if (*best->content_encoding && !*variant->content_encoding) {
+	*p_bestq = q;
+	return 1;
+    }
+    
+
+    /* charset */
+    if (variant->charset_quality < best->charset_quality)
+        return 0;
+    if (variant->charset_quality > best->charset_quality) {
+        *p_bestq = q;
+        return 1;
+    }
+    
+    
+    /* content length if all else equal */
+    if (find_content_length(neg, variant)
+         >=
+         find_content_length(neg, best))
+        return 0;
+    
+    /* ok, to get here means every thing turned out equal, except
+     * we have a shorter content length, so use this variant */
+    *p_bestq = q;
+    return 1;
+}
+
+int best_match(negotiation_state *neg, var_rec **pbest)
+{
+    int j;
+    var_rec *best = NULL;
+    float bestq = 0.0;
+    enum algorithm_results algorithm_result = na_not_applied;
+    
+    var_rec *avail_recs = (var_rec *)neg->avail_vars->elts;
+
+    set_default_lang_quality(neg);
+
+    /*
+     * Find the 'best' variant
+     */
+
+    for (j = 0; j < neg->avail_vars->nelts; ++j) {
+            
+        var_rec *variant = &avail_recs[j];
+
+        /* Find all the relevant 'quality' values from the
+         * Accept... headers, and store in the variant
+         */
+        set_accept_quality(neg, variant);
+        set_language_quality(neg, variant);
+        set_encoding_quality(neg, variant);
+        set_charset_quality(neg, variant);
+
+        /* Now find out if this variant is better than the current
+         * best, either using the network algorithm, or Apache's
+         * internal server-driven algorithm. Presumably other
+         * server-driven algorithms are possible, and could be
+         * implemented here.
+         */
+
+        if (neg->use_transparent_neg) {
+            if (is_variant_better_na(neg, variant, best, &bestq))
+                best = variant;
+        } 
+        else {
+            if (is_variant_better(neg, variant, best, &bestq))
+                best = variant;
+        }
+    }
+
+    /* We now either have a best variant, or no best variant 
+     */
+    if (neg->use_transparent_neg) {
+        if (neg->short_accept_headers)
+            algorithm_result = na_list;
+        else {
+            /* From Holtman, result is:
+             *   If variant & URI are not neigbors, list_ua or list_os
+             *   Else
+             *     If UA can do trans neg
+             *        IF best q > 0, choice_ua 
+             *        ELSE           list_ua
+             *     ELSE
+             *        IF best  > 0, choose_os
+             *        ELSE          list_os (or forward_os on proxy)
+             */
+
+            /* assume variant and URI are neigbors (since URI in
+             * var map must be in same directory) */
+            
+            algorithm_result = bestq ? na_choice : na_list;
+        }
+    }   
+
+    *pbest = best;
+    return algorithm_result;
+}
+
+/*
+ * Sets the Alternates and Vary headers, used if we are going to
+ * return 406 Not Acceptable status, a 300 Multiple Choice status,
+ * or a Choice response.
+ *
+ * 'type' is the result of the network algorithm, if applied.
+ * We do different things if the network algorithm was not applied
+ * (type == na_not_applied): no Alternates header, and Vary:
+ * does not include 'negotiate'.
+ *
+ * We should also add a max-age lifetime for the Alternates header,
+ * but how long we we give it? Presumably this should be
+ * configurable in the map file.
+ */
+
+void set_neg_headers(request_rec *r, negotiation_state *neg, int na_result)
+{
+    int j;
+    var_rec *avail_recs = (var_rec *)neg->avail_vars->elts;
+    char *sample_type = NULL;
+    char *sample_language = NULL;
+    char *sample_encoding = NULL;
+    char *sample_charset = NULL;
+    int vary_by_type = 0;
+    int vary_by_language = 0;
+    int vary_by_charset = 0;
+    int vary_by_encoding = 0;
+    array_header *hdrs;
+
+    /* Question: do we output Alternates and Vary headers in the
+     * error document of 406 messages? I assume not here. But we
+     * definitely need to get these headers output when sending
+     * a 300 'error', so if the result of the network algorithm
+     * was a List response, set them in err_headers_out.
+     */
+    hdrs = (na_result == na_list) ? r->err_headers_out : r->headers_out;
+
+    for (j = 0; j < neg->avail_vars->nelts; ++j) {
+            
+        var_rec *variant = &avail_recs[j];
+        char *rec;
+        char qstr[6];
+        long len;
+        char lenstr[20];                /* is this long enough? */
+
+        sprintf(qstr, "%1.3f", variant->type_quality);
+
+        /* Strip trailing zeros (saves those valuable network bytes) */
+        if (qstr[4] == '0') {
+            qstr[4] = '\0';
+            if (qstr[3] == '0') {
+                qstr[3] = '\0';
+                if (qstr[2] == '0') {
+                    qstr[1] = '\0';
+                }
+            }
+        }
+                              
+
+        rec = pstrcat(r->pool, "{\"", variant->file_name, "\" ", qstr, NULL);
+        if (variant->type_name) {
+	    if (*variant->type_name)
+	        rec = pstrcat(r->pool, rec, " {type ", 
+			      variant->type_name, "}", NULL);
+	    if (!sample_type) sample_type = variant->type_name;
+	    else if (strcmp(sample_type, variant->type_name))
+	      vary_by_type = 1;
+        }
+        if (variant->content_language) {
+            if (*variant->content_language)
+                rec = pstrcat(r->pool, rec, " {language ", 
+                              variant->content_language, "}", NULL);
+            if (!sample_language) sample_language = variant->content_language;
+            else if (strcmp(sample_language, variant->content_language))
+                vary_by_language = 1;
+        }
+        if (variant->content_encoding) {
+            if (!sample_encoding) sample_encoding = variant->content_encoding;
+            else if (strcmp(sample_encoding, variant->content_encoding))
+                vary_by_encoding = 1;
+        }
+        if (variant->content_charset) {
+            if (*variant->content_charset)
+                rec = pstrcat(r->pool, rec, " {charset ", 
+                              variant->content_charset, "}", NULL);
+            if (!sample_charset) sample_charset = variant->content_charset;
+            else if (strcmp(sample_charset, variant->content_charset))
+                vary_by_charset = 1;
+        }
+        if ((len = find_content_length(neg, variant)) != 0) {
+            sprintf(lenstr, "%ld", len);
+            rec = pstrcat(r->pool, rec, " {length ", lenstr, "}", NULL);
+        }
+        
+        rec = pstrcat(r->pool, rec, "}", NULL);
+        
+        if (na_result != na_not_applied)
+            table_merge(hdrs, "Alternates", rec);
+    }
+
+    if (na_result != na_not_applied)
+        table_merge(hdrs, "Vary", "negotiate");
+    if (vary_by_type) 
+        table_merge(hdrs, "Vary", "accept");
+    if (vary_by_language) 
+        table_merge(hdrs, "Vary", "accept-language");
+    if (vary_by_charset) 
+        table_merge(hdrs, "Vary", "accept-charset");
+    if (vary_by_encoding && na_result == na_not_applied) 
+        table_merge(hdrs, "Vary", "accept-encoding");
+}
+
+/**********************************************************************
+ *
+ * Return an HTML list of variants. This is output as part of the
+ * 300 or 406 status body.
+ */
+
+char *make_variant_list (request_rec *r, negotiation_state *neg)
+{
+    int i;
+    char *t;
+
+    t = pstrdup(r->pool, "Available variants:\n<ul>\n");
+    for (i = 0; i < neg->avail_vars->nelts; ++i) {
+        var_rec *variant = &((var_rec *)neg->avail_vars->elts)[i];
+        char *filename = variant->file_name ? variant->file_name : "";
+        char *content_type = variant->type_name ? variant->type_name : "";
+        char *content_language = 
+            variant->content_language ? variant->content_language : "";
+        char *description = variant->description ? variant->description : "";
+
+	/* The format isn't very neat, and it would be nice to make
+	 * the tags human readable (eg replace 'language en' with
+	 * 'English'). */
+        t = pstrcat(r->pool, t, "<li><a href=\"", filename, "\">", 
+                    filename, "</a> ", description,
+                    " type ", content_type, 
+		    *content_language ? " language " : "", content_language, 
+		    "\n",
+                    NULL);
+    }
+    t = pstrcat(r->pool, t, "</ul>\n", NULL);
+
+    return t;
+}
+
+void store_variant_list (request_rec *r, negotiation_state *neg)
+{
+  table_set (r->notes, "variant-list", make_variant_list (r, neg));
+}
+
+/* Called if we got a "Choice" response from the network algorithm.
+ * It checks the result of the chosen variant to see if it
+ * is itself negotiated (if so, return error VARIANT_ALSO_VARIES).
+ * Otherwise, add the appropriate headers to the current response.
+ */
+
+int setup_choice_response(request_rec *r, negotiation_state *neg, var_rec *variant)
+{
+    request_rec *sub_req;
+    char *sub_vary;
+
+    if (!variant->sub_req) {
+        sub_req = sub_req_lookup_file(variant->file_name, r);
+        if (sub_req->status != 200 && sub_req->status != 300)
+            return sub_req->status;
+        variant->sub_req = sub_req;
+    }
+    else 
+        sub_req = variant->sub_req;
+    
+
+    /* The network algorithm told us to return a "Choice"
+     * response. This is the normal variant response, with
+     * some extra headers. First, ensure that the chosen
+     * variant did not itself return a "List" or "Choice" response.
+     * If not, set the appropriate headers, and fall through to
+     * the normal variant handling 
+     */
+
+    if ((sub_req->status == 300) ||
+        (table_get(sub_req->headers_out, "Alternates")) ||
+        (table_get(sub_req->headers_out, "Content-Location")))
+        return VARIANT_ALSO_VARIES;
+    
+    if ((sub_vary = table_get(sub_req->headers_out, "Vary")) != NULL)
+        table_set(r->headers_out, "Variant-Vary", sub_vary);
+    table_set(r->headers_out, "Content-Location", variant->file_name);
+    set_neg_headers(r, neg, na_choice); /* add Alternates and Vary */
+    /* to do: add Expires */
+
+    return 0;
 }
 
 /****************************************************************
@@ -1091,16 +1716,43 @@ int handle_map_file (request_rec *r)
     negotiation_state *neg = parse_accept_headers (r);
     var_rec *best;
     int res;
+    int na_result;
     
-    char *vary, *udir;
+    char *udir;
     
     if ((res = read_type_map (neg, r->filename))) return res;
     
     maybe_add_default_encodings(neg, 0);
     
-    if (!(best = best_match(neg))) {
+    na_result = best_match(neg, &best);
+
+    /* na_result is one of
+     *   na_not_applied: we didn't use the network algorithm
+     *   na_choice: return a "Choice" response
+     *   na_list: return a "List" response (no variant chosen)
+     */
+
+    if (na_result == na_list) {
+        set_neg_headers(r, neg, na_list);
+        store_variant_list (r, neg);
+        return MULTIPLE_CHOICES;
+    }
+
+    if (!best) {
       log_reason ("no acceptable variant", r->filename, r);
+
+      set_neg_headers(r, neg, na_result);
+      store_variant_list (r, neg);
       return NOT_ACCEPTABLE;
+    }
+
+    if (na_result == na_choice) {
+        if ((res = setup_choice_response(r, neg, best)) != 0)
+            return res;
+        
+        /* Run the request. Should we check the output status
+         * for REDIRECT?? */
+        return run_sub_req(best->sub_req);
     }
 
     /* Make sure caching works - Vary should handle HTTP/1.1, but for
@@ -1109,8 +1761,9 @@ int handle_map_file (request_rec *r)
      */
     if (!do_cache_negotiated_docs(r->server) && (r->proto_num < 1001))
         r->no_cache = 1;
-    if ((vary = set_vary(r->pool, neg)))
-	table_merge(r->err_headers_out, "Vary", vary);
+
+    if (na_result == na_not_applied)
+        set_neg_headers(r, neg, na_not_applied);
 
     udir = make_dirstr (r->pool, r->uri, count_dirs (r->uri));
     udir = escape_uri(r->pool, udir);
@@ -1123,8 +1776,8 @@ int handle_multi (request_rec *r)
     negotiation_state *neg;
     var_rec *best;
     request_rec *sub_req;
-    char *vary;
     int res;
+    int na_result;              /* result of network algorithm */
     
     if (r->finfo.st_mode != 0 || !(allow_options (r) & OPT_MULTI))
         return DECLINED;
@@ -1134,23 +1787,44 @@ int handle_multi (request_rec *r)
     if ((res = read_types_multi (neg))) return res;
     
     maybe_add_default_encodings(neg,
-				r->method_number != M_GET
-				  || r->args || r->path_info);
+                                r->method_number != M_GET
+                                  || r->args || r->path_info);
     
     if (neg->avail_vars->nelts == 0) return DECLINED;
     
-    if (!(best = best_match(neg))) {
+    na_result = best_match(neg, &best);
+    if (na_result == na_list) {
+        /*
+         * Network algorithm tols us to output a "List" response.
+	 * This is output at a 300 status code, which we will
+	 * return. The list of variants will be stored in r->notes
+	 * under the name "variants-list".
+         */
+        set_neg_headers(r, neg, na_list); /* set Alternates: and Vary: */
+
+        store_variant_list (r, neg);
+        return MULTIPLE_CHOICES;
+    }
+
+    if (!best) {
       log_reason ("no acceptable variant", r->filename, r);
+
+      set_neg_headers (r, neg, na_result);
+      store_variant_list (r, neg);
       return NOT_ACCEPTABLE;
     }
 
+    if (na_result == na_choice)
+        if ((res = setup_choice_response(r, neg, best)) != 0)
+            return res;
+
     if (! (sub_req = best->sub_req)) {
         /* We got this out of a map file, so we don't actually have
-	 * a sub_req structure yet.  Get one now.
-	 */
+         * a sub_req structure yet.  Get one now.
+         */
       
         sub_req = sub_req_lookup_file (best->file_name, r);
-	if (sub_req->status != 200) return sub_req->status;
+        if (sub_req->status != 200) return sub_req->status;
     }
       
     /* BLETCH --- don't multi-resolve non-ordinary files */
@@ -1161,8 +1835,9 @@ int handle_multi (request_rec *r)
     
     if (!do_cache_negotiated_docs(r->server) && (r->proto_num < 1001))
         r->no_cache = 1;
-    if ((vary = set_vary(r->pool, neg)))
-	table_merge(r->err_headers_out, "Vary", vary);
+
+    if (na_result == na_not_applied)
+        set_neg_headers(r, neg, na_not_applied);
 
     r->filename = sub_req->filename;
     r->handler = sub_req->handler;

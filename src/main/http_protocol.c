@@ -50,7 +50,7 @@
  *
  */
   
-/* $Id: http_protocol.c,v 1.46 1996/09/17 14:53:54 chuck Exp $ */
+/* $Id: http_protocol.c,v 1.47 1996/09/24 12:44:57 mjc Exp $ */
 
 /*
  * http_protocol.c --- routines which directly communicate with the
@@ -793,7 +793,7 @@ int get_basic_auth_pw (request_rec *r, char **pw)
     return OK;
 }
 
-#define RESPONSE_CODE_LIST " 200 206 301 302 304 400 401 403 404 405 406 411 412 500 503 501 502 "
+#define RESPONSE_CODE_LIST " 200 206 300 301 302 304 400 401 403 404 405 406 411 412 500 503 501 502 506"
 
 /* New Apache routine to map error responses into array indicies 
  *  e.g.  400 -> 0,  500 -> 1,  502 -> 2 ...                     
@@ -803,6 +803,7 @@ int get_basic_auth_pw (request_rec *r, char **pw)
 char *status_lines[] = {
    "200 OK",
    "206 Partial Content",
+   "300 Multiple Choices",
    "301 Moved Permanently",
    "302 Found",
    "304 Not Modified",
@@ -817,12 +818,14 @@ char *status_lines[] = {
    "500 Server error",
    "503 Out of resources",
    "501 Not Implemented",
-   "502 Bad Gateway"
+   "502 Bad Gateway",
+   "506 Variant Also Varies"
 }; 
 
 char *response_titles[] = {
    "200 OK",			/* Never actually sent, barring die(200,...) */
    "206 Partial Content",	/* Never sent as an error (we hope) */
+   "Multiple Choices",		/* 300 Multiple Choices */
    "Document moved",		/* 301 Redirect */
    "Document moved",		/* 302 Redirect */
    "304 Not Modified",		/* Never sent... 304 MUST be header only */
@@ -837,7 +840,8 @@ char *response_titles[] = {
    "Server Error",
    "Out of resources",
    "Method not implemented",
-   "Bad Gateway"
+   "Bad Gateway",
+   "Variant Also Varies"
 };
 
 int index_of_response(int err_no) {
@@ -1361,6 +1365,13 @@ void send_error_response (request_rec *r, int recursive_error)
 	    bvputs(fd, "An appropriate variant to the requested entity ",
 		   escape_html(r->pool, r->uri), " could not be found "
 		   "on this server.<P>\n", NULL);
+	    /* fall through */
+	case MULTIPLE_CHOICES: 
+	    {
+		char *list;
+		if (list = table_get (r->notes, "variant-list"))
+		    bputs(list, fd);
+	    }
 	    break;
 	case LENGTH_REQUIRED:
 	    bvputs(fd, "A request of the requested method ", r->method,
@@ -1389,6 +1400,11 @@ void send_error_response (request_rec *r, int recursive_error)
 	    bputs("The proxy server received an invalid\015\012", fd);
 	    bputs("response from an upstream server.<P>\015\012", fd);
 	    break;
+	case VARIANT_ALSO_VARIES:
+	    bvputs(fd, "A variant for the requested entity  ",
+		   escape_html(r->pool, r->uri), " is itself a ",
+		   "transparently negotiable resource.<P>\n", NULL);
+  	    break;
 	}
 
         if (recursive_error) {

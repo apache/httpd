@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: httpd.h,v 1.49 1996/09/03 00:31:27 akosut Exp $ */
+/* $Id: httpd.h,v 1.50 1996/09/24 12:44:58 mjc Exp $ */
 
 /*
  * httpd.h: header for simple (ha! not anymore) http daemon
@@ -255,6 +255,7 @@
 
 #define DOCUMENT_FOLLOWS 200
 #define PARTIAL_CONTENT 206
+#define MULTIPLE_CHOICES 300
 #define MOVED 301
 #define REDIRECT 302
 #define USE_LOCAL_COPY 304
@@ -270,7 +271,8 @@
 #define NOT_IMPLEMENTED 501
 #define BAD_GATEWAY 502
 #define HTTP_SERVICE_UNAVAILABLE 503
-#define RESPONSE_CODES 16
+#define VARIANT_ALSO_VARIES 506
+#define RESPONSE_CODES 18
 
 #define METHODS 8
 #define M_GET 0

@@ -1,6 +1,19 @@
-$Id: CHANGES,v 1.64 1996/09/17 14:58:30 chuck Exp $
+$Id: CHANGES,v 1.65 1996/09/24 12:45:00 mjc Exp $
 
 Changes with Apache 1.2b1:
+
+  *) Negotiation updated to implement all aspects of HTTP/1.1, including
+      charset and encoding negotiation. Now server-driven negotiation
+      can return a list of variants (the MULTIPLE_CHOICE response).
+      Some code included for transparent negotiation (not compiled
+      in by default). [Paul Sutton]
+
+  *) IP Virtual Hosts now work where the vhost IP address is the main
+      IP address of the host and the port s not the default port.
+      [Paul Sutton]
+
+  *) Domain names on 'allow' and 'deny' lines are now case-insensitive.
+      [Paul Sutton]
 
   *) Netscape 2.x keepalive fix, using BrowserMatch/mod_browser.
      [Chuck Murcko]
