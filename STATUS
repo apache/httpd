@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/01/11 06:10:50 $]
+Last modified at [$Date: 2001/01/12 14:32:38 $]
 
 Release:
 
@@ -86,6 +86,13 @@ RELEASE SHOWSTOPPERS:
             specifying --with-module on the configure line.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Mod_autoindex is still causing too many buckets and too many bucket
+      brigades to be created.  We need to improve the way the old ap_r*
+      functions interact with buckets.  This is being tabled until after
+      the beta.
+          See MSG: <Pine.LNX.4.21.0101111403150.1557-100000@koj>
+
     * The directives to setup output filters need to be re-visited.  These
       directives aren't consistent with what we already have, and they don't
       always make good sense.
