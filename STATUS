@@ -1,15 +1,12 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/01/26 15:33:41 $]
+  Last modified at [$Date: 2000/01/26 15:38:57 $]
 
 Release:
 
     1.3.12-dev: In development
     1.3.11: Tagged and rolled Jan. 19, 2000. Released and
             announced on the 21st.
-             PREBUILT BINARIES:
-              FreeBSD-2.2.8: Jim
-	      mips-ReliantUNIX-5.4: Martin
-	      i386-SINIX-5.4: Martin
+	     PREBUILT BINARIES: see table at bottom
 
     1.3.10: Not released. Pulled at "last minute" due to
             a build bug in the MPE port.
@@ -534,55 +531,55 @@ Win32 specific issues:
       cause instability - see PR#1729.
 
 
-Binaries (1.3.9):
+Binaries (1.3.11):
 
  Platform                      Avail.  Volunteer
  ------------------------------------------------------------------------------
  alpha-dec-osf3.0              no      Sameer Parekh
- alpha-dec-osf4.0              yes     Lars Eilebrecht, Ken Coar, Randy Terbush
- alpha-whatever-linux2         yes     Randy Terbush
+ alpha-dec-osf4.0              no      Lars Eilebrecht, Ken Coar, Randy Terbush
+ alpha-whatever-linux2         no      Randy Terbush
  armv4l-whatever-linux2        no      Rasmus Lerdorf
- hppa1.1-hp-hpux-10.x          yes     Rob Hartill, Randy Terbush
+ hppa1.1-hp-hpux-10.x          no      Rob Hartill, Randy Terbush
  i386-slackware-linux(a.out)   no      Sameer Parekh
  i386-sun-solaris2.5           no      Sameer Parekh
- i386-sun-solaris2.6           yes     Randy Terbush
+ i386-sun-solaris2.6           no      Randy Terbush
  i386-sun-solaris2.7           no      Cliff Skolnick
- i386-unixware-svr4            yes     Sameer Parekh, Randy Terbush
+ i386-unixware-svr4            no      Sameer Parekh, Randy Terbush
  i386-unknown-freebsd2.1       no      Andrew Wilson, Brian Tao
- i386-unknown-freebsd2.2.8     no      Jim Jagielski
+ i386-unknown-freebsd2.2.8     yes     Jim Jagielski
  i386-whatever-freebsd3.0      no      Ken Coar
  i386-whatever-freebsd3.0      no      Dirk-Willem van Gulik
  i686-pc-freebsd3.1            no      Ralf S. Engelschall
- i586-unknown-linux2           yes     Ralf S. Engelschall, Lars Eilebrecht, Randy Terbush
+ i586-unknown-linux2           no      Ralf S. Engelschall, Lars Eilebrecht, Randy Terbush
  i686-unknown-linux2           no      Lars Eilebrecht
- i686-whatever-linux2          yes     Ken Coar, Randy Terbush
+ i686-whatever-linux2          no      Ken Coar, Randy Terbush
  i386-unknown-linux(ELF)       no      Aram Mirzadeh, Michael Douglass
- i386-unknown-netBSD-1.3.2     yes     Lars Eilebrecht, Randy Terbush
+ i386-unknown-netBSD-1.3.2     no      Lars Eilebrecht, Randy Terbush
  i386-unknown-sco3             no      Ben Laurie
  i386-unknown-sco5             no      Ben Laurie
  i386-siemens-sinix5.4         yes     Martin Kraemer
- i386-dg-dgux5.4R2.01          yes     Randy Terbush
- x86-qnx-4.x                   yes     Randy Terbush
- x86-bsdos-3.x                 yes     Randy Terbush
- x86-bsdos-4.x                 yes     Randy Terbush
- x86-openbsd-2.x               yes     Randy Terbush
+ i386-dg-dgux5.4R2.01          no      Randy Terbush
+ x86-qnx-4.x                   no      Randy Terbush
+ x86-bsdos-3.x                 no      Randy Terbush
+ x86-bsdos-4.x                 no      Randy Terbush
+ x86-openbsd-2.x               no      Randy Terbush
  m68k-apple-aux3.1.1           no      Jim Jagielski
  m88k-dg-dgux5.4R2.01          no      Sameer parekh
  m88k-next-next                no      Rob Hartill
  mips-dec-ultrix4.4            no      Sameer Parekh
- mips-unknown-linux            yes     Lars Eilebrecht
- mips-sgi-irix5.3              yes     Mark Imbrianco, Randy Terbush
- mips-sgi-irix6.2              yes     Lars Eilebrecht, Randy Terbush
+ mips-unknown-linux            no      Lars Eilebrecht
+ mips-sgi-irix5.3              no      Mark Imbrianco, Randy Terbush
+ mips-sgi-irix6.2              no      Lars Eilebrecht, Randy Terbush
  mips-sgi-irix6.4              no      Lars Eilebrecht
  mips-siemens-reliantunix5.4   yes     Martin Kraemer
  OS/2                          yes     Brian Havard
  powerpc-apple-rhapsody5.3     no      Wilfredo Sanchez
  rs6000-ibm-aix3.2.5           no      Sameer Parekh
  rs6000-ibm-aix4.1             no      Lars Eilebrecht
- rs6000-ibm-aix4.2             yes     Bill Stoddard
- rs6000-ibm-aix4.3.x           yes     Bill Stoddard, Randy Terbush
- sparc-sun-solaris2.5          yes     Lars Eilebrecht, Randy Terbush
- sparc-sun-solaris2.6          yes     Lars Eilebrecht
+ rs6000-ibm-aix4.2             no      Bill Stoddard
+ rs6000-ibm-aix4.3.x           no      Bill Stoddard, Randy Terbush
+ sparc-sun-solaris2.5          no      Lars Eilebrecht, Randy Terbush
+ sparc-sun-solaris2.6          no      Lars Eilebrecht
  sparc-sun-solaris2.7          no      Cliff Skolnick
  sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
- sparc-unknown-linux           yes     Lars Eilebrecht, Randy Terbush
+ sparc-unknown-linux           no      Lars Eilebrecht, Randy Terbush
