@@ -30,10 +30,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-MTL=midl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "ApacheModuleProxy - Win32 Release"
 
 OUTDIR=.\Release
@@ -72,12 +68,46 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\include" /I "..\..\os\win32" /D\
  "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /D "WIN32_LEAN_AND_MEAN"\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
+
+.c{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+MTL=midl.exe
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheModuleProxy.bsc" 
 BSC32_SBRS= \
@@ -87,7 +117,8 @@ LINK32_FLAGS=kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll\
  /incremental:no /pdb:"$(OUTDIR)\ApacheModuleProxy.pdb"\
  /map:"$(INTDIR)\ApacheModuleProxy.map" /machine:I386\
  /out:"$(OUTDIR)\ApacheModuleProxy.dll"\
- /implib:"$(OUTDIR)\ApacheModuleProxy.lib" /base:@"BaseAddr.ref",mod_proxy 
+ /implib:"$(OUTDIR)\ApacheModuleProxy.lib"\
+ /base:@"../../os/win32/BaseAddr.ref",mod_proxy 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_proxy.obj" \
 	"$(INTDIR)\proxy_cache.obj" \
@@ -142,37 +173,12 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\include" /I\
  "..\..\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /D\
  "WIN32_LEAN_AND_MEAN" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
-MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheModuleProxy.bsc" 
-BSC32_SBRS= \
-	
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll\
- /incremental:no /pdb:"$(OUTDIR)\ApacheModuleProxy.pdb"\
- /map:"$(INTDIR)\ApacheModuleProxy.map" /debug /machine:I386\
- /out:"$(OUTDIR)\ApacheModuleProxy.dll"\
- /implib:"$(OUTDIR)\ApacheModuleProxy.lib" /base:@"BaseAddr.ref",mod_proxy 
-LINK32_OBJS= \
-	"$(INTDIR)\mod_proxy.obj" \
-	"$(INTDIR)\proxy_cache.obj" \
-	"$(INTDIR)\proxy_connect.obj" \
-	"$(INTDIR)\proxy_ftp.obj" \
-	"$(INTDIR)\proxy_http.obj" \
-	"$(INTDIR)\proxy_util.obj" \
-	"..\..\CoreD\ApacheCore.lib"
-
-"$(OUTDIR)\ApacheModuleProxy.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ENDIF 
 
 .c{$(CPP_OBJS)}.obj::
    $(CPP) @<<
@@ -203,6 +209,36 @@ LINK32_OBJS= \
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
+
+MTL=midl.exe
+MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheModuleProxy.bsc" 
+BSC32_SBRS= \
+	
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll\
+ /incremental:no /pdb:"$(OUTDIR)\ApacheModuleProxy.pdb"\
+ /map:"$(INTDIR)\ApacheModuleProxy.map" /debug /machine:I386\
+ /out:"$(OUTDIR)\ApacheModuleProxy.dll"\
+ /implib:"$(OUTDIR)\ApacheModuleProxy.lib"\
+ /base:@"../../os/win32/BaseAddr.ref",mod_proxy 
+LINK32_OBJS= \
+	"$(INTDIR)\mod_proxy.obj" \
+	"$(INTDIR)\proxy_cache.obj" \
+	"$(INTDIR)\proxy_connect.obj" \
+	"$(INTDIR)\proxy_ftp.obj" \
+	"$(INTDIR)\proxy_http.obj" \
+	"$(INTDIR)\proxy_util.obj" \
+	"..\..\CoreD\ApacheCore.lib"
+
+"$(OUTDIR)\ApacheModuleProxy.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ENDIF 
 
 
 !IF "$(CFG)" == "ApacheModuleProxy - Win32 Release" || "$(CFG)" ==\
