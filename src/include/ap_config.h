@@ -504,7 +504,7 @@ typedef int rlim_t;
 /* Put your NT stuff here - Ambarish */
 
 /* temporarily replace crypt */
-//char *crypt(const char *pw, const char *salt);
+/* char *crypt(const char *pw, const char *salt); */
 #define crypt(buf,salt)	    (buf)
 
 /* Although DIR_TYPE is dirent (see nt/readdir.h) we need direct.h for
@@ -626,7 +626,9 @@ int ap_vsnprintf(char *buf, size_t len, const char *format, va_list ap);
 #include <fcntl.h>
 #include <limits.h>
 #define closesocket(s) close(s)
+#ifndef O_BINARY
 #define O_BINARY (0)
+#endif
 
 #else /* WIN32 */
 #include <winsock.h>

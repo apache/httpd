@@ -975,12 +975,7 @@ void reinit_scoreboard (pool *p)
 #else
     scoreboard_fname = server_root_relative (p, scoreboard_fname);
 
-#ifdef __EMX__
-    /* OS/2 needs binary mode set. */
     scoreboard_fd = popenf(p, scoreboard_fname, O_CREAT|O_BINARY|O_RDWR, 0644);
-#else
-    scoreboard_fd = popenf(p, scoreboard_fname, O_CREAT|O_RDWR, 0644);
-#endif
     if (scoreboard_fd == -1)
     {
 	perror (scoreboard_fname);
@@ -1001,12 +996,7 @@ void reopen_scoreboard (pool *p)
 #ifdef SCOREBOARD_FILE
     if (scoreboard_fd != -1) pclosef (p, scoreboard_fd);
     
-#ifdef __EMX__    
-    /* OS/2 needs binary mode set. */
     scoreboard_fd = popenf(p, scoreboard_fname, O_CREAT|O_BINARY|O_RDWR, 0666);
-#else
-    scoreboard_fd = popenf(p, scoreboard_fname, O_CREAT|O_RDWR, 0666);
-#endif
     if (scoreboard_fd == -1)
     {
 	perror (scoreboard_fname);
@@ -1501,7 +1491,7 @@ void set_signals()
     signal (SIGHUP, (void (*)(int))restart);
 #endif /* SIGHUP */
 #ifdef SIGUSR1
-    signal (SIGUSR1, (void (*)())restart);
+    signal (SIGUSR1, (void (*)(int))restart);
 #endif /* SIGUSR1 */
 #endif
 }
