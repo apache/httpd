@@ -1,5 +1,8 @@
 Changes with Apache 1.3b7
 
+  *) get/set_module_config are trivial enough to be better off inline.  Worth
+     1.5% performance boost. [Dean Gaudet]
+
   *) Fix off-by-one error in ap_proxy_date_canon() in proxy_util.c
      when ensuring 'x' is at least 30-chars big.
 
