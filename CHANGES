@@ -1,5 +1,10 @@
 Changes with Apache 2.0.48
 
+  *) Remember an authenticated user during internal redirects if the
+     redirection target is not access protected and pass it
+     to scripts using the REDIRECT_REMOTE_USER environment variable.
+     PR 10678, 11602.  [André Malo]
+
   *) mod_include: Fix a trio of bugs that would cause various unusual
      sequences of parsed bytes to omit portions of the output stream.
      PR 21095. [Ron Park <ronald.park@cnet.com>, André Malo, Cliff Woolley]

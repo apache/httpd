@@ -286,6 +286,17 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     if (r->user) {
 	apr_table_addn(e, "REMOTE_USER", r->user);
     }
+    else if (r->prev) {
+        request_rec *back = r->prev;
+
+        while (back) {
+            if (back->user) {
+                apr_table_addn(e, "REDIRECT_REMOTE_USER", back->user);
+                break;
+            }
+            back = back->prev;
+        }
+    }
     if (r->ap_auth_type) {
 	apr_table_addn(e, "AUTH_TYPE", r->ap_auth_type);
     }
