@@ -558,7 +558,7 @@ static void child_main(int child_num_arg)
     /* Get a sub context for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
      */
-    apr_pool_create(&pchild, pconf);
+    apr_pool_create_ex(&pchild, pconf, NULL, APR_POOL_FNEW_ALLOCATOR);
 
     apr_pool_create(&ptrans, pchild);
 
