@@ -1,5 +1,9 @@
 Changes with Apache 2.0.23-dev
 
+  *) Solve many mod_ssl porting issues [far too many to detail.]
+     [Madhusudan Mathihalli <madhusudan_mathihalli@hp.com>, 
+      Doug MacEachern, William Rowe, Cliff Wooley, Ralf S. Engelschall]
+
   *) More stall fixes for the threaded & worker mpm's.
      Make mod_status output more accurate.  Don't
      count workers in processes which aren't actively
