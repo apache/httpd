@@ -326,12 +326,12 @@ beziehen</td></tr>
 <tr><td><a href="core.html#filesmatch">&lt;FilesMatch <var>regex</var>&gt; ... &lt;/FilesMatch&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Enthält Direktiven, die für Dateinamen gelten, die
   auf einen regulären Ausdruck passen</td></tr>
 <tr class="odd"><td><a href="mod_filter.html#filterchain">FilterChain ([+=-@!]<var>filter-name</var>)+</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure the filter chain</td></tr>
-<tr><td><a href="mod_filter.html#filterdebug">FilterDebug filter-name level</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Get debug/diagnostic information from mod_filter</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterdeclare">FilterDeclare <var>filter-name</var> [req|resp|env]=<var>dispatch</var>
+<tr><td><a href="mod_filter.html#filterdeclare">FilterDeclare <var>filter-name</var> [req|resp|env]=<var>dispatch</var>
 <var>[type]</var>
-</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Declare a smart filter</td></tr>
-<tr><td><a href="mod_filter.html#filterprotocol">FilterProtocol filter-name [provider-name] "proto-flags"</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Deal with correct HTTP protocol handling</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterprovider">FilterProvider <var>filter-name</var> <var>provider-name</var> <var>match</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Register a content filter</td></tr>
+</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Declare a smart filter</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filterprotocol">FilterProtocol filter-name [provider-name] "proto-flags"</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Deal with correct HTTP protocol handling</td></tr>
+<tr><td><a href="mod_filter.html#filterprovider">FilterProvider <var>filter-name</var> <var>provider-name</var> <var>match</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Register a content filter</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filtertrace">FilterTrace filter-name level</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Get debug/diagnostic information from mod_filter</td></tr>
 <tr><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Action to take if a single acceptable document is not 
 found</td></tr>
 <tr class="odd"><td><a href="core.html#forcetype">ForceType <var>MIME-Type</var>|None</a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Erzwingt die Auslieferung aller passendenden Dateien mit dem
@@ -394,7 +394,7 @@ the client does not express a preference</td></tr>
 operations</td></tr>
 <tr><td><a href="mod_ldap.html#ldapopcachettl">LDAPOpCacheTTL <var>seconds</var></a></td><td> 600 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Time that entries in the operation cache remain
 valid</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile <var>directory-path/filename</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the shared memory chache file</td></tr>
+<tr class="odd"><td><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile <var>directory-path/filename</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the shared memory cache file</td></tr>
 <tr><td><a href="mod_ldap.html#ldapsharedcachesize">LDAPSharedCacheSize <var>bytes</var></a></td><td> 102400 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Size in bytes of the shared-memory cache</td></tr>
 <tr class="odd"><td><a href="mod_ldap.html#ldaptrustedca">LDAPTrustedCA <var>directory-path/filename</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the file containing the trusted Certificate Authority certificate or database</td></tr>
 <tr><td><a href="mod_ldap.html#ldaptrustedcatype">LDAPTrustedCAType <var>type</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Specifies the type of the Certificate Authority file</td></tr>
