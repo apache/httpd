@@ -8,6 +8,7 @@ SUBDIRS = \
 	aaa \
 	dav\main \
 	dav\fs \
+	dav\lock \
 	echo \
 	generators \
 	loggers \
