@@ -1,0 +1,9 @@
+(add-hook 'c-mode-hook
+          (function (lambda ()
+			(c-set-offset 'inclass' ++)
+			(c-set-offset 'defun-block-intro' ++)
+			(c-set-offset 'statement-block-intro' ++)
+			(c-set-offset 'substatement' ++)
+			(c-set-offset 'brace-list-intro' ++)
+			)))
+(setq c++-mode-hook c-mode-hook)
