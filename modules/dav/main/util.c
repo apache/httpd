@@ -334,7 +334,7 @@ const char *dav_xml_get_cdata(const ap_xml_elem *elem, apr_pool_t *pool,
     char *cdata;
     char *s;
     apr_size_t tlen;
-    const char *found_text;
+    const char *found_text = NULL; /* initialize to avoid gcc warning */
     int found_count = 0;
 
     for (scan = elem->first_cdata.first; scan != NULL; scan = scan->next) {
