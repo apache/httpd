@@ -133,3 +133,16 @@ Body:----------ro--
 
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="요청 처리 실패!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    브라우저가 보낸 요청을 이 서버가 지원하지 않습니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--

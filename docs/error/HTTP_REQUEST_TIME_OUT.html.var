@@ -144,3 +144,17 @@ Body:----------ro--
 
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="요청 시간 초과!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    브라우저가 너무 오랫동안 요청을 끝내지 않아서 서버가 네트워크 연결을
+    강제로 끊었습니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--

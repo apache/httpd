@@ -307,3 +307,30 @@ Body:----------ro--
 
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="서버 오류!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    
+    서버에 내부 오류가 발생하여 요청을 끝까지 처리하지 못했습니다.
+
+    <!--#include virtual="include/spacer.html" -->
+
+    오류 내용:
+    <br /><!--#echo var="REDIRECT_ERROR_NOTES" -->
+
+  <!--#else -->
+
+    서버에 내부 오류가 생겨 요청을 끝까지 처리하지 못했습니다.
+    서버에 과부하가 걸렸거나 아니면 CGI 프로그램에 오류가 있었습니다.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--

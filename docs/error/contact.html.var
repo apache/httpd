@@ -79,3 +79,10 @@ Va rugam sa il contactati pe
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</a>
 in cazul in care credeti ca aceasta este o eroare a serverului.
 ----------ro--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+만약 이것이 서버 오류라고 생각되면,
+<a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">웹 관리자</a>에게 연락하시기 바랍니다.
+----------ko--

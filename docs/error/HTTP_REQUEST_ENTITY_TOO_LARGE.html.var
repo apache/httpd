@@ -150,3 +150,18 @@ Body:----------ro--
 
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="너무 긴 요청!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"--> 방식의
+    요청으로는 내용을 보낼 수 없거나, 또는 보내온 내용이 그 방식에서 허용하는
+    최대 길이를 넘었습니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--

@@ -194,3 +194,21 @@ Body:----------ro--
 
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="잘못된 게이트웨이!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    프록시 서버가 더 윗쪽의 서버로부터 잘못된 응답을 받았습니다.
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    <!--#include virtual="include/spacer.html" -->
+    <!--#echo  encoding="none" var="REDIRECT_ERROR_NOTES" -->
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--

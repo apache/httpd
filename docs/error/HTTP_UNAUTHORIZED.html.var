@@ -226,3 +226,24 @@ Body:----------ro--
 
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="인증 필요!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    이 서버가 "<!--#echo encoding="url" var="REDIRECT_URL" -->" URL을
+    접근할 수 있는 권한이 있는지 확인하지 못했습니다.
+    잘못된 인증 정보(가령, 잘못된 암호)를 보냈거나 아니면
+    사용하시는 브라우저가 필요한 인증 정보를 어떻게 보내는지 모르는 것입니다.
+
+  <!--#include virtual="include/spacer.html" -->
+
+    이 문서를 사용할 수 있도록 허가를 받았는데도 이런다면,
+    사용자 ID와 암호를 확인하시고 다시 시도하시기 바랍니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
