@@ -65,9 +65,9 @@ ab \- Apache HTTP server benchmarking tool
 ] [
 .BI \-p " POST file"
 ] [
-.BI \-A " Authenticate username:password"
+.BI \-A " Authentication username:password"
 ] [
-.BI \-P " Proxy Authenticate username:password"
+.BI \-P " Proxy Authentication username:password"
 ] [
 .BI \-H " Custom header"
 ] [
@@ -101,23 +101,23 @@ ab \- Apache HTTP server benchmarking tool
 .SH DESCRIPTION
 .B ab
 is a tool for benchmarking your Apache HyperText Transfer Protocol (HTTP)
-server. It is designed to give you an impression on how performant is your
-current Apache installation.  This especially shows you how much requests per
-time your Apache installation is capable to serve. 
+server. It is designed to give you an impression of how your current
+Apache installation performs.  This especially shows you how many
+requests per second your Apache installation is capable of serving. 
 .PP
 .SH OPTIONS
 .TP 12
 .B \-k 
-Enable the HTTP KeepAlive feature, i.e. perform multiple requests within one
-HTTP session instead. Default is no KeepAlive.
+Enable the HTTP KeepAlive feature, i.e., perform multiple requests within one
+HTTP session. Default is no KeepAlive.
 .TP 12
 .BI \-n " requests"
 Number of requests to perform for the benchmarking session.  The default is to
-just perform one single request which usually leads to not very representative
+just perform a single request which usually leads to non-representative
 benchmarking results.
 .TP 12
 .BI \-t " timelimit"
-Seconds to max. spend for benchmarking. This implies
+Maximum number of seconds to spend for benchmarking. This implies
 a 
 .B \-n 
 .B 50000
@@ -125,26 +125,26 @@ internally. Use this to benchmark the server within a fixed total amount of
 time.  Per default there is no timelimit. 
 .TP 12
 .BI \-c " concurrency"
-Number of multiple requests per time to perform. 
-Default is one request per time.
+Number of multiple requests to perform at a time. 
+Default is one request at a time.
 
 .TP 12
 .BI \-p " POST file"
 File containing data to POST.
 
 .TP 12
-.BI \-A " Authorization username:password"
-Supply BASIC Authentification credentials to the server. The username
-and password are separated by a single ':' and send on the wire uuencoded.
-The string is send regardless of wether the server needs it; (i.e. has
-send an 401. Authentifcation needed).
+.BI \-A " Authentication username:password"
+Supply BASIC Authentication credentials to the server. The username
+and password are separated by a single ':' and sent on the wire uuencoded.
+The string is sent regardless of whether the server needs it; (i.e., has
+sent an 401 authentication needed).
 
 .TP 12
-.BI \-p " Proxy-Authorization username:password"
-Supply BASIC Authentification credentials to a proxy en-route. The username
-and password are separated by a single ':' and send on the wire uuencoded.
-The string is send regardless of wether the proxy needs it; (i.e. has
-send an 407 Proxy authentifcation needed).
+.BI \-p " Proxy-Authentication username:password"
+Supply BASIC Authentication credentials to a proxy en-route. The username
+and password are separated by a single ':' and sent on the wire uuencoded.
+The string is sent regardless of whether the proxy needs it; (i.e., has
+sent an 407 proxy authentication needed).
 
 .TP 12
 .BI \-C " Cookie name=value"
@@ -153,9 +153,9 @@ of a 'name=value' pair. This field is repeatable.
 
 .TP 12
 .BI \-p " Header string"
-Postfix extra headers to the request. The argument is typically in the form
-of a valid header line; containing a colon separated field value pair. (i.e. 
-'Accept-Encoding: zip/zop;8bit').
+Append extra headers to the request. The argument is typically in the form
+of a valid header line, containing a colon-separated field-value pair.
+(i.e., 'Accept-Encoding: zip/zop;8bit').
 
 .TP 12
 .BI \-T " content-type"
@@ -193,13 +193,13 @@ Display usage information.
 .SH BUGS
 There are various statically declared buffers of fixed length. Combined
 with the lazy parsing of the command line arguments, the response headers
-from the server and other external inputs this might bite you.
+from the server and other external inputs, this might bite you.
 .P
 It does not implement HTTP/1.x fully; only accepts some 'expected' forms
 of responses. The rather heavy use of 
 .BR strstr(3)
 shows up top in profile,
-which might indicate a performance problem; i.e. you would measure the
+which might indicate a performance problem; i.e., you would measure the
 .BR ab
 performance rather than the server's.
 
