@@ -98,7 +98,7 @@ int ap_pre_http_connection(conn_rec *);
  * @param c The connection on which the request is read
  * @return OK or DECLINED
  */
-int ap_process_http_connection(conn_rec *);
+AP_CORE_DECLARE(int) ap_process_http_connection(conn_rec *);
 
 AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c);
 
