@@ -1,4 +1,4 @@
-Changes with Apache 2.0.22-dev
+Changes with Apache 2.0.22
 
   *) Apache/Win32 now fills in the service description with Apache's
      server version string, including loaded and advertised modules.
