@@ -831,7 +831,7 @@ API_EXPORT(char *) ap_construct_url(pool *p, const char *uri,
 				    request_rec *r)
 {
     unsigned port = ap_get_server_port(r);
-    const char *host = ap_get_server_name(r);
+    const char *host = r->hostname;
 
     if (ap_is_default_port(port, r)) {
 	return ap_pstrcat(p, ap_http_method(r), "://", host, uri, NULL);
