@@ -99,7 +99,7 @@ fi
 
 echo Tagging the tarballs
 
-echo "Taggig the tarballs" >> $LOG_NAME
+echo "Tagging the tarballs" >> $LOG_NAME
 pgp -sba $WORKING_DIR-alpha.tar.gz $USER
 pgp -sba $WORKING_DIR-alpha.tar.Z $USER
 
