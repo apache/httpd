@@ -806,6 +806,8 @@ API_EXPORT(void) str_tolower(char *);
 API_EXPORT(int) ind(const char *, char);	/* Sigh... */
 API_EXPORT(int) rind(const char *, char);
 
+API_EXPORT(char *) ap_escape_quotes (pool *p, const char *instring);
+
 /* Common structure for reading of config files / passwd files etc. */
 typedef struct {
     int (*getch) (void *param);	/* a getc()-like function */

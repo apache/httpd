@@ -56,10 +56,10 @@
 /*
  * Given a string, replace any bare " with \" .
  */
-char *ap_escape_quotes (pool *p, char *instring)
+API_EXPORT(char *) ap_escape_quotes (pool *p, const char *instring)
 {
     int newlen = 0;
-    char *inchr = instring;
+    const char *inchr = instring;
     char *outchr, *outstring;
 
     /*
