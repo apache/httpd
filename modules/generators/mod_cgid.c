@@ -89,6 +89,7 @@
 #include "buff.h" 
 #include "ap_mpm.h"
 #include "iol_socket.h"
+#include "unixd.h"
 
 #ifndef UNIX_PATH_MAX
 #define UNIX_PATH_MAX 108
@@ -501,8 +502,9 @@ static int cgid_server(void *data)
 { 
     struct sockaddr_un unix_addr;
     int pid; 
-    int sd, sd2, len;
+    int sd, sd2, len, rc;
     int errfile;
+    mode_t omask;
     server_rec *main_server = data;
     cgid_server_conf *sconf = (cgid_server_conf *)ap_get_module_config( 
                        main_server->module_config, &cgid_module); 
@@ -526,7 +528,10 @@ static int cgid_server(void *data)
     unix_addr.sun_family = AF_UNIX;
     strcpy(unix_addr.sun_path, sconf->sockname);
 
-    if (bind(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr)) < 0) {
+    omask = umask(0077); /* so that only Apache can use socket */
+    rc = bind(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr));
+    umask(omask); /* can't fail, so can't clobber errno */
+    if (rc < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
                      "Couldn't bind unix domain socket %s",
                      sconf->sockname); 
@@ -539,6 +544,17 @@ static int cgid_server(void *data)
                      "Couldn't listen on unix domain socket"); 
         return errno;
     } 
+
+    if (!geteuid()) {
+        if (chown(sconf->sockname, unixd_config.user_id, -1) < 0) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
+                         "Couldn't change owner of unix domain socket %s",
+                         sconf->sockname); 
+            return errno;
+        }
+    }
+    
+    unixd_setup_child(); /* if running as root, switch to configured user/group */
 
     while (1) {
         len = sizeof(unix_addr);
