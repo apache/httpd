@@ -6918,35 +6918,19 @@ int REALMAIN(int argc, char *argv[])
     else if (service_name && signal_to_send && !isWindowsNT()
              && !strcasecmp(signal_to_send, "start")) {
         /* service95_main will call master_main() */
-        service95_main(master_main, argc, argv);
+        service95_main(master_main, argc, argv, service_name);
     }
     else 
     {
 #ifdef WIN32
-	/* Let's go fishing for some signals including ctrl+c/ctrl+break,
-         * and logoff, close and shutdown under WinNT/2000
-	 *
-	 * Under 95/98 create a monitor window to watch for session end
-         */
-        DWORD thread_id;
-        SetConsoleCtrlHandler(ap_control_handler, TRUE);
-        atexit(ap_control_handler_terminate);
-	if (!isWindowsNT()) {
-	    HANDLE thread;
-	    thread = CreateThread(NULL, 0, WatchWindow, 
-		                  (LPVOID) TRUE, 0, &thread_id);
-	    CloseHandle(thread);
-	}
-#endif
-
+	/* Let's go fishing for some signals including ctrl+c,
+         * ctrl+break, logoff, close and shutdown.
+	 */
+	ap_start_console_monitor();
+#endif /* WIN32 */
         master_main(argc, argv);
-
-#ifdef WIN32
-	if (!isWindowsNT())
-	    PostThreadMessage(thread_id, WM_QUIT, 0, 0);
-#endif
     }
-#endif
+#endif /* ndef NETWARE */
 
     clean_parent_exit(0);
     return 0;	/* purely to avoid a warning */

@@ -26,6 +26,13 @@ static struct
     FILE *logFile;
 } globdat;
 
+/* statics for atexit processing or shared between threads */
+static BOOL  die_on_logoff = FALSE;
+static DWORD monitor_thread_id = 0;
+DWORD (WINAPI *RegisterServiceProcess)(DWORD, DWORD);
+HINSTANCE    monitor_hkernel = NULL;
+
+
 static void WINAPI service_main_fn(DWORD, LPTSTR *);
 static void WINAPI service_ctrl(DWORD ctrlCode);
 static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint);
@@ -69,8 +76,6 @@ int service_main(int (*main_fn)(int, char **), int argc, char **argv )
 
 int send_signal(pool *p, char *signal);
 
-static BOOL die_on_logoff;
-
 LRESULT CALLBACK Service9xWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     if (message == WM_QUERYENDSESSION)
@@ -88,11 +93,16 @@ LRESULT CALLBACK Service9xWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM
     return (DefWindowProc(hWnd, message, wParam, lParam));
 }
 
-DWORD WINAPI WatchWindow(void *kill_on_logoff)
+DWORD WINAPI WatchWindow(void *service_name)
 {
     /* When running as a service under Windows 9x, there is no console
      * window present, and no ConsoleCtrlHandler to call when the system 
-     * is shutdown.
+     * is shutdown.  If the WatchWindow thread is created with a NULL
+     * service_name argument, then the ...SystemMonitor window class is
+     * used to create the "Apache" window to watch for logoff and shutdown.
+     * If the service_name is provided, the ...ServiceMonitor window class
+     * is used to create the window named by the service_name argument,
+     * and the logoff message is ignored.
      */
     WNDCLASS wc;
     HWND hwndMain;
@@ -106,9 +116,12 @@ DWORD WINAPI WatchWindow(void *kill_on_logoff)
     wc.hCursor       = NULL;
     wc.hbrBackground = NULL;
     wc.lpszMenuName  = NULL;
-    wc.lpszClassName = "ApacheWin95ServiceMonitor";
+    if (service_name)
+	wc.lpszClassName = "ApacheWin95ServiceMonitor";
+    else
+	wc.lpszClassName = "ApacheWin95SystemMonitor";
 
-    die_on_logoff = (BOOL) kill_on_logoff;
+    die_on_logoff = service_name ? FALSE : TRUE;
 
     if (!RegisterClass(&wc)) 
     {
@@ -118,7 +131,8 @@ DWORD WINAPI WatchWindow(void *kill_on_logoff)
     }
 
     /* Create an invisible window */
-    hwndMain = CreateWindow("ApacheWin95ServiceMonitor", "Apache Service", 
+    hwndMain = CreateWindow(wc.lpszClassName, 
+			    service_name ? (char *) service_name : "Apache", 
                             WS_OVERLAPPEDWINDOW & ~WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 
                             CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, NULL, NULL);
 
@@ -137,23 +151,37 @@ DWORD WINAPI WatchWindow(void *kill_on_logoff)
     return 0;
 }
 
+void stop_service_monitor(void)
+{
+    PostThreadMessage(monitor_thread_id, WM_QUIT, 0, 0);
 
-int service95_main(int (*main_fn)(int, char **), int argc, char **argv )
+    /* When the service quits, remove it from the 
+       system service table */
+    RegisterServiceProcess((DWORD)NULL, 0);
+
+    /* Free the kernel library */
+    FreeLibrary(monitor_hkernel);
+}
+
+int service95_main(int (*main_fn)(int, char **), int argc, char **argv, 
+		   char *display_name)
 {
     /* Windows 95/98 */
+    char *service_name;
     HANDLE thread;
-    DWORD thread_id;
-    HINSTANCE hkernel;
-    DWORD (WINAPI *RegisterServiceProcess)(DWORD, DWORD);
     
+    /* Remove spaces from display name to create service name */
+    service_name = strdup(display_name);
+    ap_remove_spaces(service_name, display_name);
+
     /* Obtain a handle to the kernel library */
-    hkernel = LoadLibrary("KERNEL32.DLL");
-    if (!hkernel)
+    monitor_hkernel = LoadLibrary("KERNEL32.DLL");
+    if (!monitor_hkernel)
         return -1;
     
     /* Find the RegisterServiceProcess function */
     RegisterServiceProcess = (DWORD (WINAPI *)(DWORD, DWORD))
-                             GetProcAddress(hkernel, "RegisterServiceProcess");
+                   GetProcAddress(monitor_hkernel, "RegisterServiceProcess");
     if (RegisterServiceProcess == NULL)
         return -1;
 	
@@ -164,23 +192,14 @@ int service95_main(int (*main_fn)(int, char **), int argc, char **argv )
     /* Hide the console */
     FreeConsole();
 
-    thread = CreateThread(NULL, 0, WatchWindow, (LPVOID) FALSE, 0, &thread_id);
+    thread = CreateThread(NULL, 0, WatchWindow, (LPVOID) service_name, 0, 
+			  &monitor_thread_id);
     CloseHandle(thread);
+
+    atexit(stop_service_monitor);
 
     /* Run the service */
     globdat.exit_status = main_fn(argc, argv);
-
-    PostThreadMessage(thread_id, WM_QUIT, 0, 0);
-
-    /* When the service quits, remove it from the 
-       system service table */
-    RegisterServiceProcess((DWORD)NULL, 0);
-
-    /* Free the kernel library */
-    FreeLibrary(hkernel);
-
-    /* We have to quit right here to avoid an invalid page fault */
-    exit(globdat.exit_status);
 }
 
 void service_cd()
@@ -219,6 +238,7 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
 
     return;
 }
+
 
 void service_set_status(int status)
 {
@@ -681,13 +701,7 @@ int ap_start_service(SC_HANDLE schService) {
  * on Windows NT also user logoff and system shutdown
  */
 
-void ap_control_handler_terminate(void)
-{
-    /* Remove the control handler at the end of the day. */
-    SetConsoleCtrlHandler(ap_control_handler, FALSE);
-}
-
-BOOL CALLBACK ap_control_handler(DWORD ctrl_type)
+static BOOL CALLBACK ap_control_handler(DWORD ctrl_type)
 {
     switch (ctrl_type)
     {
@@ -717,6 +731,32 @@ BOOL CALLBACK ap_control_handler(DWORD ctrl_type)
  
     /* We should never get here, but this is (mostly) harmless */
     return FALSE;
+}
+
+void stop_console_monitor(void)
+{
+    if (!isWindowsNT() && monitor_thread_id)
+	PostThreadMessage(monitor_thread_id, WM_QUIT, 0, 0);
+
+    /* Remove the control handler at the end of the day. */
+    SetConsoleCtrlHandler(ap_control_handler, FALSE);
+}
+
+void ap_start_console_monitor(void)
+{
+    /* Under 95/98 create a monitor window to watch for session end,
+     * pass NULL to WatchWindow so we do not appear to run as a service.
+     */
+    SetConsoleCtrlHandler(ap_control_handler, TRUE);
+    
+    if (!isWindowsNT()) {
+        HANDLE thread;
+        thread = CreateThread(NULL, 0, WatchWindow, NULL, 0, 
+                              &monitor_thread_id);
+        CloseHandle(thread);
+    }
+
+    atexit(stop_console_monitor);
 }
 #endif /* WIN32 */
 
