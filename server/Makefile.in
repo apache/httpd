@@ -56,7 +56,11 @@ exports.c: $(EXPORT_FILES)
 	(cat $(EXPORT_FILES) | $(top_srcdir)/build/buildexports.sh $(top_srcdir)) > $@
 
 export_vars.h:
-	$(AWK) -f $(top_srcdir)/build/make_var_export.awk $(top_srcdir)/include/*.h $(top_srcdir)/os/$(OS_DIR)/*.h $(top_srcdir)/srclib/apr/include/*.h $(top_srcdir)/srclib/apr-util/include/*.h > $@
+	$(AWK) -f $(top_srcdir)/build/make_var_export.awk \
+		$(top_srcdir)/include/*.h \
+		$(top_srcdir)/os/$(OS_DIR)/*.h \
+		$(top_srcdir)/srclib/apr/include/*.h \
+		$(top_srcdir)/srclib/apr-util/include/*.h > $@
 
 # wtf does this have to be explicit????
 exports.lo: exports.c
