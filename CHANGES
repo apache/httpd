@@ -1,5 +1,9 @@
 Changes with Apache 2.0.30-dev
 
+  *) Add back in the "suEXEC mechanism enabled (wrapper: /path/to/suexec)"
+     message that we had back in apache-1.3 and still have scattered
+     throughout our docs.  [Aaron Bannert]
+
   *) Prevent the Win32 port from continuing after encountering an
      error in the command line args to apache.  [William Rowe]
 

@@ -56,9 +56,11 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+#define CORE_PRIVATE
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
+#include "http_log.h"
 #include "http_request.h"
 #include "apr_strings.h"
 #include "unixd.h"
@@ -125,6 +127,19 @@ static ap_unix_identity_t *get_suexec_id_doer(const request_rec *r)
     return cfg->active ? &cfg->ugid : NULL;
 }
 
+static int suexec_post_config(apr_pool_t *p, apr_pool_t *plog,
+                              apr_pool_t *ptemp, server_rec *s)
+{
+    static int reported = 0;
+    if (!reported && unixd_config.suexec_enabled) {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s,
+                     "suEXEC mechanism enabled (wrapper: %s)", SUEXEC_BIN);
+        reported = 1;
+    }
+
+    return OK;
+}
+
 /*
  * Define the directives specific to this module.  This structure is referenced
  * later by the 'module' structure.
@@ -141,6 +156,7 @@ static const command_rec suexec_cmds[] =
 static void suexec_hooks(apr_pool_t *p)
 {
     ap_hook_get_suexec_identity(get_suexec_id_doer,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_post_config(suexec_post_config,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA suexec_module =
