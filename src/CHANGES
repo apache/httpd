@@ -1,5 +1,9 @@
 Changes with Apache 1.3.4
  
+  *) Make top-level Makefile aware of a parallel build procedures (make -j) by
+     making sure the src/support/ tools are _forced_ to be build last (they
+     depend on other libraries). [Markus Theissinger <markus.theissinger@gmx.de>]
+
   *) Fix installation procedure: Now that os-inline.c is actually used (a
      recently fixed bug prevented this) we need to also install os-include.c
      in addition to os.h into the PREFIX/include/ location or building of

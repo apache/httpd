@@ -152,7 +152,8 @@ all: build
 #   build the package
 build:
 	@echo "===> $(SRC)"
-	@$(MAKE) -f $(TOP)/$(MKF) $(MFLAGS) $(MFWD) build-std $(build-support)
+	@$(MAKE) -f $(TOP)/$(MKF) $(MFLAGS) $(MFWD) build-std
+	@$(MAKE) -f $(TOP)/$(MKF) $(MFLAGS) $(MFWD) $(build-support)
 	@touch $(TOP)/$(SRC)/.apaci.build.ok
 	@echo "<=== $(SRC)"
 
