@@ -152,7 +152,7 @@ typedef struct {
 /* cache info information */
 typedef struct cache_info cache_info;
 struct cache_info {
-    char *content_type;
+    const char *content_type;
     const char *etag;
     const char *lastmods;	/* last modified of cache entity */
     apr_time_t date;

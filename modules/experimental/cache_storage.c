@@ -66,7 +66,7 @@ APR_HOOK_STRUCT(
 	APR_HOOK_LINK(open_entity)
 )
 
-module AP_MODULE_DECLARE_DATA tcache_module;
+module AP_MODULE_DECLARE_DATA cache_module;
 
 /* -------------------------------------------------------------- */
 
@@ -105,7 +105,7 @@ int cache_create_entity(request_rec *r, const char *types, char *url, apr_size_t
     const char *type;
     apr_status_t rv;
     cache_request_rec *cache = (cache_request_rec *) ap_get_module_config(r->request_config, 
-                                                                          &tcache_module);
+                                                                          &cache_module);
 
     /* for each specified cache type, delete the URL */
     while (next) {
@@ -161,7 +161,7 @@ int cache_select_url(request_rec *r, const char *types, char *url)
     const char *type;
     apr_status_t rv;
     cache_request_rec *cache = (cache_request_rec *) ap_get_module_config(r->request_config, 
-                                                                          &tcache_module);
+                                                                          &cache_module);
 
     /* go through the cache types till we get a match */
     while (next) {
@@ -219,7 +219,8 @@ apr_status_t cache_read_entity_headers(cache_handle *h, request_rec *r,
     *headers = apr_table_make(r->pool, 15);
     /* Content-Length */
     if (info->len)
-        apr_table_set(*headers, "Content-Length", apr_psprintf(r->pool, "%lu", info->len));
+        apr_table_set(*headers, "Content-Length", 
+                      apr_psprintf(r->pool, "%" APR_SIZE_T_FMT, info->len));
 
     /* Last-Modified */
     if (info->lastmod) {
