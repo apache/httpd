@@ -175,10 +175,10 @@ AC_ARG_WITH(program-name,
   progname="$withval" ], [
   progname="httpd"] )
 
-APACHE_FAST_OUTPUT(Makefile ap/Makefile lib/Makefile main/Makefile
-            modules/Makefile os/Makefile support/Makefile)
+APACHE_FAST_OUTPUT(Makefile ap/Makefile lib/Makefile main/Makefile)
+APACHE_FAST_OUTPUT(modules/Makefile os/Makefile support/Makefile)
 
-APACHE_FAST_GENERATE
+APACHE_GEN_CONFIG_VARS
 
 dnl There needs to be a .deps file in the top build directory.
 dnl All others are created dynamically by rules.mk.
@@ -216,6 +216,8 @@ AC_TYPE_RLIM_T
 perlbin=`$srcdir/helpers/PrintPath perl`
 AC_SUBST(perlbin)
 
-AC_OUTPUT($APACHE_OUTPUT_FILES support/apxs)
+AC_OUTPUT($APACHE_OUTPUT_FILES support/apxs,,[
+  APACHE_GEN_MAKEFILES
+])
 
 

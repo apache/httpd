@@ -49,9 +49,9 @@ AC_DEFUN(APACHE_MKDIR_P_CHECK,[
   ])
 ])
 
-dnl APACHE_FAST_GENERATE
-dnl Creates Makefiles and config_vars.mk
-AC_DEFUN(APACHE_FAST_GENERATE,[
+dnl APACHE_GEN_CONFIG_VARS
+dnl Creates config_vars.mk
+AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
   APACHE_SUBST(abs_srcdir)
   APACHE_SUBST(bindir)
   APACHE_SUBST(cgidir)
@@ -82,6 +82,11 @@ AC_DEFUN(APACHE_FAST_GENERATE,[
   for i in $APACHE_VAR_SUBST; do
     eval echo "$i = \$$i" >> config_vars.mk
   done
+])
+
+dnl APACHE_GEN_MAKEFILES
+dnl Creates Makefiles
+AC_DEFUN(APACHE_GEN_MAKEFILES,[
   $SHELL $srcdir/build/fastgen.sh $srcdir $ac_cv_mkdir_p $APACHE_FAST_OUTPUT_FILES
 ])
 
