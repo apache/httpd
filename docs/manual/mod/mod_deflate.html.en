@@ -1,0 +1,49 @@
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!-- 
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                This file is generated from xml source: DO NOT EDIT
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        --><title>mod_deflate- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_deflate</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Compress content before
+    it is delivered to the client</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>deflate_module</td></tr></table></td></tr></table><h2>Summary</h2>
+    <p>The <code><a href="mod_deflate.html">mod_deflate</a></code> module provides
+    the <code>DEFLATE</code> output filter that allows output from
+    your server to be compressed before being sent to the client over
+    the network.</p>
+<h2>Directives</h2><ul><li><a href="#deflatebuffersize">DeflateBufferSize</a></li><li><a href="#deflatefilternote">DeflateFilterNote</a></li><li><a href="#deflatememlevel">DeflateMemLevel</a></li><li><a href="#deflatewindowsize">DeflateWindowSize</a></li></ul><p><strong>See also </strong></p><ul><li><a href="mod_mime.html#addoutputfilter" class="directive"><code class="directive">AddOutputFilter</code></a></li><li><a href="core.html#setoutputfilter" class="directive"><code class="directive">SetOutputFilter</code></a></li></ul><h2>Enabling Compression</h2>
+
+    <p>Compression is implemented by the <code>DEFLATE</code>
+    <a href="../filter.html">filter</a>.  The following directive
+    will enable compression for documents in the container where it
+    is placed:</p>
+    <p><strong>Most popular browsers can not handle compression of all content
+        so you may want to enable the 'gzip-only-text/html' note (see below)
+    </strong></p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>SetEnv gzip-only-text/html 1<br>
+SetOutputFilter DEFLATE
+</code></td></tr></table></blockquote>
+
+    <p>Here is an example of enabling compression for the Apache
+    documentation:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;Directory "/your-server-root/manual"&gt;<br>
+      SetEnv gzip-only-text/html 1<br>
+      SetOutputFilter DEFLATE<br>
+&lt;/Directory&gt;
+</code></td></tr></table></blockquote>
+<hr/><h2><a name="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Fragment size to be compressed at one time by zlib</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>DeflateBufferSize <em>value</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_deflate</td></tr></table></td></tr></table>
+    <p>The <code class="directive">DeflateBufferSize</code> directive specifies
+    the size in bytes of the fragments that zlib should compress at one
+    time.</p>
+<hr/><h2><a name="DeflateFilterNote">DeflateFilterNote</a> <a name="deflatefilternote">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Places the compression ratio in a note for logging</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>DeflateFilterNote <em>notename</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_deflate</td></tr></table></td></tr></table>
+    <p>The <code class="directive">DeflateFilterNote</code> directive
+    specifies that a note about compression ratios should be attached
+    to the request.  The name of the note is the value specified for
+    the directive.</p>
+<hr/><h2><a name="DeflateMemLevel">DeflateMemLevel</a> <a name="deflatememlevel">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Amount of memory available to zlib for compression</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>DeflateMemLevel <em>value</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_deflate</td></tr></table></td></tr></table>
+    <p>The <code class="directive">DeflateMemLevel</code> directive specifies
+    the amount of memory in bytes available to zlib for compression.</p>
+<hr/><h2><a name="DeflateWindowSize">DeflateWindowSize</a> <a name="deflatewindowsize">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Zlib compression window size</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>DeflateWindowSize <em>value</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_deflate</td></tr></table></td></tr></table>
+    <p>The <code class="directive">DeflateWindowSize</code> directive specifies the
+    zlib compression window size (a value between 1 and 15).</p>
+<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>

@@ -1,0 +1,134 @@
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!-- 
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                This file is generated from xml source: DO NOT EDIT
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        --><title>mod_auth_dbm- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_auth_dbm</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Provides for user authentication using DBM
+    files</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>auth_dbm_module</td></tr></table></td></tr></table><h2>Summary</h2>
+    <p>This module provides for HTTP Basic Authentication, where
+    the usernames and passwords are stored in DBM type database
+    files. It is an alternative to the plain text password files
+    provided by <code><a href="mod_auth.html">mod_auth</a></code>.</p>
+<h2>Directives</h2><ul><li><a href="#authdbmauthoritative">AuthDBMAuthoritative</a></li><li><a href="#authdbmgroupfile">AuthDBMGroupFile</a></li><li><a href="#authdbmtype">AuthDBMType</a></li><li><a href="#authdbmuserfile">AuthDBMUserFile</a></li></ul><p><strong>See also </strong></p><ul><li><a href="core.html#authname" class="directive"><code class="directive">AuthName</code></a></li><li><a href="core.html#authtype" class="directive"><code class="directive">AuthType</code></a></li><li><a href="core.html#require" class="directive"><code class="directive">Require</code></a></li><li><a href="core.html#satisfy" class="directive"><code class="directive">Satisfy</code></a></li></ul><hr/><h2><a name="AuthDBMAuthoritative">AuthDBMAuthoritative</a> <a name="authdbmauthoritative">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets whether authentication and authorization will be
+passwed on to lower level modules</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AuthDBMAuthoritative on|off</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>AuthDBMAuthoritative on</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_auth_dbm</td></tr></table></td></tr></table>
+
+<blockquote><table><tr><td bgcolor="#e0e5f5">This information has not been updated to take into account the
+new module ordering techniques in Apache 2.0</td></tr></table></blockquote>
+
+    <p>Setting the <code class="directive">AuthDBMAuthoritative</code>
+    directive explicitly to <strong>'off'</strong> allows for both
+    authentication and authorization to be passed on to lower level
+    modules (as defined in the <code>Configuration</code> and
+    <code>modules.c</code> file if there is <strong>no userID</strong>
+    or <strong>rule</strong> matching the supplied userID. If there is
+    a userID and/or rule specified; the usual password and access
+    checks will be applied and a failure will give an Authorization
+    Required reply.</p>
+
+    <p>So if a userID appears in the database of more than one module;
+    or if a valid <a href="core.html#require" class="directive"><code class="directive">Require</code></a>
+    directive applies to more than one module; then the first module
+    will verify the credentials; and no access is passed on;
+    regardless of the <code class="directive">AuthAuthoritative</code> setting.</p>
+
+    <p>A common use for this is in conjunction with one of the
+    basic auth modules; such as <code><a href="mod_auth.html">mod_auth</a></code>. Whereas this
+    DBM module supplies the bulk of the user credential checking; a
+    few (administrator) related accesses fall through to a lower
+    level with a well protected .htpasswd file.</p>
+
+    <p>By default, control is not passed on and an unknown userID
+    or rule will result in an Authorization Required reply. Not
+    setting it thus keeps the system secure and forces an NCSA
+    compliant behaviour.</p>
+
+    <p>Security: Do consider the implications of allowing a user to
+    allow fall-through in his .htaccess file; and verify that this
+    is really what you want; Generally it is easier to just secure
+    a single .htpasswd file, than it is to secure a database which
+    might have more access interfaces.</p>
+<hr/><h2><a name="AuthDBMGroupFile">AuthDBMGroupFile</a> <a name="authdbmgroupfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the name of the database file containing the list
+of user groups for authentication</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AuthDBMGroupFile <em>file-path</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_auth_dbm</td></tr></table></td></tr></table>
+    <p>The <code class="directive">AuthDBMGroupFile</code> directive sets the
+    name of a DBM file containing the list of user groups for user
+    authentication.  <em>File-path</em> is the absolute path to the
+    group file.</p>
+
+    <p>The group file is keyed on the username. The value for a
+    user is a comma-separated list of the groups to which the users
+    belongs. There must be no whitespace within the value, and it
+    must never contain any colons.</p>
+
+    <p>Security: make sure that the
+    <code class="directive">AuthDBMGroupFile</code> is stored outside the
+    document tree of the web-server; do <em>not</em> put it in the
+    directory that it protects. Otherwise, clients will be able to
+    download the <code class="directive">AuthDBMGroupFile</code> unless
+    otherwise protected.</p>
+
+    <p>Combining Group and Password DBM files: In some cases it is
+    easier to manage a single database which contains both the
+    password and group details for each user. This simplifies any
+    support programs that need to be written: they now only have to
+    deal with writing to and locking a single DBM file. This can be
+    accomplished by first setting the group and password files to
+    point to the same DBM:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+AuthDBMGroupFile /www/userbase<br>
+AuthDBMUserFile /www/userbase
+</code></td></tr></table></blockquote>
+
+    <p>The key for the single DBM is the username. The value consists
+    of</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>Unix Crypt-ed Password : List of Groups [ : (ignored)
+      ]</code></td></tr></table></blockquote>
+
+    <p>The password section contains the Unix <code>crypt()</code>
+    password as before. This is followed by a colon and the comma
+    separated list of groups. Other data may optionally be left in the
+    DBM file after another colon; it is ignored by the authentication
+    module. This is what www.telescope.org uses for its combined
+    password and group database.</p>
+<hr/><h2><a name="AuthDBMType">AuthDBMType</a> <a name="authdbmtype">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the type of database file that is used to
+store passwords</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AuthDBMType default|SDBM|GDBM|DB</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>AuthDBMType default</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_auth_dbm</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in version 2.0.30 and later.</td></tr></table></td></tr></table>
+
+<p>Sets the type of database file that is used to store the passwords.
+The default database type is determined at compile time.  The
+availability of other types of database files also depends on
+compile-time settings.</p>
+
+<p>It is crucial that whatever program you use to create your password
+files is configured to use the same type of database.</p>
+<hr/><h2><a name="AuthDBMUserFile">AuthDBMUserFile</a> <a name="authdbmuserfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets thename of a database file containing the list of users and
+passwords for authentication</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AuthDBMUserFile <em>file-path</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_auth_dbm</td></tr></table></td></tr></table>
+    <p>The <code class="directive">AuthDBMUserFile</code> directive sets the
+    name of a DBM file containing the list of users and passwords for
+    user authentication. <em>File-path</em> is the absolute path to
+    the user file.</p>
+
+    <p>The user file is keyed on the username. The value for a user is
+    the <code>crypt()</code> encrypted password, optionally followed
+    by a colon and arbitrary data. The colon and the data following it
+    will be ignored by the server.</p>
+
+    <p>Security: make sure that the
+    <code class="directive">AuthDBMUserFile</code> is stored outside the
+    document tree of the web-server; do <em>not</em> put it in the
+    directory that it protects. Otherwise, clients will be able to
+    download the <code class="directive">AuthDBMUserFile</code>.</p>
+
+    <p>Important compatibility note: The implementation of
+    "dbmopen" in the apache modules reads the string length of the
+    hashed values from the DBM data structures, rather than relying
+    upon the string being NULL-appended. Some applications, such as
+    the Netscape web server, rely upon the string being
+    NULL-appended, so if you are having trouble using DBM files
+    interchangeably between applications this may be a part of the
+    problem.</p>
+
+    <p>A perl script called
+    <a href="../programs/dbmmanage.html">dbmmanage</a> is included with
+    Apache. This program can be used to create and update DBM
+    format password files for use with this module.</p>
+<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
