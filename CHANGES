@@ -1,5 +1,9 @@
 Changes with Apache 2.0.48
 
+  *) Fix a misleading message from the some of the threaded MPMs when 
+     MaxClients has to be lowered due to the setting of ServerLimit.  
+     [Jeff Trawick]
+
   *) Lower the severity of the "listener thread didn't exit" message
      to debug, as it is of interest only to developers.  PR 9011
      [Jeff Trawick]
