@@ -159,7 +159,7 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
         if (APR_BUCKET_IS_EOS(dptr)) {
             break;
         }
-        apr_bucket_read(dptr, &buf, &len, 0);
+        apr_bucket_read(dptr, &buf, &len, APR_BLOCK_READ);
         /* XXX handle retcodes */
         if (len == 0) { /* end of pipe? */
             break;
@@ -257,7 +257,7 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx, apr_b
         if (APR_BUCKET_IS_EOS(dptr)) {
             break;
         }
-        apr_bucket_read(dptr, &buf, &len, 0);
+        apr_bucket_read(dptr, &buf, &len, APR_BLOCK_READ);
         /* XXX handle retcodes */
         if (len == 0) { /* end of pipe? */
             break;

@@ -60,7 +60,7 @@ static apr_status_t CaseFilterOutFilter(ap_filter_t *f,
 	    }
 
 	// read
-	apr_bucket_read(pbktIn,&data,&len,1);
+	apr_bucket_read(pbktIn,&data,&len,APR_BLOCK_READ);
 
 	// write
 	buf=apr_palloc(f->r->pool,len);

@@ -659,7 +659,7 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             break;
         }
 
-        rv = apr_bucket_read(b, &data, &len, 1);
+        rv = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
         if (rv != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, "apr_bucket_read()");
             return rv;
@@ -764,7 +764,7 @@ static int ef_input_filter(ap_filter_t *f, apr_bucket_brigade *bb,
 
     APR_BRIGADE_FOREACH(b, bb) {
         if (!APR_BUCKET_IS_EOS(b)) {
-            if ((rv = apr_bucket_read(b, (const char **)&buf, &len, 0)) != APR_SUCCESS) {
+            if ((rv = apr_bucket_read(b, (const char **)&buf, &len, APR_BLOCK_READ)) != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, "apr_bucket_read() failed");
                 return rv;
             }

@@ -144,7 +144,7 @@ static int disk_cache(request_rec *r, apr_bucket_brigade *bb, void **cf)
         const char *str;
         apr_ssize_t length;
 
-        apr_bucket_read(e, &str, &length, 0);
+        apr_bucket_read(e, &str, &length, APR_BLOCK_READ);
         apr_file_write(ctx->fd, str, &length);
     }
     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
