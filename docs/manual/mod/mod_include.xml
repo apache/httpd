@@ -93,31 +93,31 @@ Server Error Messages</a></seealso>
 
     <table border="1">
     <tr><th>Element</th><th>Description</th></tr>
-    <tr><td><code><a href="#element:config">config</a></code></td>
+    <tr><td><code><a href="#element.config">config</a></code></td>
         <td>configure output formats</td></tr>
-    <tr><td><code><a href="#element:echo">echo</a></code></td>
+    <tr><td><code><a href="#element.echo">echo</a></code></td>
         <td>print variables</td></tr>
-    <tr><td><code><a href="#element:exec">exec</a></code></td>
+    <tr><td><code><a href="#element.exec">exec</a></code></td>
         <td>execute external programs</td></tr>
-    <tr><td><code><a href="#element:fsize">fsize</a></code></td>
+    <tr><td><code><a href="#element.fsize">fsize</a></code></td>
         <td>print size of a file</td></tr>
-    <tr><td><code><a href="#element:flastmod">flastmod</a></code></td>
+    <tr><td><code><a href="#element.flastmod">flastmod</a></code></td>
         <td>print last modification time of a file</td></tr>
-    <tr><td><code><a href="#element:include">include</a></code></td>
+    <tr><td><code><a href="#element.include">include</a></code></td>
         <td>include a file</td></tr>
-    <tr><td><code><a href="#element:printenv">printenv</a></code></td>
+    <tr><td><code><a href="#element.printenv">printenv</a></code></td>
         <td>print all available variables</td></tr>
-    <tr><td><code><a href="#element:set">set</a></code></td>
+    <tr><td><code><a href="#element.set">set</a></code></td>
         <td>set a value of a variable</td></tr>
     </table>
 
     <p>SSI elements may be defined by modules other than
     <module>mod_include</module>. In fact, the <code><a
-    href="#element:exec">exec</a></code> element is provided by
+    href="#element.exec">exec</a></code> element is provided by
     <module>mod_cgi</module>, and will only be available if this
     module is loaded.</p>
 
-    <section id="element:config"><title>The config Element</title>
+    <section id="element.config"><title>The config Element</title>
       <p>This command controls various aspects of the parsing. The
       valid attributes are:</p>
 
@@ -141,7 +141,7 @@ Server Error Messages</a></seealso>
       </dl>
     </section> <!-- /config -->
 
-    <section id="element:echo"><title>The echo Element</title>
+    <section id="element.echo"><title>The echo Element</title>
       <p>This command prints one of the <a href="#includevars">include
       variables</a>, defined below. If the variable is unset, the result is
       determined by the <directive module="mod_include"
@@ -182,7 +182,7 @@ Server Error Messages</a></seealso>
       </dl>
     </section> <!-- /echo -->
 
-    <section id="element:exec"><title>The exec Element</title>
+    <section id="element.exec"><title>The exec Element</title>
       <p>The <code>exec</code> command executes a given shell command or
       CGI script. It requires <module>mod_cgi</module> to be present
       in the server. If <directive module="core">Options</directive>
@@ -254,7 +254,7 @@ Server Error Messages</a></seealso>
       </dl>
     </section> <!-- /exec -->
 
-    <section id="element:fsize"><title>The fsize Element</title>
+    <section id="element.fsize"><title>The fsize Element</title>
       <p>This command prints the size of the specified file, subject
       to the <code>sizefmt</code> format specification. Attributes:</p>
 
@@ -271,14 +271,14 @@ Server Error Messages</a></seealso>
       </dl>
     </section> <!-- /fsize -->
 
-    <section id="element:flastmod"><title>The flastmod Element</title>
+    <section id="element.flastmod"><title>The flastmod Element</title>
       <p>This command prints the last modification date of the
       specified file, subject to the <code>timefmt</code> format
       specification. The attributes are the same as for the
-      <code><a href="#element:fsize">fsize</a></code> command.</p>
+      <code><a href="#element.fsize">fsize</a></code> command.</p>
     </section> <!-- /flastmod -->
 
-    <section id="element:include"><title>The include Element</title>
+    <section id="element.include"><title>The include Element</title>
       <p>This command inserts the text of another document or file
       into the parsed file. Any included file is subject to the
       usual access control. If the directory containing the
@@ -329,10 +329,10 @@ Server Error Messages</a></seealso>
       </dl>
     </section> <!-- /include -->
 
-    <section id="element:printenv"><title>The printenv Element</title>
+    <section id="element.printenv"><title>The printenv Element</title>
       <p>This prints out a listing of all existing variables and
       their values. Special characters are entity encoded (see the <code><a
-      href="#element:echo">echo</a></code> element for details)
+      href="#element.echo">echo</a></code> element for details)
       before being output. There are no attributes.</p>
 
       <example><title>Example</title>
@@ -340,7 +340,7 @@ Server Error Messages</a></seealso>
       </example>
     </section> <!-- /printenv -->
 
-    <section id="element:set"><title>The set Element</title>
+    <section id="element.set"><title>The set Element</title>
       <p>This sets the value of a variable. Attributes:</p>
 
       <dl>
