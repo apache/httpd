@@ -30,12 +30,13 @@ test_char.h: gen_test_char
 
 util.lo: test_char.h
 
-EXPORT_FILES = ../srclib/apr/apr.exports ../srclib/apr-util/aprutil.exports \
+EXPORT_FILES = $(top_srcdir)/srclib/apr/apr.exports \
+	$(top_srcdir)/srclib/apr-util/aprutil.exports \
 	$(TARGET_EXPORTS)
 
 delete-exports:
 	@if test -f $(TARGET_EXPORTS); then \
-		    headers="`find ../include/*.h -newer $(TARGET_EXPORTS)`" ; \
+		    headers="`find $(top_srcdir)/include/*.h -newer $(TARGET_EXPORTS)`" ; \
 		    if test -n "$$headers"; then \
 		        echo Found newer headers. Will rebuild $(TARGET_EXPORTS). ; \
 		        echo rm -f $(TARGET_EXPORTS) ; \
@@ -50,7 +51,7 @@ $(TARGET_EXPORTS):
 		$(top_srcdir)/os/$(OS_DIR)/*.h > $@
 
 exports.c: $(EXPORT_FILES)
-	(cat $(EXPORT_FILES) | ../build/buildexports.sh ..) > $@
+	(cat $(EXPORT_FILES) | $(top_srcdir)/build/buildexports.sh ..) > $@
 
 # wtf does this have to be explicit????
 exports.lo: exports.c
