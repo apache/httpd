@@ -1045,6 +1045,11 @@ static void usage(char *bin)
     for (i = 0; i < strlen(bin); i++)
 	pad[i] = ' ';
     pad[i] = '\0';
+#ifdef WIN32
+    fprintf(stderr, "Usage: %s [-D name] [-d directory] [-f file] [-n service]\n", bin);
+    fprintf(stderr, "       %s [-C \"directive\"] [-c \"directive\"] [-k signal]\n", pad);
+    fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-L] [-S] [-t] [-T]\n", pad);
+#else /* !WIN32 */
 #ifdef SHARED_CORE
     fprintf(stderr, "Usage: %s [-R directory] [-D name] [-d directory] [-f file]\n", bin);
 #else
@@ -1052,13 +1057,11 @@ static void usage(char *bin)
 #endif
     fprintf(stderr, "       %s [-C \"directive\"] [-c \"directive\"]\n", pad);
     fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-L] [-S] [-t] [-T]\n", pad);
-#ifdef WIN32
-    fprintf(stderr, "       %s [-n service] [-k signal] [-i] [-u]\n", pad);
-#endif
     fprintf(stderr, "Options:\n");
 #ifdef SHARED_CORE
     fprintf(stderr, "  -R directory     : specify an alternate location for shared object files\n");
 #endif
+#endif /* !WIN32 */
     fprintf(stderr, "  -D name          : define a name for use in <IfDefine name> directives\n");
     fprintf(stderr, "  -d directory     : specify an alternate initial ServerRoot\n");
     fprintf(stderr, "  -f file          : specify an alternate ServerConfigFile\n");
@@ -1077,7 +1080,7 @@ static void usage(char *bin)
     fprintf(stderr, "  -T               : run syntax check for config files (without docroot check)\n");
 #ifdef WIN32
     fprintf(stderr, "  -n name          : name the Apache service for -k options below;\n");
-    fprintf(stderr, "  -k shutdown      : tell running Apache to shutdown\n");
+    fprintf(stderr, "  -k stop|shutdown : tell running Apache to shutdown\n");
     fprintf(stderr, "  -k restart       : tell running Apache to do a graceful restart\n");
     fprintf(stderr, "  -k start         : tell Apache to start\n");
     fprintf(stderr, "  -k install   | -i: install an Apache service\n");
