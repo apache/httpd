@@ -34,7 +34,7 @@
 <h2><a name="definition" id="definition">ハンドラとは</a></h2>
     
     <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_imap.html">mod_imap</a></code></li><li><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></li><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removehandler">RemoveHandler</a></code></li><li><code class="directive"><a href="./mod/core.html#sethandler">SetHandler</a></code></li></ul></td></tr></table>
-    
+
 
     <p>「ハンドラ」とは、ファイルが呼ばれたときに実行される動作の
     Apache における内部表現です。
@@ -65,7 +65,7 @@
       HTTP ヘッダのあるファイルをそのまま送ります。
       (<code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code>)</li>
 
-      <li><strong>cgi-script</strong>: ファイルを CGI
+      <li><strong>cgi-script</strong>: ファイルを CGI
       スクリプトとして扱います。
       (<code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code>)</li>
 
@@ -94,7 +94,7 @@
       <p>以下のディレクティブによって、拡張子が <code>html</code>
       であるファイルは <code>footer.pl</code>
       CGI スクリプトを起動するようになります。</p>
-      
+
       <div class="example"><p><code>
         Action add-footer /cgi-bin/footer.pl<br />
         AddHandler add-footer .html
@@ -120,14 +120,14 @@
         SetHandler send-as-is<br />
         &lt;/Directory&gt;
       </code></p></div>
-      
+
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="programmer" id="programmer">プログラマ向けのメモ</a></h2>
     
 
-    <p>ハンドラの機能を実装するために、利用すると便利かもしれないものが
+    <p>ハンドラの機能を実装するために、利用すると便利かもしれないものが
     <a href="developer/API.html">Apache API</a>
     に追加されました。詳しく言うと、<code>request_rec</code>
     構造体に新しいレコードが追加されたということです。</p>

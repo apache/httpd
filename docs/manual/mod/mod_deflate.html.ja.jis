@@ -236,7 +236,7 @@
 <div class="directive-section"><h2><a name="DeflateCompressionLevel" id="DeflateCompressionLevel">DeflateCompressionLevel</a> <a name="deflatecompressionlevel" id="deflatecompressionlevel">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>出力に対して行なう圧縮の程度</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateCompressionLevel<var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateCompressionLevel <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>Zlib のデフォルト</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
@@ -244,7 +244,7 @@
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>This directive is available since Apache 2.0.45</td></tr>
 </table>
      <p><code class="directive">DeflateCompressionLevel</code> ディレクティブは
-         圧縮の程度を設定します。大きな値では、より圧縮が行なわれますが、
+         圧縮の程度を設定します。大きな値では、より圧縮が行なわれますが、
          CPU 資源を消費します。</p>
     <p>値は 1 (低圧縮) から 9 (高圧縮) です。</p>
 
