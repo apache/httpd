@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/09/25 19:06:39 $]
+Last modified at [$Date: 2000/10/04 05:53:28 $]
 
 Release:
 
@@ -30,11 +30,6 @@ RELEASE SHOWSTOPPERS:
 
     * apachectl not being built or installed
 
-    * Win32: Get mod_auth_digest working under win32
-      - APR_HAS_RANDOM should be defined on windows and there is a 
-      lib/apr/misc/win32/rand.c which is basically a copy of what
-      mod_auth_digest used to use.
-
     * suEXEC doesn't work
         Status: Manoj has posted an patch to fix this.
         Message-ID: <20000825024943.A17578@manojk.users.mindspring.com>
@@ -48,6 +43,8 @@ RELEASE SHOWSTOPPERS:
 	specific code that is still not in NT only code paths
 	- IOL binds to APR sendfile, implemented with TransmitFile, which 
         is not available on 95/98.
+        - Document warning that OSR2 is required (for Crypt functions, in
+        rand.c, at least.)
 
     * Win32: Test access logging with multiple threads. Will the 
 	native file I/O calls serialize automagically like the 
@@ -63,9 +60,6 @@ RELEASE SHOWSTOPPERS:
         also seem out of sorts.
         OtherBill is working on this
 
-    * Win32: fix build/run time environment to remove ApacheCore.dll 
-        linkage from ab.exe and htdigest.exe.
-    
     * We need a thread-safe resolver, at least on Unix.
         Status: The best known candidate would be something from
 	BIND v9.
@@ -671,6 +665,12 @@ Documentation that needs writing:
       does not show the contents of new files until later.
 
 Available Patches:
+
+   * Martin Sojka <msojka@gmx.de>'s patch to add error reporting for failed 
+     htpasswd actions due to a full /tmp volume (other programs may have
+     similar problems?)
+        PR: 6475
+        Status:
 
    * Mike Abbott's <mja@trudge.engr.sgi.com> patches to improve
      performance
