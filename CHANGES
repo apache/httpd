@@ -1,5 +1,8 @@
 Changes with Apache 2.0.42
 
+  *) Add -p option to apxs to allow programs to be compiled with apxs.
+     [Justin Erenkrantz]
+
 Changes with Apache 2.0.41
 
   *) The protocol version (eg: HTTP/1.1) in the request line parsing
