@@ -1358,6 +1358,8 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
 {
     apr_status_t status = APR_SUCCESS;
     ssl_filter_ctx_t *filter_ctx = f->ctx;
+    bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)
+                                 (filter_ctx->pbioRead->ptr);
 
     if (f->c->aborted) {
         apr_brigade_cleanup(bb);
@@ -1368,6 +1370,13 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
         /* ssl_filter_io_shutdown was called */
         return ap_pass_brigade(f->next, bb);
     }
+
+    /* When we are the writer, we must initialize the inctx
+     * mode so that we block for any required ssl input, because
+     * output filtering is always nonblocking.
+     */
+    inctx->mode = APR_MODE_READBYTES;
+    inctx->block = AP_BLOCK_READ;
 
     if ((status = ssl_io_filter_connect(filter_ctx)) != APR_SUCCESS) {
         return ssl_io_filter_error(f, bb, status);
@@ -1442,15 +1451,16 @@ static void ssl_io_input_add_filter(ssl_filter_ctx_t *filter_ctx, conn_rec *c,
     filter_ctx->pbioRead = BIO_new(&bio_filter_in_method);
     filter_ctx->pbioRead->ptr = (void *)inctx;
 
-    inctx->filter_ctx = filter_ctx;
     inctx->ssl = ssl;
     inctx->bio_out = filter_ctx->pbioWrite;
     inctx->f = filter_ctx->pInputFilter;
-    inctx->bb = apr_brigade_create(c->pool, c->bucket_alloc);
-
+    inctx->rc = APR_SUCCESS;
+    inctx->mode = AP_MODE_READBYTES;
     inctx->cbuf.length = 0;
-
+    inctx->bb = apr_brigade_create(c->pool, c->bucket_alloc);
+    inctx->block = APR_BLOCK_READ;
     inctx->pool = c->pool;
+    inctx->filter_ctx = filter_ctx;
 }
 
 void ssl_io_filter_init(conn_rec *c, SSL *ssl)
