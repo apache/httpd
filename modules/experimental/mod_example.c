@@ -73,6 +73,7 @@
 #include "http_protocol.h"
 #include "http_request.h"
 #include "util_script.h"
+#include "http_connection.h"
 
 #include "apr_strings.h"
 
@@ -660,29 +661,6 @@ static int x_handler(request_rec *r)
  * There is no return value.
  */
 
-/*
- * All our module initialiser does is add its trace to the log.
- */
-static void x_init(apr_pool_t *p, apr_pool_t *ptemp, 
-                         apr_pool_t *plog, server_rec *s)
-{
-
-    char *note;
-    char *sname = s->server_hostname;
-
-    /*
-     * Set up any module cells that ought to be initialised.
-     */
-    setup_module_cells();
-    /*
-     * The arbitrary text we add to our trace entry indicates for which server
-     * we're being called.
-     */
-    sname = (sname != NULL) ? sname : "";
-    note = apr_pstrcat(p, "x_init(", sname, ")", NULL);
-    trace_add(s, NULL, NULL, note);
-}
-
 /* 
  * This function is called when an heavy-weight process (such as a child) is
  * being run down or destroyed.  As with the child initialisation function,
@@ -1219,24 +1197,6 @@ static int x_logger(request_rec *r)
     return DECLINED;
 }
 
-/*
- * This routine is called to give the module a chance to look at the request
- * headers and take any appropriate specific actions early in the processing
- * sequence.
- *
- * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, any
- * remaining modules with handlers for this phase will still be called.
- */
-static int x_header_parser(request_rec *r)
-{
-
-    x_cfg *cfg;
-
-    cfg = our_dconfig(r);
-    trace_add(r->server, r, cfg, "x_header_parser()");
-    return DECLINED;
-}
-
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
 /* Which functions are responsible for which hooks in the server.           */
@@ -1278,7 +1238,10 @@ static void x_register_hooks(apr_pool_t *p)
     ap_hook_handler(x_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_quick_handler(x_quick_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_connection(x_pre_connection, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_process_connection(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
+/* This module doesn't have a process connection phase, but I am leaving
+ * the code in, in-case somebody wants to add one.
+ */
+/*    ap_hook_process_connection(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE); */
     /* [1] post read_request handling */
     ap_hook_post_read_request(x_post_read_request, NULL, NULL,
                               APR_HOOK_MIDDLE);
