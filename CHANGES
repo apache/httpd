@@ -56,9 +56,6 @@ Changes with Apache 2.1.0-dev
      the current locale. level values are now really parsed as integers.
      PR 17564.  [André Malo]
 
-  *) Linux 2.4+: enable coredumps when Apache is started as root
-     if CoreDumpDir is configured [Greg Ames]
-
   *) Added the WindowsSocketsWorkaround directive for Windows NT/2000/XP
      to work around problems with certain VPN and Firewall products that 
      have buggy AcceptEx implementations.
@@ -152,6 +149,10 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.46
 
+  *) Linux 2.4+: If Apache is started as root and you code 
+     CoreDumpDirectory, coredumps are enabled via the prctl() syscall.
+     [Greg Ames]
+
   *) ap_get_mime_headers_core: allocate space for the trailing null
      when folding is in effect.
      PR 18170 [Peter Mayne <PeterMayne@SPAM_SUX.ap.spherion.com>]
@@ -194,7 +195,7 @@ Changes with Apache 2.0.46
      the server will accept encoded slashes ('%2f') in the URI path.
      Default condition is off (the historical behaviour).  This permits
      environments in which the path-info needs to contain encoded
-     slashes. PR 543, 2389, 3581, 3589, 5687, 7066, 7865, 14639.  [Ken Coar]
+     slashes.  PR 543, 2389, 3581, 3589, 5687, 7066, 7865, 14639.  [Ken Coar]
 
   *) When using Redirect in directory context, append requested query
      string if there's no one supplied by configuration. PR 10961.
@@ -208,9 +209,14 @@ Changes with Apache 2.0.46
      delimiters (;). Thus column headers no longer contain unescaped
      ampersands. PR 10880  [André Malo]
 
-  *) Enable ap_sock_disable_nagle for Windows. This along with the  
-     addition of  APR_TCP_NODELAY_INHERITED to apr.hw will cause Nagle 
+  *) Enable ap_sock_disable_nagle for Windows. This along with the 
+     addition of APR_TCP_NODELAY_INHERITED to apr.hw will cause Nagle 
      to be disabled for Windows. [Allan Edwards]
+
+  *) Correct a mis-correlation between mpm_common.c and mpm_common.h;
+     This patch reverts us to pre-2.0.46 behavior, using the 
+     ap_sock_disable_nagle noop macro, because ap_sock_disable_nagle 
+     was never compiled on Win32. [Allan Edwards, William Rowe]
 
   *) Fix a build problem with passing unsupported --enable-layout
      args to apr and apr-util.  This broke binbuild.sh as well as
@@ -401,7 +407,7 @@ Changes with Apache 2.0.45
      and .dbg files (older debuggers and Dr. Watson-type utilities 
      on WinNT or Win9x don't support the newer .pdb flavor.)
      [Allen Edwards, William Rowe]
-
+ 
   *) Fix bug where 'Satisfy Any' without an AuthType lost all MIME
      information (and more). Related to PR 9076.  [André Malo]
 
@@ -439,7 +445,7 @@ Changes with Apache 2.0.45
      directive AuthLDAPCharsetConfig is used to specify the config
      file that contains the character set conversion table.
      [Brad Nicholes]
-     
+
   *) Don't remove the Content-Length from responses in mod_proxy
      PR: 8677 [Brian Pane]
 
@@ -447,7 +453,7 @@ Changes with Apache 2.0.45
      [Sergey A. Lipnevich <sergeyli@pisem.net>]
 
   *) Fix mod_ldap to open an existing shared memory file should one
-     already exist. PR 12757. [Scooter Morris <scooter@gene.com>, 
+     already exist. PR 12757. [Scooter Morris <scooter@gene.com>,
      Graham Leggett]
 
   *) Fix the ulimit command used by apachectl on Tru64.  PR 13609.
@@ -467,7 +473,7 @@ Changes with Apache 2.0.44
 
   *) mod_mime: Workaround to prevent a segfault if r->filename=NULL
      [Brian Pane]
-
+ 
   *) Reorder the definitions for mod_ldap and mod_auth_ldap within
      config.m4 to make sure the parent mod_ldap is defined first.
      This ensures that mod_ldap comes before mod_auth_ldap in the
@@ -503,7 +509,7 @@ Changes with Apache 2.0.44
      patterns [André Malo <nd@perlig.de>]
 
   *) Add version string to provider API.  [Justin Erenkrantz]
-
+ 
   *) build: './configure && make' now works without an in-tree
      apr and apr-util. [Wilfredo Sanchez]
 
