@@ -21,8 +21,7 @@ FINAL RELEASE SHOWSTOPPERS:
     * The DoS issue about symlinks to /dev/zero is still present.
       A device checker patch had been sent to the list a while ago.
       PATCH: <199805082150.RAA15462@devsys.jaguNET.com>
-      Status: Jim +1
-        Dean: -0 I really don't like the API change.
+      Status: Jim +1, Brian +1, Dean +1 (ASSUMED: the API is intact)
 
 WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
 
