@@ -179,6 +179,7 @@ log_printf(const server_rec *s, const char *fmt, ...)
     va_end (args);
 
     fputc('\n', s->error_log);
+    fflush(s->error_log);
 }
 
 void log_reason(char *reason, char *file, request_rec *r) {
