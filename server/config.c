@@ -1462,11 +1462,11 @@ AP_DECLARE(void)ap_process_config_tree(server_rec *s, ap_directive_t *conftree,
 
     errmsg = ap_walk_config(conftree, &parms, s->lookup_defaults);
     if (errmsg) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_perror(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, p,
                      "Syntax error on line %d of %s:",
                      parms.err_directive->line_num,
                      parms.err_directive->filename);
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+	ap_log_perror(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, p, 
                      "%s", errmsg);
         exit(1);
     }
