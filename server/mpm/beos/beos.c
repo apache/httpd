@@ -359,6 +359,7 @@ static int32 worker_thread(void * dummy)
     proc_info * ti = dummy;
     int child_slot = ti->slot;
     apr_pool_t *tpool = ti->tpool;
+    apr_allocator_t *allocator;
     apr_socket_t *csd = NULL;
     apr_pool_t *ptrans;		/* Pool for per-transaction stuff */
     apr_socket_t *sd = NULL;
@@ -378,7 +379,10 @@ static int32 worker_thread(void * dummy)
     sigfillset(&sig_mask);
     sigprocmask(SIG_BLOCK, &sig_mask, NULL);
 
-    apr_pool_create_ex(&ptrans, tpool, NULL, APR_POOL_FNEW_ALLOCATOR);
+    apr_allocator_create(&allocator);
+    apr_pool_create_ex(&ptrans, tpool, NULL, allocator);
+    apr_allocator_set_owner(ptrans);
+
     apr_pool_tag(ptrans, "transaction");
 
     apr_lock_acquire(worker_thread_count_mutex);

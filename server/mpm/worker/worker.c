@@ -679,7 +679,11 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         if (!workers_may_exit) {
             /* create a new transaction pool for each accepted socket */
             if (recycled_pool == NULL) {
-                apr_pool_create_ex(&ptrans, NULL, NULL, APR_POOL_FNEW_ALLOCATOR);
+                apr_allocator_t *allocator;
+
+                apr_allocator_create(&allocator);
+                apr_pool_create_ex(&ptrans, NULL, NULL, allocator);
+                apr_allocator_set_owner(allocator, ptrans);
             }
             else {
                 ptrans = recycled_pool;

@@ -352,6 +352,7 @@ void worker_main(void *arg)
     ap_listen_rec *lr;
     ap_listen_rec *last_lr = NULL;
     apr_pool_t *ptrans;
+    apr_allocator_t *allocator;
     conn_rec *current_conn;
     apr_status_t stat = APR_EINIT;
     int worker_num_arg = (int)arg;
@@ -369,7 +370,10 @@ void worker_main(void *arg)
     tv.tv_sec = 1;
     tv.tv_usec = 0;
 
-    apr_pool_create_ex(&ptrans, NULL, NULL, APR_POOL_FNEW_ALLOCATOR);
+    apr_allocator_create(&allocator);
+    apr_pool_create_ex(&ptrans, NULL, NULL, allocator);
+    apr_allocator_set_owner(allocator, ptrans);
+
     apr_pool_tag(ptrans, "transaction");
 
     apr_thread_mutex_lock(worker_thread_count_mutex);
