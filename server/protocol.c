@@ -614,8 +614,8 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
                 r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
             }
             else if (r->connection->keepalive != AP_CONN_KEEPALIVE) {
-                ap_log_rerror(APLOG_MARK, APLOG_NOTICE, rv, r,
-                              "request line read error.");
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
+                              "Error while reading request line. (client didn't send a request?)");
             }
             return 0;
         }
