@@ -84,6 +84,8 @@ typedef struct {
 #define	UNP_OMITPASSWORD	(1U<<2)	/* Just omit password */
 #define	UNP_OMITUSERINFO	(UNP_OMITUSER|UNP_OMITPASSWORD)	/* omit "user:password@" part */
 #define	UNP_REVEALPASSWORD	(1U<<3)	/* Show plain text password (default: show XXXXXXXX) */
+#define UNP_OMITPATHINFO	(1U<<4)	/* Show "scheme://user@site:port" only */
+#define UNP_OMITQUERY	        (1U<<5)	/* Omit the "?queryarg" from the path */
 
 typedef struct {
     char *scheme;		/* scheme ("http"/"ftp"/...) */

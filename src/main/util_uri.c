@@ -66,14 +66,16 @@
 
 /* Some WWW schemes and their default ports; this is basically /etc/services */
 /* This will become global when the protocol abstraction comes */
+/* As the schemes are searched by a linear search, */
+/* they are sorted by their expected frequency */
 static schemes_t schemes[] =
 {
-    {"ftp",    DEFAULT_FTP_PORT},
-    {"gopher", DEFAULT_GOPHER_PORT},
     {"http",   DEFAULT_HTTP_PORT},
-    {"nntp",   DEFAULT_NNTP_PORT},
-    {"wais",   DEFAULT_WAIS_PORT},
+    {"ftp",    DEFAULT_FTP_PORT},
     {"https",  DEFAULT_HTTPS_PORT},
+    {"gopher", DEFAULT_GOPHER_PORT},
+    {"wais",   DEFAULT_WAIS_PORT},
+    {"nntp",   DEFAULT_NNTP_PORT},
     {"snews",  DEFAULT_SNEWS_PORT},
     {"prospero", DEFAULT_PROSPERO_PORT},
     { NULL, 0xFFFF }			/* unknown port */
@@ -169,35 +171,42 @@ API_EXPORT(char *) ap_unparse_uri_components(pool *p, const uri_components *uptr
 {
     char *ret = "";
 
-    /* Construct a "user:password@" string, honoring the passed UNP_ flags: */
-    if (uptr->user||uptr->password)
-	ret = ap_pstrcat (p,
-		(uptr->user     && !(flags & UNP_OMITUSER)) ? uptr->user : "",
-		(uptr->password && !(flags & UNP_OMITPASSWORD)) ? ":" : "",
-		(uptr->password && !(flags & UNP_OMITPASSWORD))
-		   ? ((flags & UNP_REVEALPASSWORD) ? uptr->password : "XXXXXXXX")
-		   : "",
-		"@", NULL);
+    /* If suppressing the site part, omit both user name & scheme://hostname */
+    if (!(flags & UNP_OMITSITEPART)) {
 
-    /* Construct scheme://site string */
-    if (uptr->hostname && !(flags & UNP_OMITSITEPART)) {
-	ret = ap_pstrcat (p,
-		uptr->scheme, "://", ret, 
-		uptr->hostname ? uptr->hostname : "",
-		       uptr->port_str ? ":" : "",
-		       uptr->port_str ? uptr->port_str : "",
-		       NULL);
+	/* Construct a "user:password@" string, honoring the passed UNP_ flags: */
+	if (uptr->user||uptr->password)
+	    ret = ap_pstrcat (p,
+			(uptr->user     && !(flags & UNP_OMITUSER)) ? uptr->user : "",
+			(uptr->password && !(flags & UNP_OMITPASSWORD)) ? ":" : "",
+			(uptr->password && !(flags & UNP_OMITPASSWORD))
+			   ? ((flags & UNP_REVEALPASSWORD) ? uptr->password : "XXXXXXXX")
+			   : "",
+			"@", NULL);
+
+	/* Construct scheme://site string */
+	if (uptr->hostname) {
+	    ret = ap_pstrcat (p,
+			uptr->scheme, "://", ret, 
+			uptr->hostname ? uptr->hostname : "",
+			uptr->port_str ? ":" : "",
+			uptr->port_str ? uptr->port_str : "",
+			NULL);
+	}
     }
 
-    /* Append path, query and fragment strings: */
-    ret = ap_pstrcat (p,
-		   ret,
-		   uptr->path ? uptr->path : "",
-		   uptr->query ? "?" : "",
-		   uptr->query ? uptr->query : "",
-		   uptr->fragment ? "#" : NULL,
-		   uptr->fragment ? uptr->fragment : NULL,
-		   NULL);
+    /* Should we suppress all path info? */
+    if (!(flags & UNP_OMITPATHINFO)) {
+	/* Append path, query and fragment strings: */
+	ret = ap_pstrcat (p,
+		ret,
+		uptr->path ? uptr->path : "",
+		(uptr->query    && !(flags & UNP_OMITQUERY)) ? "?" : "",
+		(uptr->query    && !(flags & UNP_OMITQUERY)) ? uptr->query : "",
+		(uptr->fragment && !(flags & UNP_OMITQUERY)) ? "#" : NULL,
+		(uptr->fragment && !(flags & UNP_OMITQUERY)) ? uptr->fragment : NULL,
+		NULL);
+    }
     return ret;
 }
 

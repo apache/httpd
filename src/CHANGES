@@ -1,5 +1,9 @@
 Changes with Apache 1.3.1
 
+  *) Add new flags for ap_unparse_uri_components() to make it generate
+     the scheme://sitepart string only, or to omit the query string.
+     [Martin Kraemer]
+
   *) WIN32: Canonicalize ServerRoot before checking to see if it
      is a valid directory.  The failure to do this caused certain
      ServerRoot settings (eg. "ServerRoot /apache") to be improperly
