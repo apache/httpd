@@ -2493,7 +2493,7 @@ static const char *set_interpreter_source(cmd_parms *cmd, core_dir_config *d,
 
 #if !defined (RLIMIT_CPU) || !(defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined(RLIMIT_AS)) || !defined (RLIMIT_NPROC)
 static const char *no_set_limit(cmd_parms *cmd, core_dir_config *conf,
-                                char *arg, char *arg2)
+                                const char *arg, const char *arg2)
 {
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, cmd->server,
                 "%s not supported on this platform", cmd->cmd->name);
@@ -3420,7 +3420,9 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
         }
         if (fd) {
             apr_hdtr_t hdtr;
+#if APR_HAS_SENDFILE
             apr_int32_t flags = 0;
+#endif
 
             memset(&hdtr, '\0', sizeof(hdtr));
             if (nvec) {
