@@ -161,8 +161,8 @@ blocks connections to all sites.
 <strong>Context:</strong> server config<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
-<strong>Compatibility:</strong> NoProxy is only available in a patch to
-Apache 1.2.1 and later.<p>
+<strong>Compatibility:</strong> NoProxy is only available in
+Apache 1.3 and later.<p>
 
 This directive is only useful for apache proxy servers within intranets.
 The NoProxy directive specifies a list of subnets, IP addresses, hosts
@@ -184,7 +184,7 @@ The arguments to the NoProxy directive are one of the following type list:
         It represents a list of hosts which logically belong to the same DNS
         domain or zone (i.e. the suffixes of the hostnames are all ending in 
         <EM>Domain</EM>).<BR>
-		Examples: <SAMP>.com</SAMP>   <SAMP>.apache.org.</SAMP>    <SAMP>.sni.de</SAMP><BR>
+		Examples: <SAMP>.com</SAMP>   <SAMP>.apache.org.</SAMP><BR>
         To distinguish <EM>Domain</EM>s from <A HREF="#hostname"><EM>Hostname</EM></A>s (both
         syntactically and semantically; a DNS domain can have a DNS A record,
         too!), <EM>Domain</EM>s are always written
@@ -210,10 +210,10 @@ The arguments to the NoProxy directive are one of the following type list:
         Examples:
         <DL>
          <DT><SAMP>192.168</SAMP> or <SAMP>192.168.0.0</SAMP>
-         <DD>the subnet 192.168.0.0 with a netmask of 16 valid bits
+         <DD>the subnet 192.168.0.0 with an implied netmask of 16 valid bits
              (sometimes used in the netmask form <SAMP>255.255.0.0</SAMP>)
-         <DT><SAMP>139.25.112.0/21</SAMP>
-         <DD>the subnet <SAMP>139.25.112.0/21</SAMP> with a netmask of 21
+         <DT><SAMP>192.168.112.0/21</SAMP>
+         <DD>the subnet <SAMP>192.168.112.0/21</SAMP> with a netmask of 21
              valid bits (also used in the form 255.255.248.0)
         </DL>
 		As a degenerate case, a <EM>SubNet</EM> with 32 valid bits is the
@@ -228,7 +228,7 @@ The arguments to the NoProxy directive are one of the following type list:
         numeric (dotted quad) form. Usually, this address represents a
         host, but there need not necessarily be a DNS domain name
         connected with the address.<BR>
-		Example: 139.25.113.10<BR>
+		Example: 192.168.123.7<BR>
         Note: An <EM>IPAddr</EM> does not need to be resolved by the DNS system, so
               it can result in more effective apache performance.<BR>
 <p><strong>See Also:</strong>
@@ -263,8 +263,8 @@ The arguments to the NoProxy directive are one of the following type list:
 <strong>Context:</strong> server config<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
-<strong>Compatibility:</strong> ProxyDomain is only available in a patch to
-Apache 1.2.1 and later.<p>
+<strong>Compatibility:</strong> ProxyDomain is only available in
+Apache 1.3 and later.<p>
 
 This directive is only useful for apache proxy servers within intranets.
 The ProxyDomain directive specifies the default domain which the apache
