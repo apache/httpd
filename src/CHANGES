@@ -1,5 +1,9 @@
 Changes with Apache 1.3a2
 
+  *) mod_include cleanup showed that handle_else was being used to handle
+     endif.  It didn't cause problems, but it was cleaned up too.
+     [Howard Fear]
+
   *) mod_cern_meta would attempt to find meta files for the directory itself
      in some cases, but not in others.  It now avoids it in all cases.
      [Dean Gaudet]
