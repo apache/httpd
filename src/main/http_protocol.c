@@ -1053,6 +1053,21 @@ int send_http_options(request_rec *r)
     return OK;
 }
 
+/*
+ * Here we try to be compatible with clients that want multipart/x-byteranges
+ * instead of multipart/byteranges (also see above), as per HTTP/1.1. We
+ * look for the Request-Range header (e.g. Netscape 2 and 3) as an indication
+ * that the browser supports an older protocol. We also check User-Agent
+ * for Microsoft Internet Explorer 3, which needs this as well.
+ */
+
+static int use_range_x(request_rec *r) {
+    char *ua;
+    return (table_get(r->headers_in, "Request-Range") ||
+	    ((ua = table_get(r->headers_in, "User-Agent"))
+	     && strstr(ua, "MSIE 3")));
+}
+
 void send_http_header(request_rec *r)
 {
     conn_rec *c = r->connection;
@@ -1083,9 +1098,8 @@ void send_http_header(request_rec *r)
 
     if (r->byterange > 1)
         bvputs(fd, "Content-Type: multipart/",
-	       table_get(r->headers_in, "Request-Range") ?
-	       "x-byteranges" : "byteranges",
-	       "; boundary=\"", r->boundary, "\"\015\012", NULL);
+	       use_range_x(r) ? "x-byteranges" : "byteranges",
+	       "; boundary=", r->boundary, "\015\012", NULL);
     else if (r->content_type)
         bvputs(fd, "Content-Type: ", 
 		 nuke_mime_parms (r->pool, r->content_type), "\015\012", NULL);
