@@ -97,7 +97,7 @@ Available Patches:
 
     * Khimenko Victor's os_inline.c finctions are not inlined
         Message-ID: <ABLzDHsePP@khim.sch57.msk.ru>
-        Status: Roy +1
+        Status: Roy +1, Dean +1
 
     * Juan Gallego's patch to add CSH-style modifiers (:h, :r, :t, :e)
       to mod_include's variable processing.
