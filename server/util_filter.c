@@ -196,7 +196,7 @@ API_EXPORT(void) ap_add_output_filter(const char *name, void *ctx,
  * brigade especially for that use.
  */
 API_EXPORT(apr_status_t) ap_get_brigade(ap_filter_t *next, 
-                                        ap_bucket_brigade *bb, int length)
+                                      ap_bucket_brigade *bb, apr_ssize_t length)
 {
     if (next) {
         return next->frec->filter_func.in_func(next, bb, length);

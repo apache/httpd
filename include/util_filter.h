@@ -253,9 +253,9 @@ struct ap_filter_t {
  *               AP_GET_ANY_AMOUNT (-1) tells a filter to return everything
  *               it has.
  * @return apr_status_t value
- * @deffunc apr_status_t ap_get_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket, int length)
+ * @deffunc apr_status_t ap_get_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket, apr_ssize_t length)
  */
-API_EXPORT(apr_status_t) ap_get_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket, int length);
+API_EXPORT(apr_status_t) ap_get_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket, apr_ssize_t length);
 
 /**
  * Pass the current bucket brigade down to the next filter on the filter
