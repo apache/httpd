@@ -70,7 +70,6 @@
 #define NEED_STRCASECMP
 #define NEED_STRDUP
 #define NEED_STRNCASECMP
-#define getwd(d) getcwd(d,MAX_STRING_LEN)
 extern void GETPRIVMODE();
 extern void GETUSERMODE();
 extern char *inet_ntoa();
@@ -93,7 +92,6 @@ typedef int rlim_t;
 #undef NO_SETSID
 #define HAVE_SYS_RESOURCE_H
 #define bzero(a,b) memset(a,0,b)
-#define getwd(d) getcwd(d,MAX_STRING_LEN)
 #define JMP_BUF sigjmp_buf
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP
@@ -137,7 +135,6 @@ int gethostname(char *name, int namelen);
 #define HAVE_SHMGET
 #ifndef HPUX10
 #define SELECT_NEEDS_CAST
-#define getwd(d) getcwd(d,MAX_STRING_LEN)
 typedef int rlim_t;
 #endif
 
@@ -265,7 +262,6 @@ typedef int pid_t;
 #define NEED_INITGROUPS
 #define JMP_BUF sigjmp_buf
 #define SIGURG SIGUSR1 /* but note, this signal will be sent to a process group if enabled (for OOB data). It is not currently enabled. */
-#define getwd(d) getcwd(d,MAX_STRING_LEN)
 #include <sys/time.h>     
 
 #elif defined(SCO5)
@@ -286,7 +282,6 @@ extern int strncasecmp(const char *,const char *,unsigned);
 #elif defined(CONVEXOS)
 #define HAVE_GMTOFF
 #define NEED_STRDUP
-#define getwd(d) getcwd(d,MAX_STRING_LEN)
 
 #elif defined(AUX)
 /* These are to let -Wall compile more cleanly */
@@ -302,7 +297,6 @@ extern int  shmctl();
 extern int  shmget();
 extern char *sbrk();
 extern char *crypt();
-extern char *getwd();
 #include <sys/time.h>
 #undef HAVE_GMTOFF
 #undef NO_KILLPG
@@ -330,7 +324,6 @@ extern char *getwd();
 #define NEED_STRNCASECMP
 #define bzero(a,b) memset(a,0,b)
 #define JMP_BUF sigjmp_buf
-#define getwd(d) getcwd(d,MAX_STRING_LEN)
 /* A lot of SVR4 systems need this */
 #define USE_FCNTL_SERIALIZED_ACCEPT
 
@@ -342,7 +335,6 @@ extern char *getwd();
 #define NEED_STRNCASECMP
 #define bzero(a,b) memset(a,0,b)
 #define JMP_BUF sigjmp_buf
-#define getwd(d) getcwd(d,MAX_STRING_LEN)
 #define HAVE_RESOURCE
 #define HAVE_MMAP
 #define HAVE_SHMGET
@@ -360,7 +352,6 @@ extern char *getwd();
 #define NEED_STRNCASECMP
 #define bzero(a,b) memset(a,0,b)
 #define JMP_BUF sigjmp_buf
-#define getwd(d) getcwd(d,MAX_STRING_LEN)
 /* A lot of SVR4 systems need this */
 #define USE_FCNTL_SERIALIZED_ACCEPT
 
@@ -439,7 +430,6 @@ int initgroups (char *, int);
 #undef NO_SETSID
 #define HAVE_RESOURCE 1
 #define bzero(a,b) memset(a,0,b)
-#define getwd(d) getcwd(d,MAX_STRING_LEN)
 #define JMP_BUF sigjmp_buf
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP
@@ -491,7 +481,6 @@ typedef int rlim_t;
 #define SIGURG SIGUSR1
 #define JMP_BUF sigjmp_buf
 #define USE_FCNTL_SERIALIZED_ACCEPT
-#define getwd(d) getcwd(d,MAX_STRING_LEN)
 
 /* Unknown system - Edit these to match */
 #else
@@ -693,7 +682,6 @@ int wait3 (int *, int, void*);	/* Close enough for us... */
 int lstat (const char *, struct stat *);
 int stat (const char *, struct stat *);     
 int flock (int, int);
-int getwd (char *);
 #ifndef NO_KILLPG
 int killpg(int, int);
 #endif
