@@ -815,7 +815,7 @@ fi
 # additional hackery. It would be nice to reduce the number of times
 # we have to awk the $tmpfile, though.
 
-# MODFILES contains a list of module filenames (could be .c, .o, .a
+# MODFILES contains a list of module filenames (could be .c, .o, .so, .a
 #    or .module files) from AddModule lines only
 # MODDIRS contains a list of subdirectories under 'modules' which
 #    contain modules we want to build from both AddModule and Module
@@ -823,7 +823,7 @@ fi
 
 echo " + adding selected modules"
 
-MODFILES=`awk <$tmpfile '$1 == "AddModule" { printf "%s ", $2 }'`
+MODFILES=`awk <$tmpfile '($1 == "AddModule" || $1 == "SharedModule") { printf "%s ", $2 }'`
 MODDIRS=`awk < $tmpfile '
 	($1 == "Module" && $3 ~ /^modules\//) {
 	    split ($3, pp, "/")
@@ -892,14 +892,18 @@ for modfile in $MODFILES ; do
 		    . ./$tmpfile3
 		fi
 		rm -f $tmpfile2 $tmpfile3
-		ext=o
+		if [ $ext != so ]; then
+		    ext=o
+		fi
 	fi
 	if [ "x$modname" = "x" ] ; then
 		modname=`echo $modbase | sed 's/^.*\///' | \
 			sed 's/^mod_//' | sed 's/^lib//' | sed 's/$/_module/'`
 	fi
-#	echo "Adding Module $modname $modbase.$ext"
-	echo "Module $modname $modbase.$ext" >>$tmpfile
+	if [ $ext != so ]; then
+#		echo "Adding Module $modname $modbase.$ext"
+		echo "Module $modname $modbase.$ext" >>$tmpfile
+	fi
 done
 
 # $tmpfile now contains Module lines for all the modules we want
