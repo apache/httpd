@@ -2946,7 +2946,9 @@ void child_main(int child_num_arg)
      */
     ap_setjmp(jmpbuffer);
 #ifndef __EMX__
+#ifdef SIGURG
     signal(SIGURG, timeout);
+#endif
 #endif
     signal(SIGPIPE, timeout);
     signal(SIGALRM, alrm_handler);

@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) SIGURG doesn't exist everywhere.
+     [Mark Andrew Heinrich <heinrich@tinderbox.Stanford.EDU>]
+
   *) mod_unique_id was erroneously generating a second unique id when
      an internal redirect occured.  Such redirects occur, for example,
      when processing a DirectoryIndex match.  [Dean Gaudet]
