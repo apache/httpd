@@ -110,6 +110,7 @@ typedef struct ef_ctx_t {
 } ef_ctx_t;
 
 module AP_MODULE_DECLARE_DATA ext_filter_module;
+static const server_rec *main_server;
 
 static apr_status_t ef_output_filter(ap_filter_t *, apr_bucket_brigade *);
 
@@ -341,6 +342,17 @@ static const command_rec cmds[] =
     {NULL}
 };
 
+static int ef_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_s)
+{
+    main_server = main_s;
+    return OK;
+}
+
+static void register_hooks(apr_pool_t *p)
+{
+    ap_hook_post_config(ef_init, NULL, NULL, APR_HOOK_MIDDLE);
+}
+
 static apr_status_t set_resource_limits(request_rec *r, 
                                         apr_procattr_t *procattr)
 {
@@ -469,21 +481,33 @@ static const char *get_cfg_string(ef_dir_t *dc, ef_filter_t *filter, apr_pool_t 
                         intype_str, outtype_str);
 }
 
+static ef_filter_t *find_filter_def(const server_rec *s, const char *fname)
+{
+    ef_server_t *sc;
+    ef_filter_t *f;
+
+    sc = ap_get_module_config(s->module_config, &ext_filter_module);
+    f = apr_hash_get(sc->h, fname, APR_HASH_KEY_STRING);
+    if (!f && s != main_server) {
+        s = main_server;
+        sc = ap_get_module_config(s->module_config, &ext_filter_module);
+        f = apr_hash_get(sc->h, fname, APR_HASH_KEY_STRING);
+    }
+    return f;
+}
+
 static apr_status_t init_filter_instance(ap_filter_t *f)
 {
     ef_ctx_t *ctx;
     ef_dir_t *dc;
-    ef_server_t *sc;
     apr_status_t rv;
 
     f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(ef_ctx_t));
     dc = ap_get_module_config(f->r->per_dir_config,
                               &ext_filter_module);
-    sc = ap_get_module_config(f->r->server->module_config,
-                              &ext_filter_module);
     ctx->dc = dc;
     /* look for the user-defined filter */
-    ctx->filter = apr_hash_get(sc->h, f->frec->name, APR_HASH_KEY_STRING);
+    ctx->filter = find_filter_def(f->r->server, f->frec->name);
     if (!ctx->filter) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
                       "couldn't find definition of filter '%s'",
@@ -798,4 +822,5 @@ module AP_MODULE_DECLARE_DATA ext_filter_module =
     create_ef_server_conf,
     NULL,
     cmds,
+    register_hooks
 };
