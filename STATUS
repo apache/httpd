@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/01/08 22:20:36 $]
+  Last modified at [$Date: 1999/01/08 22:37:02 $]
 
 Release:
 
@@ -46,8 +46,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 Documentation that needs writing:
 
     * Document compilation on Win95 and NT
-
-    * RemoveHandler directive needs docs
 
     * Need a document explaining mod_rewrite/"UseCanonicalName off" based
       virtualhosting.  (If it exists already I can't find it easily.)
