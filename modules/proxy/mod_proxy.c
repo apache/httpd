@@ -298,17 +298,30 @@ static int proxy_handler(request_rec *r)
     if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
 	return DECLINED;
 
-    if (r->method_number == M_TRACE &&
+    if ((r->method_number == M_TRACE || r->method_number == M_OPTIONS) &&
 	(maxfwd_str = apr_table_get(r->headers_in, "Max-Forwards")) != NULL) {
 	long maxfwd = strtol(maxfwd_str, NULL, 10);
 	if (maxfwd < 1) {
-	    int access_status;
-	    r->proxyreq = PROXYREQ_NONE;
-	    if ((access_status = ap_send_http_trace(r)))
-		ap_die(access_status, r);
-	    else
-		ap_finalize_request_protocol(r);
-	    return OK;
+            switch (r->method_number) {
+            case M_TRACE: {
+	        int access_status;
+	        r->proxyreq = PROXYREQ_NONE;
+	        if ((access_status = ap_send_http_trace(r)))
+		    ap_die(access_status, r);
+	        else
+		    ap_finalize_request_protocol(r);
+	        return OK;
+            }
+            case M_OPTIONS: {
+	        int access_status;
+	        r->proxyreq = PROXYREQ_NONE;
+	        if ((access_status = ap_send_http_options(r)))
+		    ap_die(access_status, r);
+	        else
+		    ap_finalize_request_protocol(r);
+	        return OK;
+            }
+            }
 	}
 	apr_table_setn(r->headers_in, "Max-Forwards", 
 		      apr_psprintf(r->pool, "%ld", (maxfwd > 0) ? maxfwd-1 : 0));
