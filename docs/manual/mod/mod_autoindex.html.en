@@ -88,6 +88,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#indexignore">IndexIgnore</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexoptions">IndexOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexorderdefault">IndexOrderDefault</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#indexstylesheet">IndexStyleSheet</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#readmename">ReadmeName</a></li>
 </ul>
 <h3>Topics</h3>
@@ -824,6 +825,25 @@ Name|Date|Size|Description</code></td></tr>
     particular order by combining this directive with the <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code> index option; this will prevent
     the client from requesting the directory listing in a different
     order.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="IndexStyleSheet" id="IndexStyleSheet">IndexStyleSheet</a> <a name="indexstylesheet" id="indexstylesheet">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adds a CSS stylesheet to the directory index</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IndexStyleSheet <var>url-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+</table>
+    <p>The <code class="directive">IndexStyleSheet</code> directive sets the name of
+    the file that will be used as the CSS for the index listing.
+    </p>
+    <div class="example"><h3>Example</h3><p><code>
+      
+      IndexStyleSheet "/css/style.css"
+    </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
