@@ -373,14 +373,14 @@ static ap_inline ipaddr_chain *find_ipaddr(struct in_addr *server_ip,
 {
     unsigned bucket;
     ipaddr_chain *trav;
-    unsigned s_addr;
+    unsigned addr;
 
     /* scan the hash table for an exact match first */
-    s_addr = server_ip->s_addr;
-    bucket = hash_inaddr(s_addr);
+    addr = server_ip->s_addr;
+    bucket = hash_inaddr(addr);
     for (trav = iphash_table[bucket]; trav; trav = trav->next) {
 	server_addr_rec *sar = trav->sar;
-	if ((sar->host_addr.s_addr == s_addr)
+	if ((sar->host_addr.s_addr == addr)
 	    && (sar->host_port == 0 || sar->host_port == port
 		|| port == 0)) {
 	    return trav;
