@@ -10,7 +10,7 @@
     <p>This module allows the use of HTTP Basic Authentication to
     restrict access by looking up users in plain text password and
     group files. Similar functionality and greater scalability is
-    provided by <code><a href="../mod/mod_auth_dbm.html">mod_auth_dbm</a></code>.  HTTP Digest
+    provided by <code><a href="../mod/mod_auth_dbm.html">mod_auth_dbm</a></code>. HTTP Digest
     Authentication is provided by
     <code><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>.</p>
 
@@ -23,9 +23,8 @@ passed to lower level modules</td></tr><tr><td nowrap="nowrap"><a href="directiv
                     </a></td><td>AuthConfig</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>mod_auth</td></tr></table></td></tr></table>
-
-<blockquote><table><tr><td bgcolor="#e0e5f5">This information has not been updated for Apache 2.0, which
-uses a different system for module ordering.</td></tr></table></blockquote>
+    <blockquote><table><tr><td bgcolor="#e0e5f5">This information has not been updated for Apache 2.0, which
+    uses a different system for module ordering.</td></tr></table></blockquote>
 
     <p>Setting the <code class="directive">AuthAuthoritative</code> directive
     explicitly to <strong>'off'</strong> allows for both
@@ -59,10 +58,11 @@ uses a different system for module ordering.</td></tr></table></blockquote>
     allowing a user to allow fall-through in his .htaccess file; and
     verify that this is really what you want; Generally it is easier
     to just secure a single .htpasswd file, than it is to secure a
-    database such as mSQL. Make sure that the <a href="#authuserfile" class="directive"><code class="directive">AuthUserFile</code></a> is stored outside the
-    document tree of the web-server; do <em>not</em> put it in the
-    directory that it protects. Otherwise, clients will be able to
-    download the <a href="#authuserfile" class="directive"><code class="directive">AuthUserFile</code></a>.
+    database such as mSQL. Make sure that the <a href="#authuserfile" class="directive"><code class="directive">AuthUserFile</code></a> and the <a href="#authgroupfile" class="directive"><code class="directive">AuthGroupFile</code></a> are stored outside the
+    document tree of the web-server; do <em>not</em> put them in the
+    directory that they protect. Otherwise, clients will be able to
+    download the <a href="#authuserfile" class="directive"><code class="directive">AuthUserFile</code></a>
+	and the <a href="#authgroupfile" class="directive"><code class="directive">AuthGroupFile</code></a>.
     </td></tr></table></blockquote>
 <hr><h2><a name="AuthGroupFile">AuthGroupFile</a> <a name="authgroupfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sets the name of a text file containing the list
@@ -82,18 +82,18 @@ of user groups for authentication</td></tr><tr><td nowrap="nowrap"><a href="dire
     colon, followed by the member usernames separated by spaces.
     Example:</p> 
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>mygroup: bob joe anne</code></td></tr></table></blockquote> 
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>mygroup: bob joe anne</code></td></tr></table></blockquote> 
 
     <p>Note that searching large text files is <em>very</em>
     inefficient; <a href="../mod/mod_auth_dbm.html#authdbmgroupfile" class="directive"><code class="directive">AuthDBMGroupFile</code></a> should be used
     instead.</p>
 
-<blockquote><table><tr><td bgcolor="#e0e5f5"><p align="center"><strong>Security</strong></p>
-    <p>Make sure that the AuthGroupFile is stored outside
-    the document tree of the web-server; do <em>not</em> put it in
-    the directory that it protects. Otherwise, clients will be able
-    to download the AuthGroupFile.</p>
-</td></tr></table></blockquote>
+    <blockquote><table><tr><td bgcolor="#e0e5f5"><p align="center"><strong>Security</strong></p>
+    <p>Make sure that the <code class="directive">AuthGroupFile</code> is
+	stored outside the document tree of the web-server; do <em>not</em>
+	put it in the directory that it protects. Otherwise, clients will
+	be able to download the <code class="directive">AuthGroupFile</code>.</p>
+    </td></tr></table></blockquote>
 <hr><h2><a name="AuthUserFile">AuthUserFile</a> <a name="authuserfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sets the name of a text file containing the list of users and
 passwords for authentication</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
@@ -108,7 +108,7 @@ passwords for authentication</td></tr><tr><td nowrap="nowrap"><a href="directive
     file. If it is not absolute (<em>i.e.</em>, if it doesn't begin
     with a slash), it is treated as relative to the <a href="../mod/core.html#serverroot" class="directive"><code class="directive">ServerRoot</code></a>.</p>
 
-    <p>Each line of the user file file contains a username followed by
+    <p>Each line of the user file contains a username followed by
     a colon, followed by the <code>crypt()</code> encrypted
     password. The behavior of multiple occurrences of the same user is
     undefined.</p>
@@ -121,18 +121,19 @@ passwords for authentication</td></tr><tr><td nowrap="nowrap"><a href="directive
 
     <p>Create a password file 'Filename' with 'username' as the
     initial ID. It will prompt for the password:</p>
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>htpasswd -c Filename username</code></td></tr></table></blockquote>
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>htpasswd -c Filename username</code></td></tr></table></blockquote>
 
-<p>Adds or modifies in password file 'Filename' the 'username':</p>
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>htpasswd Filename username2</code></td></tr></table></blockquote>
+    <p>Add or modify 'username' in the password file 'Filename':</p>
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>htpasswd Filename username2</code></td></tr></table></blockquote>
 
     <p>Note that searching large text files is <em>very</em>
     inefficient; <a href="../mod/mod_auth_dbm.html#authdbmuserfile" class="directive"><code class="directive">AuthDBMUserFile</code></a> should be used
     instead.</p>
 
-<blockquote><table><tr><td bgcolor="#e0e5f5"><p align="center"><strong>Security</strong></p><p>Make sure that the AuthUserFile is
-stored outside the document tree of the web-server; do <em>not</em>
-put it in the directory that it protects. Otherwise, clients will be
-able to download the AuthUserFile.</p></td></tr></table></blockquote>
-
+    <blockquote><table><tr><td bgcolor="#e0e5f5"><p align="center"><strong>Security</strong></p>
+    <p>Make sure that the <code class="directive">AuthUserFile</code> is
+	stored outside the document tree of the web-server; do <em>not</em>
+	put it in the directory that it protects. Otherwise, clients will
+	be able to download the <code class="directive">AuthUserFile</code>.</p>
+    </td></tr></table></blockquote>
 <hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>

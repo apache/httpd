@@ -14,7 +14,7 @@
     <p>This module allows the use of HTTP Basic Authentication to
     restrict access by looking up users in plain text password and
     group files. Similar functionality and greater scalability is
-    provided by <module>mod_auth_dbm</module>.  HTTP Digest
+    provided by <module>mod_auth_dbm</module>. HTTP Digest
     Authentication is provided by
     <module>mod_auth_digest</module>.</p>
 
@@ -45,19 +45,19 @@ of user groups for authentication</description>
     colon, followed by the member usernames separated by spaces.
     Example:</p> 
 
-<example>mygroup: bob joe anne</example> 
+    <example>mygroup: bob joe anne</example> 
 
     <p>Note that searching large text files is <em>very</em>
     inefficient; <directive
     module="mod_auth_dbm">AuthDBMGroupFile</directive> should be used
     instead.</p>
 
-<note><title>Security</title>
-    <p>Make sure that the AuthGroupFile is stored outside
-    the document tree of the web-server; do <em>not</em> put it in
-    the directory that it protects. Otherwise, clients will be able
-    to download the AuthGroupFile.</p>
-</note>
+    <note><title>Security</title>
+    <p>Make sure that the <directive>AuthGroupFile</directive> is
+	stored outside the document tree of the web-server; do <em>not</em>
+	put it in the directory that it protects. Otherwise, clients will
+	be able to download the <directive>AuthGroupFile</directive>.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -78,7 +78,7 @@ passwords for authentication</description>
     with a slash), it is treated as relative to the <directive
     module="core">ServerRoot</directive>.</p>
 
-    <p>Each line of the user file file contains a username followed by
+    <p>Each line of the user file contains a username followed by
     a colon, followed by the <code>crypt()</code> encrypted
     password. The behavior of multiple occurrences of the same user is
     undefined.</p>
@@ -91,21 +91,22 @@ passwords for authentication</description>
 
     <p>Create a password file 'Filename' with 'username' as the
     initial ID. It will prompt for the password:</p>
-<example>htpasswd -c Filename username</example>
+    <example>htpasswd -c Filename username</example>
 
-<p>Adds or modifies in password file 'Filename' the 'username':</p>
-<example>htpasswd Filename username2</example>
+    <p>Add or modify 'username' in the password file 'Filename':</p>
+    <example>htpasswd Filename username2</example>
 
     <p>Note that searching large text files is <em>very</em>
     inefficient; <directive
     module="mod_auth_dbm">AuthDBMUserFile</directive> should be used
     instead.</p>
 
-<note><title>Security</title><p>Make sure that the AuthUserFile is
-stored outside the document tree of the web-server; do <em>not</em>
-put it in the directory that it protects. Otherwise, clients will be
-able to download the AuthUserFile.</p></note>
-
+    <note><title>Security</title>
+    <p>Make sure that the <directive>AuthUserFile</directive> is
+	stored outside the document tree of the web-server; do <em>not</em>
+	put it in the directory that it protects. Otherwise, clients will
+	be able to download the <directive>AuthUserFile</directive>.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -120,9 +121,8 @@ passed to lower level modules</description>
 <override>AuthConfig</override>
 
 <usage>
-
-<note>This information has not been updated for Apache 2.0, which
-uses a different system for module ordering.</note>
+    <note>This information has not been updated for Apache 2.0, which
+    uses a different system for module ordering.</note>
 
     <p>Setting the <directive>AuthAuthoritative</directive> directive
     explicitly to <strong>'off'</strong> allows for both
@@ -158,10 +158,12 @@ uses a different system for module ordering.</note>
     verify that this is really what you want; Generally it is easier
     to just secure a single .htpasswd file, than it is to secure a
     database such as mSQL. Make sure that the <directive
-    module="mod_auth">AuthUserFile</directive> is stored outside the
-    document tree of the web-server; do <em>not</em> put it in the
-    directory that it protects. Otherwise, clients will be able to
-    download the <directive module="mod_auth">AuthUserFile</directive>.
+    module="mod_auth">AuthUserFile</directive> and the <directive
+    module="mod_auth">AuthGroupFile</directive> are stored outside the
+    document tree of the web-server; do <em>not</em> put them in the
+    directory that they protect. Otherwise, clients will be able to
+    download the <directive module="mod_auth">AuthUserFile</directive>
+	and the <directive module="mod_auth">AuthGroupFile</directive>.
     </note>
 </usage>
 </directivesynopsis>
