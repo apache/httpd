@@ -199,6 +199,8 @@ AP_DECLARE(int) ap_exists_scoreboard_image(void);
 AP_DECLARE_NONSTD(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e t);
 AP_DECLARE(void) ap_increment_counts(void *sbh, request_rec *r);
 
+int ap_calc_scoreboard_size(void);
+void ap_init_scoreboard(void);
 apr_status_t ap_cleanup_scoreboard(void *d);
 
 AP_DECLARE(void) reopen_scoreboard(apr_pool_t *p);

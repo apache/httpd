@@ -123,7 +123,7 @@ static apr_status_t ap_cleanup_shared_mem(void *d)
     return APR_SUCCESS;
 }
 
-static void calc_scoreboard_size(void)
+int ap_calc_scoreboard_size(void)
 {
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &server_limit);
@@ -131,9 +131,10 @@ static void calc_scoreboard_size(void)
     scoreboard_size += sizeof(process_score) * server_limit;
     scoreboard_size += sizeof(worker_score * ) * server_limit;
     scoreboard_size += sizeof(worker_score) * server_limit * thread_limit;
+    return scoreboard_size;
 }
 
-static void init_scoreboard(void)
+void ap_init_scoreboard(void)
 {
     char *more_storage;
     int i;
@@ -216,7 +217,7 @@ AP_DECLARE_NONSTD(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_t
     if (ap_scoreboard_image)
 	running_gen = ap_scoreboard_image->global.running_generation;
     if (ap_scoreboard_image == NULL) {
-        calc_scoreboard_size();
+        ap_calc_scoreboard_size();
         if (sb_type == SB_SHARED) {
             rv = setup_shared(p);
             if (rv) {
@@ -234,7 +235,7 @@ AP_DECLARE_NONSTD(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_t
             }
         }
     }
-    init_scoreboard(); /* can't just memset() */
+    ap_init_scoreboard(); /* can't just memset() */
     ap_scoreboard_image->global.sb_type = sb_type;
     ap_scoreboard_image->global.running_generation = running_gen;
     ap_restart_time = apr_time_now();
