@@ -130,7 +130,7 @@
 
     /* The locking support:
      * Try to determine whether we should use fcntl() or flock().
-     * Would be better conf.h could provide this... :-(
+     * Would be better ap_config.h could provide this... :-(
      */
 #if defined(USE_FCNTL_SERIALIZED_ACCEPT)
 #define USE_FCNTL 1

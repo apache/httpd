@@ -10,7 +10,7 @@
  * by Alexei Kosut, based on htpasswd.c, by Rob McCool
  */
 
-#include "conf.h"
+#include "ap_config.h"
 #include <sys/types.h>
 #ifdef MPE
 #include <signal.h>

@@ -80,8 +80,7 @@ distclean:
 		( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' $@ ) || exit 1; \
 		echo "<=== $(SDP)$$i"; \
 	done
-	-rm -f include/ap_config.h
-	-rm -f include/conf_auto.h
+	-rm -f include/ap_config_auto.h
 	-rm -f modules.c
 	-rm -f modules/Makefile
 	-rm -f regex/Makefile
@@ -112,9 +111,10 @@ depend:
 $(OBJS): Makefile
 
 # DO NOT REMOVE
-buildmark.o: buildmark.c include/conf.h include/conf_auto.h \
- os/unix/os.h include/apctype.h include/httpd.h include/alloc.h \
- include/buff.h include/ap.h include/util_uri.h
-modules.o: modules.c include/httpd.h include/conf.h \
- include/conf_auto.h os/unix/os.h include/apctype.h include/alloc.h \
- include/buff.h include/ap.h include/util_uri.h include/http_config.h
+buildmark.o: buildmark.c include/ap_config.h include/ap_config_auto.h \
+ os/unix/os.h include/ap_ctype.h include/hsregex.h include/httpd.h \
+ include/alloc.h include/buff.h include/ap.h include/util_uri.h
+modules.o: modules.c include/httpd.h include/ap_config.h \
+ include/ap_config_auto.h os/unix/os.h include/ap_ctype.h \
+ include/hsregex.h include/alloc.h include/buff.h include/ap.h \
+ include/util_uri.h include/http_config.h

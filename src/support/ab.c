@@ -89,7 +89,7 @@
 /* affects include files on Solaris */
 #define BSD_COMP
 
-#include "conf.h"
+#include "ap_config.h"
 #include <fcntl.h>
 #include <sys/time.h>
 

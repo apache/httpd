@@ -66,7 +66,7 @@
  * 
  */
 
-#include "conf.h"
+#include "ap_config.h"
 #include "util_date.h"
 #include <ctype.h>
 #include <string.h>

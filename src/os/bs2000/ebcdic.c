@@ -57,7 +57,7 @@
 
 
 #ifdef CHARSET_EBCDIC
-#include "conf.h"
+#include "ap_config.h"
 #include "ebcdic.h"
 /*
 	   Initial Port for  Apache-1.3 by <Martin.Kraemer@Mch.SNI.De>

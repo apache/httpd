@@ -1966,7 +1966,7 @@ static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
 {
     char *str;
     struct rlimit *limit;
-    /* If your platform doesn't define rlim_t then typedef it in conf.h */
+    /* If your platform doesn't define rlim_t then typedef it in ap_config.h */
     rlim_t cur = 0;
     rlim_t max = 0;
 

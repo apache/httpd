@@ -1,5 +1,5 @@
 
-#include "conf.h"
+#include "ap_config.h"
 #include "multithread.h"
 
 #ifdef WIN32

@@ -1205,33 +1205,35 @@ esac
 
 ####################################################################
 ## Now check for existance of non-standard system header files
+## and start generation of the ap_config_auto.h header
 ##
+AP_CONFIG_AUTO_H="include/ap_config_auto.h"
+echo "/*" >$AP_CONFIG_AUTO_H
+echo " *  ap_config_auto.h -- Automatically determined configuration stuff" >>$AP_CONFIG_AUTO_H
+echo " *  THIS FILE WAS AUTOMATICALLY GENERATED - DO NOT EDIT!" >>$AP_CONFIG_AUTO_H
+echo " */" >>$AP_CONFIG_AUTO_H
+echo "" >>$AP_CONFIG_AUTO_H
+echo "#ifndef AP_CONFIG_AUTO_H" >>$AP_CONFIG_AUTO_H
+echo "#define AP_CONFIG_AUTO_H" >>$AP_CONFIG_AUTO_H
+
 echo " + checking for system header files"
-
-CONF_AUTO_H="include/conf_auto.h"
 CHECK_FOR_HEADERS="dlfcn.h dl.h bstring.h crypt.h unistd.h sys/resource.h sys/select.h sys/processor.h"
-
-echo "/* Automatically generated file - DO NOT EDIT */" >$CONF_AUTO_H
-echo "#ifndef APACHE_CONF_AUTO_H" >>$CONF_AUTO_H
-echo "#define APACHE_CONF_AUTO_H 1" >>$CONF_AUTO_H
-echo "" >>$CONF_AUTO_H
 for header in $CHECK_FOR_HEADERS; do
-    echo "/* <$header> */" >>$CONF_AUTO_H
+    echo "" >>$AP_CONFIG_AUTO_H
+    echo "/* check: #include <$header> */" >>$AP_CONFIG_AUTO_H
     name="`echo $header | sed -e 's:/:_:g' -e 's:\.:_:g' | tr '[a-z]' '[A-Z]'`"
     if ./helpers/TestCompile header $header; then
         eval "HAVE_${name}=1"
-        echo "#ifndef HAVE_${name}" >>$CONF_AUTO_H
-        echo "#define HAVE_${name} 1" >>$CONF_AUTO_H
-        echo "#endif" >>$CONF_AUTO_H
+        echo "#ifndef HAVE_${name}" >>$AP_CONFIG_AUTO_H
+        echo "#define HAVE_${name} 1" >>$AP_CONFIG_AUTO_H
+        echo "#endif" >>$AP_CONFIG_AUTO_H
     else
         eval "HAVE_${name}=0"
-        echo "#ifdef HAVE_${name}" >>$CONF_AUTO_H
-        echo "#undef HAVE_${name}" >>$CONF_AUTO_H
-        echo "#endif" >>$CONF_AUTO_H
+        echo "#ifdef HAVE_${name}" >>$AP_CONFIG_AUTO_H
+        echo "#undef HAVE_${name}" >>$AP_CONFIG_AUTO_H
+        echo "#endif" >>$AP_CONFIG_AUTO_H
     fi
-    echo "" >>$CONF_AUTO_H
 done
-echo "#endif /* APACHE_CONF_AUTO_H */" >>$CONF_AUTO_H
 
 # SOCKS4 support:
 # We assume that if they are using SOCKS4, then they've
@@ -1660,25 +1662,27 @@ echo "##" >> Makefile.config
 echo "" >> Makefile.config
 
 ####################################################################
-## Continue building include/ap_config.h
+## Finish building ap_config_auto.h
 ##
-## We pick out all -D's from CFLAGS and create ap_config.h which
-## can be used by external modules needing to include Apache
-## header files.
+## We pick out all -D's from CFLAGS and insert them as defines into
+## ap_config_auto.h so they are available to external modules needing to
+## include Apache header files.
 ##
 for cflag in $CFLAGS; do
 	echo $cflag | sed 's/\\\"/\"/g' >>$tmpconfig ;
 done
-awk > include/ap_config.h < $tmpconfig '
-	BEGIN {
-		printf "/* Automatically generated file - do not edit */\n\n"
-	}
+awk >>$AP_CONFIG_AUTO_H <$tmpconfig '
 	/^-D.*/ {
 		define = substr($1, 3, length($1)-2)
 		split(define, parts, "=")
+		printf ("\n/* build flag: %s */\n", $0)
 		printf ("#ifndef %s\n#define %s %s\n#endif\n", parts[1],parts[1],parts[2])
 	}
 '
+
+# finish header file
+echo "" >>$AP_CONFIG_AUTO_H
+echo "#endif /* AP_CONFIG_AUTO_H */" >>$AP_CONFIG_AUTO_H
 
 ####################################################################
 ## Use TestCompile to see if $(CC) is ANSI and as a "final" sanity

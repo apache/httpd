@@ -10,7 +10,7 @@
  * Rob McCool
  */
 
-#include "conf.h"
+#include "ap_config.h"
 #include <sys/types.h>
 #include <signal.h>
 

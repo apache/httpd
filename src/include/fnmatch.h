@@ -35,7 +35,7 @@
 
 /* This file has been modified by the Apache Group. */
 
-#include "conf.h"
+#include "ap_config.h"
 
 #ifndef	_FNMATCH_H_
 #define	_FNMATCH_H_

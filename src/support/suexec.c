@@ -71,7 +71,7 @@
  *
  */
 
-#include "conf.h"
+#include "ap_config.h"
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/types.h>

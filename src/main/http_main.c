@@ -1176,7 +1176,7 @@ API_EXPORT(void) ap_kill_timeout(request_rec *dummy)
  *
  * Many operating systems tend to block, puke, or otherwise mishandle
  * calls to shutdown only half of the connection.  You should define
- * NO_LINGCLOSE in conf.h if such is the case for your system.
+ * NO_LINGCLOSE in ap_config.h if such is the case for your system.
  */
 #ifndef MAX_SECS_TO_LINGER
 #define MAX_SECS_TO_LINGER 30
@@ -1553,7 +1553,7 @@ static void reopen_scoreboard(pool *p)
  *
  * I tested this stuff and it works fine for me, but if it provides 
  * trouble for you, just comment out USE_MMAP_SCOREBOARD in QNX section
- * of conf.h
+ * of ap_config.h
  *
  * June 5, 1997, 
  * Igor N. Kovalenko -- infoh@mail.wplus.net
@@ -5576,7 +5576,7 @@ int main(int argc, char *argv[])
 #include <stdlib.h>
 #include <string.h>
 
-#include "conf.h"
+#include "ap_config.h"
 #include "httpd.h"
 
 #define VARNAME "LD_LIBRARY_PATH"

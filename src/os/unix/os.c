@@ -3,7 +3,7 @@
  * Any inlineable functions should be defined in os-inline.c instead.
  */
 
-#include "conf.h"
+#include "ap_config.h"
 #include "os.h"
 
 

@@ -1,12 +1,12 @@
 /*
-**  compat.h -- Apache Backward Compatibility
+**  ap_compat.h -- Apache Backward Compatibility
 **
 **  INCLUDE THIS HEADER FILE ONLY IF YOU REALLY NEED
 **  BACKWARD COMPATIBILITY TO OLD APACHE RESOURCES.
 */
 
-#ifndef APACHE_COMPAT_H
-#define APACHE_COMPAT_H
+#ifndef AP_COMPAT_H
+#define AP_COMPAT_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -418,4 +418,4 @@ extern "C" {
 }
 #endif
 
-#endif /* APACHE_COMPAT_H */
+#endif /* !AP_COMPAT_H */

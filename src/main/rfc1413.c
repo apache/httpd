@@ -68,7 +68,7 @@
  */
 
 /* Some small additions for Apache --- ditch the "sccsid" var if
- * compiling with gcc (it *has* changed), include conf.h for the
+ * compiling with gcc (it *has* changed), include ap_config.h for the
  * prototypes it defines on at least one system (SunlOSs) which has
  * them missing from the standard header files, and one minor change
  * below (extra parens around assign "if (foo = bar) ..." to shut up

@@ -55,7 +55,7 @@
  *
  */
 
-#include "conf.h"
+#include "ap_config.h"
 #include "httpd.h"
 
 #if defined(__DATE__) && defined(__TIME__)

@@ -55,8 +55,8 @@
  *
  */
 
-#ifndef APACHE_APCTYPE_H
-#define APACHE_APCTYPE_H
+#ifndef AP_CTYPE_H
+#define AP_CTYPE_H
 
 #include <ctype.h>
 
@@ -86,4 +86,4 @@ extern "C" {
 }
 #endif
 
-#endif	/* !APACHE_APCTYPE_H */
+#endif	/* !AP_CTYPE_H */

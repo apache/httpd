@@ -9,7 +9,7 @@
  * and prototypes of OS specific functions defined in os.c or os-inline.c
  */
 
-#include "conf.h"
+#include "ap_config.h"
 
 #if !defined(INLINE) && defined(USE_GNU_INLINE)
 /* Compiler supports inline, so include the inlineable functions as

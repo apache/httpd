@@ -28,7 +28,7 @@
 #define NO_USE_SIGACTION
 #define NO_TIMES
 #define NO_GETTIMEOFDAY
-//#define NEED_PROCESS_H    although we do, this is specially handled in conf.h
+//#define NEED_PROCESS_H    although we do, this is specially handled in ap_config.h
 #define USE_LONGJMP
 #define HAVE_MMAP
 #define USE_MMAP_SCOREBOARD

@@ -1,5 +1,15 @@
 Changes with Apache 1.3.1
 
+  *) Global renaming of C header files to both get rid of conflicts with third
+     party packages and to again reach consistency:
+       1. conf.h      -> ap_config.h
+       2. conf_auto.h -> ap_config_auto.h \ these are now merged
+       3. ap_config.h -> ap_config_auto.h / in the config process
+       4. compat.h    -> ap_compat.h
+       5. apctype.h   -> ap_ctype.h
+     Backward compatibility files for conf.h and compat.h were created.
+     [The Apache Group]
+
   *) Let mod_mmap_static be more reserved unless at least one "mmapfile"
      directive is present in the configuration. Because this experimental
      module has to do some black magic to operate inside the current API and
