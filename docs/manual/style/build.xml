@@ -40,6 +40,14 @@
       <mapper type="glob" from="*.xml" to="*.html.en"/>
       <param name="relative-path" expression="."/>
     </style>
+    <style   basedir="../"
+             destdir="../"
+           extension=".html"
+               style="./manual.ja.xsl"
+            includes="*.xml.ja">
+      <mapper type="glob" from="*.xml.ja" to="*.html.ja.jis"/>
+      <param name="relative-path" expression="."/>
+    </style>
 
   </target>
 </project>
