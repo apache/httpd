@@ -15,4 +15,5 @@ The following MPMs currently exist:
   winnt ......... Single Process Model with Threading on Windows NT
   worker ........ Multi Process model with threads.  One acceptor thread,
                   multiple worker threads.
-
+  netware ....... Multi-threaded MPM for Netware
+  beos .......... Single Process Model with Threading on BeOS
