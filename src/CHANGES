@@ -1,5 +1,11 @@
 Changes with Apache 1.3.29
 
+  *) Enabled RFC1413 ident functionality for both Win32 and
+     NetWare platforms.  This also included an alternate thread safe
+     implementation of the socket timout functionality when querying
+     the identd daemon.
+     [Brad Nicholes, William Rowe]
+     
   *) Prevent creation of subprocess Zombies when using CGI wrappers
      such as suExec and cgiwrap. PR 21737. [Numerous]
 
