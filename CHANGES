@@ -1,5 +1,8 @@
 Changes with Apache 2.0.51
 
+  *) Enable the option to support anonymous shared memory in mod_ldap.
+     This makes the cache work on Linux again. [Graham Leggett]
+
   *) Enable special ErrorDocument value 'default' which restores the
      canned server response for the scope of the directive
      [Geoffrey Young, Andre Malo]

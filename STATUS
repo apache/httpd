@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/07/20 02:25:47 $]
+Last modified at [$Date: 2004/07/28 20:05:49 $]
 
 Release:
 
@@ -141,13 +141,6 @@ PATCHES TO BACKPORT FROM 2.1
          include/util_ldap.h r1.19
        +1: bnicholes
        
-    *) Enable the option to support anonymous shared memory in mod_ldap.
-       This makes the cache work on Linux again.
-         modules/experimental/util_ldap.c r1.30
-         modules/experimental/util_ldap_cache.c r1.17
-         docs/manual/mod/mod_ldap.xml r1.12
-       +1 minfrin, bnicholes, trawick
-
     *) Prevent Win32 pool corruption at startup
          server/mpm/winnt/child.c: r1.36 
        +1: ake, trawick, nd, stoddard
