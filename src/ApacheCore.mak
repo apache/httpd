@@ -28,6 +28,10 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+MTL=midl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 OUTDIR=.\Release
@@ -105,46 +109,12 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /O2 /I ".\include" /I ".\os\win32" /I\
  ".\os\win32\win9xconhook" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D\
  "WIN32_LEAN_AND_MEAN" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\ApacheCore" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
-
-.c{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-MTL=midl.exe
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheCore.bsc" 
 BSC32_SBRS= \
@@ -201,7 +171,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\util_win32.obj" \
 	".\ap\LibR\ap.lib" \
 	".\os\win32\LibR\ApacheOS.lib" \
-	".\os\win32\win9xconhook\Release\Win9xConHook.lib" \
+	".\os\win32\Release\Win9xConHook.lib" \
 	".\regex\LibR\regex.lib"
 
 "$(OUTDIR)\ApacheCore.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -287,46 +257,12 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I ".\include" /I ".\os\win32" /I\
  ".\os\win32\win9xconhook" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D\
  "WIN32_LEAN_AND_MEAN" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\ApacheCore" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
-
-.c{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-MTL=midl.exe
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheCore.bsc" 
 BSC32_SBRS= \
@@ -382,8 +318,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\util_uri.obj" \
 	"$(INTDIR)\util_win32.obj" \
 	".\ap\LibD\ap.lib" \
+	".\os\win32\Debug\Win9xConHook.lib" \
 	".\os\win32\LibD\ApacheOS.lib" \
-	".\os\win32\win9xconhook\Debug\Win9xConHook.lib" \
 	".\regex\LibD\regex.lib"
 
 "$(OUTDIR)\ApacheCore.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -392,6 +328,36 @@ LINK32_OBJS= \
 <<
 
 !ENDIF 
+
+.c{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
 
 !IF "$(CFG)" == "ApacheCore - Win32 Release" || "$(CFG)" ==\
@@ -1348,7 +1314,7 @@ DEP_CPP_SERVI=\
 	".\os\win32\readdir.h"\
 	".\os\win32\registry.h"\
 	".\os\win32\service.h"\
-	".\os\win32\win9xconhook\Win9xConHook.h"\
+	".\os\win32\Win9xConHook.h"\
 	
 NODEP_CPP_SERVI=\
 	".\include\ap_config_auto.h"\
@@ -1661,30 +1627,30 @@ NODEP_CPP_UTIL_W=\
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 "Win9xConHook - Win32 Release" : 
-   cd ".\os\win32\win9xconhook"
+   cd ".\os\win32"
    $(MAKE) /$(MAKEFLAGS) /F ".\Win9xConHook.mak"\
  CFG="Win9xConHook - Win32 Release" 
-   cd "..\..\.."
+   cd "..\.."
 
 "Win9xConHook - Win32 ReleaseCLEAN" : 
-   cd ".\os\win32\win9xconhook"
+   cd ".\os\win32"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\Win9xConHook.mak"\
  CFG="Win9xConHook - Win32 Release" RECURSE=1 
-   cd "..\..\.."
+   cd "..\.."
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 "Win9xConHook - Win32 Debug" : 
-   cd ".\os\win32\win9xconhook"
+   cd ".\os\win32"
    $(MAKE) /$(MAKEFLAGS) /F ".\Win9xConHook.mak"\
  CFG="Win9xConHook - Win32 Debug" 
-   cd "..\..\.."
+   cd "..\.."
 
 "Win9xConHook - Win32 DebugCLEAN" : 
-   cd ".\os\win32\win9xconhook"
+   cd ".\os\win32"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\Win9xConHook.mak"\
  CFG="Win9xConHook - Win32 Debug" RECURSE=1 
-   cd "..\..\.."
+   cd "..\.."
 
 !ENDIF 
 
