@@ -25,16 +25,16 @@ VERSION=`(uname -v) 2>/dev/null` || VERSION="unknown"
 SCO=`uname -X 2>/dev/null | grep "^Release" | awk '{print $3}'`
 if [ "x$SCO" != "x" ]; then
     case "$SCO" in
-   	3\.2v4\.2)
+   	3.2v4.2)
 	    echo "whatever-whatever-sco3"; exit 0
 	    ;;
-	3\.2v5\.0*)
+	3.2v5.0*)
 	    echo "whatever-whatever-sco5"; exit 0
 	    ;;
-	4\.2MP)
+	4.2MP)
 	    echo "whatever-whatever-unixware2"; exit 0
 	    ;;
-	4\.2)
+	4.2)
 	    echo "whatever-whatever-unixware1"; exit 0
 	    ;;
     esac
