@@ -19,12 +19,6 @@
 
 module AP_MODULE_DECLARE_DATA proxy_http_module;
 
-int ap_proxy_http_canon(request_rec *r, char *url);
-int ap_proxy_http_handler(request_rec *r, proxy_worker *worker,
-                          proxy_server_conf *conf,
-                          char *url, const char *proxyname, 
-                          apr_port_t proxyport);
-
 static apr_status_t ap_proxy_http_cleanup(const char *scheme,
                                           request_rec *r,
                                           proxy_conn_rec *backend);
@@ -35,7 +29,7 @@ static apr_status_t ap_proxy_http_cleanup(const char *scheme,
  *  url    is the URL starting with the first '/'
  *  def_port is the default port for this scheme.
  */
-int ap_proxy_http_canon(request_rec *r, char *url)
+static int proxy_http_canon(request_rec *r, char *url)
 {
     char *host, *path, *search, sport[7];
     const char *err;
@@ -1131,10 +1125,10 @@ apr_status_t ap_proxy_http_cleanup(const char *scheme, request_rec *r,
  * we return DECLINED so that we can try another proxy. (Or the direct
  * route.)
  */
-int ap_proxy_http_handler(request_rec *r, proxy_worker *worker,
-                          proxy_server_conf *conf,
-                          char *url, const char *proxyname, 
-                          apr_port_t proxyport)
+static int proxy_http_handler(request_rec *r, proxy_worker *worker,
+                              proxy_server_conf *conf,
+                              char *url, const char *proxyname, 
+                              apr_port_t proxyport)
 {
     int status;
     char server_portstr[32];
@@ -1266,8 +1260,8 @@ cleanup:
 
 static void ap_proxy_http_register_hook(apr_pool_t *p)
 {
-    proxy_hook_scheme_handler(ap_proxy_http_handler, NULL, NULL, APR_HOOK_FIRST);
-    proxy_hook_canon_handler(ap_proxy_http_canon, NULL, NULL, APR_HOOK_FIRST);
+    proxy_hook_scheme_handler(proxy_http_handler, NULL, NULL, APR_HOOK_FIRST);
+    proxy_hook_canon_handler(proxy_http_canon, NULL, NULL, APR_HOOK_FIRST);
 }
 
 module AP_MODULE_DECLARE_DATA proxy_http_module = {
