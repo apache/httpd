@@ -211,8 +211,8 @@ static const char *add_setenvif(cmd_parms *cmd, void *mconfig, const char *args)
 	new = push_array(sconf->conditionals);
 	new->name = fname;
 	new->regex = regex;
-	new->preg = pcalloc(cmd->pool, sizeof(regex_t));
-	if (regcomp(new->preg, regex, REG_EXTENDED|REG_NOSUB|cflags)) {
+	new->preg = pregcomp (cmd->pool, regex, REG_EXTENDED|REG_NOSUB|cflags);
+	if (new->preg == NULL) {
 	    error = pstrcat(cmd->pool, cmd->cmd->name,
 			    " regex could not be compiled.", NULL);
 	    return error;
