@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/06 18:31:59 $]
+Last modified at [$Date: 2004/03/06 18:35:44 $]
 
 Release:
 
@@ -203,7 +203,7 @@ PATCHES TO BACKPORT FROM 2.1
         terminates, and it won't get restarted.)
         +1: trawick, jerenkrantz, nd
       Backport even with missing OS/2 and BeOS support:
-        +1: trawick
+        +1: trawick, jerenkrantz
 
     * ab: catch out of memory (reasoning report ID 29)
         support/ab.c: r1.125
