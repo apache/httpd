@@ -497,6 +497,7 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=yes
 	;;
     *-qnx32)
+        CC='cc -F'
 	OS='QNX32'
 	CFLAGS="$CFLAGS -DQNX -mf -3"
 	LIBS="$LIBS -N128k -lsocket -lunix"
