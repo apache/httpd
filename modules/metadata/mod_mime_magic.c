@@ -2235,7 +2235,7 @@ static int is_tar(unsigned char *buf, int nbytes)
 
     sum = 0;
     p = header->charptr;
-    for (i = sizeof(union record); - ap_context_t  >= 0;) {
+    for (i = sizeof(union record); --i >= 0;) {
 	/*
 	 * We can't use unsigned char here because of old compilers, e.g. V7.
 	 */
@@ -2243,7 +2243,7 @@ static int is_tar(unsigned char *buf, int nbytes)
     }
 
     /* Adjust checksum to count the "chksum" field as blanks. */
-    for (i = sizeof(header->header.chksum); - ap_context_t  >= 0;)
+    for (i = sizeof(header->header.chksum); --i >= 0;)
 	sum -= 0xFF & header->header.chksum[i];
     sum += ' ' * sizeof header->header.chksum;
 
