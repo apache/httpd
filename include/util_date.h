@@ -67,17 +67,8 @@ extern "C" {
  */
 
 #include "apr_time.h"
-/* XXX - This section lists include files for OS-specific types that APR
- * should replace. Once they are replaced, this section should be
- * removed */
-#ifndef NO_MORE_OS_TYPES_IN_THIS_FILE
-#include "ap_config_auto.h"
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#endif
-#endif /* NO_MORE_OS_TYPES_IN_THIS_FILE */
 
-#define BAD_DATE (time_t)0
+#define BAD_DATE (ap_time_t)0
 
 API_EXPORT(int) ap_checkmask(const char *data, const char *mask);
 API_EXPORT(ap_time_t) ap_parseHTTPdate(const char *date);
