@@ -501,6 +501,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
     http_ctx_t *ctx = f->ctx;
     apr_status_t rv;
 
+    /* just get out of the way of this thing. */
+    if (mode == AP_MODE_PEEK)
+        return ap_get_brigade(f->next, b, mode, readbytes);
+
     if (!ctx) {
         const char *tenc, *lenp;
         f->ctx = ctx = apr_palloc(f->r->pool, sizeof(*ctx));
