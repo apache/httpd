@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/20 12:32:25 $]
+  Last modified at [$Date: 1999/03/20 14:35:22 $]
 
 Release:
 
@@ -43,8 +43,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
 Documentation that needs writing:
 
-    * manual/content-negotiation.html lacks any information about the
-      TCN additions and when the RVSA algorithm is used.
 
 Available Patches:
     * Keith Wannamaker's NT multiple services patch
@@ -127,6 +125,31 @@ In progress:
 
 Needs patch:
 
+    * MaxRequestsPerChild doesn't count requests, only the
+      number of connections processed.
+      We can either 'fix' it by renaming the directive to
+      MaxConnectionsPerChild or really fix it to actually count
+      the number of requests.
+      Lars: I think we should really fix.
+
+    * mod_access/3821: check_dir_access(), reads a->order[31]
+      => either an if-clause should be added or the M_INVALID changed
+
+    * mod_so/3493: os/unix/os.c dlclose()s objects before module cleanups
+      => this is a subtle thing related to pool cleanups, I think.
+
+    * general/3872: util_script.c doubles up Set-Cookie headers
+       => needs review by the protocol guys! Roy?
+
+    * os-linux/3531: Bad file number: flock; Exiting
+      => When I remember correctly we had such reports also in the past.
+         Some Linux guys should check this.
+
+    * mod_rewrite/3874: RewriteLock doesn't work for virtual hosts 
+      => When I find time, I can look at this. But I would appreciate
+         when someone other already can dive into this. My opinion
+         is already appended to the PR.
+
     * get_path_info bug; ap_get_remote_host should be ap_vformatter instead.
       See: <Pine.LNX.3.96dg4.980427034301.16648P-100000@twinlark.arctic.org>
 
@@ -166,6 +189,9 @@ Needs patch:
       See <Pine.LNX.3.96dg4.990107093844.14158A-100000@twinlark.arctic.org>
 
 Open issues:
+
+    * general/3787: SERVER_PORT is always 80 if client comes to any port
+      => needs review by the protocol guys, I think.
 
     * Someone other than Dean has to do a security/correctness review on
       psprintf(), bprintf(), and ap_snprintf().  In particular these routines
