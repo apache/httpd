@@ -131,7 +131,8 @@ API_EXPORT(const char *) ap_get_remote_logname(request_rec *r);
 API_EXPORT(char *) ap_construct_url(pool *p, const char *uri, const request_rec *r);
 API_EXPORT(const char *) ap_get_server_name(const request_rec *r);
 API_EXPORT(unsigned) ap_get_server_port(const request_rec *r);
-     
+API_EXPORT(void) ap_custom_response(request_rec *r, int status, char *string);
+
 /* Authentication stuff.  This is one of the places where compatibility
  * with the old config files *really* hurts; they don't discriminate at
  * all between different authentication schemes, meaning that we need
