@@ -3,7 +3,6 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
 <manualpage metafile="directive-dict.xml.meta">
-  <relativepath href=".."/>
 
   <title>Terms Used to Describe Directives</title>
 

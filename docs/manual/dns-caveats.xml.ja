@@ -4,7 +4,6 @@
 <!-- English revision: 1.2 -->
 
 <manualpage metafile="dns-caveats.xml.meta">
-  <relativepath href="." />
   
   <title>DNS と Apache にまつわる注意事項</title>
   

@@ -2,7 +2,6 @@
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <manualpage metafile="cgi.xml.meta">
-  <relativepath href=".." />
   <parentdocument href="./">How-To / Tutorials</parentdocument>
 
   <title>Apache Tutorial: Dynamic Content with CGI</title>

@@ -3,7 +3,6 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
 
 <manualpage metafile="dns-caveats.xml.meta">
-  <relativepath href="." />
   
   <title>Issues Regarding DNS and Apache</title>
   

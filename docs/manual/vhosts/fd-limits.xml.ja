@@ -4,7 +4,6 @@
 <!-- English revision: 1.3 -->
 
 <manualpage metafile="fd-limits.xml.meta">
-<relativepath href=".."/>
 
   <title>ファイル記述子の限界</title>
 
