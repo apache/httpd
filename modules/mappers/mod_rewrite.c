@@ -982,14 +982,18 @@ static void init_module(apr_pool_t *p,
                         apr_pool_t *ptemp,
                         server_rec *s)
 {
+    apr_status_t rv;
+
     /* check if proxy module is available */
     proxy_available = (ap_find_linked_module("mod_proxy.c") != NULL);
 
     /* create the rewriting lockfiles in the parent */
-    if (apr_create_lock (&rewrite_log_lock, APR_MUTEX, APR_INTRAPROCESS,
-                        NULL, NULL) != APR_SUCCESS)
-        exit(1);    /* ugly but I can't log anything yet. This is what */
-                    /*   the pre-existing rewritelock_create code did. */
+    if ((rv = apr_create_lock (&rewrite_log_lock, APR_MUTEX, APR_LOCKALL,
+                               NULL, NULL)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                     "mod_rewrite: could not create rewrite_log_lock");
+        exit(1);
+    }
 
     rewritelock_create(s, p);
     apr_register_cleanup(p, (void *)s, rewritelock_remove, apr_null_cleanup);
@@ -3006,7 +3010,9 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
 
     /* take the lock */
 
-    apr_lock(rewrite_mapr_lock);
+    if (rewrite_mapr_lock) {
+        apr_lock(rewrite_mapr_lock);
+    }
 
     /* write out the request key */
 #ifdef NO_WRITEV
@@ -3039,7 +3045,9 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     buf[i] = '\0';
 
     /* give the lock back */
-    apr_unlock(rewrite_mapr_lock);
+    if (rewrite_mapr_lock) {
+        apr_unlock(rewrite_mapr_lock);
+    }
 
     if (strcasecmp(buf, "NULL") == 0) {
         return NULL;
@@ -3341,7 +3349,7 @@ static void rewritelock_create(server_rec *s, apr_pool_t *p)
     /* create the lockfile */
     rc = apr_create_lock (&rewrite_mapr_lock, APR_MUTEX, APR_LOCKALL, lockname, p);
     if (rc != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rc, s,
                      "mod_rewrite: Parent could not create RewriteLock "
                      "file %s", lockname);
         exit(1);
