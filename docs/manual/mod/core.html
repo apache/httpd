@@ -1060,12 +1060,22 @@ See also <A HREF="#rlimitmem">RLimitMEM</A> or <A HREF="#rlimitcpu">RLimitCPU</A
 <A name="satisfy"><h2>Satisfy</h2></A>
 <!--%plaintext &lt;?INDEX {\tt Satisfy} directive&gt; -->
 <strong>Syntax:</strong> Satisfy <em>'any' or 'all'</em><br>
+<strong>Default:</strong> Satisy all<br>
 <strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <strong>Status:</strong> core<br>
 <strong>Compatibility:</strong> Satisfy is only available in Apache 1.2 and later<p>
 
-Access policy if both allow and require used. The parameter can be either
-<em>'all'</em> or <em>'any'</em>.
+Access policy if both allow and require used. The parameter can be
+either <em>'all'</em> or <em>'any'</em>. This directive is only useful
+if access to a particular area is being restricted by both
+username/password <i>and</i> client host address. In this case the
+default behavior ("all") is to require that the client passes the
+address access restriction <i>and</i> enters a valid username and
+password. With the "any" option the client will be granted access if
+they either pass the host restriction or enter a valid username and
+password. This can be used to password restrict an area, but to let
+clients from particular addresses in without prompting for a password.
+
 
 <p><hr>
 
