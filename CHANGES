@@ -1,4 +1,4 @@
-Changes with Apache 2.0.28-dev
+Changes with Apache 2.0.28
 
   *) When no port is given in a "ServerName host" directive, the
      server_rec->port is now set to zero, not 80. That allows for
