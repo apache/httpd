@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/02 21:03:50 $]
+Last modified at [$Date: 2002/02/02 21:17:04 $]
 
 Release:
 
@@ -158,6 +158,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Message-ID: <3C58232C.FE91F19F@Golux.Com>
 
       +1:  Jim, Justin, Ken
+       0:  Aaron says "Some admins want it, some don't. Let's just make
+                       it an option. Not 'SuicidalParentlessChildren'. ;)"
       -1:  BrianP, Ian
 
     * Make some modifications to the scoreboard creation routines,
