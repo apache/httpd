@@ -90,6 +90,8 @@
 #include "util_charset.h"
 #include "util_ebcdic.h"
 
+#include <limits.h>             /* for INT_MAX */
+
 #include "mod_core.h"
 
 #if APR_HAVE_STDARG_H
@@ -580,6 +582,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
     if ((ctx->state == BODY_LENGTH || ctx->state == BODY_CHUNK) && 
         ctx->remaining < *readbytes) {
         *readbytes = ctx->remaining;
+        AP_DEBUG_ASSERT(*readbytes); /* shouldn't be in getline mode */
     }
 
     rv = ap_get_brigade(f->next, b, mode, readbytes);
@@ -1276,6 +1279,7 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
 
     max_body = ap_get_limit_req_body(r);
     if (max_body && (r->remaining > max_body)) {
+        /* XXX shouldn't we enforce this for chunked encoding too? */
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "Request content-length of %s is larger than "
 		      "the configured limit of %" APR_OFF_T_FMT, lenp, max_body);
@@ -1365,15 +1369,26 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bu
     apr_status_t rv;
     apr_bucket *b, *old;
     const char *tempbuf;
+    apr_off_t len_read;
     core_request_config *req_cfg =
 	(core_request_config *)ap_get_module_config(r->request_config,
                                                     &core_module);
     apr_bucket_brigade *bb = req_cfg->bb;
 
+    if (r->remaining) {   
+        len_read = r->remaining; /* Content-Length header, probably */ 
+    }
+    else {
+        len_read = INT_MAX;      /* Transfer-Encoding: chunked */
+    }
+
+    if (len_read > bufsiz) {
+        /* limit the resources we use for heap buckets etc */
+        len_read = bufsiz;      
+    }
+
     /* read until we get a non-empty brigade */
     while (APR_BRIGADE_EMPTY(bb)) {
-        apr_off_t len_read;
-        len_read = r->remaining;
         if (ap_get_brigade(r->input_filters, bb, AP_MODE_BLOCKING,
                            &len_read) != APR_SUCCESS) {
             /* if we actually fail here, we want to just return and
@@ -1383,7 +1398,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bu
             apr_brigade_destroy(bb);
             return -1;
         }
-        r->remaining -= len_read;
+        r->remaining -= len_read; /* XXX  goes negative w/chunking */
     } 
 
     b = APR_BRIGADE_FIRST(bb);
