@@ -37,6 +37,9 @@ _build:
 	 nmake /nologo CFG="htpasswd - Win32 Release" -f htpasswd.mak
 	 nmake /nologo CFG="htdigest - Win32 Release" -f htdigest.mak
 	cd ..
+	cd lib/expat-lite
+	 nmake /nologo CFG="xmlparse - Win32 Release" -f xmlparse.mak
+	cd ../..
 	cd main
 	 nmake /nologo CFG="gen_uri_delims - Win32 Release" -f gen_uri_delims.mak
 	 nmake /nologo CFG="gen_test_char - Win32 Release" -f gen_test_char.mak
@@ -97,6 +100,9 @@ clean:
 	 nmake /nologo CFG="htpasswd - Win32 Release" -f htpasswd.mak clean
 	 nmake /nologo CFG="htdigest - Win32 Release" -f htdigest.mak clean
 	cd ..
+	cd lib/expat-lite
+	 nmake /nologo CFG="xmlparse - Win32 Release" -f xmlparse.mak clean
+	cd ../..
 	cd main
 	 nmake /nologo CFG="gen_uri_delims - Win32 Release" -f gen_uri_delims.mak clean
 	 del uri_delims.h
