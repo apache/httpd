@@ -390,7 +390,7 @@ static char *
     do {
 	register u_wide_int new_magnitude = magnitude / 10;
 
-	*--p = magnitude - new_magnitude * 10 + '0';
+	*--p = (char)(magnitude - new_magnitude * 10 + '0');
 	magnitude = new_magnitude;
     }
     while (magnitude);
