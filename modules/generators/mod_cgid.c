@@ -507,7 +507,7 @@ static int cgid_server(void *data)
     cgid_server_conf *sconf = (cgid_server_conf *)ap_get_module_config( 
                        main_server->module_config, &cgid_module); 
 
-    signal(SIGCHLD, SIG_IGN); 
+    ap_signal(SIGCHLD, SIG_IGN); 
     unlink(sconf->sockname); 
 
     if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
