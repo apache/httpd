@@ -209,13 +209,13 @@ static const command_rec anon_auth_cmds[] =
     {NULL}
 };
 
-module MODULE_VAR_EXPORT anon_auth_module;
+module MODULE_VAR_EXPORT auth_anon_module;
 
 static int anon_authenticate_basic_user(request_rec *r)
 {
     anon_auth_config_rec *sec =
     (anon_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-					       &anon_auth_module);
+					       &auth_anon_module);
     const char *sent_pw;
     int res = DECLINED;
 
@@ -276,7 +276,7 @@ static int check_anon_access(request_rec *r)
     conn_rec *c = r->connection;
     anon_auth_config_rec *sec =
     (anon_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-					       &anon_auth_module);
+					       &auth_anon_module);
 
     if (!sec->auth_anon)
 	return DECLINED;
@@ -294,7 +294,7 @@ static void register_hooks(void)
     ap_hook_auth_checker(check_anon_access,NULL,NULL,HOOK_MIDDLE);
 }
 
-module MODULE_VAR_EXPORT anon_auth_module =
+module MODULE_VAR_EXPORT auth_anon_module =
 {
     STANDARD20_MODULE_STUFF,
     create_anon_auth_dir_config,/* dir config creater */

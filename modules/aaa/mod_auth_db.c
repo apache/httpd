@@ -72,7 +72,7 @@
  *           instead of   AuthDBMUserFile    AuthDBMGroupFile
  *
  * Also, in the configuration file you need to specify
- *  db_auth_module rather than dbm_auth_module
+ *  auth_db_module rather than auth_dbm_module
  *
  * On some BSD systems (e.g. FreeBSD and NetBSD) dbm is automatically
  * mapped to Berkeley DB. You can use either mod_auth_dbm or
@@ -150,7 +150,7 @@ static const command_rec db_auth_cmds[] =
     {NULL}
 };
 
-module db_auth_module;
+module auth_db_module;
 
 static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile)
 {
@@ -225,7 +225,7 @@ static int db_authenticate_basic_user(request_rec *r)
 {
     db_auth_config_rec *sec =
     (db_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-					     &db_auth_module);
+					     &auth_db_module);
     const char *sent_pw;
     char *real_pw, *colon_pw;
     char *invalid_pw;
@@ -267,7 +267,7 @@ static int db_check_auth(request_rec *r)
 {
     db_auth_config_rec *sec =
     (db_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-					     &db_auth_module);
+					     &auth_db_module);
     char *user = r->user;
     int m = r->method_number;
 
@@ -325,7 +325,7 @@ static int db_check_auth(request_rec *r)
 }
 
 
-module db_auth_module =
+module auth_db_module =
 {
     STANDARD_MODULE_STUFF,
     NULL,			/* initializer */
