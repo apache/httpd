@@ -206,9 +206,9 @@ AP_DECLARE(const char *) ap_get_server_name(request_rec *r);
  * Get the current server port
  * @param The current request
  * @return The server's port
- * @deffunc unsigned ap_get_server_port(const request_rec *r)
+ * @deffunc apr_port_t ap_get_server_port(const request_rec *r)
  */
-AP_DECLARE(unsigned) ap_get_server_port(const request_rec *r);
+AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r);
 /**
  * Return the limit on bytes in request msg body 
  * @param r The current request

@@ -110,10 +110,10 @@ void ap_update_vhost_from_headers(request_rec *r);
  * @param port The port from the headers
  * @return return 1 if the host:port matches any of the aliases of r->server,
  * return 0 otherwise
- * @deffunc int ap_matches_request_vhost(request_rec *r, const char *host, unsigned port)
+ * @deffunc int ap_matches_request_vhost(request_rec *r, const char *host, apr_port_t port)
  */
 AP_DECLARE(int) ap_matches_request_vhost(request_rec *r, const char *host,
-    unsigned port);
+    apr_port_t port);
 
 #ifdef __cplusplus
 }

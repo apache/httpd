@@ -121,7 +121,7 @@ int ap_setup_listeners(server_rec *s);
  * @warning This function is only available to Windows platforms, or the
  * Prefork or SPMT_OS2 MPMs.
  */
-int ap_listen_open(process_rec *process, unsigned port);
+int ap_listen_open(process_rec *process, apr_port_t port);
 #endif
 
 /* Although these functions are exported from libmain, they are not really
