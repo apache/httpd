@@ -7,7 +7,7 @@
     <title>Apache HTTP サーバ バージョン 2.0 ドキュメント</title>
 
   </head>
-  <!-- English revision: 1.30 -->
+  <!-- English revision: 1.32 -->
   <body bgcolor="#ffffff" text="#000000" link="#0000ff"
   vlink="#000080" alink="#ff0000">
     <div align="center">
@@ -227,6 +227,11 @@
               <tr>
                 <td><a href="howto/cgi.html">CGI による動的コンテンツ</a>
                 </td>
+              </tr>
+
+              <tr>
+                <td><a href="howto/auth.html">認証、
+                承認、アクセス制御</a></td>
               </tr>
 
               <tr>
