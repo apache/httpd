@@ -1,4 +1,9 @@
 Changes with Apache 2.0.31-dev
+
+  *) New Directive for mod_proxy: 'ProxyPreserveHost'. This passes
+     the incoming host header through to the proxied server
+     [Geoff <g.russell@ieee.org>]
+
   *) New Directive Option for ProxyPass. It now can block a location
      from being proxied [Jukka Pihl <jukka.pihl@entirem.com>]
 

@@ -492,6 +492,8 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->maxfwd_set = 0;
     ps->error_override = 0; 
     ps->error_override_set = 0; 
+    ps->preserve_host_set =0;
+    ps->preserve_host =0;    
     return ps;
 }
 
@@ -515,6 +517,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->recv_buffer_size = (overrides->recv_buffer_size_set == 0) ? base->recv_buffer_size : overrides->recv_buffer_size;
     ps->maxfwd = (overrides->maxfwd_set == 0) ? base->maxfwd : overrides->maxfwd;
     ps->error_override = (overrides->error_override_set == 0) ? base->error_override : overrides->error_override;
+    ps->preserve_host = (overrides->preserve_host_set == 0) ? base->preserve_host : overrides->preserve_host;
 
     return ps;
 }
@@ -780,6 +783,16 @@ static const char *
     psf->error_override_set = 1;
     return NULL;
 }
+static const char *
+    set_preserve_host(cmd_parms *parms, void *dummy, int flag)
+{
+    proxy_server_conf *psf =
+    ap_get_module_config(parms->server->module_config, &proxy_module);
+
+    psf->preserve_host = flag;
+    psf->preserve_host_set = 1;
+    return NULL;
+}
 
 static const char *
     set_recv_buffer_size(cmd_parms *parms, void *dummy, const char *arg)
@@ -953,6 +966,9 @@ static const command_rec proxy_cmds[] =
      "Configure Via: proxy header header to one of: on | off | block | full"),
     AP_INIT_FLAG("ProxyErrorOverride", set_proxy_error_override, NULL, RSRC_CONF,
      "use our error handling pages instead of the servers we are proxying"),
+    AP_INIT_FLAG("ProxyPreserveHost", set_preserve_host, NULL, RSRC_CONF,
+     "on if we shoud preserve host header while proxying"),
+ 
     {NULL}
 };
 

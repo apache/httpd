@@ -187,6 +187,8 @@ typedef struct {
      */
     int error_override;
     int error_override_set;
+    int preserve_host;
+    int preserve_host_set;
 
 } proxy_server_conf;
 
