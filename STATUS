@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/22 01:12:27 $]
+Last modified at [$Date: 2004/05/22 16:19:39 $]
 
 Release:
 
@@ -107,7 +107,7 @@ PATCHES TO BACKPORT FROM 2.1
        with conditional use of APR_LARGEFILE
 
        PR: 13511
-       +1: jorton
+       +1: jorton, trawick
 
     *) mod_ssl: Fix potential SEGV in 'shmcb' session cache.
        modules/ssl/ssl_scache_shmcb.c: r1.26
@@ -116,7 +116,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) mod_cgi: Handle stderr output during script execution
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/generators/mod_cgi.c?r1=1.160&r2=1.163
        PR: 22030, 18348
-       +1: jorton
+       +1: jorton, trawick
 
     *) Readd suexec setuid and user check (now APR supports it)
          os/unix/unixd.c: r1.69
