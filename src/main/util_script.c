@@ -83,7 +83,7 @@ char **create_argv(pool *p, char *av0, char *args) {
     av[0] = av0;
 
     for(x=1;x<n;x++) {
-        w = getword(p, &args, '+');
+        w = getword_nulls(p, &args, '+');
         unescape_url(w);
         av[x] = escape_shell_cmd(p, w);
     }

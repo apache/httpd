@@ -486,6 +486,7 @@ char *gm_timestr_822(pool *p, time_t t);
 /* String handling */     
      
 char *getword(pool *p, char **line, char stop);
+char *getword_nulls (pool *p, char **line, char stop);
 char *getword_conf (pool *p, char **line);      
      
 int is_url(char *u);

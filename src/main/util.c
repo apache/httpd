@@ -355,6 +355,26 @@ char *getword(pool* atrans, char **line, char stop) {
     
     return res;
 }
+char *getword_nulls(pool* atrans, char **line, char stop) {
+    int pos = ind(*line, stop);
+    char *res;
+
+    if (pos == -1) {
+        res = pstrdup (atrans, *line);
+	*line += strlen (*line);
+	return res;
+    }
+  
+    res = palloc(atrans, pos + 1);
+    strncpy (res, *line, pos);
+    res[pos] = '\0';
+    
+    ++pos;
+    
+    *line += pos;
+    
+    return res;
+}
 
 /* Get a word, (new) config-file style --- quoted strings and backslashes
  * all honored
