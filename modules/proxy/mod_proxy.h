@@ -219,6 +219,7 @@ typedef struct {
     apr_interval_time_t retry;  /* retry interval */
     int             retries;    /* number of retries on this worker */
     int             lbfactor;   /* initial load balancing factor */
+    const char      *name;
     const char      *scheme;    /* scheme to use ajp|http|https */
     const char      *hostname;  /* remote backend address */
     apr_port_t      port;
@@ -313,6 +314,10 @@ PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c);
 PROXY_DECLARE(int) ap_proxy_ssl_disable(conn_rec *c);
 
 /* Connection pool API */
+PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p, proxy_server_conf *conf, const char *url);
+PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker, apr_pool_t *p, proxy_server_conf *conf, const char *url);
+PROXY_DECLARE(struct proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p, proxy_server_conf *conf, const char *url);
+PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer(struct proxy_balancer *balancer, proxy_worker *worker);
 
 
 /* For proxy_util */
