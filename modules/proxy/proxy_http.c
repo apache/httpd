@@ -465,6 +465,11 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      */
     p_conn->close += ap_proxy_liststr(apr_table_get(r->headers_in,
                                                      "Connection"), "close");
+    /* sub-requests never use keepalives */
+    if (r->main) {
+        p_conn->close++;
+    }
+
     ap_proxy_clear_connection(p, r->headers_in);
     if (p_conn->close) {
         apr_table_setn(r->headers_in, "Connection", "close");
@@ -581,6 +586,15 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             || !apr_strnatcasecmp(headers_in[counter].key,"Proxy-Authorization")
             || !apr_strnatcasecmp(headers_in[counter].key,"Proxy-Authenticate")) {
             continue;
+        }
+        /* for sub-requests, ignore freshness/expiry headers */
+        if (r->main) {
+                if (headers_in[counter].key == NULL || headers_in[counter].val == NULL
+                     || !apr_strnatcasecmp(headers_in[counter].key, "Cache-Control")
+                     || !apr_strnatcasecmp(headers_in[counter].key, "If-Modified-Since")
+                     || !apr_strnatcasecmp(headers_in[counter].key, "If-None-Match")) {
+                    continue;
+                }
         }
 
         buf = apr_pstrcat(p, headers_in[counter].key, ": ",
@@ -905,7 +919,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     int status;
     char server_portstr[32];
     conn_rec *origin = NULL;
-    proxy_conn_rec *backend;
+    proxy_conn_rec *backend = NULL;
 
     /* Note: Memory pool allocation.
      * A downstream keepalive connection is always connected to the existence
@@ -936,15 +950,23 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		 "proxy: HTTP: serving URL %s", url);
     
-    /* create space for state information */
-    backend = (proxy_conn_rec *) ap_get_module_config(c->conn_config,
+    
+    /* only use stored info for top-level pages. Sub requests don't share 
+     * in keepalives
+     */
+    if (!r->main) {
+        backend = (proxy_conn_rec *) ap_get_module_config(c->conn_config,
                                                       &proxy_http_module);
+    }
+    /* create space for state information */
     if (!backend) {
         backend = ap_pcalloc(c->pool, sizeof(proxy_conn_rec));
         backend->connection = NULL;
         backend->hostname = NULL;
         backend->port = 0;
-        ap_set_module_config(c->conn_config, &proxy_http_module, backend);
+        if (!r->main) {
+            ap_set_module_config(c->conn_config, &proxy_http_module, backend);
+        }
     }
 
     /* Step One: Determine Who To Connect To */
