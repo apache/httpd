@@ -2867,7 +2867,7 @@ static void free_proc_chain(struct process_chain *procs)
         timeout_interval = TIMEOUT_INTERVAL;
         tv.tv_sec = 0;
         tv.tv_usec = timeout_interval;
-        select(0, NULL, NULL, NULL, &tv);
+        ap_select(0, NULL, NULL, NULL, &tv);
 
         do {
             need_timeout = 0;
@@ -2885,7 +2885,7 @@ static void free_proc_chain(struct process_chain *procs)
                 }
                 tv.tv_sec = timeout_interval / 1000000;
                 tv.tv_usec = timeout_interval % 1000000;
-                select(0, NULL, NULL, NULL, &tv);
+                ap_select(0, NULL, NULL, NULL, &tv);
                 timeout_interval *= 2;
             }
         } while (need_timeout);
