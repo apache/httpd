@@ -21,7 +21,9 @@
 <div id="page-content">
 <div id="preamble"><h1>아파치 모듈 mod_cgi</h1>
 <div class="toplang">
-<p><span>가능한 언어: </span><a href="../en/mod/mod_cgi.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_cgi.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/mod_cgi.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>가능한 언어: </span><a href="../en/mod/mod_cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_cgi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_cgi.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td>CGI 스크립트 실행</td></tr>
 <tr><th><a href="module-dict.html#Status">상태:</a></th><td>Base</td></tr>
@@ -221,7 +223,9 @@
 </div>
 </div>
 <div class="bottomlang">
-<p><span>가능한 언어: </span><a href="../en/mod/mod_cgi.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_cgi.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/mod_cgi.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>가능한 언어: </span><a href="../en/mod/mod_cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_cgi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_cgi.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div>

@@ -18,7 +18,9 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>지시어를 설명하는데 사용한 용어들</h1>
 <div class="toplang">
-<p><span>가능한 언어: </span><a href="../en/mod/directive-dict.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ja/mod/directive-dict.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/directive-dict.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>가능한 언어: </span><a href="../en/mod/directive-dict.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/directive-dict.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/directive-dict.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
     <p>이 문서는 아파치 <a href="directives.html">설정
@@ -241,7 +243,9 @@
     플래폼에서만 사용가능한 지시어도 여기 나온다.</p>
 </div></div>
 <div class="bottomlang">
-<p><span>가능한 언어: </span><a href="../en/mod/directive-dict.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ja/mod/directive-dict.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/directive-dict.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>가능한 언어: </span><a href="../en/mod/directive-dict.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/directive-dict.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/directive-dict.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div>

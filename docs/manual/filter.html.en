@@ -18,7 +18,9 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>Filters</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./en/filter.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="./ja/filter.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="./ko/filter.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="./en/filter.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ja/filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
     <p>This document describes the use of filters in Apache.</p>
@@ -65,7 +67,9 @@
     for external programs to be defined as filters.</p>
   </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./en/filter.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="./ja/filter.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="./ko/filter.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="./en/filter.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ja/filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>

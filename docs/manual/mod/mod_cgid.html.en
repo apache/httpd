@@ -21,7 +21,8 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_cgid</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_cgid.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ko/mod/mod_cgid.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_cgid.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/mod/mod_cgid.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Execution of CGI scripts using an
     external CGI daemon</td></tr>
@@ -93,7 +94,8 @@ the cgi daemon</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_cgid.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ko/mod/mod_cgid.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_cgid.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/mod/mod_cgid.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
