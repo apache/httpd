@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/09/06 15:04:01 $]
+Last modified at [$Date: 2001/09/07 02:34:56 $]
 
 Release:
 
@@ -112,28 +112,14 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Port of mod_ssl to Apache 2.0:
 
-      The current porting state is summarized in modules/ssl/README.  The next
-      step is to figure out how the old three configuration contexts (global,
-      per-server, per-directory) can be ported to Apache 2.0 (especially the
-      global context which has to survive server restarts RSE still does not
-      know how to port). Then the remaining source files (which depend on the
-      configuration contexts) which are still tagged with "-" in
-      modules/ssl/README can be ported. 
-      
-      One more thing to figure out is how and when mod_ssl can provide the
-      interactive pass phrase dialog (in Apache 1.3 it used the first init
-      round [where tty was still not detached] and skipped the second init
-      round [where it was already detached]). Apache 2.0 requires (or already
-      has?) an official hook where such tty-dialogs can be performed.
-
-      RSE is on holiday until June 11th, 2001. After this he starts
-      working on mod_ssl again and tries to make mod_ssl running inside
-      Apache 2.0 by end of June. If anyone wants to help making mod_ssl
-      running in the meantime, feel free to make your hands dirty inside
-      modules/ssl/. Do whatever you think is appropriate to get it
-      running. I've no objections of any kind, except: just do not
-      remove any old functionality. Keep everything, even if it needs
-      #if 0...endif wrapped to not make trouble for you.
+      The current porting state is summarized in modules/ssl/README. The
+      remaining work includes:
+      (1) stablizing/optimizing the SSL filter logic
+      (2) Enabling the various SSL caching mechanisms (shmcb, shmht)
+      (3) Enabling SSL extentions
+      (4) Trying to seperate the https filter logic from mod_ssl -
+          This is to facilitate other modules that wish to use the https
+          filter or the mod_ssl logic or both as required.
 
     * Performance: Get the SINGLE_LISTEN_UNSERIALIZED_ACCEPT
       optimization working in threaded.  prefork's new design for how
