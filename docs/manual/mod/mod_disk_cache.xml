@@ -32,7 +32,6 @@
 <description>The directory root under which cache files are
 stored</description>
 <syntax>CacheRoot <var>directory</var></syntax>
-<default>none</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
