@@ -22,7 +22,7 @@ PROGRAMS        = $(PROGRAM_NAME)
 targets         = $(PROGRAMS)
 phony_targets   = buildmark.c
 install_targets = install-conf install-htdocs install-icons install-other \
-	install-cgi install-include
+	install-cgi install-include install-support
 DISTCLEANFILES  = apaci include/config_auto.h modules.c
 
 include $(top_srcdir)/build/rules.mk
@@ -62,6 +62,16 @@ install-cgi:
 	@echo Installing CGIs
 	@test -d $(cgidir) || $(mkinstalldirs) $(cgidir)
 	@cp -rp $(srcdir)/../cgi-bin/* $(cgidir)
+
+install-support:
+	@echo Installing Support Binaries
+	@test -d $(bindir) || $(mkinstalldirs) $(bindir)
+	@cp -rp $(srcdir)/support/httpd.exp $(bindir)
+	@cp -rp $(srcdir)/support/htpasswd $(bindir)
+	@cp -rp $(srcdir)/support/htdigest $(bindir)
+	@cp -rp $(srcdir)/support/rotatelogs $(bindir)
+	@cp -rp $(srcdir)/support/logresolve $(bindir)
+	@cp -rp $(srcdir)/support/ab $(bindir)
 	
 install-other:
 	@test -d $(logdir) || $(mkinstalldirs) $(logdir)
