@@ -26,9 +26,21 @@ Unix 1.3.2 RELEASE SHOWSTOPPERS:
 
     * header detection is broken; eg. sys/resource.h often requires 
       other includes first, etc.  This breaks things like RLimit*
-      on many platforms.
+      on many platforms.  
+
       -- Ralf will try to solve this problem this week. 
 
+      -- Also, the return type of main is wrong in the test code and a
+      "test test" needs to be done to ensure we can be successful with
+      any (eg. stdio.h) header and print an error if not.  Otherwise, you
+      have _very_ difficult to resolve problems if you do something
+      like: link in a library on Solaris that also requires -lsocket
+      but don't explicitly put that on your EXTRA_LIBS line; then
+      the final result will link fine because Apache adds them for itself,
+      but all the testcompiles will fail because they aren't there at
+      that stage.
+
+      
 Documentation that needs writing:
 
     * Need a document explaining mod_rewrite/"UseCanonicalName off" based
