@@ -1538,6 +1538,11 @@ is accessed by an incompatible browser</td></tr><tr><td nowrap="nowrap"><a href=
     subdirectories <code>conf/</code> and <code>logs/</code>. Relative
     paths for other configuration files are taken as relative to this
     directory.</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+    ServerRoot /home/httpd
+    </code></td></tr></table></blockquote>
+
 <p><strong>See also </strong></p><ul><li><a href="../invoking.html">the <code>-d</code>
     option to <code>httpd</code></a></li><li><a href="../misc/security_tips.html#serverroot">the
     security tips</a> for information on how to properly set
