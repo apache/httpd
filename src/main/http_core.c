@@ -1631,7 +1631,7 @@ const char *set_loglevel (cmd_parms *cmd, void *dummy, const char *arg)
    return NULL;
 }
 
-const char *psignature(const char *prefix, request_rec *r)
+API_EXPORT(const char *) psignature(const char *prefix, request_rec *r)
 {
     char sport[20];
     core_dir_config *conf =

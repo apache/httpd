@@ -947,6 +947,6 @@ extern int raise_sigstop_flags;
 #define RAISE_SIGSTOP(x)
 #endif
 
-extern const char *psignature(const char *prefix, request_rec *r);
+API_EXPORT(extern const char *) psignature(const char *prefix, request_rec *r);
 
 #endif	/* !APACHE_HTTPD_H */
