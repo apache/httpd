@@ -1510,6 +1510,8 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
         rnew->filename = ap_make_full_path(rnew->pool, fdir, new_file);
         ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
 
+        rnew->per_dir_config = r->per_dir_config;
+
         /*
          * If this is an APR_LNK that resolves to an APR_DIR, then 
          * we will rerun everything anyways... this should be safe.
@@ -1530,8 +1532,6 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
             rnew->status = res;
             return rnew;
         }
-
-        rnew->per_dir_config = r->per_dir_config;
 
         if (rnew->finfo.filetype == APR_LNK
             && (res = resolve_symlink(rnew->filename, &rnew->finfo, 
