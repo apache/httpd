@@ -53,6 +53,14 @@ RELEASE SHOWSTOPPERS:
            Does the current cvs work with existing db files, or not?
            If not, let's fix it.  If unknown, it isn't a showstopper.
 
+      Jim: My concern is that previous versions of Apache were not db2
+           "aware" best as I can determine. Thus, Apache would use db1
+	   by default with mod_auth_db.c. Now that Apache "knows" about
+	   db2, it looks like it prefers that over db1, which means that
+	   this will break "old" db databases unless db2 can read db1 files.
+	   I simply don't know if it will, but if it doesn't then this
+	   looks like a compatibility problem.
+
     * need to ensure it compiles properly on win32 before rolling the 
       tarball, and that no last minute changes break it
 
