@@ -82,6 +82,9 @@
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 typedef struct {
 	char	*t_name;
