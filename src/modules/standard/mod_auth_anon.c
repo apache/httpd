@@ -59,7 +59,7 @@
  * 
  * Adapted to Shambhala by rst.
  *
- * Version 0.3 Feb 1996
+ * Version 0.5 May 1996
  *
  * Brutally raped by Dirk.vanGulik@jrc.it to
  * 
@@ -69,19 +69,22 @@
  *
  * Just add the following tokes to your <directory> setup:
  * 
- * Anonymous 			'magic-user-id'
+ * Anonymous 			magic-user-id [magic-user-id]...
  *
- * Anonymous_MustGiveEmail	[on | off]
- * Anonymous_NoUserId		[on | off]
+ * Anonymous_MustGiveEmail	[ on | off ] default = off
+ * Anonymous_LogEmail		[ on | off ] default = on
+ * Anonymous_VerifyEmail	[ on | off ] default = off
+ * Anonymous_NoUserId		[ on | off ] default = off
+ * Anonymous_Authorative        [ on | off ] default = off
  *
  * The magic user id is something like 'anonymous', it is NOT case sensitive. 
- *
+ * 
  * The MustGiveEmail flag can be used to force users to enter something
- * in the password field (like an email address).
+ * in the password field (like an email address). Default is off.
  *
  * Furthermore the 'NoUserID' flag can be set to allow completely empty
  * usernames in as well; this can be is convenient as a single return
- * in broken GUIs like W95 is often given by the user.
+ * in broken GUIs like W95 is often given by the user. The Default is off.
  *
  * Dirk.vanGulik@jrc.it; http://ewse.ceo.org; http://me-www.jrc.it/~dirkx
  * 
@@ -93,36 +96,101 @@
 #include "http_log.h"
 #include "http_protocol.h"
 
+typedef struct auth_anon {
+    char *password;
+    struct auth_anon * next;
+    } auth_anon;
+
 typedef struct  {
 
-    char *auth_anon;
+    auth_anon *auth_anon_passwords;
     int   auth_anon_nouserid;
+    int   auth_anon_logemail;
+    int   auth_anon_verifyemail;
     int   auth_anon_mustemail;
+    int   auth_anon_authorative;
 
 } anon_auth_config_rec;
 
 void *create_anon_auth_dir_config (pool *p, char *d)
 {
-    return pcalloc (p, sizeof(anon_auth_config_rec));
+    anon_auth_config_rec * sec = (anon_auth_config_rec *) 
+	pcalloc (p, sizeof(anon_auth_config_rec));
+
+    if (!sec) return NULL; /* no memory... */
+
+    /* just to illustrate the defaults really. */
+    sec -> auth_anon_passwords 		=NULL;
+
+    sec -> auth_anon_nouserid 		=0;
+    sec -> auth_anon_logemail		=1;
+    sec -> auth_anon_verifyemail	=0;
+    sec -> auth_anon_mustemail		=1;
+    sec -> auth_anon_authorative        =0;
+    return sec;
 }
 
-char *anon_set_passwd_flag (cmd_parms *cmd, anon_auth_config_rec *sec, int arg) {
+char *anon_set_passwd_flag (cmd_parms *cmd, 
+	anon_auth_config_rec *sec, int arg) {
     sec->auth_anon_mustemail=arg;
     return NULL;
 }
 
-char *anon_set_userid_flag (cmd_parms *cmd, anon_auth_config_rec *sec, int arg) {
+char *anon_set_userid_flag (cmd_parms *cmd, 
+	anon_auth_config_rec *sec, int arg) {
     sec->auth_anon_nouserid=arg;
+    return NULL;
+}
+char *anon_set_logemail_flag (cmd_parms *cmd, 
+	anon_auth_config_rec *sec, int arg) {
+    sec->auth_anon_logemail=arg;
+    return NULL;
+}
+char *anon_set_verifyemail_flag (cmd_parms *cmd, 
+	anon_auth_config_rec *sec, int arg) {
+    sec->auth_anon_verifyemail=arg;
+    return NULL;
+}
+char *anon_set_authorative_flag (cmd_parms *cmd, 
+	anon_auth_config_rec *sec, int arg) {
+    sec->auth_anon_authorative=arg;
+    return NULL;
+}
+
+char *anon_set_string_slots (cmd_parms *cmd, 
+	anon_auth_config_rec *sec, char *arg) {
+  
+    auth_anon 	* first;
+
+    if (!(*arg))
+      return "Anonymous string cannot be empty, use Anonymous_NoUserId instead";
+
+    /* squeeze in a record */
+    first = sec->auth_anon_passwords;
+       
+    if (
+	(!(sec->auth_anon_passwords=(auth_anon *) palloc(cmd -> pool, sizeof(auth_anon)))) ||
+	(!(sec->auth_anon_passwords->password = pstrdup(cmd -> pool, arg)))
+       ) return "Failed to claim memory for an anonymous password...";
+
+    /* and repair the next */
+    sec->auth_anon_passwords->next = first;
+
     return NULL;
 }
 
 command_rec anon_auth_cmds[] = {
-{ "Anonymous", set_string_slot,
-    (void*)XtOffsetOf(anon_auth_config_rec, auth_anon),
-    OR_AUTHCFG, TAKE1, NULL },
+{ "Anonymous", anon_set_string_slots,
+    NULL,OR_AUTHCFG, ITERATE, NULL },
 { "Anonymous_MustGiveEmail", anon_set_passwd_flag, NULL, OR_AUTHCFG, FLAG, 
 	"Limited to 'on' or 'off'" },
 { "Anonymous_NoUserId", anon_set_userid_flag, NULL, OR_AUTHCFG, FLAG, 
+	"Limited to 'on' or 'off'" },
+{ "Anonymous_VerifyEmail", anon_set_verifyemail_flag, NULL, OR_AUTHCFG, FLAG, 
+	"Limited to 'on' or 'off'" },
+{ "Anonymous_LogEmail", anon_set_logemail_flag, NULL, OR_AUTHCFG, FLAG, 
+	"Limited to 'on' or 'off'" },
+{ "Anonymous_Authorative", anon_set_authorative_flag, NULL, OR_AUTHCFG, FLAG, 
 	"Limited to 'on' or 'off'" },
 
 { NULL }
@@ -138,27 +206,56 @@ int anon_authenticate_basic_user (request_rec *r)
     conn_rec *c = r->connection;
     char *send_pw;
     char errstr[MAX_STRING_LEN];
-    int res;
+    int res=DECLINED;
     
+
     if ((res=get_basic_auth_pw (r,&send_pw)))
 	return res;
 
     /* Ignore if we are not configured */
-    if (!sec->auth_anon) return DECLINED;
+    if (!sec->auth_anon_passwords) return DECLINED;
 
     /* Do we allow an empty userID and/or is it the magic one
      */
-	
-    if ( (!strcasecmp(c->user,sec->auth_anon)) || 
-	( (!(c->user[0])) && (sec->auth_anon_nouserid))) {
-
-	/* Do we *insist* in a password of some flavour ? */
-	if ((!sec->auth_anon_mustemail) || strlen(send_pw)) {
-		sprintf(errstr,"Anonymous: Passwd <%s> Accepted", send_pw ? send_pw : "\'none\'");
-   		log_error (errstr, r->server );
-		return OK;
-		};
+    
+    if ( (!(c->user[0])) && (sec->auth_anon_nouserid) ) {
+      res=OK;
+    } else {
+      auth_anon *p=sec->auth_anon_passwords;
+      res=DECLINED;
+      while ((res == DECLINED) && (p !=NULL)) {
+	if (!(strcasecmp(c->user,p->password)))
+	  res=OK;
+	p=p->next;
+      };
+    };
+    if (
+	/* username is OK */
+	(res == OK) &&
+	/* password been filled out ? */ 
+	( (!sec->auth_anon_mustemail) || strlen(send_pw)  ) &&
+	/* does the password look like an email address ? */
+	( (!sec->auth_anon_verifyemail) || 
+	     (strpbrk("@",send_pw) != NULL) || 
+	     (strpbrk(".",send_pw) != NULL) 
+	  ) 
+	) {
+      if (sec->auth_anon_logemail) {
+	sprintf(errstr,"Anonymous: Passwd <%s> Accepted", 
+			send_pw ? send_pw : "\'none\'");
+	log_error (errstr, r->server );
+      };
+      return OK;
+    } else {
+        if (sec->auth_anon_authorative) {
+	sprintf(errstr,"Anonymous: Authorative, Passwd <%s> not accepted",
+		send_pw ? send_pw : "\'none\'");
+	log_error(errstr,r->server);
+	return AUTH_REQUIRED;
 	};
+
+	return DECLINED;
+    };
      
 
    return DECLINED;
@@ -166,20 +263,19 @@ int anon_authenticate_basic_user (request_rec *r)
     
 int check_anon_access (request_rec *r) {
 
-#ifdef notyet
     conn_rec *c = r->connection;
     anon_auth_config_rec *sec =
       (anon_auth_config_rec *)get_module_config (r->per_dir_config,
 						&anon_auth_module);
 	
+/*
     if (!sec->auth_anon) return DECLINED;
 
     if ( strcasecmp(r->connection->user,sec->auth_anon ))
      	return DECLINED;
 
    return OK;
-#endif
-
+*/
    return DECLINED;
 }
  
