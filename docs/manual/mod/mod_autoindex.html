@@ -637,8 +637,8 @@ Apache 1.3.3 introduced some significant changes in the handling of
 Whenever a '+' or '-' prefixed keyword is encountered, it is applied
 to the current <SAMP>IndexOptions</SAMP> settings (which may have been
 inherited from an upper-level directory).  However, whenever an unprefixed
-keyword is processed, it clears all incremental settings.  Consider
-the following example:
+keyword is processed, it clears all inherited options and any incremental
+settings encountered so far.  Consider the following example:
 </P>
 <BLOCKQUOTE><CODE>IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing
 <BR>
@@ -654,13 +654,9 @@ afterward.
 </P>
 <P>
 To unconditionally set the <CODE>IndexOptions</CODE> for a
-particular directory, clearing the inherited settings, use
+particular directory, clearing the inherited settings, specify
+keywords without either '+' or '-' prefixes.
 </P>
-<BLOCKQUOTE><CODE>
-IndexOptions None
-<BR>
-IndexOptions <EM>new-setting</EM> ...
-</CODE></BLOCKQUOTE>
 </DD>
 </DL>
 <HR>
