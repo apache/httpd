@@ -141,6 +141,30 @@ SOURCE=..\..\srclib\zlib\deflate.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\srclib\zlib\infblock.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\srclib\zlib\infcodes.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\srclib\zlib\inffast.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\srclib\zlib\inflate.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\srclib\zlib\inftrees.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\srclib\zlib\infutil.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\srclib\zlib\trees.c
 # End Source File
 # Begin Source File
