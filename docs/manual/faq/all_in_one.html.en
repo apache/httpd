@@ -1,9 +1,5 @@
-<!--#if expr="$QUERY_STRING = ONEPAGE"
---><!--#include virtual="all_in_one.html.en" --><!--#else
--->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta name="generator" content="HTML Tidy, see www.w3.org" />
@@ -21,9 +17,6 @@
     main Apache web site, at &lt;<a
     href="http://httpd.apache.org/docs-2.1/faq/"
     rel="Help"><samp>http://httpd.apache.org/docs-2.1/faq/</samp></a>&gt;.
-    In addition, you can view this FAQ
-    <a href="./all_in_one.html">all in one page</a> for easy searching and
-    printing.
     </p>
 
     <p>Since Apache 2.0 is very new, we don't yet know what the
@@ -33,12 +26,16 @@
     FAQ</a> to see if your question is answered there.</p>
 
     <h2>Categories</h2>
-
     <dl>
-      <dt><a href="support.html">Support</a></dt>
+      <dt><a href="#support.html">Support</a></dt>
 
       <dd>What do I do when I have problems?</dd>
     </dl>
+    <hr />
+    <!--#set var="ONEPAGE" value="YES" -->
+    <!--#include virtual="support.html" -->
+
     <!--#include virtual="footer.html" -->
   </body>
-</html><!--#endif -->
+</html>
+
