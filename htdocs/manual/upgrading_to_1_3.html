@@ -40,7 +40,14 @@ document, or in the <CODE>src/CHANGES</CODE> file.
   <LI>The <CODE>-DMAXIMUM_DNS</CODE> definition has been obsoleted by
     changes to <CODE>mod_access</CODE> enforcing double-reverse DNS lookups
     when necessary.
-  
+
+  <LI>The <CODE>-DSERVER_SUBVERSION=\"string\"</CODE> compile-time option has
+   been replaced with the run-time
+   <A HREF="mod/core.html#addversioncomponent"
+   ><SAMP>AddVersionComponent</SAMP></A>
+   directive.
+  </LI>  
+
   <LI><CODE>mod_dir</CODE> has been split into two pieces
     <CODE><A HREF="mod/mod_autoindex.html">mod_autoindex</A></CODE>, and
     <CODE><A HREF="mod/mod_dir.html">mod_dir</A></CODE>.

@@ -638,6 +638,21 @@ Allows additional information to be listed along with a specified module.
   sections.  This is useful for folks trying to debug their virtual host
   configuration.
  </li>
+ <LI><A
+      HREF="mod/core.html#addversioncomponent"
+     ><STRONG>New ways to customise the server identity</STRONG></A>
+  <BR>
+  Two new directives, <SAMP>AddVersionComponent</SAMP> and
+  <SAMP>AddVersionPlatform</SAMP>, allow the Webmaster to change the value of
+  the <SAMP>Server-Version</SAMP> response header field which is sent back
+  to clients.  <SAMP>AddVersionComponent</SAMP> replaces the
+  <CODE>-DSERVER_SUBVERSION=\"string\"</CODE> <SAMP>CCFLAGS</SAMP> mechanism
+  used in earlier versions of the Apache Web server, allowing the string to
+  be modified without having to recompile the server.  And the
+  <SAMP>AddVersionPlatform</SAMP> directive controls whether the server will
+  include a non-specific note in the server identity about the type of
+  operating system on which the server is running.
+ </LI>
 </UL>
 
 <!--#include virtual="footer.html" -->
