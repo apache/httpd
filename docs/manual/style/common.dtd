@@ -3,7 +3,7 @@
 <!ENTITY nbsp "&#160;">
 
 <!ENTITY % inlinetags "em | strong | code | a | br | directive | module | img
-| cite | dfn">
+| cite | dfn | var">
 
 <!ENTITY % blocktags "p | example | note | table | ul | ol | dl | pre
 | blockquote">
