@@ -102,13 +102,13 @@
     
     <div class="example"><p><code>
       &lt;VirtualHost www.abc.dom&gt; <br />
-        ServerAdmin webgirl@abc.dom <br />
-        DocumentRoot /www/abc <br />
+      &nbsp;&nbsp;ServerAdmin webgirl@abc.dom <br />
+      &nbsp;&nbsp;DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt; <br />
       <br />
       &lt;VirtualHost www.def.dom&gt; <br />
-        ServerAdmin webguy@def.dom <br />
-        DocumentRoot /www/def <br />
+      &nbsp;&nbsp;ServerAdmin webguy@def.dom <br />
+      &nbsp;&nbsp;DocumentRoot /www/def <br />
       &lt;/VirtualHost&gt;
     </code></p></div>
     
