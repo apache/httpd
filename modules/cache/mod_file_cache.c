@@ -457,10 +457,10 @@ static int file_cache_handler(request_rec *r)
     ap_update_mtime(r, match->finfo.mtime);
     ap_set_last_modified(r);
     ap_set_etag(r);
-    if (((errstatus = ap_meets_conditions(r)) != OK)
-	|| (errstatus = ap_set_content_length (r, match->finfo.size))) {
-	    return errstatus;
+    if ((errstatus = ap_meets_conditions(r)) != OK) {
+       return errstatus;
     }
+    ap_set_content_length(r, match->finfo.size);
 
     rangestatus = ap_set_byterange(r);
     ap_send_http_header(r);
