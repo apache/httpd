@@ -116,6 +116,7 @@ typedef struct {
     hdr_actions action;
     char *header;
     char *value;
+    int do_err;
 } header_entry;
 
 /*
@@ -153,7 +154,6 @@ static void *merge_headers_config(pool *p, void *basev, void *overridesv)
     return a;
 }
 
-
 static const char *header_cmd(cmd_parms *cmd, headers_conf * dirconf, char *action, char *hdr, char *value)
 {
     header_entry *new;
@@ -167,6 +167,12 @@ static const char *header_cmd(cmd_parms *cmd, headers_conf * dirconf, char *acti
     }
     else {
         new = (header_entry *) ap_push_array(serverconf->headers);
+    }
+
+    if (cmd->info) {
+	new->do_err = 1;
+    } else {
+	new->do_err = 0;
     }
 
     if (!strcasecmp(action, "set"))
@@ -198,7 +204,9 @@ static const char *header_cmd(cmd_parms *cmd, headers_conf * dirconf, char *acti
 
 static const command_rec headers_cmds[] =
 {
-    {"Header", header_cmd, NULL, OR_FILEINFO, TAKE23,
+    {"Header", header_cmd, (void *)0, OR_FILEINFO, TAKE23,
+     "an action, header and value"},
+    {"ErrorHeader", header_cmd, (void *)1, OR_FILEINFO, TAKE23,
      "an action, header and value"},
     {NULL}
 };
@@ -209,18 +217,19 @@ static void do_headers_fixup(request_rec *r, array_header *headers)
 
     for (i = 0; i < headers->nelts; ++i) {
         header_entry *hdr = &((header_entry *) (headers->elts))[i];
+	table *tbl = (hdr->do_err ? r->err_headers_out : r->headers_out);
         switch (hdr->action) {
         case hdr_add:
-            ap_table_addn(r->headers_out, hdr->header, hdr->value);
+            ap_table_addn(tbl, hdr->header, hdr->value);
             break;
         case hdr_append:
-            ap_table_mergen(r->headers_out, hdr->header, hdr->value);
+            ap_table_mergen(tbl, hdr->header, hdr->value);
             break;
         case hdr_set:
-            ap_table_setn(r->headers_out, hdr->header, hdr->value);
+            ap_table_setn(tbl, hdr->header, hdr->value);
             break;
         case hdr_unset:
-            ap_table_unset(r->headers_out, hdr->header);
+            ap_table_unset(tbl, hdr->header);
             break;
         }
     }

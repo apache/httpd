@@ -1,5 +1,14 @@
 Changes with Apache 1.3.27
 
+  *) Included a patch submitted by Sander van Zoest (#9181) and
+     written by Michael Radwin whichs is essentially a work around
+     for the adding headers to error responses. As apache does not
+     go through the proper chain for non 2xx responses. This patch
+     adds an ErrorHeader directive; which is for non 2xx replies the
+     direct analog of the existing Header directive. This is usefull
+     during 3xx redirects or more complex 4xx auth schemes. [Dirk-
+     Willem van Gulik]
+
   *) Included the patch submitted by Sander van Zoest (#12712) which
      prevents just 'anything' being sucked in when doing gobbeling in
      complete directories - such as editor backup files and other
