@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1998/12/28 12:22:54 $]
+  Last modified at [$Date: 1998/12/28 12:30:27 $]
 
 Release:
 
@@ -105,10 +105,6 @@ Available Patches:
     * Lars' 'binbuild' patch
         Message-ID: <XFMail.981226052910.sfx@unix-ag.org>
         Status: Lars +1
-
-    * Fabien Coelho's errmsg patch for http_config.c
-        Message-ID: PR#3573
-        Status: Martin +1 (on concept)
 
     * Jim Patterson's patch to make mod_info work on Win32
         Message-ID: PR#1442

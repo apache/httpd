@@ -1188,7 +1188,7 @@ void ap_process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp
 
     if (errmsg) {
 	fprintf(stderr, "Syntax error on line %d of %s:\n",
-		parms.config_file->line_number, fname);
+		parms.config_file->line_number, parms.config_file->name);
 	fprintf(stderr, "%s\n", errmsg);
 	exit(1);
     }
