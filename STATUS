@@ -79,6 +79,7 @@ Committed Code Changes:
     * Fix for rputs() which did not calculate r->sent_bodyct properly. PR#1900
     * Don't tweak TZ envvar if the user has specified an explicit one. PR#1888
     * Ralf's mod_so changes to keep track of loaded modules ourself.
+    * Ralf's support for building shared objects even for library-style modules
 
 Available Patches:
 

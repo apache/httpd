@@ -926,6 +926,21 @@ MODDIRS=`awk < $tmpfile '
 		SEEN[pp[2]] = 1
 	    } 
     	}'`
+MODDIRS_NO_SO=`awk < $tmpfile '
+	($1 == "Module" && $3 ~ /^modules\//) {
+	    split ($3, pp, "/")
+	    if (! SEEN[pp[2]]) {
+		printf "%s ", pp[2]
+		SEEN[pp[2]] = 1
+	    }
+    	}
+	(($1 == "AddModule") && $2 ~ /^modules\//) { 
+	    split ($2, pp, "/")
+	    if (! SEEN[pp[2]]) {
+		printf "%s ", pp[2]
+		SEEN[pp[2]] = 1
+	    } 
+    	}'`
 
 #
 # Now autoconfigure each of the modules specified by AddModule.
@@ -1061,6 +1076,11 @@ for moddir in $MODDIRS
 do
 	if [ -f modules/$moddir/Makefile.tmpl ] ; then
 		AUTODIRS="$AUTODIRS modules/$moddir"
+	fi
+done
+for moddir in $MODDIRS_NO_SO
+do
+	if [ -f modules/$moddir/Makefile.tmpl ] ; then
 		AUTOLIBS="$AUTOLIBS modules/$moddir/lib$moddir.a"
 	fi
 done
@@ -1237,28 +1257,32 @@ LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 INCDIR=../../include
 EOF
 	if [ -f $moddir/Makefile.libdir ]; then
-	    # it's responsible for the rest of its Makefile
-	    :
-	else
 	    basedir=`echo $moddir | sed 's@^[^/]*/@@g'`
 	    awk >> $moddir/Makefile < $tmpfile '
-		BEGIN {
-		    printf "OBJS="
+		($2 ~ /^modules\/'$basedir'\//) {
+		    split($2, pp, "/");
+		    split(pp[3], parts, ".");
+		    libext=parts[2];
 		}
+		END { 
+		    printf "LIBEXT=%s\n", libext;
+		}'
+	    # it's responsible for the rest of its Makefile...
+	else
+	    basedir=`echo $moddir | sed 's@^[^/]*/@@g'`
+	    OBJS=`awk < $tmpfile '
 		($1 == "Module" && $3 ~ /^modules\/'$basedir'\//) { 
 		    split ($3, pp, "/")
 		    printf "%s ", pp[3] 
 		} 
-		END {
-		    printf "\n"
-		}'
-
-	    $CAT << 'EOF' >> $moddir/Makefile
-
-all: lib shlib
-
-EOF
-	    echo "LIB=lib$basedir.a" >> $moddir/Makefile
+		'`
+	    echo "OBJS=$OBJS" >> $moddir/Makefile
+	    if [ ".$OBJS" != . ]; then
+		echo "LIB=lib$basedir.a" >> $moddir/Makefile
+	    else
+		#   essential!
+		echo "LIB=" >> $moddir/Makefile
+	    fi
 	    awk >> $moddir/Makefile < $tmpfile '
 	    ($1 == "SharedModule" && $2 ~ /^modules\/'$basedir'\//) {
 		split($2, pp, "/")
@@ -1274,6 +1298,8 @@ EOF
             }'
 
 	    $CAT << 'EOF' >> $moddir/Makefile
+
+all: lib shlib
 
 lib:	$(LIB) 
 

@@ -1,5 +1,12 @@
 Changes with Apache 1.3b6
 
+  *) Added support for building shared objects even for library-style modules
+     (which are build from more than one object file). This now provides the
+     ability to build mod_proxy as a shared object module. Additionally
+     modules like mod_example are now also supported for shared object
+     building because the generated Makefiles now no longer assume there is at
+     least one statically linked module. [Ralf S. Engelschall]
+
   *) API: Clarify usage of content_type, handler, content_encoding,
      content_language and content_languages fields in request_rec.  They
      must always be lowercased; and the strings pointed to shouldn't
