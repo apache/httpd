@@ -1,4 +1,10 @@
 Changes with Apache 1.3.23
+
+  *) Fixed a number of mismatched int sizes and signedness problems.
+     Still remains, MSVC's 'interesting' declaration of FD_SET still emits
+     (impotent) warnings, and regex still has a handful of emits.
+     [William Rowe]
+
   *) mod_proxy changes:
 
     *) Bug fix for ap_proxy_cache_conditional(), unititialized wetag
