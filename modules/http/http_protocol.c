@@ -2458,9 +2458,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
     if (r->chunked) {
         apr_table_mergen(r->headers_out, "Transfer-Encoding", "chunked");
         apr_table_unset(r->headers_out, "Content-Length");
-        /* Disable the buffer filter because it may be masking bugs in the 
-         * bucket brigade code  */
-/*      ap_add_output_filter("COALESCE", NULL, r, r->connection); */
+
     }
 
     apr_table_setn(r->headers_out, "Content-Type", make_content_type(r,
@@ -2519,6 +2517,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
     ap_pass_brigade(f->next, b2);
 
     if (r->chunked) {
+        /* The coalesce filter is useful to coalesce content from the ap_r*
+         * routines. Removing this filter should not break the server.
+         */
+        ap_add_output_filter("COALESCE", NULL, r, r->connection);
+
         /* We can't add this filter until we have already sent the headers.
          * If we add it before this point, then the headers will be chunked
          * as well, and that is just wrong.
