@@ -118,7 +118,7 @@
 
       <dl>
       <dt><code>echomsg</code> (<em>Apache 2.1 以降</em>)</dt>
-      <dd>指定される値は、<code><code><a href="#element.echo">echo</a></code>
+      <dd>指定される値は、<code><a href="#element.echo">echo</a></code>
       要素が未定義の変数をエコーしようとした際に、
       クライアントに送られるメッセージになります。
       <directive module="mod_include">SSIUndefinedEcho</directive> 
@@ -462,7 +462,7 @@
       <dd><var>string</var> が空でない場合に真です</dd>
 
       <dt><code><var>string1</var> = <var>string2</var><br />
-      <var>string1</var> == <var>string2</var></code><br />
+      <var>string1</var> == <var>string2</var><br />
       <var>string1</var> != <var>string2</var></code></dt>
 
       <dd><p><var>string1</var> と <var>string2</var> を比較します。
