@@ -991,9 +991,8 @@ apr_status_t ssl_init_ModuleKill(void *data)
      * Drop the session cache and mutex
      */
     ssl_scache_kill(s);
-#if 0 /* XXX */
+
     ssl_mutex_kill(s);
-#endif
 
     /* 
      * Destroy the temporary keys and params
