@@ -1,4 +1,8 @@
 Changes with Apache 1.3.20
+  *) Fix ndbm.h include problems with various Linux distributions and 
+     brain-dead glibc >= 2.1, which sometimes have ndbm.h in a
+     non-standard db1/ subdir. PR#6929
+     [Victor J. Orlikowski]
 
   *) Empty headers are allowed by RFC2068 section 4.2.  The presence or
      absence of an empty header can be significant.  The current mod_proxy
