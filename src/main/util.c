@@ -197,11 +197,6 @@ int is_matchexp(const char *str) {
  * AT&T V8 regexp package.
  */
 
-#ifdef QNX
-# define rm_so	rm_sp
-# define rm_eo	rm_ep
-#endif
-
 char *pregsub(pool *p, const char *input, const char *source,
 	      size_t nmatch, regmatch_t pmatch[]) {
     const char *src = input;
@@ -265,11 +260,6 @@ char *pregsub(pool *p, const char *input, const char *source,
     
     return dest;
 }
-
-#ifdef QNX
-# undef rm_so
-# undef rm_eo
-#endif
 
 /*
  * Parse .. so we don't compromise security
