@@ -199,25 +199,6 @@ int get_path_info(request_rec *r)
 	}
 #if defined(ENOENT) && defined(ENOTDIR)
 	else if (errno == ENOENT || errno == ENOTDIR) {
-#else
-#error ENOENT || ENOTDIR not defined -- check the comment below this line in the source for details
-	/*
-	 * If ENOENT || ENOTDIR is not defined in one of the your OS's
-	 * include files, Apache does not know how to check to see why
-	 * the stat() of the index file failed; there are cases where
-	 * it can fail even though the file exists.  This means
-	 * that it is possible for someone to get a directory
-	 * listing of a directory even though there is an index
-	 * (eg. index.html) file in it.  If you do not have a
-	 * problem with this, delete the above #error line and
-	 * start the compile again.  If you need to do this, please
-	 * submit a bug report from http://www.apache.org/bug_report.html
-	 * letting us know that you needed to do this.  Please be
-	 * sure to include the operating system you are using.  
-	 */
-
-	else {
-#endif
 	    last_cp = cp;
 	
 	    while (--cp > path && *cp != '/')
@@ -226,17 +207,43 @@ int get_path_info(request_rec *r)
 	    while (cp > path && cp[-1] == '/')
 		--cp;
 	} 
-#if defined(ENOENT) && defined(ENOTDIR)
 	else {
 #if defined(EACCES)
 	    if (errno != EACCES) 
 #endif 
 	    aplog_error(APLOG_MARK, APLOG_ERR, r->server, 
 			"access to %s failed for %s", r->uri,
-			get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME));
-
+			get_remote_host(r->connection, r->per_dir_config,
+			                REMOTE_NAME));
 	    return HTTP_FORBIDDEN;
 	}
+#else
+#error ENOENT || ENOTDIR not defined; please see the
+#error comments at this line in the source for a workaround.
+	/*
+	 * If ENOENT || ENOTDIR is not defined in one of the your OS's
+	 * include files, Apache does not know how to check to see why
+	 * the stat() of the index file failed; there are cases where
+	 * it can fail even though the file exists.  This means
+	 * that it is possible for someone to get a directory
+	 * listing of a directory even though there is an index
+	 * (eg. index.html) file in it.  If you do not have a
+	 * problem with this, delete the above #error lines and
+	 * start the compile again.  If you need to do this, please
+	 * submit a bug report from http://www.apache.org/bug_report.html
+	 * letting us know that you needed to do this.  Please be
+	 * sure to include the operating system you are using.  
+	 */
+
+	else {
+	    last_cp = cp;
+	
+	    while (--cp > path && *cp != '/')
+		continue;
+
+	    while (cp > path && cp[-1] == '/')
+		--cp;
+	} 
 #endif /* ENOENT && ENOTDIR */
     }
     return OK;
