@@ -641,7 +641,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 	int is_script;
 	char interpreter[2048];	/* hope this is large enough for the interpreter path */
 	FILE *program;
-	program = fopen(r->filename, "r");
+	program = fopen(r->filename, "rt");
 	if (!program) {
 	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server, "fopen(%s) failed",
 			r->filename);
