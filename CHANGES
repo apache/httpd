@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Add forensic logging module (mod_log_forensic).
+     [Ben Laurie]
+
   *) Fix segfault in mod_mem_cache cache_insert() due to cache size
      becoming negative.  PR: 21285, 21287
      [Bill Stoddard, Massimo Torquati, Jean-Jacques Clar]
