@@ -1,0 +1,117 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "HTTPD" 8 "2003-04-23" "Apache HTTP Server" "httpd"
+
+.SH "SYNOPSIS"
+
+.PP
+\fBhttpd\fR [ -\fBd\fR\fIserverroot\fR ] [ -\fBf\fR\fIconfig\fR ] [ -\fBC\fR\fIdirective\fR ] [ -\fBc\fR\fIdirective\fR ] [ -\fBD\fR\fIparameter\fR ] [ -\fBe\fR\fIlevel\fR ] [ -\fBE\fR\fIfile\fR ] [ \fB-k\fR start|restart|graceful|stop ] [ -\fBR\fR\fIdirectory\fR ] [ -\fBh\fR ] [ -\fBl\fR ] [ -\fBL\fR ] [ -\fBS\fR ] [ -\fBt\fR ] [ -\fBv\fR ] [ -\fBV\fR ] [ -\fBX\fR ]
+
+.PP
+On Windows systems, the following additional arguments are available:
+
+.PP
+\fBhttpd\fR [ -\fBk\fR install|config|uninstall ] [ -\fBn\fR\fIname\fR ] [ -\fBw\fR ]
+
+
+.SH "SUMMARY"
+
+.PP
+httpd is the Apache HyperText Transfer Protocol (HTTP) server program\&. It is designed to be run as a standalone daemon process\&. When used like this it will create a pool of child processes or threads to handle requests\&.
+
+.PP
+In general, httpd should not be invoked directly, but rather should be invoked via apachectl on Unix-based systems or as a service on Windows NT, 2000 and XP and as a console application on Windows 9x and ME\&.
+
+
+.SH "OPTIONS"
+
+.RS
+
+.TP
+-d \fIserverroot\fR
+Set the initial value for the ServerRoot directive to \fIserverroot\fR\&. This can be overridden by the ServerRoot directive in the configuration file\&. The default is /usr/local/apache2\&.
+.TP
+-f \fIconfig\fR
+Uses the directives in the file \fIconfig\fR on startup\&. If \fIconfig\fR does not begin with a /, then it is taken to be a path relative to the ServerRoot\&. The default is conf/httpd\&.conf\&.
+.TP
+-k start|restart|graceful|stop
+Signals httpd to start, restart, or stop\&. See Stopping Apache for more information\&.
+.TP
+-C \fIdirective\fR
+Process the configuration \fIdirective\fR before reading config files\&.
+.TP
+-c \fIdirective\fR
+Process the configuration \fIdirective\fR after reading config files\&.
+.TP
+-D \fIparameter\fR
+Sets a configuration \fIparameter \fRwhich can be used with <IfDefine> sections in the configuration files to conditionally skip or process commands at server startup and restart\&.
+.TP
+-e \fIlevel\fR
+Sets the LogLevel to \fIlevel\fR during server startup\&. This is useful for temporarily increasing the verbosity of the error messages to find problems during startup\&.
+.TP
+-E \fIfile\fR
+Send error messages during server startup to \fIfile\fR\&.
+.TP
+-R \fIdirectory\fR
+When the server is compiled using the SHARED_CORE rule, this specifies the \fIdirectory\fR for the shared object files\&.
+.TP
+-h
+Output a short summary of available command line options\&.
+.TP
+-l
+Output a list of modules compiled into the server\&. This will \fBnot\fR list dynamically loaded modules included using the LoadModule directive\&.
+.TP
+-L
+Output a list of directives together with expected arguments and places where the directive is valid\&.
+.TP
+-S
+Show the settings as parsed from the config file (currently only shows the virtualhost settings)\&.
+.TP
+-t
+Run syntax tests for configuration files only\&. The program immediately exits after these syntax parsing with either a return code of 0 (Syntax OK) or return code not equal to 0 (Syntax Error)\&. If -D \fIDUMP\fR_\fIVHOSTS \fRis also set, details of the virtual host configuration will be printed\&.
+.TP
+-v
+Print the version of httpd, and then exit\&.
+.TP
+-V
+Print the version and build parameters of httpd, and then exit\&.
+.TP
+-X
+Run httpd in debug mode\&. Only one worker will be started and the server will not detach from the console\&.
+.RE
+
+.PP
+The following arguments are available only on the Windows platform:
+
+.RS
+
+.TP
+-k install|config|uninstall
+Install Apache as a Windows NT service; change startup options for the Apache service; and uninstall the Apache service\&.
+.TP
+-n \fIname\fR
+The \fIname\fR of the Apache service to signal\&.
+.TP
+-w
+Keep the console window open on error so that the error message can be read\&.
+.RE
+
