@@ -2,10 +2,6 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
-  *) apxs: Include any special APR ld flags when linking the DSO.
-     This resolves problems on AIX when building a DSO with apxs+gcc.
-     [Jeff Trawick]
-
   *) mod_file_cache: fixed a segfault when multiple MMapFile directives
      were used.  PR 16313.  [Cliff Woolley]
 
@@ -37,13 +33,6 @@ Changes with Apache 2.1.0-dev
      integer to apr_pstrcat. Changed to apr_psprintf.
      [Paul J. Reder]
 
-  *) Added character set support to mod_auth_LDAP to allow it to 
-     convert extended characters used in the user ID to UTF-8 
-     before authenticating against the LDAP directory. The new
-     directive AuthLDAPCharsetConfig is used to specify the config
-     file that contains the character set conversion table.
-     [Brad Nicholes]
-     
   *) Fix a bug where we leak fd's until the end of a keepalive 
      connection, which may result in:
        (24)Too many open files: file permissions deny server access
@@ -69,6 +58,17 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.45
 
+  *) apxs: Include any special APR ld flags when linking the DSO.
+     This resolves problems on AIX when building a DSO with apxs+gcc.
+     [Jeff Trawick]
+
+  *) Added character set support to mod_auth_LDAP to allow it to 
+     convert extended characters used in the user ID to UTF-8 
+     before authenticating against the LDAP directory. The new
+     directive AuthLDAPCharsetConfig is used to specify the config
+     file that contains the character set conversion table.
+     [Brad Nicholes]
+     
   *) Don't remove the Content-Length from responses in mod_proxy
      PR: 8677 [Brian Pane]
 
