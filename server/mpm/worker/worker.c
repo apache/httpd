@@ -287,10 +287,6 @@ static void signal_threads(int mode)
         workers_may_exit = 1;
         ap_queue_interrupt_all(worker_queue);
     }
-
-    /* XXX: This will happen naturally on a graceful, and we don't care 
-     * otherwise.
-    ap_queue_signal_all_wakeup(worker_queue); */
 }
 
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
@@ -814,6 +810,11 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     ap_queue_term(worker_queue);
     dying = 1;
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
+
+    /* XXX in one-process mode, this SIGTERM will wake up the main thread
+     *     in normal mode, it is unclear what it will do... the main
+     *     thread is stuck in a read on the POD
+     */
     kill(ap_my_pid, SIGTERM);
 
     apr_thread_exit(thd, APR_SUCCESS);
