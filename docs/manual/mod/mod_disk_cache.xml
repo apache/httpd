@@ -14,58 +14,65 @@
       This module is experimental. Documentation is still under development...
     </note>
 
-    <p><module>mod_disk_cache</module> implements a disk based storage manager. It is primarily of
-    use in conjunction with <module>mod_proxy</module>.</p>
-    <p>Content is stored in and retrieved from the cache using URI based keys. Content with
-    access protection is not cached.</p>
+    <p><module>mod_disk_cache</module> implements a disk based storage
+    manager. It is primarily of use in conjunction with
+    <module>mod_proxy</module>.</p>
+
+    <p>Content is stored in and retrieved from the cache using URI based
+    keys. Content with access protection is not cached.</p>
 
     <note><title>Note:</title>
-      <p><module>mod_disk_cache</module> requires the services of <module>mod_cache</module>.</p>
+      <p><module>mod_disk_cache</module> requires the services of
+      <module>mod_cache</module>.</p>
     </note>
 </summary>
 
 <directivesynopsis>
 <name>CacheRoot</name>
-<description>The directory root under which cache files are stored</description>
+<description>The directory root under which cache files are
+stored</description>
 <syntax>CacheRoot <var>directory</var></syntax>
 <default>none</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>The <directive>CacheRoot</directive> directive defines the name of the
-    directory on the disk to contain cache files. If the
-    <module>mod_disk_cache</module> module has been loaded or compiled in to the
-    Apache server, this directive <em>must</em> be defined. Failing to provide a
-    value for <directive>CacheRoot</directive> will result in a configuration
-    file processing error. The <directive>CacheDirLevels</directive> and
-    <directive>CacheDirLength</directive> directives define the structure of
-    the directories under the specified root directory.</p>
+    <p>The <directive>CacheRoot</directive> directive defines the name of
+    the directory on the disk to contain cache files. If the <module
+    >mod_disk_cache</module> module has been loaded or compiled in to the
+    Apache server, this directive <em>must</em> be defined. Failing to
+    provide a value for <directive>CacheRoot</directive> will result in
+    a configuration file processing error. The <directive
+    module="mod_disk_cache">CacheDirLevels</directive> and <directive
+    module="mod_disk_cache">CacheDirLength</directive> directives define
+    the structure of the directories under the specified root directory.</p>
 
     <example>
-      CacheRoot c:/cacheroot<br />
+      CacheRoot c:/cacheroot
     </example>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheSize</name>
-<description>The maximum amount of disk space that will be used by the cache in KBytes</description>
+<description>The maximum amount of disk space that will be used by the
+cache in KBytes</description>
 <syntax>CacheSize <var>KBytes</var></syntax>
 <default>CacheSize 1000000</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>The <directive>CacheSize</directive> directive sets the desired disk space
-    usage of the cache, in KBytes (1024-byte units). This directive does not put a 
-    hard limit on the size of the cache. The garbage collector will delete files
-    until the usage is at or below the settings. Always use a value that is lower
-    than the available disk space.</p>
+    <p>The <directive>CacheSize</directive> directive sets the desired
+    disk space usage of the cache, in KBytes (1024-byte units). This
+    directive does not put a  hard limit on the size of the cache. The
+    garbage collector will delete files until the usage is at or below the
+    settings. Always use a value that is lower than the available disk
+    space.</p>
 
-<example>
-  CacheSize  5000000 <br />
-</example>
+    <example>
+      CacheSize  5000000
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -94,24 +101,27 @@
 
 <directivesynopsis>
 <name>CacheDirLevels</name>
-<description>The number of levels of subdirectories in the cache.</description>
+<description>The number of levels of subdirectories in the
+cache.</description>
 <syntax>CacheDirLevels <var>levels</var></syntax>
 <default>CacheDirLevels 3</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>The <directive>CacheDirLevels</directive> directive sets the number of 
-    subdirectory levels in the cache. Cached data will be saved this many
-    directory levels below the <directive>CacheRoot</directive> directory.</p>
+    <p>The <directive>CacheDirLevels</directive> directive sets the number
+    of subdirectory levels in the cache. Cached data will be saved this
+    many directory levels below the <directive module="mod_disk_cache"
+    >CacheRoot</directive> directory.</p>
 
     <note>
       <p>The result of <directive>CacheDirLevels</directive>*
-      <directive>CacheDirLength</directive> must not be higher than 20.</p>
+      <directive module="mod_disk_cache">CacheDirLength</directive> must
+      not be higher than 20.</p>
     </note>
 
     <example>
-      CacheDirLevels  5<br />
+      CacheDirLevels  5
     </example>
 </usage>
 </directivesynopsis>
@@ -125,16 +135,17 @@
 </contextlist>
 
 <usage>
-    <p>The <directive>CacheDirLength</directive> directive sets the number of 
-    characters for each subdirectory name in the cache hierarchy.</p>
+    <p>The <directive>CacheDirLength</directive> directive sets the number
+    of characters for each subdirectory name in the cache hierarchy.</p>
 
     <note>
-      <p>The result of <directive>CacheDirLevels</directive>*
-      <directive>CacheDirLength</directive> must not be higher than 20.</p>
+      <p>The result of <directive module="mod_disk_cache"
+      >CacheDirLevels</directive>* <directive>CacheDirLength</directive>
+      must not be higher than 20.</p>
     </note>
 
     <example>
-      CacheDirLength  4<br />
+      CacheDirLength  4
     </example>
 </usage>
 </directivesynopsis>
@@ -172,11 +183,12 @@ cache</description>
 </contextlist>
 
 <usage>
-    <p>The <directive>CacheMinFileSize</directive> directive sets the minimum
-    size, in bytes, for a document to be considered for storage in the cache.</p>
+    <p>The <directive>CacheMinFileSize</directive> directive sets the
+    minimum size, in bytes, for a document to be considered for storage
+    in the cache.</p>
 
     <example>
-      CacheMinFileSize 64<br />
+      CacheMinFileSize 64
     </example>
 </usage>
 </directivesynopsis>
@@ -191,11 +203,12 @@ cache</description>
 </contextlist>
 
 <usage>
-    <p>The <directive>CacheMaxFileSize</directive> directive sets the maximum
-    size, in bytes, for a document to be considered for storage in the cache.</p>
+    <p>The <directive>CacheMaxFileSize</directive> directive sets the
+    maximum size, in bytes, for a document to be considered for storage in
+    the cache.</p>
 
     <example>
-      CacheMaxFileSize 64000<br />
+      CacheMaxFileSize 64000
     </example>
 </usage>
 </directivesynopsis>
@@ -212,7 +225,7 @@ cache</description>
     <p>More detail will be added here, when the function is implemented.</p>
 
     <example>
-      CacheTimeMargin X<br />
+      CacheTimeMargin X
     </example>
 
     <note type="warning">
@@ -235,7 +248,7 @@ cache</description>
     <p>More detail will be added here, when the function is implemented.</p>
 
     <example>
-      CacheGcDaily 23:59<br />
+      CacheGcDaily 23:59
     </example>
 
     <note type="warning">
@@ -247,7 +260,8 @@ cache</description>
 
 <directivesynopsis>
 <name>CacheGcUnused</name>
-<description>The time to retain unreferenced cached files that match a URL.</description>
+<description>The time to retain unreferenced cached files that match a
+URL.</description>
 <syntax>CacheGcUnused <var>hours</var> <var>url-string</var></syntax>
 <default>CacheGcUnused ?</default>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -257,7 +271,7 @@ cache</description>
     <p>More detail will be added here, when the function is implemented.</p>
 
     <example>
-      CacheGcUnused 12 /local_images<br />
+      CacheGcUnused 12 /local_images
     </example>
 
     <note type="warning">
@@ -269,7 +283,8 @@ cache</description>
 
 <directivesynopsis>
 <name>CacheGcClean</name>
-<description>The time to retain unchanged cached files that match a URL</description>
+<description>The time to retain unchanged cached files that match a
+URL</description>
 <syntax>CacheGcClean <var>hours</var> <var>url-string</var></syntax>
 <default>CacheGcClean ?</default>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -279,7 +294,7 @@ cache</description>
     <p>More detail will be added here, when the function is implemented.</p>
 
     <example>
-      CacheGcClean 12 /daily_scripts<br />
+      CacheGcClean 12 /daily_scripts
     </example>
 
     <note type="warning">
@@ -291,7 +306,8 @@ cache</description>
 
 <directivesynopsis>
 <name>CacheGcMemUsage</name>
-<description>The maximum kilobytes of memory used for garbage collection</description>
+<description>The maximum kilobytes of memory used for garbage
+collection</description>
 <syntax>CacheGcMemUsage <var>KBytes</var></syntax>
 <default>CacheGcMemUsage ?</default>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -301,7 +317,7 @@ cache</description>
     <p>More detail will be added here, when the function is implemented.</p>
 
     <example>
-      CacheGcMemUsage 16<br />
+      CacheGcMemUsage 16
     </example>
 
     <note type="warning">
