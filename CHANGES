@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) Correct UseCanonicalName Off to properly check incoming port number.
+     [Jim Jagielski]
+
   *) Fix slow graceful restarts with prefork MPM.  [Joe Orton]
 
   *) Fix a problem with namespace mappings being dropped in mod_dav_fs;
