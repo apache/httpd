@@ -162,7 +162,11 @@ struct proxy_alias {
 struct dirconn_entry {
     char *name;
     struct in_addr addr, mask;
+#ifdef WITH_UTIL_URI
+    struct hostent *hostentry;
+#else /*WITH_UTIL_URI*/
     struct hostent hostlist;
+#endif /*WITH_UTIL_URI*/
     int (*matcher) (struct dirconn_entry * This, request_rec *r);
 };
 

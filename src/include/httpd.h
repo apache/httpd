@@ -537,6 +537,10 @@ typedef struct server_rec server_rec;
 typedef struct request_rec request_rec;
 typedef struct listen_rec listen_rec;
 
+#ifdef WITH_UTIL_URI
+#include "util_uri.h"
+#endif
+
 struct request_rec {
 
     pool *pool;
@@ -656,6 +660,9 @@ struct request_rec {
     char *path_info;
     char *args;			/* QUERY_ARGS, if any */
     struct stat finfo;		/* ST_MODE set to zero if no such file */
+#ifdef WITH_UTIL_URI
+  uri_components parsed_uri;	/* components of uri, dismantled */
+#endif
 
     /* Various other config info which may change with .htaccess files
      * These are config vectors, with one void* pointer for each module

@@ -329,6 +329,9 @@ static void dump_iphash_statistics(server_rec *main_s)
  * whack of /24s.  This is probably the most common configuration for
  * ISPs with large virtual servers.
  *
+ * NOTE: This function is symmetric (i.e. collapses all 4 octets
+ * into one), so machine byte order (big/little endianness) does not matter.
+ *
  * Hash function provided by David Hankins.
  */
 static ap_inline unsigned hash_inaddr(unsigned key)
@@ -689,6 +692,7 @@ found:
     r->server = r->connection->server = s;
     if (r->hostlen && !strncasecmp(r->uri, "http://", 7)) {
 	r->uri += r->hostlen;
+	r->proxyreq = 0;
 	parse_uri(r, r->uri);
     }
 }

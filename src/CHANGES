@@ -1,5 +1,29 @@
 Changes with Apache 1.3b6
 
+  *) For testing purposes, I added a new source called main/util_uri.c;
+     It contains a routine parse_uri_components_regex() and friends which
+     tries to break an URI into its parts. These parts are stored in a new
+     uri_components structure within each request_rec and are therefore
+     available to all routines which act on a request.
+     Additionally, an unparse routine is supplied which re-assembles the
+     URI components back to an URI, optionally hiding the username:password@
+     part from ftp proxy requests, and other useful routines.
+     Within the structure, you find on a ready-for-use basis:
+	scheme;     /* scheme ("http"/"ftp"/...) */
+	hostinfo;   /* combined [user[:password]@]host[:port] */
+	user;       /* user name, as in http://user:passwd@host:port/ */
+	password;   /* password, as in http://user:passwd@host:port/ */
+	hostname;   /* hostname from URI (or from Host: header) */
+	port_str;   /* port string (integer representation is in "port") */
+	path;       /* the request path (or "/" if only scheme://host was given) */
+	query;      /* Everything after a '?' in the path, if present */
+	fragment;   /* Trailing "#fragment" string, if present */
+     plus flags to indicate whether the strings have valid values.
+     This is meant to serve as the platform for *BIG* savings in
+     code complexity for the proxy module (and maybe the vhost logic).
+     NOTE: This code is enabled only if the WITH_UTIL_URI define is set;
+     currently this is not enabled by default.  [Martin Kraemer]
+
   *) Make all possible meta-construct expansions ($N, %N, %{NAME} and
      ${map:key}) available for all location where a string is created in
      mod_rewrite rewriting rulesets: 1st arg of RewriteCond, 2nd arg of

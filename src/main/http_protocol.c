@@ -570,8 +570,71 @@ static int getline(char *s, int n, BUFF *in, int fold)
     return total;
 }
 
+
+/* parse_uri: check uri, determine whether proxy request, TRACE, or local request
+ * Side Effects:
+ * - sets r->proxyreq if "scheme://host:port" found
+ * - sets r->args to rest after '?' (or NULL if no '?') unless TRACE or proxy req.
+ * - sets r->uri to request uri (without r->args part unless TRACE or proxy req.)
+ *#ifdef WITH_UTIL_URI
+ * - sets r->hostname (if not set already) from request (scheme://host:port)
+ * - sets r->hostlen to length of "scheme://...host:port" prefix
+ *#endif
+ */
 void parse_uri(request_rec *r, const char *uri)
 {
+#ifdef WITH_UTIL_URI
+    int hostlen = 0;
+    int status = HTTP_OK;
+
+    /* If an identical uri was parsed before, return without action */
+    if (r->parsed_uri.is_initialized && r->uri && strcmp(uri, r->uri) == 0)
+	return;
+
+    /* Simple syntax Errors in URLs are trapped by parse_uri_components(). */
+    status = parse_uri_components_regex(r->pool, uri, &r->parsed_uri);
+
+    if (is_HTTP_SUCCESS(status)) {
+
+	r->hostlen = r->parsed_uri.hostlen;
+
+	/* if hostlen is 0, it's not a proxy request */
+	r->proxyreq = (r->hostlen > 0);
+
+	if (!r->proxyreq) {
+	    r->hostname = NULL;
+
+	    if (r->method && !strcmp(r->method, "TRACE")) {
+		/* don't split into path & args for TRACE requests */
+		r->args = NULL;
+		r->uri = pstrdup(r->pool, uri);
+	    }
+	    else {
+		r->uri = r->parsed_uri.has_path ? r->parsed_uri.path : "/";
+		r->args = r->parsed_uri.query;
+	    }
+	}
+	else {
+	    if (r->hostlen == strlen(uri))
+		/* the request is just http://hostname - no trailing slash. 
+		 * Provide one:
+		 */
+		r->uri = pstrcat(r->pool, uri, "/", NULL);
+	    else
+		r->uri = pstrdup(r->pool, uri);
+	    r->hostname = r->parsed_uri.hostname;
+	    /* no args splitting for proxy requests */
+	    r->args = NULL;
+	}
+    }
+    else {
+	r->args = NULL;
+	r->hostlen = 0;
+	r->hostname = NULL;
+	r->status = status;             /* set error status */
+	r->uri = pstrdup(r->pool, uri);
+    }
+#else  /*WITH_UTIL_URI*/
     const char *s;
 
 #if defined(__EMX__) || defined(WIN32)
@@ -621,8 +684,16 @@ void parse_uri(request_rec *r, const char *uri)
         else
             r->args = NULL;
     }
+#endif /*WITH_UTIL_URI*/
 }
 
+/* check_fulluri: check full uri against main server names/addresses
+ * Side Effects:
+ *#ifndef WITH_UTIL_URI
+ * - sets r->hostname (if not set already) from request (scheme://host:port)
+ * - sets r->hostlen to length of "scheme://host:port" part
+ *#endif
+ */
 const char *check_fulluri(request_rec *r, const char *uri)
 {
     char *host, *proto, *slash, *colon;
@@ -630,6 +701,63 @@ const char *check_fulluri(request_rec *r, const char *uri)
     unsigned port;
     const char *res_uri;
 
+#ifdef WITH_UTIL_URI
+    if (!r->parsed_uri.has_hostname
+     || !r->parsed_uri.has_scheme
+     || strcasecmp(r->parsed_uri.scheme, "http") != 0)
+	return uri;
+
+    /* Note: There's no use comparing against ntohs(r->connection->local_addr.sin_port)
+     * here, because in a proxy request, the two have nothing in common.
+     */
+    /* Make sure ports match */
+    port = (r->parsed_uri.has_port) ? r->parsed_uri.port : default_port_for_request(r);
+    if (port != r->server->port)
+	    return uri;
+
+    host = r->parsed_uri.hostname;
+
+    /* Easy simplification: If main server host name and port match,
+     * then this request is rewritten from a net_path to an abs_path
+     * and reduced from a proxyreq to a local request.
+     */
+    if (strcasecmp(host, r->server->server_hostname) == 0
+	|| strcmp(host, inet_ntoa(r->connection->local_addr.sin_addr)) == 0)
+    {
+	r->proxyreq = 0;
+	r->uri += r->hostlen;
+	r->hostlen = 0;
+    }
+    else {
+	/* Now things get a bit trickier - check the IP address(es) of
+	 * the host they gave, see if it matches ours.
+	 */
+	struct hostent *hp;
+	int n;
+	if (r->parsed_uri.dns_looked_up)
+	    /* looked up earlier; re-use: */
+	    hp = r->parsed_uri.hostent;
+	else {
+	    hp = pgethostbyname(r->pool, host);
+	    r->parsed_uri.dns_looked_up = 1;
+	    r->parsed_uri.dns_resolved = (hp != NULL);
+	    r->parsed_uri.hostent = hp;
+	}
+
+	if (r->parsed_uri.dns_resolved) {
+	    for (n = 0; hp->h_addr_list[n] != NULL; n++) {
+		if (r->connection->local_addr.sin_addr.s_addr ==
+		    (((struct in_addr *) (hp->h_addr_list[n]))->s_addr)) {
+		    r->proxyreq = 0;
+		    r->uri += r->hostlen;
+		    r->hostlen = 0;
+		    break;
+		}
+	    }
+	}
+    }
+    return r->uri;
+#else /*WITH_UTIL_URI*/
     /* This routine parses full URLs, if they match the server */
     proto = http_method(r);
     plen = strlen(proto);
@@ -698,6 +826,7 @@ const char *check_fulluri(request_rec *r, const char *uri)
     }
 
     return uri;
+#endif /*WITH_UTIL_URI*/
 }
 
 int read_request_line(request_rec *r)
@@ -746,8 +875,13 @@ int read_request_line(request_rec *r)
     r->the_request = pstrdup(r->pool, l);
     r->method = getword_white(r->pool, &ll);
     uri = getword_white(r->pool, &ll);
+#ifdef WITH_UTIL_URI
+    parse_uri(r, uri);
+    r->uri = pstrdup(r->pool, check_fulluri(r, r->uri)); /* r->uri isn't const, so copy */
+#else
     uri = check_fulluri(r, uri);
     parse_uri(r, uri);
+#endif
 
     r->assbackwards = (ll[0] == '\0');
     r->protocol = pstrdup(r->pool, ll[0] ? ll : "HTTP/0.9");

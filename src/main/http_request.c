@@ -749,6 +749,9 @@ API_EXPORT(request_rec *) sub_req_lookup_file(const char *new_file,
 
         rnew->uri = make_full_path(rnew->pool, udir, new_file);
         rnew->filename = make_full_path(rnew->pool, fdir, new_file);
+#ifdef WITH_UTIL_URI
+	parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
+#endif
         if (stat(rnew->filename, &rnew->finfo) < 0) {
             rnew->finfo.st_mode = 0;
         }
@@ -794,6 +797,10 @@ API_EXPORT(request_rec *) sub_req_lookup_file(const char *new_file,
         }
     }
     else {
+#ifdef WITH_UTIL_URI
+	/* XXX: @@@: What should be done with the parsed_uri values? */
+	parse_uri(rnew, new_file);	/* fill in parsed_uri values */
+#endif
         /*
          * XXX: this should be set properly like it is in the same-dir case
          * but it's actually sometimes to impossible to do it... because the
@@ -1196,7 +1203,7 @@ request_rec *internal_internal_redirect(const char *new_uri, request_rec *r)
     new->pool       = r->pool;
 
     /*
-     * A whole lot of this really ought to be shared with protocol.c...
+     * A whole lot of this really ought to be shared with http_protocol.c...
      * another missing cleanup.  It's particularly inappropriate to be
      * setting header_only, etc., here.
      */

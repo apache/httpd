@@ -164,14 +164,31 @@ static int proxy_fixup(request_rec *r)
     char *url, *p;
     int i;
 
-    if (strncmp(r->filename, "proxy:", 6) != 0)
+    if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
 	return DECLINED;
 
     url = &r->filename[6];
+
+#ifdef WITH_UTIL_URI
+
+    if (!r->parsed_uri.has_scheme) {
+	return DECLINED;
+    }
+
+/* canonicalise each specific scheme */
+    if (strcasecmp(r->parsed_uri.scheme, "http") == 0)
+	return proxy_http_canon(r, url + 5, "http", default_port_for_scheme(r->parsed_uri.scheme));
+    else if (strcasecmp(r->parsed_uri.scheme, "ftp") == 0)
+	return proxy_ftp_canon(r, url + 4);
+    else
+	return OK;		/* otherwise; we've done the best we can */
+
+#else /*WITH_UTIL_URI*/
+
 /* lowercase the scheme */
     p = strchr(url, ':');
     if (p == NULL || p == url)
-	return BAD_REQUEST;
+	return HTTP_BAD_REQUEST;
     for (i = 0; i != p - url; i++)
 	url[i] = tolower(url[i]);
 
@@ -182,6 +199,8 @@ static int proxy_fixup(request_rec *r)
 	return proxy_ftp_canon(r, url + 4);
     else
 	return OK;		/* otherwise; we've done the best we can */
+
+#endif /*WITH_UTIL_URI*/
 }
 
 static void proxy_init(server_rec *r, pool *p)
@@ -199,6 +218,42 @@ static void proxy_init(server_rec *r, pool *p)
 /* The "ProxyDomain" directive determines what domain will be appended */
 static int proxy_needsdomain(request_rec *r, const char *url, const char *domain)
 {
+#ifdef WITH_UTIL_URI
+    char *nuri, *ref;
+    char strport[10];
+
+    /* We only want to worry about GETs */
+    if (!r->proxyreq || r->method_number != M_GET 
+	|| !r->parsed_uri.has_hostname)
+	return DECLINED;
+
+    /* If host does contain a dot already, or it is "localhost", decline */
+    if (strchr(r->parsed_uri.hostname, '.') != NULL
+     || strcasecmp(r->parsed_uri.hostname, "localhost") == 0)
+	return DECLINED;	/* host name has a dot already */
+
+    ref = table_get(r->headers_in, "Referer");
+
+    /* Reassemble the request, but insert the domain after the host name */
+    /* Note that the domain name always starts with a dot */
+    r->parsed_uri.hostname = pstrcat(r->pool, r->parsed_uri.hostname,
+				     domain, NULL);
+    nuri = unparse_uri_components(r->pool,
+				  &r->parsed_uri,
+				  &r->parsed_uri.hostlen,
+				  UNP_REVEALPASSWORD);
+
+    table_set(r->headers_out, "Location", nuri);
+    aplog_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server,
+		"Domain missing: %s sent to %s%s%s", r->uri,
+		unparse_uri_components(r->pool, &r->parsed_uri,
+		      &r->parsed_uri.hostlen, UNP_OMITUSERINFO),
+		ref ? " from " : "", ref ? ref : "");
+
+    return HTTP_MOVED_PERMANENTLY;
+
+#else /*WITH_UTIL_URI*/
+
     char *scheme = pstrdup(r->pool, url);
     char *url_copy, *user = NULL, *password = NULL, *path, *err, *host;
     int port = -1;
@@ -258,6 +313,8 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
 
 	return HTTP_MOVED_PERMANENTLY;
     }
+
+#endif /*WITH_UTIL_URI*/
 }
 
 /* -------------------------------------------------------------- */
@@ -275,7 +332,7 @@ static int proxy_handler(request_rec *r)
     struct cache_req *cr;
     int direct_connect = 0;
 
-    if (strncmp(r->filename, "proxy:", 6) != 0)
+    if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
 	return DECLINED;
 
     if ((rc = setup_client_block(r, REQUEST_CHUNKED_ERROR)))
@@ -284,16 +341,18 @@ static int proxy_handler(request_rec *r)
     url = r->filename + 6;
     p = strchr(url, ':');
     if (p == NULL)
-	return BAD_REQUEST;
+	return HTTP_BAD_REQUEST;
 
     rc = proxy_cache_check(r, url, &conf->cache, &cr);
     if (rc != DECLINED)
 	return rc;
 
     /* If the host doesn't have a domain name, add one and redirect. */
-    if (conf->domain != NULL
-	&& proxy_needsdomain(r, url, conf->domain) == REDIRECT)
-	return REDIRECT;
+    if (conf->domain != NULL) {
+	rc = proxy_needsdomain(r, url, conf->domain);
+	if (is_HTTP_REDIRECT(rc))
+	    return HTTP_MOVED_PERMANENTLY;
+    }
 
     *p = '\0';
     scheme = pstrdup(r->pool, url);
@@ -348,7 +407,7 @@ static int proxy_handler(request_rec *r)
 		    rc = DECLINED;
 
 		/* an error or success */
-		if (rc != DECLINED && rc != BAD_GATEWAY)
+		if (rc != DECLINED && rc != HTTP_BAD_GATEWAY)
 		    return rc;
 		/* we failed to talk to the upstream proxy */
 	    }
@@ -523,6 +582,9 @@ static const char *
     if (!found) {
 	New = push_array(conf->dirconn);
 	New->name = arg;
+#ifdef WITH_UTIL_URI
+	New->hostentry = NULL;;
+#endif /*WITH_UTIL_URI*/
 
 	if (proxy_is_ipaddr(New, parms->pool)) {
 #if DEBUGGING

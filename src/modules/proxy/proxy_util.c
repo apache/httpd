@@ -58,6 +58,9 @@
 #include "md5.h"
 #include "multithread.h"
 #include "http_log.h"
+#ifdef WITH_UTIL_URI
+#include "util_uri.h"
+#endif /*WITH_UTIL_URI*/
 
 static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
@@ -836,7 +839,7 @@ const char *
 	    hp = &hpbuf;
 	}
     }
-    memcpy(reqhp, hp, sizeof(struct hostent));
+    *reqhp = *hp;
     return NULL;
 }
 
@@ -886,16 +889,9 @@ int proxy_is_ipaddr(struct dirconn_entry *This, pool *p)
     /* Parse IP addr manually, optionally allowing */
     /* abbreviated net addresses like 192.168. */
 
-/*    quads = sscanf(what, "%d.%d.%d.%d", &ip_addr[0], &ip_addr[1],
-   &ip_addr[2], &ip_addr[3]);
-   commented out: use of strtok() allows arbitrary base, like in:
-   139.25.113.10 == 0x8b.0x19.0x71.0x0a
-   (yes, inet_addr() can parse that, too!)
- */
-
     /* Iterate over up to 4 (dotted) quads. */
     for (quads = 0; quads < 4 && *addr != '\0'; ++quads) {
-	char *tmp;
+	const char *tmp;
 
 	if (*addr == '/' && quads > 0)	/* netmask starts here. */
 	    break;
@@ -923,7 +919,7 @@ int proxy_is_ipaddr(struct dirconn_entry *This, pool *p)
 	This->addr.s_addr |= htonl(ip_addr[i] << (24 - 8 * i));
 
     if (addr[0] == '/' && isdigit(addr[1])) {	/* net mask follows: */
-	char *tmp;
+	const char *tmp;
 
 	++addr;
 
@@ -1048,8 +1044,6 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 	}
     }
 
-    /* Use net math to determine if a host lies in a subnet */
-    /*return This->addr.s_addr == (r->connection->remote_addr.sin_addr.s_addr & This->mask.s_addr); */
     return 0;
 }
 
@@ -1064,7 +1058,8 @@ int proxy_is_domainname(struct dirconn_entry *This, pool *p)
 	return 0;
 
     /* rfc1035 says DNS names must consist of "[-a-zA-Z0-9]" and '.' */
-    for (i = 0; isalnum(addr[i]) || addr[i] == '-' || addr[i] == '.'; ++i);
+    for (i = 0; isalnum(addr[i]) || addr[i] == '-' || addr[i] == '.'; ++i)
+	continue;
 
 #if 0
     if (addr[i] == ':') {
@@ -1108,6 +1103,7 @@ static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r)
 /* Return TRUE if addr represents a host name */
 int proxy_is_hostname(struct dirconn_entry *This, pool *p)
 {
+    struct hostent host;
     char *addr = This->name;
     int i;
 
@@ -1125,8 +1121,14 @@ int proxy_is_hostname(struct dirconn_entry *This, pool *p)
     }
 #endif
 
-    if (addr[i] != '\0' || proxy_host2addr(addr, &This->hostlist) != NULL)
+    if (addr[i] != '\0' || proxy_host2addr(addr, &host) != NULL)
 	return 0;
+
+#ifdef WITH_UTIL_URI
+    This->hostentry = pduphostent (p, &host);
+#else /*WITH_UTIL_URI*/
+    This->hostlist = host;    /*XXX: FIXME: This points to overwritten static storage!!! */
+#endif /*WITH_UTIL_URI*/
 
     /* Strip trailing dots */
     for (i = strlen(addr) - 1; i > 0 && addr[i] == '.'; --i)
@@ -1148,7 +1150,7 @@ static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r)
     unsigned long *ip_list;
 
     /* Try to deal with multiple IP addr's for a host */
-    for (ip_list = *This->hostlist.h_addr_list; *ip_list != 0UL; ++ip_list)
+    for (ip_list = *This->hostentry->h_addr_list; *ip_list != 0UL; ++ip_list)
 	if (*ip_list == ? ? ? ? ? ? ? ? ? ? ? ? ?)
 	    return 1;
 #endif

@@ -77,7 +77,7 @@ int proxy_http_canon(request_rec *r, char *url, const char *scheme, int def_port
     port = def_port;
     err = proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err)
-	return BAD_REQUEST;
+	return HTTP_BAD_REQUEST;
 
 /* now parse path/search args, according to rfc1738 */
 /* N.B. if this isn't a true proxy request, then the URL _path_
@@ -94,13 +94,13 @@ int proxy_http_canon(request_rec *r, char *url, const char *scheme, int def_port
 /* process path */
     path = proxy_canonenc(r->pool, url, strlen(url), enc_path, r->proxyreq);
     if (path == NULL)
-	return BAD_REQUEST;
+	return HTTP_BAD_REQUEST;
 
 /* process search */
     if (p != NULL) {
 	search = p;
 	if (search == NULL)
-	    return BAD_REQUEST;
+	    return HTTP_BAD_REQUEST;
     }
     else
 	search = NULL;
@@ -252,7 +252,7 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     if (sock == -1) {
 	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "proxy: error creating socket");
-	return SERVER_ERROR;
+	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     if (conf->recv_buffer_size) {
