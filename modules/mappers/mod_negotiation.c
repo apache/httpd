@@ -2892,10 +2892,6 @@ static int handle_multi(request_rec *r)
         }
     }
 
-    /* preserve path info and query string from the original request */
-    sub_req->path_info = r->path_info;
-    sub_req->args = r->args;
-    
     /* now do a "fast redirect" ... promotes the sub_req into the main req */
     ap_internal_fast_redirect(sub_req, r);
 
