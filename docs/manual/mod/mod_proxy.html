@@ -312,9 +312,12 @@ depending on the speed with which the hostname lookups occur.<p>
 Yes. Just build Apache with the rule <code>SOCKS4=yes</code> in your
 <i>Configuration</i> file, and follow the instructions there. SOCKS5 
 capability can be added in a similar way (there's no <code>SOCKS5</code>
-rule yet, so use the <code>EXTRA_LFLAGS</code> definition, or build Apache
+rule yet), so use the <code>EXTRA_LFLAGS</code> definition, or build Apache
 normally and run it with the <i>runsocks</i> wrapper provided with SOCKS5,
 if your OS supports dynamically linked libraries.<p>
+
+Some users have reported problems when using SOCKS version 4.2 on Solaris.
+The problem was solved by upgrading to SOCKS 4.3.<p>
 
 Remember that you'll also have to grant access to your Apache proxy machine by
 permitting connections on the appropriate ports in your SOCKS daemon's
