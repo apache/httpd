@@ -25,7 +25,7 @@
 # so the server root should be given in forward slashes (quoted),
 # preferably with the drive designation!
 
-default:        _apacher
+default: _apacher
 
 !IF ("$(CTARGET)" == "") && EXIST("Apache.sln")
 CTARGET=/build
@@ -78,11 +78,12 @@ _tryssl:
 #     NOT EXIST("srclib\openssl")
 
 _tryssl:
-	echo mod_ssl and ab/ssl will not build without openssl 
-	echo installed in $(INSTDIR)\srclib\openssl.  They must be precompiled 
-	echo using the ms/ntdll.mak file, see srclib\openssl\INSTALL.W32.  
-	echo The most recent version confirmed to build with mod_ssl and ab
-	echo was 0.9.6c available from http://www.openssl.org/
+	@echo -----
+	@echo mod_ssl and ab/ssl will not build unless openssl is installed
+	@echo in srclib\openssl.  They must be precompiled using the 
+	@echo ms/ntdll.mak file, see srclib\openssl\INSTALL.W32.  The most
+	@echo recent version confirmed to build with mod_ssl and ab is 0.9.6c.
+	@echo Available from http://www.openssl.org/
 !ENDIF
 
 !IF EXIST("srclib\zlib")
@@ -103,25 +104,33 @@ _tryzlib:
 #     NOT EXIST("srclib\zlib")
 
 _tryzlib:
-	echo mod_deflate will not build without zlib installed in 
-	echo $(INSTDIR)\srclib\zlib.  
-	echo Zlib needs not be built, we compile the sources directly.
+	@echo -----
+	@echo mod_deflate will not build unless zlib is installed in srclib\zlib.  
+	@echo zlib does not need to be built, we compile the sources directly.
+	@echo Available from http://www.gzip.org/zlib/
 
 !ENDIF
 
 !IF "$(INSTDIR)" == ""
 INSTDIR=\Apache2
-!MESSAGE INSTDIR not specified, installing to default $(INSTDIR)
-!ENDIF 
-!IF "$(PORT)" == ""
-PORT=80
-!MESSAGE PORT not specified, using default $(PORT)
-!MESSAGE To change this use $(MAKE) -f makefile.win PORT=8080 installr
-!ENDIF 
+!ENDIF
 !IF "$(SERVERNAME)" == ""
 SERVERNAME=localhost
-!MESSAGE SERVERNAME not specified, using default $(SERVERNAME)
-!MESSAGE To change this use $(MAKE) -f makefile.win PORT=www.example.com installr
+!ENDIF
+!IF "$(PORT)" == ""
+PORT=80
+!ENDIF 
+
+!IF "$(LONG)" == ""
+!MESSAGE
+!MESSAGE INSTDIR    = $(INSTDIR)
+!MESSAGE SERVERNAME = $(SERVERNAME)
+!MESSAGE PORT       = $(PORT)
+!MESSAGE
+!MESSAGE To change these options use 'nmake /f Makefile.win [option=value]'
+!MESSAGE Example: nmake /f Makefile.win PORT=8080
+!MESSAGE
+!MESSAGE
 !ENDIF
 
 !IFNDEF MAKEOPT
@@ -306,22 +315,22 @@ _build:
 !ELSE
 
 _cleanr:  
-	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=R LONG=Release CTARGET="/CLEAN" _build
+	@$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=R LONG=Release CTARGET="/CLEAN" _build
 
 _cleand:  
-	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=D LONG=Debug   CTARGET="/CLEAN" _build
+	@$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=D LONG=Debug   CTARGET="/CLEAN" _build
 
 _build:
-	echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
-	msdev Apache.dsw /USEENV /MAKE \
+	@echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
+	@msdev Apache.dsw /USEENV /MAKE \
 		"BuildBin - Win32 $(LONG)" $(CTARGET)
 !IF EXIST("srclib\openssl")
-	msdev Apache.dsw /USEENV /MAKE \
+	@msdev Apache.dsw /USEENV /MAKE \
 		"mod_ssl - Win32 $(LONG)" \
 		"abs - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 !IF EXIST("srclib\zlib")
-	msdev Apache.dsw /USEENV /MAKE \
+	@msdev Apache.dsw /USEENV /MAKE \
 		"mod_deflate - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
