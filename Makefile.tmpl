@@ -259,6 +259,7 @@ install-mktree:
 	$(MKDIR) $(root)$(iconsdir)
 	$(MKDIR) $(root)$(cgidir)
 	$(MKDIR) $(root)$(includedir)
+	$(MKDIR) $(root)$(includedir)/xml
 	$(MKDIR) $(root)$(runtimedir)
 	$(MKDIR) $(root)$(logfiledir)
 	$(MKDIR) $(root)$(proxycachedir)
@@ -427,7 +428,7 @@ install-binsupport:
 install-include:
 	@echo "===> [include: Installing Apache C header files]"
 	$(CP) $(TOP)/$(SRC)/include/*.h $(root)$(includedir)/
-	$(CP) $(TOP)/$(SRC)/lib/expat-lite/*.h $(root)$(includedir)/
+	$(CP) $(TOP)/$(SRC)/lib/expat-lite/*.h $(root)$(includedir)/xml/
 	@osdir=`grep '^OSDIR=' $(TOP)/$(SRC)/Makefile.config | sed -e 's:^OSDIR=.*/os/:os/:'`; \
 		echo "$(CP) $(TOP)/$(SRC)/$${osdir}/os.h $(root)$(includedir)/"; \
 		$(CP) $(TOP)/$(SRC)/$${osdir}/os.h $(root)$(includedir)/; \
