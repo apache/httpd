@@ -1,24 +1,25 @@
 
-                            Apache 1.3.25 Released
+                            Apache 1.3.26 Released
 
    The Apache Software Foundation and The Apache Server Project are
-   pleased to announce the release of version 1.3.25 of the Apache HTTP
-   Server.  This Announcement notes the significant changes in 1.3.25.
+   pleased to announce the release of version 1.3.26 of the Apache HTTP
+   Server.  This Announcement notes the significant changes in 1.3.26.
+   Apache 1.3.25 was not released.
 
    This version of Apache is principally a security and bug fix
    release.  A summary of the bug fixes is given at the end of this document.
-   Of particular note is that 1.3.25 addresses and fixes the issues noted
+   Of particular note is that 1.3.26 addresses and fixes the issues noted
    in CAN-2002-0392 (mitre.org) [CERT VU#944335] regarding a vulnerability
    in the handling of chunked transfer encoding.  We would like to thank
    Mark Litchfield of ngssoftware.com for discovering and reporting the
    vulnerability.
 
-   We consider Apache 1.3.25 to be the best version of Apache available
+   We consider Apache 1.3.26 to be the best version of Apache available
    and we strongly recommend that users of older versions, especially of
    the 1.1.x and 1.2.x family, upgrade as soon as possible.  No further
    releases will be made in the 1.2.x family.
 
-   Apache 1.3.25 is available for download from
+   Apache 1.3.26 is available for download from
    
        http://www.apache.org/dist/httpd/
 
@@ -70,7 +71,7 @@
    version, but is of acceptable quality.  Win32 stability or security
    problems do not reflect on the Unix version.
 
-                     Apache 1.3.25 Major changes
+                     Apache 1.3.26 Major changes
 
   Security vulnerabilities
 
@@ -79,7 +80,7 @@
 
   New features
 
-   The main new features in 1.3.25 (compared to 1.3.24) are:
+   The main new features in 1.3.26 (compared to 1.3.24) are:
 
      * Add some popular types to the mime types magic file.
 
@@ -93,7 +94,7 @@
   Bugs fixed
 
    The following bugs were found in Apache 1.3.24 (or earlier) and have
-   been fixed in Apache 1.3.25:
+   been fixed in Apache 1.3.26:
 
      * Allow child processes sufficient time for cleanups but making
        ap_select in reclaim_child_processes more "resistant" to
