@@ -56,9 +56,9 @@
           <a href="http://jakarta.apache.org/tomcat/">Apache Tomcat</a>.</dd>
 
       <dt>Regular Expression Library Updated</dt>
-      <dd>Apache 2.2 includes version 5.0 of the 
+      <dd>Version 5.0 of the 
           <a href="http://www.pcre.org/">Perl Compatible Regular Expression
-          Library</a> (PCRE).</dd>
+          Library</a> (PCRE) is now included.</dd>
 
       <dt>Smart Filtering</dt>
       <dd><module>mod_filter</module> introduces dynamic configuration
@@ -66,6 +66,12 @@
           inserted, based on any Request or Response header or environment
           variable, and dispenses with the more problematic dependencies and
           ordering problems in the 2.0 architecture.</dd>
+
+      <dt>Large File Support</dt>
+
+      <dd>httpd is now built with support for files larger than 2Gb on
+          modern 32-bit Unix systems.  Support for handling &gt;2Gb request
+          bodies has also been added.</dd>
 
     </dl>
   </section>
