@@ -221,6 +221,9 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     if (env_temp = getenv("COMSPEC")) {
         apr_table_addn(e, "COMSPEC", env_temp);            
     }
+    if (env_temp = getenv("PATHEXT")) {
+        apr_table_addn(e, "PATHEXT", env_temp);            
+    }
     if (env_temp = getenv("WINDIR")) {
         apr_table_addn(e, "WINDIR", env_temp);
     }
