@@ -152,11 +152,13 @@ _build:
 	cd modules\mappers
          $(MAKE) $(MAKEOPT) -f mod_rewrite.mak CFG="mod_rewrite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_speling.mak CFG="mod_speling - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_vhost_alias.mak CFG="mod_vhost_alias - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\metadata
 	 $(MAKE) $(MAKEOPT) -f mod_cern_meta.mak CFG="mod_cern_meta - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_expires.mak CFG="mod_expires - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_headers.mak CFG="mod_headers - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_unique_id.mak CFG="mod_unique_id - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_usertrack.mak CFG="mod_usertrack - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\proxy
@@ -219,9 +221,11 @@ _build:
         	"mod_status - Win32 $(LONG)"\
 		"mod_rewrite - Win32 $(LONG)"\
 		"mod_speling - Win32 $(LONG)"\
+		"mod_vhost_alias - Win32 $(LONG)"\
 		"mod_cern_meta - Win32 $(LONG)"\
 		"mod_expires - Win32 $(LONG)"\
 		"mod_headers - Win32 $(LONG)"\
+		"mod_unique_id - Win32 $(LONG)"\
 		"mod_usertrack - Win32 $(LONG)"\
 		"mod_proxy - Win32 $(LONG)"\
 		"proxy_connect - Win32 $(LONG)"\
@@ -287,9 +291,11 @@ _install:
         copy modules\generators\$(LONG)\mod_status.so "$(INSTDIR)\modules"
         copy modules\mappers\$(LONG)\mod_rewrite.so "$(INSTDIR)\modules"
 	copy modules\mappers\$(LONG)\mod_speling.so "$(INSTDIR)\modules"
+	copy modules\mappers\$(LONG)\mod_vhost_alias.so "$(INSTDIR)\modules"
 	copy modules\metadata\$(LONG)\mod_cern_meta.so "$(INSTDIR)\modules"
 	copy modules\metadata\$(LONG)\mod_expires.so "$(INSTDIR)\modules"
 	copy modules\metadata\$(LONG)\mod_headers.so "$(INSTDIR)\modules"
+	copy modules\metadata\$(LONG)\mod_unique_id.so "$(INSTDIR)\modules"
 	copy modules\metadata\$(LONG)\mod_usertrack.so "$(INSTDIR)\modules"
 	copy modules\proxy\$(LONG)\mod_proxy.so "$(INSTDIR)\modules"
 	copy modules\proxy\$(LONG)\proxy_connect.so "$(INSTDIR)\modules"

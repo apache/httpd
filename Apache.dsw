@@ -54,16 +54,16 @@ Package=<4>
     Project_Dep_Name mod_auth_anon
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_cern_meta
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_dav_fs
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name mod_auth_dbm
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_auth_digest
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_cern_meta
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_dav_fs
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_expires
@@ -87,10 +87,13 @@ Package=<4>
     Project_Dep_Name mod_status
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_unique_id
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_usertrack
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_proxy
+    Project_Dep_Name mod_vhost_alias
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name proxy_connect
@@ -618,7 +621,43 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_unique_id"=".\modules\metadata\mod_unique_id.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_usertrack"=".\modules\metadata\mod_usertrack.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_vhost_alias"=".\modules\mappers\mod_vhost_alias.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
