@@ -63,6 +63,10 @@
 extern "C" {
 #endif
 
+/**
+ * @package Apache date routines
+ */
+
 /*
  * util_date.h: prototypes for date parsing utility routines
  */
@@ -71,7 +75,36 @@ extern "C" {
 
 #define BAD_DATE (apr_time_t)0
 
+/**
+ * Compare a string to a mask
+ * @param data The string to compare
+ * @mask Mask characters (arbitrary maximum is 256 characters, just in case):
+ * <PRE>
+ *   @ - uppercase letter
+ *   $ - lowercase letter
+ *   & - hex digit
+ *   # - digit
+ *   ~ - digit or space
+ *   * - swallow remaining characters
+ *  <x> - exact match for any other character
+ * </PRE>
+ * @return 1 if the string matches, 0 otherwise
+ * @deffunc int ap_checkmask(const char *data, const char *mask)
+ */
 API_EXPORT(int) ap_checkmask(const char *data, const char *mask);
+
+/**
+ * Parses an HTTP date in one of three standard forms:
+ * <PRE>
+ *     Sun, 06 Nov 1994 08:49:37 GMT  ; RFC 822, updated by RFC 1123
+ *     Sunday, 06-Nov-94 08:49:37 GMT ; RFC 850, obsoleted by RFC 1036
+ *     Sun Nov  6 08:49:37 1994       ; ANSI C's asctime() format
+ * </PRE>
+ * @param date The date in one of the three formats above
+ * @return the apr_time_t number of microseconds since 1 Jan 1970 GMT, or
+ *         0 if this would be out of range or if the date is invalid.
+ * @deffunc apr_time_t ap_parseHTTPdate(const char *date)
+ */
 API_EXPORT(apr_time_t) ap_parseHTTPdate(const char *date);
 
 #ifdef __cplusplus
