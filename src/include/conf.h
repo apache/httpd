@@ -480,6 +480,17 @@ typedef int rlim_t;
  */
 
 #include <sys/types.h>
+/*
+ * We use snprintf() to avoid overflows, but we include
+ * our own version (ap_snprintf). Allow for people to use their
+ * snprintf() if they want
+ */
+#ifdef HAVE_SNPRINTF
+#define ap_snprintf     snprintf
+#define ap_vsnprintf    vsnprintf
+#else
+int ap_snprintf(char *buf, size_t len, const char *format,...);
+#endif
 
 #if !defined(NEXT) && !defined(CONVEXOS)
 #include <dirent.h>

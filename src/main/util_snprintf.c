@@ -53,11 +53,9 @@
  * <panos@alumni.cs.colorado.edu> for xinetd.
  */
 
-#ifdef HAVE_SNPRINTF
-#define ap_snprintf	snprintf
-#define ap_vsnprintf	vsnprintf
+#include "conf.h"
 
-#else
+#ifndef HAVE_SNPRINTF
 
 #include <stdio.h>
 #include <ctype.h>
