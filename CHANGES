@@ -1,5 +1,9 @@
 Changes with Apache 2.0.28-dev
- 
+
+  *) Fix the spelling of the AP_MPMQ_MIN_SPARE_DAEMONS and
+     AP_MPMQ_MAX_REQUESTS_DAEMON macros in ap_mpm.h and all standard
+     MPMs.  [Cliff Woolley]
+
   *) Introduce htdbm, a user management utility for db/dbm authorization
      databases.  [Mladen Turk <mturk@mappingsoft.com>]
 
