@@ -15,12 +15,12 @@
 
     <h1 align="CENTER">Content Negotiation</h1>
 
-    <p>Apache's support for content negotiation has been updated to
-    meet the HTTP/1.1 specification. It can choose the best
+    <p>Apache's supports content negotiation as described in
+    the HTTP/1.1 specification. It can choose the best
     representation of a resource based on the browser-supplied
     preferences for media type, languages, character set and
-    encoding. It is also implements a couple of features to give
-    more intelligent handling of requests from browsers which send
+    encoding. It also implements a couple of features to give
+    more intelligent handling of requests from browsers that send
     incomplete negotiation information.</p>
 
     <p>Content negotiation is provided by the <a
@@ -60,10 +60,10 @@
   Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6,
         image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1
 </pre>
-    Apache 1.2 supports 'server driven' content negotiation, as
+    Apache supports 'server driven' content negotiation, as
     defined in the HTTP/1.1 specification. It fully supports the
     Accept, Accept-Language, Accept-Charset and Accept-Encoding
-    request headers. Apache 1.3.4 also supports 'transparent'
+    request headers. Apache also supports 'transparent'
     content negotiation, which is an experimental negotiation
     protocol defined in RFC 2295 and RFC 2296. It does not offer
     support for 'feature negotiation' as defined in these RFCs. 
@@ -164,63 +164,10 @@
     variant depending on the nature of the resource it
     represents.</p>
 
-    <p>The full list of headers recognized is:</p>
+    <p>The full list of headers recognized is available in the <a
+    href="mod/mod_negotiation.html#typemaps">mod_negotation</a>
+    documentation.</p>
 
-    <dl>
-      <dt><code>URI:</code></dt>
-
-      <dd>uri of the file containing the variant (of the given
-      media type, encoded with the given content encoding). These
-      are interpreted as URLs relative to the map file; they must
-      be on the same server (!), and they must refer to files to
-      which the client would be granted access if they were to be
-      requested directly.</dd>
-
-      <dt><code>Content-Type:</code></dt>
-
-      <dd>media type --- charset, level and "qs" parameters may be
-      given. These are often referred to as MIME types; typical
-      media types are <code>image/gif</code>,
-      <code>text/plain</code>, or
-      <code>text/html;&nbsp;level=3</code>.</dd>
-
-      <dt><code>Content-Language:</code></dt>
-
-      <dd>The languages of the variant, specified as an Internet
-      standard language tag from RFC 1766 (<em>e.g.</em>,
-      <code>en</code> for English, <code>kr</code> for Korean,
-      <em>etc.</em>).</dd>
-
-      <dt><code>Content-Encoding:</code></dt>
-
-      <dd>If the file is compressed, or otherwise encoded, rather
-      than containing the actual raw data, this says how that was
-      done. Apache only recognizes encodings that are defined by an
-      <a href="mod/mod_mime.html#addencoding">AddEncoding</a>
-      directive. This normally includes the encodings
-      <code>x-compress</code> for compress'd files, and
-      <code>x-gzip</code> for gzip'd files. The <code>x-</code>
-      prefix is ignored for encoding comparisons.</dd>
-
-      <dt><code>Content-Length:</code></dt>
-
-      <dd>The size of the file in bytes. Specifying content lengths
-      in the type-map allows the server to compare file sizes
-      without checking the actual files.</dd>
-
-      <dt><code>Description:</code></dt>
-
-      <dd>A human-readable textual description of the variant. If
-      Apache cannot find any appropriate variant to return, it will
-      return an error response which lists all available variants
-      instead. Such a variant list will include the human-readable
-      variant descriptions.</dd>
-    </dl>
-    Using a type map file is preferred over <code>MultiViews</code>
-    because it requires less CPU time, and less file access, to
-    parse a file explicitly listing the various resource variants,
-    than to have to look at every matching file, and parse its file
-    extensions. 
 
     <h3>Multiviews</h3>
 
@@ -255,13 +202,14 @@
     are present, and <code>index.cgi</code> is there, the server
     will run it. 
 
-    <p>If one of the files found when reading the directive is a
-    CGI script, it's not obvious what should happen. The code gives
-    that case special treatment --- if the request was a POST, or a
-    GET with QUERY_ARGS or PATH_INFO, the script is given an
-    extremely high quality rating, and generally invoked; otherwise
-    it is given an extremely low quality rating, which generally
-    causes one of the other views (if any) to be retrieved.</p>
+    <p>If one of the files found when reading the directory does not
+    have an extension recognized by <code>mod_mime</code> to designate
+    its Charset, Content-Type, Language, or Encoding, then the result
+    depends on the setting of the <a
+    href="mod/mod_mime.html#multiviewsmatch">MultiViewsMatch</a>
+    directive.  This directive determines whether handlers, filters,
+    and other file types can participate in MultiViews
+    negotiation.</p>
 
     <h2>The Negotiation Methods</h2>
     After Apache has obtained a list of the variants for a given
@@ -476,33 +424,42 @@
     <em>not</em> applied, so requests from browsers which send the
     correct information to start with work as expected.</p>
 
-    <h3>Variants with no Language</h3>
+    <h3>Language Negotiation Exceptions</h3>
 
-    <p>If some of the variants for a particular resource have a
-    language attribute, and some do not, those variants with no
-    language are given a very low language quality factor of
-    0.001.</p>
+    <p>When a client requests a page on your server, but the server
+    cannot find a single page that matches the Accept-language sent by
+    the browser, the server will return either a "No Acceptable
+    Variant" or "Multiple Choices" response to the client.  To avoid
+    these error messages, it is possible to configure Apache to ignore
+    the Accept-language in these cases and provide a document that
+    does not explictly match the client's request.  The <a
+    href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a>
+    directive can be used to override one or both of these error
+    messages and subsitute the servers judgement in the form of the <a
+    href="mod_negotiation.html#languagepriority">LanguagePriority</a>
+    directive.</p>
 
-    <p>The reason for setting this language quality factor for
-    variant with no language to a very low value is to allow for a
-    default variant which can be supplied if none of the other
-    variants match the browser's language preferences. For example,
-    consider the situation with three variants:</p>
+    <p>The <code>ForceLanguagePriority</code> directive also causes
+    Apache to attempt to match language-subsets against their parent
+    language when no other match can be obtained.  For example, if a
+    client requests documents with the language <code>en-GB</code> for
+    British English, the server is not normally allowed by the
+    HTTP/1.1 standard to return a document that is marked as simply
+    <code>en</code>.  (Note that it is almost surely a configuration
+    error to include <code>en-GB</code> and not <code>en</code> in the
+    Accept-Language header, since it is very unlikely that a reader
+    understands British English, but doesn't understand English in
+    general.  Unfortunately, many current clients have default
+    configurations that resemble this.)  With the
+    <code>ForceLanguagePriority</code> header, the server can be
+    configured to ignore the subset specification and match
+    <code>en-GB</code> against <code>en</code> documents.  But note
+    that if the client requests "en-GB; qs=0.9, fr; qs=0.8", and the
+    server has documents designated "en" and "fr", then the "fr"
+    document will be returned regardless of the
+    <code>ForceLanguagePriority</code> directive.  This is necessary
+    to maintain compliance with the HTTP/1.1 specification.</p>
 
-    <ul>
-      <li>foo.en.html, language en</li>
-
-      <li>foo.fr.html, language en</li>
-
-      <li>foo.html, no language</li>
-    </ul>
-
-    <p>The meaning of a variant with no language is that it is
-    always acceptable to the browser. If the request
-    Accept-Language header includes either en or fr (or both) one
-    of foo.en.html or foo.fr.html will be returned. If the browser
-    does not list either en or fr as acceptable, foo.html will be
-    returned instead.</p>
 
     <h2>Extensions to Transparent Content Negotiation</h2>
     Apache extends the transparent content negotiation protocol
@@ -644,8 +601,16 @@
     responses which were subject to negotiation. This directive can
     be given in the server config or virtual host, and takes no
     arguments. It has no effect on requests from HTTP/1.1 clients. 
+
+    <h2>More Information</h2>
+
+    <p>For more information about content negotiation, see Alan
+    J. Flavell's <a
+    href="http://ppewww.ph.gla.ac.uk/~flavell/www/lang-neg.html">Language
+    Negotiation Notes</a>.  But note that this document may not be
+    updated to include changes in Apache 2.0.</p>
+
     <!--#include virtual="footer.html" -->
-    </p>
   </body>
 </html>
 
