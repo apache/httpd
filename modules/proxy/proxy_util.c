@@ -1303,4 +1303,136 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
     }
     return connected ? 0 : 1;
 }
+
+static apr_status_t proxy_conn_cleanup(void *theconn)
+{
+    proxy_conn *conn = (proxy_conn *)theconn;
+    /* Close the socket */
+    if (conn->sock)
+        apr_socket_close(conn->sock);
+    conn->sock = NULL;
+    return APR_SUCCESS;
+}
+
+/* reslist constructor */
+static apr_status_t connection_constructor(void **resource, void *params,
+                                           apr_pool_t *pool)
+{
+    apr_pool_t *ctx;
+    proxy_conn *conn;
+    server_rec *s = (server_rec *)params;
     
+    /* Create the subpool for each connection
+     * This keeps the memory consumption constant
+     * when disconnecting from backend.
+     */
+    apr_pool_create(&ctx, pool);
+    conn = apr_pcalloc(ctx, sizeof(proxy_conn));
+
+    conn->pool = ctx;
+    *resource = conn;
+    /* register the pool cleanup */
+    apr_pool_cleanup_register(ctx, (void *)conn,
+                              proxy_conn_cleanup, apr_pool_cleanup_null);      
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                 "proxy: socket is constructed");
+
+    return APR_SUCCESS;
+}
+
+/* reslist destructor */
+static apr_status_t connection_destructor(void *resource, void *params,
+                                          apr_pool_t *pool)
+{
+    proxy_conn *conn = (proxy_conn *)resource;
+    server_rec *s = (server_rec *)params;
+    
+    apr_pool_destroy(conn->pool);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                 "proxy: socket is destructed");
+
+    return APR_SUCCESS;
+}
+
+
+PROXY_DECLARE(apr_status_t)
+ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
+                              proxy_server_conf *conf,
+                              proxy_module_conf *mconf,
+                              apr_pool_t *ppool,
+                              apr_uri_t *uri,
+                              char **url,
+                              const char *proxyname,
+                              apr_port_t proxyport,
+                              char *server_portstr,
+                              int server_portstr_size)
+{
+    int server_port;
+    apr_status_t err = APR_SUCCESS;
+    /*
+     * Break up the URL to determine the host to connect to
+     */
+
+    /* we break the URL into host, port, uri */
+    if (APR_SUCCESS != apr_uri_parse(p, *url, uri)) {
+        return ap_proxyerror(r, HTTP_BAD_REQUEST,
+                             apr_pstrcat(p,"URI cannot be parsed: ", *url,
+                                         NULL));
+    }
+    if (!uri->port) {
+        uri->port = apr_uri_port_of_scheme(uri->scheme);
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "proxy: HTTP connecting %s to %s:%d", *url, uri->hostname,
+                 uri->port);
+
+    /* allocate these out of the specified connection pool 
+     * The scheme handler decides if this is permanent or
+     * short living pool.
+     */
+    /* are we connecting directly, or via a proxy? */
+    if (proxyname) {
+        mconf->conn_rec->hostname = apr_pstrdup(ppool, proxyname);
+        mconf->conn_rec->port = proxyport;
+        /* see memory note above */
+    } else {
+        mconf->conn_rec->hostname = apr_pstrdup(ppool, uri->hostname);
+        mconf->conn_rec->port = uri->port;
+        *url = apr_pstrcat(p, uri->path, uri->query ? "?" : "",
+                           uri->query ? uri->query : "",
+                           uri->fragment ? "#" : "",
+                           uri->fragment ? uri->fragment : "", NULL);
+    }
+    if (!mconf->worker->cp->addr)
+        err = apr_sockaddr_info_get(&(mconf->worker->cp->addr),
+                                    mconf->conn_rec->hostname, APR_UNSPEC,
+                                    mconf->conn_rec->port, 0,
+                                    mconf->worker->cp->pool);
+
+    /* do a DNS lookup for the destination host */
+    if (err != APR_SUCCESS) {
+        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                             apr_pstrcat(p, "DNS lookup failure for: ",
+                                         mconf->conn_rec->hostname, NULL));
+    }
+
+    /* Get the server port for the Via headers */
+    {
+        server_port = ap_get_server_port(r);
+        if (ap_is_default_port(server_port, r)) {
+            strcpy(server_portstr,"");
+        } else {
+            apr_snprintf(server_portstr, server_portstr_size, ":%d",
+                         server_port);
+        }
+    }
+
+    /* check if ProxyBlock directive on this host */
+    if (OK != ap_proxy_checkproxyblock(r, conf, mconf->worker->cp->addr)) {
+        return ap_proxyerror(r, HTTP_FORBIDDEN,
+                             "Connect to remote machine blocked");
+    }
+    return OK;
+}
