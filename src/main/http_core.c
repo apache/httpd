@@ -310,7 +310,7 @@ static int reorder_sorter (const void *va, const void *vb)
 	    return 1;
 	}
     }
-    /* Either their both special, or their both not special and have the
+    /* Either they're both special, or they're both not special and have the
      * same number of components.  In any event, we now have to compare
      * the minor key. */
     return a->orig_index - b->orig_index;
@@ -760,6 +760,24 @@ const char *endlimit_section (cmd_parms *cmd, void *dummy, void *dummy2)
     return NULL;
 }
 
+/*
+ * When a section is not closed properly when end-of-file is reached,
+ * then an error message should be printed:
+ */
+static const char *missing_endsection (pool *p, const char *secname, int nest)
+{
+    char rply[100];
+
+    if (nest < 2)
+	ap_snprintf(rply, sizeof rply, "Missing </%s> directive at end-of-file",
+		    secname);
+    else
+	ap_snprintf(rply, sizeof rply, "%d missing </%s> directives at end-of-file",
+		    nest, secname);
+
+    return pstrdup(p, rply);
+}
+
 /* We use this in <DirectoryMatch> and <FilesMatch>, to ensure that 
  * people don't get bitten by wrong-cased regex matches
  */
@@ -811,6 +829,9 @@ const char *dirsection (cmd_parms *cmd, void *dummy, const char *arg)
     }
 
     errmsg = srm_command_loop (cmd, new_dir_conf);
+    if (errmsg == NULL)
+	return missing_endsection(cmd->pool,
+			(cmd->info) ? "DirectoryMatch" : "Directory", 1);
     if (errmsg != end_dir_magic) return errmsg;
 
     conf = (core_dir_config *)get_module_config(new_dir_conf, &core_module);
@@ -862,6 +883,9 @@ const char *urlsection (cmd_parms *cmd, void *dummy, const char *arg)
     }
 
     errmsg = srm_command_loop (cmd, new_url_conf);
+    if (errmsg == NULL)
+	return missing_endsection(cmd->pool,
+			(cmd->info) ? "LocationMatch" : "Location", 1);
     if (errmsg != end_url_magic) return errmsg;
 
     conf = (core_dir_config *)get_module_config(new_url_conf, &core_module);
@@ -927,6 +951,9 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
     }
 
     errmsg = srm_command_loop (cmd, new_file_conf);
+    if (errmsg == NULL)
+	return missing_endsection(cmd->pool,
+			(cmd->info) ? "FilesMatch" : "Files", 1);
     if (errmsg != end_file_magic) return errmsg;
 
     conf = (core_dir_config *)get_module_config(new_file_conf, &core_module);
@@ -973,7 +1000,7 @@ const char *start_ifmod (cmd_parms *cmd, void *dummy, char *arg)
 	  nest--;
     }
 
-    return NULL;
+    return (nest == 0) ? NULL : missing_endsection(cmd->pool, "IfModule", nest);
 }
 
 /* httpd.conf commands... beginning with the <VirtualHost> business */
@@ -1019,6 +1046,8 @@ const char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
     if (s->access_confname)
 	process_resource_config (s, s->access_confname, p, ptemp);
     
+    if (errmsg == NULL)
+	return missing_endsection(cmd->pool, "Virtualhost", 1);
     if (errmsg == end_virthost_magic) return NULL;
     return errmsg;
 }
