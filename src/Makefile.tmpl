@@ -1,4 +1,4 @@
-# $Id: Makefile.tmpl,v 1.25 1996/09/08 16:14:55 jim Exp $
+# $Id: Makefile.tmpl,v 1.26 1996/09/26 12:33:56 chuck Exp $
 # Apache makefile template (well, suffix).
 
 # This is combined with the information in the "Configuration" file
@@ -31,9 +31,14 @@ httpd: $(REGLIB) $(OBJS)
 regex/libregex.a:
 	cd regex; make lib CC=$(CC) AUX_CFLAGS="$(CFLAGS)" RANLIB=$(RANLIB)
 
+modules/proxy/libproxy.a:
+	cd modules/proxy; \
+	make lib CC=$(CC) AUX_CFLAGS="$(CFLAGS)" RANLIB=$(RANLIB)
+
 clean:
 	rm -f httpd $(OBJS) *pure*
 	cd regex; make clean
+	cd modules/proxy; make clean
 
 dist.tar: 
 	# Assure a semi-sensible configuration going out...
@@ -69,14 +74,13 @@ mod_ai_backcompat.o mod_auth.o mod_auth_dbm.o mod_cgi.o mod_dir.o: http_core.h
 mod_access.o mod_imap.o mod_include.o mod_negotiation.o: http_core.h
 mod_asis.o mod_auth.o mod_auth_dbm.o mod_cgi.o mod_dir.o: http_core.h
 mod_status.o mod_cookies.o mod_log_common.o: http_core.h
-mod_access.o mod_proxy.o mod_imap.o mod_include.o mod_negotiation.o: http_log.h
-mod_proxy.o mod_asis.o mod_cgi.o mod_dir.o mod_imap.o: http_main.h
+mod_access.o mod_imap.o mod_include.o mod_negotiation.o: http_log.h
+mod_asis.o mod_cgi.o mod_dir.o mod_imap.o: http_main.h
 mod_status.o mod_include.o: http_main.h
-mod_proxy.o mod_asis.o mod_auth.o mod_auth_dbm.o mod_cgi.o: http_protocol.h
+mod_asis.o mod_auth.o mod_auth_dbm.o mod_cgi.o: http_protocol.h
 mod_status.o mod_dir.o: http_protocol.h
 mod_imap.o mod_include.o: http_protocol.h
 mod_cgi.o mod_dir.o mod_imap.o mod_include.o mod_negotiation.o: http_request.h
-mod_proxy.o: md5.h
 mod_status.o: util_script.h
 mod_asis.o mod_cgi.o mod_dir.o mod_imap.o mod_include.o: util_script.h
 mod_digest.o: util_md5.h

@@ -1,4 +1,4 @@
-# $Id: Configuration.tmpl,v 1.36 1996/09/13 21:02:15 jim Exp $
+# $Id: Configuration.tmpl,v 1.37 1996/09/26 12:33:56 chuck Exp $
 # Config file for the Apache httpd.
 
 # Configuration.tmpl is the template for Configuration. Configuration should
@@ -222,4 +222,4 @@ Module browser_module      mod_browser.o
 ## Finally, the proxy module.  It's not as complete as it could
 ## be yet, so use at your own risk.
 
-# Module proxy_module        mod_proxy.o
+# Module proxy_module        modules/proxy/libproxy.a
