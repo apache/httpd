@@ -705,12 +705,22 @@ static void child_main(int child_num_arg)
     
     /* What state should this child_main process be listed as in the scoreboard...?
      *  ap_update_child_status(my_child_num, i, SERVER_STARTING, (request_rec *) NULL);
+     * 
+     *  This state should be listed separately in the scoreboard, in some kind
+     *  of process_status, not mixed in with the worker threads' status.   
+     *  "life_status" is almost right, but it's in the worker's structure, and 
+     *  the name could be clearer.   gla
      */
 
     apr_signal_thread(check_signal);
 
+    workers_may_exit = 1;   /* helps us terminate a little more quickly when 
+                             * the dispatch of the signal thread
+                             * beats the Pipe of Death and the browsers
+                             */
+    
     /* A terminating signal was received. Now join each of the workers to clean them up.
-     *   If the worker already exitted, then the join frees their resources and returns.
+     *   If the worker already exited, then the join frees their resources and returns.
      *   If the worker hasn't exited, then this blocks until they have (then cleans up).
      */
     for (i = 0; i < ap_threads_per_child; i++) {
@@ -779,6 +789,29 @@ static int make_child(server_rec *s, int slot)
     /* else */
     ap_scoreboard_image->parent[slot].pid = pid;
     return 0;
+}
+
+/* If there aren't many connections coming in from the network, the child 
+ * processes may need to be awakened from their network i/o waits.
+ * The pipe of death is an effective prod.
+ */
+   
+static void wake_up_and_die(void) 
+{
+    int i;
+    char char_of_death = '!';
+    apr_size_t one = 1;
+    apr_status_t rv;
+    
+    for (i = 0; i < ap_daemons_limit;) {
+        if ((rv = apr_file_write(pipe_of_death_out, &char_of_death, &one)) 
+                                 != APR_SUCCESS) {
+            if (APR_STATUS_IS_EINTR(rv)) continue;
+            ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, 
+                         "write pipe_of_death");
+        }
+        i++;
+    }
 }
 
 /* start up a bunch of children */
@@ -994,7 +1027,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
     apr_status_t rv;
-    apr_size_t one = 1;
 
     pconf = _pconf;
     ap_server_conf = s;
@@ -1078,6 +1110,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         /* Time to gracefully shut down:
          * Kill child processes, tell them to call child_exit, etc...
          */
+        wake_up_and_die();
+
         if (unixd_killpg(getpgrp(), SIGTERM) < 0) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "killpg SIGTERM");
         }
@@ -1115,22 +1149,15 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ++ap_my_generation;
     ap_scoreboard_image->global.running_generation = ap_my_generation;
     update_scoreboard_global();
-
+    
+    /* wake up the children...time to die.  But we'll have more soon */
+    wake_up_and_die();
+    
     if (is_graceful) {
-	int i, j;
-        char char_of_death = '!';
+        int i, j;
 
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
 		    "SIGWINCH received.  Doing graceful restart");
-
-	/* give the children the signal to die */
-        for (i = 0; i < ap_daemons_limit;) {
-            if ((rv = apr_file_write(pipe_of_death_out, &char_of_death, &one)) != APR_SUCCESS) {
-                if (APR_STATUS_IS_EINTR(rv)) continue;
-                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, "write pipe_of_death");
-            }
-            i++;
-        }
 
 	/* This is mostly for debugging... so that we know what is still
          * gracefully dealing with existing request.
