@@ -83,8 +83,6 @@ DEF_Explain
  * of modules which control just about all of the server operation.
  */
 
-/* num_modules is the number of currently active modules.  */
-static int num_modules = 0;    
 /* total_modules is the number of modules linked in.  */
 static int total_modules = 0;
 module *top_module = NULL;
@@ -470,8 +468,9 @@ void add_module (module *m)
 	top_module = m;
     }
     if (m->module_index == -1) {
-	m->module_index = num_modules++;
+	m->module_index = total_modules++;
     }
+
     /** XXX: this will be slow if there's lots of add_modules */
     build_method_shortcuts ();
 }
@@ -539,8 +538,6 @@ void clear_module_list ()
 	*m = NULL;
 	m = next_m;
     }
-
-    num_modules = 0;
 
     /* This is required; so we add it always.  */
     add_named_module ("http_core.c");
