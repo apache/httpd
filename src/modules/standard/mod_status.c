@@ -100,7 +100,7 @@
 #include <machine/param.h>
 #endif
 
-#define STATUS_MAXLINE		50
+#define STATUS_MAXLINE		64
 
 #define KBYTE			1024
 #define	MBYTE			1048576L
