@@ -285,12 +285,7 @@ static int ssl_hook_pre_connection(conn_rec *c)
      */
     SSL_set_tmp_rsa_callback(ssl, ssl_callback_TmpRSA);
     SSL_set_tmp_dh_callback(ssl,  ssl_callback_TmpDH);
-#if 0 /* XXX */
-    if (sc->nLogLevel >= SSL_LOG_DEBUG) {
-        BIO_set_callback(SSL_get_rbio(ssl), ssl_io_data_cb);
-        BIO_set_callback_arg(SSL_get_rbio(ssl), ssl);
-    }
-#endif
+
     /*
      * Predefine some client verification results
      */
