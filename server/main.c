@@ -300,11 +300,10 @@ static void usage(process_rec *process)
 
 #ifdef WIN32
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                 "       %s [-k restart|shutdown|start]", pad);
+                 "       %s [-k start|restart|stop|shutdown]", pad);
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                 "       %s [-n service_name]", pad);
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                 "       %s [-i] [-u]", pad);
+                 "       %s [-k install|config|uninstall] [-n service_name]",
+                 pad);
 #endif
 
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
@@ -338,16 +337,19 @@ static void usage(process_rec *process)
                  "  -n name           : set service name and use its "
                  "ServerConfigFile");
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                 "  -k shutdown       : tell running Apache to shutdown");
+                 "  -k start          : tell Apache to start");
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
                  "  -k restart        : tell running Apache to do a graceful "
                  "restart");
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                 "  -k start          : tell Apache to start");
+                 "  -k stop|shutdown  : tell running Apache to shutdown");
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                 "  -i                : install an Apache service");
+                 "  -k install        : install an Apache service");
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                 "  -u                : uninstall an Apache service");
+                 "  -k config         : change startup Options of an Apache "
+                 "service");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -k uninstall      : uninstall an Apache service");
 #endif
 
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
