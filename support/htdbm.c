@@ -172,8 +172,6 @@ static apr_status_t htdbm_init(apr_pool_t **pool, htdbm_t **hdbm)
     apr_status_t rv;
 #endif
 
-    apr_initialize();
-    atexit(apr_terminate);
     apr_pool_create( pool, NULL);
     apr_signal(SIGINT, (void (*)(int)) htdbm_interrupted);
 
@@ -412,7 +410,7 @@ static void htdbm_usage(void)
 }
 
 
-int main(int argc, const char *argv[])
+int main(int argc, const char * const argv[])
 {
     apr_pool_t *pool;
     apr_status_t rv;
@@ -430,6 +428,9 @@ int main(int argc, const char *argv[])
     int  cmd = HTDBM_MAKE;
     int  i;
     int args_left = 2;
+
+    apr_app_initialize(&argc, &argv, NULL);
+    atexit(apr_terminate);
 
     if ((rv = htdbm_init(&pool, &h)) != APR_SUCCESS) {
         fprintf(stderr, "Unable to initialize htdbm terminating!\n");

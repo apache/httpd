@@ -376,7 +376,6 @@ static void copy_file(FILE *target, FILE *source)
 void nwTerminate()
 {
     pressanykey();
-    apr_terminate();
 }
 #endif
 
@@ -384,7 +383,7 @@ void nwTerminate()
  * Let's do it.  We end up doing a lot of file opening and closing,
  * but what do we care?  This application isn't run constantly.
  */
-int main(int argc, char *argv[])
+int main(int argc, const char * const argv[])
 {
     FILE *ftemp = NULL;
     FILE *fpw = NULL;
@@ -393,7 +392,7 @@ int main(int argc, char *argv[])
     char record[MAX_STRING_LEN];
     char line[MAX_STRING_LEN];
     char pwfilename[MAX_STRING_LEN];
-    char *arg;
+    const char *arg;
     int found = 0;
     int alg = ALG_CRYPT;
     int newfile = 0;
@@ -407,11 +406,10 @@ int main(int argc, char *argv[])
     apr_xlate_t *to_ascii;
 #endif
 
-    apr_initialize();
+    apr_app_initialize(&argc, &argv, NULL);
+    atexit(apr_terminate);
 #ifdef NETWARE
     atexit(nwTerminate);
-#else
-    atexit(apr_terminate);
 #endif
     apr_pool_create(&pool, NULL);
 
