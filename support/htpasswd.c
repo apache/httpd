@@ -222,7 +222,7 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
         to64(&salt[0], rand(), 8);
         salt[8] = '\0';
 
-	ap_MD5Encode((const unsigned char *)pw, (const unsigned char *)salt,
+	ap_MD5Encode((const char *)pw, (const char *)salt,
 		     cpw, sizeof(cpw));
 	break;
 
