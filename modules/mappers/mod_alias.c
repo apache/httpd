@@ -74,6 +74,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
+#include "http_log.h"
 
 
 typedef struct {
@@ -433,8 +434,18 @@ static int fixup_redir(request_rec *r)
     /* It may have changed since last time, so try again */
 
     if ((ret = try_alias_list(r, dirconf->redirects, 1, &status)) != NULL) {
-	if (ap_is_HTTP_REDIRECT(status))
-	    apr_table_setn(r->headers_out, "Location", ret);
+        if (ap_is_HTTP_REDIRECT(status)) {
+            if (!ap_is_url(ret)) {
+                status = HTTP_INTERNAL_SERVER_ERROR;
+                ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
+                              "cannot redirect '%s' to '%s'; "
+                              "target is not a valid absoluteURI",
+                              r->uri, ret);
+            }
+            else {
+                apr_table_setn(r->headers_out, "Location", ret);
+            }
+        }
 	return status;
     }
 
