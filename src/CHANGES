@@ -1,5 +1,11 @@
 Changes with Apache 1.3a2
 
+  *) If a htaccess file can not be read due to bad permissions, deny
+     access to the directory with a HTTP_FORBIDDEN.  The previous
+     behavior was to ignore the htaccess file if it could not
+     be read.  This change may make some setups with unreadable
+     htaccess files stop working.  PR#817  [Marc Slemko]
+
   *) Add aplog_error() providing a mechanism to define levels of
      verbosity to the server error logging. This addition also provides
      the ablity to log errors using syslogd. Error logging is configurable

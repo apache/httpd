@@ -952,8 +952,16 @@ int parse_htaccess(void **result, request_rec *r, int override,
 	}
 	
 	*result = dc;
-    } else
-	dc = NULL;
+    } else {
+	if (errno == ENOENT || errno == ENOTDIR)
+	    dc = NULL;
+	else {
+	    log_unixerr("pfopen", filename, 
+		"unable to check htaccess file, ensure it is readable",
+    	    	r->server);
+	    return HTTP_FORBIDDEN;
+	}
+    }
 
 /* cache it */
     new = palloc(r->pool, sizeof(struct htaccess_result));
