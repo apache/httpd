@@ -1,5 +1,12 @@
 Changes with Apache 1.3a2
 
+  *) Configure changes: TestLib replaced by TestCompile, which has
+     some additional capability (such as doing a sanity check of
+     the compiler and flags selected); the version of Solaris is now
+     available via the #define value of SOLARIS2; IRIX n32bit libs
+     now supported and selectable by new Configuration Rule: IRIXN32;
+     We no longer default to -O2 optimization.
+
   *) mod_browser has been removed, since it's replaced by mod_setenvif.
      [Ken Coar]
 

@@ -4,11 +4,12 @@ The Semi-Official Guide to Porting Apache
 Introduction:
 -------------
 Apache has been ported to a wide variety of platforms, from multiple
-UNIX varients to OS/2. Nonetheless, there are most likely a few
-platforms out there that currently are not "officially" supported
-under Apache. Porting Apache to these platforms can be quite simple
-depending on the "genericness" of the OS. This doc will provide
-some basic guidelines to help the potential porter.
+UNIX varients to OS/2. Starting with v1.3, it will even run under
+Windows95 and NT. Nonetheless, there are most likely a few platforms
+out there that currently are not "officially" supported under
+Apache. Porting Apache to these platforms can be quite simple
+depending on the "genericness" of the OS. This doc will provide some
+basic guidelines to help the potential porter.
 
 -------------
 Requirements:

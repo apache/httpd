@@ -31,7 +31,7 @@ To do this:
       Using Makefile template file: Makefile.tmpl
        + configured for <whatever> platform
        + setting C compiler to <whatever> *
-       + setting C compiler optimization-level to <whatever> *
+       + doing sanity check on compiler and options
       %
 
    This generates new versions of the Makefile and of modules.c.  (If
@@ -42,7 +42,7 @@ To do this:
       Using Makefile template file: Makefile.tmpl
        + configured for <whatever> platform
        + setting C compiler to <whatever> *
-       + setting C compiler optimization-level to <whatever> *
+       + doing sanity check on compiler and options
       % 
 
    (*: Depending on Configuration and your system, Configure
