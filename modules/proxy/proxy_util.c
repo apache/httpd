@@ -1168,9 +1168,10 @@ int ap_proxy_send_hdr_line(void *p, const char *key, const char *value)
 }
 
 /* send a text line to one or two BUFF's; return line length */
-unsigned ap_proxy_bputs2(const char *data, BUFF *client, ap_cache_el *cache)
+unsigned ap_proxy_bputs2(const char *data, apr_socket_t *client, ap_cache_el *cache)
 {
-    unsigned len = ap_bputs(data, client);
+    unsigned len = strlen(data);
+    apr_send(client, data, &len);
     apr_file_t *cachefp = NULL;
 
     if (ap_cache_el_data(cache, &cachefp) == APR_SUCCESS)

@@ -310,7 +310,7 @@ static long int send_dir(BUFF *f, request_rec *r, ap_cache_el  *c, char *cwd)
 		"<BODY><H2>Directory of "
 		"<A HREF=\"/\">%s</A>/",
 		site, path, site, path, site);
-    total_bytes_sent += ap_proxy_bputs2(buf, con->client, c);
+    total_bytes_sent += ap_proxy_bputs2(buf, con->client_socket, c);
 
     while ((dir = strchr(dir+1, '/')) != NULL)
     {
@@ -321,7 +321,7 @@ static long int send_dir(BUFF *f, request_rec *r, ap_cache_el  *c, char *cwd)
 	    ++reldir;
 	/* print "path/" component */
 	apr_snprintf(buf, sizeof(buf), "<A HREF=\"/%s/\">%s</A>/", path+1, reldir);
-	total_bytes_sent += ap_proxy_bputs2(buf, con->client, c);
+	total_bytes_sent += ap_proxy_bputs2(buf, con->client_socket, c);
 	*dir = '/';
     }
     /* If the caller has determined the current directory, and it differs */
@@ -331,7 +331,7 @@ static long int send_dir(BUFF *f, request_rec *r, ap_cache_el  *c, char *cwd)
     } else {
 	apr_snprintf(buf, sizeof(buf), "</H2>\n(%s)\n<HR><PRE>", cwd);
     }
-    total_bytes_sent += ap_proxy_bputs2(buf, con->client, c);
+    total_bytes_sent += ap_proxy_bputs2(buf, con->client_socket, c);
 
     while (!con->aborted) {
 	n = ap_bgets(buf, sizeof buf, f);
@@ -408,7 +408,8 @@ static long int send_dir(BUFF *f, request_rec *r, ap_cache_el  *c, char *cwd)
 	}
 
 	while (n && !r->connection->aborted) {
-	    w = ap_bwrite(con->client, &buf[o], n, &cntr);
+            cntr = n;
+	    w = apr_send(con->client_socket, &buf[o], &cntr);
 	    if (w <= 0)
 		break;
 	    n -= w;
@@ -416,12 +417,14 @@ static long int send_dir(BUFF *f, request_rec *r, ap_cache_el  *c, char *cwd)
 	}
     }
 
-    total_bytes_sent += ap_proxy_bputs2("</PRE><HR>\n", con->client, c);
-    total_bytes_sent += ap_proxy_bputs2(ap_psignature("", r), con->client, c);
-    total_bytes_sent += ap_proxy_bputs2("</BODY></HTML>\n", con->client, c);
+    total_bytes_sent += ap_proxy_bputs2("</PRE><HR>\n", con->client_socket, c);
+    total_bytes_sent += ap_proxy_bputs2(ap_psignature("", r), con->client_socket, c);
+    total_bytes_sent += ap_proxy_bputs2("</BODY></HTML>\n", con->client_socket, c);
 
-    ap_bflush(con->client);
-
+/* Flushing the actual socket doesn't make much sense, because we don't 
+ * buffer it yet.
+    ap_flush(con->client);
+*/
     return total_bytes_sent;
 }
 
@@ -492,7 +495,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
     char *pstr, dates[AP_RFC822_DATE_LEN];
 
     char *npaddr;
-    apr_uint32_t npport;
+    apr_port_t npport;
 	
 /* stuff for responses */
     char resp[MAX_STRING_LEN];
@@ -867,10 +870,10 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
 	    ap_bclose(f);
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
-        apr_get_local_port(&npport, sock);
-        apr_get_local_ipaddr(&npaddr, sock);
-        apr_set_local_port(dsock, npport);
-        apr_set_local_ipaddr(dsock, npaddr);
+        apr_get_port(&npport, APR_LOCAL, sock);
+        apr_get_ipaddr(&npaddr, APR_LOCAL, sock);
+        apr_set_port(dsock, APR_LOCAL, npport);
+        apr_set_ipaddr(dsock, APR_LOCAL, npaddr);
 
 	if (apr_setsocketopt(dsock, APR_SO_REUSEADDR, one) != APR_SUCCESS) {
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */
@@ -1195,7 +1198,9 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
         cachefp = NULL;
     }
 
+/* This is done by a filter now, so this can probably be removed cleanly.
     ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
+*/
     r->sent_bodyct = 1;
 /* send body */
     if (!r->header_only) {
