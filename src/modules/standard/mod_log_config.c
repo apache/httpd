@@ -117,6 +117,7 @@
  * %...{FOOBAR}e:  The contents of the environment variable FOOBAR
  * %...f:  filename
  * %...h:  remote host
+ * %...a:  remote IP-address
  * %...{Foobar}i:  The contents of Foobar: header line(s) in the request
  *                 sent to the client.
  * %...l:  remote logname (from identd, if supplied)
@@ -276,6 +277,11 @@ static char *log_remote_host(request_rec *r, char *a)
                                     REMOTE_NAME);
 }
 
+static char *log_remote_address(request_rec *r, char *a)
+{
+    return r->connection->remote_ip;
+}
+
 static char *log_remote_logname(request_rec *r, char *a)
 {
     return (char *) get_remote_logname(r);
@@ -432,6 +438,9 @@ static struct log_item_list {
 
     {
         'h', log_remote_host, 0
+    },
+    {   
+        'a', log_remote_address, 0 
     },
     {
         'l', log_remote_logname, 0

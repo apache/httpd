@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) Add the `%a' construct to LogFormat and CustomLog to log the client IP
+     address. [Todd Eigenschink <eigenstr@mixi.net>, PR#1885]
+
   *) For testing purposes, I added a new source called main/util_uri.c;
      It contains a routine parse_uri_components_regex() and friends which
      tries to break an URI into its parts. These parts are stored in a new
