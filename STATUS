@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/02/22 23:00:53 $]
+Last modified at [$Date: 2000/02/25 03:44:44 $]
 
 Release:
 
@@ -8,6 +8,15 @@ Release:
     2.0     : later in 2000
 
 RELEASE SHOWSTOPPERS:
+    * Fix lingering close
+        Status:
+
+    * MPMs should have responsibility for closing sockets and
+        registering the socket cleanup. Stop registering multiple
+        cleanups for each socket. Move socket close code out of
+        http_connection.c and into the MPMs.
+	Status:
+
     * Reliable piped logs look broken everywhere. Each MPM includes essentially
 	identical code to ap_register_other_child(), etc. Most of this code can
 	be moved out of the MPMs and into some common file (http_core.c?).
@@ -29,6 +38,9 @@ RELEASE SHOWSTOPPERS:
     * suEXEC doesn't work
         Status: Manoj has posted an patch to fix this.
         <19991103003605.A20612@samosa.mindspring.com>
+
+    * Win32: Enable the Windows MPM to honor max_requests_per_child
+        Status: Bill will fix this.
 
     * Win32: Fix Win9* specific code in the winnt MPM
 	Status:
