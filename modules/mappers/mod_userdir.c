@@ -96,15 +96,13 @@
 #endif
 
 #include "apr_strings.h"
+#include "apr_user.h"
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
 #ifdef HAVE_UNIX_SUEXEC
 #include "unixd.h"        /* Contains the suexec_identity hook used on Unix */
-#endif
-#ifdef HAVE_PWD_H
-#include <pwd.h>
 #endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -320,29 +318,23 @@ static int translate_userdir(request_rec *r)
             return HTTP_MOVED_TEMPORARILY;
         }
         else {
-#ifdef WIN32
-            /* Need to figure out home dirs on NT */
-            return DECLINED;
-#else                           /* WIN32 */
-            struct passwd *pw;
+#if APR_HAS_USER
+            char *homedir;
 
-#if APR_HAS_THREADS && defined(HAVE_GETPWNAM_R)
-            struct passwd pwd;
-            size_t buflen = sysconf(_SC_GETPW_R_SIZE_MAX);
-            char *buf = apr_pcalloc(r->pool, buflen);
-
-            if (!getpwnam_r(w, &pwd, buf, buflen, &pw)) {
-#else
-            if ((pw = getpwnam(w))) {
-#endif
-#ifdef OS2
+            if (apr_get_home_directory(&homedir, w, r->pool) == APR_SUCCESS) {
+#ifdef OS2      /* XXX should this OS/2 logic move to APR? */
                 /* Need to manually add user name for OS/2 */
-                filename = apr_pstrcat(r->pool, pw->pw_dir, w, "/", userdir, NULL);
+                filename = apr_pstrcat(r->pool, homedir, w, "/", userdir, NULL);
 #else
-                filename = apr_pstrcat(r->pool, pw->pw_dir, "/", userdir, NULL);
+                filename = apr_pstrcat(r->pool, homedir, "/", userdir, NULL);
 #endif
             }
-#endif                          /* WIN32 */
+            else {
+                /* XXX old code ignored this error... */
+            }
+#else
+            return DECLINED;
+#endif
         }
 
         /*
