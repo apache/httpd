@@ -382,22 +382,189 @@ PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c);
 PROXY_DECLARE(int) ap_proxy_ssl_disable(conn_rec *c);
 
 /* Connection pool API */
-PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p, proxy_server_conf *conf, const char *url);
-PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker, apr_pool_t *p, proxy_server_conf *conf, const char *url);
-PROXY_DECLARE(struct proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p, proxy_server_conf *conf, const char *url);
-PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer, apr_pool_t *p, proxy_server_conf *conf, const char *url);
-PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer, proxy_worker *worker);
-PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker, proxy_balancer **balancer, request_rec *r, proxy_server_conf *conf, char **url);
-PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker, proxy_balancer *balancer, request_rec *r, proxy_server_conf *conf);
-PROXY_DECLARE(int) ap_proxy_determine_connection(apr_pool_t *p, request_rec *r, proxy_server_conf *conf, proxy_worker *worker, proxy_conn_rec *conn,
-                                                 apr_pool_t *ppool, apr_uri_t *uri, char **url, const char *proxyname, apr_port_t proxyport,
-                                                 char *server_portstr, int server_portstr_size);
-PROXY_DECLARE(int) ap_proxy_retry_worker(const char *proxy_function, proxy_worker *worker, server_rec *s);
-PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function, proxy_conn_rec **conn, proxy_worker *worker, server_rec *s);
-PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function, proxy_conn_rec *conn, server_rec *s);
+/**
+ * Get the worker from proxy configuration
+ * @param p     memory pool used for finding worker
+ * @param conf  current proxy server configuration
+ * @param url   url to find the worker from
+ * @return      proxy_worker or NULL if not found
+ */
+PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
+                                                  proxy_server_conf *conf,
+                                                  const char *url);
+/**
+ * Add the worker to proxy configuration
+ * @param worker the new worker
+ * @param p      memory pool to allocate worker from 
+ * @param conf   current proxy server configuration
+ * @param url    url containing worker name
+ * @return       error message or NULL if successfull
+ */
+PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
+                                                apr_pool_t *p,
+                                                proxy_server_conf *conf,
+                                                const char *url);
+/**
+ * Get the balancer from proxy configuration
+ * @param p     memory pool used for finding balancer
+ * @param conf  current proxy server configuration
+ * @param url   url to find the worker from. Has to have balancer:// prefix
+ * @return      proxy_balancer or NULL if not found
+ */
+PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
+                                                      proxy_server_conf *conf,
+                                                      const char *url);
+/**
+ * Add the balancer to proxy configuration
+ * @param balancer the new balancer
+ * @param p      memory pool to allocate balancer from 
+ * @param conf   current proxy server configuration
+ * @param url    url containing balancer name
+ * @return       error message or NULL if successfull
+ */
+PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
+                                                  apr_pool_t *p,
+                                                  proxy_server_conf *conf,
+                                                  const char *url);
+
+/**
+ * Add the worker to the balancer
+ * @param pool     memory pool for adding worker 
+ * @param balancer balancer to add to
+ * @param balancer worker to add
+ * @note Single worker can be added to multiple balancers.
+ */
+PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer(apr_pool_t *pool,
+                                                    proxy_balancer *balancer,
+                                                    proxy_worker *worker);
+/**
+ * Get the most suitable worker and(or) balancer for the request
+ * @param worker   worker used for processing request
+ * @param balancer balancer used for processing request
+ * @param r        current request
+ * @param conf     current proxy server configuration
+ * @param url      request url that balancer can rewrite.
+ * @return         OK or  HTTP_XXX error 
+ * @note It calls balancer pre_request hook if the url starts with balancer://
+ * The balancer then rewrites the url to particular worker, like http://host:port
+ */
+PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
+                                        proxy_balancer **balancer,
+                                        request_rec *r,
+                                        proxy_server_conf *conf,
+                                        char **url);
+/**
+ * Post request worker and balancer cleanup
+ * @param worker   worker used for processing request
+ * @param balancer balancer used for processing request
+ * @param r        current request
+ * @param conf     current proxy server configuration
+ * @return         OK or  HTTP_XXX error
+ * @note When ever the pre_request is called, the post_request has to be
+ * called too. 
+ */
+PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
+                                         proxy_balancer *balancer,
+                                         request_rec *r,
+                                         proxy_server_conf *conf);
+/**
+ * Deternime backend hostname and port
+ * @param p       memory pool used for processing
+ * @param r       current request
+ * @param conf    current proxy server configuration
+ * @param worker  worker used for processing request
+ * @param conn    proxy connection struct
+ * @param ppool   long living memory pool
+ * @param uri     processed uri
+ * @param url     request url
+ * @param proxyname are we connecting directly or via s proxy
+ * @param proxyport proxy host port
+ * @param server_portstr Via headers server port
+ * @param server_portstr_size size of the server_portstr buffer
+ * @return         OK or HTTP_XXX error
+ */                                         
+PROXY_DECLARE(int) ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
+                                                 proxy_server_conf *conf,
+                                                 proxy_worker *worker,
+                                                 proxy_conn_rec *conn,
+                                                 apr_pool_t *ppool,
+                                                 apr_uri_t *uri,
+                                                 char **url,
+                                                 const char *proxyname,
+                                                 apr_port_t proxyport,
+                                                 char *server_portstr,
+                                                 int server_portstr_size);
+/**
+ * Mark a worker for retry
+ * @param proxy_function calling proxy scheme (http, ajp, ...)
+ * @param conf    current proxy server configuration
+ * @param worker  worker used for retrying
+ * @param s       current server record
+ * @return        OK if marked for retry, DECLINED otherwise
+ * @note Worker will be marker for retry if the time of the last retry
+ * has been ellapsed. In case there is no retry option set, defaults to
+ * number_of_retries seconds.
+ */                                         
+PROXY_DECLARE(int) ap_proxy_retry_worker(const char *proxy_function,
+                                         proxy_worker *worker,
+                                         server_rec *s);
+/**
+ * Acquire a connection from workers connection pool
+ * @param proxy_function calling proxy scheme (http, ajp, ...)
+ * @param conn    acquired connection
+ * @param worker  worker used for obtaining connection
+ * @param s       current server record
+ * @return        OK or HTTP_XXX error
+ * @note If the number of connections is exhaused the function will
+ * block untill the timeout is reached.
+ */                                         
+PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
+                                               proxy_conn_rec **conn,
+                                               proxy_worker *worker,
+                                               server_rec *s);
+/**
+ * Release a connection back to worker connection pool
+ * @param proxy_function calling proxy scheme (http, ajp, ...)
+ * @param conn    acquired connection
+ * @param s       current server record
+ * @return        OK or HTTP_XXX error
+ * @note The connection will be closed if conn->close_on_release is set
+ */                                         
+PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
+                                               proxy_conn_rec *conn,
+                                               server_rec *s);
+/**
+ * Close the connection
+ * @param conn    connection to close
+ * @return        APR_SUCCESS or error code
+ */                                         
 PROXY_DECLARE(apr_status_t) ap_proxy_close_connection(proxy_conn_rec *conn);
-PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function, proxy_conn_rec *conn, proxy_worker *worker, server_rec *s);
-PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function, proxy_conn_rec *conn, conn_rec *c, server_rec *s);
+
+/**
+ * Make a connection to the backend
+ * @param proxy_function calling proxy scheme (http, ajp, ...)
+ * @param conn    acquired connection
+ * @param worker  connection worker
+ * @param s       current server record
+ * @return        OK or HTTP_XXX error
+ * @note In case the socket already exists for conn, just check the link
+ * status.
+ */                                         
+PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
+                                            proxy_conn_rec *conn,
+                                            proxy_worker *worker,
+                                            server_rec *s);
+/**
+ * Make a connection record for backend connection
+ * @param proxy_function calling proxy scheme (http, ajp, ...)
+ * @param conn    acquired connection
+ * @param c       client connection record
+ * @param s       current server record
+ * @return        OK or HTTP_XXX error
+ */                                         
+PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
+                                              proxy_conn_rec *conn,
+                                              conn_rec *c, server_rec *s);
 
 /* Scoreboard */
 #if MODULE_MAGIC_NUMBER_MAJOR > 20020903
