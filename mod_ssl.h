@@ -567,7 +567,7 @@ typedef struct {
 extern module AP_MODULE_DECLARE_DATA ssl_module;
 
 /*  configuration handling   */
-void         ssl_config_global_create(server_rec *);
+SSLModConfigRec *ssl_config_global_create(server_rec *);
 void         ssl_config_global_fix(SSLModConfigRec *);
 BOOL         ssl_config_global_isfixed(SSLModConfigRec *);
 void        *ssl_config_server_create(apr_pool_t *, server_rec *);

@@ -68,10 +68,15 @@
 **  _________________________________________________________________
 */
 
-void ssl_config_global_create(server_rec *s)
+#define SSL_MOD_CONFIG_KEY "ssl_module"
+
+SSLModConfigRec *ssl_config_global_create(server_rec *s)
 {
     apr_pool_t *pPool;
-    SSLModConfigRec *mc = myModConfig(s);
+    SSLModConfigRec *mc;
+
+    apr_pool_userdata_get((void **)&mc, SSL_MOD_CONFIG_KEY,
+                          s->process->pool);
 
     if (mc == NULL) {
         /*
@@ -106,16 +111,11 @@ void ssl_config_global_create(server_rec *s)
 
         (void)memset(mc->pTmpKeys, 0, SSL_TKPIDX_MAX*sizeof(void *));
 
-        /*
-         * And push it into Apache's server config recs
-         */
-        while (s) {
-            SSLSrvConfigRec *sc = mySrvConfig(s);
-            sc->mc = mc;
-            s = s->next;
-        }
+        apr_pool_userdata_set((void *)mc, SSL_MOD_CONFIG_KEY,
+                              apr_pool_cleanup_null,
+                              s->process->pool);
     }
-    return;
+    return mc;
 }
 
 void ssl_config_global_fix(SSLModConfigRec *mc)
@@ -142,9 +142,8 @@ void *ssl_config_server_create(apr_pool_t *p, server_rec *s)
 {
     SSLSrvConfigRec *sc;
 
-    ssl_config_global_create(s);
-
     sc = apr_palloc(p, sizeof(SSLSrvConfigRec));
+    sc->mc                     = ssl_config_global_create(s);
     sc->bEnabled               = UNSET;
     sc->szCACertificatePath    = NULL;
     sc->szCACertificateFile    = NULL;
@@ -194,6 +193,7 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     SSLSrvConfigRec *add  = (SSLSrvConfigRec *)addv;
     SSLSrvConfigRec *new  = (SSLSrvConfigRec *)apr_palloc(p, sizeof(SSLSrvConfigRec));
 
+    cfgMerge(mc, NULL);
     cfgMergeString(szVHostID);
     cfgMergeBool(bEnabled);
     cfgMergeString(szCACertificatePath);
