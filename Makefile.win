@@ -566,17 +566,17 @@ BEGIN {
 		_copybin src_exe=exe src_dll=dll src_so=so             \
 		inst_exe="$(INSTDIR)\bin"                              \
 		inst_dll="$(INSTDIR)\bin"                              \
-		inst_mod="$(INSTDIR)\modules"
+		inst_so="$(INSTDIR)\modules"
 	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=$(SHORT) LONG=$(LONG) \
 		_copybin src_exe=pdb src_dll=pdb src_so=pdb quiet="-"  \
 		inst_exe="$(INSTDIR)\bin"                              \
 		inst_dll="$(INSTDIR)\bin"                              \
-		inst_mod="$(INSTDIR)\modules"
+		inst_so="$(INSTDIR)\modules"
 	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=$(SHORT) LONG=$(LONG) \
 		_copybin src_exe=dbg src_dll=dbg src_so=dbg quiet="-"  \
 		inst_exe="$(INSTDIR)\symbols\exe"                      \
 		inst_dll="$(INSTDIR)\symbols\dll"                      \
-		inst_mod="$(INSTDIR)\symbols\so" 
+		inst_so="$(INSTDIR)\symbols\so" 
 	cd srclib\apr-iconv
 	$(MAKE) $(MAKEOPT) -f build\modules.mk.win install symbols \
 		BUILD_MODE=$(LONG) BIND_MODE=shared API_SOURCE=. \
