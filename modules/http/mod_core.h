@@ -99,7 +99,7 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb);
 AP_DECLARE(int) ap_send_http_trace(request_rec *r);
 int ap_send_http_options(request_rec *r);
 
-AP_DECLARE_DATA module http_module;
+AP_DECLARE_DATA extern module http_module;
 
 #ifdef __cplusplus
 }
