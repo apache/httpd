@@ -204,12 +204,14 @@ AP_DECLARE(int) ap_rgetline(char **s, int n, request_rec *r, int fold)
     char *last_char;
     const char *temp;
     int retval;
-    int total = 0;
+    apr_size_t total = 0;
     int looking_ahead = 0;
     apr_size_t length;
     core_request_config *req_cfg;
     apr_bucket_brigade *b;
     apr_bucket *e;
+    int do_alloc = (*s == NULL);
+    apr_size_t alloc_size = 0;
 
     req_cfg = (core_request_config *)
                 ap_get_module_config(r->request_config, &core_module);
@@ -257,11 +259,25 @@ AP_DECLARE(int) ap_rgetline(char **s, int n, request_rec *r, int fold)
             AP_DEBUG_ASSERT(!APR_BRIGADE_EMPTY(req_cfg->bb));
             break;
         }
-        if (total + (int)length - 1 < n) {
-            if (!*s) {
-                *s = apr_palloc(r->pool, length + 2); /* +2 for LF, null */
+        if (total + length - 1 < (apr_size_t)n) {
+            if (do_alloc) {
+                if (!*s) {
+                    alloc_size = length;
+                    *s = apr_palloc(r->pool, length + 2); /* +2 for LF, null */
+                }
+                else if (total + length > alloc_size) {
+                    apr_size_t new_size = alloc_size;
+                    char *new_buffer;
+                    do {
+                        new_size *= 2;
+                    } while (total + length > new_size);
+                    new_buffer = apr_palloc(r->pool, new_size + 2);
+                    memcpy(new_buffer, *s, total);
+                    alloc_size = new_size;
+                    *s = new_buffer;
+                }
             }
-            pos = *s;
+            pos = *s + total;
             last_char = pos + length - 1;
             memcpy(pos, temp, length);
             apr_bucket_delete(e);
