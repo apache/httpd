@@ -1,5 +1,10 @@
 Changes with Apache 2.0.29-dev
 
+  *) Fix a bug which would cause the response headers to be omitted
+     when sending a negotiated ErrorDocument because the required
+     filters were attached to the wrong request_rec.
+     [John Sterling <sterling@covalent.net>]
+
   *) Remove commas from the end of the macros that define
      directives that are used by MPMs.  Prior to this patch,
      you would use these macros without commas, which was unlike
