@@ -100,7 +100,8 @@ union block_hdr *block_freelist = NULL;
 
 
 
-/* Get a completely new block from the system pool */
+/* Get a completely new block from the system pool. Note that we rely on
+malloc() to provide aligned memory. */
 
 union block_hdr *malloc_block (int size)
 {
@@ -338,7 +339,7 @@ void *palloc (struct pool *a, int reqsize)
   
   int nclicks = 1 + ((reqsize - 1) / CLICK_SZ);
   int size = nclicks * CLICK_SZ;
-  
+
   /* First, see if we have space in the block most recently
    * allocated to this pool
    */
@@ -347,7 +348,9 @@ void *palloc (struct pool *a, int reqsize)
   char *first_avail = blok->h.first_avail;
   char *new_first_avail;
 
-  if (size <= 0) size = 1;
+  if(reqsize <= 0)
+      return NULL;
+  
   new_first_avail = first_avail + size;
   
   if (new_first_avail <= blok->h.endp) {
