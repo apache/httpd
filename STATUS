@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/28 15:04:44 $]
+Last modified at [$Date: 2003/07/28 15:25:10 $]
 
 Release:
 
@@ -268,7 +268,7 @@ PATCHES TO PORT FROM 2.1
 
     * ab: reject overlong credentials from command line (2.0 + 1.3)
         support/ab.c: r1.127
-      +1: nd, jerenkrantz
+      +1: nd, jerenkrantz, trawick
 
     * mod_rewrite: more or less cosmetic fix. If a .htaccess in DocumentRoot
       configures:
@@ -284,7 +284,7 @@ PATCHES TO PORT FROM 2.1
     * mod_rewrite: don't exit(1) if the logfile could not be opened. Return
       internal server error instead to shutdown cleanly.
         modules/mappers/mod_rewrite.c: r1.191
-      +1: nd
+      +1: nd, trawick
 
 CURRENT RELEASE NOTES:
 
