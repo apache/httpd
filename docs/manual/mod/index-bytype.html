@@ -23,11 +23,25 @@ alphabetical list of <A HREF="directives.html" >all Apache
 directives</A>.
 </P>
 
-<H2>Core</H2>
+<H2>Core and Mutli-Processing Modules</H2>
 
 <DL>
 <DT><A HREF="core.html">Core</A>
 <DD>Core Apache features.
+<DT><a href="dexter.html">dexter</a>
+<DD>Multi-Processing Module with Threading via Pthreads; Fixed number
+of processes, variable number of threads/child
+<DT><A HREF="mpmt_pthread.html">mpmt_pthread</A>
+<DD>Multi-Processing Module with Threading via Pthreads; Variable number
+of processes, constant number of threads/child
+<DT><a href="mpm_winnt.html">mpm_winnt</a>
+<DD>Multi-Processing Module with a single control process and a single
+server process with multiple threads for Windows NT
+<DT><a href="perchild.html">perchild</a>
+<DD>Multi-Processing Module with the ability to server different
+virtual hosts under different userids.
+<DT><a href="prefork.html">prefork</a>
+<DD>Non-threaded preforking processes model similar to Apache 1.3
 </DL>
 
 <H2>Environment Creation</H2>
