@@ -6,7 +6,7 @@
 <name>mod_ext_filter</name>
 <description>Pass the response body through an external program before
 delivery to the client</description>
-<status>Experimental</status>
+<status>Extension</status>
 <sourcefile>mod_ext_filter.c</sourcefile>
 <identifier>ext_filter_module</identifier>
 
