@@ -107,7 +107,7 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
     mc->tVHostKeys             = apr_hash_make(pool);
     mc->tPrivateKey            = apr_hash_make(pool);
     mc->tPublicCert            = apr_hash_make(pool);
-#ifdef HAVE_ENGINE_INIT
+#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
     mc->szCryptoDevice         = NULL;
 #endif
 
