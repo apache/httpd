@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/06 09:21:41 $]
+Last modified at [$Date: 2002/05/06 12:42:36 $]
 
 Release:
 
@@ -396,13 +396,6 @@ EXPERIMENTAL MODULES:
     * mod_cache: CacheEnable/CacheDisable should accept regular expressions.
 
     * mod_disk_cache: Implement garbage collection
-
-    * mod_mem_cache/mod_disk_cache interoperability:  Some cache
-      directive names are the same which precludes using mod_mem_cache
-      and mod_disk_cache concurrently.
-
-    * mod_mem_cache: Config directive to enable caching open file
-      descriptors or caching the content in malloc'ed storage.
 
     * mod_mem_cache/mod_disk_cache: Need to be able to query cache
       status (num of entries, cache object properties, etc.).
