@@ -19,8 +19,9 @@ Changes with Apache 1.3.1
   *) PORT: F_NDELAY is a typo, should have been FNDELAY.  There's also
      O_NDELAY on various systems.  [Dave Dykstra <dwd@bell-labs.com>] PR#2313
 
-  *) PORT: SVR4 v3.0.1 running on ncr S10 (3404) host.
-     [juerg schreiner <j.schreiner@zh.ch>] PR#2310
+  *) PORT: helpers/GuessOS updates for various versions for NCR SVR4.
+     [juerg schreiner <j.schreiner@zh.ch>,
+     Bill Houle <Bill.Houle@SanDiegoCA.NCR.COM>] PR#2310
 
   *) Fix recently introduced Win32 child spawning code in mod_rewrite.c which
      was broken because of invalid ap_pstrcat() -> strcat() transformation.
