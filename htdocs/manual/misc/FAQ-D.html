@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.5 $ ($Date: 1999/12/10 14:56:26 $)
+  $Revision: 1.6 $ ($Date: 2000/07/05 15:31:29 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -104,6 +104,11 @@
    </LI>
    <LI><A HREF="#ws2_32dll">When I try to start Apache for Windows, I get a message
 	like "<samp>Unable To Locate WS2_32.DLL...</samp>". What should I do?</A>
+   </LI>
+   <LI><A HREF="#WSADuplicateSocket">Apache for Windows does not start. Error log
+	contains this message "<samp>[crit] (10045) The attempted operation is not
+	supported for the type of object referenced: Parent: WSADuplicateSocket
+	failed for socket ###</samp>".
    </LI>
   </OL>
  </LI>
@@ -384,7 +389,26 @@
   </p>
   <hr>
  </LI>
-
+ <LI><A name="WSADuplicateSocket">
+      <b>Apache for Windows does not start. Error log contains this message:
+      "<samp>[crit] (10045) The attempted operation is not supported for the type of object
+      referenced: Parent: WSADuplicateSocket failed for socket ###</samp>".</b></A>
+  <p>
+      We have seen this problem when Apache is run on systems along with Virtual Private Networking
+      clients like Aventail Connect. Aventail Connect is a Layered Service Provider (LSP) that
+      inserts itself, as a "shim", between the Winsock 2 API and Window's native Winsock 2
+      implementation. The Aventail Connect shim does not implement WSADuplicateSocket, which is the
+      cause for the failure.
+  </p>
+  <p>
+      The shim is not unloaded when Aventail Connect is shutdown. Once observed, the problem persists
+      until the shim is either explicitly unloaded or the machine is rebooted. Instructions for
+      temporarily removing the Aventail Connect V3.x shim can be found here:
+      <A HREF="http://support.aventail.com/akb/article00386.html" >"How to Remove Aventail Connect v3.x
+      from the LSP Order for Testing Purposes"</A>
+  </p>
+  <hr>
+ </LI>
 </OL>
 <!--#endif -->
 <!--#if expr="$STANDALONE" -->
