@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix for mod_dav.  Call the 'can_be_activity' callback, if provided,
+     when a MKACTIVITY request comes in.
+     [Ben Collins-Sussman <sussman@apache.org>]
+
   *) configure.in: Play nice with libtool-1.5. [Wilfredo Sanchez]
 
   *) Prevent the server from crashing when entering infinite loops. The
