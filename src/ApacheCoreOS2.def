@@ -349,3 +349,6 @@ EXPORTS
 	ap_dummy_mutex  @343
 	ap_signal  @344
 	ap_regerror  @345
+	ap_puudecode  @346
+	ap_puuencode  @347
+	ap_sha1_base64	@348
