@@ -342,7 +342,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
         new->icase = icase;
         if ((simple_pattern = non_regex_pattern(cmd->pool, regex))) {
             new->pattern = apr_strmatch_precompile(cmd->pool,
-                                                   simple_pattern, 1);
+                                                   simple_pattern, !icase);
             if (new->pattern == NULL) {
                 return apr_pstrcat(cmd->pool, cmd->cmd->name,
                                    " pattern could not be compiled.", NULL);
