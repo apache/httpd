@@ -389,9 +389,7 @@ static void restart(int sig)
 	return;
     }
     restart_pending = 1;
-    if ((is_graceful = (sig == AP_SIG_GRACEFUL))) {
-        apr_pool_cleanup_kill(pconf, NULL, ap_cleanup_scoreboard);
-    }
+    is_graceful = (sig == AP_SIG_GRACEFUL);
 }
 
 static void set_signals(void)

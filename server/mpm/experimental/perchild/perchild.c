@@ -391,9 +391,6 @@ static void ap_start_restart(int graceful)
     }
     restart_pending = 1;
     is_graceful = graceful;
-    if (is_graceful) {
-        apr_pool_cleanup_kill(pconf, NULL, ap_cleanup_scoreboard);
-    }
 }
 
 static void sig_term(int sig)
