@@ -82,8 +82,6 @@
 #include <time.h>
 #include "scoreboard.h"
 
-#define STATUS_MAGIC_TYPE "application/x-httpd-status"
-
 module status_module;
 
 /* Format the number of bytes nicely */
@@ -337,6 +335,7 @@ int status_handler (request_rec *r)
 
 handler_rec status_handlers[] = {
 { STATUS_MAGIC_TYPE, status_handler },
+{ "server-status", status_handler },
 { NULL }
 };
 

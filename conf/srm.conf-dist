@@ -167,6 +167,10 @@ ScriptAlias /cgi-bin/ /usr/local/etc/httpd/cgi-bin/
 # To enable type maps, you might want to use
 #AddHandler type-map var
 
+# If you are using the status module and don't care if anyone else
+# can see your status information you can use
+#AddHandler server-status status
+
 # Action lets you define media types that will execute a script whenever
 # a matching file is called. This eliminates the need for repeated URL
 # pathnames for oft-used CGI file processors.
