@@ -32,7 +32,7 @@ extern int ap_os_is_path_absolute(const char *file);
 #define ap_os_is_filename_valid(f)          (1)
 #define ap_os_kill(pid, sig)                kill(pid, sig)
 
-#if !defined(_POSIX_SOURCE) && !defined(_XOPEN_SOURCE)
+#if !defined(_POSIX_SOURCE) && !defined(_XOPEN_SOURCE) && !defined(HAVE_RINI_STRUCT)
 typedef struct {           
     char    *username;     
     char    *account;      
