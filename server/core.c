@@ -4544,9 +4544,10 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
 static int core_pre_connection(conn_rec *c, void *csd)
 {
     core_net_rec *net = apr_palloc(c->pool, sizeof(*net));
-    apr_status_t rv;
 
 #ifdef AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
+    apr_status_t rv;
+
     /* The Nagle algorithm says that we should delay sending partial
      * packets in hopes of getting more data.  We don't want to do
      * this; we are not telnet.  There are bad interactions between
