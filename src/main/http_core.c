@@ -1121,7 +1121,7 @@ const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
     } else
 	ports = ips;
 
-    new=palloc(cmd->pool, sizeof(listen_rec));
+    new=pcalloc(cmd->pool, sizeof(listen_rec));
     new->local_addr.sin_family = AF_INET;
     if (ports == ips) /* no address */
 	new->local_addr.sin_addr.s_addr = htonl(INADDR_ANY);

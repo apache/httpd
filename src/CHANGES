@@ -50,6 +50,8 @@ Changes with Apache 1.2b8
   *) Use proper MAXHOSTNAMELEN symbol for limiting length of server name.
      [Dean Gaudet]
 
+  *) Clear memory allocated for listeners. [Randy Terbush]
+
 Changes with Apache 1.2b7
 
   *) Port to  UXP/DS(V20) [Toshiaki Nomura <nom@yk.fujitsu.co.jp>]
