@@ -2,10 +2,6 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
-  *) htpasswd: Check the processed file on validity. If a line is not empty
-     and not a comment, it must contain at least one colon. Otherwise exit
-     with error code 7. [Kris Verbeeck <Kris.Verbeeck@ubizen.com>, Thom May]
-
   *) Use appropriate language code for Czech (cs) in default config
      files. PR 9427.  [André Malo]
 
@@ -167,6 +163,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.46
+
+  *) htpasswd: Check the processed file on validity. If a line is not empty
+     and not a comment, it must contain at least one colon. Otherwise exit
+     with error code 7. [Kris Verbeeck <Kris.Verbeeck@ubizen.com>, Thom May]
 
   *) Fix a problem that caused httpd to be linked with incorrect flags
      on some platforms when mod_so was enabled by default, breaking 
