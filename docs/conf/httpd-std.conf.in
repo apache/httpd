@@ -540,7 +540,8 @@ Alias /icons/ "@exp_iconsdir@/"
 Alias /manual "@exp_manualdir@"
 
 <Directory "@exp_manualdir@">
-    Options Indexes FollowSymLinks MultiViews
+    Options Indexes FollowSymLinks MultiViews IncludesNoExec
+    AddOutputFilter Includes html
     AllowOverride None
     Order allow,deny
     Allow from all
