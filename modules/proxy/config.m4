@@ -13,11 +13,11 @@ fi
 proxy_objs="mod_proxy.lo proxy_util.lo"
 APACHE_MODULE(proxy, Apache proxy module, $proxy_objs, , $proxy_mods_enable)
 
-proxy_connect_objs="proxy_connect.lo"
-proxy_ftp_objs="proxy_ftp.lo"
-proxy_http_objs="proxy_http.lo"
-proxy_ajp_objs="proxy_ajp.lo ajp_header.lo ajp_link.lo ajp_msg.lo"
-proxy_balancer_objs="proxy_balancer.lo"
+proxy_connect_objs="mod_proxy_connect.lo"
+proxy_ftp_objs="mod_proxy_ftp.lo"
+proxy_http_objs="mod_proxy_http.lo"
+proxy_ajp_objs="mod_proxy_ajp.lo ajp_header.lo ajp_link.lo ajp_msg.lo"
+proxy_balancer_objs="mod_proxy_balancer.lo"
 
 case "$host" in
   *os2*)
