@@ -1521,18 +1521,20 @@ AP_DECLARE(uid_t) ap_uname2id(const char *name);
 AP_DECLARE(gid_t) ap_gname2id(const char *name);
 /**
  * Given the name of an object in the file system determine if it is a directory
+ * @param p The pool to allocate out of 
  * @param name The name of the object to check
  * @return 1 if it is a directory, 0 otherwise
- * @deffunc int ap_is_rdirectory(const char *name)
+ * @deffunc int ap_is_rdirectory(apr_pool_t *p, const char *name)
  */
-AP_DECLARE(int) ap_is_rdirectory(const char *name);
+AP_DECLARE(int) ap_is_rdirectory(apr_pool_t *p, const char *name);
 /**
  * Given the name of an object in the file system determine if it is a directory - this version is symlink aware
+ * @param p The pool to allocate out of 
  * @param name The name of the object to check
  * @return 1 if it is a directory, 0 otherwise
- * @deffunc int ap_is_directory(const char *name)
+ * @deffunc int ap_is_directory(apr_pool_t *p, const char *name)
  */
-AP_DECLARE(int) ap_is_directory(const char *name);
+AP_DECLARE(int) ap_is_directory(apr_pool_t *p, const char *name);
 /**
  * Given a pathname in file, extract the directory and chdir to that directory
  * @param file The file who's directory we wish to switch to

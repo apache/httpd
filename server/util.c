@@ -1694,21 +1694,21 @@ AP_DECLARE(char *) ap_escape_html(apr_pool_t *p, const char *s)
     return x;
 }
 
-AP_DECLARE(int) ap_is_directory(const char *path)
+AP_DECLARE(int) ap_is_directory(apr_pool_t *p, const char *path)
 {
     apr_finfo_t finfo;
 
-    if (apr_stat(&finfo, path, NULL) == -1)
+    if (apr_stat(&finfo, path, p) == -1)
 	return 0;		/* in error condition, just return no */
 
     return (finfo.filetype == APR_DIR);
 }
 
-AP_DECLARE(int) ap_is_rdirectory(const char *path)
+AP_DECLARE(int) ap_is_rdirectory(apr_pool_t *p, const char *path)
 {
     apr_finfo_t finfo;
 
-    if (apr_lstat(&finfo, path, NULL) == -1)
+    if (apr_lstat(&finfo, path, p) == -1)
 	return 0;		/* in error condition, just return no */
 
     return (finfo.filetype == APR_DIR);
