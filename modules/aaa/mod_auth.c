@@ -309,20 +309,20 @@ static int check_user_access(request_rec *r)
     return AUTH_REQUIRED;
 }
 
-module MODULE_VAR_EXPORT auth_module =
 static void register_hooks(void)
 {
     ap_hook_check_user_id(authenticate_basic_user,NULL,NULL,HOOK_MIDDLE);
     ap_hook_auth_checker(check_user_access,NULL,NULL,HOOK_MIDDLE);
 }
 
+module MODULE_VAR_EXPORT auth_module =
 {
-    STANDARD_MODULE_STUFF,
     STANDARD20_MODULE_STUFF,
+    create_auth_dir_config,	/* dir config creater */
     NULL,			/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server config */
     auth_cmds,			/* command table */
     NULL,			/* handlers */
-    NULL,			/* filename translation */
     register_hooks		/* register hooks */
+};
