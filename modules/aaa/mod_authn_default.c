@@ -71,6 +71,8 @@
  */
 
 #include "apr_strings.h"
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #include "ap_config.h"
 #include "httpd.h"
