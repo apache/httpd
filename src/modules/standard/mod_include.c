@@ -663,7 +663,7 @@ int include_cmd_child (void *arg)
     ap_snprintf(err_string, sizeof(err_string),
 	"httpd: exec of %s failed, reason: %s (errno = %d)\n",
 	SHELL_PATH, strerror(errno), errno);
-    write (2, err_string, strlen(err_string));
+    write (STDERR_FILENO, err_string, strlen(err_string));
     exit(0);
     /* NOT REACHED */
     return(child_pid);

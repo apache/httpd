@@ -2249,17 +2249,17 @@ uncompress(request_rec *r, int method, const unsigned char *old,
     }
     switch (fork()) {
     case 0:        /* child */
-        (void) close(0);
+        (void) close(STDIN_FILENO);
         (void) dup(fdin[0]);
         (void) close(fdin[0]);
         (void) close(fdin[1]);
 
-        (void) close(1);
+        (void) close(STDOUT_FILENO)
         (void) dup(fdout[1]);
         (void) close(fdout[0]);
         (void) close(fdout[1]);
         if (compr[method].silent)
-            (void) close(2);
+            (void) close(STDERR_FILENO);
 
         execvp(compr[method].argv[0], compr[method].argv);
         log_printf(r->server, "%s: could not execute `%s' (%s).", MODNAME,
