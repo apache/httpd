@@ -35,7 +35,7 @@ apxs: apxs.pl
 	    -e 's%@CFLAGS@%$(CFLAGS)%g' \
 	    -e 's%@CFLAGS_SHLIB@%$(CFLAGS_SHLIB)%g' \
 	    -e 's%@LD_SHLIB@%$(LD_SHLIB)%g' \
-	    -e 's%@LDFLAGS_SHLIB@%$(LDFLAGS_SHLIB)%g' \
+	    -e 's%@LDFLAGS_MOD_SHLIB@%$(LDFLAGS_MOD_SHLIB)%g' \
 	    -e 's%@LIBS_SHLIB@%$(LIBS_SHLIB)%g' && chmod a+x apxs
 
 suexec: suexec.o

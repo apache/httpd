@@ -603,6 +603,7 @@ case "$PLAT" in
 	LIBS="$LIBS -lsocket -lnsl -lgen"
 	LD_SHLIB='cc'
 	LDFLAGS_SHLIB="-Zlink=so"
+	LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	LDFLAGS_SHLIB_EXPORT="-Zlink=dynamic -Wl,-Bexport"
 	CFLAGS_SHLIB='-Zpic'
 	;;
@@ -918,6 +919,7 @@ TTARGET=`egrep '^TARGET=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 ##
 TLD_SHLIB=`egrep '^LD_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 TLDFLAGS_SHLIB=`egrep '^LDFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
+TLDFLAGS_MOD_SHLIB=`egrep '^LDFLAGS_MOD_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 TLDFLAGS_SHLIB_EXPORT=`egrep '^LDFLAGS_SHLIB_EXPORT=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 TCFLAGS_SHLIB=`egrep '^CFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 
@@ -952,23 +954,27 @@ if [ "x$using_shlib" = "x1" ] ; then
 	*-linux1)
 	    CFLAGS_SHLIB="-fpic"
 	    LDFLAGS_SHLIB="-Bshareable"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT="-rdynamic"
 	    ;;
 	*-linux2)
 	    CFLAGS_SHLIB="-fpic"
 	    LDFLAGS_SHLIB="-Bshareable"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT="-rdynamic"
 	    SHLIB_SUFFIX_DEPTH=0
 	    ;;
 	*-freebsd2*)
 	    CFLAGS_SHLIB="-fpic"
 	    LDFLAGS_SHLIB="-Bshareable"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT=""
 	    SHLIB_SUFFIX_DEPTH=2
 	    ;;
 	*-freebsd3*|*-freebsd4*)
 	    CFLAGS_SHLIB="-fpic"
 	    LDFLAGS_SHLIB="-Bshareable"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    OBJFORMAT=`test -x /usr/bin/objformat && /usr/bin/objformat || echo aout` 
 	    if [ "x$OBJFORMAT" = "xelf" ]; then
 		LDFLAGS_SHLIB_EXPORT="-Wl,-E"
@@ -981,6 +987,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	*-openbsd*)
 	    CFLAGS_SHLIB="-fPIC"
 	    LDFLAGS_SHLIB="-Bforcearchive -Bshareable"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT=""
 	    SHLIB_SUFFIX_DEPTH=2
 	    ;;
@@ -993,21 +1000,25 @@ if [ "x$using_shlib" = "x1" ] ; then
 		LDFLAGS_SHLIB="-shared"
 		LDFLAGS_SHLIB_EXPORT="-Wl,-E"
 	    fi
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    SHLIB_SUFFIX_DEPTH=2
 	    ;;
 	*-bsdi3)
 	    LD_SHLIB="shlicc2"
 	    LDFLAGS_SHLIB="-r"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    ;;
 	*-bsdi)
 	    CFLAGS_SHLIB="-fPIC"
 	    LDFLAGS_SHLIB="-shared"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT="-rdynamic"
 	    ;;
  	*-next-openstep*)
  	    LD_SHLIB='cc'
  	    CFLAGS_SHLIB='-dynamic -fno-common'
  	    LDFLAGS_SHLIB='-bundle -undefined warning'
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
  	    LDFLAGS_SHLIB_EXPORT=''
  	    SHLIB_SUFFIX_DEPTH=0
  	    ;;
@@ -1015,6 +1026,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LD_SHLIB="cc"
 	    CFLAGS_SHLIB=""
 	    LDFLAGS_SHLIB='$(EXTRA_LDFLAGS) -bundle -undefined suppress'
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT=""
 	    SHLIB_SUFFIX_DEPTH=0
 	    ;;
@@ -1025,6 +1037,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	        CFLAGS_SHLIB="-KPIC"
 	    fi
 	    LDFLAGS_SHLIB="-G"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT=""
 	    SHLIB_SUFFIX_DEPTH=1
 	    ;;
@@ -1034,6 +1047,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 		*/acc|acc ) CFLAGS_SHLIB="-pic" ;;
 	    esac
 	    LDFLAGS_SHLIB="-assert pure-text"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT=""
 	    ;;
 	*-sgi-irix32)
@@ -1052,6 +1066,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    else
 		LDFLAGS_SHLIB="-shared"
 	    fi
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT=""
 	    ;;
 	*-sgi-irix64)
@@ -1070,6 +1085,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    else
 		LDFLAGS_SHLIB="-shared"
 	    fi
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT=""
 	    ;;
 	*-sgi-irix)
@@ -1078,6 +1094,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 		*/cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
 	    esac
 	    LDFLAGS_SHLIB="-shared"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT=""
 	    ;;
 	*-dec-osf*)
@@ -1086,6 +1103,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 		*/cc|cc   ) CFLAGS_SHLIB="" ;;
 	    esac
 	    LDFLAGS_SHLIB="-shared -expect_unresolved '*' -s"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT=""
 	    ;;
 	*-unixware*)
@@ -1094,6 +1112,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 		*/cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
 	    esac
 	    LDFLAGS_SHLIB="-Bdynamic -G"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT="-Wl,-Bexport"
 	    ;;
 	 *-sco5*)
@@ -1103,6 +1122,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	     esac
 	     LDFLAGS_SHLIB="-G"
 	     LDFLAGS_SHLIB_EXPORT="-Wl,-Bexport"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	     SHLIB_SUFFIX_DEPTH=1
 	     ;;
 	RM*-siemens-sysv4*)
@@ -1112,6 +1132,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 		*/cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
 	    esac
 	    LDFLAGS_SHLIB="-G"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT="-Wl,-Blargedynsym"
 	    ;;
 	*-siemens-sysv4*)
@@ -1121,6 +1142,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 		*/cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
 	    esac
 	    LDFLAGS_SHLIB="-G"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT=""
 	    SHLIB_SUFFIX_DEPTH=0
 	    DEF_SHARED_CORE=yes
@@ -1131,6 +1153,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 		*/cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
 	    esac
 	    LDFLAGS_SHLIB="-G"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT=""
 	    DEF_SHARED_CORE=yes
 	    ;;
@@ -1140,6 +1163,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 		*/cc|cc   ) CFLAGS_SHLIB="+z" ;;
 	    esac
 	    LDFLAGS_SHLIB="-b"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred"
 	    SHLIB_SUFFIX_NAME=sl
 	    ;;
@@ -1149,6 +1173,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 		*/cc|cc   ) CFLAGS_SHLIB="+z" ;;
 	    esac
 	    LDFLAGS_SHLIB="-b"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred -Wl,+s"
 	    SHLIB_SUFFIX_NAME=sl
 	    ;;
@@ -1165,6 +1190,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 		    LDFLAGS_SHLIB="-H512 -T512 -bhalt:4 -bM:SRE -e _nostart"
 		    ;;
 	    esac
+	    LDFLAGS_MOD_SHLIB="$LDFLAGS_SHLIB -bI:@libexecdir@/httpd.exp -lc"
 	    LDFLAGS_SHLIB="$LDFLAGS_SHLIB -bI:\$(SRCDIR)/support/httpd.exp "
 	    LDFLAGS_SHLIB="$LDFLAGS_SHLIB -bE:\`echo \$@|sed -e 's:\.so\$\$:.exp:'\`"
 	    LDFLAGS_SHLIB="$LDFLAGS_SHLIB -lc"
@@ -1174,12 +1200,14 @@ if [ "x$using_shlib" = "x1" ] ; then
 	*-*-powermax*)
 	    LD_SHLIB='cc'
 	    LDFLAGS_SHLIB="-Zlink=so"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT="-Zlink=dynamic -Wl,-Bexport"
 	    CFLAGS_SHLIB='-Zpic'
 	    ;;
 	*-OS/2*)
 	    DEF_SHARED_CORE=yes
 	    LDFLAGS_SHLIB="`echo $LDFLAGS|sed -e s/-Zexe//` -Zdll"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    SHLIB_SUFFIX_NAME=dll
 	    SHLIB_SUFFIX_DEPTH=0
 	    LD_SHLIB=$CC
@@ -1196,6 +1224,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    esac
 	    DEF_SHARED_CORE=yes
 	    LDFLAGS_SHLIB="-G"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT=""
             ;;
 	*)
@@ -1223,6 +1252,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 		    #   so we can guess the flags from its knowledge
 		    CFLAGS_SHLIB="`$PERL -V:cccdlflags | cut -d\' -f2`"
 		    LDFLAGS_SHLIB="`$PERL -V:lddlflags | cut -d\' -f2`"
+		    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 		    LDFLAGS_SHLIB_EXPORT="`$PERL -V:ccdlflags | cut -d\' -f2`"
 		    #   but additionally we have to inform the
 		    #   user that we are just guessing the flags
@@ -1672,6 +1702,9 @@ if [ "x$using_shlib" = "x1" ] ; then
     fi
     if [ "x$TLDFLAGS_SHLIB_EXPORT" = "x" ]; then
 	echo "LDFLAGS_SHLIB_EXPORT=$LDFLAGS_SHLIB_EXPORT" >> Makefile.config
+    fi
+    if [ "x$TLDFLAGS_MOD_SHLIB" = "x" ]; then
+	echo "LDFLAGS_MOD_SHLIB=$LDFLAGS_MOD_SHLIB" >> Makefile.config
     fi
     echo "LD_SHCORE_DEF=$LD_SHCORE_DEF" >> Makefile.config
     echo "LD_SHCORE_LIBS=$LD_SHCORE_LIBS" >> Makefile.config
