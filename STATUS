@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/31 20:48:15 $]
+Last modified at [$Date: 2003/09/05 16:54:30 $]
 
 Release:
 
@@ -379,6 +379,13 @@ PATCHES TO PORT FROM 2.1
         modules/http/http_protocol.c: r1.471
       See Message-ID: <3EC0B430.4010008@stason.org>
       +1: jerenkrantz
+
+    * Fix a misleading message from the some of the threaded MPMs when
+      MaxClients has to be lowered due to the setting of ServerLimit.
+        server/mpm/experimental/leader/leader.c r1.31
+        server/mpm/experimental/threadpool/threadpool.c r1.19
+        server/mpm/worker/worker.c r1.138
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
