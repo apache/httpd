@@ -338,6 +338,13 @@ typedef struct backrefinfo {
 } backrefinfo;
 
 
+/* single linked list used for variable expansion */
+typedef struct result_list {
+    struct result_list *next;
+    apr_size_t len;
+    const char *string;
+} result_list;
+
 /*
 **
 **  forward declarations
@@ -403,8 +410,8 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
                               char *perdir, backrefinfo *briRR,
                               backrefinfo *briRC);
 
-static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
-		      backrefinfo *briRR, backrefinfo *briRC);
+static char *do_expand(request_rec *r, char *input,
+		       backrefinfo *briRR, backrefinfo *briRC);
 static void do_expand_env(request_rec *r, char *env[],
 			  backrefinfo *briRR, backrefinfo *briRC);
 static void do_expand_cookie(request_rec *r, char *cookie[],
