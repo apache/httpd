@@ -221,7 +221,7 @@ static apr_status_t churn(TLSFilterCtx *pCtx,apr_read_type_e eReadType,apr_size_
 
 	if(len == 0) {
 	    /* Lazy frickin browsers just reset instead of shutting down. */
-	    if(ret == APR_EOF || ret == APR_ECONNRESET)
+	    if(ret == APR_EOF || ret == APR_ECONNRESET) {
 		if(APR_BRIGADE_EMPTY(pCtx->pbbPendingInput))
 		    return APR_EOF;
 		else
@@ -229,6 +229,7 @@ static apr_status_t churn(TLSFilterCtx *pCtx,apr_read_type_e eReadType,apr_size_
 		     * so we'll return EOF then
 		     */
 		    return APR_SUCCESS;
+	    }
 		
 	    if(eReadType != APR_NONBLOCK_READ)
 		ap_log_error(APLOG_MARK,APLOG_ERR,ret,NULL,
@@ -299,11 +300,12 @@ static apr_status_t tls_out_filter(ap_filter_t *f,apr_bucket_brigade *pbbIn)
 		if(ret != APR_SUCCESS)
 		    return ret;
 		ret=churn(pCtx,APR_NONBLOCK_READ,&zero);
-		if(ret != APR_SUCCESS)
+		if(ret != APR_SUCCESS) {
 		    if(ret == APR_EOF)
 			return APR_SUCCESS;
 		    else
 			return ret;
+		}
 	    }
 	    break;
 	}
