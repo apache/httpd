@@ -569,8 +569,6 @@ static int cgid_server(void *data)
     apr_socklen_t len;
     apr_pool_t *ptrans;
     server_rec *main_server = data;
-    cgid_server_conf *sconf = ap_get_module_config(main_server->module_config,
-                                                   &cgid_module); 
     apr_hash_t *script_hash = apr_hash_make(pcgi);
 
     apr_pool_create(&ptrans, pcgi); 
@@ -905,9 +903,6 @@ static const char *set_scriptlog_buffer(cmd_parms *cmd, void *dummy, const char 
 
 static const char *set_script_socket(cmd_parms *cmd, void *dummy, const char *arg) 
 { 
-    server_rec *s = cmd->server; 
-    cgid_server_conf *conf = ap_get_module_config(s->module_config,
-                                                  &cgid_module); 
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
