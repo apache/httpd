@@ -56,14 +56,26 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#define CORE_PRIVATE 
- 
-#include "ap_config.h"
 #include "apr_hash.h"
 #include "apr_strings.h"
 #include "apr_pools.h"
 #include "apr_portable.h"
 #include "apr_file_io.h"
+#include "apr_signal.h"
+
+#define APR_WANT_IOVEC
+#include "apr_want.h"
+
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#if APR_HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
+
+#define CORE_PRIVATE 
+ 
+#include "ap_config.h"
 #include "httpd.h" 
 #include "http_main.h" 
 #include "http_log.h" 
@@ -80,25 +92,19 @@
 #include "scoreboard.h"
 #include "util_filter.h"
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#include <poll.h>
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif
 #ifdef HAVE_NETINET_TCP_H
 #include <netinet/tcp.h>
 #endif
+
+/* ### should be APR-ized */
+#include <poll.h>
 #include <grp.h>
 #include <pwd.h>
 #include <pthread.h>
 #include <sys/stat.h>
 #include <sys/un.h>
-#include <signal.h>
 #include <setjmp.h>
 #include <stropts.h>
-#include <sys/uio.h>
 
 /*
  * Actual definitions of config globals

@@ -69,28 +69,22 @@
 #include "apr_md5.h"
 #include "apr_lib.h"            /* for apr_getpass() */
 #include "apr_general.h"
+#include "apr_signal.h"
 
-#if APR_HAVE_STDIO_H
-#include <stdio.h>
-#endif
+#define APR_WANT_STDIO
+#include "apr_want.h"
 
 #if APR_HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
-
-#if APR_HAVE_SYS_SIGNAL_H
-#include <sys/signal.h>
-#endif
-
-#if APR_HAVE_SIGNAL_H
-#include <signal.h>
-#endif
-
+#if APR_HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
 
 #ifdef WIN32
 #include <conio.h>
 #endif
+
 
 #if APR_CHARSET_EBCDIC
 #define LF '\n'
