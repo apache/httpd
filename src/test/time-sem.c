@@ -525,10 +525,13 @@ void main (int argc, char **argv)
 	    /* child, do our thing */
 	    accept_mutex_child_init();
 	    for (i = 0; i < num_iter; ++i) {
+		unsigned long tmp;
+
 		accept_mutex_on ();
-		++*shared_counter;
-		accept_mutex_off ();
+		tmp = *shared_counter;
 		YIELD;
+		*shared_counter = tmp + 1;
+		accept_mutex_off ();
 	    }
 	    exit (0);
 	} else if (pid == -1) {
