@@ -85,10 +85,10 @@ typedef int ssize_t;
 #endif /* WIN32 */
 
 /* ensure that our state subdirectory is present */
-void dav_fs_ensure_state_dir(pool *p, const char *dirname);
+void dav_fs_ensure_state_dir(ap_pool_t *p, const char *dirname);
 
 /* return the storage pool associated with a resource */
-pool *dav_fs_pool(const dav_resource *resource);
+ap_pool_t *dav_fs_pool(const dav_resource *resource);
 
 /* return the full pathname for a resource */
 const char *dav_fs_pathname(const dav_resource *resource);
@@ -106,9 +106,9 @@ dav_error * dav_fs_get_locknull_members(const dav_resource *resource,
 /* DBM functions used by the repository and locking providers */
 extern const dav_hooks_db dav_hooks_db_dbm;
 
-dav_error * dav_dbm_open_direct(pool *p, const char *pathname, int ro,
+dav_error * dav_dbm_open_direct(ap_pool_t *p, const char *pathname, int ro,
 				dav_db **pdb);
-void dav_dbm_get_statefiles(pool *p, const char *fname,
+void dav_dbm_get_statefiles(ap_pool_t *p, const char *fname,
 			    const char **state1, const char **state2);
 
 

@@ -58,13 +58,15 @@
 */
 
 /* James Clark's Expat parser */
-#include <xmlparse.h>
+/* ### need to fix this... */
+#include "../lib/expat-lite/xmlparse.h"
 
 #include "httpd.h"
 #include "http_protocol.h"
 #include "http_log.h"
 
-#include "mod_dav.h"
+/* ### need to fix this... */
+#include "../modules/dav/main/mod_dav.h"
 
 
 /* errors related to namespace processing */
@@ -79,7 +81,7 @@
 /* content for parsing */
 typedef struct dav_xml_ctx {
     dav_xml_doc *doc;		/* the doc we're parsing */
-    ap_pool *p;			/* the pool we allocate from */
+    ap_pool_t *p;		/* the pool we allocate from */
     dav_xml_elem *cur_elem;	/* current element */
 
     int error;			/* an error has occurred */
@@ -392,7 +394,7 @@ int dav_parse_input(request_rec * r, dav_xml_doc **pdoc)
 	while ((len = ap_get_client_block(r, buffer, DAV_READ_BLOCKSIZE)) > 0) {
 	    total_read += len;
 	    if (limit_xml_body && total_read > limit_xml_body) {
-		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r,
+		ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 			      "XML request body is larger than the configured "
 			      "limit of %lu", (unsigned long)limit_xml_body);
 		goto read_error;
@@ -418,12 +420,12 @@ int dav_parse_input(request_rec * r, dav_xml_doc **pdoc)
     if (ctx.error) {
 	switch (ctx.error) {
 	case DAV_NS_ERROR_UNKNOWN_PREFIX:
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 			  "An undefined namespace prefix was used.");
 	    break;
 
 	default:
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 			  "There was an error within the XML request body.");
 	    break;
 	}
@@ -443,7 +445,7 @@ int dav_parse_input(request_rec * r, dav_xml_doc **pdoc)
 	enum XML_Error err = XML_GetErrorCode(parser);
 
 	/* ### fix this error message (default vs special) */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		      "XML parser error code: %s (%d).",
 		      XML_ErrorString(err), err);
 

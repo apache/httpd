@@ -109,7 +109,7 @@ typedef struct {
     int allow_depthinfinity;
     long limit_xml_body;
 
-    table *d_params;		/* per-directory DAV config parameters */
+    ap_table_t *d_params;	/* per-directory DAV config parameters */
     struct dav_dyn_mod_ctx *dmc;
 
     dav_dyn_hooks propdb;
@@ -139,7 +139,7 @@ typedef struct {
 extern module MODULE_VAR_EXPORT dav_module;
 
 /* copy a module's providers into our per-directory configuration state */
-static void dav_copy_providers(pool *p, const char *name, dav_dir_conf *conf)
+static void dav_copy_providers(ap_pool_t *p, const char *name, dav_dir_conf *conf)
 {
     const dav_dyn_module *mod;
     const dav_dyn_provider *provider;
@@ -202,16 +202,17 @@ static void dav_copy_providers(pool *p, const char *name, dav_dir_conf *conf)
     }
 }
 
-static void dav_init_handler(server_rec *s, pool *p)
+static void dav_init_handler(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp,
+                             server_rec *s)
 {
     /* DBG0("dav_init_handler"); */
 
-    ap_add_version_component("DAV/" DAV_VERSION);
+    ap_add_version_component(p, "DAV/" DAV_VERSION);
 
     dav_process_builtin_modules(p);
 }
 
-static void *dav_create_server_config(pool *p, server_rec *s)
+static void *dav_create_server_config(ap_pool_t *p, server_rec *s)
 {
     dav_server_conf *newconf;
 
@@ -223,7 +224,7 @@ static void *dav_create_server_config(pool *p, server_rec *s)
     return newconf;
 }
 
-static void *dav_merge_server_config(pool *p, void *base, void *overrides)
+static void *dav_merge_server_config(ap_pool_t *p, void *base, void *overrides)
 {
     dav_server_conf *parent = base;
     dav_server_conf *child = overrides;
@@ -238,7 +239,7 @@ static void *dav_merge_server_config(pool *p, void *base, void *overrides)
     return newconf;
 }
 
-static void *dav_create_dir_config(pool *p, char *dir)
+static void *dav_create_dir_config(ap_pool_t *p, char *dir)
 {
     /* NOTE: dir==NULL creates the default per-dir config */
 
@@ -260,7 +261,7 @@ static void *dav_create_dir_config(pool *p, char *dir)
     return conf;
 }
 
-static void *dav_merge_dir_config(pool *p, void *base, void *overrides)
+static void *dav_merge_dir_config(ap_pool_t *p, void *base, void *overrides)
 {
     dav_dir_conf *parent = base;
     dav_dir_conf *child = overrides;
@@ -332,7 +333,7 @@ const char *dav_get_lockdb_path(const request_rec *r)
     return conf->lockdb_path;
 }
 
-table *dav_get_dir_params(const request_rec *r)
+ap_table_t *dav_get_dir_params(const request_rec *r)
 {
     dav_dir_conf *conf;
 
@@ -505,9 +506,6 @@ static int dav_error_response(request_rec *r, int status, const char *body)
     /* begin the response now... */
     ap_send_http_header(r);
 
-    /* ### hard or soft? */
-    ap_soft_timeout("send error body", r);
-
     ap_rvputs(r,
 	      DAV_RESPONSE_BODY_1,
 	      r->status_line,
@@ -521,8 +519,6 @@ static int dav_error_response(request_rec *r, int status, const char *body)
     ap_rputs(ap_psignature("\n<P><HR>\n", r), r);
     ap_rputs(DAV_RESPONSE_BODY_4, r);
 
-    ap_kill_timeout(r);
-
     /* the response has been sent. */
     /*
      * ### Use of DONE obviates logging..!
@@ -535,7 +531,7 @@ static int dav_error_response(request_rec *r, int status, const char *body)
 ** in a URI (to form a query section). We must explicitly handle it so that
 ** we can embed the URI into an XML document.
 */
-static const char *dav_xml_escape_uri(pool *p, const char *uri)
+static const char *dav_xml_escape_uri(ap_pool_t *p, const char *uri)
 {
     const char *e_uri = ap_escape_uri(p, uri);
 
@@ -554,7 +550,7 @@ static const char *dav_xml_escape_uri(pool *p, const char *uri)
 
 static void dav_send_multistatus(request_rec *r, int status,
                                  dav_response *first,
-				 array_header *namespaces)
+				 ap_array_header_t *namespaces)
 {
     /* Set the correct status and Content-Type */
     r->status = status;
@@ -562,9 +558,6 @@ static void dav_send_multistatus(request_rec *r, int status,
 
     /* Send all of the headers now */
     ap_send_http_header(r);
-
-    /* Start a timeout for delivering the response. */
-    ap_soft_timeout("sending multistatus response", r);
 
     /* Send the actual multistatus response now... */
     ap_rputs(DAV_XML_HEADER DEBUG_CR
@@ -627,9 +620,6 @@ static void dav_send_multistatus(request_rec *r, int status,
     }
 
     ap_rputs("</D:multistatus>" DEBUG_CR, r);
-
-    /* Done with sending and the timeout. */
-    ap_kill_timeout(r);
 }
 
 /*
@@ -648,11 +638,11 @@ static void dav_log_err(request_rec *r, dav_error *err, int level)
 	    continue;
 	if (errscan->save_errno != 0) {
 	    errno = errscan->save_errno;
-	    ap_log_rerror(APLOG_MARK, level, r, "%s  [%d, #%d]",
+	    ap_log_rerror(APLOG_MARK, level, errno, r, "%s  [%d, #%d]",
 			  errscan->desc, errscan->status, errscan->error_id);
 	}
 	else {
-	    ap_log_rerror(APLOG_MARK, level | APLOG_NOERRNO, r,
+	    ap_log_rerror(APLOG_MARK, level | APLOG_NOERRNO, 0, r,
 			  "%s  [%d, #%d]",
 			  errscan->desc, errscan->status, errscan->error_id);
 	}
@@ -748,7 +738,7 @@ int dav_get_depth(request_rec *r, int def_depth)
 
     /* The caller will return an HTTP_BAD_REQUEST. This will augment the
      * default message that Apache provides. */
-    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		  "An invalid Depth header was specified.");
     return -1;
 }
@@ -770,7 +760,7 @@ static int dav_get_overwrite(request_rec *r)
 
     /* The caller will return an HTTP_BAD_REQUEST. This will augment the
      * default message that Apache provides. */
-    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		  "An invalid Overwrite header was specified.");
     return -1;
 }
@@ -788,7 +778,7 @@ static int dav_get_resource(request_rec *r, dav_resource **res_p)
     repos_hooks = DAV_AS_HOOKS_REPOSITORY(&conf->repository);
     if (repos_hooks == NULL || repos_hooks->get_resource == NULL) {
 	/* ### this should happen at startup rather than per-request */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
                       "No %s has been configured.",
                       repos_hooks == NULL
                       ? "repository module"
@@ -997,9 +987,6 @@ static int dav_method_get(request_rec *r)
 	/* all set. send the headers now. */
 	ap_send_http_header(r);
 
-	/* start a timeout for delivering the response. */
-	ap_soft_timeout("sending GET response", r);
-
 	buffer = ap_palloc(r->pool, DAV_READ_BLOCKSIZE);
 	while (1) {
 	    size_t amt;
@@ -1031,13 +1018,7 @@ static int dav_method_get(request_rec *r)
                 if (range_start > range_end)
                     break;
             }
-
-	    /* reset the timeout after a successful write */
-	    ap_reset_timeout(r);
 	}
-
-	/* Done with the request; clear its timeout */
-	ap_kill_timeout(r);
 
 	if (err != NULL)
 	    return dav_handle_err(r, err, NULL);
@@ -1342,13 +1323,13 @@ static int dav_method_delete(request_rec *r)
 
     if (resource->collection && depth != DAV_INFINITY) {
 	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		      "Depth must be \"infinity\" for DELETE of a collection.");
 	return HTTP_BAD_REQUEST;
     }
     if (!resource->collection && depth == 1) {
 	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		      "Depth of \"1\" is not allowed for DELETE.");
 	return HTTP_BAD_REQUEST;
     }
@@ -1705,7 +1686,7 @@ static int dav_method_propfind(request_rec *r)
 
     if (doc && !dav_validate_root(doc, "propfind")) {
 	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		      "The \"propfind\" element was not found.");
 	return HTTP_BAD_REQUEST;
     }
@@ -1727,7 +1708,7 @@ static int dav_method_propfind(request_rec *r)
 	/* "propfind" element must have one of the above three children */
 
 	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		      "The \"propfind\" element does not contain one of "
 		      "the required child elements (the specific command).");
 	return HTTP_BAD_REQUEST;
@@ -1786,7 +1767,8 @@ static int dav_method_propfind(request_rec *r)
     return DONE;
 }
 
-static dav_text * dav_failed_proppatch(pool *p, array_header *prop_ctx)
+static dav_text * dav_failed_proppatch(ap_pool_t *p,
+                                       ap_array_header_t *prop_ctx)
 {
     dav_text_header hdr = { 0 };
     int i = prop_ctx->nelts;
@@ -1846,7 +1828,7 @@ static dav_text * dav_failed_proppatch(pool *p, array_header *prop_ctx)
     return hdr.first;
 }
 
-static dav_text * dav_success_proppatch(pool *p, array_header *prop_ctx)
+static dav_text * dav_success_proppatch(ap_pool_t *p, ap_array_header_t *prop_ctx)
 {
     dav_text_header hdr = { 0 };
     int i = prop_ctx->nelts;
@@ -1889,7 +1871,7 @@ static void dav_prop_log_errors(dav_prop_ctx *ctx)
 ** reverse order.
 */
 static int dav_process_ctx_list(void (*func)(dav_prop_ctx *ctx),
-				array_header *ctx_list, int stop_on_error,
+				ap_array_header_t *ctx_list, int stop_on_error,
 				int reverse)
 {
     int i = ctx_list->nelts;
@@ -1926,7 +1908,7 @@ static int dav_method_proppatch(request_rec *r)
     int failure = 0;
     dav_response resp = { 0 };
     dav_text *propstat_text;
-    array_header *ctx_list;
+    ap_array_header_t *ctx_list;
     dav_prop_ctx *ctx;
 
     /* Ask repository module to resolve the resource */
@@ -1945,7 +1927,7 @@ static int dav_method_proppatch(request_rec *r)
 
     if (doc == NULL || !dav_validate_root(doc, "propertyupdate")) {
 	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		      "The request body does not contain "
 		      "a \"propertyupdate\" element.");
 	return HTTP_BAD_REQUEST;
@@ -1994,7 +1976,7 @@ static int dav_method_proppatch(request_rec *r)
 	    dav_close_propdb(propdb);
 
 	    /* This supplies additional information for the default message. */
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 			  "A \"prop\" element is missing inside "
 			  "the propertyupdate command.");
 	    return HTTP_BAD_REQUEST;
@@ -2070,7 +2052,7 @@ static int process_mkcol_body(request_rec *r)
     if (tenc) {
 	if (strcasecmp(tenc, "chunked")) {
 	    /* Use this instead of Apache's default error string */
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 			  "Unknown Transfer-Encoding %s", tenc);
 	    return HTTP_NOT_IMPLEMENTED;
 	}
@@ -2085,7 +2067,7 @@ static int process_mkcol_body(request_rec *r)
 	}
 	if (*pos != '\0') {
 	    /* This supplies additional information for the default message. */
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 			  "Invalid Content-Length %s", lenp);
 	    return HTTP_BAD_REQUEST;
 	}
@@ -2282,7 +2264,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
     }
     if (dest == NULL) {
 	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		      "The request is missing a Destination header.");
 	return HTTP_BAD_REQUEST;
     }
@@ -2291,7 +2273,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
     if (lookup.rnew == NULL) {
 	if (lookup.err.status == HTTP_BAD_REQUEST) {
 	    /* This supplies additional information for the default message. */
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 			  lookup.err.desc);
 	    return HTTP_BAD_REQUEST;
 	}
@@ -2355,13 +2337,13 @@ static int dav_method_copymove(request_rec *r, int is_move)
     }
     if (depth == 1) {
 	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		   "Depth must be \"0\" or \"infinity\" for COPY or MOVE.");
 	return HTTP_BAD_REQUEST;
     }
     if (is_move && is_dir && depth != DAV_INFINITY) {
 	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		    "Depth must be \"infinity\" when moving a collection.");
 	return HTTP_BAD_REQUEST;
     }
@@ -2633,7 +2615,7 @@ static int dav_method_lock(request_rec *r)
 
     depth = dav_get_depth(r, DAV_INFINITY);
     if (depth != 0 && depth != DAV_INFINITY) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		      "Depth must be 0 or \"infinity\" for LOCK.");
 	return HTTP_BAD_REQUEST;
     }
@@ -2660,7 +2642,7 @@ static int dav_method_lock(request_rec *r)
         }
         new_lock_request = 1;
 
-        lock->auth_user = ap_pstrdup(r->pool, r->connection->user);
+        lock->auth_user = ap_pstrdup(r->pool, r->user);
     }
 
     resource_state = dav_get_resource_state(r, resource);
@@ -2749,7 +2731,6 @@ static int dav_method_lock(request_rec *r)
     r->content_type = DAV_XML_CONTENT_TYPE;
 
     ap_send_http_header(r);
-    ap_soft_timeout("send LOCK response", r);
 
     ap_rputs(DAV_XML_HEADER DEBUG_CR "<D:prop xmlns:D=\"DAV:\">" DEBUG_CR, r);
     if (lock == NULL)
@@ -2762,8 +2743,6 @@ static int dav_method_lock(request_rec *r)
 		   dav_lock_get_activelock(r, lock, NULL));
     }
     ap_rputs("</D:prop>", r);
-
-    ap_kill_timeout(r);
 
     /* the response has been sent. */
     return DONE;
@@ -2794,7 +2773,7 @@ static int dav_method_unlock(request_rec *r)
         return DECLINED;
 
     if ((const_locktoken_txt = ap_table_get(r->headers_in, "Lock-Token")) == NULL) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		      "Unlock failed (%s):  No Lock-Token specified in header", r->filename);
 	return HTTP_BAD_REQUEST;
     }
@@ -3265,6 +3244,11 @@ static int dav_type_checker(request_rec *r)
     return DECLINED;
 }
 
+static void register_hooks(void)
+{
+    ap_hook_post_config(dav_init_handler, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_type_checker(dav_type_checker, NULL, NULL, AP_HOOK_MIDDLE);
+}
 
 /*---------------------------------------------------------------------------
 **
@@ -3332,23 +3316,12 @@ static const handler_rec dav_handlers[] =
 
 module MODULE_VAR_EXPORT dav_module =
 {
-    STANDARD_MODULE_STUFF,
-    dav_init_handler,		/* initializer */
+    STANDARD20_MODULE_STUFF,
     dav_create_dir_config,	/* dir config creater */
     dav_merge_dir_config,	/* dir merger --- default is to override */
     dav_create_server_config,	/* server config */
     dav_merge_server_config,	/* merge server config */
     dav_cmds,			/* command table */
     dav_handlers,		/* handlers */
-    NULL,			/* filename translation */
-    NULL,			/* check_user_id */
-    NULL,			/* check auth */
-    NULL,			/* check access */
-    dav_type_checker,		/* type_checker */
-    NULL,			/* fixups */
-    NULL,			/* logger */
-    NULL,			/* header parser */
-    NULL,			/* child_init */
-    NULL,			/* child_exit */
-    NULL			/* post read-request */
+    register_hooks,             /* register hooks */
 };

@@ -56,14 +56,20 @@
 ** DAV filesystem lock implementation
 */
 
+/* ### this stuff is temporary... need APR */
 #include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#ifndef O_BINARY
+#define O_BINARY (0)
+#endif
 
 #include "httpd.h"
 #include "http_log.h"
 
-#include "mod_dav.h"
-#include "dav_opaquelock.h"
-#include "dav_fs_repos.h"
+#include "../main/mod_dav.h"
+#include "../main/dav_opaquelock.h"
+#include "repos.h"
 
 
 /* ---------------------------------------------------------------
@@ -120,7 +126,7 @@
 
 
 /* ack. forward declare. */
-static dav_error * dav_fs_remove_locknull_member(pool *p,
+static dav_error * dav_fs_remove_locknull_member(ap_pool_t *p,
 						 const char *filename,
 						 dav_buffer *pbuf);
 
@@ -209,7 +215,7 @@ typedef struct dav_lock_indirect
 struct dav_lockdb_private
 {
     request_rec *r;			/* for accessing the uuid state */
-    pool *pool;				/* a pool to use */
+    ap_pool_t *pool;			/* a pool to use */
     const char *lockdb_path;		/* where is the lock database? */
 
     int opened;				/* we opened the database */
@@ -270,7 +276,7 @@ static dav_lock *dav_fs_alloc_lock(dav_lockdb *lockdb, dav_datum key,
 ** Parse an opaquelocktoken URI into a locktoken.
 */
 static dav_error * dav_fs_parse_locktoken(
-    pool *p,
+    ap_pool_t *p,
     const char *char_token,
     dav_locktoken **locktoken_p)
 {
@@ -301,7 +307,7 @@ static dav_error * dav_fs_parse_locktoken(
 ** Generate the URI for a locktoken
 */
 static const char *dav_fs_format_locktoken(
-    pool *p,
+    ap_pool_t *p,
     const dav_locktoken *locktoken)
 {
     const char *uuid_token = dav_format_opaquelocktoken(p, &locktoken->uuid);
@@ -406,7 +412,7 @@ static void dav_fs_close_lockdb(dav_lockdb *lockdb)
 **
 ** Given a pathname, build a DAV_TYPE_FNAME lock database key.
 */
-static dav_datum dav_fs_build_fname_key(pool *p, const char *pathname)
+static dav_datum dav_fs_build_fname_key(ap_pool_t *p, const char *pathname)
 {
     dav_datum key;
 
@@ -433,7 +439,7 @@ static dav_datum dav_fs_build_fname_key(pool *p, const char *pathname)
 **    (non-Win32 and file exists ):
 **       dav_datum->dvalue = inode, dev_major, dev_minor
 */
-static dav_datum dav_fs_build_key(pool *p, const dav_resource *resource)
+static dav_datum dav_fs_build_key(ap_pool_t *p, const dav_resource *resource)
 {
     const char *file = dav_fs_pathname(resource);
 #ifndef WIN32
@@ -805,7 +811,7 @@ static const char *dav_fs_get_supportedlock(void)
 ** dav_fs_load_locknull_list:  Returns a dav_buffer dump of the locknull file
 **    for the given directory.
 */
-static dav_error * dav_fs_load_locknull_list(pool *p, const char *dirpath,
+static dav_error * dav_fs_load_locknull_list(ap_pool_t *p, const char *dirpath,
 					     dav_buffer *pbuf) 
 {
     struct stat finfo;
@@ -855,7 +861,7 @@ static dav_error * dav_fs_load_locknull_list(pool *p, const char *dirpath,
 ** dav_fs_save_locknull_list:  Saves contents of pbuf into the
 **    locknull file for dirpath.
 */
-static dav_error * dav_fs_save_locknull_list(pool *p, const char *dirpath,
+static dav_error * dav_fs_save_locknull_list(ap_pool_t *p, const char *dirpath,
 					     dav_buffer *pbuf)
 {
     const char *pathname;
@@ -905,7 +911,7 @@ static dav_error * dav_fs_save_locknull_list(pool *p, const char *dirpath,
 ** dav_fs_remove_locknull_member:  Removes filename from the locknull list
 **    for directory path.
 */
-static dav_error * dav_fs_remove_locknull_member(pool *p, const char *filename,
+static dav_error * dav_fs_remove_locknull_member(ap_pool_t *p, const char *filename,
 						 dav_buffer *pbuf)
 {
     dav_error *err;
@@ -968,7 +974,7 @@ static dav_error * dav_fs_add_locknull_state(
     const dav_resource *resource)
 {
     dav_buffer buf = { 0 };
-    pool *p = lockdb->info->pool;
+    ap_pool_t *p = lockdb->info->pool;
     const char *dirpath;
     const char *fname;
     dav_error *err;
@@ -1007,7 +1013,7 @@ static dav_error * dav_fs_remove_locknull_state(
 {
     dav_buffer buf = { 0 };
     dav_error *err;
-    pool *p = lockdb->info->pool;
+    ap_pool_t *p = lockdb->info->pool;
     const char *pathname = dav_fs_pathname(resource);
 
     if ((err = dav_fs_remove_locknull_member(p, pathname, &buf)) != NULL) {
@@ -1071,7 +1077,7 @@ static dav_error * dav_fs_get_locks(dav_lockdb *lockdb,
 				    int calltype,
 				    dav_lock **locks)
 {
-    pool *p = lockdb->info->pool;
+    ap_pool_t *p = lockdb->info->pool;
     dav_datum key;
     dav_error *err;
     dav_lock *lock = NULL;
@@ -1242,7 +1248,7 @@ static dav_error * dav_fs_append_locks(dav_lockdb *lockdb,
 				       int make_indirect,
 				       const dav_lock *lock)
 {
-    pool *p = lockdb->info->pool;
+    ap_pool_t *p = lockdb->info->pool;
     dav_error *err;
     dav_lock_indirect *ip;
     dav_lock_discovery *dp;

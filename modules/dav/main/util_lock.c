@@ -81,7 +81,7 @@ const char *dav_lock_get_activelock(request_rec *r, dav_lock *lock,
     const dav_hooks_locks *hooks = DAV_GET_HOOKS_LOCKS(r);
     int count = 0;
     dav_buffer work_buf = { 0 };
-    pool *p = r->pool;
+    ap_pool_t *p = r->pool;
 
     /* If no locks or no lock provider, there are no locks */
     if (lock == NULL || hooks == NULL) {
@@ -198,7 +198,7 @@ dav_error * dav_lock_parse_lockinfo(request_rec *r,
 				    dav_lock **lock_request)
 {
     const dav_hooks_locks *hooks = DAV_GET_HOOKS_LOCKS(r);
-    pool *p = r->pool;
+    ap_pool_t *p = r->pool;
     dav_error *err;
     dav_xml_elem *child;
     dav_lock *lock;
@@ -428,7 +428,7 @@ static dav_error * dav_unlock_walker(dav_walker_ctx *ctx, int calltype)
 ** namespace [repository] hierarchy. Note that some lock providers may be
 ** able to return this information with a traversal.
 */
-static dav_error * dav_get_direct_resource(pool *p,
+static dav_error * dav_get_direct_resource(ap_pool_t *p,
 					   dav_lockdb *lockdb,
 					   const dav_locktoken *locktoken,
 					   const dav_resource *resource,
@@ -731,7 +731,7 @@ int dav_get_resource_state(request_rec *r, const dav_resource *resource)
         if (err != NULL) {
 	    /* ### don't log an error. return err. add higher-level desc. */
 
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		          "Failed to query lock-null status for %s",
 			  r->filename);
 
