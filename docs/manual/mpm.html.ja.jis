@@ -1,39 +1,27 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head><META http-equiv="Content-Type" content="text/html; charset=iso-2022-jp"><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>マルチプロセッシングモジュール (MPM) - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">マルチプロセッシングモジュール (MPM)</h1>
+<p>この文書ではマルチプロセッシングモジュールがどのようなもので、
+Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
+<ul><li><a href="#introduction">はじめに</a></li><li><a href="#choosing">MPM を選ぶ</a></li><li><a href="#defaults">MPM デフォルト値</a></li></ul><hr><h2><a name="introduction">はじめに</a></h2>
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Apache Multi-Processing Modules (MPMs)</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-  <!-- English revision: 1.11 -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="center">Apache マルチプロセッシングモジュール</h1>
-
-    <p>Apache HTTP サーバは異なる幅広い環境、多種多様なプラットホームで
+    <p>Apache HTTP サーバは異なる幅広い環境、多種多様なプラットホームで
     動作するように、パワフルで柔軟性に富んだ設計になっています。
     異なるプラットホーム・異なる環境ではしばしば、
     異なる機能が必要になったり、
-    同じ機能でも効率のために異なる実装が必要になったりします。
+    同じ機能でも効率のために異なる実装が必要になったりします。
     Apache ではモジュール化された設計により幅広い環境に適応してきました。
     この設計のおかげで、管理者は
     コンパイル時または実行時にどのモジュールをロードするか選ぶことによって、
-    どの機能をサーバに取り込むか選択することがができます。</p>
+    どの機能をサーバに取り込むか選択することがができます。</p>
 
     <p>Apache 2.0 では、
     このモジュール化された設計をサーバの基本機能にまで拡張しました。
-    サーバには精選されたマルチプロセッシングモジュール (MPM) が
-    付いてきて、
-    これらはマシンのネットワークポートをバインドしたり、
-    リクエストを受け付けたり、リクエストを扱うよう子プロセスに
-    割り当てたり、
+    サーバには精選されたマルチプロセッシングモジュール (MPM) 
+    が付いてきて、これらはマシンのネットワークポートをバインドしたり、
+    リクエストを受け付けたり、リクエストを扱うよう子プロセスに割り当てたり、
     といった役割を持ちます。</p>
 
     <p>モジュール化された設計をサーバのこのレベルまで拡張することで
@@ -43,7 +31,7 @@
       <li>Apache は幅広いオペレーティングシステムを
       より美しく効率的にサポートできます。
       特に Windows 版の Apache は随分効率的になりました。
-      なぜなら <a href="mod/mpm_winnt.html">mpm_winnt</a>
+      なぜなら <code><a href="./mod/mpm_winnt.html">mpm_winnt</a></code>
       によって、Apache 1.3 で用いられていた POSIX 
       レイヤの代わりにネイティブのネットワーク機能を
       利用できるからです。
@@ -53,12 +41,12 @@
 
       <li>サーバは特定のサイト向けに、より上手にカスタマイズできます。
       例えば、非常に大きなスケーラビリティを必要とするサイトでは、
-      <a href="mod/worker.html"> worker </a>といったスレッド化された
+      <code><a href="./mod/worker.html">worker</a></code> といったスレッド化された
       MPM を利用できる一方で、安定性や古いソフトウェアとの互換性を
-      必要とするサイトでは <a href="mod/prefork.html">preforking MPM</a>
+      必要とするサイトでは <code><a href="./mod/prefork.html">prefork</a></code>
       が利用できます。また、
       異なるホストを異なるユーザ ID で動作させる
-      (<a href="mod/perchild.html">perchild</a>) といった
+      (<code><a href="./mod/perchild.html">perchild</a></code>) といった
       特別な機能も提供できます。</li>
     </ul>
 
@@ -69,7 +57,7 @@
     利用可能な MPM は 
     <a href="mod/">module インデックス</a>にあります。</p>
 
-    <h2 align="center">MPM を選ぶ</h2>
+<h2><a name="choosing">MPM を選ぶ</a></h2>
 
     <p>MPM は設定中に選択して、サーバ内部にコンパイルされなければ
     なりません。
@@ -77,7 +65,7 @@
     そもそもスレッドが使われているということを知る必要があります。
     MPM には Unix 上でスレッドを用いるものや、スレッドをまったく
     使わないものがあるので、
-    Apache は、MPM が設定中に選択されて Apache 内部に組み込まれた場合の方が
+    Apache は、MPM が設定中に選択されて Apache 内部に組み込まれた場合の方が
     常により良いパフォーマンスを発揮します。</p>
 
     <p>望みの MPM を実際に選ぶためには、./configure スクリプトで
@@ -89,19 +77,16 @@
     このコマンドは、MPM
     を含め、サーバにコンパイルで組み込まれたモジュール全てを
     列挙します。</p>
+<h2><a name="defaults">MPM デフォルト値</a></h2>
 
-    <h2 align="center">MPM デフォルト値</h2>
+<p>次表に様々な OS 向けのデフォルトの MPM 一覧を掲載しています。
+コンパイル時に意図的に他を選択しなければ、自動的にこれらの MPM
+が選択されます。</p>
 
-    <ul>
-      <li>BeOS: beos</li>
-
-      <li>OS/2: mpmt_os2</li>
-
-      <li>Unix: prefork</li>
-
-      <li>Windows: winnt</li>
-    </ul>
-    <!--#include virtual="footer.html" -->
-  </body>
-</html>
-
+<table>
+<tr><td>BeOS</td><td><code><a href="./mod/beos.html">beos</a></code></td></tr>
+<tr><td>OS/2</td><td><code><a href="./mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
+<tr><td>Unix</td><td><code><a href="./mod/prefork.html">prefork</a></code></td></tr>
+<tr><td>Windows</td><td><code><a href="./mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
+</table>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="索引"></a><a href="./"><img src="./images/home.gif" alt="ホーム"></a></body></html>
