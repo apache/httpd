@@ -13,19 +13,17 @@
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p>
-<p class="apache">Apache HTTP Server Version 2.1</p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">모듈</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">모듈</a></div>
 <div id="page-content">
 <div id="preamble"><h1>아파치 모듈 mod_auth_digest</h1>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_auth_digest.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/mod/mod_auth_digest.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td>MD5 Digest Authentication을 사용한 사용자인증.</td></tr>
 <tr><th><a href="module-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">모듈명:</a></th><td>auth_digest_module</td></tr>
@@ -39,16 +37,18 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestalgorithm">AuthDigestAlgorithm</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestdomain">AuthDigestDomain</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestfile">AuthDigestFile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestgroupfile">AuthDigestGroupFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestnccheck">AuthDigestNcCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestnonceformat">AuthDigestNonceFormat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestnoncelifetime">AuthDigestNonceLifetime</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authdigestprovider">AuthDigestProvider</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestqop">AuthDigestQop</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestshmemsize">AuthDigestShmemSize</a></li>
 </ul>
 <h3>주제</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#using">Digest Authentication 사용하기</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#msie">MS Internet Explorer 문제 해결하기</a></li>
 </ul><h3>참고</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li>
@@ -61,8 +61,10 @@
 <h2><a name="using" id="using">Digest Authentication 사용하기</a></h2>
 
     <p>MD5 Digest authentication은 매우 쉽게 사용할 수 있다.
-    <code>AuthType Basic</code>과 <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> 대신
-    <code>AuthType Digest</code>와 <code class="directive"><a href="#authdigestprovider">AuthDigestProvider</a></code>를
+    모든 <code class="directive"><a href="../mod/mod_auth.html#authgroupfile">AuthGroupFile</a></code>을
+    <code class="directive"><a href="#authdigestgroupfile">AuthDigestGroupFile</a></code>로
+    변경하고, <code>AuthType Basic</code>과 <code class="directive"><a href="../mod/mod_auth.html#authuserfile">AuthUserFile</a></code> 대신
+    <code>AuthType Digest</code>와 <code class="directive"><a href="#authdigestfile">AuthDigestFile</a></code>을
     사용하여 간단히 인증을 설정할 수 있다. 그리고 최소한 보호하려는
     영역의 기본 URI을 <code class="directive"><a href="#authdigestdomain">AuthDigestDomain</a></code> 지시어에 사용한다.</p>
 
@@ -75,9 +77,7 @@
         AuthType Digest<br />
         AuthName "private area"<br />
         AuthDigestDomain /private/ http://mirror.my.dom/private2/<br />
-	<br />
-	AuthDigestProvider file<br />
-        AuthUserFile /web/auth/.digest_pw<br />
+        AuthDigestFile /web/auth/.digest_pw<br />
         Require valid-user<br />
       </span>
       &lt;/Location&gt;
@@ -88,12 +88,38 @@
     안전한 암호시스템을 제공하지만, 브라우저가 지원해야 한다.
     2002년 11월 현재 digest authentication을 지원하는 브라우저에는
     <a href="http://www.opera.com/">Opera</a>, (질의문자열과
-    함께 사용할 수 없지만) <a href="http://www.microsoft.com/windows/ie/">MS Internet
+    함께 사용하면 안되지만 - 해결방법은 아래 "<a href="#msie">MS Internet Explorer</a> 문제 해결하기"를 참고) <a href="http://www.microsoft.com/windows/ie/">MS Internet
     Explorer</a>, <a href="http://www.w3.org/Amaya/">Amaya</a>, <a href="http://www.mozilla.org">Mozilla</a>, 버전 7 이후의
     <a href="http://channels.netscape.com/ns/browsers/download.jsp">Netscape</a> 등이 있다. digest authentication이 basic
     authentication 만큼 널리 구현되지 않았기때문에 주의해서
     사용해야 한다.</p>
     </div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="msie" id="msie">MS Internet Explorer 문제 해결하기</a></h2>
+    <p>현재 Internet Explorer는 Digest authentication
+    사용시 질의문자열이 있는 <code>GET</code> 요청을 RFC와 다르게
+    처리하는 문제가 있다. 몇가지 방법으로 이 문제를 해결할 수
+    있다.</p>
+
+    <p>
+    첫번째는 프로그램에 자료를 넘겨주기위해 <code>GET</code>
+    대신 <code>POST</code> 요청을 사용하는 방법이다. 이 방법이
+    가능하다면 가장 간단한 해결책이다.
+    </p>
+
+    <p>또, 아파치 2.0.51부터 <code>AuthDigestEnableQueryStringHack</code>
+    환경변수를 제공하여 문제를 해결한다. 요청에
+    <code>AuthDigestEnableQueryStringHack</code>을 설정하면
+    아파치는 MSIE 버그를 피해갈 조치를 취하고 요청 URI를 digest
+    비교에서 제외한다. 이 방법은 다음과 같이 사용한다.</p>
+
+    <div class="example"><h3>MSIE에서 Digest Authentication 사용하기:</h3><p><code>
+    BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
+    </code></p></div>
+
+    <p>선택적인 환경변수 설정에 대한 자세한 내용은 <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code> 지시어를
+    참고하라.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthDigestAlgorithm" id="AuthDigestAlgorithm">AuthDigestAlgorithm</a> <a name="authdigestalgorithm" id="authdigestalgorithm">지시어</a></h2>
@@ -130,7 +156,7 @@ URI들</td></tr>
     <p><code class="directive">AuthDigestDomain</code> 지시어는 같은
     보호영역에 있는 (<em>예를 들어</em> 같은 영역과 사용자명/암호
     정보를 사용하는) URI들을 지정한다. 지정한 URI는 접두사로
-    사용한다. 클라이언트는 URI "아래" 모두를
+    사용한다. <em>즉</em>, 클라이언트는 URI "아래" 모두를
     같은 사용자명/암호로 보호한다고 가정한다. URI는
     (<em>즉</em>, 스킴(scheme), 호스트, 포트 등을 포함하는)
     절대 URL이거나 상대 URI이다.</p>
@@ -144,6 +170,58 @@ URI들</td></tr>
     <p>다른 서버의 URI를 지정하면, (이를 이해하는) 클라이언트는
     여러 서버마다 매번 사용자에게 묻지않고 같은 사용자명/암호를
     사용할 수 있다.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthDigestFile" id="AuthDigestFile">AuthDigestFile</a> <a name="authdigestfile" id="authdigestfile">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>digest authentication에 사용할 사용자명과 인코딩된
+암호 목록을 저장한 문서파일 위치</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>AuthDigestFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_auth_digest</td></tr>
+</table>
+    <p><code class="directive">AuthDigestFile</code> 지시어는 digest
+    authentication에 사용할 사용자명과 인코딩된 암호를 저장하는
+    문서파일명을 지정한다. <var>File-path</var>는 사용자정보
+    파일의 절대경로이다.</p>
+
+    <p>이 파일 내용은 특별한 형식이 있다. 아파치 배포본의
+    <code>support/</code> 하위디렉토리에 있는 <a href="../programs/htdigest.html">htdigest</a> 도구를 사용하여
+    이런 형식의 파일을 만들 수 있다.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthDigestGroupFile" id="AuthDigestGroupFile">AuthDigestGroupFile</a> <a name="authdigestgroupfile" id="authdigestgroupfile">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>digest authentication에 사용할 그룹 목록을 저장한
+문서파일명</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>AuthDigestGroupFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_auth_digest</td></tr>
+</table>
+    <p><code class="directive">AuthDigestGroupFile</code> 지시어는 그룹과
+    그룹의 구성원들(사용자명) 목록을 저장하는 문서파일명을 지정한다.
+    <var>File-path</var>는 그룹정보 파일의 절대경로이다.</p>
+
+    <p>그룹파일은 그룹명 뒤에 콜론, 그뒤에 그룹에 속한 사용자명들을
+    공백으로 구분하여 한 줄로 기록한다. 예를 들어 다음과 같다.</p>
+
+    <div class="example"><p><code>mygroup: bob joe anne</code></p></div>
+
+    <p>큰 문자파일을 검색하는 것이 <em>매우</em> 비효율적임을
+    명심하라.</p>
+
+    <div class="warning"><h3>보안:</h3>
+    <p><code class="directive">AuthGroupFile</code>을 웹서버 문서들 밖에
+    저장해야 한다. 그룹파일이 보호하는 디렉토리 안에 그룹파일을
+    두지 <em>마라</em>. 그렇지 않으면 클라이언트가
+    <code class="directive">AuthGroupFile</code>을 다운받을 수도 있다.</p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -195,32 +273,6 @@ URI들</td></tr>
     <var>seconds</var>가 0보다 작으면 nonce는 영원히 만기되지
     않는다. 
     </p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDigestProvider" id="AuthDigestProvider">AuthDigestProvider</a> <a name="authdigestprovider" id="authdigestprovider">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>이 위치에 대한 인증제공자를 지정한다</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>AuthDigestProvider On|Off|<var>provider-name</var>
-[<var>provider-name</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>AuthDigestProvider On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_auth_digest</td></tr>
-</table>
-    <p><code class="directive">AuthDigestProvider</code> 지시어는 이
-    위치에서 사용자를 인증할 제공자를 지정한다. 값이
-    <code>On</code>이면 기본제공자(<code>file</code>)를 사용한다.
-    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> 모듈이 <code>file</code>
-    제공자를 구현하기때문에 서버에 이 모듈이 있는지 확인해야
-    한다.</p>
-
-    <p>제공자는 <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>과
-    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>을 참고하라.</p>
-
-    <p>값이 <code>Off</code>이면 제공자 목록을 지우고 기본상태로
-    돌아간다.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

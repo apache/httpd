@@ -67,16 +67,15 @@ NT.</dd>
 address, or other characteristics of the client request.</dd>
 <dt><a href="mod_actions.html">mod_actions</a></dt><dd>이 모듈은 미디어종류나 요청메서드에 따라 CGI
 스크립트를 실행한다.</dd>
-<dt><a href="mod_alias.html">mod_alias</a></dt><dd>Provides for mapping different parts of the host
-    filesystem in the document tree and for URL redirection</dd>
+<dt><a href="mod_alias.html">mod_alias</a></dt><dd>파일시스템의 다른 부분들을 문서 계층구조에 포함하고,
+    URL 리다이렉션을 제공한다</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>HTTP 헤더를 포함한 파일을 보낸다</dd>
 <dt><a href="mod_auth.html">mod_auth</a></dt><dd>User authentication using text files</dd>
 <dt><a href="mod_auth_anon.html">mod_auth_anon</a></dt><dd>Allows "anonymous" user access to authenticated
 areas</dd>
 <dt><a href="mod_auth_dbm.html">mod_auth_dbm</a></dt><dd>Provides for user authentication using DBM
     files</dd>
-<dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
-    Digest Authentication.</dd>
+<dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>MD5 Digest Authentication을 사용한 사용자인증.</dd>
 <dt><a href="mod_auth_ldap.html">mod_auth_ldap</a></dt><dd>Allows an LDAP directory to be used to store the database
 for HTTP Basic authentication.</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>자동으로 유닉스의 <code>ls</code> 명령어나 Win32의
@@ -104,17 +103,17 @@ index 파일을 서비스한다</dd>
 <dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>메모리에 정적 파일들을 캐쉬</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>Customization of HTTP request and response
 headers</dd>
-<dt><a href="mod_imap.html" id="I" name="I">mod_imap</a></dt><dd>Server-side imagemap processing</dd>
+<dt><a href="mod_imap.html" id="I" name="I">mod_imap</a></dt><dd>서버측 이미지맵(imagemap) 처리</dd>
 <dt><a href="mod_include.html">mod_include</a></dt><dd>Server-parsed html documents (Server Side Includes)</dd>
 <dt><a href="mod_info.html">mod_info</a></dt><dd>Provides a comprehensive overview of the server
 configuration</dd>
-<dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>ISAPI Extensions within Apache for Windows</dd>
+<dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>Windows용 아파치에서 ISAPI Extension 사용</dd>
 <dt><a href="mod_ldap.html" id="L" name="L">mod_ldap</a></dt><dd>LDAP connection pooling and result caching services for use
 by other LDAP modules</dd>
-<dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Logging of the requests made to the server</dd>
+<dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>서버로의 요청을 로그에 기록한다</dd>
 <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Forensic Logging of the requests made to the server</dd>
 <dt><a href="mod_logio.html">mod_logio</a></dt><dd>요청당 입출력 바이트수를 기록</dd>
-<dt><a href="mod_mem_cache.html" id="M" name="M">mod_mem_cache</a></dt><dd>Content cache keyed to URIs</dd>
+<dt><a href="mod_mem_cache.html" id="M" name="M">mod_mem_cache</a></dt><dd>URI를 키로 사용하여 내용을 캐쉬한다.</dd>
 <dt><a href="mod_mime.html">mod_mime</a></dt><dd>Associates the requested filename's extensions
     with the file's behavior (handlers and filters)
     and content (mime-type, language, character set and

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.16 (outdated: 1.20) -->
+<!-- English Revision: 1.5.2.11 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -40,10 +40,13 @@
 <section id="using"><title>Digest Authentication 사용하기</title>
 
     <p>MD5 Digest authentication은 매우 쉽게 사용할 수 있다.
-    <code>AuthType Basic</code>과 <directive
-    module="mod_auth_basic">AuthBasicProvider</directive> 대신
+    모든 <directive module="mod_auth">AuthGroupFile</directive>을
+    <directive
+    module="mod_auth_digest">AuthDigestGroupFile</directive>로
+    변경하고, <code>AuthType Basic</code>과 <directive
+    module="mod_auth">AuthUserFile</directive> 대신
     <code>AuthType Digest</code>와 <directive
-    module="mod_auth_digest">AuthDigestProvider</directive>를
+    module="mod_auth_digest">AuthDigestFile</directive>을
     사용하여 간단히 인증을 설정할 수 있다. 그리고 최소한 보호하려는
     영역의 기본 URI을 <directive module="mod_auth_digest"
     >AuthDigestDomain</directive> 지시어에 사용한다.</p>
@@ -57,9 +60,7 @@
         AuthType Digest<br />
         AuthName "private area"<br />
         AuthDigestDomain /private/ http://mirror.my.dom/private2/<br />
-	<br />
-	AuthDigestProvider file<br />
-        AuthUserFile /web/auth/.digest_pw<br />
+        AuthDigestFile /web/auth/.digest_pw<br />
         Require valid-user<br />
       </indent>
       &lt;/Location&gt;
@@ -70,7 +71,8 @@
     안전한 암호시스템을 제공하지만, 브라우저가 지원해야 한다.
     2002년 11월 현재 digest authentication을 지원하는 브라우저에는
     <a href="http://www.opera.com/">Opera</a>, (질의문자열과
-    함께 사용할 수 없지만) <a
+    함께 사용하면 안되지만 - 해결방법은 아래 "<a href="#msie"
+     >MS Internet Explorer</a> 문제 해결하기"를 참고) <a
     href="http://www.microsoft.com/windows/ie/">MS Internet
     Explorer</a>, <a
     href="http://www.w3.org/Amaya/">Amaya</a>, <a
@@ -82,29 +84,84 @@
     </note>
 </section>
 
+<section id="msie"><title>MS Internet Explorer 문제 해결하기</title>
+    <p>현재 Internet Explorer는 Digest authentication
+    사용시 질의문자열이 있는 <code>GET</code> 요청을 RFC와 다르게
+    처리하는 문제가 있다. 몇가지 방법으로 이 문제를 해결할 수
+    있다.</p>
+
+    <p>
+    첫번째는 프로그램에 자료를 넘겨주기위해 <code>GET</code>
+    대신 <code>POST</code> 요청을 사용하는 방법이다. 이 방법이
+    가능하다면 가장 간단한 해결책이다.
+    </p>
+
+    <p>또, 아파치 2.0.51부터 <code>AuthDigestEnableQueryStringHack</code>
+    환경변수를 제공하여 문제를 해결한다. 요청에
+    <code>AuthDigestEnableQueryStringHack</code>을 설정하면
+    아파치는 MSIE 버그를 피해갈 조치를 취하고 요청 URI를 digest
+    비교에서 제외한다. 이 방법은 다음과 같이 사용한다.</p>
+
+    <example><title>MSIE에서 Digest Authentication 사용하기:</title>
+    BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
+    </example>
+
+    <p>선택적인 환경변수 설정에 대한 자세한 내용은 <directive
+    module="mod_setenvif">BrowserMatch</directive> 지시어를
+    참고하라.</p>
+</section>
+
+
 <directivesynopsis>
-<name>AuthDigestProvider</name>
-<description>이 위치에 대한 인증제공자를 지정한다</description>
-<syntax>AuthDigestProvider On|Off|<var>provider-name</var>
-[<var>provider-name</var>] ...</syntax>
-<default>AuthDigestProvider On</default>
+<name>AuthDigestFile</name>
+<description>digest authentication에 사용할 사용자명과 인코딩된
+암호 목록을 저장한 문서파일 위치</description>
+<syntax>AuthDigestFile <var>file-path</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthDigestProvider</directive> 지시어는 이
-    위치에서 사용자를 인증할 제공자를 지정한다. 값이
-    <code>On</code>이면 기본제공자(<code>file</code>)를 사용한다.
-    <module>mod_authn_file</module> 모듈이 <code>file</code>
-    제공자를 구현하기때문에 서버에 이 모듈이 있는지 확인해야
-    한다.</p>
+    <p><directive>AuthDigestFile</directive> 지시어는 digest
+    authentication에 사용할 사용자명과 인코딩된 암호를 저장하는
+    문서파일명을 지정한다. <var>File-path</var>는 사용자정보
+    파일의 절대경로이다.</p>
 
-    <p>제공자는 <module>mod_authn_dbm</module>과
-    <module>mod_authn_file</module>을 참고하라.</p>
+    <p>이 파일 내용은 특별한 형식이 있다. 아파치 배포본의
+    <code>support/</code> 하위디렉토리에 있는 <a
+    href="../programs/htdigest.html">htdigest</a> 도구를 사용하여
+    이런 형식의 파일을 만들 수 있다.</p>
+</usage>
+</directivesynopsis>
 
-    <p>값이 <code>Off</code>이면 제공자 목록을 지우고 기본상태로
-    돌아간다.</p>
+<directivesynopsis>
+<name>AuthDigestGroupFile</name>
+<description>digest authentication에 사용할 그룹 목록을 저장한
+문서파일명</description>
+<syntax>AuthDigestGroupFile <var>file-path</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p><directive>AuthDigestGroupFile</directive> 지시어는 그룹과
+    그룹의 구성원들(사용자명) 목록을 저장하는 문서파일명을 지정한다.
+    <var>File-path</var>는 그룹정보 파일의 절대경로이다.</p>
+
+    <p>그룹파일은 그룹명 뒤에 콜론, 그뒤에 그룹에 속한 사용자명들을
+    공백으로 구분하여 한 줄로 기록한다. 예를 들어 다음과 같다.</p>
+
+    <example>mygroup: bob joe anne</example>
+
+    <p>큰 문자파일을 검색하는 것이 <em>매우</em> 비효율적임을
+    명심하라.</p>
+
+    <note type="warning"><title>보안:</title>
+    <p><directive>AuthGroupFile</directive>을 웹서버 문서들 밖에
+    저장해야 한다. 그룹파일이 보호하는 디렉토리 안에 그룹파일을
+    두지 <em>마라</em>. 그렇지 않으면 클라이언트가
+    <directive>AuthGroupFile</directive>을 다운받을 수도 있다.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -246,7 +303,7 @@ URI들</description>
     <p><directive>AuthDigestDomain</directive> 지시어는 같은
     보호영역에 있는 (<em>예를 들어</em> 같은 영역과 사용자명/암호
     정보를 사용하는) URI들을 지정한다. 지정한 URI는 접두사로
-    사용한다. 클라이언트는 URI "아래" 모두를
+    사용한다. <em>즉</em>, 클라이언트는 URI "아래" 모두를
     같은 사용자명/암호로 보호한다고 가정한다. URI는
     (<em>즉</em>, 스킴(scheme), 호스트, 포트 등을 포함하는)
     절대 URL이거나 상대 URI이다.</p>
