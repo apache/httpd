@@ -185,7 +185,7 @@ static int parse_byterange(char *range, apr_off_t clength,
     if (*start > *end)
 	return -1;
 
-    return (*start > 0 || *end < clength - 1);
+    return (*start > 0 || *end < clength);
 }
 
 static int ap_set_byterange(request_rec *r);

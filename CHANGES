@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) Fix some byterange handling.  If we get a byte range that looks like
+     "-999999" where that is past the end of the file, we should return 
+     a PARTIAL CONTENT status code, and return the whole file as one big
+     byterange.  This matches the 1.3 handling now.  [Ryan Bloom]
+
   *) Make the error bucket a real meta-data bucket.  This means that the
      bucket length is 0, and a read returns NULL data.  If one of these
      buckets is passed down after the headers are sent, this data will
