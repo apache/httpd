@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/07 21:25:49 $]
+Last modified at [$Date: 2002/06/07 21:54:48 $]
 
 Release:
 
@@ -51,15 +51,6 @@ CURRENT RELEASE NOTES:
       end of the week (ie, by Friday 6/7).  Doable?  We'll see.
 
 RELEASE SHOWSTOPPERS:
-
-    * CWD issues
-      Message-ID: <5.1.0.14.2.20020524115533.02785e28@pop3.rowe-clan.net>
-                  <COEELENBBCHBFEPPGDOPCEPPGPAA.ake@meepzor.com>
-
-    * Find a better name for ap_signal_server()
-      Message-ID: <m37kltilb3.fsf@rdu88-251-253.nc.rr.com>
-      BrianP says:  how about "ap_apachectl()"?
-      Justin says to BrianP: "Eww."
 
     * Potentially remove ap_discard_request_body()
       Message-ID: <20020531142047.W19485@apache.org>
