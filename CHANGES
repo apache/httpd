@@ -3872,7 +3872,7 @@ Changes with Apache 2.0a3
 
   *) [EBCDIC] Port Paul Gilmartin's CRLF patch from 1.3.  This replaces most
      of the \015, \012, and \015\012 constants with macros.
-     [Greg Ames <gregames@us.ibm.com>]
+     [Greg Ames]
      
   *) Add ap_xlate_open() et al for translation of text between different 
      character sets.  The initial implementation requires iconv().
