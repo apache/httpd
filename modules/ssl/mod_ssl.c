@@ -279,6 +279,7 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 #ifdef HAVE_OPENSSL
     ERR_load_crypto_strings();
 #endif
+    SSL_load_error_strings();
     SSL_library_init();
 #if HAVE_ENGINE_LOAD_BUILTIN_ENGINES
     ENGINE_load_builtin_engines();
@@ -288,7 +289,6 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
     OPENSSL_load_builtin_modules();
 #endif
 #endif
-    SSL_load_error_strings();
 
     /*
      * Let us cleanup the ssl library when the module is unloaded
