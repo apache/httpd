@@ -237,15 +237,18 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
     /* see if we've got an old listener for this address:port */
     for (walk = &old_listeners; *walk; walk = &(*walk)->next) {
         sa = (*walk)->bind_addr;
-        apr_sockaddr_port_get(&oldport, sa);
-        apr_sockaddr_ip_get(&oldaddr, sa);
-        if (!strcmp(oldaddr, addr) && port == oldport) {
-            /* re-use existing record */
-            new = *walk;
-            *walk = new->next;
-            new->next = ap_listeners;
-            ap_listeners = new;
-            return;
+        /* Some listeners are not real so they will not have a bind_addr. */
+        if (sa) {
+            apr_sockaddr_port_get(&oldport, sa);
+            apr_sockaddr_ip_get(&oldaddr, sa);
+            if (!strcmp(oldaddr, addr) && port == oldport) {
+                /* re-use existing record */
+                new = *walk;
+                *walk = new->next;
+                new->next = ap_listeners;
+                ap_listeners = new;
+                return;
+            }
         }
     }
 

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.30-dev
 
+  *) Fix segfault when worker MPM receives SIGHUP.
+     [Ian Holsman, Aaron Bannert, Justin Erenkrantz]
+
   *) Fix bug that could potentially prevent the perchild MPM from
      working with more than one vhost/uid.  [Aaron Bannert]
 
