@@ -2927,7 +2927,7 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     char buf[LONG_STRING_LEN];
     char c;
     int i;
-    apr_ssize_t nbytes;
+    apr_size_t nbytes;
 
 #ifndef NO_WRITEV
     struct iovec iova[2];
@@ -3164,7 +3164,7 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     char redir[20];
     va_list ap;
     int i;
-    apr_ssize_t nbytes;
+    apr_size_t nbytes;
     request_rec *req;
     char *ruser;
     const char *rhost;

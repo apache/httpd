@@ -593,7 +593,7 @@ static int cgi_handler(request_rec *r)
      */
     if (ap_should_client_block(r)) {
 	int dbsize, len_read;
-        apr_ssize_t bytes_written, bytes_to_write;
+        apr_size_t bytes_written, bytes_to_write;
         apr_status_t rv;
 
 	if (conf->logname) {
