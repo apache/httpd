@@ -56,6 +56,7 @@
 #define AP_LISTEN_H
 
 #include "apr_network_io.h"
+#include "http_config.h"
 
 typedef struct ap_listen_rec ap_listen_rec;
 struct ap_listen_rec {
