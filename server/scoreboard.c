@@ -149,7 +149,7 @@ static void init_scoreboard(void)
         ap_scoreboard_image->servers[i] = (worker_score *)more_storage;
         more_storage += thread_limit * sizeof(worker_score);
     }
-    ap_assert(more_storage - (char *)ap_scoreboard_image == scoreboard_size);
+    ap_assert(more_storage == (char *)ap_scoreboard_image + scoreboard_size);
 }
 
 /* ToDo: This function should be made to handle setting up 
