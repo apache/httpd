@@ -1104,6 +1104,7 @@ static void init_child(apr_pool_t *p, server_rec *s)
 static int hook_uri2file(request_rec *r)
 {
     rewrite_server_conf *conf;
+    const char *saved_rulestatus;
     const char *var;
     const char *thisserver;
     char *thisport;
@@ -1182,6 +1183,7 @@ static int hook_uri2file(request_rec *r)
                       thisurl, NULL);
     apr_table_setn(r->subprocess_env, ENVVAR_SCRIPT_URI, var);
 
+    if (!(saved_rulestatus = apr_table_get(r->notes,"already_rewritten"))) {
     /* if filename was not initially set,
      * we start with the requested URI
      */
@@ -1190,11 +1192,25 @@ static int hook_uri2file(request_rec *r)
         rewritelog(r, 2, "init rewrite engine with requested uri %s",
                    r->filename);
     }
+    else {
+        rewritelog(r, 2, "init rewrite engine with passed filename %s."
+                   " Original uri = %s", r->filename, r->uri);
+    }
 
     /*
      *  now apply the rules ...
      */
     rulestatus = apply_rewrite_list(r, conf->rewriterules, NULL);
+    apr_table_set(r->notes,"already_rewritten",
+                  apr_psprintf(r->pool,"%d",rulestatus));
+    }
+    else {
+        rewritelog(r, 2,
+                   "uri already rewritten. Status %s, Uri %s, r->filename %s",
+                   saved_rulestatus, r->uri, r->filename);
+        rulestatus = atoi(saved_rulestatus);
+    }
+
     if (rulestatus) {
         unsigned skip;
 
@@ -2816,6 +2832,13 @@ static unsigned is_absolute_uri(char *uri)
         }
         else if (!strncasecmp(uri, "ntp://", 6)) {  /* nntp://   */
             return 7;
+        }
+        break;
+
+    case 'p':
+    case 'P':
+        if (!strncasecmp(uri, "roxy:", 5)) {       /* proxy:   */
+            return 6;
         }
         break;
     }
