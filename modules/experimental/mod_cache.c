@@ -578,6 +578,9 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
                 if (APR_BUCKET_IS_FLUSH(e)) {
                     continue;
                 }
+                if (e->length < 0) {
+                    break;
+                }
                 size += e->length;
             }
 
