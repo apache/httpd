@@ -579,7 +579,8 @@ static int cgi_handler(request_rec *r)
      */
     if (ap_should_client_block(r)) {
 	int dbsize, len_read;
-        apr_ssize_t bytes_written;
+        apr_ssize_t bytes_written, bytes_to_write;
+        apr_status_t rv;
 
 	if (conf->logname) {
 	    dbuf = apr_pcalloc(r->pool, conf->bufbytes + 1);
@@ -598,9 +599,17 @@ static int cgi_handler(request_rec *r)
 		memcpy(dbuf + dbpos, argsbuffer, dbsize);
 		dbpos += dbsize;
 	    }
-            bytes_written = len_read;
-            (void) apr_write(script_out, argsbuffer, &bytes_written);
-	    if (bytes_written < len_read) {
+            /* Keep writing data to the child until done or too much time
+             * elapses with no progress or an error occurs.
+             */
+            bytes_written = 0;
+            do {
+                bytes_to_write = len_read - bytes_written;
+                rv = apr_write(script_out, argsbuffer + bytes_written, 
+                               &bytes_to_write);
+                bytes_written += bytes_to_write;
+            } while (rv == APR_SUCCESS && bytes_written < len_read);
+	    if (rv != APR_SUCCESS || bytes_written < len_read) {
 		/* silly script stopped reading, soak up remaining message */
 		while (ap_get_client_block(r, argsbuffer, HUGE_STRING_LEN) > 0) {
 		    /* dump it */
