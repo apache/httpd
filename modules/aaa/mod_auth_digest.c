@@ -299,8 +299,11 @@ static void initialize_secret(server_rec *s)
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s,
 		 "Digest: generating secret for digest authentication ...");
 
-    /* TODO - make sure this func works (compiles?) on win32 */
+#if APR_HAS_RANDOM
     status = apr_generate_random_bytes(secret, sizeof(secret));
+#else
+#error APR random number support is missing; you probably need to install the truerand library.
+#endif
 
     if(!(status == APR_SUCCESS)) {
         char buf[120];
