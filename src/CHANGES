@@ -1,5 +1,21 @@
 Changes with Apache 1.3a2
 
+  *) dbmmanage overhaul:
+     - merge dbmmanage and dbmmanage.new functionality, remove dbmmanage.new 
+     - tie() to AnyDBM_File which will use one of DB_File, NDBM_File or
+       GDBM_File (-ldb, -lndbm, -lgdbm) (trying each in that order)
+     - provide better seed for rand
+     - prompt for password as per getpass(3) (turn off echo, read from
+       /dev/tty, etc.)
+     - use "newstyle" crypt based on $Config{osname} ($^O)
+     - will not add a user if already in database, use new `update' command
+       instead
+     - added `check' command to check a users' password
+     - added `import' command to convert existing password text-files or 
+       dbm files exported with `view'
+     - more descriptive usage, general cleanup, 'use strict' clean, etc.
+     [Doug MacEachern]
+
   *) Added psocket() which is a pool form of socket(), various places within
      the proxy weren't properly blocking alarms while registering the cleanup
      for its sockets.  bclose() now uses pclose() and pclosesocket().  There
