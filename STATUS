@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/12 00:59:02 $]
+Last modified at [$Date: 2004/01/12 02:02:10 $]
 
 Release:
 
@@ -268,17 +268,6 @@ PATCHES TO BACKPORT FROM 2.1
         modules/mappers/mod_rewrite.c: r1.162
       jerenkrantz: Committed to 2.0.  Will leave backport to 1.3 to someone
                    else.  BTW, clever use of NULL terms (or lack of).  ;-)
-      +1: nd, trawick, jerenkrantz
-
-    * mod_rewrite: cause a lookup failure in external rewrite maps if
-      the key contains a newline. PR 14453. (2.0 + 1.3)
-        modules/mappers/mod_rewrite.c: r1.199
-      jerenkrantz: Okay by me, but perhaps we should just escape the \n?
-                   Wouldn't ignoring the rewrite here do something bad tho?
-                   (Am not backporting.)
-      nd: If the user/admin wants to escape, he can use the internal escape
-          map. Additionally not escaping \n is (more or less) backwards
-          compatible, because it always failed (the map got out of sync).
       +1: nd, trawick, jerenkrantz
 
     * mod_ssl: fix a link failure when the openssl-engine libraries are

@@ -1,5 +1,9 @@
 Changes with Apache 2.0.49
 
+  *) mod_rewrite: In external rewrite maps lookup keys containing
+     a newline now cause a lookup failure. PR 14453.
+     [Cedric Gavage <cedric.gavage unixtech.be>, André Malo]
+
   *) Backport major overhaul of mod_include's filter parser from 2.1.
      The new parser code is expected to be more robust and should
      catch all of the edge cases that were not handled by the previous one.
