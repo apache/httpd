@@ -217,7 +217,7 @@ API_EXPORT(char *) ap_md5digest(ap_context_t *p, ap_file_t *infile)
     AP_MD5_CTX context;
     unsigned char buf[1000];
     long length = 0;
-    int nbytes;
+    ap_ssize_t nbytes;
 
     ap_MD5Init(&context);
     nbytes = sizeof(buf);
