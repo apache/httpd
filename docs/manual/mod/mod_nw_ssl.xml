@@ -11,42 +11,37 @@
 <compatibility>NetWare only</compatibility>
 
 <summary>
-    <p>This module enable SSL encryption for a specified port. It
+    <p>This module enables SSL encryption for a specified port. It
     takes advantage of the SSL encryption functionality that is 
     built into the NetWare operating system.</p>
 </summary>
 
-
 <directivesynopsis>
 <name>SecureListen</name>
 <description>Enables SSL encryption for the specified port</description>
-<syntax>SecureListen <var>[IP-address:]portnumber</var> <var>Certificate-Name</var> <var>[MUTUAL]</var></syntax>
+<syntax>SecureListen [<var>IP-address</var>:]<var>portnumber</var>
+<var>Certificate-Name</var> [MUTUAL]</syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
     <p>Specifies the port and the eDirectory based certificate name
     that will be used to enable SSL encryption. An optional third
-    parameter also enable mutual authentication.</p>
+    parameter also enables mutual authentication.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>NWSSLTrustedCerts</name>
 <description>List of additional client certificates</description>
-<syntax>NWSSLTrustedCerts <var>filename</var><var>[filename]</var><var>...</var></syntax>
+<syntax>NWSSLTrustedCerts <var>filename</var> [<var>filename</var>] ...</syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
     <p>Specifies a list of client certificate files (DER format)
     that are used when creating a proxied SSL connection. Each
     client certificate used by a server must be listed separately 
-    in its own .der file.</p>
+    in its own <code>.der</code> file.</p>
 </usage>
-
-<seealso><directive module="mod_proxy">ProxyPass</directive></seealso>
-<seealso><directive module="mod_proxy">ProxyPassReverse</directive></seealso>
-
 </directivesynopsis>
 
 </modulesynopsis>
-
