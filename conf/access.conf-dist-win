@@ -18,10 +18,11 @@
 # First, we configure the "default" to be a very restrictive set of 
 # permissions.  
 
-<Directory />
-Options FollowSymLinks
-AllowOverride None
-</Directory>
+# XXXX disabled because it is currently broken on Win32
+#<Directory />
+#Options FollowSymLinks
+#AllowOverride None
+#</Directory>
 
 # Note that from this point forward you must specifically allow
 # particular features to be enabled - so if something's not working as

@@ -47,11 +47,6 @@ HostnameLookups off
 
 # If you wish httpd to run as a different user or group, you must run
 # httpd as root initially and it will switch.  
-
-# User/Group: The name (or #number) of the user/group to run httpd as.
-User nobody
-Group #-1
-
 # ServerAdmin: Your address, where problems with the server should be
 # e-mailed.
 
