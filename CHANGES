@@ -1,5 +1,10 @@
 Changes with Apache 2.0.29-dev
 
+  *) Add 'redirect-carefully' environment option to disable sending
+     redirects under special circumstances.  This is helpful for 
+     Microsoft's WebFolders when accessing a directory resource via
+     DAV methods.  [Justin Erenkrantz]
+
   *) Begin to abstract out the underlying transport layer.
      The first step is to remove the socket from the conn_rec,
      the server now lives in a context that is passed to the
