@@ -130,10 +130,18 @@
     cgi-enabled.</p>
 
     <example>
-      &lt;Directory /home/*/cgi-bin/&gt;<br />
+      &lt;Directory /home/*/public_html/cgi-bin/&gt;<br />
        Options ExecCGI<br />
        SetHandler cgi-script<br />
        &lt;/Directory&gt;
+    </example>
+
+    <p>Then, presuming that <code>UserDir</code> is set to
+    <code>public_html</code>, a cgi program <code>example.cgi</code>
+    could be loaded from that directory as:</p>
+
+    <example>
+    http://example.com/~rbowen/cgi-bin/example.cgi
     </example>
 
     </section>
