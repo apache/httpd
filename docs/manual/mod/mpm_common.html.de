@@ -107,6 +107,22 @@
     Ihr System herauszufinden, können Sie Ihr <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> auf <code>debug</code> setzen. Dann wird der
     voreingestellte <code class="directive">AcceptMutex</code> ins <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> geschrieben.</p>
 
+    <div class="warning"><h3>Warnung</h3>
+      <p>Auf den meisten Systemen stoppt der Server mit der Beantwortung von
+        Anfragen, wenn die Option <code>pthread</code> ausgewählt wurde und
+        ein Kindprozess unkontrolliert endet während er den
+        <code>AcceptCntl</code>-Mutex hält. In diesem Fall muss der Server
+        manuell neu gestartet werden, um wieder weiter zu arbeiten.</p>
+      <p>Eine Ausnahme stellt Solaris dar, da es einen Mechanismus anbietet, den
+        der Apache verwendet und der üblicherweise die Freigabe des Mutex
+        erlaubt, nachdem ein Kindprozess, der gerade einen Mutex hält,
+        abgestürzt ist.</p>
+      <p>Wenn Ihr System die Funktion
+        <code>pthread_mutexattr_setrobust_np()</code> bereitstellt, können
+        Sie wahrscheinlich die Option <code>pthread</code> problemlos
+        verwenden.</p>
+    </div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a>-<a name="coredumpdirectory" id="coredumpdirectory">Direktive</a></h2>
@@ -129,9 +145,14 @@
     einen Hauptspeicherauszüg haben möchten, können Sie
     ihn mit dieser Direktive an einem anderen Ort ablegen lassen.</p>
 
-    <p>Wenn Sie den Apache als <code>root</code> starten und explizit
-    <code class="directive">CoreDumpDirectory</code> konfigurieren, aktiviert
-    der Apache ab Linux 2.4 Core-Dumps.</p>
+    <div class="note"><h3>Hauptspeicherauszüge unter Linux</h3>
+      <p>Wenn Apache als <code>root</code> startet und zu einem anderen Benutzer 
+      wechselt, <em>deaktiviert</em> der Linux-Kernel Hauptspeicherauszüge
+      auch dann, wenn der Prozess in dem Verzeichnis schreiben darf. Ab Linux
+      2.4 reaktiviert Apache (ab 2.0.46) Hauptspeicherauszüge wieder,
+      jedoch nur dann, wenn Sie explizit
+      <code class="directive">CoreDumpDirectory</code> konfigurieren.</p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
