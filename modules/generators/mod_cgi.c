@@ -600,7 +600,7 @@ static void discard_script_output(apr_bucket_brigade *bb)
 
 static int cgi_handler(request_rec *r)
 {
-    int retval, nph, dbpos = 0;
+    int nph, dbpos = 0;
     const char *argv0;
     const char *command;
     const char **argv;
@@ -608,8 +608,8 @@ static int cgi_handler(request_rec *r)
     apr_file_t *script_out = NULL, *script_in = NULL, *script_err = NULL;
     apr_bucket_brigade *bb;
     apr_bucket *b;
-    char argsbuffer[HUGE_STRING_LEN];
     int is_included;
+    int seen_eos, child_stopped_reading;
     apr_pool_t *p;
     cgi_server_conf *conf;
     apr_status_t rv;
@@ -662,9 +662,6 @@ static int cgi_handler(request_rec *r)
     }
 
 */
-    if ((retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR)))
-        return retval;
-
     ap_add_common_vars(r);
 
     e_info.cmd_type  = APR_PROGRAM;
@@ -696,45 +693,77 @@ static int cgi_handler(request_rec *r)
     /* Transfer any put/post args, CERN style...
      * Note that we already ignore SIGPIPE in the core server.
      */
-    if (ap_should_client_block(r)) {
-        int len_read, dbsize;
-        apr_size_t bytes_written;
-        apr_status_t rv;
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    seen_eos = 0;
+    child_stopped_reading = 0;
+    if (conf->logname) {
+        dbuf = apr_palloc(r->pool, conf->bufbytes + 1);
+        dbpos = 0;
+    }
+    do {
+        apr_bucket *bucket;
 
-        if (conf->logname) {
-            dbuf = apr_pcalloc(r->pool, conf->bufbytes + 1);
-            dbpos = 0;
+        rv = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
+                            APR_BLOCK_READ, HUGE_STRING_LEN);
+       
+        if (rv != APR_SUCCESS) {
+            return rv;
         }
 
-        while ((len_read =
-                ap_get_client_block(r, argsbuffer, HUGE_STRING_LEN)) > 0) {
-            if (conf->logname) {
-                if ((dbpos + len_read) > conf->bufbytes) {
-                    dbsize = conf->bufbytes - dbpos;
+        APR_BRIGADE_FOREACH(bucket, bb) {
+            const char *data;
+            apr_size_t len;
+
+            if (APR_BUCKET_IS_EOS(bucket)) {
+                seen_eos = 1;
+                break;
+            }
+
+            /* We can't do much with this. */
+            if (APR_BUCKET_IS_FLUSH(bucket)) {
+                continue;
+            }
+
+            /* If the child stopped, we still must read to EOS. */
+            if (child_stopped_reading) {
+                continue;
+            } 
+
+            /* read */
+            apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
+            
+            if (conf->logname && dbpos < conf->bufbytes) {
+                int cursize;
+
+                if ((dbpos + len) > conf->bufbytes) {
+                    cursize = conf->bufbytes - dbpos;
                 }
                 else {
-                    dbsize = len_read;
+                    cursize = len;
                 }
-                memcpy(dbuf + dbpos, argsbuffer, dbsize);
-                dbpos += dbsize;
+                memcpy(dbuf + dbpos, data, cursize);
+                dbpos += cursize;
             }
+
             /* Keep writing data to the child until done or too much time
              * elapses with no progress or an error occurs.
              */
-            rv = apr_file_write_full(script_out, argsbuffer, len_read,
-                                     &bytes_written);
+            rv = apr_file_write_full(script_out, data, len, NULL);
+
             if (rv != APR_SUCCESS) {
                 /* silly script stopped reading, soak up remaining message */
-                while (ap_get_client_block(r, argsbuffer,
-                                           HUGE_STRING_LEN) > 0) {
-                    /* dump it */
-                }
-                break;
+                child_stopped_reading = 1;
             }
         }
-        apr_file_flush(script_out);
+        apr_brigade_cleanup(bb);
     }
+    while (!seen_eos);
 
+    if (conf->logname) {
+        dbuf[dbpos] = '\0';
+    }
+    /* Is this flush really needed? */
+    apr_file_flush(script_out);
     apr_file_close(script_out);
 
     /* Handle script return... */
@@ -744,7 +773,6 @@ static int cgi_handler(request_rec *r)
         char sbuf[MAX_STRING_LEN];
         int ret;
 
-        bb = apr_brigade_create(r->pool, c->bucket_alloc);
         b = apr_bucket_pipe_create(script_in, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
         b = apr_bucket_eos_create(c->bucket_alloc);
