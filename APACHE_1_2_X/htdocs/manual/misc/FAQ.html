@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.63.2.1 $ ($Date: 1997/06/09 17:04:36 $)
+  $Revision: 1.63.2.2 $ ($Date: 1997/06/11 21:21:39 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -35,6 +35,11 @@
 <!--    apache.org or apacheweek.com).                              -->
 <!--  - When adding items, make sure they're put in the right place -->
 <!--    - verify that the numbering matches up.                     -->
+<!--  - *Don't* use <PRE></PRE> blocks - they don't appear	    -->
+<!--    correctly in a reliable way when this is converted to text  -->
+<!--	with Lynx.  Use <DL><DD><CODE>xxx<BR>xx</CODE></DD></DL>    -->
+<!--	blocks inside a <P></P> instead.  This is necessary to get  -->
+<!--	the horizontal and vertical indenting right.		    -->
 <!--  - Don't forget to include an HR tag after the last /P tag     -->
 <!--    but before the /LI in an item.                              -->
   <P>
@@ -51,8 +56,8 @@
 <!-- - mod_auth & passwd lines "user:pw:.*" - ++1st colon onward is -->
 <!--   treated as pw, not just ++1st to --2nd.                      -->
 <!-- - SSL:                                                         -->
-<!--   Can I use Apache-SSL for free in Canada?                     -->
-<!--   Why can't I use Apache-SSL in the U.S.?                      -->
+<!--   - Can I use Apache-SSL for free in Canada?                   -->
+<!--   - Why can't I use Apache-SSL in the U.S.?                    -->
 <!-- - How can I found out how many visitors my site gets?          -->
 <!-- - How do I add a counter?                                      -->
 <!-- - How do I configure Apache as a proxy?                        -->
@@ -71,7 +76,7 @@
 <!-- - Fix midi question; a bigger problem than midi vs. x-midi is  -->
 <!--   the simple fact that older versions of Apache (and new ones  -->
 <!--   that have been upgraded without upgrading the mime.types     -->
-<!--   file don't have the type listed at all.                      -->
+<!--   file) don't have the type listed at all.                     -->
 <UL>
  <LI><STRONG>Background</STRONG>
   <OL START=1>
@@ -159,7 +164,7 @@
     Apache buffering it?</A>
    </LI>
    <LI><A HREF="#linuxiovec">Why do I get complaints about redefinition
-    of `struct iovec' when compiling under Linux?</A>
+    of &quot;<CODE>struct iovec</CODE>&quot; when compiling under Linux?</A>
    </LI>
    <LI><A HREF="#wheres-the-dump">The errorlog says Apache dumped core,
     but where's the dump file?</A>
@@ -182,19 +187,25 @@
     logs?</A>
    </LI>
    <LI><A HREF="#bind8.1">Why do I get an error about an undefined 
-    reference to "__inet_ntoa" or other __inet_* symbols?</A>
+    reference to &quot;<SAMP>__inet_ntoa</SAMP>&quot; or other
+    <SAMP>__inet_*</SAMP> symbols?</A>
    </LI>
    <LI><A HREF="#set-servername">Why does accessing directories only work
-    when I include the trailing "/" (eg. <CODE>http://foo.domain.com/~user/
-    </CODE>) but not when I omit it (eg. <CODE>http://foo.domain.com/~user
-    </CODE>)?</A>
+    when I include the trailing "/"
+    (<EM>e.g.</EM>,&nbsp;<SAMP>http://foo.domain.com/~user/</SAMP>) but
+    not when I omit it
+    (<EM>e.g.</EM>,&nbsp;<SAMP>http://foo.domain.com/~user</SAMP>)?</A>
    </LI>
-   <LI><A HREF="#user-authentication">How do I setup Apache to require
+   <LI><A HREF="#user-authentication">How do I set up Apache to require
     a username and password to access certain documents?</A>
    </LI>
-   <LI><A HREF="#remote-auth-only">How do I setup Apache to allow access
-    to certain documents only if a site is either a local site <EM>or
-    </EM> the user supplies a password and username?</A>
+   <LI><A HREF="#remote-auth-only">How do I set up Apache to allow access
+    to certain documents only if a site is either a local site
+    <EM>or</EM> the user supplies a password and username?</A>
+   </LI>
+   <LI><A HREF="#no-info-directives">Why doesn't mod_info list any
+    directives?</A>
+   </LI>
   </OL>
  </LI>
 </UL>
@@ -460,16 +471,12 @@
     dump, please include a backtrace (if possible).  As an example,
     </P>
     <P>
-    <CODE>
-     <DL>
-      <DD># cd <EM>ServerRoot</EM>
-      </DD>
-      <DD># dbx httpd core
-      </DD>
-      <DD>(dbx) where
-      </DD>
-     </DL>
-    </CODE>
+    <DL>
+     <DD><CODE># cd <EM>ServerRoot</EM><BR>
+      # dbx httpd core<BR>
+      (dbx) where</CODE>
+     </DD>
+    </DL>
     </P>
     <P>
     (Substitute the appropriate locations for your
@@ -538,15 +545,19 @@
      </DD>
     </DL>
     </P>
+    <P>
     The server will then recognize that all files in that location (and
     its logical descendants) that end in &quot;<SAMP>.cgi</SAMP>&quot;
     are script files, not documents.
+    </P>
    </LI>
    <LI>Make sure that the directory location is covered by an
     <A
      HREF="../mod/core.html#options"
     ><SAMP>Options</SAMP></A>
     declaration that includes the <SAMP>ExecCGI</SAMP> option.
+    <P>
+    </P>
    </LI>
   </OL>
   <HR>
@@ -565,20 +576,20 @@
   first <CODE>print</CODE> or <CODE>write</CODE> statement:
   </P>
   <P>
-  <CODE>
-   <DL>
-    <DD>$cfh = select (STDOUT);
-    </DD>
-    <DD>$| = 1;
-    </DD>
-    <DD>select ($cfh);
-    </DD>
-   </DL>
-  </CODE>
+  <DL>
+   <DD><CODE>$cfh = select (STDOUT);<BR>
+    $| = 1;<BR>
+    select ($cfh);</CODE>
+   </DD>
+  </DL>
   </P>
   <P>
   This is generally only necessary when you are calling external 
-  programs from your script that send output to stdout.  
+  programs from your script that send output to stdout, or if there will
+  be along delay between the time the headers are sent and the actual
+  content starts being emitted.  To maximise performance, you should
+  turn buffering back <EM>on</EM> (with <CODE>$| = 0</CODE> or the
+  equivalent) after the statements that send the headers.
   <P>
   If your script isn't written in Perl, do the equivalent thing for
   whatever language you <EM>are</EM> using (<EM>e.g.</EM>, for C, call 
@@ -601,7 +612,13 @@
   Processing a document at run-time is called <EM>parsing</EM> it; hence
   the term &quot;parsed HTML&quot; sometimes used for documents that
   contain SSI instructions.  Parsing tends to be <EM>extremely</EM>
-  resource-consumptive, and is not enabled by default.
+  resource-consumptive, and is not enabled by default.  It can also
+  interfere with the cachability of your documents, which can put a
+  further load on your server.  (see the
+  <A
+   HREF="#ssi-part-ii"
+  >next question</A>
+  for more information about this.)
   </P>
   <P>
   To enable SSI processing, you need to
@@ -709,7 +726,11 @@
       <STRONG>Does or will Apache act as a Proxy server?</STRONG>
      </A>
   <P>
-  Apache version 1.1 and above comes with a proxy module. If compiled
+  Apache version 1.1 and above comes with a
+  <A
+   HREF="../mod/mod_proxy.html"
+  >proxy module</A>.
+  If compiled
   in, this will make Apache act as a caching-proxy server.  
   </P>
   <HR>
@@ -821,17 +842,13 @@
   would affect the location where the POST-handling script resides:
   </P>
   <P>
-  <CODE>
-   <DL>
-    <DD>&lt;Limit GET&gt;
-    </DD>
-    <DD>&nbsp;&nbsp;&nbsp;&nbsp;:
-    </DD>
-   </DL>
-  </CODE>
+  <DL>
+   <DD><CODE>&lt;Limit GET&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;:</CODE>
+   </DD>
+  </DL>
   </P>
   <P>
-  Change that to <SAMP>&lt;Limit GET POST&gt;</SAMP> and the problem
+  Change that to <CODE>&lt;Limit GET POST&gt;</CODE> and the problem
   will probably go away.
   </P>
   <HR>
@@ -893,8 +910,9 @@
       <STRONG>Why doesn't my <CODE>ErrorDocument 401</CODE> work?</STRONG>
      </A>
   <P>
-  You need to use it with a URL in the form "/foo/bar" and not one
-  with a method and hostname such as "http://host/foo/bar".  See the
+  You need to use it with a URL in the form
+  &quot;<SAMP>/foo/bar</SAMP>&quot; and not one with a method and
+  hostname such as &quot;<SAMP>http://host/foo/bar</SAMP>&quot;.  See the 
   <A
    HREF="../mod/core.html#errordocument"
   ><SAMP>ErrorDocument</SAMP></A>
@@ -1000,7 +1018,7 @@
   </P>
   <P>
   <DL>
-   <DD><CODE>BrowserMatch Java/1.0 force-response-1.0</CODE>
+   <DD><CODE>BrowserMatch Java1.0 force-response-1.0</CODE>
    </DD>
   </DL>
   </P>
@@ -1093,25 +1111,25 @@
   <P>
   As an example how you might handle the former (in a Perl script):
   </P>
-  <CODE>
-   <DL>
-    <DD>if ($0 =~ m:/*nph-:) {
-        <BR>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        $HTTP_headers&nbsp;=&nbsp;
-        &quot;HTTP/1.1&nbsp;200&nbsp;OK\015\012&quot;;
-        <BR>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        $HTTP_headers&nbsp;.=&nbsp;
-        &quot;Connection:&nbsp;close\015\012&quot;;
-        <BR>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        printf&nbsp;($HTTP_headers);
-        <BR>
-        };
-    </DD>
-   </DL>
-  </CODE>
+  <P>
+  <DL>
+   <DD><CODE>if ($0 =~ m:/*nph-:) {
+    <BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    $HTTP_headers&nbsp;=&nbsp;
+    &quot;HTTP/1.1&nbsp;200&nbsp;OK\015\012&quot;;
+    <BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    $HTTP_headers&nbsp;.=&nbsp;
+    &quot;Connection:&nbsp;close\015\012&quot;;
+    <BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    printf&nbsp;($HTTP_headers);
+    <BR>
+    };</CODE>
+   </DD>
+  </DL>
+  </P>
   <P>
   and then follow with your normal non-<SAMP>nph</SAMP> headers.
   </P>
@@ -1119,7 +1137,7 @@
  </LI>
  <LI><A NAME="linuxiovec">
       <STRONG>Why do I get complaints about redefinition
-      of `struct iovec' when compiling under Linux?</STRONG>
+      of &quot;<CODE>struct iovec</CODE>&quot; when compiling under Linux?</STRONG>
      </A>
   <P>
   This is a conflict between your C library includes and your kernel
@@ -1143,7 +1161,7 @@
       file?</STRONG>
      </A>
   <P>
-  In Apache version 1.2 (beginning with 1.2b8), the error log message
+  In Apache version 1.2, the error log message
   about dumped core includes the directory where the dump file should be
   located.  However, many Unixes do not allow a process that has
   called <CODE>setuid()</CODE> to dump core for security reasons; 
@@ -1197,10 +1215,12 @@
     this by adding the <SAMP>-DMAXIMUM_DNS</SAMP> clause to the
     <SAMP>EXTRA_CFLAGS</SAMP> definition in your
     <SAMP>Configuration</SAMP> file.  For example:
+    <P>
     <DL>
      <DD><CODE>EXTRA_CFLAGS=-DMAXIMUM_DNS</CODE>
      </DD>
     </DL>
+    </P>
     <P>
     This will cause Apache to be very paranoid about making sure a
     particular host address is <EM>really</EM> assigned to the name it
@@ -1273,10 +1293,12 @@
    <LI>Instruct Apache to send a different <SAMP>Content-type</SAMP>
     header for these files by adding the following line to your server's
     configuration files:
+    <P>
     <DL>
      <DD><CODE>AddType audio/x-midi .mid .midi .kar</CODE>
      </DD>
     </DL>
+    </P>
     <P>
     Note that this may break browsers that <EM>do</EM> recognize the
     <SAMP>audio/midi</SAMP> MIME type unless they're prepared to also
@@ -1382,31 +1404,10 @@
   </P>
   <HR>
  </LI>
- <LI><A NAME="jdk1.x">
-      <STRONG>Why do Java applets and applications not work
-      with documents on my Apache server?</STRONG>
-     </A>
-  <P>
-  The Java Development Kit (JDK) libraries versions 1.0.2 and 1.1 do not
-  correctly interpret the &quot;<SAMP>HTTP/1.1</SAMP>&quot; response
-  header that Apache 1.2 sends.  Instead, if they don't see an exact
-  match for &quot;<SAMP>HTTP/1.0</SAMP>&quot;, they assume the headers
-  are part of the document content.
-  </P>
-  <P>
-  This is a known problem, and it has been reported to Sun's JavaSoft
-  unit.  In the meantime, Apache 1.2 servers can work around this by
-  adding the following lines to their configuration files:
-  </P>
-  <DL>
-   <DD><CODE>BrowserMatch&nbsp;Java1.0&nbsp;force-response-1.0</CODE>
-   </DD>
-  </DL>
-  <HR>
- </LI>
  <LI><A NAME="bind8.1">
       <STRONG>Why do I get an error about an undefined reference to 
-      "__inet_ntoa" or other __inet_* symbols?</STRONG>
+      &quot;<SAMP>__inet_ntoa</SAMP>&quot; or other
+      <SAMP>__inet_*</SAMP> symbols?</STRONG>
      </A>
   <P>
   If you have installed <A HREF="http://www.isc.org/bind.html">BIND-8</A>
@@ -1424,16 +1425,17 @@
   and libraries that came with your system or make sure to use the
   new include files and libraries.  Adding <CODE>-lbind</CODE> to the
   <CODE>EXTRA_LFLAGS</CODE> line in your <CODE>Configuration</CODE> 
-  file, then re-running <CODE>Configure</CODE> should resolve the
+  file, then re-running <CODE>Configure</CODE>, should resolve the
   problem.
   </P>
   <HR>
  </LI>
  <LI><A NAME="set-servername">
       <STRONG>Why does accessing directories only work when I include 
-      the trailing "/" (eg.  <CODE>http://foo.domain.com/~user/</CODE>) 
+      the trailing "/"
+      (<EM>e.g.</EM>,&nbsp;<SAMP>http://foo.domain.com/~user/</SAMP>)
       but not when I omit it 
-      (eg. <CODE>http://foo.domain.com/~user</CODE>)?</STRONG>
+      (<EM>e.g.</EM>,&nbsp;<SAMP>http://foo.domain.com/~user</SAMP>)?</STRONG>
      </A>
   <P>
   When you access a directory without a trailing "/", Apache needs
@@ -1447,56 +1449,93 @@
   you need to tell it.  
   </P>
   <P>
-  Add a <A HREF="../mod/core.html#servername"> ServerName</A> directive 
+  Add a <A HREF="../mod/core.html#servername">ServerName</A> directive 
   to the config file to tell it what the domain name of the server is.
   </P>
   <HR>
  </LI>
  <LI><A NAME="user-authentication">
-      <STRONG>How do I setup Apache to require a username and 
+      <STRONG>How do I set up Apache to require a username and 
       password to access certain documents?</STRONG>
      </A>
   <P>
   There are several ways to do this; some of the more popular 
   ones are to use the <A HREF="../mod/mod_auth.html">mod_auth</A>,
-  <A HREF="../mod/mod_auth_db.html">mod_auth_db</A> or <A HREF=
-  "../mod/mod_auth_dbm.html">mod_auth_dbm</A> modules.
+  <A HREF="../mod/mod_auth_db.html">mod_auth_db</A>, or
+  <A HREF="../mod/mod_auth_dbm.html">mod_auth_dbm</A> modules.
   </P>
   <P>
   For an explaination on how to implement these restrictions, see
-  ApacheWeek's <A HREF="http://www.apacheweek.com/features/userauth">
-  Using User Authentication</A> or 
-  <A HREF="http://www.apacheweek.com/features/dbmauth">
-  DBM User Authentication</A> tutorials.
+  <A
+   HREF="http://www.apacheweek.com/"
+  ><CITE>Apache Week</CITE></A>'s
+  articles on
+  <A
+   HREF="http://www.apacheweek.com/features/userauth"
+  ><CITE>Using User Authentication</CITE></A>
+  or 
+  <A
+   HREF="http://www.apacheweek.com/features/dbmauth"
+  ><CITE>DBM User Authentication</CITE></A>.
   </P>
   <HR>
  </LI>
  <LI><A NAME="remote-auth-only">
-      <STRONG>How do I setup Apache to allow access to certain 
+      <STRONG>How do I set up Apache to allow access to certain 
       documents only if a site is either a local site <EM>or</EM>
       the user supplies a password and username?</STRONG>
      </A>
   <P>
-  Use the <A HREF="../mod/core.html#satisfy">Satsify</A> directive,
-  in particular the <CODE>Satsify Any</CODE> directive to require
+  Use the <A HREF="../mod/core.html#satisfy">Satisfy</A> directive,
+  in particular the <CODE>Satisfy Any</CODE> directive, to require
   that only one of the access restrictions be met.  For example,
-  adding the following configuration to a <CODE>.htaccess</CODE>
+  adding the following configuration to a <SAMP>.htaccess</SAMP>
   or server configuration file would restrict access to people who
   either are accessing the site from a host under domain.com or
   who can supply a valid username and password:
   </P>
-<PRE>
-     deny from all
-     allow from .domain.com
-     AuthType Basic
-     AuthUserFile /usr/local/etc/httpd/conf/htpasswd.users
-     AuthName special directory
-     require valid-user
-     satisfy any
-</PRE>
-  <P>See the <A HREF="#user-authentication">user authentication</A>
+  <P>
+  <DL>
+   <DD><CODE>deny from all<BR>
+    allow from .domain.com<BR>
+    AuthType Basic<BR>
+    AuthUserFile /usr/local/etc/httpd/conf/htpasswd.users<BR>
+    AuthName special directory<BR>
+    require valid-user<BR>
+    satisfy any</CODE>
+   </DD>
+  </DL>
+  </P>
+  <P>
+  See the <A HREF="#user-authentication">user authentication</A>
   question and the <A HREF="../mod/mod_access.html">mod_access</A>
   module for details on how the above directives work.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="no-info-directives">
+      <STRONG>Why doesn't mod_info list any directives?</STRONG>
+     </A>
+  <P>
+  The
+  <A
+   HREF="../mod/mod_info.html"
+  ><SAMP>mod_info</SAMP></A>
+  module allows you to use a Web browser to see how your server is
+  configured.  Among the information it displays is the list modules and
+  their configuration directives.  The &quot;current&quot; values for
+  the directives are not necessarily those of the running server; they
+  are extracted from the configuration files themselves at the time of
+  the request.  If the files have been changed since the server was last
+  reloaded, the display will will not match the values actively in use.
+  If the files and the path to the files are not readable by the user as
+  which the server is running (see the
+  <A
+   HREF="../mod/core.html#user"
+  ><SAMP>User</SAMP></A>
+  directive), then <SAMP>mod_info</SAMP> cannot read them in order to
+  list their values.  An entry <EM>will</EM> be made in the error log in
+  this event, however.
   </P>
   <HR>
  </LI>
