@@ -2,6 +2,9 @@ Changes with Apache 2.1.3
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cache: Remove unimplemented CacheForceCompletion directive.
+     [Justin Erenkrantz]
+
   *) support/check_forensic: Fix temp file usage
      [Javier Fernandez-Sanguino Pen~a <jfs computer.org>]
 

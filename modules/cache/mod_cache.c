@@ -702,9 +702,6 @@ static void * create_cache_config(apr_pool_t *p, server_rec *s)
     /* factor used to estimate Expires date from LastModified date */
     ps->factor = DEFAULT_CACHE_LMFACTOR;
     ps->factor_set = 0;
-    /* default percentage to force cache completion */
-    ps->complete = DEFAULT_CACHE_COMPLETION;
-    ps->complete_set = 0;
     ps->no_last_mod_ignore_set = 0;
     ps->no_last_mod_ignore = 0;
     ps->ignorecachecontrol = 0;
@@ -736,9 +733,6 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
     /* factor used to estimate Expires date from LastModified date */
     ps->factor =
         (overrides->factor_set == 0) ? base->factor : overrides->factor;
-    /* default percentage to force cache completion */
-    ps->complete =
-        (overrides->complete_set == 0) ? base->complete : overrides->complete;
 
     ps->no_last_mod_ignore =
         (overrides->no_last_mod_ignore_set == 0)
@@ -884,23 +878,6 @@ static const char *set_cache_factor(cmd_parms *parms, void *dummy,
     return NULL;
 }
 
-static const char *set_cache_complete(cmd_parms *parms, void *dummy,
-                                      const char *arg)
-{
-    cache_server_conf *conf;
-    int val;
-
-    conf =
-        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
-                                                  &cache_module);
-    if (sscanf(arg, "%u", &val) != 1) {
-        return "CacheForceCompletion value must be a percentage";
-    }
-    conf->complete = val;
-    conf->complete_set = 1;
-    return NULL;
-}
-
 static int cache_post_config(apr_pool_t *p, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
@@ -947,9 +924,6 @@ static const command_rec cache_cmds[] =
     AP_INIT_TAKE1("CacheLastModifiedFactor", set_cache_factor, NULL, RSRC_CONF,
                   "The factor used to estimate Expires date from "
                   "LastModified date"),
-    AP_INIT_TAKE1("CacheForceCompletion", set_cache_complete, NULL, RSRC_CONF,
-                  "Percentage of download to arrive for the cache to force "
-                  "complete transfer"),
     {NULL}
 };
 
