@@ -262,6 +262,8 @@ util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
         return NULL;
 
 #if APR_HAS_SHARED_MEMORY
+    if (!st->cache_rmm)
+        return NULL;
     cache = (util_ald_cache_t *)apr_rmm_addr_get(st->cache_rmm, apr_rmm_calloc(st->cache_rmm, sizeof(util_ald_cache_t)));
 #else
     cache = (util_ald_cache_t *)calloc(sizeof(util_ald_cache_t), 1);
