@@ -414,6 +414,7 @@ static apr_status_t ssl_io_filter_cleanup (void *data)
 
 void ssl_io_filter_init(conn_rec *c, SSL *ssl)
 {
+    SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
     SSLFilterRec *filter;
 
     filter = apr_pcalloc(c->pool, sizeof(SSLFilterRec));
@@ -428,6 +429,14 @@ void ssl_io_filter_init(conn_rec *c, SSL *ssl)
 
     apr_pool_cleanup_register(c->pool, (void*)filter,
                               ssl_io_filter_cleanup, apr_pool_cleanup_null);
+
+    if (sc->nLogLevel >= SSL_LOG_DEBUG) {
+        /* XXX: this will currently get wiped out if renegotiation
+         * happens in ssl_hook_Access
+         */
+        BIO_set_callback(SSL_get_rbio(ssl), ssl_io_data_cb);
+        BIO_set_callback_arg(SSL_get_rbio(ssl), ssl);
+    }
 
     return;
 }
