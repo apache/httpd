@@ -469,6 +469,9 @@ static int    subreq_ok(request_rec *r);
     /* Lexicographic Comparison */
 static int compare_lexicography(char *cpNum1, char *cpNum2);
 
+    /* Find end of bracketed expression */
+static char *find_closing_bracket(char *s, int left, int right);
+
 #endif /* _MOD_REWRITE_H */
 
 /*EOF*/

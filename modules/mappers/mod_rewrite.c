@@ -2320,30 +2320,50 @@ static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
 	/* now we have a '$' or a '%' */
 	if (inp[1] == '{') {
 	    char *endp;
-	    endp = strchr(inp, '}');
+	    endp = find_closing_bracket(inp+2, '{', '}');
 	    if (endp == NULL) {
 		goto skip;
 	    }
 	    *endp = '\0';
 	    if (inp[0] == '$') {
 		/* ${...} map lookup expansion */
+		/*
+		 * To make rewrite maps useful the lookup key and
+		 * default values must be expanded, so we make
+		 * recursive calls to do the work. For security
+		 * reasons we must never expand a string that includes
+		 * verbatim data from the network. The recursion here
+		 * isn't a problem because the result of expansion is
+		 * only passed to lookup_map() so it cannot be
+		 * re-expanded, only re-looked-up. Another way of
+		 * looking at it is that the recursion is entirely
+		 * driven by the syntax of the nested curly brackets.
+		 */
 		char *key, *dflt, *result;
+		char xkey[MAX_STRING_LEN];
+		char xdflt[MAX_STRING_LEN];
+		char *empty = "";
 		key = strchr(inp, ':');
 		if (key == NULL) {
 		    goto skip;
 		}
 		*key++ = '\0';
 		dflt = strchr(key, '|');
-		if (dflt) {
+		if (dflt == NULL) {
+		    dflt = empty;
+		}
+		else
 		    *dflt++ = '\0';
 		}
-		result = lookup_map(r, inp+2, key);
+		do_expand(r, key,  xkey,  sizeof(xkey),  briRR, briRC);
+		do_expand(r, dflt, xdflt, sizeof(xdflt), briRR, briRC);
+		result = lookup_map(r, inp+2, xkey);
 		if (result == NULL) {
-		    result = dflt ? dflt : "";
+		    result = xdflt;
 		}
 		span = apr_cpystrn(outp, result, space) - outp;
 		key[-1] = ':';
-		if (dflt) {
+		if (dflt != empty) {
 		    dflt[-1] = '|';
 		}
 	    }
@@ -4084,6 +4104,28 @@ static int compare_lexicography(char *cpNum1, char *cpNum2)
         }
     }
     return 0;
+}
+
+/*
+**
+**  Find end of bracketed expression
+**  s points after the opening bracket
+**
+*/
+
+static char *find_closing_bracket(char *s, int left, int right)
+{
+    int depth;
+
+    for (depth = 1; *s; ++s) {
+	if (*s == right && --depth == 0) {
+	    return s;
+	}
+	else if (*s == left) {
+	    ++depth;
+	}
+    }
+    return NULL;
 }
 
 #ifdef NETWARE
