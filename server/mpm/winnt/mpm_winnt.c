@@ -1521,8 +1521,6 @@ die_now:
 }
 
 
-#define SERVICE_UNNAMED (-1)
-
 /* service_nt_main_fn needs to append the StartService() args 
  * outside of our call stack and thread as the service starts...
  */
@@ -1549,9 +1547,12 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
     return APR_ENOTIMPL;
 } 
 
+#define SERVICE_UNSET (-1)
+static apr_status_t service_set = SERVICE_UNSET;
 static apr_status_t service_to_start_success;
 static int inst_argc;
 static const char * const *inst_argv;
+static char *service_name = NULL;
     
 void winnt_rewrite_args(process_rec *process) 
 {
@@ -1563,7 +1564,6 @@ void winnt_rewrite_args(process_rec *process)
      * We can't leave this phase until we know our identity
      * and modify the command arguments appropriately.
      */
-    apr_status_t service_named = SERVICE_UNNAMED;
     apr_status_t rv;
     char *def_server_root;
     char fnbuf[MAX_PATH];
@@ -1602,7 +1602,7 @@ void winnt_rewrite_args(process_rec *process)
     /* Rewrite process->argv[]; 
      *
      * strip out -k signal into signal_arg
-     * strip out -n servicename into service_name & display_name
+     * strip out -n servicename and set the names
      * add default -d serverroot from the path of this executable
      * 
      * The end result will look like:
@@ -1650,7 +1650,8 @@ void winnt_rewrite_args(process_rec *process)
                       optbuf + 1, &optarg) == APR_SUCCESS) {
         switch (optbuf[1]) {
         case 'n':
-            service_named = mpm_service_set_name(process->pool, optarg);
+            service_set = mpm_service_set_name(process->pool, &service_name, 
+                                               optarg);
             break;
         case 'k':
             signal_arg = optarg;
@@ -1702,47 +1703,47 @@ void winnt_rewrite_args(process_rec *process)
          * after logging begins, and the failure can land in the log.
          */
         if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT) {
-            service_to_start_success = mpm_service_to_start();
+            service_to_start_success = mpm_service_to_start(&service_name);
             if (service_to_start_success == APR_SUCCESS)
-                service_named = APR_SUCCESS;
+                service_set = APR_SUCCESS;
         }
     }
 
-    if (service_named == SERVICE_UNNAMED && running_as_service) {
-        service_named = mpm_service_set_name(process->pool, 
-                                             DEFAULT_SERVICE_NAME);
+    if (service_set == SERVICE_UNSET && running_as_service) {
+        service_set = mpm_service_set_name(process->pool, &service_name,
+                                           DEFAULT_SERVICE_NAME);
     }
 
     if (!strcasecmp(signal_arg, "install")) /* -k install */
     {
-        if (service_named == APR_SUCCESS) 
+        if (service_set == APR_SUCCESS) 
         {
             ap_log_error(APLOG_MARK,APLOG_ERR, 0, NULL,
-                 "%s: Service is already installed.", display_name);
+                 "%s: Service is already installed.", service_name);
             exit(1);
         }
     }
     else if (running_as_service)
     {
-        if (service_named == APR_SUCCESS) 
+        if (service_set == APR_SUCCESS) 
         {
             rv = mpm_merge_service_args(process->pool, mpm_new_argv, 
                                         fixed_args);
             if (rv == APR_SUCCESS) {
                 ap_log_error(APLOG_MARK,APLOG_NOERRNO|APLOG_INFO, 0, NULL,
                              "Using ConfigArgs of the installed service "
-                             "\"%s\".", display_name);
+                             "\"%s\".", service_name);
             }
 	    else  {
                 ap_log_error(APLOG_MARK,APLOG_INFO, rv, NULL,
                              "No installed ConfigArgs for the service "
-                             "\"%s\", using Apache defaults.", display_name);
+                             "\"%s\", using Apache defaults.", service_name);
 	    }
         }
         else
         {
             ap_log_error(APLOG_MARK,APLOG_INFO|APLOG_NOERRNO, 0, NULL,
-                 "No installed service named \"%s\".", display_name);
+                 "No installed service named \"%s\".", service_name);
             exit(1);
         }
     }
@@ -1782,7 +1783,7 @@ static void winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
             && (service_to_start_success != APR_SUCCESS)) {
         ap_log_error(APLOG_MARK,APLOG_ERR, service_to_start_success, NULL, 
                      "%s: Unable to start the service manager.",
-                     display_name);
+                     service_name);
         exit(1);
     }
 
@@ -1886,11 +1887,11 @@ static void winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *p
             {
                 if (osver.dwPlatformId != VER_PLATFORM_WIN32_NT) 
                 {
-                    rv = mpm_service_to_start();
+                    rv = mpm_service_to_start(&service_name);
                     if (rv != APR_SUCCESS) {
                         ap_log_error(APLOG_MARK,APLOG_ERR, rv, server_conf,
                                      "%s: Unable to start the service manager.",
-                                     display_name);
+                                     service_name);
                         exit(1);
                     }            
                 }
