@@ -35,7 +35,6 @@
 **  _________________________________________________________________
 */
 
-static char *ssl_var_lookup_header(apr_pool_t *p, request_rec *r, const char *name);
 static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var);
 static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, X509 *xs, char *var);
 static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *var);
@@ -65,7 +64,7 @@ void ssl_var_register(void)
 char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, char *var)
 {
     SSLModConfigRec *mc = myModConfig(s);
-    char *result;
+    const char *result;
     BOOL resdup;
     apr_time_exp_t tm;
 
@@ -92,39 +91,39 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
         case 'H':
         case 'h':
             if (strcEQ(var, "HTTP_USER_AGENT"))
-                result = ssl_var_lookup_header(p, r, "User-Agent");
+                result = apr_table_get(r->headers_in, "User-Agent");
             else if (strcEQ(var, "HTTP_REFERER"))
-                result = ssl_var_lookup_header(p, r, "Referer");
+                result = apr_table_get(r->headers_in, "Referer");
             else if (strcEQ(var, "HTTP_COOKIE"))
-                result = ssl_var_lookup_header(p, r, "Cookie");
+                result = apr_table_get(r->headers_in, "Cookie");
             else if (strcEQ(var, "HTTP_FORWARDED"))
-                result = ssl_var_lookup_header(p, r, "Forwarded");
+                result = apr_table_get(r->headers_in, "Forwarded");
             else if (strcEQ(var, "HTTP_HOST"))
-                result = ssl_var_lookup_header(p, r, "Host");
+                result = apr_table_get(r->headers_in, "Host");
             else if (strcEQ(var, "HTTP_PROXY_CONNECTION"))
-                result = ssl_var_lookup_header(p, r, "Proxy-Connection");
+                result = apr_table_get(r->headers_in, "Proxy-Connection");
             else if (strcEQ(var, "HTTP_ACCEPT"))
-                result = ssl_var_lookup_header(p, r, "Accept");
+                result = apr_table_get(r->headers_in, "Accept");
             else if (strlen(var) > 5 && strcEQn(var, "HTTP:", 5))
                 /* all other headers from which we are still not know about */
-                result = ssl_var_lookup_header(p, r, var+5);
+                result = apr_table_get(r->headers_in, var+5);
             break;
 
         case 'R':
         case 'r':
             if (strcEQ(var, "REQUEST_METHOD")) 
-                result = (char *)(r->method);
+                result = r->method;
             else if (strcEQ(var, "REQUEST_SCHEME"))
-                result = (char *)ap_http_method(r);
+                result = ap_http_method(r);
             else if (strcEQ(var, "REQUEST_URI"))
                 result = r->uri;
             else if (strcEQ(var, "REQUEST_FILENAME"))
                 result = r->filename;
             else if (strcEQ(var, "REMOTE_HOST"))
-                result = (char *)ap_get_remote_host(r->connection,
-                                                    r->per_dir_config, REMOTE_NAME, NULL);
+                result = ap_get_remote_host(r->connection, r->per_dir_config, 
+                                            REMOTE_NAME, NULL);
             else if (strcEQ(var, "REMOTE_IDENT"))
-                result = (char *)ap_get_remote_logname(r);
+                result = ap_get_remote_logname(r);
             else if (strcEQ(var, "REMOTE_USER"))
                 result = r->user;
             break;
@@ -136,7 +135,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
             if (strcEQ(var, "SERVER_ADMIN"))
                 result = r->server->server_admin;
             else if (strcEQ(var, "SERVER_NAME"))
-                result = (char *)ap_get_server_name(r);
+                result = ap_get_server_name(r);
             else if (strcEQ(var, "SERVER_PORT"))
                 result = apr_psprintf(p, "%u", ap_get_server_port(r));
             else if (strcEQ(var, "SERVER_PROTOCOL"))
@@ -153,7 +152,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
             else if (strcEQ(var, "IS_SUBREQ"))
                 result = (r->main != NULL ? "true" : "false");
             else if (strcEQ(var, "DOCUMENT_ROOT"))
-                result = (char *)ap_document_root(r);
+                result = ap_document_root(r);
             else if (strcEQ(var, "AUTH_TYPE"))
                 result = r->ap_auth_type;
             else if (strcEQ(var, "THE_REQUEST"))
@@ -187,7 +186,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
         if (strlen(var) > 12 && strcEQn(var, "SSL_VERSION_", 12))
             result = ssl_var_lookup_ssl_version(p, var+12);
         else if (strcEQ(var, "SERVER_SOFTWARE"))
-            result = (char *)ap_get_server_version();
+            result = ap_get_server_version();
         else if (strcEQ(var, "API_VERSION")) {
             result = apr_psprintf(p, "%d", MODULE_MAGIC_NUMBER);
             resdup = FALSE;
@@ -230,9 +229,9 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
         }
         /* all other env-variables from the parent Apache process */
         else if (strlen(var) > 4 && strcEQn(var, "ENV:", 4)) {
-            result = (char *)apr_table_get(r->notes, var+4);
+            result = apr_table_get(r->notes, var+4);
             if (result == NULL)
-                result = (char *)apr_table_get(r->subprocess_env, var+4);
+                result = apr_table_get(r->subprocess_env, var+4);
             if (result == NULL)
                 result = getenv(var+4);
         }
@@ -242,16 +241,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
         result = apr_pstrdup(p, result);
     if (result == NULL)
         result = "";
-    return result;
-}
-
-static char *ssl_var_lookup_header(apr_pool_t *p, request_rec *r, const char *name)
-{
-    char *hdr = NULL;
-
-    if ((hdr = (char *)apr_table_get(r->headers_in, name)) != NULL)
-        hdr = apr_pstrdup(p, hdr);
-    return hdr;
+    return (char *)result;
 }
 
 static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var)
