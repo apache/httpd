@@ -1,33 +1,33 @@
 
-                            Apache 1.3.24 Released
+                            Apache 1.3.25 Released
 
    The Apache Software Foundation and The Apache Server Project are
-   pleased to announce the release of version 1.3.24 of the Apache HTTP
-   server.  This Announcement notes the significant changes in 1.3.24.
+   pleased to announce the release of version 1.3.25 of the Apache HTTP
+   Server.  This Announcement notes the significant changes in 1.3.25.
 
-   This version of Apache is principally a security and bug fix release.
-   A summary of the bug fixes and major new features is given at the end
-   of this document.  Of particular note is that 1.3.24 addresses and
-   fixes the issues noted in CAN-2002-0061 (mitre.org) regarding escaping
-   of command line args on Win32.  We would like to thank Ory Segal
-   <ORY.SEGAL@SANCTUMINC.COM> for discovering and reporting the
+   This version of Apache is principally a security and bug fix
+   release.  A summary of the bug fixes is given at the end of this document.
+   Of particular note is that 1.3.25 addresses and fixes the issues noted
+   in CAN-2002-0392 (mitre.org) [CERT VU#944335] regarding a vulnerability
+   in the handling of chunked transfer encoding.  We would like to thank
+   Mark Litchfield of ngssoftware.com for discovering and reporting the
    vulnerability.
 
-   We consider Apache 1.3.24 to be the best version of Apache available
+   We consider Apache 1.3.25 to be the best version of Apache available
    and we strongly recommend that users of older versions, especially of
    the 1.1.x and 1.2.x family, upgrade as soon as possible.  No further
    releases will be made in the 1.2.x family.
 
-   Apache 1.3.24 is available for download from
+   Apache 1.3.25 is available for download from
    
-       http://httpd.apache.org/dist/httpd/
+       http://www.apache.org/dist/httpd/
 
    Please see the CHANGES_1.3 file in the same directory for a full list
    of changes.
 
    Binary distributions are available from
 
-       http://httpd.apache.org/dist/httpd/binaries/
+       http://www.apache.org/dist/httpd/binaries/
 
    The source and binary distributions are also available via any of the
    mirrors listed at
@@ -70,40 +70,53 @@
    version, but is of acceptable quality.  Win32 stability or security
    problems do not reflect on the Unix version.
 
-                     Apache 1.3.24 Major changes
+                     Apache 1.3.25 Major changes
 
   Security vulnerabilities
 
-     * Fix the security vulnerability noted in CAN-2002-0061 (mitre.org)
-       regarding the escaping of command line args on Win32.
-     * Prevent invalid client hostnames from appearing in the log file.
+     * Fix the security vulnerability noted in CAN-2002-0392 (mitre.org)
+       regarding the handling of chunked transfer encoding.
 
   New features
 
-   The main new features in 1.3.24 (compared to 1.3.23) are:
+   The main new features in 1.3.25 (compared to 1.3.24) are:
 
-     * Various mod_proxy improvements, such as the new ProxyIOBufferSize
-       directive.
-     * The new ''IgnoreCase' keyword to the IndexOptions directive.
+     * Add some popular types to the mime types magic file.
 
    New features that relate to specific platforms:
 
-     * Added the module mod_log_nw to handle log rotation under NetWare.
+     * Unix: Added a '-F' flag which causes the supervisor process to
+       no longer fork down and detach and instead stay attached to
+       the tty - thus making live for automatic restart and exit checking
+       code easier.
 
   Bugs fixed
 
-   The following bugs were found in Apache 1.3.23 (or earlier) and have
-   been fixed in Apache 1.3.24:
+   The following bugs were found in Apache 1.3.24 (or earlier) and have
+   been fixed in Apache 1.3.25:
 
-     * mod_rewrite's 'rnd' was broken and has been fixed.
-     * The '-S' option of 'apxs' was not able to handle quotes; also 'apxs'
-       is now rebuilt when options are changed.
-     * proxy now correctly handles Cookies and X-Cache headers.
+     * Allow child processes sufficient time for cleanups but making
+       ap_select in reclaim_child_processes more "resistant" to
+       signal interupts.
 
-   The following bugs relate to specific platforms:
+     * Fix for a problem in mod_rewrite which would lead to 400 Bad Request
+       responses for rewriting rules which resulted in a local path.
+       Note: This will also reject invalid requests as issued by
+       Netscape-4.x Roaming Profiles (on a DAV-enabled server)
 
-     * Fixed a problem in TPF when we were using the wrong subpool when
-       opening the error log.
-     * pthread accept() mutexes on Solaris were broken (since we were
-       not linking against pthread)
+     * Recognize platform-specific root directories (other than
+       leading slash) in mod_rewrite for filename rewrite rules.
+
+     * Disallow anything but whitespace on the request line after the
+       HTTP/x.y protocol string to prevent arbitrary user input from
+       ending up in the access_log and error_log.  Also control characters
+       are now escaped.
+
+     * A large number of fixes in mod_proxy including: adding support
+       for dechunking chunked responses, correcting a timeout problem
+       which would force long or slow POST requests to close after 300
+       seconds, adding "X-Forwarded" headers, dealing correctly with the
+       multiple-cookie header bug, ability to handle unexpected
+       100-continue responses sent during PUT or POST commands, and a
+       change to tighten up the Server header overwrite bugfix.
 
