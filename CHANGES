@@ -34,9 +34,6 @@ Changes with Apache 2.1.0-dev
   *) mod_rewrite: Allow forced mimetypes [T=...] to get expanded.
      PR 14223.  [André Malo]
 
-  *) mod_log_config: Fix %b log format to write really "-" when 0 bytes
-     were sent (e.g. with 304 or 204 response codes).  [Astrid Keßler]
-
   *) mod_rewrite: Catch an edge case, where strange subsequent RewriteRules
      could lead to a 400 (Bad Request) response.  [André Malo]
 
@@ -210,6 +207,9 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.48
 
+  *) mod_rewrite: Don't die silently when failing to open RewriteLogs.
+     PR 23416.  [André Malo]
+
   *) mod_rewrite: Fix mod_rewrite's support of the [P] option to send
       rewritten request using "proxy:". The code was adding multiple "proxy:"
       fields in the rewritten URI. PR: 13946. [Eider Oliveira <eider@bol.com.br>]
@@ -219,7 +219,7 @@ Changes with Apache 2.0.48
 
   *) Ensure that ssl-std.conf is generated at configure time, and switch
      to using the expanded config variables to work the same as
-     httpd-std.conf PR 19611
+     httpd-std.conf PR: 19611
      [Thom May]
 
   *) mod_ssl: Fix segfaults after renegotiation failure. PR 21370
@@ -228,7 +228,7 @@ Changes with Apache 2.0.48
   *) mod_autoindex: If a directory contains a file listed in the
      DirectoryIndex directive, the folder icon is no longer replaced
      by the icon of that file. PR 9587.
-     [David Shane Holden <dpejesh@yahoo.com>] 
+     [David Shane Holden <dpejesh@yahoo.com>]
 
   *) Fixed mod_usertrack to not get false positive matches on the
      user-tracking cookie's name.  PR 16661.
@@ -238,6 +238,9 @@ Changes with Apache 2.0.48
      if they have an Expires header but no Etag or Last-Modified
      headers. PR 23130.
      [bjorn@exoweb.net]
+
+  *) mod_log_config: Fix %b log format to write really "-" when 0 bytes
+     were sent (e.g. with 304 or 204 response codes).  [Astrid Keßler]
 
   *) Modify ap_get_client_block() to note if it has seen EOS.
      [Justin Erenkrantz]
