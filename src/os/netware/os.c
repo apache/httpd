@@ -56,6 +56,8 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+#define WS_SSL
+
 #include "httpd.h"
 #include "ap_config.h"
 #include "http_config.h"
@@ -338,4 +340,31 @@ DIR *os_readdir (DIR *dirP)
     }
     else
         return readdir_411 (dirP);
+}
+
+char *ap_os_http_method(void *r)
+{
+    int s = ((request_rec*)r)->connection->client->fd;
+    long e;
+	struct sslserveropts *getOpts;
+	size_t getOptLen = sizeof(getOpts);
+    char *http_method = "http";
+
+    getOpts = ap_pcalloc(((request_rec*)r)->pool, getOptLen);
+    if (WSAIoctl(s, SO_SSL_GET_SERVER, 0, 0, (char *)getOpts, getOptLen, &getOptLen, NULL, NULL)) {
+		e = WSAGetLastError();
+		if(e == WSAEFAULT)
+		{
+            getOpts = ap_pcalloc(((request_rec*)r)->pool, getOptLen);
+            if (WSAIoctl(s, SO_SSL_GET_SERVER, 0, 0, (char *)getOpts, getOptLen, &getOptLen, NULL, NULL)) {
+				errno = WSAGetLastError();
+            }
+            else
+                http_method = "https";
+		}
+        else
+		    errno = e;
+	}
+
+   return http_method;
 }
