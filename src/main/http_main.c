@@ -547,7 +547,7 @@ static void accept_mutex_off()
 #ifdef NEED_UNION_SEMUN
 /* it makes no sense, but this isn't defined on solaris */
 union semun {
-    int val;
+    long val;
     struct semid_ds *buf;
     ushort *array;
 };
