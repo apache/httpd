@@ -391,7 +391,7 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
                 APR_BRIGADE_INSERT_HEAD(pRec->pbbPendingInput, e);
 
                 APR_BRIGADE_FOREACH(e, pRec->pbbInput) {
-                    apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
+                    apr_bucket_read(e, &str, &len, APR_NONBLOCK_READ);
                     if (len) {
                         APR_BUCKET_REMOVE(e);
                         APR_BRIGADE_INSERT_TAIL(pRec->pbbPendingInput, e);
