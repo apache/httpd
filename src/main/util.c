@@ -232,7 +232,7 @@ char *pregsub(pool *p, const char *input, const char *source,
 	    if (c == '\\' && (*src == '$' || *src == '&'))
 		c = *src++;
 	    len++;
-	} else if (no <= nmatch && pmatch[no].rm_so < pmatch[no].rm_eo) {
+	} else if (no < nmatch && pmatch[no].rm_so < pmatch[no].rm_eo) {
 	    len += pmatch[no].rm_eo - pmatch[no].rm_so;
 	}
 
@@ -256,7 +256,7 @@ char *pregsub(pool *p, const char *input, const char *source,
 	    if (c == '\\' && (*src == '$' || *src == '&'))
 		c = *src++;
 	    *dst++ = c;
-	} else if (no <= nmatch && pmatch[no].rm_so < pmatch[no].rm_eo) {
+	} else if (no < nmatch && pmatch[no].rm_so < pmatch[no].rm_eo) {
 	    len = pmatch[no].rm_eo - pmatch[no].rm_so;
 	    strncpy(dst, source + pmatch[no].rm_so, len);
 	    dst += len;
