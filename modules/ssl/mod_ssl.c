@@ -531,6 +531,7 @@ int ssl_hook_process_connection(SSLFilterRec *filter)
         if ((cert = SSL_get_peer_certificate(filter->pssl))) {
             sslconn->client_cert = cert;
             sslconn->client_dn = NULL;
+            X509_free(cert);
         }
 
         /*
