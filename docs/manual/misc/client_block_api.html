@@ -69,7 +69,7 @@ accomplished while remaining backwards-compatible.</p>
     100 response is defeated). Never call this function more than once.
 
 <li>Finally, call <code>get_client_block</code> in a loop. Pass it a
-    buffer and its 
+    buffer and its
     size. It will put data into the buffer (not necessarily the full
     buffer, in the case of chunked inputs), and return the length of
     the input block. When it is done reading, it will

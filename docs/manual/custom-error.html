@@ -29,13 +29,12 @@
       response, then this response can be replaced with either some
       friendlier text or by a redirection to another URL (local or
       external).
-        
       <P>
-        
+
 <DT>Old behavior
 
-  <DD>NCSA httpd 1.3 would return some boring old error/problem message 
-      which would often be meaningless to the user, and would provide no 
+  <DD>NCSA httpd 1.3 would return some boring old error/problem message
+      which would often be meaningless to the user, and would provide no
       means of logging the symptoms which caused it.<BR>
 
       <P>
@@ -69,7 +68,7 @@ REDIRECT_SERVER_SOFTWARE=Apache/0.8.15 <br>
 REDIRECT_URL=/cgi-bin/buggy.pl <br>
   </code></blockquote>
 
-  <P>note the <code>REDIRECT_</code> prefix. 
+  <P>note the <code>REDIRECT_</code> prefix.
 
   <P>At least <code>REDIRECT_URL</code> and <code>REDIRECT_QUERY_STRING</code> will
      be passed to the new URL (assuming it's a cgi-script or a cgi-include). The
@@ -94,16 +93,16 @@ ErrorDocument 404 /Lame_excuses/not_found.html  <br>
 ErrorDocument 401 /Subscription/how_to_subscribe.html
   </code></blockquote>
 
-  <P>The syntax is, 
+  <P>The syntax is,
 
   <P><code><A HREF="mod/core.html#errordocument">ErrorDocument</A></code>
-&lt;3-digit-code&gt; action 
+&lt;3-digit-code&gt; action
 
   <P>where the action can be,
 
   <OL>
     <LI>Text to be displayed.  Prefix the text with a quote (&quot;). Whatever
-        follows the quote is displayed. <em>Note: the (&quot;) prefix isn't 
+        follows the quote is displayed. <em>Note: the (&quot;) prefix isn't
         displayed.</em>
 
     <LI>An external URL to redirect to.

@@ -25,7 +25,7 @@
         <LI><A HREF="#enable">Enabling &amp; Disabling suEXEC</A></LI>
         <LI><A HREF="#debug">Debugging suEXEC</A></LI>
         <LI><A HREF="#jabberwock">Beware the Jabberwock: Warnings &amp;
-         Examples</A></LI> 
+         Examples</A></LI>
 </OL>
 </P>
 
@@ -43,9 +43,9 @@ Used properly, this feature can reduce considerably the security risks involved
 with allowing users to develop and run private CGI or SSI programs.  However,
 if suEXEC is improperly configured, it can cause any number of problems and
 possibly create new holes in your computer's security.  If you aren't familiar
-with managing setuid root programs and the security issues they present, we 
+with managing setuid root programs and the security issues they present, we
 highly recommend that you not consider using suEXEC.
-</P> 
+</P>
 
 <P ALIGN="CENTER">
 <STRONG><A HREF="suexec.html">BACK TO CONTENTS</A></STRONG>
@@ -65,7 +65,7 @@ capable of supporting suEXEC, may differ in their configuration.
 </P>
 
 <P ALIGN="LEFT">
-Second, it is assumed you are familiar with some basic concepts of your 
+Second, it is assumed you are familiar with some basic concepts of your
 computer's security and its administration.  This involves an understanding
 of <STRONG>setuid/setgid</STRONG> operations and the various effects they
 may have on your system and its level of security.
@@ -76,14 +76,14 @@ Third, it is assumed that you are using an <STRONG>unmodified</STRONG>
 version of suEXEC code.  All code for suEXEC has been carefully scrutinized and
 tested by the developers as well as numerous beta testers.  Every precaution has
 been taken to ensure a simple yet solidly safe base of code.  Altering this
-code can cause unexpected problems and new security risks.  It is 
-<STRONG>highly</STRONG> recommended you not alter the suEXEC code unless you 
+code can cause unexpected problems and new security risks.  It is
+<STRONG>highly</STRONG> recommended you not alter the suEXEC code unless you
 are well versed in the particulars of security programming and are willing to
 share your work with the Apache Group for consideration.
 </P>
 
 <P ALIGN="LEFT">
-Fourth, and last, it has been the decision of the Apache Group to 
+Fourth, and last, it has been the decision of the Apache Group to
 <STRONG>NOT</STRONG> make suEXEC part of the default installation of Apache.
 To this end, suEXEC configuration is a manual process requiring of the
 administrator careful attention to details.  It is through this process
@@ -112,7 +112,7 @@ are taken to ensure your system's security.
 called by the main Apache web server.  This wrapper is called when an HTTP
 request is made for a CGI or SSI program that the administrator has designated
 to run as a userid other than that of the main server.  When such a request
-is made, Apache provides the suEXEC wrapper with the program's name and the 
+is made, Apache provides the suEXEC wrapper with the program's name and the
 user and group IDs under which the program is to execute.
 </P>
 
@@ -299,15 +299,15 @@ match your local Apache installation.
      #define GID_MIN 100
 
      /*
-      * USERDIR_SUFFIX -- Define to be the subdirectory under users' 
+      * USERDIR_SUFFIX -- Define to be the subdirectory under users'
       *                   home directories where suEXEC access should
       *                   be allowed.  All executables under this directory
-      *                   will be executable by suEXEC as the user so 
-      *                   they should be "safe" programs.  If you are 
-      *                   using a "simple" UserDir directive (ie. one 
-      *                   without a "*" in it) this should be set to 
+      *                   will be executable by suEXEC as the user so
+      *                   they should be "safe" programs.  If you are
+      *                   using a "simple" UserDir directive (ie. one
+      *                   without a "*" in it) this should be set to
       *                   the same value.  suEXEC will not work properly
-      *                   in cases where the UserDir directive points to 
+      *                   in cases where the UserDir directive points to
       *                   a location that is not the same as the user's
       *                   home directory as referenced in the passwd file.
       *
@@ -345,7 +345,7 @@ match your local Apache installation.
 
 <P ALIGN="LEFT">
 <STRONG>COMPILING THE SUEXEC WRAPPER</STRONG><BR>
-You now need to compile the suEXEC wrapper.  At the shell command prompt, 
+You now need to compile the suEXEC wrapper.  At the shell command prompt,
 type:&nbsp;&nbsp;<STRONG><CODE>cc suexec.c -o suexec [ENTER]</CODE></STRONG>.
 This should create the <STRONG><em>suexec</em></STRONG> wrapper executable.
 </P>
@@ -382,8 +382,8 @@ exercise above to the defined location for <STRONG>SUEXEC_BIN</STRONG>.
 </P>
 
 <P ALIGN="LEFT">
-In order for the wrapper to set the user ID, it must me installed as owner 
-<STRONG><em>root</em></STRONG> and must have the setuserid execution bit 
+In order for the wrapper to set the user ID, it must me installed as owner
+<STRONG><em>root</em></STRONG> and must have the setuserid execution bit
 set for file modes.  If you are not running a <STRONG><em>root</em></STRONG>
 user shell, do so now and execute the following commands.
 </P>
@@ -447,7 +447,7 @@ scrutiny of the <a href="#model">security checks</a> above.
 <P ALIGN="LEFT">
 The suEXEC wrapper will write log information to the location defined in
 the <code>suexec.h</code> as indicated above. If you feel you have
-configured and installed the wrapper properly, have a look at this log 
+configured and installed the wrapper properly, have a look at this log
 and the error_log for the server to see where you may have gone astray.
 </P>
 

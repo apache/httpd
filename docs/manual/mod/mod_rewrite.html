@@ -31,7 +31,7 @@ in the server build Configuration file:
 <h2>Summary</h2>
 
 This module uses a rule-based rewriting engine (based on a
-regular-expression parser) to rewrite requested URLs on the fly. 
+regular-expression parser) to rewrite requested URLs on the fly.
 
 <p>
 It supports an unlimited number of additional rule conditions (which can
@@ -58,7 +58,7 @@ Written for <b>The Apache Group</b> by
 <blockquote>
     <i>Ralf S. Engelschall</i><br>
     <a href="mailto:rse@engelschall.com"><tt>rse@engelschall.com</tt></a><br>
-    <a href="http://www.engelschall.com/"><tt>www.engelschall.com</tt></a> 
+    <a href="http://www.engelschall.com/"><tt>www.engelschall.com</tt></a>
 </blockquote>
 
 <!--%hypertext -->
@@ -99,7 +99,7 @@ Written for <b>The Apache Group</b> by
 The <tt>RewriteEngine</tt> directive enables or disables the
 runtime rewriting engine. If it is set to <code>off</code> this module does
 no runtime processing at all. It does not even update the <tt>SCRIPT_URx</tt>
-environment variables. 
+environment variables.
 
 <p>
 Use this directive to disable the module instead of commenting out
@@ -143,7 +143,7 @@ The <tt>RewriteLog</tt> directive sets the name of the file to which the
 server logs any rewriting actions it performs. If the name does not begin
 with a slash ('<tt>/</tt>') then it is assumed to be relative to the
 <em>Server Root</em>.  The directive should occur only once per server
-config. 
+config.
 
 <p>
 <table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
@@ -272,7 +272,7 @@ of the following formats:
 #   map.real-to-user -- maps realnames to usernames
 #
 
-Ralf.S.Engelschall    rse   # Bastard Operator From Hell 
+Ralf.S.Engelschall    rse   # Bastard Operator From Hell
 Dr.Fred.Klabuster     fred  # Mr. DAU
 </pre></td></tr>
 </table>
@@ -317,7 +317,7 @@ RewriteMap real-to-host txt:/path/to/file/map.real-to-user
 #!/usr/bin/perl
 $| = 1;
 while (&lt;STDIN&gt;) {
-    # ...here any transformations 
+    # ...here any transformations
     # or lookups should occur...
     print $_;
 }
@@ -342,7 +342,7 @@ The <tt>RewriteMap</tt> directive can occur more than once. For each
 mapping-function use one <tt>RewriteMap</tt> directive to declare its
 rewriting mapfile. While you cannot <b>declare</b> a map in per-directory
 context it is of course possible to <b>use</b> this map in per-directory
-context.  
+context.
 
 <p>
 <table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
@@ -380,7 +380,7 @@ to know what the corresponding URL-prefix or URL-base is. By default this
 prefix is the corresponding filepath itself. <b>But at most websites URLs are
 <b>NOT</b> directly related to physical filename paths, so this assumption
 will be usually be wrong!</b> There you have to use the <tt>RewriteBase</tt>
-directive to specify the correct URL-prefix. 
+directive to specify the correct URL-prefix.
 
 <p>
 <table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
@@ -409,7 +409,7 @@ directives.
 
 RewriteEngine On
 
-#  let the server know that we are reached via /xyz and not 
+#  let the server know that we are reached via /xyz and not
 #  via the physical path prefix /abc/def
 RewriteBase   /xyz
 
@@ -420,7 +420,7 @@ RewriteRule   ^oldstuff\.html$  newstuff.html
 
 <p>
 In the above example, a request to <tt>/xyz/oldstuff.html</tt> gets correctly
-rewritten to the physical file <tt>/abc/def/newstuff.html</tt>. 
+rewritten to the physical file <tt>/abc/def/newstuff.html</tt>.
 
 <p>
 <table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
@@ -450,7 +450,7 @@ because the per-directory rewriting comes too late in the process.  So,
 when it occurs the (rewritten) request has to be re-injected into the Apache
 kernel! BUT: While this seems like a serious overhead, it really isn't, because
 this re-injection happens fully internal to the Apache server and the same
-procedure is used by many other operations inside Apache. So, you can be 
+procedure is used by many other operations inside Apache. So, you can be
 sure the design and implementation is correct.
 </font>
 </td></tr>
@@ -480,7 +480,7 @@ state of the URI <b>AND</b> if these additional conditions apply, too.
 <em>TestString</em> is a string which contains server-variables of the form
 
 <blockquote><strong>
-<tt>%{</tt> <em>NAME_OF_VARIABLE</em> <tt>}</tt> 
+<tt>%{</tt> <em>NAME_OF_VARIABLE</em> <tt>}</tt>
 </strong></blockquote>
 
 where <em>NAME_OF_VARIABLE</em> can be a string
@@ -606,7 +606,7 @@ look-ahead for the final value of <i>file</i>.
 <em>CondPattern</em> is the condition pattern, i.e. a regular expression
 which gets applied to the current instance of the <em>TestString</em>, i.e.
 <em>TestString</em> gets evaluated and then matched against
-<em>CondPattern</em>. 
+<em>CondPattern</em>.
 
 <p>
 <b>Remember:</b> <em>CondPattern</em> is a standard
@@ -678,7 +678,7 @@ is a comma-separated list of the following flags:
 <blockquote><pre>
 RewriteCond %{REMOTE_HOST}  ^host1.*  [OR]
 RewriteCond %{REMOTE_HOST}  ^host2.*  [OR]
-RewriteCond %{REMOTE_HOST}  ^host3.*  
+RewriteCond %{REMOTE_HOST}  ^host3.*
 RewriteRule ...some special stuff for any of these hosts...
 </pre></blockquote>
     Without this flag you had to write down the cond/rule three times.
@@ -745,14 +745,14 @@ Some hints about the syntax of regular expressions:
 <strong><code>^</code></strong>           Start of line
 <strong><code>$</code></strong>           End of line
 <strong><code>.</code></strong>           Any single character
-<strong><code>[</code></strong>chars<strong><code>]</code></strong>     One of chars 
-<strong><code>[^</code></strong>chars<strong><code>]</code></strong>    None of chars 
+<strong><code>[</code></strong>chars<strong><code>]</code></strong>     One of chars
+<strong><code>[^</code></strong>chars<strong><code>]</code></strong>    None of chars
 
 <strong><code>?</code></strong>           0 or 1 of the preceding char
 <strong><code>*</code></strong>           0 or N of the preceding char
 <strong><code>+</code></strong>           1 or N of the preceding char
 
-<strong><code>\</code></strong>char       escape that specific char 
+<strong><code>\</code></strong>char       escape that specific char
             (e.g. for specifying the chars "<code>.[]()</code>" etc.)
 
 <strong><code>(</code></strong>string<strong><code>)</code></strong>    Grouping of chars (the <b>N</b>th group can be used on the RHS with <code>$</code><b>N</b>)
@@ -782,7 +782,7 @@ substitution string!
 <p>
 <a name="rhs"><em>Substitution</em></a> of a rewriting rule is the string
 which is substituted for (or replaces) the original URL for which
-<em>Pattern</em> matched.  Beside plain text you can use 
+<em>Pattern</em> matched.  Beside plain text you can use
 
 <ol>
 <li>pattern-group back-references (<code>$N</code>)
@@ -842,14 +842,14 @@ comma-separated list of the following flags:
 
 <ul>
 <li>'<strong><code>redirect|R</code>[=<i>code</i>]</strong>' (force <a name="redirect"><b>r</b>edirect</a>)<br>
-    Prefix <em>Substitution</em> 
+    Prefix <em>Substitution</em>
     with <code>http://thishost[:thisport]/</code> (which makes the new URL a URI) to
     force a external redirection. If no <i>code</i> is given a HTTP response
     of 302 (MOVED TEMPORARILY) is used. If you want to use other response
     codes in the range 300-400 just specify them as a number or use
     one of the following symbolic names: <tt>temp</tt> (default), <tt>permanent</tt>,
     <tt>seeother</tt>.
-    Use it for rules which should 
+    Use it for rules which should
     canonicalize the URL and gives it back to the client, e.g. translate
     ``<code>/~</code>'' into ``<code>/u/</code>'' or always append a slash to
     <code>/u/</code><em>user</em>, etc.<br>
@@ -902,7 +902,7 @@ comma-separated list of the following flags:
     from the last rewriting rule.  This corresponds to the Perl
     <code>next</code> command or the <code>continue</code> command from the C
     language. Use this flag to restart the rewriting process, i.e.  to
-    immediately go to the top of the loop. <br> 
+    immediately go to the top of the loop. <br>
     <b>But be careful not to create a deadloop!</b>
 <p>
 <li>'<strong><code>chain|C</code></strong>' (<b>c</b>hained with next rule)<br>
@@ -948,7 +948,7 @@ comma-separated list of the following flags:
     with <tt>mod_alias</tt>:
     <pre>
     RewriteRule ^/abc(.*)  /def$1 [PT]
-    Alias       /def       /ghi   
+    Alias       /def       /ghi
     </pre>
     If you omit the <tt>PT</tt> flag then <tt>mod_rewrite</tt>
     will do its job fine, i.e. it rewrites <tt>uri=/abc/...</tt> to
@@ -990,7 +990,7 @@ comma-separated list of the following flags:
         <tt>&lt;!--#echo var="VAR"--&gt;</tt>) or CGI (e.g. <tt>$ENV{'VAR'}</tt>).
         But additionally you can also dereference it in a following RewriteCond
         pattern via <tt>%{ENV:VAR}</tt>. Use this to strip but remember
-        information from URLs. 
+        information from URLs.
 </ul>
 
 <p>
