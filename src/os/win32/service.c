@@ -744,6 +744,14 @@ void stop_console_monitor(void)
 
 void ap_start_console_monitor(void)
 {
+    /* Under Windows NT, assure we properly accept Ctrl+C as an interrupt...
+     * Win/2000 definately makes the wrong assumption here, 
+     * disabling ctrl+c by default!
+     */
+    if (isWindowsNT()) {
+	SetConsoleCtrlHandler(NULL, FALSE);
+    }
+
     /* Under 95/98 create a monitor window to watch for session end,
      * pass NULL to WatchWindow so we do not appear to run as a service.
      */
