@@ -74,6 +74,7 @@
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
 #include "apr_optional.h"
 #include "apr_buckets.h"
+#include "apr_lib.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -97,9 +98,26 @@
 
 module AP_MODULE_DECLARE_DATA cgi_module;
 
+/* There has to be a better place to put this - uhm... where exactly? */
+/**
+ * Reprocess the command and arguments to execute the given CGI script.
+ * @param cmd Pointer to the command to execute (may be overridden)
+ * @param argv Pointer to the arguments to pass (may be overridden)
+ * @param r The current request
+ * @param p The pool to allocate correct cmd/argv elements within.
+ * @deffunc apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv, request_rec *r, apr_pool_t *p)
+ * @tip This callback may be registered by the os-specific module 
+ * to correct the command and arguments for apr_proc_create invocation
+ * on a given os.  mod_cgi will call the function if registered.
+ */
+APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_cgi_build_command, 
+                        (const char **cmd, const char ***argv,
+                         request_rec *r, apr_pool_t *p));
+
 static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *cgi_pfn_reg_with_ssi;
 static APR_OPTIONAL_FN_TYPE(ap_ssi_get_tag_and_value) *cgi_pfn_gtv;
 static APR_OPTIONAL_FN_TYPE(ap_ssi_parse_string) *cgi_pfn_ps;
+static APR_OPTIONAL_FN_TYPE(ap_cgi_build_command) *cgi_build_command;
 
 typedef enum {RUN_AS_SSI, RUN_AS_CGI} prog_types;
 
@@ -479,12 +497,21 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
     return (rc);
 }
 
-static apr_status_t build_argv_list(const char ***argv, request_rec *r,
-                                    apr_pool_t *p)
+
+static apr_status_t default_build_command(const char **cmd, const char ***argv,
+                                          request_rec *r, apr_pool_t *p)
 {
     int numwords, x, idx;
     char *w;
     const char *args = r->args;
+    const char *argv0;
+
+    /* Allow suexec's "/" check to succeed */
+    if ((argv0 = strrchr(r->filename, '/')) != NULL)
+        argv0++;
+    else
+        argv0 = r->filename;
+    *cmd = argv0;
 
     if (!args || !args[0] || ap_strchr_c(args, '=')) {
         numwords = 1;
@@ -497,14 +524,14 @@ static apr_status_t build_argv_list(const char ***argv, request_rec *r,
             }
         }
     }
-    /* Everything is - 1 to account for the first parameter which is the
-     * program name.  We didn't used to have to do this, but APR wants it.
+    /* Everything is - 1 to account for the first parameter 
+     * which is the program name.
      */ 
     if (numwords > APACHE_ARG_MAX - 1) {
         numwords = APACHE_ARG_MAX - 1;	/* Truncate args to prevent overrun */
     }
     *argv = apr_palloc(p, (numwords + 2) * sizeof(char *));
- 
+    (*argv)[0] = argv0;
     for (x = 1, idx = 1; x < numwords; x++) {
         w = ap_getword_nulls(p, &args, '+');
         ap_unescape_url(w);
@@ -515,57 +542,6 @@ static apr_status_t build_argv_list(const char ***argv, request_rec *r,
     return APR_SUCCESS;
 }
 
-static apr_status_t build_command_line(const char **cmd, request_rec *r,
-                                       apr_pool_t *p)
-{
-#ifdef WIN32
-    char *quoted_filename = NULL;
-    char *interpreter = NULL;
-    char *arguments = NULL;
-    file_type_e fileType;
-#endif
-    const char *argv0;
-
-    /* Allow suexec's "/" check to succeed */
-    if ((argv0 = strrchr(r->filename, '/')) != NULL)
-        argv0++;
-    else
-        argv0 = r->filename;
-
-#ifdef WIN32 
-    *cmd = NULL;
-    fileType = ap_get_win32_interpreter(r, &interpreter, &arguments);
-
-    if (fileType == eFileTypeUNKNOWN) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
-                      "%s is not executable; ensure interpreted scripts have "
-                      "\"#!\" first line", 
-                      r->filename);
-        return APR_EBADF;
-    }
-
-    /*
-     * Build the command string to pass to ap_os_create_privileged_process()
-     */
-    quoted_filename = apr_pstrcat(p, "\"", r->filename, "\"", NULL);
-    if (interpreter && *interpreter) {
-        if (arguments && *arguments)
-            *cmd = apr_pstrcat(p, interpreter, " ", quoted_filename, " ", 
-                              arguments, NULL);
-        else
-            *cmd = apr_pstrcat(p, interpreter, " ", quoted_filename, " ", NULL);
-    }
-    else if (arguments && *arguments) {
-        *cmd = apr_pstrcat(p, quoted_filename, " ", arguments, NULL);
-    }
-    else {
-        *cmd = apr_pstrcat(p, quoted_filename, NULL);
-    }
-#else
-    *cmd = argv0;
-#endif
-    return APR_SUCCESS;
-}
 
 static int cgi_handler(request_rec *r)
 {
@@ -596,11 +572,7 @@ static int cgi_handler(request_rec *r)
 	return DECLINED;
     }
 
-    if ((argv0 = strrchr(r->filename, '/')) != NULL)
-	argv0++;
-    else
-	argv0 = r->filename;
-
+    argv0 = apr_filename_of_pathname(r->filename);
     nph = !(strncmp(argv0, "nph-", 4));
     conf = ap_get_module_config(r->server->module_config, &cgi_module);
 
@@ -632,18 +604,12 @@ static int cgi_handler(request_rec *r)
     ap_add_common_vars(r);
 
     /* build the command line */
-    if ((rv = build_command_line(&command, r, p)) != APR_SUCCESS) {
+    if ((rv = cgi_build_command(&command, &argv, r, p)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-	      "couldn't spawn child process: %s", r->filename);
+		      "don't know how to spawn child process: %s", 
+                      r->filename);
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
-    /* build the argument list */
-    else if ((rv = build_argv_list(&argv, r, p)) != APR_SUCCESS) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-		      "couldn't spawn child process: %s", r->filename);
-	return HTTP_INTERNAL_SERVER_ERROR;
-    }
-    argv[0] = apr_pstrdup(p, command);
 
     e_info.cmd_type  = APR_PROGRAM;
     e_info.in_pipe   = APR_CHILD_BLOCK;
@@ -857,13 +823,14 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
     apr_file_t    *script_out = NULL, *script_in = NULL, *script_err = NULL;
     apr_bucket_brigade *bcgi;
     apr_bucket *b;
+    apr_status_t rv;
 
-    if (build_argv_list(&argv, r, r->pool) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
-                      "couldn't spawn cmd child process: %s", r->filename);
+    if ((rv = cgi_build_command(&command, &argv, r, r->pool)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                      "don't know how to spawn cmd child process: %s", 
+                      r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    argv[0] = apr_pstrdup(r->pool, command);
 
     e_info.cmd_type  = APR_SHELLCMD;
     e_info.in_pipe   = APR_NO_PIPE;
@@ -875,9 +842,9 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
     e_info.next      = f->next;
 
     /* run the script in its own process */
-    if (run_cgi_child(&script_out, &script_in, &script_err,
-                      command, argv, r, r->pool, &e_info) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+    if ((rv = run_cgi_child(&script_out, &script_in, &script_err,
+                      command, argv, r, r->pool, &e_info)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                       "couldn't spawn child process: %s", r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -977,6 +944,14 @@ static void cgi_post_config(apr_pool_t *p, apr_pool_t *plog,
          *   with mod_include to provide processing of the exec directive.
          */
         cgi_pfn_reg_with_ssi("exec", handle_exec);
+    }
+
+    /* This is the means by which unusual (non-unix) os's may find alternate
+     * means to run a given command (e.g. shebang/registry parsing on Win32)
+     */
+    cgi_build_command    = APR_RETRIEVE_OPTIONAL_FN(ap_cgi_build_command);
+    if (!cgi_build_command) {
+        cgi_build_command = default_build_command;
     }
 }
 

@@ -151,9 +151,6 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->limit_req_body = 0;
     conf->limit_xml_body = AP_LIMIT_UNSET;
     conf->sec_file = apr_array_make(a, 2, sizeof(ap_conf_vector_t *));
-#ifdef WIN32
-    conf->script_interpreter_source = INTERPRETER_SOURCE_UNSET;
-#endif
 
     conf->server_signature = srv_sig_unset;
 
@@ -288,12 +285,6 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     if (new->satisfy != SATISFY_NOSPEC) {
         conf->satisfy = new->satisfy;
     }
-
-#ifdef WIN32
-    if (new->script_interpreter_source != INTERPRETER_SOURCE_UNSET) {
-        conf->script_interpreter_source = new->script_interpreter_source;
-    }
-#endif
 
     if (new->server_signature != srv_sig_unset) {
 	conf->server_signature = new->server_signature;
@@ -782,290 +773,6 @@ AP_DECLARE(unsigned long) ap_get_limit_req_body(const request_rec *r)
     return d->limit_req_body;
 }
 
-#ifdef WIN32
-static apr_status_t get_win32_registry_default_value(apr_pool_t *p, HKEY hkey,
-                                                     char* relativepath, 
-                                                     char **value)
-{
-    HKEY hkeyOpen;
-    DWORD type;
-    DWORD size = 0;
-    DWORD result = RegOpenKeyEx(hkey, relativepath, 0, 
-                                KEY_QUERY_VALUE, &hkeyOpen);
-    
-    if (result != ERROR_SUCCESS) 
-        return APR_FROM_OS_ERROR(result);
-
-    /* Read to NULL buffer to determine value size */
-    result = RegQueryValueEx(hkeyOpen, "", 0, &type, NULL, &size);
-    
-   if (result == ERROR_SUCCESS) {
-        if ((size < 2) || (type != REG_SZ && type != REG_EXPAND_SZ)) {
-            result = ERROR_INVALID_PARAMETER;
-        }
-        else {
-            *value = apr_palloc(p, size);
-            /* Read value based on size query above */
-            result = RegQueryValueEx(hkeyOpen, "", 0, &type, *value, &size);
-        }
-    }
-
-    /* TODO: This might look fine, but we need to provide some warning
-     * somewhere that some environment variables may -not- be translated,
-     * seeing as we may have chopped the environment table down somewhat.
-     */
-    if ((result == ERROR_SUCCESS) && (type == REG_EXPAND_SZ)) 
-    {
-        char *tmp = *value;
-        size = ExpandEnvironmentStrings(tmp, *value, 0);
-        if (size) {
-            *value = apr_palloc(p, size);
-            size = ExpandEnvironmentStrings(tmp, *value, size);
-        }
-    }
-
-    RegCloseKey(hkeyOpen);
-    return APR_FROM_OS_ERROR(result);
-}
-
-static char* get_interpreter_from_win32_registry(apr_pool_t *p, const char* ext,
-                                                 char** arguments, int strict)
-{
-    char execcgi_path[] = "SHELL\\EXECCGI\\COMMAND";
-    char execopen_path[] = "SHELL\\OPEN\\COMMAND";
-    char typeName[MAX_PATH];
-    int cmdOfName = FALSE;
-    HKEY hkeyName;
-    HKEY hkeyType;
-    DWORD type;
-    int size;
-    int result;
-    char *buffer;
-    char *s;
-    
-    if (!ext)
-        return NULL;
-    /* 
-     * Future optimization:
-     * When the registry is successfully searched, store the strings for
-     * interpreter and arguments in an ext hash to speed up subsequent look-ups
-     */
-
-    /* Open the key associated with the script filetype extension */
-    result = RegOpenKeyEx(HKEY_CLASSES_ROOT, ext, 0, KEY_QUERY_VALUE, 
-                          &hkeyType);
-
-    if (result != ERROR_SUCCESS) 
-        return NULL;
-
-    /* Retrieve the name of the script filetype extension */
-    size = sizeof(typeName);
-    result = RegQueryValueEx(hkeyType, "", NULL, &type, typeName, &size);
-    
-    if (result == ERROR_SUCCESS && type == REG_SZ && typeName[0]) {
-        /* Open the key associated with the script filetype extension */
-        result = RegOpenKeyEx(HKEY_CLASSES_ROOT, typeName, 0, 
-                              KEY_QUERY_VALUE, &hkeyName);
-
-        if (result == ERROR_SUCCESS)
-            cmdOfName = TRUE;
-    }
-
-    /* Open the key for the script command path by:
-     * 
-     *   1) the 'named' filetype key for ExecCGI/Command
-     *   2) the extension's type key for ExecCGI/Command
-     *
-     * and if the strict arg is false, then continue trying:
-     *
-     *   3) the 'named' filetype key for Open/Command
-     *   4) the extension's type key for Open/Command
-     */
-
-    if (cmdOfName) {
-        result = get_win32_registry_default_value(p, hkeyName, 
-                                                  execcgi_path, &buffer);
-    }
-
-    if (!cmdOfName || (result != ERROR_SUCCESS)) {
-        result = get_win32_registry_default_value(p, hkeyType, 
-                                                  execcgi_path, &buffer);
-    }
-
-    if (!strict && cmdOfName && (result != ERROR_SUCCESS)) {
-        result = get_win32_registry_default_value(p, hkeyName, 
-                                                  execopen_path, &buffer);
-    }
-
-    if (!strict && (result != ERROR_SUCCESS)) {
-        result = get_win32_registry_default_value(p, hkeyType, 
-                                                  execopen_path, &buffer);
-    }
-
-    if (cmdOfName)
-        RegCloseKey(hkeyName);
-
-    RegCloseKey(hkeyType);
-
-    if (result != ERROR_SUCCESS)
-        return NULL;
-
-    /*
-     * The canonical way shell command entries are entered in the Win32 
-     * registry is as follows:
-     *   shell [options] "%1" [args]
-     * where
-     *   shell - full path name to interpreter or shell to run.
-     *           E.g., c:\usr\local\ntreskit\perl\bin\perl.exe
-     *   options - optional switches
-     *              E.g., \C
-     *   "%1" - Place holder for file to run the shell against. 
-     *          Typically quoted.
-     *   options - additional arguments
-     *              E.g., /silent
-     *
-     * If we find a %1 or a quoted %1, lop off the remainder to arguments. 
-     */
-    if (buffer && *buffer) {
-        if ((s = strstr(buffer, "\"%1")))
-        {
-            *s = '\0';
-            *arguments = s + 4;
-        }
-        else if ((s = strstr(buffer, "%1"))) 
-        {
-            *s = '\0';
-            *arguments = buffer + 2;
-        }
-        else
-            *arguments = strchr(buffer, '\0');
-        while (**arguments && isspace(**arguments))
-            ++*arguments;
-    }
-
-    return buffer;
-}
-
-AP_DECLARE (file_type_e) ap_get_win32_interpreter(const  request_rec *r, 
-                                                  char** interpreter,
-                                                  char** arguments)
-{
-    HANDLE hFile;
-    DWORD nBytesRead;
-    BOOLEAN bResult;
-    char buffer[1024];
-    core_dir_config *d;
-    int i;
-    file_type_e fileType = eFileTypeUNKNOWN;
-    char *ext = NULL;
-    char *exename = NULL;
-
-    d = (core_dir_config *)ap_get_module_config(r->per_dir_config, 
-                                                &core_module);
-
-    /* Find the file extension */
-    exename = strrchr(r->filename, '/');
-    if (!exename) {
-        exename = strrchr(r->filename, '\\');
-    }
-    if (!exename) {
-        exename = r->filename;
-    }
-    else {
-        exename++;
-    }
-    ext = strrchr(exename, '.');
-
-    if (ext && (!strcasecmp(ext,".bat") || !strcasecmp(ext,".cmd"))) 
-    {
-        char *comspec = getenv("COMSPEC");
-        if (comspec) {
-            *interpreter = apr_pstrcat(r->pool, "\"", comspec, "\" /c ", NULL);
-            return eFileTypeSCRIPT;
-        }
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r->server,
-         "Failed to start a '%s' file as a script." APR_EOL_STR
-         "\tCOMSPEC variable is missing from the environment.", ext);
-        return eFileTypeUNKNOWN;
-    }
-
-    /* If the file has an extension and it is not .com and not .exe and
-     * we've been instructed to search the registry, then do it!
-     */
-    if (ext && strcasecmp(ext,".exe") && strcasecmp(ext,".com") &&
-        (d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY ||
-         d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY_STRICT)) {
-         /* Check the registry */
-        int strict = (d->script_interpreter_source 
-                            == INTERPRETER_SOURCE_REGISTRY_STRICT);
-        *interpreter = get_interpreter_from_win32_registry(r->pool, ext, 
-                                                           arguments, strict);
-        if (*interpreter)
-            return eFileTypeSCRIPT;
-        else if (d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY_STRICT) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r->server,
-             "ScriptInterpreterSource config directive set to \"registry-strict\"." APR_EOL_STR
-             "\tInterpreter not found for files of type '%s'.", ext);
-             return eFileTypeUNKNOWN;
-        }
-        else
-        {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r->server,
-             "ScriptInterpreterSource config directive set to \"registry\"." APR_EOL_STR
-             "\tInterpreter not found for files of type '%s', "
-             "trying \"script\" method...", ext);
-        }
-    }        
-
-    /* Need to peek into the file figure out what it really is... */
-    /* This is wrong for Unicode FS ... should move to APR */
-    hFile = CreateFile(r->filename, GENERIC_READ, FILE_SHARE_READ, NULL,
-                       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (hFile == INVALID_HANDLE_VALUE) {
-        return eFileTypeUNKNOWN;
-    }
-    bResult = ReadFile(hFile, (void*) &buffer, sizeof(buffer) - 1, 
-                       &nBytesRead, NULL);
-    if (!bResult || (nBytesRead == 0)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, GetLastError(), r,
-                      "ReadFile(%s) failed", r->filename);
-        CloseHandle(hFile);
-        return eFileTypeUNKNOWN;
-    }
-    CloseHandle(hFile);
-    buffer[nBytesRead] = '\0';
-
-    /* Script or executable, that is the question... */
-    if ((buffer[0] == '#') && (buffer[1] == '!')) {
-        /* Assuming file is a script since it starts with a shebang */
-        fileType = eFileTypeSCRIPT;
-        for (i = 2; i < sizeof(buffer); i++) {
-            if ((buffer[i] == '\r')
-                || (buffer[i] == '\n')) {
-                break;
-            }
-        }
-        buffer[i] = '\0';
-        for (i = 2; buffer[i] == ' ' ; ++i)
-            ;
-        *interpreter = apr_pstrdup(r->pool, buffer + i ); 
-    }
-    else {
-        /* Not a script, is it an executable? */
-        IMAGE_DOS_HEADER *hdr = (IMAGE_DOS_HEADER*)buffer;    
-        if ((nBytesRead >= sizeof(IMAGE_DOS_HEADER)) && (hdr->e_magic == IMAGE_DOS_SIGNATURE)) {
-            if (hdr->e_lfarlc < 0x40)
-                fileType = eFileTypeEXE16;
-            else
-                fileType = eFileTypeEXE32;
-        }
-        else
-            fileType = eFileTypeUNKNOWN;
-    }
-
-    return fileType;
-}
-#endif
 
 /*****************************************************************
  *
@@ -1484,7 +1191,9 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dumm
     return errmsg;
 }
 
-/* We use this in <DirectoryMatch> and <FilesMatch>, to ensure that 
+/* XXX: Bogus - need to do this differently (at least OS2/Netware suffer
+ * the same problem!!!
+ * We use this in <DirectoryMatch> and <FilesMatch>, to ensure that 
  * people don't get bitten by wrong-cased regex matches
  */
 
@@ -2377,25 +2086,6 @@ AP_DECLARE(size_t) ap_get_limit_xml_body(const request_rec *r)
     return (size_t)conf->limit_xml_body;
 }
 
-#ifdef WIN32
-static const char *set_interpreter_source(cmd_parms *cmd, core_dir_config *d,
-                                                char *arg)
-{
-    if (!strcasecmp(arg, "registry")) {
-        d->script_interpreter_source = INTERPRETER_SOURCE_REGISTRY;
-    } else if (!strcasecmp(arg, "registry-strict")) {
-        d->script_interpreter_source = INTERPRETER_SOURCE_REGISTRY_STRICT;
-    } else if (!strcasecmp(arg, "script")) {
-        d->script_interpreter_source = INTERPRETER_SOURCE_SHEBANG;
-    } else {
-        return apr_pstrcat(cmd->temp_pool, "ScriptInterpreterSource \"", arg, 
-                          "\" must be \"registry\", \"registry-strict\" or "
-                          "\"script\"", NULL);
-    }
-    return NULL;
-}
-#endif
-
 #if !defined (RLIMIT_CPU) || !(defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined(RLIMIT_AS)) || !defined (RLIMIT_NPROC)
 static const char *no_set_limit(cmd_parms *cmd, void *conf_,
                                 const char *arg, const char *arg2)
@@ -2764,11 +2454,6 @@ AP_INIT_TAKE1("NameVirtualHost", ap_set_name_virtual_host, NULL, RSRC_CONF,
 #ifdef _OSD_POSIX
 AP_INIT_TAKE1("BS2000Account", set_bs2000_account, NULL, RSRC_CONF,
   "Name of server User's bs2000 logon account name"),
-#endif
-#ifdef WIN32
-AP_INIT_TAKE1("ScriptInterpreterSource", set_interpreter_source, NULL,
-  OR_FILEINFO,
-  "Where to find interpreter to run Win32 scripts (Registry or script shebang line)"),
 #endif
 AP_INIT_TAKE1("ServerTokens", set_serv_tokens, NULL, RSRC_CONF,
   "Determine tokens displayed in the Server: header - Min(imal), OS or Full"),
