@@ -1717,12 +1717,11 @@ static const dav_hooks_repository dav_hooks_repository_fs =
 };
 
 static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
-					  int propid, int insvalue,
+					  int propid, dav_prop_insert what,
 					  ap_text_header *phdr)
 {
     const char *value;
     const char *s;
-    dav_prop_insert which;
     apr_pool_t *p = resource->info->pool;
     const dav_liveprop_spec *info;
     int global_ns;
@@ -1806,19 +1805,23 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 
     /* DBG3("FS: inserting lp%d:%s  (local %d)", ns, scan->name, scan->ns); */
 
-    if (insvalue) {
+    if (what == DAV_PROP_INSERT_VALUE) {
 	s = apr_psprintf(p, "<lp%d:%s>%s</lp%d:%s>" DEBUG_CR,
                          global_ns, info->name, value, global_ns, info->name);
-	which = DAV_PROP_INSERT_VALUE;
+    }
+    else if (what == DAV_PROP_INSERT_NAME) {
+	s = apr_psprintf(p, "<lp%d:%s/>" DEBUG_CR, global_ns, info->name);
     }
     else {
-	s = apr_psprintf(p, "<lp%d:%s/>" DEBUG_CR, global_ns, info->name);
-	which = DAV_PROP_INSERT_NAME;
+        /* assert: what == DAV_PROP_INSERT_SUPPORTED */
+        s = apr_psprintf(p, "<supported-live-property name=\"%s\""
+                            " namespace=\"%s\" xmlns=\"DAV:\"/>" DEBUG_CR,
+                         info->name, dav_fs_namespace_uris[info->ns]);
     }
     ap_text_append(p, phdr, s);
 
-    /* we inserted a name or value (this prop is done) */
-    return which;
+    /* we inserted what was asked for */
+    return what;
 }
 
 static int dav_fs_is_writable(const dav_resource *resource, int propid)
@@ -2010,7 +2013,7 @@ int dav_fs_find_liveprop(const dav_resource *resource,
 }
 
 void dav_fs_insert_all_liveprops(request_rec *r, const dav_resource *resource,
-                                 int insvalue, ap_text_header *phdr)
+                                 dav_prop_insert what, ap_text_header *phdr)
 {
     /* don't insert any liveprops if this isn't "our" resource */
     if (resource->hooks != &dav_hooks_repository_fs)
@@ -2027,13 +2030,13 @@ void dav_fs_insert_all_liveprops(request_rec *r, const dav_resource *resource,
     }
 
     (void) dav_fs_insert_prop(resource, DAV_PROPID_creationdate,
-			      insvalue, phdr);
+			      what, phdr);
     (void) dav_fs_insert_prop(resource, DAV_PROPID_getcontentlength,
-			      insvalue, phdr);
+			      what, phdr);
     (void) dav_fs_insert_prop(resource, DAV_PROPID_getlastmodified,
-			      insvalue, phdr);
+			      what, phdr);
     (void) dav_fs_insert_prop(resource, DAV_PROPID_getetag,
-			      insvalue, phdr);
+			      what, phdr);
 
 #ifndef WIN32
     /*
@@ -2042,7 +2045,7 @@ void dav_fs_insert_all_liveprops(request_rec *r, const dav_resource *resource,
     **       well not even call it.
     */
     (void) dav_fs_insert_prop(resource, DAV_PROPID_FS_executable,
-			      insvalue, phdr);
+			      what, phdr);
 #endif
 
     /* ### we know the others aren't defined as liveprops */

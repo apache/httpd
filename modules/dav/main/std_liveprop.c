@@ -82,10 +82,6 @@ static const dav_liveprop_spec dav_core_props[] =
     { 0, "displayname",          DAV_PROPID_displayname,          1 },
     { 0, "resourcetype",         DAV_PROPID_resourcetype,         0 },
     { 0, "source",               DAV_PROPID_source,               1 },
-    { 0, "supported-live-property-set",
-      DAV_PROPID_supported_live_property_set, 0 },
-    { 0, "supported-method-set", DAV_PROPID_supported_method_set, 0 },
-    { 0, "supported-report-set", DAV_PROPID_supported_report_set, 0 },
 
     { 0 }	/* sentinel */
 };
@@ -98,12 +94,11 @@ static const dav_liveprop_group dav_core_liveprop_group =
 };
 
 static dav_prop_insert dav_core_insert_prop(const dav_resource *resource,
-                                            int propid, int insvalue,
+                                            int propid, dav_prop_insert what,
                                             ap_text_header *phdr)
 {
     const char *value;
     const char *s;
-    dav_prop_insert which;
     apr_pool_t *p = resource->pool;
     const dav_liveprop_spec *info;
     int global_ns;
@@ -145,60 +140,6 @@ static dav_prop_insert dav_core_insert_prop(const dav_resource *resource,
         }
         break;
 
-    case DAV_PROPID_supported_live_property_set:
-        /* ### insert all live property names ### */
-        return DAV_PROP_INSERT_NOTDEF;
-        break;
-
-    case DAV_PROPID_supported_method_set:
-        /* ### leverage code from dav_method_options ### */
-        return DAV_PROP_INSERT_NOTDEF;
-        break;
-
-    case DAV_PROPID_supported_report_set:
-#if 0
-    {
-        /* ### where to get "r" ??? */
-        const dav_hooks_vsn *vsn_hooks = dav_get_vsn_hooks(r);
-
-        if (vsn_hooks != NULL) {
-            const dav_report_elem *reports;
-            dav_error *err;
-
-            if ((err = (*vsn_hooks->avail_reports)(resource,
-                                                   &reports)) != NULL) {
-	        err = dav_push_error(p, err->status, 0,
-                                     "DAV:supported-report-set could not "
-                                     "be determined due to a problem "
-                                     "fetching the available reports "
-                                     "for this resource.",
-                                     err);
-                /* ### can't return err... sigh. punt for now. */
-                return DAV_PROP_INSERT_NOTDEF;
-            }
-
-            value = "";
-
-            if (reports == NULL) {
-                /* no reports are defined. break with value="" */
-                break;
-            }
-
-            for (; reports->nmspace != NULL; ++reports) {
-                /* Note: presume reports->namespace is XML/URL quoted */
-                const char *v = apr_psprintf(p, "<%s xmlns=\"%s\"/>" DEBUG_CR,
-                                             reports->name, reports->nmspace);
-
-                /* This isn't very memory-efficient, but there should only
-                   be a small number of reports */
-                value = apr_pstrcat(p, value, v, NULL);
-            }
-        }
-        break;
-    }
-#endif
-    /* above code disabled. FALLTHROUGH */
-
     case DAV_PROPID_comment:
     case DAV_PROPID_creator_displayname:
     case DAV_PROPID_displayname:
@@ -218,19 +159,22 @@ static dav_prop_insert dav_core_insert_prop(const dav_resource *resource,
 
     /* assert: info != NULL && info->name != NULL */
 
-    if (insvalue && *value != '\0') {
+    if (what == DAV_PROP_INSERT_SUPPORTED) {
+        s = apr_psprintf(p, "<supported-live-property name=\"%s\""
+                            " namespace=\"%s\" xmlns=\"DAV:\"/>" DEBUG_CR,
+                         info->name, dav_core_namespace_uris[info->ns]);
+    }
+	else if (what == DAV_PROP_INSERT_VALUE && *value != '\0') {
         s = apr_psprintf(p, "<lp%d:%s>%s</lp%d:%s>" DEBUG_CR,
                          global_ns, info->name, value, global_ns, info->name);
-        which = DAV_PROP_INSERT_VALUE;
     }
     else {
         s = apr_psprintf(p, "<lp%d:%s/>" DEBUG_CR, global_ns, info->name);
-        which = DAV_PROP_INSERT_NAME;
     }
     ap_text_append(p, phdr, s);
 
-    /* we inserted a name or value (this prop is done) */
-    return which;
+    /* we inserted what was asked for */
+    return what;
 }
 
 static int dav_core_is_writable(const dav_resource *resource, int propid)
@@ -271,17 +215,10 @@ int dav_core_find_liveprop(const dav_resource *resource,
 
 void dav_core_insert_all_liveprops(request_rec *r,
                                    const dav_resource *resource,
-                                   int insvalue, ap_text_header *phdr)
+                                   dav_prop_insert what, ap_text_header *phdr)
 {
     (void) dav_core_insert_prop(resource, DAV_PROPID_resourcetype,
-                                insvalue, phdr);
-    (void) dav_core_insert_prop(resource,
-                                DAV_PROPID_supported_live_property_set,
-                                insvalue, phdr);
-    (void) dav_core_insert_prop(resource, DAV_PROPID_supported_method_set,
-                                insvalue, phdr);
-    (void) dav_core_insert_prop(resource, DAV_PROPID_supported_report_set,
-                                insvalue, phdr);
+                                what, phdr);
 }
 
 void dav_core_register_uris(apr_pool_t *p)

@@ -1261,6 +1261,244 @@ static int dav_method_delete(request_rec *r)
     return HTTP_NO_CONTENT;
 }
 
+/* generate DAV:supported-method-set OPTIONS response */
+static dav_error *dav_gen_supported_methods(request_rec *r,
+                                            const ap_xml_elem *elem,
+                                            const apr_table_t *methods,
+                                            ap_text_header *body)
+{
+    apr_array_header_t *arr;
+    apr_table_entry_t *elts;
+    ap_xml_elem *child;
+    ap_xml_attr *attr;
+    char *s;
+    int i;
+
+    ap_text_append(r->pool, body, "<D:supported-method-set>" DEBUG_CR);
+
+    if (elem->first_child == NULL) {
+        /* show all supported methods */
+        arr = apr_table_elts(methods);
+        elts = (apr_table_entry_t *) arr->elts;
+
+        for (i = 0; i < arr->nelts; ++i) {
+            if (elts[i].key == NULL)
+                continue;
+            s = apr_psprintf(r->pool,
+                            "<D:supported-method D:name=\"%s\"/>" DEBUG_CR,
+                            elts[i].key);
+            ap_text_append(r->pool, body, s);
+        }
+    }
+    else {
+        /* check for support of specific methods */
+        for (child = elem->first_child; child != NULL; child = child->next) {
+            if (child->ns == AP_XML_NS_DAV_ID
+                && strcmp(child->name, "supported-method") == 0) {
+                const char *name = NULL;
+
+                /* go through attributes to find method name */
+                for (attr = child->attr; attr != NULL; attr = attr->next) {
+                    if (attr->ns == AP_XML_NS_DAV_ID
+                        && strcmp(attr->name, "name") == 0)
+                            name = attr->value;
+                }
+
+                if (name == NULL) {
+                    return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0,
+                                         "A DAV:supported-method element "
+                                         "does not have a \"name\" attribute");
+                }
+
+                /* see if method is supported */
+                if (apr_table_get(methods, name) != NULL) {
+                    s = apr_psprintf(r->pool,
+                                    "<D:supported-method D:name=\"%s\"/>" DEBUG_CR,
+                                    name);
+                    ap_text_append(r->pool, body, s);
+                }
+            }
+        }
+    }
+
+    ap_text_append(r->pool, body, "</D:supported-method-set>" DEBUG_CR);
+    return NULL;
+}
+
+/* generate DAV:supported-live-property-set OPTIONS response */
+static dav_error *dav_gen_supported_live_props(request_rec *r,
+                                               const dav_resource *resource,
+                                               const ap_xml_elem *elem,
+                                               ap_text_header *body)
+{
+    dav_lockdb *lockdb;
+    dav_propdb *propdb;
+    ap_xml_elem *child;
+    ap_xml_attr *attr;
+    dav_error *err;
+
+    /* open lock database, to report on supported lock properties */
+    /* ### should open read-only */
+    if ((err = dav_open_lockdb(r, 0, &lockdb)) != NULL) {
+	return dav_push_error(r->pool, err->status, 0,
+			      "The lock database could not be opened, "
+			      "preventing report of supported lock properties.",
+			      err);
+    }
+
+    /* open the property database (readonly) for the resource */
+    if ((err = dav_open_propdb(r, lockdb,
+			       (dav_resource *)resource, 1,
+                               NULL, &propdb)) != NULL) {
+        if (lockdb != NULL)
+            (*lockdb->hooks->close_lockdb)(lockdb);
+
+	return dav_push_error(r->pool, err->status, 0,
+			      "The property database could not be opened, "
+			      "preventing report of supported properties.",
+			      err);
+    }
+
+    ap_text_append(r->pool, body, "<D:supported-live-property-set>" DEBUG_CR);
+
+    if (elem->first_child == NULL) {
+        /* show all supported live properties */
+        dav_get_props_result props = dav_get_allprops(propdb, DAV_PROP_INSERT_SUPPORTED);
+        body->last->next = props.propstats;
+        while (body->last->next != NULL)
+            body->last = body->last->next;
+    }
+    else {
+        /* check for support of specific live property */
+        for (child = elem->first_child; child != NULL; child = child->next) {
+            if (child->ns == AP_XML_NS_DAV_ID
+                && strcmp(child->name, "supported-live-property") == 0) {
+                const char *name = NULL;
+                const char *nmspace = NULL;
+
+                /* go through attributes to find name and namespace */
+                for (attr = child->attr; attr != NULL; attr = attr->next) {
+                    if (attr->ns == AP_XML_NS_DAV_ID) {
+                        if (strcmp(attr->name, "name") == 0)
+                            name = attr->value;
+                        else if (strcmp(attr->name, "namespace") == 0)
+                            nmspace = attr->value;
+                    }
+                }
+
+                if (name == NULL) {
+                    err = dav_new_error(r->pool, HTTP_BAD_REQUEST, 0,
+                                        "A DAV:supported-live-property element "
+                                        "does not have a \"name\" attribute");
+                    break;
+                }
+
+                /* default namespace to DAV: */
+                if (nmspace == NULL)
+                    nmspace = "DAV:";
+
+                /* check for support of property */
+                dav_get_liveprop_supported(propdb, nmspace, name, body);
+            }
+        }
+    }
+
+    ap_text_append(r->pool, body, "</D:supported-live-property-set>" DEBUG_CR);
+
+    dav_close_propdb(propdb);
+
+    if (lockdb != NULL)
+        (*lockdb->hooks->close_lockdb)(lockdb);
+
+    return err;
+}
+
+/* generate DAV:supported-report-set OPTIONS response */
+static dav_error *dav_gen_supported_reports(request_rec *r,
+                                            const dav_resource *resource,
+                                            const ap_xml_elem *elem,
+                                            const dav_hooks_vsn *vsn_hooks,
+                                            ap_text_header *body)
+{
+    ap_xml_elem *child;
+    ap_xml_attr *attr;
+    dav_error *err;
+    char *s;
+
+    ap_text_append(r->pool, body, "<D:supported-report-set>" DEBUG_CR);
+
+    if (vsn_hooks != NULL) {
+        const dav_report_elem *reports;
+        const dav_report_elem *rp;
+
+        if ((err = (*vsn_hooks->avail_reports)(resource, &reports)) != NULL) {
+	    return dav_push_error(r->pool, err->status, 0,
+			         "DAV:supported-report-set could not be determined "
+                                 "due to a problem fetching the available reports "
+                                 "for this resource.",
+			         err);
+        }
+
+        if (reports != NULL) {
+            if (elem->first_child == NULL) {
+                /* show all supported reports */
+                for (rp = reports; rp->nmspace != NULL; ++rp) {
+                    /* Note: we presume reports->namespace is properly XML/URL quoted */
+                    s = apr_psprintf(r->pool,
+                                    "<D:supported-report D:name=\"%s\" D:namespace=\"%s\"/>" DEBUG_CR,
+                                    rp->name, rp->nmspace);
+                    ap_text_append(r->pool, body, s);
+                }
+            }
+            else {
+                /* check for support of specific report */
+                for (child = elem->first_child; child != NULL; child = child->next) {
+                    if (child->ns == AP_XML_NS_DAV_ID
+                        && strcmp(child->name, "supported-report") == 0) {
+                        const char *name = NULL;
+                        const char *nmspace = NULL;
+
+                        /* go through attributes to find name and namespace */
+                        for (attr = child->attr; attr != NULL; attr = attr->next) {
+                            if (attr->ns == AP_XML_NS_DAV_ID) {
+                                if (strcmp(attr->name, "name") == 0)
+                                    name = attr->value;
+                                else if (strcmp(attr->name, "namespace") == 0)
+                                    nmspace = attr->value;
+                            }
+                        }
+
+                        if (name == NULL) {
+                            return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0,
+                                                 "A DAV:supported-report element "
+                                                 "does not have a \"name\" attribute");
+                        }
+
+                        /* default namespace to DAV: */
+                        if (nmspace == NULL)
+                            nmspace = "DAV:";
+
+                        for (rp = reports; rp->nmspace != NULL; ++rp) {
+                            if (strcmp(name, rp->name) == 0
+                                && strcmp(nmspace, rp->nmspace) == 0) {
+                                /* Note: we presume reports->nmspace is properly XML/URL quoted */
+                                s = apr_psprintf(r->pool,
+                                                "<D:supported-report D:name=\"%s\" D:namespace=\"%s\"/>" DEBUG_CR,
+                                                rp->name, rp->nmspace);
+                                ap_text_append(r->pool, body, s);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    ap_text_append(r->pool, body, "</D:supported-report-set>" DEBUG_CR);
+    return NULL;
+}
+
 /* handle the OPTIONS method */
 static int dav_method_options(request_rec *r)
 {
@@ -1268,153 +1506,271 @@ static int dav_method_options(request_rec *r)
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     const dav_hooks_binding *binding_hooks = DAV_GET_HOOKS_BINDING(r);
     dav_resource *resource;
-    const char *options;
     const char *dav_level;
-    const char *vsn_level;
+    char *allow;
+    char *s;
+    apr_array_header_t *arr;
+    apr_table_entry_t *elts;
+    apr_table_t *methods = apr_make_table(r->pool, 12);
+    ap_text_header vsn_options = { 0 };
+    ap_text_header body = { 0 };
+    ap_text *t;
+    int text_size;
     int result;
+    int i;
     apr_array_header_t *uri_ary;
-    const char *uris;
-
-    /* per HTTP/1.1 S9.2, we can discard this body */
-    if ((result = ap_discard_request_body(r)) != OK) {
-	return result;
-    }
-
-    /* no body */
-    ap_set_content_length(r, 0);
+    ap_xml_doc *doc;
+    const ap_xml_elem *elem;
 
     /* resolve the resource */
     result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
     if (result != OK)
         return result;
 
+    /* parse any request body */
+    if ((result = ap_xml_parse_input(r, &doc)) != OK) {
+	return result;
+    }
+    /* note: doc == NULL if no request body */
+
+    if (doc && !dav_validate_root(doc, "options")) {
+	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+		      "The \"options\" element was not found.");
+	return HTTP_BAD_REQUEST;
+    }
+
     /* determine which providers are available */
     dav_level = "1";
-    vsn_level = NULL;
 
     if (locks_hooks != NULL) {
         dav_level = "1,2";
     }
 
-    if (vsn_hooks != NULL
-        && (vsn_level = (*vsn_hooks->get_vsn_header)()) != NULL) {
-	dav_level = apr_pstrcat(r->pool, dav_level, ",", vsn_level, NULL);
+    if (binding_hooks != NULL)
+	dav_level = apr_pstrcat(r->pool, dav_level, ",bindings", NULL);
+
+    /* ###
+    ** MSFT Web Folders chokes if length of DAV header value > 63 characters!
+    ** To workaround that, we use separate DAV headers for versioning and
+    ** live prop provider namespace URIs.
+    ** ###
+    */
+    apr_table_setn(r->headers_out, "DAV", dav_level);
+
+    /*
+    ** If there is a versioning provider, generate DAV headers
+    ** for versioning options.
+    */
+    if (vsn_hooks != NULL) {
+        (*vsn_hooks->get_vsn_options)(r->pool, &vsn_options);
+
+        for (t = vsn_options.first; t != NULL; t = t->next)
+            apr_table_addn(r->headers_out, "DAV", t->text);
     }
 
-    /* gather property set URIs from all the liveprop providers */
+    /*
+    ** Gather property set URIs from all the liveprop providers,
+    ** and generate a separate DAV header for each URI, to avoid
+    ** problems with long header lengths.
+    */
     uri_ary = apr_make_array(r->pool, 5, sizeof(const char *));
     dav_run_gather_propsets(uri_ary);
-    uris = apr_array_pstrcat(r->pool, uri_ary, ',');
-    if (*uris) {
-        dav_level = apr_pstrcat(r->pool, dav_level, ",", uris, NULL);
+    for (i = 0; i < uri_ary->nelts; ++i) {
+        if (((char **)uri_ary->elts)[i] != NULL)
+            apr_table_addn(r->headers_out, "DAV", ((char **)uri_ary->elts)[i]);
     }
 
     /* this tells MSFT products to skip looking for FrontPage extensions */
     apr_table_setn(r->headers_out, "MS-Author-Via", "DAV");
 
     /*
+    ** Determine which methods are allowed on the resource.
     ** Three cases:  resource is null (3), is lock-null (7.4), or exists.
     **
-    ** All cases support OPTIONS and LOCK.
+    ** All cases support OPTIONS, and if there is a lock provider, LOCK.
     ** (Lock-) null resources also support MKCOL and PUT.
-    ** Lock-null support PROPFIND and UNLOCK.
+    ** Lock-null supports PROPFIND and UNLOCK.
     ** Existing resources support lots of stuff.
     */
+
+    apr_table_addn(methods, "OPTIONS", "");
 
     /* ### take into account resource type */
     switch (dav_get_resource_state(r, resource))
     {
     case DAV_RESOURCE_EXISTS:
 	/* resource exists */
-	if (resource->collection) {
-	    options = apr_pstrcat(r->pool,
-		"OPTIONS, "
-		"GET, HEAD, POST, DELETE, TRACE, "
-		"PROPFIND, PROPPATCH, COPY, MOVE",
-                locks_hooks != NULL ? ", LOCK, UNLOCK" : "",
-                NULL);
-	}
-	else {
-	    /* files also support PUT */
-	    options = apr_pstrcat(r->pool,
-		"OPTIONS, "
-		"GET, HEAD, POST, DELETE, TRACE, "
-		"PROPFIND, PROPPATCH, COPY, MOVE, PUT",
-                locks_hooks != NULL ? ", LOCK, UNLOCK" : "",
-                NULL);
-	}
-	break;
+        apr_table_addn(methods, "GET", "");
+        apr_table_addn(methods, "HEAD", "");
+        apr_table_addn(methods, "POST", "");
+        apr_table_addn(methods, "DELETE", "");
+        apr_table_addn(methods, "TRACE", "");
+        apr_table_addn(methods, "PROPFIND", "");
+        apr_table_addn(methods, "PROPPATCH", "");
+        apr_table_addn(methods, "COPY", "");
+        apr_table_addn(methods, "MOVE", "");
+
+	if (!resource->collection)
+            apr_table_addn(methods, "PUT", "");
+
+        if (locks_hooks != NULL) {
+            apr_table_addn(methods, "LOCK", "");
+            apr_table_addn(methods, "UNLOCK", "");
+        }
+
+        break;
 
     case DAV_RESOURCE_LOCK_NULL:
 	/* resource is lock-null. */
-	options = apr_pstrcat(r->pool, "OPTIONS, MKCOL, PUT, PROPFIND",
-                             locks_hooks != NULL ? ", LOCK, UNLOCK" : "",
-                             NULL);
-	break;
+        apr_table_addn(methods, "MKCOL", "");
+        apr_table_addn(methods, "PROPFIND", "");
+        apr_table_addn(methods, "PUT", "");
+
+        if (locks_hooks != NULL) {
+            apr_table_addn(methods, "LOCK", "");
+            apr_table_addn(methods, "UNLOCK", "");
+        }
+
+        break;
 
     case DAV_RESOURCE_NULL:
 	/* resource is null. */
-	options = apr_pstrcat(r->pool, "OPTIONS, MKCOL, PUT",
-                             locks_hooks != NULL ? ", LOCK" : "",
-                             NULL);
-	break;
+        apr_table_addn(methods, "MKCOL", "");
+        apr_table_addn(methods, "PUT", "");
+
+        if (locks_hooks != NULL)
+            apr_table_addn(methods, "LOCK", "");
+
+        break;
 
     default:
 	/* ### internal error! */
-	options = "OPTIONS";
 	break;
     }
 
-    /* If there is a versioning provider, add versioning options */
+    /* If there is a versioning provider, add versioning methods */
     if (vsn_hooks != NULL) {
-        const char *vsn_options = NULL;
-
         if (!resource->exists) {
-            int vsn_control = (*vsn_hooks->versionable)(resource);
-            int mkworkspace = vsn_hooks->can_be_workspace != NULL
-                              && (*vsn_hooks->can_be_workspace)(resource);
+            if ((*vsn_hooks->versionable)(resource))
+                apr_table_addn(methods, "VERSION-CONTROL", "");
 
-            if (vsn_control && mkworkspace) {
-                vsn_options = ", VERSION-CONTROL, MKWORKSPACE";
-            }
-            else if (vsn_control)
-                vsn_options = ", VERSION-CONTROL";
-            else if (mkworkspace) {
-                vsn_options = ", MKWORKSPACE";
-            }
+            if (vsn_hooks->can_be_workspace != NULL
+                && (*vsn_hooks->can_be_workspace)(resource))
+                apr_table_addn(methods, "MKWORKSPACE", "");
         }
         else if (!resource->versioned) {
-            if ((*vsn_hooks->versionable)(resource)) {
-                vsn_options = ", VERSION-CONTROL";
-            }
+            if ((*vsn_hooks->versionable)(resource))
+                apr_table_addn(methods, "VERSION-CONTROL", "");
         }
-        else if (resource->working)
-            vsn_options = ", CHECKIN, UNCHECKOUT";
-        else if (vsn_hooks->add_label != NULL)
-            vsn_options = ", CHECKOUT, LABEL";
-        else
-            vsn_options = ", CHECKOUT";
-
-        if (vsn_options != NULL)
-            options = apr_pstrcat(r->pool, options, vsn_options, NULL);
+        else if (resource->working) {
+            apr_table_addn(methods, "CHECKIN", "");
+            apr_table_addn(methods, "UNCHECKOUT", "");
+        }
+        else if (vsn_hooks->add_label != NULL) {
+            apr_table_addn(methods, "CHECKOUT", "");
+            apr_table_addn(methods, "LABEL", "");
+        }
+        else {
+            apr_table_addn(methods, "CHECKOUT", "");
+        }
     }
 
     /* If there is a bindings provider, see if resource is bindable */
-    if (binding_hooks != NULL) {
-	dav_level = apr_pstrcat(r->pool, dav_level, ",bindings", NULL);
-        if ((*binding_hooks->is_bindable)(resource))
-            options = apr_pstrcat(r->pool, options, ", BIND", NULL);
+    if (binding_hooks != NULL
+        && (*binding_hooks->is_bindable)(resource)) {
+        apr_table_addn(methods, "BIND", "");
     }
 
-    apr_table_setn(r->headers_out, "Allow", options);
-    apr_table_setn(r->headers_out, "DAV", dav_level);
+    /* Generate the Allow header */
+    arr = apr_table_elts(methods);
+    elts = (apr_table_entry_t *) arr->elts;
+    text_size = 0;
 
-    /* ### this will send a Content-Type. the default OPTIONS does not. */
+    /* first, compute total length */
+    for (i = 0; i < arr->nelts; ++i) {
+        if (elts[i].key == NULL)
+            continue;
+
+        /* add 1 for comma or null */
+        text_size += strlen(elts[i].key) + 1;
+    }
+
+    s = allow = apr_palloc(r->pool, text_size);
+
+    for (i = 0; i < arr->nelts; ++i) {
+        if (elts[i].key == NULL)
+            continue;
+
+        if (s != allow)
+            *s++ = ',';
+
+        strcpy(s, elts[i].key);
+        s += strlen(s);
+    }
+
+    apr_table_setn(r->headers_out, "Allow", allow);
+
+    /* if there was no request body, then there is no response body */
+    if (doc == NULL) {
+        ap_set_content_length(r, 0);
+
+        /* ### this will send a Content-Type. the default OPTIONS does not. */
+        ap_send_http_header(r);
+
+        /* ### the default (ap_send_http_options) returns OK, but I believe
+         * ### that is because it is the default handler and nothing else
+         * ### will run after the thing. */
+        return DONE;
+    }
+
+    /* handle each options request */
+    for (elem = doc->root->first_child; elem != NULL; elem = elem->next) {
+        /* check for something we recognize first */
+        int core_option = 0;
+        dav_error *err = NULL;
+
+        if (elem->ns == AP_XML_NS_DAV_ID) {
+            if (strcmp(elem->name, "supported-method-set") == 0) {
+                err = dav_gen_supported_methods(r, elem, methods, &body);
+                core_option = 1;
+            }
+            else if (strcmp(elem->name, "supported-live-property-set") == 0) {
+                err = dav_gen_supported_live_props(r, resource, elem, &body);
+                core_option = 1;
+            }
+            else if (strcmp(elem->name, "supported-report-set") == 0) {
+                err = dav_gen_supported_reports(r, resource, elem, vsn_hooks, &body);
+                core_option = 1;
+            }
+        }
+
+        if (err != NULL)
+            return dav_handle_err(r, err, NULL);
+
+        /* if unrecognized option, pass to versioning provider */
+        if (!core_option) {
+            if ((err = (*vsn_hooks->get_option)(resource, elem, &body))
+                != NULL) {
+                return dav_handle_err(r, err, NULL);
+            }
+        }
+    }
+
+    /* send the options response */
+    r->status = HTTP_OK;
+    r->content_type = DAV_XML_CONTENT_TYPE;
+
+    /* send the headers */
     ap_send_http_header(r);
 
-    /* ### the default (ap_send_http_options) returns OK, but I believe
-     * ### that is because it is the default handler and nothing else
-     * ### will run after the thing. */
+    /* send the response body */
+    ap_rputs(DAV_XML_HEADER DEBUG_CR
+             "<D:options-response xmlns:D=\"DAV:\">" DEBUG_CR, r);
+
+    for (t = body.first; t != NULL; t = t->next)
+        ap_rputs(t->text, r);
+
+    ap_rputs("</D:options-response>" DEBUG_CR, r);
 
     /* we've sent everything necessary to the client. */
     return DONE;
@@ -1489,8 +1845,10 @@ static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
 	propstats = dav_get_props(propdb, ctx->doc);
     }
     else {
-	propstats = dav_get_allprops(propdb,
-			     ctx->propfind_type == DAV_PROPFIND_IS_ALLPROP);
+        dav_prop_insert what = ctx->propfind_type == DAV_PROPFIND_IS_ALLPROP
+                                 ? DAV_PROP_INSERT_VALUE
+                                 : DAV_PROP_INSERT_NAME;
+	propstats = dav_get_allprops(propdb, what);
     }
     dav_close_propdb(propdb);
 
@@ -4073,5 +4431,5 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(dav, DAV, int, find_liveprop,
                                      (resource, ns_uri, name, hooks), 0);
 APR_IMPLEMENT_EXTERNAL_HOOK_VOID(dav, DAV, insert_all_liveprops,
                                  (request_rec *r, const dav_resource *resource,
-                                  int insvalue, ap_text_header *phdr),
-                                 (r, resource, insvalue, phdr));
+                                  dav_prop_insert what, ap_text_header *phdr),
+                                 (r, resource, what, phdr));
