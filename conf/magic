@@ -170,7 +170,10 @@
 # html:  file(1) magic for HTML (HyperText Markup Language) docs
 #
 # from Daniel Quinlan <quinlan@yggdrasil.com>
+# and Anna Shergold <anna@inext.co.uk>
 #
+0	string		\<!DOCTYPE\ HTML	text/html
+0	string		\<!doctype\ html	text/html
 0	string		\<HEAD		text/html
 0	string		\<head		text/html
 0	string		\<TITLE		text/html

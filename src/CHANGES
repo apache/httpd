@@ -1,5 +1,9 @@
 Changes with Apache 1.3.1
 
+  *) Add the "<!DOCTYPE HTML" magic cookie used by modern documents (and
+     required by HTML 3.2 and later) to conf/magic.
+     [Anna Shergold <anna@inext.co.uk>]
+
   *) Fix yet another signal-based race condition involving nested timers.
      Signals suck.  [Dean Gaudet]
 
