@@ -818,7 +818,7 @@ static int dav_method_get(request_rec *r)
     return DONE;
 }
 
-/* validate resource on POST, then pass it off to the default handler */
+/* validate resource/locks on POST, then pass to the default handler */
 static int dav_method_post(request_rec *r)
 {
     dav_resource *resource;
@@ -4423,21 +4423,45 @@ static int dav_method_bind(request_rec *r)
  */
 static int dav_handler(request_rec *r)
 {
-    dav_dir_conf *conf;
+    dav_dir_conf *conf = ap_get_module_config(r->per_dir_config, &dav_module);
 
-    if (strcmp(r->handler, "dav-handler")) {
+    /* if DAV is not enabled, then we've got nothing to do */
+    if (conf->provider == NULL) {
         return DECLINED;
     }
+
+    if (r->method_number == M_GET) {
+        /*
+         * ### need some work to pull Content-Type and Content-Language
+         * ### from the property database.
+         */
+
+        /*
+         * If the repository hasn't indicated that it will handle the
+         * GET method, then just punt.
+         *
+         * ### this isn't quite right... taking over the response can break
+         * ### things like mod_negotiation. need to look into this some more.
+         */
+        if (!conf->provider->repos->handle_get) {
+            return DECLINED;
+        }
+    }
+
+    /* ### do we need to do anything with r->proxyreq ?? */
 
     /* quickly ignore any HTTP/0.9 requests which aren't subreqs. */
     if (r->assbackwards && !r->main) {
         return DECLINED;
     }
 
-    /* ### do we need to do anything with r->proxyreq ?? */
-
-    conf = (dav_dir_conf *)ap_get_module_config(r->per_dir_config,
-                                                &dav_module);
+    /*
+     * ### anything else to do here? could another module and/or
+     * ### config option "take over" the handler here? i.e. how do
+     * ### we lock down this hierarchy so that we are the ultimate
+     * ### arbiter? (or do we simply depend on the administrator
+     * ### to avoid conflicting configurations?)
+     */
 
     /*
      * Set up the methods mask, since that's one of the reasons this handler
@@ -4485,8 +4509,6 @@ static int dav_handler(request_rec *r)
     /* ### we might need to refine this for just where we return the error.
      * ### also, there is the issue with other methods (see ISSUES)
      */
-
-    /* ### more work necessary, now that we have M_foo for DAV methods */
 
     /* dispatch the appropriate method handler */
     if (r->method_number == M_GET) {
@@ -4581,6 +4603,7 @@ static int dav_handler(request_rec *r)
         return dav_method_merge(r);
     }
 
+    /* BIND method */
     if (r->method_number == dav_methods[DAV_M_BIND]) {
         return dav_method_bind(r);
     }
@@ -4595,59 +4618,10 @@ static int dav_handler(request_rec *r)
     return DECLINED;
 }
 
-static int dav_fixups(request_rec *r)
-{
-    dav_dir_conf *conf;
-
-    conf = (dav_dir_conf *)ap_get_module_config(r->per_dir_config,
-                                                &dav_module);
-
-    /* if DAV is not enabled, then we've got nothing to do */
-    if (conf->provider == NULL) {
-        return DECLINED;
-    }
-
-    if (r->method_number == M_GET) {
-        /*
-         * ### need some work to pull Content-Type and Content-Language
-         * ### from the property database.
-         */
-
-        /*
-         * If the repository hasn't indicated that it will handle the
-         * GET method, then just punt.
-         *
-         * ### this isn't quite right... taking over the response can break
-         * ### things like mod_negotiation. need to look into this some more.
-         */
-        if (!conf->provider->repos->handle_get) {
-            return DECLINED;
-        }
-    }
-
-    /* ### we should (instead) trap the ones that we DO understand */
-    /* ### the handler DOES handle POST, so we need to fix one of these */
-    if (r->method_number != M_POST) {
-
-        /*
-         * ### anything else to do here? could another module and/or
-         * ### config option "take over" the handler here? i.e. how do
-         * ### we lock down this hierarchy so that we are the ultimate
-         * ### arbiter? (or do we simply depend on the administrator
-         * ### to avoid conflicting configurations?)
-         */
-        r->handler = "dav-handler";
-        return OK;
-    }
-
-    return DECLINED;
-}
-
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_handler(dav_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(dav_init_handler, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_fixups(dav_fixups, NULL, NULL, APR_HOOK_MIDDLE);
 
     dav_hook_find_liveprop(dav_core_find_liveprop, NULL, NULL, APR_HOOK_LAST);
     dav_hook_insert_all_liveprops(dav_core_insert_all_liveprops,
