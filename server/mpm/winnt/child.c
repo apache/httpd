@@ -512,7 +512,8 @@ static void winnt_accept(void *lr_)
                       &BytesRead,
                       &context->Overlapped)) {
             rv = apr_get_netos_error();
-            if (rv == APR_FROM_OS_ERROR(WSAEINVAL)) {
+            if (rv == APR_FROM_OS_ERROR(WSAEINVAL) ||
+                rv == APR_FROM_OS_ERROR(WSAENOTSOCK)) {
                 /* Hack alert. Occasionally, TransmitFile will not recycle the 
                  * accept socket (usually when the client disconnects early). 
                  * Get a new socket and try the call again.
