@@ -1,5 +1,8 @@
 Changes with Apache 1.3.5
 
+  *) SECURITY: Avoid some buffer overflow problems when escaping
+     quoted strings.  [Rick Perry <perry@ece.vill.edu>]
+
   *) Let src/Configure be aware of CFLAGS options starting with plus
      signs as it's the case for the HP/UX compiler.
      [Doug Yatcilla <yatcilda@umdnj.edu>] PR#3681

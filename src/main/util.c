@@ -1877,6 +1877,7 @@ API_EXPORT(char *) ap_escape_quotes (pool *p, const char *instring)
 	 */
 	if ((*inchr == '\\') && (inchr[1] != '\0')) {
 	    inchr++;
+	    newlen++;
 	}
 	inchr++;
     }
