@@ -159,6 +159,14 @@ In addition to these three files, the server behavior can be configured
 on a directory-by-directory basis by using <CODE>.htaccess</CODE>
 files in directories accessed by the server.
 
+<H3>Set your system time properly!</H3>
+
+Proper operation of a public web server requires accurate time
+keeping, since elements of the HTTP protocol are expressed as the time
+of day.  So, it's time to investigate setting up NTP or some other
+time synchronization system on your Unix box, or whatever the
+equivalent on NT would be.
+
 <H3>Starting and Stopping the Server</H3>
 
 To start the server, simply run <CODE>httpd</CODE>. This will look for
