@@ -225,10 +225,6 @@ initgroups \
 bindprocessor \
 )
 
-AC_CHECK_LIB(nsl, gethostbyname)
-AC_CHECK_LIB(nsl, gethostname)
-AC_CHECK_LIB(socket, socket)
-
 AC_ARG_WITH(port,[  --with-port=PORT        Port on which to listen (default is 80)],
         [if test "$withval" = "yes"; then AC_MSG_ERROR('option --with-port requires a value (the TCP port number)'); else PORT="$withval"; fi],
 	[PORT=80])
