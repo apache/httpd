@@ -282,18 +282,37 @@ MIME-typing</A></STRONG>
         HREF="mod/mod_autoindex.html#indexoptions">IndexOptions</A>
         keyword.
 
-    <LI><A HREF="mod/mod_autoindex.html#indexoptions">
+    <LI><A HREF="mod/mod_autoindex.html#indexoptions:suppresshtmlpreamble">
         <CODE><STRONG>SuppressHTMLPreamble</STRONG></CODE></A> can be used if
         your README.html file includes its own HTML header.
 
-    <LI><STRONG><CODE>IconHeight</CODE> and <CODE>IconWidth</CODE></STRONG> let
-        you set
-        height and width attributes to the <CODE>&lt;IMG&gt;</CODE> tag in
-        directory listings.
+    <LI>The <A HREF="mod/mod_autoindex.html#indexoptions">
+        <CODE><STRONG>IndexOptions</STRONG></CODE></A> directive now allows
+        the use of incremental prefixes (+/- to add/remove the respective
+        keyword feature, as was already possible for the
+        <A HREF="mod/core.html#options">Options</A> directive) to its
+        keyword arguments. Multiple IndexOptions directives applying
+        to the same directory will now be merged.
+
+    <LI><A HREF="mod/mod_autoindex.html#indexoptions:iconheight"
+        ><STRONG><CODE>IconHeight</CODE></STRONG></A> and
+	<A HREF="mod/mod_autoindex.html#indexoptions:iconwidth"
+        ><STRONG><CODE>IconWidth</CODE></STRONG></A>
+        let you set height and width attributes to the
+        <CODE>&lt;IMG&gt;</CODE> tag in directory listings.
+
+    <LI>The new <A HREF="mod/mod_autoindex.html#indexoptions:namewidth"
+        ><STRONG><CODE>NameWidth</CODE></STRONG></A> keyword to the
+        <A HREF="mod/mod_autoindex.html#indexoptions">IndexOptions</A>
+	directive lets you set the number of columns for
+	<A HREF="mod/mod_autoindex.html#indexoptions:fancyindexing">"fancy"
+	directory listings</A>. If set to an '*' asterisk, the name width
+	will be adjusted automatically.
 
     <LI>The <A HREF="mod/mod_autoindex.html#fancyindexing"
         ><SAMP>FancyIndexing</SAMP></A> directive now correctly has
-        the same impact as <SAMP>IndexOptions&nbsp;FancyIndexing</SAMP>
+        the same impact as 
+        <A HREF="mod/mod_autoindex.html#indexoptions:fancyindexing"><SAMP>IndexOptions&nbsp;FancyIndexing</SAMP></A>
 	without replacing the effect of any existing <SAMP>IndexOptions</SAMP>
 	directive.
 
