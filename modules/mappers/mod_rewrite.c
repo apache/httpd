@@ -1584,6 +1584,25 @@ static const char *lookup_header(request_rec *r, const char *name)
 }
 
 /*
+ * lookahead helper function
+ * Determine the correct URI path in perdir context
+ */
+static APR_INLINE const char *la_u(exp_ctx *ctx)
+{
+    rewrite_perdir_conf *conf;
+
+    if (*ctx->uri == '/') {
+        return ctx->uri;
+    }
+
+    conf = ap_get_module_config(ctx->r->per_dir_config, &rewrite_module);
+
+    return apr_pstrcat(ctx->r->pool, conf->baseurl
+                                     ? conf->baseurl : conf->directory,
+                       ctx->uri, NULL);
+}
+
+/*
  * generic variable lookup
  */
 static char *lookup_variable(char *var, exp_ctx *ctx)
@@ -1616,34 +1635,57 @@ static char *lookup_variable(char *var, exp_ctx *ctx)
     else if (var[4] == ':') {
         if (var[5]) {
             request_rec *rr;
+            const char *path;
 
             if (!strncasecmp(var, "HTTP", 4)) {
                 result = lookup_header(r, var+5);
             }
             else if (!strncasecmp(var, "LA-U", 4)) {
-                if (r->filename && subreq_ok(r)) {
-                    rr = ap_sub_req_lookup_uri(ctx->uri, r, NULL);
+                if (ctx->uri && subreq_ok(r)) {
+                    path = ctx->perdir ? la_u(ctx) : ctx->uri;
+                    rr = ap_sub_req_lookup_uri(path, r, NULL);
                     ctx->r = rr;
                     result = apr_pstrdup(r->pool, lookup_variable(var+5, ctx));
                     ctx->r = r;
                     ap_destroy_sub_req(rr);
 
-                    rewritelog((r, 5, NULL,"lookahead: path=%s var=%s -> val=%s",
-                                r->filename, var+5, result));
+                    rewritelog((r, 5, ctx->perdir, "lookahead: path=%s var=%s "
+                                "-> val=%s", path, var+5, result));
 
                     return (char *)result;
                 }
             }
             else if (!strncasecmp(var, "LA-F", 4)) {
-                if (r->filename && subreq_ok(r)) {
-                    rr = ap_sub_req_lookup_file(ctx->uri, r, NULL);
+                if (ctx->uri && subreq_ok(r)) {
+                    path = ctx->uri;
+                    if (ctx->perdir && *path == '/') {
+                        /* sigh, the user wants a file based subrequest, but
+                         * we can't do one, since we don't know what the file
+                         * path is! In this case behave like LA-U.
+                         */
+                        rr = ap_sub_req_lookup_uri(path, r, NULL);
+                    }
+                    else {
+                        if (ctx->perdir) {
+                            rewrite_perdir_conf *conf;
+
+                            conf = ap_get_module_config(r->per_dir_config,
+                                                        &rewrite_module);
+
+                            path = apr_pstrcat(r->pool, conf->directory, path,
+                                               NULL);
+                        }
+
+                        rr = ap_sub_req_lookup_file(path, r, NULL);
+                    }
+
                     ctx->r = rr;
                     result = apr_pstrdup(r->pool, lookup_variable(var+5, ctx));
                     ctx->r = r;
                     ap_destroy_sub_req(rr);
 
-                    rewritelog((r, 5, NULL,"lookahead: path=%s var=%s -> val=%s",
-                                r->filename, var+5, result));
+                    rewritelog((r, 5, ctx->perdir, "lookahead: path=%s var=%s "
+                                "-> val=%s", path, var+5, result));
 
                     return (char *)result;
                 }
@@ -1668,7 +1710,7 @@ static char *lookup_variable(char *var, exp_ctx *ctx)
                 result = apr_psprintf(r->pool, "%04d%02d%02d%02d%02d%02d",
                                       tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday,
                                       tm.tm_hour, tm.tm_min, tm.tm_sec);
-                rewritelog((r, 1, NULL, "RESULT='%s'", result));
+                rewritelog((r, 1, ctx->perdir, "RESULT='%s'", result));
                 return (char *)result;
             }
             break;
