@@ -96,63 +96,6 @@
 #define MALFORMED_MESSAGE "malformed header from script. Bad header="
 #define MALFORMED_HEADER_LENGTH_TO_SHOW 30
 
-#if defined(OS2) || defined(WIN32)
-/* If a request includes query info in the URL (stuff after "?"), and
- * the query info does not contain "=" (indicative of a FORM submission),
- * then this routine is called to create the argument list to be passed
- * to the CGI script.  When suexec is enabled, the suexec path, user, and
- * group are the first three arguments to be passed; if not, all three
- * must be NULL.  The query info is split into separate arguments, where
- * "+" is the separator between keyword arguments.
- *
- * XXXX: note that the WIN32 code uses one of the suexec strings 
- * to pass an interpreter name.  Remember this if changing the way they
- * are handled in create_argv.
- *
- */
-static char **create_argv(ap_pool_t *p, char *path, char *user, char *group,
-			  char *av0, const char *args)
-{
-    int x, numwords;
-    char **av;
-    char *w;
-    int idx = 0;
-
-    /* count the number of keywords */
-
-    for (x = 0, numwords = 1; args[x]; x++) {
-        if (args[x] == '+') {
-	    ++numwords;
-	}
-    }
-
-    if (numwords > APACHE_ARG_MAX - 5) {
-	numwords = APACHE_ARG_MAX - 5;	/* Truncate args to prevent overrun */
-    }
-    av = (char **) ap_palloc(p, (numwords + 5) * sizeof(char *));
-
-    if (path) {
-	av[idx++] = path;
-    }
-    if (user) {
-	av[idx++] = user;
-    }
-    if (group) {
-	av[idx++] = group;
-    }
-
-    av[idx++] = av0;
-
-    for (x = 1; x <= numwords; x++) {
-	w = ap_getword_nulls(p, &args, '+');
-	ap_unescape_url(w);
-	av[idx++] = ap_escape_shell_cmd(p, w);
-    }
-    av[idx] = NULL;
-    return av;
-}
-#endif /* defined(OS2) || defined(WIN32) */
-
 static char *http2env(ap_pool_t *a, char *w)
 {
     char *res = ap_pstrcat(a, "HTTP_", w, NULL);
@@ -685,37 +628,4 @@ API_EXPORT(void) ap_send_size(ap_ssize_t size, request_rec *r)
 	ap_rprintf(r, "%4" APR_SSIZE_T_FMT "M", (size + 524288) / 1048576);
     }
 }
-
-#if defined(OS2) || defined(WIN32)
-static char **create_argv_cmd(ap_pool_t *p, char *av0, const char *args, char *path)
-{
-    register int x, n;
-    char **av;
-    char *w;
-
-    for (x = 0, n = 2; args[x]; x++) {
-        if (args[x] == '+') {
-	    ++n;
-	}
-    }
-
-    /* Add extra strings to array. */
-    n = n + 2;
-
-    av = (char **) ap_palloc(p, (n + 1) * sizeof(char *));
-    av[0] = av0;
-
-    /* Now insert the extra strings we made room for above. */
-    av[1] = strdup("/C");
-    av[2] = strdup(path);
-
-    for (x = (1 + 2); x < n; x++) {
-	w = ap_getword(p, &args, '+');
-	ap_unescape_url(w);
-	av[x] = ap_escape_shell_cmd(p, w);
-    }
-    av[n] = NULL;
-    return av;
-}
-#endif
 
