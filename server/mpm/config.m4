@@ -18,6 +18,7 @@ MPM_DIR=modules/mpm/$MPM_NAME
 MPM_LIB=$MPM_DIR/lib${MPM_NAME}.la
 
 AC_SUBST(MPM_NAME)
+MODLIST="$MODLIST mpm_${MPM_NAME}"
 
 dnl All the unix MPMs use shared memory; save a little duplication
 AC_DEFUN(APACHE_MPM_CHECK_SHMEM, [
