@@ -374,9 +374,7 @@ static const char *clf_log_bytes_sent(request_rec *r, char *a)
         return "-";
     }
     else {
-        long int bs;
-        ap_bgetopt(r->connection->client, BO_BYTECT, &bs);
-	return apr_psprintf(r->pool, "%ld", bs);
+	return apr_psprintf(r->pool, "%ld", r->bytes_sent);
     }
 }
 
@@ -386,9 +384,7 @@ static const char *log_bytes_sent(request_rec *r, char *a)
         return "0";
     }
     else {
-        long int bs;
-        ap_bgetopt(r->connection->client, BO_BYTECT, &bs);
-	return apr_psprintf(r->pool, "%ld", bs);
+	return apr_psprintf(r->pool, "%ld", r->bytes_sent);
     }
 }
 
