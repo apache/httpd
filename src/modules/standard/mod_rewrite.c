@@ -235,7 +235,7 @@ static cache *cachep;
 static int proxy_available;
 
     /* maximum nmatch parameter for regexec */
-#define MAX_NMATCH	(10)
+#define MAX_NMATCH (10)
 
     /* the txt mapfile parsing stuff */
 #define MAPFILE_PATTERN "^([^ \t]+)[ \t]+([^ \t]+).*$"
@@ -637,9 +637,8 @@ static const char *cmd_rewritecond_setflag(pool *p, rewritecond_entry *cfg,
     return NULL;
 }
 
-/* NON static */
-const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
-                            char *str)
+static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
+                                   char *str)
 {
     rewrite_server_conf *sconf;
     rewriterule_entry *new;
@@ -1447,11 +1446,15 @@ static int handler_redirect(request_rec *r)
 /*
 ** +-------------------------------------------------------+
 ** |                                                       |
-** |                  rewriting engine
+** |                  the rewriting engine
 ** |                                                       |
 ** +-------------------------------------------------------+
 */
 
+/*
+ *  Apply a complete rule set, 
+ *  i.e. a list of rewrite rules
+ */
 static int apply_rewrite_list(request_rec *r, array_header *rewriterules,
                               char *perdir)
 {
@@ -1462,14 +1465,19 @@ static int apply_rewrite_list(request_rec *r, array_header *rewriterules,
     int rc;
     int s;
     
+    /*
+     *  Iterate over all existing rules
+     */
     entries = (rewriterule_entry *)rewriterules->elts;
     changed = 0;
     loop:
     for (i = 0; i < rewriterules->nelts; i++) {
         p = &entries[i];
 
-        /* ignore this rule on subrequests if we are explicitly asked to do so
-         * or this is a proxy throughput or a forced redirect rule
+        /*
+         *  Ignore this rule on subrequests if we are explicitly
+         *  asked to do so or this is a proxy-throughput or a
+         *  forced redirect rule.
          */
         if (r->main != NULL &&
             (p->flags & RULEFLAG_IGNOREONSUBREQ ||
@@ -1477,40 +1485,73 @@ static int apply_rewrite_list(request_rec *r, array_header *rewriterules,
              p->flags & RULEFLAG_FORCEREDIRECT    ))
             continue;
 
-        /* apply the current rule */
+        /*
+         *  Apply the current rule.
+         */
         rc = apply_rewrite_rule(r, p, perdir);
         if (rc) {
-            if (rc != 2) /* not a match-only rule */
+            /*
+             *  Indicate a change if this was not a match-only rule.
+             */
+            if (rc != 2)
                 changed = 1;
+
+            /*
+             *  Pass-Through Feature (`RewriteRule .. .. [PT]'):
+             *  Because the Apache 1.x API is very limited we
+             *  need this hack to pass the rewritten URL to other
+             *  modules like mod_alias, mod_userdir, etc.
+             */
             if (p->flags & RULEFLAG_PASSTHROUGH) {
-                rewritelog(r, 2,
-          "forcing '%s' to get passed through to next URI-to-filename handler",
-                           r->filename);
-                r->filename = pstrcat(r->pool, "passthrough:", r->filename,
-                                      NULL);
+                rewritelog(r, 2, "forcing '%s' to get passed through "
+                           "to next API URI-to-filename handler", r->filename);
+                r->filename = pstrcat(r->pool, "passthrough:", 
+                                      r->filename, NULL);
                 changed = 1;
                 break;
             }
+
+            /*
+             *  Rule has the "forbidden" flag set which means that
+             *  we stop processing and indicate this to the caller.
+             */
             if (p->flags & RULEFLAG_FORBIDDEN) {
                 rewritelog(r, 2, "forcing '%s' to be forbidden", r->filename);
                 r->filename = pstrcat(r->pool, "forbidden:", r->filename, NULL);
                 changed = 1;
                 break;
             }
+
+            /*
+             *  Rule has the "gone" flag set which means that
+             *  we stop processing and indicate this to the caller.
+             */
             if (p->flags & RULEFLAG_GONE) {
                 rewritelog(r, 2, "forcing '%s' to be gone", r->filename);
                 r->filename = pstrcat(r->pool, "gone:", r->filename, NULL);
                 changed = 1;
                 break;
             }
+
+            /*  
+             *  Stop processing also on proxy pass-through and
+             *  last-rule and new-round flags.
+             */
             if (p->flags & RULEFLAG_PROXY) 
                 break;
             if (p->flags & RULEFLAG_LASTRULE) 
                 break;
+
+            /*  
+             *  On "new-round" flag we just start from the top of
+             *  the rewriting ruleset again.
+             */
             if (p->flags & RULEFLAG_NEWROUND) 
                 goto loop;
 
-            /* if we are forced to skip N next rules, do it now */
+            /* 
+             *  If we are forced to skip N next rules, do it now. 
+             */
             if (p->skip > 0) {
                 s = p->skip;
                 while (   i < rewriterules->nelts
@@ -1522,8 +1563,9 @@ static int apply_rewrite_list(request_rec *r, array_header *rewriterules,
             }
         }
         else {
-            /* if current rule is chained with next rule(s),
-             * skip all this next rule(s)
+            /*
+             *  If current rule is chained with next rule(s),
+             *  skip all this next rule(s)
              */
             while (   i < rewriterules->nelts
                    && p->flags & RULEFLAG_CHAIN) {
@@ -1535,6 +1577,9 @@ static int apply_rewrite_list(request_rec *r, array_header *rewriterules,
     return changed;
 }
 
+/*
+ *  Apply a single(!) rewrite rule
+ */
 static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
                               char *perdir)
 {
@@ -1543,7 +1588,6 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     int flags;
     char newuri[MAX_STRING_LEN];
     char env[MAX_STRING_LEN];
-    char port[32];
     regex_t *regexp;
     regmatch_t regmatch[MAX_NMATCH];
     backrefinfo *briRR = NULL;
@@ -1556,20 +1600,32 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     int i;
     int rc;
 
+    /*
+     *  Initialisation
+     */
     uri     = r->filename;
     regexp  = p->regexp;
     output  = p->output;
     flags   = p->flags;
 
+    /*
+     *  Add (perhaps splitted away) PATH_INFO postfix to URL to
+     *  make sure we really match against the complete URL.
+     */
     if (perdir != NULL && r->path_info != NULL && r->path_info[0] != '\0') {
         rewritelog(r, 3, "[per-dir %s] add path-info postfix: %s -> %s%s",
                    perdir, uri, uri, r->path_info);
         uri = pstrcat(r->pool, uri, r->path_info, NULL);
     }
 
+    /*
+     *  On per-directory context (.htaccess) strip the location
+     *  prefix from the URL to make sure patterns apply only to
+     *  the local part.  Additionally indicate this special
+     *  threatment in the logfile.
+     */
     prefixstrip = 0;
     if (perdir != NULL) {
-        /* this is a per-directory match */
         if (   strlen(uri) >= strlen(perdir)
             && strncmp(uri, perdir, strlen(perdir)) == 0) {
             rewritelog(r, 3, "[per-dir %s] strip per-dir prefix: %s -> %s",
@@ -1579,162 +1635,105 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
         }
     }
 
-    if (perdir != NULL) 
+    /* 
+     *  Try to match the URI against the RewriteRule pattern
+     *  and exit immeddiately if it didn't apply.
+     */
+    if (perdir == NULL)
+        rewritelog(r, 3, "applying pattern '%s' to uri '%s'",
+                   p->pattern, uri);
+    else
         rewritelog(r, 3, "[per-dir %s] applying pattern '%s' to uri '%s'",
                    perdir, p->pattern, uri);
-
-    /* try to match the pattern */
     rc = (regexec(regexp, uri, regexp->re_nsub+1, regmatch, 0) == 0);
-    if (( rc && !(p->flags & RULEFLAG_NOTMATCH)) ||
-        (!rc &&  (p->flags & RULEFLAG_NOTMATCH))   ) {     
+    if (! (( rc && !(p->flags & RULEFLAG_NOTMATCH)) ||
+           (!rc &&  (p->flags & RULEFLAG_NOTMATCH))   ) )
+        return 0;
 
-        /* create the RewriteRule regsubinfo */
-        briRR = (backrefinfo *)palloc(r->pool, sizeof(backrefinfo));
-        if (!rc && (p->flags & RULEFLAG_NOTMATCH)) {
-            briRR->source = "";
-            briRR->nsub   = 0;
-        }
-        else {
-            briRR->source = pstrdup(r->pool, uri);
-            briRR->nsub   = regexp->re_nsub;
-            memcpy((void *)(briRR->regmatch), (void *)(regmatch),
-                   sizeof(regmatch));
-        }
+    /* 
+     *  Else create the RewriteRule `regsubinfo' structure which
+     *  holds the substitution information.
+     */
+    briRR = (backrefinfo *)palloc(r->pool, sizeof(backrefinfo));
+    if (!rc && (p->flags & RULEFLAG_NOTMATCH)) {
+        /*  empty info on negative patterns  */
+        briRR->source = "";
+        briRR->nsub   = 0;
+    }
+    else {
+        briRR->source = pstrdup(r->pool, uri);
+        briRR->nsub   = regexp->re_nsub;
+        memcpy((void *)(briRR->regmatch), (void *)(regmatch),
+               sizeof(regmatch));
+    }
 
-        /* create the RewriteCond backrefinfo, but
-         * initialized as empty backrefinfo, i.e. not subst
-         */
-        briRC = (backrefinfo *)pcalloc(r->pool, sizeof(backrefinfo));
-        briRC->source = "";
-        briRC->nsub   = 0;
+    /* 
+     *  Initiallally create the RewriteCond backrefinfo with
+     *  empty backrefinfo, i.e. not subst parts 
+     *  (this one is adjusted inside apply_rewrite_cond() later!!)
+     */
+    briRC = (backrefinfo *)pcalloc(r->pool, sizeof(backrefinfo));
+    briRC->source = "";
+    briRC->nsub   = 0;
 
-        /* ok, the pattern matched, but we now additionally have to check 
-         * for any preconditions which have to be also true. We do this
-         * at this very late stage to avoid unnessesary checks which
-         * slow down the rewriting engine!!
-         */
-        rewriteconds = p->rewriteconds;
-        conds = (rewritecond_entry *)rewriteconds->elts;
-        failed = 0;
-        for (i = 0; i < rewriteconds->nelts; i++) {
-            c = &conds[i];
-            rc = apply_rewrite_cond(r, c, perdir, briRR, briRC);
-            if (c->flags & CONDFLAG_ORNEXT) {
-                /* there is a "or" flag */
-                if (rc == 0) {
-                    /* one cond is false, but another can be true... */
-                    continue;
-                }
-                else {
-                    /* one true cond is enough, so skip the other conds
-                     * of the "ornext" chained conds
-                     */
-                    while (   i < rewriteconds->nelts
-                           && c->flags & CONDFLAG_ORNEXT) {
-                        i++;
-                        c = &conds[i];
-                    }
-                    continue;
-                }
+    /* 
+     *  Ok, we already know the pattern has matched, but we now
+     *  additionally have to check for all existing preconditions
+     *  (RewriteCond) which have to be also true. We do this at
+     *  this very late stage to avoid unnessesary checks which
+     *  would slow down the rewriting engine!!
+     */
+    rewriteconds = p->rewriteconds;
+    conds = (rewritecond_entry *)rewriteconds->elts;
+    failed = 0;
+    for (i = 0; i < rewriteconds->nelts; i++) {
+        c = &conds[i];
+        rc = apply_rewrite_cond(r, c, perdir, briRR, briRC);
+        if (c->flags & CONDFLAG_ORNEXT) {
+            /*
+             *  The "OR" case
+             */
+            if (rc == 0) {
+                /*  One condition is false, but another can be
+                 *  still true, so we have to continue... 
+                 */
+                continue;
             }
             else {
-                /* no "or" flag, so a single fail means total fail */
-                if (rc == 0) { /* failed */
-                    failed = 1;
-                    break;
+                /*  One true condition is enough in "or" case, so
+                 *  skip the other conditions which are "ornext"
+                 *  chained
+                 */
+                while (   i < rewriteconds->nelts
+                       && c->flags & CONDFLAG_ORNEXT) {
+                    i++;
+                    c = &conds[i];
                 }
+                continue;
             }
         }
-        if (failed) 
-            return 0; /* if any condition fails this complete rule fails */
-
-        /* if this is a pure matching rule we return immediately */
-        if (strcmp(output, "-") == 0) {
-            /* but before we set the env variables... */
-            for (i = 0; p->env[i] != NULL; i++) {
-                strncpy(env, p->env[i], sizeof(env)-1);
-                EOS_PARANOIA(env);
-                expand_backref_inbuffer(r->pool, env, sizeof(env), briRR, '$');
-                expand_backref_inbuffer(r->pool, env, sizeof(env), briRC, '%');
-                add_env_variable(r, env);
+        else {
+            /* 
+             *  The "AND" case, i.e. no "or" flag, 
+             *  so a single failure means total failure.
+             */
+            if (rc == 0) {
+                failed = 1;
+                break;
             }
-            return 2;
         }
+    }
+    /*  if any condition fails the complete rule fails  */
+    if (failed) 
+        return 0;
 
-        /* if this is a forced proxy request ... */
-        if (p->flags & RULEFLAG_PROXY) {
-            output = pstrcat(r->pool, "proxy:", output, NULL);
-            strncpy(newuri, output, sizeof(newuri)-1);
-            EOS_PARANOIA(newuri);
-            /* expand $N */
-            expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRR,'$');
-            /* expand %N */
-            expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRC,'%');
-            /* expand %{...} */
-            expand_variables_inbuffer(r, newuri, sizeof(newuri));
-            /* expand ${...} */
-            expand_map_lookups(r, newuri, sizeof(newuri));
-            if (perdir == NULL)
-                rewritelog(r, 2, "rewrite %s -> %s", r->filename, newuri);
-            else
-                rewritelog(r, 2, "[per-dir %s] rewrite %s -> %s", perdir,
-                           r->filename, newuri);
-            r->filename = pstrdup(r->pool, newuri);
-            return 1;
-        }
-
-        /* if this is an implicit redirect in a per-dir rule */
-        i = strlen(output);
-        if (perdir != NULL
-            && (   (i > 7 && strncmp(output, "http://", 7) == 0)
-                || (i > 8 && strncmp(output, "https://", 8) == 0)
-                || (i > 9 && strncmp(output, "gopher://", 9) == 0)
-                || (i > 6 && strncmp(output, "ftp://", 6) == 0)   ) ) {
-            strncpy(newuri, output, sizeof(newuri)-1);
-            EOS_PARANOIA(newuri);
-            /* expand $N */
-            expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRR,'$');
-            /* expand %N */
-            expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRC,'%');
-            /* expand %{...} */
-            expand_variables_inbuffer(r, newuri, sizeof(newuri)); 
-            /* expand ${...} */
-            expand_map_lookups(r, newuri, sizeof(newuri));
-            for (i = 0; p->env[i] != NULL; i++) {
-                strncpy(env, p->env[i], sizeof(env)-1);
-                EOS_PARANOIA(env);
-                expand_backref_inbuffer(r->pool, env, sizeof(env), briRR, '$');
-                expand_backref_inbuffer(r->pool, env, sizeof(env), briRC, '%');
-                add_env_variable(r, env);
-            }
-            rewritelog(r, 2, "[per-dir %s] redirect %s -> %s", perdir,
-                       r->filename, newuri);
-            r->filename = pstrdup(r->pool, newuri);
-            r->status = p->forced_responsecode;
-            return 1;
-        }
-
-        /* add again the previously stripped perdir prefix if the new 
-         * URI is not a new one (i.e. prefixed by a slash which means 
-         * that it is not for this per-dir context)
-         */
-        if (prefixstrip && output[0] != '/') {
-            rewritelog(r, 3, "[per-dir %s] add per-dir prefix: %s -> %s%s",
-                       perdir, output, perdir, output);
-            output = pstrcat(r->pool, perdir, output, NULL);
-        }
-
-        /* standard case: create the substitution string */
-        strncpy(newuri, output, sizeof(newuri)-1);
-        EOS_PARANOIA(newuri);
-        /* expand $N */
-        expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRR, '$');
-        /* expand %N */
-        expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRC, '%');
-        /* expand %{...} */
-        expand_variables_inbuffer(r, newuri, sizeof(newuri));
-        /* expand ${...} */
-        expand_map_lookups(r, newuri, sizeof(newuri));
+    /* 
+     *  If this is a pure matching rule (`RewriteRule <pat> -')
+     *  we stop processing and return immediately. The only thing
+     *  we have not to forget are the environment variables
+     *  (`RewriteRule <pat> - [E=...]')
+     */
+    if (strcmp(output, "-") == 0) {
         for (i = 0; p->env[i] != NULL; i++) {
             strncpy(env, p->env[i], sizeof(env)-1);
             EOS_PARANOIA(env);
@@ -1742,93 +1741,180 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
             expand_backref_inbuffer(r->pool, env, sizeof(env), briRC, '%');
             add_env_variable(r, env);
         }
+        return 2;
+    }
 
+    /* 
+     *  Ok, now we finally know all patterns have matched and
+     *  that there is something to replace, so we create the
+     *  substitution URL string in `newuri'.
+     */
+    /*  1. take the output string  */
+    strncpy(newuri, output, sizeof(newuri)-1);
+    EOS_PARANOIA(newuri);
+    /*  2. expand $N (i.e. backrefs to RewriteRule pattern)  */
+    expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRR, '$');
+    /*  3. expand %N (i.e. backrefs to latest RewriteCond pattern)  */
+    expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRC, '%');
+    /*  4. expand %{...} (i.e. variables) */
+    expand_variables_inbuffer(r, newuri, sizeof(newuri));
+    /*  5. expand ${...} (RewriteMap lookups)  */
+    expand_map_lookups(r, newuri, sizeof(newuri));
+    /*  and log the result... */
+    if (perdir == NULL)
+        rewritelog(r, 2, "rewrite %s -> %s", uri, newuri);
+    else
+        rewritelog(r, 2, "[per-dir %s] rewrite %s -> %s", perdir, uri, newuri);
+
+    /*
+     *  Additionally do expansion for the environment variable
+     *  strings (`RewriteCond .. .. [E=<string>]').
+     */
+    for (i = 0; p->env[i] != NULL; i++) {
+        /*  1. take the string  */
+        strncpy(env, p->env[i], sizeof(env)-1);
+        EOS_PARANOIA(env);
+        /*  2. expand $N (i.e. backrefs to RewriteRule pattern)  */
+        expand_backref_inbuffer(r->pool, env, sizeof(env), briRR, '$');
+        /*  3. expand %N (i.e. backrefs to latest RewriteCond pattern)  */
+        expand_backref_inbuffer(r->pool, env, sizeof(env), briRC, '%');
+        /*  and add the variable to Apache's structures  */
+        add_env_variable(r, env);
+    }
+
+    /*
+     *  Now replace API's knowledge of the current URI:
+     *  Replace r->filename with the new URI string and split out
+     *  an on-the-fly generated QUERY_STRING part into r->args
+     */ 
+    r->filename = pstrdup(r->pool, newuri);
+    splitout_queryargs(r, p->flags & RULEFLAG_QSAPPEND);
+
+    /* 
+     *   Again add the previously stripped per-directory location
+     *   prefix if the new URI is not a new one for this
+     *   location, i.e. if it's not starting with either a slash
+     *   or a fully qualified URL scheme.
+     */
+    i = strlen(r->filename);
+    if (   prefixstrip
+        && !(   r->filename[0] == '/'
+             || (    (i > 7 && strncmp(r->filename, "http://", 7)   == 0)
+                  || (i > 8 && strncmp(r->filename, "https://", 8)  == 0)
+                  || (i > 9 && strncmp(r->filename, "gopher://", 9) == 0)
+                  || (i > 6 && strncmp(r->filename, "ftp://", 6)    == 0)))) {
+        rewritelog(r, 3, "[per-dir %s] add per-dir prefix: %s -> %s%s",
+                   perdir, r->filename, perdir, r->filename);
+        r->filename = pstrcat(r->pool, perdir, r->filename, NULL);
+    }
+
+    /* 
+     *  If this rule is forced for proxy throughput 
+     *  (`RewriteRule ... ... [P]') then emulate mod_proxy's
+     *  URL-to-filename handler to be sure mod_proxy is triggered
+     *  for this URL later in the Apache API. But make sure it is
+     *  a fully-qualified URL. (If not it is qualified with
+     *  ourself).
+     */
+    if (p->flags & RULEFLAG_PROXY) {
+        fully_qualify_uri(r);
         if (perdir == NULL)
-            rewritelog(r, 2, "rewrite %s -> %s", uri, newuri);
+            rewritelog(r, 2, "forcing proxy-throughput with %s", r->filename);
         else
-            rewritelog(r, 2, "[per-dir %s] rewrite %s -> %s", perdir, uri,
-                       newuri);
-
-        r->filename = pstrdup(r->pool, newuri);
-
-        /* reduce http[s]://<ourhost>[:<port>] */
-        reduce_uri(r);
-
-        /* split out on-the-fly generated QUERY_STRING '....?xxxxx&xxxx...' */
-        splitout_queryargs(r, p->flags & RULEFLAG_QSAPPEND);
-
-        /* remember if a MIME-type should be later forced for this URL */
-        if (p->forced_mimetype != NULL) {
-            table_set(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR,
-                      p->forced_mimetype);
-            if (perdir == NULL)
-                rewritelog(r, 2, "remember %s to have MIME-type '%s'",
-                           r->filename, p->forced_mimetype);
-            else
-                rewritelog(r, 2,
-                           "[per-dir %s] remember %s to have MIME-type '%s'",
-                           perdir, r->filename, p->forced_mimetype);
-        }
-
-        /* if we are forced to do a explicit redirect by [R] flag
-         * and the current URL still is not a fully qualified one we
-         * finally prefix it with http[s]://<ourname> explicitly
-         */
-        if (flags & RULEFLAG_FORCEREDIRECT) {
-            r->status = p->forced_responsecode;
-            if (  !(strlen(r->filename) > 7 &&
-                    strncmp(r->filename, "http://", 7) == 0)
-               && !(strlen(r->filename) > 8 &&
-                    strncmp(r->filename, "https://", 8) == 0)
-               && !(strlen(r->filename) > 9 &&
-                    strncmp(r->filename, "gopher://", 9) == 0)
-               && !(strlen(r->filename) > 6 &&
-                    strncmp(r->filename, "ftp://", 6) == 0)    ) {
-
-#ifdef APACHE_SSL
-                if ((!r->connection->client->ssl
-                     && r->server->port == DEFAULT_PORT) ||
-                    ( r->connection->client->ssl && r->server->port == 443)  )
-#else
-                if (r->server->port == DEFAULT_PORT)
-#endif
-                    port[0] = '\0';
-                else 
-                    ap_snprintf(port, sizeof(port), ":%u", r->server->port);
-                if (r->filename[0] == '/')
-#ifdef APACHE_SSL
-                    ap_snprintf(newuri, sizeof(newuri), "%s://%s%s%s",
-                                http_method(r), r->server->server_hostname,
-                                port, r->filename);
-#else
-                    ap_snprintf(newuri, sizeof(newuri), "http://%s%s%s",
-                                r->server->server_hostname, port, r->filename);
-#endif
-                else
-#ifdef APACHE_SSL
-                    ap_snprintf(newuri, sizeof(newuri), "%s://%s%s/%s",
-                                http_method(r), r->server->server_hostname,
-                                port, r->filename);
-#else
-                    ap_snprintf(newuri, sizeof(newuri), "http://%s%s/%s",
-                                r->server->server_hostname, port, r->filename);
-#endif
-                if (perdir == NULL) 
-                    rewritelog(r, 2, "prepare forced redirect %s -> %s",
-                               r->filename, newuri);
-                else
-                    rewritelog(r, 2,
-                               "[per-dir %s] prepare forced redirect %s -> %s",
-                               perdir, r->filename, newuri);
-
-                r->filename = pstrdup(r->pool, newuri);
-                return 1;
-            }
-        }
-
+            rewritelog(r, 2, "[per-dir %s] forcing proxy-throughput with %s", 
+                       perdir, r->filename);
+        r->filename = pstrcat(r->pool, "proxy:", r->filename, NULL);
         return 1;
     }
-    return 0;
+
+    /*
+     *  If this rule is explicitly forced for HTTP redirection
+     *  (`RewriteRule .. .. [R]') then force an external HTTP
+     *  redirect. But make sure it is a fully-qualified URL. (If
+     *  not it is qualified with ourself).
+     */
+    if (p->flags & RULEFLAG_FORCEREDIRECT) {
+        fully_qualify_uri(r);
+        if (perdir == NULL)
+            rewritelog(r, 2, 
+                       "explicitly forcing redirect with %s", r->filename);
+        else
+            rewritelog(r, 2, 
+                       "[per-dir %s] explicitly forcing redirect with %s", 
+                       perdir, r->filename);
+        r->status = p->forced_responsecode;
+        return 1;
+    }
+
+    /* 
+     *  Special Rewriting Feature: Self-Reduction
+     *  We reduce the URL by stripping a possible
+     *  http[s]://<ourhost>[:<port>] prefix, i.e. a prefix which
+     *  corresponds to ourself. This is to simplify rewrite maps
+     *  and to avoid recursion, etc. When this prefix is not a
+     *  coincidence then the user has to use [R] explicitly (see
+     *  above).
+     */
+    reduce_uri(r);
+
+    /*
+     *  If this rule is still implicitly forced for HTTP
+     *  redirection (`RewriteRule .. <scheme>://...') then
+     *  directly force an external HTTP redirect.
+     */
+    i = strlen(r->filename);
+    if (   (i > 7 && strncmp(r->filename, "http://", 7)   == 0)
+        || (i > 8 && strncmp(r->filename, "https://", 8)  == 0)
+        || (i > 9 && strncmp(r->filename, "gopher://", 9) == 0)
+        || (i > 6 && strncmp(r->filename, "ftp://", 6)    == 0)) {
+        if (perdir == NULL)
+            rewritelog(r, 2, 
+                       "implicitly forcing redirect (rc=%d) with %s",
+                       p->forced_responsecode, r->filename);
+        else
+            rewritelog(r, 2, "[per-dir %s] implicitly forcing redirect "
+                       "(rc=%d) with %s", perdir, p->forced_responsecode, 
+                       r->filename);
+        r->status = p->forced_responsecode;
+        return 1;
+    }
+
+    /* 
+     *  Now we are sure it is not a fully qualified URL.  But
+     *  there is still one special case left: A local rewrite in
+     *  per-directory context, i.e. a substitution URL which does
+     *  not start with a slash. Here we add again the initially
+     *  stripped per-directory prefix.
+     */
+    if (prefixstrip && r->filename[0] != '/') {
+        rewritelog(r, 3, "[per-dir %s] add per-dir prefix: %s -> %s%s",
+                   perdir, r->filename, perdir, r->filename);
+        r->filename = pstrcat(r->pool, perdir, r->filename, NULL);
+    }
+
+    /* 
+     *  Finally we had to remember if a MIME-type should be
+     *  forced for this URL (`RewriteRule .. .. [T=<type>]')
+     *  Later in the API processing phase this is forced by our
+     *  MIME API-hook function.
+     */
+    if (p->forced_mimetype != NULL) {
+        table_set(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR,
+                  p->forced_mimetype);
+        if (perdir == NULL)
+            rewritelog(r, 2, "remember %s to have MIME-type '%s'",
+                       r->filename, p->forced_mimetype);
+        else
+            rewritelog(r, 2,
+                       "[per-dir %s] remember %s to have MIME-type '%s'",
+                       perdir, r->filename, p->forced_mimetype);
+    }
+
+    /*
+     *  Puuhhhhhhhh... WHAT COMPLICATED STUFF ;_)
+     *  But now we're done for this particular rule.
+     */
+    return 1;
 }
 
 static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
@@ -2103,6 +2189,56 @@ static void reduce_uri(request_rec *r)
         }
     }
     return;            
+}
+
+
+/*
+**
+**  add 'http[s]://ourhost[:ourport]/' to URI
+**  if URI is still not fully qualified
+**
+*/
+
+static void fully_qualify_uri(request_rec *r)
+{
+    int i;
+    char newuri[MAX_STRING_LEN];
+    char port[32];
+
+    i = strlen(r->filename);
+    if (!(   (i > 7 && strncmp(r->filename, "http://", 7)   == 0)
+          || (i > 8 && strncmp(r->filename, "https://", 8)  == 0)
+          || (i > 9 && strncmp(r->filename, "gopher://", 9) == 0)
+          || (i > 6 && strncmp(r->filename, "ftp://", 6)    == 0))) {
+#ifdef APACHE_SSL
+        if (is_default_port(r->server->port,r))
+#else
+        if (r->server->port == DEFAULT_PORT)
+#endif
+            port[0] = '\0';
+        else 
+            ap_snprintf(port, sizeof(port), ":%u", r->server->port);
+        if (r->filename[0] == '/')
+#ifdef APACHE_SSL
+            ap_snprintf(newuri, sizeof(newuri), "%s://%s%s%s",
+                        http_method(r), r->server->server_hostname,
+                        port, r->filename);
+#else
+            ap_snprintf(newuri, sizeof(newuri), "http://%s%s%s",
+                        r->server->server_hostname, port, r->filename);
+#endif
+        else
+#ifdef APACHE_SSL
+            ap_snprintf(newuri, sizeof(newuri), "%s://%s%s/%s",
+                        http_method(r), r->server->server_hostname,
+                        port, r->filename);
+#else
+            ap_snprintf(newuri, sizeof(newuri), "http://%s%s/%s",
+                        r->server->server_hostname, port, r->filename);
+#endif
+        r->filename = pstrdup(r->pool, newuri);
+    }
+    return;
 }
 
 

@@ -1,5 +1,17 @@
 Changes with Apache 1.3b3
 
+  *) Complete rewrite ;_) of mod_rewrite's URL rewriting engine:
+     Now the rewriting engine (the heart of mod_rewrite) is organized more
+     straight-forward, first time well documented and reduced to the really
+     essential parts. All redundant cases were stripped off and processing now
+     is the same for both per-server and per-directory context with only a
+     minimum difference (the prefix stripping in per-dir context). As a
+     side-effect some subtle restrictions and two recently discovered problems
+     are gone: Wrong escaping of QUERY_STRING on redirects in per-directory
+     context and restrictions on the substitution URL on redirects.
+     Additionally some minor source cleanups were done. 
+     [Ralf S. Engelschall] 
+
   *) Lars Eilebrecht wrote a whole new set of Apache Vhost Internals
      documentation, examples, explanations and caveats. They live in a new
      subdirectory htdocs/manual/vhost/. [Lars Eilebrecht <sfx@unix-ag.org>]

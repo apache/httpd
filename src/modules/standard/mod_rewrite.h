@@ -348,7 +348,7 @@ static const char *cmd_rewritecond_parseflagfield(pool *p,
 static const char *cmd_rewritecond_setflag(pool *p, rewritecond_entry *cfg,
                                            char *key, char *val);
 
-extern const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
+static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
                                    char *str);
 
 static const char *cmd_rewriterule_parseflagfield(pool *p,
@@ -378,6 +378,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
 
     /* URI transformation function */
 static void  splitout_queryargs(request_rec *r, int qsappend);
+static void  fully_qualify_uri(request_rec *r);
 static void  reduce_uri(request_rec *r);
 static void  expand_backref_inbuffer(pool *p, char *buf, int nbuf,
                                      backrefinfo *bri, char c);
