@@ -34,7 +34,7 @@
 
 <seealso><module>mod_vhost_alias</module></seealso>
 <seealso><a href="name-based.html">Namensbasierte virtuelle Hosts</a></seealso>
-<seealso><a href="ip-based.html">IP-basierte virtuell Hosts</a></seealso>
+<seealso><a href="ip-based.html">IP-basierte virtuelle Hosts</a></seealso>
 <seealso><a href="examples.html">Beispiele f&uuml;r virtuelle
   Hosts</a></seealso>
 <seealso><a href="fd-limits.html">Datei-Deskriptor-Begrenzungen</a></seealso>

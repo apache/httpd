@@ -40,7 +40,7 @@
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#support">Unterstützung virtueller Hosts</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directives">Konfigurationsdirektiven</a></li>
-</ul><h3>Siehe auch</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li><li><a href="name-based.html">Namensbasierte virtuelle Hosts</a></li><li><a href="ip-based.html">IP-basierte virtuell Hosts</a></li><li><a href="examples.html">Beispiele für virtuelle
+</ul><h3>Siehe auch</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li><li><a href="name-based.html">Namensbasierte virtuelle Hosts</a></li><li><a href="ip-based.html">IP-basierte virtuelle Hosts</a></li><li><a href="examples.html">Beispiele für virtuelle
   Hosts</a></li><li><a href="fd-limits.html">Datei-Deskriptor-Begrenzungen</a></li><li><a href="mass.html">Massen-Virtual-Hosting</a></li><li><a href="details.html">Zuweisung virtueller Hosts</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
