@@ -375,7 +375,7 @@ static int32 worker_thread(void * dummy)
         while (!this_worker_should_exit) {
             apr_int16_t event;
             apr_status_t ret;
-            
+
             ret = apr_poll(pollset, &srv, -1);
 
             if (ret != APR_SUCCESS) {
@@ -438,6 +438,7 @@ static int32 worker_thread(void * dummy)
 
         if (!this_worker_should_exit) {
             rv = apr_accept(&csd, sd, ptrans);
+
             apr_lock_release(accept_mutex);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
@@ -452,7 +453,6 @@ static int32 worker_thread(void * dummy)
             break;
         }
         apr_pool_clear(ptrans);
-
     }
 
     ap_update_child_status(0, child_slot, SERVER_DEAD, (request_rec*)NULL);
@@ -1088,6 +1088,7 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, const cha
 }
 
 static const command_rec beos_cmds[] = {
+BEOS_DAEMON_COMMANDS
 LISTEN_COMMANDS
 AP_INIT_TAKE1( "StartServers", set_daemons_to_start, NULL, RSRC_CONF,
   "Number of child processes launched at server startup"),
