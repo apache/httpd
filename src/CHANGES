@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *)  mod_info would occasionally produce an unpaired <tt> in its
+      output. Fixed. [Martin Kraemer]
+
   *)  By default AIX binds a process (and it's children) to a single
       processor.  httpd children now unbind themselves from that cpu
       and re-bind to one selected at random via bindprocessor()

@@ -318,8 +318,9 @@ static void mod_info_module_cmds(request_rec *r, info_cfg_lines *cfg,
                     if (li->line) {
                         rputs(" <i>", r);
                         rputs(mod_info_html_cmd_string(li->line, buf, sizeof(buf)), r);
-                        rputs("</i></tt>", r);
+                        rputs("</i>", r);
                     }
+		    rputs("</tt>", r);
                 }
             }
             else
