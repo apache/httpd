@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/01 13:21:34 $]
+Last modified at [$Date: 2002/02/01 14:56:20 $]
 
 Release:
 
@@ -52,7 +52,7 @@ RELEASE SHOWSTOPPERS:
                   a 0 status on startup failure, whether it spawns
                   or not, before doing any work.  A script will
                   incorrectly think it successfully daemonised."
-        Not a showstopper: trawick
+        Not a showstopper: trawick, stoddard
 
     * ap_directory_walk skips some per-dir config merge functions
       if there is no "<Directory />" block in the configuration
@@ -95,7 +95,7 @@ RELEASE SHOWSTOPPERS:
       filename extensions.  At minimum, some sort of +-[0-10] syntax seems
       like the quickest fix for a 2.0 gold release.
         Justin says: "Could we delay this for a point release or 2.1?"
-        Not a showstopper: justin, wrowe, trawick
+        Not a showstopper: justin, wrowe, trawick, stoddard
 
     * Convert all instances of the old apr_lock_t type to the new
       types (once they are fully supported in APR).
@@ -143,7 +143,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Message-ID: <20020111115006.K1529@clove.org>
        Vote: Is a non-portable perchild going to hold up a GA release?
         Yes: Ken
-         No: Aaron, Justin, trawick
+         No: Aaron, Justin, trawick, stoddard
 
     * Modify the worker MPM so that it doesn't need to create and
       destroy a pool for each request--possibly by adopting a
@@ -303,8 +303,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Win32: Rotatelogs sometimes is not terminated when Apache
       goes down hard.  FirstBill was looking at possibly tracking the 
       child's-child processes in the parent process.
-        OtherBill asks, wasn't this fixed?
-        OtherBill asks again, what is the status?
+        OtherBill asks, wasn't this fixed? 
+	stoddard: Not fixed. Shared scoreboard might offer a good
+	way for the parent to keep track of 'other child' processes
+	and whack them if the child goes down.
 
     * Win32: Add a simple hold console open patch (wait for close or
         the ESC key, with a nice message) if the server died a bad 
