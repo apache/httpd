@@ -121,6 +121,10 @@
                         <xsl:if test="@type='section'">&gt;</xsl:if>
                       </a>
                     </li>
+
+<xsl:text>
+</xsl:text> <!-- insert linebreak -->
+
                   </xsl:if>
 
                   <xsl:if test="@location">
@@ -135,6 +139,10 @@
                         <xsl:if test="@type='section'">&gt;</xsl:if>
                       </a>
                     </li>
+
+<xsl:text>
+</xsl:text> <!-- insert linebreak -->
+
                   </xsl:if>
                 </xsl:for-each>
               </ul> <!-- /toc -->
@@ -233,7 +241,9 @@
               </a> 
             </th>
             <td>
-              <xsl:apply-templates select="syntax"/>
+              <code>
+                <xsl:apply-templates select="syntax"/>
+              </code>
             </td>
           </tr>
 

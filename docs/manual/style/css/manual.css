@@ -236,7 +236,7 @@ div.example h3,
 div.note h3,
 div.warning h3 {
     margin: 0 0 0.5em 0;
-    text-align: center;
+    text-align: left;
     font-size: 13px;
 }
 
@@ -753,6 +753,10 @@ div.warning {
     color: #036;
     padding: 0.5em;
     margin: 1em 2em 1em 1em;
+}
+
+div.warning {
+    border: 1px solid #f00;
 }
 
 div.note p,
