@@ -7,7 +7,7 @@
     <title>Apache suEXEC Support</title>
 
   </head>
-  <!-- English revision: 1.29 -->
+  <!-- English revision: 1.31 -->
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
   <body bgcolor="#ffffff" text="#000000" link="#0000ff"
   vlink="#000080" alink="#ff0000">
@@ -41,7 +41,7 @@
 
     <h3><a id="what" name="what">suEXEC とは?</a></h3>
 
-    <p align="left">Apache 1.2 で導入された <strong>suEXEC</strong>
+    <p align="left"><strong>suEXEC</strong>
     機能により、Apache ユーザは Web サーバを実行しているユーザ ID とは
     異なるユーザ ID で <strong>CGI</strong> プログラムや <strong>SSI</strong> 
     プログラムを実行することができます。CGI プログラムまたは SSI
@@ -364,15 +364,9 @@
     <h3><a name="install" id="install">suEXEC
     の設定とインストール</a></h3>
 
-    <p align="left">ここから楽しくなります。Apache 1.2 あるいは
-    <code>"src/Configure"</code> スクリプトで Apache 1.3 を設定するなら、
-    suEXEC ヘッダファイルを編集してバイナリを適切な場所に手作業で
-    インストールしなければなりません。
-    以下の章では、AutoConf-style インタフェース (APACI) を使った
-    Apache 1.3 での設定とインストールについて述べています。
-    </p>
+    <p align="left">ここから楽しくなります。</p>
 
-    <p align="left"><strong>APACI の suEXEC
+    <p align="left"><strong>suEXEC
     設定オプション</strong><br />
     </p>
 
@@ -524,15 +518,14 @@
 
     <p align="left"><strong>仮想ホスト:</strong><br />
     suEXEC wrapper の使い方として、
-    <a href="mod/core.html#virtualhost">仮想ホスト</a>設定での
-    <a href="mod/mpm_common.html#user">User</a> ディレクティブと
-    <a href="mod/mpm_common.html#group">Group</a>
+    <a href="mod/core.html#virtualhost">バーチャルホスト</a>設定での
+    <a href="mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a>
     ディレクティブを通したものがあります。
-    これらのディレクティブをメインサーバのユーザ ID
+    このディレクティブをメインサーバのユーザ ID
     と異なるものにすると、CGI リソースへのすべてのリクエストは、その
     <code>&lt;VirtualHost&gt;</code> で指定された <em>User</em> と
     <em>Group</em> として実行されます。<code>&lt;VirtualHost&gt;</code>
-    でそれらのディレクティブのどちらか、または両方が指定されていない場合、
+    でこのディレクティブが指定されていない場合、
     メインサーバのユーザ ID が想定されます。</p>
 
     <p><strong>ユーザディレクトリ:</strong><br />
