@@ -1,5 +1,11 @@
 Changes with Apache 2.0.49
 
+  *) mod_autoindex: Add 'XHTML' option in order to allow switching between
+     HTML 3.2 and XHTML 1.0 output. PR 23747.  [André Malo]
+
+  *) Add XHTML Document Type Definitions to httpd.h (minor MMN bump).
+     [André Malo]
+
   *) mod_ssl: Advertise SSL library version as determined at run-time rather
      than at compile-time.  PR 23956.  [Eric Seidel <seidel apple.com>]
 

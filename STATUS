@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/12 14:59:16 $]
+Last modified at [$Date: 2004/01/12 15:54:35 $]
 
 Release:
 
@@ -281,16 +281,6 @@ PATCHES TO BACKPORT FROM 2.1
       only contain anchors like \b. PR 24219.
         modules/metadata/mod_setenvif.c: r1.44
       +1: nd, jerenkrantz
-
-    * mod_autoindex: Allow switching between XHTML and HTML output.
-      PR 23747. (minor MMN bump).
-        modules/generators/mod_autoindex.c: r1.124
-        include/httpd.h: r1.201
-        include/ap_mmn.h: r1.60
-      jerenkrantz suggests: Why don't we just always output XHTML instead?
-      nd replies: backwards compat; it would break those sites who have html
-      READMEs or HEADERs (or don't want to use xhtml)
-      +1: nd, jerenkrantz, trawick
 
     * LDAP cache fixes from Matthieu Estrade; see PR 18756
         include/util_ldap.h r1.12
