@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/23 15:22:56 $]
+Last modified at [$Date: 2004/09/23 16:44:16 $]
 
 Release:
 
@@ -73,6 +73,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) Fix Expires (freshness) handling in mod_cache
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/
+         cache_util.c?r1=1.33&r2=1.34
+         mod_cache.h?r1=1.49&r2=1.50
+         mod_mem_cache.c?r1=1.116&r2=1.117
+         mod_disk_cache.c?r1=1.60&r2=1.61
+         cache_storage.c?r1=1.36&r2=1.37
+       +1: stoddard
 
     *) Another ap_rgetline_core fix.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c?r1=1.152&r2=1.153
@@ -316,7 +325,7 @@ PATCHES TO BACKPORT FROM 2.1
     * mod_expires: Allow mod_cache to properly cache Expire responses by making
       ExpiresFilter run before mod_cache's cache_save_filter.
       modules/metadata/mod_expires.c: r1.55
-      +1: jerenkrantz, trawick
+      +1: jerenkrantz, trawick, stoddard
 
 CURRENT RELEASE NOTES:
 
