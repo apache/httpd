@@ -104,7 +104,7 @@ top_builddir = $(DEPTH)
 
 
 all: all-recursive
-install: install-p
+install: install-recursive
 
 distclean-recursive depend-recursive clean-recursive all-recursive install-recursive:
 	@otarget=`echo $@|sed s/-recursive//`; \
@@ -124,7 +124,7 @@ distclean-recursive depend-recursive clean-recursive all-recursive install-recur
 	fi
 
 all-p: $(targets)
-install-p: $(install_targets)
+install-p: $(targets) $(install_targets)
 	@if test -n '$(PROGRAMS)'; then \
 		test -d $(bindir) || $(mkinstalldirs) $(bindir); \
 		for i in "$(PROGRAMS)"; do \
