@@ -1289,6 +1289,9 @@ static void child_main(int child_num_arg)
     apr_threadattr_create(&thread_attr, pchild);
     /* 0 means PTHREAD_CREATE_JOINABLE */
     apr_threadattr_detach_set(thread_attr, 0);
+    if (ap_worker_stacksize != 0) {
+        apr_threadattr_stacksize_set(thread_attr, ap_worker_stacksize);
+    }
 
     ts->threads = threads;
     ts->listener = NULL;

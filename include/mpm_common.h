@@ -248,6 +248,12 @@ extern const char *ap_mpm_set_max_mem_free(cmd_parms *cmd, void *dummy,
                                            const char *arg);
 #endif
 
+#ifdef AP_MPM_WANT_SET_STACKSIZE
+extern apr_size_t ap_worker_stacksize;
+extern const char *ap_mpm_set_worker_stacksize(cmd_parms *cmd, void *dummy,
+                                               const char *arg);
+#endif
+
 #ifdef AP_MPM_WANT_FATAL_SIGNAL_HANDLER
 extern apr_status_t ap_fatal_signal_setup(server_rec *s, apr_pool_t *pconf);
 extern apr_status_t ap_fatal_signal_child_setup(server_rec *s);
