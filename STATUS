@@ -32,7 +32,7 @@ RELEASE SHOWSTOPPERS:
            of PRs say they cannot find the httpd :-(
          Status: Ralf -0, Ken +0
 
-      2. The way other projects release binary tarballs, i.e.
+      2. The way some other projects release binary tarballs, i.e.
          a package containing the installed (binary) files.
          It can be created by a script which
          - creates the build tree
@@ -47,8 +47,12 @@ RELEASE SHOWSTOPPERS:
            the tarball or not?  Some people think
            it's useful while others dislike it a lot.
 	 - it doesn't include the source.
+	 - the paths don't match the original Apache style, nor the Win32
+	   paths
 	 - should suexec be prebuilt in a binary tarball?
-         Status: Ralf +1, Martin +1, Ken -1 (not a veto), Roy -1
+         Status: Ralf +1, Martin +1, Roy -1, Ken +1 (IFF source is included,
+		 there's no usr/local/apache prefix in the tarball, AND the
+		 old-style [common with Win32] paths are used)
 
       3. A source release tarball with three extra directories:
             lib: for the shared library object files
@@ -68,6 +72,13 @@ Documentation that needs writing:
          vhost-xxx.html document out of it. -- rse
 
 Available Patches:
+
+    * Paul's [PATCH] adding a DefaultLanguage directive
+      This patch implements a DefaultLanguage directive. It sets the
+      language to apply to files with no explicit language set via
+      AddLanguage.
+	Message-ID: <Pine.LNX.4.00.9811230931230.1852-100000@ecstasy.localnet>
+	Status: Paul +1, Ken +1
 
     * Michael van Elst's patch [PR#3160] to improve mod_rewrite's
       in-core cache handling by using a hash table.
