@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/06/27 04:42:58 $
+Last modified: $Date: 2003/06/28 18:31:58 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -8,29 +8,6 @@ Project, please see http://httpd.apache.org/docs-project/
 
 Decisions pending
 =================
-
-- Figure out what to do about the 2.0 FAQ
-    - Copy important stuff from 1.3?
-    - Some kind of XML?
-    - Perhaps we can use the newly created Wiki for this. (SubWiki,
-      with the possibility to get nice commit mails.)
-       nd: someone should try to convince me, what the heck is
-           so cool with wikis
-       erik: it lowers the entry barrier and therefore users are able
-             to contribute without all the build hassles (see PHP site)
-       nd: yes, good bad example. The PHP docs would mostly be
-           better without these comments. I don't want to censor
-           the entries, but also don't want to leave them without
-           control. IMHO it's better to incorporate changes into the
-           static docs. We need some better way of feedback, anyway.
-       erik: yes, the plan could be to have the wiki as some sort of
-             scratch_pad (clearly stated on the relevant pages) and
-             finally incorporate the useful info in it into the static
-             documentation
-       jsl: +1 with nd on Wikis, especially regarding the PHP site.  Why
-            not (continue to) use Bugzilla?  Filters out people without
-            a general clue (ergo most probably stupid submissions
-            anyhow), has assignees, tracking/history etc.
 
 Things That Need Fixing
 =======================
@@ -41,6 +18,9 @@ Things That Need Fixing
     - hints on uninstalling apache (exit monitor, close directories,
       registry entries etc) (PR 10154)
     - FAQ! UTF-8 config and URL encoding for non-ascii characters.
+
+- ScriptInterpreterSource directive is poorly documented.  In particular,
+  registry-strict is pretty-much useless without more info.
 
 - New Auth system
     - Much clean-up and enhancement of aaa howto
@@ -113,7 +93,7 @@ Documentation improvements
     a similar effect.
 
 * Autogeneration of PDF
-  - Andre is working on this, Erik volunteers to help out
+  - See manual/style/latex/TODO
 
 * Improving the documentation of the documentations' build system
   itself (requirements, procedures)
