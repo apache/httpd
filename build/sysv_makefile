@@ -60,7 +60,7 @@ test -f build/sysv_makefile || exit 2
 
 test -f bsd_converted || exit 1
 
-tmpfile=`mktemp /tmp/sysv_makefile.XXXXXX` || tmpfile="tmp.$$"
+tmpfile=`mktemp /tmp/sysv_makefile.XXXXXX 2>/dev/null` || tmpfile="tmp.$$"
 for i in build/*.mk; do
     sed 's/^\.include "\(.*\)"/include \1/' $i >$tmpfile \
         && cp $tmpfile $i
