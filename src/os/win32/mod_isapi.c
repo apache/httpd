@@ -365,6 +365,7 @@ BOOL WINAPI ReadClient (HCONN ConnID, LPVOID lpvBuffer, LPDWORD lpdwSize) {
     return TRUE;
 }
 
+/* XXX: There is an O(n^2) attack possible here. */
 BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 				   LPVOID lpvBuffer, LPDWORD lpdwSize,
 				   LPDWORD lpdwDataType) {
