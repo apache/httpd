@@ -189,6 +189,7 @@ API_EXPORT(long) ap_strtol(const char *nptr, char **endptr, int base)
 			acc += c;
 		}
 	}
+        result = (long)acc;
 	if (any < 0) {
 		result = neg ? LONG_MIN : LONG_MAX;
 		errno = ERANGE;
