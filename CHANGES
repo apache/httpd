@@ -1,5 +1,8 @@
 Changes with Apache 2.0.36
 
+  *) Fix 'control reaches end of non-void function' warning in
+     server/log.c.  [Ben Collins-Sussman <sussman@collab.net>]
+
   *) Perchild MPM is now correctly deemed as experimental and is now
      located in server/mpm/experimental.  [Justin Erenkrantz]
 
