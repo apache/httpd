@@ -1,5 +1,14 @@
 Changes with Apache 2.0.27-dev
 
+  *) Cleanup the proxy code that creates a request to the origin
+     server.  This change adds an optional hook, which allows modules
+     to gain control while the request is created if the proxy module
+     is loaded.  The purpose of this hook is to allow modules to add
+     input and/or output filters to the request to the origin.  While
+     I was at it, I made the core use this hook, so that proxy request
+     creation uses some of the code from the core.  This can still be
+     greatly improved, but this is a good start.  [Ryan Bloom]
+
 Changes with Apache 2.0.26
 
   *) Port the MaxClients changes from the worker MPM to the threaded

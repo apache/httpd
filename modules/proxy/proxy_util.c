@@ -65,6 +65,10 @@ static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_word(struct dirconn_entry *This, request_rec *r);
 
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, AP, int, create_req, 
+                                   (request_rec *r, request_rec *pr), (r, pr),
+                                   OK, DECLINED)
+
 /* already called in the knowledge that the characters are hex digits */
 PROXY_DECLARE(int) ap_proxy_hex2c(const char *x)
 {
@@ -359,7 +363,6 @@ PROXY_DECLARE(const char *)
 PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)
 {
     request_rec *rp = apr_pcalloc(c->pool, sizeof(*r));
-    core_request_config *req_cfg;
 
     rp->pool            = c->pool;
     rp->status          = HTTP_OK;
@@ -373,15 +376,11 @@ PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)
     rp->server = r->server;
     rp->request_time = r->request_time;
     rp->connection      = c;
-    rp->output_filters=NULL;
-    rp->input_filters=NULL;
     rp->output_filters  = c->output_filters;
     rp->input_filters   = c->input_filters;
 
     rp->request_config  = ap_create_request_config(c->pool);
-    req_cfg = apr_pcalloc(rp->pool, sizeof(core_request_config));
-    req_cfg->bb = apr_brigade_create(c->pool);
-    ap_set_module_config(rp->request_config, &core_module, req_cfg);
+    proxy_run_create_req(r, rp);
 
     return rp;
 }

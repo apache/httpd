@@ -88,6 +88,7 @@
 #include "mpm_common.h"
 #include "scoreboard.h"
 #include "mod_core.h"
+#include "mod_proxy.h"
 
 
 /* LimitXMLRequestBody handling */
@@ -3230,6 +3231,11 @@ static int core_create_req(request_rec *r)
     return OK;
 }
 
+static int core_create_proxy_req(request_rec *r, request_rec *pr)
+{
+    core_create_req(pr);
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(core_post_config,NULL,NULL,APR_HOOK_REALLY_FIRST);
@@ -3242,6 +3248,8 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_fixups(core_override_type,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_access_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_create_request(core_create_req, NULL, NULL, APR_HOOK_MIDDLE);
+    APR_OPTIONAL_HOOK(proxy, create_req, core_create_proxy_req, NULL, NULL, 
+                      APR_HOOK_MIDDLE);
     ap_hook_pre_mpm(ap_create_scoreboard, NULL, NULL, APR_HOOK_MIDDLE);
 
     /* register the core's insert_filter hook and register core-provided
