@@ -109,25 +109,25 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c, void *csd),(c, csd),O
 #endif
 
 #ifdef USE_SO_LINGER
-#define NO_LINGCLOSE		/* The two lingering options are exclusive */
+#define NO_LINGCLOSE /* The two lingering options are exclusive */
 
-static void sock_enable_linger(int s) 
+static void sock_enable_linger(int s)
 {
-    struct linger li;                 
+    struct linger li;
 
     li.l_onoff = 1;
     li.l_linger = MAX_SECS_TO_LINGER;
 
-    if (setsockopt(s, SOL_SOCKET, SO_LINGER, 
-		   (char *) &li, sizeof(struct linger)) < 0) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf,
-	            "setsockopt: (SO_LINGER)");
-	/* not a fatal error */
+    if (setsockopt(s, SOL_SOCKET, SO_LINGER,
+                   (char *)&li, sizeof(struct linger)) < 0) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf,
+                     "setsockopt: (SO_LINGER)");
+        /* not a fatal error */
     }
 }
 
 #else
-#define sock_enable_linger(s)	/* NOOP */
+#define sock_enable_linger(s) /* NOOP */
 #endif /* USE_SO_LINGER */
 
 AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c)
@@ -168,7 +168,7 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
     ap_update_child_status(c->sbh, SERVER_CLOSING, NULL);
 
 #ifdef NO_LINGCLOSE
-    ap_flush_conn(c);	/* just close it */
+    ap_flush_conn(c); /* just close it */
     apr_socket_close(csd);
     return;
 #endif
@@ -189,24 +189,25 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
     /* Shut down the socket for write, which will send a FIN
      * to the peer.
      */
-    if (apr_shutdown(csd, APR_SHUTDOWN_WRITE) != APR_SUCCESS || 
-        c->aborted) {
+    if (apr_shutdown(csd, APR_SHUTDOWN_WRITE) != APR_SUCCESS
+        || c->aborted) {
         apr_socket_close(csd);
         return;
     }
 
     /* Read all data from the peer until we reach "end-of-file" (FIN
-     * from peer) or we've exceeded our overall timeout. If the client does 
+     * from peer) or we've exceeded our overall timeout. If the client does
      * not send us bytes within 2 seconds (a value pulled from Apache 1.3
      * which seems to work well), close the connection.
      */
     timeout = SECONDS_TO_LINGER * APR_USEC_PER_SEC;
     apr_setsocketopt(csd, APR_SO_TIMEOUT, timeout);
     apr_setsocketopt(csd, APR_INCOMPLETE_READ, 1);
-    for (;;) {
+    while (1) {
         nbytes = sizeof(dummybuf);
         rc = apr_recv(csd, dummybuf, &nbytes);
-        if (rc != APR_SUCCESS || nbytes == 0) break;
+        if (rc != APR_SUCCESS || nbytes == 0)
+            break;
 
         total_linger_time += SECONDS_TO_LINGER;
         if (total_linger_time >= MAX_SECS_TO_LINGER) {

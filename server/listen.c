@@ -73,11 +73,13 @@
 #include "mpm_common.h"
 
 ap_listen_rec *ap_listeners = NULL;
+
 #if APR_HAVE_IPV6
 static int default_family = APR_UNSPEC;
 #else
 static int default_family = APR_INET;
 #endif
+
 static ap_listen_rec *old_listeners;
 static int ap_listenbacklog;
 static int send_buffer_size;
@@ -92,17 +94,17 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     stat = apr_setsocketopt(s, APR_SO_REUSEADDR, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
-                    "make_sock: for address %pI, setsockopt: (SO_REUSEADDR)", 
-                     server->bind_addr);
+                      "make_sock: for address %pI, setsockopt: (SO_REUSEADDR)",
+                      server->bind_addr);
         apr_socket_close(s);
         return stat;
     }
-    
+
     stat = apr_setsocketopt(s, APR_SO_KEEPALIVE, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
-                    "make_sock: for address %pI, setsockopt: (SO_KEEPALIVE)", 
-                     server->bind_addr);
+                      "make_sock: for address %pI, setsockopt: (SO_KEEPALIVE)",
+                      server->bind_addr);
         apr_socket_close(s);
         return stat;
     }
@@ -130,9 +132,9 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
         stat = apr_setsocketopt(s, APR_SO_SNDBUF,  send_buffer_size);
         if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
             ap_log_perror(APLOG_MARK, APLOG_WARNING, stat, p,
-                        "make_sock: failed to set SendBufferSize for "
-                         "address %pI, using default", 
-                         server->bind_addr);
+                          "make_sock: failed to set SendBufferSize for "
+                          "address %pI, using default",
+                          server->bind_addr);
             /* not a fatal error */
         }
     }
@@ -143,16 +145,17 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 
     if ((stat = apr_bind(s, server->bind_addr)) != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, stat, p,
-                     "make_sock: could not bind to address %pI", 
-                     server->bind_addr);
+                      "make_sock: could not bind to address %pI",
+                      server->bind_addr);
         apr_socket_close(s);
         return stat;
     }
 
     if ((stat = apr_listen(s, ap_listenbacklog)) != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, stat, p,
-            "make_sock: unable to listen for connections on address %pI", 
-                     server->bind_addr);
+                      "make_sock: unable to listen for connections "
+                      "on address %pI",
+                      server->bind_addr);
         apr_socket_close(s);
         return stat;
     }
@@ -166,11 +169,13 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 
     server->sd = s;
     server->active = 1;
+
 #ifdef MPM_ACCEPT_FUNC
     server->accept_func = MPM_ACCEPT_FUNC;
 #else
     server->accept_func = NULL;
 #endif
+
     return APR_SUCCESS;
 }
 
@@ -182,6 +187,7 @@ static apr_status_t close_listeners_on_exec(void *v)
         apr_socket_close(lr->sd);
         lr->active = 0;
     }
+
     return APR_SUCCESS;
 }
 
@@ -224,11 +230,13 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
         case APR_INET:
             addr = "0.0.0.0";
             break;
+
 #if APR_HAVE_IPV6
         case APR_INET6:
             addr = "::";
             break;
 #endif
+
         default:
             ap_assert(1 != 1); /* should not occur */
         }
@@ -255,18 +263,23 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
     /* this has to survive restarts */
     new = apr_palloc(process->pool, sizeof(ap_listen_rec));
     new->active = 0;
-    if ((status = apr_sockaddr_info_get(&new->bind_addr, addr, APR_UNSPEC, 
-                                      port, 0, process->pool)) != APR_SUCCESS) {
+    if ((status = apr_sockaddr_info_get(&new->bind_addr, addr, APR_UNSPEC,
+                                        port, 0, process->pool))
+        != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
-                     "alloc_listener: failed to set up sockaddr for %s", addr);
+                      "alloc_listener: failed to set up sockaddr for %s",
+                      addr);
         return;
     }
-    if ((status = apr_socket_create(&new->sd, new->bind_addr->sa.sin.sin_family, 
-                                  SOCK_STREAM, process->pool)) != APR_SUCCESS) {
+    if ((status = apr_socket_create(&new->sd,
+                                    new->bind_addr->sa.sin.sin_family,
+                                    SOCK_STREAM, process->pool))
+        != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
-                     "alloc_listener: failed to get a socket for %s", addr);
+                      "alloc_listener: failed to get a socket for %s", addr);
         return;
     }
+
     new->next = ap_listeners;
     ap_listeners = new;
 }
@@ -308,7 +321,7 @@ static int ap_listen_open(process_rec *process, apr_port_t port)
     }
     old_listeners = NULL;
 
-    apr_pool_cleanup_register(pconf, NULL, apr_pool_cleanup_null, 
+    apr_pool_cleanup_register(pconf, NULL, apr_pool_cleanup_null,
                               close_listeners_on_exec);
 
     return num_open ? 0 : -1;
@@ -318,12 +331,15 @@ int ap_setup_listeners(server_rec *s)
 {
     ap_listen_rec *lr;
     int num_listeners = 0;
+
     if (ap_listen_open(s->process, s->port)) {
        return 0;
     }
+
     for (lr = ap_listeners; lr; lr = lr->next) {
         num_listeners++;
     }
+
     return num_listeners;
 }
 
@@ -340,8 +356,8 @@ const char *ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips)
     char *host, *scope_id;
     apr_port_t port;
     apr_status_t rv;
-
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
     if (err != NULL) {
         return err;
     }
@@ -350,13 +366,16 @@ const char *ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips)
     if (rv != APR_SUCCESS) {
         return "Invalid address or port";
     }
+
     if (host && !strcmp(host, "*")) {
         host = NULL;
     }
+
     if (scope_id) {
         /* XXX scope id support is useful with link-local IPv6 addresses */
         return "Scope id is not supported";
     }
+
     if (!port) {
         return "Port must be specified";
     }
@@ -366,11 +385,11 @@ const char *ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips)
     return NULL;
 }
 
-const char *ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg) 
+const char *ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg)
 {
     int b;
-
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
     if (err != NULL) {
         return err;
     }
@@ -379,15 +398,17 @@ const char *ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg)
     if (b < 1) {
         return "ListenBacklog must be > 0";
     }
+
     ap_listenbacklog = b;
     return NULL;
 }
 
-const char *ap_set_send_buffer_size(cmd_parms *cmd, void *dummy, 
+const char *ap_set_send_buffer_size(cmd_parms *cmd, void *dummy,
                                     const char *arg)
 {
     int s = atoi(arg);
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
     if (err != NULL) {
         return err;
     }
@@ -395,6 +416,7 @@ const char *ap_set_send_buffer_size(cmd_parms *cmd, void *dummy,
     if (s < 512 && s != 0) {
         return "SendBufferSize must be >= 512 bytes, or 0 for system default.";
     }
+
     send_buffer_size = s;
     return NULL;
 }
