@@ -1,5 +1,8 @@
 Changes with Apache 1.3.21
 
+  *) The Win32 Makefile.win build script failed if INSTDIR="c:\path\with spaces"
+     was given, this is now fixed.  PR 8184  [Jack Tan <jack_s_tan@yahoo.com>]
+
   *) EBCDIC: The proxy, when used in a proxy chain, "forgot" to
      convert the "CONNECT host:port HTTP/1.0" request line to ASCII
      before contacting the next proxy, and was thus unusable for

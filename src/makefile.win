@@ -211,7 +211,7 @@ A
       print $$0;
     }
 <<
-	awk -f <<script2.awk "support\apxs.pl" $(INSTDIR) >"$(INSTDIR)\bin\apxs.pl"
+	awk -f <<script2.awk "support\apxs.pl" "$(INSTDIR)" >"$(INSTDIR)\bin\apxs.pl"
     BEGIN {
           target = ARGV[2];
           gsub( /\\/, "/", target );
