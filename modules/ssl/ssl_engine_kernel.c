@@ -1401,7 +1401,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
 
             BIO_free(bio);
 
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, buff);
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "%s", buff);
         }
 
         /*

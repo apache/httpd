@@ -263,7 +263,7 @@ static apr_status_t htdbm_list(htdbm_t *htdbm)
         rec[val.dsize] = '\0';
         cmnt = strchr(rec, ':');
         if (cmnt)
-            fprintf(stderr, cmnt + 1);
+            fprintf(stderr, "%s", cmnt + 1);
         fprintf(stderr, "\n");
         rv = apr_dbm_nextkey(htdbm->dbm, &key);
         if (rv != APR_SUCCESS)
