@@ -288,19 +288,18 @@ int keepalive = 0;		/* try and do keepalive connections */
 char servername[1024];		/* name that server reports */
 char *hostname;			/* host name from URL */
 char *host_field;		/* value of "Host:" header field */
-char path[1024];		/* path name */
+char *path;                     /* path name */
 char postfile[1024];		/* name of file containing post data */
 char *postdata;			/* *buffer containing data from postfile */
 apr_size_t postlen = 0;		/* length of data to be POSTed */
 char content_type[1024];	/* content type to put in POST header */
-char cookie[1024],		/* optional cookie line */
-     auth[1024],		/* optional (basic/uuencoded)
-				 * authentification */
-     hdrs[4096];		/* optional arbitrary headers */
+char *cookie,                   /* optional cookie line */
+     *auth,                     /* optional (basic/uuencoded) auhentication */
+     *hdrs;                     /* optional arbitrary headers */
 apr_port_t port;		/* port number */
 char proxyhost[1024];		/* proxy host name */
 int proxyport = 0;		/* proxy port */
-char connecthost[1024];
+char *connecthost;
 apr_port_t connectport;
 char *gnuplot;			/* GNUplot file */
 char *csvperc;			/* CSV Percentile file */
@@ -1563,11 +1562,11 @@ static void test(void)
 #endif
 
     if (isproxy) {
-	strcpy(connecthost, proxyhost);
+	connecthost = apr_pstrdup(cntxt, proxyhost);
 	connectport = proxyport;
     }
     else {
-	strcpy(connecthost, hostname);
+	connecthost = apr_pstrdup(cntxt, hostname);
 	connectport = port;
     }
 
@@ -1772,14 +1771,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.119 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.120 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.119 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.120 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1869,7 +1868,7 @@ static int parse_url(char *url)
     if (rv != APR_SUCCESS || !hostname || scope_id) {
 	return 1;
     }
-    strcpy(path, cp);
+    path = apr_pstrdup(cntxt, cp);
     *cp = '\0';
     if (*url == '[') {		/* IPv6 numeric address string */
 	host_field = apr_psprintf(cntxt, "[%s]", hostname);
@@ -1959,10 +1958,10 @@ int main(int argc, const char * const argv[])
     tablestring = "";
     trstring = "";
     tdstring = "bgcolor=white";
-    cookie[0] = '\0';
-    auth[0] = '\0';
+    cookie = "";
+    auth = "";
     proxyhost[0] = '\0';
-    hdrs[0] = '\0';
+    hdrs = "";
 
     apr_app_initialize(&argc, &argv, NULL);
     atexit(apr_terminate);
@@ -2056,9 +2055,7 @@ int main(int argc, const char * const argv[])
 	    strcpy(content_type, optarg);
 	    break;
 	case 'C':
-	    strncat(cookie, "Cookie: ", sizeof(cookie));
-	    strncat(cookie, optarg, sizeof(cookie));
-	    strncat(cookie, "\r\n", sizeof(cookie));
+            cookie = apr_pstrcat(cntxt, "Cookie: ", optarg, "\r\n", NULL);
 	    break;
 	case 'A':
 	    /*
@@ -2070,9 +2067,8 @@ int main(int argc, const char * const argv[])
 	    l = apr_base64_encode(tmp, optarg, strlen(optarg));
 	    tmp[l] = '\0';
 
-	    strncat(auth, "Authorization: Basic ", sizeof(auth));
-	    strncat(auth, tmp, sizeof(auth));
-	    strncat(auth, "\r\n", sizeof(auth));
+            auth = apr_pstrcat(cntxt, auth, "Authorization: Basic ", tmp,
+                               "\r\n", NULL);
 	    break;
 	case 'P':
 	    /*
@@ -2083,13 +2079,11 @@ int main(int argc, const char * const argv[])
 	    l = apr_base64_encode(tmp, optarg, strlen(optarg));
 	    tmp[l] = '\0';
 
-	    strncat(auth, "Proxy-Authorization: Basic ", sizeof(auth));
-	    strncat(auth, tmp, sizeof(auth));
-	    strncat(auth, "\r\n", sizeof(auth));
+            auth = apr_pstrcat(cntxt, auth, "Proxy-Authorization: Basic ",
+                               tmp, "\r\n", NULL);
 	    break;
 	case 'H':
-	    strncat(hdrs, optarg, sizeof(hdrs));
-	    strncat(hdrs, "\r\n", sizeof(hdrs));
+            hdrs = apr_pstrcat(cntxt, hdrs, optarg, "\r\n", NULL);
 	    break;
 	case 'w':
 	    use_html = 1;
