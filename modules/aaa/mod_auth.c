@@ -71,7 +71,7 @@
  */
 
 #include "apr_strings.h"
-#include "apr_lib.h"            /* for apr_password_validate */
+#include "apr_md5.h"            /* for apr_password_validate */
 
 #include "ap_config.h"
 #include "httpd.h"
