@@ -143,6 +143,8 @@ AP_DECLARE_HOOK(int,process_connection,(conn_rec *c))
 AP_DECLARE_HOOK(conn_rec *, create_connection,
                 (apr_pool_t *p, apr_socket_t *csd, int conn_id))
 
+AP_DECLARE_HOOK(int, add_listeners, (apr_pollfd_t *pollset, apr_socket_t **listensocks, int num_listensocks))
+
 #ifdef __cplusplus
 }
 #endif
