@@ -226,6 +226,7 @@ void ap_time_process_request(int child_num, int thread_num, int status);
 
 
 API_VAR_EXPORT extern scoreboard *ap_scoreboard_image;
+API_VAR_EXPORT extern const char *ap_scoreboard_fname;
 
 API_VAR_EXPORT extern ap_generation_t volatile ap_my_generation;
 
