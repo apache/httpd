@@ -38,7 +38,8 @@
                 </xsl:if>
 
               </xsl:for-each>
-            </p>
+            </p><xsl:text>
+</xsl:text> <!-- insert a line break -->
           </xsl:if>
           <!-- /letter line -->
 
@@ -69,7 +70,8 @@
                         <xsl:if test="@type = 'section'">&gt;</xsl:if>
                       </a>
                     </xsl:if>
-                  </li>
+                  </li><xsl:text>
+</xsl:text>                                           <!-- insert a line break -->
                 </xsl:for-each> <!-- /directives -->
               </xsl:for-each> <!-- /letters -->
             </xsl:if>
@@ -87,7 +89,8 @@
                     <xsl:value-of select="name"/>
                     <xsl:if test="@type = 'section'">&gt;</xsl:if>
                   </a>
-                </li>
+                </li><xsl:text>
+</xsl:text>                                           <!-- insert a line break -->
               </xsl:for-each>
             </xsl:if>
             <!-- /no letters -->
