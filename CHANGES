@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_rewrite: Fix query string handling for proxied URLs. PR 14518.
+     [michael teitler <michael.teitler cetelem.fr>,
+      Jan Kratochvil <rcpt-dev.AT.httpd.apache.org jankratochvil.net>]
+
   *) Recognize QSA flag in mod_rewrite again.
      [Jan Kratochvil <rcpt-dev.AT.httpd.apache.org jankratochvil.net>]
 
