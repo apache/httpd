@@ -131,7 +131,7 @@ In the server configuration file, put
 &lt;Directory /&gt; <BR>
 AllowOverride None <BR>
 Options None <BR>
-allow from all <BR>
+Allow from all <BR>
 &lt;/Directory&gt; <BR>
 </CODE></BLOCKQUOTE>
 
@@ -164,7 +164,7 @@ around this, add the following block to your server's configuration:
 </P>
 <PRE>
  &lt;Directory /&gt;
-     Order deny,allow
+     Order Deny,Allow
      Deny from all
  &lt;/Directory&gt;
 </PRE>
@@ -179,11 +179,11 @@ in those areas you wish.  For example,
 </P>
 <PRE>
  &lt;Directory /usr/users/*/public_html&gt;
-     Order deny,allow
+     Order Deny,Allow
      Allow from all
  &lt;/Directory&gt;
  &lt;Directory /usr/local/httpd&gt;
-     Order deny,allow
+     Order Deny,Allow
      Allow from all
  &lt;/Directory&gt;
 </PRE>

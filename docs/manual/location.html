@@ -56,9 +56,9 @@ from browsers at foo.com, you might use:
 <PRE>
     &lt;Location /status&gt;
     SetHandler server-status
-    order deny,allow
-    deny from all
-    allow from .foo.com
+    Order Deny,Allow
+    Deny from all
+    Allow from .foo.com
     &lt;/Location&gt;
 </PRE>
 

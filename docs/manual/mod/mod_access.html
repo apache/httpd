@@ -22,26 +22,26 @@ hostname or IP address.
 </P>
 
 <UL>
-<LI><A HREF="#allow">allow</A>
-<LI><A HREF="#allowfromenv">allow from env=</A>
-<LI><A HREF="#deny">deny</A>
-<LI><A HREF="#denyfromenv">deny from env=</A>
-<LI><A HREF="#order">order</A>
+<LI><A HREF="#allow">Allow</A>
+<LI><A HREF="#allowfromenv">Allow from env=</A>
+<LI><A HREF="#deny">Deny</A>
+<LI><A HREF="#denyfromenv">Deny from env=</A>
+<LI><A HREF="#order">Order</A>
 </UL>
 <DL>
 <DD>See also <A HREF="core.html#satisfy">Satisfy</A>
-    and <A HREF="core.html#require">require</A>.
+    and <A HREF="core.html#require">Require</A>.
 </DL>
 <HR>
 
 
-<H2><A NAME="allow">allow directive</A></H2>
+<H2><A NAME="allow">Allow directive</A></H2>
 <P>
-<!--%plaintext &lt;?INDEX {\tt allow} directive&gt; -->
+<!--%plaintext &lt;?INDEX {\tt Allow} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> allow from <EM>host host ...</EM><BR>
+><STRONG>Syntax:</STRONG></A> Allow from <EM>host host ...</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -60,7 +60,7 @@ hostname or IP address.
 ><STRONG>Module:</STRONG></A> mod_access
 </P>
 <P>
-The allow directive affects which hosts can access a given directory.
+The Allow directive affects which hosts can access a given directory.
 <EM>Host</EM> is one of the following:
 </P>
 <DL>
@@ -82,7 +82,7 @@ The allow directive affects which hosts can access a given directory.
 <P>
 Example:
 </P>
-<BLOCKQUOTE><CODE>allow from .ncsa.uiuc.edu</CODE></BLOCKQUOTE>
+<BLOCKQUOTE><CODE>Allow from .ncsa.uiuc.edu</CODE></BLOCKQUOTE>
 <P>
 All hosts in the specified domain are allowed access.
 </P>
@@ -91,12 +91,12 @@ Note that this compares whole components; <CODE>bar.edu</CODE>
 would not match <CODE>foobar.edu</CODE>.
 </P>
 <P>
-See also <A HREF="#deny">deny</A>, <A HREF="#order">order</A>, and
+See also <A HREF="#deny">Deny</A>, <A HREF="#order">Order</A>, and
 <A HREF="mod_browser.html#browsermatch">BrowserMatch</A>.
 </P>
 
 <P>
-<A NAME="allowfromenv"><STRONG>Syntax:</STRONG> allow from
+<A NAME="allowfromenv"><STRONG>Syntax:</STRONG> Allow from
  env=<EM>variablename</EM></A><BR>
 <A
  HREF="directive-dict.html#Context"
@@ -120,7 +120,7 @@ See also <A HREF="#deny">deny</A>, <A HREF="#order">order</A>, and
 ><STRONG>Compatibility:</STRONG></A> Apache 1.2 and above
 </P>
 <P>
-The allow from env directive controls access to a directory by the
+The <CODE>Allow from env</CODE> directive controls access to a directory by the
 existence (or non-existence) of an environment variable.
 </P>
 <P>
@@ -129,26 +129,26 @@ Example:
 <BLOCKQUOTE><PRE>
 BrowserMatch ^KnockKnock/2.0 let_me_in
 &lt;Directory /docroot&gt;
-    order deny,allow
-    deny from all
-    allow from env=let_me_in
+    Order Deny,Allow
+    Deny from all
+    Allow from env=let_me_in
 &lt;/Directory&gt;
 </PRE></BLOCKQUOTE>
 In this case browsers with the user-agent string <TT>KnockKnock/2.0</TT> will
 be allowed access, and all others will be denied.
 <P>
-See also <A HREF="#denyfromenv">deny from env</A>
-and <A HREF="#order">order</A>.
+See also <A HREF="#denyfromenv">Deny from env</A>
+and <A HREF="#order">Order</A>.
 </P>
 <HR>
 
-<H2><A NAME="deny">deny directive</A></H2>
+<H2><A NAME="deny">Deny directive</A></H2>
 <P>
-<!--%plaintext &lt;?INDEX {\tt deny} directive&gt; -->
+<!--%plaintext &lt;?INDEX {\tt Deny} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> deny from <EM>host host ...</EM><BR>
+><STRONG>Syntax:</STRONG></A> Deny from <EM>host host ...</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -167,7 +167,7 @@ and <A HREF="#order">order</A>.
 ><STRONG>Module:</STRONG></A> mod_access
 </P>
 <P>
-The deny directive affects which hosts can access a given directory.
+The <CODE>Deny</CODE> directive affects which hosts can access a given directory.
 <EM>Host</EM> is one of the following:
 </P>
 <DL>
@@ -189,7 +189,7 @@ The deny directive affects which hosts can access a given directory.
 <P>
 Example:
 </P>
-<BLOCKQUOTE><CODE>deny from 16</CODE></BLOCKQUOTE>
+<BLOCKQUOTE><CODE>Deny from 16</CODE></BLOCKQUOTE>
 <P>
 All hosts in the specified network are denied access.
 </P>
@@ -198,11 +198,11 @@ Note that this compares whole components; <CODE>bar.edu</CODE>
 would not match <CODE>foobar.edu</CODE>.
 </P>
 <P>
-See also <A HREF="#allow">allow</A> and <A HREF="#order">order</A>.
+See also <A HREF="#allow">Allow</A> and <A HREF="#order">Order</A>.
 </P>
 
 <P>
-<A NAME="denyfromenv"><STRONG>Syntax:</STRONG> deny from
+<A NAME="denyfromenv"><STRONG>Syntax:</STRONG> Deny from
  env=<EM>variablename</EM></A><BR>
 <A
  HREF="directive-dict.html#Context"
@@ -226,7 +226,7 @@ See also <A HREF="#allow">allow</A> and <A HREF="#order">order</A>.
 ><STRONG>Compatibility:</STRONG></A> Apache 1.2 and above
 </P>
 <P>
-The deny from env directive controls access to a directory by the
+The <CODE>Deny from env</CODE> directive controls access to a directory by the
 existence (or non-existence) of an environment variable.
 </P>
 <P>
@@ -235,31 +235,31 @@ Example:
 <BLOCKQUOTE><PRE>
 BrowserMatch ^BadRobot/0.9 go_away
 &lt;Directory /docroot&gt;
-    order allow,deny
-    allow from all
-    deny from env=go_away
+    Order Allow,Deny
+    Allow from all
+    Deny from env=go_away
 &lt;/Directory&gt;
 </PRE></BLOCKQUOTE>
 In this case browsers with the user-agent string <TT>BadRobot/0.9</TT> will
 be denied access, and all others will be allowed.
 
 <P>
-See also <A HREF="#allowfromenv">allow from env</A>
-and <A HREF="#order">order</A>.
+See also <A HREF="#allowfromenv">Allow from env</A>
+and <A HREF="#order">Order</A>.
 </P>
 <HR>
 
-<H2><A NAME="order">order directive</A></H2>
+<H2><A NAME="order">Order directive</A></H2>
 <P>
-<!--%plaintext &lt;?INDEX {\tt order} directive&gt; -->
+<!--%plaintext &lt;?INDEX {\tt Order} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> order <EM>ordering</EM><BR>
+><STRONG>Syntax:</STRONG></A> Order <EM>ordering</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>order deny,allow</CODE><BR>
+><STRONG>Default:</STRONG></A> <CODE>Order Deny,Allow</CODE><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -278,34 +278,36 @@ and <A HREF="#order">order</A>.
 ><STRONG>Module:</STRONG></A> mod_access
 </P>
 <P>
-The order directive controls the order in which <A HREF="#allow">allow</A> and
-<A HREF="#deny">deny</A> directives are evaluated. <EM>Ordering</EM> is one
+The <CODE>Order</CODE> directive controls the order in which 
+<A HREF="#allow">Allow</A> and <A HREF="#deny">Deny</A> directives are
+evaluated. <EM>Ordering</EM> is one
 of
 </P>
 <DL>
-<DT>deny,allow
-<DD>the deny directives are evaluated before the allow directives.  (The
-initial state is OK.)
-<DT>allow,deny
-<DD>the allow directives are evaluated before the deny directives.  (The
-initial state is FORBIDDEN.)
-<DT>mutual-failure
-<DD>Only those hosts which appear on the allow list and do not appear
-on the deny list are granted access.  (The initial state is irrelevant.)
+<DT>Deny,Allow
+<DD>the <CODE>Deny</CODE> directives are evaluated before the <CODE>Allow</CODE>
+directives.  (The initial state is OK.)
+<DT>Allow,Deny
+<DD>the <CODE>Allow</CODE> directives are evaluated before the <CODE>Deny</CODE>
+directives.  (The initial state is FORBIDDEN.)
+<DT>Mutual-failure
+<DD>Only those hosts which appear on the <CODE>Allow</CODE> list and do not
+appear on the <CODE>Deny</CODE> list are granted access.  (The initial state is
+irrelevant.)
 </DL>
 <P>
 Keywords may only be separated by a comma; no whitespace is allowed between
 them.
-<STRONG>Note that in all cases every <CODE>allow</CODE> and <CODE>deny</CODE>
+<STRONG>Note that in all cases every <CODE>Allow</CODE> and <CODE>Deny</CODE>
 statement is evaluated, there is no &quot;short-circuiting&quot;.</STRONG>
 </P>
 <P>
 Example:
 </P>
 <BLOCKQUOTE><CODE>
-    order deny,allow<BR>
-    deny from all<BR>
-    allow from .ncsa.uiuc.edu<BR>
+    Order Deny,Allow<BR>
+    Deny from all<BR>
+    Allow from .ncsa.uiuc.edu<BR>
 </CODE></BLOCKQUOTE>
 <P>
 Hosts in the ncsa.uiuc.edu domain are allowed access; all other hosts are
