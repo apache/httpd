@@ -1206,7 +1206,7 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
     char *filename = NULL;
     const struct htaccess_result *cache;
     struct htaccess_result *new;
-    void *dc;
+    void *dc = NULL;
 
 /* firstly, search cache */
     for (cache = r->htaccess; cache != NULL; cache = cache->next)
@@ -1224,41 +1224,39 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
     parms.path = ap_pstrdup(r->pool, d);
 
     /* loop through the access names and find the first one */
-    while (!f && access_name[0]) {
-	char *w = ap_getword_conf(r->pool, &access_name);
-	filename = ap_make_full_path(r->pool, d, w);
-	f = ap_pcfg_openfile(r->pool, filename);
-    }
-    if (f) {
-	dc = ap_create_per_dir_config(r->pool);
 
-	parms.config_file = f;
+    while (access_name[0]) {
+        filename = ap_make_full_path(r->pool, d,
+                                     ap_getword_conf(r->pool, &access_name));
 
-	errmsg = ap_srm_command_loop(&parms, dc);
+        if ((f = ap_pcfg_openfile(r->pool, filename)) != NULL) {
 
-	ap_cfg_closefile(f);
+            dc = ap_create_per_dir_config(r->pool);
 
-	if (errmsg) {
-	    ap_log_rerror(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, r, "%s: %s",
-			  filename, errmsg);
-            return HTTP_INTERNAL_SERVER_ERROR;
-	}
+            parms.config_file = f;
 
-	*result = dc;
-    }
-    else {
-	if (errno == ENOENT || errno == ENOTDIR)
-	    dc = NULL;
-	else {
-	    ap_log_rerror(APLOG_MARK, APLOG_CRIT, r,
-			  "%s pcfg_openfile: unable to check htaccess file, "
-			  "ensure it is readable",
-			  filename);
-	    ap_table_setn(r->notes, "error-notes",
-			  "Server unable to read htaccess file, denying "
-			  "access to be safe");
-	    return HTTP_FORBIDDEN;
-	}
+            errmsg = ap_srm_command_loop(&parms, dc);
+
+            ap_cfg_closefile(f);
+
+            if (errmsg) {
+                ap_log_rerror(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, r,
+                              "%s: %s", filename, errmsg);
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+            *result = dc;
+            break;
+        }
+        else if (errno != ENOENT && errno != ENOTDIR) {
+            ap_log_rerror(APLOG_MARK, APLOG_CRIT, r,
+                          "%s pcfg_openfile: unable to check htaccess file, "
+                          "ensure it is readable",
+                          filename);
+            ap_table_setn(r->notes, "error-notes",
+                          "Server unable to read htaccess file, denying "
+                          "access to be safe");
+            return HTTP_FORBIDDEN;
+        }
     }
 
 /* cache it */
