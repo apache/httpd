@@ -74,9 +74,8 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=..\..\CoreR\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
- winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib\
- uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll\
- /incremental:no /pdb:"$(OUTDIR)\ApacheModuleHeaders.pdb" /machine:I386\
+ winspool.lib comdlg32.lib advapi32.lib shell32.lib /nologo /subsystem:windows\
+ /dll /incremental:no /pdb:"$(OUTDIR)\ApacheModuleHeaders.pdb" /machine:I386\
  /out:"$(OUTDIR)\ApacheModuleHeaders.dll"\
  /implib:"$(OUTDIR)\ApacheModuleHeaders.lib" 
 LINK32_OBJS= \
@@ -130,10 +129,9 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=..\..\CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
- winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib\
- uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll\
- /incremental:yes /pdb:"$(OUTDIR)\ApacheModuleHeaders.pdb" /debug /machine:I386\
- /out:"$(OUTDIR)\ApacheModuleHeaders.dll"\
+ winspool.lib comdlg32.lib advapi32.lib shell32.lib /nologo /subsystem:windows\
+ /dll /incremental:yes /pdb:"$(OUTDIR)\ApacheModuleHeaders.pdb" /debug\
+ /machine:I386 /out:"$(OUTDIR)\ApacheModuleHeaders.dll"\
  /implib:"$(OUTDIR)\ApacheModuleHeaders.lib" 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_headers.obj"
@@ -189,6 +187,7 @@ DEP_CPP_MOD_H=\
 	"..\..\main\http_config.h"\
 	"..\..\main\httpd.h"\
 	"..\..\regex\regex.h"\
+	".\os.h"\
 	".\readdir.h"\
 	
 
@@ -205,6 +204,7 @@ DEP_CPP_MOD_H=\
 	"..\..\main\http_config.h"\
 	"..\..\main\httpd.h"\
 	"..\..\regex\regex.h"\
+	".\os.h"\
 	".\readdir.h"\
 	
 

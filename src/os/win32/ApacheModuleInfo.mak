@@ -73,9 +73,8 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=..\..\CoreR\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
- winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib\
- uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll\
- /incremental:no /pdb:"$(OUTDIR)\ApacheModuleInfo.pdb" /machine:I386\
+ winspool.lib comdlg32.lib advapi32.lib shell32.lib /nologo /subsystem:windows\
+ /dll /incremental:no /pdb:"$(OUTDIR)\ApacheModuleInfo.pdb" /machine:I386\
  /out:"$(OUTDIR)\ApacheModuleInfo.dll" /implib:"$(OUTDIR)\ApacheModuleInfo.lib" 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_info.obj"
@@ -128,10 +127,10 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=..\..\CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
- winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib\
- uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll\
- /incremental:yes /pdb:"$(OUTDIR)\ApacheModuleInfo.pdb" /debug /machine:I386\
- /out:"$(OUTDIR)\ApacheModuleInfo.dll" /implib:"$(OUTDIR)\ApacheModuleInfo.lib" 
+ winspool.lib comdlg32.lib advapi32.lib shell32.lib /nologo /subsystem:windows\
+ /dll /incremental:yes /pdb:"$(OUTDIR)\ApacheModuleInfo.pdb" /debug\
+ /machine:I386 /out:"$(OUTDIR)\ApacheModuleInfo.dll"\
+ /implib:"$(OUTDIR)\ApacheModuleInfo.lib" 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_info.obj"
 
@@ -176,9 +175,6 @@ LINK32_OBJS= \
 !IF "$(CFG)" == "ApacheModuleInfo - Win32 Release" || "$(CFG)" ==\
  "ApacheModuleInfo - Win32 Debug"
 SOURCE=..\..\modules\standard\mod_info.c
-
-!IF  "$(CFG)" == "ApacheModuleInfo - Win32 Release"
-
 DEP_CPP_MOD_I=\
 	"..\..\main\alloc.h"\
 	"..\..\main\buff.h"\
@@ -190,30 +186,11 @@ DEP_CPP_MOD_I=\
 	"..\..\main\http_main.h"\
 	"..\..\main\http_protocol.h"\
 	"..\..\main\httpd.h"\
+	"..\..\main\os-inline.c"\
+	"..\..\main\os.h"\
 	"..\..\main\util_script.h"\
 	"..\..\regex\regex.h"\
-	".\readdir.h"\
-	
-
-"$(INTDIR)\mod_info.obj" : $(SOURCE) $(DEP_CPP_MOD_I) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ELSEIF  "$(CFG)" == "ApacheModuleInfo - Win32 Debug"
-
-DEP_CPP_MOD_I=\
-	"..\..\main\alloc.h"\
-	"..\..\main\buff.h"\
-	"..\..\main\conf.h"\
-	"..\..\main\http_conf_globals.h"\
-	"..\..\main\http_config.h"\
-	"..\..\main\http_core.h"\
-	"..\..\main\http_log.h"\
-	"..\..\main\http_main.h"\
-	"..\..\main\http_protocol.h"\
-	"..\..\main\httpd.h"\
-	"..\..\main\util_script.h"\
-	"..\..\regex\regex.h"\
+	".\os.h"\
 	".\readdir.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
@@ -225,8 +202,6 @@ NODEP_CPP_MOD_I=\
 "$(INTDIR)\mod_info.obj" : $(SOURCE) $(DEP_CPP_MOD_I) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ENDIF 
 
 
 !ENDIF 
