@@ -138,8 +138,8 @@ void ap_lingering_close(conn_rec *);
   /* Hooks */
 /**
  * This hook gives protocol modules an opportunity to set everything up
- * before calling the protocol handler.  ALL pre-connection hooks are
- * always run.
+ * before calling the protocol handler.  All pre-connection hooks are
+ * run until one returns something other than ok or decline
  * @param c The connection on which the request has been received.
  * @return OK or DECLINED
  * @deffunc int ap_run_pre_connection(conn_rec *c)
