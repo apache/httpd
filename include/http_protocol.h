@@ -685,8 +685,8 @@ AP_DECLARE_NONSTD(apr_status_t) ap_old_write_filter(ap_filter_t *f, apr_bucket_b
  * Setting up the protocol fields for subsidiary requests...
  * Also, a wrapup function to keep the internal accounting straight.
  */
-void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r);
-void ap_finalize_sub_req_protocol(request_rec *sub_r);
+AP_DECLARE(void) ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r);
+AP_DECLARE(void) ap_finalize_sub_req_protocol(request_rec *sub_r);
                                                                                 
 #ifdef __cplusplus
 }

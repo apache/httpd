@@ -991,7 +991,8 @@ request_rec *ap_read_request(conn_rec *conn)
  * *someone* has to set the protocol-specific fields...
  */
 
-void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r)
+AP_DECLARE(void) ap_set_sub_req_protocol(request_rec *rnew,
+                                         const request_rec *r)
 {
     rnew->the_request     = r->the_request;  /* Keep original request-line */
 
@@ -1029,7 +1030,7 @@ static void end_output_stream(request_rec *r)
     ap_pass_brigade(r->output_filters, bb);
 }
 
-void ap_finalize_sub_req_protocol(request_rec *sub)
+AP_DECLARE(void) ap_finalize_sub_req_protocol(request_rec *sub)
 {
     /* tell the filter chain there is no more content coming */
     if (!sub->eos_sent) {

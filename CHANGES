@@ -1,5 +1,9 @@
 Changes with Apache 2.0.50
 
+  *) ap_set_sub_req_protocol and ap_finalize_sub_req_protocol are now
+     exported on Win32 and Netware as well (minor MMN bump).  PR 28523.
+     [Edward Rudd <eddie omegaware.com>, André Malo]
+
   *) Restore the ability to disable the use of AcceptEx on Win9x systems
      automatically (broken in 2.0.49). PR 28529.  [André Malo]
 

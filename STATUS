@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/11 20:27:26 $]
+Last modified at [$Date: 2004/06/11 20:46:40 $]
 
 Release:
 
@@ -111,12 +111,6 @@ PATCHES TO BACKPORT FROM 2.1
        directive. PR 28553.
          modules/mappers/mod_actions.c: r1.32, r1.34
        +1: nd
-
-    *) export ap_set_sub_req_protocol and ap_finalize_sub_req_protocol on Win32 and NetWare.
-       (should be a minor MMN bump). PR 28523.
-         server/protocol.c: r1.147
-         include/http_protocol.h: r1.91
-       +1: nd, trawick, bnicholes
 
     *) allow symlinks on directories to be processed by Include directives
        and stop possible recursion by a counter. PR 28492
