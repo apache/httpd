@@ -17,6 +17,8 @@
 
 #include "ApacheMonitor.h"
 
+#include "ap_release.h"
+
 IDI_APSRVMON            ICON    DISCARDABLE     "ApacheMonitor.ico"
 IDI_ICOSTOP             ICON    DISCARDABLE     "apstop.ico"
 IDI_ICORUN              ICON    DISCARDABLE     "aprun.ico"
@@ -93,4 +95,42 @@ BEGIN
     IDS_MSG_SERVICES        "Ser&vices"
     IDS_MSG_CONNECT         "&Connect"
     IDS_MSG_ECONNECT        "Unable to connect to the remote registry on %s"
+END
+
+1 VERSIONINFO
+ FILEVERSION AP_SERVER_PATCHLEVEL_CSV,0
+ PRODUCTVERSION AP_SERVER_PATCHLEVEL_CSV,0
+ FILEFLAGSMASK 0x3fL
+#if defined(_DEBUG)
+ FILEFLAGS 0x03L
+#else
+#if AP_SERVER_DEVBUILD_BOOLEAN
+ FILEFLAGS 0x02L
+#else
+ FILEFLAGS 0x0L
+#endif
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904b0"
+    BEGIN
+      VALUE "Comments", "Licensed under the Apache License, Version 2.0 (the ""License""); you may not use this file except in compliance with the License.  You may obtain a copy of the License at\r\n\r\nhttp://www.apache.org/licenses/LICENSE-2.0\r\n\r\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an ""AS IS"" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License.\0"
+      VALUE "CompanyName", AP_SERVER_BASEVENDOR "\0"
+      VALUE "FileDescription", "Apache HTTP Server Monitor\0"
+      VALUE "FileVersion", AP_SERVER_BASEREVISION "\0"
+      VALUE "InternalName", "ApacheMonitor.exe\0"
+      VALUE "LegalCopyright", "Copyright 2001-2004 The Apache Software Foundation\0"
+      VALUE "OriginalFilename", "ApacheMonitor.exe\0"
+      VALUE "ProductName", "Apache HTTP Server\0"
+      VALUE "ProductVersion", AP_SERVER_BASEREVISION "\0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200
+  END
 END
