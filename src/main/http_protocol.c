@@ -50,7 +50,7 @@
  *
  */
   
-/* $Id: http_protocol.c,v 1.47 1996/09/24 12:44:57 mjc Exp $ */
+/* $Id: http_protocol.c,v 1.48 1996/09/28 02:01:02 brian Exp $ */
 
 /*
  * http_protocol.c --- routines which directly communicate with the
@@ -331,7 +331,7 @@ int set_last_modified(request_rec *r, time_t mtime)
     /* Invalid, future time... just ignore it */
     if (mtime > r->request_time) return OK;
 
-    ts = gm_timestr_822(r->pool, mtime);
+    ts = gm_timestr_822(r->pool, (mtime > r->request_time) ? r->request_time : mtime);
     table_set (r->headers_out, "Last-Modified", ts);
 
     /* Make an ETag header out of various peices of information. We use
