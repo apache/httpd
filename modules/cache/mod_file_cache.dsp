@@ -91,5 +91,40 @@ LINK32=link.exe
 
 SOURCE=.\mod_file_cache.c
 # End Source File
+# Begin Source File
+
+SOURCE=.\mod_file_cache.rc
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\build\win32\win32ver.awk
+
+!IF  "$(CFG)" == "mod_file_cache - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\mod_file_cache.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_file_cache\
+ "file_cache_module for Apache" ../../include/ap_release.h > .\mod_file_cache.rc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "mod_file_cache - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\mod_file_cache.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_file_cache\
+ "file_cache_module for Apache" ../../include/ap_release.h > .\mod_file_cache.rc
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project

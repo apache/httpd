@@ -46,8 +46,8 @@ RSC=rc.exe
 # ADD CPP /nologo /MD /W3 /O2 /I "..\main" /I "..\..\..\srclib\aputil" /I "..\..\..\srclib\sdbm" /I "..\..\..\srclib\expat-lite" /I "..\..\..\srclib\apr\include" /I "../../../srclib/apr-util/include" /I "..\..\..\include" /I "..\..\..\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_dav_fs" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x809 /d "NDEBUG"
-# ADD RSC /l 0x809 /d "NDEBUG"
+# ADD BASE RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -72,8 +72,8 @@ LINK32=link.exe
 # ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "..\main" /I "..\..\..\srclib\aputil" /I "..\..\..\srclib\sdbm" /I "..\..\..\srclib\expat-lite" /I "..\..\..\srclib\apr\include" /I "../../../srclib/apr-util/include" /I "..\..\..\include" /I "..\..\..\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_dav_fs" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x809 /d "_DEBUG"
-# ADD RSC /l 0x809 /d "_DEBUG"
+# ADD BASE RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -115,5 +115,40 @@ SOURCE=.\repos.c
 SOURCE=.\repos.h
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=.\mod_dav_fs.rc
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\build\win32\win32ver.awk
+
+!IF  "$(CFG)" == "mod_dav_fs - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\..\build\win32\win32ver.awk
+
+".\mod_dav_fs.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../../build/win32/win32ver.awk mod_dav_fs\
+ "dav_fs_module for Apache" ../../../include/ap_release.h > .\mod_dav_fs.rc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "mod_dav_fs - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\..\build\win32\win32ver.awk
+
+".\mod_dav_fs.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../../build/win32/win32ver.awk mod_dav_fs\
+ "dav_fs_module for Apache" ../../../include/ap_release.h > .\mod_dav_fs.rc
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project

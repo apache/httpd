@@ -46,8 +46,8 @@ RSC=rc.exe
 # ADD CPP /nologo /MD /W3 /O2 /I "..\..\include" /I "..\..\srclib\apr\include" /I "../../srclib/apr-util/include" /I "..\..\srclib\sdbm" /I "..\..\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_AUTH_DBM_USE_APR" /Fd"Release\mod_auth_dbm" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x809 /d "NDEBUG"
-# ADD RSC /l 0x809 /d "NDEBUG"
+# ADD BASE RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -72,8 +72,8 @@ LINK32=link.exe
 # ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "..\..\include" /I "..\..\srclib\apr\include" /I "../../srclib/apr-util/include" /I "..\..\srclib\sdbm" /I "..\..\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_AUTH_DBM_USE_APR" /Fd"Debug\mod_auth_dbm" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x809 /d "_DEBUG"
-# ADD RSC /l 0x809 /d "_DEBUG"
+# ADD BASE RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -90,6 +90,41 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=.\mod_auth_dbm.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\mod_auth_dbm.rc
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\build\win32\win32ver.awk
+
+!IF  "$(CFG)" == "mod_auth_dbm - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\mod_auth_dbm.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_auth_dbm\
+ "auth_dbm_module for Apache" ../../include/ap_release.h > .\mod_auth_dbm.rc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "mod_auth_dbm - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\mod_auth_dbm.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_auth_dbm\
+ "auth_dbm_module for Apache" ../../include/ap_release.h > .\mod_auth_dbm.rc
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # End Target
 # End Project
