@@ -8,6 +8,9 @@
 -Tapache_sfio
 -Tarray_header
 -Tbool_int
+-Tapr_bucket_brigade
+-Tapr_pool_t
+-Tap_filter_t
 -Tbuf_area
 -Tbuff_struct
 -Tbuffy
