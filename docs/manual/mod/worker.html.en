@@ -36,7 +36,7 @@
     multi-process multi-threaded server.  By using threads to serve
     requests, it is able to serve a large number of requests with
     less system resources than a process-based server.  Yet it
-    retains much of the stability of a process-based server by 
+    retains much of the stability of a process-based server by
     keeping multiple processes available, each with many threads.</p>
 
     <p>The most important directives used to control this MPM are

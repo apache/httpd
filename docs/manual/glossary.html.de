@@ -45,7 +45,7 @@
     <dd>Ein Perl-Skript zur Kompilierung von <a href="#module">Modul</a>-Quelltexten zu Dynamic-Shared-Objects
       (<span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#dso">DSOs</a>)  und zur Installation dieser zum
       Apache-Webserver.<br />
-      Siehe: <a href="programs/apxs.html">apxs-Dokumentation</a>
+      Siehe: <code class="program"><a href="./programs/apxs.html">apxs</a></code>-Dokumentation
     </dd>
 
     <dt><a name="authentication" id="authentication">Authentifizierung</a></dt> 
@@ -137,8 +137,9 @@
       Shared Object</a> 
       <span class="phonetic">[dai&#712;næmik &#643;&#603;&#601;d
       &#712;&#596;bd&#658;ikt]</span> <a name="dso" id="dso">(DSO)</a></dt>
-    <dd>Separat von der Apache-Binärdatei kompilierte <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#module">Module</a>, die bei Bedarf geladen werden
-      können.<br />
+    <dd>Separat von der Apache-Binärdatei <code class="program"><a href="./programs/httpd.html">httpd</a></code>
+      kompilierte <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#module">Module</a>, die bei Bedarf
+      geladen werden können.<br />
       Siehe: <a href="dso.html">Unterstützung für
       Dynamic-Shared-Objects</a>
     </dd>
@@ -275,10 +276,9 @@
     <dt><a name="module" id="module">Modul</a></dt>
     <dd>Ein selbstständiger Teil eines Programms. Ein Großteil der
       Funktionalität des Apache ist in Modulen enthalten, die Sie einbinden
-      oder entfernen können. In die Apache-Binärdatei httpd
-      einkompilierte Module werden <em>statische Module</em> genannt,
-      während Module, die separat gespeichert sind und optional zur
-      Laufzeit geladen werden können, <em>dynamische Module</em> oder
+      oder entfernen können. In die Apache-Binärdatei <code class="program"><a href="./programs/httpd.html">httpd</a></code> einkompilierte Module werden <em>statische Module</em>
+      genannt, während Module, die separat gespeichert sind und optional
+      zur Laufzeit geladen werden können, <em>dynamische Module</em> oder
       <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#dso">DSOs</a> genannt werden.
       Standardmäßig eingebundene Module werden <em>Basismodule</em>
       genannt. Für den Apache sind viele Module verfügbar, die nicht

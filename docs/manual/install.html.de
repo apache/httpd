@@ -260,8 +260,7 @@
     Ihres Compilers, Ihrer Bibliotheken oder Header-Dateien zu versorgen. Das
     tun Sie, indem Sie entweder Umgebungsvariablen oder Kommandozeilenoptionen
     an <code class="program"><a href="./programs/configure.html">configure</a></code> übergeben. Für mehr Informationen
-    lesen Sie bitte die <a href="programs/configure.html">Hilfeseite zu
-    configure</a>.</p>
+    lesen Sie bitte die Hilfeseite zu <code class="program"><a href="./programs/configure.html">configure</a></code>.</p>
 
     <p>Um einen kurzen Eindruck zu gewinnen, welche Möglichkeiten Sie
     haben, folgt hier ein typisches Beispiel, das den Apache mit einem
@@ -283,9 +282,8 @@
     prüfen und ein Makefile zu generieren, das später zur
     Kompilierung des Servers verwendet wird.</p>
 
-    <p>Einzelheiten zu den vielen verschiedenen Konfigurationsoptionen finden
-    Sie auf der <a href="programs/configure.html">Hilfeseite zu
-    configure</a>.</p>
+    <p>Einzelheiten zu den vielen verschiedenen <code class="program"><a href="./programs/configure.html">configure</a></code>-Optionen finden Sie auf der Hilfeseite zu
+    <code class="program"><a href="./programs/configure.html">configure</a></code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

@@ -1812,7 +1812,7 @@ URLs</td></tr>
     limits the scope of the enclosed directives by URL. It is similar to the
     <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>
     directive, and starts a subsection which is terminated with a
-    <code>&lt;/Location&gt;</code> directive.  <code class="directive">&lt;Location&gt;</code> sections are processed in the
+    <code>&lt;/Location&gt;</code> directive. <code class="directive">&lt;Location&gt;</code> sections are processed in the
     order they appear in the configuration file, after the <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections and
     <code>.htaccess</code> files are read, and after the <code class="directive"><a href="#files">&lt;Files&gt;</a></code> sections.</p>
 
