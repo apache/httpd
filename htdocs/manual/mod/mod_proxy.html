@@ -196,7 +196,7 @@ a local virtual path; &lt;url&gt; is a partial URL for the remote server.
 <P>
 Suppose the local server has address <SAMP>http://wibble.org/</SAMP>; then
 <PRE>
-   ProxyPass /mirror/foo http://foo.com
+   ProxyPass /mirror/foo/ http://foo.com/
 </PRE>
 will cause a local request for the
 &lt;<SAMP>http://wibble.org/mirror/foo/bar</SAMP>&gt; to be
@@ -248,8 +248,8 @@ used for the <TT>ProxyPass</TT> directive.
 Example:<BR>
 Suppose the local server has address <SAMP>http://wibble.org/</SAMP>; then
 <PRE>
-   ProxyPass         /mirror/foo http://foo.com
-   ProxyPassReverse  /mirror/foo http://foo.com
+   ProxyPass         /mirror/foo/ http://foo.com/
+   ProxyPassReverse  /mirror/foo/ http://foo.com/
 </PRE>
 will not only cause a local request for the
 &lt;<SAMP>http://wibble.org/mirror/foo/bar</SAMP>&gt; to be internally
