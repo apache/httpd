@@ -1,0 +1,239 @@
+
+ Apache 1.3 Dynamic Shared Object (DSO) support
+ ==============================================
+
+ Ralf S. Engelschall, April 1998
+
+ Background
+ ----------
+
+ On modern Unix derivates there exists a nifty mechanism usually named Dynamic
+ Shared Object (DSO) which provides a way to build a piece of program code in
+ a special format to be able to load it under run-time into the address space
+ of an executable program. 
+
+ This loading can usually be done in two ways: Automatically by a system
+ program named ld.so when the Unix loader has to start an executable program
+ or manually from within the executing program via a pragmatic system
+ interface to the Unix loader through the system calls dlopen()/dlsym(). 
+ 
+ In the first way the DSO's are usually called "shared libraries" or "DSO
+ libraries" and named libfoo.so or libfoo.so.1.2. They stay inside a system
+ directory (usually /usr/lib) and the link to the executable program is
+ established under link-time by specifying -lfoo to the linker command. This
+ hardcodes library references into the executable program file therewith under
+ start-time the Unix loader is able to lookup libfoo.so from /usr/lib or from
+ paths configured via the environment variable LD_LIBRARY_PATH. It then
+ resolves any (still unresolved) symbols in the executable program which are
+ defined and exported in the DSO. Symbols in the executable program are
+ usually not used inside the DSO (because its a reuseable library of general
+ code) and hence no resolving this way has to be done.  The executable program
+ has no to do anything to be able to use the symbols from the DSO because the
+ complete resolving is done by the Unix loader.
+
+ In the second way the DSO's are usually called "shared objects" or "DSO
+ files" and can be arbitrarily named (although the canonical name is foo.so).
+ These files usually stay inside a program-specific directory and there is no
+ automatically established link to the executable program where they are used.
+ Instead the executable program under run-time manually loads the DSO into his
+ address space via dlopen(). At this time no resolving of symbols from the DSO
+ for the executable program is done. But instead the Unix loader automatically
+ resolves any (still unresolved) symbols in the DSO which are defined and
+ exported in the executable program. This way the DSO gets knowledge of
+ the executable program as it would have been statically linked to it
+ under program link-time. Finally to make the DSO accessible to the
+ executable program it resolves particular symbols from the DSO via dlsym()
+ for later use inside dispatch tables, etc. In other words: The executable
+ program has no to manually resolve anything to be able to use it. 
+
+ Although this DSO mechanism sounds straight foreward there is at least one
+ difficult step here: The resolving of symbols from the executable program for
+ the DSO when using a DSO to extend a program (the second way). Why? Because
+ this resolving is against the library design (where the library has no
+ knowledge of any program it is used for) and is neither available under all
+ platforms nor standardized. In practice only global symbols from the
+ executable program are available to the DSO which are explicitly marked as
+ exported. And forcing this exportation of global symbols is the main problem
+ one has to solve when using DSO for extending a program under run-time.
+
+ Practical Usage
+ ---------------
+
+ The shared library approach is the typical one, because this is the way the
+ DSO mechanism was designed for, hence it is used for mostly all types of
+ libraries the operating system provides. On the other hand using shared
+ objects for extending a program is not used by a lot of programs.
+
+ As of 1998 there are only a few software package available which use the DSO
+ mechanism to actually extend their functionality under run-time: Perl 5 (via
+ it's XS mechanism and the DynaLoader module), GIMP, Netscape Server, etc.
+ But Apache 1.3 now is also one of these, because Apache already uses a module
+ concept to extend its functionality and really uses a dispatch-list-based
+ approach to link these modules into the Apache core functionality. So, Apache
+ is really predestinated for using DSO to load it's modules under run-time.
+
+ The idea now is to provide two optional features for Apache 1.3: To compile
+ and place the Apache core program into a DSO library for shared usage and to
+ compile and place Apache modules into DSO files for explicit loading under
+ run-time.
+
+ Implementation
+ --------------
+
+ To place the complete Apache core program into a DSO library the rule
+ SHARED_CORE has to be enabled via APACI's --enable-rule=SHARED_CORE option
+ (see ../INSTALL file) or by changing the Rule command in
+ src/Configuration.tmpl to "Rule SHARED_CORE=yes" (see ./INSTALL file) the
+ Apache core code then is placed into a DSO library named libhttpd.so. Because
+ one cannot link a DSO against static libraries, an additional executable
+ program named libhttpd.ep is created which both ties those static code and
+ provides a stub for the main() function. Finally the httpd executable program
+ itself is replaced by a bootstrapping code which automatically makes sure the
+ Unix loader is able to load and start libhttpd.ep by providing the
+ LD_LIBRARY_PATH to libhttpd.so.
+
+ The DSO support for loading Apache modules is implemented completely
+ different: Here a module named mod_so.c is used which has to be statically
+ compiled into the Apache core.  It is the only module besides http_core.c
+ which cannot be put into a DSO itself (bootstrapping!). Mostly all other
+ distributed Apache modules then can be placed into a DSO by individually
+ enabling the DSO build for them via APACI's --enable-shared option (see
+ ../INSTALL file) or by changing the `AddModule' command in
+ src/Configuration.tmpl into a `SharedModule' command (see ./INSTALL file).
+ After a module is placed into a DSO named mod_foo.so you can use mod_so's
+ `LoadModule' command in your httpd.conf file to load this module at server
+ startup or restart.
+
+ To simplify this creation of DSO files for Apache modules (especially for
+ third-party ones) a new support program named `apxs' is available. I can be
+ used to build DSO based modules _outside_ the Apache source tree. The idea is
+ simple: When installing Apache the APACI "make install" procedure installs
+ the Apache C header files and puts the platform-dependend compiler and linker
+ flags for building DSO files into the `apxs' program. This way the user can
+ use `apxs' to compile it's Apache module sources without the Apache
+ distribution source tree and without having to fiddle with the
+ platform-dependend compiler and linker flags for DSO support.
+
+ Usage Summary
+ -------------
+
+ To give you an overview of the DSO features of Apache 1.3, here is a short
+ and concrete summary:
+
+ 1. Placing the Apache core code (all the stuff which usually forms
+    the httpd binary) into a DSO libhttpd.so, an executable program
+    libhttpd.ep and a bootstrapping executable program httpd:
+
+      o Build and install via APACI (preferred):
+        $ ./configure --prefix=/path/to/install
+                      --enable-rule=SHARED_CORE ...
+        $ make install
+
+      o Build and install manually: 
+        - Edit src/Configuration:
+          << "Rule SHARED_CORE=default"
+          >> "Rule SHARED_CORE=yes"
+          << "EXTRA_CFLAGS= "
+          >> "EXTRA_CFLAGS= -DSHARED_CORE_DIR=\"/path/to/install/libexec\"
+        $ make 
+        $ cp src/libhttpd.so* /path/to/install/libexec/
+        $ cp src/libhttpd.ep  /path/to/install/libexec/
+        $ cp src/httpd        /path/to/install/bin/
+    
+ 2. Build and install a distributed Apache module, say mod_foo.c, 
+    into its own DSO mod_foo.so:
+
+      o Build and install via APACI (preferred):
+        $ ./configure --prefix=/path/to/install
+                      --enable-shared=foo
+        $ make install
+
+      o Build and install manually: 
+        - Edit src/Configuration:
+          << "AddModule    modules/xxxx/mod_foo.o" 
+          >> "SharedModule modules/xxxx/mod_foo.so"
+        $ make
+        $ cp src/xxxx/mod_foo.so /path/to/install/libexec
+        - Edit /path/to/install/etc/httpd.conf
+          >> "LoadModule foo_module /path/to/install/libexec/mod_foo.so"
+
+ 3. Build and install a third-party Apache module, say mod_foo.c, 
+    into its own DSO mod_foo.so
+
+      o Build and install via APACI (preferred):
+        $ ./configure --add-module=/path/to/3rdparty/mod_foo.c 
+                      --enable-shared=foo
+        $ make install
+
+      o Build and install manually: 
+        $ cp /path/to/3rdparty/mod_foo.c /path/to/apache-1.3/src/modules/extra/
+        - Edit src/Configuration:
+          >> "SharedModule modules/extra/mod_foo.so"
+        $ make
+        $ cp src/xxxx/mod_foo.so /path/to/install/libexec
+        - Edit /path/to/install/etc/httpd.conf
+          >> "LoadModule foo_module /path/to/install/libexec/mod_foo.so"
+
+ 4. Build and install a third-party Apache module, say mod_foo.c, 
+    into its own DSO mod_foo.so _outside_ the Apache source tree:
+
+      o Build and install via APXS: 
+        $ cd /path/to/3rdparty
+        $ apxs -c mod_foo.c
+        $ apxs -i -a -n foo mod_foo.so
+
+ Advantages & Disadvantages
+ --------------------------
+
+ The above DSO based features of Apache 1.3 have the following advantages (+)
+ and disadvantages (-):
+
+   + The server package is more flexible under run-time because the actual
+     used server process can be assembled under run-time via LoadModule
+     httpd.conf configuration commands instead of Configuration AddModule
+     commands under build-time. For instance this way one is able to run
+     different server instances (standard & SSL version, minimalistic &
+     powered up version [mod_perl, PHP3], etc.) with only one Apache
+     installation.
+
+   + The server package can be easily extended with third-party modules even
+     after installation. This is at least a great benefit for vendor package
+     maintainers who can create a Apache core package and additional packages
+     containing extensions like PHP3, mod_perl, mod_fastcgi, etc.
+
+   + Easier Apache module prototyping because with the DSO/APXS couple you can
+     both works outside the Apache source tree and only need an `apxs -i'
+     command followed by a `apachectl restart' to bring a new version of your
+     currently developed module into the running Apache server.
+
+   - The DSO mechanism cannot be used on any platform because not all
+     operating systems support this mechanism.
+
+   - The server is approximately 20% slower at startup time because of the
+     symbol resolving overhead the Unix loader now has to do.
+
+   - The server is approximately 5% slower at execution time under some
+     platforms because position independed code (PIC) sometimes needs
+     complicated assembler tricks for relative addressing which are not
+     necessarily as fast as absolute addressing.
+
+   - Because DSO modules cannot be linked against other DSO-based libraries
+     (ld -lfoo) you cannot use the DSO mechanism for all types of modules. Or
+     in other words, modules compiled as DSO files are restricted to only use
+     symbols from the Apache core, from the C library (libc) or from static
+     library archives (libfoo.a) containing position independend code. The
+     only chance to use other code is to either make sure the Apache core
+     itself already contains a reference to it or loading the code yourself
+     via dlopen.
+
+   - Because under some platforms like SVR4 there is no way to force the
+     linker to export the global symbols when linking the Apache httpd
+     executable program. This way these aren't available to modules built as
+     DSO. The only chance here is to use the SHARED_CORE feature because this
+     way the global symbols are forced to be exported. As a consequence the
+     Apache src/Configure script automatically forced SHARED_CORE under those
+     platforms when DSO should be used.
+   
+                                       Ralf S. Engelschall
+                                       rse@engelschall.com
+                                       www.engelschall.com
