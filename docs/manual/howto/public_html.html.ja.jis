@@ -131,7 +131,7 @@
     <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> の値を
     ユーザが変更することを許可したいディレクティブに対して十分なものに
     設定していることを確認してください。この機能がどのようにして動作しているか
-    の詳細は <a href="htaccess.html">.htaccess チュートリアル</a> を読んで
+    の詳細は <a href="htaccess.html">.htaccess チュートリアル</a> を読んで
     ください。</p>
 
   </div></div>

@@ -90,7 +90,7 @@
 <tr><td><code>%...A</code></td>
         <td>ローカル IP アドレス</td></tr>
 <tr class="odd"><td><code>%...B</code></td>
-        <td>HTTP ヘッダ以外の送られたバイト数</td></tr>
+        <td>HTTP ヘッダ以外の送られたバイト数</td></tr>
 <tr><td><code>%...b</code></td>
         <td>HTTP ヘッダ以外の送られたバイト数。CLF 書式。
         <em>すなわち</em>、1 バイトも送られなかったときは 0 ではなく、
@@ -137,7 +137,7 @@
         <td>リクエストの最初の行</td></tr>
 <tr class="odd"><td><code>%...s</code></td>
         <td>ステータス。内部でリダイレクトされたリクエストは、元々の
-         リクエストのステータス --- 最後のステータスは <code>%...&gt;s</code>
+         リクエストのステータス --- 最後のステータスは <code>%...&gt;s</code>
     </td></tr>
 <tr><td><code>%...t</code></td>
         <td>時刻。CLF の時刻の書式 (標準の英語の書式)</td></tr>

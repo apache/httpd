@@ -138,7 +138,7 @@
     <code class="directive">MaxSpareServers</code> よりも多い数がアイドルであれば、
     親プロセスは超過プロセスを kill します。</p>
 
-    <p>非常に混んでいるサイトでのみ、このパラメータをチューニングするべきです。
+    <p>非常に混んでいるサイトでのみ、このパラメータをチューニングするべきです。
     このパラメータを大きくするということは、大抵の場合は悪い発想です。
     <code class="directive"><a href="#minspareservers">MinSpareServers</a></code>
     よりも小さい値に設定した場合、<code class="directive">MinSpareServers</code>

@@ -62,7 +62,7 @@
 
     <p>これらのファイルに書くことのできるディレクティブは <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> ディレクティブにより決まります。
     このディレクティブは、<code>.htaccess</code> ファイルに
-    書かれたディレクティブの中で、、
+    書かれたディレクティブの中で、、
     どのディレクティブが適用されるかをカテゴリー単位で指定します。
     <code>.htaccess</code> に書くことのできるディレクティブであれば、
     説明文書には「上書き」という項目があり、.htaccess に書くことができるように
@@ -138,7 +138,7 @@
     </code></p></div>
 
     <p>ですから、そのディレクトリのそれぞれのファイルへのアクセスに対して、
-    上の例のファイルがまったく存在しないときでも、追加のファイルシステムの
+    上の例のファイルがまったく存在しないときでも、追加のファイルシステムの
     アクセスが行なわれることになります。(これは、<code>.htaccess</code> が
     <code>/</code> に対して有効になっているときの場合で、普通はそうなって
     いないことに注意してください。)</p>
@@ -182,7 +182,7 @@
     よくなるからです。</p>
 
     <p><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> ディレクティブの
-    値を <code>none</code> に設定することで <code>.htaccess</code> ファイル
+    値を <code>none</code> に設定することで <code>.htaccess</code> ファイル
     の使用を完全に無効にすることができます。</p>
 
     <div class="example"><p><code>
@@ -232,7 +232,7 @@
 
     <p>もし認証の方法を知るためにこの部分に直接来たのであれば、次のことを
     知っておくことが重要です。よくある誤解に、パスワード認証を行なうためには
-    <code>.htaccess</code> ファイルを使う必要がある、というものがあります。
+    <code>.htaccess</code> ファイルを使う必要がある、というものがあります。
     これは正しくありません。主サーバ設定ファイルの <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> セクションに
     認証用のディレクティブを書く方が推奨される方法で、<code>.htaccess</code>
     ファイルは主サーバ設定ファイルを変更できないときにのみ使用すべきです。

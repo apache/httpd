@@ -126,7 +126,7 @@
         &lt;/Directory&gt;
       </code></p></div>
 
-      <p>全てのファイルタイプでの圧縮に問題を抱えているブラウザに対しては、
+      <p>全てのファイルタイプでの圧縮に問題を抱えているブラウザに対しては、
       <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code>
       ディレクティブを使用して、特定のブラウザに <code>no-gzip</code>
       ノートをセットし、圧縮が行なわれないようにします。
@@ -163,7 +163,7 @@
       </div>
     
 
-    <h3><a name="input" id="input">入力の伸張</a></h3>
+    <h3><a name="input" id="input">入力の伸張</a></h3>
       <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> モジュールは、gzip
       で圧縮されたリクエスト本体を伸張するフィルタも提供しています。
       この機能を有効にするには、<code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>
@@ -321,7 +321,7 @@
 </table>
     <p><code class="directive">DeflateMemLevel</code> ディレクティブは
     zlib が圧縮に使うメモリのレベルを設定します (1 から 9 の間の値)。
-    (訳注: 2 を底とする対数の値になります。
+    (訳注: 2 を底とする対数の値になります。
     8 程度が良いでしょう。)</p>
 
 </div>

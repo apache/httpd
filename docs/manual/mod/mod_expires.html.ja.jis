@@ -139,7 +139,7 @@
     <p>このディレクティブは <code>Expires</code> ヘッダの存在を
     保証するわけではないことに注意してください。基準が満たされて
     いない場合はヘッダは追加されず、結果としてこのディレクティブが
-    指定されていなかったかのようにさえ見えることになります。</p>
+    指定されていなかったかのようにさえ見えることになります。</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -184,7 +184,7 @@
       ExpiresByType text/html M604800
     </code></p></div>
 
-    <p>このディレクティブは <code>ExpiresActive On</code> が指定されている
+    <p>このディレクティブは <code>ExpiresActive On</code> が指定されている
     ときのみ有効であることに注意してください。これは、
     指定された MIME タイプに対して<em>のみ</em> <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> ディレクティブで
     設定された期限切れ期日を上書きします。</p>
