@@ -1,11 +1,11 @@
 Changes with Apache 1.3b7
 
   *) Standardized the time format in mod_status to match that of other 
-     places in the code (e.g. DATE_GMT)).
+     places in the code (e.g. DATE_GMT).  PR#1551
 
   *) Fix handling of %Z in timefmt strings for those platforms with no time
      zone information in their tm struct. [Paul Eggert <eggert@twinsun.com>]
-     PR #754
+     PR#754
 
   *) Makes mod_rewrite, mod_log_config, mod_status and the ServerSignature 
      feature compatible with 'UseCanonicalName off' by changing  
