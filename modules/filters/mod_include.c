@@ -83,6 +83,7 @@
 #include "http_main.h"
 #include "util_script.h"
 #include "http_core.h"
+#include "apr_optional.h"
 #include "mod_include.h"
 #ifdef HAVE_STRING_H
 #include <string.h>
@@ -94,6 +95,8 @@
 
 
 static apr_hash_t *include_hash;
+static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *ssi_pfn_register;
+
 
 /* ------------------------ Environment function -------------------------- */
 
@@ -496,7 +499,7 @@ otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
 
 #define SKIP_TAG_WHITESPACE(ptr) while ((*ptr != '\0') && (apr_isspace (*ptr))) ptr++
 
-static void get_tag_and_value(include_ctx_t *ctx, char **tag,
+static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
                               char **tag_val, int dodecode)
 {
     char *c = ctx->curr_tag_pos;
@@ -574,8 +577,8 @@ static void get_tag_and_value(include_ctx_t *ctx, char **tag,
 /*
  * Do variable substitution on strings
  */
-static void parse_string(request_rec *r, const char *in, char *out,
-			size_t length, int leave_name)
+static void ap_ssi_parse_string(request_rec *r, const char *in, char *out,
+                         size_t length, int leave_name)
 {
     char ch;
     char *next = out;
@@ -601,7 +604,6 @@ static void parse_string(request_rec *r, const char *in, char *out,
             break;
         case '$':
             {
-/* pjr hack     char var[MAX_STRING_LEN]; */
 		const char *start_of_var_name;
 		char *end_of_var_name;	/* end of var name + 1 */
 		const char *expansion, *temp_end, *val;
@@ -637,17 +639,10 @@ static void parse_string(request_rec *r, const char *in, char *out,
 		 * pass a non-nul terminated string */
 		l = end_of_var_name - start_of_var_name;
 		if (l != 0) {
-/* pjr - this is a test hack to avoid a memcpy. Make sure that this works...
-*		    l = (l > sizeof(var) - 1) ? (sizeof(var) - 1) : l;
-*		    memcpy(var, start_of_var_name, l);
-*		    var[l] = '\0';
-*
-*		    val = apr_table_get(r->subprocess_env, var);
-*/
-/* pjr hack */      tmp_store        = *end_of_var_name;
-/* pjr hack */      *end_of_var_name = '\0';
-/* pjr hack */      val = apr_table_get(r->subprocess_env, start_of_var_name);
-/* pjr hack */      *end_of_var_name = tmp_store;
+                    tmp_store        = *end_of_var_name;
+                    *end_of_var_name = '\0';
+                    val = apr_table_get(r->subprocess_env, start_of_var_name);
+                    *end_of_var_name = tmp_store;
 
 		    if (val) {
 			expansion = val;
@@ -684,68 +679,6 @@ static void parse_string(request_rec *r, const char *in, char *out,
 }
 
 /* --------------------------- Action handlers ---------------------------- */
-
-static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
-                       apr_bucket *head_ptr, apr_bucket **inserted_head)
-{
-    request_rec *rr = ap_sub_req_lookup_uri(s, r, next);
-    int rr_status;
-    apr_bucket  *tmp_buck, *tmp2_buck;
-
-    if (rr->status != HTTP_OK) {
-        return -1;
-    }
-
-    /* No hardwired path info or query allowed */
-
-    if ((rr->path_info && rr->path_info[0]) || rr->args) {
-        return -1;
-    }
-    if (rr->finfo.filetype == 0) {
-        return -1;
-    }
-
-    /* Script gets parameters of the *document*, for back compatibility */
-
-    rr->path_info = r->path_info;       /* hard to get right; see mod_cgi.c */
-    rr->args = r->args;
-
-    /* Force sub_req to be treated as a CGI request, even if ordinary
-     * typing rules would have called it something else.
-     */
-
-    rr->content_type = CGI_MAGIC_TYPE;
-
-    /* Run it. */
-
-    rr_status = ap_run_sub_req(rr);
-    if (ap_is_HTTP_REDIRECT(rr_status)) {
-        apr_size_t len_loc, h_wrt;
-        const char *location = apr_table_get(rr->headers_out, "Location");
-
-        location = ap_escape_html(rr->pool, location);
-        len_loc = strlen(location);
-
-        tmp_buck = apr_bucket_create_immortal("<A HREF=\"", sizeof("<A HREF=\""));
-        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
-        tmp2_buck = apr_bucket_create_heap(location, len_loc, 1, &h_wrt);
-        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_create_immortal("\">", sizeof("\">"));
-        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_create_heap(location, len_loc, 1, &h_wrt);
-        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_create_immortal("</A>", sizeof("</A>"));
-        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-
-        if (*inserted_head == NULL) {
-            *inserted_head = tmp_buck;
-        }
-    }
-
-    ap_destroy_sub_req(rr);
-
-    return 0;
-}
 
 /* ensure that path is relative, and does not contain ".." elements
  * ensentially ensure that it does not match the regex:
@@ -798,7 +731,7 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
     *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
         while (1) {
-            get_tag_and_value(ctx, &tag, &tag_val, 1);
+            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
             if (tag_val == NULL) {
                 if (tag == NULL) {
                     return (0);
@@ -811,7 +744,7 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
                 request_rec *rr = NULL;
                 char *error_fmt = NULL;
 
-                parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
+                ap_ssi_parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
                 if (tag[0] == 'f') {
                     /* be safe; only files in this directory or below allowed */
     		if (!is_only_below(parsed_string)) {
@@ -884,10 +817,9 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
     		ap_set_module_config(rr->request_config, &includes_module, r);
 
                 if (!error_fmt) {
-                    SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx);
-/*
-                    rr->output_filters = f->next;
-*/                    if (ap_run_sub_req(rr)) {
+                    SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next);
+                    
+                    if (ap_run_sub_req(rr)) {
                         error_fmt = "unable to include \"%s\" in parsed file %s";
                     }
                 }
@@ -915,213 +847,6 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
     return 0;
 }
 
-typedef struct {
-#ifdef TPF
-    TPF_FORK_CHILD t;
-#endif
-    request_rec *r;
-    char *s;
-} include_cmd_arg;
-
-
-
-static apr_status_t build_argv_list(char ***argv, request_rec *r, apr_pool_t *p)
-{
-    int numwords, x, idx;
-    char *w;
-    const char *args = r->args;
-
-    if (!args || !args[0] || ap_strchr_c(args, '=')) {
-       numwords = 1;
-    }
-    else {
-        /* count the number of keywords */
-        for (x = 0, numwords = 1; args[x]; x++) {
-            if (args[x] == '+') {
-                ++numwords;
-            }
-        }
-    }
-    /* Everything is - 1 to account for the first parameter which is the
-     * program name.  We didn't used to have to do this, but APR wants it.
-     */
-    if (numwords > APACHE_ARG_MAX - 1) {
-        numwords = APACHE_ARG_MAX - 1;	/* Truncate args to prevent overrun */
-    }
-    *argv = (char **) apr_palloc(p, (numwords + 2) * sizeof(char *));
- 
-    for (x = 1, idx = 1; x < numwords; x++) {
-        w = ap_getword_nulls(p, &args, '+');
-        ap_unescape_url(w);
-        (*argv)[idx++] = ap_escape_shell_cmd(p, w);
-    }
-    (*argv)[idx] = NULL;
-
-    return APR_SUCCESS;
-}
-
-
-
-static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *s,
-                       request_rec *r, ap_filter_t *f)
-{
-    include_cmd_arg arg;
-    apr_procattr_t *procattr;
-    apr_proc_t *procnew;
-    apr_status_t rc;
-    apr_table_t *env = r->subprocess_env;
-    char **argv;
-    apr_file_t *file = NULL;
-#if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
-    defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
-    core_dir_config *conf; 
-    conf = (core_dir_config *) ap_get_module_config(r->per_dir_config,
-                                                    &core_module);
-#endif
-
-    arg.r = r;
-    arg.s = s;
-#ifdef TPF
-    arg.t.filename = r->filename;
-    arg.t.subprocess_env = r->subprocess_env;
-    arg.t.prog_type = FORK_FILE;
-#endif
-
-    if (r->path_info && r->path_info[0] != '\0') {
-        request_rec *pa_req;
-
-        apr_table_setn(env, "PATH_INFO", ap_escape_shell_cmd(r->pool, r->path_info));
-
-        pa_req = ap_sub_req_lookup_uri(ap_escape_uri(r->pool, r->path_info), r, f->next);
-        if (pa_req->filename) {
-            apr_table_setn(env, "PATH_TRANSLATED",
-                      apr_pstrcat(r->pool, pa_req->filename, pa_req->path_info,
-                              NULL));
-        }
-    }
-
-    if (r->args) {
-        char *arg_copy = apr_pstrdup(r->pool, r->args);
-
-        apr_table_setn(env, "QUERY_STRING", r->args);
-        ap_unescape_url(arg_copy);
-        apr_table_setn(env, "QUERY_STRING_UNESCAPED",
-                  ap_escape_shell_cmd(r->pool, arg_copy));
-    }
-
-    if (((rc = apr_createprocattr_init(&procattr, r->pool)) != APR_SUCCESS) ||
-        ((rc = apr_setprocattr_io(procattr, APR_NO_PIPE, 
-                                  APR_FULL_BLOCK, APR_NO_PIPE)) != APR_SUCCESS) ||
-        ((rc = apr_setprocattr_dir(procattr, ap_make_dirstr_parent(r->pool, r->filename))) != APR_SUCCESS) ||
-#ifdef RLIMIT_CPU
-        ((rc = apr_setprocattr_limit(procattr, APR_LIMIT_CPU, conf->limit_cpu)) != APR_SUCCESS) ||
-#endif
-#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
-        ((rc = apr_setprocattr_limit(procattr, APR_LIMIT_MEM, conf->limit_mem)) != APR_SUCCESS) ||
-#endif
-#ifdef RLIMIT_NPROC
-        ((rc = apr_setprocattr_limit(procattr, APR_LIMIT_NPROC, conf->limit_nproc)) != APR_SUCCESS) ||
-#endif
-        ((rc = apr_setprocattr_cmdtype(procattr, APR_SHELLCMD)) != APR_SUCCESS)) {
-        /* Something bad happened, tell the world. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
-            "couldn't initialize proc attributes: %s %s", r->filename, s);
-        rc = !APR_SUCCESS;
-    }
-    else {
-        SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx);
-        build_argv_list(&argv, r, r->pool);
-        argv[0] = apr_pstrdup(r->pool, s);
-        procnew = apr_pcalloc(r->pool, sizeof(*procnew));
-        rc = apr_create_process(procnew, s, (const char * const *) argv,
-                                (const char * const *)ap_create_environment(r->pool, env),
-                                procattr, r->pool);
-
-        if (rc != APR_SUCCESS) {
-            /* Bad things happened. Everyone should have cleaned up. */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
-                        "couldn't create child process: %d: %s", rc, s);
-        }
-        else {
-            apr_bucket_brigade *bcgi;
-            apr_bucket *b;
-
-            apr_note_subprocess(r->pool, procnew, kill_after_timeout);
-            /* Fill in BUFF structure for parents pipe to child's stdout */
-            file = procnew->out;
-            if (!file)
-                return APR_EBADF;
-            bcgi = apr_brigade_create(r->pool);
-            b = apr_bucket_create_pipe(file);
-            APR_BRIGADE_INSERT_TAIL(bcgi, b);
-            ap_pass_brigade(f->next, bcgi);
-        
-            /* We can't close the pipe here, because we may return before the
-             * full CGI has been sent to the network.  That's okay though,
-             * because we can rely on the pool to close the pipe for us.
-             */
-        }
-    }
-
-    return 0;
-}
-
-static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
-                       ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
-{
-    char *tag     = NULL;
-    char *tag_val = NULL;
-    char *file = r->filename;
-    apr_bucket  *tmp_buck;
-    char parsed_string[MAX_STRING_LEN];
-
-    *inserted_head = NULL;
-    if (ctx->flags & FLAG_PRINTING) {
-        if (ctx->flags & FLAG_NO_EXEC) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                      "exec used but not allowed in %s", r->filename);
-            CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
-        }
-        else {
-            while (1) {
-                get_tag_and_value(ctx, &tag, &tag_val, 1);
-                if (tag_val == NULL) {
-                    if (tag == NULL) {
-                        return (0);
-                    }
-                    else {
-                        return 1;
-                    }
-                }
-                if (!strcmp(tag, "cmd")) {
-                    parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 1);
-                    if (include_cmd(ctx, bb, parsed_string, r, f) == -1) {
-                        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                                    "execution failure for parameter \"%s\" "
-                                    "to tag exec in file %s", tag, r->filename);
-                        CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
-                    }
-                    /* just in case some stooge changed directories */
-                }
-                else if (!strcmp(tag, "cgi")) {
-                    parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
-                    SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx);
-                    if (include_cgi(parsed_string, r, f->next, head_ptr, inserted_head) == -1) {
-                        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                                    "invalid CGI ref \"%s\" in %s", tag_val, file);
-                        CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
-                    }
-                }
-                else {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                                "unknown parameter \"%s\" to tag exec in %s", tag, file);
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
-                }
-            }
-        }
-    }
-    return 0;
-}
 
 static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
                        ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
@@ -1138,7 +863,7 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
     *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
         while (1) {
-            get_tag_and_value(ctx, &tag, &tag_val, 1);
+            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
             if (tag_val == NULL) {
                 if (tag != NULL) {
                     return 1;
@@ -1206,7 +931,7 @@ static int handle_config(include_ctx_t *ctx, apr_bucket_brigade **bb, request_re
     *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
         while (1) {
-            get_tag_and_value(ctx, &tag, &tag_val, 0);
+            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 0);
             if (tag_val == NULL) {
                 if (tag == NULL) {
                     return 0;  /* Reached the end of the string. */
@@ -1216,20 +941,20 @@ static int handle_config(include_ctx_t *ctx, apr_bucket_brigade **bb, request_re
                 }
             }
             if (!strcmp(tag, "errmsg")) {
-                parse_string(r, tag_val, ctx->error_str, MAX_STRING_LEN, 0);
+                ap_ssi_parse_string(r, tag_val, ctx->error_str, MAX_STRING_LEN, 0);
                 ctx->error_length = strlen(ctx->error_str);
             }
             else if (!strcmp(tag, "timefmt")) {
                 apr_time_t date = r->request_time;
 
-                parse_string(r, tag_val, ctx->time_str, MAX_STRING_LEN, 0);
+                ap_ssi_parse_string(r, tag_val, ctx->time_str, MAX_STRING_LEN, 0);
                 apr_table_setn(env, "DATE_LOCAL", ap_ht_time(r->pool, date, ctx->time_str, 0));
                 apr_table_setn(env, "DATE_GMT", ap_ht_time(r->pool, date, ctx->time_str, 1));
                 apr_table_setn(env, "LAST_MODIFIED",
                                ap_ht_time(r->pool, r->finfo.mtime, ctx->time_str, 0));
             }
             else if (!strcmp(tag, "sizefmt")) {
-                parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
+                ap_ssi_parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
                 decodehtml(parsed_string);
                 if (!strcmp(parsed_string, "bytes")) {
                     ctx->flags |= FLAG_SIZE_IN_BYTES;
@@ -1367,7 +1092,7 @@ static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec
     *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
         while (1) {
-            get_tag_and_value(ctx, &tag, &tag_val, 1);
+            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
             if (tag_val == NULL) {
                 if (tag == NULL) {
                     return 0;
@@ -1377,7 +1102,7 @@ static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec
                 }
             }
             else {
-                parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
+                ap_ssi_parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
                 if (!find_file(r, "fsize", tag, parsed_string, &finfo)) {
                     char buff[50];
 
@@ -1429,7 +1154,7 @@ static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb, request_
     *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
         while (1) {
-            get_tag_and_value(ctx, &tag, &tag_val, 1);
+            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
             if (tag_val == NULL) {
                 if (tag == NULL) {
                     return 0;
@@ -1439,7 +1164,7 @@ static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb, request_
                 }
             }
             else {
-                parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
+                ap_ssi_parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
                 if (!find_file(r, "flastmod", tag, parsed_string, &finfo)) {
                     char *t_val;
 
@@ -1981,7 +1706,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
                     sizeof ("     Evaluate string\n"));
             debug_pos += sizeof ("     Evaluate string\n");
 #endif
-            parse_string(r, current->token.value, buffer, sizeof(buffer), 0);
+            ap_ssi_parse_string(r, current->token.value, buffer, sizeof(buffer), 0);
 	    apr_cpystrn(current->token.value, buffer, sizeof(current->token.value));
             current->value = (current->token.value[0] != '\0');
             current->done = 1;
@@ -2006,7 +1731,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
             if (!current->left->done) {
                 switch (current->left->token.type) {
                 case token_string:
-                    parse_string(r, current->left->token.value,
+                    ap_ssi_parse_string(r, current->left->token.value,
                                  buffer, sizeof(buffer), 0);
                     apr_cpystrn(current->left->token.value, buffer,
                             sizeof(current->left->token.value));
@@ -2021,7 +1746,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
             if (!current->right->done) {
                 switch (current->right->token.type) {
                 case token_string:
-                    parse_string(r, current->right->token.value,
+                    ap_ssi_parse_string(r, current->right->token.value,
                                  buffer, sizeof(buffer), 0);
                     apr_cpystrn(current->right->token.value, buffer,
                             sizeof(current->right->token.value));
@@ -2070,11 +1795,11 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
                 *was_error = 1;
                 goto RETURN;
             }
-            parse_string(r, current->left->token.value,
+            ap_ssi_parse_string(r, current->left->token.value,
                          buffer, sizeof(buffer), 0);
             apr_cpystrn(current->left->token.value, buffer,
 			sizeof(current->left->token.value));
-            parse_string(r, current->right->token.value,
+            ap_ssi_parse_string(r, current->right->token.value,
                          buffer, sizeof(buffer), 0);
             apr_cpystrn(current->right->token.value, buffer,
 			sizeof(current->right->token.value));
@@ -2141,11 +1866,11 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
                 *was_error = 1;
                 goto RETURN;
             }
-            parse_string(r, current->left->token.value,
+            ap_ssi_parse_string(r, current->left->token.value,
                          buffer, sizeof(buffer), 0);
             apr_cpystrn(current->left->token.value, buffer,
 			sizeof(current->left->token.value));
-            parse_string(r, current->right->token.value,
+            ap_ssi_parse_string(r, current->right->token.value,
                          buffer, sizeof(buffer), 0);
             apr_cpystrn(current->right->token.value, buffer,
 			sizeof(current->right->token.value));
@@ -2307,7 +2032,7 @@ static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r
     }
     else {
         while (1) {
-            get_tag_and_value(ctx, &tag, &tag_val, 0);
+            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 0);
             if (tag == NULL) {
                 if (expr == NULL) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
@@ -2375,7 +2100,7 @@ static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
     *inserted_head = NULL;
     if (!ctx->if_nesting_level) {
         while (1) {
-            get_tag_and_value(ctx, &tag, &tag_val, 0);
+            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 0);
             if (tag == '\0') {
                 LOG_COND_STATUS(ctx, tmp_buck, head_ptr, *inserted_head, " elif");
                 
@@ -2443,7 +2168,7 @@ static int handle_else(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
 
     *inserted_head = NULL;
     if (!ctx->if_nesting_level) {
-        get_tag_and_value(ctx, &tag, &tag_val, 1);
+        ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
         if ((tag != NULL) || (tag_val != NULL)) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                         "else directive does not take tags in %s", r->filename);
@@ -2476,7 +2201,7 @@ static int handle_endif(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec
 
     *inserted_head = NULL;
     if (!ctx->if_nesting_level) {
-        get_tag_and_value(ctx, &tag, &tag_val, 1);
+        ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
         if ((tag != NULL) || (tag_val != NULL)) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                         "endif directive does not take tags in %s", r->filename);
@@ -2507,7 +2232,7 @@ static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *
     *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
         while (1) {
-            get_tag_and_value(ctx, &tag, &tag_val, 1);
+            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
             if ((tag == NULL) && (tag_val == NULL)) {
                 return 0;
             }
@@ -2525,7 +2250,7 @@ static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *
                     CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
                     return (-1);
                 }
-                parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
+                ap_ssi_parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
                 apr_table_setn(r->subprocess_env, apr_pstrdup(r->pool, var),
                                apr_pstrdup(r->pool, parsed_string));
             }
@@ -2548,7 +2273,7 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb, request_
     apr_bucket *tmp_buck;
 
     if (ctx->flags & FLAG_PRINTING) {
-        get_tag_and_value(ctx, &tag, &tag_val, 1);
+        ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
         if ((tag == NULL) && (tag_val == NULL)) {
             apr_array_header_t *arr = apr_table_elts(r->subprocess_env);
             apr_table_entry_t *elts = (apr_table_entry_t *)arr->elts;
@@ -3016,7 +2741,7 @@ static int includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     return OK;
 }
 
-void ap_register_include_handler(char *tag, handler func)
+static void ap_register_include_handler(char *tag, include_handler func)
 {
     apr_hash_set(include_hash, tag, strlen(tag) + 1, (const void *)func);
 }
@@ -3026,18 +2751,21 @@ static void include_post_config(apr_pool_t *p, apr_pool_t *plog,
 {
     include_hash = apr_make_hash(p);
 
-    ap_register_include_handler("if", handle_if);
-    ap_register_include_handler("set", handle_set);
-    ap_register_include_handler("else", handle_else);
-    ap_register_include_handler("elif", handle_elif);
-    ap_register_include_handler("exec", handle_exec);
-    ap_register_include_handler("echo", handle_echo);
-    ap_register_include_handler("endif", handle_endif);
-    ap_register_include_handler("fsize", handle_fsize);
-    ap_register_include_handler("config", handle_config);
-    ap_register_include_handler("include", handle_include);
-    ap_register_include_handler("flastmod", handle_flastmod);
-    ap_register_include_handler("printenv", handle_printenv);
+    ssi_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_include_handler);
+
+    if(ssi_pfn_register) {
+        ssi_pfn_register("if", handle_if);
+        ssi_pfn_register("set", handle_set);
+        ssi_pfn_register("else", handle_else);
+        ssi_pfn_register("elif", handle_elif);
+        ssi_pfn_register("echo", handle_echo);
+        ssi_pfn_register("endif", handle_endif);
+        ssi_pfn_register("fsize", handle_fsize);
+        ssi_pfn_register("config", handle_config);
+        ssi_pfn_register("include", handle_include);
+        ssi_pfn_register("flastmod", handle_flastmod);
+        ssi_pfn_register("printenv", handle_printenv);
+    }
 }
 
 /*
@@ -3052,6 +2780,9 @@ static const command_rec includes_cmds[] =
 
 static void register_hooks(apr_pool_t *p)
 {
+    APR_REGISTER_OPTIONAL_FN(ap_ssi_get_tag_and_value);
+    APR_REGISTER_OPTIONAL_FN(ap_ssi_parse_string);
+    APR_REGISTER_OPTIONAL_FN(ap_register_include_handler);
     ap_hook_post_config(include_post_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_register_output_filter("INCLUDES", includes_filter, AP_FTYPE_CONTENT);
 }

@@ -59,8 +59,6 @@
 #ifndef _MOD_INCLUDE_H
 #define _MOD_INCLUDE_H 1
 
-
-
 #define STARTING_SEQUENCE "<!--#"
 #define ENDING_SEQUENCE "-->"
 
@@ -177,29 +175,40 @@ typedef struct include_filter_ctx {
 #define CREATE_ERROR_BUCKET(cntx, t_buck, h_ptr, ins_head)        \
 {                                                                 \
     apr_size_t e_wrt;                                             \
-    t_buck = apr_bucket_create_heap(cntx->error_str,               \
+    t_buck = apr_bucket_create_heap(cntx->error_str,              \
                                    ctx->error_length, 1, &e_wrt); \
-    APR_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                       \
+    APR_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                      \
                                                                   \
     if (ins_head == NULL) {                                       \
         ins_head = t_buck;                                        \
     }                                                             \
 }
 
-#define SPLIT_AND_PASS_PRETAG_BUCKETS(brgd, cntxt)               \
+#define SPLIT_AND_PASS_PRETAG_BUCKETS(brgd, cntxt, next)          \
 if ((APR_BRIGADE_EMPTY(cntxt->ssi_tag_brigade)) &&                \
-    (cntxt->head_start_bucket != NULL)) {                        \
+    (cntxt->head_start_bucket != NULL)) {                         \
     apr_bucket_brigade *tag_plus;                                 \
-                                                                 \
+                                                                  \
     tag_plus = apr_brigade_split(brgd, cntxt->head_start_bucket); \
-    ap_pass_brigade(f->next, brgd);                              \
-    brgd = tag_plus;                                             \
+    ap_pass_brigade(next, brgd);                                  \
+    brgd = tag_plus;                                              \
 }
 
-typedef int (*handler)(include_ctx_t *ctx, apr_bucket_brigade **bb, 
+
+typedef int (*include_handler)(include_ctx_t *ctx, apr_bucket_brigade **bb, 
                        request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
                        apr_bucket **inserted_head);
 
-void ap_register_include_handler(char *tag, handler func);
+APR_DECLARE_OPTIONAL_FN(void, ap_ssi_get_tag_and_value, (include_ctx_t *ctx,
+                                                        char **tag,
+                                                        char **tag_val,
+                                                        int dodecode))
+APR_DECLARE_OPTIONAL_FN(void, ap_ssi_parse_string, (request_rec *r,
+                                                    const char *in,
+                                                    char *out,
+                                                    size_t length,
+                                                    int leave_name))
+APR_DECLARE_OPTIONAL_FN(void, ap_register_include_handler, (char *tag,
+                                                         include_handler func))
 
 #endif /* MOD_INCLUDE */

@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) Move the CGI creation logic from mod_include to mod_cgi(d).  This
+     should reduce the amount of duplicate code that is required to
+     create CGI processes.
+     [Paul J. Reder <rederpj@raleigh.ibm.com>]
+
   *) ap_new_connection() closes the socket and returns NULL if a socket
      call fails.  Usually this is due to a connection which has been 
      reset.  [Jeff Trawick]
