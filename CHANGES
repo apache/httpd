@@ -1,5 +1,8 @@
 Changes with Apache 2.0.36
 
+  *) Merge in latest GNU config.guess and config.sub files.  PR 7818.
+     [Justin Erenkrantz]
+
   *) Move 100 - Continue support to the HTTP_IN filter so that filters
      are guaranteed to support 100 - Continue logic without any
      intervention.  [Justin Erenkrantz]
