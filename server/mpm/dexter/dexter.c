@@ -89,14 +89,6 @@ static int requests_this_child;
 static int num_listenfds = 0;
 static struct pollfd *listenfds;
 
-/* The structure used to pass unique initialization info to each thread */
-typedef struct {
-    int pid;
-    int tid;
-    int sd;
-    pool *tpool; /* "pthread" would be confusing */
-} proc_info;
-
 #if 0
 #define SAFE_ACCEPT(stmt) do {if (ap_listeners->next != NULL) {stmt;}} while (0)
 #else
@@ -795,7 +787,7 @@ int ap_graceful_stop_signalled(void)
  * Child process main loop.
  */
 
-static void process_socket(pool *p, struct sockaddr *sa_client, int csd, int my_child_num, int my_thread_num)
+static void process_socket(pool *p, struct sockaddr *sa_client, int csd)
 {
     struct sockaddr sa_server; /* ZZZZ */
     size_t len = sizeof(struct sockaddr);
@@ -833,17 +825,14 @@ static void process_socket(pool *p, struct sockaddr *sa_client, int csd, int my_
     current_conn = ap_new_connection(p, server_conf, conn_io,
                                   (const struct sockaddr_in *) sa_client, 
                                   (const struct sockaddr_in *) &sa_server, 
-                                  my_child_num, my_thread_num);
+                                  0, 0);
 
     ap_process_connection(current_conn);
 }
 
-static void * worker_thread(void * dummy)
+static void * worker_thread(void *thread_pool)
 {
-    proc_info * ti = dummy;
-    int process_slot = ti->pid;
-    int thread_slot = ti->tid;
-    pool *tpool = ti->tpool;
+    pool *tpool = thread_pool;
     struct sockaddr sa_client;
     int csd = -1;
     pool *ptrans;		/* Pool for per-transaction stuff */
@@ -853,8 +842,6 @@ static void * worker_thread(void * dummy)
     char pipe_read_char;
     int curr_pollfd, last_pollfd = 0;
     size_t len = sizeof(struct sockaddr);
-
-    free(ti);
 
     ptrans = ap_make_sub_pool(tpool);
 
@@ -935,11 +922,17 @@ static void * worker_thread(void * dummy)
             }
         }
     got_fd:
-        SAFE_ACCEPT(accept_mutex_off(0));
-        SAFE_ACCEPT(intra_mutex_off(0));
-        if (workers_may_exit) break;
-        csd = ap_accept(sd, &sa_client, &len);
-        process_socket(ptrans, &sa_client, csd, process_slot, thread_slot);
+        if (!workers_may_exit) {
+            csd = ap_accept(sd, &sa_client, &len);
+            SAFE_ACCEPT(accept_mutex_off(0));
+            SAFE_ACCEPT(intra_mutex_off(0));
+	} else {
+            SAFE_ACCEPT(accept_mutex_off(0));
+            SAFE_ACCEPT(intra_mutex_off(0));
+	    break;
+	}
+
+        process_socket(ptrans, &sa_client, csd);
         ap_clear_pool(ptrans);
         requests_this_child--;
     }
@@ -957,15 +950,14 @@ static void * worker_thread(void * dummy)
     return NULL;
 }
 
-static void child_main(int child_num_arg)
+static void child_main(void)
 {
     sigset_t sig_mask;
     int signal_received;
     pthread_t thread;
     pthread_attr_t thread_attr;
     int i;
-    int my_child_num = child_num_arg;
-    proc_info *my_info = NULL;
+    pool *tpool;
     ap_listen_rec *lr;
 
     my_pid = getpid();
@@ -1012,20 +1004,10 @@ static void child_main(int child_num_arg)
     pthread_attr_init(&thread_attr);
     pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
     for (i=0; i < ap_threads_per_child; i++) {
-
-	my_info = (proc_info *)malloc(sizeof(proc_info));
-        if (my_info == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
-		         "malloc: out of memory");
-            clean_child_exit(APEXIT_CHILDFATAL);
-        }
-	my_info->pid = my_child_num;
-        my_info->tid = i;
-	my_info->sd = 0;
-	my_info->tpool = ap_make_sub_pool(pchild);
+	tpool = ap_make_sub_pool(pchild);
 	
 	/* We are creating threads right now */
-	if (pthread_create(&thread, &thread_attr, worker_thread, my_info)) {
+	if (pthread_create(&thread, &thread_attr, worker_thread, tpool)) {
 	    ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
 			 "pthread_create: unable to create worker thread");
             /* In case system resources are maxxed out, we don't want
@@ -1072,7 +1054,7 @@ static int make_child(server_rec *s, int slot, time_t now) /* ZZZ */
     if (one_process) {
 	set_signals();
         ap_scoreboard_image[slot].pid = getpid();
-	child_main(slot);
+	child_main();
     }
 
     if ((pid = fork()) == -1) {
@@ -1103,7 +1085,7 @@ static int make_child(server_rec *s, int slot, time_t now) /* ZZZ */
 	/* XXX - For an unthreaded server, a signal handler will be necessary
         signal(SIGTERM, just_die);
 	*/
-        child_main(slot);
+        child_main();
 
 	return 0;
     }
@@ -1118,7 +1100,7 @@ static int startup_children(int number_to_start)
     int i;
 
     for (i = 0; number_to_start && i < ap_num_daemons; ++i) {
-	if (ap_scoreboard_image[i].pid != 0) {
+	if (ap_scoreboard_image[i].status != SERVER_DEAD) {
 	    continue;
 	}
 	if (make_child(server_conf, i, 0) < 0) {
