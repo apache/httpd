@@ -85,6 +85,17 @@
 #error mod_charset_lite cannot work without APACHE_XLATE enabled
 #endif
 
+#define XLATE_BUF_SIZE (16*1024) /* we try to send down brigades of this len, but... */
+#define XLATE_MIN_BUFF_LEFT 128  /* flush once there is no more than this much
+                                  * space is left in the translation buffer 
+                                  */
+
+#define FATTEST_CHAR  8          /* we don't handle chars wider than this that straddle 
+                                  * two buckets
+                                  */
+
+#define XLATE_FILTER_NAME "XLATE" /* registered name of the translation filter */
+
 typedef struct charset_dir_t {
     enum {NO_DEBUG = 1, DEBUG} debug; /* whether or not verbose logging is enabled; 0
                                         means uninitialized */
@@ -92,10 +103,23 @@ typedef struct charset_dir_t {
     const char *charset_default; /* how to ship on wire */
 } charset_dir_t;
 
+/* charset_filter_ctx_t is created for each filter instance; because the same
+ * filter code is used for translating in both directions, we need this context
+ * data to tell the filter which translation handle to use; it also can hold a
+ * character which was split between buckets
+ */
+typedef struct charset_filter_ctx_t {
+    apr_xlate_t *xlate;
+    apr_ssize_t saved;
+    char buf[FATTEST_CHAR]; /* we want to be able to build a complete char here */
+} charset_filter_ctx_t;
+
+/* charset_req_t is available via r->request_config if any translation is
+ * being performed
+ */
 typedef struct charset_req_t {
     charset_dir_t *dc;
-    apr_xlate_t *xlate_output;
-/*  not yet...  apr_xlate_t *xlate_input; */
+    charset_filter_ctx_t *output_ctx, *input_ctx;
 } charset_req_t;
 
 module charset_lite_module;
@@ -157,14 +181,16 @@ static const char *add_charset_debug(cmd_parms *cmd, charset_dir_t *dc, int arg)
 }
 
 /* find_code_page() is a fixup hook that decides if translation should be
- * enabled
+ * enabled; if so, it sets up request data for use by the filter registration
+ * hook so that it knows what to do
  */
 static int find_code_page(request_rec *r)
 {
-    charset_dir_t *dc = ap_get_module_config(r->per_dir_config, &charset_lite_module);
+    charset_dir_t *dc = ap_get_module_config(r->per_dir_config, 
+                                             &charset_lite_module);
     charset_req_t *reqinfo;
+    charset_filter_ctx_t *input_ctx, *output_ctx;
     apr_status_t rv;
-    apr_xlate_t *input_xlate, *output_xlate;
     const char *mime_type;
     int debug = dc->debug == DEBUG;
 
@@ -235,18 +261,26 @@ static int find_code_page(request_rec *r)
                      dc && dc->charset_default ? dc->charset_default : "(none)");
     }
 
-    rv = apr_xlate_open(&output_xlate, dc->charset_default, dc->charset_source, r->pool);
+    /* Get storage for the request data and the output filter context.
+     * We rarely need the input filter context, so allocate that separately.
+     */
+    reqinfo = (charset_req_t *)apr_pcalloc(r->pool, 
+                                           sizeof(charset_req_t) + 
+                                           sizeof(charset_filter_ctx_t));
+    output_ctx = (charset_filter_ctx_t *)(reqinfo + 1);
+
+    reqinfo->dc = dc;
+    ap_set_module_config(r->request_config, &charset_lite_module, reqinfo);
+
+    reqinfo->output_ctx = output_ctx;
+    rv = apr_xlate_open(&output_ctx->xlate, 
+                        dc->charset_default, dc->charset_source, r->pool);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                      "can't open translation %s->%s",
                      dc->charset_source, dc->charset_default);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-
-    reqinfo = (charset_req_t *)apr_palloc(r->pool, sizeof(charset_req_t));
-    ap_set_module_config(r->request_config, &charset_lite_module, reqinfo);
-    reqinfo->dc = dc;
-    reqinfo->xlate_output = output_xlate;
 
     switch (r->method_number) {
     case M_PUT:
@@ -255,7 +289,9 @@ static int find_code_page(request_rec *r)
          * with the OPTIONS method, but for now we don't set up translation 
          * of it.
          */
-        rv = apr_xlate_open(&input_xlate, dc->charset_source, 
+        input_ctx = apr_pcalloc(r->pool, sizeof(charset_filter_ctx_t));
+        reqinfo->input_ctx = input_ctx;
+        rv = apr_xlate_open(&input_ctx->xlate, dc->charset_source, 
                             dc->charset_default, r->pool);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
@@ -265,15 +301,13 @@ static int find_code_page(request_rec *r)
         }
 
 /* Can't delete this yet :( #ifdef OLD */
-        rv = ap_set_content_xlate(r, 0, input_xlate);
+        rv = ap_set_content_xlate(r, 0, input_ctx->xlate);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                          "can't set content input translation");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 /* #endif */
-
-        /* not yet... reqinfo->xlate_input = input_xlate; */
     }
 
     return DECLINED;
@@ -284,10 +318,11 @@ static int find_code_page(request_rec *r)
  */
 static void xlate_register_filter(request_rec *r)
 {
-    /* Hey... don't be so quick to use reqinfo->dc here; it may not exist */
+    /* Hey... don't be so quick to use reqinfo->dc here; reqinfo may be NULL */
     charset_req_t *reqinfo = ap_get_module_config(r->request_config, 
                                                   &charset_lite_module);
-    charset_dir_t *dc = ap_get_module_config(r->per_dir_config, &charset_lite_module);
+    charset_dir_t *dc = ap_get_module_config(r->per_dir_config, 
+                                             &charset_lite_module);
     int debug = dc->debug == DEBUG;
 
     if (debug) {
@@ -299,12 +334,12 @@ static void xlate_register_filter(request_rec *r)
                      dc && dc->charset_default ? dc->charset_default : "(none)");
     }
 
-    if (reqinfo && reqinfo->xlate_output) {
-        ap_add_filter("XLATEOUT", NULL, r);
+    if (reqinfo && reqinfo->output_ctx) {
+        ap_add_filter(XLATE_FILTER_NAME, reqinfo->output_ctx, r);
     }
     
 #ifdef NOT_YET
-    if (reqinfo && reqinfo->xlate_input) {
+    if (reqinfo && reqinfo->input_ctx) {
         /* ap_add_filter(xxx, yyy, r); */
     }
 #endif
@@ -320,22 +355,6 @@ static void xlate_register_filter(request_rec *r)
  *   we don't handle characters that straddle more than two buckets; an error
  *   will be generated
  */
-
-#define XLATE_BUF_SIZE (16*1024) /* we try to send down brigades of this len, but... */
-#define XLATE_MIN_BUFF_LEFT 128  /* flush once there is no more than this much
-                                  * space is left in the translation buffer 
-                                  */
-
-#define FATTEST_CHAR  8          /* we don't handle chars wider than this that straddle 
-                                  * two buckets
-                                  */
-
-typedef struct xlate_output_ctx xlate_output_ctx;
-
-struct xlate_output_ctx {
-    apr_ssize_t saved;
-    char buf[FATTEST_CHAR]; /* we want to be able to build a complete char here */
-};
 
 /* send_downstream() is passed the translated data; it puts it in a single-
  * bucket brigade and passes the brigade to the next filter
@@ -374,12 +393,8 @@ static void remove_and_destroy(ap_bucket_brigade *bb, ap_bucket *b)
 static void set_aside_partial_char(ap_filter_t *f, const char *partial,
                                    apr_ssize_t partial_len)
 {
-    xlate_output_ctx *ctx;
+    charset_filter_ctx_t *ctx = f->ctx;
 
-    if (!f->ctx) { /* if no context yet, create it */
-        f->ctx = ctx = (xlate_output_ctx *)
-            apr_palloc(f->r->pool, sizeof(xlate_output_ctx));
-    }
     ap_assert(sizeof(ctx->buf) > partial_len);
     ctx->saved = partial_len;
     memcpy(ctx->buf, partial, partial_len);
@@ -395,7 +410,7 @@ static apr_status_t finish_partial_char(ap_filter_t *f,
                                         apr_ssize_t *out_len)
 {
     apr_status_t rv;
-    xlate_output_ctx *ctx = f->ctx;
+    charset_filter_ctx_t *ctx = f->ctx;
     apr_size_t tmp_input_len;
 
     /* Keep adding bytes from the input string to the saved string until we
@@ -410,7 +425,7 @@ static apr_status_t finish_partial_char(ap_filter_t *f,
         ++*cur_str;
         --*cur_len;
         tmp_input_len = ctx->saved;
-        rv = apr_xlate_conv_buffer(reqinfo->xlate_output,
+        rv = apr_xlate_conv_buffer(ctx->xlate,
                                    ctx->buf,
                                    &tmp_input_len,
                                    *out_str,
@@ -425,11 +440,17 @@ static apr_status_t finish_partial_char(ap_filter_t *f,
     return APR_SUCCESS;
 }
 
-static int xlate_output_filter(ap_filter_t *f, ap_bucket_brigade *bb)
+/* xlate_filter() handles arbirary conversions from one charset to another...
+ * translation is determined in the fixup hook (find_code_page), which is
+ * where the filter's context data is set up... the context data gives us
+ * the translation handle
+ */
+static int xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
 {
     charset_req_t *reqinfo = ap_get_module_config(f->r->request_config,
                                                   &charset_lite_module);
     charset_dir_t *dc = reqinfo->dc;
+    charset_filter_ctx_t *ctx = f->ctx;
     int debug = dc->debug == DEBUG;
     ap_bucket *dptr, *consumed_bucket;
     const char *cur_str;
@@ -443,7 +464,7 @@ static int xlate_output_filter(ap_filter_t *f, ap_bucket_brigade *bb)
 
     if (debug) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, f->r->server,
-                     "xlate_output_filter() - "
+                     "xlate_filter() - "
                      "dc: %X charset_source: %s charset_default: %s",
                      (unsigned)dc,
                      dc && dc->charset_source ? dc->charset_source : "(none)",
@@ -472,7 +493,7 @@ static int xlate_output_filter(ap_filter_t *f, ap_bucket_brigade *bb)
         /* Try to fill up our tmp buffer with translated data. */
         cur_avail = cur_len;
 
-        if (f->ctx && ((xlate_output_ctx *)f->ctx)->saved) {
+        if (ctx->saved) {
             /* Rats... we need to finish a partial character from the previous
              * bucket.
              */
@@ -484,7 +505,7 @@ static int xlate_output_filter(ap_filter_t *f, ap_bucket_brigade *bb)
                                      &tmp_tmp, &space_avail);
         }
         else {
-            rv = apr_xlate_conv_buffer(reqinfo->xlate_output,
+            rv = apr_xlate_conv_buffer(ctx->xlate,
                                        cur_str, &cur_avail,
                                        tmp + sizeof(tmp) - space_avail, &space_avail);
 
@@ -537,7 +558,7 @@ static int xlate_output_filter(ap_filter_t *f, ap_bucket_brigade *bb)
     }
     else {
         ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, rv, f->r,
-                      "xlate_output_filter() - returning error");
+                      "xlate_filter() - returning error");
     }
 
     return bytes_sent_downstream;
@@ -580,7 +601,7 @@ static void charset_register_hooks(void)
      * by this module.
      */
     ap_hook_insert_filter(xlate_register_filter, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_register_filter("XLATEOUT", xlate_output_filter, AP_FTYPE_CONTENT);
+    ap_register_filter(XLATE_FILTER_NAME, xlate_filter, AP_FTYPE_CONTENT);
 }
 
 module charset_lite_module =
