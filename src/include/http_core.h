@@ -124,8 +124,8 @@ extern module core_module;
 
 /* Per-directory configuration */
 
-typedef char allow_options_t;
-typedef char overrides_t;
+typedef unsigned char allow_options_t;
+typedef unsigned char overrides_t;
 
 typedef struct {
     char *d;

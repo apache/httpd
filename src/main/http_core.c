@@ -506,7 +506,7 @@ const char *set_override (cmd_parms *cmd, core_dir_config *d, const char *l)
 
 const char *set_options (cmd_parms *cmd, core_dir_config *d, const char *l)
 {
-    unsigned char opt;
+    allow_options_t opt;
     int first = 1;
     char action;
 
