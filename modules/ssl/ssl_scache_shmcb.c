@@ -269,10 +269,13 @@ static void shmcb_set_safe_time_ex(unsigned char *, const unsigned char *);
 
 /* This is necessary simply so that the size passed to memset() is not a
  * compile-time constant, preventing the compiler from optimising it. */
+#if 0
+/* XXX: this isn't used, is it needed? */
 static void shmcb_safe_clear(void *ptr, size_t size)
 {
 	memset(ptr, 0, size);
 }
+#endif
 
 /* Underlying functions for session-caching */
 static BOOL shmcb_init_memory(server_rec *, void *, unsigned int);
