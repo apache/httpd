@@ -393,8 +393,9 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
                 len = max;
             }
 /* strncat works here, but apr_cpystrn does not - the last char gets chopped, dunno why */
-/*          apr_cpystrn(ctx->buffer+strlen(ctx->buffer), response, len);*/
-            strncat(ctx->buffer, response, len);
+/*            strncat(ctx->buffer, response, len);*/
+            /* +1 to leave spave for the trailing nil char */
+            apr_cpystrn(ctx->buffer+strlen(ctx->buffer), response, len+1);
             APR_BUCKET_REMOVE(e);
             apr_bucket_destroy(e);
         }
@@ -410,6 +411,14 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
             return APR_SUCCESS;
         }
 
+        {
+            size_t n = strlen(ctx->buffer);
+            if (ctx->buffer[n-1] == '\n')  /* strip trailing '\n' */
+                ctx->buffer[--n] = '\0';
+            if (ctx->buffer[n-1] == '\r')  /* strip trailing '\r' if present */
+                ctx->buffer[--n] = '\0';
+        }
+
         /* a symlink? */
         if (ctx->buffer[0] == 'l' && (filename = strstr(ctx->buffer, " -> ")) != NULL) {
             char *link_ptr = filename;
@@ -420,8 +429,6 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
             if (filename > ctx->buffer)
                 *(filename++) = '\0';
             *(link_ptr++) = '\0';
-            if ((n = strlen(link_ptr)) > 1 && link_ptr[n - 1] == '\n')
-                link_ptr[n - 1] = '\0';
             str = apr_psprintf(p, "%s <a href=\"%s\">%s %s</a>\n",
                                ap_escape_html(p, ctx->buffer),
                                ap_escape_uri(p, filename),
@@ -445,7 +452,6 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
             filename = strrchr(ctx->buffer, ' ');
             *(filename++) = 0;
-            filename[strlen(filename) - 1] = 0;
 
             /* handle filenames with spaces in 'em */
             if (!strcmp(filename, ".") || !strcmp(filename, "..") || firstfile) {
@@ -473,6 +479,7 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
             }
         }
         else {
+            strcat(ctx->buffer, "\n"); /* re-append the newline */
             str = ap_escape_html(p, ctx->buffer);
         }
 
