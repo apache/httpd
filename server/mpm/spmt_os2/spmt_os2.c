@@ -1603,15 +1603,9 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     return 0;
 }
 
-static void spmt_os2_hooks(void)
-{
-    INIT_SIGLIST();
-    /* TODO: set one_process properly */ one_process = 0;
-}
-
 static void spmt_os2_pre_config(pool *pconf, pool *plog, pool *ptemp)
 {
-    one_process = getenv("ONE_PROCESS");
+    one_process = !!getenv("ONE_PROCESS");
 
     is_graceful = 0;
     ap_listen_pre_config();
@@ -1624,6 +1618,13 @@ static void spmt_os2_pre_config(pool *pconf, pool *plog, pool *ptemp)
     ap_extended_status = 0;
 
     ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
+}
+
+static void spmt_os2_hooks(void)
+{
+    ap_hook_pre_config(spmt_os2_pre_config,NULL,NULL,HOOK_MIDDLE);
+    INIT_SIGLIST();
+    /* TODO: set one_process properly */ one_process = 0;
 }
 
 static const char *set_pidfile(cmd_parms *cmd, void *dummy, char *arg) 
@@ -1792,9 +1793,6 @@ LISTEN_COMMANDS
 
 module MODULE_VAR_EXPORT mpm_spmt_os2_module = {
     STANDARD20_MODULE_STUFF,
-    spmt_os2_pre_config,		/* pre_config */
-    NULL,			/* post_config */
-    NULL,			/* open_logs */
     NULL, 			/* child_init */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
@@ -1804,7 +1802,5 @@ module MODULE_VAR_EXPORT mpm_spmt_os2_module = {
     NULL,			/* handlers */
     NULL,			/* check auth */
     NULL,			/* check access */
-    NULL,			/* type_checker */
-    NULL,			/* pre-run fixups */
     spmt_os2_hooks,		/* register_hooks */
 };
