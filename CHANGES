@@ -2,6 +2,8 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_ssl: Build on RHEL 3. (RedHat bug: 82369.)  [Justin Erenkrantz]
+
   *) mod_nw_ssl: Added the directive NWSSLUpgradeable to mod_nw_ssl to 
      allow a non-secure connection to be upgraded to secure connections
      [Brad Nicholes]

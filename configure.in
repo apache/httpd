@@ -246,6 +246,7 @@ dnl ### need to move some of the arguments "up here"
 dnl ## Check for programs
 
 AC_PATH_PROG(RM, rm)
+AC_PATH_PROG(PKGCONFIG, pkg-config)
 AC_PROG_AWK
 AC_PROG_INSTALL
 AC_PROG_LN_S
