@@ -1332,7 +1332,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: end body send");
         }
-        else {
+        else if (!interim_response) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: header only");
 
