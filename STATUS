@@ -160,7 +160,7 @@ Open issues:
            of PRs say they cannot find the httpd :-(
          Pros: <gets filled tomorrow>
          Cons: <gets filled tomorrow>
-         Status: Ralf -0
+         Status: Ralf -0, Ken +0
 
       2. The way other projects release binary tarballs, i.e.
          a package containing the installed (binary) files.
@@ -174,11 +174,13 @@ Open issues:
          - packs the stuff together from ./apache-root only!!
          Already known discussion points:
          - should there be a prefix usr/local/apache in 
-           the tarball or not because some people think
-           its useful while others dislike it a lot.
+           the tarball or not?  Some people think
+           it's useful while others dislike it a lot.
+	 - it doesn't include the source.
+	 - should suexec be prebuilt in a binary tarball?
          Pros: <gets filled tomorrow>
          Cons: <gets filled tomorrow>
-         Status: Ralf +1, Martin +1
+         Status: Ralf +1, Martin +1, Ken -1 (not a veto)
 
     * Redefine APACHE_RELEASE. Add another 'bit' to signify whether
       it's a beta or final release. Maybe 'MMNNFFRBB' which means:
