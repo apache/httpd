@@ -1247,26 +1247,6 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             current = new;
             break;
 
-        case TOKEN_NOT:
-            switch (current->token.type) {
-            case TOKEN_STRING:
-            case TOKEN_RE:
-            case TOKEN_RBRACE:
-            case TOKEN_GROUP:
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "Invalid expression "
-                              "\"%s\" in file %s", expr, r->filename);
-                *was_error = 1;
-                return retval;
-
-            default:
-                break;
-            }
-
-            current->right = new;
-            new->parent = current;
-            current = new;
-            break;
-
         case TOKEN_EQ:
         case TOKEN_NE:
         case TOKEN_GE:
@@ -1329,6 +1309,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             }
             break;
 
+        case TOKEN_NOT:
         case TOKEN_LBRACE:
             switch (current->token.type) {
             case TOKEN_STRING:
