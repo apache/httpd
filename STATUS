@@ -116,7 +116,7 @@ PATCHES TO BACKPORT FROM TRUNK:
        Patch from Eric Covener with tweak by trawick:
        http://httpd.apache.org/~trawick/covener-removecontrolchars-2.0.patch
        (2.1-dev already has these fixes)
-       +1: trawick
+       +1: trawick, jorton
 
     *) util_ldap: Add the directive LDAPConnectionTimeout to control
        the socket timeout value when binding to an LDAP server
