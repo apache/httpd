@@ -11,8 +11,6 @@ Changes with Apache 2.1.0-dev
   *) mod_disk_cache: Correctly store cached content type.  PR 30278.
      [Rüdiger Plüm <r.pluem t-online.de>]
 
-  *) Fix a segfault in the LDAP cache purge. [Jess Holle <jessh ptc.com>]
-
   *) mod_rewrite: Handle per-location rules when r->filename is unset.
      Previously this would segfault or simply not match as expected,
      depending on the platform.  [Jeff Trawick]
@@ -420,6 +418,9 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.53
 
+  *) Fix the re-linking issue when purging elements from the LDAP cache
+     PR 24801 [Jess Holle <jessh ptc.com>]
+      
   *) mod_disk_cache: Fix races in saving responses.  [Justin Erenkrantz]
 
   *) Fix Expires handling in mod_cache.  [Justin Erenkrantz]
