@@ -175,7 +175,7 @@ static authn_status check_dbm_pw(request_rec *r, const char *user,
         return AUTH_USER_NOT_FOUND;
     }
 
-    colon_pw = strchr(dbm_password, ':');
+    colon_pw = ap_strchr(dbm_password, ':');
     if (colon_pw) {
         *colon_pw = '\0';
     }
@@ -213,7 +213,7 @@ static authn_status get_dbm_realm_hash(request_rec *r, const char *user,
         return AUTH_USER_NOT_FOUND;
     }
 
-    colon_hash = strchr(dbm_hash, ':');
+    colon_hash = ap_strchr(dbm_hash, ':');
     if (colon_hash) {
         *colon_hash = '\0';
     }

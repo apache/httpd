@@ -173,7 +173,7 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
     else if (!strcasecmp(where, "all")) {
         a->type = T_ALL;
     }
-    else if ((s = strchr(where, '/'))) {
+    else if ((s = ap_strchr(where, '/'))) {
         *s++ = '\0';
         rv = apr_ipsubnet_create(&a->x.ip, where, s, cmd->pool);
         if(APR_STATUS_IS_EINVAL(rv)) {
