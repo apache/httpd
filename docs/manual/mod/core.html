@@ -1,11 +1,16 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-   <title>Apache Core Features</title>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Core Features</title>
   </head>
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink=
-  "#000080" alink="#FF0000">
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
     <h1 align="CENTER">Apache Core Features</h1>
@@ -74,13 +79,13 @@
 
       <li><a href="#limitrequestfields">LimitRequestFields</a></li>
 
-      <li><a href=
-      "#limitrequestfieldsize">LimitRequestFieldsize</a></li>
+      <li><a
+      href="#limitrequestfieldsize">LimitRequestFieldsize</a></li>
 
       <li><a href="#limitrequestline">LimitRequestLine</a></li>
 
-      <li><a href=
-      "#limitxmlrequestbody">LimitXMLRequestBody</a></li>
+      <li><a
+      href="#limitxmlrequestbody">LimitXMLRequestBody</a></li>
 
       <li><a href="#location">&lt;Location&gt;</a></li>
 
@@ -88,8 +93,8 @@
 
       <li><a href="#loglevel">LogLevel</a></li>
 
-      <li><a href=
-      "#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
+      <li><a
+      href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 
       <li><a href="#namevirtualhost">NameVirtualHost</a></li>
 
@@ -107,8 +112,8 @@
 
       <li><a href="#satisfy">Satisfy</a></li>
 
-      <li><a href=
-      "#scriptinterpretersource">ScriptInterpreterSource</a></li>
+      <li><a
+      href="#scriptinterpretersource">ScriptInterpreterSource</a></li>
 
       <li><a href="#serveradmin">ServerAdmin</a></li>
 
@@ -136,24 +141,25 @@
 
       <li><a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
     </ul>
-    <hr>
+    <hr />
 
-    <h2><a name="accessfilename">AccessFileName directive</a></h2>
+    <h2><a id="accessfilename" name="accessfilename">AccessFileName
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt AccessFileName} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> AccessFileName
-    <em>filename</em> [<em>filename</em>] ...<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>AccessFileName
-    .htaccess</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> AccessFileName can
-    accept more than one filename only in Apache 1.3 and later 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AccessFileName
+    <em>filename</em> [<em>filename</em>] ...<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>AccessFileName
+    .htaccess</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> AccessFileName
+    can accept more than one filename only in Apache 1.3 and later 
 
     <p>When returning a document to the client the server looks for
     the first existing access control file from this list of names
@@ -169,30 +175,30 @@
     disabled with 
 
     <blockquote>
-      <code>&lt;Directory /&gt;<br>
-       AllowOverride None<br>
+      <code>&lt;Directory /&gt;<br />
+       AllowOverride None<br />
        &lt;/Directory&gt;</code>
     </blockquote>
 
-    <p><strong>See Also:</strong> <a href=
-    "#allowoverride">AllowOverride</a></p>
-    <hr>
+    <p><strong>See Also:</strong> <a
+    href="#allowoverride">AllowOverride</a></p>
+    <hr />
 
-    <h2><a name="adddefaultcharset">AddDefaultCharset
-    directive</a></h2>
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> AddDefaultCharset
-    On|Off|<em>charset</em><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> all<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>AddDefaultCharset
-    Off</code><br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> AddDefaultCharset is
-    only available in Apache 1.3.12 and later 
+    <h2><a id="adddefaultcharset"
+    name="adddefaultcharset">AddDefaultCharset directive</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AddDefaultCharset
+    On|Off|<em>charset</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> all<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <code>AddDefaultCharset Off</code><br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a>
+    AddDefaultCharset is only available in Apache 1.3.12 and later 
 
     <p>This directive specifies the name of the character set that
     will be added to any response that does not have any parameter
@@ -204,41 +210,43 @@
     <code>iso-8859-1</code> as required by the directive. You can
     also specify an alternate <em>charset</em> to be used; e.g.
     <code>AddDefaultCharset utf-8</code>.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="addmodule">AddModule directive</a></h2>
+    <h2><a id="addmodule" name="addmodule">AddModule
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt AddModule} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> AddModule <em>module</em>
-    [<em>module</em>] ...<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config <br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> AddModule is only
-    available in Apache 1.2 and later 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AddModule
+    <em>module</em> [<em>module</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config <br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> AddModule is
+    only available in Apache 1.2 and later 
 
     <p>The server can have modules compiled in which are not
     actively in use. This directive can be used to enable the use
     of those modules. The server comes with a pre-loaded list of
-    active modules; this list can be cleared with the <a href=
-    "#clearmodulelist">ClearModuleList</a> directive.</p>
-    <hr>
+    active modules; this list can be cleared with the <a
+    href="#clearmodulelist">ClearModuleList</a> directive.</p>
+    <hr />
 
-    <h2><a name="allowoverride">AllowOverride directive</a></h2>
+    <h2><a id="allowoverride" name="allowoverride">AllowOverride
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt AllowOverride} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> AllowOverride
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AllowOverride
     All|None|<em>directive-type</em> [<em>directive-type</em>]
-    ...<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>AllowOverride
-    All</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> directory<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core 
+    ...<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>AllowOverride
+    All</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core 
 
     <p>When the server finds an .htaccess file (as specified by <a
     href="#accessfilename">AccessFileName</a>) it needs to know
@@ -251,8 +259,8 @@
     filesystem.</p>
 
     <p>When this directive is set to <code>All</code>, then any
-    directive which has the .htaccess <a href=
-    "directive-dict.html#Context">Context</a> is allowed in
+    directive which has the .htaccess <a
+    href="directive-dict.html#Context">Context</a> is allowed in
     .htaccess files.</p>
 
     <p>The <em>directive-type</em> can be one of the following
@@ -263,45 +271,46 @@
 
       <dd>
       <!--%plaintext &lt;?INDEX {\tt AuthConfig} override&gt; -->
-      Allow use of the authorization directives (<a href=
-      "mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a>, <a
+      Allow use of the authorization directives (<a
+      href="mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a>,
+      <a
       href="mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</a>,
       <a href="mod_auth.html#authgroupfile">AuthGroupFile</a>, <a
-      href="#authname">AuthName</a>, <a href=
-      "#authtype">AuthType</a>, <a href=
-      "mod_auth.html#authuserfile">AuthUserFile</a>, <a href=
-      "#require">Require</a>, <em>etc.</em>).</dd>
+      href="#authname">AuthName</a>, <a
+      href="#authtype">AuthType</a>, <a
+      href="mod_auth.html#authuserfile">AuthUserFile</a>, <a
+      href="#require">Require</a>, <em>etc.</em>).</dd>
 
       <dt>FileInfo</dt>
 
       <dd><!--%plaintext &lt;?INDEX {\tt FileInfo} override&gt; -->
       Allow use of the directives controlling document types (<a
-      href="#defaulttype">DefaultType</a>, <a href=
-      "#errordocument">ErrorDocument</a>, <a href=
-      "#forcetype">ForceType</a>, <a href=
-      "mod_negotiation.html#languagepriority">LanguagePriority</a>,
-      <a href="#sethandler">SetHandler</a>, <a href=
-      "#setinputfilter">SetInputFilter</a>, <a href=
-      "#setoutputfilter">SetOutputFilter</a>, and <a href=
-      "mod_mime.html">mod_mime Add* and Remove* directives</a>,
-      <em>etc.</em>).</dd>
+      href="#defaulttype">DefaultType</a>, <a
+      href="#errordocument">ErrorDocument</a>, <a
+      href="#forcetype">ForceType</a>, <a
+      href="mod_negotiation.html#languagepriority">LanguagePriority</a>,
+      <a href="#sethandler">SetHandler</a>, <a
+      href="#setinputfilter">SetInputFilter</a>, <a
+      href="#setoutputfilter">SetOutputFilter</a>, and <a
+      href="mod_mime.html">mod_mime Add* and Remove*
+      directives</a>, <em>etc.</em>).</dd>
 
       <dt>Indexes</dt>
 
       <dd><!--%plaintext &lt;?INDEX {\tt Indexes} override&gt; -->
       Allow use of the directives controlling directory indexing
-      (<a href=
-      "mod_autoindex.html#adddescription">AddDescription</a>, <a
-      href="mod_autoindex.html#addicon">AddIcon</a>, <a href=
-      "mod_autoindex.html#addiconbyencoding">AddIconByEncoding</a>,
+      (<a
+      href="mod_autoindex.html#adddescription">AddDescription</a>,
+      <a href="mod_autoindex.html#addicon">AddIcon</a>, <a
+      href="mod_autoindex.html#addiconbyencoding">AddIconByEncoding</a>,
       <a href="mod_autoindex.html#addiconbytype">AddIconByType</a>,
       <a href="mod_autoindex.html#defaulticon">DefaultIcon</a>, <a
       href="mod_dir.html#directoryindex">DirectoryIndex</a>, <a
       href="mod_autoindex.html#fancyindexing">FancyIndexing</a>, <a
-      href="mod_autoindex.html#headername">HeaderName</a>, <a href=
-      "mod_autoindex.html#indexignore">IndexIgnore</a>, <a href=
-      "mod_autoindex.html#indexoptions">IndexOptions</a>, <a href=
-      "mod_autoindex.html#readmename">ReadmeName</a>,
+      href="mod_autoindex.html#headername">HeaderName</a>, <a
+      href="mod_autoindex.html#indexignore">IndexIgnore</a>, <a
+      href="mod_autoindex.html#indexoptions">IndexOptions</a>, <a
+      href="mod_autoindex.html#readmename">ReadmeName</a>,
       <em>etc.</em>).</dd>
 
       <dt>Limit</dt>
@@ -314,25 +323,27 @@
 
       <dd><!--%plaintext &lt;?INDEX {\tt Options} override&gt; -->
       Allow use of the directives controlling specific directory
-      features (<a href="#options">Options</a> and <a href=
-      "mod_include.html#xbithack">XBitHack</a>).</dd>
+      features (<a href="#options">Options</a> and <a
+      href="mod_include.html#xbithack">XBitHack</a>).</dd>
     </dl>
 
-    <p><strong>See Also:</strong> <a href=
-    "#accessfilename">AccessFileName</a></p>
-    <hr>
+    <p><strong>See Also:</strong> <a
+    href="#accessfilename">AccessFileName</a></p>
+    <hr />
 
-    <h2><a name="authname">AuthName directive</a></h2>
+    <h2><a id="authname" name="authname">AuthName
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt AuthName} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> AuthName
-    <em>auth-domain</em><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> directory, .htaccess<br>
-     <a href="directive-dict.html#Override" rel=
-    "Help"><strong>Override:</strong></a> AuthConfig<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AuthName
+    <em>auth-domain</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core 
 
     <p>This directive sets the name of the authorization realm for
     a directory. This realm is given to the client so that the user
@@ -344,18 +355,21 @@
     as <a href="mod_auth.html#authuserfile">AuthUserFile</a> and <a
     href="mod_auth.html#authgroupfile">AuthGroupFile</a> to
     work.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="authtype">AuthType directive</a></h2>
+    <h2><a id="authtype" name="authtype">AuthType
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt AuthType} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> AuthType Basic|Digest<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> directory, .htaccess<br>
-     <a href="directive-dict.html#Override" rel=
-    "Help"><strong>Override:</strong></a> AuthConfig<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AuthType
+    Basic|Digest<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core 
 
     <p>This directive selects the type of user authentication for a
     directory. Only <code>Basic</code> and <code>Digest</code> are
@@ -366,43 +380,45 @@
     as <a href="mod_auth.html#authuserfile">AuthUserFile</a> and <a
     href="mod_auth.html#authgroupfile">AuthGroupFile</a> to
     work.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="clearmodulelist">ClearModuleList
-    directive</a></h2>
+    <h2><a id="clearmodulelist"
+    name="clearmodulelist">ClearModuleList directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt ClearModuleList} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> ClearModuleList<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> ClearModuleList is
-    only available in Apache 1.2 and later 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ClearModuleList<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> ClearModuleList
+    is only available in Apache 1.2 and later 
 
     <p>The server comes with a built-in list of active modules.
     This directive clears the list. It is assumed that the list
-    will then be re-populated using the <a href=
-    "#addmodule">AddModule</a> directive.</p>
-    <hr>
+    will then be re-populated using the <a
+    href="#addmodule">AddModule</a> directive.</p>
+    <hr />
 
-    <h2><a name="contentdigest">ContentDigest directive</a></h2>
+    <h2><a id="contentdigest" name="contentdigest">ContentDigest
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt ContentDigest} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> ContentDigest on|off<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>ContentDigest
-    off</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host, directory, .htaccess<br>
-     <a href="directive-dict.html#Override" rel=
-    "Help"><strong>Override:</strong></a> Options<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> experimental<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> ContentDigest is
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ContentDigest
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>ContentDigest
+    off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> Options<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> experimental<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> ContentDigest is
     only available in Apache 1.1 and later 
 
     <p>This directive enables the generation of
@@ -430,23 +446,24 @@
     by the core, and not by any module. For example, SSI documents,
     output from CGI scripts, and byte range responses do not have
     this header.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="defaulttype">DefaultType directive</a></h2>
+    <h2><a id="defaulttype" name="defaulttype">DefaultType
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt DefaultType} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> DefaultType
-    <em>MIME-type</em><br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>DefaultType
-    text/html</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host, directory, .htaccess<br>
-     <a href="directive-dict.html#Override" rel=
-    "Help"><strong>Override:</strong></a> FileInfo<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> DefaultType
+    <em>MIME-type</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>DefaultType
+    text/html</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core 
 
     <p>There will be times when the server is asked to provide a
     document whose type cannot be determined by its MIME types
@@ -466,18 +483,19 @@
     directive is only provides the default mime-type. All other
     mime-type definitions, including filename extensions, that
     might identify the media type will override this default.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="directory">&lt;Directory&gt; directive</a></h2>
+    <h2><a id="directory" name="directory">&lt;Directory&gt;
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt Directory} section directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> &lt;Directory
-    <em>directory-path</em>&gt; ... &lt;/Directory&gt; <br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> Core. 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> &lt;Directory
+    <em>directory-path</em>&gt; ... &lt;/Directory&gt; <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Core. 
 
     <p>&lt;Directory&gt; and &lt;/Directory&gt; are used to enclose
     a group of directives which will apply only to the named
@@ -488,8 +506,8 @@
     single character, and `*' matches any sequences of characters.
     As of Apache 1.3, you may also use `[]' character ranges like
     in the shell. Also as of Apache 1.3 none of the wildcards match
-    a `/' character, which more closely mimics the behavior of
-    Unix shells. Example:</p>
+    a `/' character, which more closely mimics the behavior of Unix
+    shells. Example:</p>
 <pre>
    &lt;Directory /usr/local/httpd/htdocs&gt;
    Options Indexes FollowSymLinks
@@ -508,16 +526,17 @@
     <p>If multiple (non-regular expression) directory sections
     match the directory (or its parents) containing a document,
     then the directives are applied in the order of shortest match
-    first, interspersed with the directives from the <a href=
-    "#accessfilename">.htaccess</a> files. For example, with</p>
+    first, interspersed with the directives from the <a
+    href="#accessfilename">.htaccess</a> files. For example,
+    with</p>
 
     <blockquote>
-      <code>&lt;Directory /&gt;<br>
-       AllowOverride None<br>
-       &lt;/Directory&gt;<br>
-      <br>
-       &lt;Directory /home/*&gt;<br>
-       AllowOverride FileInfo<br>
+      <code>&lt;Directory /&gt;<br />
+       AllowOverride None<br />
+       &lt;/Directory&gt;<br />
+      <br />
+       &lt;Directory /home/*&gt;<br />
+       AllowOverride FileInfo<br />
        &lt;/Directory&gt;</code>
     </blockquote>
     for access to the document <code>/home/web/dir/doc.html</code>
@@ -545,9 +564,9 @@
     appeared in the configuration file. For example, with</p>
 
     <blockquote>
-      <code>&lt;Directory ~ abc$&gt;<br>
-       ... directives here ...<br>
-       &lt;/Directory&gt;<br>
+      <code>&lt;Directory ~ abc$&gt;<br />
+       ... directives here ...<br />
+       &lt;/Directory&gt;<br />
       </code>
     </blockquote>
     Suppose that the filename being accessed is
@@ -576,33 +595,34 @@
 </pre>
 
     <p><strong>and then override this for directories you
-    <em>want</em> accessible. See the <a href=
-    "../misc/security_tips.html">Security Tips</a> page for more
-    details.</strong></p>
+    <em>want</em> accessible. See the <a
+    href="../misc/security_tips.html">Security Tips</a> page for
+    more details.</strong></p>
     The directory sections typically occur in the access.conf file,
     but they may appear in any configuration file.
     &lt;Directory&gt; directives cannot nest, and cannot appear in
-    a <a href="#limit">&lt;Limit&gt;</a> or <a href=
-    "#limitexcept">&lt;LimitExcept&gt;</a> section. 
+    a <a href="#limit">&lt;Limit&gt;</a> or <a
+    href="#limitexcept">&lt;LimitExcept&gt;</a> section. 
 
     <p><strong>See also</strong>: <a href="../sections.html">How
     Directory, Location and Files sections work</a> for an
     explanation of how these different sections are combined when a
     request is received</p>
-    <hr>
+    <hr />
 
-    <h2><a name="directorymatch">&lt;DirectoryMatch&gt;</a></h2>
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> &lt;DirectoryMatch
-    <em>regex</em>&gt; ... &lt;/DirectoryMatch&gt; <br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> Core.<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> Available in Apache
-    1.3 and later 
+    <h2><a id="directorymatch"
+    name="directorymatch">&lt;DirectoryMatch&gt;</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> &lt;DirectoryMatch
+    <em>regex</em>&gt; ... &lt;/DirectoryMatch&gt; <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Core.<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 1.3 and later 
 
     <p>&lt;DirectoryMatch&gt; and &lt;/DirectoryMatch&gt; are used
     to enclose a group of directives which will apply only to the
@@ -616,29 +636,30 @@
     <p>would match directories in /www/ that consisted of three
     numbers.</p>
 
-    <p><strong>See Also:</strong> <a href=
-    "#directory">&lt;Directory&gt;</a> for a description of how
-    regular expressions are mixed in with normal
-    &lt;Directory&gt;s.<br>
+    <p><strong>See Also:</strong> <a
+    href="#directory">&lt;Directory&gt;</a> for a description of
+    how regular expressions are mixed in with normal
+    &lt;Directory&gt;s.<br />
      <strong>See also</strong>: <a href="../sections.html">How
     Directory, Location and Files sections work</a> for an
     explanation of how these different sections are combined when a
     request is received</p>
-    <hr>
+    <hr />
 
-    <h2><a name="documentroot">DocumentRoot directive</a></h2>
+    <h2><a id="documentroot" name="documentroot">DocumentRoot
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt DocumentRoot} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> DocumentRoot
-    <em>directory-path</em><br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>DocumentRoot
-    /usr/local/apache/htdocs</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> DocumentRoot
+    <em>directory-path</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>DocumentRoot
+    /usr/local/apache/htdocs</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core 
 
     <p>This directive sets the directory from which httpd will
     serve files. Unless matched by a directive like Alias, the
@@ -655,24 +676,25 @@
     <p>There appears to be a bug in mod_dir which causes problems
     when the DocumentRoot has a trailing slash (<em>i.e.</em>,
     "DocumentRoot /usr/web/") so please avoid that.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="errordocument">ErrorDocument directive</a></h2>
+    <h2><a id="errordocument" name="errordocument">ErrorDocument
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt ErrorDocument} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> ErrorDocument
-    <em>error-code document</em><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host, directory, .htaccess<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Override" rel=
-    "Help"><strong>Override:</strong></a> FileInfo<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> The directory and
-    .htaccess contexts are only available in Apache 1.1 and later.
-    The quoting syntax prior to Apache 2.0 was different. 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ErrorDocument
+    <em>error-code document</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> The directory
+    and .htaccess contexts are only available in Apache 1.1 and
+    later. The quoting syntax prior to Apache 2.0 was different. 
 
     <p>In the event of a problem or error, Apache can be configured
     to do one of four things,</p>
@@ -701,9 +723,9 @@
 
     <blockquote>
       <code>ErrorDocument 500
-      http://foo.example.com/cgi-bin/tester<br>
-       ErrorDocument 404 /cgi-bin/bad_urls.pl<br>
-       ErrorDocument 401 /subscription_info.html<br>
+      http://foo.example.com/cgi-bin/tester<br />
+       ErrorDocument 404 /cgi-bin/bad_urls.pl<br />
+       ErrorDocument 401 /subscription_info.html<br />
        ErrorDocument 403 "Sorry can't allow you access
       today"</code>
     </blockquote>
@@ -729,32 +751,33 @@
 
     <p>See Also: <a href="../custom-error.html">documentation of
     customizable responses.</a></p>
-    <hr>
+    <hr />
 
-    <h2><a name="errorlog">ErrorLog directive</a></h2>
+    <h2><a id="errorlog" name="errorlog">ErrorLog
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt ErrorLog} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> ErrorLog
-    <em>file-path</em>|syslog[:<em>facility</em>] <br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>ErrorLog
-    logs/error_log</code> (Unix)<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>ErrorLog
-    logs/error.log</code> (Windows and OS/2)<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ErrorLog
+    <em>file-path</em>|syslog[:<em>facility</em>] <br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>ErrorLog
+    logs/error_log</code> (Unix)<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>ErrorLog
+    logs/error.log</code> (Windows and OS/2)<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core 
 
     <p>The error log directive sets the name of the file to which
     the server will log any errors it encounters. If the
     <em>file-path</em> does not begin with a slash (/) then it is
-    assumed to be relative to the <a href=
-    "#serverroot">ServerRoot</a>. If the <em>file-path</em> begins
-    with a pipe (|) then it is assumed to be a command to spawn to
-    handle the error log.</p>
+    assumed to be relative to the <a
+    href="#serverroot">ServerRoot</a>. If the <em>file-path</em>
+    begins with a pipe (|) then it is assumed to be a command to
+    spawn to handle the error log.</p>
 
     <p><strong>Apache 1.3 and above:</strong> Using
     <code>syslog</code> instead of a filename enables logging via
@@ -764,33 +787,33 @@
     <em>facility</em> can be one of the names usually documented in
     syslog(1).</p>
 
-    <p>SECURITY: See the <a href=
-    "../misc/security_tips.html#serverroot">security tips</a>
+    <p>SECURITY: See the <a
+    href="../misc/security_tips.html#serverroot">security tips</a>
     document for details on why your security could be compromised
     if the directory where logfiles are stored is writable by
     anyone other than the user that starts the server.</p>
 
     <p><strong>See also:</strong> <a href="#loglevel">LogLevel</a>
     and <a href="../logs.html">Apache Log Files</a></p>
-    <hr>
+    <hr />
 
-    <h2><a name="files">&lt;Files&gt; directive</a></h2>
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> &lt;Files
-    <em>filename</em>&gt; ... &lt;/Files&gt;<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host, .htaccess<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> only available in
-    Apache 1.2 and above. 
+    <h2><a id="files" name="files">&lt;Files&gt; directive</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> &lt;Files
+    <em>filename</em>&gt; ... &lt;/Files&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> only available
+    in Apache 1.2 and above. 
 
     <p>The &lt;Files&gt; directive provides for access control by
-    filename. It is comparable to the <a href=
-    "#directory">&lt;Directory&gt;</a> directive and <a href=
-    "#location">&lt;Location&gt;</a> directives. It should be
+    filename. It is comparable to the <a
+    href="#directory">&lt;Directory&gt;</a> directive and <a
+    href="#location">&lt;Location&gt;</a> directives. It should be
     matched with a &lt;/Files&gt; directive. The directives given
     within this section will be applied to any object with a
     basename (last component of filename) matching the specified
@@ -813,9 +836,9 @@
     1.3 and later, <a href="#filesmatch">&lt;FilesMatch&gt;</a> is
     preferred, however. 
 
-    <p>Note that unlike <a href=
-    "#directory"><code>&lt;Directory&gt;</code></a> and <a href=
-    "#location"><code>&lt;Location&gt;</code></a> sections,
+    <p>Note that unlike <a
+    href="#directory"><code>&lt;Directory&gt;</code></a> and <a
+    href="#location"><code>&lt;Location&gt;</code></a> sections,
     <code>&lt;Files&gt;</code> sections can be used inside
     .htaccess files. This allows users to control access to their
     own files, at a file-by-file level.</p>
@@ -824,20 +847,21 @@
     Directory, Location and Files sections work</a> for an
     explanation of how these different sections are combined when a
     request is received</p>
-    <hr>
+    <hr />
 
-    <h2><a name="filesmatch">&lt;FilesMatch&gt;</a></h2>
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> &lt;FilesMatch
-    <em>regex</em>&gt; ... &lt;/FilesMatch&gt;<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host, .htaccess<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> only available in
-    Apache 1.3 and above. 
+    <h2><a id="filesmatch"
+    name="filesmatch">&lt;FilesMatch&gt;</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> &lt;FilesMatch
+    <em>regex</em>&gt; ... &lt;/FilesMatch&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> only available
+    in Apache 1.3 and above. 
 
     <p>The &lt;FilesMatch&gt; directive provides for access control
     by filename, just as the <a href="#files">&lt;Files&gt;</a>
@@ -852,20 +876,22 @@
     Directory, Location and Files sections work</a> for an
     explanation of how these different sections are combined when a
     request is received 
-    <hr>
+    <hr />
 
-    <h2><a name="forcetype">ForceType</a> directive</h2>
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> ForceType
-    <em>mime-type</em><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> directory, .htaccess<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> Base<br>
-     <a href="directive-dict.html#Module" rel=
-    "Help"><strong>Module:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> ForceType was
+    <h2><a id="forcetype" name="forcetype">ForceType</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ForceType
+    <em>mime-type</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> ForceType was
     introduced in mod_mime with Apache 1.1, and moved to the core
     in Apache 2.0. 
 
@@ -884,27 +910,28 @@
     <p>Note that unlike <a href="#defaulttype">DefaultType</a>,
     this directive overrides all mime-type associations, including
     filename extensions, that might identify the media type.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="hostnamelookups">HostNameLookups
-    directive</a></h2>
+    <h2><a id="hostnamelookups"
+    name="hostnamelookups">HostNameLookups directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt HostNameLookups} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> HostNameLookups
-    on|off|double<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>HostNameLookups
-    off</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host, directory<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> <code>double</code>
-    available only in Apache 1.3 and above.<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> Default was
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> HostNameLookups
+    on|off|double<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>HostNameLookups
+    off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a>
+    <code>double</code> available only in Apache 1.3 and
+    above.<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Default was
     <code>on</code> prior to Apache 1.3. 
 
     <p>This directive enables DNS lookups so that host names can be
@@ -916,10 +943,10 @@
     address. (In "tcpwrappers" terminology this is called
     <code>PARANOID</code>.)</p>
 
-    <p>Regardless of the setting, when <a href=
-    "mod_access.html">mod_access</a> is used for controlling access
-    by hostname, a double reverse lookup will be performed. This is
-    necessary for security. Note that the result of this
+    <p>Regardless of the setting, when <a
+    href="mod_access.html">mod_access</a> is used for controlling
+    access by hostname, a double reverse lookup will be performed.
+    This is necessary for security. Note that the result of this
     double-reverse isn't generally available unless you set
     <code>HostnameLookups double</code>. For example, if only
     <code>HostnameLookups on</code> and a request is made to an
@@ -936,24 +963,26 @@
     don't have to suffer the extra latency that a lookup entails.
     Heavily loaded sites should leave this directive
     <code>off</code>, since DNS lookups can take considerable
-    amounts of time. The utility <a href=
-    "../programs/logresolve.html">logresolve</a>, provided in the
-    <em>/support</em> directory, can be used to look up host names
-    from logged IP addresses offline.</p>
-    <hr>
+    amounts of time. The utility <a
+    href="../programs/logresolve.html">logresolve</a>, provided in
+    the <em>/support</em> directory, can be used to look up host
+    names from logged IP addresses offline.</p>
+    <hr />
 
-    <h2><a name="identitycheck">IdentityCheck directive</a></h2>
+    <h2><a id="identitycheck" name="identitycheck">IdentityCheck
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt IdentityCheck} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> IdentityCheck on|off<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>IdentityCheck
-    off</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host, directory<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> IdentityCheck
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>IdentityCheck
+    off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core 
 
     <p>This directive enables RFC1413-compliant logging of the
     remote user name for each connection, where the client machine
@@ -970,22 +999,23 @@
     possibly fail and add 30 seconds of latency to each hit. So in
     general this is not very useful on public servers accessible
     from the Internet.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="ifdefine">&lt;IfDefine&gt; directive</a></h2>
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> &lt;IfDefine
+    <h2><a id="ifdefine" name="ifdefine">&lt;IfDefine&gt;
+    directive</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> &lt;IfDefine
     [!]<em>parameter-name</em>&gt; <em>...</em>
-    &lt;/IfDefine&gt;<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> None<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> all<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> Core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> &lt;IfDefine&gt; is
-    only available in 1.3.1 and later. 
+    &lt;/IfDefine&gt;<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> None<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> all<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> &lt;IfDefine&gt;
+    is only available in 1.3.1 and later. 
 
     <p>The &lt;IfDefine <em>test</em>&gt;...&lt;/IfDefine&gt;
     section is used to mark directives that are conditional. The
@@ -1024,20 +1054,22 @@
   LoadModule proxy_module   modules/libproxy.so
   &lt;/IfDefine&gt;
 </pre>
-    <hr>
+    <hr />
 
-    <h2><a name="ifmodule">&lt;IfModule&gt; directive</a></h2>
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> &lt;IfModule
-    [!]<em>module-name</em>&gt; <em>...</em> &lt;/IfModule&gt;<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> None<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> all<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> Core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> IfModule is only
+    <h2><a id="ifmodule" name="ifmodule">&lt;IfModule&gt;
+    directive</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> &lt;IfModule
+    [!]<em>module-name</em>&gt; <em>...</em>
+    &lt;/IfModule&gt;<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> None<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> all<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> IfModule is only
     available in 1.2 and later. 
 
     <p>The &lt;IfModule <em>test</em>&gt;...&lt;/IfModule&gt;
@@ -1067,17 +1099,17 @@
 
     <p>&lt;IfModule&gt; sections are nest-able, which can be used
     to implement simple multiple-module tests.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="include">Include directive</a></h2>
+    <h2><a id="include" name="include">Include directive</a></h2>
     <strong>Syntax:</strong> Include
-    <em>file-path</em>|<em>directory-path</em><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> Core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> Include is only
+    <em>file-path</em>|<em>directory-path</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Include is only
     available in Apache 1.3 and later. 
 
     <p>This directive allows inclusion of other configuration files
@@ -1086,18 +1118,19 @@
     <p>If <code>Include</code> points to a directory, rather than a
     file, Apache will read all files in that directory, and any
     subdirectory, and parse those as configuration files.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="keepalive">KeepAlive directive</a></h2>
-    <strong>Syntax:</strong> KeepAlive on/off<br>
-     <strong>Default:</strong> <code>KeepAlive On</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> Core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> KeepAlive is only
-    available in Apache 1.1 and later. 
+    <h2><a id="keepalive" name="keepalive">KeepAlive
+    directive</a></h2>
+    <strong>Syntax:</strong> KeepAlive on/off<br />
+     <strong>Default:</strong> <code>KeepAlive On</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> KeepAlive is
+    only available in Apache 1.1 and later. 
 
     <p>The Keep-Alive extension to HTTP/1.0 and the persistent
     connection feature of HTTP/1.1 provide long-lived HTTP sessions
@@ -1119,46 +1152,47 @@
     encoding will be used in order to send content of unknown
     length over persistent connections.</p>
 
-    <p>See also <a href=
-    "#maxkeepaliverequests">MaxKeepAliveRequests</a>.</p>
-    <hr>
+    <p>See also <a
+    href="#maxkeepaliverequests">MaxKeepAliveRequests</a>.</p>
+    <hr />
 
-    <h2><a name="keepalivetimeout">KeepAliveTimeout
-    directive</a></h2>
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> KeepAliveTimeout
-    <em>seconds</em><br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>KeepAliveTimeout
-    15</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> Core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> KeepAliveTimeout is
-    only available in Apache 1.1 and later. 
+    <h2><a id="keepalivetimeout"
+    name="keepalivetimeout">KeepAliveTimeout directive</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> KeepAliveTimeout
+    <em>seconds</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>KeepAliveTimeout
+    15</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> KeepAliveTimeout
+    is only available in Apache 1.1 and later. 
 
     <p>The number of seconds Apache will wait for a subsequent
     request before closing the connection. Once a request has been
-    received, the timeout value specified by the <a href=
-    "#timeout"><code>Timeout</code></a> directive applies.</p>
+    received, the timeout value specified by the <a
+    href="#timeout"><code>Timeout</code></a> directive applies.</p>
 
     <p>Setting <code>KeepAliveTimeout</code> to a high value may
     cause performance problems in heavily loaded servers. The
     higher the timeout, the more server processes will be kept
     occupied waiting on connections with idle clients.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="limit">&lt;Limit&gt; directive</a></h2>
+    <h2><a id="limit" name="limit">&lt;Limit&gt; directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt Limit} section directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> &lt;Limit <em>method</em>
-    [<em>method</em>] ... &gt; ... &lt;/Limit&gt;<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> any<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> &lt;Limit
+    <em>method</em> [<em>method</em>] ... &gt; ...
+    &lt;/Limit&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> any<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core 
 
     <p>Access controls are normally effective for
     <strong>all</strong> access methods, and this is the usual
@@ -1175,8 +1209,8 @@
     other methods unprotected:</p>
 
     <blockquote>
-      <code>&lt;Limit POST PUT DELETE&gt;<br>
-       Require valid-user<br>
+      <code>&lt;Limit POST PUT DELETE&gt;<br />
+       Require valid-user<br />
        &lt;/Limit&gt;</code>
     </blockquote>
     The method names listed can be one or more of: GET, POST, PUT,
@@ -1184,50 +1218,50 @@
     MKCOL, COPY, MOVE, LOCK, and UNLOCK. <strong>The method name is
     case-sensitive.</strong> If GET is used it will also restrict
     HEAD requests. 
-    <hr>
+    <hr />
 
-    <h2><a name="limitexcept">&lt;LimitExcept&gt;
+    <h2><a id="limitexcept" name="limitexcept">&lt;LimitExcept&gt;
     directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt LimitExcept} section directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> &lt;LimitExcept
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> &lt;LimitExcept
     <em>method</em> [<em>method</em>] ... &gt; ...
-    &lt;/LimitExcept&gt;<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> any<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> Available in Apache
-    1.3.5 and later 
+    &lt;/LimitExcept&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> any<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 1.3.5 and later 
 
     <p>&lt;LimitExcept&gt; and &lt;/LimitExcept&gt; are used to
     enclose a group of access control directives which will then
     apply to any HTTP access method <strong>not</strong> listed in
-    the arguments; i.e., it is the opposite of a <a href=
-    "#limit">&lt;Limit&gt;</a> section and can be used to control
-    both standard and nonstandard/unrecognized methods. See the
-    documentation for <a href="#limit">&lt;Limit&gt;</a> for more
-    details.</p>
-    <hr>
+    the arguments; i.e., it is the opposite of a <a
+    href="#limit">&lt;Limit&gt;</a> section and can be used to
+    control both standard and nonstandard/unrecognized methods. See
+    the documentation for <a href="#limit">&lt;Limit&gt;</a> for
+    more details.</p>
+    <hr />
 
-    <h2><a name="limitrequestbody">LimitRequestBody
-    directive</a></h2>
+    <h2><a id="limitrequestbody"
+    name="limitrequestbody">LimitRequestBody directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt LimitRequestBody} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> LimitRequestBody
-    <em>bytes</em><br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>LimitRequestBody
-    0</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host, directory, .htaccess<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> LimitRequestBody is
-    only available in Apache 1.3.2 and later. 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> LimitRequestBody
+    <em>bytes</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>LimitRequestBody
+    0</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> LimitRequestBody
+    is only available in Apache 1.3.2 and later. 
 
     <p>This directive specifies the number of <em>bytes</em> from 0
     (meaning unlimited) to 2147483647 (2GB) that are allowed in a
@@ -1252,24 +1286,25 @@
     control over abnormal client request behavior, which may be
     useful for avoiding some forms of denial-of-service
     attacks.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="limitrequestfields">LimitRequestFields
-    directive</a></h2>
+    <h2><a id="limitrequestfields"
+    name="limitrequestfields">LimitRequestFields directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt LimitRequestFields} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> LimitRequestFields
-    <em>number</em><br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>LimitRequestFields
-    100</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> LimitRequestFields
-    is only available in Apache 1.3.2 and later. 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> LimitRequestFields
+    <em>number</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <code>LimitRequestFields 100</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a>
+    LimitRequestFields is only available in Apache 1.3.2 and later.
+    
 
     <p><em>Number</em> is an integer from 0 (meaning unlimited) to
     32767. The default value is defined by the compile-time
@@ -1293,23 +1328,24 @@
     The value should be increased if normal clients see an error
     response from the server that indicates too many fields were
     sent in the request.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="limitrequestfieldsize">LimitRequestFieldsize
+    <h2><a id="limitrequestfieldsize"
+    name="limitrequestfieldsize">LimitRequestFieldsize
     directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt LimitRequestFieldsize} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> LimitRequestFieldsize
-    <em>bytes</em><br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a>
-    <code>LimitRequestFieldsize 8190</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> LimitRequestFieldsize
+    <em>bytes</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <code>LimitRequestFieldsize 8190</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a>
     LimitRequestFieldsize is only available in Apache 1.3.2 and
     later. 
 
@@ -1334,24 +1370,24 @@
     useful for avoiding some forms of denial-of-service attacks.
     Under normal conditions, the value should not be changed from
     the default.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="limitrequestline">LimitRequestLine
-    directive</a></h2>
+    <h2><a id="limitrequestline"
+    name="limitrequestline">LimitRequestLine directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt LimitRequestLine} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> LimitRequestLine
-    <em>bytes</em><br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>LimitRequestLine
-    8190</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> LimitRequestLine is
-    only available in Apache 1.3.2 and later. 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> LimitRequestLine
+    <em>bytes</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>LimitRequestLine
+    8190</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> LimitRequestLine
+    is only available in Apache 1.3.2 and later. 
 
     <p>This directive sets the number of <em>bytes</em> from 0 to
     the value of the compile-time constant
@@ -1374,42 +1410,44 @@
     useful for avoiding some forms of denial-of-service attacks.
     Under normal conditions, the value should not be changed from
     the default.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="limitxmlrequestbody">LimitXMLRequestBody
+    <h2><a id="limitxmlrequestbody"
+    name="limitxmlrequestbody">LimitXMLRequestBody
     directive</a></h2>
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> LimitXMLRequestBody
-    <em>number</em><br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>LimitXMLRequestBody
-    1000000</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> LimitXMLRequestBody
+    <em>number</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <code>LimitXMLRequestBody 1000000</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
      
 
     <p>Limit (in bytes) on maximum size of an XML-based request
     body.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="location">&lt;Location&gt; directive</a></h2>
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> &lt;Location
-    <em>URL-path</em>|<em>URL</em>&gt; ... &lt;/Location&gt;<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> Location is only
+    <h2><a id="location" name="location">&lt;Location&gt;
+    directive</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> &lt;Location
+    <em>URL-path</em>|<em>URL</em>&gt; ... &lt;/Location&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Location is only
     available in Apache 1.1 and later. 
 
     <p>The &lt;Location&gt; directive provides for access control
-    by URL. It is similar to the <a href=
-    "#directory">&lt;Directory&gt;</a> directive, and starts a
+    by URL. It is similar to the <a
+    href="#directory">&lt;Directory&gt;</a> directive, and starts a
     subsection which is terminated with a &lt;/Location&gt;
     directive. <code>&lt;Location&gt;</code> sections are processed
     in the order they appear in the configuration file, after the
@@ -1445,10 +1483,10 @@
     <code>&lt;Location&gt;</code>.</p>
 
     <p>The <code>Location</code> functionality is especially useful
-    when combined with the <code><a href=
-    "mod_mime.html#sethandler">SetHandler</a></code> directive. For
-    example, to enable status requests, but allow them only from
-    browsers at foo.com, you might use:</p>
+    when combined with the <code><a
+    href="mod_mime.html#sethandler">SetHandler</a></code>
+    directive. For example, to enable status requests, but allow
+    them only from browsers at foo.com, you might use:</p>
 <pre>
     &lt;Location /status&gt;
     SetHandler server-status
@@ -1483,26 +1521,27 @@
     Directory, Location and Files sections work</a> for an
     explanation of how these different sections are combined when a
     request is received</p>
-    <hr>
+    <hr />
 
-    <h2><a name="locationmatch">&lt;LocationMatch&gt;</a></h2>
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> &lt;LocationMatch
-    <em>regex</em>&gt; ... &lt;/LocationMatch&gt;<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> LocationMatch is
+    <h2><a id="locationmatch"
+    name="locationmatch">&lt;LocationMatch&gt;</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> &lt;LocationMatch
+    <em>regex</em>&gt; ... &lt;/LocationMatch&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> LocationMatch is
     only available in Apache 1.3 and later. 
 
     <p>The &lt;LocationMatch&gt; directive provides for access
-    control by URL, in an identical manner to <a href=
-    "#location">&lt;Location&gt;</a>. However, it takes a regular
-    expression as an argument instead of a simple string. For
-    example:</p>
+    control by URL, in an identical manner to <a
+    href="#location">&lt;Location&gt;</a>. However, it takes a
+    regular expression as an argument instead of a simple string.
+    For example:</p>
 <pre>
    &lt;LocationMatch "/(extra|special)/data"&gt;
 </pre>
@@ -1513,21 +1552,23 @@
     Directory, Location and Files sections work</a> for an
     explanation of how these different sections are combined when a
     request is received 
-    <hr>
+    <hr />
 
-    <h2><a name="loglevel">LogLevel directive</a></h2>
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> LogLevel <em>level</em><br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>LogLevel
-    warn</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> LogLevel is only
+    <h2><a id="loglevel" name="loglevel">LogLevel
+    directive</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> LogLevel
+    <em>level</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>LogLevel
+    warn</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> LogLevel is only
     available in 1.3 or later. 
 
     <p>LogLevel adjusts the verbosity of the messages recorded in
@@ -1665,45 +1706,46 @@
 
     <p>Using a level of at least <code>crit</code> is
     recommended.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="maxkeepaliverequests">MaxKeepAliveRequests
+    <h2><a id="maxkeepaliverequests"
+    name="maxkeepaliverequests">MaxKeepAliveRequests
     directive</a></h2>
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> MaxKeepAliveRequests
-    <em>number</em><br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>MaxKeepAliveRequests
-    100</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> Only available in
-    Apache 1.2 and later. 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> MaxKeepAliveRequests
+    <em>number</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <code>MaxKeepAliveRequests 100</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Only available
+    in Apache 1.2 and later. 
 
     <p>The MaxKeepAliveRequests directive limits the number of
-    requests allowed per connection when <a href=
-    "#keepalive">KeepAlive</a> is on. If it is set to
+    requests allowed per connection when <a
+    href="#keepalive">KeepAlive</a> is on. If it is set to
     "<code>0</code>", unlimited requests will be allowed. We
     recommend that this setting be kept to a high value for maximum
     server performance.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="namevirtualhost">NameVirtualHost
-    directive</a></h2>
+    <h2><a id="namevirtualhost"
+    name="namevirtualhost">NameVirtualHost directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt NameVirtualHost} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> NameVirtualHost
-    <em>addr</em>[:<em>port</em>]<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> NameVirtualHost is
-    only available in Apache 1.3 and later 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> NameVirtualHost
+    <em>addr</em>[:<em>port</em>]<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> NameVirtualHost
+    is only available in Apache 1.3 and later 
 
     <p>The NameVirtualHost directive is a required directive if you
     want to configure <a href="../vhosts/">name-based virtual
@@ -1740,20 +1782,20 @@
     </blockquote>
     <strong>See also:</strong> <a href="../vhosts/">Apache Virtual
     Host documentation</a> 
-    <hr>
+    <hr />
 
-    <h2><a name="options">Options directive</a></h2>
+    <h2><a id="options" name="options">Options directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt Options} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> Options
-    [+|-]<em>option</em> [[+|-]<em>option</em>] ...<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host, directory, .htaccess<br>
-     <a href="directive-dict.html#Override" rel=
-    "Help"><strong>Override:</strong></a> Options<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Options
+    [+|-]<em>option</em> [[+|-]<em>option</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> Options<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core 
 
     <p>The Options directive controls which server features are
     available in a particular directory.</p>
@@ -1777,10 +1819,11 @@
 
       <dd>
       <!--%plaintext &lt;?INDEX {\tt FollowSymLinks} option&gt; -->
-      The server will follow symbolic links in this directory.<br>
+      The server will follow symbolic links in this
+      directory.<br />
        <strong>Note</strong>: even though the server follows the
       symlink it does <em>not</em> change the pathname used to
-      match against <code>&lt;Directory&gt;</code> sections.<br>
+      match against <code>&lt;Directory&gt;</code> sections.<br />
        <strong>Note</strong>: this option gets ignored if set
       inside a &lt;Location&gt; section.</dd>
 
@@ -1817,7 +1860,7 @@
       <!--%plaintext &lt;?INDEX {\tt SymLinksIfOwnerMatch} option&gt; -->
       The server will only follow symbolic links for which the
       target file or directory is owned by the same user id as the
-      link.<br>
+      link.<br />
        <strong>Note</strong>: this option gets ignored if set
       inside a &lt;Location&gt; section.</dd>
     </dl>
@@ -1833,11 +1876,11 @@
     <p>For example, without any + and - symbols:</p>
 
     <blockquote>
-      <code>&lt;Directory /web/docs&gt;<br>
-       Options Indexes FollowSymLinks<br>
-       &lt;/Directory&gt;<br>
-       &lt;Directory /web/docs/spec&gt;<br>
-       Options Includes<br>
+      <code>&lt;Directory /web/docs&gt;<br />
+       Options Indexes FollowSymLinks<br />
+       &lt;/Directory&gt;<br />
+       &lt;Directory /web/docs/spec&gt;<br />
+       Options Includes<br />
        &lt;/Directory&gt;</code>
     </blockquote>
     then only <code>Includes</code> will be set for the
@@ -1845,11 +1888,11 @@
     <code>Options</code> directive uses the + and - symbols: 
 
     <blockquote>
-      <code>&lt;Directory /web/docs&gt;<br>
-       Options Indexes FollowSymLinks<br>
-       &lt;/Directory&gt;<br>
-       &lt;Directory /web/docs/spec&gt;<br>
-       Options +Includes -Indexes<br>
+      <code>&lt;Directory /web/docs&gt;<br />
+       Options Indexes FollowSymLinks<br />
+       &lt;/Directory&gt;<br />
+       &lt;Directory /web/docs/spec&gt;<br />
+       Options +Includes -Indexes<br />
        &lt;/Directory&gt;</code>
     </blockquote>
     then the options <code>FollowSymLinks</code> and
@@ -1862,18 +1905,20 @@
 
     <p>The default in the absence of any other settings is
     <code>All</code>.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="port">Port directive</a></h2>
+    <h2><a id="port" name="port">Port directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt Port} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> Port <em>number</em><br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>Port 80</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Port
+    <em>number</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>Port
+    80</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core 
 
     <p><em>Number</em> is a number from 0 to 65535; some port
     numbers (especially below 1024) are reserved for particular
@@ -1886,11 +1931,11 @@
     confusing in the context of Apache).</p>
 
     <ul>
-      <li>In the absence of any <a href=
-      "mpm_common.html#listen">Listen</a> directives specifying a
-      port number, a Port directive given in the "main server"
-      (<em>i.e.</em>, outside any <a href=
-      "#virtualhost">&lt;VirtualHost&gt;</a> section) sets the
+      <li>In the absence of any <a
+      href="mpm_common.html#listen">Listen</a> directives
+      specifying a port number, a Port directive given in the "main
+      server" (<em>i.e.</em>, outside any <a
+      href="#virtualhost">&lt;VirtualHost&gt;</a> section) sets the
       network port on which the server listens. If there are any
       Listen directives specifying <code>:number</code> then Port
       has no effect on what address the server listens at.</li>
@@ -1900,14 +1945,14 @@
       <a href="mod_include.html">SSI</a>), and is used when the
       server must generate a URL that refers to itself (for example
       when creating an external redirect to itself). This behaviour
-      is modified by <a href=
-      "#usecanonicalname">UseCanonicalName</a>.</li>
+      is modified by <a
+      href="#usecanonicalname">UseCanonicalName</a>.</li>
     </ul>
-    The primary behavior of Port should be considered to be
-    similar to that of the <a href="#servername">ServerName</a>
-    directive. The ServerName and Port together specify what you
-    consider to be the <em>canonical</em> address of the server.
-    (See also <a href="#usecanonicalname">UseCanonicalName</a>.) 
+    The primary behavior of Port should be considered to be similar
+    to that of the <a href="#servername">ServerName</a> directive.
+    The ServerName and Port together specify what you consider to
+    be the <em>canonical</em> address of the server. (See also <a
+    href="#usecanonicalname">UseCanonicalName</a>.) 
 
     <p>Port 80 is one of Unix's special ports. All ports numbered
     below 1024 are reserved for system use, <em>i.e.</em>, regular
@@ -1915,8 +1960,8 @@
     use higher port numbers. To use port 80, you must start the
     server from the root account. After binding to the port and
     before accepting requests, Apache will change to a low
-    privileged user as set by the <a href=
-    "mpm_common.html#user">User directive</a>.</p>
+    privileged user as set by the <a
+    href="mpm_common.html#user">User directive</a>.</p>
 
     <p>If you cannot use port 80, choose any other unused port.
     Non-root users will have to choose a port number higher than
@@ -1926,19 +1971,20 @@
     set <a href="mpm_common.html#user">User</a> to root. If you run
     the server as root whilst handling connections, your site may
     be open to a major security attack.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="require">Require directive</a></h2>
+    <h2><a id="require" name="require">Require directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt Require} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> Require
-    <em>entity-name</em> [<em>entity-name</em>] ...<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> directory, .htaccess<br>
-     <a href="directive-dict.html#Override" rel=
-    "Help"><strong>Override:</strong></a> AuthConfig<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Require
+    <em>entity-name</em> [<em>entity-name</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core 
 
     <p>This directive selects which authenticated users can access
     a directory. The allowed syntaxes are:</p>
@@ -1965,50 +2011,50 @@
       </li>
     </ul>
 
-    <p>Require must be accompanied by <a href=
-    "#authname">AuthName</a> and <a href="#authtype">AuthType</a>
-    directives, and directives such as <a href=
-    "mod_auth.html#authuserfile">AuthUserFile</a> and <a href=
-    "mod_auth.html#authgroupfile">AuthGroupFile</a> (to define
+    <p>Require must be accompanied by <a
+    href="#authname">AuthName</a> and <a
+    href="#authtype">AuthType</a> directives, and directives such
+    as <a href="mod_auth.html#authuserfile">AuthUserFile</a> and <a
+    href="mod_auth.html#authgroupfile">AuthGroupFile</a> (to define
     users and groups) in order to work correctly. Example:</p>
 
     <blockquote>
-      <code>AuthType Basic<br>
-       AuthName "Restricted Directory"<br>
-       AuthUserFile /web/users<br>
-       AuthGroupFile /web/groups<br>
-       Require group admin<br>
+      <code>AuthType Basic<br />
+       AuthName "Restricted Directory"<br />
+       AuthUserFile /web/users<br />
+       AuthGroupFile /web/groups<br />
+       Require group admin<br />
       </code>
     </blockquote>
     Access controls which are applied in this way are effective for
     <strong>all</strong> methods. <strong>This is what is normally
     desired.</strong> If you wish to apply access controls only to
     specific methods, while leaving other methods unprotected, then
-    place the <code>Require</code> statement into a <a href=
-    "#limit">&lt;Limit&gt;</a> section 
+    place the <code>Require</code> statement into a <a
+    href="#limit">&lt;Limit&gt;</a> section 
 
-    <p>See also <a href="#satisfy">Satisfy</a> and <a href=
-    "mod_access.html">mod_access</a>.</p>
-    <hr>
+    <p>See also <a href="#satisfy">Satisfy</a> and <a
+    href="mod_access.html">mod_access</a>.</p>
+    <hr />
 
-    <h2><a name="rlimit">RLimitCPU</a> <a name=
-    "rlimitcpu">directive</a></h2>
+    <h2><a id="rlimit" name="rlimit">RLimitCPU</a> <a
+    id="rlimitcpu" name="rlimitcpu">directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt RLimitCPU} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> RLimitCPU
-    <em>number</em>|max [<em>number</em>|max] <br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <em>Unset; uses operating
-    system defaults</em> <br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> RLimitCPU is only
-    available in Apache 1.2 and later. Moved in version 2.0 to the
-    <a href="../mpm.html">MPMs</a>. 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> RLimitCPU
+    <em>number</em>|max [<em>number</em>|max] <br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>Unset; uses
+    operating system defaults</em> <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> RLimitCPU is
+    only available in Apache 1.2 and later. Moved in version 2.0 to
+    the <a href="../mpm.html">MPMs</a>. 
 
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
     resource limit for all processes and the second parameter sets
@@ -2028,27 +2074,28 @@
     <p>CPU resource limits are expressed in seconds per
     process.</p>
 
-    <p>See also <a href="#rlimitmem">RLimitMEM</a> or <a href=
-    "#rlimitnproc">RLimitNPROC</a>.</p>
-    <hr>
+    <p>See also <a href="#rlimitmem">RLimitMEM</a> or <a
+    href="#rlimitnproc">RLimitNPROC</a>.</p>
+    <hr />
 
-    <h2><a name="rlimitmem">RLimitMEM directive</a></h2>
+    <h2><a id="rlimitmem" name="rlimitmem">RLimitMEM
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt RLimitMEM} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> RLimitMEM
-    <em>number</em>|max [<em>number</em>|max]<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <em>Unset; uses operating
-    system defaults</em> <br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> RLimitMEM is only
-    available in Apache 1.2 and later. Moved in version 2.0 to the
-    <a href="../mpm.html">MPMs</a>. 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> RLimitMEM
+    <em>number</em>|max [<em>number</em>|max]<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>Unset; uses
+    operating system defaults</em> <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> RLimitMEM is
+    only available in Apache 1.2 and later. Moved in version 2.0 to
+    the <a href="../mpm.html">MPMs</a>. 
 
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
     resource limit for all processes and the second parameter sets
@@ -2068,27 +2115,28 @@
     <p>Memory resource limits are expressed in bytes per
     process.</p>
 
-    <p>See also <a href="#rlimitcpu">RLimitCPU</a> or <a href=
-    "#rlimitnproc">RLimitNPROC</a>.</p>
-    <hr>
+    <p>See also <a href="#rlimitcpu">RLimitCPU</a> or <a
+    href="#rlimitnproc">RLimitNPROC</a>.</p>
+    <hr />
 
-    <h2><a name="rlimitnproc">RLimitNPROC directive</a></h2>
+    <h2><a id="rlimitnproc" name="rlimitnproc">RLimitNPROC
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt RLimitNPROC} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> RLimitNPROC
-    <em>number</em>|max [<em>number</em>|max]<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <em>Unset; uses operating
-    system defaults</em> <br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> RLimitNPROC is only
-    available in Apache 1.2 and later. Moved in version 2.0 to the
-    <a href="../mpm.html">MPMs</a>. 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> RLimitNPROC
+    <em>number</em>|max [<em>number</em>|max]<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>Unset; uses
+    operating system defaults</em> <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> RLimitNPROC is
+    only available in Apache 1.2 and later. Moved in version 2.0 to
+    the <a href="../mpm.html">MPMs</a>. 
 
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
     resource limit for all processes and the second parameter sets
@@ -2114,22 +2162,23 @@
     <strong><em>cannot fork</em></strong> messages in the
     error_log.</p>
 
-    <p>See also <a href="#rlimitmem">RLimitMEM</a> or <a href=
-    "#rlimitcpu">RLimitCPU</a>.</p>
-    <hr>
+    <p>See also <a href="#rlimitmem">RLimitMEM</a> or <a
+    href="#rlimitcpu">RLimitCPU</a>.</p>
+    <hr />
 
-    <h2><a name="satisfy">Satisfy directive</a></h2>
+    <h2><a id="satisfy" name="satisfy">Satisfy directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt Satisfy} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> Satisfy any|all<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> Satisfy all<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> directory, .htaccess<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> Satisfy is only
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Satisfy any|all<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> Satisfy all<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Satisfy is only
     available in Apache 1.2 and later 
 
     <p>Access policy if both <code>Allow</code> and
@@ -2145,23 +2194,25 @@
     password restrict an area, but to let clients from particular
     addresses in without prompting for a password.</p>
 
-    <p>See also <a href="#require">Require</a> and <a href=
-    "mod_access.html">mod_access</a>.</p>
-    <hr>
+    <p>See also <a href="#require">Require</a> and <a
+    href="mod_access.html">mod_access</a>.</p>
+    <hr />
 
-    <h2><a name="scriptinterpretersource">ScriptInterpreterSource
+    <h2><a id="scriptinterpretersource"
+    name="scriptinterpretersource">ScriptInterpreterSource
     directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt ScriptInterpreterSource} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> ScriptInterpreterSource
-    registry|script<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a>
-    <code>ScriptInterpreterSource script</code> <br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> directory, .htaccess<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core (Windows only) 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ScriptInterpreterSource
+    registry|script<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <code>ScriptInterpreterSource script</code> <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core (Windows only) 
 
     <p>This directive is used to control how Apache 1.3.5 and later
     finds the interpreter used to run CGI scripts. The default
@@ -2169,18 +2220,19 @@
     in the script. Setting ScriptInterpreterSource registry will
     cause the Windows Registry to be searched using the script file
     extension (e.g., .pl) as a search key.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="serveradmin">ServerAdmin directive</a></h2>
+    <h2><a id="serveradmin" name="serveradmin">ServerAdmin
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt ServerAdmin} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> ServerAdmin
-    <em>email-address</em><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ServerAdmin
+    <em>email-address</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core 
 
     <p>The ServerAdmin sets the e-mail address that the server
     includes in any error messages it returns to the client.</p>
@@ -2193,38 +2245,41 @@
     </blockquote>
     as users do not always mention that they are talking about the
     server! 
-    <hr>
+    <hr />
 
-    <h2><a name="serveralias">ServerAlias directive</a></h2>
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> ServerAlias
-    <em>hostname</em> [<em>hostname</em>] ...<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> virtual host<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> ServerAlias is only
-    available in Apache 1.1 and later. 
+    <h2><a id="serveralias" name="serveralias">ServerAlias
+    directive</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ServerAlias
+    <em>hostname</em> [<em>hostname</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> virtual host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> ServerAlias is
+    only available in Apache 1.1 and later. 
 
     <p>The ServerAlias directive sets the alternate names for a
-    host, for use with <a href=
-    "../vhosts/name-based.html">name-based virtual hosts</a>.</p>
+    host, for use with <a
+    href="../vhosts/name-based.html">name-based virtual
+    hosts</a>.</p>
 
     <p><strong>See also:</strong> <a href="../vhosts/">Apache
     Virtual Host documentation</a></p>
-    <hr>
+    <hr />
 
-    <h2><a name="servername">ServerName directive</a></h2>
+    <h2><a id="servername" name="servername">ServerName
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt ServerName} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> ServerName
-    <em>fully-qualified-domain-name</em> <br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ServerName
+    <em>fully-qualified-domain-name</em> <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core 
 
     <p>The ServerName directive sets the hostname of the server;
     this is used when creating redirection URLs. If it is not
@@ -2238,33 +2293,35 @@
     would be used if the canonical (main) name of the actual
     machine were <code>simple.example.com</code>. 
 
-    <p>If you are using <a href=
-    "../vhosts/name-based.html">name-based virtual hosts</a>, the
-    <code>ServerName</code> inside a <a href=
-    "#virtualhost"><code>&lt;VirtualHost&gt;</code></a> section
-    specifies what hostname must appear in the request's
+    <p>If you are using <a
+    href="../vhosts/name-based.html">name-based virtual hosts</a>,
+    the <code>ServerName</code> inside a <a
+    href="#virtualhost"><code>&lt;VirtualHost&gt;</code></a>
+    section specifies what hostname must appear in the request's
     <code>Host:</code> header to match this virtual host.</p>
 
-    <p><strong>See Also</strong>:<br>
-     <a href="../dns-caveats.html">DNS Issues</a><br>
-     <a href="../vhosts/">Apache virtual host documentation</a><br>
-     <a href="#usecanonicalname">UseCanonicalName</a><br>
-     <a href="#namevirtualhost">NameVirtualHost</a><br>
-     <a href="#serveralias">ServerAlias</a><br>
+    <p><strong>See Also</strong>:<br />
+     <a href="../dns-caveats.html">DNS Issues</a><br />
+     <a href="../vhosts/">Apache virtual host
+    documentation</a><br />
+     <a href="#usecanonicalname">UseCanonicalName</a><br />
+     <a href="#namevirtualhost">NameVirtualHost</a><br />
+     <a href="#serveralias">ServerAlias</a><br />
     </p>
-    <hr>
+    <hr />
 
-    <h2><a name="serverpath">ServerPath directive</a></h2>
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> ServerPath
-    <em>directory-path</em><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> virtual host<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> ServerPath is only
-    available in Apache 1.1 and later. 
+    <h2><a id="serverpath" name="serverpath">ServerPath
+    directive</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ServerPath
+    <em>directory-path</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> virtual host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> ServerPath is
+    only available in Apache 1.1 and later. 
 
     <p>The ServerPath directive sets the legacy URL pathname for a
     host, for use with <a href="../vhosts/">name-based virtual
@@ -2272,20 +2329,21 @@
 
     <p><strong>See also:</strong> <a href="../vhosts/">Apache
     Virtual Host documentation</a></p>
-    <hr>
+    <hr />
 
-    <h2><a name="serverroot">ServerRoot directive</a></h2>
+    <h2><a id="serverroot" name="serverroot">ServerRoot
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt ServerRoot} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> ServerRoot
-    <em>directory-path</em><br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>ServerRoot
-    /usr/local/apache</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ServerRoot
+    <em>directory-path</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>ServerRoot
+    /usr/local/apache</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core 
 
     <p>The ServerRoot directive sets the directory in which the
     server lives. Typically it will contain the subdirectories
@@ -2299,25 +2357,25 @@
     <p>See also <a href="../misc/security_tips.html#serverroot">the
     security tips</a> for information on how to properly set
     permissions on the ServerRoot.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="serversignature">ServerSignature
-    directive</a></h2>
+    <h2><a id="serversignature"
+    name="serversignature">ServerSignature directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt ServerSignature} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> ServerSignature
-    On|Off|EMail<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>ServerSignature
-    Off</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host, directory, .htaccess<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> ServerSignature is
-    only available in Apache 1.3 and later. 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ServerSignature
+    On|Off|EMail<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>ServerSignature
+    Off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> ServerSignature
+    is only available in Apache 1.3 and later. 
 
     <p>The ServerSignature directive allows the configuration of a
     trailing footer line under server-generated documents (error
@@ -2325,33 +2383,36 @@
     ...). The reason why you would want to enable such a footer
     line is that in a chain of proxies, the user often has no
     possibility to tell which of the chained servers actually
-    produced a returned error message.<br>
+    produced a returned error message.<br />
      The <samp>Off</samp> setting, which is the default, suppresses
     the error line (and is therefore compatible with the behavior
     of Apache-1.2 and below). The <samp>On</samp> setting simply
-    adds a line with the server version number and <a href=
-    "#servername">ServerName</a> of the serving virtual host, and
-    the <samp>EMail</samp> setting additionally creates a "mailto:"
-    reference to the <a href="#serveradmin">ServerAdmin</a> of the
-    referenced document.</p>
-    <hr>
+    adds a line with the server version number and <a
+    href="#servername">ServerName</a> of the serving virtual host,
+    and the <samp>EMail</samp> setting additionally creates a
+    "mailto:" reference to the <a
+    href="#serveradmin">ServerAdmin</a> of the referenced
+    document.</p>
+    <hr />
 
-    <h2><a name="servertokens">ServerTokens directive</a></h2>
+    <h2><a id="servertokens" name="servertokens">ServerTokens
+    directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt ServerTokens} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> ServerTokens
-    Minimal|ProductOnly|OS|Full<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>ServerTokens
-    Full</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config <br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> ServerTokens is only
-    available in Apache 1.3 and later; the <code>ProductOnly</code>
-    keyword is only available in versions later than 1.3.12 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ServerTokens
+    Minimal|ProductOnly|OS|Full<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>ServerTokens
+    Full</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config <br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> ServerTokens is
+    only available in Apache 1.3 and later; the
+    <code>ProductOnly</code> keyword is only available in versions
+    later than 1.3.12 
 
     <p>This directive controls whether <samp>Server</samp> response
     header field which is sent back to clients includes a
@@ -2382,21 +2443,22 @@
 
     <p>This setting applies to the entire server, and cannot be
     enabled or disabled on a virtualhost-by-virtualhost basis.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="sethandler">SetHandler</a> directive</h2>
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> SetHandler
-    <em>handler-name</em><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> directory, files,
-    location, .htaccess<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> Base<br>
-     <a href="directive-dict.html#Module" rel=
-    "Help"><strong>Module:</strong></a> core<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> SetHandler was
+    <h2><a id="sethandler" name="sethandler">SetHandler</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> SetHandler
+    <em>handler-name</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory, files,
+    location, .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> SetHandler was
     introduced in mod_mime with Apache 1.1, and moved into the core
     with Apache 2.0 
 
@@ -2421,26 +2483,27 @@
     SetHandler server-status
     &lt;/Location&gt;
 </pre>
-    <hr>
+    <hr />
 
-    <h2><a name="setinputfilter">SetInputFilter directive</a></h2>
+    <h2><a id="setinputfilter" name="setinputfilter">SetInputFilter
+    directive</a></h2>
 
-    <p><a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> SetInputFilter
-    <em>filter</em>[<em>;filter</em>...]<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> none<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> directory, files,
-    location, .htaccess<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core</p>
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> SetInputFilter
+    <em>filter</em>[<em>;filter</em>...]<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> none<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory, files,
+    location, .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core</p>
 
     <p>The <code>SetInputFilter</code> directive sets the filter or
     filters which will process client requests and POST input when
     they are received by the server. This is in addition to any
-    filters defined elsewhere, including the <a href=
-    "mod_mime.html#addinputfilter">AddInputFilter</a>
+    filters defined elsewhere, including the <a
+    href="mod_mime.html#addinputfilter">AddInputFilter</a>
     directive.</p>
 
     <p>If more than one filter is specified, they must be seperated
@@ -2449,37 +2512,37 @@
 
     <p>See also the <a href="../filter.html">Filters</a>
     documentation.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="setoutputfilter">SetOutputFilter
-    directive</a></h2>
+    <h2><a id="setoutputfilter"
+    name="setoutputfilter">SetOutputFilter directive</a></h2>
 
-    <p><a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> SetOutputFilter
-    <em>filter</em> [<em>filter</em>] ...<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> none<br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> directory, files,
-    location, .htaccess<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core</p>
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> SetOutputFilter
+    <em>filter</em> [<em>filter</em>] ...<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> none<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory, files,
+    location, .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core</p>
 
     <p>The <code>SetOutputFilter</code> directive sets the filters
     which will process responses from the server before they are
     sent to the client. This is in addition to any filters defined
-    elsewhere, including the <a href=
-    "mod_mime.html#addoutputfilter">AddOutputFilter</a>
+    elsewhere, including the <a
+    href="mod_mime.html#addoutputfilter">AddOutputFilter</a>
     directive.</p>
     For example, the following configuration will process all files
     in the <code>/www/data/</code> directory for server-side
-    includes.<br>
-     <br>
+    includes.<br />
+     <br />
      
 
     <blockquote>
-      <code>&lt;Directory /www/data/&gt;<br>
-       &nbsp;&nbsp;SetOutputFilter INCLUDES<br>
+      <code>&lt;Directory /www/data/&gt;<br />
+       &nbsp;&nbsp;SetOutputFilter INCLUDES<br />
        &lt;/Directory&gt;</code>
     </blockquote>
 
@@ -2489,19 +2552,20 @@
 
     <p>See also the <a href="../filter.html">Filters</a>
     documentation.</p>
-    <hr>
+    <hr />
 
-    <h2><a name="timeout">TimeOut directive</a></h2>
+    <h2><a id="timeout" name="timeout">TimeOut directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt TimeOut} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> TimeOut <em>number</em><br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>TimeOut
-    300</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> core 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> TimeOut
+    <em>number</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>TimeOut
+    300</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core 
 
     <p>The TimeOut directive currently defines the amount of time
     Apache will wait for three things:</p>
@@ -2522,31 +2586,31 @@
     necessary in most situations. It is not set any lower by
     default because there may still be odd places in the code where
     the timer is not reset when a packet is sent. 
-    <hr>
+    <hr />
 
-    <h2><a name="usecanonicalname">UseCanonicalName
-    directive</a></h2>
+    <h2><a id="usecanonicalname"
+    name="usecanonicalname">UseCanonicalName directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt UseCanonicalName} directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> UseCanonicalName
-    on|off|dns<br>
-     <a href="directive-dict.html#Default" rel=
-    "Help"><strong>Default:</strong></a> <code>UseCanonicalName
-    on</code><br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config, virtual
-    host, directory<br>
-     <a href="directive-dict.html#Override" rel=
-    "Help"><strong>Override:</strong></a> Options<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> UseCanonicalName is
-    only available in Apache 1.3 and later 
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> UseCanonicalName
+    on|off|dns<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>UseCanonicalName
+    on</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> Options<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> UseCanonicalName
+    is only available in Apache 1.3 and later 
 
     <p>In many situations Apache has to construct a
     <em>self-referential</em> URL. That is, a URL which refers back
     to the same server. With <code>UseCanonicalName on</code> (and
-    in all versions prior to 1.3) Apache will use the <a href=
-    "#servername">ServerName</a> and <a href="#port">Port</a>
+    in all versions prior to 1.3) Apache will use the <a
+    href="#servername">ServerName</a> and <a href="#port">Port</a>
     directives to construct a canonical name for the server. This
     name is used in all self-referential URLs, and for the values
     of <code>SERVER_NAME</code> and <code>SERVER_PORT</code> in
@@ -2589,26 +2653,27 @@
     <code>SERVER_NAME</code> to construct self-referential URLs
     then it should be just fine.</p>
 
-    <p><strong>See also:</strong> <a href=
-    "#servername">ServerName</a>, <a href="#port">Port</a></p>
-    <hr>
+    <p><strong>See also:</strong> <a
+    href="#servername">ServerName</a>, <a href="#port">Port</a></p>
+    <hr />
 
-    <h2><a name="virtualhost">&lt;VirtualHost&gt;
+    <h2><a id="virtualhost" name="virtualhost">&lt;VirtualHost&gt;
     directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt VirtualHost} section directive&gt; -->
-    <a href="directive-dict.html#Syntax" rel=
-    "Help"><strong>Syntax:</strong></a> &lt;VirtualHost
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> &lt;VirtualHost
     <em>addr</em>[:<em>port</em>] [<em>addr</em>[:<em>port</em>]]
-    ...&gt; ... &lt;/VirtualHost&gt; <br>
-     <a href="directive-dict.html#Context" rel=
-    "Help"><strong>Context:</strong></a> server config<br>
-     <a href="directive-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> Core.<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> Non-IP address-based
-    Virtual Hosting only available in Apache 1.1 and later.<br>
-     <a href="directive-dict.html#Compatibility" rel=
-    "Help"><strong>Compatibility:</strong></a> Multiple address
+    ...&gt; ... &lt;/VirtualHost&gt; <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Core.<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Non-IP
+    address-based Virtual Hosting only available in Apache 1.1 and
+    later.<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Multiple address
     support only available in Apache 1.2 and later. 
 
     <p>&lt;VirtualHost&gt; and &lt;/VirtualHost&gt; are used to
@@ -2628,12 +2693,12 @@
     Example: 
 
     <blockquote>
-      <code>&lt;VirtualHost 10.1.2.3&gt;<br>
-       ServerAdmin webmaster@host.foo.com<br>
-       DocumentRoot /www/docs/host.foo.com<br>
-       ServerName host.foo.com<br>
-       ErrorLog logs/host.foo.com-error_log<br>
-       TransferLog logs/host.foo.com-access_log<br>
+      <code>&lt;VirtualHost 10.1.2.3&gt;<br />
+       ServerAdmin webmaster@host.foo.com<br />
+       DocumentRoot /www/docs/host.foo.com<br />
+       ServerName host.foo.com<br />
+       ErrorLog logs/host.foo.com-error_log<br />
+       TransferLog logs/host.foo.com-access_log<br />
        &lt;/VirtualHost&gt;</code>
     </blockquote>
     Each VirtualHost must correspond to a different IP address,
@@ -2642,8 +2707,8 @@
     accept IP packets for multiple addresses. (If the machine does
     not have multiple network interfaces, then this can be
     accomplished with the <code>ifconfig alias</code> command (if
-    your OS supports it), or with kernel patches like <a href=
-    "../misc/vif-info.html">VIF</a> (for SunOS(TM) 4.1.x)). 
+    your OS supports it), or with kernel patches like <a
+    href="../misc/vif-info.html">VIF</a> (for SunOS(TM) 4.1.x)). 
 
     <p>The special name <code>_default_</code> can be specified in
     which case this virtual host will match any IP address that is
@@ -2659,24 +2724,25 @@
     match all ports on that address. (This is recommended when used
     with <code>_default_</code>.)</p>
 
-    <p><strong>SECURITY</strong>: See the <a href=
-    "../misc/security_tips.html">security tips</a> document for
-    details on why your security could be compromised if the
+    <p><strong>SECURITY</strong>: See the <a
+    href="../misc/security_tips.html">security tips</a> document
+    for details on why your security could be compromised if the
     directory where logfiles are stored is writable by anyone other
     than the user that starts the server.</p>
 
     <p><strong>NOTE</strong>: The use of &lt;VirtualHost&gt; does
     <strong>not</strong> affect what addresses Apache listens on.
     You may need to ensure that Apache is listening on the correct
-    addresses using <a href=
-    "mpm_common.html#listen">Listen</a>.</p>
+    addresses using <a
+    href="mpm_common.html#listen">Listen</a>.</p>
 
     <p><strong>See also:</strong> <a href="../vhosts/">Apache
-    Virtual Host documentation</a><br>
-     <strong>See also:</strong> <a href=
-    "../dns-caveats.html">Warnings about DNS and Apache</a><br>
+    Virtual Host documentation</a><br />
+     <strong>See also:</strong> <a
+    href="../dns-caveats.html">Warnings about DNS and
+    Apache</a><br />
      <strong>See also:</strong> <a href="../bind.html">Setting
-    which addresses and ports Apache uses</a><br>
+    which addresses and ports Apache uses</a><br />
      <strong>See also</strong>: <a href="../sections.html">How
     Directory, Location and Files sections work</a> for an
     explanation of how these different sections are combined when a

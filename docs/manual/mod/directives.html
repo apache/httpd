@@ -1,271 +1,657 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Apache directives</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Apache Directives</H1>
-<P>
-Each Apache directive available in the standard Apache distribution is
-listed here.  They are described using a consistent format, and there is
-<A
- HREF="directive-dict.html"
- REL="Glossary"
->a dictionary</A>
-of the terms used in their descriptions available.
-</P>
-<UL>
-<LI><A HREF="prefork.html#acceptmutex">AcceptMutex</A>
-<LI><A HREF="core.html#accessfilename">AccessFileName</A>
-<LI><A HREF="mod_actions.html#action">Action</A>
-<LI><A HREF="mod_autoindex.html#addalt">AddAlt</A>
-<LI><A HREF="mod_autoindex.html#addaltbyencoding">AddAltByEncoding</A>
-<LI><A HREF="mod_autoindex.html#addaltbytype">AddAltByType</A>
-<LI><A HREF="mod_mime.html#addcharset">AddCharset</A>
-<LI><A HREF="core.html#adddefaultcharset">AddDefaultCharset</A>
-<LI><A HREF="mod_autoindex.html#adddescription">AddDescription</A>
-<LI><A HREF="mod_mime.html#addencoding">AddEncoding</A>
-<LI><A HREF="mod_mime.html#addhandler">AddHandler</A>
-<LI><A HREF="mod_autoindex.html#addicon">AddIcon</A>
-<LI><A HREF="mod_autoindex.html#addiconbyencoding">AddIconByEncoding</A>
-<LI><A HREF="mod_autoindex.html#addiconbytype">AddIconByType</A>
-<LI><A HREF="mod_mime.html#addlanguage">AddLanguage</A>
-<LI><A HREF="core.html#addmodule">AddModule</A>
-<LI><A HREF="mod_info.html#addmoduleinfo">AddModuleInfo</A>
-<LI><A HREF="mod_mime.html#addtype">AddType</A>
-<LI><A HREF="mod_alias.html#alias">Alias</A>
-<LI><A HREF="mod_alias.html#aliasmatch">AliasMatch</A>
-<LI><A HREF="mod_access.html#allow">Allow</A>
-<LI><A HREF="mod_proxy.html#allowconnect">AllowCONNECT</A>
-<LI><A HREF="core.html#allowoverride">AllowOverride</A>
-<LI><A HREF="mod_auth_anon.html#anonymous">Anonymous</A>
-<LI><A HREF="mod_auth_anon.html#Authoritative">Anonymous_Authoritative</A>
-<LI><A HREF="mod_auth_anon.html#LogEmail">Anonymous_LogEmail</A>
-<LI><A HREF="mod_auth_anon.html#MustGiveEmail">Anonymous_MustGiveEmail</A>
-<LI><A HREF="mod_auth_anon.html#NoUserID">Anonymous_NoUserID</A>
-<LI><A HREF="mod_auth_anon.html#VerifyEmail">Anonymous_VerifyEmail</A>
-<LI><A HREF="perchild.html#assignuserid">AssignUserID</A>
-<LI><A HREF="mod_auth.html#authauthoritative">AuthAuthoritative</A>
-<LI><A HREF="mod_auth_db.html#authdbauthoritative">AuthDBAuthoritative</A>
-<LI><A HREF="mod_auth_db.html#authdbgroupfile">AuthDBGroupFile</A>
-<LI><A HREF="mod_auth_dbm.html#authdbmauthoritative">AuthDBMAuthoritative</A>
-<LI><A HREF="mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</A>
-<LI><A HREF="mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</A>
-<LI><A HREF="mod_auth_db.html#authdbuserfile">AuthDBUserFile</A>
-<LI><A HREF="mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</A>
-<LI><A HREF="mod_auth.html#authgroupfile">AuthGroupFile</A>
-<LI><A HREF="mod_auth_ldap.html#AuthLDAPAuthoritative">AuthLDAPAuthoritative</A></LI>
-<LI><A HREF="mod_auth_ldap.html#AuthLDAPBindDN">AuthLDAPBindDN</A></LI>
-<LI><A HREF="mod_auth_ldap.html#AuthLDAPBindPassword">AuthLDAPBindPassword</A></LI>
-<LI><A HREF="mod_auth_ldap.html#AuthLDAPCompareDNOnServer">AuthLDAPCompareDNOnServer</A></LI>
-<LI><A HREF="mod_auth_ldap.html#AuthLDAPDereferenceAliases">AuthLDAPDereferenceAliases</A></LI>
-<LI><A HREF="mod_auth_ldap.html#AuthLDAPEnabled">AuthLDAPEnabled</A></LI>
-<LI><A HREF="mod_auth_ldap.html#AuthLDAPFrontPageHack">AuthLDAPFrontPageHack</A></LI>
-<LI><A HREF="mod_auth_ldap.html#AuthLDAPGroupAttribute">AuthLDAPGroupAttribute</A></LI>
-<LI><A HREF="mod_auth_ldap.html#AuthLDAPGroupAttributeIsDN">AuthLDAPGroupAttributeIsDN</A></LI>
-<LI><A HREF="mod_auth_ldap.html#AuthLDAPRemoteUserIsDN">AuthLDAPRemoteUserIsDN</A></LI>
-<LI><A HREF="mod_auth_ldap.html#AuthLDAPStartTLS">AuthLDAPStartTLS</A></LI>
-<LI><A HREF="mod_auth_ldap.html#AuthLDAPUrl">AuthLDAPUrl</A></LI>
-<LI><A HREF="core.html#authname">AuthName</A>
-<LI><A HREF="core.html#authtype">AuthType</A>
-<LI><A HREF="mod_auth.html#authuserfile">AuthUserFile</A>
-<LI><A HREF="mod_setenvif.html#BrowserMatch">BrowserMatch</A>
-<LI><A HREF="mod_setenvif.html#BrowserMatchNoCase">BrowserMatchNoCase</A>
-<LI><A HREF="mod_proxy.html#cachedefaultexpire">CacheDefaultExpire</A>
-<LI><A HREF="mod_proxy.html#cachedirlength">CacheDirLength</A>
-<LI><A HREF="mod_proxy.html#cachedirlevels">CacheDirLevels</A>
-<LI><A HREF="mod_proxy.html#cacheforcecompletion">CacheForceCompletion</A>
-<LI><A HREF="mod_proxy.html#cachegcinterval">CacheGcInterval</A>
-<LI><A HREF="mod_proxy.html#cachelastmodifiedfactor">CacheLastModifiedFactor</A>
-<LI><A HREF="mod_proxy.html#cachemaxexpire">CacheMaxExpire</A>
-<LI><A HREF="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</A>
-<LI><A HREF="mod_proxy.html#cacheroot">CacheRoot</A>
-<LI><A HREF="mod_proxy.html#cachesize">CacheSize</A>
-<LI><A HREF="mod_charset_lite.html#charsetdefault">CharsetDefault</A>
-<LI><A HREF="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc</A>
-<LI><A HREF="mod_charset_lite.html#charsetoptions">CharsetOptions</A>
-<LI><A HREF="mod_speling.html#checkspelling">CheckSpelling</A>
-<LI><A HREF="perchild.html#childperuserid">ChildPerUserID</A>
-<LI><A HREF="core.html#clearmodulelist">ClearModuleList</A>
-<LI><A HREF="mpm_common.html#connectionstatus">ConnectionStatus</A>
-<LI><A HREF="core.html#contentdigest">ContentDigest</A>
-<LI><A HREF="mod_usertrack.html#cookieexpires">CookieExpires</A>
-<LI><A HREF="mod_log_config.html#cookielog">CookieLog</A>
-<LI><A HREF="mod_usertrack.html#cookietracking">CookieTracking</A>
-<LI><A HREF="mpm_common.html#coredumpdirectory">CoreDumpDirectory</A>
-<LI><A HREF="mod_log_config.html#customlog">CustomLog</A>
-<LI><A HREF="mod_dav.html#dav">Dav</A>
-<LI><A HREF="mod_dav.html#davdepthinfinity">DavDepthInfinity</A>
-<LI><A HREF="mod_dav.html#davlockdb">DavLockDB</A>
-<LI><A HREF="mod_dav.html#davmintimeout">DavMinTimeout</A>
-<LI><A HREF="mod_autoindex.html#defaulticon">DefaultIcon</A>
-<LI><A HREF="mod_mime.html#defaultlanguage">DefaultLanguage</A>
-<LI><A HREF="core.html#defaulttype">DefaultType</A>
-<LI><A HREF="mod_access.html#deny">Deny</A>
-<LI><A HREF="core.html#directory">&lt;Directory&gt;</A>
-<LI><A HREF="core.html#directorymatch">&lt;DirectoryMatch&gt;</A>
-<LI><A HREF="mod_dir.html#directoryindex">DirectoryIndex</A>
-<LI><A HREF="core.html#documentroot">DocumentRoot</A>
-<LI><A HREF="core.html#errordocument">ErrorDocument</A>
-<LI><A HREF="core.html#errorlog">ErrorLog</A>
-<LI><A HREF="mod_example.html#example">Example</A>
-<LI><A HREF="mod_expires.html#expiresactive">ExpiresActive</A>
-<LI><A HREF="mod_expires.html#expiresbytype">ExpiresByType</A>
-<LI><A HREF="mod_expires.html#expiresdefault">ExpiresDefault</A>
-<LI><A HREF="mod_status.html#extendedstatus">ExtendedStatus</A>
-<LI><A HREF="mod_ext_filter.html#extfilterdefine">ExtFilterDefine</A>
-<LI><A HREF="mod_ext_filter.html#extfilteroptions">ExtFilterOptions</A>
-<LI><A HREF="mod_autoindex.html#fancyindexing">FancyIndexing</A>
-<LI><A HREF="core.html#files">&lt;Files&gt;</A>
-<LI><A HREF="core.html#filesmatch">&lt;FilesMatch&gt;</A>
-<LI><A HREF="mod_mime.html#forcetype">ForceType</A>
-<LI><A HREF="mpm_common.html#group">Group</A>
-<LI><A HREF="mod_headers.html#header">Header</A>
-<LI><A HREF="mod_autoindex.html#headername">HeaderName</A>
-<LI><A HREF="core.html#hostnamelookups">HostNameLookups</A>
-<LI><A HREF="core.html#identitycheck">IdentityCheck</A>
-<LI><A HREF="core.html#ifdefine">&lt;IfDefine&gt;</A>
-<LI><A HREF="core.html#ifmodule">&lt;IfModule&gt;</A>
-<LI><A HREF="mod_imap.html#imapbase">ImapBase</A>
-<LI><A HREF="mod_imap.html#imapdefault">ImapDefault</A>
-<LI><A HREF="mod_imap.html#imapmenu">ImapMenu</A>
-<LI><A HREF="core.html#include">Include</A>
-<LI><A HREF="mod_autoindex.html#indexignore">IndexIgnore</A>
-<LI><A HREF="mod_autoindex.html#indexoptions">IndexOptions</A>
-<LI><A HREF="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors</A>
-<LI><A HREF="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery</A>
-<LI><A HREF="mod_isapi.html#isapifilecache">ISAPIFileCache</A>
-<LI><A HREF="mod_isapi.html#isapilognotsupported">ISAPILogNotSupported</A>
-<LI><A HREF="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer</A>
-<LI><A HREF="core.html#keepalive">KeepAlive</A>
-<LI><A HREF="core.html#keepalivetimeout">KeepAliveTimeout</A>
-<LI><A HREF="mod_negotiation.html#languagepriority">LanguagePriority</A>
-<LI><A HREF="mod_ldap.html#LDAPCacheEntries">LDAPCacheEntries</A>
-<LI><A HREF="mod_ldap.html#LDAPCacheTTL">LDAPCacheTTL</A>
-<LI><A HREF="mod_ldap.html#LDAPCertDBPath">LDAPCertDBPath</A>
-<LI><A HREF="mod_ldap.html#LDAPOpCacheEntries">LDAPOpCacheEntries</A>
-<LI><A HREF="mod_ldap.html#LDAPOpCacheTTL">LDAPOpCacheTTL</A>
-<LI><A HREF="mod_ldap.html#LDAPSharedCacheSize">LDAPSharedCacheSize</A>
-<LI><A HREF="core.html#limit">&lt;Limit&gt;</A>
-<LI><A HREF="core.html#limitexcept">&lt;LimitExcept&gt;</A>
-<LI><A HREF="core.html#limitrequestbody">LimitRequestBody</A>
-<LI><A HREF="core.html#limitrequestfields">LimitRequestFields</A>
-<LI><A HREF="core.html#limitrequestfieldsize">LimitRequestFieldsize</A>
-<LI><A HREF="core.html#limitrequestline">LimitRequestLine</A>
-<LI><A HREF="mod_dav.html#limitxmlrequestbody">LimitXMLRequestBody</A>
-<LI><A HREF="mpm_common.html#listen">Listen</A>
-<LI><A HREF="mpm_common.html#listenbacklog">ListenBacklog</A>
-<LI><A HREF="mod_so.html#loadfile">LoadFile</A>
-<LI><A HREF="mod_so.html#loadmodule">LoadModule</A>
-<LI><A HREF="core.html#location">&lt;Location&gt;</A>
-<LI><A HREF="core.html#locationmatch">&lt;LocationMatch&gt;</A>
-<LI><A HREF="mpm_common.html#lockfile">LockFile</A>
-<LI><A HREF="mod_log_config.html#logformat">LogFormat</A>
-<LI><A HREF="core.html#loglevel">LogLevel</A>
-<LI><A HREF="core.html#limitxmlrequestbody">LimitXMLRequestBody</A>
-<LI><A HREF="mpm_common.html#maxclients">MaxClients</A>
-<LI><A HREF="core.html#maxkeepaliverequests">MaxKeepAliveRequests</A>
-<LI><A HREF="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</A>
-<LI><A HREF="prefork.html#maxspareservers">MaxSpareServers</A>
-<LI><A HREF="mpm_common.html#maxsparethreads">MaxSpareThreads</A>
-<LI><A HREF="mpm_commont.html#maxthreadsperchild">MaxThreadsPerChild</A>
-<LI><A HREF="mod_cern_meta.html#metadir">MetaDir</A>
-<LI><A HREF="mod_cern_meta.html#metafiles">MetaFiles</A>
-<LI><A HREF="mod_cern_meta.html#metasuffix">MetaSuffix</A>
-<LI><A HREF="mod_mime_magic.html#mimemagicfile">MimeMagicFile</A>
-<LI><A HREF="prefork.html#minspareservers">MinSpareServers</A>
-<LI><A HREF="mpm_common.html#minsparethreads">MinSpareThreads</A>
-<LI><A HREF="core.html#namevirtualhost">NameVirtualHost</A>
-<LI><A HREF="mod_proxy.html#nocache">NoCache</A>
-<LI><A HREF="mpm_common.html#numservers">NumServers</A>
-<LI><A HREF="core.html#options">Options</A>
-<LI><A HREF="mod_access.html#order">Order</A>
-<LI><A HREF="mod_env.html#passenv">PassEnv</A>
-<LI><A HREF="mpm_common.html#pidfile">PidFile</A>
-<LI><A HREF="core.html#port">Port</A>
-<LI><A HREF="mod_proxy.html#proxyblock">ProxyBlock</A>
-<LI><A HREF="mod_proxy.html#proxydomain">ProxyDomain</A>
-<LI><A HREF="mod_proxy.html#proxypass">ProxyPass</A>
-<LI><A HREF="mod_proxy.html#proxypassreverse">ProxyPassReverse</A>
-<LI><A HREF="mod_proxy.html#proxyreceivebuffersize">ProxyReceiveBufferSize</A>
-<LI><A HREF="mod_proxy.html#proxyremote">ProxyRemote</A>
-<LI><A HREF="mod_proxy.html#proxyrequests">ProxyRequests</A>
-<LI><A HREF="mod_proxy.html#proxyvia">ProxyVia</A>
-<LI><A HREF="mod_autoindex.html#readmename">ReadmeName</A>
-<LI><A HREF="mod_alias.html#redirect">Redirect</A>
-<LI><A HREF="mod_alias.html#redirectmatch">RedirectMatch</A>
-<LI><A HREF="mod_alias.html#redirectperm">RedirectPermanent</A>
-<LI><A HREF="mod_alias.html#redirecttemp">RedirectTemp</A>
-<LI><A HREF="mod_mime.html#removecharset">RemoveCharset</A>
-<LI><A HREF="mod_mime.html#removeencoding">RemoveEncoding</A>
-<LI><A HREF="mod_mime.html#removehandler">RemoveHandler</A>
-<LI><A HREF="mod_mime.html#removelanguage">RemoveLanguage</A>
-<LI><A HREF="mod_mime.html#removetype">RemoveType</A>
-<LI><A HREF="mod_headers.html#requestheader">RequestHeader</A>
-<LI><A HREF="core.html#require">Require</A>
-<LI><A HREF="mod_rewrite.html#RewriteBase">RewriteBase</A>
-<LI><A HREF="mod_rewrite.html#RewriteCond">RewriteCond</A>
-<LI><A HREF="mod_rewrite.html#RewriteEngine">RewriteEngine</A>
-<LI><A HREF="mod_rewrite.html#RewriteLock">RewriteLock</A>
-<LI><A HREF="mod_rewrite.html#RewriteLog">RewriteLog</A>
-<LI><A HREF="mod_rewrite.html#RewriteLogLevel">RewriteLogLevel</A>
-<LI><A HREF="mod_rewrite.html#RewriteMap">RewriteMap</A>
-<LI><A HREF="mod_rewrite.html#RewriteOptions">RewriteOptions</A>
-<LI><A HREF="mod_rewrite.html#RewriteRule">RewriteRule</A>
-<LI><A HREF="core.html#rlimitcpu">RLimitCPU</A>
-<LI><A HREF="core.html#rlimitmem">RLimitMEM</A>
-<LI><A HREF="core.html#rlimitnproc">RLimitNPROC</A>
-<LI><A HREF="core.html#satisfy">Satisfy</A>
-<LI><A HREF="mpm_common.html#scoreboardfile">ScoreBoardFile</A>
-<LI><A HREF="mod_actions.html#script">Script</A>
-<LI><A HREF="mod_alias.html#scriptalias">ScriptAlias</A>
-<LI><A HREF="mod_alias.html#scriptaliasmatch">ScriptAliasMatch</A>
-<LI><A HREF="core.html#scriptinterpretersource">ScriptInterpreterSource</A>
-<LI><A HREF="mod_cgi.html#scriptlog">ScriptLog</A>
-<LI><A HREF="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</A>
-<LI><A HREF="mod_cgi.html#scriptloglength">ScriptLogLength</A>
-<LI><A HREF="mod_cgid.html#scriptsock">ScriptSock</A>
-<LI><A HREF="mpm_common.html#sendbuffersize">SendBufferSize</A>
-<LI><A HREF="core.html#serveradmin">ServerAdmin</A>
-<LI><A HREF="core.html#serveralias">ServerAlias</A>
-<LI><A HREF="core.html#servername">ServerName</A>
-<LI><A HREF="core.html#serverpath">ServerPath</A>
-<LI><A HREF="core.html#serverroot">ServerRoot</A>
-<LI><A HREF="core.html#serversignature">ServerSignature</A>
-<LI><A HREF="core.html#servertokens">ServerTokens</A>
-<LI><A HREF="mod_env.html#setenv">SetEnv</A>
-<LI><A HREF="mod_setenvif.html#setenvif">SetEnvIf</A>
-<LI><A HREF="mod_setenvif.html#SetEnvIfNoCase">SetEnvIfNoCase</A>
-<LI><A HREF="mod_mime.html#sethandler">SetHandler</A>
-<LI><A HREF="core.html#setinputfilter">SetInputFilter</A>
-<LI><A HREF="core.html#setoutputfilter">SetOutputFilter</A>
-<LI><A HREF="mpm_common.html#startservers">StartServers</A>
-<LI><A HREF="mpm_common.html#startthreads">StartThreads</A>
-<LI><A HREF="mpm_common.html#threadsperchild">ThreadsPerChild</A>
-<LI><A HREF="core.html#timeout">TimeOut</A>
-<LI><A HREF="mod_log_config.html#transferlog">TransferLog</A>
-<LI><A HREF="mod_mime.html#typesconfig">TypesConfig</A>
-<LI><A HREF="mod_env.html#unsetenv">UnsetEnv</A>
-<LI><A HREF="core.html#usecanonicalname">UseCanonicalName</A>
-<LI><A HREF="mpm_common.html#user">User</A>
-<LI><A HREF="mod_userdir.html#userdir">UserDir</A>
-<LI><A HREF="core.html#virtualhost">&lt;VirtualHost&gt;</A>
-<LI><A HREF="mod_vhost_alias.html#virtualdocumentroot">VirtualDocumentRoot</A>
-<LI><A HREF="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP</A>
-<LI><A HREF="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias</A>
-<LI><A HREF="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP</A>
-<LI><A HREF="mod_include.html#xbithack">XBitHack</A>
-</UL>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
+    <title>Apache directives</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache Directives</h1>
+
+    <p>Each Apache directive available in the standard Apache
+    distribution is listed here. They are described using a
+    consistent format, and there is <a href="directive-dict.html"
+    rel="Glossary">a dictionary</a> of the terms used in their
+    descriptions available.</p>
+
+    <ul>
+      <li><a href="prefork.html#acceptmutex">AcceptMutex</a></li>
+
+      <li><a
+      href="core.html#accessfilename">AccessFileName</a></li>
+
+      <li><a href="mod_actions.html#action">Action</a></li>
+
+      <li><a href="mod_autoindex.html#addalt">AddAlt</a></li>
+
+      <li><a
+      href="mod_autoindex.html#addaltbyencoding">AddAltByEncoding</a></li>
+
+      <li><a
+      href="mod_autoindex.html#addaltbytype">AddAltByType</a></li>
+
+      <li><a href="mod_mime.html#addcharset">AddCharset</a></li>
+
+      <li><a
+      href="core.html#adddefaultcharset">AddDefaultCharset</a></li>
+
+      <li><a
+      href="mod_autoindex.html#adddescription">AddDescription</a></li>
+
+      <li><a href="mod_mime.html#addencoding">AddEncoding</a></li>
+
+      <li><a href="mod_mime.html#addhandler">AddHandler</a></li>
+
+      <li><a href="mod_autoindex.html#addicon">AddIcon</a></li>
+
+      <li><a
+      href="mod_autoindex.html#addiconbyencoding">AddIconByEncoding</a></li>
+
+      <li><a
+      href="mod_autoindex.html#addiconbytype">AddIconByType</a></li>
+
+      <li><a href="mod_mime.html#addlanguage">AddLanguage</a></li>
+
+      <li><a href="core.html#addmodule">AddModule</a></li>
+
+      <li><a
+      href="mod_info.html#addmoduleinfo">AddModuleInfo</a></li>
+
+      <li><a href="mod_mime.html#addtype">AddType</a></li>
+
+      <li><a href="mod_alias.html#alias">Alias</a></li>
+
+      <li><a href="mod_alias.html#aliasmatch">AliasMatch</a></li>
+
+      <li><a href="mod_access.html#allow">Allow</a></li>
+
+      <li><a
+      href="mod_proxy.html#allowconnect">AllowCONNECT</a></li>
+
+      <li><a href="core.html#allowoverride">AllowOverride</a></li>
+
+      <li><a href="mod_auth_anon.html#anonymous">Anonymous</a></li>
+
+      <li><a
+      href="mod_auth_anon.html#Authoritative">Anonymous_Authoritative</a></li>
+
+      <li><a
+      href="mod_auth_anon.html#LogEmail">Anonymous_LogEmail</a></li>
+
+      <li><a
+      href="mod_auth_anon.html#MustGiveEmail">Anonymous_MustGiveEmail</a></li>
+
+      <li><a
+      href="mod_auth_anon.html#NoUserID">Anonymous_NoUserID</a></li>
+
+      <li><a
+      href="mod_auth_anon.html#VerifyEmail">Anonymous_VerifyEmail</a></li>
+
+      <li><a
+      href="perchild.html#assignuserid">AssignUserID</a></li>
+
+      <li><a
+      href="mod_auth.html#authauthoritative">AuthAuthoritative</a></li>
+
+      <li><a
+      href="mod_auth_db.html#authdbauthoritative">AuthDBAuthoritative</a></li>
+
+      <li><a
+      href="mod_auth_db.html#authdbgroupfile">AuthDBGroupFile</a></li>
+
+      <li><a
+      href="mod_auth_dbm.html#authdbmauthoritative">AuthDBMAuthoritative</a></li>
+
+      <li><a
+      href="mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></li>
+
+      <li><a
+      href="mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></li>
+
+      <li><a
+      href="mod_auth_db.html#authdbuserfile">AuthDBUserFile</a></li>
+
+      <li><a
+      href="mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</a></li>
+
+      <li><a
+      href="mod_auth.html#authgroupfile">AuthGroupFile</a></li>
+
+      <li><a
+      href="mod_auth_ldap.html#AuthLDAPAuthoritative">AuthLDAPAuthoritative</a></li>
+
+      <li><a
+      href="mod_auth_ldap.html#AuthLDAPBindDN">AuthLDAPBindDN</a></li>
+
+      <li><a
+      href="mod_auth_ldap.html#AuthLDAPBindPassword">AuthLDAPBindPassword</a></li>
+
+      <li><a
+      href="mod_auth_ldap.html#AuthLDAPCompareDNOnServer">AuthLDAPCompareDNOnServer</a></li>
+
+      <li><a
+      href="mod_auth_ldap.html#AuthLDAPDereferenceAliases">AuthLDAPDereferenceAliases</a></li>
+
+      <li><a
+      href="mod_auth_ldap.html#AuthLDAPEnabled">AuthLDAPEnabled</a></li>
+
+      <li><a
+      href="mod_auth_ldap.html#AuthLDAPFrontPageHack">AuthLDAPFrontPageHack</a></li>
+
+      <li><a
+      href="mod_auth_ldap.html#AuthLDAPGroupAttribute">AuthLDAPGroupAttribute</a></li>
+
+      <li><a
+      href="mod_auth_ldap.html#AuthLDAPGroupAttributeIsDN">AuthLDAPGroupAttributeIsDN</a></li>
+
+      <li><a
+      href="mod_auth_ldap.html#AuthLDAPRemoteUserIsDN">AuthLDAPRemoteUserIsDN</a></li>
+
+      <li><a
+      href="mod_auth_ldap.html#AuthLDAPStartTLS">AuthLDAPStartTLS</a></li>
+
+      <li><a
+      href="mod_auth_ldap.html#AuthLDAPUrl">AuthLDAPUrl</a></li>
+
+      <li><a href="core.html#authname">AuthName</a></li>
+
+      <li><a href="core.html#authtype">AuthType</a></li>
+
+      <li><a
+      href="mod_auth.html#authuserfile">AuthUserFile</a></li>
+
+      <li><a
+      href="mod_setenvif.html#BrowserMatch">BrowserMatch</a></li>
+
+      <li><a
+      href="mod_setenvif.html#BrowserMatchNoCase">BrowserMatchNoCase</a></li>
+
+      <li><a
+      href="mod_proxy.html#cachedefaultexpire">CacheDefaultExpire</a></li>
+
+      <li><a
+      href="mod_proxy.html#cachedirlength">CacheDirLength</a></li>
+
+      <li><a
+      href="mod_proxy.html#cachedirlevels">CacheDirLevels</a></li>
+
+      <li><a
+      href="mod_proxy.html#cacheforcecompletion">CacheForceCompletion</a></li>
+
+      <li><a
+      href="mod_proxy.html#cachegcinterval">CacheGcInterval</a></li>
+
+      <li><a
+      href="mod_proxy.html#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
+
+      <li><a
+      href="mod_proxy.html#cachemaxexpire">CacheMaxExpire</a></li>
+
+      <li><a
+      href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></li>
+
+      <li><a href="mod_proxy.html#cacheroot">CacheRoot</a></li>
+
+      <li><a href="mod_proxy.html#cachesize">CacheSize</a></li>
+
+      <li><a
+      href="mod_charset_lite.html#charsetdefault">CharsetDefault</a></li>
+
+      <li><a
+      href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc</a></li>
+
+      <li><a
+      href="mod_charset_lite.html#charsetoptions">CharsetOptions</a></li>
+
+      <li><a
+      href="mod_speling.html#checkspelling">CheckSpelling</a></li>
+
+      <li><a
+      href="perchild.html#childperuserid">ChildPerUserID</a></li>
+
+      <li><a
+      href="core.html#clearmodulelist">ClearModuleList</a></li>
+
+      <li><a
+      href="mpm_common.html#connectionstatus">ConnectionStatus</a></li>
+
+      <li><a href="core.html#contentdigest">ContentDigest</a></li>
+
+      <li><a
+      href="mod_usertrack.html#cookieexpires">CookieExpires</a></li>
+
+      <li><a
+      href="mod_log_config.html#cookielog">CookieLog</a></li>
+
+      <li><a
+      href="mod_usertrack.html#cookietracking">CookieTracking</a></li>
+
+      <li><a
+      href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
+
+      <li><a
+      href="mod_log_config.html#customlog">CustomLog</a></li>
+
+      <li><a href="mod_dav.html#dav">Dav</a></li>
+
+      <li><a
+      href="mod_dav.html#davdepthinfinity">DavDepthInfinity</a></li>
+
+      <li><a href="mod_dav.html#davlockdb">DavLockDB</a></li>
+
+      <li><a
+      href="mod_dav.html#davmintimeout">DavMinTimeout</a></li>
+
+      <li><a
+      href="mod_autoindex.html#defaulticon">DefaultIcon</a></li>
+
+      <li><a
+      href="mod_mime.html#defaultlanguage">DefaultLanguage</a></li>
+
+      <li><a href="core.html#defaulttype">DefaultType</a></li>
+
+      <li><a href="mod_access.html#deny">Deny</a></li>
+
+      <li><a href="core.html#directory">&lt;Directory&gt;</a></li>
+
+      <li><a
+      href="core.html#directorymatch">&lt;DirectoryMatch&gt;</a></li>
+
+      <li><a
+      href="mod_dir.html#directoryindex">DirectoryIndex</a></li>
+
+      <li><a href="core.html#documentroot">DocumentRoot</a></li>
+
+      <li><a href="core.html#errordocument">ErrorDocument</a></li>
+
+      <li><a href="core.html#errorlog">ErrorLog</a></li>
+
+      <li><a href="mod_example.html#example">Example</a></li>
+
+      <li><a
+      href="mod_expires.html#expiresactive">ExpiresActive</a></li>
+
+      <li><a
+      href="mod_expires.html#expiresbytype">ExpiresByType</a></li>
+
+      <li><a
+      href="mod_expires.html#expiresdefault">ExpiresDefault</a></li>
+
+      <li><a
+      href="mod_status.html#extendedstatus">ExtendedStatus</a></li>
+
+      <li><a
+      href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></li>
+
+      <li><a
+      href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></li>
+
+      <li><a
+      href="mod_autoindex.html#fancyindexing">FancyIndexing</a></li>
+
+      <li><a href="core.html#files">&lt;Files&gt;</a></li>
+
+      <li><a
+      href="core.html#filesmatch">&lt;FilesMatch&gt;</a></li>
+
+      <li><a href="mod_mime.html#forcetype">ForceType</a></li>
+
+      <li><a href="mpm_common.html#group">Group</a></li>
+
+      <li><a href="mod_headers.html#header">Header</a></li>
+
+      <li><a
+      href="mod_autoindex.html#headername">HeaderName</a></li>
+
+      <li><a
+      href="core.html#hostnamelookups">HostNameLookups</a></li>
+
+      <li><a href="core.html#identitycheck">IdentityCheck</a></li>
+
+      <li><a href="core.html#ifdefine">&lt;IfDefine&gt;</a></li>
+
+      <li><a href="core.html#ifmodule">&lt;IfModule&gt;</a></li>
+
+      <li><a href="mod_imap.html#imapbase">ImapBase</a></li>
+
+      <li><a href="mod_imap.html#imapdefault">ImapDefault</a></li>
+
+      <li><a href="mod_imap.html#imapmenu">ImapMenu</a></li>
+
+      <li><a href="core.html#include">Include</a></li>
+
+      <li><a
+      href="mod_autoindex.html#indexignore">IndexIgnore</a></li>
+
+      <li><a
+      href="mod_autoindex.html#indexoptions">IndexOptions</a></li>
+
+      <li><a
+      href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors</a></li>
+
+      <li><a
+      href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery</a></li>
+
+      <li><a
+      href="mod_isapi.html#isapifilecache">ISAPIFileCache</a></li>
+
+      <li><a
+      href="mod_isapi.html#isapilognotsupported">ISAPILogNotSupported</a></li>
+
+      <li><a
+      href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer</a></li>
+
+      <li><a href="core.html#keepalive">KeepAlive</a></li>
+
+      <li><a
+      href="core.html#keepalivetimeout">KeepAliveTimeout</a></li>
+
+      <li><a
+      href="mod_negotiation.html#languagepriority">LanguagePriority</a></li>
+
+      <li><a
+      href="mod_ldap.html#LDAPCacheEntries">LDAPCacheEntries</a></li>
+
+      <li><a
+      href="mod_ldap.html#LDAPCacheTTL">LDAPCacheTTL</a></li>
+
+      <li><a
+      href="mod_ldap.html#LDAPCertDBPath">LDAPCertDBPath</a></li>
+
+      <li><a
+      href="mod_ldap.html#LDAPOpCacheEntries">LDAPOpCacheEntries</a></li>
+
+      <li><a
+      href="mod_ldap.html#LDAPOpCacheTTL">LDAPOpCacheTTL</a></li>
+
+      <li><a
+      href="mod_ldap.html#LDAPSharedCacheSize">LDAPSharedCacheSize</a></li>
+
+      <li><a href="core.html#limit">&lt;Limit&gt;</a></li>
+
+      <li><a
+      href="core.html#limitexcept">&lt;LimitExcept&gt;</a></li>
+
+      <li><a
+      href="core.html#limitrequestbody">LimitRequestBody</a></li>
+
+      <li><a
+      href="core.html#limitrequestfields">LimitRequestFields</a></li>
+
+      <li><a
+      href="core.html#limitrequestfieldsize">LimitRequestFieldsize</a></li>
+
+      <li><a
+      href="core.html#limitrequestline">LimitRequestLine</a></li>
+
+      <li><a
+      href="mod_dav.html#limitxmlrequestbody">LimitXMLRequestBody</a></li>
+
+      <li><a href="mpm_common.html#listen">Listen</a></li>
+
+      <li><a
+      href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
+
+      <li><a href="mod_so.html#loadfile">LoadFile</a></li>
+
+      <li><a href="mod_so.html#loadmodule">LoadModule</a></li>
+
+      <li><a href="core.html#location">&lt;Location&gt;</a></li>
+
+      <li><a
+      href="core.html#locationmatch">&lt;LocationMatch&gt;</a></li>
+
+      <li><a href="mpm_common.html#lockfile">LockFile</a></li>
+
+      <li><a
+      href="mod_log_config.html#logformat">LogFormat</a></li>
+
+      <li><a href="core.html#loglevel">LogLevel</a></li>
+
+      <li><a
+      href="core.html#limitxmlrequestbody">LimitXMLRequestBody</a></li>
+
+      <li><a href="mpm_common.html#maxclients">MaxClients</a></li>
+
+      <li><a
+      href="core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
+
+      <li><a
+      href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
+
+      <li><a
+      href="prefork.html#maxspareservers">MaxSpareServers</a></li>
+
+      <li><a
+      href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
+
+      <li><a
+      href="mpm_commont.html#maxthreadsperchild">MaxThreadsPerChild</a></li>
+
+      <li><a href="mod_cern_meta.html#metadir">MetaDir</a></li>
+
+      <li><a href="mod_cern_meta.html#metafiles">MetaFiles</a></li>
+
+      <li><a
+      href="mod_cern_meta.html#metasuffix">MetaSuffix</a></li>
+
+      <li><a
+      href="mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></li>
+
+      <li><a
+      href="prefork.html#minspareservers">MinSpareServers</a></li>
+
+      <li><a
+      href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
+
+      <li><a
+      href="core.html#namevirtualhost">NameVirtualHost</a></li>
+
+      <li><a href="mod_proxy.html#nocache">NoCache</a></li>
+
+      <li><a href="mpm_common.html#numservers">NumServers</a></li>
+
+      <li><a href="core.html#options">Options</a></li>
+
+      <li><a href="mod_access.html#order">Order</a></li>
+
+      <li><a href="mod_env.html#passenv">PassEnv</a></li>
+
+      <li><a href="mpm_common.html#pidfile">PidFile</a></li>
+
+      <li><a href="core.html#port">Port</a></li>
+
+      <li><a href="mod_proxy.html#proxyblock">ProxyBlock</a></li>
+
+      <li><a href="mod_proxy.html#proxydomain">ProxyDomain</a></li>
+
+      <li><a href="mod_proxy.html#proxypass">ProxyPass</a></li>
+
+      <li><a
+      href="mod_proxy.html#proxypassreverse">ProxyPassReverse</a></li>
+
+      <li><a
+      href="mod_proxy.html#proxyreceivebuffersize">ProxyReceiveBufferSize</a></li>
+
+      <li><a href="mod_proxy.html#proxyremote">ProxyRemote</a></li>
+
+      <li><a
+      href="mod_proxy.html#proxyrequests">ProxyRequests</a></li>
+
+      <li><a href="mod_proxy.html#proxyvia">ProxyVia</a></li>
+
+      <li><a
+      href="mod_autoindex.html#readmename">ReadmeName</a></li>
+
+      <li><a href="mod_alias.html#redirect">Redirect</a></li>
+
+      <li><a
+      href="mod_alias.html#redirectmatch">RedirectMatch</a></li>
+
+      <li><a
+      href="mod_alias.html#redirectperm">RedirectPermanent</a></li>
+
+      <li><a
+      href="mod_alias.html#redirecttemp">RedirectTemp</a></li>
+
+      <li><a
+      href="mod_mime.html#removecharset">RemoveCharset</a></li>
+
+      <li><a
+      href="mod_mime.html#removeencoding">RemoveEncoding</a></li>
+
+      <li><a
+      href="mod_mime.html#removehandler">RemoveHandler</a></li>
+
+      <li><a
+      href="mod_mime.html#removelanguage">RemoveLanguage</a></li>
+
+      <li><a href="mod_mime.html#removetype">RemoveType</a></li>
+
+      <li><a
+      href="mod_headers.html#requestheader">RequestHeader</a></li>
+
+      <li><a href="core.html#require">Require</a></li>
+
+      <li><a
+      href="mod_rewrite.html#RewriteBase">RewriteBase</a></li>
+
+      <li><a
+      href="mod_rewrite.html#RewriteCond">RewriteCond</a></li>
+
+      <li><a
+      href="mod_rewrite.html#RewriteEngine">RewriteEngine</a></li>
+
+      <li><a
+      href="mod_rewrite.html#RewriteLock">RewriteLock</a></li>
+
+      <li><a href="mod_rewrite.html#RewriteLog">RewriteLog</a></li>
+
+      <li><a
+      href="mod_rewrite.html#RewriteLogLevel">RewriteLogLevel</a></li>
+
+      <li><a href="mod_rewrite.html#RewriteMap">RewriteMap</a></li>
+
+      <li><a
+      href="mod_rewrite.html#RewriteOptions">RewriteOptions</a></li>
+
+      <li><a
+      href="mod_rewrite.html#RewriteRule">RewriteRule</a></li>
+
+      <li><a href="core.html#rlimitcpu">RLimitCPU</a></li>
+
+      <li><a href="core.html#rlimitmem">RLimitMEM</a></li>
+
+      <li><a href="core.html#rlimitnproc">RLimitNPROC</a></li>
+
+      <li><a href="core.html#satisfy">Satisfy</a></li>
+
+      <li><a
+      href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
+
+      <li><a href="mod_actions.html#script">Script</a></li>
+
+      <li><a href="mod_alias.html#scriptalias">ScriptAlias</a></li>
+
+      <li><a
+      href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></li>
+
+      <li><a
+      href="core.html#scriptinterpretersource">ScriptInterpreterSource</a></li>
+
+      <li><a href="mod_cgi.html#scriptlog">ScriptLog</a></li>
+
+      <li><a
+      href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></li>
+
+      <li><a
+      href="mod_cgi.html#scriptloglength">ScriptLogLength</a></li>
+
+      <li><a href="mod_cgid.html#scriptsock">ScriptSock</a></li>
+
+      <li><a
+      href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
+
+      <li><a href="core.html#serveradmin">ServerAdmin</a></li>
+
+      <li><a href="core.html#serveralias">ServerAlias</a></li>
+
+      <li><a href="core.html#servername">ServerName</a></li>
+
+      <li><a href="core.html#serverpath">ServerPath</a></li>
+
+      <li><a href="core.html#serverroot">ServerRoot</a></li>
+
+      <li><a
+      href="core.html#serversignature">ServerSignature</a></li>
+
+      <li><a href="core.html#servertokens">ServerTokens</a></li>
+
+      <li><a href="mod_env.html#setenv">SetEnv</a></li>
+
+      <li><a href="mod_setenvif.html#setenvif">SetEnvIf</a></li>
+
+      <li><a
+      href="mod_setenvif.html#SetEnvIfNoCase">SetEnvIfNoCase</a></li>
+
+      <li><a href="mod_mime.html#sethandler">SetHandler</a></li>
+
+      <li><a
+      href="core.html#setinputfilter">SetInputFilter</a></li>
+
+      <li><a
+      href="core.html#setoutputfilter">SetOutputFilter</a></li>
+
+      <li><a
+      href="mpm_common.html#startservers">StartServers</a></li>
+
+      <li><a
+      href="mpm_common.html#startthreads">StartThreads</a></li>
+
+      <li><a
+      href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
+
+      <li><a href="core.html#timeout">TimeOut</a></li>
+
+      <li><a
+      href="mod_log_config.html#transferlog">TransferLog</a></li>
+
+      <li><a href="mod_mime.html#typesconfig">TypesConfig</a></li>
+
+      <li><a href="mod_env.html#unsetenv">UnsetEnv</a></li>
+
+      <li><a
+      href="core.html#usecanonicalname">UseCanonicalName</a></li>
+
+      <li><a href="mpm_common.html#user">User</a></li>
+
+      <li><a href="mod_userdir.html#userdir">UserDir</a></li>
+
+      <li><a
+      href="core.html#virtualhost">&lt;VirtualHost&gt;</a></li>
+
+      <li><a
+      href="mod_vhost_alias.html#virtualdocumentroot">VirtualDocumentRoot</a></li>
+
+      <li><a
+      href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP</a></li>
+
+      <li><a
+      href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias</a></li>
+
+      <li><a
+      href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP</a></li>
+
+      <li><a href="mod_include.html#xbithack">XBitHack</a></li>
+    </ul>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+
