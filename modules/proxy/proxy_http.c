@@ -20,20 +20,13 @@
 module AP_MODULE_DECLARE_DATA proxy_http_module;
 
 int ap_proxy_http_canon(request_rec *r, char *url);
-int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
+int ap_proxy_http_handler(request_rec *r, proxy_worker *worker,
+                          proxy_server_conf *conf,
                           char *url, const char *proxyname, 
                           apr_port_t proxyport);
 
-typedef struct {
-    const char     *name;
-    apr_port_t      port;
-    apr_sockaddr_t *addr;
-    apr_socket_t   *sock;
-    int             close;
-} proxy_http_conn_t;
-
-static apr_status_t ap_proxy_http_cleanup(request_rec *r,
-                                          proxy_http_conn_t *p_conn,
+static apr_status_t ap_proxy_http_cleanup(const char *scheme,
+                                          request_rec *r,
                                           proxy_conn_rec *backend);
 
 /*
@@ -146,7 +139,8 @@ static const char *proxy_cookie_reverse_map(request_rec *r,
     const char* domainp ;
     const char* pathe = NULL;
     const char* domaine = NULL;
-    size_t l1, l2, i, poffs = 0, doffs = 0 ;
+    size_t l1, l2, poffs = 0, doffs = 0 ;
+    int i;
     int ddiff = 0 ;
     int pdiff = 0 ;
     char* ret ;
@@ -248,230 +242,8 @@ static void ap_proxy_clear_connection(apr_pool_t *p, apr_table_t *headers)
 }
 
 static
-apr_status_t ap_proxy_http_determine_connection(apr_pool_t *p, request_rec *r,
-                                                proxy_http_conn_t *p_conn,
-                                                conn_rec *c,
-                                                proxy_server_conf *conf,
-                                                apr_uri_t *uri,
-                                                char **url,
-                                                const char *proxyname,
-                                                apr_port_t proxyport,
-                                                char *server_portstr,
-                                                int server_portstr_size) {
-    int server_port;
-    apr_status_t err;
-    apr_sockaddr_t *uri_addr;
-    /*
-     * Break up the URL to determine the host to connect to
-     */
-
-    /* we break the URL into host, port, uri */
-    if (APR_SUCCESS != apr_uri_parse(p, *url, uri)) {
-        return ap_proxyerror(r, HTTP_BAD_REQUEST,
-                             apr_pstrcat(p,"URI cannot be parsed: ", *url,
-                                         NULL));
-    }
-    if (!uri->port) {
-        uri->port = apr_uri_port_of_scheme(uri->scheme);
-    }
-
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "proxy: HTTP connecting %s to %s:%d", *url, uri->hostname,
-                 uri->port);
-
-    /* do a DNS lookup for the destination host */
-    /* see memory note above */
-    err = apr_sockaddr_info_get(&uri_addr, apr_pstrdup(c->pool, uri->hostname),
-                                APR_UNSPEC, uri->port, 0, c->pool);
-
-    /* allocate these out of the connection pool - the check on
-     * r->connection->id makes sure that this string does not get accessed
-     * past the connection lifetime */
-    /* are we connecting directly, or via a proxy? */
-    if (proxyname) {
-        p_conn->name = apr_pstrdup(c->pool, proxyname);
-        p_conn->port = proxyport;
-        /* see memory note above */
-        err = apr_sockaddr_info_get(&p_conn->addr, p_conn->name, APR_UNSPEC,
-                                    p_conn->port, 0, c->pool);
-    } else {
-        p_conn->name = apr_pstrdup(c->pool, uri->hostname);
-        p_conn->port = uri->port;
-        p_conn->addr = uri_addr;
-        *url = apr_pstrcat(p, uri->path, uri->query ? "?" : "",
-                           uri->query ? uri->query : "",
-                           uri->fragment ? "#" : "",
-                           uri->fragment ? uri->fragment : "", NULL);
-    }
-
-    if (err != APR_SUCCESS) {
-        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                             apr_pstrcat(p, "DNS lookup failure for: ",
-                                         p_conn->name, NULL));
-    }
-
-    /* Get the server port for the Via headers */
-    {
-        server_port = ap_get_server_port(r);
-        if (ap_is_default_port(server_port, r)) {
-            strcpy(server_portstr,"");
-        } else {
-            apr_snprintf(server_portstr, server_portstr_size, ":%d",
-                         server_port);
-        }
-    }
-
-    /* check if ProxyBlock directive on this host */
-    if (OK != ap_proxy_checkproxyblock(r, conf, uri_addr)) {
-        return ap_proxyerror(r, HTTP_FORBIDDEN,
-                             "Connect to remote machine blocked");
-    }
-    return OK;
-}
-
-static
-apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
-                                             proxy_http_conn_t *p_conn,
-                                             conn_rec *c, conn_rec **origin,
-                                             proxy_conn_rec *backend,
-                                             proxy_server_conf *conf,
-                                             const char *proxyname) {
-    int failed=0, new=0;
-    apr_socket_t *client_socket = NULL;
-
-    /* We have determined who to connect to. Now make the connection, supporting
-     * a KeepAlive connection.
-     */
-
-    /* get all the possible IP addresses for the destname and loop through them
-     * until we get a successful connection
-     */
-
-    /* if a keepalive socket is already open, check whether it must stay
-     * open, or whether it should be closed and a new socket created.
-     */
-    /* see memory note above */
-    if (backend->connection) {
-        client_socket = ap_get_module_config(backend->connection->conn_config, &core_module);
-        if ((backend->connection->id == c->id) &&
-            (backend->port == p_conn->port) &&
-            (backend->hostname) &&
-            (!apr_strnatcasecmp(backend->hostname, p_conn->name))) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "proxy: keepalive address match (keep original socket)");
-        } else {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "proxy: keepalive address mismatch / connection has"
-                         " changed (close old socket (%s/%s, %d/%d))", 
-                         p_conn->name, backend->hostname, p_conn->port,
-                         backend->port);
-            apr_socket_close(client_socket);
-            backend->connection = NULL;
-        }
-    }
-
-    /* get a socket - either a keepalive one, or a new one */
-    new = 1;
-    if ((backend->connection) && (backend->connection->id == c->id)) {
-        apr_size_t buffer_len = 1;
-        char test_buffer[1]; 
-        apr_status_t socket_status;
-        apr_interval_time_t current_timeout;
-
-        /* use previous keepalive socket */
-        *origin = backend->connection;
-        p_conn->sock = client_socket;
-        new = 0;
-
-        /* save timeout */
-        apr_socket_timeout_get(p_conn->sock, &current_timeout);
-        /* set no timeout */
-        apr_socket_timeout_set(p_conn->sock, 0);
-        socket_status = apr_socket_recv(p_conn->sock, test_buffer, &buffer_len);
-        /* put back old timeout */
-        apr_socket_timeout_set(p_conn->sock, current_timeout);
-        if ( APR_STATUS_IS_EOF(socket_status) ) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                         "proxy: HTTP: previous connection is closed");
-            new = 1;
-        }
-    }
-    if (new) {
-
-        /* create a new socket */
-        backend->connection = NULL;
-
-        /*
-         * At this point we have a list of one or more IP addresses of
-         * the machine to connect to. If configured, reorder this
-         * list so that the "best candidate" is first try. "best
-         * candidate" could mean the least loaded server, the fastest
-         * responding server, whatever.
-         *
-         * For now we do nothing, ie we get DNS round robin.
-         * XXX FIXME
-         */
-        failed = ap_proxy_connect_to_backend(&p_conn->sock, "HTTP",
-                                             p_conn->addr, p_conn->name,
-                                             conf, r->server, c->pool);
-
-        /* handle a permanent error on the connect */
-        if (failed) {
-            if (proxyname) {
-                return DECLINED;
-            } else {
-                return HTTP_BAD_GATEWAY;
-            }
-        }
-
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "proxy: socket is connected");
-
-        /* the socket is now open, create a new backend server connection */
-        *origin = ap_run_create_connection(c->pool, r->server, p_conn->sock,
-                                           r->connection->id,
-                                           r->connection->sbh, c->bucket_alloc);
-        if (!*origin) {
-        /* the peer reset the connection already; ap_run_create_connection() 
-         * closed the socket
-         */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
-                         r->server, "proxy: an error occurred creating a "
-                         "new connection to %pI (%s)", p_conn->addr,
-                         p_conn->name);
-            apr_socket_close(p_conn->sock);
-            return HTTP_INTERNAL_SERVER_ERROR;
-        }
-        backend->connection = *origin;
-        backend->hostname = apr_pstrdup(c->pool, p_conn->name);
-        backend->port = p_conn->port;
-
-        if (backend->is_ssl) {
-            if (!ap_proxy_ssl_enable(backend->connection)) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0,
-                             r->server, "proxy: failed to enable ssl support "
-                             "for %pI (%s)", p_conn->addr, p_conn->name);
-                return HTTP_INTERNAL_SERVER_ERROR;
-            }
-        }
-        else {
-            ap_proxy_ssl_disable(backend->connection);
-        }
-
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "proxy: connection complete to %pI (%s)",
-                     p_conn->addr, p_conn->name);
-
-        /* set up the connection filters */
-        ap_run_pre_connection(*origin, p_conn->sock);
-    }
-    return OK;
-}
-
-
-static
 apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
-                                   proxy_http_conn_t *p_conn, conn_rec *origin, 
+                                   proxy_conn_rec *conn, conn_rec *origin, 
                                    proxy_server_conf *conf,
                                    apr_uri_t *uri,
                                    char *url, char *server_portstr)
@@ -499,16 +271,16 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * that subsequent client requests will hit this thread/process, so
      * we cancel server keepalive if the client does.
      */
-    p_conn->close += ap_proxy_liststr(apr_table_get(r->headers_in,
-                                                     "Connection"), "close");
+    conn->close += ap_proxy_liststr(apr_table_get(r->headers_in,
+                                                  "Connection"), "close");
 
     /* sub-requests never use keepalives */
     if (r->main) {
-        p_conn->close++;
+        conn->close++;
     }
 
     ap_proxy_clear_connection(p, r->headers_in);
-    if (p_conn->close) {
+    if (conn->close) {
         apr_table_setn(r->headers_in, "Connection", "close");
         origin->keepalive = AP_CONN_CLOSE;
     }
@@ -723,7 +495,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         if (status != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                          "proxy: request failed to %pI (%s)",
-                         p_conn->addr, p_conn->name);
+                         conn->worker->cp->addr, conn->hostname);
             return status;
         }
     }
@@ -792,7 +564,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             if (status != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                              "proxy: pass request data failed to %pI (%s)",
-                         p_conn->addr, p_conn->name);
+                         conn->worker->cp->addr, conn->hostname);
                 return status;
             }
 
@@ -825,7 +597,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         if (status != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                          "proxy: pass request data failed to %pI (%s)",
-                         p_conn->addr, p_conn->name);
+                         conn->worker->cp->addr, conn->hostname);
             return status;
         }
 
@@ -837,7 +609,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: pass request data failed to %pI (%s)",
-                     p_conn->addr, p_conn->name);
+                      conn->worker->cp->addr, conn->hostname);
         return status;
     }
  
@@ -987,9 +759,8 @@ static int addit_dammit(void *v, const char *key, const char *val)
 
 static
 apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
-                                            proxy_http_conn_t *p_conn,
-                                            conn_rec *origin,
                                             proxy_conn_rec *backend,
+                                            conn_rec *origin,
                                             proxy_server_conf *conf,
                                             char *server_portstr) {
     conn_rec *c = r->connection;
@@ -1024,11 +795,11 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             len = ap_getline(buffer, sizeof(buffer), rp, 0);
         }
         if (len <= 0) {
-            apr_socket_close(p_conn->sock);
+            apr_socket_close(backend->sock);
             backend->connection = NULL;
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "proxy: error reading status line from remote "
-                          "server %s", p_conn->name);
+                          "server %s", backend->hostname);
             return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                                  "Error reading from remote server");
         }
@@ -1047,7 +818,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * if the status line was > 8192 bytes
              */
             else if ((buffer[5] != '1') || (len >= sizeof(buffer)-1)) {
-                apr_socket_close(p_conn->sock);
+                apr_socket_close(backend->sock);
                 backend->connection = NULL;
                 return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                 apr_pstrcat(p, "Corrupt status line returned by remote "
@@ -1088,7 +859,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                              r->server, "proxy: bad HTTP/%d.%d header "
                              "returned by %s (%s)", major, minor, r->uri,
                              r->method);
-                p_conn->close += 1;
+                backend->close += 1;
                 /*
                  * ap_send_error relies on a headers_out to be present. we
                  * are in a bad position here.. so force everything we send out
@@ -1115,8 +886,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 }
                 
                 /* strip connection listed hop-by-hop headers from response */
-                p_conn->close += ap_proxy_liststr(apr_table_get(r->headers_out,
-                                                                "Connection"),
+                backend->close += ap_proxy_liststr(apr_table_get(r->headers_out,
+                                                                 "Connection"),
                                                   "close");
                 ap_proxy_clear_connection(p, r->headers_out);
                 if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
@@ -1154,7 +925,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
             /* cancel keepalive if HTTP/1.0 or less */
             if ((major < 1) || (minor < 1)) {
-                p_conn->close += 1;
+                backend->close += 1;
                 origin->keepalive = AP_CONN_CLOSE;
             }
         } else {
@@ -1162,7 +933,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             backasswards = 1;
             r->status = 200;
             r->status_line = "200 OK";
-            p_conn->close += 1;
+            backend->close += 1;
         }
 
         interim_response = ap_is_HTTP_INFO(r->status);
@@ -1258,7 +1029,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                          * backend server from hanging around waiting
                          * for a slow client to eat these bytes
                          */
-                        ap_proxy_http_cleanup(r, p_conn, backend);
+                        ap_proxy_http_cleanup(NULL, r, backend);
                         /* signal that we must leave */
                         finish = TRUE;
                     }
@@ -1266,7 +1037,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     /* try send what we read */
                     if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS) {
                         /* Ack! Phbtt! Die! User aborted! */
-                        p_conn->close = 1;  /* this causes socket close below */
+                        backend->close = 1;  /* this causes socket close below */
                         finish = TRUE;
                     }
 
@@ -1311,8 +1082,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 }
 
 static
-apr_status_t ap_proxy_http_cleanup(request_rec *r, proxy_http_conn_t *p_conn,
-                                   proxy_conn_rec *backend) {
+apr_status_t ap_proxy_http_cleanup(const char *scheme, request_rec *r,
+                                   proxy_conn_rec *backend)
+{
     /* If there are no KeepAlives, or if the connection has been signalled
      * to close, close the socket and clean up
      */
@@ -1320,10 +1092,15 @@ apr_status_t ap_proxy_http_cleanup(request_rec *r, proxy_http_conn_t *p_conn,
     /* if the connection is < HTTP/1.1, or Connection: close,
      * we close the socket, otherwise we leave it open for KeepAlive support
      */
-    if (p_conn->close || (r->proto_num < HTTP_VERSION(1,1))) {
-        if (p_conn->sock) {
-            apr_socket_close(p_conn->sock);
-            p_conn->sock = NULL;
+    if (backend->close) {
+        backend->close_on_recycle = 1;
+        ap_set_module_config(r->connection, &proxy_http_module, backend);
+        ap_proxy_release_connection(scheme, backend, r->server);    
+    }
+    else if(r->proto_num < HTTP_VERSION(1,1)) {
+        if (backend->sock) {
+            apr_socket_close(backend->sock);
+            backend->sock = NULL;
             backend->connection = NULL;
         }
     }
@@ -1339,13 +1116,15 @@ apr_status_t ap_proxy_http_cleanup(request_rec *r, proxy_http_conn_t *p_conn,
  * we return DECLINED so that we can try another proxy. (Or the direct
  * route.)
  */
-int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
+int ap_proxy_http_handler(request_rec *r, proxy_worker *worker,
+                          proxy_server_conf *conf,
                           char *url, const char *proxyname, 
                           apr_port_t proxyport)
 {
     int status;
     char server_portstr[32];
-    conn_rec *origin = NULL;
+    char *scheme;
+    const char *u;
     proxy_conn_rec *backend = NULL;
     int is_ssl = 0;
 
@@ -1365,11 +1144,18 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     apr_pool_t *p = r->connection->pool;
     conn_rec *c = r->connection;
     apr_uri_t *uri = apr_palloc(r->connection->pool, sizeof(*uri));
-    proxy_http_conn_t *p_conn = apr_pcalloc(r->connection->pool,
-                                           sizeof(*p_conn));
 
+    /* find the scheme */
+    u = strchr(url, ':');
+    if (u == NULL || u[1] != '/' || u[2] != '/' || u[3] == '\0')
+       return DECLINED;
+    if ((u - url) > 14)
+        return HTTP_BAD_REQUEST;
+    scheme = apr_pstrndup(c->pool, url, u - url);
+    /* scheme is lowercase */
+    apr_tolower(scheme);
     /* is it for us? */
-    if (strncasecmp(url, "https:", 6) == 0) {
+    if (strcmp(scheme, "https") == 0) {
         if (!ap_proxy_ssl_enable(NULL)) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: HTTPS: declining URL %s"
@@ -1378,7 +1164,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
         }
         is_ssl = 1;
     }
-    else if (!(strncasecmp(url, "http:", 5)==0 || (strncasecmp(url, "ftp:", 4)==0 && proxyname))) {
+    else if (!(strcmp(scheme, "http") == 0 || (strcmp(scheme, "ftp") == 0 && proxyname))) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: HTTP: declining URL %s", url);
         return DECLINED; /* only interested in HTTP, or FTP via proxy */
@@ -1396,51 +1182,63 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     }
     /* create space for state information */
     if (!backend) {
-        backend = apr_pcalloc(c->pool, sizeof(proxy_conn_rec));
-        backend->connection = NULL;
-        backend->hostname = NULL;
-        backend->port = 0;
+        status = ap_proxy_acquire_connection(scheme, &backend, worker, r->server);
+        if (status != OK) {
+            if (backend) {
+                backend->close_on_recycle = 1;
+                ap_proxy_release_connection(scheme, backend, r->server);
+            }
+            return status;
+        }
         if (!r->main) {
             ap_set_module_config(c->conn_config, &proxy_http_module, backend);
         }
     }
 
     backend->is_ssl = is_ssl;
+    backend->close_on_recycle = 1;
 
     /* Step One: Determine Who To Connect To */
-    status = ap_proxy_http_determine_connection(p, r, p_conn, c, conf, uri,
-                                                &url, proxyname, proxyport,
-                                                server_portstr,
-                                                sizeof(server_portstr));
+    status = ap_proxy_determine_connection(p, r, conf, worker, backend, c->pool,
+                                           uri, &url, proxyname, proxyport,
+                                           server_portstr,
+                                           sizeof(server_portstr));
+
     if ( status != OK ) {
         return status;
     }
 
     /* Step Two: Make the Connection */
-    status = ap_proxy_http_create_connection(p, r, p_conn, c, &origin, backend,
-                                             conf, proxyname);
+    status = ap_proxy_connect_backend(scheme, backend, worker, r->server);
     if ( status != OK ) {
         return status;
     }
+
+    /* Step Three: Create conn_rec */
+    if (!backend->connection) {
+        status = ap_proxy_connection_create(scheme, backend, c, r->server);
+        if (status != OK)
+            return status;
+    }
    
-    /* Step Three: Send the Request */
-    status = ap_proxy_http_request(p, r, p_conn, origin, conf, uri, url,
+    /* Step Four: Send the Request */
+    status = ap_proxy_http_request(p, r, backend, backend->connection, conf, uri, url,
                                    server_portstr);
     if ( status != OK ) {
         return status;
     }
 
-    /* Step Four: Receive the Response */
-    status = ap_proxy_http_process_response(p, r, p_conn, origin, backend, conf,
+    /* Step Five: Receive the Response */
+    status = ap_proxy_http_process_response(p, r, backend, backend->connection, conf,
                                             server_portstr);
     if ( status != OK ) {
         /* clean up even if there is an error */
-        ap_proxy_http_cleanup(r, p_conn, backend);
+        ap_proxy_http_cleanup(scheme, r, backend);
         return status;
     }
 
-    /* Step Five: Clean Up */
-    status = ap_proxy_http_cleanup(r, p_conn, backend);
+    /* Step Six: Clean Up */
+    status = ap_proxy_http_cleanup(scheme, r, backend);
     if ( status != OK ) {
         return status;
     }
