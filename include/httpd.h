@@ -808,10 +808,15 @@ struct request_rec {
     struct ap_rr_xlate *rrx;
 #endif /*APACHE_XLATE*/
 
-    /** A list of filters to be used for this request 
+    /** A list of output filters to be used for this request 
      *  @defvar ap_filter_t *filters */
-    struct ap_filter_t *filters;
+    struct ap_filter_t *output_filters;
+    /** A flag to determine if the eos bucket has been sent yet
+     *  @defvar int eos_sent */
     int eos_sent;
+    /** A list of output filters to be used for this request 
+     *  @defvar ap_filter_t *filters */
+    struct ap_filter_t *input_filters;
 
 /* Things placed at the end of the record to avoid breaking binary
  * compatibility.  It would be nice to remember to reorder the entire

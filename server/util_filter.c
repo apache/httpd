@@ -111,12 +111,12 @@ API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
             f->ctx = ctx;
             f->r = r;
 
-            if (INSERT_BEFORE(f, r->filters)) {
-                f->next = r->filters;
-                r->filters = f;
+            if (INSERT_BEFORE(f, r->output_filters)) {
+                f->next = r->output_filters;
+                r->output_filters = f;
             }
             else {
-                ap_filter_t *fscan = r->filters;
+                ap_filter_t *fscan = r->output_filters;
                 while (!INSERT_BEFORE(f, fscan->next))
                     fscan = fscan->next;
                 f->next = fscan->next;
@@ -131,7 +131,7 @@ API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
 /* Pass the buckets to the next filter in the filter stack.  If the
  * current filter is a handler, we should get NULL passed in instead of
  * the current filter.  At that point, we can just call the first filter in
- * the stack, or r->filters.
+ * the stack, or r->output_filters.
  */
 API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *bb)
 {

@@ -1358,7 +1358,7 @@ static void end_output_stream(request_rec *r)
     bb = ap_brigade_create(r->pool);
     b = ap_bucket_create_eos();
     AP_BRIGADE_INSERT_TAIL(bb, b);
-    ap_pass_brigade(r->filters, bb);
+    ap_pass_brigade(r->output_filters, bb);
 }
 
 void ap_finalize_sub_req_protocol(request_rec *sub)
@@ -2742,7 +2742,7 @@ API_EXPORT(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
     bb = ap_brigade_create(r->pool);
     b = ap_bucket_create_mmap(mm, 0, mm->size);
     AP_BRIGADE_INSERT_TAIL(bb, b);
-    ap_pass_brigade(r->filters, bb);
+    ap_pass_brigade(r->output_filters, bb);
 
     return mm->size; /* XXX - change API to report apr_status_t? */
 }
@@ -2761,7 +2761,7 @@ API_EXPORT(int) ap_rputc(int c, request_rec *r)
     bb = ap_brigade_create(r->pool);
     b = ap_bucket_create_transient(&c2, 1);
     AP_BRIGADE_INSERT_TAIL(bb, b);
-    ap_pass_brigade(r->filters, bb);
+    ap_pass_brigade(r->output_filters, bb);
 
     return c;
 }
@@ -2781,7 +2781,7 @@ API_EXPORT(int) ap_rputs(const char *str, request_rec *r)
     bb = ap_brigade_create(r->pool);
     b = ap_bucket_create_transient(str, len);
     AP_BRIGADE_INSERT_TAIL(bb, b);
-    ap_pass_brigade(r->filters, bb);
+    ap_pass_brigade(r->output_filters, bb);
 
     return len;
 }
@@ -2799,7 +2799,7 @@ API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
     bb = ap_brigade_create(r->pool);
     b = ap_bucket_create_transient(buf, nbyte);
     AP_BRIGADE_INSERT_TAIL(bb, b);
-    ap_pass_brigade(r->filters, bb);
+    ap_pass_brigade(r->output_filters, bb);
     return nbyte;
 }
 
@@ -2814,7 +2814,7 @@ API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
     bb = ap_brigade_create(r->pool);
     written = ap_brigade_vprintf(bb, fmt, va);
     if (written != 0)
-        ap_pass_brigade(r->filters, bb);
+        ap_pass_brigade(r->output_filters, bb);
     return written;
 }
 
@@ -2849,7 +2849,7 @@ API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r, ...)
     written = ap_brigade_vputstrs(bb, va);
     va_end(va);
     if (written != 0)
-        ap_pass_brigade(r->filters, bb);
+        ap_pass_brigade(r->output_filters, bb);
     return written;
 }
 
