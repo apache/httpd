@@ -1,5 +1,7 @@
 Changes with Apache 2.0.40
 
+  *) Look for OpenSSL libraries in /usr/lib64.  [Peter Poeml <poeml@suse.de>]
+
   *) Update SuSE layout.  [Peter Poeml <poeml@suse.de>]
 
   *) Changes to the internationalized error documents:
