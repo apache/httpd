@@ -1,5 +1,7 @@
 Changes with Apache 1.2b5
 
+  *) remove duplicate pcalloc() call in new_connection().
+
   *) Fix incorrect comparison which could allow number of children =
      MaxClients + 1 if less than HARD_SERVER_LIMIT. Also fix potential
      problem if StartServers > HARD_SERVER_LIMIT. [Ed Korthof]

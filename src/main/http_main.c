@@ -1439,11 +1439,10 @@ conn_rec *new_connection (pool *p, server_rec *server, BUFF *inout,
 {
     conn_rec *conn = (conn_rec *)pcalloc (p, sizeof(conn_rec));
     
-    /* Get a connection structure, and initialize what fields we can
+    /* Got a connection structure, so initialize what fields we can
      * (the rest are zeroed out by pcalloc).
      */
     
-    conn = (conn_rec *)pcalloc(p, sizeof(conn_rec));
     conn->child_num = child_num;
     
     conn->pool = p;
