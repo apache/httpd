@@ -1029,6 +1029,14 @@ $CAT >> $awkfile <<'EOF4'
 EOF4
 awk -f $awkfile >>Makefile </dev/null
 
+#
+# Now add -DSERVER_SUBVERSION if $SUBVERSION is set
+#
+if [ "x$SUBVERSION" != "x" ] ; then
+        SUBVERSION=`echo $SUBVERSION | sed 's/^ +//'`
+	CFLAGS="$CFLAGS -DSERVER_SUBVERSION=\"$SUBVERSION\""
+fi
+
 ####################################################################
 # Continue building Makefile.config.
 #
