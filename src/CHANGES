@@ -1,4 +1,10 @@
 Changes with Apache 1.3.4
+ 
+  *) Make generation of src/Configuration.apaci more robust: It failed to
+     differenciate between modules when one module name was a postfix of
+     another (e.g. cgi vs. fastcgi). We now check for mod_XXX, libXXX and even
+     just XXX (think about totally non-standard names like "apache_ssl", too).
+     [Ralf S. Engelschall] PR#3380
 
   *) In src/Configure remove the SERVER_SUBVERSION support (already deprecated
      since 1.3b7) and make whitespace handling more robust (it failed horrible

@@ -1202,17 +1202,17 @@ OIFS="$IFS" IFS=':'
 for module in $modules; do
     eval "add=\$module_$module"
     if [ $add = yes ]; then
-        echo $SEO "s%^.*\\(AddModule.*$module\\..*\\)%\\1%g" >>$sedsubst
-        echo $SEO "s%^.*\\(SharedModule.*$module\\..*\\)%\\1%g" >>$sedsubst
+        echo $SEO "s%^.*\\(AddModule.*[_b/]$module\\..*\\)%\\1%g" >>$sedsubst
+        echo $SEO "s%^.*\\(SharedModule.*[_b/]$module\\..*\\)%\\1%g" >>$sedsubst
         m="yes [static]"
     else
-        echo $SEO "s%^.*\\(AddModule.*$module\\..*\\)%# \\1%g" >>$sedsubst
-        echo $SEO "s%^.*\\(SharedModule.*$module\\..*\\)%# \\1%g" >>$sedsubst
+        echo $SEO "s%^.*\\(AddModule.*[_b/]$module\\..*\\)%# \\1%g" >>$sedsubst
+        echo $SEO "s%^.*\\(SharedModule.*[_b/]$module\\..*\\)%# \\1%g" >>$sedsubst
         m=no
     fi
     eval "share=\$shared_$module"
     if [ $share = yes ]; then
-        echo $SEO "s%^\\(.*\\)AddModule\\(.*$module\\.\\)[oa]\\(.*\\)%\\1SharedModule\\2so\\3%g" >>$sedsubst
+        echo $SEO "s%^\\(.*\\)AddModule\\(.*[_b/]$module\\.\\)[oa]\\(.*\\)%\\1SharedModule\\2so\\3%g" >>$sedsubst
         m="yes [shared]"
     fi
     if [ $verbose = yes ]; then
