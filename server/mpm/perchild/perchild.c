@@ -917,8 +917,8 @@ static void child_main(int child_num_arg)
         }
     }
 
-    /* This thread will be the one responsible for handling signals */
-    worker_thread(&worker_thread_free_ids[max_threads]);
+    /* This thread will be be a worker thread too. */
+    worker_thread(&worker_thread_free_ids[max_threads - 1]);
 
 }
 
