@@ -188,6 +188,7 @@ ap_meets_conditions
 ap_merge_per_dir_configs
 ap_method_number_of
 ap_month_snames
+ap_my_generation
 ap_no2slash
 ap_note_auth_failure
 ap_note_basic_auth_failure
