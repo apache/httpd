@@ -70,7 +70,7 @@ API_EXPORT(char *) ap_md5contextTo64(pool *p, AP_MD5_CTX * context);
 #ifdef CHARSET_EBCDIC
 API_EXPORT(char *) ap_md5digest(pool *p, FILE *infile, int convert);
 #else
-API_EXPORT(char *) ap_md5digest(pool *p, FILE *infile);
+API_EXPORT(char *) ap_md5digest(pool *p, APRFile infile);
 #endif /* CHARSET_EBCDIC */
 
 #ifdef __cplusplus

@@ -72,6 +72,7 @@ extern "C" {
 #include "alloc.h"
 #include "buff.h"
 #include "ap.h"
+#include "apr.h"
 
 /* ----------------------------- config dir ------------------------------ */
 
@@ -1110,7 +1111,7 @@ extern API_VAR_EXPORT time_t ap_restart_time;
 #ifdef NO_SLACK
 #define ap_slack(fd,line)   (fd)
 #else
-int ap_slack(int fd, int line);
+APRFile ap_slack(APRFile fd, int line);
 #define AP_SLACK_LOW	1
 #define AP_SLACK_HIGH	2
 #endif
