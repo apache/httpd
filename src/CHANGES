@@ -1,9 +1,13 @@
 Changes with Apache 1.3
   
+  *) API: A new handler response DONE which informs apache that the
+     request has been handled and it can finish off quickly, similar to
+     how it handles errors. [Rob Hartill]
+  
   *) mod_expire also issues Cache-Control: max-age headers.
      [Rob Hartill]
 
-  *) Added kill_only_once option for free_proc_chain so that it won't
+  *) API: Added kill_only_once option for free_proc_chain so that it won't
      aggressively try to kill off specific children.  For fastcgi.
      [Stanley Gambarin <gambarin@OpenMarket.com>]
 

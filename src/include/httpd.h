@@ -269,6 +269,9 @@
 #define SERVER_SUPPORT "http://www.apache.org/"
 
 #define DECLINED -1		/* Module declines to handle */
+#define DONE -2                 /* Module has served the response completely 
+                                 *  - it's safe to die() with no more output
+                                 */
 #define OK 0			/* Module has handled this stage. */
 
 

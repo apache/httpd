@@ -782,6 +782,8 @@ void die(int type, request_rec *r)
     int error_index = index_of_response (type);
     char *custom_response = response_code_string(r, error_index);
     int recursive_error = 0;
+
+    if (type == DONE) return;
     
     /* The following takes care of Apache redirects to custom response URLs
      * Note that if we are already dealing with the response to some other
