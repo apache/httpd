@@ -1,4 +1,5 @@
 #!
+ap_MD5Encode
 ap_MD5Final
 ap_MD5Init
 ap_MD5Update

@@ -204,7 +204,8 @@
  *                      - reordered entries in request_rec that were waiting
  *                        for a non-binary-compatible release.
  * 19990108-1           - add ap_find_opaque_token() for things like ETags
- *   (1.3.5-dev)          which can contain opaque quoted strings
+ *   (1.3.5-dev)          which can contain opaque quoted strings, and
+ *                        ap_MD5Encode() for MD5 password handling.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
