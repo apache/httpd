@@ -70,7 +70,7 @@
         <td valign="top"><strong>Related Directives</strong><br />
          <br />
          <a
-        href="mod/core.html#coredumpdirectory">CoreDumpDirectory</a><br />
+        href="mod/mpm_common.html#coredumpdirectory">CoreDumpDirectory</a><br />
          <a
         href="mod/core.html#documentroot">DocumentRoot</a><br />
          <a href="mod/core.html#errorlog">ErrorLog</a><br />

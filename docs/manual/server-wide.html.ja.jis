@@ -69,7 +69,7 @@
       <tr>
         <td valign="top"><strong>関連ディレクティブ</strong><br />
         <br />
-        <a href="mod/core.html#coredumpdirectory"
+        <a href="mod/mpm_common.html#coredumpdirectory"
         >CoreDumpDirectory</a><br />
         <a href="mod/core.html#documentroot"
         >DocumentRoot</a><br />
