@@ -219,7 +219,9 @@ AP_DECLARE_NONSTD(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_t
         calc_scoreboard_size();
         if (sb_type == SB_SHARED) {
             rv = setup_shared(p);
-            exit(APEXIT_INIT); /* XXX need to return an error from this function */
+            if (rv) {
+                exit(APEXIT_INIT); /* XXX need to return an error from this function */
+            }
         }
         else {
             /* A simple malloc will suffice */
