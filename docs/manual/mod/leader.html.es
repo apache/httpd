@@ -26,10 +26,6 @@
 <a href="../es/mod/leader.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ko/mod/leader.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Descripción:</a></th><td>Variante experimental del MPM estándar
 <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Estado:</a></th><td>MPM</td></tr>
@@ -37,9 +33,9 @@
 <tr><th><a href="module-dict.html#SourceFile">Fichero de Código Fuente:</a></th><td>leader.c</td></tr></table>
 <h3>Resumen de contenidos</h3>
 
-    <div class="warning"><h3>Warning</h3>
+    <div class="warning"><h3>Advertencia</h3>
       <p>Este módulo es todavía experimental, lo que
-      significa que podría no funcionar como es debido.</p>
+      significa que podría no funcionar como se espera.</p>
     </div>
     
     <p>Este módulo es una variante experimental del módulo
@@ -48,21 +44,22 @@
     trabajo entre las hebras. Para más información, consulte
     <a href="http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf">http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf</a>.</p>
 
-    <p>Para usar el MPM <code class="module"><a href="../mod/leader.html">leader</a></code>, añada
+    <p>Para usar el módulo de multiprocesamiento
+      <code class="module"><a href="../mod/leader.html">leader</a></code>, añada
       <code>--with-mpm=leader</code> como argumento al script
-      <code>configure</code> en el momento de compilar
-      <code>httpd</code>.</p>
+      <code class="program"><a href="../programs/configure.html">configure</a></code> en el momento de compilar
+      <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
   
     <p>Este módulo de multiprocesamiento depende de operaciones
-    atómicas compare-and-swap del APR para sicronizar las
+    atómicas compare-and-swap del APR para sincronizar las
     hebras. Si está compilando el servidor para una máquina
     x86 y no necesita soportar la arquitectura 386, o está
     compilando para una máquina SPARC y no necesita ejecutar el
     servidor en chips pre-UltraSPARC, añada
     <code>--enable-nonportable-atomics=yes</code> como argumento al
-    script <code>configure</code>. Esto hará que APR implemente
+    script <code class="program"><a href="../programs/configure.html">configure</a></code>. Esto hará que APR implemente
     las operaciones atómicas usando opciones más eficientes
-    que no están presentes en CPUs antiguas.</p>
+    que no están presentes para CPUs antiguas.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directivas</h3>
 <ul id="toc">
