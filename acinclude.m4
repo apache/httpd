@@ -1,3 +1,19 @@
+ 
+AC_DEFUN(APACHE_CONFIG_NICE,[
+  rm -f $1
+  cat >$1<<EOF
+#! /bin/sh
+#
+# Created by configure
+
+EOF
+
+  for arg in [$]0 "[$]@"; do
+    echo "\"[$]arg\" \\" >> $1
+  done
+  echo '"[$]@"' >> $1
+  chmod +x $1
+])
 
 AC_DEFUN(APACHE_PASSTHRU,[
   unset ac_cv_pass_$1
