@@ -70,6 +70,8 @@
 #include "util_filter.h"
 #include "apr_buckets.h"
 #include "http_request.h"
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #include "zlib.h"
 
