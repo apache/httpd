@@ -79,7 +79,7 @@
  */
 
 static int threads_to_start=0;         /* Worker threads per child */
-static int min_spare_threads=0;
+static int min_spare_threads=1;
 static int max_spare_threads=HARD_THREAD_LIMIT;
 static int max_requests_per_child=0;
 static char *ap_pid_fname=NULL;
@@ -1520,7 +1520,7 @@ static const char *set_threads_to_start (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_min_free_threads(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_min_spare_threads(cmd_parms *cmd, void *dummy, char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1538,7 +1538,7 @@ static const char *set_min_free_threads(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_max_free_threads(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy, char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1546,6 +1546,11 @@ static const char *set_max_free_threads(cmd_parms *cmd, void *dummy, char *arg)
     }
 
     max_spare_threads = atoi(arg);
+    if (max_spare_threads >= HARD_THREAD_LIMIT) {
+       fprintf(stderr, "WARNING: detected MinSpareThreads set higher than\n");
+       fprintf(stderr, "HARD_THREAD_LIMIT. Resetting to %d\n", HARD_THREAD_LIMIT);
+       max_spare_threads = HARD_THREAD_LIMIT;
+    }
     return NULL;
 }
 
@@ -1624,9 +1629,9 @@ LISTEN_COMMANDS
   "Number of children alive at the same time" },
 { "StartThreads", set_threads_to_start, NULL, RSRC_CONF, TAKE1,
   "Number of threads each child creates" },
-{ "MinSpareThreads", set_min_free_threads, NULL, RSRC_CONF, TAKE1,
+{ "MinSpareThreads", set_min_spare_threads, NULL, RSRC_CONF, TAKE1,
   "Minimum number of idle threads per child, to handle request spikes" },
-{ "MaxSpareThreads", set_max_free_threads, NULL, RSRC_CONF, TAKE1,
+{ "MaxSpareThreads", set_max_spare_threads, NULL, RSRC_CONF, TAKE1,
   "Maximum number of idle threads per child" },
 { "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF, TAKE1,
   "Maximum number of requests a particular child serves before dying." },
