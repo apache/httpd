@@ -269,10 +269,7 @@ char *check_fulluri (request_rec *r, char *uri) {
   /* Find the port */
   host = getword(r->pool, &name, ':');
   if (*name) port = atoi(name);
-  else {
-    host = name;
-    port = 80;
-  }
+  else port = 80;
 
   /* Make sure ports patch */
   if (port != r->server->port) return uri;
