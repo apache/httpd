@@ -37,6 +37,10 @@ Options</CODE> is set):
 Options +Includes
 </PRE>
 
+Alternatively the <A HREF="#xbithack"><CODE>XBitHack</CODE></A>
+directive can be used to parse normal (<CODE>text/html</CODE>) files,
+based on file permissions.  <P>
+
 For backwards compatibility, documents with mime type
 <code>text/x-server-parsed-html</code> or
 <code>text/x-server-parsed-html3</code> will also be parsed
@@ -316,6 +320,8 @@ otherwise:
 <strong>Module:</strong> mod_include<p>
 
 The XBitHack directives controls the parsing of ordinary html documents.
+This directive only affects files associated with the MIME type
+<CODE>text/html</CODE>. 
 <em>Status</em> can have the following values:
 <dl>
 <dt>off
