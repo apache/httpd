@@ -94,6 +94,7 @@
         <directive module="mod_dir">DirectoryIndex</directive>
         <directive module="core">HostnameLookups</directive>
         <directive module="core">EnableMMAP</directive>
+        <directive module="core">EnableSendfile</directive>
         <directive module="core">KeepAliveTimeout</directive>
         <directive module="prefork">MaxSpareServers</directive>
         <directive module="prefork">MinSpareServers</directive>
@@ -282,6 +283,38 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
       should use <code>EnableMMAP off</code> to disable the memory-mapping
       of delivered files. (Note: This directive can be overridden on
       a per-directory basis.)</p>
+
+    </section>
+
+    <section>
+
+      <title>Sendfile</title>
+
+      <p>In situations where Apache 2.0 can ignore the contents of the file
+      to be delivered -- for example, when serving static file content -- 
+      it normally uses the kernel sendfile support the file if the OS 
+      supports the <code>sendfile(2)</code> operation.</p>
+
+      <p>On most platforms, using sendfile improves performance by eliminating
+      separate read and send mechanics.  However, there are cases where using
+      sendfile can harm the stability of the httpd:</p>
+
+      <ul>
+        <li>
+          <p>Some platforms may have broken sendfile support that the build
+          system did not detect, especially if the binaries were built on
+          another box and moved to such a machine with broken sendfile support.</p>
+        </li>
+        <li>
+          <p>With an NFS-mounted files, the kernel may be unable 
+          to reliably serve the network file through it's own cache.</p>
+        </li>
+      </ul>
+
+      <p>For installations where either of these factors applies, you
+      should use <code>EnableSendfile off</code> to disable sendfile
+      delivery of file contents. (Note: This directive can be overridden 
+      on a per-directory basis.)</p>
 
     </section>
 
