@@ -1,0 +1,192 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<modulesynopsis>
+
+<name>mod_cache</name>
+<description>Content cache keyed to URIs</description>
+<status>Experimental</status>
+<sourcefile>mod_cache.c</sourcefile>
+<identifier>cache_module</identifier>
+
+<summary>
+
+<note type="warning">
+This module is experimental. Documentation is still under development...
+</note>
+    <p>mod_cache implements an RFC 2616 compliant HTTP content
+    cache that can be used to cache either local or proxied content.
+    mod_cache requires the services of one or more storage
+    management modules. Two storage management modules are included in
+    the base Apache distribution: <em>mod_disk_cache</em> implements a
+    disk based storage manager (generally used for proxy caching) and 
+    <em>mod_mem_cache</em> implements an in-memory based storage
+    manager (primarily useful for caching local content). </p>
+
+    <p>Content stored and retrived keyed to the URL. Content with
+    access protections is not cached.</p>
+
+</summary>
+
+<section><title>Sample Configuration</title>
+
+<example><title>Sample httpd.conf</title>
+
+# <br />
+# Sample Cache Configuration  <br />
+# <br />
+LoadModule cache_module modules/mod_cache.so  <br />
+&lt;IfModule mod_cache.c&gt;<br />
+   CacheOn On<br />
+<p />
+   #LoadModule disk_cache_module modules/mod_disk_cache.so <br />
+   &lt;IfModule mod_disk_cache.c&gt; <br />
+      CacheRoot c:/cacheroot <br />
+      CacheEnable disk  / <br />
+      CacheDirLevels 5 <br />
+      CacheDirLength 3 <br />
+   &lt;/IfModule&gt; <br />
+<p />
+   LoadModule mem_cache_module modules/mod_mem_cache.so <br />
+   &lt;IfModule mod_mem_cache.c&gt; <br />
+      CacheEnable mem  / <br />
+      CacheSize 4096 <br />
+      CacheMaxObjectCount 100 <br />
+      CacheMinObjectSize 1 <br />
+      CacheMaxObjectSize 2048 <br />
+   &lt;/IfModule&gt; <br />
+<p />
+&lt;/IfModule&gt; <br />
+
+</example>
+
+</section>
+
+<directivesynopsis>
+<name>CacheOn</name>
+<description></description>
+<syntax>CacheOn</syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>
+    </p>
+
+
+<example>
+  CacheOn
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheEnable</name>
+<description>Enable caching specified URLs in a specified storage manager</description>
+<syntax>CacheEnable <em>cache_type </em><em> url-string</em></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>CacheEnable</directive> directive instructs
+    mod_cache to cache urls at or below <em>url-string</em>.  
+    The cache store is specified with the <em>cache_type</em> argument.
+    <em>cache_type </em> <em> mem</em> instructs mod_cache to use the
+    in-memory cache storage manager implemented by <em>mod_mem_cache</em>. 
+    <em>cache_type </em> <em> disk</em> instructs mod_cache to use the
+    cache storage manager implemented by <em>mod_disk_cache </em>. </p>
+
+<example>
+  CacheEnable  disk  / <br />
+  CacheEnable  mem   /manual
+</example>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDisable</name>
+<description>Disable caching of specified URLs by specified storage manager</description>
+<syntax>CacheDisable <em>cache_type </em> <em> url-string</em></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>CacheDisable</directive> directive instructs
+    mod_cache to <em>not</em> cache urls at or above <em>url-string</em>.</p>
+
+<example><title>Example</title>
+  CacheDisable disk /local_files
+</example>
+</usage>
+
+</directivesynopsis>
+<directivesynopsis>
+<name>CacheMaxExpire</name>
+<description>The maximum time in seconds to cache a document</description>
+<syntax></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The maximum time in seconds to cache a document.</p>
+    <example>
+    CacheMaxExpire 604800
+    </example>
+</usage>
+</directivesynopsis>
+<directivesynopsis>
+<name>CacheDefaultExpire</name>
+<syntax></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The default time in seconds to cache a document.</p>
+    <example>
+    CacheDefaultExpire 86400
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreNoLastMod</name>
+<description>Ignore responses where there is no Last Modified Header</description>
+<syntax></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Ignore responses where there is no Last Modified Header</p>
+
+    <example>
+    CacheIgnoreNoLastMod 
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreCacheControl</name>
+<description>Ignore requests from the client for uncached content</description>
+<syntax></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Ignore requests from the client for uncached content</p>
+
+    <example>
+    CacheIgnoreNoLastMod 
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheLastModifiedFactor</name>
+<description>The factor used to estimate the Expires date from the LastModified date</description>
+<syntax></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The factor used to estimate the Expires date from the LastModified date.</p>
+
+    <example>
+    CacheLastModifiedFactor  
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
