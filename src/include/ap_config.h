@@ -294,7 +294,7 @@ extern char *getwd();
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
 #define DEFAULT_USER "nobody"
-#define DEFAULT_GROUP "nobody"
+#define DEFAULT_GROUP "nogroup"
 typedef quad_t rlim_t;
 
 #elif defined(UTS21)
@@ -321,7 +321,7 @@ typedef quad_t rlim_t;
 #define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
 #define DEFAULT_USER "nobody"
-#define DEFAULT_GROUP "nobody"
+#define DEFAULT_GROUP "nogroup"
 typedef quad_t rlim_t;
 
 #elif defined(QNX)
