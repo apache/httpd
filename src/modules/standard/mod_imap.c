@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_imap.c,v 1.10 1996/08/20 11:51:11 paul Exp $ */
+/* $Id: mod_imap.c,v 1.11 1996/09/28 03:10:37 brian Exp $ */
 /*
  * This imagemap module started as a port of the original imagemap.c
  * written by Rob McCool (11/13/93 robm@ncsa.uiuc.edu).
@@ -98,7 +98,7 @@
 
 #define IMAP_MAGIC_TYPE "application/x-httpd-imap"
 #define LARGEBUF 500
-#define SMALLBUF 100
+#define SMALLBUF 256
 #define MAXVERTS 100
 #define X 0
 #define Y 1
@@ -377,14 +377,14 @@ void imap_url(request_rec *r, char *base, char *value, char *url)
   }
 
   if ( ! strcasecmp(value, "nocontent") || ! strcasecmp(value, "error") ) {
-    strcpy(url, value);
+    strncpy(url, value, SMALLBUF);
     return;    /* these are handled elsewhere, so just copy them */
   }
 
   if ( ! strcasecmp(value, "referer" ) ) {
     referer = table_get(r->headers_in, "Referer");
     if ( referer && *referer ) {
-      strcpy(url, referer);
+      strncpy(url, referer, SMALLBUF);
       return;
     }
     else {
@@ -396,13 +396,13 @@ void imap_url(request_rec *r, char *base, char *value, char *url)
   while ( isalpha(*string_pos) )
     string_pos++;    /* go along the URL from the map until a non-letter */
   if ( *string_pos == ':' ) { 
-    strcpy(url, value);        /* if letters and then a colon (like http:) */
+    strncpy(url, value, SMALLBUF);        /* if letters and then a colon (like http:) */
     return;                    /* it's an absolute URL, so use it! */
   }
 
   if ( ! base || ! *base ) {
     if ( value && *value ) {  
-      strcpy(url, value);   /* no base: use what is given */
+      strncpy(url, value, SMALLBUF);   /* no base: use what is given */
     }         
     else {                  
       if (r->server->port == 80 ) {  
@@ -416,7 +416,7 @@ void imap_url(request_rec *r, char *base, char *value, char *url)
     return;  
   }
 
-  strcpy(my_base, base);  /* must be a relative URL to be combined with base */
+  strncpy(my_base, base, SMALLBUF);  /* must be a relative URL to be combined with base */
   string_pos = my_base; 
   while (*string_pos) {  
     if (*string_pos == '/' && *(string_pos+1) == '/') {
@@ -699,7 +699,7 @@ int imap_handler(request_rec *r)
       imap_url(r, NULL, value, mapdflt);
       if (showmenu) {              /* print the default if there's a menu */
 	if (! *href_text) {           /* if we didn't find a "href text" */
-	  strcpy(href_text, mapdflt); /* use the href itself as text */
+	  strncpy(href_text, mapdflt, SMALLBUF); /* use the href itself as text */
 	}
 	imap_url(r, base, mapdflt, redirect); 
 	menu_default(r, imap_menu, redirect, href_text);
@@ -730,7 +730,7 @@ int imap_handler(request_rec *r)
     if (showmenu) {
       read_quoted(string_pos, href_text); /* href text could be here instead */
       if (! *href_text) {           /* if we didn't find a "href text" */
-	strcpy(href_text, value);  /* use the href itself in the menu */
+	strncpy(href_text, value, SMALLBUF);  /* use the href itself in the menu */
       }
       imap_url(r, base, value, redirect); 
       menu_directive(r, imap_menu, redirect, href_text);
@@ -775,7 +775,7 @@ int imap_handler(request_rec *r)
     if ( ! strcasecmp(directive, "point" ) ) {         /* point */
       
       if (is_closer(testpoint, pointarray, &closest_yet) ) {
-	strcpy(closest, value);  /* if the closest point yet save it */
+	strncpy(closest, value, SMALLBUF);  /* if the closest point yet save it */
       }
       
       continue;    
