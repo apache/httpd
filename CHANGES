@@ -1,5 +1,9 @@
 Changes with Apache 2.0.44
-  
+
+  *) Terminate CGI scripts when the client connection drops.  This
+     fix only applies to some normal paths in mod_cgi.  mod_cgid
+     is still busted.  PR 8388  [Jeff Trawick]
+
   *) Fix a bug where 416 "Range not satisfiable" was being
      returned for content that should have been redirected.
      [Greg Ames]
