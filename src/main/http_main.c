@@ -2361,20 +2361,6 @@ void standalone_main(int argc, char **argv)
 	ptrans = make_sub_pool (pconf);
 
 	server_conf = read_config (pconf, ptrans, server_confname); 
-	open_logs (server_conf, pconf);
-	set_group_privs ();
-	accept_mutex_init (pconf);
-	if (!is_graceful) {
-	    reinit_scoreboard(pconf);
-	}
-#ifdef SCOREBOARD_FILE
-	else {
-	    scoreboard_fname = server_root_relative (pconf, scoreboard_fname);
-	    note_cleanups_for_fd (pconf, scoreboard_fd);
-	}
-#endif
-
-	default_server_hostnames (server_conf);
 
 	listenmaxfd = -1;
 	FD_ZERO (&listenfds);
@@ -2390,6 +2376,22 @@ void standalone_main(int argc, char **argv)
 	    lr->fd = fd;
 	}
 	close_unused_listeners ();
+
+	init_modules (pconf, server_conf);
+	open_logs (server_conf, pconf);
+	set_group_privs ();
+	accept_mutex_init (pconf);
+	if (!is_graceful) {
+	    reinit_scoreboard(pconf);
+	}
+#ifdef SCOREBOARD_FILE
+	else {
+	    scoreboard_fname = server_root_relative (pconf, scoreboard_fname);
+	    note_cleanups_for_fd (pconf, scoreboard_fd);
+	}
+#endif
+
+	default_server_hostnames (server_conf);
 
 	set_signals ();
 	log_pid (pconf, pid_fname);
@@ -2598,6 +2600,7 @@ main(int argc, char *argv[])
 
     suexec_enabled = init_suexec();
     server_conf = read_config (pconf, ptrans, server_confname);
+    init_modules (pconf, server_conf);
     
     if(standalone) {
         clear_pool (pconf);	/* standalone_main rereads... */
@@ -3482,6 +3485,7 @@ main(int argc, char *argv[])
     setup_prelinked_modules();
 
     server_conf = read_config (pconf, ptrans, server_confname);
+    init_modules (pconf, server_conf);
     suexec_enabled = init_suexec();
     open_logs(server_conf, pconf);
     set_group_privs();
