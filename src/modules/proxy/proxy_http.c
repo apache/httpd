@@ -142,8 +142,8 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	     const char *proxyhost, int proxyport)
 {
     char *p;
-    const char *err, *host;
-    int port, i, sock, len;
+    const char *err, *desthost;
+    int i, sock, len;
     array_header *reqhdrs_arr, *resp_hdrs;
     table_entry *reqhdrs;
     struct sockaddr_in server;
@@ -152,6 +152,8 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     char buffer[HUGE_STRING_LEN], inprotocol[9], outprotocol[9];
     pool *pool=r->pool;
     const long int zero=0L;
+    int destport = 0;
+    char *destportstr = NULL;
 
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
@@ -162,21 +164,16 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     memset(&server, '\0', sizeof(server));
     server.sin_family = AF_INET;
 
-    if (proxyhost != NULL)
-    {
-	server.sin_port = htons(proxyport);
-	err = proxy_host2addr(proxyhost, &server.sin_addr);
-	if (err != NULL) return DECLINED;  /* try another */
-	host = proxyhost;
-    } else
+/* We break the URL into host, port, path-search */
+
+    if ((desthost = table_get(r->headers_in, "Host:")) == NULL)
     {
 	url += 7;  /* skip http:// */
-/* We break the URL into host, port, path-search */
-	port = DEFAULT_PORT;
+	destport = DEFAULT_PORT;
 	p = strchr(url, '/');
 	if (p == NULL)
 	{
-	    host = pstrdup(pool, url);
+	    desthost = pstrdup(pool, url);
 	    url = "/";
 	} else
 	{
@@ -184,17 +181,28 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	    memcpy(q, url, p-url);
 	    q[p-url] = '\0';
 	    url = p;
-	    host = q;
+	    desthost = q;
 	}
+    }
 
-	p = strchr(host, ':');
-	if (p != NULL)
-	{
-	    *(p++) = '\0';
-	    port = atoi(p);
-	}
-	server.sin_port = htons(port);
-	err = proxy_host2addr(host, &server.sin_addr);
+    p = strchr(desthost, ':');
+    if (p != NULL)
+    {
+        *(p++) = '\0';
+        destport = atoi(p);
+        destportstr = p;
+    }
+
+    if (proxyhost != NULL)
+    {
+	url = r->uri;			/* restore original URL */
+	server.sin_port = htons(proxyport);
+	err = proxy_host2addr(proxyhost, &server.sin_addr);
+	if (err != NULL) return DECLINED;  /* try another */
+    } else
+    {
+	server.sin_port = htons(destport);
+	err = proxy_host2addr(desthost, &server.sin_addr);
 	if (err != NULL) return proxyerror(r, err); /* give up */
     }
 
@@ -213,19 +221,26 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	else return proxyerror(r, "Could not connect to remote machine");
     }
 
-    clear_connection(r->headers_in);   /* Strip connection-based headers */
+    clear_connection(r->headers_in);	/* Strip connection-based headers */
 
     f = bcreate(pool, B_RDWR);
     bpushfd(f, sock, sock);
 
     hard_timeout ("proxy send", r);
     bvputs(f, r->method, " ", url, " HTTP/1.0\015\012", NULL);
+    bvputs(f, "Host: ", desthost, NULL);
+    if (destportstr != NULL && destport != DEFAULT_PORT)
+	bvputs(f, ":", destportstr, "\015\012", NULL);
+    else
+	bputs("\015\012", f);
 
     reqhdrs_arr = table_elts (r->headers_in);
     reqhdrs = (table_entry *)reqhdrs_arr->elts;
     for (i=0; i < reqhdrs_arr->nelts; i++)
     {
-	if (reqhdrs[i].key == NULL || reqhdrs[i].val == NULL) continue;
+	if (reqhdrs[i].key == NULL || reqhdrs[i].val == NULL
+	  || !strcmp(reqhdrs[i].key, "Host"))	/* already sent if there */
+	    continue;
 	bvputs(f, reqhdrs[i].key, ": ", reqhdrs[i].val, "\015\012", NULL);
     }
 
@@ -308,8 +323,8 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 /* check if NoCache directive on this host */
     for (i=0; i < conf->nocaches->nelts; i++)
     {
-        if (ent[i].name[0] == '*' || (ent[i].name != NULL &&
-          strstr(host, ent[i].name) != NULL))
+        if ((ent[i].name != NULL && strstr(desthost, ent[i].name) != NULL)
+	  || ent[i].name[0] == '*')
 	    nocache = 1; 
     }
 
