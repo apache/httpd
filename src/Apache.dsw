@@ -3,6 +3,90 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
+Project: "InstallBin"=".\InstallBin.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Apache
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_anon
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_dbm
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_digest
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_cern_meta
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_digest
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_expires
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_headers
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_info
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_mime_magic
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_rewrite
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_speling
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_status
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_unique_id
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_usertrack
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_vhost_alias
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name htdigest
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name htpasswd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name logresolve
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name rotatelogs
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name xmlparse
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Win9xConHook
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "Apache"=".\Apache.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -299,90 +383,6 @@ Package=<5>
 
 Package=<4>
 {{{
-}}}
-
-###############################################################################
-
-Project: "InstallBin"=".\InstallBin.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Apache
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name ApacheCore
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_auth_anon
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_auth_dbm
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_auth_digest
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_cern_meta
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_digest
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_expires
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_headers
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_info
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_mime_magic
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_proxy
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_rewrite
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_speling
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_status
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_unique_id
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_usertrack
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_vhost_alias
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name htdigest
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name htpasswd
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name logresolve
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name rotatelogs
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name xmlparse
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Win9xConHook
-    End Project Dependency
 }}}
 
 ###############################################################################
