@@ -213,7 +213,12 @@ static apr_status_t open_scoreboard(apr_pool_t *pconf)
     if (ap_scoreboard_fname) {
         /* make sure it's an absolute pathname */
         fname = ap_server_root_relative(pconf, ap_scoreboard_fname);
-
+        if (!fname) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, APR_EBADPATH, NULL,
+                         "Fatal error: Invalid Scoreboard path %s",
+                         ap_scoreboard_fname);
+            return APR_EBADPATH;
+        }
         return create_namebased_scoreboard(global_pool, fname);
     }
     else { /* config didn't specify, we get to choose shmem type */

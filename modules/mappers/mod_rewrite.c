@@ -501,7 +501,12 @@ static const char *cmd_rewritelock(cmd_parms *cmd, void *dconf, const char *a1)
     if ((error = ap_check_cmd_context(cmd, GLOBAL_ONLY)) != NULL)
         return error;
 
-    lockname = a1;
+    /* fixup the path, especially for rewritelock_remove() */
+    lockname = ap_server_root_relative(cmd->pool, a1);
+
+    if (!lockname) {
+        return apr_pstrcat(cmd->pool, "Invalid RewriteLock path ", a1);
+    }
 
     return NULL;
 }
@@ -3115,8 +3120,6 @@ static void open_rewritelog(server_rec *s, apr_pool_t *p)
         return; /* virtual log shared w/ main server */
     }
 
-    fname = ap_server_root_relative(p, conf->rewritelogfile);
-
     if (*conf->rewritelogfile == '|') {
         if ((pl = ap_open_piped_log(p, conf->rewritelogfile+1)) == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s, 
@@ -3127,8 +3130,16 @@ static void open_rewritelog(server_rec *s, apr_pool_t *p)
         conf->rewritelogfp = ap_piped_log_write_fd(pl);
     }
     else if (*conf->rewritelogfile != '\0') {
-        rc = apr_file_open(&conf->rewritelogfp, fname, rewritelog_flags, rewritelog_mode, p);
-        if (rc != APR_SUCCESS)  {
+        fname = ap_server_root_relative(p, conf->rewritelogfile);
+        if (!fname) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, APR_EBADPATH, s, 
+                         "mod_rewrite: Invalid RewriteLog "
+                         "path %s", conf->rewritelogfile);
+            exit(1);
+        }
+        if ((rc = apr_file_open(&conf->rewritelogfp, fname, 
+                                rewritelog_flags, rewritelog_mode, p))
+                != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rc, s, 
                          "mod_rewrite: could not open RewriteLog "
                          "file %s", fname);
@@ -3263,9 +3274,6 @@ static void rewritelock_create(server_rec *s, apr_pool_t *p)
     if (lockname == NULL || *(lockname) == '\0') {
         return;
     }
-
-    /* fixup the path, especially for rewritelock_remove() */
-    lockname = ap_server_root_relative(p, lockname);
 
     /* create the lockfile */
     rc = apr_global_mutex_create(&rewrite_mapr_lock_acquire, lockname,

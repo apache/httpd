@@ -722,6 +722,11 @@ static const char *set_scriptlog(cmd_parms *cmd, void *dummy, const char *arg)
                                                   &cgid_module); 
 
     conf->logname = ap_server_root_relative(cmd->pool, arg);
+
+    if (!conf->logname) {
+        return apr_pstrcat(cmd->pool, "Invalid ScriptLog path ",
+                           arg1, NULL);
+    }
     return NULL; 
 } 
 
@@ -752,6 +757,12 @@ static const char *set_script_socket(cmd_parms *cmd, void *dummy, const char *ar
                                                   &cgid_module); 
 
     conf->sockname = ap_server_root_relative(cmd->pool, arg); 
+
+    if (!conf->sockname) {
+        return apr_pstrcat(cmd->pool, "Invalid Scriptsock path ",
+                           arg, NULL);
+    }
+
     return NULL; 
 } 
 

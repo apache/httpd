@@ -382,11 +382,14 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases, int doe
             /* XXX This is as SLOW as can be, next step, we optimize
              * and merge to whatever part of the found path was already
              * canonicalized.  After I finish eliminating os canonical.
+             * Better fail test for ap_server_root_relative needed here.
              */
-            if (!doesc)
+            if (!doesc) {
                 found = ap_server_root_relative(r->pool, found);
-	    *status = p->redir_status;
-
+            }
+            if (found) {
+	        *status = p->redir_status;
+            }
 	    return found;
 	}
 

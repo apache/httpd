@@ -1364,15 +1364,15 @@ static const char *set_etag_bits(cmd_parms *cmd, void *mconfig,
             bit = ETAG_INODE;
         }
         else {
-            return ap_pstrcat(cmd->pool, "Unknown keyword '",
-                              token, "' for ", cmd->cmd->name,
-                              " directive", NULL);
+            return apr_pstrcat(cmd->pool, "Unknown keyword '",
+                               token, "' for ", cmd->cmd->name,
+                               " directive", NULL);
         }
 
         if (! valid) {
-            return ap_pstrcat(cmd->pool, cmd->cmd->name, " keyword '",
-                              token, "' cannot be used with '+' or '-'",
-                              NULL);
+            return apr_pstrcat(cmd->pool, cmd->cmd->name, " keyword '",
+                               token, "' cannot be used with '+' or '-'",
+                               NULL);
         }
 
         if (action == '+') {
@@ -2126,9 +2126,14 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
                                    const char *name)
 {
     ap_directive_t *conftree = NULL;
+    const char* conffile = ap_server_root_relative(cmd->pool, name);
+    
+    if (!conffile) {
+        return apr_pstrcat(cmd->pool, "Invalid Include path ", 
+                           name, NULL);
+    }
 
-    ap_process_resource_config(cmd->server,
-                               ap_server_root_relative(cmd->pool, name),
+    ap_process_resource_config(cmd->server, conffile,
                                &conftree, cmd->pool, cmd->temp_pool);
     *(ap_directive_t **)dummy = conftree;
     return NULL;

@@ -1232,15 +1232,20 @@ static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy,
     char *fspec;
     
     fspec = ap_server_root_relative(cmd->pool, filename);
-    if (!fspec || (rv = apr_stat(&tmp, fspec, APR_FINFO_TYPE, 
-                                 cmd->temp_pool)) != APR_SUCCESS) { 
+    if (!fspec) {
+	ap_log_error(APLOG_MARK, APLOG_WARNING, APR_EBADPATH, cmd->server,
+	             "ISAPI: Invalid module path %s, skipping", filename);
+	return NULL;
+    }
+    if ((rv = apr_stat(&tmp, fspec, APR_FINFO_TYPE, 
+                      cmd->temp_pool)) != APR_SUCCESS) { 
 	ap_log_error(APLOG_MARK, APLOG_WARNING, rv, cmd->server,
-	    "ISAPI: unable to stat(%s), skipping", filename);
+	    "ISAPI: unable to stat(%s), skipping", fspec);
 	return NULL;
     }
     if (tmp.filetype != APR_REG) {
 	ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, cmd->server,
-	    "ISAPI: %s isn't a regular file, skipping", filename);
+	    "ISAPI: %s isn't a regular file, skipping", fspec);
 	return NULL;
     }
 
@@ -1248,7 +1253,7 @@ static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy,
     rv = isapi_load(cmd->pool, sconf, NULL, fspec, &isa); 
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, cmd->server,
-                     "ISAPI: unable to cache %s, skipping", filename);
+                     "ISAPI: unable to cache %s, skipping", fspec);
 	return NULL;
     }
 
