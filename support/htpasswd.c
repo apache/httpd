@@ -593,6 +593,7 @@ int main(int argc, const char * const argv[])
                  */
                 apr_file_printf(errfile, "Updating ");
                 putline(ftemp, record);
+                found++;
             }
         }
     }
