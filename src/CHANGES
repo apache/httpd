@@ -1,5 +1,10 @@
 Changes with Apache 1.3b1
 
+  *) Changes to mod_log_config to allow naming of format strings.
+     Format nicknames are defined with "LogFormat fmt nickname", and can
+     be used with "LogFormat nickname" and "CustomLog logtarget nickname".
+     [Ken Coar]
+
   *) New module, "mod_speling", which can help find files even when 
      the URL is slightly misspelled. [Martin Kraemer, Alexei Kosut]
 

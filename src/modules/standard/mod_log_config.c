@@ -195,6 +195,7 @@ typedef struct {
   array_header *default_format;
   array_header *config_logs;    
   array_header *server_config_logs;
+  table *formats;
 } multi_log_state;
 
 /*
@@ -609,13 +610,16 @@ static void *make_config_log_state (pool *p, server_rec *s)
 	make_array(p, 5, sizeof (config_log_state));
     mls->default_format = NULL;
     mls->server_config_logs = NULL;
+    mls->formats = make_table(p, 4);
+    table_set(mls->formats, "CLF", DEFAULT_LOG_FORMAT);
     
     return mls;
 }
 
 /*
  * Use the merger to simply add a pointer from the vhost log state
- * to the log of logs specified for the non-vhost configuration
+ * to the log of logs specified for the non-vhost configuration.  Make sure
+ * vhosts inherit any globally-defined format names.
  */
 
 static void *merge_config_log_state (pool *p, void *basev, void *addv)
@@ -624,35 +628,68 @@ static void *merge_config_log_state (pool *p, void *basev, void *addv)
     multi_log_state *add = (multi_log_state *)addv;
     
     add->server_config_logs = base->config_logs;
-    if (!add->default_format)
+    if (!add->default_format) {
         add->default_format = base->default_format;
+    }
+    add->formats = overlay_tables(p, base->formats, add->formats);
     
     return add;
 }
 
-static const char *log_format (cmd_parms *cmd, void *dummy, char *arg)
+/*
+ * Set the default logfile format, or define a nickname for a format string.
+ */
+static const char *log_format (cmd_parms *cmd, void *dummy, char *fmt,
+			       char *name)
 {
     const char *err_string = NULL;
+    char *format;
     multi_log_state *mls = get_module_config (cmd->server->module_config,
-					       &config_log_module);
-  
-    mls->default_format = parse_log_string (cmd->pool, arg, &err_string);
+					      &config_log_module);
+
+    /*
+     * If we were given two arguments, the second is a name to be given to the
+     * format.  This syntax just defines the nickname - it doesn't actually
+     * make the format the default.
+     */
+    if (name != NULL) {
+	parse_log_string(cmd->pool, fmt, &err_string);
+	if (err_string == NULL) {
+	    table_set(mls->formats, name, fmt);
+	}
+    }
+    else {
+	/*
+	 * See if we were given a name rather than a format string.
+	 */
+	format = table_get(mls->formats, fmt);
+	if (format == NULL) {
+	    format = fmt;
+	}
+	mls->default_format = parse_log_string (cmd->pool, format, &err_string);
+    }
     return err_string;
 }
 
-static const char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn, char *fmt)
+static const char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn,
+				  char *fmt) 
 {
     const char *err_string = NULL;
     multi_log_state *mls = get_module_config (cmd->server->module_config,
 					      &config_log_module);
     config_log_state *cls;
+    char *format;
 
     cls = (config_log_state*)push_array(mls->config_logs);
     cls->fname = fn;
-    if (!fmt)
+    if (!fmt) {
 	cls->format = NULL;
-    else
-	cls->format = parse_log_string (cmd->pool, fmt, &err_string);
+    }
+    else {
+	format = table_get(mls->formats, fmt);
+	format = (format != NULL) ? format : fmt;
+	cls->format = parse_log_string (cmd->pool, format, &err_string);
+    }
     cls->log_fd = -1;
     
     return err_string;
@@ -670,11 +707,11 @@ static const char *set_cookie_log(cmd_parms *cmd, void *dummy, char *fn)
 
 static command_rec config_log_cmds[] = {
 { "CustomLog", add_custom_log, NULL, RSRC_CONF, TAKE2,
-    "a file name and a custom log format string" },
+    "a file name and a custom log format string or format name" },
 { "TransferLog", set_transfer_log, NULL, RSRC_CONF, TAKE1,
     "the filename of the access log" },
-{ "LogFormat", log_format, NULL, RSRC_CONF, TAKE1,
-    "a log format string (see docs)" },
+{ "LogFormat", log_format, NULL, RSRC_CONF, TAKE12,
+    "a log format string (see docs) and an optional format name" },
 { "CookieLog", set_cookie_log, NULL, RSRC_CONF, TAKE1,
     "the filename of the cookie log" },
 { NULL }

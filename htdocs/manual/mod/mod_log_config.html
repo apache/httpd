@@ -203,36 +203,79 @@ only for compatibility with <a
 href="mod_cookies.html">mod_cookies</a>, and is deprecated.
 <p>
 
+<HR>
 <H2><A NAME="customlog">CustomLog</A></H2>
-<STRONG>Syntax:</STRONG> CustomLog <em>file-pipe</em> <em>format</em><BR>
+<STRONG>Syntax:</STRONG> CustomLog <em>file-pipe</em>
+    <em>format-or-nickname</em><BR>
 <STRONG>Context:</STRONG> server config, virtual host<BR>
 <STRONG>Status:</STRONG> Base<BR>
-<STRONG>Module:</STRONG> mod_log_config<P>
-
-The first argument is the filename to log to. This is used
-exactly like the argument to <tt>TransferLog</tt>, that is,
-it is either a full path, or relative to the current
-server root. <p>
-
+<STRONG>Compatibility: </STRONG> Nickname only available in Apache 1.3
+    or later
+<BR>
+<STRONG>Module:</STRONG> mod_log_config
+<P>
+The first argument is the filename to which log records should be
+written. This is used
+exactly like the argument to
+<A
+ HREF="#transferlog"
+><SAMP>TransferLog</SAMP></A>;
+that is, it is either a full path or relative to the current
+server root.
+</P>
+<P>
 The format argument specifies a format for each line of the log file.
 The options available for the format are exactly the same as for
 the argument of the <tt>LogFormat</tt> directive. If the format
 includes any spaces (which it will do in almost all cases) it
 should be enclosed in double quotes.
-
+</P>
+<P>
+Instead of an actual format string, you can use a format nickname defined with
+the
+<A
+ HREF="#logformat"
+><SAMP>LogFormat</SAMP></A>
+directive.
+</P>
+<HR>
 <h2><A name="logformat">LogFormat</A></h2>
 <!--%plaintext &lt;?INDEX {\tt LogFormat} directive&gt; -->
-<strong>Syntax:</strong> LogFormat <em>string</em><br>
+<strong>Syntax:</strong> LogFormat <em>format</em> [<EM>nickname</EM>]
+<br>
 <strong>Default:</strong> <code>LogFormat &quot;%h %l %u %t \&quot;%r\&quot;
 %s %b&quot;</code><br>
 <Strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_log_config<p>
+<STRONG>Compatibility: </STRONG> Nickname only available in Apache 1.3
+    or later
+<BR>
+<strong>Module:</strong> mod_log_config
+<P>
+This sets the format of the default logfile named by the
+<A
+ HREF="#transferlog"
+><SAMP>TransferLog</SAMP></A>
+directive .  See the section on
+<A HREF="#formats">Custom Log Formats</A> for details on the format
+arguments.
+</P>
+<P>
+If you include a nickname for the format on the directive line, you can
+use it in other <SAMP>LogFormat</SAMP> and
+<A
+ HREF="#customlog"
+><SAMP>CustomLog</SAMP></A>
+directives rather than repeating the entire format string.
+</P>
+<P>
+A
+<SAMP>LogFormat</SAMP> directive which defines a nickname <STRONG>does
+nothing else</STRONG> -- that is, it <EM>only</EM> defines the nickname,
+it doesn't actually apply the format and make it the default.
+</P>
 
-This sets the format of the logfile.  See <A HREF="#formats">
-Custom Log Formats</A> for details on the format arguments.<p><hr>
-
-
+<hr>
 <h2><A name="transferlog">TransferLog</A></h2>
 <!--%plaintext &lt;?INDEX {\tt TransferLog} directive&gt; -->
 <strong>Syntax:</strong> TransferLog <em>file-pipe</em><br>
@@ -241,7 +284,13 @@ Custom Log Formats</A> for details on the format arguments.<p><hr>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_log_config<p>
 
-The TransferLog directive adds a log file in Common Log Format.
+The TransferLog directive adds a log file in the format defined by the
+most recent
+<A
+ HREF="#logformat"
+><SAMP>LogFormat</SAMP></A>
+directive, or Common Log Format if no other default format has been
+specified.
 <em>File-pipe</em> is one
 of
 <dl><dt>A filename
@@ -259,5 +308,3 @@ was started by root; be sure that the program is secure.<p>
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
-
-
