@@ -306,20 +306,23 @@ static void decodehtml(char *s)
     const char *ents;
     static const char * const entlist[MAXENTLEN + 1] =
     {
-        NULL,                   /* 0 */
-        NULL,                   /* 1 */
-        "lt\074gt\076",         /* 2 */
-        "amp\046ETH\320eth\360",        /* 3 */
-        "quot\042Auml\304Euml\313Iuml\317Ouml\326Uuml\334auml\344euml\353\
-iuml\357ouml\366uuml\374yuml\377",      /* 4 */
-        "Acirc\302Aring\305AElig\306Ecirc\312Icirc\316Ocirc\324Ucirc\333\
-THORN\336szlig\337acirc\342aring\345aelig\346ecirc\352icirc\356ocirc\364\
-ucirc\373thorn\376",            /* 5 */
-        "Agrave\300Aacute\301Atilde\303Ccedil\307Egrave\310Eacute\311\
-Igrave\314Iacute\315Ntilde\321Ograve\322Oacute\323Otilde\325Oslash\330\
-Ugrave\331Uacute\332Yacute\335agrave\340aacute\341atilde\343ccedil\347\
-egrave\350eacute\351igrave\354iacute\355ntilde\361ograve\362oacute\363\
-otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
+        NULL,                     /* 0 */
+        NULL,                     /* 1 */
+        "lt\074gt\076",           /* 2 */
+        "amp\046ETH\320eth\360",  /* 3 */
+        "quot\042Auml\304Euml\313Iuml\317Ouml\326Uuml\334auml\344euml"
+        "\353iuml\357ouml\366uuml\374yuml\377",                         /* 4 */
+
+        "Acirc\302Aring\305AElig\306Ecirc\312Icirc\316Ocirc\324Ucirc"
+        "\333THORN\336szlig\337acirc\342aring\345aelig\346ecirc\352"
+        "icirc\356ocirc\364ucirc\373thorn\376",                         /* 5 */
+
+        "Agrave\300Aacute\301Atilde\303Ccedil\307Egrave\310Eacute\311"
+        "Igrave\314Iacute\315Ntilde\321Ograve\322Oacute\323Otilde"
+        "\325Oslash\330Ugrave\331Uacute\332Yacute\335agrave\340"
+        "aacute\341atilde\343ccedil\347egrave\350eacute\351igrave"
+        "\354iacute\355ntilde\361ograve\362oacute\363otilde\365"
+        "oslash\370ugrave\371uacute\372yacute\375"                      /* 6 */
     };
 
     /* Do a fast scan through the string until we find anything
