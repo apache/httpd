@@ -626,38 +626,6 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
     return 0;
 }
 
-int APR_THREAD_FUNC WriteClient(isapi_cid    *cid, 
-                                void         *buf_data, 
-                                apr_uint32_t *buf_size, 
-                                apr_uint32_t  flags)
-{
-    request_rec *r = cid->r;
-    conn_rec *c = r->connection;
-    apr_bucket_brigade *bb;
-    apr_bucket *b;
-    apr_status_t rv;
-
-    bb = apr_brigade_create(r->pool, c->bucket_alloc);
-    b = apr_bucket_transient_create(buf_data, *buf_size, c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, b);
-    b = apr_bucket_flush_create(c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, b);
-    rv = ap_pass_brigade(r->output_filters, bb);
-    cid->response_sent = 1;
-
-    if ((flags & HSE_IO_ASYNC) && cid->completion) {
-        if (rv == OK) {
-            cid->completion(cid->ecb, cid->completion_arg, 
-                            *buf_size, ERROR_SUCCESS);
-        }
-        else {
-            cid->completion(cid->ecb, cid->completion_arg, 
-                            *buf_size, ERROR_WRITE_FAULT);
-        }
-    }
-    return (rv == OK);
-}
-
 int APR_THREAD_FUNC ReadClient(isapi_cid    *cid, 
                                void         *buf_data, 
                                apr_uint32_t *buf_size)
@@ -685,6 +653,13 @@ int APR_THREAD_FUNC ReadClient(isapi_cid    *cid,
 
 /* Common code invoked for both HSE_REQ_SEND_RESPONSE_HEADER and 
  * the newer HSE_REQ_SEND_RESPONSE_HEADER_EX ServerSupportFunction(s)
+ * as well as other functions that write responses and presume that
+ * the support functions above are optional.
+ *
+ * Other callers trying to split headers and body bytes should pass
+ * head/headlen alone (leaving stat/statlen NULL/0), so that they
+ * get a proper count of bytes consumed.  The argument passed to stat
+ * isn't counted as the head bytes are.
  */
 static apr_ssize_t send_response_header(isapi_cid *cid, 
                                         const char *stat,
@@ -730,18 +705,29 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
     }
 
     if (stat && (statlen > 0) && *stat) {
-        char *newstat = apr_palloc(cid->r->pool, statlen + 9);
-        char *stattok = (char*)memchr(stat, ' ', statlen - 1) + 1;
-        strcpy(newstat, "Status: ");
-        /* Now decide if we follow the xxx message 
-         * or the http/x.x xxx message format 
-         */
-        if (!apr_isdigit(*stat) && stattok && apr_isdigit(*stattok)) {
-            statlen -= stattok - (char*)stat;
-            stat = stattok;
+        char *newstat;
+        if (!apr_isdigit(*stat)) {
+            const char *stattok = stat;
+            int toklen = statlen;
+            while (toklen && *stattok && !apr_isspace(*stattok)) {
+                ++stattok; --toklen;
+            }
+            while (toklen && apr_isspace(*stattok)) {
+                ++stattok; --toklen;
+            }
+            /* Now decide if we follow the xxx message 
+             * or the http/x.x xxx message format 
+             */
+            if (toklen && apr_isdigit(*stattok)) {
+                statlen -= toklen;
+                stat = stattok;
+            }
         }
-        apr_cpystrn(newstat + 8, stat, statlen + 1);
+        newstat = apr_palloc(cid->r->pool, statlen + 9);
+        strcpy(newstat, "Status: ");
+        apr_cpystrn(newstat + 8, stat, statlen);
         stat = newstat;
+        statlen += 8;
     }
 
     if (!head || headlen == 0 || !*head) {
@@ -811,6 +797,58 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
         return ate + termch - head;
     }
     return ate;
+}
+
+int APR_THREAD_FUNC WriteClient(isapi_cid    *cid, 
+                                void         *buf_data, 
+                                apr_uint32_t *size_arg, 
+                                apr_uint32_t  flags)
+{
+    request_rec *r = cid->r;
+    conn_rec *c = r->connection;
+    apr_uint32_t buf_size = *size_arg;
+    apr_bucket_brigade *bb;
+    apr_bucket *b;
+    apr_status_t rv;
+
+    if (!cid->headers_set) {
+        /* It appears that the foxisapi module and other clients
+         * presume that WriteClient("headers\n\nbody") will work.
+         * Parse them out, or die trying.
+         */
+        apr_ssize_t ate;
+        ate = send_response_header(cid, NULL, (char*)buf_data,
+                                   0, buf_size);
+        if (ate < 0) {
+            SetLastError(ERROR_INVALID_PARAMETER);
+            return 0;
+        }
+
+        (char*)buf_data += ate;
+        buf_size -= ate;
+    }
+
+    if (buf_size) {
+        bb = apr_brigade_create(r->pool, c->bucket_alloc);
+        b = apr_bucket_transient_create(buf_data, buf_size, c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+        b = apr_bucket_flush_create(c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+        rv = ap_pass_brigade(r->output_filters, bb);
+        cid->response_sent = 1;
+    }
+
+    if ((flags & HSE_IO_ASYNC) && cid->completion) {
+        if (rv == OK) {
+            cid->completion(cid->ecb, cid->completion_arg, 
+                            *size_arg, ERROR_SUCCESS);
+        }
+        else {
+            cid->completion(cid->ecb, cid->completion_arg, 
+                            *size_arg, ERROR_WRITE_FAULT);
+        }
+    }
+    return (rv == OK);
 }
 
 int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid, 
@@ -1042,10 +1080,11 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         }
 
         if (tf->pHead && (apr_size_t)ate < tf->HeadLength) {
-            sent = tf->HeadLength - ate;
             b = apr_bucket_transient_create((char*)tf->pHead + ate, 
-                                            sent, c->bucket_alloc);
+                                            tf->HeadLength - ate,
+                                            c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
+            sent = tf->HeadLength;
         }
 
         sent += (apr_uint32_t)fsize;
@@ -1575,6 +1614,8 @@ apr_status_t isapi_handler (request_rec *r)
 
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
         b = apr_bucket_eos_create(c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+        b = apr_bucket_flush_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
         rv = ap_pass_brigade(r->output_filters, bb);
         cid->response_sent = 1;
