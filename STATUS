@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/08/22 17:09:42 $]
+Last modified at [$Date: 2000/08/25 10:15:09 $]
 
 Release:
 
@@ -36,7 +36,7 @@ RELEASE SHOWSTOPPERS:
 
     * suEXEC doesn't work
         Status: Manoj has posted an patch to fix this.
-        <19991103003605.A20612@samosa.mindspring.com>
+        Message-ID: <20000825024943.A17578@manojk.users.mindspring.com>
 
     * Win32: Enable the Windows MPM to honor max_requests_per_child
         Status: Bill will fix this.
