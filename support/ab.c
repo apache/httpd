@@ -193,9 +193,9 @@ int port = 80;        		/* port number */
 time_t aprtimeout = 30 * APR_USEC_PER_SEC; /* timeout value */
 
 int use_html = 0;        	/* use html in the report */
-char *tablestring;
-char *trstring;
-char *tdstring;
+const char *tablestring;
+const char *trstring;
+const char *tdstring;
 
 int doclen = 0;        		/* the length the document should be */
 int totalread = 0;        	/* total number of bytes read */
@@ -862,14 +862,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.25 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.26 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.25 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.26 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
@@ -937,7 +937,7 @@ static int parse_url(char *url)
 
 /* read data to POST from file, save contents and length */
 
-static int open_postfile(char *pfile)
+static int open_postfile(const char *pfile)
 {
     apr_file_t *postfd = NULL;
     apr_finfo_t finfo;
@@ -974,7 +974,7 @@ int main(int argc, char **argv)
     char tmp[1024];
     apr_status_t status;
     apr_getopt_t *opt;
-    char *optarg;
+    const char *optarg;
     char c;
 
     /* table defaults  */
