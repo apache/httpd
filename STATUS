@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/07/28 23:01:26 $]
+Last modified at [$Date: 2004/07/28 23:17:16 $]
 
 Release:
 
@@ -78,6 +78,9 @@ PATCHES TO BACKPORT FROM 2.1
          include/scoreboard.h: 1.52
          server/scoreboard.c: 1.75
        +1: minfrin
+       -0: nd
+           nd: -0 as in "it should be considered as a 2.1 feature".
+              If the modified structures are public (are they?), I'm just -1.
 
     *) mod_cgi: Added API call and overload of detached field in cgi_exec_info_t 
        structure to support loading in current or new address space for CGIs.
