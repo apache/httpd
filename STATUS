@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/06/05 16:08:09 $]
+  Last modified at [$Date: 2000/06/05 18:04:19 $]
 
 Release:
 
@@ -27,26 +27,30 @@ RELEASE SHOWSTOPPERS:
 
     * Add a simple hold console open patch (wait for close or
         the ESC key, with a nice message) if the server died a 
-        bad death (non-zero exit code) in console mode.  Add the
-        ConsoleHandler to deal with Ctrl+C/Ctrl+Break and, at
-        least under NT, shutdown, logoff and window close.
+        bad death (non-zero exit code) in console mode.  
         OtherBill is working on this
 
     * Assure we haven't drifted too far between httpd.conf-dist
         and httpd.conf-dist-win.
 
-    * Assure the windows.html and win_compiling.html reflect
-        reality, today.
-	- running the server without admin
-	- how CGIs work (?)
-	- short/long name handling (?)
-	- better status page on current state of NT for users
-        > Basic answer the the last one - 2.0 is coming
+    * Document cvstodsp6.pl in win_compiling.html.
+        OtherBill will do this Wed if noone beats him to it.
+
+    * Assure the windows.html reflects reality, today.
+	- running the service as a user other than SYSTEM (NT/2000).
+        - CONDITIONALLY - if someone posts revisions to the list for
+          htdocs/manual/windows.html to properly document JJK's Win95
+          services support as a -HIGHLY EXPERIMENTAL- patch,
+          OtherBill will include that patch (with -k runservice rather
+          than -s, not documented in the -h list of options, and with
+          FreeConsole() -following- successful parsing of httpd.conf).
+          Too many are complaining, -but- 3+ Win95 users must step up
+          to test this new patch offered late Mon eve before we proceed.
 
     * Complete the security hole in stat() by testing for anything
       other than conventional file-not-found, permission-denied errors
       and rejecting the request then and there.  By rights, all of
-      these cases aught to be Not Found, not Permission Denied.
+      these cases aught to be Not Found, not Permission Denied?
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -65,15 +69,19 @@ Documentation that needs writing:
 
 Available Patches:
 
-    * Eric Wedel <wedel@wenet.net>'s patch for CONNECT method and proxy
-      on Win32.  Addresses PR 5107 and maybe 2014.
-	PR: 5899
-	Status: 
-
     * Dan Astoorian <djast@cs.toronto.edu>'s patch to fix mod_include RE
       tokenisation
 	PR: 5898
 	Status: 
+
+    * JJ Keijser's patch (99/10/06) to: 
+	- Run Apache as a service on Win9x (PR2208)
+	- Making sure that Apache is shut down when the system is shutdown. 
+           under Win95 (PR1643, PR2472)
+	- Use apache -i/-u to install/uninstalling Apache on Win9x
+	- Make Apache shut down cleanly when run on Windows 95 (PR4125)
+	PR#: PR2472, PR4125, PR1643 (suspended) and PR2208 (suspended).
+	Status: Martin +1(untested)
 
     * Gerd Knorr <gknorr@berlinonline.de>'s patch to enable mod_auth_digest
       to handle both Digest *and* Basic authentication modes.
@@ -116,16 +124,6 @@ Available Patches:
 
 	Status: Martin +1(untested), Ken +1(untested)
        
-    * JJ Keijser's patch (99/10/06) to: 
-	- Run Apache as a service on Win95 (PR2208)
-	- Making sure that Apache is shut down when the system is shutdown. 
-           (PR1643, PR2472)
-	- Use apache -i/-u to install/uninstalling Apache on Win95
-	- Add ConsoleCtrlHandler to catch Ctrl-C in the Apache console window
-	- Make Apache shut down cleanly when run on Windows 95 (PR4125)
-	PR#: PR2472, PR4125, PR1643 (suspended) and PR2208 (suspended).
-	Status: Martin +1(untested)
-
     * Paul Reder's patch to fix Allow/Deny (.htaccess parsing) in
       regex <Directory*> processing.
 	Message-ID: <37A88E34.FD09C658@raleigh.ibm.com>
@@ -422,27 +420,12 @@ Win32 specific issues:
 	Ken: What's W95-specific about it?
 
  Help:
-    * There are several PRs reporting Apache looping and they each seem to
-      implicate CGI script processing. The first PR happened about the time
-      we migrated to using native Win32 function calls to create the child 
-      process. I have tried to recreate the problem w/o success. It just now
-      occurs to me that there may be a race condition between when the new
-      process comes alive and the parent sending data to (or attempting to
-      read data from) the child process. CreateProcess() returns immediately,
-      before the new process is created. The parent may be attempting I/O
-      with the child before it's ready. TODO: investigate ways to cause the
-      parent to wait for the child process to become fully active before
-      proceeding with CGI I/O processing.
-
     * chdir() for CGI scripts and mod_include #exec needs to be 
       re-implemented now that CreateProcess is being used.
 
     * process/thread model
 	- need dynamic thread creation/destruction, similar to 
 	  Unix process model
-	- can't use WaitForMultipleObjects in the same way we
-	  do now, since that has a limit of 64(!) objects.  Grr.
-	  PR#1665
 
     * some errors printed by CGIs to stderr don't end up making it
       to the server log unless an extra debugging message is added
@@ -460,8 +443,6 @@ Win32 specific issues:
     * the mutex should be critical-regions, since the current design
       is creating a mess of SO calls that are unnecessary
 
-    * we don't mmap on NT.  Use TransmitFile?
-
     * CGIs
 	- docs on how they work w/scripts
 	- WTF is the buffering coming from?
@@ -469,8 +450,12 @@ Win32 specific issues:
 
     * performance
 
-    * http_main.c hell
-	- split into two files?
+    * documentation:
+	- running the server without admin
+	- how CGIs work
+	- update README.NT
+	- short/long name handling
+	- better status page on current state of NT for users
 
     * who should run the service?  Who exactly is the "system account"?
 

@@ -12,6 +12,8 @@ void InstallService(char *display_name, char *conf);
 void RemoveService(char *display_name);
 int service_init();
 int send_signal_to_service(char *display_name, char *sig);
+void ap_control_handler_terminate(void);
+BOOL CALLBACK ap_control_handler(DWORD ctrl_type);
 #endif /* WIN32 */
 
 #endif /* SERVICE_H */

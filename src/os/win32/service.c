@@ -456,6 +456,47 @@ int ap_start_service(SC_HANDLE schService) {
             return TRUE;
     return FALSE;
 }
-           
+
+/* Control handler for processing Ctrl-C/Ctrl-Break and
+ * on Windows NT also user logoff and system shutdown
+ */
+
+void ap_control_handler_terminate(void)
+{
+    /* Remove the control handler at the end of the day. */
+    SetConsoleCtrlHandler(ap_control_handler, FALSE);
+}
+
+BOOL CALLBACK ap_control_handler(DWORD ctrl_type)
+{
+    switch (ctrl_type)
+    {
+        case CTRL_C_EVENT:
+        case CTRL_BREAK_EVENT:
+            fprintf(stderr, "Apache server interrupted...\n");
+            /* for Interrupt signals, shut down the server.
+             * Tell the system we have dealt with the signal
+             * without waiting for Apache to terminate.
+             */
+            ap_start_shutdown();            
+            return TRUE;
+
+        case CTRL_CLOSE_EVENT:
+        case CTRL_LOGOFF_EVENT:
+        case CTRL_SHUTDOWN_EVENT:
+            /* for Terminate signals, shut down the server.
+             * Wait for Apache to terminate, but respond
+             * after a reasonable time to tell the system
+             * that we have already tried to shut down.
+             */
+            fprintf(stderr, "Apache server shutdown initiated...\n");
+            ap_start_shutdown();
+            Sleep(30000);
+            return TRUE;
+    }
+ 
+    /* We should never get here, but this is (mostly) harmless */
+    return FALSE;
+}
 #endif /* WIN32 */
 

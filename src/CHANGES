@@ -1,5 +1,15 @@
 Changes with Apache 1.3.13
 
+  *) Add Win32 option -k stop as an alias of -k shutdown, to correspond to
+     the NET START/NET STOP syntax. [William Rowe]
+
+  *) Force Apache to test the Win32 config prior to any operation,
+     except the [-k shutdown -n service] and [-u -n service] combinations.
+     [William Rowe]
+
+  *) Add Win32 Ctrl+C/Ctrl+Break/Close/Logoff/Shutdown handler.
+     [William Rowe, Jan Just Keijser <KEIJSERJJ@logica.com>]
+
   *) Expand mod_setenvif so its directives can be used in <Files> and
      <Directory> containers, and in .htaccess files when FileInfo
      overriding is allowed.  PR#3000 [Ken Coar]

@@ -6690,7 +6690,10 @@ int REALMAIN(int argc, char *argv[])
 	    ap_dump_settings = 1;
 	    break;
 	case 'k':
-	    signal_to_send = optarg;
+            if (!strcasecmp(optarg, "stop"))
+                signal_to_send = "shutdown";
+            else
+                signal_to_send = optarg;
 	    break;
 #endif /* WIN32 */
 #ifdef NETWARE
@@ -6789,11 +6792,29 @@ int REALMAIN(int argc, char *argv[])
     ap_no2slash(ap_server_confname);
 
 #ifdef WIN32
+    if (!child) {
+        /* Let's go fishing for some signals including ctrl+c/ctrl+break,
+         * and logoff, close and shutdown under WinNT/2000
+         */
+        SetConsoleCtrlHandler(ap_control_handler, TRUE);
+        atexit(ap_control_handler_terminate);
+    }
+    
+    /* Read the conf now unless we are uninstalling the service,
+     * or shutting down a running service 
+     * (but do read the conf for the pidfile if we shutdown the console)
+     */
+    if ((install >= 0) && (!service_name || !signal_to_send 
+                           || strcasecmp(signal_to_send,"shutdown"))) {
+        server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
+    }
+
     if (install) {
         if (!service_name)
             service_name = ap_pstrdup(pconf, DEFAULTSERVICENAME);
         if (install > 0) 
-            InstallService(service_name, ap_server_root_relative(pcommands, ap_server_confname));
+            InstallService(service_name, ap_server_root_relative(pcommands, 
+                                                         ap_server_confname));
         else
             RemoveService(service_name);
         clean_parent_exit(0);
@@ -6808,8 +6829,9 @@ int REALMAIN(int argc, char *argv[])
         printf("Unknown service: %s\n", service_name);
         clean_parent_exit(0);
     }
-#endif
+#else
     server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
+#endif
 
     if (ap_configtestonly) {
         fprintf(stderr, "%s: Syntax OK\n", ap_server_root_relative(pcommands, ap_server_confname));
