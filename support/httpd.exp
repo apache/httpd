@@ -467,6 +467,7 @@ apr_opendir
 apr_overlap_tables
 apr_overlay_tables
 apr_palloc
+apr_parse_addr_port
 apr_parse_uuid
 apr_pcalloc
 apr_poll
