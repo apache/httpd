@@ -1283,7 +1283,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     if (!is_graceful) {
-	ap_restart_time = time(NULL);
+	ap_restart_time = apr_now();
     }
 
     return 0;

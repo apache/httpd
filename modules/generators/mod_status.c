@@ -177,9 +177,12 @@ static void format_kbyte_out(request_rec *r, unsigned long kbytes)
 	ap_rprintf(r, "%.1f GB", (float) kbytes / MBYTE);
 }
 
-static void show_time(request_rec *r, time_t tsecs)
+static void show_time(request_rec *r, apr_time_t tsecs) 
 {
     long days, hrs, mins, secs;
+    
+    /* convert apr_time_t (in micro seconds) to seconds */
+    tsecs = tsecs/1000000;
 
     secs = tsecs % 60;
     tsecs /= 60;
@@ -225,7 +228,7 @@ static char status_flags[SERVER_NUM_STATUS];
 static int status_handler(request_rec *r)
 {
     const char *loc;
-    time_t nowtime = time(NULL);
+    apr_time_t nowtime = apr_now();
     time_t up_time;
     int j, i, res;
     int ready = 0;
