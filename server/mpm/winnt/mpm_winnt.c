@@ -1238,8 +1238,10 @@ static void child_main()
         }
     }
 
-    /* Shutdown the worker threads */
+    /* Setting is_graceful will close keep-alive connections 
+    is_graceful = 1;
 
+    /* Shutdown the worker threads */
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
         for (i = 0; i < nthreads; i++) {
             add_job(-1);
