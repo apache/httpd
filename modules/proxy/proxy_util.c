@@ -360,7 +360,7 @@ PROXY_DECLARE(const char *)
     return q;
 }
 
-PROXY_DECLARE(request_rec *)make_fake_req(conn_rec *c, request_rec *r)
+PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)
 {
     request_rec *rp = apr_pcalloc(c->pool, sizeof(*r));
     core_request_config *req_cfg;
