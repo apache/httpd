@@ -92,13 +92,16 @@ char *ap_response_code_string(request_rec *r, int error_index);
 AP_DECLARE(void) ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb);
  
 /**
- * XXX NEED DOC
+ * Send an appropriate response to an http TRACE request.
  * @param r The current request
+ * @tip returns DONE or the HTTP status error if it handles the TRACE,
+ * or DECLINED if the request was not for TRACE.
+ * request method was not TRACE.
  */
-AP_DECLARE(int) ap_send_http_trace(request_rec *r);
+AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r);
 
 /**
- * XXX NEED DOC
+ * Send an appropriate response to an http OPTIONS request.
  * @param r The current request
  */
 AP_DECLARE(int) ap_send_http_options(request_rec *r);

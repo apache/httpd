@@ -93,6 +93,7 @@
 
 APR_HOOK_STRUCT(
 	    APR_HOOK_LINK(translate_name)
+	    APR_HOOK_LINK(map_to_storage)
 	    APR_HOOK_LINK(check_user_id)
 	    APR_HOOK_LINK(fixups)
 	    APR_HOOK_LINK(type_checker)
@@ -103,6 +104,8 @@ APR_HOOK_STRUCT(
 )
 
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,translate_name,
+                            (request_rec *r),(r),DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,map_to_storage,
                             (request_rec *r),(r),DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,check_user_id,
                             (request_rec *r),(r),DECLINED)
@@ -379,7 +382,7 @@ static int get_path_info(request_rec *r)
     return OK;
 }
 
-AP_DECLARE(int) directory_walk(request_rec *r)
+AP_DECLARE(int) ap_directory_walk(request_rec *r)
 {
     core_server_config *sconf = ap_get_module_config(r->server->module_config,
                                                      &core_module);
@@ -455,7 +458,7 @@ AP_DECLARE(int) directory_walk(request_rec *r)
         return OK;
     }
 
-    /* The replacement code [above] for directory_walk eliminates this issue.
+    /* The replacement code [below] for directory_walk eliminates this issue.
      */
     res = get_path_info(r);
     if (res != OK) {
@@ -699,7 +702,7 @@ AP_DECLARE(int) directory_walk(request_rec *r)
  * they change, all the way down.
  */
 
-AP_DECLARE(int) directory_walk(request_rec *r)
+AP_DECLARE(int) ap_directory_walk(request_rec *r)
 {
     core_server_config *sconf = ap_get_module_config(r->server->module_config,
                                                      &core_module);
@@ -1035,7 +1038,8 @@ AP_DECLARE(int) directory_walk(request_rec *r)
 
 #endif /* defined REPLACE_PATH_INFO_METHOD */
 
-AP_DECLARE(int) location_walk(request_rec *r)
+
+AP_DECLARE(int) ap_location_walk(request_rec *r)
 {
     core_server_config *sconf = ap_get_module_config(r->server->module_config,
                                                      &core_module);
@@ -1106,7 +1110,7 @@ AP_DECLARE(int) location_walk(request_rec *r)
     return OK;
 }
 
-AP_DECLARE(int) file_walk(request_rec *r)
+AP_DECLARE(int) ap_file_walk(request_rec *r)
 {
     core_dir_config *conf = ap_get_module_config(r->per_dir_config,
                                                  &core_module);
@@ -1167,7 +1171,6 @@ AP_DECLARE(int) file_walk(request_rec *r)
     }
     return OK;
 }
-
 
 /*****************************************************************
  *
@@ -1318,7 +1321,7 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
 
     ap_getparents(rnew->uri);
 
-    if ((res = location_walk(rnew))) {
+    if ((res = ap_location_walk(rnew))) {
         rnew->status = res;
         return rnew;
     }
@@ -1340,9 +1343,9 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
      * from location_walk() above
      */
 
-    if ((res = directory_walk(rnew))
-        || (res = file_walk(rnew))
-        || (res = location_walk(rnew))
+    if ((res = ap_directory_walk(rnew))
+        || (res = ap_file_walk(rnew))
+        || (res = ap_location_walk(rnew))
         || (res = sub_req_common_validation(rnew))) {
         rnew->status = res;
     }
@@ -1439,17 +1442,17 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
      * directory_walk
      */
     if (rnew->finfo.filetype == APR_DIR) {
-        if (!(res = directory_walk(rnew)))
-            if (!(res = file_walk(rnew)))
-                res = location_walk(rnew);
+        if (!(res = ap_directory_walk(rnew)))
+            if (!(res = ap_file_walk(rnew)))
+                res = ap_location_walk(rnew);
     }
     else if (rnew->finfo.filetype == APR_REG || !rnew->finfo.filetype) {
         /*
          * do a file_walk, if it doesn't change the per_dir_config then
          * we know that we don't have to redo all the access checks
          */
-        if (   !(res = file_walk(rnew))
-            && !(res = location_walk(rnew))
+        if (   !(res = ap_file_walk(rnew))
+            && !(res = ap_location_walk(rnew))
             && (rnew->per_dir_config == r->per_dir_config))
         {
             if (   (res = ap_run_type_checker(rnew)) 
@@ -1558,17 +1561,17 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
          * directory_walk
          */
         if (rnew->finfo.filetype == APR_DIR) {
-            if (!(res = directory_walk(rnew)))
-                if (!(res = file_walk(rnew)))
-                    res = location_walk(rnew);
+            if (!(res = ap_directory_walk(rnew)))
+                if (!(res = ap_file_walk(rnew)))
+                    res = ap_location_walk(rnew);
         }
         else if (rnew->finfo.filetype == APR_REG || !rnew->finfo.filetype) {
             /*
              * do a file_walk, if it doesn't change the per_dir_config then
              * we know that we don't have to redo all the access checks
              */
-            if (   !(res = file_walk(rnew))
-                && !(res = location_walk(rnew))
+            if (   !(res = ap_file_walk(rnew))
+                && !(res = ap_location_walk(rnew))
                 && (rnew->per_dir_config == r->per_dir_config))
             {
                 if (   (res = ap_run_type_checker(rnew)) 
@@ -1595,9 +1598,9 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
          */
         rnew->uri = "INTERNALLY GENERATED file-relative req";
         rnew->per_dir_config = r->server->lookup_defaults;
-        res = directory_walk(rnew);
+        res = ap_directory_walk(rnew);
         if (!res) {
-            res = file_walk(rnew);
+            res = ap_file_walk(rnew);
         }
     }
 

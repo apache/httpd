@@ -253,7 +253,7 @@ static void process_request_internal(request_rec *r)
 
     ap_getparents(r->uri);     /* OK --- shrinking transformations... */
 
-    if ((access_status = location_walk(r))) {
+    if ((access_status = ap_location_walk(r))) {
         ap_die(access_status, r);
         return;
     }
@@ -263,40 +263,16 @@ static void process_request_internal(request_rec *r)
         return;
     }
 
-    if (r->proto_num > HTTP_VERSION(1,0) && apr_table_get(r->subprocess_env, "downgrade-1.0")) {
-        r->proto_num = HTTP_VERSION(1,0);
-    }
-
-    if (!r->proxyreq) {
-	/*
-	 * We don't want TRACE to run through the normal handler set, we
-	 * handle it specially.
-	 */
-	if (r->method_number == M_TRACE) {
-	    if ((access_status = ap_send_http_trace(r)))
-		ap_die(access_status, r);
-	    else
-		ap_finalize_request_protocol(r);
-	    return;
-	}
-    }
-
-    /*
-     * NB: directory_walk() clears the per_dir_config, so we don't inherit
-     * from location_walk() above
-     */
-
-    if ((access_status = directory_walk(r))) {
-        ap_die(access_status, r);
+    if ((access_status = ap_run_map_to_storage(r))) {
+        /* This request wasn't in storage (e.g. TRACE) */
+        if (access_status == DONE)
+	    ap_finalize_request_protocol(r);
+	else
+            ap_die(access_status, r);
         return;
     }
 
-    if ((access_status = file_walk(r))) {
-        ap_die(access_status, r);
-        return;
-    }
-
-    if ((access_status = location_walk(r))) {
+    if ((access_status = ap_location_walk(r))) {
         ap_die(access_status, r);
         return;
     }

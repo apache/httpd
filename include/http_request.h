@@ -289,6 +289,21 @@ AP_DECLARE_HOOK(int,create_request,(request_rec *r))
 AP_DECLARE_HOOK(int,translate_name,(request_rec *r))
 
 /**
+ * This hook allow modules to set the per_dir_config based on their own
+ * context (such as <Proxy > sections) and responds to contextless requests 
+ * such as TRACE that need no security or filesystem mapping.
+ * based on the filesystem.
+ * @param r The current request
+ * @return DONE (or HTTP_) if this contextless request was just fulfilled 
+ * (such as TRACE), OK if this is not a file, and DECLINED if this is a file.
+ * The core map_to_storage (HOOK_RUN_LAST) will directory_walk and file_walk
+ * the r->filename.
+ * 
+ * @ingroup hooks
+ */
+AP_DECLARE_HOOK(int,map_to_storage,(request_rec *r))
+
+/**
  * This hook allows modules to check the authentication information sent with
  * the request.
  * @param r The current request
@@ -341,9 +356,9 @@ AP_DECLARE_HOOK(int,auth_checker,(request_rec *r))
  */
 AP_DECLARE_HOOK(void,insert_filter,(request_rec *r))
 
-AP_DECLARE(int) directory_walk(request_rec *r);
-AP_DECLARE(int) location_walk(request_rec *r);
-AP_DECLARE(int) file_walk(request_rec *r);
+AP_DECLARE(int) ap_location_walk(request_rec *r);
+AP_DECLARE(int) ap_directory_walk(request_rec *r);
+AP_DECLARE(int) ap_file_walk(request_rec *r);
 
 #ifdef __cplusplus
 }

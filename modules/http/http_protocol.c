@@ -1023,11 +1023,14 @@ static char *make_allow(request_rec *r)
     return list + 2;
 }
 
-AP_DECLARE(int) ap_send_http_trace(request_rec *r)
+AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
 {
     int rv;
     apr_bucket_brigade *b;
     header_struct h;
+
+    if (r->method_number != M_TRACE)
+        return DECLINED;
 
     /* Get the original request */
     while (r->prev)
@@ -1049,7 +1052,7 @@ AP_DECLARE(int) ap_send_http_trace(request_rec *r)
     apr_brigade_puts(b, NULL, NULL, CRLF);
     ap_pass_brigade(r->output_filters, b);
 
-    return OK;
+    return DONE;
 }
 
 AP_DECLARE(int) ap_send_http_options(request_rec *r)
