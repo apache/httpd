@@ -81,7 +81,7 @@
 #include <sys/socket.h>
 #endif
 
-#if defined(DEXTER_MPM) || defined(MPMT_BEOS_MPM) || defined(MPM_BEOS)
+#if defined(DEXTER_MPM) || defined(MPMT_BEOS_MPM) || defined(BEOS_MPM)
 #define CHILD_TABLE 1
 #define CHILD_INFO_TABLE     ap_child_table
 #elif defined(MPMT_PTHREAD_MPM) || defined (PREFORK_MPM)
@@ -99,6 +99,7 @@ void ap_reclaim_child_processes(int terminate)
     ap_status_t waitret;
     int tries;
     int not_dead_yet;
+    int max_daemons = ap_get_max_daemons();
 
 #ifdef SCOREBOARD
     ap_sync_scoreboard_image();
@@ -116,7 +117,7 @@ void ap_reclaim_child_processes(int terminate)
 
         /* now see who is done */
         not_dead_yet = 0;
-        for (i = 0; i < ap_max_daemons_limit; ++i) {
+        for (i = 0; i < max_daemons; ++i) {
             pid_t pid = CHILD_INFO_TABLE[i].pid;
             ap_proc_t proc;
 
