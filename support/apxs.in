@@ -320,6 +320,7 @@ if ($opt_g) {
     my $data = join('', <DATA>);
     $data =~ s|%NAME%|$name|sg;
     $data =~ s|%TARGET%|$CFG_TARGET|sg;
+    $data =~ s|%PREFIX%|$prefix|sg;
 
     my ($mkf, $mods, $src) = ($data =~ m|^(.+)-=#=-\n(.+)-=#=-\n(.+)|s);
 
@@ -586,9 +587,9 @@ __DATA__
 ##
 
 builddir=$(shell pwd)
-top_srcdir=/home/rbb/apachebin4
-top_builddir=/home/rbb/apachebin4/build
-include /home/rbb/apachebin4/build/special.mk
+top_srcdir=%PREFIX%
+top_builddir=%PREFIX%
+include %PREFIX%/build/special.mk
 
 #   the used tools
 APXS=apxs
