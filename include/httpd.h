@@ -49,7 +49,7 @@
 #include <stdlib.h>
 #endif
 
-/* Note: util_uri.h is also included, see below */
+/* Note: apr_uri.h is also included, see below */
 
 #ifdef __cplusplus
 extern "C" {
