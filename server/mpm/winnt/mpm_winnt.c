@@ -1162,9 +1162,6 @@ static void worker_main(int thread_num)
         sockinfo.type    = SOCK_STREAM;
         apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
 
-        ap_update_child_status(0, thread_num,  
-                               SERVER_BUSY_READ, (request_rec *) NULL);
-
         c = ap_new_connection(context->ptrans, server_conf, context->sock,
                               thread_num);
 

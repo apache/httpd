@@ -790,9 +790,6 @@ static void child_main(int child_num_arg)
 
 	ap_sock_disable_nagle(csd);
 
-	(void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(my_child_num), SERVER_BUSY_READ,
-				   (request_rec *) NULL);
-
 	current_conn = ap_new_connection(ptrans, ap_server_conf, csd, 
                                          my_child_num);
         if (current_conn) {

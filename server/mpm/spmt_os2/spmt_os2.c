@@ -691,9 +691,6 @@ static void thread_main(void *thread_num_arg)
 
 	ap_sock_disable_nagle(csd);
 
-	(void) ap_update_child_status(0, THREAD_GLOBAL(thread_num), SERVER_BUSY_READ,
-				   (request_rec *) NULL);
-
 	current_conn = ap_new_connection(ptrans, ap_server_conf, csd,
                                          THREAD_GLOBAL(thread_num));
 

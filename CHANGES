@@ -1,5 +1,9 @@
 Changes with Apache 2.0b1
 
+  *) Begin to move the calls to update_child_status into common code, so
+     that each individual MPM does not need to update the scoreboard itself.
+     [Ryan Bloom]
+
   *) Allow mod_tls to compile under Unix boxes where openssl has been
      installed to the system include files.
      [Gomez Henri <new-httpd@slib.fr>]

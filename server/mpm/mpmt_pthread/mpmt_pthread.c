@@ -414,9 +414,6 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num, 
 
     ap_sock_disable_nagle(sock);
 
-    (void) ap_update_child_status(my_child_num, my_thread_num,  
-				  SERVER_BUSY_READ, (request_rec *) NULL);
-
     current_conn = ap_new_connection(p, ap_server_conf, sock, conn_id);
     if (current_conn) {
         ap_process_connection(current_conn);
