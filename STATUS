@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/29 04:12:19 $]
+Last modified at [$Date: 2003/05/30 00:08:25 $]
 
 Release:
 
@@ -64,12 +64,14 @@ PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
-    * Backport LimitInteralRecursion to 2.0 and 1.3. (1.3 patch is here:
-      <http://cvs.apache.org/~nd/recursion13.patch>) PR 19753.
-      include/http_core.h r1.75
-      modules/http/http_request.c r1.156
-      server/core.c r1.236
-      server/request.c r1.126
+    * Backport LimitInteralRecursion to 2.0 and 1.3.
+      (1.3 patch is here: <http://cvs.apache.org/~nd/recursion13.patch>)
+      (2.0 patch is here: <http://cvs.apache.org/~nd/recursion20.patch>)
+      PR 19753.
+      include/http_core.h r1.75, r1.76
+      modules/http/http_request.c r1.156, r1.158
+      server/core.c r1.236, r1.237
+      server/request.c r1.126, r1.127
       +1: nd
 
     * Replace some of the mutex locking in the worker MPM with
