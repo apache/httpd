@@ -240,16 +240,28 @@ B7zJElmBUrmj9aW6ICmSNbOBwVo1Y7hg6lPSFFMOOECFpT1WuTXXYpNA
 
 
 Type bits/keyID    Date       User ID
-pub   768/8F394E3D 1995/08/08 Martin Kraemer <Martin.Kraemer@Mch.SNI.De>
-
+pub  1024/EE65E321 1998/10/22 Martin Kraemer <martin@apache.org>
+sig       BB1D9F6D             ct magazine CERTIFICATE <pgpCA@ct.heise.de>
+sig       E2449019             Martin Kraemer <Martin.Kraemer@Mch.SNI.De>
+sig       EE65E321             Martin Kraemer <martin@apache.org>
 -----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: 2.6
+Version: 2.6.2
 
-mQBtAzAnjA8AAAEDAKlpkRzZ7c4yDdVnW9fMHMXrMJ8gQ+UIzr1xt2+y7Sv71Nv9
-GfUuTeCWdOoynFUXvvBjyCuEIZ426s9UfrnWv94VppoS8sjFgLYkRIAhZiDMHYp0
-j8i1/f82KtdYjzlOPQAFEbQqTWFydGluIEtyYWVtZXIgPE1hcnRpbi5LcmFlbWVy
-QE1jaC5TTkkuRGU+
-=hcsR
+mQCNAzYvawcAAAEEAO/lLOQVYsUS+l7yan+Rzr0ehfWRqlgeNsV4DQ0xTuQewD9K
+5lm7ujRwutxlNaf5dXjE24mlsiRN8KDp+fKwm7Wtqv490xmhzS/6y8ekwB02P4fi
+/JJNX1PbLS0cL6+bz2dFqLDhh03Ovz3G16Y9he5mrJ2PNOWa9Dfj9F/uZeMhAAUR
+tCJNYXJ0aW4gS3JhZW1lciA8bWFydGluQGFwYWNoZS5vcmc+iQCVAwUQNkcAbUS4
+3da7HZ9tAQFUnAP+PrKa3YFKp9XTrANmORex4kOyNpM1adS8zM6bTcHyIkH4WitB
+b2nRbqOdOuSwbh655aSStluIxY66CValeL+6E7MCEqQ/UlzzMVmdbMyWSYwDlkV3
+gQkg3vE6bgFlWlLLr2HnkllY3ISEChDWh8x7fRKLy+8ZBGW89ZXOGkhIb9mJAJUD
+BRA2L2ueKwLDReJEkBkBAbeGBACKM1FCmQC583/IHyw7rDlvnsZKeKvdbbLGSnmJ
+NWOyf4VgkC8OCKmwPnWLOOIK44/JsT2Yonih2r+04FBqYo6SsMgBqOBJqKktHvtx
+bD3VfUUkkV8kZ4ituecWTx0zj1Oa0QiCiv8HHvdsmQB0mj07mWQz1CamXPSwHYn+
+t+fJOIkAlQMFEDYva2c34/Rf7mXjIQEBcNQEAOrt4+o2LwcCiJp3bOF9WZMirpMQ
+QJISqXBnom3r2eB+k1a/Jig1sePSzPxneW9EgWIrWg0EfK+u2kMgvTJynDUux9zL
+4qnECmZT+ESEm+P8rPKeecOfUHgDjQlTUCneOX5p0TbdvJm+TcJVjXjoVrYv6hZg
+InYw+jlvF5e/sdI8
+=03LU
 -----END PGP PUBLIC KEY BLOCK-----
 
 
