@@ -48,6 +48,11 @@
       different directives to control process creation and request
       processing.</li>
 
+      <li>The <a href="mod/mod_proxy.html">proxy module</a> has been
+      revamped to bring it up to HTTP/1.1.  Among the important changes,
+      proxy access control is now placed inside a &lt;Proxy&gt; block
+      rather than a &lt;Directory proxy:&gt; block.</li>
+
       <li>The <code>CacheNegotiatedDocs</code> directive now takes
       the argument <code>on</code> or <code>off</code>. Existing
       instances of <code>CacheNegotiatedDocs</code> should be
