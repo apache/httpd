@@ -277,6 +277,9 @@ Changes with Apache 1.3b4
      self-referential urls using the "canonical" ServerName and Port.
      The new UseCanonicalName directive (default on), if set to off
      will cause Apache to use the client-supplied hostname and port.
+     Part of this change required a change to the construct_url()
+     prototype; and the addition of get_server_name() and
+     get_server_port().
      [Michael Douglass <mikedoug@texas.net>, Dean Gaudet]
      PR#315, 459, 485, 1433
 
