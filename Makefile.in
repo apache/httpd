@@ -74,11 +74,12 @@ install-conf:
 	    		fi \
 	    	) > $(DESTDIR)$(sysconfdir)/original/$$i; \
 	    	chmod 0644 $(DESTDIR)$(sysconfdir)/original/$$i; \
+		file=$$i; \
 	    	if [ "$$i" = "httpd.conf" ]; then \
 	    		file=`echo $$i|sed s/.*.conf/$(PROGRAM_NAME).conf/`; \
 	    	fi; \
 	    	if test ! -f $(DESTDIR)$(sysconfdir)/$$i; then \
-	    		$(INSTALL_DATA) $(DESTDIR)$(sysconfdir)/original/$$i $(DESTDIR)$(sysconfdir)/$$i; \
+	    		$(INSTALL_DATA) $(DESTDIR)$(sysconfdir)/original/$$i $(DESTDIR)$(sysconfdir)/$$file; \
 	    	fi; \
 	    done ; \
 	done ; \
