@@ -35,13 +35,16 @@ client</description>
 </summary>
 <seealso><a href="../filter.html">Filters</a></seealso>
 
-<section id="recommended"><title>Recommended Configuration</title>
-    <p>This is a sample configuration for the impatient. But please take
-    the time and read the sections below for a detailed description!</p>
+<section id="recommended"><title>Sample Configurations</title>
+    <p>This is a simple sample configuration for the impatient.</p>
 
     <example><title>Compress only a few types</title>
       AddOutputFilterByType DEFLATE text/html text/plain text/xml
     </example>
+
+    <p>The following configuration, while resulting in more compressed content,
+    is also much more complicated.  Do not use this unless you fully understand
+    all the configuration details.</p>
 
     <example><title>Compress everything except images</title>
       &lt;Location /&gt;<br />
