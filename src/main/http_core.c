@@ -148,6 +148,9 @@ static void *create_core_dir_config(pool *a, char *dir)
 #ifdef WIN32
     conf->script_interpreter_source = INTERPRETER_SOURCE_UNSET;
 #endif
+
+    conf->server_signature = srv_sig_unset;
+
     return (void *)conf;
 }
 
@@ -270,6 +273,10 @@ static void *merge_core_dir_configs(pool *a, void *basev, void *newv)
         conf->script_interpreter_source = new->script_interpreter_source;
     }
 #endif
+
+    if (new->server_signature != srv_sig_unset) {
+	conf->server_signature = new->server_signature;
+    }
 
     return (void*)conf;
 }
@@ -2478,7 +2485,8 @@ API_EXPORT(const char *) ap_psignature(const char *prefix, request_rec *r)
 
     conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
 						   &core_module);
-    if (conf->server_signature == srv_sig_off) {
+    if ((conf->server_signature == srv_sig_off)
+	    || (conf->server_signature == srv_sig_unset)) {
 	return "";
     }
 
@@ -2752,7 +2760,7 @@ static const command_rec core_cmds[] = {
 { "ServerName", set_server_string_slot,
   (void *)XtOffsetOf (server_rec, server_hostname), RSRC_CONF, TAKE1,
   "The hostname of the server" },
-{ "ServerSignature", set_signature_flag, NULL, ACCESS_CONF|RSRC_CONF, TAKE1,
+{ "ServerSignature", set_signature_flag, NULL, OR_ALL, TAKE1,
   "En-/disable server signature (on|off|email)" },
 { "ServerRoot", set_server_root, NULL, RSRC_CONF, TAKE1,
   "Common directory of server-related files (logs, confs, etc.)" },
