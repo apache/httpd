@@ -1,5 +1,8 @@
 Changes with Apache 1.3.3
 
+  *) The Perl %ENV hash will now be setup by default when using the
+     mod_include `perl' command [Doug MacEachern]
+
   *) PORT: Add Pyramid DC/OSx support to configuration mechanism.
      [Earle Ake <akee@wpdiss1.wpafb.af.mil>]
 

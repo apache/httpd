@@ -946,6 +946,7 @@ static int handle_perl(FILE *in, request_rec *r, const char *error)
         }
     }
     perl_stdout2client(r);
+    perl_setup_env(r);
     perl_call_handler(sub, r, av);
     return OK;
 }
