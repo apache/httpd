@@ -82,6 +82,17 @@ typedef struct {
 
 module negotiation_module;
 
+char *merge_string_array (pool *p, array_header *arr, char *sep)
+{
+    int i;
+    char *t = "";
+
+    for (i = 0; i < arr->nelts; i++) {
+	t = pstrcat(p, t, i ? sep : "", ((char**)arr->elts)[i], NULL);
+    }
+    return t;
+}
+
 void *create_neg_dir_config (pool *p, char *dummy)
 {
     neg_dir_config *new =
@@ -162,7 +173,7 @@ typedef struct var_rec {
     char *type_name;
     char *file_name;
     char *content_encoding;
-    char *content_language;
+    array_header *content_languages; /* list of languages for this variant */
     char *content_charset;
     char *description;
 
@@ -230,7 +241,7 @@ void clean_var_rec (var_rec *mime_info)
     mime_info->type_name = "";
     mime_info->file_name = "";
     mime_info->content_encoding = "";
-    mime_info->content_language = "";
+    mime_info->content_languages = NULL;
     mime_info->content_charset = "";
     mime_info->description = "";
 
@@ -390,6 +401,27 @@ array_header *do_header_line (pool *p, char *accept_line)
     }
 
     return accept_recs;
+}
+
+/* Given the text of the Content-Languages: line from the var map file,
+ * return an array containing the languages of this variant
+ */
+
+array_header *do_languages_line (pool *p, char **lang_line)
+{
+    array_header *lang_recs = make_array (p, 2, sizeof (char *));
+  
+    if (!lang_line) return lang_recs;
+    
+    while (**lang_line) {
+        char **new = (char **)push_array (lang_recs);
+	*new = get_token (p, lang_line, 0);
+	str_tolower (*new);
+	if (**lang_line == ',')
+	    ++(*lang_line);
+    }
+
+    return lang_recs;
 }
 
 /*****************************************************************
@@ -648,8 +680,8 @@ int read_type_map (negotiation_state *neg, char *map_name)
 		mime_info.bytes = atoi(body);
 	    }
 	    else if (!strncmp (buffer, "content-language:", 17)) {
-		mime_info.content_language = get_token (neg->pool, &body, 0);
-		str_tolower (mime_info.content_language);
+		mime_info.content_languages = 
+		    do_languages_line(neg->pool, &body);
 	    }
 	    else if (!strncmp (buffer, "content-encoding:", 17)) {
 		mime_info.content_encoding = get_token (neg->pool, &body, 0);
@@ -756,9 +788,13 @@ int read_types_multi (negotiation_state *neg)
 	    mime_info.content_encoding = sub_req->content_encoding;
 	    str_tolower(mime_info.content_encoding);
 	}
-	if (sub_req->content_language) {
-	    mime_info.content_language = sub_req->content_language;
-	    str_tolower(mime_info.content_language);
+	if (sub_req->content_languages) {
+	    int i;
+	    mime_info.content_languages = sub_req->content_languages;
+	    if (mime_info.content_languages)
+		for (i = 0; i < mime_info.content_languages->nelts; ++i)
+		    str_tolower(((char**)
+				 (mime_info.content_languages->elts))[i]);
 	}
 
 	get_entry (neg->pool, &accept_info, sub_req->content_type);
@@ -958,7 +994,8 @@ void set_default_lang_quality(negotiation_state *neg)
     if (!neg->use_transparent_neg)
 	for (j = 0; j < neg->avail_vars->nelts; ++j) {
 	    var_rec *variant = &avail_recs[j];
-	    if (variant->content_language && *variant->content_language) {
+	    if (variant->content_languages && 
+		variant->content_languages->nelts) {
 		neg->default_lang_quality = 0.001;
 		return;
 	    }
@@ -978,6 +1015,12 @@ void set_default_lang_quality(negotiation_state *neg)
  * match, use the longest string from the Accept-Language: header
  * (see HTTP/1.1 [14.4])
  *
+ * When a variant has multiple languages, we find the 'best'
+ * match for each variant language tag as above, then select the
+ * one with the highest q value. Because both the accept-header
+ * and variant can have multiple languages, we now have a hairy
+ * loop-within-a-loop here.
+ *
  * If the variant has no language and we have no Accept-Language
  * items, leave the quality at 1.0 and return.
  *
@@ -994,96 +1037,136 @@ void set_default_lang_quality(negotiation_state *neg)
 
 void set_language_quality(negotiation_state *neg, var_rec *variant)
 {
-    accept_rec *accs, *best = NULL, *star = NULL;
     int i;
-    char *lang = variant->content_language;
-    int prefixlen = 0;
-    char *p;
     int naccept = neg->accept_langs->nelts;
     int index;
     neg_dir_config *conf = NULL;
-    int longest_lang_range_len = 0;
-    int len;
+    char *firstlang;
 
     if (naccept == 0)
         conf = (neg_dir_config *) get_module_config (neg->r->per_dir_config,
                                                      &negotiation_module);
 
-    if (naccept == 0 && (!lang || !*lang))
-        return;                 /* variant has no assigned language */
+    if (naccept == 0 && (!variant->content_languages || 
+			 !variant->content_languages->nelts))
+	return;                 /* no accept-language and no variant lang */
 
-    p = strchr(lang, '-');      /* find prefix part (if any) */
-    if (p)
-        prefixlen = p - lang; 
-
-    if (!lang || !*lang) {
+    if (!variant->content_languages || !variant->content_languages->nelts) {
         /* This variant has no content-language, so use the default
 	 * quality factor for variants with no content-language
 	 * (previously set by set_default_lang_quality()). */
         variant->lang_quality = neg->default_lang_quality;
+
+	if (naccept == 0)
+	    return;		/* no accept-language items */
+
     }
     else if (naccept) {
+	/* Variant has one (or more) langauges, and we have one (or more)
+	 * language ranges on the Accept-Language header. Look for
+	 * the best match. We do this by going through each language
+	 * on the variant description looking for a match on the
+	 * Accept-Language header. The best match is the longest matching
+	 * language on the header. The final result is the best q value
+	 * from all the languages on the variant description.
+	 */
+	int j;
 	float fiddle_q = 0.0;
-
-        accs = (accept_rec *)neg->accept_langs->elts;
-
-        for (i = 0; i < neg->accept_langs->nelts; ++i) {
-            if (!strcmp(accs[i].type_name, "*")) {
-                star = &accs[i];
-                continue;
-            }
-            
-            /* Find language. We match if either the variant language
-	     * tag exactly matches, or the prefix of the tag up to the
-	     * '-' character matches the whole of the language in the
-	     * Accept-Language header */
-            if ((!strcmp (lang, accs[i].type_name) ||
-                 (prefixlen &&
-                  !strncmp(lang, accs[i].type_name, prefixlen) &&
-		  (accs[i].type_name[prefixlen] == '\0'))) &&
-                ((len = strlen(accs[i].type_name)) > 
-                                     longest_lang_range_len)) {
-                longest_lang_range_len = len;
-                best = &accs[i];
-            }
-
-	    if (! best) {
-	        /* The next bit is a fiddle. Some browsers might be
-		 * configured to send more specific language ranges
-		 * than desirable. For example, an Accept-Language of
-		 * en-US should never match variants with languages en
-		 * or en-GB. But US English speakers might pick en-US
-		 * as their language choice.  So this fiddle checks if
-		 * the language range has a prefix, and if so, it
-		 * matches variants which match that prefix with a
-		 * priority of 0.001. So a request for en-US would
-		 * match variants of types en and en-GB, but at much
-		 * lower priority than matches of en-US directly, or
-		 * of any other language listed on the Accept-Language
-		 * header
-		 */
-	        if ((p = strchr(accs[i].type_name, '-'))) {
-		    int plen = p - accs[i].type_name;
-		    if (!strncmp(lang, accs[i].type_name, plen))
-			fiddle_q = 0.001;
-		}
-	    }
-            
-        }
+	accept_rec *accs = (accept_rec *)neg->accept_langs->elts;
+	accept_rec *best = NULL, *star = NULL;
+	char *p;
 	
-        variant->lang_quality = best ? best->quality : 
+	for (j = 0; j < variant->content_languages->nelts; ++j) {
+	    char *lang;		/* language from variant description */
+	    accept_rec *bestthistag = NULL;
+	    int prefixlen = 0;
+	    int longest_lang_range_len = 0;
+	    int len;
+	    /* lang is the variant's language-tag, which is the one
+	     * we are allowed to use the prefix of in HTTP/1.1
+	     */
+	    lang = ((char **)(variant->content_languages->elts))[j];
+	    p = strchr(lang, '-');      /* find prefix part (if any) */
+	    if (p)
+		prefixlen = p - lang; 
+	    
+	    /* now find the best (i.e. longest) matching Accept-Language
+	     * header language. We put the best match for this tag in 
+	     * bestthistag. We cannot update the overall best (based on
+	     * q value) because the best match for this tag is the longest
+	     * language item on the accept header, not necessarily the
+	     * highest q.
+	     */
+	    for (i = 0; i < neg->accept_langs->nelts; ++i) {
+		if (!strcmp(accs[i].type_name, "*")) {
+		    if (!star)
+			star = &accs[i];
+		    continue;
+		}
+              
+		/* Find language. We match if either the variant language
+		 * tag exactly matches, or the prefix of the tag up to the
+		 * '-' character matches the whole of the language in the
+		 * Accept-Language header. We only use this accept-language
+		 * item as the best match for the current tag if it
+		 * is longer than the previous best match */
+		if ((!strcmp (lang, accs[i].type_name) ||
+		     (prefixlen &&
+		      !strncmp(lang, accs[i].type_name, prefixlen) &&
+		      (accs[i].type_name[prefixlen] == '\0'))) &&
+		    ((len = strlen(accs[i].type_name)) > 
+ 		                      longest_lang_range_len)) {
+		    longest_lang_range_len = len;
+		    bestthistag = &accs[i];
+		}
+  
+		if (! bestthistag) {
+		    /* The next bit is a fiddle. Some browsers might be
+		     * configured to send more specific language ranges
+		     * than desirable. For example, an Accept-Language of
+		     * en-US should never match variants with languages en
+		     * or en-GB. But US English speakers might pick en-US
+		     * as their language choice.  So this fiddle checks if
+		     * the language range has a prefix, and if so, it
+		     * matches variants which match that prefix with a
+		     * priority of 0.001. So a request for en-US would
+		     * match variants of types en and en-GB, but at much
+		     * lower priority than matches of en-US directly, or
+		     * of any other language listed on the Accept-Language
+		     * header
+		     */
+		    if ((p = strchr(accs[i].type_name, '-'))) {
+			int plen = p - accs[i].type_name;
+			if (!strncmp(lang, accs[i].type_name, plen))
+			    fiddle_q = 0.001;
+		    }
+  		}
+  	    }
+	    /* Finished looking at Accept-Language headers, the best
+	     * (longest) match is in bestthistag, or NULL if no match
+	     */
+	    if (!best ||
+		(bestthistag && bestthistag->quality > best->quality))
+		best = bestthistag;
+          }
+  	
+          variant->lang_quality = best ? best->quality : 
 	                     (star ? star->quality : fiddle_q);
-        variant->definite = variant->definite && best;
     }
 
-    /* Now set the old lang_index field */
+    /* Now set the old lang_index field. Since this is old 
+     * stuff anyway, don't both with handling multiple languages
+     * per variant, just use the first one assigned to it
+     */
     index = 0;
+    if (variant->content_languages && variant->content_languages->nelts)
+	firstlang = ((char**)variant->content_languages->elts)[0];
+    else
+	firstlang = "";
     if (naccept == 0)           /* Client doesn't care */
-        index = find_default_index (conf,
-                                    variant->content_language);
+        index = find_default_index (conf, firstlang);
     else                        /* Client has Accept-Language */
-        index = find_lang_index (neg->accept_langs,
-                                 variant->content_language);
+        index = find_lang_index (neg->accept_langs, firstlang);
     variant->lang_index = index;
 
     return;             
@@ -1326,7 +1409,7 @@ int is_variant_better_na(negotiation_state *neg, var_rec *variant, var_rec *best
     fprintf(stderr, "Variant: file=%s type=%s lang=%s acceptq=%1.3f langq=%1.3f typeq=%1.3f q=%1.3f definite=%d\n",
             variant->file_name ? variant->file_name : "",
             variant->type_name ? variant->type_name : "",
-            variant->content_language ? variant->content_language : "",
+            variant->content_languages ? merge_string_array(neg->pool, variant->content_languages, ",") : "",
             variant->accept_type_quality,
             variant->lang_quality,
             variant->type_quality,
@@ -1594,12 +1677,12 @@ void set_neg_headers(request_rec *r, negotiation_state *neg, int na_result)
 	    else if (strcmp(sample_type, variant->type_name))
 	      vary_by_type = 1;
         }
-        if (variant->content_language) {
-            if (*variant->content_language)
-                rec = pstrcat(r->pool, rec, " {language ", 
-                              variant->content_language, "}", NULL);
-            if (!sample_language) sample_language = variant->content_language;
-            else if (strcmp(sample_language, variant->content_language))
+        if (variant->content_languages && variant->content_languages->nelts) {
+	    char *langs = 
+		merge_string_array (r->pool, variant->content_languages, ",");
+	    rec = pstrcat(r->pool, rec, " {language ", langs, "}", NULL);
+            if (!sample_language) sample_language = langs;
+            else if (strcmp(sample_language, langs))
                 vary_by_language = 1;
         }
         if (variant->content_encoding) {
@@ -1654,19 +1737,21 @@ char *make_variant_list (request_rec *r, negotiation_state *neg)
         var_rec *variant = &((var_rec *)neg->avail_vars->elts)[i];
         char *filename = variant->file_name ? variant->file_name : "";
         char *content_type = variant->type_name ? variant->type_name : "";
-        char *content_language = 
-            variant->content_language ? variant->content_language : "";
+        array_header *languages = variant->content_languages;
         char *description = variant->description ? variant->description : "";
 
 	/* The format isn't very neat, and it would be nice to make
 	 * the tags human readable (eg replace 'language en' with
 	 * 'English'). */
         t = pstrcat(r->pool, t, "<li><a href=\"", filename, "\">", 
-                    filename, "</a> ", description,
-                    " type ", content_type, 
-		    *content_language ? " language " : "", content_language, 
-		    "\n",
-                    NULL);
+                    filename, "</a> ", description, NULL);
+	if (content_type)
+	    t = pstrcat(r->pool, t, " type ", content_type, NULL);
+	if (languages && languages->nelts)
+	    t = pstrcat(r->pool, t, " language ",
+			merge_string_array(r->pool, languages, ", "),
+			NULL);
+	t = pstrcat(r->pool, t, "\n", NULL);
     }
     t = pstrcat(r->pool, t, "</ul>\n", NULL);
 
@@ -1853,7 +1938,7 @@ int handle_multi (request_rec *r)
     r->handler = sub_req->handler;
     r->content_type = sub_req->content_type;
     r->content_encoding = sub_req->content_encoding;
-    r->content_language = sub_req->content_language;
+    r->content_languages = sub_req->content_languages;
     r->finfo = sub_req->finfo;
     
     return OK;
