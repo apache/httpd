@@ -410,7 +410,7 @@ int ssl_hook_Access(request_rec *r)
         }
 
         /* configure new state */
-        if (!SSL_set_cipher_list(ssl, dc->szCipherSuite)) {
+        if (!modssl_set_cipher_list(ssl, dc->szCipherSuite)) {
             ssl_log(r->server, SSL_LOG_WARN|SSL_ADD_SSLERR,
                     "Unable to reconfigure (per-directory) "
                     "permitted SSL ciphers");
