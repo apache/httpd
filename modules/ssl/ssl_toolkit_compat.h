@@ -56,6 +56,8 @@
 
 #define HAVE_SSL_RAND_EGD /* since 9.5.1 */
 
+#define HAVE_SSL_X509V3_EXT_d2i
+
 #else /* RSA sslc */
 
 /* sslc does not support this function, OpenSSL has since 9.5.1 */
