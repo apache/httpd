@@ -175,8 +175,9 @@ static void err_output(const char *fmt, va_list ap)
     time(&timevar);
     lt = localtime(&timevar);
 
-    fprintf(log, "[%.2d:%.2d:%.2d %.2d-%.2d-%.2d]: ", lt->tm_hour, lt->tm_min,
-	    lt->tm_sec, lt->tm_mday, (lt->tm_mon + 1), lt->tm_year);
+    fprintf(log, "[%d-%.2d-%.2d %.2d:%.2d:%.2d]: ",
+	    lt->tm_year + 1900, lt->tm_mon + 1, lt->tm_mday,
+	    lt->tm_hour, lt->tm_min, lt->tm_sec);
 
     vfprintf(log, fmt, ap);
 

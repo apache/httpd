@@ -1,4 +1,7 @@
 Changes with Apache 1.3b4
+
+  *) Fix Y2K problem with date printing in suexec log.
+     [Paul Eggert <eggert@twinsun.com>] PR#1343
   
   *) WIN32 deserves a pid file.  [Ben Hyde]
 
