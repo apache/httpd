@@ -1673,8 +1673,8 @@ static int index_directory(request_rec *r,
     else {
 	keyid = *qstring;
 	ap_getword(r->pool, &qstring, '=');
-	if (qstring != '\0') {
-	    direction = *qstring;
+	if (*qstring == D_DESCENDING) {
+	    direction = D_DESCENDING;
 	}
 	else {
 	    direction = D_ASCENDING;
