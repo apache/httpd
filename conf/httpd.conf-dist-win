@@ -184,7 +184,7 @@ ThreadsPerChild 50
 
 # To enable the cache as well, edit and uncomment the following lines:
 
-#CacheRoot @@ServerRoot@@/proxy
+#CacheRoot "@@ServerRoot@@/proxy"
 #CacheSize 5
 #CacheGcInterval 4
 #CacheMaxExpire 24
