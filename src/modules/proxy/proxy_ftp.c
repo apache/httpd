@@ -59,6 +59,7 @@
 
 #include "mod_proxy.h"
 #include "http_main.h"
+#include "http_log.h"
 
 DEF_Explain
 
@@ -569,8 +570,8 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 
     sock = ap_psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock == -1) {
-	ap_proxy_log_uerror("socket", NULL, "proxy: error creating socket",
-			 r->server);
+	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+		     "proxy: error creating socket");
 	return SERVER_ERROR;
     }
 
@@ -578,17 +579,16 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	if (setsockopt(sock, SOL_SOCKET, SO_RCVBUF,
 		       (const char *) &conf->recv_buffer_size, sizeof(int))
 	    == -1) {
-	    ap_proxy_log_uerror("setsockopt", "(SO_RCVBUF)",
-			     "Failed to set ProxyReceiveBufferSize, using default",
-			     r->server);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			 "setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
 	}
     }
 
     if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (void *) &one,
 		   sizeof(one)) == -1) {
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */
-	ap_proxy_log_uerror("setsockopt", NULL,
-			 "proxy: error setting reuseaddr option", r->server);
+	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+		     "proxy: error setting reuseaddr option: setsockopt(SO_REUSEADDR)");
 	ap_pclosesocket(p, sock);
 	return SERVER_ERROR;
 #endif /*_OSD_POSIX*/
@@ -618,7 +618,9 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 #endif
     if (i == -1) {
 	ap_pclosesocket(p, sock);
-	return ap_proxyerror(r, "Could not connect to remote machine");
+	return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ ap_pstrcat(r->pool,
+				"Could not connect to remote machine: ",
+				strerror(errno), NULL));
     }
 
     f = ap_bcreate(p, B_RDWR | B_SOCKET);
@@ -769,8 +771,8 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 /* try to set up PASV data connection first */
     dsock = ap_psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (dsock == -1) {
-	ap_proxy_log_uerror("socket", NULL, "proxy: error creating PASV socket",
-			 r->server);
+	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+		     "proxy: error creating PASV socket");
 	ap_bclose(f);
 	ap_kill_timeout(r);
 	return SERVER_ERROR;
@@ -779,8 +781,8 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     if (conf->recv_buffer_size) {
 	if (setsockopt(dsock, SOL_SOCKET, SO_RCVBUF,
 	       (const char *) &conf->recv_buffer_size, sizeof(int)) == -1) {
-	    ap_proxy_log_uerror("setsockopt", "(SO_RCVBUF)",
-		  "Failed to set ProxyReceiveBufferSize, using default", r->server);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			 "setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
 	}
     }
 
@@ -791,8 +793,8 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     i = ap_bgets(pasv, sizeof(pasv), f);
 
     if (i == -1) {
-	ap_proxy_log_uerror("command", NULL, "PASV: control connection is toast",
-			 r->server);
+	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server,
+		     "PASV: control connection is toast");
 	ap_pclosesocket(p, dsock);
 	ap_bclose(f);
 	ap_kill_timeout(r);
@@ -831,7 +833,9 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 
 	    if (i == -1) {
 		ap_kill_timeout(r);
-		return ap_proxyerror(r, "Could not connect to remote machine");
+		return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ ap_pstrcat(r->pool,
+				"Could not connect to remote machine: ",
+				strerror(errno), NULL));
 	    }
 	    else {
 		pasvmode = 1;
@@ -844,8 +848,8 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     if (!pasvmode) {		/* set up data connection */
 	clen = sizeof(struct sockaddr_in);
 	if (getsockname(sock, (struct sockaddr *) &server, &clen) < 0) {
-	    ap_proxy_log_uerror("getsockname", NULL,
-			  "proxy: error getting socket address", r->server);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			 "proxy: error getting socket address");
 	    ap_bclose(f);
 	    ap_kill_timeout(r);
 	    return SERVER_ERROR;
@@ -853,8 +857,8 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 
 	dsock = ap_psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (dsock == -1) {
-	    ap_proxy_log_uerror("socket", NULL, "proxy: error creating socket",
-			     r->server);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			 "proxy: error creating socket");
 	    ap_bclose(f);
 	    ap_kill_timeout(r);
 	    return SERVER_ERROR;
@@ -863,8 +867,8 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	if (setsockopt(dsock, SOL_SOCKET, SO_REUSEADDR, (void *) &one,
 		       sizeof(one)) == -1) {
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */
-	    ap_proxy_log_uerror("setsockopt", NULL,
-			"proxy: error setting reuseaddr option", r->server);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			 "proxy: error setting reuseaddr option");
 	    ap_pclosesocket(p, dsock);
 	    ap_bclose(f);
 	    ap_kill_timeout(r);
@@ -877,8 +881,8 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    char buff[22];
 
 	    ap_snprintf(buff, sizeof(buff), "%s:%d", inet_ntoa(server.sin_addr), server.sin_port);
-	    ap_proxy_log_uerror("bind", buff,
-		      "proxy: error binding to ftp data socket", r->server);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			 "proxy: error binding to ftp data socket %s", buff);
 	    ap_bclose(f);
 	    ap_pclosesocket(p, dsock);
 	    return SERVER_ERROR;
@@ -1035,8 +1039,8 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    csd = accept(dsock, (struct sockaddr *) &server, &clen);
 	while (csd == -1 && errno == EINTR);
 	if (csd == -1) {
-	    ap_proxy_log_uerror("accept", NULL,
-		      "proxy: failed to accept data connection", r->server);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			 "proxy: failed to accept data connection");
 	    ap_pclosesocket(p, dsock);
 	    ap_bclose(f);
 	    ap_kill_timeout(r);

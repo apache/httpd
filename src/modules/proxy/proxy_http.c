@@ -256,9 +256,8 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	if (setsockopt(sock, SOL_SOCKET, SO_RCVBUF,
 		       (const char *) &conf->recv_buffer_size, sizeof(int))
 	    == -1) {
-	    ap_proxy_log_uerror("setsockopt", "(SO_RCVBUF)",
-			     "Failed to set ReceiveBufferSize, using default",
-			     r->server);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			 "setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
 	}
     }
 
@@ -288,7 +287,9 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	if (proxyhost != NULL)
 	    return DECLINED;	/* try again another way */
 	else
-	    return ap_proxyerror(r, "Could not connect to remote machine");
+	    return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ ap_pstrcat(r->pool,
+				"Could not connect to remote machine: ",
+				strerror(errno), NULL));
     }
 
     clear_connection(r->headers_in);	/* Strip connection-based headers */

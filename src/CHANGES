@@ -1,5 +1,17 @@
 Changes with Apache 1.3b8
 
+  *) Proxy Fix: The proxy special failure routine ap_proxyerror()
+     was updated to use the normal apache error processing, thereby allowing
+     proxy errors to be treated by ErrorDocument's as well. For this
+     purpose, a new module-to-core communication variable "error-notes"
+     was introduced; the proxy (and possibly other modules) communicates
+     its error text using this variable. Its content is copied to a new
+     cgi-env-var REDIRECT_ERROR_NOTES for use by ErrorDocuments.
+     The old proxy special error routine ap_proxy_log_uerror()
+     was replaced by regular ap_log_error() calls, many messages were made
+     more informative. 
+     [Martin Kraemer] PR#494, 1259
+
   *) [SECURITY] A possible buffer overflow in the ftp proxy was fixed.
      [Martin Kraemer]
 

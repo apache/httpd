@@ -766,36 +766,11 @@ void ap_proxy_sec2hex(int t, char *y)
     y[8] = '\0';
 }
 
-void ap_proxy_log_uerror(const char *routine, const char *file, const char *err,
-		      server_rec *s)
-{
-    char *p, *q;
-
-    q = ap_get_time();
-    p = strerror(errno);
-
-    if (err != NULL) {
-	fprintf(s->error_log, "[%s] %s\n", q, err);
-	if (file != NULL)
-	    fprintf(s->error_log, "- %s: %s: %s\n", routine, file, p);
-	else
-	    fprintf(s->error_log, "- %s: %s\n", routine, p);
-    }
-    else {
-	if (file != NULL)
-	    fprintf(s->error_log, "[%s] %s: %s: %s\n", q, routine, file, p);
-	else
-	    fprintf(s->error_log, "[%s] %s: %s\n", q, routine, p);
-    }
-
-    fflush(s->error_log);
-}
-
 BUFF *
      ap_proxy_cache_error(struct cache_req *c)
 {
-    ap_proxy_log_uerror("write", c->tempfile, "proxy: error writing to cache file",
-		     c->req->server);
+    ap_log_error(APLOG_MARK, APLOG_ERR, c->req->server,
+		 "proxy: error writing to cache file %s", c->tempfile);
     ap_pclosef(c->req->pool, c->fp->fd);
     c->fp = NULL;
     unlink(c->tempfile);
@@ -804,24 +779,14 @@ BUFF *
 
 int ap_proxyerror(request_rec *r, const char *message)
 {
-    r->status = SERVER_ERROR;
+    ap_table_setn(r->notes, "error-notes",
+		  ap_pstrcat(r->pool, 
+			     "The proxy server could not handle the request "
+			     "<EM><A HREF=\"", r->uri, "\">",
+			     r->method, "&nbsp;", r->uri, "</A></EM>.<P>\n"
+			     "Reason: <STRONG>", message, "</STRONG>", NULL));
     r->status_line = "500 Proxy Error";
-    r->content_type = "text/html";
-
-    ap_send_http_header(r);
-    ap_soft_timeout("proxy error", r);
-
-    ap_rvputs(r, "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n"
-	   "<html><head><title>Proxy Error</title><head>\n<body>"
-	   "<h1>Proxy Error</h1>\n"
-	   "The proxy server could not handle this request.\n<p>\n"
-	   "Reason: <b>", message, "</b>\n",
-	   ap_psignature("<HR>\n", r),
-	   "</body><html>\n",
-	   NULL);
-
-    ap_kill_timeout(r);
-    return OK;
+    return HTTP_INTERNAL_SERVER_ERROR;
 }
 
 /*
@@ -882,7 +847,8 @@ static char *
     err = ap_proxy_canon_netloc(r->pool, &url, &user, &password, &host, &port);
 
     if (err != NULL)
-	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server, err);
+	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server,
+		     "%s", err);
 
     r->hostname = host;
 
@@ -1216,11 +1182,9 @@ int ap_proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
 #endif /* WIN32 */
     } while (i == -1 && errno == EINTR);
     if (i == -1) {
-	char details[128];
-
-	ap_snprintf(details, sizeof(details), "%s port %d",
-		    inet_ntoa(addr->sin_addr), ntohs(addr->sin_port));
-	ap_proxy_log_uerror("connect", details, NULL, r->server);
+	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+		     "proxy connect to %s port %d failed",
+		     inet_ntoa(addr->sin_addr), ntohs(addr->sin_port));
     }
     ap_kill_timeout(r);
 

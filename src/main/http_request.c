@@ -943,6 +943,7 @@ void ap_die(int type, request_rec *r)
             ap_table_setn(r->headers_out, "Location", custom_response);
         }
         else if (custom_response[0] == '/') {
+            char *error_notes;
             r->no_local_copy = 1;       /* Do NOT send USE_LOCAL_COPY for
                                          * error documents! */
             /*
@@ -950,6 +951,15 @@ void ap_die(int type, request_rec *r)
              * method was.
              */
             ap_table_setn(r->subprocess_env, "REQUEST_METHOD", r->method);
+
+	    /*
+	     * Provide a special method for modules to communicate
+	     * more informative (than the plain canned) messages to us.
+	     * Propagate them to ErrorDocuments via the ERROR_NOTES variable:
+	     */
+            if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
+		ap_table_setn(r->subprocess_env, "ERROR_NOTES", error_notes);
+	    }
             r->method = ap_pstrdup(r->pool, "GET");
             r->method_number = M_GET;
             ap_internal_redirect(custom_response, r);

@@ -166,13 +166,15 @@ static void help_proxy_garbage_coll(request_rec *r)
     strcat(filename, "/.time");
     if (stat(filename, &buf) == -1) {	/* does not exist */
 	if (errno != ENOENT) {
-	    ap_proxy_log_uerror("stat", filename, NULL, r->server);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			 "proxy: stat(%s)", filename);
 	    ap_unblock_alarms();
 	    return;
 	}
 	if ((timefd = creat(filename, 0666)) == -1) {
 	    if (errno != EEXIST)
-		ap_proxy_log_uerror("creat", filename, NULL, r->server);
+		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			     "proxy: creat(%s)", filename);
 	    else
 		lastcheck = abs(garbage_now);	/* someone else got in there */
 	    ap_unblock_alarms();
@@ -187,7 +189,8 @@ static void help_proxy_garbage_coll(request_rec *r)
 	    return;
 	}
 	if (utime(filename, NULL) == -1)
-	    ap_proxy_log_uerror("utimes", filename, NULL, r->server);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			 "proxy: utimes(%s)", filename);
     }
     files = ap_make_array(r->pool, 100, sizeof(struct gc_ent *));
     curblocks = 0;
@@ -212,7 +215,8 @@ static void help_proxy_garbage_coll(request_rec *r)
 #else
 	if (unlink(filename) == -1) {
 	    if (errno != ENOENT)
-		ap_proxy_log_uerror("unlink", filename, NULL, r->server);
+		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			     "proxy gc: unlink(%s)", filename);
 	}
 	else
 #endif
@@ -250,7 +254,8 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
     Explain1("GC Examining directory %s", cachedir);
     dir = opendir(cachedir);
     if (dir == NULL) {
-	ap_proxy_log_uerror("opendir", cachedir, NULL, r->server);
+	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+		     "proxy gc: opendir(%s)", cachedir);
 	return 0;
     }
 
@@ -264,11 +269,14 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 /* then stat it to see how old it is; delete temporary files > 1 day old */
 	    if (stat(filename, &buf) == -1) {
 		if (errno != ENOENT)
-		    ap_proxy_log_uerror("stat", filename, NULL, r->server);
+		    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+				 "proxy gc: stat(%s)", filename);
 	    }
 	    else if (garbage_now != -1 && buf.st_atime < garbage_now - SEC_ONE_DAY &&
 		     buf.st_mtime < garbage_now - SEC_ONE_DAY) {
 		Explain1("GC unlink %s", filename);
+		ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, r->server,
+			     "proxy gc: deleting orphaned cache file %s", filename);
 #if TESTING
 		fprintf(stderr, "Would unlink %s\n", filename);
 #else
@@ -307,12 +315,13 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 	fd = open(filename, O_RDONLY | O_BINARY);
 	if (fd == -1) {
 	    if (errno != ENOENT)
-		ap_proxy_log_uerror("open", filename, NULL,
-				 r->server);
+		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			     "proxy gc: open(%s)", filename);
 	    continue;
 	}
 	if (fstat(fd, &buf) == -1) {
-	    ap_proxy_log_uerror("fstat", filename, NULL, r->server);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			 "proxy gc: fstat(%s)", filename);
 	    close(fd);
 	    continue;
 	}
@@ -339,12 +348,12 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 #endif
 
 	i = read(fd, line, 26);
+	close(fd);
 	if (i == -1) {
-	    ap_proxy_log_uerror("read", filename, NULL, r->server);
-	    close(fd);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			 "proxy gc: read(%s)", filename);
 	    continue;
 	}
-	close(fd);
 	line[i] = '\0';
 	garbage_expire = ap_proxy_hex2sec(line + 18);
 	if (!ap_checkmask(line, "&&&&&&&& &&&&&&&& &&&&&&&&") ||
@@ -352,7 +361,8 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 	    /* bad file */
 	    if (garbage_now != -1 && buf.st_atime > garbage_now + SEC_ONE_DAY &&
 		buf.st_mtime > garbage_now + SEC_ONE_DAY) {
-		ap_log_error_old("proxy: deleting bad cache file", r->server);
+		ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, r->server,
+			     "proxy: deleting bad cache file with future date: %s", filename);
 #if TESTING
 		fprintf(stderr, "Would unlink bad file %s\n", filename);
 #else
@@ -532,8 +542,9 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	    ap_bpushfd(cachefp, cfd, cfd);
 	}
 	else if (errno != ENOENT)
-	    ap_proxy_log_uerror("open", c->filename,
-			     "proxy: error opening cache file", r->server);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			 "proxy: error opening cache file %s",
+			 c->filename);
 #ifdef EXPLAIN
 	else
 	    Explain1("File %s not found", c->filename);
@@ -543,10 +554,12 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
     if (cachefp != NULL) {
 	i = rdcache(r->pool, cachefp, c);
 	if (i == -1)
-	    ap_proxy_log_uerror("read", c->filename,
-			     "proxy: error reading cache file", r->server);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			 "proxy: error reading cache file %s", 
+			 c->filename);
 	else if (i == 0)
-	    ap_log_error_old("proxy: bad cache file", r->server);
+	    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server,
+			 "proxy: bad (short?) cache file: %s", c->filename);
 	if (i != 1) {
 	    ap_pclosef(r->pool, cachefp->fd);
 	    cachefp = NULL;
@@ -796,11 +809,13 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 	    if (lmod != c->lmod || expc != c->expire || date != c->date) {
 		off_t curpos = lseek(c->fp->fd, 0, SEEK_SET);
 		if (curpos == -1)
-		    ap_proxy_log_uerror("lseek", c->filename,
-			   "proxy: error seeking on cache file", r->server);
+		    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+				 "proxy: error seeking on cache file %s",
+				 c->filename);
 		else if (write(c->fp->fd, buff, 35) == -1)
-		    ap_proxy_log_uerror("write", c->filename,
-			     "proxy: error updating cache file", r->server);
+		    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+				 "proxy: error updating cache file %s",
+				 c->filename);
 	    }
 	    ap_pclosef(r->pool, c->fp->fd);
 	    Explain0("Remote document not modified, use local copy");
@@ -827,11 +842,13 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 		off_t curpos = lseek(c->fp->fd, 0, SEEK_SET);
 
 		if (curpos == -1)
-		    ap_proxy_log_uerror("lseek", c->filename,
-			   "proxy: error seeking on cache file", r->server);
+		    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+				 "proxy: error seeking on cache file %s",
+				 c->filename);
 		else if (write(c->fp->fd, buff, 35) == -1)
-		    ap_proxy_log_uerror("write", c->filename,
-			     "proxy: error updating cache file", r->server);
+		    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+				 "proxy: error updating cache file %s",
+				 c->filename);
 	    }
 	    ap_pclosef(r->pool, c->fp->fd);
 	    return OK;
@@ -862,8 +879,9 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 
     i = open(c->tempfile, O_WRONLY | O_CREAT | O_EXCL | O_BINARY, 0622);
     if (i == -1) {
-	ap_proxy_log_uerror("open", c->tempfile,
-			 "proxy: error creating cache file", r->server);
+	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+		     "proxy: error creating cache file %s",
+		     c->tempfile);
 	return DECLINED;
     }
     ap_note_cleanups_for_fd(r->pool, i);
@@ -871,8 +889,8 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
     ap_bpushfd(c->fp, -1, i);
 
     if (ap_bvputs(c->fp, buff, "X-URL: ", c->url, "\n", NULL) == -1) {
-	ap_proxy_log_uerror("write", c->tempfile,
-			 "proxy: error writing cache file", r->server);
+	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+		     "proxy: error writing cache file(%s)", c->tempfile);
 	ap_pclosef(r->pool, c->fp->fd);
 	unlink(c->tempfile);
 	c->fp = NULL;
@@ -913,31 +931,33 @@ void ap_proxy_cache_tidy(struct cache_req *c)
 	ap_proxy_sec2hex(c->len, buff);
 	curpos = lseek(c->fp->fd, 36, SEEK_SET);
 	if (curpos == -1)
-	    ap_proxy_log_uerror("lseek", c->tempfile,
-			     "proxy: error seeking on cache file", s);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, s,
+			 "proxy: error seeking on cache file %s", c->tempfile);
 	else if (write(c->fp->fd, buff, 8) == -1)
-	    ap_proxy_log_uerror("write", c->tempfile,
-			     "proxy: error updating cache file", s);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, s,
+			 "proxy: error updating cache file %s", c->tempfile);
     }
 
     if (ap_bflush(c->fp) == -1) {
-	ap_proxy_log_uerror("write", c->tempfile,
-			 "proxy: error writing to cache file", s);
+	ap_log_error(APLOG_MARK, APLOG_ERR, s,
+		     "proxy: error writing to cache file %s",
+		     c->tempfile);
 	ap_pclosef(c->req->pool, c->fp->fd);
 	unlink(c->tempfile);
 	return;
     }
 
     if (ap_pclosef(c->req->pool, c->fp->fd) == -1) {
-	ap_proxy_log_uerror("close", c->tempfile,
-			 "proxy: error closing cache file", s);
+	ap_log_error(APLOG_MARK, APLOG_ERR, s,
+		     "proxy: error closing cache file %s", c->tempfile);
 	unlink(c->tempfile);
 	return;
     }
 
     if (unlink(c->filename) == -1 && errno != ENOENT) {
-	ap_proxy_log_uerror("unlink", c->filename,
-			 "proxy: error deleting old cache file", s);
+	ap_log_error(APLOG_MARK, APLOG_ERR, s,
+		     "proxy: error deleting old cache file %s",
+		     c->tempfile);
     }
     else {
 	char *p;
@@ -954,27 +974,30 @@ void ap_proxy_cache_tidy(struct cache_req *c)
 #else
 	    if (mkdir(c->filename, S_IREAD | S_IWRITE | S_IEXEC) < 0 && errno != EEXIST)
 #endif /* WIN32 */
-		ap_proxy_log_uerror("mkdir", c->filename,
-				 "proxy: error creating cache directory", s);
+		ap_log_error(APLOG_MARK, APLOG_ERR, s,
+			     "proxy: error creating cache directory %s",
+			     c->filename);
 	    *p = '/';
 	    ++p;
 	}
 #if defined(__EMX__) || defined(WIN32)
 	/* Under OS/2 use rename. */
 	if (rename(c->tempfile, c->filename) == -1)
-	    ap_proxy_log_uerror("rename", c->filename,
-			     "proxy: error renaming cache file", s);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, s,
+			 "proxy: error renaming cache file %s to %s",
+			 c->tempfile, c->filename);
     }
 #else
 
 	if (link(c->tempfile, c->filename) == -1)
-	    ap_proxy_log_uerror("link", c->filename,
-			     "proxy: error linking cache file", s);
+	    ap_log_error(APLOG_MARK, APLOG_ERR, s,
+			 "proxy: error linking cache file %s to %s",
+			 c->tempfile, c->filename);
     }
 
     if (unlink(c->tempfile) == -1)
-	ap_proxy_log_uerror("unlink", c->tempfile,
-			 "proxy: error deleting temp file", s);
+	ap_log_error(APLOG_MARK, APLOG_ERR, s,
+		     "proxy: error deleting temp file %s", c->tempfile);
 #endif
 
 }

@@ -285,8 +285,6 @@ int ap_proxy_liststr(const char *list, const char *val);
 void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength);
 int ap_proxy_hex2sec(const char *x);
 void ap_proxy_sec2hex(int t, char *y);
-void ap_proxy_log_uerror(const char *routine, const char *file, const char *err,
-		      server_rec *s);
 BUFF *ap_proxy_cache_error(struct cache_req *r);
 int ap_proxyerror(request_rec *r, const char *message);
 const char *ap_proxy_host2addr(const char *host, struct hostent *reqhp);

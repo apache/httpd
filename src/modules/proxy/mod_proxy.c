@@ -266,7 +266,7 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
 				  UNP_REVEALPASSWORD);
 
     ap_table_set(r->headers_out, "Location", nuri);
-    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server,
+    ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, r->server,
 		"Domain missing: %s sent to %s%s%s", r->uri,
 		ap_unparse_uri_components(r->pool, &r->parsed_uri,
 		      UNP_OMITUSERINFO),
@@ -328,11 +328,9 @@ static int proxy_handler(request_rec *r)
 	    direct_connect = list[ii].matcher(&list[ii], r);
 	}
 #if DEBUGGING
-	{
-	    char msg[256];
-	    sprintf(msg, (direct_connect) ? "NoProxy for %s" : "UseProxy for %s", r->uri);
-	    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, msg);
-	}
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server,
+		     (direct_connect) ? "NoProxy for %s" : "UseProxy for %s",
+		     r->uri);
 #endif
     }
 
@@ -422,11 +420,11 @@ static const char *
 
     p = strchr(r, ':');
     if (p == NULL || p[1] != '/' || p[2] != '/' || p[3] == '\0')
-	return "Bad syntax for a remote proxy server";
+	return "ProxyRemote: Bad syntax for a remote proxy server";
     q = strchr(p + 3, ':');
     if (q != NULL) {
 	if (sscanf(q + 1, "%u", &port) != 1 || port > 65535)
-	    return "Bad syntax for a remote proxy server (bad port number)";
+	    return "ProxyRemote: Bad syntax for a remote proxy server (bad port number)";
 	*q = '\0';
     }
     else
@@ -504,6 +502,7 @@ static const char *
 	new->name = arg;
 	/* Don't do name lookups on things that aren't dotted */
 	if (strchr(arg, '.') != NULL && ap_proxy_host2addr(new->name, &hp) == NULL)
+	    /*@@@FIXME: This copies only the first of (possibly many) IP addrs */
 	    memcpy(&new->addr, hp.h_addr, sizeof(struct in_addr));
 	else
 	    new->addr.s_addr = 0;
@@ -571,7 +570,7 @@ static const char *
     ap_get_module_config(parms->server->module_config, &proxy_module);
 
     if (arg[0] != '.')
-	return "Domain name must start with a dot.";
+	return "ProxyDomain: domain name must start with a dot.";
 
     psf->domain = arg;
     return NULL;
@@ -596,7 +595,7 @@ static const char *
     int val;
 
     if (sscanf(arg, "%d", &val) != 1)
-	return "Value must be an integer";
+	return "CacheSize value must be an integer (kBytes)";
     psf->cache.space = val;
     return NULL;
 }
@@ -620,7 +619,7 @@ static const char *
     double val;
 
     if (sscanf(arg, "%lg", &val) != 1)
-	return "Value must be a float";
+	return "CacheLastModifiedFactor value must be a float";
     psf->cache.lmfactor = val;
 
     return NULL;
@@ -634,7 +633,7 @@ static const char *
     double val;
 
     if (sscanf(arg, "%lg", &val) != 1)
-	return "Value must be a float";
+	return "CacheMaxExpire value must be a float";
     psf->cache.maxexpire = (int) (val * (double) SEC_ONE_HR);
     return NULL;
 }
@@ -647,7 +646,7 @@ static const char *
     double val;
 
     if (sscanf(arg, "%lg", &val) != 1)
-	return "Value must be a float";
+	return "CacheDefaultExpire value must be a float";
     psf->cache.defaultexpire = (int) (val * (double) SEC_ONE_HR);
     return NULL;
 }
@@ -660,7 +659,7 @@ static const char *
     double val;
 
     if (sscanf(arg, "%lg", &val) != 1)
-	return "Value must be a float";
+	return "CacheGcInterval value must be a float";
     psf->cache.gcinterval = (int) (val * (double) SEC_ONE_HR);
     return NULL;
 }
@@ -674,7 +673,7 @@ static const char *
 
     val = atoi(arg);
     if (val < 1)
-	return "Value must be an integer greater than 0";
+	return "CacheDirLevels value must be an integer greater than 0";
     if (val * psf->cache.dirlength > CACHEFILE_LEN)
 	return "CacheDirLevels*CacheDirLength value must not be higher than 20";
     psf->cache.dirlevels = val;
@@ -690,7 +689,7 @@ static const char *
 
     val = atoi(arg);
     if (val < 1)
-	return "Value must be an integer greater than 0";
+	return "CacheDirLength value must be an integer greater than 0";
     if (val * psf->cache.dirlevels > CACHEFILE_LEN)
 	return "CacheDirLevels*CacheDirLength value must not be higher than 20";
     psf->cache.dirlength = val;

@@ -1950,25 +1950,25 @@ void ap_send_error_response(request_rec *r, int recursive_error)
     if (status == HTTP_NOT_MODIFIED) {
         if (!is_empty_table(r->err_headers_out))
             r->headers_out = ap_overlay_tables(r->pool, r->err_headers_out,
-                                            r->headers_out);
+                                               r->headers_out);
         ap_hard_timeout("send 304", r);
 
         ap_basic_http_header(r);
         ap_set_keepalive(r);
 
-        ap_table_do((int (*)(void *, const char *, const char *))ap_send_header_field,
-                 (void *) r, r->headers_out,
-                 "Connection",
-                 "Keep-Alive",
-                 "ETag",
-                 "Content-Location",
-                 "Expires",
-                 "Cache-Control",
-                 "Vary",
-                 "Warning",
-                 "WWW-Authenticate",
-                 "Proxy-Authenticate",
-                 NULL);
+        ap_table_do((int (*)(void *, const char *, const char *)) ap_send_header_field,
+                    (void *) r, r->headers_out,
+                    "Connection",
+                    "Keep-Alive",
+                    "ETag",
+                    "Content-Location",
+                    "Expires",
+                    "Cache-Control",
+                    "Vary",
+                    "Warning",
+                    "WWW-Authenticate",
+                    "Proxy-Authenticate",
+                    NULL);
 
         terminate_header(r->connection->client);
 
@@ -2044,144 +2044,165 @@ void ap_send_error_response(request_rec *r, int recursive_error)
     }
     {
         char *title = status_lines[idx];
-        /* folks decided they didn't want the error code in the H1 text */
+        char *h1;
+        char *error_notes;
 
-        char *h1 = 4 + status_lines[idx];
-
-        ap_bvputs(fd, "<HTML><HEAD>\n<TITLE>", title,
-               "</TITLE>\n</HEAD><BODY>\n<H1>", h1, "</H1>\n",
-               NULL);
-
-        switch (status) {
-        case REDIRECT:
-        case MOVED:
-            ap_bvputs(fd, "The document has moved <A HREF=\"",
-                   ap_escape_html(r->pool, location), "\">here</A>.<P>\n", NULL);
-            break;
-        case HTTP_SEE_OTHER:
-            ap_bvputs(fd, "The answer to your request is located <A HREF=\"",
-                   ap_escape_html(r->pool, location), "\">here</A>.<P>\n", NULL);
-            break;
-        case HTTP_USE_PROXY:
-            ap_bvputs(fd, "This resource is only accessible through the proxy\n",
-                   ap_escape_html(r->pool, location), "<BR>\nYou will need to ",
-                   "configure your client to use that proxy.<P>\n", NULL);
-            break;
-        case HTTP_PROXY_AUTHENTICATION_REQUIRED:
-        case AUTH_REQUIRED:
-            ap_bputs("This server could not verify that you\n", fd);
-            ap_bputs("are authorized to access the document you\n", fd);
-            ap_bputs("requested.  Either you supplied the wrong\n", fd);
-            ap_bputs("credentials (e.g., bad password), or your\n", fd);
-            ap_bputs("browser doesn't understand how to supply\n", fd);
-            ap_bputs("the credentials required.<P>\n", fd);
-            break;
-        case BAD_REQUEST:
-            ap_bputs("Your browser sent a request that\n", fd);
-            ap_bputs("this server could not understand.<P>\n", fd);
-            break;
-        case HTTP_FORBIDDEN:
-            ap_bvputs(fd, "You don't have permission to access ",
-                   ap_escape_html(r->pool, r->uri), "\non this server.<P>\n",
-                   NULL);
-            break;
-        case NOT_FOUND:
-            ap_bvputs(fd, "The requested URL ", ap_escape_html(r->pool, r->uri),
-                   " was not found on this server.<P>\n", NULL);
-            break;
-        case METHOD_NOT_ALLOWED:
-            ap_bvputs(fd, "The requested method ", r->method, " is not allowed "
-                   "for the URL ", ap_escape_html(r->pool, r->uri),
-                   ".<P>\n", NULL);
-            break;
-        case NOT_ACCEPTABLE:
-            ap_bvputs(fd,
-                   "An appropriate representation of the requested resource ",
-                   ap_escape_html(r->pool, r->uri),
-                   " could not be found on this server.<P>\n", NULL);
-            /* fall through */
-        case MULTIPLE_CHOICES:
-            {
-                char *list;
-                if ((list = ap_table_get(r->notes, "variant-list")))
-                    ap_bputs(list, fd);
-            }
-            break;
-        case LENGTH_REQUIRED:
-            ap_bvputs(fd, "A request of the requested method ", r->method,
-                   " requires a valid Content-length.<P>\n", NULL);
-            break;
-        case PRECONDITION_FAILED:
-            ap_bvputs(fd, "The precondition on the request for the URL ",
-                   ap_escape_html(r->pool, r->uri), " evaluated to false.<P>\n",
-                   NULL);
-            break;
-        case NOT_IMPLEMENTED:
-            ap_bvputs(fd, ap_escape_html(r->pool, r->method), " to ",
-                   ap_escape_html(r->pool, r->uri), " not supported.<P>\n", NULL);
-            break;
-        case BAD_GATEWAY:
-            ap_bputs("The proxy server received an invalid\015\012", fd);
-            ap_bputs("response from an upstream server.<P>\015\012", fd);
-            break;
-        case VARIANT_ALSO_VARIES:
-            ap_bvputs(fd, "A variant for the requested entity  ",
-                   ap_escape_html(r->pool, r->uri), " is itself a ",
-                   "transparently negotiable resource.<P>\n", NULL);
-            break;
-        case HTTP_REQUEST_TIME_OUT:
-            ap_bputs("I'm tired of waiting for your request.\n", fd);
-            break;
-        case HTTP_GONE:
-            ap_bvputs(fd, "The requested resource<BR>",
-                   ap_escape_html(r->pool, r->uri),
-                   "<BR>\nis no longer available on this server ",
-                   "and there is no forwarding address.\n",
-                   "Please remove all references to this resource.\n", NULL);
-            break;
-        case HTTP_REQUEST_ENTITY_TOO_LARGE:
-            ap_bvputs(fd, "The requested resource<BR>",
-                   ap_escape_html(r->pool, r->uri), "<BR>\n",
-                   "does not allow request data with ", r->method,
-                   " requests, or the amount of data provided in\n",
-                   "the request exceeds the capacity limit.\n", NULL);
-            break;
-        case HTTP_REQUEST_URI_TOO_LARGE:
-            ap_bputs("The requested URL's length exceeds the capacity\n", fd);
-            ap_bputs("limit for this server.\n", fd);
-            break;
-        case HTTP_UNSUPPORTED_MEDIA_TYPE:
-            ap_bputs("The supplied request data is not in a format\n", fd);
-            ap_bputs("acceptable for processing by this resource.\n", fd);
-            break;
-        case HTTP_SERVICE_UNAVAILABLE:
-            ap_bputs("The server is temporarily unable to service your\n", fd);
-            ap_bputs("request due to maintenance downtime or capacity\n", fd);
-            ap_bputs("problems. Please try again later.\n", fd);
-            break;
-        case HTTP_GATEWAY_TIME_OUT:
-            ap_bputs("The proxy server did not receive a timely response\n", fd);
-            ap_bputs("from the upstream server.<P>\n", fd);
-            break;
-        default:                /* HTTP_INTERNAL_SERVER_ERROR */
-            ap_bputs("The server encountered an internal error or\n", fd);
-            ap_bputs("misconfiguration and was unable to complete\n", fd);
-            ap_bputs("your request.<P>\n", fd);
-            ap_bputs("Please contact the server administrator,\n ", fd);
-            ap_bputs(ap_escape_html(r->pool, r->server->server_admin), fd);
-            ap_bputs(" and inform them of the time the error occurred,\n", fd);
-            ap_bputs("and anything you might have done that may have\n", fd);
-            ap_bputs("caused the error.<P>\n", fd);
-            break;
+        /* Accept a status_line set by a module, but only if it begins
+         * with the 3 digit status code
+         */
+        if (r->status_line != NULL
+            && strlen(r->status_line) > 4       /* long enough */
+            && isdigit(r->status_line[0])
+            && isdigit(r->status_line[1])
+            && isdigit(r->status_line[2])
+            && isspace(r->status_line[3])
+            && isalnum(r->status_line[4])) {
+            title = r->status_line;
         }
+
+        /* folks decided they didn't want the error code in the H1 text */
+        h1 = &title[4];
+
+        ap_bvputs(fd,
+                  "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n"
+                  "<HTML><HEAD>\n<TITLE>", title,
+                  "</TITLE>\n</HEAD><BODY>\n<H1>", h1, "</H1>\n",
+                  NULL);
+
+        if ((error_notes = ap_table_get(r->notes, "error-notes"))) {
+            ap_bputs(error_notes, fd);
+        }
+        else
+            switch (status) {
+            case REDIRECT:
+            case MOVED:
+                ap_bvputs(fd, "The document has moved <A HREF=\"",
+                          ap_escape_html(r->pool, location), "\">here</A>.<P>\n", NULL);
+                break;
+            case HTTP_SEE_OTHER:
+                ap_bvputs(fd, "The answer to your request is located <A HREF=\"",
+                          ap_escape_html(r->pool, location), "\">here</A>.<P>\n", NULL);
+                break;
+            case HTTP_USE_PROXY:
+                ap_bvputs(fd, "This resource is only accessible through the proxy\n",
+                ap_escape_html(r->pool, location), "<BR>\nYou will need to ",
+                     "configure your client to use that proxy.<P>\n", NULL);
+                break;
+            case HTTP_PROXY_AUTHENTICATION_REQUIRED:
+            case AUTH_REQUIRED:
+                ap_bputs("This server could not verify that you\n", fd);
+                ap_bputs("are authorized to access the document you\n", fd);
+                ap_bputs("requested.  Either you supplied the wrong\n", fd);
+                ap_bputs("credentials (e.g., bad password), or your\n", fd);
+                ap_bputs("browser doesn't understand how to supply\n", fd);
+                ap_bputs("the credentials required.<P>\n", fd);
+                break;
+            case BAD_REQUEST:
+                ap_bputs("Your browser sent a request that\n", fd);
+                ap_bputs("this server could not understand.<P>\n", fd);
+                break;
+            case HTTP_FORBIDDEN:
+                ap_bvputs(fd, "You don't have permission to access ",
+                  ap_escape_html(r->pool, r->uri), "\non this server.<P>\n",
+                          NULL);
+                break;
+            case NOT_FOUND:
+                ap_bvputs(fd, "The requested URL ", ap_escape_html(r->pool, r->uri),
+                          " was not found on this server.<P>\n", NULL);
+                break;
+            case METHOD_NOT_ALLOWED:
+                ap_bvputs(fd, "The requested method ", r->method, " is not allowed "
+                          "for the URL ", ap_escape_html(r->pool, r->uri),
+                          ".<P>\n", NULL);
+                break;
+            case NOT_ACCEPTABLE:
+                ap_bvputs(fd,
+                 "An appropriate representation of the requested resource ",
+                          ap_escape_html(r->pool, r->uri),
+                          " could not be found on this server.<P>\n", NULL);
+                /* fall through */
+            case MULTIPLE_CHOICES:
+                {
+                    char *list;
+                    if ((list = ap_table_get(r->notes, "variant-list")))
+                        ap_bputs(list, fd);
+                }
+                break;
+            case LENGTH_REQUIRED:
+                ap_bvputs(fd, "A request of the requested method ", r->method,
+                          " requires a valid Content-length.<P>\n", NULL);
+                break;
+            case PRECONDITION_FAILED:
+                ap_bvputs(fd, "The precondition on the request for the URL ",
+                ap_escape_html(r->pool, r->uri), " evaluated to false.<P>\n",
+                          NULL);
+                break;
+            case NOT_IMPLEMENTED:
+                ap_bvputs(fd, ap_escape_html(r->pool, r->method), " to ",
+                          ap_escape_html(r->pool, r->uri), " not supported.<P>\n", NULL);
+                break;
+            case BAD_GATEWAY:
+                ap_bputs("The proxy server received an invalid\015\012", fd);
+                ap_bputs("response from an upstream server.<P>\015\012", fd);
+                break;
+            case VARIANT_ALSO_VARIES:
+                ap_bvputs(fd, "A variant for the requested entity  ",
+                          ap_escape_html(r->pool, r->uri), " is itself a ",
+                          "transparently negotiable resource.<P>\n", NULL);
+                break;
+            case HTTP_REQUEST_TIME_OUT:
+                ap_bputs("I'm tired of waiting for your request.\n", fd);
+                break;
+            case HTTP_GONE:
+                ap_bvputs(fd, "The requested resource<BR>",
+                          ap_escape_html(r->pool, r->uri),
+                          "<BR>\nis no longer available on this server ",
+                          "and there is no forwarding address.\n",
+                  "Please remove all references to this resource.\n", NULL);
+                break;
+            case HTTP_REQUEST_ENTITY_TOO_LARGE:
+                ap_bvputs(fd, "The requested resource<BR>",
+                          ap_escape_html(r->pool, r->uri), "<BR>\n",
+                          "does not allow request data with ", r->method,
+                          " requests, or the amount of data provided in\n",
+                          "the request exceeds the capacity limit.\n", NULL);
+                break;
+            case HTTP_REQUEST_URI_TOO_LARGE:
+                ap_bputs("The requested URL's length exceeds the capacity\n", fd);
+                ap_bputs("limit for this server.\n", fd);
+                break;
+            case HTTP_UNSUPPORTED_MEDIA_TYPE:
+                ap_bputs("The supplied request data is not in a format\n", fd);
+                ap_bputs("acceptable for processing by this resource.\n", fd);
+                break;
+            case HTTP_SERVICE_UNAVAILABLE:
+                ap_bputs("The server is temporarily unable to service your\n", fd);
+                ap_bputs("request due to maintenance downtime or capacity\n", fd);
+                ap_bputs("problems. Please try again later.\n", fd);
+                break;
+            case HTTP_GATEWAY_TIME_OUT:
+                ap_bputs("The proxy server did not receive a timely response\n", fd);
+                ap_bputs("from the upstream server.<P>\n", fd);
+                break;
+            default:            /* HTTP_INTERNAL_SERVER_ERROR */
+                ap_bputs("The server encountered an internal error or\n", fd);
+                ap_bputs("misconfiguration and was unable to complete\n", fd);
+                ap_bputs("your request.<P>\n", fd);
+                ap_bputs("Please contact the server administrator,\n ", fd);
+                ap_bputs(ap_escape_html(r->pool, r->server->server_admin), fd);
+                ap_bputs(" and inform them of the time the error occurred,\n", fd);
+                ap_bputs("and anything you might have done that may have\n", fd);
+                ap_bputs("caused the error.<P>\n", fd);
+                break;
+            }
 
         if (recursive_error) {
             ap_bvputs(fd, "<P>Additionally, a ",
-                   status_lines[ap_index_of_response(recursive_error)],
-                   "\nerror was encountered while trying to use an "
-                   "ErrorDocument to handle the request.\n", NULL);
+                      status_lines[ap_index_of_response(recursive_error)],
+                      "\nerror was encountered while trying to use an "
+                      "ErrorDocument to handle the request.\n", NULL);
         }
-	ap_bputs(ap_psignature("<HR>\n", r), fd);
+        ap_bputs(ap_psignature("<HR>\n", r), fd);
         ap_bputs("</BODY></HTML>\n", fd);
     }
     ap_kill_timeout(r);

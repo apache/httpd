@@ -284,7 +284,6 @@ extern "C" {
 #define proxy_is_ipaddr                ap_proxy_is_ipaddr
 #define proxy_is_word                  ap_proxy_is_word
 #define proxy_liststr                  ap_proxy_liststr
-#define proxy_log_uerror               ap_proxy_log_uerror
 #define proxy_read_headers             ap_proxy_read_headers
 #define proxy_sec2hex                  ap_proxy_sec2hex
 #define proxy_send_fb                  ap_proxy_send_fb
