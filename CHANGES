@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Use APR_LAYOUT instead of APACHE_LAYOUT in configure.  PR 15679.
+     [Justin Erenkrantz]
+
   *) Remove files on 'make distclean' that should be.  PR 15592.
      [Justin Erenkrantz]
 
