@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
-<!DOCTYPE messages [ <!ENTITY nbsp "&#160;"> ]>
+<!DOCTYPE language [ <!ENTITY nbsp "&#160;"> ]>
 <!-- English revision: 1.5 -->
 
 <!--
@@ -18,83 +18,96 @@
  limitations under the License.
 -->
 
-<!--                    -->
-<!-- Language: Japanese -->
-<!--                    -->
+<language id="ja">
+    <name>Japanese</name>
+    <charset>ISO-2022-JP</charset>
+    <source-ext>.xml.ja</source-ext>
+    <target-ext>.html.ja.jis</target-ext>
 
-<!-- Some strings might be used in other contexts, than stated in the -->
-<!-- comments...                                                      -->
-<messages lang="ja" langname="Japanese">
- <!-- Used for the moduleindex -->
- <message name="corefeatures">コア機能と MPM</message>
- <message name="othermodules">他のモジュール</message>
+    <chm>
+        <lang>0x411 Japanese</lang>
+        <toc-font>MS UI Gothic,10,128</toc-font>
+        <charset>SHIFT_JIS</charset>
+        <settings>Japanese</settings>
+    </chm>
 
- <!-- Used for the modulesynopsis and sitemap -->
- <message name="apachemodule">Apache モジュール</message>
- <message name="apachecore">Apache コア機能</message>
- <message name="apachempmcommon">Apache MPM 共通ディレクティブ</message>
- <message name="apachempm">Apache MPM</message>
+    <!-- Some strings might be used in other contexts, than stated in the -->
+    <!-- comments...                                                      -->
+    <messages>
+        <!-- language link titles -->
+        <message id="nativename">Japanese</message>
 
- <!-- Used in description box for modulesynopsis -->
- <message name="description">説明</message>
- <message name="seealso">参照</message>
- <message name="topics">トピック</message>
- <message name="status">ステータス</message>
- <message name="moduleidentifier">モジュール識別子</message>
- <message name="sourcefile">ソースファイル</message>
- <message name="compatibility">互換性</message>
+        <!-- Used for the moduleindex -->
+        <message id="corefeatures">コア機能と MPM</message>
+        <message id="othermodules">他のモジュール</message>
 
- <!-- Used in manualpage -->
- <message name="relatedmodules">関連モジュール</message>
- <message name="relateddirectives">関連ディレクティブ</message>
+        <!-- Used for the modulesynopsis and sitemap -->
+        <message id="apachemodule">Apache モジュール</message>
+        <message id="apachecore">Apache コア機能</message>
+        <message id="apachempmcommon">Apache MPM 共通ディレクティブ</message>
+        <message id="apachempm">Apache MPM</message>
 
- <!-- Used in description box for directives -->
- <message name="syntax">構文</message>
- <message name="default">デフォルト</message>
- <message name="context">コンテキスト</message>
- <message name="override">上書き</message>
- <message name="status">ステータス</message>
- <message name="module">モジュール</message>
+        <!-- Used in description box for modulesynopsis -->
+        <message id="description">説明</message>
+        <message id="seealso">参照</message>
+        <message id="topics">トピック</message>
+        <message id="status">ステータス</message>
+        <message id="moduleidentifier">モジュール識別子</message>
+        <message id="sourcefile">ソースファイル</message>
+        <message id="compatibility">互換性</message>
 
- <!-- Used in directive context lists -->
- <message name="serverconfig">サーバ設定ファイル</message>
- <message name="virtualhost">バーチャルホスト</message>
- <message name="directory">ディレクトリ</message>
- <message name="htaccess">.htaccess</message>
+        <!-- Used in manualpage -->
+        <message id="relatedmodules">関連モジュール</message>
+        <message id="relateddirectives">関連ディレクティブ</message>
 
- <!-- Used for directive lists -->
- <message name="directives">ディレクティブ</message>
- <message name="directive">ディレクティブ</message>
- <message name="nodirectives">このモジュールにディレクティブはありません。</message>
+        <!-- Used in description box for directives -->
+        <message id="syntax">構文</message>
+        <message id="default">デフォルト</message>
+        <message id="context">コンテキスト</message>
+        <message id="override">上書き</message>
+        <message id="status">ステータス</message>
+        <message id="module">モジュール</message>
 
- <!-- Used in summaries -->
- <message name="summary">概要</message>
+        <!-- Used in directive context lists -->
+        <message id="serverconfig">サーバ設定ファイル</message>
+        <message id="virtualhost">バーチャルホスト</message>
+        <message id="directory">ディレクトリ</message>
+        <message id="htaccess">.htaccess</message>
 
- <!-- Used in headers and footers -->
- <message name="apachetitle">- Apache HTTP サーバ</message>
- <message name="apachehttpserver">Apache HTTP サーバ バージョン 2.1</message>
- <message name="apachedocalt">[APACHE DOCUMENTATION]</message>
- <message name="search">Google Search</message> <!-- search button -->
- <message name="index">索引</message> <!-- deprecated -->
- <message name="home">ホーム</message> <!-- deprecated -->
+        <!-- Used for directive lists -->
+        <message id="directives">ディレクティブ</message>
+        <message id="directive">ディレクティブ</message>
+        <message id="nodirectives">このモジュールにディレクティブはありません。</message>
 
- <!-- breadcrumb links -->
- <message name="apache">Apache</message>
- <message name="http-server">HTTP サーバ</message>
- <message name="documentation">ドキュメンテーション</message>
- <message name="version">バージョン 2.1</message>
+        <!-- Used in summaries -->
+        <message id="summary">概要</message>
 
- <!-- super menu -->
- <message name="modules">モジュール</message>
- <message name="faq">FAQ</message>
- <message name="glossary">用語</message>
- <message name="sitemap">サイトマップ</message>
+        <!-- Used in headers and footers -->
+        <message id="apachetitle">- Apache HTTP サーバ</message>
+        <message id="apachehttpserver">Apache HTTP サーバ バージョン 2.1</message>
+        <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
+        <message id="search">Google Search</message> <!-- search button -->
+        <message id="index">索引</message> <!-- deprecated -->
+        <message id="home">ホーム</message> <!-- deprecated -->
 
- <!-- footer line -->
- <message name="licensed">Licensed under the</message>
- <message name="langavail">Available Languages</message>
+        <!-- breadcrumb links -->
+        <message id="apache">Apache</message>
+        <message id="http-server">HTTP サーバ</message>
+        <message id="documentation">ドキュメンテーション</message>
+        <message id="version">バージョン 2.1</message>
 
- <!-- not up to date -->
- <message name="outofdate">This translation may be out of date. Check the
- English version for recent changes.</message>
-</messages>
+        <!-- super menu -->
+        <message id="modules">モジュール</message>
+        <message id="faq">FAQ</message>
+        <message id="glossary">用語</message>
+        <message id="sitemap">サイトマップ</message>
+
+        <!-- footer line -->
+        <message id="licensed">Licensed under the</message>
+        <message id="langavail">Available Languages</message>
+
+        <!-- not up to date -->
+        <message id="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</message>
+    </messages>
+</language>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="KOI8-R"?>
-<!DOCTYPE messages [ <!ENTITY nbsp "&#160;"> ]>
+<!DOCTYPE language [ <!ENTITY nbsp "&#160;"> ]>
 <!-- English revision: 1.4 -->
 
 <!--
@@ -18,77 +18,95 @@
  limitations under the License.
 -->
 
-<!--                   -->
-<!-- Language: Russian -->
-<!--                   -->
+<language id="ru">
+    <name>Russian</name>
+    <charset>KOI8-R</charset>
+    <source-ext>.xml.ru</source-ext>
+    <target-ext>.html.ru.koi8-r</target-ext>
 
-<!-- Some strings might be used in other contexts, than stated in the -->
-<!-- comments...                                                      -->
-<messages lang="ru" langname="Russian">
- <!-- Used for the moduleindex -->
- <message name="corefeatures">Особенности ядра и мульти-процессные модули</message>
- <message name="othermodules">Другие модули</message>
+<!-- No CHM so far (no sitemap)
+    <chm>
+        <lang>0x409 English (United States)</lang>
+        <toc-font>,8,0</toc-font>
+        <charset>windows-1252</charset>
+        <settings>English (USA)</settings>
+    </chm>
+-->
 
- <!-- Used for the modulesynopsis and sitemap -->
- <message name="apachemodule">Модуль Apache</message>
- <message name="apachecore">Особенности ядра Apache</message>
- <message name="apachempmcommon">Общие для всех МП-модулей директивы Apache</message>
- <message name="apachempm">Мульти-процессные модули Apache</message>
+    <!-- Some strings might be used in other contexts, than stated in the -->
+    <!-- comments...                                                      -->
+    <messages>
+        <!-- language link titles -->
+        <message id="nativename">Russian</message>
 
- <!-- Used in description box for modulesynopsis -->
- <message name="description">Описание</message>
- <message name="seealso">См. также</message>
- <message name="topics">Темы</message>
- <message name="status">Статус</message>
- <message name="moduleidentifier">Идентификатор&nbsp;модуля</message>
- <message name="sourcefile">Исходный&nbsp;код</message>
- <message name="compatibility">Совместимость</message>
+        <!-- Used for the moduleindex -->
+        <message id="corefeatures">Особенности ядра и мульти-процессные
+            модули</message>
+        <message id="othermodules">Другие модули</message>
 
- <!-- Used in manualpage -->
- <message name="relatedmodules">Смотрите также модули</message>
- <message name="relateddirectives">Смотрите также директивы</message>
+        <!-- Used for the modulesynopsis and sitemap -->
+        <message id="apachemodule">Модуль Apache</message>
+        <message id="apachecore">Особенности ядра Apache</message>
+        <message id="apachempmcommon">Общие для всех МП-модулей директивы
+            Apache</message>
+        <message id="apachempm">Мульти-процессные модули Apache</message>
 
- <!-- Used in description box for directives -->
- <message name="syntax">Синтаксис</message>
- <message name="default">Значение по умолчанию</message>
- <message name="context">Контекст</message>
- <message name="override">Разрешение</message>
- <message name="status">Статус</message>
- <message name="module">Модуль</message>
+        <!-- Used in description box for modulesynopsis -->
+        <message id="description">Описание</message>
+        <message id="seealso">См. также</message>
+        <message id="topics">Темы</message>
+        <message id="status">Статус</message>
+        <message id="moduleidentifier">Идентификатор&nbsp;модуля</message>
+        <message id="sourcefile">Исходный&nbsp;код</message>
+        <message id="compatibility">Совместимость</message>
 
- <!-- Used for directive lists -->
- <message name="directives">Директивы</message>
- <message name="directive">Директива</message>
- <message name="nodirectives">Этот модуль не предоставляет никаких директив.</message>
+        <!-- Used in manualpage -->
+        <message id="relatedmodules">Смотрите также модули</message>
+        <message id="relateddirectives">Смотрите также директивы</message>
 
- <!-- Used in summaries -->
- <message name="summary">Резюме</message>
+        <!-- Used in description box for directives -->
+        <message id="syntax">Синтаксис</message>
+        <message id="default">Значение по умолчанию</message>
+        <message id="context">Контекст</message>
+        <message id="override">Разрешение</message>
+        <message id="status">Статус</message>
+        <message id="module">Модуль</message>
 
- <!-- Used in headers and footers -->
- <message name="apachetitle">- HTTP сервер Apache</message>
- <message name="apachehttpserver">HTTP сервер Apache Версия 2.1</message>
- <message name="apachedocalt">[ДОКУМЕНТАЦИЯ APACHE]</message>
- <message name="search">Google Search</message> <!-- search button -->
- <message name="index">Оглавление</message> <!-- deprecated -->
- <message name="home">На главную страницу</message> <!-- deprecated -->
+        <!-- Used for directive lists -->
+        <message id="directives">Директивы</message>
+        <message id="directive">Директива</message>
+        <message id="nodirectives">Этот модуль не предоставляет никаких
+            директив.</message>
 
- <!-- breadcrumb links -->
- <message name="apache">Apache</message>
- <message name="http-server">HTTP сервер</message>
- <message name="documentation">Документация</message>
- <message name="version">Версия 2.1</message>
+        <!-- Used in summaries -->
+        <message id="summary">Резюме</message>
 
- <!-- super menu -->
- <message name="modules">Модули</message>
- <message name="faq">FAQ</message>
- <message name="glossary">Глоссарий</message>
- <message name="sitemap">Карта сайта</message>
+        <!-- Used in headers and footers -->
+        <message id="apachetitle">- HTTP сервер Apache</message>
+        <message id="apachehttpserver">HTTP сервер Apache Версия 2.1</message>
+        <message id="apachedocalt">[ДОКУМЕНТАЦИЯ APACHE]</message>
+        <message id="search">Google Search</message> <!-- search button -->
+        <message id="index">Оглавление</message> <!-- deprecated -->
+        <message id="home">На главную страницу</message> <!-- deprecated -->
 
- <!-- footer line -->
- <message name="licensed">Licensed under the</message>
- <message name="langavail">Available Languages</message>
+        <!-- breadcrumb links -->
+        <message id="apache">Apache</message>
+        <message id="http-server">HTTP сервер</message>
+        <message id="documentation">Документация</message>
+        <message id="version">Версия 2.1</message>
 
- <!-- not up to date -->
- <message name="outofdate">This translation may be out of date. Check the
- English version for recent changes.</message>
-</messages>
+        <!-- super menu -->
+        <message id="modules">Модули</message>
+        <message id="faq">FAQ</message>
+        <message id="glossary">Глоссарий</message>
+        <message id="sitemap">Карта сайта</message>
+
+        <!-- footer line -->
+        <message id="licensed">Licensed under the</message>
+        <message id="langavail">Available Languages</message>
+
+        <!-- not up to date -->
+        <message id="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</message>
+    </messages>
+</language>

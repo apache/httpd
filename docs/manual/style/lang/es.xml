@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE messages [ <!ENTITY nbsp "&#160;"> ]>
+<!DOCTYPE language [ <!ENTITY nbsp "&#160;"> ]>
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -17,93 +17,109 @@
  limitations under the License.
 -->
 
-<!--                   -->
-<!-- Language: Spanish -->
-<!--                   -->
+<language id="es">
+    <name>Spanish</name>
+    <charset>ISO-8859-1</charset>
+    <source-ext>.xml.es</source-ext>
+    <target-ext>.html.es</target-ext>
 
-<!-- Some strings might be used in other contexts, than stated in the -->
-<!-- comments...                                                      -->
-<messages lang="es" langname="Espa&#241;ol">
- <!-- Used for the moduleindex -->
- <message name="corefeatures">Funcionalidad B&#225;sica y M&#243;dulos de MultiProcesamiento</message>
- <message name="othermodules">Otros M&#243;dulos</message>
- <message name="obsoletemodules">M&#243;dulos Obsoletos</message>
+    <chm>
+        <lang>0xC0A Spanish (International)</lang>
+        <toc-font>,8,0</toc-font>
+        <charset>windows-1252</charset>
+        <settings>Spanish (Spain), sorting order: international</settings>
+    </chm>
 
- <!-- Used for the modulesynopsis and sitemap -->
- <message name="obsoleteapachemodule">M&#243;dulos Obsoletos de Apache</message>
- <message name="apachemodule">M&#243;dulo Apache</message>
- <message name="apachecore">Funcionalidad B&#225;sica de Apache</message>
- <message name="apachempmcommon">Directivas Comunes de los MPM de Apache</message>
- <message name="apachempm">MPM de Apache</message>
+    <!-- Some strings might be used in other contexts, than stated in the -->
+    <!-- comments...                                                      -->
+    <messages>
+        <!-- language link titles -->
+        <message id="nativename">Espa&#241;ol</message>
 
- <!-- Used in description box for modulesynopsis -->
- <message name="description">Descripci&#243;n</message>
- <message name="seealso">Consulte tambi&#233;n</message>
- <message name="topics">Temas</message>
- <message name="status">Estado</message>
- <message name="moduleidentifier">Identificador de M&#243;dulos</message>
- <message name="sourcefile">Fichero de C&#243;digo Fuente</message>
- <message name="compatibility">Compatibilidad</message>
+        <!-- Used for the moduleindex -->
+        <message id="corefeatures">Funcionalidad B&#225;sica y M&#243;dulos
+            de MultiProcesamiento</message>
+        <message id="othermodules">Otros M&#243;dulos</message>
+        <message id="obsoletemodules">M&#243;dulos Obsoletos</message>
 
- <!-- Used in manualpage -->
- <message name="relatedmodules">M&#243;dulos Relacionados</message>
- <message name="relateddirectives">Directivas Relacionadas</message>
+        <!-- Used for the modulesynopsis and sitemap -->
+        <message id="obsoleteapachemodule">M&#243;dulos Obsoletos de
+            Apache</message>
+        <message id="apachemodule">M&#243;dulo Apache</message>
+        <message id="apachecore">Funcionalidad B&#225;sica de Apache</message>
+        <message id="apachempmcommon">Directivas Comunes de los MPM de
+            Apache</message>
+        <message id="apachempm">MPM de Apache</message>
 
- <!-- Used in description box for directives -->
- <message name="syntax">Sintaxis</message>
- <message name="default">Valor por defecto</message>
- <message name="context">Contexto</message>
- <message name="override">Sustituye a</message>
- <message name="status">Estado</message>
- <message name="module">M&#243;dulo</message>
+        <!-- Used in description box for modulesynopsis -->
+        <message id="description">Descripci&#243;n</message>
+        <message id="seealso">Consulte tambi&#233;n</message>
+        <message id="topics">Temas</message>
+        <message id="status">Estado</message>
+        <message id="moduleidentifier">Identificador de M&#243;dulos</message>
+        <message id="sourcefile">Fichero de C&#243;digo Fuente</message>
+        <message id="compatibility">Compatibilidad</message>
 
- <!-- Used in directive context lists -->
- <message name="serverconfig">server config</message>
- <message name="virtualhost">virtual host</message>
- <message name="directory">directory</message>
- <message name="htaccess">.htaccess</message>
+        <!-- Used in manualpage -->
+        <message id="relatedmodules">M&#243;dulos Relacionados</message>
+        <message id="relateddirectives">Directivas Relacionadas</message>
 
- <!-- Used for directive lists -->
- <message name="directives">Directivas</message>
- <!-- the optional attribute replace-space-with takes a string.
-      if present, the space between <directive name> and 'Directive'
-      in directivesynopsis headings will be replaced by the given string.
-      (see de.xml for an example) -->
- <message name="directive">Directiva</message>
- <message name="nodirectives">Este m&#243;dulo no suministra ninguna directiva.</message>
+        <!-- Used in description box for directives -->
+        <message id="syntax">Sintaxis</message>
+        <message id="default">Valor por defecto</message>
+        <message id="context">Contexto</message>
+        <message id="override">Sustituye a</message>
+        <message id="status">Estado</message>
+        <message id="module">M&#243;dulo</message>
 
- <!-- Used in summaries -->
- <message name="summary">Resumen de contenidos</message>
+        <!-- Used in directive context lists -->
+        <message id="serverconfig">server config</message>
+        <message id="virtualhost">virtual host</message>
+        <message id="directory">directory</message>
+        <message id="htaccess">.htaccess</message>
 
- <!-- Used in headers and footers -->
- <message name="apachetitle">- Servidor HTTP Apache</message>
- <message name="apachehttpserver">Versi&#243;n 2.1 del Servidor HTTP Apache</message>
- <message name="apachedocalt">[APACHE DOCUMENTATION]</message>
- <message name="search">Buscar en Google</message> <!-- search button -->
- <message name="index">&#205;ndice</message> <!-- deprecated -->
- <message name="home">P&#225;gina Inicial</message> <!-- deprecated -->
+        <!-- Used for directive lists -->
+        <message id="directives">Directivas</message>
+        <!-- the optional attribute replace-space-with takes a string.
+             if present, the space between <directive name> and 'Directive'
+             in directivesynopsis headings will be replaced by the given string.
+             (see de.xml for an example) -->
+        <message id="directive">Directiva</message>
+        <message id="nodirectives">Este m&#243;dulo no suministra ninguna
+            directiva.</message>
 
- <!-- breadcrumb links -->
- <message name="apache">Apache</message>
- <message name="http-server">Servidor HTTP</message>
- <message name="documentation">Documentaci&#243;n</message>
- <message name="version">Versi&#243;n 2.1</message>
+        <!-- Used in summaries -->
+        <message id="summary">Resumen de contenidos</message>
 
- <!-- super menu -->
- <message name="modules">M&#243;dulos</message>
- <message name="faq">Preguntas Frecuentes</message>
- <message name="glossary">Glosario</message>
- <message name="sitemap">Mapa de este sitio web</message>
+        <!-- Used in headers and footers -->
+        <message id="apachetitle">- Servidor HTTP Apache</message>
+        <message id="apachehttpserver">Versi&#243;n 2.1 del Servidor HTTP
+            Apache</message>
+        <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
+        <message id="search">Buscar en Google</message> <!-- search button -->
+        <message id="index">&#205;ndice</message> <!-- deprecated -->
+        <message id="home">P&#225;gina Inicial</message> <!-- deprecated -->
 
- <!-- footer line -->
- <message name="licensed">Licencia bajo los t&#233;rminos de la</message>
- <message name="langavail">Idiomas disponibles</message>
+        <!-- breadcrumb links -->
+        <message id="apache">Apache</message>
+        <message id="http-server">Servidor HTTP</message>
+        <message id="documentation">Documentaci&#243;n</message>
+        <message id="version">Versi&#243;n 2.1</message>
 
- <!-- not up to date -->
- <message name="outofdate">Esta traducci&#243;n podr&#237;a estar
- obsoleta. Consulte la versi&#243;n en ingl&#233;s de la
- documentaci&#243;n para comprobar si se han producido cambios
- recientemente.</message>
-</messages>
+        <!-- super menu -->
+        <message id="modules">M&#243;dulos</message>
+        <message id="faq">Preguntas Frecuentes</message>
+        <message id="glossary">Glosario</message>
+        <message id="sitemap">Mapa de este sitio web</message>
 
+        <!-- footer line -->
+        <message id="licensed">Licencia bajo los t&#233;rminos de la</message>
+        <message id="langavail">Idiomas disponibles</message>
 
+        <!-- not up to date -->
+        <message id="outofdate">Esta traducci&#243;n podr&#237;a estar
+            obsoleta. Consulte la versi&#243;n en ingl&#233;s de la
+            documentaci&#243;n para comprobar si se han producido cambios
+            recientemente.</message>
+    </messages>
+</language>

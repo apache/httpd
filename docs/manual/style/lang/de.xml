@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE messages [ <!ENTITY nbsp "&#160;"> ]>
+<!DOCTYPE language [ <!ENTITY nbsp "&#160;"> ]>
 <!-- English Revision: 1.9 -->
 
 <!--
@@ -18,93 +18,109 @@
  limitations under the License.
 -->
 
-<!--                   -->
-<!-- Language: German  -->
-<!--                   -->
+<language id="de">
+    <name>German</name>
+    <charset>ISO-8859-1</charset>
+    <source-ext>.xml.de</source-ext>
+    <target-ext>.html.de</target-ext>
 
-<!-- Some strings might be used in other contexts, than stated in the -->
-<!-- comments...                                                      -->
-<messages lang="de" langname="Deutsch">
- <!-- Used for the moduleindex -->
- <message name="corefeatures">Kernfunktionen und Multi-Processing-Module</message>
- <message name="othermodules">Andere Module</message>
- <message name="obsoletemodules">Veraltete Module</message>
+    <chm>
+        <lang>0x407 German (Germany)</lang>
+        <toc-font>,8,0</toc-font>
+        <charset>windows-1252</charset>
+        <settings>German (Germany), sorting order: dictionary</settings>
+    </chm>
 
- <!-- Used for the modulesynopsis and sitemap -->
- <message name="obsoleteapachemodule">Veraltetes Apache-Modul</message>
- <message name="apachemodule">Apache-Modul</message>
- <message name="apachecore">Apache-Kernfunktionen</message>
- <message name="apachempmcommon">Allgemeine Direktiven der Apache-MPMs</message>
- <message name="apachempm">Apache-MPM</message>
+    <!-- Some strings might be used in other contexts, than stated in the -->
+    <!-- comments...                                                      -->
+    <messages>
+        <!-- language link titles -->
+        <message id="nativename">Deutsch</message>
 
- <!-- Used in description box for modulesynopsis -->
- <message name="description">Beschreibung</message>
- <message name="seealso">Siehe auch</message>
- <message name="topics">Themen</message>
- <message name="status">Status</message>
- <message name="moduleidentifier">Modulbezeichner</message>
- <message name="sourcefile">Quelltext-Datei</message>
- <message name="compatibility">Kompatibilit&#228;t</message>
+        <!-- Used for the moduleindex -->
+        <message id="corefeatures">Kernfunktionen und
+            Multi-Processing-Module</message>
+        <message id="othermodules">Andere Module</message>
+        <message id="obsoletemodules">Veraltete Module</message>
 
- <!-- Used in manualpage -->
- <message name="relatedmodules">Referenzierte Module</message>
- <message name="relateddirectives">Referenzierte Direktiven</message>
+        <!-- Used for the modulesynopsis and sitemap -->
+        <message id="obsoleteapachemodule">Veraltetes Apache-Modul</message>
+        <message id="apachemodule">Apache-Modul</message>
+        <message id="apachecore">Apache-Kernfunktionen</message>
+        <message id="apachempmcommon">Allgemeine Direktiven der Apache-MPMs</message>
+        <message id="apachempm">Apache-MPM</message>
 
- <!-- Used in description box for directives -->
- <message name="syntax">Syntax</message>
- <message name="default">Voreinstellung</message>
- <message name="context">Kontext</message>
- <message name="override">AllowOverride</message>
- <message name="status">Status</message>
- <message name="module">Modul</message>
+        <!-- Used in description box for modulesynopsis -->
+        <message id="description">Beschreibung</message>
+        <message id="seealso">Siehe auch</message>
+        <message id="topics">Themen</message>
+        <message id="status">Status</message>
+        <message id="moduleidentifier">Modulbezeichner</message>
+        <message id="sourcefile">Quelltext-Datei</message>
+        <message id="compatibility">Kompatibilit&#228;t</message>
 
- <!-- Used in directive context lists -->
- <message name="serverconfig">Serverkonfiguration</message>
- <message name="virtualhost">Virtual Host</message>
- <message name="directory">Verzeichnis</message>
- <message name="htaccess">.htaccess</message>
+        <!-- Used in manualpage -->
+        <message id="relatedmodules">Referenzierte Module</message>
+        <message id="relateddirectives">Referenzierte Direktiven</message>
 
- <!-- Used for directive lists -->
- <message name="directives">Direktiven</message>
- <!-- the optional attribute replace-space-with takes a string.
-      if present, the space between <directive name> and 'Directive'
-      in directivesynopsis headings will be replaced by the given string.
-      (see de.xml for an example) -->
- <message name="directive" replace-space-with="-">Direktive</message>
- <message name="nodirectives">Dieses Modul enth&#228;lt keine Direktiven.</message>
+        <!-- Used in description box for directives -->
+        <message id="syntax">Syntax</message>
+        <message id="default">Voreinstellung</message>
+        <message id="context">Kontext</message>
+        <message id="override">AllowOverride</message>
+        <message id="status">Status</message>
+        <message id="module">Modul</message>
 
- <!-- Used in summaries -->
- <message name="summary">Zusammenfassung</message>
+        <!-- Used in directive context lists -->
+        <message id="serverconfig">Serverkonfiguration</message>
+        <message id="virtualhost">Virtual Host</message>
+        <message id="directory">Verzeichnis</message>
+        <message id="htaccess">.htaccess</message>
 
- <!-- Used for translation notes -->
- <message name="transnote">Anm.d.&#220;.:</message>
+        <!-- Used for directive lists -->
+        <message id="directives">Direktiven</message>
+        <!-- the optional attribute replace-space-with takes a string.
+             if present, the space between <directive name> and 'Directive'
+             in directivesynopsis headings will be replaced by the given string.
+             (see de.xml for an example) -->
+        <message id="directive" replace-space-with="-">Direktive</message>
+        <message id="nodirectives">Dieses Modul enth&#228;lt keine
+            Direktiven.</message>
 
- <!-- Used in headers and footers -->
- <message name="apachetitle">- Apache HTTP Server</message>
- <message name="apachehttpserver">Apache HTTP Server Version 2.1</message>
- <message name="apachedocalt">[APACHE DOCUMENTATION]</message>
- <message name="search">Google-Suche</message> <!-- search button -->
- <message name="index">Index</message> <!-- deprecated -->
- <message name="home">Startseite</message> <!-- deprecated -->
+        <!-- Used in summaries -->
+        <message id="summary">Zusammenfassung</message>
 
- <!-- breadcrumb links -->
- <message name="apache">Apache</message>
- <message name="http-server">HTTP-Server</message>
- <message name="documentation">Dokumentation</message>
- <message name="version">Version 2.1</message>
+        <!-- Used for translation notes -->
+        <message id="transnote">Anm.d.&#220;.:</message>
 
- <!-- super menu -->
- <message name="modules">Module</message>
- <message name="faq">FAQ</message>
- <message name="glossary">Glossar</message>
- <message name="sitemap">Seitenindex</message>
+        <!-- Used in headers and footers -->
+        <message id="apachetitle">- Apache HTTP Server</message>
+        <message id="apachehttpserver">Apache HTTP Server Version
+            2.1</message>
+        <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
+        <message id="search">Google-Suche</message> <!-- search button -->
+        <message id="index">Index</message> <!-- deprecated -->
+        <message id="home">Startseite</message> <!-- deprecated -->
 
- <!-- footer line -->
- <message name="licensed">Lizenziert unter der</message>
- <message name="langavail">Verfügbare Sprachen</message>
+        <!-- breadcrumb links -->
+        <message id="apache">Apache</message>
+        <message id="http-server">HTTP-Server</message>
+        <message id="documentation">Dokumentation</message>
+        <message id="version">Version 2.1</message>
 
- <!-- not up to date -->
- <message name="outofdate">Diese &#220;bersetzung ist m&#246;glicherweise
- nicht mehr aktuell. Bitte pr&#252;fen Sie die englische Version auf die
- neuesten &#196;nderungen.</message>
-</messages>
+        <!-- super menu -->
+        <message id="modules">Module</message>
+        <message id="faq">FAQ</message>
+        <message id="glossary">Glossar</message>
+        <message id="sitemap">Seitenindex</message>
+
+        <!-- footer line -->
+        <message id="licensed">Lizenziert unter der</message>
+        <message id="langavail">Verfügbare Sprachen</message>
+
+        <!-- not up to date -->
+        <message id="outofdate">Diese &#220;bersetzung ist m&#246;glicherweise
+            nicht mehr aktuell. Bitte pr&#252;fen Sie die englische Version auf
+            die neuesten &#196;nderungen.</message>
+    </messages>
+</language>
