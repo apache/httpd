@@ -4,65 +4,104 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_authn_file - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_authn_file</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
-                  </a></th><td>テキストファイルを用いたユーザ認証</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
-                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
-                  </a></th><td>authn_file_module</td></tr><tr><th><a href="module-dict.html#SourceFile">ソースファイル:
-                  </a></th><td>mod_authn_file.c</td></tr><tr><th><a href="module-dict.html#Compatibility">互換性:
-                  </a></th><td>Apache 2.0.44 以降</td></tr></table><h3>概要</h3>
+      -->
+<title>mod_authn_file - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a> &gt; <a href="./">モジュール</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache モジュール mod_authn_file</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>テキストファイルを用いたユーザ認証</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>authn_file_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_authn_file.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td>Apache 2.1 以降</td></tr></table>
+<h3>概要</h3>
 
     <p>本モジュールは <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> や
     <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> といった認証フロントエンドに対して、
     プレインテキストのパスワードファイル内からユーザを検索することで、
     ユーザ認証機能を提供します。似たような機能は <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>
-    でも提供されています。</p>
+    でも提供されています。</p>
 
     <p><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> や <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>
     を使用する際には、
     <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> や
     <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprivider">AuthDigestPrivider</a></code>
-    で「 file 」と指定することでこのモジュールは起動されます。</p>
-
-</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#authuserfile">AuthUserFile</a></li>
-</ul><h3>参照</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li><li>
+    で <code>file</code> と指定することでこのモジュールは起動されます。</p>
+</div>
+<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#authuserfile">AuthUserFile</a></li>
+</ul>
+<h3>参照</h3>
+<ul class="seealso">
+<li>
   <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>
-</li><li>
+</li>
+<li>
   <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>
-</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthUserFile" id="AuthUserFile">AuthUserFile</a> <a name="authuserfile" id="authuserfile">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>認証に使用するユーザとパスワードの一覧が格納されている、
-テキストファイルの名前を設定する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>AuthUserFile <em>file-path</em></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
-              </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_authn_file</td></tr></table>
+</li>
+<li><a href="../programs/htpasswd.html">htpasswd</a></li>
+<li><a href="../programs/htdigest.html">htdigest</a></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthUserFile" id="AuthUserFile">AuthUserFile</a> <a name="authuserfile" id="authuserfile">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>認証に使用するユーザとパスワードの一覧が格納されている、
+テキストファイルの名前を設定する</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AuthUserFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_authn_file</td></tr>
+</table>
     <p><code class="directive">AuthUserFile</code> ディレクティブは、
     ユーザ認証のためのユーザとパスワードの一覧を格納した
-    テキストファイルの名前を設定します。<em>file-path</em>
+    テキストファイルの名前を設定します。<var>file-path</var>
     はユーザファイルへのパスです。
-    もし絶対パスでなければ
-    (<em>つまり</em> スラッシュで始まらないパスであれば)
-    、<code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>
+    もし絶対パスでなければ、
+    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>
     からの相対パスとして扱われます。</p>
 
     <p>ユーザファイルの各行には、ユーザ名、コロン、
-    <code>crypt()</code> で暗号化したパスワードを記述します。
-    同一ユーザが複数回登録された時の挙動は定義されていません。</p>
+    暗号化したパスワードを記述します。
+    同一ユーザ ID が複数回登録された時は、
+    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>
+    は最初に見つかったパスワードを使用して認証します。</p>
 
     <p>バイナリ配布の一部としてインストールされるか、
     あるいは <code>src/support</code> にある
     <a href="../programs/htpasswd.html">htpasswd</a>
-    ユーティリティで、このパスワードファイルをメインテナンスします。
-    詳細は <code>man</code> ページをご覧頂くとして、簡単には:</p>
+    ユーティリティで、この <em>HTTP 基本認証</em>
+    用パスワードファイルをメインテナンスします。
+    詳細は <a href="../programs/htpasswd.html">man
+    ページ</a>をご覧頂くとして、簡単には:</p>
 
     <p>初期 ID <code>username</code> で、<code>Filename</code>
     というパスワードファイルを生成します。
     次のコマンドを発行するとパスワードが要求されます:</p>
-    <div class="example"><p><code>htpasswd -c Filename username</code></p></div>
+
+    <div class="example"><p><code>
+      htpasswd -c Filename username
+    </code></p></div>
 
     <p>パスワードファイル <code>Filename</code> に、<code>username2</code>
     を追加したり修正したりします:</p>
-    <div class="example"><p><code>htpasswd Filename username2</code></p></div>
+
+    <div class="example"><p><code>
+      htpasswd Filename username2
+    </code></p></div>
 
     <p>(訳注: 非常に多くのユーザを登録すると大きなファイルになりますが)
     大きなテキストファイルを検索するのは<em>非常に効率が悪い</em>
@@ -70,11 +109,25 @@
     <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>
     を代わりに使ってください。</p>
 
-    <div class="note"><h3>セキュリティ</h3>
+    <p><em>HTTP ダイジェスト認証</em>を使用する場合は、
+    <a href="../programs/htpasswd.html">htpasswd</a>
+    プログラムでは不十分です。その代わりに
+    <a href="../programs/htdigest.html">htdigest</a>
+    を使用してください。ダイジェスト認証用のデータと
+    基本認証用のデータを同一ファイルに混ぜて保存できない、
+    ということに注意してください。</p>
+
+    <div class="warning"><h3>セキュリティ</h3>
     <p><code class="directive">AuthUserFile </code>
         は、ウェブサーバのドキュメントツリーの外側に保管するようにしてください。
-        保護しようとしているディレクトリ以下には、<em>置かないで下さい</em>。
+        保護しようとしているディレクトリ以下には、<strong>置かないで下さい</strong>。
         そうしないと <code class="directive">AuthUserFile</code> は
         ダウンロードできてしまいます。</p>
     </div>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>

@@ -4,64 +4,121 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_auth_basic - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_auth_basic</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
-                  </a></th><td>基本認証</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
-                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
-                  </a></th><td>auth_basic_module</td></tr><tr><th><a href="module-dict.html#SourceFile">ソースファイル:
-                  </a></th><td>mod_auth_basic.c</td></tr><tr><th><a href="module-dict.html#Compatibility">互換性:
-                  </a></th><td>Apache 2.0.44 以降</td></tr></table><h3>概要</h3>
+      -->
+<title>mod_auth_basic - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a> &gt; <a href="./">モジュール</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache モジュール mod_auth_basic</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>基本認証</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>auth_basic_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_auth_basic.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td>Apache 2.1 以降</td></tr></table>
+<h3>概要</h3>
 
-    <p>与えられたプロバイダ (訳注: 認証での照会を行う問い合わせ先) 
-    でユーザを検索し、HTTP 基本認証でアクセス制限できるようになります。
+    <p>与えられたプロバイダ (訳注: 認証での照会を行う問い合わせ先) 
+    でユーザを検索し、HTTP 基本認証でアクセス制限できるようになります。
     HTTP ダイジェスト認証については <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>
     で提供されます。</p>
-
-</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#authbasicauthoritative">AuthBasicAuthoritative</a></li>
+</div>
+<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#authbasicauthoritative">AuthBasicAuthoritative</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authbasicprovider">AuthBasicProvider</a></li>
-</ul><h3>参照</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthBasicAuthoritative" id="AuthBasicAuthoritative">AuthBasicAuthoritative</a> <a name="authbasicauthoritative" id="authbasicauthoritative">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>認証と承認を、より低いレベルのモジュールに移行させるかを
-設定します。</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>AuthBasicAuthoritative on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>AuthBasicAuthoritative on</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
-              </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_auth_basic</td></tr></table>
+</ul>
+<h3>参照</h3>
+<ul class="seealso">
+<li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li>
+<li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthBasicAuthoritative" id="AuthBasicAuthoritative">AuthBasicAuthoritative</a> <a name="authbasicauthoritative" id="authbasicauthoritative">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>認証と承認を、より低いレベルのモジュールに移行させるかを
+設定します。</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AuthBasicAuthoritative On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>AuthBasicAuthoritative On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_auth_basic</td></tr>
+</table>
     <p><code class="directive">AuthBasicAuthoritative</code>
-    ディレクティブで明示的に <strong>'off'</strong>に設定すると、
+    ディレクティブで明示的に <code>Off</code>に設定すると、
     与えられた認証ユーザ ID に対して<strong>ユーザ ID がない</strong>
     または<strong>ルールがない</strong>場合に、
     認証と承認の両方のプロセスが、
-    より低いレベルのモジュール (<code>Configuration</code> と 
-    <code>modules.c</code> ファイルで定義) に移行するようにできます。
+    より低いレベルのモジュール (<code>modules.c</code> ファイルで定義) に移行するようにできます。
     ユーザ ID がある、かつまたは、ルールが指定されている場合は、
     通常のパスワードとアクセスチェックが適用されて、
-    認証に失敗すると「 Authorization Required 」応答が返されます。</p>
+    認証に失敗すると "Authentication Required" 応答が返されます。</p>
 
     <p>ですから、二つ以上のモジュールのデータベースで同一の
     ユーザ ID が現われたり、
     または、正しい <code class="directive"><a href="../mod/core.html#require">Require</a></code>
     ディレクティブが二つ以上のモジュールで現われたりした場合は、
-    一つ目のモジュールが認定を行って、AuthAuthoritative 設定に関わらず、
-    アクセスは移行しません。</p>
+    一つ目のモジュールが認定を行って、<code class="directive">AuthAuthoritative</code>
+    設定に関わらず、アクセスは移行しません。</p>
 
     <p>デフォルトでは、制御は移行しません。そして、未知のユーザ ID や
-    ルールがあっても「 Authorization Required 」応答が返されます。
-    ですから、このディレクティブ設定しないことでシステムの安全を維持できて、また、
+    ルールがあっても "Authentication Required" 応答が返されます。
+    ですから、このディレクティブを設定しないことでシステムの安全を維持できて、また、
     NCSA 準拠の挙動を強制できます。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthBasicProvider" id="AuthBasicProvider">AuthBasicProvider</a> <a name="authbasicprovider" id="authbasicprovider">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>この位置に対する認証プロバイダを設定します。</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>AuthBasicProvider <em>provider-name</em></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
-              </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_auth_basic</td></tr></table>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthBasicProvider" id="AuthBasicProvider">AuthBasicProvider</a> <a name="authbasicprovider" id="authbasicprovider">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>この位置に対する認証プロバイダを設定します。</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AuthBasicProvider On|Off|<var>provider-name</var>
+[<var>provider-name</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>AuthBasicProvider On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_auth_basic</td></tr>
+</table>
     <p><code class="directive">AuthBasicProvider</code> ディレクティブで、
-    この位置に対するユーザ認証に用いられる認証プロバイダを設定します。</p>
+    この位置に対するユーザ認証に用いられる認証プロバイダを設定します。
+    <code>On</code> に設定するとデフォルトの認証プロバイダ
+    (<code>file</code>) が使用されます。<code>file</code>
+    プロバイダは <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>
+    モジュールで実装されていますので、
+    このモジュールがサーバに入っていることを確認してください。</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+      &lt;Location /secure&gt;<br />
+      <span class="indent">
+        AuthBasicProvider  dbm<br />
+        AuthDBMType        SDBM<br />
+        AuthDBMUserFile    /www/etc/dbmpasswd<br />
+        Require            valid-user<br />
+      </span>
+      &lt;/Location&gt;
+    </code></p></div>
 
     <p>認証プロバイダについては
-    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>, <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>
+    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> と <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>
     をご覧下さい。</p>
 
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>
+    <p><code>Off</code> はプロバイダリストをクリアして、デフォルトの
+    状態に戻します。</p>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>
