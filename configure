@@ -414,6 +414,7 @@ do
             echo " --enable-shared=NAME   enable  build of Module named 'NAME' as a DSO"
             echo " --disable-shared=NAME  disable build of Module named 'NAME' as a DSO"
             echo " --with-perl=FILE       path to the optional Perl interpreter"
+            echo " --with-port=PORT       set the port number for httpd.conf"
             echo " --without-support      disable the build and installation of support tools"
             echo " --without-confadjust   disable the user/situation adjustments in config"
             echo " --without-execstrip    disable the stripping of executables on installation"
@@ -902,6 +903,10 @@ do
         --with-perl=*)
             PERL="$apc_optarg"
             ;;
+        --with-port=*)
+            echo "Using port $apc_optarg"
+            port="$apc_optarg"
+            ;;
         --without-support)
             support=0
             ;;
@@ -1085,7 +1090,11 @@ fi
 ##
 conf_user="nobody"
 conf_group="\\\\#-1"
-conf_port="80"
+if [ "x$port" != "x" ]; then
+    conf_port=$port
+else
+    conf_port="80"
+fi
 conf_serveradmin="you@your.address"
 conf_servername="new.host.name"
 if [ "x$confadjust" = "x1" ]; then
@@ -1103,7 +1112,7 @@ if [ "x$confadjust" = "x1" ]; then
             fi
         done
     fi
-    if [ "x`$aux/getuid.sh`" != "x0" ]; then
+    if [ "x`$aux/getuid.sh`" != "x0" -a "x$port" = "x" ]; then
         conf_port="8080"
     fi
     conf_serveradmin="`$aux/buildinfo.sh -n %u@%h%d`"

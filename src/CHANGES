@@ -1,5 +1,7 @@
 Changes with Apache 1.3.10
   
+  *) Add --with-port option to APACI. [Ian Kallen <spidaman@salon.com>]
+
   *) Fixed QUERY_STRING handling for `RewriteRule ... [P]'
      in per-directory context.
      [Martin Zeh <martin.zeh@sat1.de>] PR#5073
