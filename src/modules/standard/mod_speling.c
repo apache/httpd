@@ -228,7 +228,7 @@ static int check_speling(request_rec *r)
     url = pstrndup(r->pool, r->uri, (urlen - pglen));
 
     /* Now open the directory and do ourselves a check... */
-    dirp = opendir(good);
+    dirp = popendir(r->pool, good);
     if (dirp == NULL)           /* Oops, not a directory... */
         return DECLINED;
 
@@ -247,7 +247,7 @@ static int check_speling(request_rec *r)
          * Do _not_ try to redirect this, it causes a loop!
          */
         if (strcmp(bad, dir_entry->d_name) == 0) {
-            closedir(dirp);
+            pclosedir(r->pool, dirp);
             return OK;
         }
         /*
@@ -310,7 +310,7 @@ static int check_speling(request_rec *r)
 #endif
         }
     }
-    closedir(dirp);
+    pclosedir(r->pool, dirp);
 
     if (candidates->nelts != 0) {
         /* Wow... we found us a mispelling. Construct a fixed url */
