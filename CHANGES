@@ -1,4 +1,4 @@
-Changes with Apache 2.0.29-dev
+Changes with Apache 2.0.29
 
   *) Add buffering in core_output_filter to ensure that long
      lists of small buckets don't cause small packet writes.
