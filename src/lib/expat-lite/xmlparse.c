@@ -2411,7 +2411,6 @@ appendAttributeValue(XML_Parser parser, const ENCODING *enc, int isCdata,
       if (!poolAppend(pool, enc, ptr, next))
 	return XML_ERROR_NO_MEMORY;
       break;
-      break;
     case XML_TOK_TRAILING_CR:
       next = ptr + enc->minBytesPerChar;
       /* fall through */

@@ -195,8 +195,8 @@ cmp_long61 (long61_t *left, long61_t *right)
 /* Compare two gc_ent's, sort them by expiration date */
 static int gcdiff(const void *ap, const void *bp)
 {
-    const struct gc_ent *a = (const struct gc_ent * const) ap;
-    const struct gc_ent *b = (const struct gc_ent * const) bp;
+    const struct gc_ent *a = (const struct gc_ent *) ap;
+    const struct gc_ent *b = (const struct gc_ent *) bp;
 
     if (a->expire > b->expire)
 	return 1;
@@ -385,7 +385,7 @@ static void help_proxy_garbage_coll(request_rec *r)
     for (i = 0; i < files->nelts; i++) {
 	fent = &((struct gc_ent *) files->elts)[i];
 	sprintf(filename, "%s%s", cachedir, fent->file);
-	Explain3("GC Unlinking %s (expiry %ld, garbage_now %ld)", filename, fent->expire, garbage_now);
+	Explain3("GC Unlinking %s (expiry %ld, garbage_now %ld)", filename, (long)fent->expire, (long)garbage_now);
 #if TESTING
 	fprintf(stderr, "Would unlink %s\n", filename);
 #else
@@ -710,7 +710,7 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
     pragma = ap_table_get(r->headers_in, "Pragma");
     auth = ap_table_get(r->headers_in, "Authorization");
     Explain5("Request for %s, pragma=%s, auth=%s, ims=%ld, imstr=%s", url,
-	     pragma, auth, c->ims, imstr);
+	     pragma, auth, (long)c->ims, imstr);
     if (c->filename != NULL && r->method_number == M_GET &&
 	strlen(url) < 1024 && !ap_proxy_liststr(pragma, "no-cache") &&
 	auth == NULL) {
@@ -947,7 +947,7 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
  *   else
  *      expire date = now + defaultexpire
  */
-    Explain1("Expiry date is %ld", expc);
+    Explain1("Expiry date is %ld", (long)expc);
     if (expc == BAD_DATE) {
 	if (lmod != BAD_DATE) {
 	    double x = (double) (date - lmod) * conf->cache.lmfactor;
@@ -958,7 +958,7 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
 	}
 	else
 	    expc = now + conf->cache.defaultexpire;
-	Explain1("Expiry date calculated %ld", expc);
+	Explain1("Expiry date calculated %ld", (long)expc);
     }
 
 /* get the content-length header */

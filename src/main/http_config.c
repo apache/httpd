@@ -679,7 +679,7 @@ API_EXPORT(void) ap_remove_loaded_module(module *mod)
     *m = NULL;
 }
 
-void ap_setup_prelinked_modules()
+void ap_setup_prelinked_modules(void)
 {
     module **m;
     module **m2;
@@ -1616,7 +1616,7 @@ static void show_overrides(const command_rec *pc, module *pm)
  * the directive arguments, in what module they are handled, and in
  * what parts of the configuration they are allowed.  Used for httpd -h.
  */
-void ap_show_directives()
+void ap_show_directives(void)
 {
     const command_rec *pc;
     int n;
@@ -1631,7 +1631,7 @@ void ap_show_directives()
 }
 
 /* Show the preloaded module names.  Used for httpd -l. */
-void ap_show_modules()
+void ap_show_modules(void)
 {
     int n;
 

@@ -2172,7 +2172,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
          * content-length, which currently leads to the correct result).
          */
         if (!(variant->sub_req && variant->sub_req->handler)
-            && (len = find_content_length(neg, variant)) != 0) {
+            && (len = (long)find_content_length(neg, variant)) != 0) {
 
             lenstr = (char *) ap_palloc(r->pool, 22);
             ap_snprintf(lenstr, 22, "%ld", len);

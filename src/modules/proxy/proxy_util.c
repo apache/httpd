@@ -239,12 +239,12 @@ char *
 	strp = strchr(user, ':');
 	if (strp != NULL) {
 	    *strp = '\0';
-	    password = ap_proxy_canonenc(p, strp + 1, strlen(strp + 1), enc_user, 1);
+	    password = ap_proxy_canonenc(p, strp + 1, strlen(strp + 1), enc_user, STD_PROXY);
 	    if (password == NULL)
 		return "Bad %-escape in URL (password)";
 	}
 
-	user = ap_proxy_canonenc(p, user, strlen(user), enc_user, 1);
+	user = ap_proxy_canonenc(p, user, strlen(user), enc_user, STD_PROXY);
 	if (user == NULL)
 	    return "Bad %-escape in URL (username)";
     }
@@ -882,12 +882,12 @@ const char *
     }
     else {
 	ipaddr = ap_inet_addr(host);
-	hp = gethostbyaddr((char *) &ipaddr, sizeof(u_long), AF_INET);
+	hp = gethostbyaddr((char *) &ipaddr, sizeof(ipaddr), AF_INET);
 	if (hp == NULL) {
 	    memset(&hpbuf, 0, sizeof(hpbuf));
 	    hpbuf.h_name = 0;
 	    hpbuf.h_addrtype = AF_INET;
-	    hpbuf.h_length = sizeof(u_long);
+	    hpbuf.h_length = sizeof(ipaddr);
 	    hpbuf.h_addr_list = charpbuf;
 	    hpbuf.h_addr_list[0] = (char *) &ipaddr;
 	    hpbuf.h_addr_list[1] = 0;

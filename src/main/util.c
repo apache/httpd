@@ -108,7 +108,7 @@ API_VAR_EXPORT const char ap_day_snames[7][4] =
     "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 };
 
-API_EXPORT(char *) ap_get_time()
+API_EXPORT(char *) ap_get_time(void)
 {
     time_t t;
     char *time_string;
@@ -1695,7 +1695,7 @@ API_EXPORT(int) ap_can_exec(const struct stat *finfo)
 		return 1;
     }
 #endif
-    return (finfo->st_mode & S_IXOTH);
+    return ((finfo->st_mode & S_IXOTH) != 0);
 #endif
 }
 

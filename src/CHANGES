@@ -1,5 +1,15 @@
 Changes with Apache 1.3.13
 
+  *) Merged in a small subset of SGI's latest `10x' patchkit for Apache
+     1.3.11. The extracted and merged in parts are entirely cleanup and
+     non-performance related changes only. SGI's remaining changes are
+     not taken over, because they are either cluttering the Apache 1.3
+     sources too much (e.g. the lint(1) related changes) or cause too
+     much internal changes (e.g. the ap_int32 types, etc.) which are not
+     reasonable to do any longer for Apache 1.3 (they should be done for
+     Apache 2.0 instead).
+     [Mike Abbott <mja@sgi.com>, Ralf S. Engelschall]
+
   *) Fixes to mod_proxy for BeOS support.
      [David Reid <dreid@jetnet.co.uk>]
 

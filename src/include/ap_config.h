@@ -1406,7 +1406,7 @@ int gethostname(char *name, int namelen);
 void syslog(int, char *,...);
 char *mktemp(char *);
 
-long vfprintf(FILE *, const char *, va_list);
+int vfprintf(FILE *, const char *, va_list);
 
 #endif /* SUNOS_LIB_PROTOTYPES */
 

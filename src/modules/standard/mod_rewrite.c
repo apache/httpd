@@ -3275,10 +3275,6 @@ static char *current_logtime(request_rec *r)
 
 static void rewritelock_create(server_rec *s, pool *p)
 {
-    rewrite_server_conf *conf;
-
-    conf = ap_get_module_config(s->module_config, &rewrite_module);
-
     /* only operate if a lockfile is used */
     if (lockname == NULL || *(lockname) == '\0') {
         return;
@@ -3307,10 +3303,6 @@ static void rewritelock_create(server_rec *s, pool *p)
 
 static void rewritelock_open(server_rec *s, pool *p)
 {
-    rewrite_server_conf *conf;
-
-    conf = ap_get_module_config(s->module_config, &rewrite_module);
-
     /* only operate if a lockfile is used */
     if (lockname == NULL || *(lockname) == '\0') {
         return;
@@ -3864,7 +3856,7 @@ static int cache_tlb_hash(char *key)
         n = n * 53711 + 134561 + (unsigned)(*p & 0xff);
     }
 
-    return n % CACHE_TLB_ROWS;
+    return (int)(n % CACHE_TLB_ROWS);
 }
 
 static cacheentry *cache_tlb_lookup(cachetlbentry *tlb, cacheentry *elt,

@@ -424,9 +424,11 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
      * on the size (and readability) of the error_log is considerable.
      */
 #define EXAMPLE_LOG_EACH 0
-    if (EXAMPLE_LOG_EACH && (s != NULL)) {
+#if EXAMPLE_LOG_EACH
+    if (s != NULL) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, s, "mod_example: %s", note);
     }
+#endif
 }
 
 /*--------------------------------------------------------------------------*/
