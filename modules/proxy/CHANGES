@@ -1,7 +1,14 @@
 
-mod_proxy changes for httpd 2.0.18-dev
+mod_proxy changes for httpd 2.0.20-dev
+
+  *) Fix abort code path in proxy_http.c, similar to FTP fix.
+     [Chuck Murcko <chuck@topsail.org>]
+
+  *) Fix FTP ABOR command execution path.
+     [Victor Orlikowski <v.j.orlikowski@gte.net>]
 
   *) FTP return code variable cleanup; fixed problem in login
+     [Chuck Murcko <chuck@topsail.org>]
 
   *) Get PORT working again in the ftp proxy.
      [Victor Orlikowski <v.j.orlikowski@gte.net>]
@@ -19,6 +26,8 @@ mod_proxy changes for httpd 2.0.18-dev
      nothing at all back in response to QUIT.
      [Chuck Murcko <chuck@topsail.org>]
      [Victor Orlikowski <v.j.orlikowski@gte.net>]
+
+mod_proxy changes for httpd 2.0.19
 
   *) Reverse previous patch since the core reverted.
      [Chuck Murcko <chuck@topsail.org>]
@@ -51,6 +60,8 @@ mod_proxy changes for httpd 2.0.18-dev
   *) Fix warnings about byte count type on Darwin (connect handler).
      [Chuck Murcko <chuck@topsail.org>]
 
+mod_proxy changes for httpd 2.0.18
+
   *) IPV6 EPSV support for IPV6 in FTP proxy.
      [Graham Leggett <minfrin@sharp.fm>]
 
@@ -77,6 +88,8 @@ mod_proxy changes for httpd 2.0.18-dev
   *) Converted send_dir() to ap_proxy_send_dir_filter() in proxy_ftp.c.
      [Graham Leggett <minfrin@sharp.fm>]
 
+mod_proxy changes for httpd 2.0.17
+
   *) Major rework of ap_proxy_ftp_handler() to use filters (begone foul
      BUFF!!!). It compiles, but is untested, and the build environment needs
      to be fixed to include proxy_ftp.c.
@@ -94,6 +107,8 @@ mod_proxy changes for httpd 2.0.18-dev
      would not trigger an IP address check with ProxyBlock.
      [Graham Leggett <minfrin@sharp.fm>]
 
+mod_proxy changes for httpd 2.0.16
+
   *) Fixed ProxyBlock bugs with ap_proxy_http_handler() and
      ap_proxy_connect_handler().
      [Graham Leggett <minfrin@sharp.fm>]
@@ -109,6 +124,8 @@ mod_proxy changes for httpd 2.0.18-dev
   *) Fixed problem where responses without entity bodies would cause
      the directly following proxy keepalive request to fail.
      [Graham Leggett <minfrin@sharp.fm>]
+
+mod_proxy changes for httpd 2.0.15
 
   *) Added support for downstream keepalives in mod_proxy.
      [Graham Leggett <minfrin@sharp.fm>]
@@ -142,7 +159,7 @@ mod_proxy changes for httpd 2.0.18-dev
      - Some cosmetic fixes and commenting.
      [Graham Leggett <minfrin@sharp.fm>]
 
-mod_proxy changes for 2.0.14 alpha
+mod_proxy changes for httpd 2.0.14
 
   *) removed ProxyNoCache and ProxyCacheForceCompletion config directives,
      since we no longer directly cache from this module
