@@ -34,8 +34,9 @@ Changes with Apache 2.0.43
      could lead to an infinite loop.  PR 12705  
      [amund.elstad@ergo.no (Amund Elstad), Jeff Trawick]
 
-  *) SECURITY: Allow POST requests and CGI scripts to work when DAV 
-     is enabled on the location.  [Ryan Bloom]
+  *) SECURITY: CAN-2002-1156 (cve.mitre.org)
+      Fix the exposure of CGI source when a POST request is sent to 
+      a location where both DAV and CGI are enabled. [Ryan Bloom]
 
   *) Allow the UserDir directive to accept a list of directories.
      This matches what Apache 1.3 does.  Also add documentation for
