@@ -342,7 +342,7 @@ headers</description>
 <description>Sets the MIME content-type that will be sent if the
 server cannot determine a type in any other way</description>
 <syntax>DefaultType <em>MIME-type</em></syntax>
-<default>DefaultType text/html</default>
+<default>DefaultType text/plain</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
