@@ -468,7 +468,7 @@ static const char *
 
     /* Don't duplicate entries */
     for (i = 0; i < conf->noproxies->nelts; i++) {
-	if (strcmp(arg, list[i].name) == 0)
+	if (strcasecmp(arg, list[i].name) == 0) /* ignore case for host names */
 	    found = 1;
     }
 
@@ -683,7 +683,7 @@ static const char *
 
     /* Don't duplicate entries */
     for (i = 0; i < conf->nocaches->nelts; i++) {
-	if (strcmp(arg, list[i].name) == 0)
+	if (strcasecmp(arg, list[i].name) == 0) /* ignore case for host names */
 	    found = 1;
     }
 
