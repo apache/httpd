@@ -85,7 +85,7 @@ clean:
 	rm -f $(OBJS) 
 
 #
-# Finally, what depnds upon which, so make can figure out what it needs
+# Finally, what depends upon which, so make can figure out what it needs
 # to do.
 #
 
