@@ -1,5 +1,10 @@
 Changes with Apache 1.3.10
 
+  *) EBCDIC: Escaped characters were encoding the ebcdic representation
+     of the special characters, not the latin1 representation. This
+     would result in invalid URI's for, e.g., filenames (with special chars)
+     in mod_autoindex.c [Martin Kraemer]
+
   *) EBCDIC: Fix Byte Ranges for EBCDIC platforms. The necessary switch
      between implied conversion for protocol parts and configured
      conversion for document data was missing. The effect of this was that
