@@ -532,35 +532,6 @@ void ap_log_pid(apr_pool_t *p, const char *fname)
     saved_pid = mypid;
 }
 
-API_EXPORT(void) ap_log_error_old(const char *err, server_rec *s)
-{
-    ap_log_error(APLOG_MARK, APLOG_ERR, errno, s, "%s", err);
-}
-
-API_EXPORT(void) ap_log_unixerr(const char *routine, const char *file,
-			      const char *msg, server_rec *s)
-{
-    ap_log_error(file, 0, APLOG_ERR, errno, s, "%s", msg);
-}
-
-API_EXPORT(void) ap_log_printf(const server_rec *s, const char *fmt, ...)
-{
-    va_list args;
-    
-    va_start(args, fmt);
-    log_error_core(APLOG_MARK, APLOG_ERR, errno, s, NULL, NULL, fmt, args);
-    va_end(args);
-}
-
-API_EXPORT(void) ap_log_reason(const char *reason, const char *file, request_rec *r) 
-{
-    ap_log_error(APLOG_MARK, APLOG_ERR, errno, r->server,
-		"access to %s failed for %s, reason: %s",
-		file,
-		ap_get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME),
-		reason);
-}
-
 API_EXPORT(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 {
     char time_str[AP_CTIME_LEN];
