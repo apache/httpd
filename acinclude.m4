@@ -28,8 +28,10 @@ AC_DEFUN(APACHE_MKDIR_P_CHECK,[
     mkdir -p conftestdir/somedir >/dev/null 2>&1
     if test -d conftestdir/somedir; then
       ac_cv_mkdir_p=yes
+      mkdir_p="mkdir -p"
     else
       ac_cv_mkdir_p=no
+      mkdir_p="$top_srcdir/build/mkdir.sh"
     fi
     rm -rf conftestdir
   ])
@@ -103,13 +105,7 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
 
   abs_srcdir="`(cd $srcdir && pwd)`"
 
-  APACHE_MKDIR_P_CHECK
   echo creating config_vars.mk
-  if test "$ac_cv_mkdir_p" = "yes"; then
-    mkdir_p="mkdir -p"
-  else
-    mkdir_p="$top_srcdir/build/mkdir.sh"
-  fi
   test -d build || $mkdir_p build
   > build/config_vars.mk
   for i in $APACHE_VAR_SUBST; do

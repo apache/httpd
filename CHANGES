@@ -1,5 +1,8 @@
 Changes with Apache 2.0.36
 
+  *) Allow VPATH builds to succeed when configured from an empty
+     directory.  [Thom May <thom@planetarytramp.net>]
+
   *) Fix 'control reaches end of non-void function' warning in
      server/log.c.  [Ben Collins-Sussman <sussman@collab.net>]
 
