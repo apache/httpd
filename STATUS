@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/10/31 11:18:40 $]
+Last modified at [$Date: 2003/11/01 14:05:16 $]
 
 Release:
 
@@ -254,12 +254,12 @@ PATCHES TO BACKPORT FROM 2.1
       such children stopped inheriting the error log handle.
         modules/generators/mod_cgi.c r1.152
         modules/filters/mod_ext_filter.c r1.5
-      +1: trawick
+      +1: trawick, nd
 
     * Fix mod_info to use the real config file name, not the default
       config file name.
         modules/generators/mod_info.c r1.151
-      +1: trawick, striker
+      +1: trawick, striker, nd
 
     * Set the scoreboard state to indicate logging prior to running
       logging hooks so that server-status will show 'L' for hung
@@ -273,11 +273,15 @@ PATCHES TO BACKPORT FROM 2.1
       server->port or ap_default_port()
         server/core.c r1.247
       +1: bnicholes
+       0: nd
+         nd: can the local_addr->port ever be 0?
 
     * Tag the pools created for requests and subrequests.
         server/request.c r1.129
         server/protocol.c r1.137
       +1: trawick, striker
+       0: nd
+         nd: I'm not really sure, what is it good for. What is it good for? ;-)
 
     * mod_status: Report total CPU time accurately when using a
       threaded MPM.  PR: 23795
@@ -286,7 +290,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * mod_info: Escape html code in directives and arguments. PR: 24232
         modules/generators/mod_info.c: r1.52
-      +1: thommay
+      +1: thommay, nd
 
 CURRENT RELEASE NOTES:
 
