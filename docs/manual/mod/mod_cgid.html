@@ -1,40 +1,56 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<!--
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     This file is generated from xml source: DO NOT EDIT
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+-->
+<title>mod_cgid - Apache HTTP Server</title>
+<link href="../style/manual.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<blockquote>
+<div align="center">
+<img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"><h3>Apache HTTP Server Version 2.0</h3>
+</div>
+<h1 align="center">Apache Module mod_cgid</h1>
+<table cellspacing="1" cellpadding="0" bgcolor="#cccccc">
+<tr>
+<td>
+<table bgcolor="#ffffff">
+<tr>
+<td><span class="help">Description:</span></td><td>
+<description>Execution of CGI scripts using an
+    external CGI daemon</description>
+</td>
+</tr>
+<tr>
+<td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base</td>
+</tr>
+<tr>
+<td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>cgid_module</td>
+</tr>
+<tr>
+<td><a href="module-dict.html#Compatibility" class="help">Compatibility:</a></td><td>
+<compatibility>Unix threaded MPMs only</compatibility>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<h2>Summary</h2>
+<summary>
+    
+<p>Except for the optimizations and the additional <code class="directive"><a href="#scriptsock" class="directive">ScriptSock</a></code> directive noted below,
+    mod_cgid behaves similarly to mod_cgi.  <strong>See the
+    <code><a href="mod_cgi.html">mod_cgi</a></code> Summary for additional details about
+    Apache and CGI.</strong>
+</p>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Apache module mod_cgi</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="CENTER">Module mod_cgid</h1>
-
-    <p>This module provides for execution of CGI scripts using an
-    external CGI daemon.</p>
-
-    <p><a href="module-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Base (unix threaded
-    MPMs only)<br />
-     <a href="module-dict.html#SourceFile"
-    rel="Help"><strong>Source File:</strong></a> mod_cgid.c<br />
-     <a href="module-dict.html#ModuleIdentifier"
-    rel="Help"><strong>Module Identifier:</strong></a>
-    cgid_module</p>
-
-    <h2>Summary</h2>
-
-    <p>Except for the optimizations and the additional ScriptSock
-    directive noted below, mod_cgid behaves similarly to mod_cgi.  
-    <strong>See the <a href="mod_cgi.html">mod_cgi</a> Summary 
-    for additional details about Apache and CGI.</strong></p>
-
-    <p>On certain unix operating systems, forking a process from a
+    
+<p>On certain unix operating systems, forking a process from a
     multi-threaded server is a very expensive operation because the
     new process will replicate all the threads of the parent
     process. In order to avoid incurring this expense on each CGI
@@ -43,51 +59,77 @@
     main server communicates with this daemon using a unix domain
     socket.</p>
 
-    <p>This module is used by default whenever a multi-threaded MPM
+    
+<p>This module is used by default whenever a multi-threaded MPM
     is selected during the compilation process. At the user level,
-    this module is identical in configuration and operation to <a
-    href="mod_cgi.html">mod_cgi</a>. The only exception is the
+    this module is identical in configuration and operation to
+    <code><a href="mod_cgi.html">mod_cgi</a></code>. The only exception is the
     additional directive <code>ScriptSock</code> which gives the
     name of the socket to use for communication with the cgi
     daemon.</p>
 
-    <h2>Directives</h2>
-
-    <ul>
-      <li><a href="mod_cgi.html#scriptlog">ScriptLog</a></li>
-
-      <li><a
-      href="mod_cgi.html#scriptloglength">ScriptLogLength</a></li>
-
-      <li><a
-      href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></li>
-
-      <li><a href="#scriptsock">ScriptSock</a></li>
-    </ul>
-    <hr />
-
-    <h3><a id="scriptsock" name="scriptsock">ScriptSock</a>
-    directive</h3>
-
-    <p><a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> Scriptsock
-    <em>filename</em><br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> logs/cgisock<br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Base<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_cgid</p>
-
-    <p>This directive sets the name of the socket to use for
+</summary>
+<h2>Directives</h2>
+<ul>
+<li>
+<a href="mod_cgi.html#scriptlog">ScriptLog</a>
+</li>
+<li>
+<a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a>
+</li>
+<li>
+<a href="mod_cgi.html#scriptloglength">ScriptLogLength</a>
+</li>
+<li>
+<a href="#scriptsock">ScriptSock</a>
+</li>
+</ul>
+<hr>
+<h2>
+<a name="ScriptSock">ScriptSock</a> <a name="scriptsock">Directive</a>
+</h2>
+<table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc">
+<tr>
+<td>
+<table width="100%" bgcolor="#ffffff">
+<tr>
+<td><strong>Description: </strong></td><td></td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>
+<syntax>ScriptSock <em>file-path</em>
+</syntax>
+</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ScriptSock logs/cgisock</code></td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_cgid</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<usage>
+    
+<p>This directive sets the name of the socket to use for
     communication with the CGI daemon. The socket will be opened
     using the permissions of the user who starts Apache (usually
     root). To maintain the security of communications with CGI
     scripts, it is important that no other user has permission to
     write in the directory where the socket is located.</p>
-    <!--#include virtual="footer.html" -->
-  </body>
-</html>
 
+</usage>
+<hr>
+<h3 align="center">Apache HTTP Server Version 2.0</h3>
+<a href="./"><img alt="Index" src="../images/index.gif"></a><a href="../"><img alt="Home" src="../images/home.gif"></a>
+</blockquote>
+</body>
+</html>
