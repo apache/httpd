@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/03/05 06:16:28 $]
+Last modified at [$Date: 2001/03/06 23:12:10 $]
 
 Release:
 
@@ -14,6 +14,21 @@ Release:
     2.0a3   : released April 28, 2000
     2.0a2   : released March 31, 2000
     2.0a1   : released March 10, 2000
+
+DAEDALUS 2.0 PROBLEMS:
+
+    * seg fault involving dir_cleanup() 
+      core dump: /usr/local/apache2/corefiles/httpd.core.1 
+        Status: Bill S may have fixed this, need to verify
+    
+    * assert pops in ap_setup_client_block()
+      getline() is implicated
+      core dump: /usr/local/apache2/corefiles/httpd.core.4
+        Status: Cliff did some analysis of this
+
+    * access log entries are sometimes split (multiple lines)
+      seems to be related to FrontPage and/or DAV
+        Status: Jeff suspects password hiding code in log_request_line()
 
 RELEASE SHOWSTOPPERS:
 
