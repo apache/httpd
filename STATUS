@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/05 20:20:35 $]
+Last modified at [$Date: 2003/09/05 20:40:30 $]
 
 Release:
 
@@ -342,6 +342,7 @@ PATCHES TO PORT FROM 2.1
                   bump.
       +1: nd, brianp
       jwoolley suggests: Hang onto it for 2.2 series.
+      brianp asks: Do we have an alternate fix to eliminate 2.0's segfaults?
 
     * Fix include_cmd in mod_cgid, not to treat the cmd output (partially)
       as CGI output.
@@ -373,13 +374,13 @@ PATCHES TO PORT FROM 2.1
         server/mpm/experimental/leader/leader.c r1.31
         server/mpm/experimental/threadpool/threadpool.c r1.19
         server/mpm/worker/worker.c r1.138
-      +1: trawick, stoddard
+      +1: trawick, stoddard, brianp
 
     * Lower the severity of the "listener thread didn't exit" message
       to debug, as it is of interest only to developers.
         server/mpm/experimental/threadpool/threadpool.c r1.20
         server/mpm/worker/worker.c
-      +1: trawick, stoddard
+      +1: trawick, stoddard, brianp
 
 CURRENT RELEASE NOTES:
 
