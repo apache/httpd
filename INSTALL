@@ -149,17 +149,18 @@
                                [--mandir=DIR]         [--disable-module=NAME] 
                                [--sysconfdir=DIR]     [--enable-shared=NAME]  
                                [--datadir=DIR]        [--disable-shared=NAME] 
-                               [--includedir=DIR]     
-                               [--localstatedir=DIR]  [--enable-suexec]     
-                               [--runtimedir=DIR]     [--suexec-caller=UID] 
-                               [--logfiledir=DIR]     [--suexec-userdir=DIR]
-                               [--proxycachedir=DIR]  [--suexec-uidmin=UID]
-                               [--compat]             [--suexec-gidmin=GID]
+                               [--includedir=DIR]     [--permute-module=N1:N2]
+                               [--localstatedir=DIR]  
+                               [--runtimedir=DIR]     [--enable-suexec]        
+                               [--logfiledir=DIR]     [--suexec-caller=UID]    
+                               [--proxycachedir=DIR]  [--suexec-userdir=DIR]   
+                               [--compat]             [--suexec-uidmin=UID]    
+                                                      [--suexec-gidmin=GID]    
                                                       [--suexec-safepath=PATH] 
-
-                                                      [--with-perl=FILE]   
-                                                      [--without-support]  
-                                                      [--without-confadjust]
+                                                                                
+                                                      [--with-perl=FILE]       
+                                                      [--without-support]      
+                                                      [--without-confadjust]   
 
      Use the CC, OPTIM, CFLAGS, INCLUDES, LDFLAGS, LIBS, CFLAGS_SHLIB,
      LD_SHLIB, LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT and RANLIB environment
@@ -339,6 +340,15 @@
                  --enable-shared for some modules on these platforms you also
                  have to enable the SHARED_CORE rule. For more details please
                  read the document `htdocs/manual/dso.html'.
+
+     Use the --permute-module=N1:N2 option to permutate the AddModule lines of
+     modules mod_N1 and mod_N2 in the Configuration file. This way one can
+     give modules different priorities.  Two special and important variants
+     are supported for the option argument: first BEGIN:N which permutes
+     module mod_N with the begin of the module list, i.e. it `moves' the
+     module to the begin of the list (gives it lowest priority).  And second
+     N:END which permutes mod_N with the end of the module list, i.e. it
+     `moves' the module to the end of the list (gives it highest priority).
 
      Use the --with-perl=FILE option to select a particular Perl interpreter
      executable to be used with Apache. Per default APACI tries to find it

@@ -1,5 +1,15 @@
 Changes with Apache 1.3.4
 
+  *) Add APACI --permute-module=foo:bar option which can be used to
+     on-the-fly/batch permute the order of two modules (mod_foo and mod_bar)
+     in the Configuration[.apaci] file. Two special and important variants are
+     supported for the option argument: first BEGIN:foo which permutes module
+     mod_foo with the begin of the module list, i.e. it `moves' the module to
+     the begin of the list (gives it lowest priority).  And second foo:END
+     which permutes mod_foo with the end of the module list, i.e. it `moves'
+     the module to the end of the list (gives it highest priority). 
+     [Ralf S. Engelschall]
+
   *) Fix problem with 'apache -k shutdown' and startup event
      synchronisation (Win32).  [Ken Parzygnat <kparz@raleigh.ibm.com>]
      PR#3255

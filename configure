@@ -75,6 +75,7 @@ src=src
 aux=src/helpers
 sedsubst=src/.apaci.sedsubst
 addconf=src/.apaci.addconf
+tplconf=src/.apaci.tplconf
 configstatus=config.status
 
 ##
@@ -202,6 +203,9 @@ support=1
 
 #   with adjustments
 confadjust=1
+
+#   module ordering
+permute=''
 
 #   determine rules
 rules=""
@@ -357,6 +361,7 @@ do
             shadowaux="src.$gnutriple/helpers"
             shadowsedsubst="src.$gnutriple/.apaci.sedsubst"
             shadowaddconf="src.$gnutriple/.apaci.addconf"
+            shadowtplconf="src.$gnutriple/.apaci.tplconf"
             #   (re)create shadow tree
             if [ .$quiet = .no ]; then
                 echo " + create shadow tree ($shadowsrc)"
@@ -372,6 +377,7 @@ do
             addconf=$shadowaddconf
             rm -f $addconf 2>/dev/null
             touch $addconf
+            tplconf=$shadowtplconf
             ;;
         --help | -h | -help )
             echo "Usage: configure [options]"
@@ -407,6 +413,7 @@ do
             $aux/ppl.sh $rulelist
             echo " --add-module=FILE      on-the-fly copy & activate a third-party Module source"
             echo " --activate-module=FILE on-the-fly activate existing third-party Module source"
+            echo " --permute-module=N1:N2 permute module 'N1' with module 'N2' in the configuration"
             echo " --enable-module=NAME   enable  a particular Module named 'NAME'"
             echo " --disable-module=NAME  disable a particular Module named 'NAME'"
             $aux/ppl.sh $modulelist
@@ -692,6 +699,29 @@ do
                     esac
                     ;;
             esac
+            ;;
+        --permute-module=*:*)
+            mod1=`echo $apc_optarg | sed -e 's/:.*//'`
+            mod2=`echo $apc_optarg | sed -e 's/.*://'`
+            for mod in $mod1 $mod2; do
+                case $mod in
+                    BEGIN|END)
+                        ;;
+                    *)  eval "exists=\$module_${mod}" 
+                        if [ ".$exists" = . ]; then
+                            echo "configure:Error: No such module named '${mod}'" 1>&2
+                            exit 1
+                        fi
+                        ;;
+                esac
+            done
+            case $mod1:$mod2 in
+                BEGIN:END|*:BEGIN|END:*)
+                    echo "configure:Error: Invalid combination of pseudo module identifiers" 1>&2
+                    exit 1
+                    ;;
+            esac
+            permute="${permute},${mod1}:${mod2}"
             ;;
         --with-perl=*)
             PERL="$apc_optarg"
@@ -1008,6 +1038,77 @@ if [ ".$shared_so" = .yes ]; then
     exit 1
 fi
 
+#   module permutation support
+if [ ".$permute" != . ]; then
+    sed -e '/## mod_mmap_static/,$d' <src/Configuration.tmpl >$tplconf
+    OIFS="$IFS" IFS='
+'
+    for line in `cat src/Configuration.tmpl $addconf | egrep '^[# ]*(Add|Shared)Module'`; do
+        name=`echo "$line" |\
+              sed -e 's%^.*/\(.*\)$%\1%' \
+                  -e 's/\.[oa]$//' \
+                  -e 's/^mod_//' \
+                  -e 's/^lib//'`
+        echo "${name}:${line}"
+    done |\
+    $AWK -F: '
+        BEGIN { 
+            n = 0; 
+        }
+        { 
+            module_pos[$1]  = n; 
+            module_list[n]  = $1; 
+            module_line[$1] = $2;
+            n++; 
+        }
+        END {
+            pn = split(permute, perm, ",");
+            for (p = 1; p <= pn; p++) {
+                split(perm[p], m, ":")
+                m1 = m[1];
+                m2 = m[2];
+                if (m1 == "BEGIN") {
+                    for (i = module_pos[m2]-1; i >= 0; i--) {
+                        n1 = module_list[i];
+                        n2 = module_list[i+1];
+                        module_list[i]   = n2;
+                        module_list[i+1] = n1;
+                        module_pos[n1]   = i+1;
+                        module_pos[n2]   = i;
+                    }
+                }
+                else if (m2 == "END") {
+                    for (i = module_pos[m1]; i < n-1; i++) {
+                        n1 = module_list[i];
+                        n2 = module_list[i+1];
+                        module_list[i]   = n2;
+                        module_list[i+1] = n1;
+                        module_pos[n1]   = i+1;
+                        module_pos[n2]   = i;
+                    }
+                }
+                else {
+                    p1 = module_pos[m1];
+                    p2 = module_pos[m2];
+                    n1 = module_list[p1];
+                    n2 = module_list[p2];
+                    module_list[p1] = n2;
+                    module_list[p2] = n1;
+                    module_pos[m1] = p2;
+                    module_pos[m2] = p1;
+                }
+            }
+            for (i = 0; i < n; i++) {
+                name = module_list[i];
+                printf("%s\n", module_line[name]);
+            }
+        }
+    ' "permute=$permute" >>$tplconf
+    IFS="$OIFS"
+else
+    cat $src/Configuration.tmpl $addconf >$tplconf
+fi
+
 #   generate module directives
 OIFS="$IFS" IFS=':'
 for module in $modules; do
@@ -1056,11 +1157,12 @@ IFS="$OIFS"
 
 #   and finally translate the config template 
 #   according to our defined configuration
-eval "cat $src/Configuration.tmpl $addconf | $substcmd >$src/Configuration.apaci"
+eval "cat $tplconf | $substcmd >$src/Configuration.apaci"
 
 #   cleanup
 rm -f $sedsubst $sedsubst.[0-9] 2>/dev/null
 rm -f $addconf 2>/dev/null
+rm -f $tplconf 2>/dev/null
 
 ##
 ##  create all other Makefiles by running the proprietary 
