@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_usertrack: Escape the cookie name before pasting into the
+     regexp.  [André Malo]
+
   *) Enable special ErrorDocument value 'default' which restores the
      canned server response for the scope of the directive.
      [Geoffrey Young]
