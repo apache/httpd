@@ -518,7 +518,11 @@ static int cgi_handler(request_rec *r)
                                "attempt to include NPH CGI script");
 
 #if defined(OS2) || defined(WIN32)
-    /* Allow for cgi files without the .EXE extension on them under OS/2 */
+    /* XXX: This is wrong.  As an option, perhaps, but not by default...
+     *      we are back to the same argument that a url should be a unique
+     *      entity until the sysadmin overrides that behavior.
+     * Allow for cgi files without the .EXE extension on them under OS/2 
+     */
     if (r->finfo.protection == 0) {
         apr_finfo_t finfo;
         char *newfile;
