@@ -1,3 +1,10 @@
+Changes with Apache 1.1b2.
+
+  *) Bugfixes:
+        a) core dumps in mod_digest
+        b) truncated hostnames/ip address in the logs
+        c) relative URL's in mod_imap map files
+
 Changes with Apache 1.1b1. Also see http://www.apache.org/docs/1.1/
 
   *) Add new <Location> directive, similar to <Directory>, but protects
