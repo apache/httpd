@@ -190,7 +190,7 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	echo "${MACHINE}-ncr-sysv4"; exit 0
 	;;
 
-    ConvexOS:*:11.0:*)
+    ConvexOS:*:11.*:*)
 	echo "${MACHINE}-v11-${SYSTEM}"; exit 0;
 	;;
     
