@@ -34,7 +34,7 @@
                   </strong></td><td></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>ScriptSock <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>ScriptSock logs/cgisock</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>mod_cgid</td></tr></table></td></tr></table>
     <p>This directive sets the name of the socket to use for
