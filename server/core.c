@@ -2817,14 +2817,9 @@ AP_INIT_TAKE12("RLimitNPROC", set_limit_nproc,
 AP_INIT_TAKE12("RLimitNPROC", no_set_limit, NULL,
    OR_ALL, "soft/hard limits for max number of processes per uid"),
 #endif
-/* XXX These should be allowable in .htaccess files, but currently it won't
- * play well with the Options stuff.  Until that is fixed, I would prefer
- * to leave it just in the conf file.  Other should feel free to disagree
- * with me.  Rbb.
- */
-AP_INIT_ITERATE("SetOutputFilter", add_filter, NULL, ACCESS_CONF,
+AP_INIT_ITERATE("SetOutputFilter", add_filter, NULL, OR_FILEINFO,
    "filters to be run"),
-AP_INIT_ITERATE("SetInputFilter", add_input_filter, NULL, ACCESS_CONF,
+AP_INIT_ITERATE("SetInputFilter", add_input_filter, NULL, OR_FILEINFO,
    "filters to be run on the request body"),
 
 /*
