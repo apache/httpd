@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/24 15:37:11 $]
+Last modified at [$Date: 2003/04/24 15:38:41 $]
 
 Release:
 
@@ -176,6 +176,7 @@ PATCHES TO PORT FROM 2.1
       to lock the session cache across restarts.)
       New patch forthcoming - JimJag's changes make the merge ugly.
       +1: wrowe
+      +1 (concept): jim (final vote when the patch is available)
 
     * Fix the SSLMutex config parser so that all 'mechanisms' can take
       a filename, even if ignored, and they are rooted to the full path
@@ -185,6 +186,7 @@ PATCHES TO PORT FROM 2.1
       Allows Win32 and other non-unicies to use named locks.
       New patch forthcoming - JimJag's changes make the merge ugly.
       +1: wrowe
+      +1 (concept): jim (final vote when the patch is available)
 
     * mod_ssl compile failure (or maybe warning, depending on
       compiler) with SSLC 2.3 and later.
