@@ -7,3 +7,4 @@ EXPORTS
     GetMsgProc
     CallWndProc
     FixConsoleCtrlHandler
+    Windows9xServiceCtrlHandler
