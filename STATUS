@@ -227,6 +227,10 @@ PATCHES TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewcvs?view=rev&rev=159410
       +1: gregames
 
+    * mod_version: New Module, Backport from trunk.
+      http://svn.apache.org/repos/asf/httpd/httpd/trunk/modules/metadata/mod_version.c
+      +1: pquerna
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
