@@ -16,7 +16,7 @@
     <h1 align="CENTER">Module mod_ext_filter</h1>
 
     <p>This module provides the ability to pass the response body
-    through an external program before delivering to the
+    through an external program before delivery to the
     client.</p>
 
     <p><a href="module-dict.html#Status"
@@ -33,8 +33,9 @@
     <p>This is an <strong>experimental</strong> module and should
     be used with care. Test your <code>mod_ext_filter</code>
     configuration carefully to ensure that it performs the desired
-    function. You may wish to review XXX for background on the
-    Apache filtering model.</p>
+    function. You may wish to review <a href="../filter.html">
+    this information</a> for background on the Apache filtering 
+    model.</p>
 
     <p><code>mod_ext_filter</code> presents a simple and familiar
     programming model for filters. With this module, a program
@@ -110,6 +111,10 @@
   &lt;/Location&gt;
  
 </pre>
+
+  <p>Note: this gzip example is just for the purposes of
+  illustration.  Please refer to <a href="mod_deflate.html">
+  mod_deflate</a> for a practical implementation.</p>
 
     <h3>Slowing down the server</h3>
 <pre>
