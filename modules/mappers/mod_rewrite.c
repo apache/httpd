@@ -3556,8 +3556,14 @@ static char *lookup_variable(request_rec *r, char *var)
 {
     const char *result;
     char resultbuf[LONG_STRING_LEN];
-    time_t tc;
-    struct tm *tm;
+    ap_time_t *tm = NULL;
+    ap_int32_t tmvalue = 0;
+    ap_int32_t year;
+    ap_int32_t mon;
+    ap_int32_t mday;
+    ap_int32_t hour;
+    ap_int32_t min;
+    ap_int32_t sec;
     request_rec *rsub;
 #ifndef WIN32
     struct passwd *pw;
@@ -3667,42 +3673,49 @@ static char *lookup_variable(request_rec *r, char *var)
 
     /* underlaying Unix system stuff */
     else if (strcasecmp(var, "TIME_YEAR") == 0) {
-        tc = time(NULL);
-        tm = localtime(&tc);
+        ap_make_init_time(&tm, r->pool);
+        ap_explode_time(tm, APR_LOCALTIME);
+        ap_get_year(tm, &year);
         ap_snprintf(resultbuf, sizeof(resultbuf), "%02d%02d",
-                    (tm->tm_year / 100) + 19, tm->tm_year % 100);
+                    (year / 100) + 19, year % 100);
         result = resultbuf;
     }
 #define MKTIMESTR(format, tmfield) \
-    tc = time(NULL); \
-    tm = localtime(&tc); \
-    ap_snprintf(resultbuf, sizeof(resultbuf), format, tm->tmfield); \
+    ap_make_init_time(&tm, r->pool); \
+    ap_explode_time(tm, APR_LOCALTIME); \
+    ap_get_tmfield(tm, &tmvalue); \
+    ap_snprintf(resultbuf, sizeof(resultbuf), format, tmvalue); \
     result = resultbuf;
     else if (strcasecmp(var, "TIME_MON") == 0) {
-        MKTIMESTR("%02d", tm_mon+1)
+        MKTIMESTR("%02d", mon+1)
     }
     else if (strcasecmp(var, "TIME_DAY") == 0) {
-        MKTIMESTR("%02d", tm_mday)
+        MKTIMESTR("%02d", mday)
     }
     else if (strcasecmp(var, "TIME_HOUR") == 0) {
-        MKTIMESTR("%02d", tm_hour)
+        MKTIMESTR("%02d", hour)
     }
     else if (strcasecmp(var, "TIME_MIN") == 0) {
-        MKTIMESTR("%02d", tm_min)
+        MKTIMESTR("%02d", min)
     }
     else if (strcasecmp(var, "TIME_SEC") == 0) {
-        MKTIMESTR("%02d", tm_sec)
+        MKTIMESTR("%02d", sec)
     }
     else if (strcasecmp(var, "TIME_WDAY") == 0) {
-        MKTIMESTR("%d", tm_wday)
+        MKTIMESTR("%d", wday)
     }
     else if (strcasecmp(var, "TIME") == 0) {
-        tc = time(NULL);
-        tm = localtime(&tc);
+        ap_make_init_time(&tm, r->pool);
+        ap_explode_time(tm, APR_LOCALTIME);
+        ap_get_year(tm, &year);
+        ap_get_mon(tm, &mon);
+        ap_get_mday(tm, &mday);
+        ap_get_hour(tm, &hour);
+        ap_get_min(tm, &min);
+        ap_get_sec(tm, &sec);
         ap_snprintf(resultbuf, sizeof(resultbuf),
-                    "%02d%02d%02d%02d%02d%02d%02d", (tm->tm_year / 100) + 19,
-                    (tm->tm_year % 100), tm->tm_mon+1, tm->tm_mday,
-                    tm->tm_hour, tm->tm_min, tm->tm_sec);
+                    "%02d%02d%02d%02d%02d%02d%02d", (year / 100) + 19,
+                    (year % 100), mon+1, mday, hour, min, sec);
         result = resultbuf;
         rewritelog(r, 1, "RESULT='%s'", result);
     }
