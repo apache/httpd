@@ -403,7 +403,8 @@ static void do_expand_cookie(request_rec *r, char *cookie[],
 static void  splitout_queryargs(request_rec *r, int qsappend);
 static void  fully_qualify_uri(request_rec *r);
 static void  reduce_uri(request_rec *r);
-static int   is_absolute_uri(char *uri);
+static unsigned is_absolute_uri(char *uri);
+static char *escape_absolute_uri(apr_pool_t *p, char *uri, unsigned scheme);
 static char *expand_tildepaths(request_rec *r, char *uri);
 
     /* rewrite map support functions */
