@@ -1,5 +1,9 @@
 Changes with Apache 1.3b6
 
+  *) Add `Rule HIDE' to Configuration to hide the Apache symbol
+     namespace from conflicting with third-party libraries some
+     modules force to be linked with Apache. [Ralf S. Engelschall]
+
   *) Add the `%a' construct to LogFormat and CustomLog to log the client IP
      address. [Todd Eigenschink <eigenstr@mixi.net>, PR#1885]
 

@@ -1,0 +1,84 @@
+:
+eval 'exec perl -S $0 ${1+"$@"}'
+    if $running_under_some_shell;
+##
+##  UpdateHideHeader -- update include/hide.h header file
+##  Written by Ralf S. Engelschall, <rse@apache.org>
+##
+
+#   the parameters
+$httpdbinary = $ARGV[0];
+$headerfile  = $ARGV[1];
+
+#   configuration
+$listbegin  = '\n#ifdef HIDE\n';
+$listend    = '\n#endif\n';
+@excluded   = (
+    'main', 
+    'errno', 
+    'optarg',
+);
+
+#   read current file as template
+open(FP, "<$headerfile");
+$header = '';
+while (<FP>) {
+    $header .= $_;
+}
+close(FP);
+
+#   determine list of exported symbols
+%SB = ();
+%SD = ();
+%ST = ();
+@L = `nm $httpdbinary`;
+foreach $l (@L) {
+    if ($l =~ m|^.+\s+([BDT])\s+(.+)\s*$|) {
+        ($type, $name) = ($1, $2);
+
+        #   remove leading underscore (C linker convention)
+        $name =~ s|^_||;    
+        #   remove perhaps already existing AP_ prefix
+        #   (when running this script while httpd was
+        #    already compiled with HIDE defined)
+        $name =~ s|^AP_||;  
+        #   skip any compiler- or system-private symbols
+        next if ($name =~ m|^_|);
+        #   skip any global compiler or system symbols
+        next if (grep(/$name/, @excluded));
+
+        #   insert the symbol into our lists
+        $SB{$name}++ if $type eq 'B';
+        $SD{$name}++ if $type eq 'D';
+        $ST{$name}++ if $type eq 'T';
+    }
+}
+
+#   generate new redefinition list
+sub mksublist {
+    my ($name, %SL) = @_;
+    my ($o, $s);
+
+    $o .= "\n" .
+          "/*\n" .
+          " *  $name segment symbols\n" .
+          " */\n";
+    foreach $s (sort(keys(%SL))) {
+        $o .= sprintf("#define %-30s AP_%s\n", $s, $s);
+    }
+    return $o;
+}
+$list = '';
+$list .= &mksublist("BSS",  %SB);
+$list .= &mksublist("Data", %SD);
+$list .= &mksublist("Text", %ST);
+
+#   replace old redefinition list with new one
+$header =~ s|($listbegin).*?($listend)|$1$list$2|s;
+
+#   write new header file
+open(FP, ">$headerfile");
+print FP $header;
+close(FP);
+
+##EOF##

@@ -92,12 +92,18 @@ EXTRA_INCLUDES=
 #  is performing this function. If PARANOID is set to yes, it will
 #  actually print-out the code that the modules execute
 #
+# HIDE:
+#  This has no run-time penalty, but helps keep the Apache
+#  namespace from colliding with that used by other libraries
+#  pulled in by modules. 
+#
 
 Rule STATUS=yes
 Rule SOCKS4=no
 Rule IRIXNIS=no
 Rule IRIXN32=yes
 Rule PARANOID=no
+Rule HIDE=no
 
 # The following rules should be set automatically by Configure. However, if
 # they are not set by Configure (because we don't know the correct value for

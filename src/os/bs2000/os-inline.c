@@ -21,6 +21,7 @@
 #define INLINE
 
 /* Anything required only when compiling */
+#include "conf.h"
 
 #endif
 

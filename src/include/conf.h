@@ -863,7 +863,6 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 #include <memory.h>
 #endif
 
-
 #ifdef NEED_PROCESS_H
 #include <process.h>
 #endif
@@ -874,6 +873,10 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 #include "hsregex.h"
 #else
 #include <regex.h>
+#endif
+
+#ifdef HIDE
+#include "hide.h"
 #endif
 
 #ifdef HAVE_SYS_RESOURCE_H
