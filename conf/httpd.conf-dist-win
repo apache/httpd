@@ -569,19 +569,30 @@ AddEncoding x-gzip gz tgz
 # net-standard language code is pl) may wish to use "AddLanguage pl .po" 
 # to avoid the ambiguity with the common suffix for perl scripts.
 #
-AddLanguage en .en
-AddLanguage fr .fr
-AddLanguage de .de
-AddLanguage da .da
-AddLanguage el .el
-AddLanguage it .it
-
+# In the case of 'ltz' we violate the RFC by using a three char 
+# specifier. But there is 'work in progress' to fix this and get 
+# the reference data for rfc1766 cleaned up.
 #
+AddLanguage da .dk      # Danish
+AddLanguage nl .nl      # Dutch
+AddLanguage en .en      # English
+AddLanguage et .ee      # Estonian
+AddLanguage fr .fr      # Frech
+AddLanguage de .de      # German
+AddLanguage el .el      # Greek (Modern)
+AddLanguage it .it      # Italian
+AddLanguage pt .pl      # Portugese
+AddLanguage ltz .lu     # Luxembourgeois* 
+AddLanguage es .es      # Spanish
+AddLanguage sv .se      # Swedish
+
 # LanguagePriority allows you to give precedence to some languages
 # in case of a tie during content negotiation.
-# Just list the languages in decreasing order of preference.
 #
-LanguagePriority en fr de
+# Just list the languages in decreasing order of preference. We have
+# more or less alphabetized them here. You propably want to change this.
+#
+LanguagePriority en da nl et fr de el it pt x-lux es sv
 
 #
 # AddType allows you to tweak mime.types without actually editing it, or to
