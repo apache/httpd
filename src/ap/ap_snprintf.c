@@ -64,17 +64,9 @@
 #include <stdlib.h>
 #include <math.h>
 
-#ifdef HAVE_CVT
-
-#define ap_ecvt ecvt
-#define ap_fcvt fcvt
-#define ap_gcvt gcvt
-
-#else
-
 /*
  * cvt.c - IEEE floating point formatting routines for FreeBSD
- * from GNU libc-4.6.27
+ * from GNU libc-4.6.27.  Modified to be thread safe.
  */
 
 /*
@@ -86,12 +78,12 @@
 
 #define	NDIG	80
 
-static char *ap_cvt(double arg, int ndigits, int *decpt, int *sign, int eflag)
+/* buf must have at least NDIG bytes */
+static char *ap_cvt(double arg, int ndigits, int *decpt, int *sign, int eflag, char *buf)
 {
     register int r2;
     double fi, fj;
     register char *p, *p1;
-    static char buf[NDIG];
 
     if (ndigits >= NDIG - 1)
 	ndigits = NDIG - 2;
@@ -160,14 +152,14 @@ static char *ap_cvt(double arg, int ndigits, int *decpt, int *sign, int eflag)
     return (buf);
 }
 
-static char *ap_ecvt(double arg, int ndigits, int *decpt, int *sign)
+static char *ap_ecvt(double arg, int ndigits, int *decpt, int *sign, char *buf)
 {
-    return (ap_cvt(arg, ndigits, decpt, sign, 1));
+    return (ap_cvt(arg, ndigits, decpt, sign, 1, buf));
 }
 
-static char *ap_fcvt(double arg, int ndigits, int *decpt, int *sign)
+static char *ap_fcvt(double arg, int ndigits, int *decpt, int *sign, char *buf)
 {
-    return (ap_cvt(arg, ndigits, decpt, sign, 0));
+    return (ap_cvt(arg, ndigits, decpt, sign, 0, buf));
 }
 
 /*
@@ -180,8 +172,9 @@ static char *ap_gcvt(double number, int ndigit, char *buf)
     int sign, decpt;
     register char *p1, *p2;
     register int i;
+    char buf1[NDIG];
 
-    p1 = ap_ecvt(number, ndigit, &decpt, &sign);
+    p1 = ap_ecvt(number, ndigit, &decpt, &sign, buf1);
     p2 = buf;
     if (sign)
 	*p2++ = '-';
@@ -232,8 +225,6 @@ static char *ap_gcvt(double number, int ndigit, char *buf)
     *p2 = '\0';
     return (buf);
 }
-
-#endif /* HAVE_CVT */
 
 typedef enum {
     NO = 0, YES = 1
@@ -394,18 +385,19 @@ static char *conv_10(register wide_int num, register bool_int is_unsigned,
  * The sign is returned in the is_negative argument (and is not placed
  * in buf).
  */
-static char *
-     conv_fp(register char format, register double num,
-boolean_e add_dp, int precision, bool_int *is_negative, char *buf, int *len)
+static char *conv_fp(register char format, register double num,
+    boolean_e add_dp, int precision, bool_int *is_negative,
+    char *buf, int *len)
 {
     register char *s = buf;
     register char *p;
     int decimal_point;
+    char buf1[NDIG];
 
     if (format == 'f')
-	p = ap_fcvt(num, precision, &decimal_point, is_negative);
+	p = ap_fcvt(num, precision, &decimal_point, is_negative, buf1);
     else			/* either e or E format */
-	p = ap_ecvt(num, precision + 1, &decimal_point, is_negative);
+	p = ap_ecvt(num, precision + 1, &decimal_point, is_negative, buf1);
 
     /*
      * Check for Infinity and NaN
@@ -493,9 +485,9 @@ static char *conv_p2(register u_wide_int num, register int nbits,
 {
     register int mask = (1 << nbits) - 1;
     register char *p = buf_end;
-    static char low_digits[] = "0123456789abcdef";
-    static char upper_digits[] = "0123456789ABCDEF";
-    register char *digits = (format == 'X') ? upper_digits : low_digits;
+    static const char low_digits[] = "0123456789abcdef";
+    static const char upper_digits[] = "0123456789ABCDEF";
+    register const char *digits = (format == 'X') ? upper_digits : low_digits;
 
     do {
 	*--p = digits[num & mask];

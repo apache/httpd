@@ -1,5 +1,9 @@
 Changes with Apache 1.3b6
 
+  *) The floating point ap_snprintf code wasn't threadsafe.
+     Had to remove the HAVE_CVT macro in order to do threadsafe
+     calling of the ?cvt() floating point routines.  [Dean Gaudet]
+
   *) PORT: Add the SCO_SV port. [Jim Jagielski] PR#1962
 
   *) PORT: IRIX needs the -n32 flag iff using the 'cc' compiler

@@ -602,7 +602,6 @@ int initgroups(char *, int);
 #undef NO_SETSID
 #undef NO_USE_SIGACTION
 #undef NO_LINGCLOSE
-#define HAVE_CVT 1
 extern char *crypt(char *pw, char *salt);
 typedef int rlim_t;
 #define HAVE_SYSLOG 1
