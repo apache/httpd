@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/06 08:44:13 $]
+Last modified at [$Date: 2002/02/06 08:55:12 $]
 
 Release:
 
@@ -123,7 +123,7 @@ RELEASE SHOWSTOPPERS:
 
     * other BETA possibilities
       31 + fixes for all non-cosmetic problems seen on daedalus
-        +1: trawick
+        +1: trawick, Justin
         +0:
         -1:
 
