@@ -2371,7 +2371,7 @@ static const command_rec core_cmds[] = {
  * Core handlers for various phases of server operation...
  */
 
-API_EXPORT(int) ap_core_translate(request_rec *r)
+API_EXPORT_NONSTD(int) ap_core_translate(request_rec *r)
 {
     void *sconf = r->server->module_config;
     core_server_config *conf = ap_get_module_config(sconf, &core_module);
