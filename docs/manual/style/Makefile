@@ -7,5 +7,10 @@ htmlfiles := $(subst xml,html,$(xmlfiles))
 
 html: $(htmlfiles)
 
+# Xalan-C users use this:
+#%.html : %.xml
+#	xsl-c -v -OUT $@ -IN ./manual.xsl 
+
+# Xalan-C++ users use this:
 %.html : %.xml
 	Xalan -v -o $@ $< ./manual.xsl 
