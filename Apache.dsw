@@ -1086,7 +1086,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_ext_filter"=".\modules\experimental\mod_ext_filter.dsp" - Package Owner=<4>
+Project: "mod_ext_filter"=".\modules\filters\mod_ext_filter.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
