@@ -279,7 +279,7 @@ AC_DEFUN(APACHE_MODULE,[
 dnl
 dnl APACHE_LAYOUT(configlayout, layoutname)
 AC_DEFUN(APACHE_LAYOUT,[
-  if test ! -f $srcdir/../config.layout; then
+  if test ! -f $srcdir/config.layout; then
     echo "** Error: Layout file $srcdir/../config.layout not found"
     echo "** Error: Cannot use undefined layout '$LAYOUT'"
     exit 1
