@@ -212,6 +212,14 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      */
     *(ap_directive_t **)dummy = NULL;
 
+    /* ap_server_root_relative returns NULL if the paths couldn't be
+     * merged (one is corrupt - dollars to donuts it's the named module
+     */
+    if (!szModuleFile) {
+        return apr_pstrcat(cmd->pool, "Cannot parse module name ", 
+                           filename, NULL);
+    }
+
     /* 
      * check for already existing module
      * If it already exists, we have nothing to do 
@@ -304,6 +312,14 @@ static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
 
     file = ap_server_root_relative(cmd->pool, filename);
     
+    /* ap_server_root_relative returns NULL if the paths couldn't be
+     * merged (one is corrupt - dollars to donuts it's the named module
+     */
+    if (!file) {
+        return apr_pstrcat(cmd->pool, "Cannot parse file name ", 
+                           filename, NULL);
+    }
+
     if (apr_dso_load(&handle, file, cmd->pool) != APR_SUCCESS) {
         char my_error[256];
 
