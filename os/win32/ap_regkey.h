@@ -63,16 +63,25 @@
 #include "apr_pools.h"
 #include "ap_config.h"      /* Just for AP_DECLARE */
 
+#if defined(WIN32) || defined(DOXYGEN)
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 typedef struct ap_regkey_t ap_regkey_t;
 
+/* Used to recover AP_REGKEY_* constants 
+ */
 AP_DECLARE(const ap_regkey_t *) ap_regkey_const(int i);
 
 /**
- * Constants for ap_regkey_open() only;
+ * @file ap_regkey.h
+ * @brief APR-style Win32 Registry Manipulation
+ */
+
+/**
+ * Win32 Only: Constants for ap_regkey_open()
  */
 #define AP_REGKEY_CLASSES_ROOT         ap_regkey_const(0)
 #define AP_REGKEY_CURRENT_CONFIG       ap_regkey_const(1)
@@ -83,7 +92,7 @@ AP_DECLARE(const ap_regkey_t *) ap_regkey_const(int i);
 #define AP_REGKEY_DYN_DATA             ap_regkey_const(6)
 
 /**
- * Open the specified win32 registry key.
+ * Win32 Only: Open the specified registry key.
  * @param newkey The opened registry key
  * @param parentkey The open registry key of the parent, or one of
  * <PRE>
@@ -101,9 +110,9 @@ AP_DECLARE(const ap_regkey_t *) ap_regkey_const(int i);
  *           APR_READ             open key for reading
  *           APR_WRITE            open key for writing
  *           APR_CREATE           create the key if it doesn't exist
- *           APR_EXCL             return error if APR_CREATE and file exists
+ *           APR_EXCL             return error if APR_CREATE and key exists
  * </PRE>
- * @param pool The pool to alloc newkey and temporary storage within.
+ * @param pool The pool in which newkey is allocated
  * @ingroup apr_file_open
  * @remark If perm is APR_OS_DEFAULT and the file is being created, appropriate 
  *      default permissions will be used.  *arg1 must point to a valid file_t, 
@@ -116,13 +125,13 @@ AP_DECLARE(apr_status_t) ap_regkey_open(ap_regkey_t **newkey,
                                         apr_pool_t *pool);
 
 /**
- * Close the win32 registry key opened or created by ap_regkey_open().
+ * Win32 Only: Close the registry key opened or created by ap_regkey_open().
  * @param key The registry key to close
  */
 AP_DECLARE(apr_status_t) ap_regkey_close(ap_regkey_t *key);
 
 /**
- * Remove the given win32 registry key.
+ * Win32 Only: Remove the given registry key.
  * @param parentkey The open registry key of the parent, or one of
  * <PRE>
  *           AP_REGKEY_CLASSES_ROOT
@@ -134,42 +143,71 @@ AP_DECLARE(apr_status_t) ap_regkey_close(ap_regkey_t *key);
  *           AP_REGKEY_DYN_DATA 
  * </PRE>
  * @param keyname The path of the key relative to the parent key
- * @param pool The pool to alloc newkey and temporary storage within.
+ * @param pool The pool used for temp allocations
  * @remark ap_regkey_remove() is not recursive, although it removes
- * all values within the given keyname.
+ * all values within the given keyname, it will not remove a key 
+ * containing subkeys.
  */
 AP_DECLARE(apr_status_t) ap_regkey_remove(const ap_regkey_t *parent, 
                                           const char *keyname,
                                           apr_pool_t *pool);
 
 /**
- * Retrieve a win32 registry value string from an open key.
+ * Win32 Only: Retrieve a registry value string from an open key.
  * @param result The string value retrieved 
  * @param key The registry key to retrieve the value from
  * @param valuename The named value to retrieve (pass "" for the default)
- * @param pool The pool used to store the result.
+ * @param pool The pool used to store the result
  */
 AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result, 
                                              ap_regkey_t *key, 
                                              const char *valuename, 
                                              apr_pool_t *pool);
 
+/**
+ * Win32 Only: Store a registry value string into an open key.
+ * @param key The registry key to store the value into
+ * @param valuename The named value to store (pass "" for the default)
+ * @param value The string to store for the named value
+ * @param pool The pool used for temp allocations
+ */
 AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key, 
                                              const char *valuename, 
                                              const char *value, 
                                              apr_pool_t *pool);
 
+/**
+ * Win32 Only: Retrieve a registry value string from an open key.
+ * @param result The string elements retrieved from a REG_MULTI_SZ string array
+ * @param key The registry key to retrieve the value from
+ * @param valuename The named value to retrieve (pass "" for the default)
+ * @param pool The pool used to store the result
+ */
 AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result, 
                                                    ap_regkey_t *key,
                                                    const char *valuename, 
                                                    apr_pool_t *pool);
 
+/**
+ * Win32 Only: Store a registry value string array into an open key.
+ * @param key The registry key to store the value into
+ * @param valuename The named value to store (pass "" for the default)
+ * @param nelts The string elements to store in a REG_MULTI_SZ string array
+ * @param elts The number of elements in the elts string array
+ * @param pool The pool used for temp allocations
+ */
 AP_DECLARE(apr_status_t) ap_regkey_value_array_set(ap_regkey_t *key, 
                                                    const char *valuename, 
                                                    int nelts, 
                                                    const char * const * elts,
                                                    apr_pool_t *pool);
 
+/**
+ * Win32 Only: Remove a registry value from an open key.
+ * @param key The registry key to remove the value from
+ * @param valuename The named value to remove (pass "" for the default)
+ * @param pool The pool used for temp allocations
+ */
 AP_DECLARE(apr_status_t) ap_regkey_value_remove(const ap_regkey_t *key, 
                                                 const char *valuename,
                                                 apr_pool_t *pool);
@@ -177,4 +215,5 @@ AP_DECLARE(apr_status_t) ap_regkey_value_remove(const ap_regkey_t *key,
 #ifdef __cplusplus
 }
 #endif
+#endif /* WIN32 || DOXYGEN */
 #endif /* AP_REGKEY_H */
