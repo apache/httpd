@@ -114,7 +114,7 @@ module isapi_module;
 
 BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
                                LPVOID lpvBuffer, LPDWORD lpdwSizeofBuffer);
-BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpwdwBytes,
+BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpdwBytes,
                          DWORD dwReserved);
 BOOL WINAPI ReadClient (HCONN ConnID, LPVOID lpvBuffer, LPDWORD lpdwSize);
 BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
@@ -134,7 +134,6 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 /* Our isapi server config structure */
 
 typedef struct {
-    HANDLE lock;
     apr_array_header_t *loaded;
     DWORD ReadAheadBuffer;
     int LogNotSupported;
@@ -169,38 +168,15 @@ typedef struct {
     HANDLE complete;
 } isapi_cid;
 
-static BOOL isapi_unload(isapi_loaded* isa, int force);
-
-static apr_status_t cleanup_isapi_server_config(void *sconfv)
-{
-    isapi_server_conf *sconf = sconfv;
-    size_t n;
-    isapi_loaded **isa;
- 
-    n = sconf->loaded->nelts;
-    isa = (isapi_loaded **)sconf->loaded->elts;
-    while(n--) {
-        if ((*isa)->handle)
-            isapi_unload(*isa, TRUE); 
-        ++isa;
-    }
-    CloseHandle(sconf->lock);
-    return APR_SUCCESS;
-}
-
 static void *create_isapi_server_config(apr_pool_t *p, server_rec *s)
 {
     isapi_server_conf *sconf = apr_palloc(p, sizeof(isapi_server_conf));
     sconf->loaded = apr_array_make(p, 20, sizeof(isapi_loaded*));
-    sconf->lock = CreateMutex(NULL, FALSE, NULL);
-
+    
     sconf->ReadAheadBuffer = 49152;
     sconf->LogNotSupported    = -1;
     sconf->AppendLogToErrors   = 0;
     sconf->AppendLogToQuery    = 0;
-
-    apr_pool_cleanup_register(p, sconf, cleanup_isapi_server_config, 
-                                   apr_pool_cleanup_null);
 
     return sconf;
 }
@@ -214,7 +190,7 @@ static int compare_loaded(const void *av, const void *bv)
 }
 
 static int isapi_post_config(apr_pool_t *p, apr_pool_t *plog,
-                              apr_pool_t *ptemp, server_rec *s)
+                             apr_pool_t *ptemp, server_rec *s)
 {
     isapi_server_conf *sconf = ap_get_module_config(s->module_config, 
                                                     &isapi_module);
@@ -224,11 +200,18 @@ static int isapi_post_config(apr_pool_t *p, apr_pool_t *plog,
     /* sort the elements of the main_server, by filename */
     qsort(elts, nelts, sizeof(isapi_loaded*), compare_loaded);
 
-    /* and make the virtualhosts share the same thing */
+    /* and make all virtualhosts share the same */
     for (s = s->next; s; s = s->next) {
 	ap_set_module_config(s->module_config, &isapi_module, sconf);
     }
     return OK;
+}
+
+static apr_status_t isapi_unload(isapi_loaded* isa, int force);
+
+static apr_status_t cleanup_isapi(void *isa)
+{
+    return isapi_unload((isapi_loaded*) isa, TRUE);
 }
 
 static apr_status_t isapi_load(apr_pool_t *p, isapi_server_conf *sconf, 
@@ -323,27 +306,30 @@ static apr_status_t isapi_load(apr_pool_t *p, isapi_server_conf *sconf,
 
     ++(*isa)->refcount;
 
+    apr_pool_cleanup_register(p, *isa, cleanup_isapi, 
+                                   apr_pool_cleanup_null);
+
     return APR_SUCCESS;
 }
 
-static int isapi_unload(isapi_loaded* isa, int force)
+static apr_status_t isapi_unload(isapi_loaded* isa, int force)
 {
     /* All done with the DLL... get rid of it...
      *
      * If optionally cached, pass HSE_TERM_ADVISORY_UNLOAD,
      * and if it returns TRUE, unload, otherwise, cache it.
      */
-    if ((--isa->refcount > 0) && !force)
-        return FALSE;
+    if (((--isa->refcount > 0) && !force) || !isa->handle)
+        return APR_SUCCESS;
     if (isa->TerminateExtension) {
         if (force)
             (*isa->TerminateExtension)(HSE_TERM_MUST_UNLOAD);
         else if (!(*isa->TerminateExtension)(HSE_TERM_ADVISORY_UNLOAD))
-            return FALSE;
+            return APR_EGENERAL;
     }
     apr_dso_unload(isa->handle);
     isa->handle = NULL;
-    return TRUE;
+    return APR_SUCCESS;
 }
 
 apr_status_t isapi_handler (request_rec *r)
@@ -653,7 +639,7 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
     return FALSE;
 }
 
-BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpwdwBytes,
+BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpdwBytes,
                          DWORD dwReserved)
 {
     request_rec *r = ((isapi_cid *)ConnID)->r;
@@ -664,7 +650,7 @@ BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpwdwBytes,
         ; /* XXX: Fake it */
 
     bb = apr_brigade_create(r->pool);
-    b = apr_bucket_transient_create(Buffer, *lpwdwBytes);
+    b = apr_bucket_transient_create(Buffer, *lpdwBytes);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     b = apr_bucket_flush_create();
     APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -1214,7 +1200,7 @@ static const char *isapi_cmd_appendlogtoerrors(cmd_parms *cmd, void *config,
 }
 
 static const char *isapi_cmd_appendlogtoquery(cmd_parms *cmd, void *config, 
-                                               char *arg)
+                                              char *arg)
 {
     isapi_server_conf *sconf = ap_get_module_config(cmd->server->module_config,
                                                    &isapi_module);

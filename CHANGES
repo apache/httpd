@@ -1,4 +1,7 @@
 Changes with Apache 2.0.30-dev
+
+  *) Resolved segfault in mod_isapi when configuring with ISAPICacheFile.
+     PR 8563, 8919  [William Rowe]
   
   *) Get binary builds working when libapr and libaprutil are built
      shared [Greg Ames]
