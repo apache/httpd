@@ -40,7 +40,7 @@ function add_symbol (sym_name) {
     next
 }
 
-/^[ \t]*AP_DECLARE_HOOK[^(]*[(][^)]*[)]/ {
+/^[ \t]*AP_DECLARE_HOOK[^(]*[(][^)]*/ {
     split($0, args, ",")
     symbol = args[2]
     sub("^[ \t]+", "", symbol)
