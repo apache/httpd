@@ -1,5 +1,8 @@
 Changes with Apache 2.0.48
 
+  *) MPMs: The bucket brigades subsystem now honors the MaxMemFree setting.
+     [Cliff Woolley, Jean-Jacques Clar]
+
   *) Install config.nice into the build/ directory to make
      minor version upgrades easier. [Joshua Slive]
 

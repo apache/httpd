@@ -390,6 +390,8 @@ static int32 worker_thread(void * dummy)
 
     apr_pool_tag(ptrans, "transaction");
 
+    bucket_alloc = apr_bucket_alloc_create_ex(allocator);
+
     apr_thread_mutex_lock(worker_thread_count_mutex);
     worker_thread_count++;
     apr_thread_mutex_unlock(worker_thread_count_mutex);
@@ -400,8 +402,6 @@ static int32 worker_thread(void * dummy)
     apr_poll_setup(&pollset, num_listening_sockets + 1, tpool);
     for(n=0 ; n <= num_listening_sockets ; n++)
         apr_poll_socket_add(pollset, listening_sockets[n], APR_POLLIN);
-	
-    bucket_alloc = apr_bucket_alloc_create(tpool);
 
     while (1) {
         /* If we're here, then chances are (unless we're the first thread created) 
@@ -1047,6 +1047,9 @@ static int beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
     ap_thread_limit = HARD_THREAD_LIMIT;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_max_requests_per_thread = DEFAULT_MAX_REQUESTS_PER_THREAD;
+#ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
+	ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
+#endif
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 

@@ -1047,12 +1047,10 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
 
     apr_allocator_create(&allocator);
     apr_allocator_max_free_set(allocator, ap_max_mem_free);
+    /* XXX: why is ptrans's parent not tpool? --jcw 08/2003 */
     apr_pool_create_ex(&ptrans, NULL, NULL, allocator);
     apr_allocator_owner_set(allocator, ptrans);
-
-    /* XXX: What happens if this is allocated from the
-     * single-thread-optimized ptrans pool? -aaron */
-    bucket_alloc = apr_bucket_alloc_create(tpool);
+    bucket_alloc = apr_bucket_alloc_create_ex(allocator);
 
     wakeup = (worker_wakeup_info *)apr_palloc(tpool, sizeof(*wakeup));
     wakeup->pool = ptrans;
@@ -2056,6 +2054,9 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     ap_lock_fname = DEFAULT_LOCKFILE;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_extended_status = 0;
+#ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
+	ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
+#endif
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 

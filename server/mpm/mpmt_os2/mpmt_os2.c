@@ -512,6 +512,9 @@ static int mpmt_os2_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *
     ap_extended_status = 0;
     ap_min_spare_threads = DEFAULT_MIN_SPARE_THREAD;
     ap_max_spare_threads = DEFAULT_MAX_SPARE_THREAD;
+#ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
+	ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
+#endif
 
     return OK;
 }
