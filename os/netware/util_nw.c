@@ -83,7 +83,7 @@ int  _NonAppCheckUnload( void )
 }
 
 // down server event callback
-void ap_down_server_cb(void *, void *, void*)
+void ap_down_server_cb(void *, void *)
 {
 	nlmUnloadSignaled(0);
     return;
@@ -134,7 +134,7 @@ int _NonAppStart
     rtag_t rt = AllocateResourceTag(NLMHandle, "Apache2 Down Server Callback",
                                     EventSignature);
 
-    NX_WRAP_INTERFACE((void *)ap_down_server_cb, 3, (void **)&ref);
+    NX_WRAP_INTERFACE((void *)ap_down_server_cb, 2, (void **)&ref);
     NX_WRAP_INTERFACE((void *)ap_dummy_cb, 2, (void **)&dum);
     eh = RegisterForEventNotification(rt, EVENT_DOWN_SERVER,
                                       EVENT_PRIORITY_APPLICATION,
