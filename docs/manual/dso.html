@@ -44,7 +44,7 @@ to the Unix loader through the system calls <CODE>dlopen()/dlsym()</CODE>.
 <CODE>libfoo.so.1.2</CODE>.  They reside in a system directory (usually
 <CODE>/usr/lib</CODE>) and the link to the executable program is established
 at build-time by specifying <CODE>-lfoo</CODE> to the linker command. This
-hardcodes library references into the executable program file so that at
+hard-codes library references into the executable program file so that at
 start-time the Unix loader is able to locate <CODE>libfoo.so</CODE> in
 <CODE>/usr/lib</CODE>, in paths hard-coded via linker-options like
 <CODE>-R</CODE> or in paths configured via the environment variable
@@ -52,7 +52,7 @@ start-time the Unix loader is able to locate <CODE>libfoo.so</CODE> in
 the executable program which are available in the DSO.
  
 <P>Symbols in the executable program are usually not referenced by the DSO
-(because it's a reuseable library of general code) and hence no further
+(because it's a reusable library of general code) and hence no further
 resolving has to be done. The executable program has no need to do anything on
 its own to use the symbols from the DSO because the complete resolving is done
 by the Unix loader. (In fact, the code to invoke <CODE>ld.so</CODE> is part of
@@ -137,11 +137,11 @@ third-party modules) a new support program named <CODE>apxs</CODE> (<EM>APache
 eXtenSion</EM>) is available. It can be used to build DSO based modules
 <EM>outside of</EM> the Apache source tree. The idea is simple: When
 installing Apache the <CODE>configure</CODE>'s <CODE>make install</CODE>
-procedure installs the Apache C header files and puts the platform-dependend
+procedure installs the Apache C header files and puts the platform-dependent
 compiler and linker flags for building DSO files into the <CODE>apxs</CODE>
 program.  This way the user can use <CODE>apxs</CODE> to compile his Apache
 module sources without the Apache distribution source tree and without having
-to fiddle with the platform-dependend compiler and linker flags for DSO
+to fiddle with the platform-dependent compiler and linker flags for DSO
 support.
 
 <P>To place the complete Apache core program into a DSO library (only required
@@ -351,7 +351,7 @@ $ apxs -i -a -n foo mod_foo.so
      symbol resolving overhead the Unix loader now has to do.
 <P>
 <LI> The server is approximately 5% slower at execution time under some
-     platforms because position independed code (PIC) sometimes needs
+     platforms because position independent code (PIC) sometimes needs
      complicated assembler tricks for relative addressing which are not
      necessarily as fast as absolute addressing.
 <P>
@@ -363,7 +363,7 @@ $ apxs -i -a -n foo mod_foo.so
      use symbols from the Apache core, from the C library (<CODE>libc</CODE>)
      and all other dynamic or static libraries used by the Apache core, or
      from static library archives (<CODE>libfoo.a</CODE>) containing position
-     independend code. The only chance to use other code is to either make
+     independent code. The only chance to use other code is to either make
      sure the Apache core itself already contains a reference to it or loading
      the code yourself via <CODE>dlopen()</CODE>.
 <P>
