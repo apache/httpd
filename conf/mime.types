@@ -37,6 +37,7 @@ application/x-dvi		dvi
 application/x-gtar		gtar
 application/x-gzip
 application/x-hdf		hdf
+application/x-javascript	js
 application/x-koan		skp skd skt skm
 application/x-latex		latex
 application/x-mif		mif
