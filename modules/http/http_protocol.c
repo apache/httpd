@@ -797,27 +797,23 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             }
         }
         else if (lenp) {
-            const char *pos = lenp;
             int conversion_error = 0;
+            char *endstr;
 
-            /* This ensures that the number can not be negative. */
-            while (apr_isdigit(*pos) || apr_isspace(*pos)) {
-                ++pos;
+            ctx->state = BODY_LENGTH;
+            errno = 0;
+            ctx->remaining = strtol(lenp, &endstr, 10);	/* we depend on ANSI */
+
+            /* This protects us from over/underflow (the errno check),
+             * non-digit chars in the string (excluding leading space)
+             * (the endstr checks) and a negative number. Depending
+             * on the strtol implementation, the errno check may also
+             * trigger on an all whitespace string */
+            if (errno || (endstr && *endstr) || (ctx->remaining < 0)) {
+                 conversion_error = 1; 
             }
 
-            if (*pos == '\0') {
-                char *endstr;
-
-                errno = 0;
-                ctx->state = BODY_LENGTH;
-                ctx->remaining = strtol(lenp, &endstr, 10);
-
-                if (errno || (endstr && *endstr)) {
-                    conversion_error = 1; 
-                }
-            }
-
-            if (*pos != '\0' || conversion_error) {
+            if (conversion_error) {
                 apr_bucket_brigade *bb;
 
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
@@ -1710,25 +1706,18 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
         r->read_chunked = 1;
     }
     else if (lenp) {
-        const char *pos = lenp;
         int conversion_error = 0;
+        char *endstr;
 
-        while (apr_isdigit(*pos) || apr_isspace(*pos)) {
-            ++pos;
+        errno = 0;
+        r->remaining = strtol(lenp, &endstr, 10); /* depend on ANSI */
+
+        /* See comments in ap_http_filter() */
+        if (errno || (endstr && *endstr) || (r->remaining < 0)) {
+            conversion_error = 1; 
         }
 
-        if (*pos == '\0') {
-            char *endstr;
-
-            errno = 0;
-            r->remaining = strtol(lenp, &endstr, 10);
-
-            if (errno || (endstr && *endstr)) {
-                conversion_error = 1; 
-            }
-        }
-
-        if (*pos != '\0' || conversion_error) {
+        if (conversion_error) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "Invalid Content-Length");
             return HTTP_BAD_REQUEST;
