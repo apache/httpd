@@ -2460,7 +2460,7 @@ API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list ap)
     int n;
 
     if (r->connection->aborted)
-        return -1;
+        return EOF;
 
     n = ap_vbprintf(r->connection->client, fmt, ap);
 
@@ -2472,7 +2472,7 @@ API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list ap)
             ap_bsetflag(r->connection->client, B_EOUT, 1);
             r->connection->aborted = 1;
         }
-        return -1;
+        return EOF;
     }
     SET_BYTES_SENT(r);
     return n;
@@ -2484,7 +2484,7 @@ API_EXPORT(int) ap_rprintf(request_rec *r, const char *fmt,...)
     int n;
 
     if (r->connection->aborted)
-        return -1;
+        return EOF;
 
     va_start(vlist, fmt);
     n = ap_vbprintf(r->connection->client, fmt, vlist);
@@ -2498,7 +2498,7 @@ API_EXPORT(int) ap_rprintf(request_rec *r, const char *fmt,...)
             ap_bsetflag(r->connection->client, B_EOUT, 1);
             r->connection->aborted = 1;
         }
-        return -1;
+        return EOF;
     }
     SET_BYTES_SENT(r);
     return n;
@@ -2507,38 +2507,28 @@ API_EXPORT(int) ap_rprintf(request_rec *r, const char *fmt,...)
 API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r,...)
 {
     va_list args;
-    ap_ssize_t i;
-    int j, k;
-    const char *x;
-    BUFF *fb = r->connection->client;
-    ap_status_t rv;
+    int n;
 
     if (r->connection->aborted)
         return EOF;
 
     va_start(args, r);
-    for (k = 0;;) {
-        x = va_arg(args, const char *);
-        if (x == NULL)
-            break;
-        j = strlen(x);
-        rv = ap_bwrite(fb, x, j, &i);
-        if (i != j) {
-            va_end(args);
-            if (!r->connection->aborted) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
-                    "client stopped connection before rvputs completed");
-                ap_bsetflag(r->connection->client, B_EOUT, 1);
-                r->connection->aborted = 1;
-            }
-            return EOF;
-        }
-        k += i;
-    }
+    n = ap_vbputstrs(r->connection->client, args);
     va_end(args);
 
+    if (n < 0) {
+        if (!r->connection->aborted) {
+            ap_log_rerror(APLOG_MARK, APLOG_INFO,
+                          ap_berror(r->connection->client), r,
+                          "client stopped connection before rvputs completed");
+            ap_bsetflag(r->connection->client, B_EOUT, 1);
+            r->connection->aborted = 1;
+        }
+        return EOF;
+    }
+
     SET_BYTES_SENT(r);
-    return k;
+    return n;
 }
 
 API_EXPORT(int) ap_rflush(request_rec *r)
