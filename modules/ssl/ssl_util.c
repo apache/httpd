@@ -74,7 +74,7 @@ char *ssl_util_vhostid(apr_pool_t *p, server_rec *s)
     char *id;
     SSLSrvConfigRec *sc;
     char *host;
-    unsigned int port;
+    apr_port_t port;
 
     host = s->server_hostname;
     if (s->port != 0)
@@ -86,7 +86,7 @@ char *ssl_util_vhostid(apr_pool_t *p, server_rec *s)
         else
             port = DEFAULT_HTTP_PORT;
     }
-    id = apr_psprintf(p, "%s:%u", host, port);
+    id = apr_psprintf(p, "%s:%lu", host, (unsigned long)port);
     return id;
 }
 
