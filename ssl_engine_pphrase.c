@@ -374,6 +374,10 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                 cpPassPhraseCur = NULL;
                 ssl_pphrase_server_rec = s; /* to make up for sslc flaw */
 
+                /* Ensure that the error stack is empty; otherwise the
+                 * OpenSSL UI code may dump it to stderr. */
+                ERR_clear_error();
+
                 bReadable = ((pPrivateKey = SSL_read_PrivateKey(szPath, NULL,
                             ssl_pphrase_Handle_CB, s)) != NULL ? TRUE : FALSE);
 
