@@ -1128,6 +1128,7 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb,
     apr_bucket  *tmp_buck;
     char *parsed_string;
     int loglevel = APLOG_ERR;
+    int quick_handler = 0;
 
     *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
@@ -1144,7 +1145,13 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb,
             if (!strcmp(tag, "virtual") || !strcmp(tag, "file")) {
                 request_rec *rr = NULL;
                 char *error_fmt = NULL;
+                apr_status_t rc = APR_SUCCESS;
 
+                SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next, rc);
+                if (rc != APR_SUCCESS) {
+                    return rc;
+                }
+ 
                 parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
                                                     MAX_STRING_LEN, 0);
                 if (tag[0] == 'f') {
@@ -1161,6 +1168,10 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 }
                 else {
                     rr = ap_sub_req_lookup_uri(parsed_string, r, f->next);
+                }
+                if (rr && rr->status == DONE) {
+                    rr->status = HTTP_OK;
+                    quick_handler = 1;
                 }
 
                 if (!error_fmt && rr->status != HTTP_OK) {
@@ -1227,14 +1238,8 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb,
 
                 if (!error_fmt) {
                     int rv;
-                    apr_status_t rc = APR_SUCCESS;
-
-                    SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next, rc);
-                    if (rc != APR_SUCCESS) {
-                        return rc;
-                    }
-                    
-                    if ((rv = ap_run_sub_req(rr))) {
+                   
+                    if ((quick_handler==0)&&(rv = ap_run_sub_req(rr))) {
                         if (APR_STATUS_IS_EPIPE(rv)) {
                             /* let's not clutter the log on a busy server */
                             loglevel = APLOG_INFO; 
