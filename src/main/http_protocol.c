@@ -106,6 +106,8 @@ static int parse_byterange (char *range, long clength, long *start, long *end)
     return 1;
 }
 
+static int internal_byterange(int, long*, request_rec*, char**, long*, long*);
+
 int set_byterange (request_rec *r)
 {
     char *range = table_get (r->headers_in, "Range");
@@ -161,11 +163,15 @@ int set_byterange (request_rec *r)
     else {
 	/* a multiple range */
 	char boundary[33];	/* Long enough */
+	char *r_range = pstrdup(r->pool, range + 6);
+	long tlength = 0;
 	
 	r->byterange = 2;
-	table_unset(r->headers_out, "Content-Length");
 	ap_snprintf(boundary, sizeof(boundary), "%lx%lx", r->request_time, (long)getpid());
 	r->boundary = pstrdup(r->pool, boundary);
+	while (internal_byterange(0, &tlength, r, &r_range, NULL, NULL));
+	ap_snprintf(ts, sizeof(ts), "%ld", tlength);
+	table_set(r->headers_out, "Content-Length", ts);
     }
     
     r->status = PARTIAL_CONTENT;
@@ -175,31 +181,63 @@ int set_byterange (request_rec *r)
 }
 
 int each_byterange (request_rec *r, long *offset, long *length) {
+    return internal_byterange(1, NULL, r, &r->range, offset, length);
+}
+
+/* If this function is called with realreq=1, it will spit out
+ * the correct headers for a byterange chunk, and set offset and
+ * length to the positions they should be.
+ *
+ * If it is called with realreq=0, it will add to tlength the length
+ * it *would* have used with realreq=1.
+ *
+ * Either case will return 1 if it should be called again, and 0
+ * when done.
+ *
+ */
+
+static int internal_byterange(int realreq, long *tlength, request_rec *r,
+			      char **r_range, long *offset, long *length) {
     long range_start, range_end;
     char *range;
 
-    if (!*r->range) {
-	if (r->byterange > 1)
-	    rvputs(r, "\015\012--", r->boundary, "--\015\012", NULL);
+    if (!**r_range) {
+	if (r->byterange > 1) {
+	    if (realreq)
+		rvputs(r, "\015\012--", r->boundary, "--\015\012", NULL);
+	    else
+		*tlength += 4 + strlen(r->boundary) + 4;
+	}
 	return 0;
     }
 
-    range = getword_nc(r->pool, &r->range, ',');
+    range = getword_nc(r->pool, r_range, ',');
     if (!parse_byterange(range, r->clength, &range_start, &range_end))
-	return each_byterange(r, offset, length);	/* Skip this one */
+	/* Skip this one */
+	return internal_byterange(realreq, tlength, r, r_range, offset,
+				  length);
 
     if (r->byterange > 1) {
 	char *ct = r->content_type ? r->content_type : default_type(r);
 	char ts[MAX_STRING_LEN];
-
+	
 	ap_snprintf(ts, sizeof(ts), "%ld-%ld/%ld", range_start, range_end, r->clength);
-	rvputs(r, "\015\012--", r->boundary, "\015\012Content-type: ",
+	if (realreq)
+	    rvputs(r, "\015\012--", r->boundary, "\015\012Content-type: ",
 	       ct, "\015\012Content-range: bytes ", ts, "\015\012\015\012",
 	       NULL);
+	else
+	    *tlength += 4 + strlen(r->boundary) + 16 + strlen(ct) + 23 +
+		strlen(ts) + 4;
     }
 
-    *offset = range_start;
-    *length = range_end - range_start + 1;
+    if (realreq) {
+	*offset = range_start;
+	*length = range_end - range_start + 1;
+    }
+    else {
+	*tlength += range_end - range_start + 1;
+    }
     return 1;
 }
 
@@ -228,7 +266,7 @@ int set_keepalive(request_rec *r)
 	(r->server->keep_alive_max > r->connection->keepalives)) &&
 	(r->server->keep_alive_timeout > 0) &&
 	(r->status == USE_LOCAL_COPY || r->header_only || length || tenc ||
-	 ((r->proto_num >= 1001) && (r->byterange > 1 || (r->chunked = 1)))) &&
+	 ((r->proto_num >= 1001) && (r->chunked = 1))) &&
 	(!find_token(r->pool, conn, "close")) &&
 	((ka_sent = find_token(r->pool, conn, "keep-alive")) ||
 	 r->proto_num >= 1001)) {
