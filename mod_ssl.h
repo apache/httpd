@@ -27,6 +27,16 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
                          conn_rec *, request_rec *,
                          char *));
 
+/* The ssl_ext_lookup() optional function retrieves the value of a SSL
+ * certificate X.509 extension.  The client certificate is used if
+ * peer is non-zero; the server certificate is used otherwise.  The
+ * oidnum parameter specifies the numeric OID (e.g. "1.2.3.4") of the
+ * desired extension.  The string value of the extension is returned,
+ * or NULL on error. */
+APR_DECLARE_OPTIONAL_FN(const char *, ssl_ext_lookup,
+                        (apr_pool_t *p, conn_rec *c, int peer,
+                         const char *oidnum));
+
 /* An optional function which returns non-zero if the given connection
  * is using SSL/TLS. */
 APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
