@@ -126,20 +126,13 @@
 
 
 /*
-**
-**  our interface to the Apache server kernel
-**
-**  keep in mind: 
+**  Our interface to the Apache server kernel:
 **
 **  o  Runtime logic of a request is as following:
-**
-**       while(request or subrequest) {
-**           foreach(stage #1...#9) {
-**               foreach(module) { (**)
+**       while(request or subrequest) 
+**           foreach(stage #1...#9) 
+**               foreach(module) (**)
 **                   try to run hook
-**               }
-**           }
-**       }
 **
 **  o  the order of modules at (**) is the inverted order as
 **     given in the "Configuration" file, i.e. the last module
@@ -162,7 +155,6 @@
 **         with document_root and sets r->filename
 **       - always return a "OK" independed if the file really exists
 **         or not!
-**
 */
 
     /* the table of commands we provide */
@@ -182,7 +174,8 @@ static command_rec command_table[] = {
     { "RewriteLog",      cmd_rewritelog,      NULL, RSRC_CONF,   TAKE1, 
       "the filename of the rewriting logfile" },
     { "RewriteLogLevel", cmd_rewriteloglevel, NULL, RSRC_CONF,   TAKE1, 
-      "the level of the rewriting logfile verbosity (0=none, 1=std, .., 9=max)" },
+      "the level of the rewriting logfile verbosity "
+      "(0=none, 1=std, .., 9=max)" },
     { NULL }
 };
 
@@ -195,37 +188,24 @@ static handler_rec handler_table[] = {
     /* the main config structure */
 module rewrite_module = {
    STANDARD_MODULE_STUFF, 
-
-   init_module,                 /* module initializer */
-
+   init_module,                 /* module initializer                  */
    config_perdir_create,        /* create per-dir    config structures */
    config_perdir_merge,         /* merge  per-dir    config structures */
    config_server_create,        /* create per-server config structures */
    config_server_merge,         /* merge  per-server config structures */
-   command_table,               /* table of config file commands */
-
-   handler_table,               /* [#8] table of MIME-typed-dispatched request
-                                 *      action handlers
-                                 */
-   hook_uri2file,               /* [#1] URI to filename translation */
-
-   NULL,                        /* [#4] check_user_id: get and validate
-                                 *      user id from the HTTP request
-                                 */
-   NULL,                        /* [#5] check_auth: check if the user is
-                                 *      ok _here_
-                                 */
-   NULL,                        /* [#2] check_access: check access by
-                                 *      host address, etc.
-                                 */
-   hook_mimetype,               /* [#6] determine MIME type */
-
-   hook_fixup,                  /* [#7] pre-run fixups */
-   NULL,                        /* [#9] log a transaction */
-   NULL,                        /* [#3] header parser */
-   NULL,                        /* child_init */
-   NULL,                        /* child_exit */
-   NULL                         /* post read-request */
+   command_table,               /* table of config file commands       */
+   handler_table,               /* [#8] MIME-typed-dispatched handlers */
+   hook_uri2file,               /* [#1] URI to filename translation    */
+   NULL,                        /* [#4] validate user id from request  */
+   NULL,                        /* [#5] check if the user is ok _here_ */
+   NULL,                        /* [#2] check access by host address   */
+   hook_mimetype,               /* [#6] determine MIME type            */
+   hook_fixup,                  /* [#7] pre-run fixups                 */
+   NULL,                        /* [#9] log a transaction              */
+   NULL,                        /* [#3] header parser                  */
+   NULL,                        /* child_init                          */
+   NULL,                        /* child_exit                          */
+   NULL                         /* post read-request                   */
 };
 
     /* the cache */
@@ -239,7 +219,7 @@ static int proxy_available;
 
     /* the txt mapfile parsing stuff */
 #define MAPFILE_PATTERN "^([^ \t]+)[ \t]+([^ \t]+).*$"
-#define MAPFILE_OUTPUT "$1,$2"
+#define MAPFILE_OUTPUT  "$1,$2"
 static regex_t   *lookup_map_txtfile_regexp = NULL;
 static regmatch_t lookup_map_txtfile_regmatch[MAX_NMATCH];
 
@@ -286,10 +266,10 @@ static void *config_server_merge(pool *p, void *basev, void *overridesv)
 
     a->state           = overrides->state;
     a->options         = overrides->options;
-    a->rewritelogfile  = base->rewritelogfile  != NULL ?
-                           base->rewritelogfile : overrides->rewritelogfile;
-    a->rewritelogfp    = base->rewritelogfp    != -1   ?
-                           base->rewritelogfp   : overrides->rewritelogfp;
+    a->rewritelogfile  = base->rewritelogfile != NULL ?
+                         base->rewritelogfile : overrides->rewritelogfile;
+    a->rewritelogfp    = base->rewritelogfp != -1   ?
+                         base->rewritelogfp : overrides->rewritelogfp;
     a->rewriteloglevel = overrides->rewriteloglevel;
 
     if (a->options & OPTION_INHERIT) {
@@ -1066,7 +1046,8 @@ static int hook_uri2file(request_rec *r)
         }
         else if (strlen(r->filename) > 12 &&
                  strncmp(r->filename, "passthrough:", 12) == 0) {
-            /* Hack because of underpowered API: passing the current
+            /*
+             * Hack because of underpowered API: passing the current
              * rewritten filename through to other URL-to-filename handlers
              * just as it were the requested URL. This is to enable
              * post-processing by mod_alias, etc.  which always act on
@@ -1360,8 +1341,8 @@ static int hook_fixup(request_rec *r)
              * this would lead to a deadloop.
              */
             if (strcmp(r->filename, ofilename) == 0) {
-                rewritelog(r, 1,
-         "[per-dir %s] initial URL equal rewritten URL: %s [IGNORING REWRITE]",
+                rewritelog(r, 1, "[per-dir %s] initial URL equal rewritten "
+                           "URL: %s [IGNORING REWRITE]",
                            dconf->directory, r->filename);
                 return OK;
             }
@@ -1436,7 +1417,7 @@ static int handler_redirect(request_rec *r)
 
     /* now do the internal redirect */
     internal_redirect(pstrcat(r->pool, r->filename+9, 
-                                       r->args ? "?" : NULL, r->args, NULL), r);
+                              r->args ? "?" : NULL, r->args, NULL), r);
 
     /* and return gracefully */
     return OK;
@@ -2248,7 +2229,8 @@ static void fully_qualify_uri(request_rec *r)
 **
 */
 
-static void expand_backref_inbuffer(pool *p, char *buf, int nbuf, backrefinfo *bri, char c)
+static void expand_backref_inbuffer(pool *p, char *buf, int nbuf, 
+                                    backrefinfo *bri, char c)
 {
     int i;
 
@@ -2393,7 +2375,8 @@ static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
                 n = strlen(cpT);
                 if (cpO + n >= newuri + sizeof(newuri)) {
                     aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                                "insufficient space in expand_map_lookups, aborting");
+                                "insufficient space in expand_map_lookups, "
+                                "aborting");
                     return;
                 }
                 memcpy(cpO, cpT, n);
@@ -2403,7 +2386,8 @@ static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
                 n = strlen(defaultvalue);
                 if (cpO + n >= newuri + sizeof(newuri)) {
                     aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                                "insufficient space in expand_map_lookups, aborting");
+                                "insufficient space in expand_map_lookups, "
+                                "aborting");
                     return;
                 }
                 memcpy(cpO, defaultvalue, n);
@@ -2417,7 +2401,8 @@ static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
             n = cpT-cpI;
             if (cpO + n >= newuri + sizeof(newuri)) {
                 aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                            "insufficient space in expand_map_lookups, aborting");
+                            "insufficient space in expand_map_lookups, "
+                            "aborting");
                 return;
             }
             memcpy(cpO, cpI, n);
@@ -2467,27 +2452,34 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             if (s->type == MAPTYPE_TXT) {
                 if (stat(s->checkfile, &st) == -1) {
                     aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-                                "mod_rewrite: can't access text RewriteMap file %s",
-                                s->checkfile);
+                                "mod_rewrite: can't access text RewriteMap "
+                                "file %s", s->checkfile);
                     rewritelog(r, 1,
                                "can't open RewriteMap file, see error log");
                     return NULL;
                 }
-                value = get_cache_string(cachep, s->name, CACHEMODE_TS, st.st_mtime, key);
+                value = get_cache_string(cachep, s->name, CACHEMODE_TS, 
+                                         st.st_mtime, key);
                 if (value == NULL) {
-                    rewritelog(r, 6, "cache lookup FAILED, forcing new map lookup");
-                    if ((value = lookup_map_txtfile(r, s->datafile, key)) != NULL) {
-                        rewritelog(r, 5, "map lookup OK: map=%s key=%s[txt] -> val=%s", s->name, key, value);
-                        set_cache_string(cachep, s->name, CACHEMODE_TS, st.st_mtime, key, value);
+                    rewritelog(r, 6, "cache lookup FAILED, forcing new "
+                               "map lookup");
+                    if ((value = 
+                         lookup_map_txtfile(r, s->datafile, key)) != NULL) {
+                        rewritelog(r, 5, "map lookup OK: map=%s key=%s[txt] "
+                                   "-> val=%s", s->name, key, value);
+                        set_cache_string(cachep, s->name, CACHEMODE_TS, 
+                                         st.st_mtime, key, value);
                         return value;
                     }
                     else {
-                        rewritelog(r, 5, "map lookup FAILED: map=%s[txt] key=%s", s->name, key);
+                        rewritelog(r, 5, "map lookup FAILED: map=%s[txt] "
+                                   "key=%s", s->name, key);
                         return NULL;
                     }
                 }
                 else {
-                    rewritelog(r, 5, "cache lookup OK: map=%s[txt] key=%s -> val=%s", s->name, key, value);
+                    rewritelog(r, 5, "cache lookup OK: map=%s[txt] key=%s "
+                               "-> val=%s", s->name, key, value);
                     return value;
                 }
             }
@@ -2495,27 +2487,34 @@ static char *lookup_map(request_rec *r, char *name, char *key)
 #if HAS_NDBM_LIB
                 if (stat(s->checkfile, &st) == -1) {
                     aplog_error(APLOG_MARK, APLOG_ERROR, r->server,
-                                "mod_rewrite: can't access dbm RewriteMap file %s: %s",
-                                s->checkfile);
+                                "mod_rewrite: can't access dbm RewriteMap "
+                                "file %s: %s", s->checkfile);
                     rewritelog(r, 1,
                                "can't open RewriteMap file, see error log");
                     return NULL;
                 }
-                value = get_cache_string(cachep, s->name, CACHEMODE_TS, st.st_mtime, key);
+                value = get_cache_string(cachep, s->name, CACHEMODE_TS, 
+                                         st.st_mtime, key);
                 if (value == NULL) {
-                    rewritelog(r, 6, "cache lookup FAILED, forcing new map lookup");
-                    if ((value = lookup_map_dbmfile(r, s->datafile, key)) != NULL) {
-                        rewritelog(r, 5, "map lookup OK: map=%s[dbm] key=%s -> val=%s", s->name, key, value);
-                        set_cache_string(cachep, s->name, CACHEMODE_TS, st.st_mtime, key, value);
+                    rewritelog(r, 6, 
+                               "cache lookup FAILED, forcing new map lookup");
+                    if ((value = 
+                         lookup_map_dbmfile(r, s->datafile, key)) != NULL) {
+                        rewritelog(r, 5, "map lookup OK: map=%s[dbm] key=%s "
+                                   "-> val=%s", s->name, key, value);
+                        set_cache_string(cachep, s->name, CACHEMODE_TS, 
+                                         st.st_mtime, key, value);
                         return value;
                     }
                     else {
-                        rewritelog(r, 5, "map lookup FAILED: map=%s[dbm] key=%s", s->name, key);
+                        rewritelog(r, 5, "map lookup FAILED: map=%s[dbm] "
+                                   "key=%s", s->name, key);
                         return NULL;
                     }
                 }
                 else {
-                    rewritelog(r, 5, "cache lookup OK: map=%s[dbm] key=%s -> val=%s", s->name, key, value);
+                    rewritelog(r, 5, "cache lookup OK: map=%s[dbm] key=%s "
+                               "-> val=%s", s->name, key, value);
                     return value;
                 }
 #else
@@ -2523,12 +2522,15 @@ static char *lookup_map(request_rec *r, char *name, char *key)
 #endif
             }
             else if (s->type == MAPTYPE_PRG) {
-                if ((value = lookup_map_program(r, s->fpin, s->fpout, key)) != NULL) {
-                    rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s", s->name, key, value);
+                if ((value = 
+                     lookup_map_program(r, s->fpin, s->fpout, key)) != NULL) {
+                    rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s", 
+                               s->name, key, value);
                     return value;
                 }
                 else {
-                    rewritelog(r, 5, "map lookup FAILED: map=%s key=%s", s->name, key);
+                    rewritelog(r, 5, "map lookup FAILED: map=%s key=%s", 
+                               s->name, key);
                 }
             }
         }
@@ -2556,8 +2558,13 @@ static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
     while (fgets(line, sizeof(line), fp) != NULL) {
         if (line[strlen(line)-1] == '\n')
             line[strlen(line)-1] = '\0';
-        if (regexec(lookup_map_txtfile_regexp, line, lookup_map_txtfile_regexp->re_nsub+1, lookup_map_txtfile_regmatch, 0) == 0) {
-            strncpy(result, pregsub(r->pool, output, line, lookup_map_txtfile_regexp->re_nsub+1, lookup_map_txtfile_regmatch), sizeof(result)-1); /* substitute in output */
+        if (regexec(lookup_map_txtfile_regexp, line, 
+                    lookup_map_txtfile_regexp->re_nsub+1, 
+                    lookup_map_txtfile_regmatch, 0) == 0) {
+            strncpy(result, pregsub(r->pool, output, line, 
+                    lookup_map_txtfile_regexp->re_nsub+1, 
+                    lookup_map_txtfile_regmatch), 
+                    sizeof(result)-1); /* substitute in output */
             EOS_PARANOIA(result);
             cpT = strchr(result, ',');
             *cpT = '\0';
@@ -2584,7 +2591,8 @@ static char *lookup_map_dbmfile(request_rec *r, char *file, char *key)
     char buf[MAX_STRING_LEN];
 
     dbmkey.dptr  = key;
-    dbmkey.dsize = (strlen(key) < sizeof(buf) - 1 ? strlen(key) : sizeof(buf)-1);
+    dbmkey.dsize = (strlen(key) < sizeof(buf) - 1 ? 
+                    strlen(key) : sizeof(buf)-1);
     if ((dbmfp = dbm_open(file, O_RDONLY, 0666)) != NULL) {
         dbmval = dbm_fetch(dbmfp, dbmkey);
         if (dbmval.dptr != NULL) {
@@ -2672,15 +2680,20 @@ static void open_rewritelog(server_rec *s, pool *p)
         if (!spawn_child(p, rewritelog_child, (void *)(conf->rewritelogfile+1),
                     kill_after_timeout, &fp, NULL)) {
             perror("spawn_child");
-            fprintf (stderr, "mod_rewrite: could not fork child for RewriteLog process\n");
+            fprintf(stderr, 
+                    "mod_rewrite: could not fork child for "
+                    "RewriteLog process\n");
             exit (1);
         }
         conf->rewritelogfp = fileno(fp);
     }
     else if (*conf->rewritelogfile != '\0') {
-        if ((conf->rewritelogfp = popenf(p, fname, rewritelog_flags, rewritelog_mode)) < 0) {
+        if ((conf->rewritelogfp = popenf(p, fname, rewritelog_flags, 
+                                         rewritelog_mode)) < 0) {
             perror("open");
-            fprintf(stderr, "mod_rewrite: could not open RewriteLog file %s.\n", fname);
+            fprintf(stderr, 
+                    "mod_rewrite: could not open RewriteLog file %s.\n",
+                    fname);
             exit(1);
         }
     }
@@ -2697,7 +2710,8 @@ static int rewritelog_child(void *cmd)
     signal(SIGHUP, SIG_IGN);
 #endif
 #if defined(WIN32)
-    child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", 
+                       (char *)cmd, NULL);
 #elif defined(__EMX__)
     /* OS/2 needs a '/' */
     execl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
@@ -2751,7 +2765,8 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
         rhost = "UNKNOWN-HOST";
 
     str1 = pstrcat(r->pool, rhost, " ",
-                            (conn->remote_logname != NULL ? conn->remote_logname : "-"), " ",
+                            (conn->remote_logname != NULL ? 
+                             conn->remote_logname : "-"), " ",
                             ruser, NULL);
     ap_vsnprintf(str2, sizeof(str2), text, ap);
 
@@ -2794,7 +2809,8 @@ static char *current_logtime(request_rec *r)
         timz = -timz;
 
     strftime(tstr, 80, "[%d/%b/%Y:%H:%M:%S ", t);
-    ap_snprintf(tstr + strlen(tstr), 80-strlen(tstr), "%c%.2d%.2d]", sign, timz/60, timz%60);
+    ap_snprintf(tstr + strlen(tstr), 80-strlen(tstr), "%c%.2d%.2d]", 
+                sign, timz/60, timz%60);
     return pstrdup(r->pool, tstr);
 }
 
@@ -2844,10 +2860,12 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
         fname = server_root_relative(p, map->datafile);
         fpin = NULL;
         fpout = NULL;
-        rc = spawn_child(p, rewritemap_program_child, (void *)map->datafile, kill_after_timeout, &fpin, &fpout);
+        rc = spawn_child(p, rewritemap_program_child, (void *)map->datafile,
+                         kill_after_timeout, &fpin, &fpout);
         if (rc == 0 || fpin == NULL || fpout == NULL) {
             perror("spawn_child");
-            fprintf(stderr, "mod_rewrite: could not fork child for RewriteMap process\n");
+            fprintf(stderr, 
+                    "mod_rewrite: could not fork child for RewriteMap process\n");
             exit(1);
         }
         map->fpin  = fileno(fpin);
@@ -2866,7 +2884,8 @@ static int rewritemap_program_child(void *cmd)
     signal(SIGHUP, SIG_IGN);
 #endif
 #if defined(WIN32)
-    child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH, 
+                       "/c", (char *)cmd, NULL);
 #elif defined(__EMX__)
     /* OS/2 needs a '/' */
     execl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
@@ -2916,18 +2935,21 @@ static char *expand_variables(request_rec *r, char *str)
         if ((cp2 = strstr(cp, "%{")) != NULL) {
             if ((cp3 = strstr(cp2, "}")) != NULL) {
                 *cp2 = '\0';
-                strncpy(&output[strlen(output)], cp, sizeof(output)-strlen(output)-1);
+                strncpy(&output[strlen(output)], cp, 
+                        sizeof(output)-strlen(output)-1);
 
                 cp2 += 2;
                 *cp3 = '\0';
-                strncpy(&output[strlen(output)], lookup_variable(r, cp2), sizeof(output)-strlen(output)-1);
+                strncpy(&output[strlen(output)], lookup_variable(r, cp2),
+                        sizeof(output)-strlen(output)-1);
 
                 cp = cp3+1;
                 expanded = 1;
                 continue;
             }
         }
-        strncpy(&output[strlen(output)], cp, sizeof(output)-strlen(output)-1);
+        strncpy(&output[strlen(output)], cp, 
+                sizeof(output)-strlen(output)-1);
         EOS_PARANOIA(output);
         break;
     }
@@ -2981,7 +3003,8 @@ static char *lookup_variable(request_rec *r, char *var)
         result = r->connection->remote_ip;
     }
     else if (strcasecmp(var, "REMOTE_HOST") == 0) {
-        result = (char *)get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME);
+        result = (char *)get_remote_host(r->connection, 
+                                         r->per_dir_config, REMOTE_NAME);
     }
     else if (strcasecmp(var, "REMOTE_USER") == 0) {
         result = r->connection->user;
@@ -3046,7 +3069,8 @@ static char *lookup_variable(request_rec *r, char *var)
     else if (strcasecmp(var, "TIME_YEAR") == 0) {
         tc = time(NULL); 
         tm = localtime(&tc); 
-        ap_snprintf(resultbuf, sizeof(resultbuf), "%02d%02d", (tm->tm_year / 100) + 19, tm->tm_year % 100);
+        ap_snprintf(resultbuf, sizeof(resultbuf), "%02d%02d", 
+                    (tm->tm_year / 100) + 19, tm->tm_year % 100);
         result = resultbuf;
     }
 #define MKTIMESTR(format, tmfield) \
@@ -3075,9 +3099,10 @@ static char *lookup_variable(request_rec *r, char *var)
     else if (strcasecmp(var, "TIME") == 0) {
         tc = time(NULL);
         tm = localtime(&tc);
-        ap_snprintf(resultbuf, sizeof(resultbuf), "%02d%02d%02d%02d%02d%02d%02d",
-            (tm->tm_year / 100) + 19, (tm->tm_year % 100),
-            tm->tm_mon+1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
+        ap_snprintf(resultbuf, sizeof(resultbuf), 
+                    "%02d%02d%02d%02d%02d%02d%02d", (tm->tm_year / 100) + 19,
+                    (tm->tm_year % 100), tm->tm_mon+1, tm->tm_mday,
+                    tm->tm_hour, tm->tm_min, tm->tm_sec);
         result = resultbuf;
         rewritelog(r, 1, "RESULT='%s'", result);
     }
@@ -3108,12 +3133,13 @@ static char *lookup_variable(request_rec *r, char *var)
             rsub = subrecfunc(r->filename, r); \
             /* now recursively lookup the variable in the sub_req */ \
             result = lookup_variable(rsub, var+5); \
-            /* copy it up to our scope before we destroy the sub_req's pool */ \
+            /* copy it up to our scope before we destroy sub_req's pool */ \
             result = pstrdup(r->pool, result); \
             /* cleanup by destroying the subrequest */ \
             destroy_sub_req(rsub); \
             /* log it */ \
-            rewritelog(r, 5, "lookahead: path=%s var=%s -> val=%s", r->filename, var+5, result); \
+            rewritelog(r, 5, "lookahead: path=%s var=%s -> val=%s", \
+                       r->filename, var+5, result); \
             /* return ourself to prevent re-pstrdup */ \
             return result; \
         }
@@ -3128,7 +3154,8 @@ static char *lookup_variable(request_rec *r, char *var)
     }
 
 #ifndef WIN32
-    /* Win32 has a rather different view of file ownerships. For now, just forget it */
+    /* Win32 has a rather different view of file ownerships. 
+       For now, just forget it */
 
     /* file stuff */
     else if (strcasecmp(var, "SCRIPT_USER") == 0) {
@@ -3161,7 +3188,6 @@ static char *lookup_variable(request_rec *r, char *var)
             }
         }
     }
-
 #endif /* ndef WIN32 */
 
     if (result == NULL)
@@ -3209,7 +3235,8 @@ static cache *init_cache(pool *p)
     return c;
 }
 
-static void set_cache_string(cache *c, char *res, int mode, time_t t, char *key, char *value)
+static void set_cache_string(cache *c, char *res, int mode, time_t t, 
+                             char *key, char *value)
 {
     cacheentry ce;
 
@@ -3220,7 +3247,8 @@ static void set_cache_string(cache *c, char *res, int mode, time_t t, char *key,
     return;
 }
 
-static char *get_cache_string(cache *c, char *res, int mode, time_t t, char *key)
+static char *get_cache_string(cache *c, char *res, int mode, 
+                              time_t t, char *key)
 {
     cacheentry *ce;
 
@@ -3318,7 +3346,8 @@ static cacheentry *retrieve_cache_string(cache *c, char *res, char *key)
 ** +-------------------------------------------------------+
 */
 
-static char *subst_prefix_path(request_rec *r, char *input, char *match, char *subst)
+static char *subst_prefix_path(request_rec *r, char *input, char *match, 
+                               char *subst)
 {
     char matchbuf[LONG_STRING_LEN];
     char substbuf[LONG_STRING_LEN];
@@ -3351,11 +3380,13 @@ static char *subst_prefix_path(request_rec *r, char *input, char *match, char *s
            l++;
         }
         if (output[0] == '/') {
-            rewritelog(r, 4, "add subst prefix: %s -> %s%s", output, substbuf, output+1);
+            rewritelog(r, 4, "add subst prefix: %s -> %s%s", 
+                       output, substbuf, output+1);
             output = pstrcat(r->pool, substbuf, output+1, NULL);
         }
         else {
-            rewritelog(r, 4, "add subst prefix: %s -> %s%s", output, substbuf, output);
+            rewritelog(r, 4, "add subst prefix: %s -> %s%s", 
+                       output, substbuf, output);
             output = pstrcat(r->pool, substbuf, output, NULL);
         }
     }
@@ -3453,7 +3484,8 @@ static void add_env_variable(request_rec *r, char *s)
         var[n] = '\0';
         strncpy(val, cp+1, sizeof(val)-1);
         EOS_PARANOIA(val);
-        table_set(r->subprocess_env, pstrdup(r->pool, var), pstrdup(r->pool, val));
+        table_set(r->subprocess_env, pstrdup(r->pool, var), 
+                  pstrdup(r->pool, val));
         rewritelog(r, 5, "setting env variable '%s' to '%s'", var, val);
     }
 }
@@ -3513,7 +3545,7 @@ static int is_this_our_host(request_rec *r, char *testhost)
             unsigned short port       for redirects
             char *path                name of ServerPath
             int pathlen               len of ServerPath
-            char *names               Wildcarded names for ServerAlias servers 
+            char *names               Wildcarded names for ServerAlias servers
        r->server->addrs->
             struct in_addr host_addr  The bound address, for this server
             short host_port           The bound port, for this server 
@@ -3559,8 +3591,9 @@ static int is_this_our_host(request_rec *r, char *testhost)
             names = r->server->names;
             while (*names != '\0') {
                 name = getword_conf(r->pool, &names);
-                if ((is_matchexp(name) && !strcasecmp_match(testhost, name)) ||
-                    (strcasecmp(testhost, name) == 0)                          ) {
+                if ((is_matchexp(name) &&
+                    !strcasecmp_match(testhost, name)) ||
+                    (strcasecmp(testhost, name) == 0)    ) {
                     return YES;
                 }
             }
@@ -3607,7 +3640,9 @@ static char **resolv_ipaddr_list(request_rec *r, char *name)
         ;
     cppHNL = (char **)palloc(r->pool, sizeof(char *)*(i+1));
     for (i = 0; hep->h_addr_list[i]; i++)
-        cppHNL[i] = pstrdup(r->pool, inet_ntoa(*((struct in_addr *)(hep->h_addr_list[i]))) );
+        cppHNL[i] = pstrdup(r->pool, 
+                            inet_ntoa(*((struct in_addr *)
+                            (hep->h_addr_list[i]))));
     cppHNL[i] = NULL;
     return cppHNL;
 }
@@ -3658,8 +3693,8 @@ static void fd_lock(int fd)
         continue;
 #endif
 #ifdef USE_LOCKING
-    /* Lock the first byte, always, assume we want to append and seek to
-    the end afterwards */
+    /* Lock the first byte, always, assume we want to append 
+       and seek to the end afterwards */
     lseek(fd,0,SEEK_SET);
     rc=_locking(fd, _LK_LOCK, 1);
     lseek(fd,0,SEEK_END);
