@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) htpasswd: use apr_temp_dir_get() and general cleanup
+     [Guenter Knauf <eflash gmx.net>, Thom May]
+
   *) mod_proxy: Fix handling of non-200 success status codes when
      "ProxyErrorOverride On" is configured.  PR 20183.
      [Marcus Janson <marcus.janson tre.se>, Joe Orton]
