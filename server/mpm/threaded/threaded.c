@@ -155,7 +155,7 @@ int raise_sigstop_flags;
 static apr_pool_t *pconf;		/* Pool for config stuff */
 static apr_pool_t *pchild;		/* Pool for httpd child stuff */
 
-unsigned int ap_my_pid; /* Linux getpid() doesn't work except in main 
+static pid_t ap_my_pid; /* Linux getpid() doesn't work except in main 
                            thread. Use this instead */
 /* Keep track of the number of worker threads currently active */
 static int worker_thread_count;

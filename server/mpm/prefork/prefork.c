@@ -172,7 +172,7 @@ static int one_process = 0;
 static apr_pool_t *pconf;		/* Pool for config stuff */
 static apr_pool_t *pchild;		/* Pool for httpd child stuff */
 
-int ap_my_pid;	/* it seems silly to call getpid all the time */
+static pid_t ap_my_pid;	/* it seems silly to call getpid all the time */
 #ifndef MULTITHREAD
 static int my_child_num;
 #endif
