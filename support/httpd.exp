@@ -66,7 +66,7 @@ ap_bhalfduplex
 ap_blookc
 ap_bonerror
 ap_bprintf
-ap_bpush_iol
+ap_bpush_socket
 ap_bputs
 ap_bread_core
 ap_bsetflag
@@ -87,7 +87,6 @@ ap_core_reorder_directories
 ap_coredump_dir
 ap_count_dirs
 ap_create_environment
-ap_create_file_iol
 ap_create_per_dir_config
 ap_create_request_config
 ap_default_port_for_request
@@ -158,7 +157,6 @@ ap_log_assert
 ap_log_error
 ap_log_pid
 ap_log_rerror
-ap_make_dirstr
 ap_make_dirstr_parent
 ap_make_dirstr_prefix
 ap_make_etag
@@ -333,6 +331,7 @@ apr_setprocattr_io
 apr_setprocattr_limit
 apr_signal
 apr_snprintf
+apr_socket_from_file
 apr_stat
 apr_table_add
 apr_table_addn
