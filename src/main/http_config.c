@@ -957,7 +957,12 @@ server_rec *init_virtual_host (pool *p, const char *hostname,
     /* terminate the list */
     *addrs = NULL;
     if( s->addrs ) {
-	s->port = s->addrs->host_port;  /* set them the same, by default */
+	if (s->addrs->host_port) {
+	    s->port = s->addrs->host_port;  /* set them the same, by default */
+	} else {
+	    /* otherwise we get a port of 0 on redirects */
+	    s->port = main_server->port;
+	}
     }
     s->next = NULL;
 
