@@ -48,18 +48,17 @@ changes on a per-directory basis.</p>
     particular document directory, and the directives apply to that
     directory, and all subdirectories thereof.</p>
 
-<note>
-    <p>Note: If you want to call your <code>.htaccess</code> file something
-    else, you can change the name of the file using the <code><a
-    href="../mod/core.html#accessfilename">AccessFileName</a></code>
-    directive. For example, if you would rather call the file
-    <code>.config</code> then you can put the following in your server
-    configuration file:</p>
+    <note><title>Note:</title>
+      <p>If you want to call your <code>.htaccess</code> file something
+      else, you can change the name of the file using the <directive
+      module="core">AccessFileName</directive> directive. For example,
+      if you would rather call the file <code>.config</code> then you
+      can put the following in your server configuration file:</p>
 
-    <example>
-    AccessFileName .config
-    </example>
-</note>
+      <example>
+        AccessFileName .config
+      </example>
+    </note>
 
     <p>What you can put in these files is determined by the <directive
     module="core">AllowOverride</directive>
@@ -76,36 +75,32 @@ changes on a per-directory basis.</p>
     directive, you will find that it is permitted in <code>.htaccess</code>
     files. (See the Context line in the directive summary.) The <a
     href="../mod/directive-dict.html#Context">Override</a> line reads
-    "<code>FileInfo</code>". Thus, you must have at least
-    "<code>AllowOverride FileInfo</code>" in order for this directive to be
+    <code>FileInfo</code>. Thus, you must have at least
+    <code>AllowOverride FileInfo</code> in order for this directive to be
     honored in <code>.htaccess</code> files.</p>
 
-<example><title>Example:</title>
+    <example><title>Example:</title>
       <table>
         <tr>
           <td><a
           href="../mod/directive-dict.html#Context">Context:</a></td>
-
           <td>server config, virtual host, directory, .htaccess</td>
         </tr>
 
         <tr>
           <td><a
           href="../mod/directive-dict.html#Override">Override:</a></td>
-
           <td>FileInfo</td>
         </tr>
       </table>
-</example>
-
+    </example>
 
     <p>If you are unsure whether a particular directive is permitted in a
     <code>.htaccess</code> file, look at the documentation for that
-    directive, and check the Context line for ".htaccess."</p>
+    directive, and check the Context line for ".htaccess".</p>
     </section>
 
-    <section id="when">
-    <title>When (not) to use .htaccess files</title>
+    <section id="when"><title>When (not) to use .htaccess files</title>
 
     <p>In general, you should never use <code>.htaccess</code> files unless
     you don't have access to the main server configuration file. There is,
@@ -151,17 +146,18 @@ changes on a per-directory basis.</p>
     directory <code>/www/htdocs/example</code>, Apache must look for the
     following files:</p>
 
-   <example>
+    <example>
       /.htaccess<br />
       /www/.htaccess<br />
       /www/htdocs/.htaccess<br />
       /www/htdocs/example/.htaccess
-   </example>
+    </example>
 
     <p>And so, for each file access out of that directory, there are 4
     additional file-system accesses, even if none of those files are
-    present. (Note that this would only be the case if .htaccess files were
-    enabled for /, which is not usually the case.)</p>
+    present. (Note that this would only be the case if
+    <code>.htaccess</code> files were enabled for <code>/</code>, which
+    is not usually the case.)</p>
 
     <p>The second consideration is one of security. You are permitting
     users to modify server configuration, which may result in changes over
@@ -170,13 +166,15 @@ changes on a per-directory basis.</p>
     privileges than they need will lead to additional technical support
     requests. Make sure you clearly tell your users what level of
     privileges you have given them. Specifying exactly what you have set
-    <code>AllowOverride</code> to, and pointing them to the relevant
-    documentation, will save yourself a lot of confusion later.</p>
+    <directive module="core">AllowOverride</directive> to, and pointing them
+    to the relevant documentation, will save yourself a lot of confusion
+    later.</p>
 
-    <p>Note that it is completely equivalent to put a .htaccess file in a
-    directory <code>/www/htdocs/example</code> containing a directive, and
-    to put that same directive in a Directory section <code>&lt;Directory
-    /www/htdocs/example&gt;</code> in your main server configuration:</p>
+    <p>Note that it is completely equivalent to put a <code>.htaccess</code>
+    file in a directory <code>/www/htdocs/example</code> containing a
+    directive, and to put that same directive in a Directory section
+    <code>&lt;Directory /www/htdocs/example&gt;</code> in your main server
+    configuration:</p>
 
     <p><code>.htaccess</code> file in <code>/www/htdocs/example</code>:</p>
 
@@ -187,9 +185,11 @@ changes on a per-directory basis.</p>
 
     <example><title>Section from your <code>httpd.conf</code>
     file</title>
-          &lt;Directory /www/htdocs/example&gt;<br />
-           AddType text/example .exm<br />
-           &lt;/Directory&gt;
+      &lt;Directory /www/htdocs/example&gt;<br />
+      <indent>
+        AddType text/example .exm<br />
+      </indent>
+      &lt;/Directory&gt;
     </example>
 
     <p>However, putting this configuration in your server configuration
@@ -198,7 +198,8 @@ changes on a per-directory basis.</p>
     requested.</p>
 
     <p>The use of <code>.htaccess</code> files can be disabled completely
-    by setting the <code>AllowOverride</code> directive to "none"</p>
+    by setting the <directive module="core">AllowOverride</directive>
+    directive to <code>none</code>:</p>
 
     <example>
       AllowOverride None
@@ -253,10 +254,10 @@ changes on a per-directory basis.</p>
     common misconception that you are required to use
     <code>.htaccess</code> files in order to implement password
     authentication. This is not the case. Putting authentication directives
-    in a <code>&lt;Directory&gt;</code> section, in your main server
-    configuration file, is the preferred way to implement this, and
-    <code>.htaccess</code> files should be used only if you don't have
-    access to the main server configuration file. See <a 
+    in a <directive module="core" type="section">Directory</directive>
+    section, in your main server configuration file, is the preferred way
+    to implement this, and <code>.htaccess</code> files should be used only
+    if you don't have access to the main server configuration file. See <a 
     href="#when">above</a> for a discussion of when you should and should
     not use <code>.htaccess</code> files.</p>
 
@@ -270,11 +271,11 @@ changes on a per-directory basis.</p>
     <p><code>.htaccess</code> file contents:</p>
 
     <example>
-          AuthType Basic<br />
-           AuthName "Password Required"<br />
-           AuthUserFile /www/passwords/password.file<br />
-           AuthGroupFile /www/passwords/group.file<br />
-           Require Group admins
+      AuthType Basic<br />
+      AuthName "Password Required"<br />
+      AuthUserFile /www/passwords/password.file<br />
+      AuthGroupFile /www/passwords/group.file<br />
+      Require Group admins
     </example>
 
     <p>Note that <code>AllowOverride AuthConfig</code> must be in effect
@@ -284,7 +285,7 @@ changes on a per-directory basis.</p>
     more complete discussion of authentication and authorization.</p>
 </section>
 
-<section id="ssi"><title>Server side includes example</title>
+<section id="ssi"><title>Server Side Includes example</title>
 
     <p>Another common use of <code>.htaccess</code> files is to enable
     Server Side Includes for a particular directory. This may be done with
@@ -325,8 +326,9 @@ changes on a per-directory basis.</p>
        SetHandler cgi-script
     </example>
 
-    <p>Note that <code>AllowOverride Options</code> must be in effect for
-    these directives to have any effect.</p>
+    <p>Note that <code>AllowOverride Options</code> and <code>AllowOverride
+    FileInfo</code> must both be in effect for these directives to have any
+    effect.</p>
 
     <p>Please see the <a href="cgi.html">CGI tutorial</a> for a more
     complete discussion of CGI programming and configuration.</p>
@@ -350,10 +352,10 @@ changes on a per-directory basis.</p>
 
     <p>If, on the other hand, you are getting server errors when trying to
     access documents, check your Apache error log. It will likely tell you
-    that the directive used in your .htaccess file is not permitted.
-    Alternately, it may tell you that you had a syntax error, which you
-    will then need to fix.</p>
+    that the directive used in your <code>.htaccess</code> file is not
+    permitted. Alternately, it may tell you that you had a syntax error,
+    which you will then need to fix.</p>
 
-  </section>
+</section>
 
 </manualpage>
