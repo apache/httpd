@@ -155,6 +155,8 @@ static int is_scriptaliased(request_rec *r)
 #define SSI_REQ    2
 #define GETPID_REQ 3 /* get the pid of script created for prior request */
 
+#define ERRFN_USERDATA_KEY         "CGIDCHILDERRFN"
+
 /* DEFAULT_CGID_LISTENBACKLOG controls the max depth on the unix socket's
  * pending connection queue.  If a bunch of cgi requests arrive at about
  * the same time, connections from httpd threads/processes will back up
@@ -202,6 +204,7 @@ typedef struct {
     apr_size_t uri_len;
     apr_size_t args_len;
     apr_size_t mod_userdir_user_len;
+    int loglevel; /* to stuff in server_rec */
 } cgid_req_t;
 
 /* This routine is called to create the argument list to be passed
@@ -349,6 +352,7 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     if (stat != APR_SUCCESS) {
         return stat;
     }
+    r->server->loglevel = req->loglevel;
     if (req->req_type == GETPID_REQ) {
         /* no more data sent for this request */
         return APR_SUCCESS;
@@ -480,6 +484,7 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
     if (user != NULL) {
         req.mod_userdir_user_len = strlen(user);
     }
+    req.loglevel = r->server->loglevel;
 
     /* Write the request header */
     if ((stat = sock_write(fd, &req, sizeof(req))) != APR_SUCCESS) {
@@ -563,6 +568,22 @@ static void daemon_signal_handler(int sig)
     if (sig == SIGHUP) {
         ++daemon_should_exit;
     }
+}
+
+static void cgid_child_errfn(apr_pool_t *pool, apr_status_t err,
+                             const char *description)
+{
+    request_rec *r;
+    void *vr;
+
+    apr_pool_userdata_get(&vr, ERRFN_USERDATA_KEY, pool);
+    r = vr;
+
+    /* sure we got r, but don't call ap_log_rerror() because we don't
+     * have r->headers_in and possibly other storage referenced by
+     * ap_log_rerror()
+     */
+    ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server, "%s", description);
 }
 
 static int cgid_server(void *data) 
@@ -711,12 +732,15 @@ static int cgid_server(void *data)
             ((rc = apr_procattr_child_out_set(procattr, inout, NULL)) != APR_SUCCESS) ||
             ((rc = apr_procattr_dir_set(procattr,
                                   ap_make_dirstr_parent(r->pool, r->filename))) != APR_SUCCESS) ||
-            ((rc = apr_procattr_cmdtype_set(procattr, cmd_type)) != APR_SUCCESS)) {
+            ((rc = apr_procattr_cmdtype_set(procattr, cmd_type)) != APR_SUCCESS) ||
+            ((rc = apr_procattr_child_errfn_set(procattr, cgid_child_errfn)) != APR_SUCCESS)) {
             /* Something bad happened, tell the world. */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
                       "couldn't set child process attributes: %s", r->filename);
         }
         else {
+            apr_pool_userdata_set(r, ERRFN_USERDATA_KEY, apr_pool_cleanup_null, ptrans);
+
             argv = (const char * const *)create_argv(r->pool, NULL, NULL, NULL, argv0, r->args);
 
            /* We want to close sd2 for the new CGI process too.

@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cgi, mod_cgid, mod_ext_filter: Log errors when scripts cannot
+     be started on Unix because of such problems as bad permissions,
+     bad shebang line, etc.  [Jeff Trawick]
+
   *) Fix suexec compile error under SUNOS4, where strerror() doesn't
      exist. PR 5913, 9977.
      [Jonathan W Miner <Jonathan.W.Miner@lmco.com>]
