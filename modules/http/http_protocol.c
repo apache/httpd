@@ -519,9 +519,11 @@ typedef struct http_filter_ctx {
     } state;
 } http_ctx_t;
 
-/* This is the input filter for HTTP requests.  It handles chunked and
- * content-length bodies.  This can only be inserted/used after the headers
- * are successfully parsed. */
+/* This is the HTTP_INPUT filter for HTTP requests and responses from 
+ * proxied servers (mod_proxy).  It handles chunked and content-length 
+ * bodies.  This can only be inserted/used after the headers
+ * are successfully parsed. 
+ */
 apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                             ap_input_mode_t mode, apr_off_t *readbytes)
 {
@@ -540,7 +542,18 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         ctx->state = BODY_NONE;
         ctx->remaining = 0;
         ctx->limit_used = 0;
-        ctx->limit = ap_get_limit_req_body(f->r);
+
+        /* LimitRequestBody does not apply to proxied responses.
+         * Consider implementing this check in its own filter. 
+         * Would adding a directive to limit the size of proxied 
+         * responses be useful?
+         */
+        if (!f->r->proxyreq) {
+            ctx->limit = ap_get_limit_req_body(f->r);
+        }
+        else {
+            ctx->limit = 0;
+        }
 
         tenc = apr_table_get(f->r->headers_in, "Transfer-Encoding");
         lenp = apr_table_get(f->r->headers_in, "Content-Length");
