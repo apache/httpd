@@ -285,10 +285,10 @@ CACHE_DECLARE(void *) cache_hash_get(cache_hash_t *ht,
 	return NULL;
 }
 
-CACHE_DECLARE(void*) cache_hash_set(cache_hash_t *ht,
-                                  const void *key,
-                                  apr_ssize_t klen,
-                                  const void *val)
+CACHE_DECLARE(const void *) cache_hash_set(cache_hash_t *ht,
+                                           const void *key,
+                                           apr_ssize_t klen,
+                                           const void *val)
 {
     cache_hash_entry_t **hep, *tmp;
     const void *tval;
