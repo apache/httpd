@@ -3209,7 +3209,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
     core_output_filter_ctx_t *ctx = net->out_ctx;
 
     if (ctx == NULL) {
-        ctx = apr_pcalloc(net->c->pool, sizeof(*ctx));
+        ctx = apr_pcalloc(c->pool, sizeof(*ctx));
         net->out_ctx = ctx;
     }
 
