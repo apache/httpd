@@ -197,6 +197,7 @@ audio/x-pn-realaudio-plugin	rpm
 audio/x-realaudio		ra
 audio/x-wav			wav
 chemical/x-pdb			pdb xyz
+image/bmp			bmp
 image/cgm
 image/g3fax
 image/gif			gif
@@ -213,7 +214,6 @@ image/vnd.net-fpx
 image/vnd.svf
 image/vnd.xiff
 image/x-cmu-raster		ras
-image/x-ms-bmp			bmp
 image/x-portable-anymap		pnm
 image/x-portable-bitmap		pbm
 image/x-portable-graymap	pgm
