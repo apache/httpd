@@ -1,4 +1,4 @@
-Changes with Apache 2.0.15-dev
+Changes with Apache 2.0.15
 
   *) Untangled the buildconf script and eliminated the need for build's
      aclocal.m4, generated_lists, build.mk, build2.mk, and a host of other
