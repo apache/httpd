@@ -21,7 +21,6 @@
 <li><a href="#modules">Modules</a></li>
 <li><a href="#scope">Scope of Directives</a></li>
 <li><a href="#htaccess">.htaccess Files</a></li>
-<li><a href="#logs">Log Files</a></li>
 </ul>
 
 <hr>
@@ -195,53 +194,6 @@ directives may be placed in <CODE>.htaccess</CODE> files by
 configuring the <A
 HREF="mod/core.html#allowoverride"><CODE>AllowOverride</CODE></A>
 directive in the main configuration files.
-
-<hr>
-
-<H2><a name="logs">Log files</a></H2>
-<!-- XXX: This section should be moved to its own file -->
-<H3>security warning</H3>
-Anyone who can write to the directory where Apache is writing a
-log file can almost certainly gain access to the uid that the server is
-started as, which is normally root.  Do <EM>NOT</EM> give people write
-access to the directory the logs are stored in without being aware of
-the consequences; see the <A HREF="misc/security_tips.html">security tips</A>
-document for details.
-
-<H3>pid file</H3>
-
-<P>On startup, Apache saves the process id of the parent httpd process to
-the file <CODE>logs/httpd.pid</CODE>. This filename can be changed
-with the <A HREF="mod/core.html#pidfile">PidFile</A> directive. The
-process-id is for use by the administrator in restarting and
-terminating the daemon: on Unix, a HUP or USR1 signal causes the
-daemon to re-read its configuration files and a TERM signal causes it
-to die gracefully; on Windows, use the -k command line option instead.
-For more information see the <A HREF="stopping.html">Stopping and
-Restarting</A> page.
-
-<P>
-If the process dies (or is killed) abnormally, then it will be necessary to
-kill the children httpd processes.
-
-<H3>Error log</H3>
-
-<P>The server will log error messages to a log file, by default
-<CODE>logs/error_log</CODE> on Unix or <CODE>logs/error.log</CODE> on
-Windows and OS/2. The filename can be set using the <A
-HREF="mod/core.html#errorlog">ErrorLog</A> directive; different error
-logs can be set for different <A
-HREF="mod/core.html#virtualhost">virtual hosts</A>.
-
-<H3>Transfer log</H3>
-
-<P>The server will typically log each request to a transfer file, by
-default <CODE>logs/access_log</CODE> on Unix or
-<CODE>logs/access.log</CODE> on Windows and OS/2. The filename can be
-set using a <A HREF="mod/mod_log_config.html#customlog">CustomLog</A>
-directive; different transfer logs can be set for different <A
-HREF="mod/core.html#virtualhost">virtual hosts</A>.
-
 
 <!--#include virtual="footer.html" -->
 </BODY>
