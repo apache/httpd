@@ -1,5 +1,10 @@
 Changes with Apache 1.3a2
 
+  *) Fix another long-standing bug in sub_req_lookup_file where it would
+     happily skip past access checks on subdirectories looked up with
+     relative paths.  (It's used by mod_dir, mod_negotiation,
+     and mod_include.) [Dean Gaudet]
+
   *) directory_walk optimization to reduce an O(N*M) loop to O(N+M) where
      N is the number of <Directory> sections, and M is the number of
      components in the filename of an object.

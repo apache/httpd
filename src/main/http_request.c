@@ -733,22 +733,31 @@ API_EXPORT(request_rec *) sub_req_lookup_file (const char *new_file,
 
 	rnew->per_dir_config = r->per_dir_config;
 
-	if ((res = check_symlinks (rnew->filename, allow_options (rnew)))) {
-	    log_reason ("Symbolic link not allowed", rnew->filename, rnew);
-	    rnew->status = res;
-	    return rnew;
-	}
-	/* do a file_walk, if it doesn't change the per_dir_config then
-	 * we know that we don't have to redo all the access checks */
-	if ((res = file_walk (rnew))) {
-	    rnew->status = res;
-	    return rnew;
-	}
-	if (rnew->per_dir_config == r->per_dir_config) {
-	    if ((res = find_types (rnew)) || (res = run_fixups (rnew))) {
-		rnew->status = res;
+	/* no matter what, if it's a subdirectory, we need to re-run
+	 * directory_walk */
+	if (S_ISDIR (rnew->finfo.st_mode)) {
+	    res = directory_walk (rnew);
+	    if (!res) {
+		res = file_walk (rnew);
 	    }
-	    return rnew;
+	} else {
+	    if ((res = check_symlinks (rnew->filename, allow_options (rnew)))) {
+		log_reason ("Symbolic link not allowed", rnew->filename, rnew);
+		rnew->status = res;
+		return rnew;
+	    }
+	    /* do a file_walk, if it doesn't change the per_dir_config then
+	     * we know that we don't have to redo all the access checks */
+	    if ((res = file_walk (rnew))) {
+		rnew->status = res;
+		return rnew;
+	    }
+	    if (rnew->per_dir_config == r->per_dir_config) {
+		if ((res = find_types (rnew)) || (res = run_fixups (rnew))) {
+		    rnew->status = res;
+		}
+		return rnew;
+	    }
 	}
     } else {
 	/* XXX: this should be set properly like it is in the same-dir case
