@@ -1748,7 +1748,7 @@ typedef struct {
     Buffer *reqInbufPtr;            /* client input buffer */
     Buffer *reqOutbufPtr;           /* client output buffer */
     char *errorMsg;                 /* error message from failed request */
-    int contentLengthRemaining;     /* bytes still expected from client */
+    int expectingClientContent;     /* >0 => more content, <=0 => no more */
     DString *header;
     DString *errorOut;
     int parseHeader;                /* TRUE iff parsing response headers */
@@ -2876,7 +2876,7 @@ static void ClientToCgiBuffer(FastCgiInfo *infoPtr)
      * in the output buffer, indicate EOF.
      */
     if(movelen == in_len
-            && infoPtr->contentLengthRemaining <= 0
+            && infoPtr->expectingClientContent <= 0
             && BufferFree(infoPtr->outbufPtr) >= sizeof(FCGI_Header)) {
         SendPacketHeader(infoPtr, FCGI_STDIN, 0);
         infoPtr->eofSent = TRUE;
@@ -3415,13 +3415,13 @@ fail:
  *      When FillOutbuf returns, either
  *          both reqInbuf and outbuf are full
  *      or
- *          contentLengthRemaining <= 0 and either
+ *          expectingClientContent <= 0 and either
  *          reqInbuf is empty or outbuf is full.
  *
  *      "outbuf full" means "at most sizeof(FCGI_Header) bytes free."
  *
  *      In case of an error reading from the client, sets
- *      contentLengthRemaining == -1.
+ *      expectingClientContent == -1.
  * 
  *----------------------------------------------------------------------
  */
@@ -3432,22 +3432,20 @@ static void FillOutbuf(WS_Request *reqPtr, FastCgiInfo *infoPtr)
     while(BufferFree(infoPtr->reqInbufPtr) > 0
             || BufferFree(infoPtr->outbufPtr) > 0) {
         ClientToCgiBuffer(infoPtr);
-        if(infoPtr->contentLengthRemaining <= 0) {
+        if(infoPtr->expectingClientContent <= 0) {
             break;
         }
         BufferPeekExpand(infoPtr->reqInbufPtr, &end, &count);
-        count = min(count, infoPtr->contentLengthRemaining);
         if(count == 0) {
             break;
         }
-        countRead = read_client_block(reqPtr, end, count);
+        countRead = get_client_block(reqPtr, end, count);
         if(countRead > 0) {
-            infoPtr->contentLengthRemaining -= countRead;
             BufferExpand(infoPtr->reqInbufPtr, countRead);
         } else if (countRead == 0) {
-            infoPtr->contentLengthRemaining = 0;
+            infoPtr->expectingClientContent = 0;
 	} else {
-            infoPtr->contentLengthRemaining = -1;
+            infoPtr->expectingClientContent = -1;
         }
     }
 }
@@ -3675,6 +3673,10 @@ static int FastCgiHandler(WS_Request *reqPtr)
                 reqPtr->filename, reqPtr);
         return NOT_FOUND;
     }
+    status = setup_client_block(reqPtr);
+    if(status != OK) {
+        return status;
+    }
     /*
      * Allocate and initialize FastCGI private data to augment the request
      * structure.
@@ -3700,14 +3702,8 @@ static int FastCgiHandler(WS_Request *reqPtr)
     infoPtr->requestId = 1; /* anything but zero is OK here */
     infoPtr->eofSent = FALSE;
     infoPtr->fd = -1;
-    {
-        char *lenp = table_get(reqPtr->headers_in, "Content-length");
-        int contentLength = (lenp) ? strtol(lenp, NULL, 10) : 0;
-        if (contentLength <= 0) {
-            contentLength = 0;
-        }
-        infoPtr->contentLengthRemaining = contentLength;
-    }
+    infoPtr->expectingClientContent = (should_client_block(reqPtr) != 0);
+
     SendBeginRequest(infoPtr);
     SendEnvironment(reqPtr, infoPtr);
     /*
