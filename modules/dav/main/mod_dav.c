@@ -346,6 +346,8 @@ static const char *dav_cmd_davparam(cmd_parms *cmd, void *config,
 ** Send a nice response back to the user. In most cases, Apache doesn't
 ** allow us to provide details in the body about what happened. This
 ** function allows us to completely specify the response body.
+**
+** ### this function is not logging any errors! (e.g. the body)
 */
 static int dav_error_response(request_rec *r, int status, const char *body)
 {
@@ -614,35 +616,24 @@ static int dav_get_overwrite(request_rec *r)
 }
 
 /* resolve a request URI to a resource descriptor.
- * If target_allowed != 0, then allow the request target to be overridden
- * by either a DAV:version or DAV:label-name element (passed as
- * the target argument), or any Target-Selector header in the request.
+ *
+ * If label_allowed != 0, then allow the request target to be altered by
+ * a Label: header.
+ *
+ * If use_checked_in is true, then the repository provider should return
+ * the resource identified by the DAV:checked-in property of the resource
+ * identified by the Request-URI.
  */
-static dav_error * dav_get_resource(request_rec *r, int target_allowed,
-                                    ap_xml_elem *target, dav_resource **res_p)
+static dav_error * dav_get_resource(request_rec *r, int label_allowed,
+                                    int use_checked_in, dav_resource **res_p)
 {
-    void *data;
     dav_dir_conf *conf;
-    const char *target_selector = NULL;
-    int is_label = 0;
-    int result;
+    const char *label = NULL;
     dav_error *err;
 
-    /* only look for the resource if it isn't already present */
-    (void) apr_get_userdata(&data, DAV_KEY_RESOURCE, r->pool);
-    if (data != NULL) {
-        *res_p = data;
-        return NULL;
-    }
-
     /* if the request target can be overridden, get any target selector */
-    if (target_allowed) {
-        /* ### this should return a dav_error* */
-        if ((result = dav_get_target_selector(r, target,
-                                              &target_selector,
-                                              &is_label)) != OK)
-            return dav_new_error(r->pool, result, 0,
-                                 "Could not process the method target.");
+    if (label_allowed) {
+        label = apr_table_get(r->headers_in, "label");
     }
 
     conf = ap_get_module_config(r->per_dir_config, &dav_module);
@@ -650,7 +641,7 @@ static dav_error * dav_get_resource(request_rec *r, int target_allowed,
 
     /* resolve the resource */
     err = (*conf->provider->repos->get_resource)(r, conf->dir,
-                                                 target_selector, is_label,
+                                                 label, use_checked_in,
                                                  res_p);
     if (err != NULL) {
         err = dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
@@ -667,9 +658,6 @@ static dav_error * dav_get_resource(request_rec *r, int target_allowed,
                                           "resource for %s.",
                                           ap_escape_html(r->pool, r->uri)));
     }
-
-    (void) apr_set_userdata(*res_p, DAV_KEY_RESOURCE, apr_null_cleanup,
-                            r->pool);
 
     /* ### hmm. this doesn't feel like the right place or thing to do */
     /* if there were any input headers requiring a Vary header in the response,
@@ -736,7 +724,8 @@ static int dav_method_get(request_rec *r)
      * visible to Apache. We will fetch the resource from the repository,
      * then create a subrequest for Apache to handle.
      */
-    err = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
+    err = dav_get_resource(r, 1 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
@@ -930,7 +919,8 @@ static int dav_method_post(request_rec *r)
     dav_error *err;
 
     /* Ask repository module to resolve the resource */
-    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
@@ -967,7 +957,8 @@ static int dav_method_put(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
@@ -1181,7 +1172,8 @@ static int dav_method_delete(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
@@ -1538,7 +1530,8 @@ static int dav_method_options(request_rec *r)
     dav_error *err;
 
     /* resolve the resource */
-    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
@@ -1890,7 +1883,8 @@ static int dav_method_propfind(request_rec *r)
     dav_response *multi_status;
 
     /* Ask repository module to resolve the resource */
-    err = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
+    err = dav_get_resource(r, 1 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
@@ -2154,7 +2148,8 @@ static int dav_method_proppatch(request_rec *r)
     dav_prop_ctx *ctx;
 
     /* Ask repository module to resolve the resource */
-    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
@@ -2354,7 +2349,8 @@ static int dav_method_mkcol(request_rec *r)
 						 &dav_module);
 
     /* Ask repository module to resolve the resource */
-    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
@@ -2473,7 +2469,8 @@ static int dav_method_copymove(request_rec *r, int is_move)
     int resource_state;
 
     /* Ask repository module to resolve the resource */
-    err = dav_get_resource(r, !is_move /*target_allowed*/, NULL, &resource);
+    err = dav_get_resource(r, !is_move /* label_allowed */,
+                           0 /* use_checked_in */, &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
@@ -2527,7 +2524,8 @@ static int dav_method_copymove(request_rec *r, int is_move)
     }
 
     /* Resolve destination resource */
-    err = dav_get_resource(lookup.rnew, 0 /*target_allowed*/, NULL, &resnew);
+    err = dav_get_resource(lookup.rnew, 0 /* label_allowed */,
+                           0 /* use_checked_in */, &resnew);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
@@ -2856,7 +2854,9 @@ static int dav_method_lock(request_rec *r)
      * so allow it, and let provider reject the lock attempt
      * on a version if it wants to.
      */
-    err = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
+    /* ### gjs: I'm not sure we want to allow for locking a version... */
+    err = dav_get_resource(r, 1 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
@@ -3043,7 +3043,9 @@ static int dav_method_unlock(request_rec *r)
      * so allow it, and let provider reject the unlock attempt
      * on a version if it wants to.
      */
-    err = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
+    /* ### gjs: I'm not sure we want to allow for locking a version... */
+    err = dav_get_resource(r, 1 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
@@ -3101,7 +3103,8 @@ static int dav_method_vsn_control(request_rec *r)
         return DECLINED;
 
     /* ask repository module to resolve the resource */
-    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
@@ -3279,7 +3282,11 @@ static int dav_method_checkout(request_rec *r)
     dav_error *err;
     int result;
     ap_xml_doc *doc;
-    ap_xml_elem *target = NULL;
+    int apply_to_vsn = 0;
+    int is_unreserved = 0;
+    int is_fork_ok = 0;
+    int create_activity = 0;
+    apr_array_header_t *activities = NULL;
 
     /* If no versioning provider, decline the request */
     if (vsn_hooks == NULL)
@@ -3289,6 +3296,8 @@ static int dav_method_checkout(request_rec *r)
 	return result;
 
     if (doc != NULL) {
+        const ap_xml_elem *aset;
+
         if (!dav_validate_root(doc, "checkout")) {
             /* This supplies additional information for the default msg. */
             ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
@@ -3297,12 +3306,57 @@ static int dav_method_checkout(request_rec *r)
             return HTTP_BAD_REQUEST;
         }
 
-        if ((target = dav_find_child(doc->root, "version")) == NULL)
-            target = dav_find_child(doc->root, "label-name");
+        if (dav_find_child(doc->root, "apply-to-version") != NULL) {
+            if (apr_table_get(r->headers_in, "label") != NULL) {
+                /* ### we want generic 403/409 XML reporting here */
+                /* ### DAV:must-not-have-label-and-apply-to-version */
+                return dav_error_response(r, HTTP_CONFLICT,
+                                          "DAV:apply-to-version cannot be "
+                                          "used in conjunction with a "
+                                          "Label header.");
+            }
+            apply_to_vsn = 1;
+        }
+
+        is_unreserved = dav_find_child(doc->root, "unreserved") != NULL;
+        is_fork_ok = dav_find_child(doc->root, "fork-ok") != NULL;
+
+        if ((aset = dav_find_child(doc->root, "activity-set")) != NULL) {
+            if (dav_find_child(aset, "new") != NULL) {
+                create_activity = 1;
+            }
+            else {
+                const ap_xml_elem *child = aset->first_child;
+
+                for (; child != NULL; child = child->next) {
+                    if (child->ns == AP_XML_NS_DAV_ID
+                        && strcmp(child->name, "href") == 0) {
+                        const char *href;
+
+                        href = dav_xml_get_cdata(child, r->pool,
+                                                 1 /* strip_white */);
+                        *(const char **)apr_push_array(activities) = href;
+                    }
+                }
+
+                if (activities->nelts == 0) {
+                    /* no href's is a DTD violation:
+                       <!ELEMENT activity-set (href+ | new)>
+                    */
+
+                    /* This supplies additional info for the default msg. */
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                                  "Within the DAV:activity-set element, the "
+                                  "DAV:new element must be used, or at least "
+                                  "one DAV:href must be specified.");
+                    return HTTP_BAD_REQUEST;
+                }
+            }
+        }
     }
 
     /* Ask repository module to resolve the resource */
-    err = dav_get_resource(r, 1 /*target_allowed*/, target, &resource);
+    err = dav_get_resource(r, 1 /*label_allowed*/, apply_to_vsn, &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
@@ -3331,7 +3385,9 @@ static int dav_method_checkout(request_rec *r)
     /* ### do lock checks, once behavior is defined */
 
     /* Do the checkout */
-    if ((err = (*vsn_hooks->checkout)(resource, &working_resource)) != NULL) {
+    if ((err = (*vsn_hooks->checkout)(resource, is_unreserved, is_fork_ok,
+                                      create_activity, activities,
+                                      &working_resource)) != NULL) {
 	err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
 			     apr_psprintf(r->pool,
 					 "Could not CHECKOUT resource %s.",
@@ -3367,7 +3423,8 @@ static int dav_method_uncheckout(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
@@ -3430,7 +3487,8 @@ static int dav_method_checkin(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    err = dav_get_resource(r, 0 /* target_allowed */, NULL, &resource);
+    err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
@@ -3536,7 +3594,8 @@ static int dav_method_set_target(request_rec *r)
         return DECLINED;
 
     /* Ask repository module to resolve the resource */
-    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
@@ -3718,7 +3777,8 @@ static int dav_method_label(request_rec *r)
         return DECLINED;
 
     /* Ask repository module to resolve the resource */
-    err = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
+    err = dav_get_resource(r, 1 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
@@ -3829,7 +3889,7 @@ static int dav_method_report(request_rec *r)
     dav_resource *resource;
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     int result;
-    int target_allowed;
+    int label_allowed;
     ap_xml_doc *doc;
     ap_text_header hdr = { 0 };
     ap_text *t;
@@ -3852,8 +3912,9 @@ static int dav_method_report(request_rec *r)
      * First determine whether a Target-Selector header is allowed
      * for this report.
      */
-    target_allowed = (*vsn_hooks->report_target_selector_allowed)(doc);
-    err = dav_get_resource(r, target_allowed, NULL, &resource);
+    label_allowed = (*vsn_hooks->report_target_selector_allowed)(doc);
+    err = dav_get_resource(r, label_allowed, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
@@ -3900,7 +3961,8 @@ static int dav_method_make_workspace(request_rec *r)
         return DECLINED;
 
     /* ask repository module to resolve the resource */
-    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
@@ -3963,7 +4025,8 @@ static int dav_method_make_activity(request_rec *r)
         return DECLINED;
 
     /* ask repository module to resolve the resource */
-    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
@@ -4034,7 +4097,8 @@ static int dav_method_bind(request_rec *r)
         return DECLINED;
 
     /* Ask repository module to resolve the resource */
-    err = dav_get_resource(r, 0 /*!target_allowed*/, NULL, &resource);
+    err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
@@ -4081,7 +4145,8 @@ static int dav_method_bind(request_rec *r)
     }
 
     /* resolve binding resource */
-    err = dav_get_resource(lookup.rnew, 0 /*!target_allowed*/, NULL, &binding);
+    err = dav_get_resource(lookup.rnew, 0 /* label_allowed */,
+                           0 /* use_checked_in */, &binding);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
