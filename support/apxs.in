@@ -490,9 +490,8 @@ if ($opt_i or $opt_e) {
     ##
 
     #   determine installation commands
-    #   and corresponding LoadModule/AddModule directives
+    #   and corresponding LoadModule directive
     my @lmd = ();
-    my @amd = ();
     my @cmds = ();
     my $f;
     foreach $f (@args) {
@@ -546,7 +545,6 @@ if ($opt_i or $opt_e) {
         $dir =~ s|(.)$|$1/|;
 	$t =~ s|\.la$|.so|;
         push(@lmd, sprintf("LoadModule %-18s %s", "${name}_module", "$dir$t"));
-        push(@amd, sprintf("AddModule %s", $filename));
     }
 
     #   execute the commands
@@ -582,15 +580,7 @@ if ($opt_i or $opt_e) {
             $lmd =~ m|LoadModule\s+(.+?)_module.*|;
             notice("[$what module `$1' in $CFG_SYSCONFDIR/$CFG_TARGET.conf]");
         }
-        my $amd;
-        foreach $amd (@amd) {
-            if ($content !~ m|\n#?\s*$amd|) {
-                 $content =~ s|^(.*\n#?\s*AddModule\s+[^\n]+\n)|$1$c$amd\n|sg;
-            } else {
-                 $content =~ s|^(.*\n)#?\s*$amd[^\n]*\n|$1$c$amd\n|sg;
-            }
-        }
-        if (@lmd or @amd) {
+        if (@lmd) {
             if (open(FP, ">$CFG_SYSCONFDIR/$CFG_TARGET.conf.new")) {
                 print FP $content;
                 close(FP);

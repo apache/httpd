@@ -1,4 +1,8 @@
 Changes with Apache 2.1.0-dev
+  *) If an httpd.conf has commented out AddModule directives, 
+     apxs -i -a will add an un-commented AddModule directive for 
+     the new module, which breaks the config.
+     PR: 11212 [Joe Orton]
 
   [Remove entries to the current 2.0 section below, when backported]
 
