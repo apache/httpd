@@ -840,7 +840,7 @@ AP_DECLARE(void) ap_fixup_virtual_hosts(apr_pool_t *p, server_rec *main_server);
  * @param p The pool to allocate the config vector out of
  * @return The config vector
  */
-ap_conf_vector_t *ap_create_request_config(apr_pool_t *p);
+AP_DECLARE(ap_conf_vector_t*) ap_create_request_config(apr_pool_t *p);
 
 /**
  * Setup the config vector for per dir module configs

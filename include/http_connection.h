@@ -75,7 +75,7 @@ extern "C" {
  * @param id ID of this connection; unique at any point in time.
  * @return new conn_rec, or NULL if the connection has already been reset
  */
-conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server, 
+AP_CORE_DECLARE(conn_rec *)ap_new_connection(apr_pool_t *p, server_rec *server, 
                             apr_socket_t *inout, long id);
 
 /**

@@ -961,7 +961,7 @@ AP_DECLARE(int) ap_send_http_trace(request_rec *r)
     return OK;
 }
 
-int ap_send_http_options(request_rec *r)
+AP_DECLARE(int) ap_send_http_options(request_rec *r)
 {
     if (r->assbackwards)
         return DECLINED;
