@@ -82,7 +82,7 @@ install-other:
 		if test -f $$file; then \
 			cp -p $$file $(bindir); \
 		fi; \
-	done;
+	done; \
 	file=httpd.dll; \
 	if test -f $$file; then \
 		cp -p $$file $(bindir); \
