@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/01/31 16:45:57 $
+Last modified: $Date: 2003/02/10 19:17:08 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -139,7 +139,7 @@ Documentation improvements
       <page><variant lang="en" href="">title</variant>)?
     - looking for other good ideas ;-)
   - remove <pre> elements. Use <br /> and <indent> elements to get
-    same effect.
+    a similar effect.
 
 * Autogeneration of PDF
   - André is working on this, Erik volunteers to help out
@@ -165,6 +165,9 @@ Documentation improvements
     script in the support directory that scans the files there and
     updates the manual indices.  (We do something like that now for
     httpd.conf file with apxs [LoadModule, etc.].)
+
+* Summarize all the implemented drafts/standards with short explanations
+  within a document. (PR 16938)
 
 XML Conversions
 ===============
