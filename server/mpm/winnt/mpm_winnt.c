@@ -119,6 +119,7 @@ static unsigned int g_blocked_threads = 0;
 
 static HANDLE shutdown_event;	/* used to signal the parent to shutdown */
 static HANDLE restart_event;	/* used to signal the parent to restart */
+static HANDLE ready_event;      /* used to signal the parent to duplicate sockets */
 static HANDLE exit_event;       /* used by parent to signal the child to exit */
 static HANDLE max_requests_per_child_event;
 
@@ -605,6 +606,14 @@ void get_handles_from_parent(server_rec *s)
     apr_status_t rv;
     
     pipe = GetStdHandle(STD_INPUT_HANDLE);
+    if (!ReadFile(pipe, &ready_event, sizeof(HANDLE),
+                  &BytesRead, (LPOVERLAPPED) NULL)
+        || (BytesRead != sizeof(HANDLE))) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Child %d: Unable to retrieve the ready event from the parent", my_pid);
+        exit(APEXIT_CHILDINIT);
+    }
+
     if (!ReadFile(pipe, &exit_event, sizeof(HANDLE),
                   &BytesRead, (LPOVERLAPPED) NULL)
         || (BytesRead != sizeof(HANDLE))) {
@@ -1467,7 +1476,11 @@ static void child_main()
     CloseHandle(exit_event);
 }
 
-static int send_handles_to_child(apr_pool_t *p, HANDLE child_exit_event, HANDLE hProcess, apr_file_t *child_in)
+static int send_handles_to_child(apr_pool_t *p, 
+                                 HANDLE child_ready_event,
+                                 HANDLE child_exit_event, 
+                                 HANDLE hProcess, 
+                                 apr_file_t *child_in)
 {
     apr_status_t rv;
     HANDLE hScore;
@@ -1475,6 +1488,18 @@ static int send_handles_to_child(apr_pool_t *p, HANDLE child_exit_event, HANDLE 
     HANDLE hCurrentProcess = GetCurrentProcess();
     DWORD BytesWritten;
 
+    if (!DuplicateHandle(hCurrentProcess, child_ready_event, hProcess, &hDup,
+        EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, 0)) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Parent: Unable to duplicate the ready event handle for the child");
+        return -1;
+    }
+    if ((rv = apr_file_write_full(child_in, &hDup, sizeof(hDup), &BytesWritten))
+            != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                     "Parent: Unable to send the exit event handle to the child");
+        return -1;
+    }
     if (!DuplicateHandle(hCurrentProcess, child_exit_event, hProcess, &hDup,
                          EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, 0)) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
@@ -1487,7 +1512,6 @@ static int send_handles_to_child(apr_pool_t *p, HANDLE child_exit_event, HANDLE 
                      "Parent: Unable to send the exit event handle to the child");
         return -1;
     }
-
     if ((rv = apr_os_shm_get(&hScore, ap_scoreboard_shm)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
                      "Parent: Unable to retrieve the scoreboard handle for the child");
@@ -1568,6 +1592,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     apr_file_t *child_err;
     apr_proc_t new_child;
     HANDLE hExitEvent;
+    HANDLE hReadyEvent;
     char *cmd;
     char *cwd;
 
@@ -1649,6 +1674,15 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         }
     }
 
+    /* Create the child_ready_event */
+    hReadyEvent = CreateEvent (NULL, TRUE, FALSE, NULL);
+    if (!hReadyEvent) {
+        ap_log_error (APLOG_MARK, APLOG_CRIT, apr_get_os_error (), ap_server_conf,
+                      "Parent: Could not create ready event for child process");
+        apr_pool_destroy (ptemp);
+        return -1;
+    }
+
     /* Create the child_exit_event */
     hExitEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
     if (!hExitEvent) {
@@ -1687,7 +1721,8 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                  "Parent: Created child process %d", new_child.pid);
 
-    if (send_handles_to_child(ptemp, hExitEvent, new_child.hproc, new_child.in)) {
+    if (send_handles_to_child(ptemp, hReadyEvent, hExitEvent, 
+                              new_child.hproc, new_child.in)) {
         /*
          * This error is fatal, mop up the child and move on
          * We toggle the child's exit event to cause this child 
@@ -1705,10 +1740,8 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
      * We have already set the listening sockets noninheritable, but if 
      * WSADuplicateSocket runs before the child process initializes
      * the listeners will be inherited anyway.
-     *
-     * XXX: This is badness; needs some mutex interlocking
      */
-    Sleep(1000);
+    WaitForSingleObject (hReadyEvent, INFINITE);
 
     if (send_listeners_to_child(ptemp, new_child.pid, new_child.in)) {
         /*
@@ -2464,6 +2497,8 @@ static void winnt_child_init(apr_pool_t *pchild, struct server_rec *s)
     if (!one_process) {
         /* Set up events and the scoreboard */
         get_handles_from_parent(s);
+
+        SetEvent (ready_event);
 
         /* Set up the listeners */
         get_listeners_from_parent(s);
