@@ -180,7 +180,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 		       const char *proxyname, int proxyport)
 {
     request_rec *rp;
-    apr_pool_t *p = r->pool;
+    apr_pool_t *p = r->connection->pool;
     const char *connectname;
     int connectport = 0;
     apr_sockaddr_t *uri_addr;
@@ -220,13 +220,13 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 		 "proxy: HTTP connecting %s to %s:%d", url, uri.hostname, uri.port);
 
     /* do a DNS lookup for the destination host */
-    err = apr_sockaddr_info_get(&uri_addr, uri.hostname, APR_UNSPEC, uri.port, 0, p);
+    err = apr_sockaddr_info_get(&uri_addr, uri.hostname, APR_UNSPEC, uri.port, 0, r->server->process->pconf);
 
     /* are we connecting directly, or via a proxy? */
     if (proxyname) {
 	connectname = proxyname;
 	connectport = proxyport;
-        err = apr_sockaddr_info_get(&connect_addr, proxyname, APR_UNSPEC, proxyport, 0, p);
+        err = apr_sockaddr_info_get(&connect_addr, proxyname, APR_UNSPEC, proxyport, 0, r->server->process->pconf);
     }
     else {
 	connectname = uri.hostname;
