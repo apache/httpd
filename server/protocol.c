@@ -777,9 +777,6 @@ request_rec *ap_read_request(conn_rec *conn)
     r->request_config  = ap_create_request_config(r->pool);
     /* Must be set before we run create request hook */
 
-    conn->output_filters->prev = NULL;
-    conn->input_filters->prev = NULL;
-
     r->proto_output_filters = conn->output_filters;
     r->output_filters  = r->proto_output_filters;
     r->proto_input_filters = conn->input_filters;

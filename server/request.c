@@ -1499,7 +1499,7 @@ static request_rec *make_sub_request(const request_rec *r,
         rnew->input_filters  = r->input_filters;
         rnew->proto_input_filters  = r->proto_input_filters;
         rnew->output_filters = next_filter;
-	rnew->proto_output_filters = r->connection->output_filters;
+	rnew->proto_output_filters = r->proto_output_filters;
         ap_add_output_filter_handle(ap_subreq_core_filter_handle,
                                     NULL, rnew, rnew->connection); 
     }
