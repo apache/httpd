@@ -39,7 +39,7 @@ into <a href="mpm.html">Multi-Processing Modules</a> (MPMs).</li>
 <li>The <code>CacheNegotiatedDocs</code> directive now takes
 the argument <code>on</code> or <code>off</code>.  Existing
 instances of <code>CacheNegotiatedDocs</code> should be replaced
-with <code>CachNegotiatedDocs on</code>.</li>
+with <code>CacheNegotiatedDocs on</code>.</li>
 
 <li>The <code>ErrorDocument</code> directive no longer uses a quote at
 the beginning of the argument to indicate a text message.  Instead,
