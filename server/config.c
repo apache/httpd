@@ -83,6 +83,7 @@
 #include "http_request.h"	/* for default_handler (see invoke_handler) */
 #include "http_main.h"
 #include "http_vhost.h"
+#include "util_cfgtree.h"
 
 HOOK_STRUCT(
 	    HOOK_LINK(header_parser)
@@ -837,6 +838,9 @@ CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, cons
     const char *args, *cmd_name, *retval;
     const command_rec *cmd;
     module *mod = top_module;
+    ap_directive_t *newdir;
+    static ap_directive_t *current = NULL;
+    static ap_directive_t *curr_parent = NULL;
 
     if ((l[0] == '#') || (!l[0]))
 	return NULL;
@@ -849,6 +853,25 @@ CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, cons
     cmd_name = ap_getword_conf(parms->temp_pool, &args);
     if (*cmd_name == '\0')
 	return NULL;
+
+    newdir = ap_pcalloc(parms->pool, sizeof(ap_directive_t));
+    newdir->line_num = parms->config_file->line_number;
+    newdir->directive = ap_pstrdup(parms->pool, cmd_name);
+    newdir->args = ap_pstrdup(parms->pool, args);
+
+    if (cmd_name[0] == '<') {
+        if (cmd_name[1] != '/') {
+            current = ap_add_node(&curr_parent, current, newdir, 1);
+        }
+        else {
+            current = curr_parent;
+            curr_parent = current->parent;
+        }
+    }
+    else {
+        current = ap_add_node(&curr_parent, current, newdir, 0);
+    }
+    newdir = NULL;
 
     oldconfig = parms->context;
     parms->context = config;
