@@ -117,7 +117,7 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
      * error condition, we just report on the original error, and give up on
      * any attempt to handle the other thing "intelligently"...
      */
-    if (r->status != HTTP_OK && !ap_status_drops_connection(type)) {
+    if (r->status != HTTP_OK) {
         recursive_error = type;
 
         while (r->prev && (r->prev->status != HTTP_OK))
