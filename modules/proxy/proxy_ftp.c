@@ -1452,28 +1452,30 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     apr_table_setn(r->headers_out, "Date", dates);
     apr_table_setn(r->headers_out, "Server", ap_get_server_version());
 
+    /* set content-type */
     if (parms[0] == 'd') {
 	r->content_type = "text/html";
-	apr_table_setn(r->headers_out, "Content-Type", r->content_type);
     }
     else {
-	if (r->content_type != NULL) {
-	    apr_table_setn(r->headers_out, "Content-Type", r->content_type);
+	if (r->content_type) {
 	    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 			 "proxy: FTP: Content-Type set to %s", r->content_type);
 	}
 	else {
-	    apr_table_setn(r->headers_out, "Content-Type", ap_default_type(r));
+	    r->content_type = ap_default_type(r);
 	}
 	if (parms[0] != 'a' && size != NULL) {
 	    /* We "trust" the ftp server to really serve (size) bytes... */
 	    apr_table_setn(r->headers_out, "Content-Length", size);
-		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		 "proxy: FTP: Content-Length set to %s", size);
+	    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		         "proxy: FTP: Content-Length set to %s", size);
 	}
     }
+    apr_table_setn(r->headers_out, "Content-Type", r->content_type);
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		 "proxy: FTP: Content-Type set to %s", r->content_type);
+
+    /* set content-encoding */
     if (r->content_encoding != NULL && r->content_encoding[0] != '\0') {
 		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 			     "proxy: FTP: Content-Encoding set to %s", r->content_encoding);
