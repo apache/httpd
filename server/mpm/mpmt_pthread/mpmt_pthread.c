@@ -375,10 +375,8 @@ static void set_signals(void)
 #endif
 }
 
-static void process_child_status(ap_proc_t *abs_pid, ap_wait_t status)
+static void process_child_status(ap_proc_t *pid, ap_wait_t status)
 {
-    pid_t pid;
-    ap_get_os_proc(&pid, abs_pid);
     /* Child died... if it died due to a fatal error,
 	* we should simply bail out.
 	*/
@@ -387,7 +385,7 @@ static void process_child_status(ap_proc_t *abs_pid, ap_wait_t status)
 	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, ap_server_conf,
 			"Child %ld returned a Fatal error... \n"
 			"Apache is exiting!",
-			(long)pid);
+			(long)pid->pid);
 	exit(APEXIT_CHILDFATAL);
     }
     if (WIFSIGNALED(status)) {
@@ -405,7 +403,7 @@ static void process_child_status(ap_proc_t *abs_pid, ap_wait_t status)
 			     0, ap_server_conf,
 			     "child pid %ld exit signal %s (%d), "
 			     "possible coredump in %s",
-			     (long)pid, (WTERMSIG(status) >= NumSIG) ? "" : 
+			     (long)pid->pid, (WTERMSIG(status) >= NumSIG) ? "" :
 			     SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status),
 			     ap_coredump_dir);
 	    }
@@ -413,7 +411,8 @@ static void process_child_status(ap_proc_t *abs_pid, ap_wait_t status)
 #endif
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
 			     0, ap_server_conf,
-			     "child pid %ld exit signal %s (%d)", (long)pid,
+			     "child pid %ld exit signal %s (%d)", 
+                             (long)pid->pid,
 			     SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status));
 #ifdef WCOREDUMP
 	    }
@@ -422,7 +421,7 @@ static void process_child_status(ap_proc_t *abs_pid, ap_wait_t status)
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
 			 ap_server_conf,
 			 "child pid %ld exit signal %d",
-			 (long)pid, WTERMSIG(status));
+			 (long)pid->pid, WTERMSIG(status));
 #endif
 	}
     }
@@ -1050,13 +1049,10 @@ static void server_main_loop(int remaining_children_to_start)
 		/* Great, we've probably just lost a slot in the
 		 * scoreboard.  Somehow we don't know about this child.
 		 */
-		ap_os_proc_t actual_pid;
-
-		ap_get_os_proc(&actual_pid, pid);
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0,
 		             ap_server_conf,
 		             "long lost child came home! (pid %ld)",
-		             (long)actual_pid);
+		             (long)pid->pid);
 	    }
 	    /* Don't perform idle maintenance when a child dies,
              * only do it when there's a timeout.  Remember only a
