@@ -917,8 +917,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
 
-    /* Shutdown the listen sockets so that we don't get stuck in a blocking call. */
-    shutdown_listeners();
+    /* Shutdown the listen sockets so that we don't get stuck in a blocking call. 
+    shutdown_listeners();*/
 
     if (shutdown_pending) { /* Got an unload from the console */
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
