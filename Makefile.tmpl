@@ -198,6 +198,11 @@ install:
 	-@$(RM) $(SRC)/.apaci.install.tmp
 	-@$(RM) $(SRC)/.apaci.install.conf
 	-@if [ ".$(QUIET)" != .1 ]; then \
+		if [ ".$(TARGET)" = .httpd ]; then \
+			apachectl='apachectl'; \
+		else \
+			apachectl="$(TARGET)ctl"; \
+		fi; \
 		echo "+--------------------------------------------------------+"; \
 		echo "| You now have successfully built and installed the      |"; \
 		echo "| Apache 1.3 HTTP server. To verify that Apache actually |"; \
@@ -209,7 +214,7 @@ install:
 		echo "| and then you should be able to immediately fire up     |"; \
 		echo "| Apache the first time by running:                      |"; \
 		echo "|                                                        |"; \
-		echo "|   $(sbindir)/$(TARGET)ctl start"; \
+		echo "|   $(sbindir)/$${apachectl} start"; \
 		echo "|                                                        |"; \
 		echo "| Thanks for using Apache.       The Apache Group        |"; \
 		echo "|                                http://www.apache.org/  |"; \
@@ -290,12 +295,18 @@ install-support:
 	@echo "===> [support: Installing Apache support programs and scripts]"
 	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/ab $(root)$(sbindir)/ab
 	$(INSTALL_DATA) $(TOP)/$(SRC)/support/ab.1 $(root)$(mandir)/man1/ab.1
-	@echo "$(INSTALL_SCRIPT) $(TOP)/$(SRC)/support/apachectl[*] $(root)$(sbindir)/$(TARGET)ctl"; \
+	@if [ ".$(TARGET)" = .httpd ]; then \
+		apachectl='apachectl'; \
+	else \
+		apachectl="$(TARGET)ctl"; \
+	fi; \
+	echo "$(INSTALL_SCRIPT) $(TOP)/$(SRC)/support/apachectl[*] $(root)$(sbindir)/$${apachectl}"; \
 	sed -e 's;PIDFILE=.*;PIDFILE=$(runtimedir)/$(TARGET).pid;' \
 		-e 's;HTTPD=.*;HTTPD=$(sbindir)/$(TARGET);' \
 		< $(TOP)/$(SRC)/support/apachectl > $(TOP)/$(SRC)/.apaci.install.tmp && \
-		$(INSTALL_SCRIPT) $(TOP)/$(SRC)/.apaci.install.tmp $(root)$(sbindir)/$(TARGET)ctl
-	$(INSTALL_DATA) $(TOP)/$(SRC)/support/apachectl.1 $(root)$(mandir)/man1/$(TARGET)ctl.1
+		$(INSTALL_SCRIPT) $(TOP)/$(SRC)/.apaci.install.tmp $(root)$(sbindir)/$${apachectl}; \
+	echo "$(INSTALL_DATA) $(TOP)/$(SRC)/support/apachectl.1 $(root)$(mandir)/man1/$${apachectl}.1"; \
+	$(INSTALL_DATA) $(TOP)/$(SRC)/support/apachectl.1 $(root)$(mandir)/man1/$${apachectl}.1
 	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/htpasswd $(root)$(bindir)/htpasswd
 	$(INSTALL_DATA) $(TOP)/$(SRC)/support/htpasswd.1 $(root)$(mandir)/man1/htpasswd.1
 	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/htdigest $(root)$(bindir)/htdigest
@@ -382,6 +393,11 @@ install-config:
 		else \
 			target_conf="$$conf"; \
 		fi; \
+		if [ ".$(TARGET)" = .httpd ]; then \
+			target_prefix=""; \
+		else \
+			target_prefix="$(TARGET)_"; \
+		fi; \
 		(echo "##"; \
 		 echo "## $${conf} -- Apache HTTP server configuration file"; \
 		 echo "##"; \
@@ -396,10 +412,10 @@ install-config:
 			-e 's;logs/accept.lock;$(runtimedir)/$(TARGET).lock;' \
 			-e 's;logs/apache_runtime_status;$(runtimedir)/$(TARGET).scoreboard;' \
 			-e 's;logs/httpd.pid;$(runtimedir)/$(TARGET).pid;' \
-			-e 's;logs/access_log;$(logfiledir)/$(TARGET)-access_log;' \
-			-e 's;logs/error_log;$(logfiledir)/$(TARGET)-error_log;' \
-			-e 's;logs/referer_log;$(logfiledir)/$(TARGET)-referer_log;' \
-			-e 's;logs/agent_log;$(logfiledir)/$(TARGET)-agent_log;' \
+			-e 's;logs/access_log;$(logfiledir)/$${target_prefix}access_log;' \
+			-e 's;logs/error_log;$(logfiledir)/$${target_prefix}error_log;' \
+			-e 's;logs/referer_log;$(logfiledir)/$${target_prefix}referer_log;' \
+			-e 's;logs/agent_log;$(logfiledir)/$${target_prefix}agent_log;' \
 			-e 's;conf/magic;$(sysconfdir)/magic;' \
 			-e 's;conf/mime.types;$(sysconfdir)/mime.types;' \
 			-e 's;Group #-1;Group $(conf_group);' \
