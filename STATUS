@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/04/13 20:44:09 $]
+Last modified at [$Date: 2000/04/14 18:08:05 $]
 
 Release:
 
@@ -224,6 +224,8 @@ Documentation that needs writing:
       does not show the contents of new files until later.
 
 Available Patches:
+   * Brian Martin's patch to get mod_auth_digest working
+     <20000413170306.B23887@joe.penguincomputing.com> 04/14/2000
 
    * Mike Abbott's <mja@trudge.engr.sgi.com> patches to improve
      performance
