@@ -2364,20 +2364,30 @@ static const char *set_xbithack(cmd_parms *cmd, void *xbp, char *arg)
     return NULL;
 }
 
-static int send_parsed_file(request_rec *r)
+struct {
+    ap_thread_t *thread;
+    request_rec *r;
+} ssi_rec;
+
+void * API_THREAD_FUNC sub_send_parsed_file(void *rec)
 {
     ap_file_t *f = NULL;
+    struct ssi_rec *dumb_rec = (struct ssi_rec *)rec;
+    ap_thread_t *subthread = dumb_rec->thread
+    request_rec *r = dumb_rec->r;
     enum xbithack *state =
     (enum xbithack *) ap_get_module_config(r->per_dir_config, &includes_module);
     int errstatus;
     request_rec *parent;
 
     if (!(ap_allow_options(r) & OPT_INCLUDES)) {
-        return DECLINED;
+        ap_thread_exit(0);
+/*        return DECLINED;*/
     }
     r->allowed |= (1 << M_GET);
     if (r->method_number != M_GET) {
-        return DECLINED;
+        ap_thread_exit(0);
+/*        return DECLINED;*/
     }
     if (r->finfo.protection == 0) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
@@ -2385,7 +2395,8 @@ static int send_parsed_file(request_rec *r)
                     (r->path_info
                      ? ap_pstrcat(r->pool, r->filename, r->path_info, NULL)
                      : r->filename));
-        return HTTP_NOT_FOUND;
+        ap_thread_exit(0);
+/*        return HTTP_NOT_FOUND;*/
     }
 
     errstatus = ap_open(&f, r->filename, APR_READ, 0, r->pool);
@@ -2393,7 +2404,8 @@ static int send_parsed_file(request_rec *r)
     if (errstatus != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, errstatus, r,
                     "file permissions deny server access: %s", r->filename);
-        return HTTP_FORBIDDEN;
+        ap_thread_exit(0);
+/*        return HTTP_FORBIDDEN;*/
     }
 
     if ((*state == xbithack_full)
@@ -2406,14 +2418,16 @@ static int send_parsed_file(request_rec *r)
         ap_set_last_modified(r);
     }
     if ((errstatus = ap_meets_conditions(r)) != OK) {
-        return errstatus;
+        ap_thread_exit(0);
+/*        return errstatus;*/
     }
 
     ap_send_http_header(r);
 
     if (r->header_only) {
         ap_close(f);
-        return OK;
+        ap_thread_exit(0);
+/*        return OK;*/
     }
 
     if ((parent = ap_get_module_config(r->request_config, &includes_module))) {
@@ -2453,8 +2467,39 @@ static int send_parsed_file(request_rec *r)
 	ap_set_module_config(r->request_config, &includes_module,
 	    NESTED_INCLUDE_MAGIC);
     }
+    ap_thread_exit(0);
+/*    return OK;*/
+}
 
-    return OK;
+int send_parsed_file(request_rec *r)
+{
+    struct ssi_rec dumb_rec;
+    ap_thread_t *subthread = NULL;
+    ap_file_t *pipein = NULL;
+    ap_file_t *pipeout = NULL;
+    ap_iol *iolin;
+    ap_iol *iolout;
+    BUFF *bpipeint = NULL;
+    BUFF *bpipeout = NULL;
+
+    ap_create_pipe(&pipein, &pipeout, r->pool);
+
+    iolin = ap_create_file_iol(pipein);
+    ap_bpush_iol(bpipein, iolin);
+
+    iolout = ap_create_file_iol(pipeout);
+    ap_bpush_iol(bpipeout, iolout);
+    r->output = bpipeout;
+
+    ap_setup_input(r);
+
+    dumb_rec->thread = subthread;
+    dumb_rec->r = r;
+    ap_create_thread(&subthread, NULL, sub_send_parsed_file, dumb_rec, r->pool);
+    r->input = bpipein;
+        
+
+    return RERUN_HANDLERS;
 }
 
 static int send_shtml_file(request_rec *r)

@@ -959,6 +959,30 @@ static void get_mime_headers(request_rec *r)
     ap_overlap_tables(r->headers_in, tmp_headers, AP_OVERLAP_TABLES_MERGE);
 }
 
+ap_status_t ap_setup_input(request_rec *r)
+{
+    BUFF *temp = NULL;
+    ap_iol *iol;
+    ap_file_t *fd = NULL;
+    ap_status_t status;
+
+    if (!r->input) {
+        if ((status = ap_open(&fd, r->filename, APR_READ | APR_BINARY, 0, r->pool)) != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                         "file permissions deny server access: %s", r->filename);
+            return status;
+        }
+
+        iol = ap_create_file_iol(fd);
+        if (!iol)
+            return APR_EBADF;
+        temp = ap_bcreate(r->pool, B_RD);
+        ap_bpush_iol(temp, iol);   
+        r->input = temp;
+    }
+    return APR_SUCCESS;
+}
+
 request_rec *ap_read_request(conn_rec *conn)
 {
     request_rec *r;
@@ -1860,10 +1884,13 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     long chunk_start = 0;
     unsigned long max_body;
     ap_status_t rv;
+    BUFF *used_buff;
+
+    used_buff = r->input ? r->input : r->connection->client;
 
     if (!r->read_chunked) {     /* Content-length read */
         len_to_read = (r->remaining > bufsiz) ? bufsiz : r->remaining;
-        rv = ap_bread(r->connection->client, buffer, len_to_read, &len_read);
+        rv = ap_bread(used_buff, buffer, len_to_read, &len_read);
         if (len_read == 0) {    /* error or eof */
             if (rv != APR_SUCCESS) {
                 r->connection->keepalive = -1;
@@ -1902,7 +1929,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 
     if (r->remaining == 0) {    /* Start of new chunk */
 
-        chunk_start = getline(buffer, bufsiz, r->connection->client, 0);
+        chunk_start = getline(buffer, bufsiz, used_buff, 0);
         if ((chunk_start <= 0) || (chunk_start >= (bufsiz - 1))
             || !ap_isxdigit(*buffer)) {
             r->connection->keepalive = -1;
@@ -1943,7 +1970,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
         len_read = chunk_start;
 
         while ((bufsiz > 1) && ((len_read =
-                  getline(buffer, bufsiz, r->connection->client, 1)) > 0)) {
+                  getline(buffer, bufsiz, used_buff, 1)) > 0)) {
 
             if (len_read != (bufsiz - 1)) {
                 buffer[len_read++] = CR;        /* Restore footer line end  */
@@ -1977,7 +2004,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 
     len_to_read = (r->remaining > bufsiz) ? bufsiz : r->remaining;
 
-    (void) ap_bread(r->connection->client, buffer, len_to_read, &len_read);
+    (void) ap_bread(used_buff, buffer, len_to_read, &len_read);
     if (len_read == 0) {        /* error or eof */
         r->connection->keepalive = -1;
         return -1;
@@ -1986,8 +2013,8 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     r->remaining -= len_read;
 
     if (r->remaining == 0) {    /* End of chunk, get trailing CRLF */
-        if ((c = ap_bgetc(r->connection->client)) == CR) {
-            c = ap_bgetc(r->connection->client);
+        if ((c = ap_bgetc(used_buff)) == CR) {
+            c = ap_bgetc(used_buff);
         }
         if (c != LF) {
             r->connection->keepalive = -1;
@@ -2050,16 +2077,17 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
  */
 API_EXPORT(long) ap_send_fd(ap_file_t *fd, request_rec *r)
 {
+    BUFF *used_buff = r->output ? r->output : r->connection->client;
     long len = r->finfo.size;
 #ifdef HAVE_SENDFILE
     if (!r->chunked) {
 	ap_status_t rv;
-        ap_bsetopt(r->connection->client, BO_TIMEOUT,
+        ap_bsetopt(used_buff, BO_TIMEOUT,
                    r->connection->keptalive
                    ? &r->server->keep_alive_timeout
                    : &r->server->timeout);
-        ap_bflush(r->connection->client);
-        rv = iol_sendfile(r->connection->client->iol, 
+        ap_bflush(used_buff);
+        rv = iol_sendfile(used_buff->iol, 
                           fd,     /* The file to send */
                           NULL,   /* header and trailer iovecs */
                           0,      /* Offset in file to begin sending from */
@@ -2070,7 +2098,7 @@ API_EXPORT(long) ap_send_fd(ap_file_t *fd, request_rec *r)
                           "ap_send_fd: iol_sendfile failed.");
         }
         if (r->connection->keptalive) {
-            ap_bsetopt(r->connection->client, BO_TIMEOUT, 
+            ap_bsetopt(used_buff, BO_TIMEOUT, 
                        &r->server->timeout);
         }
     }
@@ -2091,6 +2119,7 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
     ap_ssize_t w;
     ap_ssize_t n;
     ap_status_t rv;
+    BUFF *used_buff = r->output ? r->output : r->connection->client;
 
     if (length == 0)
         return 0;
@@ -2113,7 +2142,7 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
         o = 0;
 
         while (n && !ap_is_aborted(r->connection)) {
-            rv = ap_bwrite(r->connection->client, &buf[o], n, &w);
+            rv = ap_bwrite(used_buff, &buf[o], n, &w);
             if (w > 0) {
                 total_bytes_sent += w;
                 n -= w;
@@ -2123,7 +2152,7 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
                 if (!ap_is_aborted(r->connection)) {
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
                      "client stopped connection before send body completed");
-                    ap_bsetflag(r->connection->client, B_EOUT, 1);
+                    ap_bsetflag(used_buff, B_EOUT, 1);
                     r->connection->aborted = 1;
                 }
                 break;
@@ -2152,6 +2181,7 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
     ap_ssize_t w;
     ap_ssize_t n;
     ap_status_t rv;
+    BUFF *used_buff = r->output ? r->output : r->connection->client;
 
     if (length == 0) {
         return 0;
@@ -2193,7 +2223,7 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
         
         o = 0;
         while (n && !ap_is_aborted(r->connection)) {
-            rv = ap_bwrite(r->connection->client, &buf[o], n, &w);
+            rv = ap_bwrite(used_buff, &buf[o], n, &w);
             if (w > 0) {
                 total_bytes_sent += w;
                 n -= w;
@@ -2203,7 +2233,7 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
                 if (!ap_is_aborted(r->connection)) {
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
                         "client stopped connection before rflush completed");
-                    ap_bsetflag(r->connection->client, B_EOUT, 1);
+                    ap_bsetflag(used_buff, B_EOUT, 1);
                     r->connection->aborted = 1;
                 }
                 break;
@@ -2238,6 +2268,7 @@ API_EXPORT(size_t) ap_send_mmap(ap_mmap_t *mm, request_rec *r, size_t offset,
     ap_ssize_t w;
     ap_status_t rv;
     char *addr;
+    BUFF *used_buff = r->output ? r->output : r->connection->client;
     
     if (length == 0)
         return 0;
@@ -2254,7 +2285,7 @@ API_EXPORT(size_t) ap_send_mmap(ap_mmap_t *mm, request_rec *r, size_t offset,
 
         while (n && !r->connection->aborted) {
             ap_mmap_offset((void**)&addr, mm, offset);
-            rv = ap_bwrite(r->connection->client, addr, n, &w);
+            rv = ap_bwrite(used_buff, addr, n, &w);
             if (w > 0) {
                 total_bytes_sent += w;
                 n -= w;
@@ -2268,7 +2299,7 @@ API_EXPORT(size_t) ap_send_mmap(ap_mmap_t *mm, request_rec *r, size_t offset,
                 else {
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
                      "client stopped connection before send mmap completed");
-                    ap_bsetflag(r->connection->client, B_EOUT, 1);
+                    ap_bsetflag(used_buff, B_EOUT, 1);
                     r->connection->aborted = 1;
                     break;
                 }
@@ -2283,15 +2314,16 @@ API_EXPORT(size_t) ap_send_mmap(ap_mmap_t *mm, request_rec *r, size_t offset,
 
 API_EXPORT(int) ap_rputc(int c, request_rec *r)
 {
+    BUFF *used_buff = r->output ? r->output : r->connection->client;
     if (r->connection->aborted)
         return EOF;
 
-    if (ap_bputc(c, r->connection->client) < 0) {
+    if (ap_bputc(c, used_buff) < 0) {
         if (!r->connection->aborted) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO,
-                ap_berror(r->connection->client), r,
+                ap_berror(used_buff), r,
                 "client stopped connection before rputc completed");
-            ap_bsetflag(r->connection->client, B_EOUT, 1);
+            ap_bsetflag(used_buff, B_EOUT, 1);
             r->connection->aborted = 1;
         }
         return EOF;
@@ -2303,17 +2335,18 @@ API_EXPORT(int) ap_rputc(int c, request_rec *r)
 API_EXPORT(int) ap_rputs(const char *str, request_rec *r)
 {
     int rcode;
+    BUFF *used_buff = r->output ? r->output : r->connection->client; 
 
     if (r->connection->aborted)
         return EOF;
     
-    rcode = ap_bputs(str, r->connection->client);
+    rcode = ap_bputs(str, used_buff);
     if (rcode < 0) {
         if (!r->connection->aborted) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO,
-                ap_berror(r->connection->client), r,
+                ap_berror(used_buff), r,
                 "client stopped connection before rputs completed");
-            ap_bsetflag(r->connection->client, B_EOUT, 1);
+            ap_bsetflag(used_buff, B_EOUT, 1);
             r->connection->aborted = 1;
         }
         return EOF;
@@ -2326,16 +2359,17 @@ API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
 {
     ap_ssize_t n;
     ap_status_t rv;
+    BUFF *used_buff = r->output ? r->output : r->connection->client; 
 
     if (r->connection->aborted)
         return EOF;
 
-    rv = ap_bwrite(r->connection->client, buf, nbyte, &n);
+    rv = ap_bwrite(used_buff, buf, nbyte, &n);
     if (n < 0) {
         if (!r->connection->aborted) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
                 "client stopped connection before rwrite completed");
-            ap_bsetflag(r->connection->client, B_EOUT, 1);
+            ap_bsetflag(used_buff, B_EOUT, 1);
             r->connection->aborted = 1;
         }
         return EOF;
@@ -2347,18 +2381,19 @@ API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
 API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list ap)
 {
     int n;
+    BUFF *used_buff = r->output ? r->output : r->connection->client; 
 
     if (r->connection->aborted)
         return -1;
 
-    n = ap_vbprintf(r->connection->client, fmt, ap);
+    n = ap_vbprintf(used_buff, fmt, ap);
 
     if (n < 0) {
         if (!r->connection->aborted) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO,
-                ap_berror(r->connection->client), r,
+                ap_berror(used_buff), r,
                 "client stopped connection before vrprintf completed");
-            ap_bsetflag(r->connection->client, B_EOUT, 1);
+            ap_bsetflag(used_buff, B_EOUT, 1);
             r->connection->aborted = 1;
         }
         return -1;
@@ -2371,20 +2406,21 @@ API_EXPORT(int) ap_rprintf(request_rec *r, const char *fmt,...)
 {
     va_list vlist;
     int n;
+    BUFF *used_buff = r->output ? r->output : r->connection->client; 
 
     if (r->connection->aborted)
         return -1;
 
     va_start(vlist, fmt);
-    n = ap_vbprintf(r->connection->client, fmt, vlist);
+    n = ap_vbprintf(used_buff, fmt, vlist);
     va_end(vlist);
 
     if (n < 0) {
         if (!r->connection->aborted) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO,
-                ap_berror(r->connection->client), r,
+                ap_berror(used_buff), r,
                 "client stopped connection before rprintf completed");
-            ap_bsetflag(r->connection->client, B_EOUT, 1);
+            ap_bsetflag(used_buff, B_EOUT, 1);
             r->connection->aborted = 1;
         }
         return -1;
@@ -2399,7 +2435,7 @@ API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r,...)
     ap_ssize_t i;
     int j, k;
     const char *x;
-    BUFF *fb = r->connection->client;
+    BUFF *used_buff = r->output ? r->output : r->connection->client; 
     ap_status_t rv;
 
     if (r->connection->aborted)
@@ -2411,13 +2447,13 @@ API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r,...)
         if (x == NULL)
             break;
         j = strlen(x);
-        rv = ap_bwrite(fb, x, j, &i);
+        rv = ap_bwrite(used_buff, x, j, &i);
         if (i != j) {
             va_end(args);
             if (!r->connection->aborted) {
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
                     "client stopped connection before rvputs completed");
-                ap_bsetflag(r->connection->client, B_EOUT, 1);
+                ap_bsetflag(used_buff, B_EOUT, 1);
                 r->connection->aborted = 1;
             }
             return EOF;
@@ -2433,12 +2469,13 @@ API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r,...)
 API_EXPORT(int) ap_rflush(request_rec *r)
 {
     ap_status_t rv;
+    BUFF *used_buff = r->output ? r->output : r->connection->client; 
 
-    if ((rv = ap_bflush(r->connection->client)) != APR_SUCCESS) {
+    if ((rv = ap_bflush(used_buff)) != APR_SUCCESS) {
         if (!ap_is_aborted(r->connection)) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
                 "client stopped connection before rflush completed");
-            ap_bsetflag(r->connection->client, B_EOUT, 1);
+            ap_bsetflag(used_buff, B_EOUT, 1);
             r->connection->aborted = 1;
         }
         return EOF;
