@@ -664,9 +664,8 @@ static void piped_log_maintenance(int reason, void *data, ap_wait_t status)
 	break;
     
     case OC_REASON_UNWRITABLE:
-	if (pl->pid != -1) {
-	    kill(pl->pid, SIGTERM);
-	}
+        /* We should not kill off the pipe here, since it may only be full.
+         * If it really is locked, we should kill it off manually. */
 	break;
     
     case OC_REASON_RESTART:

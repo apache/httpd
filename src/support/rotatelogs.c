@@ -13,17 +13,16 @@
 #include <fcntl.h>
 
 #define BUFSIZE        65536
+#define ERRMSGSZ       82
 #ifndef MAX_PATH
 #define MAX_PATH       1024
 #endif
 
 int main (int argc, char **argv)
 {
-    char buf[BUFSIZE], buf2[MAX_PATH];
-    time_t tLogEnd = 0;
-    time_t tRotation;
-    int nLogFD = -1;
-    int nRead;
+    char buf[BUFSIZE], buf2[MAX_PATH], errbuf[ERRMSGSZ];
+    time_t tLogEnd = 0, tRotation;
+    int nLogFD = -1, nLogFDprev = -1, nMessCount = 0, nRead, nWrite;
     char *szLogRoot;
 
     if (argc != 3) {
@@ -63,7 +62,7 @@ int main (int argc, char **argv)
             if (errno != EINTR)
                 exit(4);
         if (nLogFD >= 0 && (time(NULL) >= tLogEnd || nRead < 0)) {
-            close(nLogFD);
+            nLogFDprev = nLogFD;
             nLogFD = -1;
         }
         if (nLogFD < 0) {
@@ -72,15 +71,46 @@ int main (int argc, char **argv)
             tLogEnd = tLogStart + tRotation;
             nLogFD = open(buf2, O_WRONLY | O_CREAT | O_APPEND, 0666);
             if (nLogFD < 0) {
-                perror(buf2);
-                exit(2);
+                /* Uh-oh. Failed to open the new log file. Try to clear
+                 * the previous log file, note the lost log entries,
+                 * and keep on truckin'. */
+                if (nLogFDprev == -1) {
+                    perror(buf2);
+                    exit(2);
+                }
+                else {
+                    nLogFD = nLogFDprev;
+                    sprintf(errbuf,
+                            "Resetting log file due to error opening "
+                            "new log file. %10d messages lost.\n",
+                            nMessCount); 
+                    nWrite = strlen(errbuf);
+                    ftruncate(nLogFD, 0);
+                    write(nLogFD, errbuf, nWrite);
+                }
             }
+            else {
+                close(nLogFDprev);
+            }
+            nMessCount = 0;
         }
-        if (write(nLogFD, buf, nRead) != nRead) {
-            perror(buf2);
-            exit(5);
+        do {
+            nWrite = write(nLogFD, buf, nRead);
+        } while (nWrite < 0 && errno == EINTR);
+        if (nWrite != nRead) {
+            nMessCount++;
+            sprintf(errbuf,
+                    "Error writing to log file. "
+                    "%10d messages lost.\n",
+                    nMessCount);
+            nWrite = strlen(errbuf);
+            ftruncate(nLogFD, 0);
+            write (nLogFD, errbuf, nWrite);
+        } 
+        else {
+            nMessCount++; 
         }
     }
-    /* We never get here, but surpress the compile warning */
+    /* We never get here, but suppress the compile warning */
     return (0);
 }
