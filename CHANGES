@@ -1,5 +1,8 @@
 Changes with Apache 2.0.33-dev
 
+  *) fix bug in mod-include where it wouldn't send a unmatched
+     part if it was at the end of a bucket [Ian Holsman]
+
   *) worker MPM: Improve logging of errors with the interface between
      the listener thread and worker threads.  [Jeff Trawick]
 

@@ -429,7 +429,18 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                 return found_start_sequence(dptr, ctx, c - buf);
             }
 
-            /* False alarm... */
+            /* False alarm... 
+             * send out the unmatched part
+             */
+            if (ctx->parse_pos > 0) {
+                apr_bucket *tmp_buck;
+                tmp_buck = apr_bucket_pool_create(apr_pstrndup(ctx->pool,
+                                                               ctx->start_seq,
+                                                               ctx->parse_pos),
+                                                  ctx->parse_pos, 
+                                                  ctx->pool);
+                APR_BUCKET_INSERT_BEFORE(dptr, tmp_buck);
+            }
             ctx->state = PRE_HEAD;
         }
 
