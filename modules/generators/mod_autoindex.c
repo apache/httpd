@@ -1005,7 +1005,7 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
     }
 
     if ((header_fname != NULL)
-        && (rr = ap_sub_req_lookup_uri(header_fname , r, NULL))
+        && (rr = ap_sub_req_lookup_uri(header_fname, r, r->output_filters))
         && (rr->status == HTTP_OK)
         && (rr->filename != NULL)
         && (rr->finfo.filetype == APR_REG)) {
@@ -1099,7 +1099,7 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
      * pretend there's nothing there.
      */
     if ((readme_fname != NULL)
-        && (rr = ap_sub_req_lookup_uri(readme_fname, r, NULL))
+        && (rr = ap_sub_req_lookup_uri(readme_fname, r, r->output_filters))
         && (rr->status == HTTP_OK)
         && (rr->filename != NULL)
         && rr->finfo.filetype == APR_REG) {
