@@ -350,10 +350,16 @@ API_EXPORT(int) set_last_modified(request_rec *r, time_t mtime)
 {
     char *etag, weak_etag[MAX_STRING_LEN];
     char *if_match, *if_modified_since, *if_unmodified, *if_nonematch;
-    time_t now = time(NULL);
+    time_t now;
 
-    if (now < 0)
-	now = r->request_time;
+    /* For all static responses, it's almost certain that the file was
+     * last modified before the beginning of the request.  So there's
+     * no reason to call time(NULL) again.  But if the response has been
+     * created on demand, then it might be newer than the time the request
+     * started.  In this event we really have to call time(NULL) again
+     * so that we can give the clients the most accurate Last-Modified.
+     */
+    now = (mtime <= r->request_time) ? r->request_time : time(NULL);
 
     table_set(r->headers_out, "Last-Modified",
               gm_timestr_822(r->pool, (mtime > now) ? now : mtime));
