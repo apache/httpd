@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE translations [ <!ENTITY nbsp "&#160;"> ]>
-<!-- English revision: 1.6 -->
+<!-- English revision: 1.1 -->
 
 <!--                    -->
 <!-- Language: Japanese -->
@@ -16,6 +16,7 @@
  <!-- Used in description box for modulesynopsis -->
  <message name="description">説明</message>
  <message name="seealso">参照</message>
+ <message name="topics">トピック</message>
  <message name="status">ステータス</message>
  <message name="moduleidentifier">モジュール識別子</message>
  <message name="compatibility">互換性</message>
@@ -41,9 +42,24 @@
  <message name="summary">概要</message>
 
  <!-- Used in headers and footers -->
- <message name="apachetitle">- Apache HTTP Server</message>
- <message name="apachehttpserver">Apache HTTP Server Version 2.0</message>
+ <message name="apachetitle">- Apache HTTP サーバ</message>
+ <message name="apachehttpserver">Apache HTTP サーバ バージョン 2.0</message>
  <message name="apachedocalt">[APACHE DOCUMENTATION]</message>
- <message name="index">索引</message>
- <message name="home">ホーム</message>
+ <message name="index">索引</message> <!-- deprecated -->
+ <message name="home">ホーム</message> <!-- deprecated -->
+
+ <!-- breadcrumb links -->
+ <message name="apache">Apache</message>
+ <message name="http-server">HTTP サーバ</message>
+ <message name="documentation">ドキュメンテーション</message>
+ <message name="version">バージョン 2.0</message>
+
+ <!-- super menu -->
+ <message name="modules">モジュール</message>
+ <message name="faq">FAQ</message>
+ <message name="glossary">用語</message>
+ <message name="sitemap">サイトマップ</message>
+
+ <!-- footer line -->
+ <message name="maintainedby">Maintained by the</message>
 </messages>
