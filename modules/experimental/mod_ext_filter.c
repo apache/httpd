@@ -572,7 +572,7 @@ static apr_status_t drain_available_output(ap_filter_t *f)
 }
 
 static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data, 
-                                        apr_ssize_t len)
+                                        apr_size_t len)
 {
     ef_ctx_t *ctx = f->ctx;
     ef_dir_t *dc = ctx->dc;
@@ -670,8 +670,10 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             return rv;
         }
 
+        /* Good cast, we just tested len isn't negative */
         if (len > 0 &&
-            (rv = pass_data_to_filter(f, data, len)) != APR_SUCCESS) {
+            (rv = pass_data_to_filter(f, data, (apr_size_t)len)) 
+                != APR_SUCCESS) {
             return rv;
         }
     }
