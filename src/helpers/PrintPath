@@ -5,9 +5,8 @@
 #
 if [ $1 = "-s" ]; then
     shift
-    echo="#"
 else
-    echo="echo"
+    echo="yes"
 fi
 
 for path in `echo $PATH |
@@ -17,7 +16,9 @@ for path in `echo $PATH |
       s/:/ /g' `
 do
     if [ -x $path/$1 ]; then
-    	eval $echo $path/$1
+        if [ "$echo" = "yes" ]; then
+	    echo $path/$1
+	fi
 	exit 0
     fi
 done
