@@ -111,70 +111,48 @@ typedef struct {
 
 #define DIRINFO (APR_FINFO_MTIME|APR_FINFO_SIZE|APR_FINFO_TYPE|APR_FINFO_LINK)
 
-typedef struct _direntry
-{
+typedef struct _direntry {
     APR_RING_ENTRY(_direntry) link;
-    /* type of file/fileset: TEMP, HEADER, DATA, HEADERDATA */
-    int type;
-    /* headers file modification time */
-    apr_time_t htime;
-    /* body file modification time */
-    apr_time_t dtime;
-    /* headers file size */
-    apr_off_t hsize;
-    /* body or temporary file size */
-    apr_off_t dsize;
-    /* file/fileset base name */
-    char *basename;
+    int type;         /* type of file/fileset: TEMP, HEADER, DATA, HEADERDATA */
+    apr_time_t htime; /* headers file modification time */
+    apr_time_t dtime; /* body file modification time */
+    apr_off_t hsize;  /* headers file size */
+    apr_off_t dsize;  /* body or temporary file size */
+    char *basename;   /* file/fileset base name */
 } DIRENTRY;
 
-typedef struct _entry
-{
+typedef struct _entry {
     APR_RING_ENTRY(_entry) link;
-    /* cache entry exiration time */
-    apr_time_t expire;
-    /* cache entry time of last response to client */
-    apr_time_t response_time;
-    /* headers file modification time */
-    apr_time_t htime;
-    /* body file modification time */
-    apr_time_t dtime;
-    /* headers file size */
-    apr_off_t hsize;
-    /* body or temporary file size */
-    apr_off_t dsize;
-    /* fileset base name */
-    char *basename;
+    apr_time_t expire;        /* cache entry exiration time */
+    apr_time_t response_time; /* cache entry time of last response to client */
+    apr_time_t htime;         /* headers file modification time */
+    apr_time_t dtime;         /* body file modification time */
+    apr_off_t hsize;          /* headers file size */
+    apr_off_t dsize;          /* body or temporary file size */
+    char *basename;           /* fileset base name */
 } ENTRY;
 
-/* file deletion count for nice mode */
-static int delcount;
-/* flag: true if SIGINT or SIGTERM occurred */
-static int interrupted;
-/* flag: true means user said apache is not running */
-static int realclean;
-/* flag: true means print statistics */
-static int verbose;
-/* flag: true means nice mode is activated */
-static int benice;
-/* flag: true means dry run, don't actually delete anything */
-static int dryrun;
-/* string length of the path to the proxy directory */
-static int baselen;
-/* start time of this processing run */
-static apr_time_t now;
-/* stderr file handle */
-static apr_file_t *errfile;
-/* file size summary for deleted unsolicited files */
-static apr_off_t unsolicited;
-/* ENTRY ring anchor */
-static APR_RING_ENTRY(_entry) root;
 
+static int delcount;    /* file deletion count for nice mode */
+static int interrupted; /* flag: true if SIGINT or SIGTERM occurred */
+static int realclean;   /* flag: true means user said apache is not running */
+static int verbose;     /* flag: true means print statistics */
+static int benice;      /* flag: true means nice mode is activated */
+static int dryrun;      /* flag: true means dry run, don't actually delete
+                                 anything */
+static int baselen;     /* string length of the path to the proxy directory */
+static apr_time_t now;  /* start time of this processing run */
+
+static apr_file_t *errfile;   /* stderr file handle */
+static apr_off_t unsolicited; /* file size summary for deleted unsolicited
+                                 files */
+static APR_RING_ENTRY(_entry) root; /* ENTRY ring anchor */
+
+
+#ifdef DEBUG
 /*
  * fake delete for debug purposes
  */
-
-#ifdef DEBUG
 #define apr_file_remove fake_file_remove
 static void fake_file_remove(char *pathname, apr_pool_t *p)
 {
@@ -190,7 +168,6 @@ static void fake_file_remove(char *pathname, apr_pool_t *p)
 /*
  * called on SIGINT or SIGTERM
  */
-
 static void setterm(int unused)
 {
 #ifdef DEBUG
@@ -220,13 +197,8 @@ static int oom(int unused)
 static void printstats(apr_off_t total, apr_off_t sum, apr_off_t max,
                        apr_off_t etotal, apr_off_t entries)
 {
-    char ttype;
-    char stype;
-    char mtype;
-    char utype;
-    apr_off_t tfrag;
-    apr_off_t sfrag;
-    apr_off_t ufrag;
+    char ttype, stype, mtype, utype;
+    apr_off_t tfrag, sfrag, ufrag;
 
     if (!verbose) {
         return;
@@ -271,14 +243,15 @@ static void printstats(apr_off_t total, apr_off_t sum, apr_off_t max,
             ufrag = 1;
         }
         apr_file_printf(errfile, "unsolicited size %d.%d%c\n",
-            (int)(unsolicited), (int)(ufrag), utype);
+                        (int)(unsolicited), (int)(ufrag), utype);
      }
      apr_file_printf(errfile, "size limit %d.0%c\n", (int)(max), mtype);
-     apr_file_printf(errfile,
-         "total size was %d.%d%c, total size now %d.%d%c\n",
-         (int)(total), (int)(tfrag), ttype, (int)(sum), (int)(sfrag), stype);
+     apr_file_printf(errfile, "total size was %d.%d%c, total size now "
+                              "%d.%d%c\n",
+                     (int)(total), (int)(tfrag), ttype, (int)(sum),
+                     (int)(sfrag), stype);
      apr_file_printf(errfile, "total entries was %d, total entries now %d\n",
-         (int)(etotal), (int)(entries));
+                     (int)(etotal), (int)(entries));
 }
 
 /*
@@ -286,25 +259,25 @@ static void printstats(apr_off_t total, apr_off_t sum, apr_off_t max,
  */
 static void delete_file(char *path, char *basename, apr_pool_t *pool)
 {
-     char *nextpath;
-     apr_pool_t *p;
+    char *nextpath;
+    apr_pool_t *p;
 
-     if (dryrun) {
-         return;
-     }
+    if (dryrun) {
+        return;
+    }
 
-     /* temp pool, otherwise lots of memory could be allocated */
-     apr_pool_create(&p, pool);
-     nextpath = apr_pstrcat(p, path, "/", basename, NULL);
-     apr_file_remove(nextpath, p);
-     apr_pool_destroy(p);
+    /* temp pool, otherwise lots of memory could be allocated */
+    apr_pool_create(&p, pool);
+    nextpath = apr_pstrcat(p, path, "/", basename, NULL);
+    apr_file_remove(nextpath, p);
+    apr_pool_destroy(p);
 
-     if (benice) {
-         if (++delcount >= DELETE_NICE) {
-             apr_sleep(NICE_DELAY);
-             delcount = 0;
-         }
-     }
+    if (benice) {
+        if (++delcount >= DELETE_NICE) {
+            apr_sleep(NICE_DELAY);
+            delcount = 0;
+        }
+    }
 }
 
 /*
@@ -312,31 +285,31 @@ static void delete_file(char *path, char *basename, apr_pool_t *pool)
  */
 static void delete_entry(char *path, char *basename, apr_pool_t *pool)
 {
-     char *nextpath;
-     apr_pool_t *p;
+    char *nextpath;
+    apr_pool_t *p;
 
-     if (dryrun) {
-         return;
-     }
+    if (dryrun) {
+        return;
+    }
 
-     /* temp pool, otherwise lots of memory could be allocated */
-     apr_pool_create(&p, pool);
+    /* temp pool, otherwise lots of memory could be allocated */
+    apr_pool_create(&p, pool);
 
-     nextpath = apr_pstrcat(p, path, "/", basename, CACHE_HEADER_SUFFIX, NULL);
-     apr_file_remove(nextpath, p);
+    nextpath = apr_pstrcat(p, path, "/", basename, CACHE_HEADER_SUFFIX, NULL);
+    apr_file_remove(nextpath, p);
 
-     nextpath = apr_pstrcat(p, path, "/", basename, CACHE_DATA_SUFFIX, NULL);
-     apr_file_remove(nextpath, p);
+    nextpath = apr_pstrcat(p, path, "/", basename, CACHE_DATA_SUFFIX, NULL);
+    apr_file_remove(nextpath, p);
 
-     apr_pool_destroy(p);
+    apr_pool_destroy(p);
 
-     if (benice) {
-         delcount += 2;
-         if (delcount >= DELETE_NICE) {
-             apr_sleep(NICE_DELAY);
-             delcount = 0;
-         }
-     }
+    if (benice) {
+        delcount += 2;
+        if (delcount >= DELETE_NICE) {
+            apr_sleep(NICE_DELAY);
+            delcount = 0;
+        }
+    }
 }
 
 /*
@@ -344,154 +317,154 @@ static void delete_entry(char *path, char *basename, apr_pool_t *pool)
  */
 static int process_dir(char *path, apr_pool_t *pool)
 {
-     apr_dir_t *dir;
-     apr_pool_t *p;
-     apr_hash_t *h;
-     apr_hash_index_t *i;
-     apr_file_t *fd;
-     apr_status_t status;
-     apr_finfo_t info;
-     apr_size_t len;
-     apr_time_t current;
-     apr_time_t deviation;
-     char *nextpath;
-     char *base;
-     char *ext;
-     APR_RING_ENTRY(_direntry) anchor;
-     DIRENTRY *d;
-     DIRENTRY *t;
-     DIRENTRY *n;
-     ENTRY *e;
-     int skip;
-     int retries;
-     disk_cache_info_t disk_info;
+    apr_dir_t *dir;
+    apr_pool_t *p;
+    apr_hash_t *h;
+    apr_hash_index_t *i;
+    apr_file_t *fd;
+    apr_status_t status;
+    apr_finfo_t info;
+    apr_size_t len;
+    apr_time_t current, deviation;
+    char *nextpath, *base, *ext;
+    APR_RING_ENTRY(_direntry) anchor;
+    DIRENTRY *d, *t, *n;
+    ENTRY *e;
+    int skip, retries;
+    disk_cache_info_t disk_info;
 
-     APR_RING_INIT(&anchor, _direntry, link);
-     apr_pool_create(&p, pool);
-     h = apr_hash_make(p);
-     fd = NULL;
-     skip = 0;
-     deviation = MAXDEVIATION * APR_USEC_PER_SEC;
+    APR_RING_INIT(&anchor, _direntry, link);
+    apr_pool_create(&p, pool);
+    h = apr_hash_make(p);
+    fd = NULL;
+    skip = 0;
+    deviation = MAXDEVIATION * APR_USEC_PER_SEC;
 
-     if (apr_dir_open(&dir, path, p) != APR_SUCCESS) {
-         return 1;
-     }
+    if (apr_dir_open(&dir, path, p) != APR_SUCCESS) {
+        return 1;
+    }
 
-     while (apr_dir_read(&info, 0, dir) == APR_SUCCESS && !interrupted) {
-         /* skip first two entries which will always be '.' and '..' */
-         if (skip < 2) {
-             skip++;
-             continue;
-         }
-         d = apr_pcalloc(p, sizeof(DIRENTRY));
-         d->basename = apr_pstrcat(p, path, "/", info.name, NULL);
-         APR_RING_INSERT_TAIL(&anchor, d, _direntry, link);
-     }
+    while (apr_dir_read(&info, 0, dir) == APR_SUCCESS && !interrupted) {
+        /* skip first two entries which will always be '.' and '..' */
+        if (skip < 2) {
+            skip++;
+            continue;
+        }
+        d = apr_pcalloc(p, sizeof(DIRENTRY));
+        d->basename = apr_pstrcat(p, path, "/", info.name, NULL);
+        APR_RING_INSERT_TAIL(&anchor, d, _direntry, link);
+    }
 
-     apr_dir_close(dir);
+    apr_dir_close(dir);
 
-     if (interrupted) {
-         return 1;
-     }
+    if (interrupted) {
+        return 1;
+    }
 
-     skip = baselen + 1;
+    skip = baselen + 1;
 
-     for(d = APR_RING_FIRST(&anchor);
+    for (d = APR_RING_FIRST(&anchor);
          !interrupted && d != APR_RING_SENTINEL(&anchor, _direntry, link);
          d=n) {
-         n = APR_RING_NEXT(d, link);
-         base = strrchr(d->basename, '/');
-         if (!base++) {
-             base = d->basename;
-         }
-         ext = strchr(base, '.');
+        n = APR_RING_NEXT(d, link);
+        base = strrchr(d->basename, '/');
+        if (!base++) {
+            base = d->basename;
+        }
+        ext = strchr(base, '.');
 
-         /* there may be temporary files which may be gone before
-            processing, always skip these if not in realclean mode */
-         if (!ext && !realclean) {
-             if (!strncasecmp(base, AP_TEMPFILE_BASE, AP_TEMPFILE_BASELEN) &&
-               strlen(base) == AP_TEMPFILE_NAMELEN)
-                 continue;
-         }
+        /* there may be temporary files which may be gone before
+         * processing, always skip these if not in realclean mode
+         */
+        if (!ext && !realclean) {
+            if (!strncasecmp(base, AP_TEMPFILE_BASE, AP_TEMPFILE_BASELEN)
+                && strlen(base) == AP_TEMPFILE_NAMELEN) {
+                continue;
+            }
+        }
 
-         /* this may look strange but apr_stat() may return errno which
-            is system dependent and there may be transient failures,
-            so just blindly retry for a short while */
-         retries = STAT_ATTEMPTS;
-         status = APR_SUCCESS;
-         do
-         {
-             if (status != APR_SUCCESS) {
-                 apr_sleep(STAT_DELAY);
-             }
-             status = apr_stat(&info, d->basename, DIRINFO, p);
-         } while (status != APR_SUCCESS && !interrupted && --retries);
+        /* this may look strange but apr_stat() may return errno which
+         * is system dependent and there may be transient failures,
+         * so just blindly retry for a short while
+         */
+        retries = STAT_ATTEMPTS;
+        status = APR_SUCCESS;
+        do {
+            if (status != APR_SUCCESS) {
+                apr_sleep(STAT_DELAY);
+            }
+            status = apr_stat(&info, d->basename, DIRINFO, p);
+        } while (status != APR_SUCCESS && !interrupted && --retries);
 
-         /* what may happen here is that apache did create a file which
-            we did detect but then does delete the file before we can
-            get file information, so if we don't get any file information
-            we will ignore the file in this case */
-         if (status != APR_SUCCESS) {
-             if (!realclean && !interrupted) {
-                 continue;
-             }
-             return 1;
-         }
+        /* what may happen here is that apache did create a file which
+         * we did detect but then does delete the file before we can
+         * get file information, so if we don't get any file information
+         * we will ignore the file in this case
+         */
+        if (status != APR_SUCCESS) {
+            if (!realclean && !interrupted) {
+                continue;
+            }
+            return 1;
+        }
 
-         if (info.filetype == APR_DIR) {
-             if (process_dir(d->basename, pool)) {
-                 return 1;
-             }
-             continue;
-         }
+        if (info.filetype == APR_DIR) {
+            if (process_dir(d->basename, pool)) {
+                return 1;
+            }
+            continue;
+        }
 
-         if (info.filetype != APR_REG) {
-             continue;
-         }
+        if (info.filetype != APR_REG) {
+            continue;
+        }
 
-         if (!ext) {
-             if (!strncasecmp(base, AP_TEMPFILE_BASE, AP_TEMPFILE_BASELEN) &&
-               strlen(base) == AP_TEMPFILE_NAMELEN) {
-                 d->basename += skip;
-                 d->type = TEMP;
-                 d->dsize = info.size;
-                 apr_hash_set(h, d->basename, APR_HASH_KEY_STRING, d);
-             }
-             continue;
-         }
+        if (!ext) {
+            if (!strncasecmp(base, AP_TEMPFILE_BASE, AP_TEMPFILE_BASELEN)
+                && strlen(base) == AP_TEMPFILE_NAMELEN) {
+                d->basename += skip;
+                d->type = TEMP;
+                d->dsize = info.size;
+                apr_hash_set(h, d->basename, APR_HASH_KEY_STRING, d);
+            }
+            continue;
+        }
 
-         if (!strcasecmp(ext, CACHE_HEADER_SUFFIX)) {
-             *ext = '\0';
-             d->basename += skip;
-             /* if a user manually creates a '.header' file */
-             if (d->basename[0] == '\0')
-                 continue;
-             t = apr_hash_get(h, d->basename, APR_HASH_KEY_STRING);
-             if (t)
-                 d = t;
-             d->type |= HEADER;
-             d->htime = info.mtime;
-             d->hsize = info.size;
-             apr_hash_set(h, d->basename, APR_HASH_KEY_STRING, d);
-             continue;
-         }
+        if (!strcasecmp(ext, CACHE_HEADER_SUFFIX)) {
+            *ext = '\0';
+            d->basename += skip;
+            /* if a user manually creates a '.header' file */
+            if (d->basename[0] == '\0') {
+                continue;
+            }
+            t = apr_hash_get(h, d->basename, APR_HASH_KEY_STRING);
+            if (t) {
+                d = t;
+            }
+            d->type |= HEADER;
+            d->htime = info.mtime;
+            d->hsize = info.size;
+            apr_hash_set(h, d->basename, APR_HASH_KEY_STRING, d);
+            continue;
+        }
 
-         if (!strcasecmp(ext, CACHE_DATA_SUFFIX)) {
-             *ext = '\0';
-             d->basename += skip;
-             /* if a user manually creates a '.data' file */
-             if (d->basename[0] == '\0')
-                 continue;
-             t = apr_hash_get(h, d->basename, APR_HASH_KEY_STRING);
-             if (t) {
-                 d = t;
-             }
-             d->type |= DATA;
-             d->dtime = info.mtime;
-             d->dsize = info.size;
-             apr_hash_set(h, d->basename, APR_HASH_KEY_STRING, d);
-         }
-     }
+        if (!strcasecmp(ext, CACHE_DATA_SUFFIX)) {
+            *ext = '\0';
+            d->basename += skip;
+            /* if a user manually creates a '.data' file */
+            if (d->basename[0] == '\0') {
+                continue;
+            }
+            t = apr_hash_get(h, d->basename, APR_HASH_KEY_STRING);
+            if (t) {
+                d = t;
+            }
+            d->type |= DATA;
+            d->dtime = info.mtime;
+            d->dsize = info.size;
+            apr_hash_set(h, d->basename, APR_HASH_KEY_STRING, d);
+        }
+    }
 
     if (interrupted) {
         return 1;
@@ -500,16 +473,16 @@ static int process_dir(char *path, apr_pool_t *pool)
     path[baselen] = '\0';
 
     for (i = apr_hash_first(p, h); i && !interrupted; i = apr_hash_next(i)) {
-        apr_hash_this(i, NULL, NULL, (void **)(&d));
+         apr_hash_this(i, NULL, NULL, (void **)(&d));
         switch(d->type) {
         case HEADERDATA:
             nextpath = apr_pstrcat(p, path, "/", d->basename,
-                CACHE_HEADER_SUFFIX, NULL);
-            if (apr_file_open(&fd, nextpath, APR_READ, APR_OS_DEFAULT, p)
-              == APR_SUCCESS) {
+                                   CACHE_HEADER_SUFFIX, NULL);
+            if (apr_file_open(&fd, nextpath, APR_READ, APR_OS_DEFAULT,
+                              p) == APR_SUCCESS) {
                 len = sizeof(disk_cache_info_t);
-                if (apr_file_read_full(fd, &disk_info, len, &len)
-                  == APR_SUCCESS) {
+                if (apr_file_read_full(fd, &disk_info, len,
+                                       &len) == APR_SUCCESS) {
                     apr_file_close(fd);
                     if (disk_info.format == DISK_FORMAT_VERSION) {
                         e = apr_palloc(pool, sizeof(ENTRY));
@@ -538,8 +511,8 @@ static int process_dir(char *path, apr_pool_t *pool)
              * to the current time.
              */
             current = apr_time_now();
-            if (realclean || d->htime < current - deviation ||
-                d->htime > current + deviation) {
+            if (realclean || d->htime < current - deviation
+                || d->htime > current + deviation) {
                 delete_entry(path, d->basename, p);
                 unsolicited += d->hsize;
                 unsolicited += d->dsize;
@@ -554,21 +527,21 @@ static int process_dir(char *path, apr_pool_t *pool)
          */
         case HEADER:
             current = apr_time_now();
-            if (realclean || d->htime < current - deviation ||
-                 d->htime > current + deviation) {
-                 delete_entry(path, d->basename, p);
-                 unsolicited += d->hsize;
-             }
-             break;
+            if (realclean || d->htime < current - deviation
+                || d->htime > current + deviation) {
+                delete_entry(path, d->basename, p);
+                unsolicited += d->hsize;
+            }
+            break;
 
         case DATA:
             current = apr_time_now();
-             if (realclean || d->dtime < current - deviation ||
-               d->dtime > current + deviation) {
-                 delete_entry(path, d->basename, p);
-                 unsolicited += d->dsize;
-             }
-             break;
+            if (realclean || d->dtime < current - deviation
+                || d->dtime > current + deviation) {
+                delete_entry(path, d->basename, p);
+                unsolicited += d->dsize;
+            }
+            break;
 
         /* temp files may only be deleted in realclean mode which
          * is asserted above if a tempfile is in the hash array
@@ -587,11 +560,11 @@ static int process_dir(char *path, apr_pool_t *pool)
     apr_pool_destroy(p);
 
     if (benice) {
-         apr_sleep(NICE_DELAY);
+        apr_sleep(NICE_DELAY);
     }
 
     if (interrupted) {
-         return 1;
+        return 1;
     }
 
     return 0;
@@ -602,13 +575,8 @@ static int process_dir(char *path, apr_pool_t *pool)
  */
 static void purge(char *path, apr_pool_t *pool, apr_off_t max)
 {
-    apr_off_t sum;
-    apr_off_t total;
-    apr_off_t entries;
-    apr_off_t etotal;
-    ENTRY *e;
-    ENTRY *n;
-    ENTRY *oldest;
+    apr_off_t sum, total, entries, etotal;
+    ENTRY *e, *n, *oldest;
 
     sum = 0;
     entries = 0;
@@ -653,12 +621,12 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max)
     }
 
     if (interrupted) {
-         return;
+        return;
     }
 
     /* process all entries with are expired */
     for (e = APR_RING_FIRST(&root);
-          e != APR_RING_SENTINEL(&root, _entry, link) && !interrupted;) {
+         e != APR_RING_SENTINEL(&root, _entry, link) && !interrupted;) {
         n = APR_RING_NEXT(e, link);
         if (e->expire != APR_DATE_BAD && e->expire < now) {
             delete_entry(path, e->basename, pool);
@@ -667,8 +635,9 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max)
             entries--;
             APR_RING_REMOVE(e, link);
             if (sum <= max) {
-                if (!interrupted)
+                if (!interrupted) {
                     printstats(total, sum, max, etotal, entries);
+                }
                 return;
             }
         }
@@ -687,9 +656,9 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max)
     while (sum > max && !interrupted && !APR_RING_EMPTY(&root, _entry, link)) {
         oldest = APR_RING_FIRST(&root);
 
-        for(e = APR_RING_NEXT(oldest, link);
-            e != APR_RING_SENTINEL(&root, _entry, link);
-            e = APR_RING_NEXT(e, link)) {
+        for (e = APR_RING_NEXT(oldest, link);
+             e != APR_RING_SENTINEL(&root, _entry, link);
+             e = APR_RING_NEXT(e, link)) {
             if (e->dtime < oldest->dtime) {
                 oldest = e;
             }
@@ -757,24 +726,15 @@ static void usage(void)
 int main(int argc, const char * const argv[])
 {
     apr_off_t max;
-    apr_time_t current;
-    apr_time_t repeat;
-    apr_time_t delay;
-    apr_time_t previous;
+    apr_time_t current, repeat, delay, previous;
     apr_status_t status;
-    apr_pool_t *pool;
-    apr_pool_t *instance;
+    apr_pool_t *pool, *instance;
     apr_getopt_t *o;
     apr_finfo_t info;
-    int retries;
-    int isdaemon;
-    int limit_found;
-    int intelligent;
-    int dowork;
+    int retries, isdaemon, limit_found, intelligent, dowork;
     char opt;
     const char *arg;
-    char *proxypath;
-    char *path;
+    char *proxypath, *path;
 
     interrupted = 0;
     repeat = 0;
@@ -805,67 +765,89 @@ int main(int argc, const char * const argv[])
 
     while (1) {
         status = apr_getopt(o, "iDnvrd:l:L:p:", &opt, &arg);
-        if (status == APR_EOF)
+        if (status == APR_EOF) {
             break;
-        else if (status == APR_SUCCESS)
-          switch (opt) {
+        }
+        else if (status != APR_SUCCESS) {
+            usage();
+        }
+        else {
+            switch (opt) {
             case 'i':
-                if (intelligent)
+                if (intelligent) {
                     usage();
+                }
                 intelligent = 1;
                 break;
+
             case 'D':
-                if (dryrun)
+                if (dryrun) {
                     usage();
-                 dryrun = 1;
-               break;
+                }
+                dryrun = 1;
+                break;
+
             case 'n':
-                if (benice)
+                if (benice) {
                     usage();
+                }
                 benice = 1;
-                 break;
-           case 'v':
-                 if (verbose)
+                break;
+
+            case 'v':
+                if (verbose) {
                     usage();
+                }
                 verbose = 1;
-               break;
-             case 'r':
-               if (realclean)
-                     usage();
+                break;
+
+            case 'r':
+                if (realclean) {
+                    usage();
+                }
                 realclean = 1;
                 break;
+
             case 'd':
-                if (isdaemon)
+                if (isdaemon) {
                     usage();
+                }
                 isdaemon = 1;
                 repeat = apr_atoi64(arg);
                 repeat *= SECS_PER_MIN;
                 repeat *= APR_USEC_PER_SEC;
                 break;
+
             case 'l':
-                if (limit_found)
+                if (limit_found) {
                     usage();
+                }
                 limit_found = 1;
                 max = apr_atoi64(arg);
                 max *= KBYTE;
                 break;
+
             case 'L':
-                if (limit_found)
+                if (limit_found) {
                     usage();
+                }
                 limit_found = 1;
                 max = apr_atoi64(arg);
                 max *= MBYTE;
-               break;
-             case 'p':
-                if (proxypath)
-                    usage();
-               proxypath = apr_pstrdup(pool, arg);
-                 if (apr_filepath_set(proxypath, pool) != APR_SUCCESS)
-                    usage();
                 break;
-        }
-        else usage();
-    }
+
+            case 'p':
+                if (proxypath) {
+                    usage();
+                }
+                proxypath = apr_pstrdup(pool, arg);
+                if (apr_filepath_set(proxypath, pool) != APR_SUCCESS) {
+                    usage();
+                }
+                break;
+            } /* switch */
+        } /* else */
+    } /* while */
 
     if (o->ind != argc) {
          usage();
@@ -895,8 +877,7 @@ int main(int argc, const char * const argv[])
     }
 #endif
 
-    do
-    {
+    do {
         apr_pool_create(&instance, pool);
 
         now = apr_time_now();
@@ -913,12 +894,14 @@ int main(int argc, const char * const argv[])
         case 1:
             retries = STAT_ATTEMPTS;
             status = APR_SUCCESS;
-            do
-            {
-                if (status != APR_SUCCESS)
+
+            do {
+                if (status != APR_SUCCESS) {
                     apr_sleep(STAT_DELAY);
-                 status = apr_stat(&info, path, APR_FINFO_MTIME, instance);
+                }
+                status = apr_stat(&info, path, APR_FINFO_MTIME, instance);
             } while (status != APR_SUCCESS && !interrupted && --retries);
+
             if (status == APR_SUCCESS) {
                 previous = info.mtime;
                 intelligent = 2;
@@ -929,16 +912,19 @@ int main(int argc, const char * const argv[])
         case 2:
             retries = STAT_ATTEMPTS;
             status = APR_SUCCESS;
-            do
-            {
-                if (status != APR_SUCCESS)
+
+            do {
+                if (status != APR_SUCCESS) {
                     apr_sleep(STAT_DELAY);
+                }
                 status = apr_stat(&info, path, APR_FINFO_MTIME, instance);
-           } while (status != APR_SUCCESS && !interrupted && --retries);
+            } while (status != APR_SUCCESS && !interrupted && --retries);
+
             if (status == APR_SUCCESS) {
-                if (previous != info.mtime)
-                     dowork = 1;
-               previous = info.mtime;
+                if (previous != info.mtime) {
+                    dowork = 1;
+                }
+                previous = info.mtime;
                 break;
             }
             intelligent = 1;
@@ -948,28 +934,31 @@ int main(int argc, const char * const argv[])
 
         if (dowork && !interrupted) {
             if (!process_dir(path, instance) && !interrupted) {
-               purge(path, instance, max);
-            } else if (!isdaemon && !interrupted) {
+                purge(path, instance, max);
+            }
+            else if (!isdaemon && !interrupted) {
                 apr_file_printf(errfile,
                      "An error occurred, cache cleaning aborted.\n");
                 return 1;
-           }
+            }
 
-           if (intelligent && !interrupted) {
+            if (intelligent && !interrupted) {
                 retries = STAT_ATTEMPTS;
                 status = APR_SUCCESS;
-                do
-                {
-                    if (status != APR_SUCCESS)
+                do {
+                    if (status != APR_SUCCESS) {
                         apr_sleep(STAT_DELAY);
+                    }
                     status = apr_stat(&info, path, APR_FINFO_MTIME, instance);
                 } while (status != APR_SUCCESS && !interrupted && --retries);
+
                 if (status == APR_SUCCESS) {
                     previous = info.mtime;
                     intelligent = 2;
                 }
-                else
+                else {
                     intelligent = 1;
+                }
             }
         }
 
@@ -978,24 +967,27 @@ int main(int argc, const char * const argv[])
         current = apr_time_now();
         if (current < now) {
             delay = repeat;
-        } else if (current - now >= repeat) {
+        }
+        else if (current - now >= repeat) {
             delay = repeat;
-        } else {
+        }
+        else {
             delay = now + repeat - current;
         }
 
         /* we can't sleep the whole delay time here apiece as this is racy
          * with respect to interrupt delivery - think about what happens
          * if we have tested for an interrupt, then get scheduled
-         *  before the apr_sleep() call and while waiting for the cpu
-         *  we do get an interrupt
+         * before the apr_sleep() call and while waiting for the cpu
+         * we do get an interrupt
          */
         if (isdaemon) {
             while (delay && !interrupted) {
                 if (delay > APR_USEC_PER_SEC) {
                     apr_sleep(APR_USEC_PER_SEC);
                     delay -= APR_USEC_PER_SEC;
-                } else {
+                }
+                else {
                     apr_sleep(delay);
                     delay = 0;
                 }
