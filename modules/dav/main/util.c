@@ -1480,35 +1480,48 @@ dav_error * dav_get_locktoken_list(request_rec *r, dav_locktoken_list **ltl)
     return NULL;
 }
 
-/* dav_get_target_selector:
- *
- * Returns any Target-Selector header in a request
- * (used by versioning clients)
- */
-const char *dav_get_target_selector(request_rec *r)
+static const char *strip_white(const char *s, apr_pool_t *pool)
 {
+    apr_size_t idx;
+
+    /* trim leading whitespace */
+    while (apr_isspace(*s))     /* assume: return false for '\0' */
+        ++s;
+
+    /* trim trailing whitespace */
+    idx = strlen(s) - 1;
+    if (apr_isspace(s[idx])) {
+        char *s2 = apr_pstrdup(pool, s);
+
+        while (apr_isspace(s2[idx]) && idx > 0)
+            --idx;
+        s2[idx + 1] = '\0';
+        return s2;
+    }
+
+    return s;
+}
+
+/* see mod_dav.h for docco */
+const char *dav_get_target_selector(request_rec *r, const ap_xml_elem *version)
+{
+    if (version != NULL) {
+        /* DAV:version contains a DAV:href element. find it. */
+        if ((version = dav_find_child(version, "href")) == NULL) {
+            /* ### this should generate an error... fallthru for now */
+        }
+        else {
+            /* return the contents of the DAV:href element */
+            /* ### this presumes no child elements */
+            return strip_white(version->first_cdata.first->text, r->pool);
+        }
+    }
+
+    /* no element. see if a Target-Selector header was provided. */
     return apr_table_get(r->headers_in, "Target-Selector");
 }
 
-/* Ensure that a resource is writable. If there is no versioning
- * provider, then this is essentially a no-op. Versioning repositories
- * require explicit resource creation and checkout before they can
- * be written to. If a new resource is to be created, or an existing
- * resource deleted, the parent collection must be checked out as well.
- *
- * Set the parent_only flag to only make the parent collection writable.
- * Otherwise, both parent and child are made writable as needed. If the
- * child does not exist, then a new versioned resource is created and
- * checked out.
- *
- * The parent_resource and parent_was_writable arguments are optional
- * (i.e. they may be NULL). If parent_only is set, then the
- * resource_existed and resource_was_writable arguments are ignored.
- *
- * The previous states of the resources are returned, so they can be
- * restored after the operation completes (see
- * dav_revert_resource_writability())
- */
+/* see mod_dav.h for docco */
 dav_error *dav_ensure_resource_writable(request_rec *r,
 					  dav_resource *resource,
                                           int parent_only,
@@ -1522,6 +1535,7 @@ dav_error *dav_ensure_resource_writable(request_rec *r,
     const char *body;
     int auto_version;
     dav_error *err;
+    const char *location;
 
     if (parent_resource != NULL)
         *parent_resource = NULL;
@@ -1537,7 +1551,7 @@ dav_error *dav_ensure_resource_writable(request_rec *r,
     /* if a Target-Selector header is present, then the client knows about
      * versioning, so it should not be relying on implicit versioning
      */
-    auto_version = (dav_get_target_selector(r) == NULL);
+    auto_version = (dav_get_target_selector(r, NULL) == NULL);
 
     /* check parent resource if requested or if resource must be created */
     if (!resource->exists || parent_only) {
@@ -1577,13 +1591,15 @@ dav_error *dav_ensure_resource_writable(request_rec *r,
 
 	/* parent must be checked out */
 	if (!parent->working) {
-	    if ((err = (*vsn_hooks->checkout)(parent)) != NULL) {
+	    if ((err = (*vsn_hooks->checkout)(parent, &location)) != NULL) {
 		body = apr_psprintf(r->pool,
 				   "Unable to checkout parent collection. "
 				   "Cannot create resource %s.",
 				   ap_escape_html(r->pool, resource->uri));
 		return dav_push_error(r->pool, HTTP_CONFLICT, 0, body, err);
 	    }
+
+            /* ### what to do with the location? */
 	}
 
 	/* if not just checking parent, create new child resource */
@@ -1608,26 +1624,20 @@ dav_error *dav_ensure_resource_writable(request_rec *r,
 
     /* if not just checking parent, make sure child resource is checked out */
     if (!parent_only && !resource->working) {
-	if ((err = (*vsn_hooks->checkout)(resource)) != NULL) {
+	if ((err = (*vsn_hooks->checkout)(resource, &location)) != NULL) {
 	    body = apr_psprintf(r->pool,
 			       "Unable to checkout resource %s.",
 			       ap_escape_html(r->pool, resource->uri));
 	    return dav_push_error(r->pool, HTTP_CONFLICT, 0, body, err);
 	}
+
+        /* ### what to do with the location? */
     }
 
     return NULL;
 }
 
-/* Revert the writability of resources back to what they were
- * before they were modified. If undo == 0, then the resource
- * modifications are maintained (i.e. they are checked in).
- * If undo != 0, then resource modifications are discarded
- * (i.e. they are unchecked out).
- *
- * The resource and parent_resource arguments are optional
- * (i.e. they may be NULL).
- */
+/* see mod_dav.h for docco */
 dav_error *dav_revert_resource_writability(request_rec *r,
 					   dav_resource *resource,
 					   dav_resource *parent_resource,
