@@ -126,7 +126,7 @@ EOF
 	--with-suexec-bin=%{_sbindir}/suexec \
 	--with-suexec-uidmin=500 --with-suexec-gidmin=500 \
         --with-devrandom \
-        --with-ldap --enable-ldap --enable-auth-ldap \
+        --with-ldap --enable-ldap --enable-authnz-ldap \
         --enable-cache --enable-disk-cache --enable-mem-cache \
 	--enable-ssl --with-ssl \
 	--enable-deflate --enable-cgid \
