@@ -761,9 +761,10 @@ AP_DECLARE(void) ap_note_auth_failure(request_rec *r)
         else if (!strcasecmp(type, "Digest"))
             ap_note_digest_auth_failure(r);
     }
-    /* XXX: else there is no AuthType configured
-     *      should we log an error or something ?
-     */
+    else {
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
+                      0, r, "need AuthType to note auth failure: %s", r->uri);
+    }
 }
 
 AP_DECLARE(void) ap_note_basic_auth_failure(request_rec *r)
