@@ -1,5 +1,5 @@
 
 LTLIBRARY_NAME    = libos.la
-LTLIBRARY_SOURCES = os-inline.c util_os2.c
+LTLIBRARY_SOURCES = util_os2.c
 
 include $(top_srcdir)/build/ltlib.mk
