@@ -707,7 +707,7 @@ static char *terminate_description(autoindex_config_rec * d, char *desc,
     register int x;
 
     if (autoindex_opts & SUPPRESS_LAST_MOD)
-	maxsize += 17;
+	maxsize += 19;
     if (autoindex_opts & SUPPRESS_SIZE)
 	maxsize += 7;
 
@@ -800,7 +800,7 @@ static void output_directories(struct ent **ar, int n,
 	if (!(autoindex_opts & SUPPRESS_LAST_MOD)) {
             emit_link(r, "Last modified", K_LAST_MOD, keyid, direction,
                       static_columns);
-	    rputs("     ", r);
+	    rputs("       ", r);
 	}
 	if (!(autoindex_opts & SUPPRESS_SIZE)) {
             emit_link(r, "Size", K_SIZE, keyid, direction, static_columns);
@@ -881,7 +881,7 @@ static void output_directories(struct ent **ar, int n,
 		if (ar[x]->lm != -1) {
 		    char time_str[MAX_STRING_LEN];
 		    struct tm *ts = localtime(&ar[x]->lm);
-		    strftime(time_str, MAX_STRING_LEN, "%d-%b-%y %H:%M  ", ts);
+		    strftime(time_str, MAX_STRING_LEN, "%d-%b-%Y %H:%M  ", ts);
 		    rputs(time_str, r);
 		}
 		else {

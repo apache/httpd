@@ -104,6 +104,11 @@ enhancements, <a href="http://www.apache.org/dist/">Apache
  clicking on a column title will now sort the listing in
  order by the values in that column.  Selecting the column
  repeatedly will toggle between ascending and descending order.
+ This feature can be disabled with the <SAMP>SuppressColumnSorting</SAMP>
+ <A
+  HREF="mod/mod_autoindex.html#indexoptions"
+ >IndexOptions</A>
+ keyword.
 </LI>
 <LI><A
      HREF="mod/mod_autoindex.html#indexoptions"
@@ -433,6 +438,20 @@ Allows additional information to be listed along with a specified module.
 
     </ul>
 
+ <LI><STRONG>Year-2000 Improvements</STRONG>
+  <BR>
+  The default <SAMP>timefmt</SAMP> string used by
+  <A
+   HREF="mod/mod_include.html"
+  ><SAMP>mod_include</SAMP></A>
+  has been modified todisplay the year using four digits rather than the
+  two-digit format used previously.  The
+  <A
+   HREF="mod/mod_autoindex.html"
+  ><SAMP>mod_autoindex</SAMP></A>
+  module has also been modified to display years using four digits in
+  FancyIndexed directory listings.
+ </LI>
 </ul>
 
 <!--#include virtual="footer.html" -->

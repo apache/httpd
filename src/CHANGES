@@ -1,5 +1,8 @@
 Changes with Apache 1.3b3
 
+  *) Change mod_include and mod_autoindex to use Y2K-safe date formats
+     by default.  [Ken Coar]
+
   *) Add a "SuppressColumnSorting" option to the IndexOptions list,
      which will keep the column heading from beling links for sorting
      the display.  [Ken Coar, suggested by Brian Tiemann <btman@pacific.net>]
