@@ -296,7 +296,6 @@ static int spot_cookie(request_rec *r)
 						&usertrack_module);
     const char *cookie_header;
     regmatch_t regm[NUM_SUBS];
-    int i;
 
     if (!dcfg->enabled) {
         return DECLINED;

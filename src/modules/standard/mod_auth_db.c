@@ -172,7 +172,11 @@ static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile)
 
 #if defined(DB3) || defined(DB4)
     if (   db_create(&f, NULL, 0) != 0 
+#if DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR > 0
+        || f->open(f, NULL, auth_dbpwfile, NULL, DB_HASH, DB_RDONLY, 0664) != 0) {
+#else
         || f->open(f, auth_dbpwfile, NULL, DB_HASH, DB_RDONLY, 0664) != 0) {
+#endif
 #elif defined(DB2)
     if (db_open(auth_dbpwfile, DB_HASH, DB_RDONLY, 0664, NULL, NULL, &f) != 0) {
 #else
