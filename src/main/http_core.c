@@ -3880,8 +3880,8 @@ static int default_handler(request_rec *r)
 		     */
 		    if (fseek(f, offset, SEEK_SET)) {
 			ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-			      "Failed to fseek for byterange (%ld, %ld)",
-			      offset, length);
+			      "Failed to fseek for byterange (%ld, %ld): %s",
+			      offset, length, r->filename);
 		    }
 		    else {
 			ap_send_fd_length(f, r, length);
