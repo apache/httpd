@@ -435,7 +435,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     {
                         ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0,
                                      pServ,
-                                     "Init: Unable read passphrase "
+                                     "Init: Unable to read pass phrase "
                                      "[Hint: key introduced or changed "
                                      "before restart?]");
                         ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, pServ);
