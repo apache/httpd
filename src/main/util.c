@@ -1171,7 +1171,7 @@ API_EXPORT(char *) escape_path_segment(pool *p, const char *segment)
     char *copy = palloc(p, 3 * strlen(segment) + 1);
     const unsigned char *s = (const unsigned char *)segment;
     unsigned char *d = (unsigned char *)copy;
-    unsigned c;
+    unsigned char c;
 
     while ((c = *s)) {
 	if (TEST_CHAR(c, T_ESCAPE_PATH_SEGMENT)) {
@@ -1191,7 +1191,7 @@ API_EXPORT(char *) os_escape_path(pool *p, const char *path, int partial)
     char *copy = palloc(p, 3 * strlen(path) + 3);
     const unsigned char *s = (const unsigned char *)path;
     unsigned char *d = (unsigned char *)copy;
-    unsigned c;
+    unsigned char c;
 
     if (!partial) {
 	char *colon = strchr(path, ':');
