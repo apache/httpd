@@ -3409,7 +3409,7 @@ static int rewritemap_program_child(ap_context_t *p, char *progname,
     ap_block_alarms();
 
 #ifdef SIGHUP
-    signal(SIGHUP, SIG_IGN);
+    ap_signal(SIGHUP, SIG_IGN);
 #endif
 
     

@@ -1142,28 +1142,6 @@ int setrlimit(int, struct rlimit *);
 #define INADDR_NONE ((unsigned long) -1)
 #endif
 
-#if 0
-/* This stuff taken care of in APR XXXXX */
-/*
- * Replace signal function with sigaction equivalent
- */
-#ifndef NO_USE_SIGACTION
-typedef void Sigfunc(int);
-
-#if defined(SIG_IGN) && !defined(SIG_ERR)
-#define SIG_ERR ((Sigfunc *)-1)
-#endif
-
-/*
- * For some strange reason, QNX defines signal to signal. Eliminate it.
- */
-#ifdef signal
-#undef signal
-#endif
-#define signal(s,f)	ap_signal(s,f)
-Sigfunc *signal(int signo, Sigfunc * func);
-#endif
-#endif
 #include <setjmp.h>
 
 #if defined(USE_LONGJMP)
