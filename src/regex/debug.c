@@ -6,6 +6,7 @@
 #include <sys/types.h>
 
 #include "hsregex.h"
+#include "ap_ctype.h"
 #include "utils.h"
 #include "regex2.h"
 #include "debug.ih"

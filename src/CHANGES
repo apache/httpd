@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) Fix `make r' test procedure in src/regex/: ap_isprint was not found.
+     [Ralf S. Engelschall] PR#4561, PR#4562
+
   *) OS/2: Fix problem with accept lock semaphores where server would die with
      "OS2SEM: Error 105 getting accept lock. Exiting!" 
      [Brian Havard] PR#4505
