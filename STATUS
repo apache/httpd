@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/11/06 08:10:35 $]
+Last modified at [$Date: 2004/11/06 08:28:24 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -35,7 +35,7 @@ RELEASE SHOWSTOPPERS:
     * Convert httpd-2.x to Subversion.  Yes, we've voted on this a billion
       times on dev@httpd, but let's make this one official.  Majority rules.
 
-      +1: jerenkrantz
+      +1: jerenkrantz, pquerna
 
     * Handling of non-trailing / config by non-default handler is broken
       http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105451701628081&w=2
@@ -50,7 +50,7 @@ CURRENT VOTES:
     * Promote mod_cache from experimental to non-experimental
       status (keep issues noted below in EXPERIMENTAL MODULES as
       items to be addressed as a supported module).
-      +1: jerenkrantz
+      +1: jerenkrantz, pquerna
       +0: jim, bnicholes
       -1: stoddard
           There are a couple of problems that need to be resolved
@@ -125,6 +125,8 @@ CURRENT VOTES:
       +0:   BrianP, Aaron (mutex contention is looking better with the
             latest code, let's continue tuning and testing), rederpj, jim
       -0:   Lars
+      
+      pquerna: Do we want to change this for 2.2?
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
