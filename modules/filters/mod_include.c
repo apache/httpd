@@ -658,7 +658,7 @@ static const char *get_include_var(const char *var, include_ctx_t *ctx)
     request_rec *r = ctx->intern->r;
 
     if (apr_isdigit(*var) && !var[1]) {
-        int idx = *var - '0';
+        apr_size_t idx = *var - '0';
         backref_t *re = ctx->intern->re;
 
         /* Handle $0 .. $9 from the last regex evaluated.
