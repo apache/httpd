@@ -1,3 +1,23 @@
+  *) Various fixes to mod_auth_digest:
+      - Reworked MD5-sess stuff. The semantics of userpw_hash() have been
+	changed for it to return
+            MD5(MD5(username ":" realm ":" password) ":" nonce ":" cnonce)
+	instead of just
+	    MD5(username ":" realm ":" password)
+	because one of the points of MD5-sess is to allow the info to be
+	retrieved from login servers so that the server itself never has
+	the full auth info (after all, MD5(u/r/p) is equivalent to the
+	password for auth purposes).
+      - In order to allow for servers to share a realm the server-name
+	and port have been removed from the nonce-hash. Even so, sharing
+	the realm has problems - see the new comments at the beginning.
+      - Fixed uri-comparison when request-uri isn't identical to uri in
+	Authorization header (some fields were not being initialized).
+      - Handle non-FQDN's (i.e. simple hostnames) in uri parameter in
+	the Authorization header. Thanks to Joe Orton
+	<joe@orton.demon.co.uk> for pointing out the problem.
+      [Ronald Tschalär]
+
   *) Add case_preserved_filename field to the request_rec structure.
      On systems with case insensitive file systems (Windows, OS/2, etc.), 
      r->filename is case canonicalized (folded to either lower or upper 
