@@ -1,5 +1,9 @@
 Changes with Apache 2.0.46
 
+  *) mod_negotiation: Introduce "prefer-language" environment variable,
+     which allows to influence the negotiation process on request basis
+     to prefer a certain language.  [André Malo]
+
   *) Fix for mod_dav.  Call the 'can_be_activity' callback, if provided,
      when a MKACTIVITY request comes in.
      [Ben Collins-Sussman <sussman@collab.net>]
