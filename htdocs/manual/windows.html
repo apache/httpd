@@ -155,13 +155,13 @@ There are two ways you can run Apache:
 </UL>
 
 To start Apache as a service, you first need to install it as a
-service. Run the "Install Apache as Service" option from the Start
-menu. Once this is done you can start Apache by opening the Services
-window (in the Control Panel), selecting Apache, then clicking on
-Start. Apache will now be running in the background. You can later
-stop Apache by clicking on Stop. As an alternative to using the
-Services window, you can start and stop Apache from the control line
-with
+service. Run the "Install Apache as Service (NT only)" option from the
+Start menu. Once this is done you can start Apache by opening the
+Services window (in the Control Panel), selecting Apache, then
+clicking on Start. Apache will now be running in the background. You
+can later stop Apache by clicking on Stop. As an alternative to using
+the Services window, you can start and stop Apache from the control
+line with
 
 <PRE>
   NET START APACHE
@@ -169,12 +169,14 @@ with
 </PRE>
 
 To run Apache from a console window, select the "Start Apache as
-console app" option from the Start menu. This will open a console
+console app" option from the Start menu (in Apache 1.3.4 and earlier,
+this option was called "Apache Server"). This will open a console
 window and start Apache running inside it. The window will remain
 active until you stop Apache. To stop Apache running, either select
-the "Shutdown Apache console app" icon option from the Start menu, or
-see <A HREF="#signal"><SAMP>Signalling Apache when Running</SAMP></A>
-for how to control Apache from the command line.
+the "Shutdown Apache console app" icon option from the Start menu
+(this is not available in Apache 1.3.4 or earlier), or see <A
+HREF="#signal">Signalling Apache when Running</A> for how
+to control Apache from the command line.
 
 <P>
 
