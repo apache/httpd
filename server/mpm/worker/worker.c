@@ -750,9 +750,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
     kill(ap_my_pid, SIGTERM);
 
-/* Unsure if this can be safely uncommented. -aaron
     apr_thread_exit(thd, APR_SUCCESS);
-*/
     return NULL;
 }
 
@@ -789,8 +787,7 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
     worker_thread_count--;
     apr_thread_mutex_unlock(worker_thread_count_mutex);
 
-    rv = APR_SUCCESS;
-    apr_thread_exit(thd, &rv);
+    apr_thread_exit(thd, APR_SUCCESS);
     return NULL;
 }
 
@@ -879,8 +876,7 @@ static void *start_threads(apr_thread_t *thd, void *dummy)
      *  "life_status" is almost right, but it's in the worker's structure, and 
      *  the name could be clearer.   gla
      */
-    rv = APR_SUCCESS;
-    apr_thread_exit(thd, &rv);
+    apr_thread_exit(thd, APR_SUCCESS);
     return NULL;
 }
 
