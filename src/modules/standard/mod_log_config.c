@@ -397,6 +397,9 @@ static const char *log_request_time(request_rec *r, char *a)
     return ap_pstrdup(r->pool, tstr);
 }
 
+/* XXXX: bullshit. needs to be done using gettimeofday() when possible
+ * and not this time, as it is the time the LOGging hapens.
+ */
 static const char *log_request_duration(request_rec *r, char *a)
 {
     return ap_psprintf(r->pool, "%ld", time(NULL) - r->request_time);
