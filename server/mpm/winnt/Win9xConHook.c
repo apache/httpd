@@ -80,7 +80,8 @@
  * registered HandlerRoutine.
  */
 
-#define DBG 1
+/* #define DBG 1
+ */
 
 #include <windows.h>
 
@@ -96,10 +97,12 @@ static BOOL is_subclassed = 0;
 
 static HMODULE hmodHook = NULL;
 static HHOOK hhkGetMessage;
-//static HHOOK hhkCallWndProc;
+static HHOOK hhkCallWndProc;
 
 static LPCTSTR origwndprop = NULL;
 static LPCTSTR hookwndprop = NULL;
+
+static HWND monitor_hwnd = NULL;
 
 #ifdef DBG
 static VOID DbgPrintf(LPTSTR fmt, ...);
@@ -107,6 +110,36 @@ static VOID DbgPrintf(LPTSTR fmt, ...);
 
 static BOOL CALLBACK EnumttyWindow(HWND wnd, LPARAM retwnd);
 
+LRESULT __declspec(dllexport) WINAPI RegisterWindows9xService(BOOL is_service)
+{
+    static BOOL is_registered = FALSE;
+    HINSTANCE hkernel;
+    DWORD (WINAPI *register_service_process)(DWORD, DWORD);
+    BOOL rv;
+
+    if (is_service == is_registered)
+        return 1;
+
+    /* Obtain a handle to the kernel library */
+    hkernel = LoadLibrary("KERNEL32.DLL");
+    if (!hkernel)
+        return 0;
+    
+    /* Find the RegisterServiceProcess function */
+    register_service_process = (DWORD (WINAPI *)(DWORD, DWORD))
+                     GetProcAddress(hkernel, "RegisterServiceProcess");
+    if (register_service_process == NULL) {
+        FreeLibrary(hkernel);
+        return 0;
+    }
+	
+    /* Register this process as a service */
+    rv = register_service_process(0, is_service != FALSE);
+    
+    /* Unload the kernel library */
+    FreeLibrary(hkernel);
+    return rv;
+}
 
 BOOL __declspec(dllexport) APIENTRY DllMain(PVOID hModule, ULONG ulReason, PCONTEXT pctx)
 {
@@ -130,6 +163,7 @@ BOOL __declspec(dllexport) APIENTRY DllMain(PVOID hModule, ULONG ulReason, PCONT
                 SetWindowLong(hwtty, GWL_WNDPROC, (LONG)origproc);
                 RemoveProp(hwtty, origwndprop);
             }
+            RegisterWindows9xService(FALSE);
         }
         EnumWindows(EnumttyWindow, (LPARAM)&parent);
         if (parent) {
@@ -142,6 +176,10 @@ BOOL __declspec(dllexport) APIENTRY DllMain(PVOID hModule, ULONG ulReason, PCONT
             if (hhkGetMessage) {
                 UnhookWindowsHookEx(hhkGetMessage);
                 hhkGetMessage = NULL;
+            }
+            if (hhkCallWndProc) {
+                UnhookWindowsHookEx(hhkCallWndProc);
+                hhkCallWndProc = NULL;
             }
             FreeLibrary(hmodHook);
             hmodHook = NULL;
@@ -157,6 +195,7 @@ typedef struct {
     PHANDLER_ROUTINE phandler;
     HINSTANCE instance;
     HWND parent;
+    char *name;
 } tty_info;
 
 
@@ -180,13 +219,15 @@ LRESULT CALLBACK ttyConsoleCtrlWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 #ifdef DBG
         DbgPrintf("S Created ttyConHookChild:%8.8x\r\n", hwnd);
 #endif
-        SetProp(((tty_info*)tty)->parent, hookwndprop, hwnd);
+        if (((tty_info*)tty)->parent)
+            SetProp(((tty_info*)tty)->parent, hookwndprop, hwnd);
         return 0;
     }
     else if (msg == WM_DESTROY)
     {
         HWND parent = (HWND)GetWindowLong(hwnd, gwltty_ttywnd);
-        RemoveProp(parent, hookwndprop);
+        if (parent)
+            RemoveProp(parent, hookwndprop);
     }
     else if (msg == WM_CLOSE)
     {
@@ -237,7 +278,6 @@ DWORD WINAPI ttyConsoleCtrlThread(LPVOID tty)
      * and the logoff message is ignored.
      */
     WNDCLASS wc;
-    HWND hwnd;
     MSG msg;
     wc.style         = CS_GLOBALCLASS;
     wc.lpfnWndProc   = ttyConsoleCtrlWndProc; 
@@ -248,8 +288,11 @@ DWORD WINAPI ttyConsoleCtrlThread(LPVOID tty)
     wc.hCursor       = NULL;
     wc.hbrBackground = NULL;
     wc.lpszMenuName  = NULL;
-    wc.lpszClassName = "ttyConHookChild";
-    
+    if (((tty_info*)tty)->parent)
+        wc.lpszClassName = "ttyConHookChild";
+    else
+        wc.lpszClassName = "ApacheWin95ServiceMonitor";
+        
     if (!RegisterClass(&wc)) { 
 #ifdef DBG
         DbgPrintf("S Created ttyConHookChild class\r\n");
@@ -258,14 +301,14 @@ DWORD WINAPI ttyConsoleCtrlThread(LPVOID tty)
     }
 
     /* Create an invisible window */
-    hwnd = CreateWindow(wc.lpszClassName, "", 
-                        WS_OVERLAPPED & ~WS_VISIBLE,
-                        CW_USEDEFAULT, CW_USEDEFAULT, 
-                        CW_USEDEFAULT, CW_USEDEFAULT, 
-                        NULL, NULL, 
-                        ((tty_info*)tty)->instance, tty);
+    monitor_hwnd = CreateWindow(wc.lpszClassName, ((tty_info*)tty)->name, 
+                                WS_OVERLAPPED & ~WS_VISIBLE,
+                                CW_USEDEFAULT, CW_USEDEFAULT, 
+                                CW_USEDEFAULT, CW_USEDEFAULT, 
+                                NULL, NULL, 
+                                ((tty_info*)tty)->instance, tty);
 
-    if (!hwnd) {
+    if (!monitor_hwnd) {
 #ifdef DBG
         DbgPrintf("S Error Creating ttyConHookChild:%d\r\n", GetLastError());
 #endif
@@ -276,8 +319,6 @@ DWORD WINAPI ttyConsoleCtrlThread(LPVOID tty)
     {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
-        if (msg.message == WM_DESTROY)
-            DestroyWindow(hwnd);
     }
     return 0;
 }
@@ -305,6 +346,49 @@ static BOOL CALLBACK EnumttyWindow(HWND wnd, LPARAM retwnd)
 
 
 /*
+ * Exported function that sets up the fixup child window 
+ */
+BOOL __declspec(dllexport) WINAPI Windows9xServiceCtrlHandler(
+        PHANDLER_ROUTINE phandler,
+        BOOL add)
+{
+    /* If we have not yet done so */
+    FreeConsole();
+
+    if (add)
+    {
+        DWORD tid;
+        HANDLE hThread;
+        /* NOTE: this is static so the module can continue to
+         * access these args while we go on to other things
+         */
+        static tty_info tty;
+        tty.instance = GetModuleHandle(NULL);
+        tty.phandler = phandler;
+        tty.parent = NULL;
+        tty.name = "Apache Service";
+        RegisterWindows9xService(TRUE);
+        hThread = CreateThread(NULL, 0, ttyConsoleCtrlThread,
+                               (LPVOID)&tty, 0, &tid);
+        if (hThread)
+        {
+            CloseHandle(hThread);
+            return TRUE;
+        }
+    }
+    else /* remove */
+    {
+        HWND child = FindWindowEx(NULL, NULL, "ttyConHookChild", NULL);
+        if (monitor_hwnd)
+            SendMessage(monitor_hwnd, WM_DESTROY, 0, 0);
+        RegisterWindows9xService(FALSE);
+        return TRUE;
+    }
+    return FALSE;
+}
+
+
+/*
  * Exported function that sets up the fixup child window and dispatch
  */
 BOOL __declspec(dllexport) WINAPI FixConsoleCtrlHandler(
@@ -322,17 +406,17 @@ BOOL __declspec(dllexport) WINAPI FixConsoleCtrlHandler(
         HANDLE hThread;
         DWORD tid;
         static tty_info tty;
+        tty.instance = GetModuleHandle(NULL);
         tty.phandler = phandler;
         tty.parent = parent;
-        tty.instance = GetModuleHandle(NULL);
-
+        tty.name = "ttyListener";
         hmodHook = LoadLibrary("Win9xConHook.dll");
         if (hmodHook)
         {
             hhkGetMessage = SetWindowsHookEx(WH_GETMESSAGE,
                 (HOOKPROC)GetProcAddress(hmodHook, "GetMsgProc"), hmodHook, 0);
-            //hhkCallWndProc = SetWindowsHookEx(WH_CALLWNDPROC,
-            //    (HOOKPROC)GetProcAddress(hmodHook, "CallWndProc"), hmodHook, 0);
+            hhkCallWndProc = SetWindowsHookEx(WH_CALLWNDPROC,
+                (HOOKPROC)GetProcAddress(hmodHook, "CallWndProc"), hmodHook, 0);
         }
         
         hThread = CreateThread(NULL, 0, ttyConsoleCtrlThread,
@@ -353,6 +437,10 @@ BOOL __declspec(dllexport) WINAPI FixConsoleCtrlHandler(
             if (hhkGetMessage) {
                 UnhookWindowsHookEx(hhkGetMessage);
                 hhkGetMessage = NULL;
+            }
+            if (hhkCallWndProc) {
+                UnhookWindowsHookEx(hhkCallWndProc);
+                hhkCallWndProc = NULL;
             }
             FreeLibrary(hmodHook);
             hmodHook = NULL;
@@ -380,6 +468,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                       GetCurrentProcessId(), hwnd);
 #endif
             is_subclassed = FALSE;
+            RegisterWindows9xService(FALSE);
             SetWindowLong(hwnd, GWL_WNDPROC, (LONG)origproc);
             RemoveProp(hwnd, origwndprop);
             break;
@@ -423,6 +512,7 @@ int HookProc(int hc, HWND *hwnd, UINT *msg, WPARAM *wParam, LPARAM *lParam)
             DbgPrintf("W Proc %08x hwnd:%08x Subclassed\r\n", 
                       GetCurrentProcessId(), hwtty);
 #endif
+            RegisterWindows9xService(TRUE);
         }
 #ifdef DBG
         DbgPrintf("H Proc %08x %s %08x\r\n", GetCurrentProcessId(), 
