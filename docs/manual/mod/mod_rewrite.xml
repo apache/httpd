@@ -381,7 +381,7 @@ RewriteLog "/usr/local/var/apache/logs/rewrite.log"
 <description>Sets the verbosity of the log file used by the rewrite
 engine</description>
 <syntax>RewriteLogLevel <em>Level</em></syntax>
-<default>RerwiteLogLevel 0</default>
+<default>RewriteLogLevel 0</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
