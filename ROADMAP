@@ -32,20 +32,6 @@ WORKS IN PROGRESS
       Remember, it just takes cvs diff -b (that is, --ignore-space-change)
       to see the code changes and ignore that cruft.  Get editing Justin :)
 
-    * revamp the input filter syntax to provide for ordering of
-      filters created with the Set{Input|Output}Filter and the
-      Add{Input|Output}Filter directives.  A 'relative to filterx' 
-      syntax is definately preferable.
-
-    * Platforms that do not support fork (primarily Win32 and AS/400)
-      Architect start-up code that avoids initializing all the modules 
-      in the parent process on platforms that do not support fork.
-
-    . Better yet - not only inform the startup of which phase it's in,
-      but allow the parent 'process' to initialize shared memory, etc,
-      and create a module-by-module stream to pass to the child, so the
-      parent can actually arbitrate the important stuff.
-
     * Replace stat [deferred open] with open/fstat in directory_walk.
       Justin, Ian, OtherBill all interested in this.  Implies setting up
       the apr_file_t member in request_rec, and having all modules use
@@ -77,19 +63,6 @@ WORKS IN PROGRESS
         thread" that multiplexes writes on many connections, so
         that the worker thread doesn't have to wait around for
         the sendfile to complete.
-
-    * Add a string "class" that combines a char* with a length
-      and a reference count.  This will help reduce the number
-      of strlen and strdup operations during request processing.
-      Including both the length and allocation will save us a ton 
-      of reallocation we do today, in terms of string manipulation.
-
-        OtherBill asks if this is really an APR issue, not an HTTPD issue?
-
-        Brian notes that the performance optimization work in 2.0
-        has all but eliminated the original motiviation for this
-        idea.  The httpd doesn't spend that much time in strlen
-        calls any more.
 
 
 MAKING APACHE REPOSITORY-AGNOSTIC
