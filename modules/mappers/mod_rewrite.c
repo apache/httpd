@@ -4155,8 +4155,8 @@ static void add_cookie(request_rec *r, char *s)
             }
             
             notename = apr_pstrcat(rmain->pool, var, "_rewrite", NULL);
-            apr_pool_userdata_get( &data, notename, rmain->pool);
-            if  (data== NULL) {
+            apr_pool_userdata_get(&data, notename, rmain->pool);
+            if  (data == NULL) {
                cookie = apr_pstrcat(rmain->pool, 
                                     var,
                                     "=",
