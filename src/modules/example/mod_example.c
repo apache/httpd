@@ -241,7 +241,6 @@ static void trace_add
     char    *sofar;
     char    *addon;
     char    *where;
-    char    lbuf[256];
 
     /*
      * If we weren't passed a configuration record, we can't figure out to
@@ -280,16 +279,15 @@ static void trace_add
      * on the size (and readability) of the error_log is considerable.
      */
 /*
-    ap_snprintf (lbuf, sizeof(lbuf) - 1, "mod_example: %s", note);
     if (s != NULL) {
-	log_error (lbuf, s);
+        log_printf(s, "mod_example: %s", note);
     }
  */
 }
 
 /*--------------------------------------------------------------------------*/
 /*									    */
-/* We prototyped the various syntaces for command handlers (routines that   */
+/* We prototyped the various syntax for command handlers (routines that     */
 /* are called when the configuration parser detects a directive declared    */
 /* by our module) earlier.  Now we actually declare a "real" routine that   */
 /* will be invoked by the parser when our "real" directive is		    */
@@ -512,7 +510,6 @@ static void *example_dir_create
 
     example_config
 	    *cfg;
-    char    *note;
     char    *dname = dirspec;
 
     /*
