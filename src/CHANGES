@@ -1,5 +1,9 @@
 Changes with Apache 1.3b1
 
+  *) CoreDumpDirectory directive directs where the core file is
+     written when a SIGSEGV, SIGBUS, SIGABORT or SIGABRT are
+     received.  [Marc Slemko, Dean Gaudet]
+
   *) PORT: Support for Atari MINT.
      [Jan Paul Schmidt <Jan.P.Schmidt@mni.fh-giessen.de>]
 
