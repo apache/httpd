@@ -284,3 +284,22 @@
     $ make 
     $ make install
 
+  3. You can also use APXS:
+
+    $ cd apache-1.3.X
+    $ ./configure --prefix=/path/to/apache --enable-shared=max
+    $ make
+    $ make install
+
+    $ cd php-3.0.X
+	$ ./configure --with-apxs=/path/to/apache/bin/apxs \
+                  --with-config-file-path=/path/to/apache
+    $ make
+    $ make install
+
+  At this point don't forget to edit your conf/httpd.conf file and
+  make sure the file contains the line:
+
+    AddType application/x-httpd-php3 .php3
+
+  Then restart your server.
