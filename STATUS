@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/11/16 18:30:18 $]
+Last modified at [$Date: 1999/11/17 21:39:16 $]
 
 Release:
 
@@ -104,8 +104,6 @@ Other bugs that need fixing:
         Status: No one has come up with an efficient way to fix this
         behavior. Dean has suggested getting rid of regex containers
         completely.
-
-    * Areas where APRFile is being used need to be cleaned-up
 
     * SIGSEGV on Linux seems to only kill a thread, not a whole process;
       we need to work around this, probably by bouncing the signal to

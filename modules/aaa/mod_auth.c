@@ -69,6 +69,7 @@
  *         no control is passed along.
  */
 
+#include "apr_md5.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
