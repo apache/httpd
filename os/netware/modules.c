@@ -18,7 +18,7 @@ extern module negotiation_module;
 extern module include_module;
 extern module autoindex_module;
 extern module dir_module;
-extern module cgi_module;
+//extern module cgi_module;
 extern module userdir_module;
 extern module alias_module;
 extern module env_module;
@@ -40,7 +40,7 @@ module *ap_prelinked_modules[] = {
   &include_module,
   &autoindex_module,
   &dir_module,
-  &cgi_module,
+//  &cgi_module,
   &userdir_module,
   &alias_module,
   &env_module,
@@ -64,7 +64,7 @@ module *ap_preloaded_modules[] = {
   &include_module,
   &autoindex_module,
   &dir_module,
-  &cgi_module,
+//  &cgi_module,
   &userdir_module,
   &alias_module,
   &env_module,
