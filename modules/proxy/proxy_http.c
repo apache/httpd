@@ -61,6 +61,7 @@
 #define CORE_PRIVATE
 
 #include "mod_proxy.h"
+#include "apr_strings.h"
 #include "apr_buckets.h"
 #include "util_filter.h"
 #include "ap_config.h"

@@ -67,6 +67,7 @@
 #include "util_date.h"	/* get ap_checkmask() decl. */
 #include "apr_md5.h"
 #include "apr_pools.h"
+#include "apr_strings.h"
 
 static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
