@@ -386,7 +386,7 @@ entgegengenommenen Anfragen</td></tr>
     <p>Die Direktive <code class="directive">MaxMemFree</code> gibt die maximale
     Menge freier Kilobytes an, welche die Haupt-Zuteilungsroutine verwalten
     darf, ohne <code>free()</code> aufzurufen. Wenn keine Angabe gemacht wird,
-    oder Null angegeben ist, wird dieser Wert nicht eingeschr&#19371;t.</p>
+    oder Null angegeben ist, wird dieser Wert nicht eingeschränkt.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -849,7 +849,7 @@ gültig</td></tr>
     er nicht zu dem minder privilegierten Benutzer wechseln und wird statt
     dessen weiter mit der ursprünglichen Benutzerkennung laufen.
     Wenn Sie den Server als <code>root</code> starten, dann ist es normal,
-    dass der Elternprozess als root weiterl&#19814;t.
+    dass der Elternprozess als root weiterläuft.
     <var>Unix-User-ID</var> kann sein:</p>
 
     <dl>
