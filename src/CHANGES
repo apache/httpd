@@ -1,6 +1,10 @@
-Changes with Apache 1.3.24
-
 Changes with Apache 1.3.23
+ 
+  *) Changed the symbol mapping of the following from API_EXPORT
+     to API_EXPORT_NONSTD:
+         ap_snprintf(), ap_table_do(), ap_bvputs(), ap_log_error(),
+         ap_log_rerror(), ap_log_printf(), ap_rprintf()
+     [William Rowe]
 
   *) Fixed a number of mismatched int sizes and signedness problems.
      Still remains, MSVC's 'interesting' declaration of FD_SET still emits
