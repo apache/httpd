@@ -517,6 +517,7 @@ static void dav_log_err(request_rec *r, dav_error *err, int level)
 **   - repos_hooks->remove_resource
 **   - repos_hooks->move_resource
 **   - repos_hooks->copy_resource
+**   - vsn_hooks->update
 */
 static int dav_handle_err(request_rec *r, dav_error *err,
 			  dav_response *response)
@@ -2848,13 +2849,8 @@ static int dav_method_lock(request_rec *r)
 	return HTTP_BAD_REQUEST;
     }
 
-    /* Ask repository module to resolve the resource.
-     * DeltaV says result of target selector is undefined,
-     * so allow it, and let provider reject the lock attempt
-     * on a version if it wants to.
-     */
-    /* ### gjs: I'm not sure we want to allow for locking a version... */
-    err = dav_get_resource(r, 1 /* label_allowed */, 0 /* use_checked_in */,
+    /* Ask repository module to resolve the resource */
+    err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
                            &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
@@ -3035,13 +3031,8 @@ static int dav_method_unlock(request_rec *r)
 	return dav_handle_err(r, err, NULL);
     }
 
-    /* Ask repository module to resolve the resource.
-     * DeltaV says result of target selector is undefined,
-     * so allow it, and let provider reject the unlock attempt
-     * on a version if it wants to.
-     */
-    /* ### gjs: I'm not sure we want to allow for locking a version... */
-    err = dav_get_resource(r, 1 /* label_allowed */, 0 /* use_checked_in */,
+    /* Ask repository module to resolve the resource */
+    err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
                            &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
@@ -3475,13 +3466,26 @@ static int dav_method_checkin(request_rec *r)
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     dav_error *err;
     int result;
+    ap_xml_doc *doc;
+    int keep_checked_out = 0;
 
     /* If no versioning provider, decline the request */
     if (vsn_hooks == NULL)
         return DECLINED;
 
-    if ((result = ap_discard_request_body(r)) != OK) {
+    if ((result = ap_xml_parse_input(r, &doc)) != OK)
 	return result;
+
+    if (doc != NULL) {
+        if (!dav_validate_root(doc, "checkin")) {
+            /* This supplies additional information for the default msg. */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                          "The request body, if present, must be a "
+                          "DAV:checkin element.");
+            return HTTP_BAD_REQUEST;
+        }
+
+        keep_checked_out = dav_find_child(doc->root, "keep-checked-out") != NULL;
     }
 
     /* Ask repository module to resolve the resource */
@@ -3509,13 +3513,14 @@ static int dav_method_checkin(request_rec *r)
 
     if (!resource->working) {
 	return dav_error_response(r, HTTP_CONFLICT,
-				  "The resource is not checked out to the workspace.");
+				  "The resource is not checked out.");
     }
 
     /* ### do lock checks, once behavior is defined */
 
     /* Do the checkin */
-    if ((err = (*vsn_hooks->checkin)(resource, &new_version)) != NULL) {
+    if ((err = (*vsn_hooks->checkin)(resource, keep_checked_out, &new_version))
+        != NULL) {
 	err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
 			     apr_psprintf(r->pool,
 					 "Could not CHECKIN resource %s.",
@@ -3527,79 +3532,26 @@ static int dav_method_checkin(request_rec *r)
     return dav_created(r, new_version->uri, "Version", 0);
 }
 
-/* context maintained during SET-TARGET treewalk */
-typedef struct dav_set_target_walker_ctx
-{
-    /* input: */
-    dav_walk_params w;
-
-    /* target specifier */
-    const char *target;
-
-    /* flag for whether target is version URI or label */
-    int is_label;
-
-    /* version provider hooks */
-    const dav_hooks_vsn *vsn_hooks;
-
-} dav_set_target_walker_ctx;
-
-static dav_error * dav_set_target_walker(dav_walk_resource *wres, int calltype)
-{
-    dav_set_target_walker_ctx *ctx = wres->walk_ctx;
-    dav_error *err = NULL;
-
-    /* Check the state of the resource: must be a checked-in version
-     * or baseline selector
-     */
-    /* ### need a general mechanism for reporting precondition violations
-     * ### (should be returning XML document for 403/409 responses)
-     */
-    if (wres->resource->type != DAV_RESOURCE_TYPE_REGULAR
-        || !wres->resource->versioned || wres->resource->working) {
-	err = dav_new_error(ctx->w.pool, HTTP_CONFLICT, 0,
-			    "<DAV:must-be-checked-in-version-selector/>");
-    }
-    else {
-        /* do the set-target operation */
-        err = (*ctx->vsn_hooks->set_target)(wres->resource, ctx->target, ctx->is_label);
-    }
-
-    if (err != NULL) {
-        /* ### need utility routine to add response with description? */
-        dav_add_response(wres, err->status, NULL);
-        wres->response->desc = err->desc;
-    }
-
-    return NULL;
-}
-
-static int dav_method_set_target(request_rec *r)
+static int dav_method_update(request_rec *r)
 {
     dav_resource *resource;
+    dav_resource *version = NULL;
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     ap_xml_doc *doc;
     ap_xml_elem *child;
+    int is_label = 0;
     int depth;
     int result;
-    apr_size_t tsize;
+    int tsize;
+    const char *target;
+    dav_response *multi_response;
     dav_error *err;
-    dav_set_target_walker_ctx ctx = { { 0 } };
-    dav_response *multi_status;
+    dav_lookup_result lookup;
 
-    /* If no versioning provider, decline the request */
-    if (vsn_hooks == NULL)
+    /* If no versioning provider, or UPDATE not supported,
+     * decline the request */
+    if (vsn_hooks == NULL || vsn_hooks->update == NULL)
         return DECLINED;
-
-    /* Ask repository module to resolve the resource */
-    err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
-                           &resource);
-    if (err != NULL)
-        return dav_handle_err(r, err, NULL);
-    if (!resource->exists) {
-        /* Apache will supply a default error for this. */
-        return HTTP_NOT_FOUND;
-    }
 
     if ((depth = dav_get_depth(r, 0)) < 0) {
 	/* dav_get_depth() supplies additional information for the
@@ -3612,21 +3564,18 @@ static int dav_method_set_target(request_rec *r)
 	return result;
     }
 
-    if (doc == NULL || !dav_validate_root(doc, "set-target")) {
+    if (doc == NULL || !dav_validate_root(doc, "update")) {
 	/* This supplies additional information for the default message. */
 	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		      "The request body does not contain "
-		      "a \"set-target\" element.");
+		      "an \"update\" element.");
 	return HTTP_BAD_REQUEST;
     }
 
-    /* check for label-name or version element */
-    if ((child = dav_find_child(doc->root, "label-name")) != NULL) {
-        ctx.is_label = 1;
-    }
+    /* check for label-name or version element, but not both */
+    if ((child = dav_find_child(doc->root, "label-name")) != NULL)
+        is_label = 1;
     else if ((child = dav_find_child(doc->root, "version")) != NULL) {
-        ctx.is_label = 0;
-
         /* get the href element */
         if ((child = dav_find_child(child, "href")) == NULL) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
@@ -3637,14 +3586,21 @@ static int dav_method_set_target(request_rec *r)
     }
     else {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "The \"set-target\" element does not contain "
+		      "The \"update\" element does not contain "
 		      "a \"label-name\" or \"version\" element.");
 	return HTTP_BAD_REQUEST;
     }
 
-    /* get the target value (a label or a version URI */
+    /* a depth greater than zero is only allowed for a label */
+    if (!is_label && depth != 0) {
+	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+		      "Depth must be zero for UPDATE with a version");
+	return HTTP_BAD_REQUEST;
+    }
+
+    /* get the target value (a label or a version URI) */
     ap_xml_to_text(r->pool, child, AP_XML_X2T_INNER, NULL, NULL,
-                   &ctx.target, &tsize);
+                   &target, &tsize);
     if (tsize == 0) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		      "A \"label-name\" or \"href\" element does not contain "
@@ -3652,39 +3608,69 @@ static int dav_method_set_target(request_rec *r)
 	return HTTP_BAD_REQUEST;
     }
 
-    /* do the set-target operation walk */
-    ctx.w.walk_type = DAV_WALKTYPE_NORMAL;
-    ctx.w.func = dav_set_target_walker;
-    ctx.w.walk_ctx = &ctx;
-    ctx.w.pool = r->pool;
-    ctx.w.root = resource;
-    ctx.vsn_hooks = vsn_hooks;
+    /* Ask repository module to resolve the resource */
+    err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
+                           &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
 
-    err = (*resource->hooks->walk)(&ctx.w, depth, &multi_status);
-
-    if (err != NULL) {
-        /* some sort of error occurred which terminated the walk */
-        err = dav_push_error(r->pool, err->status, 0,
-                             "The SET-TARGET operation was terminated prematurely.",
-                             err);
-        return dav_handle_err(r, err, multi_status);
+    if (!resource->exists) {
+        /* Apache will supply a default error for this. */
+        return HTTP_NOT_FOUND;
     }
 
-    if (multi_status != NULL) {
-        /* One or more resources had errors. If depth was zero, convert
-         * response to simple error, else make sure there is an
-         * overall error to pass to dav_handle_err()
-         */
-        if (depth == 0) {
-            err = dav_new_error(r->pool, multi_status->status, 0, multi_status->desc);
-            multi_status = NULL;
+    /* ### need a general mechanism for reporting precondition violations
+     * ### (should be returning XML document for 403/409 responses)
+     */
+    if (resource->type != DAV_RESOURCE_TYPE_REGULAR
+        || !resource->versioned || resource->working) {
+	return dav_error_response(r, HTTP_CONFLICT,
+				  "<DAV:must-be-checked-in-version-controlled-resource>");
+    }
+
+    /* if target is a version, resolve the version resource */
+    /* ### dav_lookup_uri only allows absolute URIs; is that OK? */
+    if (!is_label) {
+        lookup = dav_lookup_uri(target, r);
+        if (lookup.rnew == NULL) {
+	    if (lookup.err.status == HTTP_BAD_REQUEST) {
+	        /* This supplies additional information for the default message. */
+	        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+			      lookup.err.desc);
+	        return HTTP_BAD_REQUEST;
+	    }
+
+	    /* ### this assumes that dav_lookup_uri() only generates a status
+	     * ### that Apache can provide a status line for!! */
+
+	    return dav_error_response(r, lookup.err.status, lookup.err.desc);
         }
-        else {
-            err = dav_new_error(r->pool, HTTP_MULTI_STATUS, 0,
-                                "Errors occurred during the SET-TARGET operation.");
+        if (lookup.rnew->status != HTTP_OK) {
+	    /* ### how best to report this... */
+	    return dav_error_response(r, lookup.rnew->status,
+				      "Version URI had an error.");
         }
 
-        return dav_handle_err(r, err, multi_status);
+        /* resolve version resource */
+        err = dav_get_resource(lookup.rnew, 0 /* label_allowed */,
+                               0 /* use_checked_in */, &version);
+        if (err != NULL)
+            return dav_handle_err(r, err, NULL);
+
+        /* NULL out target, since we're using a version resource */
+        target = NULL;
+    }
+
+    /* do the UPDATE operation */
+    err = (*vsn_hooks->update)(resource, version, target, depth, &multi_response);
+
+    if (err != NULL) {
+        err = dav_push_error(r->pool, err->status, 0,
+			     ap_psprintf(r->pool,
+					 "Could not UPDATE %s.",
+					 ap_escape_html(r->pool, r->uri)),
+                             err);
+        return dav_handle_err(r, err, multi_response);
     }
 
     /* set the Cache-Control header, per the spec */
@@ -4402,8 +4388,8 @@ static int dav_handler(request_rec *r)
 	return dav_method_checkin(r);
     }
 
-    if (!strcmp(r->method, "SET-TARGET")) {
-	return dav_method_set_target(r);
+    if (!strcmp(r->method, "UPDATE")) {
+	return dav_method_update(r);
     }
 
     if (!strcmp(r->method, "LABEL")) {

@@ -321,12 +321,12 @@ typedef struct dav_resource_private dav_resource_private;
 **     baselined  = 0
 **     working    = 0
 **
-** version/baseline selector:
+** version-controlled resource or configuration:
 **     type       = DAV_RESOURCE_TYPE_REGULAR
 **     exists     = 1
 **     collection = ? (1 if collection)
 **     versioned  = 1
-**     baselined  = ? (1 if baseline selector)
+**     baselined  = ? (1 if configuration)
 **     working    = ? (1 if checked out)
 **
 ** version/baseline history:
@@ -357,9 +357,9 @@ typedef struct dav_resource_private dav_resource_private;
 **     type       = DAV_RESOURCE_TYPE_WORKSPACE
 **     exists     = ? (1 if exists)
 **     collection = 1
-**     versioned  = * (jvasta: I'm seeking clarification on whether a
-**     baselined  = *  workspace can be versioned or baselined)
-**     working    = *
+**     versioned  = ? (1 if version-controlled)
+**     baselined  = ? (1 if baseline-controlled)
+**     working    = ? (1 if checked out)
 **
 ** activity:
 **     type       = DAV_RESOURCE_TYPE_ACTIVITY
@@ -383,7 +383,7 @@ typedef struct dav_resource {
                          * and is always 1 for VERSION and WORKING */
 
     int baselined;      /* 0 => not baselined; can be 1 for
-                         * REGULAR and VERSION resources;
+                         * REGULAR, VERSION, and WORKSPACE resources;
                          * versioned == 1 when baselined == 1 */
 
     int working;	/* 0 => not checked out; can be 1 for
@@ -1937,30 +1937,25 @@ struct dav_hooks_vsn
                             apr_array_header_t *activities,
                             dav_resource **working_resource);
 
-    /* Uncheckout a resource. If successful, the resource
+    /* Uncheckout a checked-out resource. If successful, the resource
      * object state is updated appropriately.
      */
     dav_error * (*uncheckout)(dav_resource *resource);
 
-    /* Checkin a working resource. If successful, the resource
+    /* Checkin a checked-out resource. If successful, the resource
      * object state is updated appropriately, and the
      * version_resource descriptor will refer to the new version.
      * The version_resource argument can be NULL if the caller
      * is not interested in the new version resource.
+     *
+     * If the client has specified DAV:keep-checked-out in the checkin
+     * request, then the keep_checked_out flag is set. The provider
+     * should create a new version, but keep the resource in the
+     * checked-out state.
      */
     dav_error * (*checkin)(dav_resource *resource,
+                           int keep_checked_out,
                            dav_resource **version_resource);
-
-    /*
-    ** Set the default target of a version selector or
-    ** baseline selector resource.
-    ** The target argument specifies the new target, which
-    ** can be a label, if is_label != 0, or a version URI,
-    ** if is_label == 0.
-    */
-    dav_error * (*set_target)(const dav_resource *resource,
-	                      const char *target,
-                              int is_label);
 
     /* Determine whether a non-versioned (or non-existent) resource
      * is versionable. Returns != 0 if resource can be versioned.
@@ -2014,6 +2009,29 @@ struct dav_hooks_vsn
     ** The following hooks are optional; if not defined, then the
     ** corresponding protocol methods will be unsupported.
     */
+
+    /*
+    ** Set the state of a checked-in version-controlled resource.
+    **
+    ** If the request specified a version, the version resource
+    ** represents that version. If the request specified a label,
+    ** then "version" is NULL, and "label" is the label.
+    **
+    ** The depth argument is ignored for a file, and can be 0, 1, or
+    ** DAV_INFINITY for a collection. The depth argument only applies
+    ** with a label, not a version.
+    **
+    ** If an error occurs in a child resource, then the return value is
+    ** non-NULL, and *response is set to a multistatus response.
+    **
+    ** This hook is optional; if not defined, then the UPDATE method
+    ** will not be supported.
+    */
+    dav_error * (*update)(const dav_resource *resource,
+                          const dav_resource *version,
+                          const char *label,
+                          int depth,
+                          dav_response **response);
 
     /*
     ** Add a label to a version. The resource is either a specific
