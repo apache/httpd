@@ -272,8 +272,13 @@ int translate_alias_redir(request_rec *r)
         return DECLINED;
 
     if ((ret = try_alias_list (r, serverconf->redirects, 1, &status)) != NULL) {
-	if (is_HTTP_REDIRECT(status))
+	if (is_HTTP_REDIRECT(status)) {
+	    /* include QUERY_STRING if any */
+	    if (r->args) {
+		ret = pstrcat (r->pool, ret, "?", r->args, NULL);
+	    }
 	    table_set (r->headers_out, "Location", ret);
+	}
         return status;
     }
     

@@ -1,5 +1,8 @@
 Changes with Apache 1.2
 
+  *) Redirect did not preserve ?query_strings when present in the client's
+     request.  [Dean Gaudet]
+
   *) Add mod_example (illustration of API techniques).  [Ken Coar]
 
   *) Add macro for memmove to conf.h for SUNOS4. [Marc Slemko]
