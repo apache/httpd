@@ -82,10 +82,10 @@ static struct proxy_services defports[] =
 /* -------------------------------------------------------------- */
 /* Translate the URL into a 'filename' */
 
-static int alias_match(char *uri, char *alias_fakename)
+static int alias_match(const char *uri, const char *alias_fakename)
 {
-    char *end_fakename = alias_fakename + strlen(alias_fakename);
-    char *aliasp = alias_fakename, *urip = uri;
+    const char *end_fakename = alias_fakename + strlen(alias_fakename);
+    const char *aliasp = alias_fakename, *urip = uri;
 
     while (aliasp < end_fakename) {
 	if (*aliasp == '/') {
