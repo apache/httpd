@@ -147,8 +147,9 @@ BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, SS
     /* streamline session data */
     if ((nData = i2d_SSL_SESSION(sess, NULL)) > sizeof(ucaData)) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "streamline session data size too large: %d > %d",
-                 nData, sizeof(ucaData));
+                     "streamline session data size too large: %d > "
+                     "%" APR_SIZE_T_FMT,
+                     nData, sizeof(ucaData));
         return FALSE;
     }
     ucp = ucaData;

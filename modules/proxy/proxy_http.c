@@ -700,7 +700,8 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             apr_brigade_length(input_brigade, 1, &bytes);
 
             hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
-                                   "%qx" CRLF, (apr_uint64_t)bytes);
+                                   "%" APR_UINT64_T_HEX_FMT CRLF, 
+                                   (apr_uint64_t)bytes);
 
             ap_xlate_proto_to_ascii(chunk_hdr, hdr_len);
             e = apr_bucket_transient_create(chunk_hdr, hdr_len,
