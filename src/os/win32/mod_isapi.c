@@ -102,6 +102,14 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 				   LPVOID lpvBuffer, LPDWORD lpdwSize,
 				   LPDWORD lpdwDataType);
 
+/*
+    The optimiser blows it totally here. What happens is that autos are addressed relative to the
+    stack pointer, which, of course, moves around. The optimiser seems to lose track of it somewhere
+    between setting isapi_entry and calling through it. We work around the problem by forcing it to
+    use frame pointers.
+*/
+#pragma optimize("y",off)
+
 int isapi_handler (request_rec *r) {
     LPEXTENSION_CONTROL_BLOCK ecb =
 	pcalloc(r->pool, sizeof(struct _EXTENSION_CONTROL_BLOCK));
@@ -275,6 +283,7 @@ int isapi_handler (request_rec *r) {
     }
 
 }
+#pragma optimize("",on)
 
 BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
 			       LPVOID lpvBuffer, LPDWORD lpdwSizeofBuffer) {
