@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/01/09 20:15:04 $
+Last modified: $Date: 2003/01/09 23:50:01 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -11,9 +11,10 @@ Decisions pending
 
 - Where to put docs checkout on website
      - Leave it at /docs-x.y/
-       +1: Joshua
+       +1: Joshua, Erik
      - /manual/x.y/
      - /x.y/manual
+       -1: Erik
 
 - Figure out what to do about the 2.0 FAQ
     - Copy important stuff from 1.3?
@@ -21,6 +22,8 @@ Decisions pending
     - Something that allows dynamic contributions from users a la
       FAQ-O-Matic?  (I don't think any really good software exists 
       for this.)
+    - Perhaps we can use the newly created Wiki for this. (SubWiki,
+      with the possibility to get nice commit mails.)
 
 Things That Need Fixing
 =======================
@@ -123,7 +126,7 @@ Documentation improvements
   - need to add new <parentdocument> element to more docs
 
 * Autogeneration of PDF
-  - FOP?
+  - André is working on this, Erik volunteers to help out
 
 * Windows help file
   - David Shane Holden was working on this
