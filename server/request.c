@@ -424,7 +424,7 @@ AP_DECLARE(int) directory_walk(request_rec *r)
      * Fake filenames (i.e. proxy:) only match Directory sections.
      */
 
-    if (!ap_os_is_path_absolute(r->filename))
+    if (!ap_os_is_path_absolute(r->pool, r->filename))
     {
         const char *entry_dir;
 
@@ -457,30 +457,38 @@ AP_DECLARE(int) directory_walk(request_rec *r)
         return OK;
     }
 
-    /* XXX This needs to be rolled into APR, the APR function will not
-     * be allowed to fold the case of any non-existant segment of the path:
-     */
-    r->filename = ap_os_case_canonical_filename(r->pool, r->filename);
-
-    /* TODO This is rather silly right here, we should simply be setting
-     * filename and path_info at the end of our directory_walk
+    /* The replacement code [above] for directory_walk eliminates this issue.
      */
     res = get_path_info(r);
     if (res != OK) {
         return res;
     }
 
-    /* XXX This becomes moot, and will already happen above for elements
-     * that actually exist:
+    /* XXX Momentary period of extreme danger, Will Robinson.
+     * Removed ap_os_canonical_filename.  Anybody munging the
+     * r->filename better have pre-canonicalized the name that
+     * they just changed.  Since the two most key functions
+     * in the entire server, ap_server_root_relative() and
+     * ap_make_full_path now canonicalize as they go.
+     *
+     * To be very safe, the server is in hyper-paranoid mode.
+     * That means that non-canonical paths will be captured and
+     * denied.  This is very cpu/fs intensive, we need to finish
+     * auditing, and remove the paranoia trigger.
      */
-    r->filename = ap_os_canonical_filename(r->pool, r->filename);
-
+#ifdef NO_LONGER_PARANOID
     test_filename = apr_pstrdup(r->pool, r->filename);
-
-    /* XXX This becomes mute, since the APR canonical parsing will handle
-     * 2slash and dot directory issues:
-     */
-    ap_no2slash(test_filename);
+#else
+    if (apr_filepath_merge(&test_filename, "", r->filename,
+                           APR_FILEPATH_NOTRELATIVE | APR_FILEPATH_TRUENAME,
+                           r->pool) != APR_SUCCESS
+           || strcmp(test_filename, r->filename) != 0) {
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                      "FORBIDDEN; Filepath: %s is not the canonical %s", 
+                      r->filename, test_filename);
+        return HTTP_FORBIDDEN;
+    }
+#endif
     num_dirs = ap_count_dirs(test_filename);
 
     /* XXX This needs to be rolled into APR: */
@@ -678,7 +686,7 @@ AP_DECLARE(int) directory_walk(request_rec *r)
      * permissions of the directory as opposed to its parent.  Consider a
      * symlink pointing to a dir with a .htaccess disallowing symlinks.  If
      * you access /symlink (or /symlink/) you would get a 403 without this
-     * S_ISDIR test.  But if you accessed /symlink/index.html, for example,
+     * APR_DIR test.  But if you accessed /symlink/index.html, for example,
      * you would *not* get the 403.
      */
     if (r->finfo.filetype != APR_DIR
@@ -1026,7 +1034,7 @@ AP_DECLARE(int) directory_walk(request_rec *r)
  x    * permissions of the directory as opposed to its parent.  Consider a
  x    * symlink pointing to a dir with a .htaccess disallowing symlinks.  If
  x    * you access /symlink (or /symlink/) you would get a 403 without this
- x    * S_ISDIR test.  But if you accessed /symlink/index.html, for example,
+ x    * APR_DIR test.  But if you accessed /symlink/index.html, for example,
  x    * you would *not* get the 403.
  x
  x   if (r->finfo.filetype != APR_DIR
@@ -1393,6 +1401,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
 
     udir = ap_make_dirstr_parent(rnew->pool, r->uri);
 
+    /* This is 100% safe, since dirent->name just came from the filesystem */
     rnew->uri = ap_make_full_path(rnew->pool, udir, dirent->name);
     rnew->filename = ap_make_full_path(rnew->pool, fdir, dirent->name);
     ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
@@ -1482,6 +1491,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     request_rec *rnew;
     int res;
     char *fdir;
+    apr_size_t fdirlen;
 
     rnew = make_sub_request(r);
     fill_in_sub_req_vars(rnew, r, next_filter);
@@ -1494,20 +1504,33 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     ap_run_create_request(rnew);
 
     fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
+    fdirlen = strlen(fdir);
+
+    /* Translate r->filename
+     */
+    if (apr_filepath_merge(&rnew->filename, fdir, new_file,
+                           APR_FILEPATH_TRUENAME, rnew->pool) != APR_SUCCESS) {
+        rnew->status = HTTP_FORBIDDEN;
+        return rnew;
+    }
 
     /*
      * Check for a special case... if there are no '/' characters in new_file
-     * at all, then we are looking at a relative lookup in the same
-     * directory. That means we won't have to redo directory_walk, and we may
-     * not even have to redo access checks.
+     * at all, and the path was the same, then we are looking at a relative 
+     * lookup in the same directory. That means we won't have to redo 
+     * directory_walk, and we may not even have to redo access checks.
+     * ### Someday we don't even have to redo the entire directory walk,
+     * either, if the base paths match, we can pick up where we leave off.
      */
 
-    if (ap_strchr_c(new_file, '/') == NULL) {
+    if (strncmp(rnew->filename, fdir, fdirlen) != 0
+           && rnew->filename[fdirlen] 
+           && ap_strchr_c(rnew->filename + fdirlen, '/') == NULL) 
+    {
         char *udir = ap_make_dirstr_parent(rnew->pool, r->uri);
         apr_status_t rv;
 
         rnew->uri = ap_make_full_path(rnew->pool, udir, new_file);
-        rnew->filename = ap_make_full_path(rnew->pool, fdir, new_file);
         ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
 
         rnew->per_dir_config = r->per_dir_config;
@@ -1583,9 +1606,6 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
          * file may not have a uri associated with it -djg
          */
         rnew->uri = "INTERNALLY GENERATED file-relative req";
-        rnew->filename = ((ap_os_is_path_absolute(new_file)) ?
-                          apr_pstrdup(rnew->pool, new_file) :
-                          ap_make_full_path(rnew->pool, fdir, new_file));
         rnew->per_dir_config = r->server->lookup_defaults;
         res = directory_walk(rnew);
         if (!res) {
