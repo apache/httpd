@@ -1,5 +1,10 @@
 Changes with Apache 1.3.9
 
+  *) Fixed generated AddModule adjustments in APACI's `configure' script in
+     order to allow (new) modules like mod_vhost_alias to be handled correctly
+     (which was touched by the adjustments for mod_alias).
+     [Ralf S. Engelschall]
+
  *) For binary builds, add -R flag to apachectl to work around the
     lack of an absolute path to the ./libexec directory where
     libhttp.ep file is needed for SHARED_CORE architectures.

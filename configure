@@ -1393,22 +1393,28 @@ else
 fi
 
 #   generate module directives
+#   (paths are modules/foo/mod_bar.ext and modules/foo/libbar.ext)
 OIFS="$IFS"
 IFS=':'
 for module in $modules; do
     eval "add=\$module_$module"
     if [ "x$add" = "xyes" ]; then
-        echo $SEO "s%^.*\\(AddModule.*[_b/]$module\\..*\\)%\\1%g" >>$sedsubst
-        echo $SEO "s%^.*\\(SharedModule.*[_b/]$module\\..*\\)%\\1%g" >>$sedsubst
+        echo $SEO "s%^.*\\(AddModule.*mod_$module\\..*\\)%\\1%g" >>$sedsubst
+        echo $SEO "s%^.*\\(AddModule.*lib$module\\..*\\)%\\1%g" >>$sedsubst
+        echo $SEO "s%^.*\\(SharedModule.*mod_$module\\..*\\)%\\1%g" >>$sedsubst
+        echo $SEO "s%^.*\\(SharedModule.*lib$module\\..*\\)%\\1%g" >>$sedsubst
         m="yes"
     else
-        echo $SEO "s%^.*\\(AddModule.*[_b/]$module\\..*\\)%# \\1%g" >>$sedsubst
-        echo $SEO "s%^.*\\(SharedModule.*[_b/]$module\\..*\\)%# \\1%g" >>$sedsubst
+        echo $SEO "s%^.*\\(AddModule.*mod_$module\\..*\\)%# \\1%g" >>$sedsubst
+        echo $SEO "s%^.*\\(AddModule.*lib$module\\..*\\)%# \\1%g" >>$sedsubst
+        echo $SEO "s%^.*\\(SharedModule.*mod_$module\\..*\\)%# \\1%g" >>$sedsubst
+        echo $SEO "s%^.*\\(SharedModule.*lib$module\\..*\\)%# \\1%g" >>$sedsubst
         m=no
     fi
     eval "share=\$shared_$module"
     if [ "x$share" = "xyes" ]; then
-        echo $SEO "s%^\\(.*\\)AddModule\\(.*[_b/]$module\\.\\)[oam].*\\(.*\\)%\\1SharedModule\\2so\\3%g" >>$sedsubst
+        echo $SEO "s%^\\(.*\\)AddModule\\(.*mod_$module\\.\\)[oam].*\\(.*\\)%\\1SharedModule\\2so\\3%g" >>$sedsubst
+        echo $SEO "s%^\\(.*\\)AddModule\\(.*lib$module\\.\\)[oam].*\\(.*\\)%\\1SharedModule\\2so\\3%g" >>$sedsubst
         m="$m [shared]"
     fi
     if [ "x$verbose" = "xyes" ]; then
