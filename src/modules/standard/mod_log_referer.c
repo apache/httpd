@@ -142,10 +142,10 @@ static void open_referer_log(server_rec *s, pool *p)
     }
     else if (*cls->fname != '\0') {
         if ((cls->referer_fd = ap_popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
-            perror("open");
-            fprintf(stderr, "httpd: could not open referer log file %s.\n", fname);
-            exit(1);
-        }
+	    ap_log_error(APLOG_MARK, APLOG_ERR, s,
+			 "httpd: could not open referer log file %s.\n", fname);        
+	    exit(1);
+	}
     }
 }
 

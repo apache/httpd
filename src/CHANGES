@@ -1,5 +1,9 @@
 Changes with Apache 1.3b8
 
+  *) Changes usage of perror/fprintf to stderr to more proper ap_log_error
+     in mod_mime, mod_log_referer, mod_log_agent, and mod_log_config.
+     [Brian Behlendorf]
+
   *) Various OS/2 cleanups ["Brian Havard" <brianh@kheldar.apana.org.au>]
 
   *) PORT: QNX needed a #include <sys/mman.h>; and now it uses flock
