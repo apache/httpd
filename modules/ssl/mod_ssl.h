@@ -329,6 +329,12 @@ typedef enum {
 
 #ifdef OPENSSL_VERSION_NUMBER
 
+/*
+ * rsa sslc uses incomplete types for most structures
+ * so we macroize for OpenSSL those which cannot be dereferenced
+ * using the same sames as the sslc functions
+ */
+
 #define EVP_PKEY_key_type(k)              (EVP_PKEY_type(k->type))
 
 #define X509_NAME_get_entries(xs)         (xs->entries)
@@ -358,7 +364,15 @@ typedef enum {
 
 #define SSL_set_state(ssl,val) (ssl)->state = val
 
+#else
+
+/* support some OpenSSL-izms for compat with ssl */
+
+#ifndef STACK_OF
+#define STACK_OF(type) STACK
 #endif
+
+#endif /* OPENSSL_VERSION_NUMBER */
 
 #define ssl_verify_error_is_optional(errnum) \
    ((errnum == X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT) \
