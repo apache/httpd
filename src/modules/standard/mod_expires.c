@@ -278,7 +278,7 @@ char *check_code( pool *pool, const char *code, char **real_code )
     while ( word[0] ) {
 	/* <num>
 	 */
-	if ( isdigit(word[0]) != NULL ) {
+	if (isdigit(word[0])) {
 	    num = atoi( word );
 	} else {
             return pstrcat( pool, "bad expires code, numeric value expected <num> '",
