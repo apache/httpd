@@ -302,7 +302,7 @@ static const char *log_remote_logname(request_rec *r, char *a)
 
 static const char *log_remote_user(request_rec *r, char *a)
 {
-    char *rvalue = r->connection->user;
+    char *rvalue = r->user;
 
     if (rvalue == NULL) {
         rvalue = "-";

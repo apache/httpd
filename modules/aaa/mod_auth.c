@@ -197,7 +197,6 @@ static int authenticate_basic_user(request_rec *r)
 {
     auth_config_rec *sec =
     (auth_config_rec *) ap_get_module_config(r->per_dir_config, &auth_module);
-    conn_rec *c = r->connection;
     const char *sent_pw;
     char *real_pw;
     char *invalid_pw;
@@ -209,11 +208,11 @@ static int authenticate_basic_user(request_rec *r)
     if (!sec->auth_pwfile)
 	return DECLINED;
 
-    if (!(real_pw = get_pw(r, c->user, sec->auth_pwfile))) {
+    if (!(real_pw = get_pw(r, r->user, sec->auth_pwfile))) {
 	if (!(sec->auth_authoritative))
 	    return DECLINED;
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
-		    "user %s not found: %s", c->user, r->uri);
+		    "user %s not found: %s", r->user, r->uri);
 	ap_note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
@@ -221,7 +220,7 @@ static int authenticate_basic_user(request_rec *r)
     if (invalid_pw != NULL) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 		      "user %s: authentication failure for \"%s\": %s",
-		      c->user, r->uri, invalid_pw);
+		      r->user, r->uri, invalid_pw);
 	ap_note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
@@ -234,7 +233,7 @@ static int check_user_access(request_rec *r)
 {
     auth_config_rec *sec =
     (auth_config_rec *) ap_get_module_config(r->per_dir_config, &auth_module);
-    char *user = r->connection->user;
+    char *user = r->user;
     int m = r->method_number;
     int method_restricted = 0;
     register int x;

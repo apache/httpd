@@ -223,7 +223,6 @@ static int db_authenticate_basic_user(request_rec *r)
     db_auth_config_rec *sec =
     (db_auth_config_rec *) ap_get_module_config(r->per_dir_config,
 					     &db_auth_module);
-    conn_rec *c = r->connection;
     const char *sent_pw;
     char *real_pw, *colon_pw;
     char *invalid_pw;
@@ -235,11 +234,11 @@ static int db_authenticate_basic_user(request_rec *r)
     if (!sec->auth_dbpwfile)
 	return DECLINED;
 
-    if (!(real_pw = get_db_pw(r, c->user, sec->auth_dbpwfile))) {
+    if (!(real_pw = get_db_pw(r, r->user, sec->auth_dbpwfile))) {
 	if (!(sec->auth_dbauthoritative))
 	    return DECLINED;
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
-		    "DB user %s not found: %s", c->user, r->filename);
+		    "DB user %s not found: %s", r->user, r->filename);
 	ap_note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
@@ -252,7 +251,7 @@ static int db_authenticate_basic_user(request_rec *r)
     if (invalid_pw != NULL) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 		      "DB user %s: authentication failure for \"%s\": %s",
-		      c->user, r->uri, invalid_pw);
+		      r->user, r->uri, invalid_pw);
 	ap_note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
@@ -266,7 +265,7 @@ static int db_check_auth(request_rec *r)
     db_auth_config_rec *sec =
     (db_auth_config_rec *) ap_get_module_config(r->per_dir_config,
 					     &db_auth_module);
-    char *user = r->connection->user;
+    char *user = r->user;
     int m = r->method_number;
 
     const array_header *reqs_arr = ap_requires(r);
