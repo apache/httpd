@@ -3385,17 +3385,18 @@ static void core_insert_filter(request_rec *r)
 
 static int core_create_req(request_rec *r)
 {
+    core_request_config *req_cfg;
+    req_cfg = apr_palloc(r->pool, sizeof(core_request_config));
+    memset(req_cfg, 0, sizeof(*req_cfg));
     if (r->main) {
-        ap_set_module_config(r->request_config, &core_module,
-              ap_get_module_config(r->main->request_config, &core_module));
+        core_request_config *main_req_cfg = (core_request_config *)
+            ap_get_module_config(r->main->request_config, &core_module);
+        req_cfg->bb = main_req_cfg->bb;
     }
     else {
-        core_request_config *req_cfg;
-
-        req_cfg = apr_pcalloc(r->pool, sizeof(core_request_config));
         req_cfg->bb = apr_brigade_create(r->pool);
-        ap_set_module_config(r->request_config, &core_module, req_cfg);
     }
+    ap_set_module_config(r->request_config, &core_module, req_cfg);
 
     ap_add_input_filter("NET_TIME", NULL, r, r->connection);
     
