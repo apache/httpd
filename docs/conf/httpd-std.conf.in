@@ -41,8 +41,8 @@
 # configuration, error, and log files are kept.
 #
 # NOTE!  If you intend to place this on an NFS (or otherwise network)
-# mounted filesystem then please read the LockFile documentation
-# (available at <URL:http://httpd.apache.org/docs-2.0/mod/core.html#lockfile>);
+# mounted filesystem then please read the LockFile documentation (available
+# at <URL:http://httpd.apache.org/docs-2.0/mod/mpm_common.html#lockfile>);
 # you will save yourself a lot of trouble.
 #
 # Do NOT add a slash at the end of the directory path.
