@@ -1,10 +1,5 @@
 Changes with Apache 2.0.18-dev
  
-  *) Limit the threaded mpm to quiescing one process at a time.
-     This is to fix a problem where the scoreboard is filled with
-     quiescing processes and no working processes can start.
-     [Greg Ames]
-     
   *) Change how input filters decide how much data is returned to the
      higher filter.  We used to use a field in the conn_rec, with this
      change, we use an argument to ap_get_brigade to determine how much
