@@ -3,17 +3,18 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <modulesynopsis>
 
-<name>mod_access</name> 
+<name>mod_authz_host</name> 
 
-<description>Provides access control based on client hostname, IP
-address, or other characteristics of the client request.</description>
+<description>Group authorizations based on host (name or IP
+address)</description>
 
 <status>Base</status>
-<sourcefile>mod_access.c</sourcefile>
-<identifier>access_module</identifier>
+<sourcefile>mod_authz_host.c</sourcefile>
+<identifier>authz_host_module</identifier>
+<compatibility>Available in Apache 2.0.44 and later</compatibility>
 
 <summary>
-    <p>The directives provided by mod_access are used in <directive
+    <p>The directives provided by mod_authz_host are used in <directive
     module="core" type="section">Directory</directive>, <directive
     module="core" type="section">Files</directive>, and <directive
     module="core" type="section">Location</directive> sections as well as
@@ -22,13 +23,13 @@ address, or other characteristics of the client request.</description>
     can be controlled based on the client hostname, IP address, or
     other characteristics of the client request, as captured in <a
     href="../env.html">environment variables</a>. The <directive
-    module="mod_access">Allow</directive> and <directive
-    module="mod_access">Deny</directive> directives are used to
+    module="mod_authz_host">Allow</directive> and <directive
+    module="mod_authz_host">Deny</directive> directives are used to
     specify which clients are or are not allowed access to the server,
-    while the <directive module="mod_access">Order</directive>
+    while the <directive module="mod_authz_host">Order</directive>
     directive sets the default access state, and configures how the
-    <directive module="mod_access">Allow</directive> and <directive
-    module="mod_access">Deny</directive> directives interact with each
+    <directive module="mod_authz_host">Allow</directive> and <directive
+    module="mod_authz_host">Deny</directive> directives interact with each
     other.</p>
 
     <p>Both host-based access restrictions and password-based
@@ -71,8 +72,8 @@ server</description>
     <code>from</code>. The subsequent arguments can take three
     different forms. If <code>Allow from all</code> is specified, then
     all hosts are allowed access, subject to the configuration of the
-    <directive module="mod_access">Deny</directive> and <directive
-    module="mod_access">Order</directive> directives as discussed
+    <directive module="mod_authz_host">Deny</directive> and <directive
+    module="mod_authz_host">Order</directive> directives as discussed
     below. To allow only particular hosts or groups of hosts to access
     the server, the <em>host</em> can be specified in any of the
     following formats:</p>
@@ -176,7 +177,7 @@ server</description>
     based on hostname, IP address, or environment variables. The
     arguments for the <directive>Deny</directive> directive are
     identical to the arguments for the <directive
-    module="mod_access">Allow</directive> directive.</p>
+    module="mod_authz_host">Allow</directive> directive.</p>
 </usage>
 
 </directivesynopsis>
@@ -199,36 +200,36 @@ evaluated.</description>
 
     <p>The <directive>Order</directive> directive controls the default
     access state and the order in which <directive
-    module="mod_access">Allow</directive> and <directive
-    module="mod_access">Deny</directive> directives are evaluated.
+    module="mod_authz_host">Allow</directive> and <directive
+    module="mod_authz_host">Deny</directive> directives are evaluated.
     <em>Ordering</em> is one of</p>
 
     <dl>
       <dt>Deny,Allow</dt>
 
-      <dd>The <directive module="mod_access">Deny</directive> directives
+      <dd>The <directive module="mod_authz_host">Deny</directive> directives
       are evaluated before the <directive
-      module="mod_access">Allow</directive> directives. Access is
+      module="mod_authz_host">Allow</directive> directives. Access is
       allowed by default.  Any client which does not match a
-      <directive module="mod_access">Deny</directive> directive or does
-      match an <directive module="mod_access">Allow</directive>
+      <directive module="mod_authz_host">Deny</directive> directive or does
+      match an <directive module="mod_authz_host">Allow</directive>
       directive will be allowed access to the server.</dd>
 
       <dt>Allow,Deny</dt>
 
-      <dd>The <directive module="mod_access">Allow</directive>
+      <dd>The <directive module="mod_authz_host">Allow</directive>
       directives are evaluated before the <directive
-      module="mod_access">Deny</directive> directives. Access is denied
+      module="mod_authz_host">Deny</directive> directives. Access is denied
       by default. Any client which does not match an <directive
-      module="mod_access">Allow</directive> directive or does match a
-      <directive module="mod_access">Deny</directive> directive will be
+      module="mod_authz_host">Allow</directive> directive or does match a
+      <directive module="mod_authz_host">Deny</directive> directive will be
       denied access to the server.</dd>
 
       <dt>Mutual-failure</dt>
 
       <dd>Only those hosts which appear on the <directive
-      module="mod_access">Allow</directive> list and do not appear on
-      the <directive module="mod_access">Deny</directive> list are
+      module="mod_authz_host">Allow</directive> list and do not appear on
+      the <directive module="mod_authz_host">Deny</directive> list are
       granted access. This ordering has the same effect as <code>Order
       Allow,Deny</code> and is deprecated in favor of that
       configuration.</dd>
@@ -236,8 +237,8 @@ evaluated.</description>
 
     <p>Keywords may only be separated by a comma; no whitespace is
     allowed between them. Note that in all cases every <directive
-    module="mod_access">Allow</directive> and <directive
-    module="mod_access">Deny</directive> statement is evaluated.</p>
+    module="mod_authz_host">Allow</directive> and <directive
+    module="mod_authz_host">Deny</directive> statement is evaluated.</p>
 
     <p>In the following example, all hosts in the apache.org domain
     are allowed access; all other hosts are denied access.</p>
@@ -272,8 +273,8 @@ evaluated.</description>
 
     <p>The presence of an <directive>Order</directive> directive can affect
     access to a part of the server even in the absence of accompanying
-    <directive module="mod_access">Allow</directive> and <directive
-    module="mod_access">Deny</directive> directives because of its effect
+    <directive module="mod_authz_host">Allow</directive> and <directive
+    module="mod_authz_host">Deny</directive> directives because of its effect
     on the default access state.  For example,</p>
 
 <example>
@@ -289,12 +290,12 @@ evaluated.</description>
     <p>The <directive>Order</directive> directive controls the order of access
     directive processing only within each phase of the server's
     configuration processing. This implies, for example, that an
-    <directive module="mod_access">Allow</directive> or <directive
-    module="mod_access">Deny</directive> directive occurring in a
+    <directive module="mod_authz_host">Allow</directive> or <directive
+    module="mod_authz_host">Deny</directive> directive occurring in a
     <directive module="core" type="section">Location</directive> section will
     always be evaluated after an <directive
-    module="mod_access">Allow</directive> or <directive
-    module="mod_access">Deny</directive> directive occurring in a
+    module="mod_authz_host">Allow</directive> or <directive
+    module="mod_authz_host">Deny</directive> directive occurring in a
     <directive module="core" type="section">Directory</directive> section or
     <code>.htaccess</code> file, regardless of the setting of the
     <directive>Order</directive> directive. For details on the merging

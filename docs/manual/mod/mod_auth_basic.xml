@@ -8,7 +8,7 @@
 <status>Base</status>
 <sourcefile>mod_auth_basic.c</sourcefile>
 <identifier>auth_basic_module</identifier>
-<compatibility>Available in Apache 2.0.42 and later</compatibility>
+<compatibility>Available in Apache 2.0.44 and later</compatibility>
 
 <summary>
 

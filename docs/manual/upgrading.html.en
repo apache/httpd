@@ -4,13 +4,13 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Upgrading to 2.0 from 1.3 - Apache HTTP Server</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Upgrading to 2.0 from 1.3</h1>
+      --><title>Upgrading to 2.0 from 1.3 - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Upgrading to 2.0 from 1.3</h1>
   <p>In order to assist folks upgrading, we maintain a document
   describing information critical to existing Apache users. These
   are intended to be brief notes, and you should be able to find
   more information in either the <a href="new_features_2_0.html">New Features</a> document, or in
   the <code>src/CHANGES</code> file.</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">Compile-Time Configuration Changes</a></li><li><img alt="" src="./images/down.gif" /> <a href="#run-time">Run-Time Configuration Changes</a></li><li><img alt="" src="./images/down.gif" /> <a href="#misc">Misc Changes</a></li><li><img alt="" src="./images/down.gif" /> <a href="#third-party">Third Party Modules</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="compile-time" id="compile-time">Compile-Time Configuration Changes</a></h2>
+</div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#compile-time">Compile-Time Configuration Changes</a></li><li><img alt="" src="../images/down.gif" /> <a href="#run-time">Run-Time Configuration Changes</a></li><li><img alt="" src="../images/down.gif" /> <a href="#misc">Misc Changes</a></li><li><img alt="" src="../images/down.gif" /> <a href="#third-party">Third Party Modules</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="compile-time" id="compile-time">Compile-Time Configuration Changes</a></h2>
     
 
     <ul>
@@ -24,7 +24,7 @@
       request processing into <a href="mpm.html">Multi-Processing
       Modules</a> (MPMs).</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="run-time" id="run-time">Run-Time Configuration Changes</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="run-time" id="run-time">Run-Time Configuration Changes</a></h2>
     
 
     <ul>
@@ -46,19 +46,19 @@
       implemented as a filter may no longer accept requests with
       PATH_INFO.  Filters such as <a href="mod/mod_include.html">INCLUDES</a> are implemented on top
       of the core handler, and therefore reject requests with
-      PATH_INFO.  You can use the <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> directive to
+      PATH_INFO.  You can use the <code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> directive to
       force the core handler to accept requests with PATH_INFO and
       thereby restore the ability to use PATH_INFO in server-side
       includes.</li>
 
-      <li>The <code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code>
+      <li>The <code class="directive"><a href="../mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code>
       directive now takes the argument <code>on</code> or
       <code>off</code>. Existing instances of
       <code>CacheNegotiatedDocs</code> should be replaced with
       <code>CacheNegotiatedDocs on</code>.</li>
 
       <li>
-        The <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code>
+        The <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code>
         directive no longer uses a quote at the beginning of the
         argument to indicate a text message. Instead, you should
         enclose the message in double quotes. For example, existing
@@ -80,7 +80,7 @@
       <li>The <code>AccessConfig</code> and
       <code>ResourceConfig</code> directives no longer exist.
       Existing instances of these directives can be replaced with
-      the <code class="directive"><a href="./mod/core.html#include">Include</a></code>
+      the <code class="directive"><a href="../mod/core.html#include">Include</a></code>
       directive which has equivalent functionality. If you were
       making use of the default values of these directives without
       including them in the configuration files, you may need to
@@ -95,13 +95,13 @@
       <li>The <code>BindAddress</code> and <code>Port</code>
       directives no longer exist.  Equivalent functionality is
       provided with the more flexible
-      <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+      <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>
       directive.</li>
 
       <li>Another use of the <code>Port</code>
       directive in Apache-1.3 was setting the port number to be used
       in self-referential URL's. The Apache-2.0 equivalent is
-      the new <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>
+      the new <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>
       syntax: it has been changed to allow specifying both the
       hostname <em>and</em> the port number for self-referential URL's
       in one directive.</li>
@@ -115,8 +115,8 @@
       provided the <code>AgentLog</code>, <code>RefererLog</code>
       and <code>RefererIgnore</code> directives have been removed.
       Agent and referer logs are still available using the
-      <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code>
-      directive of <code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code>.</li>
+      <code class="directive"><a href="../mod/mod_log_config.html#customlog">CustomLog</a></code>
+      directive of <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>.</li>
 
       <li>The <code>AddModule</code> and
       <code>ClearModuleList</code> directives no longer exist.
@@ -127,10 +127,10 @@
 
       <li>The <code>FancyIndexing</code> directive has been removed.
       The same functionality is available through the
-      <code>FancyIndexing</code> option to the <code class="directive"><a href="./mod/mod_autoindex.html#indexoptions">IndexOptions</a></code>
+      <code>FancyIndexing</code> option to the <code class="directive"><a href="../mod/mod_autoindex.html#indexoptions">IndexOptions</a></code>
       directive.</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="misc" id="misc">Misc Changes</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="misc" id="misc">Misc Changes</a></h2>
     
 
     <ul>
@@ -139,11 +139,11 @@
       configuration has been replaced by <code>-t -D
       DUMP_VHOSTS</code>.</li>
 
-      <li>The module <code class="module"><a href="./mod/mod_auth_digest.html">mod_auth_digest</a></code>, which was
+      <li>The module <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>, which was
       experimental in Apache 1.3, is now a standard module.</li>
 
       <li>The <code>mod_mmap_static</code> module, which was experimental in
-      Apache 1.3, has been replaced with <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>.</li>
+      Apache 1.3, has been replaced with <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>.</li>
 
       <li>The distribution has been completely reorganized so that
       it no longer contains an independent <code>src</code>
@@ -152,7 +152,7 @@
       compiled server should be directed to a separate
       directory.</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="third-party" id="third-party">Third Party Modules</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="third-party" id="third-party">Third Party Modules</a></h2>
     
 
     <p>Extensive changes were made to the server API in Apache 2.0.
@@ -160,4 +160,4 @@
     <strong>not</strong> work in Apache 2.0 without modification.
     Details are provided in the <a href="developer/">developer
     documentation</a>.</p>
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>
+  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>

@@ -3,12 +3,13 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <modulesynopsis>
 
-<name>mod_auth_anon</name>
+<name>mod_authn_anon</name>
 <description>Allows "anonymous" user access to authenticated
     areas</description>
 <status>Extension</status>
-<sourcefile>mod_auth_anon.c</sourcefile>
-<identifier>auth_anon_module</identifier>
+<sourcefile>mod_authn_anon.c</sourcefile>
+<identifier>authn_anon_module</identifier>
+<compatibility>Available in Apache 2.0.44 and later</compatibility>
 
 <summary>
     <p>This module does access control in a manner similar to
@@ -122,7 +123,7 @@ to other methods</description>
 <usage>
     <p>When set 'on', there is no fall-through to other authorization
     methods. So if a userID does not match the values specified in the
-    <directive module="mod_auth_anon">Anonymous</directive> directive,
+    <directive module="mod_authn_anon">Anonymous</directive> directive,
     access is denied.</p>
 
     <p>Be sure you know what you are doing when you decide to
@@ -195,7 +196,7 @@ formatted email address</description>
     <p>When set <code>on</code> the 'password' entered is checked for
     at least one '@' and a '.' to encourage users to enter valid email
     addresses (see the above <directive
-    module="mod_auth_anon">Auth_LogEmail</directive>).</p>
+    module="mod_authn_anon">Auth_LogEmail</directive>).</p>
 </usage>
 </directivesynopsis>
 
