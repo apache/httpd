@@ -79,6 +79,7 @@
                                  * support code... */
 #include "util_date.h"          /* For parseHTTPdate and BAD_DATE */
 #include "util_charset.h"
+#include "util_ebcdic.h"
 #include "mpm_status.h"
 #ifdef APR_HAVE_STDARG_H
 #include <stdarg.h>
@@ -936,7 +937,10 @@ typedef struct http_filter_ctx {
 
 apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_t mode)
 {
-#define ASCII_LF '\012'
+#define ASCII_BLANK  '\040'
+#define ASCII_CR     '\015'
+#define ASCII_LF     '\012'
+#define ASCII_TAB    '\011' 
     ap_bucket *e;
     char *buff;
     apr_ssize_t len;
@@ -954,7 +958,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_
          * For now, we can't do a non-blocking read so we bypass this.
          *
          * Also, note that in the cases where another request can be read now
-         * without blocking, it is likely already in our brigadet, so this hack 
+         * without blocking, it is likely already in our brigade, so this hack 
          * isn't so bad after all.
          */
         if (AP_BRIGADE_EMPTY(ctx->b)) {
@@ -1082,7 +1086,7 @@ static int getline(char *s, int n, request_rec *r, int fold)
             break;
         }
 
-        if ((looking_ahead) && (*temp != ' ') && (*temp != '\t')) { 
+        if ((looking_ahead) && (*temp != ASCII_BLANK) && (*temp != ASCII_TAB)) { 
             /* can't fold because next line isn't indented, 
              * so return what we have.  lookahead brigade is 
              * stashed on req_cfg->bb
@@ -1110,9 +1114,9 @@ static int getline(char *s, int n, request_rec *r, int fold)
         
         pos = last_char;        /* Point at the last character           */
 
-        if (*pos == '\n') {     /* Did we get a full line of input?      */
+        if (*pos == ASCII_LF) { /* Did we get a full line of input?      */
                 
-            if (pos > s && *(pos - 1) == '\r') {
+            if (pos > s && *(pos - 1) == ASCII_CR) {
                 --pos;          /* zap optional CR before LF             */
             }
                 
@@ -1122,8 +1126,8 @@ static int getline(char *s, int n, request_rec *r, int fold)
              * it much easier to check field values for exact matches, and
              * saves memory as well.  Terminate string at end of line.
              */
-            while (pos > (s + 1) && (*(pos - 1) == ' '
-				     || *(pos - 1) == '\t')) {
+            while (pos > (s + 1) && 
+                   (*(pos - 1) == ASCII_BLANK || *(pos - 1) == ASCII_TAB)) {
                 --pos;          /* trim extra trailing spaces or tabs    */
             }
             *pos = '\0';        /* zap end of string                     */
@@ -1149,6 +1153,7 @@ static int getline(char *s, int n, request_rec *r, int fold)
             looking_ahead = 0;  /* only appropriate right after LF       */ 
         }
     }
+    ap_xlate_proto_from_ascii(s, total);
     return total;
 }
 
@@ -1774,6 +1779,7 @@ AP_DECLARE_NONSTD(int) ap_send_header_field(request_rec *r,
     ap_bucket_brigade *bb;
 
     headfield = apr_pstrcat(r->pool, fieldname, ": ", fieldval, CRLF, NULL);
+    ap_xlate_proto_to_ascii(headfield, strlen(headfield));
     headbuck = ap_bucket_create_pool(headfield, strlen(headfield), r->pool);
     bb = ap_brigade_create(r->pool);
     AP_BRIGADE_INSERT_HEAD(bb, headbuck);
@@ -1843,7 +1849,10 @@ static void terminate_header(request_rec *r)
     ap_bucket *headbuck;
     ap_bucket_brigade *bb;
 
-    headfield = apr_pstrcat(r->pool, CRLF, NULL);
+    headfield = apr_palloc(r->pool, 3);
+    headfield[0] = ASCII_CR;
+    headfield[1] = ASCII_LF;
+    headfield[2] = '\0';
     headbuck = ap_bucket_create_pool(headfield, strlen(headfield), r->pool);
     bb = ap_brigade_create(r->pool);
     AP_BRIGADE_INSERT_HEAD(bb, headbuck);
