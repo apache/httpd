@@ -969,7 +969,8 @@ void set_signals() {
     if(!one_process) {
 	signal(SIGSEGV,(void (*)())seg_fault);
     	signal(SIGBUS,(void (*)())bus_error);
-    }
+	}
+
 #ifdef NO_USE_SIGACTION
     signal(SIGTERM,(void (*)())sig_term);
     signal(SIGHUP,(void (*)())restart);
