@@ -174,6 +174,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
     char *desthost;
     apr_socket_t *sock;
     int i, len, backasswards, content_length = -1;
+    apr_status_t err;
     apr_array_header_t *reqhdrs_arr;
     apr_table_t *resp_hdrs = NULL;
     apr_table_entry_t *reqhdrs;
@@ -256,19 +257,19 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
 #endif
 
     if (proxyhost != NULL) {
-        i = ap_proxy_doconnect(sock, (char *)proxyhost, proxyport, r);
+        err = ap_proxy_doconnect(sock, (char *)proxyhost, proxyport, r);
     }
     else {
-        i = ap_proxy_doconnect(sock, (char *)desthost, destport, r);
+        err = ap_proxy_doconnect(sock, (char *)desthost, destport, r);
     }
 
-    if (i == -1) {
+    if (err != APR_SUCCESS) {
 	if (proxyhost != NULL)
 	    return DECLINED;	/* try again another way */
 	else
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(r->pool,
 				"Could not connect to remote machine: ",
-				strerror(errno), NULL));
+				desthost, NULL));
     }
 
     clear_connection(r->pool, r->headers_in);	/* Strip connection-based headers */

@@ -180,11 +180,11 @@ int ap_proxy_connect_handler(request_rec *r, ap_cache_el  *c, char *url,
     }
 
     if (ap_proxy_doconnect(sock, (char *)(proxyhost ? proxyhost : host),
-      proxyport ? proxyport : port, r) == -1) {
+      proxyport ? proxyport : port, r) != APR_SUCCESS) {
         apr_close_socket(sock);
         return ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR,
             apr_pstrcat(r->pool, "Could not connect to remote machine:<br>",
-            strerror(errno), NULL));
+            proxyhost, NULL));
     }
 
     /* If we are connecting through a remote proxy, we need to pass
