@@ -401,6 +401,14 @@ static int sendfile_handler(request_rec *r, a_file *file)
 #if APR_HAS_SENDFILE
     apr_size_t nbytes;
     apr_status_t rv = APR_EINIT;
+    apr_off_t offset = 0;
+
+    rv = apr_seek(file->file, APR_SET, &offset);
+    if (rv != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                      "seek failed");
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
 
     rv = ap_send_fd(file->file, r, 0, file->finfo.size, &nbytes);
     if (rv != APR_SUCCESS) {
