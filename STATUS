@@ -200,13 +200,13 @@ Open issues:
             apapi_xxx: +1: Ken, Paul, Jim
         - Private functions which we can't make static (because of
           cross-object usage) but should be (e.g., new_connection)
-            apx_xxx +1: Ralf, Roy
-            appri_xxx +1: Paul, Jim, Ken
+            apx_xxx +1: Ralf, Roy, Jim
+            appri_xxx +1: Paul, Ken
         - Public API module structure variables (e.g.,
           status_module) which are used special in Configure,
           mod_so, etc and have to be exported:
             ap_xxx +1:
-            apm_xxx +1: Ralf, Roy
+            apm_xxx +1: Ralf, Roy, Jim
 
         Notes: 
             - Ralf: My opinion for my decisions are the following ones: 
