@@ -61,7 +61,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\regex" /I "..\..\core" /D "WIN32" /D\
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\regex" /I "..\..\main" /D "WIN32" /D\
  "NDEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleInfo.pch" /YX /Fo"$(INTDIR)\\"\
  /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleInfoR/
@@ -116,7 +116,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\regex" /I "..\..\core" /D\
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\regex" /I "..\..\main" /D\
  "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleInfo.pch" /YX\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleInfoD/
@@ -180,17 +180,17 @@ SOURCE=..\..\modules\standard\mod_info.c
 !IF  "$(CFG)" == "ApacheModuleInfo - Win32 Release"
 
 DEP_CPP_MOD_I=\
-	"..\..\core\alloc.h"\
-	"..\..\core\buff.h"\
-	"..\..\core\conf.h"\
-	"..\..\core\http_conf_globals.h"\
-	"..\..\core\http_config.h"\
-	"..\..\core\http_core.h"\
-	"..\..\core\http_log.h"\
-	"..\..\core\http_main.h"\
-	"..\..\core\http_protocol.h"\
-	"..\..\core\httpd.h"\
-	"..\..\core\util_script.h"\
+	"..\..\main\alloc.h"\
+	"..\..\main\buff.h"\
+	"..\..\main\conf.h"\
+	"..\..\main\http_conf_globals.h"\
+	"..\..\main\http_config.h"\
+	"..\..\main\http_core.h"\
+	"..\..\main\http_log.h"\
+	"..\..\main\http_main.h"\
+	"..\..\main\http_protocol.h"\
+	"..\..\main\httpd.h"\
+	"..\..\main\util_script.h"\
 	"..\..\regex\regex.h"\
 	".\readdir.h"\
 	
@@ -202,24 +202,24 @@ DEP_CPP_MOD_I=\
 !ELSEIF  "$(CFG)" == "ApacheModuleInfo - Win32 Debug"
 
 DEP_CPP_MOD_I=\
-	"..\..\core\alloc.h"\
-	"..\..\core\buff.h"\
-	"..\..\core\conf.h"\
-	"..\..\core\http_conf_globals.h"\
-	"..\..\core\http_config.h"\
-	"..\..\core\http_core.h"\
-	"..\..\core\http_log.h"\
-	"..\..\core\http_main.h"\
-	"..\..\core\http_protocol.h"\
-	"..\..\core\httpd.h"\
-	"..\..\core\util_script.h"\
+	"..\..\main\alloc.h"\
+	"..\..\main\buff.h"\
+	"..\..\main\conf.h"\
+	"..\..\main\http_conf_globals.h"\
+	"..\..\main\http_config.h"\
+	"..\..\main\http_core.h"\
+	"..\..\main\http_log.h"\
+	"..\..\main\http_main.h"\
+	"..\..\main\http_protocol.h"\
+	"..\..\main\httpd.h"\
+	"..\..\main\util_script.h"\
 	"..\..\regex\regex.h"\
 	".\readdir.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_I=\
-	"..\..\core\sfio.h"\
+	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\mod_info.obj" : $(SOURCE) $(DEP_CPP_MOD_I) "$(INTDIR)"

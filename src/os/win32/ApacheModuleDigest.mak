@@ -62,7 +62,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\regex" /I "..\..\core" /D "WIN32" /D\
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\regex" /I "..\..\main" /D "WIN32" /D\
  "NDEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleDigest.pch" /YX\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleDigestR/
@@ -118,7 +118,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\regex" /I "..\..\core" /D\
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\regex" /I "..\..\main" /D\
  "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleDigest.pch" /YX\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleDigestD/
@@ -183,16 +183,16 @@ SOURCE=..\..\modules\standard\mod_digest.c
 !IF  "$(CFG)" == "ApacheModuleDigest - Win32 Release"
 
 DEP_CPP_MOD_D=\
-	"..\..\core\alloc.h"\
-	"..\..\core\buff.h"\
-	"..\..\core\conf.h"\
-	"..\..\core\http_config.h"\
-	"..\..\core\http_core.h"\
-	"..\..\core\http_log.h"\
-	"..\..\core\http_protocol.h"\
-	"..\..\core\httpd.h"\
-	"..\..\core\md5.h"\
-	"..\..\core\util_md5.h"\
+	"..\..\main\alloc.h"\
+	"..\..\main\buff.h"\
+	"..\..\main\conf.h"\
+	"..\..\main\http_config.h"\
+	"..\..\main\http_core.h"\
+	"..\..\main\http_log.h"\
+	"..\..\main\http_protocol.h"\
+	"..\..\main\httpd.h"\
+	"..\..\main\md5.h"\
+	"..\..\main\util_md5.h"\
 	"..\..\regex\regex.h"\
 	".\readdir.h"\
 	
@@ -204,23 +204,23 @@ DEP_CPP_MOD_D=\
 !ELSEIF  "$(CFG)" == "ApacheModuleDigest - Win32 Debug"
 
 DEP_CPP_MOD_D=\
-	"..\..\core\alloc.h"\
-	"..\..\core\buff.h"\
-	"..\..\core\conf.h"\
-	"..\..\core\http_config.h"\
-	"..\..\core\http_core.h"\
-	"..\..\core\http_log.h"\
-	"..\..\core\http_protocol.h"\
-	"..\..\core\httpd.h"\
-	"..\..\core\md5.h"\
-	"..\..\core\util_md5.h"\
+	"..\..\main\alloc.h"\
+	"..\..\main\buff.h"\
+	"..\..\main\conf.h"\
+	"..\..\main\http_config.h"\
+	"..\..\main\http_core.h"\
+	"..\..\main\http_log.h"\
+	"..\..\main\http_protocol.h"\
+	"..\..\main\httpd.h"\
+	"..\..\main\md5.h"\
+	"..\..\main\util_md5.h"\
 	"..\..\regex\regex.h"\
 	".\readdir.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_D=\
-	"..\..\core\sfio.h"\
+	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\mod_digest.obj" : $(SOURCE) $(DEP_CPP_MOD_D) "$(INTDIR)"

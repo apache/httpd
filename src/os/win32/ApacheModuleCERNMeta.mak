@@ -62,7 +62,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\regex" /I "..\..\core" /D "WIN32" /D\
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\regex" /I "..\..\main" /D "WIN32" /D\
  "NDEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleCERNMeta.pch" /YX\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleCERNMetaR/
@@ -118,7 +118,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\regex" /I "..\..\core" /D\
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\regex" /I "..\..\main" /D\
  "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleCERNMeta.pch" /YX\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleCERNMetaD/
@@ -183,14 +183,14 @@ SOURCE=..\..\modules\standard\mod_cern_meta.c
 !IF  "$(CFG)" == "ApacheModuleCERNMeta - Win32 Release"
 
 DEP_CPP_MOD_C=\
-	"..\..\core\alloc.h"\
-	"..\..\core\buff.h"\
-	"..\..\core\conf.h"\
-	"..\..\core\http_config.h"\
-	"..\..\core\http_log.h"\
-	"..\..\core\http_request.h"\
-	"..\..\core\httpd.h"\
-	"..\..\core\util_script.h"\
+	"..\..\main\alloc.h"\
+	"..\..\main\buff.h"\
+	"..\..\main\conf.h"\
+	"..\..\main\http_config.h"\
+	"..\..\main\http_log.h"\
+	"..\..\main\http_request.h"\
+	"..\..\main\httpd.h"\
+	"..\..\main\util_script.h"\
 	"..\..\regex\regex.h"\
 	".\readdir.h"\
 	
@@ -202,21 +202,21 @@ DEP_CPP_MOD_C=\
 !ELSEIF  "$(CFG)" == "ApacheModuleCERNMeta - Win32 Debug"
 
 DEP_CPP_MOD_C=\
-	"..\..\core\alloc.h"\
-	"..\..\core\buff.h"\
-	"..\..\core\conf.h"\
-	"..\..\core\http_config.h"\
-	"..\..\core\http_log.h"\
-	"..\..\core\http_request.h"\
-	"..\..\core\httpd.h"\
-	"..\..\core\util_script.h"\
+	"..\..\main\alloc.h"\
+	"..\..\main\buff.h"\
+	"..\..\main\conf.h"\
+	"..\..\main\http_config.h"\
+	"..\..\main\http_log.h"\
+	"..\..\main\http_request.h"\
+	"..\..\main\httpd.h"\
+	"..\..\main\util_script.h"\
 	"..\..\regex\regex.h"\
 	".\readdir.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_C=\
-	"..\..\core\sfio.h"\
+	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\mod_cern_meta.obj" : $(SOURCE) $(DEP_CPP_MOD_C) "$(INTDIR)"

@@ -62,7 +62,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\regex" /I "..\..\core" /D "WIN32" /D\
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\regex" /I "..\..\main" /D "WIN32" /D\
  "NDEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleExpires.pch" /YX\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleExpiresR/
@@ -118,7 +118,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\regex" /I "..\..\core" /D\
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\regex" /I "..\..\main" /D\
  "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleExpires.pch" /YX\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleExpiresD/
@@ -183,12 +183,12 @@ SOURCE=..\..\modules\standard\mod_expires.c
 !IF  "$(CFG)" == "ApacheModuleExpires - Win32 Release"
 
 DEP_CPP_MOD_E=\
-	"..\..\core\alloc.h"\
-	"..\..\core\buff.h"\
-	"..\..\core\conf.h"\
-	"..\..\core\http_config.h"\
-	"..\..\core\http_log.h"\
-	"..\..\core\httpd.h"\
+	"..\..\main\alloc.h"\
+	"..\..\main\buff.h"\
+	"..\..\main\conf.h"\
+	"..\..\main\http_config.h"\
+	"..\..\main\http_log.h"\
+	"..\..\main\httpd.h"\
 	"..\..\regex\regex.h"\
 	".\readdir.h"\
 	
@@ -200,19 +200,19 @@ DEP_CPP_MOD_E=\
 !ELSEIF  "$(CFG)" == "ApacheModuleExpires - Win32 Debug"
 
 DEP_CPP_MOD_E=\
-	"..\..\core\alloc.h"\
-	"..\..\core\buff.h"\
-	"..\..\core\conf.h"\
-	"..\..\core\http_config.h"\
-	"..\..\core\http_log.h"\
-	"..\..\core\httpd.h"\
+	"..\..\main\alloc.h"\
+	"..\..\main\buff.h"\
+	"..\..\main\conf.h"\
+	"..\..\main\http_config.h"\
+	"..\..\main\http_log.h"\
+	"..\..\main\httpd.h"\
 	"..\..\regex\regex.h"\
 	".\readdir.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_E=\
-	"..\..\core\sfio.h"\
+	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\mod_expires.obj" : $(SOURCE) $(DEP_CPP_MOD_E) "$(INTDIR)"

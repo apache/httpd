@@ -62,7 +62,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\regex" /I "..\..\core" /D "WIN32" /D\
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\regex" /I "..\..\main" /D "WIN32" /D\
  "NDEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleRewrite.pch" /YX\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleRewriteR/
@@ -118,7 +118,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\regex" /I "..\..\core" /D\
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\regex" /I "..\..\main" /D\
  "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleRewrite.pch" /YX\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleRewriteD/
@@ -180,14 +180,14 @@ LINK32_OBJS= \
  "ApacheModuleRewrite - Win32 Debug"
 SOURCE=..\..\modules\standard\mod_rewrite.c
 DEP_CPP_MOD_R=\
-	"..\..\core\alloc.h"\
-	"..\..\core\buff.h"\
-	"..\..\core\conf.h"\
-	"..\..\core\http_config.h"\
-	"..\..\core\http_core.h"\
-	"..\..\core\http_log.h"\
-	"..\..\core\http_request.h"\
-	"..\..\core\httpd.h"\
+	"..\..\main\alloc.h"\
+	"..\..\main\buff.h"\
+	"..\..\main\conf.h"\
+	"..\..\main\http_config.h"\
+	"..\..\main\http_core.h"\
+	"..\..\main\http_log.h"\
+	"..\..\main\http_request.h"\
+	"..\..\main\httpd.h"\
 	"..\..\modules\standard\mod_rewrite.h"\
 	"..\..\regex\regex.h"\
 	".\readdir.h"\
@@ -195,7 +195,7 @@ DEP_CPP_MOD_R=\
 	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_R=\
-	"..\..\core\sfio.h"\
+	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\mod_rewrite.obj" : $(SOURCE) $(DEP_CPP_MOD_R) "$(INTDIR)"
