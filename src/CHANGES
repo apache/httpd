@@ -1,5 +1,11 @@
 Changes with Apache 1.3.2
 
+  *) Triggered by the recent "Via:" header changes, the proxy module would
+     dump core for replies with invalid headers (e.g., duplicate
+     "HTTP/1.0 200 OK" lines). These errors are now logged and the
+     core dump is avoided. Also, broken replies are not cached.
+     [Martin Kraemer]
+
   *) new `GprofDir' directive when compiled with -DGPROF, where gprof can
      plop gmon.out profile data for each child [Doug MacEachern]
    

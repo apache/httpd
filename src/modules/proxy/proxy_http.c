@@ -366,6 +366,9 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     if (len == -1 || len == 0) {
 	ap_bclose(f);
 	ap_kill_timeout(r);
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+		     "ap_bgets() - proxy receive - Error reading from remote server %s",
+		     proxyhost ? proxyhost : desthost);
 	return ap_proxyerror(r, "Error reading from remote server");
     }
 
@@ -396,6 +399,13 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 /* Also, take care with headers with multiple occurences. */
 
 	resp_hdrs = ap_proxy_read_headers(p, buffer, HUGE_STRING_LEN, f);
+	if (resp_hdrs == NULL) {
+	    ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, r->server,
+		 "proxy: Bad HTTP/%d.%d header returned by %s (%s)",
+		 major, minor, r->uri, r->method);
+	    resp_hdrs = ap_make_table(p, 20);
+	    nocache = 1;    /* do not cache this broken file */
+	}
 
 	if (conf->viaopt != via_off && conf->viaopt != via_block) {
 	    /* Create a "Via:" response header entry and merge it */
