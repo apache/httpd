@@ -264,7 +264,7 @@ static int check_user_access(request_rec *r)
 	method_restricted = 1;
 
 	t = reqs[x].requirement;
-	w = ap_getword(r->pool, &t, ' ');
+	w = ap_getword_white(r->pool, &t);
 	if (!strcmp(w, "valid-user"))
 	    return OK;
 	if (!strcmp(w, "user")) {

@@ -266,7 +266,7 @@ static int dbm_check_auth(request_rec *r)
 	    continue;
 
 	t = reqs[x].requirement;
-	w = ap_getword(r->pool, &t, ' ');
+	w = ap_getword_white(r->pool, &t);
 
 	if (!strcmp(w, "group") && sec->auth_dbmgrpfile) {
 	    const char *orig_groups, *groups;
@@ -283,7 +283,7 @@ static int dbm_check_auth(request_rec *r)
 	    }
 	    orig_groups = groups;
 	    while (t[0]) {
-		w = ap_getword(r->pool, &t, ' ');
+		w = ap_getword_white(r->pool, &t);
 		groups = orig_groups;
 		while (groups[0]) {
 		    v = ap_getword(r->pool, &groups, ',');
