@@ -178,7 +178,7 @@ local-all: $(TARGETS)
 local-shared-build: $(SHARED_TARGETS)
 
 local-depend: x-local-depend
-	if test "`echo $(srcdir)/*.c`" != "$(srcdir)'/*.c'"; then \
+	if test -n "`ls $(srcdir)/*.c 2> /dev/null`"; then \
 		$(CC) -MM $(ALL_CPPFLAGS) $(ALL_INCLUDES) $(srcdir)/*.c | sed 's/\.o:/.lo:/' > $(builddir)/.deps || true;           \
 	fi
 
