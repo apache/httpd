@@ -1391,14 +1391,21 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_lock_fname = apr_psprintf(_pconf, "%s.%" APR_OS_PROC_T_FMT,
                                  ap_server_root_relative(_pconf, ap_lock_fname),
                                  ap_my_pid);
+
+#if APR_HAS_CREATE_LOCKS_NP
     rv = apr_proc_mutex_create_np(&accept_mutex, ap_lock_fname, 
                                   ap_accept_lock_mech, _pconf);
+#else
+    rv = apr_proc_mutex_create(&accept_mutex, ap_lock_fname, _pconf);
+#endif /* APR_HAS_CREATE_LOCKS_NP */
+
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                      "Couldn't create accept lock");
         return 1;
     }
 
+#if APR_HAS_CREATE_LOCKS_NP
 #if APR_USE_SYSVSEM_SERIALIZE
     if (ap_accept_lock_mech == APR_LOCK_DEFAULT || 
         ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
@@ -1412,6 +1419,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             return 1;
         }
     }
+#endif /* APR_HAS_CREATE_LOCKS_NP */
 
     if (!is_graceful) {
         ap_run_pre_mpm(pconf, SB_SHARED);
