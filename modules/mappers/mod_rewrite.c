@@ -1206,6 +1206,7 @@ static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
     rewrite_server_conf *conf;
     apr_hash_index_t *hi;
     apr_status_t rc;
+    int lock_warning_issued = 0;
 
     conf = ap_get_module_config(s->module_config, &rewrite_module);
 
@@ -1230,6 +1231,13 @@ static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
         }
         if (!(map->argv[0]) || !*(map->argv[0]) || map->fpin || map->fpout) {
             continue;
+        }
+
+        if (!lock_warning_issued && (!lockname || !*lockname)) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "mod_rewrite: Running external rewrite maps "
+                         "without defining a RewriteLock is DANGEROUS!");
+            ++lock_warning_issued;
         }
 
         rc = rewritemap_program_child(p, map->argv[0], map->argv,
