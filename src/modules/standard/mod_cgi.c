@@ -535,9 +535,6 @@ static int cgi_handler(request_rec *r)
 
     if (script_in && nph) {
 	send_fb(script_in, r);
-#if !defined(__EMX__) && !defined(WIN32)
-	waitpid(child_pid, (int *) 0, 0);
-#endif
     }
 
     return OK;			/* NOT r->status, even if it has changed. */
