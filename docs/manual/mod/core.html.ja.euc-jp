@@ -25,8 +25,6 @@
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>常に使用可能な Apache HTTP サーバのコア機能</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Core</td></tr></table>
 </div>
@@ -396,8 +394,9 @@
       特定のディレクトリにおける機能を指定するためのディレクティブの使用を許可する
       (<code class="directive"><a href="#options">Options</a></code> と
       <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>)。
-      等号の後に、コンマで分割された(空白の入っていない)オプションのリストを
-      続けることでオプションを設定することができます。</dd>
+      <code class="directive"><a href="#options">Options</a></code> で設定するオプション
+      を、(空白を含めない) コンマ区切りのリストにして等号の後に続けることで
+      設定できます。</dd>
     </dl>
 
     <p>例:</p>

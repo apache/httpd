@@ -25,8 +25,6 @@
 <a href="../ja/mod/mod_dir.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>「最後のスラッシュ」のリダイレクトと、ディレクトリの
 インデックスファイルを扱う機能を提供する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
@@ -123,7 +121,7 @@
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_dir</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.1 以降</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.51 以降</td></tr>
 </table>
     <p>要求のあった URL がディレクトリを指すかどうかを、
     <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> が調整するべきかどうかを
