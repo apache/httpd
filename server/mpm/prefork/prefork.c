@@ -1001,7 +1001,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     SAFE_ACCEPT(accept_mutex_init(pconf));
     if (!is_graceful) {
-        ap_run_pre_mpm(pconf, SB_SHARED);
+        if (ap_run_pre_mpm(pconf, SB_SHARED) != OK) {
+            return 1;
+        }
     }
 #ifdef SCOREBOARD_FILE
     else {

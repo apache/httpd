@@ -1305,7 +1305,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     if (!is_graceful) {
-        ap_run_pre_mpm(pconf, SB_SHARED);
+        if (ap_run_pre_mpm(pconf, SB_SHARED) != OK) {
+            return 1;
+        }
     }
     /* Initialize the child table */
     if (!is_graceful) {

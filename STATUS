@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/27 08:11:09 $]
+Last modified at [$Date: 2002/01/28 00:41:31 $]
 
 Release:
 
@@ -91,11 +91,6 @@ RELEASE SHOWSTOPPERS:
                 LOCKALL and CROSS_PROCESS are not yet complete on all
                 platforms, and should only be used in MPMs like worker
                 with limited OS exposure.
-
-    * ap_create_scoreboard() can exit the process, leaving stuff like
-      mod_cgid's daemon process stranded.  Either ap_create_scoreboard()
-      needs to be called at a different time or the pre-mpm hook needs
-      to be able to return an error code.
 
     * A binbuild installation picks up the right libraries when
       running apachectl because we set the appropriate environment

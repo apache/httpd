@@ -99,9 +99,9 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(pre_mpm)
 )
  
-AP_IMPLEMENT_HOOK_VOID(pre_mpm,
-                       (apr_pool_t *p, ap_scoreboard_e sb_type),
-                       (p, sb_type))
+AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_mpm,
+                          (apr_pool_t *p, ap_scoreboard_e sb_type),
+                          (p, sb_type),OK,DECLINED)
 
 struct ap_sb_handle_t {
     int child_num;
@@ -237,7 +237,7 @@ apr_status_t ap_cleanup_scoreboard(void *d)
 /* Create or reinit an existing scoreboard. The MPM can control whether
  * the scoreboard is shared across multiple processes or not
  */
-void ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
+int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
 {
     int running_gen = 0;
 #if APR_HAS_SHARED_MEMORY
@@ -255,7 +255,7 @@ void ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
             void *sb_shared;
             rv = open_scoreboard(p);
             if (rv || !(sb_shared = apr_shm_baseaddr_get(ap_scoreboard_shm))) {
-                exit(APEXIT_INIT); /* XXX need to return an error from this function */
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
             memset(sb_shared, 0, scoreboard_size);
             ap_init_scoreboard(sb_shared);
@@ -264,7 +264,7 @@ void ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
             void *sb_shared;
             rv = reopen_scoreboard(p, 1);
             if (rv || !(sb_shared = apr_shm_baseaddr_get(ap_scoreboard_shm))) {
-                exit(APEXIT_INIT); /* XXX need to return an error from this function */
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
             ap_init_scoreboard(sb_shared);
         }
@@ -277,7 +277,7 @@ void ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
                 ap_log_error(APLOG_MARK, APLOG_CRIT | APLOG_NOERRNO, 0, NULL,
                              "(%d)%s: cannot allocate scoreboard",
                              errno, strerror(errno));
-                exit(APEXIT_INIT); /* XXX need to return an error from this function */
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
             ap_init_scoreboard(sb_mem);
         }
@@ -290,6 +290,7 @@ void ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
                                   apr_pool_cleanup_null);
     }
     ap_restart_time = apr_time_now();
+    return OK;
 }
 
 /* Routines called to deal with the scoreboard image
