@@ -327,35 +327,9 @@ union ssl_ipc_semun {
 #ifndef WIN32
 #define SSL_DBM_FILE_MODE ( S_IRUSR|S_IWUSR )
 #else
-#define SSL_USE_SDBM
 #define SSL_DBM_FILE_MODE ( _S_IREAD|_S_IWRITE )
 #endif
 
-#ifdef SSL_USE_SDBM
-#include "ssl_util_sdbm.h"
-#define ssl_dbm_open     sdbm_open
-#define ssl_dbm_close    sdbm_close
-#define ssl_dbm_store    sdbm_store
-#define ssl_dbm_fetch    sdbm_fetch
-#define ssl_dbm_delete   sdbm_delete
-#define ssl_dbm_firstkey sdbm_firstkey
-#define ssl_dbm_nextkey  sdbm_nextkey
-#define SSL_DBM_FILE_SUFFIX_DIR ".dir"
-#define SSL_DBM_FILE_SUFFIX_PAG ".pag"
-#else /* !SSL_USE_SDBM */
-#if defined(__GLIBC__) && defined(__GLIBC_MINOR__) \
-    && __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 1
-#include <db1/ndbm.h>
-#else
-#include <ndbm.h>
-#endif
-#define ssl_dbm_open     dbm_open
-#define ssl_dbm_close    dbm_close
-#define ssl_dbm_store    dbm_store
-#define ssl_dbm_fetch    dbm_fetch
-#define ssl_dbm_delete   dbm_delete
-#define ssl_dbm_firstkey dbm_firstkey
-#define ssl_dbm_nextkey  dbm_nextkey
 #if !defined(SSL_DBM_FILE_SUFFIX_DIR) && !defined(SSL_DBM_FILE_SUFFIX_PAG)
 #if defined(DBM_SUFFIX)
 #define SSL_DBM_FILE_SUFFIX_DIR DBM_SUFFIX
@@ -368,7 +342,6 @@ union ssl_ipc_semun {
 #define SSL_DBM_FILE_SUFFIX_PAG ".pag"
 #endif
 #endif
-#endif /* !SSL_USE_SDBM */
 
 /*
  * Check for OpenSSL version 
