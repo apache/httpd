@@ -860,14 +860,10 @@ struct conn_rec {
     unsigned aborted:1;
     /** Are we using HTTP Keep-Alive?  -1 fatal error, 0 undecided, 1 yes */
     signed int keepalive:2;
-    /** Did we use HTTP Keep-Alive? */
-    unsigned keptalive:1;
     /** have we done double-reverse DNS? -1 yes/failure, 0 not yet, 
      *  1 yes/success */
     signed int double_reverse:2;
 
-    /** How many times have we used it? */
-    int keepalives;
     /** server IP address */
     char *local_ip;
     /** used for ap_get_server_name when UseCanonicalName is set to DNS

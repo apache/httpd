@@ -191,6 +191,7 @@
 #include "http_core.h"          /* For REMOTE_NAME */
 #include "http_log.h"
 #include "http_protocol.h"
+#include "mod_core.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
@@ -527,13 +528,19 @@ static const char *log_child_pid(request_rec *r, char *a)
 }
 static const char *log_connection_status(request_rec *r, char *a)
 {
+#ifdef AP_HTTP_ENABLED
+    ap_http_conn_rec *hconn = ap_get_module_config(r->connection->conn_config, 
+                                                &http_module);
+#endif
     if (r->connection->aborted)
         return "X";
 
+#ifdef AP_HTTP_ENABLED
     if ((r->connection->keepalive) &&
-        ((r->server->keep_alive_max - r->connection->keepalives) > 0)) {
+        ((r->server->keep_alive_max - hconn->keepalives) > 0)) {
         return "+";
     }
+#endif
 
     return "-";
 }

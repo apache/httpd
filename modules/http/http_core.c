@@ -58,6 +58,7 @@
 
 #include "apr_strings.h"
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
+#include "apr_lib.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -65,6 +66,7 @@
 #define CORE_PRIVATE
 #include "httpd.h"
 #include "http_config.h"
+#include "http_log.h"
 #include "http_connection.h"
 #include "http_protocol.h"	/* For index_of_response().  Grump. */
 #include "http_request.h"
@@ -295,6 +297,151 @@ static int ap_process_http_connection(conn_rec *c)
     return OK;
 }
 
+static int read_request_line(request_rec *r)
+{
+    char l[DEFAULT_LIMIT_REQUEST_LINE + 2]; /* getline's two extra for \n\0 */
+    const char *ll = l;
+    const char *uri;
+    const char *pro;
+ 
+    int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
+    int len;
+ 
+    /* Read past empty lines until we get a real request line,
+     * a read error, the connection closes (EOF), or we timeout.
+     *
+     * We skip empty lines because browsers have to tack a CRLF on to the end
+     * of POSTs to support old CERN webservers.  But note that we may not
+     * have flushed any previous response completely to the client yet.
+     * We delay the flush as long as possible so that we can improve
+     * performance for clients that are pipelining requests.  If a request
+     * is pipelined then we won't block during the (implicit) read() below.
+     * If the requests aren't pipelined, then the client is still waiting
+     * for the final buffer flush from us, and we will block in the implicit
+     * read().  B_SAFEREAD ensures that the BUFF layer flushes if it will
+     * have to block during a read.
+     */
+ 
+    while ((len = ap_getline(l, sizeof(l), r, 0)) <= 0) {
+        if (len < 0) {             /* includes EOF */
+            /* this is a hack to make sure that request time is set,
+             * it's not perfect, but it's better than nothing
+             */
+            r->request_time = apr_time_now();
+            return 0;
+        }
+    }
+    /* we've probably got something to do, ignore graceful restart requests */
+ 
+    /* XXX - sigwait doesn't work if the signal has been SIG_IGNed (under
+     * linux 2.0 w/ glibc 2.0, anyway), and this step isn't necessary when
+     * we're running a sigwait thread anyway. If/when unthreaded mode is
+     * put back in, we should make sure to ignore this signal iff a sigwait
+     * thread isn't used. - mvsk
+ 
+#ifdef SIGWINCH
+    apr_signal(SIGWINCH, SIG_IGN);
+#endif
+    */
+ 
+    r->request_time = apr_time_now();
+    r->the_request = apr_pstrdup(r->pool, l);
+    r->method = ap_getword_white(r->pool, &ll);
+ 
+#if 0
+/* XXX If we want to keep track of the Method, the protocol module should do
+ * it.  That support isn't in the scoreboard yet.  Hopefully next week
+ * sometime.   rbb */
+    ap_update_connection_status(AP_CHILD_THREAD_FROM_ID(conn->id), "Method", r->method);
+#endif
+    uri = ap_getword_white(r->pool, &ll);
+ 
+    /* Provide quick information about the request method as soon as known */
+ 
+    r->method_number = ap_method_number_of(r->method);
+    if (r->method_number == M_GET && r->method[0] == 'H') {
+        r->header_only = 1;
+    }
+ 
+    ap_parse_uri(r, uri);
+ 
+    /* ap_getline returns (size of max buffer - 1) if it fills up the
+     * buffer before finding the end-of-line.  This is only going to
+     * happen if it exceeds the configured limit for a request-line.
+     */
+    if (len > r->server->limit_req_line) {
+        r->status    = HTTP_REQUEST_URI_TOO_LARGE;
+        r->proto_num = HTTP_VERSION(1,0);
+        r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
+        return 0;
+    }
+ 
+    if (ll[0]) {
+        r->assbackwards = 0;
+        pro = ll;
+        len = strlen(ll);
+    } else {
+        r->assbackwards = 1;
+        pro = "HTTP/0.9";
+        len = 8;
+    }
+    r->protocol = apr_pstrndup(r->pool, pro, len);
+ 
+    /* XXX ap_update_connection_status(conn->id, "Protocol", r->protocol); */
+ 
+    /* Avoid sscanf in the common case */
+    if (len == 8 &&
+        pro[0] == 'H' && pro[1] == 'T' && pro[2] == 'T' && pro[3] == 'P' &&
+        pro[4] == '/' && apr_isdigit(pro[5]) && pro[6] == '.' &&
+        apr_isdigit(pro[7])) {
+        r->proto_num = HTTP_VERSION(pro[5] - '0', pro[7] - '0');
+    } else if (2 == sscanf(r->protocol, "HTTP/%u.%u", &major, &minor)
+               && minor < HTTP_VERSION(1,0))    /* don't allow HTTP/0.1000 */
+        r->proto_num = HTTP_VERSION(major, minor);
+    else
+        r->proto_num = HTTP_VERSION(1,0);
+ 
+    return 1;
+}
+
+static int http_create_request(request_rec *r)
+{
+    ap_http_conn_rec *hconn = ap_get_module_config(r->connection->conn_config, &http_module);
+    int keptalive;
+
+    hconn = apr_pcalloc(r->pool, sizeof(*hconn));
+    ap_set_module_config(r->connection->conn_config, &http_module, hconn);
+
+    if (!r->main && !r->prev && !r->next) {
+        keptalive = r->connection->keepalive == 1;
+        r->connection->keepalive    = 0;
+ 
+        /* XXX can we optimize these timeouts at all? gstein */
+        apr_setsocketopt(r->connection->client_socket, APR_SO_TIMEOUT,
+                         (int)(keptalive
+                         ? r->server->keep_alive_timeout * APR_USEC_PER_SEC
+                         : r->server->timeout * APR_USEC_PER_SEC));
+ 
+        /* Get the request... */
+        if (!read_request_line(r)) {
+            if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                              "request failed: URI too long");
+                ap_send_error_response(r, 0);
+                ap_run_log_transaction(r);
+                return OK;
+            }
+            return DONE;
+        }
+        if (keptalive) {
+            apr_setsocketopt(r->connection->client_socket,
+                             APR_SO_TIMEOUT,
+                             (int)(r->server->timeout * APR_USEC_PER_SEC));
+        }
+    }
+    return OK;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_pre_connection(ap_pre_http_connection,NULL,NULL,
@@ -303,6 +450,7 @@ static void register_hooks(apr_pool_t *p)
 			       APR_HOOK_REALLY_LAST);
     ap_hook_http_method(http_method,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_default_port(http_port,NULL,NULL,APR_HOOK_REALLY_LAST);
+    ap_hook_create_request(http_create_request, NULL, NULL, APR_HOOK_MIDDLE);
 
     ap_register_input_filter("HTTP_IN", ap_http_filter, AP_FTYPE_CONNECTION);
     ap_register_input_filter("DECHUNK", ap_dechunk_filter, AP_FTYPE_TRANSCODE);
