@@ -123,6 +123,15 @@ But even still, if you just need DNS names
 in some CGIs you could consider doing the
 <CODE>gethostbyname</CODE> call in the specific CGIs that need it.
 
+<p>Similarly, if you need to have hostname information in your server
+logs in order to generate reports of this information, you can
+postprocess your log file with <a href="../programs/logresolve.html"
+>logresolve</a>, so that these lookups can be done without making the
+client wait. It is recommended that you do this postprocessing, and any
+other statistical analysis of the log file, somewhere other than your
+production web server machine, in order that this activity does not
+adversely affect server performance.</p>
+
 <H4>FollowSymLinks and SymLinksIfOwnerMatch</H4>
 <P>Wherever in your URL-space you do not have an
 <CODE>Options FollowSymLinks</CODE>, or you do have an
