@@ -1026,6 +1026,7 @@ API_EXPORT(char *) ap_make_full_path(pool *a, const char *dir, const char *f);
 API_EXPORT(int) ap_is_matchexp(const char *str);
 API_EXPORT(int) ap_strcmp_match(const char *str, const char *exp);
 API_EXPORT(int) ap_strcasecmp_match(const char *str, const char *exp);
+API_EXPORT(char *) ap_stripprefix(const char *bigstring, const char *prefix);
 API_EXPORT(char *) ap_strcasestr(const char *s1, const char *s2);
 API_EXPORT(char *) ap_pbase64decode(pool *p, const char *bufcoded);
 API_EXPORT(char *) ap_pbase64encode(pool *p, char *string); 
@@ -1090,6 +1091,7 @@ char *strerror(int err);
 API_EXPORT(uid_t) ap_uname2id(const char *name);
 API_EXPORT(gid_t) ap_gname2id(const char *name);
 API_EXPORT(int) ap_is_directory(const char *name);
+API_EXPORT(int) ap_is_rdirectory(const char *name);
 API_EXPORT(int) ap_can_exec(const struct stat *);
 API_EXPORT(void) ap_chdir_file(const char *file);
 

@@ -1,5 +1,11 @@
 Changes with Apache 1.3.13
 
+  *) Add support for a "conf directory" which operates similar to
+     /etc/rc.d/init. Basically, if a config file is actually a
+     directory, all the files in that directory will be parsed
+     as conf files. PR #6397 [Jim Jagielski, Lionel Clark
+     <bishop@platypus.bc.ca>]
+
   *) Initial support added for mod_proxy under MPE/iX.
      [Mark Bixby <mark_bixby@hp.com>]
 
