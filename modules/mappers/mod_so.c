@@ -131,6 +131,7 @@
 #include "http_config.h"
 #include "http_log.h"
 #include "ap_config.h"
+#include "apr_dso.h"
 
 module MODULE_VAR_EXPORT so_module;
 
@@ -170,8 +171,11 @@ static void *so_sconf_create(ap_context_t *p, server_rec *s)
  * This is called as a cleanup function from the core.
  */
 
-static ap_status_t unload_module(moduleinfo *modi)
+static ap_status_t unload_module(void *data)
 {
+    ap_status_t stat;
+    moduleinfo *modi = (moduleinfo*)data;
+
     /* only unload if module information is still existing */
     if (modi->modp == NULL)
         return APR_SUCCESS;
@@ -180,7 +184,11 @@ static ap_status_t unload_module(moduleinfo *modi)
     ap_remove_loaded_module(modi->modp);
 
     /* unload the module space itself */
-    ap_os_dso_unload((ap_os_dso_handle_t)modi->modp->dynamic_load_handle);
+    if ((stat = ap_dso_unload(modi->modp->dynamic_load_handle)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, NULL,
+            "dso unload failure");
+        return stat;
+    }
 
     /* destroy the module information */
     modi->modp = NULL;
@@ -197,7 +205,10 @@ static ap_status_t unload_module(moduleinfo *modi)
 
 static ap_status_t unload_file(void *handle)
 {
-    ap_os_dso_unload((ap_os_dso_handle_t)handle);
+    ap_status_t stat;
+    
+    if ((stat = ap_dso_unload((ap_dso_handle_t *)handle)) != APR_SUCCESS)
+        return stat;
     return APR_SUCCESS;
 }
 
@@ -209,7 +220,9 @@ static ap_status_t unload_file(void *handle)
 static const char *load_module(cmd_parms *cmd, void *dummy, 
                                char *modname, char *filename)
 {
-    ap_os_dso_handle_t modhandle;
+    ap_status_t stat;
+    ap_dso_handle_t *modhandle;
+    ap_dso_handle_sym_t *modsym;
     module *modp;
     const char *szModuleFile=ap_server_root_relative(cmd->pool, filename);
     so_server_conf *sconf;
@@ -235,11 +248,11 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     /*
      * Load the file into the Apache address space
      */
-    if (!(modhandle = ap_os_dso_load(szModuleFile))) {
-	const char *my_error = ap_os_dso_error();
-	return ap_pstrcat (cmd->pool, "Cannot load ", szModuleFile,
+    if ((stat = ap_dso_load(&modhandle, szModuleFile, cmd->pool )) != APR_SUCCESS) {
+	    const char *my_error = ap_os_dso_error();
+        return ap_pstrcat (cmd->pool, "Cannot load ", szModuleFile,
 			" into server: ", 
-			my_error ? my_error : "(reason unknown)",
+			"(reason unknown)",
 			NULL);
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
@@ -250,12 +263,12 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * First with the hidden variant (prefix `AP_') and then with the plain
      * symbol name.
      */
-    if (!(modp = (module *)(ap_os_dso_sym(modhandle, modname)))) {
+    if ((stat = ap_dso_sym(modsym, modhandle, modname)) != APR_SUCCESS) {
 	return ap_pstrcat(cmd->pool, "Can't locate API module structure `", modname,
 		       "' in file ", szModuleFile, ": ", ap_os_dso_error(), NULL);
     }
-    modi->modp = modp;
-    modp->dynamic_load_handle = (void *)modhandle;
+    modi->modp = (module *)modsym;
+    modp->dynamic_load_handle = (ap_dso_handle_t *)modhandle;
 
     /* 
      * Make sure the found module structure is really a module structure
@@ -277,8 +290,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * we do a restart (or shutdown) this cleanup will cause the
      * shared object to be unloaded.
      */
-    ap_register_cleanup(cmd->pool, modi, 
-		     (ap_status_t (*)(void*))unload_module, ap_null_cleanup);
+    ap_register_cleanup(cmd->pool, modi, unload_module, ap_null_cleanup);
 
     /* 
      * Finally we need to run the configuration process for the module
@@ -295,16 +307,16 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 
 static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
 {
-    ap_os_dso_handle_t handle;
+    ap_status_t stat;
+    ap_dso_handle_t *handle;
     const char *file;
 
     file = ap_server_root_relative(cmd->pool, filename);
     
-    if (!(handle = ap_os_dso_load(file))) {
-	const char *my_error = ap_os_dso_error();
+    if ((stat = ap_dso_load(&handle, file, cmd->pool)) != APR_SUCCESS) {
 	return ap_pstrcat (cmd->pool, "Cannot load ", filename, 
 			" into server:", 
-			my_error ? my_error : "(reason unknown)",
+			"(reason unknown)",
 			NULL);
     }
     
@@ -345,11 +357,11 @@ static const command_rec so_cmds[] = {
 
 module MODULE_VAR_EXPORT so_module = {
    STANDARD20_MODULE_STUFF,
-   NULL,			/* create per-dir config */
-   NULL,			/* merge per-dir config */
+   NULL,			    /* create per-dir config */
+   NULL,			    /* merge per-dir config */
    so_sconf_create,		/* server config */
-   NULL,			/* merge server config */
-   so_cmds,			/* command ap_table_t */
-   NULL,			/* handlers */
-   NULL				/* register hooks */
+   NULL,			    /* merge server config */
+   so_cmds,			    /* command ap_table_t */
+   NULL,			    /* handlers */
+   NULL				    /* register hooks */
 };
