@@ -3,6 +3,63 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
+Project: "Apache"=".\Apache.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ApacheCore"=".\ApacheCore.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ap
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ApacheOS
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name gen_test_char
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name gen_uri_delims
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name regex
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Win9xConHook
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ApacheOS"=".\os\win32\ApacheOS.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "InstallBin"=".\InstallBin.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -87,7 +144,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Apache"=".\Apache.dsp" - Package Owner=<4>
+Project: "Win9xConHook"=".\os\win32\Win9xConHook.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -95,14 +152,11 @@ Package=<5>
 
 Package=<4>
 {{{
-    Begin Project Dependency
-    Project_Dep_Name ApacheCore
-    End Project Dependency
 }}}
 
 ###############################################################################
 
-Project: "ApacheCore"=".\ApacheCore.dsp" - Package Owner=<4>
+Project: "ap"=".\ap\ap.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -110,24 +164,66 @@ Package=<5>
 
 Package=<4>
 {{{
-    Begin Project Dependency
-    Project_Dep_Name ap
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name ApacheOS
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name gen_test_char
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name gen_uri_delims
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name regex
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Win9xConHook
-    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "gen_test_char"=".\main\gen_test_char.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "gen_uri_delims"=".\main\gen_uri_delims.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "htdigest"=".\support\htdigest.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "htpasswd"=".\support\htpasswd.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "logresolve"=".\support\logresolve.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
 }}}
 
 ###############################################################################
@@ -371,102 +467,6 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name ApacheCore
     End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "ApacheOS"=".\os\win32\ApacheOS.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "Win9xConHook"=".\os\win32\Win9xConHook.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "ap"=".\ap\ap.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "gen_test_char"=".\main\gen_test_char.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "gen_uri_delims"=".\main\gen_uri_delims.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "htdigest"=".\support\htdigest.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "htpasswd"=".\support\htpasswd.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "logresolve"=".\support\logresolve.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
 }}}
 
 ###############################################################################
