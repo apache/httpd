@@ -220,7 +220,6 @@ static int authenticate_basic_user(request_rec *r)
 	ap_note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
-    /* anyone know where the prototype for crypt is? */
     if (real_pw[0] == '$' && real_pw[1] == '1') {
         const char *salt = real_pw + 3;
         salt = ap_getword(r->pool, &salt, '$');

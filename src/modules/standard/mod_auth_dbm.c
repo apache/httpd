@@ -232,7 +232,6 @@ static int dbm_authenticate_basic_user(request_rec *r)
     colon_pw = strchr(real_pw, ':');
     if (colon_pw)
 	*colon_pw = '\0';
-    /* anyone know where the prototype for crypt is? */
     if (real_pw[0] == '$' && real_pw[1] == '1') {
         char *salt = real_pw + 3;
         salt = ap_getword(r->pool, &salt, '$');
