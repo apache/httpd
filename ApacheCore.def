@@ -433,7 +433,7 @@ EXPORTS
        ap_bucket_create_transient @460
        ap_bucket_split_shared @461
        ap_bucket_make_shared  @462
-       ap_bucket_destroy_shared @463
-       
-        ap_bucket_create_pool @464
-        ap_flush_type         @465 DATA
+       ap_bucket_destroy_shared @463       
+       ap_bucket_create_pool @464
+
+       ap_os_create_privileged_process @465
