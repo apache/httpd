@@ -124,7 +124,7 @@ PLATFORM="`$aux/GuessOS`"
 if [ "x$quiet" = "xno" ]; then
     APV=`cat $src/include/httpd.h |\
          grep "#define SERVER_BASEVERSION" |\
-         sed -e 's/^[^"]*"//' -e 's/".*$//' -e 's/^Apache\///'`
+         sed -e 's/^[^"]*"//' -e 's/".*$//' -e 's/^\///'`
     echo "Configuring for Apache, Version $APV"
 fi
 
