@@ -59,6 +59,7 @@ Servers</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#keepalivetimeout">KeepAliveTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limit">&lt;Limit&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitexcept">&lt;LimitExcept&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#limitinternalrecursion">LimitInternalRecursion</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitrequestbody">LimitRequestBody</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitrequestfields">LimitRequestFields</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitrequestfieldsize">LimitRequestFieldSize</a></li>
@@ -1626,6 +1627,44 @@ außer den genannten</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LimitInternalRecursion" id="LimitInternalRecursion">LimitInternalRecursion</a>-<a name="limitinternalrecursion" id="limitinternalrecursion">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Bestimmt die maximale Anzahl interner Umleitungen und 
+  verschachtelter Unteranfragen</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LimitInternalRecursion <var>Zahl</var> [<var>Zahl</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>LimitInternalRecursion 10</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Verfügbar ab Apache 2.1</td></tr>
+</table>
+    <p>Eine interne Umleitung erfolgt beispielsweise, wenn die Direktive
+    <code class="directive"><a href="../mod/mod_actions.html#action">Action</a></code> verwendet wird, welche
+    die Originalanfrage intern zu einem CGI-Skript weiterleitet. Eine
+    Unteranfrage <span class="transnote">(<em>Anm.d.Ü.:</em> engl. Subrequest)</span> ist ein Mechanismus des
+    Apache, um herauszufinden, was bei einer URI geschehen würde, wäre
+    sie angefordert worden. <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> z.B. verwendet
+    Unteranfragen, um nach den Dateien zu suchen, die in der <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>-Anweisung aufgeführt
+    sind.</p>
+    
+    <p><code class="directive">LimitInternalRecursion</code> bewahrt den Server vor
+      einem Absturz, wenn er in eine Endlosschleife aus internen Umleitungen
+      oder Unteranfragen hineinläuft. Derartige Schleifen werden
+      gewöhnlich durch Fehlkonfiguration verursacht.</p>
+
+    <p>Die Direktive setzt zwei verschiedene Begrenzungen, welche je Anfrage
+      ausgewertet werden. Die erste <var>Zahl</var> bestimmt die maximale
+      Anzahl der Umleitungen, die aufeinander folgen dürfen. Die zweite
+      <var>Zahl</var> legt fest, wie tief Unteranfragen ineinander
+      verschachtelt werden dürfen. Wenn Sie lediglich eine <var>Zahl</var>
+      angeben, wird sie beiden Begrenzungen zugewiesen.</p>
+
+    <div class="example"><h3>Beispiel</h3><p><code>
+      LimitInternalRecursion 5
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LimitRequestBody" id="LimitRequestBody">LimitRequestBody</a>-<a name="limitrequestbody" id="limitrequestbody">Direktive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Begrenzt die Gesamtgröße des vom Client gesendeten
@@ -1846,11 +1885,24 @@ URLs an</td></tr>
     der Reihenfolge ausgeführt, in der sie in der Konfigurationsdatei
     erscheinen.</p>
 
-    <p>Beachten Sie, dass URLs keineswegs mit dem Dateisystem
-    übereinstimmen müssen. Um es nochmal zu betonen,
-    <code class="directive">&lt;Location&gt;</code> operiert vollständig
-    außerhalb des Dateisystems.</p>
+    <p><code class="directive">&lt;Location&gt;</code>-Abschnitte operieren
+      vollständig außerhalb des Dateisystems. Dies hat mehrere
+      Konsequenzen. An Wichtigsten, <code class="directive">&lt;Location&gt;</code>-Anweisungen sollten nicht dafür
+      verwendet werden, den Zugriff zu Teilen des Dateisystems zu steuern. Da
+      mehrere unterschiedliche URLs auf die gleiche Stelle des Dateisystems
+      zeigen können, könnte eine solche Zugriffskontrolle u.U.
+      umgangen werden.</p>
+      
+    <div class="note"><h3>Wann sollte<code class="directive">&lt;Location&gt;</code> verwendet werden</h3>
 
+      <p>Verwenden Sie <code class="directive">&lt;Location&gt;</code>, um
+        Anweisungen auf Inhalte anzuwenden, die außerhalb des Dateisystems
+        abgelegt sind. Benutzen Sie <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> und <code class="directive"><a href="#files">&lt;Files&gt;</a></code> für Inhalte, die
+        innerhalb des Dateisystems abgelegt sind. Eine Ausnahme bildet 
+        <code>&lt;Location /&gt;</code>, welches ein einfacher Weg ist, um eine 
+        Konfiguration auf den gesamten Server anzuwenden.</p>
+    </div>
+ 
     <p>Für alle nicht-Proxy-Anfragen ist die entsprechende URL
     ein URL-Pfad in der Form <code>/path/</code>. Es dürfen weder ein
     Schema, noch ein Hostname, noch ein Port, noch ein Query-String einbezogen
@@ -2211,7 +2263,8 @@ bestimmten Verzeichnis verfügbar sind</td></tr>
 
       <dt><code>ExecCGI</code></dt>
 
-      <dd>Die Ausführung von CGI-Skripts ist erlaubt.</dd>
+      <dd>Die Ausführung von CGI-Skripten, welche <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>
+        verwenden, ist erlaubt.</dd>
 
       <dt><code>FollowSymLinks</code></dt>
 
@@ -2228,42 +2281,47 @@ bestimmten Verzeichnis verfügbar sind</td></tr>
       <dt><code>Includes</code></dt>
 
       <dd>
-      Server Side Includes sind erlaubt.</dd>
+      Server Side Includes, die von <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> bereitgestellt
+      werden, sind erlaubt.</dd>
 
       <dt><code>IncludesNOEXEC</code></dt>
 
       <dd>Server Side Includes sind erlaubt, <code>#exec cmd</code>
       und <code>#exec cgi</code> sind jedoch deaktiviert. Es ist aber noch
       möglich, CGI-Skripte aus
-      <code class="directive">ScriptAlias</code>-Verzeichnissen mittels
+      <code class="directive"><a href="../mod/mod_cgi.html#scriptalias">ScriptAlias</a></code>-Verzeichnissen mittels
       <code>#include virtual</code> einzubinden.</dd>
 
       <dt><code>Indexes</code></dt>
 
       <dd>Wenn eine URL, die auf ein Verzeichnis zeigt, in dem sich keine durch
-      <code class="directive">DirectoryIndex</code> definierte Indexdatei
-      (<em>z.B.</em> <code>index.html</code>) befindet, dann liefert der Server
-      eine formatierte Auflistung des Verzeichnisses zurück.</dd>
+        <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> definierte 
+        Indexdatei (<em>z.B.</em> <code>index.html</code>) befindet, dann liefert 
+        <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> eine formatierte Auflistung des 
+        Verzeichnisses zurück.</dd>
 
       <dt><code>MultiViews</code></dt>
 
-      <dd>"MultiViews" sind erlaubt (siehe <a href="../content-negotiation.html">Content-Negotiation</a>).</dd>
+      <dd>"MultiViews" sind bei der Verwendung von 
+        <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code> erlaubt (siehe <a href="../content-negotiation.html">Content-Negotiation</a>).</dd>
 
       <dt><code>SymLinksIfOwnerMatch</code></dt>
 
       <dd>Der Server folgt nur symbolischen Links, bei denen die Zieldatei
       bzw. das Zielverzeichnis der gleichen Benutzerkennung gehört, wie
-      der Link.<br />
-      <strong>Achtung</strong>: diese Option wird innerhalb eines
+      der Link.
+      <div class="note"><h3>Anmerkung</h3> Diese Option wird innerhalb eines
       <code class="directive"><a href="#location">&lt;Location&gt;</a></code>-Abschnitts
-      ignoriert.</dd>
+      ignoriert.</div></dd>
     </dl>
 
     <p>Wenn mehrere <code class="directive">Options</code> auf ein Verzeichnis
-    angewandt werden, dann greift normalerweise die
-    spezifischste Option <span class="transnote">(<em>Anm.d.Ü.:</em> Gemeint ist die zuletzt
-    ausgeführte Option.)</span>. Wenn jedoch <em>allen</em> Optionen
-    der <code class="directive">Options</code>-Anweisung eines der Zeichen
+    angewandt werden können, dann wird normalerweise die
+    spezifischste <span class="transnote">(<em>Anm.d.Ü.:</em> Gemeint ist die zuletzt
+    ausgeführte Option.)</span> verwendet und alle anderen werden
+    ignoriert; die Optionen werden nicht vermischt. (Siehe auch <a href="../sections.html#mergin">Wie Abschnitte zusammengeführt 
+    werden.</a>.) Wenn jedoch <em>allen</em> Optionen der 
+    <code class="directive">Options</code>-Anweisung eines der Zeichen
     <code>+</code> oder <code>-</code> vorangestellt wird, werden die Optionen
     zusammengemischt. Jede Option mit vorangestelltem <code>+</code> wird
     zu den momentan gültigen Optionen hinzugefügt und jede Option
