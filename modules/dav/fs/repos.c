@@ -1814,8 +1814,9 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
     }
     else {
         /* assert: what == DAV_PROP_INSERT_SUPPORTED */
-        s = apr_psprintf(p, "<supported-live-property name=\"%s\""
-                            " namespace=\"%s\" xmlns=\"DAV:\"/>" DEBUG_CR,
+        s = apr_psprintf(p,
+                         "<D:supported-live-property D:name=\"%s\" "
+                         "D:namespace=\"%s\"/>" DEBUG_CR,
                          info->name, dav_fs_namespace_uris[info->ns]);
     }
     ap_text_append(p, phdr, s);
@@ -1903,7 +1904,7 @@ static dav_error *dav_fs_patch_validate(const dav_resource *resource,
 
 }
 
-static dav_error *dav_fs_patch_exec(dav_resource *resource,
+static dav_error *dav_fs_patch_exec(const dav_resource *resource,
 				    const ap_xml_elem *elem,
 				    int operation,
 				    void *context,
@@ -1938,7 +1939,7 @@ static dav_error *dav_fs_patch_exec(dav_resource *resource,
     return NULL;
 }
 
-static void dav_fs_patch_commit(dav_resource *resource,
+static void dav_fs_patch_commit(const dav_resource *resource,
 				int operation,
 				void *context,
 				dav_liveprop_rollback *rollback_ctx)
@@ -1946,7 +1947,7 @@ static void dav_fs_patch_commit(dav_resource *resource,
     /* nothing to do */
 }
 
-static dav_error *dav_fs_patch_rollback(dav_resource *resource,
+static dav_error *dav_fs_patch_rollback(const dav_resource *resource,
 					int operation,
 					void *context,
 					dav_liveprop_rollback *rollback_ctx)
