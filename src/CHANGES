@@ -1,10 +1,15 @@
 Changes with Apache 1.2b5
 
+  *) Add rflush() function. [Alexei Kosut]
+
   *) remove duplicate pcalloc() call in new_connection().
 
   *) Fix incorrect comparison which could allow number of children =
      MaxClients + 1 if less than HARD_SERVER_LIMIT. Also fix potential
      problem if StartServers > HARD_SERVER_LIMIT. [Ed Korthof]
+
+  *) Updated support for OSes (MachTen, ULTRIX, Paragon, ISC, OpenBSD
+     AIX PS/2, CONVEXOS)
 
   *) Replace instances of inet_ntoa() with inet_addr() for ProxyBlock.
      It's more portable. [Martin Kraemer]
@@ -16,6 +21,8 @@ Changes with Apache 1.2b5
      caching to NoCache directive as well. ProxyBlock works with all
      handlers; NoCache now also works with FTP for anonymous logins.
      Still more code cleanup. [Chuck Murcko]
+
+  *) Add "header parse" API hook [Ben Laurie]
 
   *) Fix byte ordering problems for REMOTE_PORT [Chuck Murcko]
 
