@@ -91,6 +91,10 @@ $CFG_CFLAGS =~ s|\s+`.+apaci`||;
 ##
 ##  Initial shared object support check
 ##
+if (not -x `$CFG_SBINDIR/$CFG_TARGET`) {
+	print STDERR "apxs:Error: $CFG_SBINDIR/$CFG_TARGET not found or not executable\n";
+	exit(1);
+}
 if (not grep(/mod_so/, `$CFG_SBINDIR/$CFG_TARGET -l`)) {
     print STDERR "apxs:Error: Sorry, no shared object support for Apache\n";
     print STDERR "apxs:Error: available under your platform. Make sure\n";
