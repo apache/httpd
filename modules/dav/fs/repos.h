@@ -64,25 +64,6 @@
 #define DAV_FS_STATE_FILE_FOR_DIR	".state_for_dir"
 #define DAV_FS_LOCK_NULL_FILE	        ".locknull"
 
-#ifndef WIN32
-
-#define DAV_FS_MODE_DIR		(S_IRWXU | S_IRWXG)
-#define DAV_FS_MODE_FILE	(S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP)
-#define DAV_FS_MODE_XUSR    (S_IXUSR)
-
-#else /* WIN32 */
-
-#define DAV_FS_MODE_DIR		(_S_IREAD | _S_IWRITE)
-#define DAV_FS_MODE_FILE	(_S_IREAD | _S_IWRITE)
-#define DAV_FS_MODE_XUSR    (_S_IEXEC)
-
-#include <limits.h>
-
-typedef int ssize_t;
-
-#define mkdir(p,m)		_mkdir(p)
-
-#endif /* WIN32 */
 
 /* ensure that our state subdirectory is present */
 void dav_fs_ensure_state_dir(ap_pool_t *p, const char *dirname);
