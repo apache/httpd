@@ -18,3 +18,10 @@ config_vars.mk
 .libs
 httpd
 modules.lo
+Debug
+Release
+LibD
+LibR
+Apache.ncb
+Apache.opt
+InstallBin.plg
