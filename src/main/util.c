@@ -1398,7 +1398,7 @@ API_EXPORT(int) ap_unescape_url(char *url)
 	if (url[y] != '%')
 	    url[x] = url[y];
 	else {
-	    if (!isxdigit(url[y + 1]) || !isxdigit(url[y + 2])) {
+	    if (!ap_isxdigit(url[y + 1]) || !ap_isxdigit(url[y + 2])) {
 		badesc = 1;
 		url[x] = '%';
 	    }

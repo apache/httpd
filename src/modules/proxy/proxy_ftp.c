@@ -77,7 +77,7 @@ static int decodeenc(char *x)
     for (i = 0, j = 0; x[i] != '\0'; i++, j++) {
 /* decode it if not already done */
 	ch = x[i];
-	if (ch == '%' && isxdigit(x[i + 1]) && isxdigit(x[i + 2])) {
+	if (ch == '%' && ap_isxdigit(x[i + 1]) && ap_isxdigit(x[i + 2])) {
 	    ch = ap_proxy_hex2c(&x[i + 1]);
 	    i += 2;
 	}
@@ -97,7 +97,7 @@ static int ftp_check_string(const char *x)
 
     for (i = 0; x[i] != '\0'; i++) {
 	ch = x[i];
-	if (ch == '%' && isxdigit(x[i + 1]) && isxdigit(x[i + 2])) {
+	if (ch == '%' && ap_isxdigit(x[i + 1]) && ap_isxdigit(x[i + 2])) {
 	    ch = ap_proxy_hex2c(&x[i + 1]);
 	    i += 2;
 	}

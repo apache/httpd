@@ -109,7 +109,7 @@ API_EXPORT(int) ap_checkmask(const char *data, const char *mask)
 		return 0;
 	    break;
 	case '&':
-	    if (!isxdigit(d))
+	    if (!ap_isxdigit(d))
 		return 0;
 	    break;
 	case '~':

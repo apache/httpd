@@ -1664,7 +1664,7 @@ static long get_chunk_size(char *b)
 {
     long chunksize = 0;
 
-    while (isxdigit(*b)) {
+    while (ap_isxdigit(*b)) {
         int xvalue = 0;
 
         if (*b >= '0' && *b <= '9')
@@ -1742,7 +1742,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 
         chunk_start = getline(buffer, bufsiz, r->connection->client, 0);
         if ((chunk_start <= 0) || (chunk_start >= (bufsiz - 1))
-            || !isxdigit(*buffer)) {
+            || !ap_isxdigit(*buffer)) {
             r->connection->keepalive = -1;
             return -1;
         }

@@ -1,5 +1,8 @@
 Changes with Apache 1.3.5
 
+  *) ap_isxdigit was somehow neglected when adding the ap_isfoo() macros
+     for 8-bit safeness.  [Dean Gaudet]
+
   *) Use -fPIC instead of -fpic on Solaris and SunOS for compiling DSOs
      because SPARCs have a small machine-specific maximum size for the Global
      Offset Table which is often exceeded when compiling one of the larger

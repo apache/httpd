@@ -79,6 +79,7 @@ extern "C" {
 #define ap_ispunct(c) (ispunct(((unsigned char)(c))))
 #define ap_isspace(c) (isspace(((unsigned char)(c))))
 #define ap_isupper(c) (isupper(((unsigned char)(c))))
+#define ap_isxdigit(c) (isxdigit(((unsigned char)(c))))
 #define ap_tolower(c) (tolower(((unsigned char)(c))))
 #define ap_toupper(c) (toupper(((unsigned char)(c))))
 

@@ -178,7 +178,7 @@ char *
 	}
 /* decode it if not already done */
 	if (isenc && ch == '%') {
-	    if (!isxdigit(x[i + 1]) || !isxdigit(x[i + 2]))
+	    if (!ap_isxdigit(x[i + 1]) || !ap_isxdigit(x[i + 2]))
 		return NULL;
 	    ch = ap_proxy_hex2c(&x[i + 1]);
 	    i += 2;
