@@ -423,6 +423,7 @@ typedef struct {
 #endif    
 
     apr_array_header_t *filters;
+    apr_array_header_t *input_filters;
 } core_dir_config;
 
 /* Per-server core configuration */

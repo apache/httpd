@@ -806,8 +806,11 @@ struct request_rec {
 #endif /*APACHE_XLATE*/
 
     /** A list of output filters to be used for this request 
-     *  @defvar ap_filter_t *filters */
+     *  @defvar ap_filter_t *output_filters */
     struct ap_filter_t *output_filters;
+    /** A list of input filters to be used for this request 
+     *  @defvar ap_filter_t *filters */
+    struct ap_filter_t *input_filters;
     /** A flag to determine if the eos bucket has been sent yet
      *  @defvar int eos_sent */
     int eos_sent;

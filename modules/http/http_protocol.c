@@ -1249,6 +1249,7 @@ request_rec *ap_read_request(conn_rec *conn)
     r->status          = HTTP_REQUEST_TIME_OUT;  /* Until we get a request */
     r->the_request     = NULL;
     r->output_filters  = conn->output_filters;
+    r->input_filters   = conn->input_filters;
 
 #ifdef APACHE_XLATE
     r->rrx = apr_pcalloc(p, sizeof(struct ap_rr_xlate));
