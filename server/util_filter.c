@@ -329,7 +329,7 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
     f->ctx = ctx;
     f->r = r;
     f->c = c;
-    f->next = f->prev = NULL;
+    f->next = NULL;
 
     if (INSERT_BEFORE(f, *outf)) {
         f->next = *outf;
@@ -351,10 +351,6 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
             }
             if (first && first != (*outf)) {
                 first->next = f;
-                f->prev = first;
-            }
-            if (*outf && ((*outf)->prev == first)) {
-                (*outf)->prev = f;
             }
         }
         *outf = f;
@@ -365,11 +361,7 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
             fscan = fscan->next;
 
         f->next = fscan->next;
-        if (fscan->next->prev == fscan) {
-            f->prev = fscan;
-            fscan->next->prev = f;
-            fscan->next = f;
-        }
+	fscan->next = f;
     }
 
     if (frec->ftype < AP_FTYPE_CONNECTION && (*r_filters == *c_filters)) {
@@ -472,7 +464,6 @@ static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt, ap_filter_t 
 
     if (*curr == f) {
         *curr = (*curr)->next;
-        (*curr)->prev = NULL;
         return;
     }
 
@@ -483,7 +474,6 @@ static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt, ap_filter_t 
     }
 
     fscan->next = f->next;
-    f->next->prev = fscan;
 }
 
 AP_DECLARE(void) ap_remove_input_filter(ap_filter_t *f)

@@ -4040,7 +4040,7 @@ static void register_hooks(apr_pool_t *p)
                                   AP_FTYPE_NETWORK);
     ap_subreq_core_filter_handle =
         ap_register_output_filter("SUBREQ_CORE", ap_sub_req_output_filter,
-                                  AP_FTYPE_HTTP_HEADER);
+                                  AP_FTYPE_CONTENT + 5);
     ap_old_write_func = ap_register_output_filter("OLD_WRITE",
                                    ap_old_write_filter, AP_FTYPE_CONTENT - 10);
 }
