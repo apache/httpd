@@ -60,6 +60,7 @@
 #include "mod_proxy.h"
 #include "http_main.h"
 #include "http_log.h"
+#include "http_core.h"
 
 #define AUTODETECT_PWD
 
