@@ -362,6 +362,7 @@ install-support:
 		$(INSTALL_SCRIPT) $(TOP)/$(SRC)/.apaci.install.tmp $(root)$(sbindir)/$${apachectl}; \
 	echo "$(INSTALL_DATA) $(TOP)/$(SRC)/support/apachectl.8 $(root)$(mandir)/man8/$${apachectl}.8"; \
 	$(INSTALL_DATA) $(TOP)/$(SRC)/support/apachectl.8 $(root)$(mandir)/man8/$${apachectl}.8
+	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/checkgid $(root)$(bindir)/checkgid
 	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/htpasswd $(root)$(bindir)/htpasswd
 	$(INSTALL_DATA) $(TOP)/$(SRC)/support/htpasswd.1 $(root)$(mandir)/man1/htpasswd.1
 	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/htdigest $(root)$(bindir)/htdigest
@@ -414,6 +415,7 @@ install-binsupport:
 		$(INSTALL_SCRIPT) $(TOP)/$(SRC)/.apaci.install.tmp $(root)$(sbindir)/$${apachectl}; \
 	echo "$(INSTALL_DATA) $(TOP)/$(SRC)/support/apachectl.8 $(root)$(mandir)/man8/$${apachectl}.8"; \
 	$(INSTALL_DATA) $(TOP)/$(SRC)/support/apachectl.8 $(root)$(mandir)/man8/$${apachectl}.8
+	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/checkgid $(root)$(bindir)/checkgid
 	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/htpasswd $(root)$(bindir)/htpasswd
 	$(INSTALL_DATA) $(TOP)/$(SRC)/support/htpasswd.1 $(root)$(mandir)/man1/htpasswd.1
 	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/htdigest $(root)$(bindir)/htdigest
