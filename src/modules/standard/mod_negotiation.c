@@ -740,7 +740,7 @@ int read_types_multi (negotiation_state *neg)
     ++filp;
     prefix_len = strlen (filp);
 
-    dirp = opendir (neg->dir_name); /* Not pool protected; sigh... */
+    dirp = popendir (neg->pool, neg->dir_name);
 
     if (dirp == NULL) {
         log_reason("cannot read directory for multi", neg->dir_name, r);
@@ -783,7 +783,7 @@ int read_types_multi (negotiation_state *neg)
 	     !strcmp (sub_req->content_type, MAP_FILE_MAGIC_TYPE)) || 
 	    ((sub_req->handler) && 
 	    !strcmp (sub_req->handler, "type-map"))) {
-	    closedir(dirp);
+	    pclosedir(neg->pool, dirp);
 	    
 	    neg->avail_vars->nelts = 0;
 	    return read_type_map (neg, sub_req);
@@ -816,7 +816,7 @@ int read_types_multi (negotiation_state *neg)
 	clean_var_rec(&mime_info);
     }
 
-    closedir(dirp);
+    pclosedir(neg->pool, dirp);
     return OK;
 }
 

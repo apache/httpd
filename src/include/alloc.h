@@ -227,6 +227,10 @@ void pregfree (pool *p, regex_t *reg);
 int pfclose(struct pool *, FILE *);
 int pclosef(struct pool *, int fd);
 
+/* routines to deal with directories */
+DIR *popendir (pool *p, const char *name);
+void pclosedir (pool *p, DIR *d);
+
 /* ... even child processes (which we may want to wait for,
  * or to kill outright, on unexpected termination).
  *

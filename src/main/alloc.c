@@ -921,6 +921,41 @@ int pfclose(pool *a, FILE *fd)
   return res;
 }
 
+/*
+ * DIR * with cleanup
+ */
+
+static void dir_cleanup (void *dv)
+{
+    closedir ((DIR *)dv);
+}
+
+DIR *popendir (pool *p, const char *name)
+{
+    DIR *d;
+    int save_errno;
+
+    block_alarms ();
+    d = opendir (name);
+    if (d == NULL) {
+	save_errno = errno;
+	unblock_alarms ();
+	errno = save_errno;
+	return NULL;
+    }
+    register_cleanup (p, (void *)d, dir_cleanup, dir_cleanup);
+    unblock_alarms ();
+    return d;
+}
+
+void pclosedir (pool *p, DIR *d)
+{
+    block_alarms ();
+    kill_cleanup (p, (void *)d, dir_cleanup);
+    closedir (d);
+    unblock_alarms ();
+}
+
 /*****************************************************************
  *
  * Files and file descriptors; these are just an application of the

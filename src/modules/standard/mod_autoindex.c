@@ -776,7 +776,7 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
     char *tmp;
     int dir_opts = find_opts(dir_conf, r);
 
-    if(!(d=opendir(name))) {
+    if(!(d=popendir(r->pool, name))) {
         log_reason ("Can't open directory for index", r->filename, r);
         return HTTP_FORBIDDEN;
     }
@@ -786,7 +786,7 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
     send_http_header(r);
 
     if (r->header_only) {
-	closedir (d);
+	pclosedir (r->pool, d);
 	return 0;
     }
     hard_timeout("send directory", r);
@@ -839,7 +839,7 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
 #endif
     }
     output_directories(ar, num_ent, dir_conf, r, dir_opts);
-    closedir(d);
+    pclosedir(r->pool, d);
 
     if (dir_opts & FANCY_INDEXING)
         if((tmp = find_readme(dir_conf, r)))
