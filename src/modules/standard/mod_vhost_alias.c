@@ -412,7 +412,7 @@ static int mva_translate(request_rec *r)
     mva_sconf_t *conf;
     const char *name, *map, *uri;
     mva_mode_e mode;
-    char *cgi;
+    const char *cgi;
   
     conf = (mva_sconf_t *) ap_get_module_config(r->server->module_config,
 					      &vhost_alias_module);
