@@ -116,7 +116,6 @@
 #include <ssl.h>
 #include <err.h>
 #include <x509.h>
-#include <x509v3.h>
 #include <pem.h>
 #include <crypto.h>
 #include <evp.h>
@@ -126,6 +125,10 @@
 #endif
 
 #include "ssl_toolkit_compat.h"
+
+#ifdef HAVE_SSL_X509V3_H
+#include <x509v3.h>
+#endif
 
 /* mod_ssl headers */
 #include "ssl_expr.h"
