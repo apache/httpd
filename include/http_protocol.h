@@ -64,6 +64,7 @@
 #include "apr_portable.h"
 #include "apr_mmap.h"
 #include "apr_buckets.h"
+#include "util_filter.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -84,25 +85,6 @@ extern "C" {
  * @return The new request_rec
  */ 
 request_rec *ap_read_request(conn_rec *c);
-
-/**
- * Send the minimal part of an HTTP response header.
- * @param r The current request
- * @param bb The brigade to add the header to.
- * @warning Modules should be very careful about using this, and should 
- *          prefer ap_send_http_header().  Much of the HTTP/1.1 implementation 
- *          correctness depends on code in ap_send_http_header().
- * @deffunc void ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb)
- */
-AP_DECLARE(void) ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb);
-
-/**
- * Send the Status-Line and header fields for HTTP response
- * @param r The current request
- * @deffunc void ap_send_http_header(request_rec *r)
- */
-AP_DECLARE(void) ap_send_http_header(request_rec *r);
-
 
 /* Finish up stuff after a request */
 
@@ -158,6 +140,19 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r);
  * @deffunc apr_time_t ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  */
 AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime);
+
+/**
+ * Build the content-type that should be sent to the client from the
+ * content-type specified.  The following rules are followed:
+ *    - if type is NULL, type is set to ap_default_type(r)
+ *    - if charset adding is disabled, stop processing and return type.
+ *    - then, if there are no parameters on type, add the default charset
+ *    - return type
+ * @param r The current request
+ * @return The content-type
+ * @deffunc const char *ap_make_content_type(request_rec *r, const char *type);
+ */ 
+AP_DECLARE(const char *) ap_make_content_type(request_rec *r, const char *type);
 
 /**
  * Construct an entity tag from the resource information.  If it's a real
@@ -436,8 +431,6 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz);
 AP_DECLARE(int) ap_discard_request_body(request_rec *r);
 
 
-/* Sending a byterange */
-
 /**
  * Setup the output headers so that the client knows how to authenticate
  * itself the next time, if an authentication request failed.  This function
@@ -596,6 +589,19 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error,
 AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error,
                 const char *buf, apr_pool_t *p);
 
+AP_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f, apr_bucket_brigade *b);
+AP_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_bucket_brigade *b);
+AP_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *,
+                                                              apr_bucket_brigade *);
+AP_DECLARE_NONSTD(apr_status_t) ap_old_write_filter(ap_filter_t *f, apr_bucket_brigade *b);
+
+/*
+ * Setting up the protocol fields for subsidiary requests...
+ * Also, a wrapup function to keep the internal accounting straight.
+ */
+void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r);
+void ap_finalize_sub_req_protocol(request_rec *sub_r);
+                                                                                
 #ifdef __cplusplus
 }
 #endif

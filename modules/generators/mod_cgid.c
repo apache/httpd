@@ -107,6 +107,9 @@
 #include "mod_suexec.h"
 #include "../filters/mod_include.h"
 
+#include "mod_core.h"
+
+
 /* ### should be tossed in favor of APR */
 #include <sys/stat.h>
 #include <sys/un.h> /* for sockaddr_un */

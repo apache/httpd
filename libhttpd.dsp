@@ -354,6 +354,10 @@ SOURCE=.\server\error_bucket.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\server\protocol.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\server\rfc1413.c
 # End Source File
 # Begin Source File

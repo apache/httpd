@@ -1,5 +1,9 @@
 Changes with Apache 2.0.14-dev
 
+  *) Begin to move protocol independant functions out of mod_http.  The goal
+     is to have only functions that are HTTP specific in the http directory.
+     [Ryan Bloom]
+
 Changes with Apache 2.0.13
 
   *) Don't assume that there will always be multiple calls to the byterange 
