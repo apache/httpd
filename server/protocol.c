@@ -661,7 +661,7 @@ static void get_mime_headers(request_rec *r)
          * finding the end-of-line.  This is only going to happen if it 
          * exceeds the configured limit for a field size.
          */
-        if (rv == APR_ENOSPC) {
+        if (rv == APR_ENOSPC || len > r->server->limit_req_fieldsize) {
             r->status = HTTP_BAD_REQUEST;
             apr_table_setn(r->notes, "error-notes",
                 apr_pstrcat(r->pool,
