@@ -140,6 +140,10 @@ password verification</td></tr>
     verification by using the userIDs "anonymous",
     "AnonyMous", "Not Registered" and "I Don't Know".</p>
 
+    <p>As of Apache 2.1 it is possible to specify the userID as
+    "<code>*</code>". That allows <em>any</em> supplied userID to be
+    accepted.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Anonymous_LogEmail" id="Anonymous_LogEmail">Anonymous_LogEmail</a> <a name="anonymous_logemail" id="anonymous_logemail">Directive</a></h2>

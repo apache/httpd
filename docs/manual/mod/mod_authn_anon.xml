@@ -111,6 +111,10 @@ password verification</description>
     <p>This would allow the user to enter without password
     verification by using the userIDs "anonymous",
     "AnonyMous", "Not Registered" and "I Don't Know".</p>
+
+    <p>As of Apache 2.1 it is possible to specify the userID as
+    "<code>*</code>". That allows <em>any</em> supplied userID to be
+    accepted.</p>
 </usage>
 </directivesynopsis>
 
