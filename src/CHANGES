@@ -2,7 +2,7 @@ Changes with Apache 1.3.32
 
   *) mod_digest: Fix nonce string calculation since 1.3.31 which
      would force re-authentication for every connection if
-     AuthDigestRealmSeed was not configure.  PR 30920.  [Joe Orton]
+     AuthDigestRealmSeed was not configured.  PR 30920.  [Joe Orton]
 
   *) Trigger an error when a LoadModule directive attempts to
      load a module which is built-in.  This is a common error when
