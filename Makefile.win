@@ -158,3 +158,31 @@ _install:
 	copy support\$(LONG)\htdigest.exe $(INSTDIR)\bin
 	copy support\$(LONG)\logresolve.exe $(INSTDIR)\bin
 	copy support\$(LONG)\rotatelogs.exe $(INSTDIR)\bin
+	perl <<
+
+    my $$serverroot = '$(INSTDIR)';
+    $$serverroot =~ s|\\|\/|;
+    open(IN, '< docs\conf\httpd-win.conf') 
+        || die 'Source httpd-win.conf not found in docs\conf';
+    open(OUT, '> $(INSTDIR)\conf\httpd-default.conf') 
+        || die 'Create file $(INSTDIR)\docs\conf\httpd-default.conf failed';
+    while (<IN>) {
+        while (s|\@\@ServerRoot\@\@|$$serverroot|) {}
+	print OUT $_;
+    }
+    print 'Installed httpd-default.conf in $(INSTDIR)\conf' . "\n";
+    close (OUT); 
+    seek(IN, 0, SEEK_SET);
+    if (open(OUT, '< $(INSTDIR)\conf\httpd.conf')) { 
+        print 'Existing $(INSTDIR)\docs\conf\httpd.conf preserved' . "\n";
+        close(OUT); close(IN); exit;
+    }
+    open(OUT, '> $(INSTDIR)\conf\httpd.conf') 
+        || die 'Create file $(INSTDIR)\docs\conf\httpd.conf failed';
+    while (<IN>) {
+        while (s|\@\@ServerRoot\@\@|$$serverroot|) {}
+	print OUT $_;
+    }
+    print 'Installed httpd.conf in $(INSTDIR)\conf' . "\n";
+    close(OUT); close(IN);
+<<
