@@ -78,11 +78,10 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error,
         return NULL;
     }
     h->status = error;
-    if (buf) {
-        h->start = apr_pstrdup(p, buf);
-    }
+    h->data = (buf) ? apr_pstrdup(p, buf) : NULL;
 
     b->length = 0;
+    b->start  = 0;
     b->type = &ap_bucket_type_error;
     b->data = h;
     return b;
