@@ -492,7 +492,7 @@ static apr_status_t build_command_line(const char **cmd, request_rec *r,
         *cmd = apr_pstrcat(p, quoted_filename, NULL);
     }
 #else
-    *cmd = apr_pstrcat(p, r->filename, NULL);
+    *cmd = argv0;
 #endif
     return APR_SUCCESS;
 }
@@ -579,15 +579,15 @@ static int cgi_handler(request_rec *r)
 
     /* build the command line */
     if (build_command_line(&command, r, p) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
-                      "couldn't spawn child process: %s", r->filename);
-        return HTTP_INTERNAL_SERVER_ERROR;
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+	      "couldn't spawn child process: %s", r->filename);
+	return HTTP_INTERNAL_SERVER_ERROR;
     }
     /* build the argument list */
     else if (build_argv_list(&argv, r, p) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
-                      "couldn't spawn child process: %s", r->filename);
-        return HTTP_INTERNAL_SERVER_ERROR;
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+		      "couldn't spawn child process: %s", r->filename);
+	return HTTP_INTERNAL_SERVER_ERROR;
     }
     argv[0] = apr_pstrdup(p, command);
 
