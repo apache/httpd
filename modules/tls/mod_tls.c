@@ -267,7 +267,7 @@ static apr_status_t tls_in_filter(ap_filter_t *f,apr_bucket_brigade *pbbOut,
 	    apr_bucket *pbktOut;
 	    char *pbuf;
 
-	    pbuf=apr_memdup(pCtx->pInputFilter->c->pool,buf,n);
+	    pbuf=apr_pmemdup(pCtx->pInputFilter->c->pool,buf,n);
 	    // XXX: should we use a heap bucket instead? Or a transient (in
 	    // which case we need a separate brigade for each bucket)?
 	    pbktOut=apr_bucket_pool_create(pbuf,n,pCtx->pInputFilter->c->pool);
