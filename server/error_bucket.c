@@ -60,16 +60,16 @@
 #include <strings.h>
 #endif
 
-static apr_status_t error_read(apr_bucket *b, const char **str, 
-			       apr_size_t *len, apr_read_type_e block)
+static apr_status_t error_read(apr_bucket *b, const char **str,
+                               apr_size_t *len, apr_read_type_e block)
 {
     *str = NULL;
     *len = 0;
     return APR_SUCCESS;
 }
 
-AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error, 
-		const char *buf, apr_pool_t *p)
+AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error,
+                                              const char *buf, apr_pool_t *p)
 {
     ap_bucket_error *h;
 
