@@ -717,15 +717,19 @@ static void fix_hostname(request_rec *r)
 	if (*src == '/' || *src == '\\') {
 	    goto bad;
 	}
+        if (*src == ':') {
+            /* check the port part */
+            while (*++src) {
+                if (!ap_isdigit(*src)) {
+                    goto bad;
+                }
+            }
+            if (src[-1] == ':')
+                goto bad;
+            else
+                break;
+        }
 	*dst++ = *src++;
-    }
-    /* check the port part */
-    if (*src++ == ':') {
-	while (*src) {
-	    if (!ap_isdigit(*src++)) {
-		goto bad;
-	    }
-	}
     }
     /* strip trailing gubbins */
     if (dst > host && dst[-1] == '.') {
