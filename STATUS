@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/06 20:05:49 $]
+Last modified at [$Date: 2002/02/06 21:00:39 $]
 
 Release:
 
@@ -124,6 +124,7 @@ BETA RELEASE SHOWSTOPPERS:
     * other BETA possibilities
       31 + fixes for all non-cosmetic problems seen on daedalus
         See: http://www.apache.org/~jerenkrantz/httpd-2.0.jre.patch
+             http://www.apache.org/~gregames/
         +1: trawick, Justin
         +0:
         -1:
