@@ -69,6 +69,8 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 const char *options = 
 "\nwintty: a utility for echoing the stdin stream to a new console window,\n"
