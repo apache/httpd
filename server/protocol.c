@@ -387,7 +387,7 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
         const char *str;
         apr_bucket_brigade *bb;
         apr_size_t len;
-        const char c;
+        char c;
 
         /* Create a brigade for this filter read. */
         bb = apr_brigade_create(r->pool);
