@@ -186,6 +186,21 @@ typedef struct byterange_ctx {
     int num_ranges;
 } byterange_ctx;
 
+/*
+ * Here we try to be compatible with clients that want multipart/x-byteranges
+ * instead of multipart/byteranges (also see above), as per HTTP/1.1. We
+ * look for the Request-Range header (e.g. Netscape 2 and 3) as an indication
+ * that the browser supports an older protocol. We also check User-Agent
+ * for Microsoft Internet Explorer 3, which needs this as well.
+ */
+static int use_range_x(request_rec *r)
+{
+    const char *ua;
+    return (apr_table_get(r->headers_in, "Request-Range") ||
+            ((ua = apr_table_get(r->headers_in, "User-Agent"))
+             && ap_strstr_c(ua, "MSIE 3")));
+}
+
 #define BYTERANGE_FMT "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT "/%" APR_OFF_T_FMT
 
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
@@ -212,6 +227,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
 
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
         ctx->num_ranges = num_ranges;
+
+        if (num_ranges > 1) {
+            r->content_type = 
+                 apr_pstrcat(r->pool, "multipart", use_range_x(r) ? "/x-" : "/",
+                          "byteranges; boundary=", r->boundary, NULL);
+        }
 
         /* create a brigade in case we never call ap_save_brigade() */
         ctx->bb = ap_brigade_create(r->pool);
@@ -2135,21 +2156,6 @@ int ap_send_http_options(request_rec *r)
     return OK;
 }
 
-/*
- * Here we try to be compatible with clients that want multipart/x-byteranges
- * instead of multipart/byteranges (also see above), as per HTTP/1.1. We
- * look for the Request-Range header (e.g. Netscape 2 and 3) as an indication
- * that the browser supports an older protocol. We also check User-Agent
- * for Microsoft Internet Explorer 3, which needs this as well.
- */
-static int use_range_x(request_rec *r)
-{
-    const char *ua;
-    return (apr_table_get(r->headers_in, "Request-Range") ||
-            ((ua = apr_table_get(r->headers_in, "User-Agent"))
-             && ap_strstr_c(ua, "MSIE 3")));
-}
-
 /* This routine is called by apr_table_do and merges all instances of
  * the passed field values into a single array that will be further
  * processed by some later routine.  Originally intended to help split
@@ -2456,6 +2462,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
          * bucket brigade code  */
 /*      ap_add_output_filter("COALESCE", NULL, r, r->connection); */
     }
+
+    apr_table_setn(r->headers_out, "Content-Type", make_content_type(r,
+        r->content_type));
 
     if (r->content_encoding) {
         apr_table_setn(r->headers_out, "Content-Encoding",
