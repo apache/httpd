@@ -328,8 +328,10 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter,
  *
  * @param name The name to attach to the filter function
  * @param filter_func The filter function to name
- * @param ftype The type of filter function, either ::AP_FTYPE_CONTENT or ::
- *        AP_FTYPE_CONNECTION
+ * @param filter_init The function to call before the filter handlers 
+                      are invoked
+ * @param ftype The type of filter function, either ::AP_FTYPE_CONTENT or
+ *              ::AP_FTYPE_CONNECTION
  * @see add_input_filter()
  */
 AP_DECLARE(ap_filter_rec_t *) ap_register_input_filter(const char *name,
@@ -344,6 +346,8 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_input_filter(const char *name,
  *
  * @param name The name to attach to the filter function
  * @param filter_func The filter function to name
+ * @param filter_init The function to call before the filter handlers 
+ *                    are invoked
  * @param ftype The type of filter function, either ::AP_FTYPE_CONTENT or
  *              ::AP_FTYPE_CONNECTION
  * @see ap_add_output_filter()
