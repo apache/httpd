@@ -2723,6 +2723,7 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
 			  " does not exist or is not a directory", NULL);
     }
     ap_cpystrn(ap_coredump_dir, arg, sizeof(ap_coredump_dir));
+    ap_coredump_dir_configured = 1;
     return NULL;
 }
 

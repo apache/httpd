@@ -315,8 +315,8 @@ static listen_rec *head_listener;
 
 API_VAR_EXPORT char ap_server_root[MAX_STRING_LEN]="";
 API_VAR_EXPORT char ap_server_confname[MAX_STRING_LEN]="";
-#define DEFAULT_COREDUMP_DIR ""
-API_VAR_EXPORT char ap_coredump_dir[MAX_STRING_LEN]=DEFAULT_COREDUMP_DIR;
+API_VAR_EXPORT char ap_coredump_dir[MAX_STRING_LEN]="";
+int ap_coredump_dir_configured=0;
 
 API_VAR_EXPORT array_header *ap_server_pre_read_config=NULL;
 API_VAR_EXPORT array_header *ap_server_post_read_config=NULL;
@@ -4347,7 +4347,7 @@ static void child_main(int child_num_arg)
 #endif
 
 #ifdef HAVE_SET_DUMPABLE
-    if (strcmp(ap_coredump_dir, DEFAULT_COREDUMP_DIR)) {
+    if (ap_coredump_dir_configured) {
         /* user set CoredumpDirectory, so they want to get core dumps
          */
         if (prctl(PR_SET_DUMPABLE, 1)) {

@@ -127,6 +127,7 @@ extern API_VAR_EXPORT array_header *ap_server_config_defines;
  * is some memory corruption, so we allocate it statically.
  */
 extern API_VAR_EXPORT char ap_coredump_dir[MAX_STRING_LEN];
+extern int ap_coredump_dir_configured;
 
 #ifdef __cplusplus
 }
