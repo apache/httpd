@@ -1,5 +1,9 @@
 Changes with Apache 2.0.26-dev
 
+  *) Fix --enable-mods-shared processing.  If most is specified,
+     then all modules that can be compiled as shared modules are.
+     [Aaron Bannert <aaron@clove.org>]
+
   *) Update the mime.types file to map video/vnd.mpegurl to mxu
      and add commonly used audio/x-mpegurl for m3u extensions.        
      [Heiko Recktenwald <uzs106@uni-bonn.de>, Lars Eilebrecht]
