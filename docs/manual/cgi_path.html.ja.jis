@@ -4,22 +4,41 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>CGI 環境での PATH_INFO の変更 - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>CGI 環境での PATH_INFO の変更</h1>
-    <p>Apache 1.1.1 およびそれ以前のバージョンで実装されていた
-    CGI 環境で PATH_INFO を作成する方法は直観的でなく、
-    場合によってはクラッシュすることもありました。
+      -->
+<title>CGI 環境での PATH_INFO の変更 - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>CGI 環境での PATH_INFO の変更</h1>
+    <p>Apache 1.1.1 およびそれ以前のバージョンで実装されていた
+    CGI 環境で PATH_INFO を作成する方法は直観的でなく、
+    場合によってはクラッシュすることもありました。
     Apache 1.2 及びそれ以降において、この動作が変更されました。
     このことにより特定の古い CGI アプリケーションにおいていくつか
     互換性の問題が生じることがありますが、それでも Apache 1.2 の動作は
     CGI/1.1 仕様と互換があり、CGI スクリプトは容易に修正できます(<a href="#compat">以下参照</a>)。</p>
-  </div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#prob">問題</a></li><li><img alt="" src="./images/down.gif" /> <a href="#solution">解決</a></li><li><img alt="" src="./images/down.gif" /> <a href="#compat">以前のサーバとの互換性</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="prob" id="prob">問題</a></h2>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#prob">問題</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#solution">解決</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#compat">以前のサーバとの互換性</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="prob" id="prob">問題</a></h2>
 
     <p>Apache 1.1.1 およびそれ以前では、URL ではなくファイル名を参照して
     PATH_INFO と SCRIPT_NAME 環境変数を設定していました。
     多くの場合はこれが正しい結果を返しますが、パス情報を含むように
     filesystem パスがオーバーロードされた場合は、
     誤った結果を返す場合がありました。
-    たとえば、設定ファイルに以下がある場合</p>
+    たとえば、設定ファイルに以下がある場合</p>
 
     <div class="example"><p><code>
       Alias /cgi-ralph /usr/local/httpd/cgi-bin/user.cgi/ralph
@@ -32,7 +51,9 @@
     SCRIPT_NAME には "<code>/cgi-</code>" が設定されます。
     明らかに、後者は間違っています。特定の場合には、これにより
     サーバがクラッシュすることさえありました。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="solution" id="solution">解決</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="solution" id="solution">解決</a></h2>
     <p>Apache 1.2 以降では SCRIPT_NAME と PATH_INFO の決定には URL
     を直接参照して、URL
     のどれだけの部分がクライアントが変更可能なのかを確定させた上で
@@ -52,7 +73,9 @@
     渡すのは薦められた方法ではなく、
     またそれを使ったスクリプトは動作しなくても当然だと考えます。
     ただし、Apache 1.2b3 以降では<a href="#compat">代替手段</a>を用意しています。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="compat" id="compat">以前のサーバとの互換性</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="compat" id="compat">以前のサーバとの互換性</a></h2>
     
 
     <p>以前のバージョンの Apache や他のサーバ向けに設計された
@@ -75,4 +98,8 @@
     <p>これにより、スクリプトはすべてのバージョンの Apache を含む、
     CGI/1.1 をサポートするすべてのサーバで動作することができます。
     </p>
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>

@@ -4,14 +4,35 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>DNS と Apache にまつわる注意事項 - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>DNS と Apache にまつわる注意事項</h1>
+      -->
+<title>DNS と Apache にまつわる注意事項 - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>DNS と Apache にまつわる注意事項</h1>
     <p>本文書の内容は次の一言に尽きます。「Apache が設定ファイルを読み込むときに
-    DNS を使用する必要がないようにして下さい」。Apache が設定ファイルを
+    DNS を使用する必要がないようにして下さい」。Apache が設定ファイルを
     読み込むときに DNS を使用する必要がある場合、信頼性の問題
     (起動しないかもしれません) やサービス拒否や盗用アタック
     (他のユーザからヒットを盗むことを含みます)
     の問題に直面するかもしれません。</p>
-  </div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#example">簡単な例</a></li><li><img alt="" src="./images/down.gif" /> <a href="#denial">サービス拒否</a></li><li><img alt="" src="./images/down.gif" /> <a href="#main">「主サーバ」アドレス</a></li><li><img alt="" src="./images/down.gif" /> <a href="#tips">以上の問題を解決する方法</a></li><li><img alt="" src="./images/down.gif" /> <a href="#appendix">付録: 将来的な方向性</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="example" id="example">簡単な例</a></h2>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#example">簡単な例</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#denial">サービス拒否</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#main">「主サーバ」アドレス</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#tips">以上の問題を解決する方法</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#appendix">付録: 将来的な方向性</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="example" id="example">簡単な例</a></h2>
     
     
     <div class="example"><p><code>
@@ -46,7 +67,7 @@
     <p>現在のリリースでは Apache は DNS 逆引きを使用して
     このバーチャルホストの <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>
     を見つけます。
-    その逆引きが失敗した場合は部分的にバーチャルホストを無効にします
+    その逆引きが失敗した場合は部分的にバーチャルホストを無効にします
     (Apache 1.2 より前では起動すらしません)。
     バーチャルホストが名前ベースであれば完全に無効になりますが、
     IP ベースであれば概ね動作します。しかしながら、サーバ名を
@@ -62,7 +83,9 @@
       DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt;
     </code></p></div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="denial" id="denial">サービス拒否</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="denial" id="denial">サービス拒否</a></h2>
     
     
     <p>サービス拒否が起こる場合、(少なくとも) 二つのケースがあります。
@@ -79,13 +102,13 @@
     
     <div class="example"><p><code>
       &lt;VirtualHost www.abc.dom&gt; <br />
-      &#160;&#160;ServerAdmin webgirl@abc.dom <br />
-      &#160;&#160;DocumentRoot /www/abc <br />
+      &nbsp;&nbsp;ServerAdmin webgirl@abc.dom <br />
+      &nbsp;&nbsp;DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt; <br />
       <br />
       &lt;VirtualHost www.def.dom&gt; <br />
-      &#160;&#160;ServerAdmin webguy@def.dom <br />
-      &#160;&#160;DocumentRoot /www/def <br />
+      &nbsp;&nbsp;ServerAdmin webguy@def.dom <br />
+      &nbsp;&nbsp;DocumentRoot /www/def <br />
       &lt;/VirtualHost&gt;
     </code></p></div>
     
@@ -108,7 +131,9 @@
     応答の必要なバーチャルホストへのリクエストに対して、
     Apache がどのように整合性を確保するかについて、
     深い議論が必要になります。おおざっぱな説明は<a href="vhosts/details.html">こちら</a>に記述されています。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="main" id="main">「主サーバ」アドレス</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="main" id="main">「主サーバ」アドレス</a></h2>
     
     
     <p>Apache 1.1 での <a href="vhost/name-based.html">名前ベースのバーチャルホストのサポート</a> 追加の際に、
@@ -139,7 +164,9 @@
     <code class="module"><a href="./mod/mod_env.html">mod_env</a></code> を使用して環境変数を制御しない限り、
     CGI にも影響を与えます。man ページや使用している OS
     の FAQ で調べると良いでしょう。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="tips" id="tips">以上の問題を解決する方法</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="tips" id="tips">以上の問題を解決する方法</a></h2>
     
     
     <ul>
@@ -163,7 +190,9 @@
       <code>&lt;VirtualHost _default_:*&gt;</code>
       サーバを作る。</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="appendix" id="appendix">付録: 将来的な方向性</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="appendix" id="appendix">付録: 将来的な方向性</a></h2>
     
     
     <p>DNS に関して、現状は全く宜しくありません。Apache 1.2 で、
@@ -176,7 +205,7 @@
     <p>盗用のサービスアタックに関して行なうべき事は、
     DNS 順引きを行なって得られたアドレスに対する DNS 
     逆引きを行なって、二つの名前を比較することです。
-    この二つが一致しなければバーチャルホストは無効になるようにします。
+    この二つが一致しなければバーチャルホストは無効になるようにします。
     こうするためには逆引き DNS が適切に設定されている必要があります
     (FTP サーバや TCP ラッパーのおかげで「二重逆引き」DNS は一般的に
     なっていますので、管理者にはお馴染みものでしょう)。</p>
@@ -195,4 +224,8 @@
     しかし 1997 年 3 月時点の状況では、
     商用レベルのウェブサーバで使用できるほどには、
     これらの機能は広く開発が進んでいません。</p>
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>
