@@ -1,5 +1,8 @@
 Changes with Apache 2.0.48
 
+  *) Fix NULL-pointer issue in ab when parsing an incomplete or non-HTTP
+     response. PR 21085. [Glenn Nielsen <glenn@apache.org>, André Malo]
+
   *) mod_rewrite: Perform child initialization on the rewrite log lock.
      This fixes a log corruption issue when flock-based serialization
      is used (e.g., FreeBSD).  [Jeff Trawick]
