@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/08/31 21:46:35 $]
+Last modified at [$Date: 1999/10/13 05:24:11 $]
 
 Release:
 
@@ -14,12 +14,6 @@ RELEASE SHOWSTOPPERS:
 
     * CGI doesn't work
         Status: Ben Laurie is working on this.
-
-    * mod_status doesn't work
-        Status: Manoj Kasichainula <manojk@io.com> is working on this. A
-        patch has been posted that starts to fix this:
-        (<19990825025653.A19065@samosa.mindspring.com> and
-        <19990825022146.A10096@io.com>)
 
     * suEXEC doesn't work
         Ben Laurie's work to fix CGIs will also fix this.
@@ -43,6 +37,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Use APR to get rid of more platform dependancies.
         Status: Ryan Bloom <rbb@raleigh.ibm.com> is working on this.
+
+    * The connection status table is not very efficient. Also, very few stats
+      are exported to the connection status table (easy to fix), and mod_status
+      is ugly.
 
 Other bugs that need fixing:
 
