@@ -3331,7 +3331,7 @@ static int net_time_filter(ap_filter_t *f, apr_bucket_brigade *b,
 do { \
     apr_bucket *e = APR_BRIGADE_FIRST(b); \
     do {  \
-        if (e->length == 0) { \
+        if (e->length == 0 && !APR_BUCKET_IS_METADATA(e)) { \
             apr_bucket *d; \
             d = APR_BUCKET_NEXT(e); \
             apr_bucket_delete(e); \
