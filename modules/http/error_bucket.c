@@ -63,10 +63,8 @@
 static apr_status_t error_read(apr_bucket *b, const char **str, 
 			       apr_size_t *len, apr_read_type_e block)
 {
-    ap_bucket_error *e = b->data;
-
-    *str = e->start;
-    *len = b->length;
+    *str = NULL;
+    *len = 0;
     return APR_SUCCESS;
 }
 
@@ -80,9 +78,11 @@ AP_DECLARE(apr_bucket *) ap_bucket_make_error(apr_bucket *b, int error,
         return NULL;
     }
     h->status = error;
-    h->start = apr_pstrdup(p, buf);
+    if (buf) {
+        h->start = apr_pstrdup(p, buf);
+    }
 
-    b->length = strlen(h->start);
+    b->length = 0;
     b->type = &ap_bucket_type_error;
     b->data = h;
     return b;

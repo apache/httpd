@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) Make the error bucket a real meta-data bucket.  This means that the
+     bucket length is 0, and a read returns NULL data.  If one of these
+     buckets is passed down after the headers are sent, this data will
+     just be ignored.  [Greg Stein]
+
   *) The prefork MPM wasn't killing child processes correctly if a restart
      signal was received while the process was serving a request.  The child
      process would become the equivalent of a second parent process.  If
