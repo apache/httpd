@@ -1,5 +1,11 @@
 Changes with Apache 2.0.23-dev
 
+  *) Make the includes filter check return codes from filters lower in
+     the filter chain.  If a lower level filter returns an error, then
+     the request needs to stop immediately.  This allows mod_include to
+     stop parsing data once a lower filter recognizes an error.
+     [Ryan Bloom]
+
   *) Add the ability to extend the methods that Apache understands
      and have those methods <limit>able in the httpd.conf. It uses 
      the same bit mask/shifted offset as the original HTTP methods 
