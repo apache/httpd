@@ -1,7 +1,6 @@
 
-TARGET_EXPORTS    = apache.exports
 CLEAN_TARGETS = gen_test_char test_char.h gen_uri_delims uri_delims.h \
-	$(TARGET_EXPORTS) ApacheCoreOS2.def
+	ApacheCoreOS2.def
 DISTCLEAN_TARGETS = httpd.exp
 EXTRACLEAN_TARGETS = exports.c export_vars.h
 
