@@ -526,9 +526,10 @@ static apr_status_t expires_by_type_filter(ap_filter_t *f,
         else if ((notes != NULL) && notes->defaulted) {
             /*
              * None for this type, but there was a default defined --
-             * so use it.
+             * so use it. Add the Expires header and add or replace the
+             * Cache-Control header.
              */
-            t = apr_table_overlay(r->pool, notes->expfields, t);
+            apr_table_overlap(r->headers_out, notes->expfields, APR_OVERLAP_TABLES_SET);
         }
     }
     ap_remove_output_filter(f);
