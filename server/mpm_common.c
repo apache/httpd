@@ -81,16 +81,7 @@
 #include <sys/socket.h> /* for setsockopt prototype */
 #endif
 
-#if defined(DEXTER_MPM) || defined(MPMT_BEOS_MPM) || defined(BEOS_MPM) || defined(PERCHILD_MPM)
-#define CHILD_TABLE 1
-#define CHILD_INFO_TABLE     ap_child_table
-#elif defined(MPMT_PTHREAD) || defined(PREFORK_MPM)
-#define SCOREBOARD 1
-#define CHILD_INFO_TABLE     ap_scoreboard_image->parent
-#endif 
-
-
-#ifdef CHILD_INFO_TABLE
+#ifdef MPM_NEEDS_RECLAIM_CHILD_PROCESSES
 void ap_reclaim_child_processes(int terminate)
 {
     int i;
@@ -100,9 +91,7 @@ void ap_reclaim_child_processes(int terminate)
     int not_dead_yet;
     int max_daemons = ap_get_max_daemons();
 
-#ifdef SCOREBOARD
-    ap_sync_scoreboard_image();
-#endif
+    MPM_SYNC_CHILD_TABLE();
 
     for (tries = terminate ? 4 : 1; tries <= 9; ++tries) {
         /* don't want to hold up progress any more than
@@ -115,20 +104,16 @@ void ap_reclaim_child_processes(int terminate)
         /* now see who is done */
         not_dead_yet = 0;
         for (i = 0; i < max_daemons; ++i) {
-            pid_t pid = CHILD_INFO_TABLE[i].pid;
+            pid_t pid = MPM_CHILD_PID(i);
             ap_proc_t proc;
 
-#ifdef CHILD_TABLE
             if (pid == 0)
-#elif defined(SCOREBOARD)
-            if (pid == ap_my_pid || pid == 0)
-#endif
                 continue;
 
             proc.pid = pid;
             waitret = ap_wait_proc(&proc, APR_NOWAIT);
             if (waitret != APR_CHILD_NOTDONE) {
-                CHILD_INFO_TABLE[i].pid = 0;
+                MPM_NOTE_CHILD_KILLED(i);
                 continue;
             }
             ++not_dead_yet;
@@ -186,7 +171,7 @@ void ap_reclaim_child_processes(int terminate)
         }
     }
 }
-#endif
+#endif /* NEED_RECLAIM_CHILD_PROCESSES */
 
 /* number of calls to wait_or_timeout between writable probes */
 #ifndef INTERVAL_OF_WRITABLE_PROBES

@@ -60,6 +60,12 @@
 #define APACHE_MPM_BEOS_H
 
 #define BEOS_MPM
+
+#define MPM_NEEDS_RECLAIM_CHILD_PROCESSES 1
+#define MPM_SYNC_CHILD_TABLE()
+#define MPM_CHILD_PID(i) (ap_child_table[i].pid)
+#define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
+
 extern int ap_max_child_assigned;
 #include "scoreboard.h"
 

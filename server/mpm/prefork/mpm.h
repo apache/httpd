@@ -66,6 +66,11 @@
 
 #define PREFORK_MPM
 
+#define MPM_NEEDS_RECLAIM_CHILD_PROCESSES 1
+#define MPM_SYNC_CHILD_TABLE() (ap_sync_scoreboard_image())
+#define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
+#define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
+
 extern int ap_max_daemons_limit;
 extern scoreboard *ap_scoreboard_image;
 extern server_rec *ap_server_conf;
