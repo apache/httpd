@@ -834,7 +834,7 @@ static void child_main(int child_num_arg)
 	    if (ap_listeners->next) {
 		/* more than one socket */
 		memcpy(&main_fds, &listenfds, sizeof(fd_set));
-		srv = ap_select(listenmaxfd + 1, &main_fds, NULL, NULL, NULL);
+		srv = select(listenmaxfd + 1, &main_fds, NULL, NULL, NULL);
 
 		if (srv < 0 && errno != EINTR) {
 		    /* Single Unix documents select as returning errnos

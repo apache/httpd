@@ -106,17 +106,6 @@ APACHE_INADDR_NONE
 
 APACHE_EBCDIC
 
-AC_FUNC_SELECT_ARGTYPES
-
-dnl Check if we'll actually need to cast select args all the time
-if test "$ac_cv_func_select_arg1" != "int" \
-        -o "$ac_cv_func_select_arg234" != "fd_set *" \
-        -o "$ac_cv_func_select_arg5" != "struct timeval *" ; then
-
-    AC_DEFINE(SELECT_NEEDS_CAST,,
-        [Define if arguments to select() aren't what we expect])
-fi
-
 AC_ARG_WITH(optim,[  --with-optim="FLAGS"      compiler optimisation flags],
         [OPTIM="$withval"])
 
