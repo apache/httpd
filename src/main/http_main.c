@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_main.c,v 1.76 1996/10/06 02:25:03 fielding Exp $ */
+/* $Id: http_main.c,v 1.77 1996/10/22 18:54:03 brian Exp $ */
 
 /*
  * httpd.c: simple http daemon for answering WWW file requests
@@ -784,7 +784,7 @@ int update_child_status (int child_num, int status, request_rec *r)
 	conn_rec *c = r->connection;
 	slot_size = sizeof(new_score_rec.client) - 1;
 	strncpy(new_score_rec.client, get_remote_host(c, r->per_dir_config,
-	 REMOTE_NAME), slot_size);
+	 REMOTE_NOLOOKUP), slot_size);
 	new_score_rec.client[slot_size] = '\0';
 	slot_size = sizeof(new_score_rec.request) - 1;
 	strncpy(new_score_rec.request, (r->the_request ? r->the_request :

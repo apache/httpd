@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_core.h,v 1.12 1996/10/10 12:11:59 fielding Exp $ */
+/* $Id: http_core.h,v 1.13 1996/10/22 18:54:01 brian Exp $ */
 
 /*****************************************************************
  *
@@ -78,6 +78,7 @@
 /* options for get_remote_host() */
 #define REMOTE_HOST (0)
 #define REMOTE_NAME (1)
+#define REMOTE_NOLOOKUP (2)
 
 int allow_options (request_rec *);
 int allow_overrides (request_rec *);
