@@ -559,52 +559,68 @@ static const char *ssl_cmd_check_dir(cmd_parms *parms,
 
 }
 
-const char *ssl_cmd_SSLCertificateFile(cmd_parms *cmd, void *ctx,
-                                       const char *arg)
+#define SSL_AIDX_CERTS 1
+#define SSL_AIDX_KEYS  2
+
+static const char *ssl_cmd_check_aidx_max(cmd_parms *parms,
+                                          const char *arg,
+                                          int idx)
 {
-    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *err;
+    SSLSrvConfigRec *sc = mySrvConfig(parms->server);
+    const char *err, *desc, **files;
     int i;
 
-    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+    if ((err = ssl_cmd_check_file(parms, &arg))) {
         return err;
     }
 
+    switch (idx) {
+      case SSL_AIDX_CERTS:
+        desc = "certificates";
+        files = sc->szPublicCertFile;
+        break;
+      case SSL_AIDX_KEYS:
+        desc = "private keys";
+        files = sc->szPrivateKeyFile;
+        break;
+    }
+
     for (i = 0; i < SSL_AIDX_MAX; i++) {
-        if (!sc->szPublicCertFile[i]) {
-            sc->szPublicCertFile[i] = arg;
+        if (!files[i]) {
+            files[i] = arg;
             return NULL;
         }
     }
 
-    return apr_psprintf(cmd->pool,
-                        "SSLCertificateFile: only up to %d "
-                        "different certificates per virtual host allowed", 
-                        SSL_AIDX_MAX);
+    return apr_psprintf(parms->pool,
+                        "%s: only up to %d "
+                        "different %s per virtual host allowed", 
+                         parms->cmd->name, SSL_AIDX_MAX, desc);
+}
+
+const char *ssl_cmd_SSLCertificateFile(cmd_parms *cmd, void *ctx,
+                                       const char *arg)
+{
+
+    const char *err;
+
+    if ((err = ssl_cmd_check_aidx_max(cmd, arg, SSL_AIDX_CERTS))) {
+        return err;
+    }
+
+    return NULL;
 }
 
 const char *ssl_cmd_SSLCertificateKeyFile(cmd_parms *cmd, void *ctx,
                                           const char *arg)
 {
-    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
-    int i;
 
-    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+    if ((err = ssl_cmd_check_aidx_max(cmd, arg, SSL_AIDX_KEYS))) {
         return err;
     }
 
-    for (i = 0; i < SSL_AIDX_MAX; i++) {
-        if (!sc->szPrivateKeyFile[i]) {
-            sc->szPrivateKeyFile[i] = arg;
-            return NULL;
-        }
-    }
-
-    return apr_psprintf(cmd->pool,
-                        "SSLCertificateKeyFile: only up to %d "
-                        "different private keys per virtual host allowed", 
-                        SSL_AIDX_MAX);
+    return NULL;
 }
 
 const char *ssl_cmd_SSLCertificateChainFile(cmd_parms *cmd, void *ctx,
