@@ -72,7 +72,7 @@
 #endif
 
 static scoreboard *ap_scoreboard_image = NULL;
-API_VAR_EXPORT char *ap_scoreboard_fname;
+API_VAR_EXPORT const char *ap_scoreboard_fname;
 
 /*****************************************************************
  *
