@@ -178,7 +178,6 @@ static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
     apr_status_t rv;
     char *ipaddrstr;
     apr_sockaddr_t *sockaddr;
-    apr_time_t now;
 
     /*
      * Calculate the sizes and offsets in cur_unique_id.
@@ -251,7 +250,6 @@ static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
      * But protecting against it is relatively cheap.  We just sleep into the
      * next second.
      */
-    now = apr_time_now();
     apr_sleep(apr_time_from_sec(1));
     return OK;
 }
