@@ -121,7 +121,7 @@
     <dt>Register Providers</dt>
     <dd>The <code class="directive"><a href="#filterprovider">FilterProvider</a></code>
     directive registers a provider with a filter. The filter may have
-    been registered with <code class="directive"><a href="#filterdeclare">FilterDeclare</a></code>; if not, FilterProvider will implicitly
+    been declared with <code class="directive"><a href="#filterdeclare">FilterDeclare</a></code>; if not, FilterProvider will implicitly
     declare it with the default type AP_FTYPE_RESOURCE. The provider
     must have been
     registered with <code>ap_register_output_filter</code> by some module.

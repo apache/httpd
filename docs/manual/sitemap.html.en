@@ -185,6 +185,7 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_deflate.html">Apache Module mod_deflate</a></li>
 <li><a href="mod/mod_dir.html">Apache Module mod_dir</a></li>
 <li><a href="mod/mod_disk_cache.html">Apache Module mod_disk_cache</a></li>
+<li><a href="mod/mod_dumpio.html">Apache Module mod_dumpio</a></li>
 <li><a href="mod/mod_echo.html">Apache Module mod_echo</a></li>
 <li><a href="mod/mod_env.html">Apache Module mod_env</a></li>
 <li><a href="mod/mod_example.html">Apache Module mod_example</a></li>
