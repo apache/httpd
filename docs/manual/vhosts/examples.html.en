@@ -503,7 +503,7 @@
     </code></p></div>
 
     <p>A request to an unspecified address on port 80 is served from the
-    default vhost any other request to an unspecified address and port is
+    default vhost. Any other request to an unspecified address and port is
     served from the main server.</p>
     
 
