@@ -1,5 +1,10 @@
 Changes with Apache 2.0.37
 
+  *) Don't install *.in configuration files since we already install
+     *-std.conf files.  [Aaron Bannert]
+
+  *) Many improvements to the threadpool MPM.  [Aaron Bannert]
+
   *) Fix subreqs that are promoted via fast_redirect from having invalid
      frec->r structures.  This would cause subtle errors later on in
      request processing such as seen in PR 7966.  [Justin Erenkrantz]
