@@ -48,7 +48,7 @@ Note that changing the type or encoding of a file does not change the
 value of the <CODE>Last-Modified</CODE> header. Thus, previously cached
 copies may still be used by a client or proxy, with the previous headers.
 
-<A NAME="multipleext"><H2>Files with Multiple Extensions</H2></A>
+<H2><A NAME="multipleext">Files with Multiple Extensions</A></H2>
 
 Files can have more than one extension, and the order of the
 extensions is <i>normally</i> irrelevant. For example, if the file
@@ -92,6 +92,7 @@ mod_imap imagemap file.
 <LI><A HREF="#addtype">AddType</A>
 <LI><A HREF="#defaultlanguage">DefaultLanguage</A>
 <LI><A HREF="#forcetype">ForceType</A>
+<LI><A HREF="#removehandler">RemoveHandler</A>
 <LI><A HREF="#sethandler">SetHandler</A>
 <LI><A HREF="#typesconfig">TypesConfig</A>
 </UL>
@@ -389,6 +390,51 @@ had a directory full of GIF files, but did not want to label them all with
 </PRE>
 <P>Note that this will override any filename extensions that might determine
 the media type.</P><HR>
+
+<H2><A NAME="removehandler">RemoveHandler</A></H2>
+
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> RemoveHandler <EM>extension extension...</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_mime<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> RemoveHandler is only available in Apache
+1.3.4 and later.<P>
+
+<P>
+The <SAMP>RemoveHandler</SAMP> directive removes any
+handler associations for files with the given extensions.
+This allows <CODE>.htaccess</CODE> files in subdirectories to undo
+any associations inherited from parent directories or the server
+config files.  An example of its use might be:
+</P>
+<DL>
+ <DT><CODE>/foo/.htaccess:</CODE></DT>
+ <DD><CODE>AddHandler server-parsed .html</CODE></DD>
+ <DT><CODE>/foo/bar/.htaccess:</CODE></DT>
+ <DD><CODE>RemoveHandler .html</CODE></DD>
+</DL>
+<P>
+This has the effect of returning <SAMP>.html</SAMP> files in the
+<SAMP>/foo/bar</SAMP> directory to being treated as normal
+files, rather than as candidates for parsing (see the
+<A HREF="mod_include.html"><SAMP>mod_include</SAMP></A> module).
+</P>
+<HR>
 
 <H2><A NAME="sethandler">SetHandler</A></H2>
 
