@@ -6,6 +6,9 @@ Changes with Apache 2.1.0-dev
      and "Require file-group", which was already present in version
      1.3.21.  [André Malo]
 
+  *) Change the ulimit command used by apachectl on AIX so that it
+     works in all locales.  [Jeff Trawick]
+
   *) mod_ext_filter: Fix a problem building argument lists which 
      occasionally caused exec to fail.  PR 15491.  [Jeff Trawick]
 
