@@ -66,6 +66,28 @@
     sends the URL and file path of the requested document using the
     standard CGI PATH_INFO and PATH_TRANSLATED environment
     variables.</p>
+
+    <p>Examples:</p>
+    <pre>
+    # Requests for files of a particular type:
+    Action image/gif /cgi-bin/images.cgi
+
+    # Files of a particular file extension
+    AddHandler my-file-type .xyz
+    Action my-file-type /cgi-bin/program.cgi
+    </pre>
+
+    <p>In the first example, requests for files with a MIME content
+    type of <code>image/gif</code> will instead be handled by the
+    specified cgi script <code>/cgi-bin/images.cgi</code>.</p>
+
+    <p>In the second example, requests for files with a file extension of
+    <code>.xyz</code> are handled instead by the specified cgi script 
+    <code>/cgi-bin/program.cgi</code>.</p>
+
+    <p><strong>See also</strong>: <a 
+        href="mod_mime.html#addhandler">AddHandler</a></p>
+
     <hr />
 
     <h2><a id="script" name="script">Script directive</a></h2>
