@@ -200,7 +200,7 @@ static void help_proxy_garbage_coll(request_rec *r)
     for (i = 0; i < files->nelts; i++) {
 	fent = elts[i];
 	sprintf(filename, "%s%s", cachedir, fent->file);
-	Explain3("GC Unlinking %s (expiry %ld, garbage_now %ld)", filename, fent->garbage_expire, garbage_now);
+	Explain3("GC Unlinking %s (expiry %ld, garbage_now %ld)", filename, fent->expire, garbage_now);
 #if TESTING
 	fprintf(stderr, "Would unlink %s\n", filename);
 #else
