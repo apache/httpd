@@ -188,6 +188,13 @@ typedef unsigned short mode_t;
 #ifndef S_IWUSR
 #define S_IWUSR S_IWRITE
 #endif
+#ifndef S_IWGRP
+#define S_IWGRP	000020
+#endif
+#ifndef S_IWOTH
+#define S_IWOTH 000002
+#endif
+
 #define STDIN_FILENO  0
 #define STDOUT_FILENO 1
 #define STDERR_FILENO 2
