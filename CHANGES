@@ -1,5 +1,7 @@
 Changes with Apache 2.0.34-dev
 
+  *) Remove the single-byte socket reads for CGI headers [Brian Pane]
+
   *) When a proxied site was being served, Apache was replacing
      the original site Server header with it's own, which is not
      allowed by RFC2616. Fixed. [Graham Leggett]

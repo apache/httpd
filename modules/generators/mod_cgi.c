@@ -261,7 +261,7 @@ static void log_script_err(request_rec *r, apr_file_t *script_err)
 }
 
 static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
-		  char *dbuf, const char *sbuf, apr_file_t *script_in, 
+		  char *dbuf, const char *sbuf, apr_bucket_brigade *bb, 
                   apr_file_t *script_err)
 {
     const apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in);
@@ -280,9 +280,11 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
          (apr_file_open(&f, conf->logname,
                   APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
 	/* Soak up script output */
+#if LATER
 	while (apr_file_gets(argsbuffer, HUGE_STRING_LEN,
 	                     script_in) == APR_SUCCESS)
 	    continue;
+#endif /* LATER */
 
         log_script_err(r, script_err);
 	return ret;
@@ -319,6 +321,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     if (sbuf && *sbuf)
 	apr_file_printf(f, "%s\n", sbuf);
 
+#if LATER
     if (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_in) == APR_SUCCESS) {
 	apr_file_puts("%stdout\n", f);
 	apr_file_puts(argsbuffer, f);
@@ -327,6 +330,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
 	    apr_file_puts(argsbuffer, f);
 	apr_file_puts("\n", f);
     }
+#endif /* LATER */
 
     if (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_err) == APR_SUCCESS) {
 	apr_file_puts("%stderr\n", f);
@@ -337,7 +341,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
 	apr_file_puts("\n", f);
     }
 
-    apr_file_close(script_in);
+    apr_brigade_destroy(bb);
     apr_file_close(script_err);
 
     apr_file_close(f);
@@ -464,28 +468,11 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
     
         if (rc != APR_SUCCESS) {
             /* Bad things happened. Everyone should have cleaned up. */
-#if APR_HAS_PROC_INVOKED
-            if (procnew->invoked) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
-                              "mod_cgi: failed to invoke process: %s", 
-                              procnew->invoked);
-            }
-            else
-#endif
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
-                          "mod_cgi: couldn't create child process: %s",
-                          r->filename);
+                        "couldn't create child process: %d: %s", rc, r->filename);
         }
         else {
             apr_pool_note_subprocess(p, procnew, APR_KILL_AFTER_TIMEOUT);
-
-#if APR_HAS_PROC_INVOKED
-            if (procnew->invoked) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, rc, r,
-                              "mod_cgi invoked process: %s", 
-                              procnew->invoked);
-            }
-#endif
 
             *script_in = procnew->out;
             if (!*script_in)
@@ -559,6 +546,19 @@ static apr_status_t default_build_command(const char **cmd, const char ***argv,
     return APR_SUCCESS;
 }
 
+static void discard_script_output(apr_bucket_brigade *bb)
+{
+    apr_bucket *e;
+    const char *buf;
+    apr_size_t len;
+    apr_status_t rv;
+    APR_BRIGADE_FOREACH(e, bb) {
+        rv = apr_bucket_read(e, &buf, &len, APR_BLOCK_READ);
+        if (!APR_STATUS_IS_SUCCESS(rv)) {
+            break;
+        }
+    }
+}
 
 static int cgi_handler(request_rec *r)
 {
@@ -705,20 +705,23 @@ static int cgi_handler(request_rec *r)
 	const char *location;
 	char sbuf[MAX_STRING_LEN];
 	int ret;
+        conn_rec *c = r->connection;
 
-	if ((ret = ap_scan_script_header_err(r, script_in, sbuf))) {
-	    return log_script(r, conf, ret, dbuf, sbuf, script_in, script_err);
+        bb = apr_brigade_create(r->pool);
+        b = apr_bucket_pipe_create(script_in);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+        b = apr_bucket_eos_create();
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+
+	if ((ret = ap_scan_script_header_err_brigade(r, bb, sbuf))) {
+	    return log_script(r, conf, ret, dbuf, sbuf, bb, script_err);
 	}
 
 	location = apr_table_get(r->headers_out, "Location");
 
 	if (location && location[0] == '/' && r->status == 200) {
-
-	    /* Soak up all the script output */
-	    while (apr_file_gets(argsbuffer, HUGE_STRING_LEN,
-	                         script_in) == APR_SUCCESS) {
-		continue;
-	    }
+            discard_script_output(bb);
+            apr_brigade_destroy(bb);
             log_script_err(r, script_err);
 	    /* This redirect needs to be a GET no matter what the original
 	     * method was.
@@ -739,15 +742,12 @@ static int cgi_handler(request_rec *r)
 	    /* XX Note that if a script wants to produce its own Redirect
 	     * body, it now has to explicitly *say* "Status: 302"
 	     */
+            discard_script_output(bb);
+            apr_brigade_destroy(bb);
 	    return HTTP_MOVED_TEMPORARILY;
 	}
 
 	if (!r->header_only) {
-            bb = apr_brigade_create(r->pool);
-	    b = apr_bucket_pipe_create(script_in);
-	    APR_BRIGADE_INSERT_TAIL(bb, b);
-            b = apr_bucket_eos_create();
-	    APR_BRIGADE_INSERT_TAIL(bb, b);
 	    ap_pass_brigade(r->output_filters, bb);
 	}
 
@@ -756,6 +756,7 @@ static int cgi_handler(request_rec *r)
     }
 
     if (script_in && nph) {
+        conn_rec *c = r->connection;
         struct ap_filter_t *cur;
         
         /* get rid of all filters up through protocol...  since we
