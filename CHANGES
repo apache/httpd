@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) Fix segfault in mod_expires, which occured under certain
+     circumstances. PR 28047.  [André Malo]
+
   *) htpasswd: use apr_temp_dir_get() and general cleanup
      [Guenter Knauf <eflash gmx.net>, Thom May]
 
