@@ -123,7 +123,8 @@ int ap_max_daemons_limit = -1;
 
 static char ap_coredump_dir[MAX_STRING_LEN];
 
-int pipe_of_death[2];
+static ap_file_t *pipe_of_death_in = NULL;
+static ap_file_t *pipe_of_death_out = NULL;
 static pthread_mutex_t pipe_of_death_mutex;
 
 /* *Non*-shared http_main globals... */
@@ -736,19 +737,9 @@ static void child_main(int child_num_arg)
     /* Set up the pollfd array */
     listensocks = ap_pcalloc(pchild,
 			    sizeof(*listensocks) * (num_listensocks + 1));
-
-    /* It is a horrible crime to use ap_create_tcp_socket() here, but it
-     * keeps ap_put_os_sock() from doing getsockname() on the pipe of death
-     * (which won't work).
-     * TODO - remove the need for such a hack!  Jeff owns this problem.
-     */
-    ap_create_tcp_socket(&listensocks[0], pchild);
-    rv = ap_put_os_sock(&listensocks[0], &pipe_of_death[0], pchild);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
-                     "ap_put_os_sock() failed for the pipe of death");
-        clean_child_exit(APEXIT_CHILDFATAL);
-    }
+#if APR_FILES_AS_SOCKETS
+    ap_socket_from_file(&listensocks[0], pipe_of_death_in);
+#endif
     for (lr = ap_listeners, i = 1; i <= num_listensocks; lr = lr->next, ++i)
 	listensocks[i]=lr->sd;
 
@@ -921,6 +912,7 @@ static void perform_idle_server_maintenance(void)
     int free_slots[MAX_SPAWN_RATE];
     int last_non_dead;
     int total_non_dead;
+    int one = 1;
 
     /* initialize the free_list */
     free_length = 0;
@@ -975,7 +967,7 @@ static void perform_idle_server_maintenance(void)
     if (idle_thread_count > max_spare_threads) {
         /* Kill off one child */
         char char_of_death = '!';
-        if (write(pipe_of_death[1], &char_of_death, 1) == -1) {
+        if (ap_write(pipe_of_death_out, &char_of_death, &one) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "write pipe_of_death");
         }
         idle_spawn_rate = 1;
@@ -1095,17 +1087,18 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
     ap_status_t rv;
+    int one = 1;
 
     pconf = _pconf;
     ap_server_conf = s;
-    if (pipe(pipe_of_death) == -1) {
+    if (ap_create_pipe(&pipe_of_death_in, &pipe_of_death_out, pconf) == -1) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno,
                      (const server_rec*) ap_server_conf,
                      "pipe: (pipe_of_death)");
         exit(1);
     }
 
-    if (fcntl(pipe_of_death[0], F_SETFL, O_NONBLOCK) == -1) {
+    if (ap_set_pipe_timeout(pipe_of_death_in, 0) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno,
                      (const server_rec*) ap_server_conf,
                      "fcntl: O_NONBLOCKing (pipe_of_death)");
@@ -1224,7 +1217,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 
 	/* give the children the signal to die */
         for (i = 0; i < ap_daemons_limit;) {
-            if (write(pipe_of_death[1], &char_of_death, 1) == -1) {
+            if (ap_write(pipe_of_death_in, &char_of_death, &one) == -1) {
                 if (errno == EINTR) continue;
                 ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "write pipe_of_death");
             }

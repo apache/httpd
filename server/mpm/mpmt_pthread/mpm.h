@@ -65,7 +65,6 @@
 
 extern int ap_threads_per_child;
 extern int ap_max_requests_per_child;
-extern int ap_pipe_of_death[2];
 extern int ap_extended_status;
 extern int ap_max_daemons_limit;
 extern int ap_my_pid;
