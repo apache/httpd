@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<html><head>
-<title>Apache module mod_status</title>
-</head><!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<HTML><HEAD>
+<TITLE>Apache module mod_status</TITLE>
+</HEAD><!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 <BODY
  BGCOLOR="#FFFFFF"
  TEXT="#000000"
@@ -11,9 +11,9 @@
 >
 
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">Module mod_status</h1>
+<h1 ALIGN="CENTER">Module mod_status</H1>
 
-The Status Module is only available in Apache 1.1 and later.<p>
+The Status Module is only available in Apache 1.1 and later.<P>
 
 <h2>Function</h2>
 
@@ -23,23 +23,23 @@ the current server statistics in an easily readable form.  If required
 this page can be made to automatically refresh (given a compatible
 browser).  Another page gives a simple machine-readable list of the current
 server state.
-<p>
+<P>
 The details given are:
-<ul>
-<li>The number of children serving requests
-<li>The number of idle children
-<li>The status of each child, the number of requests that child has
+<UL>
+<LI>The number of children serving requests
+<LI>The number of idle children
+<LI>The status of each child, the number of requests that child has
 performed and the total number of bytes served by the child (*)
-<li>A total number of accesses and byte count served (*)
-<li>The time the server was started/restarted and the
+<LI>A total number of accesses and byte count served (*)
+<LI>The time the server was started/restarted and the
 time it has been running for
-<li>Averages giving the number of requests per second,
+<LI>Averages giving the number of requests per second,
 the number of bytes served per second and the average number
 of bytes per request (*)
-<li>The current percentage CPU used by each child and in total by
+<LI>The current percentage CPU used by each child and in total by
 Apache (*)
-<li>The current hosts and requests being processed (*)
-</ul>
+<LI>The current hosts and requests being processed (*)
+</UL>
 
 A compile-time option must be used to display the details marked "(*)" as
 the instrumentation required for obtaining these statistics does not
@@ -48,8 +48,8 @@ exist within standard Apache.
 <h2>Enabling Status Support</h2>
 
 To enable status reports only for browsers from the foo.com
-domain add this code to your <code>access.conf</code> configuration file
-<pre>
+domain add this code to your <CODE>access.conf</CODE> configuration file
+<PRE>
     &lt;Location /server-status&gt;
     SetHandler server-status
 
@@ -57,11 +57,11 @@ domain add this code to your <code>access.conf</code> configuration file
     deny from all
     allow from .foo.com
     &lt;/Location&gt;
-</pre>
-<p>
+</PRE>
+<P>
 You can now access server statistics by using a Web browser to access the
-page <code>http://your.server.name/server-status</code>
-<p>
+page <CODE>http://your.server.name/server-status</CODE>
+<P>
 Note that mod_status will only work when you are running Apache in
 <A HREF="core.html#servertype">standalone</A> mode and not
 <A HREF="core.html#servertype">inetd</A> mode.
@@ -69,29 +69,29 @@ Note that mod_status will only work when you are running Apache in
 <h3>Automatic Updates</h3>
 You can get the status page to update itself automatically if you have
 a browser that supports "refresh".  Access the page
-<code>http://your.server.name/server-status?refresh=N</code> to refresh the page
+<CODE>http://your.server.name/server-status?refresh=N</CODE> to refresh the page
 every N seconds.
 <h3>Machine Readable Status File</h3>
 A machine-readable version of the status file is available by accessing the
-page <code>http://your.server.name/server-status?auto</code>.  This is useful
-when automatically run, see the Perl program in the <code>/support</code>
-directory of Apache, <code>log_server_status</code>.
+page <CODE>http://your.server.name/server-status?auto</CODE>.  This is useful
+when automatically run, see the Perl program in the <CODE>/support</CODE>
+directory of Apache, <CODE>log_server_status</CODE>.
 
 <h2>Full Instrumentation</h2>
 
 To obtain full statistics you must compile Apache with a special
 directive.  On some machines there may be a small performance loss
 if you do this.  Try full statistics and see if you notice any
-difference.  If you do please contact <a href="mailto:mark@ukweb.com">
-mark@ukweb.com</a> and tell me your configuration.
+difference.  If you do please contact <A HREF="mailto:mark@ukweb.com">
+mark@ukweb.com</A> and tell me your configuration.
 
-<p>
+<P>
 
 Do this by adding the following to the AUX_CFLAGS line in the
 "Configuration" file and then recompiling as usual.
-<pre>
+<PRE>
         AUX_CFLAGS= (something) -DSTATUS
-</pre>
+</PRE>
 
 <BLOCKQUOTE>
  <STRONG>

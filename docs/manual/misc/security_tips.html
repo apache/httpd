@@ -15,51 +15,51 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Security Tips for Server Configuration</H1>
 
-<hr>
+<HR>
 
 <P>Some hints and tips on security issues in setting up a web server. Some of
 the suggestions will be general, others specific to Apache.
 
 <HR>
 
-<a name="serverroot">
-<H2>Permissions on ServerRoot Directories</H2></a>
+<A name="serverroot">
+<H2>Permissions on ServerRoot Directories</H2></A>
 <P>In typical operation, Apache is started by the root
-user, and it switches to the user defined by the <a
-href="../mod/core.html#user"><b>User</b></a> directive to serve hits.
+user, and it switches to the user defined by the <A
+HREF="../mod/core.html#user"><STRONG>User</STRONG></A> directive to serve hits.
 As is the case with any command that root executes, you must take care
 that it is protected from modification by non-root users.  Not only
 must the files themselves be writeable only by root, but so must the
 directories, and parents of all directories.  For example, if you
-choose to place ServerRoot in <code>/usr/local/apache</code> then it is
+choose to place ServerRoot in <CODE>/usr/local/apache</CODE> then it is
 suggested that you create that directory as root, with commands
 like these:
 
-<blockquote><pre>
+<BLOCKQUOTE><PRE>
     mkdir /usr/local/apache
     cd /usr/local/apache
     mkdir bin conf logs
     chown 0 . bin conf logs
     chgrp 0 . bin conf logs
     chmod 755 . bin conf logs
-</pre></blockquote>
+</PRE></BLOCKQUOTE>
 
 It is assumed that /, /usr, and /usr/local are only modifiable by root.
 When you install the httpd executable, you should ensure that it is
 similarly protected:
 
-<blockquote><pre>
+<BLOCKQUOTE><PRE>
     cp httpd /usr/local/apache/bin
     chown 0 /usr/local/apache/bin/httpd
     chgrp 0 /usr/local/apache/bin/httpd
     chmod 511 /usr/local/apache/bin/httpd
-</pre></blockquote>
+</PRE></BLOCKQUOTE>
 
-<p>You can create an htdocs subdirectory which is modifiable by other
+<P>You can create an htdocs subdirectory which is modifiable by other
 users -- since root never executes any files out of there, and shouldn't
 be creating files in there.
 
-<p>If you allow non-root users to modify any files that root either
+<P>If you allow non-root users to modify any files that root either
 executes or writes on then you open your system to root compromises.
 For example, someone could replace the httpd binary so that the next
 time you start it, it will execute some arbitrary code.  If the logs
@@ -73,16 +73,16 @@ may be able to overwrite the log itself with bogus data.
 <H2>Server Side Includes</H2>
 <P>Server side includes (SSI) can be configured so that users can execute
 arbitrary programs on the server. That thought alone should send a shiver
-down the spine of any sys-admin.<p>
+down the spine of any sys-admin.<P>
 
 One solution is to disable that part of SSI. To do that you use the
 IncludesNOEXEC option to the <A HREF="../mod/core.html#options">Options</A>
-directive.<p>
+directive.<P>
 
 <HR>
 
 <H2>Non Script Aliased CGI</H2>
-<P>Allowing users to execute <B>CGI</B> scripts in any directory should only
+<P>Allowing users to execute <STRONG>CGI</STRONG> scripts in any directory should only
 be considered if;
 <OL>
  <LI>You trust your users not to write scripts which will deliberately or
@@ -90,23 +90,23 @@ accidentally expose your system to an attack.
  <LI>You consider security at your site to be so feeble in other areas, as to
 make one more potential hole irrelevant.
  <LI>You have no users, and nobody ever visits your server.
-</OL><p>
+</OL><P>
 <HR>
 
 <H2>Script Alias'ed CGI</H2>
-<P>Limiting <B>CGI</B> to special directories gives the admin control over
+<P>Limiting <STRONG>CGI</STRONG> to special directories gives the admin control over
 what goes into those directories. This is inevitably more secure than
-non script aliased CGI, but <strong>only if users with write access to the
-directories are trusted</strong> or the admin is willing to test each new CGI
+non script aliased CGI, but <STRONG>only if users with write access to the
+directories are trusted</STRONG> or the admin is willing to test each new CGI
 script/program for potential security holes.<P>
 
-Most sites choose this option over the non script aliased CGI approach.<p>
+Most sites choose this option over the non script aliased CGI approach.<P>
 
 <HR>
 <H2>CGI in general</H2>
 <P>Always remember that you must trust the writers of the CGI script/programs
 or your ability to spot potential security holes in CGI, whether they were
-deliberate or accidental.<p>
+deliberate or accidental.<P>
 
 All the CGI scripts will run as the same user, so they have potential to
 conflict (accidentally or deliberately) with other scripts e.g.
@@ -123,21 +123,21 @@ the Apache server code.  Another popular way of doing this is with
 <H2>Stopping users overriding system wide settings...</H2>
 <P>To run a really tight ship, you'll want to stop users from setting
 up <CODE>.htaccess</CODE> files which can override security features
-you've configured. Here's one way to do it...<p>
+you've configured. Here's one way to do it...<P>
 
 In the server configuration file, put
-<blockquote><code>
-&lt;Directory /&gt; <br>
-AllowOverride None <br>
-Options None <br>
-allow from all <br>
-&lt;/Directory&gt; <br>
-</code></blockquote>
+<BLOCKQUOTE><CODE>
+&lt;Directory /&gt; <BR>
+AllowOverride None <BR>
+Options None <BR>
+allow from all <BR>
+&lt;/Directory&gt; <BR>
+</CODE></BLOCKQUOTE>
 
 Then setup for specific directories<P>
 
 This stops all overrides, Includes and accesses in all directories apart
-from those named.<p>
+from those named.<P>
 <HR>
 <H2>
  Protect server files by default
@@ -220,7 +220,7 @@ by filling out a
 <A HREF="http://www.apache.org/bugdb.cgi">problem report</A>, or by
 sending mail to
 <A HREF="mailto:apache-bugs@mail.apache.org">apache-bugs@mail.apache.org</A>
-<p>
+<P>
 <HR>
 
 <!--#include virtual="footer.html" -->

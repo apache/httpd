@@ -55,28 +55,28 @@
   <P>To achieve this, Apache will define new CGI-like environment
      variables, e.g.
 
-  <blockquote><code>
-REDIRECT_HTTP_ACCEPT=*/*, image/gif, image/x-xbitmap, image/jpeg <br>
-REDIRECT_HTTP_USER_AGENT=Mozilla/1.1b2 (X11; I; HP-UX A.09.05 9000/712) <br>
-REDIRECT_PATH=.:/bin:/usr/local/bin:/etc <br>
-REDIRECT_QUERY_STRING= <br>
-REDIRECT_REMOTE_ADDR=121.345.78.123 <br>
-REDIRECT_REMOTE_HOST=ooh.ahhh.com <br>
-REDIRECT_SERVER_NAME=crash.bang.edu <br>
-REDIRECT_SERVER_PORT=80 <br>
-REDIRECT_SERVER_SOFTWARE=Apache/0.8.15 <br>
-REDIRECT_URL=/cgi-bin/buggy.pl <br>
-  </code></blockquote>
+  <BLOCKQUOTE><CODE>
+REDIRECT_HTTP_ACCEPT=*/*, image/gif, image/x-xbitmap, image/jpeg <BR>
+REDIRECT_HTTP_USER_AGENT=Mozilla/1.1b2 (X11; I; HP-UX A.09.05 9000/712) <BR>
+REDIRECT_PATH=.:/bin:/usr/local/bin:/etc <BR>
+REDIRECT_QUERY_STRING= <BR>
+REDIRECT_REMOTE_ADDR=121.345.78.123 <BR>
+REDIRECT_REMOTE_HOST=ooh.ahhh.com <BR>
+REDIRECT_SERVER_NAME=crash.bang.edu <BR>
+REDIRECT_SERVER_PORT=80 <BR>
+REDIRECT_SERVER_SOFTWARE=Apache/0.8.15 <BR>
+REDIRECT_URL=/cgi-bin/buggy.pl <BR>
+  </CODE></BLOCKQUOTE>
 
-  <P>note the <code>REDIRECT_</code> prefix.
+  <P>note the <CODE>REDIRECT_</CODE> prefix.
 
-  <P>At least <code>REDIRECT_URL</code> and <code>REDIRECT_QUERY_STRING</code> will
+  <P>At least <CODE>REDIRECT_URL</CODE> and <CODE>REDIRECT_QUERY_STRING</CODE> will
      be passed to the new URL (assuming it's a cgi-script or a cgi-include). The
      other variables will exist only if they existed prior to the error/problem.
-     <b>None</b> of these will be set if your ErrorDocument is an
-     <i>external</i> redirect (i.e. anything starting with a protocol name
-     like <code>http:</code>, even if it refers to the same host as the
-     server).<p>
+     <STRONG>None</STRONG> of these will be set if your ErrorDocument is an
+     <EM>external</EM> redirect (i.e. anything starting with a protocol name
+     like <CODE>http:</CODE>, even if it refers to the same host as the
+     server).<P>
 
 <DT>Configuration
 
@@ -85,25 +85,25 @@ REDIRECT_URL=/cgi-bin/buggy.pl <br>
 
   <P>Here are some examples...
 
-  <blockquote><code>
-ErrorDocument 500 /cgi-bin/crash-recover <br>
-ErrorDocument 500 "Sorry, our script crashed. Oh dear<br>
-ErrorDocument 500 http://xxx/ <br>
-ErrorDocument 404 /Lame_excuses/not_found.html  <br>
+  <BLOCKQUOTE><CODE>
+ErrorDocument 500 /cgi-bin/crash-recover <BR>
+ErrorDocument 500 "Sorry, our script crashed. Oh dear<BR>
+ErrorDocument 500 http://xxx/ <BR>
+ErrorDocument 404 /Lame_excuses/not_found.html  <BR>
 ErrorDocument 401 /Subscription/how_to_subscribe.html
-  </code></blockquote>
+  </CODE></BLOCKQUOTE>
 
   <P>The syntax is,
 
-  <P><code><A HREF="mod/core.html#errordocument">ErrorDocument</A></code>
+  <P><CODE><A HREF="mod/core.html#errordocument">ErrorDocument</A></CODE>
 &lt;3-digit-code&gt; action
 
   <P>where the action can be,
 
   <OL>
     <LI>Text to be displayed.  Prefix the text with a quote (&quot;). Whatever
-        follows the quote is displayed. <em>Note: the (&quot;) prefix isn't
-        displayed.</em>
+        follows the quote is displayed. <EM>Note: the (&quot;) prefix isn't
+        displayed.</EM>
 
     <LI>An external URL to redirect to.
 
@@ -121,27 +121,27 @@ ErrorDocument 401 /Subscription/how_to_subscribe.html
 <DT>Purpose
 
   <DD>Apache's behavior to redirected URLs has been modified so that additional
-      environment variables are available to a script/server-include.<p>
+      environment variables are available to a script/server-include.<P>
 
 <DT>Old behavior
 
   <DD>Standard CGI vars were made available to a script which has been
       redirected to. No indication of where the redirection came from was provided.
 
-  <p>
+  <P>
 
 <DT>New behavior
   <DD>
 
 A new batch of environment variables will be initialized for use by a
 script which has been redirected to.  Each new variable will have the
-prefix <code>REDIRECT_</code>.  <code>REDIRECT_</code> environment
+prefix <CODE>REDIRECT_</CODE>.  <CODE>REDIRECT_</CODE> environment
 variables are created from the CGI environment variables which existed
-prior to the redirect, they are renamed with a <code>REDIRECT_</code>
-prefix, i.e. <code>HTTP_USER_AGENT</code> becomes
-<code>REDIRECT_HTTP_USER_AGENT</code>.  In addition to these new
-variables, Apache will define <code>REDIRECT_URL</code> and
-<code>REDIRECT_STATUS</code> to help the script trace its origin.
+prior to the redirect, they are renamed with a <CODE>REDIRECT_</CODE>
+prefix, i.e. <CODE>HTTP_USER_AGENT</CODE> becomes
+<CODE>REDIRECT_HTTP_USER_AGENT</CODE>.  In addition to these new
+variables, Apache will define <CODE>REDIRECT_URL</CODE> and
+<CODE>REDIRECT_STATUS</CODE> to help the script trace its origin.
 Both the original URL and the URL being redirected to can be logged in
 the access log.
 

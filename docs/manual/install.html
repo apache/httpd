@@ -36,7 +36,7 @@ for how to compile the server.
 <h2>Compiling Apache</h2>
 
 Compiling Apache consists of three steps: Firstly select which Apache
-<b>modules</b> you want to include into the server. Secondly create a
+<STRONG>modules</STRONG> you want to include into the server. Secondly create a
 configuration for your operating system. Thirdly compile the
 executable.
 <P>
@@ -111,7 +111,7 @@ The modules we place in the Apache distribution are the ones we have
 tested and are used regularly by various members of the Apache
 development group.  Additional modules contributed by members or third
 parties with specific needs or functions are available at <A
-HREF="http://www.apache.org/dist/contrib/modules/">&lt;URL:http://www.apache.org/dist/contrib/modules/&gt;</a>.
+HREF="http://www.apache.org/dist/contrib/modules/">&lt;URL:http://www.apache.org/dist/contrib/modules/&gt;</A>.
 There are instructions on that page for linking these modules into the
 core Apache code.
 
@@ -126,11 +126,11 @@ designed to be configured and run from the same set of directories
 where it is compiled. If you want to run it from somewhere else, make
 a directory and copy the <CODE>conf</CODE>, <CODE>logs</CODE> and
 <CODE>icons</CODE> directories into it.  In either case you should
-read the <a href="misc/security_tips.html#serverroot">security tips</a>
+read the <A HREF="misc/security_tips.html#serverroot">security tips</A>
 describing how to set the permissions on the server root directory.<P>
 
 The next step is to edit the configuration files for the server. This
-consists of setting up various <B>directives</B> in up to three
+consists of setting up various <STRONG>directives</STRONG> in up to three
 central configuration files. By default, these files are located in
 the <CODE>conf</CODE> directory and are called <CODE>srm.conf</CODE>,
 <CODE>access.conf</CODE> and <CODE>httpd.conf</CODE>.  To help you get
@@ -188,7 +188,7 @@ port of 80, a suitable URL to enter into your browser is
 <P>
 
 Note that when the server starts it will create a number of
-<i>child</i> processes to handle the requests. If you started Apache
+<EM>child</EM> processes to handle the requests. If you started Apache
 as the root user, the parent process will continue to run as root
 while the children will change to the user as given in the httpd.conf
 file.
@@ -214,7 +214,7 @@ this will be located in the file <CODE>error_log</CODE> in the
 If you want your server to continue running after a system reboot, you
 should add a call to <CODE>httpd</CODE> to your system startup files
 (typically <CODE>rc.local</CODE> or a file in an
-<CODE>rc.<I>N</I></CODE> directory). This will start Apache as root.
+<CODE>rc.<EM>N</EM></CODE> directory). This will start Apache as root.
 Before doing this ensure that your server is properly configured
 for security and access restrictions.
 
