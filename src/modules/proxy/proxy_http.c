@@ -166,23 +166,20 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 
 /* We break the URL into host, port, path-search */
 
-    if ((desthost = table_get(r->headers_in, "Host")) == NULL)
+    url += 7;  /* skip http:// */
+    destport = DEFAULT_PORT;
+    p = strchr(url, '/');
+    if (p == NULL)
     {
-	url += 7;  /* skip http:// */
-	destport = DEFAULT_PORT;
-	p = strchr(url, '/');
-	if (p == NULL)
-	{
-	    desthost = pstrdup(pool, url);
-	    url = "/";
-	} else
-	{
-	    char *q = palloc(pool, p-url+1);
-	    memcpy(q, url, p-url);
-	    q[p-url] = '\0';
-	    url = p;
-	    desthost = q;
-	}
+        desthost = pstrdup(pool, url);
+        url = "/";
+    } else
+    {
+        char *q = palloc(pool, p-url+1);
+        memcpy(q, url, p-url);
+        q[p-url] = '\0';
+        url = p;
+        desthost = q;
     }
 
     p = strchr(desthost, ':');
