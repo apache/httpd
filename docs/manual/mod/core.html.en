@@ -118,12 +118,15 @@ available</td></tr><tr><th><a href="module-dict.html#Status">Status:
     request, so you can use the following configuration to enable
     such a script:</p>
 
-    <div class="example"><pre>
-&lt;Files "mypaths.shtml"&gt;
-  Options +Includes
-  SetOutputFilter INCLUDES
-  AcceptPathInfo on
-&lt;/Files&gt;</pre></div>
+    <div class="example"><p><code>
+      &lt;Files "mypaths.shtml"&gt;<br />
+      <span class="indent">
+        Options +Includes<br />
+        SetOutputFilter INCLUDES<br />
+        AcceptPathInfo on<br />
+      </span>
+      &lt;/Files&gt;
+    </code></p></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AccessFileName" id="AccessFileName">AccessFileName</a> <a name="accessfilename" id="accessfilename">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Name of the distributed configuration file</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
@@ -148,10 +151,13 @@ available</td></tr><tr><th><a href="module-dict.html#Status">Status:
     <code>/usr/local/.acl</code> and <code>/usr/local/web/.acl</code>
     for directives, unless they have been disabled with</p>
 
-    <div class="example"><pre>
-&lt;Directory /&gt;
-  AllowOverride None
-&lt;/Directory&gt;</pre></div>
+    <div class="example"><p><code>
+      &lt;Directory /&gt;<br />
+      <span class="indent">
+        AllowOverride None<br />
+      </span>
+      &lt;/Directory&gt;
+    </code></p></div>
 <h3>See also</h3><ul><li><code class="directive"><a href="#allowoverride">AllowOverride</a></code></li><li><a href="../configuring.html">Configuration Files</a></li><li><a href="../howto/htaccess.html">.htaccess Files</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddDefaultCharset" id="AddDefaultCharset">AddDefaultCharset</a> <a name="adddefaultcharset" id="adddefaultcharset">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Default character set to be added for a
 response without an explicit character set</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
@@ -388,10 +394,13 @@ named file-system directory and sub-directories</td></tr><tr><th><a href="direct
     <code>/home/user/public_html</code>, but <code>&lt;Directory
     /home/*/public_html&gt;</code> will match. Example:</p>
 
-    <div class="example"><pre>
-&lt;Directory /usr/local/httpd/htdocs&gt;
-  Options Indexes FollowSymLinks
-&lt;/Directory&gt;</pre></div>
+    <div class="example"><p><code>
+      &lt;Directory /usr/local/httpd/htdocs&gt;<br />
+      <span class="indent">
+        Options Indexes FollowSymLinks<br />
+      </span>
+      &lt;/Directory&gt;
+    </code></p></div>
 
     <div class="note">
       <p>Be careful with the <var>directory-path</var> arguments:
@@ -419,14 +428,19 @@ named file-system directory and sub-directories</td></tr><tr><th><a href="direct
     first, interspersed with the directives from the <a href="#accessfilename">.htaccess</a> files. For example,
     with</p>
 
-    <div class="example"><pre>
-&lt;Directory /&gt;
-  AllowOverride None
-&lt;/Directory&gt;
-
-&lt;Directory /home/&gt;
-  AllowOverride FileInfo
-&lt;/Directory&gt;</pre></div>
+    <div class="example"><p><code>
+      &lt;Directory /&gt;<br />
+      <span class="indent">
+        AllowOverride None<br />
+      </span>
+      &lt;/Directory&gt;<br />
+      <br />
+      &lt;Directory /home/&gt;<br />
+      <span class="indent">
+        AllowOverride FileInfo<br />
+      </span>
+      &lt;/Directory&gt;
+    </code></p></div>
 
     <p>for access to the document <code>/home/web/dir/doc.html</code>
     the steps are:</p>
@@ -447,10 +461,13 @@ named file-system directory and sub-directories</td></tr><tr><th><a href="direct
     expressions are tested in the order they appeared in the
     configuration file. For example, with</p>
 
-    <div class="example"><pre>
-&lt;Directory ~ abc$&gt;
-  # ... directives here ...
-&lt;/Directory&gt;</pre></div>
+    <div class="example"><p><code>
+      &lt;Directory ~ abc$&gt;<br />
+      <span class="indent">
+        # ... directives here ...<br />
+      </span>
+      &lt;/Directory&gt;
+    </code></p></div>
 
     <p>The regular expression section won't be considered until after
     all normal &lt;Directory&gt;s and <code>.htaccess</code> files
@@ -463,11 +480,14 @@ named file-system directory and sub-directories</td></tr><tr><th><a href="direct
     recommended that you change this with a block such
     as</strong></p>
 
-    <div class="example"><pre>
-&lt;Directory /&gt;
-  Order Deny,Allow
-  Deny from All
-&lt;/Directory&gt;</pre></div>
+    <div class="example"><p><code>
+      &lt;Directory /&gt;<br />
+      <span class="indent">
+        Order Deny,Allow<br />
+        Deny from All<br />
+      </span>
+      &lt;/Directory&gt;
+    </code></p></div>
 
     <p><strong>and then override this for directories you
     <em>want</em> accessible. See the <a href="../misc/security_tips.html">Security Tips</a> page for more
@@ -888,14 +908,17 @@ if a test is true at startup</td></tr><tr><th><a href="directive-dict.html#Synta
     nest-able, which can be used to implement simple
     multiple-parameter tests. Example:</p>
 
-    <div class="example"><pre>
-$ httpd -DReverseProxy ...
-
-# httpd.conf
-&lt;IfDefine ReverseProxy&gt;
-  LoadModule rewrite_module modules/mod_rewrite.so
-  LoadModule proxy_module   modules/libproxy.so
-&lt;/IfDefine&gt;</pre></div>
+    <div class="example"><p><code>
+      httpd -DReverseProxy ...<br />
+      <br />
+      # httpd.conf<br />
+      &lt;IfDefine ReverseProxy&gt;<br />
+      <span class="indent">
+        LoadModule rewrite_module modules/mod_rewrite.so<br />
+        LoadModule proxy_module   modules/libproxy.so<br />
+      </span>
+      &lt;/IfDefine&gt;
+    </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IfModule" id="IfModule">&lt;IfModule&gt;</a> <a name="ifmodule" id="ifmodule">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Encloses directives that are processed conditional on the
 presence or absence of a specific module</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
@@ -1049,7 +1072,7 @@ methods</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <strong>all</strong> access methods, and this is the usual
     desired behavior. <strong>In the general case, access control
     directives should not be placed within a
-    <code class="directive">&lt;limit&gt;</code> section.</strong></p>
+    <code class="directive">&lt;Limit&gt;</code> section.</strong></p>
 
     <p>The purpose of the <code class="directive">&lt;Limit&gt;</code>
     directive is to restrict the effect of the access controls to the
@@ -1059,10 +1082,13 @@ methods</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     example applies the access control only to the methods POST, PUT,
     and DELETE, leaving all other methods unprotected:</p>
 
-    <div class="example"><pre>
-&lt;Limit POST PUT DELETE&gt;
-  Require valid-user
-&lt;/Limit&gt;</pre></div>
+    <div class="example"><p><code>
+      &lt;Limit POST PUT DELETE&gt;<br />
+      <span class="indent">
+        Require valid-user<br />
+      </span>
+      &lt;/Limit&gt;
+    </code></p></div>
 
     <p>The method names listed can be one or more of: <code>GET</code>,
     <code>POST</code>, <code>PUT</code>, <code>DELETE</code>,
@@ -1091,10 +1117,13 @@ except the named ones</td></tr><tr><th><a href="directive-dict.html#Syntax">Synt
 
     <p>For example:</p>
 
-    <div class="example"><pre>
-&lt;LimitExcept POST GET&gt;
-  Require valid-user
-&lt;LimitExcept&gt;</pre></div>
+    <div class="example"><p><code>
+      &lt;LimitExcept POST GET&gt;<br />
+      <span class="indent">
+        Require valid-user<br />
+      </span>
+      &lt;LimitExcept&gt;
+    </code></p></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitRequestBody" id="LimitRequestBody">LimitRequestBody</a> <a name="limitrequestbody" id="limitrequestbody">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Restricts the total size of the HTTP request body sent
@@ -1315,13 +1344,16 @@ URLs</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     directive. For example, to enable status requests, but allow them
     only from browsers at foo.com, you might use:</p>
 
-    <div class="example"><pre>
-&lt;Location /status&gt;
-  SetHandler server-status
-  Order Deny,Allow
-  Deny from all
-  Allow from .foo.com
-&lt;/Location&gt;</pre></div>
+    <div class="example"><p><code>
+      &lt;Location /status&gt;<br />
+      <span class="indent">
+        SetHandler server-status<br />
+        Order Deny,Allow<br />
+        Deny from all<br />
+        Allow from .foo.com<br />
+      </span>
+      &lt;/Location&gt;
+    </code></p></div>
 
     <div class="note"><h3>Note about / (slash)</h3>
       <p>The slash character has special meaning depending on where in a
@@ -1644,27 +1676,37 @@ directory</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 
     <p>For example, without any + and - symbols:</p>
 
-    <div class="example"><pre>
-&lt;Directory /web/docs&gt;
-  Options Indexes FollowSymLinks
-&lt;/Directory&gt;
-
-&lt;Directory /web/docs/spec&gt;
-  Options Includes
-&lt;/Directory&gt;</pre></div>
+    <div class="example"><p><code>
+      &lt;Directory /web/docs&gt;<br />
+      <span class="indent">
+        Options Indexes FollowSymLinks<br />
+      </span>
+      &lt;/Directory&gt;<br />
+      <br />
+      &lt;Directory /web/docs/spec&gt;<br />
+      <span class="indent">
+        Options Includes<br />
+      </span>
+      &lt;/Directory&gt;
+    </code></p></div>
 
     <p>then only <code>Includes</code> will be set for the
     /web/docs/spec directory. However if the second
     <code class="directive">Options</code> directive uses the + and - symbols:</p> 
 
-    <div class="example"><pre>
-&lt;Directory /web/docs&gt;
-  Options Indexes FollowSymLinks
-&lt;/Directory&gt;
-
-&lt;Directory /web/docs/spec&gt;
-  Options +Includes -Indexes
-&lt;/Directory&gt;</pre></div>
+    <div class="example"><p><code>
+      &lt;Directory /web/docs&gt;<br />
+      <span class="indent">
+        Options Indexes FollowSymLinks<br />
+      </span>
+      &lt;/Directory&gt;<br />
+      <br />
+      &lt;Directory /web/docs/spec&gt;<br />
+      <span class="indent">
+        Options +Includes -Indexes<br />
+      </span>
+      &lt;/Directory&gt;
+    </code></p></div>
 
     <p>then the options <code>FollowSymLinks</code> and
     <code>Includes</code> are set for the /web/docs/spec directory.</p>
@@ -2067,7 +2109,9 @@ handler</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 
     <div class="example"><p><code>
       &lt;Location /status&gt;<br />
-      SetHandler server-status<br />
+      <span class="indent">
+        SetHandler server-status<br />
+      </span>
       &lt;/Location&gt;
     </code></p></div>
 <h3>See also</h3><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetInputFilter" id="SetInputFilter">SetInputFilter</a> <a name="setinputfilter" id="setinputfilter">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
@@ -2107,10 +2151,13 @@ server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     in the <code>/www/data/</code> directory for server-side
     includes.</p>
 
-    <div class="example"><pre>
-&lt;Directory /www/data/&gt;
-  SetOutputFilter INCLUDES
-&lt;/Directory&gt;</pre></div>
+    <div class="example"><p><code>
+      &lt;Directory /www/data/&gt;<br />
+      <span class="indent">
+        SetOutputFilter INCLUDES<br />
+      </span>
+      &lt;/Directory&gt;
+    </code></p></div>
 
     <p>If more than one filter is specified, they must be separated
     by semicolons in the order in which they should process the
@@ -2189,12 +2236,13 @@ port</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     reverse DNS lookup on the server IP address that the client
     connected to in order to work out self-referential URLs.</p>
 
-    <p><strong>Warning:</strong> if CGIs make assumptions about the
-    values of <code>SERVER_NAME</code> they may be broken by this
-    option. The client is essentially free to give whatever value
-    they want as a hostname. But if the CGI is only using
-    <code>SERVER_NAME</code> to construct self-referential URLs
+    <div class="warning"><h3>Warning:</h3>
+    <p>If CGIs make assumptions about the values of <code>SERVER_NAME</code>
+    they may be broken by this option. The client is essentially free
+    to give whatever value they want as a hostname. But if the CGI is
+    only using <code>SERVER_NAME</code> to construct self-referential URLs
     then it should be just fine.</p>
+    </div>
 <h3>See also</h3><ul><li><code class="directive"><a href="#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="VirtualHost" id="VirtualHost">&lt;VirtualHost&gt;</a> <a name="virtualhost" id="virtualhost">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Contains directives that apply only to a specific
 hostname or IP address</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
@@ -2228,11 +2276,13 @@ hostname or IP address</td></tr><tr><th><a href="directive-dict.html#Syntax">Syn
     
     <div class="example"><h3>Example</h3><p><code>
       &lt;VirtualHost 10.1.2.3&gt;<br />
-      ServerAdmin webmaster@host.foo.com<br />
-      DocumentRoot /www/docs/host.foo.com<br />
-      ServerName host.foo.com<br />
-      ErrorLog logs/host.foo.com-error_log<br />
-      TransferLog logs/host.foo.com-access_log<br />
+      <span class="indent">
+        ServerAdmin webmaster@host.foo.com<br />
+        DocumentRoot /www/docs/host.foo.com<br />
+        ServerName host.foo.com<br />
+        ErrorLog logs/host.foo.com-error_log<br />
+        TransferLog logs/host.foo.com-access_log<br />
+      </span>
       &lt;/VirtualHost&gt;
     </code></p></div>
 
@@ -2243,11 +2293,13 @@ hostname or IP address</td></tr><tr><th><a href="directive-dict.html#Syntax">Syn
 
     <div class="example"><p><code>
       &lt;VirtualHost [fe80::a00:20ff:fea7:ccea]&gt;<br />
-      ServerAdmin webmaster@host.example.com<br />
-      DocumentRoot /www/docs/host.example.com<br />
-      ServerName host.example.com<br />
-      ErrorLog logs/host.example.com-error_log<br />
-      TransferLog logs/host.example.com-access_log<br />
+      <span class="indent">
+        ServerAdmin webmaster@host.example.com<br />
+        DocumentRoot /www/docs/host.example.com<br />
+        ServerName host.example.com<br />
+        ErrorLog logs/host.example.com-error_log<br />
+        TransferLog logs/host.example.com-access_log<br />
+      </span>
       &lt;/VirtualHost&gt;
     </code></p></div>  
 
@@ -2258,6 +2310,13 @@ hostname or IP address</td></tr><tr><th><a href="directive-dict.html#Syntax">Syn
     not have multiple network interfaces, then this can be
     accomplished with the <code>ifconfig alias</code> command (if
     your OS supports it).</p>
+
+    <div class="note"><h3>Note</h3>
+    <p>The use of <code class="directive">&lt;VirtualHost&gt;</code> does
+    <strong>not</strong> affect what addresses Apache listens on.  You
+    may need to ensure that Apache is listening on the correct addresses
+    using <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>.</p>
+    </div>
 
     <p>When using IP-based virtual hosting, the special name
     <code>_default_</code> can be specified in
@@ -2277,14 +2336,12 @@ hostname or IP address</td></tr><tr><th><a href="directive-dict.html#Syntax">Syn
     to match all ports on that address. (This is recommended when used
     with <code>_default_</code>.)</p>
 
-    <p><strong>SECURITY</strong>: See the <a href="../misc/security_tips.html">security tips</a> document
-    for details on why your security could be compromised if the
+    <div class="warning"><h3>Security</h3>
+    <p>See the <a href="../misc/security_tips.html">security tips</a>
+    document for details on why your security could be compromised if the
     directory where logfiles are stored is writable by anyone other
     than the user that starts the server.</p>
-
-    <p><strong>NOTE</strong>: The use of <code class="directive">&lt;VirtualHost&gt;</code> does <strong>not</strong>
-    affect what addresses Apache listens on.  You may need to ensure
-    that Apache is listening on the correct addresses using <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>.</p>
+    </div>
 <h3>See also</h3><ul><li><a href="../vhosts/">Apache Virtual Host documentation</a></li><li><a href="../dns-caveats.html">Warnings about DNS and
     Apache</a></li><li><a href="../bind.html">Setting
     which addresses and ports Apache uses</a></li><li><a href="../sections.html">How

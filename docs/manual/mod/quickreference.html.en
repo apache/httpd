@@ -457,7 +457,7 @@ a resource</td></tr>
 synchronization</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewritelog">RewriteLog <em>file-path</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of the file used for logging rewrite engine
 processing</td></tr>
-<tr><td><a href="mod_rewrite.html#rewriteloglevel">RewriteLogLevel <em>Level</em></a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the verbosity of the log file used by the rewrite
+<tr><td><a href="mod_rewrite.html#rewriteloglevel">RewriteLogLevel <em>Level</em></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the verbosity of the log file used by the rewrite
 engine</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewritemap">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
 </a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Defines a mapping function for key-lookup</td></tr>
