@@ -737,19 +737,16 @@ void check_serverpath(request_rec *r)
 
 void update_vhost_from_headers(request_rec *r)
 {
+    /* must set this for HTTP/1.1 support */
+    if (r->hostname || (r->hostname = table_get(r->headers_in, "Host"))) {
+	fix_hostname(r);
+    }
     /* check if we tucked away a name_chain */
     if (r->connection->vhost_lookup_data) {
-        if (r->hostname || (r->hostname = table_get(r->headers_in, "Host"))) {
-	    fix_hostname(r);
+        if (r->hostname)
             check_hostalias(r);
-	}
         else
             check_serverpath(r);
-    }
-    else if (!r->hostname) {
-        /* must set this for HTTP/1.1 support */
-        r->hostname = table_get(r->headers_in, "Host");
-	fix_hostname(r);
     }
 }
 
