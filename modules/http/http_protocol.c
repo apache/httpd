@@ -1396,11 +1396,11 @@ request_rec *ap_read_request(conn_rec *conn)
     r->output_filters  = conn->output_filters;
     r->input_filters   = conn->input_filters;
 
-    ap_bsetopt(conn->client, BO_TIMEOUT,
-               conn->keptalive
-               ? &r->server->keep_alive_timeout
-               : &r->server->timeout);
-
+    apr_setsocketopt(conn->client_socket, APR_SO_TIMEOUT, 
+                     conn->keptalive
+                     ? r->server->keep_alive_timeout * APR_USEC_PER_SEC
+                     : r->server->timeout * APR_USEC_PER_SEC);
+                     
     ap_add_output_filter("CONTENT_LENGTH", NULL, r, r->connection);
     ap_add_output_filter("HTTP_HEADER", NULL, r, r->connection);
 
@@ -1416,8 +1416,8 @@ request_rec *ap_read_request(conn_rec *conn)
         return NULL;
     }
     if (r->connection->keptalive) {
-        ap_bsetopt(r->connection->client, BO_TIMEOUT,
-		   &r->server->timeout);
+        apr_setsocketopt(r->connection->client_socket, APR_SO_TIMEOUT,
+                         r->server->timeout * APR_USEC_PER_SEC);
     }
     if (!r->assbackwards) {
         get_mime_headers(r);
