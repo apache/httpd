@@ -77,7 +77,6 @@
 #define AP_MPM_WANT_SET_COREDUMPDIR
 #define AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
 
-#define MPM_SYNC_CHILD_TABLE()
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
 #define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
 

@@ -76,7 +76,6 @@
 #define AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
 #define AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
 
-#define MPM_SYNC_CHILD_TABLE() (ap_sync_scoreboard_image())
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
 #define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
 #define MPM_ACCEPT_FUNC unixd_accept
