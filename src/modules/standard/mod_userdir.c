@@ -313,7 +313,10 @@ static int translate_userdir(request_rec *r)
          */
         if (filename && (!*userdirs || stat(filename, &statbuf) != -1)) {
             r->filename = pstrcat(r->pool, filename, dname, NULL);
-	    if (*userdirs)
+	    /* when statbuf contains info on r->filename we can save a syscall
+	     * by copying it to r->finfo
+	     */
+	    if (*userdirs && dname[0] == 0)
 		r->finfo = statbuf;
             return OK;
         }

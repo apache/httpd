@@ -1,5 +1,7 @@
 Changes with Apache 1.3b6
 
+  *) Fix multiple UserDir problem introduced during 1.3b4-dev. [Dean Gaudet]
+
   *) ap_cpystrn() had an off-by-1 error.
      [Charles Fu <ccwf@klab.caltech.edu>] PR#1847
 
