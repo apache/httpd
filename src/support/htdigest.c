@@ -4,7 +4,7 @@
  * by Alexei Kosut, based on htpasswd.c, by Rob McCool
  */
 
-/* $Id: htdigest.c,v 1.3 1996/08/20 13:25:05 paul Exp $ */
+/* $Id: htdigest.c,v 1.4 1996/10/23 18:48:17 brian Exp $ */
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -70,7 +70,7 @@ void putline(FILE *f,char *l) {
 
 
 void add_password(char *user, char *realm, FILE *f) {
-    char *pw, *cpw;
+    char *pw;
     MD5_CTX context;
     unsigned char digest[16];
     char string[MAX_STRING_LEN];
@@ -89,7 +89,7 @@ void add_password(char *user, char *realm, FILE *f) {
     sprintf(string, "%s:%s:%s", user, realm, pw);
 
     MD5Init (&context);
-    MD5Update (&context, string, strlen(string));
+    MD5Update (&context, (unsigned char *) string, strlen(string));
     MD5Final (digest, &context);
 
     for (i = 0; i < 16; i++)
