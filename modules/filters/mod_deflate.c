@@ -895,6 +895,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
+        apr_table_unset(r->headers_out, "Content-Encoding");
 
         f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
         ctx->proc_bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
