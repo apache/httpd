@@ -114,7 +114,7 @@ static int asis_handler(request_rec *r)
     if (!r->header_only) {
         ap_off_t zero = 0;
 	ap_seek(f, APR_CUR, &zero);
-	ap_send_fd(thefd, r);
+	ap_send_fd(f, r);
     }
 
     ap_close(f);
