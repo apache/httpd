@@ -138,6 +138,11 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_userdir.html">Apache Module mod_userdir</a></li>
 <li><a href="mod/mod_usertrack.html">Apache Module mod_usertrack</a></li>
 <li><a href="mod/mod_vhost_alias.html">Apache Module mod_vhost_alias</a></li>
+</ul><ul><li><a href="mod/obs_mod_access.html">Obsolete Apache Module mod_access</a></li>
+<li><a href="mod/obs_mod_auth.html">Obsolete Apache Module mod_auth</a></li>
+<li><a href="mod/obs_mod_auth_anon.html">Obsolete Apache Module mod_auth_anon</a></li>
+<li><a href="mod/obs_mod_auth_dbm.html">Obsolete Apache Module mod_auth_dbm</a></li>
+<li><a href="mod/obs_mod_auth_digest.html">Obsolete Apache Module mod_auth_digest</a></li>
 </ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="developer" id="developer">Developer Documentation</a></h2><ul><li class="separate"><a href="developer/">Overview</a></li>
 <li><a href="developer/API.html">Apache API notes</a></li>
 <li><a href="developer/debugging.html">Debugging Memory Allocation in APR</a></li>
