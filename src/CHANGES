@@ -1,5 +1,12 @@
 Changes with Apache 1.3.10
 
+  *) Fix problem with proxy configuration where globally set configuration
+     options were overridden inside virtual hosts.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Fix ProxyReceiveBufferSize where default value was left uninitialised.
+     [Graham Leggett <minfrin@sharp.fm>]
+
   *) Added a CLF '-' respecting %B to the log format.
      Suggested by Ragnar Kjørstad [dirkx]
 

@@ -417,18 +417,65 @@ static void *
     ps->allowed_connect_ports = ap_make_array(p, 10, sizeof(int));
     ps->domain = NULL;
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
+    ps->viaopt_set = 0; /* 0 means default */
     ps->req = 0;
+    ps->req_set = 0;
+    ps->recv_buffer_size = 0; /* this default was left unset for some reason */
+    ps->recv_buffer_size_set = 0;
 
     ps->cache.root = NULL;
     ps->cache.space = DEFAULT_CACHE_SPACE;
+    ps->cache.space_set = 0;
     ps->cache.maxexpire = DEFAULT_CACHE_MAXEXPIRE;
+    ps->cache.maxexpire_set = 0;
     ps->cache.defaultexpire = DEFAULT_CACHE_EXPIRE;
+    ps->cache.defaultexpire_set = 0;
     ps->cache.lmfactor = DEFAULT_CACHE_LMFACTOR;
+    ps->cache.lmfactor_set = 0;
     ps->cache.gcinterval = -1;
+    ps->cache.gcinterval_set = 0;
     /* at these levels, the cache can have 2^18 directories (256,000)  */
     ps->cache.dirlevels = 3;
+    ps->cache.dirlevels_set = 0;
     ps->cache.dirlength = 1;
+    ps->cache.dirlength_set = 0;
     ps->cache.cache_completion = DEFAULT_CACHE_COMPLETION;
+    ps->cache.cache_completion_set = 0;
+
+    return ps;
+}
+
+static void *
+     merge_proxy_config(pool *p, void *basev,
+                        void *overridesv)
+{
+    proxy_server_conf *ps = ap_pcalloc(p, sizeof(proxy_server_conf));
+    proxy_server_conf *base = (proxy_server_conf *) basev;
+    proxy_server_conf *overrides = (proxy_server_conf *) overridesv;
+
+    ps->proxies = ap_append_arrays(p, base->proxies, overrides->proxies);
+    ps->aliases = ap_append_arrays(p, base->aliases, overrides->aliases);
+    ps->raliases = ap_append_arrays(p, base->raliases, overrides->raliases);
+    ps->noproxies = ap_append_arrays(p, base->noproxies, overrides->noproxies);
+    ps->dirconn = ap_append_arrays(p, base->dirconn, overrides->dirconn);
+    ps->nocaches = ap_append_arrays(p, base->nocaches, overrides->nocaches);
+    ps->allowed_connect_ports = ap_append_arrays(p, base->allowed_connect_ports, overrides->allowed_connect_ports);
+
+    ps->domain = (overrides->domain == NULL) ? base->domain : overrides->domain;
+    ps->viaopt = (overrides->viaopt_set == 0) ? base->viaopt : overrides->viaopt;
+    ps->req = (overrides->req_set == 0) ? base->req : overrides->req;
+    ps->recv_buffer_size = (overrides->recv_buffer_size_set == 0) ? base->recv_buffer_size : overrides->recv_buffer_size;
+
+    ps->cache.root = (overrides->cache.root == NULL) ? base->cache.root : overrides->cache.root;
+    ps->cache.space = (overrides->cache.space_set == 0) ? base->cache.space : overrides->cache.space;
+    ps->cache.maxexpire = (overrides->cache.maxexpire_set == 0) ? base->cache.maxexpire : overrides->cache.maxexpire;
+    ps->cache.defaultexpire = (overrides->cache.defaultexpire_set == 0) ? base->cache.defaultexpire : overrides->cache.defaultexpire;
+    ps->cache.lmfactor = (overrides->cache.lmfactor_set == 0) ? base->cache.lmfactor : overrides->cache.lmfactor;
+    ps->cache.gcinterval = (overrides->cache.gcinterval_set == 0) ? base->cache.gcinterval : overrides->cache.gcinterval;
+    /* at these levels, the cache can have 2^18 directories (256,000)  */
+    ps->cache.dirlevels = (overrides->cache.dirlevels_set == 0) ? base->cache.dirlevels : overrides->cache.dirlevels;
+    ps->cache.dirlength = (overrides->cache.dirlength_set == 0) ? base->cache.dirlength : overrides->cache.dirlength;
+    ps->cache.cache_completion = (overrides->cache.cache_completion_set == 0) ? base->cache.cache_completion : overrides->cache.cache_completion;
 
     return ps;
 }
@@ -627,6 +674,7 @@ static const char *
     ap_get_module_config(parms->server->module_config, &proxy_module);
 
     psf->req = flag;
+    psf->req_set = 1;
     return NULL;
 }
 
@@ -641,6 +689,7 @@ static const char *
     if (sscanf(arg, "%d", &val) != 1)
 	return "CacheSize value must be an integer (kBytes)";
     psf->cache.space = val;
+    psf->cache.space_set = 1;
     return NULL;
 }
 
@@ -665,6 +714,7 @@ static const char *
     if (sscanf(arg, "%lg", &val) != 1)
 	return "CacheLastModifiedFactor value must be a float";
     psf->cache.lmfactor = val;
+    psf->cache.lmfactor_set = 1;
 
     return NULL;
 }
@@ -679,6 +729,7 @@ static const char *
     if (sscanf(arg, "%lg", &val) != 1)
 	return "CacheMaxExpire value must be a float";
     psf->cache.maxexpire = (int) (val * (double) SEC_ONE_HR);
+    psf->cache.maxexpire_set = 1;
     return NULL;
 }
 
@@ -692,6 +743,7 @@ static const char *
     if (sscanf(arg, "%lg", &val) != 1)
 	return "CacheDefaultExpire value must be a float";
     psf->cache.defaultexpire = (int) (val * (double) SEC_ONE_HR);
+    psf->cache.defaultexpire_set = 1;
     return NULL;
 }
 
@@ -705,6 +757,7 @@ static const char *
     if (sscanf(arg, "%lg", &val) != 1)
 	return "CacheGcInterval value must be a float";
     psf->cache.gcinterval = (int) (val * (double) SEC_ONE_HR);
+    psf->cache.gcinterval_set = 1;
     return NULL;
 }
 
@@ -721,6 +774,7 @@ static const char *
     if (val * psf->cache.dirlength > CACHEFILE_LEN)
 	return "CacheDirLevels*CacheDirLength value must not be higher than 20";
     psf->cache.dirlevels = val;
+    psf->cache.dirlevels_set = 1;
     return NULL;
 }
 
@@ -737,6 +791,7 @@ static const char *
     if (val * psf->cache.dirlevels > CACHEFILE_LEN)
 	return "CacheDirLevels*CacheDirLength value must not be higher than 20";
     psf->cache.dirlength = val;
+    psf->cache.dirlength_set = 1;
     return NULL;
 }
 
@@ -782,6 +837,7 @@ static const char *
     }
 
     psf->recv_buffer_size = s;
+    psf->recv_buffer_size_set = 1;
     return NULL;
 }
 
@@ -798,6 +854,8 @@ static const char*
 
     if (s > 0)
       psf->cache.cache_completion = ((float)s / 100);
+
+    psf->cache.cache_completion = 1;
     return NULL;    
 }
 
@@ -820,6 +878,7 @@ static const char*
                "off | on | full | block";
     }
 
+    psf->viaopt_set = 1;
     return NULL;    
 }
 
@@ -881,7 +940,7 @@ module MODULE_VAR_EXPORT proxy_module =
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
     create_proxy_config,	/* create per-server config structure */
-    NULL,			/* merge per-server config structures */
+    merge_proxy_config,		/* merge per-server config structures */
     proxy_cmds,			/* command table */
     proxy_handlers,		/* handlers */
     proxy_trans,		/* translate_handler */
