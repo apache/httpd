@@ -20,10 +20,6 @@ Changes with Apache 2.1.0-dev
      from being logged for I_INSIST_ON_EXTRA_CYCLES_FOR_CLF_COMPLIANCE
      processing.  PR 29696.  [Alois Treindl <alois astro.ch>]
 
-  *) initialize server arrays prior to calling ap_setup_prelinked_modules
-     so that static modules can push Defines values when registering
-     hooks just like DSO modules can ["Philippe M. Chiasson" <gozer cpan.org>]
-
   *) Add -l option to rotatelogs to let it use local time rather than
      UTC.  PR 24417.  [Ken Coar, Uli Zappe <uli ritual.org>]
 
@@ -392,6 +388,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.51
+
+  *) initialize server arrays prior to calling ap_setup_prelinked_modules
+     so that static modules can push Defines values when registering
+     hooks just like DSO modules can ["Philippe M. Chiasson" <gozer cpan.org>]
 
   *) Small fix to allow reverse proxying to an ftp server. Previously
      an attempt to do this would try and connect to 0.0.0.0, regardless
