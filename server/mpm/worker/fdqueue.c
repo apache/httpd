@@ -85,24 +85,27 @@ static apr_status_t ap_queue_destroy(void *data)
     apr_thread_cond_destroy(queue->not_full);
     apr_thread_mutex_destroy(queue->one_big_mutex);
 
-    return FD_QUEUE_SUCCESS;
+    return APR_SUCCESS;
 }
 
 /**
  * Initialize the fd_queue_t.
  */
-int ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a) 
+apr_status_t ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a)
 {
     int i;
+    apr_status_t rv;
 
-    /* FIXME: APRize these return values. */
-    if (apr_thread_mutex_create(&queue->one_big_mutex,
-                              APR_THREAD_MUTEX_DEFAULT, a) != APR_SUCCESS)
-        return FD_QUEUE_FAILURE;
-    if (apr_thread_cond_create(&queue->not_empty, a) != APR_SUCCESS)
-        return FD_QUEUE_FAILURE;
-    if (apr_thread_cond_create(&queue->not_full, a) != APR_SUCCESS)
-        return FD_QUEUE_FAILURE;
+    if ((rv = apr_thread_mutex_create(&queue->one_big_mutex,
+                                      APR_THREAD_MUTEX_DEFAULT, a)) != APR_SUCCESS) {
+        return rv;
+    }
+    if ((rv = apr_thread_cond_create(&queue->not_empty, a)) != APR_SUCCESS) {
+        return rv;
+    }
+    if ((rv = apr_thread_cond_create(&queue->not_full, a)) != APR_SUCCESS) {
+        return rv;
+    }
 
     queue->tail = 0;
     queue->data = apr_palloc(a, queue_capacity * sizeof(fd_queue_elem_t));
@@ -118,7 +121,7 @@ int ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a)
 
     apr_pool_cleanup_register(a, queue, ap_queue_destroy, apr_pool_cleanup_null);
 
-    return FD_QUEUE_SUCCESS;
+    return APR_SUCCESS;
 }
 
 /**
@@ -126,14 +129,15 @@ int ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a)
  * the push operation has completed, it signals other threads waiting
  * in apr_queue_pop() that they may continue consuming sockets.
  */
-int ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p,
-                  apr_pool_t **recycled_pool)
+apr_status_t ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p,
+                           apr_pool_t **recycled_pool)
 {
     fd_queue_elem_t *elem;
+    apr_status_t rv;
 
     *recycled_pool = NULL;
-    if (apr_thread_mutex_lock(queue->one_big_mutex) != APR_SUCCESS) {
-        return FD_QUEUE_FAILURE;
+    if ((rv = apr_thread_mutex_lock(queue->one_big_mutex)) != APR_SUCCESS) {
+        return rv;
     }
 
     while (ap_queue_full(queue)) {
@@ -150,11 +154,11 @@ int ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p,
 
     apr_thread_cond_signal(queue->not_empty);
 
-    if (apr_thread_mutex_unlock(queue->one_big_mutex) != APR_SUCCESS) {
-        return FD_QUEUE_FAILURE;
+    if ((rv = apr_thread_mutex_unlock(queue->one_big_mutex)) != APR_SUCCESS) {
+        return rv;
     }
 
-    return FD_QUEUE_SUCCESS;
+    return APR_SUCCESS;
 }
 
 /**
@@ -167,12 +171,13 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p,
                           apr_pool_t *recycled_pool) 
 {
     fd_queue_elem_t *elem;
+    apr_status_t rv;
 
-    if (apr_thread_mutex_lock(queue->one_big_mutex) != APR_SUCCESS) {
+    if ((rv = apr_thread_mutex_lock(queue->one_big_mutex)) != APR_SUCCESS) {
         if (recycled_pool) {
             apr_pool_destroy(recycled_pool);
         }
-        return FD_QUEUE_FAILURE;
+        return rv;
     }
 
     if (recycled_pool) {
@@ -189,10 +194,10 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p,
         apr_thread_cond_wait(queue->not_empty, queue->one_big_mutex);
         /* If we wake up and it's still empty, then we were interrupted */
         if (ap_queue_empty(queue)) {
-            if (apr_thread_mutex_unlock(queue->one_big_mutex) != APR_SUCCESS) {
-                return FD_QUEUE_FAILURE;
+            if ((rv = apr_thread_mutex_unlock(queue->one_big_mutex)) != APR_SUCCESS) {
+                return rv;
             }
-            return FD_QUEUE_EINTR;
+            return APR_EINTR;
         }
     } 
     
@@ -207,8 +212,8 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p,
         apr_thread_cond_signal(queue->not_full);
     }
 
-    if (apr_thread_mutex_unlock(queue->one_big_mutex) != APR_SUCCESS) {
-        return FD_QUEUE_FAILURE;
+    if ((rv = apr_thread_mutex_unlock(queue->one_big_mutex)) != APR_SUCCESS) {
+        return rv;
     }
 
     return APR_SUCCESS;
@@ -216,16 +221,18 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p,
 
 apr_status_t ap_queue_interrupt_all(fd_queue_t *queue)
 {
-    if (apr_thread_mutex_lock(queue->one_big_mutex) != APR_SUCCESS) {
-        return FD_QUEUE_FAILURE;
+    apr_status_t rv;
+    
+    if ((rv = apr_thread_mutex_lock(queue->one_big_mutex)) != APR_SUCCESS) {
+        return rv;
     }
     apr_thread_cond_broadcast(queue->not_empty);
     /* We shouldn't have multiple threads sitting in not_full, but
      * broadcast just in case. */
     apr_thread_cond_broadcast(queue->not_full);
-    if (apr_thread_mutex_unlock(queue->one_big_mutex) != APR_SUCCESS) {
-        return FD_QUEUE_FAILURE;
+    if ((rv = apr_thread_mutex_unlock(queue->one_big_mutex)) != APR_SUCCESS) {
+        return rv;
     }
-    return FD_QUEUE_SUCCESS;
+    return APR_SUCCESS;
 }
 
