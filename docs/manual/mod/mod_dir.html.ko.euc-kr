@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_dir - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">모듈</a></div>
+<div id="page-content">
+<div id="preamble"><h1>아파치 모듈 mod_dir</h1>
+<div class="toplang">
+<p><span>가능한 언어: </span><a href="../en/mod/mod_dir.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_dir.html">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/mod_dir.html">&nbsp;ko&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td>"마지막 슬래쉬" 리다이렉션을 제공하고 디렉토리
+index 파일을 서비스한다</td></tr>
+<tr><th><a href="module-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">모듈명:</a></th><td>dir_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">소스파일:</a></th><td>mod_dir.c</td></tr></table>
+<h3>요약</h3>
+
+    <p>디렉토리의 index는 다음 둘중 한가지 방법으로 제공된다:</p>
+
+    <ul>
+      <li>사용자가 작성한 보통 <code>index.html</code>이라는
+      파일. <code class="directive"><a href="#directoryindex">DirectoryIndex</a></code>
+      지시어는 이 파일의 이름을 지정한다. <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>가
+      이 지시어를 제공한다.</li>
+
+      <li>아니라면 서버가 만든 목록. <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>가
+      이 기능을 제공한다.</li>
+    </ul>
+    <p>두 기능은 서로 별개로 원한다면 자동 index 생성을 완전히
+    없앨 (혹은 교체할) 수 있다.</p>
+
+    <p><code>dirname</code>이 디렉토리라면 서버는 URL
+    <code>http://servername/foo/dirname</code> 요청을 받으면
+    "마지막 슬래쉬" 리다이렉션을 보낸다. 디렉토리에는 마지막
+    슬래쉬가 필요하다. 그래서 <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>은
+    <code>http://servername/foo/dirname/</code>로 리다이렉션을
+    보낸다.</p>
+</div>
+<div id="quickview"><h3 class="directives">지시어들</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li>
+</ul>
+</div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a> <a name="directoryindex" id="directoryindex">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>클라이언트가 디렉토리를 요청할때 찾아볼 자원 목록</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DirectoryIndex
+    <var>local-url</var> [<var>local-url</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>DirectoryIndex index.html</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_dir</td></tr>
+</table>
+    <p><code class="directive">DirectoryIndex</code> 지시어는 클라이언트가
+    디렉토리명 끝에 /를 붙여서 디렉토리의 index를 요청할때 찾아볼
+    자원 목록을 지정한다. <var>Local-url</var>은 요청한 디렉토리에
+    상대적인 문서의 (%로 인코딩된) URL이다. 보통은 디렉토리에
+    있는 파일명이다. 여러 URL을 지정할 수 있고, 이 경우 서버는
+    첫번째로 찾은 파일을 보낸다. 자원을 찾을 수 없고
+    <code>Indexes</code> 옵션을 설정하였다면 서버는 직접 디렉토리
+    목록을 만든다.</p>
+
+    <div class="example"><h3>예제</h3><p><code>
+      DirectoryIndex index.html
+    </code></p></div>
+
+    <p>이 경우 <code>http://myserver/docs/</code>를 요청할때
+    <code>http://myserver/docs/index.html</code>이 있으면 이를
+    보내고, 없다면 디렉토리 목록을 보낸다.</p>
+
+    <p>문서가 반드시 디렉토리에 상대적일 필요는 없다.</p>
+
+    <div class="example"><p><code>
+      DirectoryIndex index.html index.txt  /cgi-bin/index.pl
+    </code></p></div>
+
+    <p>이 경우 디렉토리에 <code>index.html</code>이나
+    <code>index.txt</code>가 없으면 CGI 스크립트
+    <code>/cgi-bin/index.pl</code>을 실행한다.</p>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>가능한 언어: </span><a href="../en/mod/mod_dir.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_dir.html">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/mod_dir.html">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div>
+</body></html>
