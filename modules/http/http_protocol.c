@@ -457,6 +457,11 @@ static int lookup_builtin_method(const char *method, apr_size_t len)
     case 4:
         switch (method[0])
         {
+        case 'H':
+            return (method[1] == 'E'
+                    && method[2] == 'A'
+                    && method[3] == 'D'
+                    ? M_GET : UNKNOWN_METHOD);
         case 'P':
             return (method[1] == 'O'
                     && method[2] == 'S'
