@@ -93,9 +93,8 @@
 
 #include "mod_rewrite.h"
 
-#if !defined(OS2) && !defined(WIN32) && !defined(BEOS)  && !defined(NETWARE)
+#ifdef AP_NEED_SET_MUTEX_PERMS
 #include "unixd.h"
-#define MOD_REWRITE_SET_MUTEX_PERMS /* XXX Apache should define something */
 #endif
 
 /*
@@ -2432,7 +2431,7 @@ static apr_status_t rewritelock_create(server_rec *s, apr_pool_t *p)
         return rc;
     }
 
-#ifdef MOD_REWRITE_SET_MUTEX_PERMS
+#ifdef AP_NEED_SET_MUTEX_PERMS
     rc = unixd_set_global_mutex_perms(rewrite_mapr_lock_acquire);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rc, s,
@@ -4029,7 +4028,7 @@ static int post_config(apr_pool_t *p,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-#ifdef MOD_REWRITE_SET_MUTEX_PERMS
+#ifdef AP_NEED_SET_MUTEX_PERMS
     rv = unixd_set_global_mutex_perms(rewrite_log_lock);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
