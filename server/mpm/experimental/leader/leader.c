@@ -247,11 +247,11 @@ static apr_proc_mutex_t *accept_mutex;
 /* Structure used to wake up an idle worker thread
  */
 struct worker_wakeup_info {
-    apr_thread_cond_t *cond;
-    apr_thread_mutex_t *mutex;
     apr_uint32_t next; /* index into worker_wakeups array,
                         * used to build a linked list
                         */
+    apr_thread_cond_t *cond;
+    apr_thread_mutex_t *mutex;
 };
 
 static worker_wakeup_info *worker_wakeup_create(apr_pool_t *pool)
@@ -349,9 +349,8 @@ static apr_status_t worker_stack_awaken_next(worker_stack *stack)
         }
         else {
             worker_wakeup_info *wakeup = worker_wakeups[first];
-            apr_uint32_t new_state = state & ~STACK_FIRST;
-            new_state |= wakeup->next;
-            if (apr_atomic_cas(&(stack->state), new_state, state) != state) {
+            if (apr_atomic_cas(&(stack->state), (state ^ first) | wakeup->next,
+                               state) != state) {
                 continue;
             }
             else {
