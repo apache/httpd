@@ -245,6 +245,8 @@ ap_pstrcat
 ap_pstrdup
 ap_pstrndup
 ap_push_array
+ap_puudecode
+ap_puuencode
 ap_pvsprintf
 ap_rationalize_mtime
 ap_read_config
@@ -308,6 +310,7 @@ ap_set_string_slot_lower
 ap_set_sub_req_protocol
 ap_setup_client_block
 ap_setup_prelinked_modules
+ap_sha1_base64
 ap_should_client_block
 ap_show_directives
 ap_show_modules
