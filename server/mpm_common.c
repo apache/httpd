@@ -410,13 +410,11 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_close(ap_pod_t *pod)
     return rv;
 }
 
-AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod)
+static apr_status_t pod_signal_internal(ap_pod_t *pod)
 {
-    apr_socket_t *sock;
     apr_status_t rv;
     char char_of_death = '!';
     apr_size_t one = 1;
-    apr_pool_t *p;
 
     do {
         rv = apr_file_write(pod->pod_out, &char_of_death, &one);
@@ -424,9 +422,22 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod)
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
                      "write pipe_of_death");
-        return rv;
     }
+    return rv;
+}
 
+/* This function connects to the server, then immediately closes the connection.
+ * This permits the MPM to skip the poll when there is only one listening
+ * socket, because it provides a alternate way to unblock an accept() when
+ * the pod is used.
+ */
+
+static apr_status_t dummy_connection(ap_pod_t *pod)
+{
+    apr_status_t rv;
+    apr_socket_t *sock;
+    apr_pool_t *p;
+    
     /* create a temporary pool for the socket.  pconf stays around too long */
     rv = apr_pool_create(&p, pod->p);
     if (rv != APR_SUCCESS) {
@@ -466,12 +477,23 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod)
 	
         ap_log_error(APLOG_MARK, log_level, rv, ap_server_conf,
                      "connect to listener");
-        return rv;
     }
+
     apr_socket_close(sock);
     apr_pool_destroy(p);
 
-    return APR_SUCCESS;
+    return rv;
+}
+
+AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod)
+{
+    apr_status_t rv;
+
+    rv = pod_signal_internal(pod);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    return dummy_connection(pod);
 }
 
 void ap_mpm_pod_killpg(ap_pod_t *pod, int num)
@@ -480,7 +502,12 @@ void ap_mpm_pod_killpg(ap_pod_t *pod, int num)
     apr_status_t rv = APR_SUCCESS;
 
     for (i = 0; i < num && rv == APR_SUCCESS; i++) {
-        rv = ap_mpm_pod_signal(pod);
+        rv = pod_signal_internal(pod);
+    }
+    if (rv == APR_SUCCESS) {
+        for (i = 0; i < num && rv == APR_SUCCESS; i++) {
+             rv = dummy_connection(pod);
+        }
     }
 }
 #endif /* #ifdef AP_MPM_USES_POD */
