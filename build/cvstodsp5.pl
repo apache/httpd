@@ -8,20 +8,35 @@ sub tovc5 {
 
     if (m|.dsp$|) {
 	$tname = '.#' . $_;
-	print "Convert VC6 project " . $_ . " to VC5 in " . $File::Find::dir . "\n"; 
+        $verchg = 0;
 	$srcfl = new IO::File $_, "r" || die;
 	$dstfl = new IO::File $tname, "w" || die;
 	while ($src = <$srcfl>) {
-	    $src =~ s|Format Version 6\.00|Format Version 5\.00|;
-#           This is BUCK UGLY... and I know there is a way to do it right... would someone fix?
-	    $src =~ s|^(# ADD CPP .*)/ZI (.*)|$1/Zi $2|;
-	    $src =~ s|^(# ADD BASE CPP .*)/ZI (.*)|$1/Zi $2|;
+	    if ($src =~ s|Format Version 6\.00|Format Version 5\.00|) {
+		$verchg = -1;
+	    }
+	    if ($src =~ s|^(# ADD CPP .*)/ZI (.*)|$1/Zi $2|) {
+		$verchg = -1;
+	    }
+	    if ($src =~ s|^(# ADD BASE CPP .*)/ZI (.*)|$1/Zi $2|) {
+		$verchg = -1;
+	    }
 	    if ($src !~ m|^# PROP AllowPerConfigDependencies|) {
 		print $dstfl $src; }
+	    else {
+		$verchg = -1;
+
+	    }
 	}
 	undef $srcfl;
 	undef $dstfl;
-	unlink $_;
-	rename $tname, $_;
+	if ($verchg) {
+	    unlink $_;
+	    rename $tname, $_;
+	    print "Converted VC6 project " . $_ . " to VC5 in " . $File::Find::dir . "\n"; 
+	}
+	else {
+	    unlink $tname;
+	}
     }
 }
