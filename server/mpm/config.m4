@@ -61,18 +61,11 @@ AC_DEFUN(APACHE_MPM_CHECK_SHMEM, [
 
 dnl Check for pthreads and attempt to support it
 AC_DEFUN(APACHE_MPM_PTHREAD, [
+  if test "$pthreads_working" != "yes"; then
+    AC_MSG_ERROR(This MPM requires pthreads. Try --with-mpm=prefork.)
+  fi
 
-dnl XXX - We should be checking for the proper flags to use on a particular 
-dnl platform. This will cover a couple of them, anyway
-
-    AC_CHECK_HEADER(pthread.h, [ ],[
-        AC_MSG_ERROR(This MPM requires pthreads. Try --with-mpm=prefork.)
-    ])
-    AC_CHECK_FUNC(pthread_create, [ ],[
-        AC_MSG_ERROR(Can't compile pthread code.)
-    ])
-
-    dnl User threads libraries need pthread.h included everywhere
-    AC_DEFINE(PTHREAD_EVERYWHERE,,
-        [Define if all code should have #include <pthread.h>])
+  dnl User threads libraries need pthread.h included everywhere
+  AC_DEFINE(PTHREAD_EVERYWHERE,,
+    [Define if all code should have #include <pthread.h>])
 ])
