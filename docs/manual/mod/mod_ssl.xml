@@ -74,7 +74,7 @@ compatibility variables.</p>
 <tr><td><code>SSL_CLIENT_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of client's certificate</td></tr>
 <tr><td><code>SSL_CLIENT_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of client's certificate</td></tr>
 <tr><td><code>SSL_CLIENT_CERT</code></td>               <td>string</td>    <td>PEM-encoded client certificate</td></tr>
-<tr><td><code>SSL_CLIENT_CERT_CHAIN</code><em>n</em></td> <td>string</td>    <td>PEM-encoded certificates in client certificate chain</td></tr>
+<tr><td><code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em></td> <td>string</td>    <td>PEM-encoded certificates in client certificate chain</td></tr>
 <tr><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> or <code>FAILED:</code><em>reason</em></td></tr>
 <tr><td><code>SSL_SERVER_M_VERSION</code></td>          <td>string</td>    <td>The version of the server certificate</td></tr>
 <tr><td><code>SSL_SERVER_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the server certificate</td></tr>
@@ -969,7 +969,7 @@ The available <em>option</em>s are:</p>
     <p>
     When this option is enabled, additional CGI/SSI environment variables are
     created: <code>SSL_SERVER_CERT</code>, <code>SSL_CLIENT_CERT</code> and
-    <code>SSL_CLIENT_CERT_CHAIN</code><em>n</em> (with <em>n</em> = 0,1,2,..).
+    <code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em> (with <em>n</em> = 0,1,2,..).
     These contain the PEM-encoded X.509 Certificates of server and client for
     the current HTTPS connection and can be used by CGI scripts for deeper
     Certificate checking. Additionally all other certificates of the client
@@ -1179,7 +1179,7 @@ SSL_VERSION_INTERFACE  SSL_CLIENT_S_DN_OU     SSL_SERVER_S_DN_OU
                        SSL_CLIENT_A_SIG       SSL_SERVER_A_SIG
                        SSL_CLIENT_A_KEY       SSL_SERVER_A_KEY
                        SSL_CLIENT_CERT        SSL_SERVER_CERT
-                       SSL_CLIENT_CERT_CHAIN<strong>n</strong>
+                       SSL_CLIENT_CERT_CHAIN_<strong>n</strong>
                        SSL_CLIENT_VERIFY
 </pre>
 </usage>
