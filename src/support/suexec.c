@@ -214,8 +214,7 @@ int main(int argc, char *argv[], char **env)
      * ~userdir request.  Error out if we cannot get either one,
      * or if the current working directory is not in the docroot.
      * Use chdir()s and getcwd()s to avoid problems with symlinked
-     * directories.  Yuck.  NOTE: We also free() dwd since it is
-     * the last usage...
+     * directories.  Yuck.
      */
     if (getcwd(cwd, MAXPATHLEN) == NULL) {
         log_err("cannot get current working directory\n");
@@ -242,26 +241,18 @@ int main(int argc, char *argv[], char **env)
     }
     
     doclen = strlen(dwd);
-    if (strncmp(cwd, dwd, doclen) != 0) {
-        free(dwd);
+    if ((strncmp(cwd, dwd, doclen)) != 0) {
         log_err("command not in docroot (%s/%s)\n", cwd, cmd);
         exit(109);
     }
-    else
-        free(dwd);
-
 
     /*
      * Stat the cwd and verify it is a directory, or error out.
-     * NOTE: This is the last use of cwd, so we must free() it.
      */
     if (((lstat(cwd, &dir_info)) != 0) || !(S_ISDIR(dir_info.st_mode))) {
-        free(cwd);
 	log_err("cannot stat directory: (%s)\n", cwd);
 	exit(110);
     }
-    else
-        free(cwd);
 
     /*
      * Error out if cwd is writable by others.
