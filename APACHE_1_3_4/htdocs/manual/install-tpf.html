@@ -1,0 +1,276 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Installing Apache on TPF</TITLE>
+</HEAD>
+
+<BODY>
+<H1 ALIGN="center">
+ <A NAME="top">Installing the Apache 1.3 HTTP Server on TPF</A>
+</H1>
+<HR>
+<CENTER>[&nbsp;<A HREF="#setup">Setup</A>
+   &nbsp;|&nbsp;<A HREF="#compilation">Compilation</A>
+   &nbsp;|&nbsp;<A HREF="#installation">Installation</A>
+   &nbsp;|&nbsp;<A HREF="#visualage">VisualAge</A>&nbsp;]
+</CENTER>
+<HR>
+<BR>
+
+<P>
+This document outlines the steps needed to install Apache onto a TPF system.
+</P>
+<P>
+You should first read
+htdocs/manual/<A HREF="readme-tpf.html">readme-tpf.html</A>
+for basic information on the port of Apache to TPF including required PUT level
+and supported functions &amp; modules.
+</P>
+
+<H2 align=center><A NAME="setup">Setup</A></H2>
+<P>
+Due to the use of EBCDIC on MVS OS/390 Open Edition
+(later referred to simply as
+"Open Edition"), we've found that the most reliable
+method for loading Apache onto your system is to unzip and tar the distribution
+file on your PC, and then copy the extracted files to Open Edition
+via an NFS client
+capable of transferring the data in EBCDIC format.
+</P>
+<P>
+Before moving the distribution to an
+Open Edition environment, verify that the NFS drive will transfer the
+filenames with upper/lower case preserved.
+</P>
+<P>
+Since Open Edition is not the ultimate destination of the files,
+the only required files and subdirectories that need to be moved to
+Open Edition
+are in /src.
+</P>
+<P>
+<FONT COLOR=red><STRONG>WARNING</STRONG></FONT>:
+If you are using a product such as WinZip on your PC, verify that
+the <EM>"TAR File Smart CR/LF Conversion"</EM> option is NOT checked.
+You can find this in WinZip under Options, Configuration.
+Since you had to tar and unzip the file to read this document,
+you need to re-tar and -unzip if the CR/LF option was checked.
+This will save you lots of headaches later on.
+</P>
+<P>
+<FONT COLOR=red><STRONG>WARNING</STRONG></FONT>:
+Editing files on a PC before moving them to Open Edition may result
+in the loss/addition of unprintable characters.  Files of concern include shell
+scripts and src/Configuration.  The most common problems are with
+tab characters
+and CR/LF characters.  Most editors will handle the CR/LF problem correctly
+but none seem to handle tab characters.  If you need to edit files, edit them
+in a UNIX editor such as vi or emacs.
+</P>
+
+<H2 align=center><A NAME="compilation">Compilation</A></H2>
+<P>
+Apache supports the notion of "optional modules".  However,
+the server has to know which modules are compiled into it.  In order for
+those modules to be effective, it is necessary to generate a short bit of
+code ("modules.c") which simply has a list of them. If you are using the
+make and Configure utility, "modules.c" will be created for you.
+</P>
+<P>
+The provided scripts assume a c89 compiler and have only been tested on an
+Open Edition environment.  If you are using a platform other that
+Open Edition you may need to modify src/os/tpf/TPFExport and src/Configure
+to match your environment.
+</P>
+<P>
+Note that UNIX/Open Edition commands in this section are shown in
+<TT><STRONG>bold</STRONG></TT>,
+are case sensitive, and must be made from the "src" directory.
+</P>
+<OL>
+<LI>Overlay src/Configuration with src/Configuration.tmpl:  
+    <TT><STRONG>cp&nbsp;Configuration.tmpl&nbsp;Configuration</STRONG></TT>
+    <BR><BR>
+<LI>Edit src/Configuration.  It contains the list and settings
+    of various "Rules" and an additional section at the bottom that determines
+    which modules to compile:
+    <BR><BR>
+    <OL type=a>
+    <LI>Adjust the Rules and <TT>EXTRA_CFLAGS|LIBS|LDFLAGS|INCLUDES</TT>
+        if you feel so inclined.
+    <BR><BR>
+    <LI>Comment out (by preceding the line with a "#") lines corresponding
+        to those modules you DO&nbsp;NOT wish to include.
+        At present the following modules MUST be commented out
+        as they are not yet supported on TPF: mod_actions, mod_auth,
+        mod_cgi, mod_env, mod_include, & mod_status.
+    <BR><BR>
+    <LI>Uncomment (by removing the initial "#", if present) lines
+        corresponding to those optional modules you wish
+        to include or add new lines corresponding to any custom modules
+        you have written.
+        The htdocs/manual/<A HREF="readme-tpf.html">readme-tpf.html</A>
+        document lists the modules that have been tested on TPF.
+    </OL>
+    <BR>
+<LI>Set the TPF environment variables:
+    <TT><STRONG>.&nbsp;os/tpf/TPFExport</STRONG></TT>
+    <BR>
+    (The initial period and blank on the command are required to ensure
+    the environment variables exist beyond the scope of the shell script.)
+    This script will set the environment variables required to compile the
+    programs for TPF.  Verify that the export variables are valid for your
+    installation, in particular, the system include file directories.  The
+    system include files must reside on your Open Edition system in the
+    appropriate file structure similar to /usr/include and /usr/include/sys.
+    DO&nbsp;NOT modify the <TT>TPF=YES</TT> export variable.  If this is
+    changed, the "Configure" script will not recognize TPF.
+    <BR><BR>
+<LI>Run the "Configure" script:
+    <TT><STRONG>Configure</STRONG></TT>
+    <BR>
+    The output will look something like this...
+      <PRE>
+      Using config file: Configuration
+      Creating Makefile
+       + configured for TPF platform
+       + setting C compiler to c89
+       + setting C pre-processor to c89 -E
+       + checking for system header files
+       + adding selected modules
+      Creating Makefile in support
+      Creating Makefile in main
+      Creating Makefile in ap
+      Creating Makefile in regex
+      Creating Makefile in os/tpf
+      Creating Makefile in modules/standard
+      Creating Makefile in modules/example
+      $ _
+      </PRE>
+    This generates modules.c and new versions of the Makefiles.
+    <BR><BR>
+    If you want to maintain multiple configurations, you can
+    say, <EM>e.g.</EM>,
+    <BR>
+    <TT><STRONG>Configure -file Configuration.ai</STRONG></TT>
+    <BR>
+      <PRE>
+      Using config file: Configuration.ai
+      Creating Makefile
+       + configured for &lt;whatever&gt; platform
+       + setting C compiler to &lt;whatever&gt;
+      et cetera
+      </PRE>
+
+    If you receive an error such as "<TT>Configure 146: FSUM7351 not found</TT>"
+    the most likely explanation is that one or more of the make related
+    files were edited on a non-UNIX platform, corrupting the end-of-line marks.
+    Verify that lines ending with "\" in the flagged file do&nbsp;not have trailing
+    spaces.  Using the vi editor and the sample error above as an example...
+    <BR><BR><PRE>
+            pull up the flagged file:       <STRONG>vi&nbsp;Configure</STRONG>
+            turn on punctuation:            <STRONG>:set&nbsp;list</STRONG>
+            go to the line in question:     <STRONG>146G</STRONG>
+               or find a line with a "\":   <STRONG>/\\</STRONG></PRE>
+    The end of line should display as "<TT>\$</TT>".  If it is displayed as
+    "<TT>\ $</TT>" (with a blank between \ and $) then you should revert to the
+    distributed version of the file and make the site-specific
+    changes again using a UNIX compatible editor such as vi or emacs.
+    Then try the Configure command again.
+    <BR><PRE>            close the file:                 <STRONG>:q  </STRONG>(or 
+
+<STRONG>:quit!</STRONG>)</PRE>
+<LI>Now compile the programs: <TT><STRONG>make</STRONG></TT><BR>
+    The modules placed in the Apache distribution are the ones that have been
+    tested and are used regularly by various members of the Apache development
+    group.  Additional modules contributed by members or third parties with specific
+    needs or functions are available at
+    <A 
+HREF="http://www.apache.org/dist/contrib/modules/">http://www.apache.org/dist/contrib/modules/</A>.
+    There are instructions on that page for linking these modules into the core Apache
+    code.
+    <BR><BR>
+    If during compilation you get a warning about a missing 'regex.h', set
+    <TT>WANTHSREGEX=yes</TT> in the src/Configuration file and start back at the
+    <TT><STRONG>Configure</STRONG></TT> step.
+</OL>
+
+<A NAME="installation">&nbsp;</A>
+<H2 align=center>Installation</H2>
+<OL>
+<LI>After compilation, you will have all the object files required to build an
+  "httpd" loadset.  The next step is to link the object files and create a loadset to be
+  stored in a PDS.  Sample JCL for linking and loadsets has been included in
+  src/os/tpf/samples as "linkdll.jcl" and "loadset.jcl".  You can submit these jobs
+  from CMS or directly from Open Edition if you have the proper authority.  After
+  the jobs have completed, you can <TT>ZOLDR LOAD</TT> them to your TPF system.
+  <BR><BR>
+  NOTE: The <TT>mod_<EM>xxx</EM>.o</TT> files in the linkdll.jcl file must correspond to the
+  <TT>mod_<EM>xxx</EM>.o</TT> lines in the src/Configuration file.
+  <BR><BR>
+<LI>
+  Apache requires a configuration file to initialize itself during activation.
+  (Previously three configuration files were used.)
+  Copy the distribution version, /conf/httpd.conf-dist, to /conf/httpd.conf and then
+  edit the /conf/httpd.conf copy with your site specific information.  This first release
+  of Apache for TPF only runs under the "inetd" model so you
+  <font color=red><STRONG>must</STRONG></FONT> change <TT>ServerType</TT> from <TT>standalone</TT>
+  to <TT>inetd</TT>.
+  <BR><BR>
+  General documentation for Apache is located at
+  <A HREF="http://www.apache.org/docs/">http://www.apache.org/docs/</A>
+  and in the HTML pages included with this distribution under the
+  /htdocs/manual directory.
+  <BR><BR>
+<LI>On TPF activate ZCLAW and update INETD using ZINET entries, the common case:
+    <BR><BR>
+    <PRE>
+    ZINET ADD S-TFTP   PGM-CTFT PORT-69 PROTOCOL-UDP MODEL-NOWAIT
+    ZINET ADD S-APACHE PGM-<EM>pppp</EM> PORT-80 PROTOCOL-TCP MODEL-NOWAIT</PRE>
+  Please refer to <EM>IBM Transaction Processing Facility Transmission Control
+  Protocol/Internet Protocol Version 4 Release 1</EM> for more information
+  on ZCLAW, INETD, and TFTP.
+  <BR><BR>
+<LI>Prior to sending a request to your Apache server from a browser,
+    TFTP the configuration file, log, icons and web pages to your TPF system.
+    A typical directory structure for Apache is as follows:
+<PRE>     /usr/local/apache/conf
+     /usr/local/apache/logs
+     /usr/local/apache/icons
+     /usr/local/apache/htdocs</PRE>
+    The logs directory must exist in order to avoid an
+    <CODE>fopen</CODE> error while running Apache.  TFTP an empty file into
+    the logs subdirectory to create it.  All gif, jpg, and zip files should be
+    TFTP'd as binary; conf files and html pages should be TFTP'd as text.
+</OL>
+<A NAME="visualage">&nbsp;</A>
+<H2 align=center>Compiling with VisualAge TPF</H2>
+<P>
+  It is not required that "make" be used to compile Apache for TPF:
+  Individual programs may be compiled using IBM's VisualAge TPF product.
+  This is particularly useful when compiling selected programs for the Debug Tool.
+  <BR><BR>
+  The following VisualAge compile settings are required:
+  <UL>
+  <LI><EM>"DEFINE - Define preprocessor macro name(s)"</EM> must include
+     <TT><STRONG>TPF, CHARSET_EBCDIC, _POSIX_SOURCE,</STRONG></TT> and
+     <TT><STRONG>USE_HSREGEX</STRONG></TT>
+  <BR><BR>
+  <LI><EM>"LSEARCH - Path for user include files"</EM> must include
+     <TT><STRONG>../src/include</STRONG></TT> and <TT><STRONG>../src/os/tpf</STRONG></TT>
+  <BR><BR>
+  <LI><EM>"DLL - Generate DLL code"</EM> must be checked
+  <BR><BR>
+  <LI><EM>"LONGNAME - Support long names"</EM> must be checked
+  </UL>
+</P>
+<HR>
+<CENTER>[&nbsp;<A HREF="#top">top</A>
+   &nbsp;|&nbsp;<A HREF="#setup">Setup</A>
+   &nbsp;|&nbsp;<A HREF="#compilation">Compilation</A>
+   &nbsp;|&nbsp;<A HREF="#installation">Installation</A>
+   &nbsp;|&nbsp;<A HREF="#visualage">VisualAge</A>&nbsp;]
+</CENTER>
+
+</BODY>
+</HTML>

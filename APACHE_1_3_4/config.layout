@@ -1,0 +1,62 @@
+##
+##  config.layout -- APACI Pre-defined Installation Path Layouts
+##
+##  Hints:
+##  - layouts can be loaded with APACI's --with-layout=ID option
+##  - when no --with-layout option is given, the default layout is `Apache'
+##  - a trailing plus character (`+') on paths is replaced with a 
+##    `/<target>' suffix where <target> is the the argument from 
+##    option --target (defaults to `httpd').
+##
+
+#   Classical Apache path layout.
+<Layout Apache>
+    prefix:        /usr/local/apache
+    exec_prefix:   $prefix
+    bindir:        $exec_prefix/bin
+    sbindir:       $exec_prefix/bin
+    libexecdir:    $exec_prefix/libexec
+    mandir:        $prefix/man
+    sysconfdir:    $prefix/conf
+    datadir:       $prefix
+    includedir:    $prefix/include
+    localstatedir: $prefix
+    runtimedir:    $localstatedir/logs
+    logfiledir:    $localstatedir/logs
+    proxycachedir: $localstatedir/proxy
+</Layout>
+
+#   GNU standards conforming path layout.
+#   See FSF's GNU project `make-stds' document for details.
+<Layout GNU>
+    prefix:        /usr/local
+    exec_prefix:   $prefix
+    bindir:        $exec_prefix/bin
+    sbindir:       $exec_prefix/sbin
+    libexecdir:    $exec_prefix/libexec
+    mandir:        $prefix/man
+    sysconfdir:    $prefix/etc+
+    datadir:       $prefix/share+
+    includedir:    $prefix/include+
+    localstatedir: $prefix/var+
+    runtimedir:    $localstatedir/run
+    logfiledir:    $localstatedir/log
+    proxycachedir: $localstatedir/proxy
+</Layout>
+
+#   Apache binary distribution path layout
+<Layout BinaryDistribution>
+    prefix:        /usr/local/apache
+    exec_prefix:
+    bindir:        bin
+    sbindir:       bin
+    libexecdir:    libexec
+    mandir:        man
+    sysconfdir:    conf
+    datadir:
+    includedir:    include
+    localstatedir:
+    runtimedir:    logs
+    logfiledir:    logs
+    proxycachedir: proxy
+</Layout>
