@@ -10,7 +10,7 @@ more than one multi-processing module (MPM)</description>
 
 <directivesynopsis>
 <name>CoreDumpDirectory</name>
-<description>Sets the directory where Apache attempts to
+<description>Directory where Apache attempts to
 switch before dumping core</description>
 <syntax>CoreDumpDirectory <em>directory</em></syntax>
 <default>See usage for the default setting</default>
@@ -33,7 +33,7 @@ switch before dumping core</description>
 
 <directivesynopsis>
 <name>Group</name>
-<description>Sets the group under which the server will answer
+<description>Group under which the server will answer
 requests</description>
 <syntax>Group <em>unix-group</em></syntax>
 <default>Group #-1</default>
@@ -77,7 +77,7 @@ requests</description>
 
 <directivesynopsis>
 <name>PidFile</name>
-<description>Sets the file where the server records the process ID
+<description>File where the server records the process ID
 of the daemon</description>
 <syntax>PidFile <em>filename</em></syntax>
 <default>PidFile logs/httpd.pid</default>
@@ -107,7 +107,7 @@ of the daemon</description>
 
 <directivesynopsis>
 <name>Listen</name>
-<description>Sets the IP addresses and ports that the server
+<description>IP addresses and ports that the server
 listens to</description>
 <syntax>Listen [<em>IP-address</em>:]<em>portnumber</em></syntax>
 <contextlist><context>server config</context></contextlist>
@@ -216,7 +216,7 @@ listens to</description>
 <description>Maximum number of child processes that will be created
 to serve requests</description>
 <syntax>MaxClients <em>number</em></syntax>
-<default>>MaxClients
+<default>MaxClients
     8 (with threads) MaxClients 256</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>prefork</module>
