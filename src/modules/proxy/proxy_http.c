@@ -270,7 +270,8 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     bpushfd(f, sock, sock);
 
     hard_timeout ("proxy send", r);
-    bvputs(f, r->method, " ", url, " HTTP/1.0\015\012", NULL);
+    bvputs(f, r->method, " ", proxyhost ? url : urlptr, " HTTP/1.0\015\012",
+           NULL);
     bvputs(f, "Host: ", desthost, NULL);
     if (destportstr != NULL && destport != DEFAULT_PORT)
 	bvputs(f, ":", destportstr, "\015\012", NULL);
