@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) Ease configuration debugging by making TestCompile fall back to
+     using "make" if the $MAKE variable is unset [Martin Kraemer]
+
   *) Fixed the ServerSignature directive to work as documented.
      [Raymond S Brand <rsbx@rsbx.net>] PR#4248
 
