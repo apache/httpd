@@ -14,9 +14,6 @@ always available.
 
 
 <ul>
-<li>RLimitCPU
-<li>RLimitMEM
-<li>RLimitNPROC
 <li><A HREF="#accessconfig">AccessConfig</A>
 <li><A HREF="#accessfilename">AccessFileName</A>
 <li>AddModule
@@ -33,11 +30,11 @@ always available.
 <li><A HREF="#files">&lt;Files&gt;</A>
 <li><A HREF="#group">Group</A>
 <li><A HREF="#identitycheck">IdentityCheck</A>
-<li><A HREF="#ifmodule">&lt;IfModule%gt;</A>
+<li><A HREF="#ifmodule">&lt;IfModule&gt;</A>
 <li><A HREF="#keepalive">KeepAlive</A>
 <li><A HREF="#keepalivetimeout">KeepAliveTimeout</A>
 <li><A HREF="#limit">&lt;Limit&gt;</A>
-<li><A HREF="#listen">Listen;</A>
+<li><A HREF="#listen">Listen</A>
 <li><A HREF="#location">&lt;Location&gt;</A>
 <li><A HREF="#maxclients">MaxClients</A>
 <li><A HREF="#maxrequestsperchild">MaxRequestsPerChild</A>
@@ -48,6 +45,9 @@ always available.
 <li><A HREF="#port">Port</A>
 <li><A HREF="#require">require</A>
 <li><A HREF="#resourceconfig">ResourceConfig</A>
+<li>RLimitCPU
+<li>RLimitMEM
+<li>RLimitNPROC
 <li>Satisfy
 <li><A HREF="#sendbuffersize>SendBufferSize</A>
 <li><A HREF="#serveradmin">ServerAdmin</A>
@@ -62,100 +62,6 @@ always available.
 <li><A HREF="#virtualhost">&lt;VirtualHost&gt;</A>
 </ul>
 <hr>
-
-<A name="sendbuffersize"><h2>SendBufferSize</h2></A>
-<!--%plaintext &lt;?INDEX {\tt AccessConfig} directive&gt; -->
-<strong>Syntax:</strong> SendBufferSize <em>bytes</em><br>
-<strong>Context:</strong> server config, virtual host<br>
-<strong>Status:</strong> core<p>
-
-The server will set the TCP buffer size to the number of bytes
-specified. Very useful to increase past standard OS defaults on high
-speed high latency (i.e. 100ms or so, such as transcontinental
-fast pipes)
-
-<p><hr>
-
-<A name="files"><h2>&lt;Files&gt;</h2></A>
-<strong>Syntax:</strong> &lt;Files <em>filename</em>&gt;
-... &lt;/Files&gt;<br>
-<strong>Context:</strong> server config, virtual host, htaccess<br>
-<strong>Status:</strong> core<br>
-<strong>Compatibility:</strong> only available in Apache
-1.2 and above.<p>
-
-<p>The &lt;Files&gt; directive provides for access control by
-filename. It is comparable to the <a
-href="#directory">&lt;Directory&gt;</a> directive and
-<a href="#location">&lt;Location&gt;</a> directives. It
-should be matched with a &lt;/Files&gt; directive. Directives that
-apply to the filename given should be listed
-within. <code>&lt;Files&gt;</code> sections are processed in the
-order they appear in the configuration file, after the
-&lt;Directory&gt; sections and <code>.htaccess</code> files are
-read, but before &lt;Location&gt; sections.</p>
-
-<p>The <em>filename</em> argument should include a filename, or a 
-wildcard string, where `?' matches any single character, and `*' matches any
-sequences of characters. Extended regular expressions can also be used, with the addition of
-the <code>~</code> character. For example:</p>
-
-<pre>
-   &lt;Files ~ &quot;\.(gif|jpe?g|png)$&quot;&gt;
-</pre>
-
-would match most common Internet graphics formats.
-
-<p>Note that unlike <a
-href="#directory"><code>&lt;Directory&gt;</code></a> and <a
-href="#location"><code>&lt;Location&gt;</code></a> sections,
-<code>&lt;Files&gt;</code> sections can be used inside .htaccess
-files. This allows users to control access to their own files, at a
-file-by-file level. When used in an .htaccess file, if the
-<em>filename</em> does not begin with a <code>/</code> character,
-the directory being applied will be prefixed automatically.
-
-<p> <hr>
-
-<A NAME="ifmodule"><H2>&lt;IfModule&gt;</H2></A>
-<b>Syntax:</b> &lt;IfModule [!]<i>module-name</i>&gt; <i>...</i>
-&lt;/IfModule&gt;<br>
-<b>Default:</b> None<br>
-<b>Context:</b> all<br>
-<b>Status:</b> Core
-<strong>Compatibility:</strong> ScriptLog is only available in 1.2 and
-later.<P>
-
-<p>
-
-The &lt;IfModule <i>test</i>&gt;...&lt;/IfModule&gt;
-section is used to mark directives that are conditional. The
-directives within an IfModule section are only
-processed if the <i>test</i> is true. If <i>test</i>
-is false, everything between the start and end markers
-is ignored.<p>
-
-The <i>test</i> in the &lt;IfModule&gt; section directive
-can be one of two forms:
-
-<ul>
-<li><i>module name</i>
-<li>!<i>module name</i>
-</ul>
-
-<p>In the former case, the directives between the start and end markers
-are only processed if the module named <i>module name</i> is compiled
-in to Apache. The second format reverses the test, and only processes
-the directives if <i>module name</i> is <b>not</b> compiled in.
-
-<p>The <i>module name</i> argument is a module name as given as the file
-name of the module, at the time it was compiled. For example,
-<code>mod_rewrite.c</code>.
-
-<p>&lt;IfModule&gt; sections are nestable, which can be used to implement
-simple multiple-module tests.
-
-<P> <hr>
 
 <A name="accessconfig"><h2>AccessConfig directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt AccessConfig} directive&gt; -->
@@ -431,8 +337,7 @@ is followed by the HTTP response code and a message or URL.
 
 <P><em>Messages</em> in this context, begin with a single quote
 (<code>"</code>), which does not form part of the message itself. Apache will
-sometime offer additional information regarding the problem/error. This can be
-embedded into the message using <code>%s</code>
+sometime offer additional information regarding the problem/error. 
 
 <P>URLs will begin with a slash (/) for local URLs, or will be a full
 URL which the client can resolve. Examples:
@@ -459,6 +364,47 @@ then it is assumed to be relative to the <A HREF="#serverroot">ServerRoot</A>.
 Example:
 <blockquote><code>ErrorLog /dev/null</code></blockquote>
 This effectively turns off error logging.<p><hr>
+
+<A name="files"><h2>&lt;Files&gt;</h2></A>
+<strong>Syntax:</strong> &lt;Files <em>filename</em>&gt;
+... &lt;/Files&gt;<br>
+<strong>Context:</strong> server config, virtual host, htaccess<br>
+<strong>Status:</strong> core<br>
+<strong>Compatibility:</strong> only available in Apache
+1.2 and above.<p>
+
+<p>The &lt;Files&gt; directive provides for access control by
+filename. It is comparable to the <a
+href="#directory">&lt;Directory&gt;</a> directive and
+<a href="#location">&lt;Location&gt;</a> directives. It
+should be matched with a &lt;/Files&gt; directive. Directives that
+apply to the filename given should be listed
+within. <code>&lt;Files&gt;</code> sections are processed in the
+order they appear in the configuration file, after the
+&lt;Directory&gt; sections and <code>.htaccess</code> files are
+read, but before &lt;Location&gt; sections.</p>
+
+<p>The <em>filename</em> argument should include a filename, or a 
+wildcard string, where `?' matches any single character, and `*' matches any
+sequences of characters. Extended regular expressions can also be used, with the addition of
+the <code>~</code> character. For example:</p>
+
+<pre>
+   &lt;Files ~ &quot;\.(gif|jpe?g|png)$&quot;&gt;
+</pre>
+
+would match most common Internet graphics formats.
+
+<p>Note that unlike <a
+href="#directory"><code>&lt;Directory&gt;</code></a> and <a
+href="#location"><code>&lt;Location&gt;</code></a> sections,
+<code>&lt;Files&gt;</code> sections can be used inside .htaccess
+files. This allows users to control access to their own files, at a
+file-by-file level. When used in an .htaccess file, if the
+<em>filename</em> does not begin with a <code>/</code> character,
+the directory being applied will be prefixed automatically.
+
+<p> <hr>
 
 <A name="group"><h2>Group directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt Group} directive&gt; -->
@@ -503,6 +449,46 @@ This information is logged in the access log. <em>Boolean</em> is either
 The information should not trusted in any way except for rudimentary usage
 tracking.<p><hr>
 
+<A NAME="ifmodule"><H2>&lt;IfModule&gt;</H2></A>
+<b>Syntax:</b> &lt;IfModule [!]<i>module-name</i>&gt; <i>...</i>
+&lt;/IfModule&gt;<br>
+<b>Default:</b> None<br>
+<b>Context:</b> all<br>
+<b>Status:</b> Core
+<strong>Compatibility:</strong> ScriptLog is only available in 1.2 and
+later.<P>
+
+<p>
+
+The &lt;IfModule <i>test</i>&gt;...&lt;/IfModule&gt;
+section is used to mark directives that are conditional. The
+directives within an IfModule section are only
+processed if the <i>test</i> is true. If <i>test</i>
+is false, everything between the start and end markers
+is ignored.<p>
+
+The <i>test</i> in the &lt;IfModule&gt; section directive
+can be one of two forms:
+
+<ul>
+<li><i>module name</i>
+<li>!<i>module name</i>
+</ul>
+
+<p>In the former case, the directives between the start and end markers
+are only processed if the module named <i>module name</i> is compiled
+in to Apache. The second format reverses the test, and only processes
+the directives if <i>module name</i> is <b>not</b> compiled in.
+
+<p>The <i>module name</i> argument is a module name as given as the file
+name of the module, at the time it was compiled. For example,
+<code>mod_rewrite.c</code>.
+
+<p>&lt;IfModule&gt; sections are nestable, which can be used to implement
+simple multiple-module tests.
+
+<P> <hr>
+
 <h2><a name="keepalive">KeepAlive</a></h2>
 <strong>Syntax:</strong> KeepAlive <em>max-requests</em><br>
 <strong>Default:</strong> <code>KeepAlive 5</code><br>
@@ -531,7 +517,7 @@ closing the connection. Once a request has been received, the timeout
 value specified by the <a
 href="../core.html#timeout"><code>Timeout</code></a> directive
 applies.
-
+<hr>
 
 <A name="listen"><h2>Listen</h2></A>
 <strong>Syntax:</strong>
@@ -548,6 +534,7 @@ directive.</p>
 
 <p><strong>See Also</strong>:
 <a href="bind.html">Setting which addresses and ports Apache uses</a></p>
+<hr>
 
 <A name="limit"><h2>&lt;Limit&gt; directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt Limit} section directive&gt; -->
@@ -623,12 +610,12 @@ from browsers at foo.com, you might use:
     </Limit>
     &lt;/Location&gt;
 </pre>
-
+<hr>
 
 <A name="maxclients"><h2>MaxClients directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt MaxClients} directive&gt; -->
 <strong>Syntax:</strong> MaxClients <em>number</em><br>
-<strong>Default:</strong> <code>MaxClients 150</code><br>
+<strong>Default:</strong> <code>MaxClients 256</code><br>
 <strong>Context:</strong> server config<br>
 <strong>Status:</strong> core<p>
 
@@ -744,11 +731,11 @@ file or directory is owned by the same user id as the link.
 
 Normally, if multiple <code>Options</code> could apply to a directory,
 then the most specific one is taken complete; the options are not
-merged. However if <i>all</i> the options on the <code>Options</code> directive are
-preceeded by a + or - symbol, the options are merged. Any options
-preceeded by a + are added to the options currently in force, and any
-options preceeded by a - are removed from the options currently in
-force.  <P>
+merged. However if <i>all</i> the options on the <code>Options</code>
+directive are preceeded by a + or - symbol, the options are
+merged. Any options preceeded by a + are added to the options
+currently in force, and any options preceeded by a - are removed from
+the options currently in force.  <P>
 
 For example, without any + and - symbols:
 
@@ -774,6 +761,7 @@ Options +Includes -Indexes<br>
 </code></blockquote>
 then the options <code>FollowSymLinks</code> and <code>Includes</code>
 are set for the /web/docs/spec directory.
+<hr>
 
 <A name="pidfile"><h2>PidFile directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt PidFile} directive&gt; -->
@@ -877,6 +865,18 @@ sections; in fact it can now contain any server directive allowed in the
 
 See also <A HREF="#accessconfig">AccessConfig</A>.<p><hr>
 
+<A name="sendbuffersize"><h2>SendBufferSize</h2></A>
+<!--%plaintext &lt;?INDEX {\tt AccessConfig} directive&gt; -->
+<strong>Syntax:</strong> SendBufferSize <em>bytes</em><br>
+<strong>Context:</strong> server config, virtual host<br>
+<strong>Status:</strong> core<p>
+
+The server will set the TCP buffer size to the number of bytes
+specified. Very useful to increase past standard OS defaults on high
+speed high latency (i.e. 100ms or so, such as transcontinental
+fast pipes)
+<p><hr>
+
 <A name="serveradmin"><h2>ServerAdmin directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt ServerAdmin} directive&gt; -->
 <strong>Syntax:</strong> ServerAdmin <em>email-address</em><br>
@@ -928,6 +928,7 @@ were <code>monster.wibble.com</code>.<p><hr>
 
 The ServerAlias directive sets the legacy URL pathname for a host, for
 use with <a href="host.html">Host-header based virtual hosts</a>.
+<hr>
 
 <A name="serverroot"><h2>ServerRoot directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt ServerRoot} directive&gt; -->
