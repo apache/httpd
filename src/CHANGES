@@ -1,5 +1,9 @@
 Changes with Apache 1.3.20
 
+  *) Add a -V flag to suexec, which causes it to display the
+     compile-time settings with which it was built.  (Only
+     usable by root or the HTTPD_USER username.)  [Ken Coar]
+
   *) Set the Win32 service description in the Services control panel to 
      the server_version string from Apache and the loaded modules.
      [William Rowe]

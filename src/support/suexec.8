@@ -1,4 +1,4 @@
-.TH suexec 8 "March 1998"
+.TH suexec 8 "March 2001"
 .\" ====================================================================
 .\" The Apache Software License, Version 1.1
 .\"
@@ -59,17 +59,23 @@
 .SH NAME
 suexec \- Switch User For Exec
 .SH SYNOPSIS
-No synopsis for usage, because this program
-is used internally by Apache only. 
+.B suexec -V
+.PP
+No other synopsis for usage, because this program
+is otherwise only used internally by the Apache HTTP server. 
 .PP
 .SH DESCRIPTION
 .B suexec
-is the "wrapper" support program for the suEXEC behaviour for Apache.
-It is run from within Apache automatically to switch the user when
-an external program has to be run under a different user. For more
-information about suEXEC see the document `Apache suEXEC Support'
-under http://httpd.apache.org/docs/suexec.html .
+is the "wrapper" support program for the suexec behaviour for the
+Apache HTTP server.  It is run from within the server automatically
+to switch the user when an external program has to be run under a
+different user. For more information about suexec, see the online
+document `Apache suexec Support' on the HTTP server project's
+Web site at  http://httpd.apache.org/docs/suexec.html .
+.SH OPTIONS
+.IP -V
+Display the list of compile-time settings used when \fBsuexec\fP
+was built.  No other action is taken.
 .PD
 .SH SEE ALSO
 .BR httpd(8)
-.

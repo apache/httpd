@@ -268,19 +268,7 @@ int main(int argc, char *argv[])
     struct stat dir_info;	/* directory info holder     */
     struct stat prg_info;	/* program info holder       */
 
-    /*
-     * If there are a proper number of arguments, set
-     * all of them to variables.  Otherwise, error out.
-     */
     prog = argv[0];
-    if (argc < 4) {
-	log_err("alert: too few arguments\n");
-	exit(101);
-    }
-    target_uname = argv[1];
-    target_gname = argv[2];
-    cmd = argv[3];
-
     /*
      * Check existence/validity of the UID of the user
      * running this program.  Error out if invalid.
@@ -290,6 +278,57 @@ int main(int argc, char *argv[])
 	log_err("crit: invalid uid: (%ld)\n", uid);
 	exit(102);
     }
+    /*
+     * See if this is a 'how were you compiled' request, and
+     * comply if so.
+     */
+    if ((argc > 1)
+        && (! strcmp(argv[1], "-V"))
+        && ((uid == 0)
+#ifdef _OSD_POSIX
+        /* User name comparisons are case insensitive on BS2000/OSD */
+            || (! strcasecmp(HTTPD_USER, pw->pw_name)))
+#else  /* _OSD_POSIX */
+            || (! strcmp(HTTPD_USER, pw->pw_name)))
+#endif /* _OSD_POSIX */
+        ) {
+#ifdef DOC_ROOT
+        fprintf(stderr, " -D DOC_ROOT=\"%s\"\n", DOC_ROOT);
+#endif
+#ifdef GID_MIN
+        fprintf(stderr, " -D GID_MID=%d\n", GID_MIN);
+#endif
+#ifdef HTTPD_USER
+        fprintf(stderr, " -D HTTPD_USER=\"%s\"\n", HTTPD_USER);
+#endif
+#ifdef LOG_EXEC
+        fprintf(stderr, " -D LOG_EXEC=\"%s\"\n", LOG_EXEC);
+#endif
+#ifdef SAFE_PATH
+        fprintf(stderr, " -D SAFE_PATH=\"%s\"\n", SAFE_PATH);
+#endif
+#ifdef SUEXEC_UMASK
+        fprintf(stderr, " -D SUEXEC_UMASK=%03o\n", SUEXEC_UMASK);
+#endif
+#ifdef UID_MIN
+        fprintf(stderr, " -D UID_MID=%d\n", UID_MIN);
+#endif
+#ifdef USERDIR_SUFFIX
+        fprintf(stderr, " -D USERDIR_SUFFIX=\"%s\"\n", USERDIR_SUFFIX);
+#endif
+        exit(0);
+    }
+    /*
+     * If there are a proper number of arguments, set
+     * all of them to variables.  Otherwise, error out.
+     */
+    if (argc < 4) {
+	log_err("alert: too few arguments\n");
+	exit(101);
+    }
+    target_uname = argv[1];
+    target_gname = argv[2];
+    cmd = argv[3];
 
     /*
      * Check to see if the user running this program
