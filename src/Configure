@@ -358,7 +358,14 @@ case "$PLAT" in
 	DB_LIB=""
 	;;
     *-freebsd*)
-	OS='FreeBSD'
+    	PLATOSVERS=`echo $PLAT | sed 's/^.*freebsd//'`
+	OS='FreeBSD $PLATOSVERS'
+	case "$PLATOSVERS" in
+	    3*)
+		DEF_WANTHSREGEX=no
+		CFLAGS="$CFLAGS -funsigned-char"
+		;;
+	esac
 	LIBS="$LIBS -lcrypt"
 	DBM_LIB=""
 	DB_LIB=""
@@ -413,17 +420,17 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=no
 	;;
     *-solaris2*)
-    	SOLVER=`echo $PLAT | sed 's/^.*solaris2.//'`
-	OS="Solaris $SOLVER"
-	CFLAGS="$CFLAGS -DSOLARIS2=$SOLVER"
+    	PLATOSVERS=`echo $PLAT | sed 's/^.*solaris2.//'`
+	OS="Solaris $PLATOSVERS"
+	CFLAGS="$CFLAGS -DSOLARIS2=$PLATOSVERS"
 	LIBS="$LIBS -lsocket -lnsl"
-	case "$SOLVER" in
+	case "$PLATOSVERS" in
 	    2[56789]*)
 	    	LIBS="$LIBS -lpthread"
 		;;
 	esac
 	DBM_LIB=""
-	case "$SOLVER" in
+	case "$PLATOSVERS" in
 	    2[01234]*)
 		DEF_WANTHSREGEX=yes
 		;;

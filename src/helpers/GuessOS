@@ -113,11 +113,13 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	;;
 
     FreeBSD:*:*:*486*)
-	echo "i486-whatever-freebsd"; exit 0
+	FREEBSDVERS=`echo ${RELEASE}|sed -e 's/[-(].*//'`
+	echo "i486-whatever-freebsd${FREEBSDVERS}"; exit 0
 	;;
 
     FreeBSD:*)
-	echo "${MACHINE}-whatever-freebsd"; exit 0
+	FREEBSDVERS=`echo ${RELEASE}|sed -e 's/[-(].*//'`
+	echo "${MACHINE}-whatever-freebsd${FREEBSDVERS}"; exit 0
 	;;
 
     NetBSD:*:*:*486*)
