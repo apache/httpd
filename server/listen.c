@@ -235,38 +235,6 @@ static apr_status_t close_listeners_on_exec(void *v)
 }
 
 
-static void find_default_family(apr_pool_t *p)
-{
-#if APR_HAVE_IPV6
-    /* We know the platform supports IPv6, but this particular
-     * system may not have IPv6 enabled.  See if we can get an
-     * AF_INET6 socket and bind to an ephemeral port.  (On most
-     * systems, getting an AF_INET6 socket is a sufficient test.
-     * On certain levels of OpenUNIX, getting the socket is
-     * successful but bind always returns ENETUNREACH.)
-     */
-    if (default_family == APR_UNSPEC) {
-        apr_status_t sock_rv;
-        apr_socket_t *tmp_sock;
-        apr_sockaddr_t *sa;
-
-        if ((sock_rv = apr_socket_create(&tmp_sock, APR_INET6, SOCK_STREAM, p)) 
-            == APR_SUCCESS &&
-            apr_sockaddr_info_get(&sa, NULL, APR_INET6, 0, 0, p) == APR_SUCCESS &&
-            apr_bind(tmp_sock, sa) == APR_SUCCESS) { 
-            default_family = APR_INET6;
-        }
-        else {
-            default_family = APR_INET;
-        }
-        if (sock_rv == APR_SUCCESS) {
-            apr_socket_close(tmp_sock);
-        }
-    }
-#endif
-}
-
-
 static const char *alloc_listener(process_rec *process, char *addr, apr_port_t port)
 {
     ap_listen_rec **walk;
@@ -274,24 +242,6 @@ static const char *alloc_listener(process_rec *process, char *addr, apr_port_t p
     apr_status_t status;
     apr_port_t oldport;
     apr_sockaddr_t *sa;
-
-    if (!addr) { /* don't bind to specific interface */
-        find_default_family(process->pool);
-        switch(default_family) {
-        case APR_INET:
-            addr = "0.0.0.0";
-            break;
-
-#if APR_HAVE_IPV6
-        case APR_INET6:
-            addr = "::";
-            break;
-#endif
-
-        default:
-            ap_assert(1 != 1); /* should not occur */
-        }
-    }
 
     /* see if we've got an old listener for this address:port */
     for (walk = &old_listeners; *walk; walk = &(*walk)->next) {

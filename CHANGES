@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Correct failure with Listen directives on machines with IPv6 enabled.
+     [Colm MacCárthaigh <colm@stdlib.net>, Justin Erenkrantz]
+  
   *) Fix a link failure in mod_ssl when the OpenSSL libraries contain
      the ENGINE functions but the engine header files are missing.
      [Cliff Woolley]
