@@ -59,16 +59,17 @@ available</td></tr><tr><th><a href="module-dict.html#Status">Status:
     based on PATH_INFO.  The core handler would usually reject the
     request, so you can use the following configuration to enable
     such a script:</p>
-<div class="example"><p><code>
-&lt;Files "mypaths.shtml"&gt;<br />
-    Options +Includes<br />
-    SetOutputFilter INCLUDES<br />
-    AcceptPathInfo on<br />
-&lt;/Files&gt;
-</code></p></div>
+
+    <div class="example"><pre>
+&lt;Files "mypaths.shtml"&gt;
+  Options +Includes
+  SetOutputFilter INCLUDES
+  AcceptPathInfo on
+&lt;/Files&gt;</pre></div>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AccessFileName" id="AccessFileName">AccessFileName</a> <a name="accessfilename" id="accessfilename">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Name of the distributed configuration file</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AccessFileName <em>filename</em> [<em>filename</em>] ...</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>AccessFileName <var>filename</var> [<var>filename</var>] ...</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AccessFileName .htaccess</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -79,9 +80,9 @@ available</td></tr><tr><th><a href="module-dict.html#Status">Status:
     configuration files are enabled for that directory. For
     example:</p>
 
-<div class="example"><p><code>
-AccessFileName .acl
-</code></p></div>
+    <div class="example"><p><code>
+      AccessFileName .acl
+    </code></p></div>
 
     <p>before returning the document
     <code>/usr/local/web/index.html</code>, the server will read
@@ -89,21 +90,19 @@ AccessFileName .acl
     <code>/usr/local/.acl</code> and <code>/usr/local/web/.acl</code>
     for directives, unless they have been disabled with</p>
 
-<div class="example"><p><code>
-&lt;Directory /&gt;<br />
-  AllowOverride None<br />
-&lt;/Directory&gt;
-</code></p></div>
+    <div class="example"><pre>
+&lt;Directory /&gt;
+  AllowOverride None
+&lt;/Directory&gt;</pre></div>
 <h3>See also</h3><ul><li><code class="directive"><a href="#allowoverride">AllowOverride</a></code></li><li><a href="../configuring.html">Configuration Files</a></li><li><a href="../howto/htaccess.html">.htaccess Files</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddDefaultCharset" id="AddDefaultCharset">AddDefaultCharset</a> <a name="adddefaultcharset" id="adddefaultcharset">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Default character set to be added for a
 response without an explicit character set</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AddDefaultCharset On|Off|<em>charset</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>AddDefaultCharset On|Off|<var>charset</var></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AddDefaultCharset Off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
-
     <p>This directive specifies the name of the character set that
     will be added to any response that does not have any parameter on
     the content type in the HTTP headers. This will override any
@@ -113,16 +112,16 @@ response without an explicit character set</td></tr><tr><th><a href="directive-d
     functionality. <code>AddDefaultCharset On</code> enables
     Apache's internal default charset of <code>iso-8859-1</code> as
     required by the directive. You can also specify an alternate
-    <em>charset</em> to be used. For example:</p>
+    <var>charset</var> to be used. For example:</p>
 
-<div class="example"><p><code>
-    AddDefaultCharset utf-8
-</code></p></div>
+    <div class="example"><p><code>
+      AddDefaultCharset utf-8
+    </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AllowOverride" id="AllowOverride">AllowOverride</a> <a name="allowoverride" id="allowoverride">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Types of directives that are allowed in
 .htaccess files</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AllowOverride All|None|<em>directive-type</em> 
-[<em>directive-type</em>] ...</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>AllowOverride All|None|<var>directive-type</var> 
+[<var>directive-type</var>] ...</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AllowOverride All</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -140,7 +139,7 @@ response without an explicit character set</td></tr><tr><th><a href="directive-d
     directive which has the .htaccess <a href="directive-dict.html#Context">Context</a> is allowed in
     .htaccess files.</p>
 
-    <p>The <em>directive-type</em> can be one of the following
+    <p>The <var>directive-type</var> can be one of the following
     groupings of directives.</p>
 
     <dl>
@@ -187,11 +186,13 @@ response without an explicit character set</td></tr><tr><th><a href="directive-d
 
     <p>Example:</p>
 
-    <div class="example"><p><code>AllowOverride AuthConfig Indexes</code></p></div>
+    <div class="example"><p><code>
+      AllowOverride AuthConfig Indexes
+    </code></p></div>
 <h3>See also</h3><ul><li><code class="directive"><a href="#accessfilename">AccessFileName</a></code></li><li><a href="../configuring.html">Configuration Files</a></li><li><a href="../howto/htaccess.html">.htaccess Files</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthName" id="AuthName">AuthName</a> <a name="authname" id="authname">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Authorization realm for use in HTTP
 authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthName <em>auth-domain</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>AuthName <var>auth-domain</var></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -208,7 +209,9 @@ authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 
    <p>For example:</p>
 
-   <div class="example"><p><code>AuthName "Top Secret"</code></p></div>
+   <div class="example"><p><code>
+     AuthName "Top Secret"
+   </code></p></div>
 
     <p>The string provided for the <code>AuthName</code> is what will
     appear in the password dialog provided by most browsers.</p>
@@ -264,9 +267,10 @@ headers</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     message integrity check (MIC) of the entity-body. A proxy or
     client may check this header for detecting accidental
     modification of the entity-body in transit. Example header:</p>
-<div class="example"><p><code>
-   Content-MD5: AuLb7Dp1rqtRtxz2m9kRpA==
-</code></p></div>
+
+    <div class="example"><p><code>
+      Content-MD5: AuLb7Dp1rqtRtxz2m9kRpA==
+    </code></p></div>
 
     <p>Note that this can cause performance problems on your server
     since the message digest is computed on every request (the
@@ -279,7 +283,7 @@ headers</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DefaultType" id="DefaultType">DefaultType</a> <a name="defaulttype" id="defaulttype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>MIME content-type that will be sent if the
 server cannot determine a type in any other way</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>DefaultType <em>MIME-type</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>DefaultType <var>MIME-type</var></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>DefaultType text/plain</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -293,9 +297,10 @@ server cannot determine a type in any other way</td></tr><tr><th><a href="direct
     document, so in the event of an unknown type it uses the
     <code>DefaultType</code>. For example:</p>
 
-<div class="example"><p><code>
-      <code>DefaultType image/gif</code>
-</code></p></div>
+    <div class="example"><p><code>
+      DefaultType image/gif
+    </code></p></div>
+
     <p>would be appropriate for a directory which contained many gif
     images with filenames missing the .gif extension.</p>
 
@@ -306,7 +311,7 @@ server cannot determine a type in any other way</td></tr><tr><th><a href="direct
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a> <a name="directory" id="directory">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Enclose a group of directives that apply only to the
 named file-system directory and sub-directories</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>&lt;Directory <em>directory-path</em>&gt;
+              </a></th><td>&lt;Directory <var>directory-path</var>&gt;
 ... &lt;/Directory&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -315,7 +320,7 @@ named file-system directory and sub-directories</td></tr><tr><th><a href="direct
     <code>&lt;/Directory&gt;</code> are used to enclose a group of
     directives that will apply only to the named directory and
     sub-directories of that directory. Any directive that is allowed
-    in a directory context may be used.  <em>Directory-path</em> is
+    in a directory context may be used. <var>Directory-path</var> is
     either the full path to a directory, or a wild-card string using
     Unix shell-style matching. In a wild-card string, `?' matches any
     single character, and `*' matches any sequences of characters.
@@ -324,26 +329,29 @@ named file-system directory and sub-directories</td></tr><tr><th><a href="direct
     /*/public_html&gt;</code> will not match
     <code>/home/user/public_html</code>, but <code>&lt;Directory
     /home/*/public_html&gt;</code> will match. Example:</p>
-<div class="example"><p><code>
-   &lt;Directory /usr/local/httpd/htdocs&gt;<br />
-  Options Indexes FollowSymLinks<br />
-   &lt;/Directory&gt;<br />
-</code></p></div>
 
-<div class="note">
-<p>Be careful with the <em>directory-path</em> arguments: They have
-to literally match the filesystem path which Apache uses to access the
-files. Directives applied to a particular &lt;Directory&gt; will not
-apply to files accessed from that same directory via a different path,
-such as via different symbolic links.</p>
-</div>
+    <div class="example"><pre>
+&lt;Directory /usr/local/httpd/htdocs&gt;
+  Options Indexes FollowSymLinks
+&lt;/Directory&gt;</pre></div>
+
+    <div class="note">
+      <p>Be careful with the <var>directory-path</var> arguments:
+      They have to literally match the filesystem path which Apache uses
+      to access the files. Directives applied to a particular
+      &lt;Directory&gt; will not apply to files accessed from that same
+      directory via a different path, such as via different symbolic
+      links.</p>
+    </div>
 
     <p>Extended regular
     expressions can also be used, with the addition of the
     <code>~</code> character. For example:</p>
-<div class="example"><p><code>
-   &lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
-</code></p></div>
+
+    <div class="example"><p><code>
+      &lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
+    </code></p></div>
+
     <p>would match directories in /www/ that consisted of three
     numbers.</p>
 
@@ -353,15 +361,15 @@ such as via different symbolic links.</p>
     first, interspersed with the directives from the <a href="#accessfilename">.htaccess</a> files. For example,
     with</p>
 
-<div class="example"><p><code>
-      &lt;Directory /&gt;<br />
-         AllowOverride None<br />
-       &lt;/Directory&gt;<br />
-      <br />
-       &lt;Directory /home/&gt;<br />
-         AllowOverride FileInfo<br />
-       &lt;/Directory&gt;
-</code></p></div>
+    <div class="example"><pre>
+&lt;Directory /&gt;
+  AllowOverride None
+&lt;/Directory&gt;
+
+&lt;Directory /home/&gt;
+  AllowOverride FileInfo
+&lt;/Directory&gt;</pre></div>
+
     <p>for access to the document <code>/home/web/dir/doc.html</code>
     the steps are:</p>
 
@@ -381,10 +389,10 @@ such as via different symbolic links.</p>
     expressions are tested in the order they appeared in the
     configuration file. For example, with</p>
 
-<div class="example"><p><code>&lt;Directory ~ abc$&gt;<br />
-       ... directives here ...<br />
-       &lt;/Directory&gt;<br />
-</code></p></div>
+    <div class="example"><pre>
+&lt;Directory ~ abc$&gt;
+  # ... directives here ...
+&lt;/Directory&gt;</pre></div>
 
     <p>The regular expression section won't be considered until after
     all normal &lt;Directory&gt;s and <code>.htaccess</code> files
@@ -397,12 +405,11 @@ such as via different symbolic links.</p>
     recommended that you change this with a block such
     as</strong></p>
 
-<div class="example"><p><code>
- &lt;Directory /&gt;<br />
-       Order Deny,Allow<br />
-       Deny from All<br />
- &lt;/Directory&gt;
-</code></p></div>
+    <div class="example"><pre>
+&lt;Directory /&gt;
+  Order Deny,Allow
+  Deny from All
+&lt;/Directory&gt;</pre></div>
 
     <p><strong>and then override this for directories you
     <em>want</em> accessible. See the <a href="../misc/security_tips.html">Security Tips</a> page for more
@@ -419,7 +426,7 @@ such as via different symbolic links.</p>
               </a></th><td>Enclose directives that apply to 
 file-system directories matching a regular expression and their
 subdirectories</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>&lt;DirectoryMatch <em>regex</em>&gt;
+              </a></th><td>&lt;DirectoryMatch <var>regex</var>&gt;
 ... &lt;/Directory&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -429,9 +436,10 @@ subdirectories</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     of directives which will apply only to the named directory and
     sub-directories of that directory, the same as <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>. However, it
     takes as an argument a regular expression. For example:</p>
-<div class="example"><p><code>
-   &lt;DirectoryMatch "^/www/.*/[0-9]{3}"&gt;
-</code></p></div>
+
+    <div class="example"><p><code>
+      &lt;DirectoryMatch "^/www/.*/[0-9]{3}"&gt;
+    </code></p></div>
 
     <p>would match directories in <code>/www/</code> that consisted of three
     numbers.</p>
@@ -442,7 +450,7 @@ work</a> for an explanation of how these different sections are
 combined when a request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DocumentRoot" id="DocumentRoot">DocumentRoot</a> <a name="documentroot" id="documentroot">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Directory that forms the main document tree visible
 from the web</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>DocumentRoot <em>directory-path</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>DocumentRoot <var>directory-path</var></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>DocumentRoot /usr/local/apache/htdocs</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -451,9 +459,11 @@ from the web</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     serve files. Unless matched by a directive like Alias, the
     server appends the path from the requested URL to the document
     root to make the path to the document. Example:</p>
-<div class="example"><p><code>
-   DocumentRoot /usr/web
-</code></p></div>
+
+    <div class="example"><p><code>
+      DocumentRoot /usr/web
+    </code></p></div>
+
     <p>then an access to
     <code>http://www.my.host.com/index.html</code> refers to
     <code>/usr/web/index.html</code>.</p>
@@ -474,13 +484,12 @@ Location</a></li></ul></div><div class="top"><a href="#page-header"><img alt="to
     delivery.  By default, when the handling of a request requires
     access to the data within a file-- for example, when delivering a
     server-parsed file using <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>-- Apache
-    memory-maps the file if the OS supports it.
-    </p>
-    <p>
-    This memory-mapping sometimes yields a performance improvement.
+    memory-maps the file if the OS supports it.</p>
+
+    <p>This memory-mapping sometimes yields a performance improvement.
     But in some environments, it is better to disable the memory-mapping
-    to prevent operational problems:
-    </p>
+    to prevent operational problems:</p>
+
     <ul>
     <li>On some multiprocessor systems, memory-mapping can reduce the
     performance of the httpd.</li>
@@ -488,17 +497,17 @@ Location</a></li></ul></div><div class="top"><a href="#page-header"><img alt="to
     the httpd may crash due tof a segmentation fault if a file is deleted
     or truncated while the httpd has it memory-mapped.</li>
     </ul>
-    <p>
-    For server configurations that are vulnerable to these problems,
-    you should disable memory-mapping of delivered files by specifying:
-    </p>
-<div class="example"><p><code>
-   EnableMMAP off
-</code></p></div>
+
+    <p>For server configurations that are vulnerable to these problems,
+    you should disable memory-mapping of delivered files by specifying:</p>
+
+    <div class="example"><p><code>
+      EnableMMAP off
+    </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a> <a name="errordocument" id="errordocument">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>What the server will return to the client
 in case of an error</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ErrorDocument <em>error-code document</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>ErrorDocument <var>error-code</var> <var>document</var></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -513,10 +522,10 @@ in case of an error</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax
 
       <li>output a customized message</li>
 
-      <li>redirect to a local <em>URL-path</em> to handle the
+      <li>redirect to a local <var>URL-path</var> to handle the
       problem/error</li>
 
-      <li>redirect to an external <em>URL</em> to handle the
+      <li>redirect to an external <var>URL</var> to handle the
       problem/error</li>
     </ol>
 
@@ -530,14 +539,12 @@ in case of an error</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax
     URL which the client can resolve. Alternatively, a message can
     be provided to be displayed by the browser. Examples:</p>
 
-<div class="example"><p><code>
-      ErrorDocument 500
-      http://foo.example.com/cgi-bin/tester<br />
-       ErrorDocument 404 /cgi-bin/bad_urls.pl<br />
-       ErrorDocument 401 /subscription_info.html<br />
-       ErrorDocument 403 "Sorry can't allow you access
-      today"
-</code></p></div>
+    <div class="example"><p><code>
+      ErrorDocument 500 http://foo.example.com/cgi-bin/tester<br />
+      ErrorDocument 404 /cgi-bin/bad_urls.pl<br />
+      ErrorDocument 401 /subscription_info.html<br />
+      ErrorDocument 403 "Sorry can't allow you access today"
+    </code></p></div>
 
     <p>Note that when you specify an <code class="directive">ErrorDocument</code>
     that points to a remote URL (ie. anything with a method such as
@@ -568,7 +575,7 @@ in case of an error</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax
 <h3>See also</h3><ul><li><a href="../custom-error.html">documentation of
     customizable responses</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ErrorLog" id="ErrorLog">ErrorLog</a> <a name="errorlog" id="errorlog">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Location where the server will log errors</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td> ErrorLog <em>file-path</em>|syslog[:<em>facility</em>]</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td> ErrorLog <var>file-path</var>|syslog[:<var>facility</var>]</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ErrorLog logs/error_log (Unix)
 ErrorLog logs/error.log (Windows and OS/2)</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -576,16 +583,16 @@ ErrorLog logs/error.log (Windows and OS/2)</code></td></tr><tr><th><a href="dire
               </a></th><td>core</td></tr></table>
     <p>The <code class="directive">ErrorLog</code> directive sets the name of
     the file to which the server will log any errors it encounters. If
-    the <em>file-path</em> does not begin with a slash (/) then it is
-    assumed to be relative to the <code class="directive"><a href="#serverroot">ServerRoot</a></code>. If the <em>file-path</em>
+    the <var>file-path</var> does not begin with a slash (/) then it is
+    assumed to be relative to the <code class="directive"><a href="#serverroot">ServerRoot</a></code>. If the <var>file-path</var>
     begins with a pipe (|) then it is assumed to be a command to spawn
     to handle the error log.</p>
 
     <p>Using <code>syslog</code> instead of a filename enables logging
     via syslogd(8) if the system supports it. The default is to use
     syslog facility <code>local7</code>, but you can override this by
-    using the <code>syslog:</code><em>facility</em> syntax where
-    <em>facility</em> can be one of the names usually documented in
+    using the <code>syslog:<var>facility</var></code> syntax where
+    <var>facility</var> can be one of the names usually documented in
     syslog(1).</p>
 
     <p>SECURITY: See the <a href="../misc/security_tips.html#serverroot">security tips</a>
@@ -595,7 +602,7 @@ ErrorLog logs/error.log (Windows and OS/2)</code></td></tr><tr><th><a href="dire
 <h3>See also</h3><ul><li><code class="directive"><a href="#loglevel">LogLevel</a></code></li><li><a href="../logs.html">Apache Log Files</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a> <a name="fileetag" id="fileetag">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>File attributes used to create the ETag
 HTTP response header</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>FileETag <em>component</em> ...</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>FileETag <var>component</var> ...</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>FileETag INode MTime Size</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -611,6 +618,7 @@ HTTP response header</td></tr><tr><th><a href="directive-dict.html#Syntax">Synta
     FileETag directive allows you to choose which of these -- if any
     -- should be used.  The recognized keywords are:
     </p>
+
     <dl>
      <dt><strong>INode</strong></dt>
      <dd>The file's i-node number will be included in the calculation</dd>
@@ -619,31 +627,29 @@ HTTP response header</td></tr><tr><th><a href="directive-dict.html#Syntax">Synta
      <dt><strong>Size</strong></dt>
      <dd>The number of bytes in the file will be included</dd>
      <dt><strong>All</strong></dt>
-     <dd>All available fields will be used (equivalent to
-      '<code>FileETag INode MTime Size</code>')</dd>
+     <dd>All available fields will be used. This is equivalent to:
+         <div class="example"><p><code>FileETag INode MTime Size</code></p></div></dd>
      <dt><strong>None</strong></dt>
      <dd>If a document is file-based, no ETag field will be included in the
       response</dd>
     </dl>
-    <p>
-    The INode, MTime, and Size keywords may be prefixed with either '+'
-    or '-', which allow changes to be made to the default setting
-    inherited from a broader scope.  Any keyword appearing without
-    such a prefix immediately and completely cancels the inherited
-    setting.
-    </p>
-    <p>
-    If a directory's configuration includes
-    '<code>FileETag INode MTime Size</code>', and a
-    subdirectory's includes '<code>FileETag -INode</code>',
+
+    <p>The <code>INode</code>, <code>MTime</code>, and <code>Size</code>
+    keywords may be prefixed with either <code>+</code> or <code>-</code>,
+    which allow changes to be made to the default setting inherited
+    from a broader scope. Any keyword appearing without such a prefix
+    immediately and completely cancels the inherited setting.</p>
+
+    <p>If a directory's configuration includes
+    <code>FileETag INode MTime Size</code>, and a
+    subdirectory's includes <code>FileETag -INode</code>,
     the setting for that subdirectory (which will be inherited by
     any sub-subdirectories that don't override it) will be equivalent to
-    '<code>FileETag MTime Size</code>'.
-    </p>
+    <code>FileETag MTime Size</code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Files" id="Files">&lt;Files&gt;</a> <a name="files" id="files">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Contains directives that apply to matched
 filenames</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>&lt;Files <em>filename</em>&gt; ... &lt;/Files&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>&lt;Files <var>filename</var>&gt; ... &lt;/Files&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>All</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -663,14 +669,16 @@ filenames</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     inside <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections to restrict the
     portion of the filesystem they apply to.</p>
 
-    <p>The <em>filename</em> argument should include a filename, or
+    <p>The <var>filename</var> argument should include a filename, or
     a wild-card string, where `?' matches any single character, and
     `*' matches any sequences of characters. Extended regular
     expressions can also be used, with the addition of the
     <code>~</code> character. For example:</p>
-<div class="example"><p><code>
-   &lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
-</code></p></div>
+
+    <div class="example"><p><code>
+      &lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
+    </code></p></div>
+
     <p>would match most common Internet graphics formats. In Apache 1.3
     and later, <code class="directive"><a href="#filesmatch">&lt;FilesMatch&gt;</a></code> is preferred, however.</p>
 
@@ -684,7 +692,7 @@ filenames</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="FilesMatch" id="FilesMatch">&lt;FilesMatch&gt;</a> <a name="filesmatch" id="filesmatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Contains directives that apply to regular-expression matched
 filenames</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>&lt;FilesMatch <em>regex</em>&gt; ... &lt;/FilesMatch&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>&lt;FilesMatch <var>regex</var>&gt; ... &lt;/FilesMatch&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>All</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -692,9 +700,10 @@ filenames</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>The <code class="directive">&lt;FilesMatch&gt;</code> directive
     provides for access control by filename, just as the <code class="directive"><a href="#files">&lt;Files&gt;</a></code> directive
     does. However, it accepts a regular expression. For example:</p>
-<div class="example"><p><code>
-   &lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
-</code></p></div>
+
+    <div class="example"><p><code>
+      &lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
+    </code></p></div>
 
     <p>would match most common Internet graphics formats.</p>
 <h3>See also</h3><ul><li><a href="../sections.html">How
@@ -703,7 +712,7 @@ filenames</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ForceType" id="ForceType">ForceType</a> <a name="forcetype" id="forcetype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Forces all matching files to be served with the specified
 MIME content-type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ForceType <em>mime-type</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>ForceType <var>MIME-type</var></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -715,12 +724,13 @@ MIME content-type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <code class="directive"><a href="#files">&lt;Files&gt;</a></code>
     section, this directive forces all matching files to be served
     with the content type identification given by
-    <em>mime-type</em>. For example, if you had a directory full of
+    <var>MIME-type</var>. For example, if you had a directory full of
     GIF files, but did not want to label them all with ".gif", you
     might want to use:</p>
-<div class="example"><p><code>
-    ForceType image/gif
-</code></p></div>
+
+    <div class="example"><p><code>
+      ForceType image/gif
+    </code></p></div>
 
     <p>Note that unlike <code class="directive"><a href="#defaulttype">DefaultType</a></code>,
     this directive overrides all mime-type associations, including
@@ -758,7 +768,7 @@ MIME content-type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     Heavily loaded sites should leave this directive
     <code>off</code>, since DNS lookups can take considerable
     amounts of time. The utility <a href="../programs/logresolve.html">logresolve</a>, provided in
-    the <em>/support</em> directory, can be used to look up host
+    the <var>/support</var> directory, can be used to look up host
     names from logged IP addresses offline.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IdentityCheck" id="IdentityCheck">IdentityCheck</a> <a name="identitycheck" id="identitycheck">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Enables logging of the RFC1413 identity of the remote 
@@ -785,86 +795,80 @@ user</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a> <a name="ifdefine" id="ifdefine">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Encloses directives that will be processed only
 if a test is true at startup</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>&lt;IfDefine [!]<em>parameter-name</em>&gt; <em>...</em>
+              </a></th><td>&lt;IfDefine [!]<var>parameter-name</var>&gt; ...
     &lt;/IfDefine&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>All</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
-    <p>The <code>&lt;IfDefine
-    <em>test</em>&gt;...&lt;/IfDefine&gt;</code> section is used to
-    mark directives that are conditional. The directives within an
-    <code class="directive">&lt;IfDefine&gt;</code> section are only
-    processed if the <em>test</em> is true. If <em>test</em> is false,
-    everything between the start and end markers is ignored.</p>
+    <p>The <code>&lt;IfDefine <var>test</var>&gt;...&lt;/IfDefine&gt;
+    </code> section is used to mark directives that are conditional. The
+    directives within an <code class="directive">&lt;IfDefine&gt;</code>
+    section are only processed if the <var>test</var> is true. If <var>
+    test</var> is false, everything between the start and end markers is
+    ignored.</p>
 
-    <p>The <em>test</em> in the <code class="directive">&lt;IfDefine&gt;</code> section directive can be one
-    of two forms:</p>
+    <p>The <var>test</var> in the <code class="directive">&lt;IfDefine&gt;</code> section directive can be one of two forms:</p>
 
     <ul>
-      <li><em>parameter-name</em></li>
+      <li><var>parameter-name</var></li>
 
-      <li><code>!</code><em>parameter-name</em></li>
+      <li><code>!</code><var>parameter-name</var></li>
     </ul>
 
     <p>In the former case, the directives between the start and end
     markers are only processed if the parameter named
-    <em>parameter-name</em> is defined. The second format reverses
+    <var>parameter-name</var> is defined. The second format reverses
     the test, and only processes the directives if
-    <em>parameter-name</em> is <strong>not</strong> defined.</p>
+    <var>parameter-name</var> is <strong>not</strong> defined.</p>
 
-    <p>The <em>parameter-name</em> argument is a define as given on
-    the <code>httpd</code> command line via
-    <code>-D</code><em>parameter-</em>, at the time the server was
-    started.</p>
+    <p>The <var>parameter-name</var> argument is a define as given on
+    the <code>httpd</code> command line via <code>-D<var>parameter-</var>
+    </code>, at the time the server was started.</p>
 
     <p><code class="directive">&lt;IfDefine&gt;</code> sections are
     nest-able, which can be used to implement simple
     multiple-parameter tests. Example:</p>
-<div class="example"><pre>
-  $ httpd -DReverseProxy ...
 
-  # httpd.conf
-  &lt;IfDefine ReverseProxy&gt;
+    <div class="example"><pre>
+$ httpd -DReverseProxy ...
+
+# httpd.conf
+&lt;IfDefine ReverseProxy&gt;
   LoadModule rewrite_module modules/mod_rewrite.so
   LoadModule proxy_module   modules/libproxy.so
-  &lt;/IfDefine&gt;
-</pre></div>
-
+&lt;/IfDefine&gt;</pre></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IfModule" id="IfModule">&lt;IfModule&gt;</a> <a name="ifmodule" id="ifmodule">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Encloses directives that are processed conditional on the
 presence of absence of a specific module</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>&lt;IfModule [!]<em>module-name</em>&gt; <em>...</em>
+              </a></th><td>&lt;IfModule [!]<var>module-name</var>&gt; ...
     &lt;/IfModule&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>All</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
-    <p>The <code>&lt;IfModule
-    <em>test</em>&gt;...&lt;/IfModule&gt;</code> section is used to
-    mark directives that are conditional on the presence of a 
-    specific module. The directives within an
-    <code class="directive">&lt;IfModule&gt;</code> section are only
-    processed if the <em>test</em> is true. If <em>test</em> is false,
-    everything between the start and end markers is ignored.</p>
+    <p>The <code>&lt;IfModule <var>test</var>&gt;...&lt;/IfModule&gt;</code>
+    section is used to mark directives that are conditional on the presence of a 
+    specific module. The directives within an <code class="directive">&lt;IfModule&gt;</code> section are only processed if the <var>test</var>
+    is true. If <var>test</var> is false, everything between the start and
+    end markers is ignored.</p>
 
-    <p>The <em>test</em> in the <code class="directive">&lt;IfModule&gt;</code> section directive can be one
-    of two forms:</p>
+    <p>The <var>test</var> in the <code class="directive">&lt;IfModule&gt;</code> section directive can be one of two forms:</p>
 
     <ul>
-      <li><em>module name</em></li>
+      <li><var>module name</var></li>
 
-      <li>!<em>module name</em></li>
+      <li>!<var>module name</var></li>
     </ul>
 
     <p>In the former case, the directives between the start and end
-    markers are only processed if the module named <em>module
-    name</em> is included in Apache -- either compiled in or
-    dynamically loaded using <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>. The second format
-    reverses the test, and only processes the directives if <em>module
-    name</em> is <strong>not</strong> included.</p>
+    markers are only processed if the module named <var>module
+    name</var> is included in Apache -- either compiled in or
+    dynamically loaded using <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>. The second format reverses the test,
+    and only processes the directives if <var>module name</var> is
+    <strong>not</strong> included.</p>
 
-    <p>The <em>module name</em> argument is the file name of the
+    <p>The <var>module name</var> argument is the file name of the
     module, at the time it was compiled.  For example,
     <code>mod_rewrite.c</code>.  If a module consists of several
     source files, use the name of the file containing the string
@@ -882,7 +886,7 @@ presence of absence of a specific module</td></tr><tr><th><a href="directive-dic
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Include" id="Include">Include</a> <a name="include" id="include">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Includes other configuration files from within
 the server configuration files</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>Include <em>file-path</em>|<em>directory-path</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>Include <var>file-path</var>|<var>directory-path</var></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
@@ -900,37 +904,37 @@ the server configuration files</td></tr><tr><th><a href="directive-dict.html#Syn
 
     <p>Examples:</p>
 
-<div class="example"><p><code>
-     Include /usr/local/apache/conf/ssl.conf<br />
-     Include /usr/local/apache/conf/vhosts/
-</code></p></div>
+    <div class="example"><p><code>
+      Include /usr/local/apache/conf/ssl.conf<br />
+      Include /usr/local/apache/conf/vhosts/
+    </code></p></div>
 
-     <p>Or, providing paths relative to your <code>ServerRoot</code>
-     directory:</p>
+    <p>Or, providing paths relative to your <code>ServerRoot</code>
+    directory:</p>
 
-<div class="example"><p><code>
-     Include conf/ssl.conf<br />
-     Include conf/vhosts/
-</code></p></div>
+    <div class="example"><p><code>
+      Include conf/ssl.conf<br />
+      Include conf/vhosts/
+    </code></p></div>
 
-     <p>Make sure that an included directory does not contain any stray
-     files, such as editor temporary files, for example, as Apache will
-     attempt to read them in and use the contents as configuration
-     directives, which may cause the server to fail on start up.
-     Running <code>apachectl configtest</code> will give you a list of
-     the files that are being processed during the configuration
-     check:</p>
+    <p>Make sure that an included directory does not contain any stray
+    files, such as editor temporary files, for example, as Apache will
+    attempt to read them in and use the contents as configuration
+    directives, which may cause the server to fail on start up.
+    Running <code>apachectl configtest</code> will give you a list of
+    the files that are being processed during the configuration
+    check:</p>
 
-<div class="example"><pre>
- root@host# apachectl configtest
-  Processing config directory: /usr/local/apache/conf/vhosts
-  Processing config file: /usr/local/apache/conf/vhosts/vhost1
-  Processing config file: /usr/local/apache/conf/vhosts/vhost2
- Syntax OK
-</pre></div>
+    <div class="example"><p><code>
+      root@host# apachectl configtest<br />
+      Processing config directory: /usr/local/apache/conf/vhosts<br />
+      Processing config file: /usr/local/apache/conf/vhosts/vhost1<br />
+      Processing config file: /usr/local/apache/conf/vhosts/vhost2<br />
+      Syntax OK
+    </code></p></div>
 
-     <p>This will help in verifying that you are getting only the files
-     that you intended as part of your configuration.</p>
+    <p>This will help in verifying that you are getting only the files
+    that you intended as part of your configuration.</p>
 <h3>See also</h3><ul><li><a href="../programs/apachectl.html">apachectl</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="KeepAlive" id="KeepAlive">KeepAlive</a> <a name="keepalive" id="keepalive">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Enables HTTP persistent connections</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>KeepAlive on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
@@ -960,7 +964,7 @@ the server configuration files</td></tr><tr><th><a href="directive-dict.html#Syn
 <h3>See also</h3><ul><li><code class="directive"><a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="KeepAliveTimeout" id="KeepAliveTimeout">KeepAliveTimeout</a> <a name="keepalivetimeout" id="keepalivetimeout">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Amount of time the server will wait for subsequent
 requests on a persistent connection</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>KeepAliveTimeout <em>seconds</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>KeepAliveTimeout <var>seconds</var></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>KeepAliveTimeout 15</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -977,7 +981,7 @@ requests on a persistent connection</td></tr><tr><th><a href="directive-dict.htm
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Limit" id="Limit">&lt;Limit&gt;</a> <a name="limit" id="limit">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Restrict enclosed access controls to only certain HTTP
 methods</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>&lt;Limit <em>method</em> [<em>method</em>] ... &gt; ...
+              </a></th><td>&lt;Limit <var>method</var> [<var>method</var>] ... &gt; ...
     &lt;/Limit&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>All</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -997,20 +1001,23 @@ methods</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     example applies the access control only to the methods POST, PUT,
     and DELETE, leaving all other methods unprotected:</p>
 
-<div class="example"><p><code>
-      <code>&lt;Limit POST PUT DELETE&gt;<br />
-         Require valid-user<br />
-       &lt;/Limit&gt;</code>
-</code></p></div>
-    <p>The method names listed can be one or more of: GET, POST, PUT,
-    DELETE, CONNECT, OPTIONS, TRACE, PATCH, PROPFIND, PROPPATCH,
-    MKCOL, COPY, MOVE, LOCK, and UNLOCK. <strong>The method name is
-    case-sensitive.</strong> If GET is used it will also restrict
-    HEAD requests.</p>
+    <div class="example"><pre>
+&lt;Limit POST PUT DELETE&gt;
+  Require valid-user
+&lt;/Limit&gt;</pre></div>
+
+    <p>The method names listed can be one or more of: <code>GET</code>,
+    <code>POST</code>, <code>PUT</code>, <code>DELETE</code>,
+    <code>CONNECT</code>, <code>OPTIONS</code>, <code>TRACE</code>,
+    <code>PATCH</code>, <code>PROPFIND</code>, <code>PROPPATCH</code>,
+    <code>MKCOL</code>, <code>COPY</code>, <code>MOVE</code>,
+    <code>LOCK</code>, and <code>UNLOCK</code>. <strong>The method name is
+    case-sensitive.</strong> If <code>GET</code> is used it will also
+    restrict <code>HEAD</code> requests.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitExcept" id="LimitExcept">&lt;LimitExcept&gt;</a> <a name="limitexcept" id="limitexcept">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Restrict access controls to all HTTP methods
 except the named ones</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>&lt;LimitExcept <em>method</em> [<em>method</em>] ... &gt; ...
+              </a></th><td>&lt;LimitExcept <var>method</var> [<var>method</var>] ... &gt; ...
     &lt;/LimitExcept&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>All</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -1026,22 +1033,21 @@ except the named ones</td></tr><tr><th><a href="directive-dict.html#Syntax">Synt
 
     <p>For example:</p>
 
-    <div class="example"><p><code>
-    &lt;LimitExcept POST GET&gt;<br />
-    Require valid-user<br />
-    &lt;LimitExcept&gt;
-    </code></p></div>
+    <div class="example"><pre>
+&lt;LimitExcept POST GET&gt;
+  Require valid-user
+&lt;LimitExcept&gt;</pre></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitRequestBody" id="LimitRequestBody">LimitRequestBody</a> <a name="limitrequestbody" id="limitrequestbody">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Restricts the total size of the HTTP request body sent
 from the client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>LimitRequestBody <em>bytes</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>LimitRequestBody <var>bytes</var></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>LimitRequestBody 0</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>All</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
-    <p>This directive specifies the number of <em>bytes</em> from 0
+    <p>This directive specifies the number of <var>bytes</var> from 0
     (meaning unlimited) to 2147483647 (2GB) that are allowed in a
     request body. The default value is defined by the compile-time
     constant <code>DEFAULT_LIMIT_REQUEST_BODY</code> (0 as
@@ -1070,18 +1076,18 @@ from the client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     you might use the following directive:</p>
 
     <div class="example"><p><code>
-    LimitRequestBody 102400
+      LimitRequestBody 102400
     </code></p></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitRequestFields" id="LimitRequestFields">LimitRequestFields</a> <a name="limitrequestfields" id="limitrequestfields">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Limits the number of HTTP request header fields that 
 will be accepted from the client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>LimitRequestFields <em>number</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>LimitRequestFields <var>number</var></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>LimitRequestFields 100</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
-    <p><em>Number</em> is an integer from 0 (meaning unlimited) to
+    <p><var>Number</var> is an integer from 0 (meaning unlimited) to
     32767. The default value is defined by the compile-time
     constant <code>DEFAULT_LIMIT_REQUEST_FIELDS</code> (100 as
     distributed).</p>
@@ -1107,18 +1113,18 @@ will be accepted from the client</td></tr><tr><th><a href="directive-dict.html#S
     <p>For example:</p>
 
     <div class="example"><p><code>
-    LimitRequestFields 50
+      LimitRequestFields 50
     </code></p></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitRequestFieldSize" id="LimitRequestFieldSize">LimitRequestFieldSize</a> <a name="limitrequestfieldsize" id="limitrequestfieldsize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Limits the size of the HTTP request header allowed from the
 client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>LimitRequestFieldsize <em>bytes</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>LimitRequestFieldsize <var>bytes</var></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>LimitRequestFieldsize 8190</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
-    <p>This directive specifies the number of <em>bytes</em> from 0
+    <p>This directive specifies the number of <var>bytes</var> from 0
     to the value of the compile-time constant
     <code>DEFAULT_LIMIT_REQUEST_FIELDSIZE</code> (8190 as
     distributed) that will be allowed in an HTTP request
@@ -1141,7 +1147,7 @@ client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>For example:</p>
 
     <div class="example"><p><code>
-    LimitRequestFieldSize 16380
+      LimitRequestFieldSize 16380
     </code></p></div>
 
     <div class="note">Under normal conditions, the value should not be changed from
@@ -1150,12 +1156,12 @@ client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitRequestLine" id="LimitRequestLine">LimitRequestLine</a> <a name="limitrequestline" id="limitrequestline">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Limit the size of the HTTP request line that will be accepted
 from the client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>LimitRequestLine <em>bytes</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>LimitRequestLine <var>bytes</var></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>LimitRequestLine 8190</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
-    <p>This directive sets the number of <em>bytes</em> from 0 to
+    <p>This directive sets the number of <var>bytes</var> from 0 to
     the value of the compile-time constant
     <code>DEFAULT_LIMIT_REQUEST_LINE</code> (8190 as distributed)
     that will be allowed on the HTTP request-line.</p>
@@ -1178,14 +1184,14 @@ from the client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>For example:</p>
 
     <div class="example"><p><code>
-    LimitRequestLine 16380
+      LimitRequestLine 16380
     </code></p></div>
 
     <div class="note">Under normal conditions, the value should not be changed from
     the default.</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitXMLRequestBody" id="LimitXMLRequestBody">LimitXMLRequestBody</a> <a name="limitxmlrequestbody" id="limitxmlrequestbody">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Limits the size of an XML-based request body</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>LimitXMLRequestBody <em>number</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>LimitXMLRequestBody <var>number</var></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>LimitXMLRequestBody 1000000</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>All</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -1197,7 +1203,7 @@ from the client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>Example:</p>
 
     <div class="example"><p><code>
-    LimitXMLRequestBody 0
+      LimitXMLRequestBody 0
     </code></p></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Location" id="Location">&lt;Location&gt;</a> <a name="location" id="location">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
@@ -1234,9 +1240,10 @@ URLs</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>Extended regular
     expressions can also be used, with the addition of the
     <code>~</code> character. For example:</p>
-<div class="example"><p><code>
-   &lt;Location ~ "/(extra|special)/data"&gt;
-</code></p></div>
+
+    <div class="example"><p><code>
+      &lt;Location ~ "/(extra|special)/data"&gt;
+    </code></p></div>
 
     <p>would match URLs that contained the substring "/extra/data" or
     "/special/data". In Apache 1.3 and above, a new directive
@@ -1249,31 +1256,33 @@ URLs</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <code class="directive"><a href="#sethandler">SetHandler</a></code>
     directive. For example, to enable status requests, but allow them
     only from browsers at foo.com, you might use:</p>
-<div class="example"><p><code>
-    &lt;Location /status&gt;<br />
-    SetHandler server-status<br />
-    Order Deny,Allow<br />
-    Deny from all<br />
-    Allow from .foo.com<br />
-    &lt;/Location&gt;
-</code></p></div>
 
-<div class="note"><h3>Note about / (slash)</h3> <p>The slash character has
-special meaning depending on where in a URL it appears. People may be
-used to its behavior in the filesystem where multiple adjacent slashes
-are frequently collapsed to a single slash (<em>i.e.</em>,
-<code>/home///foo</code> is the same as <code>/home/foo</code>). In
-URL-space this is not necessarily true. The <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code> directive and the regex
-version of <code class="directive">&lt;Location&gt;</code> require you
-to explicitly specify multiple slashes if that is your intention.  For
-example, <code>&lt;LocationMatch ^/abc&gt;</code> would match the
-request URL <code>/abc</code> but not the request URL
-<code>//abc</code>. The (non-regex) <code class="directive">&lt;Location&gt;</code> directive behaves similarly when
-used for proxy requests. But when (non-regex) <code class="directive">&lt;Location&gt;</code> is used for non-proxy requests it
-will implicitly match multiple slashes with a single slash. For
-example, if you specify <code>&lt;Location /abc/def&gt;</code> and the
-request is to <code>/abc//def</code> then it will match.</p>
-</div>
+    <div class="example"><pre>
+&lt;Location /status&gt;
+  SetHandler server-status
+  Order Deny,Allow
+  Deny from all
+  Allow from .foo.com
+&lt;/Location&gt;</pre></div>
+
+    <div class="note"><h3>Note about / (slash)</h3>
+      <p>The slash character has special meaning depending on where in a
+      URL it appears. People may be used to its behavior in the filesystem
+      where multiple adjacent slashes are frequently collapsed to a single
+      slash (<var>i.e.</var>, <code>/home///foo</code> is the same as
+      <code>/home/foo</code>). In URL-space this is not necessarily true.
+      The <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code>
+      directive and the regex version of <code class="directive">&lt;Location&gt;</code> require you to explicitly specify multiple
+      slashes if that is your intention.</p>
+      
+      <p>For example, <code>&lt;LocationMatch ^/abc&gt;</code> would match
+      the request URL <code>/abc</code> but not the request URL <code>
+      //abc</code>. The (non-regex) <code class="directive">&lt;Location&gt;</code> directive behaves similarly when used for
+      proxy requests. But when (non-regex) <code class="directive">&lt;Location&gt;</code> is used for non-proxy requests it will
+      implicitly match multiple slashes with a single slash. For example,
+      if you specify <code>&lt;Location /abc/def&gt;</code> and the
+      request is to <code>/abc//def</code> then it will match.</p>
+    </div>
 <h3>See also</h3><ul><li><a href="../sections.html">How
     Directory, Location and Files sections work</a> for an
     explanation of how these different sections are combined when a
@@ -1281,34 +1290,35 @@ request is to <code>/abc//def</code> then it will match.</p>
               </a></th><td>Applies the enclosed directives only to regular-expression 
 matching URLs</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>&lt;LocationMatch
-    <em>regex</em>&gt; ... &lt;/Location&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+    <var>regex</var>&gt; ... &lt;/Location&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
     <p>The <code class="directive">&lt;LocationMatch&gt;</code> directive
     provides for access control by URL, in an identical manner to
-    <code class="directive"><a href="#location">&lt;Location&gt;</a></code>. However, it takes a regular
-    expression as an argument instead of a simple string.  For
-    example:</p>
-<div class="example"><p><code>
-   &lt;LocationMatch "/(extra|special)/data"&gt;
-</code></p></div>
+    <code class="directive"><a href="#location">&lt;Location&gt;</a></code>. However,
+    it takes a regular expression as an argument instead of a simple
+    string. For example:</p>
 
-    <p>would match URLs that contained the substring "/extra/data"
-    or "/special/data".</p>
+    <div class="example"><p><code>
+      &lt;LocationMatch "/(extra|special)/data"&gt;
+    </code></p></div>
+
+    <p>would match URLs that contained the substring <code>/extra/data</code>
+    or <code>/special/data</code>.</p>
 <h3>See also</h3><ul><li><a href="../sections.html">How
     Directory, Location and Files sections work</a> for an
     explanation of how these different sections are combined when a
     request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LogLevel" id="LogLevel">LogLevel</a> <a name="loglevel" id="loglevel">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Controls the verbosity of the ErrorLog</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>LogLevel <em>level</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>LogLevel <var>level</var></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>LogLevel warn</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
     <p><code class="directive">LogLevel</code> adjusts the verbosity of the
     messages recorded in the error logs (see <code class="directive"><a href="#errorlog">ErrorLog</a></code> directive). The following
-    <em>level</em>s are available, in order of decreasing
+    <var>level</var>s are available, in order of decreasing
     significance:</p>
 
     <table class="bordered">
@@ -1399,12 +1409,13 @@ matching URLs</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 
     <p>For example:</p>
 
-    <div class="example"><p><code>LogLevel notice</code></p></div>
-
+    <div class="example"><p><code>
+      LogLevel notice
+    </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a> <a name="maxkeepaliverequests" id="maxkeepaliverequests">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Number of requests allowed on a persistent 
 connection</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>MaxKeepAliveRequests <em>number</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>MaxKeepAliveRequests <var>number</var></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>MaxKeepAliveRequests 100</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -1418,21 +1429,25 @@ connection</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 
     <p>For example:</p>
 
-    <div class="example"><p><code>MaxKeepAliveRequests 500</code></p></div>
+    <div class="example"><p><code>
+      MaxKeepAliveRequests 500
+    </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a> <a name="namevirtualhost" id="namevirtualhost">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Designates an IP address for name-virtual
 hosting</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>NameVirtualHost <em>addr</em>[:<em>port</em>]</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>NameVirtualHost <var>addr</var>[:<var>port</var>]</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
     <p>The <code class="directive">NameVirtualHost</code> directive is a
     required directive if you want to configure <a href="../vhosts/">name-based virtual hosts</a>.</p>
 
-    <p>Although <em>addr</em> can be hostname it is recommended
-    that you always use an IP address, <em>e.g.</em></p>
+    <p>Although <var>addr</var> can be hostname it is recommended
+    that you always use an IP address, e.g.</p>
 
-<div class="example"><p><code>NameVirtualHost 111.22.33.44</code></p></div>
+    <div class="example"><p><code>
+      NameVirtualHost 111.22.33.44
+    </code></p></div>
 
     <p>With the <code class="directive">NameVirtualHost</code> directive you
     specify the IP address on which the server will receive requests
@@ -1451,38 +1466,43 @@ hosting</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     don't define any VirtualHosts for that address).</p>
 
     <p>Optionally you can specify a port number on which the
-    name-based virtual hosts should be used, <em>e.g.</em></p>
+    name-based virtual hosts should be used, e.g.</p>
 
-<div class="example"><p><code>NameVirtualHost 111.22.33.44:8080</code></p></div>
+    <div class="example"><p><code>
+      NameVirtualHost 111.22.33.44:8080
+    </code></p></div>
 
-     <p>IPv6 addresses must be enclosed in square brackets, as shown
-     in the following example:</p>
+    <p>IPv6 addresses must be enclosed in square brackets, as shown
+    in the following example:</p>
  
-<div class="example"><p><code>NameVirtualHost [fe80::a00:20ff:fea7:ccea]:8080</code></p></div>
+    <div class="example"><p><code>
+      NameVirtualHost [fe80::a00:20ff:fea7:ccea]:8080
+    </code></p></div>
 
     <p>To receive requests on all interfaces, you can use an argument of
     *</p>
 
-<div class="example"><p><code>NameVirtualHost *</code></p></div>
+    <div class="example"><p><code>
+      NameVirtualHost *
+    </code></p></div>
 
-<div class="note"><h3>Argument to &lt;VirtualHost&gt; directive</h3>
-<p>Note that the argument to the &lt;VirtualHost&gt; directive must exactly
-match the argument to the <code class="directive">NameVirtualHost</code>
-directive.</p>
-<div class="example"><p><code>
-NameVirtualHost 1.2.3.4<br />
-&lt;VirtualHost 1.2.3.4&gt;<br />
-...<br />
-&lt;/VirtualHost&gt;<br />
-</code></p></div>
-</div>
+    <div class="note"><h3>Argument to &lt;VirtualHost&gt; directive</h3>
+      <p>Note that the argument to the &lt;VirtualHost&gt; directive must
+      exactly match the argument to the <code class="directive">NameVirtualHost</code> directive.</p>
 
+      <div class="example"><p><code>
+        NameVirtualHost 1.2.3.4<br />
+        &lt;VirtualHost 1.2.3.4&gt;<br />
+        # ...<br />
+        &lt;/VirtualHost&gt;<br />
+      </code></p></div>
+    </div>
 <h3>See also</h3><ul><li>See also: <a href="../vhosts/">Virtual Hosts
 documentation</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Options" id="Options">Options</a> <a name="options" id="options">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Configures what features are available in a particular
 directory</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>Options
-    [+|-]<em>option</em> [[+|-]<em>option</em>] ...</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+    [+|-]<var>option</var> [[+|-]<var>option</var>] ...</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>Options All</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>Options</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -1491,7 +1511,7 @@ directory</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>The <code class="directive">Options</code> directive controls which
     server features are available in a particular directory.</p>
 
-    <p><em>option</em> can be set to <code>None</code>, in which
+    <p><var>option</var> can be set to <code>None</code>, in which
     case none of the extra features are enabled, or one or more of
     the following:</p>
 
@@ -1510,13 +1530,14 @@ directory</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 
       <dd>
 
-      The server will follow symbolic links in this directory.<br />
-      <strong>Note</strong>: even though the server follows the
-      symlink it does <em>not</em> change the pathname used to match
-      against <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections.<br />
-      <strong>Note</strong>: this option gets ignored if set inside a
-      <code class="directive"><a href="#location">&lt;Location&gt;</a></code>
-      section.</dd>
+      The server will follow symbolic links in this directory.
+      <div class="note">
+      <p>Even though the server follows the symlink it does <em>not</em>
+      change the pathname used to match against <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections.</p>
+      <p>Note also, that this option <strong>gets ignored</strong> if set
+      inside a <code class="directive"><a href="#location">&lt;Location&gt;</a></code>
+      section.</p>
+      </div></dd>
 
       <dt>Includes</dt>
 
@@ -1565,26 +1586,28 @@ directory</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 
     <p>For example, without any + and - symbols:</p>
 
+    <div class="example"><pre>
+&lt;Directory /web/docs&gt;
+  Options Indexes FollowSymLinks
+&lt;/Directory&gt;
 
-<div class="example"><p><code>&lt;Directory /web/docs&gt;<br />
-       Options Indexes FollowSymLinks<br />
-       &lt;/Directory&gt;<br />
-       &lt;Directory /web/docs/spec&gt;<br />
-       Options Includes<br />
-       &lt;/Directory&gt;
-</code></p></div>
+&lt;Directory /web/docs/spec&gt;
+  Options Includes
+&lt;/Directory&gt;</pre></div>
+
     <p>then only <code>Includes</code> will be set for the
     /web/docs/spec directory. However if the second
     <code class="directive">Options</code> directive uses the + and - symbols:</p> 
 
-<div class="example"><p><code>
-      &lt;Directory /web/docs&gt;<br />
-       Options Indexes FollowSymLinks<br />
-       &lt;/Directory&gt;<br />
-       &lt;Directory /web/docs/spec&gt;<br />
-       Options +Includes -Indexes<br />
-       &lt;/Directory&gt;
-</code></p></div>
+    <div class="example"><pre>
+&lt;Directory /web/docs&gt;
+  Options Indexes FollowSymLinks
+&lt;/Directory&gt;
+
+&lt;Directory /web/docs/spec&gt;
+  Options +Includes -Indexes
+&lt;/Directory&gt;</pre></div>
+
     <p>then the options <code>FollowSymLinks</code> and
     <code>Includes</code> are set for the /web/docs/spec directory.</p>
     
@@ -1598,7 +1621,7 @@ directory</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Require" id="Require">Require</a> <a name="require" id="require">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Selects which authenticated users can access
 a resource</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>Require <em>entity-name</em> [<em>entity-name</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>Require <var>entity-name</var> [<var>entity-name</var>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -1608,13 +1631,13 @@ a resource</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 
     <ul>
       <li>
-        Require user <em>userid</em> [<em>userid</em>] ... 
+        Require user <var>userid</var> [<var>userid</var>] ... 
 
         <p>Only the named users can access the directory.</p>
       </li>
 
       <li>
-        Require group <em>group-name</em> [<em>group-name</em>] ...
+        Require group <var>group-name</var> [<var>group-name</var>] ...
         
 
         <p>Only users in the named groups can access the
@@ -1634,13 +1657,13 @@ a resource</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     and <code class="directive"><a href="../mod/mod_auth.html#authgroupfile">AuthGroupFile</a></code> (to
     define users and groups) in order to work correctly. Example:</p>
 
-<div class="example"><p><code>
+    <div class="example"><p><code>
        AuthType Basic<br />
        AuthName "Restricted Directory"<br />
        AuthUserFile /web/users<br />
        AuthGroupFile /web/groups<br />
-       Require group admin<br />
-</code></p></div>
+       Require group admin
+    </code></p></div>
 
     <p>Access controls which are applied in this way are effective for
     <strong>all</strong> methods. <strong>This is what is normally
@@ -1652,7 +1675,7 @@ a resource</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 <h3>See also</h3><ul><li><code class="directive"><a href="#satisfy">Satisfy</a></code></li><li><code class="module"><a href="../mod/mod_access.html">mod_access</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Limits the CPU consumption of processes launched
 by Apache children</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>RLimitCPU <em>number</em>|max [<em>number</em>|max]</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>RLimitCPU <var>number</var>|max [<var>number</var>|max]</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>Unset; uses operating system defaults</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>All</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -1661,7 +1684,7 @@ by Apache children</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
     resource limit for all processes and the second parameter sets
     the maximum resource limit. Either parameter can be a number,
-    or <em>max</em> to indicate to the server that the limit should
+    or <code>max</code> to indicate to the server that the limit should
     be set to the maximum allowed by the operating system
     configuration. Raising the maximum resource limit requires that
     the server is running as root, or in the initial startup
@@ -1678,7 +1701,7 @@ by Apache children</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 <h3>See also</h3><ul><li><code class="directive"><a href="#rlimitmem">RLimitMEM</a></code></li><li><code class="directive"><a href="#rlimitnproc">RLimitNPROC</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RLimitMEM" id="RLimitMEM">RLimitMEM</a> <a name="rlimitmem" id="rlimitmem">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Limits the memory consumption of processes launched
 by Apache children</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>RLimitMEM <em>number</em>|max [<em>number</em>|max]</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>RLimitMEM <var>number</var>|max [<var>number</var>|max]</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>Unset; uses operating system defaults</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>All</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -1687,7 +1710,7 @@ by Apache children</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
     resource limit for all processes and the second parameter sets
     the maximum resource limit. Either parameter can be a number,
-    or <em>max</em> to indicate to the server that the limit should
+    or <code>max</code> to indicate to the server that the limit should
     be set to the maximum allowed by the operating system
     configuration. Raising the maximum resource limit requires that
     the server is running as root, or in the initial startup
@@ -1704,7 +1727,7 @@ by Apache children</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 <h3>See also</h3><ul><li><code class="directive"><a href="#rlimitcpu">RLimitCPU</a></code></li><li><code class="directive"><a href="#rlimitnproc">RLimitNPROC</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RLimitNPROC" id="RLimitNPROC">RLimitNPROC</a> <a name="rlimitnproc" id="rlimitnproc">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Limits the number of processes that can be launched by 
 processes launched by Apache children</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>RLimitNPROC <em>number</em>|max [<em>number</em>|max]</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>RLimitNPROC <var>number</var>|max [<var>number</var>|max]</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>Unset; uses operating system defaults</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>All</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -1731,7 +1754,7 @@ processes launched by Apache children</td></tr><tr><th><a href="directive-dict.h
     under userids other than the web server userid, this directive
     will limit the number of processes that the server itself can
     create. Evidence of this situation will be indicated by
-    <strong><em>cannot fork</em></strong> messages in the
+    <strong><code>cannot fork</code></strong> messages in the
     error_log.</p>
 <h3>See also</h3><ul><li><code class="directive"><a href="#rlimitmem">RLimitMEM</a></code></li><li><code class="directive"><a href="#rlimitcpu">RLimitCPU</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Satisfy" id="Satisfy">Satisfy</a> <a name="satisfy" id="satisfy">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Interaction between host-level access control and 
@@ -1743,10 +1766,10 @@ user authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
     <p>Access policy if both <code class="directive"><a href="#allow">Allow</a></code> and <code class="directive"><a href="#require">Require</a></code> used. The parameter can be
-    either <em>'all'</em> or <em>'any'</em>. This directive is only
+    either <var>all</var> or <var>any</var>. This directive is only
     useful if access to a particular area is being restricted by both
     username/password <em>and</em> client host address. In this case
-    the default behavior ("all") is to require that the client passes
+    the default behavior (<var>all</var>) is to require that the client passes
     the address access restriction <em>and</em> enters a valid
     username and password. With the "any" option the client will be
     granted access if they either pass the host restriction or enter a
@@ -1760,9 +1783,9 @@ user authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax
     configuration similar to the following:</p>
 
     <div class="example"><p><code>
-    Require valid-user<br />
-    Allow from 192.168.1<br />
-    Satisfy any
+      Require valid-user<br />
+      Allow from 192.168.1<br />
+      Satisfy any
     </code></p></div>
    
 <h3>See also</h3><ul><li><code class="directive"><a href="../mod/mod_access.html#allow">Allow</a></code></li><li><code class="directive"><a href="#require">Require</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptInterpreterSource" id="ScriptInterpreterSource">ScriptInterpreterSource</a> <a name="scriptinterpretersource" id="scriptinterpretersource">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
@@ -1784,7 +1807,7 @@ scripts</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a> <a name="serveradmin" id="serveradmin">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Email address that the server includes in error
 messages sent to the client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ServerAdmin <em>email-address</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>ServerAdmin <var>email-address</var></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
@@ -1792,32 +1815,34 @@ messages sent to the client</td></tr><tr><th><a href="directive-dict.html#Syntax
     that the server includes in any error messages it returns to the
     client.</p>
 
-    <p>It may be worth setting up a dedicated address for this,
-    <em>e.g.</em></p>
-<div class="example"><p><code>ServerAdmin www-admin@foo.bar.com</code></p></div>
+    <p>It may be worth setting up a dedicated address for this, e.g.</p>
+
+    <div class="example"><p><code>
+      ServerAdmin www-admin@foo.example.com
+    </code></p></div>
     <p>as users do not always mention that they are talking about the
     server!</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerAlias" id="ServerAlias">ServerAlias</a> <a name="serveralias" id="serveralias">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Alternate names for a host used when matching requests
 to name-virtual hosts</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ServerAlias <em>hostname</em> [<em>hostname</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>ServerAlias <var>hostname</var> [<var>hostname</var>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
     <p>The <code class="directive">ServerAlias</code> directive sets the
     alternate names for a host, for use with <a href="../vhosts/name-based.html">name-based virtual hosts</a>.</p>
 
-<div class="example"><p><code>
-    &lt;VirtualHost *&gt;<br />
-    ServerName server.domain.com<br />
-    ServerAlias server server2.domain.com server2<br />
-    ...<br />
-    &lt;/VirtualHost&gt;
-</code></p></div>
+    <div class="example"><p><code>
+      &lt;VirtualHost *&gt;<br />
+      ServerName server.domain.com<br />
+      ServerAlias server server2.domain.com server2<br />
+      # ...<br />
+      &lt;/VirtualHost&gt;
+    </code></p></div>
 <h3>See also</h3><ul><li><a href="../vhosts/">Apache Virtual Host documentation</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerName" id="ServerName">ServerName</a> <a name="servername" id="servername">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Hostname and port that the server uses to identify
 itself</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ServerName <em>fully-qualified-domain-name[:port]</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>ServerName <var>fully-qualified-domain-name</var>[:<var>port</var>]</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
@@ -1832,7 +1857,9 @@ itself</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     and you wish the webserver to be so identified, the following
     directive should be used:</p>
 
-<div class="example"><p><code>ServerName www.example.com:80</code></p></div>
+    <div class="example"><p><code>
+      ServerName www.example.com:80
+    </code></p></div>
 
     <p>If no <code class="directive">ServerName</code> is specified, then the
     server attempts to deduce the hostname by performing a reverse
@@ -1858,7 +1885,7 @@ itself</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     documentation</a></li><li><code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="#namevirtualhost">NameVirtualHost</a></code></li><li><code class="directive"><a href="#serveralias">ServerAlias</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerPath" id="ServerPath">ServerPath</a> <a name="serverpath" id="serverpath">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Legacy URL pathname for a name-virtual host that
 is accessed by an incompatible browser</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ServerPath <em>URL-path</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>ServerPath <var>URL-path</var></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
@@ -1866,7 +1893,7 @@ is accessed by an incompatible browser</td></tr><tr><th><a href="directive-dict.
     URL pathname for a host, for use with <a href="../vhosts/">name-based virtual hosts</a>.</p>
 <h3>See also</h3><ul><li><a href="../vhosts/">Apache Virtual Host documentation</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerRoot" id="ServerRoot">ServerRoot</a> <a name="serverroot" id="serverroot">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Base directory for the server installation</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ServerRoot <em>directory-path</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>ServerRoot <var>directory-path</var></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ServerRoot /usr/local/apache</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -1878,7 +1905,7 @@ is accessed by an incompatible browser</td></tr><tr><th><a href="directive-dict.
     directory.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-    ServerRoot /home/httpd
+      ServerRoot /home/httpd
     </code></p></div>
 
 <h3>See also</h3><ul><li><a href="../invoking.html">the <code>-d</code>
@@ -1955,7 +1982,7 @@ is accessed by an incompatible browser</td></tr><tr><th><a href="directive-dict.
 <h3>See also</h3><ul><li><code class="directive"><a href="#serversignature">ServerSignature</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetHandler" id="SetHandler">SetHandler</a> <a name="sethandler" id="sethandler">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Forces all matching files to be processed by a
 handler</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>SetHandler <em>handler-name</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>SetHandler <var>handler-name</var></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -1966,28 +1993,29 @@ handler</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <code class="directive"><a href="#location">&lt;Location&gt;</a></code>
     section, this directive forces all matching files to be parsed
     through the <a href="../handler.html">handler</a> given by
-    <em>handler-name</em>. For example, if you had a directory you
+    <var>handler-name</var>. For example, if you had a directory you
     wanted to be parsed entirely as imagemap rule files, regardless
     of extension, you might put the following into an
     <code>.htaccess</code> file in that directory:</p>
-<div class="example"><p><code>
-    SetHandler imap-file
-</code></p></div>
+
+    <div class="example"><p><code>
+      SetHandler imap-file
+    </code></p></div>
 
     <p>Another example: if you wanted to have the server display a
     status report whenever a URL of
     <code>http://servername/status</code> was called, you might put
     the following into httpd.conf:</p>
-<div class="example"><p><code>
-    &lt;Location /status&gt;<br />
-    SetHandler server-status<br />
-    &lt;/Location&gt;
-</code></p></div>
 
+    <div class="example"><p><code>
+      &lt;Location /status&gt;<br />
+      SetHandler server-status<br />
+      &lt;/Location&gt;
+    </code></p></div>
 <h3>See also</h3><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetInputFilter" id="SetInputFilter">SetInputFilter</a> <a name="setinputfilter" id="setinputfilter">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sets the filters that will process client requests and POST
 input</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>SetInputFilter <em>filter</em>[<em>;filter</em>...]</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>SetInputFilter <var>filter</var>[;<var>filter</var>...]</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -2005,7 +2033,7 @@ input</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 <h3>See also</h3><ul><li><a href="../filter.html">Filters</a> documentation</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetOutputFilter" id="SetOutputFilter">SetOutputFilter</a> <a name="setoutputfilter" id="setoutputfilter">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sets the filters that will process responses from the
 server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>SetOutputFilter <em>filter</em>[<em>;filter</em>...]</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>SetOutputFilter <var>filter</var>[;<var>filter</var>...]</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -2020,11 +2048,11 @@ server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>For example, the following configuration will process all files
     in the <code>/www/data/</code> directory for server-side
     includes.</p>
-<div class="example"><p><code>
-&lt;Directory /www/data/&gt;<br />
-  SetOutputFilter INCLUDES<br />
-&lt;/Directory&gt;
-</code></p></div>
+
+    <div class="example"><pre>
+&lt;Directory /www/data/&gt;
+  SetOutputFilter INCLUDES
+&lt;/Directory&gt;</pre></div>
 
     <p>If more than one filter is specified, they must be separated
     by semicolons in the order in which they should process the
@@ -2032,7 +2060,7 @@ server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 <h3>See also</h3><ul><li><a href="../filter.html">Filters</a> documentation</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="TimeOut" id="TimeOut">TimeOut</a> <a name="timeout" id="timeout">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Amount of time the server will wait for
 certain events before failing a request</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>TimeOut <em>number</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>TimeOut <var>number</var></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>TimeOut 300</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -2065,13 +2093,13 @@ port</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>server config, virtual host, directory</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
-    <p>In many situations Apache must construct a
-    <em>self-referential</em> URL -- that is, a URL that refers back to
-    the same server. With <code>UseCanonicalName on</code> Apache will
-    use the hostname and port specified in the <code class="directive"><a href="#servername">ServerName</a></code> directive to construct the canonical
-    name for the server. This name is used in all self-referential
-    URLs, and for the values of <code>SERVER_NAME</code> and
-    <code>SERVER_PORT</code> in CGIs.</p>
+    <p>In many situations Apache must construct a <em>self-referential</em>
+    URL -- that is, a URL that refers back to the same server. With
+    <code>UseCanonicalName on</code> Apache will use the hostname and port
+    specified in the <code class="directive"><a href="#servername">ServerName</a></code>
+    directive to construct the canonical name for the server. This name
+    is used in all self-referential URLs, and for the values of
+    <code>SERVER_NAME</code> and <code>SERVER_PORT</code> in CGIs.</p>
 
     <p>With <code>UseCanonicalName off</code> Apache will form
     self-referential URLs using the hostname and port supplied by
@@ -2113,7 +2141,7 @@ port</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>Contains directives that apply only to a specific
 hostname or IP address</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>&lt;VirtualHost
-    <em>addr</em>[:<em>port</em>] [<em>addr</em>[:<em>port</em>]]
+    <var>addr</var>[:<var>port</var>] [<var>addr</var>[:<var>port</var>]]
     ...&gt; ... &lt;/VirtualHost&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -2125,7 +2153,7 @@ hostname or IP address</td></tr><tr><th><a href="directive-dict.html#Syntax">Syn
     used. When the server receives a request for a document on a
     particular virtual host, it uses the configuration directives
     enclosed in the <code class="directive">&lt;VirtualHost&gt;</code>
-    section. <em>Addr</em> can be</p>
+    section. <var>Addr</var> can be:</p>
 
     <ul>
       <li>The IP address of the virtual host;</li>
@@ -2140,31 +2168,30 @@ hostname or IP address</td></tr><tr><th><a href="directive-dict.html#Syntax">Syn
       with IP virtual hosting to catch unmatched IP addresses.</li>
     </ul>
     
-
-<div class="example"><h3>Example</h3><p><code>
-       &lt;VirtualHost 10.1.2.3&gt;<br />
-       ServerAdmin webmaster@host.foo.com<br />
-       DocumentRoot /www/docs/host.foo.com<br />
-       ServerName host.foo.com<br />
-       ErrorLog logs/host.foo.com-error_log<br />
-       TransferLog logs/host.foo.com-access_log<br />
-       &lt;/VirtualHost&gt;
-</code></p></div>
+    <div class="example"><h3>Example</h3><p><code>
+      &lt;VirtualHost 10.1.2.3&gt;<br />
+      ServerAdmin webmaster@host.foo.com<br />
+      DocumentRoot /www/docs/host.foo.com<br />
+      ServerName host.foo.com<br />
+      ErrorLog logs/host.foo.com-error_log<br />
+      TransferLog logs/host.foo.com-access_log<br />
+      &lt;/VirtualHost&gt;
+    </code></p></div>
 
  
-     <p>IPv6 addresses must be specified in square brackets because
-     the optional port number could not be determined otherwise.  An
-     IPv6 example is shown below:</p>
+    <p>IPv6 addresses must be specified in square brackets because
+    the optional port number could not be determined otherwise.  An
+    IPv6 example is shown below:</p>
 
-<div class="example"><p><code>     
-&lt;VirtualHost [fe80::a00:20ff:fea7:ccea]&gt;<br />
-        ServerAdmin webmaster@host.foo.com<br />
-        DocumentRoot /www/docs/host.foo.com<br />
-        ServerName host.foo.com<br />
-       ErrorLog logs/host.foo.com-error_log<br />
-        TransferLog logs/host.foo.com-access_log<br />
-        &lt;/VirtualHost&gt;
-</code></p></div>  
+    <div class="example"><p><code>
+      &lt;VirtualHost [fe80::a00:20ff:fea7:ccea]&gt;<br />
+      ServerAdmin webmaster@host.example.com<br />
+      DocumentRoot /www/docs/host.example.com<br />
+      ServerName host.example.com<br />
+      ErrorLog logs/host.example.com-error_log<br />
+      TransferLog logs/host.example.com-access_log<br />
+      &lt;/VirtualHost&gt;
+    </code></p></div>  
 
     <p>Each Virtual Host must correspond to a different IP address,
     different port number or a different host name for the server,
