@@ -36,6 +36,7 @@ Internet web servers.
 For more information, please check out http://www.apache.org/httpd.html
 
 Changes with Apache 2.0b1
+
   *) Apache is now IPv6-capable.  On systems where APR supports IPv6,
      Apache gets IPv6 listening sockets by default.  Additionally, the
      Listen, NameVirtualHost, and <VirtualHost> directives support IPv6
