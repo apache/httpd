@@ -18,7 +18,7 @@ Changes with Apache 2.0.53
   *) Util_ldap: Implemented the util_ldap_cache_getuserdn() API so that 
      ldap authorization only modules have access to the util_ldap 
      user cache without having to require ldap authentication as well.  
-     [PR 31898] [Jari Ahonen jah progress.com, Brad Nicholes]
+     PR 31898.  [Jari Ahonen jah progress.com, Brad Nicholes]
 
   *) mod_auth_ldap: Added the directive "Requires ldap-attribute" that
      allows the module to only authorize a user if the attribute value
@@ -55,10 +55,6 @@ Changes with Apache 2.0.53
      Previously this would segfault or simply not match as expected,
      depending on the platform.  [Jeff Trawick]
 
-  *) mod_rewrite: Fix query string handling for proxied URLs. PR 14518.
-     [michael teitler <michael.teitler cetelem.fr>,
-      Jan Kratochvil <rcpt-dev.AT.httpd.apache.org jankratochvil.net>]
-
   *) mod_rewrite: Fix 0 bytes write into random memory position.
      PR 31036. [Andr� Malo]
 
@@ -69,7 +65,7 @@ Changes with Apache 2.0.53
      [Rüiger Plü <r.pluem t-online.de>]
 
   *) mod_ldap: prevent the possiblity of an infinite loop in the LDAP
-     statistics display. PR 29216 [Graham Leggett]
+     statistics display. PR 29216. [Graham Leggett]
 
   *) mod_ldap: fix a bogus error message to tell the user which file
      is causing a potential problem with the LDAP shared memory cache.
@@ -78,7 +74,7 @@ Changes with Apache 2.0.53
   *) mod_disk_cache: Do not store hop-by-hop headers.  [Justin Erenkrantz]
 
   *) Fix the re-linking issue when purging elements from the LDAP cache
-     PR 24801 [Jess Holle <jessh ptc.com>]
+     PR 24801.  [Jess Holle <jessh ptc.com>]
       
   *) mod_disk_cache: Fix races in saving responses.  [Justin Erenkrantz]
 
