@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/20 17:34:02 $]
+Last modified at [$Date: 2003/11/20 19:42:30 $]
 
 Release:
 
@@ -75,18 +75,18 @@ PATCHES TO BACKPORT FROM 2.1
       other modules (or libraries used by other modules, e.g. PHP
       stuff) use OpenSSL.
       modules/ssl/ssl_util.c: r1.40
-      +1: jorton
+      +1: jorton, trawick
 
     * Fix logging of human-readable error strings in mod_ssl, and use the
       thread-safe interface for retrieving them.
       modules/ssl/ssl_engine_log.c: r1.23
       modules/ssl/mod_ssl.c: r1.88
-      +1: jorton
+      +1: jorton, trawick
 
     * Prevent mod_proxy from sending an invalid status-line to clients
       in some cases.
       modules/proxy/proxy_http.c: r1.172
-      +1: jorton
+      +1: jorton, trawick
 
     * Fix timezone handling in mod_log_config.  PR 23642
       modules/loggers/mod_log_config.c: r1.107
