@@ -362,18 +362,22 @@ LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, 
      */
     for (l=st->connections,p=NULL; l; l=l->next) {
 #if APR_HAS_THREADS
-        if ( (APR_SUCCESS == apr_thread_mutex_trylock(l->lock)) &&
-#else
-        if (
+        if (APR_SUCCESS == apr_thread_mutex_trylock(l->lock)) {
 #endif
-            l->port == port
-	    && strcmp(l->host, host) == 0
-	    && ( (!l->binddn && !binddn) || (l->binddn && binddn && !strcmp(l->binddn, binddn)) )
-	    && ( (!l->bindpw && !bindpw) || (l->bindpw && bindpw && !strcmp(l->bindpw, bindpw)) )
-            && l->deref == deref
-            && l->secure == secure 
-            )
+        if ((l->port == port) && (strcmp(l->host, host) == 0) && 
+            ((!l->binddn && !binddn) || (l->binddn && binddn && !strcmp(l->binddn, binddn))) && 
+            ((!l->bindpw && !bindpw) || (l->bindpw && bindpw && !strcmp(l->bindpw, bindpw))) && 
+            (l->deref == deref) && (l->secure == secure)) {
+
             break;
+        }
+#if APR_HAS_THREADS
+            /* If this connection didn't match the criteria, then we
+             * need to unlock the mutex so it is available to be reused.
+             */
+            apr_thread_mutex_unlock(l->lock);
+        }
+#endif
         p = l;
     }
 
@@ -383,21 +387,25 @@ LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, 
     if (!l) {
         for (l=st->connections,p=NULL; l; l=l->next) {
 #if APR_HAS_THREADS
-            if ( (APR_SUCCESS == apr_thread_mutex_trylock(l->lock)) &&
-#else
-            if (
+            if (APR_SUCCESS == apr_thread_mutex_trylock(l->lock)) {
+
 #endif
-                l->port == port
-	        && strcmp(l->host, host) == 0
-                && l->deref == deref
-                && l->secure == secure
-                ) {
+            if ((l->port == port) && (strcmp(l->host, host) == 0) && 
+                (l->deref == deref) && (l->secure == secure)) {
+
                 /* the bind credentials have changed */
                 l->bound = 0;
                 l->binddn = apr_pstrdup(st->pool, binddn);
                 l->bindpw = apr_pstrdup(st->pool, bindpw);
                 break;
             }
+#if APR_HAS_THREADS
+                /* If this connection didn't match the criteria, then we
+                 * need to unlock the mutex so it is available to be reused.
+                 */
+                apr_thread_mutex_unlock(l->lock);
+            }
+#endif
             p = l;
         }
     }
