@@ -405,8 +405,9 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
     savename = (lfi->valid & APR_FINFO_NAME) ? lfi->name : NULL;
 
     if (opts & OPT_SYM_LINKS) {
-        if ((res = apr_stat(&fi, d, lfi->valid & ~(APR_FINFO_NAME),
-                            p)) != APR_SUCCESS) {
+        if ((res = apr_stat(&fi, d, lfi->valid & ~(APR_FINFO_NAME 
+                                                 | APR_FINFO_LINK), p)) 
+                 != APR_SUCCESS) {
             return HTTP_FORBIDDEN;
         }
 
