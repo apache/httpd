@@ -700,7 +700,7 @@ static void fix_hostname(request_rec *r)
 
 bad:
     r->status = HTTP_BAD_REQUEST;
-    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		  "Client sent malformed Host header");
     return;
 }
