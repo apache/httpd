@@ -2311,6 +2311,11 @@ static int send_parsed_file(request_rec *r)
         add_cgi_vars(r);
         add_include_vars(r, DEFAULT_TIME_FORMAT);
     }
+    /* XXX: this is bogus, at some point we're going to do a subrequest,
+     * and when we do it we're going to be subjecting code that doesn't
+     * expect to be signal-ready to SIGALRM.  There is no clean way to
+     * fix this, except to put alarm support into BUFF. -djg
+     */
     hard_timeout("send SSI", r);
 
 #ifdef CHARSET_EBCDIC
