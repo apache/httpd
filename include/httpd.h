@@ -115,7 +115,7 @@ extern "C" {
  * --------- You shouldn't have to edit anything below this line ----------
  *
  * Any modifications to any defaults not defined above should be done in the 
- * respective config. file. 
+ * respective configuration file. 
  *
  */
 
