@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English revision: 1.6 -->
+<modulesynopsis metafile="mod_asis.xml.meta">
+
+<name>mod_asis</name>
+<description>HTTP 헤더를 포함한 파일을 보낸다</description>
+<status>Base</status>
+<sourcefile>mod_asis.c</sourcefile>
+<identifier>asis_module</identifier>
+
+<summary>
+    <p>이 모듈은 아파치가 일반적인 HTTP 헤더의 대부분을 추가하지않고
+    문서를 보내도록 만드는 <code>send-as-is</code> 핸들러를
+    제공한다.</p>
+
+    <p>그래서 서버는 cgi 스크립트나 nph 스크립트를 사용하지않고도
+    리다이렉션과 다른 특별한 HTTP 응답 등 어떤 자료도 보낼 수
+    있다.</p>
+
+    <p>과거에 이 모듈은 mime type이 <code>httpd/send-as-is</code>인
+    파일도 처리했다.</p>
+</summary>
+
+<seealso><module>mod_headers</module></seealso>
+<seealso><module>mod_cern_meta</module></seealso>
+<seealso><a href="../handler.html">아파치에서 핸들러 사용</a></seealso>
+
+<section id="usage"><title>사용법</title>
+
+    <p>서버 설정파일에서 파일과 <code>send-as-is</code> 핸들러를
+    <em>예를 들어</em> 다음과 같이 연결한다.</p>
+
+    <example>AddHandler send-as-is asis</example>
+
+    <p>아파치는 <code>.asis</code> 확장자를 가진 파일의 내용을
+    거의 수정하지않고 클라이언트에게 보낸다. 클라이언트는 HTTP
+    헤더가 필요하므로 빼먹지마라. Status: 헤더도 필요하다. 이
+    헤더의 내용은 세자리 숫자인 HTTP 응답코드와 그 뒤의 문구이다.</p>
+
+    <p>다음은 내용 <em>그대로</em> 클라이언트에게 파일이
+    리다이력션되었다고 알리는 파일의 예이다.</p>
+
+
+    <example>
+      Status: 301 Now where did I leave that URL<br />
+      Location: http://xyz.abc.com/foo/bar.html<br />
+      Content-type: text/html<br />
+      <br />
+      &lt;html&gt;<br />
+      &lt;head&gt;<br />
+      &lt;title&gt;Lame excuses'R'us&lt;/title&gt;<br />
+      &lt;/head&gt;<br />
+      &lt;body&gt;<br />
+      &lt;h1&gt;Fred's exceptionally wonderful page has moved to<br />
+      &lt;a href="http://xyz.abc.com/foo/bar.html"&gt;Joe's&lt;/a&gt;
+      site.<br />
+      &lt;/h1&gt;<br />
+      &lt;/body&gt;<br />
+      &lt;/html&gt;
+    </example>
+
+    <note><title>주의:</title>
+    <p>서버는 자료를 클라이언트에게 보낼때 항상 <code>Date:</code>와
+    <code>Server:</code> 헤더를 추가하므로, 파일에 이 헤더가
+    있으면 안된다. 서버는 <code>Last-Modified</code> 헤더를
+    추가하지 <em>않는다</em>. 그래서 아마도 이 헤더는 포함해야
+    한다.</p>
+    </note>
+</section>
+
+</modulesynopsis>
