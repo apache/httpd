@@ -53,12 +53,12 @@
 
 SHELL = /bin/sh
 
-INCDIR=../..
+INCDIR = ../..
 
 LIB=libproxy.a
 
 # AUX_CFLAGS comes from higher level Makefile
-CFLAGS=-I. -I$(INCDIR) -I$(INCDIR)/regex $(AUX_CFLAGS)
+CFLAGS=-I$(INCDIR) $(AUX_CFLAGS)
 
 # Internal stuff, should not need changing.
 PROXYSRC=mod_proxy.c proxy_cache.c proxy_connect.c proxy_ftp.c proxy_http.c \
@@ -66,13 +66,15 @@ proxy_util.c
 
 OBJS=$(PROXYSRC:.c=.o)
 
-default:	$(LIB)
+default:	force $(LIB)
 
 .c.a:
 	$(MAKE) $(CFLAGS) $<
 
+force:
+	rm -f $(LIB)
+
 $(LIB):	$(OBJS)
-	rm -f $@
 	ar crv $@ $(OBJS)
 	$(RANLIB) $@
 

@@ -33,7 +33,7 @@ httpd: $(REGLIB) $(OBJS)
 regex/libregex.a:
 	(cd regex; $(MAKE) lib CC=$(CC) AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)')
 
-modules/proxy/libproxy.a:
+modules/last-built:
 	(cd modules; \
 	$(MAKE) CC=$(CC) AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)')
 
