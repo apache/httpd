@@ -3,7 +3,7 @@
   [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml.de"> ]
 >
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English revision: 1.29 -->
+<!-- English revision: 1.32 -->
 
 <sitemap metafile="sitemap.xml.meta">
 
@@ -63,8 +63,8 @@
 <category id="faq">
 <title>H&#228;ufig gestellte Fragen (FAQ)</title>
 <page href="faq/">&#220;bersicht</page>
-<page separate="yes" href="faq/all_in_one.html">Alle auf einer Seite</page>
 <page href="faq/support.html">Support</page>
+<page href="faq/error.html">Fehlermeldungen</page>
 </category>
 
 <category id="ssl">
@@ -119,13 +119,13 @@ HPUX betreiben</page>
 <title>Weitere Apache-Dokumentationen</title>
 <page separate="yes" href="misc/">&#220;bersicht</page>
 <page href="cgi_path.html">PATH_INFO-&#196;nderungen in der CGI-Umgebung</page>
+<page href="misc/relevant_standards.html">Wichtige Standards</page>
 </category>
 
 <category id="modules">
 <title>Apache-Module</title>
-<page href="mod/">Modul-Index</page>
-<page href="mod/directives.html">Direktiven-Index</page>
-<page href="mod/quickreference.html">Kurzreferenz der Direktiven</page>
+<page href="mod/module-dict.html">Erkl&#228;rung der Fachbegriffe zu Apache-Modulen</page>
+<page href="mod/directive-dict.html">Erkl&#228;rung der Fachbegriffe zu Apache-Direktiven</page>
 &allmodules;
 </category>
 
@@ -141,12 +141,11 @@ HPUX betreiben</page>
 <page href="developer/filters.html">Wie Filter im Apache 2.0 arbeiten</page>
 </category>
 
-<category id="descriptive">
-<title>Beschreibende Informationen</title>
-<page href="mod/module-dict.html">Erkl&#228;rung der Fachbegriffe zu Apache-Modulen</page>
-<page href="mod/directive-dict.html">Erkl&#228;rung der Fachbegriffe zu Apache-Direktiven</page>
+<category id="index"><title>Glossar und Index</title>
 <page href="glossary.html">Glossar</page>
-<page>Seitenindex (dieses Dokument)</page>
+<page href="mod/">Modul-Index</page>
+<page href="mod/directives.html">Direktiven-Index</page>
+<page href="mod/quickreference.html">Kurzreferenz der Direktiven</page>
 </category>
 
 </sitemap>
