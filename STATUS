@@ -77,8 +77,17 @@ Committed Code Changes:
 
 Available Patches:
 
+    * Dean's [PATCH] unneeded pstrdup()s (in table_*() calls)
+	<Pine.LNX.3.95dg3.980111035658.25014B-100000@twinlark.arctic.org>
+	Status: Dean +1
+
+    * Dean's [PATCH] MONCONTROL for profiling children
+	<Pine.LNX.3.95dg3.980111040040.25014C-100000@twinlark.arctic.org>
+	Status: Dean +1
+
     * Marc's [PATCH] don't log bogus errno when file doesn't exist
-        <Pine.BSF.3.95.980110232826.3955E-100000@alive.znep.com>
+	<Pine.BSF.3.95.980110232826.3955E-100000@alive.znep.com>
+	Status: 
 
     * Dean's [PATCH] OSF/1 serialized accept
 	<Pine.LNX.3.95dg3.980110002610.7757A-100000@twinlark.arctic.org>
