@@ -242,7 +242,7 @@ union record {
 static int ascmagic(request_rec *, unsigned char *, int);
 static int is_tar(unsigned char *, int);
 static int softmagic(request_rec *, unsigned char *, int);
-static void tryit(request_rec *, unsigned char *, int);
+static void tryit(request_rec *, unsigned char *, int, int);
 static int zmagic(request_rec *, unsigned char *, int);
 
 static int getvalue(server_rec *, struct magic *, char **);
@@ -256,7 +256,7 @@ static int mget(request_rec *, union VALUETYPE *, unsigned char *,
 static int mcheck(request_rec *, union VALUETYPE *, struct magic *);
 static void mprint(request_rec *, union VALUETYPE *, struct magic *);
 
-static int uncompress(request_rec *, int, const unsigned char *,
+static int uncompress(request_rec *, int, 
 		      unsigned char **, int);
 static long from_oct(int, char *);
 static int fsmagic(request_rec *r, const char *fn);
@@ -887,7 +887,7 @@ static int magic_process(request_rec *r)
 	magic_rsl_puts(r, MIME_TEXT_UNKNOWN);
     else {
 	buf[nbytes++] = '\0';	/* null-terminate it */
-	tryit(r, buf, nbytes);
+	tryit(r, buf, nbytes, 1); 
     }
 
     (void) ap_pclosef(r->pool, fd);
@@ -897,13 +897,15 @@ static int magic_process(request_rec *r)
 }
 
 
-static void tryit(request_rec *r, unsigned char *buf, int nb)
+static void tryit(request_rec *r, unsigned char *buf, int nb, int checkzmagic)
 {
     /*
      * Try compression stuff
      */
-    if (zmagic(r, buf, nb) == 1)
-	return;
+	if (checkzmagic == 1) {  
+			if (zmagic(r, buf, nb) == 1)
+			return;
+	}
 
     /*
      * try tests in /etc/magic (or surrogate magic file)
@@ -2082,9 +2084,13 @@ static struct {
     char *encoding;	/* MUST be lowercase */
 } compr[] = {
 
+    /* we use gzip here rather than uncompress because we have to pass
+     * it a full filename -- and uncompress only considers filenames
+     * ending with .Z
+     */
     {
 	"\037\235", 2, {
-	    "uncompress", "-c", NULL
+	    "gzip", "-dcq", NULL
 	}, 0, "x-compress"
     },
     {
@@ -2121,8 +2127,8 @@ static int zmagic(request_rec *r, unsigned char *buf, int nbytes)
     if (i == ncompr)
 	return 0;
 
-    if ((newsize = uncompress(r, i, buf, &newbuf, nbytes)) > 0) {
-	tryit(r, newbuf, newsize);
+    if ((newsize = uncompress(r, i, &newbuf, nbytes)) > 0) {
+	tryit(r, newbuf, newsize, 0);
 
 	/* set encoding type in the request record */
 	r->content_encoding = compr[i].encoding;
@@ -2139,6 +2145,13 @@ struct uncompress_parms {
 static int uncompress_child(void *data, child_info *pinfo)
 {
     struct uncompress_parms *parm = data;
+	char *new_argv[4];
+
+	new_argv[0] = compr[parm->method].argv[0];
+	new_argv[1] = compr[parm->method].argv[1];
+	new_argv[2] = parm->r->filename;
+	new_argv[3] = NULL;
+
 #if defined(WIN32)
     int child_pid;
 #endif
@@ -2149,10 +2162,10 @@ static int uncompress_child(void *data, child_info *pinfo)
 
 #if defined(WIN32)
     child_pid = spawnvp(compr[parm->method].argv[0],
-			compr[parm->method].argv);
+			new_argv);
     return (child_pid);
 #else
-    execvp(compr[parm->method].argv[0], compr[parm->method].argv);
+    execvp(compr[parm->method].argv[0], new_argv);
     ap_log_rerror(APLOG_MARK, APLOG_ERR, parm->r,
 		MODNAME ": could not execute `%s'.",
 		compr[parm->method].argv[0]);
@@ -2161,11 +2174,11 @@ static int uncompress_child(void *data, child_info *pinfo)
 }
 
 
-static int uncompress(request_rec *r, int method, const unsigned char *old,
+static int uncompress(request_rec *r, int method, 
 		      unsigned char **newch, int n)
 {
     struct uncompress_parms parm;
-    BUFF *bin, *bout;
+    BUFF *bout;
     pool *sub_pool;
 
     parm.r = r;
@@ -2178,19 +2191,12 @@ static int uncompress(request_rec *r, int method, const unsigned char *old,
     sub_pool = ap_make_sub_pool(r->pool);
 
     if (!ap_bspawn_child(sub_pool, uncompress_child, &parm, kill_always,
-			 &bin, &bout, NULL)) {
+			 NULL, &bout, NULL)) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		    MODNAME ": couldn't spawn uncompress process: %s", r->uri);
 	return -1;
     }
 
-    if (ap_bwrite(bin, old, n) != n) {
-	ap_destroy_pool(sub_pool);
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-		    MODNAME ": write failed.");
-	return -1;
-    }
-    ap_bclose(bin);
     *newch = (unsigned char *) ap_palloc(r->pool, n);
     if ((n = ap_bread(bout, *newch, n)) <= 0) {
 	ap_destroy_pool(sub_pool);

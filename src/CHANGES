@@ -1,5 +1,12 @@
 Changes with Apache 1.3.7
 
+  *) mod_mime_magic passed only the first 4k of a file to
+     uncompress/gzip, but those tools sometimes do not produce
+     any output unless a sufficient portion of the compressed
+     file is input.  Change to pass the entire file -- but
+     only read 4k of output.
+     [Marcin Cieslak <saper@system.pl>] PR#4097
+
   *) "IndexOptions None" generated extra spaces at the end of each
      line.  [inkling@firstnethou.com] PR#3770
 
