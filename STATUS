@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/27 21:38:09 $]
+Last modified at [$Date: 2003/03/27 21:39:14 $]
 
 Release:
 
@@ -61,7 +61,8 @@ RELEASE SHOWSTOPPERS:
     * fix seg faults in ap_get_mime_headers_core's error leg for overlength
       headers caused by using an uninitialized length returned by ap_rgetline.
       server/protocol.c: r1.129
-      +1: gregames, wrowe                            
+      +1: gregames
+	c.f. Jeff's Q Message-ID: <3E836B47.8010600@attglobal.net>
 
     * Forward port: Escape special characters (especially control
       characters) in mod_log_config to make a clear distinction between
