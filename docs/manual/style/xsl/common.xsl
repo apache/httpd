@@ -36,6 +36,8 @@
   <xsl:include href="quickreference.xsl"/>
   <xsl:include href="faq.xsl"/>
 
+  <xsl:include href="util/modtrans.xsl"/>
+
   <!-- make sure, we set relative anchors
        only, if we're actually transforming
        a modulefile (see <directive>) -->
@@ -44,6 +46,43 @@
 
     <xsl:otherwise>1</xsl:otherwise></xsl:choose>
   </xsl:variable>
+
+  <xsl:variable name="index-file">
+    <xsl:if test="$is-chm">index.html</xsl:if>
+  </xsl:variable>
+  <xsl:variable name="ext-target">
+    <xsl:if test="$is-chm">1</xsl:if>
+  </xsl:variable>
+
+  <xsl:template name="helper.uri.fix">
+  <xsl:param name="uri"/>
+    <xsl:choose>
+      <!-- lame is_absolute_uri test -->
+      <xsl:when test="    contains($uri, ':')
+                      and string-length(substring-before($uri, ':')) &lt; 7">
+        <xsl:if test="$ext-target = '1'">
+          <xsl:attribute name="target">_blank</xsl:attribute>
+        </xsl:if>
+      </xsl:when>
+
+      <xsl:otherwise>
+        <xsl:variable name="fragment">
+          <xsl:if test="contains($uri, '#')"><xsl:value-of select="concat('#', substring-after($uri, '#'))"/></xsl:if>
+        </xsl:variable>
+        <xsl:variable name="absuri">
+          <xsl:if test="contains($uri, '#')"><xsl:value-of select="concat('#', substring-before($uri, '#'))"/></xsl:if>
+          <xsl:if test="not(contains($uri, '#'))"><xsl:value-of select="$uri"/></xsl:if>
+        </xsl:variable>
+        
+        <xsl:if test="substring($absuri, string-length($uri), 1) = '/'">
+          <xsl:attribute name="href">
+            <xsl:value-of select="concat($absuri, $index-file, $fragment)"/>
+          </xsl:attribute>
+        </xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
 
   <!--                                                            -->
   <!--    Utility templates for constructing pages                -->
@@ -55,6 +94,11 @@
   <!--                                                            -->
   <xsl:template name="head">
     <head>
+      <xsl:if test="$is-chm">
+        <meta http-equiv="Content-Type"
+                 content="text/html; charset={$output-encoding}" />
+      </xsl:if>
+
       <xsl:comment>
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -82,15 +126,23 @@
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
-      <link title="Main stylesheet"  type="text/css" media="all" rel="stylesheet"
-             href="{$path}/style/css/manual.css" />
+      <xsl:if test="$is-chm">
+        <link type="text/css" rel="stylesheet" media="all"
+              href="{$path}/style/css/manual-chm.css" />
+      </xsl:if>
+      
+      <xsl:if test="not($is-chm)">
+        <link title="Main stylesheet"  type="text/css" media="all"
+                rel="stylesheet"
+               href="{$path}/style/css/manual.css" />
 
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
-      <link title="No Sidebar - Default font size" type="text/css" media="all"
-             rel="alternate stylesheet"
-             href="{$path}/style/css/manual-loose-100pc.css"/>
+        <link title="No Sidebar - Default font size" type="text/css" media="all"
+               rel="alternate stylesheet"
+               href="{$path}/style/css/manual-loose-100pc.css"/>
+      </xsl:if> <!-- /!is-chm -->
 
 <xsl:text>
 </xsl:text> <!-- insert line break -->
@@ -99,14 +151,16 @@
              rel="stylesheet"
              href="{$path}/style/css/manual-print.css"/>
 
+      <xsl:if test="not($is-chm)">
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
-      <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
+        <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
+      </xsl:if>
+
     </head>
   </xsl:template>
   <!-- /head -->
-
 
   <!--                                                            -->
   <!-- page top                                                   -->
@@ -136,9 +190,12 @@
 </xsl:text> <!-- insert line break -->
 
     <div class="up">
-      <a href="./">
+      <a href="./{$index-file}">
         <xsl:if test="parentdocument">
           <xsl:attribute name="href"><xsl:value-of select="parentdocument/@href"/></xsl:attribute>
+          <xsl:call-template name="helper.uri.fix">
+            <xsl:with-param name="uri" select="parentdocument/@href"/>
+          </xsl:call-template>
         </xsl:if>
         <img src="{$path}/images/left.gif" alt="&lt;-" title="&lt;-" />
       </a>
@@ -153,31 +210,37 @@
 </xsl:text> <!-- insert line break -->
 
       <a href="http://www.apache.org/">
+        <xsl:if test="$ext-target = '1'"><xsl:attribute name="target">_blank</xsl:attribute></xsl:if>
         <xsl:value-of select="$messages/message[@name='apache']"/>
       </a>
       <xsl:text> &gt; </xsl:text>
       <a href="http://httpd.apache.org/">
+        <xsl:if test="$ext-target = '1'"><xsl:attribute name="target">_blank</xsl:attribute></xsl:if>
         <xsl:value-of select="$messages/message[@name='http-server']"/>
       </a>
       <xsl:text> &gt; </xsl:text>
       <a href="http://httpd.apache.org/docs-project/">
+        <xsl:if test="$ext-target = '1'"><xsl:attribute name="target">_blank</xsl:attribute></xsl:if>
         <xsl:value-of select="$messages/message[@name='documentation']"/>
       </a>
       <xsl:if test="not(../indexpage)">
         <xsl:text> &gt; </xsl:text>
-        <a href="{$path}/">
+        <a href="{$path}/{$index-file}">
           <xsl:value-of select="$messages/message[@name='version']"/>
         </a>
       </xsl:if>
       <xsl:if test="../modulesynopsis or ../directiveindex or ../quickreference">
         <xsl:text> &gt; </xsl:text>
-        <a href="./">
+        <a href="./{$index-file}">
           <xsl:value-of select="$messages/message[@name='modules']"/>
         </a>
       </xsl:if>
       <xsl:if test="parentdocument/text()">
         <xsl:text> &gt; </xsl:text>
         <a href="{parentdocument/@href}">
+          <xsl:call-template name="helper.uri.fix">
+            <xsl:with-param name="uri" select="parentdocument/@href"/>
+          </xsl:call-template>
           <xsl:value-of select="parentdocument"/>
         </a>
       </xsl:if>
@@ -198,8 +261,10 @@
       <p class="apache">
         <xsl:value-of select="$messages/message[@name='maintainedby']"/>
         <xsl:text> </xsl:text>
-        <a href="http://httpd.apache.org/docs-project/"
-          >Apache HTTP Server Documentation Project</a>
+        <a href="http://httpd.apache.org/docs-project/">
+          <xsl:if test="$ext-target = '1'"><xsl:attribute name="target">_blank</xsl:attribute></xsl:if>
+          <xsl:text>Apache HTTP Server Documentation Project</xsl:text>
+        </a>
       </p>
 
 <xsl:text>
@@ -376,7 +441,7 @@
   <!--                                                            -->
   <xsl:template name="super-menu">
     <p class="menu">
-      <a href="{$path}/mod/">
+      <a href="{$path}/mod/{$index-file}">
         <xsl:value-of select="$messages/message[@name='modules']"/>
       </a>
       <xsl:text> | </xsl:text>
@@ -384,7 +449,7 @@
         <xsl:value-of select="$messages/message[@name='directives']"/>
       </a>
       <xsl:text> | </xsl:text>
-      <a href="{$path}/faq/">
+      <a href="{$path}/faq/{$index-file}">
         <xsl:value-of select="$messages/message[@name='faq']"/>
       </a>
       <xsl:text> | </xsl:text>
@@ -425,7 +490,7 @@
            </xsl:variable>
 
            <!-- apply bare text only, if it's not only \s or empty -->
-           <xsl:if test="normalize-space($content) != ''">
+           <xsl:if test="not(normalize-space($content) = '')">
              <p><code>
                <xsl:copy-of select="$content"/>
              </code></p>
@@ -731,6 +796,31 @@
 
 
   <!--                                                    -->
+  <!-- <a>                                                -->
+  <!-- Passes through content                             -->
+  <!--                                                    -->
+  <xsl:template match="a">
+    <xsl:if test="not(@href)">
+      <xsl:copy>
+        <xsl:apply-templates select="@*|*|text()"/>
+      </xsl:copy>
+    </xsl:if>
+    
+    <xsl:if test="@href">
+      <a href="@href">
+        <xsl:apply-templates select="@*"/>
+        <xsl:call-template name="helper.uri.fix">
+          <xsl:with-param name="uri" select="@href"/>
+        </xsl:call-template>
+
+        <xsl:apply-templates select="*|text()"/>
+      </a>
+    </xsl:if>
+  </xsl:template> 
+  <!-- /a -->
+
+
+  <!--                                                    -->
   <!-- toplink                                            -->
   <!--                                                    -->
   <xsl:template name="toplink">
@@ -845,7 +935,7 @@
 
     <xsl:variable name="current" select="substring($letters,1,1)"/>
 
-    <xsl:if test="$lastletter != $current">
+    <xsl:if test="not($lastletter = $current)">
       <xsl:value-of select="$current"/>
     </xsl:if>
 
@@ -856,25 +946,5 @@
       </xsl:call-template>
     </xsl:if>
   </xsl:template>
-
-
-  <xsl:template name="module-translatename">
-  <xsl:param name="name"/>
-
-    <xsl:variable name="sname" select="translate($name,$lowercase,$uppercase)"/>
-
-    <xsl:choose>
-      <xsl:when test="starts-with($sname,'MOD_') or starts-with($sname,'MPM_')">
-        <xsl:value-of select="substring($name, 5)"/>
-      </xsl:when>
-      <xsl:when test="starts-with($sname,'MPMT_')">
-        <xsl:value-of select="substring($name, 6)"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$name"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-  <!-- /module-translatename -->
 
 </xsl:stylesheet>
