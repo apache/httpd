@@ -18,6 +18,7 @@
 <modulefile>mod_dir.xml</modulefile>
 <modulefile>mod_env.xml</modulefile>
 <modulefile>mod_example.xml</modulefile>
+<modulefile>mod_expires.xml</modulefile>
 <modulefile>mod_ext_filter.xml</modulefile>
 <modulefile>mod_file_cache.xml</modulefile>
 <modulefile>mod_headers.xml</modulefile>
