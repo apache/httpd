@@ -102,23 +102,23 @@ by the values as follows:
 %...b:          Bytes sent.
 %...f:          Filename
 %...h:          Remote host
-%...l:          Remote logname (from identd, if supplied)
-%...p:          The port request was received on
-%...P:          The process ID of the child that serviced the request
-%...r:          First line of request
-%...s:          Status.  For requests that got internally redirected, 
-                this is status of the <b>original</b> request --- %...>s 
-                for the last.
-%...t:          Time, in common log format time format
-%...T:          The time taken to serve the request, in seconds
-%...u:          Remote user (from auth; may be bogus if return 
-                status (%s) is 401)
-%...U:          The URL path requested
-%...v:          The name of the server (i.e. which virtual host)
 %...{Foobar}i:  The contents of Foobar: header line(s) in the request
                 sent to the client.
+%...l:          Remote logname (from identd, if supplied)
+%...{Foobar}n:  The contents of note "Foobar" from another module.
 %...{Foobar}o:  The contents of Foobar: header line(s) in the reply.
-%...{Foobar}n:  The contents of note "Foobar" from another module
+%...p:          The port the request was served to
+%...P:          The process ID of the child that serviced the request.
+%...r:          First line of request
+%...s:          Status.  For requests that got internally redirected, this
+                is status of the *original* request --- %...>s for the last.
+%...t:          Time, in common log format time format
+%...{format}t:  The time, in the form given by format, which should
+                be in strftime(3) format.
+%...T:          The time taken to serve the request, in seconds.
+%...u:          Remote user (from auth; may be bogus if return status (%s) is 401)
+%...U:          The URL path requested.
+%...v:          The name of the server (i.e. which virtual host?)
 </PRE>
 
 The `...' can be nothing at all (e.g. <code>"%h %u %r %s %b"</code>), or it can
