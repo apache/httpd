@@ -102,12 +102,13 @@ libexecdir      = @libexecdir@
 mandir          = @mandir@
 sysconfdir      = @sysconfdir@
 datadir         = @datadir@
-localstatedir   = @localstatedir@
 includedir      = @includedir@
+localstatedir   = @localstatedir@
+runtimedir      = @runtimedir@
+logfiledir      = @logfiledir@
+proxycachedir   = @proxycachedir@
 
 libexecdir_relative   = @libexecdir_relative@
-localstatesubdir_run  = @localstatesubdir_run@
-localstatesubdir_logs = @localstatesubdir_logs@
 
 #   suexec details (optional)
 suexec          = @suexec@
@@ -221,10 +222,10 @@ install-mktree:
 	$(MKDIR) $(root)$(datadir)/htdocs
 	$(MKDIR) $(root)$(datadir)/icons
 	$(MKDIR) $(root)$(datadir)/cgi-bin
-	$(MKDIR) $(root)$(localstatedir)/$(localstatesubdir_logs)
-	$(MKDIR) $(root)$(localstatedir)/$(localstatesubdir_run)
-	$(MKDIR) $(root)$(localstatedir)/proxy
 	$(MKDIR) $(root)$(includedir)
+	$(MKDIR) $(root)$(runtimedir)
+	$(MKDIR) $(root)$(logfiledir)
+	$(MKDIR) $(root)$(proxycachedir)
 	@echo "<=== [mktree]"
 
 #   install the server program and optionally corresponding
@@ -272,7 +273,7 @@ install-support:
 	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/ab $(root)$(sbindir)/ab
 	$(INSTALL_DATA) $(TOP)/$(SRC)/support/ab.1 $(root)$(mandir)/man1/ab.1
 	@echo "$(INSTALL_SCRIPT) $(TOP)/$(SRC)/support/apachectl[*] $(root)$(sbindir)/apachectl"; \
-	sed -e 's;PIDFILE=.*;PIDFILE=$(localstatedir)/$(localstatesubdir_run)/httpd.pid;' \
+	sed -e 's;PIDFILE=.*;PIDFILE=$(runtimedir)/httpd.pid;' \
 		-e 's;HTTPD=.*;HTTPD=$(sbindir)/httpd;' \
 		< $(TOP)/$(SRC)/support/apachectl > $(TOP)/$(SRC)/.apaci.install.tmp && \
 		$(INSTALL_SCRIPT) $(TOP)/$(SRC)/.apaci.install.tmp $(root)$(sbindir)/apachectl
@@ -365,13 +366,13 @@ install-config:
 			-e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
 			-e 's;@@ServerRoot@@/icons;$(datadir)/icons;' \
 			-e 's;@@ServerRoot@@/cgi-bin;$(datadir)/cgi-bin;' \
-			-e 's;@@ServerRoot@@/proxy;$(localstatedir)/proxy;' \
+			-e 's;@@ServerRoot@@/proxy;$(proxycachedir);' \
 			-e 's;@@ServerRoot@@;$(prefix);' \
-			-e 's;logs/accept.lock;$(localstatedir)/$(localstatesubdir_run)/httpd.lock;' \
-			-e 's;logs/apache_runtime_status;$(localstatedir)/$(localstatesubdir_run)/httpd.scoreboard;' \
-			-e 's;logs/httpd.pid;$(localstatedir)/$(localstatesubdir_run)/httpd.pid;' \
-			-e 's;logs/access_log;$(localstatedir)/$(localstatesubdir_logs)/access_log;' \
-			-e 's;logs/error_log;$(localstatedir)/$(localstatesubdir_logs)/error_log;' \
+			-e 's;logs/accept.lock;$(runtimedir)/httpd.lock;' \
+			-e 's;logs/apache_runtime_status;$(runtimedir)/httpd.scoreboard;' \
+			-e 's;logs/httpd.pid;$(runtimedir)/httpd.pid;' \
+			-e 's;logs/access_log;$(logfiledir)/access_log;' \
+			-e 's;logs/error_log;$(logfiledir)/error_log;' \
 			-e 's;conf/magic;$(sysconfdir)/magic;' \
         	> $(TOP)/$(SRC)/.apaci.install.tmp && \
 		echo "$(INSTALL_DATA) $(TOP)/conf/$$conf-dist[*] $(root)$(sysconfdir)/$$conf.default"; \

@@ -1,5 +1,15 @@
 Changes with Apache 1.3b7
 
+  *) Just having APACI's localstatedir is too general and not enough for most
+     of the systems. 1.3b6 again required manual APACI patches by package
+     maintainers from RedHat and FreeBSD because for their filesystem layout a
+     little bit more flexibility in configuring the paths is needed. Hence we
+     provide three additional configure options (--runtimedir, --logfiledir,
+     --proxycachedir) which now can be used for more granular adjustments if
+     --localstatedir is not enough to fit the particular needs. As a nice
+     side-effect this reduces some subdir fiddling in configure+Makefile.tmpl.
+     [Ralf S. Engelschall]
+
   *) Make the install root for "make install" in APACI's Makefile overrideable
      by package authors.  This way we are even more friendly to package
      maintainers (especially Debian and RedHat) who build for the real prefix

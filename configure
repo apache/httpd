@@ -147,10 +147,11 @@ libexecdir='$exec_prefix/libexec'
 mandir='$prefix/man'
 sysconfdir='$prefix/etc'
 datadir='$prefix/share'
-localstatedir='$prefix/var'
-localstatesubdir_run='run'
-localstatesubdir_logs='logs'
 includedir='$prefix/include'
+localstatedir='$prefix/var'
+runtimedir='$localstatedir/run'
+logfiledir='$localstatedir/log'
+proxycachedir='$localstatedir/proxy'
 
 #   customization flags for
 #   automatic "apache" suffix 
@@ -314,8 +315,11 @@ do
             echo " --mandir=DIR           install manual pages in DIR          [PREFIX/man]"
             echo " --sysconfdir=DIR       install configuration files in DIR   [PREFIX/etc]"
             echo " --datadir=DIR          install read-only  data files in DIR [PREFIX/share]"
-            echo " --localstatedir=DIR    install modifiable data files in DIR [PREFIX/var]"
             echo " --includedir=DIR       install includes files in DIR        [PREFIX/include]"
+            echo " --localstatedir=DIR    install modifiable data files in DIR [PREFIX/var]"
+            echo " --runtimedir=DIR       install runtime data in DIR          [PREFIX/var/run]"
+            echo " --logfiledir=DIR       install logfile data in DIR          [PREFIX/var/log]"
+            echo " --proxycachedir=DIR    install proxy cache data in DIR      [PREFIX/var/proxy]"
             echo " --compat               install with old Apache 1.2 installation paths"
             echo ""
             echo "Configuration options:"
@@ -368,13 +372,22 @@ do
             datadir="$apc_optarg"       
             customized_datadir=1
             ;;
+        --includedir=*)       
+            includedir="$apc_optarg"       
+            customized_includedir=1
+            ;;
         --localstatedir=*) 
             localstatedir="$apc_optarg" 
             customized_localstatedir=1
             ;;
-        --includedir=*)       
-            includedir="$apc_optarg"       
-            customized_includedir=1
+        --runtimedir=*) 
+            runtimedir="$apc_optarg" 
+            ;;
+        --logfiledir=*) 
+            logfiledir="$apc_optarg" 
+            ;;
+        --proxycachedir=*) 
+            proxycachedir="$apc_optarg" 
             ;;
         --compat) 
             exec_prefix='$prefix'
@@ -384,10 +397,11 @@ do
             mandir='$prefix/man'
             sysconfdir='$prefix/conf'
             datadir='$prefix'
-            localstatedir='$prefix'
-            localstatesubdir_run='logs'
-            localstatesubdir_logs='logs'
             includedir='$prefix/include'
+            localstatedir='$prefix'
+            runtimedir='$localstatedir/logs'
+            logfiledir='$localstatedir/logs'
+            proxycachedir='$localstatedir/proxy'
             customized_sysconfdir=1
             customized_datadir=1
             customized_localstatedir=1
@@ -643,7 +657,8 @@ fi
 OIFS="$IFS" IFS="$DIFS"
 for var in prefix exec_prefix bindir sbindir \
            libexecdir mandir sysconfdir datadir \
-           localstatedir includedir; do
+           includedir localstatedir runtimedir \
+           logfiledir proxycachedir; do
     eval "val=\"\$$var\"";
     val=`echo $val | sed -e 's:/*$::'`
     eval "$var=\"$val\""
@@ -687,9 +702,10 @@ fi
 ##   or we cannot support the case where the relative
 ##   path is just the emtpy one, i.e. ""]
 ##
-localstatedir_relative=`echo $localstatedir | sed -e "s:^$prefix/*::" -e 's:\(.\)$:\1/:'`
+runtimedir_relative=`echo $runtimedir | sed -e "s:^$prefix/*::" -e 's:\(.\)$:\1/:'`
+logfiledir_relative=`echo $logfiledir | sed -e "s:^$prefix/*::" -e 's:\(.\)$:\1/:'`
 sysconfdir_relative=`echo $sysconfdir | sed -e "s:^$prefix/*::" -e 's:\(.\)$:\1/:'`
-libexecdir_relative=`echo $libexecdir | sed -e "s:^$exec_prefix/*::" -e 's:\(.\)$:\1/:'`
+libexecdir_relative=`echo $libexecdir | sed -e "s:^$prefix/*::" -e 's:\(.\)$:\1/:'`
 
 ##
 ##  check and debug
@@ -705,18 +721,21 @@ if [ ".$layout" = .1 ]; then
     echo "               mandir: $mandir" 
     echo "           sysconfdir: $sysconfdir" 
     echo "              datadir: $datadir" 
-    echo "        localstatedir: $localstatedir" 
     echo "           includedir: $includedir" 
+    echo "        localstatedir: $localstatedir" 
+    echo "           runtimedir: $runtimedir" 
+    echo "           logfiledir: $logfiledir" 
+    echo "        proxycachedir: $proxycachedir" 
     echo ""
     echo "Compilation paths:"
     echo "           HTTPD_ROOT: $prefix"
     echo "           SUEXEC_BIN: $sbindir/suexec"
     echo "      SHARED_CORE_DIR: $libexecdir"
-    echo "       DEFAULT_PIDLOG: ${localstatedir_relative}${localstatesubdir_run}/httpd.pid"
-    echo "   DEFAULT_SCOREBOARD: ${localstatedir_relative}${localstatesubdir_run}/httpd.scoreboard"
-    echo "     DEFAULT_LOCKFILE: ${localstatedir_relative}${localstatesubdir_run}/httpd.lock"
-    echo "      DEFAULT_XFERLOG: ${localstatedir_relative}${localstatesubdir_logs}/access_log"
-    echo "     DEFAULT_ERRORLOG: ${localstatedir_relative}${localstatesubdir_logs}/error_log"
+    echo "       DEFAULT_PIDLOG: ${runtimedir_relative}httpd.pid"
+    echo "   DEFAULT_SCOREBOARD: ${runtimedir_relative}httpd.scoreboard"
+    echo "     DEFAULT_LOCKFILE: ${runtimedir_relative}httpd.lock"
+    echo "      DEFAULT_XFERLOG: ${logfiledir_relative}access_log"
+    echo "     DEFAULT_ERRORLOG: ${logfiledir_relative}error_log"
     echo "    TYPES_CONFIG_FILE: ${sysconfdir_relative}mime.types"
     echo "   SERVER_CONFIG_FILE: ${sysconfdir_relative}httpd.conf"
     echo "   ACCESS_CONFIG_FILE: ${sysconfdir_relative}access.conf"
@@ -747,9 +766,10 @@ sed <Makefile.tmpl >$mkf \
 -e "s%@sysconfdir@%$sysconfdir%g" \
 -e "s%@datadir@%$datadir%g" \
 -e "s%@localstatedir@%$localstatedir%g" \
--e "s%@localstatesubdir_run@%$localstatesubdir_run%g" \
--e "s%@localstatesubdir_logs@%$localstatesubdir_logs%g" \
 -e "s%@includedir@%$includedir%g" \
+-e "s%@runtimedir@%$runtimedir%g" \
+-e "s%@logfiledir@%$logfiledir%g" \
+-e "s%@proxycachedir@%$proxycachedir%g" \
 -e "s%@suexec@%$suexec%g" \
 -e "s%@suexec_caller@%$suexec_caller%g" \
 -e "s%@suexec_userdir@%$suexec_userdir%g" \
@@ -769,11 +789,11 @@ echo "## WITHOUT DISTURBING THE KNOWN MAKE BUILD PROCESS DISPLAY" >>$src/apaci
 echo "echo '-DHTTPD_ROOT=\"$prefix\"'" >>$src/apaci
 echo "echo '-DSUEXEC_BIN=\"$sbindir/suexec\"'" >>$src/apaci
 echo "echo '-DSHARED_CORE_DIR=\"$libexecdir\"'" >>$src/apaci
-echo "echo '-DDEFAULT_PIDLOG=\"${localstatedir_relative}${localstatesubdir_run}/httpd.pid\"'" >>$src/apaci
-echo "echo '-DDEFAULT_SCOREBOARD=\"${localstatedir_relative}${localstatesubdir_run}/httpd.scoreboard\"'" >>$src/apaci
-echo "echo '-DDEFAULT_LOCKFILE=\"${localstatedir_relative}${localstatesubdir_run}/httpd.lock\"'" >>$src/apaci
-echo "echo '-DDEFAULT_XFERLOG=\"${localstatedir_relative}${localstatesubdir_logs}/access_log\"'" >>$src/apaci
-echo "echo '-DDEFAULT_ERRORLOG=\"${localstatedir_relative}${localstatesubdir_logs}/error_log\"'" >>$src/apaci
+echo "echo '-DDEFAULT_PIDLOG=\"${runtimedir_relative}httpd.pid\"'" >>$src/apaci
+echo "echo '-DDEFAULT_SCOREBOARD=\"${runtimedir_relative}httpd.scoreboard\"'" >>$src/apaci
+echo "echo '-DDEFAULT_LOCKFILE=\"${runtimedir_relative}httpd.lock\"'" >>$src/apaci
+echo "echo '-DDEFAULT_XFERLOG=\"${logfiledir_relative}access_log\"'" >>$src/apaci
+echo "echo '-DDEFAULT_ERRORLOG=\"${logfiledir_relative}error_log\"'" >>$src/apaci
 echo "echo '-DTYPES_CONFIG_FILE=\"${sysconfdir_relative}mime.types\"'" >>$src/apaci
 echo "echo '-DSERVER_CONFIG_FILE=\"${sysconfdir_relative}httpd.conf\"'" >>$src/apaci
 echo "echo '-DACCESS_CONFIG_FILE=\"${sysconfdir_relative}access.conf\"'" >>$src/apaci

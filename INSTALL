@@ -143,11 +143,13 @@
                                [--mandir=DIR]         [--disable-module=NAME] 
                                [--sysconfdir=DIR]     [--enable-shared=NAME]  
                                [--datadir=DIR]        [--disable-shared=NAME] 
-                               [--localstatedir=DIR]  
-                               [--compat]             [--enable-suexec]     
-                                                      [--suexec-caller=UID] 
-                               [--with-perl=FILE]     [--suexec-userdir=DIR]
-                               [--without-support]    
+                               [--includedir=DIR]     
+                               [--localstatedir=DIR]  [--enable-suexec]     
+                               [--runtimedir=DIR]     [--suexec-caller=UID] 
+                               [--logfiledir=DIR]     [--suexec-userdir=DIR]
+                               [--proxycachedir=DIR] 
+                               [--compat]             [--with-perl=FILE]   
+                                                      [--without-support] 
 
      Use the CC, OPTIM, CFLAGS, INCLUDES, LDFLAGS, LIBS, CFLAGS_SHLIB,
      LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT and RANLIB environment variables to
@@ -174,11 +176,14 @@
      PREFIX=/usr/local/apache and EPREFIX=PREFIX.
 
      Use the --bindir=DIR, --sbindir=DIR, --libexecdir=DIR, --mandir=DIR,
-     --sysconfdir=DIR, --datadir=DIR and --localstatedir=DIR option to change
-     the paths for particular subdirectories of the installation tree. Defaults
-     are bindir=EPREFIX/bin, sbindir=EPREFIX/sbin, libexecdir=EPREFIX/libexec,
-     mandir=PREFIX/man, sysconfdir=PREFIX/etc, datadir=PREFIX/share and
-     localstatedir=PREFIX/var.
+     --sysconfdir=DIR, --datadir=DIR, --includedir=DIR, --localstatedir=DIR,
+     --runtimedir=DIR, --logfiledir=DIR and proxycachedir=DIR option to change
+     the paths for particular subdirectories of the installation tree.
+     Defaults are bindir=EPREFIX/bin, sbindir=EPREFIX/sbin,
+     libexecdir=EPREFIX/libexec, mandir=PREFIX/man, sysconfdir=PREFIX/etc,
+     datadir=PREFIX/share, includedir=PREFIX/include,
+     localstatedir=PREFIX/var, runtimedir=PREFIX/var/run,
+     logfiledir=PREFIX/var/log and proxycachedir=PREFIX/var/proxy.
 
      Use the --compat option to install Apache into a installation tree which
      has a similar layout than the one used with Apache 1.2.
