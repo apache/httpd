@@ -80,7 +80,7 @@
  * 20010808 (2.0.23-dev) dir d_is_absolute bit introduced, bucket changes, etc
  * 20010825 (2.0.25-dev) removed d_is_absolute, introduced map_to_storage hook
  * 20011002 (2.0.26-dev) removed 1.3-depreciated request_rec.content_language
- * 20011127 (2.0.28-dev) bump for postconfig hook change, and removal of socket
+ * 20011127 (2.0.29-dev) bump for postconfig hook change, and removal of socket
  *                       from connection record
  */
 
