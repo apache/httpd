@@ -999,9 +999,6 @@ static apr_status_t ssl_io_filter_cleanup(void *data)
         conn_rec *c = (conn_rec *)SSL_get_app_data(filter_ctx->pssl);
         SSLConnRec *sslconn = myConnConfig(c);
 
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
-                     "SSL connection destroyed without being closed");
-
         SSL_free(filter_ctx->pssl);
         sslconn->ssl = filter_ctx->pssl = NULL;
     }
