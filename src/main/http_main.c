@@ -1960,8 +1960,8 @@ main(int argc, char *argv[])
 
     setup_prelinked_modules();
     
-    server_conf = read_config (pconf, ptrans, server_confname);
     suexec_enabled = init_suexec();
+    server_conf = read_config (pconf, ptrans, server_confname);
     
     if(standalone) {
         clear_pool (pconf);	/* standalone_main rereads... */

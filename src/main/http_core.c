@@ -839,30 +839,36 @@ const char *set_send_buffer_size (cmd_parms *cmd, void *dummy, char *arg) {
 
 const char *set_user (cmd_parms *cmd, void *dummy, char *arg)
 {
-    uid_t uid;
-    
-    uid = uname2id (arg);
-    
     if (!cmd->server->is_virtual) {
 	user_name = pstrdup (cmd->pool, arg);
-	user_id = uid;
+	user_id = uname2id(arg);
     }
-    
-    cmd->server->server_uid = uid;
+    else {
+	if (suexec_enabled)
+	    cmd->server->server_uid = uname2id(arg);
+	else {
+	    cmd->server->server_uid = user_id;
+	    fprintf(stderr,
+		    "Warning: User directive in <VirtualHost> requires SUEXEC wrapper.\n");
+	}
+    }
 
     return NULL;
 }
 
 const char *set_group (cmd_parms *cmd, void *dummy, char *arg)
 {
-    gid_t gid;
-    
-    gid = gname2id(arg);
-
     if (!cmd->server->is_virtual)
-	group_id = gid;
-    
-    cmd->server->server_gid = gid;
+	group_id = gname2id(arg);
+    else {
+	if (suexec_enabled)
+	    cmd->server->server_gid = gname2id(arg);
+	else {
+	    cmd->server->server_gid = group_id;
+	    fprintf(stderr,
+		    "Warning: Group directive in <VirtualHost> requires SUEXEC wrapper.\n");
+	}
+    }
 
     return NULL;
 }
