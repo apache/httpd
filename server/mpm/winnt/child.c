@@ -319,13 +319,17 @@ static void win9x_accept(void * dummy)
     int wait_time = 1;
     int csd;
     SOCKET nsd = INVALID_SOCKET;
-    struct sockaddr_in sa_client;
     int count_select_errors = 0;
     int rc;
     int clen;
     ap_listen_rec *lr;
     struct fd_set listenfds;
     SOCKET listenmaxfd = INVALID_SOCKET;
+#if APR_HAVE_IPV6
+    struct sockaddr_in6 sa_client;
+#else
+    struct sockaddr_in sa_client;
+#endif
 
     /* Setup the listeners 
      * ToDo: Use apr_poll()
@@ -402,7 +406,13 @@ static void win9x_accept(void * dummy)
 static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
 {
     apr_os_sock_info_t sockinfo;
-    int len;
+    int len, salen;
+#if APR_HAVE_IPV6
+    salen = sizeof(struct sockaddr_in6);
+#else
+    salen = sizeof(struct sockaddr_in);
+#endif
+
 
     if (context == NULL) {
         /* allocate the completion context and the transaction pool */
@@ -422,7 +432,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         if (context->accept_socket == INVALID_SOCKET) {
             return NULL;
         }
-	len = sizeof(struct sockaddr);
+        len = salen;
         context->sa_server = apr_palloc(context->ptrans, len);
         if (getsockname(context->accept_socket, 
                         context->sa_server, &len)== SOCKET_ERROR) {
@@ -430,7 +440,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
                          "getsockname failed");
             continue;
         }
-        len = sizeof(struct sockaddr);
+        len = salen;
         context->sa_client = apr_palloc(context->ptrans, len);
         if ((getpeername(context->accept_socket,
                          context->sa_client, &len)) == SOCKET_ERROR) {
@@ -441,7 +451,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         sockinfo.os_sock = &context->accept_socket;
         sockinfo.local   = context->sa_server;
         sockinfo.remote  = context->sa_client;
-        sockinfo.family  = APR_INET;
+        sockinfo.family  = context->sa_server->sa_family;
         sockinfo.type    = SOCK_STREAM;
         apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
 
@@ -473,8 +483,21 @@ static void winnt_accept(void *lr_)
     DWORD BytesRead;
     SOCKET nlsd;
     int rv, err_count = 0;
+#if APR_HAVE_IPV6
+    SOCKADDR_STORAGE ss_listen;
+    int namelen = sizeof(ss_listen);
+#endif
 
     apr_os_sock_get(&nlsd, lr->sd);
+
+#if APR_HAVE_IPV6
+    if (getsockname(nlsd, (struct sockaddr *)&ss_listen, &namelen) == SOCKET_ERROR) { 
+        ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_netos_error(), ap_server_conf,
+                    "winnt_accept: getsockname error on listening socket, is IPv6 available?");
+        return;
+   }
+#endif
+
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                  "Child %d: Starting thread to listen on port %d.", my_pid, lr->bind_addr->port);
     while (!shutdown_in_progress) {
@@ -488,6 +511,25 @@ static void winnt_accept(void *lr_)
         }
 
         /* Create and initialize the accept socket */
+#if APR_HAVE_IPV6
+        if (context->accept_socket == INVALID_SOCKET) {
+            context->accept_socket = socket(ss_listen.ss_family, SOCK_STREAM, IPPROTO_TCP);
+            context->socket_family = ss_listen.ss_family;
+        }
+        else if (context->socket_family != ss_listen.ss_family) { 
+            closesocket(context->accept_socket);
+            context->accept_socket = socket(ss_listen.ss_family, SOCK_STREAM, IPPROTO_TCP);
+            context->socket_family = ss_listen.ss_family;
+        }
+
+        if (context->accept_socket == INVALID_SOCKET) {
+            ap_log_error(APLOG_MARK,APLOG_WARNING, apr_get_netos_error(), ap_server_conf,
+                         "winnt_accept: Failed to allocate an accept socket. "
+                         "Temporary resource constraint? Try again.");
+            Sleep(100);
+            continue;
+        }
+#else
         if (context->accept_socket == INVALID_SOCKET) {
             context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
             if (context->accept_socket == INVALID_SOCKET) {
@@ -499,7 +541,7 @@ static void winnt_accept(void *lr_)
                 continue;
             }
         }
-
+#endif
         /* AcceptEx on the completion context. The completion context will be 
          * signaled when a connection is accepted. 
          */
@@ -606,7 +648,7 @@ static void winnt_accept(void *lr_)
         sockinfo.os_sock = &context->accept_socket;
         sockinfo.local   = context->sa_server;
         sockinfo.remote  = context->sa_client;
-        sockinfo.family  = APR_INET;
+        sockinfo.family  = context->sa_server->sa_family;
         sockinfo.type    = SOCK_STREAM;
         apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
 

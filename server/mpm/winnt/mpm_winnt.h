@@ -85,7 +85,12 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type);
 #define CONTAINING_RECORD(address, type, field) ((type *)( \
                                                   (PCHAR)(address) - \
                                                   (PCHAR)(&((type *)0)->field)))
+#if APR_HAVE_IPV6
+#define PADDED_ADDR_SIZE sizeof(SOCKADDR_IN6)+16
+#else
 #define PADDED_ADDR_SIZE sizeof(SOCKADDR_IN)+16
+#endif
+
 typedef struct CompContext {
     struct CompContext *next;
     OVERLAPPED Overlapped;
@@ -98,6 +103,7 @@ typedef struct CompContext {
     int sa_client_len;
     apr_pool_t *ptrans;
     apr_bucket_alloc_t *ba;
+    short socket_family;
 } COMP_CONTEXT, *PCOMP_CONTEXT;
 
 typedef enum {
