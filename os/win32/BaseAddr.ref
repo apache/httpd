@@ -66,3 +66,5 @@ mod_auth_ldap.so        0x6FAC0000    0x00010000
 mod_ident.so            0x6FAB0000    0x00010000
 mod_proxy_ajp.so        0x6FAA0000    0x00010000
 mod_proxy_balancer.so   0x6FA90000    0x00010000
+mod_log_forensic.so     0x6FA80000    0x00010000
+mod_version.so          0x6FA70000    0x00010000
