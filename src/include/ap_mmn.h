@@ -235,6 +235,7 @@
  *                        filter_callback to the end of buff.h
  * 19990320.11          - Add some fields to the end of the core_dir_config
  *                        structure
+ * 19990320.12		- add ap_getline(), ap_get_chunk_size()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
@@ -242,7 +243,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 19990320
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 11                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 12                    /* 0...n */
 
 /* Useful for testing for features. */
 #define AP_MODULE_MAGIC_AT_LEAST(major,minor)		\

@@ -129,6 +129,7 @@ ap_fini_vhost_config
 ap_fnmatch
 ap_force_library_loading
 ap_get_basic_auth_pw
+ap_get_chunk_size
 ap_get_client_block
 ap_get_gmtoff
 ap_get_list_item
@@ -142,6 +143,7 @@ ap_get_server_version
 ap_get_time
 ap_get_token
 ap_get_virthost_addr
+ap_getline
 ap_getparents
 ap_getword
 ap_getword_conf

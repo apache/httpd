@@ -857,13 +857,13 @@ API_EXPORT(int) ap_method_number_of(const char *method)
  *       then the actual input line exceeded the buffer length,
  *       and it would be a good idea for the caller to puke 400 or 414.
  */
-static int getline(char *s, int n, BUFF *in, int fold)
+API_EXPORT(int) ap_getline(char *s, int n, BUFF *in, int fold)
 {
     char *pos, next;
     int retval;
     int total = 0;
 #ifdef CHARSET_EBCDIC
-    /* When getline() is called, the HTTP protocol is in a state
+    /* When ap_getline() is called, the HTTP protocol is in a state
      * where we MUST be reading "plain text" protocol stuff,
      * (Request line, MIME headers, Chunk sizes) regardless of
      * the MIME type and conversion setting of the document itself.
@@ -978,7 +978,7 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri)
 
 static int read_request_line(request_rec *r)
 {
-    char l[DEFAULT_LIMIT_REQUEST_LINE + 2]; /* getline's two extra for \n\0 */
+    char l[DEFAULT_LIMIT_REQUEST_LINE + 2]; /* ap_getline's two extra for \n\0 */
     const char *ll = l;
     const char *uri;
     conn_rec *conn = r->connection;
@@ -1000,7 +1000,7 @@ static int read_request_line(request_rec *r)
      * have to block during a read.
      */
     ap_bsetflag(conn->client, B_SAFEREAD, 1);
-    while ((len = getline(l, sizeof(l), conn->client, 0)) <= 0) {
+    while ((len = ap_getline(l, sizeof(l), conn->client, 0)) <= 0) {
         if ((len < 0) || ap_bgetflag(conn->client, B_EOF)) {
             ap_bsetflag(conn->client, B_SAFEREAD, 0);
 	    /* this is a hack to make sure that request time is set,
@@ -1031,7 +1031,7 @@ static int read_request_line(request_rec *r)
 
     ap_parse_uri(r, uri);
 
-    /* getline returns (size of max buffer - 1) if it fills up the
+    /* ap_getline returns (size of max buffer - 1) if it fills up the
      * buffer before finding the end-of-line.  This is only going to
      * happen if it exceeds the configured limit for a request-line.
      */
@@ -1056,7 +1056,7 @@ static int read_request_line(request_rec *r)
 
 static void get_mime_headers(request_rec *r)
 {
-    char field[DEFAULT_LIMIT_REQUEST_FIELDSIZE + 2]; /* getline's two extra */
+    char field[DEFAULT_LIMIT_REQUEST_FIELDSIZE + 2]; /* ap_getline's two extra */
     conn_rec *c = r->connection;
     char *value;
     char *copy;
@@ -1071,7 +1071,7 @@ static void get_mime_headers(request_rec *r)
      * Read header lines until we get the empty separator line, a read error,
      * the connection closes (EOF), reach the server limit, or we timeout.
      */
-    while ((len = getline(field, sizeof(field), c->client, 1)) > 0) {
+    while ((len = ap_getline(field, sizeof(field), c->client, 1)) > 0) {
 
         if (r->server->limit_req_fields &&
             (++fields_read > r->server->limit_req_fields)) {
@@ -1081,7 +1081,7 @@ static void get_mime_headers(request_rec *r)
                           "this server's limit.<P>\n");
             return;
         }
-        /* getline returns (size of max buffer - 1) if it fills up the
+        /* ap_getline returns (size of max buffer - 1) if it fills up the
          * buffer before finding the end-of-line.  This is only going to
          * happen if it exceeds the configured limit for a field size.
          */
@@ -2018,7 +2018,7 @@ API_EXPORT(int) ap_should_client_block(request_rec *r)
     return 1;
 }
 
-static long get_chunk_size(char *b)
+API_EXPORT(long) ap_get_chunk_size(char *b)
 {
     long chunksize = 0;
 
@@ -2100,14 +2100,14 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 
     if (r->remaining == 0) {    /* Start of new chunk */
 
-        chunk_start = getline(buffer, bufsiz, r->connection->client, 0);
+        chunk_start = ap_getline(buffer, bufsiz, r->connection->client, 0);
         if ((chunk_start <= 0) || (chunk_start >= (bufsiz - 1))
             || !ap_isxdigit(*buffer)) {
             r->connection->keepalive = -1;
             return -1;
         }
 
-        len_to_read = get_chunk_size(buffer);
+        len_to_read = ap_get_chunk_size(buffer);
 
         if (len_to_read == 0) { /* Last chunk indicated, get footers */
             if (r->read_body == REQUEST_CHUNKED_DECHUNK) {
@@ -2141,7 +2141,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
         len_read = chunk_start;
 
         while ((bufsiz > 1) && ((len_read =
-                  getline(buffer, bufsiz, r->connection->client, 1)) > 0)) {
+                  ap_getline(buffer, bufsiz, r->connection->client, 1)) > 0)) {
 
             if (len_read != (bufsiz - 1)) {
                 buffer[len_read++] = CR;        /* Restore footer line end  */
