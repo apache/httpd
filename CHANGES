@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) OS/390: LIBPATH no longer has to be manually uncommented in
+     envvars to get apachectl to set up httpd properly.  [Jeff Trawick]
+
   *) mod_isapi: All mod_isapi directives, excluding ISAPICacheFile,
      may now be specified to the <File/Directory > container, rather
      than by vhost.  [William Rowe]

@@ -139,7 +139,6 @@ cp bindist/conf/httpd.conf bindist/conf/httpd-std.conf
 
 for one_file in apachectl envvars envvars-std; do
     sed -e "s%$BUILD_DIR%$DEFAULT_DIR%" \
-        -e "s%^#binbuild %%" \
         bindist/bin/$one_file > bindist/bin/$one_file.tmp
     mv bindist/bin/$one_file.tmp bindist/bin/$one_file
 done
