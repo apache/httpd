@@ -1,5 +1,8 @@
 Changes with Apache 2.0.44
 
+  *) The value emitted by ServerSignature now mimics the Server HTTP
+     header as controlled by ServerTokens.  [Francis Daly <deva@daoine.org>]
+
   *) Gracefully handly retry situations in the SSL input filter,
      by following the SSL libraries' retry semantics.
      [William Rowe]

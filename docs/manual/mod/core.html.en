@@ -2163,6 +2163,9 @@ is accessed by an incompatible browser</td></tr><tr><th><a href="directive-dict.
     and the <code>EMail</code> setting additionally creates a
     "mailto:" reference to the <code class="directive"><a href="#serveradmin">ServerAdmin</a></code> of the referenced
     document.</p>
+
+    <p>After version 2.0.44, the details of the server version number
+    presented are controlled by the ServerTokens directive.</p>
 <h3>See also</h3><ul><li><code class="directive"><a href="#servertokens">ServerTokens</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerTokens" id="ServerTokens">ServerTokens</a> <a name="servertokens" id="servertokens">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Configures the Server HTTP response header</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>ServerTokens Major|Minor|Minimal|ProductOnly|OS|Full</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
@@ -2209,6 +2212,9 @@ is accessed by an incompatible browser</td></tr><tr><th><a href="directive-dict.
 
     <p>This setting applies to the entire server, and cannot be
     enabled or disabled on a virtualhost-by-virtualhost basis.</p>
+
+    <p>After version 2.0.44, this directive also controls the
+    information presented by the ServerSignature directive.</p>
 <h3>See also</h3><ul><li><code class="directive"><a href="#serversignature">ServerSignature</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetHandler" id="SetHandler">SetHandler</a> <a name="sethandler" id="sethandler">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Forces all matching files to be processed by a
 handler</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
