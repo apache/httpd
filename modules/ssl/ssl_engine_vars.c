@@ -62,14 +62,13 @@
                                                   -- Unknown       */
 #include "mod_ssl.h"
 
-#if 0 /* XXX */
-
 /*  _________________________________________________________________
 **
 **  Variable Lookup
 **  _________________________________________________________________
 */
 
+#if 0 /* XXX */
 static char *ssl_var_lookup_header(pool *p, request_rec *r, const char *name);
 static char *ssl_var_lookup_ssl(pool *p, conn_rec *c, char *var);
 static char *ssl_var_lookup_ssl_cert(pool *p, X509 *xs, char *var);
@@ -82,21 +81,28 @@ static char *ssl_var_lookup_ssl_cert_verify(pool *p, conn_rec *c);
 static char *ssl_var_lookup_ssl_cipher(pool *p, conn_rec *c, char *var);
 static void  ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algkeysize);
 static char *ssl_var_lookup_ssl_version(pool *p, char *var);
+#endif /* XXX */
 
 void ssl_var_register(void)
 {
+#if 0 /* XXX */
     ap_hook_configure("ap::mod_ssl::var_lookup",
                       AP_HOOK_SIG6(ptr,ptr,ptr,ptr,ptr,ptr), AP_HOOK_DECLINE(NULL));
     ap_hook_register("ap::mod_ssl::var_lookup",
                      ssl_var_lookup, AP_HOOK_NOCTX);
+#endif /* XXX */
     return;
 }
 
 void ssl_var_unregister(void)
 {
+#if 0 /* XXX */
     ap_hook_unregister("ap::mod_ssl::var_lookup", ssl_var_lookup);
+#endif /* XXX */
     return;
 }
+
+#if 0 /* XXX */
 
 char *ssl_var_lookup(pool *p, server_rec *s, conn_rec *c, request_rec *r, char *var)
 {

@@ -156,3 +156,10 @@
 
  o The DBM based session cache is now based on APR's DBM API only.
  
+ TODO
+
+ o Whether to unregister and how to unregister?
+   ssl_var_unregister();
+   ssl_ext_unregister();
+   ssl_io_unregister();
+
