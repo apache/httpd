@@ -595,7 +595,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
      */
     if (argc > 1) 
     {
-        const char **cmb_data;
+        char **cmb_data;
 
         mpm_new_argv->nalloc = mpm_new_argv->nelts + argc - 1;
         cmb_data = apr_palloc(mpm_new_argv->cont,
@@ -673,7 +673,7 @@ apr_status_t mpm_merge_service_args(apr_pool_t *p,
 {
     apr_array_header_t *svc_args = NULL;
     char conf_key[MAX_PATH];
-    const char **cmb_data;
+    char **cmb_data;
     apr_status_t rv;
 
     apr_snprintf(conf_key, sizeof(conf_key), SERVICEPARAMS, service_name);
@@ -1032,7 +1032,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
 
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
-        const char **start_argv;
+        char **start_argv;
         SC_HANDLE   schService;
         SC_HANDLE   schSCManager;
 
