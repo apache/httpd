@@ -182,12 +182,13 @@ static void lingering_close(request_rec *r)
 }
 #endif /* ndef NO_LINGCLOSE */
 
-
 CORE_EXPORT(void) ap_process_connection(conn_rec *c)
 {
     request_rec *r;
 
     ap_update_vhost_given_ip(c);
+
+    ap_run_pre_connection(c);
 
     /*
      * Read and process each request found on our connection
@@ -234,4 +235,35 @@ CORE_EXPORT(void) ap_process_connection(conn_rec *c)
 	ap_bclose(c->client);
     }
 #endif
+}
+
+/* Clearly some of this stuff doesn't belong in a generalised connection
+   structure, but for now...
+*/
+
+conn_rec *ap_new_connection(pool *p, server_rec *server, BUFF *inout,
+			    const struct sockaddr_in *remaddr,
+			    const struct sockaddr_in *saddr,
+			    int child_num)
+{
+    conn_rec *conn = (conn_rec *) ap_pcalloc(p, sizeof(conn_rec));
+
+    /* Got a connection structure, so initialize what fields we can
+     * (the rest are zeroed out by pcalloc).
+     */
+
+    conn->conn_config=ap_create_conn_config(p);
+
+    conn->child_num = child_num;
+
+    conn->pool = p;
+    conn->local_addr = *saddr;
+    conn->base_server = server;
+    conn->client = inout;
+
+    conn->remote_addr = *remaddr;
+    conn->remote_ip = ap_pstrdup(conn->pool,
+			      inet_ntoa(conn->remote_addr.sin_addr));
+
+    return conn;
 }
