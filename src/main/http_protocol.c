@@ -346,7 +346,7 @@ int read_request_line (request_rec *r)
     parse_uri (r, uri);
     
     r->assbackwards = (ll[0] == '\0');
-    r->protocol = ll[0] ? pstrdup (r->pool, ll) : "HTTP/0.9";
+    r->protocol = pstrdup (r->pool, ll[0] ? ll : "HTTP/0.9");
     sscanf(r->protocol, "HTTP/%d.%d", &major, &minor);
     r->proto_num = 1000*major + minor;
 
