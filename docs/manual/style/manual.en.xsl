@@ -23,6 +23,7 @@
 <!-- Read the localized messages from the specified language file -->
 <xsl:variable name="message" select="document('lang/en.xml')/language/messages/message"/>
 <xsl:variable name="doclang">en</xsl:variable>
+<xsl:variable name="allmodules" select="document('xsl/util/allmodules.xml')/items/item[@lang=$doclang]"/>
 
 <!-- some meta information have to be passed to the transformation -->
 <xsl:variable name="output-encoding">ISO-8859-1</xsl:variable>
