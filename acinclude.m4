@@ -42,6 +42,7 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
   APACHE_SUBST(mandir)
   APACHE_SUBST(libexecdir)
   APACHE_SUBST(htdocsdir)
+  APACHE_SUBST(manualdir)
   APACHE_SUBST(includedir)
   APACHE_SUBST(errordir)
   APACHE_SUBST(iconsdir)
@@ -320,6 +321,7 @@ if test -z "$LAYOUT"; then
   # create the Apache layout in config.layout, and it really should just
   # use what is specified in config.layout instead of duping it.
   htdocsdir='$(prefix)/htdocs'
+  manualdir='$(prefix)/manual'
   errordir='$(prefix)/error'
   iconsdir='$(prefix)/icons'
   cgidir='$(prefix)/cgi-bin'
