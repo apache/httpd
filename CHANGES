@@ -1,5 +1,8 @@
 Changes with Apache 2.0.34-dev
 
+  *) implement SSLSessionCache shmht and shmcb based on apr_rmm and
+     apr_shm.  [Madhusudan Mathihalli <madhusudan_mathihalli@hp.com>]
+
   *) Fix apxs -g handling.  Move config_vars.mk from the top build
      directory to the build directory.  PR 10163  [Jeff Trawick]
 

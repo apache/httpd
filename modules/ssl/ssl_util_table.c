@@ -96,6 +96,7 @@ typedef struct table_entry_st table_entry_t;
 
 #define TABLE_PRIVATE
 #include "ssl_util_table.h"
+#include "mod_ssl.h"
 
 /****************************** local defines ******************************/
 
@@ -205,10 +206,11 @@ struct table_st {
     table_entry_t **ta_buckets; /* array of linked lists */
     table_linear_t ta_linear;   /* linear tracking */
     unsigned long ta_file_size; /* size of on-disk space */
-    void *(*ta_malloc)(size_t size);
-    void *(*ta_calloc)(size_t number, size_t size);
-    void *(*ta_realloc)(void *ptr, size_t size);
-    void (*ta_free)(void *ptr);
+    void *(*ta_malloc)(void *opt_param, size_t size);
+    void *(*ta_calloc)(void *opt_param, size_t number, size_t size);
+    void *(*ta_realloc)(void *opt_param, void *ptr, size_t size);
+    void (*ta_free)(void *opt_param, void *ptr);
+    void *opt_param;
 };
 
 /* external table structure for debuggers */
@@ -248,6 +250,28 @@ static error_str_t errors[] =
 };
 
 #define INVALID_ERROR   "invalid error code"
+
+
+/********************** wrappers for system functions ************************/
+static void *sys_malloc(void *param, size_t size)
+{
+    return malloc(size);
+}
+
+static void *sys_calloc(void *param, size_t size1, size_t size2)
+{
+    return calloc(size1, size2);
+}
+
+static void *sys_realloc(void *param, void *ptr, size_t size)
+{
+    return realloc(ptr, size);
+}
+
+static void sys_free(void *param, void *ptr)
+{
+    free(ptr);
+}
 
 /****************************** local functions ******************************/
 
@@ -804,17 +828,17 @@ static void split(void *first_p, void *last_p, compare_t compare,
  * and free(3)-style functions.
  */
 table_t *table_alloc(const unsigned int bucket_n, int *error_p,
-                     void *(*malloc_f)(size_t size),
-                     void *(*calloc_f)(size_t number, size_t size),
-                     void *(*realloc_f)(void *ptr, size_t size),
-                     void (*free_f)(void *ptr))
+                 void *(*malloc_f)(void *opt_param, size_t size),
+                 void *(*calloc_f)(void *opt_param, size_t number, size_t size),
+                 void *(*realloc_f)(void *opt_param, void *ptr, size_t size),
+                 void (*free_f)(void *opt_param, void *ptr), void *opt_param)
 {
     table_t *table_p = NULL;
     unsigned int buck_n;
 
     /* allocate a table structure */
     if (malloc_f != NULL)
-        table_p = malloc_f(sizeof(table_t));
+        table_p = malloc_f(opt_param, sizeof(table_t));
     else
         table_p = malloc(sizeof(table_t));
     if (table_p == NULL) {
@@ -829,14 +853,15 @@ table_t *table_alloc(const unsigned int bucket_n, int *error_p,
         buck_n = DEFAULT_SIZE;
     /* allocate the buckets which are NULLed */
     if (calloc_f != NULL)
-        table_p->ta_buckets = (table_entry_t **)calloc_f(buck_n, sizeof(table_entry_t *));
+        table_p->ta_buckets = (table_entry_t **)calloc_f(opt_param, buck_n,
+                                                       sizeof(table_entry_t *));
     else
         table_p->ta_buckets = (table_entry_t **)calloc(buck_n, sizeof(table_entry_t *));
     if (table_p->ta_buckets == NULL) {
         if (error_p != NULL)
             *error_p = TABLE_ERROR_ALLOC;
         if (free_f != NULL)
-            free_f(table_p);
+            free_f(opt_param, table_p);
         else
             free(table_p);
         return NULL;
@@ -852,10 +877,11 @@ table_t *table_alloc(const unsigned int bucket_n, int *error_p,
     table_p->ta_linear.tl_bucket_c = 0;
     table_p->ta_linear.tl_entry_c = 0;
     table_p->ta_file_size = 0;
-    table_p->ta_malloc  = malloc_f  != NULL ? malloc_f  : malloc;
-    table_p->ta_calloc  = calloc_f  != NULL ? calloc_f  : calloc;
-    table_p->ta_realloc = realloc_f != NULL ? realloc_f : realloc;
-    table_p->ta_free    = free_f    != NULL ? free_f    : free;
+    table_p->ta_malloc  = malloc_f  != NULL ? malloc_f  : sys_malloc;
+    table_p->ta_calloc  = calloc_f  != NULL ? calloc_f  : sys_calloc;
+    table_p->ta_realloc = realloc_f != NULL ? realloc_f : sys_realloc;
+    table_p->ta_free    = free_f    != NULL ? free_f    : sys_free;
+    table_p->opt_param = opt_param;
 
     if (error_p != NULL)
         *error_p = TABLE_ERROR_NONE;
@@ -972,13 +998,14 @@ int table_clear(table_t * table_p)
         return TABLE_ERROR_PNT;
     /* free the table allocation and table structure */
     bounds_p = table_p->ta_buckets + table_p->ta_bucket_n;
-    for (bucket_p = table_p->ta_buckets; bucket_p < bounds_p; bucket_p++) {
+    for (bucket_p = table_p->ta_buckets; bucket_p <= bounds_p; bucket_p++) {
+#if 0
         for (entry_p = *bucket_p; entry_p != NULL; entry_p = next_p) {
             /* record the next pointer before we free */
             next_p = entry_p->te_next_p;
-            table_p->ta_free(entry_p);
+            table_p->ta_free(table_p->opt_param, entry_p);
         }
-
+#endif
         /* clear the bucket entry after we free its entries */
         *bucket_p = NULL;
     }
@@ -1020,9 +1047,9 @@ int table_free(table_t * table_p)
     ret = table_clear(table_p);
 
     if (table_p->ta_buckets != NULL)
-        table_p->ta_free(table_p->ta_buckets);
+        table_p->ta_free(table_p->opt_param, table_p->ta_buckets);
     table_p->ta_magic = 0;
-    table_p->ta_free(table_p);
+    table_p->ta_free(table_p->opt_param, table_p);
 
     return ret;
 }
@@ -1140,7 +1167,7 @@ int table_insert_kd(table_t * table_p,
     /* look for the entry in this bucket, only check keys of the same size */
     last_p = NULL;
     for (entry_p = table_p->ta_buckets[bucket];
-         entry_p != NULL;
+         (entry_p != NULL) && (entry_p->te_next_p != last_p);
          last_p = entry_p, entry_p = entry_p->te_next_p) {
         if (entry_p->te_key_size == ksize
             && memcmp(ENTRY_KEY_BUF(entry_p), key_buf, ksize) == 0)
@@ -1186,10 +1213,9 @@ int table_insert_kd(table_t * table_p,
              * this may change any previous data_key_p and data_copy_p
              * pointers.
              */
-            entry_p = (table_entry_t *) table_p->ta_realloc(entry_p,
-                                                entry_size(table_p,
-                                                       entry_p->te_key_size,
-                                                           dsize));
+            entry_p = (table_entry_t *)
+                       table_p->ta_realloc(table_p->opt_param, entry_p,
+			     entry_size(table_p, entry_p->te_key_size, dsize));
             if (entry_p == NULL)
                 return TABLE_ERROR_ALLOC;
             /* add it back to the front of the list */
@@ -1222,7 +1248,9 @@ int table_insert_kd(table_t * table_p,
      */
 
     /* allocate a new entry */
-    entry_p = (table_entry_t *) table_p->ta_malloc(entry_size(table_p, ksize, dsize));
+    entry_p = (table_entry_t *)
+               table_p->ta_malloc(table_p->opt_param,
+                                  entry_size(table_p, ksize, dsize));
     if (entry_p == NULL)
         return TABLE_ERROR_ALLOC;
     /* copy key into storage */
@@ -1509,7 +1537,8 @@ int table_delete(table_t * table_p,
              * if we were storing it compacted, we now need to malloc some
              * space if the user wants the value after the delete.
              */
-            *data_buf_p = table_p->ta_malloc(entry_p->te_data_size);
+            *data_buf_p = table_p->ta_malloc(table_p->opt_param,
+                                             entry_p->te_data_size);
             if (*data_buf_p == NULL)
                 return TABLE_ERROR_ALLOC;
             if (table_p->ta_data_align == 0)
@@ -1521,7 +1550,8 @@ int table_delete(table_t * table_p,
     }
     if (data_size_p != NULL)
         *data_size_p = entry_p->te_data_size;
-    table_p->ta_free(entry_p);
+    table_p->ta_free(table_p->opt_param, entry_p);
+    entry_p = NULL;
 
     table_p->ta_entry_n--;
 
@@ -1616,7 +1646,8 @@ int table_delete_first(table_t * table_p,
              * if we were storing it compacted, we now need to malloc some
              * space if the user wants the value after the delete.
              */
-            *key_buf_p = table_p->ta_malloc(entry_p->te_key_size);
+            *key_buf_p = table_p->ta_malloc(table_p->opt_param,
+                                            entry_p->te_key_size);
             if (*key_buf_p == NULL)
                 return TABLE_ERROR_ALLOC;
             memcpy(*key_buf_p, ENTRY_KEY_BUF(entry_p), entry_p->te_key_size);
@@ -1632,7 +1663,8 @@ int table_delete_first(table_t * table_p,
              * if we were storing it compacted, we now need to malloc some
              * space if the user wants the value after the delete.
              */
-            *data_buf_p = table_p->ta_malloc(entry_p->te_data_size);
+            *data_buf_p = table_p->ta_malloc(table_p->opt_param,
+                                             entry_p->te_data_size);
             if (*data_buf_p == NULL)
                 return TABLE_ERROR_ALLOC;
             if (table_p->ta_data_align == 0)
@@ -1644,7 +1676,7 @@ int table_delete_first(table_t * table_p,
     }
     if (data_size_p != NULL)
         *data_size_p = entry_p->te_data_size;
-    table_p->ta_free(entry_p);
+    table_p->ta_free(table_p->opt_param, entry_p);
 
     table_p->ta_entry_n--;
 
@@ -1739,10 +1771,12 @@ int table_adjust(table_t * table_p, const int bucket_n)
     if (buck_n == 0)
         buck_n = 1;
     /* make sure we have somethign to do */
-    if (buck_n == table_p->ta_bucket_n)
+    if (buck_n <= table_p->ta_bucket_n)
         return TABLE_ERROR_NONE;
     /* allocate a new bucket list */
-    buckets = (table_entry_t **) table_p->ta_calloc(buck_n, sizeof(table_entry_t *));
+    buckets = (table_entry_t **)
+               table_p->ta_calloc(table_p->opt_param,
+                                  buck_n, sizeof(table_entry_t *));
     if (table_p->ta_buckets == NULL)
         return TABLE_ERROR_ALLOC;
     /*
@@ -1773,7 +1807,7 @@ int table_adjust(table_t * table_p, const int bucket_n)
     }
 
     /* replace the table buckets with the new ones */
-    table_p->ta_free(table_p->ta_buckets);
+    table_p->ta_free(table_p->opt_param, table_p->ta_buckets);
     table_p->ta_buckets = buckets;
     table_p->ta_bucket_n = buck_n;
 
@@ -2402,8 +2436,9 @@ table_entry_t **table_order(table_t * table_p, table_compare_t compare,
         return NULL;
     }
 
-    entries = (table_entry_t **) table_p->ta_malloc(table_p->ta_entry_n *
-                                        sizeof(table_entry_t *));
+    entries = (table_entry_t **)
+               table_p->ta_malloc(table_p->opt_param,
+                                  table_p->ta_entry_n *sizeof(table_entry_t *));
     if (entries == NULL) {
         if (error_p != NULL)
             *error_p = TABLE_ERROR_ALLOC;

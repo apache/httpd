@@ -155,7 +155,7 @@ typedef void    table_entry_t;
 /*
  * Prototypes
  */
-extern table_t        *table_alloc(const unsigned int bucket_n, int *error_p, void *(*malloc_f)(size_t size), void *(*calloc_f)(size_t number, size_t size), void *(*realloc_f)(void *ptr, size_t size), void (*free_f)(void *ptr));
+extern table_t        *table_alloc(const unsigned int bucket_n, int *error_p, void *(*malloc_f)(void *opt_param, size_t size), void *(*calloc_f)(void *opt_param, size_t number, size_t size), void *(*realloc_f)(void *opt_param, void *ptr, size_t size), void (*free_f)(void *opt_param, void *ptr), void *opt_param);
 extern int             table_attr(table_t *table_p, const int attr);
 extern int             table_set_data_alignment(table_t *table_p, const int alignment);
 extern int             table_clear(table_t *table_p);
