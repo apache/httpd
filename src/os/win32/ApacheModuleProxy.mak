@@ -30,6 +30,10 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+MTL=midl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "ApacheModuleProxy - Win32 Release"
 
 OUTDIR=.\Release
@@ -63,46 +67,12 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\ap" /I "..\..\main" /I "..\..\regex"\
- /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleProxy.pch" /YX\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\include" /D "WIN32" /D "NDEBUG" /D\
+ "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleProxy.pch" /YX /Fo"$(INTDIR)\\"\
+ /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
-
-.c{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-MTL=midl.exe
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheModuleProxy.bsc" 
 BSC32_SBRS= \
@@ -162,13 +132,36 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W4 /Gm /GX /Zi /Od /I "..\..\ap" /I "..\..\main" /I\
- "..\..\regex" /D "WIN32" /D "_DEBUG" /D "_WINDOWS"\
- /Fp"$(INTDIR)\ApacheModuleProxy.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD\
- /c 
+CPP_PROJ=/nologo /MDd /W4 /Gm /GX /Zi /Od /I "..\..\include" /D "WIN32" /D\
+ "_DEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleProxy.pch" /YX\
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
+MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheModuleProxy.bsc" 
+BSC32_SBRS= \
+	
+LINK32=link.exe
+LINK32_FLAGS=..\..\CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
+ winspool.lib comdlg32.lib advapi32.lib shell32.lib wsock32.lib /nologo\
+ /subsystem:windows /dll /incremental:yes /pdb:"$(OUTDIR)\ApacheModuleProxy.pdb"\
+ /debug /machine:I386 /out:"$(OUTDIR)\ApacheModuleProxy.dll"\
+ /implib:"$(OUTDIR)\ApacheModuleProxy.lib" 
+LINK32_OBJS= \
+	"$(INTDIR)\mod_proxy.obj" \
+	"$(INTDIR)\proxy_cache.obj" \
+	"$(INTDIR)\proxy_connect.obj" \
+	"$(INTDIR)\proxy_ftp.obj" \
+	"$(INTDIR)\proxy_http.obj" \
+	"$(INTDIR)\proxy_util.obj"
+
+"$(OUTDIR)\ApacheModuleProxy.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ENDIF 
 
 .c{$(CPP_OBJS)}.obj::
    $(CPP) @<<
@@ -200,210 +193,349 @@ CPP_SBRS=.
    $(CPP_PROJ) $< 
 <<
 
-MTL=midl.exe
-MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
-RSC=rc.exe
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheModuleProxy.bsc" 
-BSC32_SBRS= \
-	
-LINK32=link.exe
-LINK32_FLAGS=..\..\CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
- winspool.lib comdlg32.lib advapi32.lib shell32.lib wsock32.lib /nologo\
- /subsystem:windows /dll /incremental:yes /pdb:"$(OUTDIR)\ApacheModuleProxy.pdb"\
- /debug /machine:I386 /out:"$(OUTDIR)\ApacheModuleProxy.dll"\
- /implib:"$(OUTDIR)\ApacheModuleProxy.lib" 
-LINK32_OBJS= \
-	"$(INTDIR)\mod_proxy.obj" \
-	"$(INTDIR)\proxy_cache.obj" \
-	"$(INTDIR)\proxy_connect.obj" \
-	"$(INTDIR)\proxy_ftp.obj" \
-	"$(INTDIR)\proxy_http.obj" \
-	"$(INTDIR)\proxy_util.obj"
-
-"$(OUTDIR)\ApacheModuleProxy.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ENDIF 
-
 
 !IF "$(CFG)" == "ApacheModuleProxy - Win32 Release" || "$(CFG)" ==\
  "ApacheModuleProxy - Win32 Debug"
 SOURCE=.\mod_proxy.c
+
+!IF  "$(CFG)" == "ApacheModuleProxy - Win32 Release"
+
 DEP_CPP_MOD_P=\
-	"..\..\ap\ap.h"\
-	"..\..\main\alloc.h"\
-	"..\..\main\buff.h"\
-	"..\..\main\conf.h"\
-	"..\..\main\explain.h"\
-	"..\..\main\http_config.h"\
-	"..\..\main\http_log.h"\
-	"..\..\main\http_protocol.h"\
-	"..\..\main\httpd.h"\
+	"..\..\include\alloc.h"\
+	"..\..\include\ap.h"\
+	"..\..\include\buff.h"\
+	"..\..\include\conf.h"\
+	"..\..\include\explain.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\include\http_config.h"\
+	"..\..\include\http_log.h"\
+	"..\..\include\http_protocol.h"\
+	"..\..\include\httpd.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
-	"..\..\regex\regex.h"\
 	".\mod_proxy.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_MOD_P=\
-	"..\..\main\ebcdic.h"\
-	"..\..\main\os.h"\
-	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\mod_proxy.obj" : $(SOURCE) $(DEP_CPP_MOD_P) "$(INTDIR)"
 
 
-SOURCE=.\proxy_cache.c
-DEP_CPP_PROXY=\
-	"..\..\ap\ap.h"\
-	"..\..\main\alloc.h"\
-	"..\..\main\buff.h"\
-	"..\..\main\conf.h"\
-	"..\..\main\explain.h"\
-	"..\..\main\http_config.h"\
-	"..\..\main\http_log.h"\
-	"..\..\main\http_main.h"\
-	"..\..\main\http_protocol.h"\
-	"..\..\main\httpd.h"\
-	"..\..\main\md5.h"\
-	"..\..\main\multithread.h"\
-	"..\..\main\util_date.h"\
+!ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
+
+DEP_CPP_MOD_P=\
+	"..\..\include\alloc.h"\
+	"..\..\include\ap.h"\
+	"..\..\include\buff.h"\
+	"..\..\include\conf.h"\
+	"..\..\include\explain.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\include\http_config.h"\
+	"..\..\include\http_log.h"\
+	"..\..\include\http_protocol.h"\
+	"..\..\include\httpd.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
-	"..\..\regex\regex.h"\
+	".\mod_proxy.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_P=\
+	"..\..\include\ebcdic.h"\
+	"..\..\include\os.h"\
+	"..\..\include\sfio.h"\
+	
+
+"$(INTDIR)\mod_proxy.obj" : $(SOURCE) $(DEP_CPP_MOD_P) "$(INTDIR)"
+
+
+!ENDIF 
+
+SOURCE=.\proxy_cache.c
+
+!IF  "$(CFG)" == "ApacheModuleProxy - Win32 Release"
+
+DEP_CPP_PROXY=\
+	"..\..\include\alloc.h"\
+	"..\..\include\ap.h"\
+	"..\..\include\buff.h"\
+	"..\..\include\conf.h"\
+	"..\..\include\explain.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\include\http_config.h"\
+	"..\..\include\http_log.h"\
+	"..\..\include\http_main.h"\
+	"..\..\include\http_protocol.h"\
+	"..\..\include\httpd.h"\
+	"..\..\include\md5.h"\
+	"..\..\include\multithread.h"\
+	"..\..\include\util_date.h"\
+	"..\..\os\win32\os.h"\
+	"..\..\os\win32\readdir.h"\
+	".\mod_proxy.h"\
+	
+
+"$(INTDIR)\proxy_cache.obj" : $(SOURCE) $(DEP_CPP_PROXY) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
+
+DEP_CPP_PROXY=\
+	"..\..\include\alloc.h"\
+	"..\..\include\ap.h"\
+	"..\..\include\buff.h"\
+	"..\..\include\conf.h"\
+	"..\..\include\explain.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\include\http_config.h"\
+	"..\..\include\http_log.h"\
+	"..\..\include\http_main.h"\
+	"..\..\include\http_protocol.h"\
+	"..\..\include\httpd.h"\
+	"..\..\include\md5.h"\
+	"..\..\include\multithread.h"\
+	"..\..\include\util_date.h"\
+	"..\..\os\win32\os.h"\
+	"..\..\os\win32\readdir.h"\
 	".\mod_proxy.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
 	{$(INCLUDE)}"sys\utime.h"\
 	
 NODEP_CPP_PROXY=\
-	"..\..\main\ebcdic.h"\
-	"..\..\main\os.h"\
-	"..\..\main\sfio.h"\
+	"..\..\include\ebcdic.h"\
+	"..\..\include\os.h"\
+	"..\..\include\sfio.h"\
 	
 
 "$(INTDIR)\proxy_cache.obj" : $(SOURCE) $(DEP_CPP_PROXY) "$(INTDIR)"
 
 
+!ENDIF 
+
 SOURCE=.\proxy_connect.c
+
+!IF  "$(CFG)" == "ApacheModuleProxy - Win32 Release"
+
 DEP_CPP_PROXY_=\
-	"..\..\ap\ap.h"\
-	"..\..\main\alloc.h"\
-	"..\..\main\buff.h"\
-	"..\..\main\conf.h"\
-	"..\..\main\explain.h"\
-	"..\..\main\http_config.h"\
-	"..\..\main\http_log.h"\
-	"..\..\main\http_main.h"\
-	"..\..\main\http_protocol.h"\
-	"..\..\main\httpd.h"\
+	"..\..\include\alloc.h"\
+	"..\..\include\ap.h"\
+	"..\..\include\buff.h"\
+	"..\..\include\conf.h"\
+	"..\..\include\explain.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\include\http_config.h"\
+	"..\..\include\http_log.h"\
+	"..\..\include\http_main.h"\
+	"..\..\include\http_protocol.h"\
+	"..\..\include\httpd.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
-	"..\..\regex\regex.h"\
 	".\mod_proxy.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_PROXY_=\
-	"..\..\main\ebcdic.h"\
-	"..\..\main\os.h"\
-	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\proxy_connect.obj" : $(SOURCE) $(DEP_CPP_PROXY_) "$(INTDIR)"
 
 
-SOURCE=.\proxy_ftp.c
-DEP_CPP_PROXY_F=\
-	"..\..\ap\ap.h"\
-	"..\..\main\alloc.h"\
-	"..\..\main\buff.h"\
-	"..\..\main\conf.h"\
-	"..\..\main\explain.h"\
-	"..\..\main\http_config.h"\
-	"..\..\main\http_main.h"\
-	"..\..\main\http_protocol.h"\
-	"..\..\main\httpd.h"\
+!ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
+
+DEP_CPP_PROXY_=\
+	"..\..\include\alloc.h"\
+	"..\..\include\ap.h"\
+	"..\..\include\buff.h"\
+	"..\..\include\conf.h"\
+	"..\..\include\explain.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\include\http_config.h"\
+	"..\..\include\http_log.h"\
+	"..\..\include\http_main.h"\
+	"..\..\include\http_protocol.h"\
+	"..\..\include\httpd.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
-	"..\..\regex\regex.h"\
+	".\mod_proxy.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_PROXY_=\
+	"..\..\include\ebcdic.h"\
+	"..\..\include\os.h"\
+	"..\..\include\sfio.h"\
+	
+
+"$(INTDIR)\proxy_connect.obj" : $(SOURCE) $(DEP_CPP_PROXY_) "$(INTDIR)"
+
+
+!ENDIF 
+
+SOURCE=.\proxy_ftp.c
+
+!IF  "$(CFG)" == "ApacheModuleProxy - Win32 Release"
+
+DEP_CPP_PROXY_F=\
+	"..\..\include\alloc.h"\
+	"..\..\include\ap.h"\
+	"..\..\include\buff.h"\
+	"..\..\include\conf.h"\
+	"..\..\include\explain.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\include\http_config.h"\
+	"..\..\include\http_main.h"\
+	"..\..\include\http_protocol.h"\
+	"..\..\include\httpd.h"\
+	"..\..\os\win32\os.h"\
+	"..\..\os\win32\readdir.h"\
+	"..\standard\mod_mime.h"\
+	".\mod_proxy.h"\
+	
+
+"$(INTDIR)\proxy_ftp.obj" : $(SOURCE) $(DEP_CPP_PROXY_F) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
+
+DEP_CPP_PROXY_F=\
+	"..\..\include\alloc.h"\
+	"..\..\include\ap.h"\
+	"..\..\include\buff.h"\
+	"..\..\include\conf.h"\
+	"..\..\include\explain.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\include\http_config.h"\
+	"..\..\include\http_main.h"\
+	"..\..\include\http_protocol.h"\
+	"..\..\include\httpd.h"\
+	"..\..\os\win32\os.h"\
+	"..\..\os\win32\readdir.h"\
 	"..\standard\mod_mime.h"\
 	".\mod_proxy.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_PROXY_F=\
-	"..\..\main\ebcdic.h"\
-	"..\..\main\os.h"\
-	"..\..\main\sfio.h"\
+	"..\..\include\ebcdic.h"\
+	"..\..\include\os.h"\
+	"..\..\include\sfio.h"\
 	
 
 "$(INTDIR)\proxy_ftp.obj" : $(SOURCE) $(DEP_CPP_PROXY_F) "$(INTDIR)"
 
 
+!ENDIF 
+
 SOURCE=.\proxy_http.c
+
+!IF  "$(CFG)" == "ApacheModuleProxy - Win32 Release"
+
 DEP_CPP_PROXY_H=\
-	"..\..\ap\ap.h"\
-	"..\..\main\alloc.h"\
-	"..\..\main\buff.h"\
-	"..\..\main\conf.h"\
-	"..\..\main\explain.h"\
-	"..\..\main\http_config.h"\
-	"..\..\main\http_log.h"\
-	"..\..\main\http_main.h"\
-	"..\..\main\http_protocol.h"\
-	"..\..\main\httpd.h"\
-	"..\..\main\util_date.h"\
+	"..\..\include\alloc.h"\
+	"..\..\include\ap.h"\
+	"..\..\include\buff.h"\
+	"..\..\include\conf.h"\
+	"..\..\include\explain.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\include\http_config.h"\
+	"..\..\include\http_log.h"\
+	"..\..\include\http_main.h"\
+	"..\..\include\http_protocol.h"\
+	"..\..\include\httpd.h"\
+	"..\..\include\util_date.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
-	"..\..\regex\regex.h"\
 	".\mod_proxy.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_PROXY_H=\
-	"..\..\main\ebcdic.h"\
-	"..\..\main\os.h"\
-	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\proxy_http.obj" : $(SOURCE) $(DEP_CPP_PROXY_H) "$(INTDIR)"
 
 
-SOURCE=.\proxy_util.c
-DEP_CPP_PROXY_U=\
-	"..\..\ap\ap.h"\
-	"..\..\main\alloc.h"\
-	"..\..\main\buff.h"\
-	"..\..\main\conf.h"\
-	"..\..\main\explain.h"\
-	"..\..\main\http_config.h"\
-	"..\..\main\http_log.h"\
-	"..\..\main\http_main.h"\
-	"..\..\main\http_protocol.h"\
-	"..\..\main\httpd.h"\
-	"..\..\main\md5.h"\
-	"..\..\main\multithread.h"\
+!ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
+
+DEP_CPP_PROXY_H=\
+	"..\..\include\alloc.h"\
+	"..\..\include\ap.h"\
+	"..\..\include\buff.h"\
+	"..\..\include\conf.h"\
+	"..\..\include\explain.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\include\http_config.h"\
+	"..\..\include\http_log.h"\
+	"..\..\include\http_main.h"\
+	"..\..\include\http_protocol.h"\
+	"..\..\include\httpd.h"\
+	"..\..\include\util_date.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
-	"..\..\regex\regex.h"\
+	".\mod_proxy.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_PROXY_H=\
+	"..\..\include\ebcdic.h"\
+	"..\..\include\os.h"\
+	"..\..\include\sfio.h"\
+	
+
+"$(INTDIR)\proxy_http.obj" : $(SOURCE) $(DEP_CPP_PROXY_H) "$(INTDIR)"
+
+
+!ENDIF 
+
+SOURCE=.\proxy_util.c
+
+!IF  "$(CFG)" == "ApacheModuleProxy - Win32 Release"
+
+DEP_CPP_PROXY_U=\
+	"..\..\include\alloc.h"\
+	"..\..\include\ap.h"\
+	"..\..\include\buff.h"\
+	"..\..\include\conf.h"\
+	"..\..\include\explain.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\include\http_config.h"\
+	"..\..\include\http_log.h"\
+	"..\..\include\http_main.h"\
+	"..\..\include\http_protocol.h"\
+	"..\..\include\httpd.h"\
+	"..\..\include\md5.h"\
+	"..\..\include\multithread.h"\
+	"..\..\os\win32\os.h"\
+	"..\..\os\win32\readdir.h"\
+	".\mod_proxy.h"\
+	
+
+"$(INTDIR)\proxy_util.obj" : $(SOURCE) $(DEP_CPP_PROXY_U) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
+
+DEP_CPP_PROXY_U=\
+	"..\..\include\alloc.h"\
+	"..\..\include\ap.h"\
+	"..\..\include\buff.h"\
+	"..\..\include\conf.h"\
+	"..\..\include\explain.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\include\http_config.h"\
+	"..\..\include\http_log.h"\
+	"..\..\include\http_main.h"\
+	"..\..\include\http_protocol.h"\
+	"..\..\include\httpd.h"\
+	"..\..\include\md5.h"\
+	"..\..\include\multithread.h"\
+	"..\..\os\win32\os.h"\
+	"..\..\os\win32\readdir.h"\
 	".\mod_proxy.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_PROXY_U=\
-	"..\..\main\ebcdic.h"\
-	"..\..\main\os.h"\
-	"..\..\main\sfio.h"\
+	"..\..\include\ebcdic.h"\
+	"..\..\include\os.h"\
+	"..\..\include\sfio.h"\
 	
 
 "$(INTDIR)\proxy_util.obj" : $(SOURCE) $(DEP_CPP_PROXY_U) "$(INTDIR)"
 
+
+!ENDIF 
 
 
 !ENDIF 
