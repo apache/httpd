@@ -115,10 +115,10 @@
 #include "http_log.h"
 
 typedef struct {
-    char *name;			/* header name */
-    char *regex;		/* regex to match against */
-    regex_t *preg;		/* compiled regex */
-    table *features;		/* env vars to set (or unset) */
+    char *name;                 /* header name */
+    char *regex;                /* regex to match against */
+    regex_t *preg;              /* compiled regex */
+    table *features;            /* env vars to set (or unset) */
 } sei_entry;
 
 typedef struct {
@@ -129,20 +129,19 @@ module MODULE_VAR_EXPORT setenvif_module;
 
 static void *create_setenvif_config(pool *p, server_rec *dummy)
 {
-    sei_cfg_rec *new = (sei_cfg_rec *)palloc(p, sizeof(sei_cfg_rec));
+    sei_cfg_rec *new = (sei_cfg_rec *) palloc(p, sizeof(sei_cfg_rec));
 
     new->conditionals = make_array(p, 20, sizeof(sei_entry));
-    return (void *)new;
+    return (void *) new;
 }
 
 static void *merge_setenvif_config(pool *p, void *basev, void *overridesv)
 {
-    sei_cfg_rec *a =
-	pcalloc(p, sizeof(sei_cfg_rec));
+    sei_cfg_rec *a = pcalloc(p, sizeof(sei_cfg_rec));
     sei_cfg_rec *base = basev, *overrides = overridesv;
 
-    a->conditionals = append_arrays(p, base->conditionals, 
-				    overrides->conditionals);
+    a->conditionals = append_arrays(p, base->conditionals,
+                                    overrides->conditionals);
     return a;
 }
 
@@ -152,13 +151,12 @@ static const char *add_setenvif(cmd_parms *cmd, void *mconfig, const char *args)
     char *regex;
     const char *feature;
     const char *cmdline = args;
-    sei_cfg_rec *sconf =
-	get_module_config(cmd->server->module_config, &setenvif_module);
-    sei_entry *new, *entries = 
-	(sei_entry *)sconf->conditionals->elts;
+    sei_cfg_rec *sconf = get_module_config(cmd->server->module_config,
+                                           &setenvif_module);
+    sei_entry *new, *entries = (sei_entry *) sconf->conditionals->elts;
     char *var;
     int i;
-    int cflags = (int)(long)cmd->info;
+    int cflags = (int) (long) cmd->info;
     char *error;
     int beenhere = 0;
 
@@ -167,71 +165,72 @@ static const char *add_setenvif(cmd_parms *cmd, void *mconfig, const char *args)
      */
     fname = getword_conf(cmd->pool, &cmdline);
     if (!*fname) {
-	error = pstrcat(cmd->pool, "Missing header-field name for ",
-			cmd->cmd->name, NULL);
-	return error;
+        error = pstrcat(cmd->pool, "Missing header-field name for ",
+                        cmd->cmd->name, NULL);
+        return error;
     }
     regex = getword_conf(cmd->pool, &cmdline);
     if (!*regex) {
-	error = pstrcat(cmd->pool, "Missing regular expression for ",
-		        cmd->cmd->name, NULL);
-	return error;
+        error = pstrcat(cmd->pool, "Missing regular expression for ",
+                        cmd->cmd->name, NULL);
+        return error;
     }
     while ((feature = getword_conf(cmd->pool, &cmdline))) {
-	beenhere++;
+        beenhere++;
 
-	/*
-	 * First, try to merge into an existing entry
-	 */
+        /*
+         * First, try to merge into an existing entry
+         */
 
-	for (i = 0; i < sconf->conditionals->nelts; ++i) {
-	    sei_entry *b = &entries[i];
-	    if (!strcmp(b->name, fname) && !strcmp(b->regex, regex)) {
-		var = getword(cmd->pool, &feature, '=');
-		if (*feature) {
-		    table_set(b->features, var, feature);
-		}
-		else if (*var == '!') {
-		    table_set(b->features, var + 1, "!");
-		}
-		else {
-		    table_set(b->features, var, "1");
-		}
-		return NULL;
-	    }
-	}
+        for (i = 0; i < sconf->conditionals->nelts; ++i) {
+            sei_entry *b = &entries[i];
+            if (!strcmp(b->name, fname) && !strcmp(b->regex, regex)) {
+                var = getword(cmd->pool, &feature, '=');
+                if (*feature) {
+                    table_set(b->features, var, feature);
+                }
+                else if (*var == '!') {
+                    table_set(b->features, var + 1, "!");
+                }
+                else {
+                    table_set(b->features, var, "1");
+                }
+                return NULL;
+            }
+        }
 
-	/*
-	 * If none was found, create a new entry
-	 */
+        /*
+         * If none was found, create a new entry
+         */
 
-	new = push_array(sconf->conditionals);
-	new->name = fname;
-	new->regex = regex;
-	new->preg = pregcomp (cmd->pool, regex, REG_EXTENDED|REG_NOSUB|cflags);
-	if (new->preg == NULL) {
-	    error = pstrcat(cmd->pool, cmd->cmd->name,
-			    " regex could not be compiled.", NULL);
-	    return error;
-	}
-	new->features = make_table(cmd->pool, 5);
+        new = push_array(sconf->conditionals);
+        new->name = fname;
+        new->regex = regex;
+        new->preg = pregcomp(cmd->pool, regex,
+                             (REG_EXTENDED | REG_NOSUB | cflags));
+        if (new->preg == NULL) {
+            error = pstrcat(cmd->pool, cmd->cmd->name,
+                            " regex could not be compiled.", NULL);
+            return error;
+        }
+        new->features = make_table(cmd->pool, 5);
 
-	var = getword(cmd->pool, &feature, '=');
-	if (*feature) {
-	    table_set(new->features, var, feature);
-	}
-	else if (*var == '!') {
-	    table_set(new->features, var + 1, "!");
-	}
-	else {
-	    table_set(new->features, var, "1");
-	}
+        var = getword(cmd->pool, &feature, '=');
+        if (*feature) {
+            table_set(new->features, var, feature);
+        }
+        else if (*var == '!') {
+            table_set(new->features, var + 1, "!");
+        }
+        else {
+            table_set(new->features, var, "1");
+        }
     }
 
     if (!beenhere) {
-	error = pstrcat(cmd->pool, "Missing envariable expression for ",
-		        cmd->cmd->name, NULL);
-	return error;
+        error = pstrcat(cmd->pool, "Missing envariable expression for ",
+                        cmd->cmd->name, NULL);
+        return error;
     }
 
     return NULL;
@@ -243,7 +242,7 @@ static const char *add_setenvif(cmd_parms *cmd, void *mconfig, const char *args)
  * command handler.
  */
 static const char *add_browser(cmd_parms *cmd, void *mconfig, char *word1,
-			       char *word2)
+                               char *word2)
 {
     const char *match_command;
 
@@ -251,90 +250,92 @@ static const char *add_browser(cmd_parms *cmd, void *mconfig, char *word1,
     return add_setenvif(cmd, mconfig, match_command);
 }
 
-static command_rec setenvif_module_cmds[] = {
-{ "SetEnvIf", add_setenvif, (void *)0,
-    RSRC_CONF, RAW_ARGS, "A header-name, regex and a list of variables." },
-{ "SetEnvIfNoCase", add_setenvif, (void *)REG_ICASE,
-    RSRC_CONF, RAW_ARGS, "a header-name, regex and a list of variables." },
-{ "BrowserMatch", add_browser, (void *)0,
-    RSRC_CONF, ITERATE2, "A browser regex and a list of variables." },
-{ "BrowserMatchNoCase", add_browser, (void *)REG_ICASE,
-    RSRC_CONF, ITERATE2, "A browser regex and a list of variables." },
-{ NULL },
+static command_rec setenvif_module_cmds[] =
+{
+    {"SetEnvIf", add_setenvif, (void *) 0,
+     RSRC_CONF, RAW_ARGS, "A header-name, regex and a list of variables."},
+    {"SetEnvIfNoCase", add_setenvif, (void *) REG_ICASE,
+     RSRC_CONF, RAW_ARGS, "a header-name, regex and a list of variables."},
+    {"BrowserMatch", add_browser, (void *) 0,
+     RSRC_CONF, ITERATE2, "A browser regex and a list of variables."},
+    {"BrowserMatchNoCase", add_browser, (void *) REG_ICASE,
+     RSRC_CONF, ITERATE2, "A browser regex and a list of variables."},
+    {NULL},
 };
 
 static int match_headers(request_rec *r)
 {
     server_rec *s = r->server;
-    sei_cfg_rec *sconf = (sei_cfg_rec *)get_module_config(s->module_config,
-					                  &setenvif_module);
-    sei_entry *entries = (sei_entry *)sconf->conditionals->elts;
+    sei_cfg_rec *sconf = (sei_cfg_rec *) get_module_config(s->module_config,
+                                                           &setenvif_module);
+    sei_entry *entries = (sei_entry *) sconf->conditionals->elts;
     table_entry *elts;
     char *val;
     int i, j;
 
     for (i = 0; i < sconf->conditionals->nelts; ++i) {
-	sei_entry *b = &entries[i];
+        sei_entry *b = &entries[i];
 
-	if (!strcasecmp(b->name, "remote_addr")) {
-	    val = r->connection->remote_ip;
-	}
-	else if (!strcasecmp(b->name, "remote_host")) {
-	    val = (char *)get_remote_host(r->connection, r->per_dir_config,
-					  REMOTE_NAME);
-	}
-	else if (!strcasecmp(b->name, "remote_user")) {
-	    val = r->connection->user;
-	}
-	else if (!strcasecmp(b->name, "request_uri")) {
-	    val = r->uri;
-	}
-	else if (!strcasecmp(b->name, "request_method")) {
-	    val = r->method;
-	}
-	else {
-	    val = table_get(r->headers_in, b->name);
-	}
+        if (!strcasecmp(b->name, "remote_addr")) {
+            val = r->connection->remote_ip;
+        }
+        else if (!strcasecmp(b->name, "remote_host")) {
+            val = (char *) get_remote_host(r->connection, r->per_dir_config,
+                                           REMOTE_NAME);
+        }
+        else if (!strcasecmp(b->name, "remote_user")) {
+            val = r->connection->user;
+        }
+        else if (!strcasecmp(b->name, "request_uri")) {
+            val = r->uri;
+        }
+        else if (!strcasecmp(b->name, "request_method")) {
+            val = r->method;
+        }
+        else {
+            val = table_get(r->headers_in, b->name);
+        }
 
-	if (!val) {
-	    continue;
-	}
- 
-	if (!regexec(b->preg, val, 0, NULL, 0)) {
-	    elts = (table_entry *)b->features->elts;
+        if (!val) {
+            continue;
+        }
 
-	    for (j = 0; j < b->features->nelts; ++j) {
-		if (!strcmp(elts[j].val, "!")) {
-		    table_unset(r->subprocess_env, elts[j].key);
-		}
-		else {
-		    table_set(r->subprocess_env, elts[j].key, elts[j].val);
-		}
-	    }
-	}
+        if (!regexec(b->preg, val, 0, NULL, 0)) {
+            elts = (table_entry *) b->features->elts;
+
+            for (j = 0; j < b->features->nelts; ++j) {
+                if (!strcmp(elts[j].val, "!")) {
+                    table_unset(r->subprocess_env, elts[j].key);
+                }
+                else {
+                    table_set(r->subprocess_env, elts[j].key, elts[j].val);
+                }
+            }
+        }
     }
 
     return DECLINED;
 }
 
-module MODULE_VAR_EXPORT setenvif_module = {
-   STANDARD_MODULE_STUFF,
-   NULL,			/* initializer */
-   NULL,			/* dir config creater */
-   NULL,			/* dir merger --- default is to override */
-   create_setenvif_config,	/* server config */
-   merge_setenvif_config,     	/* merge server configs */
-   setenvif_module_cmds,	/* command table */
-   NULL,			/* handlers */
-   NULL,			/* filename translation */
-   NULL,			/* check_user_id */
-   NULL,			/* check auth */
-   NULL,			/* check access */
-   NULL,			/* type_checker */
-   NULL,			/* fixups */
-   NULL,			/* logger */
-   NULL,			/* input header parse */
-   NULL,			/* child (process) initialization */
-   NULL,			/* child (process) rundown */
-   match_headers		/* post_read_request */
+module MODULE_VAR_EXPORT setenvif_module =
+{
+    STANDARD_MODULE_STUFF,
+    NULL,                       /* initializer */
+    NULL,                       /* dir config creater */
+    NULL,                       /* dir merger --- default is to override */
+    create_setenvif_config,     /* server config */
+    merge_setenvif_config,      /* merge server configs */
+    setenvif_module_cmds,       /* command table */
+    NULL,                       /* handlers */
+    NULL,                       /* filename translation */
+    NULL,                       /* check_user_id */
+    NULL,                       /* check auth */
+    NULL,                       /* check access */
+    NULL,                       /* type_checker */
+    NULL,                       /* fixups */
+    NULL,                       /* logger */
+    NULL,                       /* input header parse */
+    NULL,                       /* child (process) initialization */
+    NULL,                       /* child (process) rundown */
+    match_headers               /* post_read_request */
 };
