@@ -219,7 +219,7 @@ enable <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>
     <p>The <code class="directive">CookieLog</code> directive sets the 
     filename for logging of cookies. The filename is relative to the
     <code class="directive"><a href="../mod/core.html#serverroot">serverroot</a></code>. This directive is
-    included only for compatibility with <code class="module"><a href="../mod/mod_cookies.html">mod_cookies</a></code>,
+    included only for compatibility with <code>mod_cookies</code>,
     and is deprecated.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sets filename and format of log file</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:

@@ -13,7 +13,7 @@
 <div class="warning">
 This module is experimental. Documentation is still under development...
 </div>
-    <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> implements a disk based storage manager for use with <code class="module"><a href="../mod/mod_proxy..html">mod_proxy.</a></code></p>
+    <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> implements a disk based storage manager for use with <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
     <p>Content stored and retrived keyed to the URL. Content with
     access protections is not cached.</p>
 <div class="note">
