@@ -116,7 +116,6 @@ static int ap_max_requests_per_child=0;
 static char *ap_pid_fname=NULL;
 static char *ap_scoreboard_fname=NULL;
 static char *ap_lock_fname;
-static char *ap_server_argv0=NULL;
 static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
