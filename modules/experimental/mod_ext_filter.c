@@ -367,8 +367,6 @@ static apr_status_t set_resource_limits(request_rec *r,
 
 static apr_status_t ef_close_file(void *vfile)
 {
-    apr_file_t *f = vfile;
-
     return apr_close(vfile);
 }
 
