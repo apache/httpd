@@ -1301,7 +1301,7 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
 	}
 
 	pid = (*func) (data);
-        if (pid == -1) pid = 0;     // map Win32 error code onto Unix default
+        if (pid == -1) pid = 0;   /* map Win32 error code onto Unix default */
 
         if (!pid) {
 	    save_errno = errno;
