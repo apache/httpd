@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+<title>Apache の SSL/TLS 暗号化</title>
+</head>
+<!-- English revision: 1.2 -->
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#000080" alink="#FF0000"> 
+<!--#include virtual="header.html" -->
+
+<h1 align="center">SSL/TLS による強力な暗号化</h1>
+
+<p>Apache HTTP サーバモジュール 
+<a href="../mod/mod_ssl.html">mod_ssl</a> が
+<a href="http://www.openssl.org/">OpenSSL</a>
+ライブラリへのインターフェースを提供していますが、これは
+Secure Sockts Layer と Transport Layer Security
+プロトコルを用いた強力な暗号化を提供します。
+このモジュールやこの文書は Ralf S. Engelschall の mod_ssl
+プロジェクトに基づいています。</p>
+
+<ul>
+<li><a href="ssl_intro.html">はじめに</a></li>
+<li><a href="ssl_compat.html">互換性</a></li>
+<li><a href="ssl_howto.html">How-To</a></li>
+<li><a href="ssl_faq.html">よくある質問</a></li>
+<li><a href="ssl_glossary.html">用語</a></li>
+</ul>
+
+<p>このモジュールで提供されるディレクティブや環境変数に関する
+詳しい文書は、<a href="../mod/mod_ssl.html">mod_ssl
+リファレンス</a>をご覧下さい。</p>
+
+<p><!--#include virtual="footer.html" --> </p>
+  </body>
+</html>
