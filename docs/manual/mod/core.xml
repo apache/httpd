@@ -890,6 +890,21 @@ in case of an error</description>
       ErrorDocument 403 "Sorry can't allow you access today"
     </example>
 
+    <p>Additionally, the special value <code>default</code> can be used
+    to specify Apache's simple hardcoded message.  While not required
+    under normal circumstances, <code>default</code> will restore
+    Apache's simple hardcoded message for configurations that would
+    otherwise inherit an existing <directive>ErrorDocument</directive>.</p>
+
+    <example>
+      ErrorDocument 404 /cgi-bin/bad_urls.pl<br /><br />
+      &lt;Directory /web/docs&gt;<br />
+      <indent>
+        ErrorDocument 404 default<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
     <p>Note that when you specify an <directive>ErrorDocument</directive>
     that points to a remote URL (ie. anything with a method such as
     <code>http</code> in front of it), Apache will send a redirect to the
