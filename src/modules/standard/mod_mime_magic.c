@@ -498,7 +498,7 @@ typedef struct {
  * configuration functions - called by Apache API routines
  */
 
-module mime_magic_module;
+module MODULE_VAR_EXPORT mime_magic_module;
 
 static void *create_magic_server_config(pool *p, server_rec *d)
 {
@@ -2485,7 +2485,7 @@ static int magic_find_ct(request_rec *r)
  * Apache API module interface
  */
 
-module mime_magic_module =
+module MODULE_VAR_EXPORT mime_magic_module =
 {
     STANDARD_MODULE_STUFF,
     magic_init,			/* initializer */
