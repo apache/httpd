@@ -40,7 +40,7 @@ application/iotp
 application/ipp
 application/isup
 application/mac-binhex40	hqx
-application/mac-compactpro	cpt		# unregistered
+application/mac-compactpro	cpt
 application/macwriteii
 application/marc
 application/mathematica
@@ -84,9 +84,9 @@ application/sgml
 application/sgml-open-catalog
 application/sieve
 application/slate
-application/smil		smi smil	# unregistered
-application/srgs		gram		# unregistered
-application/srgs+xml		grxml		# unregistered
+application/smil		smi smil
+application/srgs		gram
+application/srgs+xml		grxml
 application/timestamp-query
 application/timestamp-reply
 application/tve-trigger
@@ -335,7 +335,7 @@ application/vnd.yamaha.hv-dic
 application/vnd.yamaha.hv-script
 application/vnd.yamaha.hv-voice
 application/vnd.yellowriver-custom-menu
-application/voicexml+xml	vxml			# unregistered
+application/voicexml+xml	vxml
 application/watcherinfo+xml
 application/whoispp-query
 application/whoispp-response
@@ -408,7 +408,7 @@ audio/l16
 audio/l20
 audio/l24
 audio/lpc
-audio/midi			mid midi kar		# unregistered
+audio/midi			mid midi kar
 audio/mpa
 audio/mpa-robust
 audio/mp4a-latm
@@ -446,9 +446,9 @@ audio/x-pn-realaudio		ram rm
 audio/x-pn-realaudio-plugin	rpm
 audio/x-realaudio		ra
 audio/x-wav			wav
-chemical/x-pdb			pdb			# invalid
-chemical/x-xyz			xyz			# invalid
-image/bmp			bmp			# unregistered
+chemical/x-pdb			pdb
+chemical/x-xyz			xyz
+image/bmp			bmp
 image/cgm			cgm
 image/g3fax
 image/gif			gif
@@ -588,4 +588,4 @@ video/vnd.objectvideo
 video/vnd.vivo
 video/x-msvideo			avi
 video/x-sgi-movie		movie
-x-conference/x-cooltalk		ice			# invalid
+x-conference/x-cooltalk		ice
