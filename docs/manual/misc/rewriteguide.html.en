@@ -32,7 +32,7 @@
     <a href="../mod/mod_rewrite.html">reference documentation</a>.
     It describes how one can use Apache's <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
     to solve typical URL-based problems with which webmasters are
-    commonony confronted. We give detailed descriptions on how to
+    commonly confronted. We give detailed descriptions on how to
     solve each problem by configuring URL rewriting rulesets.</p>
 
   </div>
