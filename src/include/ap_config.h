@@ -1153,10 +1153,6 @@ Sigfunc *signal(int signo, Sigfunc * func);
 #if !defined(WIN32) && !defined(TPF)
 #define CHECK_FD_SETSIZE
 #endif
-/* and for client sockets */
-#if !defined(TPF)
-#define CHECK_CSD_SETSIZE
-#endif
 
 #ifdef USE_TPF_SELECT
 #define ap_select(_a, _b, _c, _d, _e)	\

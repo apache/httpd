@@ -3898,7 +3898,7 @@ static void child_main(int child_num_arg)
 	ap_note_cleanups_for_fd(ptrans, csd);
 
 	/* protect various fd_sets */
-#ifdef CHECK_CSD_SETSIZE
+#ifdef CHECK_FD_SETSIZE
 	if (csd >= FD_SETSIZE) {
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
 		"[csd] filedescriptor (%u) larger than FD_SETSIZE (%u) "
@@ -3946,7 +3946,7 @@ static void child_main(int child_num_arg)
 	ap_note_cleanups_for_fd(ptrans, dupped_csd);
 
 	/* protect various fd_sets */
-#ifdef CHECK_CSD_SETSIZE
+#ifdef CHECK_FD_SETSIZE
 	if (dupped_csd >= FD_SETSIZE) {
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
 		"[dupped_csd] filedescriptor (%u) larger than FD_SETSIZE (%u) "
