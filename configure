@@ -867,18 +867,14 @@ for var in CC CPP OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LD_SHLIB LDFLAGS_SHLIB \
             -e 's:$:" \\:' >>$configstatus
     fi
 done
-if [ $# -eq 0 ]; then
-    echo "./configure" >>$configstatus
-else
-    echo $SEO "./configure \\" >>$configstatus
-    for arg
-    do
-        echo "$arg" |\
-        sed -e 's:\(["$\\]\):\\\1:g' \
-            -e 's:^:":' \
-            -e 's:$:" \\:' >>$configstatus
-    done
-fi
+echo $SEO "./configure \\" >>$configstatus
+for arg
+do
+    echo "$arg" |\
+    sed -e 's:\(["$\\]\):\\\1:g' \
+        -e 's:^:":' \
+        -e 's:$:" \\:' >>$configstatus
+done
 echo '"$@"' >>$configstatus
 echo '' >>$configstatus
 chmod a+x $configstatus
