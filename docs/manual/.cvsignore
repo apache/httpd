@@ -1,0 +1,11 @@
+_chm
+_zip
+build
+*.zip
+*.chm
+*.tex
+*.aux
+*.out
+*.log
+*.pdf
+*.toc
