@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>よくある質問 - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a> &gt; <a href="./">FAQ</a></div><div id="page-content"><div id="preamble"><h1>よくある質問</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/faq/all_in_one.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/faq/all_in_one.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/faq/all_in_one.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+
+    <p>Apache の主サイト、&lt;<a href="http://httpd.apache.org/docs-2.1/faq/">http://httpd.apache.org/docs-2.1/faq/</a>&gt;
+      から最新版の FAQ を常に手に入れることができます。</p>
+
+    <p>Apache 2.0 はまだ新しいので、何が<em>よくある質問</em>なのか
+      まだよくわかっていません。このセクションが埋まっていくまで、
+      既に質問が答えられているかどうか <a href="http://httpd.apache.org/docs/misc/FAQ.html">Apache 1.3 の FAQ</a>
+      も見るようにしてください。</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#topics">トピック</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#support">サポート</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#error">エラーメッセージ</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a id="topics" name="topics">トピック</a></h2>
+<dl><dt><a href="#support">サポート</a></dt><dd>何か問題が起こったときにどうする?</dd>
+<dt><a href="#error">エラーメッセージ</a></dt><dd>このエラーメッセージの意味は?</dd>
+</dl></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="support" id="support">サポート</a></h2>
+    <ul>
+    <li><a href="#support.what2do">「なんで…? どうして動作しない…?」問題が
+    起きたときにどうするか</a></li>
+
+    <li><a href="#support.support">誰にサポートを頼めばよい?</a></li>
+    </ul>
+
+    <h3><a name="support.what2do" id="support.what2do">「なんで…? どうして動作しない…?」問題が
+    起きたときにどうするか</a></h3>
+    
+
+      <p>Apache のサーバソフトウェアに何か問題が起こったときは、以下の
+      手順に従ってください:</p>
+
+      <dl>
+      <dt>エラーログを調べる!</dt>
+      <dd>問題が発生したときは Apache はなるべく手助けをしようとします。
+      多くの場合、Apache はサーバのエラーログにメッセージを書くことで、詳細な
+      情報を提供します。場合によっては、これだけで問題を自分自身で分析し、
+      修正するために十分な情報を得ることができます (ファイルのパーミッションの
+      問題など)。エラーログのデフォルトの場所は
+      <code>/usr/local/apache2/logs/error_log</code> ですが、あなたのサーバ
+      での場所を知るためには設定ファイル中の <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> を見てください。</dd>
+
+      <dt><a href="http://httpd.apache.org/docs-2.1/faq/">FAQ</a> を調べる!</dt>
+      <dd>Apache のよくある質問の最新版は常に Apache の主ウェブサイトに
+      あります。</dd>
+
+      <dt>Apache バグデータベースを調べる</dt>
+      <dd>Apache グループに報告されるほとんどの問題は<a href="http://httpd.apache.org/bug_report.html">バグデータベース</a>に
+      記録されます。Open <strong>も</strong> closed <strong>も</strong> 含めて、
+      既存のレポートにあるかどうかを調べて<strong>ください</strong>。
+      既に問題が報告されているとき、「私も」という報告は追加<em>しないで
+      ください</em>。元の報告が close されていないときは、定期的に
+      バグデータベースを調べることをお薦めします。また、元の提出者に
+      連絡を取ることも考慮に入れておくとよいでしょう。データベースに
+      記録されていない電子メールの交換が行なわれているかもしれません。</dd>
+
+      <dt><a id="support.what2do.user-support" name="support.what2do.user-support">ユーザサポートフォーラムで質問する</a></dt>
+      <dd><p>Apache にはよろこんで知識を共有させてくれる活発な
+      ユーザのコミュニティがあります。このコミュニティに参加することが、
+      普通は質問や問題に対する回答を得る最善で最速の手段です。</p>
+
+      <p><a href="http://httpd.apache.org/userslist.html">ユーザ
+      メーリングリスト</a></p>
+
+      <p>USENET ニュースグループ:</p>
+
+      <ul>
+      <li>comp.infosystems.www.servers.unix
+      [<a href="news:comp.infosystems.www.servers.unix">ニュース</a>]
+      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.servers.unix">google</a>]
+      </li>
+
+      <li>comp.infosystems.www.servers.ms-windows
+      [<a href="news:comp.infosystems.www.servers.ms-windows">ニュース</a>]
+      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.servers.ms-windows">google</a>]
+      </li>
+
+      <li>comp.infosystems.www.authoring.cgi
+      [<a href="news:comp.infosystems.www.authoring.cgi">ニュース</a>]
+      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.authoring.cgi">google</a>]
+      </li>
+      </ul></dd>
+
+      <dd>もし、全部失敗した場合は、問題をバグデータベースに報告してください</dd>
+      <dd><p>上記の手段の中で該当するものををすべて取って、
+      それでも問題の解決策を得られなかった場合は、<a href="http://httpd.apache.org/bug_report.html">バグの報告</a>を
+      することにより、問題を<em>ぜひ</em> httpd 開発者に知らせてください。</p>
+
+      <p>サーバのクラッシュやコアダンプの発生する問題であれば、(可能であれば)
+      バックトレースを報告に含めてください。例えば、</p>
+
+      <div class="example"><p><code>
+        # cd <var>ServerRoot</var><br />
+        # dbx <var>httpd</var> <var>core</var><br />
+        (dbx) where
+      </code></p></div>
+
+      <p>(<var>ServerRoot</var> と <var>httpd</var> と <var>core</var> ファイル
+      の位置を適切なものに置き換えてください。<code>dbx</code> の代わりに
+      <code>gdb</code> を使う必要があるかもしれません。)</p>
+      </dd>
+      </dl>
+    
+
+    <h3><a name="support.support" id="support.support">誰にサポートを頼めばよい?</a></h3>
+      <p>数百万のユーザに対して、40未満のボランティア開発者しかいないため、
+      Apache の個人的なサポートを提供することはできません。無料の
+      サポートには、<a href="#support.what2do.user-support">ユーザのフォーラム</a>に参加するのが良いでしょう。</p>
+
+      <p>Apache のプロの、商用サポートも
+      <a href="http://www.apache.org/info/support.cgi">多くの会社</a>
+      から提供されています。</p>
+   
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="error" id="error">エラーメッセージ</a></h2>
+    <ul>
+    <li><a href="#error.sendfile">Invalid argument:
+    core_output_filter: writing data to the network</a></li>
+    <li><a href="#error.acceptex">AcceptEx failed</a></li>
+    <li><a href="#error.scriptheaders">Premature end of script 
+    headers</a></li>
+    </ul>
+
+    <h3><a name="error.sendfile" id="error.sendfile">Invalid argument:
+    core_output_filter: writing data to the network</a></h3>
+
+    <p>(訳注: 無効な引数: core_output_filter: ネットワークへのデータの
+    書き込み)</p>
+
+    <p>Apache は応答の返送を速くするために、<code>sendfile</code> システム
+    コールが使用可能なプラットフォームではそのシステムコールを使用します。
+    ところが、都合の悪いことに、<code>sendfile</code> が正しく動作しないにも
+    関わらず、Apache がコンパイル時に存在を検知してしまうシステムがあります。
+    これは、ネットワークファイルシステムや他の非標準のファイルシステムを
+    使用しているときに一番よく発生します。</p>
+    
+    <p>この問題の症状は、上記のメッセージがエラーログに書かれることと、
+    サイズがゼロでないファイルの応答がゼロになることです。
+    動的なコンテンツは <code>sendfile</code> を利用しないため、
+    この問題は通常は静的なファイルでのみ発生します。</p>
+
+    <p>この問題は、<code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code> ディレクティブを使用して、
+    サーバのすべて、もしくは一部分に対して <code>sendfile</code> を
+    無効にするだけで修正できます。同様の問題を解決するための
+    <code class="directive"><a href="../mod/core.html#enablemmap">EnableMMAP</a></code> ディレクティブも
+    参照してください。</p>
+
+    
+
+    <h3><a name="error.acceptex" id="error.acceptex">AcceptEx Failed</a></h3>
+
+    <p>(訳注: AcceptEx 失敗)</p>
+
+    <p>Win32 での <code>AcceptEx</code> システムコールに関係するエラー
+    メッセージを受け取ったときは、<code class="directive"><a href="../mod/mpm_winnt.html#win32disableacceptex">Win32DisableAcceptEx</a></code> を参照してください。</p>
+    
+
+
+    <h3><a name="error.scriptheaders" id="error.scriptheaders">Premature end of script 
+    headers</a></h3>
+
+    <p>(訳注: スクリプトヘッダの中途終了)</p>
+
+    <p>CGI スクリプトのほとんどの問題はエラーログにこのメッセージが書かれ、
+    ブラウザには <code>Internal Server Error</code> が送られることになります。
+    この種の問題のデバッグ方法は <a href="../howto/cgi.html#troubleshoot">CGI
+    チュートリアル</a> で説明されています。</p>
+    
+
+</div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/faq/all_in_one.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/faq/all_in_one.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/faq/all_in_one.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1999-2004 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>
