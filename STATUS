@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/03/08 04:42:46 $]
+Last modified at [$Date: 2001/03/13 22:09:32 $]
 
 Release:
 
@@ -24,9 +24,9 @@ DAEDALUS 2.0 PROBLEMS:
     
     * assert pops in ap_setup_client_block(). ap_getline() is
       apparently failing to completely empty req_cfg->bb in some cases.
-      core dumps: /usr/local/apache2/corefiles/httpd.core.[49]
+      core dumps: /usr/local/apache2/corefiles/httpd.core.{4, 9, 12}
       see message: <NEBBKBPPOLLGMBILHACFCEHGCBAA.cliffwoolley@yahoo.com>
-        Status: Cliff did some analysis of this
+        Status: Cliff, Jeff, and Greg did some analysis of this
 
     * seg fault involving null server_addr_rec pointer in check_hostalias()
       core dump: /usr/local/apache2/corefiles/httpd.core.7
@@ -34,7 +34,7 @@ DAEDALUS 2.0 PROBLEMS:
         Status: Not yet analyzed
 
     * access log entries are sometimes split (multiple lines)
-      seems to be related to FrontPage and/or DAV
+      seems to be related to FrontPage and/or WebDAV enabled browsers
         Status: Jeff suspects password hiding code in log_request_line()
 
 RELEASE SHOWSTOPPERS:
