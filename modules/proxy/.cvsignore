@@ -11,6 +11,7 @@ modules.mk
 .deps
 .libs
 *.mak
+*.dep
 BuildLog.htm
 *.stc
 *.stt
