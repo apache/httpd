@@ -1453,11 +1453,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
 
     AP_DEBUG_ASSERT(!r->main);
 
-    /* Handlers -should- be smart enough not to send content on HEAD requests.
-     * To guard against poorly written handlers, leave the header_filter
-     * installed (but only for HEAD requests) to intercept and discard content
-     * after the headers have been sent.
-     */
     if (r->header_only) {
         if (!ctx) {
             ctx = f->ctx = apr_pcalloc(r->pool, sizeof(header_filter_ctx));
