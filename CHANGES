@@ -1,5 +1,8 @@
 Changes with Apache 2.0.48
 
+  *) mod_rewrite: Don't die silently when failing to open RewriteLogs.
+     PR 23416.  [André Malo]
+
   *) mod_rewrite: Fix mod_rewrite's support of the [P] option to send
       rewritten request using "proxy:". The code was adding multiple "proxy:"
       fields in the rewritten URI. PR: 13946. [Eider Oliveira <eider@bol.com.br>]
