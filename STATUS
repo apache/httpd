@@ -138,6 +138,7 @@ Committed Code Changes:
     * Ralf's fallback strategy for DSO by trying to guess flags from Perl
     * Ralf's add of the query (-q) option to apxs
     * Ralf's initial doc and Configuration.tmpl entry for mod_mmap_static
+    * OS/2 tweak to deal with multiple .exe targets. [Brian Havard]
 
 Available Patches:
 
@@ -184,10 +185,8 @@ Open issues:
       apache-1.3/src/test/rename/rename.cf file as the configuration for the
       renaming. The used prefix or prefixes are configureable in the file,
       too. But we have to additionally vote on them in the next point.
-      Votes: Ralf +1, Jim +1 (on the source-level renaming for
-      1.3b6 and 1.3.0; how is still up for debate :) ),
-      Marc -0 (this is not the time nor the place, but I don't have
-      time to veto this crap so it will be pushed through)
+      Votes: +1: Ralf, Jim, Roy
+              0: Marc
 
     * Use consistant prefixes for the renaming; suggestions:
 
@@ -197,17 +196,17 @@ Open issues:
         - Apache provided general functions (e.g., ap_cpystrn)
             ap_xxx: +0: Ken, Brian, Ralf, Martin, Paul, Roy, Jim
         - Public API functions (e.g., palloc)
-            ap_xxx: +1 Ralf
+            ap_xxx: +1 Ralf, Roy
             apapi_xxx: +1: Ken, Paul, Jim
         - Private functions which we can't make static (because of
           cross-object usage) but should be (e.g., new_connection)
-            apx_xxx +1: Ralf
+            apx_xxx +1: Ralf, Roy
             appri_xxx +1: Paul, Jim, Ken
         - Public API module structure variables (e.g.,
           status_module) which are used special in Configure,
           mod_so, etc and have to be exported:
             ap_xxx +1:
-            apm_xxx +1: Ralf
+            apm_xxx +1: Ralf, Roy
 
         Notes: 
             - Ralf: My opinion for my decisions are the following ones: 
@@ -314,7 +313,8 @@ Open issues:
     * 206 vs. 200 issue on Content-Length
 	See <Pine.BSF.3.95q.971102000930.5555B-100000@valis.worldgate.com>
 	Roy says current behavior is correct, but Alexei disagrees.
-	Marc sides with Alexei.
+	Marc sides with Alexei.  [Roy: This summary is incorrect -- we were
+        talking about two different PRs]
 
     * Marc's socket options like source routing (kill them?)
 	Marc, Dean, Martin say Yes
