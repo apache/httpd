@@ -1098,6 +1098,7 @@ int setup_client_block (request_rec *r)
 	    return BAD_REQUEST;
 	}
 	r->read_chunked = 1;
+	r->remaining = 0;
     }
     else {
 	if (!lenp) {
@@ -1167,21 +1168,23 @@ long get_client_block (request_rec *r, char *buffer, int bufsiz)
     if (len_to_read == 0) {
 	len_to_read = rd_chunk_size(r->connection->client);
 	if (len_to_read == 0) {
-	    /* Skip over any "footers" */
-	    do c = bgets(buffer, bufsiz, r->connection->client);
-	    while ((c > 0) && (*buffer != '\015') && (*buffer != '\012'));
+	    /* Read any footers - the module may not notice them,
+	     * but they're there, and so we read them */
+	    get_mime_headers(r);
 	    return 0;
 	}
     }
-    if (len_to_read >= bufsiz) {
-	r->remaining = len_to_read - bufsiz - 1;
-	len_to_read = bufsiz - 1;
+    if (len_to_read > bufsiz) {
+	r->remaining = len_to_read - bufsiz;
+	len_to_read = bufsiz;
     }
     else
 	r->remaining = 0;
     
     len_read = bread(r->connection->client, buffer, len_to_read);
     if (r->remaining == 0) {
+	/* Read the newline at the end of the chunk
+	 * (and any other garbage that might be present) */
 	do c = bgetc (r->connection->client);
 	while (c != '\n' && c != EOF);
     }
