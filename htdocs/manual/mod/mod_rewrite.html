@@ -248,21 +248,21 @@ rule. When it fails mod_rewrite immediately stops processing this rule and
 continues with the next rule. If the <EM>Pattern</EM> matched, mod_rewrite
 looks for corresponding rule conditions. If none are present, it just
 substitutes the URL with a new value which is constructed from the string
-<EM>Substitution</EM> and goes on with its rule-looping. But if conditions But
+<EM>Substitution</EM> and goes on with its rule-looping. But
 if conditions exists, it starts an inner loop for processing them in order
 they are listed. For conditions the logic is different: We don't match a
 pattern against the current URL. Instead we first create a string
-<EM>TestString</EM> by expanding variables, back-references, map lookups, <EM>etc.</EM>
-and then we try to match <EM>TestPattern</EM> against it. If the pattern
-doesn't match, the complete set of conditions and the corresponding rule fails.
-If the pattern matches, then the next condition is processed until no more
-condition is available. If all conditions matched processing is continued with
-the substitution of the URL with <EM>Substitution</EM>.
+<EM>TestString</EM> by expanding variables, back-references, map lookups,
+<EM>etc.</EM> and then we try to match <EM>CondPattern</EM> against it. If the
+pattern doesn't match, the complete set of conditions and the corresponding
+rule fails.  If the pattern matches, then the next condition is processed
+until no more condition is available. If all conditions matched processing is
+continued with the substitution of the URL with <EM>Substitution</EM>.
 
 <H2><A NAME="InternalBackRefs">Regex Back-Reference Availability</A></H2>
 
 One important thing here has to be remembered: Whenever you
-use parenthesis in <EM>Pattern</EM> or in one of the <EM>TestPattern</EM>
+use parenthesis in <EM>Pattern</EM> or in one of the <EM>CondPattern</EM>
 back-reference are internally created which can be used with the
 strings <CODE>$N</CODE> and <CODE>%N</CODE> (see below). And these
 are available for creating the strings <EM>Substitution</EM> and
