@@ -992,6 +992,7 @@ API_EXPORT(char *) ap_uudecode(pool *, const char *);
 API_EXPORT(char *) ap_uuencode(pool *p, char *string); 
 #ifdef OS2
 void os2pathname(char *path);
+char *ap_double_quotes(pool *p, char *str);
 #endif
 
 API_EXPORT(int)    ap_regexec(const regex_t *preg, const char *string,

@@ -67,6 +67,11 @@
 #include "util_script.h"
 #include "util_date.h"		/* For parseHTTPdate() */
 
+#ifdef OS2
+#define INCL_DOS
+#include <os2.h>
+#endif
+
 /*
  * Various utility functions which are common to a whole lot of
  * script-type extensions mechanisms, and might as well be gathered
@@ -750,54 +755,126 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 #ifdef OS2
     {
 	/* Additions by Alec Kloss, to allow exec'ing of scripts under OS/2 */
-	int is_script;
+	int is_script = 0;
 	char interpreter[2048];	/* hope it's enough for the interpreter path */
+	char error_object[260];
 	FILE *program;
+        char *cmdline = r->filename, *cmdline_pos;
+        int cmdlen;
+	char *args = "", *args_end;
+	ULONG rc;
+        RESULTCODES rescodes;
+        int env_len, e;
+        char *env_block, *env_block_pos;
 
+	if (r->args && r->args[0] && !strchr(r->args, '='))
+	    args = r->args;
+	    
 	program = fopen(r->filename, "rt");
+	
 	if (!program) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r, "fopen(%s) failed",
 			 r->filename);
 	    return (pid);
 	}
+	
 	fgets(interpreter, sizeof(interpreter), program);
 	fclose(program);
+	
 	if (!strncmp(interpreter, "#!", 2)) {
 	    is_script = 1;
-	    interpreter[strlen(interpreter) - 1] = '\0';
-	}
-	else {
-	    is_script = 0;
+            interpreter[strlen(interpreter) - 1] = '\0';
+            if (interpreter[2] != '/' && interpreter[2] != '\\' && interpreter[3] != ':') {
+                char buffer[300];
+                if (DosSearchPath(SEARCH_ENVIRONMENT, "PATH", interpreter+2, buffer, sizeof(buffer)) == 0) {
+                    strcpy(interpreter+2, buffer);
+                } else {
+                    strcat(interpreter, ".exe");
+                    if (DosSearchPath(SEARCH_ENVIRONMENT, "PATH", interpreter+2, buffer, sizeof(buffer)) == 0) {
+                        strcpy(interpreter+2, buffer);
+                    }
+                }
+            }
 	}
 
-	if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) {
-	    /* More additions by Alec Kloss for OS/2 */
-	    if (is_script) {
-		/* here's the stuff to run the interpreter */
-		pid = spawnle(P_NOWAIT, interpreter + 2, interpreter + 2, r->filename, NULL, env);
-	    }
-	    else if (strstr(strupr(r->filename), ".CMD") > 0) {
-		/* Special case to allow use of REXX commands as scripts. */
-		os2pathname(r->filename);
-		pid = spawnle(P_NOWAIT, SHELL_PATH, SHELL_PATH, "/C", r->filename, NULL, env);
-	    }
-	    else {
-		pid = spawnle(P_NOWAIT, r->filename, argv0, NULL, env);
-	    }
+        if (is_script) {
+            cmdline = ap_pstrcat(r->pool, interpreter+2, " ", r->filename, NULL);
+        }
+        else if (strstr(strupr(r->filename), ".CMD") > 0) {
+            /* Special case to allow use of REXX commands as scripts. */
+            os2pathname(r->filename);
+            cmdline = ap_pstrcat(r->pool, SHELL_PATH, " /C ", r->filename, NULL);
+        }
+        else {
+            cmdline = r->filename;
 	}
-	else {
-	    if (strstr(strupr(r->filename), ".CMD") > 0) {
-		/* Special case to allow use of REXX commands as scripts. */
-		os2pathname(r->filename);
-		pid = spawnve(P_NOWAIT, SHELL_PATH, create_argv_cmd(r->pool, argv0, r->args,
-						  r->filename), env);
-	    }
-	    else {
-		pid = spawnve(P_NOWAIT, r->filename,
-		      create_argv(r->pool, NULL, NULL, NULL, argv0, r->args), env);
-	    }
+	
+        args = ap_pstrdup(r->pool, args);
+        ap_unescape_url(args);
+        args = ap_double_quotes(r->pool, args);
+        args_end = args + strlen(args);
+
+        if (args_end - args > 4000) { /* cmd.exe won't handle lines longer than 4k */
+            args_end = args + 4000;
+            *args_end = 0;
+        }
+
+        /* +4 = 1 space between progname and args, 2 for double null at end, 2 for possible quote on first arg */
+        cmdlen = strlen(cmdline) + strlen(args) + 4; 
+        cmdline_pos = cmdline;
+
+        while (*cmdline_pos) {
+            cmdlen += 2 * (*cmdline_pos == '+');  /* Allow space for each arg to be quoted */
+            cmdline_pos++;
+        }
+
+        cmdline = ap_pstrndup(r->pool, cmdline, cmdlen);
+        cmdline_pos = cmdline + strlen(cmdline);
+
+	while (args < args_end) {
+            char *arg;
+	    
+            arg = ap_getword_nc(r->pool, &args, '+');
+
+            if (strpbrk(arg, "&|<> "))
+                arg = ap_pstrcat(r->pool, "\"", arg, "\"", NULL);
+
+            *(cmdline_pos++) = ' ';
+            strcpy(cmdline_pos, arg);
+            cmdline_pos += strlen(cmdline_pos);
+        }
+
+        *(++cmdline_pos) = 0; /* Add required second terminator */
+	args = strchr(cmdline, ' ');
+	
+	if (args) {
+	    *args = 0;
+	    args++;
 	}
-	return (pid);
+
+        /* Create environment block from list of envariables */
+        for (env_len=1, e=0; env[e]; e++)
+            env_len += strlen(env[e]) + 1;
+
+        env_block = ap_palloc(r->pool, env_len);
+        env_block_pos = env_block;
+
+        for (e=0; env[e]; e++) {
+            strcpy(env_block_pos, env[e]);
+            env_block_pos += strlen(env_block_pos) + 1;
+        }
+
+        *env_block_pos = 0; /* environment block is terminated by a double null */
+
+	rc = DosExecPgm(error_object, sizeof(error_object), EXEC_ASYNC, cmdline, env_block, &rescodes, cmdline);
+	
+	if (rc) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, r, "DosExecPgm(%s %s) failed, %s - %s",
+                          cmdline, args ? args : "", ap_os_error_message(rc), error_object );
+	    return -1;
+	}
+	
+	return rescodes.codeTerminate;
     }
 #elif defined(WIN32)
     {

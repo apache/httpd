@@ -2140,6 +2140,32 @@ void os2pathname(char *path)
 
     strcpy(path, newpath);
 };
+
+/* quotes in the string are doubled up.
+ * Used to escape quotes in args passed to OS/2's cmd.exe
+ */
+char *ap_double_quotes(pool *p, char *str)
+{
+    int num_quotes = 0;
+    int len = 0;
+    char *quote_doubled_str, *dest;
+    
+    while (str[len]) {
+        num_quotes += str[len++] == '\"';
+    }
+    
+    quote_doubled_str = ap_palloc(p, len + num_quotes + 1);
+    dest = quote_doubled_str;
+    
+    while (*str) {
+        if (*str == '\"')
+            *(dest++) = '\"';
+        *(dest++) = *(str++);
+    }
+    
+    *dest = 0;
+    return quote_doubled_str;
+}
 #endif
 
 
