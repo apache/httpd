@@ -1773,6 +1773,14 @@ static int form_header_field(header_struct *h,
     return 1;
 }
 
+static int compute_header_len(apr_size_t *length, const char *fieldname, 
+                              const char *fieldval)
+{
+    /* The extra five are for ": " and CRLF, plus one for a '\0'. */
+    *length = *length + strlen(fieldname) + strlen(fieldval) + 6;
+    return 1;
+}
+
 AP_DECLARE(void) ap_basic_http_header(request_rec *r, char *buf)
 {
     char *protocol;
@@ -2311,7 +2319,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
     char *buff;
     ap_bucket *e;
     ap_bucket_brigade *b2;
-    apr_size_t len;
+    apr_size_t len = 0;
     header_struct h;
 
     if (r->assbackwards) {
@@ -2344,15 +2352,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
     else {
 	fixup_vary(r);
     }
-
-    /* XXX Should count the bytes in the headers and allocate just enough
-     * for the headers we have.
-     */
-    buff = apr_pcalloc(r->pool, HUGE_STRING_LEN);
-    len = HUGE_STRING_LEN;
-    e = ap_bucket_create_pool(buff, len, r->pool);
-    ap_basic_http_header(r, buff);
-    buff += strlen(buff) + 1;
 
     ap_set_keepalive(r);
 
@@ -2401,6 +2400,18 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
         apr_rfc822_date(date, r->request_time);
         apr_table_addn(r->headers_out, "Expires", date);
     }
+
+    apr_table_do((int (*) (void *, const char *, const char *)) compute_header_len,
+                 (void *) &len, r->headers_out, NULL);
+    
+    /* Need to add a fudge factor so that the CRLF at the end of the headers
+     * and the basic http headers don't overflow this buffer.
+     */
+    len += strlen(ap_get_server_version()) + 100;
+    buff = apr_pcalloc(r->pool, len);
+    e = ap_bucket_create_pool(buff, len, r->pool);
+    ap_basic_http_header(r, buff);
+    buff += strlen(buff) + 1;
 
     h.r = r;
     h.buf = buff;
