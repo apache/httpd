@@ -301,12 +301,6 @@ typedef struct module_struct {
                                  * It's mainly important for the DSO facility
                                  * (see also mod_so).
                                  */
-    unsigned int module_type    /* What type of module is this?  Currently
-                                 * this can be:
-                                 *     AP_MODULE_TYPE_MPM
-                                 *     AP_MODULE_TYPE_STANDARD
-                                 *     AP_MODULE_TYPE_PROTOCOL
-                                 */
     void (*rewrite_args) (process_rec *process);
     void *(*create_dir_config) (ap_pool_t *p, char *dir);
     void *(*merge_dir_config) (ap_pool_t *p, void *base_conf, void *new_conf);
