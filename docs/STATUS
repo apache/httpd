@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/11/23 19:19:45 $
+Last modified: $Date: 2002/12/13 12:04:44 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -31,7 +31,7 @@ Things That Need Fixing
     - Copy important stuff from 1.3?
     - Some kind of XML?
     - Something that allows dynamic contributions from users a la
-      FAQ-O-Matic?  (I don't think any really good software exists 
+      FAQ-O-Matic?  (I don't think any really good software exists
       for this.)
 
 - modules docs
@@ -39,7 +39,7 @@ Things That Need Fixing
     - mod_proxy: updates for 2.0
     - mod_status: updates for 2.0
     - mod_example: updates for 2.0
-    
+
 - man pages
     - Convert from nroff to our xml format.  See list at bottom.
     - Then if someone gets creative, they can try to find an automatic
@@ -52,7 +52,7 @@ Things That Need Fixing
      - Non unix/windows MPMs still need to be completed.
      - the perchild directives in threaded/worker need docs
 
-- Individual docs will need some cleanup. 
+- Individual docs will need some cleanup.
      - misc/custom_errordocs.html needs to be updated to
        essentially describe how the international error
        docs included in 2.0 work
@@ -90,14 +90,14 @@ Documentation improvements
 * New user docs: Directory Handling (mod_dir/mod_autoindex/etc)
 
 * Enhancements to the DTD/XSL:
-  - <glossary> tag that links to the glossary and uses some special 
+  - <glossary> tag that links to the glossary and uses some special
     style in the css.
   - New index: directives by context, including listing which directives
     are available for each AllowOverride setting.
-  - Use a tag like <var> in place of <em> for things like the 
+  - Use a tag like <var> in place of <em> for things like the
     <syntax> listing.
     - nd volunteers
-  - add letter links to glossary and quickreference, 
+  - add letter links to glossary and quickreference,
     perhaps also a term overview (sidebar)
   - cross references between the different languages,
     at least links from non-en docs to the originals.
@@ -138,6 +138,9 @@ Documentation improvements
     updates the manual indices.  (We do something like that now for
     httpd.conf file with apxs [LoadModule, etc.].)
 
+* Navigation
+  - Find a way to switch between translation(s) and original doc
+
 XML Conversions
 ===============
 
@@ -154,7 +157,7 @@ misc/tutorials.html                # obsolete?
 expand.pl                          # delete after finishing everything
 
 # These will require manual.xsl changes
-faq/footer.html                    
+faq/footer.html
 faq/header.html
 faq/index.html
 faq/support.html
