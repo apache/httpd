@@ -209,15 +209,6 @@ PATCHES TO BACKPORT FROM TRUNK:
                    it as-is.  For the one or two platforms that don't like 
                    which, they can write their own version of the script.
 
-    * worker MPM: Fix a problem which could cause httpd processes to
-      remain active after shutdown.  (Reliability issue.)
-      Unix MPMs: Shut down the server more quickly when child processes are
-      slow to exit.  (Nice-to-have, but code intersects with the
-      reliability issue)
-      http://svn.apache.org/viewcvs.cgi?rev=109510&view=rev
-      http://svn.apache.org/viewcvs.cgi?rev=105195&view=rev
-      +1: trawick, stoddard, striker
-
     * modules/http/http_request.c (ap_internal_fast_redirect): Take over
       important members of the subrequest. Especially the proxyreq copying
       is interesting for proxying DirectoryIndex'd resources:

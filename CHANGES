@@ -1,5 +1,11 @@
 Changes with Apache 2.0.54
 
+  *) worker MPM: Fix a problem which could cause httpd processes to
+     remain active after shutdown.  [Jeff Trawick]
+
+  *) Unix MPMs: Shut down the server more quickly when child processes are
+     slow to exit.  [Joe Orton, Jeff Trawick]
+
   *) Remove formatting characters from ap_log_error() calls.  These
      were escaped as fallout from CAN-2003-0020.
      [Eric Covener <ecovener gmail.com>]

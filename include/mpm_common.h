@@ -60,7 +60,7 @@ extern "C" {
  * Make sure all child processes that have been spawned by the parent process
  * have died.  This includes process registered as "other_children".
  * @warning This is only defined if the MPM defines 
- *          MPM_NEEDS_RECLAIM_CHILD_PROCESS
+ *          AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
  * @param terminate Either 1 or 0.  If 1, send the child processes SIGTERM
  *        each time through the loop.  If 0, give the process time to die
  *        on its own before signalling it.
@@ -68,9 +68,40 @@ extern "C" {
  *  MPM_CHILD_PID -- Get the pid from the specified spot in the scoreboard
  *  MPM_NOTE_CHILD_KILLED -- Note the child died in the scoreboard
  * </pre>
+ * @tip The MPM child processes which are reclaimed are those listed
+ * in the scoreboard as well as those currently registered via
+ * ap_register_extra_mpm_process().
  */
 #ifdef AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
 void ap_reclaim_child_processes(int terminate);
+#endif
+
+/**
+ * Tell ap_reclaim_child_processes() about an MPM child process which has no
+ * entry in the scoreboard.
+ * @warning This is only defined if the MPM defines
+ *          AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
+ * @param pid The process id of an MPM child process which should be
+ * reclaimed when ap_reclaim_child_processes() is called.
+ * @tip If an extra MPM child process terminates prior to calling
+ * ap_reclaim_child_processes(), remove it from the list of such processes
+ * by calling ap_unregister_extra_mpm_process().
+ */
+#ifdef AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
+void ap_register_extra_mpm_process(pid_t pid);
+#endif
+
+/**
+ * Unregister an MPM child process which was previously registered by a
+ * call to ap_register_extra_mpm_process().
+ * @warning This is only defined if the MPM defines
+ *          AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
+ * @param pid The process id of an MPM child process which no longer needs to
+ * be reclaimed.
+ * @return 1 if the process was found and removed, 0 otherwise
+ */
+#ifdef AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
+int ap_unregister_extra_mpm_process(pid_t pid);
 #endif
 
 /**
