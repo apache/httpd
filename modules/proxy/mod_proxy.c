@@ -194,7 +194,7 @@ static int proxy_trans(request_rec *r)
     return DECLINED;
 }
 
-int proxy_walk(request_rec *r)
+static int proxy_walk(request_rec *r)
 {
     proxy_server_conf *sconf = ap_get_module_config(r->server->module_config,
                                                     &proxy_module);
@@ -522,7 +522,6 @@ static void *create_proxy_dir_config(apr_pool_t *p, char *dummy)
 static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
 {
     proxy_dir_conf *new = (proxy_dir_conf *) apr_pcalloc(p, sizeof(proxy_dir_conf));
-    proxy_dir_conf *base = (proxy_dir_conf *) basev;
     proxy_dir_conf *add = (proxy_dir_conf *) addv;
 
     new->p = add->p;
