@@ -187,6 +187,7 @@
  * Hi, welcome to the internet.
  */
 
+#include <ctype.h>
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
@@ -277,7 +278,7 @@ char *check_code( pool *pool, const char *code, char **real_code )
     while ( word[0] ) {
 	/* <num>
 	 */
-	if ( index("0123456789", word[0]) != NULL ) {
+	if ( isdigit(word[0]) != NULL ) {
 	    num = atoi( word );
 	} else {
             return pstrcat( pool, "bad expires code, numeric value expected <num> '",
