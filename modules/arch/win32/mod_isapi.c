@@ -97,7 +97,6 @@
 /* Retry frequency for a failed-to-load isapi .dll */
 #define ISAPI_RETRY ( 30 * APR_USEC_PER_SEC )
 
-
 /**********************************************************
  *
  *  ISAPI Module Configuration
@@ -515,8 +514,8 @@ typedef struct isapi_cid {
     request_rec  *r;
 #ifdef FAKE_ASYNC
     PFN_HSE_IO_COMPLETION completion;
-    void  *completion_arg;
-    HANDLE complete;
+    void                 *completion_arg;
+    apr_thread_mutex_t   *completed;
 #endif
 } isapi_cid;
 
@@ -628,20 +627,28 @@ int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
     conn_rec *c = r->connection;
     apr_bucket_brigade *bb;
     apr_bucket *b;
-
-#ifdef FAKE_ASYNC
-    if (flags & HSE_IO_SYNC)
-        ; /* XXX: Fake it */
-#endif
+    apr_status_t rv;
 
     bb = apr_brigade_create(r->pool, c->bucket_alloc);
     b = apr_bucket_transient_create(buf_data, *buf_size, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     b = apr_bucket_flush_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
-    ap_pass_brigade(r->output_filters, bb);
+    rv = ap_pass_brigade(r->output_filters, bb);
 
-    return 1;
+#ifdef FAKE_ASYNC
+    if ((flags & HSE_IO_ASYNC) && cid->completion) {
+        if (rv == OK) {
+            cid->completion(cid->ecb, cid->completion_arg, 
+                            ERROR_SUCCESS, *buf_size);
+        }
+        else {
+            cid->completion(cid->ecb, cid->completion_arg, 
+                            ERROR_WRITE_FAULT, *buf_size);
+        }
+    }
+#endif
+    return (rv == OK);
 }
 
 int APR_THREAD_FUNC ReadClient(isapi_cid    *cid, 
@@ -663,7 +670,10 @@ int APR_THREAD_FUNC ReadClient(isapi_cid    *cid,
     }
 
     *buf_size = read;
-    return 1;
+    if (res < 0) {
+        SetLastError(ERROR_READ_FAULT);
+    }
+    return (res >= 0);
 }
 
 /* Common code invoked for both HSE_REQ_SEND_RESPONSE_HEADER and 
@@ -800,11 +810,14 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
     }
 
     case HSE_REQ_DONE_WITH_SESSION:
-        /* Signal to resume the thread completing this request
+        /* Signal to resume the thread completing this request,
+         * leave it to the pool cleanup to dispose of our mutex.
          */
 #ifdef FAKE_ASYNC
-        if (cid->complete)
-            SetEvent(cid->complete);
+        if (cid->completed) {
+            apr_thread_mutex_unlock(cid->completed);
+            cid->completed = NULL;
+        }
 #endif
         return 1;
 
@@ -864,7 +877,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
 #ifdef FAKE_ASYNC
         if (cid->isa->fakeasync) {
             cid->completion = (PFN_HSE_IO_COMPLETION) buf_data;
-            cid->completion_arg = (PVOID) data_type;
+            cid->completion_arg = (void *) data_type;
             return 1;
         }
 #endif
@@ -960,11 +973,30 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
          */
 
 #ifdef FAKE_ASYNC
+       /* Use tf->pfnHseIO + tf->pContext, or if NULL, then use cid->fnIOComplete
+        * pass pContect to the HseIO callback.
+        */
         if (tf->dwFlags & HSE_IO_ASYNC) {
-            /* XXX: Fake async response,
-             * use tf->pfnHseIO, or if NULL, then use cid->fnIOComplete
-             * pass pContect to the HseIO callback.
-             */
+            if (tf->pfnHseIO) {
+                if (rv == OK) {
+                    tf->pfnHseIO(cid->ecb, tf->pContext, 
+                                 ERROR_SUCCESS, *buf_size);
+                }
+                else {
+                    tf->pfnHseIO(cid->ecb, tf->pContext, 
+                                 ERROR_WRITE_FAULT, *buf_size);
+                }
+            }
+            else {
+                if (rv == OK) {
+                    cid->completion(cid->ecb, cid->completion_arg, 
+                                    ERROR_SUCCESS, *buf_size);
+                }
+                else {
+                    cid->completion(cid->ecb, cid->completion_arg, 
+                                    ERROR_WRITE_FAULT, *buf_size);
+                }
+            }
         }
 #endif
         return 1;
@@ -1237,7 +1269,7 @@ apr_status_t isapi_handler (request_rec *r)
     cid->r = r;
     cid->r->status = 0;
 #ifdef FAKE_ASYNC
-    cid->complete = NULL;
+    cid->completed = NULL;
     cid->completion = NULL;
 #endif
     
@@ -1352,11 +1384,17 @@ apr_status_t isapi_handler (request_rec *r)
              */
             if (isa->fakeasync) 
             {
-                cid->complete = CreateEvent(NULL, 0, 0, NULL);
-                if (WaitForSingleObject(cid->complete, isa->timeout)
-                        == WAIT_TIMEOUT) {
-                    /* TODO: Now what... if this hung, then do we kill our own
-                     * thread to force its death?  For now leave timeout = -1
+                rv = apr_thread_mutex_create(&cid->completed, 
+                                             APR_THREAD_MUTEX_DEFAULT, 
+                                             r->pool);
+                if (rv != APR_SUCCESS 
+                        || (rv = apr_thread_mutex_lock(cid->completed)) 
+                               != APR_SUCCESS) {
+                    /* TODO: If this gets hung, then do we kill our own
+                     * thread to force its death?  No timeout options for
+                     * thread_mutex locks???  The module is still hanging
+                     * on to our ecb and cid gook, and it won't be good to
+                     * just destroy that pool.  Outch.
                      */
                 }
                 break;
