@@ -673,10 +673,11 @@ int ssl_hook_Access(request_rec *r)
      *
      * !! BUT ALL THIS IS STILL NOT RE-IMPLEMENTED FOR APACHE 2.0 !!
      */
-    if (renegotiate && (r->method_number == M_POST)) {
+    if (renegotiate && !renegotiate_quick && (r->method_number == M_POST)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                      "SSL Re-negotiation in conjunction "
-                     "with POST method not supported!");
+                     "with POST method not supported!\n"
+                     "hint: try SSLOptions +OptRenegotiate");
 
         return HTTP_METHOD_NOT_ALLOWED;
     }
