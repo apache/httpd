@@ -350,14 +350,14 @@ static int32 worker_thread(void * dummy)
                                   (request_rec*)NULL);
                                   
     apr_poll_setup(&pollset, num_listening_sockets, tpool);
+    for(n=0 ; n <= num_listening_sockets ; n++)
+        apr_poll_socket_add(pollset, listening_sockets[n], APR_POLLIN);
 
     while (1) {
         /* If we're here, then chances are (unless we're the first thread created) we're going
            to be held up on the accept_muetx, so doing this here shouldn't be a peformance hit.
            If it is, you probably need more threads...
          */
-        for(n=0 ; n <= num_listening_sockets ; n++)
-	        apr_poll_socket_add(pollset, listening_sockets[n], APR_POLLIN);
 
         this_worker_should_exit |= (ap_max_requests_per_child != 0) && (requests_this_child <= 0);
         
