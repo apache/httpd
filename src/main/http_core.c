@@ -1836,16 +1836,16 @@ API_EXPORT(const char *) ap_psignature(const char *prefix, request_rec *r)
     if (conf->server_signature == srv_sig_off)
 	return "";
 
-    ap_snprintf(sport, sizeof sport, "%u", (unsigned) r->server->port);
+    ap_snprintf(sport, sizeof sport, "%u", (unsigned) ap_get_server_port(r));
 
     if (conf->server_signature == srv_sig_withmail) {
 	return ap_pstrcat(r->pool, prefix, "<ADDRESS>" SERVER_BASEVERSION
 	     " Server at <A HREF=\"mailto:", r->server->server_admin, "\">",
-		       r->server->server_hostname, "</A> Port ", sport,
+		       ap_get_server_name(r), "</A> Port ", sport,
 		       "</ADDRESS>\n", NULL);
     }
     return ap_pstrcat(r->pool, prefix, "<ADDRESS>" SERVER_BASEVERSION
-	     " Server at ", r->server->server_hostname, " Port ", sport,
+	     " Server at ", ap_get_server_name(r), " Port ", sport,
 		   "</ADDRESS>\n", NULL);
 }
 

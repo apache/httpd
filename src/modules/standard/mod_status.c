@@ -234,7 +234,6 @@ static int status_handler(request_rec *r)
 #endif /* STATUS */
     int short_report = 0;
     int no_table_report = 0;
-    server_rec *server = r->server;
     short_score score_record;
     parent_score ps_record;
     char stat_buffer[HARD_SERVER_LIMIT];
@@ -324,7 +323,7 @@ static int status_handler(request_rec *r)
     if (!short_report) {
 	ap_rputs("<HTML><HEAD>\n<TITLE>Apache Status</TITLE>\n</HEAD><BODY>\n", r);
 	ap_rputs("<H1>Apache Server Status for ", r);
-	ap_rvputs(r, server->server_hostname, "</H1>\n\n", NULL);
+	ap_rvputs(r, ap_get_server_name(r), "</H1>\n\n", NULL);
 	ap_rvputs(r, "Server Version: ", ap_get_server_version(), "<br>\n",
 	       NULL);
 	ap_rvputs(r, "Server Built: ", ap_get_server_built(), "<br>\n<hr>\n",

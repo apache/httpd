@@ -404,12 +404,12 @@ static char *log_request_duration(request_rec *r, char *a)
  */
 static char *log_virtual_host(request_rec *r, char *a)
 {
-    return ap_pstrdup(r->pool, r->server->server_hostname);
+    return ap_pstrdup(r->pool, ap_get_server_name(r));
 }
 
 static char *log_server_port(request_rec *r, char *a)
 {
-    return ap_psprintf(r->pool, "%u", r->server->port);
+    return ap_psprintf(r->pool, "%u", ap_get_server_port(r));
 }
 
 static char *log_child_pid(request_rec *r, char *a)

@@ -998,11 +998,12 @@ static int hook_uri2file(request_rec *r)
      */
 
     /* add the canonical URI of this URL */
-    thisserver = r->server->server_hostname;
-    if (is_default_port(r->server->port, r))
+    thisserver = (char *) ap_get_server_name(r);
+    thisport = (char *) ap_get_server_port(r);
+    if (is_default_port((int) thisport, r))
         thisport = "";
     else {
-        ap_snprintf(buf, sizeof(buf), ":%u", r->server->port);
+        ap_snprintf(buf, sizeof(buf), ":%u", thisport);
         thisport = buf;
     }
     thisurl = ap_table_get(r->subprocess_env, ENVVAR_SCRIPT_URL);
@@ -2249,25 +2250,27 @@ static void fully_qualify_uri(request_rec *r)
 {
     int i;
     char port[32];
+    char *thisport;
 
     i = strlen(r->filename);
     if (!(   (i > 7 && strncasecmp(r->filename, "http://", 7)   == 0)
           || (i > 8 && strncasecmp(r->filename, "https://", 8)  == 0)
           || (i > 9 && strncasecmp(r->filename, "gopher://", 9) == 0)
           || (i > 6 && strncasecmp(r->filename, "ftp://", 6)    == 0))) {
-
-        if (is_default_port(r->server->port,r))
+          
+        thisport = (char *) ap_get_server_port(r);
+        if (is_default_port((int) thisport,r))
             port[0] = '\0';
         else
-            ap_snprintf(port, sizeof(port), ":%u", r->server->port);
+            ap_snprintf(port, sizeof(port), ":%u", thisport);
 
         if (r->filename[0] == '/')
             r->filename = ap_psprintf(r->pool, "%s://%s%s%s",
-                        http_method(r), r->server->server_hostname,
+                        http_method(r), ap_get_server_name(r),
                         port, r->filename);
         else
             r->filename = ap_psprintf(r->pool, "%s://%s%s/%s",
-                        http_method(r), r->server->server_hostname,
+                        http_method(r), ap_get_server_name(r),
                         port, r->filename);
     }
     return;
@@ -2960,7 +2963,7 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
 
     ap_snprintf(str3, sizeof(str3),
                 "%s %s [%s/sid#%lx][rid#%lx/%s%s] (%d) %s\n", str1,
-                current_logtime(r), r->server->server_hostname,
+                current_logtime(r), ap_get_server_name(r),
                 (unsigned long)(r->server), (unsigned long)r,
                 type, redir, level, str2);
 
