@@ -14,26 +14,26 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1 align="CENTER">Authentication</h1>
+    <h1 align="center">Authentication</h1>
     <a id="__index__" name="__index__"></a> <!-- INDEX BEGIN -->
      
 
     <ul>
       <li><a href="#introduction">Introduction</a></li>
 
-      <li><a href="#the prerequisites">The prerequisites</a></li>
+      <li><a href="#theprerequisites">The prerequisites</a></li>
 
-      <li><a href="#getting it working">Getting it working</a></li>
+      <li><a href="#gettingitworking">Getting it working</a></li>
 
-      <li><a href="#letting more than one person in">Letting more
+      <li><a href="#lettingmorethanonepersonin">Letting more
       than one person in</a></li>
 
-      <li><a href="#possible problems">Possible problems</a></li>
+      <li><a href="#possibleproblems">Possible problems</a></li>
 
-      <li><a href="#what other neat stuff can i do">What other neat
+      <li><a href="#whatotherneatstuffcanido">What other neat
       stuff can I do?</a></li>
 
-      <li><a href="#more information">More information</a></li>
+      <li><a href="#moreinformation">More information</a></li>
     </ul>
     <!-- INDEX END -->
     <hr />
@@ -81,7 +81,7 @@
     <p>This article covers the "standard" way of protecting parts
     of your web site that most of you are going to use.</p>
 
-    <h2><a id="the prerequisites" name="the prerequisites">The
+    <h2><a id="theprerequisites" name="theprerequisites">The
     prerequisites</a></h2>
 
     <p>The directives discussed in this article will need to go
@@ -112,8 +112,8 @@
     kept. This should not be terribly difficult, and I'll try to
     make this clear when we come to that point.</p>
 
-    <h2><a id="getting it working"
-    name="getting it working">Getting it working</a></h2>
+    <h2><a id="gettingitworking"
+    name="gettingitworking">Getting it working</a></h2>
 
     <p>Here's the basics of password protecting a directory on your
     server.</p>
@@ -221,8 +221,8 @@
     server. In the next section, we discuss various ways to use the
     <code>require</code> directive.</p>
 
-    <h2><a id="letting more than one person in"
-    name="letting more than one person in">Letting more than one
+    <h2><a id="lettingmorethanonepersonin"
+    name="lettingmorethanonepersonin">Letting more than one
     person in</a></h2>
 
     <p>The directives above only let one person (specifically
@@ -287,7 +287,7 @@
     files, and remember to reference th right one in the
     <code>AuthUserFile</code> directive.</p>
 
-    <h2><a id="possible problems" name="possible problems">Possible
+    <h2><a id="possibleproblems" name="possibleproblems">Possible
     problems</a></h2>
 
     <p>Because of the way that Basic authentication is specified,
@@ -308,8 +308,8 @@
     get above a few hundred entries, and may wish to consider a
     different authentication method at that time.</p>
 
-    <h2><a id="what other neat stuff can i do"
-    name="what other neat stuff can i do">What other neat stuff can
+    <h2><a id="whatotherneatstuffcanido"
+    name="whatotherneatstuffcanido">What other neat stuff can
     I do?</a></h2>
 
     <p>Authentication by username and password is only part of the
@@ -319,10 +319,9 @@
 
     <p>The <code>allow</code> and <code>deny</code> directives let
     you allow and deny access based on the host name, or host
-    address, of the machine requesting a document. The directive
-    goes hand-in-hand with these is the <code>order</code>
-    directive, which tells Apache in which order to apply the
-    filters.</p>
+    address, of the machine requesting a document. The
+    <code>order</code> directive goes hand-in-hand with these two,
+    and tells Apache in which order to apply the filters.</p>
 
     <p>The usage of these directives is:</p>
 <pre>
@@ -331,7 +330,8 @@
 
     <p>where <em>address</em> is an IP address (or a partial IP
     address) or a fully qualified domain name (or a partial domain
-    name).</p>
+    name); you may provide multiple addresses or domain names, if
+    desired.</p>
 
     <p>For example, if you have someone spamming your message
     board, and you want to keep them out, you could do the
@@ -341,7 +341,7 @@
 </pre>
 
     <p>Visitors coming from that address will not be able to see
-    the content behind this directive. If, instead, you have a
+    the content covered by this directive. If, instead, you have a
     machine name, rather than an IP address, you can use that.</p>
 <pre>
         deny from host.example.com
@@ -351,7 +351,7 @@
     you can specify just part of an address or domain name:</p>
 <pre>
         deny from 192.101.205
-        deny from cyberthugs.com
+        deny from cyberthugs.com moreidiots.com
         deny from ke
 </pre>
 
@@ -370,7 +370,7 @@
     addition to letting everyone in. What you want is to let
     <em>only</em> those folks in.</p>
 
-    <h2><a id="more information" name="more information">More
+    <h2><a id="moreinformation" name="moreinformation">More
     information</a></h2>
 
     <p>You should also read the documentation for <code><a
