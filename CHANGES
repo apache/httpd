@@ -2,6 +2,17 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Allow mod_authnz_ldap authorization functionality to be used 
+     without requiring the user to also be authenticated through 
+     mod_authnz_ldap. This allows other authentication modules to 
+     take advantage of LDAP authorization only [PR 28253]
+     [Jari Ahonen jah progress.com, Brad Nicholes]
+     
+  *) Util_ldap: Implemented the util_ldap_cache_getuserdn() API so that 
+     the ldap authorization only modules have access to the util_ldap 
+     user cache without have to require ldap authentication as well.  
+     [PR 31898] [Jari Ahonen jah progress.com, Brad Nicholes]
+
   *) Log the client IP address when an error occurs disabling nagle on a
      connection, but log at a severity of debug since this error 
      generally means that the connection was dropped before data was
