@@ -179,8 +179,6 @@ char tpf_server_name[INETD_SERVNAME_LENGTH+1];
 
 static scoreboard *ap_scoreboard_image = NULL;
 
-static int volatile exit_after_unblock = 0;
-
 #ifdef GPROF
 /* 
  * change directory for gprof to plop the gmon.out file
@@ -1490,6 +1488,7 @@ void ap_time_process_request(int child_num, int status)
     put_scoreboard_info(child_num, ss);
 }
 
+/*
 static void increment_counts(int child_num, request_rec *r)
 {
     long int bs = 0;
@@ -1513,6 +1512,7 @@ static void increment_counts(int child_num, request_rec *r)
 
     put_scoreboard_info(child_num, ss);
 }
+*/
 
 static int find_child_by_pid(int pid)
 {
@@ -3093,6 +3093,5 @@ module MODULE_VAR_EXPORT mpm_prefork_module = {
     NULL,			/* type_checker */
     NULL,			/* pre-run fixups */
     NULL,			/* logger */
-    NULL,			/* header parser */
-    NULL			/* post_read_request */
+    NULL			/* register hooks */
 };

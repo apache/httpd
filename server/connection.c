@@ -194,7 +194,7 @@ CORE_EXPORT(void) ap_process_connection(conn_rec *c)
 
     ap_update_vhost_given_ip(c);
 
-    run_pre_connection(c);
+    ap_run_pre_connection(c);
 
     /*
      * Read and process each request found on our connection
