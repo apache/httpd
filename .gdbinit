@@ -2,8 +2,8 @@
 # apache.  Delete it if it bothers you.
 
 define dump_table
-    set $t = (table_entry *)((array_header *)$arg0)->elts
-    set $n = ((array_header *)$arg0)->nelts
+    set $t = (apr_table_entry_t *)((apr_array_header_t *)$arg0)->elts
+    set $n = ((apr_array_header_t *)$arg0)->nelts
     set $i = 0
     while $i < $n
 	printf "[%u] '%s'='%s'\n", $i, $t[$i].key, $t[$i].val
@@ -20,8 +20,8 @@ define rh
 end
 
 define dump_string_array
-    set $a = (char **)((array_header *)$arg0)->elts
-    set $n = (int)((array_header *)$arg0)->nelts
+    set $a = (char **)((apr_array_header_t *)$arg0)->elts
+    set $n = (int)((apr_array_header_t *)$arg0)->nelts
     set $i = 0
     while $i < $n
 	printf "[%u] '%s'\n", $i, $a[$i]
