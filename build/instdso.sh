@@ -21,38 +21,41 @@ DSOBASE=`echo $DSOARCHIVE | sed -e 's/\.la$//'`
 TARGET_NAME="$DSOBASE.so"
 
 SYS=`uname -s`
-case $SYS in
-    AIX)
-        # on AIX, shared libraries remain in storage even when
-        # all processes using them have exited; standard practice
-        # prior to installing a shared library is to rm -f first
-        CMD="rm -f $TARGETDIR/$TARGET_NAME"
-        echo $CMD
-        $CMD || exit $?
-        CMD="cp .libs/lib$DSOBASE.so.0 $TARGETDIR/$TARGET_NAME"
-        echo $CMD
-        $CMD || exit $?
-        ;;
-    HP-UX)
-        CMD="cp .libs/$DSOBASE.sl $TARGETDIR/$TARGET_NAME"
-        echo $CMD
-        $CMD || exit $?
-        ;;
-    OSF1)
-        CMD="cp .libs/lib$DSOBASE.so $TARGETDIR/$TARGET_NAME"
-        echo $CMD
-        $CMD || exit $?
-        ;;
-    OS/2|OS/390)
-        CMD="$SH_LIBTOOL --mode=install cp $DSOARCHIVE $TARGETDIR/"
-        echo $CMD
-        $CMD || exit $?
-        ;;
-    *)
-        CMD="cp .libs/$TARGET_NAME $TARGETDIR/$TARGET_NAME"
-        echo $CMD
-        $CMD || exit $?
-        ;;
-esac
+
+if test "$SYS" = "AIX"
+then
+    # on AIX, shared libraries remain in storage even when
+    # all processes using them have exited; standard practice
+    # prior to installing a shared library is to rm -f first
+    CMD="rm -f $TARGETDIR/$TARGET_NAME"
+    echo $CMD
+    $CMD || exit $?
+fi
+
+CMD="$SH_LIBTOOL --mode=install cp $DSOARCHIVE $TARGETDIR/"
+echo $CMD
+$CMD || exit $?
+
+DLNAME=`grep "^dlname" $TARGETDIR/$DSOARCHIVE | sed -e "s/dlname='\([^']*\)'/\1/"`
+LIBRARY_NAMES=`grep "library_names" $TARGETDIR/$DSOARCHIVE | sed -e "s/dlname='\([^']*\)'/\1/"`
+LIBRARY_NAMES=`echo $LIBRARY_NAMES | sed -e "s/ *$DLNAME//g"`
+
+if test -n "$LIBRARY_NAMES"
+then
+    for f in $LIBRARY_NAMES
+    do
+        rm -f $TARGETDIR/$f
+    done
+fi
+
+if test "$DLNAME" != "$TARGET_NAME"
+then
+    mv $TARGETDIR/$DLNAME $TARGETDIR/$TARGET_NAME
+fi
+
+rm -f $TARGETDIR/$DSOARCHIVE
+rm -f $TARGETDIR/$DSOBASE.a
+rm -f $TARGETDIR/lib$DSOBASE.a
+rm -f $TARGETDIR/lib$TARGET_NAME
 
 exit 0

@@ -1,5 +1,12 @@
 Changes with Apache 2.0.36
 
+  *) Change instdso.sh to use libtool --install everywhere and then
+     clean up some stray files and symlinks that libtool leaves around
+     on some platforms.  This gets subversion building properly since
+     it needed a re-link to be performed by libtool at install time,
+     and the old instdso.sh logic to simply cp the DSO didn't handle
+     that requirement.  [Sander Striker]
+
   *) Allow VPATH builds to succeed when configured from an empty
      directory.  [Thom May <thom@planetarytramp.net>]
 
