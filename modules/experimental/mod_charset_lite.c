@@ -366,7 +366,7 @@ static void xlate_insert_filter(request_rec *r)
     if (reqinfo && 
         dc->implicit_add == IA_IMPADD &&
         reqinfo->output_ctx) {
-        ap_add_filter(XLATEOUT_FILTER_NAME, reqinfo->output_ctx, r);
+        ap_add_filter(XLATEOUT_FILTER_NAME, reqinfo->output_ctx, r, r->connection);
     }
     
 #ifdef NOT_YET /* no input filters yet; we still rely on BUFF */
