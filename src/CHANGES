@@ -1,5 +1,9 @@
 Changes with Apache 1.3b6
 
+  *) Modify the log directives in httpd.conf-dist files to use CustomLog
+     so that users have examples of how CustomLog can be used.
+     [Lars Eilebrecht]
+
   *) Add the new Apache Autoconf-style Interface (APACI) for the top-level of
      the Apache distribution tree.  Until Apache 1.3 there was no real
      out-of-the-box batch-capable build and installation procedure for the

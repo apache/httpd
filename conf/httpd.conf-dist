@@ -74,10 +74,29 @@ ErrorLog logs/error_log
 
 LogLevel warn
 
-# TransferLog: The location of the transfer log file. If this does not
-# start with /, ServerRoot is prepended to it.
+# The following directives define some format nicknames for use with
+# a CustomLog directive (see below).
 
-TransferLog logs/access_log
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+LogFormat "%h %l %u %t \"%r\" %>s %b" common
+LogFormat "%{Referer}i -> %U" referer
+LogFormat "%{User-agent}i" agent
+
+# The location of the access logfile (Common Logfile Format).
+# If this does not start with /, ServerRoot is prepended to it.
+
+CustomLog logs/access_log common
+
+# If you would like to have an agent and referer logfile uncomment the
+# following directives.
+
+#CustomLog logs/referer_log referer
+#CustomLog logs/agent_log agent
+
+# If you prefer a single logfile with access, agent and referer information
+# (Combined Logfile Format) you can use the following directive.
+
+#CustomLog logs/access_log combined
 
 # PidFile: The file the server should log its pid to
 PidFile logs/httpd.pid
