@@ -53,7 +53,7 @@
    <input type="hidden" name="results" value="20">
    <input type="hidden" name="version" value="2">
    <input type="text" name="keyword" size="20">
-   <input type="submit" value="Search">
+   <input type="submit" value="Chercher">
    </form>
 </td></tr></table>
 
