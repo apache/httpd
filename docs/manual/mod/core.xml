@@ -268,7 +268,7 @@ authentication</description>
 
    <example>AuthName "Top Secret"</example>
 
-    <p>The string provided for the <code>AuthRealm</code> is what will
+    <p>The string provided for the <code>AuthName</code> is what will
     appear in the password dialog provided by most browsers.</p>
 </usage>
 <seealso><a 
