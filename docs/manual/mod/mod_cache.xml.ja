@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106740) -->
+<!-- English Revision: 106740 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -23,7 +23,7 @@
 
 <name>mod_cache</name>
 <description>URI をキーにしたコンテンツのキャッシュ</description>
-<status>Experimental</status>
+<status>Extension</status>
 <sourcefile>mod_cache.c</sourcefile>
 <identifier>cache_module</identifier>
 
@@ -68,17 +68,10 @@
       <directivelist>
         <directive module="mod_disk_cache">CacheRoot</directive>
         <directive module="mod_disk_cache">CacheSize</directive>
-        <directive module="mod_disk_cache">CacheGcInterval</directive>
         <directive module="mod_disk_cache">CacheDirLevels</directive>
         <directive module="mod_disk_cache">CacheDirLength</directive>
-        <directive module="mod_disk_cache">CacheExpiryCheck</directive>
         <directive module="mod_disk_cache">CacheMinFileSize</directive>
         <directive module="mod_disk_cache">CacheMaxFileSize</directive>
-        <directive module="mod_disk_cache">CacheTimeMargin</directive>
-        <directive module="mod_disk_cache">CacheGcDaily</directive>
-        <directive module="mod_disk_cache">CacheGcUnused</directive>
-        <directive module="mod_disk_cache">CacheGcClean</directive>
-        <directive module="mod_disk_cache">CacheGcMemUsage</directive>
         <directive module="mod_mem_cache">MCacheSize</directive>
         <directive module="mod_mem_cache">MCacheMaxObjectCount</directive>
         <directive module="mod_mem_cache">MCacheMinObjectSize</directive>
@@ -104,7 +97,6 @@
         &lt;IfModule mod_disk_cache.c&gt;<br />
         <indent>
           CacheRoot c:/cacheroot<br />
-          CacheSize 256<br />
           CacheEnable disk  /<br />
           CacheDirLevels 5<br />
           CacheDirLength 3<br />
@@ -189,8 +181,8 @@
 
 <usage>
     <p><directive>CacheMaxExpire</directive> ディレクティブは、
-    キャッシュする HTTP ドキュメントを、元のサーバ問い合わせないまま最大何秒
-    保持してもよいかを指定します。つまり、ドキュメントは最大でこの秒数間分古く
+    キャッシュする HTTP ドキュメントを、元のサーバに問い合わせないまま最大何秒
+    保持してもよいかを指定します。つまり、ドキュメントは最大でこの秒数間ぶん古く
     なることになります。この最大値は、(訳注:レスポンス中で)ドキュメントと共に
     ドキュメントの期日が提供されている場合でも適用されます。</p>
 
@@ -209,8 +201,8 @@
 </contextlist>
 
 <usage>
-    <p><directive>CacheDefaultExpire</directive> ディレクティブはドキュメントに
-    期日 (expiry) や最終修正時刻 (last-modified) が指定されていない場合の
+    <p><directive>CacheDefaultExpire</directive> ディレクティブは、ドキュメントに
+    有効期限 (expiry) や最終修正時刻 (last-modified) が指定されていない場合の
     デフォルトの時間を指定します。<directive>CacheMaxExpire</directive> 
     ディレクティブで指定された値はこの設定を上書き<em>しません</em>。</p>
 
@@ -232,10 +224,10 @@
     <p>通常、Last-Modified による最終修正時刻の無いドキュメントはキャッシュ
     されません。(例えば <module>mod_include</module> による処理のときなどに)
     Last-Modified 時刻が消去されたり、そもそも最初から提供されていない
-    状況があります。<directive>CacheIgnoreNoLastMod</directive> ディレクティブは
-    Last-Modified 日時が指定されていないドキュメントでも、それ無しで
-    キャッシュするように指定することができます。ドキュメントに
-    最終修正時刻 (Last-Modified) 期日 (expiry)  がない場合は、期日の
+    状況があります。<directive>CacheIgnoreNoLastMod</directive> 
+    ディレクティブを使うと、Last-Modified 日時が指定されていない
+    ドキュメントでもキャッシュするように指定できます。ドキュメントに
+    最終修正時刻 (Last-Modified) 有効期限 (expiry) がない場合は、有効期限の
     生成に <directive>CacheDefaultExpire</directive> が使われます。</p>
 
     <example>
@@ -269,8 +261,8 @@
 
 <directivesynopsis>
 <name>CacheLastModifiedFactor</name>
-<description>LastModified の日付に基づいて Expiry の日付を計算するための重みを
-指定する
+<description>LastModified の日付に基づいて有効期限 (expiry) 
+を計算するための重みを指定する
 </description>
 <syntax>CacheLastModifiedFactor <var>float</var></syntax>
 <default>CacheLastModifiedFactor 0.1</default>
@@ -278,9 +270,9 @@
 </contextlist>
 
 <usage>
-    <p>ドキュメントに Last-Modified の日付が無いけれども Expiry の日付が
-    あるというときに、Expiry 日を最終修正時刻からの経過時間として計算する
-    ようにできます。Expiry 日を次の計算式に従って生成するのですが、
+    <p>ドキュメントに Last-Modified の日付が無いけれども有効期限 (expiry) 
+    の日付があるというときに、有効期限を最終修正時刻からの経過時間として
+    計算するようにできます。有効期限を次の計算式に従って生成するのですが、
     そのときに使われる <var>factor</var> を
     <directive>CacheLastModifiedFactor</directive> ディレクティブで指定します。
     </p>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106740) -->
+<!-- English Revision: 106740 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -23,15 +23,11 @@
 
 <name>mod_mem_cache</name>
 <description>URI をキーにしたコンテンツのキャッシュ</description>
-<status>Experimental</status>
+<status>Extension</status>
 <sourcefile>mod_mem_cache.c</sourcefile>
 <identifier>mem_cache_module</identifier>
 
 <summary>
-    <note type="warning">
-      これは実験的なモジュールです。ドキュメンテーションもまだ開発中です...
-    </note>
-
     <p>このモジュールは <module>mod_cache</module> を<em>必要とします</em>。
     これは <module>mod_cache</module> のサポートモジュールとして
     動作し、メモリを使用したストレージ管理機構を提供します。

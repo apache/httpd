@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106740) -->
+<!-- English Revision: 106740 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -23,18 +23,14 @@
 
 <name>mod_disk_cache</name>
 <description>URI をキーにしたコンテンツキャッシュストレージ管理</description>
-<status>Experimental</status>
+<status>Extension</status>
 <sourcefile>mod_disk_cache.c</sourcefile>
 <identifier>disk_cache_module</identifier>
 
 <summary>
-    <note type="warning">
-      これは実験的なモジュールです。ドキュメンテーションもまだ開発中です...
-    </note>
-
     <p><module>mod_disk_cache</module> はディスクを使用したストレージ
     管理機構を実装しています。主に
-    <module>mod_proxy</module> と組み合わせて使われます。</p>
+    <module>mod_cache</module> と組み合わせて使われます。</p>
 
     <p>コンテンツのキャッシュへの保存と取得は URI に基づいたキーが使われます。
     アクセス保護のかけられているコンテンツはキャッシュされません。</p>
