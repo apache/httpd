@@ -236,6 +236,12 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name wintty
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy_ajp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy_balancer
+    End Project Dependency
 }}}
 
 ###############################################################################
