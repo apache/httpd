@@ -1,5 +1,11 @@
 Changes with Apache 2.0.51
 
+  *) Backport from 2.1 / Regression from 1.3: mod_headers now knows
+     again the functionality of the ErrorHeader directive. But instead
+     using this misnomer additional flags to the Header directive were
+     introduced ("always" and "onsuccess", defaulting to the latter).
+     PR 28657.  [André Malo]
+
   *) Use the higher performing 'httpready' Accept Filter on all platforms 
      except FreeBSD < 4.1.1. [Paul Querna]
 
