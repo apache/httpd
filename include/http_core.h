@@ -415,7 +415,7 @@ typedef struct {
   
     /* Authentication stuff.  Groan... */
     
-    int satisfy;
+    int *satisfy; /* for every method one */
     char *ap_auth_type;
     char *ap_auth_name;
     apr_array_header_t *ap_requires;
