@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/01 00:57:01 $]
+Last modified at [$Date: 2003/01/11 23:17:23 $]
 
 Release:
 
@@ -56,6 +56,8 @@ Contributors looking for a mission:
     * just do an egrep on "TODO", "XXX" and see what's there
 
 PATCHES TO PORT FROM 2.1
+    * Allow RewriteEngine Off even if Options -FollowSymlinks. PR 12395.
+
     * Use saner default config values for suexec. PR 15713.
 
     * Rewrite how proxy sends its request to allow input bodies to 
