@@ -72,4 +72,4 @@ extern server_rec *ap_server_conf;
 #define AP_MPM_WANT_SET_MAX_REQUESTS
 #define AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
 
-#endif /* APACHE_MPM_SPMT_OS2_H */
+#endif /* APACHE_MPM_MPMT_OS2_H */

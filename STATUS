@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/30 06:33:18 $]
+Last modified at [$Date: 2002/01/30 12:32:06 $]
 
 Release:
 
@@ -317,8 +317,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Common logging API.
 
     * Document mod_file_cache.
-
-    * OS/2: Make mod_status work for spmt_os2 MPM.
 
     * Platforms that do not support fork (primarily Win32 and AS/400)
       Architect start-up code that avoids initializing all the modules 
