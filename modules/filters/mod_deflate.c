@@ -128,7 +128,7 @@ typedef struct deflate_filter_config_t
 {
     int windowSize;
     int memlevel;
-    int bufferSize;
+    apr_size_t bufferSize;
     char *noteName;
 } deflate_filter_config;
 
@@ -191,12 +191,13 @@ static const char *deflate_set_buffer_size(cmd_parms *cmd, void *dummy,
 {
     deflate_filter_config *c = ap_get_module_config(cmd->server->module_config,
                                                     &deflate_module);
+    int n = atoi(arg);
 
-    c->bufferSize = atoi(arg);
-
-    if (c->bufferSize <= 0) {
+    if (n <= 0) {
         return "DeflateBufferSize should be positive";
     }
+
+    c->bufferSize = (apr_size_t)n;
 
     return NULL;
 }
