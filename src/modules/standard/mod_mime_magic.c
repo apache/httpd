@@ -131,8 +131,9 @@
 #include "http_log.h"
 #include "http_protocol.h"
 
+#ifndef WIN32
 #include <utime.h>
-
+#endif
 
 /*
  * data structures and related constants
@@ -2146,31 +2147,64 @@ struct uncompress_parms {
 static int uncompress_child(void *data, child_info *pinfo)
 {
     struct uncompress_parms *parm = data;
-	char *new_argv[4];
+#ifndef WIN32
+    char *new_argv[4];
 
-	new_argv[0] = compr[parm->method].argv[0];
-	new_argv[1] = compr[parm->method].argv[1];
-	new_argv[2] = parm->r->filename;
-	new_argv[3] = NULL;
-
-#if defined(WIN32)
-    int child_pid;
-#endif
+    new_argv[0] = compr[parm->method].argv[0];
+    new_argv[1] = compr[parm->method].argv[1];
+    new_argv[2] = parm->r->filename;
+    new_argv[3] = NULL;
 
     if (compr[parm->method].silent) {
 	close(STDERR_FILENO);
     }
 
-#if defined(WIN32)
-    child_pid = spawnvp(compr[parm->method].argv[0],
-			new_argv);
-    return (child_pid);
-#else
     execvp(compr[parm->method].argv[0], new_argv);
     ap_log_rerror(APLOG_MARK, APLOG_ERR, parm->r,
 		MODNAME ": could not execute `%s'.",
 		compr[parm->method].argv[0]);
     return -1;
+#else
+    char *pCommand;
+    STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+    pid_t pid;
+
+    memset(&si, 0, sizeof(si));
+    memset(&pi, 0, sizeof(pi));
+
+    pid = -1;
+
+    /*
+     * Look at the arguments...
+     */
+    pCommand = ap_pstrcat(parm->r->pool, compr[parm->method].argv[0], " ",
+                                         compr[parm->method].argv[1], " \"",
+                                         parm->r->filename, "\"", NULL);
+
+    /*
+     * Make child process use hPipeOutputWrite as standard out,
+     * and make sure it does not show on screen.
+     */
+    si.cb = sizeof(si);
+    si.dwFlags     = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+    si.wShowWindow = SW_HIDE;
+    si.hStdInput   = pinfo->hPipeInputRead;
+    si.hStdOutput  = pinfo->hPipeOutputWrite;
+    si.hStdError   = pinfo->hPipeErrorWrite;
+
+    if (CreateProcess(NULL, pCommand, NULL, NULL, TRUE, 0, NULL,
+                      ap_make_dirstr_parent(parm->r->pool, parm->r->filename),
+                      &si, &pi)) {
+        pid = pi.dwProcessId;
+        /*
+         * We must close the handles to the new process and its main thread
+         * to prevent handle and memory leaks.
+         */ 
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+    }
+    return (pid);
 #endif
 }
 
