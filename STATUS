@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/01 13:16:00 $]
+Last modified at [$Date: 2002/02/01 13:21:34 $]
 
 Release:
 
@@ -48,6 +48,10 @@ RELEASE SHOWSTOPPERS:
         Justin says: "Is this really a showstopper?  Most people won't
                       be using -DNO_DETACH and will look at the error
                       logs anyway."
+        Ken says: "Yes, it's a showstopper -- because it exits with
+                  a 0 status on startup failure, whether it spawns
+                  or not, before doing any work.  A script will
+                  incorrectly think it successfully daemonised."
         Not a showstopper: trawick
 
     * ap_directory_walk skips some per-dir config merge functions
@@ -110,6 +114,9 @@ RELEASE SHOWSTOPPERS:
                       statically if you don't want to let libtool
                       handle it.  At most, I don't consider this a
                       a release showstopper as it is a packaging issue."
+        Ken sez: "Showstopper because, until it's the default, it
+                 violates the P of LA.  Binaries will give strange
+                 errors and not run if moved."
         Status: Aaron volunteers: I'll commit a patch to allow all
                 the support binaries to be built statically against
                 libapr/libaprutil/etc and then enable it in binbuild.
@@ -135,7 +142,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       on dev@apr:
         Message-ID: <20020111115006.K1529@clove.org>
        Vote: Is a non-portable perchild going to hold up a GA release?
-        Yes:
+        Yes: Ken
          No: Aaron, Justin, trawick
 
     * Modify the worker MPM so that it doesn't need to create and
