@@ -300,7 +300,6 @@ typedef quad_t rlim_t;
 #undef HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
-#define timezone	_bky_timezone
 
 #elif defined(__FreeBSD__) || defined(__bsdi__)
 #define HAVE_SYS_RESOURCE_H
@@ -323,7 +322,6 @@ typedef quad_t rlim_t;
 #elif defined(LYNXOS)
 #undef NO_KILLPG
 #undef NO_SETSID
-#define NO_TIMEZONE
 #define NEED_STRCASECMP
 #define NEED_STRNCASECMP
 #define NEED_INITGROUPS

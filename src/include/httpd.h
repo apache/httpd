@@ -596,7 +596,7 @@ struct listen_rec {
 /* Time */
 extern const char month_snames[12][4];
 
-struct tm *get_gmtoff(long *tz);
+struct tm *get_gmtoff(int *tz);
 char *get_time();
 char *ht_time (pool *p, time_t t, const char *fmt, int gmt);     
 char *gm_timestr_822(pool *p, time_t t);

@@ -103,27 +103,22 @@ char *gm_timestr_822(pool *p, time_t sec) {
 }
 
 /* What a pain in the ass. */
-struct tm *get_gmtoff(long *tz) {
-    time_t tt;
-    struct tm *t;
+struct tm *get_gmtoff(int *tz) {
+    time_t tt = time(NULL);
+#if !defined(HAS_GMTOFF)
+    struct tm gmt = *gmtime(&tt);
+#endif
+    struct tm *t = localtime(&tt);
 
-    tt = time(NULL);
-    t = localtime(&tt);
-#if defined(HAVE_GMTOFF)
-    *tz = t->tm_gmtoff;
-#elif !defined(NO_TIMEZONE)
-    *tz = - timezone;
-    if(t->tm_isdst)
-        *tz += 3600;
+#if defined(HAS_GMTOFF)
+    *tz = (int) (t->tm_gmtoff / 60);
 #else
-  {
-    static struct tm loc_t;
-
-    loc_t = *t;   /* save it */
-    t = gmtime(&tt);
-    *tz = mktime(&loc_t) - mktime(t);
-    t = &loc_t; /* return pointer to saved time */
-  }
+    /* Assume we are never more than 24 hours away. */
+    int days = t->tm_yday - gmt.tm_yday;
+    int hours = ((days < -1 ? 24 : 1 < days ? -24 : days * 24)
+		 + t->tm_hour - gmt.tm_hour);
+    int minutes = hours * 60 + t->tm_min - gmt.tm_min;
+    *tz = minutes;
 #endif
     return t;
 }

@@ -287,7 +287,7 @@ char *log_env_var (request_rec *r, char *a)
 
 char *log_request_time (request_rec *r, char *a)
 {
-    long timz;
+    int timz;
     struct tm *t;
     char tstr[MAX_STRING_LEN];
     
@@ -301,8 +301,8 @@ char *log_request_time (request_rec *r, char *a)
 	if(timz < 0) timz = -timz;
 
 	strftime(tstr,MAX_STRING_LEN,"[%d/%b/%Y:%H:%M:%S ",t);
-	sprintf (tstr + strlen(tstr), "%c%02ld%02ld]",
-		 sign, timz/3600, timz%3600);
+	sprintf (tstr + strlen(tstr), "%c%.2d%.2d]",
+		 sign, timz/60, timz%60);
     }
 
     return pstrdup (r->pool, tstr);
