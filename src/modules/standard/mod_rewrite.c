@@ -2896,7 +2896,7 @@ static void open_rewritelog(server_rec *s, pool *p)
             fprintf(stderr,
                     "mod_rewrite: could not open reliable piped log for "
                     "RewriteLog\n");
-            exit (1);
+            exit(1);
         }
         conf->rewritelogfp = ap_piped_log_write_fd(pl);
     }
@@ -3156,8 +3156,8 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
         fpin  = NULL;
         fpout = NULL;
         rc = ap_spawn_child(p, rewritemap_program_child,
-			    (void *)map->datafile, kill_after_timeout,
-			    &fpin, &fpout, &fperr);
+                            (void *)map->datafile, kill_after_timeout,
+                            &fpin, &fpout, &fperr);
         if (rc == 0 || fpin == NULL || fpout == NULL) {
             perror("ap_spawn_child");
             fprintf(stderr, "mod_rewrite: "
