@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English revision: 1.4 -->
+<!-- English revision: 1.6 -->
 <manualpage metafile="invoking.xml.meta">
 <relativepath href="."/>
 
@@ -12,7 +12,7 @@
     (Windows NT, 2000 und XP) oder als Konsolenanwendung (Windows 9x und
     ME). F&#252;r Einzelheiten lesen Sie bitte <a
     href="platform/windows.html#winsvc">Apache als Dienst betreiben</a>
-    und <a href="platform/windows.xml#wincons"
+    und <a href="platform/windows.html#wincons"
     >Apache als Konsolenanwendung betreiben</a>.</p>
 
     <p>Unter Unix wird das <a

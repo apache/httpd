@@ -20,7 +20,7 @@
     <p>Unter Windows läuft der Apache üblicherweise als Dienst
     (Windows NT, 2000 und XP) oder als Konsolenanwendung (Windows 9x und
     ME). Für Einzelheiten lesen Sie bitte <a href="platform/windows.html#winsvc">Apache als Dienst betreiben</a>
-    und <a href="platform/windows.xml#wincons">Apache als Konsolenanwendung betreiben</a>.</p>
+    und <a href="platform/windows.html#wincons">Apache als Konsolenanwendung betreiben</a>.</p>
 
     <p>Unter Unix wird das <a href="programs/httpd.html">httpd</a>-Programm als Daemon ausgeführt,
     der im Hintergrund fortlaufend aktiv ist, um Anfragen zu bearbeiten.
