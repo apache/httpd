@@ -293,6 +293,7 @@ typedef struct walk_walked_t {
 typedef struct walk_cache_t {
     const char         *cached;         /* The identifier we matched */
     ap_conf_vector_t  **dir_conf_tested;/* The sections we matched against */
+    ap_conf_vector_t   *dir_conf_merged;/* Base per_dir_config */
     ap_conf_vector_t   *per_dir_result; /* per_dir_config += walked result */
     apr_array_header_t *walked;         /* The list of walk_walked_t results */
 } walk_cache_t;
