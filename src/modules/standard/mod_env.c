@@ -77,9 +77,9 @@
  *	     Environment variables take their value from the last instance
  *	     of PassEnv / SetEnv to be reached in the configuration file.
  *	     For example, the sequence:
- *		PassEnv PATH
- *		SetEnv PATH /special/path
- *	     Causes PATH to take the value '/special/path'.
+ *		PassEnv FOO
+ *		SetEnv FOO override
+ *	     Causes FOO to take the value 'override'.
  * 23.Feb.96 Added UnsetEnv directive to allow environment variables
  *           to be removed.
  *           Virtual hosts now 'inherit' parent server environment which
