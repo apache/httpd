@@ -147,10 +147,10 @@ Package=<4>
     Project_Dep_Name mod_isapi
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_log_config
+    Project_Dep_Name mod_logio
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_logio
+    Project_Dep_Name mod_log_config
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_mem_cache
