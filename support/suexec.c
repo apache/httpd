@@ -265,11 +265,60 @@ int main(int argc, char *argv[])
     struct stat dir_info;	/* directory info holder     */
     struct stat prg_info;	/* program info holder       */
 
+    prog = argv[0];
+    /*
+     * Check existence/validity of the UID of the user
+     * running this program.  Error out if invalid.
+     */
+    uid = getuid();
+    if ((pw = getpwuid(uid)) == NULL) {
+	log_err("crit: invalid uid: (%ld)\n", uid);
+	exit(102);
+    }
+    /*
+     * See if this is a 'how were you compiled' request, and
+     * comply if so.
+     */
+    if ((argc > 1)
+        && (! strcmp(argv[1], "-V"))
+        && ((uid == 0)
+#ifdef _OSD_POSIX
+        /* User name comparisons are case insensitive on BS2000/OSD */
+            || (! strcasecmp(AP_HTTPD_USER, pw->pw_name)))
+#else  /* _OSD_POSIX */
+            || (! strcmp(AP_HTTPD_USER, pw->pw_name)))
+#endif /* _OSD_POSIX */
+        ) {
+#ifdef AP_DOC_ROOT
+        fprintf(stderr, " -D AP_DOC_ROOT=\"%s\"\n", AP_DOC_ROOT);
+#endif
+#ifdef AP_GID_MIN
+        fprintf(stderr, " -D AP_GID_MID=%d\n", AP_GID_MIN);
+#endif
+#ifdef AP_HTTPD_USER
+        fprintf(stderr, " -D AP_HTTPD_USER=\"%s\"\n", AP_HTTPD_USER);
+#endif
+#ifdef AP_LOG_EXEC
+        fprintf(stderr, " -D AP_LOG_EXEC=\"%s\"\n", AP_LOG_EXEC);
+#endif
+#ifdef SAFE_PATH
+        fprintf(stderr, " -D SAFE_PATH=\"%s\"\n", SAFE_PATH);
+#endif
+#ifdef SUEXEC_UMASK
+        fprintf(stderr, " -D SUEXEC_UMASK=%03o\n", SUEXEC_UMASK);
+#endif
+#ifdef AP_UID_MIN
+        fprintf(stderr, " -D AP_UID_MID=%d\n", AP_UID_MIN);
+#endif
+#ifdef AP_USERDIR_SUFFIX
+        fprintf(stderr, " -D AP_USERDIR_SUFFIX=\"%s\"\n", AP_USERDIR_SUFFIX);
+#endif
+        exit(0);
+    }
     /*
      * If there are a proper number of arguments, set
      * all of them to variables.  Otherwise, error out.
      */
-    prog = argv[0];
     if (argc < 4) {
 	log_err("too few arguments\n");
 	exit(101);
@@ -277,16 +326,6 @@ int main(int argc, char *argv[])
     target_uname = argv[1];
     target_gname = argv[2];
     cmd = argv[3];
-
-    /*
-     * Check existence/validity of the UID of the user
-     * running this program.  Error out if invalid.
-     */
-    uid = getuid();
-    if ((pw = getpwuid(uid)) == NULL) {
-	log_err("invalid uid: (%ld)\n", uid);
-	exit(102);
-    }
 
     /*
      * Check to see if the user running this program
