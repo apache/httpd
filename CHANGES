@@ -1,5 +1,8 @@
 Changes with Apache 2.0.45
 
+  *) Rewrite ap_xml_parse_input to use bucket brigades.  PR 16134.
+     [Justin Erenkrantz]
+
   *) Fix segfault which occurred when a section in an included
      configuration file was not closed. PR 17093.  [André Malo]
 
