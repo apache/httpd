@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/09/07 13:53:13 $]
+Last modified at [$Date: 2001/09/07 14:01:26 $]
 
 Release:
 
@@ -34,12 +34,12 @@ on related projects:
 
 RELEASE SHOWSTOPPERS:
 
-    * mod_negotiation (?): Marc's message on 23 August 2001 about
-      the .var files being read one byte at a time.
-      [Charles Randall <crandall@matchlogic.com>]
-
     * threaded MPM broken on FreeBSD
       [Charles Randall <crandall@matchlogic.com>]
+
+      Jeff says: As far as anyone can tell, it is FreeBSD which is
+      broken, with no apparent work-around available.  Even using
+      prefork with a threaded APR build on FreeBSD doesn't work.
 
     * There is a bug in how we sort some hooks, at least the pre-config
       hook.  The first time we call the hooks, they are in the correct 
