@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.4 -->
+<!-- English revision: 1.6 -->
 <modulesynopsis>
 <name>worker</name>
 <description>マルチスレッドとマルチプロセスのハイブリッド型
@@ -22,8 +22,10 @@
     <p>この MPM を制御するのに使われる最も重要なディレクティブは、
     <directive module="mpm_common">ThreadsPerChild</directive> と
     <directive module="mpm_common">MaxClients</directive> です。
-    これらのディレクティブの値を操作することで、
-    サーバの扱うことのできる全同時コネクション数を定義します。</p>
+    <directive module="mpm_common">ThreadsPerChild</directive> は
+    各子プロセスで用意されるスレッド数を制御して、
+    <directive module="mpm_common">MaxClients</directive> は
+    起動されるスレッドの総数の最大値を制限します。</p>
 
 </summary>
 <seealso><a href="../bind.html">Apache 
@@ -46,6 +48,9 @@
     このようにして、クライアントはリクエストの応答が得られるようになるために
     新しいスレッドやプロセスが生成されるのを
     待たなくてもよいようになっています。
+    起動初期時のプロセス総数は、
+    <directive module="mpm_common">StartServers</directive>
+    ディレクティブで設定されます。その後の稼働中に、
     Apache は全プロセスのアイドルスレッドの合計数を見積もって、
     <directive module="mpm_common">MinSpareThreads</directive> と
     <directive module="mpm_common">MaxSpareThreads</directive>
@@ -53,12 +58,27 @@
     kill したりします。この操作は非常に自律的なので、
     これらのディレクティブをデフォルト値から変更する必要は
     めったにないでしょう。
-    同時に応答することのできるクライアント数の最大数は、
-    生成されるサーバプロセスの最大数
-    (<directive module="mpm_common">MaxClients</directive>)
-    と、個々のプロセスで作られるスレッド数
-    (<directive module="mpm_common">ThreadsPerChild</directive>) 
-    の積になります。</p>
+    同時に応答することのできるクライアント数の最大数
+    (つまり全プロセス中の総スレッド数の最大値) は
+    <directive module="mpm_common">MaxClients</directive>
+    ディレクティブで決定されていて、
+    一方で起動することのできるプロセス数の最大値は
+    <directive module="mpm_common">ServerLimit</directive>
+    ディレクティブで設定されています。
+    <directive module="mpm_common">ServerLimit</directive> と
+    <directive module="mpm_common">ThreadsPerChild</directive> との積は、
+    <directive module="mpm_common">MaxClients</directive>
+    と等しいかそれより大きい必要があります。</p>
+    
+    <p><module>worker</module> MPM の典型的なプロセス・スレッド制御の
+    設定では、次のようになります。</p>
+
+<example><pre>StartServers         2
+MaxClients         150
+MinSpareThreads     25
+MaxSpareThreads     75
+ThreadsPerChild     25
+ServerLimit         16</pre></example>
 
     <p>通常 Unix では親プロセスは 80 番ポートにバインドするために
     root で起動されますが、子プロセスやスレッドは

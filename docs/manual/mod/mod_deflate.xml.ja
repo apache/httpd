@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.6 -->
+<!-- English revision: 1.8 -->
 
 <name>mod_deflate</name>
 <description>クライアントへ送られる前にコンテンツを圧縮する</description>
@@ -23,10 +23,13 @@
     <p>圧縮機能は <code>DEFLATE</code> <a href="../filter.html">フィルタ</a>
     により実装されています。以下のディレクティブはそのディレクティブのある
     コンテナ中のドキュメントを圧縮するようにします:</p>
-    <p><strong>ほとんどのよく使われているブラウザはすべてのコンテンツの
-        圧縮は扱えません。ですから、'gzip-only-text/html' を
-        有効にした方がよいかもしれません (以下参照)
+    <p><strong>よく使われているブラウザでは、すべてのコンテンツに対する
+        圧縮を扱えるわけではありません。ですから、'gzip-only-text/html' 
+	ノートを 1 にして、html ファイルに対してのみ
+	圧縮が働くようにした方がよいかもしれません (以下参照)
     </strong></p>
+    <p><strong>この値を 1 以外の値に設定した場合は無視されますので、
+       ネガティブマッチを行なうことができます。</strong></p>
 
 <example>SetEnv gzip-only-text/html 1<br />
 SetOutputFilter DEFLATE
@@ -46,7 +49,8 @@ SetOutputFilter DEFLATE
 <name>DeflateFilterNote</name>
 <description>ロギング用に圧縮比をメモに追加</description>
 <syntax>DeflateFilterNote <em>notename</em></syntax>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>サーバ設定ファイル</context>
+<context>バーチャルホスト</context></contextlist>
 
 <usage>
     <p><directive>DeflateFilterNote</directive> ディレクティブは
@@ -60,7 +64,8 @@ SetOutputFilter DEFLATE
 <description>zlib が一度に圧縮する塊の大きさ</description>
 <syntax>DeflateBufferSize <em>value</em></syntax>
 <default>DeflateBufferSize 8096</default>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>サーバ設定ファイル</context>
+<context>バーチャルホスト</context></contextlist>
 
 <usage>
     <p><directive>DeflateBufferSize</directive> ディレクティブは
@@ -73,7 +78,8 @@ SetOutputFilter DEFLATE
 <description>Zlib の圧縮用ウィンドウの大きさ</description>
 <syntax>DeflateWindowSize <em>value</em></syntax>
 <default>DeflateWindowSize 15</default>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>サーバ設定ファイル</context>
+<context>バーチャルホスト</context></contextlist>
 
 <usage>
     <p><directive>DeflateWindowSize</directive> ディレクティブは
@@ -89,7 +95,8 @@ SetOutputFilter DEFLATE
 <description>zlib が圧縮に使うメモリのレベルを指定</description>
 <syntax>DeflateMemLevel <em>value</em></syntax>
 <default>DeflateMemLevel 9</default>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>サーバ設定ファイル</context>
+<context>バーチャルホスト</context></contextlist>
 
 <usage>
     <p><directive>DeflateMemLevel</directive> ディレクティブは
