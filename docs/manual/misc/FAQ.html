@@ -14,7 +14,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.137 $ ($Date: 1999/02/04 18:15:05 $)
+  $Revision: 1.138 $ ($Date: 1999/02/14 00:45:08 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -2046,18 +2046,6 @@
   the century is <SAMP>20</SAMP> rather than <SAMP>19</SAMP>.
   </P>
   <P>
-  Some aspects of Apache's output may use two-digit years, such as the
-  automatic listing of directory contents provided by
-  <A HREF="../mod/mod_autoindex.html"><SAMP>mod_autoindex</SAMP></A>
-  with the
-  <A HREF="../mod/mod_autoindex.html#indexoptions"
-  ><SAMP>FancyIndexing</SAMP></A>
-  option enabled, but it is improper to depend upon such displays for
-  specific syntax.  And even that issue is being addressed by the
-  developers; a future version of Apache should allow you to format that
-  display as you like.
-  </P>
-  <P>
   Although Apache is Year 2000 compliant, you may still get problems
   if the underlying OS has problems with dates past year 2000
   (<EM>e.g.</EM>, OS calls which accept or return year numbers).
@@ -2066,6 +2054,11 @@
   the magic boundary to worry about is the year 2038 and not 2000.
   But modern operating systems shouldn't cause any trouble
   at all.
+  </P>
+  <P>
+  Users of Apache 1.2.x should upgrade to a current version of Apache 1.3
+  (see <A HREF="../new_features_1_3.html#misc">year-2000 improvements in
+  Apache 1.3</A> for details).
   </P>
   <HR>
  </LI>
