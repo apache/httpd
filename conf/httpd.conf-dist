@@ -126,6 +126,12 @@ ScoreBoardFile logs/apache_runtime_status
 #
 #LockFile logs/accept.lock
 
+# ExtendedStatus controls whether Apache will generate "full" status
+# information (ExtendedStatus On) or just basic information (ExtendedStatus
+# Off) when the server-status Handler is called. The default is Off.
+#
+#ExtendedStatus On
+
 # ServerName allows you to set a host name which is sent back to clients for
 # your server if it's different than the one the program would get (i.e. use
 # "www" instead of the host's real name).
