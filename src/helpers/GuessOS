@@ -34,6 +34,9 @@ if [ "x$SCO" != "x" ]; then
 	4\.2MP)
 	    echo "whatever-whatever-unixware2"; exit 0
 	    ;;
+	4\.2)
+	    echo "whatever-whatever-unixware1"; exit 0
+	    ;;
     esac
 else
 # Now we simply scan though... In most cases, the SYSTEM info is enough
@@ -176,14 +179,12 @@ if [ -d /usr/apollo ]; then
 fi
 
 # Now NeXT
-if hostinfo > /dev/null 2>/dev/null; then
-    ISNEXT=`hostinfo`
-    case "$ISNEXT" in
-    	*NeXT*)
-	    echo "whatever-next-nextstep"; exit 0
-	    ;;
-    esac
-fi
+ISNEXT=`hostinfo 2>/dev/null`
+case "$ISNEXT" in
+    *NeXT*)
+	echo "whatever-next-nextstep"; exit 0
+	;;
+esac
 
 # At this point we gone through all the one's
 # we know of: Punt
