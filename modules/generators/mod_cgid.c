@@ -107,7 +107,6 @@
 module AP_MODULE_DECLARE_DATA cgid_module; 
 
 static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server); 
-static int once_through = 0; 
 
 static apr_pool_t *pcgi; 
 
@@ -510,12 +509,15 @@ static int cgid_server(void *data)
     return -1; 
 } 
 
-static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server) 
+static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
+                      server_rec *main_server) 
 { 
     pid_t pid; 
     apr_proc_t *procnew;
+    void *data;
 
-    if (once_through > 0) { 
+    apr_get_userdata(&data, "cgid_init", main_server->process->pool);
+    if (data != NULL) {
         apr_create_pool(&pcgi, p); 
 
         if ((pid = fork()) < 0) {
@@ -533,8 +535,11 @@ static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server
 #if APR_HAS_OTHER_CHILD
         apr_register_other_child(procnew, cgid_maint, NULL, NULL, p);
 #endif
-    } 
-    else once_through++; 
+    }
+    else {
+        apr_set_userdata((const void *)1, "cgid_init", apr_null_cleanup,
+                         main_server->process->pool);
+    }
 } 
 
 static void *create_cgid_config(apr_pool_t *p, server_rec *s) 
