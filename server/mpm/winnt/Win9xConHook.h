@@ -56,6 +56,10 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+#ifndef AP_WIN9XCONHOOK_H
+#define AP_WIN9XCONHOOK_H
+
+#ifdef WIN32
 
 /* Windows9xServiceCtrlHandler registers a handler routine, frees the
  * console window, and registers this process as a service in Win9x.
@@ -89,3 +93,7 @@ BOOL WINAPI FixConsoleCtrlHandler(PHANDLER_ROUTINE phandler, BOOL add);
  *
  * LRESULT CALLBACK CallWndProc(INT hc, WPARAM wParam, LPARAM lParam);
  */
+
+#endif /* WIN32 */
+
+#endif AP_WIN9XCONHOOK_H
