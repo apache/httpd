@@ -77,7 +77,8 @@ tmpfile2=$tmpfile.2
 tmpfile3=$tmpfile.3
 awkfile=$tmpfile.4
 tmpconfig=$tmpfile.5
-SUBDIRS="ap main modules"
+SUBDIRS="ap main"
+APLIBDIRS=""
 
 ####################################################################
 ## Now handle any arguments, which, for now, is -file
@@ -223,6 +224,7 @@ RULE_SOCKS5=`./helpers/CutRule SOCKS5 $file`
 RULE_IRIXNIS=`./helpers/CutRule IRIXNIS $file`
 RULE_IRIXN32=`./helpers/CutRule IRIXN32 $file`
 RULE_PARANOID=`./helpers/CutRule PARANOID $file`
+RULE_EXPAT=`./helpers/CutRule EXPAT $file`
 RULE_SHARED_CORE=`./helpers/CutRule SHARED_CORE $file`
 RULE_SHARED_CHAIN=`./helpers/CutRule SHARED_CHAIN $file`
 
@@ -1565,6 +1567,27 @@ if [ "x$RULE_WANTHSREGEX" = "xyes" ]; then
 fi
 
 ####################################################################
+## Add in the Expat library if needed/wanted.
+##
+if [ -d ./lib/expat/ ]; then
+    if [ "$RULE_EXPAT" = "default" ]; then
+        RULE_EXPAT=yes
+    fi
+else
+    if [ "$RULE_EXPAT" = "yes" ]; then
+        echo "ERROR: RULE_EXPAT set to \"yes\" but is not available."
+	exit 1
+    else
+        RULE_EXPAT=no
+    fi
+fi
+if [ "$RULE_EXPAT" = "yes" ]; then
+    EXPATLIB="lib/expat/libexpat.a"
+    APLIBDIRS="expat $APLIBDIRS"
+    CFLAGS="$CFLAGS -DUSE_EXPAT -I\$(SRCDIR)/lib/expat"
+fi
+
+####################################################################
 ## Now the SHARED_CHAIN stuff
 ##
 if [ "x$using_shlib" = "x1" ] ; then
@@ -1779,7 +1802,7 @@ echo "" >>Makefile
 ####################################################################
 ## Now add the target for the main Makefile
 ##
-echo "SUBDIRS=$SUBDIRS" >> Makefile
+echo "SUBDIRS=$SUBDIRS lib modules" >> Makefile
 echo "SUBTARGET=$SUBTARGET" >> Makefile
 echo "SHLIB_SUFFIX_NAME=$SHLIB_SUFFIX_NAME" >> Makefile
 echo "SHLIB_SUFFIX_LIST=$SHLIB_SUFFIX_LIST" >> Makefile
@@ -1807,6 +1830,7 @@ echo "LIBS_SHLIB=$LIBS_SHLIB" >>Makefile.config
 echo "LDFLAGS1=$LDFLAGS" >>Makefile.config
 echo "MFLAGS_STATIC=$MFLAGS_STATIC" >>Makefile.config
 echo "REGLIB=$REGLIB" >>Makefile.config
+echo "EXPATLIB=$EXPATLIB" >>Makefile.config
 echo "RANLIB=$RANLIB" >>Makefile.config
 
 ####################################################################
@@ -1991,12 +2015,46 @@ $CAT Makefile.config >> Makefile
 sed -e "s#@@Configuration@@#$file#" "Makefile.tmpl" >>Makefile
 
 # xxx/Makefile
-MAKEDIRS="support main ap regex $OSDIR"
+MAKEDIRS="support $SUBDIRS"
 for dir in $MAKEDIRS ; do
 	echo Creating Makefile in $dir
 	./helpers/mfhead $dir $file > $dir/Makefile
 	$CAT Makefile.config $dir/Makefile.tmpl |\
 	sed -e "s:^SRCDIR=.*:SRCDIR=`./helpers/fp2rp $dir`:" >> $dir/Makefile
+done
+
+####################################################################
+## Now create the lib/Makefile
+##
+./helpers/mfhead modules $file > lib/Makefile
+$CAT Makefile.config | sed -e 's:^SRCDIR=.*:SRCDIR=..:' >> lib/Makefile
+
+$CAT << EOF >> lib/Makefile
+APLIBS=$APLIBDIRS
+CFLAGS=\$(OPTIM) \$(CFLAGS1) \$(EXTRA_CFLAGS)
+
+default: all
+
+all clean distclean depend :: 
+	@for i in \$(APLIBS) ""; do \\
+	  if [ "x\$\$i" != "x" ]; then \\
+	    echo "===> \$(SDP)lib/\$\$i"; \\
+		(cd \$\$i && \$(MAKE) \$(MFLAGS_STATIC) SDP='\$(SDP)' CC='\$(CC)' AUX_CFLAGS='\$(CFLAGS)' RANLIB='\$(RANLIB)' \$@) || exit 1; \\
+		echo "<=== \$(SDP)lib/\$\$i"; \\
+	  fi; \\
+	done
+
+EOF
+
+####################################################################
+## Now create the lib/xxx/Makefile
+##
+
+for dir in $APLIBDIRS ; do
+	echo Creating Makefile in lib/$dir
+	./helpers/mfhead lib/$dir $file > lib/$dir/Makefile
+	$CAT Makefile.config lib/$dir/Makefile.tmpl |\
+	sed -e "s:^SRCDIR=.*:SRCDIR=`./helpers/fp2rp lib/$dir`:" >> lib/$dir/Makefile
 done
 
 ####################################################################

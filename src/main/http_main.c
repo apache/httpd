@@ -6514,4 +6514,12 @@ int main(int argc, char *argv[], char *envp[])
 #endif /* def OS2 */
 #endif /* ndef SHARED_CORE_BOOTSTRAP */
 
+/* force Expat to be linked into the server executable */
+#ifdef USE_EXPAT
+#include "xmlparse.h"
+const XML_LChar * suck_in_expat(void)
+{
+    return XML_ErrorString(XML_ERROR_NONE);
+}
+#endif /* USE_EXPAT */
 

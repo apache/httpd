@@ -33,7 +33,7 @@ $(TARGET): $(EXTRA_DEPS) $(SUBTARGET)
 target_static: subdirs modules.o
 	$(CC) -c $(INCLUDES) $(CFLAGS) buildmark.c
 	$(CC) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
-	      -o $(TARGET) buildmark.o $(OBJS) $(REGLIB) $(LIBS)
+	      -o $(TARGET) buildmark.o $(OBJS) $(REGLIB) $(EXPATLIB) $(LIBS)
 
 target_compile_only: subdirs modules.o
 	$(CC) -c $(INCLUDES) $(CFLAGS) buildmark.c
@@ -50,7 +50,7 @@ lib$(TARGET).ep: lib$(TARGET).$(SHLIB_SUFFIX_NAME)
 
 lib$(TARGET).$(SHLIB_SUFFIX_NAME): subdirs modules.o
 	$(CC) -c $(INCLUDES) $(CFLAGS) buildmark.c
-	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o lib$(TARGET).$(SHLIB_SUFFIX_NAME) buildmark.o $(OBJS) $(REGLIB) $(LD_SHCORE_DEF) $(LD_SHCORE_LIBS)
+	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o lib$(TARGET).$(SHLIB_SUFFIX_NAME) buildmark.o $(OBJS) $(REGLIB) $(EXPATLIB) $(LD_SHCORE_DEF) $(LD_SHCORE_LIBS)
 	@if [ ".$(SHLIB_SUFFIX_LIST)" != . ]; then \
 		rm -f lib$(TARGET).$(SHLIB_SUFFIX_NAME).*; \
 		for suffix in $(SHLIB_SUFFIX_LIST) ""; do \
@@ -93,6 +93,7 @@ distclean:
 	-rm -f modules.c
 	-rm -f modules/Makefile
 	-rm -f regex/Makefile
+	-rm -f lib/Makefile
 	-rm -f Makefile.config
 	-rm -f Makefile
 
