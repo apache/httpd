@@ -1991,11 +1991,18 @@ static const char *set_threads(cmd_parms *cmd, void *dummy, char *arg) {
     }
 
     ap_threads_per_child = atoi(arg);
-#ifdef WIN32
-    if (ap_threads_per_child > 64) {
-	return "Can't have more than 64 threads in Windows (for now)";
+    if (ap_threads_per_child > HARD_SERVER_LIMIT) {
+        fprintf(stderr, "WARNING: ThreadsPerChild of %d exceeds compile time limit "
+                "of %d threads,\n", ap_threads_per_child, HARD_SERVER_LIMIT);
+        fprintf(stderr, " lowering ThreadsPerChild to %d.  To increase, please "
+                "see the\n", HARD_SERVER_LIMIT);
+        fprintf(stderr, " HARD_SERVER_LIMIT define in src/include/httpd.h.\n");
+        ap_threads_per_child = HARD_SERVER_LIMIT;
+    } 
+    else if (ap_threads_per_child < 1) {
+	fprintf(stderr, "WARNING: Require ThreadsPerChild > 0, setting to 1\n");
+	ap_threads_per_child = 1;
     }
-#endif
 
     return NULL;
 }
