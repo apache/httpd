@@ -177,6 +177,12 @@ document, or in the <CODE>src/CHANGES</CODE> file.
 changes in third party modules not maintained by Apache.
 
 <UL>
+  <LI>Use of <SAMP>SERVER_VERSION</SAMP> definition.  If third-party
+   modules reference the server version string using this symbol,
+   they should be corrected to obtain it by calling the new API routine
+   <CODE>const&nbsp;char&nbsp;*apapi_get_server_version()</CODE>.
+  </LI>
+
   <LI><CODE>construct_url</CODE> prototype change.  The second parameter
     was previously a <CODE>server_rec</CODE>, it has been changed to
     a <CODE>request_rec</CODE>.

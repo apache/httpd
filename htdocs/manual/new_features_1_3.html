@@ -562,7 +562,9 @@ Allows additional information to be listed along with a specified module.
   redirects on the backend servers which stay behind the reverse proxy.
  </LI>
 
- <LI><STRONG>New map types for <SAMP><A HREF="mod/mod_rewrite.html#RewriteMap">RewriteMap</A></SAMP> directive</STRONG>
+ <LI><STRONG>New map types for
+  <A HREF="mod/mod_rewrite.html#RewriteMap"><SAMP>RewriteMap</SAMP></A>
+  directive</STRONG>
   <BR>
   The new map types `Randomized Plain Text' and `Internal Function' were added
   to the <SAMP>RewriteMap</SAMP> directive of mod_rewrite.  They provide two
@@ -571,6 +573,20 @@ Allows additional information to be listed along with a specified module.
   between backend servers in a Reverse Proxy situation). Second, you now can
   translate URL parts to fixed (upper or lower) case (which is useful when
   doing mass virtual hosting by the help of mod_rewrite).
+ </LI>
+ <LI><STRONG><SAMP>SERVER_VERSION</SAMP> definition abstracted, and
+  server build date added</STRONG>
+  <BR>
+  In earlier versions, the Apache server version was available to modules
+  through the <SAMP>#define</SAMP>d value for <SAMP>SERVER_VERSION</SAMP>.
+  In order to keep this value consistent when modules and the core server
+  are compiled at different times, this information is now available
+  through the core API routine
+  <CODE>const&nbsp;char&nbsp;*apapi_get_server_version()</CODE>.  The use of
+  the <SAMP>SERVER_VERSION</STRONG> symbol is deprecated and anti-recommended.
+  In addition, a related datum is now available through the use of the
+  API routine <CODE>const&nbsp;char&nbsp;*apapi_get_server_built()</CODE>,
+  which returns a string representing the time the core server was linked.
  </LI>
 </UL>
 
