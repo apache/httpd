@@ -225,6 +225,10 @@ API_EXPORT(void) ap_clear_table(table *);
 API_EXPORT(const char *) ap_table_get(const table *, const char *);
 API_EXPORT(void) ap_table_set(table *, const char *name, const char *val);
 API_EXPORT(void) ap_table_setn(table *, const char *name, const char *val);
+API_EXPORT(void) ap_table_merge_unique_token(table *t, const char *key,
+					     const char *val);
+API_EXPORT(void) ap_table_mergen_unique_token(table *t, const char *key,
+					      const char *val);
 API_EXPORT(void) ap_table_merge(table *, const char *name, const char *more_val);
 API_EXPORT(void) ap_table_mergen(table *, const char *name, const char *more_val);
 API_EXPORT(void) ap_table_unset(table *, const char *key);

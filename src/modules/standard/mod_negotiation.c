@@ -2194,12 +2194,21 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
     if (neg->is_transparent || vary_by_type || vary_by_language ||
         vary_by_language || vary_by_charset || vary_by_encoding) {
 
-        ap_table_mergen(hdrs, "Vary", 2 + ap_pstrcat(r->pool,
-            neg->is_transparent ? ", negotiate"       : "",
-            vary_by_type        ? ", accept"          : "",
-            vary_by_language    ? ", accept-language" : "",
-            vary_by_charset     ? ", accept-charset"  : "",
-            vary_by_encoding    ? ", accept-encoding" : "", NULL));
+	if (neg->is_transparent) {
+	    ap_table_mergen_unique_token(hdrs, "Vary", "negotiate");
+	}
+	if (vary_by_type) {
+	    ap_table_mergen_unique_token(hdrs, "Vary", "accept");
+	}
+	if (vary_by_language) {
+	    ap_table_mergen_unique_token(hdrs, "Vary", "accept-language");
+	}
+	if (vary_by_charset) {
+	    ap_table_mergen_unique_token(hdrs, "Vary", "accept-charset");
+	}
+	if (vary_by_encoding) {
+	    ap_table_mergen_unique_token(hdrs, "Vary", "accept-encoding");
+	}
     }
 
     if (neg->is_transparent) { /* Create TCN response header */

@@ -1880,7 +1880,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
         }
 	vary = ap_table_get(r->notes, VARY_KEY_THIS);
 	if (vary != NULL) {
-	    ap_table_merge(r->notes, VARY_KEY, vary);
+	    ap_table_merge_unique_token(r->notes, VARY_KEY, vary);
 	    ap_table_unset(r->notes, VARY_KEY_THIS);
 	}
     }
@@ -3781,7 +3781,7 @@ static char *lookup_header(request_rec *r, const char *name)
             continue;
         }
         if (strcasecmp(hdrs[i].key, name) == 0) {
-	    ap_table_merge(r->notes, VARY_KEY_THIS, name);
+	    ap_table_merge_unique_token(r->notes, VARY_KEY_THIS, name);
             return hdrs[i].val;
         }
     }
