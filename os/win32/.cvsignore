@@ -4,6 +4,7 @@
 *.plg
 *.dsw
 *.mak
+installer
 ApacheModuleAuthAnonD
 ApacheModuleAuthAnonR
 ApacheModuleAuthDigestD
@@ -26,3 +27,7 @@ ApacheModuleStatusD
 ApacheModuleStatusR
 ApacheModuleUserTrackD
 ApacheModuleUserTrackR
+XMLParseD
+XMLParseR
+XMLTokD
+XMLTokR
