@@ -154,13 +154,13 @@ Note that the common log format is defined by the string <CODE>"%h %l
 extending for format if desired (e.g. to add extra fields at the end).
 NCSA's extended/combined log format would be <CODE>"%h %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\""</CODE>.
 
-<p>
+<P>
 
-Note that the canonical <a href="core.html#servername">ServerName</a>
-and <a href="core.html#port">Port</a> of the server serving the request
-are used for <code>%v</code> and <code>%p</code> respectively.  This
+Note that the canonical <A HREF="core.html#servername">ServerName</A>
+and <A HREF="core.html#port">Port</A> of the server serving the request
+are used for <CODE>%v</CODE> and <CODE>%p</CODE> respectively.  This
 happens regardless of the
-<a href="core.html#usecanonicalname">UseCanonicalName</a> setting because
+<A HREF="core.html#usecanonicalname">UseCanonicalName</A> setting because
 otherwise log analysis programs would have to duplicate the entire
 vhost matching algorithm in order to decide what host really served
 the request.
@@ -201,7 +201,7 @@ the user that starts the server.
 <HR>
 
 
-<H2><A name="cookielog">CookieLog</A></H2>
+<H2><A NAME="cookielog">CookieLog</A></H2>
 <!--%plaintext &lt;?INDEX {\tt CookieLog} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -275,7 +275,7 @@ the
 directive.
 </P>
 <HR>
-<H2><A name="logformat">LogFormat</A></H2>
+<H2><A NAME="logformat">LogFormat</A></H2>
 <!--%plaintext &lt;?INDEX {\tt LogFormat} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -327,7 +327,7 @@ it doesn't actually apply the format and make it the default.
 </P>
 
 <HR>
-<H2><A name="transferlog">TransferLog</A></H2>
+<H2><A NAME="transferlog">TransferLog</A></H2>
 <!--%plaintext &lt;?INDEX {\tt TransferLog} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"

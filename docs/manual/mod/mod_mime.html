@@ -84,7 +84,7 @@ copies may still be used by a client or proxy.
 <HR>
 
 
-<H2><A name="addencoding">AddEncoding</A></H2>
+<H2><A NAME="addencoding">AddEncoding</A></H2>
 <!--%plaintext &lt;?INDEX {\tt AddEncoding} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -119,21 +119,21 @@ AddEncoding x-compress Z
 This will cause files ending in .gz to be marked as encoded using the x-gzip
 encoding, and .Z files to be marked as encoded with x-compress.<P>
 
-Old clients expect <code>x-gzip</code> and <code>x-compress</code>,
-however the standard dictates that they're equivalent to <code>gzip</code>
-and <code>compress</code> respectively.  Apache does content encoding
-comparisons by ignoring any leading <code>x-</code>.  When responding
-with an encoding Apache will use whatever form (i.e. <code>x-foo</code>
-or <code>foo</code>) the client requested.  If the client didn't
+Old clients expect <CODE>x-gzip</CODE> and <CODE>x-compress</CODE>,
+however the standard dictates that they're equivalent to <CODE>gzip</CODE>
+and <CODE>compress</CODE> respectively.  Apache does content encoding
+comparisons by ignoring any leading <CODE>x-</CODE>.  When responding
+with an encoding Apache will use whatever form (i.e. <CODE>x-foo</CODE>
+or <CODE>foo</CODE>) the client requested.  If the client didn't
 specifically request a particular form Apache will use the form given by
-the <code>AddEncoding</code> directive.  To make this long story short,
-you should always use <code>x-gzip</code> and <code>x-compress</code>
+the <CODE>AddEncoding</CODE> directive.  To make this long story short,
+you should always use <CODE>x-gzip</CODE> and <CODE>x-compress</CODE>
 for these two specific encodings.  More recent encodings, such as
-<code>deflate</code> should be specified without the <code>x-</code>.
+<CODE>deflate</CODE> should be specified without the <CODE>x-</CODE>.
 
 <P><HR>
 
-<H2><A name="addhandler">AddHandler</A></H2>
+<H2><A NAME="addhandler">AddHandler</A></H2>
 
 <A
  HREF="directive-dict.html#Syntax"
@@ -170,7 +170,7 @@ file ending with "<CODE>.cgi</CODE>" will be treated as a CGI
 program.</P>
 <HR>
 
-<H2><A name="addlanguage">AddLanguage</A></H2>
+<H2><A NAME="addlanguage">AddLanguage</A></H2>
 <!--%plaintext &lt;?INDEX {\tt AddLanguage} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -209,7 +209,7 @@ the browser is unlikely to use this information. The AddLanguage directive
 is more useful for content negotiation, where the server returns one
 from several documents based on the client's language preference.<P><HR>
 
-<H2><A name="addtype">AddType</A></H2>
+<H2><A NAME="addtype">AddType</A></H2>
 <!--%plaintext &lt;?INDEX {\tt AddType} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -244,7 +244,7 @@ rather than changing the <A HREF="#typesconfig">TypesConfig</A> file.<P>
 Note that, unlike the NCSA httpd, this directive cannot be used to set the
 type of particular files.<P><HR>
 
-<H2><A name="forcetype">ForceType</A></H2>
+<H2><A NAME="forcetype">ForceType</A></H2>
 
 <A
  HREF="directive-dict.html#Syntax"
@@ -280,7 +280,7 @@ had a directory full of GIF files, but did not want to label them all with
 <P>Note that this will override any filename extensions that might determine
 the media type.</P><HR>
 
-<H2><A name="sethandler">SetHandler</A></H2>
+<H2><A NAME="sethandler">SetHandler</A></H2>
 
 <A
  HREF="directive-dict.html#Syntax"
@@ -326,7 +326,7 @@ called, you might put the following into access.conf:
 </PRE>
 <HR>
 
-<H2><A name="typesconfig">TypesConfig</A></H2>
+<H2><A NAME="typesconfig">TypesConfig</A></H2>
 <!--%plaintext &lt;?INDEX {\tt TypesConfig} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"

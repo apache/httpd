@@ -35,7 +35,7 @@ host filesystem in the the document tree, and for URL redirection.
 <HR>
 
 
-<H2><A name="alias">Alias directive</A></H2>
+<H2><A NAME="alias">Alias directive</A></H2>
 <P>
 <!--%plaintext &lt;?INDEX {\tt Alias} directive&gt; -->
 <A
@@ -74,13 +74,13 @@ server will require a trailing / in order to expand the alias.  That is,
 if you use <CODE>Alias /icons/ /usr/local/apache/icons/</CODE> then
 the url <CODE>/icons</CODE> will not be aliased.
 </P>
-<p>
+<P>
 Note that you may need to specify additional
-<a href="core.html#directory"><code>&lt;Directory&gt;</code></a> sections
-which cover the <i>destination</i> of aliases.  Aliasing occurs
-before <code>&lt;Directory&gt;</code> sections are checked, so only
+<A HREF="core.html#directory"><CODE>&lt;Directory&gt;</CODE></A> sections
+which cover the <EM>destination</EM> of aliases.  Aliasing occurs
+before <CODE>&lt;Directory&gt;</CODE> sections are checked, so only
 the destination of aliases are affected.  (Note however
-<a href="core.html#location"><code>&lt;Location&gt;</code></a>
+<A HREF="core.html#location"><CODE>&lt;Location&gt;</CODE></A>
 sections are run through once before aliases are performed, so they
 will apply.)
 <P>
@@ -88,7 +88,7 @@ See also <A HREF="#scriptalias">ScriptAlias</A>.
 </P>
 <HR>
 
-<H2><A name="aliasmatch">AliasMatch</A></H2>
+<H2><A NAME="aliasmatch">AliasMatch</A></H2>
 <P>
 <A
  HREF="directive-dict.html#Syntax"
@@ -125,17 +125,19 @@ to activate the <CODE>/icons</CODE> directory, one might use:
 
 <HR>
 
-<H2><A name="redirect">Redirect directive</A></H2>
+<H2><A NAME="redirect">Redirect directive</A></H2>
 <P>
 <!--%plaintext &lt;?INDEX {\tt Redirect} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> Redirect [ <EM>status</EM> ] <EM>url-path url</EM><BR>
+><STRONG>Syntax:</STRONG></A> Redirect [ <EM>status</EM> ]
+ <EM>url-path url</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
+><STRONG>Context:</STRONG></A> server config, virtual host, directory,
+ .htaccess<BR>
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
@@ -204,12 +206,13 @@ the function <CODE>send_error_response</CODE> in http_protocol.c).
 </P>
 <HR>
 
-<H2><A name="redirectmatch">RedirectMatch</A></H2>
+<H2><A NAME="redirectmatch">RedirectMatch</A></H2>
 <P>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> RedirectMatch [<EM>status</EM> <EM>regex url</EM><BR>
+><STRONG>Syntax:</STRONG></A> RedirectMatch [<EM>status</EM> <EM>regex url</EM>
+<BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -242,7 +245,7 @@ one might use:
 
 <HR>
 
-<H2><A name="redirecttemp">RedirectTemp directive</A></H2>
+<H2><A NAME="redirecttemp">RedirectTemp directive</A></H2>
 <P>
 <!--%plaintext &lt;?INDEX {\tt Redirect} directive&gt; -->
 <A
@@ -252,7 +255,8 @@ one might use:
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
+><STRONG>Context:</STRONG></A> server config, virtual host, directory,
+ .htaccess<BR>
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
@@ -273,7 +277,7 @@ temporary</CODE>.
 </P>
 <HR>
 
-<H2><A name="redirectperm">RedirectPermanent directive</A></H2>
+<H2><A NAME="redirectperm">RedirectPermanent directive</A></H2>
 <P>
 <!--%plaintext &lt;?INDEX {\tt Redirect} directive&gt; -->
 <A
@@ -283,7 +287,8 @@ temporary</CODE>.
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
+><STRONG>Context:</STRONG></A> server config, virtual host, directory,
+ .htaccess<BR>
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
@@ -303,13 +308,14 @@ This directive makes the client know that the Redirect is permanent
 </P>
 <HR>
 
-<H2><A name="scriptalias">ScriptAlias directive</A></H2>
+<H2><A NAME="scriptalias">ScriptAlias directive</A></H2>
 <P>
 <!--%plaintext &lt;?INDEX {\tt ScriptAlias} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ScriptAlias <EM>url-path directory-filename</EM><BR>
+><STRONG>Syntax:</STRONG></A> ScriptAlias <EM>url-path directory-filename</EM>
+<BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -340,12 +346,13 @@ run the script /web/cgi-bin/foo.
 
 <HR>
 
-<H2><A name="scriptaliasmatch">ScriptAliasMatch</A></H2>
+<H2><A NAME="scriptaliasmatch">ScriptAliasMatch</A></H2>
 <P>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ScriptAliasMatch <EM>regex directory-filename</EM><BR>
+><STRONG>Syntax:</STRONG></A> ScriptAliasMatch
+ <EM>regex directory-filename</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
