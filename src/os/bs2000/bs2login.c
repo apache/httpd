@@ -273,7 +273,7 @@ pid_t os_fork(const char *user)
 	/* Make user name all upper case - for some versions of ufork() */
 	ap_str_toupper(username);
 
-	pid = ufork(user);
+	pid = ufork(username);
 	if (pid == -1 && errno == EPERM) {
 	    ap_log_error(APLOG_MARK, APLOG_EMERG,
 			 NULL, "ufork: Possible mis-configuration "
