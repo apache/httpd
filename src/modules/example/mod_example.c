@@ -940,7 +940,7 @@ static int example_auth_checker(request_rec *r)
      * didn't actually do anything).
      */
     trace_add(r->server, r, cfg, "example_auth_checker()");
-    return OK;
+    return DECLINED;
 }
 
 /*
@@ -959,7 +959,7 @@ static int example_access_checker(request_rec *r)
 
     cfg = our_dconfig(r);
     trace_add(r->server, r, cfg, "example_access_checker()");
-    return OK;
+    return DECLINED;
 }
 
 /*
