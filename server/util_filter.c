@@ -247,8 +247,9 @@ API_EXPORT(void) ap_save_data_to_filter(ap_filter_t *f, ap_bucket_brigade **b)
         bb = ap_brigade_create(f->r->pool);
     }
     
-    AP_RING_FOREACH(e, &bb->list, ap_bucket, link) {
-	e->setaside(e);
+    AP_RING_FOREACH(e, &(*b)->list, ap_bucket, link) {
+        if (e->setaside)
+            e->setaside(e);
     }
     AP_BRIGADE_CONCAT(bb, *b);
     f->ctx = bb;
