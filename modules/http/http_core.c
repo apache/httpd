@@ -211,9 +211,8 @@ static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
              * Insert the chunk header, specifying the number of bytes in
              * the chunk.
              */
-            /* XXX might be nice to have APR_OFF_T_FMT_HEX */
             hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
-                                   "%qx" CRLF, (apr_uint64_t)bytes);
+                                   "%" APR_UINT64_T_HEX_FMT CRLF, (apr_uint64_t)bytes);
             ap_xlate_proto_to_ascii(chunk_hdr, hdr_len);
             e = apr_bucket_transient_create(chunk_hdr, hdr_len,
                                             c->bucket_alloc);
