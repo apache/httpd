@@ -96,6 +96,7 @@ module MODULE_VAR_EXPORT autoindex_module;
 #define SUPPRESS_COLSORT 128
 #define NO_OPTIONS 256
 #define FOLDERS_FIRST 512
+#define TRACK_MODIFIED 1024
 
 #define K_PAD 1
 #define K_NOPAD 0
@@ -406,7 +407,10 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
         else if (!strcasecmp(w, "FoldersFirst")) {
             option = FOLDERS_FIRST;
 	}
-	else if (!strcasecmp(w, "None")) {
+	else if (!strcasecmp(w, "TrackModified")) {
+            option = TRACK_MODIFIED;
+	}
+        else if (!strcasecmp(w, "None")) {
 	    if (action != '\0') {
 		return "Cannot combine '+' or '-' with 'None' keyword";
 	    }
@@ -492,7 +496,7 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 		d_cfg->desc_adjust = K_NOADJUST;
 	    }
 	}
-	else {
+        else {
 	    return "Invalid directory indexing option";
 	}
 	if (action == '\0') {
@@ -1615,10 +1619,11 @@ static int index_directory(request_rec *r,
     }
 
     r->content_type = "text/html";
-    ap_update_mtime(r, r->finfo.st_mtime);
-    ap_set_last_modified(r);
-    ap_set_etag(r);
-    
+    if (autoindex_opts & TRACK_MODIFIED) {
+        ap_update_mtime(r, r->finfo.st_mtime);
+        ap_set_last_modified(r);
+        ap_set_etag(r);
+    }
     ap_send_http_header(r);
 
     if (r->header_only) {
