@@ -184,7 +184,7 @@ API_EXPORT(const server_rec *) ap_get_server_conf(void)
 
 /* a clean exit from a child with proper cleanup 
    static void clean_child_exit(int code) __attribute__ ((noreturn)); */
-void clean_child_exit(int code)
+static void clean_child_exit(int code)
 {
     if (pchild) {
 	ap_destroy_pool(pchild);
@@ -487,7 +487,7 @@ static int volatile is_graceful;
  * child to force an exit) and so do an exit anyway.
  */
 
-void ap_start_shutdown(void)
+static void ap_start_shutdown(void)
 {
     if (shutdown_pending == 1) {
 	/* Um, is this _probably_ not an error, if the user has
@@ -500,7 +500,7 @@ void ap_start_shutdown(void)
 }
 
 /* do a graceful restart if graceful == 1 */
-void ap_start_restart(int graceful)
+static void ap_start_restart(int graceful)
 {
 
     if (restart_pending == 1) {
@@ -679,12 +679,12 @@ static void process_child_status(int pid, ap_wait_t status)
     }
 }
 
-static int setup_listeners(pool *pconf, server_rec *s)
+static int setup_listeners(pool *p, server_rec *s)
 {
     ap_listen_rec *lr;
     int num_listeners = 0;
 
-    if (ap_listen_open(pconf, s->port)) {
+    if (ap_listen_open(p, s->port)) {
        return 0;
     }
     for (lr = ap_listeners; lr; lr = lr->next) {
@@ -736,7 +736,7 @@ static void process_socket(pool *p, struct sockaddr *sa_client, int csd,
                            int conn_id)
 {
     struct sockaddr sa_server; /* ZZZZ */
-    size_t len = sizeof(struct sockaddr);
+    NET_SIZE_T len = sizeof(struct sockaddr);
     BUFF *conn_io;
     conn_rec *current_conn;
     ap_iol *iol;
@@ -850,7 +850,7 @@ static void *worker_thread(void *arg)
     int sd = -1;
     int srv;
     int curr_pollfd, last_pollfd = 0;
-    size_t len = sizeof(struct sockaddr);
+    NET_SIZE_T len = sizeof(struct sockaddr);
     int thread_just_started = 1;
     int thread_num = *((int *) arg);
     long conn_id = child_num * HARD_THREAD_LIMIT + thread_num;
@@ -1362,7 +1362,6 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     }
 
     if (is_graceful) {
-	int i;
         char char_of_death = '!';
 
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
@@ -1401,7 +1400,7 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     return 0;
 }
 
-static void dexter_pre_config(pool *pconf, pool *plog, pool *ptemp)
+static void dexter_pre_config(pool *p, pool *plog, pool *ptemp)
 {
     static int restart_num = 0;
 
