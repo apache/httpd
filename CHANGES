@@ -8,10 +8,6 @@ Changes with Apache 2.1.0-dev
      strings. This was already introduced in version 1.3.25.
      [André Malo]
 
-  *) mod_usertrack: don't set the cookie in subrequests. This works
-     around the problem that cookies were set twice during fast internal
-     redirects. PR 13211.  [André Malo]
-
   *) Linux 2.4+: enable coredumps when Apache is started as root
      if CoreDumpDir is configured [Greg Ames]
 
@@ -166,6 +162,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) mod_usertrack: don't set the cookie in subrequests. This works
+     around the problem that cookies were set twice during fast internal
+     redirects. PR 13211.  [André Malo]
 
   *) mod_autoindex no longer forgets output format and enabled version
      sort in linked column headers.  [André Malo]
