@@ -28,6 +28,12 @@ and filter support was enabled.</p>
 <p>Please note that the <strong>caching</strong> function present in
 mod_proxy up to Apache v1.3.x has been <strong>removed</strong> from
 mod_proxy and will be incorporated into a new module, mod_cache.</p>
+
+<blockquote><table><tr><td bgcolor="#ffe5f5"><p>Do not enable proxying with <a href="#proxyrequests" class="directive"><code class="directive">ProxyRequests</code></a> until you have 
+<a href="#access">secured your server</a>.  Open proxy servers are
+dangerous both to your network and to the Internet at large.</p></td></tr></table></blockquote>
+
+
 </summary><h2>Directives</h2><ul><li><a href="#allowconnect">AllowCONNECT</a></li><li><a href="#noproxy">NoProxy</a></li><li><a href="#proxyblock">ProxyBlock</a></li><li><a href="#proxydomain">ProxyDomain</a></li><li><a href="#proxyerroroverride">ProxyErrorOverride</a></li><li><a href="#proxymaxforwards">ProxyMaxForwards</a></li><li><a href="#proxypass">ProxyPass</a></li><li><a href="#proxypassreverse">ProxyPassReverse</a></li><li><a href="#proxypreservehost">ProxyPreserveHost</a></li><li><a href="#proxyreceivebuffersize">ProxyReceiveBufferSize</a></li><li><a href="#proxyremote">ProxyRemote</a></li><li><a href="#proxyrequests">ProxyRequests</a></li><li><a href="#proxytimeout">ProxyTimeout</a></li><li><a href="#proxyvia">ProxyVia</a></li></ul><h2><a name="configs">Common configuration topics</a></h2>
 
 <ul>
@@ -81,6 +87,8 @@ enabled using mod_cache as with the forward proxy.</p>
 
 
 <h3><a name="access">Controlling access to your proxy</a></h3>
+
+
 
 <p>You can control who can access your proxy via the normal <a href="core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a>
 control block using the following example:</p>
@@ -498,6 +506,11 @@ server. (Setting ProxyRequests to 'off' does not disable use of the
 
 <p>In a typical reverse proxy configuration, this option should be set to
 'off'.</p>
+
+<blockquote><table><tr><td bgcolor="#ffe5f5"><p>Do not enable proxying with <a href="#proxyrequests" class="directive"><code class="directive">ProxyRequests</code></a> until you have 
+<a href="#access">secured your server</a>.  Open proxy servers are
+dangerous both to your network and to the Internet at large.</p></td></tr></table></blockquote>
+
 </usage><hr/><h2><a name="ProxyTimeout">ProxyTimeout</a> <a name="proxytimeout">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ProxyTimeout <em>seconds</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyTimeout 300</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in
 Apache 2.0.31 and later</td></tr></table></td></tr></table><usage>
 <p>This directive allows a user to specifiy a timeout on proxy requests.
