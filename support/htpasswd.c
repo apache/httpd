@@ -261,12 +261,13 @@ static int exists(char *fname, apr_pool_t *pool)
     return ((check || sbuf.filetype != APR_REG) ? 0 : 1);
 }
 
-#ifdef NETWARE
-void nwTerminate()
+static void terminate(void)
 {
+    apr_terminate();
+#ifdef NETWARE
     pressanykey();
-}
 #endif
+}
 
 static void check_args(apr_pool_t *pool, int argc, const char *const argv[], 
                        int *alg, int *mask, char **user, char **pwfilename, 
@@ -379,18 +380,6 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
     }
 }
 
-static char *get_tempname(apr_pool_t *p)
-{
-    char tn[] = "htpasswd.tmp.XXXXXX";
-    char *dirname;
-
-    if (!(dirname = getenv("TEMP")) && !(dirname = getenv("TMPDIR"))) {
-            dirname = P_tmpdir;
-    }
-    dirname = apr_psprintf(p, "%s/%s", dirname, tn);
-    return dirname;
-}
-
 /*
  * Let's do it.  We end up doing a lot of file opening and closing,
  * but what do we care?  This application isn't run constantly.
@@ -403,7 +392,8 @@ int main(int argc, const char * const argv[])
     char *password = NULL;
     char *pwfilename = NULL;
     char *user = NULL;
-    char *tn;
+    char tn[] = "htpasswd.tmp.XXXXXX";
+    char *dirname;
     char scratch[MAX_STRING_LEN];
     int found = 0;
     int i;
@@ -417,10 +407,7 @@ int main(int argc, const char * const argv[])
 #endif
 
     apr_app_initialize(&argc, &argv, NULL);
-    atexit(apr_terminate);
-#ifdef NETWARE
-    atexit(nwTerminate);
-#endif
+    atexit(terminate);
     apr_pool_create(&pool, NULL);
     apr_file_open_stderr(&errfile, pool);
 
@@ -519,10 +506,16 @@ int main(int argc, const char * const argv[])
      * We can access the files the right way, and we have a record
      * to add or update.  Let's do it..
      */
-    tn = get_tempname(pool);
-    if (apr_file_mktemp(&ftemp, tn, 0, pool) != APR_SUCCESS) {
+    if (apr_temp_dir_get((const char**)&dirname, pool) != APR_SUCCESS) {
+        apr_file_printf(errfile, "%s: could not determine temp dir\n",
+                        argv[0]);
+        exit(ERR_FILEPERM);
+    }
+    dirname = apr_psprintf(pool, "%s/%s", dirname, tn);
+
+    if (apr_file_mktemp(&ftemp, dirname, 0, pool) != APR_SUCCESS) {
         apr_file_printf(errfile, "%s: unable to create temporary file %s\n", 
-                        argv[0], tn);
+                        argv[0], dirname);
         exit(ERR_FILEPERM);
     }
 
@@ -600,7 +593,7 @@ int main(int argc, const char * const argv[])
 
     /* The temporary file has all the data, just copy it to the new location.
      */
-    if (apr_file_copy(tn, pwfilename, APR_FILE_SOURCE_PERMS, pool) !=
+    if (apr_file_copy(dirname, pwfilename, APR_FILE_SOURCE_PERMS, pool) !=
         APR_SUCCESS) {
         apr_file_printf(errfile, "%s: unable to update file %s\n", 
                         argv[0], pwfilename);
