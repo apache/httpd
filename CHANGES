@@ -1,5 +1,10 @@
 Changes with Apache 2.0.27-dev
 
+  *) Fix some bungling of the remote port in rfc1413.c so that 
+     IdentityCheck retrieves the proper user id instead of failing
+     and thus always returning "nobody."  
+     [Dick Streefland <Dick.Streefland@xs4all.nl>]
+
   *) Introduced thread saftey for mod_rewrite's internal cache.
      [Brian Pane <bpane@pacbell.net>]
 
