@@ -9,16 +9,15 @@
   Introduction
   ============
 
-  Like all good things, there are two ways to configure, compile, and
-  install Apache.  You can go for the 3-minute installation process
-  using the APACI process described below; or, you can opt for the same
-  mechanism used in previous versions of Apache, as described in the
-  file 'src/INSTALL'.  Each mechanism has its benefits and drawbacks -
-  APACI is newer and a little more raw, but it gets you up and running
-  the least amount of time, whereas the "Configuration.tmpl" mechanism
-  may be more familiar and give you some more flexibility to the power
-  user.  We'd be very interested in your comments and feedback regarding
-  each approach.
+  Like all good things, there are two ways to configure, compile, and install
+  Apache.  You can go for the 3-minute installation process using the APACI
+  process described below; or, you can opt for the same mechanism used in
+  previous versions of Apache, as described in the file 'src/INSTALL'.  Each
+  mechanism has its benefits and drawbacks - APACI is newer and a little more
+  raw, but it gets you up and running the least amount of time, whereas the
+  "Configuration.tmpl" mechanism may be more familiar and give you some more
+  flexibility to the power user.  We'd be very interested in your comments and
+  feedback regarding each approach.
 
 
   Installing the Apache 1.3 HTTP server with APACI
@@ -47,22 +46,23 @@
      o  ANSI-C Compiler: 
 
         Make sure you have an ANSI-C compiler installed. The GNU C compiler
-        (GCC) from the Free Software Foundation (FSF) is recommended.  If you
-        don't have GCC then at least make sure your vendors compiler is ANSI
-        compliant. You can find the homepage of GNU at
-        http://www.gnu.ai.mit.edu/ and the GCC distribution under
+        (GCC) from the Free Software Foundation (FSF) is recommended (version
+        2.7.2 is fine). If you don't have GCC then at least make sure your
+        vendors compiler is ANSI compliant. You can find the homepage of GNU
+        at http://www.gnu.ai.mit.edu/ and the GCC distribution under
         http://www.gnu.ai.mit.edu/order/ftp.html .
 
      o  Perl 5 Interpreter [OPTIONAL]:
 
         For some of the support scripts like `apxs' or `dbmmanage' (which are
-        written in Perl) the Perl 5 interpreter is required. If no such
-        interpreter is found by APACI's `configure' script this is no harm.
-        Of course, you still can build and install Apache 1.3. Only those
-        support scripts cannot be used. If you have multiple Perl interpreters
-        installed (perhaps a Perl 4 from the vendor and a Perl 5 from your
-        own), then it is recommended to use the --with-perl option (see below)
-        to make sure the correct one is selected by APACI.
+        written in Perl) the Perl 5 interpreter is required (versions 5.003
+        and 5.004 are fine). If no such interpreter is found by APACI's
+        `configure' script this is no harm.  Of course, you still can build
+        and install Apache 1.3. Only those support scripts cannot be used. If
+        you have multiple Perl interpreters installed (perhaps a Perl 4 from
+        the vendor and a Perl 5 from your own), then it is recommended to use
+        the --with-perl option (see below) to make sure the correct one is
+        selected by APACI.
 
      o  Dynamic Shared Object (DSO) support [OPTIONAL]:
 
@@ -83,7 +83,7 @@
            - Solaris 
 
         o Entirely unsupported platforms are:
-           - Ultrix (because no dlopen-style interface)
+           - Ultrix
 
         If your system is not on these lists but has the dlopen-style
         interface, you either have to provide the appropriate compiler and
@@ -119,7 +119,7 @@
      with a particular compiler and flags plus the two additional modules
      mod_rewrite and mod_proxy for later loading through the DSO mechanism: 
 
-     $ CC="pgcc" OPTIM="-O6" \
+     $ CC="pgcc" OPTIM="-O2" \
        ./configure --prefix=/sw/pkg/apache \
                    --enable-module=rewrite --enable-shared=rewrite \
                    --enable-module=proxy   --enable-shared=proxy
@@ -244,6 +244,12 @@
                  a --enable-module=so option because the bootstrapping module
                  mod_so is always needed for DSO support.
 
+         Note 4: When you later want to extend your Apache installation via
+                 third-party modules through the DSO+APXS mechanism make sure
+                 that you at least compile with mod_so included, even when no
+                 distributed modules are build as shared objects. This can be
+                 achieved by explicitly using --enable-module=so.
+
      Use the --with-perl=FILE option to select a particular Perl interpreter
      executable to be used with Apache. Per default APACI tries to find it
      automatically. But if multiple Perl instances exist on your system you
@@ -277,8 +283,8 @@
         $ make 
  
      Please be patient here, this takes approximately 2 minutes to complete
-     under a Pentium-166/FreeBSD-2.2 system, dependend on the amount of modules
-     you have enabled. 
+     under a Pentium-166/FreeBSD-2.2 system, dependend on the amount of
+     modules you have enabled. 
  
   5. Installing the package
      ----------------------

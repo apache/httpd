@@ -277,22 +277,23 @@
      
      In other words: When a module is compiled as a DSO it automatically
      results in a higher priority than any statically compiled modules. This
-     can have strange side-effects because of different execution order. As a
-     consequence the rule of thumb is this: Either compile all modules
-     statically or all modules as DSO (--enable-shared=max) when you want to
-     avoid side-effects. And only compile just a subset of modules as DSO when
-     you are sure the different execution order has no side-effects for your
-     configuration. BE WARNED!
+     can have strange side-effects because of different execution order.  To
+     overcome this problem the Apache installation process automatically
+     inserts ClearModuleList+AddModule directives into the initial httpd.conf
+     file which re-create the chained list of modules in the correct order.
+     So whenever you change the list of loaded modules make sure to also
+     update this ClearModule+AddModule directives accordingly.
 
    - Because DSO modules cannot be linked against other DSO-based libraries
-     (ld -lfoo) you cannot use the DSO mechanism for all types of modules. Or
-     in other words, modules compiled as DSO files are restricted to only use
-     symbols from the Apache core, from the C library (libc) and all other
-     dynamic or static libraries used by the Apache core, or from static
-     library archives (libfoo.a) containing position independend code. The
-     only chance to use other code is to either make sure the Apache core
-     itself already contains a reference to it or loading the code yourself
-     via dlopen().
+     (ld -lfoo) on all platforms (for instance a.out-based platforms usually
+     don't provide this functionality while ELF-based platforms do) you cannot
+     use the DSO mechanism for all types of modules. Or in other words,
+     modules compiled as DSO files are restricted to only use symbols from the
+     Apache core, from the C library (libc) and all other dynamic or static
+     libraries used by the Apache core, or from static library archives
+     (libfoo.a) containing position independend code. The only chance to use
+     other code is to either make sure the Apache core itself already contains
+     a reference to it or loading the code yourself via dlopen().
 
    - Under some platforms (many SVR4 systems) there is no way to force the
      linker to export all global symbols for use in DSO's when linking the

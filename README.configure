@@ -78,9 +78,10 @@
 
   Additionally if some of the shown paths still don't fit for your particular
   situation, you can use the --bindir, --sbindir, --libexecdir, --mandir,
-  --sysconfdir, --datadir and --localstatedir options to adjust the layout as
-  required. Always check with --layout the resulting directory layout which
-  would be used for installation.
+  --sysconfdir, --datadir, --localstatedir, --runtimedir, --logfiledir and
+  --proxycachedir options to adjust the layout as required. Always check with
+  --layout the resulting directory layout which would be used for
+  installation.
 
   suEXEC support
   --------------
@@ -116,15 +117,15 @@
 
   Then APACI first determines the GNU platform triple, creates a shadow tree
   in src.<gnu-triple> plus corresponding Makefile.<gnu-triple> and then
-  performs the complete build process with this shadow tree.
+  performs the complete build process inside this shadow tree.
 
   Dynamic Shared Object (DSO) support
   -----------------------------------
 
-  Apache 1.3 supports building modules as shared objects on all major
+  Apache 1.3 supports building modules as shared objects on all major Unix
   platforms (see section "Supported Platforms" in file src/README.DSO for
-  details).  APACI has a nice way of enabling the building of these shared
-  objects and automatically installing them:
+  details).  APACI has a nice way of enabling the building of DSO-based
+  modules and automatically installing them:
 
     $ ./configure --prefix=/path/to/apache \
                   --enable-module=rewrite \
@@ -134,11 +135,9 @@
 
   This builds and installs Apache with the default configuration except that
   it adds the mod_rewrite module and automatically builds and installs it as a
-  shared object, so it is optionally available for loading under runtime.  To
-  make your live even more easy APACI additionally inserts a corresponding
-  (but out-commented) `LoadModule' line in the httpd.conf file in the
-  installation phase. Just uncomment this line and you have mod_rewrite
-  available.
+  DSO, so it is optionally available for loading under runtime.  To make your
+  life even more easy APACI additionally inserts a corresponding `LoadModule'
+  line into the httpd.conf file in the installation phase.
 
   APACI also supports a variant of the --enable-shared option:
 
@@ -149,7 +148,7 @@
 
   This enables shared object building for the maximum of modules, i.e. all
   enabled modules (--enable-module or the default set) except for mod_so
-  itself (the bootstrapping module for shared object support). So, to build a
+  itself (the bootstrapping module for DSO support). So, to build a
   full-powered Apache with maximum flexibility by building and installing most
   of the modules, you can use:
 
@@ -162,8 +161,8 @@
   This first enables most of the modules (all modules except some problematic
   ones like mod_auth_db which needs third party libraries not available on
   every platform or mod_log_agent and mod_log_referer which are deprecated)
-  and then enables shared object support for all of them. This way you get all
-  these modules installed and you then can configure under runtime (via the
+  and then enables DSO support for all of them. This way you get all these
+  modules installed and you then can decide under runtime (via the
   `LoadModule') directives which ones are actually used. Especially a very
   useful for vendor package maintainers to provide a flexible Apache package.
 
@@ -184,7 +183,7 @@
 
   This automatically copies mod_foo.c to src/modules/extra/, activates it in
   the configuration and builds Apache with it. A very useful way is to combine
-  this with the shared object support:
+  this with the DSO support:
 
     $ ./configure --prefix=/path/to/apache \
                   --add-module=/path/to/mod_foo.c \
@@ -193,8 +192,8 @@
     $ make install
 
   This builds and installs Apache with the default set of modules, but
-  additionally builds mod_foo as a shared object and adds a `LoadModule' line
-  to the httpd.conf file, so later you can enable this mod_foo under runtime.
+  additionally builds mod_foo as a DSO and adds a `LoadModule' line to the
+  httpd.conf file to activate it for loading under runtime.
 
   Apache and mod_perl
   -------------------
@@ -206,7 +205,7 @@
   mod_perl-1.XX.tar.gz can be found on http://perl.apache.org/src/. Here is
   how you can install Apache with mod_perl:
 
-    $ cd mod_perl-1.XX
+    $ cd mod_perl-1.11
     $ perl Makefile.PL
     ReadLine support enabled
     Configure mod_perl with ../apache-1.3/src ? [y] y
@@ -222,7 +221,7 @@
   This automatically builds and installs Apache 1.3 with mod_perl.  After
   additionally installing the Perl side of mod_perl via
 
-    $ cd ../mod_perl-1.XX
+    $ cd ../mod_perl-1.11
     $ perl Makefile.PL NO_HTTPD=1
     $ make all install
 
