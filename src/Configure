@@ -1624,6 +1624,13 @@ case "$PLAT" in
 	if ./helpers/TestCompile lib crypt; then
 	    LIBS="$LIBS -lcrypt"
 	fi
+	# see if prctl(PR_SET_DUMPABLE) is available
+	if TCADDINCL='#include <sys/prctl.h>
+static int required_flag = PR_SET_DUMPABLE;' ./helpers/TestCompile sizeof required_flag ; then
+	    if ./helpers/TestCompile func prctl; then
+	        CFLAGS="$CFLAGS -DHAVE_SET_DUMPABLE"
+	    fi
+	fi
 	;;
 
     *-dg-dgux*)

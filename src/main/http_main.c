@@ -123,6 +123,9 @@ int ap_main(int argc, char *argv[]);
 #ifdef HAVE_BSTRING_H
 #include <bstring.h>		/* for IRIX, FD_SET calls bzero() */
 #endif
+#ifdef HAVE_SET_DUMPABLE /* certain levels of Linux */
+#include <sys/prctl.h>
+#endif
 
 #ifdef MULTITHREAD
 /* special debug stuff -- PCS */
@@ -309,7 +312,8 @@ static listen_rec *head_listener;
 
 API_VAR_EXPORT char ap_server_root[MAX_STRING_LEN]="";
 API_VAR_EXPORT char ap_server_confname[MAX_STRING_LEN]="";
-API_VAR_EXPORT char ap_coredump_dir[MAX_STRING_LEN]="";
+#define DEFAULT_COREDUMP_DIR ""
+API_VAR_EXPORT char ap_coredump_dir[MAX_STRING_LEN]=DEFAULT_COREDUMP_DIR;
 
 API_VAR_EXPORT array_header *ap_server_pre_read_config=NULL;
 API_VAR_EXPORT array_header *ap_server_post_read_config=NULL;
@@ -4282,6 +4286,18 @@ static void child_main(int child_num_arg)
 	ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
 		    "setuid: unable to change to uid: %ld", (long) ap_user_id);
 	clean_child_exit(APEXIT_CHILDFATAL);
+    }
+#endif
+
+#ifdef HAVE_SET_DUMPABLE
+    if (strcmp(ap_coredump_dir, DEFAULT_COREDUMP_DIR)) {
+        /* user set CoredumpDirectory, so they want to get core dumps
+         */
+        if (prctl(PR_SET_DUMPABLE, 1)) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
+                         "set dumpable failed - this child will not coredump"
+                         " after software errors");
+        }
     }
 #endif
 

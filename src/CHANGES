@@ -1,5 +1,9 @@
 Changes with Apache 1.3.30
 
+  *) Linux 2.4+: If Apache is started as root and you code
+     CoreDumpDirectory, coredumps are enabled via the prctl() syscall.
+     Backport of a 2.x feature by Greg Ames.  [Jeff Trawick]
+
   *) Fix bug causing core dump when using CookieTracking without
      specifying a CookieName directly. Bugz# 24483.
      [Manni Wood <manniwood planet-save.com>, Jim Jagielski (backport)]
