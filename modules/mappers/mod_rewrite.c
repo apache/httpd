@@ -2111,23 +2111,20 @@ static char *do_expand(request_rec *r, char *input,
 /*
  * perform all the expansions on the environment variables
  */
-static void add_env_variable(request_rec *r, char *s)
-{
-    char *val;
-
-    if ((val = ap_strchr(s, ':')) != NULL) {
-        *val++ = '\0';
-
-        apr_table_set(r->subprocess_env, s, val);
-        rewritelog(r, 5, "setting env variable '%s' to '%s'", s, val);
-    }
-}
-
 static void do_expand_env(request_rec *r, data_item *env,
                           backrefinfo *briRR, backrefinfo *briRC)
 {
+    char *name, *val;
+
     while (env) {
-        add_env_variable(r, do_expand(r, env->data, briRR, briRC));
+        name = do_expand(r, env->data, briRR, briRC);
+        if ((val = ap_strchr(name, ':')) != NULL) {
+            *val++ = '\0';
+
+            apr_table_set(r->subprocess_env, name, val);
+            rewritelog(r, 5, "setting env variable '%s' to '%s'", name, val);
+        }
+
         env = env->next;
     }
 
