@@ -482,6 +482,7 @@ static void output_html_results(void)
 static void start_connect(struct connection *c)
 {
     apr_status_t rv;
+    apr_sockaddr_t *destsa;
 
     if(!(started < requests)) return;
 
@@ -491,14 +492,15 @@ static void start_connect(struct connection *c)
     c->cbx = 0;
     c->gotheader = 0;
 
+    if ((rv = apr_getaddrinfo(&destsa, hostname, AF_INET, port, 0, cntxt))
+         != APR_SUCCESS) {
+        apr_err("apr_getaddrinfo()", rv);
+    }
     if ((rv = apr_create_tcp_socket(&c->aprsock, cntxt)) != APR_SUCCESS) {
         apr_err("Socket:", rv);
     }
-    if ((rv = apr_set_port(c->aprsock, APR_REMOTE, port)) != APR_SUCCESS) {
-        apr_err("Port:", rv);
-    }
     c->start = apr_now();
-    if ((rv = apr_connect(c->aprsock, hostname)) != APR_SUCCESS) {
+    if ((rv = apr_connect(c->aprsock, destsa)) != APR_SUCCESS) {
         if (APR_STATUS_IS_EINPROGRESS(rv)) {
             c->state = STATE_CONNECTING;
             apr_add_poll_socket(readbits, c->aprsock, APR_POLLOUT);
@@ -876,14 +878,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.32 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.33 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.32 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.33 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");

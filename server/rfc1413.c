@@ -108,8 +108,8 @@ int ap_rfc1413_timeout = RFC1413_TIMEOUT;	/* Global so it can be changed */
 
 /* bind_connect - bind both ends of a socket */
 /* Ambarish fix this. Very broken */
-static int get_rfc1413(apr_socket_t *sock, const char *local_ip,
-		       const char *rmt_ip, 
+static int get_rfc1413(apr_socket_t *sock, apr_pool_t *p, 
+                       const char *local_ip, const char *rmt_ip, 
 		       char user[RFC1413_USERLEN+1], server_rec *srv)
 {
     apr_port_t rmt_port, our_port;
@@ -119,6 +119,7 @@ static int get_rfc1413(apr_socket_t *sock, const char *local_ip,
     char *cp;
     char buffer[RFC1413_MAXDATA + 1];
     int buflen;
+    apr_sockaddr_t *destsa;
 
     /*
      * Bind the local and remote ends of the query socket to the same
@@ -138,14 +139,19 @@ static int get_rfc1413(apr_socket_t *sock, const char *local_ip,
 	return -1;
     }
 
+    if ((status = apr_getaddrinfo(&destsa, rmt_ip, AF_INET, RFC1413_PORT, 0,
+                                  p)) != APR_SUCCESS) {
+        /* This should not fail since we have a numeric address string
+         * as the host. */
+        ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
+                     "rfc1413: apr_getaddrinfo() failed");
+        return -1;
+    }
 /*
  * errors from connect usually imply the remote machine doesn't support
  * the service
  */
-    apr_set_port(sock, APR_REMOTE, RFC1413_PORT);
-    apr_set_ipaddr(sock, APR_REMOTE, rmt_ip);
-                    
-    if (apr_connect(sock, NULL) != APR_SUCCESS)
+    if (apr_connect(sock, destsa) != APR_SUCCESS)
         return -1;
     apr_get_port(&sav_our_port, APR_LOCAL, sock);
     apr_get_port(&sav_rmt_port, APR_REMOTE, sock);
@@ -235,7 +241,7 @@ char *ap_rfc1413(conn_rec *conn, server_rec *srv)
 	conn->remote_logname = result;
     }
 
-    if (get_rfc1413(sock, conn->local_ip, conn->remote_ip, user, srv) >= 0)
+    if (get_rfc1413(sock, conn->pool, conn->local_ip, conn->remote_ip, user, srv) >= 0)
         result = user;
     apr_close_socket(sock);
     conn->remote_logname = result;
