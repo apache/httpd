@@ -1,6 +1,3 @@
-
-LTLIBRARY_NAME    = libapachemod_dav.la
-LTLIBRARY_SOURCES = mod_dav.c props.c util.c util_lock.c \
-			opaquelock.c dav_dyn.c
-
-include $(top_srcdir)/build/ltlib.mk
+# a modules Makefile has no explicit targets -- they will be defined by
+# whatever modules are enabled. just grab special.mk to deal with this.
+include $(top_srcdir)/build/special.mk

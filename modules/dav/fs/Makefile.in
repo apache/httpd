@@ -1,5 +1,3 @@
-
-LTLIBRARY_NAME    = libapachemod_dav_fs.la
-LTLIBRARY_SOURCES = mod_dav_fs.c dbm.c lock.c repos.c
-
-include $(top_srcdir)/build/ltlib.mk
+# a modules Makefile has no explicit targets -- they will be defined by
+# whatever modules are enabled. just grab special.mk to deal with this.
+include $(top_srcdir)/build/special.mk
