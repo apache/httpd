@@ -247,7 +247,7 @@ if (rc == 0) rc = nmatch;    /* All captured slots were filled in */
 if (rc >= 0)
   {
   size_t i;
-  for (i = 0; i < rc; i++)
+  for (i = 0; i < (size_t) rc; i++)
     {
     pmatch[i].rm_so = ovector[i*2];
     pmatch[i].rm_eo = ovector[i*2+1];
