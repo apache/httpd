@@ -369,9 +369,16 @@ EXPORTS
         regerror @364
         ap_send_error_response @365
 	ap_start_shutdown @366
-;        ap_send_signal  @367
-        ap_pid_fname  @368
-        ap_read_config   @369
-	ap_server_pre_read_config  @370
-	ap_server_post_read_config @371
-	ap_setup_prelinked_modules @372
+        send_signal_to_service  @367
+        ap_read_config   @368
+	ap_server_pre_read_config  @369
+	ap_server_post_read_config @370
+	ap_setup_prelinked_modules @371
+	RemoveService @372
+	InstallService @373
+	isValidService @374
+	service_main  @375
+	isProcessService @376
+	ap_registry_get_server_root @377
+	ap_registry_get_service_conf @378
+
