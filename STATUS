@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/30 14:42:03 $]
+Last modified at [$Date: 2004/03/30 17:38:07 $]
 
 Release:
 
@@ -74,7 +74,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) mod_ssl: Fix segfaults when doing shutdown from a cleanup.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.121&r2=1.122
-       +1: jorton, trawick
+       +1: jorton, trawick, madhum
 
     *) (re-)add support for RewriteRules in <Proxy> containers. PR 27985
          modules/mappers/mod_rewrite.c: r1.254
