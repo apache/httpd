@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/10 22:27:58 $]
+Last modified at [$Date: 2004/04/12 17:38:39 $]
 
 Release:
 
@@ -171,9 +171,6 @@ PATCHES TO BACKPORT FROM 2.1
     *) (re-)add support for RewriteRules in <Proxy> containers. PR 27985
          modules/mappers/mod_rewrite.c: r1.254
        +1: nd, trawick
-
-    *) Backport mod_log_forensic.
-       +1: ben, stoddard, nd
 
     *) mod_include: remove "recursive-include" check, it's no longer
        necessary and forbids legal actions.

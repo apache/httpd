@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) Add forensic logging module (mod_log_forensic).
+     [Ben Laurie]
+
   *) logresolve: Allow size of log line buffer to be overridden at
      build time (MAXLINE).  PR 27793.  [Jeff Trawick]
 
