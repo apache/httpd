@@ -353,7 +353,7 @@
 
       <p>Environment variables are values that float around you as
       you use your computer. They are useful things like your path
-      (where the computer searches for a the actual file
+      (where the computer searches for the actual file
       implementing a command when you type it), your username, your
       terminal type, and so on. For a full list of your normal,
       every day environment variables, type 
@@ -423,7 +423,7 @@
       </example>
 
       <p>You'll sometimes also see this type of string appended to
-      the a URL. When that is done, the server puts that string
+      a URL. When that is done, the server puts that string
       into the environment variable called 
       <code>QUERY_STRING</code>. That's called a <code>GET</code>
       request. Your HTML form specifies whether a <code>GET</code>
