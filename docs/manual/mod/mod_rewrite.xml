@@ -1570,15 +1570,6 @@ There is a special feature:
           URL-to-filename translators</strong>. The typical example
           is the use of <code>mod_alias</code> and
           <code>mod_rewrite</code>..</p>
-
-<note><title>For Apache hackers</title>
-               If the current Apache API had a filename-to-filename
-              hook additionally to the URI-to-filename hook then we
-              wouldn't need this flag! But without such a hook this
-              flag is the only solution. The Apache Group has
-              discussed this problem and will add such a hook in
-              Apache version 2.0.
-</note>
         </li>
 
         <li>'<strong><code>skip|S</code></strong>=<em>num</em>'
