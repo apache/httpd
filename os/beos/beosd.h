@@ -81,15 +81,17 @@ extern beosd_config_rec beosd_config;
 void beosd_detach(void);
 int beosd_setup_child(void);
 void beosd_pre_config(void);
-const char *beosd_set_user(cmd_parms *cmd, void *dummy, char *arg);
-const char *beosd_set_group(cmd_parms *cmd, void *dummy, char *arg);
+AP_DECLARE(const char *) beosd_set_user (cmd_parms *cmd, void *dummy, 
+                                         const char *arg);
+AP_DECLARE(const char *) beosd_set_group(cmd_parms *cmd, void *dummy, 
+                                         const char *arg);
 
 #define beosd_killpg(x, y)	(kill (-(x), (y)))
 
-#define UNIX_DAEMON_COMMANDS	\
-{ "User", beosd_set_user, NULL, RSRC_CONF, TAKE1, \
-  "Effective user id for this server"}, \
-{ "Group", beosd_set_group, NULL, RSRC_CONF, TAKE1, \
-  "Effective group id for this server"}, \
+#define BEOS_DAEMON_COMMANDS	\
+AP_INIT_TAKE1("User", beosd_set_user, NULL, RSRC_CONF, \
+  "Effective user id for this server (NO-OP)"), \
+AP_INIT_TAKE1("Group", beosd_set_group, NULL, RSRC_CONF, \
+  "Effective group id for this server (NO-OP)"),                  
 
 #endif /* BEOSD_H */
