@@ -206,6 +206,7 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
 
     sc->mc                     = NULL;
     sc->enabled                = UNSET;
+    sc->proxy_enabled          = UNSET;
     sc->vhost_id               = NULL;  /* set during module init */
     sc->vhost_id_len           = 0;     /* set during module init */
     sc->log_file_name          = NULL;
@@ -294,6 +295,7 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
 
     cfgMerge(mc, NULL);
     cfgMergeBool(enabled);
+    cfgMergeBool(proxy_enabled);
     cfgMergeString(log_file_name);
     cfgMerge(log_level, SSL_LOG_NONE);
     cfgMergeInt(session_cache_timeout);
@@ -1255,6 +1257,15 @@ const char *ssl_cmd_SSLProtocol(cmd_parms *cmd,
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
     return ssl_cmd_protocol_parse(cmd, arg, &sc->server->protocol);
+}
+
+const char *ssl_cmd_SSLProxyEngine(cmd_parms *cmd, void *dcfg, int flag)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    sc->proxy_enabled = flag ? TRUE : FALSE;
+
+    return NULL;
 }
 
 const char *ssl_cmd_SSLProxyProtocol(cmd_parms *cmd, 

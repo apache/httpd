@@ -243,6 +243,10 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
             sc->enabled = FALSE;
         }
 
+        if (sc->proxy_enabled == UNSET) {
+            sc->proxy_enabled = FALSE;
+        }
+
         if (sc->session_cache_timeout == UNSET) {
             sc->session_cache_timeout = SSL_SESSION_CACHE_TIMEOUT;
         }
@@ -929,7 +933,7 @@ void ssl_init_ConfigureServer(server_rec *s,
         ssl_init_server_ctx(s, p, ptemp, sc);
     }
 
-    if (1) { /* XXX: add directive */
+    if (sc->proxy_enabled) {
         ssl_init_proxy_ctx(s, p, ptemp, sc);
     }
 }

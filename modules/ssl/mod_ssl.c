@@ -154,6 +154,9 @@ static const command_rec ssl_config_cmds[] = {
     /* 
      * Proxy configuration for remote SSL connections
      */
+    SSL_CMD_SRV(ProxyEngine, FLAG,
+                "SSL switch for the proxy protocol engine "
+                "(`on', `off')")
     SSL_CMD_SRV(ProxyProtocol, RAW_ARGS,
                "SSL Proxy: enable or disable SSL protocol flavors "
                "(`[+-][SSLv2|SSLv3|TLSv1] ...' - see manual)")
@@ -230,7 +233,17 @@ static SSLConnRec *ssl_init_connection_ctx(conn_rec *c)
 
 int ssl_proxy_enable(conn_rec *c)
 {
+    SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
+
     SSLConnRec *sslconn = ssl_init_connection_ctx(c);
+
+    if (!sc->proxy_enabled) {
+        ssl_log(c->base_server, SSL_LOG_ERROR,
+                "SSL Proxy requested for %s but not enabled "
+                "[Hint: SSLProxyEngine]", sc->vhost_id);
+
+        return 0;
+    }
 
     sslconn->is_proxy = 1;
 

@@ -522,6 +522,7 @@ typedef struct {
 struct SSLSrvConfigRec {
     SSLModConfigRec *mc;
     BOOL             enabled;
+    BOOL             proxy_enabled;
     const char      *vhost_id;
     int              vhost_id_len;
     const char      *log_file_name;
@@ -589,6 +590,7 @@ const char  *ssl_cmd_SSLOptions(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRequireSSL(cmd_parms *, void *);
 const char  *ssl_cmd_SSLRequire(cmd_parms *, void *, const char *);
 
+const char *ssl_cmd_SSLProxyEngine(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLProxyProtocol(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyCipherSuite(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyVerify(cmd_parms *, void *, const char *);
