@@ -7,212 +7,273 @@
 #include "httpd.h"
 #include "http_log.h"
 
-/* Returns TRUE if the path is real, FALSE if it is PATH_INFO */
-static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon,
-				   const char *szInFile)
+/* Returns TRUE if the input string is a string
+ * of one or more '.' characters.
+ */
+static BOOL OnlyDots(char *pString)
 {
-    char buf[HUGE_STRING_LEN];
-    int n;
-    char *szFilePart;
-    char *s;
-    int nSlashes;
-    WIN32_FIND_DATA d;
-    HANDLE h;
-    const char *szFile;
+    char *c;
 
-    szFile = szInFile;
-    s = strrchr(szFile, '\\');
-    for (nSlashes = 0; s > szFile && s[-1] == '\\'; ++nSlashes, --s)
-	;
+    if (*pString == '\0')
+        return FALSE;
 
-    if (strlen(szFile)==2 && szFile[1]==':') {
-        /*
-         * If the file name is x:, do not call GetFullPathName
-         * because it will use the current path of the executable
-         */
-        strcpy(buf,szFile);
-        n = strlen(buf);
-        szFilePart = buf + n;
-    }
-    else {
-        n = GetFullPathName(szFile, sizeof buf, buf, &szFilePart);
-    }
-    ap_assert(n);
-    ap_assert(n < sizeof buf);
+    for (c = pString;*c;c++)
+        if (*c != '.')
+            return FALSE;
 
-    /*
-     * There is an implicit assumption that szInFile will contain a '\'.
-     * If this is not true (as in the case of <Directory *> or
-     * <File .htaccess>) we would assert in some of the code below.  Therefore,
-     * if we don't get any '\' in the file name, then use the file name we get
-     * from GetFullPathName, because it will have at least one '\'.  If there
-     * is no '\' in szInFile, it must just be a file name, so it should be
-     * valid to use the name from GetFullPathName.  Be sure to adjust the
-     * 's' variable so the rest of the code functions normally.
-     * Note it is possible to get here when szFile == 'x:', but that is OK
-     * because we will bail out of this routine early.
-     */
-    if (!s) {
-        szFile = buf;
-        s = strrchr(szFile, '\\');
-    }
-
-    /* If we have \\machine\share, convert to \\machine\share\ */
-    if (buf[0] == '\\' && buf[1] == '\\') {
-	char *s = strchr(buf + 2, '\\');
-	if (s && !strchr(s + 1, '\\')) {
-	    strcat(s + 1, "\\");
-	}
-    }
-
-    if (!strchr(buf, '*') && !strchr(buf, '?')) {
-        h = FindFirstFile(buf, &d);
-        if (h != INVALID_HANDLE_VALUE) {
-            FindClose(h);
-	}
-    }
-    else {
-        h = INVALID_HANDLE_VALUE;
-    }
-
-    if (szFilePart < buf + 3) {
-	ap_assert(strlen(buf) < nCanon);
-        strcpy(szCanon, buf);
-	/* a \ at the start means it is UNC, otherwise it is x: */
-	if (szCanon[0] != '\\') {
-	    ap_assert(ap_isalpha(szCanon[0]));
-	    ap_assert(szCanon[1] == ':');
-	    szCanon[2] = '/';
-	}
-	else {
-	    char *s;
-
-	    ap_assert(szCanon[1] == '\\');
-	    for (s = szCanon; *s; ++s) {
-		if (*s == '\\') {
-		    *s = '/';
-		}
-	    }
-	}
-        return TRUE;
-    }
-    if (szFilePart != buf + 3) {
-        char b2[_MAX_PATH];
-	char b3[_MAX_PATH];
-        ap_assert(szFilePart > buf + 3);
-	/* avoid SEGVs on things like "Directory *" */
-	ap_assert(s >= szFile && "this is a known bug");
-
-	memcpy(b3, szFile, s - szFile);
-	b3[s - szFile] = '\0';
-
-/*        szFilePart[-1] = '\0'; */
-        sub_canonical_filename(b2, sizeof b2, b3);
-
-	ap_assert(strlen(b2)+1 < nCanon);
-        strcpy(szCanon, b2);
-        strcat(szCanon, "/");
-    }
-    else {
-	ap_assert(strlen(buf) < nCanon);
-        strcpy(szCanon, buf);
-        szCanon[2] = '/';
-        szCanon[3] = '\0';
-    }
-    if (h == INVALID_HANDLE_VALUE) {
-	ap_assert(strlen(szCanon) + strlen(szFilePart) + nSlashes < nCanon);
-	for (n = 0; n < nSlashes; ++n) {
-	    strcat(szCanon, "/");
-	}
-        strcat(szCanon, szFilePart);
-	return FALSE;
-    }
-    else {
-	ap_assert(strlen(szCanon)+strlen(d.cFileName) < nCanon);
-        strlwr(d.cFileName);
-        strcat(szCanon, d.cFileName);
-	return TRUE;
-    }
+    return TRUE;
 }
 
-/* UNC requires backslashes, hence the conversion before canonicalisation. 
- * Not sure how * many backslashes (could be that 
- * \\machine\share\some/path/is/ok for example). For now, do them all.
+/* Accepts as input a pathname, and tries to match it to an 
+ * existing path and return the pathname in the case that
+ * is present on the existing path.  This routine also
+ * converts alias names to long names.
  */
-API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
+API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool, 
+                                             const char *szFile)
 {
     char buf[HUGE_STRING_LEN];
-    char b2[HUGE_STRING_LEN];
-    const char *s;
-    char *d;
-    int nSlashes = 0;
+    char *pInputName;
+    char *p, *q;
+    BOOL bDone = FALSE;
+    BOOL bFileExists = TRUE;
+    HANDLE hFind;
+    WIN32_FIND_DATA wfd;
 
-    ap_assert(strlen(szFile) < sizeof b2);
+    if (!szFile || strlen(szFile) == 0 || strlen(szFile) >= sizeof(buf))
+        return ap_pstrdup(pPool, "");
 
-    /* Eliminate directories consisting of three or more dots.
-     * These act like ".." but are not detected by other machinery.
-     * Also get rid of trailing .s on any path component, which are ignored
-     * by the filesystem.  Simultaneously, rewrite / to \.
-     * This is a bit of a kludge - Ben.
-     */
-    if (strlen(szFile) == 1) {
-        /*
-         * If the file is only one char (like in the case of / or .) then
-	 * just pass that through to sub_canonical_filename.  Convert a
-	 * '/' to '\\' if necessary.
-         */
-        if (szFile[0] == '/') {
-            b2[0] = '\\';
-	}
-        else {
-            b2[0] = szFile[0];
-	}
+    buf[0] = '\0';
+    pInputName = ap_pstrdup(pPool, szFile);
 
-        b2[1] = '\0';
+    /* First convert all slashes to \ so Win32 calls work OK */
+    for (p = pInputName; *p; p++) {
+        if (*p == '/')
+            *p = '\\';
     }
-    else {
-        for (s = szFile, d = b2; (*d = *s); ++d, ++s) {
-	    if (*s == '/') {
-		*d = '\\';
-	    }
-	    if (*s == '.' && (s[1] == '/' || s[1] == '\\' || !s[1])) {
-		while (*d == '.') {
-		    --d;
-		}
-		if (*d == '\\') {
-		    --d;
-		}
-	    }
-	}
+    
+    p = pInputName;
+    /* If there is drive information, copy it over. */ 
+    if (pInputName[1] == ':') {
+        buf[0] = tolower(*p++);
+        buf[1] = *p++;
+        buf[2] = '\0';
 
-        /* Finally, a trailing slash(es) screws thing, so blow them away */
-        for (nSlashes = 0; d > b2 && d[-1] == '\\'; --d, ++nSlashes)
-	    ;
-        /* XXXX this breaks '/' and 'c:/' cases */
-        *d = '\0';
+        /* If all we have is a drive letter, then we are done */
+        if (strlen(pInputName) == 2)
+            bDone = TRUE;
     }
-    sub_canonical_filename(buf, sizeof buf, b2);
+    
+    q = p;
+    if (*p == '\\') {
+        p++;
+        if (*p == '\\')  /* Possible UNC name */
+        {
+            p++;
+            /* Get past the machine name.  FindFirstFile */
+            /* will not find a machine name only */
+            p = strchr(p, '\\'); 
+            if (p)
+            {
+                p++;
+                /* Get past the share name.  FindFirstFile */
+                /* will not find a \\machine\share name only */
+                p = strchr(p, '\\'); 
+                if (p) {
+                    strncat(buf,q,p-q);
+                    q = p;
+                    p++;
+                }
+            }
 
-    buf[0] = ap_tolower(buf[0]);
-
-    if (nSlashes) {
-        /*
-         * If there were additional trailing slashes, add them back on.
-         * Be sure not to add more than were originally there though,
-         * by checking to see if sub_canonical_filename added one;
-         * this could happen in cases where the file name is 'd:/'
-         */
-        ap_assert(strlen(buf)+nSlashes < sizeof buf);
-
-        if (nSlashes && buf[strlen(buf)-1] == '/')
-            nSlashes--;
-
-        while (nSlashes--) {
-            strcat(buf, "/");
+            if (!p)
+                p = q;
         }
     }
 
+    p = strchr(p, '\\');
+
+    while (!bDone) {
+        if (p)
+            *p = '\0';
+
+        if (strchr(q, '*') || strchr(q, '?'))
+            bFileExists = FALSE;
+
+        /* If the path exists so far, call FindFirstFile
+         * again.  However, if this portion of the path contains
+         * only '.' charaters, skip the call to FindFirstFile
+         * since it will convert '.' and '..' to actual names.
+         * Note: in the call to OnlyDots, we may have to skip
+         *       a leading slash.
+         */
+        if (bFileExists && !OnlyDots((*q == '.' ? q : q+1))) {            
+            hFind = FindFirstFile(pInputName, &wfd);
+            
+            if (hFind == INVALID_HANDLE_VALUE) {
+                bFileExists = FALSE;
+            }
+            else {
+                FindClose(hFind);
+
+                if (*q == '\\')
+                    strcat(buf,"\\");
+                strcat(buf, wfd.cFileName);
+            }
+        }
+        
+        if (!bFileExists || OnlyDots((*q == '.' ? q : q+1))) {
+            strcat(buf, q);
+        }
+        
+        if (p) {
+            q = p;
+            *p++ = '\\';
+            p = strchr(p, '\\');
+        }
+        else {
+            bDone = TRUE;
+        }
+    }
+    
+    /* First convert all slashes to / so server code handles it ok */
+    for (p = buf; *p; p++) {
+        if (*p == '\\')
+            *p = '/';
+    }
+
     return ap_pstrdup(pPool, buf);
+}
+
+
+/*  Perform canonicalization with the exception that the
+ *  input case is preserved.
+ */
+API_EXPORT(char *) ap_os_case_canonical_filename(pool *pPool, 
+                                                 const char *szFile)
+{
+    char *pNewStr;
+    char *s;
+    char *p; 
+    char *q;
+
+    if (szFile == NULL || strlen(szFile) == 0)
+        return ap_pstrdup(pPool, "");
+
+    pNewStr = ap_pstrdup(pPool, szFile);
+
+    /*  Change all '\' characters to '/' characters.
+     *  While doing this, remove any trailing '.'.
+     *  Also, blow away any directories with 3 or
+     *  more '.'
+     */
+    for (p = pNewStr,s = pNewStr; *s; s++,p++) {
+        if (*s == '\\' || *s == '/') {
+
+            q = p;
+            while (p > pNewStr && *(p-1) == '.')
+                p--;
+
+            if (p == pNewStr && q-p <= 2 && *p == '.')
+                p = q;
+            else if (p > pNewStr && p < q && *(p-1) == '/') {
+                if (q-p > 2)
+                    p--;
+                else
+                    p = q;
+            }
+
+            *p = '/';
+        }
+        else {
+            *p = *s;
+        }
+    }
+    *p = '\0';
+
+    /*  Blow away any final trailing '.' since on Win32
+     *  foo.bat == foo.bat. == foo.bat... etc.
+     *  Also blow away any trailing spaces since
+     *  "filename" == "filename "
+     */
+    q = p;
+    while (p > pNewStr && (*(p-1) == '.' || *(p-1) == ' '))
+        p--;
+    if ((p > pNewStr) ||
+        (p == pNewStr && q-p > 2))
+        *p = '\0';
+        
+
+    /*  One more security issue to deal with.  Win32 allows
+     *  you to create long filenames.  However, alias filenames
+     *  are always created so that the filename will
+     *  conform to 8.3 rules.  According to the Microsoft
+     *  Developer's network CD (1/98) 
+     *  "Automatically generated aliases are composed of the 
+     *   first six characters of the filename plus ~n 
+     *   (where n is a number) and the first three characters 
+     *   after the last period."
+     *  Here, we attempt to detect and decode these names.
+     */
+    p = strchr(pNewStr, '~');
+    if (p != NULL) {
+        char *pConvertedName, *pQstr, *pPstr;
+        char buf[HUGE_STRING_LEN];
+        /* We potentially have a short name.  Call 
+         * ap_os_systemcase_filename to examine the filesystem
+         * and possibly extract the long name.
+         */
+        pConvertedName = ap_os_systemcase_filename(pPool, pNewStr);
+
+        /* Since we want to preserve the incoming case as much
+         * as we can, compare for differences in the string and
+         * only substitute in the path names that changed.
+         */
+        if (stricmp(pNewStr, pConvertedName)) {
+            buf[0] = '\0';
+
+            q = pQstr = pConvertedName;
+            p = pPstr = pNewStr;
+            do {
+                q = strchr(q,'/');
+                p = strchr(p,'/');
+
+                if (p != NULL) {
+                    *q = '\0';
+                    *p = '\0';
+                }
+
+                if (stricmp(pQstr, pPstr)) 
+                    strcat(buf, pQstr);   /* Converted name */
+                else 
+                    strcat(buf, pPstr);   /* Original name  */
+
+
+                if (p != NULL) {
+                    pQstr = q;
+                    pPstr = p;
+                    *q++ = '/';
+                    *p++ = '/';
+                }
+
+            } while (p != NULL); 
+
+            pNewStr = ap_pstrdup(pPool, buf);
+        }
+    }
+
+
+    return pNewStr;
+}
+
+/*  Perform complete canonicalization.
+ */
+API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
+{
+    char *pNewName;
+    pNewName = ap_os_case_canonical_filename(pPool, szFile);
+    strlwr(pNewName);
+    return pNewName;
 }
 
 /* Win95 doesn't like trailing /s. NT and Unix don't mind. This works 
@@ -227,19 +288,12 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
 API_EXPORT(int) os_stat(const char *szPath, struct stat *pStat)
 {
     int n;
-
-    /* be sure it is has a drive letter or is a UNC path; everything
-     * _must_ be canonicalized before getting to this point.  
-     */
-    if (szPath[1] != ':' && szPath[1] != '/') {
-	ap_log_error(APLOG_MARK, APLOG_ERR, NULL, 
-		     "Invalid path in os_stat: \"%s\", "
-		     "should have a drive letter or be a UNC path",
-		     szPath);
-	return (-1);
+    
+    if (strlen(szPath) == 0) {
+        return -1;
     }
 
-    if (szPath[0] == '/') {
+    if (szPath[0] == '/' && szPath[1] == '/') {
 	char buf[_MAX_PATH];
 	char *s;
 	int nSlashes = 0;

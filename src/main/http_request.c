@@ -359,16 +359,19 @@ static int directory_walk(request_rec *r)
         return OK;
     }
 
-    r->filename   = ap_os_canonical_filename(r->pool, r->filename);
-    test_filename = ap_pstrdup(r->pool, r->filename);
-
-    ap_no2slash(test_filename);
-    num_dirs = ap_count_dirs(test_filename);
+    r->filename   = ap_os_case_canonical_filename(r->pool, r->filename);
 
     res = get_path_info(r);
     if (res != OK) {
         return res;
     }
+
+    r->filename   = ap_os_canonical_filename(r->pool, r->filename);
+
+    test_filename = ap_pstrdup(r->pool, r->filename);
+
+    ap_no2slash(test_filename);
+    num_dirs = ap_count_dirs(test_filename);
 
     if ((res = check_safe_file(r))) {
         return res;

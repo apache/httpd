@@ -998,8 +998,17 @@ API_EXPORT(void) ap_chdir_file(const char *file);
 
 #ifndef HAVE_CANONICAL_FILENAME
 #define ap_os_canonical_filename(p,f)  (f)
+#define ap_os_case_canonical_filename(p,f)  (f)
+#define ap_os_systemcase_filename(p,f)  (f)
 #else
 API_EXPORT(char *) ap_os_canonical_filename(pool *p, const char *file);
+#ifdef WIN32
+API_EXPORT(char *) ap_os_case_canonical_filename(pool *pPool, const char *szFile);
+API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool, const char *szFile);
+#else
+#define ap_os_case_canonical_filename(p,f) ap_os_canonical_filename(p,f)
+#define ap_os_systemcase_filename(p,f) ap_os_canonical_filename(p,f)
+#endif
 #endif
 
 #ifdef _OSD_POSIX
