@@ -692,7 +692,7 @@ static int status_handler(request_rec *r)
 
     } else {
 
-    ap_rputs("<hr>To obtain a full report with current status information", r);
+    ap_rputs("<hr>To obtain a full report with current status information ", r);
     ap_rputs("you need to use the <code>ExtendedStatus On</code> directive. \n", r);
 
     }
