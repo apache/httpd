@@ -547,6 +547,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     }
 
     /* send request headers */
+    proxy_run_fixups(r);
     headers_in_array = apr_table_elts(r->headers_in);
     headers_in = (const apr_table_entry_t *) headers_in_array->elts;
     for (counter = 0; counter < headers_in_array->nelts; counter++) {
