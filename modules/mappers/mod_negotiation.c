@@ -1473,7 +1473,7 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
         if (!neg->accept_langs) {
             return;             /* no accept-language header */
         }
-
+        return;
     }
     else {
         /* Variant has one (or more) languages.  Look for the best
