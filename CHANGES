@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Allow mod_auth_digest to work with sub-requests with different
+     methods than the original request.  PR 25040.
+     [Josh Dady <jpd@indecisive.com>]
+
   *) Fixed file extensions for real media files and removed rpm extension
      from mime.types. PR 26079.  [Allan Sandfeld <kde carewolf.com>]
 
