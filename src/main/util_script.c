@@ -790,6 +790,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 	memset(&pi, 0, sizeof(pi));
 
 	interpreter[0] = 0;
+	pid = -1;
 
 	exename = strrchr(r->filename, '/');
 	if (!exename) {
@@ -848,6 +849,14 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 		}
 	    }
 	}
+        /* Bail out if we haven't figured out what kind of
+         * file this is by now..
+         */
+        if (!is_exe && !is_script && !is_binary) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			 "%s is not executable", r->filename);
+            return (pid);
+	}
 
 	/*
 	 * Make child process use hPipeOutputWrite as standard out,
@@ -859,8 +868,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 	si.hStdInput   = pinfo->hPipeInputRead;
 	si.hStdOutput  = pinfo->hPipeOutputWrite;
 	si.hStdError   = pinfo->hPipeErrorWrite;
-	
-	pid = -1;      
+
 	if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) { 
 	    if (is_exe || is_binary) {
 	        /*
