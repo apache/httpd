@@ -499,36 +499,6 @@ static const char *
 }
 
 static const char *
-    set_cache_exclude(cmd_parms *cmd, void *dummy, const char *arg)
-{
-    server_rec *s = cmd->server;
-    proxy_server_conf *psf = (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
-    struct nocache_entry *new;
-    struct nocache_entry *list = (struct nocache_entry *) psf->nocaches->elts;
-    struct hostent hp;
-    int found = 0;
-    int i;
-
-    /* Don't duplicate entries */
-    for (i = 0; i < psf->nocaches->nelts; i++) {
-	if (strcasecmp(arg, list[i].name) == 0) /* ignore case for host names */
-	    found = 1;
-    }
-
-    if (!found) {
-        new = apr_array_push(psf->nocaches);
-        new->name = arg;
-        /* Don't do name lookups on things that aren't dotted */
-        if (ap_strchr_c(arg, '.') != NULL &&
-            ap_proxy_host2addr(new->name, &hp) == NULL)
-           /*@@@FIXME: This copies only the first of (possibly many) IP addrs */            memcpy(&new->addr, hp.h_addr, sizeof(struct in_addr));
-        else
-            new->addr.s_addr = 0;
-    }
-    return NULL;
-}
-
-static const char *
     add_pass(cmd_parms *cmd, void *dummy, const char *f, const char *r)
 {
     server_rec *s = cmd->server;
@@ -727,21 +697,6 @@ static const char*
     return NULL;    
 }
 
-static const char*
-    set_cache_completion(cmd_parms *parms, void *dummy, const char *arg)
-{
-    proxy_server_conf *psf = ap_get_module_config(parms->server->module_config, &proxy_module);
-    int s = atoi(arg);
-    if (s > 100 || s < 0) {
-		return "CacheForceCompletion must be <= 100 percent, "
-               "or 0 for system default.";
-    }
-
-    if (s > 0)
-      psf->cache_completion = ((float)s / 100);
-    return NULL;    
-}
-
 static const command_rec proxy_cmds[] =
 {
     AP_INIT_FLAG("ProxyRequests", set_proxy_req, NULL, RSRC_CONF,
@@ -764,10 +719,6 @@ static const command_rec proxy_cmds[] =
      "A list of ports which CONNECT may connect to"),
     AP_INIT_TAKE1("ProxyVia", set_via_opt, NULL, RSRC_CONF,
      "Configure Via: proxy header header to one of: on | off | block | full"),
-    AP_INIT_ITERATE("ProxyNoCache", set_cache_exclude, NULL, RSRC_CONF,
-     "A list of names, hosts or domains for which caching is *not* provided"),
-    AP_INIT_TAKE1("ProxyCacheForceCompletion", set_cache_completion, NULL, RSRC_CONF,
-     "Force a http cache completion after this percentage is loaded"),
     {NULL}
 };
 
