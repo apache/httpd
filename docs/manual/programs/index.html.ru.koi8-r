@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="KOI8-R"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Сервер и вспомогательные программы - HTTP сервер Apache</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page" class="no-sidebar"><div id="page-header">
+<p class="menu"><a href="../mod/">Модули</a> | <a href="../mod/directives.html">Директивы</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Глоссарий</a> | <a href="../sitemap.html">Карта сайта</a></p>
+<p class="apache">HTTP сервер Apache версии 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="../"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP сервер</a> &gt; <a href="http://httpd.apache.org/docs-project/">Документация</a> &gt; <a href="../">Версия 2.0</a></div><div id="page-content"><div id="preamble"><h1>Сервер и вспомогательные программы</h1>
+<div class="toplang">
+<p><span>Доступные языки: </span><a href="../en/programs/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ru/programs/" title="Russian">&nbsp;ru&nbsp;</a></p>
+</div>
+
+    <p>Этот документ описывает назначение и ипользование
+    всех исполняемых файлов HTTP сервера Apache.</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="index" id="index">Указатель</a></h2>
+
+    <dl>
+      <dt><a href="httpd.html">httpd</a></dt>
+
+      <dd>HTTP сервер Apache</dd>
+
+      <dt><a href="apachectl.html">apachectl</a></dt>
+
+      <dd>Интерфейс управления HTTP сервером Apache</dd>
+
+      <dt><a href="ab.html">ab</a></dt>
+
+      <dd>Утилита для тестирования HTTP сервера Apache</dd>
+
+      <dt><a href="apxs.html">apxs</a></dt>
+
+      <dd>Утилита APache eXtenSion</dd>
+
+      <dt><a href="dbmmanage.html">dbmmanage</a></dt>
+
+      <dd>Создание и обновление файлов паролей пользователей в формате DBM,
+      необходимых для базовой аутентификации (basic authentification)</dd>
+
+      <dt><a href="htdigest.html">htdigest</a></dt>
+
+      <dd>Создание и обновление файлов паролей пользователей для
+      дайджестной аутентификации (digest authentification)</dd>
+
+      <dt><a href="htpasswd.html">htpasswd</a></dt>
+
+      <dd>Создание и обновление файлов паролей пользователей
+      для базовой аутентификации (basic authentification)</dd>
+
+      <dt><a href="logresolve.html">logresolve</a></dt>
+
+      <dd>Утилита для преобразования IP-адресов в соответствующие
+      им имена хостов в лог-файлах Apache</dd>
+
+      <dt><a href="rotatelogs.html">rotatelogs</a></dt>
+
+      <dd>Утилита, позволяющая производить ротацию лог-файлов Apache без
+      остановки сервера</dd>
+
+      <dt><a href="suexec.html">suexec</a></dt>
+
+      <dd>Switch User For Exec - утилита, позволяющая выполнять CGI-скрипт от имени
+      другого пользователя</dd>
+
+      <dt><a href="other.html">Другие программы</a></dt>
+      <dd>Вспомогательные утилиты, не имеющие своих собственных справочных руководств</dd>
+    </dl>
+</div></div>
+<div class="bottomlang">
+<p><span>Доступные языки: </span><a href="../en/programs/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ru/programs/" title="Russian">&nbsp;ru&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Поддержка осуществляется <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Модули</a> | <a href="../mod/directives.html">Директивы</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Глоссарий</a> | <a href="../sitemap.html">Карта сайта</a></p></div>
+</body></html>
