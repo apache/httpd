@@ -650,7 +650,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     /* now build the udp sockaddr_in structure... */
+#ifdef BEOS_BONE
     udpsi.sin_len = sizeof(struct sockaddr_in);
+#endif
     udpsi.sin_family = AF_INET;
     udpsi.sin_port = htons(7777);
     udpsi.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
