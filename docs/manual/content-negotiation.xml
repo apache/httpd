@@ -468,7 +468,7 @@
 
     <p>In order to support advanced techniques (such as Cookies or
     special URL-paths) to determine the user's preferred language,
-    since Apache 2.1 <module>mod_negotiation</module> recognizes
+    since Apache 2.0.46 <module>mod_negotiation</module> recognizes
     the <a href="env.html">environment variable</a>
     <code>prefer-language</code>. If it exists and contains an
     appropriate language tag, <module>mod_negotiation</module> will
@@ -476,8 +476,9 @@
     the normal negotiation process applies.</p>
 
     <example><title>Example</title>
-      SetEnvIf Cookie "language=(.+)" prefer-language=$1
-    </example>
+      SetEnvIf Cookie "language=en" prefer-language=en
+      SetEnvIf Cookie "language=fr" prefer-language=fr
+   </example>
 </section>
 </section>
 
