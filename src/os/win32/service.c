@@ -107,9 +107,11 @@ static int ap_restart_service(SC_HANDLE);
  * the service.h header, so we best assume it's an error to exit from
  * _any_ other module.
  *
- * If real_exit_code is reset to 0, it will not be set or trigger this
+ * If real_exit_code is not set to 2, it will not be set or trigger this
  * behavior on exit.  All service and child processes are expected to
- * reset this flag to zero to avoid undesireable side effects.
+ * reset this flag to zero to avoid undesireable side effects.  The value
+ * 1 simply tells the system it is safe to enable the feature (set to 2),
+ * while 0 prohibits the feature from being enabled.
  */
 int real_exit_code = 1;
 

@@ -6761,9 +6761,11 @@ int REALMAIN(int argc, char *argv[])
         optind = 1;
         reparsed = 1;
     }
-#endif
 
-    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLz:Z:iusStThk:n:")) != -1) {
+    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLz:Z:wiuStThk:n:")) != -1) {
+#else /* !WIN32 */
+    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLsStTh")) != -1) {
+#endif
         char **new;
 	switch (c) {
 	case 'c':
@@ -6779,6 +6781,13 @@ int REALMAIN(int argc, char *argv[])
 	    *new = ap_pstrdup(pcommands, optarg);
 	    break;
 #ifdef WIN32
+        /* Shortcuts; include the -w option to hold the window open on error.
+         * This must not be toggled once we reset real_exit_code to 0!
+         */
+        case 'w':
+            if (real_exit_code)
+                real_exit_code = 2;
+            break;
 	/* service children must be created with the -z option,
 	 * while console mode (interactive apache) children are created
 	 * with the -Z option
@@ -6807,9 +6816,6 @@ int REALMAIN(int argc, char *argv[])
 	case 'u':
             install = -1;
 	    break;
-	case 'S':
-	    ap_dump_settings = 1;
-	    break;
 	case 'k':
             if (!strcasecmp(optarg, "stop"))
                 signal_to_send = "shutdown";
@@ -6828,6 +6834,9 @@ int REALMAIN(int argc, char *argv[])
             DestroyScreen(GetCurrentScreen());
             break;
 #endif
+	case 'S':
+	    ap_dump_settings = 1;
+	    break;
 	case 'd':
             optarg = ap_os_canonical_filename(pcommands, optarg);
             if (!ap_os_is_path_absolute(optarg)) {

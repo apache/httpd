@@ -69,7 +69,8 @@
  * the real_exit_code, and _will_ GP fault if it tries this macro.
  */
 
-#define exit(status) ((exit)(real_exit_code ? (real_exit_code = (status)) : (status)))
+#define exit(status) ((exit)((real_exit_code==2) ? (real_exit_code = (status)) \
+                                                 : ((real_exit_code = 0), (status))))
 extern int real_exit_code;
 void hold_console_open_on_error(void);
 

@@ -1,5 +1,10 @@
 Changes with Apache 1.3.18
 
+  *) Apache/Win32 no longer holds open the console on error, except if
+     the internal -w flag is specified as a shortcut argument.  Corrected
+     bug that -t test config didn't hold the console open on "SYNTAX OK".
+     [William Rowe]
+
   *) Apache on Win9x now ensures the service is stopped before removal.
      [William Rowe]
 
