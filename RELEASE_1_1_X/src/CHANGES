@@ -1,3 +1,10 @@
+Changes with Apache 1.1.3:
+
+  *) Fix a problem introduced by the directory index patch that
+     breaks CGI with PATH_INFO arguments.
+
+  *) Remove const in storage type declaration for make_cookie().
+
 Changes with Apache 1.1.2:
 
   *) Fix a buffer overflow problem in mod_cookies. Without these

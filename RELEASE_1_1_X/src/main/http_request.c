@@ -179,10 +179,10 @@ int get_path_info(request_rec *r)
 	    *cp = '\0';
 	    return OK;
 	}
-#if defined(ENOENT)
-	else if (errno == ENOENT) {
+#if defined(ENOENT) && defined(ENOTDIR)
+	else if (errno == ENOENT || errno == ENOTDIR) {
 #else
-  #error Your system apparently does not define ENOENT.
+  #error Your system apparently does not define ENOENT || ENOTDIR.
   #error Removal of these lines opens a security hole if protecting
   #error from directory indexes with DirectoryIndex.
 	else {
@@ -195,9 +195,9 @@ int get_path_info(request_rec *r)
 	    while (cp > path && cp[-1] == '/')
 		--cp;
 	} 
-#if defined(ENOENT)
+#if defined(ENOENT) && defined(ENOTDIR)
 	else {
-	    log_printf(r->server, "access to %s failed for client; unable to determine if index file exists (stat() returned unexpected error)", r->filename);
+	    log_printf(r->server, "access to %s failed for client; unable to determine if index file exists (stat() returned unexpected error[%d])", r->filename, errno);
 	    return FORBIDDEN;
 	}
 #endif

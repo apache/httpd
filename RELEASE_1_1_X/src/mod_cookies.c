@@ -121,7 +121,7 @@ void make_cookie(request_rec *r)
     struct timeval tv;
     char new_cookie[1024];	/* blurgh */
     char *dot;
-    const char *rname = pstrdup(r->pool, 
+    char *rname = pstrdup(r->pool, 
 				get_remote_host(r->connection, r->per_dir_config,
 						REMOTE_NAME));
     
