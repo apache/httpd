@@ -344,31 +344,6 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
         /* create a new socket */
         backend->connection = NULL;
 
-        /* see memory note above */
-        if ((rv = apr_socket_create(&p_conn->sock, APR_INET, SOCK_STREAM,
-                                    c->pool)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                         "proxy: error creating socket");
-            return HTTP_INTERNAL_SERVER_ERROR;
-        }
-
-#if !defined(TPF) && !defined(BEOS)
-        if (conf->recv_buffer_size > 0 &&
-            (rv = apr_setsocketopt(p_conn->sock, APR_SO_RCVBUF,
-                                   conf->recv_buffer_size))) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                          "setsockopt(SO_RCVBUF): Failed to set "
-                          "ProxyReceiveBufferSize, using default");
-        }
-#endif
-
-        /* Set a timeout on the socket */
-        apr_setsocketopt(p_conn->sock, APR_SO_TIMEOUT,
-                         (int)(r->server->timeout * APR_USEC_PER_SEC));
-
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-                     "proxy: socket has been created");
-
         /*
          * At this point we have a list of one or more IP addresses of
          * the machine to connect to. If configured, reorder this
@@ -378,17 +353,50 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
          *
          * For now we do nothing, ie we get DNS round robin.
          * XXX FIXME
+         *
+         * We have to create a new socket each time through the loop because
+         *
+         *   (1) On most stacks, connect() fails with EINVAL or similar if
+         *       we previously failed connect() on the socket in the past
+         *   (2) The address family of the socket needs to match that of the
+         *       address we're trying to connect to.
          */
 
         /* try each IP address until we connect successfully */
         failed = 1;
         while (p_conn->addr) {
 
+            /* see memory note above */
+            if ((rv = apr_socket_create(&p_conn->sock, p_conn->addr->family,
+                                        SOCK_STREAM, c->pool)) != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                             "proxy: error creating socket");
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+
+#if !defined(TPF) && !defined(BEOS)
+            if (conf->recv_buffer_size > 0 &&
+                (rv = apr_setsocketopt(p_conn->sock, APR_SO_RCVBUF,
+                                       conf->recv_buffer_size))) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                              "setsockopt(SO_RCVBUF): Failed to set "
+                              "ProxyReceiveBufferSize, using default");
+            }
+#endif
+
+            /* Set a timeout on the socket */
+            apr_setsocketopt(p_conn->sock, APR_SO_TIMEOUT,
+                             (int)(r->server->timeout * APR_USEC_PER_SEC));
+
+            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+                         "proxy: socket has been created");
+
             /* make the connection out of the socket */
             rv = apr_connect(p_conn->sock, p_conn->addr);
 
             /* if an error occurred, loop round and try again */
             if (rv != APR_SUCCESS) {
+                apr_socket_close(p_conn->sock);
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                              "proxy: attempt to connect to %pI (%s) failed",
                              p_conn->addr, p_conn->name);
@@ -403,7 +411,6 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
 
         /* handle a permanent error from the above loop */
         if (failed) {
-            apr_socket_close(p_conn->sock);
             if (proxyname) {
                 return DECLINED;
             } else {
@@ -433,7 +440,8 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
         backend->port = p_conn->port;
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-                     "proxy: connection complete");
+                     "proxy: connection complete to %pI (%s)",
+                     p_conn->addr, p_conn->name);
 
         /* set up the connection filters */
         ap_proxy_pre_http_connection(*origin);
