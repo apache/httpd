@@ -109,13 +109,13 @@ directory resource.
 <li><SAMP>F=2</SAMP> formats the listing as an HTMLTable FancyIndexed list<br />&nbsp;
 
 <li><SAMP>V=0</SAMP> disables version sorting
-<li><SAMP>V=0</SAMP> enables version sorting<br />&nbsp;
+<li><SAMP>V=1</SAMP> enables version sorting<br />&nbsp;
 
 <li><SAMP>P=<EM>pattern</EM></SAMP> lists only files matching the given <EM>pattern</EM>
 </ul>
 
 <P>Note that the 'P'attern query argument is tested <em>after</em> the usual IndexIgnore
-directives are processed, and all file names are still subjected to the same critera
+directives are processed, and all file names are still subjected to the same criteria
 as any other autoindex listing.  The Query Arguments parser in mod_autoindex will stop
 abruptly when an unrecognized option is encountered.  The Query Arguments must be well
 formed, according to the table above.</P>
@@ -747,7 +747,7 @@ If there is no header file, the preamble is generated as usual.
 <DD>
 <!--%plaintext &lt;?INDEX {\tt SuppressIcon} index option&gt; -->
 This will suppress the icon in fancy indexing listings.  Combining
-both <EM>SuppressIcon</EM> and <EM>SuppressRules</EM> yeilds proper 
+both <EM>SuppressIcon</EM> and <EM>SuppressRules</EM> yields proper 
 HTML 3.2 output, which by the final specification prohibits IMG and HR 
 tags from the PRE block (used to format FancyIndexed listings.)
 <DT><A NAME="indexoptions:suppresslastmodified">SuppressLastModified</A>
