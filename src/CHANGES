@@ -1,5 +1,7 @@
 Changes with Apache 1.3b7
 
+  *) WIN32: Extensive overhaul of the way UNCs are handled. [Ben Laurie]
+
   *) WIN32: Make roots of filesystems (e.g. c:/) work. [Ben Laurie]
      PR#1558
 
