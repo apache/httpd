@@ -866,7 +866,7 @@ static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
     char  term = '\0';
 
     *tag_val = NULL;
-    if (ctx->curr_tag_pos - ctx->combined_tag > ctx->tag_length) {
+    if (ctx->curr_tag_pos > ctx->combined_tag + ctx->tag_length) {
         *tag = NULL;
         return;
     }
