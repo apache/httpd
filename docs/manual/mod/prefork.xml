@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.16 $ -->
+<!-- $Revision: 1.17 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -133,7 +133,7 @@ uses</a></seealso>
 
     <p>Tuning of this parameter should only be necessary on very
     busy sites. Setting this parameter to a large number is almost
-    always a bad idea. If you are trying to set the value lower than
+    always a bad idea. If you are trying to set the value equal to or lower than
     <directive module="prefork">MinSpareServers</directive>, Apache
     will automatically adjust it to <directive
     >MinSpareServers</directive><code> + 1</code>.</p>

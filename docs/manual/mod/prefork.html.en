@@ -128,7 +128,7 @@ uses</a></li>
 
     <p>Tuning of this parameter should only be necessary on very
     busy sites. Setting this parameter to a large number is almost
-    always a bad idea. If you are trying to set the value lower than
+    always a bad idea. If you are trying to set the value equal to or lower than
     <code class="directive"><a href="#minspareservers">MinSpareServers</a></code>, Apache
     will automatically adjust it to <code class="directive">MinSpareServers</code><code> + 1</code>.</p>
 
