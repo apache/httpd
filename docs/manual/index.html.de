@@ -20,7 +20,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Dokumentation</a></div>
 <div id="page-content"><h1>Dokumentation zum Apache HTTP Server Version 2.1</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./de/">&nbsp;de&nbsp;</a> | <a href="./en/">&nbsp;en&nbsp;</a> | <a href="./fr/">&nbsp;fr&nbsp;</a> | <a href="./ja/">&nbsp;ja&nbsp;</a> | <a href="./ko/">&nbsp;ko&nbsp;</a></p>
+<p><span>Verfügbare Sprachen: </span><a href="./de/">&nbsp;de&nbsp;</a> | <a href="./en/">&nbsp;en&nbsp;</a> | <a href="./fr/">&nbsp;fr&nbsp;</a> | <a href="./ja/">&nbsp;ja&nbsp;</a> | <a href="./ko/">&nbsp;ko&nbsp;</a></p>
 </div>
 <form method="get" action="http://www.google.com/search"><p><input name="as_q" value="" type="text" /> <input value="Google-Suche" type="submit" /><input value="10" name="num" type="hidden" /><input value="de" name="hl" type="hidden" /><input value="ISO-8859-1" name="ie" type="hidden" /><input value="Google Search" name="btnG" type="hidden" /><input name="as_epq" value="Apache 2.0" type="hidden" /><input name="as_oq" value="" type="hidden" /><input name="as_eq" value="&quot;List-Post&quot;" type="hidden" /><input value="" name="lr" type="hidden" /><input value="i" name="as_ft" type="hidden" /><input value="" name="as_filetype" type="hidden" /><input value="all" name="as_qdr" type="hidden" /><input value="any" name="as_occt" type="hidden" /><input value="i" name="as_dt" type="hidden" /><input value="httpd.apache.org" name="as_sitesearch" type="hidden" /><input value="off" name="safe" type="hidden" /></p></form>
 <table id="indextable"><tr><td class="col1"><div class="category"><h2><a name="release" id="release">Hinweise zur Version</a></h2>
@@ -81,7 +81,7 @@
 </ul>
 </div></td></tr></table></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./de/">&nbsp;de&nbsp;</a> | <a href="./en/">&nbsp;en&nbsp;</a> | <a href="./fr/">&nbsp;fr&nbsp;</a> | <a href="./ja/">&nbsp;ja&nbsp;</a> | <a href="./ko/">&nbsp;ko&nbsp;</a></p>
+<p><span>Verfügbare Sprachen: </span><a href="./de/">&nbsp;de&nbsp;</a> | <a href="./en/">&nbsp;en&nbsp;</a> | <a href="./fr/">&nbsp;fr&nbsp;</a> | <a href="./ja/">&nbsp;ja&nbsp;</a> | <a href="./ko/">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Gepflegt durch das <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p></div>
