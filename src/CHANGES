@@ -2,7 +2,7 @@ Changes with Apache 1.3.10
 
   *) Move "handler not found" warning message to below the check
      for a wildcard handler.  [Dirk <dirkm@teleport.com>, Roy Fielding]
-     PR#2584, PR#3349, PR#3436, PR#3548, PR#4384, PR#4795, PR#4807
+     PR#2584, PR#2751, PR#3349, PR#3436, PR#3548, PR#4384, PR#4795, PR#4807
 
   *) Build errors in src/support stop with an error, just like all the
      other recursive make calls. [David Harris <dharris@drh.net>]
