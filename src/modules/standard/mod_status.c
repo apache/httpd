@@ -135,17 +135,19 @@ int status_handler (request_rec *r)
     int i,res;
     int ready=0;
     int busy=0;
+#if defined(STATUS)
     unsigned long count=0;
     unsigned long lres,bytes;
     unsigned long my_lres,my_bytes;
     unsigned long bcount=0;
+    float tick=sysconf(_SC_CLK_TCK);
+#endif
     int short_report=0;
     server_rec *server = r->server;
     short_score score_record;
     char status[]="???????";
     char buffer[200];
     clock_t tu,ts,tcu,tcs;
-    float tick=sysconf(_SC_CLK_TCK);
 
     tu=ts=tcu=tcs=0;
 
