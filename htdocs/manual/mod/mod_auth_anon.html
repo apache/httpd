@@ -52,7 +52,7 @@ allows users to share URLs.
 
 <hr>
 
-<A name="anonymous"><h2>Anonymous</h2></a>
+<h2><A name="anonymous">Anonymous directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt Anonymous} directive&gt; -->
 <strong>Syntax:</strong> Anonymous <em>user user ...</em><br>
 <strong>Default:</strong> none<br>
@@ -80,7 +80,7 @@ allows users to share URLs.
         'I Don't Know'.
 <HR>
 
-<A name="Authoritative"><h2>Anonymous_Authoritative</h2></A>
+<h2><A name="Authoritative">Anonymous_Authoritative directive</A></h2>
 <strong>Syntax:</strong> Anonymous_Authoritative <em>on | off</em><br>
 <strong>Default:</strong> <code>Anonymous_Authoritative off</code><br>
 <strong>Context:</strong> directory, .htaccess<br>
@@ -93,13 +93,13 @@ allows users to share URLs.
         userID does not match the values specified in the
         <code>Anonymous</code> directive, access is denied.
         <p>
-        Be sure you know what you are doing when you decide to switch 
+        Be sure you know what you are doing when you decide to switch
         it on. And remember that it is the linking order of the modules
         (in the Configuration / Make file) which details the order
         in which the Authorization modules are queried.
 <hr>
 
-<A name="LogEmail"><h2>Anonymous_LogEmail</h2></A>
+<h2><A name="LogEmail">Anonymous_LogEmail directive</A></h2>
 <strong>Syntax:</strong> Anonymous_LogEmail <em>on | off</em><br>
 <strong>Default:</strong> <code>off</code><br>
 <strong>Context:</strong> directory, .htaccess<br>
@@ -111,7 +111,7 @@ allows users to share URLs.
         contains a sensible email address) is logged in the httpd-log file.
 <hr>
 
-<A name="MustGiveEmail"><h2>Anonymous_MustGiveEmail</h2></a>
+<h2><A name="MustGiveEmail">Anonymous_MustGiveEmail directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt Anonymous_MustGiveEmail} directive&gt; -->
 <strong>Syntax:</strong> Anonymous_MustGiveEmail <em>on</em> | <em>off</em><br>
 <strong>Default:</strong> off<br>
@@ -124,7 +124,7 @@ allows users to share URLs.
         address as the password.  This prohibits blank passwords.
 <HR>
 
-<A name="NoUserID"><h2>Anonymous_NoUserID</h2></A>
+<h2><A name="NoUserID">Anonymous_NoUserID directive</A></h2>
 <strong>Syntax:</strong> Anonymous_NoUserID <em>on | off</em><br>
 <strong>Default:</strong> <code>Anonymous_NoUserID off</code><br>
 <strong>Context:</strong> directory, .htaccess<br>
@@ -140,7 +140,7 @@ allows users to share URLs.
 
 <hr>
 
-<A name="VerifyEmail"><h2>Anonymous_VerifyEmail</h2></A>
+<h2><A name="VerifyEmail">Anonymous_VerifyEmail directive</A></h2>
 <strong>Syntax:</strong> Anonymous <em>on | off</em><br>
 <strong>Default:</strong> <code>Anonymous_VerifyEmail off</code><br>
 <strong>Context:</strong> directory, .htaccess<br>
@@ -152,7 +152,8 @@ allows users to share URLs.
         checked for at least one '@' and a '.' to encourage users to enter
         valid email addresses (see the above <code>Auth_LogEmail</code>).
 
-<hr><a name="Example"><h2>Example</h2></a>
+<hr>
+<h2><a name="Example">Example</A></h2>
 
 The example below (when combined with the Auth directives
 of a htpasswd-file based (or GDM, mSQL etc) base access
@@ -202,11 +203,13 @@ AuthType                basic<p>
 </dl>
 
 
-<hr><h2><a name="CompileTimeOptions">Compile Time Options</a></h2>
+<hr>
+<h2><a name="CompileTimeOptions">Compile Time Options</a></h2>
 
 Currently there are no Compile options.
 
-<hr><h2><a name="RevisionHistory">Revision History</a></h2>
+<hr>
+<h2><a name="RevisionHistory">Revision History</a></h2>
 
 This version: 23 Nov 1995, 24 Feb 1996, 16 May 1996.
 
@@ -223,7 +226,8 @@ This version: 23 Nov 1995, 24 Feb 1996, 16 May 1996.
 </dl>
 
 
-<hr><h2><a name="Person">Contact/person to blame</a></h2>
+<hr>
+<h2><a name="Person">Contact/person to blame</a></h2>
 
 This module was written for the
 <a href="http://ewse.ceo.org">European Wide Service Exchange</a> by
@@ -234,7 +238,8 @@ documentation, courtesy of Nick Himba, <a href="mailto:himba@cs.utwente.nl">
 <p>
 
 
-<hr><h2><a NAME="Sourcecode">Sourcecode</a></h2>
+<hr>
+<h2><a NAME="Sourcecode">Sourcecode</a></h2>
 
 The source code can be found at <a href="http://www.apache.org"><code>
 http://www.apache.org</code></a>. A snapshot of a development version

@@ -66,7 +66,7 @@ Use multiple daemons when:
 <ul>
 <li>The different virtual hosts need very different httpd configurations, such
    as different values for: <A HREF="mod/core.html#servertype">ServerType</A>,
-   <A HREF="mod/core.html#user">User</A>, 
+   <A HREF="mod/core.html#user">User</A>,
    <A HREF="mod/core.html#group">Group</A>,
    <A HREF="mod/mod_mime.html#typesconfig">TypesConfig</A> or
    <A HREF="mod/core.html#serverroot">ServerRoot</A>.
@@ -154,7 +154,7 @@ internal use. Unix operating systems limit the number of file descriptors that
 may be used by a process; the limit is typically 64, and may usually be
 increased up to a large hard-limit.
 <p>
-Although Apache attempts to increase the limit as required, this 
+Although Apache attempts to increase the limit as required, this
 may not work if:
 <ol>
 <li>Your system does not provide the setrlimit() system call.
@@ -181,9 +181,9 @@ The have been reports that Apache may start running out of resources allocated
 for the root process. This will exhibit itself as errors in the error log like
 "unable to fork". There are two ways you can bump this up:
 
-<OL> 
+<OL>
 <LI>Have a <code>csh</code> script wrapper around httpd which sets the
-"rlimit" to some large number, like 512.  
+"rlimit" to some large number, like 512.
 <LI>Edit http_main.c to add calls to setrlimit() from main(), along the lines of
 <PRE>
         struct rlimit rlp;

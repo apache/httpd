@@ -143,7 +143,7 @@ merges and default values are set.  In particular:
     the final setting of that value is in the main_server.)
 
 <li>The &quot;lookup defaults&quot; that define the default directory
-    permissions 
+    permissions
     for a vhost are merged with those of the main server.  This includes
     any per-directory configuration information for any module.
 
@@ -218,7 +218,7 @@ determine if the hostname's address (and optional port) match that of
 the connection vhost.  If it does then the hostname portion of the URI
 is saved as the <EM>request_hostname</EM>.  If it does not match, then the
 URI remains untouched.  <STRONG>Note</STRONG>: to achieve this address
-comparison, 
+comparison,
 the hostname supplied goes through a DNS lookup unless it matches the
 <code>ServerName</code> or the local IP address of the client's socket.
 
@@ -301,7 +301,7 @@ the virtual hosts).
     If you do have a <SAMP>_default_</SAMP> vhost, then you cannot place
     named-based vhosts after it in the config.  This is because on any
     connection to the main server IPs the connection vhost will always be
-    the <SAMP>_default_</SAMP> vhost since none of the name-based are 
+    the <SAMP>_default_</SAMP> vhost since none of the name-based are
     considered during <code>find_virtual_server</code>.
     </p>
 

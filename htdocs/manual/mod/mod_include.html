@@ -19,7 +19,7 @@ This module is contained in the <code>mod_include.c</code> file, and
 is compiled in by default. It provides for server-parsed html
 documents. Several directives beyond the original NCSA definition have been
 included in Apache 1.2 - these are flagged below with the phrase
-"Apache 1.2 and above".  Of particular significance are the new flow 
+"Apache 1.2 and above".  Of particular significance are the new flow
 control directives documented at the bottom.
 
 <H2>Enabling Server-Side Includes</H2>
@@ -193,7 +193,7 @@ output. Thus included files can be nested.
 <dt>value
 <dd>The value to give a variable.
 </dl>
-For example: 
+For example:
   <CODE>&lt;!--#set var="category" value="help" --&gt;</CODE>
 <dd>Apache 1.2 and above.
 
@@ -203,7 +203,7 @@ For example:
 
 In addition to the variables in the standard CGI environment, these are
 available for the <code>echo</code> command, for <code>if</code> and
-<code>elif</code>, and to any program invoked by the document.  
+<code>elif</code>, and to any program invoked by the document.
 
 <dl>
 <dt>DATE_GMT
@@ -254,8 +254,8 @@ current document.
     &quot;<SAMP>X</SAMP>&quot; and <SAMP>REQUEST_METHOD</SAMP> is
     &quot;<SAMP>Y</SAMP>&quot;.
 
-<P> EXAMPLE: the below example will print "in foo" if the DOCUMENT_URI is 
-/foo/file.html, "in bar" if it is /bar/file.html and "in neither" 
+<P> EXAMPLE: the below example will print "in foo" if the DOCUMENT_URI is
+/foo/file.html, "in bar" if it is /bar/file.html and "in neither"
 otherwise:
 <PRE>
     &lt;!--#if expr="\"$DOCUMENT_URI\" = \"/foo/file.html\"" --&gt;
@@ -291,7 +291,7 @@ elements are:
     if the original test_condition was false.  These elements
     are optional.
 
-<P> The <B><CODE>endif</CODE></B> element ends the 
+<P> The <B><CODE>endif</CODE></B> element ends the
     <B><CODE>if</CODE></B> element and is required.
 
 <P> <I>test_condition</I> is one of the following:
@@ -309,19 +309,19 @@ elements are:
     Unix egrep command.
 
 <DT>( <I>test_condition</I> )
-        <DD>true if <I>test_condition</I> is true 
+        <DD>true if <I>test_condition</I> is true
 <DT>! <I>test_condition</I>
         <DD>true if <I>test_condition</I> is false
 <DT><I>test_condition1</I> && <I>test_condition2</I>
         <DD>true if both <I>test_condition1</I> and
-        <I>test_condition2</I> are true 
+        <I>test_condition2</I> are true
 <DT><I>test_condition1</I> || <I>test_condition2</I>
         <DD>true if either <I>test_condition1</I> or
-        <I>test_condition2</I> is true 
+        <I>test_condition2</I> is true
 </DL>
 
 <P> "<I>=</I>" and "<I>!=</I>" bind more tightly than "<I>&&</I>" and
-    "<I>||</I>". 
+    "<I>||</I>".
     "<I>!</I>" binds most tightly.  Thus, the following are equivalent:
 
 <PRE>
@@ -360,7 +360,7 @@ elements are:
 
 The XBitHack directives controls the parsing of ordinary html documents.
 This directive only affects files associated with the MIME type
-<CODE>text/html</CODE>. 
+<CODE>text/html</CODE>.
 <em>Status</em> can have the following values:
 <dl>
 <dt>off

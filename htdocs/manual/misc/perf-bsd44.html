@@ -41,7 +41,7 @@ problem since.
 <p>
 
 After the edit, recompile the kernel and recompile the Apache server
-then reboot.  
+then reboot.
 
 <P>
 
@@ -134,8 +134,8 @@ connection ends up in the TIME_WAIT state for several minutes, during
 which time its mbufs are not yet freed. Another reason is that, on server
 timeouts, some connections end up in FIN_WAIT_2 state forever, because
 this state doesn't time out on the server, and the browser never sent
-a final FIN.  For more details see the 
-<A HREF="fin_wait_2.html">FIN_WAIT_2</A> page. 
+a final FIN.  For more details see the
+<A HREF="fin_wait_2.html">FIN_WAIT_2</A> page.
 
 <p>
 
@@ -169,7 +169,7 @@ value derived from maxusers proved sufficient for our load.
 Be aware that your system may not boot with a kernel that is configured
 to use more resources than you have available system RAM. <b>ALWAYS</b>
 have a known bootable kernel available when tuning your system this way,
-and use the system tools beforehand to learn if you need to buy more 
+and use the system tools beforehand to learn if you need to buy more
 memory before tuning.
 
 <p>

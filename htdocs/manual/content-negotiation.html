@@ -22,7 +22,7 @@ languages, character set and encoding.  It is also implements a
 couple of features to give more intelligent handling of requests from
 browsers which send incomplete negotiation information.  <p>
 
-Content negotiation is provided by the 
+Content negotiation is provided by the
 <a href="mod/mod_negotiation.html">mod_negotiation</a> module,
 which is compiled in by default.
 
@@ -47,7 +47,7 @@ French representations, the browser would send
 </pre>
 
 Note that this preference will only be applied when there is a choice
-of representations and they vary by language. 
+of representations and they vary by language.
 <p>
 
 As an example of a more complex request, this browser has been
@@ -78,12 +78,12 @@ resource vary are called the <b>dimensions</b> of negotiation.
 
 In order to negotiate a resource, the server needs to be given
 information about each of the variants. This is done in one of two
-ways: 
+ways:
 
 <ul>
   <li> Using a type map (i.e., a <code>*.var</code> file) which
        names the files containing the variants explicitly
-  <li> Or using a 'MultiViews' search, where the server does an implicit 
+  <li> Or using a 'MultiViews' search, where the server does an implicit
        filename pattern match, and chooses from among the results.
 </ul>
 
@@ -154,7 +154,7 @@ The full list of headers recognized is:
        interpreted as URLs relative to the map file; they must be on
        the same server (!), and they must refer to files to which the
        client would be granted access if they were to be requested
-       directly. 
+       directly.
   <dt> <code>Content-type:</code>
   <dd> media type --- charset, level and "qs" parameters may be given.  These
        are often referred to as MIME types; typical media types are
@@ -244,7 +244,7 @@ fiddle quality factors is explained in more detail below.
 <tr><th>Dimension
 <th>Notes
 <tr><td>Media Type
-<td>Browser indicates preferences on Accept: header. Each item 
+<td>Browser indicates preferences on Accept: header. Each item
 can have an associated quality factor. Variant description can also
 have a quality factor.
 <tr><td>Language
@@ -292,7 +292,7 @@ remains, move onto the next test.
   else the order of languages on the Accept-Language header.
 
 <li>Select the variants with the highest 'level' media parameter
-  (used to give the version of text/html media types). 
+  (used to give the version of text/html media types).
 
 <li>Select only unencoded variants, if there is a mix of encoded
   and non-encoded variants. If either all variants are encoded
@@ -366,7 +366,7 @@ as:
 The explicit types have no quality factor, so they default to a
 preference of 1.0 (the highest). The wildcard */* is given
 a low preference of 0.01, so other types will only be returned if
-no variant matches an explicitly listed type. 
+no variant matches an explicitly listed type.
 <p>
 
 If the Accept: header contains <i>no</i> q factors at all, Apache sets
@@ -386,7 +386,7 @@ are given a very low language quality factor of 0.001.<p>
 The reason for setting this language quality factor for
 variant with no language to a very low value is to allow
 for a default variant which can be supplied if none of the
-other variants match the browser's language preferences. 
+other variants match the browser's language preferences.
 
 For example, consider the situation with three variants:
 
@@ -409,9 +409,9 @@ The next time that URL is requested, the cache can use the stored
 document, provided it is still within date. But if the resource is
 subject to content negotiation at the server, this would result in
 only the first requested variant being cached, and subsequent cache
-hits could return the wrong response. To prevent this, 
+hits could return the wrong response. To prevent this,
 Apache normally marks all responses that are returned after content negotiation
-as non-cacheable by HTTP/1.0 clients. Apache also supports the HTTP/1.1 
+as non-cacheable by HTTP/1.0 clients. Apache also supports the HTTP/1.1
 protocol features to allow caching of negotiated responses. <P>
 
 For requests which come from a HTTP/1.0 compliant client (either a

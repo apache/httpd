@@ -48,7 +48,7 @@ in early versions have been fixed in 1.2.
     <a name="cnegbug">Apache's</A> <A HREF="../content-negotiation.html">Content
     Negotiation</A> should pick the smallest variant if there
     are several that are equally acceptable. A bug in 1.2 means it no
-    longer does this unless all the variants have character sets. 
+    longer does this unless all the variants have character sets.
     This <A HREF="../../dist/contrib/patches/1.2/conneg-bug.patch">patch</A>
     fixes this problem. It also fixes the problem which makes Apache
     pick the last equally acceptable variant instead of the first.
@@ -58,7 +58,7 @@ in early versions have been fixed in 1.2.
 
     <LI>
     The PATH_INFO part of a request URI cannot include the sequence
-    <CODE>%2f</CODE>. This will be tracked as 
+    <CODE>%2f</CODE>. This will be tracked as
     <A HREF="http://www.apache.org/bugdb.cgi/full/543">PR#543</A>.
     <P></LI>
 
@@ -80,15 +80,15 @@ in early versions have been fixed in 1.2.
 
     <LI>If compilation fails complaining about "unknown symbol __inet_ntoa()"
     then you have probably installed version 8 of bind. You will need to
-    explicitly link with the bind library by adding <CODE>-lbind</CODE> 
+    explicitly link with the bind library by adding <CODE>-lbind</CODE>
     to <CODE>EXTRA_LDFLAGS</CODE> in <CODE>Configuration</CODE>. See
     <A HREF="http://www.apache.org/bugdb.cgi/full/616">PR#616</A>
-    and the 
+    and the
     <A HREF="FAQ.html#bind8.1">Apache FAQ</A>.
     <P></LI>
 
     <LI>The message "<CODE>created shared memory segment #730499</CODE>"
-    in error_log is not an error and should be ignored. See 
+    in error_log is not an error and should be ignored. See
     <a href="http://www.apache.org/bugdb.cgi/full/696">PR#696</A>.
     <P></LI>
 
@@ -104,7 +104,7 @@ in early versions have been fixed in 1.2.
     virtual hosts. This appears similar to a file-descriptor limit
     but BSDI should not have this problem. This will be tracked as
     <A HREF="http://www.apache.org/bugdb.cgi/full/611">PR#611</A>.
-    See also the <A HREF="FAQ.html#fdlim">Apache FAQ</A>. 
+    See also the <A HREF="FAQ.html#fdlim">Apache FAQ</A>.
     <P></LI>
 
     <LI><a href="descriptors.html"><b>Workaround available in 1.2.1.</b></a>

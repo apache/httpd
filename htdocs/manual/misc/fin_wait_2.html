@@ -29,10 +29,10 @@ server, which responds with an ACK and the connection is closed.  The
 state that the connection is in during the period between when the
 server gets the ACK from the client and the server gets the FIN from
 the client is known as FIN_WAIT_2.  See the <A
-HREF="ftp://ds.internic.net/rfc/rfc793.txt">TCP RFC</A> for the 
+HREF="ftp://ds.internic.net/rfc/rfc793.txt">TCP RFC</A> for the
 technical details of the state transitions.<P>
 
-The FIN_WAIT_2 state is somewhat unusual in that there is no timeout 
+The FIN_WAIT_2 state is somewhat unusual in that there is no timeout
 defined in the standard for it.  This means that on many operating
 systems, a connection in the FIN_WAIT_2 state will stay around until
 the system is rebooted.  If the system does not have a timeout and
@@ -158,39 +158,39 @@ The following systems are known to have a timeout:
         <LI><A HREF="http://www.freebsd.org/">FreeBSD</A> versions starting at 2.0 or possibly earlier.
         <LI><A HREF="http://www.netbsd.org/">NetBSD</A> version 1.2(?)
         <LI><A HREF="http://www.openbsd.org/">OpenBSD</A> all versions(?)
-        <LI><A HREF="http://www.bsdi.com/">BSD/OS</A> 2.1, with the 
+        <LI><A HREF="http://www.bsdi.com/">BSD/OS</A> 2.1, with the
             <A HREF="ftp://ftp.bsdi.com/bsdi/patches/patches-2.1/K210-027">
-            K210-027</A> patch installed.  
+            K210-027</A> patch installed.
         <LI><A HREF="http://www.sun.com/">Solaris</A> as of around version
-            2.2.  The timeout can be tuned by using <CODE>ndd</CODE> to 
+            2.2.  The timeout can be tuned by using <CODE>ndd</CODE> to
             modify <CODE>tcp_fin_wait_2_flush_interval</CODE>, but the
-            default should be appropriate for most servers and improper 
+            default should be appropriate for most servers and improper
             tuning can have negative impacts.
         <LI><A HREF="http://www.sco.com/">SCO TCP/IP Release 1.2.1</A>
             can be modified to have a timeout by following
             <A HREF="http://www.sco.com/cgi-bin/waisgate?WAISdocID=2242622956+0+0+0&WAISaction=retrieve"> SCO's instructions</A>.
         <LI><A HREF="http://www.linux.org/">Linux</A> 2.0.x and
             earlier(?)
-        <LI><A HREF="http://www.hp.com/">HP-UX</A> 10.x defaults to 
-            terminating connections in the FIN_WAIT_2 state after the 
+        <LI><A HREF="http://www.hp.com/">HP-UX</A> 10.x defaults to
+            terminating connections in the FIN_WAIT_2 state after the
             normal keepalive timeouts.  This does not
             refer to the persistent connection or HTTP keepalive
-            timeouts, but the <CODE>SO_LINGER</CODE> socket option 
-            which is enabled by Apache.  This parameter can be adjusted 
+            timeouts, but the <CODE>SO_LINGER</CODE> socket option
+            which is enabled by Apache.  This parameter can be adjusted
             by using <CODE>nettune</CODE> to modify parameters such as
             <CODE>tcp_keepstart</CODE> and <CODE>tcp_keepstop</CODE>.
             In later revisions, there is an explicit timer for
             connections in FIN_WAIT_2 that can be modified; contact HP
             support for details.
         <LI><A HREF="http://www.sgi.com/">SGI IRIX</A> can be patched to
-            support a timeout.  For IRIX 5.3, 6.2, and 6.3, 
+            support a timeout.  For IRIX 5.3, 6.2, and 6.3,
             use patches 1654, 1703 and 1778 respectively.  If you
             have trouble locating these patches, please contact your
             SGI support channel for help.
         <LI><A HREF="http://www.ncr.com/">NCR's MP RAS Unix</A> 2.xx and
             3.xx both have FIN_WAIT_2 timeouts.  In 2.xx it is non-tunable
             at 600 seconds, while in 3.xx it defaults to 600 seconds and
-            is calculated based on the tunable "max keep alive probes" 
+            is calculated based on the tunable "max keep alive probes"
             (default of 8) multiplied by the "keep alive interval" (default
             75 seconds).
         <LI><A HREF="http://www.sequent.com">Squent's ptx/TCP/IP for
@@ -207,7 +207,7 @@ The following systems are known to not have a timeout:
             source should be easy to patch.
 </UL>
 <P>
-There is a 
+There is a
 <A HREF="http://www.apache.org/dist/contrib/patches/1.2/fin_wait_2.patch">
 patch available</A> for adding a timeout to the FIN_WAIT_2 state; it
 was originally intended for BSD/OS, but should be adaptable to most
@@ -221,8 +221,8 @@ It is possible to compile Apache 1.2 without using the
 <CODE>lingering_close()</CODE> function.  This will result in that
 section of code being similar to that which was in 1.1.  If you do
 this, be aware that it can cause problems with PUTs, POSTs and
-persistent connections, especially if the client uses pipelining.  
-That said, it is no worse than on 1.1, and we understand that keeping your 
+persistent connections, especially if the client uses pipelining.
+That said, it is no worse than on 1.1, and we understand that keeping your
 server running is quite important.<P>
 
 To compile without the <CODE>lingering_close()</CODE> function, add
@@ -261,9 +261,9 @@ crashing.<P>
 
 The exact way to increase them may depend on your OS; look
 for some reference to the number of "mbufs" or "mbuf clusters".  On
-many systems, this can be done by adding the line 
-<CODE>NMBCLUSTERS="n"</CODE>, where <CODE>n</CODE> is the number of 
-mbuf clusters you want to your kernel config file and rebuilding your 
+many systems, this can be done by adding the line
+<CODE>NMBCLUSTERS="n"</CODE>, where <CODE>n</CODE> is the number of
+mbuf clusters you want to your kernel config file and rebuilding your
 kernel.<P>
 </DL>
 
@@ -305,7 +305,7 @@ apparent reason.<P>
 There are two conditions under which this is likely to occur:
 <OL>
 <LI>sending POST or PUT data without proper authorization
-<LI>sending multiple requests before each response (pipelining) 
+<LI>sending multiple requests before each response (pipelining)
     and one of the middle requests resulting in an error or
     other break-the-connection result.
 </OL>

@@ -30,7 +30,7 @@ href="http://www.apache.org/bugdb.cgi">let us know.</a>
 
 <OL>
 
-<LI>The basic mod_auth <CODE>AuthGroupFile</CODE>-specified group file 
+<LI>The basic mod_auth <CODE>AuthGroupFile</CODE>-specified group file
     format allows commas between user names - Apache does not.<BR>
     <I>- added 12/1/96</I>
 </LI>
@@ -51,7 +51,7 @@ href="http://www.apache.org/bugdb.cgi">let us know.</a>
   <LI><CODE>AuthUserFile</CODE> requires a full pathname. In earlier
       versions of NCSA httpd and Apache, you could use a filename
       relative to the .htaccess file. This could be a major security hole,
-      as it made it trivially easy to make a ".htpass" file in the a 
+      as it made it trivially easy to make a ".htpass" file in the a
       directory easily accessible by the world. We recommend you store
       your passwords outside your document tree.
 
@@ -78,18 +78,32 @@ href="http://www.apache.org/bugdb.cgi">let us know.</a>
 
   <P>
 
-  <LI>Icons for FancyIndexing broken - well, no, they're not broken, we've just upgraded the
-  icons from flat .xbm files to pretty and much smaller .gif files, courtesy of 
+  <LI>Icons for FancyIndexing broken - well, no, they're not broken,
+  we've just upgraded the
+  icons from flat .xbm files to pretty and much smaller .gif files, courtesy of
 <a href="mailto:kevinh@eit.com">Kevin Hughes</a> at
-<a href="http://www.eit.com">EIT</a>.
-  If you are using the same srm.conf from an old distribution, make sure you add the new
-  AddIcon, AddIconByType, and DefaultIcon commands.
+<a href="http://www.eit.com/">EIT</a>.
+  If you are using the same srm.conf from an old distribution, make sure
+  you add the new
+  <A
+   HREF="../mod/mod_dir.html#addicon"
+  >AddIcon</A>,
+  <A
+   HREF="../mod/mod_dir.html#addiconbytype"
+  >AddIconByType</A>,
+  and
+  <A
+   HREF="../mod/mod_dir.html#defaulticon"
+  >DefaultIcon</A>
+  directives.
 
   <P>
 
-  <LI>Under IRIX, the "Group" directive in httpd.conf needs to be a valid group name 
-  (i.e. "nogroup") not the numeric group ID.  The distribution httpd.conf, and earlier 
-  ones, had the default Group be "#-1", which was causing silent exits at startup.<p>
+  <LI>Under IRIX, the "Group" directive in httpd.conf needs to be a
+  valid group name
+  (<EM>i.e.</EM>, "nogroup") not the numeric group ID.  The distribution
+  httpd.conf, and earlier  ones, had the default Group be "#-1", which
+  was causing silent exits at startup.<p>
 
 <li><code>.asis</code> files: Apache 0.6.5 did not require a Status header;
 it added one automatically if the .asis file contained a Location header.
@@ -103,7 +117,7 @@ it added one automatically if the .asis file contained a Location header.
   </LI>
 
   <LI>Apache does not permit commas delimiting the methods in &lt;Limit&gt;.
- 
+
 </OL>
 
 More to come when we notice them....

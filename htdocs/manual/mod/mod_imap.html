@@ -77,7 +77,7 @@ is called without valid coordinates.
   <dt><code>none</code>
   <dd>If ImapMenu is
        <code>none</code>, no menu is generated, and the <code>default</code>
-       action is performed.  
+       action is performed.
   <dt><code>formatted</code>
   <dd>A <code>formatted</code> menu is the simplest menu.  Comments
        in the imagemap file are ignored.  A level one header is
@@ -153,8 +153,8 @@ beginning with '#' are comments.
 <h3>Imagemap File Directives</h3>
 There are six directives allowed in the imagemap file.  The directives
 can come in any order, but are processed in the order they are found
-in the imagemap file.  
-<dl>  
+in the imagemap file.
+<dl>
 <dt><code>base</code> Directive
 <dd>Has the effect of <code>&lt;BASE href="value"&gt;</code>.  The
      non-absolute URLs of the map-file are taken relative to this value.
@@ -217,7 +217,7 @@ The values for each of the directives can any of the following:
   <dt><code>referer</code>
   <dd>Equivalent to the URL of the referring document.
        Defaults to <code>http://servername/</code> if no Referer:
-       header was present. 
+       header was present.
 <p>
   <dt><code>nocontent</code>
   <dd>Sends a status code of <code>204 No Content</code>,
@@ -227,7 +227,7 @@ The values for each of the directives can any of the following:
   <dt><code>error</code>
   <dd>Fails with a <code>500 Server Error</code>.  Valid for all but
        <code>base</code>, but sort of silly for anything but
-       <code>default</code>. 
+       <code>default</code>.
 </dl>
 
 <h3>Coordinates</h3>
@@ -237,13 +237,13 @@ The values for each of the directives can any of the following:
        separated by a comma.  The coordinates are separated from each other
        by whitespace.  To accommodate the way Lynx handles imagemaps, should a
        user select the coordinate <code>0,0</code>, it is as if
-       no coordinate had been selected.   
+       no coordinate had been selected.
 </dl>
 
 <h3>Quoted Text</h3>
 <dl>
   <dt><code>"Menu Text"</code>
-  <dd>After the value or after the coordinates, the line optionally may 
+  <dd>After the value or after the coordinates, the line optionally may
        contain text within double quotes.  This string is used as the
        text for the link if a menu is generated:<br>
      <code>&lt;a href="http://foo.com/"&gt;Menu text&lt;/a&gt;</code><br>

@@ -26,7 +26,7 @@ John Ionnidis writes:
 
 This is a topic that comes up once in a while on comp.protocols.tcp-ip
 and other newsgroups. The question is, how to get a machine with one
-network interface to respond to more than one IP addresses. 
+network interface to respond to more than one IP addresses.
 
 I have a solution than might suit you.  For my doctoral work (there's
 a paper about it in this year's ('91) SIGCOMM, also available for
@@ -52,16 +52,16 @@ class C nets). Here are the ifconfigs:
   ifconfig le0 198.3.2.1 up -trailers   # config primary interface
 
   ifconfig vif0 198.4.3.2 up            # config first virtual interface
-  route delete net 198.4.3 198.4.3.2    # delete spurious route 
+  route delete net 198.4.3 198.4.3.2    # delete spurious route
   route add host 198.4.3.2 198.4.3.2 0  # add route for this i/f
 
   ifconfig vif1 198.5.4.3 up            # config second virtual interface
-  route delete net 198.5.4 198.5.4.3    # delete spurious route 
+  route delete net 198.5.4 198.5.4.3    # delete spurious route
   route add host 198.5.4.3 198.5.4.3 0  # add route for this i/f
 
 The route deletes are needed because the ifconfig creates a default
 route to the interface's network, which can cause problems; all that's
-needed is the (host) route to the interface's address. 
+needed is the (host) route to the interface's address.
 
 Now, get le0's ethernet address (say, 8:0:20:3:2:1), and add the
 following static ARP entries:
@@ -70,12 +70,12 @@ following static ARP entries:
   arp -s 198.5.4.3 8:0:20:3:2:1 pub
 
 This will cause any ARP requests for the VIF addresses to be replied
-with your machine's ethernet address. 
+with your machine's ethernet address.
 
 Now, make sure your default route is to your segment's gateway,
 through the real interface. Finally, make sure your routers and/or
 hosts on the same segment as yours know that 198.4.3.2 and 198.5.4.3
-are on that cable. 
+are on that cable.
 
 Here's what you've accomplished.
 
@@ -85,7 +85,7 @@ the virtual ones because of the public static arp entries). Packets
 reaching your host with any of these addresses will be accepted by the
 ip_input routine because they match the address of one of the host's
 interfaces. Packets leaving your host can have any of its addresses
-(real and virtual). 
+(real and virtual).
 
 The code for vif follows. To use it, put the stuff in netinet/if_vif.c
 and netinet/if_vif.h, configure your kernel with the number of
@@ -134,10 +134,10 @@ Make sure you remember the correct major device number, 14 in this case!
 Finally, here's the code. It has the tunneling pieces removed (you
 need more code to use that anyway), and it comes from a Mach 2.6
 kernel; it should compile on any Berkeley-derived unix with minor
-changes (most likely only in the includes). 
+changes (most likely only in the includes).
 
 ---------------------netinet/if_vif.h--------------------------------------
-typedef struct 
+typedef struct
 {
         struct ifnet    vif_if;
         struct ifnet    *vif_sif;       /* slave interface */
@@ -194,7 +194,7 @@ vifattach()
         register int i;
         register struct ifnet *ifp;
         int     vifoutput(), vififioctl();
-        
+
         for (i=0; i&lt;NVIF; i++)
         {
                 ifp = &vif_softc[i].vif_if;
@@ -212,20 +212,20 @@ vifopen(dev, flag)
 int dev, flag;
 {
         int unit;
-        
+
         if (!vifs_inited)
         {
                 vifattach();
                 vifs_inited = 1;
                 printf("vif initialized\n");
         }
-        
+
         unit = minor(dev);
         if ((unit &lt; 0) || (unit &gt;= NVIF))
         {
                 return ENXIO;
         }
-        
+
         return 0;
 }
 
@@ -259,10 +259,10 @@ vifoutput(ifp, m0, dst)
         register struct ifqueue *ifq;
         struct mbuf *m;
         struct sockaddr_in *din;
-        
+
         if (dst-&gt;sa_family != AF_INET)
         {
-                printf("%s%d: can't handle af%d\n", 
+                printf("%s%d: can't handle af%d\n",
                        ifp-&gt;if_name, ifp-&gt;if_unit,
                        dst-&gt;sa_family);
                 m_freem(m0);
@@ -270,11 +270,11 @@ vifoutput(ifp, m0, dst)
         }
 
         din = (struct sockaddr_in *)dst;
-        
+
         if (din-&gt;sin_addr.s_addr == IA_SIN(ifp-&gt;if_addrlist)-&gt;sin_addr.s_addr)
         {
                 /* printf("%s%d: looping\n", ifp-&gt;if_name, ifp-&gt;if_unit); */
-                
+
                 /*
                  * Place interface pointer before the data
                  * for the receiving protocol.
@@ -345,14 +345,14 @@ caddr_t arg;
 int mode;
 {
         int unit;
-        
+
         unit = minor(dev);
         if ((unit &lt; 0) || (unit &gt;= NVIF))
           return ENXIO;
-        
+
         return EINVAL;
 }
----------------------------------------------------------------------------- 
+----------------------------------------------------------------------------
 
 To use it, compile your kernel, and reboot. Then create the vif
 device:
@@ -367,15 +367,15 @@ it:
 This will cause the device to be opened, which will if_attach the
 interfaces. If you feel like playing with the code, you may want to
 kmem_alloc() the vif_softc structrure at open time, and use the minor
-number of the device to tell it how many interfaces to create. 
+number of the device to tell it how many interfaces to create.
 
-Now you can go ahead and ifconfig etc. 
+Now you can go ahead and ifconfig etc.
 
 I'll be happy to answer minor questions, and hear about success and
 failure stories, but I cannot help you if you don't already know how
 to hack kernels.
 
-Good luck! 
+Good luck!
 
 /ji
 

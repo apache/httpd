@@ -45,7 +45,8 @@ enhancements, <a href="http://www.apache.org/dist/">Apache
 
 <ul>
 
-<li><b><a href="http11.html">HTTP/1.1 Compliance</a></b>
+<!-- change the "name" to an "href" if/when there's such a document -->
+<li><b><a name="http11.html">HTTP/1.1 Compliance</a></b>
 [Documentation to be written]<br>
 Aside from the optional proxy module (which operates as HTTP/1.0),
 Apache is conditionally compliant with the HTTP/1.1 proposed standard,
@@ -66,7 +67,7 @@ and use conditional HTML.
 
 <li><b><a href="mod/core.html#files">File-based and Regex-enabled
 Directive Sections</a></b><br>
-The new 
+The new
 <a href="mod/core.html#files"><code>&lt;Files&gt;</code></a>
 section allows directives to be enabled based on full filename, not just directory and URL. In
 addition, <code>&lt;Files&gt;</code> sections can appear in
@@ -74,7 +75,7 @@ addition, <code>&lt;Files&gt;</code> sections can appear in
 <a href="mod/core.html#directory"><code>&lt;Directory&gt;</code></a>
  and <a href="mod/core.html#location"><code>&lt;Location&gt;</code></a>, can
 also now be based on regular expressions, not just simple prefix
-matching. 
+matching.
 
 <li><b><a href="mod/mod_browser.html">Browser-based Environment
 Variables</a></b><br>
@@ -99,7 +100,7 @@ Logging</a></b><br>
 The optional <code>mod_log_config</code> included with earlier
 versions of Apache is now standard, and has been enhanced to allow
 logging of much more detail about the transaction, and can be used to
-open <a href="multilogs.html">more than one log file</a> at once 
+open <a href="multilogs.html">more than one log file</a> at once
 (each of which can have a different log format).  If you have Apache
 write any logs to a directory which is writable by anyone other than
 the user that starts the server, see the <A HREF="misc/security_tips.html">
@@ -138,7 +139,7 @@ processes.
 
 <li><b><a href="mod/mod_alias.html">Redirect Directive Can Return Alternate Status</a></b><br>
     The Redirect directive can return permanent or temporary redirects,
-    "Gone" or "See Other" HTTP status. For NCSA-compatibility, 
+    "Gone" or "See Other" HTTP status. For NCSA-compatibility,
     RedirectTemp and RedirectPermanent are also implemented.
 
 <li><b><a href="install.html">Simplified Compilation</a></b><br>
@@ -171,7 +172,7 @@ href="mod/mod_digest.html#authdigestfile">AuthDigestFile</a> commands
 now have a syntax compatible with the NCSA server.
 
 <li><b><a href="mod/core.html#satisfy">NCSA Satisfy authentication
-directive now implemented</a></b><br> 
+directive now implemented</a></b><br>
 <code>Satisfy</code> allows for more flexible access control
 configurations.
 
