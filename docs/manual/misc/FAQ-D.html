@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.1 $ ($Date: 1999/06/24 15:02:51 $)
+  $Revision: 1.2 $ ($Date: 1999/08/04 17:43:46 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -96,6 +96,11 @@
    <LI><A HREF="#stopping">I upgraded from an Apache version earlier
         than 1.2.0 and suddenly I have problems with Apache dying randomly
         or not restarting properly</A>
+   </LI>
+   <LI><A HREF="#setservername">When I try to start Apache from a DOS
+        window, I get a message like "<samp>Cannot determine host name.
+	Use ServerName directive to set it manually.</samp>"  What does
+	this mean?</A>
    </LI>
   </OL>
  </LI>
@@ -324,6 +329,35 @@
   </P>
   <HR>
  </LI>
+
+ <LI><A name="setservername">
+       <b>When I try to start Apache from a DOS
+       window, I get a message like "<samp>Cannot determine host name.
+       Use ServerName directive to set it manually.</samp>"  What does
+       this mean?</b></A>
+
+  <p>
+  It means what it says; the Apache software can't determine the
+  hostname of your system.  Edit your <samp>conf\httpd.conf</samp>
+  file, look for the string "ServerName", and make sure there's an
+  uncommented directive such as
+  </p>
+  <dl>
+   <dd><code>ServerName localhost</code></dd>
+  </dl>
+  <p>
+  or
+  </p>
+  <dl>
+   <dd><code>ServerName www.foo.com</code></dd>
+  </dl>
+  <p>
+  in the file.  Correct it if there one there with wrong information, or
+  add one if you don't already have one.  Then try to start the server
+  again.
+  </p>
+ </LI>
+
 </OL>
 <!--#endif -->
 <!--#if expr="$STANDALONE" -->
