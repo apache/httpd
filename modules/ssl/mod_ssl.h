@@ -731,8 +731,5 @@ char        *ssl_util_algotypestr(ssl_algo_t);
 char        *ssl_util_ptxtsub(apr_pool_t *, const char *, const char *, char *);
 void         ssl_util_thread_setup(server_rec *, apr_pool_t *);
 
-/* util functions for OpenSSL+sslc compat */
-int modssl_session_get_time(SSL_SESSION *session);
-
 #define APR_SHM_MAXSIZE (64 * 1024 * 1024)
 #endif /* __MOD_SSL_H__ */
