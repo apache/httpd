@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/23 18:02:03 $]
+Last modified at [$Date: 2004/09/23 18:19:28 $]
 
 Release:
 
@@ -88,10 +88,6 @@ PATCHES TO BACKPORT FROM 2.1
     *) Fix mod_disk_cache race conditions in storing the response body.
        modules/experimental/mod_disk_cache.c: 1.61
        +1: jerenkrantz
-
-    *) Another ap_rgetline_core fix.
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c?r1=1.152&r2=1.153
-       +1: jorton, jerenkrantz, trawick
 
     *) Fix a segfault in the LDAP cache purge. PR 24801
          modules/ldap/util_ldap_cache_mgr.c: 1.9, 1.10
