@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/13 16:32:05 $]
+Last modified at [$Date: 2004/10/13 16:40:54 $]
 
 Release:
 
@@ -114,10 +114,6 @@ PATCHES TO BACKPORT FROM 2.1
        jerenkrantz comments: This needs the final patch posted to dev@httpd?
        jorton replies: it does indeed, hang on...
        +1: jorton
-
-    *) Do not store aborted content. PR 21492.
-         modules/experimental/mod_disk_cache.c?r1=1.63&r2=1.64
-       +1: stoddard, jerenkrantz, minfrin, jim
 
     *) Try to correctly follow RFC 2616 13.3 on validating stale cache
        responses by teaching mod_cache's cache_select_url and

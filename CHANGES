@@ -1,5 +1,8 @@
 Changes with Apache 2.0.53
 
+  *) mod_disk_cache: Do not store aborted content.  PR 21492.
+     [Rüiger Plü <r.pluem t-online.de>]
+
   *) mod_disk_cache: Correctly store cached content type.  PR 30278.
      [Rüiger Plü <r.pluem t-online.de>]
 
