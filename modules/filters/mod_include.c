@@ -1491,10 +1491,7 @@ static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb,
                     t_val = ap_ht_time(r->pool, finfo.mtime, ctx->time_str, 0);
                     t_len = strlen(t_val);
 
-                    /* XXX: t_val was already pstrdup'ed into r->pool by
-                     * ap_ht_time. no sense copying it again to the heap.
-                     * should just use a pool bucket */
-                    tmp_buck = apr_bucket_heap_create(t_val, t_len, 1);
+                    tmp_buck = apr_bucket_pool_create(t_val, t_len, r->pool);
                     APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                     if (*inserted_head == NULL) {
                         *inserted_head = tmp_buck;
@@ -2630,7 +2627,8 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb,
             const apr_table_entry_t *elts = (const apr_table_entry_t *)arr->elts;
             int i;
             const char *key_text, *val_text;
-            apr_size_t   k_len, v_len;
+            char *key_val, *next;
+            apr_size_t   k_len, v_len, kv_length;
 
             *inserted_head = NULL;
             for (i = 0; i < arr->nelts; ++i) {
@@ -2642,29 +2640,22 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 val_text = ap_escape_html(r->pool, elts[i].val);
                 k_len = strlen(key_text);
                 v_len = strlen(val_text);
-
-                /* XXX: this isn't a very efficient way to do this.  Buckets
-                 * aren't optimized for single-byte allocations.  All of
-                 * this stuff is getting copied anyway, so it'd be better to
-                 * pstrcat them into a single pool buffer and use a single
-                 * pool bucket.  Less alloc calls, easier to send out to the
-                 * network.
-                 */
-                /*  Key_text                                               */
-                tmp_buck = apr_bucket_heap_create(key_text, k_len, 1);
+                kv_length = k_len + v_len + sizeof("=\n");
+                key_val = apr_palloc(r->pool, kv_length);
+                next = key_val;
+                memcpy(next, key_text, k_len);
+                next += k_len;
+                *next++ = '=';
+                memcpy(next, val_text, v_len);
+                next += v_len;
+                *next++ = '\n';
+                *next = 0;
+                tmp_buck = apr_bucket_pool_create(key_val, kv_length - 1,
+                                                  r->pool);
                 APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                 if (*inserted_head == NULL) {
                     *inserted_head = tmp_buck;
                 }
-                /*            =                                            */
-                tmp_buck = apr_bucket_immortal_create("=", 1);
-                APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
-                /*              Value_text                                 */
-                tmp_buck = apr_bucket_heap_create(val_text, v_len, 1);
-                APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
-                /*                        newline...                       */
-                tmp_buck = apr_bucket_immortal_create("\n", 1);
-                APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
             }
             return 0;
         }
@@ -2918,7 +2909,6 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
                          (tmp_dptr != APR_BRIGADE_SENTINEL(*bb)));
             }
             if (ctx->combined_tag == tmp_buf) {
-                memset (ctx->combined_tag, '\0', ctx->tag_length);
                 ctx->combined_tag = NULL;
             }
 
