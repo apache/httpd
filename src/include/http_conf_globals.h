@@ -62,29 +62,29 @@
  * Process config --- what the process ITSELF is doing
  */
 
-extern int standalone;
-extern uid_t user_id;
-extern char *user_name;
-extern gid_t group_id;
+extern int ap_standalone;
+extern uid_t ap_user_id;
+extern char *ap_user_name;
+extern gid_t ap_group_id;
 #ifdef MULTIPLE_GROUPS
 extern gid_t group_id_list[NGROUPS_MAX];
 #endif
-extern int max_requests_per_child;
-extern int threads_per_child;
-extern int excess_requests_per_child;
-extern struct in_addr bind_address;
-extern listen_rec *listeners;
-extern int daemons_to_start;
-extern int daemons_min_free;
-extern int daemons_max_free;
-extern int daemons_limit;
-extern MODULE_VAR_EXPORT int suexec_enabled;
-extern int listenbacklog;
+extern int ap_max_requests_per_child;
+extern int ap_threads_per_child;
+extern int ap_excess_requests_per_child;
+extern struct in_addr ap_bind_address;
+extern listen_rec *ap_listeners;
+extern int ap_daemons_to_start;
+extern int ap_daemons_min_free;
+extern int ap_daemons_max_free;
+extern int ap_daemons_limit;
+extern MODULE_VAR_EXPORT int ap_suexec_enabled;
+extern int ap_listenbacklog;
 
-extern char *pid_fname;
-extern char *scoreboard_fname;
-extern char *lock_fname;
-extern MODULE_VAR_EXPORT char *server_argv0;
+extern char *ap_pid_fname;
+extern char *ap_scoreboard_fname;
+extern char *ap_lock_fname;
+extern MODULE_VAR_EXPORT char *ap_server_argv0;
 
 /* Trying to allocate these in the config pool gets us into some *nasty*
  * chicken-and-egg problems in http_main.c --- where do you stick them
@@ -92,16 +92,16 @@ extern MODULE_VAR_EXPORT char *server_argv0;
  * statically...
  */
 
-extern API_VAR_EXPORT char server_root[MAX_STRING_LEN];
-extern char server_confname[MAX_STRING_LEN];
+extern API_VAR_EXPORT char ap_server_root[MAX_STRING_LEN];
+extern char ap_server_confname[MAX_STRING_LEN];
 
 /* for -C and -c switches */
-extern array_header *server_pre_read_config;
-extern array_header *server_post_read_config;
+extern array_header *ap_server_pre_read_config;
+extern array_header *ap_server_post_read_config;
 
 /* We want this to have the least chance of being corrupted if there
  * is some memory corruption, so we allocate it statically.
  */
-extern char coredump_dir[MAX_STRING_LEN];
+extern char ap_coredump_dir[MAX_STRING_LEN];
 
 #endif	/* !APACHE_HTTP_CONF_GLOBALS_H */

@@ -79,17 +79,17 @@ typedef struct {
 static void *make_referer_log_state(pool *p, server_rec *s)
 {
     referer_log_state *cls =
-    (referer_log_state *) palloc(p, sizeof(referer_log_state));
+    (referer_log_state *) ap_palloc(p, sizeof(referer_log_state));
 
     cls->fname = "";
     cls->referer_fd = -1;
-    cls->referer_ignore_list = make_array(p, 1, sizeof(char *));
+    cls->referer_ignore_list = ap_make_array(p, 1, sizeof(char *));
     return (void *) cls;
 }
 
 static const char *set_referer_log(cmd_parms *parms, void *dummy, char *arg)
 {
-    referer_log_state *cls = get_module_config(parms->server->module_config,
+    referer_log_state *cls = ap_get_module_config(parms->server->module_config,
                                                &referer_log_module);
 
     cls->fname = arg;
@@ -99,10 +99,10 @@ static const char *set_referer_log(cmd_parms *parms, void *dummy, char *arg)
 static const char *add_referer_ignore(cmd_parms *parms, void *dummy, char *arg)
 {
     char **addme;
-    referer_log_state *cls = get_module_config(parms->server->module_config,
+    referer_log_state *cls = ap_get_module_config(parms->server->module_config,
                                                &referer_log_module);
 
-    addme = push_array(cls->referer_ignore_list);
+    addme = ap_push_array(cls->referer_ignore_list);
     *addme = arg;
     return NULL;
 }
@@ -124,7 +124,7 @@ static int referer_log_child(void *cmd)
      */
     int child_pid = 1;
 
-    cleanup_for_exec();
+    ap_cleanup_for_exec();
     signal(SIGHUP, SIG_IGN);
 #if defined(WIN32)
     /* For OS/2 we need to use a '/' */
@@ -143,10 +143,10 @@ static int referer_log_child(void *cmd)
 
 static void open_referer_log(server_rec *s, pool *p)
 {
-    referer_log_state *cls = get_module_config(s->module_config,
+    referer_log_state *cls = ap_get_module_config(s->module_config,
                                                &referer_log_module);
 
-    char *fname = server_root_relative(p, cls->fname);
+    char *fname = ap_server_root_relative(p, cls->fname);
 
     if (cls->referer_fd > 0)
         return;                 /* virtual log shared w/main server */
@@ -164,7 +164,7 @@ static void open_referer_log(server_rec *s, pool *p)
         cls->referer_fd = fileno(dummy);
     }
     else if (*cls->fname != '\0') {
-        if ((cls->referer_fd = popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
+        if ((cls->referer_fd = ap_popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
             perror("open");
             fprintf(stderr, "httpd: could not open referer log file %s.\n", fname);
             exit(1);
@@ -181,7 +181,7 @@ static void init_referer_log(server_rec *s, pool *p)
 static int referer_log_transaction(request_rec *orig)
 {
     char **ptrptr, **ptrptr2;
-    referer_log_state *cls = get_module_config(orig->server->module_config,
+    referer_log_state *cls = ap_get_module_config(orig->server->module_config,
                                                &referer_log_module);
 
     char *str;
@@ -196,7 +196,7 @@ static int referer_log_transaction(request_rec *orig)
     if (*cls->fname == '\0')    /* Don't log referer */
         return DECLINED;
 
-    referer = table_get(orig->headers_in, "Referer");
+    referer = ap_table_get(orig->headers_in, "Referer");
     if (referer != NULL) {
 
 
@@ -219,7 +219,7 @@ static int referer_log_transaction(request_rec *orig)
         }
 
 
-        str = pstrcat(orig->pool, referer, " -> ", r->uri, "\n", NULL);
+        str = ap_pstrcat(orig->pool, referer, " -> ", r->uri, "\n", NULL);
         write(cls->referer_fd, str, strlen(str));
     }
 

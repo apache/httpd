@@ -98,7 +98,7 @@ static const char *set_speling(cmd_parms *cmd, void *dummy, int arg)
     void *server_conf = cmd->server->module_config;
 
     /* any non-NULL pointer means speling is enabled */
-    set_module_config(server_conf, &speling_module, arg ? (void *) &speling_module : NULL);
+    ap_set_module_config(server_conf, &speling_module, arg ? (void *) &speling_module : NULL);
     return NULL;
 }
 
@@ -190,7 +190,7 @@ static int check_speling(request_rec *r)
     struct DIR_TYPE *dir_entry;
     array_header *candidates = NULL;
 
-    if (!get_module_config(server_conf, &speling_module))
+    if (!ap_get_module_config(server_conf, &speling_module))
         return DECLINED;
 
     /* We only want to worry about GETs */
@@ -213,17 +213,17 @@ static int check_speling(request_rec *r)
      * So we do this in steps. First break r->filename into two pieces
      */
 
-    filoc = rind(r->filename, '/');
+    filoc = ap_rind(r->filename, '/');
     /* Don't do anything if the request doesn't contain a slash, or requests "/" */
     if (filoc == -1 || strcmp(r->uri, "/") == 0)
         return DECLINED;
 
     /* good = /correct-file */
-    good = pstrndup(r->pool, r->filename, filoc);
+    good = ap_pstrndup(r->pool, r->filename, filoc);
     /* bad = mispelling */
-    bad = pstrdup(r->pool, r->filename + filoc + 1);
+    bad = ap_pstrdup(r->pool, r->filename + filoc + 1);
     /* postgood = mispelling/more */
-    postgood = pstrcat(r->pool, bad, r->path_info, NULL);
+    postgood = ap_pstrcat(r->pool, bad, r->path_info, NULL);
 
     urlen = strlen(r->uri);
     pglen = strlen(postgood);
@@ -233,16 +233,16 @@ static int check_speling(request_rec *r)
         return DECLINED;
 
     /* url = /correct-url */
-    url = pstrndup(r->pool, r->uri, (urlen - pglen));
+    url = ap_pstrndup(r->pool, r->uri, (urlen - pglen));
 
     /* Now open the directory and do ourselves a check... */
-    dirp = popendir(r->pool, good);
+    dirp = ap_popendir(r->pool, good);
     if (dirp == NULL)           /* Oops, not a directory... */
         return DECLINED;
 
-    candidates = make_array(r->pool, 2, sizeof(misspelled_file));
+    candidates = ap_make_array(r->pool, 2, sizeof(misspelled_file));
 
-    dotloc = ind(bad, '.');
+    dotloc = ap_ind(bad, '.');
     if (dotloc == -1)
         dotloc = strlen(bad);
 
@@ -255,7 +255,7 @@ static int check_speling(request_rec *r)
          * Do _not_ try to redirect this, it causes a loop!
          */
         if (strcmp(bad, dir_entry->d_name) == 0) {
-            pclosedir(r->pool, dirp);
+            ap_pclosedir(r->pool, dirp);
             return OK;
         }
         /*
@@ -263,8 +263,8 @@ static int check_speling(request_rec *r)
          * file, upper case request)
          */
         else if (strcasecmp(bad, dir_entry->d_name) == 0) {
-            misspelled_file *sp_new = (misspelled_file *) push_array(candidates);
-            sp_new->name = pstrdup(r->pool, dir_entry->d_name);
+            misspelled_file *sp_new = (misspelled_file *) ap_push_array(candidates);
+            sp_new->name = ap_pstrdup(r->pool, dir_entry->d_name);
             sp_new->quality = SP_MISCAPITALIZED;
         }
         /*
@@ -272,8 +272,8 @@ static int check_speling(request_rec *r)
          * missing/extra/transposed char)
          */
         else if ((q = spdist(bad, dir_entry->d_name)) != SP_VERYDIFFERENT) {
-            misspelled_file *sp_new = (misspelled_file *) push_array(candidates);
-            sp_new->name = pstrdup(r->pool, dir_entry->d_name);
+            misspelled_file *sp_new = (misspelled_file *) ap_push_array(candidates);
+            sp_new->name = ap_pstrdup(r->pool, dir_entry->d_name);
             sp_new->quality = q;
         }
         /* The spdist() should have found the majority of the misspelled requests.
@@ -305,20 +305,20 @@ static int check_speling(request_rec *r)
              * (e.g. foo.gif and foo.html) This code will pick the first one
              * it finds. Better than a Not Found, though.
              */
-            int entloc = ind(dir_entry->d_name, '.');
+            int entloc = ap_ind(dir_entry->d_name, '.');
             if (entloc == -1)
                 entloc = strlen(dir_entry->d_name);
 
             if ((dotloc == entloc)
                 && !strncasecmp(bad, dir_entry->d_name, dotloc)) {
-                misspelled_file *sp_new = (misspelled_file *) push_array(candidates);
-                sp_new->name = pstrdup(r->pool, dir_entry->d_name);
+                misspelled_file *sp_new = (misspelled_file *) ap_push_array(candidates);
+                sp_new->name = ap_pstrdup(r->pool, dir_entry->d_name);
                 sp_new->quality = SP_VERYDIFFERENT;
             }
 #endif
         }
     }
-    pclosedir(r->pool, dirp);
+    ap_pclosedir(r->pool, dirp);
 
     if (candidates->nelts != 0) {
         /* Wow... we found us a mispelling. Construct a fixed url */
@@ -326,7 +326,7 @@ static int check_speling(request_rec *r)
         misspelled_file *variant = (misspelled_file *) candidates->elts;
         int i;
 
-        ref = table_get(r->headers_in, "Referer");
+        ref = ap_table_get(r->headers_in, "Referer");
 
         qsort((void *) candidates->elts, candidates->nelts,
               sizeof(misspelled_file), sort_by_quality);
@@ -340,13 +340,13 @@ static int check_speling(request_rec *r)
         if (variant[0].quality != SP_VERYDIFFERENT &&
             (candidates->nelts == 1 || variant[0].quality != variant[1].quality)) {
 
-            nuri = pstrcat(r->pool, url, variant[0].name,
+            nuri = ap_pstrcat(r->pool, url, variant[0].name,
                            r->path_info, NULL);
 
-            table_setn(r->headers_out, "Location",
-                      construct_url(r->pool, nuri, r));
+            ap_table_setn(r->headers_out, "Location",
+                      ap_construct_url(r->pool, nuri, r));
 
-            aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, r->server,
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, r->server,
                         ref ? "Fixed spelling: %s to %s from %s"
                         : "Fixed spelling: %s to %s",
                         r->uri, nuri, ref);
@@ -384,7 +384,7 @@ static int check_speling(request_rec *r)
             for (i = 0; i < candidates->nelts; ++i) {
 
                 /* The format isn't very neat... */
-                t = pstrcat(p, t, "<li><a href=\"", url,
+                t = ap_pstrcat(p, t, "<li><a href=\"", url,
                             variant[i].name, r->path_info, "\">",
                             variant[i].name, r->path_info, "</a> (",
                     sp_reason_str[(int) (variant[i].quality)], ")\n", NULL);
@@ -399,23 +399,23 @@ static int check_speling(request_rec *r)
                 if (i > 0 && i < candidates->nelts - 1
                     && variant[i].quality != SP_VERYDIFFERENT
                     && variant[i + 1].quality == SP_VERYDIFFERENT) {
-                    t = pstrcat(p, t, "</ul>\nFurthermore, the following related documents were found:\n<ul>\n", NULL);
+                    t = ap_pstrcat(p, t, "</ul>\nFurthermore, the following related documents were found:\n<ul>\n", NULL);
                 }
             }
-            t = pstrcat(p, "The document name you requested (<code>",
+            t = ap_pstrcat(p, "The document name you requested (<code>",
                      r->uri, "</code>) could not be found on this server.\n"
                         "However, we found documents with names similar to the one you requested.<p>"
                         "Available documents:\n<ul>\n", t, "</ul>\n", NULL);
 
             /* If we know there was a referring page, add a note: */
             if (ref != NULL)
-                t = pstrcat(p, t, "Please consider informing the owner of the <a href=\"",
+                t = ap_pstrcat(p, t, "Please consider informing the owner of the <a href=\"",
                 ref, "\">referring page</a> about the broken link.\n", NULL);
 
             /* Pass our table to http_protocol.c (see mod_negotiation): */
-            table_setn(notes, "variant-list", t);
+            ap_table_setn(notes, "variant-list", t);
 
-            aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, r->server,
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, r->server,
                         ref ? "Spelling fix: %s: %d candidates from %s"
                         : "Spelling fix: %s: %d candidates",
                         r->uri, candidates->nelts, ref);

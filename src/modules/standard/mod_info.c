@@ -107,19 +107,19 @@ extern module *top_module;
 
 static void *create_info_config(pool *p, server_rec *s)
 {
-    info_svr_conf *conf = (info_svr_conf *) pcalloc(p, sizeof(info_svr_conf));
+    info_svr_conf *conf = (info_svr_conf *) ap_pcalloc(p, sizeof(info_svr_conf));
 
-    conf->more_info = make_array(p, 20, sizeof(info_entry));
+    conf->more_info = ap_make_array(p, 20, sizeof(info_entry));
     return conf;
 }
 
 static void *merge_info_config(pool *p, void *basev, void *overridesv)
 {
-    info_svr_conf *new = (info_svr_conf *) pcalloc(p, sizeof(info_svr_conf));
+    info_svr_conf *new = (info_svr_conf *) ap_pcalloc(p, sizeof(info_svr_conf));
     info_svr_conf *base = (info_svr_conf *) basev;
     info_svr_conf *overrides = (info_svr_conf *) overridesv;
 
-    new->more_info = append_arrays(p, overrides->more_info, base->more_info);
+    new->more_info = ap_append_arrays(p, overrides->more_info, base->more_info);
     return new;
 }
 
@@ -169,20 +169,20 @@ static info_cfg_lines *mod_info_load_config(pool *p, const char *filename,
     info_cfg_lines *new, *ret, *prev;
     const char *t;
 
-    fp = pcfg_openfile(p, filename);
+    fp = ap_pcfg_openfile(p, filename);
     if (!fp) {
-        aplog_error(APLOG_MARK, APLOG_WARNING, r->server, 
+        ap_log_error(APLOG_MARK, APLOG_WARNING, r->server, 
 		    "mod_info: couldn't open config file %s",
 		    filename);
         return NULL;
     }
     ret = NULL;
     prev = NULL;
-    while (!cfg_getline(s, MAX_STRING_LEN, fp)) {
+    while (!ap_cfg_getline(s, MAX_STRING_LEN, fp)) {
         if (*s == '#') {
             continue;           /* skip comments */
         }
-        new = palloc(p, sizeof(struct info_cfg_lines));
+        new = ap_palloc(p, sizeof(struct info_cfg_lines));
         new->next = NULL;
         if (!ret) {
             ret = new;
@@ -191,16 +191,16 @@ static info_cfg_lines *mod_info_load_config(pool *p, const char *filename,
             prev->next = new;
         }
 	t = s;
-	new->cmd = getword_conf(p, &t);
+	new->cmd = ap_getword_conf(p, &t);
 	if (*t) {
-	    new->line = pstrdup(p, t);
+	    new->line = ap_pstrdup(p, t);
 	}
 	else {
 	    new->line = NULL;
 	}
         prev = new;
     }
-    cfg_closefile(fp);
+    ap_cfg_closefile(fp);
     return (ret);
 }
 
@@ -235,16 +235,16 @@ static void mod_info_module_cmds(request_rec *r, info_cfg_lines *cfg,
             if (block_start) {
                 if ((nest == 1 && block_start == li_st) ||
                     (nest == 2 && block_start == li_se)) {
-                    rputs("<dd><tt>", r);
+                    ap_rputs("<dd><tt>", r);
                     if (nest == 2) {
-                        rputs("&nbsp;&nbsp;", r);
+                        ap_rputs("&nbsp;&nbsp;", r);
                     }
-                    rputs(mod_info_html_cmd_string(li->cmd, buf, sizeof(buf)), r);
-                    rputs(" ", r);
+                    ap_rputs(mod_info_html_cmd_string(li->cmd, buf, sizeof(buf)), r);
+                    ap_rputs(" ", r);
                     if (li->line) {
-                        rputs(mod_info_html_cmd_string(li->line, buf, sizeof(buf)), r);
+                        ap_rputs(mod_info_html_cmd_string(li->line, buf, sizeof(buf)), r);
                     }
-                    rputs("</tt>\n", r);
+                    ap_rputs("</tt>\n", r);
                     nest--;
                     if (!nest) {
                         block_start = NULL;
@@ -278,9 +278,9 @@ static void mod_info_module_cmds(request_rec *r, info_cfg_lines *cfg,
             if (cmd->name) {
                 if (!strcasecmp(cmd->name, li->cmd)) {
                     if (!lab) {
-                        rputs("<dt><strong>", r);
-                        rputs(label, r);
-                        rputs("</strong>\n", r);
+                        ap_rputs("<dt><strong>", r);
+                        ap_rputs(label, r);
+                        ap_rputs("</strong>\n", r);
                         lab = 1;
                     }
                     if (((nest && block_start == NULL) ||
@@ -292,39 +292,39 @@ static void mod_info_module_cmds(request_rec *r, info_cfg_lines *cfg,
                          strncasecmp(li->cmd, "</location", 10) &&
                          strncasecmp(li->cmd, "</directory", 11) &&
                          strncasecmp(li->cmd, "</files", 7))) {
-                        rputs("<dd><tt>", r);
-                        rputs(mod_info_html_cmd_string(li_st->cmd, buf, sizeof(buf)), r);
-                        rputs(" ", r);
+                        ap_rputs("<dd><tt>", r);
+                        ap_rputs(mod_info_html_cmd_string(li_st->cmd, buf, sizeof(buf)), r);
+                        ap_rputs(" ", r);
                         if (li_st->line) {
-                            rputs(mod_info_html_cmd_string(li_st->line, buf, sizeof(buf)), r);
+                            ap_rputs(mod_info_html_cmd_string(li_st->line, buf, sizeof(buf)), r);
                         }
-                        rputs("</tt>\n", r);
+                        ap_rputs("</tt>\n", r);
                         block_start = li_st;
                         if (li_se) {
-                            rputs("<dd><tt>&nbsp;&nbsp;", r);
-                            rputs(mod_info_html_cmd_string(li_se->cmd, buf, sizeof(buf)), r);
-                            rputs(" ", r);
+                            ap_rputs("<dd><tt>&nbsp;&nbsp;", r);
+                            ap_rputs(mod_info_html_cmd_string(li_se->cmd, buf, sizeof(buf)), r);
+                            ap_rputs(" ", r);
                             if (li_se->line) {
-                                rputs(mod_info_html_cmd_string(li_se->line, buf, sizeof(buf)), r);
+                                ap_rputs(mod_info_html_cmd_string(li_se->line, buf, sizeof(buf)), r);
                             }
-                            rputs("</tt>\n", r);
+                            ap_rputs("</tt>\n", r);
                             block_start = li_se;
                         }
                     }
-                    rputs("<dd><tt>", r);
+                    ap_rputs("<dd><tt>", r);
                     if (nest) {
-                        rputs("&nbsp;&nbsp;", r);
+                        ap_rputs("&nbsp;&nbsp;", r);
                     }
                     if (nest == 2) {
-                        rputs("&nbsp;&nbsp;", r);
+                        ap_rputs("&nbsp;&nbsp;", r);
                     }
-                    rputs(mod_info_html_cmd_string(li->cmd, buf, sizeof(buf)), r);
+                    ap_rputs(mod_info_html_cmd_string(li->cmd, buf, sizeof(buf)), r);
                     if (li->line) {
-                        rputs(" <i>", r);
-                        rputs(mod_info_html_cmd_string(li->line, buf, sizeof(buf)), r);
-                        rputs("</i>", r);
+                        ap_rputs(" <i>", r);
+                        ap_rputs(mod_info_html_cmd_string(li->line, buf, sizeof(buf)), r);
+                        ap_rputs("</i>", r);
                     }
-		    rputs("</tt>", r);
+		    ap_rputs("</tt>", r);
                 }
             }
             else
@@ -338,7 +338,7 @@ static void mod_info_module_cmds(request_rec *r, info_cfg_lines *cfg,
 static char *find_more_info(server_rec *s, const char *module_name)
 {
     int i;
-    info_svr_conf *conf = (info_svr_conf *) get_module_config(s->module_config,
+    info_svr_conf *conf = (info_svr_conf *) ap_get_module_config(s->module_config,
                                                               &info_module);
     info_entry *entry = (info_entry *) conf->more_info->elts;
 
@@ -372,236 +372,236 @@ static int display_info(request_rec *r)
 	return DECLINED;
 
     r->content_type = "text/html";
-    send_http_header(r);
+    ap_send_http_header(r);
     if (r->header_only) {
         return 0;
     }
-    hard_timeout("send server info", r);
+    ap_hard_timeout("send server info", r);
 
-    rputs("<html><head><title>Server Information</title></head>\n", r);
-    rputs("<body><h1 align=center>Apache Server Information</h1>\n", r);
+    ap_rputs("<html><head><title>Server Information</title></head>\n", r);
+    ap_rputs("<body><h1 align=center>Apache Server Information</h1>\n", r);
     if (!r->args || strcasecmp(r->args, "list")) {
-        cfname = server_root_relative(r->pool, server_confname);
+        cfname = ap_server_root_relative(r->pool, ap_server_confname);
         mod_info_cfg_httpd = mod_info_load_config(r->pool, cfname, r);
-        cfname = server_root_relative(r->pool, serv->srm_confname);
+        cfname = ap_server_root_relative(r->pool, serv->srm_confname);
         mod_info_cfg_srm = mod_info_load_config(r->pool, cfname, r);
-        cfname = server_root_relative(r->pool, serv->access_confname);
+        cfname = ap_server_root_relative(r->pool, serv->access_confname);
         mod_info_cfg_access = mod_info_load_config(r->pool, cfname, r);
         if (!r->args) {
-            rputs("<tt><a href=\"#server\">Server Settings</a>, ", r);
+            ap_rputs("<tt><a href=\"#server\">Server Settings</a>, ", r);
             for (modp = top_module; modp; modp = modp->next) {
-                rprintf(r, "<a href=\"#%s\">%s</a>", modp->name, modp->name);
+                ap_rprintf(r, "<a href=\"#%s\">%s</a>", modp->name, modp->name);
                 if (modp->next) {
-                    rputs(", ", r);
+                    ap_rputs(", ", r);
                 }
             }
-            rputs("</tt><hr>", r);
+            ap_rputs("</tt><hr>", r);
 
         }
         if (!r->args || !strcasecmp(r->args, "server")) {
-            rprintf(r, "<a name=\"server\"><strong>Server Version:</strong> "
+            ap_rprintf(r, "<a name=\"server\"><strong>Server Version:</strong> "
                         "<font size=+1><tt>%s</tt></a></font><br>\n",
-                        apapi_get_server_version());
-            rprintf(r, "<strong>Server Built:</strong> "
+                        ap_get_server_version());
+            ap_rprintf(r, "<strong>Server Built:</strong> "
                         "<font size=+1><tt>%s</tt></a></font><br>\n",
-                        apapi_get_server_built());
-            rprintf(r, "<strong>API Version:</strong> "
+                        ap_get_server_built());
+            ap_rprintf(r, "<strong>API Version:</strong> "
                         "<tt>%d</tt><br>\n",
                         MODULE_MAGIC_NUMBER);
-            rprintf(r, "<strong>Run Mode:</strong> <tt>%s</tt><br>\n",
-                        (standalone ? "standalone" : "inetd"));
-            rprintf(r, "<strong>User/Group:</strong> "
+            ap_rprintf(r, "<strong>Run Mode:</strong> <tt>%s</tt><br>\n",
+                        (ap_standalone ? "standalone" : "inetd"));
+            ap_rprintf(r, "<strong>User/Group:</strong> "
                         "<tt>%s(%d)/%d</tt><br>\n",
-                        user_name, (int) user_id, (int) group_id);
-            rprintf(r, "<strong>Hostname/port:</strong> "
+                        ap_user_name, (int) ap_user_id, (int) ap_group_id);
+            ap_rprintf(r, "<strong>Hostname/port:</strong> "
                         "<tt>%s:%u</tt><br>\n",
                         serv->server_hostname, serv->port);
-            rprintf(r, "<strong>Daemons:</strong> "
+            ap_rprintf(r, "<strong>Daemons:</strong> "
                         "<tt>start: %d &nbsp;&nbsp; "
                         "min idle: %d &nbsp;&nbsp; "
                         "max idle: %d &nbsp;&nbsp; "
                         "max: %d</tt><br>\n",
-                        daemons_to_start, daemons_min_free,
-                        daemons_max_free, daemons_limit);
-            rprintf(r, "<strong>Max Requests:</strong> "
+                        ap_daemons_to_start, ap_daemons_min_free,
+                        ap_daemons_max_free, ap_daemons_limit);
+            ap_rprintf(r, "<strong>Max Requests:</strong> "
                         "<tt>per child: %d &nbsp;&nbsp; "
                         "keep alive: %s &nbsp;&nbsp; "
                         "max per connection: %d</tt><br>\n",
-                        max_requests_per_child,
+                        ap_max_requests_per_child,
                         (serv->keep_alive ? "on" : "off"),
                         serv->keep_alive_max);
-            rprintf(r, "<strong>Threads:</strong> "
+            ap_rprintf(r, "<strong>Threads:</strong> "
                         "<tt>per child: %d &nbsp;&nbsp; </tt><br>\n",
-                        threads_per_child);
-            rprintf(r, "<strong>Excess requests:</strong> "
+                        ap_threads_per_child);
+            ap_rprintf(r, "<strong>Excess requests:</strong> "
                         "<tt>per child: %d &nbsp;&nbsp; </tt><br>\n",
-                        excess_requests_per_child);
-            rprintf(r, "<strong>Timeouts:</strong> "
+                        ap_excess_requests_per_child);
+            ap_rprintf(r, "<strong>Timeouts:</strong> "
                         "<tt>connection: %d &nbsp;&nbsp; "
                         "keep-alive: %d</tt><br>",
                         serv->timeout, serv->keep_alive_timeout);
-            rprintf(r, "<strong>Server Root:</strong> "
-                        "<tt>%s</tt><br>\n", server_root);
-            rprintf(r, "<strong>Config File:</strong> "
-                        "<tt>%s</tt><br>\n", server_confname);
-            rprintf(r, "<strong>PID File:</strong> "
-                        "<tt>%s</tt><br>\n", pid_fname);
-            rprintf(r, "<strong>Scoreboard File:</strong> "
-                        "<tt>%s</tt><br>\n", scoreboard_fname);
+            ap_rprintf(r, "<strong>Server Root:</strong> "
+                        "<tt>%s</tt><br>\n", ap_server_root);
+            ap_rprintf(r, "<strong>Config File:</strong> "
+                        "<tt>%s</tt><br>\n", ap_server_confname);
+            ap_rprintf(r, "<strong>PID File:</strong> "
+                        "<tt>%s</tt><br>\n", ap_pid_fname);
+            ap_rprintf(r, "<strong>Scoreboard File:</strong> "
+                        "<tt>%s</tt><br>\n", ap_scoreboard_fname);
         }
-        rputs("<hr><dl>", r);
+        ap_rputs("<hr><dl>", r);
         for (modp = top_module; modp; modp = modp->next) {
             if (!r->args || !strcasecmp(modp->name, r->args)) {
-                rprintf(r, "<dt><a name=\"%s\"><strong>Module Name:</strong> "
+                ap_rprintf(r, "<dt><a name=\"%s\"><strong>Module Name:</strong> "
                             "<font size=+1><tt>%s</tt></a></font>\n",
                             modp->name, modp->name);
-                rputs("<dt><strong>Content handlers:</strong>", r);
+                ap_rputs("<dt><strong>Content handlers:</strong>", r);
                 hand = modp->handlers;
                 if (hand) {
                     while (hand) {
                         if (hand->content_type) {
-                            rprintf(r, " <tt>%s</tt>\n", hand->content_type);
+                            ap_rprintf(r, " <tt>%s</tt>\n", hand->content_type);
                         }
                         else {
                             break;
                         }
                         hand++;
                         if (hand && hand->content_type) {
-                            rputs(",", r);
+                            ap_rputs(",", r);
                         }
                     }
                 }
                 else {
-                    rputs("<tt> <EM>none</EM></tt>", r);
+                    ap_rputs("<tt> <EM>none</EM></tt>", r);
                 }
-                rputs("<dt><strong>Configuration Phase Participation:</strong> \n",
+                ap_rputs("<dt><strong>Configuration Phase Participation:</strong> \n",
                       r);
                 if (modp->child_init) {
-                    rputs("<tt>Child Init</tt>", r);
+                    ap_rputs("<tt>Child Init</tt>", r);
                     comma = 1;
                 }
                 if (modp->create_dir_config) {
                     if (comma) {
-                        rputs(", ", r);
+                        ap_rputs(", ", r);
                     }
-                    rputs("<tt>Create Directory Config</tt>", r);
+                    ap_rputs("<tt>Create Directory Config</tt>", r);
                     comma = 1;
                 }
                 if (modp->merge_dir_config) {
                     if (comma) {
-                        rputs(", ", r);
+                        ap_rputs(", ", r);
                     }
-                    rputs("<tt>Merge Directory Configs</tt>", r);
+                    ap_rputs("<tt>Merge Directory Configs</tt>", r);
                     comma = 1;
                 }
                 if (modp->create_server_config) {
                     if (comma) {
-                        rputs(", ", r);
+                        ap_rputs(", ", r);
                     }
-                    rputs("<tt>Create Server Config</tt>", r);
+                    ap_rputs("<tt>Create Server Config</tt>", r);
                     comma = 1;
                 }
                 if (modp->merge_server_config) {
                     if (comma) {
-                        rputs(", ", r);
+                        ap_rputs(", ", r);
                     }
-                    rputs("<tt>Merge Server Configs</tt>", r);
+                    ap_rputs("<tt>Merge Server Configs</tt>", r);
                     comma = 1;
                 }
                 if (modp->child_exit) {
                     if (comma) {
-                        rputs(", ", r);
+                        ap_rputs(", ", r);
                     }
-                    rputs("<tt>Child Exit</tt>", r);
+                    ap_rputs("<tt>Child Exit</tt>", r);
                     comma = 1;
                 }
                 if (!comma)
-                    rputs("<tt> <EM>none</EM></tt>", r);
+                    ap_rputs("<tt> <EM>none</EM></tt>", r);
                 comma = 0;
-                rputs("<dt><strong>Request Phase Participation:</strong> \n",
+                ap_rputs("<dt><strong>Request Phase Participation:</strong> \n",
                       r);
                 if (modp->post_read_request) {
-                    rputs("<tt>Post-Read Request</tt>", r);
+                    ap_rputs("<tt>Post-Read Request</tt>", r);
                     comma = 1;
                 }
                 if (modp->header_parser) {
                     if (comma) {
-                        rputs(", ", r);
+                        ap_rputs(", ", r);
                     }
-                    rputs("<tt>Header Parse</tt>", r);
+                    ap_rputs("<tt>Header Parse</tt>", r);
                     comma = 1;
                 }
                 if (modp->translate_handler) {
                     if (comma) {
-                        rputs(", ", r);
+                        ap_rputs(", ", r);
                     }
-                    rputs("<tt>Translate Path</tt>", r);
+                    ap_rputs("<tt>Translate Path</tt>", r);
                     comma = 1;
                 }
                 if (modp->access_checker) {
                     if (comma) {
-                        rputs(", ", r);
+                        ap_rputs(", ", r);
                     }
-                    rputs("<tt>Check Access</tt>", r);
+                    ap_rputs("<tt>Check Access</tt>", r);
                     comma = 1;
                 }
-                if (modp->check_user_id) {
+                if (modp->ap_check_user_id) {
                     if (comma) {
-                        rputs(", ", r);
+                        ap_rputs(", ", r);
                     }
-                    rputs("<tt>Verify User ID</tt>", r);
+                    ap_rputs("<tt>Verify User ID</tt>", r);
                     comma = 1;
                 }
                 if (modp->auth_checker) {
                     if (comma) {
-                        rputs(", ", r);
+                        ap_rputs(", ", r);
                     }
-                    rputs("<tt>Verify User Access</tt>", r);
+                    ap_rputs("<tt>Verify User Access</tt>", r);
                     comma = 1;
                 }
                 if (modp->type_checker) {
                     if (comma) {
-                        rputs(", ", r);
+                        ap_rputs(", ", r);
                     }
-                    rputs("<tt>Check Type</tt>", r);
+                    ap_rputs("<tt>Check Type</tt>", r);
                     comma = 1;
                 }
                 if (modp->fixer_upper) {
                     if (comma) {
-                        rputs(", ", r);
+                        ap_rputs(", ", r);
                     }
-                    rputs("<tt>Fixups</tt>", r);
+                    ap_rputs("<tt>Fixups</tt>", r);
                     comma = 1;
                 }
                 if (modp->logger) {
                     if (comma) {
-                        rputs(", ", r);
+                        ap_rputs(", ", r);
                     }
-                    rputs("<tt>Logging</tt>", r);
+                    ap_rputs("<tt>Logging</tt>", r);
                     comma = 1;
                 }
                 if (!comma)
-                    rputs("<tt> <EM>none</EM></tt>", r);
+                    ap_rputs("<tt> <EM>none</EM></tt>", r);
                 comma = 0;
-                rputs("<dt><strong>Module Directives:</strong> ", r);
+                ap_rputs("<dt><strong>Module Directives:</strong> ", r);
                 cmd = modp->cmds;
                 if (cmd) {
                     while (cmd) {
                         if (cmd->name) {
-                            rprintf(r, "<dd><tt>%s - <i>",
+                            ap_rprintf(r, "<dd><tt>%s - <i>",
 				    mod_info_html_cmd_string(cmd->name,
 					buf, sizeof(buf)));
                             if (cmd->errmsg) {
-                                rputs(cmd->errmsg, r);
+                                ap_rputs(cmd->errmsg, r);
                             }
-                            rputs("</i></tt>\n", r);
+                            ap_rputs("</i></tt>\n", r);
                         }
                         else {
                             break;
                         }
                         cmd++;
                     }
-                    rputs("<dt><strong>Current Configuration:</strong>\n", r);
+                    ap_rputs("<dt><strong>Current Configuration:</strong>\n", r);
                     mod_info_module_cmds(r, mod_info_cfg_httpd, modp->cmds,
                                          "httpd.conf");
                     mod_info_module_cmds(r, mod_info_cfg_srm, modp->cmds,
@@ -610,37 +610,37 @@ static int display_info(request_rec *r)
                                          "access.conf");
                 }
                 else {
-                    rputs("<tt> none</tt>\n", r);
+                    ap_rputs("<tt> none</tt>\n", r);
                 }
                 more_info = find_more_info(serv, modp->name);
                 if (more_info) {
-                    rputs("<dt><strong>Additional Information:</strong>\n<dd>",
+                    ap_rputs("<dt><strong>Additional Information:</strong>\n<dd>",
                           r);
-                    rputs(more_info, r);
+                    ap_rputs(more_info, r);
                 }
-                rputs("<dt><hr>\n", r);
+                ap_rputs("<dt><hr>\n", r);
                 if (r->args) {
                     break;
                 }
             }
         }
         if (!modp && r->args && strcasecmp(r->args, "server")) {
-            rputs("<b>No such module</b>\n", r);
+            ap_rputs("<b>No such module</b>\n", r);
         }
     }
     else {
         for (modp = top_module; modp; modp = modp->next) {
-            rputs(modp->name, r);
+            ap_rputs(modp->name, r);
             if (modp->next) {
-                rputs("<br>", r);
+                ap_rputs("<br>", r);
             }
         }
     }
-    rputs("</dl>\n", r);
-    rputs(psignature("",r), r);
-    rputs("</body></html>\n", r);
+    ap_rputs("</dl>\n", r);
+    ap_rputs(ap_psignature("",r), r);
+    ap_rputs("</body></html>\n", r);
     /* Done, turn off timeout, close file and return */
-    kill_timeout(r);
+    ap_kill_timeout(r);
     return 0;
 }
 
@@ -648,9 +648,9 @@ static const char *add_module_info(cmd_parms *cmd, void *dummy, char *name,
                                    char *info)
 {
     server_rec *s = cmd->server;
-    info_svr_conf *conf = (info_svr_conf *) get_module_config(s->module_config,
+    info_svr_conf *conf = (info_svr_conf *) ap_get_module_config(s->module_config,
                                                               &info_module);
-    info_entry *new = push_array(conf->more_info);
+    info_entry *new = ap_push_array(conf->more_info);
 
     new->name = name;
     new->info = info;

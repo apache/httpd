@@ -255,7 +255,7 @@ typedef struct {
 
 static char *format_integer(pool *p, int i)
 {
-    return psprintf(p, "%d", i);
+    return ap_psprintf(p, "%d", i);
 }
 
 static char *pfmt(pool *p, int i)
@@ -275,7 +275,7 @@ static char *constant_item(request_rec *dummy, char *stuff)
 
 static char *log_remote_host(request_rec *r, char *a)
 {
-    return (char *) get_remote_host(r->connection, r->per_dir_config,
+    return (char *) ap_get_remote_host(r->connection, r->per_dir_config,
                                     REMOTE_NAME);
 }
 
@@ -286,7 +286,7 @@ static char *log_remote_address(request_rec *r, char *a)
 
 static char *log_remote_logname(request_rec *r, char *a)
 {
-    return (char *) get_remote_logname(r);
+    return (char *) ap_get_remote_logname(r);
 }
 
 static char *log_remote_user(request_rec *r, char *a)
@@ -309,8 +309,8 @@ static char *log_request_line(request_rec *r, char *a)
 	     * (note the truncation before the protocol string for HTTP/0.9 requests)
 	     * (note also that r->the_request contains the unmodified request)
 	     */
-    return (r->parsed_uri.password) ? pstrcat(r->pool, r->method, " ",
-					 unparse_uri_components(r->pool, &r->parsed_uri, 0),
+    return (r->parsed_uri.password) ? ap_pstrcat(r->pool, r->method, " ",
+					 ap_unparse_uri_components(r->pool, &r->parsed_uri, 0),
 					 r->assbackwards ? NULL : " ", r->protocol, NULL)
 					: r->the_request;
 }
@@ -335,35 +335,35 @@ static char *log_bytes_sent(request_rec *r, char *a)
     }
     else {
         long int bs;
-        bgetopt(r->connection->client, BO_BYTECT, &bs);
-	return psprintf(r->pool, "%ld", bs);
+        ap_bgetopt(r->connection->client, BO_BYTECT, &bs);
+	return ap_psprintf(r->pool, "%ld", bs);
     }
 }
 
 static char *log_header_in(request_rec *r, char *a)
 {
-    return table_get(r->headers_in, a);
+    return ap_table_get(r->headers_in, a);
 }
 
 static char *log_header_out(request_rec *r, char *a)
 {
-    char *cp = table_get(r->headers_out, a);
+    char *cp = ap_table_get(r->headers_out, a);
     if (!strcasecmp(a, "Content-type") && r->content_type) {
         cp = r->content_type;
     }
     if (cp) {
         return cp;
     }
-    return table_get(r->err_headers_out, a);
+    return ap_table_get(r->err_headers_out, a);
 }
 
 static char *log_note(request_rec *r, char *a)
 {
-    return table_get(r->notes, a);
+    return ap_table_get(r->notes, a);
 }
 static char *log_env_var(request_rec *r, char *a)
 {
-    return table_get(r->subprocess_env, a);
+    return ap_table_get(r->subprocess_env, a);
 }
 
 static char *log_request_time(request_rec *r, char *a)
@@ -372,7 +372,7 @@ static char *log_request_time(request_rec *r, char *a)
     struct tm *t;
     char tstr[MAX_STRING_LEN];
 
-    t = get_gmtoff(&timz);
+    t = ap_get_gmtoff(&timz);
 
     if (a && *a) {              /* Custom format */
         strftime(tstr, MAX_STRING_LEN, a, t);
@@ -389,12 +389,12 @@ static char *log_request_time(request_rec *r, char *a)
                     "%c%.2d%.2d]", sign, timz / 60, timz % 60);
     }
 
-    return pstrdup(r->pool, tstr);
+    return ap_pstrdup(r->pool, tstr);
 }
 
 static char *log_request_duration(request_rec *r, char *a)
 {
-    return psprintf(r->pool, "%ld", time(NULL) - r->request_time);
+    return ap_psprintf(r->pool, "%ld", time(NULL) - r->request_time);
 }
 
 /* These next two routines use the canonical name:port so that log
@@ -402,17 +402,17 @@ static char *log_request_duration(request_rec *r, char *a)
  */
 static char *log_virtual_host(request_rec *r, char *a)
 {
-    return pstrdup(r->pool, r->server->server_hostname);
+    return ap_pstrdup(r->pool, r->server->server_hostname);
 }
 
 static char *log_server_port(request_rec *r, char *a)
 {
-    return psprintf(r->pool, "%u", r->server->port);
+    return ap_psprintf(r->pool, "%u", r->server->port);
 }
 
 static char *log_child_pid(request_rec *r, char *a)
 {
-    return psprintf(r->pool, "%ld", (long) getpid());
+    return ap_psprintf(r->pool, "%ld", (long) getpid());
 }
 
 /*****************************************************************
@@ -500,7 +500,7 @@ static struct log_item_list *find_log_func(char k)
 static char *log_format_substring(pool *p, const char *start,
                                   const char *end)
 {
-    char *res = palloc(p, end - start + 1);
+    char *res = ap_palloc(p, end - start + 1);
 
     strncpy(res, start, end - start);
     res[end - start] = '\0';
@@ -564,7 +564,7 @@ static char *parse_log_item(pool *p, log_format_item *it, const char **sa)
 
         case '{':
             ++s;
-            it->arg = getword(p, &s, '}');
+            it->arg = ap_getword(p, &s, '}');
             break;
 
         case '0':
@@ -582,9 +582,9 @@ static char *parse_log_item(pool *p, log_format_item *it, const char **sa)
                 i = i * 10 + (*s) - '0';
             }
             if (!it->conditions) {
-                it->conditions = make_array(p, 4, sizeof(int));
+                it->conditions = ap_make_array(p, 4, sizeof(int));
             }
-            *(int *) push_array(it->conditions) = i;
+            *(int *) ap_push_array(it->conditions) = i;
             break;
 
         default:
@@ -594,7 +594,7 @@ static char *parse_log_item(pool *p, log_format_item *it, const char **sa)
 
                 dummy[0] = s[-1];
                 dummy[1] = '\0';
-                return pstrcat(p, "Unrecognized LogFormat directive %",
+                return ap_pstrcat(p, "Unrecognized LogFormat directive %",
                                dummy, NULL);
             }
             it->func = l->func;
@@ -611,18 +611,18 @@ static char *parse_log_item(pool *p, log_format_item *it, const char **sa)
 
 static array_header *parse_log_string(pool *p, const char *s, const char **err)
 {
-    array_header *a = make_array(p, 30, sizeof(log_format_item));
+    array_header *a = ap_make_array(p, 30, sizeof(log_format_item));
     char *res;
 
     while (*s) {
-        if ((res = parse_log_item(p, (log_format_item *) push_array(a), &s))) {
+        if ((res = parse_log_item(p, (log_format_item *) ap_push_array(a), &s))) {
             *err = res;
             return NULL;
         }
     }
 
     s = "\n";
-    parse_log_item(p, (log_format_item *) push_array(a), &s);
+    parse_log_item(p, (log_format_item *) ap_push_array(a), &s);
     return a;
 }
 
@@ -689,8 +689,8 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
 
     format = cls->format ? cls->format : default_format;
 
-    strs = palloc(r->pool, sizeof(char *) * (format->nelts));
-    strl = palloc(r->pool, sizeof(int) * (format->nelts));
+    strs = ap_palloc(r->pool, sizeof(char *) * (format->nelts));
+    strl = ap_palloc(r->pool, sizeof(int) * (format->nelts));
     items = (log_format_item *) format->elts;
 
     orig = r;
@@ -714,7 +714,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
         flush_log(cls);
     }
     if (len >= LOG_BUFSIZE) {
-        str = palloc(r->pool, len + 1);
+        str = ap_palloc(r->pool, len + 1);
         for (i = 0, s = str; i < format->nelts; ++i) {
             memcpy(s, strs[i], strl[i]);
             s += strl[i];
@@ -729,7 +729,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
         cls->outcnt += len;
     }
 #else
-    str = palloc(r->pool, len + 1);
+    str = ap_palloc(r->pool, len + 1);
 
     for (i = 0, s = str; i < format->nelts; ++i) {
         memcpy(s, strs[i], strl[i]);
@@ -744,7 +744,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
 
 static int multi_log_transaction(request_rec *r)
 {
-    multi_log_state *mls = get_module_config(r->server->module_config,
+    multi_log_state *mls = ap_get_module_config(r->server->module_config,
                                              &config_log_module);
     config_log_state *clsarray;
     int i;
@@ -776,13 +776,13 @@ static int multi_log_transaction(request_rec *r)
 
 static void *make_config_log_state(pool *p, server_rec *s)
 {
-    multi_log_state *mls = (multi_log_state *) palloc(p, sizeof(multi_log_state));
+    multi_log_state *mls = (multi_log_state *) ap_palloc(p, sizeof(multi_log_state));
 
-    mls->config_logs = make_array(p, 1, sizeof(config_log_state));
+    mls->config_logs = ap_make_array(p, 1, sizeof(config_log_state));
     mls->default_format = NULL;
     mls->server_config_logs = NULL;
-    mls->formats = make_table(p, 4);
-    table_setn(mls->formats, "CLF", DEFAULT_LOG_FORMAT);
+    mls->formats = ap_make_table(p, 4);
+    ap_table_setn(mls->formats, "CLF", DEFAULT_LOG_FORMAT);
 
     return mls;
 }
@@ -802,7 +802,7 @@ static void *merge_config_log_state(pool *p, void *basev, void *addv)
     if (!add->default_format) {
         add->default_format = base->default_format;
     }
-    add->formats = overlay_tables(p, base->formats, add->formats);
+    add->formats = ap_overlay_tables(p, base->formats, add->formats);
 
     return add;
 }
@@ -815,7 +815,7 @@ static const char *log_format(cmd_parms *cmd, void *dummy, char *fmt,
 {
     const char *err_string = NULL;
     char *format;
-    multi_log_state *mls = get_module_config(cmd->server->module_config,
+    multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
                                              &config_log_module);
 
     /*
@@ -826,14 +826,14 @@ static const char *log_format(cmd_parms *cmd, void *dummy, char *fmt,
     if (name != NULL) {
         parse_log_string(cmd->pool, fmt, &err_string);
         if (err_string == NULL) {
-            table_setn(mls->formats, name, fmt);
+            ap_table_setn(mls->formats, name, fmt);
         }
     }
     else {
         /*
          * See if we were given a name rather than a format string.
          */
-        format = table_get(mls->formats, fmt);
+        format = ap_table_get(mls->formats, fmt);
         if (format == NULL) {
             format = fmt;
         }
@@ -846,18 +846,18 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn,
                                   char *fmt)
 {
     const char *err_string = NULL;
-    multi_log_state *mls = get_module_config(cmd->server->module_config,
+    multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
                                              &config_log_module);
     config_log_state *cls;
     char *format;
 
-    cls = (config_log_state *) push_array(mls->config_logs);
+    cls = (config_log_state *) ap_push_array(mls->config_logs);
     cls->fname = fn;
     if (!fmt) {
         cls->format = NULL;
     }
     else {
-        format = table_get(mls->formats, fmt);
+        format = ap_table_get(mls->formats, fmt);
         format = (format != NULL) ? format : fmt;
         cls->format = parse_log_string(cmd->pool, format, &err_string);
     }
@@ -904,15 +904,15 @@ static config_log_state *open_config_log(server_rec *s, pool *p,
     if (*cls->fname == '|') {
         piped_log *pl;
 
-        pl = open_piped_log(p, cls->fname + 1);
+        pl = ap_open_piped_log(p, cls->fname + 1);
         if (pl == NULL) {
             exit(1);
         }
         cls->log_fd = piped_log_write_fd(pl);
     }
     else {
-        char *fname = server_root_relative(p, cls->fname);
-        if ((cls->log_fd = popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
+        char *fname = ap_server_root_relative(p, cls->fname);
+        if ((cls->log_fd = ap_popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
             perror("open");
             fprintf(stderr, "httpd: could not open transfer log file %s.\n",
                     fname);
@@ -929,7 +929,7 @@ static config_log_state *open_config_log(server_rec *s, pool *p,
 static config_log_state *open_multi_logs(server_rec *s, pool *p)
 {
     int i;
-    multi_log_state *mls = get_module_config(s->module_config,
+    multi_log_state *mls = ap_get_module_config(s->module_config,
                                              &config_log_module);
     config_log_state *clsarray;
     const char *dummy;
@@ -982,7 +982,7 @@ static void flush_all_logs(server_rec *s, pool *p)
     int i;
 
     for (; s; s = s->next) {
-        mls = get_module_config(s->module_config, &config_log_module);
+        mls = ap_get_module_config(s->module_config, &config_log_module);
         log_list = NULL;
         if (mls->config_logs->nelts) {
             log_list = mls->config_logs;

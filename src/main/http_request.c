@@ -103,7 +103,7 @@ static int check_safe_file(request_rec *r)
         || S_ISLNK(r->finfo.st_mode)) {
         return OK;
     }
-    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                 "object is not a file, directory or symlink: %s",
                 r->filename);
     return HTTP_FORBIDDEN;
@@ -213,7 +213,7 @@ static int get_path_info(request_rec *r)
                 cp = last_cp;
             }
 
-            r->path_info = pstrdup(r->pool, cp);
+            r->path_info = ap_pstrdup(r->pool, cp);
             *cp = '\0';
             return OK;
         }
@@ -231,9 +231,9 @@ static int get_path_info(request_rec *r)
 #if defined(EACCES)
             if (errno != EACCES)
 #endif
-                aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+                ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
                             "access to %s failed for %s", r->uri,
-                            get_remote_host(r->connection, r->per_dir_config,
+                            ap_get_remote_host(r->connection, r->per_dir_config,
                                             REMOTE_NOLOOKUP));
             return HTTP_FORBIDDEN;
         }
@@ -269,7 +269,7 @@ static int get_path_info(request_rec *r)
 
 static int directory_walk(request_rec *r)
 {
-    core_server_config *sconf = get_module_config(r->server->module_config,
+    core_server_config *sconf = ap_get_module_config(r->server->module_config,
                                                   &core_module);
     void *per_dir_defaults = r->server->lookup_defaults;
     void **sec = (void **) sconf->sec->elts;
@@ -288,7 +288,7 @@ static int directory_walk(request_rec *r)
      */
 
     if (r->filename == NULL) {
-        r->filename = pstrdup(r->pool, r->uri);
+        r->filename = ap_pstrdup(r->pool, r->uri);
         r->finfo.st_mode = 0;   /* Not really a file... */
         r->per_dir_config = per_dir_defaults;
 
@@ -306,7 +306,7 @@ static int directory_walk(request_rec *r)
      * Fake filenames (i.e. proxy:) only match Directory sections.
      */
 
-    if (!os_is_path_absolute(r->filename))
+    if (!ap_is_path_absolute(r->filename))
     {
         void *this_conf, *entry_config;
         core_dir_config *entry_core;
@@ -317,7 +317,7 @@ static int directory_walk(request_rec *r)
             entry_config = sec[j];
 
             entry_core = (core_dir_config *)
-                get_module_config(entry_config, &core_module);
+                ap_get_module_config(entry_config, &core_module);
             entry_dir = entry_core->d;
 
             this_conf = NULL;
@@ -326,14 +326,14 @@ static int directory_walk(request_rec *r)
                     this_conf = entry_config;
             }
             else if (entry_core->d_is_fnmatch) {
-                if (!fnmatch(entry_dir, r->filename, 0))
+                if (!ap_fnmatch(entry_dir, r->filename, 0))
                     this_conf = entry_config;
             }
             else if (!strncmp(r->filename, entry_dir, strlen(entry_dir)))
                 this_conf = entry_config;
 
             if (this_conf)
-                per_dir_defaults = merge_per_dir_configs(r->pool,
+                per_dir_defaults = ap_merge_per_dir_configs(r->pool,
                                                          per_dir_defaults,
                                                          this_conf);
         }
@@ -343,11 +343,11 @@ static int directory_walk(request_rec *r)
         return OK;
     }
 
-    r->filename   = os_canonical_filename(r->pool, r->filename);
-    test_filename = pstrdup(r->pool, r->filename);
+    r->filename   = ap_canonical_filename(r->pool, r->filename);
+    test_filename = ap_pstrdup(r->pool, r->filename);
 
-    no2slash(test_filename);
-    num_dirs = count_dirs(test_filename);
+    ap_no2slash(test_filename);
+    num_dirs = ap_count_dirs(test_filename);
 
     res = get_path_info(r);
     if (res != OK) {
@@ -372,20 +372,20 @@ static int directory_walk(request_rec *r)
      * We need 2 extra bytes, one for trailing \0 and one because
      * make_dirstr_prefix will add potentially one extra /.
      */
-    test_dirname = palloc(r->pool, test_filename_len + 2);
+    test_dirname = ap_palloc(r->pool, test_filename_len + 2);
 
     /* j keeps track of which section we're on, see core_reorder_directories */
     j = 0;
     for (i = 1; i <= num_dirs; ++i) {
         int overrides_here;
         core_dir_config *core_dir = (core_dir_config *)
-            get_module_config(per_dir_defaults, &core_module);
+            ap_get_module_config(per_dir_defaults, &core_module);
 
         /*
          * XXX: this could be made faster by only copying the next component
          * rather than copying the entire thing all over.
          */
-        make_dirstr_prefix(test_dirname, test_filename, i);
+        ap_make_dirstr_prefix(test_dirname, test_filename, i);
 
         /*
          * Do symlink checks first, because they are done with the
@@ -393,7 +393,7 @@ static int directory_walk(request_rec *r)
          */
 
         if ((res = check_symlinks(test_dirname, core_dir->opts))) {
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                         "Symbolic link not allowed: %s", test_dirname);
             return res;
         }
@@ -410,17 +410,17 @@ static int directory_walk(request_rec *r)
             void *this_conf;
 
             entry_core = (core_dir_config *)
-                         get_module_config(entry_config, &core_module);
+                         ap_get_module_config(entry_config, &core_module);
             entry_dir = entry_core->d;
 
             if (entry_core->r
-		|| !os_is_path_absolute(entry_dir)
+		|| !ap_is_path_absolute(entry_dir)
                 || entry_core->d_components > i)
                 break;
 
             this_conf = NULL;
             if (entry_core->d_is_fnmatch) {
-                if (!fnmatch(entry_dir, test_dirname, FNM_PATHNAME)) {
+                if (!ap_fnmatch(entry_dir, test_dirname, FNM_PATHNAME)) {
                     this_conf = entry_config;
                 }
             }
@@ -428,11 +428,11 @@ static int directory_walk(request_rec *r)
                 this_conf = entry_config;
 
             if (this_conf) {
-                per_dir_defaults = merge_per_dir_configs(r->pool,
+                per_dir_defaults = ap_merge_per_dir_configs(r->pool,
                                                          per_dir_defaults,
                                                          this_conf);
                 core_dir = (core_dir_config *)
-                           get_module_config(per_dir_defaults, &core_module);
+                           ap_get_module_config(per_dir_defaults, &core_module);
             }
         }
         overrides_here = core_dir->override;
@@ -442,15 +442,15 @@ static int directory_walk(request_rec *r)
         if (overrides_here) {
             void *htaccess_conf = NULL;
 
-            res = parse_htaccess(&htaccess_conf, r, overrides_here,
-                                 pstrdup(r->pool, test_dirname),
+            res = ap_parse_htaccess(&htaccess_conf, r, overrides_here,
+                                 ap_pstrdup(r->pool, test_dirname),
                                  sconf->access_name);
             if (res)
                 return res;
 
             if (htaccess_conf)
                 per_dir_defaults =
-                    merge_per_dir_configs(r->pool, per_dir_defaults,
+                    ap_merge_per_dir_configs(r->pool, per_dir_defaults,
                                           htaccess_conf);
         }
     }
@@ -465,12 +465,12 @@ static int directory_walk(request_rec *r)
         core_dir_config *entry_core;
 
         entry_core = (core_dir_config *)
-                     get_module_config(entry_config, &core_module);
+                     ap_get_module_config(entry_config, &core_module);
 
         if (entry_core->r) {
             if (!regexec(entry_core->r, test_dirname, 0, NULL, REG_NOTEOL)) {
                 per_dir_defaults =
-                    merge_per_dir_configs(r->pool, per_dir_defaults,
+                    ap_merge_per_dir_configs(r->pool, per_dir_defaults,
                                           entry_config);
             }
         }
@@ -487,8 +487,8 @@ static int directory_walk(request_rec *r)
      * you would *not* get the 403.
      */
     if (!S_ISDIR(r->finfo.st_mode)
-        && (res = check_symlinks(r->filename, allow_options(r)))) {
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+        && (res = check_symlinks(r->filename, ap_allow_options(r)))) {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "Symbolic link not allowed: %s", r->filename);
         return res;
     }
@@ -498,7 +498,7 @@ static int directory_walk(request_rec *r)
 
 static int location_walk(request_rec *r)
 {
-    core_server_config *sconf = get_module_config(r->server->module_config,
+    core_server_config *sconf = ap_get_module_config(r->server->module_config,
                                                   &core_module);
     void *per_dir_defaults = r->per_dir_config;
     void **url = (void **) sconf->sec_url->elts;
@@ -522,8 +522,8 @@ static int location_walk(request_rec *r)
 	test_location = r->uri;
     }
     else {
-	test_location = pstrdup(r->pool, r->uri);
-	no2slash(test_location);
+	test_location = ap_pstrdup(r->pool, r->uri);
+	ap_no2slash(test_location);
     }
 
     /* Go through the location entries, and check for matches. */
@@ -536,7 +536,7 @@ static int location_walk(request_rec *r)
 	entry_config = url[j];
 
 	entry_core = (core_dir_config *)
-	    get_module_config(entry_config, &core_module);
+	    ap_get_module_config(entry_config, &core_module);
 	entry_url = entry_core->d;
 
 	len = strlen(entry_url);
@@ -548,7 +548,7 @@ static int location_walk(request_rec *r)
 		this_conf = entry_config;
 	}
 	else if (entry_core->d_is_fnmatch) {
-	    if (!fnmatch(entry_url, test_location, FNM_PATHNAME)) {
+	    if (!ap_fnmatch(entry_url, test_location, FNM_PATHNAME)) {
 		this_conf = entry_config;
 	    }
 	}
@@ -558,7 +558,7 @@ static int location_walk(request_rec *r)
 	    this_conf = entry_config;
 
 	if (this_conf)
-	    per_dir_defaults = merge_per_dir_configs(r->pool,
+	    per_dir_defaults = ap_merge_per_dir_configs(r->pool,
 					    per_dir_defaults, this_conf);
     }
     r->per_dir_config = per_dir_defaults;
@@ -568,7 +568,7 @@ static int location_walk(request_rec *r)
 
 static int file_walk(request_rec *r)
 {
-    core_dir_config *conf = get_module_config(r->per_dir_config, &core_module);
+    core_dir_config *conf = ap_get_module_config(r->per_dir_config, &core_module);
     void *per_dir_defaults = r->per_dir_config;
     void **file = (void **) conf->sec->elts;
     int num_files = conf->sec->nelts;
@@ -599,7 +599,7 @@ static int file_walk(request_rec *r)
             entry_config = file[j];
 
             entry_core = (core_dir_config *)
-                         get_module_config(entry_config, &core_module);
+                         ap_get_module_config(entry_config, &core_module);
             entry_file = entry_core->d;
 
             this_conf = NULL;
@@ -609,7 +609,7 @@ static int file_walk(request_rec *r)
                     this_conf = entry_config;
             }
             else if (entry_core->d_is_fnmatch) {
-                if (!fnmatch(entry_file, test_file, FNM_PATHNAME)) {
+                if (!ap_fnmatch(entry_file, test_file, FNM_PATHNAME)) {
                     this_conf = entry_config;
                 }
             }
@@ -618,7 +618,7 @@ static int file_walk(request_rec *r)
 	    }
 
             if (this_conf)
-                per_dir_defaults = merge_per_dir_configs(r->pool,
+                per_dir_defaults = ap_merge_per_dir_configs(r->pool,
                                                          per_dir_defaults,
                                                          this_conf);
         }
@@ -645,14 +645,14 @@ static int file_walk(request_rec *r)
 
 static request_rec *make_sub_request(const request_rec *r)
 {
-    pool *rrp = make_sub_pool(r->pool);
-    request_rec *rr = pcalloc(rrp, sizeof(request_rec));
+    pool *rrp = ap_make_sub_pool(r->pool);
+    request_rec *rr = ap_pcalloc(rrp, sizeof(request_rec));
 
     rr->pool = rrp;
     return rr;
 }
 
-API_EXPORT(request_rec *) sub_req_lookup_uri(const char *new_file,
+API_EXPORT(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
                                              const request_rec *r)
 {
     request_rec *rnew;
@@ -663,34 +663,34 @@ API_EXPORT(request_rec *) sub_req_lookup_uri(const char *new_file,
     rnew->request_time   = r->request_time;
     rnew->connection     = r->connection;
     rnew->server         = r->server;
-    rnew->request_config = create_request_config(rnew->pool);
+    rnew->request_config = ap_create_request_config(rnew->pool);
     rnew->htaccess       = r->htaccess;
     rnew->per_dir_config = r->server->lookup_defaults;
 
-    set_sub_req_protocol(rnew, r);
+    ap_set_sub_req_protocol(rnew, r);
 
     if (new_file[0] == '/')
-        parse_uri(rnew, new_file);
+        ap_parse_uri(rnew, new_file);
     else {
-        udir = make_dirstr_parent(rnew->pool, r->uri);
+        udir = ap_make_dirstr_parent(rnew->pool, r->uri);
         udir = escape_uri(rnew->pool, udir);    /* re-escape it */
-        parse_uri(rnew, make_full_path(rnew->pool, udir, new_file));
+        ap_parse_uri(rnew, ap_make_full_path(rnew->pool, udir, new_file));
     }
 
-    res = unescape_url(rnew->uri);
+    res = ap_unescape_url(rnew->uri);
     if (res) {
         rnew->status = res;
         return rnew;
     }
 
-    getparents(rnew->uri);
+    ap_getparents(rnew->uri);
 
     if ((res = location_walk(rnew))) {
         rnew->status = res;
         return rnew;
     }
 
-    res = translate_name(rnew);
+    res = ap_translate_name(rnew);
     if (res) {
         rnew->status = res;
         return rnew;
@@ -710,26 +710,26 @@ API_EXPORT(request_rec *) sub_req_lookup_uri(const char *new_file,
     if ((res = directory_walk(rnew))
         || (res = file_walk(rnew))
         || (res = location_walk(rnew))
-        || ((satisfies(rnew) == SATISFY_ALL
-             || satisfies(rnew) == SATISFY_NOSPEC)
-            ? ((res = check_access(rnew))
-               || (some_auth_required(rnew)
-                   && ((res = check_user_id(rnew))
-                       || (res = check_auth(rnew)))))
-            : ((res = check_access(rnew))
-               && (!some_auth_required(rnew)
-                   || ((res = check_user_id(rnew))
-                       || (res = check_auth(rnew)))))
+        || ((ap_satisfies(rnew) == SATISFY_ALL
+             || ap_satisfies(rnew) == SATISFY_NOSPEC)
+            ? ((res = ap_check_access(rnew))
+               || (ap_some_auth_required(rnew)
+                   && ((res = ap_check_user_id(rnew))
+                       || (res = ap_check_auth(rnew)))))
+            : ((res = ap_check_access(rnew))
+               && (!ap_some_auth_required(rnew)
+                   || ((res = ap_check_user_id(rnew))
+                       || (res = ap_check_auth(rnew)))))
            )
-        || (res = find_types(rnew))
-        || (res = run_fixups(rnew))
+        || (res = ap_find_types(rnew))
+        || (res = ap_run_fixups(rnew))
        ) {
         rnew->status = res;
     }
     return rnew;
 }
 
-API_EXPORT(request_rec *) sub_req_lookup_file(const char *new_file,
+API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
                                               const request_rec *r)
 {
     request_rec *rnew;
@@ -740,11 +740,11 @@ API_EXPORT(request_rec *) sub_req_lookup_file(const char *new_file,
     rnew->request_time   = r->request_time;
     rnew->connection     = r->connection;
     rnew->server         = r->server;
-    rnew->request_config = create_request_config(rnew->pool);
+    rnew->request_config = ap_create_request_config(rnew->pool);
     rnew->htaccess       = r->htaccess;
 
-    set_sub_req_protocol(rnew, r);
-    fdir = make_dirstr_parent(rnew->pool, r->filename);
+    ap_set_sub_req_protocol(rnew, r);
+    fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
 
     /*
      * Check for a special case... if there are no '/' characters in new_file
@@ -754,11 +754,11 @@ API_EXPORT(request_rec *) sub_req_lookup_file(const char *new_file,
      */
 
     if (strchr(new_file, '/') == NULL) {
-        char *udir = make_dirstr_parent(rnew->pool, r->uri);
+        char *udir = ap_make_dirstr_parent(rnew->pool, r->uri);
 
-        rnew->uri = make_full_path(rnew->pool, udir, new_file);
-        rnew->filename = make_full_path(rnew->pool, fdir, new_file);
-	parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
+        rnew->uri = ap_make_full_path(rnew->pool, udir, new_file);
+        rnew->filename = ap_make_full_path(rnew->pool, fdir, new_file);
+	ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
         if (stat(rnew->filename, &rnew->finfo) < 0) {
             rnew->finfo.st_mode = 0;
         }
@@ -781,8 +781,8 @@ API_EXPORT(request_rec *) sub_req_lookup_file(const char *new_file,
             }
         }
         else {
-            if ((res = check_symlinks(rnew->filename, allow_options(rnew)))) {
-                aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, rnew->server,
+            if ((res = check_symlinks(rnew->filename, ap_allow_options(rnew)))) {
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, rnew->server,
                             "Symbolic link not allowed: %s", rnew->filename);
                 rnew->status = res;
                 return rnew;
@@ -796,7 +796,7 @@ API_EXPORT(request_rec *) sub_req_lookup_file(const char *new_file,
                 return rnew;
             }
             if (rnew->per_dir_config == r->per_dir_config) {
-                if ((res = find_types(rnew)) || (res = run_fixups(rnew))) {
+                if ((res = ap_find_types(rnew)) || (res = ap_run_fixups(rnew))) {
                     rnew->status = res;
                 }
                 return rnew;
@@ -805,7 +805,7 @@ API_EXPORT(request_rec *) sub_req_lookup_file(const char *new_file,
     }
     else {
 	/* XXX: @@@: What should be done with the parsed_uri values? */
-	parse_uri(rnew, new_file);	/* fill in parsed_uri values */
+	ap_parse_uri(rnew, new_file);	/* fill in parsed_uri values */
         /*
          * XXX: this should be set properly like it is in the same-dir case
          * but it's actually sometimes to impossible to do it... because the
@@ -813,8 +813,8 @@ API_EXPORT(request_rec *) sub_req_lookup_file(const char *new_file,
          */
         rnew->uri = "INTERNALLY GENERATED file-relative req";
         rnew->filename = ((new_file[0] == '/') ?
-                          pstrdup(rnew->pool, new_file) :
-                          make_full_path(rnew->pool, fdir, new_file));
+                          ap_pstrdup(rnew->pool, new_file) :
+                          ap_make_full_path(rnew->pool, fdir, new_file));
         rnew->per_dir_config = r->server->lookup_defaults;
         res = directory_walk(rnew);
         if (!res) {
@@ -823,36 +823,36 @@ API_EXPORT(request_rec *) sub_req_lookup_file(const char *new_file,
     }
 
     if (res
-        || ((satisfies(rnew) == SATISFY_ALL
-             || satisfies(rnew) == SATISFY_NOSPEC)
-            ? ((res = check_access(rnew))
-               || (some_auth_required(rnew)
-                   && ((res = check_user_id(rnew))
-                       || (res = check_auth(rnew)))))
-            : ((res = check_access(rnew))
-               && (!some_auth_required(rnew)
-                   || ((res = check_user_id(rnew))
-                       || (res = check_auth(rnew)))))
+        || ((ap_satisfies(rnew) == SATISFY_ALL
+             || ap_satisfies(rnew) == SATISFY_NOSPEC)
+            ? ((res = ap_check_access(rnew))
+               || (ap_some_auth_required(rnew)
+                   && ((res = ap_check_user_id(rnew))
+                       || (res = ap_check_auth(rnew)))))
+            : ((res = ap_check_access(rnew))
+               && (!ap_some_auth_required(rnew)
+                   || ((res = ap_check_user_id(rnew))
+                       || (res = ap_check_auth(rnew)))))
            )
-        || (res = find_types(rnew))
-        || (res = run_fixups(rnew))
+        || (res = ap_find_types(rnew))
+        || (res = ap_run_fixups(rnew))
        ) {
         rnew->status = res;
     }
     return rnew;
 }
 
-API_EXPORT(int) run_sub_req(request_rec *r)
+API_EXPORT(int) ap_run_sub_req(request_rec *r)
 {
-    int retval = invoke_handler(r);
-    finalize_sub_req_protocol(r);
+    int retval = ap_invoke_handler(r);
+    ap_finalize_sub_req_protocol(r);
     return retval;
 }
 
-API_EXPORT(void) destroy_sub_req(request_rec *r)
+API_EXPORT(void) ap_destroy_sub_req(request_rec *r)
 {
     /* Reclaim the space */
-    destroy_pool(r->pool);
+    ap_destroy_pool(r->pool);
 }
 
 /*****************************************************************
@@ -860,14 +860,14 @@ API_EXPORT(void) destroy_sub_req(request_rec *r)
  * Mainline request processing...
  */
 
-void die(int type, request_rec *r)
+void ap_die(int type, request_rec *r)
 {
-    int error_index = index_of_response(type);
-    char *custom_response = response_code_string(r, error_index);
+    int error_index = ap_index_of_response(type);
+    char *custom_response = ap_response_code_string(r, error_index);
     int recursive_error = 0;
 
     if (type == DONE) {
-        finalize_request_protocol(r);
+        ap_finalize_request_protocol(r);
         return;
     }
 
@@ -907,7 +907,7 @@ void die(int type, request_rec *r)
         && !status_drops_connection(r->status)
         && r->connection && (r->connection->keepalive != -1)) {
 
-        (void) discard_request_body(r);
+        (void) ap_discard_request_body(r);
     }
 
     /*
@@ -917,7 +917,7 @@ void die(int type, request_rec *r)
 
     if (custom_response && custom_response[0] != '"') {
 
-        if (is_url(custom_response)) {
+        if (ap_is_url(custom_response)) {
             /*
              * The URL isn't local, so lets drop through the rest of this
              * apache code, and continue with the usual REDIRECT handler.
@@ -925,7 +925,7 @@ void die(int type, request_rec *r)
              * status...
              */
             r->status = REDIRECT;
-            table_setn(r->headers_out, "Location", custom_response);
+            ap_table_setn(r->headers_out, "Location", custom_response);
         }
         else if (custom_response[0] == '/') {
             r->no_local_copy = 1;       /* Do NOT send USE_LOCAL_COPY for
@@ -934,10 +934,10 @@ void die(int type, request_rec *r)
              * This redirect needs to be a GET no matter what the original
              * method was.
              */
-            table_setn(r->subprocess_env, "REQUEST_METHOD", r->method);
-            r->method = pstrdup(r->pool, "GET");
+            ap_table_setn(r->subprocess_env, "REQUEST_METHOD", r->method);
+            r->method = ap_pstrdup(r->pool, "GET");
             r->method_number = M_GET;
-            internal_redirect(custom_response, r);
+            ap_internal_redirect(custom_response, r);
             return;
         }
         else {
@@ -946,30 +946,30 @@ void die(int type, request_rec *r)
              * dying with a recursive server error...
              */
             recursive_error = SERVER_ERROR;
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                         "Invalid error redirection directive: %s",
                         custom_response);
         }
     }
-    send_error_response(r, recursive_error);
+    ap_send_error_response(r, recursive_error);
 }
 
 static void decl_die(int status, char *phase, request_rec *r)
 {
     if (status == DECLINED) {
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, r->server,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, r->server,
                     "configuration error:  couldn't %s: %s", phase, r->uri);
-        die(SERVER_ERROR, r);
+        ap_die(SERVER_ERROR, r);
     }
     else
-        die(status, r);
+        ap_die(status, r);
 }
 
-API_EXPORT(int) some_auth_required(request_rec *r)
+API_EXPORT(int) ap_some_auth_required(request_rec *r)
 {
     /* Is there a require line configured for the type of *this* req? */
 
-    array_header *reqs_arr = requires(r);
+    array_header *reqs_arr = ap_requires(r);
     require_line *reqs;
     int i;
 
@@ -1000,15 +1000,15 @@ static void process_request_internal(request_rec *r)
          * headers!  Have to dink things even to make sure the error message
          * comes through...
          */
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "client sent illegal HTTP/0.9 request: %s", r->uri);
         r->header_only = 0;
-        die(BAD_REQUEST, r);
+        ap_die(BAD_REQUEST, r);
         return;
     }
 
     if ((!r->hostname && (r->proto_num >= HTTP_VERSION(1,1))) ||
-        ((r->proto_num == HTTP_VERSION(1,1)) && !table_get(r->headers_in, "Host"))) {
+        ((r->proto_num == HTTP_VERSION(1,1)) && !ap_table_get(r->headers_in, "Host"))) {
         /*
          * Client sent us a HTTP/1.1 or later request without telling us the
          * hostname, either with a full URL or a Host: header. We therefore
@@ -1016,29 +1016,29 @@ static void process_request_internal(request_rec *r)
 	 * HTTP/1.1 mentions twice (S9, S14.23) that a request MUST contain
 	 * a Host: header, and the server MUST respond with 400 if it doesn't.
          */
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                "client sent HTTP/1.1 request without hostname (see RFC2068 section 9, and 14.23): %s", r->uri);
-        die(BAD_REQUEST, r);
+        ap_die(BAD_REQUEST, r);
         return;
     }
 
     /* Ignore embedded %2F's in path for proxy requests */
     if (!r->proxyreq && r->parsed_uri.path) {
-	access_status = unescape_url(r->parsed_uri.path);
+	access_status = ap_unescape_url(r->parsed_uri.path);
 	if (access_status) {
-	    die(access_status, r);
+	    ap_die(access_status, r);
 	    return;
 	}
     }
 
-    getparents(r->uri);     /* OK --- shrinking transformations... */
+    ap_getparents(r->uri);     /* OK --- shrinking transformations... */
 
     if ((access_status = location_walk(r))) {
-        die(access_status, r);
+        ap_die(access_status, r);
         return;
     }
 
-    if ((access_status = translate_name(r))) {
+    if ((access_status = ap_translate_name(r))) {
         decl_die(access_status, "translate", r);
         return;
     }
@@ -1049,15 +1049,15 @@ static void process_request_internal(request_rec *r)
 	 * handle it specially.
 	 */
 	if (r->method_number == M_TRACE) {
-	    if ((access_status = send_http_trace(r)))
-		die(access_status, r);
+	    if ((access_status = ap_send_http_trace(r)))
+		ap_die(access_status, r);
 	    else
-		finalize_request_protocol(r);
+		ap_finalize_request_protocol(r);
 	    return;
 	}
     }
 
-    if (r->proto_num > HTTP_VERSION(1,0) && table_get(r->subprocess_env, "downgrade-1.0")) {
+    if (r->proto_num > HTTP_VERSION(1,0) && ap_table_get(r->subprocess_env, "downgrade-1.0")) {
         r->proto_num = HTTP_VERSION(1,0);
     }
 
@@ -1067,41 +1067,41 @@ static void process_request_internal(request_rec *r)
      */
 
     if ((access_status = directory_walk(r))) {
-        die(access_status, r);
+        ap_die(access_status, r);
         return;
     }
 
     if ((access_status = file_walk(r))) {
-        die(access_status, r);
+        ap_die(access_status, r);
         return;
     }
 
     if ((access_status = location_walk(r))) {
-        die(access_status, r);
+        ap_die(access_status, r);
         return;
     }
 
-    if ((access_status = header_parse(r))) {
-        die(access_status, r);
+    if ((access_status = ap_header_parse(r))) {
+        ap_die(access_status, r);
         return;
     }
 
-    switch (satisfies(r)) {
+    switch (ap_satisfies(r)) {
     case SATISFY_ALL:
     case SATISFY_NOSPEC:
-        if ((access_status = check_access(r)) != 0) {
+        if ((access_status = ap_check_access(r)) != 0) {
             decl_die(access_status, "check access", r);
             return;
         }
-        if (some_auth_required(r)) {
-            if (((access_status = check_user_id(r)) != 0) || !auth_type(r)) {
-                decl_die(access_status, auth_type(r)
+        if (ap_some_auth_required(r)) {
+            if (((access_status = ap_check_user_id(r)) != 0) || !ap_auth_type(r)) {
+                decl_die(access_status, ap_auth_type(r)
 		    ? "check user.  No user file?"
 		    : "perform authentication. AuthType not set!", r);
                 return;
             }
-            if (((access_status = check_auth(r)) != 0) || !auth_type(r)) {
-                decl_die(access_status, auth_type(r)
+            if (((access_status = ap_check_auth(r)) != 0) || !ap_auth_type(r)) {
+                decl_die(access_status, ap_auth_type(r)
 		    ? "check access.  No groups file?"
 		    : "perform authentication. AuthType not set!", r);
                 return;
@@ -1109,21 +1109,21 @@ static void process_request_internal(request_rec *r)
         }
         break;
     case SATISFY_ANY:
-        if (((access_status = check_access(r)) != 0) || !auth_type(r)) {
-            if (!some_auth_required(r)) {
-                decl_die(access_status, auth_type(r)
+        if (((access_status = ap_check_access(r)) != 0) || !ap_auth_type(r)) {
+            if (!ap_some_auth_required(r)) {
+                decl_die(access_status, ap_auth_type(r)
 		    ? "check access"
 		    : "perform authentication. AuthType not set!", r);
                 return;
             }
-            if (((access_status = check_user_id(r)) != 0) || !auth_type(r)) {
-                decl_die(access_status, auth_type(r)
+            if (((access_status = ap_check_user_id(r)) != 0) || !ap_auth_type(r)) {
+                decl_die(access_status, ap_auth_type(r)
 		    ? "check user.  No user file?"
 		    : "perform authentication. AuthType not set!", r);
                 return;
             }
-            if (((access_status = check_auth(r)) != 0) || !auth_type(r)) {
-                decl_die(access_status, auth_type(r)
+            if (((access_status = ap_check_auth(r)) != 0) || !ap_auth_type(r)) {
+                decl_die(access_status, ap_auth_type(r)
 		    ? "check access.  No groups file?"
 		    : "perform authentication. AuthType not set!", r);
                 return;
@@ -1135,38 +1135,38 @@ static void process_request_internal(request_rec *r)
     if (! (r->proxyreq 
 	   && r->parsed_uri.scheme != NULL
 	   && strcmp(r->parsed_uri.scheme, "http") == 0) ) {
-	if ((access_status = find_types(r)) != 0) {
+	if ((access_status = ap_find_types(r)) != 0) {
 	    decl_die(access_status, "find types", r);
 	    return;
 	}
     }
 
-    if ((access_status = run_fixups(r)) != 0) {
-        die(access_status, r);
+    if ((access_status = ap_run_fixups(r)) != 0) {
+        ap_die(access_status, r);
         return;
     }
 
-    if ((access_status = invoke_handler(r)) != 0) {
-        die(access_status, r);
+    if ((access_status = ap_invoke_handler(r)) != 0) {
+        ap_die(access_status, r);
         return;
     }
 
     /* Take care of little things that need to happen when we're done */
-    finalize_request_protocol(r);
+    ap_finalize_request_protocol(r);
 }
 
-void process_request(request_rec *r)
+void ap_process_request(request_rec *r)
 {
 #ifdef STATUS
     int old_stat;
 
-    time_process_request(r->connection->child_num, START_PREQUEST);
+    ap_time_process_request(r->connection->child_num, START_PREQUEST);
 #endif
 
     process_request_internal(r);
 
 #ifdef STATUS
-    old_stat = update_child_status(r->connection->child_num,
+    old_stat = ap_update_child_status(r->connection->child_num,
                                    SERVER_BUSY_LOG, r);
 #endif
 
@@ -1177,12 +1177,12 @@ void process_request(request_rec *r)
      * this packet, then it'll appear like the link is stalled when really
      * it's the application that's stalled.
      */
-    bhalfduplex(r->connection->client);
-    log_transaction(r);
+    ap_bhalfduplex(r->connection->client);
+    ap_log_transaction(r);
 
 #ifdef STATUS
-    (void) update_child_status(r->connection->child_num, old_stat, r);
-    time_process_request(r->connection->child_num, STOP_PREQUEST);
+    (void) ap_update_child_status(r->connection->child_num, old_stat, r);
+    ap_time_process_request(r->connection->child_num, STOP_PREQUEST);
 #endif
 }
 
@@ -1190,13 +1190,13 @@ static table *rename_original_env(pool *p, table *t)
 {
     array_header *env_arr = table_elts(t);
     table_entry *elts = (table_entry *) env_arr->elts;
-    table *new = make_table(p, env_arr->nalloc);
+    table *new = ap_make_table(p, env_arr->nalloc);
     int i;
 
     for (i = 0; i < env_arr->nelts; ++i) {
         if (!elts[i].key)
             continue;
-        table_setn(new, pstrcat(p, "REDIRECT_", elts[i].key, NULL),
+        ap_table_setn(new, ap_pstrcat(p, "REDIRECT_", elts[i].key, NULL),
                   elts[i].val);
     }
 
@@ -1206,7 +1206,7 @@ static table *rename_original_env(pool *p, table *t)
 static request_rec *internal_internal_redirect(const char *new_uri, request_rec *r)
 {
     int access_status;
-    request_rec *new = (request_rec *) pcalloc(r->pool, sizeof(request_rec));
+    request_rec *new = (request_rec *) ap_pcalloc(r->pool, sizeof(request_rec));
 
     new->connection = r->connection;
     new->server     = r->server;
@@ -1220,8 +1220,8 @@ static request_rec *internal_internal_redirect(const char *new_uri, request_rec 
 
     new->method          = r->method;
     new->method_number   = r->method_number;
-    parse_uri(new, new_uri);
-    new->request_config = create_request_config(r->pool);
+    ap_parse_uri(new, new_uri);
+    new->request_config = ap_create_request_config(r->pool);
     new->per_dir_config = r->server->lookup_defaults;
 
     new->prev = r;
@@ -1243,33 +1243,33 @@ static request_rec *internal_internal_redirect(const char *new_uri, request_rec 
     new->main            = r->main;
 
     new->headers_in      = r->headers_in;
-    new->headers_out     = make_table(r->pool, 12);
+    new->headers_out     = ap_make_table(r->pool, 12);
     new->err_headers_out = r->err_headers_out;
     new->subprocess_env  = rename_original_env(r->pool, r->subprocess_env);
-    new->notes           = make_table(r->pool, 5);
+    new->notes           = ap_make_table(r->pool, 5);
 
     new->htaccess        = r->htaccess;
     new->no_cache        = r->no_cache;
     new->no_local_copy   = r->no_local_copy;
     new->read_length     = r->read_length;     /* We can only read it once */
 
-    table_setn(new->subprocess_env, "REDIRECT_STATUS",
-	psprintf(r->pool, "%d", r->status));
+    ap_table_setn(new->subprocess_env, "REDIRECT_STATUS",
+	ap_psprintf(r->pool, "%d", r->status));
 
     /*
      * XXX: hmm.  This is because mod_setenvif and mod_unique_id really need
      * to do their thing on internal redirects as well.  Perhaps this is a
      * misnamed function.
      */
-    if ((access_status = run_post_read_request(new))) {
-        die(access_status, new);
+    if ((access_status = ap_run_post_read_request(new))) {
+        ap_die(access_status, new);
         return NULL;
     }
 
     return new;
 }
 
-API_EXPORT(void) internal_redirect(const char *new_uri, request_rec *r)
+API_EXPORT(void) ap_internal_redirect(const char *new_uri, request_rec *r)
 {
     request_rec *new = internal_internal_redirect(new_uri, r);
     process_request_internal(new);
@@ -1279,7 +1279,7 @@ API_EXPORT(void) internal_redirect(const char *new_uri, request_rec *r)
  * using AddHandler, and you want to preserve the content type across
  * an internal redirect.
  */
-API_EXPORT(void) internal_redirect_handler(const char *new_uri, request_rec *r)
+API_EXPORT(void) ap_internal_redirect_handler(const char *new_uri, request_rec *r)
 {
     request_rec *new = internal_internal_redirect(new_uri, r);
     if (r->handler)
@@ -1290,7 +1290,7 @@ API_EXPORT(void) internal_redirect_handler(const char *new_uri, request_rec *r)
 /*
  * Is it the initial main request, which we only get *once* per HTTP request?
  */
-API_EXPORT(int) is_initial_req(request_rec *r)
+API_EXPORT(int) ap_is_initial_req(request_rec *r)
 {
     return
         (r->main == NULL)       /* otherwise, this is a sub-request */
@@ -1302,7 +1302,7 @@ API_EXPORT(int) is_initial_req(request_rec *r)
  * Function to set the r->mtime field to the specified value if it's later
  * than what's already there.
  */
-API_EXPORT(time_t) update_mtime(request_rec *r, time_t dependency_mtime)
+API_EXPORT(time_t) ap_update_mtime(request_rec *r, time_t dependency_mtime)
 {
     if (r->mtime < dependency_mtime) {
         r->mtime = dependency_mtime;

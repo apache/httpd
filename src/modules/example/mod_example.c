@@ -255,7 +255,7 @@ module example_module;
 static excfg *our_dconfig(request_rec *r)
 {
 
-    return (excfg *) get_module_config(r->per_dir_config, &example_module);
+    return (excfg *) ap_get_module_config(r->per_dir_config, &example_module);
 }
 
 #if 0
@@ -265,7 +265,7 @@ static excfg *our_dconfig(request_rec *r)
 static excfg *our_sconfig(server_rec *s)
 {
 
-    return (excfg *) get_module_config(s->module_config, &example_module);
+    return (excfg *) ap_get_module_config(s->module_config, &example_module);
 }
 
 /*
@@ -274,7 +274,7 @@ static excfg *our_sconfig(server_rec *s)
 static excfg *our_rconfig(request_rec *r)
 {
 
-    return (excfg *) get_module_config(r->request_config, &example_module);
+    return (excfg *) ap_get_module_config(r->request_config, &example_module);
 }
 #endif
 
@@ -287,14 +287,14 @@ static void setup_module_cells()
      * If we haven't already allocated our module-private pool, do so now.
      */
     if (example_pool == NULL) {
-        example_pool = make_sub_pool(NULL);
+        example_pool = ap_make_sub_pool(NULL);
     };
     /*
      * Likewise for the table of routine/environment pairs we visit outside of
      * request context.
      */
     if (static_calls_made == NULL) {
-        static_calls_made = make_table(example_pool, 16);
+        static_calls_made = ap_make_table(example_pool, 16);
     };
 }
 
@@ -337,7 +337,7 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
      */
     if (r != NULL) {
         p = r->pool;
-        if ((trace_copy = table_get(r->notes, TRACE_NOTE)) == NULL) {
+        if ((trace_copy = ap_table_get(r->notes, TRACE_NOTE)) == NULL) {
             trace_copy = "";
         }
     }
@@ -352,16 +352,16 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
          * Make a new sub-pool and copy any existing trace to it.  Point the
          * trace cell at the copied value.
          */
-        p = make_sub_pool(example_pool);
+        p = ap_make_sub_pool(example_pool);
         if (trace != NULL) {
-            trace = pstrdup(p, trace);
+            trace = ap_pstrdup(p, trace);
         }
         /*
          * Now, if we have a sub-pool from before, nuke it and replace with
          * the one we just allocated.
          */
         if (example_subpool != NULL) {
-            destroy_pool(example_subpool);
+            ap_destroy_pool(example_subpool);
         }
         example_subpool = p;
         trace_copy = trace;
@@ -383,8 +383,8 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
     if (r == NULL) {
         char *key;
 
-        key = pstrcat(p, note, ":", where, NULL);
-        if (table_get(static_calls_made, key) != NULL) {
+        key = ap_pstrcat(p, note, ":", where, NULL);
+        if (ap_table_get(static_calls_made, key) != NULL) {
             /*
              * Been here, done this.
              */
@@ -395,17 +395,17 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
              * First time for this combination of routine and environment -
              * log it so we don't do it again.
              */
-            table_set(static_calls_made, key, "been here");
+            ap_table_set(static_calls_made, key, "been here");
         }
     }
-    addon = pstrcat(p, "   <LI>\n", "    <DL>\n", "     <DT><SAMP>",
+    addon = ap_pstrcat(p, "   <LI>\n", "    <DL>\n", "     <DT><SAMP>",
                     note, "</SAMP>\n", "     </DT>\n", "     <DD><SAMP>[",
                     where, "]</SAMP>\n", "     </DD>\n", "    </DL>\n",
                     "   </LI>\n", NULL);
     sofar = (trace_copy == NULL) ? "" : trace_copy;
-    trace_copy = pstrcat(p, sofar, addon, NULL);
+    trace_copy = ap_pstrcat(p, sofar, addon, NULL);
     if (r != NULL) {
-        table_set(r->notes, TRACE_NOTE, trace_copy);
+        ap_table_set(r->notes, TRACE_NOTE, trace_copy);
     }
     else {
         trace = trace_copy;
@@ -418,7 +418,7 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
      */
 #define EXAMPLE_LOG_EACH 0
     if (EXAMPLE_LOG_EACH && (s != NULL)) {
-        aplog_error(APLOG_MARK, APLOG_DEBUG, s, "mod_example: %s", note);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, s, "mod_example: %s", note);
     }
 }
 
@@ -503,14 +503,14 @@ static int example_handler(request_rec *r)
      * is broken.
      */
     r->content_type = "text/html";
-    soft_timeout("send example call trace", r);
-    send_http_header(r);
+    ap_soft_timeout("send example call trace", r);
+    ap_send_http_header(r);
     /*
      * If we're only supposed to send header information (HEAD request), we're
      * already there.
      */
     if (r->header_only) {
-        kill_timeout(r);
+        ap_kill_timeout(r);
         return OK;
     }
 
@@ -518,63 +518,63 @@ static int example_handler(request_rec *r)
      * Now send our actual output.  Since we tagged this as being
      * "text/html", we need to embed any HTML.
      */
-    rputs("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n", r);
-    rputs("<HTML>\n", r);
-    rputs(" <HEAD>\n", r);
-    rputs("  <TITLE>mod_example Module Content-Handler Output\n", r);
-    rputs("  </TITLE>\n", r);
-    rputs(" </HEAD>\n", r);
-    rputs(" <BODY>\n", r);
-    rputs("  <H1><SAMP>mod_example</SAMP> Module Content-Handler Output\n", r);
-    rputs("  </H1>\n", r);
-    rputs("  <P>\n", r);
-    rprintf(r, "  Apache HTTP Server version: \"%s\"\n",
-	    apapi_get_server_version());
-    rputs("  <BR>\n", r);
-    rprintf(r, "  Server built: \"%s\"\n", apapi_get_server_built());
-    rputs("  </P>\n", r);;
-    rputs("  <P>\n", r);
-    rputs("  The format for the callback trace is:\n", r);
-    rputs("  </P>\n", r);
-    rputs("  <DL>\n", r);
-    rputs("   <DT><EM>n</EM>.<SAMP>&lt;routine-name&gt;", r);
-    rputs("(&lt;routine-data&gt;)</SAMP>\n", r);
-    rputs("   </DT>\n", r);
-    rputs("   <DD><SAMP>[&lt;applies-to&gt;]</SAMP>\n", r);
-    rputs("   </DD>\n", r);
-    rputs("  </DL>\n", r);
-    rputs("  <P>\n", r);
-    rputs("  The <SAMP>&lt;routine-data&gt;</SAMP> is supplied by\n", r);
-    rputs("  the routine when it requests the trace,\n", r);
-    rputs("  and the <SAMP>&lt;applies-to&gt;</SAMP> is extracted\n", r);
-    rputs("  from the configuration record at the time of the trace.\n", r);
-    rputs("  <STRONG>SVR()</STRONG> indicates a server environment\n", r);
-    rputs("  (blank means the main or default server, otherwise it's\n", r);
-    rputs("  the name of the VirtualHost); <STRONG>DIR()</STRONG>\n", r);
-    rputs("  indicates a location in the URL or filesystem\n", r);
-    rputs("  namespace.\n", r);
-    rputs("  </P>\n", r);
-    rprintf(r, "  <H2>Static callbacks so far:</H2>\n  <OL>\n%s  </OL>\n",
+    ap_rputs("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n", r);
+    ap_rputs("<HTML>\n", r);
+    ap_rputs(" <HEAD>\n", r);
+    ap_rputs("  <TITLE>mod_example Module Content-Handler Output\n", r);
+    ap_rputs("  </TITLE>\n", r);
+    ap_rputs(" </HEAD>\n", r);
+    ap_rputs(" <BODY>\n", r);
+    ap_rputs("  <H1><SAMP>mod_example</SAMP> Module Content-Handler Output\n", r);
+    ap_rputs("  </H1>\n", r);
+    ap_rputs("  <P>\n", r);
+    ap_rprintf(r, "  Apache HTTP Server version: \"%s\"\n",
+	    ap_get_server_version());
+    ap_rputs("  <BR>\n", r);
+    ap_rprintf(r, "  Server built: \"%s\"\n", ap_get_server_built());
+    ap_rputs("  </P>\n", r);;
+    ap_rputs("  <P>\n", r);
+    ap_rputs("  The format for the callback trace is:\n", r);
+    ap_rputs("  </P>\n", r);
+    ap_rputs("  <DL>\n", r);
+    ap_rputs("   <DT><EM>n</EM>.<SAMP>&lt;routine-name&gt;", r);
+    ap_rputs("(&lt;routine-data&gt;)</SAMP>\n", r);
+    ap_rputs("   </DT>\n", r);
+    ap_rputs("   <DD><SAMP>[&lt;applies-to&gt;]</SAMP>\n", r);
+    ap_rputs("   </DD>\n", r);
+    ap_rputs("  </DL>\n", r);
+    ap_rputs("  <P>\n", r);
+    ap_rputs("  The <SAMP>&lt;routine-data&gt;</SAMP> is supplied by\n", r);
+    ap_rputs("  the routine when it requests the trace,\n", r);
+    ap_rputs("  and the <SAMP>&lt;applies-to&gt;</SAMP> is extracted\n", r);
+    ap_rputs("  from the configuration record at the time of the trace.\n", r);
+    ap_rputs("  <STRONG>SVR()</STRONG> indicates a server environment\n", r);
+    ap_rputs("  (blank means the main or default server, otherwise it's\n", r);
+    ap_rputs("  the name of the VirtualHost); <STRONG>DIR()</STRONG>\n", r);
+    ap_rputs("  indicates a location in the URL or filesystem\n", r);
+    ap_rputs("  namespace.\n", r);
+    ap_rputs("  </P>\n", r);
+    ap_rprintf(r, "  <H2>Static callbacks so far:</H2>\n  <OL>\n%s  </OL>\n",
             trace);
-    rputs("  <H2>Request-specific callbacks so far:</H2>\n", r);
-    rprintf(r, "  <OL>\n%s  </OL>\n", table_get(r->notes, TRACE_NOTE));
-    rputs("  <H2>Environment for <EM>this</EM> call:</H2>\n", r);
-    rputs("  <UL>\n", r);
-    rprintf(r, "   <LI>Applies-to: <SAMP>%s</SAMP>\n   </LI>\n", dcfg->loc);
-    rprintf(r, "   <LI>\"Example\" directive declared here: %s\n   </LI>\n",
+    ap_rputs("  <H2>Request-specific callbacks so far:</H2>\n", r);
+    ap_rprintf(r, "  <OL>\n%s  </OL>\n", ap_table_get(r->notes, TRACE_NOTE));
+    ap_rputs("  <H2>Environment for <EM>this</EM> call:</H2>\n", r);
+    ap_rputs("  <UL>\n", r);
+    ap_rprintf(r, "   <LI>Applies-to: <SAMP>%s</SAMP>\n   </LI>\n", dcfg->loc);
+    ap_rprintf(r, "   <LI>\"Example\" directive declared here: %s\n   </LI>\n",
             (dcfg->local ? "YES" : "NO"));
-    rprintf(r, "   <LI>\"Example\" inherited: %s\n   </LI>\n",
+    ap_rprintf(r, "   <LI>\"Example\" inherited: %s\n   </LI>\n",
             (dcfg->congenital ? "YES" : "NO"));
-    rputs("  </UL>\n", r);
-    rputs(" </BODY>\n", r);
-    rputs("</HTML>\n", r);
+    ap_rputs("  </UL>\n", r);
+    ap_rputs(" </BODY>\n", r);
+    ap_rputs("</HTML>\n", r);
     /*
      * We're all done, so cancel the timeout we set.  Since this is probably
      * the end of the request we *could* assume this would be done during
      * post-processing - but it's possible that another handler might be
      * called and inherit our outstanding timer.  Not good; to each its own.
      */
-    kill_timeout(r);
+    ap_kill_timeout(r);
     /*
      * We did what we wanted to do, so tell the rest of the server we
      * succeeded.
@@ -637,7 +637,7 @@ static void example_init(server_rec *s, pool *p)
      * we're being called.
      */
     sname = (sname != NULL) ? sname : "";
-    note = pstrcat(p, "example_init(", sname, ")", NULL);
+    note = ap_pstrcat(p, "example_init(", sname, ")", NULL);
     trace_add(s, NULL, NULL, note);
 }
 
@@ -668,7 +668,7 @@ static void example_child_init(server_rec *s, pool *p)
      * we're being called.
      */
     sname = (sname != NULL) ? sname : "";
-    note = pstrcat(p, "example_child_init(", sname, ")", NULL);
+    note = ap_pstrcat(p, "example_child_init(", sname, ")", NULL);
     trace_add(s, NULL, NULL, note);
 }
 
@@ -695,7 +695,7 @@ static void example_child_exit(server_rec *s, pool *p)
      * we're being called.
      */
     sname = (sname != NULL) ? sname : "";
-    note = pstrcat(p, "example_child_exit(", sname, ")", NULL);
+    note = ap_pstrcat(p, "example_child_exit(", sname, ")", NULL);
     trace_add(s, NULL, NULL, note);
 }
 
@@ -720,7 +720,7 @@ static void *example_create_dir_config(pool *p, char *dirspec)
     /*
      * Allocate the space for our record from the pool supplied.
      */
-    cfg = (excfg *) pcalloc(p, sizeof(excfg));
+    cfg = (excfg *) ap_pcalloc(p, sizeof(excfg));
     /*
      * Now fill in the defaults.  If there are any `parent' configuration
      * records, they'll get merged as part of a separate callback.
@@ -732,7 +732,7 @@ static void *example_create_dir_config(pool *p, char *dirspec)
      * Finally, add our trace to the callback list.
      */
     dname = (dname != NULL) ? dname : "";
-    cfg->loc = pstrcat(p, "DIR(", dname, ")", NULL);
+    cfg->loc = ap_pstrcat(p, "DIR(", dname, ")", NULL);
     trace_add(NULL, NULL, cfg, "example_create_dir_config()");
     return (void *) cfg;
 }
@@ -756,7 +756,7 @@ static void *example_merge_dir_config(pool *p, void *parent_conf,
                                       void *newloc_conf)
 {
 
-    excfg *merged_config = (excfg *) pcalloc(p, sizeof(excfg));
+    excfg *merged_config = (excfg *) ap_pcalloc(p, sizeof(excfg));
     excfg *pconf = (excfg *) parent_conf;
     excfg *nconf = (excfg *) newloc_conf;
     char *note;
@@ -766,7 +766,7 @@ static void *example_merge_dir_config(pool *p, void *parent_conf,
      * than getting merged.
      */
     merged_config->local = nconf->local;
-    merged_config->loc = pstrdup(p, nconf->loc);
+    merged_config->loc = ap_pstrdup(p, nconf->loc);
     /*
      * Others, like the setting of the `congenital' flag, get ORed in.  The
      * setting of that particular flag, for instance, is TRUE if it was ever
@@ -784,7 +784,7 @@ static void *example_merge_dir_config(pool *p, void *parent_conf,
      * Now just record our being called in the trace list.  Include the
      * locations we were asked to merge.
      */
-    note = pstrcat(p, "example_merge_dir_config(\"", pconf->loc, "\",\"",
+    note = ap_pstrcat(p, "example_merge_dir_config(\"", pconf->loc, "\",\"",
                    nconf->loc, "\")", NULL);
     trace_add(NULL, NULL, merged_config, note);
     return (void *) merged_config;
@@ -807,7 +807,7 @@ static void *example_create_server_config(pool *p, server_rec *s)
      * As with the example_create_dir_config() reoutine, we allocate and fill
      * in an empty record.
      */
-    cfg = (excfg *) pcalloc(p, sizeof(excfg));
+    cfg = (excfg *) ap_pcalloc(p, sizeof(excfg));
     cfg->local = 0;
     cfg->congenital = 0;
     cfg->cmode = CONFIG_MODE_SERVER;
@@ -815,7 +815,7 @@ static void *example_create_server_config(pool *p, server_rec *s)
      * Note that we were called in the trace list.
      */
     sname = (sname != NULL) ? sname : "";
-    cfg->loc = pstrcat(p, "SVR(", sname, ")", NULL);
+    cfg->loc = ap_pstrcat(p, "SVR(", sname, ")", NULL);
     trace_add(s, NULL, cfg, "example_create_server_config()");
     return (void *) cfg;
 }
@@ -837,7 +837,7 @@ static void *example_merge_server_config(pool *p, void *server1_conf,
                                          void *server2_conf)
 {
 
-    excfg *merged_config = (excfg *) pcalloc(p, sizeof(excfg));
+    excfg *merged_config = (excfg *) ap_pcalloc(p, sizeof(excfg));
     excfg *s1conf = (excfg *) server1_conf;
     excfg *s2conf = (excfg *) server2_conf;
     char *note;
@@ -850,11 +850,11 @@ static void *example_merge_server_config(pool *p, void *server1_conf,
         (s1conf->cmode == s2conf->cmode) ? s1conf->cmode : CONFIG_MODE_COMBO;
     merged_config->local = s2conf->local;
     merged_config->congenital = (s1conf->congenital | s1conf->local);
-    merged_config->loc = pstrdup(p, s2conf->loc);
+    merged_config->loc = ap_pstrdup(p, s2conf->loc);
     /*
      * Trace our call, including what we were asked to merge.
      */
-    note = pstrcat(p, "example_merge_server_config(\"", s1conf->loc, "\",\"",
+    note = ap_pstrcat(p, "example_merge_server_config(\"", s1conf->loc, "\",\"",
                    s2conf->loc, "\")", NULL);
     trace_add(NULL, NULL, merged_config, note);
     return (void *) merged_config;

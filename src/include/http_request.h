@@ -78,12 +78,12 @@
  * about which was allocated in its pool elsewhere before doing this.
  */
 
-API_EXPORT(request_rec *) sub_req_lookup_uri(const char *new_file,
+API_EXPORT(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
                                              const request_rec *r);
-API_EXPORT(request_rec *) sub_req_lookup_file(const char *new_file,
+API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
                                               const request_rec *r);
-API_EXPORT(int) run_sub_req(request_rec *r);
-API_EXPORT(void) destroy_sub_req(request_rec *r);
+API_EXPORT(int) ap_run_sub_req(request_rec *r);
+API_EXPORT(void) ap_destroy_sub_req(request_rec *r);
 
 /*
  * Then there's the case that you want some other request to be served
@@ -91,16 +91,16 @@ API_EXPORT(void) destroy_sub_req(request_rec *r);
  * If so, call this from a handler, and then immediately return OK.
  */
 
-API_EXPORT(void) internal_redirect(const char *new_uri, request_rec *);
-API_EXPORT(void) internal_redirect_handler(const char *new_uri, request_rec *);
-API_EXPORT(int) some_auth_required(request_rec *r);
-API_EXPORT(int) is_initial_req(request_rec *r);
-API_EXPORT(time_t) update_mtime(request_rec *r, time_t dependency_mtime);
+API_EXPORT(void) ap_internal_redirect(const char *new_uri, request_rec *);
+API_EXPORT(void) ap_internal_redirect_handler(const char *new_uri, request_rec *);
+API_EXPORT(int) ap_some_auth_required(request_rec *r);
+API_EXPORT(int) ap_is_initial_req(request_rec *r);
+API_EXPORT(time_t) ap_update_mtime(request_rec *r, time_t dependency_mtime);
 
 #ifdef CORE_PRIVATE
 /* Function called by main.c to handle first-level request */
-void process_request(request_rec *);
-void die(int type, request_rec *r);
+void ap_process_request(request_rec *);
+void ap_die(int type, request_rec *r);
 #endif
 
 #endif	/* !APACHE_HTTP_REQUEST_H */

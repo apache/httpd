@@ -16,7 +16,7 @@
 /* Compiler does not support inline, so prototype the inlineable functions
  * as normal
  */
-extern int os_is_path_absolute(const char *f);
+extern int ap_is_path_absolute(const char *f);
 #endif
 
 /* OS/2 doesn't have symlinks so S_ISLNK is always false */

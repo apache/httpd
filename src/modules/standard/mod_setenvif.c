@@ -144,18 +144,18 @@ module MODULE_VAR_EXPORT setenvif_module;
 
 static void *create_setenvif_config(pool *p, server_rec *dummy)
 {
-    sei_cfg_rec *new = (sei_cfg_rec *) palloc(p, sizeof(sei_cfg_rec));
+    sei_cfg_rec *new = (sei_cfg_rec *) ap_palloc(p, sizeof(sei_cfg_rec));
 
-    new->conditionals = make_array(p, 20, sizeof(sei_entry));
+    new->conditionals = ap_make_array(p, 20, sizeof(sei_entry));
     return (void *) new;
 }
 
 static void *merge_setenvif_config(pool *p, void *basev, void *overridesv)
 {
-    sei_cfg_rec *a = pcalloc(p, sizeof(sei_cfg_rec));
+    sei_cfg_rec *a = ap_pcalloc(p, sizeof(sei_cfg_rec));
     sei_cfg_rec *base = basev, *overrides = overridesv;
 
-    a->conditionals = append_arrays(p, base->conditionals,
+    a->conditionals = ap_append_arrays(p, base->conditionals,
                                     overrides->conditionals);
     return a;
 }
@@ -169,7 +169,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 {
     char *regex;
     const char *feature;
-    sei_cfg_rec *sconf = get_module_config(cmd->server->module_config,
+    sei_cfg_rec *sconf = ap_get_module_config(cmd->server->module_config,
                                            &setenvif_module);
     sei_entry *new, *entries = (sei_entry *) sconf->conditionals->elts;
     char *var;
@@ -178,9 +178,9 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
     unsigned icase;
 
     /* get regex */
-    regex = getword_conf(cmd->pool, &args);
+    regex = ap_getword_conf(cmd->pool, &args);
     if (!*regex) {
-        return pstrcat(cmd->pool, "Missing regular expression for ",
+        return ap_pstrcat(cmd->pool, "Missing regular expression for ",
                         cmd->cmd->name, NULL);
     }
 
@@ -210,18 +210,18 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 
 	/* no match, create a new entry */
 
-	new = push_array(sconf->conditionals);
+	new = ap_push_array(sconf->conditionals);
 	new->name = fname;
 	new->regex = regex;
 	new->icase = icase;
-	new->preg = pregcomp(cmd->pool, regex,
+	new->preg = ap_pregcomp(cmd->pool, regex,
 			    (REG_EXTENDED | REG_NOSUB
 			    | (icase ? REG_ICASE : 0)));
 	if (new->preg == NULL) {
-	    return pstrcat(cmd->pool, cmd->cmd->name,
+	    return ap_pstrcat(cmd->pool, cmd->cmd->name,
 			    " regex could not be compiled.", NULL);
 	}
-	new->features = make_table(cmd->pool, 2);
+	new->features = ap_make_table(cmd->pool, 2);
 
 	if (!strcasecmp(fname, "remote_addr")) {
 	    new->special_type = SPECIAL_REMOTE_ADDR;
@@ -247,25 +247,25 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
     }
 
     for (;;) {
-	feature = getword_conf(cmd->pool, &args);
+	feature = ap_getword_conf(cmd->pool, &args);
 	if(!*feature)
 	    break;
         beenhere++;
 
-        var = getword(cmd->pool, &feature, '=');
+        var = ap_getword(cmd->pool, &feature, '=');
         if (*feature) {
-            table_setn(new->features, var, feature);
+            ap_table_setn(new->features, var, feature);
         }
         else if (*var == '!') {
-            table_setn(new->features, var + 1, "!");
+            ap_table_setn(new->features, var + 1, "!");
         }
         else {
-            table_setn(new->features, var, "1");
+            ap_table_setn(new->features, var, "1");
         }
     }
 
     if (!beenhere) {
-        return pstrcat(cmd->pool, "Missing envariable expression for ",
+        return ap_pstrcat(cmd->pool, "Missing envariable expression for ",
                         cmd->cmd->name, NULL);
     }
 
@@ -277,9 +277,9 @@ static const char *add_setenvif(cmd_parms *cmd, void *mconfig, const char *args)
     char *fname;
 
     /* get header name */
-    fname = getword_conf(cmd->pool, &args);
+    fname = ap_getword_conf(cmd->pool, &args);
     if (!*fname) {
-        return pstrcat(cmd->pool, "Missing header-field name for ",
+        return ap_pstrcat(cmd->pool, "Missing header-field name for ",
                         cmd->cmd->name, NULL);
     }
     return add_setenvif_core(cmd, mconfig, fname, args);
@@ -311,7 +311,7 @@ static const command_rec setenvif_module_cmds[] =
 static int match_headers(request_rec *r)
 {
     server_rec *s = r->server;
-    sei_cfg_rec *sconf = (sei_cfg_rec *) get_module_config(s->module_config,
+    sei_cfg_rec *sconf = (sei_cfg_rec *) ap_get_module_config(s->module_config,
                                                            &setenvif_module);
     sei_entry *entries = (sei_entry *) sconf->conditionals->elts;
     table_entry *elts;
@@ -336,7 +336,7 @@ static int match_headers(request_rec *r)
 		val = r->connection->remote_ip;
 		break;
 	    case SPECIAL_REMOTE_HOST:
-		val =  get_remote_host(r->connection, r->per_dir_config,
+		val =  ap_get_remote_host(r->connection, r->per_dir_config,
 					    REMOTE_NAME);
 		break;
 	    case SPECIAL_REMOTE_USER:
@@ -349,7 +349,7 @@ static int match_headers(request_rec *r)
 		val = r->method;
 		break;
 	    case SPECIAL_NOT:
-		val = table_get(r->headers_in, b->name);
+		val = ap_table_get(r->headers_in, b->name);
 		break;
 	    }
         }
@@ -364,10 +364,10 @@ static int match_headers(request_rec *r)
 
             for (j = 0; j < arr->nelts; ++j) {
                 if (!strcmp(elts[j].val, "!")) {
-                    table_unset(r->subprocess_env, elts[j].key);
+                    ap_table_unset(r->subprocess_env, elts[j].key);
                 }
                 else {
-                    table_setn(r->subprocess_env, elts[j].key, elts[j].val);
+                    ap_table_setn(r->subprocess_env, elts[j].key, elts[j].val);
                 }
             }
         }

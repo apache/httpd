@@ -25,7 +25,7 @@ extern module action_module;
 extern module setenvif_module;
 extern module isapi_module;
 
-module *prelinked_modules[] = {
+module *ap_prelinked_modules[] = {
   &core_module,
   &so_module,
   &mime_module,
@@ -47,7 +47,7 @@ module *prelinked_modules[] = {
   &isapi_module,
   NULL
 };
-module *preloaded_modules[] = {
+module *ap_preloaded_modules[] = {
   &core_module,
   &so_module,
   &mime_module,

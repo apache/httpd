@@ -54,7 +54,7 @@ static void sub_canonical_filename(char *szCanon, const char *szFile)
     }
 }
 
-API_EXPORT(char *) os_canonical_filename(pool *pPool, const char *szFile)
+API_EXPORT(char *) ap_canonical_filename(pool *pPool, const char *szFile)
 {
     char buf[HUGE_STRING_LEN];
 
@@ -64,7 +64,7 @@ API_EXPORT(char *) os_canonical_filename(pool *pPool, const char *szFile)
     if (*szFile && szFile[strlen(szFile)-1] == '/')
         strcat(buf, "/");
 
-    return pstrdup(pPool, buf);
+    return ap_pstrdup(pPool, buf);
 }
 
 /* Win95 doesn't like trailing /s. NT and Unix don't mind. This works 

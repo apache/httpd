@@ -1249,14 +1249,14 @@ sed 's/_module//' $tmpfile | awk >modules.c '
 	    printf ("extern module %s_module;\n", pmodules[i])
 	}
 	print ""
-	print "module *prelinked_modules[] = {"
+	print "module *ap_prelinked_modules[] = {"
 	for (i = 0; i < n; ++i) {
 	    printf "  &%s_module,\n", modules[i]
 	}
 	print "  NULL"
 	print "};"
 	print ""
-	print "module *preloaded_modules[] = {"
+	print "module *ap_preloaded_modules[] = {"
 	for (i = 0; i < pn; ++i) {
 	    printf "  &%s_module,\n", pmodules[i]
 	}

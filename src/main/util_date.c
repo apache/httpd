@@ -82,7 +82,7 @@
  *   * - swallow remaining characters 
  *  <x> - exact match for any other character
  */
-API_EXPORT(int) checkmask(const char *data, const char *mask)
+API_EXPORT(int) ap_checkmask(const char *data, const char *mask)
 {
     int i;
     char d;
@@ -136,7 +136,7 @@ API_EXPORT(int) checkmask(const char *data, const char *mask)
  *
  * This routine is intended to be very fast, much faster than mktime().
  */
-API_EXPORT(time_t) tm2sec(const struct tm * t)
+API_EXPORT(time_t) ap_tm2sec(const struct tm * t)
 {
     int year;
     time_t days;
@@ -214,7 +214,7 @@ API_EXPORT(time_t) tm2sec(const struct tm * t)
  * but many changes since then.
  *
  */
-API_EXPORT(time_t) parseHTTPdate(const char *date)
+API_EXPORT(time_t) ap_parseHTTPdate(const char *date)
 {
     struct tm ds;
     int mint, mon;
@@ -243,7 +243,7 @@ API_EXPORT(time_t) parseHTTPdate(const char *date)
     ++date;			/* Now pointing to first char after space, which should be */
     /* start of the actual date information for all 3 formats. */
 
-    if (checkmask(date, "## @$$ #### ##:##:## *")) {	/* RFC 1123 format */
+    if (ap_checkmask(date, "## @$$ #### ##:##:## *")) {	/* RFC 1123 format */
 	ds.tm_year = ((date[7] - '0') * 10 + (date[8] - '0') - 19) * 100;
 	if (ds.tm_year < 0)
 	    return BAD_DATE;
@@ -255,7 +255,7 @@ API_EXPORT(time_t) parseHTTPdate(const char *date)
 	monstr = date + 3;
 	timstr = date + 12;
     }
-    else if (checkmask(date, "##-@$$-## ##:##:## *")) {		/* RFC 850 format  */
+    else if (ap_checkmask(date, "##-@$$-## ##:##:## *")) {		/* RFC 850 format  */
 	ds.tm_year = ((date[7] - '0') * 10) + (date[8] - '0');
 	if (ds.tm_year < 70)
 	    ds.tm_year += 100;
@@ -265,7 +265,7 @@ API_EXPORT(time_t) parseHTTPdate(const char *date)
 	monstr = date + 3;
 	timstr = date + 10;
     }
-    else if (checkmask(date, "@$$ ~# ##:##:## ####*")) {	/* asctime format  */
+    else if (ap_checkmask(date, "@$$ ~# ##:##:## ####*")) {	/* asctime format  */
 	ds.tm_year = ((date[16] - '0') * 10 + (date[17] - '0') - 19) * 100;
 	if (ds.tm_year < 0)
 	    return BAD_DATE;
@@ -317,5 +317,5 @@ API_EXPORT(time_t) parseHTTPdate(const char *date)
 
     ds.tm_mon = mon;
 
-    return tm2sec(&ds);
+    return ap_tm2sec(&ds);
 }

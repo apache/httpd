@@ -163,7 +163,7 @@ static unsigned char PADDING[64] =
 
 /* MD5 initialization. Begins an MD5 operation, writing a new context.
  */
-API_EXPORT(void) MD5Init(AP_MD5_CTX * context)
+API_EXPORT(void) ap_MD5Init(AP_MD5_CTX * context)
 {
     context->count[0] = context->count[1] = 0;
     /* Load magic initialization constants. */
@@ -177,7 +177,7 @@ API_EXPORT(void) MD5Init(AP_MD5_CTX * context)
    operation, processing another message block, and updating the
    context.
  */
-API_EXPORT(void) MD5Update(AP_MD5_CTX * context, const unsigned char *input,
+API_EXPORT(void) ap_MD5Update(AP_MD5_CTX * context, const unsigned char *input,
 			   unsigned int inputLen)
 {
     unsigned int i, idx, partLen;
@@ -212,7 +212,7 @@ API_EXPORT(void) MD5Update(AP_MD5_CTX * context, const unsigned char *input,
 /* MD5 finalization. Ends an MD5 message-digest operation, writing the
    the message digest and zeroizing the context.
  */
-API_EXPORT(void) MD5Final(unsigned char digest[16], AP_MD5_CTX * context)
+API_EXPORT(void) ap_MD5Final(unsigned char digest[16], AP_MD5_CTX * context)
 {
     unsigned char bits[8];
     unsigned int idx, padLen;
@@ -223,10 +223,10 @@ API_EXPORT(void) MD5Final(unsigned char digest[16], AP_MD5_CTX * context)
     /* Pad out to 56 mod 64. */
     idx = (unsigned int) ((context->count[0] >> 3) & 0x3f);
     padLen = (idx < 56) ? (56 - idx) : (120 - idx);
-    MD5Update(context, PADDING, padLen);
+    ap_MD5Update(context, PADDING, padLen);
 
     /* Append length (before padding) */
-    MD5Update(context, bits, 8);
+    ap_MD5Update(context, bits, 8);
 
     /* Store state in digest */
     Encode(digest, context->state, 16);

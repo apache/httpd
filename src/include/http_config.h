@@ -236,7 +236,7 @@ typedef struct module_struct {
      */
 
     int (*translate_handler) (request_rec *);
-    int (*check_user_id) (request_rec *);
+    int (*ap_check_user_id) (request_rec *);
     int (*auth_checker) (request_rec *);
     int (*access_checker) (request_rec *);
     int (*type_checker) (request_rec *);
@@ -278,69 +278,69 @@ typedef struct module_struct {
  * data
  */
 
-API_EXPORT(void *) get_module_config(void *conf_vector, module *m);
-API_EXPORT(void) set_module_config(void *conf_vector, module *m, void *val);
+API_EXPORT(void *) ap_get_module_config(void *conf_vector, module *m);
+API_EXPORT(void) ap_set_module_config(void *conf_vector, module *m, void *val);
 
 /* Generic command handling function... */
 
-API_EXPORT_NONSTD(const char *) set_string_slot(cmd_parms *, char *, char *);
-API_EXPORT_NONSTD(const char *) set_string_slot_lower(cmd_parms *, char *, char *);
-API_EXPORT_NONSTD(const char *) set_flag_slot(cmd_parms *, char *, int);
-API_EXPORT_NONSTD(const char *) set_file_slot(cmd_parms *, char *, char *);
+API_EXPORT_NONSTD(const char *) ap_set_string_slot(cmd_parms *, char *, char *);
+API_EXPORT_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *, char *, char *);
+API_EXPORT_NONSTD(const char *) ap_set_flag_slot(cmd_parms *, char *, int);
+API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *, char *, char *);
 
 /* For modules which need to read config files, open logs, etc. ...
  * this returns the fname argument if it begins with '/'; otherwise
  * it relativizes it wrt server_root.
  */
 
-API_EXPORT(char *) server_root_relative(pool *p, char *fname);
+API_EXPORT(char *) ap_server_root_relative(pool *p, char *fname);
 
 /* Finally, the hook for dynamically loading modules in... */
 
-API_EXPORT(void) add_module(module *m);
-API_EXPORT(void) remove_module(module *m);
-API_EXPORT(int) add_named_module(const char *name);
-API_EXPORT(void) clear_module_list(void);
-API_EXPORT(const char *) find_module_name(module *m);
-API_EXPORT(module *) find_linked_module(const char *name);
+API_EXPORT(void) ap_add_module(module *m);
+API_EXPORT(void) ap_remove_module(module *m);
+API_EXPORT(int) ap_add_named_module(const char *name);
+API_EXPORT(void) ap_clear_module_list(void);
+API_EXPORT(const char *) ap_find_module_name(module *m);
+API_EXPORT(module *) ap_find_linked_module(const char *name);
 
 /* for implementing subconfigs and customized config files */
-API_EXPORT(const char *) srm_command_loop(cmd_parms *parms, void *config);
+API_EXPORT(const char *) ap_srm_command_loop(cmd_parms *parms, void *config);
 
 #ifdef CORE_PRIVATE
 
 extern API_VAR_EXPORT module *top_module;
 
-extern module *prelinked_modules[];
-extern module *preloaded_modules[];
+extern module *ap_prelinked_modules[];
+extern module *ap_preloaded_modules[];
 
 /* For http_main.c... */
 
-server_rec *read_config(pool *conf_pool, pool *temp_pool, char *config_name);
-void init_modules(pool *p, server_rec *s);
-void child_init_modules(pool *p, server_rec *s);
-void child_exit_modules(pool *p, server_rec *s);
-void setup_prelinked_modules(void);
-void show_directives(void);
-void show_modules(void);
+server_rec *ap_read_config(pool *conf_pool, pool *temp_pool, char *config_name);
+void ap_init_modules(pool *p, server_rec *s);
+void ap_child_init_modules(pool *p, server_rec *s);
+void ap_child_exit_modules(pool *p, server_rec *s);
+void ap_setup_prelinked_modules(void);
+void ap_show_directives(void);
+void ap_show_modules(void);
 
 /* For http_request.c... */
 
-void *create_request_config(pool *p);
-CORE_EXPORT(void *) create_per_dir_config(pool *p);
-void *merge_per_dir_configs(pool *p, void *base, void *new);
+void *ap_create_request_config(pool *p);
+CORE_EXPORT(void *) ap_create_per_dir_config(pool *p);
+void *ap_merge_per_dir_configs(pool *p, void *base, void *new);
 
 /* For http_core.c... (<Directory> command and virtual hosts) */
 
-int parse_htaccess(void **result, request_rec *r, int override,
+int ap_parse_htaccess(void **result, request_rec *r, int override,
 		const char *path, const char *access_name);
 
-CORE_EXPORT(const char *) init_virtual_host(pool *p, const char *hostname,
+CORE_EXPORT(const char *) ap_init_virtual_host(pool *p, const char *hostname,
 				server_rec *main_server, server_rec **);
-void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp);
+void ap_process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp);
 
 /* check_cmd_context() definitions: */
-API_EXPORT(const char *) check_cmd_context(cmd_parms *cmd, unsigned forbidden);
+API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden);
 
 /* check_cmd_context():                  Forbidden in: */
 #define  NOT_IN_VIRTUALHOST     0x01 /* <Virtualhost> */
@@ -354,22 +354,22 @@ API_EXPORT(const char *) check_cmd_context(cmd_parms *cmd, unsigned forbidden);
 
 /* Module-method dispatchers, also for http_request.c */
 
-int translate_name(request_rec *);
-int check_access(request_rec *);	/* check access on non-auth basis */
-int check_user_id(request_rec *);	/* obtain valid username from client auth */
-int check_auth(request_rec *);	/* check (validated) user is authorized here */
-int find_types(request_rec *);	/* identify MIME type */
-int run_fixups(request_rec *);	/* poke around for other metainfo, etc.... */
-int invoke_handler(request_rec *);
-int log_transaction(request_rec *r);
-int header_parse(request_rec *);
-int run_post_read_request(request_rec *);
+int ap_translate_name(request_rec *);
+int ap_check_access(request_rec *);	/* check access on non-auth basis */
+int ap_check_user_id(request_rec *);	/* obtain valid username from client auth */
+int ap_check_auth(request_rec *);	/* check (validated) user is authorized here */
+int ap_find_types(request_rec *);	/* identify MIME type */
+int ap_run_fixups(request_rec *);	/* poke around for other metainfo, etc.... */
+int ap_invoke_handler(request_rec *);
+int ap_log_transaction(request_rec *r);
+int ap_header_parse(request_rec *);
+int ap_run_post_read_request(request_rec *);
 
 /* for mod_perl */
 
-CORE_EXPORT(const command_rec *) find_command(const char *name, const command_rec *cmds);
-CORE_EXPORT(const command_rec *) find_command_in_modules(const char *cmd_name, module **mod);
-CORE_EXPORT(const char *) handle_command(cmd_parms *parms, void *config, const char *l);
+CORE_EXPORT(const command_rec *) ap_find_command(const char *name, const command_rec *cmds);
+CORE_EXPORT(const command_rec *) ap_find_command_in_modules(const char *cmd_name, module **mod);
+CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, const char *l);
 
 #endif
 

@@ -156,6 +156,7 @@ Committed Code Changes:
     * Ralf's consistent add of "distclean" targets for the src/-Makefiles
     * Build the libraries before building the rest of the tools
     * Ralf's and Martin's DSO support for all SVR4-derivate Unix platforms
+    * THE BIG SYMBOL RENAMING
 
 Available Patches:
 
@@ -189,14 +190,6 @@ Needs patch:
 	supply a dot-notation address.
 
 Closed issues:
-
-    * To avoid symbol clashes with third-party code compiled into the server,
-      we shall apply the prefix "ap_" to the following classes of functions:
-
-        - Apache provided general functions (e.g., ap_cpystrn)
-        - Public API functions (e.g., palloc, bgets)
-        - Private functions which we can't make static (because of
-          cross-object usage) but should be (e.g., new_connection)
 
 Open issues:
     

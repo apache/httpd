@@ -136,67 +136,67 @@ extern Sfdisc_t *bsfio_new(pool *p, BUFF *b);
 #define BO_BYTECT (1)
 
 /* Stream creation and modification */
-API_EXPORT(BUFF *) bcreate(pool *p, int flags);
-API_EXPORT(void) bpushfd(BUFF *fb, int fd_in, int fd_out);
-API_EXPORT(int) bsetopt(BUFF *fb, int optname, const void *optval);
-API_EXPORT(int) bgetopt(BUFF *fb, int optname, void *optval);
-API_EXPORT(int) bsetflag(BUFF *fb, int flag, int value);
-API_EXPORT(int) bclose(BUFF *fb);
+API_EXPORT(BUFF *) ap_bcreate(pool *p, int flags);
+API_EXPORT(void) ap_bpushfd(BUFF *fb, int fd_in, int fd_out);
+API_EXPORT(int) ap_bsetopt(BUFF *fb, int optname, const void *optval);
+API_EXPORT(int) ap_bgetopt(BUFF *fb, int optname, void *optval);
+API_EXPORT(int) ap_bsetflag(BUFF *fb, int flag, int value);
+API_EXPORT(int) ap_bclose(BUFF *fb);
 
 #define bgetflag(fb, flag)	((fb)->flags & (flag))
 
 /* Error handling */
-API_EXPORT(void) bonerror(BUFF *fb, void (*error) (BUFF *, int, void *),
+API_EXPORT(void) ap_bonerror(BUFF *fb, void (*error) (BUFF *, int, void *),
 			  void *data);
 
 /* I/O */
-API_EXPORT(int) bread(BUFF *fb, void *buf, int nbyte);
-API_EXPORT(int) bgets(char *s, int n, BUFF *fb);
-API_EXPORT(int) blookc(char *buff, BUFF *fb);
-API_EXPORT(int) bskiplf(BUFF *fb);
-API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte);
-API_EXPORT(int) bflush(BUFF *fb);
-API_EXPORT(int) bputs(const char *x, BUFF *fb);
-API_EXPORT(int) bvputs(BUFF *fb,...);
-API_EXPORT_NONSTD(int) bprintf(BUFF *fb, const char *fmt,...)
+API_EXPORT(int) ap_bread(BUFF *fb, void *buf, int nbyte);
+API_EXPORT(int) ap_bgets(char *s, int n, BUFF *fb);
+API_EXPORT(int) ap_blookc(char *buff, BUFF *fb);
+API_EXPORT(int) ap_bskiplf(BUFF *fb);
+API_EXPORT(int) ap_bwrite(BUFF *fb, const void *buf, int nbyte);
+API_EXPORT(int) ap_bflush(BUFF *fb);
+API_EXPORT(int) ap_bputs(const char *x, BUFF *fb);
+API_EXPORT(int) ap_bvputs(BUFF *fb,...);
+API_EXPORT_NONSTD(int) ap_bprintf(BUFF *fb, const char *fmt,...)
 				__attribute__((format(printf,2,3)));
-API_EXPORT(int) vbprintf(BUFF *fb, const char *fmt, va_list vlist);
+API_EXPORT(int) ap_vbprintf(BUFF *fb, const char *fmt, va_list vlist);
 
 /* Internal routines */
-API_EXPORT(int) bflsbuf(int c, BUFF *fb);
-API_EXPORT(int) bfilbuf(BUFF *fb);
+API_EXPORT(int) ap_bflsbuf(int c, BUFF *fb);
+API_EXPORT(int) ap_bfilbuf(BUFF *fb);
 
 #ifndef CHARSET_EBCDIC
 
-#define bgetc(fb)   ( ((fb)->incnt == 0) ? bfilbuf(fb) : \
+#define bgetc(fb)   ( ((fb)->incnt == 0) ? ap_bfilbuf(fb) : \
 		    ((fb)->incnt--, *((fb)->inptr++)) )
 
 #define bputc(c, fb) ((((fb)->flags & (B_EOUT|B_WRERR|B_WR)) != B_WR || \
-		     (fb)->outcnt == (fb)->bufsiz) ? bflsbuf(c, (fb)) : \
+		     (fb)->outcnt == (fb)->bufsiz) ? ap_bflsbuf(c, (fb)) : \
 		     ((fb)->outbase[(fb)->outcnt++] = (c), 0))
 
 #else /*CHARSET_EBCDIC*/
 
-#define bgetc(fb)   ( ((fb)->incnt == 0) ? bfilbuf(fb) : \
+#define bgetc(fb)   ( ((fb)->incnt == 0) ? ap_bfilbuf(fb) : \
 		    ((fb)->incnt--, (fb->flags & B_ASCII2EBCDIC)\
 		    ?os_toebcdic[(unsigned char)*((fb)->inptr++)]:*((fb)->inptr++)) )
 
 #define bputc(c, fb) ((((fb)->flags & (B_EOUT|B_WRERR|B_WR)) != B_WR || \
-		     (fb)->outcnt == (fb)->bufsiz) ? bflsbuf(c, (fb)) : \
+		     (fb)->outcnt == (fb)->bufsiz) ? ap_bflsbuf(c, (fb)) : \
 		     ((fb)->outbase[(fb)->outcnt++] = (fb->flags & B_EBCDIC2ASCII)\
 		     ?os_toascii[(unsigned char)c]:(c), 0))
 
 #endif /*CHARSET_EBCDIC*/
-API_EXPORT(int) spawn_child_err_buff(pool *, int (*)(void *), void *,
+API_EXPORT(int) ap_spawn_child_err_buff(pool *, int (*)(void *), void *,
 		      enum kill_conditions, BUFF **pipe_in, BUFF **pipe_out,
 				     BUFF **pipe_err);
 
 /* enable non-blocking operations */
-API_EXPORT(int) bnonblock(BUFF *fb, int direction);
+API_EXPORT(int) ap_bnonblock(BUFF *fb, int direction);
 /* and get an fd to select() on */
-API_EXPORT(int) bfileno(BUFF *fb, int direction);
+API_EXPORT(int) ap_bfileno(BUFF *fb, int direction);
 
 /* bflush() if a read now would block, but don't actually read anything */
-API_EXPORT(void) bhalfduplex(BUFF *fb);
+API_EXPORT(void) ap_bhalfduplex(BUFF *fb);
 
 #endif	/* !APACHE_BUFF_H */

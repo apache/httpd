@@ -162,7 +162,7 @@ static int error_log_child (void *cmd)
      */
     int child_pid = 0;
 
-    cleanup_for_exec();
+    ap_cleanup_for_exec();
 #ifdef SIGHUP
     /* No concept of a child process on Win32 */
     signal (SIGHUP, SIG_IGN);
@@ -218,8 +218,8 @@ static void open_error_log (server_rec *s, pool *p)
     }
 #endif
     else {
-	fname = server_root_relative (p, s->error_fname);
-        if(!(s->error_log = pfopen(p, fname, "a"))) {
+	fname = ap_server_root_relative (p, s->error_fname);
+        if(!(s->error_log = ap_pfopen(p, fname, "a"))) {
             perror("fopen");
             fprintf(stderr,"httpd: could not open error log file %s.\n", fname);
             exit(1);
@@ -227,7 +227,7 @@ static void open_error_log (server_rec *s, pool *p)
     }
 }
 
-void open_logs (server_rec *s_main, pool *p)
+void ap_open_logs (server_rec *s_main, pool *p)
 {
     server_rec *virt, *q;
     int replace_stderr;
@@ -239,7 +239,7 @@ void open_logs (server_rec *s_main, pool *p)
 	/* replace stderr with this new log */
 	fflush(stderr);
 	if (dup2(fileno(s_main->error_log), 2) == -1) {
-	    aplog_error(APLOG_MARK, APLOG_CRIT, s_main,
+	    ap_log_error(APLOG_MARK, APLOG_CRIT, s_main,
 		"unable to replace stderr with error_log");
 	} else {
 	    replace_stderr = 0;
@@ -250,7 +250,7 @@ void open_logs (server_rec *s_main, pool *p)
      * of the submitter.
      */
     if (replace_stderr && freopen("/dev/null", "w", stderr) == NULL) {
-	aplog_error(APLOG_MARK, APLOG_CRIT, s_main,
+	ap_log_error(APLOG_MARK, APLOG_CRIT, s_main,
 	    "unable to replace stderr with /dev/null");
     }
 
@@ -269,12 +269,12 @@ void open_logs (server_rec *s_main, pool *p)
     }
 }
 
-API_EXPORT(void) error_log2stderr (server_rec *s) {
+API_EXPORT(void) ap_error_log2stderr (server_rec *s) {
     if(fileno(s->error_log) != STDERR_FILENO)
         dup2(fileno(s->error_log),STDERR_FILENO);
 }
 
-API_EXPORT(void) aplog_error (const char *file, int line, int level,
+API_EXPORT(void) ap_log_error (const char *file, int line, int level,
 			      const server_rec *s, const char *fmt, ...)
 {
     va_list args;
@@ -307,7 +307,7 @@ API_EXPORT(void) aplog_error (const char *file, int line, int level,
     }
 
     if (logf) {
-	len = ap_snprintf(errstr, sizeof(errstr), "[%s] ", get_time());
+	len = ap_snprintf(errstr, sizeof(errstr), "[%s] ", ap_get_time());
     } else {
 	len = 0;
     }
@@ -389,56 +389,56 @@ API_EXPORT(void) aplog_error (const char *file, int line, int level,
 }
     
 
-void log_pid (pool *p, char *pid_fname)
+void ap_log_pid (pool *p, char *ap_pid_fname)
 {
     FILE *pid_file;
 
-    if (!pid_fname) return;
-    pid_fname = server_root_relative (p, pid_fname);
-    if(!(pid_file = fopen(pid_fname,"w"))) {
+    if (!ap_pid_fname) return;
+    ap_pid_fname = ap_server_root_relative (p, ap_pid_fname);
+    if(!(pid_file = fopen(ap_pid_fname,"w"))) {
 	perror("fopen");
-        fprintf(stderr,"httpd: could not log pid to file %s\n", pid_fname);
+        fprintf(stderr,"httpd: could not log pid to file %s\n", ap_pid_fname);
         exit(1);
     }
     fprintf(pid_file,"%ld\n",(long)getpid());
     fclose(pid_file);
 }
 
-API_EXPORT(void) log_error (const char *err, server_rec *s)
+API_EXPORT(void) ap_log_error_old (const char *err, server_rec *s)
 {
-    aplog_error(APLOG_MARK, APLOG_ERR, s, err);
+    ap_log_error(APLOG_MARK, APLOG_ERR, s, err);
 }
 
-API_EXPORT(void) log_unixerr (const char *routine, const char *file,
+API_EXPORT(void) ap_log_unixerr (const char *routine, const char *file,
 			      const char *msg, server_rec *s)
 {
-    aplog_error(file, 0, APLOG_ERR, s, msg);
+    ap_log_error(file, 0, APLOG_ERR, s, msg);
 }
 
-API_EXPORT(void) log_printf (const server_rec *s, const char *fmt, ...)
+API_EXPORT(void) ap_log_printf (const server_rec *s, const char *fmt, ...)
 {
     char buf[MAX_STRING_LEN];
     va_list args;
     
     va_start(args, fmt);
     ap_vsnprintf(buf, sizeof(buf), fmt, args);
-    aplog_error(APLOG_MARK, APLOG_ERR, s, buf);
+    ap_log_error(APLOG_MARK, APLOG_ERR, s, buf);
     va_end(args);
 }
 
-API_EXPORT(void) log_reason (const char *reason, const char *file, request_rec *r) 
+API_EXPORT(void) ap_log_reason (const char *reason, const char *file, request_rec *r) 
 {
-    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		"access to %s failed for %s, reason: %s",
 		file,
-		get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME),
+		ap_get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME),
 		reason);
 }
 
-API_EXPORT(void) log_assert (const char *szExp, const char *szFile, int nLine)
+API_EXPORT(void) ap_log_assert (const char *szExp, const char *szFile, int nLine)
 {
     fprintf(stderr, "[%s] file %s, line %d, assertion \"%s\" failed\n",
-	    get_time(), szFile, nLine, szExp);
+	    ap_get_time(), szFile, nLine, szExp);
 #ifndef WIN32
     /* unix assert does an abort leading to a core dump */
     abort();
@@ -457,7 +457,7 @@ static int piped_log_spawn (piped_log *pl)
 {
     int pid;
 
-    block_alarms();
+    ap_block_alarms();
     pid = fork();
     if (pid == 0) {
 	/* XXX: this needs porting to OS2 and WIN32 */
@@ -469,7 +469,7 @@ static int piped_log_spawn (piped_log *pl)
 	close (STDIN_FILENO);
 	dup2 (pl->fds[0], STDIN_FILENO);
 
-	cleanup_for_exec ();
+	ap_cleanup_for_exec ();
 	signal (SIGCHLD, SIG_DFL);	/* for HPUX */
 	signal (SIGHUP, SIG_IGN);
 	execl (SHELL_PATH, SHELL_PATH, "-c", pl->program, NULL);
@@ -481,12 +481,12 @@ static int piped_log_spawn (piped_log *pl)
     if (pid == -1) {
 	fprintf (stderr,
 	    "piped_log_spawn: unable to fork(): %s\n", strerror (errno));
-	unblock_alarms ();
+	ap_unblock_alarms ();
 	return -1;
     }
-    unblock_alarms();
+    ap_unblock_alarms();
     pl->pid = pid;
-    register_other_child (pid, piped_log_maintenance, pl, pl->fds[1]);
+    ap_register_other_child (pid, piped_log_maintenance, pl, pl->fds[1]);
     return 0;
 }
 
@@ -499,7 +499,7 @@ static void piped_log_maintenance (int reason, void *data, int status)
     case OC_REASON_DEATH:
     case OC_REASON_LOST:
 	pl->pid = -1;
-	unregister_other_child (pl);
+	ap_unregister_other_child (pl);
 	if (pl->program == NULL) {
 	    /* during a restart */
 	    break;
@@ -539,7 +539,7 @@ static void piped_log_cleanup (void *data)
     if (pl->pid != -1) {
 	kill (pl->pid, SIGTERM);
     }
-    unregister_other_child (pl);
+    ap_unregister_other_child (pl);
     close (pl->fds[0]);
     close (pl->fds[1]);
 }
@@ -554,41 +554,41 @@ static void piped_log_cleanup_for_exec (void *data)
 }
 
 
-API_EXPORT(piped_log *) open_piped_log (pool *p, const char *program)
+API_EXPORT(piped_log *) ap_open_piped_log (pool *p, const char *program)
 {
     piped_log *pl;
 
-    pl = palloc (p, sizeof (*pl));
+    pl = ap_palloc (p, sizeof (*pl));
     pl->p = p;
-    pl->program = pstrdup (p, program);
+    pl->program = ap_pstrdup (p, program);
     pl->pid = -1;
-    block_alarms ();
+    ap_block_alarms ();
     if (pipe (pl->fds) == -1) {
 	int save_errno = errno;
-	unblock_alarms();
+	ap_unblock_alarms();
 	errno = save_errno;
 	return NULL;
     }
-    register_cleanup (p, pl, piped_log_cleanup, piped_log_cleanup_for_exec);
+    ap_register_cleanup (p, pl, piped_log_cleanup, piped_log_cleanup_for_exec);
     if (piped_log_spawn (pl) == -1) {
 	int save_errno = errno;
-	kill_cleanup (p, pl, piped_log_cleanup);
+	ap_kill_cleanup (p, pl, piped_log_cleanup);
 	close (pl->fds[0]);
 	close (pl->fds[1]);
-	unblock_alarms ();
+	ap_unblock_alarms ();
 	errno = save_errno;
 	return NULL;
     }
-    unblock_alarms ();
+    ap_unblock_alarms ();
     return pl;
 }
 
-API_EXPORT(void) close_piped_log (piped_log *pl)
+API_EXPORT(void) ap_close_piped_log (piped_log *pl)
 {
-    block_alarms ();
+    ap_block_alarms ();
     piped_log_cleanup (pl);
-    kill_cleanup (pl->p, pl, piped_log_cleanup);
-    unblock_alarms ();
+    ap_kill_cleanup (pl->p, pl, piped_log_cleanup);
+    ap_unblock_alarms ();
 }
 
 #else
@@ -600,7 +600,7 @@ static int piped_log_child (void *cmd)
      */
     int child_pid = 1;
 
-    cleanup_for_exec();
+    ap_cleanup_for_exec();
 #ifdef SIGHUP
     signal (SIGHUP, SIG_IGN);
 #endif
@@ -619,7 +619,7 @@ static int piped_log_child (void *cmd)
 }
 
 
-API_EXPORT(piped_log *) open_piped_log (pool *p, const char *program)
+API_EXPORT(piped_log *) ap_open_piped_log (pool *p, const char *program)
 {
     piped_log *pl;
     FILE *dummy;
@@ -630,15 +630,15 @@ API_EXPORT(piped_log *) open_piped_log (pool *p, const char *program)
 	fprintf (stderr, "Couldn't fork child for piped log process\n");
 	exit (1);
     }
-    pl = palloc (p, sizeof (*pl));
+    pl = ap_palloc (p, sizeof (*pl));
     pl->p = p;
     pl->write_f = dummy;
     return pl;
 }
 
 
-API_EXPORT(void) close_piped_log (piped_log *pl)
+API_EXPORT(void) ap_close_piped_log (piped_log *pl)
 {
-    pfclose (pl->p, pl->write_f);
+    ap_pfclose (pl->p, pl->write_f);
 }
 #endif

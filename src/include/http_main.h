@@ -108,20 +108,20 @@
  * reset_timeout() resets the timeout in progress.
  */
 
-void start_shutdown(void);
-void start_restart(int);
-API_EXPORT(void) hard_timeout(char *, request_rec *);
-void keepalive_timeout(char *, request_rec *);
-API_EXPORT(void) soft_timeout(char *, request_rec *);
-API_EXPORT(void) kill_timeout(request_rec *);
-API_EXPORT(void) reset_timeout(request_rec *);
+void ap_start_shutdown(void);
+void ap_start_restart(int);
+API_EXPORT(void) ap_hard_timeout(char *, request_rec *);
+void ap_keepalive_timeout(char *, request_rec *);
+API_EXPORT(void) ap_soft_timeout(char *, request_rec *);
+API_EXPORT(void) ap_kill_timeout(request_rec *);
+API_EXPORT(void) ap_reset_timeout(request_rec *);
 
-API_EXPORT(void) child_terminate(request_rec *r);
-API_EXPORT(void) sync_scoreboard_image(void);
-int update_child_status(int child_num, int status, request_rec *r);
-void time_process_request(int child_num, int status);
-unsigned int set_callback_and_alarm(void (*fn) (int), int x);
-API_EXPORT(int) check_alarm(void);
+API_EXPORT(void) ap_child_terminate(request_rec *r);
+API_EXPORT(void) ap_sync_scoreboard_image(void);
+int ap_update_child_status(int child_num, int status, request_rec *r);
+void ap_time_process_request(int child_num, int status);
+unsigned int ap_set_callback_and_alarm(void (*fn) (int), int x);
+API_EXPORT(int) ap_check_alarm(void);
 
 #ifndef NO_OTHER_CHILD
 /*
@@ -138,7 +138,7 @@ API_EXPORT(int) check_alarm(void);
  * This is useful for log pipe children, to know when they've blocked.  To
  * disable this feature, use -1 for write_fd.
  */
-API_EXPORT(void) register_other_child(int pid,
+API_EXPORT(void) ap_register_other_child(int pid,
        void (*maintenance) (int reason, void *data, int status), void *data,
 				      int write_fd);
 #define OC_REASON_DEATH		0	/* child has died, caller must call
@@ -159,7 +159,7 @@ API_EXPORT(void) register_other_child(int pid,
  * is assumed to be unique per other_child.  This is because the pid and
  * write_fd are possibly killed off separately.
  */
-API_EXPORT(void) unregister_other_child(void *data);
+API_EXPORT(void) ap_unregister_other_child(void *data);
 
 #endif
 

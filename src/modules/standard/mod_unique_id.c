@@ -148,7 +148,7 @@ static void unique_id_global_init(server_rec *s, pool *p)
      */
     if (XtOffsetOf(unique_id_rec, counter) + sizeof(cur_unique_id.counter)
         != 14) {
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
                     "mod_unique_id: sorry the size assumptions are wrong "
                     "in mod_unique_id.c, please remove it from your server "
                     "or fix the code!");
@@ -161,21 +161,21 @@ static void unique_id_global_init(server_rec *s, pool *p)
      * be unique as the physical address of the machine
      */
     if (gethostname(str, sizeof(str) - 1) != 0) {
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
           "gethostname: mod_unique_id requires the hostname of the server");
         exit(1);
     }
     str[sizeof(str) - 1] = '\0';
 
     if ((hent = gethostbyname(str)) == NULL) {
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
                     "mod_unique_id: unable to gethostbyname(\"%s\")", str);
         exit(1);
     }
 
     global_in_addr = ((struct in_addr *) hent->h_addr_list[0])->s_addr;
 
-    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, s,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, s,
                 "mod_unique_id: using ip addr %s",
                 inet_ntoa(*(struct in_addr *) hent->h_addr_list[0]));
 
@@ -232,7 +232,7 @@ static void unique_id_child_init(server_rec *s, pool *p)
      * global_init ... but oh well.
      */
     if (cur_unique_id.pid != pid) {
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, s,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, s,
                     "oh no! pids are greater than 32-bits!  I'm broken!");
     }
 
@@ -290,8 +290,8 @@ static int gen_unique_id(request_rec *r)
     /* copy the unique_id if this is an internal redirect (we're never
      * actually called for sub requests, so we don't need to test for
      * them) */
-    if (r->prev && (e = table_get(r->subprocess_env, "REDIRECT_UNIQUE_ID"))) {
-	table_setn(r->subprocess_env, "UNIQUE_ID", e);
+    if (r->prev && (e = ap_table_get(r->subprocess_env, "REDIRECT_UNIQUE_ID"))) {
+	ap_table_setn(r->subprocess_env, "UNIQUE_ID", e);
 	return DECLINED;
     }
 
@@ -324,7 +324,7 @@ static int gen_unique_id(request_rec *r)
     str[18] = uuencoder[((x[1] & 0x0f) << 2) | ((0 & 0xc0) >> 6)];
     str[19] = '\0';
 
-    table_setn(r->subprocess_env, "UNIQUE_ID", pstrdup(r->pool, str));
+    ap_table_setn(r->subprocess_env, "UNIQUE_ID", ap_pstrdup(r->pool, str));
 
     /* and increment the identifier for the next call */
     counter = ntohs(cur_unique_id.counter) + 1;

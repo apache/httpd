@@ -65,12 +65,12 @@ static const char server_built[] = "unknown";
 #endif
 static const char server_version[] = SERVER_VERSION;
 
-API_EXPORT(const char *) apapi_get_server_built()
+API_EXPORT(const char *) ap_get_server_built()
 {
     return server_built;
 }
 
-API_EXPORT(const char *) apapi_get_server_version()
+API_EXPORT(const char *) ap_get_server_version()
 {
     return server_version;
 }

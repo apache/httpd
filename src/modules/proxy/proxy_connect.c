@@ -97,7 +97,7 @@ DEF_Explain
  * FIXME: no check for r->assbackwards, whatever that is.
  */
 
-int proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
+int ap_proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
 			  const char *proxyhost, int proxyport)
 {
     struct sockaddr_in server;
@@ -112,7 +112,7 @@ int proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
 
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
-    (proxy_server_conf *) get_module_config(sconf, &proxy_module);
+    (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
     struct noproxy_entry *npent = (struct noproxy_entry *) conf->noproxies->elts;
 
     memset(&server, '\0', sizeof(server));
@@ -134,7 +134,7 @@ int proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
     for (i = 0; i < conf->noproxies->nelts; i++) {
 	if ((npent[i].name != NULL && strstr(host, npent[i].name) != NULL)
 	    || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
-	    return proxyerror(r, "Connect to remote machine blocked");
+	    return ap_proxyerror(r, "Connect to remote machine blocked");
     }
 
     switch (port) {
@@ -153,26 +153,26 @@ int proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
     }
 
     server.sin_port = (proxyport ? htons(proxyport) : htons(port));
-    err = proxy_host2addr(proxyhost ? proxyhost : host, &server_hp);
+    err = ap_proxy_host2addr(proxyhost ? proxyhost : host, &server_hp);
 
     if (err != NULL)
-	return proxyerror(r, err);	/* give up */
+	return ap_proxyerror(r, err);	/* give up */
 
-    sock = psocket(r->pool, PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    sock = ap_psocket(r->pool, PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock == -1) {
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "proxy: error creating socket");
 	return SERVER_ERROR;
     }
 
 #ifndef WIN32
     if (sock >= FD_SETSIZE) {
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
 	    "proxy_connect_handler: filedescriptor (%u) "
 	    "larger than FD_SETSIZE (%u) "
 	    "found, you probably need to rebuild Apache with a "
 	    "larger FD_SETSIZE", sock, FD_SETSIZE);
-	pclosesocket(r->pool, sock);
+	ap_pclosesocket(r->pool, sock);
 	return SERVER_ERROR;
     }
 #endif
@@ -181,14 +181,14 @@ int proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
     while (server_hp.h_addr_list[j] != NULL) {
 	memcpy(&server.sin_addr, server_hp.h_addr_list[j],
 	       sizeof(struct in_addr));
-	i = proxy_doconnect(sock, &server, r);
+	i = ap_proxy_doconnect(sock, &server, r);
 	if (i == 0)
 	    break;
 	j++;
     }
     if (i == -1) {
-	pclosesocket(r->pool, sock);
-	return proxyerror(r, "Could not connect to remote machine");
+	ap_pclosesocket(r->pool, sock);
+	return ap_proxyerror(r, "Could not connect to remote machine");
     }
 
     /* If we are connecting through a remote proxy, we need to pass
@@ -204,14 +204,14 @@ int proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
 		    r->uri);
 	write(sock, buffer, strlen(buffer));
 	ap_snprintf(buffer, sizeof(buffer),
-		    "Proxy-agent: %s" CRLF CRLF, apapi_get_server_version());
+		    "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
 	write(sock, buffer, strlen(buffer));
     }
     else {
 	Explain0("Returning 200 OK Status");
-	rvputs(r, "HTTP/1.0 200 Connection established" CRLF, NULL);
-	rvputs(r, "Proxy-agent: ", apapi_get_server_version(), CRLF CRLF, NULL);
-	bflush(r->connection->client);
+	ap_rvputs(r, "HTTP/1.0 200 Connection established" CRLF, NULL);
+	ap_rvputs(r, "Proxy-agent: ", ap_get_server_version(), CRLF CRLF, NULL);
+	ap_bflush(r->connection->client);
     }
 
     while (1) {			/* Infinite loop until error (one side closes the connection) */
@@ -258,7 +258,7 @@ int proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
 	    break;
     }
 
-    pclosesocket(r->pool, sock);
+    ap_pclosesocket(r->pool, sock);
 
     return OK;
 }

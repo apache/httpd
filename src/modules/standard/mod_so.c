@@ -172,8 +172,8 @@ static void *so_sconf_create(pool *p, server_rec *s)
 {
     so_server_conf *soc;
 
-    soc = (so_server_conf *)pcalloc(p, sizeof(so_server_conf));
-    soc->loaded_modules = make_array(p, DYNAMIC_MODULE_LIMIT, 
+    soc = (so_server_conf *)ap_pcalloc(p, sizeof(so_server_conf));
+    soc->loaded_modules = ap_make_array(p, DYNAMIC_MODULE_LIMIT, 
                                      sizeof(moduleinfo));
     return (void *)soc;
 }
@@ -192,7 +192,7 @@ static void unload_module(moduleinfo *modi)
         return;
 
     /* remove the module pointer from the core structure */
-    remove_module(modi->modp);
+    ap_remove_module(modi->modp);
 
     /* unload the module space itself */
     os_dl_unload((os_dl_module_handle_type)modi->modp->dynamic_load_handle);
@@ -226,7 +226,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 {
     void *modhandle;
     module *modp;
-    const char *szModuleFile=server_root_relative(cmd->pool, filename);
+    const char *szModuleFile=ap_server_root_relative(cmd->pool, filename);
     so_server_conf *sconf;
     moduleinfo *modi;
     moduleinfo *modie;
@@ -236,7 +236,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * check for already existing module
      * If it already exists, we have nothing to do 
      */
-    sconf = (so_server_conf *)get_module_config(cmd->server->module_config, 
+    sconf = (so_server_conf *)ap_get_module_config(cmd->server->module_config, 
 	                                        &so_module);
     modie = (moduleinfo *)sconf->loaded_modules->elts;
     for (i = 0; i < sconf->loaded_modules->nelts; i++) {
@@ -244,7 +244,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
         if (modi->name != NULL && strcmp(modi->name, modname) == 0)
             return NULL;
     }
-    modi = push_array(sconf->loaded_modules);
+    modi = ap_push_array(sconf->loaded_modules);
     modi->name = modname;
 
     /*
@@ -252,12 +252,12 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      */
     if (!(modhandle = os_dl_load(szModuleFile))) {
 	const char *my_error = os_dl_error();
-	return pstrcat (cmd->pool, "Cannot load ", szModuleFile,
+	return ap_pstrcat (cmd->pool, "Cannot load ", szModuleFile,
 			" into server: ", 
 			my_error ? my_error : "(reason unknown)",
 			NULL);
     }
-    aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL,
 		"loaded module %s", modname);
 
     /*
@@ -265,7 +265,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * for some platforms.
      */
 #ifdef NEED_UNDERSCORE_SYM
-    modname = pstrcat(cmd->pool, "_", modname, NULL);
+    modname = ap_pstrcat(cmd->pool, "_", modname, NULL);
 #endif
 
     /*
@@ -274,7 +274,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * symbol name.
      */
     if (!(modp = (module *)(os_dl_sym (modhandle, modname)))) {
-	return pstrcat(cmd->pool, "Can't find module ", modname,
+	return ap_pstrcat(cmd->pool, "Can't find module ", modname,
 		       " in file ", filename, ":", os_dl_error(), NULL);
     }
     modi->modp = modp;
@@ -283,15 +283,15 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     /* 
      * Add this module to the Apache core structures
      */
-    add_module(modp);
+    ap_add_module(modp);
 
     /* 
      * Register a cleanup in the config pool (normally pconf). When
      * we do a restart (or shutdown) this cleanup will cause the
      * shared object to be unloaded.
      */
-    register_cleanup(cmd->pool, modi, 
-		     (void (*)(void*))unload_module, null_cleanup);
+    ap_register_cleanup(cmd->pool, modi, 
+		     (void (*)(void*))unload_module, ap_null_cleanup);
 
     /* 
      * Finally we need to run the configuration functions 
@@ -317,20 +317,20 @@ static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
     void *handle;
     char *file;
 
-    file = server_root_relative(cmd->pool, filename);
+    file = ap_server_root_relative(cmd->pool, filename);
     
     if (!(handle = os_dl_load(file))) {
 	const char *my_error = os_dl_error();
-	return pstrcat (cmd->pool, "Cannot load ", filename, 
+	return ap_pstrcat (cmd->pool, "Cannot load ", filename, 
 			" into server:", 
 			my_error ? my_error : "(reason unknown)",
 			NULL);
     }
     
-    aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL,
 		"loaded file %s", filename);
 
-    register_cleanup(cmd->pool, handle, unload_file, null_cleanup);
+    ap_register_cleanup(cmd->pool, handle, unload_file, ap_null_cleanup);
 
     return NULL;
 }

@@ -216,10 +216,10 @@ module MODULE_VAR_EXPORT expires_module;
 static void *create_dir_expires_config(pool *p, char *dummy)
 {
     expires_dir_config *new =
-    (expires_dir_config *) pcalloc(p, sizeof(expires_dir_config));
+    (expires_dir_config *) ap_pcalloc(p, sizeof(expires_dir_config));
     new->active = ACTIVE_DONTCARE;
     new->expiresdefault = "";
-    new->expiresbytype = make_table(p, 4);
+    new->expiresbytype = ap_make_table(p, 4);
     return (void *) new;
 }
 
@@ -259,7 +259,7 @@ static char *check_code(pool *p, const char *code, char **real_code)
 
     /* <base>
      */
-    word = getword_conf(p, &code);
+    word = ap_getword_conf(p, &code);
     if (!strncasecmp(word, "now", 1) ||
         !strncasecmp(word, "access", 1)) {
         base = 'A';
@@ -268,15 +268,15 @@ static char *check_code(pool *p, const char *code, char **real_code)
         base = 'M';
     }
     else {
-        return pstrcat(p, "bad expires code, unrecognised <base> '",
+        return ap_pstrcat(p, "bad expires code, unrecognised <base> '",
                        word, "'", NULL);
     };
 
     /* [plus]
      */
-    word = getword_conf(p, &code);
+    word = ap_getword_conf(p, &code);
     if (!strncasecmp(word, "plus", 1)) {
-        word = getword_conf(p, &code);
+        word = ap_getword_conf(p, &code);
     };
 
     /* {<num> <type>}*
@@ -288,18 +288,18 @@ static char *check_code(pool *p, const char *code, char **real_code)
             num = atoi(word);
         }
         else {
-            return pstrcat(p, "bad expires code, numeric value expected <num> '",
+            return ap_pstrcat(p, "bad expires code, numeric value expected <num> '",
                            word, "'", NULL);
         };
 
         /* <type>
          */
-        word = getword_conf(p, &code);
+        word = ap_getword_conf(p, &code);
         if (word[0]) {
             /* do nothing */
         }
         else {
-            return pstrcat(p, "bad expires code, missing <type>", NULL);
+            return ap_pstrcat(p, "bad expires code, missing <type>", NULL);
         };
 
         factor = 0;
@@ -325,7 +325,7 @@ static char *check_code(pool *p, const char *code, char **real_code)
             factor = 1;
         }
         else {
-            return pstrcat(p, "bad expires code, unrecognised <type>",
+            return ap_pstrcat(p, "bad expires code, unrecognised <type>",
                            "'", word, "'", NULL);
         };
 
@@ -333,10 +333,10 @@ static char *check_code(pool *p, const char *code, char **real_code)
 
         /* next <num>
          */
-        word = getword_conf(p, &code);
+        word = ap_getword_conf(p, &code);
     };
 
-    *real_code = psprintf(p, "%c%d", base, modifier);
+    *real_code = ap_psprintf(p, "%c%d", base, modifier);
 
     return NULL;
 }
@@ -346,10 +346,10 @@ static const char *set_expiresbytype(cmd_parms *cmd, expires_dir_config * dir_co
     char *response, *real_code;
 
     if ((response = check_code(cmd->pool, code, &real_code)) == NULL) {
-        table_setn(dir_config->expiresbytype, mime, real_code);
+        ap_table_setn(dir_config->expiresbytype, mime, real_code);
         return NULL;
     };
-    return pstrcat(cmd->pool,
+    return ap_pstrcat(cmd->pool,
                  "'ExpiresByType ", mime, " ", code, "': ", response, NULL);
 }
 
@@ -361,7 +361,7 @@ static const char *set_expiresdefault(cmd_parms *cmd, expires_dir_config * dir_c
         dir_config->expiresdefault = real_code;
         return NULL;
     };
-    return pstrcat(cmd->pool,
+    return ap_pstrcat(cmd->pool,
                    "'ExpiresDefault ", code, "': ", response, NULL);
 }
 
@@ -378,7 +378,7 @@ static const command_rec expires_cmds[] =
 
 static void *merge_expires_dir_configs(pool *p, void *basev, void *addv)
 {
-    expires_dir_config *new = (expires_dir_config *) pcalloc(p, sizeof(expires_dir_config));
+    expires_dir_config *new = (expires_dir_config *) ap_pcalloc(p, sizeof(expires_dir_config));
     expires_dir_config *base = (expires_dir_config *) basev;
     expires_dir_config *add = (expires_dir_config *) addv;
 
@@ -393,7 +393,7 @@ static void *merge_expires_dir_configs(pool *p, void *basev, void *addv)
         new->expiresdefault = add->expiresdefault;
     };
 
-    new->expiresbytype = overlay_tables(p, add->expiresbytype,
+    new->expiresbytype = ap_overlay_tables(p, add->expiresbytype,
                                         base->expiresbytype);
     return new;
 }
@@ -416,9 +416,9 @@ static int add_expires(request_rec *r)
     if (r->finfo.st_mode == 0)  /* no file ? shame. */
         return DECLINED;
 
-    conf = (expires_dir_config *) get_module_config(r->per_dir_config, &expires_module);
+    conf = (expires_dir_config *) ap_get_module_config(r->per_dir_config, &expires_module);
     if (conf == NULL) {
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "internal error: %s", r->filename);
         return SERVER_ERROR;
     };
@@ -440,7 +440,7 @@ static int add_expires(request_rec *r)
     if (r->content_type == NULL)
         code = NULL;
     else
-        code = (char *) table_get(conf->expiresbytype, r->content_type);
+        code = (char *) ap_table_get(conf->expiresbytype, r->content_type);
 
     if (code == NULL) {
         /* no expires defined for that type, is there a default? */
@@ -468,18 +468,18 @@ static int add_expires(request_rec *r)
         /* expecting the add_* routines to be case-hardened this 
          * is just a reminder that module is beta
          */
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "internal error: bad expires code: %s", r->filename);
         return SERVER_ERROR;
     };
 
     expires = base + additional;
     ap_snprintf(age, sizeof(age), "max-age=%d", (int) expires - (int) r->request_time);
-    table_setn(r->headers_out, "Cache-Control", pstrdup(r->pool, age));
+    ap_table_setn(r->headers_out, "Cache-Control", ap_pstrdup(r->pool, age));
     tzset();                    /* redundant? called implicitly by localtime, at least 
                                  * under FreeBSD
                                  */
-    table_setn(r->headers_out, "Expires", gm_timestr_822(r->pool, expires));
+    ap_table_setn(r->headers_out, "Expires", ap_gm_timestr_822(r->pool, expires));
     return OK;
 }
 

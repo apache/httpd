@@ -104,23 +104,23 @@ static int send_rndchunk(request_rec *r)
 	return DECLINED;
 
     r->content_type = "text/html";		
-    send_http_header(r);
+    ap_send_http_header(r);
     if(r->header_only) {
 	return 0;
     }
-    hard_timeout("send_rndchunk", r);
+    ap_hard_timeout("send_rndchunk", r);
 
     if (!r->chunked) {
-	rputs("Not chunked!", r);
-	kill_timeout(r);
+	ap_rputs("Not chunked!", r);
+	ap_kill_timeout(r);
 	return 0;
     }
 
     args = r->args;
     if (!args) {
 error:
-	rputs("Must include args! ... of the form <code>?seed,count</code>", r);
-	kill_timeout(r);
+	ap_rputs("Must include args! ... of the form <code>?seed,count</code>", r);
+	ap_kill_timeout(r);
 	return 0;
     }
     seed = strtol(args, &endptr, 0);
@@ -134,22 +134,22 @@ error:
     for (i = 0; i < count; ++i) {
 	len = random() % (MAX_SEGMENT + ONE_WEIGHT);
 	if (len >= MAX_SEGMENT) {
-	    rputc((i & 1) ? '0' : '1', r);
+	    ap_rputc((i & 1) ? '0' : '1', r);
 	}
 	else if (len == 0) {
 	    /* not a really nice thing to do, but we need to test
 	     * beginning/ending chunks as well
 	     */
-	    bsetflag(r->connection->client, B_CHUNK, 0);
-	    bsetflag(r->connection->client, B_CHUNK, 1);
+	    ap_bsetflag(r->connection->client, B_CHUNK, 0);
+	    ap_bsetflag(r->connection->client, B_CHUNK, 1);
 	}
 	else {
 	    memset(buf, '2' + len, len);
 	    buf[len] = 0;
-	    rputs(buf, r);
+	    ap_rputs(buf, r);
 	}
     }
-    kill_timeout(r);
+    ap_kill_timeout(r);
     return 0;
 }
 

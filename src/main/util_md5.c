@@ -98,15 +98,15 @@ API_EXPORT(char *) ap_md5(pool *p, unsigned char *string)
      * Take the MD5 hash of the string argument.
      */
 
-    MD5Init(&my_md5);
-    MD5Update(&my_md5, string, strlen((const char *) string));
-    MD5Final(hash, &my_md5);
+    ap_MD5Init(&my_md5);
+    ap_MD5Update(&my_md5, string, strlen((const char *) string));
+    ap_MD5Final(hash, &my_md5);
 
     for (i = 0, r = result; i < 16; i++, r += 2)
 	sprintf(r, "%02x", hash[i]);
     *r = '\0';
 
-    return pstrdup(p, result);
+    return ap_pstrdup(p, result);
 }
 
 /* these portions extracted from mpack, John G. Myers - jgm+@cmu.edu */
@@ -161,9 +161,9 @@ API_EXPORT(char *) ap_md5contextTo64(pool *a, AP_MD5_CTX * context)
     int i;
     char *p;
 
-    encodedDigest = (char *) pcalloc(a, 25 * sizeof(char));
+    encodedDigest = (char *) ap_pcalloc(a, 25 * sizeof(char));
 
-    MD5Final(digest, context);
+    ap_MD5Final(digest, context);
     digest[sizeof(digest) - 1] = digest[sizeof(digest) - 2] = 0;
 
     p = encodedDigest;
@@ -186,10 +186,10 @@ API_EXPORT(char *) ap_md5digest(pool *p, FILE *infile)
     long length = 0;
     int nbytes;
 
-    MD5Init(&context);
+    ap_MD5Init(&context);
     while ((nbytes = fread(buf, 1, sizeof(buf), infile))) {
 	length += nbytes;
-	MD5Update(&context, buf, nbytes);
+	ap_MD5Update(&context, buf, nbytes);
     }
     rewind(infile);
     return ap_md5contextTo64(p, &context);

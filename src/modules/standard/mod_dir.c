@@ -81,9 +81,9 @@ static const char *add_index(cmd_parms *cmd, void *dummy, char *arg)
     dir_config_rec *d = dummy;
 
     if (!d->index_names) {
-	d->index_names = make_array(cmd->pool, 2, sizeof(char *));
+	d->index_names = ap_make_array(cmd->pool, 2, sizeof(char *));
     }
-    *(char **)push_array(d->index_names) = arg;
+    *(char **)ap_push_array(d->index_names) = arg;
     return NULL;
 }
 
@@ -98,7 +98,7 @@ static const command_rec dir_cmds[] =
 static void *create_dir_config(pool *p, char *dummy)
 {
     dir_config_rec *new =
-    (dir_config_rec *) pcalloc(p, sizeof(dir_config_rec));
+    (dir_config_rec *) ap_pcalloc(p, sizeof(dir_config_rec));
 
     new->index_names = NULL;
     return (void *) new;
@@ -106,7 +106,7 @@ static void *create_dir_config(pool *p, char *dummy)
 
 static void *merge_dir_configs(pool *p, void *basev, void *addv)
 {
-    dir_config_rec *new = (dir_config_rec *) pcalloc(p, sizeof(dir_config_rec));
+    dir_config_rec *new = (dir_config_rec *) ap_pcalloc(p, sizeof(dir_config_rec));
     dir_config_rec *base = (dir_config_rec *) basev;
     dir_config_rec *add = (dir_config_rec *) addv;
 
@@ -117,7 +117,7 @@ static void *merge_dir_configs(pool *p, void *basev, void *addv)
 static int handle_dir(request_rec *r)
 {
     dir_config_rec *d =
-    (dir_config_rec *) get_module_config(r->per_dir_config,
+    (dir_config_rec *) ap_get_module_config(r->per_dir_config,
                                          &dir_module);
     char *dummy_ptr[1];
     char **names_ptr;
@@ -127,14 +127,14 @@ static int handle_dir(request_rec *r)
     if (r->uri[0] == '\0' || r->uri[strlen(r->uri) - 1] != '/') {
         char *ifile;
         if (r->args != NULL)
-            ifile = pstrcat(r->pool, escape_uri(r->pool, r->uri),
+            ifile = ap_pstrcat(r->pool, escape_uri(r->pool, r->uri),
                             "/", "?", r->args, NULL);
         else
-            ifile = pstrcat(r->pool, escape_uri(r->pool, r->uri),
+            ifile = ap_pstrcat(r->pool, escape_uri(r->pool, r->uri),
                             "/", NULL);
 
-        table_setn(r->headers_out, "Location",
-                  construct_url(r->pool, ifile, r));
+        ap_table_setn(r->headers_out, "Location",
+                  ap_construct_url(r->pool, ifile, r));
         return HTTP_MOVED_PERMANENTLY;
     }
 
@@ -144,7 +144,7 @@ static int handle_dir(request_rec *r)
      */
 
     if (r->filename[strlen(r->filename) - 1] != '/') {
-        r->filename = pstrcat(r->pool, r->filename, "/", NULL);
+        r->filename = ap_pstrcat(r->pool, r->filename, "/", NULL);
     }
 
     if (d->index_names) {
@@ -159,18 +159,18 @@ static int handle_dir(request_rec *r)
 
     for (; num_names; ++names_ptr, --num_names) {
         char *name_ptr = *names_ptr;
-        request_rec *rr = sub_req_lookup_uri(name_ptr, r);
+        request_rec *rr = ap_sub_req_lookup_uri(name_ptr, r);
 
         if (rr->status == HTTP_OK && rr->finfo.st_mode != 0) {
             char *new_uri = escape_uri(r->pool, rr->uri);
 
             if (rr->args != NULL)
-                new_uri = pstrcat(r->pool, new_uri, "?", rr->args, NULL);
+                new_uri = ap_pstrcat(r->pool, new_uri, "?", rr->args, NULL);
             else if (r->args != NULL)
-                new_uri = pstrcat(r->pool, new_uri, "?", r->args, NULL);
+                new_uri = ap_pstrcat(r->pool, new_uri, "?", r->args, NULL);
 
-            destroy_sub_req(rr);
-            internal_redirect(new_uri, r);
+            ap_destroy_sub_req(rr);
+            ap_internal_redirect(new_uri, r);
             return OK;
         }
 
@@ -180,12 +180,12 @@ static int handle_dir(request_rec *r)
             (rr->status == HTTP_NOT_ACCEPTABLE && num_names == 1)) {
 
             error_notfound = rr->status;
-            r->notes = overlay_tables(r->pool, r->notes, rr->notes);
-            r->headers_out = overlay_tables(r->pool, r->headers_out,
+            r->notes = ap_overlay_tables(r->pool, r->notes, rr->notes);
+            r->headers_out = ap_overlay_tables(r->pool, r->headers_out,
                                             rr->headers_out);
-            r->err_headers_out = overlay_tables(r->pool, r->err_headers_out,
+            r->err_headers_out = ap_overlay_tables(r->pool, r->err_headers_out,
                                                 rr->err_headers_out);
-            destroy_sub_req(rr);
+            ap_destroy_sub_req(rr);
             return error_notfound;
         }
 
@@ -201,7 +201,7 @@ static int handle_dir(request_rec *r)
         if (rr->status && rr->status != HTTP_NOT_FOUND && rr->status != HTTP_OK)
             error_notfound = rr->status;
 
-        destroy_sub_req(rr);
+        ap_destroy_sub_req(rr);
     }
 
     if (error_notfound)

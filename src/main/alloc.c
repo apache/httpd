@@ -261,7 +261,7 @@ static void free_blocks(union block_hdr *blok)
     if (blok == NULL)
 	return;			/* Sanity check --- freeing empty pool? */
 
-    (void) acquire_mutex(alloc_mutex);
+    (void) ap_acquire_mutex(alloc_mutex);
     old_free_list = block_freelist;
     block_freelist = blok;
 
@@ -291,7 +291,7 @@ static void free_blocks(union block_hdr *blok)
     /* Finally, reset next pointer to get the old free blocks back */
 
     blok->h.next = old_free_list;
-    (void) release_mutex(alloc_mutex);
+    (void) ap_release_mutex(alloc_mutex);
 #endif
 }
 
@@ -392,14 +392,14 @@ static pool *permanent_pool;
 #define POOL_HDR_CLICKS (1 + ((sizeof(struct pool) - 1) / CLICK_SZ))
 #define POOL_HDR_BYTES (POOL_HDR_CLICKS * CLICK_SZ)
 
-API_EXPORT(struct pool *) make_sub_pool(struct pool *p)
+API_EXPORT(struct pool *) ap_make_sub_pool(struct pool *p)
 {
     union block_hdr *blok;
     pool *new_pool;
 
-    block_alarms();
+    ap_block_alarms();
 
-    (void) acquire_mutex(alloc_mutex);
+    (void) ap_acquire_mutex(alloc_mutex);
 
     blok = new_block(POOL_HDR_BYTES);
     new_pool = (pool *) blok->h.first_avail;
@@ -420,8 +420,8 @@ API_EXPORT(struct pool *) make_sub_pool(struct pool *p)
 	p->sub_pools = new_pool;
     }
 
-    (void) release_mutex(alloc_mutex);
-    unblock_alarms();
+    (void) ap_release_mutex(alloc_mutex);
+    ap_unblock_alarms();
 
     return new_pool;
 }
@@ -440,7 +440,7 @@ static void stack_var_init(char *s)
 }
 #endif
 
-pool *init_alloc(void)
+pool *ap_init_alloc(void)
 {
 #ifdef POOL_DEBUG
     char s;
@@ -448,21 +448,21 @@ pool *init_alloc(void)
     known_stack_point = &s;
     stack_var_init(&s);
 #endif
-    alloc_mutex = create_mutex(NULL);
-    spawn_mutex = create_mutex(NULL);
-    permanent_pool = make_sub_pool(NULL);
+    alloc_mutex = ap_create_mutex(NULL);
+    spawn_mutex = ap_create_mutex(NULL);
+    permanent_pool = ap_make_sub_pool(NULL);
 
     return permanent_pool;
 }
 
-API_EXPORT(void) clear_pool(struct pool *a)
+API_EXPORT(void) ap_clear_pool(struct pool *a)
 {
-    block_alarms();
+    ap_block_alarms();
 
-    (void) acquire_mutex(alloc_mutex);
+    (void) ap_acquire_mutex(alloc_mutex);
     while (a->sub_pools)
-	destroy_pool(a->sub_pools);
-    (void) release_mutex(alloc_mutex);
+	ap_destroy_pool(a->sub_pools);
+    (void) ap_release_mutex(alloc_mutex);
     /* Don't hold the mutex during cleanups. */
     run_cleanups(a->cleanups);
     a->cleanups = NULL;
@@ -488,15 +488,15 @@ API_EXPORT(void) clear_pool(struct pool *a)
     }
 #endif
 
-    unblock_alarms();
+    ap_unblock_alarms();
 }
 
-API_EXPORT(void) destroy_pool(pool *a)
+API_EXPORT(void) ap_destroy_pool(pool *a)
 {
-    block_alarms();
-    clear_pool(a);
+    ap_block_alarms();
+    ap_clear_pool(a);
 
-    (void) acquire_mutex(alloc_mutex);
+    (void) ap_acquire_mutex(alloc_mutex);
     if (a->parent) {
 	if (a->parent->sub_pools == a)
 	    a->parent->sub_pools = a->sub_next;
@@ -505,17 +505,17 @@ API_EXPORT(void) destroy_pool(pool *a)
 	if (a->sub_next)
 	    a->sub_next->sub_prev = a->sub_prev;
     }
-    (void) release_mutex(alloc_mutex);
+    (void) ap_release_mutex(alloc_mutex);
 
     free_blocks(a->first);
-    unblock_alarms();
+    ap_unblock_alarms();
 }
 
-API_EXPORT(long) bytes_in_pool(pool *p)
+API_EXPORT(long) ap_bytes_in_pool(pool *p)
 {
     return bytes_in_block_list(p->first);
 }
-API_EXPORT(long) bytes_in_free_blocks(void)
+API_EXPORT(long) ap_bytes_in_free_blocks(void)
 {
     return bytes_in_block_list(block_freelist);
 }
@@ -539,7 +539,7 @@ extern char _end;
 /* Find the pool that ts belongs to, return NULL if it doesn't
  * belong to any pool.
  */
-API_EXPORT(pool *) find_pool(const void *ts)
+API_EXPORT(pool *) ap_find_pool(const void *ts)
 {
     const char *s = ts;
     union block_hdr **pb;
@@ -557,7 +557,7 @@ API_EXPORT(pool *) find_pool(const void *ts)
 	abort();
 	return NULL;
     }
-    block_alarms();
+    ap_block_alarms();
     /* search the global_block_list */
     for (pb = &global_block_list; *pb; pb = &b->h.global_next) {
 	b = *pb;
@@ -575,18 +575,18 @@ API_EXPORT(pool *) find_pool(const void *ts)
 		b->h.global_next = global_block_list;
 		global_block_list = b;
 	    }
-	    unblock_alarms();
+	    ap_unblock_alarms();
 	    return b->h.owning_pool;
 	}
     }
-    unblock_alarms();
+    ap_unblock_alarms();
     return NULL;
 }
 
 /* return TRUE iff a is an ancestor of b
  * NULL is considered an ancestor of all pools
  */
-API_EXPORT(int) pool_is_ancestor(pool *a, pool *b)
+API_EXPORT(int) ap_pool_is_ancestor(pool *a, pool *b)
 {
     if (a == NULL) {
 	return 1;
@@ -607,7 +607,7 @@ API_EXPORT(int) pool_is_ancestor(pool *a, pool *b)
  * instead.  This is a guarantee by the caller that sub will not
  * be destroyed before p is.
  */
-API_EXPORT(void) pool_join(pool *p, pool *sub)
+API_EXPORT(void) ap_pool_join(pool *p, pool *sub)
 {
     union block_hdr *b;
 
@@ -616,7 +616,7 @@ API_EXPORT(void) pool_join(pool *p, pool *sub)
 	fprintf(stderr, "pool_join: p is not parent of sub\n");
 	abort();
     }
-    block_alarms();
+    ap_block_alarms();
     while (p->joined) {
 	p = p->joined;
     }
@@ -626,7 +626,7 @@ API_EXPORT(void) pool_join(pool *p, pool *sub)
 	    b->h.owning_pool = p;
 	}
     }
-    unblock_alarms();
+    ap_unblock_alarms();
 }
 #endif
 
@@ -636,13 +636,13 @@ API_EXPORT(void) pool_join(pool *p, pool *sub)
  */
 
 
-API_EXPORT(void *) palloc(struct pool *a, int reqsize)
+API_EXPORT(void *) ap_palloc(struct pool *a, int reqsize)
 {
 #ifdef ALLOC_USE_MALLOC
     int size = reqsize + CLICK_SZ;
     void *ptr;
 
-    block_alarms();
+    ap_block_alarms();
     ptr = malloc(size);
     if (ptr == NULL) {
 	fputs("Ouch!  Out of memory!\n", stderr);
@@ -651,7 +651,7 @@ API_EXPORT(void *) palloc(struct pool *a, int reqsize)
     debug_fill(ptr, size); /* might as well get uninitialized protection */
     *(void **)ptr = a->allocation_list;
     a->allocation_list = ptr;
-    unblock_alarms();
+    ap_unblock_alarms();
     return (char *)ptr + CLICK_SZ;
 #else
 
@@ -683,9 +683,9 @@ API_EXPORT(void *) palloc(struct pool *a, int reqsize)
 
     /* Nope --- get a new one that's guaranteed to be big enough */
 
-    block_alarms();
+    ap_block_alarms();
 
-    (void) acquire_mutex(alloc_mutex);
+    (void) ap_acquire_mutex(alloc_mutex);
 
     blok = new_block(size);
     a->last->h.next = blok;
@@ -694,9 +694,9 @@ API_EXPORT(void *) palloc(struct pool *a, int reqsize)
     blok->h.owning_pool = a;
 #endif
 
-    (void) release_mutex(alloc_mutex);
+    (void) ap_release_mutex(alloc_mutex);
 
-    unblock_alarms();
+    ap_unblock_alarms();
 
     first_avail = blok->h.first_avail;
     blok->h.first_avail += size;
@@ -705,14 +705,14 @@ API_EXPORT(void *) palloc(struct pool *a, int reqsize)
 #endif
 }
 
-API_EXPORT(void *) pcalloc(struct pool *a, int size)
+API_EXPORT(void *) ap_pcalloc(struct pool *a, int size)
 {
-    void *res = palloc(a, size);
+    void *res = ap_palloc(a, size);
     memset(res, '\0', size);
     return res;
 }
 
-API_EXPORT(char *) pstrdup(struct pool *a, const char *s)
+API_EXPORT(char *) ap_pstrdup(struct pool *a, const char *s)
 {
     char *res;
     size_t len;
@@ -720,24 +720,24 @@ API_EXPORT(char *) pstrdup(struct pool *a, const char *s)
     if (s == NULL)
 	return NULL;
     len = strlen(s) + 1;
-    res = palloc(a, len);
+    res = ap_palloc(a, len);
     memcpy(res, s, len);
     return res;
 }
 
-API_EXPORT(char *) pstrndup(struct pool *a, const char *s, int n)
+API_EXPORT(char *) ap_pstrndup(struct pool *a, const char *s, int n)
 {
     char *res;
 
     if (s == NULL)
 	return NULL;
-    res = palloc(a, n + 1);
+    res = ap_palloc(a, n + 1);
     memcpy(res, s, n);
     res[n] = '\0';
     return res;
 }
 
-API_EXPORT_NONSTD(char *) pstrcat(pool *a,...)
+API_EXPORT_NONSTD(char *) ap_pstrcat(pool *a,...)
 {
     char *cp, *argp, *res;
 
@@ -755,7 +755,7 @@ API_EXPORT_NONSTD(char *) pstrcat(pool *a,...)
 
     /* Allocate the required string */
 
-    res = (char *) palloc(a, len + 1);
+    res = (char *) ap_palloc(a, len + 1);
     cp = res;
     *cp = '\0';
 
@@ -820,11 +820,11 @@ static int psprintf_flush(ap_vformatter_buff *vbuff)
     cur_len = strp - blok->h.first_avail;
 
     /* must try another blok */
-    block_alarms();
-    (void) acquire_mutex(alloc_mutex);
+    ap_block_alarms();
+    (void) ap_acquire_mutex(alloc_mutex);
     nblok = new_block(2 * cur_len);
-    (void) release_mutex(alloc_mutex);
-    unblock_alarms();
+    (void) ap_release_mutex(alloc_mutex);
+    ap_unblock_alarms();
     memcpy(nblok->h.first_avail, strp, cur_len);
     strp = nblok->h.first_avail + cur_len;
     ps->vbuff.curpos = strp;
@@ -833,12 +833,12 @@ static int psprintf_flush(ap_vformatter_buff *vbuff)
     /* did we allocate the current blok? if so free it up */
     if (ps->got_a_new_block) {
 	debug_fill(blok->h.first_avail, blok->h.endp - blok->h.first_avail);
-	block_alarms();
-	(void) acquire_mutex(alloc_mutex);
+	ap_block_alarms();
+	(void) ap_acquire_mutex(alloc_mutex);
 	blok->h.next = block_freelist;
 	block_freelist = blok;
-	(void) release_mutex(alloc_mutex);
-	unblock_alarms();
+	(void) ap_release_mutex(alloc_mutex);
+	ap_unblock_alarms();
     }
     ps->blok = nblok;
     ps->got_a_new_block = 1;
@@ -846,13 +846,13 @@ static int psprintf_flush(ap_vformatter_buff *vbuff)
 #endif
 }
 
-API_EXPORT(char *) pvsprintf(pool *p, const char *fmt, va_list ap)
+API_EXPORT(char *) ap_pvsprintf(pool *p, const char *fmt, va_list ap)
 {
 #ifdef ALLOC_USE_MALLOC
     struct psprintf_data ps;
     void *ptr;
 
-    block_alarms();
+    ap_block_alarms();
     ps.base = malloc(512);
     if (ps.base == NULL) {
 	fputs("Ouch!  Out of memory!\n", stderr);
@@ -872,7 +872,7 @@ API_EXPORT(char *) pvsprintf(pool *p, const char *fmt, va_list ap)
     }
     *(void **)ptr = p->allocation_list;
     p->allocation_list = ptr;
-    unblock_alarms();
+    ap_unblock_alarms();
     return (char *)ptr + CLICK_SZ;
 #else
     struct psprintf_data ps;
@@ -907,13 +907,13 @@ API_EXPORT(char *) pvsprintf(pool *p, const char *fmt, va_list ap)
 #endif
 }
 
-API_EXPORT_NONSTD(char *) psprintf(pool *p, const char *fmt, ...)
+API_EXPORT_NONSTD(char *) ap_psprintf(pool *p, const char *fmt, ...)
 {
     va_list ap;
     char *res;
 
     va_start(ap, fmt);
-    res = pvsprintf(p, fmt, ap);
+    res = ap_pvsprintf(p, fmt, ap);
     va_end(ap);
     return res;
 }
@@ -930,7 +930,7 @@ static void make_array_core(array_header *res, pool *p, int nelts, int elt_size)
 				 * array of zero elts.
 				 */
 
-    res->elts = pcalloc(p, nelts * elt_size);
+    res->elts = ap_pcalloc(p, nelts * elt_size);
 
     res->pool = p;
     res->elt_size = elt_size;
@@ -938,21 +938,21 @@ static void make_array_core(array_header *res, pool *p, int nelts, int elt_size)
     res->nalloc = nelts;	/* ...but this many allocated */
 }
 
-API_EXPORT(array_header *) make_array(pool *p, int nelts, int elt_size)
+API_EXPORT(array_header *) ap_make_array(pool *p, int nelts, int elt_size)
 {
-    array_header *res = (array_header *) palloc(p, sizeof(array_header));
+    array_header *res = (array_header *) ap_palloc(p, sizeof(array_header));
 
     make_array_core(res, p, nelts, elt_size);
     return res;
 }
 
-API_EXPORT(void *) push_array(array_header *arr)
+API_EXPORT(void *) ap_push_array(array_header *arr)
 {
     if (arr->nelts == arr->nalloc) {
 	int new_size = (arr->nalloc <= 0) ? 1 : arr->nalloc * 2;
 	char *new_data;
 
-	new_data = pcalloc(arr->pool, arr->elt_size * new_size);
+	new_data = ap_pcalloc(arr->pool, arr->elt_size * new_size);
 
 	memcpy(new_data, arr->elts, arr->nalloc * arr->elt_size);
 	arr->elts = new_data;
@@ -963,7 +963,7 @@ API_EXPORT(void *) push_array(array_header *arr)
     return arr->elts + (arr->elt_size * (arr->nelts - 1));
 }
 
-API_EXPORT(void) array_cat(array_header *dst, const array_header *src)
+API_EXPORT(void) ap_array_cat(array_header *dst, const array_header *src)
 {
     int elt_size = dst->elt_size;
 
@@ -974,7 +974,7 @@ API_EXPORT(void) array_cat(array_header *dst, const array_header *src)
 	while (dst->nelts + src->nelts > new_size)
 	    new_size *= 2;
 
-	new_data = pcalloc(dst->pool, elt_size * new_size);
+	new_data = ap_pcalloc(dst->pool, elt_size * new_size);
 	memcpy(new_data, dst->elts, dst->nalloc * elt_size);
 
 	dst->elts = new_data;
@@ -985,9 +985,9 @@ API_EXPORT(void) array_cat(array_header *dst, const array_header *src)
     dst->nelts += src->nelts;
 }
 
-API_EXPORT(array_header *) copy_array(pool *p, const array_header *arr)
+API_EXPORT(array_header *) ap_copy_array(pool *p, const array_header *arr)
 {
-    array_header *res = make_array(p, arr->nalloc, arr->elt_size);
+    array_header *res = ap_make_array(p, arr->nalloc, arr->elt_size);
 
     memcpy(res->elts, arr->elts, arr->elt_size * arr->nelts);
     res->nelts = arr->nelts;
@@ -1010,9 +1010,9 @@ static ap_inline void copy_array_hdr_core(array_header *res,
     res->nalloc = arr->nelts;	/* Force overflow on push */
 }
 
-API_EXPORT(array_header *) copy_array_hdr(pool *p, const array_header *arr)
+API_EXPORT(array_header *) ap_copy_array_hdr(pool *p, const array_header *arr)
 {
-    array_header *res = (array_header *) palloc(p, sizeof(array_header));
+    array_header *res = (array_header *) ap_palloc(p, sizeof(array_header));
 
     res->pool = p;
     copy_array_hdr_core(res, arr);
@@ -1021,13 +1021,13 @@ API_EXPORT(array_header *) copy_array_hdr(pool *p, const array_header *arr)
 
 /* The above is used here to avoid consing multiple new array bodies... */
 
-API_EXPORT(array_header *) append_arrays(pool *p,
+API_EXPORT(array_header *) ap_append_arrays(pool *p,
 					 const array_header *first,
 					 const array_header *second)
 {
-    array_header *res = copy_array_hdr(p, first);
+    array_header *res = ap_copy_array_hdr(p, first);
 
-    array_cat(res, second);
+    ap_array_cat(res, second);
     return res;
 }
 
@@ -1059,16 +1059,16 @@ static table_entry *table_push(table *t)
 	    "table_push: table created by %p hit limit of %u\n",
 	    t->creator, t->a.nalloc);
     }
-    return (table_entry *) push_array(&t->a);
+    return (table_entry *) ap_push_array(&t->a);
 }
 #else
-#define table_push(t)	((table_entry *) push_array(&(t)->a))
+#define table_push(t)	((table_entry *) ap_push_array(&(t)->a))
 #endif
 
 
-API_EXPORT(table *) make_table(pool *p, int nelts)
+API_EXPORT(table *) ap_make_table(pool *p, int nelts)
 {
-    table *t = palloc(p, sizeof(table));
+    table *t = ap_palloc(p, sizeof(table));
 
     make_array_core(&t->a, p, nelts, sizeof(table_entry));
 #ifdef MAKE_TABLE_PROFILE
@@ -1077,15 +1077,15 @@ API_EXPORT(table *) make_table(pool *p, int nelts)
     return t;
 }
 
-API_EXPORT(table *) copy_table(pool *p, const table *t)
+API_EXPORT(table *) ap_copy_table(pool *p, const table *t)
 {
-    table *new = palloc(p, sizeof(table));
+    table *new = ap_palloc(p, sizeof(table));
 
 #ifdef POOL_DEBUG
     /* we don't copy keys and values, so it's necessary that t->a.pool
      * have a life span at least as long as p
      */
-    if (!pool_is_ancestor(t->a.pool, p)) {
+    if (!ap_pool_is_ancestor(t->a.pool, p)) {
 	fprintf(stderr, "copy_table: t's pool is not an ancestor of p\n");
 	abort();
     }
@@ -1096,12 +1096,12 @@ API_EXPORT(table *) copy_table(pool *p, const table *t)
     return new;
 }
 
-API_EXPORT(void) clear_table(table *t)
+API_EXPORT(void) ap_clear_table(table *t)
 {
     t->a.nelts = 0;
 }
 
-API_EXPORT(char *) table_get(const table *t, const char *key)
+API_EXPORT(char *) ap_table_get(const table *t, const char *key)
 {
     table_entry *elts = (table_entry *) t->a.elts;
     int i;
@@ -1116,7 +1116,7 @@ API_EXPORT(char *) table_get(const table *t, const char *key)
     return NULL;
 }
 
-API_EXPORT(void) table_set(table *t, const char *key, const char *val)
+API_EXPORT(void) ap_table_set(table *t, const char *key, const char *val)
 {
     register int i, j, k;
     table_entry *elts = (table_entry *) t->a.elts;
@@ -1125,7 +1125,7 @@ API_EXPORT(void) table_set(table *t, const char *key, const char *val)
     for (i = 0; i < t->a.nelts; ) {
 	if (!strcasecmp(elts[i].key, key)) {
 	    if (!done) {
-		elts[i].val = pstrdup(t->a.pool, val);
+		elts[i].val = ap_pstrdup(t->a.pool, val);
 		done = 1;
 		++i;
 	    }
@@ -1144,12 +1144,12 @@ API_EXPORT(void) table_set(table *t, const char *key, const char *val)
 
     if (!done) {
 	elts = (table_entry *) table_push(t);
-	elts->key = pstrdup(t->a.pool, key);
-	elts->val = pstrdup(t->a.pool, val);
+	elts->key = ap_pstrdup(t->a.pool, key);
+	elts->val = ap_pstrdup(t->a.pool, val);
     }
 }
 
-API_EXPORT(void) table_setn(table *t, const char *key, const char *val)
+API_EXPORT(void) ap_table_setn(table *t, const char *key, const char *val)
 {
     register int i, j, k;
     table_entry *elts = (table_entry *) t->a.elts;
@@ -1157,11 +1157,11 @@ API_EXPORT(void) table_setn(table *t, const char *key, const char *val)
 
 #ifdef POOL_DEBUG
     {
-	if (!pool_is_ancestor(find_pool(key), t->a.pool)) {
+	if (!ap_pool_is_ancestor(ap_find_pool(key), t->a.pool)) {
 	    fprintf(stderr, "table_set: key not in ancestor pool of t\n");
 	    abort();
 	}
-	if (!pool_is_ancestor(find_pool(val), t->a.pool)) {
+	if (!ap_pool_is_ancestor(ap_find_pool(val), t->a.pool)) {
 	    fprintf(stderr, "table_set: key not in ancestor pool of t\n");
 	    abort();
 	}
@@ -1195,7 +1195,7 @@ API_EXPORT(void) table_setn(table *t, const char *key, const char *val)
     }
 }
 
-API_EXPORT(void) table_unset(table *t, const char *key)
+API_EXPORT(void) ap_table_unset(table *t, const char *key)
 {
     register int i, j, k;
     table_entry *elts = (table_entry *) t->a.elts;
@@ -1220,34 +1220,34 @@ API_EXPORT(void) table_unset(table *t, const char *key)
     }
 }
 
-API_EXPORT(void) table_merge(table *t, const char *key, const char *val)
+API_EXPORT(void) ap_table_merge(table *t, const char *key, const char *val)
 {
     table_entry *elts = (table_entry *) t->a.elts;
     int i;
 
     for (i = 0; i < t->a.nelts; ++i)
 	if (!strcasecmp(elts[i].key, key)) {
-	    elts[i].val = pstrcat(t->a.pool, elts[i].val, ", ", val, NULL);
+	    elts[i].val = ap_pstrcat(t->a.pool, elts[i].val, ", ", val, NULL);
 	    return;
 	}
 
     elts = (table_entry *) table_push(t);
-    elts->key = pstrdup(t->a.pool, key);
-    elts->val = pstrdup(t->a.pool, val);
+    elts->key = ap_pstrdup(t->a.pool, key);
+    elts->val = ap_pstrdup(t->a.pool, val);
 }
 
-API_EXPORT(void) table_mergen(table *t, const char *key, const char *val)
+API_EXPORT(void) ap_table_mergen(table *t, const char *key, const char *val)
 {
     table_entry *elts = (table_entry *) t->a.elts;
     int i;
 
 #ifdef POOL_DEBUG
     {
-	if (!pool_is_ancestor(find_pool(key), t->a.pool)) {
+	if (!ap_pool_is_ancestor(ap_find_pool(key), t->a.pool)) {
 	    fprintf(stderr, "table_set: key not in ancestor pool of t\n");
 	    abort();
 	}
-	if (!pool_is_ancestor(find_pool(val), t->a.pool)) {
+	if (!ap_pool_is_ancestor(ap_find_pool(val), t->a.pool)) {
 	    fprintf(stderr, "table_set: key not in ancestor pool of t\n");
 	    abort();
 	}
@@ -1256,7 +1256,7 @@ API_EXPORT(void) table_mergen(table *t, const char *key, const char *val)
 
     for (i = 0; i < t->a.nelts; ++i) {
 	if (!strcasecmp(elts[i].key, key)) {
-	    elts[i].val = pstrcat(t->a.pool, elts[i].val, ", ", val, NULL);
+	    elts[i].val = ap_pstrcat(t->a.pool, elts[i].val, ", ", val, NULL);
 	    return;
 	}
     }
@@ -1266,26 +1266,26 @@ API_EXPORT(void) table_mergen(table *t, const char *key, const char *val)
     elts->val = (char *)val;
 }
 
-API_EXPORT(void) table_add(table *t, const char *key, const char *val)
+API_EXPORT(void) ap_table_add(table *t, const char *key, const char *val)
 {
     table_entry *elts = (table_entry *) t->a.elts;
 
     elts = (table_entry *) table_push(t);
-    elts->key = pstrdup(t->a.pool, key);
-    elts->val = pstrdup(t->a.pool, val);
+    elts->key = ap_pstrdup(t->a.pool, key);
+    elts->val = ap_pstrdup(t->a.pool, val);
 }
 
-API_EXPORT(void) table_addn(table *t, const char *key, const char *val)
+API_EXPORT(void) ap_table_addn(table *t, const char *key, const char *val)
 {
     table_entry *elts = (table_entry *) t->a.elts;
 
 #ifdef POOL_DEBUG
     {
-	if (!pool_is_ancestor(find_pool(key), t->a.pool)) {
+	if (!ap_pool_is_ancestor(ap_find_pool(key), t->a.pool)) {
 	    fprintf(stderr, "table_set: key not in ancestor pool of t\n");
 	    abort();
 	}
-	if (!pool_is_ancestor(find_pool(val), t->a.pool)) {
+	if (!ap_pool_is_ancestor(ap_find_pool(val), t->a.pool)) {
 	    fprintf(stderr, "table_set: key not in ancestor pool of t\n");
 	    abort();
 	}
@@ -1297,7 +1297,7 @@ API_EXPORT(void) table_addn(table *t, const char *key, const char *val)
     elts->val = (char *)val;
 }
 
-API_EXPORT(table *) overlay_tables(pool *p, const table *overlay, const table *base)
+API_EXPORT(table *) ap_overlay_tables(pool *p, const table *overlay, const table *base)
 {
     table *res;
 
@@ -1306,21 +1306,21 @@ API_EXPORT(table *) overlay_tables(pool *p, const table *overlay, const table *b
      * overlay->a.pool and base->a.pool have a life span at least
      * as long as p
      */
-    if (!pool_is_ancestor(overlay->a.pool, p)) {
+    if (!ap_pool_is_ancestor(overlay->a.pool, p)) {
 	fprintf(stderr, "overlay_tables: overlay's pool is not an ancestor of p\n");
 	abort();
     }
-    if (!pool_is_ancestor(base->a.pool, p)) {
+    if (!ap_pool_is_ancestor(base->a.pool, p)) {
 	fprintf(stderr, "overlay_tables: base's pool is not an ancestor of p\n");
 	abort();
     }
 #endif
 
-    res = palloc(p, sizeof(table));
+    res = ap_palloc(p, sizeof(table));
     /* behave like append_arrays */
     res->a.pool = p;
     copy_array_hdr_core(&res->a, &overlay->a);
-    array_cat(&res->a, &base->a);
+    ap_array_cat(&res->a, &base->a);
 
     return res;
 }
@@ -1347,7 +1347,7 @@ API_EXPORT(table *) overlay_tables(pool *p, const table *overlay, const table *b
  * Note that rec is simply passed-on to the comp function, so that the
  * caller can pass additional info for the task.
  */
-API_EXPORT(void) table_do(int (*comp) (void *, const char *, const char *), void *rec,
+API_EXPORT(void) ap_table_do(int (*comp) (void *, const char *, const char *), void *rec,
 	      const table *t,...)
 {
     va_list vp;
@@ -1382,10 +1382,10 @@ struct cleanup {
     struct cleanup *next;
 };
 
-API_EXPORT(void) register_cleanup(pool *p, void *data, void (*plain_cleanup) (void *),
+API_EXPORT(void) ap_register_cleanup(pool *p, void *data, void (*plain_cleanup) (void *),
 				  void (*child_cleanup) (void *))
 {
-    struct cleanup *c = (struct cleanup *) palloc(p, sizeof(struct cleanup));
+    struct cleanup *c = (struct cleanup *) ap_palloc(p, sizeof(struct cleanup));
     c->data = data;
     c->plain_cleanup = plain_cleanup;
     c->child_cleanup = child_cleanup;
@@ -1393,7 +1393,7 @@ API_EXPORT(void) register_cleanup(pool *p, void *data, void (*plain_cleanup) (vo
     p->cleanups = c;
 }
 
-API_EXPORT(void) kill_cleanup(pool *p, void *data, void (*cleanup) (void *))
+API_EXPORT(void) ap_kill_cleanup(pool *p, void *data, void (*cleanup) (void *))
 {
     struct cleanup *c = p->cleanups;
     struct cleanup **lastp = &p->cleanups;
@@ -1409,12 +1409,12 @@ API_EXPORT(void) kill_cleanup(pool *p, void *data, void (*cleanup) (void *))
     }
 }
 
-API_EXPORT(void) run_cleanup(pool *p, void *data, void (*cleanup) (void *))
+API_EXPORT(void) ap_run_cleanup(pool *p, void *data, void (*cleanup) (void *))
 {
-    block_alarms();		/* Run cleanup only once! */
+    ap_block_alarms();		/* Run cleanup only once! */
     (*cleanup) (data);
-    kill_cleanup(p, data, cleanup);
-    unblock_alarms();
+    ap_kill_cleanup(p, data, cleanup);
+    ap_unblock_alarms();
 }
 
 static void run_cleanups(struct cleanup *c)
@@ -1442,7 +1442,7 @@ static void cleanup_pool_for_exec(pool *p)
 	cleanup_pool_for_exec(p);
 }
 
-API_EXPORT(void) cleanup_for_exec(void)
+API_EXPORT(void) ap_cleanup_for_exec(void)
 {
 #ifndef WIN32
     /*
@@ -1454,13 +1454,13 @@ API_EXPORT(void) cleanup_for_exec(void)
      * I can do about that (except if the child decides
      * to go out and close them
      */
-    block_alarms();
+    ap_block_alarms();
     cleanup_pool_for_exec(permanent_pool);
-    unblock_alarms();
+    ap_unblock_alarms();
 #endif /* ndef WIN32 */
 }
 
-API_EXPORT_NONSTD(void) null_cleanup(void *data)
+API_EXPORT_NONSTD(void) ap_null_cleanup(void *data)
 {
     /* do nothing cleanup routine */
 }
@@ -1476,43 +1476,43 @@ static void fd_cleanup(void *fdv)
     close((int) (long) fdv);
 }
 
-API_EXPORT(void) note_cleanups_for_fd(pool *p, int fd)
+API_EXPORT(void) ap_note_cleanups_for_fd(pool *p, int fd)
 {
-    register_cleanup(p, (void *) (long) fd, fd_cleanup, fd_cleanup);
+    ap_register_cleanup(p, (void *) (long) fd, fd_cleanup, fd_cleanup);
 }
 
-API_EXPORT(void) kill_cleanups_for_fd(pool *p, int fd)
+API_EXPORT(void) ap_kill_cleanups_for_fd(pool *p, int fd)
 {
-    kill_cleanup(p, (void *) (long) fd, fd_cleanup);
+    ap_kill_cleanup(p, (void *) (long) fd, fd_cleanup);
 }
 
-API_EXPORT(int) popenf(pool *a, const char *name, int flg, int mode)
+API_EXPORT(int) ap_popenf(pool *a, const char *name, int flg, int mode)
 {
     int fd;
     int save_errno;
 
-    block_alarms();
+    ap_block_alarms();
     fd = open(name, flg, mode);
     save_errno = errno;
     if (fd >= 0) {
 	fd = ap_slack(fd, AP_SLACK_HIGH);
-	note_cleanups_for_fd(a, fd);
+	ap_note_cleanups_for_fd(a, fd);
     }
-    unblock_alarms();
+    ap_unblock_alarms();
     errno = save_errno;
     return fd;
 }
 
-API_EXPORT(int) pclosef(pool *a, int fd)
+API_EXPORT(int) ap_pclosef(pool *a, int fd)
 {
     int res;
     int save_errno;
 
-    block_alarms();
+    ap_block_alarms();
     res = close(fd);
     save_errno = errno;
-    kill_cleanup(a, (void *) (long) fd, fd_cleanup);
-    unblock_alarms();
+    ap_kill_cleanup(a, (void *) (long) fd, fd_cleanup);
+    ap_unblock_alarms();
     errno = save_errno;
     return res;
 }
@@ -1531,12 +1531,12 @@ static void file_child_cleanup(void *fpv)
     close(fileno((FILE *) fpv));
 }
 
-API_EXPORT(void) note_cleanups_for_file(pool *p, FILE *fp)
+API_EXPORT(void) ap_note_cleanups_for_file(pool *p, FILE *fp)
 {
-    register_cleanup(p, (void *) fp, file_cleanup, file_child_cleanup);
+    ap_register_cleanup(p, (void *) fp, file_cleanup, file_child_cleanup);
 }
 
-API_EXPORT(FILE *) pfopen(pool *a, const char *name, const char *mode)
+API_EXPORT(FILE *) ap_pfopen(pool *a, const char *name, const char *mode)
 {
     FILE *fd = NULL;
     int baseFlag, desc;
@@ -1548,7 +1548,7 @@ API_EXPORT(FILE *) pfopen(pool *a, const char *name, const char *mode)
     modeFlags = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
 #endif
 
-    block_alarms();
+    ap_block_alarms();
 
     if (*mode == 'a') {
 	/* Work around faulty implementations of fopen */
@@ -1565,32 +1565,32 @@ API_EXPORT(FILE *) pfopen(pool *a, const char *name, const char *mode)
     }
 
     if (fd != NULL)
-	note_cleanups_for_file(a, fd);
-    unblock_alarms();
+	ap_note_cleanups_for_file(a, fd);
+    ap_unblock_alarms();
     return fd;
 }
 
-API_EXPORT(FILE *) pfdopen(pool *a, int fd, const char *mode)
+API_EXPORT(FILE *) ap_pfdopen(pool *a, int fd, const char *mode)
 {
     FILE *f;
 
-    block_alarms();
+    ap_block_alarms();
     f = fdopen(fd, mode);
     if (f != NULL)
-	note_cleanups_for_file(a, f);
-    unblock_alarms();
+	ap_note_cleanups_for_file(a, f);
+    ap_unblock_alarms();
     return f;
 }
 
 
-API_EXPORT(int) pfclose(pool *a, FILE *fd)
+API_EXPORT(int) ap_pfclose(pool *a, FILE *fd)
 {
     int res;
 
-    block_alarms();
+    ap_block_alarms();
     res = fclose(fd);
-    kill_cleanup(a, (void *) fd, file_cleanup);
-    unblock_alarms();
+    ap_kill_cleanup(a, (void *) fd, file_cleanup);
+    ap_unblock_alarms();
     return res;
 }
 
@@ -1603,30 +1603,30 @@ static void dir_cleanup(void *dv)
     closedir((DIR *) dv);
 }
 
-API_EXPORT(DIR *) popendir(pool *p, const char *name)
+API_EXPORT(DIR *) ap_popendir(pool *p, const char *name)
 {
     DIR *d;
     int save_errno;
 
-    block_alarms();
+    ap_block_alarms();
     d = opendir(name);
     if (d == NULL) {
 	save_errno = errno;
-	unblock_alarms();
+	ap_unblock_alarms();
 	errno = save_errno;
 	return NULL;
     }
-    register_cleanup(p, (void *) d, dir_cleanup, dir_cleanup);
-    unblock_alarms();
+    ap_register_cleanup(p, (void *) d, dir_cleanup, dir_cleanup);
+    ap_unblock_alarms();
     return d;
 }
 
-API_EXPORT(void) pclosedir(pool *p, DIR * d)
+API_EXPORT(void) ap_pclosedir(pool *p, DIR * d)
 {
-    block_alarms();
-    kill_cleanup(p, (void *) d, dir_cleanup);
+    ap_block_alarms();
+    ap_kill_cleanup(p, (void *) d, dir_cleanup);
     closedir(d);
-    unblock_alarms();
+    ap_unblock_alarms();
 }
 
 /*****************************************************************
@@ -1640,46 +1640,46 @@ static void socket_cleanup(void *fdv)
     closesocket((int) (long) fdv);
 }
 
-API_EXPORT(void) note_cleanups_for_socket(pool *p, int fd)
+API_EXPORT(void) ap_note_cleanups_for_socket(pool *p, int fd)
 {
-    register_cleanup(p, (void *) (long) fd, socket_cleanup, socket_cleanup);
+    ap_register_cleanup(p, (void *) (long) fd, socket_cleanup, socket_cleanup);
 }
 
-API_EXPORT(void) kill_cleanups_for_socket(pool *p, int sock)
+API_EXPORT(void) ap_kill_cleanups_for_socket(pool *p, int sock)
 {
-    kill_cleanup(p, (void *) (long) sock, socket_cleanup);
+    ap_kill_cleanup(p, (void *) (long) sock, socket_cleanup);
 }
 
-API_EXPORT(int) psocket(pool *p, int domain, int type, int protocol)
+API_EXPORT(int) ap_psocket(pool *p, int domain, int type, int protocol)
 {
     int fd;
 
-    block_alarms();
+    ap_block_alarms();
     fd = socket(domain, type, protocol);
     if (fd == -1) {
 	int save_errno = errno;
-	unblock_alarms();
+	ap_unblock_alarms();
 	errno = save_errno;
 	return -1;
     }
-    note_cleanups_for_socket(p, fd);
-    unblock_alarms();
+    ap_note_cleanups_for_socket(p, fd);
+    ap_unblock_alarms();
     return fd;
 }
 
-API_EXPORT(int) pclosesocket(pool *a, int sock)
+API_EXPORT(int) ap_pclosesocket(pool *a, int sock)
 {
     int res;
     int save_errno;
 
-    block_alarms();
+    ap_block_alarms();
     res = closesocket(sock);
 #ifdef WIN32
     errno = WSAGetLastError();
 #endif /* WIN32 */
     save_errno = errno;
-    kill_cleanup(a, (void *) (long) sock, socket_cleanup);
-    unblock_alarms();
+    ap_kill_cleanup(a, (void *) (long) sock, socket_cleanup);
+    ap_unblock_alarms();
     errno = save_errno;
     return res;
 }
@@ -1698,25 +1698,25 @@ static void regex_cleanup(void *preg)
     regfree((regex_t *) preg);
 }
 
-API_EXPORT(regex_t *) pregcomp(pool *p, const char *pattern, int cflags)
+API_EXPORT(regex_t *) ap_pregcomp(pool *p, const char *pattern, int cflags)
 {
-    regex_t *preg = palloc(p, sizeof(regex_t));
+    regex_t *preg = ap_palloc(p, sizeof(regex_t));
 
     if (regcomp(preg, pattern, cflags))
 	return NULL;
 
-    register_cleanup(p, (void *) preg, regex_cleanup, regex_cleanup);
+    ap_register_cleanup(p, (void *) preg, regex_cleanup, regex_cleanup);
 
     return preg;
 }
 
 
-API_EXPORT(void) pregfree(pool *p, regex_t * reg)
+API_EXPORT(void) ap_pregfree(pool *p, regex_t * reg)
 {
-    block_alarms();
+    ap_block_alarms();
     regfree(reg);
-    kill_cleanup(p, (void *) reg, regex_cleanup);
-    unblock_alarms();
+    ap_kill_cleanup(p, (void *) reg, regex_cleanup);
+    ap_unblock_alarms();
 }
 
 /*****************************************************************
@@ -1736,10 +1736,10 @@ struct process_chain {
     struct process_chain *next;
 };
 
-API_EXPORT(void) note_subprocess(pool *a, int pid, enum kill_conditions how)
+API_EXPORT(void) ap_note_subprocess(pool *a, int pid, enum kill_conditions how)
 {
     struct process_chain *new =
-    (struct process_chain *) palloc(a, sizeof(struct process_chain));
+    (struct process_chain *) ap_palloc(a, sizeof(struct process_chain));
 
     new->pid = pid;
     new->kill_how = how;
@@ -1805,7 +1805,7 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
 	int hStdIn, hStdOut, hStdErr;
 	int old_priority;
 
-	(void) acquire_mutex(spawn_mutex);
+	(void) ap_acquire_mutex(spawn_mutex);
 	thread_handle = GetCurrentThread();	/* doesn't need to be closed */
 	old_priority = GetThreadPriority(thread_handle);
 	SetThreadPriority(thread_handle, THREAD_PRIORITY_HIGHEST);
@@ -1813,20 +1813,20 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
 	if (pipe_in) {
 	    hStdIn = dup(fileno(stdin));
 	    if(dup2(in_fds[0], fileno(stdin)))
-		aplog_error(APLOG_MARK, APLOG_ERR, NULL, "dup2(stdin) failed");
+		ap_log_error(APLOG_MARK, APLOG_ERR, NULL, "dup2(stdin) failed");
 	    close(in_fds[0]);
 	}
 	if (pipe_out) {
 	    hStdOut = dup(fileno(stdout));
 	    close(fileno(stdout));
 	    if(dup2(out_fds[1], fileno(stdout)))
-		aplog_error(APLOG_MARK, APLOG_ERR, NULL, "dup2(stdout) failed");
+		ap_log_error(APLOG_MARK, APLOG_ERR, NULL, "dup2(stdout) failed");
 	    close(out_fds[1]);
 	}
 	if (pipe_err) {
 	    hStdErr = dup(fileno(stderr));
 	    if(dup2(err_fds[1], fileno(stderr)))
-		aplog_error(APLOG_MARK, APLOG_ERR, NULL, "dup2(stdin) failed");
+		ap_log_error(APLOG_MARK, APLOG_ERR, NULL, "dup2(stdin) failed");
 	    close(err_fds[1]);
 	}
 
@@ -1855,7 +1855,7 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
 	}
 
         if (pid) {
-	    note_subprocess(p, pid, kill_how);
+	    ap_note_subprocess(p, pid, kill_how);
 	    if (pipe_in) {
 		*pipe_in = in_fds[1];
 	    }
@@ -1867,7 +1867,7 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
 	    }
 	}
 	SetThreadPriority(thread_handle, old_priority);
-	(void) release_mutex(spawn_mutex);
+	(void) ap_release_mutex(spawn_mutex);
 	/*
 	 * go on to the end of the function, where you can
 	 * unblock alarms and return the pid
@@ -1925,7 +1925,7 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
 
     /* Parent process */
 
-    note_subprocess(p, pid, kill_how);
+    ap_note_subprocess(p, pid, kill_how);
 
     if (pipe_out) {
 	close(out_fds[1]);
@@ -1947,14 +1947,14 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
 }
 
 
-API_EXPORT(int) spawn_child_err(pool *p, int (*func) (void *), void *data,
+API_EXPORT(int) ap_spawn_child_err(pool *p, int (*func) (void *), void *data,
 				enum kill_conditions kill_how,
 			   FILE **pipe_in, FILE **pipe_out, FILE **pipe_err)
 {
     int fd_in, fd_out, fd_err;
     int pid, save_errno;
 
-    block_alarms();
+    ap_block_alarms();
 
     pid = spawn_child_err_core(p, func, data, kill_how,
 			       pipe_in ? &fd_in : NULL,
@@ -1963,7 +1963,7 @@ API_EXPORT(int) spawn_child_err(pool *p, int (*func) (void *), void *data,
 
     if (pid == 0) {
 	save_errno = errno;
-	unblock_alarms();
+	ap_unblock_alarms();
 	errno = save_errno;
 	return 0;
     }
@@ -1971,7 +1971,7 @@ API_EXPORT(int) spawn_child_err(pool *p, int (*func) (void *), void *data,
     if (pipe_out) {
 	*pipe_out = fdopen(fd_out, "r" BINMODE);
 	if (*pipe_out)
-	    note_cleanups_for_file(p, *pipe_out);
+	    ap_note_cleanups_for_file(p, *pipe_out);
 	else
 	    close(fd_out);
     }
@@ -1979,7 +1979,7 @@ API_EXPORT(int) spawn_child_err(pool *p, int (*func) (void *), void *data,
     if (pipe_in) {
 	*pipe_in = fdopen(fd_in, "w" BINMODE);
 	if (*pipe_in)
-	    note_cleanups_for_file(p, *pipe_in);
+	    ap_note_cleanups_for_file(p, *pipe_in);
 	else
 	    close(fd_in);
     }
@@ -1987,24 +1987,24 @@ API_EXPORT(int) spawn_child_err(pool *p, int (*func) (void *), void *data,
     if (pipe_err) {
 	*pipe_err = fdopen(fd_err, "r" BINMODE);
 	if (*pipe_err)
-	    note_cleanups_for_file(p, *pipe_err);
+	    ap_note_cleanups_for_file(p, *pipe_err);
 	else
 	    close(fd_err);
     }
 
-    unblock_alarms();
+    ap_unblock_alarms();
     return pid;
 }
 
 
-API_EXPORT(int) spawn_child_err_buff(pool *p, int (*func) (void *), void *data,
+API_EXPORT(int) ap_spawn_child_err_buff(pool *p, int (*func) (void *), void *data,
 				     enum kill_conditions kill_how,
 			   BUFF **pipe_in, BUFF **pipe_out, BUFF **pipe_err)
 {
     int fd_in, fd_out, fd_err;
     int pid, save_errno;
 
-    block_alarms();
+    ap_block_alarms();
 
     pid = spawn_child_err_core(p, func, data, kill_how,
 			       pipe_in ? &fd_in : NULL,
@@ -2013,30 +2013,30 @@ API_EXPORT(int) spawn_child_err_buff(pool *p, int (*func) (void *), void *data,
 
     if (pid == 0) {
 	save_errno = errno;
-	unblock_alarms();
+	ap_unblock_alarms();
 	errno = save_errno;
 	return 0;
     }
 
     if (pipe_out) {
-	*pipe_out = bcreate(p, B_RD);
-	note_cleanups_for_fd(p, fd_out);
-	bpushfd(*pipe_out, fd_out, fd_out);
+	*pipe_out = ap_bcreate(p, B_RD);
+	ap_note_cleanups_for_fd(p, fd_out);
+	ap_bpushfd(*pipe_out, fd_out, fd_out);
     }
 
     if (pipe_in) {
-	*pipe_in = bcreate(p, B_WR);
-	note_cleanups_for_fd(p, fd_in);
-	bpushfd(*pipe_in, fd_in, fd_in);
+	*pipe_in = ap_bcreate(p, B_WR);
+	ap_note_cleanups_for_fd(p, fd_in);
+	ap_bpushfd(*pipe_in, fd_in, fd_in);
     }
 
     if (pipe_err) {
-	*pipe_err = bcreate(p, B_RD);
-	note_cleanups_for_fd(p, fd_err);
-	bpushfd(*pipe_err, fd_err, fd_err);
+	*pipe_err = ap_bcreate(p, B_RD);
+	ap_note_cleanups_for_fd(p, fd_err);
+	ap_bpushfd(*pipe_err, fd_err, fd_err);
     }
 
-    unblock_alarms();
+    ap_unblock_alarms();
     return pid;
 }
 

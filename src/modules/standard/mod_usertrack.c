@@ -125,7 +125,7 @@ typedef struct {
 
 static void make_cookie(request_rec *r)
 {
-    cookie_log_state *cls = get_module_config(r->server->module_config,
+    cookie_log_state *cls = ap_get_module_config(r->server->module_config,
                                               &usertrack_module);
 #if defined(NO_GETTIMEOFDAY) && !defined(NO_TIMES)
     clock_t mpe_times;
@@ -138,7 +138,7 @@ static void make_cookie(request_rec *r)
     char cookiebuf[1024];
     char *new_cookie;
     char *dot;
-    const char *rname = get_remote_host(r->connection, r->per_dir_config,
+    const char *rname = ap_get_remote_host(r->connection, r->per_dir_config,
 					REMOTE_NAME);
 
     if ((dot = strchr(rname, '.')))
@@ -187,24 +187,24 @@ static void make_cookie(request_rec *r)
         tms = gmtime(&when);
 
         /* Cookie with date; as strftime '%a, %d-%h-%y %H:%M:%S GMT' */
-        new_cookie = psprintf(r->pool,
+        new_cookie = ap_psprintf(r->pool,
                 "%s%s; path=/; expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
-                    COOKIE_NAME, cookiebuf, day_snames[tms->tm_wday],
-                    tms->tm_mday, month_snames[tms->tm_mon],
+                    COOKIE_NAME, cookiebuf, ap_day_snames[tms->tm_wday],
+                    tms->tm_mday, ap_month_snames[tms->tm_mon],
 		    tms->tm_year % 100,
                     tms->tm_hour, tms->tm_min, tms->tm_sec);
     }
     else
-	new_cookie = psprintf(r->pool, "%s%s; path=/", COOKIE_NAME, cookiebuf);
+	new_cookie = ap_psprintf(r->pool, "%s%s; path=/", COOKIE_NAME, cookiebuf);
 
-    table_setn(r->headers_out, "Set-Cookie", new_cookie);
-    table_setn(r->notes, "cookie", pstrdup(r->pool, cookiebuf));   /* log first time */
+    ap_table_setn(r->headers_out, "Set-Cookie", new_cookie);
+    ap_table_setn(r->notes, "cookie", ap_pstrdup(r->pool, cookiebuf));   /* log first time */
     return;
 }
 
 static int spot_cookie(request_rec *r)
 {
-    int *enable = (int *) get_module_config(r->per_dir_config,
+    int *enable = (int *) ap_get_module_config(r->per_dir_config,
                                             &usertrack_module);
     char *cookie;
     char *value;
@@ -212,18 +212,18 @@ static int spot_cookie(request_rec *r)
     if (!*enable)
         return DECLINED;
 
-    if ((cookie = table_get(r->headers_in, "Cookie")))
+    if ((cookie = ap_table_get(r->headers_in, "Cookie")))
         if ((value = strstr(cookie, COOKIE_NAME))) {
             char *cookiebuf, *cookieend;
 
             value += strlen(COOKIE_NAME);
-            cookiebuf = pstrdup(r->pool, value);
+            cookiebuf = ap_pstrdup(r->pool, value);
             cookieend = strchr(cookiebuf, ';');
             if (cookieend)
                 *cookieend = '\0';      /* Ignore anything after a ; */
 
             /* Set the cookie in a note, for logging */
-            table_setn(r->notes, "cookie", cookiebuf);
+            ap_table_setn(r->notes, "cookie", cookiebuf);
 
             return DECLINED;    /* Theres already a cookie, no new one */
         }
@@ -234,7 +234,7 @@ static int spot_cookie(request_rec *r)
 static void *make_cookie_log_state(pool *p, server_rec *s)
 {
     cookie_log_state *cls =
-    (cookie_log_state *) palloc(p, sizeof(cookie_log_state));
+    (cookie_log_state *) ap_palloc(p, sizeof(cookie_log_state));
 
     cls->expires = 0;
 
@@ -243,7 +243,7 @@ static void *make_cookie_log_state(pool *p, server_rec *s)
 
 static void *make_cookie_dir(pool *p, char *d)
 {
-    return (void *) pcalloc(p, sizeof(int));
+    return (void *) ap_pcalloc(p, sizeof(int));
 }
 
 static const char *set_cookie_enable(cmd_parms *cmd, int *c, int arg)
@@ -254,7 +254,7 @@ static const char *set_cookie_enable(cmd_parms *cmd, int *c, int arg)
 
 static const char *set_cookie_exp(cmd_parms *parms, void *dummy, const char *arg)
 {
-    cookie_log_state *cls = get_module_config(parms->server->module_config,
+    cookie_log_state *cls = ap_get_module_config(parms->server->module_config,
                                               &usertrack_module);
     time_t factor, modifier = 0;
     time_t num = 0;
@@ -272,9 +272,9 @@ static const char *set_cookie_exp(cmd_parms *parms, void *dummy, const char *arg
      * CookieExpires "[plus] {<num> <type>}*"
      */
 
-    word = getword_conf(parms->pool, &arg);
+    word = ap_getword_conf(parms->pool, &arg);
     if (!strncasecmp(word, "plus", 1)) {
-        word = getword_conf(parms->pool, &arg);
+        word = ap_getword_conf(parms->pool, &arg);
     };
 
     /* {<num> <type>}* */
@@ -286,7 +286,7 @@ static const char *set_cookie_exp(cmd_parms *parms, void *dummy, const char *arg
             return "bad expires code, numeric value expected.";
 
         /* <type> */
-        word = getword_conf(parms->pool, &arg);
+        word = ap_getword_conf(parms->pool, &arg);
         if (!word[0])
             return "bad expires code, missing <type>";
 
@@ -311,7 +311,7 @@ static const char *set_cookie_exp(cmd_parms *parms, void *dummy, const char *arg
         modifier = modifier + factor * num;
 
         /* next <num> */
-        word = getword_conf(parms->pool, &arg);
+        word = ap_getword_conf(parms->pool, &arg);
     }
 
     cls->expires = modifier;

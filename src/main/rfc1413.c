@@ -96,7 +96,7 @@
 #define	ANY_PORT	0	/* Any old port will do */
 #define FROM_UNKNOWN  "unknown"
 
-int rfc1413_timeout = RFC1413_TIMEOUT;	/* Global so it can be changed */
+int ap_rfc1413_timeout = RFC1413_TIMEOUT;	/* Global so it can be changed */
 
 static JMP_BUF timebuf;
 
@@ -128,7 +128,7 @@ static int get_rfc1413(int sock, const struct sockaddr_in *our_sin,
 
     if (bind(sock, (struct sockaddr *) &our_query_sin,
 	     sizeof(struct sockaddr_in)) < 0) {
-	aplog_error(APLOG_MARK, APLOG_CRIT, srv,
+	ap_log_error(APLOG_MARK, APLOG_CRIT, srv,
 		    "bind: rfc1413: Error binding to local port");
 	return -1;
     }
@@ -148,7 +148,7 @@ static int get_rfc1413(int sock, const struct sockaddr_in *our_sin,
 	i = write(sock, buffer, buflen);
     while (i == -1 && errno == EINTR);
     if (i == -1) {
-	aplog_error(APLOG_MARK, APLOG_CRIT, srv,
+	ap_log_error(APLOG_MARK, APLOG_CRIT, srv,
 		    "write: rfc1413: error sending request");
 	return -1;
     }
@@ -162,7 +162,7 @@ static int get_rfc1413(int sock, const struct sockaddr_in *our_sin,
 	i = read(sock, buffer, RFC1413_MAXDATA);
     while (i == -1 && errno == EINTR);
     if (i == -1) {
-	aplog_error(APLOG_MARK, APLOG_CRIT, srv,
+	ap_log_error(APLOG_MARK, APLOG_CRIT, srv,
 		    "read: rfc1413: error reading response");
 	return -1;
     }
@@ -192,7 +192,7 @@ static void ident_timeout(int sig)
 }
 
 /* rfc1413 - return remote user name, given socket structures */
-char *rfc1413(conn_rec *conn, server_rec *srv)
+char *ap_rfc1413(conn_rec *conn, server_rec *srv)
 {
     static char user[RFC1413_USERLEN + 1];	/* XXX */
     static char *result;
@@ -200,9 +200,9 @@ char *rfc1413(conn_rec *conn, server_rec *srv)
 
     result = FROM_UNKNOWN;
 
-    sock = psocket(conn->pool, AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    sock = ap_psocket(conn->pool, AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock < 0) {
-	aplog_error(APLOG_MARK, APLOG_CRIT, srv,
+	ap_log_error(APLOG_MARK, APLOG_CRIT, srv,
 		    "socket: rfc1413: error creating socket");
 	conn->remote_logname = result;
     }
@@ -211,14 +211,14 @@ char *rfc1413(conn_rec *conn, server_rec *srv)
      * Set up a timer so we won't get stuck while waiting for the server.
      */
     if (ap_setjmp(timebuf) == 0) {
-	set_callback_and_alarm(ident_timeout, rfc1413_timeout);
+	ap_set_callback_and_alarm(ident_timeout, ap_rfc1413_timeout);
 
 	if (get_rfc1413(sock, &conn->local_addr, &conn->remote_addr, user, srv) >= 0)
 	    result = user;
 
-	set_callback_and_alarm(NULL, 0);
+	ap_set_callback_and_alarm(NULL, 0);
     }
-    pclosesocket(conn->pool, sock);
+    ap_pclosesocket(conn->pool, sock);
     conn->remote_logname = result;
 
     return conn->remote_logname;

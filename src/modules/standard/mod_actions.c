@@ -93,9 +93,9 @@ module action_module;
 static void *create_action_dir_config(pool *p, char *dummy)
 {
     action_dir_config *new =
-    (action_dir_config *) palloc(p, sizeof(action_dir_config));
+    (action_dir_config *) ap_palloc(p, sizeof(action_dir_config));
 
-    new->action_types = make_table(p, 4);
+    new->action_types = ap_make_table(p, 4);
     new->get = NULL;
     new->post = NULL;
     new->put = NULL;
@@ -109,9 +109,9 @@ static void *merge_action_dir_configs(pool *p, void *basev, void *addv)
     action_dir_config *base = (action_dir_config *) basev;
     action_dir_config *add = (action_dir_config *) addv;
     action_dir_config *new =
-    (action_dir_config *) palloc(p, sizeof(action_dir_config));
+    (action_dir_config *) ap_palloc(p, sizeof(action_dir_config));
 
-    new->action_types = overlay_tables(p, add->action_types,
+    new->action_types = ap_overlay_tables(p, add->action_types,
 				       base->action_types);
 
     new->get = add->get ? add->get : base->get;
@@ -125,7 +125,7 @@ static void *merge_action_dir_configs(pool *p, void *basev, void *addv)
 static const char *add_action(cmd_parms *cmd, action_dir_config * m, char *type,
 			      char *script)
 {
-    table_setn(m->action_types, type, script);
+    ap_table_setn(m->action_types, type, script);
     return NULL;
 }
 
@@ -158,7 +158,7 @@ static const command_rec action_cmds[] =
 static int action_handler(request_rec *r)
 {
     action_dir_config *conf =
-    (action_dir_config *) get_module_config(r->per_dir_config, &action_module);
+    (action_dir_config *) ap_get_module_config(r->per_dir_config, &action_module);
     char *t, *action = r->handler ? r->handler : r->content_type;
     char *script = NULL;
 
@@ -187,11 +187,11 @@ static int action_handler(request_rec *r)
 	return DECLINED;
 
     /* Second, check for actions (which override the method scripts) */
-    if ((t = table_get(conf->action_types,
-		       action ? action : default_type(r)))) {
+    if ((t = ap_table_get(conf->action_types,
+		       action ? action : ap_default_type(r)))) {
 	script = t;
 	if (r->finfo.st_mode == 0) {
-	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 			"File does not exist: %s", r->filename);
 	    return NOT_FOUND;
 	}
@@ -200,7 +200,7 @@ static int action_handler(request_rec *r)
     if (script == NULL)
 	return DECLINED;
 
-    internal_redirect_handler(pstrcat(r->pool, script, escape_uri(r->pool,
+    ap_internal_redirect_handler(ap_pstrcat(r->pool, script, escape_uri(r->pool,
 			  r->uri), r->args ? "?" : NULL, r->args, NULL), r);
     return OK;
 }

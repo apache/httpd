@@ -115,13 +115,13 @@ typedef void *(*merger_func) (pool *, void *, void *);
  * overridden).
  */
 
-API_EXPORT(void *) get_module_config(void *conf_vector, module *m)
+API_EXPORT(void *) ap_get_module_config(void *conf_vector, module *m)
 {
     void **confv = (void **) conf_vector;
     return confv[m->module_index];
 }
 
-API_EXPORT(void) set_module_config(void *conf_vector, module *m, void *val)
+API_EXPORT(void) ap_set_module_config(void *conf_vector, module *m, void *val)
 {
     void **confv = (void **) conf_vector;
     confv[m->module_index] = val;
@@ -129,14 +129,14 @@ API_EXPORT(void) set_module_config(void *conf_vector, module *m, void *val)
 
 static void *create_empty_config(pool *p)
 {
-    void **conf_vector = (void **) pcalloc(p, sizeof(void *) *
+    void **conf_vector = (void **) ap_pcalloc(p, sizeof(void *) *
 				    (total_modules + DYNAMIC_MODULE_LIMIT));
     return (void *) conf_vector;
 }
 
 static void *create_default_per_dir_config(pool *p)
 {
-    void **conf_vector = (void **) pcalloc(p, sizeof(void *) * (total_modules + DYNAMIC_MODULE_LIMIT));
+    void **conf_vector = (void **) ap_pcalloc(p, sizeof(void *) * (total_modules + DYNAMIC_MODULE_LIMIT));
     module *modp;
 
     for (modp = top_module; modp; modp = modp->next) {
@@ -150,9 +150,9 @@ static void *create_default_per_dir_config(pool *p)
 }
 
 void *
-     merge_per_dir_configs(pool *p, void *base, void *new)
+     ap_merge_per_dir_configs(pool *p, void *base, void *new)
 {
-    void **conf_vector = (void **) palloc(p, sizeof(void *) * total_modules);
+    void **conf_vector = (void **) ap_palloc(p, sizeof(void *) * total_modules);
     void **base_vector = (void **) base;
     void **new_vector = (void **) new;
     module *modp;
@@ -172,7 +172,7 @@ void *
 
 static void *create_server_config(pool *p, server_rec *s)
 {
-    void **conf_vector = (void **) pcalloc(p, sizeof(void *) * (total_modules + DYNAMIC_MODULE_LIMIT));
+    void **conf_vector = (void **) ap_pcalloc(p, sizeof(void *) * (total_modules + DYNAMIC_MODULE_LIMIT));
     module *modp;
 
     for (modp = top_module; modp; modp = modp->next) {
@@ -204,12 +204,12 @@ static void merge_server_configs(pool *p, void *base, void *virt)
     }
 }
 
-void *create_request_config(pool *p)
+void *ap_create_request_config(pool *p)
 {
     return create_empty_config(p);
 }
 
-CORE_EXPORT(void *) create_per_dir_config(pool *p)
+CORE_EXPORT(void *) ap_create_per_dir_config(pool *p)
 {
     return create_empty_config(p);
 }
@@ -224,7 +224,7 @@ struct {
 {
 #define m(meth)	{ XtOffsetOf(module,meth),#meth }
     m(translate_handler),
-    m(check_user_id),
+    m(ap_check_user_id),
     m(auth_checker),
     m(type_checker),
     m(fixer_upper),
@@ -264,7 +264,7 @@ char *ShowMethod(module *modp, int offset)
 static const int method_offsets[] =
 {
     XtOffsetOf(module, translate_handler),
-    XtOffsetOf(module, check_user_id),
+    XtOffsetOf(module, ap_check_user_id),
     XtOffsetOf(module, auth_checker),
     XtOffsetOf(module, access_checker),
     XtOffsetOf(module, type_checker),
@@ -277,7 +277,7 @@ static const int method_offsets[] =
 
 static struct {
     int translate_handler;
-    int check_user_id;
+    int ap_check_user_id;
     int auth_checker;
     int access_checker;
     int type_checker;
@@ -359,37 +359,37 @@ static int run_method(request_rec *r, int offset, int run_all)
     return run_all ? OK : DECLINED;
 }
 
-int translate_name(request_rec *r)
+int ap_translate_name(request_rec *r)
 {
     return run_method(r, offsets_into_method_ptrs.translate_handler, 0);
 }
 
-int check_access(request_rec *r)
+int ap_check_access(request_rec *r)
 {
     return run_method(r, offsets_into_method_ptrs.access_checker, 1);
 }
 
-int find_types(request_rec *r)
+int ap_find_types(request_rec *r)
 {
     return run_method(r, offsets_into_method_ptrs.type_checker, 0);
 }
 
-int run_fixups(request_rec *r)
+int ap_run_fixups(request_rec *r)
 {
     return run_method(r, offsets_into_method_ptrs.fixer_upper, 1);
 }
 
-int log_transaction(request_rec *r)
+int ap_log_transaction(request_rec *r)
 {
     return run_method(r, offsets_into_method_ptrs.logger, 1);
 }
 
-int header_parse(request_rec *r)
+int ap_header_parse(request_rec *r)
 {
     return run_method(r, offsets_into_method_ptrs.header_parser, 1);
 }
 
-int run_post_read_request(request_rec *r)
+int ap_run_post_read_request(request_rec *r)
 {
     return run_method(r, offsets_into_method_ptrs.post_read_request, 1);
 }
@@ -399,12 +399,12 @@ int run_post_read_request(request_rec *r)
  * separate from check_access to make catching some config errors easier.
  */
 
-int check_user_id(request_rec *r)
+int ap_check_user_id(request_rec *r)
 {
-    return run_method(r, offsets_into_method_ptrs.check_user_id, 0);
+    return run_method(r, offsets_into_method_ptrs.ap_check_user_id, 0);
 }
 
-int check_auth(request_rec *r)
+int ap_check_auth(request_rec *r)
 {
     return run_method(r, offsets_into_method_ptrs.auth_checker, 0);
 }
@@ -443,8 +443,8 @@ static void init_handlers(pool *p)
             }
         }
     }
-    ph = handlers = palloc(p, sizeof(*ph)*(nhandlers + 1));
-    pw = wildhandlers = palloc(p, sizeof(*pw)*(nwildhandlers + 1));
+    ph = handlers = ap_palloc(p, sizeof(*ph)*(nhandlers + 1));
+    pw = wildhandlers = ap_palloc(p, sizeof(*pw)*(nwildhandlers + 1));
     for (modp = top_module; modp; modp = modp->next) {
 	if (!modp->handlers)
 	    continue;
@@ -468,7 +468,7 @@ static void init_handlers(pool *p)
     ph->hr.handler = NULL;
 }
 
-int invoke_handler(request_rec *r)
+int ap_invoke_handler(request_rec *r)
 {
     fast_handler_rec *handp;
     char *handler, *p;
@@ -479,7 +479,7 @@ int invoke_handler(request_rec *r)
 	handler_len = strlen(handler);
     }
     else {
-	handler = r->content_type ? r->content_type : default_type(r);
+	handler = r->content_type ? r->content_type : ap_default_type(r);
 	if ((p = strchr(handler, ';')) != NULL) { /* MIME type arguments */
 	    while (p > handler && p[-1] == ' ')
 		--p;		/* strip trailing spaces */
@@ -519,7 +519,7 @@ int invoke_handler(request_rec *r)
 
 /* One-time setup for precompiled modules --- NOT to be done on restart */
 
-API_EXPORT(void) add_module(module *m)
+API_EXPORT(void) ap_add_module(module *m)
 {
     /* This could be called from an AddModule httpd.conf command,
      * after the file has been linked and the module structure within it
@@ -583,7 +583,7 @@ API_EXPORT(void) add_module(module *m)
  * all our current data. I.e. when doing a restart.
  */
 
-API_EXPORT(void) remove_module(module *m)
+API_EXPORT(void) ap_remove_module(module *m)
 {
     module *modp;
 
@@ -602,7 +602,7 @@ API_EXPORT(void) remove_module(module *m)
 	}
 	if (!modp) {
 	    /* Uh-oh, this module doesn't exist */
-	    aplog_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, NULL,
+	    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, NULL,
 		"Cannot remove module %s: not found in module list",
 		m->name);
 	    return;
@@ -617,27 +617,27 @@ API_EXPORT(void) remove_module(module *m)
 }
 
 
-void setup_prelinked_modules()
+void ap_setup_prelinked_modules()
 {
     module **m;
 
     /* First, set all module indices, and init total_modules.  */
     total_modules = 0;
-    for (m = preloaded_modules; *m; ++m, ++total_modules) {
+    for (m = ap_preloaded_modules; *m; ++m, ++total_modules) {
 	(*m)->module_index = total_modules;
     }
 
-    for (m = prelinked_modules; *m; ++m) {
-	add_module(*m);
+    for (m = ap_prelinked_modules; *m; ++m) {
+	ap_add_module(*m);
     }
 }
 
-API_EXPORT(const char *) find_module_name(module *m)
+API_EXPORT(const char *) ap_find_module_name(module *m)
 {
     return m->name;
 }
 
-API_EXPORT(module *) find_linked_module(const char *name)
+API_EXPORT(module *) ap_find_linked_module(const char *name)
 {
     module *modp;
 
@@ -649,16 +649,16 @@ API_EXPORT(module *) find_linked_module(const char *name)
 }
 
 /* Add a named module.  Returns 1 if module found, 0 otherwise.  */
-API_EXPORT(int) add_named_module(const char *name)
+API_EXPORT(int) ap_add_named_module(const char *name)
 {
     module *modp;
     int i = 0;
 
-    for (modp = preloaded_modules[i]; modp; modp = preloaded_modules[++i]) {
+    for (modp = ap_preloaded_modules[i]; modp; modp = ap_preloaded_modules[++i]) {
 	if (strcmp(modp->name, name) == 0) {
 	    /* Only add modules that are not already enabled.  */
 	    if (modp->next == NULL) {
-		add_module(modp);
+		ap_add_module(modp);
 	    }
 	    return 1;
 	}
@@ -668,7 +668,7 @@ API_EXPORT(int) add_named_module(const char *name)
 }
 
 /* Clear the internal list of modules, in preparation for starting over. */
-API_EXPORT(void) clear_module_list()
+API_EXPORT(void) ap_clear_module_list()
 {
     module **m = &top_module;
     module **next_m;
@@ -680,7 +680,7 @@ API_EXPORT(void) clear_module_list()
     }
 
     /* This is required; so we add it always.  */
-    add_named_module("http_core.c");
+    ap_add_named_module("http_core.c");
 }
 
 /*****************************************************************
@@ -699,7 +699,7 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
     const char *errmsg;
 
     if ((parms->override & cmd->req_override) == 0)
-	return pstrcat(parms->pool, cmd->name, " not allowed here", NULL);
+	return ap_pstrcat(parms->pool, cmd->name, " not allowed here", NULL);
 
     parms->info = cmd->cmd_data;
     parms->cmd = cmd;
@@ -711,17 +711,17 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 
     case NO_ARGS:
 	if (*args != 0)
-	    return pstrcat(parms->pool, cmd->name, " takes no arguments",
+	    return ap_pstrcat(parms->pool, cmd->name, " takes no arguments",
 			   NULL);
 
 	return ((const char *(*)(cmd_parms *, void *))
 		(cmd->func)) (parms, mconfig);
 
     case TAKE1:
-	w = getword_conf(parms->pool, &args);
+	w = ap_getword_conf(parms->pool, &args);
 
 	if (*w == '\0' || *args != 0)
-	    return pstrcat(parms->pool, cmd->name, " takes one argument",
+	    return ap_pstrcat(parms->pool, cmd->name, " takes one argument",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
 	return ((const char *(*)(cmd_parms *, void *, const char *))
@@ -729,11 +729,11 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 
     case TAKE2:
 
-	w = getword_conf(parms->pool, &args);
-	w2 = getword_conf(parms->pool, &args);
+	w = ap_getword_conf(parms->pool, &args);
+	w2 = ap_getword_conf(parms->pool, &args);
 
 	if (*w == '\0' || *w2 == '\0' || *args != 0)
-	    return pstrcat(parms->pool, cmd->name, " takes two arguments",
+	    return ap_pstrcat(parms->pool, cmd->name, " takes two arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
 	return ((const char *(*)(cmd_parms *, void *, const char *,
@@ -741,11 +741,11 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 
     case TAKE12:
 
-	w = getword_conf(parms->pool, &args);
-	w2 = getword_conf(parms->pool, &args);
+	w = ap_getword_conf(parms->pool, &args);
+	w2 = ap_getword_conf(parms->pool, &args);
 
 	if (*w == '\0' || *args != 0)
-	    return pstrcat(parms->pool, cmd->name, " takes 1-2 arguments",
+	    return ap_pstrcat(parms->pool, cmd->name, " takes 1-2 arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
 	return ((const char *(*)(cmd_parms *, void *, const char *,
@@ -754,12 +754,12 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 
     case TAKE3:
 
-	w = getword_conf(parms->pool, &args);
-	w2 = getword_conf(parms->pool, &args);
-	w3 = getword_conf(parms->pool, &args);
+	w = ap_getword_conf(parms->pool, &args);
+	w2 = ap_getword_conf(parms->pool, &args);
+	w3 = ap_getword_conf(parms->pool, &args);
 
 	if (*w == '\0' || *w2 == '\0' || *w3 == '\0' || *args != 0)
-	    return pstrcat(parms->pool, cmd->name, " takes three arguments",
+	    return ap_pstrcat(parms->pool, cmd->name, " takes three arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
 	return ((const char *(*)(cmd_parms *, void *, const char *,
@@ -768,12 +768,12 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 
     case TAKE23:
 
-	w = getword_conf(parms->pool, &args);
-	w2 = getword_conf(parms->pool, &args);
-	w3 = *args ? getword_conf(parms->pool, &args) : NULL;
+	w = ap_getword_conf(parms->pool, &args);
+	w2 = ap_getword_conf(parms->pool, &args);
+	w3 = *args ? ap_getword_conf(parms->pool, &args) : NULL;
 
 	if (*w == '\0' || *w2 == '\0' || *args != 0)
-	    return pstrcat(parms->pool, cmd->name,
+	    return ap_pstrcat(parms->pool, cmd->name,
 			    " takes two or three arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
@@ -783,12 +783,12 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 
     case TAKE123:
 
-	w = getword_conf(parms->pool, &args);
-	w2 = *args ? getword_conf(parms->pool, &args) : NULL;
-	w3 = *args ? getword_conf(parms->pool, &args) : NULL;
+	w = ap_getword_conf(parms->pool, &args);
+	w2 = *args ? ap_getword_conf(parms->pool, &args) : NULL;
+	w3 = *args ? ap_getword_conf(parms->pool, &args) : NULL;
 
 	if (*w == '\0' || *args != 0)
-	    return pstrcat(parms->pool, cmd->name,
+	    return ap_pstrcat(parms->pool, cmd->name,
 			    " takes one, two or three arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
@@ -798,12 +798,12 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 
     case TAKE13:
 
-	w = getword_conf(parms->pool, &args);
-	w2 = *args ? getword_conf(parms->pool, &args) : NULL;
-	w3 = *args ? getword_conf(parms->pool, &args) : NULL;
+	w = ap_getword_conf(parms->pool, &args);
+	w2 = *args ? ap_getword_conf(parms->pool, &args) : NULL;
+	w3 = *args ? ap_getword_conf(parms->pool, &args) : NULL;
 
 	if (*w == '\0' || (*w2 && !w3) || *args != 0)
-	    return pstrcat(parms->pool, cmd->name,
+	    return ap_pstrcat(parms->pool, cmd->name,
 			    " takes one or three arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
@@ -813,7 +813,7 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 
     case ITERATE:
 
-	while (*(w = getword_conf(parms->pool, &args)) != '\0')
+	while (*(w = ap_getword_conf(parms->pool, &args)) != '\0')
 	if   ((errmsg = ((const char *(*)(cmd_parms *, void *,
 			const char *)) (cmd->func)) (parms, mconfig, w)))
 		    return errmsg;
@@ -822,15 +822,15 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 
     case ITERATE2:
 
-	w = getword_conf(parms->pool, &args);
+	w = ap_getword_conf(parms->pool, &args);
 
 	if (*w == '\0' || *args == 0)
-	    return pstrcat(parms->pool, cmd->name,
+	    return ap_pstrcat(parms->pool, cmd->name,
 			    " requires at least two arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
 
-	while (*(w2 = getword_conf(parms->pool, &args)) != '\0')
+	while (*(w2 = ap_getword_conf(parms->pool, &args)) != '\0')
 	    if   ((errmsg = ((const char *(*)(cmd_parms *, void *,
 			    const char *, const char *)) (cmd->func)) (parms,
 							    mconfig, w, w2)))
@@ -840,10 +840,10 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 
     case FLAG:
 
-	w = getword_conf(parms->pool, &args);
+	w = ap_getword_conf(parms->pool, &args);
 
 	if (*w == '\0' || (strcasecmp(w, "on") && strcasecmp(w, "off")))
-	    return pstrcat(parms->pool, cmd->name, " must be On or Off",
+	    return ap_pstrcat(parms->pool, cmd->name, " must be On or Off",
 			    NULL);
 
 	return ((const char *(*)(cmd_parms *, void *, int))
@@ -851,13 +851,13 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 
     default:
 
-	return pstrcat(parms->pool, cmd->name,
+	return ap_pstrcat(parms->pool, cmd->name,
 		    " is improperly configured internally (server bug)",
 			NULL);
     }
 }
 
-CORE_EXPORT(const command_rec *) find_command(const char *name, const command_rec *cmds)
+CORE_EXPORT(const command_rec *) ap_find_command(const char *name, const command_rec *cmds)
 {
     while (cmds->name)
 	if (!strcasecmp(name, cmds->name))
@@ -868,13 +868,13 @@ CORE_EXPORT(const command_rec *) find_command(const char *name, const command_re
     return NULL;
 }
 
-CORE_EXPORT(const command_rec *) find_command_in_modules(const char *cmd_name, module **mod)
+CORE_EXPORT(const command_rec *) ap_find_command_in_modules(const char *cmd_name, module **mod)
 {
     const command_rec *cmdp;
     module *modp;
 
     for (modp = *mod; modp; modp = modp->next)
-	if (modp->cmds && (cmdp = find_command(cmd_name, modp->cmds))) {
+	if (modp->cmds && (cmdp = ap_find_command(cmd_name, modp->cmds))) {
 	    *mod = modp;
 	    return cmdp;
 	}
@@ -882,7 +882,7 @@ CORE_EXPORT(const command_rec *) find_command_in_modules(const char *cmd_name, m
     return NULL;
 }
 
-CORE_EXPORT(const char *) handle_command(cmd_parms *parms, void *config, const char *l)
+CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, const char *l)
 {
     const char *args, *cmd_name, *retval;
     const command_rec *cmd;
@@ -892,31 +892,31 @@ CORE_EXPORT(const char *) handle_command(cmd_parms *parms, void *config, const c
 	return NULL;
 
     args = l;
-    cmd_name = getword_conf(parms->temp_pool, &args);
+    cmd_name = ap_getword_conf(parms->temp_pool, &args);
     if (*cmd_name == '\0')
 	return NULL;
 
     do {
-	if (!(cmd = find_command_in_modules(cmd_name, &mod))) {
+	if (!(cmd = ap_find_command_in_modules(cmd_name, &mod))) {
             errno = EINVAL;
-            return pstrcat(parms->pool, "Invalid command '", cmd_name,
+            return ap_pstrcat(parms->pool, "Invalid command '", cmd_name,
                            "', perhaps mis-spelled or defined by a module "
                            "not included in the server configuration", NULL);
 	}
 	else {
-	    void *mconfig = get_module_config(config, mod);
+	    void *mconfig = ap_get_module_config(config, mod);
 	    void *sconfig =
-		get_module_config(parms->server->module_config, mod);
+		ap_get_module_config(parms->server->module_config, mod);
 
 	    if (!mconfig && mod->create_dir_config) {
 		mconfig = (*mod->create_dir_config) (parms->pool, parms->path);
-		set_module_config(config, mod, mconfig);
+		ap_set_module_config(config, mod, mconfig);
 	    }
 
 	    if (!sconfig && mod->create_server_config) {
 		sconfig =
 		    (*mod->create_server_config) (parms->pool, parms->server);
-		set_module_config(parms->server->module_config, mod, sconfig);
+		ap_set_module_config(parms->server->module_config, mod, sconfig);
 	    }
 
 	    retval = invoke_cmd(cmd, parms, mconfig, args);
@@ -927,12 +927,12 @@ CORE_EXPORT(const char *) handle_command(cmd_parms *parms, void *config, const c
     return retval;
 }
 
-API_EXPORT(const char *) srm_command_loop(cmd_parms *parms, void *config)
+API_EXPORT(const char *) ap_srm_command_loop(cmd_parms *parms, void *config)
 {
     char l[MAX_STRING_LEN];
 
-    while (!(cfg_getline(l, MAX_STRING_LEN, parms->config_file))) {
-	const char *errmsg = handle_command(parms, config, l);
+    while (!(ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))) {
+	const char *errmsg = ap_handle_command(parms, config, l);
         if (errmsg) {
 	    return errmsg;
 	}
@@ -945,7 +945,7 @@ API_EXPORT(const char *) srm_command_loop(cmd_parms *parms, void *config)
  * Generic command functions...
  */
 
-API_EXPORT_NONSTD(const char *) set_string_slot(cmd_parms *cmd,
+API_EXPORT_NONSTD(const char *) ap_set_string_slot(cmd_parms *cmd,
 						char *struct_ptr, char *arg)
 {
     /* This one's pretty generic... */
@@ -955,18 +955,18 @@ API_EXPORT_NONSTD(const char *) set_string_slot(cmd_parms *cmd,
     return NULL;
 }
 
-API_EXPORT_NONSTD(const char *) set_string_slot_lower(cmd_parms *cmd,
+API_EXPORT_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *cmd,
 						char *struct_ptr, char *arg)
 {
     /* This one's pretty generic... */
 
     int offset = (int) (long) cmd->info;
-    str_tolower(arg);
+    ap_str_tolower(arg);
     *(char **) (struct_ptr + offset) = arg;
     return NULL;
 }
 
-API_EXPORT_NONSTD(const char *) set_flag_slot(cmd_parms *cmd,
+API_EXPORT_NONSTD(const char *) ap_set_flag_slot(cmd_parms *cmd,
 					      char *struct_ptr, int arg)
 {
     /* This one's pretty generic too... */
@@ -976,17 +976,17 @@ API_EXPORT_NONSTD(const char *) set_flag_slot(cmd_parms *cmd,
     return NULL;
 }
 
-API_EXPORT_NONSTD(const char *) set_file_slot(cmd_parms *cmd, char *struct_ptr, char *arg)
+API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, char *struct_ptr, char *arg)
 {
     /* Prepend server_root to relative arg.
        This allows .htaccess to be independent of server_root,
        so the server can be moved or mirrored with less pain.  */
     char *p;
     int offset = (int) (long) cmd->info;
-    if (os_is_path_absolute(arg))
+    if (ap_is_path_absolute(arg))
 	p = arg;
     else
-	p = make_full_path(cmd->pool, server_root, arg);
+	p = ap_make_full_path(cmd->pool, ap_server_root, arg);
     *(char **) (struct_ptr + offset) = p;
     return NULL;
 }
@@ -999,11 +999,11 @@ API_EXPORT_NONSTD(const char *) set_file_slot(cmd_parms *cmd, char *struct_ptr, 
 static cmd_parms default_parms =
 {NULL, 0, -1, NULL, NULL, NULL, NULL, NULL, NULL};
 
-API_EXPORT(char *) server_root_relative(pool *p, char *file)
+API_EXPORT(char *) ap_server_root_relative(pool *p, char *file)
 {
-    if(os_is_path_absolute(file))
+    if(ap_is_path_absolute(file))
 	return file;
-    return make_full_path(p, server_root, file);
+    return ap_make_full_path(p, ap_server_root, file);
 }
 
 
@@ -1062,37 +1062,37 @@ static void process_command_config(server_rec *s, array_header *arr, pool *p,
     parms.temp_pool = ptemp;
     parms.server = s;
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
-    parms.config_file = pcfg_open_custom(p, "-c/-C directives",
+    parms.config_file = ap_pcfg_open_custom(p, "-c/-C directives",
                                          &arr_parms, NULL,
                                          arr_elts_getstr, arr_elts_close);
 
-    errmsg = srm_command_loop(&parms, s->lookup_defaults);
+    errmsg = ap_srm_command_loop(&parms, s->lookup_defaults);
 
     if (errmsg) {
         fprintf(stderr, "Syntax error in -C/-c directive:\n%s\n", errmsg);
         exit(1);
     }
 
-    cfg_closefile(parms.config_file);
+    ap_cfg_closefile(parms.config_file);
 }
 
-void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp)
+void ap_process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp)
 {
     const char *errmsg;
     cmd_parms parms;
     struct stat finfo;
 
-    fname = server_root_relative(p, fname);
+    fname = ap_server_root_relative(p, fname);
 
-    if (!(strcmp(fname, server_root_relative(p, RESOURCE_CONFIG_FILE))) ||
-	!(strcmp(fname, server_root_relative(p, ACCESS_CONFIG_FILE)))) {
+    if (!(strcmp(fname, ap_server_root_relative(p, RESOURCE_CONFIG_FILE))) ||
+	!(strcmp(fname, ap_server_root_relative(p, ACCESS_CONFIG_FILE)))) {
 	if (stat(fname, &finfo) == -1)
 	    return;
     }
 
     /* don't require conf/httpd.conf if we have a -C or -c switch */
-    if((server_pre_read_config->nelts || server_post_read_config->nelts) &&
-       !(strcmp(fname, server_root_relative(p, SERVER_CONFIG_FILE)))) {
+    if((ap_server_pre_read_config->nelts || ap_server_post_read_config->nelts) &&
+       !(strcmp(fname, ap_server_root_relative(p, SERVER_CONFIG_FILE)))) {
 	if (stat(fname, &finfo) == -1)
 	    return;
     }
@@ -1105,14 +1105,14 @@ void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp)
     parms.server = s;
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
 
-    if (!(parms.config_file = pcfg_openfile(p,fname))) {
+    if (!(parms.config_file = ap_pcfg_openfile(p,fname))) {
 	perror("fopen");
 	fprintf(stderr, "httpd: could not open document config file %s\n",
 		fname);
 	exit(1);
     }
 
-    errmsg = srm_command_loop(&parms, s->lookup_defaults);
+    errmsg = ap_srm_command_loop(&parms, s->lookup_defaults);
 
     if (errmsg) {
 	fprintf(stderr, "Syntax error on line %d of %s:\n",
@@ -1121,11 +1121,11 @@ void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp)
 	exit(1);
     }
 
-    cfg_closefile(parms.config_file);
+    ap_cfg_closefile(parms.config_file);
 }
 
 
-int parse_htaccess(void **result, request_rec *r, int override,
+int ap_parse_htaccess(void **result, request_rec *r, int override,
 		   const char *d, const char *access_name)
 {
     configfile_t *f = NULL;
@@ -1149,25 +1149,25 @@ int parse_htaccess(void **result, request_rec *r, int override,
     parms.pool = r->pool;
     parms.temp_pool = r->pool;
     parms.server = r->server;
-    parms.path = pstrdup(r->pool, d);
+    parms.path = ap_pstrdup(r->pool, d);
 
     /* loop through the access names and find the first one */
     while (!f && access_name[0]) {
-	char *w = getword_conf(r->pool, &access_name);
-	filename = make_full_path(r->pool, d, w);
-	f = pcfg_openfile(r->pool, filename);
+	char *w = ap_getword_conf(r->pool, &access_name);
+	filename = ap_make_full_path(r->pool, d, w);
+	f = ap_pcfg_openfile(r->pool, filename);
     }
     if (f) {
-	dc = create_per_dir_config(r->pool);
+	dc = ap_create_per_dir_config(r->pool);
 
 	parms.config_file = f;
 
-	errmsg = srm_command_loop(&parms, dc);
+	errmsg = ap_srm_command_loop(&parms, dc);
 
-	cfg_closefile(f);
+	ap_cfg_closefile(f);
 
 	if (errmsg) {
-	    aplog_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, r->server, "%s: %s",
+	    ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, r->server, "%s: %s",
                         filename, errmsg);
             return HTTP_INTERNAL_SERVER_ERROR;
 	}
@@ -1178,7 +1178,7 @@ int parse_htaccess(void **result, request_rec *r, int override,
 	if (errno == ENOENT || errno == ENOTDIR)
 	    dc = NULL;
 	else {
-	    aplog_error(APLOG_MARK, APLOG_CRIT, r->server,
+	    ap_log_error(APLOG_MARK, APLOG_CRIT, r->server,
 			"%s pcfg_openfile: unable to check htaccess file, ensure it is readable",
 			filename);
 	    return HTTP_FORBIDDEN;
@@ -1186,7 +1186,7 @@ int parse_htaccess(void **result, request_rec *r, int override,
     }
 
 /* cache it */
-    new = palloc(r->pool, sizeof(struct htaccess_result));
+    new = ap_palloc(r->pool, sizeof(struct htaccess_result));
     new->dir = parms.path;
     new->override = override;
     new->htaccess = dc;
@@ -1198,10 +1198,10 @@ int parse_htaccess(void **result, request_rec *r, int override,
 }
 
 
-CORE_EXPORT(const char *) init_virtual_host(pool *p, const char *hostname,
+CORE_EXPORT(const char *) ap_init_virtual_host(pool *p, const char *hostname,
 			      server_rec *main_server, server_rec **ps)
 {
-    server_rec *s = (server_rec *) pcalloc(p, sizeof(server_rec));
+    server_rec *s = (server_rec *) ap_pcalloc(p, sizeof(server_rec));
 
 #ifdef RLIMIT_NOFILE
     struct rlimit limits;
@@ -1232,18 +1232,18 @@ CORE_EXPORT(const char *) init_virtual_host(pool *p, const char *hostname,
     s->next = NULL;
 
     s->is_virtual = 1;
-    s->names = make_array(p, 4, sizeof(char **));
-    s->wild_names = make_array(p, 4, sizeof(char **));
+    s->names = ap_make_array(p, 4, sizeof(char **));
+    s->wild_names = ap_make_array(p, 4, sizeof(char **));
 
     s->module_config = create_empty_config(p);
-    s->lookup_defaults = create_per_dir_config(p);
+    s->lookup_defaults = ap_create_per_dir_config(p);
 
-    s->server_uid = user_id;
-    s->server_gid = group_id;
+    s->server_uid = ap_user_id;
+    s->server_gid = ap_group_id;
 
     *ps = s;
 
-    return parse_vhost_addrs(p, hostname, s);
+    return ap_parse_vhost_addrs(p, hostname, s);
 }
 
 
@@ -1256,7 +1256,7 @@ static void fixup_virtual_hosts(pool *p, server_rec *main_server)
 			     virt->module_config);
 
 	virt->lookup_defaults =
-	    merge_per_dir_configs(p, main_server->lookup_defaults,
+	    ap_merge_per_dir_configs(p, main_server->lookup_defaults,
 				  virt->lookup_defaults);
 
 	if (virt->server_admin == NULL)
@@ -1285,9 +1285,9 @@ static void fixup_virtual_hosts(pool *p, server_rec *main_server)
 
 	/* XXX: this is really something that should be dealt with by a
 	 * post-config api phase */
-	core_reorder_directories(p, virt);
+	ap_core_reorder_directories(p, virt);
     }
-    core_reorder_directories(p, main_server);
+    ap_core_reorder_directories(p, main_server);
 }
 
 /*****************************************************************
@@ -1299,31 +1299,31 @@ static void init_config_globals(pool *p)
 {
     /* ServerRoot, server_confname set in httpd.c */
 
-    standalone = 1;
-    user_name = DEFAULT_USER;
-    user_id = uname2id(DEFAULT_USER);
-    group_id = gname2id(DEFAULT_GROUP);
-    daemons_to_start = DEFAULT_START_DAEMON;
-    daemons_min_free = DEFAULT_MIN_FREE_DAEMON;
-    daemons_max_free = DEFAULT_MAX_FREE_DAEMON;
-    daemons_limit = HARD_SERVER_LIMIT;
-    pid_fname = DEFAULT_PIDLOG;
-    scoreboard_fname = DEFAULT_SCOREBOARD;
-    lock_fname = DEFAULT_LOCKFILE;
-    max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
-    bind_address.s_addr = htonl(INADDR_ANY);
-    listeners = NULL;
-    listenbacklog = DEFAULT_LISTENBACKLOG;
+    ap_standalone = 1;
+    ap_user_name = DEFAULT_USER;
+    ap_user_id = ap_uname2id(DEFAULT_USER);
+    ap_group_id = ap_gname2id(DEFAULT_GROUP);
+    ap_daemons_to_start = DEFAULT_START_DAEMON;
+    ap_daemons_min_free = DEFAULT_MIN_FREE_DAEMON;
+    ap_daemons_max_free = DEFAULT_MAX_FREE_DAEMON;
+    ap_daemons_limit = HARD_SERVER_LIMIT;
+    ap_pid_fname = DEFAULT_PIDLOG;
+    ap_scoreboard_fname = DEFAULT_SCOREBOARD;
+    ap_lock_fname = DEFAULT_LOCKFILE;
+    ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
+    ap_bind_address.s_addr = htonl(INADDR_ANY);
+    ap_listeners = NULL;
+    ap_listenbacklog = DEFAULT_LISTENBACKLOG;
 
     /* Global virtual host hash bucket pointers.  Init to null. */
-    init_vhost_config(p);
+    ap_init_vhost_config(p);
 
-    ap_cpystrn(coredump_dir, server_root, sizeof(coredump_dir));
+    ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
 
 static server_rec *init_server_config(pool *p)
 {
-    server_rec *s = (server_rec *) pcalloc(p, sizeof(server_rec));
+    server_rec *s = (server_rec *) ap_pcalloc(p, sizeof(server_rec));
 
     s->port = 0;
     s->server_admin = DEFAULT_ADMIN;
@@ -1338,7 +1338,7 @@ static server_rec *init_server_config(pool *p)
     s->keep_alive_max = DEFAULT_KEEPALIVE;
     s->keep_alive = 1;
     s->next = NULL;
-    s->addrs = pcalloc(p, sizeof(server_addr_rec));
+    s->addrs = ap_pcalloc(p, sizeof(server_addr_rec));
     /* NOT virtual host; don't match any real network interface */
     s->addrs->host_addr.s_addr = htonl(INADDR_ANY);
     s->addrs->host_port = 0;	/* matches any port */
@@ -1356,22 +1356,22 @@ static void default_listeners(pool *p, server_rec *s)
 {
     listen_rec *new;
 
-    if (listeners != NULL) {
+    if (ap_listeners != NULL) {
 	return;
     }
     /* allocate a default listener */
-    new = pcalloc(p, sizeof(listen_rec));
+    new = ap_pcalloc(p, sizeof(listen_rec));
     new->local_addr.sin_family = AF_INET;
-    new->local_addr.sin_addr = bind_address;
+    new->local_addr.sin_addr = ap_bind_address;
     new->local_addr.sin_port = htons(s->port ? s->port : DEFAULT_HTTP_PORT);
     new->fd = -1;
     new->used = 0;
     new->next = NULL;
-    listeners = new;
+    ap_listeners = new;
 }
 
 
-server_rec *read_config(pool *p, pool *ptemp, char *confname)
+server_rec *ap_read_config(pool *p, pool *ptemp, char *confname)
 {
     server_rec *s = init_server_config(p);
 
@@ -1379,23 +1379,23 @@ server_rec *read_config(pool *p, pool *ptemp, char *confname)
 
     /* All server-wide config files now have the SAME syntax... */
 
-    process_command_config(s, server_pre_read_config, p, ptemp);
+    process_command_config(s, ap_server_pre_read_config, p, ptemp);
 
-    process_resource_config(s, confname, p, ptemp);
-    process_resource_config(s, s->srm_confname, p, ptemp);
-    process_resource_config(s, s->access_confname, p, ptemp);
+    ap_process_resource_config(s, confname, p, ptemp);
+    ap_process_resource_config(s, s->srm_confname, p, ptemp);
+    ap_process_resource_config(s, s->access_confname, p, ptemp);
 
-    process_command_config(s, server_post_read_config, p, ptemp);
+    process_command_config(s, ap_server_post_read_config, p, ptemp);
 
     fixup_virtual_hosts(p, s);
     default_listeners(p, s);
-    fini_vhost_config(p, s);
+    ap_fini_vhost_config(p, s);
 
     return s;
 }
 
 
-void init_modules(pool *p, server_rec *s)
+void ap_init_modules(pool *p, server_rec *s)
 {
     module *m;
 
@@ -1406,7 +1406,7 @@ void init_modules(pool *p, server_rec *s)
     init_handlers(p);
 }
 
-void child_init_modules(pool *p, server_rec *s)
+void ap_child_init_modules(pool *p, server_rec *s)
 {
     module *m;
 
@@ -1415,7 +1415,7 @@ void child_init_modules(pool *p, server_rec *s)
 	    (*m->child_init) (s, p);
 }
 
-void child_exit_modules(pool *p, server_rec *s)
+void ap_child_exit_modules(pool *p, server_rec *s)
 {
     module *m;
 
@@ -1510,26 +1510,26 @@ static void show_overrides(const command_rec *pc, module *pm)
  * the directive arguments, in what module they are handled, and in
  * what parts of the configuration they are allowed.  Used for httpd -h.
  */
-void show_directives()
+void ap_show_directives()
 {
     const command_rec *pc;
     int n;
 
-    for (n = 0; preloaded_modules[n]; ++n)
-	for (pc = preloaded_modules[n]->cmds; pc && pc->name; ++pc) {
-	    printf("%s (%s)\n", pc->name, preloaded_modules[n]->name);
+    for (n = 0; ap_preloaded_modules[n]; ++n)
+	for (pc = ap_preloaded_modules[n]->cmds; pc && pc->name; ++pc) {
+	    printf("%s (%s)\n", pc->name, ap_preloaded_modules[n]->name);
 	    if (pc->errmsg)
 		printf("\t%s\n", pc->errmsg);
-	    show_overrides(pc, preloaded_modules[n]);
+	    show_overrides(pc, ap_preloaded_modules[n]);
 	}
 }
 
 /* Show the preloaded module names.  Used for httpd -l. */
-void show_modules()
+void ap_show_modules()
 {
     int n;
 
     printf("Compiled-in modules:\n");
-    for (n = 0; preloaded_modules[n]; ++n)
-	printf("  %s\n", preloaded_modules[n]->name);
+    for (n = 0; ap_preloaded_modules[n]; ++n)
+	printf("  %s\n", ap_preloaded_modules[n]->name);
 }

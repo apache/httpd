@@ -148,7 +148,7 @@ static unsigned iterate_pieces(request_rec *r, const test_uri_t *pieces, int row
 
     failures = 0;
 
-    input_uri = palloc(r->pool,
+    input_uri = ap_palloc(r->pool,
 	strlen(pieces->scheme) + 3
 	+ strlen(pieces->user) + 1
 	+ strlen(pieces->password) + 1
@@ -206,8 +206,8 @@ static unsigned iterate_pieces(request_rec *r, const test_uri_t *pieces, int row
 	}
 	*strp = 0;
 
-	sub = make_sub_pool(r->pool);
-	status = parse_uri_components(sub, input_uri, &result);
+	sub = ap_make_sub_pool(r->pool);
+	status = ap_parse_uri_components(sub, input_uri, &result);
 	if (status == HTTP_OK) {
 #define CHECK(f)							\
 	    if ((expect & T_##f)					\
@@ -228,19 +228,19 @@ static unsigned iterate_pieces(request_rec *r, const test_uri_t *pieces, int row
 #undef CHECK
 	}
 	if (status != HTTP_OK) {
-	    rprintf(r, "<tr><td>%d</td><td>0x%02x</td><td>0x%02x</td><td>%d</td><td>\"%s\"</td>", row, u, expect, status, input_uri);
+	    ap_rprintf(r, "<tr><td>%d</td><td>0x%02x</td><td>0x%02x</td><td>%d</td><td>\"%s\"</td>", row, u, expect, status, input_uri);
 #define DUMP(f) 							\
 	    if (result.f) {						\
-		rvputs(r, "<td>\"", result.f, "\"<br>", NULL);		\
+		ap_rvputs(r, "<td>\"", result.f, "\"<br>", NULL);		\
 	    }								\
 	    else {							\
-		rputs("<td>NULL<br>", r);				\
+		ap_rputs("<td>NULL<br>", r);				\
 	    }								\
 	    if (expect & T_##f) {					\
-		rvputs(r, "\"", pieces->f, "\"</td>", NULL);		\
+		ap_rvputs(r, "\"", pieces->f, "\"</td>", NULL);		\
 	    }								\
 	    else {							\
-		rputs("NULL</td>", r);					\
+		ap_rputs("NULL</td>", r);					\
 	    }
 	    DUMP(scheme);
 	    DUMP(user);
@@ -251,10 +251,10 @@ static unsigned iterate_pieces(request_rec *r, const test_uri_t *pieces, int row
 	    DUMP(query);
 	    DUMP(fragment);
 #undef DUMP
-	    rputs("</tr>\n", r);
+	    ap_rputs("</tr>\n", r);
 	    ++failures;
 	}
-	destroy_pool(sub);
+	ap_destroy_pool(sub);
     }
     return failures;
 }
@@ -269,13 +269,13 @@ static int test_util_uri(request_rec *r)
 	return DECLINED;
 
     r->content_type = "text/html";		
-    send_http_header(r);
+    ap_send_http_header(r);
     if(r->header_only) {
 	return 0;
     }
-    hard_timeout("test_util_uri", r);
+    ap_hard_timeout("test_util_uri", r);
 
-    rputs("
+    ap_rputs("
 <html><body>
 <p>Key:
 <dl>
@@ -295,7 +295,7 @@ the values we expected for each piece (resp.).
 <p>Only failures are displayed.
 <p>
 <table><tr><th>row</th><th>u</th><th>expect</th><th>status</th><th>input uri</th>", r);
-#define HEADER(f) rprintf(r, "<th>" #f "<br>0x%02x</th>", T_##f)
+#define HEADER(f) ap_rprintf(r, "<th>" #f "<br>0x%02x</th>", T_##f)
     HEADER(scheme);
     HEADER(user);
     HEADER(password);
@@ -315,14 +315,14 @@ the values we expected for each piece (resp.).
 	for (i = 0; i < sizeof(uri_tests) / sizeof(uri_tests[0]); ++i) {
 	    total_failures += iterate_pieces(r, &uri_tests[i], i);
 	    if (total_failures > 256) {
-		rprintf(r, "</table>\n<b>Stopped early to save your browser "
+		ap_rprintf(r, "</table>\n<b>Stopped early to save your browser "
 			   "from certain death!</b>\nTOTAL FAILURES = %u\n",
 			   total_failures);
 		return OK;
 	    }
 	}
     }
-    rprintf(r, "</table>\nTOTAL FAILURES = %u\n", total_failures);
+    ap_rprintf(r, "</table>\nTOTAL FAILURES = %u\n", total_failures);
 
     return OK;
 }

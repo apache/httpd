@@ -91,7 +91,7 @@ extern int fclose(FILE *);
  */
 #define TEST_CHAR(c, f)	(test_char_table[(unsigned)(c)] & (f))
 
-void util_init(void)
+void ap_util_init(void)
 {
     /* nothing to do... previously there was run-time initialization of
      * test_char_table here
@@ -99,16 +99,16 @@ void util_init(void)
 }
 
 
-API_VAR_EXPORT const char month_snames[12][4] =
+API_VAR_EXPORT const char ap_month_snames[12][4] =
 {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
-API_VAR_EXPORT const char day_snames[7][4] =
+API_VAR_EXPORT const char ap_day_snames[7][4] =
 {
     "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 };
 
-API_EXPORT(char *) get_time()
+API_EXPORT(char *) ap_get_time()
 {
     time_t t;
     char *time_string;
@@ -119,7 +119,7 @@ API_EXPORT(char *) get_time()
     return (time_string);
 }
 
-API_EXPORT(char *) ht_time(pool *p, time_t t, const char *fmt, int gmt)
+API_EXPORT(char *) ap_ht_time(pool *p, time_t t, const char *fmt, int gmt)
 {
     char ts[MAX_STRING_LEN];
     struct tm *tms;
@@ -129,25 +129,25 @@ API_EXPORT(char *) ht_time(pool *p, time_t t, const char *fmt, int gmt)
     /* check return code? */
     strftime(ts, MAX_STRING_LEN, fmt, tms);
     ts[MAX_STRING_LEN - 1] = '\0';
-    return pstrdup(p, ts);
+    return ap_pstrdup(p, ts);
 }
 
-API_EXPORT(char *) gm_timestr_822(pool *p, time_t sec)
+API_EXPORT(char *) ap_gm_timestr_822(pool *p, time_t sec)
 {
     struct tm *tms;
 
     tms = gmtime(&sec);
 
     /* RFC date format; as strftime '%a, %d %b %Y %T GMT' */
-    return psprintf(p,
-		"%s, %.2d %s %d %.2d:%.2d:%.2d GMT", day_snames[tms->tm_wday],
-		tms->tm_mday, month_snames[tms->tm_mon], tms->tm_year + 1900,
+    return ap_psprintf(p,
+		"%s, %.2d %s %d %.2d:%.2d:%.2d GMT", ap_day_snames[tms->tm_wday],
+		tms->tm_mday, ap_month_snames[tms->tm_mon], tms->tm_year + 1900,
 		tms->tm_hour, tms->tm_min, tms->tm_sec);
 }
 
 /* What a pain in the ass. */
 #if defined(HAVE_GMTOFF)
-API_EXPORT(struct tm *) get_gmtoff(int *tz)
+API_EXPORT(struct tm *) ap_get_gmtoff(int *tz)
 {
     time_t tt = time(NULL);
     struct tm *t;
@@ -157,7 +157,7 @@ API_EXPORT(struct tm *) get_gmtoff(int *tz)
     return t;
 }
 #else
-API_EXPORT(struct tm *) get_gmtoff(int *tz)
+API_EXPORT(struct tm *) ap_get_gmtoff(int *tz)
 {
     time_t tt = time(NULL);
     struct tm gmt;
@@ -181,7 +181,7 @@ API_EXPORT(struct tm *) get_gmtoff(int *tz)
  * Based loosely on sections of wildmat.c by Rich Salz
  * Hmmm... shouldn't this really go component by component?
  */
-API_EXPORT(int) strcmp_match(const char *str, const char *exp)
+API_EXPORT(int) ap_strcmp_match(const char *str, const char *exp)
 {
     int x, y;
 
@@ -194,7 +194,7 @@ API_EXPORT(int) strcmp_match(const char *str, const char *exp)
 		return 0;
 	    while (str[x]) {
 		int ret;
-		if ((ret = strcmp_match(&str[x++], &exp[y])) != 1)
+		if ((ret = ap_strcmp_match(&str[x++], &exp[y])) != 1)
 		    return ret;
 	    }
 	    return -1;
@@ -205,7 +205,7 @@ API_EXPORT(int) strcmp_match(const char *str, const char *exp)
     return (str[x] != '\0');
 }
 
-API_EXPORT(int) strcasecmp_match(const char *str, const char *exp)
+API_EXPORT(int) ap_strcasecmp_match(const char *str, const char *exp)
 {
     int x, y;
 
@@ -218,7 +218,7 @@ API_EXPORT(int) strcasecmp_match(const char *str, const char *exp)
 		return 0;
 	    while (str[x]) {
 		int ret;
-		if ((ret = strcasecmp_match(&str[x++], &exp[y])) != 1)
+		if ((ret = ap_strcasecmp_match(&str[x++], &exp[y])) != 1)
 		    return ret;
 	    }
 	    return -1;
@@ -229,7 +229,7 @@ API_EXPORT(int) strcasecmp_match(const char *str, const char *exp)
     return (str[x] != '\0');
 }
 
-API_EXPORT(int) is_matchexp(const char *str)
+API_EXPORT(int) ap_is_matchexp(const char *str)
 {
     register int x;
 
@@ -253,7 +253,7 @@ API_EXPORT(int) is_matchexp(const char *str)
  * AT&T V8 regexp package.
  */
 
-API_EXPORT(char *) pregsub(pool *p, const char *input, const char *source,
+API_EXPORT(char *) ap_pregsub(pool *p, const char *input, const char *source,
 			   size_t nmatch, regmatch_t pmatch[])
 {
     const char *src = input;
@@ -265,7 +265,7 @@ API_EXPORT(char *) pregsub(pool *p, const char *input, const char *source,
     if (!source)
 	return NULL;
     if (!nmatch)
-	return pstrdup(p, src);
+	return ap_pstrdup(p, src);
 
     /* First pass, find the size */
 
@@ -290,7 +290,7 @@ API_EXPORT(char *) pregsub(pool *p, const char *input, const char *source,
 
     }
 
-    dest = dst = pcalloc(p, len + 1);
+    dest = dst = ap_pcalloc(p, len + 1);
 
     /* Now actually fill in the string */
 
@@ -324,7 +324,7 @@ API_EXPORT(char *) pregsub(pool *p, const char *input, const char *source,
 /*
  * Parse .. so we don't compromise security
  */
-API_EXPORT(void) getparents(char *name)
+API_EXPORT(void) ap_getparents(char *name)
 {
     int l, w;
 
@@ -385,7 +385,7 @@ API_EXPORT(void) getparents(char *name)
     }
 }
 
-API_EXPORT(void) no2slash(char *name)
+API_EXPORT(void) ap_no2slash(char *name)
 {
     char *d, *s;
 
@@ -416,7 +416,7 @@ API_EXPORT(void) no2slash(char *name)
  *    /a/b, 3  ==> /a/b/
  *    /a/b, 4  ==> /a/b/
  */
-API_EXPORT(char *) make_dirstr_prefix(char *d, const char *s, int n)
+API_EXPORT(char *) ap_make_dirstr_prefix(char *d, const char *s, int n)
 {
     for (;;) {
 	*d = *s;
@@ -437,7 +437,7 @@ API_EXPORT(char *) make_dirstr_prefix(char *d, const char *s, int n)
 /*
  * return the parent directory name including trailing / of the file s
  */
-API_EXPORT(char *) make_dirstr_parent(pool *p, const char *s)
+API_EXPORT(char *) ap_make_dirstr_parent(pool *p, const char *s)
 {
     char *last_slash = strrchr(s, '/');
     char *d;
@@ -445,10 +445,10 @@ API_EXPORT(char *) make_dirstr_parent(pool *p, const char *s)
 
     if (last_slash == NULL) {
 	/* XXX: well this is really broken if this happens */
-	return (pstrdup(p, "/"));
+	return (ap_pstrdup(p, "/"));
     }
     l = (last_slash - s) + 1;
-    d = palloc(p, l + 1);
+    d = ap_palloc(p, l + 1);
     memcpy(d, s, l);
     d[l] = 0;
     return (d);
@@ -459,7 +459,7 @@ API_EXPORT(char *) make_dirstr_parent(pool *p, const char *s)
  * This function is deprecated.  Use one of the preceeding two functions
  * which are faster.
  */
-API_EXPORT(char *) make_dirstr(pool *p, const char *s, int n)
+API_EXPORT(char *) ap_make_dirstr(pool *p, const char *s, int n)
 {
     register int x, f;
     char *res;
@@ -467,7 +467,7 @@ API_EXPORT(char *) make_dirstr(pool *p, const char *s, int n)
     for (x = 0, f = 0; s[x]; x++) {
 	if (s[x] == '/')
 	    if ((++f) == n) {
-		res = palloc(p, x + 2);
+		res = ap_palloc(p, x + 2);
 		memcpy(res, s, x);
 		res[x] = '/';
 		res[x + 1] = '\0';
@@ -476,12 +476,12 @@ API_EXPORT(char *) make_dirstr(pool *p, const char *s, int n)
     }
 
     if (s[strlen(s) - 1] == '/')
-	return pstrdup(p, s);
+	return ap_pstrdup(p, s);
     else
-	return pstrcat(p, s, "/", NULL);
+	return ap_pstrcat(p, s, "/", NULL);
 }
 
-API_EXPORT(int) count_dirs(const char *path)
+API_EXPORT(int) ap_count_dirs(const char *path)
 {
     register int x, n;
 
@@ -492,7 +492,7 @@ API_EXPORT(int) count_dirs(const char *path)
 }
 
 
-API_EXPORT(void) chdir_file(const char *file)
+API_EXPORT(void) ap_chdir_file(const char *file)
 {
     const char *x;
     char buf[HUGE_STRING_LEN];
@@ -510,23 +510,23 @@ API_EXPORT(void) chdir_file(const char *file)
      * error... ah well. */
 }
 
-API_EXPORT(char *) getword_nc(pool *atrans, char **line, char stop)
+API_EXPORT(char *) ap_getword_nc(pool *atrans, char **line, char stop)
 {
-    return getword(atrans, (const char **) line, stop);
+    return ap_getword(atrans, (const char **) line, stop);
 }
 
-API_EXPORT(char *) getword(pool *atrans, const char **line, char stop)
+API_EXPORT(char *) ap_getword(pool *atrans, const char **line, char stop)
 {
     char *pos = strchr(*line, stop);
     char *res;
 
     if (!pos) {
-	res = pstrdup(atrans, *line);
+	res = ap_pstrdup(atrans, *line);
 	*line += strlen(*line);
 	return res;
     }
 
-    res = pstrndup(atrans, *line, pos - *line);
+    res = ap_pstrndup(atrans, *line, pos - *line);
 
     while (*pos == stop) {
 	++pos;
@@ -537,12 +537,12 @@ API_EXPORT(char *) getword(pool *atrans, const char **line, char stop)
     return res;
 }
 
-API_EXPORT(char *) getword_white_nc(pool *atrans, char **line)
+API_EXPORT(char *) ap_getword_white_nc(pool *atrans, char **line)
 {
-    return getword_white(atrans, (const char **) line);
+    return ap_getword_white(atrans, (const char **) line);
 }
 
-API_EXPORT(char *) getword_white(pool *atrans, const char **line)
+API_EXPORT(char *) ap_getword_white(pool *atrans, const char **line)
 {
     int pos = -1, x;
     char *res;
@@ -555,12 +555,12 @@ API_EXPORT(char *) getword_white(pool *atrans, const char **line)
     }
 
     if (pos == -1) {
-	res = pstrdup(atrans, *line);
+	res = ap_pstrdup(atrans, *line);
 	*line += strlen(*line);
 	return res;
     }
 
-    res = palloc(atrans, pos + 1);
+    res = ap_palloc(atrans, pos + 1);
     ap_cpystrn(res, *line, pos + 1);
 
     while (isspace((*line)[pos]))
@@ -571,23 +571,23 @@ API_EXPORT(char *) getword_white(pool *atrans, const char **line)
     return res;
 }
 
-API_EXPORT(char *) getword_nulls_nc(pool *atrans, char **line, char stop)
+API_EXPORT(char *) ap_getword_nulls_nc(pool *atrans, char **line, char stop)
 {
-    return getword_nulls(atrans, (const char **) line, stop);
+    return ap_getword_nulls(atrans, (const char **) line, stop);
 }
 
-API_EXPORT(char *) getword_nulls(pool *atrans, const char **line, char stop)
+API_EXPORT(char *) ap_getword_nulls(pool *atrans, const char **line, char stop)
 {
     char *pos = strchr(*line, stop);
     char *res;
 
     if (!pos) {
-	res = pstrdup(atrans, *line);
+	res = ap_pstrdup(atrans, *line);
 	*line += strlen(*line);
 	return res;
     }
 
-    res = pstrndup(atrans, *line, pos - *line);
+    res = ap_pstrndup(atrans, *line, pos - *line);
 
     ++pos;
 
@@ -602,7 +602,7 @@ API_EXPORT(char *) getword_nulls(pool *atrans, const char **line, char stop)
 
 static char *substring_conf(pool *p, const char *start, int len, char quote)
 {
-    char *result = palloc(p, len + 2);
+    char *result = ap_palloc(p, len + 2);
     char *resp = result;
     int i;
 
@@ -618,12 +618,12 @@ static char *substring_conf(pool *p, const char *start, int len, char quote)
     return result;
 }
 
-API_EXPORT(char *) getword_conf_nc(pool *p, char **line)
+API_EXPORT(char *) ap_getword_conf_nc(pool *p, char **line)
 {
-    return getword_conf(p, (const char **) line);
+    return ap_getword_conf(p, (const char **) line);
 }
 
-API_EXPORT(char *) getword_conf(pool *p, const char **line)
+API_EXPORT(char *) ap_getword_conf(pool *p, const char **line)
 {
     const char *str = *line, *strend;
     char *res;
@@ -666,7 +666,7 @@ API_EXPORT(char *) getword_conf(pool *p, const char **line)
 
 
 /* Open a configfile_t as FILE, return open configfile_t struct pointer */
-API_EXPORT(configfile_t *) pcfg_openfile(pool *p, const char *name)
+API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name)
 {
     configfile_t *new_cfg;
     FILE *file;
@@ -675,14 +675,14 @@ API_EXPORT(configfile_t *) pcfg_openfile(pool *p, const char *name)
 #endif
 
     if (name == NULL) {
-        aplog_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
                "Internal error: pcfg_openfile() called with NULL filename");
         return NULL;
     }
 
     file = fopen(name, "r");
 #ifdef DEBUG
-    aplog_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, NULL,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, NULL,
                 "Opening config file %s (%s)",
                 name, (file == NULL) ? strerror(errno) : "successful");
 #endif
@@ -693,7 +693,7 @@ API_EXPORT(configfile_t *) pcfg_openfile(pool *p, const char *name)
     if (strcmp(name, "/dev/null") != 0 &&
         fstat(fileno(file), &stbuf) == 0 &&
         !S_ISREG(stbuf.st_mode)) {
-        aplog_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
                     "Access to file %s denied by server: not a regular file",
                     name);
         fclose(file);
@@ -701,9 +701,9 @@ API_EXPORT(configfile_t *) pcfg_openfile(pool *p, const char *name)
     }
 #endif
 
-    new_cfg = palloc(p, sizeof(*new_cfg));
+    new_cfg = ap_palloc(p, sizeof(*new_cfg));
     new_cfg->param = file;
-    new_cfg->name = pstrdup(p, name);
+    new_cfg->name = ap_pstrdup(p, name);
     new_cfg->getch = (int (*)(void *)) fgetc;
     new_cfg->getstr = (void *(*)(void *, size_t, void *)) fgets;
     new_cfg->close = (int (*)(void *)) fclose;
@@ -713,15 +713,15 @@ API_EXPORT(configfile_t *) pcfg_openfile(pool *p, const char *name)
 
 
 /* Allocate a configfile_t handle with user defined functions and params */
-API_EXPORT(configfile_t *) pcfg_open_custom(pool *p, const char *descr,
+API_EXPORT(configfile_t *) ap_pcfg_open_custom(pool *p, const char *descr,
     void *param,
     int(*getch)(void *),
     void *(*getstr) (void *buf, size_t bufsiz, void *param),
     int(*close_func)(void *))
 {
-    configfile_t *new_cfg = palloc(p, sizeof(*new_cfg));
+    configfile_t *new_cfg = ap_palloc(p, sizeof(*new_cfg));
 #ifdef DEBUG
-    aplog_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, NULL, "Opening config handler %s", descr);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, NULL, "Opening config handler %s", descr);
 #endif
     new_cfg->param = param;
     new_cfg->name = descr;
@@ -734,7 +734,7 @@ API_EXPORT(configfile_t *) pcfg_open_custom(pool *p, const char *descr,
 
 
 /* Read one character from a configfile_t */
-API_EXPORT(int) cfg_getc(configfile_t *cfp)
+API_EXPORT(int) ap_cfg_getc(configfile_t *cfp)
 {
     register int ch = cfp->getch(cfp->param);
     if (ch == LF) 
@@ -745,7 +745,7 @@ API_EXPORT(int) cfg_getc(configfile_t *cfp)
 
 /* Read one line from open configfile_t, strip LF, increase line number */
 /* If custom handler does not define a getstr() function, read char by char */
-API_EXPORT(int) cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
+API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
 {
     /* If a "get string" function is defined, use it */
     if (cfp->getstr != NULL) {
@@ -818,7 +818,7 @@ API_EXPORT(int) cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
 	    *dst = '\0';
 
 #ifdef DEBUG_CFG_LINES
-	aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Read config: %s", buf);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Read config: %s", buf);
 #endif
 	return 0;
     } else {
@@ -875,7 +875,7 @@ API_EXPORT(int) cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
 		    --i;
 		buf[i] = '\0';
 #ifdef DEBUG_CFG_LINES
-		aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Read config: %s", buf);
+		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Read config: %s", buf);
 #endif
 		return 0;
 	    }
@@ -886,10 +886,10 @@ API_EXPORT(int) cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
     }
 }
 
-API_EXPORT(int) cfg_closefile(configfile_t *fp)
+API_EXPORT(int) ap_cfg_closefile(configfile_t *fp)
 {
 #ifdef DEBUG
-    aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Done with config file %s", fp->name);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Done with config file %s", fp->name);
 #endif
     return (fp->close == NULL) ? 0 : fp->close(fp->param);
 }
@@ -901,7 +901,7 @@ API_EXPORT(int) cfg_closefile(configfile_t *fp)
  * by whitespace at the caller's option.
  */
 
-API_EXPORT(char *) get_token(pool *p, char **accept_line, int accept_white)
+API_EXPORT(char *) ap_get_token(pool *p, char **accept_line, int accept_white)
 {
     char *ptr = *accept_line;
     char *tok_start;
@@ -928,7 +928,7 @@ API_EXPORT(char *) get_token(pool *p, char **accept_line, int accept_white)
     }
 
     tok_len = ptr - tok_start;
-    token = pstrndup(p, tok_start, tok_len);
+    token = ap_pstrndup(p, tok_start, tok_len);
 
     /* Advance accept_line pointer to the next non-white byte */
 
@@ -941,7 +941,7 @@ API_EXPORT(char *) get_token(pool *p, char **accept_line, int accept_white)
 
 
 /* find http tokens, see the definition of token from RFC2068 */
-API_EXPORT(int) find_token(pool *p, const char *line, const char *tok)
+API_EXPORT(int) ap_find_token(pool *p, const char *line, const char *tok)
 {
     const unsigned char *start_token;
     const unsigned char *s;
@@ -975,7 +975,7 @@ API_EXPORT(int) find_token(pool *p, const char *line, const char *tok)
 }
 
 
-API_EXPORT(int) find_last_token(pool *p, const char *line, const char *tok)
+API_EXPORT(int) ap_find_last_token(pool *p, const char *line, const char *tok)
 {
     int llen, tlen, lidx;
 
@@ -993,13 +993,13 @@ API_EXPORT(int) find_last_token(pool *p, const char *line, const char *tok)
     return (strncasecmp(&line[lidx], tok, tlen) == 0);
 }
 
-API_EXPORT(char *) escape_shell_cmd(pool *p, const char *str)
+API_EXPORT(char *) ap_escape_shell_cmd(pool *p, const char *str)
 {
     char *cmd;
     unsigned char *d;
     const unsigned char *s;
 
-    cmd = palloc(p, 2 * strlen(str) + 1);	/* Be safe */
+    cmd = ap_palloc(p, 2 * strlen(str) + 1);	/* Be safe */
     d = (unsigned char *)cmd;
     s = (const unsigned char *)str;
     for (; *s; ++s) {
@@ -1053,7 +1053,7 @@ static char x2c(const char *what)
  *   decoding %2f -> /   (a special character)
  *                      returns NOT_FOUND
  */
-API_EXPORT(int) unescape_url(char *url)
+API_EXPORT(int) ap_unescape_url(char *url)
 {
     register int x, y, badesc, badpath;
 
@@ -1084,13 +1084,13 @@ API_EXPORT(int) unescape_url(char *url)
 	return OK;
 }
 
-API_EXPORT(char *) construct_server(pool *p, const char *hostname,
+API_EXPORT(char *) ap_construct_server(pool *p, const char *hostname,
 				    unsigned port, const request_rec *r)
 {
     if (is_default_port(port, r))
-	return pstrdup(p, hostname);
+	return ap_pstrdup(p, hostname);
     else {
-	return psprintf(p, "%s:%u", hostname, port);
+	return ap_psprintf(p, "%s:%u", hostname, port);
     }
 }
 
@@ -1129,9 +1129,9 @@ static ap_inline unsigned char *c2x(unsigned what, unsigned char *where)
  * something with a '/' in it (and thus does not prefix "./").
  */
 
-API_EXPORT(char *) escape_path_segment(pool *p, const char *segment)
+API_EXPORT(char *) ap_escape_path_segment(pool *p, const char *segment)
 {
-    char *copy = palloc(p, 3 * strlen(segment) + 1);
+    char *copy = ap_palloc(p, 3 * strlen(segment) + 1);
     const unsigned char *s = (const unsigned char *)segment;
     unsigned char *d = (unsigned char *)copy;
     unsigned c;
@@ -1149,9 +1149,9 @@ API_EXPORT(char *) escape_path_segment(pool *p, const char *segment)
     return copy;
 }
 
-API_EXPORT(char *) os_escape_path(pool *p, const char *path, int partial)
+API_EXPORT(char *) ap_escape_path(pool *p, const char *path, int partial)
 {
-    char *copy = palloc(p, 3 * strlen(path) + 3);
+    char *copy = ap_palloc(p, 3 * strlen(path) + 3);
     const unsigned char *s = (const unsigned char *)path;
     unsigned char *d = (unsigned char *)copy;
     unsigned c;
@@ -1180,7 +1180,7 @@ API_EXPORT(char *) os_escape_path(pool *p, const char *path, int partial)
 
 /* escape_uri is now a macro for os_escape_path */
 
-API_EXPORT(char *) escape_html(pool *p, const char *s)
+API_EXPORT(char *) ap_escape_html(pool *p, const char *s)
 {
     int i, j;
     char *x;
@@ -1193,8 +1193,8 @@ API_EXPORT(char *) escape_html(pool *p, const char *s)
 	    j += 4;
 
     if (j == 0)
-	return pstrdup(p, s);
-    x = palloc(p, i + j + 1);
+	return ap_pstrdup(p, s);
+    x = ap_palloc(p, i + j + 1);
     for (i = 0, j = 0; s[i] != '\0'; i++, j++)
 	if (s[i] == '<') {
 	    memcpy(&x[j], "&lt;", 4);
@@ -1215,7 +1215,7 @@ API_EXPORT(char *) escape_html(pool *p, const char *s)
     return x;
 }
 
-API_EXPORT(int) is_directory(const char *path)
+API_EXPORT(int) ap_is_directory(const char *path)
 {
     struct stat finfo;
 
@@ -1225,25 +1225,25 @@ API_EXPORT(int) is_directory(const char *path)
     return (S_ISDIR(finfo.st_mode));
 }
 
-API_EXPORT(char *) make_full_path(pool *a, const char *src1,
+API_EXPORT(char *) ap_make_full_path(pool *a, const char *src1,
 				  const char *src2)
 {
     register int x;
 
     x = strlen(src1);
     if (x == 0)
-	return pstrcat(a, "/", src2, NULL);
+	return ap_pstrcat(a, "/", src2, NULL);
 
     if (src1[x - 1] != '/')
-	return pstrcat(a, src1, "/", src2, NULL);
+	return ap_pstrcat(a, src1, "/", src2, NULL);
     else
-	return pstrcat(a, src1, src2, NULL);
+	return ap_pstrcat(a, src1, src2, NULL);
 }
 
 /*
  * Check for an absoluteURI syntax (see section 3.2 in RFC2068).
  */
-API_EXPORT(int) is_url(const char *u)
+API_EXPORT(int) ap_is_url(const char *u)
 {
     register int x;
 
@@ -1258,7 +1258,7 @@ API_EXPORT(int) is_url(const char *u)
     return (x ? 1 : 0);		/* If the first character is ':', it's broken, too */
 }
 
-API_EXPORT(int) can_exec(const struct stat *finfo)
+API_EXPORT(int) ap_can_exec(const struct stat *finfo)
 {
 #ifdef MULTIPLE_GROUPS
     int cnt;
@@ -1267,10 +1267,10 @@ API_EXPORT(int) can_exec(const struct stat *finfo)
     /* OS/2 dosen't have Users and Groups */
     return 1;
 #else
-    if (user_id == finfo->st_uid)
+    if (ap_user_id == finfo->st_uid)
 	if (finfo->st_mode & S_IXUSR)
 	    return 1;
-    if (group_id == finfo->st_gid)
+    if (ap_group_id == finfo->st_gid)
 	if (finfo->st_mode & S_IXGRP)
 	    return 1;
 #ifdef MULTIPLE_GROUPS
@@ -1387,7 +1387,7 @@ int waitpid(pid_t pid, int *statusp, int options)
 }
 #endif
 
-API_EXPORT(int) ind(const char *s, char c)
+API_EXPORT(int) ap_ind(const char *s, char c)
 {
     register int x;
 
@@ -1398,7 +1398,7 @@ API_EXPORT(int) ind(const char *s, char c)
     return -1;
 }
 
-API_EXPORT(int) rind(const char *s, char c)
+API_EXPORT(int) ap_rind(const char *s, char c)
 {
     register int x;
 
@@ -1409,7 +1409,7 @@ API_EXPORT(int) rind(const char *s, char c)
     return -1;
 }
 
-API_EXPORT(void) str_tolower(char *str)
+API_EXPORT(void) ap_str_tolower(char *str)
 {
     while (*str) {
 	*str = tolower(*str);
@@ -1417,7 +1417,7 @@ API_EXPORT(void) str_tolower(char *str)
     }
 }
 
-API_EXPORT(uid_t) uname2id(const char *name)
+API_EXPORT(uid_t) ap_uname2id(const char *name)
 {
 #ifdef WIN32
     return (1);
@@ -1435,7 +1435,7 @@ API_EXPORT(uid_t) uname2id(const char *name)
 #endif
 }
 
-API_EXPORT(gid_t) gname2id(const char *name)
+API_EXPORT(gid_t) ap_gname2id(const char *name)
 {
 #ifdef WIN32
     return (1);
@@ -1458,7 +1458,7 @@ API_EXPORT(gid_t) gname2id(const char *name)
  * Parses a host of the form <address>[:port]
  * :port is permitted if 'port' is not NULL
  */
-unsigned long get_virthost_addr(const char *w, unsigned short *ports)
+unsigned long ap_get_virthost_addr(const char *w, unsigned short *ports)
 {
     struct hostent *hep;
     unsigned long my_addr;
@@ -1515,14 +1515,14 @@ static char *find_fqdn(pool *a, struct hostent *p)
 	for (x = 0; p->h_aliases[x]; ++x) {
 	    if (strchr(p->h_aliases[x], '.') &&
 		(!strncasecmp(p->h_aliases[x], p->h_name, strlen(p->h_name))))
-		return pstrdup(a, p->h_aliases[x]);
+		return ap_pstrdup(a, p->h_aliases[x]);
 	}
 	return NULL;
     }
-    return pstrdup(a, (void *) p->h_name);
+    return ap_pstrdup(a, (void *) p->h_name);
 }
 
-char *get_local_host(pool *a)
+char *ap_get_local_host(pool *a)
 {
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN 256
@@ -1565,7 +1565,7 @@ static const unsigned char pr2six[256] =
     64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64
 };
 
-API_EXPORT(char *) uudecode(pool *p, const char *bufcoded)
+API_EXPORT(char *) ap_uudecode(pool *p, const char *bufcoded)
 {
     int nbytesdecoded;
     register const unsigned char *bufin;
@@ -1587,7 +1587,7 @@ API_EXPORT(char *) uudecode(pool *p, const char *bufcoded)
     nprbytes = (bufin - (const unsigned char *) bufcoded) - 1;
     nbytesdecoded = ((nprbytes + 3) / 4) * 3;
 
-    bufplain = palloc(p, nbytesdecoded + 1);
+    bufplain = ap_palloc(p, nbytesdecoded + 1);
     bufout = (unsigned char *) bufplain;
 
     bufin = (const unsigned char *) bufcoded;
@@ -1616,7 +1616,7 @@ API_EXPORT(char *) uudecode(pool *p, const char *bufcoded)
     nprbytes = (bufin - (const unsigned char *) bufcoded) - 1;
     nbytesdecoded = ((nprbytes + 3) / 4) * 3;
 
-    bufplain = palloc(p, nbytesdecoded + 1);
+    bufplain = ap_palloc(p, nbytesdecoded + 1);
     bufout = (unsigned char *) bufplain;
 
     bufin = (const unsigned char *) bufcoded;

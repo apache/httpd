@@ -72,18 +72,18 @@ free_thread(thread *thread_id)
 
 
 
-API_EXPORT(mutex *) create_mutex(char *name)
+API_EXPORT(mutex *) ap_create_mutex(char *name)
 {
     return(CreateMutex(NULL, FALSE, name));
 }
 
-API_EXPORT(mutex *) open_mutex(char *name)
+API_EXPORT(mutex *) ap_open_mutex(char *name)
 {
     return(OpenMutex(MUTEX_ALL_ACCESS, FALSE, name));
 }
 
 
-API_EXPORT(int) acquire_mutex(mutex *mutex_id)
+API_EXPORT(int) ap_acquire_mutex(mutex *mutex_id)
 {
     int rv;
     
@@ -92,12 +92,12 @@ API_EXPORT(int) acquire_mutex(mutex *mutex_id)
     return(map_rv(rv));
 }
 
-API_EXPORT(int) release_mutex(mutex *mutex_id)
+API_EXPORT(int) ap_release_mutex(mutex *mutex_id)
 {
     return(ReleaseMutex(mutex_id));
 }
 
-API_EXPORT(void) destroy_mutex(mutex *mutex_id)
+API_EXPORT(void) ap_destroy_mutex(mutex *mutex_id)
 {
     CloseHandle(mutex_id);
 }
@@ -193,25 +193,25 @@ void free_thread(thread *thread_id)
 {}
 
 
-mutex *create_mutex(char *name)
+mutex *ap_create_mutex(char *name)
 {
     return(NULL);
 }
 
-mutex *open_mutex(char *name)
+mutex *ap_open_mutex(char *name)
 {
     return(NULL);
 }
 
-int acquire_mutex(mutex *mutex_id)
+int ap_acquire_mutex(mutex *mutex_id)
 {
     return(0);
 }
-int release_mutex(mutex *mutex_id)
+int ap_release_mutex(mutex *mutex_id)
 {
     return(0);
 }
-void destroy_mutex(mutex *mutex_id)
+void ap_destroy_mutex(mutex *mutex_id)
 {}
 
 

@@ -107,7 +107,7 @@ typedef struct {
 static void *create_db_auth_dir_config(pool *p, char *d)
 {
     db_auth_config_rec *sec
-    = (db_auth_config_rec *) pcalloc(p, sizeof(db_auth_config_rec));
+    = (db_auth_config_rec *) ap_pcalloc(p, sizeof(db_auth_config_rec));
     sec->auth_dbpwfile = NULL;
     sec->auth_dbgrpfile = NULL;
     sec->auth_dbauthoritative = 1;	/* fortress is secure by default */
@@ -119,15 +119,15 @@ static const char *set_db_slot(cmd_parms *cmd, void *offset, char *f, char *t)
     if (!t || strcmp(t, "db"))
 	return DECLINE_CMD;
 
-    return set_file_slot(cmd, offset, f);
+    return ap_set_file_slot(cmd, offset, f);
 }
 
 static const command_rec db_auth_cmds[] =
 {
-    {"AuthDBUserFile", set_file_slot,
+    {"AuthDBUserFile", ap_set_file_slot,
      (void *) XtOffsetOf(db_auth_config_rec, auth_dbpwfile),
      OR_AUTHCFG, TAKE1, NULL},
-    {"AuthDBGroupFile", set_file_slot,
+    {"AuthDBGroupFile", ap_set_file_slot,
      (void *) XtOffsetOf(db_auth_config_rec, auth_dbgrpfile),
      OR_AUTHCFG, TAKE1, NULL},
     {"AuthUserFile", set_db_slot,
@@ -136,7 +136,7 @@ static const command_rec db_auth_cmds[] =
     {"AuthGroupFile", set_db_slot,
      (void *) XtOffsetOf(db_auth_config_rec, auth_dbgrpfile),
      OR_AUTHCFG, TAKE12, NULL},
-    {"AuthDBAuthoritative", set_flag_slot,
+    {"AuthDBAuthoritative", ap_set_flag_slot,
      (void *) XtOffsetOf(db_auth_config_rec, auth_dbauthoritative),
      OR_AUTHCFG, FLAG,
      "Set to 'no' to allow access control to be passed along to lower modules if the userID is not known to this module"},
@@ -155,13 +155,13 @@ static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile)
     q.size = strlen(q.data);
 
     if (!(f = dbopen(auth_dbpwfile, O_RDONLY, 0664, DB_HASH, NULL))) {
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "could not open db auth file: %s", auth_dbpwfile);
 	return NULL;
     }
 
     if (!((f->get) (f, &q, &d, 0))) {
-	pw = palloc(r->pool, d.size + 1);
+	pw = ap_palloc(r->pool, d.size + 1);
 	strncpy(pw, d.data, d.size);
 	pw[d.size] = '\0';	/* Terminate the string */
     }
@@ -202,13 +202,13 @@ static char *get_db_grp(request_rec *r, char *user, const char *auth_dbgrpfile)
 static int db_authenticate_basic_user(request_rec *r)
 {
     db_auth_config_rec *sec =
-    (db_auth_config_rec *) get_module_config(r->per_dir_config,
+    (db_auth_config_rec *) ap_get_module_config(r->per_dir_config,
 					     &db_auth_module);
     conn_rec *c = r->connection;
     char *sent_pw, *real_pw, *colon_pw;
     int res;
 
-    if ((res = get_basic_auth_pw(r, &sent_pw)))
+    if ((res = ap_get_basic_auth_pw(r, &sent_pw)))
 	return res;
 
     if (!sec->auth_dbpwfile)
@@ -217,9 +217,9 @@ static int db_authenticate_basic_user(request_rec *r)
     if (!(real_pw = get_db_pw(r, c->user, sec->auth_dbpwfile))) {
 	if (!(sec->auth_dbauthoritative))
 	    return DECLINED;
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		    "DB user %s not found: %s", c->user, r->filename);
-	note_basic_auth_failure(r);
+	ap_note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
     /* Password is up to first : if exists */
@@ -228,9 +228,9 @@ static int db_authenticate_basic_user(request_rec *r)
 	*colon_pw = '\0';
     /* anyone know where the prototype for crypt is? */
     if (strcmp(real_pw, (char *) crypt(sent_pw, real_pw))) {
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		    "DB user %s: password mismatch: %s", c->user, r->uri);
-	note_basic_auth_failure(r);
+	ap_note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
     return OK;
@@ -241,12 +241,12 @@ static int db_authenticate_basic_user(request_rec *r)
 static int db_check_auth(request_rec *r)
 {
     db_auth_config_rec *sec =
-    (db_auth_config_rec *) get_module_config(r->per_dir_config,
+    (db_auth_config_rec *) ap_get_module_config(r->per_dir_config,
 					     &db_auth_module);
     char *user = r->connection->user;
     int m = r->method_number;
 
-    array_header *reqs_arr = requires(r);
+    array_header *reqs_arr = ap_requires(r);
     require_line *reqs = reqs_arr ? (require_line *) reqs_arr->elts : NULL;
 
     register int x;
@@ -264,7 +264,7 @@ static int db_check_auth(request_rec *r)
 	    continue;
 
 	t = reqs[x].requirement;
-	w = getword(r->pool, &t, ' ');
+	w = ap_getword(r->pool, &t, ' ');
 
 	if (!strcmp(w, "group") && sec->auth_dbgrpfile) {
 	    const char *orig_groups, *groups;
@@ -273,25 +273,25 @@ static int db_check_auth(request_rec *r)
 	    if (!(groups = get_db_grp(r, user, sec->auth_dbgrpfile))) {
 		if (!(sec->auth_dbauthoritative))
 		    return DECLINED;
-		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 			    "user %s not in DB group file %s: %s",
 			    user, sec->auth_dbgrpfile, r->filename);
-		note_basic_auth_failure(r);
+		ap_note_basic_auth_failure(r);
 		return AUTH_REQUIRED;
 	    }
 	    orig_groups = groups;
 	    while (t[0]) {
-		w = getword(r->pool, &t, ' ');
+		w = ap_getword(r->pool, &t, ' ');
 		groups = orig_groups;
 		while (groups[0]) {
-		    v = getword(r->pool, &groups, ',');
+		    v = ap_getword(r->pool, &groups, ',');
 		    if (!strcmp(v, w))
 			return OK;
 		}
 	    }
-	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 			"user %s not in right group: %s", user, r->filename);
-	    note_basic_auth_failure(r);
+	    ap_note_basic_auth_failure(r);
 	    return AUTH_REQUIRED;
 	}
     }

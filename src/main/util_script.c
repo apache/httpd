@@ -107,7 +107,7 @@ static char **create_argv(pool *p, char *path, char *user, char *group,
     if (numwords > APACHE_ARG_MAX - 5) {
 	numwords = APACHE_ARG_MAX - 5;	/* Truncate args to prevent overrun */
     }
-    av = (char **) palloc(p, (numwords + 5) * sizeof(char *));
+    av = (char **) ap_palloc(p, (numwords + 5) * sizeof(char *));
 
     if (path)
 	av[idx++] = path;
@@ -119,9 +119,9 @@ static char **create_argv(pool *p, char *path, char *user, char *group,
     av[idx++] = av0;
 
     for (x = 1; x <= numwords; x++) {
-	w = getword_nulls(p, &args, '+');
-	unescape_url(w);
-	av[idx++] = escape_shell_cmd(p, w);
+	w = ap_getword_nulls(p, &args, '+');
+	ap_unescape_url(w);
+	av[idx++] = ap_escape_shell_cmd(p, w);
     }
     av[idx] = NULL;
     return av;
@@ -130,7 +130,7 @@ static char **create_argv(pool *p, char *path, char *user, char *group,
 
 static char *http2env(pool *a, char *w)
 {
-    char *res = pstrcat(a, "HTTP_", w, NULL);
+    char *res = ap_pstrcat(a, "HTTP_", w, NULL);
     char *cp = res;
 
     while (*++cp) {
@@ -145,25 +145,25 @@ static char *http2env(pool *a, char *w)
     return res;
 }
 
-API_EXPORT(char **) create_environment(pool *p, table *t)
+API_EXPORT(char **) ap_create_environment(pool *p, table *t)
 {
     array_header *env_arr = table_elts(t);
     table_entry *elts = (table_entry *) env_arr->elts;
-    char **env = (char **) palloc(p, (env_arr->nelts + 2) * sizeof(char *));
+    char **env = (char **) ap_palloc(p, (env_arr->nelts + 2) * sizeof(char *));
     int i, j;
     char *tz;
     char *whack;
 
     j = 0;
-    if (!table_get(t, "TZ")) {
+    if (!ap_table_get(t, "TZ")) {
 	tz = getenv("TZ");
 	if (tz != NULL)
-	    env[j++] = pstrcat(p, "TZ=", tz, NULL);
+	    env[j++] = ap_pstrcat(p, "TZ=", tz, NULL);
     }
     for (i = 0; i < env_arr->nelts; ++i) {
 	if (!elts[i].key)
 	    continue;
-	env[j] = pstrcat(p, elts[i].key, "=", elts[i].val, NULL);
+	env[j] = ap_pstrcat(p, elts[i].key, "=", elts[i].val, NULL);
 	whack = env[j];
 	if (isdigit(*whack)) {
 	    *whack++ = '_';
@@ -181,7 +181,7 @@ API_EXPORT(char **) create_environment(pool *p, table *t)
     return env;
 }
 
-API_EXPORT(void) add_common_vars(request_rec *r)
+API_EXPORT(void) ap_add_common_vars(request_rec *r)
 {
     table *e = r->subprocess_env;
     server_rec *s = r->server;
@@ -212,9 +212,9 @@ API_EXPORT(void) add_common_vars(request_rec *r)
 	 */
 
 	if (!strcasecmp(hdrs[i].key, "Content-type"))
-	    table_setn(e, "CONTENT_TYPE", hdrs[i].val);
+	    ap_table_setn(e, "CONTENT_TYPE", hdrs[i].val);
 	else if (!strcasecmp(hdrs[i].key, "Content-length"))
-	    table_setn(e, "CONTENT_LENGTH", hdrs[i].val);
+	    ap_table_setn(e, "CONTENT_LENGTH", hdrs[i].val);
 	/*
 	 * You really don't want to disable this check, since it leaves you
 	 * wide open to CGIs stealing passwords and people viewing them
@@ -226,7 +226,7 @@ API_EXPORT(void) add_common_vars(request_rec *r)
 	    continue;
 #endif
 	else
-	    table_setn(e, http2env(r->pool, hdrs[i].key), hdrs[i].val);
+	    ap_table_setn(e, http2env(r->pool, hdrs[i].key), hdrs[i].val);
     }
 
     if (!(env_path = getenv("PATH")))
@@ -234,43 +234,43 @@ API_EXPORT(void) add_common_vars(request_rec *r)
 
 #ifdef WIN32
     if (env_temp = getenv("SystemRoot"))
-        table_setn(e, "SystemRoot", env_temp);         
+        ap_table_setn(e, "SystemRoot", env_temp);         
     if (env_temp = getenv("COMSPEC"))
-        table_setn(e, "COMSPEC", env_temp);            
+        ap_table_setn(e, "COMSPEC", env_temp);            
     if (env_temp = getenv("WINDIR"))
-        table_setn(e, "WINDIR", env_temp);             
+        ap_table_setn(e, "WINDIR", env_temp);             
 #endif
 
-    table_setn(e, "PATH", env_path);
-    table_setn(e, "SERVER_SOFTWARE", apapi_get_server_version());
-    table_setn(e, "SERVER_NAME", get_server_name(r));
-    table_setn(e, "SERVER_PORT", psprintf(r->pool, "%u", get_server_port(r)));
-    host = get_remote_host(c, r->per_dir_config, REMOTE_HOST);
+    ap_table_setn(e, "PATH", env_path);
+    ap_table_setn(e, "SERVER_SOFTWARE", ap_get_server_version());
+    ap_table_setn(e, "SERVER_NAME", ap_get_server_name(r));
+    ap_table_setn(e, "SERVER_PORT", ap_psprintf(r->pool, "%u", ap_get_server_port(r)));
+    host = ap_get_remote_host(c, r->per_dir_config, REMOTE_HOST);
     if (host) {
-	table_setn(e, "REMOTE_HOST", host);
+	ap_table_setn(e, "REMOTE_HOST", host);
     }
-    table_setn(e, "REMOTE_ADDR", c->remote_ip);
-    table_setn(e, "DOCUMENT_ROOT", document_root(r));	/* Apache */
-    table_setn(e, "SERVER_ADMIN", s->server_admin);	/* Apache */
-    table_setn(e, "SCRIPT_FILENAME", r->filename);	/* Apache */
+    ap_table_setn(e, "REMOTE_ADDR", c->remote_ip);
+    ap_table_setn(e, "DOCUMENT_ROOT", ap_document_root(r));	/* Apache */
+    ap_table_setn(e, "SERVER_ADMIN", s->server_admin);	/* Apache */
+    ap_table_setn(e, "SCRIPT_FILENAME", r->filename);	/* Apache */
 
-    table_setn(e, "REMOTE_PORT", psprintf(r->pool, "%d", ntohs(c->remote_addr.sin_port)));
+    ap_table_setn(e, "REMOTE_PORT", ap_psprintf(r->pool, "%d", ntohs(c->remote_addr.sin_port)));
 
     if (c->user)
-	table_setn(e, "REMOTE_USER", c->user);
-    if (c->auth_type)
-	table_setn(e, "AUTH_TYPE", c->auth_type);
-    rem_logname = get_remote_logname(r);
+	ap_table_setn(e, "REMOTE_USER", c->user);
+    if (c->ap_auth_type)
+	ap_table_setn(e, "AUTH_TYPE", c->ap_auth_type);
+    rem_logname = ap_get_remote_logname(r);
     if (rem_logname)
-	table_setn(e, "REMOTE_IDENT", pstrdup(r->pool, rem_logname));
+	ap_table_setn(e, "REMOTE_IDENT", ap_pstrdup(r->pool, rem_logname));
 
     /* Apache custom error responses. If we have redirected set two new vars */
 
     if (r->prev) {
 	if (r->prev->args)
-	    table_setn(e, "REDIRECT_QUERY_STRING", r->prev->args);
+	    ap_table_setn(e, "REDIRECT_QUERY_STRING", r->prev->args);
 	if (r->prev->uri)
-	    table_setn(e, "REDIRECT_URL", r->prev->uri);
+	    ap_table_setn(e, "REDIRECT_URL", r->prev->uri);
     }
 }
 
@@ -279,7 +279,7 @@ API_EXPORT(void) add_common_vars(request_rec *r)
  * and find as much of the two that match as possible.
  */
 
-API_EXPORT(int) find_path_info(const char *uri, const char *path_info)
+API_EXPORT(int) ap_find_path_info(const char *uri, const char *path_info)
 {
     int lu = strlen(uri);
     int lp = strlen(path_info);
@@ -303,7 +303,7 @@ static char *original_uri(request_rec *r)
     char *first, *last;
 
     if (r->the_request == NULL)
-	return (char *) pcalloc(r->pool, 1);
+	return (char *) ap_pcalloc(r->pool, 1);
 
     first = r->the_request;	/* use the request-line */
 
@@ -316,18 +316,18 @@ static char *original_uri(request_rec *r)
     while (*last && !isspace(*last))
 	++last;			/* end at next whitespace */
 
-    return pstrndup(r->pool, first, last - first);
+    return ap_pstrndup(r->pool, first, last - first);
 }
 
-API_EXPORT(void) add_cgi_vars(request_rec *r)
+API_EXPORT(void) ap_add_cgi_vars(request_rec *r)
 {
     table *e = r->subprocess_env;
 
-    table_setn(e, "GATEWAY_INTERFACE", "CGI/1.1");
-    table_setn(e, "SERVER_PROTOCOL", r->protocol);
-    table_setn(e, "REQUEST_METHOD", r->method);
-    table_setn(e, "QUERY_STRING", r->args ? r->args : "");
-    table_setn(e, "REQUEST_URI", original_uri(r));
+    ap_table_setn(e, "GATEWAY_INTERFACE", "CGI/1.1");
+    ap_table_setn(e, "SERVER_PROTOCOL", r->protocol);
+    ap_table_setn(e, "REQUEST_METHOD", r->method);
+    ap_table_setn(e, "QUERY_STRING", r->args ? r->args : "");
+    ap_table_setn(e, "REQUEST_URI", original_uri(r));
 
     /* Note that the code below special-cases scripts run from includes,
      * because it "knows" that the sub_request has been hacked to have the
@@ -336,20 +336,20 @@ API_EXPORT(void) add_cgi_vars(request_rec *r)
      */
 
     if (!strcmp(r->protocol, "INCLUDED")) {
-	table_setn(e, "SCRIPT_NAME", r->uri);
+	ap_table_setn(e, "SCRIPT_NAME", r->uri);
 	if (r->path_info && *r->path_info)
-	    table_setn(e, "PATH_INFO", r->path_info);
+	    ap_table_setn(e, "PATH_INFO", r->path_info);
     }
     else if (!r->path_info || !*r->path_info) {
-	table_setn(e, "SCRIPT_NAME", r->uri);
+	ap_table_setn(e, "SCRIPT_NAME", r->uri);
     }
     else {
-	int path_info_start = find_path_info(r->uri, r->path_info);
+	int path_info_start = ap_find_path_info(r->uri, r->path_info);
 
-	table_setn(e, "SCRIPT_NAME", pstrndup(r->pool, r->uri,
+	ap_table_setn(e, "SCRIPT_NAME", ap_pstrndup(r->pool, r->uri,
 					     path_info_start));
 
-	table_setn(e, "PATH_INFO", r->path_info);
+	ap_table_setn(e, "PATH_INFO", r->path_info);
     }
 
     if (r->path_info && r->path_info[0]) {
@@ -358,7 +358,7 @@ API_EXPORT(void) add_cgi_vars(request_rec *r)
 	 * Need to re-escape it for this, since the entire URI was
 	 * un-escaped before we determined where the PATH_INFO began.
 	 */
-	request_rec *pa_req = sub_req_lookup_uri(escape_uri(r->pool, r->path_info),
+	request_rec *pa_req = ap_sub_req_lookup_uri(escape_uri(r->pool, r->path_info),
 						 r);
 
 	/* Don't bother destroying pa_req --- it's only created in
@@ -372,14 +372,14 @@ API_EXPORT(void) add_cgi_vars(request_rec *r)
 #ifdef WIN32
 	    char buffer[HUGE_STRING_LEN];
 #endif
-	    char *pt = pstrcat(r->pool, pa_req->filename, pa_req->path_info,
+	    char *pt = ap_pstrcat(r->pool, pa_req->filename, pa_req->path_info,
 			       NULL);
 #ifdef WIN32
 	    /* We need to make this a real Windows path name */
 	    GetFullPathName(pt, HUGE_STRING_LEN, buffer, NULL);
-	    table_setn(e, "PATH_TRANSLATED", pstrdup(r->pool, buffer));
+	    ap_table_setn(e, "PATH_TRANSLATED", ap_pstrdup(r->pool, buffer));
 #else
-	    table_setn(e, "PATH_TRANSLATED", pt);
+	    ap_table_setn(e, "PATH_TRANSLATED", pt);
 #endif
 	}
     }
@@ -398,13 +398,13 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	*buffer = '\0';
     w = buffer ? buffer : x;
 
-    hard_timeout("read script header", r);
+    ap_hard_timeout("read script header", r);
 
     while (1) {
 
 	if ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data) == 0) {
-	    kill_timeout(r);
-	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	    ap_kill_timeout(r);
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 			"Premature end of script headers: %s", r->filename);
 	    return SERVER_ERROR;
 	}
@@ -434,9 +434,9 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	if (w[0] == '\0') {
 	    int cond_status = OK;
 
-	    kill_timeout(r);
+	    ap_kill_timeout(r);
 	    if ((cgi_status == HTTP_OK) && (r->method_number == M_GET)) {
-		cond_status = meets_conditions(r);
+		cond_status = ap_meets_conditions(r);
 	    }
 	    return cond_status;
 	}
@@ -453,8 +453,8 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 		while ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data))
 		    continue;
 
-	    kill_timeout(r);
-	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	    ap_kill_timeout(r);
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 			"%s: %s", malformed, r->filename);
 	    return SERVER_ERROR;
 	}
@@ -471,38 +471,38 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	    while (endp > l && isspace(*endp))
 		*endp-- = '\0';
 
-	    r->content_type = pstrdup(r->pool, l);
-	    str_tolower(r->content_type);
+	    r->content_type = ap_pstrdup(r->pool, l);
+	    ap_str_tolower(r->content_type);
 	}
 	else if (!strcasecmp(w, "Status")) {
 	    sscanf(l, "%d", &r->status);
-	    r->status_line = pstrdup(r->pool, l);
+	    r->status_line = ap_pstrdup(r->pool, l);
 	}
 	else if (!strcasecmp(w, "Location")) {
-	    table_set(r->headers_out, w, l);
+	    ap_table_set(r->headers_out, w, l);
 	}
 	else if (!strcasecmp(w, "Content-Length")) {
-	    table_set(r->headers_out, w, l);
+	    ap_table_set(r->headers_out, w, l);
 	}
 	else if (!strcasecmp(w, "Transfer-Encoding")) {
-	    table_set(r->headers_out, w, l);
+	    ap_table_set(r->headers_out, w, l);
 	}
 	/*
 	 * If the script gave us a Last-Modified header, we can't just
 	 * pass it on blindly because of restrictions on future values.
 	 */
 	else if (!strcasecmp(w, "Last-Modified")) {
-	    time_t mtime = parseHTTPdate(l);
+	    time_t mtime = ap_parseHTTPdate(l);
 
-	    update_mtime(r, mtime);
-	    set_last_modified(r);
+	    ap_update_mtime(r, mtime);
+	    ap_set_last_modified(r);
 	}
 	/*
 	 * If the script returned a specific status, that's what
 	 * we'll use - otherwise we assume 200 OK.
 	 */
 	else if (!strcasecmp(w, "Status")) {
-	    table_set(r->headers_out, w, l);
+	    ap_table_set(r->headers_out, w, l);
 	    cgi_status = atoi(l);
 	}
 
@@ -512,10 +512,10 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	 * separately.  Lets humour those browsers.
 	 */
 	else if (!strcasecmp(w, "Set-Cookie")) {
-	    table_add(r->err_headers_out, w, l);
+	    ap_table_add(r->err_headers_out, w, l);
 	}
 	else {
-	    table_merge(r->err_headers_out, w, l);
+	    ap_table_merge(r->err_headers_out, w, l);
 	}
     }
 }
@@ -525,38 +525,38 @@ static int getsfunc_FILE(char *buf, int len, void *f)
     return fgets(buf, len, (FILE *) f) != NULL;
 }
 
-API_EXPORT(int) scan_script_header_err(request_rec *r, FILE *f, char *buffer)
+API_EXPORT(int) ap_scan_script_header_err(request_rec *r, FILE *f, char *buffer)
 {
     return scan_script_header_err_core(r, buffer, getsfunc_FILE, f);
 }
 
 static int getsfunc_BUFF(char *w, int len, void *fb)
 {
-    return bgets(w, len, (BUFF *) fb) > 0;
+    return ap_bgets(w, len, (BUFF *) fb) > 0;
 }
 
-API_EXPORT(int) scan_script_header_err_buff(request_rec *r, BUFF *fb,
+API_EXPORT(int) ap_scan_script_header_err_buff(request_rec *r, BUFF *fb,
 					    char *buffer)
 {
     return scan_script_header_err_core(r, buffer, getsfunc_BUFF, fb);
 }
 
 
-API_EXPORT(void) send_size(size_t size, request_rec *r)
+API_EXPORT(void) ap_send_size(size_t size, request_rec *r)
 {
     /* XXX: this -1 thing is a gross hack */
     if (size == (size_t)-1)
-	rputs("    -", r);
+	ap_rputs("    -", r);
     else if (!size)
-	rputs("   0k", r);
+	ap_rputs("   0k", r);
     else if (size < 1024)
-	rputs("   1k", r);
+	ap_rputs("   1k", r);
     else if (size < 1048576)
-	rprintf(r, "%4dk", (size + 512) / 1024);
+	ap_rprintf(r, "%4dk", (size + 512) / 1024);
     else if (size < 103809024)
-	rprintf(r, "%4.1fM", size / 1048576.0);
+	ap_rprintf(r, "%4.1fM", size / 1048576.0);
     else
-	rprintf(r, "%4dM", (size + 524288) / 1048576);
+	ap_rprintf(r, "%4dM", (size + 524288) / 1048576);
 }
 
 #if defined(__EMX__) || defined(WIN32)
@@ -573,7 +573,7 @@ static char **create_argv_cmd(pool *p, char *av0, const char *args, char *path)
     /* Add extra strings to array. */
     n = n + 2;
 
-    av = (char **) palloc(p, (n + 1) * sizeof(char *));
+    av = (char **) ap_palloc(p, (n + 1) * sizeof(char *));
     av[0] = av0;
 
     /* Now insert the extra strings we made room for above. */
@@ -581,9 +581,9 @@ static char **create_argv_cmd(pool *p, char *av0, const char *args, char *path)
     av[2] = strdup(path);
 
     for (x = (1 + 2); x < n; x++) {
-	w = getword(p, &args, '+');
-	unescape_url(w);
-	av[x] = escape_shell_cmd(p, w);
+	w = ap_getword(p, &args, '+');
+	ap_unescape_url(w);
+	av[x] = ap_escape_shell_cmd(p, w);
     }
     av[n] = NULL;
     return av;
@@ -591,14 +591,14 @@ static char **create_argv_cmd(pool *p, char *av0, const char *args, char *path)
 #endif
 
 
-API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
+API_EXPORT(int) ap_call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 {
     int pid = 0;
 #if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
     defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
 
     core_dir_config *conf =
-    (core_dir_config *) get_module_config(r->per_dir_config, &core_module);
+    (core_dir_config *) ap_get_module_config(r->per_dir_config, &core_module);
 
 #endif
 
@@ -611,29 +611,29 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 #ifdef RLIMIT_CPU
     if (conf->limit_cpu != NULL)
 	if ((setrlimit(RLIMIT_CPU, conf->limit_cpu)) != 0)
-	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 			"setrlimit: failed to set CPU usage limit");
 #endif
 #ifdef RLIMIT_NPROC
     if (conf->limit_nproc != NULL)
 	if ((setrlimit(RLIMIT_NPROC, conf->limit_nproc)) != 0)
-	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 			"setrlimit: failed to set process limit");
 #endif
 #if defined(RLIMIT_AS)
     if (conf->limit_mem != NULL)
 	if ((setrlimit(RLIMIT_AS, conf->limit_mem)) != 0)
-	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 			"setrlimit(RLIMIT_AS): failed to set memory usage limit");
 #elif defined(RLIMIT_DATA)
     if (conf->limit_mem != NULL)
 	if ((setrlimit(RLIMIT_DATA, conf->limit_mem)) != 0)
-	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 			"setrlimit(RLIMIT_DATA): failed to set memory usage limit");
 #elif defined(RLIMIT_VMEM)
     if (conf->limit_mem != NULL)
 	if ((setrlimit(RLIMIT_VMEM, conf->limit_mem)) != 0)
-	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 			"setrlimit(RLIMIT_VMEM): failed to set memory usage limit");
 #endif
 
@@ -645,7 +645,7 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	FILE *program;
 	program = fopen(r->filename, "r");
 	if (!program) {
-	    aplog_error(APLOG_MARK, APLOG_ERR, r->server, "fopen(%s) failed",
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server, "fopen(%s) failed",
 			r->filename);
 	    return (pid);
 	}
@@ -738,13 +738,13 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	if (!is_exe) {
 	    program = fopen(r->filename, "rb");
 	    if (!program) {
-		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 			    "fopen(%s) failed", r->filename);
 		return (pid);
 	    }
 	    sz = fread(interpreter, 1, sizeof(interpreter) - 1, program);
 	    if (sz < 0) {
-		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 			    "fread of %s failed", r->filename);
 		fclose(program);
 		return (pid);
@@ -804,9 +804,9 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	return (pid);
     }
 #else
-    if (suexec_enabled &&
-	((r->server->server_uid != user_id) ||
-	 (r->server->server_gid != group_id) ||
+    if (ap_suexec_enabled &&
+	((r->server->server_uid != ap_user_id) ||
+	 (r->server->server_gid != ap_group_id) ||
 	 (!strncmp("/~", r->uri, 2)))) {
 
 	char *execuser, *grpname;
@@ -815,22 +815,22 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 
 	if (!strncmp("/~", r->uri, 2)) {
 	    gid_t user_gid;
-	    char *username = pstrdup(r->pool, r->uri + 2);
+	    char *username = ap_pstrdup(r->pool, r->uri + 2);
 	    char *pos = strchr(username, '/');
 
 	    if (pos)
 		*pos = '\0';
 
 	    if ((pw = getpwnam(username)) == NULL) {
-		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 			    "getpwnam: invalid username %s", username);
 		return (pid);
 	    }
-	    execuser = pstrcat(r->pool, "~", pw->pw_name, NULL);
+	    execuser = ap_pstrcat(r->pool, "~", pw->pw_name, NULL);
 	    user_gid = pw->pw_gid;
 
 	    if ((gr = getgrgid(user_gid)) == NULL) {
-		if ((grpname = palloc(r->pool, 16)) == NULL)
+		if ((grpname = ap_palloc(r->pool, 16)) == NULL)
 		    return (pid);
 		else
 		    ap_snprintf(grpname, 16, "%ld", (long) user_gid);
@@ -840,15 +840,15 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	}
 	else {
 	    if ((pw = getpwuid(r->server->server_uid)) == NULL) {
-		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		            "getpwuid: invalid userid %ld",
 		            (long) r->server->server_uid);
 		return (pid);
 	    }
-	    execuser = pstrdup(r->pool, pw->pw_name);
+	    execuser = ap_pstrdup(r->pool, pw->pw_name);
 
 	    if ((gr = getgrgid(r->server->server_gid)) == NULL) {
-		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		            "getgrgid: invalid groupid %ld",
 		            (long) r->server->server_gid);
 		return (pid);

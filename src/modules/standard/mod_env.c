@@ -112,8 +112,8 @@ module MODULE_VAR_EXPORT env_module;
 static void *create_env_server_config(pool *p, server_rec *dummy)
 {
     env_server_config_rec *new =
-    (env_server_config_rec *) palloc(p, sizeof(env_server_config_rec));
-    new->vars = make_table(p, 50);
+    (env_server_config_rec *) ap_palloc(p, sizeof(env_server_config_rec));
+    new->vars = ap_make_table(p, 50);
     new->unsetenv = "";
     new->vars_present = 0;
     return (void *) new;
@@ -124,7 +124,7 @@ static void *merge_env_server_configs(pool *p, void *basev, void *addv)
     env_server_config_rec *base = (env_server_config_rec *) basev;
     env_server_config_rec *add = (env_server_config_rec *) addv;
     env_server_config_rec *new =
-    (env_server_config_rec *) palloc(p, sizeof(env_server_config_rec));
+    (env_server_config_rec *) ap_palloc(p, sizeof(env_server_config_rec));
 
     table *new_table;
     table_entry *elts;
@@ -143,20 +143,20 @@ static void *merge_env_server_configs(pool *p, void *basev, void *addv)
      * }
      */
 
-    new_table = copy_table(p, base->vars);
+    new_table = ap_copy_table(p, base->vars);
 
     arr = table_elts(add->vars);
     elts = (table_entry *)arr->elts;
 
     for (i = 0; i < arr->nelts; ++i) {
-        table_setn(new_table, elts[i].key, elts[i].val);
+        ap_table_setn(new_table, elts[i].key, elts[i].val);
     }
 
     unset = add->unsetenv;
-    uenv = getword_conf(p, &unset);
+    uenv = ap_getword_conf(p, &unset);
     while (uenv[0] != '\0') {
-        table_unset(new_table, uenv);
-        uenv = getword_conf(p, &unset);
+        ap_table_unset(new_table, uenv);
+        uenv = ap_getword_conf(p, &unset);
     }
 
     new->vars = new_table;
@@ -170,17 +170,17 @@ static const char *add_env_module_vars_passed(cmd_parms *cmd, char *struct_ptr,
                                               const char *arg)
 {
     env_server_config_rec *sconf =
-    get_module_config(cmd->server->module_config, &env_module);
+    ap_get_module_config(cmd->server->module_config, &env_module);
     table *vars = sconf->vars;
     char *env_var;
     char *name_ptr;
 
     while (*arg) {
-        name_ptr = getword_conf(cmd->pool, &arg);
+        name_ptr = ap_getword_conf(cmd->pool, &arg);
         env_var = getenv(name_ptr);
         if (env_var != NULL) {
             sconf->vars_present = 1;
-            table_setn(vars, name_ptr, pstrdup(cmd->pool, env_var));
+            ap_table_setn(vars, name_ptr, ap_pstrdup(cmd->pool, env_var));
         }
     }
     return NULL;
@@ -190,12 +190,12 @@ static const char *add_env_module_vars_set(cmd_parms *cmd, char *struct_ptr,
                                            const char *arg)
 {
     env_server_config_rec *sconf =
-    get_module_config(cmd->server->module_config, &env_module);
+    ap_get_module_config(cmd->server->module_config, &env_module);
     table *vars = sconf->vars;
     char *name, *value;
 
-    name = getword_conf(cmd->pool, &arg);
-    value = getword_conf(cmd->pool, &arg);
+    name = ap_getword_conf(cmd->pool, &arg);
+    value = ap_getword_conf(cmd->pool, &arg);
 
     /* name is mandatory, value is optional.  no value means
      * set the variable to an empty string
@@ -207,7 +207,7 @@ static const char *add_env_module_vars_set(cmd_parms *cmd, char *struct_ptr,
     }
 
     sconf->vars_present = 1;
-    table_setn(vars, name, value);
+    ap_table_setn(vars, name, value);
 
     return NULL;
 }
@@ -216,9 +216,9 @@ static const char *add_env_module_vars_unset(cmd_parms *cmd, char *struct_ptr,
                                              char *arg)
 {
     env_server_config_rec *sconf =
-    get_module_config(cmd->server->module_config, &env_module);
+    ap_get_module_config(cmd->server->module_config, &env_module);
     sconf->unsetenv = sconf->unsetenv ?
-        pstrcat(cmd->pool, sconf->unsetenv, " ", arg, NULL) :
+        ap_pstrcat(cmd->pool, sconf->unsetenv, " ", arg, NULL) :
          arg;
     return NULL;
 }
@@ -238,14 +238,14 @@ static int fixup_env_module(request_rec *r)
 {
     table *e = r->subprocess_env;
     server_rec *s = r->server;
-    env_server_config_rec *sconf = get_module_config(s->module_config,
+    env_server_config_rec *sconf = ap_get_module_config(s->module_config,
                                                      &env_module);
     table *vars = sconf->vars;
 
     if (!sconf->vars_present)
         return DECLINED;
 
-    r->subprocess_env = overlay_tables(r->pool, e, vars);
+    r->subprocess_env = ap_overlay_tables(r->pool, e, vars);
 
     return OK;
 }

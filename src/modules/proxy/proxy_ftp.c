@@ -75,7 +75,7 @@ static int decodeenc(char *x)
 /* decode it if not already done */
 	ch = x[i];
 	if (ch == '%' && isxdigit(x[i + 1]) && isxdigit(x[i + 2])) {
-	    ch = proxy_hex2c(&x[i + 1]);
+	    ch = ap_proxy_hex2c(&x[i + 1]);
 	    i += 2;
 	}
 	x[j] = ch;
@@ -95,7 +95,7 @@ static int ftp_check_string(const char *x)
     for (i = 0; x[i] != '\0'; i++) {
 	ch = x[i];
 	if (ch == '%' && isxdigit(x[i + 1]) && isxdigit(x[i + 2])) {
-	    ch = proxy_hex2c(&x[i + 1]);
+	    ch = ap_proxy_hex2c(&x[i + 1]);
 	    i += 2;
 	}
 #ifndef CHARSET_EBCDIC
@@ -111,7 +111,7 @@ static int ftp_check_string(const char *x)
 /*
  * Canonicalise ftp URLs.
  */
-int proxy_ftp_canon(request_rec *r, char *url)
+int ap_proxy_ftp_canon(request_rec *r, char *url)
 {
     char *user, *password, *host, *path, *parms, *strp, sport[7];
     pool *p = r->pool;
@@ -119,7 +119,7 @@ int proxy_ftp_canon(request_rec *r, char *url)
     int port;
 
     port = DEFAULT_FTP_PORT;
-    err = proxy_canon_netloc(p, &url, &user, &password, &host, &port);
+    err = ap_proxy_canon_netloc(p, &url, &user, &password, &host, &port);
     if (err)
 	return HTTP_BAD_REQUEST;
     if (user != NULL && !ftp_check_string(user))
@@ -136,14 +136,14 @@ int proxy_ftp_canon(request_rec *r, char *url)
     strp = strchr(url, ';');
     if (strp != NULL) {
 	*(strp++) = '\0';
-	parms = proxy_canonenc(p, strp, strlen(strp), enc_parm, r->proxyreq);
+	parms = ap_proxy_canonenc(p, strp, strlen(strp), enc_parm, r->proxyreq);
 	if (parms == NULL)
 	    return HTTP_BAD_REQUEST;
     }
     else
 	parms = "";
 
-    path = proxy_canonenc(p, url, strlen(url), enc_path, r->proxyreq);
+    path = ap_proxy_canonenc(p, url, strlen(url), enc_path, r->proxyreq);
     if (path == NULL)
 	return HTTP_BAD_REQUEST;
     if (!ftp_check_string(path))
@@ -151,16 +151,16 @@ int proxy_ftp_canon(request_rec *r, char *url)
 
     if (!r->proxyreq && r->args != NULL) {
 	if (strp != NULL) {
-	    strp = proxy_canonenc(p, r->args, strlen(r->args), enc_parm, 1);
+	    strp = ap_proxy_canonenc(p, r->args, strlen(r->args), enc_parm, 1);
 	    if (strp == NULL)
 		return HTTP_BAD_REQUEST;
-	    parms = pstrcat(p, parms, "?", strp, NULL);
+	    parms = ap_pstrcat(p, parms, "?", strp, NULL);
 	}
 	else {
-	    strp = proxy_canonenc(p, r->args, strlen(r->args), enc_fpath, 1);
+	    strp = ap_proxy_canonenc(p, r->args, strlen(r->args), enc_fpath, 1);
 	    if (strp == NULL)
 		return HTTP_BAD_REQUEST;
-	    path = pstrcat(p, path, "?", strp, NULL);
+	    path = ap_pstrcat(p, path, "?", strp, NULL);
 	}
 	r->args = NULL;
     }
@@ -172,7 +172,7 @@ int proxy_ftp_canon(request_rec *r, char *url)
     else
 	sport[0] = '\0';
 
-    r->filename = pstrcat(p, "proxy:ftp://", (user != NULL) ? user : "",
+    r->filename = ap_pstrcat(p, "proxy:ftp://", (user != NULL) ? user : "",
 			       (password != NULL) ? ":" : "",
 			       (password != NULL) ? password : "",
 		          (user != NULL) ? "@" : "", host, sport, "/", path,
@@ -190,7 +190,7 @@ static int ftp_getrc(BUFF *f)
     int len, status;
     char linebuff[100], buff[5];
 
-    len = bgets(linebuff, 100, f);
+    len = ap_bgets(linebuff, 100, f);
     if (len == -1)
 	return -1;
 /* check format */
@@ -201,7 +201,7 @@ static int ftp_getrc(BUFF *f)
 	status = 100 * linebuff[0] + 10 * linebuff[1] + linebuff[2] - 111 * '0';
 
     if (linebuff[len - 1] != '\n') {
-	(void)bskiplf(f);
+	(void)ap_bskiplf(f);
     }
 
 /* skip continuation lines */
@@ -209,11 +209,11 @@ static int ftp_getrc(BUFF *f)
 	memcpy(buff, linebuff, 3);
 	buff[3] = ' ';
 	do {
-	    len = bgets(linebuff, 100, f);
+	    len = ap_bgets(linebuff, 100, f);
 	    if (len == -1)
 		return -1;
 	    if (linebuff[len - 1] != '\n') {
-		(void)bskiplf(f);
+		(void)ap_bskiplf(f);
 	    }
 	} while (memcmp(linebuff, buff, 4) != 0);
     }
@@ -232,7 +232,7 @@ static int ftp_getrc_msg(BUFF *f, char *msgbuf, int msglen)
     char *mb = msgbuf;
     int ml = msglen;
 
-    len = bgets(linebuff, 100, f);
+    len = ap_bgets(linebuff, 100, f);
     if (len == -1)
 	return -1;
     if (len < 5 || !isdigit(linebuff[0]) || !isdigit(linebuff[1]) ||
@@ -244,17 +244,17 @@ static int ftp_getrc_msg(BUFF *f, char *msgbuf, int msglen)
     mb = ap_cpystrn(mb, linebuff+4, len-4 < ml ? len-4 : ml);
 
     if (linebuff[len - 1] != '\n')
-	(void)bskiplf(f);
+	(void)ap_bskiplf(f);
 
     if (linebuff[3] == '-') {
 	memcpy(buff, linebuff, 3);
 	buff[3] = ' ';
 	do {
-	    len = bgets(linebuff, 100, f);
+	    len = ap_bgets(linebuff, 100, f);
 	    if (len == -1)
 		return -1;
 	    if (linebuff[len - 1] != '\n') {
-		(void)bskiplf(f);
+		(void)ap_bskiplf(f);
 	    }
             mb = ap_cpystrn(mb, linebuff+4, len-4 < ml ? len-4 : ml);
 	} while (memcmp(linebuff, buff, 4) != 0);
@@ -279,7 +279,7 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
     char *dir, *path, *reldir, *site, *psite;
     const char *sig;
 
-    tempurl = pstrdup(r->pool, url);
+    tempurl = ap_pstrdup(r->pool, url);
 
     (void)decodeenc(tempurl);
 
@@ -294,7 +294,7 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
     }
 
     /* Save "scheme://site" prefix */
-    site = psite = pstrndup(r->pool, tempurl, hostlen);
+    site = psite = ap_pstrndup(r->pool, tempurl, hostlen);
 
     if ((n = strcspn(tempurl, "@")) != strlen(tempurl) && n < hostlen) {    /* hide user/passwd */
 	memmove(tempurl + (n - 5), tempurl, 6);
@@ -302,11 +302,11 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 	hostlen -= (n-5);
 
 	/* Save "scheme://site" prefix without user/password */
-	site = pstrndup(r->pool, tempurl, hostlen);
+	site = ap_pstrndup(r->pool, tempurl, hostlen);
     }
 
     /* Copy path, strip (all except the last) trailing slashes */
-    path = dir = pstrcat(r->pool, tempurl+hostlen, "/", NULL);
+    path = dir = ap_pstrcat(r->pool, tempurl+hostlen, "/", NULL);
     while ((n = strlen(path)) > 1 && path[n-1] == '/' && path[n-2] == '/')
 	path[n-1] = '\0';
 
@@ -317,9 +317,9 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 		"<BODY><H2>Directory of "
 		"<A HREF=\"/\">%s</A>/",
 		tempurl, psite, path, site);
-    bputs(buf, con->client);
+    ap_bputs(buf, con->client);
     if (f2 != NULL)
-	bputs(buf, f2);
+	ap_bputs(buf, f2);
     total_bytes_sent += strlen(buf);
 
     while ((dir = strchr(dir+1, '/')) != NULL)
@@ -331,16 +331,16 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 	    ++reldir;
 	/* print "path/" component */
 	ap_snprintf(buf, sizeof(buf), "<A HREF=\"/%s/\">%s</A>/", path+1, reldir);
-	bputs(buf, con->client);
+	ap_bputs(buf, con->client);
     if (f2 != NULL)
-	    bputs(buf, f2);
+	    ap_bputs(buf, f2);
 	total_bytes_sent += strlen(buf);
 	*dir = '/';
     }
     ap_snprintf(buf, sizeof(buf), "</H2>\n<HR><PRE>");
-    bputs(buf, con->client);
+    ap_bputs(buf, con->client);
     if (f2 != NULL)
-	    bputs(buf, f2);
+	    ap_bputs(buf, f2);
     total_bytes_sent += strlen(buf);
 
     for (hostlen=0; url[hostlen]!='/'; ++hostlen)
@@ -352,10 +352,10 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 	hostlen = 0;
 
     while (!con->aborted) {
-	n = bgets(buf, IOBUFSIZE, f);
+	n = ap_bgets(buf, IOBUFSIZE, f);
 	if (n == -1) {		/* input error */
 	    if (f2 != NULL)
-		f2 = proxy_cache_error(c);
+		f2 = ap_proxy_cache_error(c);
 	    break;
 	}
 	if (n == 0)
@@ -416,36 +416,36 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 	total_bytes_sent += n;
 
 	if (f2 != NULL)
-	    if (bwrite(f2, buf, n) != n)
-		f2 = proxy_cache_error(c);
+	    if (ap_bwrite(f2, buf, n) != n)
+		f2 = ap_proxy_cache_error(c);
 
 	while (n && !r->connection->aborted) {
-	    w = bwrite(con->client, &buf[o], n);
+	    w = ap_bwrite(con->client, &buf[o], n);
 	    if (w <= 0)
 		break;
-	    reset_timeout(r);	/* reset timeout after successfule write */
+	    ap_reset_timeout(r);	/* reset timeout after successfule write */
 	    n -= w;
 	    o += w;
 	}
     }
     site = "</PRE><HR>\n";
-    bputs(site, con->client);
+    ap_bputs(site, con->client);
     if (f2 != NULL)
-	bputs(site, f2);
+	ap_bputs(site, f2);
     total_bytes_sent += strlen(site);
 
-    sig = psignature("", r);
-    bputs(sig, con->client);
+    sig = ap_psignature("", r);
+    ap_bputs(sig, con->client);
     if (f2 != NULL)
-	bputs(sig, f2);
+	ap_bputs(sig, f2);
     total_bytes_sent += strlen(sig);
 
     site = "</BODY></HTML>\n";
-    bputs(site, con->client);
+    ap_bputs(site, con->client);
     if (f2 != NULL)
-	bputs(site, f2);
+	ap_bputs(site, f2);
     total_bytes_sent += strlen(site);
-    bflush(con->client);
+    ap_bflush(con->client);
 
     return total_bytes_sent;
 }
@@ -456,7 +456,7 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
  * Troy Morrison <spiffnet@zoom.com>
  * PASV added by Chuck
  */
-int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
+int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 {
     char *host, *path, *strp, *user, *password, *parms;
     const char *err;
@@ -477,7 +477,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
-    (proxy_server_conf *) get_module_config(sconf, &proxy_module);
+    (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
     struct noproxy_entry *npent = (struct noproxy_entry *) conf->noproxies->elts;
     struct nocache_entry *ncent = (struct nocache_entry *) conf->nocaches->elts;
 
@@ -502,11 +502,11 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 
 /* allocate a buffer for the response message */
 	resplen = MAX_STRING_LEN;
-	resp = (char *)palloc(r->pool, resplen);
+	resp = (char *)ap_palloc(r->pool, resplen);
 
 /* We break the URL into host, port, path-search */
 
-    host = pstrdup(p, url + 6);
+    host = ap_pstrdup(p, url + 6);
     port = DEFAULT_FTP_PORT;
     path = strchr(host, '/');
     if (path == NULL)
@@ -551,7 +551,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     for (i = 0; i < conf->noproxies->nelts; i++) {
 	if ((npent[i].name != NULL && strstr(host, npent[i].name) != NULL)
 	    || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
-	    return proxyerror(r, "Connect to remote machine blocked");
+	    return ap_proxyerror(r, "Connect to remote machine blocked");
     }
 
     Explain2("FTP: connect to %s:%d", host, port);
@@ -563,13 +563,13 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     memset(&server, 0, sizeof(struct sockaddr_in));
     server.sin_family = AF_INET;
     server.sin_port = htons(port);
-    err = proxy_host2addr(host, &server_hp);
+    err = ap_proxy_host2addr(host, &server_hp);
     if (err != NULL)
-	return proxyerror(r, err);	/* give up */
+	return ap_proxyerror(r, err);	/* give up */
 
-    sock = psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    sock = ap_psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock == -1) {
-	proxy_log_uerror("socket", NULL, "proxy: error creating socket",
+	ap_proxy_log_uerror("socket", NULL, "proxy: error creating socket",
 			 r->server);
 	return SERVER_ERROR;
     }
@@ -578,7 +578,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	if (setsockopt(sock, SOL_SOCKET, SO_RCVBUF,
 		       (const char *) &conf->recv_buffer_size, sizeof(int))
 	    == -1) {
-	    proxy_log_uerror("setsockopt", "(SO_RCVBUF)",
+	    ap_proxy_log_uerror("setsockopt", "(SO_RCVBUF)",
 			     "Failed to set ProxyReceiveBufferSize, using default",
 			     r->server);
 	}
@@ -587,9 +587,9 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (void *) &one,
 		   sizeof(one)) == -1) {
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */
-	proxy_log_uerror("setsockopt", NULL,
+	ap_proxy_log_uerror("setsockopt", NULL,
 			 "proxy: error setting reuseaddr option", r->server);
-	pclosesocket(p, sock);
+	ap_pclosesocket(p, sock);
 	return SERVER_ERROR;
 #endif /*_OSD_POSIX*/
     }
@@ -600,7 +600,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 
 	for (; ip_addr->s_addr != 0; ++ip_addr) {
 	    memcpy(&server.sin_addr, ip_addr, sizeof(struct in_addr));
-	    i = proxy_doconnect(sock, &server, r);
+	    i = ap_proxy_doconnect(sock, &server, r);
 	    if (i == 0)
 		break;
 	}
@@ -610,44 +610,44 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     while (server_hp.h_addr_list[j] != NULL) {
 	memcpy(&server.sin_addr, server_hp.h_addr_list[j],
 	       sizeof(struct in_addr));
-	i = proxy_doconnect(sock, &server, r);
+	i = ap_proxy_doconnect(sock, &server, r);
 	if (i == 0)
 	    break;
 	j++;
     }
 #endif
     if (i == -1) {
-	pclosesocket(p, sock);
-	return proxyerror(r, "Could not connect to remote machine");
+	ap_pclosesocket(p, sock);
+	return ap_proxyerror(r, "Could not connect to remote machine");
     }
 
-    f = bcreate(p, B_RDWR | B_SOCKET);
-    bpushfd(f, sock, sock);
+    f = ap_bcreate(p, B_RDWR | B_SOCKET);
+    ap_bpushfd(f, sock, sock);
 /* shouldn't we implement telnet control options here? */
 
 #ifdef CHARSET_EBCDIC
-    bsetflag(f, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 1);
+    ap_bsetflag(f, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 1);
 #endif /*CHARSET_EBCDIC*/
 
 /* possible results: 120, 220, 421 */
-    hard_timeout("proxy ftp", r);
+    ap_hard_timeout("proxy ftp", r);
     i = ftp_getrc(f);
     Explain1("FTP: returned status %d", i);
     if (i == -1) {
-	kill_timeout(r);
-	return proxyerror(r, "Error reading from remote server");
+	ap_kill_timeout(r);
+	return ap_proxyerror(r, "Error reading from remote server");
     }
     if (i != 220) {
-	kill_timeout(r);
+	ap_kill_timeout(r);
 	return BAD_GATEWAY;
     }
 
     Explain0("FTP: connected.");
 
-    bputs("USER ", f);
-    bwrite(f, user, userlen);
-    bputs(CRLF, f);
-    bflush(f);			/* capture any errors */
+    ap_bputs("USER ", f);
+    ap_bwrite(f, user, userlen);
+    ap_bputs(CRLF, f);
+    ap_bflush(f);			/* capture any errors */
     Explain1("FTP: USER %s", user);
 
 /* possible results; 230, 331, 332, 421, 500, 501, 530 */
@@ -655,43 +655,43 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     i = ftp_getrc(f);
     Explain1("FTP: returned status %d", i);
     if (i == -1) {
-	kill_timeout(r);
-	return proxyerror(r, "Error sending to remote server");
+	ap_kill_timeout(r);
+	return ap_proxyerror(r, "Error sending to remote server");
     }
     if (i == 530) {
-	kill_timeout(r);
-	return proxyerror(r, "Not logged in");
+	ap_kill_timeout(r);
+	return ap_proxyerror(r, "Not logged in");
     }
     if (i != 230 && i != 331) {
-	kill_timeout(r);
+	ap_kill_timeout(r);
 	return BAD_GATEWAY;
     }
 
     if (i == 331) {		/* send password */
 	if (password == NULL)
 	    return FORBIDDEN;
-	bputs("PASS ", f);
-	bwrite(f, password, passlen);
-	bputs(CRLF, f);
-	bflush(f);
+	ap_bputs("PASS ", f);
+	ap_bwrite(f, password, passlen);
+	ap_bputs(CRLF, f);
+	ap_bflush(f);
 	Explain1("FTP: PASS %s", password);
 /* possible results 202, 230, 332, 421, 500, 501, 503, 530 */
 	i = ftp_getrc(f);
 	Explain1("FTP: returned status %d", i);
 	if (i == -1) {
-	    kill_timeout(r);
-	    return proxyerror(r, "Error sending to remote server");
+	    ap_kill_timeout(r);
+	    return ap_proxyerror(r, "Error sending to remote server");
 	}
 	if (i == 332) {
-	    kill_timeout(r);
-	    return proxyerror(r, "Need account for login");
+	    ap_kill_timeout(r);
+	    return ap_proxyerror(r, "Need account for login");
 	}
 	if (i == 530) {
-	    kill_timeout(r);
-	    return proxyerror(r, "Not logged in");
+	    ap_kill_timeout(r);
+	    return ap_proxyerror(r, "Not logged in");
 	}
 	if (i != 230 && i != 202) {
-	    kill_timeout(r);
+	    ap_kill_timeout(r);
 	    return BAD_GATEWAY;
 	}
     }
@@ -707,25 +707,25 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	*strp = '\0';
 
 	len = decodeenc(path);
-	bputs("CWD ", f);
-	bwrite(f, path, len);
-	bputs(CRLF, f);
-	bflush(f);
+	ap_bputs("CWD ", f);
+	ap_bwrite(f, path, len);
+	ap_bputs(CRLF, f);
+	ap_bflush(f);
 	Explain1("FTP: CWD %s", path);
 /* responses: 250, 421, 500, 501, 502, 530, 550 */
 /* 1,3 error, 2 success, 4,5 failure */
 	i = ftp_getrc(f);
 	Explain1("FTP: returned status %d", i);
 	if (i == -1) {
-	    kill_timeout(r);
-	    return proxyerror(r, "Error sending to remote server");
+	    ap_kill_timeout(r);
+	    return ap_proxyerror(r, "Error sending to remote server");
 	}
 	if (i == 550) {
-	    kill_timeout(r);
+	    ap_kill_timeout(r);
 	    return NOT_FOUND;
 	}
 	if (i != 250) {
-	    kill_timeout(r);
+	    ap_kill_timeout(r);
 	    return BAD_GATEWAY;
 	}
 
@@ -747,18 +747,18 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	/* set type to image */
 	/* TM - Added \015\012 to the end of TYPE I, otherwise it hangs the
 	   connection */
-	bputs("TYPE I" CRLF, f);
-	bflush(f);
+	ap_bputs("TYPE I" CRLF, f);
+	ap_bflush(f);
 	Explain0("FTP: TYPE I");
 /* responses: 200, 421, 500, 501, 504, 530 */
 	i = ftp_getrc(f);
 	Explain1("FTP: returned status %d", i);
 	if (i == -1) {
-	    kill_timeout(r);
-	    return proxyerror(r, "Error sending to remote server");
+	    ap_kill_timeout(r);
+	    return ap_proxyerror(r, "Error sending to remote server");
 	}
 	if (i != 200 && i != 504) {
-	    kill_timeout(r);
+	    ap_kill_timeout(r);
 	    return BAD_GATEWAY;
 	}
 /* Allow not implemented */
@@ -767,35 +767,35 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     }
 
 /* try to set up PASV data connection first */
-    dsock = psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    dsock = ap_psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (dsock == -1) {
-	proxy_log_uerror("socket", NULL, "proxy: error creating PASV socket",
+	ap_proxy_log_uerror("socket", NULL, "proxy: error creating PASV socket",
 			 r->server);
-	bclose(f);
-	kill_timeout(r);
+	ap_bclose(f);
+	ap_kill_timeout(r);
 	return SERVER_ERROR;
     }
 
     if (conf->recv_buffer_size) {
 	if (setsockopt(dsock, SOL_SOCKET, SO_RCVBUF,
 	       (const char *) &conf->recv_buffer_size, sizeof(int)) == -1) {
-	    proxy_log_uerror("setsockopt", "(SO_RCVBUF)",
+	    ap_proxy_log_uerror("setsockopt", "(SO_RCVBUF)",
 		  "Failed to set ProxyReceiveBufferSize, using default", r->server);
 	}
     }
 
-    bputs("PASV" CRLF, f);
-    bflush(f);
+    ap_bputs("PASV" CRLF, f);
+    ap_bflush(f);
     Explain0("FTP: PASV command issued");
 /* possible results: 227, 421, 500, 501, 502, 530 */
-    i = bgets(pasv, sizeof(pasv), f);
+    i = ap_bgets(pasv, sizeof(pasv), f);
 
     if (i == -1) {
-	proxy_log_uerror("command", NULL, "PASV: control connection is toast",
+	ap_proxy_log_uerror("command", NULL, "PASV: control connection is toast",
 			 r->server);
-	pclosesocket(p, dsock);
-	bclose(f);
-	kill_timeout(r);
+	ap_pclosesocket(p, dsock);
+	ap_bclose(f);
+	ap_kill_timeout(r);
 	return SERVER_ERROR;
     }
     else {
@@ -822,47 +822,47 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    data_addr.sin_family = AF_INET;
 	    data_addr.sin_addr.s_addr = htonl(paddr);
 	    data_addr.sin_port = htons(pport);
-	    i = proxy_doconnect(dsock, &data_addr, r);
+	    i = ap_proxy_doconnect(dsock, &data_addr, r);
 
 	    if (i == -1) {
-		kill_timeout(r);
-		return proxyerror(r, "Could not connect to remote machine");
+		ap_kill_timeout(r);
+		return ap_proxyerror(r, "Could not connect to remote machine");
 	    }
 	    else {
 		pasvmode = 1;
 	    }
 	}
 	else
-	    pclosesocket(p, dsock);	/* and try the regular way */
+	    ap_pclosesocket(p, dsock);	/* and try the regular way */
     }
 
     if (!pasvmode) {		/* set up data connection */
 	clen = sizeof(struct sockaddr_in);
 	if (getsockname(sock, (struct sockaddr *) &server, &clen) < 0) {
-	    proxy_log_uerror("getsockname", NULL,
+	    ap_proxy_log_uerror("getsockname", NULL,
 			  "proxy: error getting socket address", r->server);
-	    bclose(f);
-	    kill_timeout(r);
+	    ap_bclose(f);
+	    ap_kill_timeout(r);
 	    return SERVER_ERROR;
 	}
 
-	dsock = psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
+	dsock = ap_psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (dsock == -1) {
-	    proxy_log_uerror("socket", NULL, "proxy: error creating socket",
+	    ap_proxy_log_uerror("socket", NULL, "proxy: error creating socket",
 			     r->server);
-	    bclose(f);
-	    kill_timeout(r);
+	    ap_bclose(f);
+	    ap_kill_timeout(r);
 	    return SERVER_ERROR;
 	}
 
 	if (setsockopt(dsock, SOL_SOCKET, SO_REUSEADDR, (void *) &one,
 		       sizeof(one)) == -1) {
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */
-	    proxy_log_uerror("setsockopt", NULL,
+	    ap_proxy_log_uerror("setsockopt", NULL,
 			"proxy: error setting reuseaddr option", r->server);
-	    pclosesocket(p, dsock);
-	    bclose(f);
-	    kill_timeout(r);
+	    ap_pclosesocket(p, dsock);
+	    ap_bclose(f);
+	    ap_kill_timeout(r);
 	    return SERVER_ERROR;
 #endif /*_OSD_POSIX*/
 	}
@@ -872,10 +872,10 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    char buff[22];
 
 	    ap_snprintf(buff, sizeof(buff), "%s:%d", inet_ntoa(server.sin_addr), server.sin_port);
-	    proxy_log_uerror("bind", buff,
+	    ap_proxy_log_uerror("bind", buff,
 		      "proxy: error binding to ftp data socket", r->server);
-	    bclose(f);
-	    pclosesocket(p, dsock);
+	    ap_bclose(f);
+	    ap_pclosesocket(p, dsock);
 	    return SERVER_ERROR;
 	}
 	listen(dsock, 2);	/* only need a short queue */
@@ -890,10 +890,10 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	parms = "d";
     }
     else {
-	bputs("SIZE ", f);
-	bwrite(f, path, len);
-	bputs(CRLF, f);
-	bflush(f);
+	ap_bputs("SIZE ", f);
+	ap_bwrite(f, path, len);
+	ap_bputs(CRLF, f);
+	ap_bflush(f);
 	Explain1("FTP: SIZE %s", path);
 	i = ftp_getrc_msg(f, resp, resplen);
 	Explain2("FTP: returned status %d with response %s", i, resp);
@@ -901,23 +901,23 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    if (i == 550) {	/* Not a regular file */
 		Explain0("FTP: SIZE shows this is a directory");
 		parms = "d";
-		bputs("CWD ", f);
-		bwrite(f, path, len);
-		bputs(CRLF, f);
-		bflush(f);
+		ap_bputs("CWD ", f);
+		ap_bwrite(f, path, len);
+		ap_bputs(CRLF, f);
+		ap_bflush(f);
 		Explain1("FTP: CWD %s", path);
 		i = ftp_getrc(f);
 		Explain1("FTP: returned status %d", i);
 		if (i == -1) {
-		    kill_timeout(r);
-		    return proxyerror(r, "Error sending to remote server");
+		    ap_kill_timeout(r);
+		    return ap_proxyerror(r, "Error sending to remote server");
 		}
 		if (i == 550) {
-		    kill_timeout(r);
+		    ap_kill_timeout(r);
 		    return NOT_FOUND;
 		}
 		if (i != 250) {
-		    kill_timeout(r);
+		    ap_kill_timeout(r);
 		    return BAD_GATEWAY;
 		}
 		path = "";
@@ -931,78 +931,78 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 
     if (parms[0] == 'd') {
 	if (len != 0)
-	    bputs("LIST ", f);
+	    ap_bputs("LIST ", f);
 	else
-	    bputs("LIST -lag", f);
+	    ap_bputs("LIST -lag", f);
 	Explain1("FTP: LIST %s", (len == 0 ? "" : path));
     }
     else {
-	bputs("RETR ", f);
+	ap_bputs("RETR ", f);
 	Explain1("FTP: RETR %s", path);
     }
-    bwrite(f, path, len);
-    bputs(CRLF, f);
-    bflush(f);
+    ap_bwrite(f, path, len);
+    ap_bputs(CRLF, f);
+    ap_bflush(f);
 /* RETR: 110, 125, 150, 226, 250, 421, 425, 426, 450, 451, 500, 501, 530, 550
    NLST: 125, 150, 226, 250, 421, 425, 426, 450, 451, 500, 501, 502, 530 */
     rc = ftp_getrc(f);
     Explain1("FTP: returned status %d", rc);
     if (rc == -1) {
-	kill_timeout(r);
-	return proxyerror(r, "Error sending to remote server");
+	ap_kill_timeout(r);
+	return ap_proxyerror(r, "Error sending to remote server");
     }
     if (rc == 550) {
 	Explain0("FTP: RETR failed, trying LIST instead");
 	parms = "d";
-	bputs("CWD ", f);
-	bwrite(f, path, len);
-	bputs(CRLF, f);
-	bflush(f);
+	ap_bputs("CWD ", f);
+	ap_bwrite(f, path, len);
+	ap_bputs(CRLF, f);
+	ap_bflush(f);
 	Explain1("FTP: CWD %s", path);
 	rc = ftp_getrc(f);
 	Explain1("FTP: returned status %d", rc);
 	if (rc == -1) {
-	    kill_timeout(r);
-	    return proxyerror(r, "Error sending to remote server");
+	    ap_kill_timeout(r);
+	    return ap_proxyerror(r, "Error sending to remote server");
 	}
 	if (rc == 550) {
-	    kill_timeout(r);
+	    ap_kill_timeout(r);
 	    return NOT_FOUND;
 	}
 	if (rc != 250) {
-	    kill_timeout(r);
+	    ap_kill_timeout(r);
 	    return BAD_GATEWAY;
 	}
 
-	bputs("LIST -lag" CRLF, f);
-	bflush(f);
+	ap_bputs("LIST -lag" CRLF, f);
+	ap_bflush(f);
 	Explain0("FTP: LIST -lag");
 	rc = ftp_getrc(f);
 	Explain1("FTP: returned status %d", rc);
 	if (rc == -1)
-	    return proxyerror(r, "Error sending to remote server");
+	    return ap_proxyerror(r, "Error sending to remote server");
     }
-    kill_timeout(r);
+    ap_kill_timeout(r);
     if (rc != 125 && rc != 150 && rc != 226 && rc != 250)
 	return BAD_GATEWAY;
 
     r->status = 200;
     r->status_line = "200 OK";
 
-    resp_hdrs = make_array(p, 2, sizeof(struct hdr_entry));
+    resp_hdrs = ap_make_array(p, 2, sizeof(struct hdr_entry));
     if (parms[0] == 'd')
-	proxy_add_header(resp_hdrs, "Content-Type", "text/html", HDR_REP);
+	ap_proxy_add_header(resp_hdrs, "Content-Type", "text/html", HDR_REP);
     else {
 	if (r->content_type != NULL) {
-	    proxy_add_header(resp_hdrs, "Content-Type", r->content_type,
+	    ap_proxy_add_header(resp_hdrs, "Content-Type", r->content_type,
 			     HDR_REP);
 	    Explain1("FTP: Content-Type set to %s", r->content_type);
 	}
 	else {
-	    proxy_add_header(resp_hdrs, "Content-Type", "text/plain", HDR_REP);
+	    ap_proxy_add_header(resp_hdrs, "Content-Type", "text/plain", HDR_REP);
 	}
 	if (parms[0] != 'a' && size != NULL) {
-	    proxy_add_header(resp_hdrs, "Content-Length", size, HDR_REP);
+	    ap_proxy_add_header(resp_hdrs, "Content-Length", size, HDR_REP);
 	    Explain1("FTP: Content-Length set to %s", size);
 	}
     }
@@ -1014,53 +1014,53 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    nocache = 1;
     }
 
-    i = proxy_cache_update(c, resp_hdrs, 0, nocache);
+    i = ap_proxy_cache_update(c, resp_hdrs, 0, nocache);
 
     if (i != DECLINED) {
-	pclosesocket(p, dsock);
-	bclose(f);
+	ap_pclosesocket(p, dsock);
+	ap_bclose(f);
 	return i;
     }
     cache = c->fp;
 
     if (!pasvmode) {		/* wait for connection */
-	hard_timeout("proxy ftp data connect", r);
+	ap_hard_timeout("proxy ftp data connect", r);
 	clen = sizeof(struct sockaddr_in);
 	do
 	    csd = accept(dsock, (struct sockaddr *) &server, &clen);
 	while (csd == -1 && errno == EINTR);
 	if (csd == -1) {
-	    proxy_log_uerror("accept", NULL,
+	    ap_proxy_log_uerror("accept", NULL,
 		      "proxy: failed to accept data connection", r->server);
-	    pclosesocket(p, dsock);
-	    bclose(f);
-	    kill_timeout(r);
-	    proxy_cache_error(c);
+	    ap_pclosesocket(p, dsock);
+	    ap_bclose(f);
+	    ap_kill_timeout(r);
+	    ap_proxy_cache_error(c);
 	    return BAD_GATEWAY;
 	}
-	note_cleanups_for_socket(p, csd);
-	data = bcreate(p, B_RDWR | B_SOCKET);
-	bpushfd(data, csd, -1);
-	kill_timeout(r);
+	ap_note_cleanups_for_socket(p, csd);
+	data = ap_bcreate(p, B_RDWR | B_SOCKET);
+	ap_bpushfd(data, csd, -1);
+	ap_kill_timeout(r);
     }
     else {
-	data = bcreate(p, B_RDWR | B_SOCKET);
-	bpushfd(data, dsock, dsock);
+	data = ap_bcreate(p, B_RDWR | B_SOCKET);
+	ap_bpushfd(data, dsock, dsock);
     }
 
 #ifdef CHARSET_EBCDIC
 /*    bsetflag(data, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);*/
 #endif /*CHARSET_EBCDIC*/
 
-    hard_timeout("proxy receive", r);
+    ap_hard_timeout("proxy receive", r);
 /* send response */
 /* write status line */
     if (!r->assbackwards)
-	rvputs(r, "HTTP/1.0 ", r->status_line, CRLF, NULL);
+	ap_rvputs(r, "HTTP/1.0 ", r->status_line, CRLF, NULL);
     if (cache != NULL)
-	if (bvputs(cache, "HTTP/1.0 ", r->status_line, CRLF,
+	if (ap_bvputs(cache, "HTTP/1.0 ", r->status_line, CRLF,
 		   NULL) == -1)
-	    cache = proxy_cache_error(c);
+	    cache = ap_proxy_cache_error(c);
 
 /* send headers */
     len = resp_hdrs->nelts;
@@ -1070,61 +1070,61 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    hdr[i].value[0] == '\0')
 	    continue;
 	if (!r->assbackwards)
-	    rvputs(r, hdr[i].field, ": ", hdr[i].value, CRLF, NULL);
+	    ap_rvputs(r, hdr[i].field, ": ", hdr[i].value, CRLF, NULL);
 	if (cache != NULL)
-	    if (bvputs(cache, hdr[i].field, ": ", hdr[i].value, CRLF,
+	    if (ap_bvputs(cache, hdr[i].field, ": ", hdr[i].value, CRLF,
 		       NULL) == -1)
-		cache = proxy_cache_error(c);
+		cache = ap_proxy_cache_error(c);
     }
 
     if (!r->assbackwards)
-	rputs(CRLF, r);
+	ap_rputs(CRLF, r);
     if (cache != NULL)
-	if (bputs(CRLF, cache) == -1)
-	    cache = proxy_cache_error(c);
+	if (ap_bputs(CRLF, cache) == -1)
+	    cache = ap_proxy_cache_error(c);
 
-    bsetopt(r->connection->client, BO_BYTECT, &zero);
+    ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
     r->sent_bodyct = 1;
 /* send body */
     if (!r->header_only) {
 	if (parms[0] != 'd')
-	    proxy_send_fb(data, r, cache, c);
+	    ap_proxy_send_fb(data, r, cache, c);
 	else
 	    send_dir(data, r, cache, c, url);
 
 	if (rc == 125 || rc == 150)
 	    rc = ftp_getrc(f);
 	if (rc != 226 && rc != 250)
-	    proxy_cache_error(c);
+	    ap_proxy_cache_error(c);
     }
     else {
 /* abort the transfer */
-	bputs("ABOR" CRLF, f);
-	bflush(f);
+	ap_bputs("ABOR" CRLF, f);
+	ap_bflush(f);
 	if (!pasvmode)
-	    bclose(data);
+	    ap_bclose(data);
 	Explain0("FTP: ABOR");
 /* responses: 225, 226, 421, 500, 501, 502 */
 	i = ftp_getrc(f);
 	Explain1("FTP: returned status %d", i);
     }
 
-    kill_timeout(r);
-    proxy_cache_tidy(c);
+    ap_kill_timeout(r);
+    ap_proxy_cache_tidy(c);
 
 /* finish */
-    bputs("QUIT" CRLF, f);
-    bflush(f);
+    ap_bputs("QUIT" CRLF, f);
+    ap_bflush(f);
     Explain0("FTP: QUIT");
 /* responses: 221, 500 */
 
     if (pasvmode)
-	bclose(data);
-    bclose(f);
+	ap_bclose(data);
+    ap_bclose(f);
 
-    rflush(r);	/* flush before garbage collection */
+    ap_rflush(r);	/* flush before garbage collection */
 
-    proxy_garbage_coll(r);
+    ap_proxy_garbage_coll(r);
 
     return OK;
 }

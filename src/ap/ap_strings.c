@@ -84,7 +84,7 @@ API_EXPORT(char *) ap_escape_quotes (pool *p, const char *instring)
 	}
 	inchr++;
     }
-    outstring = palloc(p, newlen + 1);
+    outstring = ap_palloc(p, newlen + 1);
     inchr = instring;
     outchr = outstring;
     /*

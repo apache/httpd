@@ -51,7 +51,7 @@ static char sccsid[] = "@(#)fnmatch.c	8.2 (Berkeley) 4/16/94";
 
 static const char *rangematch(const char *, int, int);
 
-API_EXPORT(int) fnmatch(pattern, string, flags)
+API_EXPORT(int) ap_fnmatch(pattern, string, flags)
      const char *pattern, *string;
      int flags;
 {
@@ -102,7 +102,7 @@ API_EXPORT(int) fnmatch(pattern, string, flags)
 
 	    /* General case, use recursion. */
 	    while ((test = *string) != EOS) {
-		if (!fnmatch(pattern, string, flags & ~FNM_PERIOD))
+		if (!ap_fnmatch(pattern, string, flags & ~FNM_PERIOD))
 		    return (0);
 		if (test == '/' && flags & FNM_PATHNAME)
 		    break;
@@ -181,7 +181,7 @@ static const char *
 
 /* This function is an Apache addition */
 /* return non-zero if pattern has any glob chars in it */
-API_EXPORT(int) is_fnmatch(const char *pattern)
+API_EXPORT(int) ap_is_fnmatch(const char *pattern)
 {
     int nesting;
 

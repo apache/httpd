@@ -77,7 +77,7 @@ typedef struct {
 static void *make_agent_log_state(pool *p, server_rec *s)
 {
     agent_log_state *cls =
-    (agent_log_state *) palloc(p, sizeof(agent_log_state));
+    (agent_log_state *) ap_palloc(p, sizeof(agent_log_state));
 
     cls->fname = "";
     cls->agent_fd = -1;
@@ -87,7 +87,7 @@ static void *make_agent_log_state(pool *p, server_rec *s)
 
 static const char *set_agent_log(cmd_parms *parms, void *dummy, char *arg)
 {
-    agent_log_state *cls = get_module_config(parms->server->module_config,
+    agent_log_state *cls = ap_get_module_config(parms->server->module_config,
                                              &agent_log_module);
 
     cls->fname = arg;
@@ -109,7 +109,7 @@ static int agent_log_child(void *cmd)
      */
     int child_pid = 1;
 
-    cleanup_for_exec();
+    ap_cleanup_for_exec();
     signal(SIGHUP, SIG_IGN);
 #if defined(WIN32)
     child_pid = spawnl(SHELL_PATH, SHELL_PATH, "/c", (char *) cmd, NULL);
@@ -127,10 +127,10 @@ static int agent_log_child(void *cmd)
 
 static void open_agent_log(server_rec *s, pool *p)
 {
-    agent_log_state *cls = get_module_config(s->module_config,
+    agent_log_state *cls = ap_get_module_config(s->module_config,
                                              &agent_log_module);
 
-    char *fname = server_root_relative(p, cls->fname);
+    char *fname = ap_server_root_relative(p, cls->fname);
 
     if (cls->agent_fd > 0)
         return;                 /* virtual log shared w/main server */
@@ -148,7 +148,7 @@ static void open_agent_log(server_rec *s, pool *p)
         cls->agent_fd = fileno(dummy);
     }
     else if (*cls->fname != '\0') {
-        if ((cls->agent_fd = popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
+        if ((cls->agent_fd = ap_popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
             perror("open");
             fprintf(stderr, "httpd: could not open agent log file %s.\n", fname);
             exit(1);
@@ -164,7 +164,7 @@ static void init_agent_log(server_rec *s, pool *p)
 
 static int agent_log_transaction(request_rec *orig)
 {
-    agent_log_state *cls = get_module_config(orig->server->module_config,
+    agent_log_state *cls = ap_get_module_config(orig->server->module_config,
                                              &agent_log_module);
 
     char str[HUGE_STRING_LEN];
@@ -179,7 +179,7 @@ static int agent_log_transaction(request_rec *orig)
     if (*cls->fname == '\0')    /* Don't log agent */
         return DECLINED;
 
-    agent = table_get(orig->headers_in, "User-Agent");
+    agent = ap_table_get(orig->headers_in, "User-Agent");
     if (agent != NULL) {
         ap_snprintf(str, sizeof(str), "%s\n", agent);
         write(cls->agent_fd, str, strlen(str));

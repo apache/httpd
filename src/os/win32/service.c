@@ -148,7 +148,7 @@ VOID WINAPI service_ctrl(DWORD dwCtrlCode)
         //
         case SERVICE_CONTROL_STOP:
             state = SERVICE_STOP_PENDING;
-	    start_shutdown();
+	    ap_start_shutdown();
             break;
 
         // Update the service status.
@@ -228,7 +228,7 @@ void InstallService()
                         SC_MANAGER_ALL_ACCESS   // access required
                         );
    if (!schSCManager) {
-       aplog_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+       ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
 	   "OpenSCManager failed");
     }
     else {
@@ -251,10 +251,10 @@ void InstallService()
             CloseServiceHandle(schService);
 
 	    /* Now store the server_root in the registry */
-	    ap_registry_set_server_root(server_root);
+	    ap_registry_set_server_root(ap_server_root);
         }
         else {
-            aplog_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL, 
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL, 
 		"CreateService failed");
         }
 
@@ -277,7 +277,7 @@ void RemoveService()
                         SC_MANAGER_ALL_ACCESS   // access required
                         );
     if (!schSCManager) {
-       aplog_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+       ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
 	   "OpenSCManager failed");
     }
     else {
@@ -285,7 +285,7 @@ void RemoveService()
 
         if (schService == NULL) {
             /* Could not open the service */
-           aplog_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+           ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
 			"OpenService failed");
         }
         else {

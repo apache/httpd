@@ -134,7 +134,7 @@ int sendwithtimeout(int sock, const char *buf, int len, int flags)
     int rv;
     int retry;
 
-    if (!(tv.tv_sec = check_alarm()))
+    if (!(tv.tv_sec = ap_check_alarm()))
 	return (send(sock, buf, len, flags));
 
     rv = ioctlsocket(sock, FIONBIO, &iostate);
@@ -158,7 +158,7 @@ int sendwithtimeout(int sock, const char *buf, int len, int flags)
 		    err = WSAGetLastError();
 		else if (rv == 0) {
  		    ioctlsocket(sock, FIONBIO, &iostate);
-		    if(check_alarm() < 0) {
+		    if(ap_check_alarm() < 0) {
 			WSASetLastError(EINTR);	/* Simulate an alarm() */
 			return (SOCKET_ERROR);
 		    }
@@ -168,7 +168,7 @@ int sendwithtimeout(int sock, const char *buf, int len, int flags)
 		    if (rv == SOCKET_ERROR) {
 		        err = WSAGetLastError();
 			if(err == WSAEWOULDBLOCK) {
-			    aplog_error(APLOG_MARK,APLOG_WARNING,NULL,
+			    ap_log_error(APLOG_MARK,APLOG_WARNING,NULL,
 				"select claimed we could write, but in fact we couldn't. This is a bug in Windows.");
 			    retry=1;
 			    Sleep(100);
@@ -192,7 +192,7 @@ int recvwithtimeout(int sock, char *buf, int len, int flags)
     int err = WSAEWOULDBLOCK;
     int rv;
 
-    if (!(tv.tv_sec = check_alarm()))
+    if (!(tv.tv_sec = ap_check_alarm()))
 	return (recv(sock, buf, len, flags));
 
     rv = ioctlsocket(sock, FIONBIO, &iostate);
@@ -210,7 +210,7 @@ int recvwithtimeout(int sock, char *buf, int len, int flags)
 		err = WSAGetLastError();
 	    else if (rv == 0) {
 		ioctlsocket(sock, FIONBIO, &iostate);
-		check_alarm();
+		ap_check_alarm();
 		WSASetLastError(WSAEWOULDBLOCK);
 		return (SOCKET_ERROR);
 	    }
@@ -305,24 +305,24 @@ static void doerror(BUFF *fb, int direction)
 /*
  * Create a new buffered stream
  */
-API_EXPORT(BUFF *) bcreate(pool *p, int flags)
+API_EXPORT(BUFF *) ap_bcreate(pool *p, int flags)
 {
     BUFF *fb;
 
-    fb = palloc(p, sizeof(BUFF));
+    fb = ap_palloc(p, sizeof(BUFF));
     fb->pool = p;
     fb->bufsiz = DEFAULT_BUFSIZE;
     fb->flags = flags & (B_RDWR | B_SOCKET);
 
     if (flags & B_RD)
-	fb->inbase = palloc(p, fb->bufsiz);
+	fb->inbase = ap_palloc(p, fb->bufsiz);
     else
 	fb->inbase = NULL;
 
     /* overallocate so that we can put a chunk trailer of CRLF into this
      * buffer */
     if (flags & B_WR)
-	fb->outbase = palloc(p, fb->bufsiz + 2);
+	fb->outbase = ap_palloc(p, fb->bufsiz + 2);
     else
 	fb->outbase = NULL;
 
@@ -356,13 +356,13 @@ API_EXPORT(BUFF *) bcreate(pool *p, int flags)
 /*
  * Push some I/O file descriptors onto the stream
  */
-API_EXPORT(void) bpushfd(BUFF *fb, int fd_in, int fd_out)
+API_EXPORT(void) ap_bpushfd(BUFF *fb, int fd_in, int fd_out)
 {
     fb->fd = fd_out;
     fb->fd_in = fd_in;
 }
 
-API_EXPORT(int) bsetopt(BUFF *fb, int optname, const void *optval)
+API_EXPORT(int) ap_bsetopt(BUFF *fb, int optname, const void *optval)
 {
     if (optname == BO_BYTECT) {
 	fb->bytes_sent = *(const long int *) optval - (long int) fb->outcnt;;
@@ -374,7 +374,7 @@ API_EXPORT(int) bsetopt(BUFF *fb, int optname, const void *optval)
     }
 }
 
-API_EXPORT(int) bgetopt(BUFF *fb, int optname, void *optval)
+API_EXPORT(int) ap_bgetopt(BUFF *fb, int optname, void *optval)
 {
     if (optname == BO_BYTECT) {
 	long int bs = fb->bytes_sent + fb->outcnt;
@@ -477,7 +477,7 @@ static void end_chunk(BUFF *fb)
 /*
  * Set a flag on (1) or off (0).
  */
-API_EXPORT(int) bsetflag(BUFF *fb, int flag, int value)
+API_EXPORT(int) ap_bsetflag(BUFF *fb, int flag, int value)
 {
     if (value) {
 	fb->flags |= flag;
@@ -495,7 +495,7 @@ API_EXPORT(int) bsetflag(BUFF *fb, int flag, int value)
 }
 
 
-API_EXPORT(int) bnonblock(BUFF *fb, int direction)
+API_EXPORT(int) ap_bnonblock(BUFF *fb, int direction)
 {
     int fd;
 
@@ -510,7 +510,7 @@ API_EXPORT(int) bnonblock(BUFF *fb, int direction)
 #endif
 }
 
-API_EXPORT(int) bfileno(BUFF *fb, int direction)
+API_EXPORT(int) ap_bfileno(BUFF *fb, int direction)
 {
     return (direction == B_RD) ? fb->fd_in : fb->fd;
 }
@@ -534,7 +534,7 @@ static int saferead(BUFF *fb, char *buf, int nbyte)
 
 
 /* note we assume the caller has ensured that fb->fd_in <= FD_SETSIZE */
-API_EXPORT(void) bhalfduplex(BUFF *fb)
+API_EXPORT(void) ap_bhalfduplex(BUFF *fb)
 {
     int rv;
     fd_set fds;
@@ -553,7 +553,7 @@ API_EXPORT(void) bhalfduplex(BUFF *fb)
     } while (rv < 0 && errno == EINTR);
     /* treat any error as if it would block as well */
     if (rv != 1) {
-	bflush(fb);
+	ap_bflush(fb);
     }
 }
 
@@ -562,7 +562,7 @@ static ap_inline int saferead_guts(BUFF *fb, void *buf, int nbyte)
     int rv;
 
     if (fb->flags & B_SAFEREAD) {
-	bhalfduplex(fb);
+	ap_bhalfduplex(fb);
     }
     do {
 	rv = buff_read(fb, buf, nbyte);
@@ -593,7 +593,7 @@ Sfdisc_t *bsfio_new(pool *p, BUFF *b)
 {
     apache_sfio *disc;
 
-    if (!(disc = (apache_sfio *) palloc(p, sizeof(apache_sfio))))
+    if (!(disc = (apache_sfio *) ap_palloc(p, sizeof(apache_sfio))))
 	            return (Sfdisc_t *) disc;
 
     disc->disc.readf = (Sfread_f) bsfio_read;
@@ -634,7 +634,7 @@ static int read_with_errors(BUFF *fb, void *buf, int nbyte)
  * Only when the caller retrieves data from the buffer (calls bread)
  * is a conversion done, if the conversion flag is set at that time.
  */
-API_EXPORT(int) bread(BUFF *fb, void *buf, int nbyte)
+API_EXPORT(int) ap_bread(BUFF *fb, void *buf, int nbyte)
 {
     int i, nrd;
 
@@ -747,7 +747,7 @@ API_EXPORT(int) bread(BUFF *fb, void *buf, int nbyte)
  *  CR characters in the byte stream not immediately followed by a LF
  * will be preserved.
  */
-API_EXPORT(int) bgets(char *buff, int n, BUFF *fb)
+API_EXPORT(int) ap_bgets(char *buff, int n, BUFF *fb)
 {
     int i, ch, ct;
 
@@ -831,7 +831,7 @@ API_EXPORT(int) bgets(char *buff, int n, BUFF *fb)
  * Returns 1 on success, zero on end of transmission, or -1 on an error.
  *
  */
-API_EXPORT(int) blookc(char *buff, BUFF *fb)
+API_EXPORT(int) ap_blookc(char *buff, BUFF *fb)
 {
     int i;
 
@@ -870,7 +870,7 @@ API_EXPORT(int) blookc(char *buff, BUFF *fb)
  * Skip data until a linefeed character is read
  * Returns 1 on success, 0 if no LF found, or -1 on error
  */
-API_EXPORT(int) bskiplf(BUFF *fb)
+API_EXPORT(int) ap_bskiplf(BUFF *fb)
 {
     unsigned char *x;
     int i;
@@ -906,23 +906,23 @@ API_EXPORT(int) bskiplf(BUFF *fb)
 /*
  * Empty the buffer after putting a single character in it
  */
-API_EXPORT(int) bflsbuf(int c, BUFF *fb)
+API_EXPORT(int) ap_bflsbuf(int c, BUFF *fb)
 {
     char ss[1];
 
     ss[0] = c;
-    return bwrite(fb, ss, 1);
+    return ap_bwrite(fb, ss, 1);
 }
 
 /*
  * Fill the buffer and read a character from it
  */
-API_EXPORT(int) bfilbuf(BUFF *fb)
+API_EXPORT(int) ap_bfilbuf(BUFF *fb)
 {
     int i;
     char buf[1];
 
-    i = bread(fb, buf, 1);
+    i = ap_bread(fb, buf, 1);
     if (i == 0)
 	errno = 0;		/* no error; EOF */
     if (i != 1)
@@ -1157,7 +1157,7 @@ static int large_write(BUFF *fb, const void *buf, int nbyte)
  * It is worth noting that if an error occurs, the buffer is in an unknown
  * state.
  */
-API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte)
+API_EXPORT(int) ap_bwrite(BUFF *fb, const void *buf, int nbyte)
 {
     int i, nwr, useable_bufsiz;
 #ifdef CHARSET_EBCDIC
@@ -1328,7 +1328,7 @@ static int bflush_core(BUFF *fb)
  * Flushes the buffered stream.
  * Returns 0 on success or -1 on error
  */
-API_EXPORT(int) bflush(BUFF *fb)
+API_EXPORT(int) ap_bflush(BUFF *fb)
 {
     int ret;
 
@@ -1356,19 +1356,19 @@ API_EXPORT(int) bflush(BUFF *fb)
  * Sets the EOF flag to indicate no futher data can be read,
  * and the EOUT flag to indicate no further data can be written.
  */
-API_EXPORT(int) bclose(BUFF *fb)
+API_EXPORT(int) ap_bclose(BUFF *fb)
 {
     int rc1, rc2, rc3;
 
     if (fb->flags & B_WR)
-	rc1 = bflush(fb);
+	rc1 = ap_bflush(fb);
     else
 	rc1 = 0;
 #ifdef WIN32
     if (fb->flags & B_SOCKET) {
-	rc2 = pclosesocket(fb->pool, fb->fd);
+	rc2 = ap_pclosesocket(fb->pool, fb->fd);
 	if (fb->fd_in != fb->fd) {
-	    rc3 = pclosesocket(fb->pool, fb->fd_in);
+	    rc3 = ap_pclosesocket(fb->pool, fb->fd_in);
 	}
 	else {
 	    rc3 = 0;
@@ -1376,9 +1376,9 @@ API_EXPORT(int) bclose(BUFF *fb)
     }
     else {
 #endif
-	rc2 = pclosef(fb->pool, fb->fd);
+	rc2 = ap_pclosef(fb->pool, fb->fd);
 	if (fb->fd_in != fb->fd) {
-	    rc3 = pclosef(fb->pool, fb->fd_in);
+	    rc3 = ap_pclosef(fb->pool, fb->fd_in);
 	}
 	else {
 	    rc3 = 0;
@@ -1411,10 +1411,10 @@ API_EXPORT(int) bclose(BUFF *fb)
 /*
  * returns the number of bytes written or -1 on error
  */
-API_EXPORT(int) bputs(const char *x, BUFF *fb)
+API_EXPORT(int) ap_bputs(const char *x, BUFF *fb)
 {
     int i, j = strlen(x);
-    i = bwrite(fb, x, j);
+    i = ap_bwrite(fb, x, j);
     if (i != j)
 	return -1;
     else
@@ -1424,7 +1424,7 @@ API_EXPORT(int) bputs(const char *x, BUFF *fb)
 /*
  * returns the number of bytes written or -1 on error
  */
-API_EXPORT_NONSTD(int) bvputs(BUFF *fb,...)
+API_EXPORT_NONSTD(int) ap_bvputs(BUFF *fb,...)
 {
     int i, j, k;
     va_list v;
@@ -1436,7 +1436,7 @@ API_EXPORT_NONSTD(int) bvputs(BUFF *fb,...)
 	if (x == NULL)
 	    break;
 	j = strlen(x);
-	i = bwrite(fb, x, j);
+	i = ap_bwrite(fb, x, j);
 	if (i != j) {
 	    va_end(v);
 	    return -1;
@@ -1449,7 +1449,7 @@ API_EXPORT_NONSTD(int) bvputs(BUFF *fb,...)
     return k;
 }
 
-API_EXPORT(void) bonerror(BUFF *fb, void (*error) (BUFF *, int, void *),
+API_EXPORT(void) ap_bonerror(BUFF *fb, void (*error) (BUFF *, int, void *),
 			  void *data)
 {
     fb->error = error;
@@ -1475,7 +1475,7 @@ static int bprintf_flush(ap_vformatter_buff *vbuff)
 #endif /*CHARSET_EBCDIC*/
     fb->outcnt += b->vbuff.curpos - (char *)&fb->outbase[fb->outcnt];
     if (fb->outcnt == fb->bufsiz) {
-	if (bflush(fb)) {
+	if (ap_bflush(fb)) {
 	    return -1;
 	}
     }
@@ -1484,7 +1484,7 @@ static int bprintf_flush(ap_vformatter_buff *vbuff)
     return 0;
 }
 
-API_EXPORT_NONSTD(int) bprintf(BUFF *fb, const char *fmt, ...)
+API_EXPORT_NONSTD(int) ap_bprintf(BUFF *fb, const char *fmt, ...)
 {
     va_list ap;
     int res;
@@ -1509,7 +1509,7 @@ API_EXPORT_NONSTD(int) bprintf(BUFF *fb, const char *fmt, ...)
     return res;
 }
 
-API_EXPORT(int) vbprintf(BUFF *fb, const char *fmt, va_list ap)
+API_EXPORT(int) ap_vbprintf(BUFF *fb, const char *fmt, va_list ap)
 {
     struct bprintf_data b;
     int res;

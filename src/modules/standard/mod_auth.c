@@ -87,7 +87,7 @@ typedef struct auth_config_struct {
 static void *create_auth_dir_config(pool *p, char *d)
 {
     auth_config_rec *sec =
-    (auth_config_rec *) pcalloc(p, sizeof(auth_config_rec));
+    (auth_config_rec *) ap_pcalloc(p, sizeof(auth_config_rec));
     sec->auth_pwfile = NULL;	/* just to illustrate the default really */
     sec->auth_grpfile = NULL;	/* unless you have a broken HP cc */
     sec->auth_authoritative = 1;	/* keep the fortress secure by default */
@@ -97,9 +97,9 @@ static void *create_auth_dir_config(pool *p, char *d)
 static const char *set_auth_slot(cmd_parms *cmd, void *offset, char *f, char *t)
 {
     if (t && strcmp(t, "standard"))
-	return pstrcat(cmd->pool, "Invalid auth file type: ", t, NULL);
+	return ap_pstrcat(cmd->pool, "Invalid auth file type: ", t, NULL);
 
-    return set_file_slot(cmd, offset, f);
+    return ap_set_file_slot(cmd, offset, f);
 }
 
 static const command_rec auth_cmds[] =
@@ -110,7 +110,7 @@ static const command_rec auth_cmds[] =
     {"AuthGroupFile", set_auth_slot,
      (void *) XtOffsetOf(auth_config_rec, auth_grpfile), OR_AUTHCFG, TAKE12,
      "text file containing group names and member user IDs"},
-    {"AuthAuthoritative", set_flag_slot,
+    {"AuthAuthoritative", ap_set_flag_slot,
      (void *) XtOffsetOf(auth_config_rec, auth_authoritative),
      OR_AUTHCFG, FLAG,
      "Set to 'no' to allow access control to be passed along to lower modules if the UserID is not known to this module"},
@@ -125,60 +125,60 @@ static char *get_pw(request_rec *r, char *user, char *auth_pwfile)
     char l[MAX_STRING_LEN];
     const char *rpw, *w;
 
-    if (!(f = pcfg_openfile(r->pool, auth_pwfile))) {
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+    if (!(f = ap_pcfg_openfile(r->pool, auth_pwfile))) {
+	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "Could not open password file: %s", auth_pwfile);
 	return NULL;
     }
-    while (!(cfg_getline(l, MAX_STRING_LEN, f))) {
+    while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
 	if ((l[0] == '#') || (!l[0]))
 	    continue;
 	rpw = l;
-	w = getword(r->pool, &rpw, ':');
+	w = ap_getword(r->pool, &rpw, ':');
 
 	if (!strcmp(user, w)) {
-	    cfg_closefile(f);
-	    return getword(r->pool, &rpw, ':');
+	    ap_cfg_closefile(f);
+	    return ap_getword(r->pool, &rpw, ':');
 	}
     }
-    cfg_closefile(f);
+    ap_cfg_closefile(f);
     return NULL;
 }
 
 static table *groups_for_user(pool *p, char *user, char *grpfile)
 {
     configfile_t *f;
-    table *grps = make_table(p, 15);
+    table *grps = ap_make_table(p, 15);
     pool *sp;
     char l[MAX_STRING_LEN];
     const char *group_name, *ll, *w;
 
-    if (!(f = pcfg_openfile(p, grpfile))) {
+    if (!(f = ap_pcfg_openfile(p, grpfile))) {
 /*add?	aplog_error(APLOG_MARK, APLOG_ERR, NULL,
 		    "Could not open group file: %s", grpfile);*/
 	return NULL;
     }
 
-    sp = make_sub_pool(p);
+    sp = ap_make_sub_pool(p);
 
-    while (!(cfg_getline(l, MAX_STRING_LEN, f))) {
+    while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
 	if ((l[0] == '#') || (!l[0]))
 	    continue;
 	ll = l;
-	clear_pool(sp);
+	ap_clear_pool(sp);
 
-	group_name = getword(sp, &ll, ':');
+	group_name = ap_getword(sp, &ll, ':');
 
 	while (ll[0]) {
-	    w = getword_conf(sp, &ll);
+	    w = ap_getword_conf(sp, &ll);
 	    if (!strcmp(w, user)) {
-		table_setn(grps, pstrdup(p, group_name), "in");
+		ap_table_setn(grps, ap_pstrdup(p, group_name), "in");
 		break;
 	    }
 	}
     }
-    cfg_closefile(f);
-    destroy_pool(sp);
+    ap_cfg_closefile(f);
+    ap_destroy_pool(sp);
     return grps;
 }
 
@@ -199,12 +199,12 @@ static table *groups_for_user(pool *p, char *user, char *grpfile)
 static int authenticate_basic_user(request_rec *r)
 {
     auth_config_rec *sec =
-    (auth_config_rec *) get_module_config(r->per_dir_config, &auth_module);
+    (auth_config_rec *) ap_get_module_config(r->per_dir_config, &auth_module);
     conn_rec *c = r->connection;
     char *sent_pw, *real_pw;
     int res;
 
-    if ((res = get_basic_auth_pw(r, &sent_pw)))
+    if ((res = ap_get_basic_auth_pw(r, &sent_pw)))
 	return res;
 
     if (!sec->auth_pwfile)
@@ -213,16 +213,16 @@ static int authenticate_basic_user(request_rec *r)
     if (!(real_pw = get_pw(r, c->user, sec->auth_pwfile))) {
 	if (!(sec->auth_authoritative))
 	    return DECLINED;
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		    "user %s not found: %s", c->user, r->uri);
-	note_basic_auth_failure(r);
+	ap_note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
     /* anyone know where the prototype for crypt is? */
     if (strcmp(real_pw, (char *) crypt(sent_pw, real_pw))) {
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		    "user %s: password mismatch: %s", c->user, r->uri);
-	note_basic_auth_failure(r);
+	ap_note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
     return OK;
@@ -233,14 +233,14 @@ static int authenticate_basic_user(request_rec *r)
 static int check_user_access(request_rec *r)
 {
     auth_config_rec *sec =
-    (auth_config_rec *) get_module_config(r->per_dir_config, &auth_module);
+    (auth_config_rec *) ap_get_module_config(r->per_dir_config, &auth_module);
     char *user = r->connection->user;
     int m = r->method_number;
     int method_restricted = 0;
     register int x;
     const char *t, *w;
     table *grpstatus;
-    array_header *reqs_arr = requires(r);
+    array_header *reqs_arr = ap_requires(r);
     require_line *reqs;
 
     /* BUG FIX: tadc, 11-Nov-1995.  If there is no "requires" directive, 
@@ -263,12 +263,12 @@ static int check_user_access(request_rec *r)
 	method_restricted = 1;
 
 	t = reqs[x].requirement;
-	w = getword(r->pool, &t, ' ');
+	w = ap_getword(r->pool, &t, ' ');
 	if (!strcmp(w, "valid-user"))
 	    return OK;
 	if (!strcmp(w, "user")) {
 	    while (t[0]) {
-		w = getword_conf(r->pool, &t);
+		w = ap_getword_conf(r->pool, &t);
 		if (!strcmp(user, w))
 		    return OK;
 	    }
@@ -278,8 +278,8 @@ static int check_user_access(request_rec *r)
 		return DECLINED;	/* DBM group?  Something else? */
 
 	    while (t[0]) {
-		w = getword_conf(r->pool, &t);
-		if (table_get(grpstatus, w))
+		w = ap_getword_conf(r->pool, &t);
+		if (ap_table_get(grpstatus, w))
 		    return OK;
 	    }
 	}
@@ -291,7 +291,7 @@ static int check_user_access(request_rec *r)
     if (!(sec->auth_authoritative))
 	return DECLINED;
 
-    note_basic_auth_failure(r);
+    ap_note_basic_auth_failure(r);
     return AUTH_REQUIRED;
 }
 

@@ -112,24 +112,24 @@ char *load_module (cmd_parms *cmd, void *dummy, char *modname, char *filename)
 {
     HINSTANCE modhandle;
     module *modp;
-    const char *szModuleFile=server_root_relative(cmd->pool, filename);
+    const char *szModuleFile=ap_server_root_relative(cmd->pool, filename);
 
     if (been_there_done_that) return NULL;
     
     if (!(modhandle = LoadLibraryEx(szModuleFile, NULL,
 				    LOAD_WITH_ALTERED_SEARCH_PATH)))
-	return pstrcat (cmd->pool, "Cannot load ", szModuleFile, " into server",
+	return ap_pstrcat (cmd->pool, "Cannot load ", szModuleFile, " into server",
 			NULL);
  
     /* If I knew what the correct cast is here, I'd be happy. But 
      * I don't. So I'll use (void *). It works.
      */
     if (!(modp = (module *)(GetProcAddress (modhandle, modname)))) {
-	return pstrcat (cmd->pool, "Can't find module ", modname,
+	return ap_pstrcat (cmd->pool, "Can't find module ", modname,
 			" in file ", filename, NULL);
     }
 	
-    add_module (modp);
+    ap_add_module (modp);
 
     /* Alethea Patch (rws,djw2) - need to run configuration functions
        in new modules */
@@ -150,8 +150,8 @@ char *load_file (cmd_parms *cmd, void *dummy, char *filename)
 {
    if (been_there_done_that) return NULL;
     
-	if (!LoadLibrary(server_root_relative(cmd->pool, filename)))
-		return pstrcat (cmd->pool, "Cannot load ", filename, " into server", NULL);
+	if (!LoadLibrary(ap_server_root_relative(cmd->pool, filename)))
+		return ap_pstrcat (cmd->pool, "Cannot load ", filename, " into server", NULL);
  
 	return NULL;
 }

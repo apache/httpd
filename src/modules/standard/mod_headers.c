@@ -130,9 +130,9 @@ module MODULE_VAR_EXPORT headers_module;
 static void *create_headers_config(pool *p, server_rec *s)
 {
     headers_conf *a =
-    (headers_conf *) pcalloc(p, sizeof(headers_conf));
+    (headers_conf *) ap_pcalloc(p, sizeof(headers_conf));
 
-    a->headers = make_array(p, 2, sizeof(header_entry));
+    a->headers = ap_make_array(p, 2, sizeof(header_entry));
     return a;
 }
 
@@ -144,10 +144,10 @@ static void *create_headers_dir_config(pool *p, char *d)
 static void *merge_headers_config(pool *p, void *basev, void *overridesv)
 {
     headers_conf *a =
-    (headers_conf *) pcalloc(p, sizeof(headers_conf));
+    (headers_conf *) ap_pcalloc(p, sizeof(headers_conf));
     headers_conf *base = (headers_conf *) basev, *overrides = (headers_conf *) overridesv;
 
-    a->headers = append_arrays(p, base->headers, overrides->headers);
+    a->headers = ap_append_arrays(p, base->headers, overrides->headers);
 
     return a;
 }
@@ -158,14 +158,14 @@ static const char *header_cmd(cmd_parms *cmd, headers_conf * dirconf, char *acti
     header_entry *new;
     server_rec *s = cmd->server;
     headers_conf *serverconf =
-    (headers_conf *) get_module_config(s->module_config, &headers_module);
+    (headers_conf *) ap_get_module_config(s->module_config, &headers_module);
     char *colon;
 
     if (cmd->path) {
-        new = (header_entry *) push_array(dirconf->headers);
+        new = (header_entry *) ap_push_array(dirconf->headers);
     }
     else {
-        new = (header_entry *) push_array(serverconf->headers);
+        new = (header_entry *) ap_push_array(serverconf->headers);
     }
 
     if (!strcasecmp(action, "set"))
@@ -210,16 +210,16 @@ static void do_headers_fixup(request_rec *r, array_header *headers)
         header_entry *hdr = &((header_entry *) (headers->elts))[i];
         switch (hdr->action) {
         case hdr_add:
-            table_addn(r->headers_out, hdr->header, hdr->value);
+            ap_table_addn(r->headers_out, hdr->header, hdr->value);
             break;
         case hdr_append:
-            table_mergen(r->headers_out, hdr->header, hdr->value);
+            ap_table_mergen(r->headers_out, hdr->header, hdr->value);
             break;
         case hdr_set:
-            table_setn(r->headers_out, hdr->header, hdr->value);
+            ap_table_setn(r->headers_out, hdr->header, hdr->value);
             break;
         case hdr_unset:
-            table_unset(r->headers_out, hdr->header);
+            ap_table_unset(r->headers_out, hdr->header);
             break;
         }
     }
@@ -230,10 +230,10 @@ static int fixup_headers(request_rec *r)
 {
     void *sconf = r->server->module_config;
     headers_conf *serverconf =
-    (headers_conf *) get_module_config(sconf, &headers_module);
+    (headers_conf *) ap_get_module_config(sconf, &headers_module);
     void *dconf = r->per_dir_config;
     headers_conf *dirconf =
-    (headers_conf *) get_module_config(dconf, &headers_module);
+    (headers_conf *) ap_get_module_config(dconf, &headers_module);
 
     do_headers_fixup(r, serverconf->headers);
     do_headers_fixup(r, dirconf->headers);

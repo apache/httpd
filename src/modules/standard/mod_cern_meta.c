@@ -173,7 +173,7 @@ typedef struct {
 static void *create_cern_meta_dir_config(pool *p, char *dummy)
 {
     cern_meta_dir_config *new =
-    (cern_meta_dir_config *) palloc(p, sizeof(cern_meta_dir_config));
+    (cern_meta_dir_config *) ap_palloc(p, sizeof(cern_meta_dir_config));
 
     new->metadir = NULL;
     new->metasuffix = NULL;
@@ -187,7 +187,7 @@ static void *merge_cern_meta_dir_configs(pool *p, void *basev, void *addv)
     cern_meta_dir_config *base = (cern_meta_dir_config *) basev;
     cern_meta_dir_config *add = (cern_meta_dir_config *) addv;
     cern_meta_dir_config *new =
-    (cern_meta_dir_config *) palloc(p, sizeof(cern_meta_dir_config));
+    (cern_meta_dir_config *) ap_palloc(p, sizeof(cern_meta_dir_config));
 
     new->metadir = add->metadir ? add->metadir : base->metadir;
     new->metasuffix = add->metasuffix ? add->metasuffix : base->metasuffix;
@@ -250,7 +250,7 @@ static int scan_meta_file(request_rec *r, FILE *f)
 	/* if we see a bogus header don't ignore it. Shout and scream */
 
 	if (!(l = strchr(w, ':'))) {
-	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 			"malformed header in meta file: %s", r->filename);
 	    return SERVER_ERROR;
 	}
@@ -267,15 +267,15 @@ static int scan_meta_file(request_rec *r, FILE *f)
 	    while (endp > l && isspace(*endp))
 		*endp-- = '\0';
 
-	    r->content_type = pstrdup(r->pool, l);
-	    str_tolower(r->content_type);
+	    r->content_type = ap_pstrdup(r->pool, l);
+	    ap_str_tolower(r->content_type);
 	}
 	else if (!strcasecmp(w, "Status")) {
 	    sscanf(l, "%d", &r->status);
-	    r->status_line = pstrdup(r->pool, l);
+	    r->status_line = ap_pstrdup(r->pool, l);
 	}
 	else {
-	    table_set(r->headers_out, w, l);
+	    ap_table_set(r->headers_out, w, l);
 	}
     }
     return OK;
@@ -292,7 +292,7 @@ static int add_cern_meta_data(request_rec *r)
     int rv;
     request_rec *rr;
 
-    dconf = get_module_config(r->per_dir_config, &cern_meta_module);
+    dconf = ap_get_module_config(r->per_dir_config, &cern_meta_module);
 
     if (!dconf->metafiles) {
 	return DECLINED;
@@ -310,7 +310,7 @@ static int add_cern_meta_data(request_rec *r)
     };
 
     /* what directory is this file in? */
-    scrap_book = pstrdup(r->pool, r->filename);
+    scrap_book = ap_pstrdup(r->pool, r->filename);
     /* skip leading slash, recovered in later processing */
     scrap_book++;
     last_slash = strrchr(scrap_book, '/');
@@ -322,13 +322,13 @@ static int add_cern_meta_data(request_rec *r)
     }
     else {
 	/* no last slash, buh?! */
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		    "internal error in mod_cern_meta: %s", r->filename);
 	/* should really barf, but hey, let's be friends... */
 	return DECLINED;
     };
 
-    metafilename = pstrcat(r->pool, "/", scrap_book, "/",
+    metafilename = ap_pstrcat(r->pool, "/", scrap_book, "/",
 			   dconf->metadir ? dconf->metadir : DEFAULT_METADIR,
 			   "/", real_file,
 		 dconf->metasuffix ? dconf->metasuffix : DEFAULT_METASUFFIX,
@@ -339,26 +339,26 @@ static int add_cern_meta_data(request_rec *r)
      * A better solution might be a "safe open" feature of pfopen to avoid
      * pipes, symlinks, and crap like that.
      */
-    rr = sub_req_lookup_file(metafilename, r);
+    rr = ap_sub_req_lookup_file(metafilename, r);
     if (rr->status != HTTP_OK) {
-	destroy_sub_req(rr);
+	ap_destroy_sub_req(rr);
 	return DECLINED;
     }
-    destroy_sub_req(rr);
+    ap_destroy_sub_req(rr);
 
-    f = pfopen(r->pool, metafilename, "r");
+    f = ap_pfopen(r->pool, metafilename, "r");
     if (f == NULL) {
 	if (errno == ENOENT) {
 	    return DECLINED;
 	}
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 	      "meta file permissions deny server access: %s", metafilename);
 	return FORBIDDEN;
     };
 
     /* read the headers in */
     rv = scan_meta_file(r, f);
-    pfclose(r->pool, f);
+    ap_pfclose(r->pool, f);
 
     return rv;
 }

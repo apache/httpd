@@ -144,23 +144,23 @@ module MODULE_VAR_EXPORT status_module;
 static void format_byte_out(request_rec *r, unsigned long bytes)
 {
     if (bytes < (5 * KBYTE))
-	rprintf(r, "%d B", (int) bytes);
+	ap_rprintf(r, "%d B", (int) bytes);
     else if (bytes < (MBYTE / 2))
-	rprintf(r, "%.1f kB", (float) bytes / KBYTE);
+	ap_rprintf(r, "%.1f kB", (float) bytes / KBYTE);
     else if (bytes < (GBYTE / 2))
-	rprintf(r, "%.1f MB", (float) bytes / MBYTE);
+	ap_rprintf(r, "%.1f MB", (float) bytes / MBYTE);
     else
-	rprintf(r, "%.1f GB", (float) bytes / GBYTE);
+	ap_rprintf(r, "%.1f GB", (float) bytes / GBYTE);
 }
 
 static void format_kbyte_out(request_rec *r, unsigned long kbytes)
 {
     if (kbytes < KBYTE)
-	rprintf(r, "%d kB", (int) kbytes);
+	ap_rprintf(r, "%d kB", (int) kbytes);
     else if (kbytes < MBYTE)
-	rprintf(r, "%.1f MB", (float) kbytes / KBYTE);
+	ap_rprintf(r, "%.1f MB", (float) kbytes / KBYTE);
     else
-	rprintf(r, "%.1f GB", (float) kbytes / MBYTE);
+	ap_rprintf(r, "%.1f GB", (float) kbytes / MBYTE);
 }
 
 #endif
@@ -176,13 +176,13 @@ static void show_time(request_rec *r, time_t tsecs)
     hrs = tsecs % 24;
     days = tsecs / 24;
     if (days)
-	rprintf(r, " %ld day%s", days, days == 1 ? "" : "s");
+	ap_rprintf(r, " %ld day%s", days, days == 1 ? "" : "s");
     if (hrs)
-	rprintf(r, " %ld hour%s", hrs, hrs == 1 ? "" : "s");
+	ap_rprintf(r, " %ld hour%s", hrs, hrs == 1 ? "" : "s");
     if (mins)
-	rprintf(r, " %ld minute%s", mins, mins == 1 ? "" : "s");
+	ap_rprintf(r, " %ld minute%s", mins, mins == 1 ? "" : "s");
     if (secs)
-	rprintf(r, " %ld second%s", secs, secs == 1 ? "" : "s");
+	ap_rprintf(r, " %ld second%s", secs, secs == 1 ? "" : "s");
 }
 
 /* Main handler for x-httpd-status requests */
@@ -242,8 +242,8 @@ static int status_handler(request_rec *r)
 
     tu = ts = tcu = tcs = 0;
 
-    if (!exists_scoreboard_image()) {
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+    if (!ap_exists_scoreboard_image()) {
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		    "Server status unavailable in inetd mode");
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -264,10 +264,10 @@ static int status_handler(request_rec *r)
 		switch (status_options[i].id) {
 		case STAT_OPT_REFRESH:
 		    if (*(loc + strlen(status_options[i].form_data_str)) == '=')
-			table_set(r->headers_out, status_options[i].hdr_out_str,
+			ap_table_set(r->headers_out, status_options[i].hdr_out_str,
 				  loc + strlen(status_options[i].hdr_out_str) + 1);
 		    else
-			table_set(r->headers_out, status_options[i].hdr_out_str, "1");
+			ap_table_set(r->headers_out, status_options[i].hdr_out_str, "1");
 		    break;
 		case STAT_OPT_NOTABLE:
 		    no_table_report = 1;
@@ -282,15 +282,15 @@ static int status_handler(request_rec *r)
 	}
     }
 
-    send_http_header(r);
+    ap_send_http_header(r);
 
     if (r->header_only)
 	return 0;
 
-    sync_scoreboard_image();
+    ap_sync_scoreboard_image();
     for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
-	score_record = scoreboard_image->servers[i];
-	ps_record = scoreboard_image->parent[i];
+	score_record = ap_scoreboard_image->servers[i];
+	ps_record = ap_scoreboard_image->parent[i];
 	res = score_record.status;
 	stat_buffer[i] = status_flags[res];
 	if (res == SERVER_READY)
@@ -317,131 +317,131 @@ static int status_handler(request_rec *r)
 #endif /* STATUS */
     }
 
-    up_time = nowtime - restart_time;
+    up_time = nowtime - ap_restart_time;
 
-    hard_timeout("send status info", r);
+    ap_hard_timeout("send status info", r);
 
     if (!short_report) {
-	rputs("<HTML><HEAD>\n<TITLE>Apache Status</TITLE>\n</HEAD><BODY>\n", r);
-	rputs("<H1>Apache Server Status for ", r);
-	rvputs(r, server->server_hostname, "</H1>\n\n", NULL);
-	rvputs(r, "Server Version: ", apapi_get_server_version(), "<br>\n",
+	ap_rputs("<HTML><HEAD>\n<TITLE>Apache Status</TITLE>\n</HEAD><BODY>\n", r);
+	ap_rputs("<H1>Apache Server Status for ", r);
+	ap_rvputs(r, server->server_hostname, "</H1>\n\n", NULL);
+	ap_rvputs(r, "Server Version: ", ap_get_server_version(), "<br>\n",
 	       NULL);
-	rvputs(r, "Server Built: ", apapi_get_server_built(), "<br>\n<hr>\n",
+	ap_rvputs(r, "Server Built: ", ap_get_server_built(), "<br>\n<hr>\n",
 	       NULL);
-	rvputs(r, "Current Time: ", asctime(localtime(&nowtime)), "<br>\n", NULL);
-	rvputs(r, "Restart Time: ", asctime(localtime(&restart_time)), "<br>\n",
+	ap_rvputs(r, "Current Time: ", asctime(localtime(&nowtime)), "<br>\n", NULL);
+	ap_rvputs(r, "Restart Time: ", asctime(localtime(&ap_restart_time)), "<br>\n",
 	       NULL);
-	rputs("Server uptime: ", r);
+	ap_rputs("Server uptime: ", r);
 	show_time(r, up_time);
-	rputs("<br>\n", r);
+	ap_rputs("<br>\n", r);
     }
 
 #if defined(STATUS)
     if (short_report) {
-	rprintf(r, "Total Accesses: %lu\nTotal kBytes: %lu\n", count, kbcount);
+	ap_rprintf(r, "Total Accesses: %lu\nTotal kBytes: %lu\n", count, kbcount);
 
 #ifndef NO_TIMES
 	/* Allow for OS/2 not having CPU stats */
 	if (ts || tu || tcu || tcs)
-	    rprintf(r, "CPULoad: %g\n", (tu + ts + tcu + tcs) / tick / up_time * 100.);
+	    ap_rprintf(r, "CPULoad: %g\n", (tu + ts + tcu + tcs) / tick / up_time * 100.);
 #endif
 
-	rprintf(r, "Uptime: %ld\n", (long) (up_time));
+	ap_rprintf(r, "Uptime: %ld\n", (long) (up_time));
 	if (up_time > 0)
-	    rprintf(r, "ReqPerSec: %g\n", (float) count / (float) up_time);
+	    ap_rprintf(r, "ReqPerSec: %g\n", (float) count / (float) up_time);
 
 	if (up_time > 0)
-	    rprintf(r, "BytesPerSec: %g\n", KBYTE * (float) kbcount / (float) up_time);
+	    ap_rprintf(r, "BytesPerSec: %g\n", KBYTE * (float) kbcount / (float) up_time);
 
 	if (count > 0)
-	    rprintf(r, "BytesPerReq: %g\n", KBYTE * (float) kbcount / (float) count);
+	    ap_rprintf(r, "BytesPerReq: %g\n", KBYTE * (float) kbcount / (float) count);
     }
     else {			/* !short_report */
-	rprintf(r, "Total accesses: %lu - Total Traffic: ", count);
+	ap_rprintf(r, "Total accesses: %lu - Total Traffic: ", count);
 	format_kbyte_out(r, kbcount);
 
 #ifndef NO_TIMES
 	/* Allow for OS/2 not having CPU stats */
-	rputs("<br>\n", r);
-	rprintf(r, "CPU Usage: u%g s%g cu%g cs%g",
+	ap_rputs("<br>\n", r);
+	ap_rprintf(r, "CPU Usage: u%g s%g cu%g cs%g",
 		tu / tick, ts / tick, tcu / tick, tcs / tick);
 
 	if (ts || tu || tcu || tcs)
-	    rprintf(r, " - %.3g%% CPU load", (tu + ts + tcu + tcs) / tick / up_time * 100.);
+	    ap_rprintf(r, " - %.3g%% CPU load", (tu + ts + tcu + tcs) / tick / up_time * 100.);
 #endif
 
-	rputs("<br>\n", r);
+	ap_rputs("<br>\n", r);
 
 	if (up_time > 0)
-	    rprintf(r, "%.3g requests/sec - ",
+	    ap_rprintf(r, "%.3g requests/sec - ",
 		    (float) count / (float) up_time);
 
 	if (up_time > 0) {
 	    format_byte_out(r, KBYTE * (float) kbcount / (float) up_time);
-	    rputs("/second - ", r);
+	    ap_rputs("/second - ", r);
 	}
 
 	if (count > 0) {
 	    format_byte_out(r, KBYTE * (float) kbcount / (float) count);
-	    rputs("/request", r);
+	    ap_rputs("/request", r);
 	}
 
-	rputs("<br>\n", r);
+	ap_rputs("<br>\n", r);
     }				/* short_report */
 #endif /* STATUS */
 
     if (!short_report)
-	rprintf(r, "\n%d requests currently being processed, %d idle servers\n"
+	ap_rprintf(r, "\n%d requests currently being processed, %d idle servers\n"
 		,busy, ready);
     else
-	rprintf(r, "BusyServers: %d\nIdleServers: %d\n", busy, ready);
+	ap_rprintf(r, "BusyServers: %d\nIdleServers: %d\n", busy, ready);
 
     /* send the scoreboard 'table' out */
 
     if (!short_report)
-	rputs("<PRE>", r);
+	ap_rputs("<PRE>", r);
     else
-	rputs("Scoreboard: ", r);
+	ap_rputs("Scoreboard: ", r);
 
     for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
-	rputc(stat_buffer[i], r);
+	ap_rputc(stat_buffer[i], r);
 	if ((i % STATUS_MAXLINE == (STATUS_MAXLINE - 1)) && !short_report)
-	    rputs("\n", r);
+	    ap_rputs("\n", r);
     }
 
     if (short_report)
-	rputs("\n", r);
+	ap_rputs("\n", r);
     else {
-	rputs("</PRE>\n", r);
-	rputs("Scoreboard Key: <br>\n", r);
-	rputs("\"<B><code>_</code></B>\" Waiting for Connection, \n", r);
-	rputs("\"<B><code>S</code></B>\" Starting up, \n", r);
-	rputs("\"<B><code>R</code></B>\" Reading Request,<BR>\n", r);
-	rputs("\"<B><code>W</code></B>\" Sending Reply, \n", r);
-	rputs("\"<B><code>K</code></B>\" Keepalive (read), \n", r);
-	rputs("\"<B><code>D</code></B>\" DNS Lookup,<BR>\n", r);
-	rputs("\"<B><code>L</code></B>\" Logging, \n", r);
-	rputs("\"<B><code>G</code></B>\" Gracefully finishing, \n", r);
-	rputs("\"<B><code>.</code></B>\" Open slot with no current process<P>\n", r);
+	ap_rputs("</PRE>\n", r);
+	ap_rputs("Scoreboard Key: <br>\n", r);
+	ap_rputs("\"<B><code>_</code></B>\" Waiting for Connection, \n", r);
+	ap_rputs("\"<B><code>S</code></B>\" Starting up, \n", r);
+	ap_rputs("\"<B><code>R</code></B>\" Reading Request,<BR>\n", r);
+	ap_rputs("\"<B><code>W</code></B>\" Sending Reply, \n", r);
+	ap_rputs("\"<B><code>K</code></B>\" Keepalive (read), \n", r);
+	ap_rputs("\"<B><code>D</code></B>\" DNS Lookup,<BR>\n", r);
+	ap_rputs("\"<B><code>L</code></B>\" Logging, \n", r);
+	ap_rputs("\"<B><code>G</code></B>\" Gracefully finishing, \n", r);
+	ap_rputs("\"<B><code>.</code></B>\" Open slot with no current process<P>\n", r);
     }
 
 #if defined(STATUS)
     if (!short_report) {
 	if (no_table_report)
-	    rputs("<p><hr><h2>Server Details</h2>\n\n", r);
+	    ap_rputs("<p><hr><h2>Server Details</h2>\n\n", r);
 	else
 #ifdef NO_TIMES
 	    /* Allow for OS/2 not having CPU stats */
-	    rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n", r);
+	    ap_rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n", r);
 #else
-	    rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n", r);
+	    ap_rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n", r);
 #endif
     }
 
     for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
-	score_record = scoreboard_image->servers[i];
-	ps_record = scoreboard_image->parent[i];
+	score_record = ap_scoreboard_image->servers[i];
+	ps_record = ap_scoreboard_image->parent[i];
 
 #if defined(NO_GETTIMEOFDAY)
 #ifndef NO_TIMES
@@ -477,50 +477,50 @@ static int status_handler(request_rec *r)
 	    if (!short_report) {
 		if (no_table_report) {
 		    if (score_record.status == SERVER_DEAD)
-			rprintf(r, "<b>Server %d</b> (-): %d|%lu|%lu [",
+			ap_rprintf(r, "<b>Server %d</b> (-): %d|%lu|%lu [",
 				i, (int) conn_lres, my_lres, lres);
 		    else
-			rprintf(r, "<b>Server %d</b> (%d): %d|%lu|%lu [",
+			ap_rprintf(r, "<b>Server %d</b> (%d): %d|%lu|%lu [",
 				i, (int) ps_record.pid, (int) conn_lres, my_lres, lres);
 
 		    switch (score_record.status) {
 		    case SERVER_READY:
-			rputs("Ready", r);
+			ap_rputs("Ready", r);
 			break;
 		    case SERVER_STARTING:
-			rputs("Starting", r);
+			ap_rputs("Starting", r);
 			break;
 		    case SERVER_BUSY_READ:
-			rputs("<b>Read</b>", r);
+			ap_rputs("<b>Read</b>", r);
 			break;
 		    case SERVER_BUSY_WRITE:
-			rputs("<b>Write</b>", r);
+			ap_rputs("<b>Write</b>", r);
 			break;
 		    case SERVER_BUSY_KEEPALIVE:
-			rputs("<b>Keepalive</b>", r);
+			ap_rputs("<b>Keepalive</b>", r);
 			break;
 		    case SERVER_BUSY_LOG:
-			rputs("<b>Logging</b>", r);
+			ap_rputs("<b>Logging</b>", r);
 			break;
 		    case SERVER_BUSY_DNS:
-			rputs("<b>DNS lookup</b>", r);
+			ap_rputs("<b>DNS lookup</b>", r);
 			break;
 		    case SERVER_DEAD:
-			rputs("Dead", r);
+			ap_rputs("Dead", r);
 			break;
 		    case SERVER_GRACEFUL:
-			rputs("Graceful", r);
+			ap_rputs("Graceful", r);
 			break;
 		    default:
-			rputs("?STATE?", r);
+			ap_rputs("?STATE?", r);
 			break;
 		    }
 #ifdef NO_TIMES
 		    /* Allow for OS/2 not having CPU stats */
-		    rprintf(r, "]\n %.0f %ld (",
+		    ap_rprintf(r, "]\n %.0f %ld (",
 #else
 
-		    rprintf(r, "] u%g s%g cu%g cs%g\n %.0f %ld (",
+		    ap_rprintf(r, "] u%g s%g cu%g cs%g\n %.0f %ld (",
 			    score_record.times.tms_utime / tick,
 			    score_record.times.tms_stime / tick,
 			    score_record.times.tms_cutime / tick,
@@ -533,60 +533,60 @@ static int status_handler(request_rec *r)
 #endif
 			    (long) req_time);
 		    format_byte_out(r, conn_bytes);
-		    rputs("|", r);
+		    ap_rputs("|", r);
 		    format_byte_out(r, my_bytes);
-		    rputs("|", r);
+		    ap_rputs("|", r);
 		    format_byte_out(r, bytes);
-		    rputs(")\n", r);
-		    rprintf(r, " <i>%s {%s}</i><br>\n\n",
+		    ap_rputs(")\n", r);
+		    ap_rprintf(r, " <i>%s {%s}</i><br>\n\n",
 			    score_record.client,
-			    escape_html(r->pool, score_record.request));
+			    ap_escape_html(r->pool, score_record.request));
 		}
 		else {		/* !no_table_report */
 		    if (score_record.status == SERVER_DEAD)
-			rprintf(r, "<tr><td><b>%d</b><td>-<td>%d/%lu/%lu",
+			ap_rprintf(r, "<tr><td><b>%d</b><td>-<td>%d/%lu/%lu",
 				i, (int) conn_lres, my_lres, lres);
 		    else
-			rprintf(r, "<tr><td><b>%d</b><td>%d<td>%d/%lu/%lu",
+			ap_rprintf(r, "<tr><td><b>%d</b><td>%d<td>%d/%lu/%lu",
 				i, (int) ps_record.pid, (int) conn_lres, my_lres, lres);
 
 		    switch (score_record.status) {
 		    case SERVER_READY:
-			rputs("<td>_", r);
+			ap_rputs("<td>_", r);
 			break;
 		    case SERVER_STARTING:
-			rputs("<td><b>S</b>", r);
+			ap_rputs("<td><b>S</b>", r);
 			break;
 		    case SERVER_BUSY_READ:
-			rputs("<td><b>R</b>", r);
+			ap_rputs("<td><b>R</b>", r);
 			break;
 		    case SERVER_BUSY_WRITE:
-			rputs("<td><b>W</b>", r);
+			ap_rputs("<td><b>W</b>", r);
 			break;
 		    case SERVER_BUSY_KEEPALIVE:
-			rputs("<td><b>K</b>", r);
+			ap_rputs("<td><b>K</b>", r);
 			break;
 		    case SERVER_BUSY_LOG:
-			rputs("<td><b>L</b>", r);
+			ap_rputs("<td><b>L</b>", r);
 			break;
 		    case SERVER_BUSY_DNS:
-			rputs("<td><b>D</b>", r);
+			ap_rputs("<td><b>D</b>", r);
 			break;
 		    case SERVER_DEAD:
-			rputs("<td>.", r);
+			ap_rputs("<td>.", r);
 			break;
 		    case SERVER_GRACEFUL:
-			rputs("<td>G", r);
+			ap_rputs("<td>G", r);
 			break;
 		    default:
-			rputs("<td>?", r);
+			ap_rputs("<td>?", r);
 			break;
 		    }
 #ifdef NO_TIMES
 		    /* Allow for OS/2 not having CPU stats */
-		    rprintf(r, "\n<td>%.0f<td>%ld",
+		    ap_rprintf(r, "\n<td>%.0f<td>%ld",
 #else
-		    rprintf(r, "\n<td>%.2f<td>%.0f<td>%ld",
+		    ap_rprintf(r, "\n<td>%.2f<td>%.0f<td>%ld",
 			    (score_record.times.tms_utime +
 			     score_record.times.tms_stime +
 			     score_record.times.tms_cutime +
@@ -598,12 +598,12 @@ static int status_handler(request_rec *r)
 			    difftime(nowtime, score_record.last_used),
 #endif
 			    (long) req_time);
-		    rprintf(r, "<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
+		    ap_rprintf(r, "<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
 		       (float) conn_bytes / KBYTE, (float) my_bytes / MBYTE,
 			    (float) bytes / MBYTE);
-		    rprintf(r, "<td>%s<td nowrap>%s<td nowrap>%s</tr>\n\n",
+		    ap_rprintf(r, "<td>%s<td nowrap>%s<td nowrap>%s</tr>\n\n",
 			    score_record.client, score_record.vhost,
-			    escape_html(r->pool, score_record.request));
+			    ap_escape_html(r->pool, score_record.request));
 		}		/* no_table_report */
 	    }			/* !short_report */
 	}			/* if (<active child>) */
@@ -611,7 +611,7 @@ static int status_handler(request_rec *r)
 
     if (!(short_report || no_table_report)) {
 #ifdef __EMX__
-	rputs("</table>\n \
+	ap_rputs("</table>\n \
 <hr> \
 <table>\n \
 <tr><th>Srv<td>Server number\n \
@@ -625,7 +625,7 @@ static int status_handler(request_rec *r)
 <tr><th>Slot<td>Total megabytes transferred this slot\n \
 </table>\n", r);
 #else
-	rputs("</table>\n \
+	ap_rputs("</table>\n \
 <hr> \
 <table>\n \
 <tr><th>Srv<td>Server number\n \
@@ -644,19 +644,19 @@ static int status_handler(request_rec *r)
 
 #else /* !defined(STATUS) */
 
-    rputs("<hr>To obtain a full report with current status information and", r);
-    rputs(" DNS and LOGGING status codes \n", r);
-    rputs("you need to recompile Apache after adding the line <pre>", r);
-    rputs("Rule STATUS=yes</pre>into the file <code>Configuration</code>\n", r);
+    ap_rputs("<hr>To obtain a full report with current status information and", r);
+    ap_rputs(" DNS and LOGGING status codes \n", r);
+    ap_rputs("you need to recompile Apache after adding the line <pre>", r);
+    ap_rputs("Rule STATUS=yes</pre>into the file <code>Configuration</code>\n", r);
 
 #endif /* STATUS */
 
     if (!short_report) {
-	rputs(psignature("<HR>\n",r), r);
-	rputs("</BODY></HTML>\n", r);
+	ap_rputs(ap_psignature("<HR>\n",r), r);
+	ap_rputs("</BODY></HTML>\n", r);
     }
 
-    kill_timeout(r);
+    ap_kill_timeout(r);
     return 0;
 }
 

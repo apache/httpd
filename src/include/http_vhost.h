@@ -59,29 +59,29 @@
 #define APACHE_HTTP_VHOST_H
 
 /* called before any config is read */
-void init_vhost_config(pool *p);
+void ap_init_vhost_config(pool *p);
 
 /* called after the config has been read */
-void fini_vhost_config(pool *p, server_rec *main_server);
+void ap_fini_vhost_config(pool *p, server_rec *main_server);
 
 /* handle addresses in <VirtualHost> statement */
-const char *parse_vhost_addrs(pool *p, const char *hostname, server_rec *s);
+const char *ap_parse_vhost_addrs(pool *p, const char *hostname, server_rec *s);
 
 /* handle NameVirtualHost directive */
-const char *set_name_virtual_host (cmd_parms *cmd, void *dummy, char *arg);
+const char *ap_set_name_virtual_host (cmd_parms *cmd, void *dummy, char *arg);
 
 /* given an ip address only, give our best guess as to what vhost it is */
-void update_vhost_given_ip(conn_rec *conn);
+void ap_update_vhost_given_ip(conn_rec *conn);
 
 /* The above is never enough, and this is always called after the headers
  * have been read.  It may change r->server.
  */
-void update_vhost_from_headers(request_rec *r);
+void ap_update_vhost_from_headers(request_rec *r);
 
 /* return 1 if the host:port matches any of the aliases of r->server
  * return 0 otherwise
  */
-API_EXPORT(int) matches_request_vhost(request_rec *r, const char *host,
+API_EXPORT(int) ap_matches_request_vhost(request_rec *r, const char *host,
     unsigned port);
 
 #endif	/* !APACHE_HTTP_VHOST_H */

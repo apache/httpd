@@ -83,13 +83,13 @@ int os_checkconv(struct request_rec *r)
     if (r->content_type && strncmp(r->content_type, "text/", 5)==0) {
         if (strncmp(r->content_type, ASCIITEXT_MAGIC_TYPE_PREFIX, 
         sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1) == 0)
-        r->content_type = pstrcat(r->pool, "text/",
+        r->content_type = ap_pstrcat(r->pool, "text/",
         r->content_type+sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1, NULL);
         else
         /* translate EBCDIC to ASCII */
         convert_to_ascii = 1;
     }
-    bsetflag(r->connection->client, B_EBCDIC2ASCII, convert_to_ascii);
+    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, convert_to_ascii);
 
     return convert_to_ascii;
 }

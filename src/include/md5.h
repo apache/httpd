@@ -100,9 +100,9 @@ typedef struct {
     unsigned char buffer[64];	/* input buffer */
 } AP_MD5_CTX;
 
-API_EXPORT(void) MD5Init(AP_MD5_CTX * context);
-API_EXPORT(void) MD5Update(AP_MD5_CTX * context, const unsigned char *input,
+API_EXPORT(void) ap_MD5Init(AP_MD5_CTX * context);
+API_EXPORT(void) ap_MD5Update(AP_MD5_CTX * context, const unsigned char *input,
 			   unsigned int inputLen);
-API_EXPORT(void) MD5Final(unsigned char digest[16], AP_MD5_CTX * context);
+API_EXPORT(void) ap_MD5Final(unsigned char digest[16], AP_MD5_CTX * context);
 
 #endif	/* !APACHE_MD5_H */

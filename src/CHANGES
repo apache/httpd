@@ -1,5 +1,18 @@
 Changes with Apache 1.3b6
 
+  *) ++++ THE BIG SYMBOL RENAMING ++++
+     To avoid symbol clashes with third-party code compiled into the server,
+     we globally applied the prefix "ap_" to the following classes of
+     functions:
+        - Apache provided general functions (e.g., ap_cpystrn)
+        - Public API functions (e.g., palloc, bgets)
+        - Private functions which we can't make static (because of
+          cross-object usage) but should be (e.g., new_connection)
+     For backward source compatibility a new header file named compat.h was
+     created which provides defines for the old symbol names and can be used
+     by third-party module authors.
+     [The Apache Group]
+
   *) Added dynamic shared object (DSO) support for SVR4-derivates: The
      problem under SVR4 is that there is no command flag to force the linker
      to export the global symbols of the httpd executable therewith they are

@@ -46,9 +46,9 @@
 #define	FNM_PATHNAME	0x02	/* Slash must be matched by slash. */
 #define	FNM_PERIOD	0x04	/* Period must be matched by period. */
 
-API_EXPORT(int) fnmatch(const char *, const char *, int);
+API_EXPORT(int) ap_fnmatch(const char *, const char *, int);
 
 /* this function is an Apache addition */
-API_EXPORT(extern int) is_fnmatch(const char *);
+API_EXPORT(extern int) ap_is_fnmatch(const char *);
 
 #endif /* !_FNMATCH_H_ */

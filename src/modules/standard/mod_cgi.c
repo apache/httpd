@@ -88,7 +88,7 @@ module MODULE_VAR_EXPORT cgi_module;
 
 static int is_scriptaliased(request_rec *r)
 {
-    char *t = table_get(r->notes, "alias-forced-type");
+    char *t = ap_table_get(r->notes, "alias-forced-type");
     return t && (!strcasecmp(t, "cgi-script"));
 }
 
@@ -106,7 +106,7 @@ typedef struct {
 static void *create_cgi_config(pool *p, server_rec *s)
 {
     cgi_server_conf *c =
-    (cgi_server_conf *) pcalloc(p, sizeof(cgi_server_conf));
+    (cgi_server_conf *) ap_pcalloc(p, sizeof(cgi_server_conf));
 
     c->logname = NULL;
     c->logbytes = DEFAULT_LOGBYTES;
@@ -126,7 +126,7 @@ static const char *set_scriptlog(cmd_parms *cmd, void *dummy, char *arg)
 {
     server_rec *s = cmd->server;
     cgi_server_conf *conf =
-    (cgi_server_conf *) get_module_config(s->module_config, &cgi_module);
+    (cgi_server_conf *) ap_get_module_config(s->module_config, &cgi_module);
 
     conf->logname = arg;
     return NULL;
@@ -136,7 +136,7 @@ static const char *set_scriptlog_length(cmd_parms *cmd, void *dummy, char *arg)
 {
     server_rec *s = cmd->server;
     cgi_server_conf *conf =
-    (cgi_server_conf *) get_module_config(s->module_config, &cgi_module);
+    (cgi_server_conf *) ap_get_module_config(s->module_config, &cgi_module);
 
     conf->logbytes = atol(arg);
     return NULL;
@@ -146,7 +146,7 @@ static const char *set_scriptlog_buffer(cmd_parms *cmd, void *dummy, char *arg)
 {
     server_rec *s = cmd->server;
     cgi_server_conf *conf =
-    (cgi_server_conf *) get_module_config(s->module_config, &cgi_module);
+    (cgi_server_conf *) ap_get_module_config(s->module_config, &cgi_module);
 
     conf->bufbytes = atoi(arg);
     return NULL;
@@ -169,26 +169,26 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
     FILE *f;
     struct stat finfo;
 
-    aplog_error(APLOG_MARK, show_errno|APLOG_ERR, r->server, 
+    ap_log_error(APLOG_MARK, show_errno|APLOG_ERR, r->server, 
 		"%s, reason: %s", error, r->filename);
 
     if (!conf->logname ||
-	((stat(server_root_relative(r->pool, conf->logname), &finfo) == 0)
+	((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0)
 	 &&   (finfo.st_size > conf->logbytes)) ||
-         ((f = pfopen(r->pool, server_root_relative(r->pool, conf->logname),
+         ((f = ap_pfopen(r->pool, ap_server_root_relative(r->pool, conf->logname),
 		      "a")) == NULL)) {
 	return ret;
     }
 
     /* "%% [Wed Jun 19 10:53:21 1996] GET /cgi-bin/printenv HTTP/1.0" */
-    fprintf(f, "%%%% [%s] %s %s%s%s %s\n", get_time(), r->method, r->uri,
+    fprintf(f, "%%%% [%s] %s %s%s%s %s\n", ap_get_time(), r->method, r->uri,
 	    r->args ? "?" : "", r->args ? r->args : "", r->protocol);
     /* "%% 500 /usr/local/apache/cgi-bin */
     fprintf(f, "%%%% %d %s\n", ret, r->filename);
 
     fprintf(f, "%%error\n%s\n", error);
 
-    pfclose(r->pool, f);
+    ap_pfclose(r->pool, f);
     return ret;
 }
 
@@ -203,20 +203,20 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     struct stat finfo;
 
     if (!conf->logname ||
-	((stat(server_root_relative(r->pool, conf->logname), &finfo) == 0)
+	((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0)
 	 &&   (finfo.st_size > conf->logbytes)) ||
-         ((f = pfopen(r->pool, server_root_relative(r->pool, conf->logname),
+         ((f = ap_pfopen(r->pool, ap_server_root_relative(r->pool, conf->logname),
 		      "a")) == NULL)) {
 	/* Soak up script output */
-	while (bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
+	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
 	    continue;
-	while (bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
+	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
 	    continue;
 	return ret;
     }
 
     /* "%% [Wed Jun 19 10:53:21 1996] GET /cgi-bin/printenv HTTP/1.0" */
-    fprintf(f, "%%%% [%s] %s %s%s%s %s\n", get_time(), r->method, r->uri,
+    fprintf(f, "%%%% [%s] %s %s%s%s %s\n", ap_get_time(), r->method, r->uri,
 	    r->args ? "?" : "", r->args ? r->args : "", r->protocol);
     /* "%% 500 /usr/local/apache/cgi-bin" */
     fprintf(f, "%%%% %d %s\n", ret, r->filename);
@@ -245,26 +245,26 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     if (sbuf && *sbuf)
 	fprintf(f, "%s\n", sbuf);
 
-    if (bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) {
+    if (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) {
 	fputs("%stdout\n", f);
 	fputs(argsbuffer, f);
-	while (bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
+	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
 	    fputs(argsbuffer, f);
 	fputs("\n", f);
     }
 
-    if (bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
+    if (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
 	fputs("%stderr\n", f);
 	fputs(argsbuffer, f);
-	while (bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
+	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
 	    fputs(argsbuffer, f);
 	fputs("\n", f);
     }
 
-    bclose(script_in);
-    bclose(script_err);
+    ap_bclose(script_in);
+    ap_bclose(script_err);
 
-    pfclose(r->pool, f);
+    ap_pfclose(r->pool, f);
     return ret;
 }
 
@@ -306,8 +306,8 @@ static int cgi_child(void *child_stuff)
 	    r->filename, nph ? "NPH " : "", argv0);
 #endif
 
-    add_cgi_vars(r);
-    env = create_environment(r->pool, r->subprocess_env);
+    ap_add_cgi_vars(r);
+    env = ap_create_environment(r->pool, r->subprocess_env);
 
 #ifdef DEBUG_CGI
     fprintf(dbg, "Environment: \n");
@@ -315,17 +315,17 @@ static int cgi_child(void *child_stuff)
 	fprintf(dbg, "'%s'\n", env[i]);
 #endif
 
-    chdir_file(r->filename);
+    ap_chdir_file(r->filename);
     if (!cld->debug)
-	error_log2stderr(r->server);
+	ap_error_log2stderr(r->server);
 
     /* Transumute outselves into the script.
      * NB only ISINDEX scripts get decoded arguments.
      */
 
-    cleanup_for_exec();
+    ap_cleanup_for_exec();
 
-    child_pid = call_exec(r, argv0, env, 0);
+    child_pid = ap_call_exec(r, argv0, env, 0);
 #ifdef WIN32
     return (child_pid);
 #else
@@ -339,7 +339,7 @@ static int cgi_child(void *child_stuff)
      * a server to aplog_error.
      */
 
-    aplog_error(APLOG_MARK, APLOG_ERR, NULL, "exec of %s failed", r->filename);
+    ap_log_error(APLOG_MARK, APLOG_ERR, NULL, "exec of %s failed", r->filename);
     exit(0);
     /* NOT REACHED */
     return (0);
@@ -355,7 +355,7 @@ static int cgi_handler(request_rec *r)
     int is_included = !strcmp(r->protocol, "INCLUDED");
     void *sconf = r->server->module_config;
     cgi_server_conf *conf =
-    (cgi_server_conf *) get_module_config(sconf, &cgi_module);
+    (cgi_server_conf *) ap_get_module_config(sconf, &cgi_module);
 
     struct cgi_child_stuff cld;
 
@@ -373,7 +373,7 @@ static int cgi_handler(request_rec *r)
 
     nph = !(strncmp(argv0, "nph-", 4));
 
-    if (!(allow_options(r) & OPT_EXECCGI) && !is_scriptaliased(r))
+    if (!(ap_allow_options(r) & OPT_EXECCGI) && !is_scriptaliased(r))
 	return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
 			       "Options ExecCGI is off in this directory");
     if (nph && is_included)
@@ -385,7 +385,7 @@ static int cgi_handler(request_rec *r)
     if (r->finfo.st_mode == 0) {
 	struct stat statbuf;
 
-	r->filename = pstrcat(r->pool, r->filename, ".EXE", NULL);
+	r->filename = ap_pstrcat(r->pool, r->filename, ".EXE", NULL);
 
 	if ((stat(r->filename, &statbuf) != 0) || (!S_ISREG(statbuf.st_mode))) {
 	    return log_scripterror(r, conf, NOT_FOUND, 0,
@@ -400,16 +400,16 @@ static int cgi_handler(request_rec *r)
     if (S_ISDIR(r->finfo.st_mode))
 	return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
 			       "attempt to invoke directory as script");
-    if (!suexec_enabled) {
-	if (!can_exec(&r->finfo))
+    if (!ap_suexec_enabled) {
+	if (!ap_can_exec(&r->finfo))
 	    return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
 				   "file permissions deny server execution");
     }
 
-    if ((retval = setup_client_block(r, REQUEST_CHUNKED_ERROR)))
+    if ((retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR)))
 	return retval;
 
-    add_common_vars(r);
+    ap_add_common_vars(r);
     cld.argv0 = argv0;
     cld.r = r;
     cld.nph = nph;
@@ -418,7 +418,7 @@ static int cgi_handler(request_rec *r)
 #ifdef CHARSET_EBCDIC
     /* XXX:@@@ Is the generated/included output ALWAYS in text/ebcdic format? */
     /* Or must we check the Content-Type first? */
-    bsetflag(r->connection->client, B_EBCDIC2ASCII, 1);
+    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, 1);
 #endif /*CHARSET_EBCDIC*/
 
     /*
@@ -426,11 +426,11 @@ static int cgi_handler(request_rec *r)
      * waiting for free_proc_chain to cleanup in the middle of an
      * SSI request -djg
      */
-    if (!spawn_child_err_buff(r->main ? r->main->pool : r->pool, cgi_child,
+    if (!ap_spawn_child_err_buff(r->main ? r->main->pool : r->pool, cgi_child,
 			            (void *) &cld,
 			       kill_after_timeout,
 			       &script_out, &script_in, &script_err)) {
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "couldn't spawn child process: %s", r->filename);
 	return SERVER_ERROR;
     }
@@ -444,22 +444,22 @@ static int cgi_handler(request_rec *r)
      * spurious newline).
      */
 
-    if (should_client_block(r)) {
+    if (ap_should_client_block(r)) {
 	void (*handler) (int);
 	int dbsize, len_read;
 
 	if (conf->logname) {
-	    dbuf = pcalloc(r->pool, conf->bufbytes + 1);
+	    dbuf = ap_pcalloc(r->pool, conf->bufbytes + 1);
 	    dbpos = 0;
 	}
 
-	hard_timeout("copy script args", r);
+	ap_hard_timeout("copy script args", r);
 #ifdef SIGPIPE
 	handler = signal(SIGPIPE, SIG_IGN);
 #endif
 
 	while ((len_read =
-		get_client_block(r, argsbuffer, HUGE_STRING_LEN)) > 0) {
+		ap_get_client_block(r, argsbuffer, HUGE_STRING_LEN)) > 0) {
 	    if (conf->logname) {
 		if ((dbpos + len_read) > conf->bufbytes) {
 		    dbsize = conf->bufbytes - dbpos;
@@ -470,30 +470,30 @@ static int cgi_handler(request_rec *r)
 		memcpy(dbuf + dbpos, argsbuffer, dbsize);
 		dbpos += dbsize;
 	    }
-	    reset_timeout(r);
-	    if (bwrite(script_out, argsbuffer, len_read) < len_read) {
+	    ap_reset_timeout(r);
+	    if (ap_bwrite(script_out, argsbuffer, len_read) < len_read) {
 		/* silly script stopped reading, soak up remaining message */
-		while (get_client_block(r, argsbuffer, HUGE_STRING_LEN) > 0) {
+		while (ap_get_client_block(r, argsbuffer, HUGE_STRING_LEN) > 0) {
 		    /* dump it */
 		}
 		break;
 	    }
 	}
 
-	bflush(script_out);
+	ap_bflush(script_out);
 	signal(SIGPIPE, handler);
 
-	kill_timeout(r);
+	ap_kill_timeout(r);
     }
 
-    bclose(script_out);
+    ap_bclose(script_out);
 
     /* Handle script return... */
     if (script_in && !nph) {
 	char *location, sbuf[MAX_STRING_LEN];
 	int ret;
 
-	if ((ret = scan_script_header_err_buff(r, script_in, sbuf))) {
+	if ((ret = ap_scan_script_header_err_buff(r, script_in, sbuf))) {
 	    return log_script(r, conf, ret, dbuf, sbuf, script_in, script_err);
 	}
 
@@ -502,34 +502,34 @@ static int cgi_handler(request_rec *r)
         os_checkconv(r);
 #endif /*CHARSET_EBCDIC*/
 
-	location = table_get(r->headers_out, "Location");
+	location = ap_table_get(r->headers_out, "Location");
 
 	if (location && location[0] == '/' && r->status == 200) {
 
 	    /* Soak up all the script output */
-	    hard_timeout("read from script", r);
-	    while (bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) {
+	    ap_hard_timeout("read from script", r);
+	    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) {
 		continue;
 	    }
-	    while (bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
+	    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
 		continue;
 	    }
-	    kill_timeout(r);
+	    ap_kill_timeout(r);
 
 
 	    /* This redirect needs to be a GET no matter what the original
 	     * method was.
 	     */
-	    r->method = pstrdup(r->pool, "GET");
+	    r->method = ap_pstrdup(r->pool, "GET");
 	    r->method_number = M_GET;
 
 	    /* We already read the message body (if any), so don't allow
 	     * the redirected request to think it has one.  We can ignore 
 	     * Transfer-Encoding, since we used REQUEST_CHUNKED_ERROR.
 	     */
-	    table_unset(r->headers_in, "Content-Length");
+	    ap_table_unset(r->headers_in, "Content-Length");
 
-	    internal_redirect_handler(location, r);
+	    ap_internal_redirect_handler(location, r);
 	    return OK;
 	}
 	else if (location && r->status == 200) {
@@ -539,22 +539,22 @@ static int cgi_handler(request_rec *r)
 	    return REDIRECT;
 	}
 
-	send_http_header(r);
+	ap_send_http_header(r);
 	if (!r->header_only) {
-	    send_fb(script_in, r);
+	    ap_send_fb(script_in, r);
 	}
-	bclose(script_in);
+	ap_bclose(script_in);
 
-	soft_timeout("soaking script stderr", r);
-	while (bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
+	ap_soft_timeout("soaking script stderr", r);
+	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
 	    continue;
 	}
-	kill_timeout(r);
-	bclose(script_err);
+	ap_kill_timeout(r);
+	ap_bclose(script_err);
     }
 
     if (script_in && nph) {
-	send_fb(script_in, r);
+	ap_send_fb(script_in, r);
     }
 
     return OK;			/* NOT r->status, even if it has changed. */

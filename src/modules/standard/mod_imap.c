@@ -124,7 +124,7 @@ typedef struct {
 static void *create_imap_dir_config(pool *p, char *dummy)
 {
     imap_conf_rec *icr =
-    (imap_conf_rec *) palloc(p, sizeof(imap_conf_rec));
+    (imap_conf_rec *) ap_palloc(p, sizeof(imap_conf_rec));
 
     icr->imap_menu = NULL;
     icr->imap_default = NULL;
@@ -135,7 +135,7 @@ static void *create_imap_dir_config(pool *p, char *dummy)
 
 static void *merge_imap_dir_configs(pool *p, void *basev, void *addv)
 {
-    imap_conf_rec *new = (imap_conf_rec *) pcalloc(p, sizeof(imap_conf_rec));
+    imap_conf_rec *new = (imap_conf_rec *) ap_pcalloc(p, sizeof(imap_conf_rec));
     imap_conf_rec *base = (imap_conf_rec *) basev;
     imap_conf_rec *add = (imap_conf_rec *) addv;
 
@@ -150,13 +150,13 @@ static void *merge_imap_dir_configs(pool *p, void *basev, void *addv)
 
 static const command_rec imap_cmds[] =
 {
-    {"ImapMenu", set_string_slot,
+    {"ImapMenu", ap_set_string_slot,
      (void *) XtOffsetOf(imap_conf_rec, imap_menu), OR_INDEXES, TAKE1,
  "the type of menu generated: none, formatted, semiformatted, unformatted"},
-    {"ImapDefault", set_string_slot,
+    {"ImapDefault", ap_set_string_slot,
      (void *) XtOffsetOf(imap_conf_rec, imap_default), OR_INDEXES, TAKE1,
      "the action taken if no match: error, nocontent, referer, menu, URL"},
-    {"ImapBase", set_string_slot,
+    {"ImapBase", ap_set_string_slot,
      (void *) XtOffsetOf(imap_conf_rec, imap_base), OR_INDEXES, TAKE1,
      "the base for all URL's: map, referer, URL (or start of)"},
     {NULL}
@@ -359,18 +359,18 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
     char *my_base;
 
     if (!strcasecmp(value, "map") || !strcasecmp(value, "menu")) {
-	return construct_url(r->pool, r->uri, r);
+	return ap_construct_url(r->pool, r->uri, r);
     }
 
     if (!strcasecmp(value, "nocontent") || !strcasecmp(value, "error")) {
-        return pstrdup(r->pool, value);      /* these are handled elsewhere,
+        return ap_pstrdup(r->pool, value);      /* these are handled elsewhere,
                                                 so just copy them */
     }
 
     if (!strcasecmp(value, "referer")) {
-        referer = table_get(r->headers_in, "Referer");
+        referer = ap_table_get(r->headers_in, "Referer");
         if (referer && *referer) {
-	    return pstrdup(r->pool, referer);
+	    return ap_pstrdup(r->pool, referer);
         }
         else {
 	    /* XXX:  This used to do *value = '\0'; ... which is totally bogus
@@ -392,25 +392,25 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
     if (*string_pos_const == ':') {
 	/* if letters and then a colon (like http:) */
 	/* it's an absolute URL, so use it! */
-	return pstrdup(r->pool, value);
+	return ap_pstrdup(r->pool, value);
     }
 
     if (!base || !*base) {
         if (value && *value) {
-	    return pstrdup(r->pool, value); /* no base: use what is given */
+	    return ap_pstrdup(r->pool, value); /* no base: use what is given */
         }
 	/* no base, no value: pick a simple default */
-	return construct_url(r->pool, "/", r);
+	return ap_construct_url(r->pool, "/", r);
     }
 
     /* must be a relative URL to be combined with base */
     if (strchr(base, '/') == NULL && (!strncmp(value, "../", 3)
         || !strcmp(value, ".."))) {
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "invalid base directive in map file: %s", r->uri);
         return NULL;
     }
-    my_base = pstrdup(r->pool, base);
+    my_base = ap_pstrdup(r->pool, base);
     string_pos = my_base;
     while (*string_pos) {
         if (*string_pos == '/' && *(string_pos + 1) == '/') {
@@ -466,7 +466,7 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
                                    value */
         }
         else if (directory) {
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                         "invalid directory name in map file: %s", r->uri);
             return NULL;
         }
@@ -482,7 +482,7 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
                                    with '..' */
 
     if (value && *value) {
-	return pstrcat(r->pool, my_base, value, NULL);
+	return ap_pstrcat(r->pool, my_base, value, NULL);
     }
     return my_base;
 }
@@ -496,7 +496,7 @@ static int imap_reply(request_rec *r, char *redirect)
         return HTTP_NO_CONTENT; /* tell the client to keep the page it has */
     }
     if (redirect && *redirect) {
-        table_setn(r->headers_out, "Location", redirect);
+        ap_table_setn(r->headers_out, "Location", redirect);
         return REDIRECT;        /* must be a URL, so redirect to it */
     }
     return SERVER_ERROR;
@@ -505,14 +505,14 @@ static int imap_reply(request_rec *r, char *redirect)
 static void menu_header(request_rec *r, char *menu)
 {
     r->content_type = "text/html";
-    send_http_header(r);
-    hard_timeout("send menu", r);       /* killed in menu_footer */
+    ap_send_http_header(r);
+    ap_hard_timeout("send menu", r);       /* killed in menu_footer */
 
-    rvputs(r, "<html><head>\n<title>Menu for ", r->uri,
+    ap_rvputs(r, "<html><head>\n<title>Menu for ", r->uri,
            "</title>\n</head><body>\n", NULL);
 
     if (!strcasecmp(menu, "formatted")) {
-        rvputs(r, "<h1>Menu for ", r->uri, "</h1>\n<hr>\n\n", NULL);
+        ap_rvputs(r, "<h1>Menu for ", r->uri, "</h1>\n<hr>\n\n", NULL);
     }
 
     return;
@@ -521,13 +521,13 @@ static void menu_header(request_rec *r, char *menu)
 static void menu_blank(request_rec *r, char *menu)
 {
     if (!strcasecmp(menu, "formatted")) {
-        rputs("\n", r);
+        ap_rputs("\n", r);
     }
     if (!strcasecmp(menu, "semiformatted")) {
-        rputs("<br>\n", r);
+        ap_rputs("<br>\n", r);
     }
     if (!strcasecmp(menu, "unformatted")) {
-        rputs("\n", r);
+        ap_rputs("\n", r);
     }
     return;
 }
@@ -535,13 +535,13 @@ static void menu_blank(request_rec *r, char *menu)
 static void menu_comment(request_rec *r, char *menu, char *comment)
 {
     if (!strcasecmp(menu, "formatted")) {
-        rputs("\n", r);         /* print just a newline if 'formatted' */
+        ap_rputs("\n", r);         /* print just a newline if 'formatted' */
     }
     if (!strcasecmp(menu, "semiformatted") && *comment) {
-        rvputs(r, comment, "\n", NULL);
+        ap_rvputs(r, comment, "\n", NULL);
     }
     if (!strcasecmp(menu, "unformatted") && *comment) {
-        rvputs(r, comment, "\n", NULL);
+        ap_rvputs(r, comment, "\n", NULL);
     }
     return;                     /* comments are ignored in the
                                    'formatted' form */
@@ -554,15 +554,15 @@ static void menu_default(request_rec *r, char *menu, char *href, char *text)
                                    really href's */
     }
     if (!strcasecmp(menu, "formatted")) {
-        rvputs(r, "<pre>(Default) <a href=\"", href, "\">", text,
+        ap_rvputs(r, "<pre>(Default) <a href=\"", href, "\">", text,
                "</a></pre>\n", NULL);
     }
     if (!strcasecmp(menu, "semiformatted")) {
-        rvputs(r, "<pre>(Default) <a href=\"", href, "\">", text,
+        ap_rvputs(r, "<pre>(Default) <a href=\"", href, "\">", text,
                "</a></pre>\n", NULL);
     }
     if (!strcasecmp(menu, "unformatted")) {
-        rvputs(r, "<a href=\"", href, "\">", text, "</a>", NULL);
+        ap_rvputs(r, "<a href=\"", href, "\">", text, "</a>", NULL);
     }
     return;
 }
@@ -574,23 +574,23 @@ static void menu_directive(request_rec *r, char *menu, char *href, char *text)
                                    really an href */
     }
     if (!strcasecmp(menu, "formatted")) {
-        rvputs(r, "<pre>          <a href=\"", href, "\">", text,
+        ap_rvputs(r, "<pre>          <a href=\"", href, "\">", text,
                "</a></pre>\n", NULL);
     }
     if (!strcasecmp(menu, "semiformatted")) {
-        rvputs(r, "<pre>          <a href=\"", href, "\">", text,
+        ap_rvputs(r, "<pre>          <a href=\"", href, "\">", text,
                "</a></pre>\n", NULL);
     }
     if (!strcasecmp(menu, "unformatted")) {
-        rvputs(r, "<a href=\"", href, "\">", text, "</a>", NULL);
+        ap_rvputs(r, "<a href=\"", href, "\">", text, "</a>", NULL);
     }
     return;
 }
 
 static void menu_footer(request_rec *r)
 {
-    rputs("\n\n</body>\n</html>\n", r);         /* finish the menu */
-    kill_timeout(r);
+    ap_rputs("\n\n</body>\n</html>\n", r);         /* finish the menu */
+    ap_kill_timeout(r);
 }
 
 static int imap_handler(request_rec *r)
@@ -612,7 +612,7 @@ static int imap_handler(request_rec *r)
     char *string_pos;
     int showmenu = 0;
 
-    imap_conf_rec *icr = get_module_config(r->per_dir_config, &imap_module);
+    imap_conf_rec *icr = ap_get_module_config(r->per_dir_config, &imap_module);
 
     char *imap_menu = icr->imap_menu ? icr->imap_menu : IMAP_MENU_DEFAULT;
     char *imap_default = icr->imap_default
@@ -625,7 +625,7 @@ static int imap_handler(request_rec *r)
 	return DECLINED;
     }
 
-    imap = pcfg_openfile(r->pool, r->filename);
+    imap = ap_pcfg_openfile(r->pool, r->filename);
 
     if (!imap) {
         return NOT_FOUND;
@@ -662,7 +662,7 @@ static int imap_handler(request_rec *r)
         menu_header(r, imap_menu);
     }
 
-    while (!cfg_getline(input, sizeof(input), imap)) {
+    while (!ap_cfg_getline(input, sizeof(input), imap)) {
         if (!input[0]) {
             if (showmenu) {
                 menu_blank(r, imap_menu);
@@ -791,7 +791,7 @@ static int imap_handler(request_rec *r)
         if (!strcasecmp(directive, "poly")) {   /* poly */
 
             if (pointinpoly(testpoint, pointarray)) {
-		cfg_closefile(imap);
+		ap_cfg_closefile(imap);
                 redirect = imap_url(r, base, value);
 		if (!redirect) {
 		    return HTTP_INTERNAL_SERVER_ERROR;
@@ -804,7 +804,7 @@ static int imap_handler(request_rec *r)
         if (!strcasecmp(directive, "circle")) {         /* circle */
 
             if (pointincircle(testpoint, pointarray)) {
-		cfg_closefile(imap);
+		ap_cfg_closefile(imap);
                 redirect = imap_url(r, base, value);
 		if (!redirect) {
 		    return HTTP_INTERNAL_SERVER_ERROR;
@@ -817,7 +817,7 @@ static int imap_handler(request_rec *r)
         if (!strcasecmp(directive, "rect")) {   /* rect */
 
             if (pointinrect(testpoint, pointarray)) {
-		cfg_closefile(imap);
+		ap_cfg_closefile(imap);
                 redirect = imap_url(r, base, value);
 		if (!redirect) {
 		    return HTTP_INTERNAL_SERVER_ERROR;
@@ -830,7 +830,7 @@ static int imap_handler(request_rec *r)
         if (!strcasecmp(directive, "point")) {  /* point */
 
             if (is_closer(testpoint, pointarray, &closest_yet)) {
-		closest = pstrdup(r->pool, value);
+		closest = ap_pstrdup(r->pool, value);
             }
 
             continue;
@@ -839,7 +839,7 @@ static int imap_handler(request_rec *r)
 
     }                           /* nothing matched, so we get another line! */
 
-    cfg_closefile(imap);        /* we are done with the map file; close it */
+    ap_cfg_closefile(imap);        /* we are done with the map file; close it */
 
     if (showmenu) {
         menu_footer(r);         /* finish the menu and we are done */
@@ -867,17 +867,17 @@ static int imap_handler(request_rec *r)
                                                  we failed. They lose! */
 
 need_2_fields:
-    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		"map file %s, line %d syntax error: requires at "
                 "least two fields", r->uri, imap->line_number);
     /* fall through */
 menu_bail:
-    cfg_closefile(imap);
+    ap_cfg_closefile(imap);
     if (showmenu) {
 	/* There's not much else we can do ... we've already sent the headers
 	 * to the client.
 	 */
-	rputs("\n\n[an internal server error occured]\n", r);
+	ap_rputs("\n\n[an internal server error occured]\n", r);
 	menu_footer(r);
 	return OK;
     }

@@ -69,7 +69,7 @@ static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_word(struct dirconn_entry *This, request_rec *r);
 
 /* already called in the knowledge that the characters are hex digits */
-int proxy_hex2c(const char *x)
+int ap_proxy_hex2c(const char *x)
 {
     int i, ch;
 
@@ -96,7 +96,7 @@ int proxy_hex2c(const char *x)
 #endif /*CHARSET_EBCDIC*/
 }
 
-void proxy_c2hex(int ch, char *x)
+void ap_proxy_c2hex(int ch, char *x)
 {
 #ifndef CHARSET_EBCDIC
     int i;
@@ -134,7 +134,7 @@ void proxy_c2hex(int ch, char *x)
  * those which must not be touched.
  */
 char *
-     proxy_canonenc(pool *p, const char *x, int len, enum enctype t, int isenc)
+     ap_proxy_canonenc(pool *p, const char *x, int len, enum enctype t, int isenc)
 {
     int i, j, ch;
     char *y;
@@ -166,7 +166,7 @@ char *
     else
 	reserved = "";
 
-    y = palloc(p, 3 * len + 1);
+    y = ap_palloc(p, 3 * len + 1);
 
     for (i = 0, j = 0; i < len; i++, j++) {
 /* always handle '/' first */
@@ -179,17 +179,17 @@ char *
 	if (isenc && ch == '%') {
 	    if (!isxdigit(x[i + 1]) || !isxdigit(x[i + 2]))
 		return NULL;
-	    ch = proxy_hex2c(&x[i + 1]);
+	    ch = ap_proxy_hex2c(&x[i + 1]);
 	    i += 2;
 	    if (ch != 0 && strchr(reserved, ch)) {	/* keep it encoded */
-		proxy_c2hex(ch, &y[j]);
+		ap_proxy_c2hex(ch, &y[j]);
 		j += 2;
 		continue;
 	    }
 	}
 /* recode it, if necessary */
 	if (!isalnum(ch) && !strchr(allowed, ch)) {
-	    proxy_c2hex(ch, &y[j]);
+	    ap_proxy_c2hex(ch, &y[j]);
 	    j += 2;
 	}
 	else
@@ -210,7 +210,7 @@ char *
  * Returns an error string.
  */
 char *
-     proxy_canon_netloc(pool *p, char **const urlp, char **userp,
+     ap_proxy_canon_netloc(pool *p, char **const urlp, char **userp,
 			char **passwordp, char **hostp, int *port)
 {
     int i;
@@ -238,12 +238,12 @@ char *
 	strp = strchr(user, ':');
 	if (strp != NULL) {
 	    *strp = '\0';
-	    password = proxy_canonenc(p, strp + 1, strlen(strp + 1), enc_user, 1);
+	    password = ap_proxy_canonenc(p, strp + 1, strlen(strp + 1), enc_user, 1);
 	    if (password == NULL)
 		return "Bad %-escape in URL (password)";
 	}
 
-	user = proxy_canonenc(p, user, strlen(user), enc_user, 1);
+	user = ap_proxy_canonenc(p, user, strlen(user), enc_user, 1);
 	if (user == NULL)
 	    return "Bad %-escape in URL (username)";
     }
@@ -268,7 +268,7 @@ char *
 	if (*port > 65535)
 	    return "Port number in URL > 65535";
     }
-    str_tolower(host);		/* DNS names are case-insensitive */
+    ap_str_tolower(host);		/* DNS names are case-insensitive */
     if (*host == '\0')
 	return "Missing host in URL";
 /* check hostname syntax */
@@ -305,7 +305,7 @@ static const char * const lwday[7] =
  * formatted, then it exits very quickly.
  */
 char *
-     proxy_date_canon(pool *p, char *x)
+     ap_proxy_date_canon(pool *p, char *x)
 {
     int wk, mday, year, hour, min, sec, mon;
     char *q, month[4], zone[4], week[4];
@@ -340,7 +340,7 @@ char *
 		   &min, &sec, &year) != 7)
 	    return x;
 	for (wk = 0; wk < 7; wk++)
-	    if (strcmp(week, day_snames[wk]) == 0)
+	    if (strcmp(week, ap_day_snames[wk]) == 0)
 		break;
 	if (wk == 7)
 	    return x;
@@ -348,15 +348,15 @@ char *
 
 /* check date */
     for (mon = 0; mon < 12; mon++)
-	if (strcmp(month, month_snames[mon]) == 0)
+	if (strcmp(month, ap_month_snames[mon]) == 0)
 	    break;
     if (mon == 12)
 	return x;
 
     if (strlen(x) < 30)
-	x = palloc(p, 30);
-    ap_snprintf(x, 30, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", day_snames[wk], mday,
-		month_snames[mon], year, hour, min, sec);
+	x = ap_palloc(p, 30);
+    ap_snprintf(x, 30, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", ap_day_snames[wk], mday,
+		ap_month_snames[mon], year, hour, min, sec);
     return x;
 }
 
@@ -365,19 +365,19 @@ char *
  * Returns NULL on file error
  */
 array_header *
-             proxy_read_headers(pool *p, char *buffer, int size, BUFF *f)
+             ap_proxy_read_headers(pool *p, char *buffer, int size, BUFF *f)
 {
     int gotcr, len, i, j;
     array_header *resp_hdrs;
     struct hdr_entry *hdr;
     char *strp;
 
-    resp_hdrs = make_array(p, 10, sizeof(struct hdr_entry));
+    resp_hdrs = ap_make_array(p, 10, sizeof(struct hdr_entry));
     hdr = NULL;
 
     gotcr = 1;
     for (;;) {
-	len = bgets(buffer, size, f);
+	len = ap_bgets(buffer, size, f);
 	if (len == -1)
 	    return NULL;
 	if (len == 0)
@@ -394,14 +394,14 @@ array_header *
 	    if (hdr == NULL) {
 		/* error!! */
 		if (!i) {
-		    i = bskiplf(f);
+		    i = ap_bskiplf(f);
 		    if (i == -1)
 			return NULL;
 		}
 		gotcr = 1;
 		continue;
 	    }
-	    hdr->value = pstrcat(p, hdr->value, buffer, NULL);
+	    hdr->value = ap_pstrcat(p, hdr->value, buffer, NULL);
 	}
 	else if (gotcr && len == 0)
 	    break;
@@ -410,7 +410,7 @@ array_header *
 	    if (strp == NULL) {
 		/* error!! */
 		if (!gotcr) {
-		    i = bskiplf(f);
+		    i = ap_bskiplf(f);
 		    if (i == -1)
 			return NULL;
 		}
@@ -418,12 +418,12 @@ array_header *
 		hdr = NULL;
 		continue;
 	    }
-	    hdr = push_array(resp_hdrs);
+	    hdr = ap_push_array(resp_hdrs);
 	    *(strp++) = '\0';
-	    hdr->field = pstrdup(p, buffer);
+	    hdr->field = ap_pstrdup(p, buffer);
 	    while (*strp == ' ' || *strp == '\t')
 		strp++;
-	    hdr->value = pstrdup(p, strp);
+	    hdr->value = ap_pstrdup(p, strp);
 	    gotcr = i;
 	}
     }
@@ -440,7 +440,7 @@ array_header *
     return resp_hdrs;
 }
 
-long int proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
+long int ap_proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
 {
     char buf[IOBUFSIZE];
     long total_bytes_sent;
@@ -451,23 +451,23 @@ long int proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
 
 #ifdef CHARSET_EBCDIC
     /* The cache copy is ASCII, not EBCDIC, even for text/html) */
-    bsetflag(f, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
+    ap_bsetflag(f, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
     if (f2 != NULL)
-	bsetflag(f2, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
-    bsetflag(con->client, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
+	ap_bsetflag(f2, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
+    ap_bsetflag(con->client, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
 #endif
 
     /* Since we are reading from one buffer and writing to another,
      * it is unsafe to do a soft_timeout here, at least until the proxy
      * has its own timeout handler which can set both buffers to EOUT.
      */
-    hard_timeout("proxy send body", r);
+    ap_hard_timeout("proxy send body", r);
 
     while (!con->aborted && f != NULL) {
-	n = bread(f, buf, IOBUFSIZE);
+	n = ap_bread(f, buf, IOBUFSIZE);
 	if (n == -1) {		/* input error */
 	    if (f2 != NULL)
-		f2 = proxy_cache_error(c);
+		f2 = ap_proxy_cache_error(c);
 	    break;
 	}
 	if (n == 0)
@@ -476,14 +476,14 @@ long int proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
 	total_bytes_sent += n;
 
 	if (f2 != NULL)
-	    if (bwrite(f2, buf, n) != n)
-		f2 = proxy_cache_error(c);
+	    if (ap_bwrite(f2, buf, n) != n)
+		f2 = ap_proxy_cache_error(c);
 
 	while (n && !con->aborted) {
-	    w = bwrite(con->client, &buf[o], n);
+	    w = ap_bwrite(con->client, &buf[o], n);
 	    if (w <= 0) {
 		if (f2 != NULL) {
-		    pclosef(c->req->pool, c->fp->fd);
+		    ap_pclosef(c->req->pool, c->fp->fd);
 		    c->fp = NULL;
 		    f2 = NULL;
 		    con->aborted = 1;
@@ -491,15 +491,15 @@ long int proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
 		}
 		break;
 	    }
-	    reset_timeout(r);	/* reset timeout after successful write */
+	    ap_reset_timeout(r);	/* reset timeout after successful write */
 	    n -= w;
 	    o += w;
 	}
     }
     if (!con->aborted)
-	bflush(con->client);
+	ap_bflush(con->client);
 
-    kill_timeout(r);
+    ap_kill_timeout(r);
     return total_bytes_sent;
 }
 
@@ -507,7 +507,7 @@ long int proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
  * Read a header from the array, returning the first entry
  */
 struct hdr_entry *
-          proxy_get_header(array_header *hdrs_arr, const char *name)
+          ap_proxy_get_header(array_header *hdrs_arr, const char *name)
 {
     struct hdr_entry *hdrs;
     int i;
@@ -526,7 +526,7 @@ struct hdr_entry *
  * is not subsequently overwritten
  */
 struct hdr_entry *
-          proxy_add_header(array_header *hdrs_arr, char *field, char *value,
+          ap_proxy_add_header(array_header *hdrs_arr, char *field, char *value,
 			   int rep)
 {
     int i;
@@ -540,14 +540,14 @@ struct hdr_entry *
 		return hdrs;
 	    }
 
-    hdrs = push_array(hdrs_arr);
+    hdrs = ap_push_array(hdrs_arr);
     hdrs->field = field;
     hdrs->value = value;
 
     return hdrs;
 }
 
-void proxy_del_header(array_header *hdrs_arr, const char *field)
+void ap_proxy_del_header(array_header *hdrs_arr, const char *field)
 {
     int i;
     struct hdr_entry *hdrs;
@@ -566,7 +566,7 @@ void proxy_del_header(array_header *hdrs_arr, const char *field)
  * 
  * A timeout should be set before calling this routine.
  */
-void proxy_send_headers(request_rec *r, const char *respline, array_header *hdrs_arr)
+void ap_proxy_send_headers(request_rec *r, const char *respline, array_header *hdrs_arr)
 {
     struct hdr_entry *hdrs;
     int i;
@@ -574,16 +574,16 @@ void proxy_send_headers(request_rec *r, const char *respline, array_header *hdrs
 
     hdrs = (struct hdr_entry *) hdrs_arr->elts;
 
-    bputs(respline, fp);
-    bputs(CRLF, fp);
+    ap_bputs(respline, fp);
+    ap_bputs(CRLF, fp);
     for (i = 0; i < hdrs_arr->nelts; i++) {
 	if (hdrs[i].field == NULL)
 	    continue;
-	bvputs(fp, hdrs[i].field, ": ", hdrs[i].value, CRLF, NULL);
-	table_set(r->headers_out, hdrs[i].field, hdrs[i].value);
+	ap_bvputs(fp, hdrs[i].field, ": ", hdrs[i].value, CRLF, NULL);
+	ap_table_set(r->headers_out, hdrs[i].field, hdrs[i].value);
     }
 
-    bputs(CRLF, fp);
+    ap_bputs(CRLF, fp);
 }
 
 
@@ -593,7 +593,7 @@ void proxy_send_headers(request_rec *r, const char *respline, array_header *hdrs
  * The return returns 1 if the token val is found in the list, or 0
  * otherwise.
  */
-int proxy_liststr(const char *list, const char *val)
+int ap_proxy_liststr(const char *list, const char *val)
 {
     int len, i;
     const char *p;
@@ -626,7 +626,7 @@ int proxy_liststr(const char *list, const char *val)
  * On NT, the file system is NOT case sensitive. So, a == A
  * need to map to smaller set of characters
  */
-void proxy_hash(const char *it, char *val, int ndepth, int nlength)
+void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength)
 {
     AP_MD5_CTX context;
     unsigned char digest[16];
@@ -635,9 +635,9 @@ void proxy_hash(const char *it, char *val, int ndepth, int nlength)
     unsigned int x;
     static const char enc_table[32] = "abcdefghijklmnopqrstuvwxyz012345";
 
-    MD5Init(&context);
-    MD5Update(&context, (const unsigned char *) it, strlen(it));
-    MD5Final(digest, &context);
+    ap_MD5Init(&context);
+    ap_MD5Update(&context, (const unsigned char *) it, strlen(it));
+    ap_MD5Final(digest, &context);
 
 /* encode 128 bits as 26 characters, using a modified uuencoding */
 /* the encoding is 5 bytes -> 8 characters
@@ -673,7 +673,7 @@ void proxy_hash(const char *it, char *val, int ndepth, int nlength)
 
 #else
 
-void proxy_hash(const char *it, char *val, int ndepth, int nlength)
+void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength)
 {
     AP_MD5_CTX context;
     unsigned char digest[16];
@@ -690,9 +690,9 @@ void proxy_hash(const char *it, char *val, int ndepth, int nlength)
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_@";
 #endif
 
-    MD5Init(&context);
-    MD5Update(&context, (const unsigned char *) it, strlen(it));
-    MD5Final(digest, &context);
+    ap_MD5Init(&context);
+    ap_MD5Update(&context, (const unsigned char *) it, strlen(it));
+    ap_MD5Final(digest, &context);
 
 /* encode 128 bits as 22 characters, using a modified uuencoding */
 /* the encoding is 3 bytes -> 4 characters
@@ -726,7 +726,7 @@ void proxy_hash(const char *it, char *val, int ndepth, int nlength)
 /*
  * Converts 8 hex digits to a time integer
  */
-int proxy_hex2sec(const char *x)
+int ap_proxy_hex2sec(const char *x)
 {
     int i, ch;
     unsigned int j;
@@ -750,7 +750,7 @@ int proxy_hex2sec(const char *x)
 /*
  * Converts a time integer to 8 hex digits
  */
-void proxy_sec2hex(int t, char *y)
+void ap_proxy_sec2hex(int t, char *y)
 {
     int i, ch;
     unsigned int j = t;
@@ -766,12 +766,12 @@ void proxy_sec2hex(int t, char *y)
     y[8] = '\0';
 }
 
-void proxy_log_uerror(const char *routine, const char *file, const char *err,
+void ap_proxy_log_uerror(const char *routine, const char *file, const char *err,
 		      server_rec *s)
 {
     char *p, *q;
 
-    q = get_time();
+    q = ap_get_time();
     p = strerror(errno);
 
     if (err != NULL) {
@@ -792,35 +792,35 @@ void proxy_log_uerror(const char *routine, const char *file, const char *err,
 }
 
 BUFF *
-     proxy_cache_error(struct cache_req *c)
+     ap_proxy_cache_error(struct cache_req *c)
 {
-    proxy_log_uerror("write", c->tempfile, "proxy: error writing to cache file",
+    ap_proxy_log_uerror("write", c->tempfile, "proxy: error writing to cache file",
 		     c->req->server);
-    pclosef(c->req->pool, c->fp->fd);
+    ap_pclosef(c->req->pool, c->fp->fd);
     c->fp = NULL;
     unlink(c->tempfile);
     return NULL;
 }
 
-int proxyerror(request_rec *r, const char *message)
+int ap_proxyerror(request_rec *r, const char *message)
 {
     r->status = SERVER_ERROR;
     r->status_line = "500 Proxy Error";
     r->content_type = "text/html";
 
-    send_http_header(r);
-    soft_timeout("proxy error", r);
+    ap_send_http_header(r);
+    ap_soft_timeout("proxy error", r);
 
-    rvputs(r, "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n"
+    ap_rvputs(r, "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n"
 	   "<html><head><title>Proxy Error</title><head>\n<body>"
 	   "<h1>Proxy Error</h1>\n"
 	   "The proxy server could not handle this request.\n<p>\n"
 	   "Reason: <b>", message, "</b>\n",
-	   psignature("<HR>\n", r),
+	   ap_psignature("<HR>\n", r),
 	   "</body><html>\n",
 	   NULL);
 
-    kill_timeout(r);
+    ap_kill_timeout(r);
     return OK;
 }
 
@@ -828,7 +828,7 @@ int proxyerror(request_rec *r, const char *message)
  * This routine returns its own error message
  */
 const char *
-     proxy_host2addr(const char *host, struct hostent *reqhp)
+     ap_proxy_host2addr(const char *host, struct hostent *reqhp)
 {
     int i;
     struct hostent *hp;
@@ -877,12 +877,12 @@ static char *
 	|| url[1] != '/' || url[2] != '/')
 	return NULL;
 
-    url = pstrdup(r->pool, &url[1]);	/* make it point to "//", which is what proxy_canon_netloc expects */
+    url = ap_pstrdup(r->pool, &url[1]);	/* make it point to "//", which is what proxy_canon_netloc expects */
 
-    err = proxy_canon_netloc(r->pool, &url, &user, &password, &host, &port);
+    err = ap_proxy_canon_netloc(r->pool, &url, &user, &password, &host, &port);
 
     if (err != NULL)
-	aplog_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server, err);
+	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server, err);
 
     r->hostname = host;
 
@@ -890,7 +890,7 @@ static char *
 }
 
 /* Return TRUE if addr represents an IP address (or an IP network address) */
-int proxy_is_ipaddr(struct dirconn_entry *This, pool *p)
+int ap_proxy_is_ipaddr(struct dirconn_entry *This, pool *p)
 {
     const char *addr = This->name;
     long ip_addr[4];
@@ -1032,7 +1032,7 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 	struct hostent the_host;
 
 	memset(&the_host, '\0', sizeof the_host);
-	found = proxy_host2addr(host, &the_host);
+	found = ap_proxy_host2addr(host, &the_host);
 
 	if (found != NULL) {
 #if DEBUGGING
@@ -1071,7 +1071,7 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 }
 
 /* Return TRUE if addr represents a domain name */
-int proxy_is_domainname(struct dirconn_entry *This, pool *p)
+int ap_proxy_is_domainname(struct dirconn_entry *This, pool *p)
 {
     char *addr = This->name;
     int i;
@@ -1124,7 +1124,7 @@ static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r)
 }
 
 /* Return TRUE if addr represents a host name */
-int proxy_is_hostname(struct dirconn_entry *This, pool *p)
+int ap_proxy_is_hostname(struct dirconn_entry *This, pool *p)
 {
     struct hostent host;
     char *addr = This->name;
@@ -1144,10 +1144,10 @@ int proxy_is_hostname(struct dirconn_entry *This, pool *p)
     }
 #endif
 
-    if (addr[i] != '\0' || proxy_host2addr(addr, &host) != NULL)
+    if (addr[i] != '\0' || ap_proxy_host2addr(addr, &host) != NULL)
 	return 0;
 
-    This->hostentry = pduphostent (p, &host);
+    This->hostentry = ap_pduphostent (p, &host);
 
     /* Strip trailing dots */
     for (i = strlen(addr) - 1; i > 0 && addr[i] == '.'; --i)
@@ -1190,7 +1190,7 @@ static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r)
 }
 
 /* Return TRUE if addr is to be matched as a word */
-int proxy_is_word(struct dirconn_entry *This, pool *p)
+int ap_proxy_is_word(struct dirconn_entry *This, pool *p)
 {
     This->matcher = proxy_match_word;
     return 1;
@@ -1203,11 +1203,11 @@ static int proxy_match_word(struct dirconn_entry *This, request_rec *r)
     return host != NULL && strstr(host, This->name) != NULL;
 }
 
-int proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
+int ap_proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
 {
     int i;
 
-    hard_timeout("proxy connect", r);
+    ap_hard_timeout("proxy connect", r);
     do {
 	i = connect(sock, (struct sockaddr *) addr, sizeof(struct sockaddr_in));
 #ifdef WIN32
@@ -1220,9 +1220,9 @@ int proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
 
 	ap_snprintf(details, sizeof(details), "%s port %d",
 		    inet_ntoa(addr->sin_addr), ntohs(addr->sin_port));
-	proxy_log_uerror("connect", details, NULL, r->server);
+	ap_proxy_log_uerror("connect", details, NULL, r->server);
     }
-    kill_timeout(r);
+    ap_kill_timeout(r);
 
     return i;
 }

@@ -84,15 +84,15 @@ typedef struct digest_header_struct {
 
 static void *create_digest_dir_config(pool *p, char *d)
 {
-    return pcalloc(p, sizeof(digest_config_rec));
+    return ap_pcalloc(p, sizeof(digest_config_rec));
 }
 
 static const char *set_digest_slot(cmd_parms *cmd, void *offset, char *f, char *t)
 {
     if (t && strcmp(t, "standard"))
-	return pstrcat(cmd->pool, "Invalid auth file type: ", t, NULL);
+	return ap_pstrcat(cmd->pool, "Invalid auth file type: ", t, NULL);
 
-    return set_string_slot(cmd, offset, f);
+    return ap_set_string_slot(cmd, offset, f);
 }
 
 static const command_rec digest_cmds[] =
@@ -111,24 +111,24 @@ static char *get_hash(request_rec *r, char *user, char *auth_pwfile)
     const char *rpw;
     char *w, *x;
 
-    if (!(f = pcfg_openfile(r->pool, auth_pwfile))) {
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+    if (!(f = ap_pcfg_openfile(r->pool, auth_pwfile))) {
+	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "Could not open password file: %s", auth_pwfile);
 	return NULL;
     }
-    while (!(cfg_getline(l, MAX_STRING_LEN, f))) {
+    while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
 	if ((l[0] == '#') || (!l[0]))
 	    continue;
 	rpw = l;
-	w = getword(r->pool, &rpw, ':');
-	x = getword(r->pool, &rpw, ':');
+	w = ap_getword(r->pool, &rpw, ':');
+	x = ap_getword(r->pool, &rpw, ':');
 
-	if (x && w && !strcmp(user, w) && !strcmp(auth_name(r), x)) {
-	    cfg_closefile(f);
-	    return pstrdup(r->pool, rpw);
+	if (x && w && !strcmp(user, w) && !strcmp(ap_auth_name(r), x)) {
+	    ap_cfg_closefile(f);
+	    return ap_pstrdup(r->pool, rpw);
 	}
     }
-    cfg_closefile(f);
+    ap_cfg_closefile(f);
     return NULL;
 }
 
@@ -136,32 +136,32 @@ static char *get_hash(request_rec *r, char *user, char *auth_pwfile)
 
 static int get_digest_rec(request_rec *r, digest_header_rec * response)
 {
-    const char *auth_line = table_get(r->headers_in,
+    const char *auth_line = ap_table_get(r->headers_in,
                                     r->proxyreq ? "Proxy-Authorization"
                                     : "Authorization");
     int l;
     int s, vk = 0, vv = 0;
     char *t, *key, *value;
 
-    if (!(t = auth_type(r)) || strcasecmp(t, "Digest"))
+    if (!(t = ap_auth_type(r)) || strcasecmp(t, "Digest"))
 	return DECLINED;
 
-    if (!auth_name(r)) {
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+    if (!ap_auth_name(r)) {
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		    "need AuthName: %s", r->uri);
 	return SERVER_ERROR;
     }
 
     if (!auth_line) {
-	note_digest_auth_failure(r);
+	ap_note_digest_auth_failure(r);
 	return AUTH_REQUIRED;
     }
 
-    if (strcasecmp(getword(r->pool, &auth_line, ' '), "Digest")) {
+    if (strcasecmp(ap_getword(r->pool, &auth_line, ' '), "Digest")) {
 	/* Client tried to authenticate using wrong auth scheme */
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		    "client used wrong authentication scheme: %s", r->uri);
-	note_digest_auth_failure(r);
+	ap_note_digest_auth_failure(r);
 	return AUTH_REQUIRED;
     }
 
@@ -171,8 +171,8 @@ static int get_digest_rec(request_rec *r, digest_header_rec * response)
      * there has to be at least one '=' character for either of these two
      * new strings to be terminated.  That takes care of the need for +1.
      */
-    key = palloc(r->pool, l);
-    value = palloc(r->pool, l);
+    key = ap_palloc(r->pool, l);
+    value = ap_palloc(r->pool, l);
 
     /* There's probably a better way to do this, but for the time being... */
 
@@ -207,15 +207,15 @@ static int get_digest_rec(request_rec *r, digest_header_rec * response)
 		value[vv] = '\0';
 
 		if (!strcasecmp(key, "username"))
-		    response->username = pstrdup(r->pool, value);
+		    response->username = ap_pstrdup(r->pool, value);
 		else if (!strcasecmp(key, "realm"))
-		    response->realm = pstrdup(r->pool, value);
+		    response->realm = ap_pstrdup(r->pool, value);
 		else if (!strcasecmp(key, "nonce"))
-		    response->nonce = pstrdup(r->pool, value);
+		    response->nonce = ap_pstrdup(r->pool, value);
 		else if (!strcasecmp(key, "uri"))
-		    response->requested_uri = pstrdup(r->pool, value);
+		    response->requested_uri = ap_pstrdup(r->pool, value);
 		else if (!strcasecmp(key, "response"))
-		    response->digest = pstrdup(r->pool, value);
+		    response->digest = ap_pstrdup(r->pool, value);
 
 		vv = 0;
 		s = D_KEY;
@@ -243,12 +243,12 @@ static int get_digest_rec(request_rec *r, digest_header_rec * response)
 
     if (!response->username || !response->realm || !response->nonce ||
 	!response->requested_uri || !response->digest) {
-	note_digest_auth_failure(r);
+	ap_note_digest_auth_failure(r);
 	return AUTH_REQUIRED;
     }
 
     r->connection->user = response->username;
-    r->connection->auth_type = "Digest";
+    r->connection->ap_auth_type = "Digest";
 
     return OK;
 }
@@ -258,9 +258,9 @@ static int get_digest_rec(request_rec *r, digest_header_rec * response)
 static char *find_digest(request_rec *r, digest_header_rec * h, char *a1)
 {
     return ap_md5(r->pool,
-		  (unsigned char *)pstrcat(r->pool, a1, ":", h->nonce, ":",
+		  (unsigned char *)ap_pstrcat(r->pool, a1, ":", h->nonce, ":",
 					   ap_md5(r->pool,
-		           (unsigned char *)pstrcat(r->pool, r->method, ":",
+		           (unsigned char *)ap_pstrcat(r->pool, r->method, ":",
 						    h->requested_uri, NULL)),
 					   NULL));
 }
@@ -282,9 +282,9 @@ static char *find_digest(request_rec *r, digest_header_rec * h, char *a1)
 static int authenticate_digest_user(request_rec *r)
 {
     digest_config_rec *sec =
-    (digest_config_rec *) get_module_config(r->per_dir_config,
+    (digest_config_rec *) ap_get_module_config(r->per_dir_config,
 					    &digest_module);
-    digest_header_rec *response = pcalloc(r->pool, sizeof(digest_header_rec));
+    digest_header_rec *response = ap_pcalloc(r->pool, sizeof(digest_header_rec));
     conn_rec *c = r->connection;
     char *a1;
     int res;
@@ -296,15 +296,15 @@ static int authenticate_digest_user(request_rec *r)
 	return DECLINED;
 
     if (!(a1 = get_hash(r, c->user, sec->pwfile))) {
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		    "user %s not found: %s", c->user, r->uri);
-	note_digest_auth_failure(r);
+	ap_note_digest_auth_failure(r);
 	return AUTH_REQUIRED;
     }
     if (strcmp(response->digest, find_digest(r, response, a1))) {
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		    "user %s: password mismatch: %s", c->user, r->uri);
-	note_digest_auth_failure(r);
+	ap_note_digest_auth_failure(r);
 	return AUTH_REQUIRED;
     }
     return OK;
@@ -323,10 +323,10 @@ static int digest_check_auth(request_rec *r)
     array_header *reqs_arr;
     require_line *reqs;
 
-    if (!(t = auth_type(r)) || strcasecmp(t, "Digest"))
+    if (!(t = ap_auth_type(r)) || strcasecmp(t, "Digest"))
 	return DECLINED;
 
-    reqs_arr = requires(r);
+    reqs_arr = ap_requires(r);
     /* If there is no "requires" directive, 
      * then any user will do.
      */
@@ -342,12 +342,12 @@ static int digest_check_auth(request_rec *r)
 	method_restricted = 1;
 
 	t = reqs[x].requirement;
-	w = getword(r->pool, &t, ' ');
+	w = ap_getword(r->pool, &t, ' ');
 	if (!strcmp(w, "valid-user"))
 	    return OK;
 	else if (!strcmp(w, "user")) {
 	    while (t[0]) {
-		w = getword_conf(r->pool, &t);
+		w = ap_getword_conf(r->pool, &t);
 		if (!strcmp(user, w))
 		    return OK;
 	    }
@@ -359,7 +359,7 @@ static int digest_check_auth(request_rec *r)
     if (!method_restricted)
 	return OK;
 
-    note_digest_auth_failure(r);
+    ap_note_digest_auth_failure(r);
     return AUTH_REQUIRED;
 }
 

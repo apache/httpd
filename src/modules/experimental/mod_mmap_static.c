@@ -138,9 +138,9 @@ typedef struct {
 
 static void *create_server_config(pool *p, server_rec *s)
 {
-    a_server_config *sconf = palloc(p, sizeof(*sconf));
+    a_server_config *sconf = ap_palloc(p, sizeof(*sconf));
 
-    sconf->files = make_array(p, 20, sizeof(a_file));
+    sconf->files = ap_make_array(p, 20, sizeof(a_file));
     sconf->inode_sorted = NULL;
     return sconf;
 }
@@ -169,19 +169,19 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, char *filename)
     caddr_t mm;
 
     if (stat(filename, &tmp.finfo) == -1) {
-	aplog_error(APLOG_MARK, APLOG_WARNING, cmd->server,
+	ap_log_error(APLOG_MARK, APLOG_WARNING, cmd->server,
 	    "mmap_static: unable to stat(%s), skipping", filename);
 	return NULL;
     }
     if ((tmp.finfo.st_mode & S_IFMT) != S_IFREG) {
-	aplog_error(APLOG_MARK, APLOG_WARNING, cmd->server,
+	ap_log_error(APLOG_MARK, APLOG_WARNING, cmd->server,
 	    "mmap_static: %s isn't a regular file, skipping", filename);
 	return NULL;
     }
-    block_alarms();
+    ap_block_alarms();
     fd = open(filename, O_RDONLY, 0);
     if (fd == -1) {
-	aplog_error(APLOG_MARK, APLOG_WARNING, cmd->server,
+	ap_log_error(APLOG_MARK, APLOG_WARNING, cmd->server,
 	    "mmap_static: unable to open(%s, O_RDONLY), skipping", filename);
 	return NULL;
     }
@@ -189,23 +189,23 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, char *filename)
     if (mm == (caddr_t)-1) {
 	int save_errno = errno;
 	close(fd);
-	unblock_alarms();
+	ap_unblock_alarms();
 	errno = save_errno;
-	aplog_error(APLOG_MARK, APLOG_WARNING, cmd->server,
+	ap_log_error(APLOG_MARK, APLOG_WARNING, cmd->server,
 	    "mmap_static: unable to mmap %s, skipping", filename);
 	return NULL;
     }
     close(fd);
     tmp.mm = mm;
-    tmp.filename = pstrdup(cmd->pool, filename);
-    sconf = get_module_config(cmd->server->module_config, &mmap_static_module);
-    new_file = push_array(sconf->files);
+    tmp.filename = ap_pstrdup(cmd->pool, filename);
+    sconf = ap_get_module_config(cmd->server->module_config, &mmap_static_module);
+    new_file = ap_push_array(sconf->files);
     *new_file = tmp;
     if (sconf->files->nelts == 1) {
 	/* first one, register the cleanup */
-	register_cleanup(cmd->pool, sconf, cleanup_mmap, null_cleanup);
+	ap_register_cleanup(cmd->pool, sconf, cleanup_mmap, ap_null_cleanup);
     }
-    unblock_alarms();
+    ap_unblock_alarms();
     return NULL;
 }
 
@@ -250,22 +250,22 @@ static void mmap_init(server_rec *s, pool *p)
     int i;
     
     /* sort the elements of the main_server, by filename */
-    sconf = get_module_config(s->module_config, &mmap_static_module);
+    sconf = ap_get_module_config(s->module_config, &mmap_static_module);
     elts = (a_file *)sconf->files->elts;
     nelts = sconf->files->nelts;
     qsort(elts, nelts, sizeof(a_file), file_compare);
 
     /* build an index by inode as well, speeds up the search in the handler */
-    inodes = make_array(p, nelts, sizeof(a_file *));
+    inodes = ap_make_array(p, nelts, sizeof(a_file *));
     sconf->inode_sorted = inodes;
     for (i = 0; i < nelts; ++i) {
-	*(a_file **)push_array(inodes) = &elts[i];
+	*(a_file **)ap_push_array(inodes) = &elts[i];
     }
     qsort(inodes->elts, nelts, sizeof(a_file *), inode_compare);
 
     /* and make the virtualhosts share the same thing */
     for (s = s->next; s; s = s->next) {
-	set_module_config(s->module_config, &mmap_static_module, sconf);
+	ap_set_module_config(s->module_config, &mmap_static_module, sconf);
     }
 }
 
@@ -285,7 +285,7 @@ static int mmap_static_xlat(request_rec *r)
     if (res == DECLINED || !r->filename) {
 	return res;
     }
-    sconf = get_module_config(r->server->module_config, &mmap_static_module);
+    sconf = ap_get_module_config(r->server->module_config, &mmap_static_module);
     tmp.filename = r->filename;
     match = (a_file *)bsearch(&tmp, sconf->files->elts, sconf->files->nelts,
 	sizeof(a_file), file_compare);
@@ -314,7 +314,7 @@ static int mmap_static_handler(request_rec *r)
     /* file doesn't exist, we won't be dealing with it */
     if (r->finfo.st_mode == 0) return DECLINED;
 
-    sconf = get_module_config(r->server->module_config, &mmap_static_module);
+    sconf = ap_get_module_config(r->server->module_config, &mmap_static_module);
     tmp.finfo.st_dev = r->finfo.st_dev;
     tmp.finfo.st_ino = r->finfo.st_ino;
     ptmp = &tmp;
@@ -331,28 +331,28 @@ static int mmap_static_handler(request_rec *r)
     /* This handler has no use for a request body (yet), but we still
      * need to read and discard it if the client sent one.
      */
-    if ((errstatus = discard_request_body(r)) != OK)
+    if ((errstatus = ap_discard_request_body(r)) != OK)
         return errstatus;
 
-    update_mtime(r, match->finfo.st_mtime);
-    set_last_modified(r);
-    set_etag(r);
-    if (((errstatus = meets_conditions(r)) != OK)
-	|| (errstatus = set_content_length (r, match->finfo.st_size))) {
+    ap_update_mtime(r, match->finfo.st_mtime);
+    ap_set_last_modified(r);
+    ap_set_etag(r);
+    if (((errstatus = ap_meets_conditions(r)) != OK)
+	|| (errstatus = ap_set_content_length (r, match->finfo.st_size))) {
 	    return errstatus;
     }
 
-    rangestatus = set_byterange(r);
-    send_http_header(r);
+    rangestatus = ap_set_byterange(r);
+    ap_send_http_header(r);
 
     if (!r->header_only) {
 	if (!rangestatus) {
-	    send_mmap (match->mm, r, 0, match->finfo.st_size);
+	    ap_send_mmap (match->mm, r, 0, match->finfo.st_size);
 	}
 	else {
 	    long offset, length;
-	    while (each_byterange(r, &offset, &length)) {
-		send_mmap(match->mm, r, offset, length);
+	    while (ap_each_byterange(r, &offset, &length)) {
+		ap_send_mmap(match->mm, r, offset, length);
 	    }
 	}
     }

@@ -119,7 +119,7 @@ typedef struct {
 static void *create_anon_auth_dir_config(pool *p, char *d)
 {
     anon_auth_config_rec *sec = (anon_auth_config_rec *)
-    pcalloc(p, sizeof(anon_auth_config_rec));
+    ap_pcalloc(p, sizeof(anon_auth_config_rec));
 
     if (!sec)
 	return NULL;		/* no memory... */
@@ -180,7 +180,7 @@ static const char *anon_set_string_slots(cmd_parms *cmd,
     first = sec->auth_anon_passwords;
 
     if (
-	   (!(sec->auth_anon_passwords = (auth_anon *) palloc(cmd->pool, sizeof(auth_anon)))) ||
+	   (!(sec->auth_anon_passwords = (auth_anon *) ap_palloc(cmd->pool, sizeof(auth_anon)))) ||
            (!(sec->auth_anon_passwords->password = arg))
     )
 	     return "Failed to claim memory for an anonymous password...";
@@ -214,13 +214,13 @@ module MODULE_VAR_EXPORT anon_auth_module;
 static int anon_authenticate_basic_user(request_rec *r)
 {
     anon_auth_config_rec *sec =
-    (anon_auth_config_rec *) get_module_config(r->per_dir_config,
+    (anon_auth_config_rec *) ap_get_module_config(r->per_dir_config,
 					       &anon_auth_module);
     conn_rec *c = r->connection;
     char *send_pw;
     int res = DECLINED;
 
-    if ((res = get_basic_auth_pw(r, &send_pw)))
+    if ((res = ap_get_basic_auth_pw(r, &send_pw)))
 	return res;
 
     /* Ignore if we are not configured */
@@ -251,8 +251,8 @@ static int anon_authenticate_basic_user(request_rec *r)
 	   && ((!sec->auth_anon_verifyemail)
 	       || ((strpbrk("@", send_pw) != NULL)
 		   && (strpbrk(".", send_pw) != NULL)))) {
-	if (sec->auth_anon_logemail && is_initial_req(r)) {
-	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r->server,
+	if (sec->auth_anon_logemail && ap_is_initial_req(r)) {
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r->server,
 			"Anonymous: Passwd <%s> Accepted",
 			send_pw ? send_pw : "\'none\'");
 	}
@@ -260,7 +260,7 @@ static int anon_authenticate_basic_user(request_rec *r)
     }
     else {
 	if (sec->auth_anon_authoritative) {
-	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 			"Anonymous: Authoritative, Passwd <%s> not accepted",
 			send_pw ? send_pw : "\'none\'");
 	    return AUTH_REQUIRED;
@@ -276,7 +276,7 @@ static int check_anon_access(request_rec *r)
 #ifdef NOTYET
     conn_rec *c = r->connection;
     anon_auth_config_rec *sec =
-    (anon_auth_config_rec *) get_module_config(r->per_dir_config,
+    (anon_auth_config_rec *) ap_get_module_config(r->per_dir_config,
 					       &anon_auth_module);
 
     if (!sec->auth_anon)

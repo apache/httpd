@@ -100,10 +100,10 @@ static char *filename;
 static mutex *garbage_mutex = NULL;
 
 
-int proxy_garbage_init(server_rec *r, pool *p)
+int ap_proxy_garbage_init(server_rec *r, pool *p)
 {
     if (!garbage_mutex)
-	garbage_mutex = create_mutex(NULL);
+	garbage_mutex = ap_create_mutex(NULL);
 
     return (0);
 }
@@ -113,24 +113,24 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 			    const char *cachedir, const char *cachesubdir);
 static void help_proxy_garbage_coll(request_rec *r);
 
-void proxy_garbage_coll(request_rec *r)
+void ap_proxy_garbage_coll(request_rec *r)
 {
     static int inside = 0;
 
-    (void) acquire_mutex(garbage_mutex);
+    (void) ap_acquire_mutex(garbage_mutex);
     if (inside == 1) {
-	(void) release_mutex(garbage_mutex);
+	(void) ap_release_mutex(garbage_mutex);
 	return;
     }
     else
 	inside = 1;
-    (void) release_mutex(garbage_mutex);
+    (void) ap_release_mutex(garbage_mutex);
 
     help_proxy_garbage_coll(r);
 
-    (void) acquire_mutex(garbage_mutex);
+    (void) ap_acquire_mutex(garbage_mutex);
     inside = 0;
-    (void) release_mutex(garbage_mutex);
+    (void) ap_release_mutex(garbage_mutex);
 }
 
 
@@ -139,7 +139,7 @@ static void help_proxy_garbage_coll(request_rec *r)
     const char *cachedir;
     void *sconf = r->server->module_config;
     proxy_server_conf *pconf =
-    (proxy_server_conf *) get_module_config(sconf, &proxy_module);
+    (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
     const struct cache_conf *conf = &pconf->cache;
     array_header *files;
     struct stat buf;
@@ -157,23 +157,23 @@ static void help_proxy_garbage_coll(request_rec *r)
     if (garbage_now != -1 && lastcheck != BAD_DATE && garbage_now < lastcheck + every)
 	return;
 
-    block_alarms();		/* avoid SIGALRM on big cache cleanup */
+    ap_block_alarms();		/* avoid SIGALRM on big cache cleanup */
 
-    filename = palloc(r->pool, strlen(cachedir) + HASH_LEN + 2);
+    filename = ap_palloc(r->pool, strlen(cachedir) + HASH_LEN + 2);
     strcpy(filename, cachedir);
     strcat(filename, "/.time");
     if (stat(filename, &buf) == -1) {	/* does not exist */
 	if (errno != ENOENT) {
-	    proxy_log_uerror("stat", filename, NULL, r->server);
-	    unblock_alarms();
+	    ap_proxy_log_uerror("stat", filename, NULL, r->server);
+	    ap_unblock_alarms();
 	    return;
 	}
 	if ((timefd = creat(filename, 0666)) == -1) {
 	    if (errno != EEXIST)
-		proxy_log_uerror("creat", filename, NULL, r->server);
+		ap_proxy_log_uerror("creat", filename, NULL, r->server);
 	    else
 		lastcheck = abs(garbage_now);	/* someone else got in there */
-	    unblock_alarms();
+	    ap_unblock_alarms();
 	    return;
 	}
 	close(timefd);
@@ -181,20 +181,20 @@ static void help_proxy_garbage_coll(request_rec *r)
     else {
 	lastcheck = buf.st_mtime;	/* save the time */
 	if (garbage_now < lastcheck + every) {
-	    unblock_alarms();
+	    ap_unblock_alarms();
 	    return;
 	}
 	if (utime(filename, NULL) == -1)
-	    proxy_log_uerror("utimes", filename, NULL, r->server);
+	    ap_proxy_log_uerror("utimes", filename, NULL, r->server);
     }
-    files = make_array(r->pool, 100, sizeof(struct gc_ent *));
+    files = ap_make_array(r->pool, 100, sizeof(struct gc_ent *));
     curblocks = 0;
     curbytes = 0;
 
     sub_garbage_coll(r, files, cachedir, "/");
 
     if (curblocks < cachesize || curblocks + curbytes <= cachesize) {
-	unblock_alarms();
+	ap_unblock_alarms();
 	return;
     }
 
@@ -210,7 +210,7 @@ static void help_proxy_garbage_coll(request_rec *r)
 #else
 	if (unlink(filename) == -1) {
 	    if (errno != ENOENT)
-		proxy_log_uerror("unlink", filename, NULL, r->server);
+		ap_proxy_log_uerror("unlink", filename, NULL, r->server);
 	}
 	else
 #endif
@@ -225,7 +225,7 @@ static void help_proxy_garbage_coll(request_rec *r)
 		break;
 	}
     }
-    unblock_alarms();
+    ap_unblock_alarms();
 }
 
 static int sub_garbage_coll(request_rec *r, array_header *files,
@@ -248,7 +248,7 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
     Explain1("GC Examining directory %s", cachedir);
     dir = opendir(cachedir);
     if (dir == NULL) {
-	proxy_log_uerror("opendir", cachedir, NULL, r->server);
+	ap_proxy_log_uerror("opendir", cachedir, NULL, r->server);
 	return 0;
     }
 
@@ -262,7 +262,7 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 /* then stat it to see how old it is; delete temporary files > 1 day old */
 	    if (stat(filename, &buf) == -1) {
 		if (errno != ENOENT)
-		    proxy_log_uerror("stat", filename, NULL, r->server);
+		    ap_proxy_log_uerror("stat", filename, NULL, r->server);
 	    }
 	    else if (garbage_now != -1 && buf.st_atime < garbage_now - SEC_ONE_DAY &&
 		     buf.st_mtime < garbage_now - SEC_ONE_DAY) {
@@ -305,12 +305,12 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 	fd = open(filename, O_RDONLY | O_BINARY);
 	if (fd == -1) {
 	    if (errno != ENOENT)
-		proxy_log_uerror("open", filename, NULL,
+		ap_proxy_log_uerror("open", filename, NULL,
 				 r->server);
 	    continue;
 	}
 	if (fstat(fd, &buf) == -1) {
-	    proxy_log_uerror("fstat", filename, NULL, r->server);
+	    ap_proxy_log_uerror("fstat", filename, NULL, r->server);
 	    close(fd);
 	    continue;
 	}
@@ -338,19 +338,19 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 
 	i = read(fd, line, 26);
 	if (i == -1) {
-	    proxy_log_uerror("read", filename, NULL, r->server);
+	    ap_proxy_log_uerror("read", filename, NULL, r->server);
 	    close(fd);
 	    continue;
 	}
 	close(fd);
 	line[i] = '\0';
-	garbage_expire = proxy_hex2sec(line + 18);
-	if (!checkmask(line, "&&&&&&&& &&&&&&&& &&&&&&&&") ||
+	garbage_expire = ap_proxy_hex2sec(line + 18);
+	if (!ap_checkmask(line, "&&&&&&&& &&&&&&&& &&&&&&&&") ||
 	    garbage_expire == BAD_DATE) {
 	    /* bad file */
 	    if (garbage_now != -1 && buf.st_atime > garbage_now + SEC_ONE_DAY &&
 		buf.st_mtime > garbage_now + SEC_ONE_DAY) {
-		log_error("proxy: deleting bad cache file", r->server);
+		ap_log_error_old("proxy: deleting bad cache file", r->server);
 #if TESTING
 		fprintf(stderr, "Would unlink bad file %s\n", filename);
 #else
@@ -368,12 +368,12 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
  */
 	/* FIXME: We should make the array an array of gc_ents, not gc_ent *s
 	 */
-	fent = palloc(r->pool, sizeof(struct gc_ent));
+	fent = ap_palloc(r->pool, sizeof(struct gc_ent));
 	fent->len = buf.st_size;
 	fent->expire = garbage_expire;
 	strcpy(fent->file, cachesubdir);
 	strcat(fent->file, ent->d_name);
-	*(struct gc_ent **) push_array(files) = fent;
+	*(struct gc_ent **) ap_push_array(files) = fent;
 
 /* accumulate in blocks, to cope with directories > 4Gb */
 	curblocks += buf.st_size >> 10;		/* Kbytes */
@@ -405,25 +405,25 @@ static int rdcache(pool *p, BUFF *cachefp, struct cache_req *c)
  * date SP lastmod SP expire SP count SP content-length CRLF
  * dates are stored as hex seconds since 1970
  */
-    len = bgets(urlbuff, 1034, cachefp);
+    len = ap_bgets(urlbuff, 1034, cachefp);
     if (len == -1)
 	return -1;
     if (len == 0 || urlbuff[len - 1] != '\n')
 	return 0;
     urlbuff[len - 1] = '\0';
 
-    if (!checkmask(urlbuff,
+    if (!ap_checkmask(urlbuff,
 		   "&&&&&&&& &&&&&&&& &&&&&&&& &&&&&&&& &&&&&&&&"))
 	return 0;
 
-    c->date = proxy_hex2sec(urlbuff);
-    c->lmod = proxy_hex2sec(urlbuff + 9);
-    c->expire = proxy_hex2sec(urlbuff + 18);
-    c->version = proxy_hex2sec(urlbuff + 27);
-    c->len = proxy_hex2sec(urlbuff + 36);
+    c->date = ap_proxy_hex2sec(urlbuff);
+    c->lmod = ap_proxy_hex2sec(urlbuff + 9);
+    c->expire = ap_proxy_hex2sec(urlbuff + 18);
+    c->version = ap_proxy_hex2sec(urlbuff + 27);
+    c->len = ap_proxy_hex2sec(urlbuff + 36);
 
 /* check that we have the same URL */
-    len = bgets(urlbuff, 1034, cachefp);
+    len = ap_bgets(urlbuff, 1034, cachefp);
     if (len == -1)
 	return -1;
     if (len == 0 || strncmp(urlbuff, "X-URL: ", 7) != 0 ||
@@ -434,29 +434,29 @@ static int rdcache(pool *p, BUFF *cachefp, struct cache_req *c)
 	return 0;
 
 /* What follows is the message */
-    len = bgets(urlbuff, 1034, cachefp);
+    len = ap_bgets(urlbuff, 1034, cachefp);
     if (len == -1)
 	return -1;
     if (len == 0 || urlbuff[len - 1] != '\n')
 	return 0;
     urlbuff[--len] = '\0';
 
-    c->resp_line = pstrdup(p, urlbuff);
+    c->resp_line = ap_pstrdup(p, urlbuff);
     strp = strchr(urlbuff, ' ');
     if (strp == NULL)
 	return 0;
 
     c->status = atoi(strp);
-    c->hdrs = proxy_read_headers(p, urlbuff, 1034, cachefp);
+    c->hdrs = ap_proxy_read_headers(p, urlbuff, 1034, cachefp);
     if (c->hdrs == NULL)
 	return -1;
     if (c->len != -1) {		/* add a content-length header */
 	struct hdr_entry *q;
-	q = proxy_get_header(c->hdrs, "Content-Length");
+	q = ap_proxy_get_header(c->hdrs, "Content-Length");
 	if (q == NULL) {
-	    strp = palloc(p, 15);
+	    strp = ap_palloc(p, 15);
 	    ap_snprintf(strp, 15, "%u", c->len);
-	    proxy_add_header(c->hdrs, "Content-Length", strp, HDR_REP);
+	    ap_proxy_add_header(c->hdrs, "Content-Length", strp, HDR_REP);
 	}
     }
     return 1;
@@ -477,7 +477,7 @@ static int rdcache(pool *p, BUFF *cachefp, struct cache_req *c)
  *         if last modified after if-modified-since then add
  *            last modified date to request
  */
-int proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
+int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 		      struct cache_req **cr)
 {
     char hashfile[66], *imstr, *pragma, *auth;
@@ -488,49 +488,49 @@ int proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
     const long int zero = 0L;
     void *sconf = r->server->module_config;
     proxy_server_conf *pconf =
-    (proxy_server_conf *) get_module_config(sconf, &proxy_module);
+    (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
-    c = pcalloc(r->pool, sizeof(struct cache_req));
+    c = ap_pcalloc(r->pool, sizeof(struct cache_req));
     *cr = c;
     c->req = r;
-    c->url = pstrdup(r->pool, url);
+    c->url = ap_pstrdup(r->pool, url);
 
 /* get the If-Modified-Since date of the request */
     c->ims = BAD_DATE;
-    imstr = table_get(r->headers_in, "If-Modified-Since");
+    imstr = ap_table_get(r->headers_in, "If-Modified-Since");
     if (imstr != NULL) {
 /* this may modify the value in the original table */
-	imstr = proxy_date_canon(r->pool, imstr);
-	c->ims = parseHTTPdate(imstr);
+	imstr = ap_proxy_date_canon(r->pool, imstr);
+	c->ims = ap_parseHTTPdate(imstr);
 	if (c->ims == BAD_DATE)	/* bad or out of range date; remove it */
-	    table_unset(r->headers_in, "If-Modified-Since");
+	    ap_table_unset(r->headers_in, "If-Modified-Since");
     }
 
 /* find the filename for this cache entry */
-    proxy_hash(url, hashfile, pconf->cache.dirlevels, pconf->cache.dirlength);
+    ap_proxy_hash(url, hashfile, pconf->cache.dirlevels, pconf->cache.dirlength);
     if (conf->root != NULL)
-	c->filename = pstrcat(r->pool, conf->root, "/", hashfile, NULL);
+	c->filename = ap_pstrcat(r->pool, conf->root, "/", hashfile, NULL);
     else
 	c->filename = NULL;
 
     cachefp = NULL;
 /* find out about whether the request can access the cache */
-    pragma = table_get(r->headers_in, "Pragma");
-    auth = table_get(r->headers_in, "Authorization");
+    pragma = ap_table_get(r->headers_in, "Pragma");
+    auth = ap_table_get(r->headers_in, "Authorization");
     Explain5("Request for %s, pragma=%s, auth=%s, ims=%ld, imstr=%s", url,
 	     pragma, auth, c->ims, imstr);
     if (c->filename != NULL && r->method_number == M_GET &&
-	strlen(url) < 1024 && !proxy_liststr(pragma, "no-cache") &&
+	strlen(url) < 1024 && !ap_proxy_liststr(pragma, "no-cache") &&
 	auth == NULL) {
 	Explain1("Check file %s", c->filename);
 	cfd = open(c->filename, O_RDWR | O_BINARY);
 	if (cfd != -1) {
-	    note_cleanups_for_fd(r->pool, cfd);
-	    cachefp = bcreate(r->pool, B_RD | B_WR);
-	    bpushfd(cachefp, cfd, cfd);
+	    ap_note_cleanups_for_fd(r->pool, cfd);
+	    cachefp = ap_bcreate(r->pool, B_RD | B_WR);
+	    ap_bpushfd(cachefp, cfd, cfd);
 	}
 	else if (errno != ENOENT)
-	    proxy_log_uerror("open", c->filename,
+	    ap_proxy_log_uerror("open", c->filename,
 			     "proxy: error opening cache file", r->server);
 #ifdef EXPLAIN
 	else
@@ -541,17 +541,17 @@ int proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
     if (cachefp != NULL) {
 	i = rdcache(r->pool, cachefp, c);
 	if (i == -1)
-	    proxy_log_uerror("read", c->filename,
+	    ap_proxy_log_uerror("read", c->filename,
 			     "proxy: error reading cache file", r->server);
 	else if (i == 0)
-	    log_error("proxy: bad cache file", r->server);
+	    ap_log_error_old("proxy: bad cache file", r->server);
 	if (i != 1) {
-	    pclosef(r->pool, cachefp->fd);
+	    ap_pclosef(r->pool, cachefp->fd);
 	    cachefp = NULL;
 	}
     }
     if (cachefp == NULL)
-	c->hdrs = make_array(r->pool, 2, sizeof(struct hdr_entry));
+	c->hdrs = ap_make_array(r->pool, 2, sizeof(struct hdr_entry));
     /* FIXME: Shouldn't we check the URL somewhere? */
     now = time(NULL);
 /* Ok, have we got some un-expired data? */
@@ -569,11 +569,11 @@ int proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 		 */
 		struct hdr_entry *q;
 
-		q = proxy_get_header(c->hdrs, "Expires");
+		q = ap_proxy_get_header(c->hdrs, "Expires");
 		if (q != NULL && q->value != NULL)
-		    table_set(r->headers_out, "Expires", q->value);
+		    ap_table_set(r->headers_out, "Expires", q->value);
 	    }
-	    pclosef(r->pool, cachefp->fd);
+	    ap_pclosef(r->pool, cachefp->fd);
 	    Explain0("Use local copy, cached file hasn't changed");
 	    return USE_LOCAL_COPY;
 	}
@@ -583,15 +583,15 @@ int proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	r->status_line = strchr(c->resp_line, ' ') + 1;
 	r->status = c->status;
 	if (!r->assbackwards) {
-	    soft_timeout("proxy send headers", r);
-	    proxy_send_headers(r, c->resp_line, c->hdrs);
-	    kill_timeout(r);
+	    ap_soft_timeout("proxy send headers", r);
+	    ap_proxy_send_headers(r, c->resp_line, c->hdrs);
+	    ap_kill_timeout(r);
 	}
-	bsetopt(r->connection->client, BO_BYTECT, &zero);
+	ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
 	r->sent_bodyct = 1;
 	if (!r->header_only)
-	    proxy_send_fb(cachefp, r, NULL, NULL);
-	pclosef(r->pool, cachefp->fd);
+	    ap_proxy_send_fb(cachefp, r, NULL, NULL);
+	ap_pclosef(r->pool, cachefp->fd);
 	return OK;
     }
 
@@ -607,10 +607,10 @@ int proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	if (c->ims == BAD_DATE || c->ims < c->lmod) {
 	    struct hdr_entry *q;
 
-	    q = proxy_get_header(c->hdrs, "Last-Modified");
+	    q = ap_proxy_get_header(c->hdrs, "Last-Modified");
 
 	    if (q != NULL && q->value != NULL)
-		table_set(r->headers_in, "If-Modified-Since",
+		ap_table_set(r->headers_in, "If-Modified-Since",
 			  (char *) q->value);
 	}
     }
@@ -633,7 +633,7 @@ int proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
  *  from the cache, maybe updating the header line
  *  otherwise, delete the old cached file and open a new temporary file
  */
-int proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
+int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 		       const int is_HTTP1, int nocache)
 {
     request_rec *r = c->req;
@@ -644,7 +644,7 @@ int proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
     char buff[46];
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
-    (proxy_server_conf *) get_module_config(sconf, &proxy_module);
+    (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
     const long int zero = 0L;
 
     c->tempfile = NULL;
@@ -653,18 +653,18 @@ int proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 /* read expiry date; if a bad date, then leave it so the client can
  * read it
  */
-    expire = proxy_get_header(resp_hdrs, "Expires");
+    expire = ap_proxy_get_header(resp_hdrs, "Expires");
     if (expire != NULL)
-	expc = parseHTTPdate(expire->value);
+	expc = ap_parseHTTPdate(expire->value);
     else
 	expc = BAD_DATE;
 
 /*
  * read the last-modified date; if the date is bad, then delete it
  */
-    lmods = proxy_get_header(resp_hdrs, "Last-Modified");
+    lmods = ap_proxy_get_header(resp_hdrs, "Last-Modified");
     if (lmods != NULL) {
-	lmod = parseHTTPdate(lmods->value);
+	lmod = ap_parseHTTPdate(lmods->value);
 	if (lmod == BAD_DATE) {
 /* kill last modified date */
 	    lmods->value = NULL;
@@ -688,12 +688,12 @@ int proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 	(r->status == 304 && c->fp == NULL) ||
 	(r->status == 200 && lmods == NULL && is_HTTP1) ||
 	r->header_only ||
-	table_get(r->headers_in, "Authorization") != NULL ||
+	ap_table_get(r->headers_in, "Authorization") != NULL ||
 	nocache) {
 	Explain1("Response is not cacheable, unlinking %s", c->filename);
 /* close the file */
 	if (c->fp != NULL) {
-	    pclosef(r->pool, c->fp->fd);
+	    ap_pclosef(r->pool, c->fp->fd);
 	    c->fp = NULL;
 	}
 /* delete the previously cached file */
@@ -705,9 +705,9 @@ int proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 /*
  * Read the date. Generate one if one is not supplied
  */
-    dates = proxy_get_header(resp_hdrs, "Date");
+    dates = ap_proxy_get_header(resp_hdrs, "Date");
     if (dates != NULL)
-	date = parseHTTPdate(dates->value);
+	date = ap_parseHTTPdate(dates->value);
     else
 	date = BAD_DATE;
 
@@ -718,8 +718,8 @@ int proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 /* add one; N.B. use the time _now_ rather than when we were checking the cache
  */
 	date = abs(now);
-	p = gm_timestr_822(r->pool, now);
-	dates = proxy_add_header(resp_hdrs, "Date", p, HDR_REP);
+	p = ap_gm_timestr_822(r->pool, now);
+	dates = ap_proxy_add_header(resp_hdrs, "Date", p, HDR_REP);
 	Explain0("Added date header");
     }
 
@@ -739,9 +739,9 @@ int proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 
 /* we now need to calculate the expire data for the object. */
     if (expire == NULL && c->fp != NULL) {	/* no expiry data sent in response */
-	expire = proxy_get_header(c->hdrs, "Expires");
+	expire = ap_proxy_get_header(c->hdrs, "Expires");
 	if (expire != NULL)
-	    expc = parseHTTPdate(expire->value);
+	    expc = ap_parseHTTPdate(expire->value);
     }
 /* so we now have the expiry date */
 /* if no expiry date then
@@ -765,21 +765,21 @@ int proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
     }
 
 /* get the content-length header */
-    clen = proxy_get_header(c->hdrs, "Content-Length");
+    clen = ap_proxy_get_header(c->hdrs, "Content-Length");
     if (clen == NULL)
 	c->len = -1;
     else
 	c->len = atoi(clen->value);
 
-    proxy_sec2hex(date, buff);
+    ap_proxy_sec2hex(date, buff);
     buff[8] = ' ';
-    proxy_sec2hex(lmod, buff + 9);
+    ap_proxy_sec2hex(lmod, buff + 9);
     buff[17] = ' ';
-    proxy_sec2hex(expc, buff + 18);
+    ap_proxy_sec2hex(expc, buff + 18);
     buff[26] = ' ';
-    proxy_sec2hex(c->version++, buff + 27);
+    ap_proxy_sec2hex(c->version++, buff + 27);
     buff[35] = ' ';
-    proxy_sec2hex(c->len, buff + 36);
+    ap_proxy_sec2hex(c->len, buff + 36);
     buff[44] = '\n';
     buff[45] = '\0';
 
@@ -791,13 +791,13 @@ int proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 	    if (lmod != c->lmod || expc != c->expire || date != c->date) {
 		off_t curpos = lseek(c->fp->fd, 0, SEEK_SET);
 		if (curpos == -1)
-		    proxy_log_uerror("lseek", c->filename,
+		    ap_proxy_log_uerror("lseek", c->filename,
 			   "proxy: error seeking on cache file", r->server);
 		else if (write(c->fp->fd, buff, 35) == -1)
-		    proxy_log_uerror("write", c->filename,
+		    ap_proxy_log_uerror("write", c->filename,
 			     "proxy: error updating cache file", r->server);
 	    }
-	    pclosef(r->pool, c->fp->fd);
+	    ap_pclosef(r->pool, c->fp->fd);
 	    Explain0("Remote document not modified, use local copy");
 	    /* CHECKME: Is this right? Shouldn't we check IMS again here? */
 	    return USE_LOCAL_COPY;
@@ -808,44 +808,44 @@ int proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 	    r->status_line = strchr(c->resp_line, ' ') + 1;
 	    r->status = c->status;
 	    if (!r->assbackwards) {
-		soft_timeout("proxy send headers", r);
-		proxy_send_headers(r, c->resp_line, c->hdrs);
-		kill_timeout(r);
+		ap_soft_timeout("proxy send headers", r);
+		ap_proxy_send_headers(r, c->resp_line, c->hdrs);
+		ap_kill_timeout(r);
 	    }
-	    bsetopt(r->connection->client, BO_BYTECT, &zero);
+	    ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
 	    r->sent_bodyct = 1;
 	    if (!r->header_only)
-		proxy_send_fb(c->fp, r, NULL, NULL);
+		ap_proxy_send_fb(c->fp, r, NULL, NULL);
 /* set any changed headers somehow */
 /* update dates and version, but not content-length */
 	    if (lmod != c->lmod || expc != c->expire || date != c->date) {
 		off_t curpos = lseek(c->fp->fd, 0, SEEK_SET);
 
 		if (curpos == -1)
-		    proxy_log_uerror("lseek", c->filename,
+		    ap_proxy_log_uerror("lseek", c->filename,
 			   "proxy: error seeking on cache file", r->server);
 		else if (write(c->fp->fd, buff, 35) == -1)
-		    proxy_log_uerror("write", c->filename,
+		    ap_proxy_log_uerror("write", c->filename,
 			     "proxy: error updating cache file", r->server);
 	    }
-	    pclosef(r->pool, c->fp->fd);
+	    ap_pclosef(r->pool, c->fp->fd);
 	    return OK;
 	}
     }
 /* new or modified file */
     if (c->fp != NULL) {
-	pclosef(r->pool, c->fp->fd);
+	ap_pclosef(r->pool, c->fp->fd);
 	c->fp->fd = -1;
     }
     c->version = 0;
-    proxy_sec2hex(0, buff + 27);
+    ap_proxy_sec2hex(0, buff + 27);
     buff[35] = ' ';
 
 /* open temporary file */
 #define TMPFILESTR	"/tmpXXXXXX"
     if (conf->cache.root == NULL)
 	return DECLINED;
-    c->tempfile = palloc(r->pool, strlen(conf->cache.root) + sizeof(TMPFILESTR));
+    c->tempfile = ap_palloc(r->pool, strlen(conf->cache.root) + sizeof(TMPFILESTR));
     strcpy(c->tempfile, conf->cache.root);
     strcat(c->tempfile, TMPFILESTR);
 #undef TMPFILESTR
@@ -857,25 +857,25 @@ int proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 
     i = open(c->tempfile, O_WRONLY | O_CREAT | O_EXCL | O_BINARY, 0622);
     if (i == -1) {
-	proxy_log_uerror("open", c->tempfile,
+	ap_proxy_log_uerror("open", c->tempfile,
 			 "proxy: error creating cache file", r->server);
 	return DECLINED;
     }
-    note_cleanups_for_fd(r->pool, i);
-    c->fp = bcreate(r->pool, B_WR);
-    bpushfd(c->fp, -1, i);
+    ap_note_cleanups_for_fd(r->pool, i);
+    c->fp = ap_bcreate(r->pool, B_WR);
+    ap_bpushfd(c->fp, -1, i);
 
-    if (bvputs(c->fp, buff, "X-URL: ", c->url, "\n", NULL) == -1) {
-	proxy_log_uerror("write", c->tempfile,
+    if (ap_bvputs(c->fp, buff, "X-URL: ", c->url, "\n", NULL) == -1) {
+	ap_proxy_log_uerror("write", c->tempfile,
 			 "proxy: error writing cache file", r->server);
-	pclosef(r->pool, c->fp->fd);
+	ap_pclosef(r->pool, c->fp->fd);
 	unlink(c->tempfile);
 	c->fp = NULL;
     }
     return DECLINED;
 }
 
-void proxy_cache_tidy(struct cache_req *c)
+void ap_proxy_cache_tidy(struct cache_req *c)
 {
     server_rec *s = c->req->server;
     long int bc;
@@ -883,18 +883,18 @@ void proxy_cache_tidy(struct cache_req *c)
     if (c->fp == NULL)
 	return;
 
-    bgetopt(c->req->connection->client, BO_BYTECT, &bc);
+    ap_bgetopt(c->req->connection->client, BO_BYTECT, &bc);
 
     if (c->len != -1) {
 /* file lengths don't match; don't cache it */
 	if (bc != c->len) {
-	    pclosef(c->req->pool, c->fp->fd);	/* no need to flush */
+	    ap_pclosef(c->req->pool, c->fp->fd);	/* no need to flush */
 	    unlink(c->tempfile);
 	    return;
 	}
     }
     else if (c->req->connection->aborted) {
-	pclosef(c->req->pool, c->fp->fd);	/* no need to flush */
+	ap_pclosef(c->req->pool, c->fp->fd);	/* no need to flush */
 	unlink(c->tempfile);
 	return;
     }
@@ -904,40 +904,40 @@ void proxy_cache_tidy(struct cache_req *c)
 	off_t curpos;
 
 	c->len = bc;
-	bflush(c->fp);
-	proxy_sec2hex(c->len, buff);
+	ap_bflush(c->fp);
+	ap_proxy_sec2hex(c->len, buff);
 	curpos = lseek(c->fp->fd, 36, SEEK_SET);
 	if (curpos == -1)
-	    proxy_log_uerror("lseek", c->tempfile,
+	    ap_proxy_log_uerror("lseek", c->tempfile,
 			     "proxy: error seeking on cache file", s);
 	else if (write(c->fp->fd, buff, 8) == -1)
-	    proxy_log_uerror("write", c->tempfile,
+	    ap_proxy_log_uerror("write", c->tempfile,
 			     "proxy: error updating cache file", s);
     }
 
-    if (bflush(c->fp) == -1) {
-	proxy_log_uerror("write", c->tempfile,
+    if (ap_bflush(c->fp) == -1) {
+	ap_proxy_log_uerror("write", c->tempfile,
 			 "proxy: error writing to cache file", s);
-	pclosef(c->req->pool, c->fp->fd);
+	ap_pclosef(c->req->pool, c->fp->fd);
 	unlink(c->tempfile);
 	return;
     }
 
-    if (pclosef(c->req->pool, c->fp->fd) == -1) {
-	proxy_log_uerror("close", c->tempfile,
+    if (ap_pclosef(c->req->pool, c->fp->fd) == -1) {
+	ap_proxy_log_uerror("close", c->tempfile,
 			 "proxy: error closing cache file", s);
 	unlink(c->tempfile);
 	return;
     }
 
     if (unlink(c->filename) == -1 && errno != ENOENT) {
-	proxy_log_uerror("unlink", c->filename,
+	ap_proxy_log_uerror("unlink", c->filename,
 			 "proxy: error deleting old cache file", s);
     }
     else {
 	char *p;
 	proxy_server_conf *conf =
-	(proxy_server_conf *) get_module_config(s->module_config, &proxy_module);
+	(proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
 
 	for (p = c->filename + strlen(conf->cache.root) + 1;;) {
 	    p = strchr(p, '/');
@@ -949,7 +949,7 @@ void proxy_cache_tidy(struct cache_req *c)
 #else
 	    if (mkdir(c->filename, S_IREAD | S_IWRITE | S_IEXEC) < 0 && errno != EEXIST)
 #endif /* WIN32 */
-		proxy_log_uerror("mkdir", c->filename,
+		ap_proxy_log_uerror("mkdir", c->filename,
 				 "proxy: error creating cache directory", s);
 	    *p = '/';
 	    ++p;
@@ -957,18 +957,18 @@ void proxy_cache_tidy(struct cache_req *c)
 #if defined(__EMX__) || defined(WIN32)
 	/* Under OS/2 use rename. */
 	if (rename(c->tempfile, c->filename) == -1)
-	    proxy_log_uerror("rename", c->filename,
+	    ap_proxy_log_uerror("rename", c->filename,
 			     "proxy: error renaming cache file", s);
     }
 #else
 
 	if (link(c->tempfile, c->filename) == -1)
-	    proxy_log_uerror("link", c->filename,
+	    ap_proxy_log_uerror("link", c->filename,
 			     "proxy: error linking cache file", s);
     }
 
     if (unlink(c->tempfile) == -1)
-	proxy_log_uerror("unlink", c->tempfile,
+	ap_proxy_log_uerror("unlink", c->tempfile,
 			 "proxy: error deleting temp file", s);
 #endif
 

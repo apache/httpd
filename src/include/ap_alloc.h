@@ -86,45 +86,45 @@
 
 typedef struct pool pool;
 
-pool * init_alloc(void);		/* Set up everything */
-API_EXPORT(pool *) make_sub_pool(pool *);	/* All pools are subpools of permanent_pool */
-API_EXPORT(void) destroy_pool(pool *);
+pool * ap_init_alloc(void);		/* Set up everything */
+API_EXPORT(pool *) ap_make_sub_pool(pool *);	/* All pools are subpools of permanent_pool */
+API_EXPORT(void) ap_destroy_pool(pool *);
 
 /* used to guarantee to the pool debugging code that the sub pool will not be
  * destroyed before the parent pool
  */
 #ifndef POOL_DEBUG
-#ifdef pool_join
-#undef pool_join
+#ifdef ap_pool_join
+#undef ap_pool_join
 #endif
-#define pool_join(a,b)
+#define ap_pool_join(a,b)
 #else
-API_EXPORT(void) pool_join(pool *p, pool *sub);
-API_EXPORT(pool *) find_pool(const void *ts);
-API_EXPORT(int) pool_is_ancestor(pool *a, pool *b);
+API_EXPORT(void) ap_pool_join(pool *p, pool *sub);
+API_EXPORT(pool *) ap_find_pool(const void *ts);
+API_EXPORT(int) ap_pool_is_ancestor(pool *a, pool *b);
 #endif
 
 /* Clearing out EVERYTHING in an pool... destroys any sub-pools */
 
-API_EXPORT(void) clear_pool(struct pool *);
+API_EXPORT(void) ap_clear_pool(struct pool *);
 
 /* Preparing for exec() --- close files, etc., but *don't* flush I/O
  * buffers, *don't* wait for subprocesses, and *don't* free any memory.
  */
 
-API_EXPORT(void) cleanup_for_exec(void);
+API_EXPORT(void) ap_cleanup_for_exec(void);
 
 /* routines to allocate memory from an pool... */
 
-API_EXPORT(void *) palloc(struct pool *, int nbytes);
-API_EXPORT(void *) pcalloc(struct pool *, int nbytes);
-API_EXPORT(char *) pstrdup(struct pool *, const char *s);
+API_EXPORT(void *) ap_palloc(struct pool *, int nbytes);
+API_EXPORT(void *) ap_pcalloc(struct pool *, int nbytes);
+API_EXPORT(char *) ap_pstrdup(struct pool *, const char *s);
 /* make a nul terminated copy of the n characters starting with s */
-API_EXPORT(char *) pstrndup(struct pool *, const char *s, int n);
-API_EXPORT_NONSTD(char *) pstrcat(struct pool *,...);	/* all '...' must be char* */
-API_EXPORT_NONSTD(char *) psprintf(struct pool *, const char *fmt, ...)
+API_EXPORT(char *) ap_pstrndup(struct pool *, const char *s, int n);
+API_EXPORT_NONSTD(char *) ap_pstrcat(struct pool *,...);	/* all '...' must be char* */
+API_EXPORT_NONSTD(char *) ap_psprintf(struct pool *, const char *fmt, ...)
     __attribute__((format(printf,2,3)));
-API_EXPORT(char *) pvsprintf(struct pool *, const char *fmt, va_list);
+API_EXPORT(char *) ap_pvsprintf(struct pool *, const char *fmt, va_list);
 
 /* array and alist management... keeping lists of things.
  * Common enough to want common support code ...
@@ -138,10 +138,10 @@ typedef struct {
     char *elts;
 } array_header;
 
-API_EXPORT(array_header *) make_array(pool *p, int nelts, int elt_size);
-API_EXPORT(void *) push_array(array_header *);
-API_EXPORT(void) array_cat(array_header *dst, const array_header *src);
-API_EXPORT(array_header *) append_arrays(pool *, const array_header *,
+API_EXPORT(array_header *) ap_make_array(pool *p, int nelts, int elt_size);
+API_EXPORT(void *) ap_push_array(array_header *);
+API_EXPORT(void) ap_array_cat(array_header *dst, const array_header *src);
+API_EXPORT(array_header *) ap_append_arrays(pool *, const array_header *,
 					 const array_header *);
 
 /* copy_array copies the *entire* array.  copy_array_hdr just copies
@@ -149,8 +149,8 @@ API_EXPORT(array_header *) append_arrays(pool *, const array_header *,
  * if) the code subsequently does a push or arraycat.
  */
 
-API_EXPORT(array_header *) copy_array(pool *p, const array_header *src);
-API_EXPORT(array_header *) copy_array_hdr(pool *p, const array_header *src);
+API_EXPORT(array_header *) ap_copy_array(pool *p, const array_header *src);
+API_EXPORT(array_header *) ap_copy_array_hdr(pool *p, const array_header *src);
 
 
 /* Tables.  Implemented alist style, for now, though we try to keep
@@ -171,21 +171,21 @@ typedef struct {
     char *val;
 } table_entry;
 
-API_EXPORT(table *) make_table(pool *p, int nelts);
-API_EXPORT(table *) copy_table(pool *p, const table *);
-API_EXPORT(void) clear_table(table *);
-API_EXPORT(char *) table_get(const table *, const char *);
-API_EXPORT(void) table_set(table *, const char *name, const char *val);
-API_EXPORT(void) table_setn(table *, const char *name, const char *val);
-API_EXPORT(void) table_merge(table *, const char *name, const char *more_val);
-API_EXPORT(void) table_mergen(table *, const char *name, const char *more_val);
-API_EXPORT(void) table_unset(table *, const char *key);
-API_EXPORT(void) table_add(table *, const char *name, const char *val);
-API_EXPORT(void) table_addn(table *, const char *name, const char *val);
-API_EXPORT(void) table_do(int (*comp) (void *, const char *, const char *), void *rec,
+API_EXPORT(table *) ap_make_table(pool *p, int nelts);
+API_EXPORT(table *) ap_copy_table(pool *p, const table *);
+API_EXPORT(void) ap_clear_table(table *);
+API_EXPORT(char *) ap_table_get(const table *, const char *);
+API_EXPORT(void) ap_table_set(table *, const char *name, const char *val);
+API_EXPORT(void) ap_table_setn(table *, const char *name, const char *val);
+API_EXPORT(void) ap_table_merge(table *, const char *name, const char *more_val);
+API_EXPORT(void) ap_table_mergen(table *, const char *name, const char *more_val);
+API_EXPORT(void) ap_table_unset(table *, const char *key);
+API_EXPORT(void) ap_table_add(table *, const char *name, const char *val);
+API_EXPORT(void) ap_table_addn(table *, const char *name, const char *val);
+API_EXPORT(void) ap_table_do(int (*comp) (void *, const char *, const char *), void *rec,
 			  const table *t,...);
 
-API_EXPORT(table *) overlay_tables(pool *p, const table *overlay, const table *base);
+API_EXPORT(table *) ap_overlay_tables(pool *p, const table *overlay, const table *base);
 
 /* XXX: these know about the definition of struct table in alloc.c.  That
  * definition is not here because it is supposed to be private, and by not
@@ -217,16 +217,16 @@ API_EXPORT(table *) overlay_tables(pool *p, const table *overlay, const table *b
  * unblock_alarms() below...
  */
 
-API_EXPORT(void) register_cleanup(pool *p, void *data,
+API_EXPORT(void) ap_register_cleanup(pool *p, void *data,
 				  void (*plain_cleanup) (void *),
 				  void (*child_cleanup) (void *));
 
-API_EXPORT(void) kill_cleanup(pool *p, void *data, void (*plain_cleanup) (void *));
-API_EXPORT(void) run_cleanup(pool *p, void *data, void (*cleanup) (void *));
+API_EXPORT(void) ap_kill_cleanup(pool *p, void *data, void (*plain_cleanup) (void *));
+API_EXPORT(void) ap_run_cleanup(pool *p, void *data, void (*cleanup) (void *));
 
 /* A "do-nothing" cleanup, for register_cleanup; it's faster to do
  * things this way than to test for NULL. */
-API_EXPORT_NONSTD(void) null_cleanup(void *data);
+API_EXPORT_NONSTD(void) ap_null_cleanup(void *data);
 
 /* The time between when a resource is actually allocated, and when it
  * its cleanup is registered is a critical section, during which the
@@ -238,39 +238,39 @@ API_EXPORT_NONSTD(void) null_cleanup(void *data);
  * up with timeout handling in general...
  */
 
-API_EXPORT(void) block_alarms(void);
-API_EXPORT(void) unblock_alarms(void);
+API_EXPORT(void) ap_block_alarms(void);
+API_EXPORT(void) ap_unblock_alarms(void);
 
 /* Common cases which want utility support..
  * the note_cleanups_for_foo routines are for 
  */
 
-API_EXPORT(FILE *) pfopen(struct pool *, const char *name, const char *fmode);
-API_EXPORT(FILE *) pfdopen(struct pool *, int fd, const char *fmode);
-API_EXPORT(int) popenf(struct pool *, const char *name, int flg, int mode);
+API_EXPORT(FILE *) ap_pfopen(struct pool *, const char *name, const char *fmode);
+API_EXPORT(FILE *) ap_pfdopen(struct pool *, int fd, const char *fmode);
+API_EXPORT(int) ap_popenf(struct pool *, const char *name, int flg, int mode);
 
-API_EXPORT(void) note_cleanups_for_file(pool *, FILE *);
-API_EXPORT(void) note_cleanups_for_fd(pool *, int);
-API_EXPORT(void) kill_cleanups_for_fd(pool *p, int fd);
+API_EXPORT(void) ap_note_cleanups_for_file(pool *, FILE *);
+API_EXPORT(void) ap_note_cleanups_for_fd(pool *, int);
+API_EXPORT(void) ap_kill_cleanups_for_fd(pool *p, int fd);
 
-API_EXPORT(void) note_cleanups_for_socket(pool *, int);
-API_EXPORT(void) kill_cleanups_for_socket(pool *p, int sock);
-API_EXPORT(int) psocket(pool *p, int, int, int);
-API_EXPORT(int) pclosesocket(pool *a, int sock);
+API_EXPORT(void) ap_note_cleanups_for_socket(pool *, int);
+API_EXPORT(void) ap_kill_cleanups_for_socket(pool *p, int sock);
+API_EXPORT(int) ap_psocket(pool *p, int, int, int);
+API_EXPORT(int) ap_pclosesocket(pool *a, int sock);
 
-API_EXPORT(regex_t *) pregcomp(pool *p, const char *pattern, int cflags);
-API_EXPORT(void) pregfree(pool *p, regex_t * reg);
+API_EXPORT(regex_t *) ap_pregcomp(pool *p, const char *pattern, int cflags);
+API_EXPORT(void) ap_pregfree(pool *p, regex_t * reg);
 
 /* routines to note closes... file descriptors are constrained enough
  * on some systems that we want to support this.
  */
 
-API_EXPORT(int) pfclose(struct pool *, FILE *);
-API_EXPORT(int) pclosef(struct pool *, int fd);
+API_EXPORT(int) ap_pfclose(struct pool *, FILE *);
+API_EXPORT(int) ap_pclosef(struct pool *, int fd);
 
 /* routines to deal with directories */
-API_EXPORT(DIR *) popendir(pool *p, const char *name);
-API_EXPORT(void) pclosedir(pool *p, DIR * d);
+API_EXPORT(DIR *) ap_popendir(pool *p, const char *name);
+API_EXPORT(void) ap_pclosedir(pool *p, DIR * d);
 
 /* ... even child processes (which we may want to wait for,
  * or to kill outright, on unexpected termination).
@@ -290,11 +290,11 @@ enum kill_conditions {
     kill_only_once		/* send SIGTERM and then wait */
 };
 
-API_EXPORT(void) note_subprocess(pool *a, int pid, enum kill_conditions how);
-API_EXPORT(int) spawn_child_err(pool *, int (*)(void *), void *,
+API_EXPORT(void) ap_note_subprocess(pool *a, int pid, enum kill_conditions how);
+API_EXPORT(int) ap_spawn_child_err(pool *, int (*)(void *), void *,
 		      enum kill_conditions, FILE **pipe_in, FILE **pipe_out,
 				FILE **pipe_err);
-#define spawn_child(p,f,v,k,in,out) spawn_child_err(p,f,v,k,in,out,NULL)
+#define spawn_child(p,f,v,k,in,out) ap_spawn_child_err(p,f,v,k,in,out,NULL)
 
 /* magic numbers --- min free bytes to consider a free pool block useable,
  * and the min amount to allocate if we have to go to malloc() */
@@ -308,7 +308,7 @@ API_EXPORT(int) spawn_child_err(pool *, int (*)(void *), void *,
 
 /* Finally, some accounting */
 
-API_EXPORT(long) bytes_in_pool(pool *p);
-API_EXPORT(long) bytes_in_free_blocks(void);
+API_EXPORT(long) ap_bytes_in_pool(pool *p);
+API_EXPORT(long) ap_bytes_in_free_blocks(void);
 
 #endif	/* !APACHE_ALLOC_H */

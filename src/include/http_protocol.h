@@ -65,11 +65,11 @@
 
 /* Read a request and fill in the fields. */
 
-request_rec *read_request(conn_rec *c);
+request_rec *ap_read_request(conn_rec *c);
 
 /* Send a single HTTP header field */
 
-API_EXPORT_NONSTD(int) send_header_field(request_rec *r, const char *fieldname,
+API_EXPORT_NONSTD(int) ap_send_header_field(request_rec *r, const char *fieldname,
                       const char *fieldval);
 
 /* Send the minimal part of an HTTP response header... but modules should be
@@ -77,20 +77,20 @@ API_EXPORT_NONSTD(int) send_header_field(request_rec *r, const char *fieldname,
  * Much of the HTTP/1.1 implementation correctness depends on code in
  * send_http_header().
  */
-API_EXPORT(void) basic_http_header(request_rec *r);
+API_EXPORT(void) ap_basic_http_header(request_rec *r);
 
 /* Send the Status-Line and header fields for HTTP response */
 
-API_EXPORT(void) send_http_header(request_rec *l);
+API_EXPORT(void) ap_send_http_header(request_rec *l);
 
 /* Send the response to special method requests */
 
-int send_http_trace(request_rec *r);
-int send_http_options(request_rec *r);
+int ap_send_http_trace(request_rec *r);
+int ap_send_http_options(request_rec *r);
 
 /* Finish up stuff after a request */
 
-void finalize_request_protocol(request_rec *r);
+void ap_finalize_request_protocol(request_rec *r);
 
 /* Send error back to client... last arg indicates error status in case
  * we get an error in the process of trying to deal with an ErrorDocument
@@ -99,7 +99,7 @@ void finalize_request_protocol(request_rec *r);
  * problem with the ErrorDocument.
  */
 
-void send_error_response(request_rec *r, int recursive_error);
+void ap_send_error_response(request_rec *r, int recursive_error);
 
 /* Set last modified header line from the lastmod date of the associated file.
  * Also, set content length.
@@ -108,12 +108,12 @@ void send_error_response(request_rec *r, int recursive_error);
  * permit_cache argument is set to one).
  */
 
-API_EXPORT(int) set_content_length(request_rec *r, long length);
-API_EXPORT(int) set_keepalive(request_rec *r);
-API_EXPORT(time_t) rationalize_mtime(request_rec *r, time_t mtime);
-API_EXPORT(void) set_etag(request_rec *r);
-API_EXPORT(void) set_last_modified(request_rec *r);
-API_EXPORT(int) meets_conditions(request_rec *r);
+API_EXPORT(int) ap_set_content_length(request_rec *r, long length);
+API_EXPORT(int) ap_set_keepalive(request_rec *r);
+API_EXPORT(time_t) ap_rationalize_mtime(request_rec *r, time_t mtime);
+API_EXPORT(void) ap_set_etag(request_rec *r);
+API_EXPORT(void) ap_set_last_modified(request_rec *r);
+API_EXPORT(int) ap_meets_conditions(request_rec *r);
 
 /* Other ways to send stuff at the client.  All of these keep track
  * of bytes_sent automatically.  This indirection is intended to make
@@ -126,45 +126,45 @@ API_EXPORT(int) meets_conditions(request_rec *r);
  * (Ditto the send_header stuff).
  */
 
-API_EXPORT(long) send_fd(FILE *f, request_rec *r);
-API_EXPORT(long) send_fd_length(FILE *f, request_rec *r, long length);
+API_EXPORT(long) ap_send_fd(FILE *f, request_rec *r);
+API_EXPORT(long) ap_send_fd_length(FILE *f, request_rec *r, long length);
 
-API_EXPORT(long) send_fb(BUFF *f, request_rec *r);
-API_EXPORT(long) send_fb_length(BUFF *f, request_rec *r, long length);
+API_EXPORT(long) ap_send_fb(BUFF *f, request_rec *r);
+API_EXPORT(long) ap_send_fb_length(BUFF *f, request_rec *r, long length);
 
-API_EXPORT(size_t) send_mmap(void *mm, request_rec *r, size_t offset,
+API_EXPORT(size_t) ap_send_mmap(void *mm, request_rec *r, size_t offset,
                              size_t length);
 
 /* Hmmm... could macrofy these for now, and maybe forever, though the
  * definitions of the macros would get a whole lot hairier.
  */
 
-API_EXPORT(int) rputc(int c, request_rec *r);
-API_EXPORT(int) rputs(const char *str, request_rec *r);
-API_EXPORT(int) rwrite(const void *buf, int nbyte, request_rec *r);
-API_EXPORT_NONSTD(int) rvputs(request_rec *r,...);
-API_EXPORT_NONSTD(int) rprintf(request_rec *r, const char *fmt,...)
+API_EXPORT(int) ap_rputc(int c, request_rec *r);
+API_EXPORT(int) ap_rputs(const char *str, request_rec *r);
+API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r);
+API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r,...);
+API_EXPORT_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt,...)
 				__attribute__((format(printf,2,3)));
-API_EXPORT(int) rflush(request_rec *r);
+API_EXPORT(int) ap_rflush(request_rec *r);
 
 /*
  * Index used in custom_responses array for a specific error code
  * (only use outside protocol.c is in getting them configured).
  */
 
-API_EXPORT(int) index_of_response(int status);
+API_EXPORT(int) ap_index_of_response(int status);
 
 /* Reading a block of data from the client connection (e.g., POST arg) */
 
-API_EXPORT(int) setup_client_block(request_rec *r, int read_policy);
-API_EXPORT(int) should_client_block(request_rec *r);
-API_EXPORT(long) get_client_block(request_rec *r, char *buffer, int bufsiz);
-API_EXPORT(int) discard_request_body(request_rec *r);
+API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy);
+API_EXPORT(int) ap_should_client_block(request_rec *r);
+API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz);
+API_EXPORT(int) ap_discard_request_body(request_rec *r);
 
 /* Sending a byterange */
 
-API_EXPORT(int) set_byterange(request_rec *r);
-API_EXPORT(int) each_byterange(request_rec *r, long *offset, long *length);
+API_EXPORT(int) ap_set_byterange(request_rec *r);
+API_EXPORT(int) ap_each_byterange(request_rec *r, long *offset, long *length);
 
 /* Support for the Basic authentication protocol.  Note that there's
  * nothing that prevents these from being in mod_auth.c, except that other
@@ -188,21 +188,21 @@ API_EXPORT(int) each_byterange(request_rec *r, long *offset, long *length);
  *
  */
 
-API_EXPORT(void) note_auth_failure(request_rec *r);
-API_EXPORT(void) note_basic_auth_failure(request_rec *r);
-API_EXPORT(void) note_digest_auth_failure(request_rec *r);
-API_EXPORT(int) get_basic_auth_pw(request_rec *r, char **pw);
+API_EXPORT(void) ap_note_auth_failure(request_rec *r);
+API_EXPORT(void) ap_note_basic_auth_failure(request_rec *r);
+API_EXPORT(void) ap_note_digest_auth_failure(request_rec *r);
+API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, char **pw);
 
 /*
  * Setting up the protocol fields for subsidiary requests...
  * Also, a wrapup function to keep the internal accounting straight.
  */
 
-void set_sub_req_protocol(request_rec *rnew, const request_rec *r);
-void finalize_sub_req_protocol(request_rec *sub_r);
+void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r);
+void ap_finalize_sub_req_protocol(request_rec *sub_r);
 
 /* This is also useful for putting sub_reqs and internal_redirects together */
 
-CORE_EXPORT(void) parse_uri(request_rec *r, const char *uri);
+CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri);
 
 #endif	/* !APACHE_HTTP_PROTOCOL_H */

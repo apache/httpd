@@ -141,17 +141,17 @@ static int proxy_detect(request_rec *r)
     void *sconf = r->server->module_config;
     proxy_server_conf *conf;
 
-    conf = (proxy_server_conf *) get_module_config(sconf, &proxy_module);
+    conf = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
     if (conf->req && r->parsed_uri.scheme) {
 	/* but it might be something vhosted */
        if (!(r->parsed_uri.hostname
 	    && !strcasecmp(r->parsed_uri.scheme, http_method(r))
-	    && matches_request_vhost(r, r->parsed_uri.hostname,
+	    && ap_matches_request_vhost(r, r->parsed_uri.hostname,
                r->parsed_uri.port_str ? r->parsed_uri.port : default_port(r)))) {
 	    r->proxyreq = 1;
 	    r->uri = r->unparsed_uri;
-	    r->filename = pstrcat(r->pool, "proxy:", r->uri, NULL);
+	    r->filename = ap_pstrcat(r->pool, "proxy:", r->uri, NULL);
 	    r->handler = "proxy-server";
         }
     }
@@ -161,7 +161,7 @@ static int proxy_detect(request_rec *r)
 	     && r->parsed_uri.port_str) {
 	    r->proxyreq = 1;
 	    r->uri = r->unparsed_uri;
-	    r->filename = pstrcat(r->pool, "proxy:", r->uri, NULL);
+	    r->filename = ap_pstrcat(r->pool, "proxy:", r->uri, NULL);
 	    r->handler = "proxy-server";
     }
     return DECLINED;
@@ -171,7 +171,7 @@ static int proxy_trans(request_rec *r)
 {
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
-    (proxy_server_conf *) get_module_config(sconf, &proxy_module);
+    (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
     int i, len;
     struct proxy_alias *ent = (struct proxy_alias *) conf->aliases->elts;
 
@@ -191,7 +191,7 @@ static int proxy_trans(request_rec *r)
         len = alias_match(r->uri, ent[i].fake);
 	    
        if (len > 0) {
-           r->filename = pstrcat(r->pool, "proxy:", ent[i].real,
+           r->filename = ap_pstrcat(r->pool, "proxy:", ent[i].real,
                                  r->uri + len, NULL);
            r->handler = "proxy-server";
            r->proxyreq = 1;
@@ -218,9 +218,9 @@ static int proxy_fixup(request_rec *r)
 
 /* canonicalise each specific scheme */
     if (strncasecmp(url, "http:", 5) == 0)
-	return proxy_http_canon(r, url + 5, "http", DEFAULT_HTTP_PORT);
+	return ap_proxy_http_canon(r, url + 5, "http", DEFAULT_HTTP_PORT);
     else if (strncasecmp(url, "ftp:", 4) == 0)
-	return proxy_ftp_canon(r, url + 4);
+	return ap_proxy_ftp_canon(r, url + 4);
 
     p = strchr(url, ':');
     if (p == NULL || p == url)
@@ -231,7 +231,7 @@ static int proxy_fixup(request_rec *r)
 
 static void proxy_init(server_rec *r, pool *p)
 {
-    proxy_garbage_init(r, p);
+    ap_proxy_garbage_init(r, p);
 }
 
 
@@ -255,20 +255,20 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
      || strcasecmp(r->parsed_uri.hostname, "localhost") == 0)
 	return DECLINED;	/* host name has a dot already */
 
-    ref = table_get(r->headers_in, "Referer");
+    ref = ap_table_get(r->headers_in, "Referer");
 
     /* Reassemble the request, but insert the domain after the host name */
     /* Note that the domain name always starts with a dot */
-    r->parsed_uri.hostname = pstrcat(r->pool, r->parsed_uri.hostname,
+    r->parsed_uri.hostname = ap_pstrcat(r->pool, r->parsed_uri.hostname,
 				     domain, NULL);
-    nuri = unparse_uri_components(r->pool,
+    nuri = ap_unparse_uri_components(r->pool,
 				  &r->parsed_uri,
 				  UNP_REVEALPASSWORD);
 
-    table_set(r->headers_out, "Location", nuri);
-    aplog_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server,
+    ap_table_set(r->headers_out, "Location", nuri);
+    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server,
 		"Domain missing: %s sent to %s%s%s", r->uri,
-		unparse_uri_components(r->pool, &r->parsed_uri,
+		ap_unparse_uri_components(r->pool, &r->parsed_uri,
 		      UNP_OMITUSERINFO),
 		ref ? " from " : "", ref ? ref : "");
 
@@ -283,7 +283,7 @@ static int proxy_handler(request_rec *r)
     char *url, *scheme, *p;
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
-    (proxy_server_conf *) get_module_config(sconf, &proxy_module);
+    (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
     array_header *proxies = conf->proxies;
     struct proxy_remote *ents = (struct proxy_remote *) proxies->elts;
     int i, rc;
@@ -293,7 +293,7 @@ static int proxy_handler(request_rec *r)
     if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
 	return DECLINED;
 
-    if ((rc = setup_client_block(r, REQUEST_CHUNKED_ERROR)))
+    if ((rc = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR)))
 	return rc;
 
     url = r->filename + 6;
@@ -301,7 +301,7 @@ static int proxy_handler(request_rec *r)
     if (p == NULL)
 	return HTTP_BAD_REQUEST;
 
-    rc = proxy_cache_check(r, url, &conf->cache, &cr);
+    rc = ap_proxy_cache_check(r, url, &conf->cache, &cr);
     if (rc != DECLINED)
 	return rc;
 
@@ -313,7 +313,7 @@ static int proxy_handler(request_rec *r)
     }
 
     *p = '\0';
-    scheme = pstrdup(r->pool, url);
+    scheme = ap_pstrdup(r->pool, url);
     *p = ':';
 
     /* Check URI's destination host against NoProxy hosts */
@@ -331,7 +331,7 @@ static int proxy_handler(request_rec *r)
 	{
 	    char msg[256];
 	    sprintf(msg, (direct_connect) ? "NoProxy for %s" : "UseProxy for %s", r->uri);
-	    aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, msg);
+	    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, msg);
 	}
 #endif
     }
@@ -349,11 +349,11 @@ static int proxy_handler(request_rec *r)
 		 * proxy code.
 		 */
 		if (r->method_number == M_CONNECT)
-		    rc = proxy_connect_handler(r, cr, url, ents[i].hostname,
+		    rc = ap_proxy_connect_handler(r, cr, url, ents[i].hostname,
 					       ents[i].port);
 /* we only know how to handle communication to a proxy via http */
 		else if (strcasecmp(ents[i].protocol, "http") == 0)
-		    rc = proxy_http_handler(r, cr, url, ents[i].hostname,
+		    rc = ap_proxy_http_handler(r, cr, url, ents[i].hostname,
 					    ents[i].port);
 		else
 		    rc = DECLINED;
@@ -371,11 +371,11 @@ static int proxy_handler(request_rec *r)
  */
     /* handle the scheme */
     if (r->method_number == M_CONNECT)
-	return proxy_connect_handler(r, cr, url, NULL, 0);
+	return ap_proxy_connect_handler(r, cr, url, NULL, 0);
     if (strcasecmp(scheme, "http") == 0)
-	return proxy_http_handler(r, cr, url, NULL, 0);
+	return ap_proxy_http_handler(r, cr, url, NULL, 0);
     if (strcasecmp(scheme, "ftp") == 0)
-	return proxy_ftp_handler(r, cr, url);
+	return ap_proxy_ftp_handler(r, cr, url);
     else
 	return NOT_IMPLEMENTED;
 }
@@ -386,14 +386,14 @@ static int proxy_handler(request_rec *r)
 static void *
      create_proxy_config(pool *p, server_rec *s)
 {
-    proxy_server_conf *ps = pcalloc(p, sizeof(proxy_server_conf));
+    proxy_server_conf *ps = ap_pcalloc(p, sizeof(proxy_server_conf));
 
-    ps->proxies = make_array(p, 10, sizeof(struct proxy_remote));
-    ps->aliases = make_array(p, 10, sizeof(struct proxy_alias));
-    ps->raliases = make_array(p, 10, sizeof(struct proxy_alias));
-    ps->noproxies = make_array(p, 10, sizeof(struct noproxy_entry));
-    ps->dirconn = make_array(p, 10, sizeof(struct dirconn_entry));
-    ps->nocaches = make_array(p, 10, sizeof(struct nocache_entry));
+    ps->proxies = ap_make_array(p, 10, sizeof(struct proxy_remote));
+    ps->aliases = ap_make_array(p, 10, sizeof(struct proxy_alias));
+    ps->raliases = ap_make_array(p, 10, sizeof(struct proxy_alias));
+    ps->noproxies = ap_make_array(p, 10, sizeof(struct noproxy_entry));
+    ps->dirconn = ap_make_array(p, 10, sizeof(struct dirconn_entry));
+    ps->nocaches = ap_make_array(p, 10, sizeof(struct nocache_entry));
     ps->domain = NULL;
     ps->req = 0;
 
@@ -415,7 +415,7 @@ static const char *
 {
     server_rec *s = cmd->server;
     proxy_server_conf *conf =
-    (proxy_server_conf *) get_module_config(s->module_config, &proxy_module);
+    (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
     struct proxy_remote *new;
     char *p, *q;
     int port;
@@ -433,8 +433,8 @@ static const char *
 	port = -1;
     *p = '\0';
     if (strchr(f, ':') == NULL)
-	str_tolower(f);		/* lowercase scheme */
-    str_tolower(p + 3);		/* lowercase hostname */
+	ap_str_tolower(f);		/* lowercase scheme */
+    ap_str_tolower(p + 3);		/* lowercase hostname */
 
     if (port == -1) {
 	int i;
@@ -444,7 +444,7 @@ static const char *
 	port = defports[i].port;
     }
 
-    new = push_array(conf->proxies);
+    new = ap_push_array(conf->proxies);
     new->scheme = f;
     new->protocol = r;
     new->hostname = p + 3;
@@ -457,10 +457,10 @@ static const char *
 {
     server_rec *s = cmd->server;
     proxy_server_conf *conf =
-    (proxy_server_conf *) get_module_config(s->module_config, &proxy_module);
+    (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
     struct proxy_alias *new;
 
-    new = push_array(conf->aliases);
+    new = ap_push_array(conf->aliases);
     new->fake = f;
     new->real = r;
     return NULL;
@@ -473,9 +473,9 @@ static const char *
     proxy_server_conf *conf;
     struct proxy_alias *new;
 
-    conf = (proxy_server_conf *)get_module_config(s->module_config, 
+    conf = (proxy_server_conf *)ap_get_module_config(s->module_config, 
                                                   &proxy_module);
-    new = push_array(conf->raliases);
+    new = ap_push_array(conf->raliases);
     new->fake = f;
     new->real = r;
     return NULL;
@@ -486,7 +486,7 @@ static const char *
 {
     server_rec *s = parms->server;
     proxy_server_conf *conf =
-    get_module_config(s->module_config, &proxy_module);
+    ap_get_module_config(s->module_config, &proxy_module);
     struct noproxy_entry *new;
     struct noproxy_entry *list = (struct noproxy_entry *) conf->noproxies->elts;
     struct hostent hp;
@@ -500,10 +500,10 @@ static const char *
     }
 
     if (!found) {
-	new = push_array(conf->noproxies);
+	new = ap_push_array(conf->noproxies);
 	new->name = arg;
 	/* Don't do name lookups on things that aren't dotted */
-	if (strchr(arg, '.') != NULL && proxy_host2addr(new->name, &hp) == NULL)
+	if (strchr(arg, '.') != NULL && ap_proxy_host2addr(new->name, &hp) == NULL)
 	    memcpy(&new->addr, hp.h_addr, sizeof(struct in_addr));
 	else
 	    new->addr.s_addr = 0;
@@ -519,7 +519,7 @@ static const char *
 {
     server_rec *s = parms->server;
     proxy_server_conf *conf =
-    get_module_config(s->module_config, &proxy_module);
+    ap_get_module_config(s->module_config, &proxy_module);
     struct dirconn_entry *New;
     struct dirconn_entry *list = (struct dirconn_entry *) conf->dirconn->elts;
     int found = 0;
@@ -532,30 +532,30 @@ static const char *
     }
 
     if (!found) {
-	New = push_array(conf->dirconn);
+	New = ap_push_array(conf->dirconn);
 	New->name = arg;
 	New->hostentry = NULL;
 
-	if (proxy_is_ipaddr(New, parms->pool)) {
+	if (ap_proxy_is_ipaddr(New, parms->pool)) {
 #if DEBUGGING
 	    fprintf(stderr, "Parsed addr %s\n", inet_ntoa(New->addr));
 	    fprintf(stderr, "Parsed mask %s\n", inet_ntoa(New->mask));
 #endif
 	}
-	else if (proxy_is_domainname(New, parms->pool)) {
-	    str_tolower(New->name);
+	else if (ap_proxy_is_domainname(New, parms->pool)) {
+	    ap_str_tolower(New->name);
 #if DEBUGGING
 	    fprintf(stderr, "Parsed domain %s\n", New->name);
 #endif
 	}
-	else if (proxy_is_hostname(New, parms->pool)) {
-	    str_tolower(New->name);
+	else if (ap_proxy_is_hostname(New, parms->pool)) {
+	    ap_str_tolower(New->name);
 #if DEBUGGING
 	    fprintf(stderr, "Parsed host %s\n", New->name);
 #endif
 	}
 	else {
-	    proxy_is_word(New, parms->pool);
+	    ap_proxy_is_word(New, parms->pool);
 #if DEBUGGING
 	    fprintf(stderr, "Parsed word %s\n", New->name);
 #endif
@@ -568,7 +568,7 @@ static const char *
      set_proxy_domain(cmd_parms *parms, void *dummy, char *arg)
 {
     proxy_server_conf *psf =
-    get_module_config(parms->server->module_config, &proxy_module);
+    ap_get_module_config(parms->server->module_config, &proxy_module);
 
     if (arg[0] != '.')
 	return "Domain name must start with a dot.";
@@ -581,7 +581,7 @@ static const char *
      set_proxy_req(cmd_parms *parms, void *dummy, int flag)
 {
     proxy_server_conf *psf =
-    get_module_config(parms->server->module_config, &proxy_module);
+    ap_get_module_config(parms->server->module_config, &proxy_module);
 
     psf->req = flag;
     return NULL;
@@ -592,7 +592,7 @@ static const char *
      set_cache_size(cmd_parms *parms, char *struct_ptr, char *arg)
 {
     proxy_server_conf *psf =
-    get_module_config(parms->server->module_config, &proxy_module);
+    ap_get_module_config(parms->server->module_config, &proxy_module);
     int val;
 
     if (sscanf(arg, "%d", &val) != 1)
@@ -605,7 +605,7 @@ static const char *
      set_cache_root(cmd_parms *parms, void *dummy, char *arg)
 {
     proxy_server_conf *psf =
-    get_module_config(parms->server->module_config, &proxy_module);
+    ap_get_module_config(parms->server->module_config, &proxy_module);
 
     psf->cache.root = arg;
 
@@ -616,7 +616,7 @@ static const char *
      set_cache_factor(cmd_parms *parms, void *dummy, char *arg)
 {
     proxy_server_conf *psf =
-    get_module_config(parms->server->module_config, &proxy_module);
+    ap_get_module_config(parms->server->module_config, &proxy_module);
     double val;
 
     if (sscanf(arg, "%lg", &val) != 1)
@@ -630,7 +630,7 @@ static const char *
      set_cache_maxex(cmd_parms *parms, void *dummy, char *arg)
 {
     proxy_server_conf *psf =
-    get_module_config(parms->server->module_config, &proxy_module);
+    ap_get_module_config(parms->server->module_config, &proxy_module);
     double val;
 
     if (sscanf(arg, "%lg", &val) != 1)
@@ -643,7 +643,7 @@ static const char *
      set_cache_defex(cmd_parms *parms, void *dummy, char *arg)
 {
     proxy_server_conf *psf =
-    get_module_config(parms->server->module_config, &proxy_module);
+    ap_get_module_config(parms->server->module_config, &proxy_module);
     double val;
 
     if (sscanf(arg, "%lg", &val) != 1)
@@ -656,7 +656,7 @@ static const char *
      set_cache_gcint(cmd_parms *parms, void *dummy, char *arg)
 {
     proxy_server_conf *psf =
-    get_module_config(parms->server->module_config, &proxy_module);
+    ap_get_module_config(parms->server->module_config, &proxy_module);
     double val;
 
     if (sscanf(arg, "%lg", &val) != 1)
@@ -669,7 +669,7 @@ static const char *
      set_cache_dirlevels(cmd_parms *parms, char *struct_ptr, char *arg)
 {
     proxy_server_conf *psf =
-    get_module_config(parms->server->module_config, &proxy_module);
+    ap_get_module_config(parms->server->module_config, &proxy_module);
     int val;
 
     val = atoi(arg);
@@ -685,7 +685,7 @@ static const char *
      set_cache_dirlength(cmd_parms *parms, char *struct_ptr, char *arg)
 {
     proxy_server_conf *psf =
-    get_module_config(parms->server->module_config, &proxy_module);
+    ap_get_module_config(parms->server->module_config, &proxy_module);
     int val;
 
     val = atoi(arg);
@@ -702,7 +702,7 @@ static const char *
 {
     server_rec *s = parms->server;
     proxy_server_conf *conf =
-    get_module_config(s->module_config, &proxy_module);
+    ap_get_module_config(s->module_config, &proxy_module);
     struct nocache_entry *new;
     struct nocache_entry *list = (struct nocache_entry *) conf->nocaches->elts;
     struct hostent hp;
@@ -716,10 +716,10 @@ static const char *
     }
 
     if (!found) {
-	new = push_array(conf->nocaches);
+	new = ap_push_array(conf->nocaches);
 	new->name = arg;
 	/* Don't do name lookups on things that aren't dotted */
-	if (strchr(arg, '.') != NULL && proxy_host2addr(new->name, &hp) == NULL)
+	if (strchr(arg, '.') != NULL && ap_proxy_host2addr(new->name, &hp) == NULL)
 	    /*@@@FIXME: This copies only the first of (possibly many) IP addrs */
 	    memcpy(&new->addr, hp.h_addr, sizeof(struct in_addr));
 	else
@@ -732,7 +732,7 @@ static const char *
      set_recv_buffer_size(cmd_parms *parms, void *dummy, char *arg)
 {
     proxy_server_conf *psf =
-    get_module_config(parms->server->module_config, &proxy_module);
+    ap_get_module_config(parms->server->module_config, &proxy_module);
     int s = atoi(arg);
     if (s < 512 && s != 0) {
 	return "ProxyReceiveBufferSize must be >= 512 bytes, or 0 for system default.";

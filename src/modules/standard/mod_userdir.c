@@ -111,12 +111,12 @@ typedef struct userdir_config {
 static void *create_userdir_config(pool *p, server_rec *s)
 {
     userdir_config
-    * newcfg = (userdir_config *) pcalloc(p, sizeof(userdir_config));
+    * newcfg = (userdir_config *) ap_pcalloc(p, sizeof(userdir_config));
 
     newcfg->globally_disabled = 0;
     newcfg->userdir = DEFAULT_USER_DIR;
-    newcfg->enabled_users = make_table(p, 4);
-    newcfg->disabled_users = make_table(p, 4);
+    newcfg->enabled_users = ap_make_table(p, 4);
+    newcfg->disabled_users = ap_make_table(p, 4);
     return (void *) newcfg;
 }
 
@@ -127,7 +127,7 @@ static void *create_userdir_config(pool *p, server_rec *s)
 static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
 {
     userdir_config
-    * s_cfg = (userdir_config *) get_module_config
+    * s_cfg = (userdir_config *) ap_get_module_config
     (
      cmd->server->module_config,
      &userdir_module
@@ -135,7 +135,7 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
     char *username;
     const char
         *usernames = arg;
-    char *kw = getword_conf(cmd->pool, &usernames);
+    char *kw = ap_getword_conf(cmd->pool, &usernames);
     table *usertable;
 
     /*
@@ -168,7 +168,7 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
          * If the first (only?) value isn't one of our keywords, just copy
          * the string to the userdir string.
          */
-        s_cfg->userdir = pstrdup(cmd->pool, arg);
+        s_cfg->userdir = ap_pstrdup(cmd->pool, arg);
         return NULL;
     }
     /*
@@ -176,8 +176,8 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
      * the appropriate table.
      */
     while (*usernames) {
-        username = getword_conf(cmd->pool, &usernames);
-        table_setn(usertable, username, kw);
+        username = ap_getword_conf(cmd->pool, &usernames);
+        ap_table_setn(usertable, username, kw);
     }
     return NULL;
 }
@@ -192,7 +192,7 @@ static int translate_userdir(request_rec *r)
 {
     void *server_conf = r->server->module_config;
     const userdir_config *s_cfg =
-    (userdir_config *) get_module_config(server_conf, &userdir_module);
+    (userdir_config *) ap_get_module_config(server_conf, &userdir_module);
     char *name = r->uri;
     const char *userdirs = s_cfg->userdir;
     const char *w, *dname;
@@ -213,7 +213,7 @@ static int translate_userdir(request_rec *r)
     }
 
     dname = name + 2;
-    w = getword(r->pool, &dname, '/');
+    w = ap_getword(r->pool, &dname, '/');
 
     /*
      * The 'dname' funny business involves backing it up to capture the '/'
@@ -235,7 +235,7 @@ static int translate_userdir(request_rec *r)
     /*
      * Nor if there's an username but it's in the disabled list.
      */
-    if (table_get(s_cfg->disabled_users, w) != NULL) {
+    if (ap_table_get(s_cfg->disabled_users, w) != NULL) {
         return DECLINED;
     }
     /*
@@ -244,7 +244,7 @@ static int translate_userdir(request_rec *r)
      */
     if (
         s_cfg->globally_disabled &&
-        (table_get(s_cfg->enabled_users, w) == NULL)
+        (ap_table_get(s_cfg->enabled_users, w) == NULL)
         ) {
         return DECLINED;
     }
@@ -254,13 +254,13 @@ static int translate_userdir(request_rec *r)
      */
 
     while (*userdirs) {
-        const char *userdir = getword_conf(r->pool, &userdirs);
+        const char *userdir = ap_getword_conf(r->pool, &userdirs);
         char *filename = NULL;
 
         if (strchr(userdir, '*'))
-            x = getword(r->pool, &userdir, '*');
+            x = ap_getword(r->pool, &userdir, '*');
 
-	if (userdir[0] == '\0' || os_is_path_absolute(userdir)) {
+	if (userdir[0] == '\0' || ap_is_path_absolute(userdir)) {
             if (x) {
 #ifdef WIN32
                 /*
@@ -274,19 +274,19 @@ static int translate_userdir(request_rec *r)
                 if (strchr(x, ':'))
 #endif                          /* WIN32 */
 		{
-                    redirect = pstrcat(r->pool, x, w, userdir, dname, NULL);
-                    table_setn(r->headers_out, "Location", redirect);
+                    redirect = ap_pstrcat(r->pool, x, w, userdir, dname, NULL);
+                    ap_table_setn(r->headers_out, "Location", redirect);
                     return REDIRECT;
                 }
                 else
-                    filename = pstrcat(r->pool, x, w, userdir, NULL);
+                    filename = ap_pstrcat(r->pool, x, w, userdir, NULL);
             }
             else
-                filename = pstrcat(r->pool, userdir, "/", w, NULL);
+                filename = ap_pstrcat(r->pool, userdir, "/", w, NULL);
         }
         else if (strchr(userdir, ':')) {
-            redirect = pstrcat(r->pool, userdir, "/", w, dname, NULL);
-            table_setn(r->headers_out, "Location", redirect);
+            redirect = ap_pstrcat(r->pool, userdir, "/", w, dname, NULL);
+            ap_table_setn(r->headers_out, "Location", redirect);
             return REDIRECT;
         }
         else {
@@ -298,9 +298,9 @@ static int translate_userdir(request_rec *r)
             if ((pw = getpwnam(w))) {
 #ifdef __EMX__
                 /* Need to manually add user name for OS/2 */
-                filename = pstrcat(r->pool, pw->pw_dir, w, "/", userdir, NULL);
+                filename = ap_pstrcat(r->pool, pw->pw_dir, w, "/", userdir, NULL);
 #else
-                filename = pstrcat(r->pool, pw->pw_dir, "/", userdir, NULL);
+                filename = ap_pstrcat(r->pool, pw->pw_dir, "/", userdir, NULL);
 #endif
             }
 #endif                          /* WIN32 */
@@ -313,7 +313,7 @@ static int translate_userdir(request_rec *r)
          * used, for example, to run a CGI script for the user.
          */
         if (filename && (!*userdirs || stat(filename, &statbuf) != -1)) {
-            r->filename = pstrcat(r->pool, filename, dname, NULL);
+            r->filename = ap_pstrcat(r->pool, filename, dname, NULL);
 	    /* when statbuf contains info on r->filename we can save a syscall
 	     * by copying it to r->finfo
 	     */

@@ -25,7 +25,7 @@
 
 #endif
 
-INLINE int os_is_path_absolute(const char *file)
+INLINE int ap_is_path_absolute(const char *file)
 {
   /* For now, just do the same check that http_request.c and mod_alias.c
    * do. 

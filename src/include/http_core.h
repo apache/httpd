@@ -91,23 +91,23 @@
 #define SATISFY_ANY 1
 #define SATISFY_NOSPEC 2
 
-API_EXPORT(int) allow_options (request_rec *);
-API_EXPORT(int) allow_overrides (request_rec *);
-API_EXPORT(char *) default_type (request_rec *);     
-API_EXPORT(char *) document_root (request_rec *); /* Don't use this!  If your request went
+API_EXPORT(int) ap_allow_options (request_rec *);
+API_EXPORT(int) ap_allow_overrides (request_rec *);
+API_EXPORT(char *) ap_default_type (request_rec *);     
+API_EXPORT(char *) ap_document_root (request_rec *); /* Don't use this!  If your request went
 				      * through a Userdir, or something like
 				      * that, it'll screw you.  But it's
 				      * back-compatible...
 				      */
-API_EXPORT(const char *) get_remote_host(conn_rec *conn, void *dir_config, int type);
-API_EXPORT(const char *) get_remote_logname(request_rec *r);
+API_EXPORT(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config, int type);
+API_EXPORT(const char *) ap_get_remote_logname(request_rec *r);
 
 /* Used for constructing self-referencing URLs, and things like SERVER_PORT,
  * and SERVER_NAME.
  */
-API_EXPORT(char *) construct_url(pool *p, const char *uri, const request_rec *r);
-API_EXPORT(const char *) get_server_name(const request_rec *r);
-API_EXPORT(unsigned) get_server_port(const request_rec *r);
+API_EXPORT(char *) ap_construct_url(pool *p, const char *uri, const request_rec *r);
+API_EXPORT(const char *) ap_get_server_name(const request_rec *r);
+API_EXPORT(unsigned) ap_get_server_port(const request_rec *r);
      
 /* Authentication stuff.  This is one of the places where compatibility
  * with the old config files *really* hurts; they don't discriminate at
@@ -121,10 +121,10 @@ typedef struct {
     char *requirement;
 } require_line;
      
-API_EXPORT(char *) auth_type (request_rec *);
-API_EXPORT(char *) auth_name (request_rec *);     
-API_EXPORT(int) satisfies (request_rec *r);
-API_EXPORT(array_header *) requires (request_rec *);    
+API_EXPORT(char *) ap_auth_type (request_rec *);
+API_EXPORT(char *) ap_auth_name (request_rec *);     
+API_EXPORT(int) ap_satisfies (request_rec *r);
+API_EXPORT(array_header *) ap_requires (request_rec *);    
 
 #ifdef CORE_PRIVATE
 
@@ -134,7 +134,7 @@ API_EXPORT(array_header *) requires (request_rec *);
  * the code that cares really is in http_core.c.  Also, anothre accessor.
  */
 
-char *response_code_string (request_rec *r, int error_index);
+char *ap_response_code_string (request_rec *r, int error_index);
 
 extern API_VAR_EXPORT module core_module;
 
@@ -166,14 +166,14 @@ typedef struct {
      * goes untyped by other mechanisms before it slips out the door...
      */
     
-    char *default_type;
+    char *ap_default_type;
   
     /* Authentication stuff.  Groan... */
     
     int satisfy;
-    char *auth_type;
-    char *auth_name;
-    array_header *requires;
+    char *ap_auth_type;
+    char *ap_auth_name;
+    array_header *ap_requires;
 
     /* Custom response config. These can contain text or a URL to redirect to.
      * if response_code_strings is NULL then there are none in the config,
@@ -231,7 +231,7 @@ typedef struct {
      * so it's at least a minimally functional web server on its own (and
      * can be tested that way).  But let's keep it to the bare minimum:
      */
-    char *document_root;
+    char *ap_document_root;
   
     /* Access control */
 
@@ -241,12 +241,12 @@ typedef struct {
 } core_server_config;
 
 /* for http_config.c */
-void core_reorder_directories(pool *, server_rec *);
+void ap_core_reorder_directories(pool *, server_rec *);
 
 /* for mod_perl */
-CORE_EXPORT(void) add_per_dir_conf (server_rec *s, void *dir_config);
-CORE_EXPORT(void) add_per_url_conf (server_rec *s, void *url_config);
-CORE_EXPORT_NONSTD(const char *) limit_section (cmd_parms *cmd, void *dummy, const char *arg);
+CORE_EXPORT(void) ap_add_per_dir_conf (server_rec *s, void *dir_config);
+CORE_EXPORT(void) ap_add_per_url_conf (server_rec *s, void *url_config);
+CORE_EXPORT_NONSTD(const char *) ap_limit_section (cmd_parms *cmd, void *dummy, const char *arg);
 
 #endif
 

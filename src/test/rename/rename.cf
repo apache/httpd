@@ -395,6 +395,6 @@ release_mutex                  PREFIX_release_mutex
 os_is_path_absolute            PREFIX_is_path_absolute
 
 #   specials: these two require also a (trivial) change in Configure
-#prelinked_modules              PREFIX_prelinked_modules
-#preloaded_modules              PREFIX_preloaded_modules
+prelinked_modules              PREFIX_prelinked_modules
+preloaded_modules              PREFIX_preloaded_modules
 

@@ -100,19 +100,19 @@
 
 #define APLOG_MARK	__FILE__,__LINE__
 
-void open_logs (server_rec *, pool *p);
-API_EXPORT(void) aplog_error(const char *file, int line, int level,
+void ap_open_logs (server_rec *, pool *p);
+API_EXPORT(void) ap_log_error(const char *file, int line, int level,
 			     const server_rec *s, const char *fmt, ...)
 			    __attribute__((format(printf,5,6)));
-API_EXPORT(void) error_log2stderr (server_rec *);     
+API_EXPORT(void) ap_error_log2stderr (server_rec *);     
 
-void log_pid (pool *p, char *fname);
-API_EXPORT(void) log_error(const char *err, server_rec *s);
-API_EXPORT(void) log_unixerr(const char *routine, const char *file,
+void ap_log_pid (pool *p, char *fname);
+API_EXPORT(void) ap_log_error_old(const char *err, server_rec *s);
+API_EXPORT(void) ap_log_unixerr(const char *routine, const char *file,
 			     const char *msg, server_rec *s);
-API_EXPORT(void) log_printf(const server_rec *s, const char *fmt, ...)
+API_EXPORT(void) ap_log_printf(const server_rec *s, const char *fmt, ...)
 			    __attribute__((format(printf,2,3)));
-API_EXPORT(void) log_reason(const char *reason, const char *fname,
+API_EXPORT(void) ap_log_reason(const char *reason, const char *fname,
 			    request_rec *r);
 
 typedef struct piped_log {
@@ -126,8 +126,8 @@ typedef struct piped_log {
 #endif
 } piped_log;
 
-API_EXPORT(piped_log *) open_piped_log (pool *p, const char *program);
-API_EXPORT(void) close_piped_log (piped_log *);
+API_EXPORT(piped_log *) ap_open_piped_log (pool *p, const char *program);
+API_EXPORT(void) ap_close_piped_log (piped_log *);
 #ifndef NO_RELIABLE_PIPED_LOGS
 #define piped_log_read_fd(pl)	((pl)->fds[0])
 #define piped_log_write_fd(pl)	((pl)->fds[1])

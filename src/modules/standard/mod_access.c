@@ -104,13 +104,13 @@ module MODULE_VAR_EXPORT access_module;
 static void *create_access_dir_config(pool *p, char *dummy)
 {
     access_dir_conf *conf =
-    (access_dir_conf *) pcalloc(p, sizeof(access_dir_conf));
+    (access_dir_conf *) ap_pcalloc(p, sizeof(access_dir_conf));
     int i;
 
     for (i = 0; i < METHODS; ++i)
 	conf->order[i] = DENY_THEN_ALLOW;
-    conf->allows = make_array(p, 1, sizeof(allowdeny));
-    conf->denys = make_array(p, 1, sizeof(allowdeny));
+    conf->allows = ap_make_array(p, 1, sizeof(allowdeny));
+    conf->denys = ap_make_array(p, 1, sizeof(allowdeny));
 
     return (void *) conf;
 }
@@ -152,7 +152,7 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, char *from, char *where)
     if (strcasecmp(from, "from"))
 	return "allow and deny must be followed by 'from'";
 
-    a = (allowdeny *) push_array(cmd->info ? d->allows : d->denys);
+    a = (allowdeny *) ap_push_array(cmd->info ? d->allows : d->denys);
     a->x.from = where;
     a->limited = cmd->limited;
 
@@ -305,7 +305,7 @@ static int find_allowdeny(request_rec *r, array_header *a, int method)
 
 	switch (ap[i].type) {
 	case T_ENV:
-	    if (table_get(r->subprocess_env, ap[i].x.from)) {
+	    if (ap_table_get(r->subprocess_env, ap[i].x.from)) {
 		return 1;
 	    }
 	    break;
@@ -323,7 +323,7 @@ static int find_allowdeny(request_rec *r, array_header *a, int method)
 
 	case T_HOST:
 	    if (!gothost) {
-		remotehost = get_remote_host(r->connection, r->per_dir_config,
+		remotehost = ap_get_remote_host(r->connection, r->per_dir_config,
 					    REMOTE_DOUBLE_REV);
 
 		if ((remotehost == NULL) || is_ip(remotehost))
@@ -350,7 +350,7 @@ static int check_dir_access(request_rec *r)
     int method = r->method_number;
     access_dir_conf *a =
     (access_dir_conf *)
-    get_module_config(r->per_dir_config, &access_module);
+    ap_get_module_config(r->per_dir_config, &access_module);
     int ret = OK;
 
     if (a->order[method] == ALLOW_THEN_DENY) {
@@ -375,8 +375,8 @@ static int check_dir_access(request_rec *r)
     }
 
     if (ret == FORBIDDEN
-	&& (satisfies(r) != SATISFY_ANY || !some_auth_required(r))) {
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+	&& (ap_satisfies(r) != SATISFY_ANY || !ap_some_auth_required(r))) {
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		  "Client denied by server configuration: %s", r->filename);
     }
 

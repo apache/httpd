@@ -148,7 +148,7 @@ static server_addr_rec **name_vhost_list_tail;
 
 
 /* called at the beginning of the config */
-void init_vhost_config(pool *p)
+void ap_init_vhost_config(pool *p)
 {
     memset(iphash_table, 0, sizeof(iphash_table));
     default_list = NULL;
@@ -204,12 +204,12 @@ static const char *get_addresses(pool *p, char *w, server_addr_rec ***paddr,
 	is_an_ip_addr = 1;
     }
     if (is_an_ip_addr) {
-	sar = pcalloc(p, sizeof(server_addr_rec));
+	sar = ap_pcalloc(p, sizeof(server_addr_rec));
 	**paddr = sar;
 	*paddr = &sar->next;
 	sar->host_addr.s_addr = my_addr;
 	sar->host_port = port;
-	sar->virthost = pstrdup(p, w);
+	sar->virthost = ap_pstrdup(p, w);
 	if (t != NULL)
 	    *t = ':';
 	return NULL;
@@ -218,7 +218,7 @@ static const char *get_addresses(pool *p, char *w, server_addr_rec ***paddr,
     hep = gethostbyname(w);
 
     if ((!hep) || (hep->h_addrtype != AF_INET || !hep->h_addr_list[0])) {
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
 	    "Cannot resolve host name %s --- ignoring!", w);
 	if (t != NULL)
 	    *t = ':';
@@ -226,12 +226,12 @@ static const char *get_addresses(pool *p, char *w, server_addr_rec ***paddr,
     }
 
     for (i = 0; hep->h_addr_list[i]; ++i) {
-	sar = pcalloc(p, sizeof(server_addr_rec));
+	sar = ap_pcalloc(p, sizeof(server_addr_rec));
 	**paddr = sar;
 	*paddr = &sar->next;
 	sar->host_addr = *(struct in_addr *) hep->h_addr_list[i];
 	sar->host_port = port;
-	sar->virthost = pstrdup(p, w);
+	sar->virthost = ap_pstrdup(p, w);
     }
 
     if (t != NULL)
@@ -241,7 +241,7 @@ static const char *get_addresses(pool *p, char *w, server_addr_rec ***paddr,
 
 
 /* parse the <VirtualHost> addresses */
-const char *parse_vhost_addrs(pool *p, const char *hostname, server_rec *s)
+const char *ap_parse_vhost_addrs(pool *p, const char *hostname, server_rec *s)
 {
     server_addr_rec **addrs;
     const char *err;
@@ -249,7 +249,7 @@ const char *parse_vhost_addrs(pool *p, const char *hostname, server_rec *s)
     /* start the list of addreses */
     addrs = &s->addrs;
     while (hostname[0]) {
-	err = get_addresses(p, getword_conf(p, &hostname), &addrs, s->port);
+	err = get_addresses(p, ap_getword_conf(p, &hostname), &addrs, s->port);
 	if (err) {
 	    *addrs = NULL;
 	    return err;
@@ -267,7 +267,7 @@ const char *parse_vhost_addrs(pool *p, const char *hostname, server_rec *s)
 }
 
 
-const char *set_name_virtual_host (cmd_parms *cmd, void *dummy, char *arg)
+const char *ap_set_name_virtual_host (cmd_parms *cmd, void *dummy, char *arg)
 {
     /* use whatever port the main server has at this point */
     return get_addresses(cmd->pool, arg, &name_vhost_list_tail,
@@ -323,7 +323,7 @@ static void dump_iphash_statistics(server_rec *main_s)
     }
     p += ap_snprintf(p, sizeof(buf) - (p - buf), " %ux%u",
 		     total, count[IPHASH_TABLE_SIZE - 1]);
-    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, main_s, buf);
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, main_s, buf);
 }
 #endif
 
@@ -351,7 +351,7 @@ static ipaddr_chain *new_ipaddr_chain(pool *p,
 {
     ipaddr_chain *new;
 
-    new = palloc(p, sizeof(*new));
+    new = ap_palloc(p, sizeof(*new));
     new->names = NULL;
     new->server = s;
     new->sar = sar;
@@ -364,7 +364,7 @@ static name_chain *new_name_chain(pool *p, server_rec *s, server_addr_rec *sar)
 {
     name_chain *new;
 
-    new = palloc(p, sizeof(*new));
+    new = ap_palloc(p, sizeof(*new));
     new->server = s;
     new->sar = sar;
     new->next = NULL;
@@ -411,7 +411,7 @@ static ipaddr_chain *find_default_server(unsigned port)
 
 
 /* compile the tables and such we need to do the run-time vhost lookups */
-void fini_vhost_config(pool *p, server_rec *main_s)
+void ap_fini_vhost_config(pool *p, server_rec *main_s)
 {
     server_addr_rec *sar;
     int has_default_vhost_addr;
@@ -426,7 +426,7 @@ void fini_vhost_config(pool *p, server_rec *main_s)
     s = main_s;
 
     if (!s->server_hostname) {
-	s->server_hostname = get_local_host(p);
+	s->server_hostname = ap_get_local_host(p);
     }
 
     /* initialize the tails */
@@ -470,7 +470,7 @@ void fini_vhost_config(pool *p, server_rec *main_s)
 
 		other = find_default_server(sar->host_port);
 		if (other && other->sar->host_port != 0) {
-		    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, main_s,
+		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, main_s,
 			    "_default_ VirtualHost overlap on port %u,"
 			    " the first has precedence", sar->host_port);
 		}
@@ -494,7 +494,7 @@ void fini_vhost_config(pool *p, server_rec *main_s)
 		    ic->server = s;
 		    if (sar->host_port != ic->sar->host_port) {
 			/* one of the two is a * port, the other isn't */
-			aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, main_s,
+			ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, main_s,
 				"VirtualHost %s:%u -- mixing * "
 				"ports and non-* ports with "
 				"a NameVirtualHost address is not supported,"
@@ -503,7 +503,7 @@ void fini_vhost_config(pool *p, server_rec *main_s)
 		    }
 		}
 		else if (ic) {
-		    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, main_s,
+		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, main_s,
 			    "VirtualHost %s:%u overlaps with "
 			    "VirtualHost %s:%u, the first has precedence, "
 			    "perhaps you need a NameVirtualHost directive",
@@ -536,25 +536,25 @@ void fini_vhost_config(pool *p, server_rec *main_s)
 		    DNS in the VirtualHost statement.  It's disabled
 		    anyhow by the host matching code.  -djg */
 		s->server_hostname =
-		    pstrdup(p, "bogus_host_without_forward_dns");
+		    ap_pstrdup(p, "bogus_host_without_forward_dns");
 	    }
 	    else {
 		struct hostent *h;
 
 		if ((h = gethostbyaddr((char *) &(s->addrs->host_addr),
 					sizeof(struct in_addr), AF_INET))) {
-		    s->server_hostname = pstrdup(p, (char *) h->h_name);
+		    s->server_hostname = ap_pstrdup(p, (char *) h->h_name);
 		}
 		else {
 		    /* again, what can we do?  They didn't specify a
 		       ServerName, and their DNS isn't working. -djg */
-		    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, main_s,
+		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, main_s,
 			    "Failed to resolve server name "
 			    "for %s (check DNS) -- or specify an explicit "
 			    "ServerName",
 			    inet_ntoa(s->addrs->host_addr));
 		    s->server_hostname =
-			pstrdup(p, "bogus_host_without_reverse_dns");
+			ap_pstrdup(p, "bogus_host_without_reverse_dns");
 		}
 	    }
 	}
@@ -570,7 +570,7 @@ void fini_vhost_config(pool *p, server_rec *main_s)
 	    ipaddr_chain *ic = *pic;
 
 	    if (ic->server == NULL) {
-		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, main_s,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, main_s,
 			"NameVirtualHost %s:%u has no VirtualHosts",
 			ic->sar->virthost, ic->sar->host_port);
 		*pic = ic->next;
@@ -603,7 +603,7 @@ void fini_vhost_config(pool *p, server_rec *main_s)
 static void fix_hostname(request_rec *r)
 {
     const char *hostname = r->hostname;
-    char *host = getword(r->pool, &hostname, ':');	/* get rid of port */
+    char *host = ap_getword(r->pool, &hostname, ':');	/* get rid of port */
     size_t l;
 
     /* trim a trailing . */
@@ -642,7 +642,7 @@ static int matches_aliases(server_rec *s, const char *host)
 	char **name = (char **) names->elts;
 	for (i = 0; i < names->nelts; ++i) {
 	    if(!name[i]) continue;
-	    if (!strcasecmp_match(host, name[i]))
+	    if (!ap_strcasecmp_match(host, name[i]))
 		return 1;
 	}
     }
@@ -657,7 +657,7 @@ static int matches_aliases(server_rec *s, const char *host)
  * we just call it a match.  But here we require the host:port to match
  * the ServerName and/or ServerAliases.
  */
-API_EXPORT(int) matches_request_vhost(request_rec *r, const char *host,
+API_EXPORT(int) ap_matches_request_vhost(request_rec *r, const char *host,
     unsigned port)
 {
     server_rec *s;
@@ -809,10 +809,10 @@ static void check_serverpath(request_rec *r)
 }
 
 
-void update_vhost_from_headers(request_rec *r)
+void ap_update_vhost_from_headers(request_rec *r)
 {
     /* must set this for HTTP/1.1 support */
-    if (r->hostname || (r->hostname = table_get(r->headers_in, "Host"))) {
+    if (r->hostname || (r->hostname = ap_table_get(r->headers_in, "Host"))) {
 	fix_hostname(r);
     }
     /* check if we tucked away a name_chain */
@@ -828,7 +828,7 @@ void update_vhost_from_headers(request_rec *r)
 /* Called for a new connection which has a known local_addr.  Note that the
  * new connection is assumed to have conn->server == main server.
  */
-void update_vhost_given_ip(conn_rec *conn)
+void ap_update_vhost_given_ip(conn_rec *conn)
 {
     ipaddr_chain *trav;
     unsigned port = ntohs(conn->local_addr.sin_port);

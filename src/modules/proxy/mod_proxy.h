@@ -240,59 +240,59 @@ struct cache_req {
 
 /* proxy_cache.c */
 
-void proxy_cache_tidy(struct cache_req *c);
-int proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
+void ap_proxy_cache_tidy(struct cache_req *c);
+int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 		      struct cache_req **cr);
-int proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
+int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 		       const int is_HTTP1, int nocache);
-void proxy_garbage_coll(request_rec *r);
+void ap_proxy_garbage_coll(request_rec *r);
 
 /* proxy_connect.c */
 
-int proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
+int ap_proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
 			  const char *proxyhost, int proxyport);
 
 /* proxy_ftp.c */
 
-int proxy_ftp_canon(request_rec *r, char *url);
-int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url);
+int ap_proxy_ftp_canon(request_rec *r, char *url);
+int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url);
 
 /* proxy_http.c */
 
-int proxy_http_canon(request_rec *r, char *url, const char *scheme,
+int ap_proxy_http_canon(request_rec *r, char *url, const char *scheme,
 		     int def_port);
-int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
+int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 		       const char *proxyhost, int proxyport);
 
 /* proxy_util.c */
 
-int proxy_hex2c(const char *x);
-void proxy_c2hex(int ch, char *x);
-char *proxy_canonenc(pool *p, const char *x, int len, enum enctype t,
+int ap_proxy_hex2c(const char *x);
+void ap_proxy_c2hex(int ch, char *x);
+char *ap_proxy_canonenc(pool *p, const char *x, int len, enum enctype t,
 		     int isenc);
-char *proxy_canon_netloc(pool *p, char **const urlp, char **userp,
+char *ap_proxy_canon_netloc(pool *p, char **const urlp, char **userp,
 			 char **passwordp, char **hostp, int *port);
-char *proxy_date_canon(pool *p, char *x);
-array_header *proxy_read_headers(pool *p, char *buffer, int size, BUFF *f);
-long int proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c);
-struct hdr_entry *proxy_get_header(array_header *hdrs_arr, const char *name);
-struct hdr_entry *proxy_add_header(array_header *hdrs_arr, char *field,
+char *ap_proxy_date_canon(pool *p, char *x);
+array_header *ap_proxy_read_headers(pool *p, char *buffer, int size, BUFF *f);
+long int ap_proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c);
+struct hdr_entry *ap_proxy_get_header(array_header *hdrs_arr, const char *name);
+struct hdr_entry *ap_proxy_add_header(array_header *hdrs_arr, char *field,
 				   char *value, int rep);
-void proxy_del_header(array_header *hdrs_arr, const char *field);
-void proxy_send_headers(request_rec *r, const char *respline,
+void ap_proxy_del_header(array_header *hdrs_arr, const char *field);
+void ap_proxy_send_headers(request_rec *r, const char *respline,
 			array_header *hdrs_arr);
-int proxy_liststr(const char *list, const char *val);
-void proxy_hash(const char *it, char *val, int ndepth, int nlength);
-int proxy_hex2sec(const char *x);
-void proxy_sec2hex(int t, char *y);
-void proxy_log_uerror(const char *routine, const char *file, const char *err,
+int ap_proxy_liststr(const char *list, const char *val);
+void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength);
+int ap_proxy_hex2sec(const char *x);
+void ap_proxy_sec2hex(int t, char *y);
+void ap_proxy_log_uerror(const char *routine, const char *file, const char *err,
 		      server_rec *s);
-BUFF *proxy_cache_error(struct cache_req *r);
-int proxyerror(request_rec *r, const char *message);
-const char *proxy_host2addr(const char *host, struct hostent *reqhp);
-int proxy_is_ipaddr(struct dirconn_entry *This, pool *p);
-int proxy_is_domainname(struct dirconn_entry *This, pool *p);
-int proxy_is_hostname(struct dirconn_entry *This, pool *p);
-int proxy_is_word(struct dirconn_entry *This, pool *p);
-int proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r);
-int proxy_garbage_init(server_rec *, pool *);
+BUFF *ap_proxy_cache_error(struct cache_req *r);
+int ap_proxyerror(request_rec *r, const char *message);
+const char *ap_proxy_host2addr(const char *host, struct hostent *reqhp);
+int ap_proxy_is_ipaddr(struct dirconn_entry *This, pool *p);
+int ap_proxy_is_domainname(struct dirconn_entry *This, pool *p);
+int ap_proxy_is_hostname(struct dirconn_entry *This, pool *p);
+int ap_proxy_is_word(struct dirconn_entry *This, pool *p);
+int ap_proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r);
+int ap_proxy_garbage_init(server_rec *, pool *);

@@ -25,7 +25,7 @@
 
 #endif
 
-INLINE int os_is_path_absolute(const char *file)
+INLINE int ap_is_path_absolute(const char *file)
 {
   return (file && file[0] == '/' ? 1 : 0);
 }

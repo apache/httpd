@@ -23,11 +23,11 @@ int await_thread(thread *thread_id, int sec_to_wait);
 void exit_thread(int status);
 void free_thread(thread *thread_id);
 
-API_EXPORT(mutex *) create_mutex(char *name);
-API_EXPORT(mutex *) open_mutex(char *name);
-API_EXPORT(int) acquire_mutex(mutex *mutex_id);
-API_EXPORT(int) release_mutex(mutex *mutex_id);
-API_EXPORT(void) destroy_mutex(mutex *mutex_id);
+API_EXPORT(mutex *) ap_create_mutex(char *name);
+API_EXPORT(mutex *) ap_open_mutex(char *name);
+API_EXPORT(int) ap_acquire_mutex(mutex *mutex_id);
+API_EXPORT(int) ap_release_mutex(mutex *mutex_id);
+API_EXPORT(void) ap_destroy_mutex(mutex *mutex_id);
 
 semaphore *create_semaphore(int initial);
 int acquire_semaphore(semaphore *semaphore_id);
@@ -45,12 +45,12 @@ void destroy_event(event *event_id);
 
 #define APACHE_TLS
 /* Only define the ones actually used, for now */
-extern void *dummy_mutex;
+extern void *ap_dummy_mutex;
 
-#define create_mutex(name)	((mutex *)dummy_mutex)
-#define acquire_mutex(mutex_id)	((int)MULTI_OK)
-#define release_mutex(mutex_id)	((int)MULTI_OK)
-#define destroy_mutex(mutex_id)	(0)
+#define ap_create_mutex(name)	((mutex *)ap_dummy_mutex)
+#define ap_acquire_mutex(mutex_id)	((int)MULTI_OK)
+#define ap_release_mutex(mutex_id)	((int)MULTI_OK)
+#define ap_destroy_mutex(mutex_id)	(0)
 
 #endif /* ndef MULTITHREAD */
 
