@@ -877,7 +877,7 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(ap_context_t *p, const char *name)
         return NULL;
     }
  
-    stat = ap_open(&file, p, name, APR_READ | APR_BUFFERED, APR_OS_DEFAULT);
+    stat = ap_open(&file, name, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, p);
 #ifdef DEBUG
     saved_errno = errno;
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, NULL,

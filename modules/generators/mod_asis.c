@@ -79,8 +79,8 @@ static int asis_handler(request_rec *r)
 	return NOT_FOUND;
     }
 
-    if (ap_open(&f, r->pool, r->filename, APR_READ | APR_BUFFERED, 
-                APR_OS_DEFAULT) != APR_SUCCESS) {
+    if (ap_open(&f, r->filename, APR_READ | APR_BUFFERED, 
+                APR_OS_DEFAULT, r->pool) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		    "file permissions deny server access: %s", r->filename);
 	return FORBIDDEN;
