@@ -131,12 +131,12 @@ LanguagePriority en fr de
 # Aliases: Add here as many aliases as you need (with no limit). The format is 
 # Alias fakename realname
 
-Alias /icons/ /usr/local/etc/httpd/icons/
+#Alias /icons/ /usr/local/etc/httpd/icons/
 
 # ScriptAlias: This controls which directories contain server scripts.
 # Format: ScriptAlias fakename realname
 
-ScriptAlias /cgi-bin/ /usr/local/etc/httpd/cgi-bin/
+#ScriptAlias /cgi-bin/ /usr/local/etc/httpd/cgi-bin/
 
 # If you want to use server side includes, or CGI outside
 # ScriptAliased directories, uncomment the following lines.
