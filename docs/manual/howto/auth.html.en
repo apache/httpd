@@ -130,7 +130,7 @@
     with Apache. This be located in the <code>bin</code> directory
     of wherever you installed Apache. To create the file, type:</p>
 <pre>
-        htpasswd -c /usr/local/apache/passwd/password rbowen
+        htpasswd -c /usr/local/apache/passwd/passwords rbowen
 </pre>
 
     <p><code>htpasswd</code> will ask you for the password, and
