@@ -794,14 +794,37 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         }
         else if (lenp) {
             const char *pos = lenp;
+            int conversion_error = 0;
 
+            /* This ensures that the number can not be negative. */
             while (apr_isdigit(*pos) || apr_isspace(*pos)) {
                 ++pos;
             }
 
             if (*pos == '\0') {
+                char *endstr;
                 ctx->state = BODY_LENGTH;
-                ctx->remaining = atol(lenp);
+                ctx->remaining = strtol(lenp, &endstr, 10);
+
+                if (errno == ERANGE) {
+                    conversion_error = 1; 
+                }
+            }
+
+            if (*pos != '\0' || conversion_error) {
+                apr_bucket_brigade *bb;
+
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
+                              "Invalid Content-Length");
+
+                bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+                e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
+                                           f->r->pool, f->c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(bb, e);
+                e = apr_bucket_eos_create(f->c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(bb, e);
+                ctx->eos_sent = 1;
+                return ap_pass_brigade(f->r->output_filters, bb);
             }
             
             /* If we have a limit in effect and we know the C-L ahead of
@@ -1683,17 +1706,26 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
     }
     else if (lenp) {
         const char *pos = lenp;
+        int conversion_error = 0;
 
         while (apr_isdigit(*pos) || apr_isspace(*pos)) {
             ++pos;
         }
-        if (*pos != '\0') {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "Invalid Content-Length %s", lenp);
-            return HTTP_BAD_REQUEST;
+
+        if (*pos == '\0') {
+            char *endstr;
+            r->remaining = strtol(lenp, &endstr, 10);
+
+            if (errno == ERANGE || errno == EINVAL) {
+                conversion_error = 1; 
+            }
         }
 
-        r->remaining = atol(lenp);
+        if (*pos != '\0' || conversion_error) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "Invalid Content-Length");
+            return HTTP_BAD_REQUEST;
+        }
     }
 
     if ((r->read_body == REQUEST_NO_BODY)
