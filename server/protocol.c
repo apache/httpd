@@ -1176,20 +1176,20 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
     }
 
     /* We will compute a content length if:
-     *     We already have all the data
+     *     The protocol is < 1.1
+     * and We can not chunk
+     * and this is a keepalive request.
+     * or  We already have all the data
      *         This is a bit confusing, because we will always buffer up
      *         to AP_MIN_BYTES_TO_WRITE, so if we get all the data while
      *         we are buffering that much data, we set the c-l.
-     *  or We are in a 1.1 request and we can't chunk
-     *  or This is a keepalive connection
-     *         We may want to change this later to just close the connection
      */
-    if ((r->proto_num == HTTP_VERSION(1,1)
-        && !ap_find_last_token(f->r->pool,
+    if ((r->proto_num < HTTP_VERSION(1,1)
+        && (!ap_find_last_token(f->r->pool,
                                apr_table_get(r->headers_out,
                                              "Transfer-Encoding"),
-                               "chunked"))
-        || (f->r->connection->keepalive)
+                               "chunked")
+        && (f->r->connection->keepalive)))
         || (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(b)))) {
         ctx->compute_len = 1;
     }
