@@ -270,6 +270,8 @@ static char **create_argv(apr_pool_t *p, char *path, char *user, char *group,
 static void cgid_maint(int reason, void *data, apr_wait_t status)
 {
     apr_proc_t *proc = data;
+    int mpm_state;
+    int stopping;
 
     switch (reason) {
         case APR_OC_REASON_DEATH:
@@ -277,10 +279,17 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
             /* If apache is not terminating or restarting,
              * restart the cgid daemon
              */
-            if (!ap_graceful_stop_signalled()) {
-                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                              "cgid daemon process died, restarting");
-               cgid_start(root_pool, root_server, proc);
+            stopping = 1; /* if MPM doesn't support query,
+                           * assume we shouldn't restart daemon
+                           */
+            if (ap_mpm_query(AP_MPMQ_MPM_STATE, &mpm_state) == APR_SUCCESS &&
+                mpm_state != AP_MPMQ_STOPPING) {
+                stopping = 0;
+            }
+            if (!stopping) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
+                             "cgid daemon process died, restarting");
+                cgid_start(root_pool, root_server, proc);
             }
             break;
         case APR_OC_REASON_RESTART:
