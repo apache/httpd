@@ -859,7 +859,7 @@ static int read_request_line(request_rec *r)
     const char *ll = l;
     const char *uri;
     conn_rec *conn = r->connection;
-    int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
+    unsigned int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
     int len;
 
     /* Read past empty lines until we get a real request line,
