@@ -1,5 +1,7 @@
 Changes with Apache 2.0.19-dev
 
+  *) apxs no longer generates ap_send_http_header() in the example handler
+
   *) Fix an ab problem which could cause a divide-by-zero exception
      with certain invocations (e.g., ab -k -c 6 -n 100 localhost/).
      [Ian Holsman <ianh@cnet.com>]
