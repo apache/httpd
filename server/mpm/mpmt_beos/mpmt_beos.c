@@ -73,8 +73,6 @@
 #include "iol_socket.h"
 #include "ap_listen.h"
 #include "scoreboard.h" 
-#include "acceptlock.h"
-#include "mutex.h"
 #include "poll.h"
 
 /*
@@ -95,6 +93,17 @@ static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listenfds = 0;
 static struct pollfd *listenfds;
+ap_lock_t *accept_mutex = NULL;
+
+static ap_context_t *pconf;		/* Pool for config stuff */
+static ap_context_t *pchild;		/* Pool for httpd child stuff */
+
+static int my_pid; /* Linux getpid() doesn't work except in main thread. Use
+                      this instead */
+
+/* Keep track of the number of worker threads currently active */
+static int worker_thread_count;
+ap_lock_t *worker_thread_count_mutex;
 
 /* The structure used to pass unique initialization info to each thread */
 typedef struct {
@@ -113,12 +122,6 @@ static struct {
     unsigned char status;
 } child_table[HARD_SERVER_LIMIT];
 
-#if 0
-#define SAFE_ACCEPT(stmt) do {if (ap_listeners->next != NULL) {stmt;}} while (0)
-#else
-#define SAFE_ACCEPT(stmt) do {stmt;} while (0)
-#endif
-
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
  * to deal with MaxClients changes across SIGWINCH restarts.  We use this
@@ -132,17 +135,8 @@ port_id port_of_death;
 
 static server_rec *server_conf;
 
-/* one_process --- debugging mode variable; can be set from the command line
- * with the -X flag.  If set, this gets you the child_main loop running
- * in the process which originally started up (no detach, no make_child),
- * which is a pretty nice debugging environment.  (You'll get a SIGHUP
- * early in standalone_main; just continue through.  This is the server
- * trying to kill off any child processes which it might have lying
- * around --- Apache doesn't keep track of their pids, it just sends
- * SIGHUP to the process group, ignoring it in the root process.
- * Continue through and you'll be fine.).
- */
-
+/* one_process */
+/* TODO - get this working again... */
 static int one_process = 0;
 
 #ifdef DEBUG_SIGSTOP
@@ -162,14 +156,6 @@ struct other_child_rec {
 static other_child_rec *other_children;
 #endif
 
-static ap_context_t *pconf;		/* Pool for config stuff */
-static ap_context_t *pchild;		/* Pool for httpd child stuff */
-
-static int my_pid; /* Linux getpid() doesn't work except in main thread. Use
-                      this instead */
-/* Keep track of the number of worker threads currently active */
-static int worker_thread_count;
-static be_mutex_t worker_thread_count_mutex;
 
 /* Global, alas, so http_core can talk to us */
 enum server_token_type ap_server_tokens = SrvTk_FULL;
@@ -698,9 +684,9 @@ static int32 worker_thread(void * dummy)
 
     ap_create_context(&ptrans, tpool);
 
-    be_mutex_lock(&worker_thread_count_mutex);
+    ap_lock(worker_thread_count_mutex);
     worker_thread_count++;
-    be_mutex_unlock(&worker_thread_count_mutex);
+    ap_unlock(worker_thread_count_mutex);
 
     /* TODO: Switch to a system where threads reuse the results from earlier
        poll calls - manoj */
@@ -708,12 +694,7 @@ static int32 worker_thread(void * dummy)
         workers_may_exit |= (ap_max_requests_per_child != 0) && (requests_this_child <= 0);
         if (workers_may_exit) break;
 
-        SAFE_ACCEPT(intra_mutex_on(0));
-        if (workers_may_exit) {
-            SAFE_ACCEPT(intra_mutex_off(0));
-            break;
-        }
-        SAFE_ACCEPT(accept_mutex_on(0));
+        ap_lock(accept_mutex);
         while (!workers_may_exit) {
             srv = poll(listenfds, num_listenfds + 1, -1);
             if (srv < 0) {
@@ -754,31 +735,27 @@ static int32 worker_thread(void * dummy)
     got_fd:
         if (!workers_may_exit) {
             ap_accept(&csd, sd, ptrans);
-            SAFE_ACCEPT(accept_mutex_off(0));
-            SAFE_ACCEPT(intra_mutex_off(0));
+            ap_unlock(accept_mutex);
             process_socket(ptrans, csd, process_slot,
                        thread_slot);
             requests_this_child--;
         }
         else {
-            SAFE_ACCEPT(accept_mutex_off(0));
-            SAFE_ACCEPT(intra_mutex_off(0));
+            ap_unlock(accept_mutex);
             break;
         }
-#if B_BEOS_VERSION < 0x0460
         ap_clear_pool(ptrans);
-#endif
     }
 
     ap_destroy_pool(tpool);
-    be_mutex_lock(&worker_thread_count_mutex);
+    ap_lock(worker_thread_count_mutex);
     worker_thread_count--;
     if (worker_thread_count == 0) {
         /* All the threads have exited, now finish the shutdown process
          * by signalling the sigwait thread */
         kill(my_pid, SIGTERM);
     }
-    be_mutex_unlock(&worker_thread_count_mutex);
+    ap_unlock(worker_thread_count_mutex);
 
     return (0);
 }
@@ -796,13 +773,10 @@ static int32 child_main(void * data)
     struct sigaction sa;
     int32 msg;
     char buf;
-    
+    ap_status_t rv;
+        
     my_pid = getpid();
     ap_create_context(&pchild, pconf);
-
-    /*stuff to do before we switch id's, so we have permissions.*/
-    SAFE_ACCEPT(intra_mutex_init(pchild, 1));
-    SAFE_ACCEPT(accept_mutex_child_init(pchild));
 
     if (beosd_setup_child()) {
 	clean_child_exit(APEXIT_CHILDFATAL);
@@ -829,38 +803,41 @@ static int32 child_main(void * data)
     /* Setup worker threads */
 
     worker_thread_count = 0;
-    be_mutex_init(&worker_thread_count_mutex, NULL);
+    if ((rv = ap_create_lock(&worker_thread_count_mutex, APR_MUTEX, 
+        APR_CROSS_PROCESS, NULL, pchild)) != APR_SUCCESS) {
+        /* Oh dear, didn't manage to create a worker thread mutex, 
+           so there's no point on going on with this child... */
+        return (0);
+    }
 
     for (i=0; i < ap_threads_per_child; i++) {
-
-	my_info = (proc_info *)malloc(sizeof(proc_info));
+        my_info = (proc_info *)malloc(sizeof(proc_info));
         if (my_info == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, server_conf,
 		         "malloc: out of memory");
             clean_child_exit(APEXIT_CHILDFATAL);
         }
-	my_info->pid = my_child_num;
+        my_info->pid = my_child_num;
         my_info->tid = i;
-	my_info->sd = 0;
-	ap_create_context(&my_info->tpool, pchild);
+        my_info->sd = 0;
+        ap_create_context(&my_info->tpool, pchild);
 	
-	/* We are creating threads right now */
+        /* We are creating threads right now */
 
-	if ((thread = spawn_thread(worker_thread, "httpd_worker_thread",
+        if ((thread = spawn_thread(worker_thread, "httpd_worker_thread",
 	      B_NORMAL_PRIORITY, my_info)) < B_NO_ERROR) {
-	    ap_log_error(APLOG_MARK, APLOG_ALERT, errno, server_conf,
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, server_conf,
 			 "spawn_thread: unable to create worker thread");
             /* In case system resources are maxxed out, we don't want
                Apache running away with the CPU trying to fork over and
                over and over again if we exit. */
-        sleep(10);
-	    clean_child_exit(APEXIT_CHILDFATAL);
-	}
-	resume_thread(thread);
-
-	/* We let each thread update it's own scoreboard entry.  This is done
-	 * because it let's us deal with tid better.
-	 */
+            sleep(10);
+	        clean_child_exit(APEXIT_CHILDFATAL);
+        }
+        resume_thread(thread);
+    	/* We let each thread update it's own scoreboard entry.  This is done
+	     * because it let's us deal with tid better.
+	     */
     }
 
     sigemptyset(&sa.sa_mask);
@@ -1062,7 +1039,8 @@ static void server_main_loop(int remaining_children_to_start)
 int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
-
+    ap_status_t rv;
+    
     pconf = _pconf;
     server_conf = s;
     port_of_death = create_port(1, "httpd_port_of_death");
@@ -1074,7 +1052,17 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
         return 1;
     }
     ap_log_pid(pconf, ap_pid_fname);
-    SAFE_ACCEPT(accept_mutex_init(pconf, 1));
+
+    /* create the accept_mutex */
+    if ((rv = ap_create_lock(&accept_mutex, APR_MUTEX, APR_CROSS_PROCESS,
+        NULL, pconf)) != APR_SUCCESS) {
+        /* tsch tsch, can't have more than one thread in the accept loop
+           at a time so we need to fall on our sword... */
+        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
+                     "Couldn't create accept lock");
+        return 1;
+    }
+
     if (!is_graceful) {
 	reinit_scoreboard(pconf);
     }
