@@ -1,4 +1,4 @@
-Changes with Apache 2.0.24-dev
+Changes with Apache 2.0.24
 
   *) The Unix MPMs other than perchild now allow child server 
      processes to use the accept mutex when starting as root and 
