@@ -1,5 +1,8 @@
 Changes with Apache 1.3.13
 
+  *) Fix merging of AddDefaultCharset directive.
+     PR #5872 [Jun Kuriyama <kuriyama@imgsrc.co.jp>]
+    
   *) Win32: Work around bug in Win32 select on network reads. Select
      can indicate a socket has data to read, but the subsequent read
      can return WSAEWOULDBLOCK. This problem has been observed

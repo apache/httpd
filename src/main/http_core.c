@@ -286,10 +286,9 @@ static void *merge_core_dir_configs(pool *a, void *basev, void *newv)
 
     if (new->add_default_charset != ADD_DEFAULT_CHARSET_UNSET) {
 	conf->add_default_charset = new->add_default_charset;
-    }
-
-    if (new->add_default_charset_name) {
-	conf->add_default_charset_name = new->add_default_charset_name;
+	if (new->add_default_charset_name) {
+	    conf->add_default_charset_name = new->add_default_charset_name;
+	}
     }
 
     return (void*)conf;
