@@ -1216,24 +1216,23 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         pCommand = apr_pstrcat(p, pCommand, " \"", ap_server_conf->process->argv[i], "\"", NULL);
     }
 
-    /* Build the environment, since Win9x disrespects the active env */
-    pEnvVar = apr_psprintf(p, "AP_PARENT_PID=%i", parent_pid);
     /*
+     * Build the environment
      * Win32's CreateProcess call requires that the environment
      * be passed in an environment block, a null terminated block of
      * null terminated strings.
      */  
+    _putenv(apr_psprintf(p,"AP_PARENT_PID=%i", parent_pid));
+    _putenv(apr_psprintf(p,"AP_MY_GENERATION=%i", ap_my_generation));
+
     i = 0;
     iEnvBlockLen = 1;
     while (_environ[i]) {
         iEnvBlockLen += strlen(_environ[i]) + 1;
         i++;
     }
-
-    pEnvBlock = (char *)apr_pcalloc(p, iEnvBlockLen + strlen(pEnvVar) + 1);
-    strcpy(pEnvBlock, pEnvVar);
-    pEnvVar = strchr(pEnvBlock, '\0') + 1;
-
+    pEnvBlock = (char *)apr_pcalloc(p, iEnvBlockLen);
+    pEnvVar = pEnvBlock;
     i = 0;
     while (_environ[i]) {
         strcpy(pEnvVar, _environ[i]);
@@ -1459,14 +1458,15 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
          * just move on with the restart.
          */
         event_handles[CHILD_HANDLE] = NULL;
-    } 
+        ++ap_my_generation;
+    }
     else {
         /* The child process exited prematurely due to a fatal error. */
         restart_pending = 1;
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, ap_server_conf, 
                      "Parent: CHILD PROCESS FAILED -- Restarting the child process.");
-
         event_handles[CHILD_HANDLE] = NULL;
+        ++ap_my_generation;
     }
 
 die_now:
@@ -1982,6 +1982,7 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
             }
         }
         else {
+            ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
             get_listeners_from_parent(ap_server_conf);
         }
         if (!set_listeners_noninheritable(pconf)) {
