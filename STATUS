@@ -200,6 +200,12 @@ Closed issues:
     * Guidelines for commit-then-review are documented at
       <http://dev.apache.org/guidelines.html#ctr>
 
+    * The "apache" CVS module has been renamed to "apache-1.2" and the
+      "apachen" module to "apache-1.3".  "apache-1.3" has been copied
+      to "apache-2.0", but whether that's appropriate or not is
+      under discussion.  A couple of people want that module to
+      start empty rather than full of 1.3's stuff.
+
 Open issues:
 
     * Provide consistant prefixes; suggestions:
@@ -221,12 +227,6 @@ Open issues:
     * Maybe moving *all* of the *.h header files into a new
       src/include directory?
 	Status: Ken +1, Dean +1
-
-    * Renaming the "apache" CVS module to "apache-1.2" and the
-      "apachen" module to "apache-1.3" - and, at some point,
-      copying (*not* branching) the apache-1.3 module to a new
-      apache-2.x tree and opening up 2.0 development.
-	Status: Ken +1, Jim +1 (let do it NOW :) )
 
     * Ken's [POLL] apachen/patches directory
       Shall we experiment with allowing patches to be distributed for
