@@ -1265,6 +1265,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     SSLSrvConfigRec *sc = mySrvConfig(s);
     SSLDirConfigRec *dc = r ? myDirConfig(r) : NULL;
     SSLConnRec *sslconn = myConnConfig(conn);
+    modssl_ctx_t *mctx  = myCtxConfig(sslconn);
 
     /* Get verify ingredients */
     int errnum   = X509_STORE_CTX_get_error(ctx);
@@ -1301,7 +1302,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
         verify = dc->nVerifyClient;
     }
     else {
-        verify = sc->server->auth.verify_mode;
+        verify = mctx->auth.verify_mode;
     }
 
     if (ssl_verify_error_is_optional(errnum) &&
@@ -1344,7 +1345,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
         depth = dc->nVerifyDepth;
     }
     else {
-        depth = sc->server->auth.verify_depth;
+        depth = mctx->auth.verify_depth;
     }
 
     if (errdepth > depth) {
