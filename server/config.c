@@ -1287,6 +1287,10 @@ AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive)
             else {
                 const char *msg;
 
+                if (*args == '\0' && cmd_name[strlen(cmd_name) - 1] == '>') {
+                    cmd_name[strlen(cmd_name) - 1] = '\0';
+                }
+
                 if ((msg = ap_soak_end_container(cmd, cmd_name)) != NULL) {
                     return msg;
                 }
