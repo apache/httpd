@@ -39,8 +39,6 @@ WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
 	for buffer overflow, someone should rewrite or verify
 	they're safe
 
-    * SECURITY: os_ abstract is_only_below() in mod_include.c
-
     * signal type handling
     	- how to rotate logs from command line?
 
