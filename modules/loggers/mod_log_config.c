@@ -333,8 +333,9 @@ static const char *constant_item(request_rec *dummy, char *stuff)
 
 static const char *log_remote_host(request_rec *r, char *a)
 {
-    return ap_get_remote_host(r->connection, r->per_dir_config,
-                                    REMOTE_NAME, NULL);
+    return ap_escape_logitem(r->pool, ap_get_remote_host(r->connection,
+                                                         r->per_dir_config,
+                                                         REMOTE_NAME, NULL));
 }
 
 static const char *log_remote_address(request_rec *r, char *a)
@@ -349,7 +350,7 @@ static const char *log_local_address(request_rec *r, char *a)
 
 static const char *log_remote_logname(request_rec *r, char *a)
 {
-    return ap_get_remote_logname(r);
+    return ap_escape_logitem(r->pool, ap_get_remote_logname(r));
 }
 
 static const char *log_remote_user(request_rec *r, char *a)
@@ -362,6 +363,10 @@ static const char *log_remote_user(request_rec *r, char *a)
     else if (strlen(rvalue) == 0) {
         rvalue = "\"\"";
     }
+    else {
+        rvalue = ap_escape_logitem(r->pool, rvalue);
+    }
+
     return rvalue;
 }
 
@@ -372,33 +377,37 @@ static const char *log_request_line(request_rec *r, char *a)
      * (note the truncation before the protocol string for HTTP/0.9 requests)
      * (note also that r->the_request contains the unmodified request)
      */
-    return (r->parsed_uri.password) 
-                ? apr_pstrcat(r->pool, r->method, " ",
-                              apr_uri_unparse(r->pool, &r->parsed_uri, 0),
-                              r->assbackwards ? NULL : " ", r->protocol, NULL)
-                : r->the_request;
+    return ap_escape_logitem(r->pool,
+                             (r->parsed_uri.password)
+                               ? apr_pstrcat(r->pool, r->method, " ",
+                                             apr_uri_unparse(r->pool,
+                                                             &r->parsed_uri, 0),
+                                             r->assbackwards ? NULL : " ",
+                                             r->protocol, NULL)
+                               : r->the_request);
 }
 
 static const char *log_request_file(request_rec *r, char *a)
 {
-    return r->filename;
+    return ap_escape_logitem(r->pool, r->filename);
 }
 static const char *log_request_uri(request_rec *r, char *a)
 {
-    return r->uri;
+    return ap_escape_logitem(r->pool, r->uri);
 }
 static const char *log_request_method(request_rec *r, char *a)
 {
-    return r->method;
+    return ap_escape_logitem(r->pool, r->method);
 }
 static const char *log_request_protocol(request_rec *r, char *a)
 {
-    return r->protocol;
+    return ap_escape_logitem(r->pool, r->protocol);
 }
 static const char *log_request_query(request_rec *r, char *a)
 {
-    return (r->args != NULL) ? apr_pstrcat(r->pool, "?", r->args, NULL)
-                             : "";
+    return (r->args) ? apr_pstrcat(r->pool, "?",
+                                   ap_escape_logitem(r->pool, r->args), NULL)
+                     : "";
 }
 static const char *log_status(request_rec *r, char *a)
 {
@@ -428,7 +437,7 @@ static const char *log_bytes_sent(request_rec *r, char *a)
 
 static const char *log_header_in(request_rec *r, char *a)
 {
-    return apr_table_get(r->headers_in, a);
+    return ap_escape_logitem(r->pool, apr_table_get(r->headers_in, a));
 }
 
 static const char *log_header_out(request_rec *r, char *a)
@@ -438,18 +447,18 @@ static const char *log_header_out(request_rec *r, char *a)
         cp = ap_field_noparam(r->pool, r->content_type);
     }
     if (cp) {
-        return cp;
+        return ap_escape_logitem(r->pool, cp);
     }
-    return apr_table_get(r->err_headers_out, a);
+    return ap_escape_logitem(r->pool, apr_table_get(r->err_headers_out, a));
 }
 
 static const char *log_note(request_rec *r, char *a)
 {
-    return apr_table_get(r->notes, a);
+    return ap_escape_logitem(r->pool, apr_table_get(r->notes, a));
 }
 static const char *log_env_var(request_rec *r, char *a)
 {
-    return apr_table_get(r->subprocess_env, a);
+    return ap_escape_logitem(r->pool, apr_table_get(r->subprocess_env, a));
 }
 
 static const char *log_cookie(request_rec *r, char *a)
@@ -467,7 +476,7 @@ static const char *log_cookie(request_rec *r, char *a)
             if (end_cookie) {
                 *end_cookie = '\0';
             }
-            return cookie;
+            return ap_escape_logitem(r->pool, cookie);
         }
     }
     return NULL;
@@ -585,7 +594,7 @@ static const char *log_request_duration_microseconds(request_rec *r, char *a)
  */
 static const char *log_virtual_host(request_rec *r, char *a)
 {
-    return r->server->server_hostname;
+    return ap_escape_logitem(r->pool, r->server->server_hostname);
 }
 
 static const char *log_server_port(request_rec *r, char *a)
@@ -599,7 +608,7 @@ static const char *log_server_port(request_rec *r, char *a)
  */
 static const char *log_server_name(request_rec *r, char *a)
 {
-    return ap_get_server_name(r);
+    return ap_escape_logitem(r->pool, ap_get_server_name(r));
 }
 
 static const char *log_child_pid(request_rec *r, char *a)
