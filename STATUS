@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/26 12:08:13 $]
+Last modified at [$Date: 2004/05/26 12:13:58 $]
 
 Release:
 
@@ -418,6 +418,10 @@ CURRENT RELEASE NOTES:
       get feedback and then commit to APACHE_2_0_BRANCH.
 
 CURRENT VOTES:
+
+    * Promote mod_ldap and mod_auth_ldap from experimental to
+      non experimental status.
+      +0: minfrin (wait till the last cache bugs are ironed out)
 
     * Promote mod_cache from experimental to non-experimental
       status (keep issues noted below in EXPERIMENTAL MODULES as
@@ -945,6 +949,7 @@ EXPERIMENTAL MODULES:
     mod_auth_ldap/util_ldap:
     * General stabilization and testing
     
+    * Fix the shared memory cache
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
