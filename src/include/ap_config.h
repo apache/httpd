@@ -269,8 +269,11 @@ typedef int pid_t;
 #define HAVE_SHMGET
 #define HAVE_SYS_RESOURCE_H
 typedef int rlim_t;
-#endif
+/* flock is faster ... but hasn't been tested on 1.x systems */
+#define USE_FLOCK_SERIALIZED_ACCEPT
+#else
 #define USE_FCNTL_SERIALIZED_ACCEPT
+#endif
 #undef HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
