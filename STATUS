@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/09 13:44:07 $]
+Last modified at [$Date: 2002/02/09 14:24:36 $]
 
 Release:
 
@@ -46,11 +46,11 @@ CURRENT RELEASE NOTES:
       Proposed tag is JRE_1.  A proposed tarball is at:
         http://www.apache.org/~jerenkrantz/2.0.32-jre/httpd-2.0.32-JRE-1-alpha.tar.gz
       Win32 is not expected to work.
-        +1 (concept): trawick
+        +1 (concept): trawick, BillS
 
     * 31 + fixes for all resolved problems and call it 32 (instead of HEAD)
         See: http://www.apache.org/~jerenkrantz/httpd-2.0.jre.patch
-        +1: trawick, Justin, Ian
+        +1: trawick, Justin, Ian, BillS
         +0:
         -1:
 
