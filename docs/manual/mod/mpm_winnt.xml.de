@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
-<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
 <!-- English revision: 1.4.2.2 -->
 
 <modulesynopsis metafile="mpm_winnt.xml.meta">
