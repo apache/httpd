@@ -340,8 +340,9 @@ static int check_speling(request_rec *r)
         if (variant[0].quality != SP_VERYDIFFERENT &&
             (candidates->nelts == 1 || variant[0].quality != variant[1].quality)) {
 
-            nuri = ap_pstrcat(r->pool, url, variant[0].name,
-                           r->path_info, NULL);
+            nuri = ap_pstrcat(r->pool, url, variant[0].name, r->path_info,
+			      r->parsed_uri.query ? "?" : "",
+			      r->parsed_uri.query ? r->parsed_uri.query : "", NULL);
 
             ap_table_setn(r->headers_out, "Location",
                       ap_construct_url(r->pool, nuri, r));
@@ -385,8 +386,11 @@ static int check_speling(request_rec *r)
 
                 /* The format isn't very neat... */
                 t = ap_pstrcat(p, t, "<li><a href=\"", url,
-                            variant[i].name, r->path_info, "\">",
-                            variant[i].name, r->path_info, "</a> (",
+			       variant[i].name, r->path_info, "\">",
+			       variant[i].name, r->path_info,
+			       r->parsed_uri.query ? "?" : "",
+			       r->parsed_uri.query ? r->parsed_uri.query : "",
+			       "</a> (",
                     sp_reason_str[(int) (variant[i].quality)], ")\n", NULL);
 
                 /*
