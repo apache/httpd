@@ -55,6 +55,8 @@
 
 <!ELEMENT dfn %Inline;>
 
+<!ELEMENT var %Inline;>
+
 <!ELEMENT a %Inline;>
 <!ATTLIST a  href CDATA #IMPLIED
              name CDATA #IMPLIED
