@@ -367,3 +367,4 @@ EXPORTS
 	ap_hook_auth_checker @362
 	ap_hook_fixups @363
         regerror @364
+        ap_send_error_response @365
