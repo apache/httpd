@@ -1,5 +1,10 @@
 Changes with Apache 2.0.53
 
+  *) --with-module can now take more than one module to be statically
+     linked: --with-module=<modtype>:<modfile>,<modtype>:<modfile>,...
+     If the <modtype>-subdirectory doesn't exist it will be created and
+     populated with a standard Makefile.in.  [Erik Abele]
+
   *) Fix the RPM spec file so that an RPM build now works. An RPM
      build now requires system installations of APR and APR-util.
      Remove some arbitrary moving around of binaries - the RPM now
