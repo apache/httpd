@@ -300,39 +300,8 @@ case "$PLAT" in
 	;;
     i386-ibm-aix*)
 	OS='IBM AIX PS/2'
-	CFLAGS="$CFLAGS -DAIX=1 -U__STR__ -DUSEBCOPY"
+	CFLAGS="$CFLAGS -DAIX=100 -U__STR__ -DUSEBCOPY"
 	DEF_WANTHSREGEX=no
-	;;
-    *-ibm-aix[1-2].*)
-	OS='IBM AIX 1.x/2.x'
-	CFLAGS="$CFLAGS -DAIX=1 -DNEED_RLIM_T -U__STR__"
-	;;
-    *-ibm-aix3.*)
-	OS='IBM AIX 3.x'
-	CFLAGS="$CFLAGS -DAIX=30 -DNEED_RLIM_T -U__STR__"
-	;;
-    *-ibm-aix4.1)
-	OS='IBM AIX 4.1'
-	CFLAGS="$CFLAGS -DAIX=41 -DNEED_RLIM_T -U__STR__"
-	;;
-    *-ibm-aix4.2)
-	OS='IBM AIX 4.2'
-	CFLAGS="$CFLAGS -DAIX=42 -U__STR__"
-	LDFLAGS="$LDFLAGS -lm"
-	;;
-    *-ibm-aix4.3)
-	OS='IBM AIX 4.3'
-	CFLAGS="$CFLAGS -DAIX=43 -DUSE_PTHREAD_SERIALIZED_ACCEPT -U__STR__"
-	LDFLAGS="$LDFLAGS -lm -lpthread"
-	RULE_SHARED_CORE=no
-	DEF_SHARED_CORE=no
-	;;
-    *-ibm-aix5.1)
-	OS='IBM AIX 5.1'
-	CFLAGS="$CFLAGS -DAIX=51 -DUSE_PTHREAD_SERIALIZED_ACCEPT -U__STR__"
-	LDFLAGS="$LDFLAGS -lm -lpthread"
-	RULE_SHARED_CORE=no
-	DEF_SHARED_CORE=no
 	;;
     ia64-ibm-aix*)
        OS='IBM AIX IA64'
@@ -341,9 +310,40 @@ case "$PLAT" in
        RULE_SHARED_CORE=no
        DEF_SHARED_CORE=no
        ;;
+    *-ibm-aix[1-2].*)
+	OS='IBM AIX 1.x/2.x'
+	CFLAGS="$CFLAGS -DAIX=100 -DNEED_RLIM_T -U__STR__"
+	;;
+    *-ibm-aix3.*)
+	OS='IBM AIX 3.x'
+	CFLAGS="$CFLAGS -DAIX=300 -DNEED_RLIM_T -U__STR__"
+	;;
+    *-ibm-aix[45678].*)
+        PLATOSVERS=`echo $PLAT | sed 's/^.*ibm-aix//'`
+        OS="AIX $PLATOSVERS"
+        PLATOSVERSNUM=`echo $PLATOSVERS | sed 's/\.//'`
+        if test $PLATOSVERSNUM -ge 43; then
+            PLATOSVERSNUM=`oslevel | sed 's/\.//g' | sed 's/.$//'`
+        else
+            PLATOSVERSNUM="$PLATOSVERSNUM"0
+        fi
+        # PLATOSVERSNUM is a three digit number at this point
+        CFLAGS="$CFLAGS -DAIX=$PLATOSVERSNUM -U__STR__"
+        if test $PLATOSVERSNUM -lt 420; then
+            CFLAGS="$CFLAGS -DNEED_RLIM_T"
+        fi
+        if test $PLATOSVERSNUM -ge 420; then
+            LDFLAGS="$LDFLAGS -lm"
+        fi
+        if test $PLATOSVERSNUM -ge 430; then
+            LDFLAGS="$LDFLAGS -lpthread"
+            RULE_SHARED_CORE=no
+            DEF_SHARED_CORE=no
+        fi
+        ;;
     *-ibm-aix*)
 	OS='IBM AIX'
-	CFLAGS="$CFLAGS -DAIX=1 -U__STR__"
+	CFLAGS="$CFLAGS -DAIX=100 -U__STR__"
 	LDFLAGS="$LDFLAGS -lm"
 	;;
     *-apollo-*)

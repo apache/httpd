@@ -1,6 +1,9 @@
 Changes with Apache 1.3.28
 
-
+  *) PORT: Enable SINGLE_LISTEN_UNSERIALIZED_ACCEPT for AIX 4.3.2
+     and above.  Update AIX configure logic to allow higher AIX 
+     release numbers without having to change Apache.
+     [Jeff Trawick]
 
 Changes with Apache 1.3.27
 

@@ -18,7 +18,7 @@ void ap_is_not_here(void) {}
  * to 4.3. Use the native DSO code for 4.3 and later.
  */
 #if defined(AIX) && !defined(NO_DL_NEEDED)
-#if AIX < 43
+#if AIX < 430
 #include "os-aix-dso.c"
 #endif
 #endif

@@ -284,15 +284,21 @@ typedef int rlim_t;
 #define HAVE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_SYSVSEM_SERIALIZED_ACCEPT
 #define NEED_UNION_SEMUN
-#if !defined(USE_PTHREAD_SERIALIZED_ACCEPT)
+#if AIX >= 430
+#define HAVE_PTHREAD_SERIALIZED_ACCEPT
+#define USE_PTHREAD_SERIALIZED_ACCEPT
+#else
 #define USE_FCNTL_SERIALIZED_ACCEPT
+#endif
+#if AIX >= 432
+#define SINGLE_LISTEN_UNSERIALIZED_ACCEPT 
 #endif
 #ifdef USEBCOPY
 #define memmove(a,b,c) bcopy(b,a,c)
 #endif
-#if AIX >= 51
+#if AIX >= 510
 #define NET_SIZE_T socklen_t
-#elif AIX >= 42
+#elif AIX >= 420
 #define NET_SIZE_T size_t
 #endif
 
@@ -990,6 +996,7 @@ typedef int rlim_t;
 #define USE_MMAP_FILES
 #define NEED_UNION_SEMUN
 #define HAVE_SYSVSEM_SERIALIZED_ACCEPT
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
 #define _POSIX_SOURCE
 #include <signal.h>
 #ifdef SIGDUMP  /* SIGDUMP is not defined by OS/390 v1r2 */
