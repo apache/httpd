@@ -210,7 +210,7 @@ authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 
    <div class="example"><p><code>AuthName "Top Secret"</code></p></div>
 
-    <p>The string provided for the <code>AuthRealm</code> is what will
+    <p>The string provided for the <code>AuthName</code> is what will
     appear in the password dialog provided by most browsers.</p>
 <h3>See also</h3><ul><li><a href="../howto/auth.html">Authentication, Authorization, and 
     Access Control</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthType" id="AuthType">AuthType</a> <a name="authtype" id="authtype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
