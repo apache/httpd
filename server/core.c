@@ -3522,8 +3522,12 @@ static int default_handler(request_rec *r)
         }
 
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
-#if APR_HAS_SENDFILE && APR_HAS_LARGE_FILES
+#if APR_HAS_LARGE_FILES
+#if APR_HAS_SENDFILE
         if ((d->enable_sendfile != ENABLE_SENDFILE_OFF) &&
+#else
+        if (
+#endif
             (r->finfo.size > AP_MAX_SENDFILE)) {
             /* APR_HAS_LARGE_FILES issue; must split into mutiple buckets,
              * no greater than MAX(apr_size_t), and more granular than that

@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/30 15:52:07 $]
+Last modified at [$Date: 2004/01/30 16:20:50 $]
 
 Release:
 
@@ -85,13 +85,6 @@ PATCHES TO BACKPORT FROM 2.1
         docs/conf/mime.types: r1.23
       jerenkrantz: Why is rm not application/vnd.rn-realmedia as in PR 26079?
       +1: nd, trawick
-
-    * If large file support is enabled, allow any file that is greater than
-      AP_MAX_SENDFILE to be split into multiple buckets. This allows Apache
-      to send files that are greater than 2gig. Otherwise we run into 
-      32/64 bit type mismatches in the file size.
-      server/core.c r1.255, r1.256
-      +1: bnicholes, nd, jerenkrantz
 
     * Fix segfault in mod_mem_cache cache_insert() due to cache size
       becoming negative.  PR: 21285, 21287
