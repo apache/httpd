@@ -121,6 +121,7 @@
 #define core_cmds                      AP_core_cmds
 #define core_handlers                  AP_core_handlers
 #define core_module                    AP_core_module
+#define day_snames                     AP_day_snames
 #define db_auth_module                 AP_db_auth_module
 #define dbm_auth_module                AP_dbm_auth_module
 #define default_parms                  AP_default_parms
@@ -138,6 +139,7 @@
 #define info_module                    AP_info_module
 #define mime_magic_module              AP_mime_magic_module
 #define mime_module                    AP_mime_module
+#define month_snames                   AP_month_snames
 #define negotiation_module             AP_negotiation_module
 #define one_process                    AP_one_process
 #define prelinked_modules              AP_prelinked_modules
@@ -167,7 +169,6 @@
 #define MD5Final                       AP_MD5Final
 #define MD5Init                        AP_MD5Init
 #define MD5Update                      AP_MD5Update
-#define SERVER_BUILT                   AP_SERVER_BUILT
 #define add_cgi_vars                   AP_add_cgi_vars
 #define add_common_vars                AP_add_common_vars
 #define add_file_conf                  AP_add_file_conf
@@ -188,6 +189,8 @@
 #define ap_slack                       AP_ap_slack
 #define ap_snprintf                    AP_ap_snprintf
 #define ap_vsnprintf                   AP_ap_vsnprintf
+#define apapi_get_server_built         AP_apapi_get_server_built
+#define apapi_get_server_version       AP_apapi_get_server_version
 #define aplog_error                    AP_aplog_error
 #define append_arrays                  AP_append_arrays
 #define array_cat                      AP_array_cat
@@ -378,7 +381,6 @@
 #define merge_per_dir_configs          AP_merge_per_dir_configs
 #define merge_server_configs           AP_merge_server_configs
 #define mime_find_ct                   AP_mime_find_ct
-#define month_snames                   AP_month_snames
 #define new_block                      AP_new_block
 #define no2slash                       AP_no2slash
 #define note_auth_failure              AP_note_auth_failure
@@ -415,7 +417,6 @@
 #define plustospace                    AP_plustospace
 #define popendir                       AP_popendir
 #define popenf                         AP_popenf
-#define pr2six                         AP_pr2six
 #define pregcomp                       AP_pregcomp
 #define pregfree                       AP_pregfree
 #define pregsub                        AP_pregsub
