@@ -118,10 +118,6 @@ SOURCE=.\os\win32\getopt.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\http_bprintf.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\main\http_config.c
 # End Source File
 # Begin Source File
@@ -392,10 +388,30 @@ SOURCE=.\include\util_md5.h
 
 SOURCE=.\include\util_script.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\include\util_uri.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
+# End Group
+# Begin Group "Generated Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\include\hide.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\main\test_char.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\main\uri_delims.h
+# End Source File
 # End Group
 # End Target
 # End Project

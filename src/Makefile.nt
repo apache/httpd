@@ -55,6 +55,10 @@ _build:
 	cd ap
 	 nmake /nologo CFG="ap - Win32 %LONG%" -f ap.mak
 	cd ..
+	cd main
+	 nmake /nologo CFG="gen_uri_delims - Win32 %LONG%" -f gen_uri_delims.mak
+	 nmake /nologo CFG="gen_test_char - Win32 %LONG%" -f gen_test_char.mak
+	cd ..
 	 -del Core%SHORT%\buildmark.obj
 	 nmake /nologo CFG="ApacheCore - Win32 %LONG%" -f ApacheCore.mak
 	 nmake /nologo CFG="Apache - Win32 %LONG%" -f Apache.mak
@@ -103,6 +107,12 @@ _clean:
 	cd ..
 	cd ap
 	 nmake /nologo CFG="ap - Win32 %LONG%" -f ap.mak clean
+	cd ..
+	cd main
+	 nmake /nologo CFG="gen_uri_delims - Win32 %LONG%" -f gen_uri_delims.mak clean
+	 del uri_delims.h
+	 nmake /nologo CFG="gen_test_char - Win32 %LONG%" -f gen_test_char.mak clean
+	 del test_char.h
 	cd ..
 	 nmake /nologo CFG="ApacheCore - Win32 %LONG%" -f ApacheCore.mak clean
 	 nmake /nologo CFG="Apache - Win32 %LONG%" -f Apache.mak clean
