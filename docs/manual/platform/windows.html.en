@@ -377,8 +377,8 @@
     </p>
 
     <div class="warning"><strong>Never grant any network privileges to
-    the <code>System</code> account! If you need Apache to be able to
-    access network resources, create a separate account for Apache as
+    the <code>LocalSystem</code> account! If you need Apache to be able
+    to access network resources, create a separate account for Apache as
     noted below.</strong></div>
 
     <p>You may want to create a separate account for running Apache
@@ -404,7 +404,7 @@
       and script folders (<code>htdocs</code> and <code>cgi-bin</code>
       for example).</li>
 
-      <li>Grant the account read/write/delete (RWXD) rights to the
+      <li>Grant the account change (RWXD) rights to the
       Apache <code>logs</code> directory.</li>
 
       <li>Grant the account read and execute (RX) rights to the
@@ -414,10 +414,10 @@
     <div class="note">It is usually a good practice to grant the user the Apache
     service runs as read and execute (RX) access to the whole Apache2
     directory, except the <code>logs</code> subdirectory, where the
-    user has to have read/write/delete (RWXD) rights.</div>
+    user has to have at least change (RWXD) rights.</div>
 
     <p>If you allow the account to log in as a user and as a service,
-    then you can log in yourself and test that the account has the
+    then you can log on with that account and test that the account has the
     privileges to execute the scripts, read the web pages, and that
     you can start Apache in a console window. If this works, and you
     have followed the steps above, Apache should execute as a service
@@ -425,12 +425,14 @@
 
     <div class="note"><strong>Error code 2186</strong> is a good indication that
     you need to review the "Log On As" configuration for the service,
-    since Apache cannot access a required network resource.</div>
+    since Apache cannot access a required network resource. Also, pay
+    close attention to the privileges of the user Apache is
+    configured to run as.</div>
 
     <p>When starting Apache as a service you may encounter an error
     message from the Windows Service Control Manager. For example,
     if you try to start Apache by using the Services applet in the
-    Windows Control Panel you may get the following message:</p>
+    Windows Control Panel, you may get the following message:</p>
 
     <div class="example"><p><code>
       Could not start the Apache2 service on \\COMPUTER <br />
@@ -692,8 +694,9 @@
     <p>Apache should respond with a welcome page and a link to the
     Apache manual. If nothing happens or you get an error, look in the
     <code>error.log</code> file in the <code>logs</code> subdirectory.
-    If your host is not connected to the net, you may have to use this
-    URL:</p>
+    If your host is not connected to the net, or if you have serious
+    problems with your DNS (Domain Name Service) configuration, you
+    may have to use this URL:</p>
 
     <div class="example"><p><code>
       http://127.0.0.1/
@@ -703,10 +706,10 @@
     properly by editing the files in the <code>conf</code> subdirectory.
     Again, if you change the configuration of the Windows NT service
     for Apache, first attempt to start it from the command line to
-    assure that the service starts with no errors.</p>
+    make sure that the service starts with no errors.</p>
 
     <p>Because Apache <strong>cannot</strong> share the same port with
-    another TCP/IP application, you may need to stop or uninstall
+    another TCP/IP application, you may need to stop, uninstall or reconfigure
     certain other services before running Apache. These conflicting
     services include other WWW servers and some firewall implementations.
     </p>
