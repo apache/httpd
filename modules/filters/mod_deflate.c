@@ -20,9 +20,19 @@
  */
 
 /*
- * Portions of this software are based upon public domain software
- * (zlib functions gz_open and gzwrite)
+ * Portions of this software are based upon zlib code by Jean-loup Gailly
+ * (zlib functions gz_open and gzwrite, check_header)
  */
+
+/* zlib flags */
+#define ASCII_FLAG   0x01 /* bit 0 set: file probably ascii text */
+#define HEAD_CRC     0x02 /* bit 1 set: header CRC present */
+#define EXTRA_FIELD  0x04 /* bit 2 set: extra field present */
+#define ORIG_NAME    0x08 /* bit 3 set: original file name present */
+#define COMMENT      0x10 /* bit 4 set: file comment present */
+#define RESERVED     0xE0 /* bits 5..7: reserved */
+
+
 
 #include "httpd.h"
 #include "http_config.h"
@@ -871,7 +881,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
 static apr_status_t inflate_out_filter(ap_filter_t *f,
                                       apr_bucket_brigade *bb)
 {
-    /* have we read the zlib header in yet? assume we have in a previous pass */
+    int zlib_method ;
+    int zlib_flags ;
     int deflate_init = 1; 
     apr_bucket *bkt;
     request_rec *r = f->r;
@@ -960,6 +971,8 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             apr_bucket *tmp_heap;
             zRC = inflate(&(ctx->stream), Z_SYNC_FLUSH);
             if (zRC != Z_OK) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                    "Inflate error %d on flush", zRC) ;
                 inflateEnd(&ctx->stream);
                 return APR_EGENERAL;
             }
@@ -989,14 +1002,46 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                 return APR_EGENERAL ;
             } 
             else  {
+                zlib_method = data[2] ;
+                zlib_flags = data[3] ;
+                if ( zlib_method != Z_DEFLATED ) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                        "inflate: data not deflated!") ;
+                    ap_remove_output_filter(f) ;
+                    return ap_pass_brigade(f->next, bb) ;
+                }
                 if (data[0] != deflate_magic[0] ||
-                    data[1] != deflate_magic[1]) {
+                    data[1] != deflate_magic[1] ||
+                    (zlib_flags & RESERVED) != 0 ) {
                         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                       "deflate: bad header");
                     return APR_EGENERAL ;
                 }
                 data += 10 ;
                 len -= 10 ;
+           }
+           if ( zlib_flags & EXTRA_FIELD) {
+               unsigned int bytes =
+                        (unsigned int)(data[0]) ;
+               bytes += ((unsigned int)(data[1])) << 8 ;
+               bytes += 2 ;
+               if ( len < bytes ) {
+                   ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "inflate: extra field too big (not supported)") ;
+                   return APR_EGENERAL ;
+               }
+               data += bytes ;
+               len -= bytes ;
+           }
+           if ( zlib_flags & ORIG_NAME) {
+               while ( len-- && *data++ ) ;
+           }
+           if ( zlib_flags & COMMENT) {
+               while ( len-- && *data++ ) ;
+           }
+           if ( zlib_flags & HEAD_CRC) {
+                len -= 2 ;
+                data += 2 ;
            }
         }
 
