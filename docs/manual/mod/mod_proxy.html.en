@@ -163,7 +163,7 @@
       Deny from all<br />
       Allow from internal.example.com<br />
     </span>
-    &lt;/Proxy
+    &lt;/Proxy&gt;
     </code></p></div>
 
     <div class="example"><h3>Reverse Proxy</h3><p><code>
@@ -176,8 +176,8 @@
     </span>
     &lt;/Proxy&gt;<br />
     <br />
-    ProxyPass /foo/ http://foo.example.com/bar/<br />
-    ProxyPassReverse /foo/ http://foo.example.com/bar/
+    ProxyPass /foo http://foo.example.com/bar<br />
+    ProxyPassReverse /foo http://foo.example.com/bar
     </code></p></div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
