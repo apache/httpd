@@ -667,8 +667,9 @@ static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
  
     h->req_hdrs = apr_table_make(r->pool, mobj->num_req_hdrs);
-    r->headers_out = apr_table_make(r->pool, mobj->num_header_out);
-    r->err_headers_out = apr_table_make(r->pool, mobj->num_err_header_out);
+    h->resp_hdrs = apr_table_make(r->pool, mobj->num_header_out);
+    h->resp_err_hdrs = apr_table_make(r->pool, mobj->num_err_header_out);
+    /* ### FIXME: These two items should not be saved. */
     r->subprocess_env = apr_table_make(r->pool, mobj->num_subprocess_env);
     r->notes = apr_table_make(r->pool, mobj->num_notes);
 
@@ -677,10 +678,10 @@ static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
                            h->req_hdrs);
     rc = unserialize_table( mobj->header_out,
                             mobj->num_header_out, 
-                            r->headers_out);
+                            h->resp_hdrs);
     rc = unserialize_table( mobj->err_header_out,
                             mobj->num_err_header_out, 
-                            r->err_headers_out);
+                            h->resp_err_hdrs);
     rc = unserialize_table( mobj->subprocess_env, 
                             mobj->num_subprocess_env, 
                             r->subprocess_env);
@@ -691,7 +692,7 @@ static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
     /* Content-Type: header may not be set if content is local since
      * CACHE_IN runs before header filters....
      */
-    ap_set_content_type(r, apr_pstrdup(r->pool, h->cache_obj->info.content_type));
+    h->content_type = h->cache_obj->info.content_type;
 
     return rc;
 }

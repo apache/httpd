@@ -28,7 +28,6 @@ APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;
  */
 static ap_filter_rec_t *cache_save_filter_handle;
 static ap_filter_rec_t *cache_out_filter_handle;
-static ap_filter_rec_t *cache_conditional_filter_handle;
 
 /*
  * CACHE handler
@@ -131,14 +130,10 @@ static int cache_url_handler(request_rec *r, int lookup)
      * If no existing cache file (DECLINED)
      *   add cache_save filter
      * If cached file (OK)
-     *   If fresh cache file
-     *     clear filter stack
-     *     add cache_out filter
-     *     return OK
-     *   If stale cache file
-     *       add cache_conditional filter (which updates cache)
+     *   clear filter stack
+     *   add cache_out filter
+     *   return OK
      */
-
     rv = cache_select_url(r, url);
     if (rv != OK) {
         if (rv == DECLINED) {
@@ -158,38 +153,6 @@ static int cache_url_handler(request_rec *r, int lookup)
     }
 
     /* We have located a suitable cache file now. */
-
-    /* RFC2616 13.2 - Check cache object expiration */
-    cache->fresh = ap_cache_check_freshness(cache, r);
-
-    /* What we have in our cache isn't fresh. */
-    if (!cache->fresh) {
-        /* If our stale cached response was conditional... */
-        if (!lookup && ap_cache_request_is_conditional(r)) {
-            info = &(cache->handle->cache_obj->info);
-
-            /* fudge response into a conditional */
-            if (info && info->etag) {
-                /* if we have a cached etag */
-                apr_table_set(r->headers_in, "If-None-Match", info->etag);
-            }
-            else if (info && info->lastmods) {
-                /* if we have a cached IMS */
-                apr_table_set(r->headers_in, "If-Modified-Since",
-                              info->lastmods);
-            }
-        }
-
-        /* Add cache_conditional_filter to see if we can salvage
-         * later.
-         */
-        ap_add_output_filter_handle(cache_conditional_filter_handle,
-                                    NULL, r, r->connection);
-        return DECLINED;
-    }
-
-    /* fresh data available */
-
     info = &(cache->handle->cache_obj->info);
 
     if (info && info->lastmod) {
@@ -265,39 +228,6 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
                  "cache: serving %s", r->uri);
     return ap_pass_brigade(f->next, bb);
-}
-
-
-/*
- * CACHE_CONDITIONAL filter
- * ------------------------
- *
- * Decide whether or not cached content should be delivered
- * based on our fudged conditional request.
- * If response HTTP_NOT_MODIFIED
- *   replace ourselves with cache_out filter
- * Otherwise
- *   replace ourselves with cache_save filter
- */
-
-static int cache_conditional_filter(ap_filter_t *f, apr_bucket_brigade *in)
-{
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, f->r->server,
-                 "cache: running CACHE_CONDITIONAL filter");
-
-    if (f->r->status == HTTP_NOT_MODIFIED) {
-        /* replace ourselves with CACHE_OUT filter */
-        ap_add_output_filter_handle(cache_out_filter_handle, NULL,
-                                    f->r, f->r->connection);
-    }
-    else {
-        /* replace ourselves with CACHE_SAVE filter */
-        ap_add_output_filter_handle(cache_save_filter_handle, NULL,
-                                    f->r, f->r->connection);
-    }
-    ap_remove_output_filter(f);
-
-    return ap_pass_brigade(f->next, in);
 }
 
 
@@ -980,11 +910,6 @@ static void register_hooks(apr_pool_t *p)
                                   cache_out_filter, 
                                   NULL,
                                   AP_FTYPE_CONTENT_SET-1);
-    cache_conditional_filter_handle =
-        ap_register_output_filter("CACHE_CONDITIONAL", 
-                                  cache_conditional_filter, 
-                                  NULL,
-                                  AP_FTYPE_CONTENT_SET);
     ap_hook_post_config(cache_post_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
 }
 

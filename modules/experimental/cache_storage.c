@@ -98,6 +98,57 @@ int cache_create_entity(request_rec *r, char *url, apr_off_t size)
     return DECLINED;
 }
 
+static int set_cookie_doo_doo(void *v, const char *key, const char *val)
+{
+    apr_table_addn(v, key, val);
+    return 1;
+}
+
+static void accept_headers(cache_handle_t *h, request_rec *r)
+{
+    apr_table_t *cookie_table;
+    const char *v;
+
+    v = apr_table_get(h->resp_hdrs, "Content-Type");
+    if (v) {
+        ap_set_content_type(r, v);
+        apr_table_unset(h->resp_hdrs, "Content-Type");
+    }
+
+    /* If the cache gave us a Last-Modified header, we can't just
+     * pass it on blindly because of restrictions on future values.
+     */
+    v = apr_table_get(h->resp_hdrs, "Last-Modified");
+    if (v) {
+        ap_update_mtime(r, apr_date_parse_http(v));
+        ap_set_last_modified(r);
+        apr_table_unset(h->resp_hdrs, "Last-Modified");
+    }
+
+    /* The HTTP specification says that it is legal to merge duplicate
+     * headers into one.  Some browsers that support Cookies don't like
+     * merged headers and prefer that each Set-Cookie header is sent
+     * separately.  Lets humour those browsers by not merging.
+     * Oh what a pain it is.
+     */
+    cookie_table = apr_table_make(r->pool, 2);
+    apr_table_do(set_cookie_doo_doo, cookie_table, r->err_headers_out,
+                 "Set-Cookie", NULL);
+    apr_table_do(set_cookie_doo_doo, cookie_table, h->resp_hdrs,
+                 "Set-Cookie", NULL);
+    apr_table_unset(r->err_headers_out, "Set-Cookie");
+    apr_table_unset(h->resp_hdrs, "Set-Cookie");
+
+    apr_table_overlap(r->headers_out, h->resp_hdrs,
+                      APR_OVERLAP_TABLES_SET);
+    apr_table_overlap(r->err_headers_out, h->resp_err_hdrs,
+                      APR_OVERLAP_TABLES_SET);
+    if (!apr_is_empty_table(cookie_table)) {
+        r->err_headers_out = apr_table_overlay(r->pool, r->err_headers_out,
+                                               cookie_table);
+    }
+}
+
 /*
  * select a specific URL entity in the cache
  *
@@ -118,12 +169,12 @@ int cache_select_url(request_rec *r, char *url)
     cache_request_rec *cache = (cache_request_rec *) 
                          ap_get_module_config(r->request_config, &cache_module);
 
-    rv =  cache_generate_key(r,r->pool,&key);
+    rv = cache_generate_key(r, r->pool, &key);
     if (rv != APR_SUCCESS) {
         return rv;
     }
     /* go through the cache types till we get a match */
-    h = cache->handle = apr_palloc(r->pool, sizeof(cache_handle_t));
+    h = apr_palloc(r->pool, sizeof(cache_handle_t));
 
     list = cache->providers;
 
@@ -132,32 +183,33 @@ int cache_select_url(request_rec *r, char *url)
         case OK: {
             char *vary = NULL;
             const char *varyhdr = NULL;
+            int fresh;
+
             if (list->provider->recall_headers(h, r) != APR_SUCCESS) {
                 /* TODO: Handle this error */
                 return DECLINED;
             }
 
-            r->filename = apr_pstrdup(r->pool, h->cache_obj->info.filename);
-
             /*
              * Check Content-Negotiation - Vary
              * 
-             * At this point we need to make sure that the object we found in the cache
-             * is the same object that would be delivered to the client, when the
-             * effects of content negotiation are taken into effect.
-             * 
+             * At this point we need to make sure that the object we found in
+             * the cache is the same object that would be delivered to the
+             * client, when the effects of content negotiation are taken into
+             * effect.
+             *
              * In plain english, we want to make sure that a language-negotiated
              * document in one language is not given to a client asking for a
              * language negotiated document in a different language by mistake.
-             * 
+             *
              * This code makes the assumption that the storage manager will
              * cache the req_hdrs if the response contains a Vary
              * header.
-             * 
+             *
              * RFC2616 13.6 and 14.44 describe the Vary mechanism.
              */
-            if ((varyhdr = apr_table_get(r->err_headers_out, "Vary")) == NULL) {
-                varyhdr = apr_table_get(r->headers_out, "Vary");
+            if ((varyhdr = apr_table_get(h->resp_err_hdrs, "Vary")) == NULL) {
+                varyhdr = apr_table_get(h->resp_hdrs, "Vary");
             }
             vary = apr_pstrdup(r->pool, varyhdr);
             while (vary && *vary) {
@@ -186,16 +238,29 @@ int cache_select_url(request_rec *r, char *url)
                 }
                 else {
                     /* headers do not match, so Vary failed */
-                    ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, r->server,
-                                 "cache_select_url(): Vary header mismatch - Cached document cannot be used. \n");
-                    apr_table_clear(r->headers_out);
-                    r->status_line = NULL;
-                    cache->handle = NULL;
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                                r->server,
+                                "cache_select_url(): Vary header mismatch.");
                     return DECLINED;
                 }
             }
+
+            /* Is our cached response fresh enough? */
+            fresh = ap_cache_check_freshness(h, r);
+            if (!fresh) {
+                list->provider->remove_entity(h);
+                return DECLINED;
+            }
+
+            /* Okay, this response looks okay.  Merge in our stuff and go. */
+            apr_table_setn(r->headers_out, "Content-Type",
+                           ap_make_content_type(r, h->content_type));
+            r->filename = apr_pstrdup(r->pool, h->cache_obj->info.filename);
+            accept_headers(h, r);
+
             cache->provider = list->provider;
             cache->provider_name = list->provider_name;
+            cache->handle = h;
             return OK;
         }
         case DECLINED: {
@@ -205,12 +270,10 @@ int cache_select_url(request_rec *r, char *url)
         }
         default: {
             /* oo-er! an error */
-            cache->handle = NULL;
             return rv;
         }
         }
     }
-    cache->handle = NULL;
     return DECLINED;
 }
 
@@ -224,3 +287,4 @@ apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key
     }
     return APR_SUCCESS;
 }
+
