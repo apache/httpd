@@ -557,8 +557,9 @@ static void *worker_thread(void *arg)
     ap_create_pool(&ptrans, tpool);
 
     ap_setup_poll(&pollset, num_listenfds+1, tpool);
-    for(n=0 ; n <= num_listenfds ; ++n)
+    for(n=0 ; n <= num_listenfds ; ++n) {
         ap_add_poll_socket(pollset, listenfds[n], APR_POLLIN);
+    }
 
     while (!workers_may_exit) {
         workers_may_exit |= (max_requests_per_child != 0) && (requests_this_child <= 0);
@@ -833,7 +834,6 @@ static void child_main(int child_num_arg)
     int i;
     ap_listen_rec *lr;
     ap_status_t rv;
-    int sd;
 
     my_pid = getpid();
     child_num = child_num_arg;
@@ -883,8 +883,10 @@ static void child_main(int child_num_arg)
 #if APR_FILES_AS_SOCKETS
     ap_socket_from_file(&listenfds[0], pipe_of_death_in);
 #endif
+
     /* The child socket */
-    ap_put_os_sock(&listenfds[1], &sd, pchild);
+    ap_put_os_sock(&listenfds[1], &child_info_table[child_num].sd, pchild);
+
     num_listenfds++;
     for (lr = ap_listeners, i = 2; i <= num_listenfds; lr = lr->next, ++i)
         listenfds[i]=lr->sd;
@@ -1394,17 +1396,19 @@ static int perchild_post_read(request_rec *r)
     int num;
 
 fprintf(stderr, "In perchild_post_read\n");
+    fflush(stderr);
     process_num = ap_hash_get(socket_info_table, hostname, 0);
     if (process_num) {
         num = atoi(process_num);
     }
     else {
-        num = -1;
+        num = socket_num;
     }
 
-    if (num != child_num) {
+    if (num != child_info_table[child_num].num) {
         /* package the request and send it to another child */
-fprintf(stderr, "leaving DECLINED\n");
+fprintf(stderr, "leaving DECLINED %d %d\n", num, child_num);
+    fflush(stderr);
         return DECLINED;
     }
     return OK;
