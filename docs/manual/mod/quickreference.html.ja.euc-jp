@@ -134,7 +134,7 @@ proxy</td></tr>
 <tr><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider On|Off|<var>provider-name</var>
 [<var>provider-name</var>] ...</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">この位置に対する認証プロバイダを設定します。</td></tr>
 <tr class="odd"><td><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile <var>file-path</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of the database file containing the list
-of user groups for authentication</td></tr>
+of user groups for authorization</td></tr>
 <tr><td><a href="mod_authn_dbm.html#authdbmtype">AuthDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">パスワードを保存するために必要なデータベースファイルの種類を
 設定する</td></tr>
 <tr class="odd"><td><a href="mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile <var>file-path</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">認証用のユーザとパスワードのリストを保持している
