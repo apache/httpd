@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/20 14:09:07 $]
+Last modified at [$Date: 2003/03/20 14:37:47 $]
 
 Release:
 
@@ -76,6 +76,11 @@ PATCHES TO PORT FROM 2.1
           nd: since it's inherited carefully (namely: not) and has to
               be explicitely turned on, I see no harm with that patch.
               (needs docs anyway!)
+          wrowe: two open questions, one about dconf v.s. sconf and
+                 the other about proxied requests containing %2f,
+                 posted to the dev@ list with Message-ID
+ 
+                 <5.2.0.9.2.20030319124411.01f9c6e8@pop3.rowe-clan.net>
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
