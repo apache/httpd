@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/11 15:48:48 $]
+Last modified at [$Date: 2004/06/11 16:15:42 $]
 
 Release:
 
@@ -78,11 +78,6 @@ PATCHES TO BACKPORT FROM 2.1
          server/vhost.c r1.87
        +1: trawick, stoddard, jim
 
-    *) util_ldap: allow relative paths for LDAPTrustedCA to be resolved
-       against ServerRoot PR#26602
-       modules/experimental/util_ldap.c r1.31
-       +1: bnicholes, minfrin, trawick, jim
-       
     *) mod_ssl: Remove some unused functions (after CAN-2004-0488 fix is applied)
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_util.c?r1=1.46&r2=1.47
        +1: jorton, nd
