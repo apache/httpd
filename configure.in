@@ -360,16 +360,9 @@ AC_ARG_ENABLE(v4-mapped,APACHE_HELP_STRING(--enable-v4-mapped,Allow IPv6 sockets
 esac
 ])
 
-if test $v4mapped = "yes" -o $ac_cv_define_APR_HAVE_IPV6 = "no"; then
-    nonssl_listen_stmt_1=""
-    nonssl_listen_stmt_2="Listen @@Port@@"
-    if test $ac_cv_define_APR_HAVE_IPV6 = "yes"; then
-        AC_DEFINE(AP_ENABLE_V4_MAPPED, 1,
-                  [Allow IPv4 connections on IPv6 listening sockets])
-    fi
-else
-    nonssl_listen_stmt_1="Listen 0.0.0.0:@@Port@@"
-    nonssl_listen_stmt_2="Listen [[::]]:@@Port@@"
+if test $v4mapped = "yes" -a $ac_cv_define_APR_HAVE_IPV6 = "yes"; then
+    AC_DEFINE(AP_ENABLE_V4_MAPPED, 1,
+              [Allow IPv4 connections on IPv6 listening sockets])
 fi
 
 AC_ARG_ENABLE(maintainer-mode,APACHE_HELP_STRING(--enable-maintainer-mode,Turn on debugging and compile time warnings),

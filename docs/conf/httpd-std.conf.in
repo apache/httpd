@@ -214,8 +214,7 @@ KeepAliveTimeout 15
 # prevent Apache from glomming onto all bound IP addresses (0.0.0.0)
 #
 #Listen 12.34.56.78:80
-@nonssl_listen_stmt_1@
-@nonssl_listen_stmt_2@
+Listen @@Port@@
 
 #
 # Dynamic Shared Object (DSO) Support
