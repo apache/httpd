@@ -29,14 +29,7 @@
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_example.c</td></tr></table>
 <h3>Summary</h3>
 
-<div class="warning">
-      This document has not been updated
-      to take into account changes made in the 2.0 version of the
-      Apache HTTP Server. Some of the information may still be
-      relevant, but please use it with care.
-</div>
-
-    <p>The files in the <code>src/modules/example directory</code>
+    <p>Some files in the <code>modules/experimental</code> directory
     under the Apache distribution directory tree are provided as an
     example to those that wish to write modules that use the Apache
     API.</p>
@@ -70,43 +63,52 @@
 
     <ol>
       <li>
-        Uncomment the "AddModule modules/example/mod_example" line
-        near the bottom of the <code>src/Configuration</code> file.
-        If there isn't one, add it; it should look like this: 
-<div class="example"><p><code>
-     AddModule modules/example/mod_example.o
-</code></p></div>
-      </li>
+        Run <code>configure</code> with <code>--enable-example</code>
+        option.</li>
 
-      <li>Run the <code>src/Configure</code> script
-      ("<code>cd&nbsp;src;&nbsp;./Configure</code>"). This will
-      build the Makefile for the server itself, and update the
-      <code>src/modules/Makefile</code> for any additional modules
-      you have requested from beneath that subdirectory.</li>
-
-      <li>Make the server (run "<code>make</code>" in the
-      <code>src</code> directory).</li>
+      <li>Make the server (run "<code>make</code>").</li>
     </ol>
 
     <p>To add another module of your own:</p>
 
     <ol class="up-A">
-      <li><code>mkdir src/modules/<em>mymodule</em></code></li>
+      <li><code>cp modules/experimental/mod_example.c
+      modules/new_module/<em>mod_myexample.c</em></code></li>
 
-      <li><code>cp src/modules/example/*
-      src/modules/<em>mymodule</em></code></li>
+      <li>Modify the file.</li>
 
-      <li>Modify the files in the new directory.</li>
+      <li>Create <code>modules/new_module/config.m4</code>.
+        <ol>
+          <li>Add <code>APACHE_MODPATH_INIT(new_module)</code>.</li>
+          <li>Copy APACHE_MODULE line with "example" from
+            <code>modules/experimental/config.m4</code>.</li>
+          <li>Replace the first argument "example" with <em>myexample</em>.</li>
+          <li>Replace the second argument with brief description of your module.
+            It will be used in <code>configure --help</code>.</li>
+          <li>If your module needs additional C compiler flags, linker flags or
+            libraries, add them to CFLAGS, LDFLAGS and LIBS accordingly.
+            See other <code>config.m4</code> files in modules directory for
+            examples.</li>
+          <li>Add <code>APACHE_MODPATH_FINISH</code>.</li>
+        </ol>
+      </li>
 
-      <li>Follow steps [1] through [3] above, with appropriate
-      changes.</li>
+      <li>Create <code>module/new_module/Makefile.in</code>.
+      If your module doesn't need special build instructions,
+      all you need to have in that file is
+      <code>include $(top_srcdir)/build/special.mk</code>.</li>
+
+      <li>Run ./buildconf from the top-level directory.</li>
+
+      <li>Build the server with --enable-myexample</li>
+
     </ol>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="using" id="using">Using the <code>mod_example</code> Module</a></h2>
 
     <p>To activate the example module, include a block similar to
-    the following in your <code>srm.conf</code> file:</p>
+    the following in your <code>httpd.conf</code> file:</p>
 <div class="example"><p><code>
    &lt;Location /example-info&gt;<br />
        SetHandler example-handler<br />
