@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.11 $ -->
+<!-- $Revision: 1.12 $ -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -445,10 +445,16 @@
           <code>http</code> protocol module.</dd>
 
         <dt><code>--enable-dav-fs</code></dt>
-        <dd>Enable DAV support for filesystem resources, which is provides by
+        <dd>Enable DAV support for filesystem resources, which is provided by
           <module>mod_dav_fs</module>. This module is a provider for the
           <module>mod_dav</module> module, so you should also use
           <code>--enable-dav</code>.</dd> 
+
+        <dt><code>--enable-dav-lock</code></dt>
+        <dd>Enable <module>mod_dav_lock</module> which provides generic DAV
+          locking support for backend modules. This module needs at least
+          <module>mod_dav</module> to function, so you should also use
+          <code>--enable-dav</code>.</dd>
 
         <dt><code>--enable-deflate</code></dt>
         <dd>Enable deflate transfer encoding provided by
