@@ -1212,7 +1212,6 @@ static void mpmt_beos_pre_config(ap_context_t *pconf, ap_context_t *plog, ap_con
 
 static void mpmt_beos_hooks(void)
 {
-    ap_hook_pre_config(mpmt_beos_pre_config,NULL,NULL,HOOK_MIDDLE);
     INIT_SIGLIST()
     one_process = 0;
 }
@@ -1409,7 +1408,8 @@ LISTEN_COMMANDS
 };
 
 module MODULE_VAR_EXPORT mpm_mpmt_beos_module = {
-    STANDARD20_MODULE_STUFF,
+    MPM20_MODULE_STUFF,
+    mpmt_beos_pre_config,       /* hook run before the configuration is read */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */

@@ -1632,7 +1632,6 @@ static void spmt_os2_pre_config(ap_context_t *pconf, ap_context_t *plog, ap_cont
 
 static void spmt_os2_hooks(void)
 {
-    ap_hook_pre_config(spmt_os2_pre_config,NULL,NULL,HOOK_MIDDLE);
     INIT_SIGLIST();
     /* TODO: set one_process properly */ one_process = 0;
 }
@@ -1784,7 +1783,8 @@ LISTEN_COMMANDS
 };
 
 module MODULE_VAR_EXPORT mpm_spmt_os2_module = {
-    STANDARD20_MODULE_STUFF,
+    MPM20_MODULE_STUFF,
+    spmt_os2_pre_config,        /* hook run before the configuration is read */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */

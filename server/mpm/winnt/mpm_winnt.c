@@ -1747,7 +1747,6 @@ static void winnt_hooks(void)
 //    INIT_SIGLIST()
     one_process = 0;
     /* Configuration hooks implemented by http_config.c ... */
-    ap_hook_pre_config(winnt_pre_config, NULL, NULL, HOOK_MIDDLE);
 }
 
 /* 
@@ -1851,7 +1850,8 @@ LISTEN_COMMANDS
 };
 
 module MODULE_VAR_EXPORT mpm_winnt_module = {
-    STANDARD20_MODULE_STUFF,
+    MPM20_MODULE_STUFF,
+    winnt_pre_config,           /* hook run before configuration is read */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
