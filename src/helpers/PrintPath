@@ -6,7 +6,6 @@
 # We do some funny stuff to check to see
 # if test/[] knows about -x
 #
-trap 'rm -f $testfile; exit' 0 1 2 3 15
 testfile="pp.t.$$"
 
 cat > $testfile <<ENDTEST
@@ -19,6 +18,7 @@ echo "YES"
 ENDTEST
 
 havex=`/bin/sh $testfile 2>/dev/null`
+rm -f $testfile
 
 if [ "x$havex" = "xYES" ]; then
     test_exec_flag="-x"
