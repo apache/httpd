@@ -1,0 +1,1352 @@
+Changes with Apache 1.2b7
+
+  *) unset Content-Length if chunked (RFC-2068) [Petr Lampa]
+
+  *) mod_negotiation fixes [Petr Lampa] PR#157, PR#158, PR#159
+     - replace protocol response numbers with symbols
+     - save variant-list into main request notes
+     - free allocated memory from subrequests
+     - merge notes, headers_out and err_headers_out
+
+  *) changed status check mask in proxy_http.c from "HTTP/#.# ### *" to
+     "HTTP/#.# ###*" to be more lenient about what we accept.
+     [Chuck Murcko]
+
+  *) more proxy FTP bug fixes:
+     - Changed send_dir() to remove user/passwd from displayed URL.
+     - Changed login error messages to be more descriptive. 
+     - remove setting of SO_DEBUG socket option
+     - Make ftp_getrc() more lenient about multiline responses,
+       specifically, 230 responses which don't have continuation 230-
+       on each line). These seem to be all NT FTP servers, and while
+       perhaps questionable, they appear to be legal by RFC 959.
+     - Add missing kill_timeout() after transfer to user completes.
+     [Chuck Murcko]
+
+  *) Fixed problem where a busy server could hang when restarting
+     after being sent a SIGHUP due to child processes not exiting.
+     [Marc Slemko]
+
+  *) Modify mod_include escaping so a '\' only signifies an escaped
+     character if the next character is one that needs
+     escaping.  [Ben Laurie]
+
+  *) Eliminated possible infinite loop in mod_imap when relative URLs are
+     used with a 'base' directive that does not have a '/' in it.
+     [Marc Slemko, reported by Onno Witvliet <onno@tc.hsa.nl>]
+
+  *) Reduced the default timeout from 1200 seconds to 300, and the
+     one in the sample configfile from 400 to 300.  [Marc Slemko]
+
+  *) Stop vbprintf from crashing if given a NULL string pointer; 
+     print (null) instead.  [Ken Coar]
+
+  *) Don't disable Nagle algorithm if system doesn't have TCP_NODELAY.
+     [Marc Slemko and Roy Fielding]
+
+  *) Fixed problem with mod_cgi-generated internal redirects trying to
+     read the request message-body twice. [Archie Cobbs and Roy Fielding]
+
+  *) Reduced timeout on lingering close, removed possibility of a blocked
+     read causing the child to hang, and stopped logging of errors if
+     the socket is not connected (reset by client).  [Roy Fielding]
+
+  *) Rearranged main child loop to remove duplication of code in
+     select/accept and keep-alive requests, fixed several bugs regarding
+     checking scoreboard_image for exit indication and failure to
+     account for all success conditions and trap all error conditions,
+     prevented multiple flushes before closing the socket; close the entire
+     socket buffer instead of just one descriptor, prevent logging of
+     EPROTO and ECONNABORTED on platforms where supported, and generally
+     improved readability.  [Roy Fielding]
+
+  *) Extensive performance improvements. Cleaned up inefficient use of
+     auto initializers, multiple is_matchexp calls on a static string,
+     and excessive merging of response_code_strings. [Dean Gaudet]
+
+  *) Added double-buffering to mod_include to improve performance on
+     server-side includes. [Marc Slemko]
+
+  *) Several fixes for suexec wrapper. [Randy Terbush]
+     - Make wrapper work for files on NFS filesystem.
+     - Fix portability problem of MAXPATHLEN.
+     - Fix array overrun problem in clean_env().
+     - Fix allocation of PATH environment variable
+
+  *) Removed extraneous blank line is description of mod_status chars.
+     [Kurt Kohler]
+
+  *) Logging of errors from the call_exec routine simply went nowhere,
+     since the logfile fd has been closed, so now we send them to stderr.
+     [Harald T. Alvestrand]
+
+  *) Fixed core dump when DocumentRoot is a CGI.
+     [Ben Laurie, reported by geddis@tesserae.com]
+
+  *) Fixed potential file descriptor leak in mod_asis; updated it and
+     http_core to use pfopen/pfclose instead of fopen/fclose.
+     [Randy Terbush and Roy Fielding]
+
+  *) Fixed handling of unsigned ints in ap_snprintf() on some chips such
+     as the DEC Alpha which is 64-bit but uses 32-bit ints. 
+     [Dean Gaudet and Ken Coar]
+
+  *) Return a 302 response code to the client when sending a redirect
+     due to a missing trailing '/' on a directory instead of a 301; now
+     it is cacheable. [Markus Gyger]
+
+  *) Fix condition where, if a bad directive occurs in .htaccess, and
+     sub_request() goes first to this directory, then log_reason() will
+     SIGSEGV because it doesn't have initialized r->per_dir_config.
+     [PR#162 from Petr Lampa, fix by Marc Slemko and Dean Gaudet]
+
+  *) Fix handling of lang_index in is_variant_better().  This was
+     causing problems which resulted in the server sending the
+     wrong language document in some cases. [Petr Lampa]
+
+  *) Remove free() from clean_env() in suexec wrapper. This was nuking
+     the clean environment on some systems.
+
+  *) Tweak byteserving code (e.g. serving PDF files) to work around
+     bugs in Netscape Navigator and Microsoft Internet Explorer.
+     Emit Content-Length header when sending multipart/byteranges.
+     [Alexei Kosut]
+
+  *) Port to HI-UX/WE2. [Nick Maclaren]
+
+  *) Port to HP MPE operating system for HP 3000 machines
+     [Mark Bixby <markb@cccd.edu>]
+
+  *) Fixed bug which caused a segmentation fault if only one argument
+     given to RLimit* directives. [Ed Korthof]
+
+  *) Continue persistent connection after 204 or 304 response. [Dean Gaudet]
+
+  *) Improved buffered output to the client by delaying the flush decision
+     until the BUFF code is actually about to read the next request.
+     This fixes a problem introduced in 1.2b5 with clients that send
+     an extra CRLF after a POST request. Also improved chunked output
+     performance by combining writes using writev() and removing as
+     many bflush() calls as possible.  NOTE: Platforms without writev()
+     must add -DNO_WRITEV to the compiler CFLAGS, either in Configuration
+     or Configure, unless we have already done so.  [Dean Gaudet]
+
+  *) Fixed mod_rewrite bug which truncated the rewritten URL [Marc Slemko]
+
+  *) Fixed mod_info output corruption bug introduced by buffer overflow
+     fixes. [Dean Gaudet]
+
+  *) Fixed http_protocol to correctly output all HTTP/1.1 headers, including
+     for the special case of a 304 response.  [Paul Sutton]
+
+  *) Improved handling of TRACE method by bypassing normal method handling
+     and header parsing routines; fixed Allow response to always allow TRACE.
+     [Dean Gaudet]
+
+  *) Fixed compiler warnings in the regex library. [Dean Gaudet]
+
+  *) Cleaned-up some of the generated HTML. [Ken Coar]
+
+Changes with Apache 1.2b6
+
+  *) Allow whitespace in imagemap mapfile coordinates. [Marc Slemko]
+
+  *) Fix typo introduced in fix for potential infinite loop around
+     accept() in child_main(). This change caused the rev to 1.2b6.
+     1.2b5 was never a public beta.
+
+Changes with Apache 1.2b5
+
+  *) Change KeepAlive semantics (On|Off instead of a number), add
+     MaxKeepAliveRequests directive. [Alexei Kosut]
+
+  *) Various NeXT compilation patches, as well as a change in
+     regex/regcomp.c since that file also used a NEXT define.
+     [Andreas Koenig]
+
+  *) Allow * to terminate the end of a directory match in mod_dir.
+     Allows /~* to match for both /~joe and /~joe/. [David Bronder]
+
+  *) Don't call can_exec() if suexec_enabled. Calling this requires
+     scripts executed by the suexec wrapper to be world executable, which
+     defeats one of the advantages of running the wrapper. [Randy Terbush]
+
+  *) Portability Fix: IRIX complained with 'make clean' about *pure* (removed)
+     [Jim Jagielski]
+     
+  *) Migration from sprintf() to snprintf() to avoid buffer
+     overflows. [Marc Slemko]
+
+  *) Provide portable snprintf() implementation (ap_snprintf)
+     as well as *cvt family. [Jim Jagielski]
+
+  *) Portability Fix: NeXT lacks unistd.h so we wrap it's inclusion
+     [Jim Jagielski]
+
+  *) Remove mod_fastcgi.c from the distribution. This module appears
+     to be maintained more through the Open Market channels and should
+     continue to be easily available at http://www.fastcgi.com/
+
+  *) Fixed bug in modules/Makefile that wouldn't allow building in more
+     than one subdirectory (or cleaning, either). [Jeremy Laidman]
+
+  *) mod_info assumed that the config files were relative to ServerRoot.
+     [Ken the Rodent]
+
+  *) CGI scripts called as an error document resulting from failed
+     CGI execution would hang waiting for POST'ed data. [Rob Hartill]
+
+  *) Log reason when mod_dir returns access HTTP_FORBIDDEN
+     [Ken the Rodent]
+
+  *) Properly check errno to prevent display of a directory index
+     when server receives a long enough URL to confuse stat().
+     [Marc Slemko]
+
+  *) Several security enhancements to suexec wrapper. It is _highly_
+     recommended that previously installed versions of the wrapper
+     be replaced with this version.  [Randy Terbush, Jason Dour]
+
+	- ~user execution now properly restricted to ~user's home
+	  directory and below.
+	- execution restricted to UID/GID > 100
+	- restrict passed environment to known variables
+	- call setgid() before initgroups() (portability fix)
+	- remove use of setenv() (portability fix)
+
+  *) Add HTTP/1.0 response forcing. [Ben Laurie]
+
+  *) Add access control via environment variables. [Ben Laurie]
+
+  *) Add rflush() function. [Alexei Kosut]
+
+  *) remove duplicate pcalloc() call in new_connection().
+
+  *) Fix incorrect comparison which could allow number of children =
+     MaxClients + 1 if less than HARD_SERVER_LIMIT. Also fix potential
+     problem if StartServers > HARD_SERVER_LIMIT. [Ed Korthof]
+
+  *) Updated support for OSes (MachTen, ULTRIX, Paragon, ISC, OpenBSD
+     AIX PS/2, CONVEXOS. [Jim Jagielski]
+
+  *) Replace instances of inet_ntoa() with inet_addr() for ProxyBlock.
+     It's more portable. [Martin Kraemer]
+
+  *) Replace references to make in Makefile.tmpl with $(MAKE).
+     [Chuck Murcko]
+
+  *) Add ProxyBlock directive w/IP address caching. Add IP address
+     caching to NoCache directive as well. ProxyBlock works with all
+     handlers; NoCache now also works with FTP for anonymous logins.
+     Still more code cleanup. [Chuck Murcko]
+
+  *) Add "header parse" API hook [Ben Laurie]
+
+  *) Fix byte ordering problems for REMOTE_PORT [Chuck Murcko]
+
+  *) suEXEC wrapper was freeing memory that had not been malloc'ed.
+
+  *) Correctly allow access and auth directives in <Files> sections in
+     server config files. [Alexei Kosut]
+
+  *) Fix bug with ServerPath that could cause certain files to be not
+     found by the server. [Alexei Kosut] 
+
+  *) Fix handling of ErrorDocument so that it doesn't remove a trailing
+     double-quote from text and so that it properly checks for unsupported
+     status codes using the new index_of_response interface. [Roy Fielding] 
+
+  *) Multiple fixes to the lingering_close code in order to avoid being
+     interrupted by a stray timeout, to avoid lingering on a connection
+     that has already been aborted or never really existed, to ensure that
+     we stop lingering as soon as any error condition is received, and to
+     prevent being stuck indefinitely if the read blocks.  Also improves
+     reporting of error conditions.  [Marc Slemko and Roy Fielding]
+
+  *) Fixed initialization of parameter structure for sigaction.
+     [mgyger@itr.ch, Adrian Filipi-Martin]
+
+  *) Fixed reinitializing the parameters before each call to accept and
+     select, and removed potential for infinite loop in accept.
+     [Roy Fielding, after useful PR from adrian@virginia.edu]
+
+  *) Fixed condition where, if a child fails to fork, the scoreboard would
+     continue to say SERVER_STARTING forever. Eventually, the main process
+     would refuse to start new children because count_idle_servers() will
+     count those SERVER_STARTING entries and will always report that there
+     are enough idle servers. [Phillip Vandry]
+
+  *) Fixed bug in bcwrite regarding failure to account for partial writes.
+     Avoided calling bflush() when the client is pipelining requests.
+     Removed unnecessary flushes from http_protocol. [Dean Gaudet]
+ 
+  *) Added description of "." mode in server-status [Jim Jagielski]
+
+
+Changes with Apache 1.2b4:
+
+  *) Fix possible race condition in accept_mutex_init() that
+     could leave a small security hole open allowing files to be
+     overwritten in cases where the server UID has write permissions.
+     [Marc Slemko]
+
+  *) Fix awk compatibilty problem in Configure. [Jim Jagielski]
+
+  *) Fix portablity problem in util_script where ARG_MAX may not be
+     defined for some systems.
+
+  *) Add changes to allow compilation on Machten 4.0.3 for PowerPC.
+     [Randal Schwartz]
+
+  *) OS/2 changes to support an MMAP style scoreboard file and UNIX
+     style magic #! token for better script portability. [Garey Smiley]
+
+  *) Fix bug in suexec wrapper introduced in b3 that would cause failed
+     execution for ~userdir CGI. [Jason Dour]
+
+  *) Fix initgroups() business in suexec wrapper. [Jason Dour]
+
+  *) Fix month off by one in suexec wrapper logging.
+
+Changes with Apache 1.2b3:
+
+  *) Fix error in mod_cgi which could cause resources not to be properly
+     freed, or worse. [Dean Gaudet]
+
+  *) Fix find_string() NULL pointer dereference. [Howard Fear]
+
+  *) Add set_flag_slot() at the request of Dirk and others.
+     [Dirk vanGulik]
+
+  *) Sync mod_rewrite with patch level 10. [Ralf Engelschall]
+
+  *) Add changes to improve the error message given for invalid
+     ServerName parameters. [Dirk vanGulik]
+
+  *) Add "Authoritative" directive for Auth modules that don't
+     currently have it. This gives admin control to assign authoritative
+     control to an authentication scheme and allow "fall through" for
+     those authentication modules that aren't "Authoritative" thereby
+     allowing multiple authentication mechanisms to be chained.
+     [Dirk vanGulik]
+
+  *) Remove requirement for ResourceConfig/AccessConfig if not using
+     the three config file layout. [Randy Terbush]
+
+  *) Add PASV mode to mod_proxy FTP handler. [Chuck Murcko]
+
+  *) Changes to suexec wrapper to fix the following problems:
+     1.  symlinked homedirs will kill ~userdirs.
+     2.  initgroups() on Linux 2.0.x clobbers gr->grid.
+     3.  CGI command lines paramters problems
+     4.  pw-pwdir for "docroot check" still the httpd user's pw record.
+    [Randy Terbush, Jason Dour]
+
+  *) Change create_argv() to accept variable arguments. This fixes
+     a problem where arguments were not getting passed to the CGI via
+     argv[] when the suexec wrapper was active. [Randy Terbush, Jake Buchholz]
+
+  *) Collapse multiple slashes in path URLs to properly apply
+     handlers defined by <Location>. [Alexei Kosut]
+
+  *) Define a sane set of DEFAULT_USER and DEFAULT_GROUP values for AIX.
+
+  *) Improve the accuracy of request duration timings by setting
+     r->request_time in read_request_line() instead of read_request().
+     [Dean Gaudet]
+
+  *) Reset timeout while reading via get_client_block() in mod_cgi.c
+     Fixes problem with timed out transfers of large files. [Rasmus Lerdorf]
+
+  *) Add the ability to pass different Makefile.tmpl files to Configure
+     using the -make flag. [Rob Hartill]
+
+  *) Fix coredump triggered when sending a SIGHUP to the server caused
+     by an assertion failure, in turn caused by an uninitialised field in a
+     listen_rec.
+     [Ben Laurie]
+
+  *) Add FILEPATH_INFO variable to CGI environment, which is equal to
+     PATH_INFO from previous versions of Apache (in certain situations,
+     Apache 1.2's PATH_INFO will be different than 1.1's). [Alexei Kosut]
+
+  *) Add rwrite() function to API to allow for sending strings of
+     arbitrary length. [Doug MacEachern]
+
+  *) Remove rlim_t typedef for NetBSD. Do older versions need this?
+
+  *) Defined rlim_t and WANTHSREGEX=yes and fixed waitpid() substitute for
+     NeXT. [Jim Jagielski]
+
+  *) Removed recent modification to promote the status code on internal
+     redirects, since the correct fix was to change the default log format
+     in mod_log_config so that it outputs the original status. [Rob Hartill]
+
+Changes with Apache 1.2b2:
+  
+  *) Update set_signals() to use sigaction() for setting handlers.
+     This appears to fix a re-entrant problem in the seg_fault()
+     bus_error() handlers. [Randy Terbush]
+
+  *) Changes to allow mod_status compile for OS/2 [Garey Smiley]
+
+  *) changes for DEC AXP running OSF/1 v3.0. [Marc Evans]
+
+  *) proxy_http.c bugfixes:  [Chuck Murcko]
+        1) fixes possible NULL pointer reference w/NoCache
+        2) fixes NoCache behavior when using ProxyRemote (ProxyRemote
+           host would cache nothing if it was in the local domain,
+           and the local domain was in the NoCache list)
+        3) Adds Host: header when not available
+        4) Some code cleanup and clarification
+
+  *) mod_include.c bugfixes:
+	1) Fixed an ommission that caused include variables to not 
+	   be parsed in config errmsg directives [Howard Fear]
+	2) Remove HAVE_POSIX_REGEX cruft [Alexei Kosut]
+	3) Patch to fix compiler warnings [perrot@lal.in2p3.fr]
+	4) Allow backslash-escaping to all quoted text
+	   [Ben Yoshino <ben@wiliki.eng.hawaii.edu>]
+	5) Pass variable to command line if not set in XSSI's env
+	   [Howard Fear]
+
+  *) Fix infinite loop when processing Content-language lines in
+     type-map files. [Alexei Kosut]
+
+  *) Closed file-globbing hole in test-cgi script. [Brian Behlendorf]
+
+  *) Fixed problem in set_[user|group] that prevented CGI execution
+     for non-virtualhosts when suEXEC was enabled. [Randy Terbush]
+
+  *) Added PORTING information file.  [Jim Jagielski]
+
+  *) Added definitions for S_IWGRP and S_IWOTH to conf.h [Ben Laurie]
+
+  *) Changed default group to "nogroup" instead of "nobody" [Randy Terbush]
+
+  *) Fixed define typo of FCNTL_SERIALIZED_ACCEPT where
+     USE_FCNTL_SERIALIZED_ACCEPT was intended.
+
+  *) Fixed additional uses of 0xffffffff where INADDR_NONE was intended,
+     which caused problems of systems where socket s_addr is >32bits.
+
+  *) Added comment to explain (r->chunked = 1) side-effect in
+     http_protocol.c [Roy Fielding]
+
+  *) Replaced use of index() in mod_expires.c with more appropriate
+     and portable isdigit() test.  [Ben Laurie]
+  
+  *) Updated Configure for ... 
+	OS/2	      (DEF_WANTHSREGEX=yes, other code changes)
+        *-dg-dgux*    (bad pattern match)
+        QNX           (DEF_WANTHSREGEX=yes)
+        *-sunos4*     (DEF_WANTHSREGEX=yes, -DUSEBCOPY)
+        *-ultrix      (new)
+	*-unixware211 (new)
+     and added some user diagnostic info.  [Ben Laurie]
+
+  *) In helpers/CutRule, replaced "cut" invocation with "awk" invocation
+     for better portability. [Jim Jagielski]
+
+  *) Updated helpers/GuessOS for ... 
+        SCO 5            (recognize minor releases)
+        SCO Unixware     (braindamaged uname, whatever-whatever-unixware2)
+	SCO UnixWare 2.1.1	(requires a separate set of #defines in conf.h)
+        IRIX64           (-sgi-irix64)
+        ULTRIX           (-unknown-ultrix)
+        SINIX            (-whatever-sysv4)
+        NCR Unix         (-ncr-sysv4)
+     and fixed something in helpers/PrintPath  [Ben Laurie]
+
+Changes with Apache 1.2b1:
+
+  *) Not listed. See <http://www.apache.org/docs/new_features_1_2.html>
+
+Changes with Apache 1.1.1:
+
+  *) Fixed bug where Cookie module would make two entries in the
+     logfile for each access [Mark Cox]
+
+  *) Fixed bug where Redirect in .htaccess files would cause memory
+     leak. [Nathan Neulinger]
+
+  *) MultiViews now works correctly with AddHandler [Alexei Kosut]
+
+  *) Problems with mod_auth_msql fixed [Dirk vanGulik]
+
+  *) Fix misspelling of "Anonymous_Authorative" directive in mod_auth_anon.
+
+Changes with Apache 1.1.0:
+
+  *) Bring NeXT support up to date. [Takaaki Matsumoto]
+
+  *) Bring QNX support up to date. [Ben Laurie]
+
+  *) Make virtual hosts default to main server keepalive parameters.
+     [Alexei Kosut, Ben Laurie]
+
+  *) Allow ScanHTMLTitles to work with lowercase <title> tags. [Alexei Kosut]
+
+  *) Fix missing address family for connect, also remove unreachable statement
+     in mod_proxy. [Ben Laurie]
+
+  *) mod_env now turned on by default in Configuration.tmpl.
+
+  *) Bugs which were fixed:
+        a) yet more mod_proxy bugs [Ben Laurie]
+        b) CGI works again with inetd [Alexei Kosut]
+	c) Leading colons were stripped from passwords [osm@interguide.com] 
+	d) Another fix to multi-method Limit problem [jk@tools.de]
+
+Changes with Apache 1.1b4:
+
+  *) r->bytes_sent variable restored. [Robert Thau]
+
+  *) Previously broken multi-method <Limit> parsing fixed. [Robert Thau]
+
+  *) More possibly unsecure programs removed from the support directory.
+
+  *) More mod_auth_msql authentication improvements.
+
+  *) VirtualHosts based on Host: headers no longer conflict with the
+     Listen directive.
+
+  *) OS/2 compatibility enhancements. [Gary Smiley]
+
+  *) POST now allowed to directory index CGI scripts.
+
+  *) Actions now work with files of the default type.
+
+  *) Bugs which were fixed:
+        a) more mod_proxy bugs
+        b) early termination of inetd requests
+        c) compile warnings on several systems
+        d) problems when scripts stop reading output early
+
+Changes with Apache 1.1b3:
+
+  *) Much of cgi-bin and all of cgi-src has been removed, due to
+     various security holes found and that we could no longer support
+     them.  
+
+  *) The "Set-Cookie" header is now special-cased to not merge multiple 
+     instances, since certain popular browsers can not handle multiple 
+     Set-Cookie instructions in a single header. [Paul Sutton]
+
+  *) rprintf() added to buffer code, occurrences of sprintf removed.
+     [Ben Laurie]
+
+  *) CONNECT method for proxy module, which means tunneling SSL should work.
+     (No crypto needed)  Also a NoCache config directive.
+
+  *) Several API additions: pstrndup(), table_unset() and get_token()
+     functions now available to modules.
+
+  *) mod_imap fixups, in particular Location: headers are now complete
+     URL's.
+
+  *) New "info" module which reports on installed module set through a 
+     special URL, a la mod_status.
+
+  *) "ServerPath" directive added - allows for graceful transition
+     for Host:-header-based virtual hosts.
+
+  *) Anonymous authentication module improvements.
+
+  *) MSQL authentication module improvements.
+
+  *) Status module design improved - output now table-based. [Ben Laurie]
+
+  *) htdigest utility included for use with digest authentication
+     module.
+ 
+  *) mod_negotiation: Accept values with wildcards to be treated with
+     less priority than those without wildcards at the same quality
+     value. [Alexei Kosut]
+
+  *) Bugs which were fixed:
+	a) numerous mod_proxy bugs
+	b) CGI early-termination bug [Ben Laurie]
+	c) Keepalives not working with virtual hosts
+	d) RefererIgnore problems
+	e) closing fd's twice in mod_include (causing core dumps on
+	   Linux and elsewhere).
+
+Changes with Apache 1.1b2:
+
+  *) Bugfixes:
+        a) core dumps in mod_digest
+        b) truncated hostnames/ip address in the logs
+        c) relative URL's in mod_imap map files
+
+Changes with Apache 1.1b1:
+
+  *) Not listed. See <http://www.apache.org/docs/new_features_1_1.html>
+
+Changes with Apache 1.0.3:
+
+  *) Internal redirects which occur in mod_dir.c now preserve the
+     query portion of a request (the bit after the question mark).
+     [Adam Sussman]
+
+  *) Escape active characters '<', '>' and '&' in html output in
+     directory listings, error messages and redirection links.
+     [David Robinson]
+
+  *) Apache will now work with LynxOS 2.3 and later [Steven Watt]
+
+  *) Fix for POSIX compliance in waiting for processes in alloc.c.
+     [Nick Williams]
+
+  *) setsockopt no longer takes a const declared argument [Martijn Koster]
+
+  *) Reset timeout timer after each successful fwrite() to the network.
+     This patch adds a reset_timeout() procedure that is called by
+     send_fd() to reset the timeout ever time data is written to the net.
+     [Nathan Schrenk]
+
+  *) timeout() signal handler now checks for SIGPIPE and reports
+     lost connections in a more user friendly way. [Rob Hartill]
+
+  *) Location of the "scoreboard" file which used to live in /tmp is
+     now configurable (for OSes that can't use mmap) via ScoreBoardFile
+     which works similar to PidFile (in httpd.conf) [Rob Hartill]
+
+  *) Include sys/resource.h in the correct place for SunOS4 [Sameer Parekh]
+
+  *) the pstrcat call in mod_cookies.c didn't have an ending NULL,
+     which caused a SEGV with cookies enabled
+
+  *) Output warning when MinSpareServers is set to <= 0 and change it to 1
+     [Rob Hartill]
+
+  *) Log the UNIX textual error returned by some system calls, in
+     particular errors from accept() [David Robinson]
+
+  *) Add strerror function to util.c for SunOS4 [Randy Terbush]
+
+Changes with Apache 1.0.2
+
+  *) patch to get Apache compiled on UnixWare 2.x, recommended as 
+     a temporary measure, pending rewrite of rfc931.c. [Chuck Murcko]
+
+  *) Fix get_basic_auth_pw() to set the auth_type of the request.
+     [David Robinson]
+
+  *) past changes to http_config.c to only use the 
+     setrlimit function on systems defining RLIMIT_NOFILE
+     broke the feature on SUNOS4. Now defines HAVE_RESOURCE
+     for SUNOS and prototypes the needed functions.
+
+  *) Remove uses of MAX_STRING_LEN/HUGE_STRING_LEN from several routines.
+     [David Robinson]
+
+  *) Fix use of pointer to scratch memory. [Cliff Skolnick]
+
+  *) Merge multiple headers from CGI scripts instead of taking last
+     one. [David Robinson]
+
+  *) Add support for SCO 5. [Ben Laurie]
+
+Changes with Apache 1.0.1
+
+  *) Silence mod_log_referer and mod_log_agent if not configured
+     [Randy Terbush]
+
+  *) Recursive includes can occur if the client supplies PATH_INFO data
+     and the server provider uses relative links; as file.html
+     relative to /doc.shtml/pathinfo is /doc.shtml/file.html. [David Robinson]
+
+  *) The replacement for initgroups() did not call {set,end}grent(). This
+     had two implications: if anything else used getgrent(), then
+     initgroups() would fail, and it was consuming a file descriptor.
+     [Ben Laurie]
+
+  *) On heavily loaded servers it was possible for the scoreboard to get 
+     out of sync with reality, as a result of a race condition.
+     The observed symptoms are far more Apaches running than should
+     be, and heavy system loads, generally followed by catastrophic
+     system failure. [Ben Laurie]
+
+  *) Fix typo in license. [David Robinson]
+
+Changes with Apache 1.0.0
+
+  *) Not listed. See <http://www.apache.org/docs/new_features_1_0.html>
+
+Changes with Apache 0.8.16
+
+  *) New man page for 'httpd' added to support directory [David Robinson]
+
+  *) .htgroup files can have more than one line giving members for a
+     given group (each must have the group name in front), for NCSA
+     back-compatibility [Robert Thau]
+
+  *) Mutual exclusion around accept() is on by default for SVR4 systems
+     generally, since they generally can't handle multiple processes in
+     accept() on the same socket.  This should cure flaky behavior on
+     a lot of those systems.  [David Robinson]
+
+  *) AddType, AddEncoding, and AddLanguage directives take multiple
+     extensions on a single command line [David Robinson]
+
+  *) UserDir can be disabled for a given virtual host by saying
+     "UserDir disabled" in the <VirtualHost> section --- it was a bug
+     that this didn't work.  [David Robinson]
+
+  *) Compiles on QNX [Ben Laurie]
+
+  *) Corrected parsing of ctime time format [David Robinson]
+
+  *) httpd does a perror() before exiting if it can't log its pid
+     to the PidFile, to make diagnosing the error a bit easier.
+     [David Robinson]
+
+  *) <!--#include file="..."--> can no longer include files in the
+     parent directory, for NCSA back-compatibility.  [David Robinson]
+
+  *) '~' is *not* escaped in URIs generated for directory listings
+     [Roy Fielding]
+
+  *) Eliminated compiler warning in the imagemap module [Randy Terbush]
+
+  *) Fixed bug involving handling URIs with escaped %-characters
+     in redirects [David Robinson]
+
+Changes with Apache 0.8.15
+
+  *) Switched to new, simpler license
+
+  *) Eliminated core dumps with improperly formatted DBM group files [Mark Cox]
+
+  *) Don't allow requests for ordinary files to have PATH_INFO [Ben Laurie]
+
+  *) Reject paths containing %-escaped '%' or null characters [David Robinson]
+
+  *) Correctly handles internal redirects to files with names containing '%'
+     [David Robinson]
+
+  *) Repunctuated some error messages [Aram Mirzadeh, Andrew Wilson]
+
+  *) Use geteuid() rather than getuid() to see if we have root privilege,
+     so that server correctly resets privilege if run setuid root.  [Andrew
+     Wilson]
+
+  *) Handle ftp: and telnet: URLs correctly in imagemaps (built-in module)
+     [Randy Terbush]
+
+  *) Fix relative URLs in imagemap files [Randy Terbush]
+
+  *) Somewhat better fix for the old "Alias /foo/ /bar/" business
+     [David Robinson]
+
+  *) Don't repeatedly open the ErrorLog if a bunch of <VirtualHost>
+     entries all name the same one. [David Robinson]
+
+  *) Fix directory listings with filenames containing unusual characters
+     [David Robinson]
+
+  *) Better URI-escaping for generated URIs in directories with filenames
+     containing unusual characters [Ben Laurie]
+
+  *) Fixed potential FILE* leak in http_main.c [Ben Laurie]
+
+  *) Unblock alarms on error return from spawn_child() [David Robinson]  
+
+  *) Sample Config files have extra note for SCO users [Ben Laurie]
+
+  *) Configuration has note for HP-UX users [Rob Hartill]
+
+  *) Eliminated some bogus Linux-only #defines in conf.h [Aram Mirzadeh]
+
+  *) Nuked bogus #define in httpd.h [David Robinson]
+
+  *) Better test for whether a system has setrlimit() [David Robinson]
+
+  *) Calls update_child_status() after reopen_scoreboard() [David Robinson]
+
+  *) Doesn't send itself SIGHUP on startup when run in the -X debug-only mode
+     [Ben Laurie]
+
+Changes with Apache 0.8.14
+
+  *) Compiles on SCO ODT 3.0 [Ben Laurie]
+
+  *) AddDescription works (better) [Ben Laurie]
+
+  *) Leaves an intelligible error diagnostic when it can't set group
+     privileges on standalone startup [Andrew Wilson]
+
+  *) Compiles on NeXT again --- the 0.8.13 RLIMIT patch was failing on
+     that machine, which claims to be BSD but does not support RLIMIT.
+     [Randy Terbush]
+
+  *) gcc -Wall no longer complains about an unused variable when util.c
+     is compiled with -DMINIMAL_DNS [Andrew Wilson]
+
+  *) Nuked another compiler warning for -Wall on Linux [Aram Mirzadeh]
+
+Changes with Apache 0.8.13
+
+  *) Make IndexIgnore *work* (ooops) [Jarkko Torppa]
+
+  *) Have built-in imagemap code recognize & honor Point directive [James
+     Cloos]
+
+  *) Generate cleaner directory listings in directories with a mix of
+     long and short filenames [Rob Hartill]
+
+  *) Properly initialize dynamically loaded modules [Royston Shufflebotham]
+
+  *) Properly default ServerName for virtual servers [Robert Thau]
+
+  *) Rationalize handling of BSD in conf.h and elsewhere [Randy Terbush,
+     Paul Richards and a cast of thousands...]
+
+  *) On self-identified BSD systems (we don't try to guess any more),
+     allocate a few extra file descriptors per virtual host with setrlimit,
+     if we can, to avoid running out. [Randy Terbush]
+
+  *) Write 22-character lock file name into buffer with enough space
+     on startup [Konstantin Olchanski]
+
+  *) Use archaic setpgrp() interface on NeXT, which requires it [Brian
+     Pinkerton]
+
+  *) Suppress -Wall warning by casting const away in util.c [Aram Mirzadeh]
+
+  *) Suppress -Wall warning by initializing variable in negotiation code
+     [Tobias Weingartner]
+
+Changes with Apache 0.8.12
+
+  *) Doesn't pause three seconds after including a CGI script which is
+     too slow to die off (this is done by not even trying to kill off
+     subprocesses, including the SIGTERM/pause/SIGKILL routine, until
+     after the entire document has been processed).  [Robert Thau]
+
+  *) Doesn't do SSI if Options Includes is off.  (Ooops).  [David Robinson]
+
+  *) Options IncludesNoExec allows inclusion of at least text/* [Roy Fielding]
+
+  *) Allows .htaccess files to override <Directory> sections naming the
+     same directory [David Robinson]
+
+  *) Removed an efficiency hack in sub_req_lookup_uri which was
+     causing certain extremely marginal cases (e.g., ScriptAlias of a
+     *particular* index.html file) to fail.  [David Robinson]
+
+  *) Doesn't log an error when the requested URI requires
+     authentication, but no auth header line was supplied by the
+     client; this is a normal condition (the client doesn't no auth is
+     needed here yet).  [Robert Thau]
+
+  *) Behaves more sanely when the name server loses its mind [Sean Welch]
+
+  *) RFC931 code compiles cleanly on old BSDI releases [Randy Terbush]
+
+  *) RFC931 code no longer passes out name of prior clients on current
+     requests if the current request came from a server that doesn't
+     do RFC931.  [David Robinson]
+
+  *) Configuration script accepts "Module" lines with trailing whitespace.
+     [Robert Thau]
+
+  *) Cleaned up compiler warning from mod_access.c [Robert Thau]
+
+  *) Cleaned up comments in mod_cgi.c [Robert Thau]
+
+Changes with Apache 0.8.11
+
+  *) Wildcard <Directory> specifications work.  [Robert Thau]
+
+  *) Doesn't loop for buggy CGI on Solaris [Cliff Skolnick]
+  
+  *) Symlink checks (FollowSymLinks off, or SymLinkIfOwnerMatch) always check
+     the file being requested itself, in addition to the directories leading
+     up to it. [Robert Thau]
+  
+  *) Logs access failures due to symlink checks or invalid client address
+     in the error log [Roy Fielding, Robert Thau]
+  
+  *) Symlink checks deal correctly with systems where lstat of
+     "/path/to/some/link/" follows the link.  [Thau, Fielding]
+
+  *) Doesn't reset DirectoryIndex to 'index.html' when
+     other directory options are set in a .htaccess file.  [Robert Thau]
+  
+  *) Clarified init code and nuked bogus warning in mod_access.c
+     [Florent Guillaume]
+  
+  *) Corrected several directives in sample srm.conf
+     --- includes corrections to directory indexing icon-related directives
+     (using unknown.gif rather than unknown.xbm as the DefaultIcon, doing
+     icons for encodings right, and turning on AddEncoding by default).
+     [Roy Fielding]
+  
+  *) Corrected descriptions of args to AddIcon and AddAlt in command table
+     [James Cloos]
+  
+  *) INSTALL & README mention "contributed modules" directory [Brian
+     Behlendorf]
+  
+  *) Fixed English in the license language...  "for for" --> "for".
+     [Roy Fielding]
+  
+  *) Fixed ScriptAlias/Alias interaction by moving ScriptAlias handling to
+     mod_alias.c, merging it almost completely with handling of Alias, and
+     adding a 'notes' field to the request_rec which allows the CGI module
+     to discover whether the Alias module has put this request through
+     ScriptAlias (which it needs to know for back-compatibility, as the old
+     NCSA code did not check Options ExecCGI in ScriptAlias directories).
+     [Robert Thau]
+  
+
+Changes with Apache 0.8.10
+
+  *) AllowOverride applies to the named directory, and not just
+     subdirectories.  [David Robinson]
+
+  *) Do locking for accept() exclusion (on systems that need it)
+     using a special file created for the purpose in /usr/tmp, and
+     not the error log; using the error log causes real problems
+     if it's NFS-mounted; this is known to be the cause of a whole
+     lot of "server hang" problems with Solaris.  [David Robinson;
+     thanks to Merten Schumann for help diagnosing the problem].
+
+Changes with Apache 0.8.9
+
+  *) Compiles with -DMAXIMUM_DNS ---- ooops! [Henrik Mortensen]
+
+  *) Nested includes see environment variables of the including document,
+     for NCSA bug-compatibility (some sites have standard footer includes
+     which try to print out the last-modified date).  [Eric Hagberg/Robert
+     Thau]
+
+  *) <!--exec cgi="/some/uri/here"--> always treats the item named by the
+     URI as a CGI script, even if it would have been treated as something
+     else if requested directly, for NCSA back-compatibility.  (Note that
+     this means that people who know the name of the script can see the
+     code just by asking for it).  [Robert Thau]
+
+  *) New version of dbmmanage script included in support directory as
+     dbmmanage.new.
+
+  *) Check if scoreboard file couldn't be opened, and say so, rather
+     then going insane [David Robinson]
+
+  *) POST to CGI works on A/UX [Jim Jaglieski]
+
+  *) AddIcon and AddAlt commands work properly [Rob Hartill]
+
+  *) NCSA server push works properly --- the Arena bug compatibility
+     workaround, which broke it, is gone (use -DARENA_BUG_WORKAROUND
+     if you still want the workaround).  [Rob Hartill]
+
+  *) If client didn't submit any Accept-encodings, ignore encodings in
+     content negotiation.  (NB this will all have to be reworked anyway
+     for the new HTTP draft).  [Florent Guillaume]
+     
+  *) Don't dump core when trying to log timed-out requests [Jim Jaglieski]
+
+  *) Really honor CacheNegotiatedDocs [Florent Guillaume]
+
+  *) Give Redirect priority over Alias, for NCSA bug compatibility
+     [David Robinson]
+
+  *) Correctly set PATH_TRANSLATED in all cases from <!--#exec cmd=""-->,
+     paralleling earlier bug fix for CGI [David Robinson]
+
+  *) If DBM auth is improperly configured, report a server error and don't
+     dump core.
+
+  *) Deleted FCNTL_SERIALIZED_ACCEPTS from conf.h entry for A/UX;
+     it seems to work well enough without it (even in a 10 hits/sec
+     workout), and the overhead for the locking under A/UX is
+     alarmingly high (though it is very low on other systems).
+     [Eric Hagberg]
+
+  *) Fixed portability problems with mod_cookies.c [Cliff Skolnick]
+
+  *) Further de-Berklize mod_cookies.c; change the bogus #include.  [Brian
+     Behlendorf/Eric Hagberg]
+
+  *) More improvements to default Configuration for A/UX [Jim Jaglieski]
+
+  *) Compiles clean on NEXT [Rob Hartill]
+
+  *) Compiles clean on SGI [Robert Thau]
+
+Changes with Apache 0.8.8
+
+  *) SunOS library prototypes now never included unless explicitly
+     requested in the configuration (via -DSUNOS_LIB_PROTOTYPES);
+     people using GNU libc on SunOS are screwed by prototypes for the
+     standard library.
+
+     (Those who wish to compile clean with gcc -Wall on a standard
+     SunOS setup need the prototypes, and may obtain them using
+     -DSUNOS_LIB_PROTOTYPES.  Those wishing to use -Wall on a system
+     with nonstandard libraries are presumably competent to make their
+     own arrangements).
+
+  *) Strips trailing '/' characters off both args to the Alias command,
+     to make 'Alias /foo/ /bar/' work.
+
+Changes with Apache 0.8.7
+
+  *) Don't hang when restarting with a child from 'TransferLog "|..."' running
+     [reported by David Robinson]
+
+  *) Compiles clean on OSF/1 [David Robinson]
+
+  *) Added some of the more recent significant changes (AddLanguage stuff,
+     experimental LogFormat support) to CHANGES file in distribution root
+     directory
+
+Changes with Apache 0.8.6
+
+  *) Deleted Netscape reload workaround --- it's in violation of HTTP specs.
+     (If you actually wanted a conditional GET which bypassed the cache, you
+     couldn't get it). [Reported by Roy Fielding]
+
+  *) Properly terminate headers on '304 Not Modified' replies to conditional
+     GETs --- no browser we can find cares much, but the CERN proxy chokes.
+     [Reported by Cliff Skolnick; fix discovered independently by Rob Hartill]
+
+  *) httpd -v doesn't call itself "Shambhala".  [Reported by Chuck Murcko]
+
+  *) SunOS lib-function prototypes in conf.h conditionalized on __GNUC__,
+     not __SUNPRO_C (they're needed to quiet gcc -Wall, but acc chokes on 'em,
+     and older versions don't set the __SUNPRO_C preprocessor variable).  On
+     all other systems, these are never used anyway.  [Reported by Mark Cox].
+
+  *) Scoreboard file (/tmp/htstatus.*) no longer publically writable.
+
+Changes with Apache 0.8.5
+
+  *) Added last-minute configurable log experiment, as optional module
+
+  *) Correctly set r->bytes_sent for HTTP/0.9 requests, so they get logged
+     properly.  (One-line fix to http_protocol.c).
+
+  *) Work around bogus behavior when reloading from Netscape.
+     It's Netscape's bug --- for some reason they expect a request with
+     If-modified-since: to not function as a conditional GET if it also
+     comes with Pragma: no-cache, which is way out of line with the HTTP
+     spec (according to Roy Fielding, the redactor).  
+
+  *) Added parameter to set maximum number of server processes.  
+
+  *) Added patches to make it work on A/UX.  A/UX is *weird*.  [Eric Hagberg]
+
+  *) IdentityCheck bugfix [Chuck Murcko].
+
+  *) Corrected cgi-src/Makefile entry for new imagemap script.  [Alexei Kosut]
+
+  *) More sample config file corrections; add extension to AddType for
+     *.asis, move AddType generic description to its proper place, and
+     fix miscellaneous typos. [ Alexei Kosut ]
+
+  *) Deleted the *other* reference to the regents from the Berkeley
+     legal disclaimer (everyplace).
+
+  *) Nuked Shambhala name from src/README; had already cleaned it out
+     of everywhere else.
+
+Changes with Apache 0.8.4
+
+  *) Changes to server-pool management parms --- renamed current
+     StartServers to MinSpareServers, created separate StartServers
+     parameter which means what it says, and renamed MaxServers to
+     MaxSpareServers (though the old name still works, for NCSA 1.4
+     back-compatibility).  The old names were generally regarded as
+     too confusing.  Also altered "docs" in sample config files.
+
+  *) More improvements to default config files ---
+     sample directives (commented out) for XBitHack, BindAddress,
+     CacheNegotiatedDocs, VirtualHost; decent set of AddLanguage
+     defaults, AddTypes for send-as-is and imagemap magic types, and
+     improvements to samples for DirectoryIndex [Alexei Kosut]
+
+  *) Yet more improvements to default config files --- changes to
+     Alexei's sample AddLanguage directives, and sample LanguagePriority
+     [ Florent Guillaume ]
+
+  *) Set config file locations properly if not set in httpd.conf
+     [ David Robinson ]
+
+  *) Don't escape URIs in internal redirects multiple times; don't
+     do that when translating PATH_INFO to PATH_TRANSLATED either.
+     [ David Robinson ]
+
+  *) Corrected spelling of "Required" in 401 error reports [Andrew Wilson]
+
+Changes with Apache 0.8.3
+
+  *) Edited distribution README to *briefly* summarize installation
+     procedures, and give a pointer to the INSTALL file in the src/
+     directory.
+
+  *) Upgraded imagemap script in cgi-bin to 1.8 version from more
+     recent NCSA distributions.
+
+  *) Bug fix to previous bug fix --- if .htaccess file and <Directory>
+     exist for the same directory, use both and don't segfault.  [Reported
+     by David Robinson]
+
+  *) Proper makefile dependencies [David Robinson]
+
+  *) Note (re)starts in error log --- reported by Rob Hartill.
+
+  *) Only call no2slash() after get_path_info() has been done, to
+     preserve multiple slashes in the PATH_INFO [NCSA compatibility,
+     reported by Andrew Wilson, though this one is probably a real bug]
+
+  *) Fixed mod_imap.c --- relative paths with base_uri referer don't
+     dump core when Referer is not supplied. [Randy Terbush]
+
+  *) Lightly edited sample config files to refer people to our documentation
+     instead of NCSA's, and to list Rob McCool as *original* author (also
+     deleted his old, and no doubt non-functional email address).  Would be
+     nice to have examples of new features...
+
+Changes with Apache 0.8.2
+
+  *) Added AddLanuage code [Florent Guillaume]
+
+  *) Don't say "access forbidden" when a CGI script is not found.  [Mark Cox] 
+
+  *) All sorts of problems when MultiViews finds a directory.  It would
+     be nice if mod_dir.c was robust enough to handle that, but for now,
+     just punt.  [reported by Brian Behlendorf]
+
+  *) Wait for all children on restart, to make sure that the old socket
+     is gone and we can reopen it.  [reported by Randy Terbush]
+
+  *) Imagemap module is enabled in default Configuration 
+
+  *) RefererLog and UserAgentLog modules properly default the logfile
+     [Randy Terbush]
+
+  *) Mark Cox's mod_cookies added to the distribution as an optional
+     module (commented out in the default Configuration, and noted as
+     an experiment, along with mod_dld). [Mark Cox]
+
+  *) Compiles on Ultrix (a continuing battle...). [Robert Thau]
+
+  *) Fixed nasty bug in SIGTERM handling [reported by Randy Terbush]
+
+  *) Changed "Shambhala" to "Apache" in API docs. [Robert Thau]
+
+  *) Added new, toothier legal disclaimer. [Robert Thau; copied from BSD
+     license]
+
+Changes with Apache 0.8.1
+
+  *) New imagemap module [Randy Terbush]
+
+  *) Replacement referer log module with NCSA-compatible RefererIgnore
+     [Matthew Gray again]
+
+  *) Don't mung directory listings with very long filenames.
+     [Florent Guillaume]
+
+Changes with Apache 0.8.0 (nee Shambhala 0.6.2):
+
+  *) New config script.  See INSTALL for info.  [Robert Thau]
+
+  *) Scoreboard mechanism for regulating the number of extant server
+     processes.  MaxServers and StartServers defaults are the same as
+     for NCSA, but the meanings are slightly different.  (Actually,
+     I should probably lower the MaxServers default to 10).
+
+     Before asking for a new connection, each server process checks
+     the number of other servers which are also waiting for a
+     connection.  If there are more than MaxServers, it quietly dies
+     off.  Conversely, every second, the root, or caretaker, process
+     looks to see how many servers are waiting for a new connection;
+     if there are fewer than StartServers, it starts a new one.  This
+     does not depend on the number of server processes already extant.
+     The accounting is arranged through a "scoreboard" file, named
+     /tmp/htstatus.*, on which each process has an independent file
+     descriptor (they need to seek without interference).
+
+     The end effect is that MaxServers is the maximum number of
+     servers on an *inactive* server machine, but more will be forked
+     off to handle unusually heavy loads (or unusually slow clients);
+     these will die off when they are no longer needed --- without
+     reverting to the overhead of full forking operation.  There is a
+     hard maximum of 150 server processes compiled in, largely to
+     avoid forking out of control and dragging the machine down.
+     (This is arguably too high).
+
+     In my server endurance tests, this mechanism did not appear to
+     impose any significant overhead, even after I forced it to put the
+     scoreboard file on a normal filesystem (which might have more
+     overhead than tmpfs).  [Robert Thau]
+   
+  *) Set HTTP_FOO variables for SSI <!--#exec cmd-->s, not just CGI scripts.
+     [Cliff Skolnick]
+
+  *) Read .htaccess files even in directory with <Directory> section.
+     (Former incompatibility noted on mailing list, now fixed). [Robert
+     Thau]
+
+  *) "HEAD /" gives the client a "Bad Request" error message, rather
+     than trying to send no body *and* no headers.  [Cliff Skolnick].
+
+  *) Don't produce double error reports for some very obscure cases
+     mainly involving auth configuration (the "all modules decline to
+     handle" case which is a sure sign of a server bug in most cases,
+     but also happens when authentication is badly misconfigured).
+     [Robert Thau]
+
+  *) Moved FCNTL_SERIALIZED_ACCEPT defines into conf.h (that's what
+     it's *for*, and this sort of thing really shouldn't be cluttering
+     up the Makefile). [Robert Thau]
+
+  *) Incidental code cleanups in http_main.c --- stop dragging
+     sa_client around; just declare it where used.  [Robert Thau]
+  
+  *) Another acc-related fix.  (It doesn't like const char
+     in some places...). [Mark Cox]
+
+Changes with 0.6.1
+
+  *) Fixed auth_name-related typos in http_core.c [Brian Behlendorf]
+     Also, fixed auth typo in http_protocol.c unmasked by this fix.
+
+  *) Compiles clean with acc on SunOS [Paul Sutton]
+
+  *) Reordered modules in modules.c so that Redirect takes priority
+     over ScriptAlias, for NCSA bug-compatibility [Rob Hartill] ---
+     believe it or not, he has an actual site with a ScriptAlias and
+     a Redirect declared for the *exact same directory*.  Even *my*
+     compatibility fetish wouldn't motivate me to fix this if the fix
+     required any effort, but it doesn't, so what the hey. 
+
+  *) Fixed to properly default several server_rec fields for virtual
+     servers from the corresponding fields in the main server_rec.
+     [Cliff Skolnick --- 'port' was a particular irritant].
+
+  *) No longer kills off nph- child processes before they are
+     finished sending output. [Matthew Gray]
+
+Changes with 0.6.0
+
+  *) Two styles of timeout --- hard and soft.  soft_timeout()s just put
+     the connection to the client in an "aborted" state, but otherwise
+     allow whatever handlers are running to clean up.  hard_timeout()s
+     abort the request in progress completely; anything not tied to some
+     resource pool cleanup will leak.  They're still around because I
+     haven't yet come up with a more elegant way of handling
+     timeouts when talking to something that isn't the client.  The
+     default_handler and the dir_handler now use soft timeouts, largely
+     so I can test the feature.  [Robert Thau]
+
+  *) TransferLog "| my_postprocessor ..." seems to be there.  Note that
+     the case of log handlers dying prematurely is probably handled VERY
+     gracelessly at this point, and if the logger stops reading input,
+     the server will hang.  (It is known to correctly restart the
+     logging process on server restart; this is (should be!) going through
+     the same SIGTERM/pause/SIGKILL routine used to ding an errant CGI
+     script).  [Robert Thau]
+
+  *) asis files supported (new module).  [Robert Thau]
+
+  *) IdentityCheck code is compiled in, but has not been tested.  (I
+     don't know anyone who runs identd). [Robert Thau]
+
+  *) PATH_INFO and PATH_TRANSLATED are not set unless some real PATH_INFO
+     came in with the request, for NCSA bug-compatibility. [Robert Thau]
+
+  *) Don't leak the DIR * on HEAD request for a directory. [Robert Thau]
+
+  *) Deleted the block_alarms() stuff from dbm_auth; no longer necessary,
+     as timeouts are not in scope. [Robert Thau]
+
+  *) quoted-string args in config files now handled correctly (doesn't drop
+     the last character). [Robert Thau; reported by Randy Terbush]
+
+  *) Fixed silly typo in http_main.c which was suddenly fatal in HP-UX.
+     How the hell did it ever work? [Robert Thau; reported by Rob Hartill]
+
+  *) mod_core.c --- default_type returns DEFAULT_TYPE (the compile-time
+     default default type); the former default default behavior when all
+     type-checkers defaulted had been a core dump.  [Paul Sutton]
+
+  *) Copy filenames out of the struct dirent when indexing
+     directories.  (On Linux, readdir() returns a pointer to the same
+     memory area every time).  Fix is in mod_dir.c.  [Paul Sutton]
+
+Changes with 0.5.3 [not released]
+
+  *) Default response handler notes "file not found" in the error log,
+     if the file was not found.  [Cliff Skolnick].
+
+  *) Another Cliff bug --- "GET /~user" now properly redirects (the userdir
+     code no longer sets up bogus PATH_INFO which fakes out the directory
+     handler). [Cliff Skolnick]
+
+Changes with 0.5.2
+
+  *) Changes to http_main.c --- root server no longer plays silly
+     games with SIGCHLD, and so now detects and replaces dying
+     children.  Child processes just die on SIGTERM, without taking
+     the whole process group with them.  Potential problem --- if any
+     child process refuses to die, we hang in restart.
+     MaxRequestsPerChild may still not work, but it certainly works
+     better than it did before this!  [Robert Thau]
+
+  *) mod_dir.c bug fixes: ReadmeName and HeaderName
+     work (or work better, at least); over-long description lines
+     properly terminated. [Mark Cox]
+
+  *) http_request.c now calls unescape_url() more places where it
+     should [Paul Sutton].
+
+  *) More directory handling bugs (reported by Cox)
+     Parent Directory link is now set correctly. [Robert Thau]
+
+Changes with 0.5.1: [Hopefully complete]
+
+  *) Generalized cleanup interface in alloc.c --- any function can be
+     registered with alloc.c as a cleanup for a resource pool;
+     tracking of files and file descriptors has been reimplemented in
+     terms of this interface, so I can give it some sort of a test.
+     [Robert Thau]
+
+  *) More changes in alloc.c --- new cleanup_for_exec() function,
+     which tracks down and closes all file descriptors which have been
+     registered with the alloc.c machinery before the server exec()s a
+     child process for CGI or <!--#exec-->.  CGI children now get
+     started with exactly three file descriptors open.  Hopefully,
+     this cures the problem Rob H. was having with overly persistent
+     CGI connections. [Robert Thau]
+
+  *) Mutual exclusion around the accept() in child_main() --- this is
+     required on at least SGI, Solaris and Linux, and is #ifdef'ed in
+     by default on those systems only (-DFCNTL_SERIALIZED_ACCEPT).
+     This uses fcntl(F_SETLK,...) on the error log descriptor because
+     flock() on that descriptor won't work on systems which have BSD
+     flock() semantics, including (I think) Linux 1.3 and Solaris.
+
+     This does work on SunOS (when the server is idle, only one
+     process in the pool is waiting on accept()); it *ought* to work
+     on the other systems. [Robert Thau]
+
+  *) FreeBSD and BSDI portability tweaks [Chuck Murcko]
+
+  *) sizeof(*sa_client) bugfix from [Rob Hartill]
+
+  *) pstrdup(..., NULL) returns NULL, [Randy Terbush]
+
+  *) block_alarms() to avoid leaking the DBM* in dbm auth (this should
+     be unnecessary if I go to the revised timeout-handling scheme).
+     [Robert Thau]
+
+  *) For NCSA bug-compatibility, set QUERY_STRING env var (to a null
+     string) even if none came in with the request.  [Robert Thau]
+
+  *) CHANGES file added to distribution ;-).
