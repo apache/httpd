@@ -85,7 +85,7 @@ typedef int rlim_t;
 #define NO_LONG_DOUBLE
 #define USE_FLOCK_SERIALIZED_ACCEPT
 #define _BSD_SOURCE
-#define EAGAIN EACCESS
+#define EAGAIN EWOULDBLOCK
 int initgroups (char *, int);     
 char *crypt (const char *pw, const char *salt);
 int gethostname (char *name, int namelen);
