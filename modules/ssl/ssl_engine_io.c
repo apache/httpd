@@ -741,8 +741,17 @@ static apr_status_t ssl_io_input_getline(ssl_io_input_ctx_t *ctx,
     return APR_SUCCESS;
 }
 
+/* Just use a simple request.  Any request will work for this, because
+ * we use a flag in the conn_rec->conn_vector now.  The fake request just
+ * gets the request back to the Apache core so that a response can be sent.
+ *
+ * We should probably use a 0.9 request, but the BIO bucket code is calling
+ * socket_bucket_read one extra time with all 0.9 requests from the client.
+ * Until that is resolved, continue to use a 1.0 request, just like we
+ * always have.
+ */
 #define HTTP_ON_HTTPS_PORT \
-    "GET /mod_ssl:error:HTTP-request HTTP/1.0"
+    "GET / HTTP/1.0"
 
 #define HTTP_ON_HTTPS_PORT_BUCKET(alloc) \
     apr_bucket_immortal_create(HTTP_ON_HTTPS_PORT, \
@@ -760,6 +769,7 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
                                         apr_bucket_brigade *bb,
                                         apr_status_t status)
 {
+    SSLConnRec *sslconn = myConnConfig(f->c);
     apr_bucket *bucket;
 
     switch (status) {
@@ -771,9 +781,11 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
                          "trying to send HTML error page");
             ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, f->c->base_server);
 
+            sslconn->non_ssl_request = 1;
+            ssl_io_filter_disable(f);
+
             /* fake the request line */
             bucket = HTTP_ON_HTTPS_PORT_BUCKET(f->c->bucket_alloc);
-            ssl_io_filter_disable(f);
             break;
 
       default:
