@@ -1,5 +1,0 @@
-
-LTLIBRARY_NAME    = libapachemod_proxy.la
-LTLIBRARY_SOURCES = mod_proxy.lo proxy_connect.lo proxy_ftp.lo proxy_http.lo proxy_util.lo
-
-include $(top_srcdir)/build/ltlib.mk

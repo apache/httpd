@@ -1,0 +1,497 @@
+##                      _             _ 
+##  _ __ ___   ___   __| |    ___ ___| |  mod_ssl
+## | '_ ` _ \ / _ \ / _` |   / __/ __| |  Apache Interface to OpenSSL
+## | | | | | | (_) | (_| |   \__ \__ \ |  www.modssl.org
+## |_| |_| |_|\___/ \__,_|___|___/___/_|  ftp.modssl.org
+##                      |_____|         
+##  libssl.module
+##  Apache 1.3 Configuration mechanism module stub
+##
+
+##
+##  ====================================================================
+##  Copyright (c) 1998-2001 Ralf S. Engelschall. All rights reserved.
+## 
+##  Redistribution and use in source and binary forms, with or without
+##  modification, are permitted provided that the following conditions
+##  are met:
+## 
+##  1. Redistributions of source code must retain the above copyright
+##     notice, this list of conditions and the following disclaimer. 
+## 
+##  2. Redistributions in binary form must reproduce the above copyright
+##     notice, this list of conditions and the following
+##     disclaimer in the documentation and/or other materials
+##     provided with the distribution.
+## 
+##  3. All advertising materials mentioning features or use of this
+##     software must display the following acknowledgment:
+##     "This product includes software developed by 
+##      Ralf S. Engelschall <rse@engelschall.com> for use in the
+##      mod_ssl project (http://www.modssl.org/)."
+## 
+##  4. The names "mod_ssl" must not be used to endorse or promote
+##     products derived from this software without prior written
+##     permission. For written permission, please contact
+##     rse@engelschall.com.
+## 
+##  5. Products derived from this software may not be called "mod_ssl"
+##     nor may "mod_ssl" appear in their names without prior
+##     written permission of Ralf S. Engelschall.
+## 
+##  6. Redistributions of any form whatsoever must retain the following
+##     acknowledgment:
+##     "This product includes software developed by 
+##      Ralf S. Engelschall <rse@engelschall.com> for use in the
+##      mod_ssl project (http://www.modssl.org/)."
+## 
+##  THIS SOFTWARE IS PROVIDED BY RALF S. ENGELSCHALL ``AS IS'' AND ANY
+##  EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+##  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+##  PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL RALF S. ENGELSCHALL OR
+##  HIS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+##  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+##  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+##  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+##  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+##  STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+##  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+##  OF THE POSSIBILITY OF SUCH DAMAGE.
+##  ====================================================================
+##
+
+                     # ``What you are missing, I suppose, is that I'm not
+                     #   prepared to give equal rights to Ralf on the basis
+                     #   that he's spent a few hours doing what he thinks is
+                     #   better than what I've spent the last 4 years on,
+                     #   and so he isn't prepared to cooperate with me.''
+                     #             -- Ben Laurie, Apache-SSL author
+
+Name: ssl_module
+ConfigStart
+
+    #
+    #   interface to the src/Configure script   
+    #
+    my_dir="`echo ${modfile} | sed -e 's:/[^/]*$::'`"
+    my_version="$my_dir/libssl.version"
+    my_outfile="Makefile.config"
+    my_prefix="      +"
+    my_prefixe="       "
+    SSL_CFLAGS=''
+    SSL_LDFLAGS=''
+    SSL_LIBS=''
+
+    #   
+    #   find a reasonable Bourne Shell for sub-shell calls
+    #
+    SH=sh
+    if [ -f /bin/bash ]; then
+        SH=/bin/bash
+    elif [ -f /bin/sh5 ]; then
+        SH=/bin/sh5
+    elif [ -f /bin/sh ]; then
+        SH=/bin/sh
+    fi
+
+    #
+    #   determine mod_ssl author version
+    #
+    A_ID=`cat $my_version | sed -e 's; .*;;'`
+    A_NAME=`echo $A_ID | sed -e 's;/.*;;'`
+    A_VER=`echo $A_ID | sed -e 's;.*/;;'`
+    A_VER_STR=`echo $A_VER | sed -e 's;-.*;;'`
+    case $A_VER_STR in
+        *.*b* )
+            A_VER_HEX=`echo "$A_VER_STR" | sed -e 's/b.*//' | awk -F. '{ printf("%d%02d", $1, $2); }' &&
+                       echo "$A_VER_STR" | sed -e 's/.*b//' | awk '{ printf("0%02d", $1); }'`
+            ;;
+        *.*.* )
+            A_VER_HEX=`echo "$A_VER_STR" | awk -F. '{ printf("%d%02d1%02d", $1, $2, $3); }'`
+            ;;
+    esac
+    echo "$my_prefix SSL interface: $A_NAME/$A_VER_STR"
+    SSL_VERSION="-DMOD_SSL_VERSION=\\\"$A_VER_STR\\\""
+  
+    #
+    #   determine optional mod_ssl product version
+    #
+    if [ ".`egrep '.*/.* .*/.*' $my_version`" != . ]; then
+        P_ID=`cat $my_version | sed -e 's;.* ;;'`
+        P_NAME=`echo $P_ID | sed -e 's;/.*;;'`
+        P_VER=`echo $P_ID | sed -e 's;.*/;;'`
+        P_VER_STR=`echo $P_VER | sed -e 's;-.*;;'`
+        case $P_VER_STR in
+            *.*b* )
+                P_VER_HEX=`echo "$P_VER_STR" | sed -e 's/b.*//' | awk -F. '{ printf("%d%02d", $1, $2); }' &&
+                           echo "$P_VER_STR" | sed -e 's/.*b//' | awk '{ printf("0%02d", $1); }'`
+                ;;
+            *.*.* )
+                P_VER_HEX=`echo "$P_VER_STR" | awk -F. '{ printf("%d%02d1%02d", $1, $2, $3); }'`
+                ;;
+        esac
+        echo "$my_prefix SSL product: $P_NAME/$P_VER_STR"
+        SSL_VERSION="$SSL_VERSION -DSSL_PRODUCT_NAME=\\\"$P_NAME\\\""
+        SSL_VERSION="$SSL_VERSION -DSSL_PRODUCT_VERSION=\\\"$P_VER_STR\\\""
+    fi
+
+    #
+    #   determine object build type
+    #
+    case $modfile in
+        *.so ) my_buildtype="DSO" ;;
+        *    ) my_buildtype="OBJ" ;;
+    esac
+    echo "$my_prefix SSL interface build type: $my_buildtype"
+
+    #   
+    #   determine SSL rules
+    #
+    if [ ".$APXS_MODE" = .YES ]; then
+        my_rule_SSL_COMPAT=$SSL_COMPAT
+        my_rule_SSL_SDBM=$SSL_SDBM
+        my_rule_SSL_EXPERIMENTAL=$SSL_EXPERIMENTAL
+        my_rule_SSL_CONSERVATIVE=$SSL_CONSERVATIVE
+        my_rule_SSL_VENDOR=$SSL_VENDOR
+    else
+        my_rule_SSL_COMPAT=`$SH helpers/CutRule SSL_COMPAT $file`
+        my_rule_SSL_SDBM=`$SH helpers/CutRule SSL_SDBM $file`
+        my_rule_SSL_EXPERIMENTAL=`$SH helpers/CutRule SSL_EXPERIMENTAL $file`
+        my_rule_SSL_CONSERVATIVE=`$SH helpers/CutRule SSL_CONSERVATIVE $file`
+        my_rule_SSL_VENDOR=`$SH helpers/CutRule SSL_VENDOR $file`
+    fi
+
+    #
+    #   determine compatibility mode
+    #
+    if [ ".$my_rule_SSL_COMPAT" = .yes ]; then
+        echo "$my_prefix SSL interface compatibility: enabled"
+        SSL_CFLAGS="$SSL_CFLAGS -DSSL_COMPAT"
+    else
+        echo "$my_prefix SSL interface compatibility: disabled"
+    fi
+
+    #
+    #   determine experimental mode
+    #
+    if [ ".$my_rule_SSL_EXPERIMENTAL" = .yes ]; then
+        echo "$my_prefix SSL interface experimental code: enabled"
+        SSL_CFLAGS="$SSL_CFLAGS -DSSL_EXPERIMENTAL"
+    else
+        echo "$my_prefix SSL interface experimental code: disabled"
+    fi
+
+    #
+    #   determine conservative mode
+    #
+    if [ ".$my_rule_SSL_CONSERVATIVE" = .yes ]; then
+        echo "$my_prefix SSL interface conservative code: enabled"
+        SSL_CFLAGS="$SSL_CFLAGS -DSSL_CONSERVATIVE"
+    else
+        echo "$my_prefix SSL interface conservative code: disabled"
+    fi
+
+    # 
+    #   determine vendor mode
+    #
+    SSL_VENDOR_OBJS=''
+    SSL_VENDOR_OBJS_PIC=''
+    if [ ".$my_rule_SSL_VENDOR" = .yes ]; then
+        echo "$my_prefix SSL interface vendor extensions: enabled"
+        SSL_CFLAGS="$SSL_CFLAGS -DSSL_VENDOR"
+        my_src="`cd $my_dir && echo ssl_vendor*.c`"
+        if [ ".$my_src" != . -a ".$my_src" != ".ssl_vendor*.c" ]; then
+            SSL_CFLAGS="$SSL_CFLAGS -DSSL_VENDOR_OBJS"
+            SSL_VENDOR_OBJS="`echo $my_src | sed -e 's;\.c;.o;g'`"
+            SSL_VENDOR_OBJS_PIC="`echo $my_src | sed -e 's;\.c;.lo;g'`"
+            echo "$my_prefix SSL interface vendor objects: $SSL_VENDOR_OBJS"
+        fi
+    else
+        echo "$my_prefix SSL interface vendor extensions: disabled"
+    fi
+
+    #
+    #   determine DBM support library
+    #   (src/Configure has DBM_LIB predefined for some platforms)
+    #
+    if [ ".$APXS_MODE" != .YES ]; then
+        SSL_DBM_NAME=''
+        #   1. check for predefined DBM lib
+        if [ ".$DBM_LIB" != . ]; then
+            LIBS_ORIG="$LIBS"
+            LIBS="$LIBS $DBM_LIB"
+            if $SH helpers/TestCompile func dbm_open; then
+                SSL_DBM_NAME="Configured DBM ($DBM_LIB)"
+                SSL_DBM_FLAG="$DBM_LIB"
+            fi
+            LIBS="$LIBS_ORIG"
+        fi
+        #   2. check for various vendor DBM libs
+        if [ ".$SSL_DBM_NAME" = . ]; then
+            if $SH helpers/TestCompile func dbm_open; then
+                SSL_DBM_NAME='Vendor DBM (libc)'
+                SSL_DBM_FLAG=''
+            elif $SH helpers/TestCompile lib dbm dbm_open; then
+                SSL_DBM_NAME='Vendor DBM (libdbm)'
+                SSL_DBM_FLAG='-ldbm'
+            elif $SH helpers/TestCompile lib ndbm dbm_open; then
+                SSL_DBM_NAME='Vendor DBM (libndbm)'
+                SSL_DBM_FLAG='-lndbm'
+            fi
+        fi
+        #   3. let the SSL_SDBM rule override decisions
+        if [ ".$my_rule_SSL_SDBM" = .yes ]; then
+            # force us to fallback to SDBM
+            SSL_DBM_NAME='' 
+        fi
+        if [ ".$my_rule_SSL_SDBM" = .no ]; then
+            #   for us to never use SDBM,  but be
+            #   careful when no DBM was found at all
+            if [ ".$SSL_DBM_NAME" = . ]; then
+                echo "Error: SDBM is needed, because no custom or vendor DBM library available!" 1>&2  
+                echo "Hint:  Allow us to choose SDBM by changing the rule SSL_SDBM, please." 1>&2  
+                exit 1
+            fi
+        fi
+        #   4. override decision on a few brain-dead platforms
+        if [ ".$my_rule_SSL_SDBM" = .default ]; then
+            case "$OS" in
+                Linux )
+                    #   force Linux boxes to use builtin SDBM per default because 
+                    #   of too much broken vendor DBM libraries on this platform
+                    SSL_DBM_NAME=''
+                    ;;
+            esac
+        fi
+        #   5. finally configure the chosen DBM lib
+        if [ ".$SSL_DBM_NAME" != . ]; then
+            echo "$my_prefix SSL interface plugin: $SSL_DBM_NAME"
+            my_dbm_already_used=`echo $LIBS | grep -- " $SSL_DBM_FLAG"`
+            if [ ".$my_buildtype" = .OBJ -a ".$my_dbm_already_used" != . ]; then
+                :
+            else
+                SSL_LIBS="$SSL_LIBS $SSL_DBM_FLAG"
+            fi
+        else
+            echo "$my_prefix SSL interface plugin: Built-in SDBM"
+            SSL_CFLAGS="$SSL_CFLAGS -DSSL_USE_SDBM"
+        fi
+    fi
+
+    #
+    #   determine SSL_BASE
+    #
+    if [ ".$SSL_BASE" = . ]; then
+        SSL_BASE=`egrep '^SSL_BASE=' $file | tail -1 | awk -F= '{print $2}'`
+        if [ ".$SSL_BASE" = . ]; then
+            if [ -d /usr/local/ssl ]; then
+                SSL_BASE="/usr/local/ssl"
+            else
+                SSL_BASE="SYSTEM"
+            fi
+        fi
+    fi
+    case $SSL_BASE in
+        SYSTEM ) ;;
+        /* ) ;;
+         * ) SSL_BASE="`cd ../$SSL_BASE; pwd`" ;;
+    esac
+    if [ ".$SSL_BASE" = .SYSTEM ]; then
+        echo "$my_prefix SSL library path: [SYSTEM]"
+    else
+        if [ ! -d "$SSL_BASE" ]; then
+            echo "Error: Cannot find SSL installation in $SSL_BASE" 1>&2  
+            echo "Hint:  Please provide us with the location of OpenSSL" 1>&2
+            echo "       via the environment variable SSL_BASE." 1>&2
+            exit 1
+        fi
+        echo "$my_prefix SSL library path: $SSL_BASE"
+    fi
+
+    #
+    #   determine location of OpenSSL binaries
+    #   (we still search also for `ssleay' to allow us to
+    #   better complain about the actually installed version)
+    #
+    SSL_BINDIR=""
+    if [ ".$SSL_BASE" = .SYSTEM ]; then
+        for name in openssl ssleay; do
+            for p in . `echo $PATH | sed -e 's/:/ /g'`; do
+                if [ -f "$p/$name" ]; then
+                    SSL_PROGRAM="$p/$name"
+                    SSL_BINDIR="$p"
+                    break
+                fi
+            done
+            if [ ".$SSL_BINDIR" != . ]; then
+                break;
+            fi
+        done
+        if [ ".$SSL_BINDIR" = . ]; then
+            echo "Error: Cannot find SSL binaries in $PATH" 1>&2
+            exit 1
+        fi
+    else
+        for name in openssl ssleay; do
+            if [ -f "$SSL_BASE/bin/$name" ]; then
+                SSL_PROGRAM="$SSL_BASE/bin/$name"
+                SSL_BINDIR='$(SSL_BASE)/bin'
+                break;
+            fi
+            if [ -f "$SSL_BASE/apps/$name" ]; then
+                SSL_PROGRAM="$SSL_BASE/apps/$name"
+                SSL_BINDIR='$(SSL_BASE)/apps'
+                break;
+            fi
+        done
+        if [ ".$SSL_BINDIR" = . ]; then
+            echo "Error: Cannot find SSL binaries under $SSL_BASE" 1>&2
+            exit 1
+        fi
+    fi
+
+    #
+    #   SSL version
+    #
+    SSL_VERSION_ID="`$SSL_PROGRAM version`"
+    echo "$my_prefix SSL library version: $SSL_VERSION_ID"
+    case $SSL_VERSION_ID in
+        *0.[5678].*|*0.9.[012]* )
+            echo "Error: OpenSSL VERSIONS BELOW 0.9.3 ARE NO LONGER SUPPORTED."
+            echo "Hint:  Use OpenSSL version 0.9.3 or higher!"
+            exit 1
+            ;;
+    esac
+
+    #
+    #   SSL engine support
+    #
+    case $SSL_VERSION_ID in
+        *0.9.6*engine* | *0.9.6a*engine* | *0.9.[789]* )
+            SSL_CFLAGS="$SSL_CFLAGS -DSSL_ENGINE"
+            ;;
+    esac
+
+    #
+    #   determine location of OpenSSL headers
+    #
+    if [ ".$SSL_BASE" = .SYSTEM ]; then
+        SSL_INCDIR=""
+        for p in . /usr/include /usr/include/ssl/ /usr/local/include /usr/local/include/ssl; do
+            if [ -f "$p/openssl/ssl.h" ]; then
+                SSL_INCDIR="$p"
+                break
+            fi
+        done
+        if [ ".$SSL_INCDIR" = . ]; then
+            echo "Error: Cannot find SSL header files in any of the following dirs:" 1>&2
+            echo "Error: . /usr/include /usr/include/ssl/ /usr/local/include /usr/local/include/ssl" 1>&2
+            exit 1
+        fi
+    else
+        if [ -f "$SSL_BASE/include/openssl/ssl.h" ]; then
+            SSL_INCDIR='$(SSL_BASE)/include'
+        else
+            echo "Error: Cannot find SSL header files under $SSL_BASE" 1>&2
+            exit 1
+        fi
+    fi
+    if [ ".$SSL_INCDIR" != "./usr/include" ]; then
+        SSL_CFLAGS="$SSL_CFLAGS -I\$(SSL_INCDIR)"
+    fi
+
+    #
+    #  determine location of OpenSSL libraries
+    #
+    if [ ".$SSL_BASE" = .SYSTEM ]; then
+        SSL_LIBDIR=""
+        for p in . /lib /usr/lib /usr/local/lib; do
+            if [ -f "$p/libssl.a" -o -f "$p/libssl.so" ]; then
+                SSL_LIBDIR="$p"
+                my_real_ssl_libdir="$p"
+                break
+            fi
+        done
+        if [ ".$SSL_LIBDIR" = . ]; then
+            echo "Error: Cannot find SSL library files in any of the following dirs:" 1>&2
+            echo "Error: . /lib /usr/lib /usr/local/lib" 1>&2
+            exit 1
+        fi
+    else
+        if [ -f "$SSL_BASE/libssl.a" -o -f "$SSL_BASE/libssl.so" ]; then
+            SSL_LIBDIR='$(SSL_BASE)'
+            my_real_ssl_libdir="$SSL_BASE"
+        elif [ -f "$SSL_BASE/lib/libssl.a" -o -f "$SSL_BASE/lib/libssl.so" ]; then
+            SSL_LIBDIR='$(SSL_BASE)/lib'
+            my_real_ssl_libdir="$SSL_BASE/lib"
+        else
+            echo "Error: Cannot find SSL library files under $SSL_BASE" 1>&2
+            exit 1
+        fi
+    fi
+    SSL_LDFLAGS="$SSL_LDFLAGS -L\$(SSL_LIBDIR)"
+    SSL_LIBS="$SSL_LIBS -lssl -lcrypto"
+
+    #
+    #   SSL installation type
+    #
+    case $SSL_BINDIR in
+        */apps ) my_type="source tree only" ;;
+             * ) my_type="installed package" ;;
+    esac
+    case $SSL_BASE in
+        SYSTEM ) my_note="(system-wide)" ;;
+        *      ) my_note="(stand-alone)" ;;
+    esac
+    echo "$my_prefix SSL library type: $my_type $my_note"
+
+    #
+    #   Special GCC/DSO support
+    #
+    #   Under some platforms where GCC is used we have to link the DSO
+    #   (libssl.so) explicitly against the GCC library (libgcc) to avoid
+    #   problems with missing symbols like __umoddi3, etc.
+    #
+    #   Notice: When GCC is installed as "cc" we assume it's really
+    #           well incorporated into the system and no hack is
+    #           needed (like on FreeBSD, Linux, etc.)
+    #
+    if [ ".$my_buildtype" = .DSO ]; then
+        my_CC=`echo "$CC" | sed -e 's/ .*//'`
+        case $my_CC in
+            gcc|*/gcc|egcs|*/egcs|egcc|*/egcc|pgcc|*/pgcc )
+                gcclibdir="`$CC --print-libgcc-file-name | sed -e 's;/[^/]*$;;'`"
+                SSL_LIBS="$SSL_LIBS -L$gcclibdir -lgcc"
+                ;;
+        esac
+    fi
+
+    #
+    #   adjust the Apache build environment
+    #
+    echo "SSL_BASE=$SSL_BASE" >>$my_outfile
+    echo "SSL_BINDIR=$SSL_BINDIR" >>$my_outfile
+    echo "SSL_INCDIR=$SSL_INCDIR" >>$my_outfile
+    echo "SSL_LIBDIR=$SSL_LIBDIR" >>$my_outfile
+    echo "SSL_PROGRAM=$SSL_PROGRAM" >>$my_outfile
+    echo "SSL_VERSION=$SSL_VERSION" >>$my_outfile
+    echo "SSL_CFLAGS=$SSL_CFLAGS" >>$my_outfile
+    echo "SSL_VENDOR_OBJS=$SSL_VENDOR_OBJS" >>$my_outfile
+    echo "SSL_VENDOR_OBJS_PIC=$SSL_VENDOR_OBJS_PIC" >>$my_outfile
+    if [ ".$my_buildtype" = .DSO ]; then
+        #   under DSO we link ourself
+        echo "SSL_LIBS=$SSL_LIBS" >>$my_outfile
+        echo "SSL_LDFLAGS=$SSL_LDFLAGS" >>$my_outfile
+    else
+        #   else we are linked with httpd
+        LDFLAGS="$LDFLAGS $SSL_LDFLAGS"
+        LIBS="$LIBS $SSL_LIBS"
+    fi
+    CFLAGS="$CFLAGS -DMOD_SSL=$A_VER_HEX"
+    if [ ".$P_ID" != . ]; then
+        CFLAGS="$CFLAGS -DSSL_PRODUCT=$P_VER_HEX"
+    fi
+    RULE_EAPI=yes
+
+ConfigEnd
+

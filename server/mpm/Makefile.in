@@ -1,9 +1,0 @@
-
-DEPTH     = ../..
-topsrcdir = @topsrcdir@
-srcdir    = @srcdir@
-VPATH     = @srcdir@
-
-SUBDIRS = $(MPM_NAME)
-
-include $(topsrcdir)/build/rules.mk
