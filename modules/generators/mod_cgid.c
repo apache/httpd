@@ -429,7 +429,7 @@ static int cgid_server(void *data)
                        main_server->module_config, &cgid_module); 
 
     apr_signal(SIGCHLD, SIG_IGN); 
-    if (unlink(sconf->sockname) < 0 && errno == ENOENT) {
+    if (unlink(sconf->sockname) < 0 && errno != ENOENT) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
                      "Couldn't unlink unix domain socket %s",
                      sconf->sockname);
