@@ -1081,9 +1081,16 @@ static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
     apr_pool_t *pool;
     proxy_conn_pool *cp;
     
-    /* Create a connection pool's subpool */
+    /* Create a connection pool's subpool. 
+     * This pool is used for connection recycling.
+     * Once the worker is added it is never removed but
+     * it can be disabled.
+     */
     apr_pool_create(&pool, p);
-    cp = (proxy_conn_pool *)apr_pcalloc(pool, sizeof(proxy_conn_pool));
+    /* Alloc from the same pool as worker.
+     * proxy_conn_pool is permanently attached to the worker. 
+     */
+    cp = (proxy_conn_pool *)apr_pcalloc(p, sizeof(proxy_conn_pool));
     cp->pool = pool;
 #if APR_HAS_THREADS
     {
@@ -1372,7 +1379,12 @@ static apr_status_t init_conn_worker(proxy_worker *worker, server_rec *s)
 #endif
     {
         worker->cp->conn = apr_pcalloc(worker->cp->pool, sizeof(proxy_conn));
-        /* register the pool cleanup */
+        /* register the pool cleanup.
+         * The cleanup is registered on conn_pool pool, so that
+         * the same mechanism (apr_pool_cleanup) can be used
+         * for both nonthreaded and threaded servers when closing
+         * the entire worker.
+         */
         apr_pool_cleanup_register(worker->cp->pool, (void *)worker->cp->conn,
                                   proxy_conn_cleanup, apr_pool_cleanup_null);      
 
