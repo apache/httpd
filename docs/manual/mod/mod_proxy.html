@@ -1081,9 +1081,9 @@ control block using the following example:<P>
 
 <PRE>
 &lt;Directory proxy:*&gt;
-order deny,allow
-deny from [machines you'd like *not* to allow by IP address or name]
-allow from [machines you'd like to allow by IP address or name]
+Order Deny,Allow
+Deny from [machines you'd like *not* to allow by IP address or name]
+Allow from [machines you'd like to allow by IP address or name]
 &lt;/Directory&gt;
 </PRE><P>
 

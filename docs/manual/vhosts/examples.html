@@ -128,9 +128,9 @@
     ServerName www-cache.domain.tld
     ...
       &lt;Directory proxy:&gt;
-      order deny,allow
-      deny from all
-      allow from 111.22.33
+      Order Deny,Allow
+      Deny from all
+      Allow from 111.22.33
       &lt;/Directory&gt;
     &lt;/VirtualHost&gt;
     </PRE>

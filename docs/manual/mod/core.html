@@ -70,7 +70,7 @@ always available.
 <LI><A HREF="#options">Options</A>
 <LI><A HREF="#pidfile">PidFile</A>
 <LI><A HREF="#port">Port</A>
-<LI><A HREF="#require">require</A>
+<LI><A HREF="#require">Require</A>
 <LI><A HREF="#resourceconfig">ResourceConfig</A>
 <LI><A HREF="#rlimitcpu">RLimitCPU</A>
 <LI><A HREF="#rlimitmem">RLimitMEM</A>
@@ -253,7 +253,7 @@ Allow use of the authorization directives
 <A HREF="mod_auth.html#authgroupfile">AuthGroupFile</A>,
 <A HREF="#authname">AuthName</A>, <A HREF="#authtype">AuthType</A>,
 <A HREF="mod_auth.html#authuserfile">AuthUserFile</A>,
-<A HREF="#require">require</A>, <EM>etc.</EM>).
+<A HREF="#require">Require</A>, <EM>etc.</EM>).
 <DT>FileInfo
 <DD>
 <!--%plaintext &lt;?INDEX {\tt FileInfo} override&gt; -->
@@ -282,7 +282,7 @@ Allow use of the directives controlling directory indexing
 <DT>Limit
 <DD>
 <!--%plaintext &lt;?INDEX {\tt Limit} override&gt; -->
-Allow use of the directives controlling host access (allow, deny and order).
+Allow use of the directives controlling host access (Allow, Deny and Order).
 <DT>Options
 <DD>
 <!--%plaintext &lt;?INDEX {\tt Options} override&gt; -->
@@ -315,7 +315,7 @@ This realm is given to the client so that the user knows which username and
 password to send.  <SAMP>AuthName</SAMP> takes a single argument;
 if the realm name contains spaces, it must be enclosed in quotation marks.
 It must be accompanied by <A HREF="#authtype">AuthType</A> and
-<A HREF="#require">require</A> directives, and directives such as
+<A HREF="#require">Require</A> directives, and directives such as
 <A HREF="mod_auth.html#authuserfile">AuthUserFile</A> and
 <A HREF="mod_auth.html#authgroupfile">AuthGroupFile</A> to work.<P><HR>
 
@@ -342,7 +342,7 @@ This directive selects the type of user authentication for a directory.
 Only <CODE>Basic</CODE> and <CODE>Digest</CODE> are currently implemented.
 <!--%plaintext &lt;?INDEX {\tt Basic} authentication scheme&gt; -->
 It must be accompanied by <A HREF="#authname">AuthName</A> and
-<A HREF="#require">require</A> directives, and directives such as
+<A HREF="#require">Require</A> directives, and directives such as
 <A HREF="mod_auth.html#authuserfile">AuthUserFile</A> and
 <A HREF="mod_auth.html#authgroupfile">AuthGroupFile</A> to work.<P><HR>
 
@@ -1378,7 +1378,7 @@ PUT, and DELETE, leaving all other methods unprotected:
 
 <BLOCKQUOTE><CODE>
 &lt;Limit POST PUT DELETE&gt;<BR>
-require valid-user<BR>
+Require valid-user<BR>
 &lt;/Limit&gt;</CODE></BLOCKQUOTE>
 
 The method names listed can be one or more of: GET, POST, PUT, DELETE,
@@ -1780,9 +1780,9 @@ from browsers at foo.com, you might use:
 <PRE>
     &lt;Location /status&gt;
     SetHandler server-status
-    order deny,allow
-    deny from all
-    allow from .foo.com
+    Order Deny,Allow
+    Deny from all
+    Allow from .foo.com
     &lt;/Location&gt;
 </PRE>
 
@@ -2418,12 +2418,12 @@ not to set <A HREF="#user">User</A> to root. If you run the server as
 root whilst handling connections, your site may be open to a major security
 attack.<P><HR>
 
-<H2><A NAME="require">require directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt require} directive&gt; -->
+<H2><A NAME="require">Require directive</A></H2>
+<!--%plaintext &lt;?INDEX {\tt Require} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> require <EM>entity-name entity entity...</EM><BR>
+><STRONG>Syntax:</STRONG></A> Require <EM>entity-name entity entity...</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -2440,11 +2440,11 @@ attack.<P><HR>
 This directive selects which authenticated users can access a directory.
 The allowed syntaxes are:
 <UL>
-<LI>require user <EM>userid userid ...</EM><P>
+<LI>Require user <EM>userid userid ...</EM><P>
 Only the named users can access the directory.<P>
-<LI>require group <EM>group-name group-name ...</EM><P>
+<LI>Require group <EM>group-name group-name ...</EM><P>
 Only users in the named groups can access the directory.<P>
-<LI>require valid-user<P>
+<LI>Require valid-user<P>
 All valid users can access the directory.
 </UL>
 <P>
@@ -2458,14 +2458,14 @@ AuthType Basic<BR>
 AuthName "Restricted Directory"<BR>
 AuthUserFile /web/users<BR>
 AuthGroupFile /web/groups<BR>
-require group admin<BR>
+Require group admin<BR>
 </CODE></BLOCKQUOTE>
 
 Access controls which are applied in this way are effective for
 <STRONG>all</STRONG> methods. <STRONG>This is what is normally
 desired.</STRONG> If you wish to apply access controls only to
 specific methods, while leaving other methods unprotected, then place
-the <CODE>require</CODE> statement into a <A
+the <CODE>Require</CODE> statement into a <A
 HREF="#limit">&lt;Limit&gt;</A> section<P>
 <P>See also <A HREF="#satisfy">Satisfy</A> and <A HREF="mod_access.html">mod_access</A>.
 <HR>
@@ -2667,7 +2667,8 @@ See also <A HREF="#rlimitmem">RLimitMEM</A> or
 ><STRONG>Compatibility:</STRONG></A> Satisfy is only available in Apache 1.2
 and later<P>
 
-Access policy if both allow and require used. The parameter can be
+Access policy if both <CODE>Allow</CODE> and <CODE>Require</CODE>
+used. The parameter can be
 either <EM>'all'</EM> or <EM>'any'</EM>. This directive is only useful
 if access to a particular area is being restricted by both
 username/password <EM>and</EM> client host address. In this case the
@@ -2678,7 +2679,7 @@ they either pass the host restriction or enter a valid username and
 password. This can be used to password restrict an area, but to let
 clients from particular addresses in without prompting for a password.
 <P>
-See also <A HREF="#require">require</A> and 
+See also <A HREF="#require">Require</A> and 
 <A HREF="mod_access.html">mod_access</A>.
 
 <P><HR>

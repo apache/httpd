@@ -93,9 +93,9 @@ domain add this code to your <CODE>access.conf</CODE> configuration file
     &lt;Location /server-status&gt;
     SetHandler server-status
 
-    order deny,allow
-    deny from all
-    allow from .foo.com
+    Order Deny,Allow
+    Deny from all
+    Allow from .foo.com
     &lt;/Location&gt;
 </PRE>
 <P>
