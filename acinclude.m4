@@ -175,6 +175,7 @@ AC_DEFUN(APACHE_ONCE,[
 
 sinclude(lib/apr/apr_common.m4)
 sinclude(lib/apr/hints.m4)
+sinclude(hints.m4)
 
 AC_DEFUN(APACHE_CHECK_SIGWAIT_ONE_ARG,[
   AC_CACHE_CHECK(whether sigwait takes one argument,ac_cv_sigwait_one_arg,[
