@@ -1,7 +1,8 @@
   *) Allow ScanHTMLTitles to work with lowercase <title> tags. [Alexei Kosut]
 
   *) Bugs which were fixed:
-	a) yet more mod_proxy bugs [Ben Laurie]
+        a) yet more mod_proxy bugs [Ben Laurie]
+        b) CGI works again with inetd [Alexei Kosut]
 
 Changes with Apache 1.1b4:
 

@@ -1550,7 +1550,8 @@ main(int argc, char *argv[])
 	}
 	server_conf->port =ntohs(((struct sockaddr_in *)&sa_server)->sin_port);
 	cio = bcreate(ptrans, B_RDWR);
-	bpushfd(cio, fileno(stdin), fileno(stdout));
+	cio->fd = fileno(stdout);
+	cio->fd_in = fileno(stdin);
 	conn = new_connection (ptrans, server_conf, cio,
 			       (struct sockaddr_in *)&sa_client,
 			       (struct sockaddr_in *)&sa_server,-1);
