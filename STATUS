@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/06 22:23:48 $]
+Last modified at [$Date: 2002/02/06 22:27:24 $]
 
 Release:
 
@@ -79,10 +79,7 @@ CURRENT RELEASE NOTES:
 
             * erroneous check in an AP_DEBUG_ASSERT() call.  Only happens
               in maintainer mode.  Fixed in modules/http/http_protocol.c
-              revision 1.391.  Add item in release notes:
-                +1: Justin, Cliff, Aaron, BillS, Jim, trawick
-                +0:
-                -1:
+              revision 1.391
 
             * seg faults in core_input_filter when the client goes away
               before any POST body bytes are received.
@@ -260,10 +257,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       descriptors between vhost child groups. An API was proposed
       on dev@apr:
         Message-ID: <20020111115006.K1529@clove.org>
-       Vote: Is a non-portable perchild going to hold up a GA release?
-        Yes: 
-         No: Aaron, Justin, trawick, stoddard, Jim, Ian, BrianP, gregames,
-             Ken
 
     * Recent changes to ap_rgetline may have broken EBCDIC boxes.
         Message-ID: <20020122072605.GF28051@ebuilt.com>
