@@ -65,7 +65,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cachedefaultexpire">CacheDefaultExpire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachedisable">CacheDisable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheenable">CacheEnable</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cacheforcecompletion">CacheForceCompletion</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorecachecontrol">CacheIgnoreCacheControl</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignoreheaders">CacheIgnoreHeaders</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
@@ -189,37 +188,6 @@
       CacheEnable  fd    /images<br />
       CacheEnable  disk  /<br />
     </code></p></div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheForceCompletion" id="CacheForceCompletion">CacheForceCompletion</a> <a name="cacheforcecompletion" id="cacheforcecompletion">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リクエストがキャンセルされてもキャッシュを完了するかどうかを
-決める送られたドキュメントの割合を指定する。</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheForceCompletion <var>Percentage</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheForceCompletion 60</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table>
-    <p>通常、応答がキャッシュされてクライアントに送られている最中に
-    リクエストがキャンセルされると、応答の処理は中止されて、キャッシュの
-    エントリも削除されます。<code class="directive">CacheForceCompletion</code>
-    ディレクティブは、リクエストがキャンセルされても、キャッシュ処理を
-    完了まで続けるかどうかのしきい値を指定します。</p>
-
-    <p>しきい値は <code>1</code> と <code>100</code> の間で指定する
-    割合です。<code>0</code> ではデフォルトが使われます。
-    <code>100</code> では、完全に送信が完了したドキュメントのみを
-    キャッシュします。60 から 90 の間の値が推奨値です。</p>
-
-    <div class="example"><p><code>
-      CacheForceCompletion 80
-    </code></p></div>
-
-    <div class="warning"><h3>注:</h3>
-      この機能は現時点では実装されて<em>いません</em>。
-    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

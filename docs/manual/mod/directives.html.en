@@ -116,7 +116,6 @@
 <li><a href="mod_cache.html#cachedisable">CacheDisable</a></li>
 <li><a href="mod_cache.html#cacheenable">CacheEnable</a></li>
 <li><a href="mod_file_cache.html#cachefile">CacheFile</a></li>
-<li><a href="mod_cache.html#cacheforcecompletion">CacheForceCompletion</a></li>
 <li><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl</a></li>
 <li><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders</a></li>
 <li><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
@@ -217,8 +216,9 @@
 <li><a href="mod_ldap.html#ldapopcachettl">LDAPOpCacheTTL</a></li>
 <li><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile</a></li>
 <li><a href="mod_ldap.html#ldapsharedcachesize">LDAPSharedCacheSize</a></li>
-<li><a href="mod_ldap.html#ldaptrustedca">LDAPTrustedCA</a></li>
-<li><a href="mod_ldap.html#ldaptrustedcatype">LDAPTrustedCAType</a></li>
+<li><a href="mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert</a></li>
+<li><a href="mod_ldap.html#ldaptrustedglobalcert">LDAPTrustedGlobalCert</a></li>
+<li><a href="mod_ldap.html#ldaptrustedmode">LDAPTrustedMode</a></li>
 <li><a href="core.html#limit">&lt;Limit&gt;</a></li>
 <li><a href="core.html#limitexcept">&lt;LimitExcept&gt;</a></li>
 <li><a href="core.html#limitinternalrecursion">LimitInternalRecursion</a></li>

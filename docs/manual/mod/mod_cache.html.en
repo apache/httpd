@@ -58,7 +58,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cachedefaultexpire">CacheDefaultExpire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachedisable">CacheDisable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheenable">CacheEnable</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cacheforcecompletion">CacheForceCompletion</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorecachecontrol">CacheIgnoreCacheControl</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignoreheaders">CacheIgnoreHeaders</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
@@ -183,39 +182,6 @@ manager</td></tr>
       CacheEnable  fd    /images<br />
       CacheEnable  disk  /<br />
     </code></p></div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheForceCompletion" id="CacheForceCompletion">CacheForceCompletion</a> <a name="cacheforcecompletion" id="cacheforcecompletion">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Percentage of document served, after which the server
-will complete caching the file even if the request is cancelled.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheForceCompletion <var>Percentage</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheForceCompletion 60</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
-</table>
-    <p>Ordinarily, if a request is cancelled while the response is being
-    cached and delivered to the client the processing of the response will
-    stop and the cache entry will be removed. The
-    <code class="directive">CacheForceCompletion</code> directive specifies a
-    threshold beyond which the document will continue to be cached to
-    completion, even if the request is cancelled.</p>
-
-    <p>The threshold is a percentage specified as a value between
-    <code>1</code> and <code>100</code>. A value of <code>0</code>
-    specifies that the default be used. A value of <code>100</code>
-    will only cache documents that are served in their entirety. A value
-    between 60 and 90 is recommended.</p>
-
-    <div class="example"><p><code>
-      CacheForceCompletion 80
-    </code></p></div>
-
-    <div class="warning"><h3>Note:</h3>
-      This feature is currently <em>not</em> implemented.
-    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
