@@ -56,22 +56,15 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#ifndef APACHE_OS_H
-#define APACHE_OS_H
-/* 
- * Compile the server including all the Windows NT 4.0 header files by 
- * default. We still want the server to run on Win95/98 so use 
- * runtime checks before calling NT specific functions to verify we are 
- * really running on an NT system.
- *
- * Delegate windows include to the apr.h header, if USER or GDI declarations
+#ifdef WIN32
+
+#ifndef AP_OS_H
+#define AP_OS_H
+/* Delegate windows include to the apr.h header, if USER or GDI declarations
  * are required (for a window rather than console application), include
  * windows.h prior to any other Apache header files.
  */
-
-#ifndef ap_os_h
-#define ap_os_h
-#endif
+#include "apr_pools.h"
 
 #include <io.h>
 #include <fcntl.h>
@@ -87,6 +80,10 @@
 
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* BIG RED WARNING: exit() is mapped to allow us to capture the exit
  * status.  This header must only be included from modules linked into
  * the ApacheCore.dll - since it's a horrible behavior to exit() from
@@ -100,4 +97,11 @@ AP_DECLARE_DATA extern int real_exit_code;
 #define exit(status) ((exit)((real_exit_code==2) ? (real_exit_code = (status)) \
                                                  : ((real_exit_code = 0), (status))))
 
-#endif   /* ! ap_os_h */
+AP_DECLARE(apr_status_t) ap_os_proc_filepath(char **binpath, apr_pool_t *p);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif  /* ndef AP_OS_H */
+#endif  /* def WIN32 */
