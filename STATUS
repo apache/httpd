@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/17 20:33:29 $]
+Last modified at [$Date: 2003/01/19 02:37:38 $]
 
 Release:
 
@@ -57,6 +57,7 @@ Contributors looking for a mission:
     * just do an egrep on "TODO", "XXX" and see what's there
 
 PATCHES TO PORT FROM 2.1
+
     * Allow RewriteEngine Off even if Options -FollowSymlinks. PR 12395.
 
     * Use saner default config values for suexec. PR 15713.
@@ -76,7 +77,7 @@ PATCHES TO PORT FROM 2.1
     * Fix mod_ext_filter to properly NULL-terminate an array of args
       for some forms of ExtFilterDefine.  PR 15491.  This is r1.2 of
       modules/filters/mod_ext_filter.c.
-      +1: trawick, jerenkrantz
+      +1: trawick, jerenkrantz, wrowe
 
     * Use different ulimit commands in apachectl on Tru64 and AIX.
       On both platforms, there are situations where problems with the
@@ -95,8 +96,7 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-    * The Auth module overhaul of module names and directives need to
-      be reverted to their 2.0.43 names.  The new hooks remain.
+
 
 CURRENT VOTES:
 
@@ -134,7 +134,10 @@ CURRENT VOTES:
       a) httpd-std.conf should be tailored by install (from src or
          binbuild) even if user has existing httpd.conf
          +1:   trawick, slive, gregames, ianh, Ken, wrowe, jwoolley, jim
-           wrowe - prefer httpd.default.conf to avoid ambiguity with cvs
+           wrowe - prefer httpd.default.conf to avoid ambiguity with cvs,
+                   note that win32 installer creates just that file
+                   (.default.conf rather than .conf.default so that win32
+                    can recognize .conf files as text configuration files.)
 
       b) tailored httpd-std.conf should be copied by install to
          sysconfdir/examples
@@ -911,7 +914,7 @@ Other bugs that need fixing:
         Status: Greg volunteers to investigate (esp. since he was most 
                 likely the one to break it :-)
 
-Binaries (2.0.43):
+Binaries (2.0.44):
 
  Platform                      Avail.  Volunteer
  ------------------------------------------------------------------
