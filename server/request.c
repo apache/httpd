@@ -924,6 +924,8 @@ minimerge2:
             /* That temporary trailing slash was useful, now drop it.
              */
             if (temp_slash) {
+                temp_slash = 0;
+                AP_ASSERT(r->filename[filename_len-1] == '/');
                 r->filename[--filename_len] = '\0';
             }
 
