@@ -1,5 +1,11 @@
 Changes with Apache 2.0.12-dev
 
+  *) Close one copy of the CGI's stdout before creating the new process.
+     The CGI will still have stdout, because we have already dup'ed it.
+     This keeps Apache from waiting forever to send the results of a CGI
+     process that has forked a long-lived child process.
+     [Taketo Kabe <kabe@sra-tohoku.co.jp>]
+
   *) Remove the rest of the pthreads functions from the threaded MPM.
      This requires the APR support for a signal thread that was just
      added.  [Ryan Bloom]

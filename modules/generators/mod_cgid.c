@@ -549,11 +549,20 @@ static int cgid_server(void *data)
         }
         else {
             argv = (const char * const *)create_argv(r->pool, NULL, NULL, NULL, argv0, r->args);
+
+           /* We want to sd2 close for new CGI process too.
+            * If it's remained open it'll make ap_pass_brigade() block
+            * waiting for EOF if CGI forked something running long.
+            * close(sd2) here should be okay, as CGI channel
+            * is already dup()ed by apr_procattr_child_{in,out}_set()
+            * above.
+            */
+            close(sd2);
+
             rc = ap_os_create_privileged_process(r, procnew, argv0, argv, 
                                                  (const char * const *)env, 
                                                  procattr, p);
 
-            close(sd2);
             if (rc != APR_SUCCESS) {
                 /* Bad things happened. Everyone should have cleaned up. */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
