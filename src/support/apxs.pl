@@ -91,7 +91,7 @@ $CFG_CFLAGS =~ s|\s+`.+apaci`||;
 ##
 ##  Initial shared object support check
 ##
-if (not -x `$CFG_SBINDIR/$CFG_TARGET`) {
+if (not -x "$CFG_SBINDIR/$CFG_TARGET") {
 	print STDERR "apxs:Error: $CFG_SBINDIR/$CFG_TARGET not found or not executable\n";
 	exit(1);
 }
