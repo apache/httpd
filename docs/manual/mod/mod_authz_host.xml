@@ -4,10 +4,8 @@
 <modulesynopsis>
 
 <name>mod_authz_host</name> 
-
 <description>Group authorizations based on host (name or IP
 address)</description>
-
 <status>Base</status>
 <sourcefile>mod_authz_host.c</sourcefile>
 <identifier>authz_host_module</identifier>
@@ -50,18 +48,15 @@ address)</description>
 
 <directivesynopsis>
 <name>Allow</name>
-
 <description>Controls which hosts can access an area of the
 server</description>
-<syntax> Allow from
-    all|<em>host</em>|env=<em>env-variable</em>
-    [<em>host</em>|env=<em>env-variable</em>] ...</syntax>
+<syntax> Allow from all|<var>host</var>|env=<var>env-variable</var>
+[<var>host</var>|env=<var>env-variable</var>] ...</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Limit</override>
 
 <usage>
-
     <p>The <directive>Allow</directive> directive affects which hosts can
     access an area of the server. Access can be controlled by
     hostname, IP Address, IP Address range, or by other
@@ -81,39 +76,53 @@ server</description>
     <dl>
       <dt>A (partial) domain-name</dt>
 
-      <dd>Example: <code>Allow from apache.org</code><br />
-       Hosts whose names match, or end in, this string are allowed
+      <dd>
+      <example><title>Example:</title>
+        Allow from apache.org
+      </example>
+      <p>Hosts whose names match, or end in, this string are allowed
       access. Only complete components are matched, so the above
       example will match <code>foo.apache.org</code> but it will
       not match <code>fooapache.org</code>. This configuration will
       cause the server to perform a reverse DNS lookup on the
       client IP address, regardless of the setting of the <directive
       module="core">HostnameLookups</directive>
-      directive.</dd>
+      directive.</p></dd>
 
       <dt>A full IP address</dt>
 
-      <dd>Example: <code>Allow from 10.1.2.3</code><br />
-       An IP address of a host allowed access</dd>
+      <dd>
+      <example><title>Example:</title>
+        Allow from 10.1.2.3
+      </example>
+      <p>An IP address of a host allowed access</p></dd>
 
       <dt>A partial IP address</dt>
 
-      <dd>Example: <code>Allow from 10.1</code><br />
-       The first 1 to 3 bytes of an IP address, for subnet
-      restriction.</dd>
+      <dd>
+      <example><title>Example:</title>
+        Allow from 10.1
+      </example>
+      <p>The first 1 to 3 bytes of an IP address, for subnet
+      restriction.</p></dd>
 
       <dt>A network/netmask pair</dt>
 
-      <dd>Example: <code>Allow from
-      10.1.0.0/255.255.0.0</code><br />
-       A network a.b.c.d, and a netmask w.x.y.z. For more
-      fine-grained subnet restriction.</dd>
+      <dd>
+      <example><title>Example:</title>
+        Allow from 10.1.0.0/255.255.0.0
+      </example>
+      <p>A network a.b.c.d, and a netmask w.x.y.z. For more
+      fine-grained subnet restriction.</p></dd>
 
       <dt>A network/nnn CIDR specification</dt>
 
-      <dd>Example: <code>Allow from 10.1.0.0/16</code><br />
-       Similar to the previous case, except the netmask consists of
-      nnn high-order 1 bits.</dd>
+      <dd>
+      <example><title>Example:</title>
+        Allow from 10.1.0.0/16
+      </example>
+      <p>Similar to the previous case, except the netmask consists of
+      nnn high-order 1 bits.</p></dd>
     </dl>
 
     <p>Note that the last three examples above match exactly the
@@ -131,43 +140,39 @@ server</description>
     <directive>Allow</directive> directive allows access to the server
     to be controlled based on the existence of an <a
     href="../env.html">environment variable</a>. When <code>Allow from
-    env=</code><em>env-variable</em> is specified, then the request is
-    allowed access if the environment variable <em>env-variable</em>
+    env=<var>env-variable</var></code> is specified, then the request is
+    allowed access if the environment variable <var>env-variable</var>
     exists. The server provides the ability to set environment
     variables in a flexible way based on characteristics of the client
     request using the directives provided by
-    <module>mod_setenvif</module>.  Therefore, this directive can be
+    <module>mod_setenvif</module>. Therefore, this directive can be
     used to allow access based on such factors as the clients
     <code>User-Agent</code> (browser type), <code>Referer</code>, or
     other HTTP request header fields.</p>
 
-<example>
-<title>Example:</title>
-SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
-&lt;Directory /docroot&gt;<br />
-&nbsp;&nbsp;    Order Deny,Allow<br />
-&nbsp;&nbsp;    Deny from all<br />
-&nbsp;&nbsp;    Allow from env=let_me_in<br />
-&lt;/Directory&gt;
-</example>
+    <example><title>Example:</title>
+      SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
+      &lt;Directory /docroot&gt;<br />
+      <indent>
+        Order Deny,Allow<br />
+        Deny from all<br />
+        Allow from env=let_me_in<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
 
     <p>In this case, browsers with a user-agent string beginning
     with <code>KnockKnock/2.0</code> will be allowed access, and all
     others will be denied.</p>
 </usage>
-
 </directivesynopsis>
 
 <directivesynopsis>
-
 <name>Deny</name>
-
 <description>Controls which hosts are denied access to the
 server</description>
-
-<syntax> Deny from
-    all|<em>host</em>|env=<em>env-variable</em>
-    [<em>host</em>|env=<em>env-variable</em>] ...</syntax>
+<syntax> Deny from all|<var>host</var>|env=<var>env-variable</var>
+[<var>host</var>|env=<var>env-variable</var>] ...</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Limit</override>
@@ -179,43 +184,38 @@ server</description>
     identical to the arguments for the <directive
     module="mod_authz_host">Allow</directive> directive.</p>
 </usage>
-
 </directivesynopsis>
 
 <directivesynopsis>
-
 <name>Order</name>
-
 <description>Controls the default access state and the order in which
 <directive>Allow</directive> and <directive>Deny</directive> are
 evaluated.</description>
-
-<syntax> Order <em>ordering</em></syntax>
+<syntax> Order <var>ordering</var></syntax>
 <default>Order Deny,Allow</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Limit</override>
 
 <usage>
-
     <p>The <directive>Order</directive> directive controls the default
     access state and the order in which <directive
     module="mod_authz_host">Allow</directive> and <directive
     module="mod_authz_host">Deny</directive> directives are evaluated.
-    <em>Ordering</em> is one of</p>
+    <var>Ordering</var> is one of</p>
 
     <dl>
-      <dt>Deny,Allow</dt>
+      <dt><code>Deny,Allow</code></dt>
 
       <dd>The <directive module="mod_authz_host">Deny</directive> directives
       are evaluated before the <directive
       module="mod_authz_host">Allow</directive> directives. Access is
-      allowed by default.  Any client which does not match a
+      allowed by default. Any client which does not match a
       <directive module="mod_authz_host">Deny</directive> directive or does
       match an <directive module="mod_authz_host">Allow</directive>
       directive will be allowed access to the server.</dd>
 
-      <dt>Allow,Deny</dt>
+      <dt><code>Allow,Deny</code></dt>
 
       <dd>The <directive module="mod_authz_host">Allow</directive>
       directives are evaluated before the <directive
@@ -225,7 +225,7 @@ evaluated.</description>
       <directive module="mod_authz_host">Deny</directive> directive will be
       denied access to the server.</dd>
 
-      <dt>Mutual-failure</dt>
+      <dt><code>Mutual-failure</code></dt>
 
       <dd>Only those hosts which appear on the <directive
       module="mod_authz_host">Allow</directive> list and do not appear on
@@ -235,7 +235,7 @@ evaluated.</description>
       configuration.</dd>
     </dl>
 
-    <p>Keywords may only be separated by a comma; no whitespace is
+    <p>Keywords may only be separated by a comma; <em>no whitespace</em> is
     allowed between them. Note that in all cases every <directive
     module="mod_authz_host">Allow</directive> and <directive
     module="mod_authz_host">Deny</directive> statement is evaluated.</p>
@@ -243,11 +243,11 @@ evaluated.</description>
     <p>In the following example, all hosts in the apache.org domain
     are allowed access; all other hosts are denied access.</p>
 
-<example>
+    <example>
       Order Deny,Allow<br />
       Deny from all<br />
-      Allow from apache.org<br />
-</example>
+      Allow from apache.org
+    </example>
 
     <p>In the next example, all hosts in the apache.org domain are
     allowed access, except for the hosts which are in the
@@ -255,11 +255,11 @@ evaluated.</description>
     in the apache.org domain are denied access because the default
     state is to deny access to the server.</p>
 
-<example>
-       Order Allow,Deny<br />
-       Allow from apache.org<br />
-       Deny from foo.apache.org<br />
-</example>
+    <example>
+      Order Allow,Deny<br />
+      Allow from apache.org<br />
+      Deny from foo.apache.org
+    </example>
 
     <p>On the other hand, if the <directive>Order</directive> in the last
     example is changed to <code>Deny,Allow</code>, all hosts will
@@ -275,13 +275,15 @@ evaluated.</description>
     access to a part of the server even in the absence of accompanying
     <directive module="mod_authz_host">Allow</directive> and <directive
     module="mod_authz_host">Deny</directive> directives because of its effect
-    on the default access state.  For example,</p>
+    on the default access state. For example,</p>
 
-<example>
+    <example>
       &lt;Directory /www&gt;<br />
-      &nbsp;&nbsp;Order Allow,Deny<br />
+      <indent>
+        Order Allow,Deny<br />
+      </indent>
       &lt;/Directory&gt;
-</example>
+    </example>
 
     <p>will deny all access to the <code>/www</code> directory
     because the default access state will be set to
@@ -303,7 +305,6 @@ evaluated.</description>
     href="../sections.html">How Directory, Location and Files sections
     work</a>.</p>
 </usage>
-
 </directivesynopsis>
 
 </modulesynopsis>

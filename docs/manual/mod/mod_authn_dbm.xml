@@ -13,14 +13,15 @@
 <summary>
     <p>This module provides authentication front-ends such as
     <module>mod_auth_digest</module> and <module>mod_auth_basic</module>
-    to authenticate users by looking up users in plain text password files.
-    Similar functionality is provided by <module>mod_authn_file</module>.</p>
+    to authenticate users by looking up users in <dfn>dbm</dfn> password
+    files. Similar functionality is provided by
+    <module>mod_authn_file</module>.</p>
 
     <p>When using <module>mod_auth_basic</module> or
     <module>mod_auth_digest</module>, this module is invoked via the
     <directive module="mod_auth_basic">AuthBasicProvider</directive> or
     <directive module="mod_auth_digest">AuthDigestProvider</directive>
-    with the 'dbm' value.</p>
+    with the <code>dbm</code> value.</p>
 </summary>
 
 <seealso><directive module="core">AuthName</directive></seealso>
@@ -36,17 +37,15 @@
 <name>AuthDBMUserFile</name>
 <description>Sets the name of a database file containing the list of users and
 passwords for authentication</description>
-<syntax>AuthDBMUserFile <em>file-path</em></syntax>
-<contextlist>
-  <context>directory</context>
-  <context>.htaccess</context>
+<syntax>AuthDBMUserFile <var>file-path</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
     <p>The <directive>AuthDBMUserFile</directive> directive sets the
     name of a DBM file containing the list of users and passwords for
-    user authentication. <em>File-path</em> is the absolute path to
+    user authentication. <var>File-path</var> is the absolute path to
     the user file.</p>
 
     <p>The user file is keyed on the username. The value for a user is
@@ -61,8 +60,8 @@ passwords for authentication</description>
     download the <directive>AuthDBMUserFile</directive>.</p>
 
     <p>Important compatibility note: The implementation of
-    "dbmopen" in the apache modules reads the string length of the
-    hashed values from the DBM data structures, rather than relying
+    <code>dbmopen</code> in the apache modules reads the string length of
+    the hashed values from the DBM data structures, rather than relying
     upon the string being NULL-appended. Some applications, such as
     the Netscape web server, rely upon the string being
     NULL-appended, so if you are having trouble using DBM files
@@ -82,22 +81,18 @@ passwords for authentication</description>
 store passwords</description>
 <syntax>AuthDBMType default|SDBM|GDBM|NDBM|DB</syntax>
 <default>AuthDBMType default</default>
-<contextlist>
-  <context>directory</context>
-  <context>.htaccess</context>
+<contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
-<compatibility>Available in version 2.0.30 and later.</compatibility>
 
 <usage>
+    <p>Sets the type of database file that is used to store the passwords.
+    The default database type is determined at compile time.  The
+    availability of other types of database files also depends on
+    <a href="../install.html#dbm">compile-time settings</a>.</p>
 
-<p>Sets the type of database file that is used to store the passwords.
-The default database type is determined at compile time.  The
-availability of other types of database files also depends on
-<a href="../install.html#dbm">compile-time settings</a>.</p>
-
-<p>It is crucial that whatever program you use to create your password
-files is configured to use the same type of database.</p>
+    <p>It is crucial that whatever program you use to create your password
+    files is configured to use the same type of database.</p>
 </usage>
 </directivesynopsis>
 
