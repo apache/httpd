@@ -43,8 +43,9 @@ MPM_LIB=$MPM_DIR/lib${MPM_NAME}.la
 
 if test "$mpm_explicit" = "no"; then
   if test "$MPM_NAME" = "prefork" ; then
-    MPM_NAME="mpmt_pthread"
-    EXTRA_CFLAGS="$EXTRA_CFLAGS -DNO_THREADS"
+    MPM_NAME="prefork"
+    MPM_FAKE_NAME=prefork.c
+    EXTRA_CFLAGS="$EXTRA_CFLAGS -DPREFORK"
 
     ac_cv_enable_threads="no"
     AC_CACHE_SAVE
@@ -69,7 +70,7 @@ dnl and actually find it.
     ln -s mpmt.c modules/mpm/mpmt/dexter.c
   fi
 
-  if test "$MPM_NAME" = "dexter" -o "$MPM_NAME" = "mpmt_pthread"; then
+  if test "$MPM_NAME" = "dexter" -o "$MPM_NAME" = "mpmt_pthread" -o "$MPM_NAME" = "prefork"; then
     MPM_DIR=modules/mpm/mpmt;
     MPM_LIB=$MPM_DIR/libmpmt.la
     MPM_NAME="mpmt"
