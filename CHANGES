@@ -4,7 +4,8 @@ Changes with Apache 2.1.0-dev
 
   *) Major overhaul of mod_include's filter parser. The new parser code
      is expected to be more robust and should catch all of the edge cases
-     that were not handled by the previous one.  [André Malo]
+     that were not handled by the previous one. This includes a binary
+     incompatible change of mod_include's external API.  [André Malo]
 
   *) mod_rewrite: Allow forced mimetypes [T=...] to get expanded.
      PR 14223.  [André Malo]

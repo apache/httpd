@@ -115,14 +115,15 @@
  * 20020903.2 (2.0.46-dev) add ap_escape_logitem
  * 20030213.1 (2.1.0-dev) changed log_writer optional fn's to return previous
  *                        handler
+ * 20030821 (2.1.0-dev) bumped mod_include's entire API
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20030213
+#define MODULE_MAGIC_NUMBER_MAJOR 20030821
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
