@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Allow ap_http_filter (HTTP_IN) to return EOS when there is no request
+     body.  [Justin Erenkrantz]
+    
   *) NetWare: Piping log entries through RotateLogs using the 
      CustomLogs directive is finally supported now that we have 
 	 the pipes and spawning functionality working.
