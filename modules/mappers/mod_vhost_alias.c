@@ -193,9 +193,9 @@ static const char *vhost_alias_set(cmd_parms *cmd, void *dummy, const char *map)
 	return "INTERNAL ERROR: unknown command info";
     }
 
-    if (*map != '/') {
+    if (!ap_os_is_path_absolute(cmd->pool, map)) {
 	if (strcasecmp(map, "none")) {
-	    return "format string must start with '/' or be 'none'";
+	    return "format string must be an absolute path, or 'none'";
 	}
 	*pmap = NULL;
 	*pmode = VHOST_ALIAS_NONE;
@@ -413,6 +413,7 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
     if (last == '/') {
 	++uri;
     }
+
     if (r->filename) {
 	r->filename = apr_pstrcat(r->pool, r->filename, buf, uri, NULL);
     }
@@ -461,6 +462,12 @@ static int mva_translate(request_rec *r)
 	return DECLINED;
     }
 
+    /* ### There is an optimization available here to determine the
+     * absolute portion of the path from the server config phase, 
+     * through the first % segment, and note that portion of the path
+     * canonical_path buffer.
+     */
+    r->canonical_filename = "";
     vhost_alias_interpolate(r, name, map, uri);
 
     if (cgi) {
