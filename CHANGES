@@ -1,5 +1,12 @@
 Changes with Apache 2.0.40
 
+  *) Changes to the internationalized error documents:
+     Comment them out in the default config file to make the default
+     install as simple as possible; Correct the english 500 error to
+     be more understandable; Add a Swedish translation.
+     [Thomas Sjogren <thomas@northernsecurity.net>, 
+      Erik Abele <erik@codefaktor.de>, Rich Bowen, Joshua Slive]
+     
   *) Increase the limit on file descriptors per process in apachectl.
      [Brian Pane]
 
