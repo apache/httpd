@@ -960,7 +960,9 @@ static int getline(char *s, int n, conn_rec *c, int fold)
 
     while (1) {
         if (AP_BRIGADE_EMPTY(b)) {
-            if (ap_get_brigade(c->input_filters, b, AP_GET_LINE) != APR_SUCCESS) {
+            if (ap_get_brigade(c->input_filters, b, AP_GET_LINE) != APR_SUCCESS ||
+                AP_BRIGADE_EMPTY(b)) {
+                ap_brigade_destroy(b);
                 return -1;
             }
         }
@@ -986,6 +988,7 @@ static int getline(char *s, int n, conn_rec *c, int fold)
             /* input line was larger than the caller's buffer */
             AP_BUCKET_REMOVE(e);
             ap_bucket_destroy(e);
+            ap_brigade_destroy(b);
             return -1;
         }
         
@@ -1033,6 +1036,7 @@ static int getline(char *s, int n, conn_rec *c, int fold)
             pos++;              /* bump past end of incomplete line      */
         }
     }
+    ap_brigade_destroy(b);
     return total;
 }
 
