@@ -17,7 +17,7 @@ Source0: http://www.apache.org/dist/httpd/httpd-%{version}.tar.gz
 License: Apache License, Version 2.0
 Group: System Environment/Daemons
 BuildRoot: %{_tmppath}/%{name}-root
-BuildPrereq: openldap-devel, db3-devel, expat-devel, findutils, perl, pkgconfig
+BuildPrereq: openldap-devel, db4-devel, expat-devel, findutils, perl, pkgconfig
 Requires: gawk, /usr/share/magic.mime, /usr/bin/find, openldap
 Prereq: /sbin/chkconfig, /bin/mktemp, /bin/rm, /bin/mv
 Prereq: sh-utils, textutils, /usr/sbin/useradd
@@ -300,7 +300,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/httpd/logs
 %{_sysconfdir}/httpd/run
 %dir %{_sysconfdir}/httpd/conf
-%config(noreplace) %{_sysconfdir}/httpd/conf/*.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/httpd.conf
+%{_sysconfdir}/httpd/conf/httpd-std.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/highperformance.conf
+%{_sysconfdir}/httpd/conf/highperformance-std.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/magic
 %config(noreplace) %{_sysconfdir}/httpd/conf/mime.types
 
@@ -318,8 +321,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/rotatelogs
 %attr(4510,root,%{suexec_caller}) %{_sbindir}/suexec
 
-%{_libdir}/libapr-0.so.*
-%{_libdir}/libaprutil-0.so.*
+%{_libdir}/libapr-1.so.*
+%{_libdir}/libaprutil-1.so.*
 
 %dir %{_libdir}/httpd
 %dir %{_libdir}/httpd/modules
@@ -335,6 +338,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{contentdir}/error
 %dir %{contentdir}/error/include
 %{contentdir}/icons/*
+%{contentdir}/error/README
 %config(noreplace) %{contentdir}/error/*.var
 %config(noreplace) %{contentdir}/error/include/*.html
 
@@ -346,16 +350,24 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_mandir}/man8/rotatelogs*
 %{_mandir}/man8/suexec*
+%{_mandir}/man8/apachectl.8*
+%{_mandir}/man8/httpd.8*
 
 %files manual
 %defattr(-,root,root)
 %{contentdir}/manual
+%{contentdir}/error/README
 
 %files -n mod_ssl
 %defattr(-,root,root)
 %{_libdir}/httpd/modules/mod_ssl.so
 %config(noreplace) %{_sysconfdir}/httpd/conf/ssl.conf
-%attr(0700,root,root) %dir %{_sysconfdir}/httpd/conf/ssl.*
+%{_sysconfdir}/httpd/conf/ssl-std.conf
+%attr(0700,root,root) %dir %{_sysconfdir}/httpd/conf/ssl.crl
+%attr(0700,root,root) %dir %{_sysconfdir}/httpd/conf/ssl.crt
+%attr(0700,root,root) %dir %{_sysconfdir}/httpd/conf/ssl.csr
+%attr(0700,root,root) %dir %{_sysconfdir}/httpd/conf/ssl.key
+%attr(0700,root,root) %dir %{_sysconfdir}/httpd/conf/ssl.prm
 #%config %{_sysconfdir}/httpd/conf/Makefile
 #%dir %{_sysconfdir}/httpd/conf/ssl.*
 %attr(0700,apache,root) %dir %{_localstatedir}/cache/mod_ssl
@@ -365,8 +377,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(-,root,root)
-%{_libdir}/libapr-0.so
-%{_libdir}/libaprutil-0.so
+#%{_libdir}/libapr-0.so
+#%{_libdir}/libaprutil-0.so
+%{_libdir}/libapr-1.a
+%{_libdir}/libapr-1.la
+%{_libdir}/libaprutil-1.a
+%{_libdir}/libaprutil-1.la
+%{_libdir}/httpd/build/config.nice
 %{_includedir}/httpd
 %{_sysconfdir}/httpd/build
 %{_sbindir}/apxs
@@ -377,6 +394,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/build/libtool
 
 %changelog
+* Thu May 20 2004 Graham Leggett <minfrin@apache.org> 2.0.50-dev
+- Changed default dependancy to link to db4 instead of db3.
+- Fixed complaints about unpackaged files.
+
 * Sat Apr 5 2003 Graham Leggett <minfrin@apache.org> 2.0.46-dev
 - Moved mime.types back to the default location.
 - Added mod_ldap and friends, mod_cache and friends.
