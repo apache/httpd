@@ -379,7 +379,6 @@ static void log_error_core(const char *file, int line, int level,
 	 */
 	if (level_and_mask > s->loglevel)
 	    return;
-	logf = NULL;
     }
 
     if (logf && ((level & APLOG_STARTUP) != APLOG_STARTUP)) {
