@@ -78,24 +78,13 @@
 
         To provide maximum flexibility Apache now is able to load
         modules under runtime via the DSO mechanism by using the
-        pragmatic dlopen()/dlsym() system calls. These system calls
+        pragmatic apr_dso_open()/apr_dso_sym() calls. These calls
         are not available under all operating systems therefore you
-        cannot use the DSO mechanism on all platforms. And Apache
-        currently has only limited built-in knowledge on how to
-        compile shared objects because this is heavily
-        platform-dependent. The current state is this:
-
-        o Out-of-the-box supported platforms are (Not all of these
-          will work currently.  DSO support is currently available on
-          most of these platforms however):
-           - Linux     - SunOS         - UnixWare     - Darwin/Mac OS
-           - FreeBSD   - Solaris       - AIX          - OpenStep/Mach
-           - OpenBSD   - IRIX          - SCO          - DYNIX/ptx
-           - NetBSD    - HPUX          - ReliantUNIX
-           - BSDI      - Digital Unix  - DGUX
-
-        o Entirely unsupported platforms are:
-           - Ultrix
+        cannot use the DSO mechanism on all platforms. Apache relies
+        on autoconf to detect the ability to use DSOs, and libtool to
+        determine how to build DSOs. If your platform is supported by
+        libtool, and we can find DSO system calls, then DSOs should
+        work out-of-the-box. 
 
         If your system is not on these lists but has the dlopen-style
         interface, you either have to provide the appropriate compiler
