@@ -143,6 +143,7 @@ install-include:
 	@cp -p $(srcdir)/modules/filters/mod_include.h $(includedir)
 	@cp -p $(srcdir)/modules/generators/mod_cgi.h $(includedir)
 	@cp -p $(srcdir)/modules/http/mod_core.h $(includedir)
+	@cp -p $(srcdir)/modules/http/mod_proxy.h $(includedir)
 	@cp -p $(srcdir)/modules/ssl/*.h $(includedir)
 	@cp -p $(srcdir)/srclib/pcre/*.h $(includedir)
 	@cp -p $(srcdir)/srclib/apr/include/*.h $(includedir)
