@@ -214,7 +214,9 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     /*
      *  initialize the mutex handling and session caching
      */
-    ssl_mutex_init(s, p);
+    if (!ssl_mutex_init(s, p)) {
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
     ssl_scache_init(s, p);
 
     /*
