@@ -39,12 +39,11 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
 {
     apr_pool_t *pool = s->process->pool;
     SSLModConfigRec *mc;
+    void *vmc;
 
-    apr_pool_userdata_get((void **)&mc, SSL_MOD_CONFIG_KEY,
-                          pool);
-
-    if (mc) {
-        return mc; /* reused for lifetime of the server */
+    apr_pool_userdata_get(&vmc, SSL_MOD_CONFIG_KEY, pool);
+    if (vmc) {
+        return vmc; /* reused for lifetime of the server */
     }
 
     /*
