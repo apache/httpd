@@ -79,10 +79,6 @@ Available Patches:
       <Pine.LNX.3.96dg4.980418001055.4893D-100000@twinlark.arctic.org>
       Status: Dean +1
 
-    * Dean's patch for OPTIMIZE_TIMEOUTS to remove rare race
-      <Pine.LNX.3.96dg4.980418002301.4893H-100000@twinlark.arctic.org>
-      Status: Dean +0
-
     * Wilfredo Sanchez's port to Rhapsody 5.1 for 1.2.6 - forward port to
       1.3?
       <199804182347.QAA05438@scv2.apple.com>
