@@ -188,6 +188,19 @@ Closed issues:
 
 Open issues:
 
+    * Ken's [POLL] apachen/patches directory
+      Shall we experiment with allowing patches to be distributed for
+      voting through cvs, by creating a directory under the source tree
+      and putting them there?  Please vote.
+	<34B8EE39.43F32BE0@Golux.Com>
+	Status: Ken +1
+
+    * Ken's [POLL] experiment with commit-then-review
+      Shall we permit unreviewed commits to the source tree?  (Details
+      of when it's [in]appropriate to be worked out later.)  Vote, please.
+	<34B8EEF7.E4BD2126@Golux.Com>
+	Status: Ken +1
+
     * Paul would like to see a 'gdbm' option because he uses
       it a lot. Dean notes that 'gdbm' include 'db' support
       so we need to watch the library ordering.
