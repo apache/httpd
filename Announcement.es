@@ -1,11 +1,11 @@
-              Liberado el Servidor de HTTP Apache 1.3.30
+           Liberado el Servidor de HTTP Apache 1.3.31
 
 La Fundación de Software Apache y el Proyecto de Servidor HTTP Apache se
-complacen en anunciar el lanzamiento de la versión 1.3.30 del Servidor HTTP
+complacen en anunciar el lanzamiento de la versión 1.3.31 del Servidor HTTP
 Apache ("Apache"). Este comunicado recoge los cambios más significativos que
-se han introducido en la versión 1.3.30 con respecto a la versión 1.3.29.
-Este comunicado está también disponible en Inglés, Alemán y Japonés, en los
-siguientes enlaces: 
+se han introducido en la versión 1.3.31 con respecto a la versión 1.3.29
+(1.3.30 no llegó a ser liberado). Este comunicado está también disponible en
+Inglés, Alemán y Japonés, en los siguientes enlaces: 
 
    http://www.apache.org/dist/httpd/Announcement.html
    http://www.apache.org/dist/httpd/Announcement.html.de
@@ -15,19 +15,26 @@ La nueva version soluciona principalmente problemas de seguridad y errores
 de programación (bugs). Al final de este documento puede encontrar un
 resumen parcial de los problemas corregidos. En el fichero CHANGES está la
 lista completa de los cambios introducidos. De especial relevancia son los
-tres problemas potenciales de seguridad que se han resuelto en la version
-1.3.30:
+cuatro problemas potenciales de seguridad que se han resuelto en la version
+1.3.31:
 
-	* CAN-2003.0020 (cve.mitre.org)	
+	* CAN-2003-0987 (cve.mitre.org) 	
+	  En mod_digest, verificar que el 'nonce' devuelto por el cliente es
+	  uno que el servidor envió previamente. El problema no afecta a
+	  mod_auth_digest.
+
+	* CAN-2003-0020 (cve.mitre.org)	
 	  Filtrado de datos arbitrarios antes de escribir en el registro de
 	  errores (errorlog). 
 
-	* CAN-2004-0174 (cve.mitre.org)	
+	* CAN-2004-0174 (cve.mitre.org)		
 	  Soluciona el problema de muerte por inanición en sockets de
 	  escucha, en el que una conexión de vida corta a un socket de
 	  escucha raramente accedido provocará que un hijo mantenga aceptado
 	  el mutex y bloquee las nuevas conexiones hasta que otra conexión
-	  llegue a ese socket de escucha raramente accedido.
+	  llegue a ese socket de escucha raramente accedido. Este problema
+	  solo afecta a algunas plataformas como Solaris, AIX e IRIX. Linux
+	  no se ve afectado.
 
 	* CAN-2003-0993 (cve.mitre.org)	
 	  Soluciona el problema que surge al analizar las reglas de las
@@ -35,12 +42,12 @@ tres problemas potenciales de seguridad que se han resuelto en la version
 	  red; este problema actualmente solo se conoce que afecte a la
 	  plataformas de 64 bits big-endian
 
-Consideramos que Apache 1.3.30 es la mejor versión disponible de Apache 1.3
+Consideramos que Apache 1.3.31 es la mejor versión disponible de Apache 1.3
 y recomendamos firmemente a los usuarios de versiones anteriores,
 especialmente los de las versiones 1.1.x y 1.2.x, que se actualicen lo antes
 posible. No se harán nuevas versiones de la familia 1.2.x.
 
-Apache 1.3.30 puede descargarse desde el siguiente enlace:
+Apache 1.3.31 puede descargarse desde el siguiente enlace:
 
        http://httpd.apache.org/download.cgi
 
@@ -91,20 +98,27 @@ pasen a usar Apache 2.0 para mejorar el rendimiento, la estabilidad y la
 seguridad en sus plataformas.
 
 
-               Principales cambios introducidos en Apache 1.3.30
+               Principales cambios introducidos en Apache 1.3.31
 
 Problemas de seguridad
 
-	* CAN-2003.0020 (cve.mitre.org)	
+	* CAN-2003-0987 (cve.mitre.org) 	
+	  En mod_digest, verificar que el 'nonce' devuelto por el cliente es
+	  uno que el servidor envió previamente. El problema no afecta a
+	  mod_auth_digest.
+	  
+	* CAN-2003-0020 (cve.mitre.org)	
 	  Filtrado de datos arbitrarios antes de escribir en el registro de
 	  errores (errorlog). 
 
-	* CAN-2004-0174 (cve.mitre.org)	
+	* CAN-2004-0174 (cve.mitre.org)		
 	  Soluciona el problema de muerte por inanición en sockets de
 	  escucha, en el que una conexión de vida corta a un socket de
 	  escucha raramente accedido provocará que un hijo mantenga aceptado
 	  el mutex y bloquee las nuevas conexiones hasta que otra conexión
-	  llegue a ese socket de escucha raramente accedido.
+	  llegue a ese socket de escucha raramente accedido. Este problema
+	  solo afecta a algunas plataformas como Solaris, AIX e IRIX. Linux
+	  no se ve afectado.
 
 	* CAN-2003-0993 (cve.mitre.org)	
 	  Soluciona el problema que surge al analizar las reglas de las
@@ -138,7 +152,7 @@ Errores de programación solucionados
 
 Estos son los errores de programación de relevancia que fueron
 encontrados en la version de Apache 1.3.29 (o anteriores) y que han
-sido corregidos en Apache 1.3.30:
+sido corregidos en Apache 1.3.31:
 
      * Solucionado el problema de corrupción de memoria con la función
        ap_custom_response(). La configuración principal per-dir config
