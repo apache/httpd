@@ -583,6 +583,55 @@ static void ssl_init_crl(server_rec *s,
     }
 }
 
+static void ssl_init_cert_chain(server_rec *s,
+                                apr_pool_t *p,
+                                apr_pool_t *ptemp,
+                                SSLSrvConfigRec *sc)
+{
+    BOOL skip_first = TRUE;
+    int i, n;
+    const char *chain = sc->szCertificateChain;
+
+    /* 
+     * Optionally configure extra server certificate chain certificates.
+     * This is usually done by OpenSSL automatically when one of the
+     * server cert issuers are found under SSLCACertificatePath or in
+     * SSLCACertificateFile. But because these are intended for client
+     * authentication it can conflict. For instance when you use a
+     * Global ID server certificate you've to send out the intermediate
+     * CA certificate, too. When you would just configure this with
+     * SSLCACertificateFile and also use client authentication mod_ssl
+     * would accept all clients also issued by this CA. Obviously this
+     * isn't what we want in this situation. So this feature here exists
+     * to allow one to explicity configure CA certificates which are
+     * used only for the server certificate chain.
+     */
+    if (!chain) {
+        return;
+    }
+
+    for (i = 0; (i < SSL_AIDX_MAX) && sc->szPublicCertFiles[i]; i++) {
+        if (strEQ(sc->szPublicCertFiles[i], chain)) {
+            skip_first = TRUE;
+            break;
+        }
+    }
+
+    n = SSL_CTX_use_certificate_chain(sc->pSSLCtx,
+                                      (char *)chain, 
+                                      skip_first, NULL);
+    if (n < 0) {
+        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
+                "Failed to configure CA certificate chain!");
+        ssl_die();
+    }
+
+    ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
+            "Configuring server certificate chain "
+            "(%d CA certificate%s)",
+            n, n == 1 ? "" : "s");
+}
+
 /*
  * Configure a particular server
  */
@@ -601,7 +650,7 @@ void ssl_init_ConfigureServer(server_rec *s,
     unsigned char *ptr;
     BOOL ok = FALSE;
     int is_ca, pathlen;
-    int i, n;
+    int i;
 
     /*
      * Now check for important parameters and the
@@ -634,6 +683,8 @@ void ssl_init_ConfigureServer(server_rec *s,
     ssl_init_cipher_suite(s, p, ptemp, sc);
 
     ssl_init_crl(s, p, ptemp, sc);
+
+    ssl_init_cert_chain(s, p, ptemp, sc);
 
     SSL_CTX_set_tmp_rsa_callback(ctx, ssl_callback_TmpRSA);
     SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
@@ -826,45 +877,6 @@ void ssl_init_ConfigureServer(server_rec *s,
             EVP_PKEY_copy_parameters(pkey,
                                      sc->pPrivateKey[SSL_AIDX_DSA]);
         }
-    }
-
-    /* 
-     * Optionally configure extra server certificate chain certificates.
-     * This is usually done by OpenSSL automatically when one of the
-     * server cert issuers are found under SSLCACertificatePath or in
-     * SSLCACertificateFile. But because these are intended for client
-     * authentication it can conflict. For instance when you use a
-     * Global ID server certificate you've to send out the intermediate
-     * CA certificate, too. When you would just configure this with
-     * SSLCACertificateFile and also use client authentication mod_ssl
-     * would accept all clients also issued by this CA. Obviously this
-     * isn't what we want in this situation. So this feature here exists
-     * to allow one to explicity configure CA certificates which are
-     * used only for the server certificate chain.
-     */
-    if (sc->szCertificateChain) {
-        BOOL skip_first = FALSE;
-
-        for (i = 0; (i < SSL_AIDX_MAX) && sc->szPublicCertFiles[i]; i++) {
-            if (strEQ(sc->szPublicCertFiles[i], sc->szCertificateChain)) {
-                skip_first = TRUE;
-                break;
-            }
-        }
-
-        n = SSL_CTX_use_certificate_chain(ctx,
-                                          (char *)sc->szCertificateChain, 
-                                          skip_first, NULL);
-        if (n < 0) {
-            ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
-                    "Failed to configure CA certificate chain!");
-            ssl_die();
-        }
-
-        ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
-                "Configuring server certificate chain "
-                "(%d CA certificate%s)",
-                n, n == 1 ? "" : "s");
     }
 }
 
