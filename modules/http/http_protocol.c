@@ -2152,7 +2152,9 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
     register int o;
     ap_ssize_t w;
     ap_ssize_t n;
+    ap_ssize_t bytes_read;
     ap_status_t rv;
+    ap_status_t read_rv;
 
     if (length == 0) {
         return 0;
@@ -2165,33 +2167,10 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
 
     ap_bsetopt(fb, BO_TIMEOUT, &zero_timeout);
     while (!ap_is_aborted(r->connection)) {
-        rv = ap_bread(fb, buf, sizeof(buf), &n);
-        if (n == 0) {
-            if (rv == APR_SUCCESS) {    /* eof */
-                (void) ap_rflush(r);
-                break;
-            }
-            if (rv != APR_EAGAIN) {
-                r->connection->aborted = 1;
-                break;
-            }
-            /* next read will block, so flush the client now */
-            if (ap_rflush(r) == EOF) {
-                break;
-            }
-
-            ap_bsetopt(fb, BO_TIMEOUT, &r->server->timeout);
-            rv = ap_bread(fb, buf, sizeof(buf), &n);
-            if (n == 0) {
-                if (rv == APR_SUCCESS) {        /* eof */
-                    (void) ap_rflush(r);
-                }
-                r->connection->aborted = 1;
-                break;
-            }
-            ap_bsetopt(fb, BO_TIMEOUT, &zero_timeout);
-        }
-        
+        read_rv = ap_bread(fb, buf, sizeof(buf), &n);
+    got_read:
+        bytes_read = n;
+        /* Regardless of read errors, EOF, etc, bytes may have been read */
         o = 0;
         while (n && !ap_is_aborted(r->connection)) {
             rv = ap_bwrite(r->connection->client, &buf[o], n, &w);
@@ -2203,12 +2182,41 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
             else if (rv != APR_SUCCESS) {
                 if (!ap_is_aborted(r->connection)) {
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
-                        "client stopped connection before rflush completed");
+                                  "client stopped connection before rflush completed");
                     ap_bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
                 }
                 break;
             }
+        }
+        if (read_rv == APR_SUCCESS) {
+            /* Assume a sucessful read of 0 bytes is an EOF 
+             * Note: I don't think this is ultimately the right thing.
+             * Read functions should explicitly return EOF. 
+             * wgs
+             */
+            if (bytes_read == 0) {
+                (void) ap_rflush(r);
+                break;
+            }
+        }
+        else if (read_rv == APR_EOF) {
+            (void) ap_rflush(r);
+            break;
+        }
+        else if (read_rv != APR_EAGAIN) {
+            r->connection->aborted = 1;
+            break;
+        }
+        else {
+            /* next read will block, so flush the client now */
+            if (ap_rflush(r) == EOF) {
+                break;
+            }
+            ap_bsetopt(fb, BO_TIMEOUT, &r->server->timeout);
+            read_rv = ap_bread(fb, buf, sizeof(buf), &n);
+            ap_bsetopt(fb, BO_TIMEOUT, &zero_timeout);
+            goto got_read;
         }
     }
     SET_BYTES_SENT(r);
