@@ -831,19 +831,13 @@ CORE_EXPORT(void *) ap_set_config_vectors(cmd_parms *parms, void *config, module
     return mconfig;
 }
 
-
-CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, const char *l)
+CORE_EXPORT(void) ap_build_config_sub(cmd_parms *parms, const char *l, ap_directive_t **current, ap_directive_t **curr_parent)
 {
-    void *oldconfig;
-    const char *args, *cmd_name, *retval;
-    const command_rec *cmd;
-    module *mod = top_module;
+    const char *args, *cmd_name;
     ap_directive_t *newdir;
-    static ap_directive_t *current = NULL;
-    static ap_directive_t *curr_parent = NULL;
 
     if ((l[0] == '#') || (!l[0]))
-	return NULL;
+	return;
 
 #if RESOLVE_ENV_PER_TOKEN
     args = l;
@@ -852,7 +846,7 @@ CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, cons
 #endif
     cmd_name = ap_getword_conf(parms->temp_pool, &args);
     if (*cmd_name == '\0')
-	return NULL;
+	return;
 
     newdir = ap_pcalloc(parms->pool, sizeof(ap_directive_t));
     newdir->line_num = parms->config_file->line_number;
@@ -861,58 +855,100 @@ CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, cons
 
     if (cmd_name[0] == '<') {
         if (cmd_name[1] != '/') {
-            current = ap_add_node(&curr_parent, current, newdir, 1);
+            (*current) = ap_add_node(curr_parent, *current, newdir, 1);
         }
         else {
             /* The next line needs to be removed once we have a validating
              * tree building routine.
-             * It is left in for now, so that we can ensure that
+             * It is left in for now, so that we can ensure that 
              * a container directive is followed by an appropriate closing
              * directive.
              */
-            current = ap_add_node(&curr_parent, current, newdir, 0);
-            current = curr_parent;
-            curr_parent = current->parent;
+            *current = ap_add_node(curr_parent, *current, newdir, 0);
+            *current = *curr_parent;
+            *curr_parent = (*current)->parent;
         }
     }
     else {
-        current = ap_add_node(&curr_parent, current, newdir, 0);
+        *current = ap_add_node(curr_parent, *current, newdir, 0);
     }
-    newdir = NULL;
+}
+
+API_EXPORT(const char *)ap_walk_config_sub(ap_directive_t *current, cmd_parms *parms, void *config)
+{
+    void *oldconfig;
+    const command_rec *cmd;
+    module *mod = top_module;
+    const char *retval;
 
     oldconfig = parms->context;
     parms->context = config;
     do {
-	if (!(cmd = ap_find_command_in_modules(cmd_name, &mod))) {
-            errno = EINVAL;
-            return ap_pstrcat(parms->pool, "Invalid command '", cmd_name,
+	if (!(cmd = ap_find_command_in_modules(current->directive, &mod))) {
+            retval = ap_pstrcat(parms->pool, "Invalid command '", 
+                           current->directive,
                            "', perhaps mis-spelled or defined by a module "
                            "not included in the server configuration", NULL);
 	}
 	else {
 	    void *mconfig = ap_set_config_vectors(parms,config, mod);
 
-	    retval = invoke_cmd(cmd, parms, mconfig, args);
+	    retval = invoke_cmd(cmd, parms, mconfig, current->args);
 	    mod = mod->next;	/* Next time around, skip this one */
 	}
     } while (retval && !strcmp(retval, DECLINE_CMD));
     parms->context = oldconfig;
 
-    return retval;
+    if (retval) {
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                     "Syntax error on line %d of %s:",
+		     parms->config_file->line_number, parms->config_file->name);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s", retval);
+	exit(1);
+    }
 }
 
-API_EXPORT(const char *) ap_srm_command_loop(cmd_parms *parms, void *config)
+API_EXPORT(const char *)ap_walk_config(ap_directive_t *conftree, cmd_parms *parms, void *config, int container)
 {
+    static ap_directive_t *current;
+
+    if (conftree != NULL) {
+        current = conftree;
+    }
+    if (container && current->first_child) {
+        current = current->first_child;
+    }
+
+    while (current != NULL) {
+        /* actually parse the command and execute the correct function */
+        ap_walk_config_sub(current, parms, config);
+
+        if (current->next == NULL) {
+            current = current->parent;
+            break;
+        } else {
+            current = current->next;
+            continue;
+        }
+    }
+}
+
+
+API_EXPORT(ap_directive_t *) ap_build_config(cmd_parms *parms, ap_directive_t *current)
+{
+    ap_directive_t *curr_parent = NULL;
+    ap_directive_t *cfg_root = NULL;
     char l[MAX_STRING_LEN];
 
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))) {
-	const char *errmsg = ap_handle_command(parms, config, l);
-        if (errmsg) {
-	    return errmsg;
-	}
+	ap_build_config_sub(parms, l, &current, &curr_parent);
+        if (cfg_root == NULL && current != NULL) {
+            cfg_root = current;
+        }
     }
 
-    return NULL;
+    return cfg_root;
 }
 
 /*
@@ -1039,8 +1075,8 @@ static void process_command_config(server_rec *s, ap_array_header_t *arr, ap_poo
     parms.config_file = ap_pcfg_open_custom(p, "-c/-C directives",
                                          &arr_parms, NULL,
                                          arr_elts_getstr, arr_elts_close);
-
-    errmsg = ap_srm_command_loop(&parms, s->lookup_defaults);
+/*
+    errmsg = ap_build_config(&parms, s->lookup_defaults);
 
     if (errmsg) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
@@ -1049,13 +1085,14 @@ static void process_command_config(server_rec *s, ap_array_header_t *arr, ap_poo
     }
 
     ap_cfg_closefile(parms.config_file);
+*/
 }
 
 void ap_process_resource_config(server_rec *s, const char *fname, ap_pool_t *p, ap_pool_t *ptemp)
 {
-    const char *errmsg;
     cmd_parms parms;
     ap_finfo_t finfo;
+    ap_directive_t *current = NULL;
 
     fname = ap_server_root_relative(p, fname);
 
@@ -1081,16 +1118,8 @@ void ap_process_resource_config(server_rec *s, const char *fname, ap_pool_t *p, 
 	exit(1);
     }
 
-    errmsg = ap_srm_command_loop(&parms, s->lookup_defaults);
-
-    if (errmsg) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                     "Syntax error on line %d of %s:",
-		     parms.config_file->line_number, parms.config_file->name);
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     "%s", errmsg);
-	exit(1);
-    }
+    current = ap_build_config(&parms, NULL);
+    ap_walk_config(current, &parms, s->lookup_defaults, 0);
 
     ap_cfg_closefile(parms.config_file);
 }
@@ -1101,12 +1130,13 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
 {
     configfile_t *f = NULL;
     cmd_parms parms;
-    const char *errmsg;
+    const char *errmsg = NULL;
     char *filename = NULL;
     const struct htaccess_result *cache;
     struct htaccess_result *new;
     void *dc = NULL;
     ap_status_t status;
+    ap_directive_t *htaccess_tree = NULL;
 
 /* firstly, search cache */
     for (cache = r->htaccess; cache != NULL; cache = cache->next)
@@ -1136,7 +1166,8 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
 
             parms.config_file = f;
 
-            errmsg = ap_srm_command_loop(&parms, dc);
+            htaccess_tree = ap_build_config(&parms, NULL);
+            ap_walk_config(htaccess_tree, &parms, dc, 0);
 
             ap_cfg_closefile(f);
 
@@ -1147,19 +1178,16 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
             }
             *result = dc;
             break;
-        } else {
-            ap_status_t cerr = ap_canonical_error(status);
-
-            if (cerr != APR_ENOENT && cerr != APR_ENOTDIR) {
-                ap_log_rerror(APLOG_MARK, APLOG_CRIT, status, r,
-                              "%s pcfg_openfile: unable to check htaccess file, "
-                              "ensure it is readable",
-                              filename);
-                ap_table_setn(r->notes, "error-notes",
-                              "Server unable to read htaccess file, denying "
-                              "access to be safe");
-                return HTTP_FORBIDDEN;
-            }
+        }
+        else if (status != APR_ENOENT && status != APR_ENOTDIR) {
+            ap_log_rerror(APLOG_MARK, APLOG_CRIT, errno, r,
+                          "%s pcfg_openfile: unable to check htaccess file, "
+                          "ensure it is readable",
+                          filename);
+            ap_table_setn(r->notes, "error-notes",
+                          "Server unable to read htaccess file, denying "
+                          "access to be safe");
+            return HTTP_FORBIDDEN;
         }
     }
 
