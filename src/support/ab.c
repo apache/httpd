@@ -382,7 +382,11 @@ static void read_connection(struct connection *c)
         int l = 4;
         int space = CBUFFSIZE - c->cbx - 1;     /* -1 to allow for 0 terminator */
         int tocopy = (space < r) ? space : r;
+#ifndef CHARSET_EBCDIC
         memcpy(c->cbuff + c->cbx, buffer, space);
+#else /*CHARSET_EBCDIC*/
+        ascii2ebcdic(c->cbuff + c->cbx, buffer, space);
+#endif /*CHARSET_EBCDIC*/
         c->cbx += tocopy;
         space -= tocopy;
         c->cbuff[c->cbx] = 0;   /* terminate for benefit of strstr */
@@ -526,6 +530,10 @@ static void test(void)
                      hostname);
 
     reqlen = strlen(request);
+
+#ifdef CHARSET_EBCDIC
+    ebcdic2ascii(request, request, reqlen);
+#endif /*CHARSET_EBCDIC*/
 
     /* ok - lets start */
     gettimeofday(&start, 0);
