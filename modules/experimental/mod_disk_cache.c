@@ -349,16 +349,24 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     rv = apr_file_mktemp(&tmpfile, dobj->tempfile,  
                          APR_CREATE | APR_READ | APR_WRITE | APR_EXCL, r->pool);
 
-    /* Populate the cache handle */
-    h->cache_obj = obj;
-    h->read_body = &read_body;
-    h->read_headers = &read_headers;
-    h->write_body = &write_body;
-    h->write_headers = &write_headers;
-    h->remove_entity = &remove_entity;
+    if (rv == APR_SUCCESS) {
+        /* Populate the cache handle */
+        h->cache_obj = obj;
+        h->read_body = &read_body;
+        h->read_headers = &read_headers;
+        h->write_body = &write_body;
+        h->write_headers = &write_headers;
+        h->remove_entity = &remove_entity;
 
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-                 "disk_cache: Caching URL %s",  key);
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
+                     "disk_cache: Caching URL %s",  key);
+    }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
+                     "disk_cache: Could not cache URL %s [%d]", key, rv);
+
+        return DECLINED;
+    }
 
     return OK;
 }
@@ -812,6 +820,22 @@ static const char
     */
     return NULL;
 }
+
+static int disk_cache_post_config(apr_pool_t *p, apr_pool_t *plog,
+                                  apr_pool_t *ptemp, server_rec *s)
+{
+    disk_cache_conf *conf = ap_get_module_config(s->module_config,
+                                                   &disk_cache_module);
+    if (conf->cache_root == NULL) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
+                     "CacheRoot must be initialized for mod_disk_cache to function.");
+
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    return OK;
+}
+
 static const command_rec disk_cache_cmds[] =
 {
     AP_INIT_TAKE1("CacheRoot", set_cache_root, NULL, RSRC_CONF,
@@ -849,6 +873,7 @@ static void disk_cache_register_hook(apr_pool_t *p)
     cache_hook_create_entity(create_entity, NULL, NULL, APR_HOOK_MIDDLE);
     cache_hook_open_entity(open_entity,  NULL, NULL, APR_HOOK_MIDDLE);
 /*    cache_hook_remove_entity(remove_entity, NULL, NULL, APR_HOOK_MIDDLE); */
+    ap_hook_post_config(disk_cache_post_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA disk_cache_module = {
