@@ -232,7 +232,7 @@ static int status_handler(request_rec *r)
     long req_time;
 #if defined(NEXT)
     float tick = HZ;
-#elif !defined(WIN32)
+#elif !defined(NO_TIMES)
     float tick = sysconf(_SC_CLK_TCK);
 #endif
 #endif /* STATUS */
