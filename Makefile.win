@@ -255,7 +255,7 @@ _install:
 	-mkdir "$(INSTDIR)\conf"
 	-mkdir "$(INSTDIR)\error"
 	-mkdir "$(INSTDIR)\htdocs"
-	-mkdir "$(INSTDIR)\htdocs\manual"
+	-mkdir "$(INSTDIR)\manual"
 	-mkdir "$(INSTDIR)\icons"
 	-mkdir "$(INSTDIR)\include"
 	-mkdir "$(INSTDIR)\lib"
@@ -387,7 +387,7 @@ A
         xcopy docs\docroot "$(INSTDIR)\htdocs" /d < <<
 A
 <<
-        xcopy docs\manual "$(INSTDIR)\htdocs\manual" /s /d < <<
+        xcopy docs\manual "$(INSTDIR)\manual" /s /d < <<
 A
 <<
 	xcopy srclib\pcre\pcre*.h "$(INSTDIR)\include" /d < <<
