@@ -2060,8 +2060,18 @@ static int dav_method_propfind(request_rec *r)
     }
 
     if (err != NULL) {
-        /* ### add a higher-level description? */
-        return dav_handle_err(r, err, NULL);
+        /* If an error occurred during the resource walk, there's
+           basically nothing we can do but abort the connection and
+           log an error.  This is one of the limitations of HTTP; it
+           needs to "know" the entire status of the response before
+           generating it, which is just impossible in these streamy
+           response situations. */
+        err = dav_push_error(r->pool, err->status, 0,
+                             "Provider encountered an error while streaming"
+                             " a multistatus PROPFIND response.", err);
+        dav_log_err(r, err, APLOG_ERR);
+        r->connection->aborted = 1;
+        return DONE;
     }
 
     /* Finish up the multistatus response. */
@@ -4034,9 +4044,22 @@ static int dav_method_report(request_rec *r)
     /* run report hook */
     if ((err = (*vsn_hooks->deliver_report)(r, resource, doc,
                                             r->output_filters)) != NULL) {
-        /* NOTE: we're assuming that the provider has not generated any
-           content yet! */
-        return dav_handle_err(r, err, NULL);
+        if (! r->sent_bodyct)
+          /* No data has been sent to client yet;  throw normal error. */
+          return dav_handle_err(r, err, NULL);
+
+        /* If an error occurred during the report delivery, there's
+           basically nothing we can do but abort the connection and
+           log an error.  This is one of the limitations of HTTP; it
+           needs to "know" the entire status of the response before
+           generating it, which is just impossible in these streamy
+           response situations. */
+        err = dav_push_error(r->pool, err->status, 0,
+                             "Provider encountered an error while streaming"
+                             " a REPORT response.", err);
+        dav_log_err(r, err, APLOG_ERR);
+        r->connection->aborted = 1;
+        return DONE;
     }
 
     return DONE;
