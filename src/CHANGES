@@ -85,6 +85,16 @@ Changes with Apache 1.2b5
      double-quote from text and so that it properly checks for unsupported
      status codes using the new index_of_response interface. [Roy Fielding] 
 
+  *) Multiple fixes to the lingering_close code in order to avoid being
+     interrupted by a stray timeout, to avoid lingering on a connection
+     that has already been aborted or never really existed, to ensure that
+     we stop lingering as soon as any error condition is received, and to
+     prevent being stuck indefinitely if the read blocks.  Also improves
+     reporting of error conditions.  [Marc Slemko and Roy Fielding]
+
+  *) Fixed initialization of parameter structure for sigaction.
+     [mgyger@itr.ch, Adrian Filipi-Martin]
+
 Changes with Apache 1.2b4:
 
   *) Fix possible race condition in accept_mutex_init() that
