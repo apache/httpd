@@ -97,6 +97,7 @@ typedef enum {
     EES_INIT = 0,   /* no error info yet; value must be 0 for easy init */
     EES_LIMIT,      /* built-in restriction encountered */
     EES_INCOMPLETE_CHAR, /* incomplete multi-byte char at end of content */
+    EES_BUCKET_READ,
     EES_BAD_INPUT   /* input data invalid */
 } ees_t;
 
@@ -472,6 +473,9 @@ static void log_xlate_error(ap_filter_t *f, apr_status_t rv)
     case EES_BAD_INPUT:
         msg = "xlate_filter() - an input character was invalid";
         break;
+    case EES_BUCKET_READ:
+        msg = "xlate_filter() - bucket read routine failed";
+        break;
     case EES_INCOMPLETE_CHAR:
         strcpy(msgbuf, "xlate_filter() - incomplete char at end of input - ");
         cur = 0;
@@ -531,16 +535,28 @@ static apr_status_t xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
                 ap_bucket_destroy(consumed_bucket);
                 consumed_bucket = NULL;
             }
-            if (dptr == AP_BRIGADE_SENTINEL(bb) ||
-                dptr->read(dptr, &cur_str, &cur_len, 0) == AP_END_OF_BRIGADE) {
+            if (dptr == AP_BRIGADE_SENTINEL(bb)) {
                 done = 1;
-                if (dptr != AP_BRIGADE_SENTINEL(bb) && ctx->saved) {
+                break;
+            }
+            if (dptr->type == AP_BUCKET_EOS) {
+                done = 1;
+                cur_len = AP_END_OF_BRIGADE; /* XXX yuck, but that tells us to send
+                                 * eos down; when we minimize our bb construction
+                                 * we'll fix this crap */
+                if (ctx->saved) {
                     /* Oops... we have a partial char from the previous bucket
                      * that won't be completed because there's no more data.
                      */
                     rv = APR_INCOMPLETE;
                     ctx->ees = EES_INCOMPLETE_CHAR;
                 }
+                break;
+            }
+            rv = dptr->read(dptr, &cur_str, &cur_len, 0);
+            if (rv != APR_SUCCESS) {
+                done = 1;
+                ctx->ees = EES_BUCKET_READ;
                 break;
             }
             consumed_bucket = dptr; /* for axing when we're done reading it */
