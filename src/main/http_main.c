@@ -223,6 +223,11 @@ pid_t pgrp;
 
 int one_process = 0;
 
+/* set if timeouts are to be handled by the children and not by the parent.
+ * i.e. child_timeouts = standalone || one_process.
+ */
+static int child_timeouts;
+
 #ifdef DEBUG_SIGSTOP
 int raise_sigstop_flags;
 #endif
@@ -863,12 +868,17 @@ unsigned int set_callback_and_alarm(void (*fn) (int), int x)
 #ifndef OPTIMIZE_TIMEOUTS
     old = alarm(x);
 #else
-    /* Just note the timeout in our scoreboard, no need to call the system.
-     * We also note that the virtual time has gone forward.
-     */
-    old = scoreboard_image->servers[my_child_num].timeout_len;
-    scoreboard_image->servers[my_child_num].timeout_len = x;
-    ++scoreboard_image->servers[my_child_num].cur_vtime;
+    if (child_timeouts) {
+	old = alarm(x);
+    }
+    else {
+	/* Just note the timeout in our scoreboard, no need to call the system.
+	 * We also note that the virtual time has gone forward.
+	 */
+	old = scoreboard_image->servers[my_child_num].timeout_len;
+	scoreboard_image->servers[my_child_num].timeout_len = x;
+	++scoreboard_image->servers[my_child_num].cur_vtime;
+    }
 #endif
 #endif
     return (old);
@@ -3538,6 +3548,8 @@ int main(int argc, char *argv[])
 
     suexec_enabled = init_suexec();
     server_conf = read_config(pconf, ptrans, server_confname);
+
+    child_timeouts = standalone || one_process;
 
     if (standalone) {
 	open_logs(server_conf, pconf);

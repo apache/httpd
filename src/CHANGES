@@ -1,5 +1,7 @@
 Changes with Apache 1.3b4
 
+  *) Fix problems with timeouts in inetd mode and -X mode.  [Dean Gaudet]
+
   *) Fix the spurious "(0)unknown error: mmap_handler: mmap failed"
      error messages. [Ben Hyde]
 
