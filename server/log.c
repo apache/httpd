@@ -96,6 +96,10 @@ typedef struct {
 	int	t_val;
 } TRANS;
 
+APR_HOOK_STRUCT(
+    APR_HOOK_LINK(error_log)
+)
+
 #ifdef HAVE_SYSLOG
 
 static const TRANS facilities[] = {
@@ -455,6 +459,7 @@ static void log_error_core(const char *file, int line, int level,
 	syslog(level_and_mask, "%s", errstr);
     }
 #endif
+    ap_run_error_log(file, line, level, status, s, r, pool, errstr);
 }
     
 AP_DECLARE(void) ap_log_error(const char *file, int line, int level,
@@ -749,4 +754,11 @@ AP_DECLARE(void) ap_close_piped_log(piped_log *pl)
 {
     apr_pool_cleanup_run(pl->p, pl, piped_log_cleanup);
 }
+
+AP_IMPLEMENT_HOOK_VOID(error_log,
+                       (const char *file, int line, int level, 
+                       apr_status_t status, const server_rec *s,
+                       const request_rec *r, apr_pool_t *pool, 
+                       const char *errstr), (file, line, level,
+                       status, s, r, pool, errstr))
 

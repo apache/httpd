@@ -1,5 +1,11 @@
 Changes with Apache 2.0.19-dev
 
+  *) Add a new request hook, error_log.  This phase allows modules
+     to act on the error log string _after_ it has been written
+     to the error log.  The goal for this hook is to allow monitoring
+     modules to send the error string to the monitoring agent.
+     [Ryan Bloom]
+
   *) Modify mod_echo to make it use filters for input and output.
      [Ryan Morgan <rmorgan@covalent.net>]
 
