@@ -782,10 +782,12 @@ static int form_header_field(header_struct *h,
                              const char *fieldname, const char *fieldval)
 {
     char *headfield;
+    apr_size_t len;
 
     headfield = apr_pstrcat(h->pool, fieldname, ": ", fieldval, CRLF, NULL);
-    ap_xlate_proto_to_ascii(headfield, strlen(headfield));
-    apr_brigade_puts(h->bb, NULL, NULL, headfield);
+    len = strlen(headfield);
+    ap_xlate_proto_to_ascii(headfield, len);
+    apr_brigade_write(h->bb, NULL, NULL, headfield, len);
     return 1;
 }
 
@@ -826,6 +828,7 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
     char *date = NULL;
     char *tmp;
     header_struct h;
+    apr_size_t len;
 
     if (r->assbackwards) {
         /* there are no headers to send */
@@ -835,8 +838,9 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
     /* Output the HTTP/1.x Status-Line and the Date and Server fields */
 
     tmp = apr_pstrcat(r->pool, protocol, " ", r->status_line, CRLF, NULL);
-    ap_xlate_proto_to_ascii(tmp, strlen(tmp));
-    apr_brigade_puts(bb, NULL, NULL, tmp);
+    len = strlen(tmp);
+    ap_xlate_proto_to_ascii(tmp, len);
+    apr_brigade_write(bb, NULL, NULL, tmp, len);
 
     date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
     apr_rfc822_date(date, r->request_time);
@@ -880,15 +884,18 @@ static void terminate_header(apr_bucket_brigade *bb)
     char tmp[] = "X-Pad: avoid browser bug" CRLF;
     char crlf[] = CRLF;
     apr_ssize_t len;
+    apr_size_t buflen;
 
     (void) apr_brigade_length(bb, 1, &len);
 
     if (len >= 255 && len <= 257) {
-        ap_xlate_proto_to_ascii(tmp, strlen(tmp));
-        apr_brigade_puts(bb, NULL, NULL, tmp);
+        buflen = strlen(tmp);
+        ap_xlate_proto_to_ascii(tmp, buflen);
+        apr_brigade_write(bb, NULL, NULL, tmp, buflen);
     }
-    ap_xlate_proto_to_ascii(crlf, strlen(crlf));
-    apr_brigade_puts(bb, NULL, NULL, crlf);
+    buflen = strlen(crlf);
+    ap_xlate_proto_to_ascii(crlf, buflen);
+    apr_brigade_write(bb, NULL, NULL, crlf, buflen);
 }
 
 /* Build the Allow field-value from the request handler method mask.
