@@ -63,12 +63,30 @@ ab \- Apache HTTP server benchmarking tool
 .BI \-t " timelimit"
 ] [
 .BI \-c " concurrency"
+] [
+.BI \-p " POST file"
+] [
+.BI \-T " content-type"
+] [
+.BI \-v " verbosity"
+]
+] [
+.BI \-w " output HTML"
+]
+] [
+.BI \-x " <table> attributes"
+]
+] [
+.BI \-y " <tr> attributes"
+]
+] [
+.BI \-z " <td> attributes"
 ]
 .I [http://]hostname[:port]/path 
 
 .B ab
 [
-.B \-v 
+.B \-V
 ] [
 .B \-h 
 ]
@@ -102,9 +120,40 @@ time.  Per default there is no timelimit.
 .BI \-c " concurrency"
 Number of multiple requests per time to perform. 
 Default is one request per time.
+
+.TP 12
+.BI \-p " POST file"
+File containing data to POST.
+
+.TP 12
+.BI \-T " content-type"
+Content-type header to use for POST data.
+
 .TP 12
 .B \-v 
-Display version and copyright information.
+Set verbosity level - 4 and above prints information on headers, 3 and
+above prints response codes (404, 200, etc.), 2 and above prints
+warnings and info.
+
+.TP 12
+.BI \-w
+Print out results in HTML tables.  Default table is two columns wide,
+with a white background.
+.TP 12
+.BI \-x " attributes"
+String to use as attributes for <table>.  Attributes are inserted
+<table 
+.B here
+>
+.TP 12
+.BI \-y " attributes"
+String to use as attributes for <tr>.
+.TP 12
+.BI \-z " attributes"
+String to use as attributes for <td>.
+.TP 12
+.B \-V
+Display version number and exit.
 .TP 12
 .B \-h 
 Display usage information.

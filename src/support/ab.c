@@ -6,7 +6,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -55,34 +55,34 @@
  *
  */
 
-/* 
-** This program is based on ZeusBench V1.0 written by Adam Twiss 
-** which is Copyright (c) 1996 by Zeus Technology Ltd. http://www.zeustech.net/
-**
-** This software is provided "as is" and any express or implied waranties, 
-** including but not limited to, the implied warranties of merchantability and
-** fitness for a particular purpose are disclaimed.  In no event shall 
-** Zeus Technology Ltd. be liable for any direct, indirect, incidental, special, 
-** exemplary, or consequential damaged (including, but not limited to, 
-** procurement of substitute good or services; loss of use, data, or profits;
-** or business interruption) however caused and on theory of liability.  Whether
-** in contract, strict liability or tort (including negligence or otherwise) 
-** arising in any way out of the use of this software, even if advised of the
-** possibility of such damage.
-**
-*/
+/*
+   ** This program is based on ZeusBench V1.0 written by Adam Twiss
+   ** which is Copyright (c) 1996 by Zeus Technology Ltd. http://www.zeustech.net/
+   **
+   ** This software is provided "as is" and any express or implied waranties,
+   ** including but not limited to, the implied warranties of merchantability and
+   ** fitness for a particular purpose are disclaimed.  In no event shall
+   ** Zeus Technology Ltd. be liable for any direct, indirect, incidental, special,
+   ** exemplary, or consequential damaged (including, but not limited to,
+   ** procurement of substitute good or services; loss of use, data, or profits;
+   ** or business interruption) however caused and on theory of liability.  Whether
+   ** in contract, strict liability or tort (including negligence or otherwise)
+   ** arising in any way out of the use of this software, even if advised of the
+   ** possibility of such damage.
+   **
+ */
 
 /*
-** HISTORY: 
-**    - Originally written by Adam Twiss <adam@zeus.co.uk>, March 1996
-**      with input from Mike Belshe <mbelshe@netscape.com> and 
-**      Michael Campanella <campanella@stevms.enet.dec.com>
-**    - Enhanced by Dean Gaudet <dgaudet@apache.org>, November 1997
-**    - Cleaned up by Ralf S. Engelschall <rse@apache.org>, March 1998 
-**    - POST and verbosity by Kurt Sussman <kls@merlot.com>, August 1998 
-**    - HTML table output added by David N. Welton <davidw@prosa.it>, January 1999
-**
-*/
+   ** HISTORY:
+   **    - Originally written by Adam Twiss <adam@zeus.co.uk>, March 1996
+   **      with input from Mike Belshe <mbelshe@netscape.com> and
+   **      Michael Campanella <campanella@stevms.enet.dec.com>
+   **    - Enhanced by Dean Gaudet <dgaudet@apache.org>, November 1997
+   **    - Cleaned up by Ralf S. Engelschall <rse@apache.org>, March 1998
+   **    - POST and verbosity by Kurt Sussman <kls@merlot.com>, August 1998
+   **    - HTML table output added by David N. Welton <davidw@prosa.it>, January 1999
+   **
+ */
 
 /*
  * BUGS:
@@ -119,7 +119,7 @@
 #include <sys/ioctl.h>
 #include <string.h>
 
-#define ap_select	select
+#define ap_select       select
 #else /* (!)NO_APACHE_INCLUDES */
 #include "ap_config.h"
 #include <fcntl.h>
@@ -140,20 +140,20 @@
 struct connection {
     int fd;
     int state;
-    int read;                   /* amount of bytes read */
-    int bread;                  /* amount of body read */
-    int length;                 /* Content-Length value used for keep-alive */
-    char cbuff[CBUFFSIZE];      /* a buffer to store server response header */
-    int cbx;                    /* offset in cbuffer */
-    int keepalive;              /* non-zero if a keep-alive request */
-    int gotheader;              /* non-zero if we have the entire header in cbuff */
+    int read;			/* amount of bytes read */
+    int bread;			/* amount of body read */
+    int length;			/* Content-Length value used for keep-alive */
+    char cbuff[CBUFFSIZE];	/* a buffer to store server response header */
+    int cbx;			/* offset in cbuffer */
+    int keepalive;		/* non-zero if a keep-alive request */
+    int gotheader;		/* non-zero if we have the entire header in cbuff */
     struct timeval start, connect, done;
 };
 
 struct data {
-    int read;                   /* number of bytes read */
-    int ctime;                  /* time in ms to connect */
-    int time;                   /* time in ms for connection */
+    int read;			/* number of bytes read */
+    int ctime;			/* time in ms to connect */
+    int time;			/* time in ms for connection */
 };
 
 #define ap_min(a,b) ((a)<(b))?(a):(b)
@@ -161,29 +161,33 @@ struct data {
 
 /* --------------------- GLOBALS ---------------------------- */
 
-int verbosity = 0;              /* no verbosity by default */
-int posting = 0;                /* GET by default */
-int requests = 1;               /* Number of requests to make */
-int concurrency = 1;            /* Number of multiple requests to make */
-int tlimit = 0;                 /* time limit in cs */
-int keepalive = 0;              /* try and do keepalive connections */
-char servername[1024];          /* name that server reports */
-char hostname[1024];            /* host name */
-char path[1024];                /* path name */
-char postfile[1024];            /* name of file containing post data */
-char* postdata;                 /* *buffer containing data from postfile */
-int postlen = 0;                /* length of data to be POSTed */
-char content_type[1024];        /* content type to put in POST header */
-int port = 80;                  /* port number */
+int verbosity = 0;		/* no verbosity by default */
+int posting = 0;		/* GET by default */
+int requests = 1;		/* Number of requests to make */
+int concurrency = 1;		/* Number of multiple requests to make */
+int tlimit = 0;			/* time limit in cs */
+int keepalive = 0;		/* try and do keepalive connections */
+char servername[1024];		/* name that server reports */
+char hostname[1024];		/* host name */
+char path[1024];		/* path name */
+char postfile[1024];		/* name of file containing post data */
+char *postdata;			/* *buffer containing data from postfile */
+int postlen = 0;		/* length of data to be POSTed */
+char content_type[1024];	/* content type to put in POST header */
+int port = 80;			/* port number */
+
 int use_html = 0;		/* use html in the report */
- 
-int doclen = 0;                 /* the length the document should be */
-int totalread = 0;              /* total number of bytes read */
-int totalbread = 0;             /* totoal amount of entity body read */
-int totalposted = 0;            /* total number of bytes posted, inc. headers */
-int done = 0;                   /* number of requests we have done */
-int doneka = 0;                 /* number of keep alive connections done */
-int good = 0, bad = 0;          /* number of good and bad requests */
+char *tablestring;
+char *trstring;
+char *tdstring;
+
+int doclen = 0;			/* the length the document should be */
+int totalread = 0;		/* total number of bytes read */
+int totalbread = 0;		/* totoal amount of entity body read */
+int totalposted = 0;		/* total number of bytes posted, inc. headers */
+int done = 0;			/* number of requests we have done */
+int doneka = 0;			/* number of keep alive connections done */
+int good = 0, bad = 0;		/* number of good and bad requests */
 
 /* store error cases */
 int err_length = 0, err_conn = 0, err_except = 0;
@@ -198,11 +202,11 @@ int reqlen;
 /* one global throw-away buffer to read stuff into */
 char buffer[8192];
 
-struct connection *con;         /* connection array */
-struct data *stats;             /* date for each request */
+struct connection *con;		/* connection array */
+struct data *stats;		/* date for each request */
 
-fd_set readbits, writebits;     /* bits for select */
-struct sockaddr_in server;      /* server addr structure */
+fd_set readbits, writebits;	/* bits for select */
+struct sockaddr_in server;	/* server addr structure */
 
 /* --------------------------------------------------------- */
 
@@ -211,7 +215,7 @@ struct sockaddr_in server;      /* server addr structure */
 static void err(char *s)
 {
     if (errno) {
-    	perror(s);
+	perror(s);
     }
     else {
 	printf("%s", s);
@@ -221,7 +225,7 @@ static void err(char *s)
 
 /* --------------------------------------------------------- */
 
-/* write out request to a connection - assumes we can write 
+/* write out request to a connection - assumes we can write
    (small) request out in one go into our new socket buffer  */
 
 static void write_request(struct connection *c)
@@ -230,8 +234,8 @@ static void write_request(struct connection *c)
     /* XXX: this could use writev for posting -- more efficient -djg */
     write(c->fd, request, reqlen);
     if (posting) {
-        write(c->fd,postdata, postlen);
-        totalposted += (reqlen + postlen); 
+	write(c->fd, postdata, postlen);
+	totalposted += (reqlen + postlen);
     }
 
     c->state = STATE_READ;
@@ -285,63 +289,63 @@ static void output_results(void)
     printf("\n");
     printf("Concurrency Level:      %d\n", concurrency);
     printf("Time taken for tests:   %d.%03d seconds\n",
-           timetaken / 1000, timetaken % 1000);
+	   timetaken / 1000, timetaken % 1000);
     printf("Complete requests:      %d\n", done);
     printf("Failed requests:        %d\n", bad);
     if (bad)
-        printf("   (Connect: %d, Length: %d, Exceptions: %d)\n",
-               err_conn, err_length, err_except);
+	printf("   (Connect: %d, Length: %d, Exceptions: %d)\n",
+	       err_conn, err_length, err_except);
     if (err_response)
-        printf("Non-2xx responses:      %d\n", err_response);
+	printf("Non-2xx responses:      %d\n", err_response);
     if (keepalive)
-        printf("Keep-Alive requests:    %d\n", doneka);
+	printf("Keep-Alive requests:    %d\n", doneka);
     printf("Total transferred:      %d bytes\n", totalread);
     if (posting)
-        printf("Total POSTed:           %d\n", totalposted);
+	printf("Total POSTed:           %d\n", totalposted);
     printf("HTML transferred:       %d bytes\n", totalbread);
 
     /* avoid divide by zero */
     if (timetaken) {
-        printf("Requests per second:    %.2f\n", 1000 * (float) (done) / timetaken);
-        printf("Transfer rate:          %.2f kb/s received\n",
-               (float) (totalread) / timetaken);
-        if (posting) {
-            printf("                        %.2f kb/s sent\n", 
-       		    (float)(totalposted)/timetaken);
-            printf("                        %.2f kb/s total\n", 
-           	    (float)(totalread + totalposted)/timetaken);
-        }
+	printf("Requests per second:    %.2f\n", 1000 * (float) (done) / timetaken);
+	printf("Transfer rate:          %.2f kb/s received\n",
+	       (float) (totalread) / timetaken);
+	if (posting) {
+	    printf("                        %.2f kb/s sent\n",
+		   (float) (totalposted) / timetaken);
+	    printf("                        %.2f kb/s total\n",
+		   (float) (totalread + totalposted) / timetaken);
+	}
     }
 
     {
-        /* work out connection times */
-        int i;
-        int totalcon = 0, total = 0;
-        int mincon = 9999999, mintot = 999999;
-        int maxcon = 0, maxtot = 0;
+	/* work out connection times */
+	int i;
+	int totalcon = 0, total = 0;
+	int mincon = 9999999, mintot = 999999;
+	int maxcon = 0, maxtot = 0;
 
-        for (i = 0; i < requests; i++) {
-            struct data s = stats[i];
-            mincon = ap_min(mincon, s.ctime);
-            mintot = ap_min(mintot, s.time);
-            maxcon = ap_max(maxcon, s.ctime);
-            maxtot = ap_max(maxtot, s.time);
-            totalcon += s.ctime;
-            total += s.time;
-        }
-        printf("\nConnnection Times (ms)\n");
-        printf("              min   avg   max\n");
-        printf("Connect:    %5d %5d %5d\n", mincon, totalcon / requests, maxcon);
-        printf("Processing: %5d %5d %5d\n", 
-            mintot - mincon, (total/requests) - (totalcon/requests),
-            maxtot - maxcon);
-        printf("Total:      %5d %5d %5d\n", mintot, total / requests, maxtot);
+	for (i = 0; i < requests; i++) {
+	    struct data s = stats[i];
+	    mincon = ap_min(mincon, s.ctime);
+	    mintot = ap_min(mintot, s.time);
+	    maxcon = ap_max(maxcon, s.ctime);
+	    maxtot = ap_max(maxtot, s.time);
+	    totalcon += s.ctime;
+	    total += s.time;
+	}
+	printf("\nConnnection Times (ms)\n");
+	printf("              min   avg   max\n");
+	printf("Connect:    %5d %5d %5d\n", mincon, totalcon / requests, maxcon);
+	printf("Processing: %5d %5d %5d\n",
+	       mintot - mincon, (total / requests) - (totalcon / requests),
+	       maxtot - maxcon);
+	printf("Total:      %5d %5d %5d\n", mintot, total / requests, maxtot);
     }
 }
 
 /* --------------------------------------------------------- */
 
-/* calculate and output results in HTML  */ 
+/* calculate and output results in HTML  */
 
 static void output_html_results(void)
 {
@@ -350,70 +354,113 @@ static void output_html_results(void)
     gettimeofday(&endtime, 0);
     timetaken = timedif(endtime, start);
 
-    printf("\n\n<table>\n");
-    printf("<tr><th>Server Software:</th>	<td>%s</td></tr>\n", servername);
-    printf("<tr><th>Server Hostname:</th>	<td>%s</td></tr>\n", hostname);
-    printf("<tr><th>Server Port:</th>		<td>%d</td></tr>\n", port);
-    printf("<tr><th></th><td></td></tr>\n");
-    printf("<tr><th>Document Path:</th>		<td>%s</td></tr>\n", path);
-    printf("<tr><th>Document Length:</th>	<td>%d bytes</td></tr>\n", doclen);
-    printf("<tr><th></th><td></td></tr>\n");
-    printf("<tr><th>Concurrency Level:</th>	<td>%d</td></tr>\n", concurrency);
-    printf("<tr><th>Time taken for tests:</th>	<td>%d.%03d seconds</td></tr>\n",
-           timetaken / 1000, timetaken % 1000);
-    printf("<tr><th>Complete requests:</th>	<td>%d</td></tr>\n", done);
-    printf("<tr><th>Failed requests:</th>	<td>%d</td></tr>\n", bad);
+    printf("\n\n<table %s>\n", tablestring);
+    printf("<tr %s><th colspan=2 %s>Server Software:</th>"
+	   "<td colspan=2 %s>%s</td></tr>\n",
+	   trstring, tdstring, tdstring, servername);
+    printf("<tr %s><th colspan=2 %s>Server Hostname:</th>"
+	   "<td colspan=2 %s>%s</td></tr>\n",
+	   trstring, tdstring, tdstring, hostname);
+    printf("<tr %s><th colspan=2 %s>Server Port:</th>"
+	   "<td colspan=2 %s>%d</td></tr>\n",
+	   trstring, tdstring, tdstring, port);
+    printf("<tr %s><th colspan=2 %s>Document Path:</th>"
+	   "<td colspan=2 %s>%s</td></tr>\n",
+	   trstring, tdstring, tdstring, path);
+    printf("<tr %s><th colspan=2 %s>Document Length:</th>"
+	   "<td colspan=2 %s>%d bytes</td></tr>\n",
+	   trstring, tdstring, tdstring, doclen);
+    printf("<tr %s><th colspan=2 %s>Concurrency Level:</th>"
+	   "<td colspan=2 %s>%d</td></tr>\n",
+	   trstring, tdstring, tdstring, concurrency);
+    printf("<tr %s><th colspan=2 %s>Time taken for tests:</th>"
+	   "<td colspan=2 %s>%d.%03d seconds</td></tr>\n",
+	   trstring, tdstring, tdstring, timetaken / 1000, timetaken % 1000);
+    printf("<tr %s><th colspan=2 %s>Complete requests:</th>"
+	   "<td colspan=2 %s>%d</td></tr>\n",
+	   trstring, tdstring, tdstring, done);
+    printf("<tr %s><th colspan=2 %s>Failed requests:</th>"
+	   "<td colspan=2 %s>%d</td></tr>\n",
+	   trstring, tdstring, tdstring, bad);
     if (bad)
-        printf("<tr><td colspan=3>   (Connect: %d, Length: %d, Exceptions: %d)</td></tr>\n",
-               err_conn, err_length, err_except);
+	printf("<tr %s><td colspan=4 %s >   (Connect: %d, Length: %d, Exceptions: %d)</td></tr>\n",
+	       trstring, tdstring, err_conn, err_length, err_except);
     if (err_response)
-        printf("<tr><th>Non-2xx responses:</th>	<td>%d</td></tr>\n", err_response);
+	printf("<tr %s><th colspan=2 %s>Non-2xx responses:</th>"
+	       "<td colspan=2 %s>%d</td></tr>\n",
+	       trstring, tdstring, tdstring, err_response);
     if (keepalive)
-        printf("<tr><th>Keep-Alive requests:</th>	<td>%d</td></tr>\n", doneka);
-    printf("<tr><th>Total transferred:</th>	<td>%d bytes</td></tr>\n", totalread);
+	printf("<tr %s><th colspan=2 %s>Keep-Alive requests:</th>"
+	       "<td colspan=2 %s>%d</td></tr>\n",
+	       trstring, tdstring, tdstring, doneka);
+    printf("<tr %s><th colspan=2 %s>Total transferred:</th>"
+	   "<td colspan=2 %s>%d bytes</td></tr>\n",
+	   trstring, tdstring, tdstring, totalread);
     if (posting)
-        printf("<tr><th>Total POSTed:</th>	<td>%d</td></tr>\n", totalposted);
-    printf("<tr><th>HTML transferred:</th>	<td>%d bytes</td></tr>\n", totalbread);
+	printf("<tr %s><th colspan=2 %s>Total POSTed:</th>"
+	       "<td colspan=2 %s>%d</td></tr>\n",
+	       trstring, tdstring, tdstring, totalposted);
+    printf("<tr %s><th colspan=2 %s>HTML transferred:</th>"
+	   "<td colspan=2 %s>%d bytes</td></tr>\n",
+	   trstring, tdstring, tdstring, totalbread);
 
     /* avoid divide by zero */
     if (timetaken) {
-        printf("<tr><th>Requests per second:</th>	<td>%.2f</td></tr>\n", 1000 * (float) (done) / timetaken);
-        printf("<tr><th>Transfer rate:</th>	<td>%.2f kb/s received</td></tr>\n", (float) (totalread) / timetaken);
-        if (posting) {
-            printf("<tr><td></td>	<td>%.2f kb/s sent</td></tr>\n", 
-       		    (float)(totalposted)/timetaken);
-            printf("<tr><td></td>	<td>%.2f kb/s total</td></tr>\n", 
-           	    (float)(totalread + totalposted)/timetaken);
-        }
+	printf("<tr %s><th colspan=2 %s>Requests per second:</th>"
+	       "<td colspan=2 %s>%.2f</td></tr>\n",
+	   trstring, tdstring, tdstring, 1000 * (float) (done) / timetaken);
+	printf("<tr %s><th colspan=2 %s>Transfer rate:</th>"
+	       "<td colspan=2 %s>%.2f kb/s received</td></tr>\n",
+	     trstring, tdstring, tdstring, (float) (totalread) / timetaken);
+	if (posting) {
+	    printf("<tr %s><td colspan=2 %s>&nbsp;</td>"
+		   "<td colspan=2 %s>%.2f kb/s sent</td></tr>\n",
+		   trstring, tdstring, tdstring,
+		   (float) (totalposted) / timetaken);
+	    printf("<tr %s><td colspan=2 %s>&nbsp;</td>"
+		   "<td colspan=2 %s>%.2f kb/s total</td></tr>\n",
+		   trstring, tdstring, tdstring,
+		   (float) (totalread + totalposted) / timetaken);
+	}
     }
-    printf("</table>\n");
 
     {
-        /* work out connection times */
-        int i;
-        int totalcon = 0, total = 0;
-        int mincon = 9999999, mintot = 999999;
-        int maxcon = 0, maxtot = 0;
+	/* work out connection times */
+	int i;
+	int totalcon = 0, total = 0;
+	int mincon = 9999999, mintot = 999999;
+	int maxcon = 0, maxtot = 0;
 
-        for (i = 0; i < requests; i++) {
-            struct data s = stats[i];
+	for (i = 0; i < requests; i++) {
+	    struct data s = stats[i];
 	    mincon = ap_min(mincon, s.ctime);
 	    mintot = ap_min(mintot, s.time);
 	    maxcon = ap_max(maxcon, s.ctime);
 	    maxtot = ap_max(maxtot, s.time);
-            totalcon += s.ctime;
-            total += s.time;
-        }
-	printf("<table>\n");
-        printf("<tr><th colspan=4>Connnection Times (ms)</th></tr>\n");
-        printf("<tr><th></th> <th>min</th>   <th>avg</th>   <th>max</th></tr>\n");
-        printf("<tr><th>Connect:</th>    <td>%5d</td> <td>%5d</td> <td>%5d</td></tr>\n", 
-	       mincon, totalcon / requests, maxcon);
-        printf("<tr><th>Processing:</th> <td>%5d</td> <td>%5d</td> <td>%5d</td></tr>\n", 
-            mintot - mincon, (total/requests) - (totalcon/requests),
-            maxtot - maxcon);
-        printf("<tr><th>Total:</th> <td>%5d</td> <td>%5d</td> <td>%5d</td></tr>\n", 
-	       mintot, total / requests, maxtot);
+	    totalcon += s.ctime;
+	    total += s.time;
+	}
+
+	printf("<tr %s><th %s colspan=4>Connnection Times (ms)</th></tr>\n",
+	       trstring, tdstring);
+	printf("<tr %s><th %s>&nbsp;</th> <th %s>min</th>   <th %s>avg</th>   <th %s>max</th></tr>\n",
+	       trstring, tdstring, tdstring, tdstring, tdstring);
+	printf("<tr %s><th %s>Connect:</th>"
+	       "<td %s>%5d</td>"
+	       "<td %s>%5d</td>"
+	       "<td %s>%5d</td></tr>\n",
+	       trstring, tdstring, tdstring, mincon, tdstring, totalcon / requests, tdstring, maxcon);
+	printf("<tr %s><th %s>Processing:</th>"
+	       "<td %s>%5d</td>"
+	       "<td %s>%5d</td>"
+	       "<td %s>%5d</td></tr>\n",
+	       trstring, tdstring, tdstring, mintot - mincon, tdstring,
+	       (total / requests) - (totalcon / requests), tdstring, maxtot - maxcon);
+	printf("<tr %s><th %s>Total:</th>"
+	       "<td %s>%5d</td>"
+	       "<td %s>%5d</td>"
+	       "<td %s>%5d</td></tr>\n",
+	       trstring, tdstring, tdstring, mintot, tdstring, total / requests, tdstring, maxtot);
 	printf("</table>\n");
     }
 }
@@ -432,25 +479,25 @@ static void start_connect(struct connection *c)
 
     c->fd = socket(AF_INET, SOCK_STREAM, 0);
     if (c->fd < 0)
-        err("socket");
+	err("socket");
 
     nonblock(c->fd);
     gettimeofday(&c->start, 0);
 
     if (connect(c->fd, (struct sockaddr *) &server, sizeof(server)) < 0) {
-        if (errno == EINPROGRESS) {
-            c->state = STATE_CONNECTING;
-            FD_SET(c->fd, &writebits);
-            return;
-        }
-        else {
-            close(c->fd);
-            err_conn++;
-            if (bad++ > 10) {
-                err("\nTest aborted after 10 failures\n\n");
-            }
-            start_connect(c);
-        }
+	if (errno == EINPROGRESS) {
+	    c->state = STATE_CONNECTING;
+	    FD_SET(c->fd, &writebits);
+	    return;
+	}
+	else {
+	    close(c->fd);
+	    err_conn++;
+	    if (bad++ > 10) {
+		err("\nTest aborted after 10 failures\n\n");
+	    }
+	    start_connect(c);
+	}
     }
 
     /* connected first time */
@@ -464,28 +511,28 @@ static void start_connect(struct connection *c)
 static void close_connection(struct connection *c)
 {
     if (c->read == 0 && c->keepalive) {
-        /* server has legitimately shut down an idle keep alive request */
-        good--;                 /* connection never happend */
+	/* server has legitimately shut down an idle keep alive request */
+	good--;			/* connection never happend */
     }
     else {
-        if (good == 1) {
-            /* first time here */
-            doclen = c->bread;
-        }
-        else if (c->bread != doclen) {
-            bad++;
-            err_length++;
-        }
+	if (good == 1) {
+	    /* first time here */
+	    doclen = c->bread;
+	}
+	else if (c->bread != doclen) {
+	    bad++;
+	    err_length++;
+	}
 
-        /* save out time */
-        if (done < requests) {
-            struct data s;
-            gettimeofday(&c->done, 0);
-            s.read = c->read;
-            s.ctime = timedif(c->connect, c->start);
-            s.time = timedif(c->done, c->start);
-            stats[done++] = s;
-        }
+	/* save out time */
+	if (done < requests) {
+	    struct data s;
+	    gettimeofday(&c->done, 0);
+	    s.read = c->read;
+	    s.ctime = timedif(c->connect, c->start);
+	    s.time = timedif(c->done, c->start);
+	    stats[done++] = s;
+	}
     }
 
     close(c->fd);
@@ -505,144 +552,145 @@ static void read_connection(struct connection *c)
 {
     int r;
     char *part;
-    char respcode[4];  /* 3 digits and null */
+    char respcode[4];		/* 3 digits and null */
 
     r = read(c->fd, buffer, sizeof(buffer));
     if (r == 0 || (r < 0 && errno != EAGAIN)) {
-        good++;
-        close_connection(c);
-        return;
+	good++;
+	close_connection(c);
+	return;
     }
 
     if (r < 0 && errno == EAGAIN)
-        return;
+	return;
 
     c->read += r;
     totalread += r;
 
     if (!c->gotheader) {
-        char *s;
-        int l = 4;
-        int space = CBUFFSIZE - c->cbx - 1;     /* -1 to allow for 0 terminator */
-        int tocopy = (space < r) ? space : r;
+	char *s;
+	int l = 4;
+	int space = CBUFFSIZE - c->cbx - 1;	/* -1 to allow for 0 terminator */
+	int tocopy = (space < r) ? space : r;
 #ifndef CHARSET_EBCDIC
-        memcpy(c->cbuff + c->cbx, buffer, space);
-#else /*CHARSET_EBCDIC*/
-        ascii2ebcdic(c->cbuff + c->cbx, buffer, space);
-#endif /*CHARSET_EBCDIC*/
-        c->cbx += tocopy;
-        space -= tocopy;
-        c->cbuff[c->cbx] = 0;   /* terminate for benefit of strstr */
+	memcpy(c->cbuff + c->cbx, buffer, space);
+#else /*CHARSET_EBCDIC */
+	ascii2ebcdic(c->cbuff + c->cbx, buffer, space);
+#endif /*CHARSET_EBCDIC */
+	c->cbx += tocopy;
+	space -= tocopy;
+	c->cbuff[c->cbx] = 0;	/* terminate for benefit of strstr */
 	if (verbosity >= 4) {
 	    printf("LOG: header received:\n%s\n", c->cbuff);
 	}
-        s = strstr(c->cbuff, "\r\n\r\n");
-        /* this next line is so that we talk to NCSA 1.5 which blatantly breaks 
-           the http specifaction */
-        if (!s) {
-            s = strstr(c->cbuff, "\n\n");
-            l = 2;
-        }
+	s = strstr(c->cbuff, "\r\n\r\n");
+	/* this next line is so that we talk to NCSA 1.5 which blatantly breaks
+	   the http specifaction */
+	if (!s) {
+	    s = strstr(c->cbuff, "\n\n");
+	    l = 2;
+	}
 
-        if (!s) {
-            /* read rest next time */
-            if (space)
-                return;
-            else {
-                /* header is in invalid or too big - close connection */
-                close(c->fd);
-                if (bad++ > 10) {
-                    err("\nTest aborted after 10 failures\n\n");
-                }
-                FD_CLR(c->fd, &writebits);
-                start_connect(c);
-            }
-        }
-        else {
-            /* have full header */
-            if (!good) {
-                /* this is first time, extract some interesting info */
-                char *p, *q;
-                p = strstr(c->cbuff, "Server:");
-                q = servername;
-                if (p) {
-                    p += 8;
-                    while (*p > 32)
-                        *q++ = *p++;
-                }
-                *q = 0;
-            }
+	if (!s) {
+	    /* read rest next time */
+	    if (space)
+		return;
+	    else {
+		/* header is in invalid or too big - close connection */
+		close(c->fd);
+		if (bad++ > 10) {
+		    err("\nTest aborted after 10 failures\n\n");
+		}
+		FD_CLR(c->fd, &writebits);
+		start_connect(c);
+	    }
+	}
+	else {
+	    /* have full header */
+	    if (!good) {
+		/* this is first time, extract some interesting info */
+		char *p, *q;
+		p = strstr(c->cbuff, "Server:");
+		q = servername;
+		if (p) {
+		    p += 8;
+		    while (*p > 32)
+			*q++ = *p++;
+		}
+		*q = 0;
+	    }
 
 	    /* XXX: this parsing isn't even remotely HTTP compliant...
 	     * but in the interest of speed it doesn't totally have to be,
 	     * it just needs to be extended to handle whatever servers
 	     * folks want to test against. -djg */
 
-            /* check response code */
-            part = strstr(c->cbuff, "HTTP");                /* really HTTP/1.x_ */
-            strncpy(respcode, (part+strlen("HTTP/1.x_")), 3);
+	    /* check response code */
+	    part = strstr(c->cbuff, "HTTP");	/* really HTTP/1.x_ */
+	    strncpy(respcode, (part + strlen("HTTP/1.x_")), 3);
 	    respcode[3] = '\0';
-            if (respcode[0] != '2') {
-                err_response++;
-                if (verbosity >= 2) printf ("WARNING: Response code not 2xx (%s)\n", respcode);
-            }
+	    if (respcode[0] != '2') {
+		err_response++;
+		if (verbosity >= 2)
+		    printf("WARNING: Response code not 2xx (%s)\n", respcode);
+	    }
 	    else if (verbosity >= 3) {
-                printf("LOG: Response code = %s\n", respcode);
-            }
+		printf("LOG: Response code = %s\n", respcode);
+	    }
 
-            c->gotheader = 1;
-            *s = 0;             /* terminate at end of header */
-            if (keepalive &&
-                (strstr(c->cbuff, "Keep-Alive")
-                 || strstr(c->cbuff, "keep-alive"))) {  /* for benefit of MSIIS */
-                char *cl;
-                cl = strstr(c->cbuff, "Content-Length:");
-                /* handle NCSA, which sends Content-length: */
-                if (!cl)
-                    cl = strstr(c->cbuff, "Content-length:");
-                if (cl) {
-                    c->keepalive = 1;
-                    c->length = atoi(cl + 16);
-                }
-            }
-            c->bread += c->cbx - (s + l - c->cbuff) + r - tocopy;
-            totalbread += c->bread;
-        }
+	    c->gotheader = 1;
+	    *s = 0;		/* terminate at end of header */
+	    if (keepalive &&
+		(strstr(c->cbuff, "Keep-Alive")
+		 || strstr(c->cbuff, "keep-alive"))) {	/* for benefit of MSIIS */
+		char *cl;
+		cl = strstr(c->cbuff, "Content-Length:");
+		/* handle NCSA, which sends Content-length: */
+		if (!cl)
+		    cl = strstr(c->cbuff, "Content-length:");
+		if (cl) {
+		    c->keepalive = 1;
+		    c->length = atoi(cl + 16);
+		}
+	    }
+	    c->bread += c->cbx - (s + l - c->cbuff) + r - tocopy;
+	    totalbread += c->bread;
+	}
     }
     else {
-        /* outside header, everything we have read is entity body */
-        c->bread += r;
-        totalbread += r;
+	/* outside header, everything we have read is entity body */
+	c->bread += r;
+	totalbread += r;
     }
 
     if (c->keepalive && (c->bread >= c->length)) {
-        /* finished a keep-alive connection */
-        good++;
-        doneka++;
-        /* save out time */
-        if (good == 1) {
-            /* first time here */
-            doclen = c->bread;
-        }
-        else if (c->bread != doclen) {
-            bad++;
-            err_length++;
-        }
-        if (done < requests) {
-            struct data s;
-            gettimeofday(&c->done, 0);
-            s.read = c->read;
-            s.ctime = timedif(c->connect, c->start);
-            s.time = timedif(c->done, c->start);
-            stats[done++] = s;
-        }
-        c->keepalive = 0;
-        c->length = 0;
-        c->gotheader = 0;
-        c->cbx = 0;
-        c->read = c->bread = 0;
-        write_request(c);
-        c->start = c->connect;  /* zero connect time with keep-alive */
+	/* finished a keep-alive connection */
+	good++;
+	doneka++;
+	/* save out time */
+	if (good == 1) {
+	    /* first time here */
+	    doclen = c->bread;
+	}
+	else if (c->bread != doclen) {
+	    bad++;
+	    err_length++;
+	}
+	if (done < requests) {
+	    struct data s;
+	    gettimeofday(&c->done, 0);
+	    s.read = c->read;
+	    s.ctime = timedif(c->connect, c->start);
+	    s.time = timedif(c->done, c->start);
+	    stats[done++] = s;
+	}
+	c->keepalive = 0;
+	c->length = 0;
+	c->gotheader = 0;
+	c->cbx = 0;
+	c->read = c->bread = 0;
+	write_request(c);
+	c->start = c->connect;	/* zero connect time with keep-alive */
     }
 }
 
@@ -656,21 +704,20 @@ static void test(void)
     fd_set sel_read, sel_except, sel_write;
     int i;
 
-    if (!use_html)
-    {
+    if (!use_html) {
 	printf("Benchmarking %s (be patient)...", hostname);
 	fflush(stdout);
     }
 
     {
-        /* get server information */
-        struct hostent *he;
-        he = gethostbyname(hostname);
-        if (!he)
-            err("bad hostname");
-        server.sin_family = he->h_addrtype;
-        server.sin_port = htons(port);
-        server.sin_addr.s_addr = ((unsigned long *) (he->h_addr_list[0]))[0];
+	/* get server information */
+	struct hostent *he;
+	he = gethostbyname(hostname);
+	if (!he)
+	    err("bad hostname");
+	server.sin_family = he->h_addrtype;
+	server.sin_port = htons(port);
+	server.sin_addr.s_addr = ((unsigned long *) (he->h_addr_list[0]))[0];
     }
 
     con = malloc(concurrency * sizeof(struct connection));
@@ -684,83 +731,84 @@ static void test(void)
     /* setup request */
     if (!posting) {
 	sprintf(request, "GET %s HTTP/1.0\r\n"
-                     "User-Agent: ApacheBench/%s\r\n"
-                     "%s"
-                     "Host: %s\r\n"
-                     "Accept: */*\r\n"
-                     "\r\n", 
-                     path, 
-                     VERSION,
-                     keepalive ? "Connection: Keep-Alive\r\n" : "", 
-                     hostname);
+		"User-Agent: ApacheBench/%s\r\n"
+		"%s"
+		"Host: %s\r\n"
+		"Accept: */*\r\n"
+		"\r\n",
+		path,
+		VERSION,
+		keepalive ? "Connection: Keep-Alive\r\n" : "",
+		hostname);
     }
     else {
 	sprintf(request, "POST %s HTTP/1.0\r\n"
-                     "User-Agent: ApacheBench/%s\r\n"
-                     "%s"
-                     "Host: %s\r\n"
-                     "Accept: */*\r\n"
-                     "Content-length: %d\r\n"
-                     "Content-type: %s\r\n"
-                     "\r\n", 
-                     path, 
-                     VERSION,
-                     keepalive ? "Connection: Keep-Alive\r\n" : "", 
-                     hostname, postlen, 
-                     (content_type[0]) ? content_type : "text/plain");
+		"User-Agent: ApacheBench/%s\r\n"
+		"%s"
+		"Host: %s\r\n"
+		"Accept: */*\r\n"
+		"Content-length: %d\r\n"
+		"Content-type: %s\r\n"
+		"\r\n",
+		path,
+		VERSION,
+		keepalive ? "Connection: Keep-Alive\r\n" : "",
+		hostname, postlen,
+		(content_type[0]) ? content_type : "text/plain");
     }
 
-    if (verbosity >= 2) printf("INFO: POST header == \n---\n%s\n---\n", request);
+    if (verbosity >= 2)
+	printf("INFO: POST header == \n---\n%s\n---\n", request);
 
     reqlen = strlen(request);
 
 #ifdef CHARSET_EBCDIC
     ebcdic2ascii(request, request, reqlen);
-#endif /*CHARSET_EBCDIC*/
+#endif /*CHARSET_EBCDIC */
 
     /* ok - lets start */
     gettimeofday(&start, 0);
 
     /* initialise lots of requests */
     for (i = 0; i < concurrency; i++)
-        start_connect(&con[i]);
+	start_connect(&con[i]);
 
     while (done < requests) {
-        int n;
-        /* setup bit arrays */
-        memcpy(&sel_except, &readbits, sizeof(readbits));
-        memcpy(&sel_read, &readbits, sizeof(readbits));
-        memcpy(&sel_write, &writebits, sizeof(readbits));
+	int n;
+	/* setup bit arrays */
+	memcpy(&sel_except, &readbits, sizeof(readbits));
+	memcpy(&sel_read, &readbits, sizeof(readbits));
+	memcpy(&sel_write, &writebits, sizeof(readbits));
 
-        /* check for time limit expiry */
-        gettimeofday(&now, 0);
-        if (tlimit && timedif(now, start) > (tlimit * 1000)) {
-            requests = done;    /* so stats are correct */
-        }
+	/* check for time limit expiry */
+	gettimeofday(&now, 0);
+	if (tlimit && timedif(now, start) > (tlimit * 1000)) {
+	    requests = done;	/* so stats are correct */
+	}
 
-        /* Timeout of 30 seconds. */
-        timeout.tv_sec = 30;
-        timeout.tv_usec = 0;
-        n = ap_select(FD_SETSIZE, &sel_read, &sel_write, &sel_except, &timeout);
-        if (!n) {
-            err("\nServer timed out\n\n");
-        }
-        if (n < 1)
-            err("select");
+	/* Timeout of 30 seconds. */
+	timeout.tv_sec = 30;
+	timeout.tv_usec = 0;
+	n = ap_select(FD_SETSIZE, &sel_read, &sel_write, &sel_except, &timeout);
+	if (!n) {
+	    err("\nServer timed out\n\n");
+	}
+	if (n < 1)
+	    err("select");
 
-        for (i = 0; i < concurrency; i++) {
-            int s = con[i].fd;
-            if (FD_ISSET(s, &sel_except)) {
-                bad++;
-                err_except++;
-                start_connect(&con[i]);
-                continue;
-            }
-            if (FD_ISSET(s, &sel_read))
-                read_connection(&con[i]);
-            if (FD_ISSET(s, &sel_write))
-                write_request(&con[i]);
-        }
+	for (i = 0; i < concurrency; i++) {
+	    int s = con[i].fd;
+	    if (FD_ISSET(s, &sel_except)) {
+		bad++;
+		err_except++;
+		start_connect(&con[i]);
+		continue;
+	    }
+	    if (FD_ISSET(s, &sel_read))
+		read_connection(&con[i]);
+	    if (FD_ISSET(s, &sel_write))
+		write_request(&con[i]);
+	}
     }
     if (use_html)
 	output_html_results();
@@ -771,15 +819,15 @@ static void test(void)
 /* ------------------------------------------------------- */
 
 /* display copyright information */
-static void copyright(void) 
+static void copyright(void)
 {
-    if (!use_html)
-    {
+    if (!use_html) {
 	printf("This is ApacheBench, Version %s\n", VERSION);
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/\n");
 	printf("\n");
-    } else {
+    }
+    else {
 	printf("<p>\n");
 	printf(" This is ApacheBench, Version %s<br>\n", VERSION);
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
@@ -799,6 +847,10 @@ static void usage(char *progname)
     fprintf(stderr, "    -p postfile     File containg data to POST\n");
     fprintf(stderr, "    -T content-type Content-type header for POSTing\n");
     fprintf(stderr, "    -v verbosity    How much troubleshooting info to print\n");
+    fprintf(stderr, "    -w              Print out results in HTML tables\n");
+    fprintf(stderr, "    -x attributes   String to insert as table attributes\n");
+    fprintf(stderr, "    -y attributes   String to insert as tr attributes\n");
+    fprintf(stderr, "    -z attributes   String to insert as td or th attributes\n");
     fprintf(stderr, "    -V              Print version number and exit\n");
     fprintf(stderr, "    -k              Use HTTP KeepAlive feature\n");
     fprintf(stderr, "    -h              Display usage information (this message)\n");
@@ -815,21 +867,21 @@ static int parse_url(char *url)
     char *h;
     char *p = NULL;
 
-    if (strlen(url) > 7 && strncmp(url, "http://", 7) == 0) 
-        url += 7;
+    if (strlen(url) > 7 && strncmp(url, "http://", 7) == 0)
+	url += 7;
     h = url;
     if ((cp = strchr(url, ':')) != NULL) {
-        *cp++ = '\0';
-        p = cp;
-        url = cp;
+	*cp++ = '\0';
+	p = cp;
+	url = cp;
     }
     if ((cp = strchr(url, '/')) == NULL)
-        return 1;
+	return 1;
     strcpy(path, cp);
     *cp = '\0';
     strcpy(hostname, h);
     if (p != NULL)
-        port = atoi(p);
+	port = atoi(p);
     return 0;
 }
 
@@ -843,21 +895,21 @@ static int open_postfile(char *pfile)
     struct stat postfilestat;
 
     if ((postfd = open(pfile, O_RDONLY)) == -1) {
-        printf("Invalid postfile name (%s)\n", pfile);
-        return errno;
+	printf("Invalid postfile name (%s)\n", pfile);
+	return errno;
     }
     if ((status = fstat(postfd, &postfilestat)) == -1) {
-        perror("Can\'t stat postfile\n");
-        return status;
+	perror("Can\'t stat postfile\n");
+	return status;
     }
     postdata = malloc(postfilestat.st_size);
     if (!postdata) {
-        printf("Can\'t alloc postfile buffer\n");
-        return ENOMEM;
+	printf("Can\'t alloc postfile buffer\n");
+	return ENOMEM;
     }
     if (read(postfd, postdata, postfilestat.st_size) != postfilestat.st_size) {
-        printf("error reading postfilen");
-        return EIO;
+	printf("error reading postfilen");
+	return EIO;
     }
     postlen = postfilestat.st_size;
     return 0;
@@ -872,63 +924,82 @@ extern int optind, opterr, optopt;
 int main(int argc, char **argv)
 {
     int c, r;
+
+    /* table defaults  */
+    tablestring = "";
+    trstring = "";
+    tdstring = "bgcolor=white";
+
     optind = 1;
-    while ((c = getopt(argc, argv, "n:c:t:T:p:v:kVhw")) > 0) {
-        switch (c) {
-        case 'n':
-            requests = atoi(optarg);
-            if (!requests) {
-                err("Invalid number of requests\n");
-            }
-            break;
-        case 'k':
-            keepalive = 1;
-            break;
-        case 'c':
-            concurrency = atoi(optarg);
-            break;
-        case 'p':
-            if (0 == (r = open_postfile(optarg))) {
-                posting = 1;
-            }
-	    else if (postdata) {
-                exit(r);
+    while ((c = getopt(argc, argv, "n:c:t:T:p:v:kVhwx:y:z:")) > 0) {
+	switch (c) {
+	case 'n':
+	    requests = atoi(optarg);
+	    if (!requests) {
+		err("Invalid number of requests\n");
 	    }
-            break;
-        case 'v':
-            verbosity = atoi(optarg);
-            break;
-        case 't':
-            tlimit = atoi(optarg);
-            requests = MAX_REQUESTS;    /* need to size data array on something */
-            break;
-        case 'T':
-            strcpy(content_type, optarg);
-            break;
-        case 'V':
-            copyright();
-            exit(0);
-            break;
+	    break;
+	case 'k':
+	    keepalive = 1;
+	    break;
+	case 'c':
+	    concurrency = atoi(optarg);
+	    break;
+	case 'p':
+	    if (0 == (r = open_postfile(optarg))) {
+		posting = 1;
+	    }
+	    else if (postdata) {
+		exit(r);
+	    }
+	    break;
+	case 'v':
+	    verbosity = atoi(optarg);
+	    break;
+	case 't':
+	    tlimit = atoi(optarg);
+	    requests = MAX_REQUESTS;	/* need to size data array on something */
+	    break;
+	case 'T':
+	    strcpy(content_type, optarg);
+	    break;
+	case 'V':
+	    copyright();
+	    exit(0);
+	    break;
 	case 'w':
 	    use_html = 1;
 	    break;
-        case 'h':
-            usage(argv[0]);
-            break;
-        default:
-            fprintf(stderr, "%s: invalid option `%c'\n", argv[0], c);
-            usage(argv[0]);
-            break;
-        }
+	    /* if any of the following three are used, turn on html output automatically  */
+	case 'x':
+	    use_html = 1;
+	    tablestring = optarg;
+	    break;
+	case 'y':
+	    use_html = 1;
+	    trstring = optarg;
+	    break;
+	case 'z':
+	    use_html = 1;
+	    tdstring = optarg;
+	    break;
+	case 'h':
+	    usage(argv[0]);
+	    break;
+	default:
+	    fprintf(stderr, "%s: invalid option `%c'\n", argv[0], c);
+	    usage(argv[0]);
+	    break;
+	}
     }
-    if (optind != argc-1) {
-        fprintf(stderr, "%s: wrong number of arguments\n", argv[0]);
-        usage(argv[0]);
+    if (optind != argc - 1) {
+	fprintf(stderr, "%s: wrong number of arguments\n", argv[0]);
+	usage(argv[0]);
     }
 
     if (parse_url(argv[optind++])) {
-        fprintf(stderr, "%s: invalid URL\n", argv[0]);
-        usage(argv[0]);
+	fprintf(stderr, "%s: invalid URL\n", argv[0]);
+	usage(argv[0]);
     }
 
     copyright();
@@ -936,4 +1007,3 @@ int main(int argc, char **argv)
 
     exit(0);
 }
-
