@@ -3462,7 +3462,6 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
     /* read up to the amount they specified. */
     if (mode == AP_MODE_READBYTES || mode == AP_MODE_SPECULATIVE) {
-        apr_off_t total;
         apr_bucket *e;
         apr_bucket_brigade *newbb;
 
@@ -3500,7 +3499,10 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
             readbytes = len;
         }
 
-        apr_brigade_partition(ctx->b, readbytes, &e);
+        rv = apr_brigade_partition(ctx->b, readbytes, &e);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
 
         /* Must do split before CONCAT */
         newbb = apr_brigade_split(ctx->b, e);
@@ -3521,9 +3523,6 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
         /* Take what was originally there and place it back on ctx->b */
         APR_BRIGADE_CONCAT(ctx->b, newbb);
-
-        /* XXX: Why is this here? We never use 'total'! */
-        apr_brigade_length(b, 1, &total);
 
         return APR_SUCCESS;
     }

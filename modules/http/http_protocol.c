@@ -898,14 +898,14 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE,
                                 APR_BLOCK_READ, 0);
 
-            if (rv != APR_SUCCESS) {
-                return rv;
+            if (rv == APR_SUCCESS) {
+                rv = apr_brigade_flatten(bb, line, &len);
+                if (rv == APR_SUCCESS) {
+                    ctx->remaining = get_chunk_size(line);
+                }
             }
-            apr_brigade_flatten(bb, line, &len);
-
-            ctx->remaining = get_chunk_size(line);
             /* Detect chunksize error (such as overflow) */
-            if (ctx->remaining < 0) {
+            if (rv != APR_SUCCESS || ctx->remaining < 0) {
                 ctx->remaining = 0; /* Reset it in case we have to
                                      * come back here later */
                 apr_brigade_cleanup(bb);
@@ -957,23 +957,22 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 /* We need to read the CRLF after the chunk.  */
                 rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE,
                                     APR_BLOCK_READ, 0);
-                if (rv != APR_SUCCESS) {
-                    return rv;
-                }
                 apr_brigade_cleanup(bb);
 
-                /* Read the real chunk line. */
-                rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE,
-                                    APR_BLOCK_READ, 0);
-
-                if (rv != APR_SUCCESS) {
-                    return rv;
+                if (rv == APR_SUCCESS) {
+                    /* Read the real chunk line. */
+                    rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE,
+                                        APR_BLOCK_READ, 0);
+                    if (rv == APR_SUCCESS) {
+                        rv = apr_brigade_flatten(bb, line, &len);
+                        if (rv == APR_SUCCESS) {
+                            ctx->remaining = get_chunk_size(line);
+                        }
+                    }
                 }
-                apr_brigade_flatten(bb, line, &len);
-                ctx->remaining = get_chunk_size(line);
 
                 /* Detect chunksize error (such as overflow) */
-                if (ctx->remaining < 0) {
+                if (rv != APR_SUCCESS || ctx->remaining < 0) {
                     ctx->remaining = 0; /* Reset it in case we have to
                                          * come back here later */
                     apr_brigade_cleanup(bb);
