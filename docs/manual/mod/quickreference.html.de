@@ -425,8 +425,8 @@ zulässig sind</td></tr>
   aufzurufen</td></tr>
 <tr><td><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild <var>number</var></a></td><td> 10000 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Obergrenze für die Anzahl von Anfragen, die ein einzelner
   Kindprozess während seines Lebens bearbeitet</td></tr>
-<tr class="odd"><td><a href="beos.html#maxrequestsperthread">MaxRequestsPerThread <var>number</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Limit on the number of requests that an individual thread
-will handle during its life</td></tr>
+<tr class="odd"><td><a href="beos.html#maxrequestsperthread">MaxRequestsPerThread <var>Anzahl</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Die maximale Anzahl von Anfragen, die ein einzelner Thread
+  während seiner Lebensdauer bedient.</td></tr>
 <tr><td><a href="prefork.html#maxspareservers">MaxSpareServers <var>Anzahl</var><br /></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximale Anzahl der unbeschäftigten Kindprozesse des
   Servers</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>Anzahl</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximale Anzahl unbeschäftigter Threads</td></tr>
