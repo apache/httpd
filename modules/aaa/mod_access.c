@@ -94,10 +94,7 @@ typedef struct {
     int limited;
     union {
 	char *from;
-	struct {
-	    unsigned long net;
-	    unsigned long mask;
-	} ip;
+        apr_ipsubnet_t *ip;
     } x;
     enum allowdeny_type type;
 } allowdeny;
@@ -150,20 +147,15 @@ static const char *order(cmd_parms *cmd, void *dv, const char *arg)
     return NULL;
 }
 
-static int is_ip(const char *host)
-{
-    while ((*host == '.') || apr_isdigit(*host))
-	host++;
-    return (*host == '\0');
-}
-
 static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from, 
                              const char *where_c)
 {
     access_dir_conf *d = (access_dir_conf *) dv;
     allowdeny *a;
-    char *s;
     char *where = apr_pstrdup(cmd->pool, where_c);
+    char *s;
+    char msgbuf[120];
+    apr_status_t rv;
 
     if (strcasecmp(from, "from"))
 	return "allow and deny must be followed by 'from'";
@@ -179,92 +171,29 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
     }
     else if (!strcasecmp(where, "all")) {
 	a->type = T_ALL;
-
     }
     else if ((s = strchr(where, '/'))) {
-	unsigned long mask;
-
-	a->type = T_IP;
-	/* trample on where, we won't be using it any more */
-	*s++ = '\0';
-
-	if (!is_ip(where)
-	    || (a->x.ip.net = apr_inet_addr(where)) == APR_INADDR_NONE) {
-	    a->type = T_FAIL;
-	    return "syntax error in network portion of network/netmask";
-	}
-
-	/* is_ip just tests if it matches [\d.]+ */
-	if (!is_ip(s)) {
-	    a->type = T_FAIL;
-	    return "syntax error in mask portion of network/netmask";
-	}
-	/* is it in /a.b.c.d form? */
-	if (strchr(s, '.')) {
-	    mask = apr_inet_addr(s);
-	    if (mask == APR_INADDR_NONE) {
-		a->type = T_FAIL;
-		return "syntax error in mask portion of network/netmask";
-	    }
-	}
-	else {
-	    /* assume it's in /nnn form */
-	    mask = atoi(s);
-	    if (mask > 32 || mask <= 0) {
-		a->type = T_FAIL;
-		return "invalid mask in network/netmask";
-	    }
-	    mask = 0xFFFFFFFFUL << (32 - mask);
-	    mask = htonl(mask);
-	}
-	a->x.ip.mask = mask;
-        a->x.ip.net  = (a->x.ip.net & mask);   /* pjr - This fixes PR 4770 */
+        *s++ = '\0';
+        rv = apr_ipsubnet_create(&a->x.ip, where, s, cmd->pool);
+        switch(rv) {
+        case APR_SUCCESS:
+            break;
+        case APR_EINVAL: /* looked nothing like an IP address */
+            return "An IP address was expected";
+        default:
+            apr_strerror(rv, msgbuf, sizeof msgbuf);
+            return apr_pstrdup(cmd->pool, msgbuf);
+        }
+        a->type = T_IP;
     }
-    else if (apr_isdigit(*where) && is_ip(where)) {
-	/* legacy syntax for ip addrs: a.b.c. ==> a.b.c.0/24 for example */
-	int shift;
-	char *t;
-	int octet;
-
-	a->type = T_IP;
-	/* parse components */
-	s = where;
-	a->x.ip.net = 0;
-	a->x.ip.mask = 0;
-	shift = 24;
-	while (*s) {
-	    t = s;
-	    if (!apr_isdigit(*t)) {
-		a->type = T_FAIL;
-		return "invalid ip address";
-	    }
-	    while (apr_isdigit(*t)) {
-		++t;
-	    }
-	    if (*t == '.') {
-		*t++ = 0;
-	    }
-	    else if (*t) {
-		a->type = T_FAIL;
-		return "invalid ip address";
-	    }
-	    if (shift < 0) {
-		return "invalid ip address, only 4 octets allowed";
-	    }
-	    octet = atoi(s);
-	    if (octet < 0 || octet > 255) {
-		a->type = T_FAIL;
-		return "each octet must be between 0 and 255 inclusive";
-	    }
-	    a->x.ip.net |= octet << shift;
-	    a->x.ip.mask |= 0xFFUL << shift;
-	    s = t;
-	    shift -= 8;
-	}
-	a->x.ip.net = ntohl(a->x.ip.net);
-	a->x.ip.mask = ntohl(a->x.ip.mask);
+    else if ((rv = apr_ipsubnet_create(&a->x.ip, where, NULL, cmd->pool)) != APR_EINVAL) {
+        if (rv != APR_SUCCESS) {
+            apr_strerror(rv, msgbuf, sizeof msgbuf);
+            return apr_pstrdup(cmd->pool, msgbuf);
+        }
+        a->type = T_IP;
     }
-    else {
+    else { /* no slash, didn't look like an IP address => must be a host */
 	a->type = T_HOST;
     }
 
@@ -330,14 +259,10 @@ static int find_allowdeny(request_rec *r, apr_array_header_t *a, int method)
 	    return 1;
 
 	case T_IP:
-            /* XXX handle IPv6 with separate T_IP6 type or add common 
-             *     address masking operations to APR */
-	    if (ap[i].x.ip.net != APR_INADDR_NONE
-		&& (r->connection->remote_addr->sa.sin.sin_addr.s_addr
-		    & ap[i].x.ip.mask) == ap[i].x.ip.net) {
-		return 1;
-	    }
-	    break;
+            if (apr_ipsubnet_test(ap[i].x.ip, r->connection->remote_addr)) {
+                return 1;
+            }
+            break;
 
 	case T_HOST:
 	    if (!gothost) {
