@@ -71,7 +71,7 @@
 #include "mod_cache.h"
 #include "apr_hooks.h"
 
-module AP_DECLARE_DATA cache_module;
+AP_DECLARE_DATA module cache_module;
 
 APR_HOOK_STRUCT(
             APR_HOOK_LINK(serve_cache)
@@ -113,7 +113,7 @@ static void cache_register_hook(apr_pool_t *p)
     ap_register_output_filter("CACHE", cache_filter, AP_FTYPE_HTTP_HEADER);
 }
 
-module AP_DECLARE_DATA cache_module = {
+AP_DECLARE_DATA module cache_module = {
     STANDARD20_MODULE_STUFF,
     NULL,			/* create per-directory config structure */
     NULL,        		/* merge per-directory config structures */
