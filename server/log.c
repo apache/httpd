@@ -229,8 +229,9 @@ static void open_error_log(server_rec *s, ap_context_t *p)
         rc = log_child (p, s->error_fname+1, NULL, &dummy, NULL);
         if (rc != APR_SUCCESS) {
 	    perror("ap_spawn_child");
-	    fprintf(stderr, "Couldn't fork child for ErrorLog process\n");
-	    exit(1);
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "Couldn't fork child for ErrorLog process");
+	                 exit(1);
 	}
 
         s->error_log = dummy;
@@ -263,8 +264,9 @@ static void open_error_log(server_rec *s, ap_context_t *p)
         if (ap_open(&s->error_log, fname, APR_APPEND | 
                     APR_READ | APR_WRITE | APR_CREATE, APR_OS_DEFAULT, p) != APR_SUCCESS) {
             perror("fopen");
-            fprintf(stderr, "%s: could not open error log file %s.\n",
-		    ap_server_argv0, fname);
+            ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "%s: could not open error log file %s.",
+		         ap_server_argv0, fname);
             exit(1);
 	}
     }
@@ -342,14 +344,18 @@ static void log_error_core(const char *file, int line, int level,
 	if (((level & APLOG_LEVELMASK) != APLOG_NOTICE) &&
 	    ((level & APLOG_LEVELMASK) > DEFAULT_LOGLEVEL))
 	    return;
+#ifdef WIN32
+        /* This is where the different ap_put_os_file's belong */
+#else
 	ap_put_os_file(&logf, &errfileno, NULL);
+#endif
     }
     else if (s->error_log) {
 	/*
 	 * If we are doing normal logging, don't log messages that are
 	 * above the server log level unless it is a startup/shutdown notice
 	 */
-	if (((level & APLOG_LEVELMASK) != APLOG_NOTICE) &&
+	if (((level & APLOG_LEVELMASK) != APLOG_NOTICE) && 
 	    ((level & APLOG_LEVELMASK) > s->loglevel))
 	    return;
 	logf = s->error_log;
@@ -376,15 +382,16 @@ static void log_error_core(const char *file, int line, int level,
 	logf = NULL;
     }
 
-    if (logf) {
+    if (logf && ((level & APLOG_STARTUP) != APLOG_STARTUP)) {
 	len = ap_snprintf(errstr, MAX_STRING_LEN, "[%s] ", ap_get_time());
     } else {
 	len = 0;
     }
 
-    len += ap_snprintf(errstr + len, MAX_STRING_LEN - len,
-	    "[%s] ", priorities[level & APLOG_LEVELMASK].t_name);
-
+    if ((level & APLOG_STARTUP) != APLOG_STARTUP) {
+        len += ap_snprintf(errstr + len, MAX_STRING_LEN - len,
+	        "[%s] ", priorities[level & APLOG_LEVELMASK].t_name);
+    }
 #ifndef TPF
     if (file && (level & APLOG_LEVELMASK) == APLOG_DEBUG) {
 #ifdef _OSD_POSIX
@@ -557,8 +564,9 @@ void ap_log_pid(ap_context_t *p, const char *fname)
 
     if(ap_open(&pid_file, fname, APR_WRITE | APR_CREATE, APR_OS_DEFAULT, p) != APR_SUCCESS) {
 	perror("fopen");
-        fprintf(stderr, "%s: could not log pid to file %s\n",
-		ap_server_argv0, fname);
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: could not log pid to file %s",
+		     ap_server_argv0, fname);
         exit(1);
     }
     ap_fprintf(pid_file, "%ld\n", (long)mypid);
@@ -597,9 +605,9 @@ API_EXPORT(void) ap_log_reason(const char *reason, const char *file, request_rec
 
 API_EXPORT(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 {
-  /* Use AP funcs to output message and abort program.  */
-    fprintf(stderr, "[%s] file %s, line %d, assertion \"%s\" failed\n",
-	    ap_get_time(), szFile, nLine, szExp);
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "[%s] file %s, line %d, assertion \"%s\" failed",
+	         ap_get_time(), szFile, nLine, szExp);
 #ifndef WIN32
     /* unix assert does an abort leading to a core dump */
     abort();
@@ -633,8 +641,8 @@ static int piped_log_spawn(piped_log *pl)
         (ap_setprocattr_dir(procattr, pl->program)        != APR_SUCCESS) ||
         (ap_set_childin(procattr, pl->fds[0], pl->fds[1]) != APR_SUCCESS)) {
         /* Something bad happened, give up and go away. */
-	fprintf(stderr,
-	    "piped_log_spawn: unable to exec %s -c '%s': %s\n",
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+	    "piped_log_spawn: unable to exec %s -c '%s': %s",
 	    SHELL_PATH, pl->program, strerror (errno));
         rc = -1;
     }
@@ -672,8 +680,8 @@ static void piped_log_maintenance(int reason, void *data, ap_wait_t status)
 	if (piped_log_spawn(pl) != APR_SUCCESS) {
 	    /* what can we do?  This could be the error log we're having
 	     * problems opening up... */
-	    fprintf(stderr,
-		"piped_log_maintenance: unable to respawn '%s': %s\n",
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+		"piped_log_maintenance: unable to respawn '%s': %s",
 		pl->program, strerror(errno));
 	}
 	break;
@@ -760,7 +768,8 @@ API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
     rc = log_child(p, program, NULL, &dummy, NULL);
     if (rc != APR_SUCCESS) {
 	perror("ap_spawn_child");
-	fprintf(stderr, "Couldn't fork child for piped log process\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "Couldn't fork child for piped log process");
 	exit (1);
     }
 

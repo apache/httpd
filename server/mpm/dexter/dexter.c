@@ -1536,15 +1536,19 @@ static const char *set_num_daemons (cmd_parms *cmd, void *dummy, char *arg)
 
     num_daemons = atoi(arg);
     if (num_daemons > HARD_SERVER_LIMIT) {
-       fprintf(stderr, "WARNING: NumServers of %d exceeds compile time limit "
-           "of %d servers,\n", num_daemons, HARD_SERVER_LIMIT);
-       fprintf(stderr, " lowering NumServers to %d.  To increase, please "
-           "see the\n", HARD_SERVER_LIMIT);
-       fprintf(stderr, " HARD_SERVER_LIMIT define in src/include/httpd.h.\n");
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "WARNING: NumServers of %d exceeds compile time limit "
+                    "of %d servers,", num_daemons, HARD_SERVER_LIMIT);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    " lowering NumServers to %d.  To increase, please "
+                    "see the", HARD_SERVER_LIMIT);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    " HARD_SERVER_LIMIT define in src/include/httpd.h.");
        num_daemons = HARD_SERVER_LIMIT;
     } 
     else if (num_daemons < 1) {
-	fprintf(stderr, "WARNING: Require NumServers > 0, setting to 1\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "WARNING: Require NumServers > 0, setting to 1");
 	num_daemons = 1;
     }
     return NULL;
@@ -1559,15 +1563,19 @@ static const char *set_threads_to_start (cmd_parms *cmd, void *dummy, char *arg)
 
     threads_to_start = atoi(arg);
     if (threads_to_start > HARD_THREAD_LIMIT) {
-        fprintf(stderr, "WARNING: StartThreads of %d exceeds compile time"
-                "limit of %d threads,\n", threads_to_start,
-                HARD_THREAD_LIMIT);
-        fprintf(stderr, " lowering StartThreads to %d. To increase, please"
-                "see the\n", HARD_THREAD_LIMIT);
-        fprintf(stderr, " HARD_THREAD_LIMIT define in src/include/httpd.h.\n");
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "WARNING: StartThreads of %d exceeds compile time"
+                     "limit of %d threads,", threads_to_start,
+                     HARD_THREAD_LIMIT);
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "lowering StartThreads to %d. To increase, please"
+                     "see the", HARD_THREAD_LIMIT);
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "HARD_THREAD_LIMIT define in src/include/httpd.h.");
     }
     else if (threads_to_start < 1) {
-	fprintf(stderr, "WARNING: Require StartThreads > 0, setting to 1\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "WARNING: Require StartThreads > 0, setting to 1");
 	threads_to_start = 1;
     }
     return NULL;
@@ -1582,9 +1590,12 @@ static const char *set_min_spare_threads(cmd_parms *cmd, void *dummy, char *arg)
 
     min_spare_threads = atoi(arg);
     if (min_spare_threads <= 0) {
-       fprintf(stderr, "WARNING: detected MinSpareThreads set to non-positive.\n");
-       fprintf(stderr, "Resetting to 1 to avoid almost certain Apache failure.\n");
-       fprintf(stderr, "Please read the documentation.\n");
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "WARNING: detected MinSpareThreads set to non-positive.");
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "Resetting to 1 to avoid almost certain Apache failure.");
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "Please read the documentation.");
        min_spare_threads = 1;
     }
        
@@ -1600,8 +1611,10 @@ static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy, char *arg)
 
     max_spare_threads = atoi(arg);
     if (max_spare_threads >= HARD_THREAD_LIMIT) {
-       fprintf(stderr, "WARNING: detected MinSpareThreads set higher than\n");
-       fprintf(stderr, "HARD_THREAD_LIMIT. Resetting to %d\n", HARD_THREAD_LIMIT);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "WARNING: detected MinSpareThreads set higher than");
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "HARD_THREAD_LIMIT. Resetting to %d", HARD_THREAD_LIMIT);
        max_spare_threads = HARD_THREAD_LIMIT;
     }
     return NULL;
@@ -1616,8 +1629,10 @@ static const char *set_max_threads(cmd_parms *cmd, void *dummy, char *arg)
 
     max_threads = atoi(arg);
     if (max_threads > HARD_THREAD_LIMIT) {
-       fprintf(stderr, "WARNING: detected MaxThreadsPerChild set higher than\n");
-       fprintf(stderr, "HARD_THREAD_LIMIT. Resetting to %d\n", HARD_THREAD_LIMIT);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "WARNING: detected MaxThreadsPerChild set higher than");
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "HARD_THREAD_LIMIT. Resetting to %d", HARD_THREAD_LIMIT);
        max_threads = HARD_THREAD_LIMIT;
     }
     return NULL;

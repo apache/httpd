@@ -1706,7 +1706,7 @@ char *strdup(const char *str)
     char *sdup;
 
     if (!(sdup = (char *) malloc(strlen(str) + 1))) {
-	fprintf(stderr, "Ouch!  Out of memory in our strdup()!\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Ouch!  Out of memory in our strdup()!");
 	return NULL;
     }
     sdup = strcpy(sdup, str);
@@ -1877,7 +1877,7 @@ API_EXPORT(uid_t) ap_uname2id(const char *name)
 	return (atoi(&name[1]));
 
     if (!(ent = getpwnam(name))) {
-	fprintf(stderr, "%s: bad user name %s\n", ap_server_argv0, name);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "%s: bad user name %s", ap_server_argv0, name);
 	exit(1);
     }
     return (ent->pw_uid);
@@ -1895,7 +1895,7 @@ API_EXPORT(gid_t) ap_gname2id(const char *name)
 	return (atoi(&name[1]));
 
     if (!(ent = getgrnam(name))) {
-	fprintf(stderr, "%s: bad group name %s\n", ap_server_argv0, name);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "%s: bad group name %s", ap_server_argv0, name);
 	exit(1);
     }
     return (ent->gr_gid);
@@ -1938,14 +1938,14 @@ unsigned long ap_get_virthost_addr(char *w, unsigned short *ports)
     hep = gethostbyname(w);
 
     if ((!hep) || (hep->h_addrtype != AF_INET || !hep->h_addr_list[0])) {
-	fprintf(stderr, "Cannot resolve host name %s --- exiting!\n", w);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Cannot resolve host name %s --- exiting!", w);
 	exit(1);
     }
 
     if (hep->h_addr_list[1]) {
-	fprintf(stderr, "Host %s has multiple addresses ---\n", w);
-	fprintf(stderr, "you must choose one explicitly for use as\n");
-	fprintf(stderr, "a virtual host.  Exiting!!!\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Host %s has multiple addresses ---", w);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "you must choose one explicitly for use as");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "a virtual host.  Exiting!!!");
 	exit(1);
     }
 
@@ -1991,9 +1991,11 @@ char *ap_get_local_host(ap_context_t *a)
     }
     str[MAXHOSTNAMELEN] = '\0';
     if ((!(p = gethostbyname(str))) || (!(server_hostname = find_fqdn(a, p)))) {
-	fprintf(stderr, "%s: cannot determine local host name.\n",
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: cannot determine local host name.",
 		ap_server_argv0);
-	fprintf(stderr, "Use the ServerName directive to set it manually.\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "Use the ServerName directive to set it manually.");
 	exit(1);
     }
 

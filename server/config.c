@@ -385,9 +385,10 @@ API_EXPORT(void) ap_add_module(module *m)
      */
 
     if (m->version != MODULE_MAGIC_NUMBER_MAJOR) {
-	fprintf(stderr, "%s: module \"%s\" is not compatible with this "
-		"version of Apache.\n", ap_server_argv0, m->name);
-	fprintf(stderr, "Please contact the vendor for the correct version.\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                     "%s: module \"%s\" is not compatible with this "
+		     "version of Apache.", ap_server_argv0, m->name);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Please contact the vendor for the correct version.");
 	exit(1);
     }
 
@@ -400,10 +401,12 @@ API_EXPORT(void) ap_add_module(module *m)
 	dynamic_modules++;
 
 	if (dynamic_modules > DYNAMIC_MODULE_LIMIT) {
-	    fprintf(stderr, "%s: module \"%s\" could not be loaded, because"
-		    " the dynamic\n", ap_server_argv0, m->name);
-	    fprintf(stderr, "module limit was reached. Please increase "
-		    "DYNAMIC_MODULE_LIMIT and recompile.\n");
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "%s: module \"%s\" could not be loaded, because"
+		         " the dynamic", ap_server_argv0, m->name);
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                         "module limit was reached. Please increase "
+		         "DYNAMIC_MODULE_LIMIT and recompile.");
 	    exit(1);
 	}
     }
@@ -544,7 +547,8 @@ void ap_setup_prelinked_modules(process_rec *process)
     ap_loaded_modules = (module **)ap_palloc(process->pool,
         sizeof(module *)*(total_modules+DYNAMIC_MODULE_LIMIT+1));
     if (ap_loaded_modules == NULL) {
-	fprintf(stderr, "Ouch!  Out of memory in ap_setup_prelinked_modules()!\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                     "Ouch!  Out of memory in ap_setup_prelinked_modules()!");
     }
     for (m = ap_preloaded_modules, m2 = ap_loaded_modules; *m != NULL; )
         *m2++ = *m++;
@@ -1004,7 +1008,8 @@ static void process_command_config(server_rec *s, ap_array_header_t *arr, ap_con
     errmsg = ap_srm_command_loop(&parms, s->lookup_defaults);
 
     if (errmsg) {
-        fprintf(stderr, "Syntax error in -C/-c directive:\n%s\n", errmsg);
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                     "Syntax error in -C/-c directive:\n%s", errmsg);
         exit(1);
     }
 
@@ -1041,17 +1046,20 @@ void ap_process_resource_config(server_rec *s, const char *fname, ap_context_t *
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
 
     if (ap_pcfg_openfile(&parms.config_file, p, fname) != APR_SUCCESS) {
-	fprintf(stderr, "%s: could not open document config file %s\n",
-		ap_server_argv0, fname);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                     "%s: could not open document config file %s",
+		     ap_server_argv0, fname);
 	exit(1);
     }
 
     errmsg = ap_srm_command_loop(&parms, s->lookup_defaults);
 
     if (errmsg) {
-	fprintf(stderr, "Syntax error on line %d of %s:\n",
-		parms.config_file->line_number, parms.config_file->name);
-	fprintf(stderr, "%s\n", errmsg);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                     "Syntax error on line %d of %s:",
+		     parms.config_file->line_number, parms.config_file->name);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s", errmsg);
 	exit(1);
     }
 
@@ -1149,7 +1157,8 @@ CORE_EXPORT(const char *) ap_init_virtual_host(ap_context_t *p, const char *host
 	limits.rlim_cur += 2;
 	if (setrlimit(RLIMIT_NOFILE, &limits) < 0) {
 	    perror("setrlimit(RLIMIT_NOFILE)");
-	    fprintf(stderr, "Cannot exceed hard limit for open files");
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "Cannot exceed hard limit for open files");
 	}
     }
 #endif
