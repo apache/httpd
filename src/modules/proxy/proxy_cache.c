@@ -880,7 +880,14 @@ int ap_proxy_cache_conditional(request_rec *r, cache_req *c, BUFF *cachefp)
     ap_overlap_tables(r->headers_out, c->hdrs, AP_OVERLAP_TABLES_SET);
     /* make sure our X-Cache header does not stomp on a previous header */
     ap_table_mergen(r->headers_out, "X-Cache", c->xcache);
+
+    /* content type is already set in the headers */
     r->content_type = ap_table_get(r->headers_out, "Content-Type");
+
+    /* cookies are special: they must not be merged (stupid browsers) */
+    ap_proxy_table_unmerge(r->pool, r->headers_out, "Set-Cookie");
+    ap_proxy_table_unmerge(r->pool, r->headers_out, "Set-Cookie2");
+
     ap_send_http_header(r);
 
     /* are we rewriting the cache file? */

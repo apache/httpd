@@ -1,5 +1,10 @@
 Changes with Apache 1.3.24
 
+  *) Some browsers ignore cookies that have been merged into a
+     single Set-Cookie header. Set-Cookie and Set-Cookie2 headers
+     are now unmerged in the http proxy before being sent to the
+     client. [Graham Leggett]
+
   *) Fix a problem with proxy where each entry of a duplicated
      header such as Set-Cookie would overwrite and obliterate the
      previous value of the header, resulting in multiple header
