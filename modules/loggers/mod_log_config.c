@@ -433,7 +433,7 @@ static const char *log_request_time(request_rec *r, char *a)
 
 static const char *log_request_duration(request_rec *r, char *a)
 {
-    return apr_psprintf(r->pool, "%lld", (apr_now() - r->request_time) 
+    return apr_psprintf(r->pool, "%ld", (apr_now() - r->request_time) 
                                              / APR_USEC_PER_SEC);
 }
 
