@@ -195,7 +195,7 @@ static int get_path_info(request_rec *r)
     char *path = r->filename;
     char *end = &path[strlen(path)];
     char *last_cp = NULL;
-    int rv;
+    int rv, rvc;
 #ifdef HAVE_DRIVE_LETTERS
     char bStripSlash=1;
 #endif
@@ -286,9 +286,10 @@ static int get_path_info(request_rec *r)
 	 * even if they returned an error.
 	 */
 	r->finfo.protection = 0;
+	rvc = ap_canonical_error(rv);
 
 #if defined(APR_ENOENT) && defined(APR_ENOTDIR)
-        if (rv == APR_ENOENT || rv == APR_ENOTDIR) {
+        if (rvc == APR_ENOENT || rvc == APR_ENOTDIR) {
             last_cp = cp;
 
             while (--cp > path && *cp != '/')
@@ -299,7 +300,7 @@ static int get_path_info(request_rec *r)
         }
         else {
 #if defined(APR_EACCES)
-            if (rv != APR_EACCES)
+            if (rvc != APR_EACCES)
 #endif
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                             "access to %s failed", r->uri);

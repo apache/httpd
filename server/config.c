@@ -1147,16 +1147,19 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
             }
             *result = dc;
             break;
-        }
-        else if (status != APR_ENOENT && status != APR_ENOTDIR) {
-            ap_log_rerror(APLOG_MARK, APLOG_CRIT, errno, r,
-                          "%s pcfg_openfile: unable to check htaccess file, "
-                          "ensure it is readable",
-                          filename);
-            ap_table_setn(r->notes, "error-notes",
-                          "Server unable to read htaccess file, denying "
-                          "access to be safe");
-            return HTTP_FORBIDDEN;
+        } else {
+            ap_status_t cerr = ap_canonical_error(status);
+
+            if (cerr != APR_ENOENT && cerr != APR_ENOTDIR) {
+                ap_log_rerror(APLOG_MARK, APLOG_CRIT, status, r,
+                              "%s pcfg_openfile: unable to check htaccess file, "
+                              "ensure it is readable",
+                              filename);
+                ap_table_setn(r->notes, "error-notes",
+                              "Server unable to read htaccess file, denying "
+                              "access to be safe");
+                return HTTP_FORBIDDEN;
+            }
         }
     }
 
