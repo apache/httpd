@@ -615,7 +615,7 @@ static const char *
     if (!found) {
 	New = apr_array_push(conf->dirconn);
         New->name = apr_pstrdup(parms->pool, arg);
-	New->hostentry = NULL;
+	New->hostaddr = NULL;
 
 	if (ap_proxy_is_ipaddr(New, parms->pool)) {
 #if DEBUGGING
