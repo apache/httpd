@@ -217,6 +217,9 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
     return (mtime > now) ? now : mtime;
 }
 
+/* Min # of bytes to allocate when reading a request line */
+#define MIN_LINE_ALLOC 80
+
 /* Get a line of protocol input, including any continuation lines
  * caused by MIME folding (or broken clients) if fold != 0, and place it
  * in the buffer s, of size n bytes, without the ending newline.
@@ -300,7 +303,10 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
             /* We'll assume the common case where one bucket is enough. */
             if (!*s) {
                 current_alloc = len;
-                *s = apr_palloc(r->pool, len);
+                if (current_alloc < MIN_LINE_ALLOC) {
+                    current_alloc = MIN_LINE_ALLOC;
+                }
+                *s = apr_palloc(r->pool, current_alloc);
             }
             else if (bytes_handled + len > current_alloc) {
                 /* Increase the buffer size */
