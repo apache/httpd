@@ -531,7 +531,8 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
                 && (strncmp(elts[i].key, "HTTP_", 5) == 0
                  || strncmp(elts[i].key, "SERVER_", 7) == 0
                  || strncmp(elts[i].key, "REQUEST_", 8) == 0
-                 || strcmp(elts[i].key, "QUERY_STRING") == 0)) {
+                 || strcmp(elts[i].key, "QUERY_STRING") == 0
+                 || strcmp(elts[i].key, "PATH_INFO") == 0)) {
             prep_string((const char**) &elts[i].val, r->pool);
         }
     }
