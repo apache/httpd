@@ -927,7 +927,7 @@ AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r)
          * URLs using the hostname and port supplied by the client if
          * any are supplied (otherwise it will use the canonical name).
          */
-        port = r->parsed_uri.port ? r->parsed_uri.port :
+        port = r->parsed_uri.port_str ? r->parsed_uri.port :
                r->connection->local_addr->port ? r->connection->local_addr->port :
                r->server->port ? r->server->port :
                ap_default_port(r);
