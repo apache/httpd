@@ -1303,7 +1303,7 @@ static void default_listeners(pool *p, server_rec *s)
     new = pcalloc(p, sizeof(listen_rec));
     new->local_addr.sin_family = AF_INET;
     new->local_addr.sin_addr = bind_address;
-    new->local_addr.sin_port = htons(s->port);
+    new->local_addr.sin_port = htons(s->port ? s->port : DEFAULT_HTTP_PORT);
     new->fd = -1;
     new->used = 0;
     new->next = NULL;

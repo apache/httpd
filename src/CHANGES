@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) Fix bug introduced in 1.3b4-dev, config with no Port setting would cause
+     server to bind to port 0 rather than 80.  [Dean Gaudet]
+
   *) Fix long-standing problem with RewriteMap _programs_ under Unix derivates
      (like SunOS and FreeBSD) which don't accept the locking of pipes
      directly.  A new directive RewriteLock is introduced which can be used to
