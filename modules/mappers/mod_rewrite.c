@@ -3762,8 +3762,8 @@ static char *lookup_variable(request_rec *r, char *var)
     /* file stuff */
     else if (strcasecmp(var, "SCRIPT_USER") == 0) {
         result = "<unknown>";
-        if (r->finfo.st_mode != 0) {
-            if ((pw = getpwuid(r->finfo.st_uid)) != NULL) {
+        if (r->finfo.protection != 0) {
+            if ((pw = getpwuid(r->finfo.user)) != NULL) {
                 result = pw->pw_name;
             }
         }
@@ -3777,8 +3777,8 @@ static char *lookup_variable(request_rec *r, char *var)
     }
     else if (strcasecmp(var, "SCRIPT_GROUP") == 0) {
         result = "<unknown>";
-        if (r->finfo.st_mode != 0) {
-            if ((gr = getgrgid(r->finfo.st_gid)) != NULL) {
+        if (r->finfo.protection != 0) {
+            if ((gr = getgrgid(r->finfo.group)) != NULL) {
                 result = gr->gr_name;
             }
         }
