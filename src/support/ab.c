@@ -703,7 +703,8 @@ static void read_connection(struct connection * c)
 	totalbread += r;
     }
 
-    if (c->keepalive && (c->bread >= c->length)) {
+    /* cater for the case where we're using keepalives and doing HEAD requests */
+    if (c->keepalive && ((c->bread >= c->length) || (posting < 0))) {
 	/* finished a keep-alive connection */
 	good++;
 	doneka++;
