@@ -1,5 +1,9 @@
 Changes with Apache 2.0.24-dev
 
+  *) Close a major resource leak.  Everytime we had issued a
+     graceful restart, we leaked a socket descriptor.
+     [Ryan Bloom]
+
   *) Fix a problem with the new method code.  We need to cast
      the 1 to an apr_int64_t or it will be treated as a 32-bit
      integer, and it will wrap after being shifted 32 times.
