@@ -318,7 +318,7 @@ API_EXPORT(char *) ap_strcasestr(const char *s1, const char *s2)
  * This is especially important for the DSO situations of modules.
  * DO NOT MAKE A MACRO OUT OF THIS FUNCTION!
  */
-API_EXPORT(int) ap_regexec(const regex_t *preg, const char *string,
+API_EXPORT(int) ap_regexec(regex_t *preg, const char *string,
                            size_t nmatch, regmatch_t pmatch[], int eflags)
 {
     return regexec(preg, string, nmatch, pmatch, eflags);

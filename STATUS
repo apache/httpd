@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/05/05 20:19:25 $]
+Last modified at [$Date: 2000/05/05 23:17:51 $]
 
 Release:
 
@@ -63,11 +63,6 @@ RELEASE SHOWSTOPPERS:
     * We need a thread-safe resolver, at least on Unix.
         Status: The best known candidate would be something from
 	BIND v9.
-
-    * Switch from HSRegex to PCRE. New code should be src/lib/pcre/
-      (ftp://cus.cam.ac.uk/pub/software/programs/pcre/)
-      Status: Greg +1
-
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * the top-level configure.in appears to use $USE_MAINTAINER_MODE = yes

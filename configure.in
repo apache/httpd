@@ -30,7 +30,7 @@ if test "$abs_builddir" != "$abs_srcdir"; then
 fi
 
 dnl ## Run configure for packages Apache uses
-AC_CONFIG_SUBDIRS(lib/apr)
+AC_CONFIG_SUBDIRS(lib/pcre lib/apr)
 
 dnl
 dnl ## Preload our OS configuration
@@ -164,8 +164,6 @@ APACHE_SUBST(EXTRA_CFLAGS)
 APACHE_SUBST(EXTRA_LDFLAGS)
 APACHE_SUBST(EXTRA_LIBS)
 APACHE_SUBST(INCLUDES)
-APACHE_SUBST(REGEX_DIR)
-APACHE_SUBST(REGEX_LIB)
 APACHE_SUBST(MPM_LIB)
 APACHE_SUBST(OS)
 APACHE_SUBST(OS_DIR)
