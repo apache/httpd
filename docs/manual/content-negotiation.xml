@@ -476,7 +476,7 @@
     the normal negotiation process applies.</p>
 
     <example><title>Example</title>
-      SetEnvIf Cookie "language=en" prefer-language=en
+      SetEnvIf Cookie "language=en" prefer-language=en<br />
       SetEnvIf Cookie "language=fr" prefer-language=fr
    </example>
 </section>
