@@ -17,6 +17,7 @@
       <body id="module-index">
         <xsl:call-template name="top"/>  
 
+        <div id="page-content">
         <div id="preamble">
           <h1>
             <xsl:value-of select="title"/>
@@ -27,6 +28,59 @@
 
           <xsl:apply-templates select="summary" />
         </div>
+        <!-- /preamble -->
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
+        <div id="quickview">
+          <ul id="toc">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
+            <li>
+              <img src="{$path}/images/down.gif" alt="" />
+              <xsl:text> </xsl:text>
+              <a href="#core">
+                <xsl:value-of select="$messages/message[@name='corefeatures']"/>
+              </a>
+            </li>
+
+            <li>
+              <img src="{$path}/images/down.gif" alt="" />
+              <xsl:text> </xsl:text>
+              <a href="#other">
+                <xsl:value-of select="$messages/message[@name='othermodules']"/>
+              </a>
+            </li>
+          </ul>
+
+          <xsl:if test="seealso">
+            <h3>
+              <xsl:value-of select="$messages/message[@name='seealso']"/>
+            </h3>
+            
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
+            <ul class="seealso">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
+              <xsl:for-each select="seealso">
+                <li>
+                  <xsl:apply-templates/>
+                </li>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
+              </xsl:for-each>
+            </ul>
+          </xsl:if>
+        </div> <!-- /quickview -->
 
 <xsl:text>
 </xsl:text> <!-- insert line break -->
@@ -46,13 +100,48 @@
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
+          <!--                                -->
+          <!-- put core and mpm_common on top -->
+          <!--                                -->
           <dl>
 
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
-            <xsl:for-each select="document(sitemap/category[@id='modules']/modulefilelist/modulefile)/modulesynopsis[status='MPM' or status='Core']">
-            <xsl:sort select="name"/>
+            <dt>
+              <a href="{document(sitemap/category[@id='modules']/modulefilelist/modulefile[starts-with(.,'core.xml')])/modulesynopsis/name}.html">
+                <xsl:value-of select="document(sitemap/category[@id='modules']/modulefilelist/modulefile[starts-with(.,'core.xml')])/modulesynopsis/name"/>
+              </a>
+            </dt>
+            <dd>
+              <xsl:apply-templates select="document(sitemap/category[@id='modules']/modulefilelist/modulefile[starts-with(.,'core.xml')])/modulesynopsis/description"/>
+            </dd>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
+            <dt>
+              <a href="{document(sitemap/category[@id='modules']/modulefilelist/modulefile[starts-with(.,'mpm_common.xml')])/modulesynopsis/name}.html">
+                <xsl:value-of select="document(sitemap/category[@id='modules']/modulefilelist/modulefile[starts-with(.,'mpm_common.xml')])/modulesynopsis/name"/>
+              </a>
+            </dt>
+            <dd class="separate">
+              <xsl:apply-templates select="document(sitemap/category[@id='modules']/modulefilelist/modulefile[starts-with(.,'mpm_common.xml')])/modulesynopsis/description"/>
+            </dd>
+          <!-- /core, mpm_common -->
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
+            <xsl:variable name="modules" select="document(sitemap/category[@id='modules']/modulefilelist/modulefile)/modulesynopsis[status='MPM' and name != 'mpm_common']"/>
+            <xsl:variable name="translist">
+              <xsl:call-template name="module-translist">
+                <xsl:with-param name="modules" select="$modules"/>
+              </xsl:call-template>
+            </xsl:variable>
+
+            <xsl:for-each select="$modules">
+            <xsl:sort select="substring-before(substring-after($translist, concat('- ', translate(normalize-space(name),$lowercase,$uppercase), ' ')), ' -')"/>
 
               <dt>
                 <a href="{name}.html">
@@ -67,6 +156,7 @@
 </xsl:text> <!-- insert line break -->
 
             </xsl:for-each>
+            <!-- /mpm -->
           </dl>
         </div>
         <!-- /core section -->
@@ -118,6 +208,9 @@
           </dl>
         </div>
         <!-- /modules section -->
+        
+        </div>
+        <!-- /page-content -->
 
 <xsl:text>
 </xsl:text> <!-- insert line break -->
@@ -144,7 +237,7 @@
 
     <xsl:variable name="letter" select="substring($letters-todo,1,1)"/>
     <xsl:variable name="translist">
-      <xsl:call-template name="module-trans">
+      <xsl:call-template name="module-translist">
         <xsl:with-param name="modules" select="$modules"/>
       </xsl:call-template>
     </xsl:variable>
@@ -190,7 +283,7 @@
   <xsl:param name="modules"/>
 
     <xsl:variable name="translist">
-      <xsl:call-template name="module-trans">
+      <xsl:call-template name="module-translist">
         <xsl:with-param name="modules" select="$modules"/>
       </xsl:call-template>
     </xsl:variable>
@@ -208,7 +301,7 @@
 
   </xsl:template>
   <!-- /module-startletters -->
-  
+
 
   <!--                                                     -->
   <!-- define module name translations for sorting         -->
@@ -232,7 +325,7 @@
            ' -')
                                                            -->
   <!--                                                     -->
-  <xsl:template name="module-trans">
+  <xsl:template name="module-translist">
   <xsl:param name="modules"/>
 
     <xsl:text>-</xsl:text>
@@ -242,23 +335,13 @@
       <xsl:text> </xsl:text>
       <xsl:value-of select="$sname"/>
       <xsl:text> </xsl:text>
-
-      <xsl:choose>
-        <xsl:when test="starts-with($sname,'MOD_') or starts-with($sname,'MPM_')">
-          <xsl:value-of select="substring($sname, 5)"/>
-        </xsl:when>
-        <xsl:when test="starts-with($sname,'MPMT_')">
-          <xsl:value-of select="substring($sname, 6)"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$sname"/>
-        </xsl:otherwise>
-      </xsl:choose>
-
+      <xsl:call-template name="module-translatename">
+        <xsl:with-param name="name" select="$sname"/>
+      </xsl:call-template>
       <xsl:text> -</xsl:text>
     </xsl:for-each>
 
   </xsl:template>
-  <!-- /module-trans -->
+  <!-- /module-translist -->
 
   </xsl:stylesheet>

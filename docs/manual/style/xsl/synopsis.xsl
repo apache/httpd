@@ -32,14 +32,34 @@
 
           <div id="preamble">
             <h1>
-              <xsl:if test="status='Obsolete'">
-                <xsl:value-of select="$messages/message[@name='obsoleteapachemodule']"/>
-              </xsl:if>
-              <xsl:if test="status!='Obsolete'">
-                <xsl:value-of select="$messages/message[@name='apachemodule']"/>
-              </xsl:if>
-              <xsl:text> </xsl:text> 
-              <xsl:value-of select="name"/>
+              <xsl:choose>
+                <xsl:when test="status='Core'">
+                  <xsl:value-of select="$messages/message[@name='apachecore']"/>
+                </xsl:when>
+                
+                <xsl:when test="name='mpm_common'">
+                  <xsl:value-of select="$messages/message[@name='apachempmcommon']"/>
+                </xsl:when>
+
+                <xsl:when test="status='MPM'">
+                  <xsl:value-of select="$messages/message[@name='apachempm']"/>
+                  <xsl:text> </xsl:text>
+                  <xsl:call-template name="module-translatename">
+                    <xsl:with-param name="name" select="name" />
+                  </xsl:call-template>
+                </xsl:when>
+
+                <xsl:otherwise>
+                  <xsl:if test="status='Obsolete'">
+                    <xsl:value-of select="$messages/message[@name='obsoleteapachemodule']"/>
+                  </xsl:if>
+                  <xsl:if test="status!='Obsolete'">
+                    <xsl:value-of select="$messages/message[@name='apachemodule']"/>
+                  </xsl:if>
+                  <xsl:text> </xsl:text>
+                  <xsl:value-of select="name"/>
+                </xsl:otherwise>
+              </xsl:choose>
             </h1>
 
 <xsl:text>
