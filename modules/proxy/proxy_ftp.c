@@ -528,7 +528,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     char *size = NULL;
 
     /* stuff for PASV mode */
-    int pasvmode = 0;
+    int connect = 0, use_port = 0;
     char dates[AP_RFC822_DATE_LEN];
 
     void *sconf = r->server->module_config;
@@ -604,7 +604,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		 "proxy: FTP connecting %s to %s:%d", url, connectname, connectport);
+		 "proxy: FTP: connecting %s to %s:%d", url, connectname, connectport);
 
     /* do a DNS lookup for the destination host */
     err = apr_sockaddr_info_get(&connect_addr, connectname, APR_UNSPEC, connectport, 0, p);
@@ -635,7 +635,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 
     if ((apr_socket_create(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "proxy: error creating socket");
+                      "proxy: FTP: error creating socket");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -651,13 +651,13 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     if (apr_setsocketopt(sock, APR_SO_REUSEADDR, one)) {
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-		     "proxy: error setting reuseaddr option: setsockopt(SO_REUSEADDR)");
+		     "proxy: FTP: error setting reuseaddr option: setsockopt(SO_REUSEADDR)");
 	return HTTP_INTERNAL_SERVER_ERROR;
 #endif /*_OSD_POSIX*/
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		 "proxy: socket has been created");
+		 "proxy: FTP: socket has been created");
 
 
     /*
@@ -683,7 +683,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	    /* if an error occurred, loop round and try again */
             if (err != APR_SUCCESS) {
 		ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server,
-			     "proxy: attempt to connect to %pI (%s) failed", connect_addr, connectname);
+			     "proxy: FTP: attempt to connect to %pI (%s) failed", connect_addr, connectname);
 		connect_addr = connect_addr->next;
 		continue;
             }
@@ -707,7 +707,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	/* the peer reset the connection already; ap_new_connection() 
 	 * closed the socket */
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		     "proxy: an error occurred creating a new connection to %pI (%s)", connect_addr, connectname);
+		     "proxy: FTP: an error occurred creating a new connection to %pI (%s)", connect_addr, connectname);
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -719,7 +719,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		 "proxy: connection complete");
+		 "proxy: FTP: control connection complete");
 
 
     /*
@@ -838,6 +838,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
 	}
     }
+    apr_table_set(r->notes, "Directory-README", buffer);
 
     /* set the directory (walk directory component by component):
      * this is what we must do if we don't know the OS type of the remote
@@ -883,7 +884,6 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 
 	path = strp + 1;
     }
-    apr_table_set(r->notes, "Directory-README", buffer);
 
     if (parms != NULL && strncasecmp(parms, "type=a", 6) == 0) {
 	parms = "A";
@@ -929,108 +929,203 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
      * IV: Make Data Connection?
      * -------------------------
      *
-     * Try PASV, if that fails try normally.
+     * Try EPSV, if that fails...
+     * try PASV, if that fails...
+     * try PORT.
      */
-/* this temporarily switches off PASV */
+/* this temporarily switches off EPSV/PASV */
 /*goto bypass;*/
 
-    /* try to set up PASV data connection first */
-/* IPV6 FIXME:
- * The EPSV command replaces PASV where both IPV4 and IPV6 is supported. Only
- * the port is returned, the IP address is always the same as that on the
- * control connection. Example:
- *   Entering Extended Passive Mode (|||6446|)
- */
-    buf = apr_pstrcat(p, "PASV", CRLF, NULL);
-    e = apr_bucket_pool_create(buf, strlen(buf), p);
-    APR_BRIGADE_INSERT_TAIL(bb, e);
-    e = apr_bucket_flush_create();
-    APR_BRIGADE_INSERT_TAIL(bb, e);
-    ap_pass_brigade(origin->output_filters, bb);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-                 "proxy: FTP: PASV");
-    /* possible results: 227, 421, 500, 501, 502, 530 */
-    /*   227 Entering Passive Mode (h1,h2,h3,h4,p1,p2). */
-    /*   421 Service not available, closing control connection. */
-    /*   500 Syntax error, command unrecognized. */
-    /*   501 Syntax error in parameters or arguments. */
-    /*   502 Command not implemented. */
-    /*   530 Not logged in. */
-    i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		 "proxy: FTP: %d %s", i, buffer);
-    if (i == -1) {
-	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-			     "Error reading from remote server");
+    /* set up data connection - EPSV */
+    {
+	apr_sockaddr_t *remote_addr;
+	char *remote_ip;
+	apr_port_t remote_port;
+
+	/* The EPSV command replaces PASV where both IPV4 and IPV6 is supported. Only
+	 * the port is returned, the IP address is always the same as that on the
+	 * control connection. Example:
+	 *   Entering Extended Passive Mode (|||6446|)
+	 */
+	buf = apr_pstrcat(p, "EPSV", CRLF, NULL);
+	e = apr_bucket_pool_create(buf, strlen(buf), p);
+	APR_BRIGADE_INSERT_TAIL(bb, e);
+	e = apr_bucket_flush_create();
+	APR_BRIGADE_INSERT_TAIL(bb, e);
+	ap_pass_brigade(origin->output_filters, bb);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+                     "proxy: FTP: EPSV");
+	/* possible results: 227, 421, 500, 501, 502, 530 */
+	/*   227 Entering Passive Mode (h1,h2,h3,h4,p1,p2). */
+	/*   421 Service not available, closing control connection. */
+	/*   500 Syntax error, command unrecognized. */
+	/*   501 Syntax error in parameters or arguments. */
+	/*   502 Command not implemented. */
+	/*   530 Not logged in. */
+	i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		     "proxy: FTP: %d %s", i, buffer);
+	if (i == -1) {
+	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+				 "Error reading from remote server");
+	}
+	if (i != 229 && i != 500 && i != 501 && i != 502) {
+	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
+	}
+	else if (i == 229) {
+	    char *pstr;
+
+	    pstr = apr_pstrdup(p, buffer);
+	    pstr = strtok(pstr, " ");	/* separate result code */
+	    if (pstr != NULL) {
+		if (*(pstr + strlen(pstr) + 1) == '=') {
+		    pstr += strlen(pstr) + 2;
+		}
+		else {
+		    pstr = strtok(NULL, "(");  /* separate address & port params */
+		    if (pstr != NULL)
+			pstr = strtok(NULL, ")");
+		}
+	    }
+
+	    if (pstr) {
+		apr_sockaddr_t *epsv_addr;
+		remote_port = atoi(pstr+3);
+
+        	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+                             "proxy: FTP: EPSV contacting remote host on port %d",
+                             remote_port);
+
+		if ((rv = apr_socket_create(&remote_sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
+		    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+			          "proxy: FTP: error creating EPSV socket");
+		    return HTTP_INTERNAL_SERVER_ERROR;
+		}
+
+#if !defined (TPF) && !defined(BEOS)
+		if (conf->recv_buffer_size > 0 && (rv = apr_setsocketopt(remote_sock, APR_SO_RCVBUF,
+		    conf->recv_buffer_size))) {
+		    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+				  "proxy: FTP: setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
+		}
+#endif
+
+		/* make the connection */
+		apr_socket_addr_get(&remote_addr, APR_REMOTE, sock);
+		apr_sockaddr_ip_get(&remote_ip, remote_addr);
+		apr_sockaddr_info_get(&epsv_addr, remote_ip, APR_INET, remote_port, 0, p);
+		rv = apr_connect(remote_sock, epsv_addr);
+		if (rv != APR_SUCCESS) {
+		    ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+				 "proxy: FTP: EPSV attempt to connect to %pI failed - Firewall/NAT?", epsv_addr);
+		    return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_psprintf(r->pool,
+				         "EPSV attempt to connect to %pI failed - firewall/NAT?", epsv_addr));
+		}
+		else {
+		    connect = 1;
+		}
+	    }
+	    else {
+		/* and try the regular way */
+		apr_socket_close(remote_sock);
+	    }
+	}
     }
-    if (i != 227 && i != 502) {
-	return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
-    }
-    else if (i == 227) {
-	unsigned int h0, h1, h2, h3, p0, p1;
-	char *pstr;
+
+    /* set up data connection - PASV */
+    if (!connect) {
+	buf = apr_pstrcat(p, "PASV", CRLF, NULL);
+	e = apr_bucket_pool_create(buf, strlen(buf), p);
+	APR_BRIGADE_INSERT_TAIL(bb, e);
+	e = apr_bucket_flush_create();
+	APR_BRIGADE_INSERT_TAIL(bb, e);
+	ap_pass_brigade(origin->output_filters, bb);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+                     "proxy: FTP: PASV");
+	/* possible results: 227, 421, 500, 501, 502, 530 */
+	/*   227 Entering Passive Mode (h1,h2,h3,h4,p1,p2). */
+	/*   421 Service not available, closing control connection. */
+	/*   500 Syntax error, command unrecognized. */
+	/*   501 Syntax error in parameters or arguments. */
+	/*   502 Command not implemented. */
+	/*   530 Not logged in. */
+	i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		     "proxy: FTP: %d %s", i, buffer);
+	if (i == -1) {
+	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+				 "Error reading from remote server");
+	}
+	if (i != 227 && i != 502) {
+	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
+	}
+	else if (i == 227) {
+	    unsigned int h0, h1, h2, h3, p0, p1;
+	    char *pstr;
 
 /* FIXME: Check PASV against RFC1123 */
 
-	pstr = apr_pstrdup(p, buffer);
-	pstr = strtok(pstr, " ");	/* separate result code */
-	if (pstr != NULL) {
-	    if (*(pstr + strlen(pstr) + 1) == '=') {
-	        pstr += strlen(pstr) + 2;
+	    pstr = apr_pstrdup(p, buffer);
+	    pstr = strtok(pstr, " ");	/* separate result code */
+	    if (pstr != NULL) {
+		if (*(pstr + strlen(pstr) + 1) == '=') {
+		    pstr += strlen(pstr) + 2;
+		}
+		else {
+		    pstr = strtok(NULL, "(");  /* separate address & port params */
+		    if (pstr != NULL)
+			pstr = strtok(NULL, ")");
+		}
 	    }
-	    else {
-	        pstr = strtok(NULL, "(");  /* separate address & port params */
-		if (pstr != NULL)
-		    pstr = strtok(NULL, ")");
-	    }
-	}
 
 /* FIXME: Only supports IPV4 - fix in RFC2428 */
 
-	if (pstr != NULL && (sscanf(pstr,
-		 "%d,%d,%d,%d,%d,%d", &h3, &h2, &h1, &h0, &p1, &p0) == 6)) {
+	    if (pstr != NULL && (sscanf(pstr,
+		"%d,%d,%d,%d,%d,%d", &h3, &h2, &h1, &h0, &p1, &p0) == 6)) {
 
-	    apr_sockaddr_t *pasv_addr;
-	    int pasvport = (p1 << 8) + p0;
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-                         "proxy: FTP: PASV contacting host %d.%d.%d.%d:%d",
-                         h3, h2, h1, h0, pasvport);
+		apr_sockaddr_t *pasv_addr;
+		int pasvport = (p1 << 8) + p0;
+        	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+                             "proxy: FTP: PASV contacting host %d.%d.%d.%d:%d",
+                             h3, h2, h1, h0, pasvport);
 
-	    if ((rv = apr_socket_create(&remote_sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
-		ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-			     "proxy: error creating PASV socket");
-		return HTTP_INTERNAL_SERVER_ERROR;
-	    }
+		if ((rv = apr_socket_create(&remote_sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
+		    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+			          "proxy: error creating PASV socket");
+		    return HTTP_INTERNAL_SERVER_ERROR;
+		}
 
 #if !defined (TPF) && !defined(BEOS)
-	    if (conf->recv_buffer_size > 0 && (rv = apr_setsocketopt(remote_sock, APR_SO_RCVBUF,
-		conf->recv_buffer_size))) {
+		if (conf->recv_buffer_size > 0 && (rv = apr_setsocketopt(remote_sock, APR_SO_RCVBUF,
+		    conf->recv_buffer_size))) {
 		    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-				 "setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
-	    }
+				  "proxy: FTP: setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
+		}
 #endif
 
-	    /* make the connection */
-	    apr_sockaddr_info_get(&pasv_addr, apr_psprintf(p, "%d.%d.%d.%d", h3, h2, h1, h0), APR_INET, pasvport, 0, p);
-	    rv = apr_connect(remote_sock, pasv_addr);
-            if (rv != APR_SUCCESS) {
-		ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-			     "proxy: FTP: PASV error creating socket");
-		return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_psprintf(r->pool,
-				     "PASV attempt to connect to %pI failed - firewall/NAT?", pasv_addr));
-            }
+		/* make the connection */
+		apr_sockaddr_info_get(&pasv_addr, apr_psprintf(p, "%d.%d.%d.%d", h3, h2, h1, h0), APR_INET, pasvport, 0, p);
+		rv = apr_connect(remote_sock, pasv_addr);
+		if (rv != APR_SUCCESS) {
+		    ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+				 "proxy: FTP: PASV attempt to connect to %pI failed - Firewall/NAT?", pasv_addr);
+		    return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_psprintf(r->pool,
+				         "PASV attempt to connect to %pI failed - firewall/NAT?", pasv_addr));
+		}
+		else {
+		    connect = 1;
+		}
+	    }
 	    else {
-		pasvmode = 1;
+		/* and try the regular way */
+		apr_socket_close(remote_sock);
 	    }
 	}
-	else
-	    /* and try the regular way */
-	    apr_socket_close(remote_sock);
     }
 /*bypass:*/
 
-    /* set up data connection */
-    if (!pasvmode) {
+    /* set up data connection - PORT */
+    if (!connect) {
 	apr_sockaddr_t *local_addr;
 	char *local_ip;
 	apr_port_t local_port;
@@ -1101,6 +1196,9 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	    if (rc != 200) {
 		return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
 	    }
+
+	    /* signal that we must use the EPRT/PORT loop */
+	    use_port = 1;
 	}
 	else {
 /* IPV6 FIXME:
@@ -1109,7 +1207,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
  *   EPRT |1|132.235.1.2|6275|
  *   EPRT |2|1080::8:800:200C:417A|5282|
  */
-	    return ap_proxyerror(r, HTTP_NOT_IMPLEMENTED, "Connect to IPV6 ftp server not supported");
+	    return ap_proxyerror(r, HTTP_NOT_IMPLEMENTED, "Connect to IPV6 ftp server using EPRT not supported. Enable EPSV.");
 	}
     }
 
@@ -1384,7 +1482,7 @@ ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
     }
 
     /* wait for connection */
-    if (!pasvmode) {
+    if (use_port) {
         for(;;)
         {
 /* FIXME: this does not return, despite the incoming connection being accepted */
@@ -1401,9 +1499,6 @@ ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
             }
         }
     }
-
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                  "proxy: FTP: ready to suck data");
 
     /* the transfer socket is now open, create a new connection */
     remote = ap_new_connection(p, r->server, remote_sock, r->connection->id);
