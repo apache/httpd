@@ -585,6 +585,9 @@ static void child_main(int child_num_arg)
                 ret = apr_poll(pollset, num_listensocks, &n, -1);
                 if (ret != APR_SUCCESS) {
                     if (APR_STATUS_IS_EINTR(ret)) {
+                        if (one_process && shutdown_pending) {
+                            return;
+                        }
                         continue;
                     }
     	            /* Single Unix documents select as returning errnos
@@ -630,6 +633,9 @@ static void child_main(int child_num_arg)
                 /* resource shortage or should-not-occur occured */
                 clean_child_exit(1);
             }
+            if (APR_STATUS_IS_EINTR(status) && one_process && shutdown_pending) {
+                return;
+            }
         }
 	SAFE_ACCEPT(accept_mutex_off());	/* unlock after "accept" */
 
@@ -673,14 +679,15 @@ static int make_child(server_rec *s, int slot)
     }
 
     if (one_process) {
-	apr_signal(SIGHUP, just_die);
+	apr_signal(SIGHUP, sig_term);
         /* Don't catch AP_SIG_GRACEFUL in ONE_PROCESS mode :) */
-	apr_signal(SIGINT, just_die);
+	apr_signal(SIGINT, sig_term);
 #ifdef SIGQUIT
 	apr_signal(SIGQUIT, SIG_DFL);
 #endif
-	apr_signal(SIGTERM, just_die);
+	apr_signal(SIGTERM, sig_term);
 	child_main(slot);
+        return 0;
     }
 
     (void) ap_update_child_status_from_indexes(slot, 0, SERVER_STARTING,
@@ -950,8 +957,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     if (one_process) {
         AP_MONCONTROL(1);
+        make_child(ap_server_conf, 0);
     }
-
+    else {
     if (ap_daemons_max_free < ap_daemons_min_free + 1)	/* Don't thrash... */
 	ap_daemons_max_free = ap_daemons_min_free + 1;
 
@@ -1071,6 +1079,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     sleep(1);
 #endif /*TPF */
     }
+    } /* one_process */
 
     if (shutdown_pending) {
 	/* Time to gracefully shut down:
