@@ -450,7 +450,7 @@ void clear_module_list ()
     num_modules = 0;
 
     /* This is required; so we add it always.  */
-    add_named_module ("core");
+    add_named_module ("http_core.c");
 }
 
 /*****************************************************************
