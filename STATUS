@@ -14,8 +14,17 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-    * Win32 device file issues (nul/aux/...)
-      Patch: Available /* anyone have message-id? */
+    * Paul's [PATCH] Win32 device files
+      Message-ID: <Pine.LNX.4.00.9812021631410.21697-100000@ecstasy.localnet>
+              and <000401be2225$861f11b0$bf4d2509@wolfpad.raleigh.ibm.com>
+      Status: Someone who knows the current status of this thing should apply
+              it now, since the rest of us can't test it otherwise.
+      
+    * nmake compilation broken on Win95
+      Paul Ausbeck says the problem is that the distribution uses
+      %PARAM% type arguments in nmake invokations.
+      Message-ID: <36684B1D.5A47@alumni.cse.ucsc.edu>
+      Status: patch needed since we can't test above without it
 
     * 'kill -HUP' broken on FreeBSD and others: child processes die or
        do not restart.
