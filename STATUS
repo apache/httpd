@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/10/30 19:40:29 $]
+Last modified at [$Date: 2003/10/31 11:18:40 $]
 
 Release:
 
@@ -283,6 +283,10 @@ PATCHES TO BACKPORT FROM 2.1
       threaded MPM.  PR: 23795
         modules/generators/mod_status.c r1.75
       +1: trawick
+
+    * mod_info: Escape html code in directives and arguments. PR: 24232
+        modules/generators/mod_info.c: r1.52
+      +1: thommay
 
 CURRENT RELEASE NOTES:
 
