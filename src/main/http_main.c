@@ -3124,8 +3124,10 @@ void standalone_main(int argc, char **argv)
 	    hold_off_on_exponential_spawning = 10;
 	}
 
+	log_printf (server_conf, "Apache HTTP Server version: %s",
+	            SERVER_VERSION);
 	log_error ("Server configured -- resuming normal operations",
-	    server_conf);
+	           server_conf);
 	restart_pending = 0;
 
 	while (!restart_pending) {
