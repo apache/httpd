@@ -266,7 +266,7 @@
         APR_OPTIONAL_HOOK(ap,name,fn,pre,succ,order)
 
 #include "os.h"
-#ifndef WIN32
+#if !defined(WIN32) && !defined(NETWARE)
 #include "ap_config_auto.h"
 #endif
 
