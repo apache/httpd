@@ -61,6 +61,12 @@
 #include "mod_proxy.h"
 
 #define AUTODETECT_PWD
+/* Automatic timestamping (Last-Modified header) based on MDTM is used if:
+ * 1) the FTP server supports the MDTM command and
+ * 2) HAVE_TIMEGM (preferred) or HAVE_GMTOFF is available at compile time
+ */
+#define USE_MDTM
+
 
 module AP_MODULE_DECLARE_DATA proxy_ftp_module;
 
@@ -92,6 +98,43 @@ static int decodeenc(char *x)
     }
     x[j] = '\0';
     return j;
+}
+
+/*
+ * Escape the globbing characters in a path used as argument to
+ * the FTP commands (SIZE, CWD, RETR, MDTM, ...).
+ * ftpd assumes '\\' as a quoting character to escape special characters.
+ * Returns: escaped string
+ */
+#define FTP_GLOBBING_CHARS "*?[{~"
+static char *ftp_escape_globbingchars(apr_pool_t *p, const char *path)
+{
+    char *ret = apr_palloc(p, 2*strlen(path)+sizeof(""));
+    char *d;
+    for (d = ret; *path; ++path) {
+        if (strchr(FTP_GLOBBING_CHARS, *path) != NULL)
+            *d++ = '\\';
+        *d++ = *path;
+    }
+    *d = '\0';
+    return ret;
+}
+
+/*
+ * Check for globbing characters in a path used as argument to
+ * the FTP commands (SIZE, CWD, RETR, MDTM, ...).
+ * ftpd assumes '\\' as a quoting character to escape special characters.
+ * Returns: 0 (no globbing chars, or all globbing chars escaped), 1 (globbing chars)
+ */
+static int ftp_check_globbingchars(const char *path)
+{
+    for ( ; *path; ++path) {
+        if (*path == '\\')
+	    ++path;
+        if (path != '\0' && strchr(FTP_GLOBBING_CHARS, *path) != NULL)
+            return TRUE;
+    }
+    return FALSE;
 }
 
 /*
@@ -744,6 +787,9 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     apr_socket_t *origin_sock = NULL;
     char xfer_type = 'A'; /* after ftp login, the default is ASCII */
     int  dirlisting = 0;
+#if defined(USE_MDTM) && (defined(HAVE_TIMEGM) || defined(HAVE_GMTOFF))
+    apr_time_t mtime = 0L;
+#endif
 
     /* stuff for PASV mode */
     int connect = 0, use_port = 0;
@@ -1134,12 +1180,11 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
         /* NOTE: FTP servers do globbing on the path.
          * So we need to escape the URI metacharacters.
-         * In the current implementation, we use shell escaping, because
-         * it masks all characters which are also dangerous for FTP.
+         * We use a special glob-escaping routine to escape globbing chars.
          * We could also have extended gen_test_char.c with a special T_ESCAPE_FTP_PATH
          */
         rc = proxy_ftp_command(apr_pstrcat(p, "CWD ",
-                           ap_escape_shell_cmd(p, path), CRLF, NULL),
+                           ftp_escape_globbingchars(p, path), CRLF, NULL),
                            r, origin, bb, &ftpmessage);
         *strp = '/';
         /* responses: 250, 421, 500, 501, 502, 530, 550 */
@@ -1442,7 +1487,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     /* If len == 0 then it must be a directory (you can't RETR nothing)
      * Also, don't allow to RETR by wildcard. Instead, create a dirlisting
      */
-    if (len == 0 || strpbrk(path, "*?[]") != NULL) {
+    if (len == 0 || ftp_check_globbingchars(path)) {
         dirlisting = 1;
     }
     else {
@@ -1453,8 +1498,17 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
          * Return size of file in a format suitable for
          * using with RESTART (we just count bytes).
          */
+        /* from draft-ietf-ftpext-mlst-14.txt:
+         * This value will
+         * change depending on the current STRUcture, MODE and TYPE of the data
+         * connection, or a data connection which would be created were one
+         * created now.  Thus, the result of the SIZE command is dependent on
+         * the currently established STRU, MODE and TYPE parameters.
+         */
+        /* Therefore: switch to binary if the user did not specify ";type=a" */
+        ftp_set_TYPE(xfer_type, r, origin, bb, &ftpmessage);
         rc = proxy_ftp_command(apr_pstrcat(p, "SIZE ",
-                           ap_escape_shell_cmd(p, path), CRLF, NULL),
+                           ftp_escape_globbingchars(p, path), CRLF, NULL),
                            r, origin, bb, &ftpmessage);
         if (rc == -1 || rc == 421) {
             return ap_proxyerror(r, HTTP_BAD_GATEWAY,
@@ -1473,7 +1527,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
                              "proxy: FTP: SIZE shows this is a directory");
             dirlisting = 1;
             rc = proxy_ftp_command(apr_pstrcat(p, "CWD ", 
-                           ap_escape_shell_cmd(p, path), CRLF, NULL),
+                           ftp_escape_globbingchars(p, path), CRLF, NULL),
                            r, origin, bb, &ftpmessage);
             /* possible results: 250, 421, 500, 501, 502, 530, 550 */
             /* 250 Requested file action okay, completed. */
@@ -1504,6 +1558,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     if (dirlisting) {
+        ftp_set_TYPE('A', r, origin, bb, NULL);
         /* If the current directory contains no slash, we are talking to
          * a non-unix ftp system. Try LIST instead of "LIST -lag", it
          * should return a long listing anyway (unlike NLST).
@@ -1522,13 +1577,57 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     else {
         /* switch to binary if the user did not specify ";type=a" */
         ftp_set_TYPE(xfer_type, r, origin, bb, &ftpmessage);
-/* FIXME: we might as well do:
-        rc = proxy_ftp_command(apr_pstrcat(p, "MDTM ", ap_escape_shell_cmd(p, path), CRLF, NULL),
+#if defined(USE_MDTM) && (defined(HAVE_TIMEGM) || defined(HAVE_GMTOFF))
+        /* from draft-ietf-ftpext-mlst-14.txt:
+         *   The FTP command, MODIFICATION TIME (MDTM), can be used to determine
+         *   when a file in the server NVFS was last modified.     <..>
+         *   The syntax of a time value is:
+         *           time-val       = 14DIGIT [ "." 1*DIGIT ]      <..>
+         *     Symbolically, a time-val may be viewed as
+         *           YYYYMMDDHHMMSS.sss
+         *     The "." and subsequent digits ("sss") are optional. <..>
+         *     Time values are always represented in UTC (GMT)
+         */
+        rc = proxy_ftp_command(apr_pstrcat(p, "MDTM ", ftp_escape_globbingchars(p, path), CRLF, NULL),
                                r, origin, bb, &ftpmessage);
-        and extract the Last-Modified time from it (YYYYMMDDhhmmss or YYYYMMDDhhmmss.xxx GMT).
-*/
+        /* then extract the Last-Modified time from it (YYYYMMDDhhmmss or YYYYMMDDhhmmss.xxx GMT). */
+        if (rc == 213) {
+	    struct {
+	        char YYYY[4+1];
+		char MM[2+1];
+		char DD[2+1];
+		char hh[2+1];
+		char mm[2+1];
+		char ss[2+1];
+	    } time_val;
+	    if (6 == sscanf(ftpmessage, "%4[0-9]%2[0-9]%2[0-9]%2[0-9]%2[0-9]%2[0-9]",
+	        time_val.YYYY, time_val.MM, time_val.DD, time_val.hh, time_val.mm, time_val.ss)) {
+                struct tm tms;
+		memset (&tms, '\0', sizeof tms);
+		tms.tm_year = atoi(time_val.YYYY) - 1900;
+		tms.tm_mon  = atoi(time_val.MM)   - 1;
+		tms.tm_mday = atoi(time_val.DD);
+		tms.tm_hour = atoi(time_val.hh);
+		tms.tm_min  = atoi(time_val.mm);
+		tms.tm_sec  = atoi(time_val.ss);
+#ifdef HAVE_TIMEGM /* Does system have timegm()? */
+		mtime = timegm(&tms);
+		mtime *= APR_USEC_PER_SEC;
+#elif HAVE_GMTOFF /* does struct tm have a member tm_gmtoff? */
+                /* mktime will subtract the local timezone, which is not what we want.
+		 * Add it again because the MDTM string is GMT
+		 */
+		mtime = mktime(&tms);
+		mtime += tms.tm_gmtoff;
+		mtime *= APR_USEC_PER_SEC;
+#else
+		mtime = 0L;
+#endif
+            }
+	}
+#endif /* USE_MDTM */
 /* FIXME: Handle range requests - send REST */
-        buf = apr_pstrcat(p, "RETR ", ap_escape_shell_cmd(p, path), CRLF, NULL);
+        buf = apr_pstrcat(p, "RETR ", ftp_escape_globbingchars(p, path), CRLF, NULL);
     }
     rc = proxy_ftp_command(buf, r, origin, bb, &ftpmessage);
     /* rc is an intermediate response for the LIST or RETR commands */
@@ -1565,7 +1664,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
         ftp_set_TYPE('A', r, origin, bb, NULL);
 
         rc = proxy_ftp_command(apr_pstrcat(p, "CWD ",
-                               ap_escape_shell_cmd(p, path), CRLF, NULL),
+                               ftp_escape_globbingchars(p, path), CRLF, NULL),
                                r, origin, bb, &ftpmessage);
         /* possible results: 250, 421, 500, 501, 502, 530, 550 */
         /* 250 Requested file action okay, completed. */
@@ -1635,6 +1734,16 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     apr_table_setn(r->headers_out, "Content-Type", r->content_type);
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
                  "proxy: FTP: Content-Type set to %s", r->content_type);
+
+#if defined(USE_MDTM) && (defined(HAVE_TIMEGM) || defined(HAVE_GMTOFF))
+    if (mtime != 0L) {
+        char datestr[APR_RFC822_DATE_LEN];
+        apr_rfc822_date(datestr, mtime);
+        apr_table_set(r->headers_out, "Last-Modified", datestr);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+                 "proxy: FTP: Last-Modified set to %s", datestr);
+    }
+#endif /* USE_MDTM */
 
     /* If an encoding has been set by mistake, delete it.
      * @@@ FIXME (e.g., for ftp://user@host/file*.tar.gz,
