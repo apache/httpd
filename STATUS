@@ -362,13 +362,14 @@ Proposed announcement for -testers mailing list:
     These forums will be predominantly one-way: when the Apache Group has
     a new release ready, they will let the appropriate list know about it
     first, and then it is *expected* that people will pull it down from
-    the Apache web site and give it a spin.  If you see a problem, and
-    have done your due diligence to make sure it isn't a configuration
-    error, and it's definitely a difference in behavior from the last
-    public release in the series, then please post here about it.
+    the Apache web site (or one of its mirrors) and give it a spin.  If
+    you see a problem, and have with due diligence verified that it
+    isn't a configuration error, and it's definitely a difference in
+    behavior from the last public release in the series, then please
+    post here about it.
 
     Thanks!
 
     Dean intends to post this on friday, around noon PST.
 
-    Status: Dean +1
+    Status: Dean +1, Ken +1
