@@ -790,8 +790,6 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
             memset(&context->sa_client, '\0', sizeof(context->sa_client));
         }
 
-        context->conn_io = ap_bcreate(context->ptrans, B_RDWR);
-
         /* do we NEED_DUPPED_CSD ?? */
         
         return context;
@@ -883,7 +881,6 @@ static int create_acceptex_context(apr_pool_t *_pconf, ap_listen_rec *lr)
     }
 
     apr_create_pool(&context->ptrans, _pconf);
-    context->conn_io = ap_bcreate(context->ptrans, B_RDWR);
 
     /* recv_buf must be large enough to hold the remote and local
      * addresses. Note that recv_buf_size is the amount of recv_buf
@@ -922,7 +919,6 @@ static apr_inline apr_status_t reset_acceptex_context(PCOMP_CONTEXT context)
     /* reset the buffer pools */
     apr_clear_pool(context->ptrans);
     context->sock = NULL;
-    context->conn_io = ap_bcreate(context->ptrans, B_RDWR);
 
     /* recreate and initialize the accept socket if it is not being reused */
     apr_get_os_sock(&nsd, context->lr->sd);
@@ -1092,7 +1088,6 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
     }
 
     /* Received a connection */
-    context->conn_io->incnt = BytesRead;
     GetAcceptExSockaddrs(context->recv_buf, 
                          context->recv_buf_size,
                          PADDED_ADDR_SIZE,
