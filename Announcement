@@ -1,21 +1,20 @@
 
-                            Apache 1.3.23 Released
+                            Apache 1.3.24 Released
 
    The Apache Software Foundation and The Apache Server Project are
-   pleased to announce the release of version 1.3.23 of the Apache HTTP
-   server. This Announcement notes the significant changes in 1.3.23.
+   pleased to announce the release of version 1.3.24 of the Apache HTTP
+   server. This Announcement notes the significant changes in 1.3.24.
 
-   This version of Apache is principally a security fix release which
-   closes some problems where a directory listing could be obtained
-   instead of the default index page. A summary of the bug fixes and major
-   new features is given at the end of this document.
+   This version of Apache is principally a bug fix release.  A summary of
+   the bug fixes and major new features is given at the end of this
+   document.
 
-   We consider Apache 1.3.23 to be the best version of Apache available
+   We consider Apache 1.3.24 to be the best version of Apache available
    and we strongly recommend that users of older versions, especially of
    the 1.1.x and 1.2.x family, upgrade as soon as possible. No further
    releases will be made in the 1.2.x family.
 
-   Apache 1.3.23 is available for download from
+   Apache 1.3.24 is available for download from
    
        http://httpd.apache.org/dist/httpd/
 
@@ -67,44 +66,38 @@
    version, but is of acceptable quality. Win32 stability or security
    problems do not reflect on the Unix version.
 
-                     Apache 1.3.23 Major changes
+                     Apache 1.3.24 Major changes
 
   Security vulnerabilities
 
-     * None addressed.
+     * Prevent invalid client hostnames from appearing in the log file.
 
   New features
 
-   The main new features in 1.3.23 (compared to 1.3.22) are:
+   The main new features in 1.3.24 (compared to 1.3.23) are:
 
-     * HTTP/1.1 support for mod_proxy.
-     * Other mod_proxy improvements.
-     * The new 'FileETag' directive to allow one to build the
-       format of the ETag via runtime directives.
-     * Addition of a 'filter callback' function to enable modules to
-       intercept the output byte stream for dynamic page caching.
+     * Various mod_proxy improvements, such as the new roxyIOBufferSize
+       directive.
+     * The new ''IgnoreCase' keyword to the IndexOptions directive.
 
    New features that relate to specific platforms:
 
-     * Use "httpready" accept filter rather than "dataready"
-       on post 4.1.1-RELEASE versions of FreeBSD.
+     * Added the module mod_log_nw to handle log rotation under NetWare.
 
   Bugs fixed
 
-   The following bugs were found in Apache 1.3.22 and have been fixed in
-   Apache 1.3.23:
+   The following bugs were found in Apache 1.3.23 (or earlier) and have
+   been fixed in Apache 1.3.24:
 
-     * Fix incorrect "Content-Length" header in the 416 response.
-     * Revert mod_negotation's handling of path_info and query_args
-       to the 1.3.20 behavior (PRs: 8628, 8582, 8538).
-     * Prevent an Apache module from being loaded or added twice due
-       to duplicate LoadModule or AddModule directives.
+     * mod_rewrite's 'rnd' was broken and has been fixed.
+     * The '-S' option of 'apxs' was not able to handle quotes; also 'apxs'
+       is now rebuilt when options are changed.
+     * proxy now correctly handles Cookies and X-Cache headers.
 
    The following bugs relate to specific platforms:
 
-     * Fixed the access forbidden problem when requesting an empty directory
-       on Netware.
-     * Do not kill the child process when accept() returns ENOBUFS on
-       HPUX 11.*
-     * A default locking mechanism has been defined for Unixware 7.0 and later.
+     * Fixed a problem in TPF when we were using the wrong subpool when
+       opening the error log.
+     * pthread accept() mutexes on Solaris were broken (since we were
+       not linking against pthread)
 

@@ -37,7 +37,7 @@ Changes with Apache 1.3.24
 
   *) Clean up warnings in mod_proxy [Chuck Murcko <chuck@topsail.org>]
 
-  *) TPF: Use the correct subpool whening opening the error log.
+  *) TPF: Use the correct subpool when opening the error log.
      This prevents a possible SIGPIPE in standalone_main.
      [David McCreedy <McCreedy@us.ibm.com>]
 
