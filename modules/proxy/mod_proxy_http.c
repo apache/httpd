@@ -373,6 +373,12 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
         /* need to flush any pending data */
         b = input_brigade; /* empty now; pass_brigade() will add flush */
     }
+    if (apr_table_get(r->subprocess_env, "proxy-sendextracrlf")) {
+        e = apr_bucket_immortal_create(ASCII_CRLF, 2,
+                                       r->connection->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(input_brigade, e);
+    }
+
     status = pass_brigade(bucket_alloc, r, conn, origin, b, 1);
     return status;
 }
@@ -508,6 +514,11 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
             e = apr_bucket_file_create(tmpfile, 0, (apr_size_t)fsize, p,
                                        bucket_alloc);
         }
+        APR_BRIGADE_INSERT_TAIL(header_brigade, e);
+    }
+    if (apr_table_get(r->subprocess_env, "proxy-sendextracrlf")) {
+        e = apr_bucket_immortal_create(ASCII_CRLF, 2,
+                                       r->connection->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
     status = pass_brigade(bucket_alloc, r, conn, origin, header_brigade, 1);
