@@ -1,5 +1,9 @@
 Changes with Apache 2.0.25-dev
 
+  *) Fix a minor issue with Jeff Trawick's mod_include
+     patch. Without this patch, the code will just allocate
+     more bytes in get_combined_directive than are needed.
+
   *) Added the LDAP authentication module mod_auth_ldap.
      [Dave Carrigan <dave@rudedog.org>, Graham Leggett]
 
