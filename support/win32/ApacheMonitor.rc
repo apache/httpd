@@ -94,7 +94,7 @@ IDD_DLGCONNECT DIALOGEX 0, 0, 240, 54
 STYLE DS_MODALFRAME | DS_SETFOREGROUND | WS_VISIBLE | WS_CLIPCHILDREN | 
     WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_CONTROLPARENT
-CAPTION "Connect Remote Computer"
+CAPTION "Connect To A Remote Computer"
 FONT 8, "MS Sans Serif"
 BEGIN
     LTEXT           "Computer &Name:",IDC_LREMOTE,7,4,155,8
@@ -119,8 +119,8 @@ BEGIN
     IDS_MSG_APPRUNNING      "Apache monitor is already started"
     IDS_MSG_ERROR           "Error"
     IDS_MSG_RUNNINGALL      "Running all Apache services"
-    IDS_MSG_RUNNING         "Running %d from %d Apache services"
-    IDS_MSG_RUNNINGNONE     "Running none from %d Apache services"
+    IDS_MSG_RUNNING         "Running %d of %d Apache services"
+    IDS_MSG_RUNNINGNONE     "Running none of %d Apache services"
     IDS_MSG_NOSERVICES      "No services installed"
     IDS_MSG_MNUSERVICES     "Open &Services"
     IDS_MSG_MNUSHOW         "&Open Apache Monitor"
