@@ -133,7 +133,8 @@ typedef enum {
 
 typedef enum {
     hdr_in = 0,                 /* RequestHeader */
-    hdr_out = 1                 /* Header */
+    hdr_out = 1,                /* Header */
+    hdr_err = 2                 /* ErrorHeader */
 } hdr_inout;
 
 /*
@@ -169,6 +170,7 @@ typedef struct {
 typedef struct {
     apr_array_header_t *fixup_in;
     apr_array_header_t *fixup_out;
+    apr_array_header_t *fixup_err;
 } headers_conf;
 
 module AP_MODULE_DECLARE_DATA headers_module;
@@ -207,6 +209,7 @@ static void *create_headers_config(apr_pool_t *p, server_rec *s)
 
     conf->fixup_in = apr_array_make(p, 2, sizeof(header_entry));
     conf->fixup_out = apr_array_make(p, 2, sizeof(header_entry));
+    conf->fixup_err = apr_array_make(p, 2, sizeof(header_entry));
 
     return conf;
 }
@@ -224,6 +227,8 @@ static void *merge_headers_config(apr_pool_t *p, void *basev, void *overridesv)
 
     newconf->fixup_in = apr_array_append(p, base->fixup_in, overrides->fixup_in);
     newconf->fixup_out = apr_array_append(p, base->fixup_out, overrides->fixup_out);
+    newconf->fixup_err = apr_array_append(p, base->fixup_err,
+                                          overrides->fixup_err);
 
     return newconf;
 }
@@ -351,9 +356,10 @@ static char *parse_format_string(apr_pool_t *p, header_entry *hdr, const char *s
 }
 
 /* handle RequestHeader and Header directive */
-static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indirconf,
-                              const char *action, const char *inhdr,
-                              const char *value, const char* envclause)
+static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd,
+                                    void *indirconf,
+                                    const char *action, const char *inhdr,
+                                    const char *value, const char* envclause)
 {
     headers_conf *dirconf = indirconf;
     const char *condition_var = NULL;
@@ -363,12 +369,31 @@ static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indir
     server_rec *s = cmd->server;
     headers_conf *serverconf = ap_get_module_config(s->module_config,
                                                     &headers_module);
+    apr_array_header_t *fixup = dirconf->fixup_out;
+
+    switch (inout) {
+    case hdr_in:
+        fixup = (cmd->path != NULL)
+            ? dirconf->fixup_in
+            : serverconf->fixup_in;
+        break;
+    case hdr_out:
+        fixup = (cmd->path != NULL)
+            ? dirconf->fixup_out
+            : serverconf->fixup_out;
+        break;
+    case hdr_err:
+        fixup = (cmd->path != NULL)
+            ? dirconf->fixup_err
+            : serverconf->fixup_err;
+        break;
+    }
 
     if (cmd->path) {
-        new = (header_entry *) apr_array_push((hdr_in == inout) ? dirconf->fixup_in : dirconf->fixup_out);
+        new = (header_entry *) apr_array_push(fixup);
     }
     else {
-        new = (header_entry *) apr_array_push((hdr_in == inout) ? serverconf->fixup_in : serverconf->fixup_out);
+        new = (header_entry *) apr_array_push(fixup);
     }
 
     if (!strcasecmp(action, "set"))
@@ -407,15 +432,17 @@ static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indir
 
     /* Handle the envclause on Header */
     if (envclause != NULL) {
-        if (inout != hdr_out) {
-            return "error: envclause (env=...) only valid on Header directive";
+        if (inout == hdr_in) {
+            return "error: envclause (env=...) only valid on "
+                "Header and ErrorHeader directives";
         }
         if (strncasecmp(envclause, "env=", 4) != 0) {
             return "error: envclause should be in the form env=envar";
         }
         if ((envclause[4] == '\0')
             || ((envclause[4] == '!') && (envclause[5] == '\0'))) {
-            return "error: missing environment variable name. envclause should be in the form env=envar ";
+            return "error: missing environment variable name. "
+                "envclause should be in the form env=envar ";
         }
         condition_var = apr_pstrdup(cmd->pool, &envclause[4]);
     }
@@ -438,14 +465,16 @@ static const char *header_cmd(cmd_parms *cmd, void *indirconf,
     const char *hdr;
     const char *val;
     const char *envclause;
+    hdr_inout outbl;
 
     s = apr_pstrdup(cmd->pool, args);
     action = ap_getword_conf(cmd->pool, &s);
     hdr = ap_getword_conf(cmd->pool, &s);
     val = *s ? ap_getword_conf(cmd->pool, &s) : NULL;
     envclause = *s ? ap_getword_conf(cmd->pool, &s) : NULL;
+    outbl = (cmd->info == NULL) ? hdr_out : hdr_err;
 
-    return header_inout_cmd(hdr_out, cmd, indirconf, action, hdr, val, envclause);
+    return header_inout_cmd(outbl, cmd, indirconf, action, hdr, val, envclause);
 }
 
 /* handle RequestHeader directive */
@@ -497,7 +526,19 @@ static void do_headers_fixup(request_rec *r, hdr_inout inout,
                              apr_array_header_t *fixup)
 {
     int i;
-    apr_table_t *headers = (hdr_in == inout) ? r->headers_in : r->headers_out;
+    apr_table_t *headers = r->headers_out;
+
+    switch (inout) {
+    case hdr_in:
+        headers = r->headers_in;
+        break;
+    case hdr_out:
+        headers = r->headers_out;
+        break;
+    case hdr_err:
+        headers = r->err_headers_out;
+        break;
+    }
 
     for (i = 0; i < fixup->nelts; ++i) {
         header_entry *hdr = &((header_entry *) (fixup->elts))[i];
@@ -548,8 +589,24 @@ static void ap_headers_insert_output_filter(request_rec *r)
     headers_conf *dirconf = ap_get_module_config(r->per_dir_config,
                                                  &headers_module);
 
-    if (serverconf->fixup_out->nelts || dirconf->fixup_out->nelts) {
+    if (serverconf->fixup_out->nelts || dirconf->fixup_out->nelts
+        || serverconf->fixup_err->nelts || dirconf->fixup_err->nelts) {
         ap_add_output_filter("FIXUP_HEADERS_OUT", NULL, r, r->connection);
+    }
+}
+
+/*
+ * Make sure our error-path filter is in place.
+ */
+static void ap_headers_insert_error_filter(request_rec *r)
+{
+    headers_conf *serverconf = ap_get_module_config(r->server->module_config,
+                                                    &headers_module);
+    headers_conf *dirconf = ap_get_module_config(r->per_dir_config,
+                                                 &headers_module);
+
+    if (serverconf->fixup_err->nelts || dirconf->fixup_err->nelts) {
+        ap_add_output_filter("FIXUP_HEADERS_ERR", NULL, r, r->connection);
     }
 }
 
@@ -565,7 +622,9 @@ static apr_status_t ap_headers_output_filter(ap_filter_t *f,
                  "headers: ap_headers_output_filter()");
 
     /* do the fixup */
+    do_headers_fixup(f->r, hdr_err, serverconf->fixup_err);
     do_headers_fixup(f->r, hdr_out, serverconf->fixup_out);
+    do_headers_fixup(f->r, hdr_err, dirconf->fixup_err);
     do_headers_fixup(f->r, hdr_out, dirconf->fixup_out);
 
     /* remove ourselves from the filter chain */
@@ -573,6 +632,42 @@ static apr_status_t ap_headers_output_filter(ap_filter_t *f,
 
     /* send the data up the stack */
     return ap_pass_brigade(f->next,in);
+}
+
+/*
+ * Make sure we propagate any ErrorHeader settings on the error
+ * path through http_protocol.c.
+ */
+static apr_status_t ap_headers_error_filter(ap_filter_t *f,
+                                            apr_bucket_brigade *in)
+{
+    headers_conf *serverconf;
+    headers_conf *dirconf;
+
+    serverconf = ap_get_module_config(f->r->server->module_config,
+                                      &headers_module);
+    dirconf = ap_get_module_config(f->r->per_dir_config,
+                                    &headers_module);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, f->r->server,
+                 "headers: ap_headers_error_filter()");
+
+    /*
+     * Add any header fields defined by ErrorHeader to r->err_headers_out.
+     * Server-wide first, then per-directory to allow overriding.
+     */
+    do_headers_fixup(f->r, hdr_err, serverconf->fixup_err);
+    do_headers_fixup(f->r, hdr_err, dirconf->fixup_err);
+
+    /*
+     * We've done our bit; remove ourself from the filter chain so there's
+     * no possibility we'll be called again.
+     */
+    ap_remove_output_filter(f);
+
+    /*
+     * Pass the buck.  (euro?)
+     */
+    return ap_pass_brigade(f->next, in);
 }
 
 static apr_status_t ap_headers_fixup(request_rec *r)
@@ -595,6 +690,9 @@ static const command_rec headers_cmds[] =
 {
     AP_INIT_RAW_ARGS("Header", header_cmd, NULL, OR_FILEINFO,
                    "an action, header and value followed by optional env clause"),
+    AP_INIT_RAW_ARGS("ErrorHeader", header_cmd, "", OR_FILEINFO,
+                     "an action, header and value "
+                     "followed by optional env clause"),
     AP_INIT_TAKE23("RequestHeader", request_header_cmd, NULL, OR_FILEINFO,
                    "an action, header and value"),
     {NULL}
@@ -618,11 +716,15 @@ static int header_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_pre_config(header_pre_config,NULL,NULL,APR_HOOK_MIDDLE);
-    ap_hook_insert_filter(ap_headers_insert_output_filter, NULL, NULL, APR_HOOK_LAST);
-    ap_hook_fixups(ap_headers_fixup, NULL, NULL, APR_HOOK_LAST);
     ap_register_output_filter("FIXUP_HEADERS_OUT", ap_headers_output_filter,
                               NULL, AP_FTYPE_CONTENT_SET);
+    ap_register_output_filter("FIXUP_HEADERS_ERR", ap_headers_error_filter,
+                              NULL, AP_FTYPE_CONTENT_SET);
+    ap_hook_pre_config(header_pre_config,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_insert_filter(ap_headers_insert_output_filter, NULL, NULL, APR_HOOK_LAST);
+    ap_hook_insert_error_filter(ap_headers_insert_error_filter,
+                                NULL, NULL, APR_HOOK_LAST);
+    ap_hook_fixups(ap_headers_fixup, NULL, NULL, APR_HOOK_LAST);
 }
 
 module AP_MODULE_DECLARE_DATA headers_module =
