@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/26 15:27:51 $]
+Last modified at [$Date: 2004/08/26 16:48:23 $]
 
 Release:
 
@@ -84,7 +84,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) util_ldap: Validate the file path of the trusted certificate file 
        at the time the LDAPTrushedCA directive is handled. PR#30782
-         modules/ldap/util_ldap.c: 1.9, 1.10
+         modules/ldap/util_ldap.c: 1.9, 1.11
        +1: bnicholes
        trawick: why toss the rv?  logging it might show that there is
                 a permissions problem instead of simple file-not-found
