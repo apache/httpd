@@ -2,7 +2,7 @@
 /* ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -257,10 +257,9 @@
 <!-- ==================================================================== -->
 <xsl:template match="section/section">
 &lf;
-<xsl:text>.Sh "</xsl:text>
+<xsl:text>.SS "</xsl:text>
     <xsl:call-template name="filter.escape">
-        <xsl:with-param name="text"
-            select="normalize-space(translate(title, $lowercase, $uppercase))"/>
+        <xsl:with-param name="text" select="normalize-space(title)"/>
     </xsl:call-template>
 <xsl:text>"</xsl:text>&lf;
 <xsl:apply-templates />
@@ -322,9 +321,7 @@
 <!-- ==================================================================== -->
 <xsl:template match="dl">
 &lf;
-<xsl:text>.RS</xsl:text>&lf;
 <xsl:apply-templates />&lf;
-<xsl:text>.RE</xsl:text>&lf;
 </xsl:template>
 
 
