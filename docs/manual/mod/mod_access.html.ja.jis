@@ -99,38 +99,53 @@
     <dl>
       <dt>ドメイン名 (の一部)</dt>
 
-      <dd>例: <code>Allow from apache.org</code><br />
-      この文字列に合うか、これで終わる名前のホストのアクセスが許可されます。
+      <dd>
+      <div class="example"><h3>例:</h3><p><code>
+        Allow from apache.org
+      </code></p></div>
+      <p>この文字列に合うか、これで終わる名前のホストのアクセスが許可されます。
       各部分が完全に合うものだけに適用されますので、上の例は
       <code>foo.apache.org</code> にはマッチしますが、
       <code>fooapache.org</code> にはマッチしません。
       この設定をすると、サーバは
       <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code>
       の設定に関わらず、クライアントの IP アドレスに対して
-      DNS の逆引きを行ないます。</dd>
+      DNS の逆引きを行ないます。</p></dd>
 
       <dt>完全な IP アドレス</dt>
 
-      <dd>例: <code>Allow from 10.1.2.3</code><br />
-      アクセスを許可する IP アドレスです。</dd>
+      <dd>
+      <div class="example"><h3>例:</h3><p><code>
+        Allow from 10.1.2.3
+      </code></p></div>
+      <p>アクセスを許可する IP アドレスです。</p></dd>
 
       <dt>IP アドレスの一部</dt>
 
-      <dd>例: <code>Allow from 10.1</code><br />
-      サブネットの制限用の、IP
-      アドレスの最初の一つから三つまでのバイトです。</dd>
+      <dd>
+      <div class="example"><h3>例:</h3><p><code>
+        Allow from 10.1
+      </code></p></div>
+      <p>サブネットの制限用の、IP
+      アドレスの最初の一つから三つまでのバイトです。</p></dd>
 
       <dt>ネットワーク/ネットマスク の対</dt>
 
-      <dd>例: <code>Allow from 10.1.0.0/255.255.0.0</code><br />
-      ネットワーク a.b.c.d とネットマスク w.x.y.z です。
-      より細粒度のサブネット制限用です。</dd>
+      <dd>
+      <div class="example"><h3>例:</h3><p><code>
+        Allow from 10.1.0.0/255.255.0.0
+      </code></p></div>
+      <p>ネットワーク a.b.c.d とネットマスク w.x.y.z です。
+      より細粒度のサブネット制限用です。</p></dd>
 
       <dt>ネットワーク/nnn CIDR 指定</dt>
 
-      <dd>例: <code>Allow from 10.1.0.0/16</code><br />
-      ネットマスクが nnn の上位ビットが 1
-      となっているものからなること以外は前のものと同じです。</dd>
+      <dd>
+      <div class="example"><h3>例:</h3><p><code>
+        Allow from 10.1.0.0/16
+      </code></p></div>
+      <p>ネットマスクが nnn の上位ビットが 1
+      となっているものからなること以外は前のものと同じです。</p></dd>
     </dl>
 
     <p>注: 最後の三つの例はまったく同じホストに合います。</p>
@@ -173,7 +188,6 @@
     で始まるブラウザのみがアクセスを許可され、
     他のものはアクセスを拒否されます。</p>
 
-
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Deny" id="Deny">Deny</a> <a name="deny" id="deny">ディレクティブ</a></h2>
@@ -213,7 +227,7 @@ Deny が評価される順番を制御する</td></tr>
     <var>Ordering</var> は以下のどれかです。</p>
 
     <dl>
-      <dt>Deny,Allow</dt>
+      <dt><code>Deny,Allow</code></dt>
 
       <dd><code class="directive"><a href="#deny">Deny</a></code> ディレクティブが
       <code class="directive"><a href="#allow">Allow</a></code>
@@ -222,7 +236,7 @@ Deny が評価される順番を制御する</td></tr>
       ディレクティブに合わないか、<code class="directive"><a href="#allow">Allow</a></code>
       ディレクティブに合うクライアントはアクセスを許可されます。</dd>
 
-      <dt>Allow,Deny</dt>
+      <dt><code>Allow,Deny</code></dt>
 
       <dd><code class="directive"><a href="#allow">Allow</a></code>
       ディレクティブが <code class="directive"><a href="#deny">Deny</a></code>
@@ -232,7 +246,7 @@ Deny が評価される順番を制御する</td></tr>
       ディレクティブに合うクライアントはアクセスを拒否されます。
       </dd>
 
-      <dt>Mutual-failure</dt>
+      <dt><code>Mutual-failure</code></dt>
 
       <dd><code class="directive"><a href="#allow">Allow</a></code> のリストに現れて、
       <code class="directive"><a href="#deny">Deny</a></code>
@@ -242,7 +256,7 @@ Deny が評価される順番を制御する</td></tr>
     </dl>
 
     <p>キーワードはコンマで分離することだけが可能です。
-    間に空白があってはいけません。どの場合でも、<code class="directive"><a href="#allow">Allow</a></code> と
+    間に<em>空白があってはいけません</em>。どの場合でも、<code class="directive"><a href="#allow">Allow</a></code> と
     <code class="directive"><a href="#deny">Deny</a></code> 文は
     全て評価されるということに注意してください。
     </p>

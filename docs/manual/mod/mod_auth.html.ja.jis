@@ -54,19 +54,15 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>認証と承認プロセスを、
 より低いレベルのモジュールに移行させるかどうかを設定する</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AuthAuthoritative on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>AuthAuthoritative on</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AuthAuthoritative On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>AuthAuthoritative On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_auth</td></tr>
 </table>
-
-<div class="note">記載されている情報は、未だ Apache 2.0 向けにアップデートされていません。
-Apache 2.0 では、モジュールの順序づけに異なる仕組みを使っています。</div>
-
     <p><code class="directive">AuthAuthoritative</code>
-    ディレクティブで明示的に <strong>'off'</strong>に設定すると、
+    ディレクティブで明示的に <code>Off</code> に設定すると、
     与えられた認証ユーザ ID に対して<strong>ユーザ ID がない</strong>
     または<strong>ルールがない</strong>場合に、
     認証と承認の両方のプロセスが、
@@ -74,13 +70,14 @@ Apache 2.0 では、モジュールの順序づけに異なる仕組みを使っています。</div>
     <code>modules.c</code> ファイルで定義) に移行するようにできます。
     ユーザ ID がある、かつまたは、ルールが指定されている場合は、
     通常のパスワードとアクセスチェックが適用されて、
-    認証に失敗すると「 Authorization Required 」応答が返されます。</p>
+    認証に失敗すると "Authentication Required" 応答が返されます。</p>
 
     <p>ですから、二つ以上のモジュールのデータベースで同一の
     ユーザ ID が現われたり、
     または、正しい <code class="directive"><a href="../mod/core.html#require">Require</a></code>
     ディレクティブが二つ以上のモジュールで現われたりした場合は、
-    一つ目のモジュールが認定を行って、AuthAuthoritative 設定に関わらず、
+    一つ目のモジュールが認定を行って、<code class="directive">AuthAuthoritative</code>
+    の設定に関わらず、
     アクセスは移行しません。</p>
 
     <p>一般的な使用法は、<code class="module"><a href="../mod/mod_auth_dbm.html">mod_auth_dbm</a></code>,
@@ -92,24 +89,26 @@ Apache 2.0 では、モジュールの順序づけに異なる仕組みを使っています。</div>
     で良く保護された、より低レベルに移行するようにします。</p>
 
     <p>デフォルトでは、制御は移行しません。そして、未知のユーザ ID や
-    ルールがあっても「Authorization Required」応答が返されます。
+    ルールがあっても "Authentication Required" 応答が返されます。
     ですから、このディレクティブ設定しないことでシステムの安全を維持できて、また、
     NCSA 準拠の挙動を強制できます。</p>
 
-    <div class="note"><h3>セキュリティ</h3> ユーザが自分自身で作成した
-    .htaccess ファイルで認証できるようにすることの影響を
-    考慮に入れておいてください。そして、
-    それが本当に希望の挙動であるかどうかを検討してください。
-    一般的に言って、mSQL といったデータベースのセキュリティ保護よりも、
-    単純に一つのファイル .htpasswd のセキュリティを保護する方が容易です。
-    <code class="directive"><a href="#authuserfile">AuthUserFile</a></code> と
-    <code class="directive"><a href="#authgroupfile">AuthGroupFile</a></code> は、
-    ウェブサーバのドキュメントツリーの外側に保管する
-    ようにしてください。保護しようとしているディレクトリ以下には、
-    <em>置かないで下さい</em>。そうしないと 
-    <code class="directive"><a href="#authuserfile">AuthUserFile</a></code> と
-    <code class="directive"><a href="#authgroupfile">AuthGroupFile</a></code>
-    はダウンロードできてしまいます。</div>
+    <div class="warning"><h3>セキュリティ</h3>
+      <p>ユーザが自分自身で作成した
+      .htaccess ファイルで認証できるようにすることの影響を
+      考慮に入れておいてください。そして、
+      それが本当に希望の挙動であるかどうかを検討してください。
+      一般的に言って、mSQL といったデータベースのセキュリティ保護よりも、
+      単純に一つのファイル .htpasswd のセキュリティを保護する方が容易です。
+      <code class="directive"><a href="#authuserfile">AuthUserFile</a></code> と
+      <code class="directive"><a href="#authgroupfile">AuthGroupFile</a></code> は、
+      ウェブサーバのドキュメントツリーの外側に保管する
+      ようにしてください。保護しようとしているディレクトリ以下には、
+      <em>置かないで下さい</em>。そうしないと 
+      <code class="directive"><a href="#authuserfile">AuthUserFile</a></code> と
+      <code class="directive"><a href="#authgroupfile">AuthGroupFile</a></code>
+      はダウンロードできてしまいます。</p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -127,30 +126,30 @@ Apache 2.0 では、モジュールの順序づけに異なる仕組みを使っています。</div>
     認証に使用するユーザグループの一覧が格納されている、
     テキストファイルの名前を設定します。
     <var>file-path</var> はグループファイルへのパスです。
-    もし絶対パスでなければ
-    (<em>つまり</em> スラッシュで始まらないパスであれば)
-    、<code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>
+    もし絶対パスでなければ、
+    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>
     からの相対パスとして扱われます。</p>
 
     <p>グループファイル各行は、グループ名、コロン、そして
-    スペース区切りでそのメンバーのユーザ名を記述します。
-    例えば:</p>
+    スペース区切りでそのメンバーのユーザ名を記述します。</p>
 
-<div class="example"><p><code>mygroup: bob joe anne</code></p></div> 
+    <div class="example"><h3>例:</h3><p><code>
+      mygroup: bob joe anne
+    </code></p></div> 
 
     <p>大きなファイルを探索するのは、<em>非常に</em>効率が悪いという点に
     注意してください。そのような場合は、
     <code class="directive"><a href="../mod/mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>
-    を代わりに使うべきでしょう。</p>
+    の方がずっと良い性能を発揮します。</p>
 
-<div class="note"><h3>セキュリティ</h3>
-    <p><code class="directive">AuthGroupFile</code> は、
-    ウェブサーバのドキュメントツリーの外側に
-    保管するようにしてください。
-    保護しようとしているディレクトリ以下には、<em>置かないで下さい</em>。
-    そうしないと <code class="directive">AuthGroupFile</code> は
-    ダウンロードできてしまいます。</p>
-</div>
+    <div class="warning"><h3>セキュリティ</h3>
+      <p><code class="directive">AuthGroupFile</code> は、
+      ウェブサーバのドキュメントツリーの外側に
+      保管するようにしてください。
+      保護しようとしているディレクトリ以下には、<em>置かないで下さい</em>。
+      そうしないと <code class="directive">AuthGroupFile</code> は
+      ダウンロードできてしまいます。</p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -174,22 +173,24 @@ Apache 2.0 では、モジュールの順序づけに異なる仕組みを使っています。</div>
     からの相対パスとして扱われます。</p>
 
     <p>ユーザファイルの各行には、ユーザ名、コロン、
-    <code>crypt()</code> で暗号化したパスワードを記述します。
-    同一ユーザが複数回登録された時の挙動は定義されていません。</p>
+    暗号化したパスワードを記述します。
+    同一ユーザ ID が複数回登録された時は、<code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code> は
+    パスワードの検証には最初の登録を使用します。</p>
 
     <p>バイナリ配布の一部としてインストールされるか、
     あるいは <code>src/support</code> にある
     <a href="../programs/htpasswd.html">htpasswd</a>
     ユーティリティで、このパスワードファイルをメインテナンスします。
-    詳細は <code>man</code> ページをご覧頂くとして、簡単には:</p>
+    詳細は <a href="../programs/htpasswd.html">man</a> ページをご覧頂くとして、
+    簡単には:</p>
 
-    <p>初期 ID username で、Filename
+    <p>初期 ID <code>username</code> で、<code>Filename</code>
     というパスワードファイルを生成します。
     次のコマンドを発行するとパスワードが要求されます:</p>
 
     <div class="example"><p><code>htpasswd -c Filename username</code></p></div>
 
-    <p>パスワードファイル Filename に、username2
+    <p>パスワードファイル <code>Filename</code> に、<code>username2</code>
     を追加したり修正したりします:</p>
 
     <div class="example"><p><code>htpasswd Filename username2</code></p></div>
@@ -200,13 +201,13 @@ Apache 2.0 では、モジュールの順序づけに異なる仕組みを使っています。</div>
     <code class="directive"><a href="../mod/mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>
     を代わりに使ってください。</p>
 
-<div class="note"><h3>セキュリティ</h3>
-    <p><code class="directive">AuthUserFile </code>
-        は、ウェブサーバのドキュメントツリーの外側に保管するようにしてください。
-        保護しようとしているディレクトリ以下には、<em>置かないで下さい</em>。
-        そうしないと <code class="directive">AuthUserFile</code> は
-        ダウンロードできてしまいます。</p></div>
-
+    <div class="warning"><h3>セキュリティ</h3>
+      <p><code class="directive">AuthUserFile </code>
+      は、ウェブサーバのドキュメントツリーの外側に保管するようにしてください。
+      保護しようとしているディレクトリ以下には、<em>置かないで下さい</em>。
+      そうしないと <code class="directive">AuthUserFile</code> は
+      ダウンロードできてしまいます。</p>
+    </div>
 
 </div>
 </div>

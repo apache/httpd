@@ -18,9 +18,11 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>停止と再起動</h1>
     <p>この文書では Unix に類似したシステムでの
-    Apache の停止と再起動について扱っています。Windows
-    ユーザ (Windows で Apache を使う場合) は、<a href="platform/windows.html#signal">実行中の Apache
-    にシグナルを送る</a>もご覧下さい。</p>
+    Apache の停止と再起動について扱っています。Windows で Apache を制御するための
+    情報として、Windows NT, 2000, XP の
+    ユーザは <a href="platform/windows.html#winsvc">Apache をサービスとして実行する</a>を、
+    Windows 9x と ME のユーザは <a href="platform/windows.html#wincons">Apache をコンソールアプリとして
+    実行する</a>を参照してください。</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">イントロダクション</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#term">急な停止</a></li>

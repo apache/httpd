@@ -65,7 +65,7 @@
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クライアントがディレクトリをリクエストしたときに調べる
 リソースのリスト</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DirectoryIndex
-    <em>local-url</em> [<em>local-url</em>] ...</code></td></tr>
+    <var>local-url</var> [<var>local-url</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>DirectoryIndex index.html</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>Indexes</td></tr>
@@ -76,7 +76,7 @@
     クライアントが、ディレクトリ名の最後に「/」
     を指定してディレクトリインデックスを要求する場合に探すリソースのリストを
     <code class="directive">DirectoryIndex</code> ディレクティブで設定します。
-    <em>Local-url</em>
+    <var>Local-url</var>
     は、リクエストされたディレクトリに対応する、サーバ上のドキュメントの
     (% エンコードされた) URL で、普通はディレクトリ中のファイルの名前です。
     複数の URL が設定された場合には、最初に見つかったものを返します。
@@ -84,9 +84,9 @@
     オプションがセットされている場合、ディレクトリのリストを生成します。
     </p>
 
-<div class="example"><h3>例</h3><p><code>
-DirectoryIndex index.html
-</code></p></div>
+    <div class="example"><h3>例</h3><p><code>
+      DirectoryIndex index.html
+    </code></p></div>
 
     <p><code>http://myserver/docs/</code> へのアクセスがあり、
     <code>http://myserver/docs/index.html</code>
@@ -96,7 +96,10 @@ DirectoryIndex index.html
     <p>注: ドキュメントが同じディレクトリ内に存在するは必要ありません。
     </p>
 
-<div class="example"><p><code>DirectoryIndex index.html index.txt  /cgi-bin/index.pl</code></p></div>
+    <div class="example"><p><code>
+      DirectoryIndex index.html index.txt  /cgi-bin/index.pl
+    </code></p></div>
+
     <p>とした場合、<code>index.html</code> と <code>index.txt</code>
     のどちらもディレクトリ内に存在しない場合、CGI スクリプト
     <code>/cgi-bin/index.pl</code> が実行されます。</p>

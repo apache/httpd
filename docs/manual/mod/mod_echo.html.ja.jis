@@ -42,7 +42,7 @@
 <div class="directive-section"><h2><a name="ProtocolEcho" id="ProtocolEcho">ProtocolEcho</a> <a name="protocolecho" id="protocolecho">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>エコーサーバの有効無効を設定します。</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProtocolEcho <em>On|Off</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProtocolEcho On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_echo</td></tr>
@@ -52,10 +52,8 @@
     エコーサーバの有効無効を設定します。</p>
 
     <div class="example"><h3>例</h3><p><code>
-    
-    ProtocolEcho On
+      ProtocolEcho On
     </code></p></div>
-
 
 </div>
 </div>

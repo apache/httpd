@@ -156,6 +156,10 @@
       <li><code>Remote_Addr</code> -
       リクエストを行なっているクライアントの IP アドレス</li>
 
+      <li><code>Server_Addr</code> - 
+      リクエストを受け取ったサーバの IP アドレス
+      (2.0.43 以降のみ)</li>
+
       <li><code>Remote_User</code> -
       認証されたユーザ名 (もしあれば)</li>
 

@@ -41,7 +41,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#install">インストール</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#customize">カスタマイズ</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#test">テスト</a></li>
-</ul><h3>参照</h3><ul class="seealso"><li><a href="invoking.html">起動</a></li><li><a href="stopping.html">停止と再起動</a></li></ul></div>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="invoking.html">Apache の起動</a></li><li><a href="stopping.html">停止と再起動</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">概要 (せっかちな人向け)</a></h2>
@@ -150,19 +150,9 @@
 <div class="section">
 <h2><a name="download" id="download">ダウンロード</a></h2>
 
-    <p>Apache は <a href="http://www.apache.org/dist/httpd/">Apache Software
-    Foundation ダウンロードサイト</a>や<a href="http://www.apache.org/dyn/closer.cgi/httpd/">近くの
-    ミラーサイト</a>からダウンロードできます。</p>
-
-    <p><code>alpha</code> で終わるバージョン番号は、
-    動くか動かないかよく分からない、
-    早期のプリテストバージョンであることを示しています。
-    <code>beta</code> で終わるバージョンはそれよりは信頼性のある
-    リリースですが、テストとバグフィックスを重ねる段階のものです。
-    Apache HTTP サーバの入手可能な中で最高の製品リリースを
-    ダウンロードしたいのであれば、ファイル名に <code>alpha</code>
-    も <code>beta</code>
-    も付かない最新のバージョンを選んでください。</p>
+    <p>Apache はいくつかのミラーのリストがある <a href="http://httpd.apache.org/download.cgi">Apache HTTP
+    サーバダウンロードサイト</a>でダウンロードできます。
+    そこには、リリースされた最新の安定版があります。</p>
 
     <p>ダウンロード後、特にミラーサイトを使った場合は、
     ダウンロードしたものが Apache HTTP 
@@ -170,7 +160,8 @@
     検証することが重要です。これはダウンロードした tarball の PGP 署名を
     テストすることによって検証します。
     これは二つの段階があります。
-    まず <code>KEYS</code> ファイルを <a href="http://www.apache.org/dist/httpd/">Apache 配布サイト</a>
+    まず <a href="http://www.apache.org/dist/httpd/"><code>KEYS</code></a>
+    ファイルも Apache 配布サイト
     からダウンロードしてください。(<code>KEYS</code> ファイル自体が
     改竄されていないことを確実にするために、以前の Apache 
     配布から取り出したファイルを使ったり、
@@ -185,8 +176,11 @@
 <div class="example"><p><code>$ gpg --import KEYS</code></p></div>
 
     <p>次のステップでは、tarball を PGP 署名でテストします。
-    PGP 署名は必ず <a href="http://www.apache.org/dist/httpd/">メインの Apache
+    PGP 署名は必ず <a href="http://httpd.apache.org/download.cgi">メインの Apache
     ウェブサイト</a>から取得してください。
+    署名ファイルへのリンクは対応するダウンロードリンクの次にあり、
+    <a href="http://www.apache.org/dist/httpd/">Apache
+    配布サイト</a>の特定のディレクトリにもあるかもしれません。
     署名ファイルの名前は、ソースファイルの tarball と同じ名前に
     <code>.asc</code> を付加したものになっています。
     以下のコマンド (やっぱり pgp のバージョンに依存) のどれか一つで、
@@ -509,7 +503,7 @@
 
 <h3><a name="dbm" id="dbm">DBM</a></h3>
 
-    <p><code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code> と <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>
+    <p><code class="module"><a href="./mod/mod_auth_dbm.html">mod_auth_dbm</a></code> と <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>
     の DBM <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> 
     等、 Apache 機能の幾つかでは情報の検索に単純な key/value
     データベースを使用します。Apache には SDBM がソースコードごと
