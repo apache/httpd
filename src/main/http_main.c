@@ -92,6 +92,12 @@
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#if defined(AUX)		/* Aren't defined anyplace */
+extern char *shmat(int, char *, int);
+extern int  shmctl(int, int, struct shmid_ds *);
+extern int  shmget(key_t, int, int);
+extern char *sbrk(int);
+#endif
 #endif
 #ifdef SecureWare
 #include <sys/security.h>
@@ -471,7 +477,7 @@ static void setup_shared_mem(void)
     char errstr[MAX_STRING_LEN];
     struct shmid_ds shmbuf;
 #ifdef MOVEBREAK
-    int obrk;
+    char *obrk;
 #endif
 
     if ((shmid = shmget(shmkey, score_size, IPC_CREAT|SHM_R|SHM_W)) == -1)
@@ -494,7 +500,7 @@ static void setup_shared_mem(void)
      * To get around this, we move the break point "way up there",
      * attach the segment and then move break back down. Ugly
      */
-    if ((obrk=sbrk(MOVEBREAK)) == -1)
+    if ((obrk=sbrk(MOVEBREAK)) == (char *)-1)
     {
 	perror("sbrk");
 	fprintf(stderr, "httpd: Could not move break\n");
@@ -540,9 +546,9 @@ static void setup_shared_mem(void)
 	exit(1);
 
 #ifdef MOVEBREAK
-    if (obrk == -1)
+    if (obrk == (char *)-1)
 	return;		/* nothing else to do */
-    if (sbrk(-(MOVEBREAK)) == -1)
+    if (sbrk(-(MOVEBREAK)) == (char *)-1)
     {
 	perror("sbrk");
 	fprintf(stderr, "httpd: Could not move break back\n");

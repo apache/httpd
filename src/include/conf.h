@@ -229,6 +229,9 @@ extern int strncasecmp(const char *,const char *,unsigned);
 #undef FLOCK_SERIALIZED_ACCEPT
 #define HAVE_SHMGET
 #define MOVEBREAK		0x4000000
+/* These are to let -Wall compile more cleanly */
+extern int strcasecmp(const char *, const char *);
+extern int strncasecmp(const char *,const char *,unsigned);
 
 #elif defined(SVR4)
 #define NO_KILLPG
