@@ -76,9 +76,6 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f pcre.mak CFG="pcre - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f pcreposix.mak CFG="pcreposix - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
-	cd srclib\sdbm
-	 $(MAKE) $(MAKEOPT) -f sdbmlib.mak CFG="sdbmlib - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-        cd ..\..
 	cd server
 	 $(MAKE) $(MAKEOPT) -f gen_uri_delims.mak CFG="gen_uri_delims - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f gen_test_char.mak CFG="gen_test_char - Win32 $(LONG)" RECURSE=0 $(CTARGET)
