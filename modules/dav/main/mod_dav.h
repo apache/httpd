@@ -667,7 +667,7 @@ const dav_hooks_locks *dav_get_lock_hooks(request_rec *r);
 const dav_hooks_propdb *dav_get_propdb_hooks(request_rec *r);
 const dav_hooks_vsn *dav_get_vsn_hooks(request_rec *r);
 const dav_hooks_binding *dav_get_binding_hooks(request_rec *r);
-const dav_hooks_search *dav_get_search(request_rec *r);
+const dav_hooks_search *dav_get_search_hooks(request_rec *r);
 
 DAV_DECLARE(void) dav_register_provider(apr_pool_t *p, const char *name,
                                         const dav_provider *hooks);
