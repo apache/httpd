@@ -1,5 +1,9 @@
 Changes with Apache 2.0b1
 
+  *) Do not try to run make depend if there are no .c files in the
+     current directory, doing so makes `make depend` fail.
+     [Ryan Bloom]
+
    *) Update highperformance.conf to work with either prefork or
       pthreads mpms.  [Greg Ames] 
 
