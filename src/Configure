@@ -608,7 +608,7 @@ case "$PLAT" in
     *-unixware7)
 	OS='UnixWare 7'
 	CFLAGS="$CFLAGS -DUW=700"
-	LIBS="$LIBS -lsocket -lnsl -lcrypt -lgen"
+	LIBS="$LIBS -lsocket -lnsl -lcrypt -lgen -lresolv"
 	DBM_LIB=""
 	;;
     maxion-*-sysv4*)
