@@ -448,7 +448,8 @@ case "$PLAT" in
 	;;
     *convex-v11*)
 	OS='CONVEXOS11'
-	CFLAGS="$CFLAGS -DCONVEXOS11"
+	CFLAGS="$CFLAGS -ext -DCONVEXOS11"
+	OPTIM="-O1" # scalar optimization only
 	CC='cc'
 	DEF_WANTHSREGEX=yes
 	;;

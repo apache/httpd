@@ -306,10 +306,6 @@ consts. Sigh. */
 extern int strcasecmp(const char *,const char *);
 extern int strncasecmp(const char *,const char *,unsigned);
 
-#elif defined(CONVEXOS)
-#define HAVE_GMTOFF
-#define NEED_STRDUP
-
 #elif defined(AUX)
 /* These are to let -Wall compile more cleanly */
 extern int strcasecmp(const char *, const char *);
@@ -505,6 +501,12 @@ typedef int rlim_t;
 
 /* Convex OS v11 */
 #elif defined(CONVEXOS11)
+#undef HAVE_GMTOFF
+#undef NO_KILLPG
+#undef NO_SETSID
+#undef NEED_STRDUP
+#define HAVE_MMAP
+
 #define NO_TIMEZONE
 #include <stdio.h>
 #include <sys/types.h>
@@ -659,7 +661,7 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 			     va_list ap);
 #endif
 
-#if !defined(NEXT) && !defined(CONVEXOS) && !defined(WIN32)
+#if !defined(NEXT) && !defined(WIN32)
 #include <dirent.h>
 #define DIR_TYPE dirent
 #elif !defined(WIN32)

@@ -893,8 +893,27 @@ static void setup_shared_mem(void)
 
 #elif defined(MAP_ANON) || defined(MAP_FILE)
 /* BSD style */
+#ifdef CONVEXOS11
+    /*
+     * 9-Aug-97 - Jeff Venters (venters@convex.hp.com)
+     * ConvexOS maps address space as follows:
+     *   0x00000000 - 0x7fffffff : Kernel
+     *   0x80000000 - 0xffffffff : User
+     * Start mmapped area 1GB above start of text.
+     *
+     * Also, the length requires a pointer as the actual length is
+     * returned (rounded up to a page boundary).
+     */
+    {
+	unsigned len = SCOREBOARD_SIZE;
+	
+	m = mmap((caddr_t)0xC0000000, &len,
+		PROT_READ | PROT_WRITE, MAP_ANON | MAP_SHARED, NOFD, 0);
+    }
+#else
     m = mmap((caddr_t)0, SCOREBOARD_SIZE,
 	     PROT_READ | PROT_WRITE, MAP_ANON | MAP_SHARED, -1, 0);
+#endif
     if (m == (caddr_t)-1)
     {
 	perror("mmap");

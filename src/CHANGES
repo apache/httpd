@@ -422,6 +422,8 @@ Changes with Apache 1.2.3
   *) Force proxy to always respond as HTTP/1.0, which it was failing to
      do for errors and cached responses.  [Roy Fielding]
 
+  *) PORT: Improved support for ConvexOS 11.  [Jeff Venters]
+
 Changes with Apache 1.2.2 [not released]
 
   *) Fixed another long-standing bug in sub_req_lookup_file where it would
