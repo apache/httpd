@@ -281,6 +281,8 @@ typedef int rlim_t;
 typedef int rlim_t;
 #endif
 #define HAVE_FCNTL_SERIALIZED_ACCEPT
+#define HAVE_SYSVSEM_SERIALIZED_ACCEPT
+#define NEED_UNION_SEMUN
 #if !defined(USE_PTHREAD_SERIALIZED_ACCEPT)
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #endif
