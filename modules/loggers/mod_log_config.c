@@ -528,6 +528,18 @@ static const char *log_child_pid(request_rec *r, char *a)
     return apr_psprintf(r->pool, "%ld", (long) getpid());
 }
 
+static const char *log_connection_status(request_rec *r, char *a)
+{
+    if (r->connection->aborted)
+        return "X";
+
+    if ((r->connection->keepalive) &&
+        ((r->server->keep_alive_max - r->connection->keepalives) > 0)) {
+        return "+";
+    }
+    return "-";
+}
+
 /*****************************************************************
  *
  * Parsing the log format string
@@ -1177,6 +1189,7 @@ static void log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         log_pfn_register(p, "H", log_request_protocol, 0);
         log_pfn_register(p, "m", log_request_method, 0);
         log_pfn_register(p, "q", log_request_query, 0);
+        log_pfn_register(p, "c", log_connection_status, 0);
         log_pfn_register(p, "C", log_cookie, 0);
         log_pfn_register(p, "r", log_request_line, 1);
         log_pfn_register(p, "D", log_request_duration_microseconds, 1);
