@@ -1027,8 +1027,8 @@ Fehlermeldungen</a></li>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Ablageort, an dem der Server Fehler protokolliert</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code> ErrorLog <var>Dateiname</var>|syslog[:<var>facility</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>ErrorLog logs/error_log (Unix)<br />
-ErrorLog logs/error.log (Windows and OS/2)</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows and
+  OS/2)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
@@ -1620,6 +1620,13 @@ bestimmte HTTP-Methoden</td></tr>
     <code>GET</code> verwendet wird, sind <code>HEAD</code>-Anfragen
     ebenfalls eingeschränkt. Die <code>TRACE</code>-Methode kann nicht
     limitiert werden.</p>
+
+    <div class="warning">
+      Bei Zugriffsbeschränkungen ist ein <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>-Abschnitt stets einem
+      <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code>-Abschnitt
+      vorzuziehen, da ein <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>-Abschnitt vor allen möglichen
+      Methoden schützt.</div>
+        
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2642,8 +2649,8 @@ CGI-Skripten</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>ausschließlich Win32<br />
-Die Option <code>Registry-Strict</code> ist verfügbar seit Apache
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>ausschließlich Win32; Die Option
+  <code>Registry-Strict</code> ist verfügbar seit Apache
 2.0.</td></tr>
 </table>
     <p>Die Direktive steuert, wie der Apache den Interpreter zur Ausführung
@@ -2656,8 +2663,8 @@ Die Option <code>Registry-Strict</code> ist verfügbar seit Apache
       #!C:/Perl/bin/perl.exe
     </code></p></div>
 
-    <p>oder, wenn perl im Pfad (Umgebungsvariable <code>PATH</code>) liegt,
-      einfach:</p>
+    <p>oder, wenn <code>perl</code> im Pfad (Umgebungsvariable
+      <code>PATH</code>) liegt, einfach:</p>
 
     <div class="example"><p><code>
       #!perl
@@ -2669,31 +2676,30 @@ Die Option <code>Registry-Strict</code> ist verfügbar seit Apache
     (z.B. <code>.pl</code>) als Suchargument. Der durch den Unterschlüssel
     <code>Shell\ExecCGI\Command</code> oder, falls dieser nicht existiert,
     <code>Shell\Open\Command</code> definierte Befehl wird zum Öffnen der
-    Skript-Datei verwendet. Wenn der Schlüssel zur Dateiendung oder
-    beide Unterschlüssel fehlen, dann verwendet der Apache die Option
-    <code>Script</code>.</p>
+    Skript-Datei verwendet. Wenn die Registrierungsschlüsel nicht gefunden
+    werden, dann verwendet der Apache die Option <code>Script</code>.</p>
 
     <div class="warning"><h3>Sicherheit</h3>
-      <p>Seien Sie vorsichtig, <code>ScriptInterpreterSource Registry</code> bei
-      Verzeichnissen zu verwenden, auf die eine <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>-Anweisung zeigt, denn der
-      Apache versucht <strong>jede</strong> Datei innerhalb des Verzeichnisses
-      auszuführen. Die Einstellung <code>Registry</code> kann
-      unerwünschte Programmaufrufe bei Dateien verursachen, die
+      <p>Seien Sie vorsichtig, wenn Sie <code>ScriptInterpreterSource
+      Registry</code> bei Verzeichnissen verwenden, auf die eine <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>-Anweisung zeigt, denn der
+      Apache wird versuchen, <strong>jede</strong> Datei innerhalb des
+      Verzeichnisses auszuführen. Die Einstellung <code>Registry</code>
+      kann unerwünschte Programmaufrufe bei Dateien verursachen, die
       üblicherweise nicht ausgeführt werden. Auf den meisten
       Windows-Systemen beispielsweise startet der voreingestellte
       Öffnen-Befehl für <code>.htm</code>-Dateien den Microsoft
       Internet Explorer, so dass jede HTTP-Anfrage nach einer existierenden
-      <code>.htm</code>-Datei im Skript-Verzeichnis den Browser im Hintergrund
-      starten würde. Dies ist eine wirksame Methode, Ihr System binnen
-      etwa einer Minute zum Absturz zu bringen.</p>
+      <code>.htm</code>-Datei im Skript-Verzeichnis den Browser auf dem Server
+      im Hintergrund starten würde. Dies ist leichte Art und Weise, Ihr 
+      System binnen etwa einer Minute zum Absturz zu bringen.</p>
     </div>
           
     <p>Die seit Apache 2.0 neue Option <code>Registry-Strict</code>
     macht das gleiche wie <code>Registry</code>, verwendet jedoch nur den
     Unterschlüssel <code>Shell\ExecCGI\Command</code>. Der Schlüssel
     <code>ExecCGI</code> ist gewöhnlich nicht voreingestellt. Er muss
-    manuell eingerichtet werden und schützt Ihr System so for
-    versehentlichen Programmaufrufen.</p>
+    manuell in der Windows-Registrierungsdatenbank eingerichtet werden und 
+    verhindert dann versehentlicht Programmaufrufe auf Ihrem System.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
