@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/05/25 20:04:47 $]
+Last modified at [$Date: 2001/06/02 00:22:19 $]
 
 Release:
 
@@ -22,7 +22,7 @@ DAEDALUS 2.0 PROBLEMS:
     * mod_cgid and suexec have a problem co-existing.  suexec sees a null
       command string sometimes.
 
-    * core dump from 20010418
+    * core dump from 20010418 running 2_0_16
 
       /usr/local/apache2b/corefiles/httpd.core.2
       #0  0x2813a3c8 in kill () from /usr/lib/libc.so.4
@@ -61,6 +61,23 @@ DAEDALUS 2.0 PROBLEMS:
       The confusion was because apr_sendfile() returned APR_SUCCESS
       but zero bytes sent.  Presumably the FreeBSD kernel sendfile()
       did the same thing (not 100% sure).
+
+    * core dump from 20010521 and 20010529 running 2_0_16 - the "3030" problem
+
+      /usr/local/apache/corefiles/httpd.core.6
+      #0  0x80987e8 in apr_cvt (arg=1.3980432860952889e-76,
+                                ndigits=808464432, decpt=0x30303030, 
+                                sign=0x30303030, eflag=808464432,
+                                buf=0x30303030 <Address 0x30303030 out of bounds>) at apr_snprintf.c:177
+      #1  0x30303030 in ?? ()
+      Cannot access memory at address 0x30303030. 
+
+      In both coredumps the request is /server-status?auto.
+
+      It is unclear whether the apr_*printf function was passed bad
+      data or it screwed up on its own.  0x30 is '0'.  There is a
+      string of 200-300 '0' characters in the dump, apparently
+      overlaying enough of the stack to cause serious problems :)
 
 RELEASE SHOWSTOPPERS:
 
