@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/07 16:06:24 $]
+Last modified at [$Date: 2003/03/07 18:42:44 $]
 
 Release:
 
@@ -74,6 +74,10 @@ PATCHES TO PORT FROM 2.1
          wrowe: yes - it would be cool to have debug flavors in the same
            files as their non-debug versions - but for macros, then what?
            Andre - suggest an alternative :-)
+          nd: ehm, just to be clear: I was talking about get/set_module_config.
+              (hmm, are the macros ever used now?). These should go into
+              config.c, imho. It seems, I don't fully understand all the
+              #defines and #undefs that happen there.
 
     * AllowEncodedSlashes patch to permit %2f in path-info.
       CHANGES r1.1038
