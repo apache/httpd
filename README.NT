@@ -38,10 +38,11 @@ Changes for the Windows version
    the program to hook up to the Service Manager). On Windows 95
    it runs as a regular program.
 
-3. It executes as multiple processes (this allows for some fault tolerance -
-   if a server dies, another one takes its place. Also after dealing
-   with a certain number of requests, each process voluntarily exits, to
-   clean up any resources it might have forgotten to free up).
+3. There is only ever one child process for handling requests.
+   However for fault tolerance, if this process dies, another one
+   takes its place. Also after dealing with a certain number of
+   requests, each process voluntarily exits, to clean up any resources
+   it might have forgotten to free up.
 
 By default Apache uses the directory \Apache for the ServerRoot ON THE
 DRIVE WHERE THE EXECUTABLE EXISTS. This can be changed with the -d
@@ -49,29 +50,10 @@ command line argument.
 
 There are a couple of new directives:
 
-ThreadsPerChild         - Number of threads each server spawns)
+ThreadsPerChild         - Number of threads to use to handle requests
 ExcessRequestsPerChild  - Number of additional requests a server responds
-                          to, after it decides to exit
-
-Due to the behavior of NT when multiple processes have a socket open
-for listening, I would recommend that you set the following in httpd.conf
-(in the directory /usr/local/apache/conf):
-
-# Start up 3 servers (in case one dies, another can take its place, while
-# a new one is spawned
-StartServers 3
-
-# Don't force a server to exit after it has served some number of requests.
-# If you do want server's to exit after they have run for a long time (to
-# help the system clean up after the process), please set this to a pretty
-# large number - like 10,000. What this will do, is, each child server will
-# exit after serving 10,000 requests, and another server will take its place.
-MaxRequestsPerChild 0
-
-# Number of concurrent threads at a time (set the value to more or less
-# depending on the responsiveness you want and the resources you wish
-# this server to consume).
-ThreadsPerChild 20
+                          to, after it decides to exit (this is not
+                          currently used)
 
 Compilation
 -----------
@@ -96,11 +78,11 @@ so that your environment is configured to run nmake from the command
 line.
 
 To build Apache within MSVC, you will need to build the following
-projects and Makefiles, in the following order. Make sure that you
-build the same configuration (i.e. Debug or Release) for all of the
-various projects.
+projects in this order. Make sure that you build the same
+configuration (i.e. Debug or Release) for all of the various projects.
 
-   regex/Makefile.mak
+   regex/Makefile.dsp
+   ap/ap.dsp
    os/win32/ApacheOS.dsp
    src/ApacheCore.dsp
    src/Apache.dsp
@@ -118,24 +100,41 @@ Running Apache
 
 Apache can run as either a service (NT only) or a regular executable. 
 
-To run as an executable, simply run \Apache\apache from the command
+To run as an executable, simply run apache.exe from the command
 line. This will print the version number, then wait to serve
-requests. To stop Apache, press Control-C to stop it running. Note
+requests. If the server root is a directory other than \Apache, use
+the -d option to give the correct server root, or store it in the
+registry (see below).
+
+To stop Apache, press Control-C to stop it running. Note
 that there may be a delay between typing the command line and Apache
 being ready to accept requests as it checks the service manager. Use
 the -s option to prevent this delay.
 
-To run as a service, first install the service with
+When Apache starts it will look at the registry key
 
-  \Apache\apache -i
+  HKEY_LOCAL_MACHINE\Software\Apache Group\Apache\1.3 beta\ServerRoot
 
-You can now start the Apache service within the service manager
+to find the server root, unless specified by the -d command line
+flag. The correct server root is stored in this key by the binary
+installation, or when Apache is run with the -i option.
+
+To install Apache as a service on NT and set the server root registry
+key, run
+
+  apache -i -d serverroot
+
+This will store the value of "serverroot" into the Apache ServerRoot
+registry key, as above. Note that this can be used on both Windows NT
+and Windows 95, however it will not install a service on 95.
+
+On NT you can now start the Apache service within the service manager
 (Control Panel, Services), and set it to start automatically at boot
 time if required. You can also stop Apache from the manager.
 
 To remove the Apache service, run
 
-  \Apache\apache -u
+  apache -u
 
 Uninstalling Apache
 -------------------
@@ -146,7 +145,8 @@ Add/Remove Programs). You may have to remove the directory manually
 because of the configuration files.
 
 If you installed a source release, you should delete the directory
-where you installed Apache (normally \Apache).
+where you installed Apache. You might also want to delete the registry
+key, as given above.
 
 Known Problems
 --------------
