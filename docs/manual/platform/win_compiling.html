@@ -93,6 +93,13 @@
         listing Executable file paths.  Add the path for awk.exe to this 
         list, and your system PATH environment variable, as needed.<br />
         <br />
+         Also note that if you are using Cygwin (<a href="http://www.cygwin.com/"
+         >http://www.cygwin.com/</a>) the awk utility is named gawk.exe and
+         that the file awk.exe is really a symlink to the gawk.exe file. The
+         Windows command shell does not recognize symlinks, and because of that
+         building InstallBin will fail. A workaround is to delete awk.exe from
+         the cygwin installation and rename gawk.exe to awk.exe.<br />
+         <br />
       </li>
 
       <li>[Optional] OpenSSL libraries (for mod_ssl and ab.exe with ssl support)<br />
