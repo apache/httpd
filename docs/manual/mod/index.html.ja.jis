@@ -1,23 +1,25 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=iso-2022-jp"><!--
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>$B%b%8%e!<%k0lMw(B - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">$B%b%8%e!<%k0lMw(B</h1>
+      --><title>$B%b%8%e!<%k0lMw(B - Apache HTTP Server</title><link href="../style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="../style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="../style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="../style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="../style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="../style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="../style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="../style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="module-index"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a></div><div id="preamble"><h1>$B%b%8%e!<%k0lMw(B</h1>
     <p>
       $B0J2<$O(B Apache $B$NG[I[$N0lIt$H$7$FG[$i$l$F$$$k$9$Y$F$N%b%8%e!<%k$N(B
       $B0lMw$G$9!#$9$Y$F$N(B <a href="directives.html">Apache
-      $B%G%#%l%/%F(B$B%#%V(B</a> $B$N%"%k%U%!%Y%C%H=g$N%j%9%H$b8+$F$/$@$5$$!#(B
+      $B%G%#%l%/%F%#%V(B</a> $B$N%"%k%U%!%Y%C%H=g$N%j%9%H$b8+$F$/$@$5$$!#(B
     </p>
-  <h2>$B%3%"5!G=$H(B MPM</h2><dl><dt><a href="core.html">core</a></dt><dd>Core Apache HTTP Server features that are always
-available</dd><dt><a href="mpm_common.html">mpm_common</a></dt><dd>$BFs$D0J>e$N%^%k%A%W%m%;%C%7%s%0%b%8%e(B$B!<%k(B (MPM)
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>$B%3%"5!G=$H(B MPM</h2><dl><dt><a href="core.html">core</a></dt><dd>Core Apache HTTP Server features that are always
+available</dd><dt><a href="mpm_common.html">mpm_common</a></dt><dd>$BFs$D0J>e$N%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B (MPM)
 $B$G<BAu$5$l$F$$$k%G%#%l%/%F%#%V$N%3%l%/%7%g%s(B</dd><dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Multi-Processing Module implementing an exclusively threaded web
     server optimized for Novell NetWare</dd><dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd>Windows NT
-$B8~$1$K:GE,2=$5$l$?(B$B%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B</dd><dt><a href="perchild.html">perchild</a></dt><dd>Multi-Processing Module allowing for daemon processes
+$B8~$1$K:GE,2=$5$l$?%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B</dd><dt><a href="perchild.html">perchild</a></dt><dd>Multi-Processing Module allowing for daemon processes
     serving requests to be assigned a variety of different
-    userids</dd><dt><a href="prefork.html">prefork</a></dt><dd>$B%9%l%C%I$r;H$o$:!"@h9T$7$F(B fork $B$r9T$J(B$B$&%&%'%V%5!<%P$r<BAu(B
+    userids</dd><dt><a href="prefork.html">prefork</a></dt><dd>$B%9%l%C%I$r;H$o$:!"@h9T$7$F(B fork $B$r9T$J$&%&%'%V%5!<%P$r<BAu(B
 </dd><dt><a href="worker.html">worker</a></dt><dd>$B%^%k%A%9%l%C%I$H%^%k%A%W%m%;%9$N%O%$%V%j%C%I7?(B
-$B%&%'%V%5!<%P$r<BAu$7$?%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B</dd></dl><h2>$BB>$N%b%8%e!<%k(B</h2><dl><dt><a href="mod_access.html">mod_access</a></dt><dd>$B%/%i%$%"%s%H$N%[%9%HL>!"(BIP $B%"(B$B%I%l%9!"$=$NB>$N%/%i%$%"%s%H(B
-$B$N%j%/%(%9%H$NFCD'$K4p$E$$$?%"%/%;(B$B%9@)8f5!G=$rDs6!$9$k(B</dd><dt><a href="mod_actions.html">mod_actions</a></dt><dd>This module provides for executing CGI scripts based on
+$B%&%'%V%5!<%P$r<BAu$7$?%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B</dd></dl></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>$BB>$N%b%8%e!<%k(B</h2><dl><dt><a href="mod_access.html">mod_access</a></dt><dd>$B%/%i%$%"%s%H$N%[%9%HL>!"(BIP $B%"%I%l%9!"$=$NB>$N%/%i%$%"%s%H(B
+$B$N%j%/%(%9%H$NFCD'$K4p$E$$$?%"%/%;%9@)8f5!G=$rDs6!$9$k(B</dd><dt><a href="mod_actions.html">mod_actions</a></dt><dd>This module provides for executing CGI scripts based on
 media type or request method.</dd><dt><a href="mod_alias.html">mod_alias</a></dt><dd>Provides for mapping different parts of the host
     filesystem in the document tree and for URL redirection</dd><dt><a href="mod_asis.html">mod_asis</a></dt><dd>Sends files that contain their own
 HTTP headers</dd><dt><a href="mod_auth.html">mod_auth</a></dt><dd>$B%F%-%9%H%U%!%$%k$rMQ$$$?%f!<%6G'>Z(B</dd><dt><a href="mod_auth_anon.html">mod_auth_anon</a></dt><dd>Allows "anonymous" user access to authenticated
@@ -25,10 +27,10 @@ HTTP headers</dd><dt><a href="mod_auth.html">mod_auth</a></dt><dd>$B%F%-%9%H%U%
     files</dd><dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication.</dd><dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Unix $B$N(B <em>ls</em> $B%3%^%s%I$d(B
     Win32 $B$N(B <em>dir</em> $B%7%'%k%3%^%s%I$K;w$?(B
-    $B%G(B$B%#%l%/%H%j%$%s%G%C%/%9$r@8@.$9$k(B</dd><dt><a href="mod_cache.html">mod_cache</a></dt><dd>Content cache keyed to URIs.</dd><dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd><dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Execution of CGI scripts</dd><dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an
+    $B%G%#%l%/%H%j%$%s%G%C%/%9$r@8@.$9$k(B</dd><dt><a href="mod_cache.html">mod_cache</a></dt><dd>Content cache keyed to URIs.</dd><dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd><dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Execution of CGI scripts</dd><dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an
     external CGI daemon</dd><dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>Specify character set translation or recoding</dd><dt><a href="mod_dav.html">mod_dav</a></dt><dd>$BJ,;6%*!<%5%j%s%0$H%P!<%8%g%s4IM}(B
 (<a href="http://www.webdav.org/">WebDAV</a>) $B5!G=(B</dd><dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>Compress content before
-    it is delivered to the client</dd><dt><a href="mod_dir.html">mod_dir</a></dt><dd>$B!V:G8e$N%9%i%C%7%e!W$N%j%@%$%l%/%H$H!"%G%#(B$B%l%/%H%j$N(B
+    it is delivered to the client</dd><dt><a href="mod_dir.html">mod_dir</a></dt><dd>$B!V:G8e$N%9%i%C%7%e!W$N%j%@%$%l%/%H$H!"%G%#%l%/%H%j$N(B
 $B%$%s%G%C%/%9%U%!%$%k$r07$&5!G=$rDs6!$9$k(B</dd><dt><a href="mod_echo.html">mod_echo</a></dt><dd>A simple echo server to illustrate protocol 
 modules</dd><dt><a href="mod_env.html">mod_env</a></dt><dd>CGI $B%9%/%j%W%H5Z$S(B SSI
     $B%Z!<%8$KEO$5$l$k4D6-JQ?t$rJQ99$9$k5!G=$rDs6!$9$k(B</dd><dt><a href="mod_example.html">mod_example</a></dt><dd>Illustrates the Apache module API</dd><dt><a href="mod_expires.html">mod_expires</a></dt><dd>Generation of
@@ -43,7 +45,7 @@ configuration</dd><dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>ISAPI Exten
     encoding)</dd><dt><a href="mod_mime_magic.html">mod_mime_magic</a></dt><dd>Determines the MIME type of a file
     by looking at a few bytes of its contents</dd><dt><a href="mod_negotiation.html">mod_negotiation</a></dt><dd>Provides for <a href="../content-negotiation.html">content negotiation</a></dd><dt><a href="mod_proxy.html">mod_proxy</a></dt><dd>HTTP/1.1 proxy/gateway server</dd><dt><a href="mod_rewrite.html">mod_rewrite</a></dt><dd>Provides a rule-based rewriting engine to rewrite requested
 URLs on the fly</dd><dt><a href="mod_setenvif.html">mod_setenvif</a></dt><dd>Allows the setting of environment variables based
-on characteristics of the request</dd><dt><a href="mod_so.html">mod_so</a></dt><dd>$B5/F0;~$d:F5/F0;~$K<B9T%3!<%I$H%b%8%e!<%k$r%5(B$B!<%P$K%m!<%I$9$k(B
+on characteristics of the request</dd><dt><a href="mod_so.html">mod_so</a></dt><dd>$B5/F0;~$d:F5/F0;~$K<B9T%3!<%I$H%b%8%e!<%k$r%5!<%P$K%m!<%I$9$k(B
 </dd><dt><a href="mod_speling.html">mod_speling</a></dt><dd>Attempts to correct mistaken URLs that
 users might have entered by ignoring capitalization and by
 allowing up to one misspelling</dd><dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Strong cryptography using the Secure Sockets
@@ -53,4 +55,4 @@ identifier for each request</dd><dt><a href="mod_userdir.html">mod_userdir</a></
   </dd><dt><a href="mod_usertrack.html">mod_usertrack</a></dt><dd>
 <em>Clickstream</em> logging of user activity on a site
 </dd><dt><a href="mod_vhost_alias.html">mod_vhost_alias</a></dt><dd>Provides for dynamically configured mass virtual
-hosting</dd></dl></blockquote><hr><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="$B:w(B$B0z(B"></a><a href="../"><img src="../images/home.gif" alt="$B%[(B$B!<(B$B%`(B"></a></body></html>
+hosting</dd></dl></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>

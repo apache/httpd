@@ -1,13 +1,15 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_expires - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_expires</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
-                      </span></td><td>Generation of
+      --><title>mod_expires - Apache HTTP Server</title><link href="../style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="../style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="../style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="../style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="../style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="../style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="../style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="../style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_expires</h1><table class="module"><tr><th>Description:
+                </th><td>Generation of
     <code>Expires</code> HTTP headers according to user-specified
-    criteria</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
-                      </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
-                        </a></td><td>expires_module</td></tr></table></td></tr></table><h2>Summary</h2>
+    criteria</td></tr><tr><th><a href="module-dict.html#Status">Status:
+                  </a></th><td>Extension</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
+                  </a></th><td>expires_module</td></tr></table><h3>Summary</h3>
     <p>This module controls the setting of the <code>Expires</code>
     HTTP header in server responses. The expiration date can set to
     be relative to either the time the source file was last
@@ -19,19 +21,20 @@
     from the source until this time has passed. After that, the
     cache copy is considered "expired" and invalid, and a new copy
     must be obtained from the source.</p>
-<h2>Directives</h2><ul><li><a href="#expiresactive">ExpiresActive</a></li><li><a href="#expiresbytype">ExpiresByType</a></li><li><a href="#expiresdefault">ExpiresDefault</a></li></ul><h2><a name="AltSyn">Alternate Interval
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#expiresactive">ExpiresActive</a></li><li><img alt="" src="../images/down.gif" /> <a href="#expiresbytype">ExpiresByType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#expiresdefault">ExpiresDefault</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#AltSyn">Alternate Interval
+    Syntax</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="AltSyn" id="AltSyn">Alternate Interval
     Syntax</a></h2>
 
-    <p>The <a href="#expiresdefault" class="directive"><code class="directive">ExpiresDefault</code></a> and 
-    <a href="#expiresbytype" class="directive"><code class="directive">ExpiresByType</code></a> directives
+    <p>The <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> and 
+    <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> directives
     can also be defined in a more readable syntax of the form:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
        ExpiresDefault "&lt;base&gt; [plus] {&lt;num&gt;
-      &lt;type&gt;}*"<br>
+      &lt;type&gt;}*"<br />
        ExpiresByType type/encoding "&lt;base&gt; [plus]
       {&lt;num&gt; &lt;type&gt;}*"
-</code></td></tr></table></blockquote>
+</code></p></div>
 
     <p>where &lt;base&gt; is one of:</p>
 
@@ -68,33 +71,33 @@
     make documents expire 1 month after being accessed, by
     default:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-       ExpiresDefault "access plus 1 month"<br>
-       ExpiresDefault "access plus 4 weeks"<br>
+<div class="example"><p><code>
+       ExpiresDefault "access plus 1 month"<br />
+       ExpiresDefault "access plus 4 weeks"<br />
        ExpiresDefault "access plus 30 days"
-</code></td></tr></table></blockquote>
+</code></p></div>
 
     <p>The expiry time can be fine-tuned by adding several
     '&lt;num&gt; &lt;type&gt;' clauses:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
 ExpiresByType text/html "access plus 1 month 15
-      days 2 hours"<br>
+      days 2 hours"<br />
        ExpiresByType image/gif "modification plus 5 hours 3
       minutes"
-</code></td></tr></table></blockquote>
+</code></p></div>
 
     <p>Note that if you use a modification date based setting, the
     Expires header will <strong>not</strong> be added to content
     that does not come from a file on disk. This is due to the fact
     that there is no modification time for such content.</p>
-<hr><h2><a name="ExpiresActive">ExpiresActive</a> <a name="expiresactive">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Enables generation of Expires headers</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>ExpiresActive On|Off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
-                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_expires</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ExpiresActive" id="ExpiresActive">ExpiresActive</a> <a name="expiresactive" id="expiresactive">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Enables generation of Expires headers</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>ExpiresActive On|Off</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_expires</td></tr></table>
     <p>This directive enables or disables the generation of the
     <code>Expires</code> header for the document realm in question.
     (That is, if found in an <code>.htaccess</code> file, for
@@ -105,23 +108,23 @@ ExpiresByType text/html "access plus 1 month 15
     <code>.htaccess</code> file overriding a server config file).
     If set to <em><code>On</code></em>, the header will be added to
     served documents according to the criteria defined by the 
-    <a href="#expiresbytype" class="directive"><code class="directive">ExpiresByType</code></a> and 
-    <a href="#expiresdefault" class="directive"><code class="directive">ExpiresDefault</code></a> directives
+    <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> and 
+    <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> directives
     (<em>q.v.</em>).</p>
 
     <p>Note that this directive does not guarantee that an
     <code>Expires</code> header will be generated. If the criteria
     aren't met, no header will be sent, and the effect will be as
     though this directive wasn't even specified.</p>
-<hr><h2><a name="ExpiresByType">ExpiresByType</a> <a name="expiresbytype">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Value of the Expires header configured
-by MIME type</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>ExpiresByType
-    <em>MIME-type &lt;code&gt;seconds</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
-                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_expires</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ExpiresByType" id="ExpiresByType">ExpiresByType</a> <a name="expiresbytype" id="expiresbytype">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Value of the Expires header configured
+by MIME type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>ExpiresByType
+    <em>MIME-type &lt;code&gt;seconds</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_expires</td></tr></table>
     <p>This directive defines the value of the <code>Expires</code>
     header generated for documents of the specified type
     (<em>e.g.</em>, <code>text/html</code>). The second argument
@@ -147,35 +150,35 @@ by MIME type</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Synta
     repeatedly within a relatively short timespan).</p>
 
     <p><strong>Example:</strong></p>
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-# enable expirations<br>
-ExpiresActive On<br>
-# expire GIF images after a month in the client's cache<br>
-ExpiresByType image/gif A2592000<br>
-# HTML documents are good for a week from the time they were changed<br>
+<div class="example"><p><code>
+# enable expirations<br />
+ExpiresActive On<br />
+# expire GIF images after a month in the client's cache<br />
+ExpiresByType image/gif A2592000<br />
+# HTML documents are good for a week from the time they were changed<br />
 ExpiresByType text/html M604800
-</code></td></tr></table></blockquote>
+</code></p></div>
 
     <p>Note that this directive only has effect if
     <code>ExpiresActive On</code> has been specified. It overrides,
     for the specified MIME type <em>only</em>, any expiration date
-    set by the <a href="#expiresdefault" class="directive"><code class="directive">ExpiresDefault</code></a>
+    set by the <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code>
     directive.</p>
 
     <p>You can also specify the expiration time calculation using
     an <a href="#AltSyn">alternate syntax</a>, described earlier in
     this document.</p>
-<hr><h2><a name="ExpiresDefault">ExpiresDefault</a> <a name="expiresdefault">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Default algorithm for calculating expiration time</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>ExpiresDefault <em>&lt;code&gt;seconds</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
-                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_expires</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ExpiresDefault" id="ExpiresDefault">ExpiresDefault</a> <a name="expiresdefault" id="expiresdefault">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Default algorithm for calculating expiration time</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>ExpiresDefault <em>&lt;code&gt;seconds</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_expires</td></tr></table>
     <p>This directive sets the default algorithm for calculating the
     expiration time for all documents in the affected realm. It can be
-    overridden on a type-by-type basis by the <a href="#expiresbytype" class="directive"><code class="directive">ExpiresByType</code></a> directive. See the
+    overridden on a type-by-type basis by the <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> directive. See the
     description of that directive for details about the syntax of the
     argument, and the <a href="#AltSyn">alternate syntax</a>
     description as well.</p>
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>

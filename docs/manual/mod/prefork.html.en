@@ -1,11 +1,13 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>prefork - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module prefork</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
-                      </span></td><td>Implements a non-threaded, pre-forking web server</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
-                      </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
-                        </a></td><td>mpm_prefork_module</td></tr></table></td></tr></table><h2>Summary</h2>
+      --><title>prefork - Apache HTTP Server</title><link href="../style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="../style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="../style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="../style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="../style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="../style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="../style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="../style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module prefork</h1><table class="module"><tr><th>Description:
+                </th><td>Implements a non-threaded, pre-forking web server</td></tr><tr><th><a href="module-dict.html#Status">Status:
+                  </a></th><td>MPM</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
+                  </a></th><td>mpm_prefork_module</td></tr></table><h3>Summary</h3>
     <p>This Multi-Processing Module (MPM) implements a non-threaded,
     pre-forking web server that handles requests in a manner similar
     to Apache 1.3.  It is appropriate for sites that need to avoid
@@ -15,13 +17,13 @@
 
     <p>This MPM is very self-regulating, so it is rarely necessary to
     adjust its configuration directives.  Most important is that
-    <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a> be big enough to 
+    <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> be big enough to 
     handle as many simultaneous requests as you expect to receive, but
     small enough to assure that there is enough physical RAM for all
     processes.</p>
 
-<h2>Directives</h2><ul><li><a href="#acceptmutex">AcceptMutex</a></li><li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li><li><a href="mpm_common.html#group">Group</a></li><li><a href="mpm_common.html#listen">Listen</a></li><li><a href="mpm_common.html#listenbacklog">ListenBacklog</a></li><li><a href="mpm_common.html#lockfile">LockFile</a></li><li><a href="mpm_common.html#maxclients">MaxClients</a></li><li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="#maxspareservers">MaxSpareServers</a></li><li><a href="#minspareservers">MinSpareServers</a></li><li><a href="mpm_common.html#pidfile">PidFile</a></li><li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li><li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li><li><a href="mpm_common.html#serverlimit">ServerLimit</a></li><li><a href="mpm_common.html#startservers">StartServers</a></li><li><a href="mpm_common.html#user">User</a></li></ul><p><strong>See also </strong></p><ul><li><a href="../bind.html">Setting which addresses and
-    ports Apache uses</a></li></ul><h2>How it Works</h2>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#acceptmutex">AcceptMutex</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#group">Group</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#lockfile">LockFile</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxclients">MaxClients</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxspareservers">MaxSpareServers</a></li><li><img alt="" src="../images/down.gif" /> <a href="#minspareservers">MinSpareServers</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#pidfile">PidFile</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#serverlimit">ServerLimit</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startservers">StartServers</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> How it Works</li></ul><h3>See also</h3><ul class="seealso"><li><a href="../bind.html">Setting which addresses and
+    ports Apache uses</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>How it Works</h2>
     <p>A single control process is responsible for launching child
     processes which listen for connections and serve them when they
     arrive. Apache always tries to maintain several <em>spare</em>
@@ -30,38 +32,38 @@
     child processes to be forked before their requests can be
     served.</p>
 
-    <p>The <a href="../mod/mpm_common.html#startservers" class="directive"><code class="directive">StartServers</code></a>,
-    <a href="#minspareservers" class="directive"><code class="directive">MinSpareServers</code></a>,
-    <a href="#maxspareservers" class="directive"><code class="directive">MaxSpareServers</code></a>, and
-    <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a> regulate how
+    <p>The <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>,
+    <code class="directive"><a href="#minspareservers">MinSpareServers</a></code>,
+    <code class="directive"><a href="#maxspareservers">MaxSpareServers</a></code>, and
+    <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> regulate how
     the parent process creates children to serve requests. In general,
     Apache is very self-regulating, so most sites do not need to
     adjust these directives from their default values. Sites which
     need to serve more than 256 simultaneous requests may need to
-    increase <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a>,
-    while sites with limited memory may need to decrease <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a> to keep the server from
+    increase <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>,
+    while sites with limited memory may need to decrease <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> to keep the server from
     thrashing (swapping memory to disk and back). More information
     about tuning process creation is provided in the <a href="../misc/perf-tuning.html">performance hints</a>
     documentation.</p>
 
     <p>While the parent process is usually started as root under Unix
     in order to bind to port 80, the child processes are launched by
-    Apache as a less-privileged user. The <a href="../mod/mpm_common.html#user" class="directive"><code class="directive">User</code></a> and <a href="../mod/mpm_common.html#group" class="directive"><code class="directive">Group</code></a> directives are used to set
+    Apache as a less-privileged user. The <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> and <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> directives are used to set
     the privileges of the Apache child processes. The child processes
     must be able to read all the content that will be served, but
     should have as few privileges beyond that as possible.</p>
 
-    <p><a href="../mod/mpm_common.html#maxrequestsperchild" class="directive"><code class="directive">MaxRequestsPerChild</code></a>
+    <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
     controls how frequently the server recycles processes by killing
     old ones and launching new ones.</p>
-<hr><h2><a name="AcceptMutex">AcceptMutex</a> <a name="acceptmutex">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Method that Apache uses to serialize multiple children
-accepting requests on network sockets</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>AcceptMutex default|<em>method</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
-                    </a></td><td><code>AcceptMutex default</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>prefork</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AcceptMutex" id="AcceptMutex">AcceptMutex</a> <a name="acceptmutex" id="acceptmutex">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Method that Apache uses to serialize multiple children
+accepting requests on network sockets</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>AcceptMutex default|<em>method</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>AcceptMutex default</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>prefork</td></tr></table>
     <p>The <code class="directive">AcceptMutex</code> directives sets the
     method that Apache uses to serialize multiple children accepting
     requests on network sockets. Prior to Apache 2.0, the method was
@@ -81,12 +83,12 @@ accepting requests on network sockets</td></tr><tr><td nowrap="nowrap"><a href="
       <dt><code>flock</code></dt>
 
       <dd>uses the <code>flock(2)</code> system call to lock the
-      file defined by the <a href="../mod/mpm_common.html#lockfile" class="directive"><code class="directive">LockFile</code></a> directive.</dd>
+      file defined by the <code class="directive"><a href="../mod/mpm_common.html#lockfile">LockFile</a></code> directive.</dd>
 
       <dt><code>fcntl</code></dt>
 
       <dd>uses the <code>fnctl(2)</code> system call to lock the
-      file defined by the <a href="../mod/mpm_common.html#lockfile" class="directive"><code class="directive">LockFile</code></a> directive.</dd>
+      file defined by the <code class="directive"><a href="../mod/mpm_common.html#lockfile">LockFile</a></code> directive.</dd>
 
       <dt><code>sysvsem</code></dt>
 
@@ -97,13 +99,13 @@ accepting requests on network sockets</td></tr><tr><td nowrap="nowrap"><a href="
       <dd>uses POSIX mutexes as implemented by the POSIX Threads
       (PThreads) specification.</dd>
     </dl>
-<hr><h2><a name="MaxSpareServers">MaxSpareServers</a> <a name="maxspareservers">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Maximum number of idle child server processes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>MaxSpareServers <em>number</em><br></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
-                    </a></td><td><code>MaxSpareServers 10</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>prefork</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a> <a name="maxspareservers" id="maxspareservers">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Maximum number of idle child server processes</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>MaxSpareServers <em>number</em><br /></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>MaxSpareServers 10</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>prefork</td></tr></table>
     <p>The <code class="directive">MaxSpareServers</code> directive sets the
     desired maximum number of <em>idle</em> child server processes. An
     idle process is one which is not handling a request. If there are
@@ -113,13 +115,13 @@ accepting requests on network sockets</td></tr><tr><td nowrap="nowrap"><a href="
     <p>Tuning of this parameter should only be necessary on very
     busy sites. Setting this parameter to a large number is almost
     always a bad idea.</p>
-<p><strong>See also </strong></p><ul><li><a href="#minspareservers" class="directive"><code class="directive">MinSpareServers</code></a></li><li><a href="../mod/mpm_common.html#startservers" class="directive"><code class="directive">StartServers</code></a></li></ul><hr><h2><a name="MinSpareServers">MinSpareServers</a> <a name="minspareservers">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Minimum number of idle child server processes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>MinSpareServers <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
-                    </a></td><td><code>MinSpareServers  5</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>prefork</td></tr></table></td></tr></table>
+<h3>See also</h3><ul><li><code class="directive"><a href="#minspareservers">MinSpareServers</a></code></li><li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MinSpareServers" id="MinSpareServers">MinSpareServers</a> <a name="minspareservers" id="minspareservers">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Minimum number of idle child server processes</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>MinSpareServers <em>number</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>MinSpareServers  5</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>prefork</td></tr></table>
     <p>The <code class="directive">MinSpareServers</code> directive sets the
     desired minimum number of <em>idle</em> child server processes. An
     idle process is one which is not handling a request. If there are
@@ -129,4 +131,4 @@ accepting requests on network sockets</td></tr><tr><td nowrap="nowrap"><a href="
     <p>Tuning of this parameter should only be necessary on very
     busy sites. Setting this parameter to a large number is almost
     always a bad idea.</p>
-<p><strong>See also </strong></p><ul><li><a href="#maxspareservers" class="directive"><code class="directive">MaxSpareServers</code></a></li><li><a href="../mod/mpm_common.html#startservers" class="directive"><code class="directive">StartServers</code></a></li></ul><hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>
+<h3>See also</h3><ul><li><code class="directive"><a href="#maxspareservers">MaxSpareServers</a></code></li><li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li></ul></div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>

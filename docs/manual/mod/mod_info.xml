@@ -74,7 +74,9 @@ host</context></contextlist>
     the module <em>module-name</em>. Example:</p>
 
 <example>
-AddModuleInfo mod_auth.c 'See &lt;A HREF="http://www.apache.org/docs/mod/mod_auth.html"&gt;http://www.apache.org/docs/mod/mod_auth.html&lt;/A&gt;'
+AddModuleInfo mod_auth.c 'See &lt;A \<br />
+  HREF="http://www.apache.org/docs/mod/mod_auth.html"&gt;\<br />
+  http://www.apache.org/docs/mod/mod_auth.html&lt;/A&gt;'
 </example>
 </usage>
 

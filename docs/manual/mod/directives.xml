@@ -15,5 +15,18 @@
       descriptions available.
     </p>
   </summary>
+
+  <letters>
+    <letter>A</letter> <letter>B</letter> <letter>C</letter>
+    <letter>D</letter> <letter>E</letter> <letter>F</letter>
+    <letter>G</letter> <letter>H</letter> <letter>I</letter>
+    <letter>J</letter> <letter>K</letter> <letter>L</letter>
+    <letter>M</letter> <letter>N</letter> <letter>O</letter>
+    <letter>P</letter> <letter>Q</letter> <letter>R</letter>
+    <letter>S</letter> <letter>T</letter> <letter>U</letter>
+    <letter>V</letter> <letter>W</letter> <letter>X</letter>
+    <letter>Y</letter> <letter>Z</letter>
+  </letters>
+
   &allmodules;
 </directiveindex>

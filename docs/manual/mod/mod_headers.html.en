@@ -1,17 +1,19 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_headers - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_headers</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
-                      </span></td><td>Customization of HTTP request
-    and response headers</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
-                      </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
-                        </a></td><td>headers_module</td></tr><tr><td align="left" valign="top"><a href="module-dict.html#Compatibility" class="help">Compatibility:
-                        </a></td><td><compatibility>RequestHeader is available only in Apache 2.0</compatibility></td></tr></table></td></tr></table><h2>Summary</h2>
+      --><title>mod_headers - Apache HTTP Server</title><link href="../style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="../style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="../style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="../style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="../style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="../style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="../style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="../style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_headers</h1><table class="module"><tr><th>Description:
+                </th><td>Customization of HTTP request
+    and response headers</td></tr><tr><th><a href="module-dict.html#Status">Status:
+                  </a></th><td>Extension</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
+                  </a></th><td>headers_module</td></tr><tr><th><a href="module-dict.html#Compatibility">Compatibility:
+                  </a></th><td>RequestHeader is available only in Apache 2.0</td></tr></table><h3>Summary</h3>
     <p>This module provides directives to control and modify HTTP
     request and response headers. Headers can be merged, replaced
     or removed.</p>
-<h2>Directives</h2><ul><li><a href="#header">Header</a></li><li><a href="#requestheader">RequestHeader</a></li></ul><h2>Order of Processing</h2>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#header">Header</a></li><li><img alt="" src="../images/down.gif" /> <a href="#requestheader">RequestHeader</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> Order of Processing</li><li><img alt="" src="../images/down.gif" /> Example</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>Order of Processing</h2>
 
     <p>The directives provided by mod_header can occur almost
     anywhere within the server configuration. They are valid in the
@@ -36,22 +38,22 @@
     <p>Order is important. These two headers have a different
     effect if reversed:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-RequestHeader append MirrorID "mirror 12"<br>
+<div class="example"><p><code>
+RequestHeader append MirrorID "mirror 12"<br />
        RequestHeader unset MirrorID
-</code></td></tr></table></blockquote>
+</code></p></div>
 
     <p>This way round, the MirrorID header is not set. If reversed,
     the MirrorID header is set to "mirror 12".</p>
-<h2>Example</h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>Example</h2>
 
     <ol>
       <li>Copy all request headers that begin with "TS" to the
       response headers:
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
    Header echo ^TS*
-</code></td></tr></table></blockquote></li>
+</code></p></div></li>
 
       <li>Add a header, MyHeader, to the response including a
       timestamp for when the request was received and how long it
@@ -59,24 +61,24 @@ RequestHeader append MirrorID "mirror 12"<br>
       the client to intuit load on the server or in isolating
       bottlenecks between the client and the server.
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
    Header add MyHeader "%D %t"
-</code></td></tr></table></blockquote>
+</code></p></div>
         results in this header being added to the response:
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
    MyHeader: D=3775428 t=991424704447256
-</code></td></tr></table></blockquote>
+</code></p></div>
       </li>
 
       <li>Say hello to Joe
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
    Header add MyHeader "Hello Joe. It took %D microseconds for Apache to serve this request."
-</code></td></tr></table></blockquote>
+</code></p></div>
         results in this header being added to the response: 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
    MyHeader: Hello Joe. It took D=3775428 microseconds for Apache to serve this request.
-</code></td></tr></table></blockquote>
+</code></p></div>
       </li>
 
       <li>Conditionally send MyHeader on the response if and only
@@ -85,26 +87,26 @@ RequestHeader append MirrorID "mirror 12"<br>
       stimulus. Note that this example requires the services of the
       mod_setenvif module.
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-   SetEnvIf MyRequestHeader value HAVE_MyRequestHeader<br>
+<div class="example"><p><code>
+   SetEnvIf MyRequestHeader value HAVE_MyRequestHeader<br />
    Header add MyHeader "%D %t mytext" env=HAVE_MyRequestHeader
-</code></td></tr></table></blockquote>
+</code></p></div>
         If the header "MyRequestHeader: value" is present on the
         HTTP request, the response will contain the following
         header: 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
    MyHeader: D=3775428 t=991424704447256 mytext
-</code></td></tr></table></blockquote>
+</code></p></div>
       </li>
     </ol>
-<hr><h2><a name="Header">Header</a> <a name="header">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Configure HTTP response headers</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>Header set|append|add|unset|echo  <em>header</em> 
-[<em>value</em>]</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
-                    </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_headers</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Configure HTTP response headers</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>Header set|append|add|unset|echo  <em>header</em> 
+[<em>value</em>]</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_headers</td></tr></table>
     <p>This directive can replace, merge or remove HTTP response
     headers. The header is modified just after the content handler
     and output filters are run, allowing outgoing headers to be
@@ -112,31 +114,31 @@ RequestHeader append MirrorID "mirror 12"<br>
     argument. This can be one of the following values:</p>
 
     <ul>
-      <li><strong>set</strong><br>
+      <li><strong>set</strong><br />
        The response header is set, replacing any previous header
       with this name. The <em>value</em> may be a format
       string.</li>
 
-      <li><strong>append</strong><br>
+      <li><strong>append</strong><br />
        The response header is appended to any existing header of
       the same name. When a new value is merged onto an existing
       header it is separated from the existing header with a comma.
       This is the HTTP standard way of giving a header multiple
       values.</li>
 
-      <li><strong>add</strong><br>
+      <li><strong>add</strong><br />
        The response header is added to the existing set of headers,
       even if this header already exists. This can result in two
       (or more) headers having the same name. This can lead to
       unforeseen consequences, and in general "append" should be
       used instead.</li>
 
-      <li><strong>unset</strong><br>
+      <li><strong>unset</strong><br />
        The response header of this name is removed, if it exists.
       If there are multiple headers of the same name, all will be
       removed.</li>
 
-      <li><strong>echo</strong><br>
+      <li><strong>echo</strong><br />
        Request headers with this name are echoed back in the
       response headers. <em>header</em> may be a regular
       expression.</li>
@@ -182,14 +184,14 @@ variable</a> FOOBAR.</td></tr>
     is sent to the network. These means that it is possible to set
     and/or override most headers, except for those headers added by
     the header filter.</p>
-<hr><h2><a name="RequestHeader">RequestHeader</a> <a name="requestheader">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Configure HTTP request headers</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>RequestHeader   set|append|add|unset <em>header</em> 
-[<em>value</em>]</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
-                    </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_headers</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Configure HTTP request headers</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>RequestHeader   set|append|add|unset <em>header</em> 
+[<em>value</em>]</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_headers</td></tr></table>
     <p>This directive can replace, merge or remove HTTP request
     headers. The header is modified just before the content handler
     is run, allowing incoming headers to be modified. The action it
@@ -197,25 +199,25 @@ variable</a> FOOBAR.</td></tr>
     of the following values:</p>
 
     <ul>
-      <li><strong>set</strong><br>
+      <li><strong>set</strong><br />
        The request header is set, replacing any previous header
       with this name</li>
 
-      <li><strong>append</strong><br>
+      <li><strong>append</strong><br />
        The request header is appended to any existing header of the
       same name. When a new value is merged onto an existing header
       it is separated from the existing header with a comma. This
       is the HTTP standard way of giving a header multiple
       values.</li>
 
-      <li><strong>add</strong><br>
+      <li><strong>add</strong><br />
        The request header is added to the existing set of headers,
       even if this header already exists. This can result in two
       (or more) headers having the same name. This can lead to
       unforeseen consequences, and in general "append" should be
       used instead.</li>
 
-      <li><strong>unset</strong><br>
+      <li><strong>unset</strong><br />
        The request header of this name is removed, if it exists. If
       there are multiple headers of the same name, all will be
       removed.</li>
@@ -232,4 +234,4 @@ variable</a> FOOBAR.</td></tr>
     just before the request is run by its handler in the fixup phase.
     This should allow headers generated by the browser, or by Apache
     input filters to be overridden or modified.</p>
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>

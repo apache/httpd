@@ -15,25 +15,25 @@ URLs on the fly</description>
 
 <summary>
       <blockquote>
-            <em>``The great thing about mod_rewrite is it gives you
+            <p>``The great thing about mod_rewrite is it gives you
             all the configurability and flexibility of Sendmail.
             The downside to mod_rewrite is that it gives you all
-            the configurability and flexibility of Sendmail.''</em><br />
+            the configurability and flexibility of Sendmail.''</p>
 
-            &nbsp;&nbsp;&nbsp;&nbsp;  -- Brian Behlendorf<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;   Apache Group
+            <p class="cite">-- <cite>Brian Behlendorf</cite><br />
+            Apache Group</p>
 
       </blockquote>
 
       <blockquote>
-            <em>`` Despite the tons of examples and docs,
+            <p>`` Despite the tons of examples and docs,
             mod_rewrite is voodoo. Damned cool voodoo, but still
-            voodoo. ''</em> <br />
+            voodoo. ''</p>
 
-              &nbsp;&nbsp;&nbsp;&nbsp;-- Brian Moore<br />
-              &nbsp;&nbsp;&nbsp;&nbsp; bem@news.cmc.net
+            <p class="cite">-- <cite>Brian Moore</cite><br />
+            bem@news.cmc.net</p>
 
-          </blockquote>
+      </blockquote>
 
 
       <p>Welcome to mod_rewrite, the Swiss Army Knife of URL
@@ -66,14 +66,14 @@ URLs on the fly</description>
       1996 and gifted exclusively to the The Apache Group in July 1997
       by</p>
 
-      <blockquote>
+      <p class="indent">
         <a href="http://www.engelschall.com/"><code>Ralf S.
         Engelschall</code></a><br />
          <a
         href="mailto:rse@engelschall.com"><code>rse@engelschall.com</code></a><br />
          <a
         href="http://www.engelschall.com/"><code>www.engelschall.com</code></a>
-      </blockquote>
+      </p>
 </summary>
 
 <section id="Internal"><title>Interal Processing</title>
@@ -175,11 +175,11 @@ URLs on the fly</description>
       directives). For historical reasons the conditions are given
       first, and so the control flow is a little bit long-winded. See
       Figure 1 for more details.</p>
-<blockquote>
-      <img src="../images/mod_rewrite_fig1.gif" border="1" width="428"
-           height="385" alt="[Needs graphics capability to display]" />
-      <p><strong>Figure 1:</strong>The control flow through the rewriting ruleset</p>
-</blockquote>
+<p class="figure">
+      <img src="../images/mod_rewrite_fig1.gif" width="428"
+           height="385" alt="[Needs graphics capability to display]" /><br />
+      <dfn>Figure 1:</dfn>The control flow through the rewriting ruleset
+</p>
       <p>As you can see, first the URL is matched against the
       <em>Pattern</em> of each rule. When it fails mod_rewrite
       immediately stops processing this rule and continues with the
@@ -226,11 +226,11 @@ URLs on the fly</description>
       Figure 2 shows to which locations the back-references are
       transfered for expansion.</p>
 
-<blockquote>
-      <img src="../images/mod_rewrite_fig2.gif" border="1" width="381"
-           height="179" alt="[Needs graphics capability to display]" />
-      <p><strong>Figure 2:</strong> The back-reference flow through a rule.</p>
-</blockquote>
+<p class="figure">
+      <img src="../images/mod_rewrite_fig2.gif" width="381"
+           height="179" alt="[Needs graphics capability to display]" /><br />
+      <dfn>Figure 2:</dfn> The back-reference flow through a rule.
+</p>
       <p>We know this was a crash course on mod_rewrite's internal
       processing. But you will benefit from this knowledge when
       reading the following documentation of the available
@@ -255,9 +255,7 @@ URLs on the fly</description>
       primarily used to rewrite logical URLs to physical
       pathnames.</p>
 
-      <p><strong>Example:</strong></p>
-
-<example>
+<example><title>Example</title>
 <pre>
 SCRIPT_NAME=/sw/lib/w3s/tree/global/u/rse/.www/index.html
 SCRIPT_FILENAME=/u/rse/.www/index.html
@@ -453,13 +451,13 @@ synchronization</description>
       mapping-function for the substitution strings of a rewriting
       rule via one of the following constructs:</p>
 
-      <blockquote>
+      <p class="indent">
         <strong><code>${</code> <em>MapName</em> <code>:</code>
         <em>LookupKey</em> <code>}</code><br />
          <code>${</code> <em>MapName</em> <code>:</code>
         <em>LookupKey</em> <code>|</code> <em>DefaultValue</em>
         <code>}</code></strong>
-      </blockquote>
+      </p>
 
       <p>When such a construct occurs the map <em>MapName</em> is
       consulted and the key <em>LookupKey</em> is looked-up. If the
@@ -483,10 +481,10 @@ synchronization</description>
           character) or pairs like the following - one per
           line.</p>
 
-          <blockquote>
+          <p class="indent">
             <strong><em>MatchingKey</em>
             <em>SubstValue</em></strong>
-          </blockquote>
+          </p>
 
 <example><title>Example</title>
 <pre>
@@ -565,7 +563,8 @@ use Fcntl;
 ($txtmap, $dbmmap) = @ARGV;
 
 open(TXT, "&lt;$txtmap") or die "Couldn't open $txtmap!\n";
-tie (%DB, 'NDBM_File', $dbmmap,O_RDWR|O_TRUNC|O_CREAT, 0644) or die "Couldn't create $dbmmap!\n";
+tie (%DB, 'NDBM_File', $dbmmap,O_RDWR|O_TRUNC|O_CREAT, 0644)
+  or die "Couldn't create $dbmmap!\n";
 
 while (&lt;TXT&gt;) {
   next if (/^\s*#/ or /^\s*$/);
@@ -804,9 +803,9 @@ Result:
           <strong>RewriteRule backreferences</strong>: These are
           backreferences of the form 
 
-          <blockquote>
+          <p class="indent">
             <strong><code>$N</code></strong>
-          </blockquote>
+          </p>
           (0 &lt;= N &lt;= 9) which provide access to the grouped
           parts (parenthesis!) of the pattern from the
           corresponding <code>RewriteRule</code> directive (the one
@@ -818,9 +817,9 @@ Result:
           <strong>RewriteCond backreferences</strong>: These are
           backreferences of the form 
 
-          <blockquote>
+          <p class="indent">
             <strong><code>%N</code></strong>
-          </blockquote>
+          </p>
           (1 &lt;= N &lt;= 9) which provide access to the grouped
           parts (parentheses!) of the pattern from the last matched
           <code>RewriteCond</code> directive in the current bunch
@@ -831,9 +830,9 @@ Result:
           <strong>RewriteMap expansions</strong>: These are
           expansions of the form 
 
-          <blockquote>
+          <p class="indent">
             <strong><code>${mapname:key|default}</code></strong>
-          </blockquote>
+          </p>
           See <a href="#mapfunc">the documentation for
           RewriteMap</a> for more details.
         </li>
@@ -842,32 +841,31 @@ Result:
           <strong>Server-Variables</strong>: These are variables of
           the form 
 
-          <blockquote>
+          <p class="indent">
             <strong><code>%{</code> <em>NAME_OF_VARIABLE</em>
             <code>}</code></strong>
-          </blockquote>
+          </p>
           where <em>NAME_OF_VARIABLE</em> can be a string taken
           from the following list: 
 
-          <table bgcolor="#F0F0F0" cellspacing="0" cellpadding="5">
+          <table>
             <tr>
-              <td>
-                <strong>HTTP headers:</strong> 
+              <th>HTTP headers:</th> <th>connection &amp; request:</th> <th></th>
+	    </tr>
 
-                <p>HTTP_USER_AGENT<br />
+            <tr>
+	      <td>
+		 HTTP_USER_AGENT<br />
                  HTTP_REFERER<br />
                  HTTP_COOKIE<br />
                  HTTP_FORWARDED<br />
                  HTTP_HOST<br />
                  HTTP_PROXY_CONNECTION<br />
                  HTTP_ACCEPT<br />
-                </p>
               </td>
 
               <td>
-                <strong>connection &amp; request:</strong> 
-
-                <p>REMOTE_ADDR<br />
+                 REMOTE_ADDR<br />
                  REMOTE_HOST<br />
                  REMOTE_USER<br />
                  REMOTE_IDENT<br />
@@ -876,28 +874,28 @@ Result:
                  PATH_INFO<br />
                  QUERY_STRING<br />
                  AUTH_TYPE<br />
-                </p>
               </td>
+	      
+	      <td></td>
             </tr>
 
             <tr>
-              <td>
-                <strong>server internals:</strong> 
+              <th>server internals:</th> <th>system stuff:</th> <th>specials:</th>
+	    </tr>
 
-                <p>DOCUMENT_ROOT<br />
+            <tr>
+	      <td>
+	         DOCUMENT_ROOT<br />
                  SERVER_ADMIN<br />
                  SERVER_NAME<br />
                  SERVER_ADDR<br />
                  SERVER_PORT<br />
                  SERVER_PROTOCOL<br />
                  SERVER_SOFTWARE<br />
-                </p>
               </td>
 
               <td>
-                <strong>system stuff:</strong> 
-
-                <p>TIME_YEAR<br />
+                 TIME_YEAR<br />
                  TIME_MON<br />
                  TIME_DAY<br />
                  TIME_HOUR<br />
@@ -905,18 +903,14 @@ Result:
                  TIME_SEC<br />
                  TIME_WDAY<br />
                  TIME<br />
-                </p>
               </td>
 
               <td>
-                <strong>specials:</strong> 
-
-                <p>API_VERSION<br />
+                 API_VERSION<br />
                  THE_REQUEST<br />
                  REQUEST_URI<br />
                  REQUEST_FILENAME<br />
                  IS_SUBREQ<br />
-                </p>
               </td>
             </tr>
           </table>
@@ -1117,9 +1111,9 @@ Result:
       <p>Additionally you can set special flags for
       <em>CondPattern</em> by appending</p>
 
-      <blockquote>
+      <p class="indent">
         <strong><code>[</code><em>flags</em><code>]</code></strong>
-      </blockquote>
+      </p>
 
       <p>as the third argument to the <code>RewriteCond</code>
       directive. <em>Flags</em> is a comma-separated list of the
@@ -1214,10 +1208,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 
       <p>Some hints about the syntax of regular expressions:</p>
 
-      <table bgcolor="#F0F0F0" cellspacing="0" cellpadding="5">
-        <tr>
-          <td>
-<pre>
+<note><pre>
 <strong>Text:</strong>
   <strong><code>.</code></strong>           Any single character
   <strong><code>[</code></strong>chars<strong><code>]</code></strong>     Character class: One  of chars
@@ -1242,10 +1233,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 <strong>Escaping:</strong>
   <strong><code>\</code></strong>char       escape that particular char
               (for instance to specify the chars "<code>.[]()</code>" <em>etc.</em>)
-</pre>
-          </td>
-        </tr>
-      </table>
+</pre></note>
 
       <p>For more information about regular expressions either have
       a look at your local regex(3) manpage or its
@@ -1255,13 +1243,13 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       (POSIX regex, Perl regex, <em>etc.</em>) have a look at the
       following dedicated book on this topic:</p>
 
-      <blockquote>
+      <p class="indent">
         <em>Mastering Regular Expressions</em><br />
          Jeffrey E.F. Friedl<br />
          Nutshell Handbook Series<br />
          O'Reilly &amp; Associates, Inc. 1997<br />
          ISBN 1-56592-257-3<br />
-      </blockquote>
+      </p>
 
       <p>Additionally in mod_rewrite the NOT character
       ('<code>!</code>') is a possible pattern prefix. This gives
@@ -1357,9 +1345,9 @@ There is a special feature:
       <p>Additionally you can set special flags for
       <em>Substitution</em> by appending</p>
 
-      <blockquote>
+      <p class="indent">
         <strong><code>[</code><em>flags</em><code>]</code></strong>
-      </blockquote>
+      </p>
       <p>
       as the third argument to the <code>RewriteRule</code>
       directive. <em>Flags</em> is a comma-separated list of the
@@ -1660,10 +1648,7 @@ directory which is not always possible.
       /somepath/pathinfo</code>'':</strong><br />
       </p>
 
-      <table bgcolor="#F0F0F0" cellspacing="0" cellpadding="5">
-        <tr>
-          <td>
-<pre>
+<note><pre>
 <strong>Given Rule</strong>                                      <strong>Resulting Substitution</strong>
 ----------------------------------------------  ----------------------------------
 ^/somepath(.*) otherpath$1                      not supported, because invalid!
@@ -1695,10 +1680,7 @@ directory which is not always possible.
 
 ^/somepath(.*) http://otherhost/otherpath$1 [P] http://otherhost/otherpath/pathinfo
                                                 via internal proxy
-</pre>
-          </td>
-        </tr>
-      </table>
+</pre></note>
 
       <p><strong>Inside per-directory configuration for
       <code>/somepath</code><br />
@@ -1709,10 +1691,7 @@ directory which is not always possible.
       /somepath/localpath/pathinfo</code>'':</strong><br /> 
      </p>
 
-      <table bgcolor="#F0F0F0" cellspacing="0" cellpadding="5">
-        <tr>
-          <td>
-<pre>
+<note><pre>
 <strong>Given Rule</strong>                                      <strong>Resulting Substitution</strong>
 ----------------------------------------------  ----------------------------------
 ^localpath(.*) otherpath$1                      /somepath/otherpath/pathinfo
@@ -1745,26 +1724,23 @@ directory which is not always possible.
 
 ^localpath(.*) http://otherhost/otherpath$1 [P] http://otherhost/otherpath/pathinfo
                                                 via internal proxy
-</pre>
-          </td>
-        </tr>
-      </table>
+</pre></note>
 
       <p><strong>Example:</strong></p>
 
       <p>We want to rewrite URLs of the form </p>
 
-        <blockquote>
+        <p class="indent">
           <code>/</code> <em>Language</em> <code>/~</code>
           <em>Realname</em> <code>/.../</code> <em>File</em>
-        </blockquote>
+        </p>
 
         <p>into </p>
 
-        <blockquote>
+        <p class="indent">
           <code>/u/</code> <em>Username</em> <code>/.../</code>
           <em>File</em> <code>.</code> <em>Language</em>
-        </blockquote>
+        </p>
 
         <p>We take the rewrite mapfile from above and save it under
         <code>/path/to/file/map.txt</code>. Then we only have to

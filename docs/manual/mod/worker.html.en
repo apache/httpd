@@ -1,12 +1,14 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>worker - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module worker</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
-                      </span></td><td>Multi-Processing Module implementing a hybrid
-    multi-threaded multi-process web server</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
-                      </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
-                        </a></td><td>mpm_worker_module</td></tr></table></td></tr></table><h2>Summary</h2>
+      --><title>worker - Apache HTTP Server</title><link href="../style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="../style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="../style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="../style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="../style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="../style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="../style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="../style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module worker</h1><table class="module"><tr><th>Description:
+                </th><td>Multi-Processing Module implementing a hybrid
+    multi-threaded multi-process web server</td></tr><tr><th><a href="module-dict.html#Status">Status:
+                  </a></th><td>MPM</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
+                  </a></th><td>mpm_worker_module</td></tr></table><h3>Summary</h3>
     <p>This Multi-Processing Module (MPM) implements a hybrid
     multi-process multi-threaded server.  By using threads to serve
     requests, it is able to serve a large number of requests with
@@ -15,21 +17,21 @@
     keeping multiple processes available, each with many threads.</p>
 
     <p>The most important directives used to control this MPM are
-    <a href="../mod/mpm_common.html#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a>, which
+    <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>, which
     controls the number of threads deployed by each child process and
-    <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a>, which
+    <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>, which
     controls the maximum total number of threads that may be
     launched.</p>
 
-<h2>Directives</h2><ul><li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li><li><a href="mpm_common.html#group">Group</a></li><li><a href="mpm_common.html#listen">Listen</a></li><li><a href="mpm_common.html#listenbacklog">ListenBacklog</a></li><li><a href="mpm_common.html#lockfile">LockFile</a></li><li><a href="mpm_common.html#maxclients">MaxClients</a></li><li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li><li><a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li><li><a href="mpm_common.html#pidfile">PidFile</a></li><li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li><li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li><li><a href="mpm_common.html#serverlimit">ServerLimit</a></li><li><a href="mpm_common.html#startservers">StartServers</a></li><li><a href="mpm_common.html#threadlimit">ThreadLimit</a></li><li><a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li><li><a href="mpm_common.html#user">User</a></li></ul><p><strong>See also </strong></p><ul><li><a href="../bind.html">Setting which addresses and
-    ports Apache uses</a></li></ul><h2>How it Works</h2>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#group">Group</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#lockfile">LockFile</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxclients">MaxClients</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#pidfile">PidFile</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#serverlimit">ServerLimit</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startservers">StartServers</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadlimit">ThreadLimit</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> How it Works</li></ul><h3>See also</h3><ul class="seealso"><li><a href="../bind.html">Setting which addresses and
+    ports Apache uses</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>How it Works</h2>
     <p>Each process has a fixed
     number of threads. The server adjusts to handle load by
     increasing or decreasing the number of processes.</p>
 
     <p>A single control process is responsible for launching child
     processes. Each child process creates a fixed number of threads as
-    specified in the <a href="../mod/mpm_common.html#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> directive. The
+    specified in the <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> directive. The
     individual threads then listen for connections and serve them when
     they arrive.</p>
 
@@ -38,34 +40,34 @@
     requests. In this way, clients do not need to wait for a new
     threads or processes to be created before their requests can be
     served. The number of processes that will initially launched is
-    set by the <a href="../mod/mpm_common.html#startservers" class="directive"><code class="directive">StartServers</code></a>
+    set by the <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>
     directive. Then during operation, Apache assesses the total number
     of idle threads in all processes, and forks or kills processes to
-    keep this number within the boundaries specified by <a href="../mod/mpm_common.html#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a> and <a href="../mod/mpm_common.html#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a>. Since this
+    keep this number within the boundaries specified by <code class="directive"><a href="../mod/mpm_common.html#minsparethreads">MinSpareThreads</a></code> and <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code>. Since this
     process is very self-regulating, it is rarely necessary to modify
     these directives from their default values. The maximum number of
     clients that may be served simultaneously (i.e., the maximum total
     number of threads in all processes) is determined by the
-    <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a> directive,
+    <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> directive,
     while the maximum number of processes that can be launched is set
-    by the <a href="../mod/mpm_common.html#serverlimit" class="directive"><code class="directive">ServerLimit</code></a>
-    directive.  <a href="../mod/mpm_common.html#serverlimit" class="directive"><code class="directive">ServerLimit</code></a>
-    multiplied by <a href="../mod/mpm_common.html#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> must be greater
-    than or equal to <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a></p>
+    by the <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code>
+    directive.  <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code>
+    multiplied by <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> must be greater
+    than or equal to <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code></p>
 
     <p>A typical configuration of the process-thread controls in
-    the <code><a href="../mod/worker.html">worker</a></code> MPM could look as follows:</p>
+    the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM could look as follows:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code><pre>StartServers         2
+<div class="example"><pre>StartServers         2
 MaxClients         150
 MinSpareThreads     25
 MaxSpareThreads     75
 ThreadsPerChild     25
-ServerLimit         16</pre></code></td></tr></table></blockquote>
+ServerLimit         16</pre></div>
 
     <p>While the parent process is usually started as root under Unix
     in order to bind to port 80, the child processes and threads are
-    launched by Apache as a less-privileged user. The <a href="../mod/mpm_common.html#user" class="directive"><code class="directive">User</code></a> and <a href="../mod/mpm_common.html#group" class="directive"><code class="directive">Group</code></a> directives are used to set
+    launched by Apache as a less-privileged user. The <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> and <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> directives are used to set
     the privileges of the Apache child processes. The child processes
     must be able to read all the content that will be served, but
     should have as few privileges beyond that as possible. In
@@ -73,7 +75,7 @@ ServerLimit         16</pre></code></td></tr></table></blockquote>
     these directives also set the privileges which will be inherited
     by CGI scripts.</p>
 
-    <p><a href="../mod/mpm_common.html#maxrequestsperchild" class="directive"><code class="directive">MaxRequestsPerChild</code></a>
+    <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
     controls how frequently the server recycles processes by killing
     old ones and launching new ones.</p>
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>

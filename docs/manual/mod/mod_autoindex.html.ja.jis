@@ -1,61 +1,63 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=iso-2022-jp"><!--
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_autoindex - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_autoindex</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
-                      </span></td><td>Unix の <em>ls</em> コマンドや
+      --><title>mod_autoindex - Apache HTTP Server</title><link href="../style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="../style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="../style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="../style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="../style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="../style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="../style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="../style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_autoindex</h1><table class="module"><tr><th>説明:
+                </th><td>Unix の <em>ls</em> コマンドや
     Win32 の <em>dir</em> シェルコマンドに似た
-    ディレクトリインデックスを生成する</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
-                      </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">モジュール識別子:
-                        </a></td><td>autoindex_module</td></tr></table></td></tr></table><h2>概要</h2> 
+    ディレクトリインデックスを生成する</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
+                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
+                  </a></th><td>autoindex_module</td></tr></table><h3>概要</h3> 
       <p>ディレクトリのインデックスは二つの情報源のうちの
       一つから生成できます:</p>
 
     <ul>
       <li>普通は <code>index.html</code> と呼ばれる
       ユーザによって書かれたファイル。
-      <a href="../mod/mod_dir.html#directoryindex" class="directive"><code class="directive">DirectoryIndex</code></a>
-      ディレクティブでこのファイル名を設定します。
-      これは <code><a href="../mod/mod_dir.html">mod_dir</a></code> で制御されます。</li>
+      <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>
+      ディレクティブでこのファイル名を設定します。
+      これは <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> で制御されます。</li>
 
       <li>もしくは、サーバによって生成された一覧。
       その他のディレクティブでこの一覧の書式を制御します。
-      <a href="#addicon" class="directive"><code class="directive">AddIcon</code></a>, <a href="#addiconbyencoding" class="directive"><code class="directive">AddIconByEncoding</code></a> と
-      <a href="#addiconbytype" class="directive"><code class="directive">AddIconByType</code></a>
+      <code class="directive"><a href="#addicon">AddIcon</a></code>, <code class="directive"><a href="#addiconbyencoding">AddIconByEncoding</a></code> と
+      <code class="directive"><a href="#addiconbytype">AddIconByType</a></code>
       を使うことで、様々なファイルタイプに対してアイコン一覧を
       セットします。つまり、リストされたファイル毎に、
-      ファイルにマッチした一番最初のアイコンが表示されます。
-      これらは <code><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> で制御されます。</li>
+      ファイルにマッチした一番最初のアイコンが表示されます。
+      これらは <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> で制御されます。</li>
     </ul>
     <p>望むならば、自動インデックス生成を完全に除去 (あるいは置換)
     できるように、この二つの機能は分離されています。</p>
 
     <p>自動インデックス生成は <code>Optioins +Indexes</code>
     を使うことで有効になります。詳細については、
-    <a href="../mod/core.html#options" class="directive"><code class="directive">Options</code></a>
+    <code class="directive"><a href="../mod/core.html#options">Options</a></code>
     ディレクティブをご覧下さい。</p>
 
-    <p>もし <a href="../mod/autoindex.html#fancyindexing" class="directive"><code class="directive">FancyIndexing</code></a>
+    <p>もし <code class="directive"><a href="../mod/autoindex.html#fancyindexing">FancyIndexing</a></code>
     オプションが
-    <a href="../mod/autoindex.html#indexoptions" class="directive"><code class="directive">IndexOptions</code></a>
+    <code class="directive"><a href="../mod/autoindex.html#indexoptions">IndexOptions</a></code>
     ディレクティブに与えられているならば、
     列の先頭は表示の順番を制御するリンクになります。
     先頭のリンクを選択すると、一覧は再生成されて
     その列の値でソートされます。
     同じ先頭を続けて選択すると、交互に昇順と降順とになります。
     これらの列の先頭のリンクは、
-    <a href="../mod/autoindex.html#indexoptions" class="directive"><code class="directive">IndexOptions</code></a>
+    <code class="directive"><a href="../mod/autoindex.html#indexoptions">IndexOptions</a></code>
     ディレクティブの
     <code>SuppressColumnSorting</code>
     オプションで消すことができます。</p>
 
-    <p>"Size" でソートした場合は、用いられるのは
+    <p>"Size" でソートした場合は、用いられるのは
     <em>実際の</em>ファイルのサイズであって、
     表示の値ではないことに注意してください -
     たとえ両方ともが "1K" と表示されていたとしても、
     1010 バイトのファイルは必ず 1011
     バイトのファイルよりも前 (昇順の場合) に表示されます。</p>
-<h2>ディレクティブ</h2><ul><li><a href="#addalt">AddAlt</a></li><li><a href="#addaltbyencoding">AddAltByEncoding</a></li><li><a href="#addaltbytype">AddAltByType</a></li><li><a href="#adddescription">AddDescription</a></li><li><a href="#addicon">AddIcon</a></li><li><a href="#addiconbyencoding">AddIconByEncoding</a></li><li><a href="#addiconbytype">AddIconByType</a></li><li><a href="#defaulticon">DefaultIcon</a></li><li><a href="#headername">HeaderName</a></li><li><a href="#indexignore">IndexIgnore</a></li><li><a href="#indexoptions">IndexOptions</a></li><li><a href="#indexorderdefault">IndexOrderDefault</a></li><li><a href="#readmename">ReadmeName</a></li></ul><h2>Autoindex リクエストクエリー引数</h2>
+</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#addalt">AddAlt</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addaltbyencoding">AddAltByEncoding</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addaltbytype">AddAltByType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#adddescription">AddDescription</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addicon">AddIcon</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addiconbyencoding">AddIconByEncoding</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addiconbytype">AddIconByType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#defaulticon">DefaultIcon</a></li><li><img alt="" src="../images/down.gif" /> <a href="#headername">HeaderName</a></li><li><img alt="" src="../images/down.gif" /> <a href="#indexignore">IndexIgnore</a></li><li><img alt="" src="../images/down.gif" /> <a href="#indexoptions">IndexOptions</a></li><li><img alt="" src="../images/down.gif" /> <a href="#indexorderdefault">IndexOrderDefault</a></li><li><img alt="" src="../images/down.gif" /> <a href="#readmename">ReadmeName</a></li></ul><h3 /><ul id="topics"><li><img alt="" src="../images/down.gif" /> Autoindex リクエストクエリー引数</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>Autoindex リクエストクエリー引数</h2>
 
     <p>Apache 2.0.23 で、
     コラムソートのためにクエリー引数を再編成して、
@@ -75,19 +77,19 @@
       <li><code>C=N</code> は、ファイル名でソートします。</li>
 
       <li><code>C=M</code> は、更新日時、
-      ディレクトリ、ファイル名の順でソートします。</li>
+      ディレクトリ、ファイル名の順でソートします。</li>
 
       <li><code>C=S</code> は、サイズ、
       ディレクトリ、ファイル名の順でソートします。</li>
 
       <li><code>C=D</code> は、説明、
-      ディレクトリ、ファイル名の順でソートします。<br>
-       &nbsp;</li>
+      ディレクトリ、ファイル名の順でソートします。<br />
+       ?</li>
 
       <li><code>O=A</code> は、昇順で表をソートします。</li>
 
-      <li><code>O=D</code> は、降順で表をソートします。<br>
-       &nbsp;</li>
+      <li><code>O=D</code> は、降順で表をソートします。<br />
+       ?</li>
 
       <li><code>F=0</code> は、単純な表の書式にします。
       (FancyIndex ではありません。)</li>
@@ -96,22 +98,22 @@
       表示の表の書式にします。</li>
 
       <li><code>F=2</code> は、表を HTML 
-      のテーブルを使った FancyIndex の書式にします。<br>
-       &nbsp;</li>
+      のテーブルを使った FancyIndex の書式にします。<br />
+       ?</li>
 
       <li><code>V=0</code> 
       は、バージョンによるソートを無効にします。</li>
 
       <li><code>V=1</code> 
-      は、バージョンによるソートを有効にします。<br>
-       &nbsp;</li>
+      は、バージョンによるソートを有効にします。<br />
+       ?</li>
 
       <li><code>P=<em>パターン</em></code> 
       は、与えられた<em>パターン</em>
       に適合したファイルのみを表示します。</li>
     </ul>
 
-    <p>"P (パターンの P)" クエリー引数は、
+    <p>"P (パターンの P)" クエリー引数は、
     通常の IndexIgnore
     ディレクティブが処理された<em>後</em>に検査され、
     ファイル名全てが、他の autoindex
@@ -129,40 +131,40 @@
     引数が全て解釈されるように、
     未知の引数 "X" はリストの最後に置かれています。</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-&lt;FORM METHOD="GET"&gt;<br>
-&nbsp;&nbsp;Show me a &lt;SELECT NAME="F"&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="0"&gt; Plain list <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="1" SELECTED&gt; Fancy list<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="2"&gt; Table list<br>
-&nbsp;&nbsp;&lt;/SELECT&gt;<br>
-&nbsp;&nbsp;Sorted by &lt;SELECT NAME="C"&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="N" SELECTED&gt; Name<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="M"&gt; Date Modified<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="S"&gt; Size<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="D"&gt; Description<br>
-&nbsp;&nbsp;&lt;/SELECT&gt;<br>
-&nbsp;&nbsp;&lt;SELECT NAME="O"&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="A" SELECTED&gt; Ascending<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="D"&gt; Descending<br>
-&nbsp;&nbsp;&lt;/SELECT&gt;<br>
-&nbsp;&nbsp;&lt;SELECT NAME="V"&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="0" SELECTED&gt; in Normal order<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="1"&gt; in Version order<br>
-&nbsp;&nbsp;&lt;/SELECT&gt;<br>
-&nbsp;&nbsp;Matching &lt;INPUT TYPE="text" NAME="P" VALUE="*"&gt;<br>
-&nbsp;&nbsp;&lt;INPUT TYPE="submit" NAME="X" VALUE="Go"&gt;<br>
+<div class="example"><p><code>
+&lt;FORM METHOD="GET"&gt;<br />
+??Show me a &lt;SELECT NAME="F"&gt;<br />
+????&lt;OPTION VALUE="0"&gt; Plain list <br />
+????&lt;OPTION VALUE="1" SELECTED&gt; Fancy list<br />
+????&lt;OPTION VALUE="2"&gt; Table list<br />
+??&lt;/SELECT&gt;<br />
+??Sorted by &lt;SELECT NAME="C"&gt;<br />
+????&lt;OPTION VALUE="N" SELECTED&gt; Name<br />
+????&lt;OPTION VALUE="M"&gt; Date Modified<br />
+????&lt;OPTION VALUE="S"&gt; Size<br />
+????&lt;OPTION VALUE="D"&gt; Description<br />
+??&lt;/SELECT&gt;<br />
+??&lt;SELECT NAME="O"&gt;<br />
+????&lt;OPTION VALUE="A" SELECTED&gt; Ascending<br />
+????&lt;OPTION VALUE="D"&gt; Descending<br />
+??&lt;/SELECT&gt;<br />
+??&lt;SELECT NAME="V"&gt;<br />
+????&lt;OPTION VALUE="0" SELECTED&gt; in Normal order<br />
+????&lt;OPTION VALUE="1"&gt; in Version order<br />
+??&lt;/SELECT&gt;<br />
+??Matching &lt;INPUT TYPE="text" NAME="P" VALUE="*"&gt;<br />
+??&lt;INPUT TYPE="submit" NAME="X" VALUE="Go"&gt;<br />
 &lt;/FORM&gt;
-</code></td></tr></table></blockquote>
+</code></p></div>
 
-<hr><h2><a name="AddAlt">AddAlt</a> <a name="addalt">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
-                  </strong></td><td>アイコンの代わりに
-表示される、ファイル名で選択された代替テキスト</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
-                  </a></td><td>AddAlt <em>string file</em> [<em>file</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
-                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
-                  </a></td><td>mod_autoindex</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddAlt" id="AddAlt">AddAlt</a> <a name="addalt" id="addalt">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
+            </th><td>アイコンの代わりに
+表示される、ファイル名で選択された代替テキスト</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+              </a></th><td>AddAlt <em>string file</em> [<em>file</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
+              </a></th><td>mod_autoindex</td></tr></table>
     <p><code class="directive">AddAlt</code> は、<code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
     において、アイコンの代わりに表示する代替テキストを提供します。
     <em>File</em> は、説明するファイルのファイル拡張子、
@@ -174,19 +176,19 @@
     アイコンの取得に失敗したときに表示されます。</p>
 
     <p>例:</p>
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-    AddAlt "PDF" *.pdf<br>
+<div class="example"><p><code>
+    AddAlt "PDF" *.pdf<br />
     AddAlt "Compressed" *.gz *.zip *.Z
-</code></td></tr></table></blockquote>
-<hr><h2><a name="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
-                  </strong></td><td>アイコンの代わりに表示される、MIME 符号化方法で選択された
-代替テキスト</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
-                  </a></td><td>AddAltByEncoding <em>string MIME-encoding</em>
-[<em>MIME-encoding</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
-                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
-                  </a></td><td>mod_autoindex</td></tr></table></td></tr></table>
+</code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddAltByEncoding" id="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding" id="addaltbyencoding">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
+            </th><td>アイコンの代わりに表示される、MIME 符号化方法で選択された
+代替テキスト</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+              </a></th><td>AddAltByEncoding <em>string MIME-encoding</em>
+[<em>MIME-encoding</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
+              </a></th><td>mod_autoindex</td></tr></table>
     <p><code class="directive">AddAltByEncoding</code> は、
     <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
     において、アイコンの代わりに表示する代替文字列を提供します。
@@ -199,18 +201,18 @@
     アイコンの取得に失敗したときに表示されます。</p>
 
     <p>例:</p>
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
     AddAltByEncoding "gzip" x-gzip
-</code></td></tr></table></blockquote>
-<hr><h2><a name="AddAltByType">AddAltByType</a> <a name="addaltbytype">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
-                  </strong></td><td>アイコンの代わりに
-表示される、MIME タイプで選択された代替テキスト</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
-                  </a></td><td>AddAltByType <em>string
-    MIME-type</em> [<em>MIME-type</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
-                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
-                  </a></td><td>mod_autoindex</td></tr></table></td></tr></table>
+</code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddAltByType" id="AddAltByType">AddAltByType</a> <a name="addaltbytype" id="addaltbytype">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
+            </th><td>アイコンの代わりに
+表示される、MIME タイプで選択された代替テキスト</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+              </a></th><td>AddAltByType <em>string
+    MIME-type</em> [<em>MIME-type</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
+              </a></th><td>mod_autoindex</td></tr></table>
     <p><code class="directive">AddAltByType</code> は、
     <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
     において、アイコンの代わりに表示する代替文字列を設定します。
@@ -223,17 +225,17 @@
     アイコンの取得に失敗したときに表示されます。</p>
 
     <p>例:</p>
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
     AddAltByType "TXT" text/plain
-</code></td></tr></table></blockquote>
-<hr><h2><a name="AddDescription">AddDescription</a> <a name="adddescription">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
-                  </strong></td><td>ファイルに対して表示する説明</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
-                  </a></td><td>AddDescription
-    <em>string file</em> [<em>file</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
-                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
-                  </a></td><td>mod_autoindex</td></tr></table></td></tr></table>
+</code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddDescription" id="AddDescription">AddDescription</a> <a name="adddescription" id="adddescription">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
+            </th><td>ファイルに対して表示する説明</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+              </a></th><td>AddDescription
+    <em>string file</em> [<em>file</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
+              </a></th><td>mod_autoindex</td></tr></table>
     <p><code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
     において、ファイルに対して表示する説明を設定します。
     <em>File</em> は説明するファイルのファイル拡張子、
@@ -245,15 +247,15 @@
     アイコンの取得に失敗したときに表示されます。
     例:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>AddDescription "The planet Mars"
-      /web/pics/mars.gif</code></td></tr></table></blockquote>
+<div class="example"><p><code>AddDescription "The planet Mars"
+      /web/pics/mars.gif</code></p></div>
 
     <p>通常のデフォルトの説明領域は 23 バイトの幅です。
-    <code>IndexOptions&nbsp;SuppressIcon</code>
+    <code>IndexOptions?SuppressIcon</code>
     オプションで 6 バイト追加、
-    <code>IndexOptions&nbsp;SuppressSize</code>
+    <code>IndexOptions?SuppressSize</code>
     オプションで 7 バイト追加、
-    <code>IndexOptions&nbsp;SuppressLastModified</code>
+    <code>IndexOptions?SuppressLastModified</code>
     オプションで 19 バイト追加されます。
     ですから、デフォルトの説明コラムの最大幅は
     55 バイトになります。</p>
@@ -262,25 +264,25 @@
     説明が無制限長でもよいようにするための詳細に関しては、
     <a href="#indexoptions:descriptionwidth">DescriptionWidth</a>
     という
-    <a href="#indexoptions" class="directive"><code class="directive">IndexOptions</code></a> 
+    <code class="directive"><a href="#indexoptions">IndexOptions</a></code> 
     のキーワードをご覧下さい。</p>
 
-<blockquote><table><tr><td bgcolor="#e0e5f5"><p align="center"><strong>警告</strong></p>
+<div class="note"><h3>警告</h3>
       <p><code class="directive">AddDescription</code> 
       で定義された説明テキストは、タグや文字列といった
       HTML マークアップを含むことができます。
       もし、説明コラムの幅によってタグ付けされた要素が丸め込まれた
        (太字の語句の最後が切れるといった) 場合、
       出力結果は、ディレクトリ一覧の残りの部分に影響を与えるでしょう。</p>
-</td></tr></table></blockquote>
-<hr><h2><a name="AddIcon">AddIcon</a> <a name="addicon">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
-                  </strong></td><td>ファイルに表示するアイコンを名前で選択</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
-                  </a></td><td>AddIcon <em>icon
-    name</em> [<em>name</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
-                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
-                  </a></td><td>mod_autoindex</td></tr></table></td></tr></table>
+</div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddIcon" id="AddIcon">AddIcon</a> <a name="addicon" id="addicon">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
+            </th><td>ファイルに表示するアイコンを名前で選択</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+              </a></th><td>AddIcon <em>icon
+    name</em> [<em>name</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
+              </a></th><td>mod_autoindex</td></tr></table>
     <p><code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
     において、
     <em>name</em> で終わるファイルの隣に表示するアイコンを設定します。
@@ -295,26 +297,26 @@
     ファイル拡張子か、ワイルドカード表現か、ファイル名の一部か
     完全なファイル名です。例:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      AddIcon (IMG,/icons/image.xbm) .gif .jpg .xbm<br>
-       AddIcon /icons/dir.xbm ^^DIRECTORY^^<br>
+<div class="example"><p><code>
+      AddIcon (IMG,/icons/image.xbm) .gif .jpg .xbm<br />
+       AddIcon /icons/dir.xbm ^^DIRECTORY^^<br />
        AddIcon /icons/backup.xbm *~
-</code></td></tr></table></blockquote>
+</code></p></div>
     
     <p>もし可能なら、
     <code class="directive">AddIcon</code>
     より
-    <a href="#addiconbytype" class="directive"><code class="directive">AddIconByType</code></a>
+    <code class="directive"><a href="#addiconbytype">AddIconByType</a></code>
     を優先的に使うべきでしょう。</p>
-<hr><h2><a name="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
-                  </strong></td><td>ファイルに表示するアイコンを MIME 
-符号化方法で選択</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
-                  </a></td><td>AddIconByEncoding
-    <em>icon MIME-encoding</em> [<em>MIME-encoding</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
-                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
-                  </a></td><td>mod_autoindex</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddIconByEncoding" id="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding" id="addiconbyencoding">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
+            </th><td>ファイルに表示するアイコンを MIME 
+符号化方法で選択</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+              </a></th><td>AddIconByEncoding
+    <em>icon MIME-encoding</em> [<em>MIME-encoding</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
+              </a></th><td>mod_autoindex</td></tr></table>
     <p><code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
     において、ファイルの隣に表示するアイコンを設定します。
     <em>Icon</em> は、(% でエスケープされた) アイコンへの相対 URL
@@ -326,16 +328,16 @@
     <p><em>MIME-encoding</em> は、要求されたエンコードに該当する
     ワイルドカード表現です。例:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>AddIconByEncoding /icons/compress.xbm x-compress</code></td></tr></table></blockquote>
-<hr><h2><a name="AddIconByType">AddIconByType</a> <a name="addiconbytype">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
-                  </strong></td><td>ファイルの隣に表示するアイコンを
-MIME タイプによって選択</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
-                  </a></td><td>AddIconByType
-    <em>icon MIME-type</em> [<em>MIME-type</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
-                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
-                  </a></td><td>mod_autoindex</td></tr></table></td></tr></table>
+<div class="example"><p><code>AddIconByEncoding /icons/compress.xbm x-compress</code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddIconByType" id="AddIconByType">AddIconByType</a> <a name="addiconbytype" id="addiconbytype">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
+            </th><td>ファイルの隣に表示するアイコンを
+MIME タイプによって選択</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+              </a></th><td>AddIconByType
+    <em>icon MIME-type</em> [<em>MIME-type</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
+              </a></th><td>mod_autoindex</td></tr></table>
     <p><code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
     において、ファイルの隣に表示するアイコンを設定します。
     <em>Icon</em> は、(% でエスケープされた) アイコンへの相対 URL
@@ -347,39 +349,39 @@ MIME タイプによって選択</td></tr><tr><td nowrap="nowrap"><a href="directiv
     <p><em>MIME-type</em> は、要求されたタイプに該当する
     ワイルドカード表現です。例:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>AddIconByType (IMG,/icons/image.xbm) image/*</code></td></tr></table></blockquote>
-<hr><h2><a name="DefaultIcon">DefaultIcon</a> <a name="defaulticon">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
-                  </strong></td><td>特定のアイコンが何も設定されていない時に
-ファイルに表示するアイコン</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
-                  </a></td><td>DefaultIcon <em>url-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
-                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
-                  </a></td><td>mod_autoindex</td></tr></table></td></tr></table>
+<div class="example"><p><code>AddIconByType (IMG,/icons/image.xbm) image/*</code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DefaultIcon" id="DefaultIcon">DefaultIcon</a> <a name="defaulticon" id="defaulticon">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
+            </th><td>特定のアイコンが何も設定されていない時に
+ファイルに表示するアイコン</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+              </a></th><td>DefaultIcon <em>url-path</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
+              </a></th><td>mod_autoindex</td></tr></table>
     <p><code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
     において、
     特定のアイコンがない場合にファイルに表示するアイコンを設定します。
     <em>Url-path</em> は、(% でエスケープされた) アイコンへの相対 URL
     です。例:</p>
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>DefaultIcon /icon/unknown.xbm</code></td></tr></table></blockquote>
-<hr><h2><a name="HeaderName">HeaderName</a> <a name="headername">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
-                  </strong></td><td>
-インデックス一覧の先頭に挿入されるファイルの名前</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
-                  </a></td><td>HeaderName <em>filename</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
-                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
-                  </a></td><td>mod_autoindex</td></tr></table></td></tr></table>
+<div class="example"><p><code>DefaultIcon /icon/unknown.xbm</code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="HeaderName" id="HeaderName">HeaderName</a> <a name="headername" id="headername">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
+            </th><td>
+インデックス一覧の先頭に挿入されるファイルの名前</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+              </a></th><td>HeaderName <em>filename</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
+              </a></th><td>mod_autoindex</td></tr></table>
     <p><code class="directive">HeaderName</code> 
     ディレクティブは、
     インデックス一覧の先頭に挿入するファイルの名前を設定します。
     <em>Filename</em> は取り込むファイルの名前です。</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+<div class="example"><h3>Example</h3><p><code>
 HeaderName HEADER.html
-</code></td></tr></table></blockquote>
-<blockquote><table><tr><td bgcolor="#e0e5f5">
-      <p>HeaderName も <a href="#readmename" class="directive"><code class="directive">ReadmeName</code></a> 
+</code></p></div>
+<div class="note">
+      <p>HeaderName も <code class="directive"><a href="#readmename">ReadmeName</a></code> 
       も両方とも現在は、<em>filename</em> 
       をインデックスされているディレクトリに用いられた URI
       に対する相対 URI パスとして扱います。
@@ -395,20 +397,20 @@ HeaderName HEADER.html
       <em>filename</em>
       は CGI スクリプトを参照するかも知れない、
       ということを意味します:</p>
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
     AddType text/html .cgi
-</code></td></tr></table></blockquote>
-      <p><code>MultiViews</code> <a href="../mod/core.html#option" class="directive"><code class="directive">Option</code></a> が有効になっている場合は、
+</code></p></div>
+      <p><code>MultiViews</code> <code class="directive"><a href="../mod/core.html#option">Option</a></code> が有効になっている場合は、
       <a href="../content-negotiation.html">コンテントネゴシエーション</a>
       が行われます。
       もし <em>filename</em> が (CGI スクリプトでない) 静的な 
       <code>text/html</code> ドキュメントで解決され、
       <code>Includes</code>
-      <a href="../mod/core.html#option" class="directive"><code class="directive">option</code></a>
+      <code class="directive"><a href="../mod/core.html#option">option</a></code>
       オプションが有効になっている場合は、
       ファイルはサーバーサイドインクルードで処理されます
-      (<code><a href="../mod/mod_include.html">mod_include</a></code> ドキュメントを参照して下さい)。</p>
-</td></tr></table></blockquote>
+      (<code class="module"><a href="../mod/mod_include.html">mod_include</a></code> ドキュメントを参照して下さい)。</p>
+</div>
 
     <p>もし <code class="directive">HeaderName</code> で指定されたファイルが
     HTML ドキュメントの開始部分 (&lt;HTML&gt;, &lt;HEAD&gt;, 
@@ -416,14 +418,14 @@ HeaderName HEADER.html
     <a href="#indexoptions:suppresshtmlpreamble"><code>IndexOptions
     +SuppressHTMLPreamble</code></a>
     を設定して、これらのタグが繰り返されないようにしたいと思うでしょう。</p>
-<hr><h2><a name="IndexIgnore">IndexIgnore</a> <a name="indexignore">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
-                  </strong></td><td>ディレクトリ一覧を行なう際に無視すべき
-ファイルリストに追加</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
-                  </a></td><td>IndexIgnore <em>file</em> [<em>file</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
-                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
-                  </a></td><td>mod_autoindex</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IndexIgnore" id="IndexIgnore">IndexIgnore</a> <a name="indexignore" id="indexignore">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
+            </th><td>ディレクトリ一覧を行なう際に無視すべき
+ファイルリストに追加</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+              </a></th><td>IndexIgnore <em>file</em> [<em>file</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
+              </a></th><td>mod_autoindex</td></tr></table>
     <p><code class="directive">IndexIgnore</code> ディレクティブは、
     ディレクトリの一覧を行う際に無視すべきファイルリストに追加します。
     <em>File</em> は、無視するファイル名のファイル拡張子か、ファイル名の一部か、
@@ -432,15 +434,15 @@ HeaderName HEADER.html
     置換は行われません。デフォルトではリストには `<code>.</code>'
     が含まれています。例:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>IndexIgnore README .htaccess *~</code></td></tr></table></blockquote>
-<hr><h2><a name="IndexOptions">IndexOptions</a> <a name="indexoptions">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
-                  </strong></td><td>ディレクトリインデックスの様々な設定項目
-</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
-                  </a></td><td>IndexOptions  [+|-]<em>option</em> [[+|-]<em>option</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
-                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
-                  </a></td><td>mod_autoindex</td></tr></table></td></tr></table>
+<div class="example"><p><code>IndexIgnore README .htaccess *~</code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IndexOptions" id="IndexOptions">IndexOptions</a> <a name="indexoptions" id="indexoptions">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
+            </th><td>ディレクトリインデックスの様々な設定項目
+</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+              </a></th><td>IndexOptions  [+|-]<em>option</em> [[+|-]<em>option</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
+              </a></th><td>mod_autoindex</td></tr></table>
     <p><code class="directive">IndexOptions</code> 
     は、ディレクトリインデックスの挙動を指定します。
     <em>option</em> は次のどれかです:</p>
@@ -462,7 +464,7 @@ HeaderName HEADER.html
       は、最長の説明に合わせて必要な長さまでコラムを延ばします。</dd>
 
       <dd><strong>説明を丸め込んだ場合特有の危険については
-      <a href="#adddescription" class="directive"><code class="directive">AddDescription</code></a>
+      <code class="directive"><a href="#adddescription">AddDescription</a></code>
       セクションをお読み下さい。</strong></dd>
 
       <dt><a name="indexoptions:fancyindexing">FancyIndexing</a></dt>
@@ -593,7 +595,7 @@ HeaderName HEADER.html
       (<em>Apache 1.3 以降</em>)</dt>
 
       <dd>通常、
-      <a href="#headername" class="directive"><code class="directive">HeaderName</code></a>
+      <code class="directive"><a href="#headername">HeaderName</a></code>
       ディレクティブで指定したファイルを
       ディレクトリが実際に含んでいれば、標準的な HTML プリアンブル
       (&lt;HTML&gt;, &lt;HEAD&gt;, <em>等</em>) の後に、
@@ -672,22 +674,22 @@ HeaderName HEADER.html
 	それ以外の、説明や名前中の数となる部分文字列は
 	その数値で比較されます。例えば:
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-foo-1.7<br>
-foo-1.7.2<br>
-foo-1.7.12<br>
-foo-1.8.2<br>
-foo-1.8.2a<br>
-foo-1.12<br>
-</code></td></tr></table></blockquote>
+<div class="example"><p><code>
+foo-1.7<br />
+foo-1.7.2<br />
+foo-1.7.12<br />
+foo-1.8.2<br />
+foo-1.8.2a<br />
+foo-1.12<br />
+</code></p></div>
 	番号が 0 から始まる場合は、端数と考えられます:
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-foo-1.001<br>
-foo-1.002<br>
-foo-1.030<br>
+<div class="example"><p><code>
+foo-1.001<br />
+foo-1.002<br />
+foo-1.030<br />
 foo-1.04
-</code></td></tr></table></blockquote>
+</code></p></div>
       </dd>
 
       <dd>
@@ -698,8 +700,8 @@ foo-1.04
         Apache 1.3.3 では、
         <code class="directive">IndexOptions</code> 
 	ディレクティブの扱いで幾つかの大きな変化が導入されました。
-        特に、<br>
-        <br>
+        特に、<br />
+        <br />
          
 
         <ul>
@@ -707,14 +709,14 @@ foo-1.04
 	  <code class="directive">IndexOptions</code> 
 	  ディレクティブは、現在では一つにマージされます。
 	  上の例の結果は、
-          <code>IndexOptions&nbsp;FancyIndexing&nbsp;ScanHTMLTitles</code>
+          <code>IndexOptions?FancyIndexing?ScanHTMLTitles</code>
 	  と同一になります。</li>
 
           <li>増減構文
            (<em>すなわち</em>、'+' や '-'
 	  の接頭辞が付くキーワード) の追加。</li>
         </ul>
-        <br>
+        <br />
 	'+' や '-' 接頭辞の付いたキーワードに出会うとそれは、
 	その時点での <code class="directive">IndexOptions</code>
 	の設定 (これは上流のディレクトリを受け継ぎます) 
@@ -723,17 +725,17 @@ foo-1.04
 	受け継いだオプション全てとそれまで出会った増減設定全てが
 	消去されます。次の例を考えてみてください:
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>IndexOptions +ScanHTMLTitles -IconsAreLinks
-          FancyIndexing<br>
-           IndexOptions +SuppressSize<br>
-</code></td></tr></table></blockquote>
+<div class="example"><p><code>IndexOptions +ScanHTMLTitles -IconsAreLinks
+          FancyIndexing<br />
+           IndexOptions +SuppressSize<br />
+</code></p></div>
 	中身の効果は
-        <code>IndexOptions&nbsp;FancyIndexing&nbsp;+SuppressSize</code>
+        <code>IndexOptions?FancyIndexing?+SuppressSize</code>
 	と同一です。
 	接頭辞の付かない <code>FancyIndexing</code>
 	でそれ以前の増減キーワードを無効にされて、
-	その後の累積が始まるからです。<br>
-        <br>
+	その後の累積が始まるからです。<br />
+        <br />
 	無条件に <code class="directive">IndexOptions</code>
 	をあるディレクトリで設定することによって
 	継承した設定を消去して、'+' や '-'
@@ -741,15 +743,15 @@ foo-1.04
 	
       </dd>
     </dl>
-<hr><h2><a name="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
-                  </strong></td><td>
-ディレクトリインデックスの標準の順番付けを設定</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
-                  </a></td><td>IndexOrderDefault
-Ascending|Descending Name|Date|Size|Description</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
-                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
-                  </a></td><td>mod_autoindex</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IndexOrderDefault" id="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault" id="indexorderdefault">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
+            </th><td>
+ディレクトリインデックスの標準の順番付けを設定</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+              </a></th><td>IndexOrderDefault
+Ascending|Descending Name|Date|Size|Description</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
+              </a></th><td>mod_autoindex</td></tr></table>
     <p><code class="directive">IndexOrderDefault</code> ディレクティブは
     <a href="#indexoptions:fancyindexing"><code>FancyIndexing</code></a>
     インデックスオプションと併せて用いれれます。
@@ -771,22 +773,22 @@ Ascending|Descending Name|Date|Size|Description</td></tr><tr><td nowrap="nowrap"
     ディレクトリ一覧をある特定の順番でのみ表示するようにできます。
     これは、
     クライアントが別の順番でディレクトリ一覧をリクエストすることを防ぎます。</p>
-<hr><h2><a name="ReadmeName">ReadmeName</a> <a name="readmename">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
-                  </strong></td><td>インデックス一覧の最後に挿入されるファイルの名前</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
-                  </a></td><td>ReadmeName <em>filename</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
-                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
-                  </a></td><td>mod_autoindex</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ReadmeName" id="ReadmeName">ReadmeName</a> <a name="readmename" id="readmename">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
+            </th><td>インデックス一覧の最後に挿入されるファイルの名前</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+              </a></th><td>ReadmeName <em>filename</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
+              </a></th><td>mod_autoindex</td></tr></table>
     <p><code class="directive">ReadmeName</code> ディレクティブは、
     インデックスの終わりに付け加えられるファイルの名前を設定します。
     <em>filename</em> は挿入するファイルの名前で、
     一覧の行われている位置から相対的なものとして解釈されます。</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>例</strong></p><code>
+<div class="example"><h3>例</h3><p><code>
 ReadmeName FOOTER.html
-</code></td></tr></table></blockquote>
+</code></p></div>
 
-    <p>より詳細にまでこの挙動について記述している <a href="#headername" class="directive"><code class="directive">HeaderName</code></a>
+    <p>より詳細にまでこの挙動について記述している <code class="directive"><a href="#headername">HeaderName</a></code>
     もご覧下さい。</p>
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="索引"></a><a href="../"><img src="../images/home.gif" alt="ホーム"></a></body></html>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>

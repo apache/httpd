@@ -1,26 +1,28 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_access - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_access</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
-                      </span></td><td>Provides access control based on client hostname, IP
-address, or other characteristics of the client request.</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
-                      </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
-                        </a></td><td>access_module</td></tr></table></td></tr></table><h2>Summary</h2>
-    <p>The directives provided by mod_access are used in <a href="../mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a>, <a href="../mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a>, and <a href="../mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a> sections as well as
+      --><title>mod_access - Apache HTTP Server</title><link href="../style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="../style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="../style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="../style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="../style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="../style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="../style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="../style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_access</h1><table class="module"><tr><th>Description:
+                </th><td>Provides access control based on client hostname, IP
+address, or other characteristics of the client request.</td></tr><tr><th><a href="module-dict.html#Status">Status:
+                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
+                  </a></th><td>access_module</td></tr></table><h3>Summary</h3>
+    <p>The directives provided by mod_access are used in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, and <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> sections as well as
     <code><a href="core.html#accessfilename">.htaccess</a></code>
     files to control access to particular parts of the server. Access
     can be controlled based on the client hostname, IP address, or
-    other characteristics of the client request, as captured in <a href="../env.html">environment variables</a>. The <a href="#allow" class="directive"><code class="directive">Allow</code></a> and <a href="#deny" class="directive"><code class="directive">Deny</code></a> directives are used to
+    other characteristics of the client request, as captured in <a href="../env.html">environment variables</a>. The <code class="directive"><a href="#allow">Allow</a></code> and <code class="directive"><a href="#deny">Deny</a></code> directives are used to
     specify which clients are or are not allowed access to the server,
-    while the <a href="#order" class="directive"><code class="directive">Order</code></a>
+    while the <code class="directive"><a href="#order">Order</a></code>
     directive sets the default access state, and configures how the
-    <a href="#allow" class="directive"><code class="directive">Allow</code></a> and <a href="#deny" class="directive"><code class="directive">Deny</code></a> directives interact with each
+    <code class="directive"><a href="#allow">Allow</a></code> and <code class="directive"><a href="#deny">Deny</a></code> directives interact with each
     other.</p>
 
     <p>Both host-based access restrictions and password-based
     authentication may be implemented simultaneously. In that case,
-    the <a href="../mod/core.html#satisfy" class="directive"><code class="directive">Satisfy</code></a> directive is used
+    the <code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code> directive is used
     to determine how the two sets of restrictions interact.</p>
 
     <p>In general, access restriction directives apply to all
@@ -28,17 +30,17 @@ address, or other characteristics of the client request.</td></tr><tr><td nowrap
     <code>POST</code>, etc). This is the desired behavior in most
     cases. However, it is possible to restrict some methods, while
     leaving other methods unrestricted, by enclosing the directives
-    in a <a href="../mod/core.html#limit" class="directive"><code class="directive">&lt;Limit&gt;</code></a> section.</p>
-<h2>Directives</h2><ul><li><a href="#allow">Allow</a></li><li><a href="#deny">Deny</a></li><li><a href="#order">Order</a></li></ul><p><strong>See also </strong></p><ul><li><a href="../mod/core.html#satisfy" class="directive"><code class="directive">Satisfy</code></a></li><li><a href="../mod/core.html#require" class="directive"><code class="directive">Require</code></a></li></ul><hr><h2><a name="Allow">Allow</a> <a name="allow">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Controls which hosts can access an area of the
-server</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td> Allow from
+    in a <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> section.</p>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#allow">Allow</a></li><li><img alt="" src="../images/down.gif" /> <a href="#deny">Deny</a></li><li><img alt="" src="../images/down.gif" /> <a href="#order">Order</a></li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Controls which hosts can access an area of the
+server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td> Allow from
     all|<em>host</em>|env=<em>env-variable</em>
-    [<em>host</em>|env=<em>env-variable</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
-                    </a></td><td>Limit</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_access</td></tr></table></td></tr></table>
+    [<em>host</em>|env=<em>env-variable</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>Limit</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_access</td></tr></table>
 
     <p>The <code class="directive">Allow</code> directive affects which hosts can
     access an area of the server. Access can be controlled by
@@ -50,7 +52,7 @@ server</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cla
     <code>from</code>. The subsequent arguments can take three
     different forms. If <code>Allow from all</code> is specified, then
     all hosts are allowed access, subject to the configuration of the
-    <a href="#deny" class="directive"><code class="directive">Deny</code></a> and <a href="#order" class="directive"><code class="directive">Order</code></a> directives as discussed
+    <code class="directive"><a href="#deny">Deny</a></code> and <code class="directive"><a href="#order">Order</a></code> directives as discussed
     below. To allow only particular hosts or groups of hosts to access
     the server, the <em>host</em> can be specified in any of the
     following formats:</p>
@@ -58,36 +60,36 @@ server</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cla
     <dl>
       <dt>A (partial) domain-name</dt>
 
-      <dd>Example: <code>Allow from apache.org</code><br>
+      <dd>Example: <code>Allow from apache.org</code><br />
        Hosts whose names match, or end in, this string are allowed
       access. Only complete components are matched, so the above
       example will match <code>foo.apache.org</code> but it will
       not match <code>fooapache.org</code>. This configuration will
       cause the server to perform a reverse DNS lookup on the
-      client IP address, regardless of the setting of the <a href="../mod/core.html#hostnamelookups" class="directive"><code class="directive">HostnameLookups</code></a>
+      client IP address, regardless of the setting of the <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code>
       directive.</dd>
 
       <dt>A full IP address</dt>
 
-      <dd>Example: <code>Allow from 10.1.2.3</code><br>
+      <dd>Example: <code>Allow from 10.1.2.3</code><br />
        An IP address of a host allowed access</dd>
 
       <dt>A partial IP address</dt>
 
-      <dd>Example: <code>Allow from 10.1</code><br>
+      <dd>Example: <code>Allow from 10.1</code><br />
        The first 1 to 3 bytes of an IP address, for subnet
       restriction.</dd>
 
       <dt>A network/netmask pair</dt>
 
       <dd>Example: <code>Allow from
-      10.1.0.0/255.255.0.0</code><br>
+      10.1.0.0/255.255.0.0</code><br />
        A network a.b.c.d, and a netmask w.x.y.z. For more
       fine-grained subnet restriction.</dd>
 
       <dt>A network/nnn CIDR specification</dt>
 
-      <dd>Example: <code>Allow from 10.1.0.0/16</code><br>
+      <dd>Example: <code>Allow from 10.1.0.0/16</code><br />
        Similar to the previous case, except the netmask consists of
       nnn high-order 1 bits.</dd>
     </dl>
@@ -98,10 +100,10 @@ server</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cla
     <p>IPv6 addresses and IPv6 subnets can be specified as shown
     below:</p>
 
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-       Allow from fe80::a00:20ff:fea7:ccea<br>
+    <div class="example"><p><code>
+       Allow from fe80::a00:20ff:fea7:ccea<br />
        Allow from fe80::a00:20ff:fea7:ccea/10
-    </code></td></tr></table></blockquote>
+    </code></p></div>
 
     <p>The third format of the arguments to the
     <code class="directive">Allow</code> directive allows access to the server
@@ -111,91 +113,91 @@ server</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cla
     exists. The server provides the ability to set environment
     variables in a flexible way based on characteristics of the client
     request using the directives provided by
-    <code><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>.  Therefore, this directive can be
+    <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>.  Therefore, this directive can be
     used to allow access based on such factors as the clients
     <code>User-Agent</code> (browser type), <code>Referer</code>, or
     other HTTP request header fields.</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example:</strong></p><code>
+<div class="example"><h3>Example:</h3><p><code>
 
-SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br>
-&lt;Directory /docroot&gt;<br>
-&nbsp;&nbsp;    Order Deny,Allow<br>
-&nbsp;&nbsp;    Deny from all<br>
-&nbsp;&nbsp;    Allow from env=let_me_in<br>
+SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
+&lt;Directory /docroot&gt;<br />
+      Order Deny,Allow<br />
+      Deny from all<br />
+      Allow from env=let_me_in<br />
 &lt;/Directory&gt;
-</code></td></tr></table></blockquote>
+</code></p></div>
 
     <p>In this case, browsers with a user-agent string beginning
     with <code>KnockKnock/2.0</code> will be allowed access, and all
     others will be denied.</p>
-<hr><h2><a name="Deny">Deny</a> <a name="deny">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Controls which hosts are denied access to the
-server</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td> Deny from
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Deny" id="Deny">Deny</a> <a name="deny" id="deny">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Controls which hosts are denied access to the
+server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td> Deny from
     all|<em>host</em>|env=<em>env-variable</em>
-    [<em>host</em>|env=<em>env-variable</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
-                    </a></td><td>Limit</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_access</td></tr></table></td></tr></table>
+    [<em>host</em>|env=<em>env-variable</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>Limit</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_access</td></tr></table>
     <p>This directive allows access to the server to be restricted
     based on hostname, IP address, or environment variables. The
     arguments for the <code class="directive">Deny</code> directive are
-    identical to the arguments for the <a href="#allow" class="directive"><code class="directive">Allow</code></a> directive.</p>
-<hr><h2><a name="Order">Order</a> <a name="order">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Controls the default access state and the order in which
+    identical to the arguments for the <code class="directive"><a href="#allow">Allow</a></code> directive.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Order" id="Order">Order</a> <a name="order" id="order">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Controls the default access state and the order in which
 Allow and Deny are
-evaluated.</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td> Order <em>ordering</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
-                    </a></td><td><code>Order Deny,Allow</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
-                    </a></td><td>Limit</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_access</td></tr></table></td></tr></table>
+evaluated.</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td> Order <em>ordering</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>Order Deny,Allow</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>Limit</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_access</td></tr></table>
 
     <p>The <code class="directive">Order</code> directive controls the default
-    access state and the order in which <a href="#allow" class="directive"><code class="directive">Allow</code></a> and <a href="#deny" class="directive"><code class="directive">Deny</code></a> directives are evaluated.
+    access state and the order in which <code class="directive"><a href="#allow">Allow</a></code> and <code class="directive"><a href="#deny">Deny</a></code> directives are evaluated.
     <em>Ordering</em> is one of</p>
 
     <dl>
       <dt>Deny,Allow</dt>
 
-      <dd>The <a href="#deny" class="directive"><code class="directive">Deny</code></a> directives
-      are evaluated before the <a href="#allow" class="directive"><code class="directive">Allow</code></a> directives. Access is
+      <dd>The <code class="directive"><a href="#deny">Deny</a></code> directives
+      are evaluated before the <code class="directive"><a href="#allow">Allow</a></code> directives. Access is
       allowed by default.  Any client which does not match a
-      <a href="#deny" class="directive"><code class="directive">Deny</code></a> directive or does
-      match an <a href="#allow" class="directive"><code class="directive">Allow</code></a>
+      <code class="directive"><a href="#deny">Deny</a></code> directive or does
+      match an <code class="directive"><a href="#allow">Allow</a></code>
       directive will be allowed access to the server.</dd>
 
       <dt>Allow,Deny</dt>
 
-      <dd>The <a href="#allow" class="directive"><code class="directive">Allow</code></a>
-      directives are evaluated before the <a href="#deny" class="directive"><code class="directive">Deny</code></a> directives. Access is denied
-      by default. Any client which does not match an <a href="#allow" class="directive"><code class="directive">Allow</code></a> directive or does match a
-      <a href="#deny" class="directive"><code class="directive">Deny</code></a> directive will be
+      <dd>The <code class="directive"><a href="#allow">Allow</a></code>
+      directives are evaluated before the <code class="directive"><a href="#deny">Deny</a></code> directives. Access is denied
+      by default. Any client which does not match an <code class="directive"><a href="#allow">Allow</a></code> directive or does match a
+      <code class="directive"><a href="#deny">Deny</a></code> directive will be
       denied access to the server.</dd>
 
       <dt>Mutual-failure</dt>
 
-      <dd>Only those hosts which appear on the <a href="#allow" class="directive"><code class="directive">Allow</code></a> list and do not appear on
-      the <a href="#deny" class="directive"><code class="directive">Deny</code></a> list are
+      <dd>Only those hosts which appear on the <code class="directive"><a href="#allow">Allow</a></code> list and do not appear on
+      the <code class="directive"><a href="#deny">Deny</a></code> list are
       granted access. This ordering has the same effect as <code>Order
       Allow,Deny</code> and is deprecated in favor of that
       configuration.</dd>
     </dl>
 
     <p>Keywords may only be separated by a comma; no whitespace is
-    allowed between them. Note that in all cases every <a href="#allow" class="directive"><code class="directive">Allow</code></a> and <a href="#deny" class="directive"><code class="directive">Deny</code></a> statement is evaluated.</p>
+    allowed between them. Note that in all cases every <code class="directive"><a href="#allow">Allow</a></code> and <code class="directive"><a href="#deny">Deny</a></code> statement is evaluated.</p>
 
     <p>In the following example, all hosts in the apache.org domain
     are allowed access; all other hosts are denied access.</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      Order Deny,Allow<br>
-      Deny from all<br>
-      Allow from apache.org<br>
-</code></td></tr></table></blockquote>
+<div class="example"><p><code>
+      Order Deny,Allow<br />
+      Deny from all<br />
+      Allow from apache.org<br />
+</code></p></div>
 
     <p>In the next example, all hosts in the apache.org domain are
     allowed access, except for the hosts which are in the
@@ -203,11 +205,11 @@ evaluated.</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax"
     in the apache.org domain are denied access because the default
     state is to deny access to the server.</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-       Order Allow,Deny<br>
-       Allow from apache.org<br>
-       Deny from foo.apache.org<br>
-</code></td></tr></table></blockquote>
+<div class="example"><p><code>
+       Order Allow,Deny<br />
+       Allow from apache.org<br />
+       Deny from foo.apache.org<br />
+</code></p></div>
 
     <p>On the other hand, if the <code class="directive">Order</code> in the last
     example is changed to <code>Deny,Allow</code>, all hosts will
@@ -221,14 +223,14 @@ evaluated.</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax"
 
     <p>The presence of an <code class="directive">Order</code> directive can affect
     access to a part of the server even in the absence of accompanying
-    <a href="#allow" class="directive"><code class="directive">Allow</code></a> and <a href="#deny" class="directive"><code class="directive">Deny</code></a> directives because of its effect
+    <code class="directive"><a href="#allow">Allow</a></code> and <code class="directive"><a href="#deny">Deny</a></code> directives because of its effect
     on the default access state.  For example,</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      &lt;Directory /www&gt;<br>
-      &nbsp;&nbsp;Order Allow,Deny<br>
+<div class="example"><p><code>
+      &lt;Directory /www&gt;<br />
+        Order Allow,Deny<br />
       &lt;/Directory&gt;
-</code></td></tr></table></blockquote>
+</code></p></div>
 
     <p>will deny all access to the <code>/www</code> directory
     because the default access state will be set to
@@ -237,12 +239,12 @@ evaluated.</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax"
     <p>The <code class="directive">Order</code> directive controls the order of access
     directive processing only within each phase of the server's
     configuration processing. This implies, for example, that an
-    <a href="#allow" class="directive"><code class="directive">Allow</code></a> or <a href="#deny" class="directive"><code class="directive">Deny</code></a> directive occurring in a
-    <a href="../mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a> section will
-    always be evaluated after an <a href="#allow" class="directive"><code class="directive">Allow</code></a> or <a href="#deny" class="directive"><code class="directive">Deny</code></a> directive occurring in a
-    <a href="../mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a> section or
+    <code class="directive"><a href="#allow">Allow</a></code> or <code class="directive"><a href="#deny">Deny</a></code> directive occurring in a
+    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section will
+    always be evaluated after an <code class="directive"><a href="#allow">Allow</a></code> or <code class="directive"><a href="#deny">Deny</a></code> directive occurring in a
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section or
     <code>.htaccess</code> file, regardless of the setting of the
     <code class="directive">Order</code> directive. For details on the merging
     of configuration sections, see the documentation on <a href="../sections.html">How Directory, Location and Files sections
     work</a>.</p>
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
