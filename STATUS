@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/04/27 21:10:39 $]
+Last modified at [$Date: 2001/05/04 18:49:28 $]
 
 Release:
 
@@ -87,6 +87,10 @@ DAEDALUS 2.0 PROBLEMS:
       Referer: http://jakarta.apache.org/log4j/docs/download.html
       Accept-Encoding: gzip, deflate
 
+      The confusion was because apr_sendfile() returned APR_SUCCESS
+      but zero bytes sent.  Presumably the FreeBSD kernel sendfile()
+      did the same thing (not 100% sure).
+
 RELEASE SHOWSTOPPERS:
 
     WARNING: ALWAYS check srclib/apr/STATUS and srclib/apr-util/STATUS
@@ -94,6 +98,15 @@ RELEASE SHOWSTOPPERS:
     * threaded + cgid: "apachectl graceful" followed by "apachectl
       restart" results in all processes but cgid going away; parent
       died referencing other-child registration structures
+
+      a couple of solutions/work-arounds for this problem:
+
+      1) disable APR_HAS_OTHER_CHILD support
+      2) teach APR to clean up other-child registrations when the 
+         associated pool goes away (see 
+         Message-Id:
+	 <200104262241.SAA04468@adsl-77-241-65.rdu.bellsouth.net> for
+	 a patch.
 
     * There is a bug in how we sort some hooks, at least the pre-config
       hook.  The first time we call the hooks, they are in the correct 
