@@ -497,8 +497,8 @@ typedef enum {
 				   resource (it may be present as a dead
 				   property). */
     DAV_PROP_INSERT_NOTSUPP,    /* property is recognized by this provider,
-                                 * but it is not supported, and cannot be
-                                 * treated as a dead property */
+                                   but it is not supported, and cannot be
+                                   treated as a dead property */
     DAV_PROP_INSERT_NAME,	/* a property name (empty elem) was
 				   inserted into the text block */
     DAV_PROP_INSERT_VALUE,	/* a property name/value pair was inserted
@@ -707,10 +707,10 @@ struct dav_hooks_liveprop
     **      a DAV:supported-live-property element, as defined
     **      by the DeltaV extensions to RFC2518.
     **                      
-    ** Providers should return DAV_PROP_INSERT_NOTDEF if they do not define
-    ** the specified propid, but allow the property to be handled as a
-    ** dead property. If a provider recognizes, but does not support,
-    ** a property, and does not want it handled as a dead property, it should
+    ** Providers should return DAV_PROP_INSERT_NOTDEF if the property is
+    ** known and not defined for this resource, so should be handled as a
+    ** dead property. If a provider recognizes, but does not support, a
+    ** property, and does not want it handled as a dead property, it should
     ** return DAV_PROP_INSERT_NOTSUPP.
     **
     ** Returns one of DAV_PROP_INSERT_* based on what happened.
@@ -778,20 +778,20 @@ struct dav_hooks_liveprop
 				  int *defer_to_dead);
 
     /* ### doc... */
-    dav_error * (*patch_exec)(dav_resource *resource,
+    dav_error * (*patch_exec)(const dav_resource *resource,
 			      const ap_xml_elem *elem,
 			      int operation,
 			      void *context,
 			      dav_liveprop_rollback **rollback_ctx);
 
     /* ### doc... */
-    void (*patch_commit)(dav_resource *resource,
+    void (*patch_commit)(const dav_resource *resource,
 			 int operation,
 			 void *context,
 			 dav_liveprop_rollback *rollback_ctx);
 
     /* ### doc... */
-    dav_error * (*patch_rollback)(dav_resource *resource,
+    dav_error * (*patch_rollback)(const dav_resource *resource,
 				  int operation,
 				  void *context,
 				  dav_liveprop_rollback *rollback_ctx);
@@ -1355,7 +1355,7 @@ typedef struct dav_propdb dav_propdb;
 dav_error *dav_open_propdb(
     request_rec *r,
     dav_lockdb *lockdb,
-    dav_resource *resource,
+    const dav_resource *resource,
     int ro,
     apr_array_header_t *ns_xlate,
     dav_propdb **propdb);

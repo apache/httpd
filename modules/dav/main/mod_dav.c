@@ -1342,14 +1342,14 @@ static dav_error *dav_gen_supported_live_props(request_rec *r,
     if ((err = dav_open_lockdb(r, 0, &lockdb)) != NULL) {
 	return dav_push_error(r->pool, err->status, 0,
 			      "The lock database could not be opened, "
-			      "preventing report of supported lock properties.",
+			      "preventing the reporting of supported lock "
+                              "properties.",
 			      err);
     }
 
     /* open the property database (readonly) for the resource */
-    if ((err = dav_open_propdb(r, lockdb,
-			       (dav_resource *)resource, 1,
-                               NULL, &propdb)) != NULL) {
+    if ((err = dav_open_propdb(r, lockdb, resource, 1, NULL,
+                               &propdb)) != NULL) {
         if (lockdb != NULL)
             (*lockdb->hooks->close_lockdb)(lockdb);
 
@@ -1388,8 +1388,9 @@ static dav_error *dav_gen_supported_live_props(request_rec *r,
 
                 if (name == NULL) {
                     err = dav_new_error(r->pool, HTTP_BAD_REQUEST, 0,
-                                        "A DAV:supported-live-property element "
-                                        "does not have a \"name\" attribute");
+                                        "A DAV:supported-live-property "
+                                        "element does not have a \"name\" "
+                                        "attribute");
                     break;
                 }
 
@@ -1433,10 +1434,10 @@ static dav_error *dav_gen_supported_reports(request_rec *r,
 
         if ((err = (*vsn_hooks->avail_reports)(resource, &reports)) != NULL) {
 	    return dav_push_error(r->pool, err->status, 0,
-			         "DAV:supported-report-set could not be determined "
-                                 "due to a problem fetching the available reports "
-                                 "for this resource.",
-			         err);
+                                  "DAV:supported-report-set could not be "
+                                  "determined due to a problem fetching the "
+                                  "available reports for this resource.",
+                                  err);
         }
 
         if (reports != NULL) {
@@ -1664,6 +1665,8 @@ static int dav_method_options(request_rec *r)
         }
         else if (resource->working) {
             apr_table_addn(methods, "CHECKIN", "");
+
+            /* ### we might not support this DeltaV option */
             apr_table_addn(methods, "UNCHECKOUT", "");
         }
         else if (vsn_hooks->add_label != NULL) {
@@ -1819,8 +1822,7 @@ static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
     ** Note: we cast to lose the "const". The propdb won't try to change
     ** the resource, however, since we are opening readonly.
     */
-    err = dav_open_propdb(ctx->r, ctx->w.lockdb,
-			  (dav_resource *)wres->resource, 1,
+    err = dav_open_propdb(ctx->r, ctx->w.lockdb, wres->resource, 1,
 			  ctx->doc ? ctx->doc->namespaces : NULL, &propdb);
     if (err != NULL) {
 	/* ### do something with err! */

@@ -160,11 +160,12 @@ static dav_prop_insert dav_core_insert_prop(const dav_resource *resource,
     /* assert: info != NULL && info->name != NULL */
 
     if (what == DAV_PROP_INSERT_SUPPORTED) {
-        s = apr_psprintf(p, "<supported-live-property name=\"%s\""
-                            " namespace=\"%s\" xmlns=\"DAV:\"/>" DEBUG_CR,
+        s = apr_psprintf(p,
+                         "<D:supported-live-property D:name=\"%s\" "
+                         "D:namespace=\"%s\"/>" DEBUG_CR,
                          info->name, dav_core_namespace_uris[info->ns]);
     }
-	else if (what == DAV_PROP_INSERT_VALUE && *value != '\0') {
+    else if (what == DAV_PROP_INSERT_VALUE && *value != '\0') {
         s = apr_psprintf(p, "<lp%d:%s>%s</lp%d:%s>" DEBUG_CR,
                          global_ns, info->name, value, global_ns, info->name);
     }

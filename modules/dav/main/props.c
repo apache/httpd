@@ -250,7 +250,7 @@ struct dav_propdb {
     apr_pool_t *p;		/* the pool we should use */
     request_rec *r;		/* the request record */
 
-    dav_resource *resource;	/* the target resource */
+    const dav_resource *resource;	/* the target resource */
 
     int deferred;		/* open of db has been deferred */
     dav_db *db;			/* underlying database containing props */
@@ -375,6 +375,8 @@ static void dav_find_liveprop(dav_propdb *propdb, ap_xml_elem *elem)
 
     priv->propid = dav_find_liveprop_provider(propdb, ns_uri, elem->name,
                                               &hooks);
+
+    /* ### this test seems redundant... */
     if (priv->propid != DAV_PROPID_CORE_UNKNOWN) {
         priv->provider = hooks;
     }
@@ -921,7 +923,7 @@ static dav_error *dav_really_open_db(dav_propdb *propdb, int ro)
 }
 
 dav_error *dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
-			   dav_resource *resource,
+			   const dav_resource *resource,
 			   int ro,
 			   apr_array_header_t * ns_xlate,
 			   dav_propdb **p_propdb)
@@ -1228,7 +1230,8 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, ap_xml_doc *doc)
         }
 
 	/*
-	** If not handled as a live property, look in the dead property database
+	** If not handled as a live property, look in the dead property
+        ** database.
 	*/
         if (!is_liveprop) {
             /* make sure propdb is really open */
