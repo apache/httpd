@@ -769,22 +769,36 @@ const char *ssl_cmd_SSLVerifyClient(cmd_parms *cmd, void *ctx,
     return NULL;
 }
 
+static const char *ssl_cmd_verify_depth_parse(cmd_parms *parms,
+                                              const char *arg,
+                                              int *depth)
+{
+    if ((*depth = atoi(arg)) >= 0) {
+        return NULL;
+    }
+
+    return apr_pstrcat(parms->temp_pool, parms->cmd->name,
+                       ": Invalid argument '", arg, "'",
+                       NULL);
+}
+
 const char *ssl_cmd_SSLVerifyDepth(cmd_parms *cmd, void *ctx,
                                    const char *arg)
 {
     SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    int d = atoi(arg);
+    int depth;
+    const char *err;
 
-    if (d < 0) {
-        return "SSLVerifyDepth: Invalid argument";
+    if ((err = ssl_cmd_verify_depth_parse(cmd, arg, &depth))) {
+        return err;
     }
 
     if (!(cmd->path || dc)) {
-        sc->nVerifyDepth = d;
+        sc->nVerifyDepth = depth;
     }
     else {
-        dc->nVerifyDepth = d;
+        dc->nVerifyDepth = depth;
     }
 
     return NULL;
@@ -1165,13 +1179,14 @@ const char *ssl_cmd_SSLProxyVerifyDepth(cmd_parms *cmd, char *struct_ptr,
                                         char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    int d = atoi(arg);
+    int depth;
+    const char *err;
 
-    if (d < 0) {
-        return "SSLProxyVerifyDepth: Invalid argument";
+    if ((err = ssl_cmd_verify_depth_parse(cmd, arg, &depth))) {
+        return err;
     }
 
-    sc->nProxyVerifyDepth = d;
+    sc->nProxyVerifyDepth = depth;
 
     return NULL;
 }
