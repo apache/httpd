@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/06 22:34:47 $]
+Last modified at [$Date: 2002/02/06 22:52:15 $]
 
 Release:
 
@@ -45,7 +45,7 @@ CURRENT RELEASE NOTES:
     * Proposed BETA possibilities
       31 + fixes for all resolved problems and call it 32 (instead of HEAD)
         See: http://www.apache.org/~jerenkrantz/httpd-2.0.jre.patch
-        +1: trawick, Justin
+        +1: trawick, Justin, Ian
         +0:
         -1:
 
@@ -58,7 +58,7 @@ CURRENT RELEASE NOTES:
             +1 : Aaron
             +0 : Lars, Justin, trawick
             -0 : OtherBill
-            -1 : BillS, Ian, gregames, BrianP, Jim
+            -1 : BillS, gregames, BrianP, Jim
         bumps since original tag:
             * mod-dir patch
             * scoreboard x2 : 1 to fix gracefull restarts
