@@ -82,7 +82,6 @@
  * TODO: behave like apache-1.3... here's a short list of things I think
  * TODO: need cleaning up still:
  * TODO: - use ralf's mm stuff for the shared mem and mutexes
- * TODO: - abstract the Listen stuff, it's going to be common with other MPM
  * TODO: - clean up scoreboard stuff when we figure out how to do it in 2.0
  */
 
@@ -98,6 +97,7 @@
 #include "ap_mpm.h"
 #include "unixd.h"
 #include "iol_socket.h"
+#include "ap_listen.h"
 #ifdef USE_SHMGET_SCOREBOARD
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -115,13 +115,11 @@ static char *ap_pid_fname=NULL;
 static char *ap_scoreboard_fname=NULL;
 static char *ap_lock_fname;
 static char *ap_server_argv0=NULL;
-static struct in_addr ap_bind_address;
 static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
 static int ap_daemons_limit=0;
 static time_t ap_restart_time=0;
-static int ap_listenbacklog;
 static int ap_extended_status = 0;
 
 /*
@@ -130,26 +128,6 @@ static int ap_extended_status = 0;
  * value to optimize routines that have to scan the entire scoreboard.
  */
 static int max_daemons_limit = -1;
-
-/*
- * During config time, listeners is treated as a NULL-terminated list.
- * child_main previously would start at the beginning of the list each time
- * through the loop, so a socket early on in the list could easily starve out
- * sockets later on in the list.  The solution is to start at the listener
- * after the last one processed.  But to do that fast/easily in child_main it's
- * way more convenient for listeners to be a ring that loops back on itself.
- * The routine setup_listeners() is called after config time to both open up
- * the sockets and to turn the NULL-terminated list into a ring that loops back
- * on itself.
- *
- * head_listener is used by each child to keep track of what they consider
- * to be the "start" of the ring.  It is also set by make_child to ensure
- * that new children also don't starve any sockets.
- *
- * Note that listeners != NULL is ensured by read_config().
- */
-static listen_rec *ap_listeners;
-static listen_rec *head_listener;
 
 static char ap_coredump_dir[MAX_STRING_LEN];
 
@@ -787,7 +765,7 @@ static void accept_mutex_off(void)
  * when it's safe in the single Listen case.
  */
 #ifdef SINGLE_LISTEN_UNSERIALIZED_ACCEPT
-#define SAFE_ACCEPT(stmt) do {if(ap_listeners->next != ap_listeners) {stmt;}} while(0)
+#define SAFE_ACCEPT(stmt) do {if (ap_listeners->next) {stmt;}} while(0)
 #else
 #define SAFE_ACCEPT(stmt) do {stmt;} while(0)
 #endif
@@ -2078,289 +2056,6 @@ static void sock_disable_nagle(int s)
 #endif
 
 
-static int make_sock(pool *p, const struct sockaddr_in *server)
-{
-    int s;
-    int one = 1;
-    char addr[512];
-
-    if (server->sin_addr.s_addr != htonl(INADDR_ANY))
-	ap_snprintf(addr, sizeof(addr), "address %s port %d",
-		inet_ntoa(server->sin_addr), ntohs(server->sin_port));
-    else
-	ap_snprintf(addr, sizeof(addr), "port %d", ntohs(server->sin_port));
-
-    /* note that because we're about to slack we don't use psocket */
-    if ((s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
-		    "make_sock: failed to get a socket for %s", addr);
-	exit(1);
-    }
-
-    /* Solaris (probably versions 2.4, 2.5, and 2.5.1 with various levels
-     * of tcp patches) has some really weird bugs where if you dup the
-     * socket now it breaks things across SIGHUP restarts.  It'll either
-     * be unable to bind, or it won't respond.
-     */
-#if defined (SOLARIS2) && SOLARIS2 < 260
-#define WORKAROUND_SOLARIS_BUG
-#endif
-
-    /* PR#1282 Unixware 1.x appears to have the same problem as solaris */
-#if defined (UW) && UW < 200
-#define WORKAROUND_SOLARIS_BUG
-#endif
-
-    /* PR#1973 NCR SVR4 systems appear to have the same problem */
-#if defined (MPRAS)
-#define WORKAROUND_SOLARIS_BUG
-#endif
-
-#ifndef WORKAROUND_SOLARIS_BUG
-    s = ap_slack(s, AP_SLACK_HIGH);
-
-    ap_note_cleanups_for_socket(p, s);	/* arrange to close on exec or restart */
-#ifdef TPF
-    os_note_additional_cleanups(p, s);
-#endif /* TPF */
-#endif
-
-#ifndef MPE
-/* MPE does not support SO_REUSEADDR and SO_KEEPALIVE */
-#ifndef _OSD_POSIX
-    if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *) &one, sizeof(int)) < 0) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
-		    "make_sock: for %s, setsockopt: (SO_REUSEADDR)", addr);
-	close(s);
-	return -1;
-    }
-#endif /*_OSD_POSIX*/
-    one = 1;
-#ifdef SO_KEEPALIVE
-    if (setsockopt(s, SOL_SOCKET, SO_KEEPALIVE, (char *) &one, sizeof(int)) < 0) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
-		    "make_sock: for %s, setsockopt: (SO_KEEPALIVE)", addr);
-	close(s);
-	return -1;
-    }
-#endif
-#endif
-
-    sock_disable_nagle(s);
-
-    /*
-     * To send data over high bandwidth-delay connections at full
-     * speed we must force the TCP window to open wide enough to keep the
-     * pipe full.  The default window size on many systems
-     * is only 4kB.  Cross-country WAN connections of 100ms
-     * at 1Mb/s are not impossible for well connected sites.
-     * If we assume 100ms cross-country latency,
-     * a 4kB buffer limits throughput to 40kB/s.
-     *
-     * To avoid this problem I've added the SendBufferSize directive
-     * to allow the web master to configure send buffer size.
-     *
-     * The trade-off of larger buffers is that more kernel memory
-     * is consumed.  YMMV, know your customers and your network!
-     *
-     * -John Heidemann <johnh@isi.edu> 25-Oct-96
-     *
-     * If no size is specified, use the kernel default.
-     */
-#ifndef BEOS			/* BeOS does not support SO_SNDBUF */
-    if (server_conf->send_buffer_size) {
-	if (setsockopt(s, SOL_SOCKET, SO_SNDBUF,
-		(char *) &server_conf->send_buffer_size, sizeof(int)) < 0) {
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf,
-			"make_sock: failed to set SendBufferSize for %s, "
-			"using default", addr);
-	    /* not a fatal error */
-	}
-    }
-#endif
-
-#ifdef MPE
-/* MPE requires CAP=PM and GETPRIVMODE to bind to ports less than 1024 */
-    if (ntohs(server->sin_port) < 1024)
-	GETPRIVMODE();
-#endif
-    if (bind(s, (struct sockaddr *) server, sizeof(struct sockaddr_in)) == -1) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
-	    "make_sock: could not bind to %s", addr);
-#ifdef MPE
-	if (ntohs(server->sin_port) < 1024)
-	    GETUSERMODE();
-#endif
-	close(s);
-	exit(1);
-    }
-#ifdef MPE
-    if (ntohs(server->sin_port) < 1024)
-	GETUSERMODE();
-#endif
-
-    if (listen(s, ap_listenbacklog) == -1) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
-	    "make_sock: unable to listen for connections on %s", addr);
-	close(s);
-	exit(1);
-    }
-
-#ifdef WORKAROUND_SOLARIS_BUG
-    s = ap_slack(s, AP_SLACK_HIGH);
-
-    ap_note_cleanups_for_socket(p, s);	/* arrange to close on exec or restart */
-#endif
-
-#ifdef CHECK_FD_SETSIZE
-    /* protect various fd_sets */
-    if (s >= FD_SETSIZE) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
-	    "make_sock: problem listening on %s, filedescriptor (%u) "
-	    "larger than FD_SETSIZE (%u) "
-	    "found, you probably need to rebuild Apache with a "
-	    "larger FD_SETSIZE", addr, s, FD_SETSIZE);
-	close(s);
-	return -1;
-    }
-#endif
-
-    return s;
-}
-
-
-/*
- * During a restart we keep track of the old listeners here, so that we
- * can re-use the sockets.  We have to do this because we won't be able
- * to re-open the sockets ("Address already in use").
- *
- * Unlike the listeners ring, old_listeners is a NULL terminated list.
- *
- * copy_listeners() makes the copy, find_listener() finds an old listener
- * and close_unused_listener() cleans up whatever wasn't used.
- */
-static listen_rec *old_listeners;
-
-/* unfortunately copy_listeners may be called before listeners is a ring */
-static void copy_listeners(pool *p)
-{
-    listen_rec *lr;
-
-    ap_assert(old_listeners == NULL);
-    if (ap_listeners == NULL) {
-	return;
-    }
-    lr = ap_listeners;
-    do {
-	listen_rec *nr = malloc(sizeof *nr);
-	if (nr == NULL) {
-	    fprintf(stderr, "Ouch!  malloc failed in copy_listeners()\n");
-	    exit(1);
-	}
-	*nr = *lr;
-	ap_kill_cleanups_for_socket(p, nr->fd);
-	nr->next = old_listeners;
-	ap_assert(!nr->used);
-	old_listeners = nr;
-	lr = lr->next;
-    } while (lr && lr != ap_listeners);
-}
-
-
-static int find_listener(listen_rec *lr)
-{
-    listen_rec *or;
-
-    for (or = old_listeners; or; or = or->next) {
-	if (!memcmp(&or->local_addr, &lr->local_addr, sizeof(or->local_addr))) {
-	    or->used = 1;
-	    return or->fd;
-	}
-    }
-    return -1;
-}
-
-
-static void close_unused_listeners(void)
-{
-    listen_rec *or, *next;
-
-    for (or = old_listeners; or; or = next) {
-	next = or->next;
-	if (!or->used)
-	    closesocket(or->fd);
-	free(or);
-    }
-    old_listeners = NULL;
-}
-
-
-/* open sockets, and turn the listeners list into a singly linked ring */
-static void setup_listeners(pool *p)
-{
-    listen_rec *lr;
-    int fd;
-
-    listenmaxfd = -1;
-    FD_ZERO(&listenfds);
-    lr = ap_listeners;
-    for (;;) {
-	fd = find_listener(lr);
-	if (fd < 0) {
-	    fd = make_sock(p, &lr->local_addr);
-	}
-	else {
-	    ap_note_cleanups_for_socket(p, fd);
-	}
-	if (fd >= 0) {
-	    FD_SET(fd, &listenfds);
-	    if (fd > listenmaxfd)
-		listenmaxfd = fd;
-	}
-	lr->fd = fd;
-	if (lr->next == NULL)
-	    break;
-	lr = lr->next;
-    }
-    /* turn the list into a ring */
-    lr->next = ap_listeners;
-    head_listener = ap_listeners;
-    close_unused_listeners();
-
-#ifdef NO_SERIALIZED_ACCEPT
-    /* warn them about the starvation problem if they're using multiple
-     * sockets
-     */
-    if (ap_listeners->next != ap_listeners) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, NULL,
-		    "You cannot use multiple Listens safely on your system, "
-		    "proceeding anyway.  See src/PORTING, search for "
-		    "SERIALIZED_ACCEPT.");
-    }
-#endif
-}
-
-
-/*
- * Find a listener which is ready for accept().  This advances the
- * head_listener global.
- */
-static ap_inline listen_rec *find_ready_listener(fd_set * main_fds)
-{
-    listen_rec *lr;
-
-    lr = head_listener;
-    do {
-	if (FD_ISSET(lr->fd, main_fds)) {
-	    head_listener = lr->next;
-	    return (lr);
-	}
-	lr = lr->next;
-    } while (lr != head_listener);
-    return NULL;
-}
-
-
 /*****************************************************************
  * Child process main loop.
  * The following vars are static to avoid getting clobbered by longjmp();
@@ -2393,7 +2088,8 @@ static void child_main(int child_num_arg)
     NET_SIZE_T clen;
     struct sockaddr sa_server;
     struct sockaddr sa_client;
-    listen_rec *lr;
+    ap_listen_rec *lr;
+    ap_listen_rec *last_lr;
     pool *ptrans;
     conn_rec *current_conn;
     ap_iol *iol;
@@ -2402,6 +2098,7 @@ static void child_main(int child_num_arg)
     csd = -1;
     my_child_num = child_num_arg;
     requests_this_child = 0;
+    last_lr = NULL;
 
     /* Get a sub pool for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
@@ -2465,7 +2162,7 @@ static void child_main(int child_num_arg)
 	SAFE_ACCEPT(accept_mutex_on());
 
 	for (;;) {
-	    if (ap_listeners->next != ap_listeners) {
+	    if (ap_listeners->next) {
 		/* more than one socket */
 		memcpy(&main_fds, &listenfds, sizeof(fd_set));
 		srv = ap_select(listenmaxfd + 1, &main_fds, NULL, NULL, NULL);
@@ -2484,9 +2181,25 @@ static void child_main(int child_num_arg)
 		if (srv <= 0)
 		    continue;
 
-		lr = find_ready_listener(&main_fds);
-		if (lr == NULL)
+		/* we remember the last_lr we searched last time around so that
+		   we don't end up starving any particular listening socket */
+		if (last_lr == NULL) {
+		    lr = ap_listeners;
+		}
+		else {
+		    lr = last_lr->next;
+		}
+		while (lr != last_lr) {
+		    if (FD_ISSET(lr->fd, &main_fds)) break;
+		    lr = lr->next;
+		    if (!lr) {
+			lr = ap_listeners;
+		    }
+		}
+		if (lr == last_lr) {
 		    continue;
+		}
+		last_lr = lr;
 		sd = lr->fd;
 	    }
 	    else {
@@ -2649,35 +2362,6 @@ static void child_main(int child_num_arg)
     }
 }
 
-#ifdef TPF
-static void reset_tpf_listeners(APACHE_TPF_INPUT *input_parms)
-{
-    int count;
-    listen_rec *lr;
-
-    count = 0;
-    listenmaxfd = -1;
-    FD_ZERO(&listenfds);
-    lr = ap_listeners;
-
-    for(;;) {
-        lr->fd = input_parms->listeners[count];
-        if(lr->fd >= 0) {
-            FD_SET(lr->fd, &listenfds);
-            if(lr->fd > listenmaxfd)
-                listenmaxfd = lr->fd;
-        }
-        if(lr->next == NULL)
-            break;
-        lr = lr->next;
-        count++;
-    }
-    lr->next = ap_listeners;
-    head_listener = ap_listeners;
-    close_unused_listeners();
-}
-
-#endif /* TPF */
 
 static int make_child(server_rec *s, int slot, time_t now)
 {
@@ -2696,9 +2380,6 @@ static int make_child(server_rec *s, int slot, time_t now)
 	signal(SIGTERM, just_die);
 	child_main(slot);
     }
-
-    /* avoid starvation */
-    head_listener = head_listener->next;
 
     (void) ap_update_child_status(slot, SERVER_STARTING, (request_rec *) NULL);
 
@@ -2962,6 +2643,28 @@ static void process_child_status(int pid, ap_wait_t status)
 }
 
 
+static int setup_listeners(pool *pconf, server_rec *s)
+{
+    ap_listen_rec *lr;
+
+    if (ap_listen_open(pconf, s->port)) {
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
+		    "no listening sockets available, shutting down");
+	return -1;
+    }
+
+    listenmaxfd = -1;
+    FD_ZERO(&listenfds);
+    for (lr = ap_listeners; lr; lr = lr->next) {
+	FD_SET(lr->fd, &listenfds);
+	if (lr->fd > listenmaxfd) {
+	    listenmaxfd = lr->fd;
+	}
+    }
+    return 0;
+}
+
+
 /*****************************************************************
  * Executive routines.
  */
@@ -2975,7 +2678,11 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     server_conf = s;
 
     ap_log_pid(pconf, ap_pid_fname);
-    setup_listeners(pconf);
+
+    if (setup_listeners(pconf, s)) {
+	/* XXX: hey, what's the right way for the mpm to indicate a fatal error? */
+	return 1;
+    }
 
     SAFE_ACCEPT(accept_mutex_init(pconf));
     if (!is_graceful) {
@@ -3167,8 +2874,6 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
 		    "SIGHUP received.  Attempting to restart");
     }
 
-    /* must copy now before pconf is cleared */
-    copy_listeners(pconf);
     if (!is_graceful) {
 	ap_restart_time = time(NULL);
     }
@@ -3203,6 +2908,7 @@ static void prefork_pre_config(pool *pconf, pool *plog, pool *ptemp)
     }
 
     unixd_pre_config();
+    ap_listen_pre_config();
     ap_daemons_to_start = DEFAULT_START_DAEMON;
     ap_daemons_min_free = DEFAULT_MIN_FREE_DAEMON;
     ap_daemons_max_free = DEFAULT_MAX_FREE_DAEMON;
@@ -3211,29 +2917,9 @@ static void prefork_pre_config(pool *pconf, pool *plog, pool *ptemp)
     ap_scoreboard_fname = DEFAULT_SCOREBOARD;
     ap_lock_fname = DEFAULT_LOCKFILE;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
-    /* ZZZ  Initialize the Network Address here. */
-    ap_bind_address.s_addr = htonl(INADDR_ANY);
-    ap_listeners = NULL;
-    ap_listenbacklog = DEFAULT_LISTENBACKLOG;
     ap_extended_status = 0;
 
     ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
-}
-
-static void prefork_post_config(pool *pconf, pool *plog, pool *ptemp, server_rec *s)
-{
-    if (ap_listeners == NULL) {
-	/* allocate a default listener */
-	listen_rec *new;
-
-	new = ap_pcalloc(pconf, sizeof(listen_rec));
-	new->local_addr.sin_family = AF_INET;
-	new->local_addr.sin_addr = ap_bind_address;
-	new->local_addr.sin_port = htons(s->port ? s->port : DEFAULT_HTTP_PORT);
-	new->fd = -1;
-	new->next = NULL;
-	ap_listeners = new;
-    }
 }
 
 static const char *set_pidfile(cmd_parms *cmd, void *dummy, char *arg) 
@@ -3366,71 +3052,6 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_listenbacklog(cmd_parms *cmd, void *dummy, char *arg) 
-{
-    int b;
-
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    b = atoi(arg);
-    if (b < 1) {
-        return "ListenBacklog must be > 0";
-    }
-    ap_listenbacklog = b;
-    return NULL;
-}
-
-static const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
-{
-    listen_rec *new;
-    char *ports;
-    unsigned short port;
-
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ports = strchr(ips, ':');
-    if (ports != NULL) {
-	if (ports == ips) {
-	    return "Missing IP address";
-	}
-	else if (ports[1] == '\0') {
-	    return "Address must end in :<port-number>";
-	}
-	*(ports++) = '\0';
-    }
-    else {
-	ports = ips;
-    }
-
-    new=ap_pcalloc(cmd->pool, sizeof(listen_rec));
-    /* ZZZ let's set this using the AP funcs. */
-    new->local_addr.sin_family = AF_INET;
-    if (ports == ips) { /* no address */
-      /*  ZZZ Initialize the Network Address */
-	new->local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    }
-    else {
-	new->local_addr.sin_addr.s_addr = ap_get_virthost_addr(ips, NULL);
-    }
-    port = atoi(ports);
-    if (!port) {
-	return "Port must be numeric";
-    }
-    /* ZZZ change to AP funcs.*/
-    new->local_addr.sin_port = htons(port);
-    new->fd = -1;    /*ZZZ change to NULL */
-    new->used = 0;
-    new->next = ap_listeners;
-    ap_listeners = new;
-    return NULL;
-}
-
 /* there are no threads in the prefork model, so the mutexes are
    nops. */
 /* TODO: make these #defines to eliminate the function call */
@@ -3460,6 +3081,7 @@ API_EXPORT(void) ap_thread_mutex_destroy(ap_thread_mutex *mtx)
 
 static const command_rec prefork_cmds[] = {
 UNIX_DAEMON_COMMANDS
+LISTEN_COMMANDS
 { "PidFile", set_pidfile, NULL, RSRC_CONF, TAKE1,
     "A file for logging the server process ID"},
 { "ScoreBoardFile", set_scoreboard, NULL, RSRC_CONF, TAKE1,
@@ -3478,10 +3100,6 @@ UNIX_DAEMON_COMMANDS
   "Maximum number of requests a particular child serves before dying." },
 { "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, TAKE1,
   "The location of the directory Apache changes to before dumping core" },
-{ "ListenBacklog", set_listenbacklog, NULL, RSRC_CONF, TAKE1,
-  "Maximum length of the queue of pending connections, as used by listen(2)" },
-{ "Listen", set_listener, NULL, RSRC_CONF, TAKE1,
-  "A port number or a numeric IP address and a port number"},
 { NULL }
 };
 
@@ -3489,7 +3107,7 @@ module MODULE_VAR_EXPORT mpm_prefork_module = {
     STANDARD20_MODULE_STUFF,
     prefork_pre_command_line,	/* pre_command_line */
     prefork_pre_config,		/* pre_config */
-    prefork_post_config,	/* post_config */
+    NULL,			/* post_config */
     NULL,			/* open_logs */
     NULL, 			/* child_init */
     NULL,			/* create per-directory config structure */
