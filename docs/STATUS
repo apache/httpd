@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/03/29 19:22:47 $
+Last modified: $Date: 2002/05/21 06:05:53 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -85,8 +85,7 @@ tutorial on how to get started with making your contribution.
     - Italian (.it)
     - Japanese (.ja.iso2022-jp, .ja.jis)
     - Korean (.kr.iso2022-kr, .kt.iso-kr)
-    - ? (.ltz)
-    - ? (.lu)
+    - Luxembourgish (.lb)
     - Dutch (.nl)
     - Norwegian (.no)
     - Polish (.po.iso-pl)
@@ -94,9 +93,7 @@ tutorial on how to get started with making your contribution.
     - Portuguese [Brasilian] (.pt-br)
     - Russian (.ru.cp-1251, .ru.cp866, .ru.iso-ru, .ru.koi8-r, .ru.ucs[248])
     - Swedish (.se)
-    - Twi (.tw, .tw.big5)
-      (is that supposed to be Chinese/Taiwanese?  Because if so, it is using
-      the code reserved for Twi..)
+    - Chinese (.zh)
     [Need this clarified --jsl]
 
 
