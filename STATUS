@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/07/31 16:27:12 $]
+Last modified at [$Date: 2000/08/01 15:56:07 $]
 
 Release:
 
@@ -169,6 +169,364 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Ryan's patch:
         MsgID: <Pine.LNX.4.21.0007072059120.18877-100000@koj.rkbloom.net>
 	Status: Dirk +1, Ryan +1, Greg -1
+
+PRs that have been suspended forever waiting for someone to
+put them into 'the next release':
+
+    * PR#73: mod_log-any
+      reporting of referer in error_log
+
+    * PR#76: general
+      missing call to "setlocale();"
+
+    * PR#78: mod_include
+      Additional status for XBitHack directive
+
+    * PR#161: mod_dir
+      Questionable performace of mod_dir() with negotiation
+
+    * PR#362: mod_proxy
+      Mod_proxy doesn't allow change of error pages
+
+    * PR#370: mod_env
+      Modified PATH environemnt variable is not passed, instead
+      system's is used
+
+    * PR#440: mod_proxy
+      Proxy doesn't deliver documents if not connected
+
+    * PR#534: mod_proxy
+      proxy converts ~name to %7Ename when name starts with a dot (.)
+
+    * PR#537: mod_access
+      mod_access syntax allows hosts that should be restricted
+
+    * PR#557: mod_auth-any
+      ~UserHome directories are not honored in absolute pathname
+      requests (.htaccess)
+
+    * PR#573: mod_log-any
+      More LogFormat directives
+
+    * PR#612: mod_proxy
+      Proxy FTP Authentication Fails
+
+    * PR#623: mod_include
+      A smarter "Last Modified" value for SSI documents (see PR number 600)
+
+    * PR#628: config
+      Request of "Options SymLinksIfGroupMatch"
+
+    * PR#697: mod_include
+      A security tweak I've been using for a few years for SSI
+
+    * PR#700: mod_proxy
+      Proxy doesn't do links right for OpenVMS files through ftp:
+
+    * PR#759: mod_imap
+      imap should read <MAP><AREA>*</MAP> too!
+
+    * PR#793: general
+      RLimitCPU and RLimitMEM don't apply to all children like they should
+
+    * PR#921: suexec
+      Uses cwd before filling it in, doesn't use syslog
+
+    * PR#922: config
+      it is useful to allow specifiction that root-owned symlinks
+      should always be followed
+
+    * PR#980: mod_proxy
+      Controlling Access to Remote Proxies would be nice...
+
+    * PR#994: mod_proxy
+      Adding authentication "on the fly" through the proxy module
+
+    * PR#1004: apache-api
+      request_config field in request_rec is moderately bogus
+
+    * PR#1028: other
+      DoS attacks involving memory consumption
+
+    * PR#1050: mod_log-any
+      Logging of virtual server to error_log as well
+
+    * PR#1085: mod_proxy
+      ProxyRemote make a dead cycle.
+
+    * PR#1117: mod_auth-any
+      Using NIS passwd.byname dbm files with AuthDBMUserFile
+
+    * PR#1120: suexec
+      suexec does not parse arguments to #exec cmd
+
+    * PR#1145: mod_include
+      Allow for Last-Modified: without resorting to XBitHack
+
+    * PR#1156: config
+      insufficent AllowOverrides granularity for autoindexing
+
+    * PR#1158: apache-api
+      improvements to child spawning API
+
+    * PR#1166: mod_proxy
+      ``nph-'' not honored (no buffering) for ProxyRemote mapping
+
+    * PR#1176: mod_cgi
+      Apache cannot handle continuation line in headers
+
+    * PR#1191: general
+      setlogin() is not called, causing problems with e.g. identd
+
+    * PR#1204: general
+      regerror() exists, use it
+
+    * PR#1206: general
+      where possible use herror()
+
+    * PR#1233: apache-api
+      there is no way to keep per-connection per-module state
+
+    * PR#1263: mod_dir
+      Add frame-safe anchor attribute to mod_autoindex links
+
+    * PR#1268: suexec
+      CGI scripts running as Apache user: security (suexec etc.)
+
+    * PR#1285: suexec
+      Error messages could be easier to spot in cgi.log file for suexec.c
+
+    * PR#1287: mod_access
+      add allow,deny/deny,allow warning to mod_access
+
+    * PR#1290: mod_proxy
+      Need to know "hit-rate" on proxy cache
+
+    * PR#1358: mod_log-any
+      Selective url-encode of log fields (or maybe a pseudo
+      log_rewrite module?)
+
+    * PR#1383: mod_headers
+      I make mod_headers to modify request headers as well as
+      response ones.
+
+    * PR#1532: mod_proxy
+      Proxy transfer logging
+
+    * PR#1547: mod_proxy
+      No HTTP_X_FORWARDED_FOR set...
+
+    * PR#1567: mod_proxy
+      ProxyRemote proxy requests fail authentication by firewall
+
+    * PR#1574: mod_autoindex
+      ReadmeName and HeaderName don't allow for server-parsed html.
+
+    * PR#1582: mod_rewrite
+      mod_rewrite forms REQUEST_URI different than mod_cgi does
+
+    * PR#1677: mod_headers
+      mod_headers should allow mod_log_config-style formats in
+      header values
+
+    * PR#1702: mod_proxy
+      mod_proxy to support persistent conns?
+
+    * PR#1803: mod_include
+      patches to mod_include to allow for file tests
+
+    * PR#1809: mod_auth-any
+      Suggestion for improving authentication modules and core source
+      code, problem with 401 and ErrorDocument
+
+    * PR#1855: mod_autoindex
+      More Control over autoindex layout
+
+    * PR#1878: mod_proxy
+      listing of proxy cache content
+
+    * PR#1905: suexec
+      Allow modules to set user:group for execution.
+
+    * PR#2024: apache-api
+      adding auth_why to conn_rec
+
+    * PR#2073: mod_log-any
+      pipelined connections are not logged correctly
+
+    * PR#2074: mod_rewrite
+      mod_rewrite doesn't pass Proxy Throughput on internal subrequests
+
+    * PR#2113: config
+      HTTP Server Rebuild Line Needs Changing for the better
+
+    * PR#2138: mod_status
+      mod_status always displays 256 possible connection slots
+
+    * PR#2144: general
+      apache always detaches for normal operation
+
+    * PR#2221: documentation
+      Make online documentation search link back to my installation
+
+    * PR#2284: general
+      Can not POST to ErrorDocument - Apache/1.3b6
+
+    * PR#2314: mod_proxy
+      patterns in ProxyRemote
+
+    * PR#2343: mod_status
+      Status module averages are for entire uptime
+
+    * PR#2360: suexec
+      suexec for general access of user content?
+
+    * PR#2396: general
+      Proposal for TimeZone directive
+
+    * PR#2415: mod_info
+      /server-info doesn't check for the virtual host to list the info
+
+    * PR#2421: config
+      problem specifying ndbm library for build ?with autoconfigure
+
+    * PR#2431: general
+      A small addition to rotatelogs.c to improve program functionality.
+
+    * PR#2446: config
+      AllowOverride FileInfo is too coarse
+
+    * PR#2460: mod_cgi
+      TimeOut applies to output of CGI scripts
+
+    * PR#2512: mod_access
+      &lt;IfDenied&gt; directive wanted
+
+    * PR#2573: suexec
+      CGI's for general use still have to be run as another user
+      with suExec
+
+    * PR#2648: general
+      Cache file names in Proxy module
+
+    * PR#2760: config
+      [PATCH] User/Group for <Directory> and <Location> i.e. not only
+      in global and <Virtual>.
+
+    * PR#2763: general
+      mailto tags and bundling bug report script
+
+    * PR#2772: mod_log-any
+      more % escapes
+
+    * PR#2785: os-aix
+      Support for System Resource Controller
+
+    * PR#2793: protocol
+      When will Apache support P3P? Any Plans?
+
+    * PR#2818: general
+      Parent process should remain attached to the terminal for high
+      availibility system's software check
+
+    * PR#2873: config
+      Feedback/Comment on APACI
+
+    * PR#2889: general
+      Inclusion of RPM spec file in CVS/distributions
+
+    * PR#2906: general
+      Propose that Apache recommend $UNIQUE_ID for all "session id"
+      algorithms
+
+    * PR#2907: config
+      suggestion: power up your Include directive :)
+
+    * PR#3018: general
+      cannot limit some HTTP methods
+
+    * PR#3026: mod_autoindex
+      No way to change ReadmeName/HeaderName suffixes.
+
+    * PR#3143: apache-api
+      No module specific data hook for per-connection data
+
+    * PR#3181: config
+      Configuration file in Japanese
+
+    * PR#3191: mod_negotiation
+      no way to set global quality-of-source (qs) coneg values
+      with multiviews
+
+    * PR#3430: mod_negotiation
+      Enhancement: MultiViews, Multi-Language Documents
+
+    * PR#3568: mod_proxy
+      Accessing URL through proxy server corrupts data.
+
+    * PR#3594: os-windows
+      Please add an Apache icon to the systray instead of a DOS window
+
+    * PR#3605: mod_proxy
+      Some anonymous FTP URLs ask for authentication
+
+    * PR#3654: mod_autoindex
+      BORDER=0 makes Icons look nicer (FancyIndexing)
+
+    * PR#3677: general
+      New ErrorDocumentMatch directive
+
+    * PR#3854: apache-api
+      apache lacks hook for output stream "filter" modules in api
+
+    * PR#4180: os-windows
+      Alternative for win95 users
+
+    * PR#4241: config
+      Need to be able to override shebang line to make CGI scripts
+      more portable.
+
+    * PR#4244: config
+      "Files" and "FilesMatch" regexp does not recognize bang as
+      negation operator
+
+    * PR#4448: mod_log-any
+      Please allow CGI env variables (QUERY_STRING, ...) to be logged
+      with %{}e
+
+    * PR#4455: config
+      apache provides no way to do a wildcard/global NameVirtualHost
+
+    * PR#4459: mod_include
+      Suggestion for better handling of Last-modified headers
+
+    * PR#4490: mod_cgi
+      mod_cgi prevents handling of OPTIONS requests
+
+    * PR#4520: mod_autoindex
+      mod_autoindex does not generate Last-Modified response headers
+
+    * PR#4658: os-windows
+      The output of CGI scripts appears in the window that apache
+      is running in
+
+    * PR#4816: general
+      SSI in CGI
+
+    * PR#5079: config
+      Apache header files should have a private name, e.g.
+      #include "apache/httpd.h"
+
+    * PR#5713: os-windows
+      [PATCH] install as service with domain account
+
+    * PR#5993: general
+      AllowOverride should have a 'CheckNone' and 'AllowNone' argument
+      instead of only 'None'
+
+    * PR#6347: mod_mime
+      MIME types for MNG and JNG files need adding to mime.types and
+      the mime.types and magic files
 
 Other bugs that need fixing:
 
