@@ -14,12 +14,12 @@
     multi-process multi-threaded server.  By using threads to serve
     requests, it is able to serve a large number of requests with
     less system resources than a process-based server.  Yet it
-    retains much of the stability of a process-based server by 
+    retains much of the stability of a process-based server by
     keeping multiple processes available, each with many threads.</p>
 
     <p>The most important directives used to control this MPM are
     <directive module="mpm_common">ThreadsPerChild</directive>, which
-    controls the number of threads deployed by each child process and
+    controls the number of threads deployed by each child process, and
     <directive module="mpm_common">MaxClients</directive>, which
     controls the maximum total number of threads that may be
     launched.</p>
@@ -75,9 +75,9 @@ uses</a></seealso>
       ServerLimit         16
     </example>
 
-    <p>While the parent process is usually started as root under Unix
-    in order to bind to port 80, the child processes and threads are
-    launched by Apache as a less-privileged user. The <directive
+    <p>While the parent process is usually started as <code>root</code>
+    under Unix in order to bind to port 80, the child processes and threads
+    are launched by Apache as a less-privileged user. The <directive
     module="mpm_common">User</directive> and <directive
     module="mpm_common">Group</directive> directives are used to set
     the privileges of the Apache child processes. The child processes
@@ -91,7 +91,7 @@ uses</a></seealso>
     controls how frequently the server recycles processes by killing
     old ones and launching new ones.</p>
 </section>
- 
+
 <directivesynopsis location="mpm_common"><name>AcceptMutex</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
