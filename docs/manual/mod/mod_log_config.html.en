@@ -60,8 +60,8 @@
 <h2><a name="formats" id="formats">Custom Log Formats</a></h2>
 
     <p>The format argument to the <code class="directive"><a href="#logformat">LogFormat</a></code> and <code class="directive"><a href="#customlog">CustomLog</a></code> directives is a string. This string is
-    logged to the log file for each request. It can contain literal
-    characters copied into the log files and the c-type control
+    used to log each request to the log file. It can contain literal
+    characters copied into the log files and the C-style control
     characters "\n" and "\t" to represent new-lines and tabs.
     Literal quotes and back-slashes should be escaped with
     back-slashes.</p>
@@ -178,20 +178,20 @@
     "%!200,304,302{Referer}i" logs <code>Referer:</code> on all requests
     which did <em>not</em> return some sort of normal status.</p>
 
-    <p>Note that in versions previous to 2.0.46 no escaping has been performed
+    <p>Note that in httpd 2.0 versions prior to 2.0.46, no escaping was performed
     on the strings from <code>%...r</code>, <code>%...i</code> and
     <code>%...o</code>. This was mainly to comply with the requirements of
     the Common Log Format. This implied that clients could insert control
     characters into the log, so you had to be quite careful when dealing
     with raw log files.</p>
 
-    <p>For security reasons starting with 2.0.46 non-printable and
+    <p>For security reasons, starting with 2.0.46, non-printable and
     other special characters are escaped mostly by using
     <code>\x<var>hh</var></code> sequences, where <var>hh</var> stands for
     the hexadecimal representation of the raw byte. Exceptions from this
     rule are <code>"</code> and <code>\</code> which are escaped by prepending
-    a backslash, and all whitespace characters that are written in their
-    C-notation (<code>\n</code>, <code>\t</code> etc).</p>
+    a backslash, and all whitespace characters which are written in their
+    C-style notation (<code>\n</code>, <code>\t</code> etc).</p>
 
     <p>Some commonly used log format strings are:</p>
 
@@ -261,7 +261,7 @@
     characteristics using environment variables.</p>
 
     <p>The first argument, which specifies the location to which
-    the logs will be written, can take on one of the following two
+    the logs will be written, can take one of the following two
     types of values:</p>
 
     <dl>
@@ -274,7 +274,7 @@
       input.
 
       <div class="warning"><h3>Security:</h3>
-      <p>If a program is used, then it will be run under the user who
+      <p>If a program is used, then it will be run as the user who
       started httpd. This will be root if the server was started by root;
       be sure that the program is secure.</p>
       </div>
@@ -304,8 +304,8 @@
       CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
     </code></p></div>
 
-    <p>The third argument is optional and allows the decision on
-    whether or not to log a particular request to be based on the
+    <p>The third argument is optional and controls whether or
+    not to log a particular request based on the
     presence or absence of a particular variable in the server
     environment. If the specified <a href="../env.html">environment
     variable</a> is set for the request (or is not set, in the case
@@ -345,7 +345,7 @@
     this directive sets the log format which will be used by logs
     specified in subsequent <code class="directive">TransferLog</code>
     directives. The single argument can specify an explicit
-    <var>format</var> as discussed in <a href="#formats">custom log
+    <var>format</var> as discussed in the <a href="#formats">custom log
     formats</a> section above. Alternatively, it can use a
     <var>nickname</var> to refer to a log format defined in a
     previous <code class="directive">LogFormat</code> directive as described
@@ -363,7 +363,7 @@
     it the default. Therefore, it will not affect subsequent
     <code class="directive"><a href="#transferlog">TransferLog</a></code> directives.
     In addition, <code class="directive">LogFormat</code> cannot use one nickname
-    to define another nickname. Note, that the nickname should not contain
+    to define another nickname. Note that the nickname should not contain
     percent signs (<code>%</code>).</p>
 
     <div class="example"><h3>Example</h3><p><code>
@@ -386,7 +386,7 @@
     to be specified explicitly or for conditional logging of requests.
     Instead, the log format is determined by the most recently specified
     <code class="directive"><a href="#logformat">LogFormat</a></code> directive
-    (which does not define a nickname). Common Log Format is used if no
+    which does not define a nickname. Common Log Format is used if no
     other format has been specified.</p>
 
     <div class="example"><h3>Example</h3><p><code>
