@@ -143,8 +143,8 @@ SOURCE=.\config.hw
 InputPath=.\config.hw
 
 ".\config.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	echo Creating pcre config.h from config.hw 
-	copy .\config.hw .\config.h 
+	copy .\config.hw .\config.h >nul 
+	echo Created pcre config.h from config.hw 
 	
 # End Custom Build
 
@@ -154,8 +154,8 @@ InputPath=.\config.hw
 InputPath=.\config.hw
 
 ".\config.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	echo Creating pcre config.h from config.hw 
-	copy .\config.hw .\config.h 
+	copy .\config.hw .\config.h >nul 
+	echo Created pcre config.h from config.hw 
 	
 # End Custom Build
 
@@ -176,8 +176,8 @@ SOURCE=.\pcre.hw
 InputPath=.\pcre.hw
 
 ".\pcre.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	echo Creating pcre.h from pcre.hw 
-	copy .\pcre.hw .\pcre.h 
+	copy .\pcre.hw .\pcre.h >nul 
+	echo Created pcre.h from pcre.hw 
 	
 # End Custom Build
 
@@ -187,8 +187,8 @@ InputPath=.\pcre.hw
 InputPath=.\pcre.hw
 
 ".\pcre.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	echo Creating pcre.h from pcre.hw 
-	copy .\pcre.hw .\pcre.h 
+	copy .\pcre.hw .\pcre.h >nul 
+	echo Created pcre.h from pcre.hw 
 	
 # End Custom Build
 
