@@ -1,6 +1,6 @@
 APACHE 2.x ROADMAP:
 
-Last modified at [$Date: 2002/09/28 17:33:31 $]
+Last modified at [$Date: 2002/10/01 13:28:31 $]
 
 DEFERRRED FOR APACHE 2.1
 
@@ -25,6 +25,7 @@ DEFERRRED FOR APACHE 2.1
           branch the next tree.  Really sort of straightforward, if you
           dislike a bit within that doc, bring it up on the dev@httpd
           list prior to the next branch.
+
 
 WORKS IN PROGRESS (PERHAPS DEFERRED FOR 2.1 or 3.0)
 
@@ -71,3 +72,87 @@ WORKS IN PROGRESS (PERHAPS DEFERRED FOR 2.1 or 3.0)
       of reallocation we do today, in terms of string manipulation.
 
         OtherBill asks if this is really an APR issue, not an HTTPD issue?
+
+
+MAKING APACHE REPOSITORY-AGNOSTIC
+(or: remove knowledge of the filesystem)
+
+[ 2002/10/01: discussion in progress on items below; this isn't
+  planned yet ]
+
+    * dav_resource concept for an HTTP resource ("ap_resource")
+
+    * r->filename, r->canonical_filename, r->finfo need to
+      disappear. All users need to use new APIs on the ap_resource
+      object.
+      
+      (backwards compat: today, when this occurs with mod_dav and a
+       custom backend, the above items refer to the topmost directory
+       mapped by a location; e.g. docroot)
+    
+    * The translate_name hook goes away
+    
+    * The doc for map_to_storage is totally opaque to me. It has
+      something to do with filesystems, but it also talks about
+      security and per_dir_config and other stuff. I presume something
+      needs to happen there -- at least better doc.
+
+    * The directory_walk concept disappears. All configuration is
+      tagged to Locations. The "mod_filesystem" module might have some
+      internal concept of the same config appearing in multiple
+      places, but that is handled internally rather than by Apache
+      core.
+    
+    * The "Location tree" is an in-memory representation of the URL
+      namespace. Nodes of the tree have configuration specific to that
+      location in the namespace.
+      
+      Something like:
+      
+      typedef struct {
+          const char *name;  /* name of this node relative to parent */
+
+	  struct ap_conf_vector_t *locn_config;
+	  
+	  apr_hash_t *children; /* NULL if no child configs */
+      } ap_locn_node;
+
+      The following config:
+      
+      <Location /server-status>
+          SetHandler server-status
+	  Order deny,allow
+	  Deny from allo
+	  Allow from 127.0.0.1
+      </Location>
+      
+      Creates a node with name=="server_status", and the node is a
+      child of the "/" node. (hmm. node->name is redundant with the
+      hash key; maybe drop node->name)
+      
+      In the config vector, mod_access has stored its Order, Deny, and
+      Allow configs. mod_core has stored the SetHandler.
+      
+      During the Location walk, we merge the config vectors normally.
+      
+      Note that an Alias simply associates a filesystem path (in
+      mod_filesystem) with that Location in the tree. Merging
+      continues with child locations, but a merge is never done
+      through filesystem locations. Config on a specific subdir needs
+      to be mapped back into the corresponding point in the Location
+      tree for proper merging.
+
+    * Config is parsed into a tree, as we did for the 2.0 timeframe,
+      but that tree is just a representation of the config (for
+      multiple runs and for in-memory manipulation and usage). It is
+      unrelated to the "Location tree".
+
+    * Calls to apr_file_io functions generally need to be replaced
+      with operations against the ap_resource. For example, rather
+      than calling apr_dir_open/read/close(), a caller uses
+      resource->repos->get_children() or somesuch.
+
+      Note that things like mod_dir, mod_autoindex, and mod_negotation
+      need to be converted to use these mechanisms so that their
+      functions will work on logical repositories rather than just
+      filesystems.
