@@ -162,7 +162,7 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
 
     if (RAND_status() == 0)
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
-                     "%sPRNG still contains not sufficient entropy!", prefix);
+                     "%sPRNG still contains insufficient entropy!", prefix);
 
     return nDone;
 }
