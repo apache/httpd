@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/11/30 00:10:23 $]
+Last modified at [$Date: 1999/11/30 00:52:30 $]
 
 Release:
 
@@ -125,7 +125,9 @@ Other features that need writing:
     * Work on other MPMs. Possible MPMs discussed or in progress include:
 
       - Dean Gaudet's async MPM
-          Status: ?
+          Status: dean is unlikely to begin work on this any time soon...
+	    has lots of ideas he'll share with folks willing to begin
+	    tackling the issues.  this is apache 2.1 material.
 
       - Zach Brown's <zab@zabbo.net> Linux siginfo MPM
           Status: ?
