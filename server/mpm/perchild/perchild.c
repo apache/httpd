@@ -135,7 +135,7 @@ typedef struct socket_info_t socket_info_t;
  * process.
  */
 static child_info_t child_info_table[HARD_SERVER_LIMIT];
-static ap_hash_t    *socket_info_table;
+static ap_hash_t    *socket_info_table = NULL;
 
 
 struct ap_ctable    ap_child_table[HARD_SERVER_LIMIT];
@@ -1326,7 +1326,6 @@ static void perchild_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
     lock_fname = DEFAULT_LOCKFILE;
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_perchild_set_maintain_connection_status(1);
-    socket_info_table = ap_make_hash(p);
 
     ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 
@@ -1342,13 +1341,21 @@ static int perchild_post_read(request_rec *r)
     char *process_num;
     int num;
 
+fprintf(stderr, "In perchild_post_read\n");
     process_num = ap_hash_get(socket_info_table, hostname, 0);
-    num = atoi(process_num);
+    if (process_num) {
+        num = atoi(process_num);
+    }
+    else {
+        num = -1;
+    }
 
     if (num != child_num) {
         /* package the request and send it to another child */
+fprintf(stderr, "leaving DECLINED\n");
         return DECLINED;
     }
+fprintf(stderr, "leaving OK\n");
     return OK;
 }
 
@@ -1584,8 +1591,18 @@ static const char *set_socket_name(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
     
+static ap_status_t cleanup_hash(void *dptr)
+{
+    socket_info_table = NULL;
+    return APR_SUCCESS;
+}
+
 static const char *assign_childprocess(cmd_parms *cmd, void *dummy, const char *p)
 {
+    if (socket_info_table == NULL) {
+        socket_info_table = ap_make_hash(cmd->pool);
+        ap_register_cleanup(cmd->pool, socket_info_table, cleanup_hash, NULL);
+    }
     ap_hash_set(socket_info_table, cmd->server->server_hostname, 0, p);
     return NULL;
 }
