@@ -129,6 +129,24 @@ Package=<4>
 
 ###############################################################################
 
+Project: "abs"=".\support\abs.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name apr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name aprutil
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "apr"=".\srclib\apr\apr.dsp" - Package Owner=<4>
 
 Package=<5>
