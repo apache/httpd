@@ -1200,6 +1200,8 @@ request_rec *ap_read_request(conn_rec *conn)
     r->status          = HTTP_REQUEST_TIME_OUT;  /* Until we get a request */
     r->the_request     = NULL;
 
+    ap_add_filter("CORE", NULL, r);
+
 #ifdef APACHE_XLATE
     r->rrx = apr_pcalloc(p, sizeof(struct ap_rr_xlate));
     ap_set_content_xlate(r, 0, ap_locale_from_ascii);
