@@ -412,7 +412,7 @@ static int proxy_handler(request_rec *r)
 	return ap_proxy_http_handler(r, url, NULL, 0);
 #if FTP
     if (strcasecmp(scheme, "ftp") == 0)
-	return ap_proxy_ftp_handler(r, NULL, url);
+	return ap_proxy_ftp_handler(r, url);
 #endif
     else {
         ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,

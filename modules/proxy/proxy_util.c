@@ -74,6 +74,7 @@ static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_word(struct dirconn_entry *This, request_rec *r);
 static struct per_thread_data *get_per_thread_data(void);
+
 /* already called in the knowledge that the characters are hex digits */
 int ap_proxy_hex2c(const char *x)
 {
@@ -463,35 +464,6 @@ apr_table_t *ap_proxy_read_headers(request_rec *r, request_rec *rr, char *buffer
 	}
     }
     return headers_out;
-}
-
-/*
- * Sends response line and headers.  Uses the client fd and the 
- * headers_out array from the passed request_rec to talk to the client
- * and to properly set the headers it sends for things such as logging.
- * 
- * A timeout should be set before calling this routine.
- */
-void ap_proxy_send_headers(request_rec *r, const char *respline, apr_table_t *t)
-{
-	int i;
-	apr_socket_t *fp = r->connection->client_socket;
-	apr_table_entry_t *elts = (apr_table_entry_t *) apr_table_elts(t)->elts;
-
-	char *temp = apr_pstrcat(r->pool, respline, CRLF, NULL);
-	apr_size_t len = strlen(temp);
-	apr_send(fp, temp, &len);
-
-	for (i = 0; i < apr_table_elts(t)->nelts; ++i) {
-            if (elts[i].key != NULL) {
-                temp = apr_pstrcat(r->pool, elts[i].key, ": ", elts[i].val, CRLF, NULL);
-                apr_send(fp, temp, &len);
-                apr_table_addn(r->headers_out, elts[i].key, elts[i].val);
-            }
-	}
-
-        len = 2;
-	apr_send(fp, CRLF, &len);
 }
 
 
@@ -1109,34 +1081,15 @@ int ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf,
     return OK;
 }
 
-apr_status_t ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t port, request_rec *r)
+/* set up the minimal filter set */
+int ap_proxy_pre_http_connection(conn_rec *c)
 {
-    apr_status_t rv;
-    apr_sockaddr_t *destsa;
-
-    rv = apr_sockaddr_info_get(&destsa, host, AF_INET, port, 0, r->pool);
-    if (rv == APR_SUCCESS) {
-        rv = apr_connect(sock, destsa);
-    }
-    else if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-            "proxy connect to %s port %d failed", host, port);
-    }
-    return rv;
+    ap_add_input_filter("HTTP_IN", NULL, NULL, c);
+    ap_add_input_filter("CORE_IN", NULL, NULL, c);
+    ap_add_output_filter("CORE", NULL, NULL, c);
+    return OK;
 }
 
-/* This function is called by apr_table_do() for all header lines */
-/* (from proxy_http.c and proxy_ftp.c) */
-/* It is passed a table_do_args struct pointer and a MIME field and value pair */
-int ap_proxy_send_hdr_line(void *p, const char *key, const char *value)
-{
-    struct request_rec *r = (struct request_rec *)p;
-    if (key == NULL || value == NULL || value[0] == '\0')
-        return 1;
-    if (!r->assbackwards)
-        ap_rvputs(r, key, ": ", value, CRLF, NULL);
-    return 1; /* tell apr_table_do() to continue calling us for more headers */
-}
 
 #if defined WIN32
 
