@@ -104,6 +104,7 @@ typedef struct {
     ssl_expr_node_op node_op;
     void *node_arg1;
     void *node_arg2;
+    apr_pool_t *p;
 } ssl_expr_node;
 
 typedef ssl_expr_node ssl_expr;
