@@ -1244,9 +1244,10 @@ static const char *add_module_command (cmd_parms *cmd, void *dummy, char *arg)
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
-    if (ap_add_named_module (arg))
-        return NULL;
-    return "required module not found";
+    if (!ap_add_named_module(arg))
+	return ap_pstrcat(cmd->pool, "Cannot add module via name '", arg, 
+			  "': not in list of loaded modules", NULL);
+    return NULL;
 }
 
 static const char *clear_module_list_command (cmd_parms *cmd, void *dummy)
