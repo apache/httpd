@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
+<!-- English Revision: 1.1 -->
+
+<indexpage>
+<relativepath href="."/>
+<parentdocument href="http://httpd.apache.org/docs-project/" />
+
+<title>Dokumentation zum Apache HTTP Server Version 2.1</title>
+
+<category id="release"><title>Hinweise zur Version</title>
+    <page href="new_features_2_0.html">Neue Funktionen in Version 2.0</page>
+    <page href="upgrading.html">Upgrade auf Version 2.0</page>
+    <page href="LICENSE">Apache-Lizenz</page>
+</category>
+
+<category id="manual"><title>Bedienungsanleitung</title>
+    <page href="install.html">Kompilieren und Installieren</page>
+    <page href="invoking.html">Starten</page>
+    <page href="stopping.html">Stoppen und Neustarten</page>
+    <page href="mod/directives.html">Konfigurationsanweisungen</page>
+    <page href="mod/quickreference.html">Kurzreferenz der Direktiven</page>
+    <page href="mod/">Module</page>
+    <page href="mpm.html">Multi-Processing-Module (MPMs)</page>
+    <page href="filter.html">Filter</page>
+    <page href="handler.html">Handler</page>
+    <page href="programs/">Server und Hilfsprogramme</page>
+    <page href="glossary.html">Glossar</page>
+</category>    
+
+<category id="usersguide"><title>Benutzerhandbuch</title>
+    <page href="bind.html">Bindung</page>
+    <page href="configuring.html">Konfigurationsdateien</page>
+    <page href="sections.html">Konfigurationsabschnitte</page>
+    <page href="content-negotiation.html">Content Negotiation</page>
+    <page href="dso.html">Dynamic Shared Objects (DSO)</page>
+    <page href="env.html">Umgebungsvariablen</page>
+    <page href="logs.html">Log-Dateien</page>
+    <page href="urlmapping.html">URLs auf das Dateisystem abbilden</page>
+    <page href="misc/perf-tuning.html">Performance-Hinweise</page>
+    <page href="misc/security_tips.html">Tipps zur Sicherheit</page>
+    <page href="server-wide.html">Serverweite Konfiguration</page>
+    <page href="ssl/">SSL/TLS-Verschl&uuml;sselung</page>
+    <page href="suexec.html">Suexec f&uuml;r CGI</page>
+    <page href="misc/rewriteguide.html">Einf&uuml;hrung in die
+    URL-Manipulation</page>
+    <page href="vhosts/">Virtual-Hosts</page>
+</category>
+
+<category id="howto"><title>Praxis / Anleitungen</title>
+    <page href="howto/auth.html">Authentisierung, Autorisierung und
+    Zugriffskontrolle</page>
+    <page href="howto/cgi.html">CGI: Dynamische Inhalte</page>
+    <page href="howto/htaccess.html">.htaccess-Dateien</page>
+    <page href="howto/ssi.html">Server Side Includes (SSI)</page>
+    <page href="howto/public_html.html">Web-Verzeichnisse f&uuml;r Benutzer
+    (public_html)</page>
+</category>
+
+<category id="platform"><title>Plattform-spezifische Anmerkungen</title>
+    <page href="platform/windows.html">Microsoft Windows</page>
+    <page href="platform/netware.html">Novell NetWare</page>
+    <page href="platform/ebcdic.html">EBCDIC-Portierung</page>
+</category>
+
+<category id="other"><title>Weitere Themen</title>
+    <page href="faq/">H&auml;ufig gestellte Fragen (FAQ)</page>
+    <page href="sitemap.html">Seitenindex</page>
+    <page href="developer/">Dokumentation f&uuml;r Entwickler</page>
+    <page href="misc/">Sonstiges</page>
+</category>
+
+</indexpage>
+
