@@ -56,11 +56,22 @@
 
 include $(top_builddir)/config_vars.mk
 
+# Combine all of the flags together in the proper order so that
+# the user-defined flags can always override the configure ones, if needed.
+# Note that includes are listed after the flags because -I options have
+# left-to-right precedence and CPPFLAGS may include user-defined overrides.
+#
+ALL_CPPFLAGS = $(DEFS) $(EXTRA_CPPFLAGS) $(NOTEST_CPPFLAGS) $(CPPFLAGS)
+ALL_CFLAGS   = $(EXTRA_CFLAGS) $(NOTEST_CFLAGS) $(CFLAGS)
+ALL_CXXFLAGS = $(EXTRA_CXXFLAGS) $(NOTEST_CXXFLAGS) $(CXXFLAGS)
+ALL_LDFLAGS  = $(EXTRA_LDFLAGS) $(NOTEST_LDFLAGS) $(LDFLAGS)
+ALL_LIBS     = $(EXTRA_LIBS) $(NOTEST_LIBS) $(LIBS)
+ALL_INCLUDES = $(INCLUDES) $(EXTRA_INCLUDES)
+
 # Compile commands
 
-COMMON_FLAGS = $(DEFS) $(INCLUDES) $(EXTRA_INCLUDES) $(EXTRA_CPPFLAGS) $(CPPFLAGS)
-COMPILE      = $(CC)  $(COMMON_FLAGS) $(EXTRA_CFLAGS) $(CFLAGS) $(NOTEST_CFLAGS)
-CXX_COMPILE  = $(CXX) $(COMMON_FLAGS) $(EXTRA_CXXFLAGS) $(CXXFLAGS)
+COMPILE      = $(CC)  $(ALL_CPPFLAGS) $(ALL_CFLAGS) $(ALL_INCLUDES)
+CXX_COMPILE  = $(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) $(ALL_INCLUDES)
 
 SH_COMPILE     = $(SH_LIBTOOL) --mode=compile $(COMPILE) -c $< && touch $@
 SH_CXX_COMPILE = $(SH_LIBTOOL) --mode=compile $(CXX_COMPILE) -c $< && touch $@
@@ -70,9 +81,9 @@ LT_CXX_COMPILE = $(LIBTOOL) --mode=compile $(CXX_COMPILE) -c $< && touch $@
 
 # Link-related commands
 
-LINK     = $(LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(LDFLAGS) $(NOTEST_LDFLAGS) -o $@
-SH_LINK  = $(SH_LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(LDFLAGS) $(EXTRA_LDFLAGS) $(NOTEST_LDFLAGS) $(SH_LDFLAGS) $(CORE_IMPLIB) -o $@
-MOD_LINK = $(LIBTOOL) --mode=link $(COMPILE) -module $(LTFLAGS) $(LDFLAGS) $(NOTEST_LDFLAGS) -o $@
+LINK     = $(LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(ALL_LDFLAGS) -o $@
+SH_LINK  = $(SH_LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(ALL_LDFLAGS) $(SH_LDFLAGS) $(CORE_IMPLIB) -o $@
+MOD_LINK = $(LIBTOOL) --mode=link $(COMPILE) -module $(LTFLAGS) $(ALL_LDFLAGS) -o $@
 
 # Cross compile commands
 
@@ -82,8 +93,6 @@ MKINSTALLDIRS = $(abs_srcdir)/build/mkdir.sh
 INSTALL = $(abs_srcdir)/build/install.sh -c
 INSTALL_DATA = $(INSTALL) -m 644
 INSTALL_PROGRAM = $(INSTALL) -m 755
-
-DEFS = -I. -I$(srcdir) -I$(top_srcdir)/server/mpm/$(MPM_NAME) -I$(top_srcdir)/modules/http
 
 # Suffixes
 
@@ -214,9 +223,9 @@ distclean-p depend-p clean-p:
 
 depend: depend-recursive
 	if test "`echo $(srcdir)/*.c`" != "$(srcdir)'/*.c'"; then \
-	    gcc -MM $(COMMON_FLAGS) $(srcdir)/*.c | sed 's/\.o:/.lo:/' > $(builddir)/.deps || true;           \
+	    gcc -MM $(ALL_CPPFLAGS) $(ALL_INCLUDES) $(srcdir)/*.c | sed 's/\.o:/.lo:/' > $(builddir)/.deps || true;           \
 	fi
-#	    test "`echo *.c`" = '*.c' || perl $(top_srcdir)/build/mkdep.perl $(CPP) $(INCLUDES) $(EXTRA_INCLUDES) *.c > .deps
+#	    test "`echo *.c`" = '*.c' || perl $(top_srcdir)/build/mkdep.perl $(CPP) $(ALL_CPPFLAGS) $(ALL_INCLUDES) *.c > .deps
 
 clean: clean-recursive clean-x
 

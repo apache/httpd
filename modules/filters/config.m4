@@ -6,6 +6,6 @@ APACHE_MODPATH_INIT(filters)
 
 APACHE_MODULE(include, Server Side Includes, , , yes)
 
-LTFLAGS="$LTFLAGS -export-dynamic"
+APR_ADDTO(LTFLAGS,-export-dynamic)
 
 APACHE_MODPATH_FINISH

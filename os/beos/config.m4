@@ -1,3 +1,3 @@
 if test "$OS" = "beos" ; then
-    CFLAGS="$CFLAGS -DBEOS"
+    APR_ADDTO(CFLAGS,-DBEOS)
 fi

@@ -14,7 +14,7 @@ APACHE_MODULE(userdir, mapping of user requests, , , yes)
 APACHE_MODULE(alias, translation of requests, , , yes)
 
 APACHE_MODULE(rewrite, regex URL translation, , , most, [
-  EXTRA_CFLAGS="$EXTRA_CFLAGS -DNO_DBM_REWRITEMAP"
+  APR_ADDTO(CFLAGS,-DNO_DBM_REWRITEMAP)
 ])
 
 dnl ### this isn't going to work quite right because of ordering issues

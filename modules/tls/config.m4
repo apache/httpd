@@ -8,26 +8,26 @@ APACHE_MODULE(tls, TLS/SSL support, $tls_objs, , no, [
   [
       searchfile="$withval/inc/ssl.h"
       if test -f $searchfile ; then
-          INCLUDES="$INCLUDES -I$withval/inc"
-          LIBS="$LIBS -L$withval -lsslc"
+          APR_ADDTO(INCLUDES, [-I$withval/inc])
+          APR_ADDTO(LIBS, [-L$withval -lsslc])
           ssl_lib="SSLC"
       else
           searchfile="$withval/ssl/ssl.h"
           if test -f $searchfile ; then
-              INCLUDES="$INCLUDES -I$withval/include"
-              LIBS="$LIBS -L$withval -lssl -lcrypto"
+              APR_ADDTO(INCLUDES, [-I$withval/include])
+              APR_ADDTO(LIBS, [-L$withval -lssl -lcrypto])
               ssl_lib="OpenSSL"
           else
               searchfile="$withval/openssl/ssl.h"
               if test -f $searchfile ; then
-                  INCLUDES="$INCLUDES -I$withval/openssl"
-                  LIBS="$LIBS -L$withval -lssl -lcrypto"
+                  APR_ADDTO(INCLUDES, [-I$withval/openssl])
+                  APR_ADDTO(LIBS, [-L$withval -lssl -lcrypto])
                   ssl_lib="OpenSSL"
               else
                   searchfile="$withval/include/openssl/ssl.h"
                   if test -f $searchfile ; then
-                      INCLUDES="$INCLUDES -I$withval/include"
-                      LIBS="$LIBS -L$withval/lib -lssl -lcrypto"
+                      APR_ADDTO(INCLUDES, [-I$withval/include])
+                      APR_ADDTO(LIBS, [-L$withval/lib -lssl -lcrypto])
                       ssl_lib="OpenSSL"
                   else
                       AC_MSG_ERROR(no - Unable to locate $withval/inc/ssl.h)

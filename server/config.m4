@@ -1,14 +1,8 @@
 dnl ## Check for libraries
 
-AC_CHECK_LIB(nsl, gethostname, [
- AC_ADD_LIBRARY(nsl) ], [])
-
-AC_CHECK_LIB(socket, socket, [
- AC_ADD_LIBRARY(socket) ], [])
-
-AC_CHECK_LIB(nsl, gethostbyaddr, [
- AC_ADD_LIBRARY(nsl) ], [])
-
+AC_CHECK_LIB(nsl, gethostname, APR_ADDTO(LIBS,-lnsl))
+AC_CHECK_LIB(socket, socket, APR_ADDTO(LIBS,-lsocket))
+AC_CHECK_LIB(nsl, gethostbyaddr, APR_ADDTO(LIBS,-lnsl))
 
 dnl ## Check for header files
 

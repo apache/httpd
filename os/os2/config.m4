@@ -1,3 +1,3 @@
 if test "$OS" = "os2" ; then
-  CFLAGS="$CFLAGS -DOS2 -O2"
+  APR_ADDTO(CFLAGS, [-DOS2 -O2])
 fi

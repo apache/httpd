@@ -66,4 +66,4 @@ exports.lo: exports.c
 # Rule to make def file for OS/2 core dll
 ApacheCoreOS2.def: exports.c $(top_srcdir)/os/$(OS_DIR)/core_header.def
 	cat $(top_srcdir)/os/$(OS_DIR)/core_header.def > $@
-	$(CPP) $< $(COMMON_FLAGS) | grep "ap_hack_" | sed -e 's/^.*[)]\(.*\);$$/  "\1"/' >> $@
+	$(CPP) $< $(ALL_CPPFLAGS) $(ALL_INCLUDES) | grep "ap_hack_" | sed -e 's/^.*[)]\(.*\);$$/  "\1"/' >> $@
