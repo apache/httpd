@@ -1872,31 +1872,6 @@ static void sock_disable_nagle (int s)
 #endif
 
 
-static void sock_bind (int s, const struct sockaddr_in *server)
-{
-#ifdef MPE
-/* MPE requires CAP=PM and GETPRIVMODE to bind to ports less than 1024 */
-    if (ntohs(server->sin_port) < 1024) GETPRIVMODE();
-#endif
-    if(bind(s, (struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1)
-    {
-        perror("bind");
-#ifdef MPE
-        if (ntohs(server->sin_port) < 1024) GETUSERMODE();
-#endif
-	if (server->sin_addr.s_addr != htonl(INADDR_ANY))
-	    fprintf(stderr,"httpd: could not bind to address %s port %d\n",
-		    inet_ntoa(server->sin_addr), ntohs(server->sin_port));
-	else
-	    fprintf(stderr,"httpd: could not bind to port %d\n",
-		    ntohs(server->sin_port));
-        exit(1);
-    }
-#ifdef MPE
-    if (ntohs(server->sin_port) < 1024) GETUSERMODE();
-#endif
-}
-
 static int make_sock(pool *p, const struct sockaddr_in *server)
 {
     int s;
@@ -1911,15 +1886,22 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
         exit(1);
     }
 
-#ifdef SOLARIS2
-    sock_bind (s, server);
+    /* Solaris (probably versions 2.4, 2.5, and 2.5.1 with various levels
+     * of tcp patches) has some really weird bugs where if you dup the
+     * socket now it breaks things across SIGHUP restarts.  It'll either
+     * be unable to bind, or it won't respond.
+     */
+#if defined (SOLARIS2) && SOLARIS2 < 260
+#define WORKAROUND_SOLARIS_BUG
 #endif
 
+#ifndef WORKAROUND_SOLARIS_BUG
     s = ap_slack(s, AP_SLACK_HIGH);
 
     note_cleanups_for_socket(p, s); /* arrange to close on exec or restart */
     unblock_alarms();
-    
+#endif
+
 #ifndef MPE
 /* MPE does not support SO_REUSEADDR and SO_KEEPALIVE */
     if (setsockopt(s, SOL_SOCKET,SO_REUSEADDR,(char *)&one,sizeof(int)) < 0) {
@@ -1965,16 +1947,44 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	}
     }
 
-#ifndef SOLARIS2
-    sock_bind (s, server);
+#ifdef MPE
+/* MPE requires CAP=PM and GETPRIVMODE to bind to ports less than 1024 */
+    if (ntohs(server->sin_port) < 1024) GETPRIVMODE();
+#endif
+    if(bind(s, (struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1)
+    {
+        perror("bind");
+#ifdef MPE
+        if (ntohs(server->sin_port) < 1024) GETUSERMODE();
+#endif
+	if (server->sin_addr.s_addr != htonl(INADDR_ANY))
+	    fprintf(stderr,"httpd: could not bind to address %s port %d\n",
+		    inet_ntoa(server->sin_addr), ntohs(server->sin_port));
+	else
+	    fprintf(stderr,"httpd: could not bind to port %d\n",
+		    ntohs(server->sin_port));
+        exit(1);
+    }
+#ifdef MPE
+    if (ntohs(server->sin_port) < 1024) GETUSERMODE();
 #endif
 
     if (listen(s, listenbacklog) == -1) {
 	log_unixerr ("listen", NULL, "unable to listen for connections",
 	    server_conf);
 	close (s);
+#ifdef WORKAROUND_SOLARIS_BUG
+	unblock_alarms();
+#endif
 	return -1;
     }
+
+#ifdef WORKAROUND_SOLARIS_BUG
+    s = ap_slack(s, AP_SLACK_HIGH);
+
+    note_cleanups_for_socket(p, s); /* arrange to close on exec or restart */
+    unblock_alarms();
+#endif
     return s;
 }
 
@@ -2751,6 +2761,8 @@ void standalone_main(int argc, char **argv)
 	}
 
 	/* we've been told to restart */
+	signal (SIGHUP, SIG_IGN);
+	signal (SIGUSR1, SIG_IGN);
 
 	if (one_process) {
 	    /* not worth thinking about */
