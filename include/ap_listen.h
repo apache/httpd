@@ -97,9 +97,9 @@ AP_DECLARE(int) ap_listen_open(process_rec *process, apr_port_t port);
  * LISTEN_COMMANDS in their command_rec table so that these functions are
  * called.
  */ 
-AP_DECLARE(const char *) ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg);
-AP_DECLARE(const char *) ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips);
-AP_DECLARE(const char *) ap_set_send_buffer_size(cmd_parms *cmd, void *dummy,
+AP_DECLARE_NONSTD(const char *) ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg);
+AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips);
+AP_DECLARE_NONSTD(const char *) ap_set_send_buffer_size(cmd_parms *cmd, void *dummy,
 				    const char *arg);
 
 #define LISTEN_COMMANDS	\

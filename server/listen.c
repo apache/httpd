@@ -442,7 +442,8 @@ AP_DECLARE(void) ap_listen_pre_config(void)
 }
 
 
-AP_DECLARE(const char *) ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips)
+AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
+                                                const char *ips)
 {
     char *host, *scope_id;
     apr_port_t port;
@@ -474,7 +475,9 @@ AP_DECLARE(const char *) ap_set_listener(cmd_parms *cmd, void *dummy, const char
     return alloc_listener(cmd->server->process, host, port);
 }
 
-AP_DECLARE(const char *) ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg)
+AP_DECLARE_NONSTD(const char *) ap_set_listenbacklog(cmd_parms *cmd,
+                                                     void *dummy,
+                                                     const char *arg)
 {
     int b;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -492,8 +495,9 @@ AP_DECLARE(const char *) ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const
     return NULL;
 }
 
-AP_DECLARE(const char *) ap_set_send_buffer_size(cmd_parms *cmd, void *dummy,
-                                    const char *arg)
+AP_DECLARE_NONSTD(const char *) ap_set_send_buffer_size(cmd_parms *cmd,
+                                                        void *dummy,
+                                                        const char *arg)
 {
     int s = atoi(arg);
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
