@@ -643,11 +643,7 @@ static void process_socket(ap_context_t *p, ap_socket_t *sock, int my_child_num,
     long conn_id = my_child_num * HARD_THREAD_LIMIT + my_thread_num;
     int csd;
 
-    ap_get_os_sock(&csd, sock);
-
-    sock_disable_nagle(csd);
-
-    iol = beos_attach_socket(csd);
+    iol = beos_attach_socket(sock);
     if (iol == NULL) {
         if (errno == EBADF) {
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, errno, NULL,
@@ -659,7 +655,7 @@ static void process_socket(ap_context_t *p, ap_socket_t *sock, int my_child_num,
             ap_log_error(APLOG_MARK, APLOG_WARNING, errno, NULL,
                 "error attaching to socket");
         }
-        closesocket(csd);
+        ap_close_socket(sock);
 	return;
     }
 
