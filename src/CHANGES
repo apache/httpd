@@ -1,3 +1,12 @@
+Changes with Apache 1.3.2
+
+  *) mod_include had problems with the fsize and flastmod directives
+     under WIN32.  Fix also avoids the minor security hole of using
+     ".." paths for fsize and flastmod.
+     [Manoj Kasichainula <manojk@raleigh.ibm.com>] PR#2355
+
+  *) Fixed some Makefile dependency problems.  [Dean Gaudet]
+
 Changes with Apache 1.3.1
 
   *) Disable the incorrect entry for application/msword in the 
