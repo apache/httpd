@@ -242,11 +242,10 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
         }
 
         if (ctx->output_now) {
-            apr_size_t start_index;
             apr_bucket *start_bucket;
             if (ctx->head_start_index > 0) {
                 start_bucket = ctx->head_start_bucket;
-                apr_bucket_split(start_bucket, start_index);
+                apr_bucket_split(start_bucket, ctx->head_start_index);
                 start_bucket = APR_BUCKET_NEXT(start_bucket);
                 ctx->head_start_index = 0;
                 ctx->head_start_bucket = start_bucket;
