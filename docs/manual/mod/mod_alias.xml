@@ -70,6 +70,19 @@ href="../urlmapping.html">Mapping URLs to the filesystem</a></seealso>
     sections are run through once before aliases are performed, so
     they will apply.)</p>
 
+    <p>In particular, if you are creating an <code>Alias</code> to a
+    directory outside of your <directive
+    module="code">DocumentRoot</directive>, you may need to explicitly
+    permit access to the target directory.</p>
+
+    <example><title>Example:</title>
+        Alias /image /ftp/pub/image
+        &lt;Directory /ftp/pub/image&gt;
+            Order allow,deny
+            Allow from all
+        &lt;/Directory&gt;
+    </example>
+
 </usage>
 </directivesynopsis>
 
