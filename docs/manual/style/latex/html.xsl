@@ -53,10 +53,10 @@
      one line break followed by smallskips. -->
 <xsl:template match="br">
 <xsl:choose>
-<xsl:when test="name(preceding-sibling::node()[1])='br'">
+<xsl:when test="name(preceding-sibling::node()[1])='br' or name(preceding-sibling::node()[1])='indent'">
 <xsl:text>\smallskip </xsl:text>
 </xsl:when>
-<xsl:when test="name(preceding-sibling::node()[2])='br'">
+<xsl:when test="name(preceding-sibling::node()[2])='br' or name(preceding-sibling::node()[2])='indent'">
   <xsl:choose>
   <xsl:when test="normalize-space(preceding-sibling::node()[1])=''">
     <xsl:text>\smallskip </xsl:text>
@@ -159,7 +159,7 @@ interpreted in pre -->
 </xsl:text>
 </xsl:template>
 
-<xsl:template match="td|th">
+<xsl:template match="td">
     <xsl:variable name="pos" select="position()"/>
     <xsl:text>\begin{minipage}[t]{</xsl:text>
     <xsl:choose>
@@ -167,10 +167,29 @@ interpreted in pre -->
       <xsl:value-of select="../../columnspec/column[$pos]/@width"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="1 div last()"/>
+      <xsl:value-of select=".95 div last()"/>
     </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>\linewidth}</xsl:text>
+    <xsl:text>\linewidth}\small </xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>\end{minipage}</xsl:text>
+    <xsl:if test="not(position()=last())">
+      <xsl:text> &amp; </xsl:text>
+    </xsl:if>
+</xsl:template>
+
+<xsl:template match="th">
+    <xsl:variable name="pos" select="position()"/>
+    <xsl:text>\begin{minipage}[t]{</xsl:text>
+    <xsl:choose>
+    <xsl:when test="../../columnspec">
+      <xsl:value-of select="../../columnspec/column[$pos]/@width"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select=".95 div last()"/>
+    </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>\linewidth}\bfseries </xsl:text>
     <xsl:apply-templates/>
     <xsl:text>\end{minipage}</xsl:text>
     <xsl:if test="not(position()=last())">
@@ -217,7 +236,11 @@ interpreted in pre -->
   <xsl:if test="not(.=@href)">
     <xsl:text>\footnote{</xsl:text>
       <xsl:text>\href{</xsl:text>
-      <xsl:value-of select="@href"/>
+      <xsl:call-template name="replace-string">
+        <xsl:with-param name="text" select="@href"/>
+        <xsl:with-param name="replace" select="'#'"/>
+        <xsl:with-param name="with" select="'\#'"/>
+      </xsl:call-template>
       <xsl:text>}{</xsl:text>
     <xsl:call-template name="ltescape">
       <xsl:with-param name="string" select="@href"/>
