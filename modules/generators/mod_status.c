@@ -55,17 +55,17 @@
  *
  */
 
-#define CORE_PRIVATE
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
 #include "http_protocol.h"
 #include "mpm_status.h"
-#include <time.h>
 
 #ifndef DEFAULT_TIME_FORMAT 
 #define DEFAULT_TIME_FORMAT "%A, %d-%b-%Y %H:%M:%S %Z"
 #endif
+
+#define STATUS_MAGIC_TYPE "application/x-httpd-status"
 
 module MODULE_VAR_EXPORT status_module;
 

@@ -73,6 +73,7 @@
 #include "http_main.h"
 #include "util_script.h"
 #include "apr_fnmatch.h"
+#include <string.h>
 
 module MODULE_VAR_EXPORT autoindex_module;
 

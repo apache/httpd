@@ -62,6 +62,7 @@
  * rst
  */
 
+#include "apr_file_io.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
@@ -69,6 +70,9 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "util_script.h"
+#include <string.h>
+
+#define MAP_FILE_MAGIC_TYPE "application/x-type-map"
 
 /* Commands --- configuring document caching on a per (virtual?)
  * server basis... 
@@ -1442,15 +1446,15 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
 
 static float find_content_length(negotiation_state *neg, var_rec *variant)
 {
-    struct stat statb;
+    ap_finfo_t statb;
 
     if (variant->bytes == 0) {
         char *fullname = ap_make_full_path(neg->pool, neg->dir_name,
                                            variant->file_name);
 
-        if (stat(fullname, &statb) >= 0) {
+        if (ap_stat(&statb, fullname, neg->pool) == APR_SUCCESS) {
             /* Note, precision may be lost */
-            variant->bytes = (float) statb.st_size;
+            variant->bytes = (float) statb.size;
         }
     }
 

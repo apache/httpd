@@ -92,6 +92,9 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "util_script.h"
+#include <sys/stat.h>
+#include <string.h>
+#include <pwd.h>
 #endif
 
 #define STARTING_SEQUENCE "<!--#"
