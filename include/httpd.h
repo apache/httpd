@@ -59,10 +59,6 @@
 #ifndef APACHE_HTTPD_H
 #define APACHE_HTTPD_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /*
  * httpd.h: header for simple (ha! not anymore) http daemon
  */
@@ -86,6 +82,14 @@ extern "C" {
 #include "apr_pools.h"
 #include "apr_time.h"
 #include "apr_network_io.h"
+
+#include "pcreposix.h"
+
+/* Note: util_uri.h is also included, see below */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #ifdef CORE_PRIVATE
 
@@ -137,30 +141,7 @@ extern "C" {
 /* Default administrator's address */
 #define DEFAULT_ADMIN "[no address given]"
 
-/* The target name of the installed Apache */
-#ifndef TARGET
-#define TARGET "httpd"
-#endif
-
-/* --------- Default user name and group name ----------------------------- */
-/* --- These may be specified as numbers by placing a # before a number --- */
-
-#ifndef DEFAULT_USER
-#define DEFAULT_USER "#-1"
-#endif
-#ifndef DEFAULT_GROUP
-#define DEFAULT_GROUP "#-1"
-#endif
-
 /* The name of the log files */
-#ifndef DEFAULT_XFERLOG
-#if defined(OS2) || defined(WIN32)
-#define DEFAULT_XFERLOG "logs/access.log"
-#else
-#define DEFAULT_XFERLOG "logs/access_log"
-#endif
-#endif /* DEFAULT_XFERLOG */
-
 #ifndef DEFAULT_ERRORLOG
 #if defined(OS2) || defined(WIN32)
 #define DEFAULT_ERRORLOG "logs/error.log"
@@ -214,19 +195,6 @@ extern "C" {
 #define DEFAULT_KEEPALIVE 100
 #endif
 
-/* The maximum length of the queue of pending connections, as defined
- * by listen(2).  Under some systems, it should be increased if you
- * are experiencing a heavy TCP SYN flood attack.
- *
- * It defaults to 511 instead of 512 because some systems store it 
- * as an 8-bit datatype; 512 truncated to 8-bits is 0, while 511 is 
- * 255 when truncated.
- */
-
-#ifndef DEFAULT_LISTENBACKLOG
-#define DEFAULT_LISTENBACKLOG 511
-#endif
-
 /* Limits on the size of various request items.  These limits primarily
  * exist to prevent simple denial-of-service attacks on a server based
  * on misuse of the protocol.  The recommended values will depend on the
@@ -260,23 +228,6 @@ extern "C" {
  */
 #define DEFAULT_ADD_DEFAULT_CHARSET_NAME "iso-8859-1"
 
-/*
- * The below defines the base string of the Server: header. Additional
- * tokens can be added via the ap_add_version_component() API call.
- *
- * The tokens are listed in order of their significance for identifying the
- * application.
- *
- * "Product tokens should be short and to the point -- use of them for 
- * advertizing or other non-essential information is explicitly forbidden."
- *
- * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
- */
-
-/* Define this to 1 if you want fancy indexing, 0 otherwise */
-#ifndef DEFAULT_INDEXING
-#define DEFAULT_INDEXING 0
-#endif
 #endif /* CORE_PRIVATE */
 
 #define AP_SERVER_PROTOCOL "HTTP/1.1"
@@ -571,6 +522,8 @@ typedef struct server_rec server_rec;
 typedef struct conn_rec conn_rec;
 typedef struct request_rec request_rec;
 
+/* ### would be nice to not include this from httpd.h ... */
+/* This comes after we have defined the request_rec type */
 #include "util_uri.h"
 
 /** A structure that represents one process */
@@ -998,19 +951,6 @@ struct server_rec {
 #define AP_CORE_DECLARE_NONSTD	AP_DECLARE_NONSTD
 #endif
 
-/* On Mac OS X Server, symbols that conflict with loaded dylibs
- * (eg. System framework) need to be declared as private symbols with
- * __private_extern__.
- * For other systems, make that a no-op.
- */
-#ifndef ap_private_extern
-#if (defined(MAC_OS) || defined(MAC_OS_X_SERVER)) && defined(__DYNAMIC__)
-#define ap_private_extern __private_extern__
-#else
-#define ap_private_extern
-#endif
-#endif
-
 /**
  * Examine a field value (such as a media-/content-type) string and return
  * it sans any parameters; e.g., strip off any ';charset=foo' and the like.
@@ -1282,6 +1222,7 @@ AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *s);
  * @deffunc int ap_count_dirs(const char *path)
  */
 AP_DECLARE(int) ap_count_dirs(const char *path);
+
 /**
  * Copy at most n leading directories of s into d d should be at least as 
  * large as s plus 1 extra byte
@@ -1295,6 +1236,7 @@ AP_DECLARE(int) ap_count_dirs(const char *path);
  * returns the empty string.
  */
 AP_DECLARE(char *) ap_make_dirstr_prefix(char *d, const char *s, int n);
+
 /**
  * return the parent directory name including trailing / of the file s
  * @param p The pool to allocate out of
@@ -1381,7 +1323,6 @@ AP_DECLARE(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded);
  */
 AP_DECLARE(char *) ap_pbase64encode(apr_pool_t *p, char *string); 
 
-#include "pcreposix.h"
 
 /**
  * Compile a regular expression to be used later
@@ -1399,6 +1340,7 @@ AP_DECLARE(char *) ap_pbase64encode(apr_pool_t *p, char *string);
  */
 AP_DECLARE(regex_t *) ap_pregcomp(apr_pool_t *p, const char *pattern,
 				   int cflags);
+
 /**
  * Free the memory associated with a compiled regular expression
  * @param p The pool the regex was allocated out of
@@ -1457,6 +1399,7 @@ AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *sour
  * @deffunc void ap_content_type_tolower(char *s)
  */
 AP_DECLARE(void) ap_content_type_tolower(char *s);
+
 /**
  * convert a string to all lowercase
  * @param s The string to convert to lowercase 
@@ -1502,6 +1445,7 @@ AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring);
  * @deffunc int ap_is_rdirectory(apr_pool_t *p, const char *name)
  */
 AP_DECLARE(int) ap_is_rdirectory(apr_pool_t *p, const char *name);
+
 /**
  * Given the name of an object in the file system determine if it is a directory - this version is symlink aware
  * @param p The pool to allocate out of 
@@ -1510,12 +1454,6 @@ AP_DECLARE(int) ap_is_rdirectory(apr_pool_t *p, const char *name);
  * @deffunc int ap_is_directory(apr_pool_t *p, const char *name)
  */
 AP_DECLARE(int) ap_is_directory(apr_pool_t *p, const char *name);
-/**
- * Get the maximum number of daemons processes for this version of Apache
- * @return The maximum number of daemon processes
- * @deffunc int ap_get_max_daemons(void)
- */
-AP_DECLARE(int) ap_get_max_daemons(void);
 
 #ifdef _OSD_POSIX
 extern const char *os_set_account(apr_pool_t *p, const char *account);

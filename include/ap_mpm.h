@@ -126,6 +126,13 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *serv
 AP_DECLARE(int) ap_graceful_stop_signalled(void);
 
 /**
+ * Get the maximum number of daemons processes for this version of Apache
+ * @return The maximum number of daemon processes
+ * @deffunc int ap_get_max_daemons(void)
+ */
+AP_DECLARE(int) ap_get_max_daemons(void);
+
+/**
  * Spawn a process with privileges that another module has requested
  * @param r The request_rec of the current request
  * @param newproc The resulting process handle.
