@@ -907,6 +907,21 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
         ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
         if (stat(rnew->filename, &rnew->finfo) < 0) {
             rnew->finfo.st_mode = 0;
+#ifdef ENAMETOOLONG
+            /* Special case for filenames which exceed the maximum limit
+	     * imposed by the operating system (~1024). These should
+	     * NOT be treated like "file not found", because there is
+	     * a difference between "the file is not there" and
+	     * "the file exists, but you tried to access it using a
+	     * path which exceeds the path length limit".
+	     * The idea here is to handle DoS attacks with long
+	     * runs of //////'s in a graceful and secure manner.
+	     */
+            if (errno == ENAMETOOLONG) {
+                rnew->status = HTTP_FORBIDDEN;
+                return rnew;
+            }
+#endif
         }
 
         if ((res = check_safe_file(rnew))) {

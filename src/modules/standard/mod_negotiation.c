@@ -895,6 +895,7 @@ static int read_types_multi(negotiation_state *neg)
     struct var_rec mime_info;
     struct accept_rec accept_info;
     void *new_var;
+    struct { int any, all; } forbidden;
 
     clean_var_rec(&mime_info);
 
@@ -916,6 +917,9 @@ static int read_types_multi(negotiation_state *neg)
                     "cannot read directory for multi: %s", neg->dir_name);
         return HTTP_FORBIDDEN;
     }
+
+    forbidden.any = 0;
+    forbidden.all = 1;
 
     while ((dir_entry = readdir(dirp))) {
         request_rec *sub_req;
@@ -943,6 +947,13 @@ static int read_types_multi(negotiation_state *neg)
         if (sub_req->handler && !sub_req->content_type) {
             sub_req->content_type = CGI_MAGIC_TYPE;
         }
+
+        /* HTTP_FORBIDDEN is returned, e.g., if the path length limit was exceeded */
+        /* HTTP_OK does NOT necessarily mean that the file is really readable! */
+        if (sub_req->status == HTTP_OK)
+            forbidden.all = 0;
+        else if (sub_req->status == HTTP_FORBIDDEN)
+            forbidden.any = 1;
 
         if (sub_req->status != HTTP_OK || !sub_req->content_type) {
             ap_destroy_sub_req(sub_req);
@@ -989,6 +1000,10 @@ static int read_types_multi(negotiation_state *neg)
     }
 
     ap_pclosedir(neg->pool, dirp);
+
+    /* If all variants we considered turn out to be forbidden, then return FORBIDDEN */
+    if (forbidden.any && forbidden.all)
+        return HTTP_FORBIDDEN;
 
     set_vlist_validator(r, r);
 
