@@ -294,7 +294,7 @@ static void interrupted(void)
  * Check to see if the specified file can be opened for the given
  * access.
  */
-int accessible(char *fname, char *mode)
+static int accessible(char *fname, char *mode)
 {
     FILE *s;
 
@@ -309,7 +309,7 @@ int accessible(char *fname, char *mode)
 /*
  * Return true if a file is readable.
  */
-int readable(char *fname)
+static int readable(char *fname)
 {
     return accessible(fname, "r");
 }
@@ -317,7 +317,7 @@ int readable(char *fname)
 /*
  * Return true if the specified file can be opened for write access.
  */
-int writable(char *fname)
+static int writable(char *fname)
 {
     return accessible(fname, "a");
 }
@@ -325,7 +325,7 @@ int writable(char *fname)
 /*
  * Return true if the named file exists, regardless of permissions.
  */
-int exists(char *fname)
+static int exists(char *fname)
 {
 #ifdef WIN32
     struct _stat sbuf;
@@ -346,7 +346,7 @@ int exists(char *fname)
  * Copy from the current position of one file to the current position
  * of another.
  */
-void copy_file(FILE *target, FILE *source)
+static void copy_file(FILE *target, FILE *source)
 {
     static char line[MAX_STRING_LEN];
 
