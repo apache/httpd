@@ -53,59 +53,65 @@
  *
  */
 
-#ifndef APACHE_MOD_AUTH_H
-#define APACHE_MOD_AUTH_H
-
 #include "apr_pools.h"
 #include "apr_hash.h"
 
-#include "httpd.h"
+#include "ap_provider.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+static apr_hash_t *global_providers = NULL;
 
-#define AUTHN_PROVIDER_GROUP "authn"
-#define AUTHN_DEFAULT_PROVIDER "file"
-
-typedef enum {
-    AUTH_DENIED,
-    AUTH_GRANTED,
-    AUTH_USER_FOUND,
-    AUTH_USER_NOT_FOUND,
-    AUTH_GENERAL_ERROR
-} authn_status;
-
-typedef struct {
-    /* Given a username and password, expected to return AUTH_GRANTED
-     * if we can validate this user/password combination.
-     */
-    authn_status (*check_password)(request_rec *r, const char *user,
-                                  const char *password);
-
-    /* Given a user and realm, expected to return AUTH_USER_FOUND if we
-     * can find a md5 hash of 'user:realm:password'
-     */
-    authn_status (*get_realm_hash)(request_rec *r, const char *user,
-                                   const char *realm, char **rethash);
-} authn_provider;
-
-/* A linked-list of authn providers. */
-typedef struct authn_provider_list authn_provider_list;
-
-struct authn_provider_list {
-    const char *provider_name;
-    const authn_provider *provider;
-    authn_provider_list *next;
-};
-
-typedef struct {
-    /* For a given user, return a hash of all groups the user belongs to.  */
-    apr_hash_t * (*get_user_groups)(request_rec *r, const char *user);
-} authz_provider;
-
-#ifdef __cplusplus
+static apr_status_t cleanup_global_providers(void *ctx)
+{
+    global_providers = NULL;
+    return APR_SUCCESS;
 }
-#endif
 
-#endif
+AP_DECLARE(apr_status_t) ap_register_provider(apr_pool_t *pool,
+                                              const char *provider_group,
+                                              const char *provider_name,
+                                              const void *provider)
+{
+    apr_hash_t *provider_group_hash;
+
+    if (global_providers == NULL) {
+        global_providers = apr_hash_make(pool);
+        apr_pool_cleanup_register(pool, NULL, cleanup_global_providers,
+                                  apr_pool_cleanup_null);
+    }
+
+    provider_group_hash = apr_hash_get(global_providers, provider_group,
+                                       APR_HASH_KEY_STRING);
+
+    if (!provider_group_hash) {
+        provider_group_hash = apr_hash_make(pool);
+        apr_hash_set(global_providers, provider_group, APR_HASH_KEY_STRING,
+                     provider_group_hash);
+        
+    }
+
+    /* just set it. no biggy if it was there before. */
+    apr_hash_set(provider_group_hash, provider_name, APR_HASH_KEY_STRING,
+                 provider);
+
+    return APR_SUCCESS;
+}
+
+AP_DECLARE(void *) ap_lookup_provider(const char *provider_group,
+                                      const char *provider_name)
+{
+    apr_hash_t *provider_group_hash;
+
+    if (global_providers == NULL) {
+        return NULL;
+    }
+
+    provider_group_hash = apr_hash_get(global_providers, provider_group,
+                                       APR_HASH_KEY_STRING);
+
+    if (provider_group_hash == NULL) {
+        return NULL;
+    }
+
+    return apr_hash_get(provider_group_hash, provider_name,
+                        APR_HASH_KEY_STRING);
+}

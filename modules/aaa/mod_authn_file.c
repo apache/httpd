@@ -218,7 +218,7 @@ static const authn_provider authn_file_provider =
 
 static void register_hooks(apr_pool_t *p)
 {
-    authn_register_provider(p, "file", &authn_file_provider);
+    ap_register_provider(p, AUTHN_PROVIDER_GROUP, "file", &authn_file_provider);
 }
 
 module AP_MODULE_DECLARE_DATA authn_file_module =

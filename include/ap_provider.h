@@ -50,62 +50,39 @@
  * individuals on behalf of the Apache Software Foundation.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
- *
  */
 
-#ifndef APACHE_MOD_AUTH_H
-#define APACHE_MOD_AUTH_H
+#ifndef AP_PROVIDER_H
+#define AP_PROVIDER_H
 
-#include "apr_pools.h"
-#include "apr_hash.h"
+#include "ap_config.h"
 
-#include "httpd.h"
+/**
+ * @package Provider API
+ */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+/**
+ * This function is used to register a provider with the global
+ * provider pool.
+ * @param pool The pool to create any storage from
+ * @param provider_group The group to store the provider in
+ * @param provider_name The name for this provider
+ * @param provider Opaque structure for this provider
+ * @return APR_SUCCESS if all went well
+ */
+AP_DECLARE(apr_status_t) ap_register_provider(apr_pool_t *pool,
+                                              const char *provider_group,
+                                              const char *provider_name,
+                                              const void *provider);
 
-#define AUTHN_PROVIDER_GROUP "authn"
-#define AUTHN_DEFAULT_PROVIDER "file"
-
-typedef enum {
-    AUTH_DENIED,
-    AUTH_GRANTED,
-    AUTH_USER_FOUND,
-    AUTH_USER_NOT_FOUND,
-    AUTH_GENERAL_ERROR
-} authn_status;
-
-typedef struct {
-    /* Given a username and password, expected to return AUTH_GRANTED
-     * if we can validate this user/password combination.
-     */
-    authn_status (*check_password)(request_rec *r, const char *user,
-                                  const char *password);
-
-    /* Given a user and realm, expected to return AUTH_USER_FOUND if we
-     * can find a md5 hash of 'user:realm:password'
-     */
-    authn_status (*get_realm_hash)(request_rec *r, const char *user,
-                                   const char *realm, char **rethash);
-} authn_provider;
-
-/* A linked-list of authn providers. */
-typedef struct authn_provider_list authn_provider_list;
-
-struct authn_provider_list {
-    const char *provider_name;
-    const authn_provider *provider;
-    authn_provider_list *next;
-};
-
-typedef struct {
-    /* For a given user, return a hash of all groups the user belongs to.  */
-    apr_hash_t * (*get_user_groups)(request_rec *r, const char *user);
-} authz_provider;
-
-#ifdef __cplusplus
-}
-#endif
+/**
+ * This function is used to retrieve a provider from the global
+ * provider pool.
+ * @param provider_group The group to look for this provider in
+ * @param provider_name The name for the provider
+ * @return provider point if found, NULL otherwise
+ */
+AP_DECLARE(void *) ap_lookup_provider(const char *provider_group,
+                                      const char *provider_name);
 
 #endif

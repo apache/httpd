@@ -70,6 +70,7 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "http_request.h"
+#include "ap_provider.h"
 
 #include "mod_auth.h"
 
@@ -113,7 +114,8 @@ static const char *add_authn_provider(cmd_parms *cmd, void *config,
     newp->provider_name = provider_name;
 
     /* lookup and cache the actual provider now */
-    newp->provider = authn_lookup_provider(newp->provider_name);
+    newp->provider = ap_lookup_provider(AUTHN_PROVIDER_GROUP,
+                                        newp->provider_name);
 
     if (newp->provider == NULL) {
         /* by the time they use it, the provider should be loaded and
@@ -253,7 +255,8 @@ static int authenticate_basic_user(request_rec *r)
          * provider.
          */
         if (!current_provider) {
-            provider = authn_lookup_provider(AUTHN_DEFAULT_PROVIDER);
+            provider = ap_lookup_provider(AUTHN_PROVIDER_GROUP,
+                                          AUTHN_DEFAULT_PROVIDER);
         }
         else {
             provider = current_provider->provider;
