@@ -1,7 +1,11 @@
 Changes with Apache 1.3
 
+  *) Added another Configure helper script: TestLib. It determines
+     if a specified library exists.
+
   *) PORT: Allow for use of n32bit libraries under IRIX 6.x
      [derived from patch from Jeff Hayes <jhayes@aw.sgi.com>]
+     (PR#721)
 
   *) PORT: Some architectures use size_t for various lengths in network
      functions such as accept(), and getsockname().  The definition
