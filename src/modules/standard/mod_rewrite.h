@@ -255,6 +255,9 @@
 
 #define MAX_NMATCH    10
 
+/* default maximum number of internal redirects */
+#define REWRITE_REDIRECT_LIMIT 10
+
 /*
 **
 **  our private data structures we handle with
@@ -309,6 +312,7 @@ typedef struct {
     array_header *rewriteconds;    /* the RewriteCond entries (temporary) */
     array_header *rewriterules;    /* the RewriteRule entries */
     server_rec   *server;          /* the corresponding server indicator */
+    int          redirect_limit;   /* maximum number of internal redirects */
 } rewrite_server_conf;
 
 
@@ -322,7 +326,15 @@ typedef struct {
     array_header *rewriterules;    /* the RewriteRule entries */
     char         *directory;       /* the directory where it applies */
     char         *baseurl;         /* the base-URL  where it applies */
+    int          redirect_limit;   /* maximum number of internal redirects */
 } rewrite_perdir_conf;
+
+    /* the per-request configuration
+     */
+typedef struct {
+    int           redirects;       /* current number of redirects */
+    int           redirect_limit;  /* maximum number of redirects */
+} rewrite_request_conf;
 
 
     /* the cache structures,
@@ -376,10 +388,8 @@ static void *config_perdir_merge (pool *p, void *basev, void *overridesv);
 static const char *cmd_rewriteengine(cmd_parms *cmd,
                                      rewrite_perdir_conf *dconf, int flag);
 static const char *cmd_rewriteoptions(cmd_parms *cmd,
-                                      rewrite_perdir_conf *dconf,
-                                      char *option);
-static const char *cmd_rewriteoptions_setoption(pool *p, int *options,
-                                                char *name);
+                                      void *in_dconf,
+                                      const char *option);
 static const char *cmd_rewritelog     (cmd_parms *cmd, void *dconf, char *a1);
 static const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1);
 static const char *cmd_rewritemap     (cmd_parms *cmd, void *dconf, char *a1,
@@ -489,6 +499,7 @@ static int    parseargline(char *str, char **a1, char **a2, char **a3);
 static int    prefix_stat(const char *path, struct stat *sb);
 static void   add_env_variable(request_rec *r, char *s);
 static int    subreq_ok(request_rec *r);
+static int    is_redirect_limit_exceeded(request_rec *r);
 
     /* File locking */
 static void fd_lock(request_rec *r, int fd);
