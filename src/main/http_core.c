@@ -683,7 +683,7 @@ const char *check_cmd_context(cmd_parms *cmd, unsigned forbidden)
     return NULL;
 }
 
-const char *set_access_name (cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_access_name (cmd_parms *cmd, void *dummy, char *arg)
 {
     void *sconf = cmd->server->module_config;
     core_server_config *conf = get_module_config (sconf, &core_module);
@@ -695,7 +695,7 @@ const char *set_access_name (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-const char *set_document_root (cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_document_root (cmd_parms *cmd, void *dummy, char *arg)
 {
     void *sconf = cmd->server->module_config;
     core_server_config *conf = get_module_config (sconf, &core_module);
@@ -716,7 +716,7 @@ const char *set_document_root (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-const char *set_error_document (cmd_parms *cmd, core_dir_config *conf,
+static const char *set_error_document (cmd_parms *cmd, core_dir_config *conf,
 				char *line)
 {
     int error_number, index_number, idx500;
@@ -759,7 +759,7 @@ const char *set_error_document (cmd_parms *cmd, core_dir_config *conf,
  * discards as harmless.  Cheesy, but it works.
  */
 
-const char *set_override (cmd_parms *cmd, core_dir_config *d, const char *l)
+static const char *set_override (cmd_parms *cmd, core_dir_config *d, const char *l)
 {
     char *w;
   
@@ -793,7 +793,7 @@ const char *set_override (cmd_parms *cmd, core_dir_config *d, const char *l)
     return NULL;
 }
 
-const char *set_options (cmd_parms *cmd, core_dir_config *d, const char *l)
+static const char *set_options (cmd_parms *cmd, core_dir_config *d, const char *l)
 {
     allow_options_t opt;
     int first = 1;
@@ -876,7 +876,7 @@ const char *require (cmd_parms *cmd, core_dir_config *c, char *arg)
     return NULL;
 }
 
-const char *limit_section (cmd_parms *cmd, void *dummy, const char *arg)
+static const char *limit_section (cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *limited_methods = getword(cmd->pool,&arg,'>');
     int limited = 0;
@@ -904,7 +904,7 @@ const char *limit_section (cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-const char *endlimit_section (cmd_parms *cmd, void *dummy, void *dummy2)
+static const char *endlimit_section (cmd_parms *cmd, void *dummy, void *dummy2)
 {
     if (cmd->limited == -1) return "</Limit> unexpected";
     
@@ -953,7 +953,7 @@ static const char *end_nested_section(cmd_parms *cmd, void *dummy)
     return cmd->end_token;
 }
 
-const char *dirsection (cmd_parms *cmd, void *dummy, const char *arg)
+static const char *dirsection (cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *errmsg;
     char *endp = strrchr (arg, '>');
@@ -1014,7 +1014,7 @@ const char *dirsection (cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-const char *urlsection (cmd_parms *cmd, void *dummy, const char *arg)
+static const char *urlsection (cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *errmsg;
     char *endp = strrchr (arg, '>');
@@ -1070,7 +1070,7 @@ const char *urlsection (cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
+static const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
 {
     const char *errmsg;
     char *endp = strrchr (arg, '>');
@@ -1137,11 +1137,11 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
  * Extra (redundant, unpaired) </IfModule> directives are
  * simply silently ignored.
  */
-const char *end_ifmod (cmd_parms *cmd, void *dummy) {
+static const char *end_ifmod (cmd_parms *cmd, void *dummy) {
     return NULL;
 }
 
-const char *start_ifmod (cmd_parms *cmd, void *dummy, char *arg)
+static const char *start_ifmod (cmd_parms *cmd, void *dummy, char *arg)
 {
     char *endp = strrchr (arg, '>');
     char l[MAX_STRING_LEN];
@@ -1173,7 +1173,7 @@ const char *start_ifmod (cmd_parms *cmd, void *dummy, char *arg)
 
 /* httpd.conf commands... beginning with the <VirtualHost> business */
 
-const char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
+static const char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
 {
     server_rec *main_server = cmd->server, *s;
     const char *errmsg;
@@ -1222,7 +1222,7 @@ const char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
     return errmsg;
 }
 
-const char *set_server_alias(cmd_parms *cmd, void *dummy, const char *arg)
+static const char *set_server_alias(cmd_parms *cmd, void *dummy, const char *arg)
 {
     if (!cmd->server->names)
 	return "ServerAlias only used in <VirtualHost>";
@@ -1237,7 +1237,7 @@ const char *set_server_alias(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-const char *add_module_command (cmd_parms *cmd, void *dummy, char *arg)
+static const char *add_module_command (cmd_parms *cmd, void *dummy, char *arg)
 {
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
@@ -1247,7 +1247,7 @@ const char *add_module_command (cmd_parms *cmd, void *dummy, char *arg)
     return "required module not found";
 }
 
-const char *clear_module_list_command (cmd_parms *cmd, void *dummy)
+static const char *clear_module_list_command (cmd_parms *cmd, void *dummy)
 {
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
@@ -1256,7 +1256,8 @@ const char *clear_module_list_command (cmd_parms *cmd, void *dummy)
     return NULL;
 }
 
-const char *set_server_string_slot (cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_server_string_slot (cmd_parms *cmd, void *dummy,
+		                                   char *arg)
 {
     /* This one's pretty generic... */
   
@@ -1270,7 +1271,7 @@ const char *set_server_string_slot (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-const char *server_type (cmd_parms *cmd, void *dummy, char *arg)
+static const char *server_type (cmd_parms *cmd, void *dummy, char *arg)
 {
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
@@ -1282,7 +1283,8 @@ const char *server_type (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-const char *server_port (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *server_port (cmd_parms *cmd, void *dummy, char *arg)
+{
     const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) return err;
 
@@ -1290,7 +1292,9 @@ const char *server_port (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_signature_flag (cmd_parms *cmd, core_dir_config *d, char *arg) {
+static const char *set_signature_flag (cmd_parms *cmd, core_dir_config *d, 
+		                               char *arg)
+{
     const char *err = check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) return err;
 
@@ -1305,7 +1309,8 @@ const char *set_signature_flag (cmd_parms *cmd, core_dir_config *d, char *arg) {
     return NULL;
 }
 
-const char *set_send_buffer_size (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_send_buffer_size (cmd_parms *cmd, void *dummy, char *arg)
+{
     int s = atoi (arg);
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
@@ -1317,7 +1322,7 @@ const char *set_send_buffer_size (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_user (cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_user (cmd_parms *cmd, void *dummy, char *arg)
 {
     const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) return err;
@@ -1353,7 +1358,7 @@ const char *set_user (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-const char *set_group (cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_group (cmd_parms *cmd, void *dummy, char *arg)
 {
     const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) return err;
@@ -1373,7 +1378,8 @@ const char *set_group (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-const char *set_server_root (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_server_root (cmd_parms *cmd, void *dummy, char *arg) 
+{
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
@@ -1382,7 +1388,7 @@ const char *set_server_root (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_timeout (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_timeout (cmd_parms *cmd, void *dummy, char *arg) {
     const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) return err;
 
@@ -1390,7 +1396,9 @@ const char *set_timeout (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_keep_alive_timeout (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_keep_alive_timeout (cmd_parms *cmd, void *dummy,
+		                                   char *arg)
+{
     const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) return err;
 
@@ -1398,7 +1406,8 @@ const char *set_keep_alive_timeout (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_keep_alive (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_keep_alive (cmd_parms *cmd, void *dummy, char *arg) 
+{
     const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) return err;
 
@@ -1412,7 +1421,8 @@ const char *set_keep_alive (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_keep_alive_max (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_keep_alive_max (cmd_parms *cmd, void *dummy, char *arg) 
+{
     const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) return err;
 
@@ -1420,7 +1430,8 @@ const char *set_keep_alive_max (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_pidfile (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_pidfile (cmd_parms *cmd, void *dummy, char *arg) 
+{
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
@@ -1430,7 +1441,8 @@ const char *set_pidfile (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_scoreboard (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_scoreboard (cmd_parms *cmd, void *dummy, char *arg) 
+{
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
@@ -1438,7 +1450,8 @@ const char *set_scoreboard (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_lockfile (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_lockfile (cmd_parms *cmd, void *dummy, char *arg) 
+{
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
@@ -1446,7 +1459,8 @@ const char *set_lockfile (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_idcheck (cmd_parms *cmd, core_dir_config *d, int arg) {
+static const char *set_idcheck (cmd_parms *cmd, core_dir_config *d, int arg) 
+{
     const char *err = check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) return err;
 
@@ -1454,7 +1468,8 @@ const char *set_idcheck (cmd_parms *cmd, core_dir_config *d, int arg) {
     return NULL;
 }
 
-const char *set_hostname_lookups (cmd_parms *cmd, core_dir_config *d, char *arg)
+static const char *set_hostname_lookups (cmd_parms *cmd, core_dir_config *d,
+		                                 char *arg)
 {
     const char *err = check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) return err;
@@ -1471,7 +1486,8 @@ const char *set_hostname_lookups (cmd_parms *cmd, core_dir_config *d, char *arg)
     return NULL;
 }
 
-const char *set_serverpath (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_serverpath (cmd_parms *cmd, void *dummy, char *arg) 
+{
     const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) return err;
 
@@ -1480,7 +1496,8 @@ const char *set_serverpath (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_content_md5 (cmd_parms *cmd, core_dir_config *d, int arg) {
+static const char *set_content_md5 (cmd_parms *cmd, core_dir_config *d, int arg) 
+{
     const char *err = check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) return err;
 
@@ -1488,7 +1505,8 @@ const char *set_content_md5 (cmd_parms *cmd, core_dir_config *d, int arg) {
     return NULL;
 }
 
-const char *set_use_canonical_name (cmd_parms *cmd, core_dir_config *d, int arg)
+static const char *set_use_canonical_name (cmd_parms *cmd, core_dir_config *d, 
+		                                   int arg)
 {
     const char *err = check_cmd_context(cmd, NOT_IN_LIMIT);
 
@@ -1499,7 +1517,8 @@ const char *set_use_canonical_name (cmd_parms *cmd, core_dir_config *d, int arg)
     return NULL;
 }
 
-const char *set_daemons_to_start (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_daemons_to_start (cmd_parms *cmd, void *dummy, char *arg) 
+{
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
@@ -1507,7 +1526,8 @@ const char *set_daemons_to_start (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_min_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_min_free_servers (cmd_parms *cmd, void *dummy, char *arg) 
+{
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
@@ -1522,7 +1542,8 @@ const char *set_min_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_max_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_max_free_servers (cmd_parms *cmd, void *dummy, char *arg) 
+{
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
@@ -1530,7 +1551,8 @@ const char *set_max_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) 
+{
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
@@ -1549,7 +1571,8 @@ const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_max_requests (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_max_requests (cmd_parms *cmd, void *dummy, char *arg) 
+{
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
@@ -1557,7 +1580,7 @@ const char *set_max_requests (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_threads (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_threads (cmd_parms *cmd, void *dummy, char *arg) {
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
@@ -1565,7 +1588,8 @@ const char *set_threads (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_excess_requests (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_excess_requests (cmd_parms *cmd, void *dummy, char *arg) 
+{
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
@@ -1637,7 +1661,8 @@ static const char *no_set_limit (cmd_parms *cmd, core_dir_config *conf,
 #endif
 
 #ifdef RLIMIT_CPU
-const char *set_limit_cpu (cmd_parms *cmd, core_dir_config *conf, char *arg, char *arg2)
+static const char *set_limit_cpu (cmd_parms *cmd, core_dir_config *conf, 
+	                          char *arg, char *arg2)
 {
     set_rlimit(cmd,&conf->limit_cpu,arg,arg2,RLIMIT_CPU);
     return NULL;
@@ -1645,7 +1670,8 @@ const char *set_limit_cpu (cmd_parms *cmd, core_dir_config *conf, char *arg, cha
 #endif
 
 #if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined(RLIMIT_AS)
-const char *set_limit_mem (cmd_parms *cmd, core_dir_config *conf, char *arg, char * arg2)
+static const char *set_limit_mem (cmd_parms *cmd, core_dir_config *conf, 
+	                          char *arg, char * arg2)
 {
 #if defined(RLIMIT_AS)
     set_rlimit(cmd,&conf->limit_mem,arg,arg2,RLIMIT_AS);
@@ -1659,14 +1685,16 @@ const char *set_limit_mem (cmd_parms *cmd, core_dir_config *conf, char *arg, cha
 #endif
 
 #ifdef RLIMIT_NPROC
-const char *set_limit_nproc (cmd_parms *cmd, core_dir_config *conf, char *arg, char * arg2)
+static const char *set_limit_nproc (cmd_parms *cmd, core_dir_config *conf,  
+	                            char *arg, char * arg2)
 {
     set_rlimit(cmd,&conf->limit_nproc,arg,arg2,RLIMIT_NPROC);
     return NULL;
 }
 #endif
 
-const char *set_bind_address (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_bind_address (cmd_parms *cmd, void *dummy, char *arg) 
+{
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
@@ -1674,7 +1702,7 @@ const char *set_bind_address (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
+static const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
 {
     listen_rec *new;
     char *ports;
@@ -1710,7 +1738,8 @@ const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
     return NULL;
 }
 
-const char *set_listenbacklog (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_listenbacklog (cmd_parms *cmd, void *dummy, char *arg) 
+{
     int b;
 
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
@@ -1722,7 +1751,8 @@ const char *set_listenbacklog (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) 
+{
     struct stat finfo;
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
@@ -1735,7 +1765,7 @@ const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *include_config (cmd_parms *cmd, void *dummy, char *name)
+static const char *include_config (cmd_parms *cmd, void *dummy, char *name)
 {
     name = server_root_relative(cmd->pool, name);
     
@@ -1744,7 +1774,7 @@ const char *include_config (cmd_parms *cmd, void *dummy, char *name)
     return NULL;
 }
 
-const char *set_loglevel (cmd_parms *cmd, void *dummy, const char *arg) 
+static const char *set_loglevel (cmd_parms *cmd, void *dummy, const char *arg) 
 {
    char *str;
     
