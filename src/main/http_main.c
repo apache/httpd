@@ -5829,6 +5829,9 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
         return -1;
     }
     else {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, server_conf,
+                     "Parent: Created child process %d", pi.dwProcessId);
+
         /* Assume the child process lives. Update the process and event tables */
         handles[*processes] = pi.hProcess;
         events[*processes] = kill_event;
@@ -5840,7 +5843,8 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
         lr = ap_listeners;
         while (lr != NULL) {
             lpWSAProtocolInfo = ap_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
-            APD2("Parent: Duplicating socket %d and sending it to the child process.", lr->fd);
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, server_conf,
+                         "Parent: Duplicating socket %d and sending it to child process %d", lr->fd, pi.dwProcessId);
             if (WSADuplicateSocket(lr->fd, 
                                    pi.dwProcessId,
                                    lpWSAProtocolInfo) == SOCKET_ERROR) {
