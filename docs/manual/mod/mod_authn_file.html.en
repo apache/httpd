@@ -55,8 +55,8 @@
 <li>
   <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>
 </li>
-<li><a href="../programs/htpasswd.html">htpasswd</a></li>
-<li><a href="../programs/htdigest.html">htdigest</a></li>
+<li><code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code></li>
+<li><code class="program"><a href="../programs/htdigest.html">htdigest</a></code></li>
 </ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -81,7 +81,7 @@ passwords for authentication</td></tr>
     ID is defined multiple times, <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> will
     use the first occurrence to verify the password.</p>
 
-    <p>The utility <a href="../programs/htpasswd.html">htpasswd</a>
+    <p>The utility <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code>
     which is installed as part of the binary distribution, or which
     can be found in <code>src/support</code>, is used to maintain
     the password file for <em>HTTP Basic Authentication</em>. See the
@@ -107,8 +107,8 @@ passwords for authentication</td></tr>
     inefficient; <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code> should be used
     instead.</p>
 
-    <p>If you are using <em>HTTP Digest Authentication</em>, the <a href="../programs/htpasswd.html">htpasswd</a> tool is not sufficient.
-    You have to use <a href="../programs/htdigest.html">htdigest</a>
+    <p>If you are using <em>HTTP Digest Authentication</em>, the <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> tool is not sufficient.
+    You have to use <code class="program"><a href="../programs/htdigest.html">htdigest</a></code>
     instead. Note that you cannot mix user data for Digest Authentication
     and Basic Authentication within the same file.</p>
 

@@ -22,6 +22,8 @@
 <a href="./ja/dso.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/dso.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 
     <p>Apache HTTP サーバはモジュール化されたプログラムで、
     管理者がモジュールを選択することでサーバに組み込む機能を選ぶことができます。

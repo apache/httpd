@@ -60,7 +60,7 @@ identifier for each request</td></tr>
     process requests one at a time. Each child can serve multiple
     requests in its lifetime. For the purpose of this discussion,
     the children don't share any data with each other. We'll refer
-    to the children as httpd processes.</p>
+    to the children as <dfn>httpd processes</dfn>.</p>
 
     <p>Your website has one or more machines under your
     administrative control, together we'll call them a cluster of

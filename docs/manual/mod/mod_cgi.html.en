@@ -74,7 +74,8 @@
 <li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li>
 <li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li>
 <li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
-<li><a href="../suexec.html">Running CGI programs under different user IDs</a></li>
+<li><a href="../suexec.html">Running CGI programs under different
+    user IDs</a></li>
 <li><a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI Specification</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

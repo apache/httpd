@@ -28,17 +28,17 @@
     Resources available from the Apache HTTP server can be restricted to just
     the users listed in the files created by <code>dbmmanage</code>. This
     program can only be used when the usernames are stored in a DBM file. To
-    use a flat-file database see <a href="htpasswd.html">htpasswd</a>.</p>
+    use a flat-file database see <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code>.</p>
 
     <p>This manual page only lists the command line arguments. For details of
     the directives necessary to configure user authentication in
-    <a href="httpd.html">httpd</a> see the httpd manual, which is part of
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> see the httpd manual, which is part of
     the Apache distribution or can be found at <a href="http://httpd.apache.org/">http://httpd.apache.org/</a>.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Synopsis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#bugs">Bugs</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="httpd.html">httpd</a></li><li><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code></li><li><code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li><li><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code></li><li><code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="synopsis" id="synopsis">Synopsis</a></h2>

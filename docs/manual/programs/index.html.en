@@ -31,54 +31,54 @@
 <h2><a name="index" id="index">Index</a></h2>
 
     <dl>
-      <dt><a href="httpd.html">httpd</a></dt>
+      <dt><code class="program"><a href="../programs/httpd.html">httpd</a></code></dt>
 
       <dd>Apache hypertext transfer protocol server</dd>
 
-      <dt><a href="apachectl.html">apachectl</a></dt>
+      <dt><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></dt>
 
       <dd>Apache HTTP server control interface</dd>
 
-      <dt><a href="ab.html">ab</a></dt>
+      <dt><code class="program"><a href="../programs/ab.html">ab</a></code></dt>
 
       <dd>Apache HTTP server benchmarking tool</dd>
 
-      <dt><a href="apxs.html">apxs</a></dt>
+      <dt><code class="program"><a href="../programs/apxs.html">apxs</a></code></dt>
 
       <dd>APache eXtenSion tool</dd>
 
-      <dt><a href="configure.html">configure</a></dt>
+      <dt><code class="program"><a href="../programs/configure.html">configure</a></code></dt>
 
       <dd>Configure the source tree</dd>
 
-      <dt><a href="dbmmanage.html">dbmmanage</a></dt>
+      <dt><code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code></dt>
 
       <dd>Create and update user authentication files in DBM format
       for basic authentication</dd>
 
-      <dt><a href="htcacheclean.html">htcacheclean</a></dt>
+      <dt><code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code></dt>
       <dd>Clean up the disk cache</dd>
 
-      <dt><a href="htdigest.html">htdigest</a></dt>
+      <dt><code class="program"><a href="../programs/htdigest.html">htdigest</a></code></dt>
 
       <dd>Create and update user authentication files for digest
       authentication</dd>
 
-      <dt><a href="htpasswd.html">htpasswd</a></dt>
+      <dt><code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code></dt>
 
       <dd>Create and update user authentication files for basic
       authentication</dd>
 
-      <dt><a href="logresolve.html">logresolve</a></dt>
+      <dt><code class="program"><a href="../programs/logresolve.html">logresolve</a></code></dt>
 
       <dd>Resolve hostnames for IP-addresses in Apache
       logfiles</dd>
 
-      <dt><a href="rotatelogs.html">rotatelogs</a></dt>
+      <dt><code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code></dt>
 
       <dd>Rotate Apache logs without having to kill the server</dd>
 
-      <dt><a href="suexec.html">suexec</a></dt>
+      <dt><code class="program"><a href="../programs/suexec.html">suexec</a></code></dt>
 
       <dd>Switch User For Exec</dd>
 

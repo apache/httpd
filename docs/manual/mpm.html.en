@@ -92,7 +92,7 @@ how they are used by the Apache HTTP Server.</p>
     is chosen at configuration time and built into Apache.</p>
 
     <p>To actually choose the desired MPM, use the argument
-    --with-mpm= <em>NAME</em> with the ./configure script.
+    --with-mpm= <em>NAME</em> with the <code class="program"><a href="./programs/configure.html">configure</a></code> script.
     <em>NAME</em> is the name of the desired MPM.</p>
 
     <p>Once the server has been compiled, it is possible to

@@ -157,7 +157,7 @@ uses</a></li>
     the privileges of the Apache child processes. The child processes
     must be able to read all the content that will be served, but
     should have as few privileges beyond that as possible. In
-    addition, unless <a href="../suexec.html">suexec</a> is used,
+    addition, unless <code class="program"><a href="../programs/suexec.html">suexec</a></code> is used,
     these directives also set the privileges which will be inherited
     by CGI scripts.</p>
 

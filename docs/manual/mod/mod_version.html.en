@@ -72,7 +72,8 @@
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_version</td></tr>
 </table>
     <p>The <code class="directive">&lt;IfVersion&gt;</code> section encloses
-    configuration directives which are executed only if the httpd version
+    configuration directives which are executed only if the
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> version
     matches the desired criteria. For normal (numeric) comparisons the
     <var>version</var> argument has the format
     <code><var>major</var>[.<var>minor</var>[.<var>patch</var>]]</code>, e.g.

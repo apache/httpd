@@ -90,7 +90,8 @@ hosts</a></li><li><a href="ip-based.html">IP-based virtual hosts</a></li><li><a 
 
     <p>This command will dump out a description of how Apache parsed
     the configuration file. Careful examination of the IP addresses and
-    server names may help uncover configuration mistakes. (See <a href="../programs/httpd.html">the docs for the httpd program</a> for
+    server names may help uncover configuration mistakes. (See
+    the docs for the <code class="program"><a href="../programs/httpd.html">httpd</a></code> program for
     other command line options)</p>
 
 </div></div>

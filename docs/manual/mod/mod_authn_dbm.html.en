@@ -120,7 +120,7 @@ passwords for authentication</td></tr>
     problem.</p>
 
     <p>A perl script called
-    <a href="../programs/dbmmanage.html">dbmmanage</a> is included with
+    <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> is included with
     Apache. This program can be used to create and update DBM
     format password files for use with this module.</p>
 

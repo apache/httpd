@@ -31,16 +31,16 @@
     and <a href="platform/windows.html#wincons">Running Apache as a
     Console Application</a>.</p>
 
-    <p>On Unix, the <a href="programs/httpd.html">httpd</a> program
+    <p>On Unix, the <code class="program"><a href="./programs/httpd.html">httpd</a></code> program
     is run as a daemon that executes continuously in the
     background to handle requests.  This document describes how
-    to invoke <code>httpd</code>.</p>
+    to invoke <code class="program"><a href="./programs/httpd.html">httpd</a></code>.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">How Apache Starts</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#errors">Errors During Start-up</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#boot">Starting at Boot-Time</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#info">Additional Information</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="stopping.html">Stopping and Restarting</a></li><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="stopping.html">Stopping and Restarting</a></li><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="startup" id="startup">How Apache Starts</a></h2>
@@ -57,17 +57,17 @@
     run as a less privileged user. This is controlled by the selected
     <a href="mpm.html">Multi-Processing Module</a>.</p>
 
-    <p>The recommended method of invoking the <code>httpd</code>
-    executable is to use the <a href="programs/apachectl.html">apachectl</a> control script.  This
+    <p>The recommended method of invoking the <code class="program"><a href="./programs/httpd.html">httpd</a></code>
+    executable is to use the <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> control script. This
     script sets certain environment variables that are necessary for
-    <code>httpd</code> to function correctly under some operating
-    systems, and then invokes the <code>httpd</code> binary.
-    <code>apachectl</code> will pass through any command line
-    arguments, so any <code>httpd</code> options may also be used with
-    <code>apachectl</code>.  You may also directly edit the
-    <code>apachectl</code> script by changing the <code>HTTPD</code>
+    <code class="program"><a href="./programs/httpd.html">httpd</a></code> to function correctly under some operating
+    systems, and then invokes the <code class="program"><a href="./programs/httpd.html">httpd</a></code> binary.
+    <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> will pass through any command line
+    arguments, so any <code class="program"><a href="./programs/httpd.html">httpd</a></code> options may also be used with
+    <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>.  You may also directly edit the
+    <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> script by changing the <code>HTTPD</code>
     variable near the top to specify the correct location of the
-    <code>httpd</code> binary and any command-line arguments that you
+    <code class="program"><a href="./programs/httpd.html">httpd</a></code> binary and any command-line arguments that you
     wish to be <em>always</em> present.</p>
 
     <p>The first thing that <code>httpd</code> does when it is
@@ -113,25 +113,25 @@
 <h2><a name="boot" id="boot">Starting at Boot-Time</a></h2>
 
     <p>If you want your server to continue running after a system
-    reboot, you should add a call to <code>apachectl</code> to your
+    reboot, you should add a call to <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> to your
     system startup files (typically <code>rc.local</code> or a file in
     an <code>rc.N</code> directory). This will start Apache as
     root. Before doing this ensure that your server is properly
     configured for security and access restrictions.</p>
 
-    <p>The <code>apachectl</code> script is designed to act like a
+    <p>The <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> script is designed to act like a
     standard SysV init script; it can take the arguments
     <code>start</code>, <code>restart</code>, and <code>stop</code>
     and translate them into the appropriate signals to
-    <code>httpd</code>.  So you can often simply link
-    <code>apachectl</code> into the appropriate init directory. But be
+    <code class="program"><a href="./programs/httpd.html">httpd</a></code>.  So you can often simply link
+    <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> into the appropriate init directory. But be
     sure to check the exact requirements of your system.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="info" id="info">Additional Information</a></h2>
 
-    <p>Additional information about the command-line options of <a href="programs/httpd.html">httpd</a> and <a href="programs/apachectl.html">apachectl</a> as well as other
-    support programs included with the server is available on the
+    <p>Additional information about the command-line options of <code class="program"><a href="./programs/httpd.html">httpd</a></code> and <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> as well as other support
+    programs included with the server is available on the
     <a href="programs/">Server and Supporting Programs</a> page.
     There is also documentation on all the <a href="mod/">modules</a> included with the Apache distribution
     and the <a href="mod/directives.html">directives</a> that they
