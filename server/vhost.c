@@ -587,10 +587,12 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
      * occured in the config file, we'll copy it in that order.
      */
     for (sar = name_vhost_list; sar; sar = sar->next) {
+        char inaddr_any[16] = {0}; /* big enough to handle IPv4 or IPv6 */
         unsigned bucket = hash_addr(sar->host_addr);
         ipaddr_chain *ic = new_ipaddr_chain(p, NULL, sar);
 
-        if (sar->host_addr->sa.sin.sin_addr.s_addr != INADDR_ANY) {
+        if (memcmp(sar->host_addr->ipaddr_ptr, inaddr_any, 
+                   sar->host_addr->ipaddr_len)) { /* not IN[6]ADDR_ANY */
             *iphash_table_tail[bucket] = ic;
             iphash_table_tail[bucket] = &ic->next;
         }
