@@ -50,7 +50,7 @@
     encoding) you may need to 'touch' affected files (updating
     their last modified date) to ensure that all visitors are
     receive the corrected content headers.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#addcharset">AddCharset</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addencoding">AddEncoding</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addhandler">AddHandler</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addinputfilter">AddInputFilter</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addlanguage">AddLanguage</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addoutputfilter">AddOutputFilter</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addtype">AddType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#defaultlanguage">DefaultLanguage</a></li><li><img alt="" src="../images/down.gif" /> <a href="#multiviewsmatch">MultiviewsMatch</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removecharset">RemoveCharset</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removeencoding">RemoveEncoding</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removehandler">RemoveHandler</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removeinputfilter">RemoveInputFilter</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removelanguage">RemoveLanguage</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removeoutputfilter">RemoveOutputFilter</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removetype">RemoveType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#typesconfig">TypesConfig</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#multipleext">Files with Multiple Extensions</a></li><li><img alt="" src="../images/down.gif" /> <a href="#contentencoding">Content encoding</a></li><li><img alt="" src="../images/down.gif" /> Character sets and languages</li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code></li><li><code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code></li><li><code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code></li><li><code class="directive"><a href="../mod/core.html#defaulttype">DefaultType</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="multipleext" id="multipleext">Files with Multiple Extensions</a></h2>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#addcharset">AddCharset</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addencoding">AddEncoding</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addhandler">AddHandler</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addinputfilter">AddInputFilter</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addlanguage">AddLanguage</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addoutputfilter">AddOutputFilter</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addtype">AddType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#defaultlanguage">DefaultLanguage</a></li><li><img alt="" src="../images/down.gif" /> <a href="#modmimeusepathinfo">ModMimeUsePathInfo</a></li><li><img alt="" src="../images/down.gif" /> <a href="#multiviewsmatch">MultiviewsMatch</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removecharset">RemoveCharset</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removeencoding">RemoveEncoding</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removehandler">RemoveHandler</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removeinputfilter">RemoveInputFilter</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removelanguage">RemoveLanguage</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removeoutputfilter">RemoveOutputFilter</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removetype">RemoveType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#typesconfig">TypesConfig</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#multipleext">Files with Multiple Extensions</a></li><li><img alt="" src="../images/down.gif" /> <a href="#contentencoding">Content encoding</a></li><li><img alt="" src="../images/down.gif" /> Character sets and languages</li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code></li><li><code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code></li><li><code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code></li><li><code class="directive"><a href="../mod/core.html#defaulttype">DefaultType</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="multipleext" id="multipleext">Files with Multiple Extensions</a></h2>
 
 
     <p>Files can have more than one extension, and the order of the
@@ -453,7 +453,37 @@ specified language</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 DefaultLanguage en
 </code></p></div>
 
-<h3>See also</h3><ul><li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MultiviewsMatch" id="MultiviewsMatch">MultiviewsMatch</a> <a name="multiviewsmatch" id="multiviewsmatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+<h3>See also</h3><ul><li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ModMimeUsePathInfo" id="ModMimeUsePathInfo">ModMimeUsePathInfo</a> <a name="modmimeusepathinfo" id="modmimeusepathinfo">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Tells mod_mime to treat path_info components as part of the filename</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>ModMimeUsePathInfo On|Off</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual host, directory, location, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_mime</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
+              </a></th><td>Available in Apache 2.0.41 and later</td></tr></table>
+
+  <p>The ModMimeUsePathInfo directive is used to combine the filename with
+     the path_info URL component to apply mod_mime's directives to the
+     request.  The default value is 'Off' - therefore, the path_info
+     component is ignored.
+  </p>
+
+  <p>This directive is recommended when you have a virtual filesystem.</p>
+
+<div class="example"><h3>Example</h3><p><code>
+
+ModMimeUsePathInfo On
+</code></p></div>
+
+  <p>If you have a request for /bar/foo.html where /bar is a Location and
+     ModMimeUsePathInfo is on, mod_mime will treat the incoming request as
+     /bar/foo.html and directives like
+     <code>AddOutputFilter INCLUDES .shtml</code> will add the INCLUDES
+     filter to the request.  If ModMimeUsePathInfo is not set, the includes
+     filter will not be added.
+  </p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MultiviewsMatch" id="MultiviewsMatch">MultiviewsMatch</a> <a name="multiviewsmatch" id="multiviewsmatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>The types of files that will be included when 
 searching for a matching file with MultiViews</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>MultiviewsMatch

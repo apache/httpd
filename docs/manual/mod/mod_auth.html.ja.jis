@@ -4,10 +4,11 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_auth - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_auth</h1><table class="module"><tr><th>説明:
-                </th><td>テキストファイルを用いたユーザ認証</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
+      --><title>mod_auth - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_auth</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
+                  </a></th><td>テキストファイルを用いたユーザ認証</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
                   </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
-                  </a></th><td>auth_module</td></tr></table><h3>概要</h3>
+                  </a></th><td>auth_module</td></tr><tr><th><a href="module-dict.html#SourceFile">:
+                  </a></th><td>mod_auth.c</td></tr></table><h3>概要</h3>
 
     <p>プレインテキストのパスワードファイルとグループファイルを検査して
     ユーザを探すことで、HTTP 基本認証でアクセス制限できるようにします。
@@ -16,8 +17,8 @@
     また、HTTP ダイジェスト認証は <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>
     で提供されています。</p>
 
-</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#authauthoritative">AuthAuthoritative</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authgroupfile">AuthGroupFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authuserfile">AuthUserFile</a></li></ul><h3>参照</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li><li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthAuthoritative" id="AuthAuthoritative">AuthAuthoritative</a> <a name="authauthoritative" id="authauthoritative">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
-            </th><td>認証と承認プロセスを、
+</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#authauthoritative">AuthAuthoritative</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authgroupfile">AuthGroupFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authuserfile">AuthUserFile</a></li></ul><h3>参照</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li><li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthAuthoritative" id="AuthAuthoritative">AuthAuthoritative</a> <a name="authauthoritative" id="authauthoritative">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+              </a></th><td>認証と承認プロセスを、
 より低いレベルのモジュールに移行させるかどうかを設定する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>AuthAuthoritative on|off</td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
               </a></th><td><code>AuthAuthoritative on</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
@@ -71,8 +72,8 @@ Apache 2.0 では、モジュールの順序づけに異なる仕組みを使っています。</div>
     <em>置かないで下さい</em>。そうしないと 
     <code class="directive"><a href="#authuserfile">AuthUserFile</a></code>
     はダウンロードできてしまいます。</div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthGroupFile" id="AuthGroupFile">AuthGroupFile</a> <a name="authgroupfile" id="authgroupfile">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
-            </th><td>認証に使用するユーザグループの一覧が格納されている、
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthGroupFile" id="AuthGroupFile">AuthGroupFile</a> <a name="authgroupfile" id="authgroupfile">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+              </a></th><td>認証に使用するユーザグループの一覧が格納されている、
 テキストファイルの名前を設定する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>AuthGroupFile <em>file-path</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
               </a></th><td>ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
@@ -105,8 +106,8 @@ Apache 2.0 では、モジュールの順序づけに異なる仕組みを使っています。</div>
     保護しようとしているディレクトリ以下には、<em>置かないで下さい</em>。
     そうしないと AuthGroupFile はダウンロードできてしまいます。</p>
 </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthUserFile" id="AuthUserFile">AuthUserFile</a> <a name="authuserfile" id="authuserfile">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
-            </th><td>認証に使用するユーザとパスワードの一覧が格納されている、
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthUserFile" id="AuthUserFile">AuthUserFile</a> <a name="authuserfile" id="authuserfile">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+              </a></th><td>認証に使用するユーザとパスワードの一覧が格納されている、
 テキストファイルの名前を設定する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>AuthUserFile <em>file-path</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
               </a></th><td>ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:

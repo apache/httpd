@@ -635,6 +635,45 @@ DefaultLanguage en
 <seealso><module>mod_negotiation</module></seealso>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>ModMimeUsePathInfo</name>
+<description>Tells mod_mime to treat path_info components as part of the filename</description>
+<syntax>ModMimeUsePathInfo On|Off</syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>location</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>Available in Apache 2.0.41 and later</compatibility>
+
+<usage>
+
+  <p>The ModMimeUsePathInfo directive is used to combine the filename with
+     the path_info URL component to apply mod_mime's directives to the
+     request.  The default value is 'Off' - therefore, the path_info
+     component is ignored.
+  </p>
+
+  <p>This directive is recommended when you have a virtual filesystem.</p>
+
+<example>
+<title>Example</title>
+ModMimeUsePathInfo On
+</example>
+
+  <p>If you have a request for /bar/foo.html where /bar is a Location and
+     ModMimeUsePathInfo is on, mod_mime will treat the incoming request as
+     /bar/foo.html and directives like
+     <code>AddOutputFilter INCLUDES .shtml</code> will add the INCLUDES
+     filter to the request.  If ModMimeUsePathInfo is not set, the includes
+     filter will not be added.
+  </p>
+
+</usage>
+</directivesynopsis>
 
 <directivesynopsis>
 <name>RemoveCharset</name>
