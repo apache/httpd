@@ -189,3 +189,5 @@
  o init functions should return status code rather than ssl_die()
  o ssl_engine_pphrase.c needs to be reworked so it is generic enough
    to also decrypt proxy keys
+ o the shmcb code should just align its memory segment rather than
+   jumping through all the "safe" memcpy and memset hoops
