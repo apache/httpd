@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/09/15 18:59:14 $
+Last modified: $Date: 2002/09/16 15:52:40 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -29,6 +29,9 @@ tutorial on how to get started with making your contribution.
       the program in the site-tools repository, but nobody seems
       willing to update the nroff files at the moment.
       What should we do?
+
+      - we should be able to setup an XSLT to convert XML to nroff,
+        shouldn't we? --nd
 
 - MPM documentation
      - Non unix/windows MPMs still need to be completed.
@@ -78,9 +81,14 @@ Documentation improvements
     that contains this info.
   - Use a tag like <replaceable> (but not that long) in place of
     <em> for things like the <syntax> listing.
+
+    -> use <var>, it's intuitive enough and can easily passed through
+    by XSLT at least for HTML targets --nd (volunteer)
+
   - Use the sitemap.xml in place of allmodules.xml to generate the
     directives.html and mod/index.html.
   - Handle more levels of sub<section>s.
+  - add letter links to glossary, perhaps also a term overview (sidebar)
 
 * Improving the "security docs"
 
@@ -124,9 +132,6 @@ misc/known_client_problems.html    # obsolete?
 misc/perf-tuning.html              
 misc/rewriteguide.html
 misc/tutorials.html                # obsolete?
-platform/win_compiling.html
-platform/win_service.html
-platform/windows.html
 ssl/index.html.en
 ssl/ssl_compat.html
 ssl/ssl_faq.html
