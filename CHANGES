@@ -6,7 +6,7 @@ Changes with Apache 2.1.0-dev
      PR 25772.  [André Malo]
 
   *) Allow unescaped error logs via compile time switch
-     "-DAP_ERROR_LOG_UNESCAPED".
+     "-DAP_UNSAFE_ERROR_LOG_UNESCAPED".
      [Geoffrey Young <geoff modperlcookbook.org>, André Malo]
 
   *) proxy_http fix: mod_proxy hangs when both KeepAlive and 
