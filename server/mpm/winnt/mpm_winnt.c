@@ -1265,7 +1265,6 @@ static void child_main()
             ap_update_child_status_from_indexes(0, i, SERVER_STARTING, NULL);
             child_handles[i] = (thread) _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) worker_main,
                                                        (void *) i, 0, &tid);
-            /* ToDo: Check for error */
             if (child_handles[i] == 0) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                              "Child %d: _beginthreadex failed. Unable to create all worker threads. "
