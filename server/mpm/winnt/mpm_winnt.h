@@ -88,14 +88,12 @@ apr_status_t ap_registry_delete_value(const char *key, const char *name);
 #define SERVICECONFIG "System\\CurrentControlSet\\Services\\%s"
 #define SERVICEPARAMS "System\\CurrentControlSet\\Services\\%s\\Parameters"
 
-extern char const* service_name;
-extern char const* display_name;
-
-apr_status_t mpm_service_set_name(apr_pool_t *p, const char *name);
+apr_status_t mpm_service_set_name(apr_pool_t *p, const char **display_name, 
+                                                 const char *set_name);
 apr_status_t mpm_merge_service_args(apr_pool_t *p, apr_array_header_t *args, 
                                    int fixed_args);
 
-apr_status_t mpm_service_to_start(void);
+apr_status_t mpm_service_to_start(const char **display_name);
 apr_status_t mpm_service_started(void);
 apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc, 
                                 char const* const* argv);
