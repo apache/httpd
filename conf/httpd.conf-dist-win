@@ -564,27 +564,39 @@ AddEncoding x-gzip gz tgz
 #
 # AddLanguage allows you to specify the language of a document. You can
 # then use content negotiation to give a browser a file in a language
-# it can understand.  Note that the suffix does not have to be the same
-# as the language keyword --- those with documents in Polish (whose
-# net-standard language code is pl) may wish to use "AddLanguage pl .po" 
-# to avoid the ambiguity with the common suffix for perl scripts.
+# it can understand.  
 #
-# In the case of 'ltz' we violate the RFC by using a three char 
+# Note 1: The suffix does not have to be the same as the language 
+# keyword --- those with documents in Polish (whose net-standard 
+# language code is pl) may wish to use "AddLanguage pl .po" to 
+# avoid the ambiguity with the common suffix for perl scripts.
+#
+# Note 2: The example entries below illustrate that in quite
+# some cases the two character 'Language' abbriviation is not
+# identical to the two character 'Country' code for it's country,
+# E.g. 'Danmark/dk' versus 'Danish/da'.
+#
+# Note 3: In the case of 'ltz' we violate the RFC by using a three char 
 # specifier. But there is 'work in progress' to fix this and get 
 # the reference data for rfc1766 cleaned up.
 #
-AddLanguage da .dk      # Danish
-AddLanguage nl .nl      # Dutch
-AddLanguage en .en      # English
-AddLanguage et .ee      # Estonian
-AddLanguage fr .fr      # Frech
-AddLanguage de .de      # German
-AddLanguage el .el      # Greek (Modern)
-AddLanguage it .it      # Italian
-AddLanguage pt .pt      # Portugese
-AddLanguage ltz .lu     # Luxembourgeois* 
-AddLanguage es .es      # Spanish
-AddLanguage sv .se      # Swedish
+# Danish (da) - Dutch (nl) - English (en) - Estonian (ee)
+# French (fr) - German (de) - Greek-Modern (el)
+# Italian (it) -Portugese (pt) - Luxembourgeois* (ltz)
+# Spanish (es) - Swedish (sv)
+#
+AddLanguage da .dk
+AddLanguage nl .nl
+AddLanguage en .en
+AddLanguage et .ee
+AddLanguage fr .fr
+AddLanguage de .de
+AddLanguage el .el
+AddLanguage it .it
+AddLanguage pt .pt
+AddLanguage ltz .lu
+AddLanguage es .es
+AddLanguage sv .se
 
 # LanguagePriority allows you to give precedence to some languages
 # in case of a tie during content negotiation.
@@ -592,7 +604,7 @@ AddLanguage sv .se      # Swedish
 # Just list the languages in decreasing order of preference. We have
 # more or less alphabetized them here. You propably want to change this.
 #
-LanguagePriority en da nl et fr de el it pt x-lux es sv
+LanguagePriority en da nl et fr de el it pt ltz es sv
 
 #
 # AddType allows you to tweak mime.types without actually editing it, or to
