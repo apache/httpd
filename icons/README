@@ -3,21 +3,16 @@ Public Domain Icons
      These icons were originally made for Mosaic for X and have been
      included in the NCSA httpd and Apache server distributions in the
      past. They are in the public domain and may be freely included in any
-     application. The originals were done by Kevin Hughes (kevinh@eit.com).
+     application. The originals were done by Kevin Hughes 
+     (kevinh@kevcom.com).
 
      Many thanks to Andy Polyakov for tuning the icon colors and adding a
      few new images. If you'd like to contribute additions or ideas to
      this set, please let me know.
 
-     Almost all of these icons are 20x22 pixels in size.
-
-     The distribution site for these icons is at:
-
-          http://www.eit.com/goodies/www.icons/
-
-     Kevin Hughes
-     September 11, 1995
-
+     Almost all of these icons are 20x22 pixels in size.  There are
+     alternative icons in the "small" directory that are 16x16 in size,
+     provided by Mike Brown (mike@hyperreal.org).
 
 Suggested Uses
 
