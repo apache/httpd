@@ -18,7 +18,8 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Multi-Processing Modules (MPMs)</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./en/mpm.html" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Available Languages: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/mpm.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/mpm.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./ja/mpm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
@@ -88,13 +89,12 @@ how they are used by the Apache HTTP Server.</p>
     <p>MPMs must be chosen during configuration, and compiled into
     the server. Compilers are capable of optimizing a lot of
     functions if threads are used, but only if they know that
-    threads are being used. Because some MPMs use threads on Unix
-    and others don't, Apache will always perform better if the MPM
-    is chosen at configuration time and built into Apache.</p>
+    threads are being used.</p>
 
     <p>To actually choose the desired MPM, use the argument
-    --with-mpm= <em>NAME</em> with the <code class="program"><a href="./programs/configure.html">configure</a></code> script.
-    <em>NAME</em> is the name of the desired MPM.</p>
+      <code>--with-mpm=<em>NAME</em></code> with the
+      <code class="program"><a href="./programs/configure.html">configure</a></code> script. <em>NAME</em> is the name of the
+      desired MPM.</p>
 
     <p>Once the server has been compiled, it is possible to
     determine which MPM was chosen by using <code>./httpd
@@ -118,7 +118,8 @@ choice at compile-time.</p>
 </table>
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./en/mpm.html" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Available Languages: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/mpm.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/mpm.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./ja/mpm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
