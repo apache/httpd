@@ -571,8 +571,11 @@ static int cgid_server(void *data)
         len = sizeof(unix_addr);
         sd2 = accept(sd, (struct sockaddr *)&unix_addr, &len);
         if (sd2 < 0) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, errno, (server_rec *)data,
-                         "Error accepting on cgid socket.");
+            if (errno != EINTR) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, errno, 
+                             (server_rec *)data,
+                             "Error accepting on cgid socket.");
+            }
             continue;
         }
        
