@@ -72,7 +72,7 @@ APR_TARGETS = $(apr_configure) $(apr_private.h_in) $(mm_configure)
 
 PCRE_TARGETS = $(pcre_configure)
 
-targets = .deps aclocal.m4 $(APACHE_TARGETS) $(APR_TARGETS) $(PCRE_TARGETS)
+targets = .deps aclocal.m4 $(APACHE_TARGETS) $(APR_TARGETS) $(PCRE_TARGETS) export_lists
 
 cross_compile_warning = "warning: AC_TRY_RUN called without default to allow cross compiling"
 
@@ -86,6 +86,9 @@ libtool_m4 = $(libtool_prefix)/share/aclocal/libtool.m4
 aclocal.m4: acinclude.m4 lib/apr/apr_common.m4 lib/apr/hints.m4 $(libtool_m4)
 	@echo rebuilding $@
 	@cat acinclude.m4 $(libtool_m4) > $@
+
+export_lists:
+	@build/buildexports.sh main/exports.c lib/apr/apr.exports
 
 $(LT_TARGETS):
 	libtoolize $(AMFLAGS) --force
