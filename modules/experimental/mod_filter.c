@@ -134,7 +134,6 @@ static void filter_trace(apr_pool_t* pool, int debug, const char* fname,
                          apr_bucket_brigade* bb)
 {
     apr_bucket* b ;
-    const char* type ;
     switch ( debug ) {
         case 0:        /* normal, operational use */
             return ;
@@ -143,7 +142,6 @@ static void filter_trace(apr_pool_t* pool, int debug, const char* fname,
             for ( b = APR_BRIGADE_FIRST(bb) ;
                   b != APR_BRIGADE_SENTINEL(bb) ;
                   b = APR_BUCKET_NEXT(b) ) {
-                type = filter_bucket_type(b) ;
                 ap_log_perror(APLOG_MARK, APLOG_NOTICE, 0, pool, "   %s: %s %d",
                               fname, filter_bucket_type(b), b->length);
             }
@@ -457,9 +455,9 @@ static const char* filter_declare(cmd_parms* cmd, void* CFG,
             filter->dispatch = HANDLER ;
         } else {
             filter->dispatch = RESPONSE_HEADERS ;
-            tmpname = apr_pstrdup(cmd->pool, condition) ;
-            ap_str_tolower(tmpname) ;
         }
+        tmpname = apr_pstrdup(cmd->pool, condition) ;
+        ap_str_tolower(tmpname) ;
     }
     if ( ( filter->dispatch == RESPONSE_HEADERS )
         && !strcmp(tmpname, "content-type") ) {
