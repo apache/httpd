@@ -1,0 +1,100 @@
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!-- 
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                This file is generated from xml source: DO NOT EDIT
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        --><title>mod_userdir- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_userdir</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">説明:</span></td><td>ユーザ専用のディレクトリを提供します
+  </td></tr><tr><td><a href="module-dict.html#Status" class="help">ステータス:</a></td><td>Base</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">モジュール識別子:</a></td><td>userdir_module</td></tr></table></td></tr></table><h2>概要</h2>
+このモジュールは、
+<code>http://example.com/~user/</code>
+構文を使ってユーザ専用ディレクトリにアクセスできるようにします。
+<h2>ディレクティブ</h2><ul><li><a href="#userdir">UserDir</a></li></ul><p><strong>参照 </strong></p><ul><li><a href="../urlmapping.html">URL から
+ファイルシステムへのマッピング</a></li></ul><hr/><h2><a name="UserDir">UserDir</a> <a name="userdir">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: </strong></td><td>ユーザ専用ディレクトリの位置</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:</a></td><td>UserDir <em>directory-filename</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">デフォルト:</a></td><td><code>UserDir public_html</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:</a></td><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:</a></td><td>mod_userdir</td></tr></table></td></tr></table>
+
+    <p><code class="directive">UserDir</code> ディレクティブは、
+    ユーザのドキュメントへのリクエストを受けた時に使う
+    ユーザのホームディレクトリ中の、実際のディレクトリを
+    設定します。
+    <em>directory-filename</em> には次のどれかを指定します:</p>
+
+    <ul>
+      <li>ディレクトリ名か下に示すようなパターン。</li>
+
+      <li><code>disabled</code> キーワード。
+      <code>enabled</code> キーワード (下記参照) で明示的に
+      指定されたユーザ以外の
+      <em>全ての</em>ユーザ名-ディレクトリ変換を
+      しないようにします。</li>
+
+      <li><code>disabled</code> キーワードと、スペース区切りのユーザ名リスト。
+      このリスト中に含まれるユーザ名に対しては、たとえ
+      <code>enabled</code> 節にあったとしても、
+      <em>決して</em>ディレクトリ変換は行われません。</li>
+
+      <li><code>enebled</code> キーワードとスペース区切りのユーザ名リスト。
+      全体では変換が無効になっていたといたとしても、
+      これらのユーザ名にはディレクトリ変換が行われます。
+      ただし、<code>disabled</code> 節にもあれば変換はされません。
+      </li>
+    </ul>
+
+    <p>もし <code>enabled</code> も <code>disabled</code>
+    キーワードも <code>UserDir</code> に現われていなければ、
+    引数はファイル名パターンとして扱われ、
+    名前からディレクトリへの変換の指定を行なう時に使われます。
+    <code>http://www.foo.com/~bob/one/two.html</code>
+    へのリクエストは次のように変換されます:</p>
+
+<table>
+<tr><th>UserDir ディレクティブ</th>
+<th>変換後のパス</th></tr>
+<tr><td>UserDir public_html</td><td>~bob/public_html/one/two.html</td></tr>
+<tr><td>UserDir /usr/web</td><td>/usr/web/bob/one/two.html</td></tr>
+<tr><td>UserDir /home/*/www</td><td>/home/bob/www/one/two.html</td></tr>
+</table>
+
+    <p>次のディレクティブはクライアントに対してリダイレクトを
+    送信します:</p>
+
+<table>
+<tr><th>UserDir ディレクティブ</th>
+<th>変換後のパス</th></tr>
+<tr><td>UserDir http://www.foo.com/users</td><td>http://www.foo.com/users/bob/one/two.html</td></tr>
+<tr><td>UserDir
+http://www.foo.com/*/usr</td><td>http://www.foo.com/bob/usr/one/two.html</td></tr>
+<tr><td>UserDir
+http://www.foo.com/~*/</td><td>http://www.foo.com/~bob/one/two.html</td></tr>
+</table> 
+
+<blockquote><table><tr><td bgcolor="#e0e5f5">
+      <strong>このディレクティブを使うときは注意してください;
+      "<code>UserDir ./</code>" は
+      "<code>/~root</code>" から "<code>/</code>" へマップしますが、
+      これは望ましい動作ではないでしょう。
+      "<code>UserDir disabled root</code>" 宣言を
+      設定の中に含めておくことを強くお薦めします。
+      追加情報に <a href="core.html#directory" class="directive"><code class="directive">Directory</code></a>
+      ディレクティブや
+      <a href="../misc/security_tips.html">セキュリティ
+      Tips</a> のページもご覧下さい。</strong>
+</td></tr></table></blockquote>
+
+<p>追加の例:</p>
+
+<p>少数のユーザのみが <code>UserDir</code>
+ディレクトリを利用し、それ以外には利用させたくない場合は
+次を使いましょう:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+UserDir disabled<br>
+UserDir enabled user1 user2 user3
+</code></td></tr></table></blockquote>
+
+<p>大部分のユーザは <code>UserDir</code> ディレクトリを利用するけれど、
+少数の人は不許可にしたい場合は、次を使いましょう:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+UserDir enabled<br>
+UserDir disabled user4 user5 user6
+</code></td></tr></table></blockquote>
+
+<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="索引"/></a><a href="../"><img src="../images/home.gif" alt="ホーム"/></a></body></html>
