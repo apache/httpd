@@ -208,7 +208,9 @@ API_EXPORT(const char *) ap_os_dso_error(void);
 #define ap_os_kill(pid, sig)                kill(pid, sig)
 
 /* Some Win32isms */
+#define HAVE_ISNAN
 #define isnan(n) _isnan(n)
+#define HAVE_ISINF
 #define isinf(n) (!_finite(n))
 
 #endif /* WIN32 */
