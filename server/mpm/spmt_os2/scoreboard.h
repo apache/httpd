@@ -153,6 +153,7 @@ typedef struct {
     char request[64];		/* We just want an idea... */
     server_rec *vhostrec;	/* What virtual host is being accessed? */
                                 /* SEE ABOVE FOR SAFE USAGE! */
+    int thread_retval;
 } short_score;
 
 typedef struct {
@@ -162,12 +163,13 @@ typedef struct {
 
 /* stuff which the parent generally writes and the children rarely read */
 typedef struct {
-    pid_t pid;
+    pid_t tid;
 #ifdef OPTIMIZE_TIMEOUTS
     time_t last_rtime;		/* time(0) of the last change */
     vtime_t last_vtime;		/* the last vtime the parent has seen */
 #endif
     ap_generation_t generation;	/* generation of this child */
+    int deferred_die;
 } parent_score;
 
 typedef struct {
