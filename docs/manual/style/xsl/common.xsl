@@ -915,6 +915,37 @@
 </xsl:template>
 <!-- /transnote -->
 
+<!-- ==================================================================== -->
+<!-- <phonetic>                                                           -->
+<!-- phonetics are enclosed in  square brackets and displayed in a        -->
+<!-- different color                                                      -->
+<!-- ==================================================================== -->
+<xsl:template match="phonetic">
+<span class="phonetic">
+    <xsl:text>[</xsl:text>
+    <xsl:apply-templates />
+    <xsl:text>]</xsl:text>
+</span>
+</xsl:template>
+<!-- /phonetic -->
+
+
+<!-- ==================================================================== -->
+<!-- <glossary>                                                           -->
+<!-- link to a glossary anchor                                            -->
+<!-- ==================================================================== -->
+<xsl:template match="glossary">
+<span>
+    <xsl:attribute name="title">
+        <xsl:value-of select="$message[@id='glossarylink']" />
+    </xsl:attribute>
+    <xsl:text>&#x2192;</xsl:text>
+</span>&nbsp;
+<a href="{$path}/glossary.html#{@ref}">
+    <xsl:apply-templates />
+</a>
+</xsl:template>
+<!-- /glossary -->
 
 <!-- ==================================================================== -->
 <!-- Filter &#160; in text() nodes.                                       -->
