@@ -1449,7 +1449,7 @@ static int hook_fixup(request_rec *r)
     char *cp2;
     const char *ccp;
     char *prefix;
-    int l;
+    apr_size_t l;
     int rulestatus;
     int n;
     char *ofilename;
@@ -1478,10 +1478,10 @@ static int hook_fixup(request_rec *r)
      *  URL: http://localhost/foo  and .htaccess is located in foo directory
      *  Ignore such attempts, since they may lead to undefined behaviour.
      */
-    if (r->filename &&
-        strlen(r->filename) == strlen(dconf->directory) - 1 &&
-        (dconf->directory)[strlen(dconf->directory) - 1] == '/' &&
-        !strncmp(r->filename, dconf->directory, strlen(dconf->directory) - 1)) {
+    l = strlen(dconf->directory) - 1;
+    if (r->filename && strlen(r->filename) == l &&
+        (dconf->directory)[l] == '/' &&
+        !strncmp(r->filename, dconf->directory, l)) {
         return DECLINED;
     }
 
