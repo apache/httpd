@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/04 18:40:20 $]
+Last modified at [$Date: 2003/05/04 23:43:00 $]
 
 Release:
 
@@ -124,7 +124,7 @@ PATCHES TO PORT FROM 2.1
       (There's a somewhat outdated example for such cross language links:
        <http://test.perlig.de/manual/>, done with mod_rewrite, waiting for
        mod_negotiation enhancement ;-))
-      modules/mappers/mod_negotiation.c r1.110
+      modules/mappers/mod_negotiation.c r1.110,r1.115
       +1: nd
 
     * Allow mod_dav to do weak entity comparison functions.
