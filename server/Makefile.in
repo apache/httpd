@@ -12,7 +12,8 @@ LTLIBRARY_SOURCES = \
 	util_script.c util_uri.c util_md5.c util_cfgtree.c util_ebcdic.c \
 	rfc1413.c connection.c listen.c \
         mpm_common.c util_charset.c util_debug.c util_xml.c \
-	util_filter.c exports.c buildmark.c scoreboard.c
+	util_filter.c exports.c buildmark.c scoreboard.c \
+	error_bucket.c
 
 targets = delete-exports $(LTLIBRARY_NAME)
 
