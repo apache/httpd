@@ -239,12 +239,12 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_charset_lite.mak CFG="mod_charset_lite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_mem_cache.mak   CFG="mod_mem_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_disk_cache.mak  CFG="mod_disk_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_ext_filter.mak  CFG="mod_ext_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\filters
 !IF EXIST("srclib\zlib")
 	 $(MAKE) $(MAKEOPT) -f mod_deflate.mak     CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 !ENDIF
+	 $(MAKE) $(MAKEOPT) -f mod_ext_filter.mak  CFG="mod_ext_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_include.mak     CFG="mod_include - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\generators
