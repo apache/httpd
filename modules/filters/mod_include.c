@@ -2894,6 +2894,15 @@ static int xbithack_handler(request_rec *r)
 #endif
 }
 
+static void insert_filter(request_rec *r)
+{
+    if (r->handler && (strcmp(r->handler, "server-parsed") == 0)) {
+        ap_add_output_filter("INCLUDES", NULL, r, r->connection);
+        r->content_type = "text/html";
+        r->handler = "default-handler";
+    }
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     APR_REGISTER_OPTIONAL_FN(ap_ssi_get_tag_and_value);
@@ -2901,6 +2910,7 @@ static void register_hooks(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(ap_register_include_handler);
     ap_hook_post_config(include_post_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_handler(xbithack_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_insert_filter(insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
     ap_register_output_filter("INCLUDES", includes_filter, AP_FTYPE_CONTENT);
 }
 
