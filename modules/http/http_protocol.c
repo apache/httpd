@@ -1033,7 +1033,7 @@ request_rec *ap_read_request(conn_rec *conn)
     r->status = HTTP_OK;                         /* Until further notice. */
 
     /* update what we think the virtual host is based on the headers we've
-     * now read
+     * now read. may update status.
      */
     ap_update_vhost_from_headers(r);
 
@@ -1056,6 +1056,8 @@ request_rec *ap_read_request(conn_rec *conn)
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                       "client sent HTTP/1.1 request without hostname "
                       "(see RFC2068 section 9, and 14.23): %s", r->uri);
+    }
+    if (r->status != HTTP_OK) {
         ap_send_error_response(r, 0);
         ap_run_log_transaction(r);
         return r;
