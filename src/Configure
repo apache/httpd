@@ -532,7 +532,7 @@ case "$PLAT" in
     *-sco5*)
 	OS='SCO 5'
 	CFLAGS="$CFLAGS -DSCO5"
-	LIBS="$LIBS -lsocket -lmalloc -lprot"
+	LIBS="$LIBS -lsocket -lmalloc -lprot -ltinfo -lx -lm"
 	DEF_WANTHSREGEX=no
 	;;
     *-sco_sv*|*-SCO_SV*)
