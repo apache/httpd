@@ -135,9 +135,9 @@ BOOL ssl_config_global_isfixed(SSLModConfigRec *mc)
 **  _________________________________________________________________
 */
 
-static void modssl_ctx_init(modssl_ctx_t *ctx, SSLSrvConfigRec *sc)
+static void modssl_ctx_init(modssl_ctx_t *ctx)
 {
-    ctx->sc                  = sc;
+    ctx->sc                  = NULL;
 
     ctx->ssl_ctx             = NULL;
 
@@ -169,7 +169,7 @@ static void modssl_ctx_init_server(SSLSrvConfigRec *sc,
 
     ctx = sc->server = apr_palloc(p, sizeof(*sc->server));
 
-    modssl_ctx_init(ctx, sc);
+    modssl_ctx_init(ctx);
 
     ctx->pks = apr_palloc(p, sizeof(*ctx->pks));
 
