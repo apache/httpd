@@ -60,9 +60,9 @@
  *
  * Action mime/type /cgi-bin/script
  * 
- * will activate /cgi-bin/script when a file of content type mime/type. It
- * sends the URL and file path of the requested document using the standard
- * CGI PATH_INFO and PATH_TRANSLATED environment variables.
+ * will activate /cgi-bin/script when a file of content type mime/type is 
+ * requested. It sends the URL and file path of the requested document using 
+ * the standard CGI PATH_INFO and PATH_TRANSLATED environment variables.
  *
  */
 
