@@ -1,5 +1,8 @@
 Changes with Apache 1.3b7
 
+  *) Fix the path to the ScoreBoardFile in the install-config target, too.
+     [Ralf S. Engelschall] PR#2105
+
   *) Let "configure" clear out the users parameters (provided as shell
      variables) to avoid side-effects in "src/Configure" when the user
      exported them (which is not needed, but some users do it). 

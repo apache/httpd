@@ -353,7 +353,7 @@ install-config:
 			-e 's;@@ServerRoot@@/proxy;$(localstatedir)/proxy;' \
 			-e 's;@@ServerRoot@@;$(prefix);' \
 			-e 's;logs/accept.lock;$(localstatedir)/$(localstatesubdir_run)/httpd.lock;' \
-			-e 's;logs/apache_status;$(localstatedir)/$(localstatesubdir_run)/httpd.scoreboard;' \
+			-e 's;logs/apache_runtime_status;$(localstatedir)/$(localstatesubdir_run)/httpd.scoreboard;' \
 			-e 's;logs/httpd.pid;$(localstatedir)/$(localstatesubdir_run)/httpd.pid;' \
 			-e 's;logs/access_log;$(localstatedir)/$(localstatesubdir_logs)/access_log;' \
 			-e 's;logs/error_log;$(localstatedir)/$(localstatesubdir_logs)/error_log;' \
