@@ -77,6 +77,7 @@ Committed Code Changes:
     * Doug's [PATCH] add -c and -C switches (take 3)
     * Paul's WIN32: patch to allow for Doug's -c option
     * Dean's [PATCH] unneeded pstrdup()s (in table_*() calls)
+    * Brian Havard's [Patch] OS/2 - fix up shut down
 
 Available Patches:
 
@@ -101,10 +102,6 @@ Available Patches:
     * Dean's [PATCH] yet another slow function
         <Pine.LNX.3.95dg3.980106142612.1054W-100000@twinlark.arctic.org>
 	Status: Dean +1, Jim +1, Martin +1, Paul +1
-
-    * Brian Havard's [Patch] OS/2 - fix up shut down
-	<199801051625.DAA25173@silk.apana.org.au>
-	Status: Dean +1, Jim +1
 
     * Martin's [PATCH] mod_speling [300] Multiple Choices bug (Take 2)
 	Submitted by: Soeren Ziehe <ROBINTON@AMTRASH.comlink.de>

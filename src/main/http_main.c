@@ -2223,6 +2223,10 @@ void set_signals(void)
     sa.sa_handler = sig_term;
     if (sigaction(SIGTERM, &sa, NULL) < 0)
 	aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGTERM)");
+#ifdef SIGINT
+    if (sigaction(SIGINT, &sa, NULL) < 0)
+        aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGINT)");
+#endif
 
     /* we want to ignore HUPs and USR1 while we're busy processing one */
     sigaddset(&sa.sa_mask, SIGHUP);
@@ -2263,11 +2267,11 @@ void set_signals(void)
 
 void detach(void)
 {
-#if !defined(WIN32) && !defined(__EMX__)
+#if !defined(WIN32)
     int x;
 
     chdir("/");
-#ifndef MPE
+#if !defined(MPE) && !defined(__EMX__)
 /* Don't detach for MPE because child processes can't survive the death of
    the parent. */
     if ((x = fork()) > 0)
@@ -2293,7 +2297,7 @@ void detach(void)
     }
 #elif defined(__EMX__)
     /* OS/2 don't support process group IDs */
-    pgrp = -getpid();
+    pgrp = getpid();
 #elif defined(MPE)
     /* MPE uses negative pid for process group */
     pgrp = -getpid();
@@ -2323,7 +2327,7 @@ void detach(void)
      * but we haven't opened that yet.  So leave it alone for now and it'll
      * be reopened moments later.
      */
-#endif /* ndef WIN32 or __EMX__ */
+#endif /* ndef WIN32 */
 }
 
 /* Set group privileges.
@@ -2906,6 +2910,14 @@ void child_main(int child_num_arg)
 #endif
     signal(SIGPIPE, timeout);
     signal(SIGALRM, alrm_handler);
+
+#ifdef __EMX__
+/* Stop Ctrl-C/Ctrl-Break signals going to child processes */
+    {
+        unsigned long ulTimes;
+        DosSetSignalExceptionFocus(0, &ulTimes);
+    }
+#endif
 
     while (1) {
 	BUFF *conn_io;

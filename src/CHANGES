@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) PORT: Fix problem killing children when terminating.  Allow ^C
+     to shut down the server.  [Brian Havard]
+
   *) pstrdup() is implicit in calls to table_* functions, so there's
      no need to do it before calling.  Clean up a few cases.
      [Marc Slemko, Dean Gaudet]
@@ -112,7 +115,7 @@ Changes with Apache 1.3b4
      htdocs/manual/misc/known_client_problems.html#257th-byte) can happen
      at the 256th byte as well.  Fixed.  [Dean Gaudet]
 
-  *) Fix mod_mime_magic under OS/2, no support for block devices.
+  *) PORT: Fix mod_mime_magic under OS/2, no support for block devices.
      [Brian Havard]
 
   *) Fix memory corruption caused by allocating auth usernames in the
