@@ -674,15 +674,6 @@ ServerSignature On
 <IfModule mod_mime.c>
 
     #
-    # AddEncoding allows you to have certain browsers (Mosaic/X 2.1+) uncompress
-    # information on the fly. Note: Not all browsers support this.
-    # Despite the name similarity, the following Add* directives have nothing
-    # to do with the FancyIndexing customization directives above.
-    #
-    AddEncoding x-compress Z
-    AddEncoding x-gzip gz tgz
-
-    #
     # AddLanguage allows you to specify the language of a document. You can
     # then use content negotiation to give a browser a file in a language
     # it can understand.  
@@ -760,7 +751,21 @@ ServerSignature On
     # make certain files to be certain types.
     #
     AddType application/x-tar .tgz
-    AddType image/x-icon .ico
+
+    #
+    # AddEncoding allows you to have certain browsers uncompress
+    # information on the fly. Note: Not all browsers support this.
+    # Despite the name similarity, the following Add* directives have nothing
+    # to do with the FancyIndexing customization directives above.
+    #
+    AddEncoding x-compress .Z
+    AddEncoding x-gzip .gz .tgz
+    #
+    # If the AddEncoding directives above are commented-out, then you
+    # probably should define those extensions to indicate media types:
+    #
+    #AddType application/x-compress .Z
+    #AddType application/x-gzip .gz .tgz
 
     #
     # AddHandler allows you to map certain file extensions to "handlers",
