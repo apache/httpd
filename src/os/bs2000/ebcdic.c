@@ -27,7 +27,7 @@ d0    a6 4a 4b 4c 4d 4e 4f 50  51 52 b9 fb fc db fa ff  *.JKLMNOPQR......*
 e0    d9 f7 53 54 55 56 57 58  59 5a b2 d4 d6 d2 d3 d5  *..STUVWXYZ......*
 f0    30 31 32 33 34 35 36 37  38 39 b3 7b dc 7d da 7e  *0123456789.{.}.~*
 */
-unsigned char _toascii[256] = {
+unsigned char os_toascii[256] = {
 /*00*/ 0x00, 0x01, 0x02, 0x03, 0x85, 0x09, 0x86, 0x7f,
        0x87, 0x8d, 0x8e, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, /*................*/
 /*10*/ 0x10, 0x11, 0x12, 0x13, 0x8f, 0x0a, 0x08, 0x97,
@@ -79,7 +79,7 @@ d0    ac 69 ed ee eb ef ec bf  80 e0 fe dd fc ad ae 59  *................*
 e0    44 45 42 46 43 47 9c 48  54 51 52 53 58 55 56 57  *................*
 f0    8c 49 cd ce cb cf cc e1  70 c0 de db dc 8d 8e df  *................*
 */
-unsigned char _toebcdic[256] = {
+unsigned char os_toebcdic[256] = {
 /*00*/  0x00, 0x01, 0x02, 0x03, 0x37, 0x2d, 0x2e, 0x2f,
 	0x16, 0x05, 0x15, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,  /*................*/
 /*10*/  0x10, 0x11, 0x12, 0x13, 0x3c, 0x3d, 0x32, 0x26,
@@ -123,7 +123,7 @@ ebcdic2ascii(unsigned char *dest, const unsigned char *srce, size_t count)
 {
 	while (count-- != 0) {
 		*dest++ = (*srce == '\015' || *srce=='\012') 
-			? *srce : _toascii[*srce];
+			? *srce : os_toascii[*srce];
 		++srce;
 	}
 }
@@ -131,7 +131,7 @@ void
 ascii2ebcdic(unsigned char *dest, const unsigned char *srce, size_t count)
 {
 	while (count-- != 0) {
-		*dest++ = _toebcdic[*srce++];
+		*dest++ = os_toebcdic[*srce++];
 	}
 }
 #endif /*CHARSET_EBCDIC*/

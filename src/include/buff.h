@@ -171,11 +171,11 @@ API_EXPORT(int) bfilbuf(BUFF *fb);
 #else /*CHARSET_EBCDIC*/
 
 #define bgetc(fb)   ( ((fb)->incnt == 0) ? bfilbuf(fb) : \
-		    ((fb)->incnt--, _toebcdic[(unsigned char)*((fb)->inptr++)]) )
+		    ((fb)->incnt--, os_toebcdic[(unsigned char)*((fb)->inptr++)]) )
 
 #define bputc(c, fb) ((((fb)->flags & (B_EOUT|B_WRERR|B_WR)) != B_WR || \
 		     (fb)->outcnt == (fb)->bufsiz) ? bflsbuf(c, (fb)) : \
-		     ((fb)->outbase[(fb)->outcnt++] = _toascii[(unsigned char)c], 0))
+		     ((fb)->outbase[(fb)->outcnt++] = os_toascii[(unsigned char)c], 0))
 
 #endif /*CHARSET_EBCDIC*/
 API_EXPORT(int) spawn_child_err_buff(pool *, int (*)(void *), void *,

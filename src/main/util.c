@@ -1000,7 +1000,7 @@ static char x2c(const char *what)
     xstr[2]=what[0];
     xstr[3]=what[1];
     xstr[4]='\0';
-    digit = _toebcdic[0xFF & strtol(xstr, NULL, 16)];
+    digit = os_toebcdic[0xFF & strtol(xstr, NULL, 16)];
 #endif /*CHARSET_EBCDIC*/
     return (digit);
 }
@@ -1601,7 +1601,7 @@ API_EXPORT(char *) uudecode(pool *p, const char *bufcoded)
     bufplain[nbytesdecoded] = '\0';
 #else /*CHARSET_EBCDIC*/
     bufin = (const unsigned char *) bufcoded;
-    while (pr2six[_toascii[(unsigned char)*(bufin++)]] <= 63);
+    while (pr2six[os_toascii[(unsigned char)*(bufin++)]] <= 63);
     nprbytes = (bufin - (const unsigned char *) bufcoded) - 1;
     nbytesdecoded = ((nprbytes + 3) / 4) * 3;
 
@@ -1611,18 +1611,18 @@ API_EXPORT(char *) uudecode(pool *p, const char *bufcoded)
     bufin = (const unsigned char *) bufcoded;
 
     while (nprbytes > 0) {
-	*(bufout++) = _toebcdic[
-	    (unsigned char) (pr2six[_toascii[*bufin]] << 2 | pr2six[_toascii[bufin[1]]] >> 4)];
-	*(bufout++) = _toebcdic[
-	    (unsigned char) (pr2six[_toascii[bufin[1]]] << 4 | pr2six[_toascii[bufin[2]]] >> 2)];
-	*(bufout++) = _toebcdic[
-	    (unsigned char) (pr2six[_toascii[bufin[2]]] << 6 | pr2six[_toascii[bufin[3]]])];
+	*(bufout++) = os_toebcdic[
+	    (unsigned char) (pr2six[os_toascii[*bufin]] << 2 | pr2six[_toascii[bufin[1]]] >> 4)];
+	*(bufout++) = os_toebcdic[
+	    (unsigned char) (pr2six[os_toascii[bufin[1]]] << 4 | pr2six[_toascii[bufin[2]]] >> 2)];
+	*(bufout++) = os_toebcdic[
+	    (unsigned char) (pr2six[os_toascii[bufin[2]]] << 6 | pr2six[_toascii[bufin[3]]])];
 	bufin += 4;
 	nprbytes -= 4;
     }
 
     if (nprbytes & 03) {
-	if (pr2six[_toascii[bufin[-2]]] > 63)
+	if (pr2six[os_toascii[bufin[-2]]] > 63)
 	    nbytesdecoded -= 2;
 	else
 	    nbytesdecoded -= 1;

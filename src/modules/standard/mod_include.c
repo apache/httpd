@@ -96,7 +96,7 @@
 #define SIZEFMT_BYTES 0
 #define SIZEFMT_KMG 1
 #ifdef CHARSET_EBCDIC
-#define RAW_ASCII_CHAR(ch)  _toebcdic[(unsigned char)ch]
+#define RAW_ASCII_CHAR(ch)  os_toebcdic[(unsigned char)ch]
 #else /*CHARSET_EBCDIC*/
 #define RAW_ASCII_CHAR(ch)  (ch)
 #endif /*CHARSET_EBCDIC*/

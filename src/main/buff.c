@@ -727,12 +727,12 @@ API_EXPORT(int) bgets(char *buff, int n, BUFF *fb)
 	buff[ct++] = ch;
     }
 #else /* an EBCDIC machine: do the same, but convert to EBCDIC on the fly: */
-	ch = _toebcdic[(unsigned char)fb->inptr[i++]];
-	if (ch == _toebcdic['\012']) {	/* got LF */
+	ch = os_toebcdic[(unsigned char)fb->inptr[i++]];
+	if (ch == os_toebcdic['\012']) {  /* got LF */
 	    if (ct == 0)
 		buff[ct++] = '\n';
 /* if just preceeded by CR, replace CR with LF */
-	    else if (buff[ct - 1] == _toebcdic['\015'])
+	    else if (buff[ct - 1] == os_toebcdic['\015'])
 		buff[ct - 1] = '\n';
 	    else if (ct < n - 1)
 		buff[ct++] = '\n';
@@ -790,7 +790,7 @@ API_EXPORT(int) blookc(char *buff, BUFF *fb)
 #ifndef CHARSET_EBCDIC
     *buff = fb->inptr[0];
 #else /*CHARSET_EBCDIC*/
-    *buff = _toebcdic[(unsigned char)fb->inptr[0]];
+    *buff = os_toebcdic[(unsigned char)fb->inptr[0]];
 #endif /*CHARSET_EBCDIC*/
     return 1;
 }
@@ -843,7 +843,7 @@ API_EXPORT(int) bflsbuf(int c, BUFF *fb)
 #ifndef CHARSET_EBCDIC
     ss[0] = c;
 #else
-    ss[0] = _toascii[(unsigned char)c];
+    ss[0] = os_toascii[(unsigned char)c];
 #endif
     rc = bwrite(fb, ss, 1);
     /* We do start_chunk() here so that the bputc macro can be smaller
@@ -871,7 +871,7 @@ API_EXPORT(int) bfilbuf(BUFF *fb)
 #ifndef CHARSET_EBCDIC
 	return buf[0];
 #else /*CHARSET_EBCDIC*/
-	return _toebcdic[(unsigned char)buf[0]];
+	return os_toebcdic[(unsigned char)buf[0]];
 #endif /*CHARSET_EBCDIC*/
 }
 
@@ -1326,7 +1326,7 @@ API_EXPORT(int) bnputs(const char *x, BUFF *fb, size_t amount)
 	 * the HTTP protocol.
 	 */
 	if (ch == '\012' || ch == '\015')
-	    ch = _toebcdic[ch];
+	    ch = os_toebcdic[ch];
 	if (bputc(ch, fb) != 0)
 	    return -1;
     }
