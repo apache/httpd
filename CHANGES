@@ -1,5 +1,7 @@
 Changes with Apache 2.0.37
 
+  *) Get proxy CONNECT basically working.  [Jeff Trawick]
+
   *) Fix mod_rewrite hang when APR uses SysV Semaphores and
      RewriteLogLevel is set to anything other than 0.  PR: 8143
      [Aaron Bannert, Cliff Woolley]

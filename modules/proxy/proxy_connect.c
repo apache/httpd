@@ -279,11 +279,11 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
         apr_send(client_socket, buffer, &nbytes);
         nbytes = apr_snprintf(buffer, sizeof(buffer),
 			      "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
+        apr_send(client_socket, buffer, &nbytes);
 #if 0
         /* This is safer code, but it doesn't work yet.  I'm leaving it 
          * here so that I can fix it later.
          */
-        apr_send(r->connection->client_socket, buffer, &nbytes);
         r->status = HTTP_OK;
         r->header_only = 1;
         apr_table_set(r->headers_out, "Proxy-agent: %s", ap_get_server_version());
