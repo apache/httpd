@@ -73,12 +73,6 @@
 
 ap_listen_rec *ap_listeners = NULL;
 
-#if APR_HAVE_IPV6
-static int default_family = APR_UNSPEC;
-#else
-static int default_family = APR_INET;
-#endif
-
 static ap_listen_rec *old_listeners;
 static int ap_listenbacklog;
 static int send_buffer_size;
@@ -249,8 +243,12 @@ static const char *alloc_listener(process_rec *process, char *addr, apr_port_t p
         /* Some listeners are not real so they will not have a bind_addr. */
         if (sa) {
             apr_sockaddr_port_get(&oldport, sa);
-            if (!strcmp(sa->hostname, addr) && port == oldport) {
-                /* re-use existing record */
+            /* If both ports are equivalent, then if their names are equivalent,
+             * then we will re-use the existing record.
+             */
+            if (port == oldport &&
+                ((!addr && !sa->hostname) ||
+                 ((addr && sa->hostname) && !strcmp(sa->hostname, addr)))) {
                 new = *walk;
                 *walk = new->next;
                 new->next = ap_listeners;
@@ -271,10 +269,27 @@ static const char *alloc_listener(process_rec *process, char *addr, apr_port_t p
                       addr);
         return "Listen setup failed";
     }
-    if ((status = apr_socket_create(&new->sd,
-                                    new->bind_addr->family,
-                                    SOCK_STREAM, process->pool))
-        != APR_SUCCESS) {
+
+    while (new->bind_addr) {
+        status = apr_socket_create(&new->sd, new->bind_addr->family,
+                                    SOCK_STREAM, process->pool);
+#if APR_HAVE_IPV6
+        /* What could happen is that we got an IPv6 address, but this system
+         * doesn't actually support IPv6.  Try the next address.
+         */
+        if (status != APR_SUCCESS && !addr &&
+            new->bind_addr->family == APR_INET6) {
+            new->bind_addr = new->bind_addr->next;
+        }
+        else {
+            break;
+        }
+#else
+        break;
+#endif
+    }
+
+    if (status != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
                       "alloc_listener: failed to get a socket for %s", addr);
         return "Listen setup failed";
