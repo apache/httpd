@@ -13,11 +13,11 @@
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
-<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a> &gt; <a href="./">モジュール</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_autoindex</h1>
 <div class="toplang">
@@ -25,6 +25,8 @@
 <a href="../ja/mod/mod_autoindex.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>Unix の <code>ls</code> コマンドや
     Win32 の <code>dir</code> シェルコマンドに似た
     ディレクトリインデックスを生成する</td></tr>
@@ -55,7 +57,7 @@
     <p>望むならば、自動インデックス生成を完全に除去 (あるいは置換)
     できるように、この二つの機能は分離されています。</p>
 
-    <p>自動インデックス生成は <code>Options +Indexes</code>
+    <p>自動インデックス生成は <code>Optioins +Indexes</code>
     を使うことで有効になります。詳細については、
     <code class="directive"><a href="../mod/core.html#options">Options</a></code>
     ディレクティブをご覧下さい。</p>
@@ -94,7 +96,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#indexignore">IndexIgnore</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexoptions">IndexOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexorderdefault">IndexOrderDefault</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#indexstylesheet">IndexStyleSheet</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#readmename">ReadmeName</a></li>
 </ul>
 <h3>トピック</h3>
@@ -312,7 +313,10 @@
     <var>file</var> は説明するファイルのファイル拡張子、
     ファイル名の一部、ワイルドカード表現、完全なファイル名の
     どれかになります。
-    <var>string</var> は二重引用符 (<code>"</code>) で囲まれます。</p>
+    <var>string</var> は二重引用符 (<code>"</code>) で囲まれます。
+    この文字列は、クライアントが画像を表示できない場合や
+    画像のロードを無効にしている場合や
+    アイコンの取得に失敗したときに表示されます。</p>
 
     <div class="example"><h3>例</h3><p><code>
       AddDescription "The planet Mars" /web/pics/mars.gif
@@ -398,7 +402,7 @@
     <p><code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
     において、ファイルの隣に表示するアイコンを設定します。
     <var>icon</var> は、(% でエスケープされた) アイコンへの相対 URL
-    か、他の書式 <code>(<var>alttext</var>, <var>url</var>)</code> です。
+    か、他の書式 (<var>alttext</var>, <var>url</var>) です。
     ここで <var>alttext</var>
     は、非グラフィカルブラウザ向けにアイコンに付けられたテキストタグです。
     </p>
@@ -514,7 +518,7 @@ MIME タイプによって選択</td></tr>
       <p><code class="directive"><a href="../mod/core.html#options">Options</a></code> <code>MultiViews</code> が
       有効になっている場合は、
       <a href="../content-negotiation.html">コンテントネゴシエーション</a>
-      が行なわれます。
+      が行われます。
       もし <var>filename</var> が (CGI スクリプトでない) 静的な 
       <code>text/html</code> ドキュメントで解決され、
       <code class="directive"><a href="../mod/core.html#options">options</a></code>
@@ -525,7 +529,7 @@ MIME タイプによって選択</td></tr>
     </div>
 
     <p>もし <code class="directive">HeaderName</code> で指定されたファイルが
-    HTML ドキュメントの開始部分 (&lt;html&gt;, &lt;head&gt;, 
+    HTML ドキュメントの開始部分 (&lt;HTML&gt;, &lt;HEAD&gt;, 
     等) を含んでいたら、
     <a href="#indexoptions.suppresshtmlpreamble"><code>IndexOptions
     +SuppressHTMLPreamble</code></a>
@@ -545,14 +549,14 @@ MIME タイプによって選択</td></tr>
 </table>
     <p><code class="directive">IndexIgnore</code> ディレクティブは、
     ディレクトリの一覧を行う際に無視すべきファイルリストに追加します。
-    <var>file</var> は、
-    シェル形式のワイルドカード表現か完全なファイル名です。
+    <var>file</var> は、無視するファイル名のファイル拡張子か、ファイル名の一部か、
+    ワイルドカード表現か完全なファイル名です。
     IndexIgnore が複数ある場合は、無視するリストに追加が行われ、
     置換は行われません。デフォルトではリストには <code>.</code>
     (カレントディレクトリ) が含まれています。</p>
 
     <div class="example"><p><code>
-      IndexIgnore README .htaccess *.bak *~
+      IndexIgnore README .htaccess *~
     </code></p></div>
 
 </div>
@@ -603,7 +607,7 @@ MIME タイプによって選択</td></tr>
       その後に続きます。
       一覧は基本的には、ファイルとディレクトリの二つの部分に分けられて、
       それぞれは別々にソートされ、その後サブディレクトリを先にして
-      表示が行なわれます。例えばソート順が名前の降順になっていて、
+      表示が行われます。例えばソート順が名前の降順になっていて、
       <code>FoldersFirst</code> が有効になっている場合は、
       サブディレクトリ <code>Zed</code> はサブディレクトリ
       <code>Beta</code> よりも前にリストされ、通常のファイル
@@ -641,7 +645,7 @@ MIME タイプによって選択</td></tr>
 
       <dt><a name="indexoptions.iconwidth" id="indexoptions.iconwidth">IconWidth[=<var>pixels</var>]</a></dt>
 
-      <dd>このオプションが、<code>IconHeight</code> とともに使われている場合は、
+      <dd>このオプションが、IconHeightとともに使われている場合は、
       サーバはファイルアイコンのための <code>img</code>
       タグに <code>height</code> と <code>width</code>
       属性を取り込むようになります。
@@ -650,13 +654,6 @@ MIME タイプによって選択</td></tr>
       このオプションに何も値が与えられなければ、Apache
       ソフトウェアで提供されているアイコンの標準の高さが
       デフォルトなります。</dd>
-
-      <dt><a name="indexoptions.ignorecase" id="indexoptions.ignorecase">IgnoreCase</a></dt>
-
-      <dd>このオプションが有効であると、ファイル名は大文字小文字を区別せずにソートされます。
-      例えばファイル名が昇順でソートされ、IgnoreCase が有効であれば、
-      Zeta は alfa の後にリストされます
-      (注意: GAMMA は常に gamma の前になります)。</dd>
 
       <dt><a name="indexoptions.ignoreclient" id="indexoptions.ignoreclient">IgnoreClient</a></dt>
 
@@ -690,12 +687,6 @@ MIME タイプによって選択</td></tr>
       で説明が与えられていなければ、
       httpd は <code>title</code> タグの値を読むためにドキュメントを読み始めます。
       これは CPU や disk に負荷をかけます。</dd>
-
-      <dt><a name="indexoptions.showforbidden" id="indexoptions.showforbidden">ShowForbidden</a></dt>
-
-      <dd>指定した場合であっても、サブリクエストの結果が HTTP_UNAUTHORIZED や
-      HTTP_FORBIDDEN のファイルは通常通り隠された状態のまま、
-      ファイル一覧が生成されます。</dd>
 
       <dt><a name="indexoptions.suppresscolumnsorting" id="indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></dt>
 
@@ -818,12 +809,6 @@ MIME タイプによって選択</td></tr>
         foo-1.04
       </code></p></div>
       </dd>
-
-      <dt><a name="indexoptions.xhtml" id="indexoptions.xhtml">XHTML</a>
-      (<em>Apache 2.0.49 以降</em>)</dt>
-
-      <dd><code>XHTML</code> キーワードを指定すると、<code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>
-      は HTML 3.2 の代わりに XHTML 1.0 のコードを出力するようになります。</dd>
     </dl>
 
    
@@ -923,25 +908,6 @@ Name|Date|Size|Description</code></td></tr>
     ディレクトリ一覧をある特定の順番でのみ表示するようにできます。
     これは、
     クライアントが別の順番でディレクトリ一覧をリクエストすることを防ぎます。</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexStyleSheet" id="IndexStyleSheet">IndexStyleSheet</a> <a name="indexstylesheet" id="indexstylesheet">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ディレクトリインデックスに CSS スタイルシートを追加する</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>IndexStyleSheet <var>url-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_autoindex</td></tr>
-</table>
-    <p><code class="directive">IndexStyleSheet</code> ディレクティブは
-    インデックス表示に使用される CSS のファイル名を設定します。
-    </p>
-    <div class="example"><h3>例</h3><p><code>
-      
-      IndexStyleSheet "/css/style.css"
-    </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

@@ -13,11 +13,11 @@
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
-<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a> &gt; <a href="./">モジュール</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_speling</h1>
 <div class="toplang">
@@ -25,6 +25,8 @@
 <a href="../ja/mod/mod_speling.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_speling.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>ユーザが入力したであろう間違った URL を、
 大文字小文字の区別を無視することと一つ以下の綴り間違いを許容することで
 修正を試みる</td></tr>
@@ -84,6 +86,7 @@
 ディレクティブは「サーバ」と「バーチャルホスト」コンテキストでのみ
 使用可能でした</td></tr>
 </table>
+
     <p>このディレクティブは綴り用のモジュールを使用するかどうかを
     決めます。使用時には、以下のことを覚えておいてください</p>
 
@@ -106,14 +109,6 @@
       はネゴシエーションの結果のファイル "<code>/stats.html</code>"
       として間違って扱われるかもしれません。</li>
     </ul>
-
-    
-    <p><a href="mod_dav.html">DAV</a> が有効なディレクトリでは
-    <code class="module"><a href="../mod/mod_speling.html">mod_speling</a></code> は有効にしないでください。
-    新しく作成したリソース名を既に存在するファイル名に「修正」しようとする、
-    例えば、新規ドキュメント <code>doc43.html</code> が既に存在する
-    <code>doc34.html</code> にリダイレクトされて、
-    期待とは違う挙動になるからです。</p>
 
 </div>
 </div>

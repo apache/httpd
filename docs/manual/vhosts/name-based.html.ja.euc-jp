@@ -12,20 +12,25 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
-<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a> &gt; <a href="./">バーチャルホスト</a></div><div id="page-content"><div id="preamble"><h1>名前ベースのバーチャルホスト</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">バーチャルホスト</a></div><div id="page-content"><div id="preamble"><h1>名前ベースのバーチャルホスト</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../de/vhosts/name-based.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/vhosts/name-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/vhosts/name-based.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/vhosts/name-based.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
+
 
     <p>この文書では名前ベースのバーチャルホストをどんなとき、
     どうやって使うかを説明します。</p>
+
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#namevip">名前ベースと IP ベースのバーチャルホストの比較</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#using">名前ベースのバーチャルホストを利用する</a></li>
@@ -81,8 +86,6 @@
     これは <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>
     ディレクティブで設定します。通常、<code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> で
     <code>*</code> の属性を使ってサーバの全ての IP アドレスを使います。
-    (例えば SSL の使用などで) 複数のポートを使うことを計画しているのであれば、
-    引数に <code>*:80</code> のようにポートも含めるようにしてください。
     <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> ディレクティブで
     IP アドレスを書いても、
     自動的にサーバがその IP アドレスをリッスンするということはないことに
@@ -102,15 +105,15 @@
     書く必要があります。</p>
 
     <div class="note"><h3>メインホストはなくなります</h3>
-        <p>既にあるウェブサーバにバーチャルホストを追加する場合、
-        既存のウェブサーバに対しても <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-        ブロックを作らなければなりません。このバーチャルホストの
-        <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> と
-        <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
-        は、グローバルな <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> と
-        <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
-        と同じものにします。また、このバーチャルホストを設定ファイルの中で
-        先頭に置いて、デフォルトホストとして動作するようにします。</p>
+    <p>既にあるウェブサーバにバーチャルホストを追加する場合、
+    既存のウェブサーバに対しても <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+    ブロックを作らなければなりません。このバーチャルホストの
+    <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> と
+    <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
+    は、グローバルな <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> と
+    <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
+    と同じものにします。また、このバーチャルホストを設定ファイルの中で
+    先頭に置いて、デフォルトホストとして動作するようにします。</p>
     </div>
 
     <p>たとえば、<code>www.domain.tld</code> を動かしていて、
@@ -120,30 +123,26 @@
     に以下のようなコードを追加するだけです</p>
 
     <div class="example"><p><code>
-        NameVirtualHost *:80<br />
-        <br />
-        &lt;VirtualHost *:80&gt;<br />
-        <span class="indent">
-            ServerName www.domain.tld<br />
-            ServerAlias domain.tld *.domain.tld<br />
-            DocumentRoot /www/domain<br />
-        </span>
-        &lt;/VirtualHost&gt;<br />
-        <br />
-        &lt;VirtualHost *:80&gt;<br />
-        <span class="indent">ServerName www.otherdomain.tld<br />
-            DocumentRoot /www/otherdomain<br />
-        </span>
-        &lt;/VirtualHost&gt;<br />
+    NameVirtualHost *<br />
+    <br />
+    &lt;VirtualHost *&gt;<br />
+    <span class="indent">
+    ServerName www.domain.tld<br />
+    DocumentRoot /www/domain<br />
+    </span>
+    &lt;/VirtualHost&gt;<br />
+    <br />
+    &lt;VirtualHost *&gt;<br />
+    <span class="indent">
+    ServerName www.otherdomain.tld<br />
+    DocumentRoot /www/otherdomain<br />
+    </span>
+    &lt;/VirtualHost&gt;<br />
     </code></p></div>
 
     <p><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> 及び
     <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> のどちらの場合も、
-    * の部分には明示的に IP アドレスを指定することができます。
-    例えば、ある IP アドレスでは名前ベースのバーチャルホストを使いたい一方で、
-    別の IP アドレスでは、他の IP ベースのバーチャルホストや
-    別組の名前ベースのバーチャルホストを使いたい場合、
-    そう設定することになるでしょう。</p>
+    * の部分には明示的に IP アドレスを指定することができます。</p>
 
     <p>複数の名前でサーバアクセスができるようにしたいことも多いでしょう。
     このようなことは、<code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> ディレクティブを <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
@@ -155,7 +154,7 @@
     ディレクティブで指定できます。</p> 
 
     <div class="example"><p><code>
-        ServerAlias domain.tld *.domain.tld
+    ServerAlias domain.tld *.domain.tld
     </code></p></div>
 
     <p><code>domain.tld</code> ドメインへの全てのホストへのリクエストは
@@ -223,15 +222,15 @@
     <p>設定例</p>
 
     <div class="example"><p><code>
-        NameVirtualHost 111.22.33.44<br />
-        <br />
-        &lt;VirtualHost 111.22.33.44&gt;<br />
-        <span class="indent">
-            ServerName www.domain.tld<br />
-            ServerPath /domain<br />
-            DocumentRoot /web/domain<br />
-        </span>
-        &lt;/VirtualHost&gt;<br />
+    NameVirtualHost 111.22.33.44<br />
+    <br />
+    &lt;VirtualHost 111.22.33.44&gt;<br />
+    <span class="indent">
+    ServerName www.domain.tld<br />
+    ServerPath /domain<br />
+    DocumentRoot /web/domain<br />
+    </span>
+    &lt;/VirtualHost&gt;<br />
     </code></p></div>
 
     <p>この例にはどういう意味があるでしょうか? これは
@@ -261,6 +260,7 @@
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../de/vhosts/name-based.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/vhosts/name-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/vhosts/name-based.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/vhosts/name-based.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">

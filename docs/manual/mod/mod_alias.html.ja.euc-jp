@@ -13,18 +13,19 @@
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
-<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a> &gt; <a href="./">モジュール</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_alias</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ja/mod/mod_alias.html" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ja/mod/mod_alias.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>ホストファイルシステム上のいろいろな違う場所を
     ドキュメントツリーにマップする機能と、
     URL のリダイレクトを行なう機能を提供する</td></tr>
@@ -61,42 +62,12 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptalias">ScriptAlias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptaliasmatch">ScriptAliasMatch</a></li>
 </ul>
-<h3>トピック</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#order">処理の順番</a></li>
-</ul><h3>参照</h3>
+<h3>参照</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li>
 <li><a href="../urlmapping.html">URL からファイルシステム上の位置へのマッピング</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="order" id="order">処理の順番</a></h2>
 
-<p>様々なコンテキスト中での Alias や Redirect は他のディレクティブと
-同じように標準の <a href="../sections.html#mergin">マージ規則</a> に
-従って処理されます。ただし、(例えば <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> セクションの中のように) 複数の Alias や Redirect が
-同じコンテキスト中に現れた場合は決まった順番で処理されます。</p>
-
-<p>まず、Alias の前にすべての Redirect が処理されます。ですから、<code class="directive"><a href="#redirect">Redirect</a></code> か <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code> にマッチするリクエストには
-Alias は決して適用されません。次に、Alias と Redirect が設定ファイル中の
-順番に適用され、最初にマッチしたものが優先されます。</p>
-
-<p>ですから、二つ以上のディレクティブが同じパスに適用されるときは、
-すべてのディレクティブの効果を得るためにはより詳しいパスを先に書く
-必要があります。例えば、次の設定は期待通りの動作をします:</p>
-
-<div class="example"><p><code>
-Alias /foo/bar /baz<br />
-Alias /foo /gaq
-</code></p></div>
-
-<p>しかし、上記の二つのディレクティブの順番が逆になると、
-<code>/foo</code> <code class="directive"><a href="#alias">Alias</a></code> が
-常に <code>/foo/bar</code> <code class="directive"><a href="#alias">Alias</a></code> より先にマッチしますので、後者は
-決して適用されることはありません。</p>
-
-</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">ディレクティブ</a></h2>
 <table class="directive">
@@ -210,7 +181,7 @@ Redirect 系のディレクティブは Alias
 ディレクティブと ScriptAlias ディレクティブよりも優先されます。
 また、.htaccess ファイルや <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
 セクションの中で使われていたとしても、<var>URL-path</var>
-は相対パスではなく、完全な URL でなければなりません。</p></div>
+は相対パスではなく、絶対パスでなければなりません。</p></div>
 
     <p>もし <var>status</var> 引数が与えられていなければ、リダイレクトは
     "temporary" (HTTP ステータス 302) になります。これはクライアントに
@@ -372,8 +343,7 @@ CGI スクリプトに指定</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ja/mod/mod_alias.html" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ja/mod/mod_alias.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 1999-2004 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>

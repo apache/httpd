@@ -13,11 +13,11 @@
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
-<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a> &gt; <a href="./">モジュール</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_deflate</h1>
 <div class="toplang">
@@ -25,6 +25,8 @@
 <a href="../ja/mod/mod_deflate.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>クライアントへ送られる前にコンテンツを圧縮する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>deflate_module</td></tr>
@@ -45,7 +47,7 @@
 </ul>
 <h3>トピック</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#recommended">サンプル設定</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#recommended">推奨設定</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">圧縮を有効にする</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxies">Proxy サーバでの扱い</a></li>
 </ul><h3>参照</h3>
@@ -54,15 +56,13 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="recommended" id="recommended">サンプル設定</a></h2>
-    <p>下にせっかちな人向けの簡単な設定例を示します。</p>
+<h2><a name="recommended" id="recommended">推奨設定</a></h2>
+    <p>下にせっかちな人向けの設定例を示します。しかしぜひ時間を取って
+    下記の詳細もお読み下さい!</p>
 
     <div class="example"><h3>数タイプのみ圧縮する</h3><p><code>
       AddOutputFilterByType DEFLATE text/html text/plain text/xml
     </code></p></div>
-
-    <p>以下の設定はコンテンツをより圧縮しますが、ずっと複雑な設定になります。
-    設定の隅々までよく理解しないで使わないでください。</p>
 
     <div class="example"><h3>画像以外全て圧縮する</h3><p><code>
       &lt;Location /&gt;<br />
@@ -163,35 +163,8 @@
         フィルタの後になります。
         DEFLATE フィルタは内部的なサブリクエストを関知しません。
       </div>
-      <div class="note"><h3>注</h3>
-        <code class="directive"><a href="../mod/core.html#setenv">SetEnv</a></code> で設定される
-        <code>force-gzip</code> 環境変数がありますが、これは
-        ブラウザの accept-encoding 設定を無視し、圧縮した出力をします。
-      </div>
-
     
-    <h3><a name="inflate" id="inflate">出力の伸長</a></h3>
-      <p><code class="module"><a href="../mod/mod_defulate.html">mod_defulate</a></code> モジュールは、gzip 圧縮されたレスポンス
-      本文を inflate/uncompress するフィルタも提供しています。
-      この機能を有効にするには、<code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>
-      や <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> を使って、
-      <code>INFLATE</code> フィルタを出力フィルタチェインに挿入します。
-      例えば次のようにします。</p>
 
-      <div class="example"><p><code>
-        &lt;Location /dav-area&gt;<br />
-        <span class="indent">
-          ProxyPass http://example.com/<br />
-          SetOutputFilter INFLATE<br />
-        </span>
-        &lt;/Location&gt;
-      </code></p></div>
-
-      <p>この例では、example.com からの gzip 圧縮された出力を伸長し、
-      その他のフィルタがさらにその出力を処理できるようにします。
-      </p>
-      
-    
     <h3><a name="input" id="input">入力の伸張</a></h3>
       <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> モジュールは、gzip
       で圧縮されたリクエスト本体を伸張するフィルタも提供しています。

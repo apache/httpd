@@ -12,11 +12,11 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="module-index"><div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
-<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>モジュール一覧</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>モジュール一覧</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -42,7 +42,8 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section"><h2><a id="core" name="core">コア機能と MPM</a></h2>
 <dl>
-<dt><a href="core.html">core</a></dt><dd>常に使用可能な Apache HTTP サーバのコア機能</dd>
+<dt><a href="core.html">core</a></dt><dd>Core Apache HTTP Server features that are always
+available</dd>
 <dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">二つ以上のマルチプロセッシングモジュール (MPM)
 で実装されているディレクティブのコレクション</dd>
 <dt><a href="beos.html">beos</a></dt><dd>This Multi-Processing Module is optimized for BeOS.</dd>
@@ -65,40 +66,35 @@ requests to be assigned a variety of different userids</dd>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section"><h2><a id="other" name="other">他のモジュール</a></h2>
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a></p>
-<dl><dt><a href="mod_actions.html" id="A" name="A">mod_actions</a></dt><dd>メディアタイプやリクエストメソッドに応じて
+<dl><dt><a href="mod_access.html" id="A" name="A">mod_access</a></dt><dd>クライアントのホスト名、IP アドレス、その他のクライアント
+のリクエストの特徴に基づいたアクセス制御機能を提供する</dd>
+<dt><a href="mod_actions.html">mod_actions</a></dt><dd>メディアタイプやリクエストメソッドに応じて
 CGI スクリプトを実行する機能を提供</dd>
 <dt><a href="mod_alias.html">mod_alias</a></dt><dd>ホストファイルシステム上のいろいろな違う場所を
     ドキュメントツリーにマップする機能と、
     URL のリダイレクトを行なう機能を提供する</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>自分用の HTTP ヘッダの書かれているファイルを送信する</dd>
-<dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>基本認証</dd>
+<dt><a href="mod_auth.html">mod_auth</a></dt><dd>テキストファイルを用いたユーザ認証</dd>
+<dt><a href="mod_auth_anon.html">mod_auth_anon</a></dt><dd>Allows "anonymous" user access to authenticated
+areas</dd>
+<dt><a href="mod_auth_dbm.html">mod_auth_dbm</a></dt><dd>Provides for user authentication using DBM
+    files</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication.</dd>
 <dt><a href="mod_auth_ldap.html">mod_auth_ldap</a></dt><dd>Allows an LDAP directory to be used to store the database
 for HTTP Basic authentication.</dd>
-<dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>認証が必要な領域への "anonymous" ユーザのアクセスを許可する
-</dd>
-<dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>DBM ファイルを用いたユーザ認証</dd>
-<dt><a href="mod_authn_default.html">mod_authn_default</a></dt><dd>認証フォールバックモジュール</dd>
-<dt><a href="mod_authn_file.html">mod_authn_file</a></dt><dd>テキストファイルを用いたユーザ認証</dd>
-<dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Group authorization using DBM files</dd>
-<dt><a href="mod_authz_default.html">mod_authz_default</a></dt><dd>承認フォールバックモジュール</dd>
-<dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>プレーンテキストファイルを用いたグループ承認</dd>
-<dt><a href="mod_authz_host.html">mod_authz_host</a></dt><dd>ホスト (名前もしくは IP アドレス) に基づいたグループ承認</dd>
-<dt><a href="mod_authz_owner.html">mod_authz_owner</a></dt><dd>Authorization based on file ownership</dd>
-<dt><a href="mod_authz_user.html">mod_authz_user</a></dt><dd>User Authorization</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Unix の <code>ls</code> コマンドや
     Win32 の <code>dir</code> シェルコマンドに似た
     ディレクトリインデックスを生成する</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>Content cache keyed to URIs.</dd>
 <dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd>
 <dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>CGI スクリプトの実行</dd>
-<dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>外部 CGI デーモンを使った CGI スクリプトの実行</dd>
+<dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an
+    external CGI daemon</dd>
 <dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>Specify character set translation or recoding</dd>
 <dt><a href="mod_dav.html" id="D" name="D">mod_dav</a></dt><dd>分散オーサリングとバージョン管理
 (<a href="http://www.webdav.org/">WebDAV</a>) 機能</dd>
 <dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> のためのファイルシステムプロバイダ</dd>
-<dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd>generic locking module for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>クライアントへ送られる前にコンテンツを圧縮する</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>「最後のスラッシュ」のリダイレクトと、ディレクトリの
 インデックスファイルを扱う機能を提供する</dd>
@@ -108,21 +104,22 @@ for HTTP Basic authentication.</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>CGI スクリプト及び SSI
 ページに渡される環境変数を変更する機能を提供する</dd>
 <dt><a href="mod_example.html">mod_example</a></dt><dd>Illustrates the Apache module API</dd>
-<dt><a href="mod_expires.html">mod_expires</a></dt><dd>ユーザの指定した基準に基づいた <code>Expires</code> HTTP ヘッダの生成</dd>
+<dt><a href="mod_expires.html">mod_expires</a></dt><dd>Generation of <code>Expires</code> HTTP headers according to
+user-specified criteria</dd>
 <dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>Pass the response body through an external program before
 delivery to the client</dd>
 <dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>Caches a static list of files in memory</dd>
-<dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>HTTP リクエストのヘッダと応答のヘッダのカスタマイズ</dd>
-<dt><a href="mod_ident.html" id="I" name="I">mod_ident</a></dt><dd>RFC 1413 ident lookups</dd>
-<dt><a href="mod_imap.html">mod_imap</a></dt><dd>Server-side imagemap processing</dd>
+<dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>Customization of HTTP request and response
+headers</dd>
+<dt><a href="mod_imap.html" id="I" name="I">mod_imap</a></dt><dd>Server-side imagemap processing</dd>
 <dt><a href="mod_include.html">mod_include</a></dt><dd>サーバがパースする html ドキュメント (Server Side Includes)</dd>
 <dt><a href="mod_info.html">mod_info</a></dt><dd>サーバの設定の包括的な概観を提供する</dd>
 <dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>ISAPI Extensions within Apache for Windows</dd>
 <dt><a href="mod_ldap.html" id="L" name="L">mod_ldap</a></dt><dd>LDAP connection pooling and result caching services for use
 by other LDAP modules</dd>
-<dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>サーバへのリクエストのロギング</dd>
+<dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Logging of the requests made to the server</dd>
 <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Forensic Logging of the requests made to the server</dd>
-<dt><a href="mod_logio.html">mod_logio</a></dt><dd>リクエスト毎に入力バイト数と出力バイト数とをロギング</dd>
+<dt><a href="mod_logio.html">mod_logio</a></dt><dd>Logging of input and output bytes per request</dd>
 <dt><a href="mod_mem_cache.html" id="M" name="M">mod_mem_cache</a></dt><dd>Content cache keyed to URIs</dd>
 <dt><a href="mod_mime.html">mod_mime</a></dt><dd>リクエストされたファイルの拡張子とファイルの振る舞い
     (ハンドラとフィルタ)、内容 (MIME タイプ、言語、文字セット、エンコーディング)
@@ -149,7 +146,8 @@ URLs on the fly</dd>
 修正を試みる</dd>
 <dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Strong cryptography using the Secure Sockets
 Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
-<dt><a href="mod_status.html">mod_status</a></dt><dd>サーバの活動状況と性能に関する情報を提供する</dd>
+<dt><a href="mod_status.html">mod_status</a></dt><dd>Provides information on server activity and
+performance</dd>
 <dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>指定されたユーザとグループで CGI スクリプトを実行する</dd>
 <dt><a href="mod_unique_id.html" id="U" name="U">mod_unique_id</a></dt><dd>それぞれのリクエストに対する一意な識別子の入った環境変数を
 提供する</dd>
@@ -158,8 +156,7 @@ Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
 <dt><a href="mod_usertrack.html">mod_usertrack</a></dt><dd>
 <em>Clickstream</em> logging of user activity on a site
 </dd>
-<dt><a href="mod_version.html" id="V" name="V">mod_version</a></dt><dd>Version dependent configuration</dd>
-<dt><a href="mod_vhost_alias.html">mod_vhost_alias</a></dt><dd>Provides for dynamically configured mass virtual
+<dt><a href="mod_vhost_alias.html" id="V" name="V">mod_vhost_alias</a></dt><dd>Provides for dynamically configured mass virtual
 hosting</dd>
 </dl></div></div>
 <div class="bottomlang">

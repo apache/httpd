@@ -12,16 +12,18 @@
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
-<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>suEXEC サポート</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>suEXEC サポート</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./en/suexec.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./ja/suexec.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 
     <p><strong>suEXEC</strong>
     機能により、Apache ユーザは Web サーバを実行しているユーザ ID とは
@@ -435,6 +437,23 @@
       </dd>
     </dl>
 
+    <p><strong>suEXEC 設定の確認</strong>
+    <br />
+    suEXEC wrapper をコンパイルしてインストールする前に、設定内容を
+    <code>--layout</code> オプションで確認できます。<br />
+    出力例:</p>
+<div class="example"><p><code>
+    suEXEC setup:<br />
+            suexec binary: /usr/local/apache2/sbin/suexec<br />
+            document root: /usr/local/apache2/share/htdocs<br />
+           userdir suffix: public_html<br />
+                  logfile: /usr/local/apache2/var/log/suexec_log<br />
+                safe path: /usr/local/bin:/usr/bin:/bin<br />
+                caller ID: www<br />
+          minimum user ID: 100<br />
+         minimum group ID: 100<br />
+</code></p></div>
+
     <p><strong>suEXEC wrapper
     のコンパイルとインストール</strong><br />
     <code>--enable-suexec</code> オプションで suEXEC 機能を有効にすると、
@@ -510,11 +529,6 @@
 <div class="section">
 <h2><a name="usage" id="usage">suEXEC の使用</a></h2>
 
-    <p>CGI プログラムへのリクエストが suEXEC ラッパーを呼ぶのは、
-    <code class="directive"><a href="./mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> ディレクティブを
-    含むバーチャルホストへのリクエストか、<code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code> により
-    処理されたリクエストの場合に限ります。</p>
-
     <p><strong>仮想ホスト:</strong><br />
     suEXEC wrapper の使い方として、
     <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code> 設定での
@@ -528,13 +542,13 @@
     メインサーバのユーザ ID が想定されます。</p>
 
     <p><strong>ユーザディレクトリ:</strong><br />
-    <code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code> により処理されたリクエストは
-    リクエストされたユーザディレクトリのユーザ ID で CGI プログラムを
-    実行するために suEXEC ラッパーを呼びます。
+    suEXEC wrapper は、リクエスト先のユーザとして CGI
+    を実行するためにも使えます。これは期待する実行権限のユーザ ID
+    の前に、"<strong><code>~</code></strong>"
+    文字を置くことで実現されます。
     この機能を動作させるために必要なことは、CGI
     をそのユーザで実行できること、そのスクリプトが上記の<a href="#model">セキュリティ検査</a>をパスできることです。
-    <a href="#install">コンパイル
-     時のオプション</a> <code>--with-suexec-userdir</code> も参照してください。</p>
+    </p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="debug" id="debug">suEXEC のデバッグ</a></h2>
@@ -550,7 +564,7 @@
 
     <p><strong>注意!</strong>
     この章は完全ではありません。この章の最新改訂版については、
-    Apache グループの<a href="http://httpd.apache.org/docs-2.1/suexec.html">
+    Apache グループの<a href="http://httpd.apache.org/docs-2.0/suexec.html">
     オンラインドキュメント</a>版を参照してください。
     </p>
 

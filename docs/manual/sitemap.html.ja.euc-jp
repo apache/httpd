@@ -13,11 +13,11 @@
 <body id="manual-page">
 <div id="page-header">
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
-<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div>
 <div id="page-content"><div id="preamble"><h1>Site Map</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
@@ -26,9 +26,11 @@
 <a href="./ja/sitemap.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 
 <p>このページは現時点で利用可能な
-<a href="./">Apache HTTP サーババージョン 2.1 のドキュメンテーション</a>
+<a href="./">Apache HTTP サーババージョン 2.0 のドキュメンテーション</a>
 の一覧です。</p>
 </div>
 <div id="quickview"><ul id="toc">
@@ -108,6 +110,7 @@
 <li><a href="howto/ssi.html">Server Side Includes 入門</a></li>
 <li><a href="howto/htaccess.html">.htaccess ファイル</a></li>
 <li><a href="howto/public_html.html">ユーザ毎のウェブディレクトリ</a></li>
+<li><a href="misc/tutorials.html">Apache チュートリアル</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="platform" id="platform">プラットフォーム固有の情報</a></h2>
@@ -126,7 +129,6 @@
 <li><a href="programs/ab.html">マニュアルページ: ab</a></li>
 <li><a href="programs/apachectl.html">マニュアルページ: apachectl</a></li>
 <li><a href="programs/apxs.html">マニュアルページ: apxs</a></li>
-<li><a href="programs/configure.html">マニュアルページ: configure</a></li>
 <li><a href="programs/dbmmanage.html">マニュアルページ: dbmmanage</a></li>
 <li><a href="programs/htdigest.html">マニュアルページ: htdigest</a></li>
 <li><a href="programs/htpasswd.html">マニュアルページ: htpasswd</a></li>
@@ -138,6 +140,11 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="misc" id="misc">Apache その他</a></h2>
 <ul><li class="separate"><a href="misc/">概略</a></li>
+<li><a href="misc/custom_errordocs.html">カスタマイズされた
+国際化サーバエラーメッセージ</a></li>
+<li><a href="misc/fin_wait_2.html">FIN_WAIT_2 のコネクションと Apache</a></li>
+<li><a href="misc/known_client_problems.html">クライアントの既知の問題</a></li>
+<li><a href="misc/descriptors.html">記述子と Apache</a></li>
 <li><a href="cgi_path.html">CGI 環境の PATH_INFO の変更</a></li>
 <li><a href="misc/relevant_standards.html">関連する標準規格</a></li>
 </ul>
@@ -156,22 +163,15 @@
 <li><a href="mod/threadpool.html">Apache MPM threadpool</a></li>
 <li><a href="mod/mpm_winnt.html">Apache MPM winnt</a></li>
 <li><a href="mod/worker.html">Apache MPM worker</a></li>
-</ul><ul><li><a href="mod/mod_actions.html">Apache モジュール mod_actions</a></li>
+</ul><ul><li><a href="mod/mod_access.html">Apache モジュール mod_access</a></li>
+<li><a href="mod/mod_actions.html">Apache モジュール mod_actions</a></li>
 <li><a href="mod/mod_alias.html">Apache モジュール mod_alias</a></li>
 <li><a href="mod/mod_asis.html">Apache モジュール mod_asis</a></li>
-<li><a href="mod/mod_auth_basic.html">Apache モジュール mod_auth_basic</a></li>
+<li><a href="mod/mod_auth.html">Apache モジュール mod_auth</a></li>
+<li><a href="mod/mod_auth_anon.html">Apache モジュール mod_auth_anon</a></li>
+<li><a href="mod/mod_auth_dbm.html">Apache モジュール mod_auth_dbm</a></li>
 <li><a href="mod/mod_auth_digest.html">Apache モジュール mod_auth_digest</a></li>
 <li><a href="mod/mod_auth_ldap.html">Apache モジュール mod_auth_ldap</a></li>
-<li><a href="mod/mod_authn_anon.html">Apache モジュール mod_authn_anon</a></li>
-<li><a href="mod/mod_authn_dbm.html">Apache モジュール mod_authn_dbm</a></li>
-<li><a href="mod/mod_authn_default.html">Apache モジュール mod_authn_default</a></li>
-<li><a href="mod/mod_authn_file.html">Apache モジュール mod_authn_file</a></li>
-<li><a href="mod/mod_authz_dbm.html">Apache モジュール mod_authz_dbm</a></li>
-<li><a href="mod/mod_authz_default.html">Apache モジュール mod_authz_default</a></li>
-<li><a href="mod/mod_authz_groupfile.html">Apache モジュール mod_authz_groupfile</a></li>
-<li><a href="mod/mod_authz_host.html">Apache モジュール mod_authz_host</a></li>
-<li><a href="mod/mod_authz_owner.html">Apache モジュール mod_authz_owner</a></li>
-<li><a href="mod/mod_authz_user.html">Apache モジュール mod_authz_user</a></li>
 <li><a href="mod/mod_autoindex.html">Apache モジュール mod_autoindex</a></li>
 <li><a href="mod/mod_cache.html">Apache モジュール mod_cache</a></li>
 <li><a href="mod/mod_cern_meta.html">Apache モジュール mod_cern_meta</a></li>
@@ -180,7 +180,6 @@
 <li><a href="mod/mod_charset_lite.html">Apache モジュール mod_charset_lite</a></li>
 <li><a href="mod/mod_dav.html">Apache モジュール mod_dav</a></li>
 <li><a href="mod/mod_dav_fs.html">Apache モジュール mod_dav_fs</a></li>
-<li><a href="mod/mod_dav_lock.html">Apache モジュール mod_dav_lock</a></li>
 <li><a href="mod/mod_deflate.html">Apache モジュール mod_deflate</a></li>
 <li><a href="mod/mod_dir.html">Apache モジュール mod_dir</a></li>
 <li><a href="mod/mod_disk_cache.html">Apache モジュール mod_disk_cache</a></li>
@@ -191,7 +190,6 @@
 <li><a href="mod/mod_ext_filter.html">Apache モジュール mod_ext_filter</a></li>
 <li><a href="mod/mod_file_cache.html">Apache モジュール mod_file_cache</a></li>
 <li><a href="mod/mod_headers.html">Apache モジュール mod_headers</a></li>
-<li><a href="mod/mod_ident.html">Apache モジュール mod_ident</a></li>
 <li><a href="mod/mod_imap.html">Apache モジュール mod_imap</a></li>
 <li><a href="mod/mod_include.html">Apache モジュール mod_include</a></li>
 <li><a href="mod/mod_info.html">Apache モジュール mod_info</a></li>
@@ -219,7 +217,6 @@
 <li><a href="mod/mod_unique_id.html">Apache モジュール mod_unique_id</a></li>
 <li><a href="mod/mod_userdir.html">Apache モジュール mod_userdir</a></li>
 <li><a href="mod/mod_usertrack.html">Apache モジュール mod_usertrack</a></li>
-<li><a href="mod/mod_version.html">Apache モジュール mod_version</a></li>
 <li><a href="mod/mod_vhost_alias.html">Apache モジュール mod_vhost_alias</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
