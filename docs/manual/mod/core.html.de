@@ -2130,6 +2130,13 @@ reguläre Ausdrücke passen</td></tr>
       LogLevel notice
     </code></p></div>
 
+    <div class="note"><h3>Hinweis</h3>
+      <p>Beim Protokollieren in eine reguläre Datei können
+      Nachrichten des Levels <code>notice</code> nicht unterdrückt
+      werden und werden daher immer protokolliert. Dies trifft allerdings
+      nicht zu wenn mittels <code>syslog</code> protokolliert wird.</p>
+    </div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a>-<a name="maxkeepaliverequests" id="maxkeepaliverequests">Direktive</a></h2>
