@@ -1,0 +1,259 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<modulesynopsis>
+
+<name>mod_disk_cache</name>
+<description>Content cache keyed to URIs</description>
+<status>Experimental</status>
+<sourcefile>mod_disk_cache.c</sourcefile>
+<identifier>disk_cache_module</identifier>
+
+<summary>
+
+<note type="warning">
+This module is experimental. Documentation is still under development...
+</note>
+    <p><module>mod_disk_cache</module> implements a disk based storage manager for use with <module>mod_proxy.</module></p>
+    <p>Content stored and retrived keyed to the URL. Content with
+    access protections is not cached.</p>
+<note>
+    <p><module>mod_disk_cache</module> requires the services of <module>mod_cache</module>.</p>
+</note>
+</summary>
+
+<directivesynopsis>
+<name>CacheRoot</name>
+<description>The directory to store cache files</description>
+<syntax>CacheRoot <em>directory</em></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>CacheRoot</directive> directive defines the name of the directory
+    on the disk to contain cache files. What is happening if not set ?</p>
+
+<example>
+  CacheRoot c:/cacheroot <br />
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheSize</name>
+<description>The maximum amount of disk space that will be used by the cache in KBytes</description>
+<syntax>CacheSize <em>KBytes</em></syntax>
+<default>CacheSize 1000000</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>MCacheSize</directive> directive sets the desired disk space
+    usage of the cache, in KBytes (1024-byte units). This directive does not put a 
+    hard limit on the size of the cache. The garbage collector will delete files
+    until the usage is at or below the settings. Always use a value that is lower
+    than the available disk space.</p>
+
+<example>
+  MCacheSize  5000000 <br />
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheGcInterval</name>
+<description>The interval between garbage collections</description>
+<syntax>CacheGcInterval <em>hours</em></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+
+<example>
+  CacheGcInterval  24 <br />
+</example>
+<note type="warning">
+The <directive>CacheGcInterval</directive> directive is currently <em>not</em> implemented.
+</note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDirLevels</name>
+<description>The number of levels of subdirectories in the cache</description>
+<syntax>CacheDirLevels <em>levels</em></syntax>
+<default>CacheDirLevels 3</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>CacheDirLevels</directive> directive sets the number of 
+    subdirectory levels in the cache. Cached data will be saved this many directory
+    levels below <directive>CacheRoot</directive></p>
+
+<note>
+    <p>CacheDirLevels*CacheDirLength value must not be higher than 20.</p>
+</note>
+<example>
+  CacheDirLevels  5 <br />
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDirLength</name>
+<description>The number of characters in subdirectory names</description>
+<syntax>CacheDirLength <em>length</em></syntax>
+<default>CacheDirLength 2</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>CacheDirLength</directive> directive sets the number of 
+    characters for each subdirectory in the cache</p>
+
+<note>
+    <p>CacheDirLevels*CacheDirLength value must not be higher than 20.</p>
+</note>
+<example>
+  CacheDirLength  4 <br />
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheExpiryCheck</name>
+<description>On if cache observes Expires date when seeking files</description>
+<syntax>CacheExpiryCheck <em>binary</em></syntax>
+<default>CacheExpiryCheck ?</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+
+<example>
+   CacheExpiryCheck On<br />
+</example>
+<note type="warning">
+The <directive>CacheExpiryCheck</directive> directive is currently <em>not</em> implemented.
+</note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheMinFileSize</name>
+<description>The minimum size (in bytes) of a file to be placed in the cache</description>
+<syntax>CacheMinFileSize <em>bytes</em></syntax>
+<default>CacheMinFileSize 1</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>CacheMinFileSize</directive> directive sets the minimum
+    size in bytes of a file to be cached.</p>
+
+<example>
+   CacheMinFileSize 64<br />
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheMaxFileSize</name>
+<description>The maximum size (in bytes) of a file to be placed in the cache</description>
+<syntax>CacheMaxFileSize <em>bytes</em></syntax>
+<default>CacheMaxFileSize 1000000</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>CacheMaxFileSize</directive> directive sets the maximum
+    size in bytes of a file to be cached.</p>
+
+<example>
+   CacheMaxFileSize 64000<br />
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheTimeMargin</name>
+<description>The minimum time margin to cache a document</description>
+<syntax>CacheTimeMargin <em>?</em></syntax>
+<default>CacheTimeMargin ?</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+
+<example>
+   CacheTimeMargin<br />
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheGcDaily</name>
+<description>The time of day for garbage collection (24 hour clock)</description>
+<syntax>CacheGcDaily <em>time</em></syntax>
+<default>CacheGcDaily ?</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+
+<example>
+   CacheGcDaily<br />
+</example>
+<note type="warning">
+The <directive>CacheGcDaily</directive> directive is currently <em>not</em> implemented.
+</note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheGcUnused</name>
+<description>The time in hours to retain unused file that match a url</description>
+<syntax>CacheGcUnused <em>hours</em></syntax>
+<default>CacheGcUnused ?</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+
+<example>
+   CacheGcUnused<br />
+</example>
+<note type="warning">
+The <directive>CacheGcUnused</directive> directive is currently <em>not</em> implemented.
+</note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheGcClean</name>
+<description>The time in hours to retain unchanged files that match a url</description>
+<syntax>CacheGcClean <em>hours</em></syntax>
+<default>CacheGcClean ?</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+
+<example>
+   CacheGcClean<br />
+</example>
+<note type="warning">
+The <directive>CacheGcClean</directive> directive is currently <em>not</em> implemented.
+</note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheGcMemUsage</name>
+<description>The maximum kilobytes of memory used for garbage collection</description>
+<syntax>CacheGcMemUsage <em>KBytes</em></syntax>
+<default>CacheGcMemUsage ?</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+
+<example>
+   CacheGcMemUsage<br />
+</example>
+<note type="warning">
+The <directive>CacheGcMemUsage</directive> directive is currently <em>not</em> implemented.
+</note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

@@ -4,7 +4,7 @@
 <modulesynopsis>
 
 <name>mod_cache</name>
-<description>Content cache keyed to URIs</description>
+<description>Content cache keyed to URIs.</description>
 <status>Experimental</status>
 <sourcefile>mod_cache.c</sourcefile>
 <identifier>cache_module</identifier>
@@ -20,17 +20,44 @@ This module is experimental. Documentation is still under development...
     management modules. Two storage management modules are included in
     the base Apache distribution:</p>
     <dl>
-    <dt><em>mod_disk_cache</em></dt>
-    <dd>implements a disk based storage manager for use with mod_proxy</dd>
-    <dt><em>mod_mem_cache</em></dt>
+    <dt><em><module>mod_disk_cache</module></em></dt>
+    <dd>implements a disk based storage manager for use with <module>mod_proxy</module></dd>
+    <dt><em><module>mod_mem_cache</module></em></dt>
     <dd>implements an in-memory based storage manager. mod_mem_cache
     can be configured to operate in two modes: caching open file
-    descriptors or caching objects in heap storage. <em>mod_mem_cache</em>
+    descriptors or caching objects in heap storage. <em><module>mod_mem_cache</module></em>
     is most useful when used to cache locally generated content or to cache 
     backend server content for mod_proxy configured for ProxyPass (aka <em>reverse proxy</em>)</dd>
     </dl>
     <p>Content stored and retrived keyed to the URL. Content with
     access protections is not cached.</p>
+
+    <related>
+      <modulelist>
+        <module>mod_disk_cache</module>
+        <module>mod_mem_cache</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_disk_cache">CacheRoot</directive>
+        <directive module="mod_disk_cache">CacheSize</directive>
+        <directive module="mod_disk_cache">CacheGcInterval</directive>
+        <directive module="mod_disk_cache">CacheDirLevels</directive>
+        <directive module="mod_disk_cache">CacheDirLength</directive>
+        <directive module="mod_disk_cache">CacheExpiryCheck</directive>
+        <directive module="mod_disk_cache">CacheMinFileSize</directive>
+        <directive module="mod_disk_cache">CacheMaxFileSize</directive>
+        <directive module="mod_disk_cache">CacheTimeMargin</directive>
+        <directive module="mod_disk_cache">CacheGcDaily</directive>
+        <directive module="mod_disk_cache">CacheGcUnused</directive>
+        <directive module="mod_disk_cache">CacheGcClean</directive>
+        <directive module="mod_disk_cache">CacheGcMemUsage</directive>
+        <directive module="mod_mem_cache">MCacheSize</directive>
+        <directive module="mod_mem_cache">MCacheMaxObjectCount</directive>
+        <directive module="mod_mem_cache">MCacheMinObjectSize</directive>
+        <directive module="mod_mem_cache">MCacheMaxObjectSize</directive>
+        <directive module="mod_mem_cache">MCacheRemovalAlgorithm</directive>
+      </directivelist>
+    </related>
 </summary>
 
 <section><title>Sample Configuration</title>
@@ -47,7 +74,7 @@ LoadModule cache_module modules/mod_cache.so  <br />
    #LoadModule disk_cache_module modules/mod_disk_cache.so <br />
    &lt;IfModule mod_disk_cache.c&gt; <br />
       CacheRoot c:/cacheroot <br />
-      CacheSize 
+      CacheSize 256 <br /> 
       CacheEnable disk  / <br />
       CacheDirLevels 5 <br />
       CacheDirLength 3 <br />
@@ -128,11 +155,13 @@ LoadModule cache_module modules/mod_cache.so  <br />
 <directivesynopsis>
 <name>CacheMaxExpire</name>
 <description>The maximum time in seconds to cache a document</description>
-<syntax></syntax>
+<syntax>CacheMaxExpire <em>seconds</em></syntax>
+<default>CacheMaxExpire 86400 <em>(one day)</em></default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>The maximum time in seconds to cache a document.</p>
+    <p>The maximum time in seconds to cache a document. The <directive>CacheMaxExpire</directive>
+    takes precedence over the <em>Expire</em> field from the header.</p>
     <example>
     CacheMaxExpire 604800
     </example>
@@ -140,11 +169,13 @@ LoadModule cache_module modules/mod_cache.so  <br />
 </directivesynopsis>
 <directivesynopsis>
 <name>CacheDefaultExpire</name>
-<syntax></syntax>
+<syntax>CacheDefaultExpire <em>seconds</em></syntax>
+<default>CacheDefaultExpire 3600 <em>(one hour)</em></default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>The default time in seconds to cache a document.</p>
+    <p>The default time in seconds to cache a document if the page does not have
+    an expiry date in the <em>Expires</em> field.</p>
     <example>
     CacheDefaultExpire 86400
     </example>
@@ -154,7 +185,7 @@ LoadModule cache_module modules/mod_cache.so  <br />
 <directivesynopsis>
 <name>CacheIgnoreNoLastMod</name>
 <description>Ignore responses where there is no Last Modified Header</description>
-<syntax></syntax>
+<syntax>CacheIgnoreNoLastMod</syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -169,7 +200,7 @@ LoadModule cache_module modules/mod_cache.so  <br />
 <directivesynopsis>
 <name>CacheIgnoreCacheControl</name>
 <description>Ignore requests from the client for uncached content</description>
-<syntax></syntax>
+<syntax>CacheIgnoreCacheControl</syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -184,7 +215,8 @@ LoadModule cache_module modules/mod_cache.so  <br />
 <directivesynopsis>
 <name>CacheLastModifiedFactor</name>
 <description>The factor used to estimate the Expires date from the LastModified date</description>
-<syntax></syntax>
+<syntax>CacheLastModifiedFactor <em>float</em></syntax>
+<default>CacheLastModifiedFactor 0.1</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -193,6 +225,44 @@ LoadModule cache_module modules/mod_cache.so  <br />
     <example>
     CacheLastModifiedFactor  
     </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheForceCompletion</name>
+<description>Percentage of download to arrive for the cache to force complete transfert</description>
+<syntax>CacheLastModifiedFactor <em>Percentage</em></syntax>
+<default>CacheLastModifiedFactor 60</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Percentage of download to arrive for the cache to force complete transfert.</p>
+
+    <example>
+    CacheForceCompletion  
+    </example>
+<note type="warning">
+This feature is currently <em>not</em> implemented.
+</note>
+ </usage>
+ </directivesynopsis>
+
+<directivesynopsis>
+<name>CacheForceCompletion</name>
+<description>Percentage of download to arrive for the cache to force complete transfert</description>
+<syntax>CacheLastModifiedFactor <em>Percentage</em></syntax>
+<default>CacheLastModifiedFactor 60</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Percentage of download to arrive for the cache to force complete transfert.</p>
+
+    <example>
+    CacheForceCompletion  
+    </example>
+<note type="warning">
+This feature is currently <em>not</em> implemented.
+</note>
 </usage>
 </directivesynopsis>
 
