@@ -597,9 +597,9 @@
       <ul>
       <li>Expressions are evaluated from left to right</li>
       <li>Binary boolean operators (<code>&amp;&amp;</code> and <code>||</code>)
-          are short circuited whereever possible. In conclusion with the rule
+          are short circuited wherever possible. In conclusion with the rule
           above that means, <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> evaluates at first
-          the left expression. If the left result if sufficient to determine
+          the left expression. If the left result is sufficient to determine
           the end result, processing stops here. Otherwise it evaluates the
           right side and computes the end result from both left and right
           results.</li>
