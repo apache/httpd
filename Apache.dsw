@@ -528,6 +528,51 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_dav"=".\os\win32\mod_dav.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCoreDll
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name aprlibdll
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_dav_fs"=".\os\win32\mod_dav_fs.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name xmlparse
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ApacheCoreDll
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name aprlibdll
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name sdbmlib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_dav
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "pcre"=".\lib\pcre\pcre.dsp" - Package Owner=<4>
 
 Package=<5>
