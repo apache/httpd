@@ -325,7 +325,13 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
         ec = e;
         do {
             apr_bucket *foo;
-            apr_bucket_copy(ec, &foo);
+            const char *str;
+            apr_size_t len;
+
+            if (apr_bucket_copy(ec, &foo) != APR_SUCCESS) {
+                apr_bucket_read(ec, &str, &len, APR_BLOCK_READ);
+                foo = apr_bucket_create_heap(str, len, 0, NULL);
+            }
             APR_BRIGADE_INSERT_TAIL(bsend, foo);
             ec = APR_BUCKET_NEXT(ec);
         } while (ec != e2);
