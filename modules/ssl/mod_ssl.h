@@ -414,6 +414,7 @@ typedef struct {
     int verify_depth;
     int is_proxy;
     int disabled;
+    int non_ssl_request;
 } SSLConnRec;
 
 typedef struct {

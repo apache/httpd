@@ -1,5 +1,9 @@
 Changes with Apache 2.0.37
 
+  *) Remove all special mod_ssl URIs.  This also fixes the bug where
+     redirecting (.*) will allow an SSL protected page to be viewed
+     without SSL.  [Ryan Bloom]
+
   *) Fix the binary build install script so that the build logic
      created by "apxs -g" will work when the user has a binary
      build.  [Jeff Trawick]
