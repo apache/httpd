@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/10/14 09:35:17 $]
+  Last modified at [$Date: 2000/11/02 18:03:14 $]
 
 Release:
 
@@ -30,12 +30,39 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
+    * Parse the ServerName arg for invalid characters at startup.
+      Bug report 6787 and others are very confused that these bugs
+      don't appear until requests to the invalid hostname are
+      rejected in http_protocol.c - wasting bug reviewers time.
+
+    * This shouldn't be, but it is since non-core modules install
+      with backslashes in the Win32 httpd.conf file.  Need to either
+      (#1) accept backslashes back into the core, or (#2) always
+      canonicalize the elements before testing if an absolute paths
+      when concatinating them to the ServerRoot.  See the thread 
+      titled: [Patch] 1.3.15 ap_os_is_path_absolute
+        Status #1: OtherBill -1, Brian Harvard +1
+        Status #2: OtherBill +1, Brian Harvard -1
+
+    * Likewise, mod_alias paths are never canonicalized today.  Needs
+      a fix to canonicalize all but perhaps the regex Aliases, and
+      while we are at it, additional feature to accept Alias relative
+      to ServerRoot could be good.  See the above showstopper and the
+      thread titled: Resolution - 1.3.15 ap_os_is_path_absolute
+        Status: Patch proposed; won't work for OS2; still in review.
+
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
-    * Root all file systems with <Directory /> for WIN32/OS2/NW permissions 
-      Status: NETWARE still does not handle all these variants properly:
-              <Directory / | server/ | server/vol:/ | vol:/> 
-              Brad Nicholes <BNICHOLES@novell.com> is researching
+    * Patch to piped logs to prevent procs from being spawned over
+      and over again once they return a 'fatal' error (e.g. volume
+      full, bad args, etc.)
+        Status: Victor Orlikowski is working up a patch
+
+    * mod_autoindex results return no timestamp, so they are cached
+      past their legitimate lifetime.  Patch to add ETag and 
+      Last Modified based on directory mtime posted to new-httpd
+      Message ID <001f01c0441e$b719c180$93c0b0d0@covalentwrowe1>
+	Status:
 
     * long pathnames with many components and no AllowOverride None
       Workaround is to define <Directory /> with AllowOverride None,
@@ -116,7 +143,8 @@ Available Patches:
 	Status:
 
     * Stipe Tolj's Cygwin32 port
-	PR#: 2936
+        New Message-ID: <39F6BD04.7C8922B0@wapme-systems.de> for 1.3.14
+	Original PR#: 2936
         Status: Lars +1 (on concept), Martin +1 (on concept), Ken +1 (concept),
                 Jim +1 (concept)
 
@@ -392,7 +420,7 @@ Win32 specific issues:
       from OtherBill <002001bff8b6$cb53b420$345985d0@corecomm.net>
         Status: Is this done, now that we use scan_script_headers_err_strs?
 
-    * Apache console on Windows 95 (98?) won't close, close button/menu 
+    * Apache console on Windows 95 alone won't close, close button/menu 
       option can't (?) be intercepted, any workarounds out there?
       There is also an unverified report that Apache in a Win98 (95?) 
       console window is ignoring shutdown/logoff, but this is not a
