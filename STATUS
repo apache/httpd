@@ -134,6 +134,7 @@ Committed Code Changes:
     * Ralf's APache eXtenSion for easy "off-source" extending Apache via DSO
     * Ralf's APACI --without-support option
     * Martin's fix accept (and pass) http://user:pass@host proxy requests
+    * Martin's fix CONNECT proxy handling again
 
 Available Patches:
 
