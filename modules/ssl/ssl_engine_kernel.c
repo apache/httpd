@@ -1320,7 +1320,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
      * Additionally perform CRL-based revocation checks
      */
     if (ok) {
-        if (!(ok = ssl_callback_SSLVerify_CRL(ok, ctx, s))) {
+        if (!(ok = ssl_callback_SSLVerify_CRL(ok, ctx, conn))) {
             errnum = X509_STORE_CTX_get_error(ctx);
         }
     }
@@ -1366,9 +1366,12 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     return ok;
 }
 
-int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, server_rec *s)
+int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
 {
+    server_rec *s       = c->base_server;
     SSLSrvConfigRec *sc = mySrvConfig(s);
+    SSLConnRec *sslconn = myConnConfig(c);
+    modssl_ctx_t *mctx  = myCtxConfig(sslconn);
     X509_OBJECT obj;
     X509_NAME *subject, *issuer;
     X509 *cert;
@@ -1379,7 +1382,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, server_rec *s)
      * Unless a revocation store for CRLs was created we
      * cannot do any CRL-based verification, of course.
      */
-    if (!sc->server->crl) {
+    if (!mctx->crl) {
         return ok;
     }
 
@@ -1426,7 +1429,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, server_rec *s)
      * the current certificate in order to verify it's integrity.
      */
     memset((char *)&obj, 0, sizeof(obj));
-    rc = SSL_X509_STORE_lookup(sc->server->crl,
+    rc = SSL_X509_STORE_lookup(mctx->crl,
                                X509_LU_CRL, subject, &obj);
     crl = obj.data.crl;
 
@@ -1503,7 +1506,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, server_rec *s)
      * the current certificate in order to check for revocation.
      */
     memset((char *)&obj, 0, sizeof(obj));
-    rc = SSL_X509_STORE_lookup(sc->server->crl,
+    rc = SSL_X509_STORE_lookup(mctx->crl,
                                X509_LU_CRL, issuer, &obj);
 
     crl = obj.data.crl;
