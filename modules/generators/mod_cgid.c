@@ -515,9 +515,17 @@ static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     pid_t pid; 
     apr_proc_t *procnew;
     void *data;
+    int first_time = 0;
+    const char *userdata_key = "cgid_init";
 
-    apr_get_userdata(&data, "cgid_init", main_server->process->pool);
-    if (data != NULL) {
+    apr_get_userdata(&data, userdata_key, main_server->process->pool);
+    if (!data) {
+        first_time = 1;
+        apr_set_userdata((const void *)1, userdata_key,
+                         apr_null_cleanup, main_server->process->pool);
+    }
+
+    if (!first_time) {
         apr_create_pool(&pcgi, p); 
 
         if ((pid = fork()) < 0) {
@@ -535,10 +543,6 @@ static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
 #if APR_HAS_OTHER_CHILD
         apr_register_other_child(procnew, cgid_maint, NULL, NULL, p);
 #endif
-    }
-    else {
-        apr_set_userdata((const void *)1, "cgid_init", apr_null_cleanup,
-                         main_server->process->pool);
     }
 } 
 
