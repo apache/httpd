@@ -16,7 +16,7 @@
   </H1>
   <P>
   Hvis du kan se denne siden, det betyr at de som eier denne domene (domain)
-  har nettopp greid å installere <A HREF="http://www.apache.org/">Apache Web server</A>
+  har nettopp greid å installere <A HREF="http://www.apache.org/httpd">Apache Web server</A>
   software.  De må tilføye innhold til denne katalog og erstatte denne 
   plassholder siden, ellers peke serveren til de virkelige innhold.
   </P>
