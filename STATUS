@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/08/17 00:26:38 $]
+Last modified at [$Date: 2001/08/17 00:29:08 $]
 
 Release:
 
@@ -571,10 +571,6 @@ put them into 'the next release':
 
     * PR#3568: mod_proxy
       Accessing URL through proxy server corrupts data.
-	Status: 
-
-    * PR#3594: os-windows
-      Please add an Apache icon to the win32 systray instead of a DOS window
 	Status: 
 
     * PR#3605: mod_proxy
