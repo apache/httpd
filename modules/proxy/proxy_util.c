@@ -1078,11 +1078,11 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     return NULL;
 }
 
-static apr_status_t conn_pool_cleanup(void *thepool)
+static apr_status_t conn_pool_cleanup(void *theworker)
 {
-    proxy_conn_pool *cp = (proxy_conn_pool *)thepool;
-    /* Close the socket */
-    cp->addr = NULL;
+    proxy_worker *worker = (proxy_worker *)theworker;
+    /* Set the connection pool to NULL */
+    worker->cp = NULL;
     return APR_SUCCESS;
 }
 
@@ -1103,7 +1103,7 @@ static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
     cp = (proxy_conn_pool *)apr_pcalloc(p, sizeof(proxy_conn_pool));
     cp->pool = pool;    
     worker->cp = cp;
-    apr_pool_cleanup_register(p, (void *)cp,
+    apr_pool_cleanup_register(p, (void *)worker,
                               conn_pool_cleanup,
                               apr_pool_cleanup_null);      
 
@@ -1298,24 +1298,19 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
     return connected ? 0 : 1;
 }
 
-static apr_status_t proxy_conn_cleanup(void *theconn)
-{
-    proxy_conn_rec *conn = (proxy_conn_rec *)theconn;
-    /* Close the socket */
-    if (conn->sock)
-        apr_socket_close(conn->sock);
-    conn->sock = NULL;
-    conn->pool = NULL;
-    return APR_SUCCESS;
-}
-
 static apr_status_t connection_cleanup(void *theconn)
 {
     proxy_conn_rec *conn = (proxy_conn_rec *)theconn;
     proxy_worker *worker = conn->worker;
     
+    /* If the connection pool is NULL the worker
+     * cleanup has been run. Just return.
+     */
+    if (!worker->cp)
+        return APR_SUCCESS;
+
     /* deterimine if the connection need to be closed */
-    if (conn->close_on_recycle) {
+    if (conn->close_on_recycle || conn->close) {
         if (conn->sock)
             apr_socket_close(conn->sock);
         conn->sock = NULL;
@@ -1351,10 +1346,6 @@ static apr_status_t connection_constructor(void **resource, void *params,
 
     conn->pool = ctx;
     *resource = conn;
-    /* register the pool cleanup */
-    apr_pool_cleanup_register(ctx, (void *)conn,
-                              proxy_conn_cleanup,
-                              apr_pool_cleanup_null);      
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "proxy: socket is constructed");
@@ -1368,20 +1359,10 @@ static apr_status_t connection_destructor(void *resource, void *params,
 {
     proxy_conn_rec *conn = (proxy_conn_rec *)resource;
     
-#if 0
-    if (conn->sock)
-        apr_socket_close(conn->sock);
-    conn->sock = NULL;
-    apr_pool_cleanup_kill(conn->pool, conn, proxy_conn_cleanup);
-#endif
     if (conn->pool)
         apr_pool_destroy(conn->pool);
     conn->pool = NULL;
-#if 0
-    if (s != NULL)
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "proxy: socket is destructed");
-#endif
+
     return APR_SUCCESS;
 }
 
@@ -1533,6 +1514,8 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
                  proxy_function, worker->hostname);
 
     (*conn)->worker = worker;
+    (*conn)->close  = 0;
+    (*conn)->close_on_recycle = 0;
 
     return OK;
 }
@@ -1545,10 +1528,11 @@ PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
                  "proxy: %s: has released connection for (%s)",
                  proxy_function, conn->worker->hostname);
     /* If there is a connection kill it's cleanup */
-    if (conn->connection)
+    if (conn->connection) {
         apr_pool_cleanup_kill(conn->connection->pool, conn, connection_cleanup);
+        conn->connection = NULL;
+    }
     connection_cleanup(conn);
-    conn->connection = NULL;
 
     return OK;
 }
