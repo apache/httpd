@@ -67,6 +67,7 @@ typedef struct disk_cache_object {
     char *name;
     apr_file_t *fd;          /* data file */
     apr_file_t *hfd;         /* headers file */
+    apr_file_t *tfd;         /* temporary file for data */
     apr_off_t file_size;     /*  File size of the cached data file  */
     disk_cache_info_t disk_info; /* Header information. */
 } disk_cache_object_t;
@@ -160,30 +161,16 @@ static void mkdir_structure(disk_cache_conf *conf, char *file, apr_pool_t *pool)
     }
 }
 
-static apr_status_t file_cache_el_final(cache_handle_t *h, request_rec *r)
+static apr_status_t file_cache_el_final(disk_cache_object_t *dobj,
+                                        request_rec *r)
 {
-    apr_status_t rv;
-    disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
-                                                 &disk_cache_module);
-    disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
-
     /* move the data over */
-    if (dobj->fd) {
-        apr_file_flush(dobj->fd);
-        if (!dobj->datafile) {
-            dobj->datafile = data_file(r->pool, conf, dobj, h->cache_obj->key);
-        }
-        /* Remove old file with the same name. If remove fails, then
-         * perhaps we need to create the directory tree where we are
-         * about to write the new file.
-         */
-        rv = apr_file_remove(dobj->datafile, r->pool);
-        if (rv != APR_SUCCESS) {
-            mkdir_structure(conf, dobj->datafile, r->pool);
-        }
+    if (dobj->tfd) {
+        apr_status_t rv;
 
-        /*
-         * This assumes that the tempfile is on the same file system
+        apr_file_close(dobj->tfd);
+
+        /* This assumes that the tempfile is on the same file system
          * as the cache_root. If not, then we need a file copy/move
          * rather than a rename.
          */
@@ -192,9 +179,7 @@ static apr_status_t file_cache_el_final(cache_handle_t *h, request_rec *r)
             /* XXX log */
         }
 
-        apr_file_close(dobj->fd);
-        dobj->fd = NULL;
-        /* XXX log */
+        dobj->tfd = NULL;
     }
 
     return APR_SUCCESS;
@@ -202,17 +187,18 @@ static apr_status_t file_cache_el_final(cache_handle_t *h, request_rec *r)
 
 static apr_status_t file_cache_errorcleanup(disk_cache_object_t *dobj, request_rec *r)
 {
-    if (dobj->fd) {
-        apr_file_close(dobj->fd);
-        dobj->fd = NULL;
-    }
-    /* Remove the header file, the temporary body file, and a potential old body file */
+    /* Remove the header file and the body file. */
     apr_file_remove(dobj->hdrsfile, r->pool);
-    apr_file_remove(dobj->tempfile, r->pool);
     apr_file_remove(dobj->datafile, r->pool);
 
-    /* Return non-APR_SUCCESS in order to have mod_cache remove the disk_cache filter */
-    return DECLINED;
+    /* If we opened the temporary data file, close and remove it. */
+    if (dobj->tfd) {
+        apr_file_close(dobj->tfd);
+        apr_file_remove(dobj->tempfile, r->pool);
+        dobj->tfd = NULL;
+    }
+
+    return APR_SUCCESS;
 }
 
 
@@ -298,7 +284,7 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     }
 
     /* Allocate and initialize cache_object_t and disk_cache_object_t */
-    obj = apr_pcalloc(r->pool, sizeof(*obj));
+    h->cache_obj = obj = apr_pcalloc(r->pool, sizeof(*obj));
     obj->vobj = dobj = apr_pcalloc(r->pool, sizeof(*dobj));
 
     obj->key = apr_pstrdup(r->pool, key);
@@ -307,25 +293,9 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     obj->complete = 0;   /* Cache object is not complete */
 
     dobj->name = obj->key;
-
-    /* open temporary file */
+    dobj->datafile = data_file(r->pool, conf, dobj, key);
+    dobj->hdrsfile = header_file(r->pool, conf, dobj, key);
     dobj->tempfile = apr_pstrcat(r->pool, conf->cache_root, AP_TEMPFILE, NULL);
-    rv = apr_file_mktemp(&tmpfile, dobj->tempfile,
-                         APR_CREATE | APR_READ | APR_WRITE | APR_EXCL, r->pool);
-
-    if (rv == APR_SUCCESS) {
-        /* Populate the cache handle */
-        h->cache_obj = obj;
-
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-                     "disk_cache: Storing URL %s",  key);
-    }
-    else {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-                     "disk_cache: Could not store URL %s [%d]", key, rv);
-
-        return DECLINED;
-    }
 
     return OK;
 }
@@ -354,7 +324,6 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
         return DECLINED;
     }
 
-
     /* Create and init the cache object */
     h->cache_obj = obj = apr_pcalloc(r->pool, sizeof(cache_object_t));
     obj->vobj = dobj = apr_pcalloc(r->pool, sizeof(disk_cache_object_t));
@@ -364,6 +333,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     dobj->name = (char *) key;
     dobj->datafile = data_file(r->pool, conf, dobj, key);
     dobj->hdrsfile = header_file(r->pool, conf, dobj, key);
+    dobj->tempfile = apr_pstrcat(r->pool, conf->cache_root, AP_TEMPFILE, NULL);
 
     /* Open the data file */
     flags = APR_READ|APR_BINARY;
@@ -588,16 +558,10 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     apr_status_t rv;
     apr_size_t amt;
     disk_cache_object_t *dobj = (disk_cache_object_t*) h->cache_obj->vobj;
-    apr_file_t *hfd = dobj->hfd;
 
-    if (!hfd)  {
+    if (!dobj->hfd)  {
         disk_cache_info_t disk_info;
         struct iovec iov[2];
-
-        if (!dobj->hdrsfile) {
-            dobj->hdrsfile = header_file(r->pool, conf, dobj,
-                                         h->cache_obj->key);
-        }
 
         /* This is flaky... we need to manage the cache_info differently */
         h->cache_obj->info = *info;
@@ -617,7 +581,6 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
         if (rv != APR_SUCCESS) {
             return rv;
         }
-        hfd = dobj->hfd;
         dobj->name = h->cache_obj->key;
 
         disk_info.format = DISK_FORMAT_VERSION;
@@ -640,7 +603,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
         iov[1].iov_base = dobj->name;
         iov[1].iov_len = disk_info.name_len;
 
-        rv = apr_file_writev(hfd, (const struct iovec *) &iov, 2, &amt);
+        rv = apr_file_writev(dobj->hfd, (const struct iovec *) &iov, 2, &amt);
         if (rv != APR_SUCCESS) {
             return rv;
         }
@@ -650,7 +613,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 
             headers_out = ap_cache_cacheable_hdrs_out(r->pool, r->headers_out);
 
-            rv = store_table(hfd, headers_out);
+            rv = store_table(dobj->hfd, headers_out);
             if (rv != APR_SUCCESS) {
                 return rv;
             }
@@ -666,12 +629,12 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
         /* Make call to the same thing cache_select_url calls to crack Vary. */
         /* @@@ Some day, not today. */
         if (r->headers_in) {
-            rv = store_table(hfd, r->headers_in);
+            rv = store_table(dobj->hfd, r->headers_in);
             if (rv != APR_SUCCESS) {
                 return rv;
             }
         }
-        apr_file_close(hfd); /* flush and close */
+        apr_file_close(dobj->hfd); /* flush and close */
     }
     else {
         /* XXX log message */
@@ -682,7 +645,8 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     return APR_SUCCESS;
 }
 
-static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
+static apr_status_t store_body(cache_handle_t *h, request_rec *r,
+                               apr_bucket_brigade *bb)
 {
     apr_bucket *e;
     apr_status_t rv;
@@ -690,41 +654,51 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
 
-    if (!dobj->fd) {
-        rv = apr_file_open(&dobj->fd, dobj->tempfile,
-                           APR_WRITE | APR_CREATE | APR_BINARY| APR_TRUNCATE | APR_BUFFERED,
-                           APR_UREAD | APR_UWRITE, r->pool);
+    /* We write to a temp file and then atomically rename the file over
+     * in file_cache_el_final().
+     */
+    if (!dobj->tfd) {
+        rv = apr_file_mktemp(&dobj->tfd, dobj->tempfile,
+                             APR_CREATE | APR_WRITE | APR_BINARY |
+                             APR_BUFFERED | APR_EXCL, r->pool);
         if (rv != APR_SUCCESS) {
             return rv;
         }
         dobj->file_size = 0;
     }
-    for (e = APR_BRIGADE_FIRST(b);
-         e != APR_BRIGADE_SENTINEL(b);
+
+    for (e = APR_BRIGADE_FIRST(bb);
+         e != APR_BRIGADE_SENTINEL(bb);
          e = APR_BUCKET_NEXT(e))
     {
         const char *str;
-        apr_size_t length;
+        apr_size_t length, written;
         apr_bucket_read(e, &str, &length, APR_BLOCK_READ);
-        if (apr_file_write(dobj->fd, str, &length) != APR_SUCCESS) {
-          ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                     "cache_disk: Error when writing cache file for URL %s",
-                     h->cache_obj->key);
-          /* Remove the intermediate cache file and return non-APR_SUCCESS */
-          return file_cache_errorcleanup(dobj, r);
+        rv = apr_file_write_full(dobj->tfd, str, length, &written);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                         "cache_disk: Error when writing cache file for URL %s",
+                         h->cache_obj->key);
+            /* Remove the intermediate cache file and return non-APR_SUCCESS */
+            file_cache_errorcleanup(dobj, r);
+            return APR_EGENERAL;
         }
-        dobj->file_size += length;
+        dobj->file_size += written;
         if (dobj->file_size > conf->maxfs) {
-          ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "cache_disk: URL %s failed the size check (%lu>%lu)",
-                     h->cache_obj->key, (unsigned long)dobj->file_size, (unsigned long)conf->maxfs);
-          /* Remove the intermediate cache file and return non-APR_SUCCESS */
-          return file_cache_errorcleanup(dobj, r);
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                         "cache_disk: URL %s failed the size check (%lu>%lu)",
+                         h->cache_obj->key, (unsigned long)dobj->file_size,
+                         (unsigned long)conf->maxfs);
+            /* Remove the intermediate cache file and return non-APR_SUCCESS */
+            file_cache_errorcleanup(dobj, r);
+            return APR_EGENERAL;
         }
     }
 
-    /* Was this the final bucket? If yes, close the body file and make sanity checks */
-    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(b))) {
+    /* Was this the final bucket? If yes, close the temp file and perform
+     * sanity checks.
+     */
+    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
         if (h->cache_obj->info.len <= 0) {
           /* XXX Fixme: file_size isn't constrained by size_t. */
           h->cache_obj->info.len = dobj->file_size;
@@ -737,17 +711,21 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
                        (unsigned long)h->cache_obj->info.len,
                        (unsigned long)dobj->file_size);
           /* Remove the intermediate cache file and return non-APR_SUCCESS */
-          return file_cache_errorcleanup(dobj, r);
+          file_cache_errorcleanup(dobj, r);
+          return APR_EGENERAL;
         }
         if (dobj->file_size < conf->minfs) {
           ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "cache_disk: URL %s failed the size check (%lu<%lu)",
                      h->cache_obj->key, (unsigned long)dobj->file_size, (unsigned long)conf->minfs);
           /* Remove the intermediate cache file and return non-APR_SUCCESS */
-          return file_cache_errorcleanup(dobj, r);
+          file_cache_errorcleanup(dobj, r);
+          return APR_EGENERAL;
         }
+
         /* All checks were fine. Move tempfile to final destination */
-        file_cache_el_final(h, r);    /* Link to the perm file, and close the descriptor */
+        /* Link to the perm file, and close the descriptor */
+        file_cache_el_final(dobj, r);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "disk_cache: Body for URL %s cached.",  dobj->name);
     }
