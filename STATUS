@@ -49,16 +49,6 @@ Available Patches:
       Bill Stoddard <wgstodda@us.ibm.com>
 	Message-ID: <3591353E.A5D07487@us.ibm.com>
 
-    * PR#2483 reports that RewriteMap program still don't work under Win32
-      because of a SIGSEGV. The reporter is right, ap_spawn_child_core()
-      calls the child function with NULL while in the child function the
-      file handles have to be available. I've assembled the above patch
-      from the reporters description/patch for testing by our Win32 folks.
-      (I cannot test it myself).
-      "Ralf S. Engelschall" <rse@engelschall.com>
-	Message-ID: <19980629143312.A4552@engelschall.com>
-	Status: Ralf +1
-
     * Bill Stoddard's patch to make some structural changes to ap_call_exec to
       make it more readable and friendly to a couple of patches that will
       follow (capability to query the Win32 registry for interpreter name
