@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-     This file is generated from xml source: DO NOT EDIT
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
---><title>mod_ssl - Apache HTTP Server</title><link rel="stylesheet" type="text/css" href="../style/manual.css"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_ssl</h1><table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Strong cryptography using the Secure Sockets
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!-- 
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                This file is generated from xml source: DO NOT EDIT
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        --><title>mod_ssl- Apache HTTP Server</title><link rel="stylesheet" type="text/css" href="../style/manual.css"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_ssl</h1><table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Strong cryptography using the Secure Sockets
 Layer (SSL) and Transport Layer Security (TLS) protocols</td></tr><tr><td><a class="help" href="module-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></td><td>ssl_module</td></tr></table></td></tr></table><h2>Summary</h2>
 <p>This module provides SSL v2/v3 and TLS v1 support for the Apache
 HTTP Server.  It was contributed by Ralf S. Engeschall based on his
@@ -13,7 +13,7 @@ to provide the cryptography engine.</p>
 
 <p>Further details, discussion, and examples are provided in the
 <a href="../ssl/">SSL documentation</a>.</p>
-<h2>Directives</h2><ul><li><a href="#sslcacertificatefile">SSLCACertificateFile</a></li><li><a href="#sslcacertificatepath">SSLCACertificatePath</a></li><li><a href="#sslcarevocationfile">SSLCARevocationFile</a></li><li><a href="#sslcarevocationpath">SSLCARevocationPath</a></li><li><a href="#sslcertificatechainfile">SSLCertificateChainFile</a></li><li><a href="#sslcertificatefile">SSLCertificateFile</a></li><li><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></li><li><a href="#sslciphersuite">SSLCipherSuite</a></li><li><a href="#sslengine">SSLEngine</a></li><li><a href="#ssllog">SSLLog</a></li><li><a href="#sslloglevel">SSLLogLevel</a></li><li><a href="#sslmutex">SSLMutex</a></li><li><a href="#ssloptions">SSLOptions</a></li><li><a href="#sslpassphrasedialog">SSLPassPhraseDialog</a></li><li><a href="#sslprotocol">SSLProtocol</a></li><li><a href="#sslrandomseed">SSLRandomSeed</a></li><li><a href="#sslrequire">SSLRequire</a></li><li><a href="#sslrequiressl">SSLRequireSSL</a></li><li><a href="#sslsessioncache">SSLSessionCache</a></li><li><a href="#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li><li><a href="#sslverifyclient">SSLVerifyClient</a></li><li><a href="#sslverifydepth">SSLVerifyDepth</a></li></ul><h2><a name="ToC25">Environment Variables</a></h2>
+<h2>Directives</h2><ul><li><a href="#sslcacertificatefile">SSLCACertificateFile</a></li><li><a href="#sslcacertificatepath">SSLCACertificatePath</a></li><li><a href="#sslcarevocationfile">SSLCARevocationFile</a></li><li><a href="#sslcarevocationpath">SSLCARevocationPath</a></li><li><a href="#sslcertificatechainfile">SSLCertificateChainFile</a></li><li><a href="#sslcertificatefile">SSLCertificateFile</a></li><li><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></li><li><a href="#sslciphersuite">SSLCipherSuite</a></li><li><a href="#sslengine">SSLEngine</a></li><li><a href="#ssllog">SSLLog</a></li><li><a href="#sslloglevel">SSLLogLevel</a></li><li><a href="#sslmutex">SSLMutex</a></li><li><a href="#ssloptions">SSLOptions</a></li><li><a href="#sslpassphrasedialog">SSLPassPhraseDialog</a></li><li><a href="#sslprotocol">SSLProtocol</a></li><li><a href="#sslrandomseed">SSLRandomSeed</a></li><li><a href="#sslrequire">SSLRequire</a></li><li><a href="#sslrequiressl">SSLRequireSSL</a></li><li><a href="#sslsessioncache">SSLSessionCache</a></li><li><a href="#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li><li><a href="#sslverifyclient">SSLVerifyClient</a></li><li><a href="#sslverifydepth">SSLVerifyDepth</a></li></ul><h2>Environment Variables</h2>
 
 <p>This module provides a lot of SSL information as additional environment
 variables to the SSI and CGI namespace. The generated variables are listed in
@@ -21,60 +21,57 @@ the table below. For backward compatibility the information can
 be made available under different names, too. Look in the <a href="../ssl/ssl_compat.html">Compatibility</a> chapter for details on the
 compatibility variables.</p>
 
-<div align="center">
-<a name="table4"/>
 <table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
-<caption align="bottom" id="sf">SSI/CGI Environment Variables</caption>
+
 <tr><td bgcolor="#cccccc">
 <table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
-<tr><td valign="top" align="center" bgcolor="#ffffff">
+<tr><td bgcolor="#ffffff">
 <table border="0" cellspacing="0" cellpadding="2" width="598" summary="">
-<tr id="H">
+<tr>
  <td><strong>Variable Name:</strong></td>
  <td><strong>Value Type:</strong></td>
  <td><strong>Description:</strong></td>
 </tr>
-<tr id="D"><td><code>HTTPS</code></td>                         <td>flag</td>      <td>HTTPS is being used.</td></tr>
-<tr id="H"><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv2, SSLv3, TLSv1)</td></tr>
-<tr id="H"><td><code>SSL_SESSION_ID</code></td>                <td>string</td>    <td>The hex-encoded SSL session id</td></tr>
-<tr id="D"><td><code>SSL_CIPHER</code></td>                    <td>string</td>    <td>The cipher specification name</td></tr>
-<tr id="D"><td><code>SSL_CIPHER_EXPORT</code></td>             <td>string</td>    <td><code>true</code> if cipher is an export cipher</td></tr>
-<tr id="H"><td><code>SSL_CIPHER_USEKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (actually used)</td></tr>
-<tr id="D"><td><code>SSL_CIPHER_ALGKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (possible)</td></tr>
-<tr id="H"><td><code>SSL_VERSION_INTERFACE</code></td>         <td>string</td>    <td>The mod_ssl program version</td></tr>
-<tr id="D"><td><code>SSL_VERSION_LIBRARY</code></td>           <td>string</td>    <td>The OpenSSL program version</td></tr>
-<tr id="H"><td><code>SSL_CLIENT_M_VERSION</code></td>          <td>string</td>    <td>The version of the client certificate</td></tr>
-<tr id="D"><td><code>SSL_CLIENT_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the client certificate</td></tr>
-<tr id="H"><td><code>SSL_CLIENT_S_DN</code></td>               <td>string</td>    <td>Subject DN in client's certificate</td></tr>
-<tr id="D"><td><code>SSL_CLIENT_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Subject DN</td></tr>
-<tr id="H"><td><code>SSL_CLIENT_I_DN</code></td>               <td>string</td>    <td>Issuer DN of client's certificate</td></tr>
-<tr id="D"><td><code>SSL_CLIENT_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Issuer DN</td></tr>
-<tr id="H"><td><code>SSL_CLIENT_V_START</code></td>            <td>string</td>    <td>Validity of client's certificate (start time)</td></tr>
-<tr id="D"><td><code>SSL_CLIENT_V_END</code></td>              <td>string</td>    <td>Validity of client's certificate (end time)</td></tr>
-<tr id="H"><td><code>SSL_CLIENT_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of client's certificate</td></tr>
-<tr id="D"><td><code>SSL_CLIENT_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of client's certificate</td></tr>
-<tr id="H"><td><code>SSL_CLIENT_CERT</code></td>               <td>string</td>    <td>PEM-encoded client certificate</td></tr>
-<tr id="D"><td><code>SSL_CLIENT_CERT_CHAIN</code><em>n</em></td> <td>string</td>    <td>PEM-encoded certificates in client certificate chain</td></tr>
-<tr id="H"><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> or <code>FAILED:</code><em>reason</em></td></tr>
-<tr id="D"><td><code>SSL_SERVER_M_VERSION</code></td>          <td>string</td>    <td>The version of the server certificate</td></tr>
-<tr id="H"><td><code>SSL_SERVER_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the server certificate</td></tr>
-<tr id="D"><td><code>SSL_SERVER_S_DN</code></td>               <td>string</td>    <td>Subject DN in server's certificate</td></tr>
-<tr id="H"><td><code>SSL_SERVER_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Subject DN</td></tr>
-<tr id="D"><td><code>SSL_SERVER_I_DN</code></td>               <td>string</td>    <td>Issuer DN of server's certificate</td></tr>
-<tr id="H"><td><code>SSL_SERVER_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Issuer DN</td></tr>
-<tr id="D"><td><code>SSL_SERVER_V_START</code></td>            <td>string</td>    <td>Validity of server's certificate (start time)</td></tr>
-<tr id="H"><td><code>SSL_SERVER_V_END</code></td>              <td>string</td>    <td>Validity of server's certificate (end time)</td></tr>
-<tr id="D"><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of server's certificate</td></tr>
-<tr id="H"><td><code>SSL_SERVER_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of server's certificate</td></tr>
-<tr id="D"><td><code>SSL_SERVER_CERT</code></td>               <td>string</td>    <td>PEM-encoded server certificate</td></tr>
+<tr><td><code>HTTPS</code></td>                         <td>flag</td>      <td>HTTPS is being used.</td></tr>
+<tr><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv2, SSLv3, TLSv1)</td></tr>
+<tr><td><code>SSL_SESSION_ID</code></td>                <td>string</td>    <td>The hex-encoded SSL session id</td></tr>
+<tr><td><code>SSL_CIPHER</code></td>                    <td>string</td>    <td>The cipher specification name</td></tr>
+<tr><td><code>SSL_CIPHER_EXPORT</code></td>             <td>string</td>    <td><code>true</code> if cipher is an export cipher</td></tr>
+<tr><td><code>SSL_CIPHER_USEKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (actually used)</td></tr>
+<tr><td><code>SSL_CIPHER_ALGKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (possible)</td></tr>
+<tr><td><code>SSL_VERSION_INTERFACE</code></td>         <td>string</td>    <td>The mod_ssl program version</td></tr>
+<tr><td><code>SSL_VERSION_LIBRARY</code></td>           <td>string</td>    <td>The OpenSSL program version</td></tr>
+<tr><td><code>SSL_CLIENT_M_VERSION</code></td>          <td>string</td>    <td>The version of the client certificate</td></tr>
+<tr><td><code>SSL_CLIENT_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the client certificate</td></tr>
+<tr><td><code>SSL_CLIENT_S_DN</code></td>               <td>string</td>    <td>Subject DN in client's certificate</td></tr>
+<tr><td><code>SSL_CLIENT_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Subject DN</td></tr>
+<tr><td><code>SSL_CLIENT_I_DN</code></td>               <td>string</td>    <td>Issuer DN of client's certificate</td></tr>
+<tr><td><code>SSL_CLIENT_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Issuer DN</td></tr>
+<tr><td><code>SSL_CLIENT_V_START</code></td>            <td>string</td>    <td>Validity of client's certificate (start time)</td></tr>
+<tr><td><code>SSL_CLIENT_V_END</code></td>              <td>string</td>    <td>Validity of client's certificate (end time)</td></tr>
+<tr><td><code>SSL_CLIENT_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of client's certificate</td></tr>
+<tr><td><code>SSL_CLIENT_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of client's certificate</td></tr>
+<tr><td><code>SSL_CLIENT_CERT</code></td>               <td>string</td>    <td>PEM-encoded client certificate</td></tr>
+<tr><td><code>SSL_CLIENT_CERT_CHAIN</code><em>n</em></td> <td>string</td>    <td>PEM-encoded certificates in client certificate chain</td></tr>
+<tr><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> or <code>FAILED:</code><em>reason</em></td></tr>
+<tr><td><code>SSL_SERVER_M_VERSION</code></td>          <td>string</td>    <td>The version of the server certificate</td></tr>
+<tr><td><code>SSL_SERVER_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the server certificate</td></tr>
+<tr><td><code>SSL_SERVER_S_DN</code></td>               <td>string</td>    <td>Subject DN in server's certificate</td></tr>
+<tr><td><code>SSL_SERVER_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Subject DN</td></tr>
+<tr><td><code>SSL_SERVER_I_DN</code></td>               <td>string</td>    <td>Issuer DN of server's certificate</td></tr>
+<tr><td><code>SSL_SERVER_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Issuer DN</td></tr>
+<tr><td><code>SSL_SERVER_V_START</code></td>            <td>string</td>    <td>Validity of server's certificate (start time)</td></tr>
+<tr><td><code>SSL_SERVER_V_END</code></td>              <td>string</td>    <td>Validity of server's certificate (end time)</td></tr>
+<tr><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of server's certificate</td></tr>
+<tr><td><code>SSL_SERVER_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of server's certificate</td></tr>
+<tr><td><code>SSL_SERVER_CERT</code></td>               <td>string</td>    <td>PEM-encoded server certificate</td></tr>
 </table>
 [ where <em>x509</em> is a component of a X.509 DN:
   <code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code> ]
 </td>
 </tr></table>
 </td></tr></table>
-</div>
-<h2><a name="ToC26">Custom Log Formats</a></h2>
+<h2>Custom Log Formats</h2>
 
 <p>When <code><a href="mod_ssl.html">mod_ssl</a></code> is built into Apache or at least
 loaded (under DSO situation) additional functions exist for the <a href="../mod_log_config.html#formats">Custom Log Format</a> of 
@@ -238,57 +235,54 @@ one can either specify all the Ciphers, one at a time, or use aliases to
 specify the preference and order for the ciphers (see <a href="#table1">Table
 1</a>).</p>
 
-<div align="center">
-<a name="table1"/>
 <table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
-<caption align="bottom" id="sf">Table 1: OpenSSL Cipher Specification Tags</caption>
+
 <tr><td bgcolor="#cccccc">
 <table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
-<tr><td valign="top" align="center" bgcolor="#ffffff">
+<tr><td bgcolor="#ffffff">
 <table border="0" cellspacing="0" cellpadding="2" width="598" summary="">
-<tr id="D"><td><strong>Tag</strong></td> <td><strong>Description</strong></td></tr>
-<tr id="H"><td colspan="2"><em>Key Exchange Algorithm:</em></td></tr>
-<tr id="D"><td><code>kRSA</code></td>   <td>RSA key exchange</td></tr>
-<tr id="H"><td><code>kDHr</code></td>   <td>Diffie-Hellman key exchange with RSA key</td></tr>
-<tr id="D"><td><code>kDHd</code></td>   <td>Diffie-Hellman key exchange with DSA key</td></tr>
-<tr id="H"><td><code>kEDH</code></td>   <td>Ephemeral (temp.key) Diffie-Hellman key exchange (no cert)</td>   </tr>
-<tr id="H"><td colspan="2"><em>Authentication Algorithm:</em></td></tr>
-<tr id="D"><td><code>aNULL</code></td>  <td>No authentication</td></tr>
-<tr id="H"><td><code>aRSA</code></td>   <td>RSA authentication</td></tr>
-<tr id="D"><td><code>aDSS</code></td>   <td>DSS authentication</td> </tr>
-<tr id="H"><td><code>aDH</code></td>    <td>Diffie-Hellman authentication</td></tr>
-<tr id="D"><td colspan="2"><em>Cipher Encoding Algorithm:</em></td></tr>
-<tr id="H"><td><code>eNULL</code></td>  <td>No encoding</td>         </tr>
-<tr id="D"><td><code>DES</code></td>    <td>DES encoding</td>        </tr>
-<tr id="H"><td><code>3DES</code></td>   <td>Triple-DES encoding</td> </tr>
-<tr id="D"><td><code>RC4</code></td>    <td>RC4 encoding</td>       </tr>
-<tr id="H"><td><code>RC2</code></td>    <td>RC2 encoding</td>       </tr>
-<tr id="D"><td><code>IDEA</code></td>   <td>IDEA encoding</td>       </tr>
-<tr id="H"><td colspan="2"><em>MAC Digest Algorithm</em>:</td></tr>
-<tr id="D"><td><code>MD5</code></td>    <td>MD5 hash function</td></tr>
-<tr id="H"><td><code>SHA1</code></td>   <td>SHA1 hash function</td></tr>
-<tr id="D"><td><code>SHA</code></td>    <td>SHA hash function</td> </tr>
-<tr id="H"><td colspan="2"><em>Aliases:</em></td></tr>
-<tr id="D"><td><code>SSLv2</code></td>  <td>all SSL version 2.0 ciphers</td></tr>
-<tr id="H"><td><code>SSLv3</code></td>  <td>all SSL version 3.0 ciphers</td> </tr>
-<tr id="D"><td><code>TLSv1</code></td>  <td>all TLS version 1.0 ciphers</td> </tr>
-<tr id="H"><td><code>EXP</code></td>    <td>all export ciphers</td>  </tr>
-<tr id="D"><td><code>EXPORT40</code></td> <td>all 40-bit export ciphers only</td>  </tr>
-<tr id="H"><td><code>EXPORT56</code></td> <td>all 56-bit export ciphers only</td>  </tr>
-<tr id="D"><td><code>LOW</code></td>    <td>all low strength ciphers (no export, single DES)</td></tr>
-<tr id="H"><td><code>MEDIUM</code></td> <td>all ciphers with 128 bit encryption</td> </tr>
-<tr id="D"><td><code>HIGH</code></td>   <td>all ciphers using Triple-DES</td>     </tr>
-<tr id="H"><td><code>RSA</code></td>    <td>all ciphers using RSA key exchange</td> </tr>
-<tr id="D"><td><code>DH</code></td>     <td>all ciphers using Diffie-Hellman key exchange</td> </tr>
-<tr id="H"><td><code>EDH</code></td>    <td>all ciphers using Ephemeral Diffie-Hellman key exchange</td> </tr>
-<tr id="D"><td><code>ADH</code></td>    <td>all ciphers using Anonymous Diffie-Hellman key exchange</td> </tr>
-<tr id="H"><td><code>DSS</code></td>    <td>all ciphers using DSS authentication</td> </tr>
-<tr id="D"><td><code>NULL</code></td>   <td>all ciphers using no encryption</td> </tr>
+<tr><td><strong>Tag</strong></td> <td><strong>Description</strong></td></tr>
+<tr><td colspan="2"><em>Key Exchange Algorithm:</em></td></tr>
+<tr><td><code>kRSA</code></td>   <td>RSA key exchange</td></tr>
+<tr><td><code>kDHr</code></td>   <td>Diffie-Hellman key exchange with RSA key</td></tr>
+<tr><td><code>kDHd</code></td>   <td>Diffie-Hellman key exchange with DSA key</td></tr>
+<tr><td><code>kEDH</code></td>   <td>Ephemeral (temp.key) Diffie-Hellman key exchange (no cert)</td>   </tr>
+<tr><td colspan="2"><em>Authentication Algorithm:</em></td></tr>
+<tr><td><code>aNULL</code></td>  <td>No authentication</td></tr>
+<tr><td><code>aRSA</code></td>   <td>RSA authentication</td></tr>
+<tr><td><code>aDSS</code></td>   <td>DSS authentication</td> </tr>
+<tr><td><code>aDH</code></td>    <td>Diffie-Hellman authentication</td></tr>
+<tr><td colspan="2"><em>Cipher Encoding Algorithm:</em></td></tr>
+<tr><td><code>eNULL</code></td>  <td>No encoding</td>         </tr>
+<tr><td><code>DES</code></td>    <td>DES encoding</td>        </tr>
+<tr><td><code>3DES</code></td>   <td>Triple-DES encoding</td> </tr>
+<tr><td><code>RC4</code></td>    <td>RC4 encoding</td>       </tr>
+<tr><td><code>RC2</code></td>    <td>RC2 encoding</td>       </tr>
+<tr><td><code>IDEA</code></td>   <td>IDEA encoding</td>       </tr>
+<tr><td colspan="2"><em>MAC Digest Algorithm</em>:</td></tr>
+<tr><td><code>MD5</code></td>    <td>MD5 hash function</td></tr>
+<tr><td><code>SHA1</code></td>   <td>SHA1 hash function</td></tr>
+<tr><td><code>SHA</code></td>    <td>SHA hash function</td> </tr>
+<tr><td colspan="2"><em>Aliases:</em></td></tr>
+<tr><td><code>SSLv2</code></td>  <td>all SSL version 2.0 ciphers</td></tr>
+<tr><td><code>SSLv3</code></td>  <td>all SSL version 3.0 ciphers</td> </tr>
+<tr><td><code>TLSv1</code></td>  <td>all TLS version 1.0 ciphers</td> </tr>
+<tr><td><code>EXP</code></td>    <td>all export ciphers</td>  </tr>
+<tr><td><code>EXPORT40</code></td> <td>all 40-bit export ciphers only</td>  </tr>
+<tr><td><code>EXPORT56</code></td> <td>all 56-bit export ciphers only</td>  </tr>
+<tr><td><code>LOW</code></td>    <td>all low strength ciphers (no export, single DES)</td></tr>
+<tr><td><code>MEDIUM</code></td> <td>all ciphers with 128 bit encryption</td> </tr>
+<tr><td><code>HIGH</code></td>   <td>all ciphers using Triple-DES</td>     </tr>
+<tr><td><code>RSA</code></td>    <td>all ciphers using RSA key exchange</td> </tr>
+<tr><td><code>DH</code></td>     <td>all ciphers using Diffie-Hellman key exchange</td> </tr>
+<tr><td><code>EDH</code></td>    <td>all ciphers using Ephemeral Diffie-Hellman key exchange</td> </tr>
+<tr><td><code>ADH</code></td>    <td>all ciphers using Anonymous Diffie-Hellman key exchange</td> </tr>
+<tr><td><code>DSS</code></td>    <td>all ciphers using DSS authentication</td> </tr>
+<tr><td><code>NULL</code></td>   <td>all ciphers using no encryption</td> </tr>
 </table>
 </td>
 </tr></table>
 </td></tr></table>
-</div>
 <p>
 Now where this becomes interesting is that these can be put together
 to specify the order and ciphers you wish to use. To speed this up
@@ -327,51 +321,48 @@ EXP-RC4-MD5             SSLv2 Kx=RSA(512) Au=RSA  Enc=RC4(40)   Mac=MD5  export
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 </code></td></tr></table></blockquote>
-<div align="center">
-<a name="table2"/>
 <table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
-<caption align="bottom" id="sf">Table 2: Particular SSL Ciphers</caption>
+
 <tr><td bgcolor="#cccccc">
 <table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
-<tr><td valign="top" align="center" bgcolor="#ffffff">
+<tr><td bgcolor="#ffffff">
 <table border="0" cellspacing="0" cellpadding="2" width="598" summary="">
-<tr id="D"><td><strong>Cipher-Tag</strong></td> <td><strong>Protocol</strong></td> <td><strong>Key Ex.</strong></td> <td><strong>Auth.</strong></td> <td><strong>Enc.</strong></td> <td><strong>MAC</strong></td> <td><strong>Type</strong></td> </tr>
-<tr id="H"><td colspan="7"><em>RSA Ciphers:</em></td></tr>
-<tr id="D"><td><code>DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr id="H"><td><code>DES-CBC3-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
-<tr id="D"><td><code>IDEA-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>IDEA(128)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr id="H"><td><code>RC4-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr id="D"><td><code>RC4-MD5</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
-<tr id="H"><td><code>IDEA-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>IDEA(128)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
-<tr id="D"><td><code>RC2-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC2(128)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
-<tr id="H"><td><code>RC4-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
-<tr id="D"><td><code>DES-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>DES(56)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr id="H"><td><code>RC4-64-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC4(64)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
-<tr id="D"><td><code>DES-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>DES(56)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
-<tr id="H"><td><code>EXP-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
-<tr id="D"><td><code>EXP-RC2-CBC-MD5</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>RC2(40)</td> <td>MD5</td> <td>  export</td> </tr>
-<tr id="H"><td><code>EXP-RC4-MD5</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>RC4(40)</td> <td>MD5</td> <td>  export</td> </tr>
-<tr id="D"><td><code>EXP-RC2-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA(512)</td> <td>RSA</td> <td>RC2(40)</td> <td>MD5</td> <td>  export</td> </tr>
-<tr id="H"><td><code>EXP-RC4-MD5</code></td> <td>SSLv2</td> <td>RSA(512)</td> <td>RSA</td> <td>RC4(40)</td> <td>MD5</td> <td>  export</td> </tr>
-<tr id="D"><td><code>NULL-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>None</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr id="H"><td><code>NULL-MD5</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>None</td> <td>MD5</td> <td>&nbsp; </td> </tr>
-<tr id="D"><td colspan="7"><em>Diffie-Hellman Ciphers:</em></td></tr>
-<tr id="H"><td><code>ADH-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>3DES(168)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr id="D"><td><code>ADH-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>DES(56)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr id="H"><td><code>ADH-RC4-MD5</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>RC4(128)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
-<tr id="D"><td><code>EDH-RSA-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr id="H"><td><code>EDH-DSS-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>DSS</td> <td>3DES(168)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr id="D"><td><code>EDH-RSA-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>RSA</td> <td>DES(56)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr id="H"><td><code>EDH-DSS-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>DSS</td> <td>DES(56)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr id="D"><td><code>EXP-EDH-RSA-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>RSA</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
-<tr id="H"><td><code>EXP-EDH-DSS-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>DSS</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
-<tr id="D"><td><code>EXP-ADH-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>None</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
-<tr id="H"><td><code>EXP-ADH-RC4-MD5</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>None</td> <td>RC4(40)</td> <td>MD5</td> <td>  export</td> </tr>
+<tr><td><strong>Cipher-Tag</strong></td> <td><strong>Protocol</strong></td> <td><strong>Key Ex.</strong></td> <td><strong>Auth.</strong></td> <td><strong>Enc.</strong></td> <td><strong>MAC</strong></td> <td><strong>Type</strong></td> </tr>
+<tr><td colspan="7"><em>RSA Ciphers:</em></td></tr>
+<tr><td><code>DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
+<tr><td><code>DES-CBC3-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
+<tr><td><code>IDEA-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>IDEA(128)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
+<tr><td><code>RC4-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
+<tr><td><code>RC4-MD5</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
+<tr><td><code>IDEA-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>IDEA(128)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
+<tr><td><code>RC2-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC2(128)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
+<tr><td><code>RC4-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
+<tr><td><code>DES-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>DES(56)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
+<tr><td><code>RC4-64-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC4(64)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
+<tr><td><code>DES-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>DES(56)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
+<tr><td><code>EXP-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
+<tr><td><code>EXP-RC2-CBC-MD5</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>RC2(40)</td> <td>MD5</td> <td>  export</td> </tr>
+<tr><td><code>EXP-RC4-MD5</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>RC4(40)</td> <td>MD5</td> <td>  export</td> </tr>
+<tr><td><code>EXP-RC2-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA(512)</td> <td>RSA</td> <td>RC2(40)</td> <td>MD5</td> <td>  export</td> </tr>
+<tr><td><code>EXP-RC4-MD5</code></td> <td>SSLv2</td> <td>RSA(512)</td> <td>RSA</td> <td>RC4(40)</td> <td>MD5</td> <td>  export</td> </tr>
+<tr><td><code>NULL-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>None</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
+<tr><td><code>NULL-MD5</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>None</td> <td>MD5</td> <td>&nbsp; </td> </tr>
+<tr><td colspan="7"><em>Diffie-Hellman Ciphers:</em></td></tr>
+<tr><td><code>ADH-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>3DES(168)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
+<tr><td><code>ADH-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>DES(56)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
+<tr><td><code>ADH-RC4-MD5</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>RC4(128)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
+<tr><td><code>EDH-RSA-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
+<tr><td><code>EDH-DSS-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>DSS</td> <td>3DES(168)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
+<tr><td><code>EDH-RSA-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>RSA</td> <td>DES(56)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
+<tr><td><code>EDH-DSS-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>DSS</td> <td>DES(56)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
+<tr><td><code>EXP-EDH-RSA-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>RSA</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
+<tr><td><code>EXP-EDH-DSS-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>DSS</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
+<tr><td><code>EXP-ADH-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>None</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
+<tr><td><code>EXP-ADH-RC4-MD5</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>None</td> <td>RC4(40)</td> <td>MD5</td> <td>  export</td> </tr>
 </table>
 </td>
 </tr></table>
 </td></tr></table>
-</div>
 <hr/><h2><a name="SSLEngine">SSLEngine</a> <a name="sslengine">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>SSL Engine Operation Switch</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLEngine on|off</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>SSLEngine off</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive toggles the usage of the SSL/TLS Protocol Engine. This
@@ -809,13 +800,11 @@ SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/ \<br/>
             and %{TIME_HOUR} &gt;= 8 and %{TIME_HOUR} &lt;= 20       ) \<br/>
            or %{REMOTE_ADDR} =~ m/^192\.76\.162\.[0-9]+$/
 </code></td></tr></table></blockquote>
-<div align="center">
-<a name="table3"/>
 <table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
-<caption align="bottom" id="sf">Table 3: Available Variables for SSLRequire</caption>
+
 <tr><td bgcolor="#cccccc">
 <table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
-<tr><td valign="top" align="center" bgcolor="#ffffff">
+<tr><td bgcolor="#ffffff">
 <table summary=""><tr><td>
 <em>Standard CGI/1.0 and Apache variables:</em>
 <pre>
@@ -877,7 +866,6 @@ SSL_VERSION_INTERFACE  SSL_CLIENT_S_DN_OU     SSL_SERVER_S_DN_OU
 </td>
 </tr></table>
 </td></tr></table>
-</div>
 <hr/><h2><a name="SSLRequireSSL">SSLRequireSSL</a> <a name="sslrequiressl">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Deny access when SSL is not used for the 
 HTTP request</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLRequireSSL</td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>AuthConfig</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
@@ -988,4 +976,4 @@ known to the server (i.e. the CA's certificate is under
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLVerifyDepth 10
 </code></td></tr></table></blockquote>
-<hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></blockquote></body></html>
+<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>

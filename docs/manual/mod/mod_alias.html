@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-     This file is generated from xml source: DO NOT EDIT
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
---><title>mod_alias - Apache HTTP Server</title><link rel="stylesheet" type="text/css" href="../style/manual.css"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_alias</h1><table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Provides for mapping different parts of the host
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!-- 
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                This file is generated from xml source: DO NOT EDIT
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        --><title>mod_alias- Apache HTTP Server</title><link rel="stylesheet" type="text/css" href="../style/manual.css"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_alias</h1><table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Provides for mapping different parts of the host
     filesystem in the document tree and for URL redirection</td></tr><tr><td><a class="help" href="module-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></td><td>alias_module</td></tr></table></td></tr></table><h2>Summary</h2>
     <p>The directives contained in this module allow for manipulation
     and control of URLs as requests arrive at the server. The
@@ -118,6 +118,14 @@ sections.</p></td></tr></table></blockquote>
     otherwise it must be omitted. Note that the status must be
     known to the Apache code (see the function
     <code>send_error_response</code> in http_protocol.c).</p>
+
+    <p>Example:</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+        Redirect permanent /one http://example.com/two<br/>
+        Redirect 303 /three http://example.com/other
+    </code></td></tr></table></blockquote>
+
 <hr/><h2><a name="RedirectMatch">RedirectMatch</a> <a name="redirectmatch">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sends an external redirect asking the client to fetch
 a different URL based on a regular expression match of the 
 current URL</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>RedirectMatch [<em>status</em>] <em>regex URL</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>FileInfo</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_alias</td></tr></table></td></tr></table>
@@ -171,4 +179,4 @@ and designates the target as a CGI script</td></tr><tr><td><a class="help" href=
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
     ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
 </code></td></tr></table></blockquote>
-<hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></blockquote></body></html>
+<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
