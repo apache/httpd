@@ -1278,8 +1278,19 @@ void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r)
     rnew->main = (request_rec *) r;
 }
 
+static void end_output_stream(request_rec *r)
+{
+    /*
+    ** ### place holder to tell filters that no more content will be
+    ** ### arriving. typically, they will flush any pending content
+    */
+}
+
 void ap_finalize_sub_req_protocol(request_rec *sub)
 {
+    /* tell the filter chain there is no more content coming */
+    end_output_stream(sub);
+
     SET_BYTES_SENT(sub->main);
 }
 
@@ -1833,11 +1844,6 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
 #endif /*APACHE_XLATE*/
 }
 
-static void flush_filters(request_rec *r)
-{
-    /* ### place holder to flush pending content through the filters */
-}
-
 /* finalize_request_protocol is called at completion of sending the
  * response.  It's sole purpose is to send the terminating protocol
  * information for any wrappers around the response message body
@@ -1845,7 +1851,8 @@ static void flush_filters(request_rec *r)
  */
 API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
 {
-    flush_filters(r);
+    /* tell the filter chain there is no more content coming */
+    end_output_stream(r);
 
     if (r->chunked && !r->connection->aborted) {
 #ifdef APACHE_XLATE
