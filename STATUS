@@ -163,6 +163,8 @@ Needs patch:
     * Dean's "locale" project
 	See <Pine.LNX.3.95dg3.971219001345.7010F-100000@twinlark.arctic.org>
 	Status: Jim'll look into it
+    
+    * os_ abstract is_only_below() in mod_include.c
 
 Closed issues:
 
