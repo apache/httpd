@@ -98,8 +98,8 @@ static int min_spare_threads = 0;
 static int max_spare_threads = 0;
 static int max_threads = 0;
 static int max_requests_per_child = 0;
-static char *ap_pid_fname=NULL;
-API_VAR_EXPORT char *ap_scoreboard_fname=NULL;
+static const char *ap_pid_fname=NULL;
+API_VAR_EXPORT const char *ap_scoreboard_fname=NULL;
 static int num_daemons=0;
 static int workers_may_exit = 0;
 static int requests_this_child;
@@ -169,7 +169,7 @@ static pthread_mutex_t idle_thread_count_mutex;
 #define SAFE_ACCEPT(stmt) (stmt)
 static ap_lock_t *process_accept_mutex;
 #endif /* NO_SERIALIZED_ACCEPT */
-static char *lock_fname;
+static const char *lock_fname;
 static pthread_mutex_t thread_accept_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 API_EXPORT(const server_rec *) ap_get_server_conf(void)
@@ -1261,7 +1261,7 @@ static void dexter_hooks(void)
     ap_hook_pre_config(dexter_pre_config, NULL, NULL, AP_HOOK_MIDDLE); 
 }
 
-static const char *set_pidfile(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_pidfile(cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1275,7 +1275,7 @@ static const char *set_pidfile(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_scoreboard(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_scoreboard(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1286,7 +1286,7 @@ static const char *set_scoreboard(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_lockfile(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_lockfile(cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1296,7 +1296,7 @@ static const char *set_lockfile(cmd_parms *cmd, void *dummy, char *arg)
     lock_fname = arg;
     return NULL;
 }
-static const char *set_num_daemons (cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_num_daemons (cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1323,7 +1323,7 @@ static const char *set_num_daemons (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_threads_to_start (cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_threads_to_start (cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1350,7 +1350,7 @@ static const char *set_threads_to_start (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_min_spare_threads(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_min_spare_threads(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1371,7 +1371,7 @@ static const char *set_min_spare_threads(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1389,7 +1389,7 @@ static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_max_threads(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_max_threads(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1407,7 +1407,7 @@ static const char *set_max_threads(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_max_requests(cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1420,7 +1420,7 @@ static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg)
 }
 
 static const char *set_maintain_connection_status(cmd_parms *cmd,
-                                                  core_dir_config *d, int arg) 
+                                                  void *dummy, int arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1431,7 +1431,7 @@ static const char *set_maintain_connection_status(cmd_parms *cmd,
     return NULL;
 }
 
-static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, const char *arg) 
 {
     ap_finfo_t finfo;
     const char *fname;
@@ -1453,28 +1453,28 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
 static const command_rec dexter_cmds[] = {
 UNIX_DAEMON_COMMANDS
 LISTEN_COMMANDS
-{ "PidFile", set_pidfile, NULL, RSRC_CONF, TAKE1,
-    "A file for logging the server process ID"},
-{ "ScoreBoardFile", set_scoreboard, NULL, RSRC_CONF, TAKE1,
-    "A file for Apache to maintain runtime process management information"},
-{ "LockFile", set_lockfile, NULL, RSRC_CONF, TAKE1,
-    "The lockfile used when Apache needs to lock the accept() call"},
-{ "NumServers", set_num_daemons, NULL, RSRC_CONF, TAKE1,
-  "Number of children alive at the same time" },
-{ "StartThreads", set_threads_to_start, NULL, RSRC_CONF, TAKE1,
-  "Number of threads each child creates" },
-{ "MinSpareThreads", set_min_spare_threads, NULL, RSRC_CONF, TAKE1,
-  "Minimum number of idle threads per child, to handle request spikes" },
-{ "MaxSpareThreads", set_max_spare_threads, NULL, RSRC_CONF, TAKE1,
-  "Maximum number of idle threads per child" },
-{ "MaxThreadsPerChild", set_max_threads, NULL, RSRC_CONF, TAKE1,
-  "Maximum number of threads per child" },
-{ "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF, TAKE1,
-  "Maximum number of requests a particular child serves before dying." },
-{ "ConnectionStatus", set_maintain_connection_status, NULL, RSRC_CONF, FLAG,
-  "Whether or not to maintain status information on current connections"},
-{ "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, TAKE1,
-  "The location of the directory Apache changes to before dumping core" },
+AP_INIT_TAKE1("PidFile", set_pidfile, NULL, RSRC_CONF,
+              "A file for logging the server process ID"),
+AP_INIT_TAKE1("ScoreBoardFile", set_scoreboard, NULL, RSRC_CONF,
+              "A file for Apache to maintain runtime process management information"),
+AP_INIT_TAKE1("LockFile", set_lockfile, NULL, RSRC_CONF,
+              "The lockfile used when Apache needs to lock the accept() call"),
+AP_INIT_TAKE1("NumServers", set_num_daemons, NULL, RSRC_CONF,
+              "Number of children alive at the same time"),
+AP_INIT_TAKE1("StartThreads", set_threads_to_start, NULL, RSRC_CONF,
+              "Number of threads each child creates"),
+AP_INIT_TAKE1("MinSpareThreads", set_min_spare_threads, NULL, RSRC_CONF,
+              "Minimum number of idle threads per child, to handle request spikes"),
+AP_INIT_TAKE1("MaxSpareThreads", set_max_spare_threads, NULL, RSRC_CONF,
+              "Maximum number of idle threads per child"),
+AP_INIT_TAKE1("MaxThreadsPerChild", set_max_threads, NULL, RSRC_CONF,
+              "Maximum number of threads per child"),
+AP_INIT_TAKE1("MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF,
+              "Maximum number of requests a particular child serves before dying."),
+AP_INIT_FLAG("ConnectionStatus", set_maintain_connection_status, NULL, RSRC_CONF,
+             "Whether or not to maintain status information on current connections"),
+AP_INIT_TAKE1("CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF,
+              "The location of the directory Apache changes to before dumping core"),
 { NULL }
 };
 
