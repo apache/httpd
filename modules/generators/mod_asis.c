@@ -73,9 +73,8 @@
 static int asis_handler(request_rec *r)
 {
     apr_file_t *f = NULL;
-    apr_status_t status;
+    apr_status_t rv;
     const char *location;
-    apr_size_t nbytes;
 
     if(strcmp(r->handler,ASIS_MAGIC_TYPE) && strcmp(r->handler,"send-as-is"))
 	return DECLINED;
@@ -89,9 +88,9 @@ static int asis_handler(request_rec *r)
 	return HTTP_NOT_FOUND;
     }
 
-    if ((status = apr_file_open(&f, r->filename, APR_READ, 
+    if ((rv = apr_file_open(&f, r->filename, APR_READ, 
                 APR_OS_DEFAULT, r->pool)) != APR_SUCCESS) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 		    "file permissions deny server access: %s", r->filename);
 	return HTTP_FORBIDDEN;
     }
@@ -118,20 +117,24 @@ static int asis_handler(request_rec *r)
     }
 
     if (!r->header_only) {
-        apr_off_t start = 0;
-        apr_off_t fsize = r->finfo.size;
-#if APR_HAS_LARGE_FILES
-	/* must split into mutiple send_fd chunks */
-        while (fsize > AP_MAX_SENDFILE) {
-            ap_send_fd(f, r, start, AP_MAX_SENDFILE, &nbytes);
-            start += AP_MAX_SENDFILE;
-            fsize -= AP_MAX_SENDFILE;
+        apr_bucket_brigade *bb;
+        apr_bucket *b;
+
+        bb = apr_brigade_create(r->pool);
+        b = apr_bucket_file_create(f, 0, (apr_size_t) r->finfo.size, r->pool);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+        b = apr_bucket_eos_create();
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+        rv = ap_pass_brigade(r->output_filters, bb);
+        if (rv != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                          "mod_asis: ap_pass_brigade failed for file %s", r->filename);
         }
-#endif
-        ap_send_fd(f, r, start, (apr_size_t)fsize, &nbytes);
+    }
+    else {
+        apr_file_close(f);
     }
 
-    apr_file_close(f);
     return OK;
 }
 
