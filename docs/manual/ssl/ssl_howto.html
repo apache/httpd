@@ -45,7 +45,7 @@ is not always obvious because of the coherences between SSL, HTTP and Apache's
 way of processing requests. This chapter gives instructions on how to solve
 such typical situations. Treat is as a first step to find out the final
 solution, but always try to understand the stuff before you use it. Nothing is
-worse than using a security solution without knowing it's restrictions and
+worse than using a security solution without knowing its restrictions and
 coherences.
 
 <ul>
@@ -174,7 +174,7 @@ find in the <code>README.GlobalID</code> document in the mod_ssl distribution.
 In short: The server has a Global ID server certificate, signed by a special
 CA certificate from Verisign which enables strong encryption in export
 browsers. This works as following: The browser connects with an export cipher,
-the server sends it's Global ID certificate, the browser verifies it and
+the server sends its Global ID certificate, the browser verifies it and
 subsequently upgrades the cipher suite before any HTTP communication takes
 place. The question now is: How can we allow this upgrade, but enforce strong
 encryption. Or in other words: Browser either have to initially connect with

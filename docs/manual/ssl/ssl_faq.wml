@@ -231,7 +231,7 @@ Is mod_ssl Year 2000 compliant?
 What about mod_ssl and the Wassenaar Arrangement?
 </faq>
 
-    First, let us explain what <i>Wassenaar</i> and it's <i>Arrangement on
+    First, let us explain what <i>Wassenaar</i> and its <i>Arrangement on
     Export Controls for Conventional Arms and Dual-Use Goods and
     Technologies</i> is: This is a international regime, established 1995, to
     control trade in conventional arms and dual-use goods and technology. It
@@ -424,7 +424,7 @@ How can I speak HTTPS manually for testing purposes?
     <code><b>$ telnet localhost 80</b></code><br>
     <code><b>GET / HTTP/1.0</b></code>
     <p>
-    for simple testing the HTTP protocol of Apache, it's not such easy for
+    for simple testing the HTTP protocol of Apache, it's not so easy for
     HTTPS because of the SSL protocol between TCP and HTTP. But with the
     help of OpenSSL's <code>s_client</code> command you can do a similar
     check even for HTTPS:
