@@ -576,6 +576,12 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
         }
     }
 
+    /* Ensure that the caller can not go over our boundary point. */
+    if ((ctx->state == BODY_LENGTH || ctx->state == BODY_CHUNK) && 
+        ctx->remaining < *readbytes) {
+        *readbytes = ctx->remaining;
+    }
+
     rv = ap_get_brigade(f->next, b, mode, readbytes);
 
     if (rv != APR_SUCCESS)
