@@ -589,14 +589,9 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
         disk_info.entity_version = dobj->disk_info.entity_version++;
         disk_info.request_time = info->request_time;
         disk_info.response_time = info->response_time;
+        disk_info.status = info->status;
 
         disk_info.name_len = strlen(dobj->name);
-        disk_info.status = r->status;
-
-        /* This case only occurs when the content is generated locally */
-        if (!r->status_line) {
-            r->status_line = ap_get_status_line(r->status);
-        }
 
         iov[0].iov_base = (void*)&disk_info;
         iov[0].iov_len = sizeof(disk_cache_info_t);
