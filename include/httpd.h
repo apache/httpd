@@ -178,7 +178,7 @@ extern "C" {
 
 /* The path to the suExec wrapper, can be overridden in Configuration */
 #ifndef SUEXEC_BIN
-#define SUEXEC_BIN  HTTPD_ROOT "/sbin/suexec"
+#define SUEXEC_BIN  HTTPD_ROOT "/bin/suexec"
 #endif
 
 /* The timeout for waiting for messages */
