@@ -601,7 +601,6 @@ static int check_signal(int signum)
     switch (signum) {
         case SIGTERM:
         case SIGINT:
-            just_die(signum);
             return 1;
     }                                                                           
     return 0;
@@ -609,7 +608,7 @@ static int check_signal(int signum)
 
 static void child_main(int child_num_arg)
 {
-    apr_thread_t *thread;
+    apr_thread_t **threads;
     apr_threadattr_t *thread_attr;
     int i;
     int my_child_num = child_num_arg;
@@ -659,13 +658,20 @@ static void child_main(int child_num_arg)
 	listensocks[i]=lr->sd;
 
     /* Setup worker threads */
+
+    threads = (apr_thread_t **)malloc(sizeof(apr_thread_t *) * ap_threads_per_child);
+    if (threads == NULL) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
+                     "malloc: out of memory");
+        clean_child_exit(APEXIT_CHILDFATAL);
+    }
     worker_thread_count = 0;
     apr_lock_create(&worker_thread_count_mutex, APR_MUTEX, APR_INTRAPROCESS,
                     NULL, pchild);
     apr_lock_create(&pipe_of_death_mutex, APR_MUTEX, APR_INTRAPROCESS, 
                     NULL, pchild);
     apr_threadattr_create(&thread_attr, pchild);
-    apr_threadattr_detach_set(thread_attr, 1);
+    apr_threadattr_detach_set(thread_attr, 0);    /* 0 means PTHREAD_CREATE_JOINABLE */
 
     for (i=0; i < ap_threads_per_child; i++) {
 
@@ -683,7 +689,7 @@ static void child_main(int child_num_arg)
 	/* We are creating threads right now */
 	(void) ap_update_child_status(my_child_num, i, SERVER_STARTING, 
 				      (request_rec *) NULL);
-	if ((rv = apr_thread_create(&thread, thread_attr, worker_thread, my_info, pchild))) {
+	if ((rv = apr_thread_create(&threads[i], thread_attr, worker_thread, my_info, pchild))) {
 	    ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
 			 "apr_thread_create: unable to create worker thread");
             /* In case system resources are maxxed out, we don't want
@@ -696,7 +702,24 @@ static void child_main(int child_num_arg)
 	 * because it let's us deal with tid better.
 	 */
     }
+    
+    /* What state should this child_main process be listed as in the scoreboard...?
+     *  ap_update_child_status(my_child_num, i, SERVER_STARTING, (request_rec *) NULL);
+     */
+
     apr_signal_thread(check_signal);
+
+    /* A terminating signal was received. Now join each of the workers to clean them up.
+     *   If the worker already exitted, then the join frees their resources and returns.
+     *   If the worker hasn't exited, then this blocks until they have (then cleans up).
+     */
+    for (i = 0; i < ap_threads_per_child; i++) {
+        apr_thread_join(&rv, threads[i]);
+    }
+
+    free (threads);
+
+    clean_child_exit(0);
 }
 
 static int make_child(server_rec *s, int slot) 
