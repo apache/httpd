@@ -100,6 +100,29 @@ int cflags;
 #else
 #	define	GOODFLAGS(f)	((f)&~REG_DUMP)
 #endif
+#ifdef CHARSET_EBCDIC /* Added for Apache by <martin@apache.org> */
+	static int initialized = 0;
+
+	if (!initialized) {
+		unsigned ch, idx = 0;
+		static unsigned char ctlchars_ebcdic[256+1];
+
+		for (ch = 1; ch <= 0xFF; ++ch) {
+			if (ap_iscntrl(ch)) {
+				ctlchars_ebcdic[idx++] = ch;
+			}
+		}
+		ctlchars_ebcdic[idx++] = '\0'; /* redundant */
+
+		for (idx=0; idx < sizeof(cclasses) / sizeof(cclasses[0]); ++idx) {
+			if (strcmp(cclasses[idx].name, "cntrl") == 0) {
+				cclasses[idx].chars = ctlchars_ebcdic;
+				break;
+			}
+		}
+		initialized = 1;
+	}
+#endif /*CHARSET_EBCDIC*/
 
 	cflags = GOODFLAGS(cflags);
 	if ((cflags&REG_EXTENDED) && (cflags&REG_NOSPEC))
@@ -708,8 +731,22 @@ register cset *cs;
 			finish = start;
 /* xxx what about signed chars here... */
 		REQUIRE(start <= finish, REG_ERANGE);
+#ifndef CHARSET_EBCDIC
 		for (i = start; i <= finish; i++)
 			CHadd(cs, i);
+#else /* Added for Apache by <martin@apache.org> */
+		/* Special provision for character ranges [a-zA-Z], */
+		/* which are non-contiguous in EBCDIC: */
+		if ((ap_isupper(start) && ap_isupper(finish)) ||
+		    (ap_islower(start) && ap_islower(finish))) {
+			for (i = start; i <= finish; i++)
+				if (ap_isalpha(i))
+					CHadd(cs, i);
+		} else {
+			for (i = start; i <= finish; i++)
+				CHadd(cs, i);
+		}
+#endif /*CHARSET_EBCDIC*/
 		break;
 	}
 }
