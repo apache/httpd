@@ -10,6 +10,7 @@ SUBDIRS = \
 	dav\fs \
 	echo \
 	generators \
+	loggers \
 	mappers \
 	metadata \
 	proxy \
