@@ -68,7 +68,7 @@ HOOK_STRUCT(
 	    HOOK_LINK(pre_connection)
 );
 
-IMPLEMENT_VOID_HOOK(pre_connection,(conn_rec *c),(c),1)
+IMPLEMENT_VOID_HOOK(pre_connection,(conn_rec *c),(c),RUN_ALL)
 
 /* TODO: re-implement the lingering close stuff */
 #define NO_LINGCLOSE
