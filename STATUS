@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/29 14:53:00 $]
+Last modified at [$Date: 2004/03/01 02:27:39 $]
 
 Release:
 
@@ -79,6 +79,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    * Win32 mpm: Fix broken find_ready_listener in Win32DisableAcceptEx path
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/mpm/winnt/child.c?r1=1.29&r2=1.30
+      +1: stoddard
 
     * mod_ssl: Send the Close Alert message to the peer before closing
       the SSL session.
