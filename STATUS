@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/18 08:50:45 $]
+Last modified at [$Date: 2004/03/19 11:25:04 $]
 
 Release:
 
@@ -72,16 +72,26 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) mod_dav: Fix a problem that could cause crashes when manipulating 
+       locks on some platforms. (especially Sparc!!!)
+           modules/dav/fs/lock.c: r1.31
+       +1: trawick
+
+    *) Michael Corcoran's patch to listen.c to avoid segfault when
+       there are no Listen directives.
+           server/listen.c: r1.101
+       +1: trawick
+
     *) Limit the concurrency in 'ab' to MAX_CONCURRENCY to prevent a 
        segmentation fault.
            support/ab.c: r1.140, r1.141
-       +1: madhum
+       +1: madhum, trawick
 
     *) Fix the comment delimiter so that it correctly parses the username
         comment.  Also add a terminate function to allow NetWare to pause
 	the output before the screen is destroyed.
        support/htdbm.c: r1.15
-       +1: bnicholes
+       +1: bnicholes, trawick
 
     *) Use apr_temp_dir_get for htdigest and remove the dependancy on
         the external cp/copy command. Remove the OMIT_DELONCLOSE #ifdef
@@ -105,7 +115,7 @@ PATCHES TO BACKPORT FROM 2.1
        server hang when number of Listen directives is >=
        ThreadsPerChild.
            server/mpm/winnt/child.c?r1=1.32&r2=1.33
-       +1: stoddard
+       +1: stoddard, trawick
 
     *) Provide TLS/SSL upgrade functionality in mod_ssl allowing an unsecure
        connection to be upgraded to a secure connection upon request by the
