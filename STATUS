@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/11/04 15:16:15 $]
+Last modified at [$Date: 1999/11/04 18:25:23 $]
 
 Release:
 
@@ -11,6 +11,10 @@ Plan:
       is active.
 
 RELEASE SHOWSTOPPERS:
+
+    * Pipes to CGI scripts are not being timed out
+        Status:
+
     * Port mod_rewrite
         Status: Paul Reder is working on this.
 
