@@ -11,9 +11,6 @@ Changes with Apache 2.1.0-dev
   *) Fix If header parsing when a non-mod_dav lock token is passed to it.
      PR 16452.  [Justin Erenkrantz]
 
-  *) Fix bug where 'Satisfy Any' without an AuthType lost all MIME
-     information (and more). Related to PR 9076.  [André Malo]
-
   *) mod_negotiation: Introduce "prefer-language" environment variable,
      which allows to influence the negotiation process on request basis
      to prefer a certain language.  [André Malo]
@@ -22,7 +19,6 @@ Changes with Apache 2.1.0-dev
      to encode '/' as '%2f' and pass it to scripts in path-info without
      triggering the 'no encoded slashes anywhere' legacy rule.
      PR 543, 2389, 3581, 3589, 5687, 7066, 7865, 14639.  [Ken Coar]
-
 
   *) Move RFC 1413 ident requests from core to new module mod_ident.
      [André Malo]
@@ -73,6 +69,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) Fix bug where 'Satisfy Any' without an AuthType lost all MIME
+     information (and more). Related to PR 9076.  [André Malo]
+
   *) mod_file_cache: fix segfault serving mmaped cached files.
      [Bill Stoddard]
 
