@@ -1443,12 +1443,6 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     return 0;
 }
 
-static void dexter_hooks(void)
-{
-    INIT_SIGLIST()
-    one_process = 0;
-}
-
 static void dexter_pre_config(pool *pconf, pool *plog, pool *ptemp)
 {
     static int restart_num = 0;
@@ -1480,6 +1474,12 @@ static void dexter_pre_config(pool *pconf, pool *plog, pool *ptemp)
     ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
 
+static void dexter_hooks(void)
+{
+    ap_hook_pre_config(dexter_pre_config, NULL, NULL, HOOK_MIDDLE);
+    INIT_SIGLIST()
+    one_process = 0;
+}
 
 static const char *set_pidfile(cmd_parms *cmd, void *dummy, char *arg) 
 {
@@ -1691,7 +1691,6 @@ LISTEN_COMMANDS
 
 module MODULE_VAR_EXPORT mpm_dexter_module = {
     STANDARD20_MODULE_STUFF,
-    dexter_pre_config,		/* pre_config */
     NULL,                       /* post_config */
     NULL,			/* open_logs */
     NULL, 			/* child_init */
