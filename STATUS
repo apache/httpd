@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/11/23 21:40:26 $]
+Last modified at [$Date: 2002/11/23 21:50:18 $]
 
 Release:
 
@@ -73,15 +73,11 @@ RELEASE SHOWSTOPPERS:
 
 CURRENT VOTES:
 
-    * Develop in Review-Then-Commit mode on APACHE_2_0_BRANCH
-       +1: trawick
-       -0: BrianP
-       -1:
-
-    * Remove experimental modules (modules/experimental and
-      server/mpm/experimental) from the 2.0 stable release
-       +1:
-       -1: BrianP, trawick
+    * Develop in Review-Then-Commit or Commit-Then-Review mode 
+      on APACHE_2_0_BRANCH (no vetoes, this is a straight vote.)
+       R-T-C:   trawick, wrowe
+       Abstain: BrianP
+       C-T-R:   
 
     * httpd-std.conf and friends;
 
