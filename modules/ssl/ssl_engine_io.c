@@ -693,7 +693,7 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
             
             status = apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
 
-            if (APR_STATUS_IS_EOF(status) && (status != APR_SUCCESS)) {
+            if (!APR_STATUS_IS_EOF(status) && (status != APR_SUCCESS)) {
                 break;
             }
 
