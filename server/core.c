@@ -885,6 +885,23 @@ AP_DECLARE(const char *) ap_get_server_name(request_rec *r)
     return r->server->server_hostname;
 }
 
+/*
+ * Get the current server name from the request for the purposes
+ * of using in a URL.  If the server name is an IPv6 literal
+ * address, it will be returned in URL format (e.g., "[fe80::1]").
+ */
+static const char *get_server_name_for_url(request_rec *r)
+{
+    const char *plain_server_name = ap_get_server_name(r);
+
+#ifdef APR_HAVE_IPV6
+    if (ap_strchr_c(plain_server_name, ':')) { /* IPv6 literal? */
+        return apr_psprintf(r->pool, "[%s]", plain_server_name);
+    }
+#endif
+    return plain_server_name;
+}
+
 AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r)
 {
     apr_port_t port;
@@ -925,7 +942,7 @@ AP_DECLARE(char *) ap_construct_url(apr_pool_t *p, const char *uri,
                                     request_rec *r)
 {
     unsigned port = ap_get_server_port(r);
-    const char *host = ap_get_server_name(r);
+    const char *host = get_server_name_for_url(r);
 
     if (ap_is_default_port(port, r)) {
         return apr_pstrcat(p, ap_http_method(r), "://", host, uri, NULL);
