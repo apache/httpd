@@ -2804,7 +2804,7 @@ static const char *add_ct_output_filters(cmd_parms *cmd, void *conf_,
 void ap_add_output_filters_by_type(request_rec *r)
 {
     core_dir_config *conf;
-    const char *ctype, *ctypes;
+    const char *ctype;
 
     conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
                                                    &core_module);
@@ -2817,10 +2817,9 @@ void ap_add_output_filters_by_type(request_rec *r)
         return;
     }
 
-    ctypes = r->content_type;
-
-    /* We must be able to handle decorated content-types.  */
-    while (*ctypes && (ctype = ap_getword(r->pool, &ctypes, ';'))) {
+    /* remove c-t decoration */
+    ctype = ap_field_noparam(r->pool, r->content_type);
+    if (ctype) {
         ap_filter_rec_t *ct_filter;
         ct_filter = apr_hash_get(conf->ct_output_filters, ctype,
                                  APR_HASH_KEY_STRING);
