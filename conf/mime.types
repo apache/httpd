@@ -101,6 +101,7 @@ text/richtext			rtx
 text/tab-separated-values	tsv
 text/x-setext			etx
 text/x-sgml			sgml sgm
+text/xml			xml dtd
 video/mpeg			mpeg mpg mpe
 video/quicktime			qt mov
 video/x-msvideo			avi
