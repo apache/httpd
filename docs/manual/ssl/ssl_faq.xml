@@ -30,9 +30,6 @@ author.</p>
 <section id="about"><title>About The Module</title>
 <ul>
 <li><a href="#history">What is the history of mod_ssl?</a></li>
-<li><a href="#apssl-diff">Apache-SSL vs. mod_ssl: differences?</a></li>
-<li><a href="#commalt">mod_ssl vs. commercial alternatives?</a></li>
-<li><a href="#modversion">mod_ssl/Apache versions?</a></li>
 <li><a href="#y2k">mod_ssl and Year 2000?</a></li>
 <li><a href="#wassenaar">mod_ssl and Wassenaar Arrangement?</a></li>
 </ul>
@@ -61,99 +58,6 @@ author.</p>
     
     <p>After the US export restrictions for cryptographic software were
     opened, mod_ssl was integrated into the code base of Apache V2 in 2001.</p>
-</section>
-
-<section id="apssl-diff"><title>What are the functional differences between mod_ssl and Apache-SSL, from which
-it is originally derived?</title>
-<p>This neither can be answered in short (there were too many code changes)
-    nor can be answered at all by the author (there would immediately be flame
-    wars with no reasonable results at the end). But as you easily can guess
-    from the 5% of remaining Apache-SSL code, a lot of differences exists,
-    although user-visible backward compatibility exists for most things.</p>
-
-    
-    <p>When you really want a detailed comparison you have to read the entries in
-    the large <code>CHANGES</code> file that is in the mod_ssl
-    distribution. Usually this is much too hard-core. So I recommend you to
-    either believe in the opinion and recommendations of other users (the
-    simplest approach) or do a comparison yourself (the most reasonable
-    approach). For the latter, grab distributions of mod_ssl (from <a
-    href="http://www.modssl.org/">http://www.modssl.org</a>) and Apache-SSL
-    (from <a href="http://www.apache-ssl.org/">http://www.apache-ssl.org</a>),
-    install both packages, read their documentation and try them out yourself.
-    Then choose the one which pleases you most.</p>
-    
-    <p>A few final hints to help direct your comparison: quality of documentation
-    ("can you easily find answers and are they sufficient?"), quality of
-    source code ("is the source code reviewable so you can make sure there
-    aren't any trapdoors or inherent security risks because of bad programming
-    style?"), easy and clean installation ("can the SSL functionality easily
-    added to an Apache source tree without manual editing or patching?"),
-    clean integration into Apache ("is the SSL functionality encapsulated and
-    cleanly separated from the remaining Apache functionality?"), support for
-    Dynamic Shared Object (DSO) facility ("can the SSL functionality built as
-    a separate DSO for maximum flexibility?"), Win32 port ("is the SSL
-    functionality available also under the Win32 platform?"), amount and
-    quality of functionality ("is the provided SSL functionality and control
-    possibilities sufficient for your situation?"), quality of problem tracing
-    ("is it possible for you to easily trace down the problems via logfiles,
-    etc?"), etc. pp.</p>
-</section>
-
-<section id="commalt"><title>What are the major differences between mod_ssl and
-the commercial alternatives like Raven or Stronghold?</title>
-<p>In the past (until September 20th, 2000) the major difference was
-    the RSA license which one received (very cheaply in contrast to
-    a direct licensing from RSA DSI) with the commercial Apache SSL
-    products. On the other hand, one needed this license only in the US,
-    of course. So for non-US citizens this point was useless. But now
-    even for US citizens the situations changed because the RSA patent
-    expired on September 20th, 2000 and RSA DSI also placed the RSA
-    algorithm explicitly into the public domain.</p>
-    
-    <p>Second, there is the point that one has guaranteed support from
-    the commercial vendors. On the other hand, if you monitored the
-    Open Source quality of mod_ssl and the support activities
-    found on <a href="mailto:modssl-users@modssl.org">
-    <code>modssl-users@modssl.org</code></a>, you could ask yourself
-    whether you are really convinced that you can get better support
-    from a commercial vendor.</p>
-
-    
-    <p>Third, people often think they would receive perhaps at least a
-    better technical SSL solution than mod_ssl from the commercial
-    vendors. But this is not really true, because all commercial
-    alternatives (Raven 1.4.x, Stronghold 3.x, RedHat SWS 2.x, etc.)
-    <em>are</em> actually based on mod_ssl and OpenSSL. The reason for
-    this common misunderstanding is mainly because some vendors make no
-    attempt to make it reasonably clear that their product is actually
-    mod_ssl based. So, do not think, just because the commercial
-    alternatives are usually more expensive, that you are also receiving
-    an alternative <em>technical</em> SSL solution. This is usually not
-    the case. Actually the vendor versions of Apache, mod_ssl and OpenSSL
-    often stay behind the latest free versions and perhaps this way still do not
-    include important bug and security fixes. On the other hand,
-    it sometimes occurs that a vendor version includes useful changes
-    which are not available through the official freely available
-    packages. But most vendors play fair and contribute back those
-    changes to the free software world, of course.</p>
-    
-    <p>So, in short: There are lots of commercial versions of the popular
-    Apache+mod_ssl+OpenSSL server combination available. Every user
-    should decide carefully whether they really need to buy a commercial
-    version or whether it would not be sufficient to directly use the
-    free and official versions of the Apache, mod_ssl and OpenSSL
-    packages.</p>
-</section>
-
-<section id="modversion"><title>How do I know which mod_ssl version is for which Apache version?</title>
- <p>That's trivial: mod_ssl uses version strings of the syntax
-    <em>&lt;mod_ssl-version&gt;</em>-<em>&lt;apache-version&gt;</em>, for
-    instance <code>2.4.0-1.3.9</code>. This directly indicates that it's
-    mod_ssl version 2.4.0 for Apache version 1.3.9. And this also means you
-    <em>only</em> can apply this mod_ssl version to exactly this Apache
-    version (unless you use the <code>--force</code> option to mod_ssl's
-    <code>configure</code> command ;-).</p>
 </section>
 
 <section id="y2k"><title>Is mod_ssl Year 2000 compliant?</title>
@@ -1014,24 +918,16 @@ server" What's the reason?</title>
         subscribe to the list first, but then you can easily discuss your problem
         with both the author and the whole mod_ssl user community.
     </li>
-    <li><em>Write a Problem Report to the author</em><br />
-        <a href="mailto:rse@engelschall.com">rse@engelschall.com</a><br />
-        This is the last way of submitting your problem report. Please avoid this
-        in your own interest because the author is really a very busy men. Your
-        mail will always be filed to one of his various mail-folders and is
-        usually not processed as fast as a posting on modssl-users.
-    </li>
     </ol>
 </section>
 
-<section id="reportdetails"><title>What information and details I've to provide to
-the author when writing a bug report?</title>
+<section id="reportdetails"><title>What information and details should I
+	provide when writing a bug report?</title>
 <p>You have to at least always provide the following information:</p>
 
     <dl>
-    <dt>Apache, mod_ssl and OpenSSL version information</dt>
-    <dd>The mod_ssl version you should really know. For instance, it's the version
-        number in the distribution tarball. The Apache version can be determined
+    <dt>Apache and OpenSSL version information</dt>
+    <dd>The Apache version can be determined
         by running ``<code>httpd -v</code>''. The OpenSSL version can be
         determined by running ``<code>openssl version</code>''. Alternatively when
         you have Lynx installed you can run the command ``<code>lynx -mime_header
@@ -1042,12 +938,11 @@ the author when writing a bug report?</title>
     <dt>The details on how you built and installed Apache+mod_ssl+OpenSSL</dt>
     <dd>For this you can provide a logfile of your terminal session which shows
         the configuration and install steps. Alternatively you can at least
-        provide the author with the APACI <code>configure</code> command line
-        you used (assuming you used APACI, of course).
+        provide the <code>configure</code> command line you used.
     </dd>
 
     <dt>In case of core dumps please include a Backtrace</dt>
-    <dd>In case your Apache+mod_ssl+OpenSSL should really dumped core please attach
+    <dd>In case your Apache+mod_ssl+OpenSSL should really dump core please attach
         a stack-frame ``backtrace'' (see the next question on how to get it).
         Without this information the reason for your core dump cannot be found.
         So you have to provide the backtrace, please.
@@ -1075,7 +970,7 @@ the author when writing a bug report?</title>
 <p>Follow the following steps:</p>
     <ol>
     <li>Make sure you have debugging symbols available in at least
-        Apache and mod_ssl. On platforms where you use GCC/GDB you have to build
+        Apache. On platforms where you use GCC/GDB you have to build
         Apache+mod_ssl with ``<code>OPTIM="-g -ggdb3"</code>'' to achieve this. On
         other platforms at least ``<code>OPTIM="-g"</code>'' is needed.
     </li>
