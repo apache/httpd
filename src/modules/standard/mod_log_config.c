@@ -59,17 +59,22 @@
  * The argument to LogFormat is a string, which can include literal
  * characters copied into the log files, and '%' directives as follows:
  *
+ * %...b:  bytes sent.
  * %...h:  remote host
+ * %...{Foobar}i:  The contents of Foobar: header line(s) in the request
+ *                 sent to the client.
  * %...l:  remote logname (from identd, if supplied)
- * %...u:  remote user (from auth; may be bogus if return status (%s) is 401)
- * %...t:  time, in common log format time format
+ * %...{Foobar}o:  The contents of Foobar: header line(s) in the reply.
+ * %...p:  the port the request was served to
  * %...r:  first line of request
  * %...s:  status.  For requests that got internally redirected, this
  *         is status of the *original* request --- %...>s for the last.
- * %...b:  bytes sent.
- * %...{Foobar}i:  The contents of Foobar: header line(s) in the request
- *                 sent to the client.
- * %...{Foobar}o:  The contents of Foobar: header line(s) in the reply.
+ * %...t:  time, in common log format time format
+ * %...{format}t:  The time, in the form given by format, which should
+ *                 be in strftime(3) format.
+ * %...T:  the time taken to serve the request, in seconds.
+ * %...u:  remote user (from auth; may be bogus if return status (%s) is 401)
+ * %...v:  the name of the server (i.e. which virtual host?)
  *
  * The '...' can be nothing at all (e.g. "%h %u %r %s %b"), or it can
  * indicate conditions for inclusion of the item (which will cause it
@@ -93,22 +98,6 @@
  * If it doesn't have its own LogFormat, it inherits from the main
  * server.  If it doesn't have its own TransferLog, it writes to the
  * same descriptor (meaning the same process for "| ...").
- *
- * That means that you can do things like:
- *
- * <VirtualHost hosta.com>
- * LogFormat "hosta ..."
- * ...
- * </VirtualHost>
- *
- * <VirtualHost hosta.com>
- * LogFormat "hostb ..."
- * ...
- * </VirtualHost>
- *
- * ... to have different virtual servers write into the same log file,
- * but have some indication which host they came from, though a %v
- * directive may well be a better way to handle this.
  *
  * --- rst */
 
@@ -197,6 +186,8 @@ char *log_header_in (request_rec *r, char *a)
 char *log_header_out (request_rec *r, char *a)
 {
     char *cp = table_get (r->headers_out, a);
+    if (!strcasecmp(a, "Content-type") && r->content_type)
+	cp = r->content_type;
     if (cp) return cp;
     return table_get (r->err_headers_out, a);
 }
@@ -208,19 +199,41 @@ char *log_request_time (request_rec *r, char *a)
 {
     long timz;
     struct tm *t;
-    char tstr[MAX_STRING_LEN],sign;
+    char tstr[MAX_STRING_LEN];
     
     t = get_gmtoff(&timz);
-    sign = (timz < 0 ? '-' : '+');
-    if(timz < 0) 
-        timz = -timz;
 
-    strftime(tstr,MAX_STRING_LEN,"[%d/%b/%Y:%H:%M:%S ",t);
+    if (a && *a) /* Custom format */
+	strftime(tstr, MAX_STRING_LEN, a, t);
+    else { /* CLF format */
+	char sign = (timz < 0 ? '-' : '+');
 
-    sprintf (tstr + strlen(tstr), "%c%02ld%02ld]",
-	     sign, timz/3600, timz%3600);
+	if(timz < 0) timz = -timz;
+
+	strftime(tstr,MAX_STRING_LEN,"[%d/%b/%Y:%H:%M:%S ",t);
+	sprintf (tstr + strlen(tstr), "%c%02ld%02ld]",
+		 sign, timz/3600, timz%3600);
+    }
 
     return pstrdup (r->pool, tstr);
+}
+
+char *log_request_duration (request_rec *r, char *a) {
+    char duration[22];	/* Long enough for 2^64 */
+
+    sprintf(duration, "%ld", time(NULL) - r->request_time);
+    return pstrdup(r->pool, duration);
+}
+
+char *log_virtual_host (request_rec *r, char *a) {
+    return pstrdup(r->pool, r->server->server_hostname);
+}
+
+char *log_server_port (request_rec *r, char *a) {
+    char portnum[10];
+
+    sprintf(portnum, "%d", r->server->port);
+    return pstrdup(r->pool, portnum);
 }
 
 /*****************************************************************
@@ -237,12 +250,15 @@ struct log_item_list {
     { 'l', log_remote_logname, 0 },
     { 'u', log_remote_user, 0 },
     { 't', log_request_time, 0 },
+    { 'T', log_request_duration, 0 },
     { 'r', log_request_line, 1 },
     { 's', log_status, 1 },
     { 'b', log_bytes_sent, 0 },
     { 'i', log_header_in, 0 },
     { 'o', log_header_out, 0 },
     { 'e', log_env_var, 0 },
+    { 'v', log_virtual_host, 0 },
+    { 'p', log_server_port, 0 },
     { '\0' }
 };
 
