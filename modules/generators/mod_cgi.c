@@ -376,32 +376,35 @@ static ap_status_t build_argv_list(char ***argv, request_rec *r, ap_context_t *p
     const char *args = r->args;
 
     if (!args || !args[0] || strchr(args, '=')) {
-       *argv = NULL;
+        numwords = 1;
     }
     else {
         /* count the number of keywords */
-        for (x = 0, numwords = 1; args[x]; x++) {
+        for (x = 0, numwords = 2; args[x]; x++) {
             if (args[x] == '+') {
                 ++numwords;
             }
         }
-        if (numwords > APACHE_ARG_MAX) {
-            numwords = APACHE_ARG_MAX;	/* Truncate args to prevent overrun */
-        }
-        *argv = (char **) ap_palloc(p, (numwords + 1) * sizeof(char *));
-
-        for (x = 1, idx = 0; x <= numwords; x++) {
-            w = ap_getword_nulls(p, &args, '+');
-            ap_unescape_url(w);
-            (*argv)[idx++] = ap_escape_shell_cmd(p, w);
-        }
-        (*argv)[idx] = NULL;
     }
+    /* Everything is - 1 to account for the first parameter which is the
+     * program name.  We didn't used to have to do this, but APR wants it.
+     */ 
+    if (numwords > APACHE_ARG_MAX - 1) {
+        numwords = APACHE_ARG_MAX - 1;	/* Truncate args to prevent overrun */
+    }
+    *argv = (char **) ap_palloc(p, (numwords + 2) * sizeof(char *));
+ 
+    for (x = 1, idx = 1; x < numwords; x++) {
+        w = ap_getword_nulls(p, &args, '+');
+        ap_unescape_url(w);
+        (*argv)[idx++] = ap_escape_shell_cmd(p, w);
+    }
+    (*argv)[idx] = NULL;
 
     return APR_SUCCESS;
 }
 
-static ap_status_t build_command_line(char **c, request_rec *r, ap_context_t *p) 
+static ap_status_t build_command_line(char **c, request_rec *r, ap_context_t *p)
 {
 #ifdef WIN32
     char *quoted_filename = NULL;
@@ -522,8 +525,9 @@ static int cgi_handler(request_rec *r)
                       "couldn't spawn child process: %s", r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+    argv[0] = ap_pstrdup(p, command);
     /* run the script in its own process */
-    else if (run_cgi_child(&script_out, &script_in, &script_err, command, argv, r, p) != APR_SUCCESS) {
+    if (run_cgi_child(&script_out, &script_in, &script_err, command, argv, r, p) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
                       "couldn't spawn child process: %s", r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
