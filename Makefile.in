@@ -53,19 +53,22 @@ docs: include/*.h
 install-htdocs:
 	@echo Installing HTML documents
 	@test -d $(htdocsdir) || $(MKINSTALLDIRS) $(htdocsdir)
-	@test -d $(htdocs-srcdir) && (cd $(htdocs-srcdir) && find . ! -path '*CVS*' -a ! -type d -exec cp -Pp {}  $(htdocsdir) \;)
+	@test -d $(htdocs-srcdir) && (cd $(htdocs-srcdir) && cp -rp * $(htdocsdir))
 	@test -d $(htdocsdir)/manual || $(MKINSTALLDIRS) $(htdocsdir)/manual
-	@test -d docs/manual && (cd docs/manual && find . ! -path '*CVS*' -a ! -type d -exec cp -Pp {} $(htdocsdir)/manual \;)
+	@test -d docs/manual && (cd docs/manual && cp -rp * $(htdocsdir)/manual)
+	@(cd $(htdocsdir) && find . -name "CVS" -print | xargs rm -rf {} \;)
 
 install-icons:
 	@echo Installing icons
 	@test -d $(iconsdir) || $(MKINSTALLDIRS) $(iconsdir)
-	@(cd docs/icons && find . ! -path '*CVS*' -a ! -type d -exec cp -Pp {}  $(iconsdir) \;)
+	@(cd docs/icons && cp -rp * $(iconsdir))
+	@(cd $(iconsdir) && find . -name "CVS" -print | xargs rm -rf {} \;)
 
 install-cgi:
 	@echo Installing CGIs
 	@test -d $(cgidir) || $(MKINSTALLDIRS) $(cgidir)
-	@(cd docs/cgi-examples && find . ! -path '*CVS*' -a ! -type d -exec cp -Pp {} $(cgidir) \;)
+	@(cd docs/cgi-examples && cp -rp * $(cgidir))
+	@(cd $(cgidir) && find . -name "CVS" -print | xargs rm -rf {} \;)
 
 install-support:
 	@echo Installing Support Binaries
