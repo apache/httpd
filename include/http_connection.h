@@ -129,7 +129,7 @@ void ap_lingering_close(conn_rec *);
  * @return OK or DECLINED
  * @deffunc int ap_run_pre_connection(conn_rec *c)
  */
-AP_DECLARE_HOOK(int,pre_connection,(conn_rec *))
+AP_DECLARE_HOOK(int,pre_connection,(conn_rec *c))
 
 /**
  * This hook implements different protocols.  After a connection has been
@@ -140,7 +140,7 @@ AP_DECLARE_HOOK(int,pre_connection,(conn_rec *))
  * @return OK or DECLINED
  * @deffunc int ap_run_process_connection(conn_rec *c)
  */
-AP_DECLARE_HOOK(int,process_connection,(conn_rec *))
+AP_DECLARE_HOOK(int,process_connection,(conn_rec *c))
 
 #ifdef __cplusplus
 }
