@@ -58,7 +58,6 @@
 
 #include "apr_network_io.h"
 #include "apr_strings.h"
-#include "apr_lock.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
