@@ -342,7 +342,7 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
 {
     int n, err;
     X509 *xs;
-    char *cp;
+    char *cp = NULL;
     conn_rec *c = (conn_rec*)SSL_get_app_data (pRec->pssl);
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
 
@@ -445,9 +445,10 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
         /*
          * Check for failed client authentication
          */
-        if (   SSL_get_verify_result(pRec->pssl) != X509_V_OK
-            || apr_table_get (c->notes, "ssl::verify::error") != NULL) {
-            cp = (char *)apr_table_get(c->notes, "ssl::verify::error");
+        if (SSL_get_verify_result(pRec->pssl) != X509_V_OK ||
+            ((cp = (char *)apr_table_get(c->notes,
+                                         "ssl::verify::error")) != NULL))
+        {
             ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                     "SSL client authentication failed: %s",
                     cp != NULL ? cp : "unknown reason");
