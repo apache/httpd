@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_autoindex now emits and accepts modern query string parameter
+     delimiters (;). Thus column headers no longer contain unescaped
+     ampersands. PR 10880  [André Malo]
+
   *) mod_autoindex no longer forgets output format and enabled version
      sort in linked column headers.  [André Malo]
 
