@@ -1,3 +1,11 @@
+mod_proxy changes for httpd 2.0.29-dev
+  *) don't do keepalives for sub-requests. [Ian Holsman]
+  
+  *) fix up proxypass handling [Ian Holsman]
+
+  *) don't send If-Modified-Since, Cache-Control, or If-None-Match on 
+     a subrequest [Ian Holsman]
+
 mod_proxy changes for httpd 2.0.26-dev
   *) Add New option 'HTTPProxyOverrideReturnedErrors'. By Turning the
      Flag on, you will mask the error pages returned by the proxied
