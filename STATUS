@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/07/24 14:01:00 $]
+Last modified at [$Date: 2002/07/24 14:02:56 $]
 
 Release:
 
@@ -56,9 +56,6 @@ RELEASE SHOWSTOPPERS:
     * apr_poll() grows the pool (e.g., pchild or the thread's pool) on
       each call...  Apache MPMs don't have logic to work around this
       issue.
-
-    * On AIX and Tru64, Apache won't load due to an unresolved
-      reference to iconv.
 
 CURRENT VOTES:
 
