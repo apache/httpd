@@ -215,6 +215,7 @@ static mode_t xfer_mode = (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
  */
 
 typedef struct {
+    char *default_format_string;
     array_header *default_format;
     array_header *config_logs;
     array_header *server_config_logs;
@@ -232,6 +233,7 @@ typedef struct {
 
 typedef struct {
     char *fname;
+    char *format_string;
     array_header *format;
     int log_fd;
 #ifdef BUFFERED_LOGS
@@ -782,6 +784,7 @@ static void *make_config_log_state(pool *p, server_rec *s)
     multi_log_state *mls = (multi_log_state *) ap_palloc(p, sizeof(multi_log_state));
 
     mls->config_logs = ap_make_array(p, 1, sizeof(config_log_state));
+    mls->default_format_string = NULL;
     mls->default_format = NULL;
     mls->server_config_logs = NULL;
     mls->formats = ap_make_table(p, 4);
@@ -800,12 +803,38 @@ static void *merge_config_log_state(pool *p, void *basev, void *addv)
 {
     multi_log_state *base = (multi_log_state *) basev;
     multi_log_state *add = (multi_log_state *) addv;
+    char *format;
+    const char *dummy;
 
     add->server_config_logs = base->config_logs;
     if (!add->default_format) {
+        add->default_format_string = base->default_format_string;
         add->default_format = base->default_format;
     }
     add->formats = ap_overlay_tables(p, base->formats, add->formats);
+
+    if (add->default_format_string) {
+	format = ap_table_get(add->formats, add->default_format_string);
+	if (format) {
+	    add->default_format = parse_log_string(p, format, &dummy);
+	}
+    }    
+
+    if (add->config_logs) {
+	config_log_state *clsarray = (config_log_state *) add->config_logs->elts;
+	int i;
+
+	for (i = 0; i < add->config_logs->nelts; ++i) {
+	    config_log_state *cls = &clsarray[i];
+
+	    if (cls->format_string) {
+		format = ap_table_get(add->formats, cls->format_string);
+		if (format) {
+		    cls->format = parse_log_string(p, format, &dummy);
+		}
+	    }
+	}
+    }
 
     return add;
 }
@@ -817,7 +846,6 @@ static const char *log_format(cmd_parms *cmd, void *dummy, char *fmt,
                               char *name)
 {
     const char *err_string = NULL;
-    char *format;
     multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
                                              &config_log_module);
 
@@ -833,14 +861,8 @@ static const char *log_format(cmd_parms *cmd, void *dummy, char *fmt,
         }
     }
     else {
-        /*
-         * See if we were given a name rather than a format string.
-         */
-        format = ap_table_get(mls->formats, fmt);
-        if (format == NULL) {
-            format = fmt;
-        }
-        mls->default_format = parse_log_string(cmd->pool, format, &err_string);
+        mls->default_format_string = fmt;
+        mls->default_format = parse_log_string(cmd->pool, fmt, &err_string);
     }
     return err_string;
 }
@@ -852,17 +874,15 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn,
     multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
                                              &config_log_module);
     config_log_state *cls;
-    char *format;
 
     cls = (config_log_state *) ap_push_array(mls->config_logs);
     cls->fname = fn;
+    cls->format_string = fmt;
     if (!fmt) {
         cls->format = NULL;
     }
     else {
-        format = ap_table_get(mls->formats, fmt);
-        format = (format != NULL) ? format : fmt;
-        cls->format = parse_log_string(cmd->pool, format, &err_string);
+        cls->format = parse_log_string(cmd->pool, fmt, &err_string);
     }
     cls->log_fd = -1;
 
