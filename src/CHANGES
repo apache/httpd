@@ -1,5 +1,13 @@
 Changes with Apache 1.3.24
 
+  *) [Security] Prevent invalid client hostnames from appearing in
+     the log file. If a double-reverse lookup was performed (e.g.,
+     for an "Allow from .my.domain" directive) but failed, then
+     a spoofed dns-reverse-address could appear in the logs. Now
+     the numeric address is logged instead. Note that
+     reverse-address-spoofing did NOT actually allow access
+     to any protected resource!  [Martin Kraemer]
+
   *) Some browsers ignore cookies that have been merged into a
      single Set-Cookie header. Set-Cookie and Set-Cookie2 headers
      are now unmerged in the http proxy before being sent to the

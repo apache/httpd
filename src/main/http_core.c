@@ -619,6 +619,19 @@ API_EXPORT(char *) ap_response_code_string(request_rec *r, int error_index)
 
 
 /* Code from Harald Hanche-Olsen <hanche@imf.unit.no> */
+/* Note: the function returns its result in conn->double_reverse:
+ *       +1: forward lookup of the previously reverse-looked-up
+ *           hostname in conn->remote_host succeeded, and at
+ *           least one of its IP addresses matches the client.
+ *       -1: forward lookup of conn->remote_host failed, or
+ *           none of the addresses found matches the client connection
+ *           (possible DNS spoof in the reverse zone!)
+ *       If do_double_reverse() returns -1, then it also invalidates
+ *       conn->remote_host to prevent an invalid name from appearing
+ *       in the log files. Conn->remote_host is set to "", because
+ *       a setting of NULL would allow another reverse lookup,
+ *       depending on the flags given to ap_get_remote_host().
+ */
 static ap_inline void do_double_reverse (conn_rec *conn)
 {
     struct hostent *hptr;
@@ -630,6 +643,7 @@ static ap_inline void do_double_reverse (conn_rec *conn)
     if (conn->remote_host == NULL || conn->remote_host[0] == '\0') {
 	/* single reverse failed, so don't bother */
 	conn->double_reverse = -1;
+        conn->remote_host = ""; /* prevent another lookup */
 	return;
     }
     hptr = gethostbyname(conn->remote_host);
@@ -645,6 +659,8 @@ static ap_inline void do_double_reverse (conn_rec *conn)
 	}
     }
     conn->double_reverse = -1;
+    /* invalidate possible reverse-resolved hostname if forward lookup fails */
+    conn->remote_host = "";
 }
 
 API_EXPORT(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
@@ -683,9 +699,6 @@ API_EXPORT(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
 	   
 	    if (hostname_lookups == HOSTNAME_LOOKUP_DOUBLE) {
 		do_double_reverse(conn);
-		if (conn->double_reverse != 1) {
-		    conn->remote_host = NULL;
-		}
 	    }
 	}
 	/* if failed, set it to the NULL string to indicate error */
