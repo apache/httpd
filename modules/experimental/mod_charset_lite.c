@@ -801,7 +801,8 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, ap_bucket_brigade *bb)
 {
     charset_req_t *reqinfo = ap_get_module_config(f->r->request_config,
                                                   &charset_lite_module);
-    charset_dir_t *dc = reqinfo->dc;
+    charset_dir_t *dc = ap_get_module_config(f->r->per_dir_config,
+                                             &charset_lite_module);
     charset_filter_ctx_t *ctx = f->ctx;
     ap_bucket *dptr, *consumed_bucket;
     const char *cur_str;
@@ -813,13 +814,16 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, ap_bucket_brigade *bb)
 
     if (!ctx) { 
         /* this is AddOutputFilter path; grab the preallocated context,
-         * if any 
+         * if any; note that if we decided not to do anything in an earlier
+         * handler, we won't even have a reqinfo
          */
-        ctx = f->ctx = reqinfo->output_ctx;
-        reqinfo->output_ctx = NULL;   /* prevent SNAFU if user coded us twice
-                                       * in the filter chain; we can't have two
-                                       * instances using the same context
-                                       */
+        if (reqinfo) {
+            ctx = f->ctx = reqinfo->output_ctx;
+            reqinfo->output_ctx = NULL; /* prevent SNAFU if user coded us twice
+                                         * in the filter chain; we can't have two
+                                         * instances using the same context
+                                         */
+        }
         if (!ctx) {                   /* no idea how to translate; don't do anything */
             ctx = f->ctx = apr_pcalloc(f->r->pool, sizeof(charset_filter_ctx_t));
             ctx->dc = dc;
@@ -971,20 +975,24 @@ static int xlate_in_filter(ap_filter_t *f, ap_bucket_brigade *bb,
     apr_status_t rv;
     charset_req_t *reqinfo = ap_get_module_config(f->r->request_config,
                                                   &charset_lite_module);
-    charset_dir_t *dc = reqinfo->dc;
+    charset_dir_t *dc = ap_get_module_config(f->r->per_dir_config,
+                                             &charset_lite_module);
     charset_filter_ctx_t *ctx = f->ctx;
     apr_size_t buffer_size;
     int hit_eos;
 
     if (!ctx) { 
         /* this is AddInputFilter path; grab the preallocated context,
-         * if any
+         * if any; note that if we decided not to do anything in an earlier
+         * handler, we won't even have a reqinfo
          */
-        ctx = f->ctx = reqinfo->input_ctx;
-        reqinfo->input_ctx = NULL;    /* prevent SNAFU if user coded us twice
-                                       * in the filter chain; we can't have two
-                                       * instances using the same context
-                                       */
+        if (reqinfo) {
+            ctx = f->ctx = reqinfo->input_ctx;
+            reqinfo->input_ctx = NULL; /* prevent SNAFU if user coded us twice
+                                        * in the filter chain; we can't have two
+                                        * instances using the same context
+                                        */
+        }
         if (!ctx) {                   /* no idea how to translate; don't do anything */
             ctx = f->ctx = apr_pcalloc(f->r->pool, sizeof(charset_filter_ctx_t));
             ctx->dc = dc;
