@@ -2631,7 +2631,7 @@ static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd,
         for (i = 0; i < hdtr->numheaders; i++) {
             sendlen += hdtr->headers[i].iov_len;
         }
-        rv = writev_it_all(c->client->bsock, hdtr->headers, hdtr->numheaders,
+        rv = writev_it_all(c->client_socket, hdtr->headers, hdtr->numheaders,
                            sendlen, &bytes_sent);
         if (rv == APR_SUCCESS)
             *nbytes += bytes_sent;     /* track total bytes sent */
@@ -2650,7 +2650,7 @@ static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd,
         rv = apr_read(fd, buffer, &sendlen);
         while (rv == APR_SUCCESS && sendlen) {
             bytes_sent = sendlen;
-            rv = apr_send(c->client->bsock, &buffer[o], &bytes_sent);
+            rv = apr_send(c->client_socket, &buffer[o], &bytes_sent);
             if (rv == APR_SUCCESS) {
                 sendlen -= bytes_sent; /* sendlen != bytes_sent ==> partial write */
                 o += bytes_sent;       /* o is where we are in the buffer */
@@ -2669,7 +2669,7 @@ static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd,
         for (i = 0; i < hdtr->numtrailers; i++) {
             sendlen += hdtr->trailers[i].iov_len;
         }
-        rv = writev_it_all(c->client->bsock, hdtr->trailers, hdtr->numtrailers,
+        rv = writev_it_all(c->client_socket, hdtr->trailers, hdtr->numtrailers,
                            sendlen, &bytes_sent);
         if (rv == APR_SUCCESS)
             *nbytes += bytes_sent;
@@ -3332,13 +3332,11 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
  */
 static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t length)
 {
-    apr_socket_t *csock = NULL;
     ap_bucket *e;
     
     if (!f->ctx) {    /* If we haven't passed up the socket yet... */
         f->ctx = (void *)1;
-        ap_bpop_socket(&csock, f->c->client);
-        e = ap_bucket_create_socket(csock);
+        e = ap_bucket_create_socket(f->c->client_socket);
         AP_BRIGADE_INSERT_TAIL(b, e);
         return APR_SUCCESS;
     }
@@ -3467,7 +3465,7 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
                 flags |= APR_SENDFILE_DISCONNECT_SOCKET;
             }
             nbytes = flen;
-            rv = apr_sendfile(c->client->bsock, 
+            rv = apr_sendfile(c->client_socket, 
                               fd,       /* The file to send */
                               &hdtr,    /* Header and trailer iovecs */
                               &foffset, /* Offset in file to begin sending from */
@@ -3493,7 +3491,7 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
 #endif
         }
         else {
-            rv = writev_it_all(c->client->bsock, 
+            rv = writev_it_all(c->client_socket, 
                                vec, nvec, 
                                nbytes, &bytes_sent);
         }
