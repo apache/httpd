@@ -98,11 +98,12 @@ cache_pqueue_t *cache_pq_init(apr_ssize_t n,
         return NULL;
     }
 
-    if (!(q->d = malloc(sizeof(void*) * n))) {
+    /* Need to allocate n+1 elements since element 0 isn't used. */
+    if (!(q->d = malloc(sizeof(void*) * (n+1)))) {
         free(q);
         return NULL;
     }
-    q->avail = q->step = n;
+    q->avail = q->step = (n+1);  /* see comment above about n+1 */
     q->pri = pri;
     q->size = 1;
     q->get = get;
@@ -122,7 +123,8 @@ void cache_pq_free(cache_pqueue_t *q)
  */
 apr_ssize_t cache_pq_size(cache_pqueue_t *q)
 {
-    return q->size;
+    /* queue element 0 exists but doesn't count since it isn't used. */
+    return (q->size - 1);
 }
 
 static void cache_pq_bubble_up(cache_pqueue_t *q, apr_ssize_t i)
