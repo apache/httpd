@@ -51,6 +51,8 @@ done
 # Check to be sure that we have the srclib dependencies checked-out
 #
 
+should_exit=0
+
 if [ ! -d "$apr_src_dir" -o ! -f "$apr_src_dir/build/apr_common.m4" ]; then
     echo ""
     echo "You don't have a copy of the apr source in $apr_src_dir. " 
@@ -61,7 +63,7 @@ if [ ! -d "$apr_src_dir" -o ! -f "$apr_src_dir/build/apr_common.m4" ]; then
     echo "   cd srclib"
     echo "   svn co https://svn.apache.org/repos/asf/apr/apr/trunk apr"
     echo ""
-    exit 1
+    should_exit=1
 fi
 if [ ! -d "$apu_src_dir" -o ! -f "$apu_src_dir/Makefile.in" ]; then
     echo ""
@@ -73,6 +75,10 @@ if [ ! -d "$apu_src_dir" -o ! -f "$apu_src_dir/Makefile.in" ]; then
     echo "   cd srclib"
     echo "   svn co http://svn.apache.org/repos/asf/apr/apr-util/trunk apr-util"
     echo ""
+    should_exit=1
+fi
+
+if [ $should_exit -gt 0 ]; then
     exit 1
 fi
 
