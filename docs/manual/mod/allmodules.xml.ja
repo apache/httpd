@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!-- English revision: 1.10.2.1 -->
 
 <modulefilelist>
   <modulefile>core.xml</modulefile>
@@ -40,6 +41,7 @@
   <modulefile>mod_mime.xml</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml.ja</modulefile>
+  <modulefile>mod_nw_ssl.xml</modulefile>
   <modulefile>mod_proxy.xml</modulefile>
   <modulefile>mod_proxy_connect.xml</modulefile>
   <modulefile>mod_proxy_ftp.xml</modulefile>
