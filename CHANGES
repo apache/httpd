@@ -1,5 +1,8 @@
 Changes with Apache 2.0.41
 
+  *) Fix some bucket memory leaks in the chunking code
+     [Joe Schaefer <joe+apache@sunstarsys.com>]
+
   *) Add ModMimeUsePathInfo directive.  [Justin Erenkrantz]
 
   *) mod_cache: added support for caching streamed responses (proxy,

@@ -904,11 +904,12 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     ctx->remaining = get_chunk_size(line);
                 }
             }
+            apr_brigade_cleanup(bb);
+
             /* Detect chunksize error (such as overflow) */
             if (rv != APR_SUCCESS || ctx->remaining < 0) {
                 ctx->remaining = 0; /* Reset it in case we have to
                                      * come back here later */
-                apr_brigade_cleanup(bb);
                 e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
                                            f->r->pool,
                                            f->c->bucket_alloc);
@@ -969,13 +970,13 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                             ctx->remaining = get_chunk_size(line);
                         }
                     }
+                    apr_brigade_cleanup(bb);
                 }
 
                 /* Detect chunksize error (such as overflow) */
                 if (rv != APR_SUCCESS || ctx->remaining < 0) {
                     ctx->remaining = 0; /* Reset it in case we have to
                                          * come back here later */
-                    apr_brigade_cleanup(bb);
                     e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE,
                                                NULL, f->r->pool,
                                                f->c->bucket_alloc);
