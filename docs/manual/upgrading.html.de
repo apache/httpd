@@ -26,9 +26,6 @@
 <a href="./ko/upgrading.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/upgrading.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
     <p>Dieses Dokument dient der Unterstützung beim Upgrade. Es
     enthält die entscheidenden Informationen für bisherige
@@ -176,6 +173,18 @@ in Apache 2.0</a></li></ul></div>
       <em>aushandelbaren</em> Dateien gewählt. Das bisherige Verhalten
       kann jedoch mit der Direktive <code class="directive"><a href="./mod/mod_mime.html#multiviewsmatch">MultiviewsMatch</a></code> wiederhergestellt
       werden.</li>
+
+      <li>(<em>Ab Version 2.0.51</em>)
+        <p><code>ErrorHeader</code> war eine Fehlbenennung, weshalb die
+          Funktionalität dieser Direktive mit der
+          <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code>-Anweisung
+          zusammengelegt wurde. Verwenden Sie stattdessen</p>
+
+        <div class="example"><p><code>
+          Header always set foo bar
+        </code></p></div>
+
+        <p>um den gleichen Effekt zu erzielen.</p></li>
      </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

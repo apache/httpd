@@ -182,13 +182,12 @@ in Apache 2.0</a></seealso>
       <li>(<em>Ab Version 2.0.51</em>)
         <p><code>ErrorHeader</code> war eine Fehlbenennung, weshalb die
           Funktionalit&auml;t dieser Direktive mit der
-          <code class="directive"><a href="./mod/mod_headers.html#header"
-              >Header</a></code>-Anweisung zusammengelegt wurde. Verwenden 
-          Sie stattdessen</p>
+          <directive module="mod_headers">Header</directive>-Anweisung
+          zusammengelegt wurde. Verwenden Sie stattdessen</p>
 
-        <div class="example"><p><code>
+        <example>
           Header always set foo bar
-        </code></p></div>
+        </example>
 
         <p>um den gleichen Effekt zu erzielen.</p></li>
      </ul>
