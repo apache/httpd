@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/04 04:10:52 $]
+Last modified at [$Date: 2003/04/04 15:27:30 $]
 
 Release:
 
@@ -191,6 +191,7 @@ PATCHES TO PORT FROM 2.1
     * Fix warnings on AIX for missing str[n]casecmp prototypes
       modules/aaa/mod_authn_default r1.6
       modules/ssl/mod_ssl.h r1.130
+      modules/experimenal/mod_auth_ldap.c r1.15
       +1: trawick
 
 CURRENT RELEASE NOTES:
