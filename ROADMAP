@@ -1,6 +1,6 @@
 APACHE 2.x ROADMAP
 ==================
-Last modified at [$Date: 2002/10/18 01:08:38 $]
+Last modified at [$Date: 2002/10/18 16:47:29 $]
 
 
 INTRODUCTION
@@ -8,22 +8,22 @@ INTRODUCTION
 The Apache HTTP Server project must balance two competing and disjoint
 objectives: maintain stable code for third party authors, distributors and
 most importantly users so that bug and security fixes can be quickly adopted
-without significant hardship due to API changes; and continue the development
-process that requires ongoing redesign to work around earlier oversights in
-the implementation of a fluid and flexible API.
+without significant hardship due to user-visible changes; and continue the
+development process that requires ongoing redesign to correct earlier
+oversights and to add additional features.
 
-The Apache HTTP Server versions, through 2.0, used the Module Magic Number
-to reflect the relatively frequent API changes.  This had the shortcoming
-of often leaving binary download users hunting to replace their loaded third
-party modules.  This left the third party module authors searching through
-the API change histories to determine the new declarations, APIs and side 
-effects of making the necessary code changes.  
+The Apache HTTP Server, through version 2.0, used the Module Magic Number (MMN)
+to reflect API changes.  This had the shortcoming of often leaving users
+hunting to replace binary third party modules that were now incompatible.
+This also left module authors searching through the API change histories to
+determine the exact cause for the MMN change and whether their module was
+affected.
 
 With the simultaneous release of Apache 2.2-stable and Apache 2.3-development,
-the Apache HTTP Server project is moving to a more predictable stable code
-branch, while opening the development to forward progress without concern
+the Apache HTTP Server project is moving towards a more predictable stable
+release cycle, while allowing forward progress to occur without concern
 for breaking the stable branch.  This document explains the rationale between
-the two versions and their behavior, going forward.
+the two versions and their behavior.
 
 
 STABLE RELEASES, 2.{even}.{revision}
@@ -79,26 +79,27 @@ keeping the stable tree as safe as possible:
 
 DEVELOPMENT RELEASES, 2.{odd}.{revision}
 -----------------------------------------
+
 All odd numbered releases designate the 'next' possible stable release,
 therefore the current development version will always be one greater than
-the stable release.  Work proceeds on development releases, permitting
+the current stable release.  Work proceeds on development releases, permitting
 the modification of the MMN at any time in order to correct deficiencies 
-or shortcomings in the API.  This means that third party modules from one 
-revision to another may not be binary compatible, and may not successfully
+or shortcomings in the API.  This means that modules from one development
+release to another may not be binary compatible, or may not successfully
 compile without modification to accomodate the API changes.
 
 The only 'supported' development release at any time will be the most
 recently released version.  Developers will not be answering bug reports
-of older development releases once a new release is available, it becomes
+of older development releases once a new release is available.  It becomes
 the resposibility of the reporter to use the latest development version
-to confirm that the bug still exists.
+to confirm that any issue still exists.
 
 Any new code, new API features or new ('experimental') modules may be
 promoted at any time to the next stable release, by a vote of the project
 contributors.  This vote is based on the technical stability of the new
 code and the stability of the interface.  Once moved to stable, that feature
 cannot change for the remainder of that lifetime of that stable verions,
-so the vote must reflect that the final decisions on the behavior and naming 
+so the vote must reflect that the final decisions on the behavior and naming
 of that new feature were reached.  Vetos continue to apply to this choice
 of introducing the new work to the stable version.
 
@@ -116,9 +117,11 @@ development version.  This assures that the module will be ready for the next
 stable release, but more importantly, the author can react to shortcomings
 in the API early enough to warn the dev@httpd.apache.org community of the
 shortcomings so that they can be addressed before the stable release.  The
-entire onus is on the third party module author to anticipate the needs of
-their module before the stable release is created, once it has been released
-they will be stuck with that API for the lifetime of that stable release.
+entire burden is on the module author to anticipate the needs of their module
+before the stable release is created.  Once a new stable release cycle has
+begun, that API will be present for the lifetime of the stable release.  Any
+desired changes in the stable versions must wait for inclusion into the next
+release cycle.
 
 
 ALL RELEASES
