@@ -15,8 +15,8 @@ LOG_NAME=`pwd`/$2
 USER=$3
 
 REPO="httpd-2.0"
-WORKING_DIR=`echo "$REPO" | sed -e 's/[\-\.]/_/g'`
-WORKING_TAG=`echo "$TAG" | sed -e 's/APACHE_2_0_/_/'`
+WORKING_DIR=`echo "$REPO" | sed -e 's/[\-\.]/./g'`
+WORKING_TAG=`echo "$TAG" | sed -e 's/APACHE_2_0_/./'`
 WORKING_DIR="$WORKING_DIR$WORKING_TAG"
 
 START_DIR=`echo "$PWD"`
