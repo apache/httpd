@@ -103,10 +103,6 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb);
  */
 AP_DECLARE(void) ap_send_http_header(request_rec *r);
 
-/* Send the response to special method requests */
-
-AP_DECLARE(int) ap_send_http_trace(request_rec *r);
-int ap_send_http_options(request_rec *r);
 
 /* Finish up stuff after a request */
 
@@ -483,14 +479,6 @@ AP_DECLARE(void) ap_note_digest_auth_failure(request_rec *r);
  * @deffunc int ap_get_basic_auth_pw(request_rec *r, const char **pw)
  */
 AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw);
-
-/*
- * Setting up the protocol fields for subsidiary requests...
- * Also, a wrapup function to keep the internal accounting straight.
- */
-
-void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r);
-void ap_finalize_sub_req_protocol(request_rec *sub_r);
 
 /**
  * parse_uri: break apart the uri
