@@ -129,7 +129,7 @@ static HANDLE maintenance_event;
 static char ap_coredump_dir[MAX_STRING_LEN];
 
 static int one_process = 0;
-static char const* signal_arg;
+static char const* signal_arg = NULL;
 
 OSVERSIONINFO osver; /* VER_PLATFORM_WIN32_NT */
 
@@ -1763,9 +1763,12 @@ void winnt_rewrite_args(process_rec *process)
         }
     }
 
-    if (service_set == SERVICE_UNSET) {
+    /* Get the default for any -k option, except run */
+    if (service_set == SERVICE_UNSET && strcasecmp(signal_arg, "run")) {
         service_set = mpm_service_set_name(process->pool, &service_name,
                                            DEFAULT_SERVICE_NAME);
+        if (APR_STATUS_IS_ENOENT(service_set))
+            service_set = SERVICE_UNSET;
     }
 
     if (!strcasecmp(signal_arg, "install")) /* -k install */
