@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/23 14:02:12 $]
+Last modified at [$Date: 2004/03/23 15:03:46 $]
 
 Release:
 
@@ -121,7 +121,7 @@ PATCHES TO BACKPORT FROM 2.1
        server hang when number of Listen directives is >=
        ThreadsPerChild.
            server/mpm/winnt/child.c?r1=1.32&r2=1.33
-       +1: stoddard, trawick
+       +1: stoddard, trawick, geoff
 
     *) Provide TLS/SSL upgrade functionality in mod_ssl allowing an unsecure
        connection to be upgraded to a secure connection upon request by the
