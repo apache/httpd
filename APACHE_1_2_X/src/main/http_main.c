@@ -941,6 +941,11 @@ void sync_scoreboard_image ()
 #endif
 }
 
+int exists_scoreboard_image ()
+{
+    return (scoreboard_image ? 1 : 0);
+}
+
 int update_child_status (int child_num, int status, request_rec *r)
 {
     int old_status;

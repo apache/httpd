@@ -107,4 +107,4 @@ typedef struct
 
 extern void sync_scoreboard_image(void);
 short_score get_scoreboard_info(int x);
-
+int exists_scoreboard_image ();
