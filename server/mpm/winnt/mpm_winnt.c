@@ -75,8 +75,7 @@
 /*
  * Definitions of WINNT MPM specific config globals
  */
-int ap_max_requests_per_child=0;
-int ap_daemons_to_start=0;
+
 static char *mpm_pid_fname=NULL;
 static int ap_threads_per_child = 0;
 static int workers_may_exit = 0;
@@ -84,20 +83,22 @@ static int max_requests_per_child = 0;
 
 static struct fd_set listenfds;
 static int num_listenfds = 0;
-int listenmaxfd = 500;
+static SOCKET listenmaxfd = INVALID_SOCKET;
 
 static ap_context_t *pconf;		/* Pool for config stuff */
 
 static char ap_coredump_dir[MAX_STRING_LEN];
-
 
 static server_rec *server_conf;
 
 static int one_process = 0;
 
 static OSVERSIONINFO osver; /* VER_PLATFORM_WIN32_NT */
+
+int ap_max_requests_per_child=0;
+int ap_daemons_to_start=0;
+
 event *exit_event;
-//mutex *start_mutex;
 ap_lock_t *start_mutex;
 int my_pid;
 int parent_pid;
@@ -348,11 +349,11 @@ static ap_listen_rec *head_listener;
 static ap_inline ap_listen_rec *find_ready_listener(fd_set * main_fds)
 {
     ap_listen_rec *lr;
-    SOCKET native_socket;
+    SOCKET nsd;
 
     for (lr = head_listener; lr ; lr = lr->next) {
-        ap_get_os_sock(lr->sd, &native_socket);
-	if (FD_ISSET(native_socket, main_fds)) {
+        ap_get_os_sock(lr->sd, &nsd);
+	if (FD_ISSET(nsd, main_fds)) {
 	    head_listener = lr->next;
             if (head_listener == NULL)
                 head_listener = ap_listeners;
@@ -369,7 +370,6 @@ static int setup_listeners(ap_context_t *pconf, server_rec *s)
     SOCKET nsd;
 
     /* Setup the listeners */
-//    listenmaxfd = -1;
     FD_ZERO(&listenfds);
 
     if (ap_listen_open(pconf, s->port)) {
@@ -380,13 +380,9 @@ static int setup_listeners(ap_context_t *pconf, server_rec *s)
         if (lr->sd != NULL) {
             ap_get_os_sock(lr->sd, &nsd);
             FD_SET(nsd, &listenfds);
-            listenmaxfd == nsd;
-#if 0
-            if (listenmaxfd == -1)
-                listenmaxfd == nsd;
-            else if (nsd > listenmaxfd)
+            if (listenmaxfd == INVALID_SOCKET || nsd > listenmaxfd) {
                 listenmaxfd = nsd;
-#endif
+            }
         }
     }
 
@@ -402,10 +398,9 @@ static int setup_inherited_listeners(ap_context_t *p, server_rec *s)
     ap_listen_rec *lr;
     DWORD BytesRead;
     int num_listeners = 0;
-    int native_socket;
+    SOCKET nsd;
 
     /* Setup the listeners */
-    listenmaxfd = -1;
     FD_ZERO(&listenfds);
 
     /* Set up a default listener if necessary */
@@ -433,24 +428,23 @@ static int setup_inherited_listeners(ap_context_t *p, server_rec *s)
             exit(1);
         }
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
-                         "BytesRead = %d WSAProtocolInfo = %x20", BytesRead, WSAProtocolInfo);
-        native_socket = WSASocket(FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO,
-                                  &WSAProtocolInfo, 0, 0);
-        if (native_socket == INVALID_SOCKET) {
+                     "BytesRead = %d WSAProtocolInfo = %x20", BytesRead, WSAProtocolInfo);
+        nsd = WSASocket(FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO,
+                        &WSAProtocolInfo, 0, 0);
+        if (nsd == INVALID_SOCKET) {
             ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
                          "setup_inherited_listeners: WSASocket failed to open the inherited socket.");
             signal_parent(0);	/* tell parent to die */
             exit(1);
         }
-        if (native_socket >= 0) {
-            FD_SET(native_socket, &listenfds);
-            if (listenmaxfd == -1)
-                listenmaxfd = native_socket;
-            else if (native_socket > listenmaxfd)
-                listenmaxfd = native_socket;
+        if (nsd >= 0) {
+            FD_SET(nsd, &listenfds);
+            if (listenmaxfd == INVALID_SOCKET || nsd > listenmaxfd) {
+                listenmaxfd = nsd;
+            }
         }
 //        ap_register_cleanup(p, (void *)lr->sd, socket_cleanup, NULL);
-        ap_put_os_sock(&lr->sd, &native_socket, pconf);
+        ap_put_os_sock(&lr->sd, &nsd, pconf);
     }
     CloseHandle(pipe);
 
@@ -1040,7 +1034,7 @@ static void worker_main()
         setup_inherited_listeners(pconf, server_conf);
     }
 
-    if (listenmaxfd == -1) {
+    if (listenmaxfd == INVALID_SOCKET) {
 	/* Help, no sockets were made, better log something and exit */
 	ap_log_error(APLOG_MARK, APLOG_CRIT|APLOG_NOERRNO, NULL,
 		    "No sockets were created for listening");
@@ -1266,12 +1260,12 @@ static int create_process(ap_context_t *p, HANDLE *handles, HANDLE *events, int 
          * for the target process then send the WSAPROTOCOL_INFO 
          * (returned by dup socket) to the child */
         for (lr = ap_listeners; lr; lr = lr->next) {
-            int native_socket;
+            int nsd;
             lpWSAProtocolInfo = ap_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
             ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, server_conf,
                          "Parent: Duplicating socket %d and sending it to child process %d", lr->sd, pi.dwProcessId);
-            ap_get_os_sock(lr->sd,&native_socket);
-            if (WSADuplicateSocket(native_socket, 
+            ap_get_os_sock(lr->sd,&nsd);
+            if (WSADuplicateSocket(nsd, 
                                    pi.dwProcessId,
                                    lpWSAProtocolInfo) == SOCKET_ERROR) {
                 ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
