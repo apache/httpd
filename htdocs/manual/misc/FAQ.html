@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.34 $ ($Date: 1997/04/21 22:48:05 $)
+$Revision: 1.35 $ ($Date: 1997/04/22 02:52:45 $)
 </P>
 <P>
 If you are reading a text-only version of this FAQ, you may find numbers
@@ -62,6 +62,8 @@ do not appear, and are not needed, for the hypertext version.
    </LI>
    <LI><A HREF="#where">Where can I get Apache?</A>
    </LI>
+   <LI><A HREF="#linuxiovec">When compiling under Linux it complains
+   about redefinition of `struct iovec'.</A>
   </OL>
  </LI>
  <LI><STRONG>Technical Questions</STRONG>
@@ -806,6 +808,20 @@ do not appear, and are not needed, for the hypertext version.
   directive (probably in <SAMP>conf/httpd.conf</SAMP>) needs to name a
   group that actually exists in the <SAMP>/etc/group</SAMP> file (or
   your system's equivalent).
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="linuxiovec">
+	<STRONG>When compiling under Linux it complains about redefinition 
+		of `struct iovec'.</STRONG>
+     </A>
+  <P>
+  This is a conflict between your C library includes and your kernel
+  includes.  You need to make sure that the versions of both are matched
+  properly.  There are two workarounds.  One is to remove the definition
+  of struct iovec from your C library includes.  Another is to add
+  <code>-DNO_WRITEV</code> to the <code>EXTRA_CFLAGS</code> line in
+  your <code>Configuration</code> and reconfigure/rebuild.
   </P>
   <HR>
  </LI>
