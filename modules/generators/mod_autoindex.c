@@ -1000,6 +1000,7 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
     apr_table_setn(hdrs, "Accept", "text/html, text/plain");
     apr_table_unset(hdrs, "Accept-Encoding");
 
+
     if ((header_fname != NULL) && r->args) {
         header_fname = apr_pstrcat(r->pool, header_fname, "?", r->args, NULL);
     }
@@ -1017,13 +1018,30 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
         if (rr->content_type != NULL) {
             if (!strcasecmp(ap_field_noparam(r->pool, rr->content_type),
                             "text/html")) {
-                /* Hope everything will work... */
+                ap_filter_t *f;
+               /* Hope everything will work... */
                 emit_amble = 0;
                 emit_H1 = 0;
 
                 if (! suppress_amble) {
                     emit_preamble(r, title);
                 }
+                /* This is a hack, but I can't find any better way to do this.
+                 * The problem is that we have already created the sub-request,
+                 * but we just inserted the OLD_WRITE filter, and the 
+                 * sub-request needs to pass its data through the OLD_WRITE
+                 * filter, or things go horribly wrong (missing data, data in
+                 * the wrong order, etc).  To fix it, if you create a 
+                 * sub-request and then insert the OLD_WRITE filter before you
+                 * run the request, you need to make sure that the sub-request
+                 * data goes through the OLD_WRITE filter.  Just steal this 
+                 * code.  The long-term solution is to remove the ap_r*
+                 * functions.
+                 */
+                for (f=rr->output_filters; 
+                     f->frec != ap_subreq_core_filter_handle; f = f->next);
+                f->next = r->output_filters; 
+
                 /*
                  * If there's a problem running the subrequest, display the
                  * preamble if we didn't do it before -- the header file
@@ -1111,6 +1129,12 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
         if (rr->content_type != NULL) {
             if (!strcasecmp(ap_field_noparam(r->pool, rr->content_type),
                             "text/html")) {
+                ap_filter_t *f;
+                for (f=rr->output_filters; 
+                     f->frec != ap_subreq_core_filter_handle; f = f->next);
+                f->next = r->output_filters; 
+
+
                 if (ap_run_sub_req(rr) == OK) {
                     /* worked... */
                     suppress_sig = 1;
