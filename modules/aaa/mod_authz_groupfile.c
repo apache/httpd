@@ -86,7 +86,6 @@
  */
 
 #include "apr_strings.h"
-#include "apr_md5.h"            /* for apr_password_validate */
 
 #include "ap_config.h"
 #include "httpd.h"
@@ -186,7 +185,7 @@ static int check_user_access(request_rec *r)
                                                       &authz_groupfile_module);
     char *user = r->user;
     int m = r->method_number;
-    int method_restricted = 0;
+    int required_group = 0;
     register int x,has_entries;
     const char *t, *w;
     apr_table_t *grpstatus;
@@ -220,31 +219,29 @@ static int check_user_access(request_rec *r)
         if (!(reqs[x].method_mask & (AP_METHOD_BIT << m))) {
             continue;
         }
-        method_restricted |= 1;
 
         t = reqs[x].requirement;
         w = ap_getword_white(r->pool, &t);
 
         if (!strcmp(w, "group")) {
-            method_restricted |= 2;
-             if (has_entries) {
+            required_group = 1;
+
+            if (!has_entries) {
+                /* we will never match, so exit immediately */
+                break;
+            }
+
             while (t[0]) {
                 w = ap_getword_conf(r->pool, &t);
                 if (apr_table_get(grpstatus, w)) {
                     return OK;
                 }
             }
-         }
         }
     }
 
-    /* No applicable requires for this method seen at all */
-    if (method_restricted == 0) {
-        return DECLINED; /* XXX change from legacy */
-    }
-
     /* No applicable "requires group" for this method seen */
-    if ((method_restricted & 2) == 0) {
+    if (!required_group) {
         return DECLINED;
     }
 
@@ -256,7 +253,7 @@ static int check_user_access(request_rec *r)
                   "access to %s failed, reason: user %s not part of the "
                   "'require'ed group(s).", r->uri, user);
         
-    ap_note_basic_auth_failure(r);
+    ap_note_auth_failure(r);
     return HTTP_UNAUTHORIZED;
 }
 
