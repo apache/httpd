@@ -36,7 +36,7 @@ dist.tar:
 
 # Work around broken compilers
 http_bprintf.o: http_bprintf.c
-	$(CC) -c $(CFLAGS) $(AUX_CFLAGS) $(BROKEN_BPRINTF_FLAGS) $<
+	$(CC) -c $(CFLAGS) $(AUX_CFLAGS) $(BROKEN_BPRINTF_FLAGS) http_bprintf.c
 
 #Dependencies
 #Core code
