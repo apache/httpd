@@ -99,6 +99,7 @@ Committed Code Changes:
     * Ralf's additional manual pages for the support programs
     * Ben Hyde's Configure check for unknown command switch
     * Martin's fix for src/helpers/fp2rp
+    * Ralf's reanimation of an undocumented directive: ProxyReceiveBufferSize
 
 Available Patches:
 

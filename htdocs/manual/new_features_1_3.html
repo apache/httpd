@@ -281,8 +281,8 @@ Allows additional information to be listed along with a specified module.
     <LI>The critical path for static requests has fewer system calls.  This
 	generally helps all requests.  (45 syscalls for a static request
 	in 1.2 versus 22 in 1.3 in a well tuned configuration).
-    <LI><A HREF="mod/mod_proxy.html#receivebuffersize"
-        ><SAMP>ReceiveBufferSize</SAMP></A>
+    <LI><A HREF="mod/mod_proxy.html#proxyreceivebuffersize"
+        ><SAMP>ProxyReceiveBufferSize</SAMP></A>
 	directive gives <CODE>mod_proxy</CODE>'s outgoing connections
 	larger network buffers, for increased throughput.
     <LI>The low level I/O routines use <CODE>writev</CODE> (where available)

@@ -253,7 +253,7 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 		       (const char *) &conf->recv_buffer_size, sizeof(int))
 	    == -1) {
 	    proxy_log_uerror("setsockopt", "(SO_RCVBUF)",
-			     "Failed to set RecvBufferSize, using default",
+			     "Failed to set ReceiveBufferSize, using default",
 			     r->server);
 	}
     }

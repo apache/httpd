@@ -1,5 +1,11 @@
 Changes with Apache 1.3b6
 
+  *) Reanimated the (still undocumented) proxy receive buffer size directive:
+     Renamed from ReceiveBufferSize to ProxyReceiveBufferSize because the old
+     name was really too generic, added documentation for this directive to
+     the mod_proxy.html and corrected the hyperlink to it in the
+     new_features_1.3.html document.  [Ralf S. Engelschall, PR#1348]
+
   *) Fix a bug in the src/helpers/fp2rp script and make it a little bit
      faster [Martin Kraemer]
   

@@ -521,7 +521,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 		       (const char *) &conf->recv_buffer_size, sizeof(int))
 	    == -1) {
 	    proxy_log_uerror("setsockopt", "(SO_RCVBUF)",
-			     "Failed to set RecvBufferSize, using default",
+			     "Failed to set ProxyReceiveBufferSize, using default",
 			     r->server);
 	}
     }
@@ -720,7 +720,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	if (setsockopt(dsock, SOL_SOCKET, SO_RCVBUF,
 	       (const char *) &conf->recv_buffer_size, sizeof(int)) == -1) {
 	    proxy_log_uerror("setsockopt", "(SO_RCVBUF)",
-		  "Failed to set RecvBufferSize, using default", r->server);
+		  "Failed to set ProxyReceiveBufferSize, using default", r->server);
 	}
     }
 

@@ -728,7 +728,7 @@ static const char *
     get_module_config(parms->server->module_config, &proxy_module);
     int s = atoi(arg);
     if (s < 512 && s != 0) {
-	return "ReceiveBufferSize must be >= 512 bytes, or 0 for system default.";
+	return "ProxyReceiveBufferSize must be >= 512 bytes, or 0 for system default.";
     }
 
     psf->recv_buffer_size = s;
@@ -752,7 +752,9 @@ static const command_rec proxy_cmds[] =
     {"ProxyPassReverse", add_pass_reverse, NULL, RSRC_CONF, TAKE2,
      "a virtual path and a URL for reverse proxy behaviour"},
     {"ProxyBlock", set_proxy_exclude, NULL, RSRC_CONF, ITERATE,
-   "A list of names, hosts or domains to which the proxy will not connect"},
+     "A list of names, hosts or domains to which the proxy will not connect"},
+    {"ProxyReceiveBufferSize", set_recv_buffer_size, NULL, RSRC_CONF, TAKE1,
+     "Receive buffer size for outgoing HTTP and FTP connections in bytes"},
     {"NoProxy", set_proxy_dirconn, NULL, RSRC_CONF, ITERATE,
      "A list of domains, hosts, or subnets to which the proxy will connect directly"},
     {"ProxyDomain", set_proxy_domain, NULL, RSRC_CONF, TAKE1,
@@ -774,9 +776,7 @@ static const command_rec proxy_cmds[] =
     {"CacheDirLength", set_cache_dirlength, NULL, RSRC_CONF, TAKE1,
      "The number of characters in subdirectory names"},
     {"NoCache", set_cache_exclude, NULL, RSRC_CONF, ITERATE,
-   "A list of names, hosts or domains for which caching is *not* provided"},
-    {"ReceiveBufferSize", set_recv_buffer_size, NULL, RSRC_CONF, TAKE1,
-     "Receive buffer size in bytes"},
+     "A list of names, hosts or domains for which caching is *not* provided"},
     {NULL}
 };
 
