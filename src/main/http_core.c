@@ -418,6 +418,8 @@ void ap_core_reorder_directories(pool *p, server_rec *s)
     qsort(sortbin, nelts, sizeof(*sortbin), reorder_sorter);
 
     /* and now build a new array */
+    /* XXX: uh I don't see why we can't reuse the old array, what
+     * was I thinking? -djg */
     sec = ap_make_array(p, nelts, sizeof(void *));
     for (i = 0; i < nelts; ++i) {
 	*(void **)ap_push_array(sec) = sortbin[i].elt;
