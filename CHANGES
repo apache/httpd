@@ -1,4 +1,7 @@
 Changes with Apache 2.0.36
+  *) Win32: Fix problem that caused rapid performance degradation
+     when number of connecting clients exceeded ThreadsPerChild.
+     [Bill Stoddard]
 
   *) Fixed a segfault parsing large SSIs on non-mmap systems.
      [Brian Havard]

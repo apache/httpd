@@ -921,8 +921,9 @@ static void winnt_accept(void *listen_socket)
         if (!context) {
             /* Hopefully whatever is preventing us from getting a 
              * completion context is a temporary resource constraint.
+             * Yield the rest of our time slice.
              */
-            Sleep(750);
+            Sleep(0);
             continue;
         }
 
@@ -931,11 +932,11 @@ static void winnt_accept(void *listen_socket)
         if (context->accept_socket == INVALID_SOCKET) {
             context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
             if (context->accept_socket == INVALID_SOCKET) {
-                /* Hopefully another temporary condition. Be graceful. */
+                /* Another temporary condition? */
                 ap_log_error(APLOG_MARK,APLOG_WARNING, apr_get_netos_error(), ap_server_conf,
                              "winnt_accept: Failed to allocate an accept socket. "
                              "Temporary resource constraint? Try again.");
-                Sleep(500);
+                Sleep(100);
                 goto again;
             }
         }
@@ -971,7 +972,7 @@ static void winnt_accept(void *listen_socket)
                              "winnt_accept: AcceptEx failed. Attempting to recover.");
                 closesocket(context->accept_socket);
                 context->accept_socket = INVALID_SOCKET;
-                Sleep(500);
+                Sleep(100);
                 goto again;
             }
 
