@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Add mod_dav_lock - a generic subset of the DAV locking implementation.
+     [Justin Erenkrantz]
+
   *) Replace some of the mutex locking in the worker MPM with
      atomic operations for higher concurrency.  [Brian Pane]
 
