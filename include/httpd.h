@@ -786,6 +786,8 @@ struct request_rec {
     char *uri;
     /** The filename on disk that this response corresponds to */
     char *filename;
+    /** The true filename, we canonicalize if it differs from r->filename */
+    char *canonical_filename;
     /** The path_info for this request if there is any. */
     char *path_info;
     /** QUERY_ARGS, if any */
