@@ -221,6 +221,10 @@ the child processes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.htm
     disk (using file-based shared memory). Specifying this directive causes
     Apache to always create the file on the disk.</p>
 
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+    ScoreBoardFile /var/run/apache_status
+    </code></td></tr></table></blockquote>
+
     <p>File-based shared memory is useful for third-party applications
     that require direct access to the scoreboard.</p>
 

@@ -395,6 +395,10 @@ the child processes</description>
     disk (using file-based shared memory). Specifying this directive causes
     Apache to always create the file on the disk.</p>
 
+    <example><title>Example</title>
+    ScoreBoardFile /var/run/apache_status
+    </example>
+
     <p>File-based shared memory is useful for third-party applications
     that require direct access to the scoreboard.</p>
 
