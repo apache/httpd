@@ -1492,6 +1492,7 @@ static int fsmagic(request_rec *r, const char *fn, struct stat *sb)
 	 */
 	(void) magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
 	return DONE;
+#ifdef S_IFBLK
     case S_IFBLK:
 	/*
 	 * (void) magic_rsl_printf(r,"block special (%d/%d)",
@@ -1500,6 +1501,7 @@ static int fsmagic(request_rec *r, const char *fn, struct stat *sb)
 	(void) magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
 	return DONE;
 	/* TODO add code to handle V7 MUX and Blit MUX files */
+#endif
 #ifdef    S_IFIFO
     case S_IFIFO:
 	/*

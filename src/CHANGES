@@ -1,4 +1,7 @@
 Changes with Apache 1.3b4
+  
+  *) Fix mod_mime_magic under OS/2, no support for block devices.
+     [Brian Havard]
 
   *) Fix memory corruption caused by allocating auth usernames in the
      wrong pool.  [Dean Gaudet] PR#1500
