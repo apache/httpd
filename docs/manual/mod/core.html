@@ -1101,12 +1101,22 @@ See also <A HREF="#minspareservers">MinSpareServers</A> and
 <strong>Context:</strong> server config<br>
 <strong>Status:</strong> core<p>
 
-The TimeOut directive sets the maximum time that the server will wait
-for the receipt of a request and the completion of a request, in seconds.
-So if it takes more than TimeOut seconds for a client to send a request or
-receive a response, the server will break off the connection. Thus TimeOut
-limits the maximum a transfer can take; for large files, and slow networks
-transfer times can be large.
+The TimeOut directive currently defines the amount of time Apache will
+wait for three things:
+
+<OL>
+  <LI>The total amount of time it takes to receive a GET request.
+  <LI>The amount of time between receipt of TCP packets on a POST or
+      PUT request.
+  <LI>The amount of time between ACKs on transmissions of TCP packets 
+      in responses.
+</OL>
+
+We plan on making these separately configurable at some point down the
+road.  1200 is very generous - you may consider turning it down to
+something smaller if you find the server getting swamped by
+half-completed connections from buggy browsers.
+
 <p><hr>
 
 <A name="user"><h2>User directive</h2></A>
