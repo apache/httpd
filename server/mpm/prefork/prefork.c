@@ -399,7 +399,7 @@ static void restart(int sig)
     }
     restart_pending = 1;
     if ((is_graceful = (sig == SIGWINCH))) {
-        apr_kill_cleanup(pconf, NULL, ap_cleanup_shared_mem);
+        apr_kill_cleanup(pconf, NULL, ap_cleanup_scoreboard);
     }
 }
 
