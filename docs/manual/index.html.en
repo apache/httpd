@@ -1,180 +1,208 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<title>Apache HTTP Server 2.0 Documentation</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/" shape="rect">Modules</a> | <a href="./mod/directives.html" shape="rect">Directives</a> | <a href="./faq/" shape="rect">FAQ</a> | <a href="./glossary.html" shape="rect">Glossary</a> | <a href="./sitemap.html" shape="rect">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./" shape="rect"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/" shape="rect">Apache</a> &gt; <a href="http://httpd.apache.org/" shape="rect">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/" shape="rect">Documentation</a> &gt; <a href="./" shape="rect">Version 2.0</a></div>
 
-<div id="page-content"><div id="preamble">
-<h1>Apache HTTP Server 2.0 Documentation</h1>
+<title>Apache HTTP Server Version 2.0 Documentation</title><link
+href="./style/css/manual.css" rel="stylesheet" media="all"
+type="text/css" title="Main stylesheet" />
+<style type="text/css" media="all">
+<!--
+/* undo move content left */
+div#page-content {
+    margin-right: 2em;
+    padding-right: 0px;
+    margin-left: 2em;
+}
+
+th {
+    background-color: #e5ecf3;
+}
+-->
+</style>
+
+<link
+href="./images/favicon.ico" rel="shortcut icon" /></head><body
+id="manual-page"><div id="page-header"><p class="menu"><a
+href="./mod/">Modules</a> | <a
+href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a>
+| <a href="./glossary.html">Glossary</a> | <a
+href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP
+Server Version 2.0</p><img alt="" src="./images/feather.gif"
+/></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-"
+src="./images/left.gif" /></a></div><div id="path"><a
+href="http://www.apache.org/">Apache</a> &gt; <a
+href="http://httpd.apache.org/">HTTP Server</a> &gt; <a
+href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a
+href="./">Version 2.0</a></div>
+
+<div id="page-content">
+<h1>Apache HTTP Server Version 2.0 Documentation</h1>
 
 
 
-            <form method="post" action="http://search.apache.org/" enctype="application/x-www-form-urlencoded">
-              <input type="hidden" name="what" value="httpd.apache.org" /> <input type="hidden" name="results" value="20" /> <input type="hidden" name="version" value="2" /> <input type="text" name="keyword" size="20" /> <input type="submit" value="Search" />
-            </form>
+<div align="center"><form method="post" action="http://search.apache.org/">
+              <input type="hidden" name="what"
+              value="httpd.apache.org" /> <input type="hidden"
+              name="results" value="20" /> <input type="hidden"
+              name="version" value="2" /> <input type="text"
+              name="keyword" size="20" /> <input type="submit"
+              value="Search" />
+            </form></div>
 
 
-<table>
-<tr><td rowspan="1" colspan="1">
+<table style="border: 0">
+<tr><td style="width: 33%">
 
-<table>
+<table style="width: 100%">
 <tr>
-<th rowspan="1" colspan="1">Release Notes</th>
+<th>Release Notes</th>
 </tr>
-<tr>
-<td rowspan="1" colspan="1"><ul>
-<li><a href="new_features_2_0.html" shape="rect">New Features in Version 2.0</a></li>
+<tr><td>
+<a href="new_features_2_0.html">New Features in Version 2.0</a></td></tr>
               
-<li><a href="upgrading.html" shape="rect">Upgrading to Version
-                2.0</a> </li>
+<tr><td><a href="upgrading.html">Upgrading to Version
+                2.0</a> </td></tr>
               
-                <li><a href="LICENSE" shape="rect">Apache License</a> </li>
-</ul></td>
+<tr><td><a href="LICENSE">Apache License</a> </td>
+
 </tr>
+<tr><td>&nbsp;</td></tr>
 <tr>
-<th rowspan="1" colspan="1">Reference Manual</th>
-</tr>
-<tr>
-<td rowspan="1" colspan="1"><ul>
-                <li><a href="install.html" shape="rect">Compiling and
-                Installing</a> </li>
-              
-                <li><a href="invoking.html" shape="rect">Starting</a> </li>
-              
-                <li><a href="stopping.html" shape="rect">Stopping or
-                Restarting</a> </li>
-              
-                <li><a href="mod/directives.html" shape="rect">Run-time
-                Configuration Directives</a> </li>
-              
-                <li><a href="mod/" shape="rect">Modules</a> </li>
-              
-                <li><a href="mpm.html" shape="rect">Multi-Processing Modules
-                (MPMs)</a> </li>
-              
-                <li><a href="filter.html" shape="rect">Filters</a> </li>
-              
-                <li><a href="handler.html" shape="rect">Handlers</a> </li>
-              
-                <li><a href="programs/" shape="rect">Server and Supporting
-                Programs</a> </li>
-              
-                <li><a href="glossary.html" shape="rect">Glossary</a> </li>
-</ul></td>
+<th>Reference Manual</th>
 </tr>
 
+                <tr><td><a href="install.html">Compiling and
+                Installing</a> </td></tr>
+              
+                <tr><td><a href="invoking.html">Starting</a> </td></tr>
+              
+                <tr><td><a href="stopping.html">Stopping or
+                Restarting</a> </td></tr>
+              
+                <tr><td><a href="mod/directives.html">Run-time
+                Configuration Directives</a> </td></tr>
+              
+                <tr><td><a href="mod/">Modules</a> </td></tr>
+              
+                <tr><td><a href="mpm.html">Multi-Processing Modules
+                (MPMs)</a> </td></tr>
+              
+                <tr><td><a href="filter.html">Filters</a> </td></tr>
+              
+                <tr><td><a href="handler.html">Handlers</a> </td></tr>
+              
+                <tr><td><a href="programs/">Server and Supporting
+                Programs</a> </td></tr>
+              
+                <tr><td><a href="glossary.html">Glossary</a> </td></tr>
 </table>
 </td>
 
-<td rowspan="1" colspan="1">
-<table>
+<td style="width: 33%">
+<table style="width: 100%">
 <tr>
-<th rowspan="1" colspan="1">Users' Guide</th>
+<th>Users' Guide</th>
 </tr>
-<tr>
               
-<td rowspan="1" colspan="1"><ul>
+                <tr><td><a href="configuring.html">Configuration
+                Files</a> </td></tr>
               
-                <li><a href="configuring.html" shape="rect">Configuration
-                Files</a> </li>
+                <tr><td><a href="content-negotiation.html">Content
+                negotiation</a> </td></tr>
               
-                <li><a href="content-negotiation.html" shape="rect">Content
-                negotiation</a> </li>
+                <tr><td><a href="dso.html">Dynamic Shared 
+                Objects (DSO)</a> </td></tr>
               
-                <li><a href="dso.html" shape="rect">Dynamic Shared 
-                Objects (DSO)</a> </li>
-              
-                <li><a href="env.html" shape="rect">Environment Variables</a>
-                </li>
+                <tr><td><a href="env.html">Environment Variables</a>
+                </td></tr>
               
               
-                <li><a href="logs.html" shape="rect">Log Files</a> </li>
+                <tr><td><a href="logs.html">Log Files</a> </td></tr>
               
-                <li><a href="urlmapping.html" shape="rect">Mapping URLs to the
-                Filesystem</a> </li>
+                <tr><td><a href="urlmapping.html">Mapping URLs to the
+                Filesystem</a> </td></tr>
               
-                <li><a href="misc/perf-tuning.html" shape="rect">Performance 
-                hints</a> </li>
+                <tr><td><a href="misc/perf-tuning.html">Performance 
+                hints</a> </td></tr>
               
-                <li><a href="misc/security_tips.html" shape="rect">Security
-                tips</a> </li>
+                <tr><td><a href="misc/security_tips.html">Security
+                tips</a> </td></tr>
               
-                <li><a href="server-wide.html" shape="rect">Server-Wide
-                Configuration</a> </li>
+                <tr><td><a href="server-wide.html">Server-Wide
+                Configuration</a> </td></tr>
               
-                <li><a href="ssl/" shape="rect">SSL/TLS Encryption</a></li>
+                <tr><td><a href="ssl/">SSL/TLS Encryption</a></td></tr>
               
-                <li><a href="suexec.html" shape="rect">Suexec Execution
-                for CGI</a> </li>
+                <tr><td><a href="suexec.html">Suexec Execution
+                for CGI</a> </td></tr>
               
-                <li><a href="misc/rewriteguide.html" shape="rect">URL Rewriting
-                Guide</a> </li>
+                <tr><td><a href="misc/rewriteguide.html">URL Rewriting
+                Guide</a> </td></tr>
               
-                <li><a href="vhosts/" shape="rect">Virtual Hosts</a> </li>
-</ul></td>
-</tr>
+                <tr><td><a href="vhosts/">Virtual Hosts</a> </td></tr>
 
-<tr>
-<th rowspan="1" colspan="1">How-To / Tutorials</th>
-</tr>
-<tr>
-              
-<td rowspan="1" colspan="1"><ul>
-                <li><a href="howto/auth.html" shape="rect">Authentication,
-                Authorization, and Access Control</a></li>
-              
-                <li><a href="howto/cgi.html" shape="rect">CGI: Dynamic 
-                Content</a> </li>
-
-                <li><a href="howto/htaccess.html" shape="rect"><code>.htaccess</code> files</a>
-                </li>
-
-                <li><a href="howto/ssi.html" shape="rect">Server Side
-                Includes (SSI)</a> </li>
-              
-                <li><a href="howto/public_html.html" shape="rect">User web
-                directories (<code>public_html</code>)</a> </li>
-              
-</ul></td>
-</tr></table>
+</table>
 </td>
-<td rowspan="1" colspan="1">
-<table>
+<td style="width: 33%">
+<table style="width: 100$">
 <tr>
-<th rowspan="1" colspan="1">Platform Specific Notes</th>
+<th>How-To / Tutorials</th>
 </tr>
+
+                <tr><td><a href="howto/auth.html">Authentication,
+                Authorization, and Access Control</a></td></tr>
+              
+                <tr><td><a href="howto/cgi.html">CGI: Dynamic 
+                Content</a> </td></tr>
+
+                <tr><td><a
+                href="howto/htaccess.html"><code>.htaccess</code> files</a>
+                </td></tr>
+
+                <tr><td><a href="howto/ssi.html">Server Side
+                Includes (SSI)</a> </td></tr>
+              
+                <tr><td><a href="howto/public_html.html">User web
+                directories (<code>public_html</code>)</a> </td></tr>
+              
+
+<tr><td>&nbsp;</td></tr>
 <tr>
-
-<td rowspan="1" colspan="1"><ul>
-                <li><a href="platform/windows.html" shape="rect">Microsoft
-                Windows</a> </li>
-
-                <li><a href="platform/netware.html" shape="rect">Novell NetWare
-                </a> </li>
-</ul></td>
+<th>Platform Specific Notes</th>
 </tr>
-<tr>
-<th rowspan="1" colspan="1">Other Topics</th>
-</tr>
-<tr>
+                <tr><td><a href="platform/windows.html">Microsoft
+                Windows</a> </td></tr>
 
-<td rowspan="1" colspan="1"><ul>              
-                <li><a href="faq/" shape="rect">Frequently Asked Questions</a>
-                </li>
+                <tr><td><a href="platform/netware.html">Novell NetWare
+                </a> </td></tr>
+
+<tr><td>&nbsp;</td></tr>
+<tr>
+<th>Other Topics</th>
+</tr>
+
+                <tr><td><a href="faq/">Frequently Asked Questions</a>
+                </td></tr>
               
-                <li><a href="sitemap.html" shape="rect">SiteMap</a>
-                </li>
+                <tr><td><a href="sitemap.html">SiteMap</a>
+                </td></tr>
               
-                <li><a href="misc/tutorials.html" shape="rect">Tutorials</a>
-                </li>
+                <tr><td><a href="misc/tutorials.html">Tutorials</a>
+                </td></tr>
               
-                <li><a href="developer/" shape="rect">Documentation for
-                Developers</a> </li>
+                <tr><td><a href="developer/">Documentation for
+                Developers</a> </td></tr>
               
-                <li><a href="misc/" shape="rect">Other Notes</a> </li>
-</ul></td>
-</tr></table>
+                <tr><td><a href="misc/">Other Notes</a> </td></tr>
+</table>
 
 </td></tr></table>
 
-    
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/" shape="rect">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/" shape="rect">Modules</a> | <a href="./mod/directives.html" shape="rect">Directives</a> | <a href="./faq/" shape="rect">FAQ</a> | <a href="./glossary.html" shape="rect">Glossary</a> | <a href="./sitemap.html" shape="rect">Sitemap</a></p></div></body></html>
+</div>    
+<div id="footer"><p class="apache">Maintained by the <a
+href="http://httpd.apache.org/docs-project/">Apache HTTP Server
+Documentation Project</a></p><p class="menu"><a
+href="./mod/">Modules</a> | <a
+href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a>
+| <a href="./glossary.html">Glossary</a> | <a
+href="./sitemap.html">Sitemap</a></p></div></body></html>
