@@ -68,6 +68,10 @@ allowing any other media type as a last resort:
 Apache 1.2 supports 'server driven' content negotiation, as defined in
 the HTTP/1.1 specification. It fully supports the Accept,
 Accept-Language, Accept-Charset and Accept-Encoding request headers.
+Apache 1.3.4 also supports 'transparent' content negotiation, which is
+an experimental negotiation protocol defined in RFC 2295 and RFC 2296.
+It does not offer support for 'feature negotiation' as defined in
+these RFCs.  
 <P>
 
 A <STRONG>resource</STRONG> is a conceptual entity identified by a URI
@@ -196,6 +200,11 @@ The full list of headers recognized is:
        type only if the variant isn't too big; specifying a content
        length in the map allows the server to compare against these
        thresholds without checking the actual file.
+  <DT> <CODE>Description:</CODE>
+  <DD> A human-readable textual description of the variant.  If Apache cannot
+       find any appropriate variant to return, it will return an error 
+       response which lists all available variants instead.  Such a variant
+       list will include the human-readable variant descriptions.
 </DL>
 
 <H3>Multiviews</H3>
@@ -242,20 +251,36 @@ rating, and generally invoked; otherwise it is given an extremely low
 quality rating, which generally causes one of the other views (if any)
 to be retrieved.
 
-<H2>The Negotiation Algorithm</H2>
+<H2>The Negotiation Methods</H2>
 
 After Apache has obtained a list of the variants for a given resource,
 either from a type-map file or from the filenames in the directory, it
-applies an algorithm to decide on the 'best' variant to return, if
-any. To do this it calculates a quality value for each variant in each
-of the dimensions of variance. It is not necessary to know any of the
-details of how negotiation actually takes place in order to use Apache's
-content negotiation features. However the rest of this document
-explains in detail the algorithm used for those interested.  <P>
+invokes one of two methods to decide on the 'best' variant to
+return, if any.  It is not necessary to know any of the details of how
+negotiation actually takes place in order to use Apache's content
+negotiation features. However the rest of this document explains the
+methods used for those interested.
+<P>
 
-In some circumstances, Apache can 'fiddle' the quality factor of a
-particular dimension to achieve a better result. The ways Apache can
-fiddle quality factors is explained in more detail below.
+There are two negotiation methods:
+
+<OL> 
+
+<LI><STRONG>Server driven negotiation with the Apache
+algorithm</STRONG> is used in the normal case.  The Apache algorithm is
+explained in more detail below.  When this algorithm is used, Apache
+can sometimes 'fiddle' the quality factor of a particular dimension to
+achieve a better result. The ways Apache can fiddle quality factors is
+explained in more detail below.
+
+<LI><STRONG>Transparent content negotiation</STRONG> is used when the
+browser specifically requests this through the mechanism defined in RFC
+2295.  This negotiation method gives the browser full control over
+deciding on the 'best' variant, the result is therefore dependent on
+the specific algorithms used by the browser.  As part of the
+transparent negotiation process, the browser can ask Apache to run the
+'remote variant selection algorithm' defined in RFC 2296.  </UL>
+
 
 <H3>Dimensions of Negotiation</H3>
 
@@ -287,43 +312,47 @@ Variants can indicate a charset as a parameter of the media type.
 <H3>Apache Negotiation Algorithm</H3>
 
 <P>
-Apache uses an algorithm to select the 'best' variant (if any) to
-return to the browser. This algorithm is not configurable. It operates
-as follows:
+Apache can use the following algorithm to select the 'best' variant
+(if any) to return to the browser.  This algorithm is not
+further configurable. It operates as follows:
 
 <OL>
-<LI>
-First, for each dimension of the negotiation, the appropriate
-<EM>Accept*</EM> header field is checked and a quality assigned to each
-variant. If the <EM>Accept*</EM> header for any dimension means that this
+<LI>First, for each dimension of the negotiation, check the appropriate
+<EM>Accept*</EM> header field and assign a quality to each
+variant. If the <EM>Accept*</EM> header for any dimension implies that this
 variant is not acceptable, eliminate it. If no variants remain, go
 to step 4.
 
-<LI>Select the 'best' variant by a process of elimination. Each of
-the following tests is applied in order. Any variants not selected at
-each stage are eliminated. After each test, if only one variant
-remains, it is selected as the best match. If more than one variant
-remains, move on to the next test.
+<LI>Select the 'best' variant by a process of elimination. Each of the
+following tests is applied in order. Any variants not selected at each
+test are eliminated. After each test, if only one variant remains,
+select it as the best match and proceed to step 3. If more than one
+variant remains, move on to the next test.
 
 <OL>
 <LI>Multiply the quality factor from the Accept header with the
   quality-of-source factor for this variant's media type, and select
-  the variants with the highest value
+  the variants with the highest value.
 
-<LI>Select the variants with the highest language quality factor
+<LI>Select the variants with the highest language quality factor.
 
 <LI>Select the variants with the best language match, using either the
-  order of languages on the <CODE>LanguagePriority</CODE> directive (if
-  present),
-  else the order of languages on the Accept-Language header.
+  order of languages in the Accept-Language header (if present), or else 
+  else the order of languages in the <CODE>LanguagePriority</CODE> 
+  directive (if present).
 
 <LI>Select the variants with the highest 'level' media parameter
   (used to give the version of text/html media types).
 
-<LI>Select only variants with acceptable charset media parameters,
+<LI>Select variants with the best charset media parameters,
   as given on the Accept-Charset header line. Charset ISO-8859-1
-  is acceptable unless explicitly excluded. Variants not associated
+  is acceptable unless explicitly excluded. Variants with a
+  <CODE>text/*</CODE> media type but not explicitly associated
   with a particular charset are assumed to be in ISO-8859-1.
+
+<LI>Select those variants which have associated
+    charset media parameters that are <EM>not</EM> ISO-8859-1.
+    If there are no such variants, select all variants instead.
 
 <LI>Select the variants with the best encoding. If there are
   variants with an encoding that is acceptable to the user-agent,
@@ -332,11 +361,12 @@ remains, move on to the next test.
   If either all variants are encoded or all variants are not encoded, 
   select all variants.
 
-<LI>Select the variants with the smallest content length
+<LI>Select the variants with the smallest content length.
 
-<LI>Select the first variant of those remaining (this will be either the
-  first listed in the type-map file, or the first read from the directory)
-  and go to stage 3.
+<LI>Select the first variant of those remaining. This will be either the
+  first listed in the type-map file, or when variants are read from
+  the directory, the one whose file name comes first when sorted using
+  ASCII code order.
 
 </OL>
 
@@ -355,15 +385,15 @@ remains, move on to the next test.
 
 <H2><A NAME="better">Fiddling with Quality Values</A></H2>
 
-<P>
+<P> 
 Apache sometimes changes the quality values from what would be
-expected by a strict interpretation of the algorithm above. This is to
-get a better result from the algorithm for browsers which do not send
-full or accurate information. Some of the most popular browsers send
-Accept header information which would otherwise result in the
-selection of the wrong variant in many cases. If a browser
-sends full and correct information these fiddles will not
-be applied.
+expected by a strict interpretation of the Apache negotiation
+algorithm above. This is to get a better result from the algorithm for
+browsers which do not send full or accurate information. Some of the
+most popular browsers send Accept header information which would
+otherwise result in the selection of the wrong variant in many
+cases. If a browser sends full and correct information these fiddles
+will not be applied.
 <P>
 
 <H3>Media Types and Wildcards</H3>
@@ -435,6 +465,18 @@ always acceptable to the browser. If the request Accept-Language
 header includes either en or fr (or both) one of foo.en.html
 or foo.fr.html will be returned. If the browser does not list
 either en or fr as acceptable, foo.html will be returned instead.
+
+<H2>Extensions to Transparent Content Negotiation</H2>
+
+Apache extends the transparent content negotiation protocol (RFC 2295)
+as follows.  A new <CODE> {encoding ..}</CODE> element is used in
+variant lists to label variants which are available with a specific
+content-encoding only. The implementation of the
+RVSA/1.0 algorithm (RFC 2296) is extended to recognize encoded
+variants in the list, and to use them as candidate variants whenever
+their encodings are acceptable according to the Accept-Encoding
+request header.  The RVSA/1.0 implementation does not round computed
+quality factors to 5 decimal places before choosing the best variant.
 
 <H2>Note on hyperlinks and naming conventions</H2>
 
