@@ -832,14 +832,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
          * file may not have a uri associated with it -djg
          */
         rnew->uri = "INTERNALLY GENERATED file-relative req";
-#ifdef WIN32
-        rnew->filename = ((new_file[0] == '/'
-                           || (ap_isalpha(new_file[0])
-                               && new_file[1] == ':'
-                               && new_file[2] == '/')) ?
-#else
-        rnew->filename = ((new_file[0] == '/') ?
-#endif
+        rnew->filename = ((ap_os_is_path_absolute(new_file)) ?
                           ap_pstrdup(rnew->pool, new_file) :
                           ap_make_full_path(rnew->pool, fdir, new_file));
         rnew->per_dir_config = r->server->lookup_defaults;
