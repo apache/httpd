@@ -450,10 +450,27 @@ if ($opt_c) {
     }
 
     if ($opt_p == 1) {
-      $opt .= " ".get_vars("EXTRA_LDFLAGS")." ".get_vars("AP_LIBS");
+        my $apr_bindir = get_vars("APR_BINDIR");
+        my $apu_bindir = get_vars("APU_BINDIR");
+
+        if (! -x "$apr_bindir/apr-config") {
+            error("$apr_bindir/apr-config not found!");
+            exit(1);
+        }
+        if (! -x "$apu_bindir/apu-config") {
+            error("$apu_bindir/apu-config not found!");
+            exit(1);
+        }
+        
+        my $apr_libs=`$apr_bindir/apr-config --ldflags --link-libtool --libs`;
+        chomp($apr_libs);
+        my $apu_libs=`$apu_bindir/apu-config --ldflags --link-libtool --libs`;
+        chomp($apu_libs);
+        
+        $opt .= " ".$apu_libs." ".$apr_libs;
     }
     else {
-      $opt .= " -rpath $CFG_LIBEXECDIR -module -avoid-version";
+        $opt .= " -rpath $CFG_LIBEXECDIR -module -avoid-version";
     }
 
     push(@cmds, "$installbuilddir/libtool $ltflags --mode=link $CFG_CC -o $dso_file $opt $lo");
