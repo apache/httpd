@@ -4,7 +4,7 @@ dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 
 APACHE_MODPATH_INIT(generators)
 
-APACHE_MODULE(status, process/thread monitoring, , , most)
+APACHE_MODULE(status, process/thread monitoring, , , yes)
 APACHE_MODULE(autoindex, directory listing, , , yes)
 APACHE_MODULE(asis, as-is filetypes, , , yes)
 APACHE_MODULE(info, server information, , , most)
