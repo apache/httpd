@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
 
-<!-- English revision: 1.5 -->
+<!-- English revision: 1.6 -->
 <name>mod_suexec</name>
 <description>指定されたユーザとグループで CGI スクリプトを実行する</description>
 <status>拡張</status>
@@ -36,6 +36,12 @@
     リクエストは User ディレクティブで指定されたユーザのままで処理されます。
     このディレクティブは Apache 1.3 における VirtualHosts の中で
     User ディレクティブと Group ディレクティブを使う用法の代わりになります。</p>
+
+    <example>
+    <title>例</title>
+    SuexecUserGroup nobody nogroup
+    </example>
+
 </usage>
 
 </directivesynopsis>
