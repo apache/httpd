@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) By default, use the same CC and CPP with which APR was built.
+     The user can override with CC and CPP environment variables.
+     [Jeff Trawick]
+
   *) Fix ap_construct_url() so that it surrounds IPv6 literal address
      strings with [].  This fixes certain types of redirection.
      PR 19207.  [Jeff Trawick]
