@@ -69,6 +69,7 @@
 #include "apr_file_io.h"
 #include "apr_thread_proc.h"
 #include "apr_signal.h"
+#include "apr_thread_mutex.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
@@ -152,8 +153,8 @@ char ap_coredump_dir[MAX_STRING_LEN];
 
 static apr_file_t *pipe_of_death_in = NULL;
 static apr_file_t *pipe_of_death_out = NULL;
-static apr_lock_t *pipe_of_death_mutex;   /* insures that a child process only
-                                             consumes one character */
+/* insures that a child process only consumes one character */
+static apr_thread_mutex_t *pipe_of_death_mutex;
 
 /* *Non*-shared http_main globals... */
 
@@ -186,7 +187,7 @@ static pid_t ap_my_pid; /* Linux getpid() doesn't work except in main
 static pid_t parent_pid;
 /* Keep track of the number of worker threads currently active */
 static int worker_thread_count;
-static apr_lock_t *worker_thread_count_mutex;
+static apr_thread_mutex_t *worker_thread_count_mutex;
 
 /* Locks for accept serialization */
 static apr_lock_t *accept_mutex;
@@ -531,7 +532,7 @@ static void check_infinite_requests(void)
 /* Sets workers_may_exit if we received a character on the pipe_of_death */
 static void check_pipe_of_death(void)
 {
-    apr_lock_acquire(pipe_of_death_mutex);
+    apr_thread_mutex_lock(pipe_of_death_mutex);
     if (!workers_may_exit) {
         apr_status_t ret;
         char pipe_read_char;
@@ -548,7 +549,7 @@ static void check_pipe_of_death(void)
             signal_workers();
         }
     }
-    apr_lock_release(pipe_of_death_mutex);
+    apr_thread_mutex_unlock(pipe_of_death_mutex);
 }
 
 static void *listener_thread(apr_thread_t *thd, void * dummy)
@@ -567,9 +568,9 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
 
     free(ti);
 
-    apr_lock_acquire(worker_thread_count_mutex);
+    apr_thread_mutex_lock(worker_thread_count_mutex);
     worker_thread_count++;
-    apr_lock_release(worker_thread_count_mutex);
+    apr_thread_mutex_unlock(worker_thread_count_mutex);
 
     apr_poll_setup(&pollset, num_listensocks+1, tpool);
     for(n=0 ; n <= num_listensocks ; ++n)
@@ -724,9 +725,9 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
 
     ap_update_child_status(process_slot, thread_slot,
         (dying) ? SERVER_DEAD : SERVER_GRACEFUL, (request_rec *) NULL);
-    apr_lock_acquire(worker_thread_count_mutex);
+    apr_thread_mutex_lock(worker_thread_count_mutex);
     worker_thread_count--;
-    apr_lock_release(worker_thread_count_mutex);
+    apr_thread_mutex_unlock(worker_thread_count_mutex);
 
     apr_thread_exit(thd, APR_SUCCESS);
     return NULL;
@@ -886,10 +887,10 @@ static void child_main(int child_num_arg)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
     worker_thread_count = 0;
-    apr_lock_create(&worker_thread_count_mutex, APR_MUTEX, APR_INTRAPROCESS,
-                    NULL, pchild);
-    apr_lock_create(&pipe_of_death_mutex, APR_MUTEX, APR_INTRAPROCESS, 
-                    NULL, pchild);
+    apr_thread_mutex_create(&worker_thread_count_mutex,
+                            APR_THREAD_MUTEX_DEFAULT, pchild);
+    apr_thread_mutex_create(&pipe_of_death_mutex,
+                            APR_THREAD_MUTEX_DEFAULT, pchild);
 
     ts = (thread_starter *)apr_palloc(pchild, sizeof(*ts));
 
