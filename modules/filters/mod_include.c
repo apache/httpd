@@ -2387,11 +2387,15 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
             /* If I am inside a conditional (if, elif, else) that is false
              *   then I need to throw away anything contained in it.
              */
-            if ((!(ctx->flags & FLAG_PRINTING)) && (tmp_dptr != NULL)) {
-                apr_bucket_brigade *temp_bb = *bb;
-                *bb = apr_brigade_split(temp_bb, tmp_dptr);
-                apr_brigade_destroy(temp_bb);
-                dptr = APR_BRIGADE_FIRST(*bb);
+            if ((!(ctx->flags & FLAG_PRINTING)) && (tmp_dptr != NULL) &&
+                (dptr != APR_BRIGADE_SENTINEL(*bb))) {
+                while ((dptr != APR_BRIGADE_SENTINEL(*bb)) &&
+                       (dptr != tmp_dptr)) {
+                    apr_bucket *free_bucket = dptr;
+
+                    dptr = APR_BUCKET_NEXT (dptr);
+                    apr_bucket_delete(free_bucket);
+                }
             }
 
             /* Adjust the current bucket position based on what was found... */
@@ -2471,13 +2475,17 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
                 CREATE_ERROR_BUCKET(ctx, tmp_bkt, dptr, content_head);
 
                 /* DO CLEANUP HERE!!!!! */
+                tmp_dptr = ctx->head_start_bucket;
                 if (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
                     apr_brigade_cleanup(ctx->ssi_tag_brigade);
                 }
                 else {
-                    apr_bucket_brigade *temp_bb = *bb;
-                    *bb = apr_brigade_split(temp_bb, dptr);
-                    apr_brigade_destroy(temp_bb);
+                    do {
+                        tmp_bkt  = tmp_dptr;
+                        tmp_dptr = APR_BUCKET_NEXT (tmp_dptr);
+                        apr_bucket_delete(tmp_bkt);
+                    } while ((tmp_dptr != dptr) &&
+                             (tmp_dptr != APR_BRIGADE_SENTINEL(*bb)));
                 }
 
                 return;
@@ -2535,13 +2543,17 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
             if (content_head == NULL) {
                 content_head = dptr;
             }
+            tmp_dptr = ctx->head_start_bucket;
             if (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
                 apr_brigade_cleanup(ctx->ssi_tag_brigade);
             }
             else {
-                apr_bucket_brigade *temp_bb = *bb;
-                *bb = apr_brigade_split(temp_bb, content_head);
-                apr_brigade_destroy(temp_bb);
+                do {
+                    tmp_bkt  = tmp_dptr;
+                    tmp_dptr = APR_BUCKET_NEXT (tmp_dptr);
+                    apr_bucket_delete(tmp_bkt);
+                } while ((tmp_dptr != content_head) &&
+                         (tmp_dptr != APR_BRIGADE_SENTINEL(*bb)));
             }
             if (ctx->combined_tag == tmp_buf) {
                 memset (ctx->combined_tag, '\0', ctx->tag_length);
@@ -2578,8 +2590,12 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
         /* Inside a false conditional (if, elif, else), so toss it all... */
         if ((dptr != APR_BRIGADE_SENTINEL(*bb)) &&
             (!(ctx->flags & FLAG_PRINTING))) {
-            apr_brigade_cleanup(*bb);
-            dptr = APR_BRIGADE_SENTINEL(*bb);
+            apr_bucket *free_bucket;
+            do {
+                free_bucket = dptr;
+                dptr = APR_BUCKET_NEXT (dptr);
+                apr_bucket_delete(free_bucket);
+            } while (dptr != APR_BRIGADE_SENTINEL(*bb));
         }
         else { /* Otherwise pass it along... */
             ap_pass_brigade(f->next, *bb);  /* No SSI tags in this brigade... */
