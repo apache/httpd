@@ -841,7 +841,7 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name)
         return NULL;
     }
 
-#ifdef OS2
+#ifdef FOPEN_REQUIRES_T
     file = ap_pfopen(p, name, "rt");
 #else
     file = ap_pfopen(p, name, "r");

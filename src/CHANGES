@@ -1,8 +1,9 @@
 Changes with Apache 1.3.12
 
   *) Only OS/2 requires the addition "t" flag for ap_pfopen()
-     (as therefore fopen() as well). [Ian Turner <iant@sequent.com>]
-     PR#5760
+     (as therefore fopen() as well). This is handled by the
+     FOPEN_REQUIRES_T macro. [Ian Turner <iant@sequent.com>,
+     Jim Jagielski] PR#5760
 
   *) The default charset is only added, when enabled, for those
      Content-types which require it (text/plain, text/html).
