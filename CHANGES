@@ -1,5 +1,8 @@
 Changes with Apache 2.0.38
 
+  *) Fixed a problem with 'make install' on ReliantUnix.
+     [Jean-frederic Clere <jfrederic.clere@fujitsu-siemens.com>]
+
   *) Make the default_handler catch all requests that aren't served by
      another handler.  This also gets us to return a 404 if a directory
      is requested, there is no DirectoryIndex, and mod_autoindex isn't
