@@ -32,11 +32,12 @@ vlink="#000080" alink="#ff0000">
 
 <strong>OPTIONS</strong>
      <em>logfile</em>
-          The path plus basename  of  the  logfile.   If  <strong>logfile</strong>
-          includes  any  Otherwise,  the  suffix  .nnnnnnnnnn  is
-          automatically added and is the time in  seconds.   Both
-          formats  compute  the  start time from the beginning of
-          the current period.
+          The  path plus  basename  of  the  logfile.  If <strong>logfile</strong>
+          includes any '%' characters,  it is treated as a format
+          string   for   <em>strftime</em>(<em>3</em>).   Otherwise,   the   suffix
+          .nnnnnnnnnn is automatically  added and is  the time in
+          seconds.  Both formats compute  the start time from the
+          beginning of the current period.
 
      <em>rotationtime</em>
           The rotation time in seconds.
