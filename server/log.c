@@ -265,14 +265,7 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
     replace_stderr = 1;
     if (s_main->error_log) {
         /* replace stderr with this new log */
-#ifdef WIN32
-        /* ToDo: Create ap_fflush() */
-        HANDLE hFile;
-        ap_get_os_file(&hFile, s_main->error_log);
-        FlushFileBuffers(hFile);
-#else
-        fflush(stderr);
-#endif
+        ap_flush(s_main->error_log);
         ap_open_stderr(&errfile, p);        
         if ((rc = ap_dupfile(&errfile, s_main->error_log)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rc, s_main,
