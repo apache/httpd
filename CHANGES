@@ -1,5 +1,12 @@
 Changes with Apache 2.0.29-dev
 
+  *) Fix the cmd command for mod_include.  When we are processing
+     a cmd command, we do not want to use the r->filename to set
+     the command name.  The command comes from the SSI tag.  To do this,
+     I added a variable to the function that builds the command line
+     in mod_cgi.  This allows the include_cmd function to specify
+     the command line itself. [Ryan Bloom]
+
   *) Change open_logs hook to return a value, allowing you
      to flag a error while opening logs
      [Ian Holsman, Doug MacEachern]

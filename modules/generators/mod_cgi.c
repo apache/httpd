@@ -487,19 +487,22 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
 
 
 static apr_status_t default_build_command(const char **cmd, const char ***argv,
-                                          request_rec *r, apr_pool_t *p)
+                                          request_rec *r, apr_pool_t *p,
+                                          int replace_cmd)
 {
     int numwords, x, idx;
     char *w;
     const char *args = r->args;
     const char *argv0;
 
-    /* Allow suexec's "/" check to succeed */
-    if ((argv0 = strrchr(r->filename, '/')) != NULL)
-        argv0++;
-    else
-        argv0 = r->filename;
-    *cmd = argv0;
+    if (replace_cmd) {
+        /* Allow suexec's "/" check to succeed */
+        if ((argv0 = strrchr(r->filename, '/')) != NULL)
+            argv0++;
+        else
+            argv0 = r->filename;
+        *cmd = argv0;
+    }
 
     if (!args || !args[0] || ap_strchr_c(args, '=')) {
         numwords = 1;
@@ -519,7 +522,7 @@ static apr_status_t default_build_command(const char **cmd, const char ***argv,
         numwords = APACHE_ARG_MAX - 1;	/* Truncate args to prevent overrun */
     }
     *argv = apr_palloc(p, (numwords + 2) * sizeof(char *));
-    (*argv)[0] = argv0;
+    (*argv)[0] = *cmd;
     for (x = 1, idx = 1; x < numwords; x++) {
         w = ap_getword_nulls(p, &args, '+');
         ap_unescape_url(w);
@@ -594,7 +597,7 @@ static int cgi_handler(request_rec *r)
     ap_add_common_vars(r);
 
     /* build the command line */
-    if ((rv = cgi_build_command(&command, &argv, r, p)) != APR_SUCCESS) {
+    if ((rv = cgi_build_command(&command, &argv, r, p, 1)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 		      "don't know how to spawn child process: %s", 
                       r->filename);
@@ -822,7 +825,7 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb,
     apr_bucket *b;
     apr_status_t rv;
 
-    if ((rv = cgi_build_command(&command, &argv, r, r->pool)) != APR_SUCCESS) {
+    if ((rv = cgi_build_command(&command, &argv, r, r->pool, 0)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                       "don't know how to spawn cmd child process: %s", 
                       r->filename);

@@ -73,6 +73,6 @@
  */
 APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_cgi_build_command, 
                         (const char **cmd, const char ***argv,
-                         request_rec *r, apr_pool_t *p));
+                         request_rec *r, apr_pool_t *p, int replace_cmd));
 
 #endif /* _MOD_CGI_H */
