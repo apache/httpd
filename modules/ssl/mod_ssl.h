@@ -516,7 +516,7 @@ typedef struct {
     apr_lock_t     *pMutex;
     apr_array_header_t   *aRandSeed;
     int             nScoreboardSize; /* used for builtin random seed */
-    ssl_ds_table   *tTmpKeys;
+    apr_hash_t     *tTmpKeys;
     void           *pTmpKeys[SSL_TKPIDX_MAX];
     ssl_ds_table   *tPublicCert;
     ssl_ds_table   *tPrivateKey;
@@ -740,6 +740,13 @@ void         *ssl_ds_table_push(ssl_ds_table *, char *);
 void         *ssl_ds_table_get(ssl_ds_table *, char *);
 void          ssl_ds_table_wipeout(ssl_ds_table *);
 void          ssl_ds_table_kill(ssl_ds_table *);
+
+unsigned char *ssl_asn1_table_set(apr_hash_t *table,
+                                  const void *key,
+                                  long int length);
+
+void ssl_asn1_table_unset(apr_hash_t *table,
+                          const void *key);
 
 /*  Mutex Support  */
 int          ssl_mutex_init(server_rec *, apr_pool_t *);
