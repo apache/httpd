@@ -3130,7 +3130,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
     case 't':
     case 'T':
         if (!*key || !strcasecmp(key, "ype")) {            /* type */
-            cfg->forced_mimetype = apr_pstrdup(p, val);
+            cfg->forced_mimetype = val;
             ap_str_tolower(cfg->forced_mimetype);
         }
         break;
@@ -3185,8 +3185,8 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
         }
     }
 
-    /*  arg1: the pattern
-     *  try to compile the regexp to test if is ok
+    /* arg1: the pattern
+     * try to compile the regexp to test if is ok
      */
     if (*a1 == '!') {
         newrule->flags |= RULEFLAG_NOTMATCH;
@@ -3202,11 +3202,11 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
                            a1, "'", NULL);
     }
 
-    newrule->pattern = apr_pstrdup(cmd->pool, a1);
+    newrule->pattern = a1;
     newrule->regexp  = regexp;
 
-    /*  arg2: the output string */
-    newrule->output = apr_pstrdup(cmd->pool, a2);
+    /* arg2: the output string */
+    newrule->output = a2;
 
     /* now, if the server or per-dir config holds an
      * array of RewriteCond entries, we take it for us
@@ -3215,12 +3215,12 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     if (cmd->path == NULL) {  /* is server command */
         newrule->rewriteconds   = sconf->rewriteconds;
         sconf->rewriteconds = apr_array_make(cmd->pool, 2,
-                                            sizeof(rewritecond_entry));
+                                             sizeof(rewritecond_entry));
     }
     else {                    /* is per-directory command */
         newrule->rewriteconds   = dconf->rewriteconds;
         dconf->rewriteconds = apr_array_make(cmd->pool, 2,
-                                            sizeof(rewritecond_entry));
+                                             sizeof(rewritecond_entry));
     }
 
     return NULL;
