@@ -4,7 +4,22 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Directive Quick Reference - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="directive-index"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.1</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Modules</a></div><div id="preamble"><h1>Directive Quick Reference</h1>
+      -->
+<title>Directive Quick Reference - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="directive-index">
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Modules</a></div>
+<div id="preamble"><h1>Directive Quick Reference</h1>
+
     <p>The directive quick reference shows the usage, default, status,
     and context of each Apache configuration directive.  For more
     information about each of these, see the <a href="directive-dict.html">Directive Dictionary</a>.</p>
@@ -18,20 +33,24 @@
     is allowed and the status of the directive according to the legend
     tables below.</p>
   </div>
-<div id="directive-ref"><table id="legend"><tr><td class="letters"><span><a href="#A"> A </a> | <a href="#B"> B </a> | <a href="#C"> C </a> | <a href="#D"> D </a> | <a href="#E"> E </a> | <a href="#F"> F </a> | <a href="#G"> G </a> | <a href="#H"> H </a> | <a href="#I"> I </a> | <a href="#K"> K </a> | <a href="#L"> L </a> | <a href="#M"> M </a> | <a href="#N"> N </a> | <a href="#O"> O </a> | <a href="#P"> P </a> | <a href="#R"> R </a> | <a href="#S"> S </a> | <a href="#T"> T </a> | <a href="#U"> U </a> | <a href="#V"> V </a> | <a href="#X"> X </a></span></td>
+<div id="directive-ref"><table id="legend">
+<tr><td class="letters"><span><a href="#A"> A </a> | <a href="#B"> B </a> | <a href="#C"> C </a> | <a href="#D"> D </a> | <a href="#E"> E </a> | <a href="#F"> F </a> | <a href="#G"> G </a> | <a href="#H"> H </a> | <a href="#I"> I </a> | <a href="#K"> K </a> | <a href="#L"> L </a> | <a href="#M"> M </a> | <a href="#N"> N </a> | <a href="#O"> O </a> | <a href="#P"> P </a> | <a href="#R"> R </a> | <a href="#S"> S </a> | <a href="#T"> T </a> | <a href="#U"> U </a> | <a href="#V"> V </a> | <a href="#X"> X </a></span></td>
 <td><table>
       <tr><th>s</th><td>server config</td></tr>
       <tr><th>v</th><td>virtual host</td></tr>
       <tr><th>d</th><td>directory</td></tr>
       <tr><th>h</th><td>.htaccess</td></tr>
-    </table></td><td><table>
+    </table></td>
+<td><table>
       <tr><th>C</th><td>Core</td></tr>
       <tr><th>M</th><td>MPM</td></tr>
       <tr><th>B</th><td>Base</td></tr>
       <tr><th>E</th><td>Extension</td></tr>
       <tr><th>X</th><td>Experimental</td></tr>
-    </table></td></tr></table>
-<table class="qref"><tr><td><a href="prefork.html#acceptmutex" id="A" name="A">AcceptMutex default|<var>method</var></a></td><td> default </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Method that Apache uses to serialize multiple children
+    </table></td></tr>
+</table>
+<table class="qref">
+<tr><td><a href="prefork.html#acceptmutex" id="A" name="A">AcceptMutex default|<var>method</var></a></td><td> default </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Method that Apache uses to serialize multiple children
 accepting requests on network sockets</td></tr>
 <tr class="odd"><td><a href="core.html#acceptpathinfo">AcceptPathInfo On|Off|Default</a></td><td> Default </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Resources accept trailing pathname information</td></tr>
 <tr><td><a href="core.html#accessfilename">AccessFileName <var>filename</var> [<var>filename</var>] ...</a></td><td> .htaccess </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Name of the distributed configuration file</td></tr>
@@ -651,4 +670,8 @@ a given virtual host</td></tr>
 a given virtual host</td></tr>
 <tr><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Parse SSI directives in files with the execute bit
 set</td></tr>
-</table></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+</table></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
