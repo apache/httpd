@@ -171,8 +171,8 @@ static unsigned long parse_addr(const char *w, unsigned short *ports)
     hep = gethostbyname(w);
 
     if ((!hep) || (hep->h_addrtype != AF_INET || !hep->h_addr_list[0])) {
-        /* XXX Should be echoing by r_errno the actual failure, no? 
-         * ap_log_error would be good here.
+        /* XXX Should be echoing by h_errno the actual failure, no? 
+         * ap_log_error would be good here.  Better yet - APRize.
          */
         fprintf(stderr, "Cannot resolve host name %s --- exiting!\n", w);
         exit(1);
@@ -203,7 +203,6 @@ static int find_secure_listener(seclisten_rec *lr)
     }    
     return -1;
 }
-
 
 static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *server,
                               char* key, int mutual, server_rec *sconf)
@@ -286,8 +285,10 @@ int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
 	int rcode;
 	struct tlsclientopts sWS2Opts;
 	struct nwtlsopts sNWTLSOpts;
-	unsigned long ulFlags;
+   	struct sslserveropts opts;
+    unsigned long ulFlags;
     SOCKET sock;
+    unicode_t keyFileName[60];
 
     apr_os_sock_get(&sock, csd);
 
@@ -296,7 +297,7 @@ int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
 	memset((char *)&sNWTLSOpts, 0, sizeof(struct nwtlsopts));
 
     /* turn on ssl for the socket */
-	ulFlags = SO_TLS_ENABLE;
+	ulFlags = (numcerts ? SO_TLS_ENABLE : SO_TLS_ENABLE | SO_TLS_BLIND_ACCEPT);
 	rcode = WSAIoctl(sock, SO_TLS_SET_FLAGS, &ulFlags, sizeof(unsigned long),
                      NULL, 0, NULL, NULL, NULL);
 	if (SOCKET_ERROR == rcode)
@@ -306,33 +307,30 @@ int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
 		return rcode;
 	}
 
-
     /* setup the socket for SSL */
-	sWS2Opts.wallet = NULL;    /* no client certificate */
-	sWS2Opts.walletlen = 0;
-	sWS2Opts.sidtimeout = 0;
-	sWS2Opts.sidentries = 0;
-	sWS2Opts.siddir = NULL;
-	sWS2Opts.options = &sNWTLSOpts;
+    memset (&sWS2Opts, 0, sizeof(sWS2Opts));
+    memset (&sNWTLSOpts, 0, sizeof(sNWTLSOpts));
+    sWS2Opts.options = &sNWTLSOpts;
 
-	sNWTLSOpts.walletProvider 		= WAL_PROV_DER;	//the wallet provider defined in wdefs.h
-	sNWTLSOpts.TrustedRootList 		= certarray;	//array of certs in UNICODE format
-	sNWTLSOpts.numElementsInTRList 	= numcerts;     //number of certs in TRList
-	sNWTLSOpts.keysList 			= NULL;
-	sNWTLSOpts.numElementsInKeyList = 0;
-	sNWTLSOpts.reservedforfutureuse = NULL;
-	sNWTLSOpts.reservedforfutureCRL = NULL;
-	sNWTLSOpts.reservedforfutureCRLLen = 0;
-	sNWTLSOpts.reserved1			= NULL;
-	sNWTLSOpts.reserved2			= NULL;
-	sNWTLSOpts.reserved3			= NULL;
-	
-	
+    if (numcerts) {
+    	sNWTLSOpts.walletProvider 		= WAL_PROV_DER;	//the wallet provider defined in wdefs.h
+    	sNWTLSOpts.TrustedRootList 		= certarray;	//array of certs in UNICODE format
+    	sNWTLSOpts.numElementsInTRList 	= numcerts;     //number of certs in TRList
+    }
+    else {
+        /* setup the socket for SSL */
+    	unicpy(keyFileName, L"SSL CertificateIP");
+    	sWS2Opts.wallet = keyFileName;    /* no client certificate */
+    	sWS2Opts.walletlen = unilen(keyFileName);
+    
+    	sNWTLSOpts.walletProvider 		= WAL_PROV_KMO;	//the wallet provider defined in wdefs.h
+    }
+
     /* make the IOCTL call */
-	rcode = WSAIoctl(sock, SO_TLS_SET_CLIENT, &sWS2Opts,
-	  			     sizeof(struct tlsclientopts), NULL, 0, NULL,
-				     NULL, NULL);
-	
+    rcode = WSAIoctl(sock, SO_TLS_SET_CLIENT, &sWS2Opts,
+                     sizeof(struct tlsclientopts), NULL, 0, NULL,
+                     NULL, NULL);
+
     /* make sure that it was successfull */
 	if(SOCKET_ERROR == rcode ){
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, c->base_server,
