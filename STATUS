@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/11 08:42:20 $]
+Last modified at [$Date: 2002/01/11 12:39:45 $]
 
 Release:
 
@@ -115,6 +115,8 @@ RELEASE SHOWSTOPPERS:
       needs to be called at a different time or the pre-mpm hook needs
       to be able to return an error code.
 
+    * The worker MPM on Solaris segfaults when it runs out of file
+      descriptors.  (This may affect other MPMs and/or platforms.)
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Add a Logging Directive to exclude logging based on mime type.
