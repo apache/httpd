@@ -693,7 +693,7 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
     char *tmp;
     int dir_opts = find_opts(dir_conf, r);
 
-    if(!(d=opendir(name))) return FORBIDDEN;
+    if(!(d=opendir(name))) return HTTP_FORBIDDEN;
 
     r->content_type = "text/html";
     
@@ -834,7 +834,7 @@ int handle_dir (request_rec *r)
     if (allow_opts & OPT_INDEXES) 
         return index_directory (r, d);
     else
-        return FORBIDDEN;
+        return HTTP_FORBIDDEN;
 }
 
 

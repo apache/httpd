@@ -1,5 +1,8 @@
 Changes with Apache 1.2b5
 
+  *) Properly check errno to prevent display of a directory index
+     when server receives a long enough URL to confuse stat().
+
   *) Several security enhancements to suexec wrapper. It is _highly_
      recommended that previously installed versions of the wrapper
      be replaced with this version.  [Randy Terbush, Jason Dour]

@@ -125,11 +125,11 @@ int check_symlinks (char *d, int opts)
 
     /* OK, it's a symlink.  May still be OK with OPT_SYM_OWNER */
     
-    if (!(opts & OPT_SYM_OWNER)) return FORBIDDEN;
+    if (!(opts & OPT_SYM_OWNER)) return HTTP_FORBIDDEN;
 	
-    if (stat (d, &fi) < 0) return FORBIDDEN;
+    if (stat (d, &fi) < 0) return HTTP_FORBIDDEN;
     
-    return (fi.st_uid == lfi.st_uid) ? OK : FORBIDDEN;
+    return (fi.st_uid == lfi.st_uid) ? OK : HTTP_FORBIDDEN;
 
 #endif    
 }
@@ -137,7 +137,7 @@ int check_symlinks (char *d, int opts)
 /* Dealing with the file system to get PATH_INFO
  */
 
-void get_path_info(request_rec *r)
+int get_path_info(request_rec *r)
 {
     char *cp;
     char *path = r->filename;
@@ -155,7 +155,10 @@ void get_path_info(request_rec *r)
 	/* See if the pathname ending here exists... */
       
 	*cp = '\0';
+
+	errno = 0;
 	rv = stat(path, &r->finfo);
+
 	if (cp != end) *cp = '/';
       
 	if (!rv) {
@@ -172,9 +175,29 @@ void get_path_info(request_rec *r)
 	
 	    r->path_info = pstrdup (r->pool, cp);
 	    *cp = '\0';
-	    return;
+	    return OK;
 	}
+#if defined(ENOENT)
+	else if (errno == ENOENT) {
+#else
+#error ENOENT not defined -- check the comment below this line in the source for details
+	/*
+	 * If ENOENT is not defined in one of the your OS's include
+	 * files, Apache does not know how to check to see why the
+	 * stat() of the index file failed; there are cases where
+	 * it can fail even though the file exists.  This means
+	 * that it is possible for someone to get a directory
+	 * listing of a directory even though there is an index
+	 * (eg. index.html) file in it.  If you do not have a
+	 * problem with this, delete the above #error line and
+	 * start the compile again.  If you need to do this, please
+	 * submit a bug report from http://www.apache.org/bug_report.html
+	 * letting us know that you needed to do this.  Please be
+	 * sure to include the operating system you are using.  
+	 */
+
 	else {
+#endif
 	    last_cp = cp;
 	
 	    while (--cp > path && *cp != '/')
@@ -182,8 +205,15 @@ void get_path_info(request_rec *r)
 
 	    while (cp > path && cp[-1] == '/')
 		--cp;
+	} 
+#if defined(ENOENT)
+	else {
+	    log_reason("unable to determine if index file exists (stat() returned unexpected error)", r->filename, r);
+	    return HTTP_FORBIDDEN;
 	}
+#endif
     }
+    return OK;
 }
 
 int directory_walk (request_rec *r)
@@ -269,7 +299,10 @@ int directory_walk (request_rec *r)
     no2slash (test_filename);
     num_dirs = count_dirs(test_filename);
 
-    get_path_info (r);
+    res = get_path_info (r);
+    if (res != OK) {
+	return res;
+    }
     
     if (test_filename[strlen(test_filename)-1] == '/')
 	--num_dirs;
