@@ -860,8 +860,8 @@ ServerSignature On
     # AddType allows you to add to or override the MIME configuration
     # file mime.types for specific file types.
     #
-    AddType application/x-tar .tgz
-    AddType image/x-icon .ico
+    #AddType application/x-gzip .tgz
+    #AddType image/x-icon .ico
 
     #
     # AddHandler allows you to map certain file extensions to "handlers":
