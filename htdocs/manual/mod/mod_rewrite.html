@@ -8,14 +8,14 @@
 
 <body>
 <!--#include virtual="header.html" -->
-<h1>Module mod_rewrite (Version 2.3)</h1>
 
-This module is contained in the <code>mod_rewrite.c</code> file, with
-Apache 1.2 and later.  It provides
-a rule-based rewriting engine to rewrite requested URLs on the fly. 
-<code>mod_rewrite</code> is not compiled into the server by
-default. To use <code>mod_rewrite</code> you have to enable the following
-line in the server build Configuration file:
+<h1>Module mod_rewrite (Version 3.0)</h1>
+
+This module is contained in the <code>mod_rewrite.c</code> file, with Apache
+1.2 and later.  It provides a rule-based rewriting engine to rewrite requested
+URLs on the fly.   <code>mod_rewrite</code> is not compiled into the server by
+default. To use <code>mod_rewrite</code> you have to enable the following line
+in the server build Configuration file:
 <pre>
     Module  rewrite_module   mod_rewrite.o
 </pre>
@@ -45,13 +45,13 @@ The latest version can be found on<br>
 
 <p>
 Copyright &copy; 1996,1997 <b>The Apache Group</b>, All rights reserved.<br>
-Copyright &copy; 1996 <i>Ralf S. Engelschall</i>, All rights reserved.
+Copyright &copy; 1996,1997 <i>Ralf S. Engelschall</i>, All rights reserved.
 <p>
 Written for <b>The Apache Group</b> by
 <blockquote>
     <i>Ralf S. Engelschall</i><br>
     <a href="mailto:rse@engelschall.com"><tt>rse@engelschall.com</tt></a><br>
-    <a href="http://www.engelschall.com/~rse"><tt>http://www.engelschall.com/~rse</i></a> 
+    <a href="http://www.engelschall.com/"><tt>www.engelschall.com</tt></a> 
 </blockquote>
 
 <!--%hypertext -->
@@ -114,11 +114,11 @@ strings can be one of the following:
 
 <ul>
 <li>'<strong><code>inherit</code></strong>'<br>
-	This forces the current configuration to inherit the configuration of the
-	parent. In per-virtual-server context this means that the maps,
-	conditions and rules of the main server gets inherited. In per-directory
-	context this means that conditions and rules of the parent directory's
-	<tt>.htaccess</tt> configuration gets inherited.
+    This forces the current configuration to inherit the configuration of the
+    parent. In per-virtual-server context this means that the maps,
+    conditions and rules of the main server gets inherited. In per-directory
+    context this means that conditions and rules of the parent directory's
+    <tt>.htaccess</tt> configuration gets inherited.
 <p>
 </ul>
 
@@ -151,12 +151,17 @@ To disable logging either remove or comment out the
 <tt>RewriteLog</tt> directive or use <tt>RewriteLogLevel 0</tt>!
 </td></tr>
 </table>
-<P>
 
-SECURITY: See the <A HREF="../misc/security_tips.html">security
-tips</A> document for details on why your security could be
-compromised if the directory where logfiles are stored is writable
-by anyone other than the user that starts the server. <P>
+<p>
+<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<tr><td>
+SECURITY: See the <a
+href="http://www.apache.org/docs/misc/security_tips.html">Apache Security
+Tips</a> document for details on why your security could be compromised if the
+directory where logfiles are stored is writable by anyone other than the user
+that starts the server.
+</td></tr>
+</table>
 
 <p>
 <b>Example:</b>
@@ -365,7 +370,7 @@ it is automatically added.
 When a substitution occurs for a new URL, this module has to
 re-inject the URL into the server processing. To be able to do this it needs
 to know what the corresponding URL-prefix or URL-base is. By default this
-prefix is the corresponding filepath itself. <b>But at most web-sites URLs are
+prefix is the corresponding filepath itself. <b>But at most websites URLs are
 <b>NOT</b> directly related to physical filename paths, so this assumption
 will be usually be wrong!</b> There you have to use the <tt>RewriteBase</tt>
 directive to specify the correct URL-prefix. 
@@ -373,7 +378,7 @@ directive to specify the correct URL-prefix.
 <p>
 <table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
 <tr><td>
-So, if your web-server's URLs are <b>not</b> directly
+So, if your webserver's URLs are <b>not</b> directly
 related to physical file paths, you have to use <tt>RewriteBase</tt> in every
 <tt>.htaccess</tt> files where you want to use <tt>RewriteRule</tt>
 directives.
@@ -541,10 +546,12 @@ API_VERSION<br>
 THE_REQUEST<br>
 REQUEST_URI<br>
 REQUEST_FILENAME<br>
+IS_SUBREQ<br>
 </font>
 </td>
 </tr>
 </table>
+
 
 <p>
 <table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
@@ -566,17 +573,27 @@ counterpart to REQUEST_URI (which contains the value of the <tt>uri</tt>
 field of <tt>request_rec</tt>).
 
 <p>
-<li>There is an additional format: <tt>%{ENV:variable}</tt> where
-<i>variable</i> can be any Unix environment variable. This is looked-up
-via <tt>getenv()</tt> from the Apache server process.
+<li>There is the special format: <tt>%{ENV:variable}</tt> where
+<i>variable</i> can be any environment variable. This is looked-up via
+internal Apache structures and (if not found there) via <tt>getenv()</tt> from
+the Apache server process.
 
 <p>
-<li>There is one more additional format: <tt>%{HTTP:header}</tt> where
+<li>There is the special format: <tt>%{HTTP:header}</tt> where
 <i>header</i> can be any HTTP MIME-header name. This is looked-up
 from the HTTP request. Example: <tt>%{HTTP:Proxy-Connection}</tt>
 is the value of the HTTP header ``<tt>Proxy-Connection:</tt>''.
-</ol>
 
+<p>
+<li>There is the special format: <tt>%{LA-U:url}</tt>
+for look-aheads like <tt>-U</tt>. This performans a internal sub-request to
+look-ahead for the final value of <i>url</i>.
+
+<p>
+<li>There is the special format: <tt>%{LA-F:file}</tt>
+for look-aheads like <tt>-F</tt>. This performans a internal sub-request to
+look-ahead for the final value of <i>file</i>.
+</ol>
 
 <p>
 <em>CondPattern</em> is the condition pattern, i.e. a regular expression
@@ -613,6 +630,18 @@ tests if it exists and is a regular file with size greater then zero.
 <li>'<b>-l</b>' (is symbolic <b>l</b>ink)<br>
 Treats the <i>TestString</i> as a pathname and
 tests if it exists and is a symbolic link.
+<p>
+<li>'<b>-F</b>' (is existing file via subrequest)<br>
+Checks if <i>TestString</i> is a valid file and accessible via all the
+server's currently-configured access controls for that path.  This uses an
+internal subrequest to determine the check, so use it with care because it
+decreases your servers performance!
+<p>
+<li>'<b>-U</b>' (is existing URL via subrequest)<br>
+Checks if <i>TestString</i> is a valid URL and accessible via all the server's
+currently-configured access controls for that path.  This uses an internal
+subrequest to determine the check, so use it with care because it decreases
+your servers performance!
 </ul>
 <p>
 Notice: All of these tests can also be prefixed by a not ('!') character
@@ -636,9 +665,9 @@ is a comma-separated list of the following flags:
     <em>TestString</em> and the <em>CondPattern</em>.
 <p>
 <li>'<strong><code>ornext|OR</code></strong>' (<b>or</b> next condition)<br>
-	Use this to combine rule conditions with a local OR instead of the
-	implicit AND. Typical example:
-	<p>
+    Use this to combine rule conditions with a local OR instead of the
+    implicit AND. Typical example:
+    <p>
 <blockquote><pre>
 RewriteCond %{REMOTE_HOST}  ^host1.*  [OR]
 RewriteCond %{REMOTE_HOST}  ^host2.*  [OR]
@@ -653,7 +682,7 @@ RewriteRule ...some special stuff for any of these hosts...
 <b>Example:</b>
 <blockquote>
 
-To rewrite the Home-page of a site according to the ``<tt>User-Agent:</tt>''
+To rewrite the Homepage of a site according to the ``<tt>User-Agent:</tt>''
 header of the request, you can use the following:
 
 <blockquote><pre>
@@ -805,16 +834,35 @@ as the third argument to the <tt>RewriteRule</tt> directive. <em>Flags</em> is a
 comma-separated list of the following flags:
 
 <ul>
-<li>'<strong><code>redirect|R</code></strong>' (force <a name="redirect"><b>r</b>edirect</a>)<br>
+<li>'<strong><code>redirect|R</code>[=<i>code</i>]</strong>' (force <a name="redirect"><b>r</b>edirect</a>)<br>
     Prefix <em>Substitution</em> 
-    with <code>http://thishost/</code> (which makes the new URL a URI) to
-    force a external redirection. Use it for rules which should 
-	canonicalize the URL and gives it back to the client, e.g. translate
+    with <code>http://thishost[:thisport]/</code> (which makes the new URL a URI) to
+    force a external redirection. If no <i>code</i> is given a HTTP response
+    of 302 (MOVED TEMPORARILY) is used. If you want to use other response
+    codes in the range 300-400 just specify them as a number or use
+    one of the following symbolic names: <tt>temp</tt> (default), <tt>permanent</tt>,
+    <tt>seeother</tt>.
+    Use it for rules which should 
+    canonicalize the URL and gives it back to the client, e.g. translate
     ``<code>/~</code>'' into ``<code>/u/</code>'' or always append a slash to
     <code>/u/</code><em>user</em>, etc.<br>
+    <p>
     <b>Notice:</b> When you use this flag, make sure that the
-    substitution field is a valid URL! If not, you are redirecting to an invalid
-    location!</b>
+    substitution field is a valid URL! If not, you are redirecting to an
+    invalid location!  And remember that this flag itself only prefixes the
+    URL with <code>http://thishost[:thisport]/</code>, but rewriting goes on.
+    Usually you also want to stop and do the redirection immediately.  To stop
+    the rewriting you also have to provide the 'L' flag.
+<p>
+<li>'<strong><code>forbidden|F</code></strong>' (force URL to be <b>f</b>orbidden)<br>
+    This forces the current URL to be forbidden, i.e. it immediately sends
+    back a HTTP response of 403 (FORBIDDEN). Use this flag in conjunction with
+    appropriate RewriteConds to conditionally block some URLs.
+<p>
+<li>'<strong><code>gone|G</code></strong>' (force URL to be <b>g</b>one)<br>
+    This forces the current URL to be gone, i.e. it immediately sends back a
+    HTTP response of 410 (GONE). Use this flag to mark no longer existing
+    pages as gone.
 <p>
 <li>'<strong><code>proxy|P</code></strong>' (force <b>p</b>roxy)<br>
     This flag forces the substitution part to be internally forced as a proxy
@@ -824,7 +872,13 @@ comma-separated list of the following flags:
     be handled by the Apache proxy module. If not you get an error from
     the proxy module. Use this flag to achieve a more powerful implementation
     of the <tt>mod_proxy</tt> directive <tt>ProxyPass</tt>, to map
-    some remote stuff into the name-space of the local server.
+    some remote stuff into the namespace of the local server.
+    <p>
+    Notice: <b>You really have to put <tt>ProxyRequests On</tt> into your
+    server configuration to prevent proxy requests from leading to core-dumps
+    inside the Apache kernel. If you have not compiled in the proxy module,
+    then there is no core-dump problem, because mod_rewrite checks for
+    existence of the proxy module and if lost forbids proxy URLs.  </b>
 <p>
 <li>'<strong><code>last|L</code></strong>' (<b>l</b>ast rule)<br>
     Stop the rewriting process here and
@@ -899,7 +953,6 @@ comma-separated list of the following flags:
     of different modules which contain URL-to-filename translators</b>. The
     typical example is the use of <tt>mod_alias</tt> and
     <tt>mod_rewrite</tt>..
-
 <p>
 <table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
 <tr><td>
@@ -921,6 +974,16 @@ comma-separated list of the following flags:
     a <tt>skip=N</tt> where N is the number of rules in the else-clause.
     (This is <b>not</b> the same as the 'chain|C' flag!)
 <p>
+<li>'<strong><code>env|E=</code></strong><i>VAR</i>:<i>VAL</i>' (set <b>e</b>nvironment variable)<br>
+    This forces an environment variable named <i>VAR</i> to be set to the value
+    <i>VAL</i>, where <i>VAL</i> can contain regexp backreferences <tt>$N</tt>
+    which will be expanded. You can use this flag more than once to set more
+    than one variable. The variables can be later dereferenced at a lot of
+    situations, but the usual location will be from within XSSI (via
+	<tt>&lt;!--#echo var="VAR"--&gt;</tt>) or CGI (e.g. <tt>$ENV{'VAR'}</tt>).
+	But additionally you can also dereference it in a following RewriteCond
+	pattern via <tt>%{ENV:VAR}</tt>. Use this to strip but remember
+	information from URLs. 
 </ul>
 
 <p>
@@ -1087,3 +1150,4 @@ RewriteRule  ^/([^/]+)/~([^/]+)/(.*)$   /u/${real-to-user:$2|nobody}/$3.$1
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
+<!--/%hypertext -->
