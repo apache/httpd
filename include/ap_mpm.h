@@ -126,22 +126,6 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *serv
 AP_DECLARE(int) ap_graceful_stop_signalled(void);
 
 /**
- * ap_start_shutdown() and ap_start_restart() is a function to initiate 
- * shutdown without relying on signals. 
- *
- * This should only be called from the parent process itself, since the
- * parent process will use the shutdown_pending and restart_pending variables
- * to determine whether to shutdown or restart. The child process should
- * call signal_parent() directly to tell the parent to die -- this will
- * cause neither of those variable to be set, which the parent will
- * assume means something serious is wrong (which it will be, for the
- * child to force an exit) and so do an exit anyway.
- * @deffunc void ap_start_shutdown(void)
- */
-
-AP_DECLARE(void) ap_start_shutdown(void);
-
-/**
  * Spawn a process with privileges that another module has requested
  * @param r The request_rec of the current request
  * @param newproc The resulting process handle.
