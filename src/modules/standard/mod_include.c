@@ -786,7 +786,7 @@ static int include_cmd_child(void *arg, child_info *pinfo)
     FILE *dbg = fopen("/dev/tty", "w");
 #endif
 #endif
-#ifndef WIN32
+#if !defined(WIN32) && !defined(OS2)
     char err_string[MAX_STRING_LEN];
 #endif
 
