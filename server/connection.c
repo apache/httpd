@@ -208,7 +208,7 @@ void ap_lingering_close(conn_rec *c)
         if (timeout >= MAX_SECS_TO_LINGER) break;
 
         /* figure out the new timeout */
-        timeout = (MAX_SECS_TO_LINGER - timeout) * APR_USEC_PER_SEC;
+        timeout = (int)((MAX_SECS_TO_LINGER - timeout) * APR_USEC_PER_SEC);
     }
 
     apr_close_socket(c->client_socket);
