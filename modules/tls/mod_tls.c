@@ -89,7 +89,7 @@ typedef struct tls_filter_ctx
 
 static void *create_tls_server_config(apr_pool_t *p, server_rec *s)
 {
-    tls_config_rec *tcfg = apr_pcalloc(p, sizeof *tcfg);
+    tls_config_rec *tcfg = apr_pcalloc(p, sizeof(*tcfg));
 
     tcfg->enabled = 0;
     tcfg->certificate_file = tcfg->key_file = NULL;
@@ -164,15 +164,15 @@ static apr_status_t churn_output(tls_filter_ctx *ctx)
 
         if (SSLStateMachine_write_can_extract(ctx->state_machine)) {
             n = SSLStateMachine_write_extract(ctx->state_machine, buf,
-                                              sizeof buf);
+                                              sizeof(buf));
             if (n > 0) {
-                char *buf;
+                char *pbuf;
 
                 if (!bb_out)
                     bb_out = apr_brigade_create(ctx->output_filter->c->pool);
 
-                buf = apr_pmemdup(ctx->output_filter->c->pool, buf, n);
-                b = apr_bucket_pool_create(buf, n, 
+                pbuf = apr_pmemdup(ctx->output_filter->c->pool, buf, n);
+                b = apr_bucket_pool_create(pbuf, n, 
                                            ctx->output_filter->c->pool);
                 APR_BRIGADE_INSERT_TAIL(bb_out, b);
                 done = 1;
@@ -263,16 +263,16 @@ static apr_status_t churn(tls_filter_ctx *ctx, apr_read_type_e readtype,
         /* write SSL */
         SSLStateMachine_read_inject(ctx->state_machine, data, len);
 
-        n = SSLStateMachine_read_extract(ctx->state_machine, buf, sizeof buf);
+        n = SSLStateMachine_read_extract(ctx->state_machine, buf, sizeof(buf));
         if (n > 0) {
             apr_bucket *b_out;
-            char *buf;
+            char *pbuf;
 
-            buf = apr_pmemdup(ctx->input_filter->c->pool, buf, n);
+            pbuf = apr_pmemdup(ctx->input_filter->c->pool, buf, n);
             /* XXX: should we use a heap bucket instead? Or a transient (in
              * which case we need a separate brigade for each bucket)?
              */
-            b_out = apr_bucket_pool_create(buf, n, ctx->input_filter->c->pool);
+            b_out = apr_bucket_pool_create(pbuf, n, ctx->input_filter->c->pool);
             APR_BRIGADE_INSERT_TAIL(ctx->bb_decrypted, b_out);
 
             /* Once we've read something, we can move to non-blocking mode
