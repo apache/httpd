@@ -22,8 +22,6 @@
 <a href="./es/glossary.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./ko/glossary.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
 <p>이 문서는 웹 서비스 일반에 대한, 특히 아파치와 관련된, 용어들을
 정의한다. 각 개념에 대한 자세한 정보는 링크를 참고하라.
@@ -197,8 +195,8 @@ Protocol</a> <a name="http">(HTTP)</a></dt> <dd>월드와이드웹에서
 정의한 HTTP/1.1이라는 프로토콜의 1.1 버전을 구현한다.</dd>
 
 <dt><a name="https">HTTPS</a></dt>
-<dd>월드화이드웹의 표준 암호통신 방법, HyperText Transport
-    Protocol (Secure). 사실 밑단에 <a name="ssl">SSL</a>을
+<dd>월드화이드웹의 표준 암호통신 방법, HyperText Transfer
+    Protocol (Secure). 사실 밑단에 <a href="#ssl">SSL</a>을
     사용한 HTTP이다.<br />
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
@@ -255,7 +253,7 @@ Protocol</a> <a name="http">(HTTP)</a></dt> <dd>월드와이드웹에서
 <dd>암호화하지 않은 글.</dd>
 
 <dt><a name="privatekey">개인키 (Private Key)</a></dt> <dd>받은
-자료를 해독하고 보내는 자료를 서명하기위한 <a name="publickeycryptography">공개키 암호화 (Public Key
+자료를 해독하고 보내는 자료를 서명하기위한 <a href="#publickeycryptography">공개키 암호화 (Public Key
 Cryptography)</a> 시스템의 암호키.<br />
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
@@ -267,7 +265,7 @@ Cryptography)</a> 시스템의 암호키.<br />
 응답시간을 줄일 수 있다.<br />
 참고: <a href="mod/mod_proxy.html">mod_proxy</a></dd>
 
-<dt><a name="publickey">공개키 (Public Key)</a></dt> <dd><a name="publickeycryptography">공개키 암호화 (Public Key
+<dt><a name="publickey">공개키 (Public Key)</a></dt> <dd><a href="#publickeycryptography">공개키 암호화 (Public Key
 Cryptography)</a> 시스템에서 키의 소유자에게 보내는 문구를 암호화하거나
 소유자가 만든 서명을 풀기위한 공개된 키.<br />
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>

@@ -22,10 +22,6 @@
 <a href="./es/glossary.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
 <p>Este glosario define la terminología más común
 relacionada con Apache en particular y con los servidores web en
@@ -210,7 +206,7 @@ referencia como HTTP/1.1 y definido por el <a href="http://ietf.org/rfc/rfc2616.
 
 <dt><a name="https">HTTPS</a></dt> <dd>Protocolo de transferencia de
 Hipertext (Seguro), es el mecanismo de comunicación encriptado
-estándar en World Wide Web. En realidad es HTTP sobre <a name="ssl">SSL</a>.<br /> Consulte: <a href="ssl/">Encriptado
+estándar en World Wide Web. En realidad es HTTP sobre <a href="#ssl">SSL</a>.<br /> Consulte: <a href="ssl/">Encriptado
 SSL/TLS</a></dd>
 
 <dt><a name="method">Método</a></dt> <dd>En el contexto de <a href="#http">HTTP</a>, es una acción a ejecutar sobre un recurso,
@@ -273,7 +269,7 @@ SSL/TLS</a></dd>
 <dd>Un texto no encriptado.</dd>
 
 <dt><a name="privatekey">Clave Privada</a></dt> <dd>La clave secreta
-de un <a name="publickeycryptography">sistema criptográfico de
+de un <a href="#publickeycryptography">sistema criptográfico de
 Clave Pública</a>, usada para desencriptar los mensajes entrantes
 y firmar los salientes.<br /> Consulte: <a href="ssl/">Encriptado
 SSL/TLS</a></dd>
@@ -288,7 +284,7 @@ necesita al servidor de origen, reduciendo con esto el tiempo de
 respuesta.<br /> Consulte: <a href="mod/mod_proxy.html">mod_proxy</a></dd>
 
 <dt><a name="publickey">Clave Publica</a></dt> <dd>La clave disponible
-públicamente en un <a name="publickeycryptography">sistema
+públicamente en un <a href="#publickeycryptography">sistema
 criptográfico de Clave Pública</a>, usado para encriptar
 mensajes destinados a su propietario y para desencriptar firmas hechas
 por su propietario.<br /> Consulte: <a href="ssl/">Encriptado
