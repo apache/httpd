@@ -66,27 +66,17 @@ echo >> $LOG_NAME
 echo "Making sure people can read the manual (expanding SSI's)" >> $LOG_NAME
 ( cd docs/manual ; chmod +x expand.pl ; ./expand.pl ; rm ./expand.pl ) >> $LOG_NAME
 
-# make sure generated files are newer than their sources
-echo "Making sure generated files are newer than their sources"
-echo >> $LOG_NAME
-echo "Making sure generated files are newer than their sources" >> $LOG_NAME
-touch modules/ssl/ssl_expr_parse.c
-touch modules/ssl/ssl_expr_parse.h
-touch modules/ssl/ssl_expr_scan.c
-
 # Time to roll the tarball
 echo "Rolling the tarballs"
 
 cd $START_DIR
 echo >> $LOG_NAME
 echo "Rolling the tarball" >> $LOG_NAME
-tar cvf $WORKING_DIR.tar $WORKING_DIR >> $LOG_NAME
-cp -p $WORKING_DIR.tar x$WORKING_DIR.tar
-gzip -9 $WORKING_DIR.tar
-mv $WORKING_DIR.tar.gz $WORKING_DIR-alpha.tar.gz
-mv x$WORKING_DIR.tar $WORKING_DIR.tar
-compress $WORKING_DIR.tar
-mv $WORKING_DIR.tar.Z $WORKING_DIR-alpha.tar.Z
+tar cvf $WORKING_DIR-alpha.tar $WORKING_DIR >> $LOG_NAME
+cp -p $WORKING_DIR-alpha.tar x$WORKING_DIR-alpha.tar
+gzip -9 $WORKING_DIR-alpha.tar
+mv x$WORKING_DIR-alpha.tar $WORKING_DIR-alpha.tar
+compress $WORKING_DIR-alpha.tar
 
 # Test the tarballs
 echo "Testing the tarball"
