@@ -564,11 +564,40 @@ API_EXPORT(const char *) get_remote_logname(request_rec *r)
  * commands, but most of the old srm.conf is in the the modules.
  */
 
+/* check_cmd_context():                  Forbidden in: */
+#define  NOT_IN_VIRTUALHOST     0x01U /* <Virtualhost> */
+#define  NOT_IN_LIMIT           0x02U /* <Limit> */
+#define  NOT_IN_DIR_LOC_FILE    0x04U /* <Directory>/<Location>/<Files>*/
+
+
+static const char *check_cmd_context(cmd_parms *cmd, unsigned forbidden)
+{
+    const char *gt = (cmd->cmd->name[0] == '<'
+		   && cmd->cmd->name[strlen(cmd->cmd->name)-1] != '>') ? ">" : "";
+
+    if ((forbidden & NOT_IN_VIRTUALHOST) && cmd->server->is_virtual)
+	return pstrcat(cmd->pool, cmd->cmd->name, gt,
+		       " cannot occur within <VirtualHost> section", NULL);
+
+    if ((forbidden & NOT_IN_LIMIT) && cmd->limited != -1)
+	return pstrcat(cmd->pool, cmd->cmd->name, gt,
+		       " cannot occur within <Limit> section", NULL);
+
+    if ((forbidden & NOT_IN_DIR_LOC_FILE) && cmd->path != NULL)
+	return pstrcat(cmd->pool, cmd->cmd->name, gt,
+		       " cannot occur within <Directory/Location/Files> section", NULL);
+
+    return NULL;
+}
+
 const char *set_access_name (cmd_parms *cmd, void *dummy, char *arg)
 {
     void *sconf = cmd->server->module_config;
     core_server_config *conf = get_module_config (sconf, &core_module);
-  
+
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     conf->access_name = pstrdup(cmd->pool, arg);
     return NULL;
 }
@@ -578,6 +607,9 @@ const char *set_document_root (cmd_parms *cmd, void *dummy, char *arg)
     void *sconf = cmd->server->module_config;
     core_server_config *conf = get_module_config (sconf, &core_module);
   
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     if (!is_directory (arg))
 	if (cmd->server->is_virtual)
 	    fprintf (stderr, "Warning: DocumentRoot [%s] does not exist\n", arg);
@@ -594,6 +626,9 @@ const char *set_error_document (cmd_parms *cmd, core_dir_config *conf,
     int error_number, index_number, idx500;
     char *w;
                 
+    const char *err = check_cmd_context(cmd, NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     /* 1st parameter should be a 3 digit number, which we recognize;
      * convert it into an array index
      */
@@ -632,6 +667,9 @@ const char *set_override (cmd_parms *cmd, core_dir_config *d, const char *l)
 {
     char *w;
   
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     d->override = OR_NONE;
     while(l[0]) {
         w = getword_conf (cmd->pool, &l);
@@ -736,7 +774,13 @@ const char *limit_section (cmd_parms *cmd, void *dummy, const char *arg)
     const char *limited_methods = getword(cmd->pool,&arg,'>');
     int limited = 0;
   
-    if (cmd->limited > 0) return "Can't nest <Limit> sections";
+    const char *err = check_cmd_context(cmd, NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
+    /* XXX: NB: Currently, we have no way of checking
+     * whether <Limit> sections are closed properly.
+     * (If we would add a srm_command_loop() here we might...)
+     */
     
     while(limited_methods[0]) {
         char *method = getword_conf (cmd->pool, &limited_methods);
@@ -765,18 +809,18 @@ const char *endlimit_section (cmd_parms *cmd, void *dummy, void *dummy2)
  * When a section is not closed properly when end-of-file is reached,
  * then an error message should be printed:
  */
-static const char *missing_endsection (pool *p, const char *secname, int nest)
+static const char *missing_endsection (cmd_parms *cmd, int nest)
 {
     char rply[100];
 
     if (nest < 2)
 	ap_snprintf(rply, sizeof rply, "Missing </%s> directive at end-of-file",
-		    secname);
+		    &cmd->cmd->name[1]);
     else
 	ap_snprintf(rply, sizeof rply, "%d missing </%s> directives at end-of-file",
-		    nest, secname);
+		    nest, &cmd->cmd->name[1]);
 
-    return pstrdup(p, rply);
+    return pstrdup(cmd->pool, rply);
 }
 
 /* We use this in <DirectoryMatch> and <FilesMatch>, to ensure that 
@@ -805,10 +849,10 @@ const char *dirsection (cmd_parms *cmd, void *dummy, const char *arg)
     void *new_dir_conf = create_per_dir_config (cmd->pool);
     regex_t *r = NULL;
 
-    if (endp) *endp = '\0';
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
 
-    if (cmd->path) return "<Directory> sections don't nest";
-    if (cmd->limited != -1) return "Can't have <Directory> within <Limit>";
+    if (endp) *endp = '\0';
 
     cmd->path = getword_conf (cmd->pool, &arg);
 #ifdef __EMX__
@@ -831,9 +875,9 @@ const char *dirsection (cmd_parms *cmd, void *dummy, const char *arg)
 
     errmsg = srm_command_loop (cmd, new_dir_conf);
     if (errmsg == NULL)
-	return missing_endsection(cmd->pool,
-			(cmd->info) ? "DirectoryMatch" : "Directory", 1);
-    if (errmsg != end_dir_magic) return errmsg;
+	return missing_endsection(cmd, 1);
+    else if (errmsg != end_dir_magic)
+	return errmsg;
 
     conf = (core_dir_config *)get_module_config(new_dir_conf, &core_module);
     conf->r = r;
@@ -867,11 +911,11 @@ const char *urlsection (cmd_parms *cmd, void *dummy, const char *arg)
 
     void *new_url_conf = create_per_dir_config (cmd->pool);
 
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     if (endp) *endp = '\0';
 
-    if (cmd->path) return "<Location> sections don't nest";
-    if (cmd->limited != -1) return "Can't have <Location> within <Limit>";
-    
     cmd->path = getword_conf (cmd->pool, &arg);
     cmd->override = OR_ALL|ACCESS_CONF;
 
@@ -885,9 +929,9 @@ const char *urlsection (cmd_parms *cmd, void *dummy, const char *arg)
 
     errmsg = srm_command_loop (cmd, new_url_conf);
     if (errmsg == NULL)
-	return missing_endsection(cmd->pool,
-			(cmd->info) ? "LocationMatch" : "Location", 1);
-    if (errmsg != end_url_magic) return errmsg;
+	return missing_endsection(cmd, 1);
+    else if (errmsg != end_url_magic)
+	return errmsg;
 
     conf = (core_dir_config *)get_module_config(new_url_conf, &core_module);
     conf->d = pstrdup(cmd->pool, cmd->path);	/* No mangling, please */
@@ -923,6 +967,9 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
 
     void *new_file_conf = create_per_dir_config (cmd->pool);
 
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     if (endp) *endp = '\0';
 
     if (cmd->limited != -1) return "Can't have <Files> within <Limit>";
@@ -953,9 +1000,9 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
 
     errmsg = srm_command_loop (cmd, new_file_conf);
     if (errmsg == NULL)
-	return missing_endsection(cmd->pool,
-			(cmd->info) ? "FilesMatch" : "Files", 1);
-    if (errmsg != end_file_magic) return errmsg;
+	return missing_endsection(cmd, 1);
+    else if (errmsg != end_file_magic)
+	return errmsg;
 
     conf = (core_dir_config *)get_module_config(new_file_conf, &core_module);
     conf->d = pstrdup(cmd->pool, cmd->path);
@@ -1001,7 +1048,7 @@ const char *start_ifmod (cmd_parms *cmd, void *dummy, char *arg)
 	  nest--;
     }
 
-    return (nest == 0) ? NULL : missing_endsection(cmd->pool, "IfModule", nest);
+    return (nest == 0) ? NULL : missing_endsection(cmd, nest);
 }
 
 /* httpd.conf commands... beginning with the <VirtualHost> business */
@@ -1019,6 +1066,9 @@ const char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
     const char *errmsg;
     char *endp = strrchr (arg, '>');
     pool *p = cmd->pool, *ptemp = cmd->temp_pool;
+
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
 
     if (endp) *endp = '\0';
     
@@ -1048,13 +1098,17 @@ const char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
 	process_resource_config (s, s->access_confname, p, ptemp);
     
     if (errmsg == NULL)
-	return missing_endsection(cmd->pool, "Virtualhost", 1);
-    if (errmsg == end_virthost_magic) return NULL;
+	return missing_endsection(cmd, 1);
+    else if (errmsg == end_virthost_magic)
+	return NULL;
     return errmsg;
 }
 
 const char *add_module_command (cmd_parms *cmd, void *dummy, char *arg)
 {
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     if (add_named_module (arg))
         return NULL;
     return "required module not found";
@@ -1062,6 +1116,9 @@ const char *add_module_command (cmd_parms *cmd, void *dummy, char *arg)
 
 const char *clear_module_list_command (cmd_parms *cmd, void *dummy)
 {
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     clear_module_list ();
     return NULL;
 }
@@ -1073,14 +1130,18 @@ const char *set_server_string_slot (cmd_parms *cmd, void *dummy, char *arg)
     int offset = (int)(long)cmd->info;
     char *struct_ptr = (char *)cmd->server;
     
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     *(char **)(struct_ptr + offset) = pstrdup (cmd->pool, arg);
     return NULL;
 }
 
 const char *server_type (cmd_parms *cmd, void *dummy, char *arg)
 {
-    if (cmd->server->is_virtual)
-	return "ServerType directive not allowed in <VirtualHost>";
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     if (!strcasecmp (arg, "inetd")) standalone = 0;
     else if (!strcasecmp (arg, "standalone")) standalone = 1;
     else return "ServerType must be either 'inetd' or 'standalone'";
@@ -1089,15 +1150,18 @@ const char *server_type (cmd_parms *cmd, void *dummy, char *arg)
 }
 
 const char *server_port (cmd_parms *cmd, void *dummy, char *arg) {
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     cmd->server->port = atoi (arg);
     return NULL;
 }
 
 const char *set_send_buffer_size (cmd_parms *cmd, void *dummy, char *arg) {
     int s = atoi (arg);
-    if (cmd->server->is_virtual) {
-        return "SendBufferSize directive can not be used in <VirtualHost>";
-    }
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     if (s < 512 && s != 0) {
         return "SendBufferSize must be >= 512 bytes, or 0 for system default.";
     }
@@ -1107,6 +1171,9 @@ const char *set_send_buffer_size (cmd_parms *cmd, void *dummy, char *arg) {
 
 const char *set_user (cmd_parms *cmd, void *dummy, char *arg)
 {
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     if (!cmd->server->is_virtual) {
 	user_name = pstrdup (cmd->pool, arg);
 	cmd->server->server_uid = user_id = uname2id(arg);
@@ -1140,6 +1207,9 @@ const char *set_user (cmd_parms *cmd, void *dummy, char *arg)
 
 const char *set_group (cmd_parms *cmd, void *dummy, char *arg)
 {
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     if (!cmd->server->is_virtual)
 	cmd->server->server_gid = group_id = gname2id(arg);
     else {
@@ -1156,8 +1226,9 @@ const char *set_group (cmd_parms *cmd, void *dummy, char *arg)
 }
 
 const char *set_server_root (cmd_parms *cmd, void *dummy, char *arg) {
-    if (cmd->server->is_virtual)
-	return "ServerRoot directive not allowed in <VirtualHost>";
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     if (!is_directory (arg)) return "ServerRoot must be a valid directory";
     strncpy (server_root, arg, sizeof(server_root)-1);
     server_root[sizeof(server_root)-1] = '\0';
@@ -1165,16 +1236,25 @@ const char *set_server_root (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_timeout (cmd_parms *cmd, void *dummy, char *arg) {
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     cmd->server->timeout = atoi (arg);
     return NULL;
 }
 
 const char *set_keep_alive_timeout (cmd_parms *cmd, void *dummy, char *arg) {
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     cmd->server->keep_alive_timeout = atoi (arg);
     return NULL;
 }
 
 const char *set_keep_alive (cmd_parms *cmd, void *dummy, char *arg) {
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     /* We've changed it to On/Off, but used to use numbers
      * so we accept anything but "Off" or "0" as "On"
      */
@@ -1186,11 +1266,17 @@ const char *set_keep_alive (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_keep_alive_max (cmd_parms *cmd, void *dummy, char *arg) {
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     cmd->server->keep_alive_max = atoi (arg);
     return NULL;
 }
 
 const char *set_pidfile (cmd_parms *cmd, void *dummy, char *arg) {
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     if (cmd->server->is_virtual)
 	return "PidFile directive not allowed in <VirtualHost>";
     pid_fname = pstrdup (cmd->pool, arg);
@@ -1198,26 +1284,34 @@ const char *set_pidfile (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_scoreboard (cmd_parms *cmd, void *dummy, char *arg) {
-    if (cmd->server->is_virtual)
-	return "ScoreBoardFile directive not allowed in <VirtualHost>";
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     scoreboard_fname = pstrdup (cmd->pool, arg);
     return NULL;
 }
 
 const char *set_lockfile (cmd_parms *cmd, void *dummy, char *arg) {
-    if (cmd->server->is_virtual)
-	return "LockFile directive not allowed in <VirtualHost>";
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     lock_fname = pstrdup (cmd->pool, arg);
     return NULL;
 }
 
 const char *set_idcheck (cmd_parms *cmd, core_dir_config *d, int arg) {
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     d->do_rfc1413 = arg != 0;
     return NULL;
 }
 
 const char *set_hostname_lookups (cmd_parms *cmd, core_dir_config *d, char *arg)
 {
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     if (!strcasecmp (arg, "on")) {
 	d->hostname_lookups = HOSTNAME_LOOKUP_ON;
     } else if (!strcasecmp (arg, "off")) {
@@ -1231,26 +1325,34 @@ const char *set_hostname_lookups (cmd_parms *cmd, core_dir_config *d, char *arg)
 }
 
 const char *set_serverpath (cmd_parms *cmd, void *dummy, char *arg) {
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     cmd->server->path = pstrdup (cmd->pool, arg);
     cmd->server->pathlen = strlen (arg);
     return NULL;
 }
 
 const char *set_content_md5 (cmd_parms *cmd, core_dir_config *d, int arg) {
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     d->content_md5 = arg != 0;
     return NULL;
 }
 
 const char *set_daemons_to_start (cmd_parms *cmd, void *dummy, char *arg) {
-    if (cmd->server->is_virtual)
-	return "StartServers directive not allowed in <VirtualHost>";
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     daemons_to_start = atoi (arg);
     return NULL;
 }
 
 const char *set_min_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
-    if (cmd->server->is_virtual)
-	return "MinSpareServers directive not allowed in <VirtualHost>";
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     daemons_min_free = atoi (arg);
     if (daemons_min_free <= 0) {
        fprintf(stderr, "WARNING: detected MinSpareServers set to non-positive.\n");
@@ -1263,15 +1365,17 @@ const char *set_min_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_max_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
-    if (cmd->server->is_virtual)
-	return "MaxSpareServers directive not allowed in <VirtualHost>";
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     daemons_max_free = atoi (arg);
     return NULL;
 }
 
 const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) {
-    if (cmd->server->is_virtual)
-	return "MaxClients directive not allowed in <VirtualHost>";
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     daemons_limit = atoi (arg);
     if (daemons_limit > HARD_SERVER_LIMIT) {
        fprintf(stderr, "WARNING: MaxClients of %d exceeds compile time limit "
@@ -1288,22 +1392,25 @@ const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_max_requests (cmd_parms *cmd, void *dummy, char *arg) {
-    if (cmd->server->is_virtual)
-	return "MaxRequestsPerChild directive not allowed in <VirtualHost>";
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     max_requests_per_child = atoi (arg);
     return NULL;
 }
 
 const char *set_threads (cmd_parms *cmd, void *dummy, char *arg) {
-    if (cmd->server->is_virtual)
-	return "ThreadsPerChild directive not allowed in <VirtualHost>";
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     threads_per_child = atoi (arg);
     return NULL;
 }
 
 const char *set_excess_requests (cmd_parms *cmd, void *dummy, char *arg) {
-    if (cmd->server->is_virtual)
-	return "ExcessRequestsPerChild directive not allowed in <VirtualHost>";
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     excess_requests_per_child = atoi (arg);
     return NULL;
 }
@@ -1397,8 +1504,9 @@ const char *set_limit_nproc (cmd_parms *cmd, core_dir_config *conf, char *arg, c
 #endif
 
 const char *set_bind_address (cmd_parms *cmd, void *dummy, char *arg) {
-    if (cmd->server->is_virtual)
-	return "BindAddress directive not allowed in <VirtualHost>";
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     bind_address.s_addr = get_virthost_addr (arg, NULL);
     return NULL;
 }
@@ -1409,7 +1517,9 @@ const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
     char *ports;
     unsigned short port;
 
-    if (cmd->server->is_virtual) return "Listen not allowed in <VirtualHost>";
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     ports=strchr(ips, ':');
     if (ports != NULL)
     {
@@ -1440,8 +1550,9 @@ const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
 const char *set_listenbacklog (cmd_parms *cmd, void *dummy, char *arg) {
     int b;
 
-    if (cmd->server->is_virtual) 
-        return "ListenBacklog not allowed in <VirtualHost>";
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     b = atoi (arg);
     if (b < 1) return "ListenBacklog must be > 0";
     listenbacklog = b;
@@ -1450,8 +1561,9 @@ const char *set_listenbacklog (cmd_parms *cmd, void *dummy, char *arg) {
 
 const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) {
     struct stat finfo;
-    if (cmd->server->is_virtual)
-        return "CoreDumpDirectory not allowed in <VirtualHost>";
+    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
     if ((stat(arg, &finfo) == -1) || !S_ISDIR(finfo.st_mode)) {
 	return pstrcat(cmd->pool, "CoreDumpDirectory ", arg, 
 	    " does not exist or is not a directory", NULL);
@@ -1474,6 +1586,9 @@ const char *set_loglevel (cmd_parms *cmd, void *dummy, const char *arg)
 {
    char *str;
     
+    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
    if ((str = getword_conf(cmd->pool, &arg))) {
        if (!strcasecmp(str, "emerg"))
 	   cmd->server->loglevel = APLOG_EMERG;
