@@ -637,7 +637,7 @@ static int piped_log_spawn(piped_log *pl)
 #ifdef SIGHUP
     signal(SIGHUP, SIG_IGN);
 #endif
-    if ((ap_createprocattr_init(pl->p, &procattr)         != APR_SUCCESS) ||
+    if ((ap_createprocattr_init(&procattr, pl->p)         != APR_SUCCESS) ||
         (ap_setprocattr_dir(procattr, pl->program)        != APR_SUCCESS) ||
         (ap_set_childin(procattr, pl->fds[0], pl->fds[1]) != APR_SUCCESS)) {
         /* Something bad happened, give up and go away. */
@@ -653,7 +653,7 @@ static int piped_log_spawn(piped_log *pl)
             RAISE_SIGSTOP(PIPED_LOG_SPAWN); /*   I am assuming that if ap_create_process was  */
                                             /*   successful that the child is running.        */
             pl->pid = procnew;
-            ap_get_os_proc(&pid, &procnew);
+            ap_get_os_proc(&pid, procnew);
             ap_register_other_child(pid, piped_log_maintenance, pl, pl->fds[1]);
         }
     }
@@ -705,7 +705,7 @@ static void piped_log_maintenance(int reason, void *data, ap_wait_t status)
 }
 
 
-static void piped_log_cleanup(void *data)
+static ap_status_t piped_log_cleanup(void *data)
 {
     piped_log *pl = data;
 
@@ -715,15 +715,17 @@ static void piped_log_cleanup(void *data)
     ap_unregister_other_child(pl);
     ap_close(pl->fds[0]);
     ap_close(pl->fds[1]);
+    return APR_SUCCESS;
 }
 
 
-static void piped_log_cleanup_for_exec(void *data)
+static ap_status_t piped_log_cleanup_for_exec(void *data)
 {
     piped_log *pl = data;
 
     ap_close(pl->fds[0]);
     ap_close(pl->fds[1]);
+    return APR_SUCCESS;
 }
 
 
@@ -735,7 +737,7 @@ API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
     pl->p = p;
     pl->program = ap_pstrdup(p, program);
     pl->pid = NULL;
-    if (ap_create_pipe(p, &pl->fds[0], &pl->fds[1]) != APR_SUCCESS) {
+    if (ap_create_pipe(&pl->fds[0], &pl->fds[1], p) != APR_SUCCESS) {
 	int save_errno = errno;
 	errno = save_errno;
 	return NULL;
