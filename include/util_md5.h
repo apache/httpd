@@ -97,20 +97,13 @@ AP_DECLARE(char *) ap_md5_binary(apr_pool_t *a, const unsigned char *buf, int le
  */
 AP_DECLARE(char *) ap_md5contextTo64(apr_pool_t *p, apr_md5_ctx_t *context);
 
-#ifdef APACHE_XLATE
 /**
  * Create an MD5 Digest for a given file
  * @param p The pool to allocate out of
  * @param infile The file to create the digest for
- * @param xlate The translation header to use.
- * @warning The xlate parameter is only available if APACHE_XLATE is defined
- * @deffunc char *ap_md5digest(apr_pool_t *p, apr_file_t *infile, apr_xlate_t *xlate)
+ * @deffunc char *ap_md5digest(apr_pool_t *p, apr_file_t *infile)
  */
-AP_DECLARE(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile,
-                                apr_xlate_t *xlate);
-#else
 AP_DECLARE(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile);
-#endif
 
 #ifdef __cplusplus
 }

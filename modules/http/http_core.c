@@ -3006,13 +3006,8 @@ static int default_handler(request_rec *r)
 #endif
 
         if (bld_content_md5) {
-#ifdef APACHE_XLATE
-	    apr_table_setn(r->headers_out, "Content-MD5",
-                           ap_md5digest(r->pool, fd, NULL));
-#else
 	    apr_table_setn(r->headers_out, "Content-MD5",
                            ap_md5digest(r->pool, fd));
-#endif /* APACHE_XLATE */
 	}
 
 	rangestatus = ap_set_byterange(r);
