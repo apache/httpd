@@ -367,7 +367,7 @@ static void check_pipeline_flush(request_rec *r)
        ### allow us to defer creation of the brigade to when we actually
        ### need to send a FLUSH. */
     apr_bucket_brigade *bb = apr_brigade_create(r->pool);
-    int zero = 0;
+    apr_size_t zero = 0;
 
     /* Flush the filter contents if:
      *
