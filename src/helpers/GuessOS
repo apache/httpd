@@ -33,6 +33,8 @@ RELEASE=`(uname -r) 2>/dev/null` || RELEASE="unknown"
 SYSTEM=`(uname -s) 2>/dev/null`  || SYSTEM="unknown"
 VERSION=`(uname -v) 2>/dev/null` || VERSION="unknown"
 
+# Some HP machines have slashes.
+MACHINE=`echo ${MACHINE}|sed -e 's/\//_/'`
 
 # Now test for ISC and SCO, since it is has a braindamaged uname.
 #
