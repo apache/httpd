@@ -2213,6 +2213,19 @@ static ap_inline void put_scoreboard_info(int child_num,
 
 /* a clean exit from the parent with proper cleanup */
 #ifdef NETWARE
+void clean_shutdown_on_exit(void)
+{
+    if (!ap_main_finished) {
+        AMCSocketCleanup();
+        ap_destroy_pool(pcommands);    
+        free(ap_loaded_modules);    
+        ap_cleanup_method_ptrs();    
+        ap_destroy_pool(pglobal);
+        ap_cleanup_alloc();
+        ap_main_finished = TRUE;
+    }
+}
+
 void clean_parent_exit(int code) __attribute__((noreturn));
 void clean_parent_exit(int code)
 #else
@@ -6697,8 +6710,12 @@ int REALMAIN(int argc, char *argv[])
 #endif
 
 #ifdef NETWARE
+    // If top_module is not NULL then APACHEC was not exited cleanly
+    //  and is in a bad state.  Simply clean up and exit.
+    check_clean_load (top_module);
     init_name_space();
     signal(SIGTERM, signal_handler);
+    atexit(clean_shutdown_on_exit);
     init_tsd();
 #endif
 
