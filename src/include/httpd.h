@@ -219,7 +219,7 @@
 
 /* ------------------------------ error types ------------------------------ */
 
-#define SERVER_VERSION "Apache/1.1-dev"
+#define SERVER_VERSION "Apache/1.1b1"
 #define SERVER_PROTOCOL "HTTP/1.0"
 #define SERVER_SUPPORT "http://www.apache.org/"
 
