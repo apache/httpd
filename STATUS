@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/07 19:40:44 $]
+Last modified at [$Date: 2003/03/07 20:23:37 $]
 
 Release:
 
@@ -146,18 +146,6 @@ PATCHES TO PORT FROM 2.1
       modules/dav/main/util.c: r1.45
       [ This one is under review.  Don't merge.  ]
       +1:
-
-    * Standardize mod_ldap and mod_auth_ldap SSL support across the various 
-      LDAP SDKs.  Isolate the SSL functionality to mod_ldap rather than 
-      speading it across mod_auth_ldap and mod_ldap.  Add LDAPTrustedCA
-      and LDAPTrustedCAType directives to mod_ldap to allow for a more 
-      common method of specifying the SSL certificate.
-      include/util_ldap.h r1.11
-      modules/experimental/mod_auth_ldap.c r1.12
-      modules/experimental/util_ldap.c r1.11
-      +1: bnicholes, wrowe (experimental, it can't hurt ;-), trawick
-          (same reasoning as wrowe), jim (ditto)
-       0: jerenkrantz (mod_ldap is experimental, no need to update it)
 
     * Fix a problem where a redirected subrequest doesn't have the
       subrequest filter in place (PR 15423).
@@ -801,9 +789,6 @@ EXPERIMENTAL MODULES:
       (mod_cache: CacheForceCompletion). 
 
     mod_auth_ldap/util_ldap:
-    
-    * implement cross-platform/cross-library TLS support
-    
     * General stabilization and testing
     
 
