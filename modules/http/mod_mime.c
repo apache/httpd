@@ -105,13 +105,11 @@ typedef struct extension_info {
     char *language_type;              /* Added with AddLanguage... */
     char *handler;                    /* Added with AddHandler... */
     char *charset_type;               /* Added with AddCharset... */
-    int copy;                         /* To avoid dupping in the merge */
 } extension_info;
 
 typedef struct {
     apr_hash_t  *extension_mappings;  /* Map from extension name to
                                        * extension_info structure */
-    int copy_mappings;          /* To avoid dupping in the merge */
 
     apr_array_header_t *handlers_remove;  /* List of handlers to remove */
     apr_array_header_t *types_remove;     /* List of MIME types to remove */
@@ -149,8 +147,7 @@ static void *create_mime_dir_config(apr_pool_t *p, char *dummy)
     mime_dir_config *new =
     (mime_dir_config *) apr_palloc(p, sizeof(mime_dir_config));
 
-    new->extension_mappings = apr_hash_make(p);
-    new->copy_mappings = 0;
+    new->extension_mappings = NULL;
 
     new->handlers_remove = NULL;
     new->types_remove = NULL;
@@ -180,13 +177,10 @@ static void overlay_extension_mappings(apr_pool_t *p,
         base_info = (extension_info*)apr_hash_get(base, key, klen);
 
         if (base_info) {
-            if (!base_info->copy) {
-                extension_info *copyinfo = base_info;
-                base_info = (extension_info*)apr_palloc(p, sizeof(*base_info));
-                apr_hash_set(base, key, klen, base_info);
-                memcpy(base_info, copyinfo, sizeof(*base_info));
-                base_info->copy = 1;
-            }
+            extension_info *copyinfo = base_info;
+            base_info = (extension_info*)apr_palloc(p, sizeof(*base_info));
+            apr_hash_set(base, key, klen, base_info);
+            memcpy(base_info, copyinfo, sizeof(*base_info));
 
             if (overlay_info->forced_type) {
                 base_info->forced_type = overlay_info->forced_type;
@@ -220,97 +214,79 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
     attrib_info *suffix;
 
     if (base->extension_mappings && add->extension_mappings) {
-        /* XXX: Greg Ames' fast hack to always copy the hash.
-         * It's incomplete, and slower than tables, but at least
-         * the server (mostly) runs once again.
-         */
-            new->extension_mappings = apr_hash_make(p);
-            overlay_extension_mappings(p, base->extension_mappings,
-                                       new->extension_mappings);
+        new->extension_mappings = apr_hash_make(p);
+        overlay_extension_mappings(p, base->extension_mappings,
+                                   new->extension_mappings);
         overlay_extension_mappings(p, add->extension_mappings,
                                    new->extension_mappings);
-        new->copy_mappings = 1;
     }
     else {
         if (base->extension_mappings == NULL) {
             new->extension_mappings = add->extension_mappings;
-            new->copy_mappings = add->copy_mappings;
         }
-        else if (add->extension_mappings == NULL) {
+        else {
             new->extension_mappings = base->extension_mappings;
-            new->copy_mappings = base->copy_mappings;
         }
-        if (!new->copy_mappings && (add->handlers_remove 
-                                 || add->types_remove 
-                                 || add->encodings_remove)) {
+        if (new->extension_mappings && (add->handlers_remove 
+                                     || add->types_remove 
+                                     || add->encodings_remove)) {
             apr_hash_t *copyhash = new->extension_mappings;
             new->extension_mappings = apr_hash_make(p);
-            /* ### as slow as can be... just use an apr_hash_dup! */
             overlay_extension_mappings(p, copyhash, new->extension_mappings);
-            new->copy_mappings = 1;
         }
     }
 
-    if (add->handlers_remove) {
+    if (new->extension_mappings && add->handlers_remove) {
         suffix = (attrib_info *) add->handlers_remove->elts;
         for (i = 0; i < add->handlers_remove->nelts; i++) {
             extension_info *exinfo =
                 (extension_info*)apr_hash_get(new->extension_mappings,
                                               suffix[i].name,
                                               APR_HASH_KEY_STRING);
-            if (exinfo) {
-                if (!exinfo->copy) {
-                    extension_info *copyinfo = exinfo;
-                    exinfo = (extension_info*)apr_palloc(p, sizeof(*exinfo));
-                    apr_hash_set(new->extension_mappings,  suffix[i].name, 
-                                 APR_HASH_KEY_STRING, exinfo);
-                    memcpy(exinfo, copyinfo, sizeof(*exinfo));
-                    exinfo->copy = 1;
-                }
+            if (exinfo && exinfo->handler) {
+                extension_info *copyinfo = exinfo;
+                exinfo = (extension_info*)apr_palloc(p, sizeof(*exinfo));
+                apr_hash_set(new->extension_mappings,  suffix[i].name, 
+                             APR_HASH_KEY_STRING, exinfo);
+                memcpy(exinfo, copyinfo, sizeof(*exinfo));
                 exinfo->handler = NULL;
             }
         }
     }
     new->handlers_remove = NULL;
 
-    if (add->types_remove) {
+    if (new->extension_mappings && add->types_remove) {
         suffix = (attrib_info *) add->types_remove->elts;
         for (i = 0; i < add->types_remove->nelts; i++) {
             extension_info *exinfo =
                 (extension_info*)apr_hash_get(new->extension_mappings,
                                               suffix[i].name,
                                               APR_HASH_KEY_STRING);
-            if (exinfo) {
-                if (!exinfo->copy) {
-                    extension_info *copyinfo = exinfo;
-                    exinfo = (extension_info*)apr_palloc(p, sizeof(*exinfo));
-                    apr_hash_set(new->extension_mappings,  suffix[i].name, 
-                                 APR_HASH_KEY_STRING, exinfo);
-                    memcpy(exinfo, copyinfo, sizeof(*exinfo));
-                    exinfo->copy = 1;
-                }
+            if (exinfo && exinfo->forced_type) {
+                extension_info *copyinfo = exinfo;
+                exinfo = (extension_info*)apr_palloc(p, sizeof(*exinfo));
+                apr_hash_set(new->extension_mappings,  suffix[i].name, 
+                             APR_HASH_KEY_STRING, exinfo);
+                memcpy(exinfo, copyinfo, sizeof(*exinfo));
                 exinfo->forced_type = NULL;
             }
         }
     }
     new->types_remove = NULL;
 
-    if (add->encodings_remove) {
+    if (new->extension_mappings && add->encodings_remove) {
         suffix = (attrib_info *) add->encodings_remove->elts;
         for (i = 0; i < add->encodings_remove->nelts; i++) {
             extension_info *exinfo =
                 (extension_info*)apr_hash_get(new->extension_mappings,
                                               suffix[i].name,
                                               APR_HASH_KEY_STRING);
-            if (exinfo) {
-                if (!exinfo->copy) {
-                    extension_info *copyinfo = exinfo;
-                    exinfo = (extension_info*)apr_palloc(p, sizeof(*exinfo));
-                    apr_hash_set(new->extension_mappings,  suffix[i].name, 
-                                 APR_HASH_KEY_STRING, exinfo);
-                    memcpy(exinfo, copyinfo, sizeof(*exinfo));
-                    exinfo->copy = 1;
-                }
+            if (exinfo && exinfo->encoding_type) {
+                extension_info *copyinfo = exinfo;
+                exinfo = (extension_info*)apr_palloc(p, sizeof(*exinfo));
+                apr_hash_set(new->extension_mappings,  suffix[i].name, 
+                             APR_HASH_KEY_STRING, exinfo);
+                memcpy(exinfo, copyinfo, sizeof(*exinfo));
                 exinfo->encoding_type = NULL;
             }
         }
@@ -337,10 +313,14 @@ static extension_info *add_extension_info(cmd_parms *cmd, void *m_,
 #endif
     if (*key == '.')
 	++key;
-    exinfo = (extension_info*)apr_hash_get(m->extension_mappings, key,
-                                           APR_HASH_KEY_STRING);
+    if (!m->extension_mappings) {
+        m->extension_mappings = apr_hash_make(cmd->pool);
+        exinfo = NULL;
+    }
+    else
+        exinfo = (extension_info*)apr_hash_get(m->extension_mappings, key,
+                                               APR_HASH_KEY_STRING);
     if (!exinfo) {
-        /* pcalloc sets ->copy to false */
         exinfo = apr_pcalloc(cmd->pool, sizeof(extension_info));
         key = apr_pstrdup(cmd->pool, key);
         apr_hash_set(m->extension_mappings, key,
