@@ -404,9 +404,9 @@ int status_handler (request_rec *r)
 	rputs("\"<B><code>R</code></B>\" Reading Request,<BR>\n",r);
 	rputs("\"<B><code>W</code></B>\" Sending Reply, \n",r);
 	rputs("\"<B><code>K</code></B>\" Keepalive (read), \n",r);
-	rputs("\"<B><code>D</code></B>\" DNS Lookup, \n",r);
-	rputs("\"<B><code>L</code></B>\" Logging<p>\n",r);
-	rputs("\"<B><code>.</code></B>\" Open slot with no current process, \n",r);
+	rputs("\"<B><code>D</code></B>\" DNS Lookup,<BR>\n",r);
+	rputs("\"<B><code>L</code></B>\" Logging, \n",r);
+	rputs("\"<B><code>.</code></B>\" Open slot with no current process<P>\n",r);
     }
 
 #if defined(STATUS)

@@ -1,5 +1,8 @@
 Changes with Apache 1.2b7
 
+  *) Removed extraneous blank line is description of mod_status chars.
+     [Kurt Kohler]
+
   *) Logging of errors from the call_exec routine simply went nowhere,
      since the logfile fd has been closed, so now we send them to stderr.
      [Harald T. Alvestrand]
