@@ -274,7 +274,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 
 	return ap_pstrcat(cmd->pool, "Can't locate API module structure `",
 			  modname, "' in file ", szModuleFile, ": ", 
-			  ap_strerror(status, my_error, sizeof(my_error)),
+			  ap_dso_error(modhandle, my_error, sizeof(my_error)),
 			  NULL);
     }
     modp = (module*) modsym;
