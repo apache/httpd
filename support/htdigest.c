@@ -122,24 +122,20 @@ static int getline(char *s, int n, apr_file_t *f)
 {
     register int i = 0;
     char ch;
+    apr_status_t rv;
 
-    while (1) {
-	apr_file_getc(&ch, f);
-            s[i] = ch;
-
-	if (s[i] == CR)
-	    apr_file_getc(&ch, f);
-            s[i] = ch;
-
-	if ((s[i] == 0x4) || (s[i] == LF) || (i == (n - 1))) {
-	    s[i] = '\0';
-            if (apr_file_eof(f) == APR_EOF) {
-                return 1;
-            }
-            return 0;
-	}
-	++i;
+    while (i < (n - 1) && 
+           ((rv = apr_file_getc(&ch, f)) == APR_SUCCESS) && (ch != '\n')) {
+        s[i++] = ch;
     }
+    if (ch == '\n')
+        s[i++] = ch;
+    s[i] = '\0';
+
+    if (rv != APR_SUCCESS) 
+        return 1;
+
+    return 0;
 }
 
 static void putline(apr_file_t *f, char *l)
@@ -148,7 +144,6 @@ static void putline(apr_file_t *f, char *l)
 
     for (x = 0; l[x]; x++)
 	apr_file_putc(l[x], f);
-    apr_file_putc('\n', f);
 }
 
 
