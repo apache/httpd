@@ -1,5 +1,9 @@
 Changes with Apache 2.0.37
 
+  *) Fix subreqs that are promoted via fast_redirect from having invalid
+     frec->r structures.  This would cause subtle errors later on in
+     request processing such as seen in PR 7966.  [Justin Erenkrantz]
+
   *) More efficient pool recycling logic for the worker MPM [Brian Pane]
 
   *) Modify the worker MPM to not accept() new connections until
