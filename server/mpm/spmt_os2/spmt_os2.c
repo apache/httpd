@@ -922,6 +922,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     set_signals();
+    DosSetMaxFH(ap_daemons_limit * 2);
 
     if (ppthread_globals == NULL) {
         if (DosAllocThreadLocalMemory(1, (PULONG *)&ppthread_globals)) {
