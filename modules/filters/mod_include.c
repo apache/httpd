@@ -407,6 +407,43 @@ static void debug_dump_tree(include_ctx_t *ctx, parse_node_t *root)
     }                                                                         \
 } while(0)
 
+#define DEBUG_DUMP_EVAL(ctx, node) do {                                       \
+    char c = '"';                                                             \
+    switch ((node)->token.type) {                                             \
+    case TOKEN_STRING:                                                        \
+        debug_printf((ctx), "     Evaluate: %s (%s) -> %c\n", (node)->token.s,\
+                     (node)->token.value, ((node)->value) ? '1':'0');         \
+        break;                                                                \
+    case TOKEN_AND:                                                           \
+    case TOKEN_OR:                                                            \
+        debug_printf((ctx), "     Evaluate: %s (Left: %s; Right: %s) -> %c\n",\
+                     (node)->token.s,                                         \
+                     (((node)->left->done) ? ((node)->left->value ?"1":"0")   \
+                                          : "short circuited"),               \
+                     (((node)->right->done) ? ((node)->right->value?"1":"0")  \
+                                          : "short circuited"),               \
+                     (node)->value ? '1' : '0');                              \
+        break;                                                                \
+    case TOKEN_EQ:                                                            \
+    case TOKEN_NE:                                                            \
+    case TOKEN_GT:                                                            \
+    case TOKEN_GE:                                                            \
+    case TOKEN_LT:                                                            \
+    case TOKEN_LE:                                                            \
+        if ((node)->right->token.type == TOKEN_RE) c = '/';                   \
+        debug_printf((ctx), "     Compare:  %s (\"%s\" with %c%s%c) -> %c\n", \
+                     (node)->token.s,                                         \
+                     (node)->left->token.value,                               \
+                     c, (node)->right->token.value, c,                        \
+                     (node)->value ? '1' : '0');                              \
+        break;                                                                \
+    default:                                                                  \
+        debug_printf((ctx), "     Evaluate: %s -> %c\n", (node)->token.s,     \
+                     (node)->value ? '1' : '0');                              \
+        break;                                                                \
+    }                                                                         \
+} while(0)
+
 #define DEBUG_DUMP_UNMATCHED(ctx, unmatched) do {                        \
     if (unmatched) {                                                     \
         DEBUG_PRINTF(((ctx), "     Unmatched %c\n", (char)(unmatched))); \
@@ -432,6 +469,7 @@ static void debug_dump_tree(include_ctx_t *ctx, parse_node_t *root)
 #define DEBUG_INIT(ctx, f, bb)
 #define DEBUG_PRINTF(arg)
 #define DEBUG_DUMP_TOKEN(ctx, token)
+#define DEBUG_DUMP_EVAL(ctx, node)
 #define DEBUG_DUMP_UNMATCHED(ctx, unmatched)
 #define DEBUG_DUMP_COND(ctx, text)
 #define DEBUG_DUMP_TREE(ctx, root)
@@ -1133,7 +1171,10 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
 
     /* Create Parse Tree */
     while (1) {
-        DEBUG_DUMP_TREE(ctx, root);
+        /* uncomment this to see how the tree a built:
+         *
+         * DEBUG_DUMP_TREE(ctx, root);
+         */
         CREATE_NODE(ctx, new);
 
         was_unmatched = get_ptoken(ctx->dpool, &parse, &new->token);
@@ -1331,18 +1372,19 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
         }
     }
 
+    DEBUG_DUMP_TREE(ctx, root);
+
     /* Evaluate Parse Tree */
     current = root;
     while (current) {
         switch (current->token.type) {
         case TOKEN_STRING:
-            DEBUG_PRINTF((ctx, "     Evaluate %s\n", current->token.s));
-
             buffer = ap_ssi_parse_string(ctx, current->token.value, NULL, 0,
                                          SSI_EXPAND_DROP_NAME);
 
             current->token.value = buffer;
             current->value = !!*current->token.value;
+            DEBUG_DUMP_EVAL(ctx, current);
             current->done = 1;
             current = current->parent;
             break;
@@ -1356,8 +1398,6 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
 
         case TOKEN_AND:
         case TOKEN_OR:
-            DEBUG_PRINTF((ctx, "     Evaluate %s\n", current->token.s));
-
             if (!current->left || !current->right) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Invalid expression \"%s\" in file %s",
@@ -1388,10 +1428,6 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             if (!current->left->done && !regex &&
                 ((current->token.type == TOKEN_AND && !current->right->value) ||
                 (current->token.type == TOKEN_OR && current->right->value))) {
-                DEBUG_PRINTF((ctx, "     Left: short circuited\n"));
-                DEBUG_PRINTF((ctx, "     Right: %c\n", current->right->value
-                                                                  ? '1' : '0'));
-
                 current->value = current->right->value;
             }
             else {
@@ -1414,11 +1450,6 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                     }
                 }
 
-                DEBUG_PRINTF((ctx, "     Left: %c\n", current->left->value
-                                                                  ? '1' : '0'));
-                DEBUG_PRINTF((ctx, "     Right: %c\n", current->right->value
-                                                                  ? '1' : '0'));
-
                 if (current->token.type == TOKEN_AND) {
                     current->value = current->left->value &&
                                      current->right->value;
@@ -1429,16 +1460,13 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 }
             }
 
-            DEBUG_PRINTF((ctx, "     Returning %c\n", current->value
-                                                                  ? '1' : '0'));
+            DEBUG_DUMP_EVAL(ctx, current);
             current->done = 1;
             current = current->parent;
             break;
 
         case TOKEN_EQ:
         case TOKEN_NE:
-            DEBUG_PRINTF((ctx, "     Evaluate %s\n", current->token.s));
-
             if (!current->left || !current->right ||
                 current->left->token.type != TOKEN_STRING ||
                 (current->right->token.type != TOKEN_STRING &&
@@ -1459,19 +1487,11 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             current->right->token.value = buffer;
 
             if (current->right->token.type == TOKEN_RE) {
-                DEBUG_PRINTF((ctx, "     Re Compare (%s) with /%s/\n",
-                              current->left->token.value,
-                              current->right->token.value));
-
                 current->value = re_check(ctx, current->left->token.value,
                                           current->right->token.value);
                 --regex;
             }
             else {
-                DEBUG_PRINTF((ctx, "     Compare (%s) with (%s)\n",
-                              current->left->token.value,
-                              current->right->token.value));
-
                 current->value = !strcmp(current->left->token.value,
                                          current->right->token.value);
             }
@@ -1480,9 +1500,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 current->value = !current->value;
             }
 
-            DEBUG_PRINTF((ctx, "     Returning %c\n", current->value
-                                                                  ? '1' : '0'));
-
+            DEBUG_DUMP_EVAL(ctx, current);
             current->done = 1;
             current = current->parent;
             break;
@@ -1491,8 +1509,6 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
         case TOKEN_GT:
         case TOKEN_LE:
         case TOKEN_LT:
-            DEBUG_PRINTF((ctx, "     Evaluate %s\n", current->token.s));
-
             if (!current->left || !current->right ||
                 current->left->token.type != TOKEN_STRING ||
                 current->right->token.type != TOKEN_STRING) {
@@ -1509,10 +1525,6 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             buffer = ap_ssi_parse_string(ctx, current->right->token.value, NULL,
                                          0, SSI_EXPAND_DROP_NAME);
             current->right->token.value = buffer;
-
-            DEBUG_PRINTF((ctx, "     Compare (%s) with (%s)\n",
-                          current->left->token.value,
-                          current->right->token.value));
 
             current->value = strcmp(current->left->token.value,
                                     current->right->token.value);
@@ -1533,9 +1545,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 current->value = 0;     /* Don't return -1 if unknown token */
             }
 
-            DEBUG_PRINTF((ctx, "     Returning %c\n", current->value
-                                                                  ? '1' : '0'));
-
+            DEBUG_DUMP_EVAL(ctx, current);
             current->done = 1;
             current = current->parent;
             break;
@@ -1552,9 +1562,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 current->value = 0;
             }
 
-            DEBUG_PRINTF((ctx, "     Evaluate %s: %c\n", current->token.s,
-                                                   current->value ? '1' : '0'));
-
+            DEBUG_DUMP_EVAL(ctx, current);
             current->done = 1;
             current = current->parent;
             break;
@@ -1571,9 +1579,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 current->value = 1;
             }
 
-            DEBUG_PRINTF((ctx, "     Evaluate %s: %c\n", current->token.s,
-                                                   current->value ? '1' : '0'));
-
+            DEBUG_DUMP_EVAL(ctx, current);
             current->done = 1;
             current = current->parent;
             break;
