@@ -1,5 +1,8 @@
 Changes with Apache 1.1.1:
 
+  *) Fixed bug where Cookie module would make two entries in the
+     logfile for each access [Mark Cox]
+
   *) Fixed bug where Redirect in .htaccess files would cause memory
      leak. [Nathan Neulinger]
 
@@ -62,9 +65,9 @@ Changes with Apache 1.1b3:
      various security holes found and that we could no longer support
      them.  
 
-  *) The "Set-Cookie" header is now special-special-cased to not 
-     merge multiple instances, since certain popular browsers can not 
-     handle multiple Set-Cookie instructions in a single header.
+  *) The "Set-Cookie" header is now special-cased to not merge multiple 
+     instances, since certain popular browsers can not handle multiple 
+     Set-Cookie instructions in a single header. [Paul Sutton]
 
   *) rprintf() added to buffer code, occurrences of sprintf removed.
      [Ben Laurie]
