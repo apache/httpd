@@ -597,7 +597,7 @@ authenticating the user if this one fails</description>
     <p>The file contains lines in the following format:</p>
 
     <example>
-      <var>Language-Extension</var> <var>charset<var> [<var>Language-String</var>] ...
+      <var>Language-Extension</var> <var>charset</var> [<var>Language-String</var>] ...
     </example>
 
     <p>The case of the extension does not matter. Blank lines, and lines
