@@ -213,4 +213,5 @@ void log_assert(const char *szExp,const char *szFile,int nLine)
     ap_snprintf(buf, sizeof(buf), 
         "line %d, assertion \"%s\" failed",nLine,szExp);
     log_unixerr("assert",szFile,buf,NULL);
+    exit(1);
 }
