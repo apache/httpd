@@ -1363,6 +1363,15 @@ const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
+const char *include_config (cmd_parms *cmd, void *dummy, char *name)
+{
+    name = server_root_relative(cmd->pool, name);
+    
+    process_resource_config(cmd->server, name, cmd->pool, cmd->temp_pool);
+
+    return NULL;
+}
+
 /* Note --- ErrorDocument will now work from .htaccess files.  
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
@@ -1488,6 +1497,7 @@ command_rec core_cmds[] = {
 { "ExcessRequestsPerChild", set_excess_requests, NULL, RSRC_CONF, TAKE1, "Maximum number of requests a particular child serves after it is ready to die." },
 { "ListenBacklog", set_listenbacklog, NULL, RSRC_CONF, TAKE1, "maximum length of the queue of pending connections, as used by listen(2)" },
 { "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, TAKE1, "The location of the directory Apache changes to before dumping core" },
+{ "Include", include_config, NULL, RSRC_CONF, TAKE1, "config file to be included" },
 { NULL },
 };
 

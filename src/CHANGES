@@ -1,5 +1,8 @@
 Changes with Apache 1.3a2
 
+  *) Add 'Include' directive to allow inclusion of configuration
+     files within configuration files. [Randy Terbush]
+
   *) Proxy errors on connect() are logged to the error_log (nothing
      new); now they include the IP address and port that failed
      (*that's* new).  PR#352  [Ken Coar, Marc Slemko]
