@@ -322,7 +322,7 @@ static void log_error_core(const char *file, int line, int level,
                            const request_rec *r, ap_pool_t *pool,
                            const char *fmt, va_list args)
 {
-    char errstr[MAX_STRING_LEN + 1];    /* + 1 to have room for '\n' */
+    char errstr[MAX_STRING_LEN];
     size_t len;
     ap_file_t *logf = NULL;
 
@@ -427,12 +427,11 @@ static void log_error_core(const char *file, int line, int level,
 
     /* NULL if we are logging to syslog */
     if (logf) {
-        /* We know that we have one more character of space available because
-         * the array is sized that way */
-        /* ap_assert(len < MAX_STRING_LEN) */
-        errstr[len++] = '\n';
-        errstr[len] = '\0';
-	ap_puts(errstr, logf);
+        /* Truncate for the terminator (as ap_snprintf does) */
+        if (len > MAX_STRING_LEN - 2)
+            len = MAX_STRING_LEN - 2;
+        strcpy(errstr + len, APR_EOL_STR);
+        ap_puts(errstr, logf);
 	ap_flush(logf);
     }
 #ifdef HAVE_SYSLOG
@@ -528,7 +527,7 @@ void ap_log_pid(ap_pool_t *p, const char *fname)
 		     ap_server_argv0, fname);
         exit(1);
     }
-    ap_fprintf(pid_file, "%ld\n", (long)mypid);
+    ap_fprintf(pid_file, "%ld" APR_EOL_STR, (long)mypid);
     ap_close(pid_file);
     saved_pid = mypid;
 }

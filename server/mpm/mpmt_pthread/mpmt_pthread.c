@@ -1307,7 +1307,7 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy,
        ap_daemons_limit = HARD_SERVER_LIMIT;
     } 
     else if (ap_daemons_limit < 1) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "WARNING: Require MaxClients > 0, setting to 1\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "WARNING: Require MaxClients > 0, setting to 1");
 	ap_daemons_limit = 1;
     }
     return NULL;

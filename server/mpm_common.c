@@ -232,7 +232,7 @@ void ap_process_child_status(ap_proc_t *pid, ap_wait_t status)
     if ((WIFEXITED(status)) &&
         WEXITSTATUS(status) == APEXIT_CHILDFATAL) {
         ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, ap_server_conf,
-                        "Child %ld returned a Fatal error... \n"
+                        "Child %ld returned a Fatal error..." APR_EOL_STR
                         "Apache is exiting!",
                         (long)pid->pid);
         exit(APEXIT_CHILDFATAL);

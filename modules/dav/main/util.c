@@ -211,8 +211,8 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r)
 	result.err.status = HTTP_BAD_GATEWAY;
 	result.err.desc = ap_psprintf(r->pool,
 				      "Destination URI refers to different "
-				      "scheme or port (%s://hostname:%d)\n"
-				      "(want: %s://hostname:%d)",
+				      "scheme or port (%s://hostname:%d)" 
+                                      APR_EOL_STR "(want: %s://hostname:%d)",
 				      comp.scheme ? comp.scheme : scheme,
 				      comp.port ? comp.port : port,
 				      scheme, port);

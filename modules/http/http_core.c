@@ -985,7 +985,7 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
             return eFileTypeSCRIPT;
         }
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r->server,
-         "Failed to start a '%s' file as a script.\n\t"
+         "Failed to start a '%s' file as a script.\r\n\t"
          "COMSPEC variable is missing from the environment.", ext);
         return eFileTypeUNKNOWN;
     }
@@ -1005,15 +1005,15 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
             return eFileTypeSCRIPT;
         else if (d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY_STRICT) {
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r->server,
-             "ScriptInterpreterSource config directive set to \"registry-strict\".\n\t"
-             "Interpreter not found for files of type '%s'.", ext);
+             "ScriptInterpreterSource config directive set to \"registry-strict\"." APR_EOL_STR
+             "\tInterpreter not found for files of type '%s'.", ext);
              return eFileTypeUNKNOWN;
         }
         else
         {
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r->server,
-             "ScriptInterpreterSource config directive set to \"registry\".\n\t"
-             "Interpreter not found for files of type '%s', "
+             "ScriptInterpreterSource config directive set to \"registry\"." APR_EOL_STR
+             "\tInterpreter not found for files of type '%s', "
              "trying \"script\" method...", ext);
         }
     }        
