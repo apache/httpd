@@ -51,14 +51,18 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  *
- * Portions of this software are based upon public domain software
- * originally written at the National Center for Supercomputing Applications,
- * University of Illinois, Urbana-Champaign.
  */
 
 /* 
  * Apache example module.  Provide demonstrations of how modules do things.
+ * It is not meant to be used in a production server.  Since it participates
+ * in all of the processing phases, it could conceivable interfere with
+ * the proper operation of other modules -- particularly the ones related
+ * to security.
  *
+ * In the interest of brevity, all functions and structures internal to
+ * this module, but which may have counterparts in *real* modules, are
+ * prefixed with 'x_' instead of 'example_'.
  */
 
 #include "httpd.h"
@@ -90,7 +94,7 @@
  * It's perfectly reasonable to have two different structures for the two
  * different environments.  The same command handlers will be called for
  * both, though, so the handlers need to be able to tell them apart.  One
- * possibility is for both structures to start with an int which is zero for
+ * possibility is for both structures to start with an int which is 0 for
  * one and 1 for the other.
  *
  * Note that while the per-directory and per-server configuration records are
@@ -99,18 +103,20 @@
  * are handed a record that applies to the current location by implication or
  * inheritance, and modifying it will change the rules for other locations.
  */
-typedef struct excfg {
-    int cmode;                  /* Environment to which record applies (directory,
-                                 * server, or combination).
+typedef struct x_cfg {
+    int cmode;                  /* Environment to which record applies
+                                 * (directory, server, or combination).
                                  */
 #define CONFIG_MODE_SERVER 1
 #define CONFIG_MODE_DIRECTORY 2
 #define CONFIG_MODE_COMBO 3     /* Shouldn't ever happen. */
-    int local;                  /* Boolean: "Example" directive declared here? */
+    int local;                  /* Boolean: "Example" directive declared
+                                 * here?
+                                 */
     int congenital;             /* Boolean: did we inherit an "Example"? */
     char *trace;                /* Pointer to trace string. */
     char *loc;                  /* Location to which this record applies. */
-} excfg;
+} x_cfg;
 
 /*
  * Let's set up a module-local static cell to point to the accreting callback
@@ -129,8 +135,8 @@ static apr_table_t *static_calls_made = NULL;
  * freed each time we modify the trace.  That way previous layers of trace
  * data don't get lost.
  */
-static apr_pool_t *example_pool = NULL;
-static apr_pool_t *example_subpool = NULL;
+static apr_pool_t *x_pool = NULL;
+static apr_pool_t *x_subpool = NULL;
 
 /*
  * Declare ourselves so the configuration routines can find and know us.
@@ -150,14 +156,18 @@ module example_module;
 /*--------------------------------------------------------------------------*/
 
 /*
- * Command handler for a NO_ARGS directive.
+ * Command handler for a NO_ARGS directive.  Declared in the command_rec
+ * list with
+ *   AP_INIT_NO_ARGS("directive", function, mconfig, where, help)
  *
  * static const char *handle_NO_ARGS(cmd_parms *cmd, void *mconfig);
  */
 
 /*
  * Command handler for a RAW_ARGS directive.  The "args" argument is the text
- * of the commandline following the directive itself.
+ * of the commandline following the directive itself.  Declared in the
+ * command_rec list with
+ *   AP_INIT_RAW_ARGS("directive", function, mconfig, where, help)
  *
  * static const char *handle_RAW_ARGS(cmd_parms *cmd, void *mconfig,
  *                                    const char *args);
@@ -166,13 +176,16 @@ module example_module;
 /*
  * Command handler for a FLAG directive.  The single parameter is passed in
  * "bool", which is either zero or not for Off or On respectively.
+ * Declared in the command_rec list with
+ *   AP_INIT_FLAG("directive", function, mconfig, where, help)
  *
  * static const char *handle_FLAG(cmd_parms *cmd, void *mconfig, int bool);
  */
 
 /*
  * Command handler for a TAKE1 directive.  The single parameter is passed in
- * "word1".
+ * "word1".  Declared in the command_rec list with
+ *   AP_INIT_TAKE1("directive", function, mconfig, where, help)
  *
  * static const char *handle_TAKE1(cmd_parms *cmd, void *mconfig,
  *                                 char *word1);
@@ -180,7 +193,8 @@ module example_module;
 
 /*
  * Command handler for a TAKE2 directive.  TAKE2 commands must always have
- * exactly two arguments.
+ * exactly two arguments.  Declared in the command_rec list with
+ *   AP_INIT_TAKE2("directive", function, mconfig, where, help)
  *
  * static const char *handle_TAKE2(cmd_parms *cmd, void *mconfig,
  *                                 char *word1, char *word2);
@@ -189,6 +203,8 @@ module example_module;
 /*
  * Command handler for a TAKE3 directive.  Like TAKE2, these must have exactly
  * three arguments, or the parser complains and doesn't bother calling us.
+ * Declared in the command_rec list with
+ *   AP_INIT_TAKE3("directive", function, mconfig, where, help)
  *
  * static const char *handle_TAKE3(cmd_parms *cmd, void *mconfig,
  *                                 char *word1, char *word2, char *word3);
@@ -198,6 +214,8 @@ module example_module;
  * Command handler for a TAKE12 directive.  These can take either one or two
  * arguments.
  * - word2 is a NULL pointer if no second argument was specified.
+ * Declared in the command_rec list with
+ *   AP_INIT_TAKE12("directive", function, mconfig, where, help)
  *
  * static const char *handle_TAKE12(cmd_parms *cmd, void *mconfig,
  *                                  char *word1, char *word2);
@@ -208,6 +226,8 @@ module example_module;
  * as might be expected, one, two, or three arguments.
  * - word2 is a NULL pointer if no second argument was specified.
  * - word3 is a NULL pointer if no third argument was specified.
+ * Declared in the command_rec list with
+ *   AP_INIT_TAKE123("directive", function, mconfig, where, help)
  *
  * static const char *handle_TAKE123(cmd_parms *cmd, void *mconfig,
  *                                   char *word1, char *word2, char *word3);
@@ -217,6 +237,8 @@ module example_module;
  * Command handler for a TAKE13 directive.  Either one or three arguments are
  * permitted - no two-parameters-only syntax is allowed.
  * - word2 and word3 are NULL pointers if only one argument was specified.
+ * Declared in the command_rec list with
+ *   AP_INIT_TAKE13("directive", function, mconfig, where, help)
  *
  * static const char *handle_TAKE13(cmd_parms *cmd, void *mconfig,
  *                                  char *word1, char *word2, char *word3);
@@ -226,6 +248,8 @@ module example_module;
  * Command handler for a TAKE23 directive.  At least two and as many as three
  * arguments must be specified.
  * - word3 is a NULL pointer if no third argument was specified.
+ * Declared in the command_rec list with
+ *   AP_INIT_TAKE23("directive", function, mconfig, where, help)
  *
  * static const char *handle_TAKE23(cmd_parms *cmd, void *mconfig,
  *                                  char *word1, char *word2, char *word3);
@@ -235,6 +259,8 @@ module example_module;
  * Command handler for a ITERATE directive.
  * - Handler is called once for each of n arguments given to the directive.
  * - word1 points to each argument in turn.
+ * Declared in the command_rec list with
+ *   AP_INIT_ITERATE("directive", function, mconfig, where, help)
  *
  * static const char *handle_ITERATE(cmd_parms *cmd, void *mconfig,
  *                                   char *word1);
@@ -247,6 +273,8 @@ module example_module;
  * - word1 is the same for each call for a particular directive instance (the
  *   first argument).
  * - word2 points to each of the second and subsequent arguments in turn.
+ * Declared in the command_rec list with
+ *   AP_INIT_ITERATE2("directive", function, mconfig, where, help)
  *
  * static const char *handle_ITERATE2(cmd_parms *cmd, void *mconfig,
  *                                    char *word1, char *word2);
@@ -263,31 +291,36 @@ module example_module;
 /*
  * Locate our directory configuration record for the current request.
  */
-static excfg *our_dconfig(request_rec *r)
+static x_cfg *our_dconfig(const request_rec *r)
 {
-
-    return (excfg *) ap_get_module_config(r->per_dir_config, &example_module);
+    return (x_cfg *) ap_get_module_config(r->per_dir_config, &example_module);
 }
 
 #if 0
 /*
  * Locate our server configuration record for the specified server.
  */
-static excfg *our_sconfig(server_rec *s)
+static x_cfg *our_sconfig(const server_rec *s)
 {
-
-    return (excfg *) ap_get_module_config(s->module_config, &example_module);
+    return (x_cfg *) ap_get_module_config(s->module_config, &example_module);
 }
 
 /*
  * Likewise for our configuration record for the specified request.
  */
-static excfg *our_rconfig(request_rec *r)
+static x_cfg *our_rconfig(const request_rec *r)
 {
-
-    return (excfg *) ap_get_module_config(r->request_config, &example_module);
+    return (x_cfg *) ap_get_module_config(r->request_config, &example_module);
 }
 #endif
+
+/*
+ * Likewise for our configuration record for a connection.
+ */
+static x_cfg *our_cconfig(const conn_rec *c)
+{
+    return (x_cfg *) ap_get_module_config(c->conn_config, &example_module);
+}
 
 /*
  * This routine sets up some module-wide cells if they haven't been already.
@@ -297,15 +330,15 @@ static void setup_module_cells(void)
     /*
      * If we haven't already allocated our module-private pool, do so now.
      */
-    if (example_pool == NULL) {
-        apr_pool_create(&example_pool, NULL);
+    if (x_pool == NULL) {
+        apr_pool_create(&x_pool, NULL);
     };
     /*
-     * Likewise for the apr_table_t of routine/environment pairs we visit outside of
+     * Likewise for the table of routine/environment pairs we visit outside of
      * request context.
      */
     if (static_calls_made == NULL) {
-        static_calls_made = apr_table_make(example_pool, 16);
+        static_calls_made = apr_table_make(x_pool, 16);
     };
 }
 
@@ -315,24 +348,23 @@ static void setup_module_cells(void)
  * a pointer to our private configuration record (if available) for the
  * environment to which the callback is supposed to apply, and some text.  We
  * turn this into a textual representation and add it to the tail of the list.
- * The list can be displayed by the example_handler() routine.
+ * The list can be displayed by the x_handler() routine.
  *
  * If the call occurs within a request context (i.e., we're passed a request
  * record), we put the trace into the request apr_pool_t and attach it to the
  * request via the notes mechanism.  Otherwise, the trace gets added
  * to the static (non-request-specific) list.
  *
- * Note that the r->notes apr_table_t is only for storing strings; if you need to
+ * Note that the r->notes table is only for storing strings; if you need to
  * maintain per-request data of any other type, you need to use another
  * mechanism.
  */
 
 #define TRACE_NOTE "example-trace"
 
-static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
+static void trace_add(server_rec *s, request_rec *r, x_cfg *mconfig,
                       const char *note)
 {
-
     const char *sofar;
     char *addon;
     char *where;
@@ -363,7 +395,7 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
          * Make a new sub-pool and copy any existing trace to it.  Point the
          * trace cell at the copied value.
          */
-        apr_pool_create(&p, example_pool);
+        apr_pool_create(&p, x_pool);
         if (trace != NULL) {
             trace = apr_pstrdup(p, trace);
         }
@@ -371,10 +403,10 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
          * Now, if we have a sub-pool from before, nuke it and replace with
          * the one we just allocated.
          */
-        if (example_subpool != NULL) {
-            apr_pool_destroy(example_subpool);
+        if (x_subpool != NULL) {
+            apr_pool_destroy(x_subpool);
         }
-        example_subpool = p;
+        x_subpool = p;
         trace_copy = trace;
     }
     /*
@@ -409,10 +441,14 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
             apr_table_set(static_calls_made, key, "been here");
         }
     }
-    addon = apr_pstrcat(p, "   <LI>\n", "    <DL>\n", "     <DT><SAMP>",
-                    note, "</SAMP>\n", "     </DT>\n", "     <DD><SAMP>[",
-                    where, "]</SAMP>\n", "     </DD>\n", "    </DL>\n",
-                    "   </LI>\n", NULL);
+    addon = apr_pstrcat(p,
+                        "   <li>\n"
+                        "    <dl>\n"
+                        "     <dt><samp>", note, "</samp></dt>\n"
+                        "     <dd><samp>[", where, "]</samp></dd>\n"
+                        "    </dl>\n"
+                        "   </li>\n",
+                        NULL);
     sofar = (trace_copy == NULL) ? "" : trace_copy;
     trace_copy = apr_pstrcat(p, sofar, addon, NULL);
     if (r != NULL) {
@@ -458,8 +494,7 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
  */
 static const char *cmd_example(cmd_parms *cmd, void *mconfig)
 {
-
-    excfg *cfg = (excfg *) mconfig;
+    x_cfg *cfg = (x_cfg *) mconfig;
 
     /*
      * "Example Wuz Here"
@@ -493,13 +528,12 @@ static const char *cmd_example(cmd_parms *cmd, void *mconfig)
  *  DECLINED ("this isn't something with which we want to get involved")
  *  HTTP_mumble ("an error status should be reported")
  */
-static int example_handler(request_rec *r)
+static int x_handler(request_rec *r)
 {
-
-    excfg *dcfg;
+    x_cfg *dcfg;
 
     dcfg = our_dconfig(r);
-    trace_add(r->server, r, dcfg, "example_handler()");
+    trace_add(r->server, r, dcfg, "x_handler()");
     /*
      * We're about to start sending content, so we need to force the HTTP
      * headers to be sent at this point.  Otherwise, no headers will be sent
@@ -629,7 +663,7 @@ static int example_handler(request_rec *r)
 /*
  * All our module initialiser does is add its trace to the log.
  */
-static void example_init(apr_pool_t *p, apr_pool_t *ptemp, 
+static void x_init(apr_pool_t *p, apr_pool_t *ptemp, 
                          apr_pool_t *plog, server_rec *s)
 {
 
@@ -645,7 +679,7 @@ static void example_init(apr_pool_t *p, apr_pool_t *ptemp,
      * we're being called.
      */
     sname = (sname != NULL) ? sname : "";
-    note = apr_pstrcat(p, "example_init(", sname, ")", NULL);
+    note = apr_pstrcat(p, "x_init(", sname, ")", NULL);
     trace_add(s, NULL, NULL, note);
 }
 
@@ -658,25 +692,6 @@ static void example_init(apr_pool_t *p, apr_pool_t *ptemp,
  * There is no return value.
  */
 
-/*
- * All our process-death routine does is add its trace to the log.
- */
-static apr_status_t example_child_exit(void *sv)
-{
-    server_rec *s = sv;
-    char *note;
-    char *sname = s->server_hostname;
-
-    /*
-     * The arbitrary text we add to our trace entry indicates for which server
-     * we're being called.
-     */
-    sname = (sname != NULL) ? sname : "";
-    note = apr_pstrcat(s->process->pool, "example_child_exit(", sname, ")", NULL);
-    trace_add(s, NULL, NULL, note);
-    return APR_SUCCESS;
-}
-
 /* 
  * This function is called during server initialisation when an heavy-weight
  * process (such as a child) is being initialised.  As with the
@@ -685,30 +700,6 @@ static apr_status_t example_child_exit(void *sv)
  *
  * There is no return value.
  */
-
-/*
- * All our process initialiser does is add its trace to the log.
- */
-static void example_child_init(apr_pool_t *p, server_rec *s)
-{
-
-    char *note;
-    char *sname = s->server_hostname;
-
-    /*
-     * Set up any module cells that ought to be initialised.
-     */
-    setup_module_cells();
-    /*
-     * The arbitrary text we add to our trace entry indicates for which server
-     * we're being called.
-     */
-    sname = (sname != NULL) ? sname : "";
-    note = apr_pstrcat(p, "example_child_init(", sname, ")", NULL);
-    trace_add(s, NULL, NULL, note);
-
-    apr_pool_cleanup_register(p, s, example_child_exit, example_child_exit);
-}
 
 /*
  * This function gets called to create a per-directory configuration
@@ -722,16 +713,15 @@ static void example_child_init(apr_pool_t *p, server_rec *s)
  * The return value is a pointer to the created module-specific
  * structure.
  */
-static void *example_create_dir_config(apr_pool_t *p, char *dirspec)
+static void *x_create_dir_config(apr_pool_t *p, char *dirspec)
 {
-
-    excfg *cfg;
+    x_cfg *cfg;
     char *dname = dirspec;
 
     /*
      * Allocate the space for our record from the pool supplied.
      */
-    cfg = (excfg *) apr_pcalloc(p, sizeof(excfg));
+    cfg = (x_cfg *) apr_pcalloc(p, sizeof(x_cfg));
     /*
      * Now fill in the defaults.  If there are any `parent' configuration
      * records, they'll get merged as part of a separate callback.
@@ -744,7 +734,7 @@ static void *example_create_dir_config(apr_pool_t *p, char *dirspec)
      */
     dname = (dname != NULL) ? dname : "";
     cfg->loc = apr_pstrcat(p, "DIR(", dname, ")", NULL);
-    trace_add(NULL, NULL, cfg, "example_create_dir_config()");
+    trace_add(NULL, NULL, cfg, "x_create_dir_config()");
     return (void *) cfg;
 }
 
@@ -763,13 +753,13 @@ static void *example_create_dir_config(apr_pool_t *p, char *dirspec)
  * The return value is a pointer to the created module-specific structure
  * containing the merged values.
  */
-static void *example_merge_dir_config(apr_pool_t *p, void *parent_conf,
+static void *x_merge_dir_config(apr_pool_t *p, void *parent_conf,
                                       void *newloc_conf)
 {
 
-    excfg *merged_config = (excfg *) apr_pcalloc(p, sizeof(excfg));
-    excfg *pconf = (excfg *) parent_conf;
-    excfg *nconf = (excfg *) newloc_conf;
+    x_cfg *merged_config = (x_cfg *) apr_pcalloc(p, sizeof(x_cfg));
+    x_cfg *pconf = (x_cfg *) parent_conf;
+    x_cfg *nconf = (x_cfg *) newloc_conf;
     char *note;
 
     /*
@@ -795,7 +785,7 @@ static void *example_merge_dir_config(apr_pool_t *p, void *parent_conf,
      * Now just record our being called in the trace list.  Include the
      * locations we were asked to merge.
      */
-    note = apr_pstrcat(p, "example_merge_dir_config(\"", pconf->loc, "\",\"",
+    note = apr_pstrcat(p, "x_merge_dir_config(\"", pconf->loc, "\",\"",
                    nconf->loc, "\")", NULL);
     trace_add(NULL, NULL, merged_config, note);
     return (void *) merged_config;
@@ -808,17 +798,17 @@ static void *example_merge_dir_config(apr_pool_t *p, void *parent_conf,
  * The return value is a pointer to the created module-specific
  * structure.
  */
-static void *example_create_server_config(apr_pool_t *p, server_rec *s)
+static void *x_create_server_config(apr_pool_t *p, server_rec *s)
 {
 
-    excfg *cfg;
+    x_cfg *cfg;
     char *sname = s->server_hostname;
 
     /*
-     * As with the example_create_dir_config() reoutine, we allocate and fill
+     * As with the x_create_dir_config() reoutine, we allocate and fill
      * in an empty record.
      */
-    cfg = (excfg *) apr_pcalloc(p, sizeof(excfg));
+    cfg = (x_cfg *) apr_pcalloc(p, sizeof(x_cfg));
     cfg->local = 0;
     cfg->congenital = 0;
     cfg->cmode = CONFIG_MODE_SERVER;
@@ -827,7 +817,7 @@ static void *example_create_server_config(apr_pool_t *p, server_rec *s)
      */
     sname = (sname != NULL) ? sname : "";
     cfg->loc = apr_pstrcat(p, "SVR(", sname, ")", NULL);
-    trace_add(s, NULL, cfg, "example_create_server_config()");
+    trace_add(s, NULL, cfg, "x_create_server_config()");
     return (void *) cfg;
 }
 
@@ -844,13 +834,13 @@ static void *example_create_server_config(apr_pool_t *p, server_rec *s)
  * The return value is a pointer to the created module-specific structure
  * containing the merged values.
  */
-static void *example_merge_server_config(apr_pool_t *p, void *server1_conf,
+static void *x_merge_server_config(apr_pool_t *p, void *server1_conf,
                                          void *server2_conf)
 {
 
-    excfg *merged_config = (excfg *) apr_pcalloc(p, sizeof(excfg));
-    excfg *s1conf = (excfg *) server1_conf;
-    excfg *s2conf = (excfg *) server2_conf;
+    x_cfg *merged_config = (x_cfg *) apr_pcalloc(p, sizeof(x_cfg));
+    x_cfg *s1conf = (x_cfg *) server1_conf;
+    x_cfg *s2conf = (x_cfg *) server2_conf;
     char *note;
 
     /*
@@ -865,10 +855,198 @@ static void *example_merge_server_config(apr_pool_t *p, void *server1_conf,
     /*
      * Trace our call, including what we were asked to merge.
      */
-    note = apr_pstrcat(p, "example_merge_server_config(\"", s1conf->loc, "\",\"",
+    note = apr_pstrcat(p, "x_merge_server_config(\"", s1conf->loc, "\",\"",
                    s2conf->loc, "\")", NULL);
     trace_add(NULL, NULL, merged_config, note);
     return (void *) merged_config;
+}
+
+/*
+ * This routine is called before the server processes the configuration
+ * files.  There is no return value.
+ */
+static void x_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
+                         apr_pool_t *ptemp)
+{
+    /*
+     * Log the call and exit.
+     */
+    trace_add(NULL, NULL, NULL, "x_pre_config()");
+}
+
+/*
+ * This routine is called to perform any module-specific fixing of header
+ * fields, et cetera.  It is invoked just before any content-handler.
+ *
+ * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
+ * server will still call any remaining modules with an handler for this
+ * phase.
+ */
+static void x_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+                          apr_pool_t *ptemp, server_rec *s)
+{
+    /*
+     * Log the call and exit.
+     */
+    trace_add(NULL, NULL, NULL, "x_post_config()");
+}
+
+/*
+ * This routine is called to perform any module-specific fixing of header
+ * fields, et cetera.  It is invoked just before any content-handler.
+ *
+ * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
+ * server will still call any remaining modules with an handler for this
+ * phase.
+ */
+static void x_open_logs(apr_pool_t *pconf, apr_pool_t *plog,
+                        apr_pool_t *ptemp, server_rec *s)
+{
+    /*
+     * Log the call and exit.
+     */
+    trace_add(s, NULL, NULL, "x_open_logs()");
+}
+
+/*
+ * All our process-death routine does is add its trace to the log.
+ */
+static void x_child_exit(apr_pool_t *pchild, server_rec *s)
+{
+    char *note;
+    char *sname = s->server_hostname;
+
+    /*
+     * The arbitrary text we add to our trace entry indicates for which server
+     * we're being called.
+     */
+    sname = (sname != NULL) ? sname : "";
+    note = apr_pstrcat(s->process->pool, "x_child_exit(", sname, ")", NULL);
+    trace_add(s, NULL, NULL, note);
+}
+
+/*
+ * All our process initialiser does is add its trace to the log.
+ */
+static void x_child_init(apr_pool_t *p, server_rec *s)
+{
+    char *note;
+    char *sname = s->server_hostname;
+
+    /*
+     * Set up any module cells that ought to be initialised.
+     */
+    setup_module_cells();
+    /*
+     * The arbitrary text we add to our trace entry indicates for which server
+     * we're being called.
+     */
+    sname = (sname != NULL) ? sname : "";
+    note = apr_pstrcat(p, "x_child_init(", sname, ")", NULL);
+    trace_add(s, NULL, NULL, note);
+
+    apr_pool_cleanup_register(p, s, x_child_exit, x_child_exit);
+}
+
+/*
+ * This routine is called to perform any module-specific fixing of header
+ * fields, et cetera.  It is invoked just before any content-handler.
+ *
+ * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
+ * server will still call any remaining modules with an handler for this
+ * phase.
+ */
+static const char *x_http_method(const request_rec *r)
+{
+    x_cfg *cfg;
+
+    cfg = our_dconfig(r);
+    /*
+     * Log the call and exit.
+     */
+    trace_add(r->server, NULL, cfg, "x_post_config()");
+    return "foo";
+}
+
+/*
+ * This routine is called to perform any module-specific fixing of header
+ * fields, et cetera.  It is invoked just before any content-handler.
+ *
+ * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
+ * server will still call any remaining modules with an handler for this
+ * phase.
+ */
+static apr_port_t x_default_port(const request_rec *r)
+{
+    x_cfg *cfg;
+
+    cfg = our_dconfig(r);
+    /*
+     * Log the call and exit.
+     */
+    trace_add(r->server, NULL, cfg, "x_post_config()");
+    return 80;
+}
+
+/*
+ * This routine is called to perform any module-specific fixing of header
+ * fields, et cetera.  It is invoked just before any content-handler.
+ *
+ * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
+ * server will still call any remaining modules with an handler for this
+ * phase.
+ */
+static void x_insert_filter(request_rec *r)
+{
+    x_cfg *cfg;
+
+    cfg = our_dconfig(r);
+    /*
+     * Log the call and exit.
+     */
+    trace_add(r->server, NULL, cfg, "x_post_config()");
+}
+
+/*
+ * This routine is called to perform any module-specific fixing of header
+ * fields, et cetera.  It is invoked just before any content-handler.
+ *
+ * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
+ * server will still call any remaining modules with an handler for this
+ * phase.
+ */
+static int x_quick_handler(request_rec *r)
+{
+    x_cfg *cfg;
+
+    cfg = our_dconfig(r);
+    /*
+     * Log the call and exit.
+     */
+    trace_add(r->server, NULL, cfg, "x_post_config()");
+    return OK;
+}
+
+/*
+ * This routine is called to perform any module-specific fixing of header
+ * fields, et cetera.  It is invoked just before any content-handler.
+ *
+ * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
+ * server will still call any remaining modules with an handler for this
+ * phase.
+ */
+static int x_pre_connection(conn_rec *c)
+{
+    x_cfg *cfg;
+
+    cfg = our_cconfig(c);
+#if 0
+    /*
+     * Log the call and exit.
+     */
+    trace_add(r->server, NULL, cfg, "x_post_config()");
+#endif
+    return OK;
 }
 
 /*
@@ -879,17 +1057,16 @@ static void *example_merge_server_config(apr_pool_t *p, void *server1_conf,
  * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, no
  * further modules are called for this phase.
  */
-static int example_post_read_request(request_rec *r)
+static int x_post_read_request(request_rec *r)
 {
-
-    excfg *cfg;
+    x_cfg *cfg;
 
     cfg = our_dconfig(r);
     /*
      * We don't actually *do* anything here, except note the fact that we were
      * called.
      */
-    trace_add(r->server, r, cfg, "example_post_read_request()");
+    trace_add(r->server, r, cfg, "x_post_read_request()");
     return DECLINED;
 }
 
@@ -901,17 +1078,17 @@ static int example_post_read_request(request_rec *r)
  * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, no
  * further modules are called for this phase.
  */
-static int example_translate_handler(request_rec *r)
+static int x_translate_handler(request_rec *r)
 {
 
-    excfg *cfg;
+    x_cfg *cfg;
 
     cfg = our_dconfig(r);
     /*
      * We don't actually *do* anything here, except note the fact that we were
      * called.
      */
-    trace_add(r->server, r, cfg, "example_translate_handler()");
+    trace_add(r->server, r, cfg, "x_translate_handler()");
     return DECLINED;
 }
 
@@ -924,16 +1101,16 @@ static int example_translate_handler(request_rec *r)
  * HTTP_UNAUTHORIZED).  If we return OK, no other modules are given a chance
  * at the request during this phase.
  */
-static int example_check_user_id(request_rec *r)
+static int x_check_user_id(request_rec *r)
 {
 
-    excfg *cfg;
+    x_cfg *cfg;
 
     cfg = our_dconfig(r);
     /*
      * Don't do anything except log the call.
      */
-    trace_add(r->server, r, cfg, "example_check_user_id()");
+    trace_add(r->server, r, cfg, "x_check_user_id()");
     return DECLINED;
 }
 
@@ -947,17 +1124,17 @@ static int example_check_user_id(request_rec *r)
  * If *all* modules return DECLINED, the request is aborted with a server
  * error.
  */
-static int example_auth_checker(request_rec *r)
+static int x_auth_checker(request_rec *r)
 {
 
-    excfg *cfg;
+    x_cfg *cfg;
 
     cfg = our_dconfig(r);
     /*
      * Log the call and return OK, or access will be denied (even though we
      * didn't actually do anything).
      */
-    trace_add(r->server, r, cfg, "example_auth_checker()");
+    trace_add(r->server, r, cfg, "x_auth_checker()");
     return DECLINED;
 }
 
@@ -970,13 +1147,13 @@ static int example_auth_checker(request_rec *r)
  * return OK or DECLINED.  The first one to return any other status, however,
  * will abort the sequence (and the request) as usual.
  */
-static int example_access_checker(request_rec *r)
+static int x_access_checker(request_rec *r)
 {
 
-    excfg *cfg;
+    x_cfg *cfg;
 
     cfg = our_dconfig(r);
-    trace_add(r->server, r, cfg, "example_access_checker()");
+    trace_add(r->server, r, cfg, "x_access_checker()");
     return DECLINED;
 }
 
@@ -988,17 +1165,17 @@ static int example_access_checker(request_rec *r)
  * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, no
  * further modules are given a chance at the request for this phase.
  */
-static int example_type_checker(request_rec *r)
+static int x_type_checker(request_rec *r)
 {
 
-    excfg *cfg;
+    x_cfg *cfg;
 
     cfg = our_dconfig(r);
     /*
      * Log the call, but don't do anything else - and report truthfully that
      * we didn't do anything.
      */
-    trace_add(r->server, r, cfg, "example_type_checker()");
+    trace_add(r->server, r, cfg, "x_type_checker()");
     return DECLINED;
 }
 
@@ -1010,16 +1187,16 @@ static int example_type_checker(request_rec *r)
  * server will still call any remaining modules with an handler for this
  * phase.
  */
-static int example_fixer_upper(request_rec *r)
+static int x_fixer_upper(request_rec *r)
 {
 
-    excfg *cfg;
+    x_cfg *cfg;
 
     cfg = our_dconfig(r);
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, r, cfg, "example_fixer_upper()");
+    trace_add(r->server, r, cfg, "x_fixer_upper()");
     return OK;
 }
 
@@ -1030,13 +1207,13 @@ static int example_fixer_upper(request_rec *r)
  * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, any
  * remaining modules with an handler for this phase will still be called.
  */
-static int example_logger(request_rec *r)
+static int x_logger(request_rec *r)
 {
 
-    excfg *cfg;
+    x_cfg *cfg;
 
     cfg = our_dconfig(r);
-    trace_add(r->server, r, cfg, "example_logger()");
+    trace_add(r->server, r, cfg, "x_logger()");
     return DECLINED;
 }
 
@@ -1048,13 +1225,13 @@ static int example_logger(request_rec *r)
  * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, any
  * remaining modules with handlers for this phase will still be called.
  */
-static int example_header_parser(request_rec *r)
+static int x_header_parser(request_rec *r)
 {
 
-    excfg *cfg;
+    x_cfg *cfg;
 
     cfg = our_dconfig(r);
-    trace_add(r->server, r, cfg, "example_header_parser()");
+    trace_add(r->server, r, cfg, "x_header_parser()");
     return DECLINED;
 }
 
@@ -1071,14 +1248,15 @@ static int example_header_parser(request_rec *r)
  *
  * The args are as follows:
  * name         -> the name of the function to call.
- * predecessors -> a list of modules whose calls to this hook must come 
- *                 before this module.
- * successors   -> a list of modules whose calls to this hook must come 
- *                 after this module.
- * position     -> The relative position of this module.  One of APR_HOOK_FIRST,
- *                 APR_HOOK_MIDDLE, or APR_HOOK_LAST.  Most modules will use
- *                 APR_HOOK_MIDDLE.  If multiple modules use the same relative
- *                 position, Apache will determine which to call first.
+ * predecessors -> a list of modules whose calls to this hook must be
+ *                 invoked before this module.
+ * successors   -> a list of modules whose calls to this hook must be
+ *                 invoked after this module.
+ * position     -> The relative position of this module.  One of
+ *                 APR_HOOK_FIRST, APR_HOOK_MIDDLE, or APR_HOOK_LAST.
+ *                 Most modules will use APR_HOOK_MIDDLE.  If multiple
+ *                 modules use the same relative position, Apache will
+ *                 determine which to call first.
  *                 If your module relies on another module to run first,
  *                 or another module running after yours, use the 
  *                 predecessors and/or successors.
@@ -1089,43 +1267,30 @@ static int example_header_parser(request_rec *r)
  * The actual delivery of content to the browser [9] is not handled by
  * a hook; see the handler declarations below.
  */
-static void example_register_hooks(apr_pool_t *p)
+static void x_register_hooks(apr_pool_t *p)
 {
-    /* module initializer */
-    ap_hook_post_config(example_init,
-			NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_pre_config(x_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_config(x_post_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_open_logs(x_open_logs, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_child_init(x_child_init, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_handler(x_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_quick_handler(x_quick_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_pre_connection(x_pre_connection, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_process_connection(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
     /* [1] post read_request handling */
-    ap_hook_post_read_request(example_post_read_request,
-			      NULL, NULL, APR_HOOK_MIDDLE);
-    /* [2] filename-to-URI translation */
-    ap_hook_translate_name(example_translate_handler,
-			   NULL, NULL, APR_HOOK_MIDDLE);
-    /* [3] header parser */
-    ap_hook_header_parser(example_header_parser,
-			  NULL, NULL, APR_HOOK_MIDDLE);
-    /* [4] check access by host address */
-    ap_hook_access_checker(example_access_checker,
-			   NULL, NULL, APR_HOOK_MIDDLE);
-    /* [5] check/validate user_id */
-    ap_hook_check_user_id(example_check_user_id,
-			  NULL, NULL, APR_HOOK_MIDDLE);
-    /* [6] check user_id is valid *here* */
-    ap_hook_auth_checker(example_auth_checker,
-			 NULL, NULL, APR_HOOK_MIDDLE);
-    /* [7] MIME type checker/setter */
-    ap_hook_type_checker(example_type_checker,
-			 NULL, NULL, APR_HOOK_MIDDLE);
-    /* [8] fixups */
-    ap_hook_fixups(example_fixer_upper,
-		   NULL, NULL, APR_HOOK_MIDDLE);
-    /* [9] is for the handlers; see below */
-
-    /* [10] logger */
-    ap_hook_log_transaction(example_logger,
-			    NULL, NULL, APR_HOOK_MIDDLE);
-    /* process initializer */
-    ap_hook_child_init(example_child_init,
-		       NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_read_request(x_fixer_upper, NULL, NULL,
+                              APR_HOOK_MIDDLE);
+    ap_hook_log_transaction(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_http_method(x_http_method, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_default_port(x_default_port, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_create_request(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_translate_name(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_check_user_id(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_fixups(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_type_checker(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_access_checker(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_auth_checker(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_insert_filter(x_insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -1140,7 +1305,7 @@ static void example_register_hooks(apr_pool_t *p)
 /* 
  * List of directives specific to our module.
  */
-static const command_rec example_cmds[] =
+static const command_rec x_cmds[] =
 {
     AP_INIT_NO_ARGS(
         "Example",                          /* directive name */
@@ -1169,11 +1334,13 @@ static const command_rec example_cmds[] =
  * if a content-handler returns anything except DECLINED, no other
  * content-handlers will be called.
  */
-static const handler_rec example_handlers[] =
+#if 0
+static const handler_rec x_handlers[] =
 {
-    {"example-handler", example_handler},
+    {"example-handler", x_handler},
     {NULL}
 };
+#endif
 
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
@@ -1188,11 +1355,10 @@ static const handler_rec example_handlers[] =
 module example_module =
 {
     STANDARD20_MODULE_STUFF,
-    example_create_dir_config,    /* per-directory config creator */
-    example_merge_dir_config,     /* dir config merger */
-    example_create_server_config, /* server config creator */
-    example_merge_server_config,  /* server config merger */
-    example_cmds,                 /* command table */
-    example_handlers,             /* list of content delivery handlers */
-    example_register_hooks,       /* set up other request processing hooks */
+    x_create_dir_config,    /* per-directory config creator */
+    x_merge_dir_config,     /* dir config merger */
+    x_create_server_config, /* server config creator */
+    x_merge_server_config,  /* server config merger */
+    x_cmds,                 /* command table */
+    x_register_hooks,       /* set up other request processing hooks */
 };
