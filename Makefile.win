@@ -218,6 +218,7 @@ _build:
 	cd ..\..\..
 	cd modules\experimental
 	 $(MAKE) $(MAKEOPT) -f mod_cache.mak       CFG="mod_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_charset_lite.mak CFG="mod_charset_lite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_mem_cache.mak   CFG="mod_mem_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_disk_cache.mak  CFG="mod_disk_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_ext_filter.mak  CFG="mod_ext_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -368,6 +369,7 @@ _install:
 	copy modules\dav\fs\$(LONG)\mod_dav_fs.so "$(INSTDIR)\modules" <.y
 	copy modules\dav\main\$(LONG)\mod_dav.so "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_cache.so "$(INSTDIR)\modules" <.y
+	copy modules\experimental\$(LONG)\mod_charset_lite.so "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_mem_cache.so "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_disk_cache.so "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_ext_filter.so "$(INSTDIR)\modules" <.y
@@ -416,6 +418,7 @@ _install:
 	copy modules\dav\fs\$(LONG)\mod_dav_fs.pdb "$(INSTDIR)\modules" <.y
 	copy modules\dav\main\$(LONG)\mod_dav.pdb "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_cache.pdb "$(INSTDIR)\modules" <.y
+	copy modules\experimental\$(LONG)\mod_charset_lite.pdb "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_mem_cache.pdb "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_disk_cache.pdb "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_ext_filter.pdb "$(INSTDIR)\modules" <.y
@@ -600,6 +603,7 @@ BEGIN {
 	xcopy include\*.h "$(INSTDIR)\include" /d < .a
 	xcopy docs\icons "$(INSTDIR)\icons" /s /d < .a
 	copy srclib\apr\Lib$(SHORT)\apr.lib "$(INSTDIR)\lib" <.y
+	copy srclib\apr-iconv\Lib$(SHORT)\apriconv.lib "$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\Lib$(SHORT)\aprutil.lib "$(INSTDIR)\lib" <.y
 	copy srclib\pcre\Lib$(SHORT)\pcre.lib "$(INSTDIR)\lib" <.y
 	copy srclib\pcre\Lib$(SHORT)\pcreposix.lib "$(INSTDIR)\lib" <.y
@@ -608,6 +612,8 @@ BEGIN {
 	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml.lib "$(INSTDIR)\lib\expat.lib" <.y
 	copy srclib\apr\$(LONG)\libapr.lib "$(INSTDIR)\lib" <.y
 	copy srclib\apr\$(LONG)\libapr.exp "$(INSTDIR)\lib" <.y
+	copy srclib\apr-iconv\$(LONG)\libapriconv.lib "$(INSTDIR)\lib" <.y
+	copy srclib\apr-iconv\$(LONG)\libapriconv.exp "$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\$(LONG)\libaprutil.lib "$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\$(LONG)\libaprutil.exp "$(INSTDIR)\lib" <.y
 	copy $(LONG)\libhttpd.exp "$(INSTDIR)\lib" <.y
