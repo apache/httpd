@@ -665,7 +665,7 @@ default: \$(MODULES)
 clean: \$(CLEANERS)
 	@echo "Done cleaning module subdirectories"
 
-\$(MODULES): ForceMe
+placeholder \$(MODULES): ForceMe
 	(cd \$@; \$(MAKE) CC=\$(CC) AUX_CFLAGS='\$(MOD_CFLAGS)' RANLIB='\$(RANLIB)')
 
 ForceMe:

@@ -55,6 +55,9 @@ Changes with Apache 1.2.1
      lockfile in any location.  It previously defaulted to /usr/tmp/htlock.
      [Somehow it took four of us: Randy Terbush, Jim Jagielski, Dean Gaudet,
      Marc Slemko]
+  
+  *) Add a placeholder in modules/Makefile to avoid errors with certain
+     makes. [Marc Slemko]
 
   *) QUERY_STRING was unescaped in mod_include, it shouldn't be.
      [Dean Gaudet] PR#644
