@@ -639,13 +639,13 @@ API_EXPORT(void) ap_send_size(ap_ssize_t size, request_rec *r)
 	ap_rputs("   1k", r);
     }
     else if (size < 1048576) {
-	ap_rprintf(r, "%4ldk", (size + 512) / 1024);
+	ap_rprintf(r, "%4" APR_SSIZE_T_FMT "k", (size + 512) / 1024);
     }
     else if (size < 103809024) {
 	ap_rprintf(r, "%4.1fM", size / 1048576.0);
     }
     else {
-	ap_rprintf(r, "%4ldM", (size + 524288) / 1048576);
+	ap_rprintf(r, "%4" APR_SSIZE_T_FMT "M", (size + 524288) / 1048576);
     }
 }
 
