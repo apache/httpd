@@ -1,10 +1,6 @@
-.deps
 .libs
-*.la
-modules.mk
+.deps
 Makefile
+modules.mk
 *.lo
-*.slo
-*.so
-Debug
-Release
+*.la
