@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.7 -->
+<!-- English revision: 1.8 -->
 <modulesynopsis>
 
 <name>mod_userdir</name>
@@ -12,9 +12,9 @@
 <identifier>userdir_module</identifier>
 
 <summary>
-このモジュールは、
+<p>このモジュールは、
 <code>http://example.com/~user/</code>
-構文を使ってユーザ専用ディレクトリにアクセスできるようにします。
+構文を使ってユーザ専用ディレクトリにアクセスできるようにします。</p>
 </summary>
 
 <seealso><a href="../urlmapping.html">URL から
