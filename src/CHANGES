@@ -1,5 +1,8 @@
 Changes with Apache 1.3.5
 
+  *) Add ability to handle DES or MD5 authentication passwords.
+     [Ryan Bloom <rbb@Raleigh.IBM.Com>]
+
   *) Fix O(n^2) memory consumption in mod_speling.  [Dean Gaudet]
 
   *) SECURITY: Avoid some buffer overflow problems when escaping

@@ -92,6 +92,7 @@
 
 #include "ap_config.h"
 #include "ap_md5.h"
+#include "ap.h"
 #ifdef CHARSET_EBCDIC
 #include "ebcdic.h"
 #endif /*CHARSET_EBCDIC*/
@@ -389,4 +390,48 @@ static void Decode(UINT4 *output, const unsigned char *input, unsigned int len)
     for (i = 0, j = 0; j < len; i++, j += 4)
 	output[i] = ((UINT4) input[j]) | (((UINT4) input[j + 1]) << 8) |
 	    (((UINT4) input[j + 2]) << 16) | (((UINT4) input[j + 3]) << 24);
+}
+
+API_EXPORT(char *) ap_MD5Encode(const char *password, const char * salt) {
+/* salt has size 2, md5 hash size 22, plus 1 for trailing NUL, plus 4 for
+   '$' separators between md5 distinguisher, salt, and password.*/
+
+    static unsigned char ret[2+22+1+4];
+    AP_MD5_CTX my_md5;
+    unsigned char hash[16], *cp;
+    register int i;
+    static const char *alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./";
+ 
+    /*
+     * Take the MD5 hash of the string argument.
+    */
+ 
+    sprintf(ret, "$1$%s$", salt); 
+ 
+    /* If the salt is shorter than 2, pad with random characters */
+    for (cp = &ret[strlen(ret)]; cp < &ret[2]; ++cp) {
+        *cp = alphabet[rand() & 0x3F];
+    }
+    ap_MD5Init(&my_md5);
+    ap_MD5Update(&my_md5, salt, 2);
+    ap_MD5Update(&my_md5, password, strlen(password));
+    ap_MD5Final(hash, &my_md5);
+ 
+    /* Take 3*8 bits (3 bytes) and store them as 4 base64 bytes (of 6 bit each) */
+    /* Copy first 15 bytes in loop (producing 20 result bytes) */
+    for (i = 0, cp = &ret[6]; i < 15; i += 3, cp += 4) {
+        long l = hash[i] | (hash[i+1] << 8) | (hash[i+2] << 16);
+ 
+        cp[0] = alphabet[l&0x3F];
+        cp[1] = alphabet[(l>>6)&0x3F];
+        cp[2] = alphabet[(l>>12)&0x3F];
+        cp[3] = alphabet[(l>>18)&0x3F];
+    }
+    cp[0] = alphabet[hash[i]&0x3F]; /* Use 16th byte as 21st result byte */
+    cp[1] = alphabet[(hash[i]>>6)&0x3F]; /* Last 2 bits of 16th byte are 22nd result byte */
+    cp[2] = '\0';
+ 
+    /*ap_assert(&cp[2] == &ret[(sizeof ret)-1]);*/
+ 
+    return (char *)ret;
 }

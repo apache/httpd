@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/01/20 03:38:18 $]
+  Last modified at [$Date: 1999/01/25 22:55:31 $]
 
 Release:
 
@@ -385,10 +385,6 @@ Win32 specific issues:
 
       That _really_ sucks.  Can we recommend running Apache as some 
       other user?
-
-    * need a crypt() of some sort.
-	- sources are easy; problem is export restrictions on DES
-	- if we don't do DES, can do md5
 
     * modules that need to be made to work on win32
         - mod_example isn't multithreadreded

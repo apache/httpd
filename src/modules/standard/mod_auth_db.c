@@ -96,6 +96,10 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include <db.h>
+#include "ap_md5.h";
+#if defined(HAVE_CRYPT_H)
+#include <crypt.h>
+#endif
 
 #if defined(DB_VERSION_MAJOR) && (DB_VERSION_MAJOR == 2)
 #define DB2
@@ -244,12 +248,22 @@ static int db_authenticate_basic_user(request_rec *r)
     }
     /* Password is up to first : if exists */
     colon_pw = strchr(real_pw, ':');
-    if (colon_pw)
+    if (colon_pw) {
 	*colon_pw = '\0';
+    }
     /* anyone know where the prototype for crypt is? */
-    if (strcmp(real_pw, (char *) crypt(sent_pw, real_pw))) {
+    if (real_pw[0] == '$' && real_pw[1] == '1') {
+        char *salt = real_pw + 3;
+        salt = ap_getword(r->pool, &salt, '$');
+        res = strcmp(real_pw, ap_MD5Encode(sent_pw, salt));
+    }
+    else {
+        res = strcmp(real_pw, crypt(sent_pw, real_pw));
+    }
+
+    if (res != 0) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
-		    "DB user %s: password mismatch: %s", c->user, r->uri);
+		      "DB user %s: password mismatch: %s", c->user, r->uri);
 	ap_note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }

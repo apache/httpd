@@ -13,6 +13,13 @@
 #include "ap_config.h"
 #include <sys/types.h>
 #include <signal.h>
+#include "ap_md5.h"
+
+#ifdef WIN32
+#include <conio.h>
+#include "../os/win32/getopt.h"
+#define unlink _unlink
+#endif
 
 #ifndef CHARSET_EBCDIC
 #define LF 10
@@ -116,7 +123,41 @@ static char *getpass(const char *prompt)
 
 #endif
 
-static void add_password(char *user, FILE *f)
+#ifdef WIN32
+/* Windows lacks getpass().  So we'll re-implement it here.
+ */
+
+static char *getpass(const char *prompt)
+{
+    static char password[81];
+    int n = 0;
+
+    fputs(prompt, stderr);
+    
+    while ((password[n] = _getch()) != '\r') {
+        if (password[n] >= ' ' && password[n] <= '~') {
+            n++;
+            printf("*");
+        }
+	else {
+            printf("\n");
+            fputs(prompt, stderr);
+            n = 0;
+        }
+    }
+ 
+    password[n] = '\0';
+    printf("\n");
+
+    if (n > 8) {
+        password[8] = '\0';
+    }
+
+    return (char *) &password;
+}
+#endif
+
+static void add_password(char *user, FILE *f, int use_md5)
 {
     char *pw, *cpw, salt[3];
 
@@ -131,15 +172,23 @@ static void add_password(char *user, FILE *f)
     (void) srand((int) time((time_t *) NULL));
     to64(&salt[0], rand(), 2);
     salt[2] = '\0';
-    cpw = (char *)crypt(pw, salt);
+
+    if (use_md5) {
+        cpw = (char *)ap_MD5Encode(pw, salt);
+    }
+    else {
+	cpw = (char *)crypt(pw, salt);
+    }
     free(pw);
     fprintf(f, "%s:%s\n", user, cpw);
 }
 
 static void usage(void)
 {
-    fprintf(stderr, "Usage: htpasswd [-c] passwordfile username\n");
+    fprintf(stderr, "Usage: htpasswd [-cm] passwordfile username\n");
     fprintf(stderr, "The -c flag creates a new file.\n");
+    fprintf(stderr, "The -m flag creates a md5 encrypted file.\n");
+    fprintf(stderr, "On Windows systems the -m flag is used by default.\n");
     exit(1);
 }
 
@@ -160,27 +209,58 @@ int main(int argc, char *argv[])
     char l[MAX_STRING_LEN];
     char w[MAX_STRING_LEN];
     char command[MAX_STRING_LEN];
+    char filename[MAX_STRING_LEN];
     int found;
+    int use_md5 = 0;
+    int newfile = 0;
 
     tn = NULL;
-    signal(SIGINT, (void (*)()) interrupted);
-    if (argc == 4) {
-	if (strcmp(argv[1], "-c")) {
+    signal(SIGINT, (void (*)(int)) interrupted);
+
+    /* preliminary check to make sure they provided at least
+     * three arguments, we'll do better argument checking as 
+     * we parse the command line.
+     */
+    if (argc < 3) {
 	    usage();
-	}
-	if (!(tfp = fopen(argv[2], "w+"))) {
-	    fprintf(stderr, "Could not open passwd file %s for writing.\n",
-		    argv[2]);
+    }
+    else {
+        strcpy(filename, argv[argc - 2]);
+    }
+
+    /* I would rather use getopt, but Windows and UNIX seem to handle getopt
+     * differently, so I am doing the argument checking by hand.
+     */
+    
+    if (!strcmp(argv[1],"-c") || !strcmp(argv[2],"-c")) {
+        newfile = 1;
+    }
+    if (!strcmp(argv[1],"-m") || !strcmp(argv[2],"-m")) {
+        use_md5 = 1;
+    }
+
+    if (!strcmp(argv[1], "-cm") || !strcmp(argv[2], "-mc")) {
+        use_md5 = 1;
+        newfile = 1;
+    }
+
+#ifdef WIN32
+    if (!use_md5) {
+	use_md5 = 1;
+	fprintf(stderr,"Automatically using md5 format on Windows.\n");
+    }
+#endif
+    if (newfile) {
+        if (!(tfp = fopen(filename, "w+"))) {
+            fprintf(stderr, "Could not open password file %s for writing.\n",
+                    filename);
 	    perror("fopen");
 	    exit(1);
 	}
-	printf("Adding password for %s.\n", argv[3]);
-	add_password(argv[3], tfp);
+	printf("Adding password for %s.\n", argv[argc-1]);
+	add_password(argv[argc - 1], tfp, use_md5);
 	fclose(tfp);
-	exit(0);
-    }
-    else if (argc != 3) {
-	usage();
+	return(0);
     }
 
     tn = tmpnam(NULL);
@@ -189,13 +269,15 @@ int main(int argc, char *argv[])
 	exit(1);
     }
 
-    if (!(f = fopen(argv[1], "r+"))) {
-	fprintf(stderr,
-		"Could not open passwd file %s for reading.\n", argv[1]);
-	fprintf(stderr, "Use -c option to create new one.\n");
+    if (!(f = fopen(argv[argc - 2], "r+"))) {
+        fprintf(stderr, "Could not open password file %s for reading.\n",
+                argv[argc - 2]);
+        fprintf(stderr, "Use -c option to create a new one\n");
+	fclose(tfp);
+	unlink(tn);
 	exit(1);
     }
-    strcpy(user, argv[2]);
+    strcpy(user, argv[argc - 1]);
 
     found = 0;
     while (!(getline(line, MAX_STRING_LEN, f))) {
@@ -208,28 +290,28 @@ int main(int argc, char *argv[])
 	if (strcmp(user, w)) {
 	    putline(tfp, line);
 	    continue;
-	}
+        }
 	else {
 	    printf("Changing password for user %s\n", user);
-	    add_password(user, tfp);
+            add_password(user, tfp, use_md5);
 	    found = 1;
 	}
     }
     if (!found) {
 	printf("Adding user %s\n", user);
-	add_password(user, tfp);
+        add_password(user, tfp, use_md5);
     }
 /*
  * make a copy from the tmp file to the actual file
  */  
-    rewind(f);
+    f = fopen(filename, "w+");
     rewind(tfp);
-    while ( fgets(command,MAX_STRING_LEN,tfp) != NULL) {
-	fputs(command,f);
-    } 
+    while (fgets(command, MAX_STRING_LEN, tfp) != NULL) {
+	fputs(command, f);
+    }
 
     fclose(f);
     fclose(tfp);
     unlink(tn);
-    exit(0);
+    return(0);
 }
