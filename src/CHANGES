@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) Modify mod_autoindex's handling of AddDescription so that the
+     behaviour matches the documentation.  [Ken Coar] PR#1898, 3072.
+
   *) Add functionality to the install-bindist.sh script created by
      binbuild.sh to use tar when copying distribution files to the
      serverroot. This allows upgrading an existing installation

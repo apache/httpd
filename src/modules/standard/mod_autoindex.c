@@ -72,6 +72,7 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "util_script.h"
+#include "fnmatch.h"
 
 module MODULE_VAR_EXPORT autoindex_module;
 
@@ -131,6 +132,12 @@ struct item {
     char *data;
 };
 
+typedef struct ai_desc_t {
+    char *pattern;
+    char *description;
+    int full_path;
+} ai_desc_t;
+
 typedef struct autoindex_config_struct {
 
     char *default_icon;
@@ -143,8 +150,12 @@ typedef struct autoindex_config_struct {
     int icon_height;
     char *default_order;
 
-    array_header *icon_list, *alt_list, *desc_list, *ign_list;
-    array_header *hdr_list, *rdme_list;
+    array_header *icon_list;
+    array_header *alt_list;
+    array_header *desc_list;
+    array_header *ign_list;
+    array_header *hdr_list;
+    array_header *rdme_list;
 
 } autoindex_config_rec;
 
@@ -257,10 +268,31 @@ static const char *add_icon(cmd_parms *cmd, void *d, char *icon, char *to)
     return NULL;
 }
 
+/*
+ * Add description text for a filename pattern.  Prefix the pattern
+ * with a wildcard unless it begins with '/' signifying an absolute
+ * path.  If the pattern contains a '/' anywhere, add a slash to the
+ * prefix so that "bar/bletch" won't be matched by "foobar/bletch",
+ * and make a note that there's a delimiter; the matching routine
+ * simplifies to just the actual filename whenever it can.  This allows
+ * definitions in parent directories to be made for files in subordinate
+ * ones using relative paths.  Always postfix with a wildard so that
+ * partial or leading names will match.
+ */
 static const char *add_desc(cmd_parms *cmd, void *d, char *desc, char *to)
 {
-    push_item(((autoindex_config_rec *) d)->desc_list, cmd->info, to,
-	      cmd->path, desc);
+    autoindex_config_rec *dcfg = (autoindex_config_rec *) d;
+    ai_desc_t *desc_entry;
+    char *prefix = "";
+
+    desc_entry = (ai_desc_t *) ap_push_array(dcfg->desc_list);
+    desc_entry->full_path = (strchr(to, '/') == NULL) ? 0 : 1;
+    if (*to != '/') {
+	prefix = desc_entry->full_path ? "*/" : "*";
+    }
+    desc_entry->pattern = ap_pstrcat(dcfg->desc_list->pool,
+				     prefix, to, "*", NULL);
+    desc_entry->description = ap_pstrdup(dcfg->desc_list->pool, desc);
     return NULL;
 }
 
@@ -530,7 +562,7 @@ static void *create_autoindex_config(pool *p, char *dummy)
     new->name_adjust = K_UNSET;
     new->icon_list = ap_make_array(p, 4, sizeof(struct item));
     new->alt_list = ap_make_array(p, 4, sizeof(struct item));
-    new->desc_list = ap_make_array(p, 4, sizeof(struct item));
+    new->desc_list = ap_make_array(p, 4, sizeof(ai_desc_t));
     new->ign_list = ap_make_array(p, 4, sizeof(struct item));
     new->hdr_list = ap_make_array(p, 4, sizeof(struct item));
     new->rdme_list = ap_make_array(p, 4, sizeof(struct item));
@@ -688,7 +720,6 @@ static char *find_item(request_rec *r, array_header *list, int path_only)
 
 #define find_icon(d,p,t) find_item(p,d->icon_list,t)
 #define find_alt(d,p,t) find_item(p,d->alt_list,t)
-#define find_desc(d,p) find_item(p,d->desc_list,0)
 #define find_header(d,p) find_item(p,d->hdr_list,0)
 #define find_readme(d,p) find_item(p,d->rdme_list,0)
 
@@ -705,6 +736,45 @@ static char *find_default_icon(autoindex_config_rec *d, char *bogus_name)
     r.content_type = r.content_encoding = NULL;
 
     return find_item(&r, d->icon_list, 1);
+}
+
+/*
+ * Look through the list of pattern/description pairs and return the first one
+ * if any) that matches the filename in the request.  If multiple patterns
+ * match, only the first one is used; since the order in the array is the
+ * same as the order in which directives were processed, earlier matching
+ * directives will dominate.
+ */
+static char *find_desc(autoindex_config_rec *dcfg, request_rec *r)
+{
+    int i;
+    ai_desc_t *list = (ai_desc_t *) dcfg->desc_list->elts;
+    const char *filename_full = r->filename;
+    const char *filename_only;
+    const char *filename;
+
+    /*
+     * If the filename includes a path, extract just the name itself
+     * for the simple matches.
+     */
+    if ((filename_only = strrchr(filename_full, '/')) == NULL) {
+	filename_only = filename_full;
+    }
+    else {
+	filename_only++;
+    }
+    for (i = 0; i < dcfg->desc_list->nelts; ++i) {
+	ai_desc_t *tuple = &list[i];
+
+	/*
+	 * Only use the full-path filename if the pattern contains '/'s.
+	 */
+	filename = (tuple->full_path) ? filename_full : filename_only;
+	if (ap_fnmatch(tuple->pattern, filename, 0) == 0) {
+	    return tuple->description;
+	}
+    }
+    return NULL;
 }
 
 static int ignore_entry(autoindex_config_rec *d, char *path)
