@@ -160,9 +160,6 @@ apr_status_t ap_registry_delete_key(const char *key)
 		          KEY_WRITE,
 		          &hKey);
 
-        if (rv == ERROR_FILE_NOT_FOUND)
-            return APR_ENODIR;
-    
         if (rv != ERROR_SUCCESS)
             return_error(rv);
     }
@@ -181,7 +178,7 @@ apr_status_t ap_registry_delete_key(const char *key)
 
 /* Clean up a way over complicated process.
  *
- * The return value is APR_SUCCESS, APR_ENOPATH, APR_NOTFOUND, or the OS error
+ * The return value is APR_SUCCESS, APR_ENOENT, APR_NOTFOUND, or the OS error
  */
 
 apr_status_t ap_registry_get_value(apr_pool_t *p, const char *key, const char *name, char **ppValue)
@@ -196,9 +193,6 @@ apr_status_t ap_registry_get_value(apr_pool_t *p, const char *key, const char *n
 		      KEY_READ,
 		      &hKey);
 
-    if (rv == ERROR_FILE_NOT_FOUND)
-        return APR_ENODIR;
-    
     if (rv != ERROR_SUCCESS)
         return_error(rv);
 
@@ -224,9 +218,6 @@ apr_status_t ap_registry_get_value(apr_pool_t *p, const char *key, const char *n
 			 *ppValue,      /* for value */
 			 &nSize);	/* for size of "value" */
 
-    if (rv == ERROR_FILE_NOT_FOUND)
-        rv = APR_ENOFILE;
-
     RegCloseKey(hKey);
 
     return_error(rv);
@@ -247,9 +238,6 @@ apr_status_t ap_registry_get_array(apr_pool_t *p, const char *key, const char *n
 		      KEY_READ,
 		      &hKey);
 
-    if (rv == ERROR_FILE_NOT_FOUND)
-        return APR_ENODIR;
-    
     if (rv != ERROR_SUCCESS)
         return_error(rv);
 
@@ -264,10 +252,7 @@ apr_status_t ap_registry_get_array(apr_pool_t *p, const char *key, const char *n
 			 NULL,		/* for value */
 			 &nSize);		/* for size of "value" */
 
-    if (rv == ERROR_FILE_NOT_FOUND) {
-        rv = APR_ENOFILE;
-    }
-    else if (rv != ERROR_SUCCESS) {
+    if (rv != ERROR_SUCCESS) {
 	return_error(rv);
     }
     else 
@@ -346,9 +331,6 @@ apr_status_t ap_registry_store_value(const char *key, const char *name, const ch
 		          0,
 	 	          KEY_WRITE,
 		          &hKey);
-
-	if (rv == ERROR_FILE_NOT_FOUND)
-            return APR_ENODIR;
     }
 
     if (rv != ERROR_SUCCESS)
@@ -400,9 +382,6 @@ apr_status_t ap_registry_store_array(apr_pool_t *p, const char *key, const char 
 		          0,
 	 	          KEY_WRITE,
 		          &hKey);
-
-	if (rv == ERROR_FILE_NOT_FOUND)
-            return APR_ENODIR;
     }
 
     if (rv != ERROR_SUCCESS)
