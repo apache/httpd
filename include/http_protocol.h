@@ -265,10 +265,10 @@ API_EXPORT(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
 API_EXPORT(ap_method_list_t *) ap_make_method_list(apr_pool_t *p, int nelts);
 API_EXPORT(void) ap_copy_method_list(ap_method_list_t *dest,
 				     ap_method_list_t *src);
-API_EXPORT(void) ap_method_list_do(int (*comp) (void *urec, const char *mname,
-						int mnum),
-				   void *rec,
-				   const ap_method_list_t *ml, ...);
+API_EXPORT_NONSTD(void) ap_method_list_do(int (*comp) (void *urec, const char *mname,
+						       int mnum),
+				          void *rec,
+				          const ap_method_list_t *ml, ...);
 API_EXPORT(void) ap_method_list_vdo(int (*comp) (void *urec, const char *mname,
 						 int mnum),
 				    void *rec, const ap_method_list_t *ml,
