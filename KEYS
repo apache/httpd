@@ -314,7 +314,7 @@ B7zJElmBUrmj9aW6ICmSNbOBwVo1Y7hg6lPSFFMOOECFpT1WuTXXYpNA
 Type bits/keyID    Date       User ID
 pub  1024/EE65E321 1998/10/22 Martin Kraemer <martin@apache.org>
 sig       BB1D9F6D             ct magazine CERTIFICATE <pgpCA@ct.heise.de>
-sig       E2449019             Martin Kraemer <Martin.Kraemer@Mch.SNI.De>
+sig       E2449019             Martin Kraemer <Martin.Kraemer@Fujitsu-Siemens.com>
 sig       EE65E321             Martin Kraemer <martin@apache.org>
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: PGP 6.5.1i
@@ -342,6 +342,27 @@ Iq6TEECSEqlwZ6Jt69ngfpNWvyYoNbHj0sz8Z3lvRIFiK1oNBHyvrtpDIL0ycpw1
 Lsfcy+KpxApmU/hEhJvj/KzynnnDn1B4A40JU1Ap3jl+adE23byZvk3CVY146Fa2
 L+oWYCJ2MPo5bxeXv7HSPA==
 =Z/eM
+-----END PGP PUBLIC KEY BLOCK-----
+Type bits      keyID      Date       User ID
+RSA   768      0xFDE534D1 1997/10/19 Martin Kraemer <martin@apache.org>
+sig            0xFDE534D1             Martin Kraemer <martin@apache.org>
+sig            0xE2449019             Martin Kraemer <Martin.Kraemer@Fujitsu-Siemens.com>
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6.3ia
+
+mQBtAzRKZDIAAAEDAON7JJtbjj6ZFEstbQS16Hd/BPlwdbczMGaQ0Mi3Xjfvi5Dq
+4+Lf8bthb8YWu8pxIb+6ktmfzWmgshWwxNNYzaY/iqgH72zlgYSG4dYoozC4yj5n
+Ov1Bc5xQ69dy/eU00QAFEbQiTWFydGluIEtyYWVtZXIgPG1hcnRpbkBhcGFjaGUu
+b3JnPokAlQMFEDqfWqkrAsNF4kSQGQEBzfAD/1n9mcXRCQ/vUB6o96zcVe9ixQfd
+3y4gFLP4omhBr9K8HnvexbULnSL4kRadV7x8BCzBBD4Xyr+QlqX56om9qnr6ujcp
+EbUIZrbxpy5HMdyFKYboYmlSo5esV+jixsUIRcizZabCGjt3sC2es3yWx+piZrPV
+Rz/KX7AclQlQi5sLiQB1AwUQNi9nP1Dr13L95TTRAQGHRQMAkvnovM0IcP/Nrxtp
++3KVNz6CDDVtT4NYqSd2O+IcJo/AFsyuV+wSd1UUuWOEzmXhuAFSGlMFAb608+H0
+ajW4AvaKOpxe8CymJxjZlKQBmULHF0U/YZJhUqpOheaVGyP2iQB1AwUQNi9m/zYq
+11iPOU49AQGBegL+M8/0OUD77YhMwCbjyjmykiadBHQOBmtCTnK++dcUTSpQKjcJ
+xsWNzFE7qS1tyA0NwiZNW6cVia+6vbn7+YP8mSagk0r0TcN/iXjyWlsPTfzhk9Up
+ir1wcfWgKb9P2VwL
+=ZxgG
 -----END PGP PUBLIC KEY BLOCK-----
 
 
