@@ -929,8 +929,11 @@ static int hook_uri2file(request_rec *r)
 
             /* check if the proxy module is enabled, so
                we can actually use it! */
-            if (!proxy_available)
-                return FORBIDDEN; 
+            if (!proxy_available) {
+		log_reason("attempt to make remote request from mod_rewrite "
+    	    	    "without proxy enabled", r->filename, r);
+                return FORBIDDEN;
+    	    }
 
             /* make sure the QUERY_STRING and
                PATH_INFO parts get incorporated */
@@ -3298,7 +3301,7 @@ static char **resolv_ipaddr_list(request_rec *r, char *name)
 
 static int is_proxy_available(server_rec *s)
 {
-    return (find_linked_module("mod_proxy") != NULL);
+    return (find_linked_module("mod_proxy.c") != NULL); 
 }
 
 

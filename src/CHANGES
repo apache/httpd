@@ -1,5 +1,8 @@
 Changes with Apache 1.3a2
 
+  *) Fixed proxy-pass-through feature of mod_rewrite; Added error logging
+     information for case where proxy module is not available. [Marc Slemko]
+
   *) The request to a remote proxy was mangled if it was generated as the
      result of a ProxyPass directive. URL schemes other than http:// were not
      supported when ProxyRemote was used. PR#260, PR#656, PR#699, PR#713,
