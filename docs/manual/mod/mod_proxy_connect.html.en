@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_proxy_connect - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_proxy_connect</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> extension for
+<code>CONNECT</code> request handling</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>proxy_connect_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>proxy_connect.c</td></tr></table>
+<h3>Summary</h3>
+
+    <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. It provides support for the <code>CONNECT</code>
+    HTTP method. This method is mainly used to tunnel SSL requests
+    through proxy servers.</p>
+
+    <p>Thus, in order to get the ability of handling <code>CONNECT</code>
+    requests, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and
+    <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code> have to be present in the server.</p>
+
+    <div class="warning"><h3>Warning</h3>
+      <p>Do not enable proxying until you have <a href="mod_proxy.html#access">secured your server</a>. Open proxy
+      servers are dangerous both to your network and to the Internet at
+      large.</p>
+    </div>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<p>This module provides no directives.</p>
+<h3>See also</h3>
+<ul class="seealso">
+<li><code class="directive"><a href="../mod/mod_proxy.html#allowconnect">AllowCONNECT</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
+</ul></div>
+
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
