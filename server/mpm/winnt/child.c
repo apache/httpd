@@ -13,7 +13,7 @@
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
+ *    the documentation and/or  materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -108,6 +108,7 @@ static PCOMP_CONTEXT qhead = NULL;
 static PCOMP_CONTEXT qtail = NULL;
 static int num_completion_contexts = 0;
 static HANDLE ThreadDispatchIOCP = NULL;
+static HANDLE qwait_event = NULL;
 
 
 AP_DECLARE(void) mpm_recycle_completion_context(PCOMP_CONTEXT context)
@@ -124,10 +125,12 @@ AP_DECLARE(void) mpm_recycle_completion_context(PCOMP_CONTEXT context)
         context->next = NULL;
         ResetEvent(context->Overlapped.hEvent);
         apr_thread_mutex_lock(qlock);
-        if (qtail)
+        if (qtail) {
             qtail->next = context;
-        else
+        } else {
             qhead = context;
+            SetEvent(qwait_event);
+        }
         qtail = context;
         apr_thread_mutex_unlock(qlock);
     }
@@ -138,57 +141,78 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
     apr_status_t rv;
     PCOMP_CONTEXT context = NULL;
 
-    /* Grab a context off the queue */
-    apr_thread_mutex_lock(qlock);
-    if (qhead) {
-        context = qhead;
-        qhead = qhead->next;
-        if (!qhead)
-            qtail = NULL;
-    }
-    apr_thread_mutex_unlock(qlock);
+    while (1) {
+        /* Grab a context off the queue */
+        apr_thread_mutex_lock(qlock);
+        if (qhead) {
+            context = qhead;
+            qhead = qhead->next;
+            if (!qhead)
+                qtail = NULL;
+        } else {
+            ResetEvent(qwait_event);
+        }
+        apr_thread_mutex_unlock(qlock);
+  
+        if (!context) {
+            /* We failed to grab a context off the queue, consider allocating a
+             * new one out of the child pool. There may be up to ap_threads_per_child
+             * contexts in the system at once.
+             */
+            if (num_completion_contexts >= ap_threads_per_child) {
+                /* All workers are busy, need to wait for one */
+                static int reported = 0;
+                if (!reported) {
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
+                                 "Server ran out of threads to serve requests. Consider "
+                                 "raising the ThreadsPerChild setting");
+                    reported = 1;
+                }
 
-    /* If we failed to grab a context off the queue, alloc one out of 
-     * the child pool. There may be up to ap_threads_per_child contexts
-     * in the system at once.
-     */
-    if (!context) {
-        if (num_completion_contexts >= ap_threads_per_child) {
-            static int reported = 0;
-            if (!reported) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
-                             "Server ran out of threads to serve requests. Consider "
-                             "raising the ThreadsPerChild setting");
-                reported = 1;
+                /* Wait for a worker to free a context. Once per second, give
+                 * the caller a chance to check for shutdown. If the wait
+                 * succeeds, get the context off the queue. It must be available,
+                 * since there's only one consumer.
+                 */
+                rv = WaitForSingleObject(qwait_event, 1000);
+                if (rv == WAIT_OBJECT_0)
+                    continue;
+                else /* Hopefully, WAIT_TIMEOUT */
+                    return NULL;
+            } else {
+                /* Allocate another context.
+                 * Note:
+                 * Multiple failures in the next two steps will cause the pchild pool
+                 * to 'leak' storage. I don't think this is worth fixing...
+                 */
+                context = (PCOMP_CONTEXT) apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
+  
+                context->Overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+                if (context->Overlapped.hEvent == NULL) {
+                    /* Hopefully this is a temporary condition ... */
+                    ap_log_error(APLOG_MARK,APLOG_WARNING, apr_get_os_error(), ap_server_conf,
+                                 "mpm_get_completion_context: CreateEvent failed.");
+                    return NULL;
+                }
+ 
+                /* Create the tranaction pool */
+                if ((rv = apr_pool_create(&context->ptrans, pchild)) != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK,APLOG_WARNING, rv, ap_server_conf,
+                                 "mpm_get_completion_context: Failed to create the transaction pool.");
+                    CloseHandle(context->Overlapped.hEvent);
+                    return NULL;
+                }
+                apr_pool_tag(context->ptrans, "ptrans");
+ 
+                context->accept_socket = INVALID_SOCKET;
+                context->ba = apr_bucket_alloc_create(pchild);
+                apr_atomic_inc(&num_completion_contexts); 
+                break;
             }
-            return NULL;
+        } else {
+            /* Got a context from the queue */
+            break;
         }
-        /* Note:
-         * Multiple failures in the next two steps will cause the pchild pool
-         * to 'leak' storage. I don't think this is worth fixing...
-         */
-        context = (PCOMP_CONTEXT) apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
-
-        context->Overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-        if (context->Overlapped.hEvent == NULL) {
-            /* Hopefully this is a temporary condition ... */
-            ap_log_error(APLOG_MARK,APLOG_WARNING, apr_get_os_error(), ap_server_conf,
-                         "mpm_get_completion_context: CreateEvent failed.");
-            return NULL;
-        }
-
-        /* Create the tranaction pool */
-        if ((rv = apr_pool_create(&context->ptrans, pchild)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK,APLOG_WARNING, rv, ap_server_conf,
-                         "mpm_get_completion_context: Failed to create the transaction pool.");
-            CloseHandle(context->Overlapped.hEvent);
-            return NULL;
-        }
-        apr_pool_tag(context->ptrans, "ptrans");
-
-        context->accept_socket = INVALID_SOCKET;
-        context->ba = apr_bucket_alloc_create(pchild);
-        apr_atomic_inc(&num_completion_contexts);
     }
 
     return context;
@@ -823,6 +847,12 @@ void child_main(apr_pool_t *pconf)
                                                     0,
                                                     0); /* CONCURRENT ACTIVE THREADS */
         apr_thread_mutex_create(&qlock, APR_THREAD_MUTEX_DEFAULT, pchild);
+        qwait_event = CreateEvent(NULL, TRUE, FALSE, NULL);
+        if (!qwait_event) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                         "Child %d: Failed to create a qwait event.", my_pid);
+            exit(APEXIT_CHILDINIT);
+        }
     }
 
     /* 
@@ -1035,8 +1065,10 @@ void child_main(apr_pool_t *pconf)
 
     CloseHandle(allowed_globals.jobsemaphore);
     apr_thread_mutex_destroy(allowed_globals.jobmutex);
-    if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS)
+    if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS) {
     	apr_thread_mutex_destroy(qlock);
+        CloseHandle(qwait_event);
+    }
 
     apr_pool_destroy(pchild);
     CloseHandle(exit_event);

@@ -1,6 +1,9 @@
 Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
+  *) Win32: Avoid busy wait (consuming all the CPU idle cycles) when
+     all worker threads are busy. 
+    [Igor Nazarenko <igor_nazarenko@hotmail.com>]
 
   *) When using Redirect in directory context, append requested query
      string if there's no one supplied by configuration. PR 10961.
