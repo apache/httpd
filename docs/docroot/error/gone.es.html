@@ -1,0 +1,21 @@
+<!--#set var="TITLE" value="Resource is no longer available!" -->
+<!--#include virtual="include/top.html" -->
+
+	Los recursos solicitados ya no estan disponibles en
+	este servidor y no existe una direcci&oacute;n alterna.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+	Le solicitamos que comunique al autor de la 
+	<a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">p&aacute;gina 
+	referida</a> que el URL esta fuera de tiempo.
+
+  <!--#else -->
+	
+	Si usted siguio el URL desde una p&aacute;gina externa, 
+	porfavor contacte al autor de esa p&aacute;gina.
+
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->

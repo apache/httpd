@@ -1,0 +1,14 @@
+<!--#set var="TITLE" value="Erreur du serveur!" -->
+<!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    <!--#echo var="REDIRECT_ERROR_NOTES" -->
+  <!--#else -->
+
+    Le serveur a &egrave;t&eacute; victime d'une erreur interne et n'a pas &eacute;t&eacute;
+    capable de faire aboutir votre requ&ecirc;te. Soit le server est surcharg&eacute;
+    soit il s'agit d'une erreur dans le script CGI.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->   
