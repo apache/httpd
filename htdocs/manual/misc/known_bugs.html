@@ -25,6 +25,18 @@ in early versions have been fixed in 1.2.
 <P>See Also: <A HREF="compat_notes.html">Compatibility notes</A></P>
 <HR>
 
+<H2>Apache 1.3a1 Bugs</H2>
+
+<OL>
+  <LI>The <code><a href="../mod/core.html#listen">Listen</a></code>
+      directive does not work when running under Windows.
+  <LI>For some reason, <a href="../mod/mod_isapi.html">mod_isapi</a>
+      does not work (with Windows) when compiled using the
+      <code>Release</code> setting; it will crash the server whenever you
+      access an ISA DLL. It works fine when the server is compiled with
+      <code>Debug</code>.
+</OL>
+      
 <H2>Apache 1.2 Bugs</H2>
 
 <OL>
