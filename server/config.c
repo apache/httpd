@@ -1040,8 +1040,8 @@ void ap_process_resource_config(server_rec *s, const char *fname, ap_context_t *
     parms.server = s;
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
 
-    if (!(parms.config_file = ap_pcfg_openfile(p,fname))) {
-	perror("fopen");
+    if (ap_pcfg_openfile(&parms.config_file, p, fname) != APR_SUCCESS) {
+        /* ZZZ  use ap_strerror() once it exists to print an error message */
 	fprintf(stderr, "%s: could not open document config file %s\n",
 		ap_server_argv0, fname);
 	exit(1);
@@ -1070,6 +1070,7 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
     const struct htaccess_result *cache;
     struct htaccess_result *new;
     void *dc = NULL;
+    ap_status_t status;
 
 /* firstly, search cache */
     for (cache = r->htaccess; cache != NULL; cache = cache->next)
@@ -1091,8 +1092,9 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
     while (access_name[0]) {
         filename = ap_make_full_path(r->pool, d,
                                      ap_getword_conf(r->pool, &access_name));
+        status = ap_pcfg_openfile(&f, r->pool, filename);
 
-        if ((f = ap_pcfg_openfile(r->pool, filename)) != NULL) {
+        if (status == APR_SUCCESS) {
 
             dc = ap_create_per_dir_config(r->pool);
 
@@ -1110,7 +1112,7 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
             *result = dc;
             break;
         }
-        else if (errno != ENOENT && errno != ENOTDIR) {
+        else if (status != APR_ENOENT && status != APR_ENOTDIR) {
             ap_log_rerror(APLOG_MARK, APLOG_CRIT, errno, r,
                           "%s pcfg_openfile: unable to check htaccess file, "
                           "ensure it is readable",

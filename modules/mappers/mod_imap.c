@@ -603,6 +603,7 @@ static int imap_handler(request_rec *r)
     char *mapdflt;
     char *closest = NULL;
     double closest_yet = -1;
+    ap_status_t status;
 
     double testpoint[2];
     double pointarray[MAXVERTS + 1][2];
@@ -624,9 +625,9 @@ static int imap_handler(request_rec *r)
 	return DECLINED;
     }
 
-    imap = ap_pcfg_openfile(r->pool, r->filename);
+    status = ap_pcfg_openfile(&imap, r->pool, r->filename);
 
-    if (!imap) {
+    if (status != APR_SUCCESS) {
         return NOT_FOUND;
     }
 

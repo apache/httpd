@@ -1004,7 +1004,7 @@ typedef struct {
 } configfile_t;
 
 /* Open a configfile_t as FILE, return open configfile_t struct pointer */
-API_EXPORT(configfile_t *) ap_pcfg_openfile(ap_context_t *p, const char *name);
+API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **, ap_context_t *p, const char *name);
 
 /* Allocate a configfile_t handle with user defined functions and params */
 API_EXPORT(configfile_t *) ap_pcfg_open_custom(ap_context_t *p, const char *descr,
