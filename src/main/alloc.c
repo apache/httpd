@@ -873,6 +873,15 @@ API_EXPORT(table *) copy_table(pool *p, const table *t)
 {
     table *new = palloc(p, sizeof(table));
 
+#ifdef POOL_DEBUG
+    /* we don't copy keys and values, so it's necessary that t->a.pool
+     * have a life span at least as long as p
+     */
+    if (!pool_is_ancestor(t->a.pool, p)) {
+	fprintf(stderr, "copy_table: t's pool is not an ancestor of p\n");
+	abort();
+    }
+#endif
     make_array_core(&new->a, p, t->a.nalloc, sizeof(table_entry));
     memcpy(new->a.elts, t->a.elts, t->a.nelts * sizeof(table_entry));
     new->a.nelts = t->a.nelts;
@@ -1083,6 +1092,21 @@ API_EXPORT(void) table_addn(table *t, char *key, char *val)
 API_EXPORT(table *) overlay_tables(pool *p, const table *overlay, const table *base)
 {
     table *res;
+
+#ifdef POOL_DEBUG
+    /* we don't copy keys and values, so it's necessary that
+     * overlay->a.pool and base->a.pool have a life span at least
+     * as long as p
+     */
+    if (!pool_is_ancestor(overlay->a.pool, p)) {
+	fprintf(stderr, "overlay_tables: overlay's pool is not an ancestor of p\n");
+	abort();
+    }
+    if (!pool_is_ancestor(base->a.pool, p)) {
+	fprintf(stderr, "overlay_tables: base's pool is not an ancestor of p\n");
+	abort();
+    }
+#endif
 
     res = palloc(p, sizeof(table));
     /* behave like append_arrays */
