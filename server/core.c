@@ -3081,6 +3081,13 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                             apr_bucket *temp, *next;
                             apr_bucket_brigade *temp_brig;
 
+                            if (nbytes >= AP_MIN_BYTES_TO_WRITE) {
+                                /* We have enough data in the iovec
+                                 * to justify doing a writev
+                                 */
+                                more = apr_brigade_split(b, e);
+                                break;
+                            }
                             temp_brig = apr_brigade_create(f->c->pool);
                             temp = APR_BRIGADE_FIRST(b);
                             while (temp != e) {
