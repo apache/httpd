@@ -92,7 +92,41 @@
 
 #define MOD_INCLUDE_REDESIGN
 #include "mod_include.h"
+
+#if APR_CHARSET_EBCDIC
 #include "util_ebcdic.h"
+#define RAW_ASCII_CHAR(ch)  apr_xlate_conv_byte(ap_hdrs_from_ascii, \
+                                                (unsigned char)ch)
+#else /*APR_CHARSET_EBCDIC*/
+#define RAW_ASCII_CHAR(ch)  (ch)
+#endif /*APR_CHARSET_EBCDIC*/
+
+#ifdef DEBUG_INCLUDE
+
+#define MAX_DEBUG_SIZE MAX_STRING_LEN
+
+#define LOG_COND_STATUS(ctx, f, bb, text)                                   \
+do {                                                                        \
+    char *cond_txt = apr_pstrcat((ctx)->dpool, "**** ", (text),             \
+        " conditional_status=\"", ((ctx)->flags & FLAG_COND_TRUE)?"1":"0",  \
+        "\"\n", NULL);                                                      \
+    APR_BRIGADE_INSERT_TAIL((bb), apr_bucket_heap_create(cond_txt,          \
+                            strlen(cond_txt), NULL, (f)->c->bucket_alloc)); \
+} while(0)
+
+#define DUMP_PARSE_EXPR_DEBUG(buf, f, bb)                                   \
+do {                                                                        \
+    APR_BRIGADE_INSERT_TAIL((bb), apr_bucket_heap_create((buf),             \
+                            strlen((buf)), NULL, (f)->c->bucket_alloc));    \
+} while(0)
+
+#else
+
+#define MAX_DEBUG_SIZE 10
+#define LOG_COND_STATUS(ctx, f, bb, text)
+#define DUMP_PARSE_EXPR_DEBUG(buf, f, bb)
+
+#endif
 
 module AP_MODULE_DECLARE_DATA include_module;
 static apr_hash_t *include_hash;
@@ -108,10 +142,10 @@ enum xbithack {
     xbithack_off, xbithack_on, xbithack_full
 };
 
-struct bndm_t {
+typedef struct {
     unsigned int T[256];
     unsigned int x;
-} ;
+} bndm_t;
 
 typedef struct {
     char *default_error_msg;
@@ -158,32 +192,40 @@ typedef struct ssi_arg_item {
     apr_size_t           value_len;
 } ssi_arg_item_t;
 
-typedef struct {
+struct ssi_internal_ctx {
     parse_state_t state;
     int           seen_eos;
     int           error;
     char          quote;         /* quote character value (or \0) */
+    apr_size_t    parse_pos;   /* parse position of partial matches */
+    apr_size_t    bytes_read;
 
     apr_bucket_brigade *tmp_bb;
 
+    request_rec  *r;
+    const char   *start_seq;
+    bndm_t       *start_seq_pat;
+    apr_size_t    start_seq_len;
+    const char   *end_seq;
     apr_size_t    end_seq_len;
     char         *directive;     /* name of the current directive */
+    apr_size_t    directive_len; /* length of the current directive name */
 
-    unsigned        argc;        /* argument counter (of the current
-                                  * directive)
-                                  */
-    ssi_arg_item_t *argv;        /* all arguments */
-    ssi_arg_item_t *current_arg; /* currently parsed argument */
-    request_rec    *r;
-    include_ctx_t  *ctx;         /* public part of the context structure */
+    ssi_arg_item_t   *current_arg;   /* currently parsed argument */
+    ssi_arg_item_t   *argv;          /* all arguments */
 
-    apr_pool_t     *dpool;
-} ssi_ctx_t;
+    char         *error_str_override;
+    char         *time_str_override;
+    char         *re_string;
+    regmatch_t   (*re_result)[10];
+};
 
-#define SSI_CREATE_ERROR_BUCKET(ctx, f, bb) APR_BRIGADE_INSERT_TAIL((bb),   \
-    apr_bucket_pool_create(apr_pstrdup((ctx)->pool, (ctx)->error_str),  \
-                           strlen((ctx)->error_str), (ctx)->pool,       \
-                           (f)->c->bucket_alloc))
+/* some defaults */
+#define STARTING_SEQUENCE "<!--#"
+#define ENDING_SEQUENCE "-->"
+#define DEFAULT_ERROR_MSG "[an error occurred while processing this directive]"
+#define DEFAULT_TIME_FORMAT "%A, %d-%b-%Y %H:%M:%S %Z"
+#define DEFAULT_UNDEFINED_ECHO "(none)"
 
 #ifdef XBITHACK
 #define DEFAULT_XBITHACK xbithack_full
@@ -192,6 +234,16 @@ typedef struct {
 #endif
 
 #define BYTE_COUNT_THRESHOLD AP_MIN_BYTES_TO_WRITE
+
+/* for better diffs (fixed later): */
+#define SPLIT_AND_PASS_PRETAG_BUCKETS(a, b, c, d)
+#define FLAG_PRINTING SSI_FLAG_PRINTING
+#define FLAG_COND_TRUE SSI_FLAG_COND_TRUE
+#define FLAG_CLEAR_PRINTING SSI_FLAG_CLEAR_PRINTING
+#define FLAG_CLEAR_PRINT_COND SSI_FLAG_CLEAR_PRINT_COND
+#define FLAG_NO_EXEC SSI_FLAG_NO_EXEC
+#define FLAG_SIZE_IN_BYTES SSI_FLAG_SIZE_IN_BYTES
+#define FLAG_SIZE_ABBREV SSI_FLAG_SIZE_ABBREV
 
 /* ------------------------ Environment function -------------------------- */
 
@@ -274,19 +326,19 @@ static const char *get_include_var(request_rec *r, include_ctx_t *ctx,
          * The choice of returning NULL strings on not-found,
          * v.s. empty strings on an empty match is deliberate.
          */
-        if (!ctx->re_result || !ctx->re_string) {
+        if (!ctx->intern->re_result || !ctx->intern->re_string) {
             return NULL;
         }
         else {
             int idx = atoi(var);
-            apr_size_t len = (*ctx->re_result)[idx].rm_eo
-                           - (*ctx->re_result)[idx].rm_so;
-            if (    (*ctx->re_result)[idx].rm_so < 0
-                 || (*ctx->re_result)[idx].rm_eo < 0) {
+            apr_size_t len = (*ctx->intern->re_result)[idx].rm_eo
+                           - (*ctx->intern->re_result)[idx].rm_so;
+            if (    (*ctx->intern->re_result)[idx].rm_so < 0
+                 || (*ctx->intern->re_result)[idx].rm_eo < 0) {
                 return NULL;
             }
-            val = apr_pstrmemdup(r->pool, ctx->re_string 
-                                        + (*ctx->re_result)[idx].rm_so, len);
+            val = apr_pstrmemdup(r->pool, ctx->intern->re_string
+                                 + (*ctx->intern->re_result)[idx].rm_so, len);
         }
     }
     else {
@@ -492,32 +544,21 @@ otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
 static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
                                      char **tag_val, int dodecode)
 {
-    *tag_val = NULL;
-    if (ctx->curr_tag_pos >= ctx->combined_tag + ctx->tag_length) {
+    char *p;
+
+    if (!ctx->intern->argv) {
         *tag = NULL;
+        *tag_val = NULL;
+
         return;
     }
 
-    *tag = ctx->curr_tag_pos;
-    if (!**tag) {
-        *tag = NULL;
-        return;
-    }
+    *tag_val = ctx->intern->argv->value;
+    p = *tag = ctx->intern->argv->name;
 
-    *tag_val = ap_strchr(*tag, '=');
-    if (!*tag_val) {
-        return;
-    }
+    ctx->intern->argv = ctx->intern->argv->next;
 
-    if (*tag_val == *tag) {
-        *tag = NULL;
-    }
-
-    **tag_val = '\0';
-    ++(*tag_val);
-    ctx->curr_tag_pos = *tag_val + strlen(*tag_val) + 1;
-
-    if (dodecode) {
+    if (dodecode && *tag_val) {
         decodehtml(*tag_val);
     }
 
@@ -749,26 +790,25 @@ static int is_only_below(const char *path)
     return 1;
 }
 
-static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, 
-                         request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
-                         apr_bucket **inserted_head)
+static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
+                                   apr_bucket_brigade *bb)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
     apr_bucket  *tmp_buck;
     char *parsed_string;
     int loglevel = APLOG_ERR;
+    request_rec *r = f->r;
 
-    *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
         while (1) {
             ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
             if (tag_val == NULL) {
                 if (tag == NULL) {
-                    return (0);
+                    return APR_SUCCESS;
                 }
                 else {
-                    return (1);
+                    return APR_SUCCESS;
                 }
             }
             if (!strcmp(tag, "virtual") || !strcmp(tag, "file")) {
@@ -867,8 +907,7 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 if (error_fmt) {
                     ap_log_rerror(APLOG_MARK, loglevel,
                                   0, r, error_fmt, tag_val, r->filename);
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
-                                        *inserted_head);
+                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
                 }
 
                 /* destroy the sub request */
@@ -880,17 +919,16 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "unknown parameter \"%s\" to tag include in %s",
                             tag, r->filename);
-                CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
             }
         }
     }
-    return 0;
+    return APR_SUCCESS;
 }
 
 
-static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb, 
-                       request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
-                       apr_bucket **inserted_head)
+static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
+                                apr_bucket_brigade *bb)
 {
     char       *tag       = NULL;
     char       *tag_val   = NULL;
@@ -898,19 +936,19 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb,
     apr_bucket  *tmp_buck;
     apr_size_t e_len;
     enum {E_NONE, E_URL, E_ENTITY} encode;
+    request_rec *r = f->r;
 
     encode = E_ENTITY;
 
-    *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
         while (1) {
             ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
             if (tag_val == NULL) {
                 if (tag != NULL) {
-                    return 1;
+                    return APR_SUCCESS;
                 }
                 else {
-                    return 0;
+                    return APR_SUCCESS;
                 }
             }
             if (!strcmp(tag, "var")) {
@@ -944,10 +982,7 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb,
                                                       sconf->undefinedEchoLen,
                                                       r->pool, c->bucket_alloc);
                 }
-                APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
-                if (*inserted_head == NULL) {
-                    *inserted_head = tmp_buck;
-                }
+                APR_BRIGADE_INSERT_TAIL(bb, tmp_buck);
             }
             else if (!strcmp(tag, "encoding")) {
                 if (!strcasecmp(tag_val, "none")) encode = E_NONE;
@@ -957,64 +992,65 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb,
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                            "unknown value \"%s\" to parameter \"encoding\" of "
                            "tag echo in %s", tag_val, r->filename);
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
-                                        *inserted_head);
+                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
                 }
             }
             else {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "unknown parameter \"%s\" in tag echo of %s",
                             tag, r->filename);
-                CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
             }
 
         }
     }
-    return 0;
+    return APR_SUCCESS;
 }
 
 /* error and tf must point to a string with room for at 
  * least MAX_STRING_LEN characters 
  */
-static int handle_config(include_ctx_t *ctx, apr_bucket_brigade **bb, 
-                         request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
-                         apr_bucket **inserted_head)
+static apr_status_t handle_config(include_ctx_t *ctx, ap_filter_t *f,
+                                  apr_bucket_brigade *bb)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
     char *parsed_string;
+    request_rec *r = f->r;
     apr_table_t *env = r->subprocess_env;
 
-    *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
         while (1) {
             ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 0);
             if (tag_val == NULL) {
                 if (tag == NULL) {
-                    return 0;  /* Reached the end of the string. */
+                    return APR_SUCCESS;
                 }
                 else {
-                    return 1;  /* tags must have values. */
+                    return APR_SUCCESS;
                 }
             }
             if (!strcmp(tag, "errmsg")) {
-                if (ctx->error_str_override == NULL) {
-                    ctx->error_str_override = (char *)apr_palloc(ctx->pool,
-                                                              MAX_STRING_LEN);
-                    ctx->error_str = ctx->error_str_override;
+                if (ctx->intern->error_str_override == NULL) {
+                    ctx->intern->error_str_override = apr_palloc(ctx->pool,
+                                                                MAX_STRING_LEN);
+                    ctx->error_str = ctx->intern->error_str_override;
                 }
-                ap_ssi_parse_string(r, ctx, tag_val, ctx->error_str_override,
+                ap_ssi_parse_string(r, ctx, tag_val,
+                                    ctx->intern->error_str_override,
                                     MAX_STRING_LEN, 0);
             }
             else if (!strcmp(tag, "timefmt")) {
                 apr_time_t date = r->request_time;
-                if (ctx->time_str_override == NULL) {
-                    ctx->time_str_override = (char *)apr_palloc(ctx->pool,
-                                                              MAX_STRING_LEN);
-                    ctx->time_str = ctx->time_str_override;
+                if (ctx->intern->time_str_override == NULL) {
+                    ctx->intern->time_str_override = apr_palloc(ctx->pool,
+                                                                MAX_STRING_LEN);
+                    ctx->time_str = ctx->intern->time_str_override;
                 }
-                ap_ssi_parse_string(r, ctx, tag_val, ctx->time_str_override,
+                ap_ssi_parse_string(r, ctx, tag_val,
+                                    ctx->intern->time_str_override,
                                     MAX_STRING_LEN, 0);
+
                 apr_table_setn(env, "DATE_LOCAL", ap_ht_time(r->pool, date, 
                                ctx->time_str, 0));
                 apr_table_setn(env, "DATE_GMT", ap_ht_time(r->pool, date, 
@@ -1040,11 +1076,11 @@ static int handle_config(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "unknown parameter \"%s\" to tag config in %s",
                               tag, r->filename);
-                CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
             }
         }
     }
-    return 0;
+    return APR_SUCCESS;
 }
 
 
@@ -1125,9 +1161,8 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
     }
 }
 
-static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb, 
-                        request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
-                        apr_bucket **inserted_head)
+static apr_status_t handle_fsize(include_ctx_t *ctx, ap_filter_t *f,
+                                 apr_bucket_brigade *bb)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -1135,17 +1170,17 @@ static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb,
     apr_size_t  s_len;
     apr_bucket   *tmp_buck;
     char *parsed_string;
+    request_rec *r = f->r;
 
-    *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
         while (1) {
             ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
             if (tag_val == NULL) {
                 if (tag == NULL) {
-                    return 0;
+                    return APR_SUCCESS;
                 }
                 else {
-                    return 1;
+                    return APR_SUCCESS;
                 }
             }
             else {
@@ -1182,24 +1217,19 @@ static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb,
 
                     tmp_buck = apr_bucket_heap_create(buff, s_len, NULL,
                                                   r->connection->bucket_alloc);
-                    APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
-                    if (*inserted_head == NULL) {
-                        *inserted_head = tmp_buck;
-                    }
+                    APR_BRIGADE_INSERT_TAIL(bb, tmp_buck);
                 }
                 else {
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
-                                        *inserted_head);
+                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
                 }
             }
         }
     }
-    return 0;
+    return APR_SUCCESS;
 }
 
-static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb, 
-                           request_rec *r, ap_filter_t *f, 
-                           apr_bucket *head_ptr, apr_bucket **inserted_head)
+static apr_status_t handle_flastmod(include_ctx_t *ctx, ap_filter_t *f,
+                                    apr_bucket_brigade *bb)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -1207,17 +1237,17 @@ static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb,
     apr_size_t  t_len;
     apr_bucket   *tmp_buck;
     char *parsed_string;
+    request_rec *r = f->r;
 
-    *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
         while (1) {
             ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
             if (tag_val == NULL) {
                 if (tag == NULL) {
-                    return 0;
+                    return APR_SUCCESS;
                 }
                 else {
-                    return 1;
+                    return APR_SUCCESS;
                 }
             }
             else {
@@ -1231,26 +1261,22 @@ static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb,
 
                     tmp_buck = apr_bucket_pool_create(t_val, t_len, r->pool,
                                                   r->connection->bucket_alloc);
-                    APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
-                    if (*inserted_head == NULL) {
-                        *inserted_head = tmp_buck;
-                    }
+                    APR_BRIGADE_INSERT_TAIL(bb, tmp_buck);
                 }
                 else {
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
-                                        *inserted_head);
+                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
                 }
             }
         }
     }
-    return 0;
+    return APR_SUCCESS;
 }
 
 static int re_check(request_rec *r, include_ctx_t *ctx, 
                     char *string, char *rexp)
 {
     regex_t *compiled;
-    const apr_size_t nres = sizeof(*ctx->re_result) / sizeof(regmatch_t);
+    const apr_size_t nres = sizeof(*ctx->intern->re_result) / sizeof(regmatch_t);
     int regex_error;
 
     compiled = ap_pregcomp(r->pool, rexp, REG_EXTENDED | REG_NOSUB);
@@ -1259,11 +1285,11 @@ static int re_check(request_rec *r, include_ctx_t *ctx,
                       "unable to compile pattern \"%s\"", rexp);
         return -1;
     }
-    if (!ctx->re_result) {
-        ctx->re_result = apr_pcalloc(r->pool, sizeof(*ctx->re_result));
+    if (!ctx->intern->re_result) {
+        ctx->intern->re_result = apr_pcalloc(r->pool, sizeof(*ctx->intern->re_result));
     }
-    ctx->re_string = string;
-    regex_error = ap_regexec(compiled, string, nres, *ctx->re_result, 0);
+    ctx->intern->re_string = string;
+    regex_error = ap_regexec(compiled, string, nres, *ctx->intern->re_result, 0);
     ap_pregfree(r->pool, compiled);
     return (!regex_error);
 }
@@ -2053,6 +2079,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
 }
 
 /*-------------------------------------------------------------------------*/
+#if 0
 #ifdef DEBUG_INCLUDE
 
 #define MAX_DEBUG_SIZE MAX_STRING_LEN
@@ -2091,12 +2118,12 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
 #define DUMP_PARSE_EXPR_DEBUG(t_buck, h_ptr, d_buf, ins_head)
 
 #endif
+#endif
 /*-------------------------------------------------------------------------*/
 
 /* pjr - These seem to allow expr="fred" expr="joe" where joe overwrites fred. */
-static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb, 
-                     request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
-                     apr_bucket **inserted_head)
+static apr_status_t handle_if(include_ctx_t *ctx, ap_filter_t *f,
+                              apr_bucket_brigade *bb)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -2104,8 +2131,8 @@ static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb,
     int   expr_ret, was_error, was_unmatched;
     apr_bucket *tmp_buck;
     char debug_buf[MAX_DEBUG_SIZE];
+    request_rec *r = f->r;
 
-    *inserted_head = NULL;
     if (!(ctx->flags & FLAG_PRINTING)) {
         ctx->if_nesting_level++;
     }
@@ -2117,34 +2144,29 @@ static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb,
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "missing expr in if statement: %s", 
                                   r->filename);
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
-                                        *inserted_head);
-                    return 1;
+                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                    return APR_SUCCESS;
                 }
                 expr_ret = parse_expr(r, ctx, expr, &was_error, 
                                       &was_unmatched, debug_buf);
                 if (was_error) {
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
-                                        *inserted_head);
-                    return 1;
+                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                    return APR_SUCCESS;
                 }
                 if (was_unmatched) {
-                    DUMP_PARSE_EXPR_DEBUG(tmp_buck, head_ptr, 
-                                          "\nUnmatched '\n", *inserted_head);
+                    DUMP_PARSE_EXPR_DEBUG("\nUnmatched '\n", f, bb);
                 }
-                DUMP_PARSE_EXPR_DEBUG(tmp_buck, head_ptr, debug_buf, 
-                                      *inserted_head);
-                
+                DUMP_PARSE_EXPR_DEBUG(debug_buf, f, bb);
+
                 if (expr_ret) {
                     ctx->flags |= (FLAG_PRINTING | FLAG_COND_TRUE);
                 }
                 else {
                     ctx->flags &= FLAG_CLEAR_PRINT_COND;
                 }
-                LOG_COND_STATUS(ctx, tmp_buck, head_ptr, *inserted_head, 
-                                "   if");
+                LOG_COND_STATUS(ctx, f, bb, "   if");
                 ctx->if_nesting_level = 0;
-                return 0;
+                return APR_SUCCESS;
             }
             else if (!strcmp(tag, "expr")) {
                 expr = tag_val;
@@ -2154,11 +2176,7 @@ static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb,
                     d_len = sprintf(debug_buf, "**** if expr=\"%s\"\n", expr);
                     tmp_buck = apr_bucket_heap_create(debug_buf, d_len, NULL,
                                                   r->connection->bucket_alloc);
-                    APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
-
-                    if (*inserted_head == NULL) {
-                        *inserted_head = tmp_buck;
-                    }
+                    APR_BRIGADE_INSERT_TAIL(bb, tmp_buck);
                 }
 #endif
             }
@@ -2166,17 +2184,16 @@ static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "unknown parameter \"%s\" to tag if in %s", tag, 
                             r->filename);
-                CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
             }
 
         }
     }
-    return 0;
+    return APR_SUCCESS;
 }
 
-static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb, 
-                       request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
-                       apr_bucket **inserted_head)
+static apr_status_t handle_elif(include_ctx_t *ctx, ap_filter_t *f,
+                                apr_bucket_brigade *bb)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -2184,40 +2201,35 @@ static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb,
     int   expr_ret, was_error, was_unmatched;
     apr_bucket *tmp_buck;
     char debug_buf[MAX_DEBUG_SIZE];
+    request_rec *r = f->r;
 
-    *inserted_head = NULL;
     if (!ctx->if_nesting_level) {
         while (1) {
             ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 0);
             if (tag == '\0') {
-                LOG_COND_STATUS(ctx, tmp_buck, head_ptr, *inserted_head, 
-                                " elif");
+                LOG_COND_STATUS(ctx, f, bb, " elif");
                 
                 if (ctx->flags & FLAG_COND_TRUE) {
                     ctx->flags &= FLAG_CLEAR_PRINTING;
-                    return (0);
+                    return APR_SUCCESS;
                 }
                 if (expr == NULL) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "missing expr in elif statement: %s", 
                                   r->filename);
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
-                                        *inserted_head);
-                    return (1);
+                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                    return APR_SUCCESS;
                 }
                 expr_ret = parse_expr(r, ctx, expr, &was_error, 
                                       &was_unmatched, debug_buf);
                 if (was_error) {
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
-                                        *inserted_head);
-                    return 1;
+                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                    return APR_SUCCESS;
                 }
                 if (was_unmatched) {
-                    DUMP_PARSE_EXPR_DEBUG(tmp_buck, head_ptr, 
-                                          "\nUnmatched '\n", *inserted_head);
+                    DUMP_PARSE_EXPR_DEBUG("\nUnmatched '\n", f, bb);
                 }
-                DUMP_PARSE_EXPR_DEBUG(tmp_buck, head_ptr, debug_buf, 
-                                      *inserted_head);
+                DUMP_PARSE_EXPR_DEBUG(debug_buf, f, bb);
                 
                 if (expr_ret) {
                     ctx->flags |= (FLAG_PRINTING | FLAG_COND_TRUE);
@@ -2225,9 +2237,8 @@ static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 else {
                     ctx->flags &= FLAG_CLEAR_PRINT_COND;
                 }
-                LOG_COND_STATUS(ctx, tmp_buck, head_ptr, *inserted_head, 
-                                " elif");
-                return (0);
+                LOG_COND_STATUS(ctx, f, bb, " elif");
+                return APR_SUCCESS;
             }
             else if (!strcmp(tag, "expr")) {
                 expr = tag_val;
@@ -2237,11 +2248,7 @@ static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb,
                     d_len = sprintf(debug_buf, "**** elif expr=\"%s\"\n", expr);
                     tmp_buck = apr_bucket_heap_create(debug_buf, d_len, NULL,
                                                   r->connection->bucket_alloc);
-                    APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
-
-                    if (*inserted_head == NULL) {
-                        *inserted_head = tmp_buck;
-                    }
+                    APR_BRIGADE_INSERT_TAIL(bb, tmp_buck);
                 }
 #endif
             }
@@ -2249,34 +2256,33 @@ static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                "unknown parameter \"%s\" to tag if in %s", tag, 
                                r->filename);
-                CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
             }
         }
     }
-    return 0;
+    return APR_SUCCESS;
 }
 
-static int handle_else(include_ctx_t *ctx, apr_bucket_brigade **bb, 
-                       request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
-                       apr_bucket **inserted_head)
+static apr_status_t handle_else(include_ctx_t *ctx, ap_filter_t *f,
+                                apr_bucket_brigade *bb)
 {
     char *tag = NULL;
     char *tag_val = NULL;
     apr_bucket *tmp_buck;
+    request_rec *r = f->r;
 
-    *inserted_head = NULL;
     if (!ctx->if_nesting_level) {
         ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
         if ((tag != NULL) || (tag_val != NULL)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                         "else directive does not take tags in %s", r->filename);
             if (ctx->flags & FLAG_PRINTING) {
-                CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
             }
-            return -1;
+            return APR_SUCCESS;
         }
         else {
-            LOG_COND_STATUS(ctx, tmp_buck, head_ptr, *inserted_head, " else");
+            LOG_COND_STATUS(ctx, f, bb, " else");
             
             if (ctx->flags & FLAG_COND_TRUE) {
                 ctx->flags &= FLAG_CLEAR_PRINTING;
@@ -2284,50 +2290,49 @@ static int handle_else(include_ctx_t *ctx, apr_bucket_brigade **bb,
             else {
                 ctx->flags |= (FLAG_PRINTING | FLAG_COND_TRUE);
             }
-            return 0;
+            return APR_SUCCESS;
         }
     }
-    return 0;
+    return APR_SUCCESS;
 }
 
-static int handle_endif(include_ctx_t *ctx, apr_bucket_brigade **bb, 
-                        request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
-                        apr_bucket **inserted_head)
+static apr_status_t handle_endif(include_ctx_t *ctx, ap_filter_t *f,
+                                 apr_bucket_brigade *bb)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
     apr_bucket *tmp_buck;
+    request_rec *r = f->r;
 
-    *inserted_head = NULL;
     if (!ctx->if_nesting_level) {
         ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
         if ((tag != NULL) || (tag_val != NULL)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                        "endif directive does not take tags in %s", r->filename);
-            CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
-            return -1;
+            SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+            return APR_SUCCESS;
         }
         else {
-            LOG_COND_STATUS(ctx, tmp_buck, head_ptr, *inserted_head, "endif");
+            LOG_COND_STATUS(ctx, f, bb, "endif");
             ctx->flags |= (FLAG_PRINTING | FLAG_COND_TRUE);
-            return 0;
+            return APR_SUCCESS;
         }
     }
     else {
         ctx->if_nesting_level--;
-        return 0;
+        return APR_SUCCESS;
     }
 }
 
-static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb, 
-                      request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
-                      apr_bucket **inserted_head)
+static apr_status_t handle_set(include_ctx_t *ctx, ap_filter_t *f,
+                               apr_bucket_brigade *bb)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
     char *var     = NULL;
     apr_bucket *tmp_buck;
     char *parsed_string;
+    request_rec *r = f->r;
     request_rec *sub = r->main;
     apr_pool_t *p = r->pool;
 
@@ -2339,15 +2344,14 @@ static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb,
         sub = sub->main;
     }
 
-    *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
         while (1) {
             ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
             if ((tag == NULL) && (tag_val == NULL)) {
-                return 0;
+                return APR_SUCCESS;
             }
             else if (tag_val == NULL) {
-                return 1;
+                return APR_SUCCESS;
             }
             else if (!strcmp(tag, "var")) {
                 var = ap_ssi_parse_string(r, ctx, tag_val, NULL,
@@ -2358,9 +2362,8 @@ static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb,
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                            "variable must precede value in set directive in %s",
                            r->filename);
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
-                                        *inserted_head);
-                    return (-1);
+                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                    return APR_SUCCESS;
                 }
                 parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
                                                     MAX_STRING_LEN, 0);
@@ -2370,21 +2373,21 @@ static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb,
             else {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "Invalid tag for set directive in %s", r->filename);
-                CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
-                return -1;
+                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                return APR_SUCCESS;
             }
         }
     }
-    return 0;
+    return APR_SUCCESS;
 }
 
-static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb, 
-                           request_rec *r, ap_filter_t *f, 
-                           apr_bucket *head_ptr, apr_bucket **inserted_head)
+static apr_status_t handle_printenv(include_ctx_t *ctx, ap_filter_t *f,
+                                    apr_bucket_brigade *bb)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
     apr_bucket *tmp_buck;
+    request_rec *r = f->r;
 
     if (ctx->flags & FLAG_PRINTING) {
         ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
@@ -2396,7 +2399,6 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb,
             char *key_val, *next;
             apr_size_t   k_len, v_len, kv_length;
 
-            *inserted_head = NULL;
             for (i = 0; i < arr->nelts; ++i) {
                 key_text = ap_escape_html(r->pool, elts[i].key);
                 val_text = elts[i].val;
@@ -2419,22 +2421,19 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 tmp_buck = apr_bucket_pool_create(key_val, kv_length - 1,
                                                   r->pool,
                                                   r->connection->bucket_alloc);
-                APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
-                if (*inserted_head == NULL) {
-                    *inserted_head = tmp_buck;
-                }
+                APR_BRIGADE_INSERT_TAIL(bb, tmp_buck);
             }
-            return 0;
+            return APR_SUCCESS;
         }
         else {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                         "printenv directive does not take tags in %s", 
                         r->filename);
-            CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
-            return -1;
+            SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+            return APR_SUCCESS;
         }
     }
-    return 0;
+    return APR_SUCCESS;
 }
 
 /* -------------------------- The main function --------------------------- */
@@ -2443,10 +2442,11 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb,
  * returns the index position of the first byte of start_seq (or the len of
  * the buffer as non-match)
  */
-static apr_size_t find_start_sequence(ssi_ctx_t *ctx, const char *data,
+static apr_size_t find_start_sequence(include_ctx_t *ctx, const char *data,
                                       apr_size_t len)
 {
-    apr_size_t slen = ctx->ctx->start_seq_len;
+    struct ssi_internal_ctx *intern = ctx->intern;
+    apr_size_t slen = intern->start_seq_len;
     apr_size_t index;
     const char *p, *ep;
 
@@ -2457,12 +2457,12 @@ static apr_size_t find_start_sequence(ssi_ctx_t *ctx, const char *data,
         /* try fast bndm search over the buffer
          * (hopefully the whole start sequence can be found in this buffer)
          */
-        index = bndm(ctx->ctx->start_seq, ctx->ctx->start_seq_len, data, len,
-                     ctx->ctx->start_seq_pat);
+        index = bndm(intern->start_seq, intern->start_seq_len, data, len,
+                     intern->start_seq_pat);
 
         /* wow, found it. ready. */
         if (index < len) {
-            ctx->state = PARSE_DIRECTIVE;
+            intern->state = PARSE_DIRECTIVE;
             return index;
         }
         else {
@@ -2475,7 +2475,7 @@ static apr_size_t find_start_sequence(ssi_ctx_t *ctx, const char *data,
 
     ep = data + len;
     do {
-        while (p < ep && *p != *ctx->ctx->start_seq) {
+        while (p < ep && *p != *intern->start_seq) {
             ++p;
         }
 
@@ -2486,15 +2486,15 @@ static apr_size_t find_start_sequence(ssi_ctx_t *ctx, const char *data,
             apr_size_t pos = 1;
 
             ++p;
-            while (p < ep && *p == ctx->ctx->start_seq[pos]) {
+            while (p < ep && *p == intern->start_seq[pos]) {
                 ++p;
                 ++pos;
             }
 
             /* partial match found. Store the info for the next round */
             if (p == ep) {
-                ctx->state = PARSE_HEAD;
-                ctx->ctx->parse_pos = pos;
+                intern->state = PARSE_HEAD;
+                intern->parse_pos = pos;
                 return index;
             }
         }
@@ -2516,36 +2516,37 @@ static apr_size_t find_start_sequence(ssi_ctx_t *ctx, const char *data,
  * number of chars of the start_seq which appeared not to be part of a
  * full tag and may have to be passed down the filter chain.
  */
-static apr_size_t find_partial_start_sequence(ssi_ctx_t *ctx,
+static apr_size_t find_partial_start_sequence(include_ctx_t *ctx,
                                               const char *data,
                                               apr_size_t len,
                                               apr_size_t *release)
 {
+    struct ssi_internal_ctx *intern = ctx->intern;
     apr_size_t pos, spos = 0;
-    apr_size_t slen = ctx->ctx->start_seq_len;
+    apr_size_t slen = intern->start_seq_len;
     const char *p, *ep;
 
-    pos = ctx->ctx->parse_pos;
+    pos = intern->parse_pos;
     ep = data + len;
     *release = 0;
 
     do {
         p = data;
 
-        while (p < ep && pos < slen && *p == ctx->ctx->start_seq[pos]) {
+        while (p < ep && pos < slen && *p == intern->start_seq[pos]) {
             ++p;
             ++pos;
         }
 
         /* full match */
         if (pos == slen) {
-            ctx->state = PARSE_DIRECTIVE;
+            intern->state = PARSE_DIRECTIVE;
             return (p - data);
         }
 
         /* the whole buffer is a partial match */
         if (p == ep) {
-            ctx->ctx->parse_pos = pos;
+            intern->parse_pos = pos;
             return (p - data);
         }
 
@@ -2558,14 +2559,14 @@ static apr_size_t find_partial_start_sequence(ssi_ctx_t *ctx,
          * begins with this offset. (This can happen, if a strange
          * start_seq like "---->" spans buffers)
          */
-        if (spos < ctx->ctx->parse_pos) {
+        if (spos < intern->parse_pos) {
             do {
                 ++spos;
                 ++*release;
-                p = ctx->ctx->start_seq + spos;
-                pos = ctx->ctx->parse_pos - spos;
+                p = intern->start_seq + spos;
+                pos = intern->parse_pos - spos;
 
-                while (pos && *p != *ctx->ctx->start_seq) {
+                while (pos && *p != *intern->start_seq) {
                     ++p;
                     ++spos;
                     ++*release;
@@ -2579,7 +2580,7 @@ static apr_size_t find_partial_start_sequence(ssi_ctx_t *ctx,
                     apr_size_t t = 1;
 
                     ++p;
-                    while (t < pos && *p == ctx->ctx->start_seq[t]) {
+                    while (t < pos && *p == intern->start_seq[t]) {
                         ++p;
                         ++t;
                     }
@@ -2603,31 +2604,32 @@ static apr_size_t find_partial_start_sequence(ssi_ctx_t *ctx,
     } while (1); /* work hard to find a match ;-) */
 
     /* no match at all, release all (wrongly) matched chars so far */
-    *release = ctx->ctx->parse_pos;
-    ctx->state = PARSE_PRE_HEAD;
+    *release = intern->parse_pos;
+    intern->state = PARSE_PRE_HEAD;
     return 0;
 }
 
 /*
  * returns the position after the directive
  */
-static apr_size_t find_directive(ssi_ctx_t *ctx, const char *data,
+static apr_size_t find_directive(include_ctx_t *ctx, const char *data,
                                  apr_size_t len, char ***store,
                                  apr_size_t **store_len)
 {
+    struct ssi_internal_ctx *intern = ctx->intern;
     const char *p = data;
     const char *ep = data + len;
     apr_size_t pos;
 
-    switch (ctx->state) {
+    switch (intern->state) {
     case PARSE_DIRECTIVE:
         while (p < ep && !apr_isspace(*p)) {
             /* we have to consider the case of missing space between directive
              * and end_seq (be somewhat lenient), e.g. <!--#printenv-->
              */
-            if (*p == *ctx->ctx->end_seq) {
-                ctx->state = PARSE_DIRECTIVE_TAIL;
-                ctx->ctx->parse_pos = 1;
+            if (*p == *intern->end_seq) {
+                intern->state = PARSE_DIRECTIVE_TAIL;
+                intern->parse_pos = 1;
                 ++p;
                 return (p - data);
             }
@@ -2635,60 +2637,61 @@ static apr_size_t find_directive(ssi_ctx_t *ctx, const char *data,
         }
 
         if (p < ep) { /* found delimiter whitespace */
-            ctx->state = PARSE_DIRECTIVE_POSTNAME;
-            *store = &ctx->directive;
-            *store_len = &ctx->ctx->directive_length;
+            intern->state = PARSE_DIRECTIVE_POSTNAME;
+            *store = &intern->directive;
+            *store_len = &intern->directive_len;
         }
 
         break;
 
     case PARSE_DIRECTIVE_TAIL:
-        pos = ctx->ctx->parse_pos;
+        pos = intern->parse_pos;
 
-        while (p < ep && pos < ctx->end_seq_len &&
-               *p == ctx->ctx->end_seq[pos]) {
+        while (p < ep && pos < intern->end_seq_len &&
+               *p == intern->end_seq[pos]) {
             ++p;
             ++pos;
         }
 
         /* full match, we're done */
-        if (pos == ctx->end_seq_len) {
-            ctx->state = PARSE_DIRECTIVE_POSTTAIL;
-            *store = &ctx->directive;
-            *store_len = &ctx->ctx->directive_length;
+        if (pos == intern->end_seq_len) {
+            intern->state = PARSE_DIRECTIVE_POSTTAIL;
+            *store = &intern->directive;
+            *store_len = &intern->directive_len;
             break;
         }
 
         /* partial match, the buffer is too small to match fully */
         if (p == ep) {
-            ctx->ctx->parse_pos = pos;
+            intern->parse_pos = pos;
             break;
         }
 
         /* no match. continue normal parsing */
-        ctx->state = PARSE_DIRECTIVE;
+        intern->state = PARSE_DIRECTIVE;
         return 0;
 
     case PARSE_DIRECTIVE_POSTTAIL:
-        ctx->state = PARSE_EXECUTE;
-        ctx->ctx->directive_length -= ctx->end_seq_len;
+        intern->state = PARSE_EXECUTE;
+        intern->directive_len -= intern->end_seq_len;
         /* continue immediately with the next state */
 
     case PARSE_DIRECTIVE_POSTNAME:
-        if (PARSE_DIRECTIVE_POSTNAME == ctx->state) {
-            ctx->state = PARSE_PRE_ARG;
+        if (PARSE_DIRECTIVE_POSTNAME == intern->state) {
+            intern->state = PARSE_PRE_ARG;
         }
         ctx->argc = 0;
-        ctx->argv = NULL;
+        intern->argv = NULL;
 
-        if (!ctx->ctx->directive_length) {
-            ctx->error = 1;
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r, "missing directive "
-                          "name in parsed document %s", ctx->r->filename);
+        if (!intern->directive_len) {
+            intern->error = 1;
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, intern->r, "missing "
+                          "directive name in parsed document %s",
+                          intern->r->filename);
         }
         else {
-            char *sp = ctx->directive;
-            char *sep = ctx->directive + ctx->ctx->directive_length;
+            char *sp = intern->directive;
+            char *sep = intern->directive + intern->directive_len;
 
             /* normalize directive name */
             for (; sp < sep; ++sp) {
@@ -2709,9 +2712,10 @@ static apr_size_t find_directive(ssi_ctx_t *ctx, const char *data,
 /*
  * find out whether the next token is (a possible) end_seq or an argument
  */
-static apr_size_t find_arg_or_tail(ssi_ctx_t *ctx, const char *data,
+static apr_size_t find_arg_or_tail(include_ctx_t *ctx, const char *data,
                                    apr_size_t len)
 {
+    struct ssi_internal_ctx *intern = ctx->intern;
     const char *p = data;
     const char *ep = data + len;
 
@@ -2722,7 +2726,7 @@ static apr_size_t find_arg_or_tail(ssi_ctx_t *ctx, const char *data,
 
     /* buffer doesn't consist of whitespaces only */
     if (p < ep) {
-        ctx->state = (*p == *ctx->ctx->end_seq) ? PARSE_TAIL : PARSE_ARG;
+        intern->state = (*p == *intern->end_seq) ? PARSE_TAIL : PARSE_ARG;
     }
 
     return (p - data);
@@ -2732,39 +2736,40 @@ static apr_size_t find_arg_or_tail(ssi_ctx_t *ctx, const char *data,
  * test the stream for end_seq. If it doesn't match at all, it must be an
  * argument
  */
-static apr_size_t find_tail(ssi_ctx_t *ctx, const char *data,
+static apr_size_t find_tail(include_ctx_t *ctx, const char *data,
                             apr_size_t len)
 {
+    struct ssi_internal_ctx *intern = ctx->intern;
     const char *p = data;
     const char *ep = data + len;
-    apr_size_t pos = ctx->ctx->parse_pos;
+    apr_size_t pos = intern->parse_pos;
 
-    if (PARSE_TAIL == ctx->state) {
-        ctx->state = PARSE_TAIL_SEQ;
-        pos = ctx->ctx->parse_pos = 0;
+    if (PARSE_TAIL == intern->state) {
+        intern->state = PARSE_TAIL_SEQ;
+        pos = intern->parse_pos = 0;
     }
 
-    while (p < ep && pos < ctx->end_seq_len && *p == ctx->ctx->end_seq[pos]) {
+    while (p < ep && pos < intern->end_seq_len && *p == intern->end_seq[pos]) {
         ++p;
         ++pos;
     }
 
     /* bingo, full match */
-    if (pos == ctx->end_seq_len) {
-        ctx->state = PARSE_EXECUTE;
+    if (pos == intern->end_seq_len) {
+        intern->state = PARSE_EXECUTE;
         return (p - data);
     }
 
     /* partial match, the buffer is too small to match fully */
     if (p == ep) {
-        ctx->ctx->parse_pos = pos;
+        intern->parse_pos = pos;
         return (p - data);
     }
 
     /* no match. It must be an argument string then
      * The caller should cleanup and rewind to the reparse point
      */
-    ctx->state = PARSE_ARG;
+    intern->state = PARSE_ARG;
     return 0;
 }
 
@@ -2773,33 +2778,34 @@ static apr_size_t find_tail(ssi_ctx_t *ctx, const char *data,
  * A pcre-pattern could look (similar to):
  * name\s*(?:=\s*(["'`]?)value\1(?>\s*))?
  */
-static apr_size_t find_argument(ssi_ctx_t *ctx, const char *data,
+static apr_size_t find_argument(include_ctx_t *ctx, const char *data,
                                 apr_size_t len, char ***store,
                                 apr_size_t **store_len)
 {
+    struct ssi_internal_ctx *intern = ctx->intern;
     const char *p = data;
     const char *ep = data + len;
 
-    switch (ctx->state) {
+    switch (intern->state) {
     case PARSE_ARG:
         /*
          * create argument structure and append it to the current list
          */
-        ctx->current_arg = apr_palloc(ctx->dpool,
-                                      sizeof(*ctx->current_arg));
-        ctx->current_arg->next = NULL;
+        intern->current_arg = apr_palloc(ctx->dpool,
+                                         sizeof(*intern->current_arg));
+        intern->current_arg->next = NULL;
 
         ++(ctx->argc);
-        if (!ctx->argv) {
-            ctx->argv = ctx->current_arg;
+        if (!intern->argv) {
+            intern->argv = intern->current_arg;
         }
         else {
-            ssi_arg_item_t *newarg = ctx->argv;
+            ssi_arg_item_t *newarg = intern->argv;
 
             while (newarg->next) {
                 newarg = newarg->next;
             }
-            newarg->next = ctx->current_arg;
+            newarg->next = intern->current_arg;
         }
 
         /* check whether it's a valid one. If it begins with a quote, we
@@ -2809,22 +2815,22 @@ static apr_size_t find_argument(ssi_ctx_t *ctx, const char *data,
         case '"': case '\'': case '`':
             *store = NULL;
 
-            ctx->state = PARSE_ARG_VAL;
-            ctx->quote = *p++;
-            ctx->current_arg->name = NULL;
-            ctx->current_arg->name_len = 0;
-            ctx->error = 1;
+            intern->state = PARSE_ARG_VAL;
+            intern->quote = *p++;
+            intern->current_arg->name = NULL;
+            intern->current_arg->name_len = 0;
+            intern->error = 1;
 
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r, "missing argument "
-                          "name for value to tag %s in %s",
-                          apr_pstrmemdup(ctx->r->pool, ctx->directive,
-                                         ctx->ctx->directive_length),
-                                         ctx->r->filename);
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, intern->r, "missing "
+                          "argument name for value to tag %s in %s",
+                          apr_pstrmemdup(intern->r->pool, intern->directive,
+                                         intern->directive_len),
+                                         intern->r->filename);
 
             return (p - data);
 
         default:
-            ctx->state = PARSE_ARG_NAME;
+            intern->state = PARSE_ARG_NAME;
         }
         /* continue immediately with next state */
 
@@ -2834,27 +2840,27 @@ static apr_size_t find_argument(ssi_ctx_t *ctx, const char *data,
         }
 
         if (p < ep) {
-            ctx->state = PARSE_ARG_POSTNAME;
-            *store = &ctx->current_arg->name;
-            *store_len = &ctx->current_arg->name_len;
+            intern->state = PARSE_ARG_POSTNAME;
+            *store = &intern->current_arg->name;
+            *store_len = &intern->current_arg->name_len;
             return (p - data);
         }
         break;
 
     case PARSE_ARG_POSTNAME:
-        ctx->current_arg->name = apr_pstrmemdup(ctx->dpool,
-                                                ctx->current_arg->name,
-                                                ctx->current_arg->name_len);
-        if (!ctx->current_arg->name_len) {
-            ctx->error = 1;
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r, "missing argument "
-                          "name for value to tag %s in %s",
-                          apr_pstrmemdup(ctx->r->pool, ctx->directive,
-                                         ctx->ctx->directive_length),
-                                         ctx->r->filename);
+        intern->current_arg->name = apr_pstrmemdup(ctx->dpool,
+                                                 intern->current_arg->name,
+                                                 intern->current_arg->name_len);
+        if (!intern->current_arg->name_len) {
+            intern->error = 1;
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, intern->r, "missing "
+                          "argument name for value to tag %s in %s",
+                          apr_pstrmemdup(intern->r->pool, intern->directive,
+                                         intern->directive_len),
+                                         intern->r->filename);
         }
         else {
-            char *sp = ctx->current_arg->name;
+            char *sp = intern->current_arg->name;
 
             /* normalize the name */
             while (*sp) {
@@ -2863,7 +2869,7 @@ static apr_size_t find_argument(ssi_ctx_t *ctx, const char *data,
             }
         }
 
-        ctx->state = PARSE_ARG_EQ;
+        intern->state = PARSE_ARG_EQ;
         /* continue with next state immediately */
 
     case PARSE_ARG_EQ:
@@ -2875,12 +2881,12 @@ static apr_size_t find_argument(ssi_ctx_t *ctx, const char *data,
 
         if (p < ep) {
             if (*p == '=') {
-                ctx->state = PARSE_ARG_PREVAL;
+                intern->state = PARSE_ARG_PREVAL;
                 ++p;
             }
             else { /* no value */
-                ctx->current_arg->value = NULL;
-                ctx->state = PARSE_PRE_ARG;
+                intern->current_arg->value = NULL;
+                intern->state = PARSE_PRE_ARG;
             }
 
             return (p - data);
@@ -2896,13 +2902,13 @@ static apr_size_t find_argument(ssi_ctx_t *ctx, const char *data,
 
         /* buffer doesn't consist of whitespaces only */
         if (p < ep) {
-            ctx->state = PARSE_ARG_VAL;
+            intern->state = PARSE_ARG_VAL;
             switch (*p) {
             case '"': case '\'': case '`':
-                ctx->quote = *p++;
+                intern->quote = *p++;
                 break;
             default:
-                ctx->quote = '\0';
+                intern->quote = '\0';
                 break;
             }
 
@@ -2911,37 +2917,37 @@ static apr_size_t find_argument(ssi_ctx_t *ctx, const char *data,
         break;
 
     case PARSE_ARG_VAL_ESC:
-        if (*p == ctx->quote) {
+        if (*p == intern->quote) {
             ++p;
         }
-        ctx->state = PARSE_ARG_VAL;
+        intern->state = PARSE_ARG_VAL;
         /* continue with next state immediately */
 
     case PARSE_ARG_VAL:
         for (; p < ep; ++p) {
-            if (ctx->quote && *p == '\\') {
+            if (intern->quote && *p == '\\') {
                 ++p;
                 if (p == ep) {
-                    ctx->state = PARSE_ARG_VAL_ESC;
+                    intern->state = PARSE_ARG_VAL_ESC;
                     break;
                 }
 
-                if (*p != ctx->quote) {
+                if (*p != intern->quote) {
                     --p;
                 }
             }
-            else if (ctx->quote && *p == ctx->quote) {
+            else if (intern->quote && *p == intern->quote) {
                 ++p;
-                *store = &ctx->current_arg->value;
-                *store_len = &ctx->current_arg->value_len;
-                ctx->state = PARSE_ARG_POSTVAL;
+                *store = &intern->current_arg->value;
+                *store_len = &intern->current_arg->value_len;
+                intern->state = PARSE_ARG_POSTVAL;
                 break;
             }
-            else if (!ctx->quote && apr_isspace(*p)) {
+            else if (!intern->quote && apr_isspace(*p)) {
                 ++p;
-                *store = &ctx->current_arg->value;
-                *store_len = &ctx->current_arg->value_len;
-                ctx->state = PARSE_ARG_POSTVAL;
+                *store = &intern->current_arg->value;
+                *store_len = &intern->current_arg->value_len;
+                intern->state = PARSE_ARG_POSTVAL;
                 break;
             }
         }
@@ -2952,21 +2958,21 @@ static apr_size_t find_argument(ssi_ctx_t *ctx, const char *data,
         /*
          * The value is still the raw input string. Finally clean it up.
          */
-        --(ctx->current_arg->value_len);
-        ctx->current_arg->value[ctx->current_arg->value_len] = '\0';
+        --(intern->current_arg->value_len);
+        intern->current_arg->value[intern->current_arg->value_len] = '\0';
 
         /* strip quote escaping \ from the string */
-        if (ctx->quote) {
+        if (intern->quote) {
             apr_size_t shift = 0;
             char *sp;
 
-            sp = ctx->current_arg->value;
-            ep = ctx->current_arg->value + ctx->current_arg->value_len;
+            sp = intern->current_arg->value;
+            ep = intern->current_arg->value + intern->current_arg->value_len;
             while (sp < ep && *sp != '\\') {
                 ++sp;
             }
             for (; sp < ep; ++sp) {
-                if (*sp == '\\' && sp[1] == ctx->quote) {
+                if (*sp == '\\' && sp[1] == intern->quote) {
                     ++sp;
                     ++shift;
                 }
@@ -2975,11 +2981,11 @@ static apr_size_t find_argument(ssi_ctx_t *ctx, const char *data,
                 }
             }
 
-            ctx->current_arg->value_len -= shift;
+            intern->current_arg->value_len -= shift;
         }
 
-        ctx->current_arg->value[ctx->current_arg->value_len] = '\0';
-        ctx->state = PARSE_PRE_ARG;
+        intern->current_arg->value[intern->current_arg->value_len] = '\0';
+        intern->state = PARSE_PRE_ARG;
 
         return 0;
 
@@ -2996,7 +3002,8 @@ static apr_size_t find_argument(ssi_ctx_t *ctx, const char *data,
  */
 static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
 {
-    ssi_ctx_t *ctx = f->ctx;
+    include_ctx_t *ctx = f->ctx;
+    struct ssi_internal_ctx *intern = ctx->intern;
     request_rec *r = f->r;
     apr_bucket *b = APR_BRIGADE_FIRST(bb);
     apr_bucket_brigade *pass_bb;
@@ -3011,15 +3018,18 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
     /* we may crash, since already cleaned up; hand over the responsibility
      * to the next filter;-)
      */
-    if (ctx->seen_eos) {
+    if (intern->seen_eos) {
         return ap_pass_brigade(f->next, bb);
     }
 
     /* All stuff passed along has to be put into that brigade */
-    pass_bb = apr_brigade_create(ctx->ctx->pool, f->c->bucket_alloc);
-    ctx->ctx->bytes_parsed = 0;
-    ctx->ctx->output_now = 0;
-    ctx->error = 0;
+    pass_bb = apr_brigade_create(ctx->pool, f->c->bucket_alloc);
+
+    /* initialization for this loop */
+    intern->bytes_read = 0;
+    intern->error = 0;
+    intern->r = r;
+    ctx->flush_now = 0;
 
     /* loop over the current bucket brigade */
     while (b != APR_BRIGADE_SENTINEL(bb)) {
@@ -3036,7 +3046,7 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
             APR_BUCKET_REMOVE(b);
 
             if (APR_BUCKET_IS_EOS(b)) {
-                ctx->seen_eos = 1;
+                intern->seen_eos = 1;
 
                 /* Hit end of stream, time for cleanup ... But wait!
                  * Perhaps we're not ready yet. We may have to loop one or
@@ -3054,8 +3064,8 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
                  *    will be passed through within the next (and actually
                  *    last) round.
                  */
-                if (PARSE_EXECUTE            == ctx->state ||
-                    PARSE_DIRECTIVE_POSTTAIL == ctx->state) {
+                if (PARSE_EXECUTE            == intern->state ||
+                    PARSE_DIRECTIVE_POSTTAIL == intern->state) {
                     APR_BUCKET_INSERT_BEFORE(newb, b);
                 }
                 else {
@@ -3066,7 +3076,7 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
                 APR_BRIGADE_INSERT_TAIL(pass_bb, b);
 
                 if (APR_BUCKET_IS_FLUSH(b)) {
-                    ctx->ctx->output_now = 1;
+                    ctx->flush_now = 1;
                 }
 
                 b = newb;
@@ -3075,8 +3085,8 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
         }
 
         /* enough is enough ... */
-        if (ctx->ctx->output_now ||
-            ctx->ctx->bytes_parsed > AP_MIN_BYTES_TO_WRITE) {
+        if (ctx->flush_now ||
+            intern->bytes_read > AP_MIN_BYTES_TO_WRITE) {
 
             if (!APR_BRIGADE_EMPTY(pass_bb)) {
                 rv = ap_pass_brigade(f->next, pass_bb);
@@ -3086,17 +3096,17 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
                 }
             }
 
-            ctx->ctx->output_now = 0;
-            ctx->ctx->bytes_parsed = 0;
+            ctx->flush_now = 0;
+            intern->bytes_read = 0;
         }
 
         /* read the current bucket data */
         len = 0;
-        if (!ctx->seen_eos) {
-            if (ctx->ctx->bytes_parsed > 0) {
+        if (!intern->seen_eos) {
+            if (intern->bytes_read > 0) {
                 rv = apr_bucket_read(b, &data, &len, APR_NONBLOCK_READ);
                 if (APR_STATUS_IS_EAGAIN(rv)) {
-                    ctx->ctx->output_now = 1;
+                    ctx->flush_now = 1;
                     continue;
                 }
             }
@@ -3110,11 +3120,11 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
                 return rv;
             }
 
-            ctx->ctx->bytes_parsed += len;
+            intern->bytes_read += len;
         }
 
         /* zero length bucket, fetch next one */
-        if (!len && !ctx->seen_eos) {
+        if (!len && !intern->seen_eos) {
             b = APR_BUCKET_NEXT(b);
             continue;
         }
@@ -3123,7 +3133,7 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
          * it's actually a data containing bucket, start/continue parsing
          */
 
-        switch (ctx->state) {
+        switch (intern->state) {
         /* no current tag; search for start sequence */
         case PARSE_PRE_HEAD:
             index = find_start_sequence(ctx, data, len);
@@ -3133,7 +3143,7 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
             }
 
             newb = APR_BUCKET_NEXT(b);
-            if (ctx->ctx->flags & FLAG_PRINTING) {
+            if (ctx->flags & FLAG_PRINTING) {
                 APR_BUCKET_REMOVE(b);
                 APR_BRIGADE_INSERT_TAIL(pass_bb, b);
             }
@@ -3143,9 +3153,9 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
 
             if (index < len) {
                 /* now delete the start_seq stuff from the remaining bucket */
-                if (PARSE_DIRECTIVE == ctx->state) { /* full match */
-                    apr_bucket_split(newb, ctx->ctx->start_seq_len);
-                    ctx->ctx->output_now = 1; /* pass pre-tag stuff */
+                if (PARSE_DIRECTIVE == intern->state) { /* full match */
+                    apr_bucket_split(newb, intern->start_seq_len);
+                    ctx->flush_now = 1; /* pass pre-tag stuff */
                 }
 
                 b = APR_BUCKET_NEXT(newb);
@@ -3162,21 +3172,20 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
             index = find_partial_start_sequence(ctx, data, len, &release);
 
             /* check if we mismatched earlier and have to release some chars */
-            if (release && (ctx->ctx->flags & FLAG_PRINTING)) {
-                char *to_release = apr_palloc(ctx->ctx->pool, release);
+            if (release && (ctx->flags & FLAG_PRINTING)) {
+                char *to_release = apr_palloc(ctx->pool, release);
 
-                memcpy(to_release, ctx->ctx->start_seq, release);
-                newb = apr_bucket_pool_create(to_release, release,
-                                              ctx->ctx->pool,
+                memcpy(to_release, intern->start_seq, release);
+                newb = apr_bucket_pool_create(to_release, release, ctx->pool,
                                               f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(pass_bb, newb);
             }
 
             if (index) { /* any match */
                 /* now delete the start_seq stuff from the remaining bucket */
-                if (PARSE_DIRECTIVE == ctx->state) { /* final match */
+                if (PARSE_DIRECTIVE == intern->state) { /* final match */
                     apr_bucket_split(b, index);
-                    ctx->ctx->output_now = 1; /* pass pre-tag stuff */
+                    ctx->flush_now = 1; /* pass pre-tag stuff */
                 }
                 newb = APR_BUCKET_NEXT(b);
                 apr_bucket_delete(b);
@@ -3200,15 +3209,15 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
             if (store) {
                 if (index) {
                     APR_BUCKET_REMOVE(b);
-                    APR_BRIGADE_INSERT_TAIL(ctx->tmp_bb, b);
+                    APR_BRIGADE_INSERT_TAIL(intern->tmp_bb, b);
                     b = newb;
                 }
 
                 /* time for cleanup? */
                 if (store != &magic) {
-                    apr_brigade_pflatten(ctx->tmp_bb, store, store_len,
+                    apr_brigade_pflatten(intern->tmp_bb, store, store_len,
                                          ctx->dpool);
-                    apr_brigade_cleanup(ctx->tmp_bb);
+                    apr_brigade_cleanup(intern->tmp_bb);
                 }
             }
             else if (index) {
@@ -3252,15 +3261,15 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
             if (store) {
                 if (index) {
                     APR_BUCKET_REMOVE(b);
-                    APR_BRIGADE_INSERT_TAIL(ctx->tmp_bb, b);
+                    APR_BRIGADE_INSERT_TAIL(intern->tmp_bb, b);
                     b = newb;
                 }
 
                 /* time for cleanup? */
                 if (store != &magic) {
-                    apr_brigade_pflatten(ctx->tmp_bb, store, store_len,
+                    apr_brigade_pflatten(intern->tmp_bb, store, store_len,
                                          ctx->dpool);
-                    apr_brigade_cleanup(ctx->tmp_bb);
+                    apr_brigade_cleanup(intern->tmp_bb);
                 }
             }
             else if (index) {
@@ -3275,7 +3284,7 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
         case PARSE_TAIL_SEQ:
             index = find_tail(ctx, data, len);
 
-            switch (ctx->state) {
+            switch (intern->state) {
             case PARSE_EXECUTE:  /* full match */
                 apr_bucket_split(b, index);
                 newb = APR_BUCKET_NEXT(b);
@@ -3285,14 +3294,14 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
 
             case PARSE_ARG:      /* no match */
                 /* PARSE_ARG must reparse at the beginning */
-                APR_BRIGADE_PREPEND(bb, ctx->tmp_bb);
+                APR_BRIGADE_PREPEND(bb, intern->tmp_bb);
                 b = APR_BRIGADE_FIRST(bb);
                 break;
 
             default:             /* partial match */
                 newb = APR_BUCKET_NEXT(b);
                 APR_BUCKET_REMOVE(b);
-                APR_BRIGADE_INSERT_TAIL(ctx->tmp_bb, b);
+                APR_BRIGADE_INSERT_TAIL(intern->tmp_bb, b);
                 b = newb;
                 break;
             }
@@ -3304,80 +3313,43 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
          */
         case PARSE_EXECUTE:
             /* if there was an error, it was already logged; just stop here */
-            if (ctx->error) {
-                if (ctx->ctx->flags & FLAG_PRINTING) {
-                    SSI_CREATE_ERROR_BUCKET(ctx->ctx, f, pass_bb);
-                    ctx->error = 0;
+            if (intern->error) {
+                if (ctx->flags & FLAG_PRINTING) {
+                    SSI_CREATE_ERROR_BUCKET(ctx, f, pass_bb);
+                    intern->error = 0;
                 }
             }
             else {
                 include_handler_fn_t *handle_func;
 
-                handle_func = apr_hash_get(include_hash, ctx->directive, 
-                                           ctx->ctx->directive_length);
+                handle_func = apr_hash_get(include_hash, intern->directive, 
+                                           intern->directive_len);
+
                 if (handle_func) {
-                    apr_bucket *dummy;
-                    char *tag;
-                    apr_size_t tag_len = 0;
-                    ssi_arg_item_t *carg = ctx->argv;
-
-                    /* legacy wrapper code */
-                    while (carg) {
-                        tag_len += (carg->name  ? carg->name_len      : 0) +
-                                   (carg->value ? carg->value_len + 1 : 0);
-                        carg = carg->next;
-                    }
-
-                    tag = ctx->ctx->combined_tag = ctx->ctx->curr_tag_pos =
-                        apr_palloc(ctx->dpool, tag_len + 1);
-
-                    carg = ctx->argv;
-                    while (carg) {
-                        if (carg->name) {
-                            memcpy(tag, carg->name, carg->name_len);
-                            tag += carg->name_len;
-                        }
-                        if (carg->value) {
-                            memcpy(tag++, "=", 1);
-                            memcpy(tag, carg->value, carg->value_len + 1);
-                            tag += carg->value_len + 1;
-                        }
-                        carg = carg->next;
-                    }
-                    ctx->ctx->tag_length = tag_len;
-
-                    rv = handle_func(ctx->ctx, &bb, r, f, b, &dummy);
-                    if (rv != 0 && rv != 1 && rv != -1) {
+                    rv = handle_func(ctx, f, pass_bb);
+                    if (!APR_STATUS_IS_SUCCESS(rv)) {
                         apr_brigade_destroy(pass_bb);
                         return rv;
-                    }
-
-                    if (dummy) {
-                        apr_bucket_brigade *remain;
-
-                        remain = apr_brigade_split(bb, b);
-                        APR_BRIGADE_CONCAT(pass_bb, bb);
-                        bb = remain;
                     }
                 }
                 else {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "unknown directive \"%s\" in parsed doc %s",
-                                  apr_pstrmemdup(r->pool, ctx->directive,
-                                                 ctx->ctx->directive_length),
+                                  apr_pstrmemdup(r->pool, intern->directive,
+                                                 intern->directive_len),
                                                  r->filename);
-                    if (ctx->ctx->flags & FLAG_PRINTING) {
-                        SSI_CREATE_ERROR_BUCKET(ctx->ctx, f, pass_bb);
+                    if (ctx->flags & FLAG_PRINTING) {
+                        SSI_CREATE_ERROR_BUCKET(ctx, f, pass_bb);
                     }
                 }
             }
 
             /* cleanup */
             apr_pool_clear(ctx->dpool);
-            apr_brigade_cleanup(ctx->tmp_bb);
+            apr_brigade_cleanup(intern->tmp_bb);
 
             /* Oooof. Done here, start next round */
-            ctx->state = PARSE_PRE_HEAD;
+            intern->state = PARSE_PRE_HEAD;
             break;
 
         } /* switch(ctx->state) */
@@ -3385,36 +3357,35 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
     } /* while(brigade) */
 
     /* End of stream. Final cleanup */
-    if (ctx->seen_eos) {
-        if (PARSE_HEAD == ctx->state) {
-            if (ctx->ctx->flags & FLAG_PRINTING) {
-                char *to_release = apr_palloc(ctx->ctx->pool,
-                                              ctx->ctx->parse_pos);
+    if (intern->seen_eos) {
+        if (PARSE_HEAD == intern->state) {
+            if (ctx->flags & FLAG_PRINTING) {
+                char *to_release = apr_palloc(ctx->pool, intern->parse_pos);
 
-                memcpy(to_release, ctx->ctx->start_seq, ctx->ctx->parse_pos);
+                memcpy(to_release, intern->start_seq, intern->parse_pos);
                 APR_BRIGADE_INSERT_TAIL(pass_bb,
                                         apr_bucket_pool_create(to_release,
-                                        ctx->ctx->parse_pos, ctx->ctx->pool,
+                                        intern->parse_pos, ctx->pool,
                                         f->c->bucket_alloc));
             }
         }
-        else if (PARSE_PRE_HEAD != ctx->state) {
+        else if (PARSE_PRE_HEAD != intern->state) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "SSI directive was not properly finished at the end "
                           "of parsed document %s", r->filename);
-            if (ctx->ctx->flags & FLAG_PRINTING) {
-                SSI_CREATE_ERROR_BUCKET(ctx->ctx, f, pass_bb);
+            if (ctx->flags & FLAG_PRINTING) {
+                SSI_CREATE_ERROR_BUCKET(ctx, f, pass_bb);
             }
         }
 
-        if (!(ctx->ctx->flags & FLAG_PRINTING)) {
+        if (!(ctx->flags & FLAG_PRINTING)) {
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                           "missing closing endif directive in parsed document"
                           " %s", r->filename);
         }
 
         /* cleanup our temporary memory */
-        apr_brigade_destroy(ctx->tmp_bb);
+        apr_brigade_destroy(intern->tmp_bb);
         apr_pool_destroy(ctx->dpool);
 
         /* don't forget to finally insert the EOS bucket */
@@ -3503,7 +3474,7 @@ static int includes_setup(ap_filter_t *f)
 static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
     request_rec *r = f->r;
-    ssi_ctx_t *ctx = f->ctx;
+    include_ctx_t *ctx = f->ctx;
     request_rec *parent;
     include_dir_config *conf = 
                    (include_dir_config *)ap_get_module_config(r->per_dir_config,
@@ -3517,43 +3488,37 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     }
 
     if (!f->ctx) {
+        struct ssi_internal_ctx *intern;
+
         /* create context for this filter */
-        f->ctx = ctx = apr_palloc(f->c->pool, sizeof(*ctx));
-        ctx->ctx = apr_pcalloc(f->c->pool, sizeof(*ctx->ctx));
-        ctx->ctx->pool = f->r->pool;
-        apr_pool_create(&ctx->dpool, ctx->ctx->pool);
+        f->ctx = ctx = apr_palloc(r->pool, sizeof(*ctx));
+        ctx->intern = intern = apr_palloc(r->pool, sizeof(*ctx->intern));
+        ctx->pool = r->pool;
+        apr_pool_create(&ctx->dpool, ctx->pool);
 
         /* configuration data */
-        ctx->end_seq_len = strlen(sconf->default_end_tag);
-        ctx->r = f->r;
+        intern->end_seq_len = strlen(sconf->default_end_tag);
 
         /* runtime data */
-        ctx->tmp_bb = apr_brigade_create(ctx->ctx->pool, f->c->bucket_alloc);
-        ctx->seen_eos = 0;
-        ctx->state = PARSE_PRE_HEAD;
-        ctx->ctx->flags = (FLAG_PRINTING | FLAG_COND_TRUE);
-        if (ap_allow_options(f->r) & OPT_INCNOEXEC) {
-            ctx->ctx->flags |= FLAG_NO_EXEC;
+        intern->tmp_bb = apr_brigade_create(ctx->pool, f->c->bucket_alloc);
+        intern->seen_eos = 0;
+        intern->state = PARSE_PRE_HEAD;
+        ctx->flags = (FLAG_PRINTING | FLAG_COND_TRUE);
+        if (ap_allow_options(r) & OPT_INCNOEXEC) {
+            ctx->flags |= SSI_FLAG_NO_EXEC;
         }
-        ctx->ctx->if_nesting_level = 0;
-        ctx->ctx->re_string = NULL;
-        ctx->ctx->error_str_override = NULL;
-        ctx->ctx->time_str_override = NULL;
 
-        ctx->ctx->state = PARSED; /* dummy */
-        ctx->ctx->ssi_tag_brigade = apr_brigade_create(f->c->pool,
-                                                       f->c->bucket_alloc);
-        ctx->ctx->status = APR_SUCCESS;
+        ctx->if_nesting_level = 0;
+        intern->re_string = NULL;
+        intern->error_str_override = NULL;
+        intern->time_str_override = NULL;
 
-        ctx->ctx->error_str = conf->default_error_msg;
-        ctx->ctx->time_str = conf->default_time_fmt;
-        ctx->ctx->start_seq_pat = &sconf->start_seq_pat;
-        ctx->ctx->start_seq  = sconf->default_start_tag;
-        ctx->ctx->start_seq_len = sconf->start_tag_len;
-        ctx->ctx->end_seq = sconf->default_end_tag;
-    }
-    else {
-        ctx->ctx->bytes_parsed = 0;
+        ctx->error_str = conf->default_error_msg;
+        ctx->time_str = conf->default_time_fmt;
+        intern->start_seq_pat = &sconf->start_seq_pat;
+        intern->start_seq  = sconf->default_start_tag;
+        intern->start_seq_len = sconf->start_tag_len;
+        intern->end_seq = sconf->default_end_tag;
     }
 
     if ((parent = ap_get_module_config(r->request_config, &include_module))) {
