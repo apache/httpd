@@ -201,7 +201,9 @@ static void alloc_listener(process_rec *process, char *addr, unsigned int port)
     ap_listeners = new;
 }
 
-
+#ifndef WIN32
+static
+#endif
 int ap_listen_open(process_rec *process, unsigned port)
 {
     ap_pool_t *pconf = process->pconf;
@@ -241,6 +243,20 @@ int ap_listen_open(process_rec *process, unsigned port)
     return num_open ? 0 : -1;
 }
 
+#ifndef WIN32
+int ap_setup_listeners(server_rec *s)
+{
+    ap_listen_rec *lr;
+    int num_listeners = 0;
+    if (ap_listen_open(s->process, s->port)) {
+       return 0;
+    }
+    for (lr = ap_listeners; lr; lr = lr->next) {
+        num_listeners++;
+    }
+    return num_listeners;
+}
+#endif
 
 void ap_listen_pre_config(void)
 {

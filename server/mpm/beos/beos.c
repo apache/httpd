@@ -289,19 +289,6 @@ static void set_signals(void)
 	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGWINCH)");
 }
 
-static int setup_listeners(server_rec *s)
-{
-    ap_listen_rec *lr;
-    int num_listeners = 0;
-    if (ap_listen_open(s->process, s->port)) {
-       return 0;
-    }
-    for (lr = ap_listeners; lr; lr = lr->next) {
-        num_listeners++;
-    }
-    return num_listeners;
-}
-
 /*****************************************************************
  * Here follows a long bunch of generic server bookkeeping stuff...
  */
@@ -692,7 +679,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
         return 1;
     }
        
-    if ((num_listening_sockets = setup_listeners(ap_server_conf)) < 1) {
+    if ((num_listening_sockets = ap_setup_listeners(ap_server_conf)) < 1) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
             "no listening sockets available, shutting down");
         return 1;

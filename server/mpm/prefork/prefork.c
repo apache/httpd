@@ -1283,29 +1283,6 @@ static void perform_idle_server_maintenance(void)
     }
 }
 
-static int setup_listeners(server_rec *s)
-{
-    ap_listen_rec *lr;
-    int sockdes;
-
-    if (ap_listen_open(s->process, s->port)) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
-		    "no listening sockets available, shutting down");
-	return -1;
-    }
-
-    listenmaxfd = -1;
-    FD_ZERO(&listenfds);
-    for (lr = ap_listeners; lr; lr = lr->next) {
-        ap_get_os_sock(&sockdes, lr->sd);
-	FD_SET(sockdes, &listenfds);
-	if (sockdes > listenmaxfd) {
-	    listenmaxfd = sockdes;
-	}
-    }
-    return 0;
-}
-
 /* Useful to erase the status of children that might be from previous
  * generations */
 static void ap_prefork_force_reset_connection_status(long conn_id)
@@ -1337,7 +1314,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
  
     ap_log_pid(pconf, ap_pid_fname);
 
-    if (setup_listeners(s)) {
+    if (ap_setup_listeners(s)) {
 	/* XXX: hey, what's the right way for the mpm to indicate a fatal error? */
 	return 1;
     }
