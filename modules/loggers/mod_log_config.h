@@ -76,7 +76,8 @@ typedef void *ap_log_writer_init(apr_pool_t *p, server_rec *s,
 /**
  * callback which gets called where there is a log line to write.
  */
-typedef apr_status_t ap_log_writer(apr_pool_t *p, 
+typedef apr_status_t ap_log_writer(
+                            request_rec *r,
                             void *handle, 
                             const char **portions,
                             int *lengths,
