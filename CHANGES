@@ -1,5 +1,8 @@
 Changes with Apache 2.0.53
 
+  *) Fix handling of files >2Gb on all platforms (or builds) where
+     apr_off_t is larger than apr_size_t.  PR 28898.  [Joe Orton]
+
   *) mod_include: Fix bug which could truncate variable expansions
      of N*64 characters by one byte.  PR 32985.  [Joe Orton]
 

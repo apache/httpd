@@ -94,12 +94,6 @@ PATCHES TO BACKPORT FROM 2.1
        PR: 32529
        +1: jorton
 
-    *) core: fix bucket-splitting logic for platforms with
-       sizeof(apr_off_t)>sizeof(apr_size_t)
-       http://www.apache.org/~jorton/ap_splitlfs.diff
-       PR: 28898
-       +1: jorton, trawick, stoddard
-
     *) modules/config5.m4 & docs/manual/programs/configure.xml:
        --with-module can now take more than one module to be statically
        linked:
