@@ -198,11 +198,16 @@ ifneq "$(IPV6)" ""
 DEFINES += -DNW_BUILD_IPV6
 INCDIRS := $(NOVELLLIBC)\include\winsock\IPV6;$(INCDIRS)
 
-ifneq "$(IPV6)" "SET"
+ifneq "$(findstring IPV6,$(OBJDIR))" "IPV6"
 OBJDIR := $(OBJDIR)_IPV6
+endif
+        
+ifneq "$(findstring IPV6,$(INSTALL))" "IPV6"
 INSTALL := $(INSTALL)_IPV6
+endif        
+
+ifneq "$(findstring IPV6,$(INSTDIRS))" "IPV6"
 INSTDIRS := $(INSTDIRS)_IPV6
-IPV6=SET
 endif
 
 endif
