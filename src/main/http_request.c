@@ -324,7 +324,7 @@ int directory_walk(request_rec *r)
                     this_conf = entry_config;
             }
             else if (entry_core->d_is_fnmatch) {
-                if (!fnmatch(entry_dir, test_filename, FNM_PATHNAME))
+                if (!fnmatch(entry_dir, test_filename, 0))
                     this_conf = entry_config;
             }
             else if (!strncmp(test_filename, entry_dir, strlen(entry_dir)))
