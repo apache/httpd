@@ -488,7 +488,9 @@ do
                     ;;
             esac
             #   determine GNU platform triple
-            gnutriple=`$aux/GuessOS | sed -e 's:/:-:g' | $AWK '{ printf("%s",$1); }'`
+            #   (the use of `awk' and not `$AWK' here is correct, because this
+            #   Makefile is for platform bootstrapping, so don't hardcode paths)
+            gnutriple=`$aux/GuessOS | sed -e 's:/:-:g' | awk '{ printf("%s",$1); }'`
             #   create Makefile wrapper (the first time only)
             if [ ".`ls $top/src.* 2>/dev/null`" = . ]; then
                 if [ "x$quiet" = "xno" ]; then

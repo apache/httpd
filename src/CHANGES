@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) Don't hard-code the path to AWK in --shadow bootstrapping Makefile.
+     [Ralf S. Engelschall] PR#4050
+
   *) Add support for DSO module compilation on BSD/OS 3.x.
      [Randy Terbush, Covalent Technologies]
 
