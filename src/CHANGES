@@ -1,5 +1,11 @@
 Changes with Apache 1.3.21
 
+  *) Added an abnormal exit clean up routine to make sure that ApacheC NLM
+     is always unloaded cleanly.  This fixes the "Ouch! out of memory"
+     problem when restarting Apache for NetWare after an abnormal exit
+     due to configuration errors. 
+     [Brad Nicholes <BNICHOLES@novell.com>]
+
   *)_Change the compile switches for ReliantUNIX SVR4 not to use
      SYSV semaphores, because upon reaching the system limit of
      semaphores, the whole server exits (not just one child).
