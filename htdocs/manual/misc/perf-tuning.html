@@ -340,7 +340,7 @@ the inner loop.  The loop looks like this (differences highlighted):
 implement a mutual exclusion semaphore.  Only one child can have the
 mutex at any time.  There are several choices for implementing these
 mutexes.  The choice is defined in <CODE>src/conf.h</CODE> (pre-1.3) or
-<CODE>src/main/conf.h</CODE> (1.3 or later).  Some architectures
+<CODE>src/include/ap_config.h</CODE> (1.3 or later).  Some architectures
 do not have any locking choice made, on these architectures it is unsafe
 to use multiple <CODE>Listen</CODE> directives.
 
