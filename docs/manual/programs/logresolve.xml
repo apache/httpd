@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<manualpage metafile="httpd.xml.meta">
+<parentdocument href="./">Programs</parentdocument>
+
+  <title>logresolve - Resolve IP-addresses to hostnames in Apache 
+   log files</title>
+
+<summary>
+     <p><code>logresolve</code> is a post-processing program to
+     resolve IP-addresses in Apache's access logfiles.  To minimize
+     impact on your nameserver, logresolve has its very own internal
+     hash-table cache.  This means that each IP number will only be
+     looked up the first time it is found in the log file.</p>
+
+     <p>Takes an Apache log file on standard input.  The IP addresses
+     must be the first thing on each line and must be seperated from
+     the remainder of the line by a space.</p>
+</summary>
+
+<section id="synopsis"><title>Synopsis</title>
+
+     <p><code><strong>logresolve</strong> [ -<strong>s</strong>
+     <var>filename</var> ] [ -<strong>c</strong> ] &lt;
+     <var>access_log</var> &gt; <var>access_log.new</var></code></p>
+</section>
+
+
+<section id="options"><title>Options</title>
+
+<dl>
+
+<dt><code>-s <var>filename</var></code></dt>
+
+<dd>Specifies a filename to record statistics.</dd>
+
+<dt><code>-c</code></dt>
+
+<dd>This causes <code>logresolve</code> to apply some DNS checks:
+after finding the hostname from the IP address, it looks up the IP
+addresses for the hostname and checks that one of these matches the
+original address.</dd>
+
+</dl>
+</section>
+
+</manualpage>
