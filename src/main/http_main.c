@@ -2055,7 +2055,7 @@ int ap_update_child_status(int child_num, int status, request_rec *r)
 					       r->assbackwards ? NULL : " ", r->protocol, NULL),
 				       sizeof(ss->request));
 	    }
-	    ap_cpystrn(ss->vhost, r->server->server_hostname, sizeof(ss->vhost));
+	    ss->vhostrec =  r->server;
 	}
     }
     put_scoreboard_info(child_num, ss);

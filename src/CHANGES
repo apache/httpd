@@ -1,5 +1,10 @@
 Changes with Apache 1.3.4
 
+  *) Add the actual server_rec structure of the specific Vhost to the
+     scoreboard file and avoid a string copy (as well as allow some
+     further future enhancements). [Harrie Hazewinkel
+     <harrie.hazewinkel@jrc.it>]
+
   *) Add APACI --permute-module=foo:bar option which can be used to
      on-the-fly/batch permute the order of two modules (mod_foo and mod_bar)
      in the Configuration[.apaci] file. Two special and important variants are

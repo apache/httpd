@@ -652,7 +652,8 @@ static int status_handler(request_rec *r)
 			else
 			    ap_rprintf(r,
 			     "<td>%s<td nowrap>%s<td nowrap>%s</tr>\n\n",
-			     score_record.client, score_record.vhost,
+			     score_record.client,
+			     score_record.vhostrec->server_hostname,
 			     ap_escape_html(r->pool, score_record.request));
 		    }		/* no_table_report */
 		}			/* !short_report */

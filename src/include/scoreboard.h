@@ -130,7 +130,7 @@ typedef struct {
 #endif
     char client[32];		/* Keep 'em small... */
     char request[64];		/* We just want an idea... */
-    char vhost[32];		/* What virtual host is being accessed? */
+    server_rec *vhostrec;	/* What virtual host is being accessed? */
 } short_score;
 
 typedef struct {
