@@ -1766,7 +1766,7 @@ void winnt_rewrite_args(process_rec *process)
     /* Get the default for any -k option, except run */
     if (service_set == SERVICE_UNSET && strcasecmp(signal_arg, "run")) {
         service_set = mpm_service_set_name(process->pool, &service_name,
-                                           DEFAULT_SERVICE_NAME);
+                                           AP_DEFAULT_SERVICE_NAME);
         if (APR_STATUS_IS_ENOENT(service_set))
             service_set = SERVICE_UNSET;
     }

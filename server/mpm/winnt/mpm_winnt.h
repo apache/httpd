@@ -83,7 +83,10 @@ apr_status_t ap_registry_delete_value(const char *key, const char *name);
 
 #define SERVICE_APACHE_RESTART 128
 
-#define DEFAULT_SERVICE_NAME AP_SERVER_BASEPRODUCT
+#ifndef AP_DEFAULT_SERVICE_NAME
+#define AP_DEFAULT_SERVICE_NAME "Apache2"
+#endif
+
 #define SERVICECONFIG9X "Software\\Microsoft\\Windows\\CurrentVersion\\RunServices"
 #define SERVICECONFIG "System\\CurrentControlSet\\Services\\%s"
 #define SERVICEPARAMS "System\\CurrentControlSet\\Services\\%s\\Parameters"
