@@ -1,5 +1,9 @@
 Changes with Apache 2.0.48
 
+  *) mod_cgid: fix a hash table corruption problem which could
+     result in the wrong script being cleaned up at the end of a
+     request.  [Jeff Trawick]
+
   *) Update httpd-*.conf to be clearer in describing the connection
      between AddType and AddEncoding for defining the meaning of
      compressed file extensions. [Roy Fielding]
