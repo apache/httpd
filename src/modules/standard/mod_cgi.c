@@ -483,8 +483,9 @@ static int cgi_handler(request_rec *r)
 	char *location, sbuf[MAX_STRING_LEN];
 	int ret;
 
-	if ((ret = scan_script_header_err_buff(r, script_in, sbuf)))
+	if ((ret = scan_script_header_err_buff(r, script_in, sbuf))) {
 	    return log_script(r, conf, ret, dbuf, sbuf, script_in, script_err);
+	}
 
 	location = table_get(r->headers_out, "Location");
 
@@ -492,10 +493,12 @@ static int cgi_handler(request_rec *r)
 
 	    /* Soak up all the script output */
 	    hard_timeout("read from script", r);
-	    while (bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
+	    while (bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) {
 		continue;
-	    while (bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
+	    }
+	    while (bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
 		continue;
+	    }
 	    kill_timeout(r);
 
 
@@ -522,13 +525,15 @@ static int cgi_handler(request_rec *r)
 	}
 
 	send_http_header(r);
-	if (!r->header_only)
+	if (!r->header_only) {
 	    send_fb(script_in, r);
+	}
 	bclose(script_in);
 
 	soft_timeout("soaking script stderr", r);
-	while (bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
+	while (bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
 	    continue;
+	}
 	kill_timeout(r);
 	bclose(script_err);
     }
