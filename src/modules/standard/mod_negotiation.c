@@ -1556,7 +1556,7 @@ static void set_accept_quality(negotiation_state *neg, var_rec *variant)
 }
 
 /* For a given variant, find the 'q' value of the charset given
- * on the Accept-Charset line. If not charsets are listed,
+ * on the Accept-Charset line. If no charsets are listed,
  * assume value of '1'.
  */
 static void set_charset_quality(negotiation_state *neg, var_rec *variant)
@@ -1805,19 +1805,6 @@ static int is_variant_better_rvsa(negotiation_state *neg, var_rec *variant,
             *p_bestq = q;
             return 1;
         }
-        /* If the best variant's charset is ISO-8859-1 and this variant has
-         * the same charset quality, then we prefer this variant
-         */
-        if (variant->charset_quality == best->charset_quality &&
-            (variant->content_charset != NULL &&
-             *variant->content_charset != '\0' &&
-             strcmp(variant->content_charset, "iso-8859-1") != 0) &&
-            (best->content_charset == NULL ||
-             *best->content_charset == '\0' ||
-             strcmp(best->content_charset, "iso-8859-1") == 0)) {
-            *p_bestq = q;
-            return 1;
-        }
     }
     return 0;
 }
@@ -1835,7 +1822,7 @@ static int is_variant_better(negotiation_state *neg, var_rec *variant,
     /* For non-transparent negotiation, server can choose how
      * to handle the negotiation. We'll use the following in
      * order: content-type, language, content-type level, charset,
-     * content length.
+     * content encoding, content length.
      *
      * For each check, we have three possible outcomes:
      *   This variant is worse than current best: return 0
