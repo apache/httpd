@@ -602,8 +602,6 @@ struct ap_bucket_error {
     int status;
     /** The error string */
     const char    *data;
-    /** The SMS from which this structure was allocated */
-    apr_sms_t *sms;
 };
 
 AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_error;
