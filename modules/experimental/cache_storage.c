@@ -78,11 +78,14 @@ int cache_remove_url(request_rec *r, const char *types, char *url)
 {
     const char *next = types;
     const char *type;
+    const char *key;
+
+    key = cache_create_key(r);
 
     /* for each specified cache type, delete the URL */
     while(next) {
         type = ap_cache_tokstr(r->pool, next, &next);
-        cache_run_remove_url(type, url);
+        cache_run_remove_url(type, key);
     }
     return OK;
 }
@@ -104,14 +107,16 @@ int cache_create_entity(request_rec *r, const char *types, char *url, apr_size_t
     cache_handle_t *h = apr_pcalloc(r->pool, sizeof(h));
     const char *next = types;
     const char *type;
+    const char *key;
     apr_status_t rv;
-    cache_request_rec *cache = (cache_request_rec *) ap_get_module_config(r->request_config, 
-                                                                          &cache_module);
+    cache_request_rec *cache = (cache_request_rec *) 
+                         ap_get_module_config(r->request_config, &cache_module);
 
     /* for each specified cache type, delete the URL */
+    key = cache_create_key(r);
     while (next) {
         type = ap_cache_tokstr(r->pool, next, &next);
-        switch (rv = cache_run_create_entity(h, type, url, size)) {
+        switch (rv = cache_run_create_entity(h, type, key, size)) {
         case OK: {
             cache->handle = h;
             return OK;
@@ -157,15 +162,16 @@ int cache_select_url(request_rec *r, const char *types, char *url)
     const char *type;
     apr_status_t rv;
     cache_info *info;
-    cache_request_rec *cache = (cache_request_rec *) ap_get_module_config(r->request_config, 
-                                                                          &cache_module);
-
+    const char *key;
+    cache_request_rec *cache = (cache_request_rec *) 
+                         ap_get_module_config(r->request_config, &cache_module);
+    key = cache_create_key(r);
     /* go through the cache types till we get a match */
     cache->handle = apr_palloc(r->pool, sizeof(cache_handle_t));
 
     while (next) {
         type = ap_cache_tokstr(r->pool, next, &next);
-        switch ((rv = cache_run_open_entity(cache->handle, type, url))) {
+        switch ((rv = cache_run_open_entity(cache->handle, type, key))) {
         case OK: {
             info = &(cache->handle->cache_obj->info);
             /* XXX:
@@ -196,10 +202,11 @@ int cache_select_url(request_rec *r, const char *types, char *url)
     return DECLINED;
 }
 
-apr_status_t cache_write_entity_headers(cache_handle_t *h, request_rec *r, cache_info *info,
-                                        apr_table_t *headers)
+apr_status_t cache_write_entity_headers(cache_handle_t *h, 
+                                        request_rec *r, 
+                                        cache_info *info)
 {
-    h->write_headers(h, r, info, headers);
+    h->write_headers(h, r, info);
     return APR_SUCCESS;
 }
 apr_status_t cache_write_entity_body(cache_handle_t *h, apr_bucket_brigade *b) 
@@ -210,17 +217,15 @@ apr_status_t cache_write_entity_body(cache_handle_t *h, apr_bucket_brigade *b)
     return rv;
 }
 
-apr_status_t cache_read_entity_headers(cache_handle_t *h, request_rec *r, 
-                                       apr_table_t **headers)
+apr_status_t cache_read_entity_headers(cache_handle_t *h, request_rec *r)
 {
     cache_info *info = &(h->cache_obj->info);
 
     /* Build the header table from info in the info struct */
-    *headers = apr_table_make(r->pool, 15);
-
-    h->read_headers(h, r, *headers);
+    h->read_headers(h, r);
 
     r->content_type = apr_pstrdup(r->pool, info->content_type);
+    r->filename = apr_pstrdup(r->pool, info->filename );
 
     return APR_SUCCESS;
 }
@@ -230,37 +235,18 @@ apr_status_t cache_read_entity_body(cache_handle_t *h, apr_bucket_brigade *b)
     return APR_SUCCESS;
 }
 
+const char* cache_create_key( request_rec *r ) 
+{
+    return r->uri;
+}
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, create_entity, 
                                       (cache_handle_t *h, const char *type, 
-                                      char *url, apr_size_t len),(h,type,url,len),DECLINED)
+                                      const char *urlkey, apr_size_t len),
+                                      (h,type,urlkey,len),DECLINED)
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, open_entity,  
                                       (cache_handle_t *h, const char *type, 
-                                      char *url),(h,type,url),DECLINED)
+                                      const char *urlkey),(h,type,urlkey),
+                                      DECLINED)
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(cache, CACHE, int, remove_url, 
-                                    (const char *type, char *url),(type,url),OK,DECLINED)
-#if 0
-/* BillS doesn't think these should be hooks.
- * All functions which accept a cache_handle * argument should use
- * function pointers in the cache_handle. Leave them here for now as 
- * points for discussion...
- */
-
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, remove_entity, 
-                                     (cache_handle *h),(h),DECLINED)
-
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, read_entity_headers, 
-                                     (cache_handle *h, request_rec *r,
-                                      apr_table_t **headers),
-                                      (h,info,headers_in,headers_out),DECLINED)
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, read_entity_body, 
-                                     (cache_handle *h,
-                                      apr_bucket_brigade *out),(h,out),DECLINED)
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, write_entity_headers, 
-                                     (cache_handle *h, cache_info *info,
-                                      apr_table_t *headers_in, 
-                                      apr_table_t *headers_out),
-                                      (h,info,headers_in,headers_out),DECLINED)
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, write_entity_body, 
-                                     (cache_handle *h,
-                                      apr_bucket_brigade *in),(h,in),DECLINED)
-#endif
+                                    (const char *type, const char *urlkey),
+                                    (type,urlkey),OK,DECLINED)

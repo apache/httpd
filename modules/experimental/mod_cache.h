@@ -142,12 +142,15 @@ typedef struct {
     apr_array_header_t *cachedisable;	/* URLs not to cache */
     apr_time_t maxex;			/* Maximum time to keep cached files in msecs */
     int maxex_set;
-    apr_time_t defex;			/* default time to keep cached file in msecs */
+    apr_time_t defex;           /* default time to keep cached file in msecs */
     int defex_set;
-    double factor;			/* factor for estimating expires date */
+    double factor;              /* factor for estimating expires date */
     int factor_set;
-    int complete;			/* Force cache completion after this point */
+    int complete;               /* Force cache completion after this point */
     int complete_set;
+    /* ignore the last-modified header when deciding to cache this request */
+    int no_last_mod_ignore_set;
+    int no_last_mod_ignore; 
 } cache_server_conf;
 
 /* cache info information */
@@ -155,7 +158,8 @@ typedef struct cache_info cache_info;
 struct cache_info {
     const char *content_type;
     const char *etag;
-    const char *lastmods;	/* last modified of cache entity */
+    const char *lastmods;     /* last modified of cache entity */
+    const char *filename;   
     apr_time_t date;
     apr_time_t lastmod;
     char lastmod_str[APR_RFC822_DATE_LEN];
@@ -180,9 +184,9 @@ typedef struct cache_handle cache_handle_t;
 struct cache_handle {
     cache_object_t *cache_obj;
     int (*remove_entity) (cache_handle_t *h);
-    int (*write_headers)(cache_handle_t *h, request_rec *r, cache_info *i, apr_table_t *headers);
+    int (*write_headers)(cache_handle_t *h, request_rec *r, cache_info *i);
     int (*write_body)(cache_handle_t *h, apr_bucket_brigade *b);
-    int (*read_headers) (cache_handle_t *h, request_rec *r, apr_table_t *headers);
+    int (*read_headers) (cache_handle_t *h, request_rec *r);
     int (*read_body) (cache_handle_t *h, apr_bucket_brigade *bb); 
 };
 
@@ -210,12 +214,16 @@ int cache_remove_url(request_rec *r, const char *types, char *url);
 int cache_create_entity(request_rec *r, const char *types, char *url, apr_size_t size);
 int cache_remove_entity(request_rec *r, const char *types, cache_handle_t *h);
 int cache_select_url(request_rec *r, const char *types, char *url);
+/**
+ * create a key for the cache based on the request record
+ * this is the 'default' version, which can be overridden by a default function
+ */
+const char* cache_create_key( request_rec*r );
 
-apr_status_t cache_write_entity_headers(cache_handle_t *h, request_rec *r, cache_info *info, 
-                                        apr_table_t *headers);
+apr_status_t cache_write_entity_headers(cache_handle_t *h, request_rec *r, cache_info *info);
 apr_status_t cache_write_entity_body(cache_handle_t *h, apr_bucket_brigade *bb);
 
-apr_status_t cache_read_entity_headers(cache_handle_t *h, request_rec *r, apr_table_t **headers);
+apr_status_t cache_read_entity_headers(cache_handle_t *h, request_rec *r);
 apr_status_t cache_read_entity_body(cache_handle_t *h, apr_bucket_brigade *bb);
 
 
@@ -244,28 +252,11 @@ apr_status_t cache_read_entity_body(cache_handle_t *h, apr_bucket_brigade *bb);
 
 APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, create_entity, 
                           (cache_handle_t *h, const char *type,
-                           char *url, apr_size_t len))
+                           const char *urlkey, apr_size_t len))
 APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, open_entity,  
                           (cache_handle_t *h, const char *type,
-                           char *url))
+                           const char *urlkey))
 APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, remove_url, 
-                          (const char *type, char *url))
-
-#if 0
-APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, remove_entity, 
-                          (cache_handle *h))
-APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, read_entity_headers, 
-                          (cache_handle *h, cache_info **info,
-                           apr_table_t **headers))
-APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, read_entity_body, 
-                          (cache_handle *h,
-                           apr_bucket_brigade *out))
-APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, write_entity_headers, 
-                          (cache_handle *h, cache_info *info,
-                           apr_table_t *headers))
-APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, write_entity_body, 
-                          (cache_handle *h,
-                           apr_bucket_brigade *in))
-#endif
+                          (const char *type, const char *urlkey))
 
 #endif /*MOD_CACHE_H*/
