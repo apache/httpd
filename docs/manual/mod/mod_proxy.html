@@ -37,10 +37,12 @@ and other protocols.
 <li><a href="#proxyblock">ProxyBlock</a>
 <li><a href="#cacheroot">CacheRoot</a>
 <li><a href="#cachesize">CacheSize</a>
-<li><a href="#cachegcinterval">CacheGcInterval</a>
 <li><a href="#cachemaxexpire">CacheMaxExpire</a>
-<li><a href="#cachelastmodifiedfactor">CacheLastModifiedFactor</a>
 <li><a href="#cachedefaultexpire">CacheDefaultExpire</a>
+<li><a href="#cachelastmodifiedfactor">CacheLastModifiedFactor</a>
+<li><a href="#cachegcinterval">CacheGcInterval</a>
+<li><a href="#cachedirlevels">CacheDirLevels</a>
+<li><a href="#cachedirlength">CacheDirLength</a>
 <li><a href="#nocache">NoCache</a>
 </ul>
 
@@ -201,7 +203,7 @@ was supplied with the document.
 Apache 1.1 and later.<p>
 
 If the origin HTTP server did not supply an expiry date for the
-document, then estimate on using the formula
+document, then estimate one using the formula
 <pre>
   expiry-period = time-since-last-modification * &lt;factor&gt;
 </pre>
@@ -210,6 +212,29 @@ For example, if the document was last modified 10 hours ago, and
 
 <p>If the expiry-period would be longer than that set by CacheMaxExpire,
 then the latter takes precedence.
+
+<A name="cachedirlevels"><h2>CacheDirLevels</h2></A>
+<strong>Syntax:</strong> CacheDirLevels <em>&lt;levels&gt;</em><br>
+<strong>Default:</strong> </code>CacheDirLevels 3</code><br>
+<strong>Context:</strong> server config<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_proxy<br>
+<strong>Compatibility:</strong> CacheDirLevels is only available in
+Apache 1.1 and later.<p>
+
+CacheDirLevels sets the number of levels of subdirectories in the cache.
+Cached data will be saved this many directory levels below CacheRoot.
+
+<A name="cachedirlength"><h2>CacheDirLength</h2></A>
+<strong>Syntax:</strong> CacheDirLength <em>&lt;length&gt;</em><br>
+<strong>Default:</strong> </code>CacheDirLength 1</code><br>
+<strong>Context:</strong> server config<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_proxy<br>
+<strong>Compatibility:</strong> CacheDirLength is only available in
+Apache 1.1 and later.<p>
+
+CacheDirLength sets the number of characters in proxy cache subdirectory names.
 
 <A name="cachedefaultexpire"><h2>CacheDefaultExpire</h2></A>
 <strong>Syntax:</strong> CacheDefaultExpire <em>&lt;time&gt;</em><br>
@@ -220,7 +245,7 @@ then the latter takes precedence.
 <strong>Compatibility:</strong> CacheDefaultExpire is only available in
 Apache 1.1 and later.<p>
 
-If the document is fetched via a protocol that does not support expirytimes,
+If the document is fetched via a protocol that does not support expiry times,
 then use &lt;time&gt; hours as the expiry time.
 <a href="#cachemaxexpire">CacheMaxExpire</a> does <strong>not</strong>
 override.
