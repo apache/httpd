@@ -91,6 +91,7 @@
  * Mark Cox, mark@ukweb.com, Allow relative URLs even when no base specified
  */
 
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
@@ -99,7 +100,9 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "util_script.h"
+#ifdef HAVE_STRING_H
 #include <string.h>
+#endif
 
 #define IMAP_MAGIC_TYPE "application/x-httpd-imap"
 #define MAXVERTS 100

@@ -68,6 +68,7 @@
  * they fail.
  */
 
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
@@ -77,8 +78,12 @@
 #include "http_log.h"
 #include "util_script.h"
 #include "http_conf_globals.h"
+#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
+#endif
+#ifdef HAVE_STRING_H
 #include <string.h>
+#endif
 
 module MODULE_VAR_EXPORT cgi_module;
 

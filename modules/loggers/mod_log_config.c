@@ -169,12 +169,15 @@
 
 #define DEFAULT_LOG_FORMAT "%h %l %u %t \"%r\" %>s %b"
 
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"          /* For REMOTE_NAME */
 #include "http_log.h"
 #include "http_protocol.h"
+#ifdef HAVE_LIMITS_H
 #include <limits.h>
+#endif
 
 module MODULE_VAR_EXPORT config_log_module;
 

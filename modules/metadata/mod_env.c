@@ -98,10 +98,13 @@
  *       *** older versions of the module.                        ***
  */
 
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
 
 typedef struct {
     ap_table_t *vars;

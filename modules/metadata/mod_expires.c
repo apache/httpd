@@ -192,7 +192,10 @@
  * Hi, welcome to the internet.
  */
 
+#include "ap_config.h"
+#ifdef HAVE_CTYPE_H
 #include <ctype.h>
+#endif
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
