@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/13 04:05:37 $]
+Last modified at [$Date: 2003/09/15 11:49:19 $]
 
 Release:
 
@@ -103,18 +103,6 @@ PATCHES TO PORT FROM 2.1
       atomic operations for higher concurrency.
       server/mpm/worker/fdqueue.c 1.24, 1.25
       +1: brianp
-      -0: trawick  These gcc warnings seem to point out uncleanness
-                   that should be resolved first.  Perhaps "volatile"-ity
-                   is inconsistent?  (gcc 3.2 on UL 1.0)
-          fdqueue.c: In function `queue_info_cleanup':
-          fdqueue.c:89: warning: passing arg 1 of `apr_atomic_casptr' from
-                        incompatible pointer type
-          fdqueue.c: In function `ap_queue_info_set_idle':
-          fdqueue.c:142: warning: passing arg 1 of `apr_atomic_casptr' from
-                         incompatible pointer type
-          fdqueue.c: In function `ap_queue_info_wait_for_idler':
-          fdqueue.c:232: warning: passing arg 1 of `apr_atomic_casptr' from
-                         incompatible pointer type
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
