@@ -2,7 +2,7 @@ Changes with Apache 2.0.41
 
   *) Update the xslt and css to give the documentation a more
      modern style.
-     [André Malo <nd@perlig.de>]
+     [André Malo <nd@perlig.de>, Gernot Winkler <greh@o3media.de>]
 
   *) Fix some bucket memory leaks in the chunking code
      [Joe Schaefer <joe+apache@sunstarsys.com>]
