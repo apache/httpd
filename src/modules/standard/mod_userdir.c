@@ -266,16 +266,16 @@ static int translate_userdir(request_rec *r)
     while (*userdirs) {
         const char *userdir = ap_getword_conf(r->pool, &userdirs);
         char *filename = NULL;
-#ifdef NETWARE        
+#if defined(NETWARE)
         int is_absolute = ap_os_is_path_absolute(userdir);
 #endif		
 
         if (strchr(userdir, '*'))
             x = ap_getword(r->pool, &userdir, '*');
 
-	if (userdir[0] == '\0' || ap_os_is_path_absolute(userdir)) {
+	if (userdir[0] == '\0' || userdir[0] == '/') {
             if (x) {
-#ifdef NETWARE 
+#if defined(NETWARE)
                 if (strchr(x, ':') && !is_absolute )
 #elif defined(HAVE_DRIVE_LETTERS)
                 /*
@@ -285,7 +285,7 @@ static int translate_userdir(request_rec *r)
                  * the second character, I will assume a file was specified
                  */
                 if ((strlen(x) > 1) && strchr(x + 2, ':'))
-#else /* !(NETWARE ||HAVE_DRIVE_LETTERS) */
+#else /* !(NETWARE || HAVE_DRIVE_LETTERS) */
                 if (strchr(x, ':'))
 #endif
 		{
@@ -299,13 +299,13 @@ static int translate_userdir(request_rec *r)
             else
                 filename = ap_pstrcat(r->pool, userdir, "/", w, NULL);
         }
-#ifdef NETWARE
+#if defined(NETWARE)
         else if (strchr(userdir, ':') && !is_absolute ) {
 #elif defined(HAVE_DRIVE_LETTERS)
         /* Same Crummy hack here
          */
         else if ((strlen(userdir) > 1) && strchr(userdir + 2, ':')) {
-#else /* !(NETWARE ||HAVE_DRIVE_LETTERS) */
+#else /* !(NETWARE || HAVE_DRIVE_LETTERS) */
         else if (strchr(userdir, ':')) {
 #endif
             redirect = ap_pstrcat(r->pool, userdir, "/", w, dname, NULL);
