@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- $Revision: 1.3.2.10 $ -->
+<!-- $Revision: 1.3.2.11 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -425,24 +425,6 @@
       executables. Default value is
       "/usr/local/bin:/usr/bin:/bin".</dd>
     </dl>
-
-    <p><strong>Checking your suEXEC
-    setup</strong><br />
-     Before you compile and install the suEXEC wrapper you can
-    check the configuration with the <code>--layout</code> option.<br />
-     Example output:</p>
-
-<example>
-    suEXEC setup:<br />
-            suexec binary: /usr/local/apache2/sbin/suexec<br />
-            document root: /usr/local/apache2/share/htdocs<br />
-           userdir suffix: public_html<br />
-                  logfile: /usr/local/apache2/var/log/suexec_log<br />
-                safe path: /usr/local/bin:/usr/bin:/bin<br />
-                caller ID: www<br />
-          minimum user ID: 100<br />
-         minimum group ID: 100<br />
-</example>
 
     <p><strong>Compiling and installing the suEXEC
     wrapper</strong><br />
