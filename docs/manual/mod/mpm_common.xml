@@ -584,16 +584,14 @@ requests</description>
       <dd>Refers to a user by their number.</dd>
     </dl>
 
-    <p>The user should have no privileges which result in it being
-    able to access files which are not intended to be visible to the
+    <p>The user should have no privileges that result in it being
+    able to access files that are not intended to be visible to the
     outside world, and similarly, the user should not be able to
-    execute code which is not meant for httpd requests. It is
+    execute code that is not meant for httpd requests. It is
     recommended that you set up a new user and group specifically for
     running the server. Some admins use user <code>nobody</code>, but
-    this is not always possible or desirable. For example
-    <module>mod_proxy</module>'s cache, when enabled, must be
-    accessible to this user (see <directive
-    module="mod_proxy">CacheRoot</directive>).</p>
+    this is not always desirable, since the <code>nobody</code> user
+    can have other uses on the system.</p>
 
     <p>Notes: If you start the server as a non-root user, it will
     fail to change to the lesser privileged user, and will instead
