@@ -1,5 +1,8 @@
 Changes with Apache 2.0.40
 
+  *) Fix an error when building ApacheMonitor. 
+     [James Cox <imajes@php.net>]
+
   *) APR-Util Renames pending have been completed [Thom May]
 
   *) Performance improvements for the code that reads request
