@@ -389,15 +389,15 @@ API_EXPORT(void) ap_log_error (const char *file, int line, int level,
 }
     
 
-void ap_log_pid (pool *p, char *ap_pid_fname)
+void ap_log_pid (pool *p, char *fname)
 {
     FILE *pid_file;
 
-    if (!ap_pid_fname) return;
-    ap_pid_fname = ap_server_root_relative (p, ap_pid_fname);
-    if(!(pid_file = fopen(ap_pid_fname,"w"))) {
+    if (!fname) return;
+    fname = ap_server_root_relative (p, fname);
+    if(!(pid_file = fopen(fname,"w"))) {
 	perror("fopen");
-        fprintf(stderr,"httpd: could not log pid to file %s\n", ap_pid_fname);
+        fprintf(stderr,"httpd: could not log pid to file %s\n", fname);
         exit(1);
     }
     fprintf(pid_file,"%ld\n",(long)getpid());
