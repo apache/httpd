@@ -72,6 +72,7 @@
 #include "apr_fnmatch.h"
 #include "http_connection.h"
 #include "util_ebcdic.h"
+#include "mpm.h"
 
 /* Allow Apache to use ap_mmap */
 #ifdef USE_MMAP_FILES
@@ -139,6 +140,16 @@ static void *create_core_dir_config(ap_pool_t *a, char *dir)
     conf->hostname_lookups = HOSTNAME_LOOKUP_UNSET;
     conf->do_rfc1413 = DEFAULT_RFC1413 | 2; /* set bit 1 to indicate default */
     conf->satisfy = SATISFY_NOSPEC;
+
+#ifdef RLIMIT_CPU
+    conf->limit_cpu = NULL;
+#endif
+#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
+    conf->limit_mem = NULL;
+#endif
+#ifdef RLIMIT_NPROC
+    conf->limit_nproc = NULL;
+#endif
 
     conf->limit_req_body = 0;
     conf->sec = ap_make_array(a, 2, sizeof(void *));
@@ -242,6 +253,22 @@ static void *merge_core_dir_configs(ap_pool_t *a, void *basev, void *newv)
     if (new->use_canonical_name != USE_CANONICAL_NAME_UNSET) {
 	conf->use_canonical_name = new->use_canonical_name;
     }
+
+#ifdef RLIMIT_CPU
+    if (new->limit_cpu) {
+        conf->limit_cpu = new->limit_cpu;
+    }
+#endif
+#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
+    if (new->limit_mem) {
+        conf->limit_mem = new->limit_mem;
+    }
+#endif
+#ifdef RLIMIT_NPROC
+    if (new->limit_nproc) {
+        conf->limit_nproc = new->limit_nproc;
+    }
+#endif
 
     if (new->limit_req_body) {
         conf->limit_req_body = new->limit_req_body;
@@ -2225,6 +2252,49 @@ static const char *set_interpreter_source(cmd_parms *cmd, core_dir_config *d,
 }
 #endif
 
+#if !defined (RLIMIT_CPU) || !(defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined(RLIMIT_AS)) || !defined (RLIMIT_NPROC)
+static const char *no_set_limit(cmd_parms *cmd, core_dir_config *conf,
+                                char *arg, char *arg2)
+{
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, cmd->server,
+                "%s not supported on this platform", cmd->cmd->name);
+    return NULL;
+}
+#endif
+
+#ifdef RLIMIT_CPU
+static const char *set_limit_cpu(cmd_parms *cmd, core_dir_config *conf,
+                                 char *arg, char *arg2)
+{
+    unixd_set_rlimit(cmd, &conf->limit_cpu, arg, arg2, RLIMIT_CPU);
+    return NULL;
+}
+#endif
+
+#if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined(RLIMIT_AS)
+static const char *set_limit_mem(cmd_parms *cmd, core_dir_config *conf,
+                                 char *arg, char * arg2)
+{
+#if defined(RLIMIT_AS)
+    unixd_set_rlimit(cmd, &conf->limit_mem, arg, arg2 ,RLIMIT_AS);
+#elif defined(RLIMIT_DATA)
+    unixd_set_rlimit(cmd, &conf->limit_mem, arg, arg2, RLIMIT_DATA);
+#elif defined(RLIMIT_VMEM)
+    unixd_set_rlimit(cmd, &conf->limit_mem, arg, arg2, RLIMIT_VMEM);
+#endif
+    return NULL;
+}
+#endif
+
+#ifdef RLIMIT_NPROC
+static const char *set_limit_nproc(cmd_parms *cmd, core_dir_config *conf,
+                                   char *arg, char * arg2)
+{
+    unixd_set_rlimit(cmd, &conf->limit_nproc, arg, arg2, RLIMIT_NPROC);
+    return NULL;
+}
+#endif
+
 /* Note --- ErrorDocument will now work from .htaccess files.  
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
@@ -2363,6 +2433,28 @@ static const command_rec core_cmds[] = {
   (void*)XtOffsetOf(core_dir_config, limit_req_body),
   OR_ALL, TAKE1,
   "Limit (in bytes) on maximum size of request message body" },
+/* System Resource Controls */
+{ "RLimitCPU",
+#ifdef RLIMIT_CPU
+  set_limit_cpu, (void*)XtOffsetOf(core_dir_config, limit_cpu),
+#else
+  no_set_limit, NULL,
+#endif
+  OR_ALL, TAKE12, "Soft/hard limits for max CPU usage in seconds" },
+{ "RLimitMEM",
+#if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined (RLIMIT_AS)
+  set_limit_mem, (void*)XtOffsetOf(core_dir_config, limit_mem),
+#else
+  no_set_limit, NULL,
+#endif
+  OR_ALL, TAKE12, "Soft/hard limits for max memory usage per process" },
+{ "RLimitNPROC",
+#ifdef RLIMIT_NPROC
+  set_limit_nproc, (void*)XtOffsetOf(core_dir_config, limit_nproc),
+#else
+  no_set_limit, NULL,
+#endif
+   OR_ALL, TAKE12, "soft/hard limits for max number of processes per uid" },
 { NULL }
 };
 

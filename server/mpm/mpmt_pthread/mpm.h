@@ -56,6 +56,7 @@
  * University of Illinois, Urbana-Champaign.
  */
 #include "scoreboard.h"
+#include "unixd.h"
 
 #ifndef APACHE_MPM_MPMT_PTHREAD_H
 #define APACHE_MPM_MPMT_PTHREAD_H
