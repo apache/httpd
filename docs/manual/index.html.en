@@ -17,6 +17,10 @@ div#page-content {
 th {
     background-color: #e5ecf3;
 }
+
+td {
+    padding-top: .4em;
+}
 -->
 </style>
 
