@@ -540,9 +540,8 @@ the child processes</description>
 <description>Sets the upper limit on the configurable number of threads
 per child process</description>
 <syntax>ThreadLimit <em>number</em></syntax>
-<default>ThreadLimit 64</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module></modulelist>
+<modulelist><module>mpm_winnt</module><module>worker</module></modulelist>
 
 <usage>
     <p>This directive sets the maximum configured value for <directive
@@ -559,13 +558,15 @@ per child process</description>
     <directive>ThreadLimit</directive> and <directive
     module="mpm_common">ThreadsPerChild</directive> are set to values
     higher than the system can handle, Apache may not start or the
-    system may become unstable.</p>
+    system may become unstable. Do not set the value of this directive
+    any higher than your greatest predicted setting of <directive
+    module="mpm_common">ThreadsPerChild</directive> for the
+    current run of Apache.</p>
 
-    <p>Use this directive only if you need to set <directive
-    module="mpm_common">ThreadsPerChild</directive> higher than 64.  Do
-    not set the value of this directive any higher than what you might
-    want to set <directive
-    module="mpm_common">ThreadsPerChild</directive> to.</p>
+    <p>The default value for <directive>ThreadLimit</directive> is
+    64 when used with <module>worker</module> and 1920 when used
+    with <module>mpm_winnt</module>.</p>
+
 </usage>
 </directivesynopsis>
 
@@ -573,7 +574,6 @@ per child process</description>
 <name>ThreadsPerChild</name>
 <description>Number of threads created by each child process</description>
 <syntax>ThreadsPerChild <em>number</em></syntax>
-<default>ThreadsPerChild 50</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>mpm_winnt</module>
 </modulelist>
@@ -587,6 +587,11 @@ per child process</description>
     like worker, where there are multiple child processes, the
     total number of threads should be high enough to handle the
     common load on the server.</p>
+
+    <p>The default value for this directive is 25 when used with
+    <module>worker</module> and 64 when used with
+    <module>mpm_winnt</module>.</p>
+
 </usage>
 </directivesynopsis>
 
