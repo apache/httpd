@@ -55,6 +55,8 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
   APACHE_SUBST(iconsdir)
   APACHE_SUBST(sysconfdir)
   APACHE_SUBST(installbuilddir)
+  APACHE_SUBST(runtimedir)
+  APACHE_SUBST(proxycachedir)
   APACHE_SUBST(other_targets)
   APACHE_SUBST(progname)
   APACHE_SUBST(prefix)
@@ -275,8 +277,26 @@ AC_DEFUN(APACHE_MODULE,[
     APACHE_MODPATH_ADD($1, $shared, $3)
   fi
 ])dnl
+
+dnl
+dnl APACHE_LAYOUT_DEFAULTS
+dnl
+AC_DEFUN(APACHE_LAYOUT_DEFAULTS,[
+  dnl We only need to check the non-autoconf variables.
+  test "x${cgidir}" = "x" && cgidir='${datadir}/error'
+  test "x${logfiledir}" = "x" && logfiledir='${localstatedir}/logs'
+  test "x${htdocsdir}" = "x" && htdocsdir='${datadir}/htdocs'
+  test "x${manualdir}" = "x" && manualdir='${datadir}/manual'
+  test "x${errordir}" = "x" && errordir='${datadir}/error'
+  test "x${iconsdir}" = "x" && iconsdir='${datadir}/icons'
+  test "x${installbuilddir}" = "x" && installbuilddir='${datadir}/build'
+  test "x${runtimedir}" = "x" && runtimedir='${localstatedir}/logs'
+  test "x${proxycachedir}" = "x" && proxycachedir='${localstatedir}/proxy'
+])dnl
+
 dnl
 dnl APACHE_LAYOUT(configlayout, layoutname)
+dnl
 AC_DEFUN(APACHE_LAYOUT,[
   if test ! -f $srcdir/config.layout; then
     echo "** Error: Layout file $srcdir/config.layout not found"
