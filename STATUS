@@ -110,6 +110,7 @@ Committed Code Changes:
     * Paul Eggert's [PATCH] suexec/1343: year-2000 bug in suexec log
     * Marc's [PATCH] define to allow passing of Authorization header
     * Roy's [PATCH] protocol/1399: failing to read body
+    * PR#1082, 1282, 1499, 1553: unixware cleanup
 
 Available Patches:
 
