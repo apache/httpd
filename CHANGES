@@ -1,8 +1,14 @@
-Changes with Apache 2.0.12-dev
+Changes with Apache 2.0.13-dev
+
+  *) Don't assume that there will always be multiple calls to the byterange 
+     filter.  It is possible that we will need to do byteranges with only
+     one call to the filter.  [Ryan Morgan <rmorgan@covalent.net>]
 
   *) Move the error_bucket definition from the http module to the
      core server.  Every protocol will need this ability, not just
      HTTP.  [Ryan Bloom]
+
+Changes with Apache 2.0.12
 
   *) Modify mod_file_cache to save pre-formatted strings for 
      content-length and last-modified headers for performance. 
