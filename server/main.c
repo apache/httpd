@@ -200,7 +200,7 @@ static void destroy_and_exit_process(process_rec *process, int process_exit_valu
     exit(process_exit_value);
 }
 
-static process_rec *create_process(int argc, const char **argv)
+static process_rec *create_process(int argc, char *const *argv)
 {
     process_rec *process;
     
@@ -300,7 +300,7 @@ API_EXPORT(int)        main(int argc, char *argv[])
 #ifndef WIN32 /* done in main_win32.c */
     ap_initialize();
 #endif
-    process = create_process(argc, (const char **)argv);
+    process = create_process(argc, (char *const *)argv);
     pglobal = process->pool;
     pconf = process->pconf;
     ap_server_argv0 = process->short_name;
