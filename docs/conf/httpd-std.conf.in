@@ -814,18 +814,6 @@ ServerSignature On
 
 <IfModule mod_mime.c>
     #
-    # Specify a default charset for all pages sent out. This is
-    # always a good idea and opens the door for future internationalisation
-    # of your web site, should you ever want it. Specifying it as
-    # a default does little harm; as the standard dictates that a page
-    # is in iso-8859-1 (latin1) unless specified otherwise i.e. you
-    # are merely stating the obvious. There are also some security
-    # reasons in browsers, related to javascript and URL parsing
-    # which encourage you to always set a default char set.
-    #
-    AddDefaultCharset ISO-8859-1
-
-    #
     # Commonly used filename extensions to character sets. You probably
     # want to avoid clashes with the language extensions, unless you
     # are good at carefully testing your setup after each change.
