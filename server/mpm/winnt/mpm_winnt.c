@@ -1855,7 +1855,7 @@ static void winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
 
-static void winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec* server)
+static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec* server)
 {
     static int restart_num = 0;
     apr_status_t rv = 0;
@@ -1911,7 +1911,7 @@ static void winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *p
                 ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                              "Parent: Cannot create shutdown event %s", signal_shutdown_name);
                 CleanNullACL((void *)sa);
-                exit(1);
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
 
             /* Create restart event, apPID_restart, where PID is the parent 
@@ -1923,7 +1923,7 @@ static void winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *p
                 ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                              "Parent: Cannot create restart event %s", signal_restart_name);
                 CleanNullACL((void *)sa);
-                exit(1);
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
             CleanNullACL((void *)sa);
 
@@ -1941,7 +1941,7 @@ static void winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *p
                         ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
                                      "%s: Unable to start the service manager.",
                                      service_name);
-                        exit(1);
+                        return HTTP_INTERNAL_SERVER_ERROR;
                     }            
                 }
             }
@@ -1962,6 +1962,7 @@ static void winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *p
     {
         mpm_start_child_console_handler();
     }
+    return OK;
 }
 
 AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
