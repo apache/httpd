@@ -284,13 +284,6 @@ static int ssl_hook_pre_connection(conn_rec *c)
 
     SSL_set_verify_result(ssl, X509_V_OK);
 
-    /*
-     * We have to manage a I/O timeout ourself, because Apache
-     * does it the first time when reading the request, but we're
-     * working some time before this happens.
-     */
-    ssl_util_setmodconfig(c->base_server, "ssl::handshake::timeout", (void *)FALSE);
-
     ssl_io_filter_init(c, ssl);
 
     return APR_SUCCESS;
@@ -363,13 +356,6 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
                  */
                 ap_remove_output_filter(pRec->pOutputFilter);
                 return HTTP_BAD_REQUEST;
-            }
-            else if (ssl_util_getmodconfig_ssl(pRec->pssl, "ssl::handshake::timeout")
-               == (void *)TRUE) {
-                ssl_log(c->base_server, SSL_LOG_ERROR,
-                        "SSL handshake timed out (client %s, server %s)",
-                        c->remote_ip != NULL ? c->remote_ip : "unknown", 
-                        ssl_util_vhostid(c->pool,c->base_server));
             }
             else if ((SSL_get_error(pRec->pssl, n) == SSL_ERROR_SYSCALL) 
                 && (errno != EINTR)) {
