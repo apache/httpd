@@ -1217,7 +1217,6 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_SHLIB="-b"
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred"
-	    SHLIB_SUFFIX_NAME=sl
 	    ;;
 	*-hp-hpux10.*|*-hp-hpux11.*)
 	    case $CC in
@@ -1227,7 +1226,6 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_SHLIB="-b"
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred -Wl,+s"
-	    SHLIB_SUFFIX_NAME=sl
 	    ;;
 	*-ibm-aix*)
 	    case $CC in
