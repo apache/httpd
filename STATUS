@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/18 22:24:11 $]
+Last modified at [$Date: 2004/02/19 11:53:24 $]
 
 Release:
 
@@ -256,6 +256,15 @@ PATCHES TO BACKPORT FROM 2.1
       fields given "ALL_HTTP" or "ALL_RAW".  PR 20656.
       [Jesse Pelton <jsp pkc.com>]
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/arch/win32/mod_isapi.c?r1=1.98&r2=1.99
+      +1: trawick
+
+    * fatal exception hook and related signal handler cleanups
+      This also fixes an issue for me on Solaris where the cgid daemon
+      won't restart multiple times because of something different
+      about the signal handling the second time it is started.  With
+      this patch I can "kill -SEGV" the cgid daemon process a number
+      of times and the daemon will be restarted each time.
+      http://www.apache.org/~trawick/fatal_exception_20.patch
       +1: trawick
 
 CURRENT RELEASE NOTES:
