@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/13 00:16:43 $]
+Last modified at [$Date: 2004/05/13 15:18:24 $]
 
 Release:
 
@@ -72,6 +72,14 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) mod_ldap calls ldap_simple_bind_s() to validate the user
+       credentials.  If the bind fails, the connection is left
+       in an unbound state.  Make sure that the ldap connection
+       record is updated to show that the connection is no longer
+       bound.
+       modules/experimental/util_ldap.c: r1.27
+       +1: bnicholes
+        
     *) mod_ssl: Fix potential SEGV in 'shmcb' session cache.
        modules/ssl/ssl_scache_shmcb.c: r1.26
        +1: madhum
@@ -99,7 +107,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) htpasswd should not refuse to process files containing empty lines.
          support/htpasswd.c: r1.76
-       +1: nd, trawick
+       +1: nd, trawick, bnicholes
 
     *) Disable AcceptEx on Win9x systems automatically. (broken in 2.0.49)
        PR 28529
@@ -387,7 +395,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * Make sure long request lines are '\0'-terminated. (PR 28376)
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c?r1=1.147&r2=1.148
-      +1: trawick, nd
+      +1: trawick, nd, bnicholes
 
 CURRENT RELEASE NOTES:
 
