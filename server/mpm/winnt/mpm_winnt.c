@@ -2157,7 +2157,7 @@ void winnt_rewrite_args(process_rec *process)
          * without a drive letter.  Change to the default root
          * (path to apache root, above /bin) for safety.
          */
-        SetCurrentDirectory(def_server_root);
+        apr_filepath_set(def_server_root, process->pool);
         
         /* Any other process has a console, so we don't to begin
          * a Win9x service until the configuration is parsed and
