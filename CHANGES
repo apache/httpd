@@ -1,5 +1,11 @@
 Changes with Apache 2.0.30-dev
 
+  *) Change make install processing of DSO modules to perform special
+     handling on platforms where libtool doesn't install mod_foo.so.
+     This fixes some wonkiness on HP-UX, Tru64, and AIX which
+     prevented standard LoadModule statements from working.
+     [Jeff Trawick]
+
   *) Whenever mod_so is enabled (not just when there are DSOs for
      our modules), do whatever special magic is required for compiling/
      loading third-party modules.  This allows third-party DSOs to

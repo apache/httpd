@@ -68,7 +68,7 @@ install-modules:
 	if [ "x$$has_mod_so" = "xhas_mod_so" ]; then \
 		list='$(shared)'; \
 		for i in $$list; do \
-			$(SH_LIBTOOL) --mode=install cp $$i $(libexecdir); \
+			$(top_builddir)/build/instdso.sh SH_LIBTOOL='$(SH_LIBTOOL)' $$i $(libexecdir); \
 		done; \
 	fi	
 
