@@ -1,8 +1,13 @@
 Changes with Apache 2.0.33-dev
 
+  *) Change mod_ssl to always do a full startup/teardown on restarts.
+     this allows mod_ssl to be added to a server that is already
+     running and makes it possible to add/change certs/keys after the
+     server has been started.  [Doug MacEachern]
+
   *) Introduce PassPhraseDialog "|/path/to/pipe" mechanism to mod_ssl.
      This pipe must be a bidirectional 'console' style relay, which
-     mod_perl prints all prompts to the pipe's stdin, and reads the
+     mod_ssl prints all prompts to the pipe's stdin, and reads the
      passphrases from the pipe's stdout.  [William Rowe]
 
   *) Fix bug where --sysconfdir and --localstatedir were being
