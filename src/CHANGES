@@ -1,16 +1,20 @@
 Changes with Apache 1.3
+  
+  *) mod_expire also issues Cache-Control: max-age headers.
+     [Rob Hartill]
+
+  *) Added kill_only_once option for free_proc_chain so that it won't
+     aggressively try to kill off specific children.  For fastcgi.
+     [Stanley Gambarin <gambarin@OpenMarket.com>]
+
+  *) mod_auth deals with extra ':' delimited fields.  [Marc Slemko]
 
   *) Added IconHeight and IconWidth to mod_dir's IndexOptions directive.
      When used together, these cause mod_dir to emit HEIGHT and WIDTH
      attributes in the FancyIndexing IMG tags.  [Ken Coar]
 
-  *) Added NT support [Ben Laurie and Ambarish Malpani <ambarish@valicert.com>]
-
-  *) mod_auth deals with extra ':' delimited fields.  [Marc Slemko]
-
-  *) Added kill_only_once option for free_proc_chain so that it won't
-     aggressively try to kill off specific children.  For fastcgi.
-     [Stanley Gambarin <gambarin@OpenMarket.com>]
+  *) PORT: Added NT support
+     [Ben Laurie and Ambarish Malpani <ambarish@valicert.com>]
 
 Changes with Apache 1.2.1
 

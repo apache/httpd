@@ -384,18 +384,23 @@ void *merge_expires_dir_configs (pool *p, void *basev, void *addv)
 
 int add_expires(request_rec *r)
 {
-    expires_dir_config *conf =
-            (expires_dir_config *)get_module_config(r->per_dir_config, &expires_module);
+    expires_dir_config *conf;
     char *code;
     time_t base; 
     time_t additional; 
     time_t expires; 
+    char age[20];
 
-    if ( r->finfo.st_mode == 0 )
+    if (is_HTTP_ERROR(r->status))  /* Don't add Expires headers to errors */
 	return DECLINED;
 
-    /* COMMA bites my ass...
-     */
+    if (r->main != NULL)           /* Say no to subrequests */
+	return DECLINED;
+
+    if ( r->finfo.st_mode == 0 )     /* no file ? shame. */
+	return DECLINED;
+
+    conf = (expires_dir_config *)get_module_config(r->per_dir_config, &expires_module);
     if ( conf == NULL ) {
         log_reason ("internal error in expires_module; add_expires(), conf == NULL", r->filename, r);
 	return SERVER_ERROR;
@@ -451,6 +456,8 @@ int add_expires(request_rec *r)
     };
 
     expires = base + additional;
+    ap_snprintf(age, sizeof(age), "max-age=%d", (int)expires - (int)time(NULL));
+    table_set( r->headers_out, "Cache-Control", age);
     tzset();	/* redundant? called implicitly by localtime, at least 
 		 * under FreeBSD
 		 */
