@@ -1,10 +1,10 @@
 
 DEPTH     = ../..
-topsrcdir = @topsrcdir@
+top_srcdir = @top_srcdir@
 srcdir    = @srcdir@
 VPATH     = @srcdir@
 
 LTLIBRARY_NAME    = libos.la
 LTLIBRARY_SOURCES = os.c os-inline.c util_os2.c iol_socket.c
 
-include $(topsrcdir)/build/ltlib.mk
+include $(top_srcdir)/build/ltlib.mk

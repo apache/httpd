@@ -1,6 +1,6 @@
 
 DEPTH     = .
-topsrcdir = @topsrcdir@
+top_srcdir = @top_srcdir@
 srcdir    = @srcdir@
 VPATH     = @srcdir@
 
@@ -25,8 +25,8 @@ install_targets = install-conf install-htdocs install-icons install-other \
 	install-cgi install-include
 DISTCLEANFILES  = apaci include/config_auto.h modules.c
 
-include $(topsrcdir)/build/rules.mk
-include $(topsrcdir)/build/program.mk
+include $(top_srcdir)/build/rules.mk
+include $(top_srcdir)/build/program.mk
 
 install-conf:
 	@echo Installing configuration files

@@ -1,9 +1,9 @@
 
 DEPTH     = ..
-topsrcdir = @topsrcdir@
+top_srcdir = @top_srcdir@
 srcdir    = @srcdir@
 VPATH     = @srcdir@
 
 SUBDIRS = apr
 
-include $(topsrcdir)/build/rules.mk
+include $(top_srcdir)/build/rules.mk

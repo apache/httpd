@@ -1,10 +1,10 @@
 
 DEPTH     = ../../..
-topsrcdir = @topsrcdir@
+top_srcdir = @top_srcdir@
 srcdir    = @srcdir@
 VPATH     = @srcdir@
 
 LTLIBRARY_NAME    = libmpmt_pthread.la
 LTLIBRARY_SOURCES = mpmt_pthread.c scoreboard.c
 
-include $(topsrcdir)/build/ltlib.mk
+include $(top_srcdir)/build/ltlib.mk
