@@ -79,6 +79,16 @@ typedef enum
 
 static bs2_ForkType forktype = bs2_unknown;
 
+#if !defined(_POSIX_SOURCE) && !defined(_XOPEN_SOURCE)
+typedef struct {           
+    char    *username;     
+    char    *account;      
+    char    *processor_name;
+}  _rini_struct;           
+
+extern int _rini(_rini_struct *);
+#endif /* !defined(_POSIX_SOURCE) && !defined(_XOPEN_SOURCE) */
+
 
 static void ap_pad(char *dest, size_t size, char ch)
 {
