@@ -1,0 +1,3076 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
+<!-- English revision: 1.52 -->
+
+<modulesynopsis>
+
+<name>core</name>
+<description>St&auml;ndig verf&uuml;gbare Kernfunktionen des Apache HTTP
+Servers</description>
+<status>Core</status>
+
+<directivesynopsis>
+<name>AcceptPathInfo</name>
+<description>Ressourcen lassen angeh&auml;ngte Pfadangaben zu</description>
+<syntax>AcceptPathInfo On|Off|Default</syntax>
+<default>AcceptPathInfo Default</default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>Verf&uuml;gbar ab Apache 2.0.30</compatibility>
+
+<usage>
+    <p>Die Direktive steuert, ob Anfragen akzeptiert oder
+    abgewiesen werden, bei denen nach der tats&auml;chlichen
+    Datei (oder einer nicht existierenden Datei in einem existierenden
+    Verzeichnis) zus&auml;tzliche Pfadangaben folgen. Die angeh&auml;ngte
+    Pfadangabe kann Skripten in der Umgebungsvariable <code>PATH_INFO</code>
+    verf&uuml;gbar gemacht werden.</p>
+
+    <p>Nehmen wir beispielsweise an, dass <code>/test/</code> auf ein
+    Verzeichnis zeigt, welches lediglich eine Datei <code>here.html</code>
+    enth&auml;lt. Dann wird bei Anfragen nach
+    <code>/test/here.html/more</code> und
+    <code>/test/nothere.html/more</code> beides Mal <code>/more</code>
+    als <code>PATH_INFO</code> ermittelt.</p>
+
+    <p>Die drei m&ouml;glichen Argumente f&uuml;r die Direktive
+    <directive>AcceptPathInfo</directive> sind:</p>
+
+    <dl>
+    <dt><code>Off</code></dt><dd>Eine Anfrage wird nur dann akzeptiert,
+    wenn sie exakt auf ein existierendes Verzeichnis (oder eine Datei)
+    abgebildet werden kann. Daher w&uuml;rde eine Anfrage mit einer nach dem
+    tats&auml;chlichen Dateinamen angeh&auml;ngten Pfadangabe, wie
+    <code>/test/here.html/more</code> im obigen Beispiel, den Fehler
+    404 NOT FOUND <transnote>nicht gefunden</transnote>
+    zur&uuml;ckgeben.</dd>
+
+    <dt><code>On</code></dt>
+    <dd>Eine Anfrage wird akzeptiert, wenn eine vorangestellte Pfadangabe
+    auf ein existierendes Verzeichnis abgebildet werden kann. Das
+    obige Beispiel <code>/test/here.html/more</code> wird akzeptiert,
+    wenn <code>/test/here.html</code> auf eine g&uuml;ltige Datei
+    zeigt.</dd>
+
+    <dt><code>Default</code></dt>
+    <dd>Die Behandlung von Anfragen mit angeh&auml;ngten Pfadangaben
+    wird von dem f&uuml;r die Anfrage verantwortlichen <a
+    href="../handler.html">Handler</a> bestimmt. Der Core-Handler
+    f&uuml;r gew&ouml;hnliche Dateien weist <code>PATH_INFO</code>-Zugriffe
+    standardm&auml;&szlig;ig zur&uuml;ck. Handler, die Skripte bedienen,
+    wie z.B. <a href="mod_cgi.html">cgi-script</a> und
+    <a href="mod_isapi.html">isapi-isa</a>, sind im Allgemeinen darauf
+    voreingestellt, <code>PATH_INFO</code> zu akzeptieren.</dd>
+    </dl>
+
+    <p>Das eigentliche Ziel von <code>AcceptPathInfo</code> ist es, Ihnen
+    das &Uuml;berschreiben der Voreinstellung der Handler bez&uuml;glich
+    der Akzeptanz oder Ablehnung von <code>PATH_INFO</code> zu erlauben.
+    Eine solche &Auml;nderung ist zum Beispiel notwendig, wenn Sie einen
+    <a href="../filter.html">Filter</a> wie <a
+    href="mod_include.html">INCLUDES</a> verwenden, um Inhalte
+    abh&auml;ngig von <code>PATH_INFO</code> zu generieren. Der
+    Core-Handler w&uuml;rde die Anfrage normalerweise abweisen. Verwenden
+    Sie die folgende Konfiguration, um dennoch solch ein Skript zu
+    erm&ouml;glichen.</p>
+
+    <example>
+      &lt;Files "mypaths.shtml"&gt;<br />
+      <indent>
+        Options +Includes<br />
+        SetOutputFilter INCLUDES<br />
+        AcceptPathInfo On<br />
+      </indent>
+      &lt;/Files&gt;
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AccessFileName</name>
+<description>Name der dezentralen Konfigurationsdateien</description>
+<syntax>AccessFileName <var>Dateiname</var> [<var>Dateiname</var>] ...</syntax>
+<default>AccessFileName .htaccess</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Aus dieser Namensliste sucht der Server w&auml;hrend der
+    Bearbeitung einer Anfrage in jedem Verzeichnis nach der ersten
+    existierenden Datei, sofern im betreffenden Verzeichnis dezentrale
+    Konfigurationsdateien <a href="#allowoverride">erlaubt sind</a>.
+    Beispiel:</p>
+
+    <example>
+      AccessFileName .acl
+    </example>
+
+    <p>Vor der R&uuml;cksendung des Dokuments
+    <code>/usr/local/web/index.html</code> wird der Server
+    <code>/.acl</code>, <code>/usr/.acl</code>,
+    <code>/usr/local/.acl</code> und <code>/usr/local/web/.acl</code>
+    einlesen, solange diese nicht mit</p>
+
+    <example>
+      &lt;Directory /&gt;<br />
+      <indent>
+        AllowOverride None<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p>deaktiviert wurden.</p>
+</usage>
+<seealso><directive module="core">AllowOverride</directive></seealso>
+<seealso><a href="../configuring.html">Konfigurationsdateien</a></seealso>
+<seealso><a href="../howto/htaccess.html">.htaccess-Dateien</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AddDefaultCharset</name>
+<description>Standard-Zeichenkodierung f&uuml;r Antworten ohne
+explizit angegebene Zeichenkodierung
+</description>
+<syntax>AddDefaultCharset On|Off|<var>Zeichenkodierung</var></syntax>
+<default>AddDefaultCharset Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Die Direktive gibt den Namen der Zeichenkodierung an, die
+    jeder Antwort hinzugef&uuml;gt wird, welche in den HTTP-Headern
+    keinen Parameter zum Content-Type enth&auml;lt. Dies &uuml;berschreibt
+    jede Zeichenkodierung, die mittels <code>META</code>-Tag im Dokument
+    angegeben ist. Die Angabe von <code>AddDefaultCharset Off</code>
+    deaktiviert die Funktion. <code>AddDefaultCharset On</code>
+    erm&ouml;glicht es, mit der Direktive die Apache-interne
+    Standard-Zeichenkodierung <code>iso-8859-1</code> vorzuschreiben.
+    Sie k&ouml;nnen auch angeben, dass eine andere
+    <var>Zeichenkodierung</var> verwendet werden soll. Zum Beispiel:</p>
+
+    <example>
+      AddDefaultCharset utf-8
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AddOutputFilterByType</name>
+<description>einen Ausgabefilter einem bestimmten MIME-Type
+zuordnen</description>
+<syntax>AddOutputFilterByType <var>Filter</var>[;<var>Filter</var>...]
+<var>MIME-Type</var> [<var>MIME-Type</var>] ...</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>Verf&uuml;gbar ab Apache 2.0.33</compatibility>
+
+<usage>
+    <p>Die Direktive aktiviert f&uuml;r eine Anfrage abh&auml;ngig vom
+    MIME-Type der Antwort einen bestimmten Ausgabe-<a href="../filter.html"
+    >Filter</a>.</p>
+
+    <p>Das folgende Beispiel verwendet den Filter <code>DEFLATE</code>,
+    der von <module>mod_deflate</module> angeboten wird. Er komprimiert
+    jede Ausgabe, die  als <code>text/html</code> oder <code>text/plain</code>
+    gekennzeichnet ist, (gleichg&uuml;ltig, ob statisch oder dynamisch)
+    bevor sie an den Client gesendet wird.</p>
+
+    <example>
+      AddOutputFilterByType DEFLATE text/html text/plain
+    </example>
+
+    <p>Wenn Sie den Inhalt von mehr als einem Filter verarbeiten lassen
+    wollen, dann m&uuml;ssen deren Namen durch Semikolons voneinander
+    getrennt werden. Es ist ebenfalls m&ouml;glich, eine
+    <directive>AddOutputFilterByType</directive>-Direktive f&uuml;r
+    jeden von diesen Filtern zu verwenden.</p>
+
+    <p>Die folgende Konfiguration sorgt daf&uuml;r, dass alle
+    Skriptausgaben, die als <code>text/html</code> gekennzeichnet
+    sind, zuerst vom <code>INCLUDES</code>-Filter und dann vom
+    <code>DEFLATE</code>-Filter verarbeitet werden.</p>
+
+    <example>
+    &lt;Location /cgi-bin/&gt;<br />
+    <indent>
+      Options Includes<br />
+      AddOutputFilterByType INCLUDES;DEFLATE text/html<br />
+    </indent>
+    &lt;/Location&gt;
+    </example>
+
+    <note type="warning"><title>Hinweis:</title>
+      <p>Die Aktivierung von Filtern mittels
+      <directive>AddOutputFilterByType</directive> kann in einigen
+      F&auml;llen ganz oder teilweise fehlschlagen. Beispielsweise
+      werden keine Filter angewendet, wenn der MIME-Type nicht bestimmt
+      werden kann und auf die Einstellung der <directive
+      module="core">DefaultType</directive>-Anweisung zur&uuml;ckf&auml;llt,
+      selbst wenn die <directive
+      module="core">DefaultType</directive>-Einstellung die gleiche ist.</p>
+
+      <p>Wenn Sie jedoch sicherstellen wollen, dass der Filter
+      angewendet wird, sollten Sie den Content-Type z.B. mit
+      <directive module="mod_mime">AddType</directive> oder
+      <directive module="core">ForceType</directive> der Ressource
+      explizit zuordnen. Das Setzen des Content-Types innerhalb
+      eines (nicht-nph) CGI-Skriptes funktioniert ebenfalls
+      zuverl&auml;ssig.</p>
+
+      <p>Die Typ-gebundenen Ausgabefilter werden niemals auf
+      Proxy-Anfragen angewendet.</p>
+    </note>
+</usage>
+
+<seealso><directive module="mod_mime">AddOutputFilter</directive></seealso>
+<seealso><directive module="core">SetOutputFilter</directive></seealso>
+<seealso><a href="../filter.html">Filter</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AllowOverride</name>
+<description>Direktiven-Typen, die in <code>.htaccess</code>-Dateien
+erlaubt sind.</description>
+<syntax>AllowOverride All|None|<var>Direktiven-Typ</var>
+[<var>Direktiven-Typ</var>] ...</syntax>
+<default>AllowOverride All</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>Wenn der Server eine <code>.htaccess</code>-Datei (wie durch
+    <directive module="core">AccessFileName</directive> definiert)
+    findet, muss er wissen, welche in der Datei angegebenen Direktiven
+    fr&uuml;here Konfigurationsanweisungen &uuml;berschreiben
+    d&uuml;rfen.</p>
+
+    <note><title>Nun in &lt;Directory&gt;-Abschnitten verf&uuml;gbar</title>
+    <directive>AllowOverride</directive> ist nur in <directive
+    type="section" module="core">Directory</directive>-Abschnitten
+    g&uuml;ltig, nicht in <directive type="section"
+    module="core">Location</directive>- oder <directive type="section"
+    module="core">Files</directive>-Abschnitten.
+    </note>
+
+    <p>Wenn diese Anweisung auf <code>None</code> gesetzt wird, dann
+    werden <a href="#accessfilename">.htaccess</a>-Dateien komplett
+    ignoriert. In diesem Fall wird der Server nicht einmal versuchen,
+    die <code>.htaccess</code>-Dateien im Dateisystem zu lesen.</p>
+
+    <p>Wenn diese Anweisung auf <code>All</code> gesetzt wird, dann
+    ist jede Direktive in den <code>.htaccess</code>-Dateien erlaubt,
+    die den <a href="directive-dict.html#Context">Kontext</a>
+    .htaccess besitzt.</p>
+
+    <p>Der <var>Direktiven-Typ</var> kann eine der folgenden
+    Anweisungsgruppen sein.</p>
+
+    <dl>
+      <dt>AuthConfig</dt>
+
+      <dd>
+      Erlaubt die Verwendung von Autorisierungs-Anweisungen (<directive
+      module="mod_authn_dbm">AuthDBMGroupFile</directive>,
+      <directive module="mod_authn_dbm">AuthDBMUserFile</directive>,
+      <directive module="mod_authz_groupfile">AuthGroupFile</directive>,
+      <directive module="core">AuthName</directive>,
+      <directive module="core">AuthType</directive>, <directive
+      module="mod_authn_file">AuthUserFile</directive>, <directive
+      module="core">Require</directive> <em>usw.</em>).</dd>
+
+      <dt>FileInfo</dt>
+
+      <dd>
+      Erlaubt die Verwendung von Direktiven zur Steuerung der
+      Dokumenttypen (<directive
+      module="core">DefaultType</directive>, <directive
+      module="core">ErrorDocument</directive>, <directive
+      module="core">ForceType</directive>, <directive
+      module="mod_negotiation">LanguagePriority</directive>,
+      <directive module="core">SetHandler</directive>, <directive
+      module="core">SetInputFilter</directive>, <directive
+      module="core">SetOutputFilter</directive>, und
+      <module>mod_mime</module>-Direktiven Add* und Remove*
+      <em>usw.</em>).</dd>
+
+      <dt>Indexes</dt>
+
+      <dd>
+      Erlaubt die Verwendung von Direktiven zur Steuerung von
+      Verzeichnisindizes (<directive
+      module="mod_autoindex">AddDescription</directive>,
+      <directive module="mod_autoindex">AddIcon</directive>, <directive
+      module="mod_autoindex">AddIconByEncoding</directive>,
+      <directive module="mod_autoindex">AddIconByType</directive>,
+      <directive module="mod_autoindex">DefaultIcon</directive>, <directive
+      module="mod_dir">DirectoryIndex</directive>, <directive
+      module="mod_autoindex">FancyIndexing</directive>, <directive
+      module="mod_autoindex">HeaderName</directive>, <directive
+      module="mod_autoindex">IndexIgnore</directive>, <directive
+      module="mod_autoindex">IndexOptions</directive>, <directive
+      module="mod_autoindex">ReadmeName</directive>
+      <em>usw.</em>).</dd>
+
+      <dt>Limit</dt>
+
+      <dd>
+      Erlaubt die Verwendung von Direktiven zur Steuerung des
+      Zugriffs von Hosts (<directive
+      module="mod_authz_host">Allow</directive>, <directive
+      module="mod_authz_host">Deny</directive> und <directive
+      module="mod_authz_host">Order</directive>).</dd>
+
+      <dt>Options</dt>
+
+      <dd>
+      Erlaubt die Verwendung von Direktiven zur Steuerung spezieller
+      Verzeichniseigenschaften (<directive module="core">Options</directive>
+      und <directive module="mod_include">XBitHack</directive>).</dd>
+    </dl>
+
+    <p>Beispiel:</p>
+
+    <example>
+      AllowOverride AuthConfig Indexes
+    </example>
+</usage>
+
+<seealso><directive module="core">AccessFileName</directive></seealso>
+<seealso><a href="../configuring.html">Konfigurationsdateien</a></seealso>
+<seealso><a href="../howto/htaccess.html">.htaccess-Dateien</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthName</name>
+<description>Autorisierungsbereich zur Verwendung in der
+HTTP-Authentisierung</description>
+<syntax>AuthName <var>auth-Bereich</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Die Direktive legt den Namen des Autorisierungsbereiches
+    <transnote>Der Autorisierungsbereich wird auch Realm genannt.</transnote>
+    f&uuml;r ein Verzeichnis fest. Dieser Realm wird dem Client mitgeteilt,
+    damit der Anwender wei&szlig;, welchen Benutzernamen und welches Passwort
+    er zu &uuml;bermitteln hat. <directive>AuthName</directive> akzeptiert ein
+    Argument. Falls der Name des Realm Leerzeichen enth&auml;lt, muss er in
+    Anf&uuml;hrungszeichen eingeschlossen werden. Um zu funktionieren, muss
+    die Anweisung von den Direktiven <directive
+    module="core">AuthType</directive> und <directive
+    module="core">Require</directive> sowie von
+    Direktiven wie <directive module="mod_authn_file">AuthUserFile</directive>
+    und <directive module="mod_authz_groupfile">AuthGroupFile</directive>
+    begleitet werden.</p>
+
+   <p>Beispiel:</p>
+
+   <example>
+     AuthName "Top Secret"
+   </example>
+
+    <p>Die <code>AuthName</code> &uuml;bergebene Zeichenkette ist das,
+    was in dem von den meisten Browsern angebotenen Passwort-Dialog
+    angezeigt wird.</p>
+</usage>
+<seealso><a
+    href="../howto/auth.html">Authentisierung, Autorisierung und
+    Zugriffskontrolle</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthType</name>
+<description>Art der Authentisierung</description>
+<syntax>AuthType Basic|Digest</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Die Direktive w&auml;hlt die Art der Benutzer-Authentisierung
+    f&uuml;r ein Verzeichnis aus. Derzeit sind lediglich <code>Basic</code>
+    und <code>Digest</code> implementiert.
+    Um zu funktionieren, muss die Anweisung von den Direktiven <directive
+    module="core">AuthName</directive> und <directive
+    module="core">Require</directive> sowie von
+    Direktiven wie <directive module="mod_authn_file">AuthUserFile</directive>
+    und <directive module="mod_authz_groupfile">AuthGroupFile</directive>
+    begleitet werden.</p>
+</usage>
+<seealso><a href="../howto/auth.html">Authentisierung, Autorisierung und
+    Zugriffskontrolle</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CGIMapExtension</name>
+<description>Technik zur Bestimmung des Interpreters f&uuml;r
+CGI-Skripte</description>
+<syntax>CGIMapExtension <var>CGI-Pfad</var> <var>.Endung</var></syntax>
+<default>None</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>ausschlie&szlig;lich NetWare</compatibility>
+
+<usage>
+    <p>Die Direktive wird zur Steuerung verwendet, wie Apache
+    den Interpreter ermittelt, der zur Ausf&uuml;hrung von
+    CGI-Skripten verwendet wird. Beispielsweise bestimmt die Angabe
+    von <code>CGIMapExtension sys:\foo.nlm .foo</code>, dass
+    alle CGI-Scripte mit der Endung <code>.foo</code> an den
+    FOO-Interpreter &uuml;bergeben werden.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ContentDigest</name>
+<description>Aktiviert die Generierung von <code>Content-MD5</code>
+HTTP-Response-Headern</description>
+<syntax>ContentDigest On|Off</syntax>
+<default>ContentDigest Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Options</override>
+<status>Experimental</status>
+
+<usage>
+    <p>Die Direktive aktiviert die Generierung von
+    <code>Content-MD5</code>-Headern, wie sie in RFC1864 bzw. RFC2068
+    definiert sind.</p>
+
+    <p>MD5 ist ein Algorithmus zur Berechnung eines "Datenextrakts"
+    (zuweilen "Fingerabdruck" genannt) <transnote>Der "Datenextrakt" wird im
+    Englischen als "message digest" oder "fingerprint" bezeichnet.</transnote>
+    aus beliebig langen Daten. Es gilt als zuverl&auml;ssig, dass
+    Ver&auml;nderungen an den Daten sich in Ver&auml;nderungen des
+    Extrakts wiederspiegeln.</p>
+
+    <p>Der <code>Content-MD5</code>-Header bietet eine
+    End-to-End-Integrit&auml;tspr&uuml;fung (MIC) <transnote>MIC steht f&uuml;r
+    "message integrity check".</transnote> des Daten-Inhalts. Ein Proxy oder
+    Client kann diesen Header pr&uuml;fen, um zuf&auml;llige Ver&auml;nderungen
+    des Entity-Inhalts bei der &Uuml;bertragung festzustellen.
+    Beispielheader:</p>
+
+    <example>
+      Content-MD5: AuLb7Dp1rqtRtxz2m9kRpA==
+    </example>
+
+    <p>Beachten Sie bitte, dass dies Performanceprobleme auf Ihrem
+    System verursachen kann, da der Extrakt bei jeder Anfrage
+    berechnet wird (der Wert wird nicht zwischengespeichert).</p>
+
+    <p><code>Content-MD5</code> wird nur f&uuml;r Dokumente gesendet,
+    die von <module>core</module> bedient werden, nicht jedoch bei
+    Modulen. SSI-Dokumente, CGI-Skript-Ausgaben und Byte-Range-Antworten
+    besitzen diesen Header beispielsweise nicht.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DefaultType</name>
+<description>MIME-Content-Type, der gesendet wird, wenn der Server den Typ
+nicht auf andere Weise ermitteln kann.</description>
+<syntax>DefaultType <var>MIME-Type</var></syntax>
+<default>DefaultType text/plain</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Es kann vorkommen, dass der Server ein Dokument ausliefern muss,
+    dessen Typ er nicht mit Hilfe seiner MIME-Type-Zuordnungen bestimmen
+    kann.</p>
+
+    <p>Der Server muss den Client &uuml;ber den Content-Type des
+    Dokumentes informieren. Daher verwendet er im Falle eines
+    unbekannten Typs die <code>DefaultType</code>-Einstellung.
+    Zum Beispiel:</p>
+
+    <example>
+      DefaultType image/gif
+    </example>
+
+    <p>w&auml;re angemessen f&uuml;r ein Verzeichnis, das viele GIF-Bilder
+    enth&auml;lt, deren Dateinamen nicht Endung <code>.gif</code>
+    besitzen.</p>
+
+    <p>Beachten Sie bitte, dass die Direktive anders als <directive
+    module="core">ForceType</directive> lediglich den Standard-MIME-Type
+    bestimmt. Alle anderen MIME-Type-Definitionen, einschlie&szlig;lich
+    Dateierweiterungen, die den Medien-Typ anzeigen k&ouml;nnen,
+    &uuml;berschreiben diese Voreinstellung.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>Directory</name>
+<description>Umschlie&szlig;t eine Gruppe von Direktiven, die nur auf
+das genannte Verzeichnis des Dateisystems und Unterverzeichnisse angewendet
+werden</description>
+<syntax>&lt;Directory <var>Verzeichnispfad</var>&gt;
+... &lt;/Directory&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive type="section">Directory</directive> und
+    <code>&lt;/Directory&gt;</code> werden dazu verwendet, eine Gruppe
+    von Direktiven zusammenzufassen, die nur f&uuml;r das genannte
+    Verzeichnis und dessen Unterverzeichnisse gelten. Jede Direktive,
+    die im Verzeichnis-Kontext erlaubt ist, kann verwendet werden.
+    <var>Verzeichnispfad</var> ist entweder der vollst&auml;ndige Pfad zu
+    einem Verzeichnis oder eine Zeichenkette mit Platzhaltern wie sie von der
+    Unix-Shell zum Abgleich verwendet werden. In einer Zeichenkette
+    mit Platzhaltern <transnote>sogenannte wild-cards</transnote> entspricht
+    <code>?</code> einem einzelnen Zeichen und <code>*</code> einer
+    Zeichenkette beliebiger L&auml;nge. Sie k&ouml;nnen auch auch
+    <code>[]</code>-Zeichenbereiche verwenden. Keiner der Platzhalter
+    entspricht dem Zeichen "/". Daher passt <code>&lt;Directory
+    /*/public_html&gt;</code> nicht auf <code>/home/user/public_html</code>,
+    <code>&lt;Directory /home/*/public_html&gt;</code> jedoch tut es.
+    Beispiel:</p>
+
+    <example>
+      &lt;Directory /usr/local/httpd/htdocs&gt;<br />
+      <indent>
+        Options Indexes FollowSymLinks<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <note>
+      <p>Seien Sie vorsichtig mit den <var>Verzeichnispfad</var>-Argumenten.
+      Sie m&uuml;ssen buchst&auml;blich mit dem Dateisystempfad
+      &uuml;bereinstimmen, den der Apache f&uuml;r den Zugriff auf die
+      Dateien verwendet. Direktiven, die f&uuml;r ein bestimmtes
+      Verzeichnis gelten, gelten nicht f&uuml;r Dateien in dem Verzeichnis,
+      auf die &uuml;ber einen anderen Pfad zugegriffen wird, wie z.B.
+      &uuml;ber verschiedene symbolische Links.</p>
+    </note>
+
+    <p>Erweiterte regul&auml;re Ausdr&uuml;cke k&ouml;nnen ebenfalls
+    verwendet werden, indem das Zeichen <code>~</code> hinzugef&uuml;gt
+    wird. Beispielsweise w&uuml;rde</p>
+
+    <example>
+      &lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
+    </example>
+
+    <p>auf Verzeichnisse in <code>/www/</code> passen, die aus drei
+    Zahlen bestehen.</p>
+
+    <p>Wenn mehrere <directive type="section">Directory</directive>-Abschnitte
+    (ohne regul&auml;re Ausdr&uuml;cke) auf ein Verzeichnis (oder
+    ein ihm &uuml;bergeordnetes Verzeichnis) passen, welches ein Dokument
+    enth&auml;lt, dann werden die Direktiven der Reihe nach, angefangen
+    beim k&uuml;rzesten passenden Muster, vermischt mit den Direktiven
+    aus den <a href="#accessfilename">.htaccess</a>-Dateien, angewendet.
+    Beispiel:</p>
+
+    <example>
+      &lt;Directory /&gt;<br />
+      <indent>
+        AllowOverride None<br />
+      </indent>
+      &lt;/Directory&gt;<br />
+      <br />
+      &lt;Directory /home/&gt;<br />
+      <indent>
+        AllowOverride FileInfo<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p>Beim Zugriff auf das Dokument <code>/home/web/dir/doc.html</code>
+    sind die einzelnen Schritte:</p>
+
+    <ul>
+      <li>Wende die Direktive <code>AllowOverride None</code> an
+      (deaktiviere <code>.htaccess</code>-Dateien).</li>
+
+      <li>Wende die Direktive <code>AllowOverride FileInfo</code>
+      (auf das Verzeichnis <code>/home</code>) an.</li>
+
+      <li>Wende jede <code>FileInfo</code>-Direktive aus
+      <code>/home/.htaccess</code>, <code>/home/web/.htaccess</code> und
+      <code>/home/web/dir/.htaccess</code> der Reihe nach an.</li>
+    </ul>
+
+    <p>Regul&auml;re Ausdr&uuml;cke werden solange nicht ber&uuml;cksichtigt,
+    bis alle normalen Abschnitte angewendet wurden. Anschlie&szlig;end
+    werden alle regul&auml;ren Ausdr&uuml;cke in der Reihenfolge
+    gepr&uuml;ft, in der sie in der Konfigurationsdatei auftauchen.
+    Beispielsweise wird bei</p>
+
+    <example>
+      &lt;Directory ~ abc$&gt;<br />
+      <indent>
+        # ... hier die Direktiven ...<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p>der Abschnitt mit dem regul&auml;ren Ausdruck nicht
+    ber&uuml;cksichtigt, bis alle normalen
+    <directive type="section">Directory</directive>-Abschnitte und
+    <code>.htaccess</code>-Dateien angewendet wurden. Dann erst wird
+    der regul&auml;re Ausdruck mit <code>/home/abc/public_html/abc</code>
+    abgeglichen und der entsprechende <directive
+    type="section">Directory</directive>-Abschnitt angewendet.</p>
+
+    <p><strong>Beachten Sie bitte, dass der vom Apache voreingestellte
+    Zugriff f&uuml;r <code>&lt;Directory /&gt;</code>
+    <code>Allow from All</code> ist. Das bedeutet, dass der Apache
+    jede Datei ausliefert, die durch eine URL abgebildet wird. Es wird
+    empfohlen, dass Sie dies durch einen Block wie</strong></p>
+
+    <example>
+      &lt;Directory /&gt;<br />
+      <indent>
+        Order Deny,Allow<br />
+        Deny from All<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p><strong>&auml;ndern und anschlie&szlig;end f&uuml;r
+    Verzeichnisse &uuml;berschreiben, die Sie verf&uuml;gbar machen
+    <em>wollen</em>. F&uuml;r weitere Einzelheiten lesen Sie bitte
+    die Seite zu den <a
+    href="../misc/security_tips.html">Sicherheitshinweisen</a>.</strong></p>
+
+    <p>Die Verzeichnisabschnitte erscheinen in der Datei
+    <code>httpd.conf</code>. <directive
+    type="section">Directory</directive>-Direktiven d&uuml;rfen nicht
+    ineinander verschachtelt werden oder innerhalb von <directive module="core"
+    type="section">Limit</directive>- oder <directive module="core"
+    type="section">LimitExcept</directive>-Abschnitten auftauchen.</p>
+</usage>
+<seealso><a href="../sections.html">Wie die Abschnitte &lt;Directory&gt;,
+    &lt;Location&gt; und &lt;Files&gt; arbeiten</a> f&uuml;r eine
+    Erl&auml;uterung, wie diese verschiedenen Abschnitte miteinander
+    kombiniert werden, wenn eine Anfrage empfangen wird</seealso>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>DirectoryMatch</name>
+<description>Umschlie&szlig;t eine Gruppe von Direktiven, die auf
+  Verzeichnisse des Dateisystems und ihre Unterverzeichnisse abgebildet
+  werden, welche auf einen regul&auml;ren Ausdruck passen</description>
+<syntax>&lt;DirectoryMatch <var>regex</var>&gt;
+... &lt;/DirectoryMatch&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive type="section">DirectoryMatch</directive> und
+    <code>&lt;/DirectoryMatch&gt;</code> werden dazu verwendet, eine
+    Gruppe von Direktiven zusammenzufassen, die nur f&uuml;r das
+    genannte Verzeichnis und dessen Unterverzeichnisse gelten, genauso
+    wie bei <directive module="core" type="section">Directory</directive>.
+    Als Argument dient jedoch ein regul&auml;rer Ausdruck.
+    Beispielsweise w&uuml;rde</p>
+
+    <example>
+      &lt;DirectoryMatch "^/www/.*/[0-9]{3}"&gt;
+    </example>
+
+    <p>auf Verzeichnisse in <code>/www/</code> passen, die aus drei
+    Zeichen bestehen.</p>
+</usage>
+<seealso><directive type="section" module="core">Directory</directive>
+    f&uuml;r eine Beschreibung, wie regul&auml;re Ausdr&uuml;cke mit
+    normalen <directive type="section">Directory</directive>-Anweisungen
+    vermischt werden.</seealso>
+<seealso><a href="../sections.html">Wie die Abschnitte &lt;Directory&gt;,
+    &lt;Location&gt; und &lt;Files&gt; arbeiten</a> f&uuml;r eine
+    Erl&auml;uterung, wie diese verschiedenen Abschnitte miteinander
+    kombiniert werden, wenn eine Anfrage empfangen wird</seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DocumentRoot</name>
+<description>Verzeichnis, welches den Haupt-Dokumentenbaum bildet, der im
+Web sichtbar ist.</description>
+<syntax>DocumentRoot <var>Verzeichnis</var></syntax>
+<default>DocumentRoot /usr/local/apache/htdocs</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Die Direktive setzt das Verzeichnis, von dem aus
+    <code>httpd</code> Dateien ausliefert. Sofern nicht eine Direktive
+    wie <directive module="mod_alias">Alias</directive> greift, h&auml;ngt
+    der Server Pfade aus der angeforderten URL an das Wurzelverzeichnis
+    an, um den Pfad zum Dokument zu bilden. Beispiel:</p>
+
+    <example>
+      DocumentRoot /usr/web
+    </example>
+
+    <p>Damit bezieht sich ein Zugriff auf
+    <code>http://www.my.host.com/index.html</code> auf
+    <code>/usr/web/index.html</code>.</p>
+
+    <p><directive>DocumentRoot</directive> sollte ohne einen
+    Schr&auml;gstrich am Ende angegeben werden.</p>
+</usage>
+<seealso><a href="../urlmapping.html">URLs auf das Dateisystem
+abbilden</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>EnableMMAP</name>
+<description>Verwende Memory-Mapping, um Dateien w&auml;hrend der
+Auslieferung zu lesen</description>
+<syntax>EnableMMAP On|Off</syntax>
+<default>EnableMMAP On</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Die Direktive steuert, ob <code>httpd</code> Memory-Mapping verwenden
+    darf, wenn er w&auml;hrend der Auslieferung den Inhalt einer
+    Datei lesen muss. Wenn die Bearbeitung einer Anfrage es erfordert,
+    auf die Daten in einer Datei zuzugreifen -- zum Beispiel bei der
+    Auslieferung einer mittels <module>mod_include</module> serverseitig
+    analysierten Datei --, dann verwendet der Apache standardm&auml;&szlig;ig
+    Memory-Mapping f&uuml;r diese Datei, sofern das Betriebssystem es
+    unterst&uuml;tzt.</p>
+
+    <p>Memory-Mapping bedeutet zuweilen eine Performanceverbesserung.
+    In einigen Umgebungen ist es jedoch besser, Memory-Mapping zu
+    deaktivieren, um Problemen w&auml;hrend des Betriebs vorzubeugen:</p>
+
+    <ul>
+    <li>Bei einigen Multiprozessorsystemen kann Memory-Mapping die
+    Performance von <code>httpd</code> reduzieren.</li>
+    <li>Bei einem per NFS eingebundenen <directive
+    module="core">DocumentRoot</directive> kann <code>httpd</code> mit einem
+    Segmentierungsfehler <transnote>ein sogenannter "segmentation
+    fault"</transnote> abst&uuml;rzen, wenn eine Datei gel&ouml;scht oder
+    gek&uuml;rzt wird, w&auml;hrend <code>httpd</code> sie im Speicher
+    abbildet.</li>
+    </ul>
+
+    <p>Bei Serverkonfigurationen, die f&uuml;r dieses Problem
+    anf&auml;llig sind, sollten Sie das Memory-Mapping f&uuml;r
+    auszuliefernde Dateien deaktivieren, indem Sie schreiben:</p>
+
+    <example>
+      EnableMMAP Off
+    </example>
+
+    <p>Bei per NFS eingebundenen Dateien kann diese Funktion
+    explizit f&uuml;r die st&ouml;renden Dateien deaktiviert werden,
+    indem Sie angeben:</p>
+
+    <example>
+      &lt;Directory "/pfad-zu-den-nfs-dateien"&gt;
+      <indent>
+        EnableMMAP Off
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>EnableSendfile</name>
+<description>Verwende die sendfile-Unterst&uuml;tzung des Kernels, um
+Dateien an den Client auszuliefern</description>
+<syntax>EnableSendfile On|Off</syntax>
+<default>EnableSendfile On</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>Verf&uuml;gbar ab Apache Version 2.0.44</compatibility>
+
+<usage>
+    <p>Die Direktive steuert, ob <code>httpd</code> die
+    sendfile-Unterst&uuml;tzung des Kernels verwenden kann, um
+    Dateiinhalte an den Client zu &uuml;bermitteln. Wenn die Bearbeitung
+    einer Anfrage keinen Zugriff auf die Daten in der Datei erfordert --
+    zum Beispiel bei der Auslieferung einer statischen Datei -- und das
+    Betriebssystem es unterst&uuml;tzt, verwendet der Apache
+    standardm&auml;&szlig;ig sendfile, um den Dateiinhalt zu
+    &uuml;bertragen, ohne die Datei jemals zu lesen.</p>
+
+    <p>Der sendfile-Mechanismus vermeidet getrennte Lese- und
+    Sendeoperationen sowie Puffer-Zuweisungen. Bei einigen Plattformen bzw.
+    Dateisystemen deaktivieren Sie diese Funktion jedoch besser, um Probleme
+    w&auml;hrend des Betriebs zu vermeiden:</p>
+
+    <ul>
+    <li>Einige Plattformen besitzen u.U. eine fehlerhafte
+    sendfile-Unterst&uuml;tzung, die das Erstellungssystem nicht erkennt,
+    insbesondere wenn die Bin&auml;rdateien auf einem anderen Rechner erstellt
+    und auf eine solche Maschine mit fehlerhafter sendfile-Unterst&uuml;tzung
+    &uuml;bertragen wurden.</li>
+    <li>Bei einem &uuml;ber das Netzwerk eingebundenen <directive
+    module="core">DocumentRoot</directive> (z.B. NFS oder SMB) ist der
+    Kernel m&ouml;glicherweise nicht in der Lage, die Netzwerkdatei
+    &uuml;ber seinen eigenen Cache zu bedienen.</li>
+    </ul>
+
+    <p>Bei Serverkonfigurationen, die f&uuml;r dieses Problam
+    anf&auml;llig sind, sollten die diese Funktion deaktivieren, indem
+    Sie schreiben:</p>
+
+    <example>
+      EnableSendfile Off
+    </example>
+
+    <p>Bei per NFS oder SMB eingebundenen Dateien kann diese Funktion
+    explizit f&uuml;r die st&ouml;renden Dateien deaktiviert werden, indem
+    Sie angeben:</p>
+
+    <example>
+      &lt;Directory "/pfad-zu-den-nfs-dateien"&gt;
+      <indent>
+        EnableSendfile Off
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ErrorDocument</name>
+<description>Das, was der Server im Fehlerfall an den Client
+zur&uuml;ckgibt</description>
+<syntax>ErrorDocument <var>Fehlercode</var> <var>Dokument</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>Die Syntax der Anf&uuml;hrungszeichen bei Textnachrichten hat
+sich im Apache 2.0 ge&auml;ndert</compatibility>
+
+<usage>
+    <p>Im Falle eines Problems oder Fehlers kann der Apache
+    konfiguriert werden, eine der vier Aktionen auszuf&uuml;hren:</p>
+
+    <ol>
+      <li>Ausgabe einer einfachen, hartkodierten Fehlermeldung</li>
+
+      <li>Ausgabe einer angepassten Meldung</li>
+
+      <li>Umleitung zu einem lokalen <var>URL-Pfad</var> der das
+      Problem bzw. den Fehler behandelt</li>
+
+      <li>Umleitung zu einer externen <var>URL</var>, die das Problem
+      bzw. den Fehler behandelt</li>
+    </ol>
+
+    <p>Die erste Option ist Voreinstellung, w&auml;hrend die Optionen
+    2 bis 4 &uuml;ber die Direktive <directive>ErrorDocument</directive>
+    eingestellt werden, welcher der HTTP-Statuscode und eine
+    URL oder Nachricht folgen. Abh&auml;ngig vom Problem bzw. Fehler bietet
+    der Apache manchmal zus&auml;tzliche Informationen an.</p>
+
+    <p>URLs k&ouml;nnen bei lokalen Adressen mit einem Schr&auml;gstrich
+    (/) beginnen oder eine komplette URL bilden, die der Client
+    aufl&ouml;sen kann. Alternativ kann eine Nachricht f&uuml;r die
+    Anzeige im Browser angeboten werden. Beispiel:</p>
+
+    <example>
+      ErrorDocument 500 http://foo.example.com/cgi-bin/tester<br />
+      ErrorDocument 404 /cgi-bin/falsche_urls.pl<br />
+      ErrorDocument 401 /info_zur_anmeldung.html<br />
+      ErrorDocument 403 "Der Zugriff ist nicht erlaubt."
+    </example>
+
+    <p>Wenn Sie eine <directive>ErrorDocument</directive>-Anweisung
+    angeben, die auf eine entfernte URL weist (d.h. irgendetwas mit der
+    Methode <code>http</code> davor), beachten Sie bitte, dass der Apache
+    eine Umleitung zum Client sendet, um diesem mitzuteilen, wo das
+    Dokument zu finden ist, auch wenn das Dokument letztlich wieder zum
+    gleichen Server f&uuml;hrt. Das hat mehrere Auswirkungen. Die
+    wichtigste ist, dass der Client nicht den Original-Statuscode
+    erh&auml;lt sondern statt dessen einen Umleitungs-Statuscode. Dies
+    wiederum kann Web-Robots und andere Clients verwirren, die den
+    Statuscode dazu verwenden, herauszufinden ob eine URL g&uuml;ltig ist.
+    Wenn Sie eine entfernte URL in einer Anweisung
+    <code>ErrorDocument 401</code> verwenden, wird der Client
+    dar&uuml;ber hinaus nicht wissen, dass er den Benutzer zur Eingabe
+    eines Passwortes auffordern muss, da er den Statuscode 401 nicht
+    erh&auml;lt. <strong>Deshalb m&uuml;ssen Sie sich auf ein lokales
+    Dokument beziehen, wenn Sie eine Anweisung <code>ErrorDocument
+    401</code> verwenden.</strong></p>
+
+    <p>Der Microsoft Internet Explorer (MSIE) ignoriert
+    standardm&auml;&szlig;ig serverseitig generierte Fehlermeldungen, wenn
+    sie "zu kurz" sind und ersetzt sie durch eigene "freundliche"
+    Fehlermeldungen. Die Gr&ouml;&szlig;e variiert abh&auml;ngig von der
+    Art des Fehlers, im Allgemeinen zeigt der MSIE jedoch den
+    serverseitig generierten Fehler, anstatt ihn zu verstecken, wenn Ihr
+    Fehlerdokument gr&ouml;&szlig;er als 512 Bytes ist. Weitere Informationen
+    sind im Artikel  <a
+    href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807"
+    >Q294807</a> in der Microsoft Knowledgebase article verf&uuml;gbar.</p>
+
+    <p>In Versionen vor 2.0 wurden Meldungen durch ein einzelnes
+    vorangestelltes Anf&uuml;hrungszeichen (") erkannt.</p>
+</usage>
+
+<seealso><a href="../custom-error.html">Dokumentation zu individuellen
+Fehlermeldungen</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ErrorLog</name>
+<description>Ablageort, an dem der Server Fehler protokolliert</description>
+<syntax> ErrorLog <var>Dateiname</var>|syslog[:<var>facility</var>]</syntax>
+<default>ErrorLog logs/error_log (Unix)<br />
+ErrorLog logs/error.log (Windows and OS/2)</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Die Direktive <directive>ErrorLog</directive> bestimmt den Namen
+    der Datei, in welcher der Server alle auftretenden Fehler protokolliert.
+    Wenn <var>Dateiname</var> nicht absolut ist (im Allgemeinen: nicht mit
+    einem Schr&auml;gstrich (/) beginnt), wird er relativ zu <directive
+    module="core">ServerRoot</directive> betrachtet.</p>
+
+    <example><title>Beispiel</title>
+    ErrorLog /var/log/httpd/error_log
+    </example>
+
+    <p>Wenn der <var>Dateiname</var> mit einem senkrechten Strich (|,
+    engl.: Pipe) beginnt, wird angenommen, dass es sich um einen Befehl
+    handelt, der ausgef&uuml;hrt wird, um das Fehlerprotokolls zu
+    verarbeiten.</p>
+
+    <example><title>Beispiel</title>
+    ErrorLog "|/usr/local/bin/httpd_errors"
+    </example>
+
+    <p>Die Verwendung von <code>syslog</code> anstelle eines Dateinamens
+    aktiviert die Protokollierung mittels syslogd(8), sofern das System
+    es unterst&uuml;tzt. Als Voreinstellung wird der syslog-Typ (syslog
+    facility) <code>local7</code> verwendet, Sie k&ouml;nnen dies jedoch
+    auch &uuml;berschreiben, indem Sie die Syntax
+    <code>syslog:<var>facility</var></code> verwenden, wobei
+    <var>facility</var> einer der Namen sein kann, die &uuml;blicherweise
+    in syslog(1) dokumentiert sind.</p>
+
+    <example><title>Beispiel</title>
+    ErrorLog syslog:user
+    </example>
+
+		<p>SICHERHEITSHINWEIS: Lesen Sie das Dokument <a
+    href="../misc/security_tips.html#serverroot">Sicherheitshinweise</a>
+    zu Einzelheiten dar&uuml;ber, warum Ihre Sicherheit gef&auml;hrdet
+    sein kann, wenn das Verzeichnis, in dem die Log-Dateien gespeichert
+    werden, f&uuml;r jemand anderen, als den Benutzer, der den Server
+    gestartet hat, beschreibbar ist.</p>
+</usage>
+<seealso><directive module="core">LogLevel</directive></seealso>
+<seealso><a href="../logs.html">Apache-Log-Dateien</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>FileETag</name>
+<description>Dateiattribute, die zur Erstellung des HTTP-Response-Headers
+ETag verwendet werden</description>
+<syntax>FileETag <var>Komponente</var> ...</syntax>
+<default>FileETag INode MTime Size</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Wenn dem Dokument eine Datei zugrundeliegt, bestimmt die Direktive
+    <directive>FileETag</directive> die Dateiattribute, die zur Erstellung
+    des HTTP-Response-Headers <code>ETag</code> (Entity-Tag) verwendet
+    werden. (Der Wert von <code>ETag</code> wird bei der Cache-Verwaltung
+    zur Einsparung von Netzwerk-Bandbreite benutzt.) Im Apache 1.3.22 und
+    fr&uuml;her wurde der <code>ETag</code>-Wert <em>stets</em> aus
+    der I-Node, der Gr&ouml;&szlig;e und dem Datum der letzten
+    &Auml;nderung (mtime) der Datei gebildet. Die Direktive
+    <directive>FileETag</directive> erlaubt es Ihnen, zu bestimmen,
+    welche dieser Eigenschaften -- falls &uuml;berhaupt -- verwendet
+    werden sollen. Die g&uuml;ltigen Schl&uuml;sselworte lauten:</p>
+
+    <dl>
+     <dt><strong>INode</strong></dt>
+     <dd>Die I-Node-Nummer wird in die Berechnung mit einbezogen</dd>
+     <dt><strong>MTime</strong></dt>
+     <dd>Datum und Uhrzeit der letzten &Auml;nderung werden mit einbezogen</dd>
+     <dt><strong>Size</strong></dt>
+     <dd>Die Anzahl der Bytes in der Datei wird mit einbezogen</dd>
+     <dt><strong>All</strong></dt>
+     <dd>Alle verf&uuml;gbaren Angaben werden verwendet. Die ist
+     gleichbedeutend mit:
+         <example>FileETag INode MTime Size</example></dd>
+     <dt><strong>None</strong></dt>
+     <dd>Es wird keine <code>ETag</code>-Angabe in die Antwort eingef&uuml;gt,
+     wenn dem Dokument eine Datei zugrundeliegt.</dd>
+    </dl>
+
+    <p>Den Schl&uuml;sselw&ouml;rtern <code>INode</code>, <code>MTime</code>
+    und <code>Size</code> kann entweder ein <code>+</code> oder ein
+    <code>-</code> vorangestellt werden, was die &Auml;nderung einer
+    Vorgabe erlaubt, die von einem gr&ouml;&szlig;eren Umfeld
+    geerbt wurde. Jedes Schl&uuml;selwort ohne ein solches Prefix
+    hebt die ererbte Einstellung sofort und vollst&auml;ndig auf.</p>
+
+    <p>Wenn die Konfiguration f&uuml;r ein Verzeichnis
+    <code>FileETag&nbsp;INode&nbsp;MTime&nbsp;Size</code> enth&auml;lt
+    und die eines Unterverzeichnisses <code>FileETag&nbsp;-INode</code>,
+    dann ist die Einstellung f&uuml;r das Unterverzeichnis (die an
+    jedes Unter-Unterverzeichnis weitervererbt wird, welches dies nicht
+    &uuml;berschreibt) &auml;quivalent mit
+    <code>FileETag&nbsp;MTime&nbsp;Size</code>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>Files</name>
+<description>Enth&auml;lt Direktiven, die sich nur auf passende Dateinamen
+beziehen</description>
+<syntax>&lt;Files <var>Dateiname</var>&gt; ... &lt;/Files&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Die Direktive <directive type="section">Files</directive>
+    begrenzt die Reichweite der enthaltenen Anweisungen auf Dateinamen.
+    Sie ist vergleichbar mit den Direktiven <directive
+    module="core" type="section">Directory</directive> und <directive
+    module="core" type="section">Location</directive>. Sie muss eine
+    passende <code>&lt;/Files&gt;</code>-Anweisung besitzen.
+    Die innerhalb dieses Abschnittes angegebenen Direktiven werden auf
+    jedes Objekt mit einem Basisnamen (letzte Komponente des Dateinamens)
+    angewendet, der auf die angegebenen Dateinamen passt. <directive
+    type="section">Files</directive>-Container werden, nachdem die
+    <directive module="core" type="section">Directory</directive>-Container
+    und <code>.htaccess</code>-Dateien gelesen sind, jedoch vor den
+    <directive type="section" module="core">Location</directive>-Containern,
+    in der Reihenfolge ihres Auftretens ausgef&uuml;hrt. Beachten Sie, dass
+    <directive type="section">Files</directive>-Anweisungen innerhalb von
+    <directive type="section" module="core">Directory</directive>-Containern
+    auftreten k&ouml;nnen, um den Teil des Dateisystems einzuschr&auml;nken,
+    den sie betreffen.</p>
+
+    <p>Das Argument <var>Dateiname</var> kann einen Dateinamen oder eine
+    Zeichenkette mit Platzhaltern enthalten, wobei <code>?</code> auf ein
+    einzelnes Zeichen passt und <code>*</code> auf eine beliebige Folge von
+    Zeichen. Erweiterte regul&auml;re Ausdr&uuml;cke k&ouml;nnen ebenfalls
+    verwendet werden, indem das Zeichen <code>~</code> hinzugef&uuml;gt wird.
+    Beispielsweise w&uuml;rde</p>
+
+    <example>
+      &lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
+    </example>
+
+    <p>auf die gebr&auml;uchlichsten Grafikformate im Internet passen.
+    <directive module="core" type="section">FilesMatch</directive> wird
+    jedoch bevorzugt.</p>
+
+    <p>Beachten Sie bitte, dass die <directive
+    type="section">Files</directive>-Container anders als <directive
+    type="section" module="core">Directory</directive>- und <directive
+    type="section" module="core">Location</directive>-Container innerhalb
+    von <code>.htaccess</code>-Dateien verwendet werden k&ouml;nnen.
+    Dies erlaubt den Anwendern auf Dateiebene die Kontrolle &uuml;ber ihre
+    eigenen Dateien.</p>
+</usage>
+<seealso><a href="../sections.html">Wie die Abschnitte &lt;Directory&gt;,
+    &lt;Location&gt; und &lt;Files&gt; arbeiten</a> f&uuml;r eine
+    Erl&auml;uterung, wie diese verschiedenen Abschnitte miteinander
+    kombiniert werden, wenn eine Anfrage empfangen wird</seealso>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>FilesMatch</name>
+<description>Enth&auml;lt Direktiven, die f&uuml;r Dateinamen gelten, die
+  auf einen regul&auml;ren Ausdruck passen</description>
+<syntax>&lt;FilesMatch <var>regex</var>&gt; ... &lt;/FilesMatch&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Die Direktive <directive type="section">FilesMatch</directive>
+    begrenzt wie die Direktive <directive module="core"
+    type="section">Files</directive> die enthaltenen Anweisungen auf
+    Dateinamen. Sie akzeptiert jedoch regul&auml;re Ausdr&uuml;cke.
+    Beispielsweise w&uuml;rde</p>
+
+    <example>
+      &lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
+    </example>
+
+    <p>auf die gebr&auml;uchlichsten Grafikformate im Internet passen.</p>
+</usage>
+
+<seealso><a href="../sections.html">Wie die Abschnitte &lt;Directory&gt;,
+    &lt;Location&gt; und &lt;Files&gt; arbeiten</a> f&uuml;r eine
+    Erl&auml;uterung, wie diese verschiedenen Abschnitte miteinander
+    kombiniert werden, wenn eine Anfrage empfangen wird</seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ForceType</name>
+<description>Erzwingt die Auslieferung aller passendenden Dateien mit dem
+angegebenen MIME-Content-Type</description>
+<syntax>ForceType <var>MIME-Type</var>|none</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>Wurde im Apache 2.0 in den Core verschoben</compatibility>
+
+<usage>
+    <p>Wenn sie innerhalb einer <code>.htaccess</code>-Datei, eines
+    <directive type="section" module="core">Directory</directive>-,
+    <directive type="section" module="core">Location</directive>-
+    <directive type="section" module="core">Files</directive>-Containers
+    angegeben wird, erzwingt die Direktive die Auslieferung aller
+    entsprechenden Dateien mit dem Content-Type, der durch
+    <var>MIME-Type</var> definiert wurde. Wenn Sie zum Beispiel ein
+    Verzeichnis voller GIF-Dateien haben, die Sie nicht alle durch
+    <code>.gif</code> kennzeichnen wollen, k&ouml;nnen Sie angeben:</p>
+
+    <example>
+      ForceType image/gif
+    </example>
+
+    <p>Beachten Sie bitte, dass die Direktive anders als <directive
+    module="core">DefaultType</directive> alle MIME-Type-Zuordnungen
+    &uuml;berschreibt, einschlie&szlig;lich Dateiendungen, die einen
+    Medientyp bezeichnen k&ouml;nnten.</p>
+
+    <p>Sie k&ouml;nnen jede <directive>ForceType</directive>-Angabe
+    durch die Verwendung des Wertes <code>none</code> &uuml;berschreiben:</p>
+
+    <example>
+      # erzwinge image/gif f&uuml;r alle Dateien:<br />
+      &lt;Location /images&gt;<br />
+        <indent>
+          ForceType image/gif<br />
+        </indent>
+      &lt;/Location&gt;<br />
+      <br />
+      # hier jedoch normale MIME-Type-Zuordnungen:<br />
+      &lt;Location /images/mixed&gt;<br />
+      <indent>
+        ForceType none<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>HostnameLookups</name>
+<description>Aktiviert DNS-Lookups auf Client-IP-Adressen</description>
+<syntax>HostnameLookups On|Off|Double</syntax>
+<default>HostnameLookups Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+
+<usage>
+    <p>Diese Direktive aktiviert die DNS-Abfrage <transnote>ein sogenannter
+    DNS-Lookup</transnote>, so dass Hostnamen protokolliert (und in
+    <code>REMOTE_HOST</code> an CGIs/SSIs &uuml;bergeben) werden k&ouml;nnnen.
+    Der Wert <code>Double</code> bezieht sich auf ein
+    Double-Reverse-DNS-Lookup. D.h. nachdem ein Reverse-Lookup
+    durchgef&uuml;hrt wurde, wird dann auf dem Ergebnis ein
+    Forward-Lookup ausgef&uuml;hrt. Wenigstens eine der IP-Adressen
+    aus dem Forward-Lookup muss der Originaladresse entsprechen.
+    (In der "tcpwrappers"-Terminologie wird dies <code>PARANOID</code>
+    genannt.)</p>
+
+    <p>Unabh&auml;ngig von der Einstellung wird ein Double-Reverse-Lookup
+    durchgef&uuml;hrt, wenn <module>mod_authz_host</module> zur
+    Zugriffskontrolle per Hostnamen eingesetzt wird. Dies ist aus
+    Sicherheitsgr&uuml;nden notwendig. Beachten Sie, dass das Ergebnis dieses
+    Double-Reverse-Lookups nicht generell verf&uuml;gbar ist, solange Sie
+    nicht <code>HostnameLookups Double</code> setzen. Wenn beispielsweise
+    nur <code>HostnameLookups On</code> angegeben ist und eine Anfrage
+    f&uuml;r ein Objekt erfolgt, welches durch Hostnamen-Beschr&auml;nkungen
+    gesch&uuml;tzt ist, dann wird CGIs nur das Ergebnis des
+    Singel-Reverse-Lookups in <code>REMOTE_HOST</code> &uuml;bergeben,
+    egal ob das Doble-Reverse-Lookup fehlschlug oder nicht.</p>
+
+    <p>Die Voreinstellung ist <code>Off</code>, um Netzwerktraffic bei den
+    Angeboten einzusparen, die nicht tats&auml;chlich Reverse-Lookups
+    ben&ouml;tigen. Es ist auch f&uuml;r die Endanwender besser, da sie nicht
+    die zus&auml;tzliche Wartezeit ertragen m&uuml;ssen, die ein Lookup mit
+    sich bringt. Hoch frequentierte Angebote sollten diese Direktive auf
+    <code>Off</code>lassen. Das Hilfsprogramm <a
+    href="../programs/logresolve.html">logresolve</a>, das
+    standardm&auml;&szlig;ig in das Unterverzeichnis <code>bin</code>
+    Ihres Installationsverzeichnisses kompiliert wird, kann dazu verwendet
+    werden, um offline Hostnamen zu protokollierten IP-Adressen
+    nachzuschlagen.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IdentityCheck</name>
+<description>Erm&ouml;glicht die Protokollierung der Identit&auml;t des
+entfernten Anwenders nach RFC1413</description>
+<syntax>IdentityCheck On|Off</syntax>
+<default>IdentityCheck Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<usage>
+    <p>Die Direktive erm&ouml;glicht die RFC1413-konforme Protokollierung des
+    entfernten Benutzernamens f&uuml;r jede Verbindung, bei der auf der
+    Client-Maschine identd oder etwas &auml;hnliches l&auml;uft. Die
+    Information wird im Zugriffsprotokoll festgehalten.</p>
+
+    <p>Der Information sollte au&szlig;er f&uuml;r eine rudiment&auml;re
+    Benutzerverfolgung in keinster Weise vertraut werden.</p>
+
+    <p>Beachten Sie bitte, dass dies betr&auml;chtliche Zeitprobleme
+    beim Zugriff auf Ihren Server verursachen kann, da f&uuml;r jede Anfrage
+    eine solche R&uuml;ckfrage durchgef&uuml;hrt werden muss. Wenn
+    Firewalls beteiligt sind, kann unter Umst&auml;nden jede R&uuml;ckfrage
+    fehlschlagen und weitere 30 Sekunden Wartezeit zu jedem Hit
+    zuf&uuml;gen. Daher ist dies im Allgemeinen bei &ouml;ffentlichen
+    Servern, die im Internet erreichbar sind, nicht besonders sinnvoll.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>IfDefine</name>
+<description>Schlie&szlig;t Direktiven ein, die nur ausgef&uuml;hrt werden,
+wenn eine Testbedingung beim Start wahr ist</description>
+<syntax>&lt;IfDefine [!]<var>Parametername</var>&gt; ...
+    &lt;/IfDefine&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Der Container <code>&lt;IfDefine <var>Test</var>&gt;...&lt;/IfDefine&gt;
+    </code> wird dazu verwendet, Direktiven als bedingt zu kennzeichnen.
+    Die Direktiven innerhalb eines <directive
+    type="section">IfDefine</directive>-Abschnittes werden nur ausgef&uuml;hrt,
+    wenn <var>Test</var> wahr ist. Ist <var>Test</var> falsch, wird alles
+    zwischen der Start- und Endemarkierung ignoriert.</p>
+
+    <p>In der <directive type="section">IfDefine</directive>-Anweisung kann
+    <var>Test</var> eine von zwei Formen annehmen:</p>
+
+    <ul>
+      <li><var>Parametername</var></li>
+
+      <li><code>!</code><var>Parametername</var></li>
+    </ul>
+
+    <p>Im ersten Fall werden die Direktiven zwischen der Start- und
+    Endemarkierung nur ausgef&uuml;hrt, wenn der Parameter namens
+    <var>Parametername</var> definiert ist. Die zweite Form kehrt den
+    Test um und f&uuml;hrt die Direktiven nur dann aus, wenn
+    <var>Parametername</var> <strong>nicht</strong> definiert ist.</p>
+
+    <p>Das Argument <var>Parametername</var> ist ein sogenanntes
+    "Define", das beim beim Start des Servers in der
+    <code>httpd</code>-Befehlszeile durch <code>-D<var>Parameter</var></code>
+    angegeben wird.</p>
+
+    <p><directive type="section">IfDefine</directive>-Container k&ouml;nnen
+    ineinander verschachtelt werden, um einfache Multi-Parameter-Tests
+    zu implementieren. Beispiel:</p>
+
+    <example>
+      httpd -DReverseProxy ...<br />
+      <br />
+      # httpd.conf<br />
+      &lt;IfDefine ReverseProxy&gt;<br />
+      <indent>
+        LoadModule rewrite_module modules/mod_rewrite.so<br />
+        LoadModule proxy_module   modules/libproxy.so<br />
+      </indent>
+      &lt;/IfDefine&gt;
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>IfModule</name>
+<description>Schlie&szlig;t Direktiven ein, die abh&auml;ngig vom
+Vorhandensein oder Fehlen eines speziellen Moduls ausgef&uuml;hrt
+werden</description>
+<syntax>&lt;IfModule [!]<var>Modulname</var>&gt; ...
+    &lt;/IfModule&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Der Container <code>&lt;IfModule
+    <var>Test</var>&gt;...&lt;/IfModule&gt;</code> wird dazu verwendet,
+    Direktiven als abh&auml;ngig von dem Vorhandensein eines speziellen
+    Moduls zu kennzeichnen. Die Direktiven innerhalb eines <directive
+    type="section">IfModule</directive>-Abschnitts werden nur
+    ausgef&uuml;hrt, wenn <var>Test</var> wahr ist. Ist <var>Test</var>
+    falsch, wird alles zwischen der Start- und Endemarkierung ignoriert.</p>
+
+    <p>In der <directive type="section">IfModule</directive>-Anweisung
+    kann <var>Test</var> eine von zwei Formen annehmen:</p>
+
+    <ul>
+      <li><var>Modulname</var></li>
+
+      <li><code>!</code><var>Modulname</var></li>
+    </ul>
+
+    <p>Im ersten Fall werden die Direktiven zwischen der Start- und
+    Endemarkierung nur ausgef&uuml;hrt, das Modul namens
+    <var>Modulname</var> im Apache enthalten ist -- entweder einkompiliert
+    oder mittels <directive module="mod_so">LoadModule</directive>
+    dynamisch geladen. Die zweite Form dreht den Test um und f&uuml;hrt die
+    Direktiven nur aus, wenn <var>Modulname</var> <strong>nicht</strong>
+    enthalten ist.</p>
+
+    <p>Das Argument <var>Modulname</var> ist der Dateiname des Moduls zum
+    Zeitpunkt seiner Kompilierung, z.B. <code>mod_rewrite.c</code>.
+    Wenn ein Modul aus mehreren Quelltext-Dateien besteht, verwenden Sie den
+    Namen der Datei, welche die Zeichenfolge
+    <code>STANDARD20_MODULE_STUFF</code> enth&auml;lt.</p>
+
+    <p><directive type="section">IfModule</directive>-Container k&ouml;nnen
+    inneinander verschachtelt werden, um einfache Multi-Modul-Tests
+    durchzuf&uuml;hren.</p>
+
+    <p>Dieser Container sollte verwendet werden, wenn Sie eine
+    Konfigurationsdatei ben&ouml;tigen, die unabh&auml;ngig davon funktioniert,
+    ob ein bestimmtes Modul verf&uuml;gbar ist oder nicht. Normalerweise
+    ist es nicht notwendig, Direktiven in <directive
+    type="section">IfModule</directive>-Containern unterzubringen.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Include</name>
+<description>F&uuml;gt andere Konfigurationsdateien innerhalb der
+Server-Konfigurationsdatei ein</description>
+<syntax>Include <var>Dateiname</var>|<var>Verzeichnis</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Die Platzhalter-Suche ist verf&uuml;gbar seit
+2.0.41</compatibility>
+
+<usage>
+    <p>Die Direktive erlaubt das Einf&uuml;gen anderer Konfigurationsdateien
+    in die Konfigurationsdatei des Servers.</p>
+
+    <p>Shell-typische (<code>fnmatch()</code>) Platzhlaterzeichen k&ouml;nnen
+    dazu verwendet werden, mehrere Dateien auf einmal in alphabetischer
+    Reihenfolge einzuf&uuml;gen. Wenn <directive>Include</directive>
+    dar&uuml;ber hinaus auf ein Verzeichnis anstatt auf eine Datei zeigt,
+    liest der Apache alle Dateien in diesem Verzeichnis und allen
+    Unterverzeichnissen ein. Das Einf&uuml;gen ganzer Verzeichnisse ist
+    jedoch nicht empfehlenswert, da tempor&auml;re Dateien sehr leicht
+    versehentlich in einem Verzeichnis zur&uuml;ckgelassen werden, was
+    <code>httpd</code> scheitern lassen kann.</p>
+
+    <p>Der angegebene Dateiname kann ein absoluter Pfad (d.h., er
+    beginnt mit einem Schr&auml;gstrich) sein oder relativ zum <directive
+    module="core">ServerRoot</directive>-Verzeichnis angegeben werden.</p>
+
+    <p>Beispiele:</p>
+
+    <example>
+      Include /usr/local/apache2/conf/ssl.conf<br />
+      Include /usr/local/apache2/conf/vhosts/*.conf
+    </example>
+
+    <p>Oder Sie geben Pfade relativ zu Ihrem <directive
+    module="core">ServerRoot</directive>-Verzeichnis an:</p>
+
+    <example>
+      Include conf/ssl.conf<br />
+      Include conf/vhosts/*.conf
+    </example>
+
+    <p>Der Aufruf von <code>apachectl configtest</code> liefert eine Liste
+    der Dateien, die w&auml;hrend des Konfigurations-Tests verarbeitet
+    werden:</p>
+
+    <example>
+      root@host# apachectl configtest<br />
+      Processing config file: /usr/local/apache2/conf/ssl.conf<br />
+      Processing config file: /usr/local/apache2/conf/vhosts/vhost1.conf<br />
+      Processing config file: /usr/local/apache2/conf/vhosts/vhost2.conf<br />
+      Syntax OK
+    </example>
+</usage>
+
+<seealso><a href="../programs/apachectl.html">apachectl</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>KeepAlive</name>
+<description>Aktiviert persistente HTTP-Verbindungen</description>
+<syntax>KeepAlive On|Off</syntax>
+<default>KeepAlive On</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Die Keep-Alive-Erweiterung von HTTP/1.0 und die
+    HTTP/1.1-Funktionalit&auml;t persistenter Verbindungen unterst&uuml;tzt
+    langlebige HTTP-Sitzungen, die es erlauben, mehrere Anfragen &uuml;ber
+    die gleich TCP-Verbindung zu senden. In einigen F&auml;llen wurde eine
+    Beschleunigung der Wartezeiten von beinahe 50% f&uuml;r HTML-Dokumente
+    mit vielen Bildern festgestellt. Um Keep-Alive-Verbindungen zu aktivieren,
+    setzen Sie <code>KeepAlive On</code>.</p>
+
+    <p>Bei HTTP/1.0-Clients werden Keep-Alive-Verbindungen nur dann verwendet,
+    wenn sie vom Client eigens angefordert werden. Desweiteren k&ouml;nnen
+    Keep-Alive-Verbindungen bei einem HTTP/1.0-Client nur dann verwendet
+    werden, wenn die L&auml;nge des Inhalts im Voraus bekannt ist. Dies
+    impliziert, dass dynamische Inhalte wie CGI-Ausgaben, SSI-Seiten und
+    servergenerierte Verzeichnisauflistungen im Allgemeinen keine
+    Keep-Alive-Verbindungen mit HTTP/1.0-Clients verwenden. Bei
+    HTTP/1.1-Clients sind Keep-Alive-Verbindungen Voreinstellung, solange
+    nichts anderes angegeben ist. Wenn der Client es anfordert, wird
+    Chunked-Encoding verwendet, um Inhalte mit unbekannter L&auml;nge
+    &uuml;ber persistente Verbindungen zu senden.</p>
+</usage>
+
+<seealso><directive module="core">MaxKeepAliveRequests</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>KeepAliveTimeout</name>
+<description>Zeitspanne, die der Server w&auml;hrend persistenter Verbindungen
+auf nachfolgende Anfragen wartet</description>
+<syntax>KeepAliveTimeout <var>Sekunden</var></syntax>
+<default>KeepAliveTimeout 15</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Dies legt die Anzahl der Sekunden fest, die der Apache auf weitere
+    Anfragen wartet, bevor er die Verbindung schlie&szlig;t. Nachdem einmal
+    eine Anfrage entgegen genommen wurde, wird die durch die Direktive
+    <directive module="core">Timeout</directive> festgelegte Auszeit
+    angewendet.</p>
+
+    <p>Auf stark belasteten Servern kann ein hoher
+    <directive>KeepAliveTimeout</directive>-Wert zu Durchsatzminderungen
+    f&uuml;hren. Je h&ouml;her die Auszeit angegeben ist, desto l&auml;nger
+    ist der Apache damit besch&auml;ftigt, auf unt&auml;tige Clients zu
+    warten.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>Limit</name>
+<description>Beschr&auml;nkt die eingeschlossenen Zugriffskontrollen auf
+bestimmte HTTP-Methoden</description>
+<syntax>&lt;Limit <var>Methode</var> [<var>Methode</var>] ... &gt; ...
+    &lt;/Limit&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Zugriffskontrollen gelten normalerweise f&uuml;r <strong>alle</strong>
+    Zugriffsmethoden, was normalerweise auch das gew&uuml;nschte Verhalten ist.
+    <strong>Im Allgemeinen sollten Zugriffskontrollen nicht in einen
+    <directive type="section">Limit</directive>-Container gepackt
+    werden.</strong></p>
+
+    <p>Der Sinn der Direktive <directive type="section">Limit</directive>
+    ist es, den Effekt der Zugriffskontrollen auf die angegebenen
+    HTTP-Methoden zu beschr&auml;nken. Bei allen anderen Methoden haben
+    die in der <directive type="section">Limit</directive>-Gruppe
+    enthaltenen Zugriffsbeschr&auml;nkungen <strong>keine Wirkung</strong>.
+    Im folgenden Beispiel gilt die Zugriffskontrolle nur f&uuml;r die
+    Methoden <code>POST</code>, <code>PUT</code> und <code>DELETE</code>.
+    Alle anderen Methoden bleiben ungesch&uuml;tzt:</p>
+
+    <example>
+      &lt;Limit POST PUT DELETE&gt;<br />
+      <indent>
+        Require valid-user<br />
+      </indent>
+      &lt;/Limit&gt;
+    </example>
+
+    <p>Sie k&ouml;nnen eine oder mehrere der folgenden Methoden angeben:
+    <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>,
+    <code>CONNECT</code>, <code>OPTIONS</code>, <code>TRACE</code>,
+    <code>PATCH</code>, <code>PROPFIND</code>, <code>PROPPATCH</code>,
+    <code>MKCOL</code>, <code>COPY</code>, <code>MOVE</code>,
+    <code>LOCK</code> und <code>UNLOCK</code>. <strong>Die Methodennamen
+    unterscheiden zwischen Gro&szlig;- und Kleinschreibung.</strong> Wenn
+    <code>GET</code> verwendet wird, sind <code>HEAD</code>-Anfragen
+    ebenfalls eingeschr&auml;nkt.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>LimitExcept</name>
+<description>Beschr&auml;nkt Zugriffskontrollen auf alle HTTP-Methoden
+au&szlig;er den genannten</description>
+<syntax>&lt;LimitExcept <var>Methode</var> [<var>Methode</var>] ... &gt; ...
+    &lt;/LimitExcept&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p><directive type="section">LimitExcept</directive> und
+    <code>&lt;/LimitExcept&gt;</code> werden dazu verwendet, eine Gruppe
+    von Anweisungen zur Zugriffskontrolle zusammenzufassen, die dann auf
+    jede HTTP-Methode angewendet werden, die <strong>nicht</strong>
+    als Argument angegeben ist. D.h. dies ist das Gegenteil des
+    <directive type="section" module="core">Limit</directive>-Containers
+    und kann zur Steuerung von Standard- und nicht-Standard-/unbekannten
+    Methoden verwendet werden. F&uuml;r weitere Einzelheiten lesen Sie bitte
+    die Beschreibung zu <directive module="core"
+    type="section">Limit</directive>.</p>
+
+    <p>Beispiel:</p>
+
+    <example>
+      &lt;LimitExcept POST GET&gt;<br />
+      <indent>
+        Require valid-user<br />
+      </indent>
+      &lt;LimitExcept&gt;
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LimitRequestBody</name>
+<description>Begrenzt die Gesamtgr&ouml;&szlig;e des vom Client gesendeten
+HTTP-Request-Body</description>
+<syntax>LimitRequestBody <var>Bytes</var></syntax>
+<default>LimitRequestBody 0</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Die Direktive gibt die Anzahl der <var>Bytes</var> zwischen 0
+    (unbegrenzt) und 2147483647 (2GB) an, die im Request-Body (Datenteil der
+    Anfrage) erlaubt sind. Die Voreinstellung wird durch die Konstante
+    <code>DEFAULT_LIMIT_REQUEST_BODY</code> (<code>0</code> bei der
+    Auslieferung) zur Kompilierungszeit gesetzt.</p>
+
+    <p>Die Direktive <directive>LimitRequestBody</directive> erlaubt es dem
+    Benutzer, die Gr&ouml;&szlig;e des HTTP-Request-Bodys in dem Kontext zu
+    begrenzen, in dem die Anweisung angegeben ist (Server, pro Verzeichnis,
+    pro Datei oder pro Adresse). Wenn die Anfrage des Clients dieses Limit
+    &uuml;berschreitet, gibt der Server einen Fehler zur&uuml;ck anstatt die
+    Anfrage zu bearbeiten. Die Gr&ouml;&szlig;e des Datenteils einer Anfrage
+    kann sehr stark variieren, abh&auml;ngig von der Art der Ressource und
+    den f&uuml;r diese Ressource erlaubten Methoden. CGI-Skripte verwenden
+    den Datenteil &uuml;blicherweise zum Empfang von Formulardaten. Wird
+    die <code>PUT</code>-Methode angewendet, dann muss der Wert mindestens
+    so gro&szlig; sein wie irgendeine Darstellungsform, die der Server
+    f&uuml;r diese Ressource akzeptieren soll.</p>
+
+    <p>Die Direktive gibt dem Serveradministrator eine gr&ouml;&szlig;ere
+    Kontrolle gegen&uuml;ber abnormalem Verhalten von Clients, was bei der
+    Vermeidung einiger Formen von Denial-of-Service-Attacken hilfreich
+    sein kann.</p>
+
+    <p>Wenn Sie beispielsweise das Hochladen von Dateien zu einer bestimmten
+    Adresse erlauben, aber die Gr&ouml;&szlig;e der hochgeladenen Dateien
+    auf 100K beschr&auml;nken wollen, k&ouml;nnen Sie die folgende Anweisung
+    verwenden:</p>
+
+    <example>
+      LimitRequestBody 102400
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LimitRequestFields</name>
+<description>Begrenzt die Anzahl der HTTP-Request-Header, die vom Client
+entgegengenommen werden</description>
+<syntax>LimitRequestFields <var>Anzahl</var></syntax>
+<default>LimitRequestFields 100</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p><var>Anzahl</var> ist ein Integer-Wert (eine positive Ganzzahl)
+    zwischen 0 (unbegrenzt) und 32767. Die Voreinstellung wird durch die
+    Konstante <code>DEFAULT_LIMIT_REQUEST_FIELDS</code> (<code>100</code>
+    bei der Auslieferung) zur Kompilierungszeit gesetzt.</p>
+
+    <p>Die Direktive <directive>LimitRequestFields</directive> erlaubt es
+    dem Serveradministrator, die maximale Anzahl der in einem HTTP-Request
+    erlaubten HTTP-Request-Header zu ver&auml;ndern. F&uuml;r den Server
+    muss dieser Wert gr&ouml;&szlig;er sein als die Anzahl der Headerzeilen,
+    die ein normaler Client senden k&ouml;nnte. Die Anzahl der Request-Header,
+    die ein gew&ouml;hnlicher Client verwendet, &uuml;berschreitet selten 20
+    Zeilen. Allerdings kann dies zwischen den verschiedenen
+    Client-Ausf&uuml;hrungen variieren, oft abh&auml;ngig vom Ausma&szlig;,
+    mit dem der Anwender die genaue Content-Negotiation-Unterst&uuml;tzung
+    seines Browsers konfiguriert hat. Optionale HTTP-Erweiterungen
+    &auml;u&szlig;ern sich oft in Form von HTTP-Headern.</p>
+
+    <p>Die Direktive gibt dem Serveradministrator eine gr&ouml;&szlig;ere
+    Kontrolle gegen&uuml;ber abnormalem Verhalten von Clients, was bei der
+    Vermeidung einiger Formen von Denial-of-Service-Attacken hilfreich
+    sein kann. Der Wert sollte erh&ouml;ht werden, wenn normale Clients
+    eine Fehlermeldung vom Server erhalten, die besagt, dass mit der Anfrage
+    zu viele Headerzeilen gesendet wurden.</p>
+
+    <p>Beispiel:</p>
+
+    <example>
+      LimitRequestFields 50
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LimitRequestFieldSize</name>
+<description>Begrenzt die L&auml;nge des vom Client gesendeten
+HTTP-Request-Headers</description>
+<syntax>LimitRequestFieldsize <var>Bytes</var></syntax>
+<default>LimitRequestFieldsize 8190</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Die Direktive gibt die Anzahl der <var>Bytes</var> zwischen 0
+    und dem Wert der zur Kompilierungszeit definierten Konstante
+    <code>DEFAULT_LIMIT_REQUEST_FIELDSIZE</code> (<code>8190</code> bei
+    der Auslieferung) an, die in einem HTTP-Header erlaubt sind.</p>
+
+    <p>Die Direktive <directive>LimitRequestFieldsize</directive> erlaubt es
+    dem Serveradministrator, die maximale Gr&ouml;&szlig;e eines
+    HTTP-Request-Headers auf einen Wert unterhalb der normalen, im Server
+    einkompilierten Gr&ouml;&szlig;e des Eingabepuffers zu verringern.
+    F&uuml;r den Server muss der Wert gro&szlig; genug sein, um eine beliebige
+    Headerzeile einer normalen Client-Anfrage vorzuhalten. Die
+    Gr&ouml;&szlig;e variiert stark zwischen den verschiedenen
+    Client-Ausf&uuml;hrungen, oft abh&auml;ngig vom Ausma&szlig;, mit dem
+    der Anwender die genaue Content-Negotiation-Unterst&uuml;tzung seines
+    Browsers konfiguriert hat.</p>
+
+    <p>Die Direktive gibt dem Serveradministrator eine gr&ouml;&szlig;ere
+    Kontrolle gegen&uuml;ber abnormalem Verhalten von Clients, was bei der
+    Vermeidung einiger Formen von Denial-of-Service-Attacken hilfreich
+    sein kann.</p>
+
+    <p>Beispiel:</p>
+
+    <example>
+      LimitRequestFieldSize 4094
+    </example>
+
+    <note>Unter normalen Umst&auml;nden sollte die Voreinstellung nicht
+    ver&auml;ndert werden.</note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LimitRequestLine</name>
+<description>Begrenzt die L&auml;nge der vom Client entgegengenommenen
+HTTP-Anfragezeile</description>
+<syntax>LimitRequestLine <var>Bytes</var></syntax>
+<default>LimitRequestLine 8190</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Die Direktive legt die Anzahl der <var>Bytes</var> zwischen 0 und
+    dem  Wert der zur Kompilierungszeit definierten Konstante
+    <code>DEFAULT_LIMIT_REQUEST_LINE</code> (<code>8190</code> bei der
+    Auslieferung) fest, die in der HTTP-Anfragezeile erlaubt sind.</p>
+
+    <p>Die Direktive <directive>LimitRequestLine</directive> erlaubt es dem
+    Serveradministrator, die maximale Gr&ouml;&szlig;e der
+    HTTP-Anfragezeile auf einen Wert unterhalb der normalen, im Server
+    einkompilierten Gr&ouml;&szlig;e des Eingabepuffers zu verringern. Da
+    die Anfragezeile aus der HTTP-Methode, der URI und der Protokollversion
+    besteht, bedeutet die <directive>LimitRequestLine</directive>-Direktive
+    eine Beschr&auml;nkung der L&auml;nge der f&uuml;r eine Anfrage an den
+    Server erlaubten Anfrage-URI. F&uuml;r den Server muss der Wert gro&szlig;
+    genug sein, um jeden seiner Ressourcennamen vorzuhalten,
+    einschlie&szlig;lich aller Informationen, die im Query-String einer
+    <code>GET</code>-Anfrage &uuml;bergeben werden k&ouml;nnen.</p>
+
+    <p>Die Direktive gibt dem Serveradministrator eine gr&ouml;&szlig;ere
+    Kontrolle gegen&uuml;ber abnormalem Verhalten von Clients, was bei der
+    Vermeidung einiger Formen von Denial-of-Service-Attacken hilfreich
+    sein kann.</p>
+
+    <p>Beispiel:</p>
+
+    <example>
+      LimitRequestLine 4094
+    </example>
+
+    <note>Unter normalen Umst&auml;nden sollte die Voreinstellung nicht
+    ver&auml;ndert werden.</note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LimitXMLRequestBody</name>
+<description>Begrenzt die Gr&ouml;&szlig;e eines XML-basierten
+Request-Bodys</description>
+<syntax>LimitXMLRequestBody <var>Bytes</var></syntax>
+<default>LimitXMLRequestBody 1000000</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
+
+<usage>
+    <p>Dies gibt die Grenze f&uuml;r die maximale Gr&ouml;&szlig;e (in Bytes)
+    des XML-basierten Request-Bodys an. Der Wert <code>0</code> deaktiviert
+    diese Pr&uuml;fung.</p>
+
+    <p>Beispiel:</p>
+
+    <example>
+      LimitXMLRequestBody 0
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>Location</name>
+<description>Wendet die enthaltenen Direktiven nur auf die entsprechenden
+URLs an</description>
+<syntax>&lt;Location
+    <var>URL-Pfad</var>|<var>URL</var>&gt; ... &lt;/Location&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Die Direktive <directive type="section">Location</directive>
+    begrenzt die Reichweite der enthaltenen Anweisungen auf URLs.
+    Sie ist der Direktive <directive type="section"
+    module="core">Directory</directive> &auml;hnlich und startet einen
+    Abschnitt, der mit der Anweisung <code>&lt;/Location&gt;</code>
+    abgeschlossen wird. <directive
+    type="section">Location</directive>-Container werden, nachdem die
+    <directive type="section" module="core">Directory</directive>-Container
+    und <code>.htaccess</code>-Dateien gelesen wurden, und nach den
+    <directive type="section" module="core">Files</directive>-Containern, in
+    der Reihenfolge ausgef&uuml;hrt, in der sie in der Konfigurationsdatei
+    erscheinen.</p>
+
+    <p>Beachten Sie, dass URLs keineswegs mit dem Dateisystem
+    &uuml;bereinstimmen m&uuml;ssen. Um es nochmal zu betonen,
+    <directive type="section">Location</directive> operiert vollst&auml;ndig
+    au&szlig;erhalb des Dateisystems.</p>
+
+    <p>F&uuml;r alle nicht-Proxy-Anfragen ist die entsprechende URL
+    ein URL-Pfad in der Form <code>/path/</code>. Es d&uuml;rfen weder ein
+    Schema, noch ein Hostname, noch ein Port, noch ein Query-String einbezogen
+    werden. F&uuml;r Proxy-Anfragen hat die Vergleichs-URL die Form
+    <code>schema://servername/path</code>. Das Pr&auml;fix muss angegeben
+    werden.</p>
+
+    <p>Die URL kann Platzhalter verwenden. In einer Zeichenfolge mit
+    Platzhaltern entspricht <code>?</code> einem einzelnen Zeichen und
+    <code>*</code>einer beliebigen Zeichenfolge.</p>
+
+    <p>Erweiterte regul&auml;re Ausdr&uuml;cke k&ouml;nnen ebenfalls
+    verwendet werden, indem das Zeichen <code>~</code> hinzugef&uuml;gt
+    wird. Beispielsweise w&uuml;rde</p>
+
+    <example>
+      &lt;Location ~ "/(extra|special)/data"&gt;
+    </example>
+
+    <p>auf URLs passen, welche die Zeichenfolge <code>/extra/data</code>
+    oder <code>/special/data</code> enthalten. Die Direktive <directive
+    type="section" module="core">LocationMatch</directive> verh&auml;lt sich
+    genauso wie <directive type="section">Location</directive> mit
+    regul&auml;ren Ausdr&uuml;cken.</p>
+
+    <p>Die Funktionalit&auml;t von <directive
+    type="section">Location</directive> ist insbesondere dann n&uuml;tzlich,
+    wenn sie mit der <directive module="core">SetHandler</directive>-Direktive
+    kombiniert wird. Um zum Beispiel Statusabfragen zu aktivieren, sie aber
+    nur von Browsern aus <code>foo.com</code> zuzulassen, k&ouml;nnten Sie
+    schreiben:</p>
+
+    <example>
+      &lt;Location /status&gt;<br />
+      <indent>
+        SetHandler server-status<br />
+        Order Deny,Allow<br />
+        Deny from all<br />
+        Allow from .foo.com<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+
+    <note><title>Anmerkung zu / (Schr&auml;gstrich, Slash)</title>
+      <p>Das Slash-Zeichen hat eine besondere Bedeutung, je nachdem, wo es
+      in der URL erscheint. Manche werden sein Verhalten vom Dateisystem
+      gewohnt sein, wo mehrere aufeinanderfolgende Schr&auml;gstriche
+      h&auml;ufig zu einem Schr&auml;gstrich zusammengefa&szlig;t werden
+      (<em>d.h.</em> <code>/home///foo</code> ist das gleiche wie
+      <code>/home/foo</code>). Im URL-Raum ist dies nicht notwendigerweise
+      genauso. Bei der Direktive  <directive type="section"
+      module="core">LocationMatch</directive> und der <directive type="section"
+      >Location</directive>-Version mit regul&auml;ren Ausdr&uuml;cken
+      m&uuml;ssen Sie explizit mehrere Schr&auml;gstriche angeben, wenn Sie
+      genau dies beabsichtigen.</p>
+
+      <p>Beispielsweise w&uuml;rde <code>&lt;LocationMatch ^/abc&gt;</code>
+      auf die angeforderte URL <code>/abc</code> passen, nicht aber auf
+      <code>//abc</code>. Die Direktive <directive type="section"
+      >Location</directive> (ohne regul&auml;re Ausdr&uuml;cke) verh&auml;lt
+      sich &auml;hnlich, wenn sie f&uuml;r Proxy-Anfragen verwendet wird.
+      Wenn <directive type="section">Location</directive> (ohne
+      regul&auml;re Ausdr&uuml;cke) jedoch f&uuml;r nicht-Proxy-Anfragen
+      verwendet wird, werden stillscheigend mehrere Schr&auml;chstriche mit
+      mit einem einzigen Schr&auml;gstrich gleichgesetzt. Geben Sie
+      beispielsweise <code>&lt;Location /abc/def&gt;</code> an und die
+      Anfrage lautet auf <code>/abc//def</code>, dann greift die Anweisung.</p>
+    </note>
+</usage>
+<seealso><a href="../sections.html">Wie die Abschnitte &lt;Directory&gt;,
+    &lt;Location&gt; und &lt;Files&gt; arbeiten</a> f&uuml;r eine
+    Erl&auml;uterung, wie diese verschiedenen Abschnitte miteinander
+    kombiniert werden, wenn eine Anfrage empfangen wird</seealso>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>LocationMatch</name>
+<description>Wendet die enthaltenen Direktiven nur auf URLs an, die auf
+regul&auml;re Ausdr&uuml;cke passen</description>
+<syntax>&lt;LocationMatch
+    <var>regex</var>&gt; ... &lt;/LocationMatch&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Die Direktive <directive type="section">LocationMatch</directive>
+    begrenzt die Reichweite der enthaltenen Anweisungen in der gleichen Weise
+    wie <directive module="core" type="section">Location</directive> auf URLs.
+    Sie verwendet jedoch regul&auml;re Ausdr&uuml;cke als Argument anstelle
+    einer einfachen Zeichenkette. Beispielsweise w&uuml;rde</p>
+
+    <example>
+      &lt;LocationMatch "/(extra|special)/data"&gt;
+    </example>
+
+    <p>auf URLs passen, welche die Zeichenfolge <code>/extra/data</code>
+    oder <code>/special/data</code> enthalten.</p>
+</usage>
+
+<seealso><a href="../sections.html">Wie die Abschnitte &lt;Directory&gt;,
+    &lt;Location&gt; und &lt;Files&gt; arbeiten</a> f&uuml;r eine
+    Erl&auml;uterung, wie diese verschiedenen Abschnitte miteinander
+    kombiniert werden, wenn eine Anfrage empfangen wird</seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LogLevel</name>
+<description>Steuert die Ausf&uuml;hrlichkeit des Fehlerprotokolls</description>
+<syntax>LogLevel <var>Level</var></syntax>
+<default>LogLevel warn</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>LogLevel</directive> stellt die Ausf&uuml;hrlichkeit
+    der Nachrichten ein, die im Fehlerprotokoll aufgezeichnet werden (siehe
+    Direktive <directive module="core">ErrorLog</directive>). Die folgenden,
+    nach absteigender Aussagekraft sortierten <var>Level</var> sind
+    verf&uuml;gbar:</p>
+
+    <table border="1">
+      <tr>
+        <th><strong>Level</strong> </th>
+
+        <th><strong>Beschreibung</strong> </th>
+
+        <th><strong>Beispiel</strong> </th>
+      </tr>
+
+      <tr>
+        <td><code>emerg</code> </td>
+
+        <td>Notfall - das System ist unbenutzbar.</td>
+
+        <td>"Child cannot open lock file. Exiting"
+        <transnote>"Kindprozess kann die Lock-Datei nicht &ouml;ffnen.
+        Beende Programm"</transnote></td>
+      </tr>
+
+      <tr>
+        <td><code>alert</code> </td>
+
+        <td>Ma&szlig;nahmen m&uuml;ssen unverz&uuml;glich ergriffen
+        werden.</td>
+
+        <td>"getpwuid: couldn't determine user name from uid"
+        <transnote>"getpwuid: kann keinen Benutzernamen aus der UID
+        ermitteln"</transnote></td>
+      </tr>
+
+      <tr>
+        <td><code>crit</code> </td>
+
+        <td>Kritischer Zustand.</td>
+
+        <td>"socket: Failed to get a socket, exiting child"
+        <transnote>"socket: Socket-Zuweisung fehlgeschlagen, beende
+        Kindprozess"</transnote></td>
+      </tr>
+
+      <tr>
+        <td><code>error</code> </td>
+
+        <td>Fehlerbedingung.</td>
+
+        <td>"Premature end of script headers"
+        <transnote>"Vorzeitiges Ende der Skript-Header"</transnote></td>
+      </tr>
+
+      <tr>
+        <td><code>warn</code> </td>
+
+        <td>Warnung.</td>
+
+        <td>"child process 1234 did not exit, sending another SIGHUP"
+        <transnote>"Kindprozess 1234 nicht beendet, sende ein weiteres
+        SIGHUP"</transnote></td>
+      </tr>
+
+      <tr>
+        <td><code>notice</code> </td>
+
+        <td>Normaler, aber signifikanter Zustand.</td>
+
+        <td>"httpd: caught SIGBUS, attempting to dump core in ..."
+        <transnote>"httpd: SIGBUS empfangen, versuche Speicherabbild nach ...
+        zu schreiben"</transnote></td>
+      </tr>
+
+      <tr>
+        <td><code>info</code> </td>
+
+        <td>Information.</td>
+
+        <td>"Server seems busy, (you may need to increase
+        StartServers, or Min/MaxSpareServers)..."
+        <transnote>"Server scheint besch&auml;ftigt zu sein,
+        (m&ouml;glicherweise m&uuml;ssen Sie StartServers oder
+        Min/MaxSpareServers erh&ouml;hen)"</transnote></td>
+      </tr>
+
+      <tr>
+        <td><code>debug</code> </td>
+
+        <td>Debug-Level-Nachrichten</td>
+
+        <td>"Opening config file ..."
+        <transnote>"&Ouml;ffne Konfigurationsdatei ..."</transnote></td>
+      </tr>
+    </table>
+
+    <p>Geben Sie einen bestimmten Level an, denn werden Nachrichten von
+    allen h&ouml;heren Leveln ebenso angezeigt. <em>Z.B.:</em> Wenn
+    <code>LogLevel info</code> eingestellt ist, dann werden Nachrichten der
+    Log-Level <code>notice</code> und <code>warn</code> ebenso eingetragen.</p>
+
+    <p>Es wird empfohlen, mindestens den Level <code>crit</code> zu
+    verwenden.</p>
+
+    <p>Beispiel:</p>
+
+    <example>
+      LogLevel notice
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxKeepAliveRequests</name>
+<description>Anzahl der Anfragen, die bei einer persistenten Verbindung
+zul&auml;ssig sind</description>
+<syntax>MaxKeepAliveRequests <var>Anzahl</var></syntax>
+<default>MaxKeepAliveRequests 100</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Die Direktive <directive>MaxKeepAliveRequests</directive>
+    begrenzt die Anzahl der Anfragen, die pro Verbindung zul&auml;ssig sind,
+    wenn <directive module="core" >KeepAlive</directive> eingeschaltet ist.
+    Bei der Einstellung <code>0</code> sind unbegrenzt viele Anfragen
+    erlaubt. Wir empfehlen f&uuml;r diese Einstellung einen hohen Wert
+    f&uuml;r eine maximale Serverleistung.</p>
+
+    <p>Beispiel:</p>
+
+    <example>
+      MaxKeepAliveRequests 500
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>NameVirtualHost</name>
+<description>Bestimmt eine IP-Adresse f&uuml;r den Betrieb namensbasierter
+Virtual-Hosts</description>
+<syntax>NameVirtualHost <var>Adresse</var>[:<var>Port</var>]</syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Die Direktive <directive>NameVirtualHost</directive> ist erforderlich,
+    wenn Sie <a href="../vhosts/">namensbasierte Virtual-Hosts</a>
+    konfigurieren m&ouml;chten.</p>
+
+    <p>Obwohl <var>Adresse</var> eine Hostname sein kann, wird empfohlen,
+    dass Sie stets eine IP-Adresse verwenden, z.B.:</p>
+
+    <example>
+      NameVirtualHost 111.22.33.44
+    </example>
+
+    <p>Mit der <directive>NameVirtualHost</directive>-Anweisung geben Sie
+    die IP-Adresse an, unter der der Server Anfragen f&uuml;r
+    namensbasierte Virtual-Hosts entgegennimmt. Das ist &uuml;blicherweise
+    die Adresse, zu der die Namen Ihrer namensbasierten Virtual-Hosts
+    aufgel&ouml;st werden. Falls eine Firewall oder ein anderer Proxy die
+    Anfrage in Empfang nimmt und Sie zu einer weiteren IP-Adresse des Servers
+    weiterleitet, m&uuml;ssen Sie die IP-Adresse der physikalischen
+    Schnittstelle der Maschine angeben, welche die Anfragen bedient.
+    Wenn Sie mehrere namensbasierte Hosts an verschiedenen Adressen
+    betreiben, wiederholen Sie einfach die Anweisung f&uuml;r jede
+    Adresse.</p>
+
+    <note><title>Anmerkung</title>
+      <p>Beachten Sie, dass der "Hauptserver" und jeder
+      <code>_default_</code>-Server <strong>niemals</strong> bei einer
+      Anfrage an einer <directive>NameVirtualHost</directive>-IP-Adresse
+      bedient wird (es sei denn, Sie geben aus irgendwelchen Gr&uuml;nden
+      <directive>NameVirtualHost</directive> an, definieren dann aber keine
+      <directive>VirtualHost</directive>s f&uuml;r diese Adresse).</p>
+    </note>
+
+    <p>Optional k&ouml;nnen Sie die Nummer eines Ports angeben, an dem
+    namensbasierte Virtual-Hosts verwendet werden sollen. Beispiel:</p>
+
+    <example>
+      NameVirtualHost 111.22.33.44:8080
+    </example>
+
+    <p>IPv6-Adressen m&uuml;ssen, wie im folgenden Beispiel angegeben, in
+    eckige Klammern eingeschlossen werden:</p>
+
+    <example>
+      NameVirtualHost [fe80::a00:20ff:fea7:ccea]:8080
+    </example>
+
+    <p>Um an allen Schnittstellen Anfragen zu empfangen, k&ouml;nnen Sie
+    <code>*</code> als Argument verwenden.</p>
+
+    <example>
+      NameVirtualHost *
+    </example>
+
+    <note><title>Argument der Direktive <directive
+    type="section">VirtualHost</directive></title>
+      <p>Beachten Sie, dass das Argument der <directive
+      type="section">VirtualHost</directive>-Anweisung exakt auf das Argument
+      der <directive>NameVirtualHost</directive>-Anweisung passen muss.</p>
+
+      <example>
+        NameVirtualHost 1.2.3.4<br />
+        &lt;VirtualHost 1.2.3.4&gt;<br />
+        # ...<br />
+        &lt;/VirtualHost&gt;<br />
+      </example>
+    </note>
+</usage>
+<seealso><a href="../vhosts/">Virtual-Host-Dokumentation</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Options</name>
+<description>Definiert, welche Eigenscahften oder Funktionen in einem
+bestimmten Verzeichnis verf&uuml;gbar sind</description>
+<syntax>Options
+    [+|-]<var>Option</var> [[+|-]<var>Option</var>] ...</syntax>
+<default>Options All</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Options</override>
+
+<usage>
+    <p>Die Direktive <directive>Options</directive> steuert, welche
+    Eigenschaften bzw. Funktionen in einem bestimmten Verzeichnis
+    verf&uuml;gbar sind.</p>
+
+    <p><var>Option</var> kann auf <code>None</code> gesetzt werden, wobei
+    keine der besonderen Eigenschaften verf&uuml;gbar sind, oder auf eines
+    oder mehrere der folgenden:</p>
+
+    <dl>
+      <dt><code>All</code></dt>
+
+      <dd>Alle Optionen au&szlig;er <code>MultiViews</code>. Dies ist
+      die Voreinstellung.</dd>
+
+      <dt><code>ExecCGI</code></dt>
+
+      <dd>Die Ausf&uuml;hrung von CGI-Skripts ist erlaubt.</dd>
+
+      <dt><code>FollowSymLinks</code></dt>
+
+      <dd>Der Server folgt symbolischen Links in diesem Verzeichnis.
+      <note>
+      <p>Auch wenn der Server symbolischen Links folgt, bedeutet dies
+      <em>nicht</em>, dass der zum Abgleich gegen <directive type="section"
+      module="core">Directory</directive>-Abschnitte verwendete Pfadname
+      wechselt.</p>
+      <p>Beachten Sie auch, dass diese Option innerhalb eines
+      <directive type="section" module="core">Location</directive>-Abschnitts
+      <strong>ignoriert wird</strong>.</p>
+      </note></dd>
+
+      <dt><code>Includes</code></dt>
+
+      <dd>
+      Server Side Includes sind erlaubt.</dd>
+
+      <dt><code>IncludesNOEXEC</code></dt>
+
+      <dd>Server Side Includes sind erlaubt, <code>#exec cmd</code>
+      und <code>#exec cgi</code> sind jedoch deaktiviert. Es ist aber noch
+      m&ouml;glich, CGI-Skripte aus
+      <directive>ScriptAlias</directive>-Verzeichnissen mittels
+      <code>#include virtual</code> einzubinden.</dd>
+
+      <dt><code>Indexes</code></dt>
+
+      <dd>Wenn eine URL, die auf ein Verzeichnis zeigt, in dem sich keine durch
+      <directive>DirectoryIndex</directive> definierte Indexdatei
+      (<em>z.B.</em> <code>index.html</code>) befindet, dann liefert der Server
+      eine formatierte Auflistung des Verzeichnisses zur&uuml;ck.</dd>
+
+      <dt><code>MultiViews</code></dt>
+
+      <dd>"MultiViews" sind erlaubt (siehe <a
+      href="../content-negotiation.html">Content-Negotiation</a>).</dd>
+
+      <dt><code>SymLinksIfOwnerMatch</code></dt>
+
+      <dd>Der Server folgt nur symbolischen Links, bei denen die Zieldatei
+      bzw. das Zielverzeichnis der gleichen Benutzerkennung geh&ouml;rt, wie
+      der Link.<br />
+      <strong>Achtung</strong>: diese Option wird innerhalb eines
+      <directive module="core" type="section">Location</directive>-Abschnitts
+      ignoriert.</dd>
+    </dl>
+
+    <p>Wenn mehrere <directive>Options</directive> auf ein Verzeichnis
+    angewandt werden, dann greift normalerweise die
+    spezifischste Option <transnote>Gemeint ist die zuletzt
+    ausgef&uuml;hrte Option.</transnote>. Wenn jedoch <em>allen</em> Optionen
+    der <directive>Options</directive>-Anweisung eines der Zeichen
+    <code>+</code> oder <code>-</code> vorangestellt wird, werden die Optionen
+    zusammengemischt. Jede Option mit vorangestelltem <code>+</code> wird
+    zu den momentan g&uuml;ltigen Optionen hinzugef&uuml;gt und jede Option
+    mit vorangestelltem <code>-</code> wird aus den derzeit g&uuml;ltigen
+    Optionen entfernt.</p>
+
+    <p>So wird zum Beispiel ohne die Zeichen <code>+</code> und
+    <code>-</code></p>
+
+    <example>
+      &lt;Directory /web/docs&gt;<br />
+      <indent>
+        Options Indexes FollowSymLinks<br />
+      </indent>
+      &lt;/Directory&gt;<br />
+      <br />
+      &lt;Directory /web/docs/spec&gt;<br />
+      <indent>
+        Options Includes<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p>f&uuml;r das Verzeichnis <code>/web/docs/spec</code> wird jetzt
+    lediglich <code>Includes</code> gesetzt. Wenn die zweite
+    <directive>Options</directive>-Anweisung jedoch <code>+</code>-
+    und <code>-</code>-Zeichen verwenden w&uuml;rde,</p>
+
+    <example>
+      &lt;Directory /web/docs&gt;<br />
+      <indent>
+        Options Indexes FollowSymLinks<br />
+      </indent>
+      &lt;/Directory&gt;<br />
+      <br />
+      &lt;Directory /web/docs/spec&gt;<br />
+      <indent>
+        Options +Includes -Indexes<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p>dann w&uuml;rden die Optionen <code>FollowSymLinks</code> und
+    <code>Includes</code> f&uuml;r das Verzeichnis <code>/web/docs/spec</code>
+    gesetzt.</p>
+
+    <note><title>Anmerkung</title>
+      <p>Die Verwendung von <code>-IncludesNOEXEC</code> oder
+      <code>-Includes</code> deaktiviert Server Side Includes unabh&auml;ngig
+      von der vorigen Einstellung vollst&auml;ndig.</p>
+    </note>
+
+    <p>Die Voreinstellung ist <code>All</code>, sofern keine anderen Angaben
+    gemacht wurden.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Require</name>
+<description>W&auml;hlt die authentisierten Benutzer aus, die auf eine
+Ressource zugreifen k&ouml;nnen</description>
+<syntax>Require <var>Name</var> [<var>Name</var>] ...</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Die Direktive w&auml;hlt aus, welche authentisierten Benutzer auf ein
+    Verzeichnis zugreifen d&uuml;rfen. Folgende Syntax ist erlaubt:</p>
+
+    <dl>
+      <dt><code>Require user <var>User-ID</var> [<var>User-ID</var>]
+      ...</code></dt>
+      <dd>Nur die genannten Benutzer d&uuml;rfen auf die Ressource
+      zugreifen.</dd>
+
+      <dt><code>Require group <var>Gruppenname</var> [<var>Gruppenname</var>]
+      ...</code></dt>
+      <dd>Nur Benutzer der genannten Gruppen d&uuml;rfen auf die
+      Ressource zugreifen.</dd>
+
+      <dt><code>Require valid-user</code></dt>
+      <dd>Alle g&uuml;ltigen Benutzer d&uuml;rfen auf die Ressource
+      zugreifen.</dd>
+    </dl>
+
+    <p><directive>Require</directive> muss von den Direktiven
+    <directive module="core">AuthName</directive> und <directive
+    module="core">AuthType</directive> sowie Direktiven wie
+    <directive module="mod_authn_file">AuthUserFile</directive>
+    und <directive module="mod_authz_groupfile">AuthGroupFile</directive>
+    (zur Definition von Benutzern und Gruppen) begleitet werden, um
+    korrekt zu funktionieren. Beispiel:</p>
+
+    <example>
+       AuthType Basic<br />
+       AuthName "gesch&uuml;tztes Verzeichnis"<br />
+       AuthUserFile /web/users<br />
+       AuthGroupFile /web/groups<br />
+       Require group admin
+    </example>
+
+    <p>Zugriffskontrollen, die in dieser Form angewandt werden, gelten
+    f&uuml;r <strong>alle</strong> Methoden. <strong>Dies ist normalerweise
+    gew&uuml;nscht.</strong> Wenn Sie Zugriffskontrollen nur auf bestimmte
+    Methoden anwenden m&ouml;chten, w&auml;hrend andere Methoden
+    ungesch&uuml;tzt bleiben, dann m&uuml;ssen Sie die
+    <directive>Require</directive>-Anweisung innerhalb eines
+    <directive module="core" type="section">Limit</directive>-Abschnitts
+    platzieren.</p>
+</usage>
+<seealso><directive module="core">Satisfy</directive></seealso>
+<seealso><module>mod_authz_host</module></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RLimitCPU</name>
+<description>Begrenzt den CPU-Verbrauch von Prozessen, die von
+Apache-Kindprozessen gestartet wurden</description>
+<syntax>RLimitCPU <var>Sekunden</var>|max [<var>Sekunden</var>|max]</syntax>
+<default>unbestimmt; verwendet die Voreinstellung des Systems</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
+
+<usage>
+    <p>Akzeptiert einen oder zwei Parameter. Der erste Paramater setzt eine
+    weiche Ressourcenbegrenzung f&uuml;r alle Prozesse, der zweite Parameter
+    setzt die Maximalgrenze f&uuml;r die Ressourcennutzung. Jeder der
+    Parameter kann eine Zahl oder <code>max</code> sein. <code>max</code>
+    zeigt dem Server an, dass das vom Betriebssystem erlaubte Maximum
+    verwendet werden soll. Das Anheben der maximal erlaubten Ressourcennutzung
+    erfordert, dass der Server als <code>root</code> l&auml;uft, zumindest in
+    der anf&auml;nglichen Startphase.</p>
+
+    <p>Dies wird auf Prozesse angewendet, die von Anfragen bearbeitenden
+    Apache-Kindprozessen abgespalten werden, nicht auf die
+    Apache-Kindprozesse selbst. Das beinhaltet CGI-Skripte und
+    SSI-exec-Befehle, nicht jedoch Prozesse, die vom Apache-Elternprozess
+    abgespalten werden, wie z.B. Protokollierung.</p>
+
+    <p>CPU-Ressourcenbegrenzung wird in Sekunden pro Prozess
+    ausgedr&uuml;ckt.</p>
+</usage>
+<seealso><directive module="core">RLimitMEM</directive></seealso>
+<seealso><directive module="core">RLimitNPROC</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RLimitMEM</name>
+<description>Begrenzt den Speicherverbrauch von Prozessen, die von
+Apache-Kindprozessen gestartet wurden</description>
+<syntax>RLimitMEM <var>Bytes</var>|max [<var>Bytes</var>|max]</syntax>
+<default>unbestimmt; verwendet die Voreinstellung des Systems</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
+
+<usage>
+    <p>Akzeptiert einen oder zwei Parameter. Der erste Paramater setzt eine
+    weiche Ressourcenbegrenzung f&uuml;r alle Prozesse, der zweite Parameter
+    setzt die Maximalgrenze f&uuml;r die Ressourcennutzung. Jeder der
+    Parameter kann eine Zahl oder <code>max</code> sein. <code>max</code>
+    zeigt dem Server an, dass das vom Betriebssystem erlaubte Maximum
+    verwendet werden soll. Das Anheben der maximal erlaubten Ressourcennutzung
+    erfordert, dass der Server als <code>root</code> l&auml;uft, zumindest in
+    der anf&auml;nglichen Startphase.</p>
+
+    <p>Dies wird auf Prozesse angewendet, die von Anfragen bearbeitenden
+    Apache-Kindprozessen abgespalten werden, nicht auf die
+    Apache-Kindprozesse selbst. Das beinhaltet CGI-Skripte und
+    SSI-exec-Befehle, nicht jedoch Prozesse, die vom Apache-Elternprozess
+    abgespalten werden, wie z.B. Protokollierung.</p>
+
+    <p>Die Begrenzung des Speicherverbrauchs wird in Bytes pro Prozess
+    ausgedr&uuml;ckt.</p>
+</usage>
+<seealso><directive module="core">RLimitCPU</directive></seealso>
+<seealso><directive module="core">RLimitNPROC</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RLimitNPROC</name>
+<description>Begrenzt die Anzahl der Prozesse, die von Prozessen gestartet
+werden k&ouml;nnen, der ihrerseits von Apache-Kinprozessen gestartet
+wurden</description>
+<syntax>RLimitNPROC <var>Zahl</var>|max [<var>Zahl</var>|max]</syntax>
+<default>unbestimmt; verwendet die Voreinstellung des Systems</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
+
+<usage>
+    <p>Akzeptiert einen oder zwei Parameter. Der erste Paramater setzt eine
+    weiche Ressourcenbegrenzung f&uuml;r alle Prozesse, der zweite Parameter
+    setzt die Maximalgrenze f&uuml;r die Ressourcennutzung. Jeder der
+    Parameter kann eine Zahl oder <code>max</code> sein. <code>max</code>
+    zeigt dem Server an, dass das vom Betriebssystem erlaubte Maximum
+    verwendet werden soll. Das Anheben der maximal erlaubten Ressourcennutzung
+    erfordert, dass der Server als <code>root</code> l&auml;uft, zumindest in
+    der anf&auml;nglichen Startphase.</p>
+
+    <p>Dies wird auf Prozesse angewendet, die von Anfragen bearbeitenden
+    Apache-Kindprozessen abgespalten werden, nicht auf die
+    Apache-Kindprozesse selbst. Dies beinhaltet CGI-Skripte und
+    SSI-exec-Befehle, nicht jedoch Prozesse, die vom Apache-Elternprozess
+    abgespalten werden, wie z.B. Protokollierung.</p>
+
+    <p>Prozessbegrenzungen steuern die Anzahl der Prozesse pro Benutzer.</p>
+
+    <note><title>Anmerkung</title>
+      <p>Wenn CGI-Prozesse nicht unter anderen Benutzerkennungen als der
+      User-ID des Webservers laufen, dann beschr&auml;nkt diese Direktive
+      die Anzahl der Prozesse, die der Server selbst erstellen kann.
+      Kennzeichen einer solchen Situation sind
+      <strong><code>cannot fork</code></strong>-Meldungen
+      <transnote><code>kann nicht abspalten</code></transnote> in der
+      Datei <code>error_log</code>.</p>
+    </note>
+</usage>
+<seealso><directive module="core">RLimitMEM</directive></seealso>
+<seealso><directive module="core">RLimitCPU</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Satisfy</name>
+<description>Zusammenspiel von rechnerbasierter Zugriffskontrolle und
+Benutzerauthentisierung</description>
+<syntax>Satisfy Any|All</syntax>
+<default>Satisfy All</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Verfahrensweise f&uuml;r den Zugriff, falls sowohl <directive
+    module="mod_authz_host">Allow</directive> als auch <directive
+    module="core">Require</directive> verwendet werden. Der Parameter kann
+    entweder <code>All</code> oder <code>Any</code> sein. Die Direktive ist
+    nur dann n&uuml;tzlich, wenn der Zugriff zu einem bestimmten Bereich
+    durch Benutzername/Passwort <em>und</em> Clientrechner-Adressen
+    eingeschr&auml;nkt ist. In diesem Fall verlangt die Voreinstellung
+    (<code>All</code>), dass der Client die Adressbeschr&auml;nkung passiert
+    <em>und</em> eine g&uuml;ltige Benutzerkennung und ein g&uuml;ltiges
+    Passwort &uuml;bermittelt. Mit der Auswahl <code>Any</code> wird dem
+    Client der Zugriff erlaubt, wenn er entweder die Rechner-Besch&auml;nkung
+    passiert oder einen g&uuml;ltigen Benutzernamen und ein g&uuml;ltiges
+    Passwort &uuml;bermittelt. Dies kann verwendet werden, um einen Bereich
+    mit einem Passwort zu sch&uuml;tzen, jedoch Clients von bestimmten
+    Adressen ohne Abfrage des Passwortes zuzulassen.</p>
+
+    <p>Wenn Sie beispielsweise m&ouml;chten, dass Personen aus Ihrem
+    privaten Netzwerk unbech&auml;nkten Zugriff zu Teilen Ihres
+    Webangebots haben, jedoch verlangen, dass Personen au&szlig;erhalb
+    Ihres privaten Netzwerks ein Passwort &uuml;bergeben m&uuml;ssen,
+    k&ouml;nnen Sie eine Konfiguration &auml;hnlich der folgenden
+    verwenden:</p>
+
+    <example>
+      Require valid-user<br />
+      Allow from 192.168.1<br />
+      Satisfy Any
+    </example>
+</usage>
+   <seealso><directive module="mod_authz_host">Allow</directive></seealso>
+   <seealso><directive module="core">Require</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ScriptInterpreterSource</name>
+<description>Methode zur Ermittlung des Interpreters von
+CGI-Skripten</description>
+<syntax>ScriptInterpreterSource Registry|Registry-Strict|Script</syntax>
+<default>ScriptInterpreterSource Script</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>ausschlie&szlig;lich Win32<br />
+Die Option <code>Registry-Strict</code> ist verf&uuml;gbar seit Apache
+2.0.</compatibility>
+
+<usage>
+    <p>Die Direktive wird dazu verwendet, zu steuern, wie der Apache
+    den Interpreter zur Ausf&uuml;hrung von CGI-Skripten findet. Die
+    voreingestellte Methode ist, den Interpreter zu verwenden, auf den
+    die <code>#!</code>-Zeile im Skript zeigt.</p>
+
+    <p>Die Einstellung <code>ScriptInterpreterSource Registry</code>
+    veranla&szlig;t eine Suche in der Windows-Registrierungsdatenbank und
+    verwendet die Endung der Skript-Datei (z.B. <code>.pl</code>) als
+    Suchargument.</p>
+
+    <p>Die Option <code>Registry-Strict</code>, die neu im Apache 2.0
+    ist, macht das gleiche wie <code>Registry</code>, f&uuml;hrt jedoch eine
+    strengere Suche in der Registrierungsdatenbank durch.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ServerAdmin</name>
+<description>E-Mail-Adresse, die der Server in Fehlermeldungen einf&uuml;gt,
+welche an den Client gesendet werden</description>
+<syntax>ServerAdmin <var>E-Mail-Adresse</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>ServerAdmin</directive> legt die E-Mail-Adresse fest,
+    die der Server in jede Fehlermeldung einf&uuml;gt, die er an den
+    Client zur&uuml;ckschickt.</p>
+
+    <p>Es kann sich lohnen, hierf&uuml;r eine reservierte Adresse
+    anzugeben, z.B.</p>
+
+    <example>
+      ServerAdmin www-admin@foo.example.com
+    </example>
+
+    <p>da Anwender nicht unbedingt erw&auml;hnen, dass sie vom Server
+    sprechen!</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ServerAlias</name>
+<description>Alternativer Name f&uuml;r einen Host, der verwendet wird, wenn
+Anfragen einem namensbasierten Virtual-Host zugeordnet werden</description>
+<syntax>ServerAlias <var>Hostname</var> [<var>Hostname</var>] ...</syntax>
+<contextlist><context>virtual host</context></contextlist>
+
+<usage>
+    <p>Die Direktive <directive>ServerAlias</directive> bestimmt die
+    alternativen Namen eines Hosts zur Verwendung mit <a
+    href="../vhosts/name-based.html">namensbasierten Virtual-Hosts</a>.</p>
+
+    <example>
+      &lt;VirtualHost *&gt;<br />
+      ServerName server.domain.com<br />
+      ServerAlias server server2.domain.com server2<br />
+      # ...<br />
+      &lt;/VirtualHost&gt;
+    </example>
+</usage>
+<seealso><a href="../vhosts/">Virtual-Host-Dokumentation des
+Apache</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ServerName</name>
+<description>Rechnername und Port, die der Server dazu verwendet, sich
+selbst zu identifizieren</description>
+<syntax>ServerName
+<var>voll-qualifizierter-Domainname</var>[:<var>port</var>]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Diese Direktive l&ouml;st in Version 2.0 die
+     Funktionalit&auml;t der Direktive <directive>Port</directive> aus
+     Version 1.3 ab.</compatibility>
+
+<usage>
+    <p>Die Direktive <directive>ServerName</directive> bestimmt den
+    Rechnernamen und Port, den der Server dazu verwendet, sich selbst
+    zu identifizieren. Diese werden bei der Erstellung von Umleitungs-URLs
+    ben&ouml;tigt. Wenn beispielsweise der Name der Maschine, die den Webserver
+    beherbergt, <code>simple.example.com</code> lautet, die Maschine jedoch
+    auch einen DNS-Alias <code>www.example.com</code> besitzt und Sie den
+    Webserver so identifizieren m&ouml;chten, sollten Sie die folgende
+    Anweisung verwenden:</p>
+
+    <example>
+      ServerName www.example.com:80
+    </example>
+
+    <p>Wenn kein <directive>ServerName</directive> angegeben wurde,
+    dann versucht der Server den Rechnernamen mittels eines Reverse-Lookup
+    herzuleiten. Wenn kein Post im Servernamen angegeben wurde, dann
+    verwendet der Server den Port der eingegangenen Anfrage. F&uuml;r eine
+    optimale Zuverl&auml;ssigkeit und Berechenbarkeit sollten Sie einen
+    eindeutigen Rechnernamen und Port angeben, in dem Sie die Direktive
+    <directive>ServerName</directive> verwenden.</p>
+
+    <p>Wenn Sie <a href="../vhosts/name-based.html">namensbasierte
+    Virtual-Hosts</a> verwenden, gibt <directive>ServerName</directive>
+    innerhalb eines <directive type="section"
+    module="core">VirtualHost</directive>-Abschnitts an, welcher
+    Hostname im <code>Host:</code>-Header der Anfrage auftauchen muss,
+    damit sie diesem Virtual-Host zugeordnet wird.</p>
+
+    <p>Lesen Sie bitte die Beschreibung der Direktive <directive
+    module="core">UseCanonicalName</directive> f&uuml;r Einstellungen, die
+    bestimmen, ob selbstreferenzierende URLs (z.B. vom Modul
+    <module>mod_dir</module>) auf den angegebenen Port zeigen oder auf die
+    Portnummern die in der Anfrage des Clients angegeben ist.</p>
+</usage>
+
+<seealso><a href="../dns-caveats.html">Probleme bez&uuml;glich DNS und
+Apache</a></seealso>
+<seealso><a href="../vhosts/">Virtual-Host-Dokumentation des
+    Apache</a></seealso>
+<seealso><directive module="core">UseCanonicalName</directive></seealso>
+<seealso><directive module="core">NameVirtualHost</directive></seealso>
+<seealso><directive module="core">ServerAlias</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ServerPath</name>
+<description>Veralteter URL-Pfad f&uuml;r einen namensbasierten
+Virtual-Host, auf den von einem inkompatiblen Browser zugegriffen
+wird</description>
+<syntax>ServerPath <var>URL-Pfad</var></syntax>
+<contextlist><context>virtual host</context></contextlist>
+
+<usage>
+    <p>Die Direktive <directive>ServerPath</directive> legt den
+    veralteten <transnote>Gemeint ist eigentlich "Altlast" aufgrund
+    antiquierter Clients.</transnote> URL-Pfad eines Hosts zur Verwendung mit
+    <a href="../vhosts/">namensbasierten Virtual-Hosts</a> fest.</p>
+</usage>
+<seealso><a href="../vhosts/">Virtual-Host-Dokumentation des
+Apache</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ServerRoot</name>
+<description>Basisverzeichnis der Serverinstallation</description>
+<syntax>ServerRoot <var>Verzeichnis</var></syntax>
+<default>ServerRoot /usr/local/apache</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Die Direktive <directive>ServerRoot</directive> bestimmt das
+    Verzeichnis, in dem der Server installiert ist. &Uuml;blicherweise
+    enth&auml;lt es die Unterverzeichnisse <code>conf/</code> und
+    <code>logs/</code>. Relative Pfadangaben f&uuml;r andere
+    Konfigurationsdateien werden relativ zu diesem Verzeichnis betrachtet.</p>
+
+    <example><title>Beispiel</title>
+      ServerRoot /home/httpd
+    </example>
+</usage>
+<seealso><a href="../invoking.html">Die <code>httpd</code>-Option
+    <code>-d</code></a></seealso>
+<seealso><a href="../misc/security_tips.html#serverroot">Sicherheitshinweise</a>
+    f&uuml;r Informationen, wie die Rechte auf das <directive
+    >ServerRoot</directive>-Verzeichnis richtig gesetzt werden</seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ServerSignature</name>
+<description>Konfiguriert die Fu&szlig;zeile von servergenerierten
+Dokumenten</description>
+<syntax>ServerSignature On|Off|EMail</syntax>
+<default>ServerSignature Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Die Direktive <directive>ServerSignature</directive> erm&ouml;glicht
+    die Gestaltung einer unter servergenerierten Dokumenten (z.B.
+    Fehlerdokumente, FTP-Verzeichnislisten von <module>mod_proxy</module>,
+    <module>mod_info</module>-Ausgaben, ...) angef&uuml;gten
+    Fu&szlig;zeile. Ein m&ouml;glicher Grund f&uuml;r die Aktivierung einer
+    solchen Fu&szlig;zeile ist, dass der Anwender bei einer Kette von
+    Proxy-Servern oft keine M&ouml;glichkeit hat, zu erkennen, welcher der
+    verketteten Server gegenw&auml;rtig die zur&uuml;ckgegebene Fehlermeldung
+    produziert hat.</p>
+
+    <p>Die (Vor-)Einstellung <code>Off</code> unterdr&uuml;ckt die
+    Fu&szlig;zeile (und ist damit kompatibel zum Verhalten des Apache 1.2 und
+    fr&uuml;her). Die Einstellung <code>On</code> f&uuml;gt schlicht eine
+    Zeile mit der Versionsnummer des Servers und dem Servernamen (<directive
+    module="core">ServerName</directive>) des bedienenden Virtual-Hosts an.
+    Die Einstellung <code>EMail</code> erstellt zus&auml;tzlich einen
+    "mailto:"-Verweis zum Serveradministrator (<directive
+    module="core">ServerAdmin</directive>) des referenzierten Dokuments.</p>
+
+    <p>Ab Version 2.0.44 werden die Details der angegebenen Versionsnummer des
+    Servers von der Direktive  <directive
+    module="core">ServerTokens</directive> kontrolliert.</p>
+</usage>
+<seealso><directive module="core">ServerTokens</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ServerTokens</name>
+<description>Konfiguriert den HTTP-Response-Header
+<code>Server</code></description>
+<syntax>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</syntax>
+<default>ServerTokens Full</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>die Direktive steuert, ob der Response-Header <code>Server</code>,
+    der an den Client zur&uuml;ckgesendet wird, eine Beschreibung des
+    allgemeinen Betriesbsystemtyps des Servers wie auch Informationen
+    &uuml;ber einkompilierte Module enth&auml;lt.</p>
+
+    <dl>
+      <dt><code>ServerTokens Prod[uctOnly]</code></dt>
+
+      <dd>Der Server sendet (<em>z.B.</em>): <code>Server:
+      Apache</code></dd>
+
+      <dt><code>ServerTokens Major</code></dt>
+
+      <dd>Der Server sendet (<em>z.B.</em>): <code>Server:
+      Apache/2</code></dd>
+
+      <dt><code>ServerTokens Minor</code></dt>
+
+      <dd>Der Server sendet (<em>z.B.</em>): <code>Server:
+      Apache/2.0</code></dd>
+
+      <dt><code>ServerTokens Min[imal]</code></dt>
+
+      <dd>Der Server sendet (<em>z.B.</em>): <code>Server:
+      Apache/2.0.41</code></dd>
+
+      <dt><code>ServerTokens OS</code></dt>
+
+      <dd>Der Server sendet (<em>z.B.</em>): <code>Server: Apache/2.0.41
+      (Unix)</code></dd>
+
+      <dt><code>ServerTokens Full</code> (oder nicht angegeben)</dt>
+
+      <dd>Der Server sendet (<em>z.B.</em>): <code>Server: Apache/2.0.41
+      (Unix) PHP/4.2.2 MyMod/1.2</code></dd>
+    </dl>
+
+    <p>Diese Einstellung gilt f&uuml;r den gesamten Server und kann nicht
+    auf Virtual-Host-Basis aktiviert oder deaktiviert werden.</p>
+
+    <p>Ab Version 2.0.44 steuert diese Direktive auch die Informationen, die
+    durch die Direktive <directive module="core">ServerSignature</directive>
+    angeboten werden.</p>
+</usage>
+<seealso><directive module="core">ServerSignature</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SetHandler</name>
+<description>Erzwingt die Verarbeitung aller passenden Dateien durch
+einen Handler</description>
+<syntax>SetHandler <var>Handlername</var>|None</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>Seit Apache 2.0 im Core</compatibility>
+
+<usage>
+    <p>Wenn die Direktive innerhalb einer <code>.htaccess</code>-Datei
+    oder in einem <directive type="section"
+    module="core">Directory</directive>- oder
+    <directive type="section" module="core">Location</directive>-Abschnitt
+    angegeben wird, erzwingt sie, dass alle entsprechenden Dateien von dem
+    durch <var>Handlername</var> angegebenen <a
+    href="../handler.html">Handler</a> analysiert werden. Wenn Sie
+    beispielsweise ein Verzeichnis haben, dessen Dateien unabh&auml;ngig von
+    der Endung g&auml;nzlich als Image-Maps interpretiert werden sollen,
+    k&ouml;nnen Sie folgendes in eine <code>.htaccess</code>-Datei in
+    dem Verzeichnis schreiben:</p>
+
+    <example>
+      SetHandler imap-file
+    </example>
+
+    <p>Noch ein Beispiel: wenn Sie den Server immer, wenn die URL
+    <code>http://servername/status</code> aufgerufen wird, einen
+    Statusbericht anzeigen lassen m&ouml;chten, dann k&ouml;nnen
+    Sie folgendes in die <code>httpd.conf</code> schreiben:</p>
+
+    <example>
+      &lt;Location /status&gt;<br />
+      <indent>
+        SetHandler server-status<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+</usage>
+<seealso><directive module="mod_mime">AddHandler</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SetInputFilter</name>
+<description>Bestimmt die Filter, die Client-Anfragen und POST-Eingaben
+verarbeiten</description>
+<syntax>SetInputFilter <var>Filter</var>[;<var>Filter</var>...]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Die Direktive <directive>SetInputFilter</directive> bestimmt den oder
+    die Filter, die Client-Anfragen und POST-Eingaben verarbeiten, wenn
+    sie vom Server empfangen werden. Diese gelten zus&auml;tzlich zu
+    anderweitig definierten Filtern, einschlie&szlig;lich denen der Direktive
+    <directive module="mod_mime">AddInputFilter</directive>.</p>
+
+    <p>Wenn mehr als ein Filter angegeben wird, dann m&uuml;ssen diese
+    durch Semikolon voneinander getrennt in der Reihenfolge angegeben werden,
+    in der sie die Daten verarbeiten sollen.</p>
+</usage>
+<seealso><a href="../filter.html">Filter</a>-Dokumentation</seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SetOutputFilter</name>
+<description>Bestimmt die Filter, die Antworten des Servers verarbeiten</description>
+<syntax>SetOutputFilter <var>Filter</var>[;<var>Filter</var>...]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Die Direktive <directive>SetOutputFilter</directive> bestimmt
+    die Filter, die Antworten des Servers verarbeiten, bevor sie an den
+    Client gesendet werden. Diese gelten zus&auml;tzlich zu anderweitig
+    definierten Filtern, einschlie&szlig;lich denen der Direktive
+    <directive module="mod_mime">AddOutputFilter</directive>.</p>
+
+    <p>Die folgende Konfiguration verarbeitet zum Beispiel alle Dateien
+    im Verzeichnis <code>/www/data</code> als Server Side Includes.</p>
+
+    <example>
+      &lt;Directory /www/data/&gt;<br />
+      <indent>
+        SetOutputFilter INCLUDES<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p>Wenn mehr als ein Filter angegeben wird, dann m&uuml;ssen diese
+    durch Semikolon voneinander getrennt in der Reihenfolge angegeben werden,
+    in der sie die Daten verarbeiten sollen.</p>
+</usage>
+<seealso><a href="../filter.html">Filter</a>-Dokumentation</seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>TimeOut</name>
+<description>Zeitspanne, die der Server auf verschiedene Ereignisse wartet,
+bevor er die Anfrage abbricht</description>
+<syntax>TimeOut <var>Sekunden</var></syntax>
+<default>TimeOut 300</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+		<p>Die Direktive <directive>TimeOut</directive> definiert derzeit die
+    Zeitspanne, die der Apache auf drei Dinge wartet:</p>
+
+    <ol>
+      <li>Die gesamte Zeispanne, die ben&ouml;tigt wird, um eine GET-Anfrage
+      zu empfangen.</li>
+
+      <li>Die Zeitspanne zwischen dem Empfang von TCP-Paketen einer
+      POST- oder PUT-Anfrage.</li>
+
+      <li>Die Zeitspanne zwischen ACKs bei der &Uuml;bermittlung der
+      TCP-Pakete der Antwort.</li>
+    </ol>
+
+    <p>Wir haben vor, diese Zeitspannen in Zukunft separat konfigurierbar zu
+    machen. Vor Version 1.2 war der Zeitgeber auf 1200 voreingestellt, wurde
+    dann aber auf 300 herabgesetzt, was immer noch weit mehr ist, als in den
+    meisten Situationen ben&ouml;tigt wird. Die Voreinstellung wurde nicht
+    weiter herabgesetzt, da gelegentlich noch Stellen im Code existieren
+    k&ouml;nnen, wo der Zeitgeber nicht zur&uuml;ckgesetzt wird, wenn ein
+    Paket verschickt wird.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>UseCanonicalName</name>
+<description>Bestimmt, wie der Server seinen eigenen Namen und Port
+ermittelt</description>
+<syntax>UseCanonicalName On|Off|DNS</syntax>
+<default>UseCanonicalName On</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+
+<usage>
+    <p>In vielen Situationen muss der Apache eine
+    <em>selbstreferenzierende</em> URL -- d.h. eine URL, die auf den selben
+    Server zur&uuml;ck verweist -- zusammenbauen. Bei <code>UseCanonicalName
+    On</code> verwendet der Apache den Hostnamen und Port, der in der
+    <directive module="core">ServerName</directive>-Anweisung angegeben ist,
+    um den kanonischen Namen des Servers zu erstellen. Dieser Name wird in
+    allen selbstreferenzierenden URLs sowie in CGI-Skripten f&uuml;r die
+    Werte von <code>SERVER_NAME</code> und <code>SERVER_PORT</code>
+    verwendet.</p>
+
+    <p>Bei <code>UseCanonicalName Off</code> bildet der Apache
+    selbstreferenzierende URLs, indem er den vom Client &uuml;bermittelten
+    Hostnamen und Port verwendet, sofern diese vorhanden sind (andernfalls
+    wird der kanonische Name, wie oben beschrieben, benutzt). Die Werte
+    sind die gleichen, die zur Anwendung von <a
+    href="../vhosts/name-based.html">namensbasierten Virtual-Hosts</a>
+    verwendet werden, und sie sind mit den gleichen Clients verf&uuml;gbar
+    <transnote>, die auch in der Lage sind, auf namensbasierte Virtual-Hosts
+    zuzugreifen, d.h. einen <code>Host</code>-Header mitschicken</transnote>.
+    Die CGI-Variablen <code>SERVER_NAME</code> und <code>SERVER_PORT</code>
+    werden ebenfalls aus den vom Client angeboten Werten erstellt.</p>
+
+    <p>Ein Intranet-Server, auf den Anwender mit kurzen Namen wie
+    <code>www</code> zugreifen, ist ein Beispiel, wo dies sinnvoll sein kann.
+    Sie werden bemerken, dass der Apache den Benutzer auf
+    <code>http://www.domain.com/splat/</code> umleitet, wenn dieser einen
+    Kurznamen und eine URL, die einem Verzeichnis entspricht, ohne
+    abschlie&szlig;enden Schr&auml;gstrich eingibt, wie z.B.
+    <code>http://www/splat</code>. Wenn Sie Authentisierung aktiviert haben,
+    bewirkt dies, dass der Benutzer sich zweimal identifizieren muss
+    (einmal f&uuml;r <code>www</code> und noch einmal f&uuml;r
+    <code>www.domain.com</code> -- lesen Sie f&uuml;r weitere Informationen <a
+    href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">die
+    FAQ zu diesem Thema</a>). Wenn <directive>UseCanonicalName</directive>
+    jedoch auf <code>Off</code> gesetzt ist, denn wird der Apache zu
+    <code>http://www/splat/</code> umleiten.</p>
+
+    <p>Es existiert noch eine dritte Option, <code>UseCanonicalName DNS</code>,
+    die f&uuml;r den Betrieb von IP-basierten Massen-Virtual-Hosts gedacht ist,
+    um antiquierte Clients zu unterst&uuml;tzen, die keinen
+    <code>Host:</code>-Header bereit stellen. Um selbstreferenzierende
+    URLs zu ermitteln, f&uuml;hrt der Apache bei dieser Option ein
+    Reverse-DNS-Lookup auf die IP-Adresse des Servers aus, zu der der Client
+    Verbindung aufgenommen hat.</p>
+
+    <note type="warning"><title>Warnung</title>
+      <p>Wenn CGI-Skripte Vermutungen aufgrund des Wertes von
+      <code>SERVER_NAME</code> anstellen, k&ouml;nnen sie durch diese
+      Option fehlschlagen. Clients steht es im Wesentlichen frei, einen Wert
+      f&uuml;r den Hostnamen anzugeben, wie er will. Wenn das
+      CGI-Skript <code>SERVER_NAME</code> jedoch lediglich dazu verwendet,
+      selbstreferenzierende URLs zu erstellen, sollte das gerade noch
+      in Ordnung sein.</p>
+    </note>
+</usage>
+<seealso><directive module="core">ServerName</directive></seealso>
+<seealso><directive module="mpm_common">Listen</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>VirtualHost</name>
+<description>Enth&auml;lt Direktiven, die nur auf bestimmte Hostnamen oder
+IP-Adressen angewendet werden</description>
+<syntax>&lt;VirtualHost
+    <var>Adresse</var>[:<var>Port</var>] [<var>Adresse</var>[:<var>Port</var>]]
+    ...&gt; ... &lt;/VirtualHost&gt;</syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p><directive type="section">VirtualHost</directive> und
+    <code>&lt;/VirtualHost&gt;</code> werden dazu verwendet, eine Gruppe
+    von Direktiven zusammenzufassen, die nur auf einen bestimmten Virtual-Host
+    angewendet werden. Jede Direktive, die im Virtual-Host-Kontext
+    zul&auml;ssig ist, kann verwendet werden. Wenn der Server eine Anfrage
+    f&uuml;r ein bestimmtes Dokument eines bestimmten Virtual-Hosts
+    empf&auml;ngt, dann benutzt er die im
+    <directive type="section">VirtualHost</directive>-Container enthaltenen
+    Konfigurationsanweisungen. <var>Adresse</var> kann sein:</p>
+
+    <ul>
+      <li>Die IP-Adresse des Virtual-Hosts.</li>
+
+      <li>Ein voll qualifizierter Domainname f&uuml;r die IP-Adresse des
+      Virtual-Hosts.</li>
+
+      <li>Das Zeichen <code>*</code>, welches nur in Kombination mit
+      <code>NameVirtualHost *</code> verwendet wird, um allen IP-Adressen
+      zu entsprechen.</li>
+
+      <li>Die Zeichenkette <code>_default_</code>, die nur mit IP-basierten
+      Virtual-Hosts verwendet wird, um nicht zugewiesene IP-Adressen
+      aufzufangen.</li>
+    </ul>
+
+    <example><title>Beispiel</title>
+      &lt;VirtualHost 10.1.2.3&gt;<br />
+      <indent>
+        ServerAdmin webmaster@host.foo.com<br />
+        DocumentRoot /www/docs/host.foo.com<br />
+        ServerName host.foo.com<br />
+        ErrorLog logs/host.foo.com-error_log<br />
+        TransferLog logs/host.foo.com-access_log<br />
+      </indent>
+      &lt;/VirtualHost&gt;
+    </example>
+
+    <p>IPv6-Adressen m&uuml;ssen in eckigen Klammern angegeben werden, da die
+    optionale Portnummer sonst nicht erkannt werden kann. Hier ein
+    IPv6-Beispiel:</p>
+
+    <example>
+      &lt;VirtualHost [fe80::a00:20ff:fea7:ccea]&gt;<br />
+      <indent>
+        ServerAdmin webmaster@host.example.com<br />
+        DocumentRoot /www/docs/host.example.com<br />
+        ServerName host.example.com<br />
+        ErrorLog logs/host.example.com-error_log<br />
+        TransferLog logs/host.example.com-access_log<br />
+      </indent>
+      &lt;/VirtualHost&gt;
+    </example>
+
+    <p>Jeder Virtual-Host muss einer anderen IP-Adresse, einem anderen Port
+    oder einem anderen Hostnamen f&uuml;r den Server entsprechen. Im ersten
+    Fall muss die Servermaschine so eingerichtet sein, dass sie IP-Pakete
+    f&uuml;r mehrere Adressen akzeptiert. (Wenn der Rechner nicht mehrere
+    Netzwerkkarten besitzt, kann dies mit dem Befehl <code>ifconfig
+    alias</code> durchgef&uuml;hrt werden -- sofern Ihr Betriebssystem das
+    unterst&uuml;tzt).</p>
+
+    <note><title>Anmerkung</title>
+      <p>Die Verwendung von <directive type="section">VirtualHost</directive>
+      beeinflusst <strong>nicht</strong>, an welchen Adressen der Apache
+      lauscht. Sie m&uuml;ssen mit <directive
+      module="mpm_common">Listen</directive> sicherstellen, dass der Apache
+      an der richtigen Adresse lauscht.</p>
+    </note>
+
+    <p>Bei der Verwendung IP-basierter Virtual-Hosts kann der spezielle
+    Name <code>_default_</code> benutzt werden. In diesem Fall weist
+    der Apache jede IP-Adresse diesem Virtual-Host zu, die nicht explizit in
+    einem anderen Virtual-Host angegeben ist. Falls kein Virtual-Host
+    <code>_default_</code> angegeben ist, wird die "Hauptserver"-Konfiguration,
+    die aus allen Definitionen au&szlig;erhalb der Virtual-Host-Abschnitte
+    besteht, f&uuml;r nicht passende IPs verwendet. (Beachten Sie jedoch,
+    dass eine IP-Adressen die zu einer <directive
+    module="core">NameVirtualHost</directive>-Anweisung passt, weder den
+    "hauptserver" noch den <code>_default_</code>-Virtual-Host verwendet.
+    Lesen Sie f&uuml;r weitere Details die Dokumentation zu <a
+    href="../vhosts/name-based.html">namensbasierten Virtual-Hosts</a>.)</p>
+
+    <p>Sie k&ouml;nnen einen speziellen <code>:Port</code> angeben,
+    um den entsprechenden Port zu wechseln. Falls nicht angegeben, wird
+    er auf den gleichen Port voreingestellt, wie die letzte
+    <directive module="mpm_common">Listen</directive>-Anweisung des
+    Hauptservers. Sie k&ouml;nnen auch <code>:*</code> angeben, um alle
+    Ports dieser Adresse zu akzeptieren. (Dies wird zusammen mit
+    <code>_default_</code> empfohlen.)</p>
+
+    <note type="warning"><title>Sicherheit</title>
+      <p>Lesen Sie das Dokument <a
+      href="../misc/security_tips.html">Sicherheitshinweise</a> f&uuml;r
+      Details, warum Ihre Sicherheit gef&auml;hrdet sein kann, wenn das
+      Verzeichnis, in dem Protokolldateien gespeichert werden, f&uuml;r
+      jemanden anderes als den Benutzer beschreibbar ist, der den Server
+      gestartet hat.</p>
+    </note>
+</usage>
+<seealso><a href="../vhosts/">Virtual-Host-Dokumentation des
+    Apache</a></seealso>
+<seealso><a href="../dns-caveats.html">Probleme bez&uuml;glich DNS und
+    Apache</a></seealso>
+<seealso><a href="../bind.html">Bestimmen, welche Adressen und Ports
+    der Apache verwendet</a></seealso>
+<seealso><a href="../sections.html">Wie die Abschnitte &lt;Directory&gt;,
+    &lt;Location&gt; und &lt;Files&gt; arbeiten</a> f&uuml;r eine
+    Erl&auml;uterung, wie diese verschiedenen Abschnitte miteinander
+    kombiniert werden, wenn eine Anfrage empfangen wird</seealso>
+</directivesynopsis>
+
+</modulesynopsis>
