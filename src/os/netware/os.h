@@ -136,6 +136,9 @@ DIR *os_readdir (DIR *dirP);
 void AMCSocketCleanup(void);
 void clean_parent_exit(int code);
 
+#ifdef __GNUC__
+static
+#endif
 inline int ap_os_is_path_absolute(const char *file)
 {
     char *s = strstr (file, "://");
