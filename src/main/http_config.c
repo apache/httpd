@@ -698,6 +698,7 @@ void ap_setup_prelinked_modules()
         sizeof(module *)*(total_modules+DYNAMIC_MODULE_LIMIT+1));
     if (ap_loaded_modules == NULL) {
 	fprintf(stderr, "Ouch!  Out of memory in ap_setup_prelinked_modules()!\n");
+	exit(1);
     }
     for (m = ap_preloaded_modules, m2 = ap_loaded_modules; *m != NULL; )
         *m2++ = *m++;
