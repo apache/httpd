@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/24 17:03:21 $]
+Last modified at [$Date: 2003/05/01 11:36:05 $]
 
 Release:
 
@@ -186,8 +186,12 @@ PATCHES TO PORT FROM 2.1
       See MessageID: <5.2.0.9.2.20030405165151.01f1fe48@pop3.rowe-clan.net>
       for a complete patch rollup of this and the two following patches.
       +1: wrowe, jim
-      +1 (concept): trawick (willing to review in more detail/test if
-                    I become the potential 3rd vote)
+      +1 (concept): trawick (working with this as time allows; seeing
+         warnings in our code on RH 8 with OpenSSL 0.9.6b; I expect
+         that overall we're better off and need to commit this and
+         then tweak later with smaller, easier-to-review changes :) 
+         I'll update my vote as soon as I give up trying to find 
+         regression)
 
     * mod_ssl compile failure (or maybe warning, depending on
       compiler) with 0.9.7a and later
@@ -211,6 +215,26 @@ PATCHES TO PORT FROM 2.1
       (trawick volunteers to regenerate/commit/site-update the html
       corresponding to mpm_common.xml if that isn't something you're
       comfortable with doing)
+
+    * By default, use the same CC and CPP with which APR was built.
+      The user can override with CC and CPP environment variables.
+      configure.in              r1.249
+      +1: trawick
+
+    * Fix a problem that caused httpd to be linked with incorrect flags
+      on some platforms when mod_so was enabled by default, breaking 
+      DSOs on AIX.  PR 19012
+      This was new breakage with 2.0.45 that has bit at least a 
+      handful of vocal people, but there is an easy work-around 
+      (explicitly add --enable-so).
+      modules/mappers/config9.m4 r1.16
+      +1: trawick
+
+    * Fix ap_construct_url() so that it surrounds IPv6 literal address
+      strings with [].  This fixes certain types of redirection.
+      PR 19207.
+      server/core.c r1.232
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
