@@ -203,7 +203,6 @@ typedef struct {
 
 int ap_proxy_connect_handler(request_rec *r, char *url,
 			  const char *proxyhost, int proxyport);
-apr_status_t ap_proxy_null_filter(ap_filter_t *f, apr_bucket_brigade *bb);
 
 /* proxy_ftp.c */
 
