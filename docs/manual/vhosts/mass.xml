@@ -299,7 +299,7 @@ VirtualScriptAliasIP  /www/hosts/%0/cgi-bin<br />
     <code>mod_rewrite</code> runs before the other URI translation
     modules (<code>mod_alias</code> etc.) so if they are used then
     <code>mod_rewrite</code> must be configured to accommodate
-    them. Also, mome magic must be performed to do a
+    them. Also, some magic must be performed to do a
     per-dynamic-virtual-host equivalent of
     <code>ScriptAlias</code>.</p>
 
