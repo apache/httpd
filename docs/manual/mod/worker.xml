@@ -18,10 +18,11 @@
     keeping multiple processes available, each with many threads.</p>
 
     <p>The most important directives used to control this MPM are
-    <directive module="mpm_common">ThreadsPerChild</directive> and
-    <directive module="mpm_common">MaxClients</directive>.  By multiplying
-    together the value of these directives you define the total number
-    of simultaneous connections that the server can handle.</p>
+    <directive module="mpm_common">ThreadsPerChild</directive>, which
+    controls the number of threads deployed by each child process and
+    <directive module="mpm_common">MaxClients</directive>, which
+    controls the maximum total number of threads that may be
+    launched.</p>
 
 </summary>
 <seealso><a href="../bind.html">Setting which addresses and

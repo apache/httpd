@@ -15,10 +15,11 @@
     keeping multiple processes available, each with many threads.</p>
 
     <p>The most important directives used to control this MPM are
-    <a href="../mod/mpm_common.html#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> and
-    <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a>.  By multiplying
-    together the value of these directives you define the total number
-    of simultaneous connections that the server can handle.</p>
+    <a href="../mod/mpm_common.html#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a>, which
+    controls the number of threads deployed by each child process and
+    <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a>, which
+    controls the maximum total number of threads that may be
+    launched.</p>
 
 <h2>Directives</h2><ul><li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li><li><a href="mpm_common.html#group">Group</a></li><li><a href="mpm_common.html#listen">Listen</a></li><li><a href="mpm_common.html#listenbacklog">ListenBacklog</a></li><li><a href="mpm_common.html#lockfile">LockFile</a></li><li><a href="mpm_common.html#maxclients">MaxClients</a></li><li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li><li><a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li><li><a href="mpm_common.html#pidfile">PidFile</a></li><li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li><li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li><li><a href="mpm_common.html#serverlimit">ServerLimit</a></li><li><a href="mpm_common.html#startservers">StartServers</a></li><li><a href="mpm_common.html#threadlimit">ThreadLimit</a></li><li><a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li><li><a href="mpm_common.html#user">User</a></li></ul><p><strong>See also </strong></p><ul><li><a href="../bind.html">Setting which addresses and
     ports Apache uses</a></li></ul><h2>How it Works</h2>
