@@ -72,6 +72,13 @@ document, or in the <CODE>src/CHANGES</CODE> file.
 <H3>Run-Time Configuration Changes</H3>
 
 <UL>
+  <LI>There have been numerous changes to the default config files.  
+    Ensure that you compare your existing configuration files with the
+    new ones to ensure there aren't any undesired differences.  In
+    particular, the current config files apply different 
+    <A HREF="mod/core.html#options">Options</A> and 
+    <A HREF="mod/core.html#allowoverride">AllowOverride</A> settings to
+    various directories.
   <LI>As of 1.3.2, <A HREF="mod/mod_expires.html"><CODE>mod_expires</CODE></A>
     will add Expires headers to content that does not come from a file 
     on disk, unless you are using a modification time based setting.
@@ -110,7 +117,7 @@ document, or in the <CODE>src/CHANGES</CODE> file.
     "<SAMP>&lt;Limit&nbsp;Get&nbsp;post&gt;</SAMP>" in your configuration
     files, you need to correct them to use uppercase names.
     <P>
-    Unrecognised method names in the server configuration files will
+    Unrecognized method names in the server configuration files will
     result in the server logging an error message and failing to start.
     In <SAMP>.htaccess</SAMP> files, unknown methods will cause the
     server to log an error to its error log and return an 'Internal
@@ -180,7 +187,7 @@ document, or in the <CODE>src/CHANGES</CODE> file.
    
   <LI>&lt;Files&gt; sections previously could take a full pathname, and
      were matched against the full pathnames.  This had some
-     inconsistancies, and was removed.  To emulate this older behaviour
+     inconsistencies, and was removed.  To emulate this older behaviour
      use a &lt;Files&gt; section nested inside a &lt;Directory&gt;
      section.
 
