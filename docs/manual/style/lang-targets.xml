@@ -24,7 +24,6 @@
 <target description="- builds all HTML files and nroff man pages" name="all" depends="de, en, es, fr, ja, ko, ru"/>
 <target description="- builds all zip download packages" name="zip-all" depends="zip-de, zip-en, zip-es, zip-fr, zip-ja, zip-ko, zip-ru"/>
 <target description="- builds all war download packages" name="war-all" depends="war-de, war-en, war-es, war-fr, war-ja, war-ko, war-ru"/>
-<target description="- builds all maf download packages" name="maf-all" depends="maf-de, maf-en, maf-es, maf-fr, maf-ja, maf-ko, maf-ru"/>
 
 <!-- German                                                               -->
 <!-- ==================================================================== -->
@@ -39,9 +38,6 @@
 </target>
 <target description="- builds the German Konqueror Web Archive" name="war-de">
     <war.generic lang="de"/>
-</target>
-<target description="- builds the German Mozilla Web Archive" name="maf-de">
-    <maf.generic lang="de"/>
 </target>
 <target description="- builds the German CHM file" name="chm-de">
     <chm.generic lang="de"/>
@@ -61,9 +57,6 @@
 </target>
 <target description="- builds the English Konqueror Web Archive" name="war-en">
     <war.generic lang="en"/>
-</target>
-<target description="- builds the English Mozilla Web Archive" name="maf-en">
-    <maf.generic lang="en"/>
 </target>
 <target description="- builds the English CHM file" name="chm-en">
     <chm.generic lang="en"/>
@@ -89,9 +82,6 @@
 <target description="- builds the Spanish Konqueror Web Archive" name="war-es">
     <war.generic lang="es"/>
 </target>
-<target description="- builds the Spanish Mozilla Web Archive" name="maf-es">
-    <maf.generic lang="es"/>
-</target>
 <target description="- builds the Spanish CHM file" name="chm-es">
     <chm.generic lang="es"/>
 </target>
@@ -110,9 +100,6 @@
 <target description="- builds the French Konqueror Web Archive" name="war-fr">
     <war.generic lang="fr"/>
 </target>
-<target description="- builds the French Mozilla Web Archive" name="maf-fr">
-    <maf.generic lang="fr"/>
-</target>
 
 <!-- Japanese                                                             -->
 <!-- ==================================================================== -->
@@ -127,9 +114,6 @@
 </target>
 <target description="- builds the Japanese Konqueror Web Archive" name="war-ja">
     <war.generic lang="ja"/>
-</target>
-<target description="- builds the Japanese Mozilla Web Archive" name="maf-ja">
-    <maf.generic lang="ja"/>
 </target>
 <target description="- builds the Japanese CHM file" name="chm-ja">
     <chm.generic lang="ja"/>
@@ -149,9 +133,6 @@
 <target description="- builds the Korean Konqueror Web Archive" name="war-ko">
     <war.generic lang="ko"/>
 </target>
-<target description="- builds the Korean Mozilla Web Archive" name="maf-ko">
-    <maf.generic lang="ko"/>
-</target>
 <target description="- builds the Korean CHM file" name="chm-ko">
     <chm.generic lang="ko"/>
 </target>
@@ -169,9 +150,6 @@
 </target>
 <target description="- builds the Russian Konqueror Web Archive" name="war-ru">
     <war.generic lang="ru"/>
-</target>
-<target description="- builds the Russian Mozilla Web Archive" name="maf-ru">
-    <maf.generic lang="ru"/>
 </target>
 
 <!-- XML validation.                                                      -->
