@@ -301,7 +301,6 @@ typedef struct {
     ap_input_mode_t mode;
     apr_read_type_e block;
     apr_bucket_brigade *bb;
-    apr_bucket *bucket;
     char_buffer_t cbuf;
 } BIO_bucket_in_t;
 
@@ -352,11 +351,86 @@ static int char_buffer_write(char_buffer_t *buffer, char *in, int inl)
  */
 #define BIO_bucket_in_ptr(bio) (BIO_bucket_in_t *)bio->ptr
 
+static apr_status_t brigade_consume(apr_bucket_brigade *bb,
+                                    apr_read_type_e block,
+                                    char *c, apr_size_t *len)
+{
+    apr_size_t actual = 0;
+ 
+    while (!APR_BRIGADE_EMPTY(bb)) {
+        apr_bucket *b = APR_BRIGADE_FIRST(bb);
+        const char *str;
+        apr_status_t status;
+        apr_size_t str_len;
+        apr_size_t consume;
+
+        if (APR_BUCKET_IS_EOS(b)) {
+            *len = 0;
+            return APR_EOF;
+        }
+
+        status = apr_bucket_read(b, &str, &str_len, block);
+        
+        if (status != APR_SUCCESS) {
+            if (status == APR_EOF) {
+                /* This stream bucket was consumed */
+                APR_BUCKET_REMOVE(b);
+                apr_bucket_destroy(b);
+                continue;
+            }
+
+            *len = actual;
+            return status;
+        }
+
+        if (str_len > 0) {
+            /* Do not block once some data has been consumed */
+            block = APR_NONBLOCK_READ;
+
+            /* Assure we don't overflow. */
+            consume = (str_len + actual > *len) ? *len - actual : str_len;
+
+            memcpy(c, str, consume);
+
+            c += consume;
+            actual += consume;
+        }
+
+        if (b->start >= 0) {
+            if (consume >= b->length) {
+                /* This physical bucket was consumed */
+                APR_BUCKET_REMOVE(b);
+                apr_bucket_destroy(b);
+            }
+            else {
+                /* Only part of this physical bucket was consumed */
+                b->start += consume;
+                b->length -= consume;
+            }
+        }
+
+        /* This could probably be actual == *len, but be safe from stray
+         * photons. */
+        if (actual >= *len) {
+            break;
+        }
+    }
+
+    *len = actual;
+    return APR_SUCCESS;
+}
+
 static int bio_bucket_in_read(BIO *bio, char *in, int inl)
 {
     BIO_bucket_in_t *inbio = BIO_bucket_in_ptr(bio);
+    apr_read_type_e block = inbio->block;
     SSLConnRec *sslconn = myConnConfig(inbio->f->c);
-    int len = 0;
+
+    inbio->rc = APR_SUCCESS;
+
+    /* OpenSSL catches this case, so should we. */
+    if (!in)
+        return 0;
 
     /* XXX: flush here only required for SSLv2;
      * OpenSSL calls BIO_flush() at the appropriate times for
@@ -366,92 +440,63 @@ static int bio_bucket_in_read(BIO *bio, char *in, int inl)
         BIO_bucket_flush(inbio->wbio);
     }
 
-    inbio->rc = APR_SUCCESS;
-    
-    /* first use data already read from socket if any */
-    if ((len = char_buffer_read(&inbio->cbuf, in, inl))) {
-        if ((len <= inl) || inbio->mode == AP_MODE_GETLINE) {
-            return len;
-        }
-        inl -= len;
+    BIO_clear_retry_flags(bio);
+
+    if (!inbio->bb) {
+        inbio->rc = APR_EOF;
+        return -1;
     }
 
-    while (1) {
-        const char *buf;
-        apr_size_t buf_len = 0;
+    if (APR_BRIGADE_EMPTY(inbio->bb)) {
 
-        if (inbio->bucket) {
-            /* all of the data in this bucket has been read,
-             * so we can delete it now.
-             */
-            apr_bucket_delete(inbio->bucket);
-            inbio->bucket = NULL;
+        inbio->rc = ap_get_brigade(inbio->f->next, inbio->bb,
+                                   AP_MODE_READBYTES, block, 
+                                   inl);
+
+        /* Not a problem, there was simply no data ready yet.
+         */
+        if (APR_STATUS_IS_EAGAIN(inbio->rc) || APR_STATUS_IS_EINTR(inbio->rc)
+               || (inbio->rc == APR_SUCCESS && APR_BRIGADE_EMPTY(inbio->bb))) {
+            BIO_set_retry_read(bio);
+            return 0;
         }
-
-        if (APR_BRIGADE_EMPTY(inbio->bb)) {
-            /* We will always call with READBYTES even if the user wants
-             * GETLINE.
-             */
-            inbio->rc = ap_get_brigade(inbio->f->next, inbio->bb,
-                                       AP_MODE_READBYTES, inbio->block, 
-                                       inl);
-
-            if ((inbio->rc != APR_SUCCESS) || APR_BRIGADE_EMPTY(inbio->bb))
-            {
-                break;
-            }
-        }
-
-        inbio->bucket = APR_BRIGADE_FIRST(inbio->bb);
-
-        inbio->rc = apr_bucket_read(inbio->bucket,
-                                    &buf, &buf_len, inbio->block);
 
         if (inbio->rc != APR_SUCCESS) {
-            apr_bucket_delete(inbio->bucket);
-            inbio->bucket = NULL;
-            return len;
-        }
-
-        if (buf_len) {
-            /* Protected against len > MAX_INT 
-             */
-            if ((len + (int)buf_len) >= inl || (int)buf_len < 0) {
-                /* we have enough to fill the buffer.
-                 * append if we have already written to the buffer.
-                 */
-                int nibble = inl - len;
-                char *value = (char *)buf+nibble;
-
-                int length = buf_len - nibble;
-                memcpy(in + len, buf, nibble);
-
-                char_buffer_write(&inbio->cbuf, value, length);
-                len += nibble;
-
-                break;
-            }
-            else {
-                /* not enough data,
-                 * save what we have and try to read more.
-                 */
-                memcpy(in + len, buf, buf_len);
-                len += buf_len;
-            }
-        }
-
-        if (inbio->mode == AP_MODE_GETLINE) {
-            /* only read from the socket once in getline mode.
-             * since callers buffer size is likely much larger than
-             * the request headers.  caller can always come back for more
-             * if first read didn't get all the headers.
-             */
-            break;
+            /* Unexpected errors discard the brigade */
+            apr_brigade_cleanup(inbio->bb);
+            inbio->bb = NULL;
+            return -1;
         }
     }
 
-    return len;
+    inbio->rc = brigade_consume(inbio->bb, block, in, &inl);
+
+    if (inbio->rc == APR_SUCCESS) {
+        return inl;
+    }
+
+    if (APR_STATUS_IS_EAGAIN(inbio->rc) 
+            || APR_STATUS_IS_EINTR(inbio->rc)) {
+        BIO_set_retry_read(bio);
+        return inl;
+    }
+        
+    /* Unexpected errors and APR_EOF clean out the brigade.
+     * Subsequent calls will return APR_EOF.
+     */
+    apr_brigade_cleanup(inbio->bb);
+    inbio->bb = NULL;
+
+    if ((inbio->rc == APR_EOF) && inl) {
+        /* Provide the results of this read pass,
+         * without resetting the BIO retry_read flag
+         */
+        return inl;
+    }
+
+    return -1;
 }
+
 
 static BIO_METHOD bio_bucket_in_method = {
     BIO_TYPE_MEM,
@@ -474,42 +519,6 @@ static BIO_METHOD *BIO_s_in_bucket(void)
 }
 
 static const char ssl_io_filter[] = "SSL/TLS Filter";
-
-static int ssl_io_hook_read(SSL *ssl, char *buf, int len)
-{
-    int rc;
-
-    if (ssl == NULL) {
-        return -1;
-    }
-
-    rc = SSL_read(ssl, buf, len);
-
-    if (rc <= 0) {
-        int ssl_err = SSL_get_error(ssl, rc);
-
-        if (ssl_err == SSL_ERROR_WANT_READ) {
-            /*
-             * Simulate an EINTR in case OpenSSL wants to read more.
-             * (This is usually the case when the client forces an SSL
-             * renegotation which is handled implicitly by OpenSSL.)
-             */
-            errno = EINTR;
-            rc = 0; /* non fatal error */
-        }
-        else if (ssl_err == SSL_ERROR_SSL) {
-            /*
-             * Log SSL errors
-             */
-            conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, c->base_server,
-                    "SSL error on reading data");
-            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
-        }
-    }
-
-    return rc;
-}
 
 static int ssl_io_hook_write(SSL *ssl, unsigned char *buf, int len)
 {
@@ -640,11 +649,6 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
     return status;
 }
 
-/*
- * ctx->cbuf is leftover plaintext from ssl_io_input_getline,
- * use what we have there first if any,
- * then go for more by calling ssl_io_hook_read.
- */
 static apr_status_t ssl_io_input_read(ssl_io_input_ctx_t *ctx,
                                       char *buf,
                                       apr_size_t *len)
@@ -668,26 +672,75 @@ static apr_status_t ssl_io_input_read(ssl_io_input_ctx_t *ctx,
         }
     }
 
-    rc = ssl_io_hook_read(ctx->frec->pssl, buf + bytes, wanted - bytes);
+    while (1) {
 
-    if (rc > 0) {
-        *len += rc;
-        if (ctx->inbio.mode == AP_MODE_SPECULATIVE) {
-            char_buffer_write(&ctx->cbuf, buf, rc);
+        /* SSL_read may not read because we haven't taken enough data
+         * from the stack.  This is where we want to consider all of
+         * the blocking and SPECULATIVE semantics
+         */
+        rc = SSL_read(ctx->frec->pssl, buf + bytes, wanted - bytes);
+
+        if (rc > 0) {
+            *len += rc;
+            if (ctx->inbio.mode == AP_MODE_SPECULATIVE) {
+                char_buffer_write(&ctx->cbuf, buf, rc);
+            }
+            return ctx->inbio.rc;
+        }
+        else if (rc == 0) {
+            /* If EAGAIN, we will loop given a blocking read,
+             * otherwise consider ourselves at EOF.
+             */
+            if (APR_STATUS_IS_EAGAIN(ctx->inbio.rc)
+                    || APR_STATUS_IS_EINTR(ctx->inbio.rc)) {
+                if (ctx->inbio.block == APR_NONBLOCK_READ) {
+                    break;
+                }
+            }
+            else {
+                ctx->inbio.rc = APR_EOF;
+                break;
+            }
+        }
+        else /* (rc < 0) */ {
+            int ssl_err = SSL_get_error(ctx->frec->pssl, rc);
+
+            if (ssl_err == SSL_ERROR_WANT_READ) {
+                /*
+                 * If OpenSSL wants to read more, and we were nonblocking,
+                 * report as an EAGAIN.  Otherwise loop, pulling more
+                 * data from network filter.
+                 *
+                 * (This is usually the case when the client forces an SSL
+                 * renegotation which is handled implicitly by OpenSSL.)
+                 */
+                if (ctx->inbio.block == APR_NONBLOCK_READ) {
+                    ctx->inbio.rc = APR_EAGAIN;
+                    break; /* non fatal error */
+                }
+            }
+            if (ssl_err == SSL_ERROR_SYSCALL) {
+                conn_rec *c = (conn_rec *)SSL_get_app_data(ctx->frec->pssl);
+                ap_log_error(APLOG_MARK, APLOG_ERR, ctx->inbio.rc, c->base_server,
+                            "SSL filter error reading data");
+                break;
+            }
+            else if (ssl_err == SSL_ERROR_SSL) {
+                /*
+                 * Log SSL errors and any unexpected conditions.
+                 */
+                conn_rec *c = (conn_rec *)SSL_get_app_data(ctx->frec->pssl);
+                ap_log_error(APLOG_MARK, APLOG_ERR, ctx->inbio.rc, c->base_server,
+                            "SSL library error reading data");
+                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
+
+                if (ctx->inbio.rc == APR_SUCCESS) {
+                    ctx->inbio.rc = APR_EGENERAL;
+                }
+                break;
+            }
         }
     }
-    else if ((rc == 0) && (errno != EINTR)) {
-        /* something other than SSL_ERROR_WANT_READ */
-        return APR_EOF;
-    }
-    else if ((rc == -1) && (ctx->inbio.rc == APR_SUCCESS)) {
-        /*
-         * bucket read from socket was successful,
-         * but there was an error within the ssl runtime.
-         */
-        return APR_EGENERAL;
-    }
-
     return ctx->inbio.rc;
 }
 
@@ -745,13 +798,11 @@ static apr_status_t ssl_io_input_getline(ssl_io_input_ctx_t *ctx,
  * we use a flag in the conn_rec->conn_vector now.  The fake request just
  * gets the request back to the Apache core so that a response can be sent.
  *
- * We should probably use a 0.9 request, but the BIO bucket code is calling
- * socket_bucket_read one extra time with all 0.9 requests from the client.
- * Until that is resolved, continue to use a 1.0 request, just like we
- * always have.
+ * To avoid calling back for more data from the socket, use an HTTP/0.9
+ * request, and tack on an EOS bucket.
  */
 #define HTTP_ON_HTTPS_PORT \
-    "GET / HTTP/1.0"
+    "GET /" CRLF
 
 #define HTTP_ON_HTTPS_PORT_BUCKET(alloc) \
     apr_bucket_immortal_create(HTTP_ON_HTTPS_PORT, \
@@ -792,6 +843,8 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
         return status;
     }
 
+    APR_BRIGADE_INSERT_TAIL(bb, bucket);
+    bucket = apr_bucket_eos_create(f->c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, bucket);
 
     return APR_SUCCESS;
@@ -887,7 +940,6 @@ static void ssl_io_input_add_filter(SSLFilterRec *frec, conn_rec *c,
     ctx->inbio.wbio = frec->pbioWrite;
     ctx->inbio.f = frec->pInputFilter;
     ctx->inbio.bb = apr_brigade_create(c->pool, c->bucket_alloc);
-    ctx->inbio.bucket = NULL;
     ctx->inbio.cbuf.length = 0;
 
     ctx->cbuf.length = 0;
