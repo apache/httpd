@@ -156,12 +156,7 @@ static void *create_server_config(ap_pool_t *p, server_rec *s)
     sconf->inode_sorted = NULL;
     return sconf;
 }
-#if 0
-static void pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp)
-{
-    context = pconf;
-}
-#endif
+
 static ap_status_t open_file(ap_file_t **file, char* filename, int flg1, int flg2, 
                              ap_pool_t *context)
 {
@@ -251,10 +246,6 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, char *filename)
     return NULL;
 }
 
-#ifdef WIN32
-/* Windows doesn't have inodes. This ifdef should be changed to 
- * something like HAVE_INODES
- */
 static int file_compare(const void *av, const void *bv)
 {
     const a_file *a = av;
@@ -262,31 +253,14 @@ static int file_compare(const void *av, const void *bv)
 
     return strcmp(a->filename, b->filename);
 }
-#else
-static int inode_compare(const void *av, const void *bv)
-{
-    const a_file *a = *(a_file **)av;
-    const a_file *b = *(a_file **)bv;
-    long c;
 
-    c = a->finfo.st_ino - b->finfo.st_ino;
-    if (c == 0) {
-	return a->finfo.st_dev - b->finfo.st_dev;
-    }
-    return c;
-}
-#endif
 static void file_cache_post_config(ap_pool_t *p, ap_pool_t *plog,
                                    ap_pool_t *ptemp, server_rec *s)
 {
     a_server_config *sconf;
     a_file *elts;
     int nelts;
-#ifndef WIN32
-    ap_array_header_t *inodes;
-    int i;
-#endif
-    
+
     context = p;    
     /* sort the elements of the main_server, by filename */
     sconf = ap_get_module_config(s->module_config, &file_cache_module);
@@ -294,15 +268,6 @@ static void file_cache_post_config(ap_pool_t *p, ap_pool_t *plog,
     nelts = sconf->files->nelts;
     qsort(elts, nelts, sizeof(a_file), file_compare);
 
-    /* build an index by inode as well, speeds up the search in the handler */
-#ifndef WIN32
-    inodes = ap_make_array(p, nelts, sizeof(a_file *));
-    sconf->inode_sorted = inodes;
-    for (i = 0; i < nelts; ++i) {
-	*(a_file **)ap_push_array(inodes) = &elts[i];
-    }
-    qsort(inodes->elts, nelts, sizeof(a_file *), inode_compare);
-#endif
     /* and make the virtualhosts share the same thing */
     for (s = s->next; s; s = s->next) {
 	ap_set_module_config(s->module_config, &file_cache_module, sconf);
@@ -312,47 +277,6 @@ static void file_cache_post_config(ap_pool_t *p, ap_pool_t *plog,
 /* If it's one of ours, fill in r->finfo now to avoid extra stat()... this is a
  * bit of a kludge, because we really want to run after core_translate runs.
  */
-int core_translate_copy(request_rec *r)
-{
-    void *sconf = r->server->module_config;
-    core_server_config *conf = ap_get_module_config(sconf, &core_module);
-  
-    if (r->proxyreq) {
-        return HTTP_FORBIDDEN;
-    }
-    if ((r->uri[0] != '/') && strcmp(r->uri, "*")) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                      "Invalid URI in request %s", r->the_request);
-        return HTTP_BAD_REQUEST;
-    }
-    
-    if (r->server->path 
-        && !strncmp(r->uri, r->server->path, r->server->pathlen)
-        && (r->server->path[r->server->pathlen - 1] == '/'
-            || r->uri[r->server->pathlen] == '/'
-            || r->uri[r->server->pathlen] == '\0')) {
-        r->filename = ap_pstrcat(r->pool, conf->ap_document_root,
-                                 (r->uri + r->server->pathlen), NULL);
-    }
-    else {
-        /*
-         * Make sure that we do not mess up the translation by adding two
-         * /'s in a row.  This happens under windows when the document
-         * root ends with a /
-         */
-        if ((conf->ap_document_root[strlen(conf->ap_document_root)-1] == '/')
-            && (*(r->uri) == '/')) {
-            r->filename = ap_pstrcat(r->pool, conf->ap_document_root, r->uri+1,
-                                     NULL);
-        }
-        else {
-            r->filename = ap_pstrcat(r->pool, conf->ap_document_root, r->uri,
-                                     NULL);
-        }
-
-        return OK;
-    }
-}
 static int file_cache_xlat(request_rec *r)
 {
     a_server_config *sconf;
@@ -360,33 +284,26 @@ static int file_cache_xlat(request_rec *r)
     a_file *match;
     int res;
 
-#ifdef WIN32
-/*
- * This is really broken on Windows. The call to get the core_module config
- * in core_translate_copy seg faults because 'core_module' is not exported 
- * properly and needs a thunk.
- * Will be fixed when we get API_VAR_EXPORTS working correctly again    
- */
-    return DECLINED;
-#endif
-
     sconf = ap_get_module_config(r->server->module_config, &file_cache_module);
 
     /* we only operate when at least one cachefile directive was used */
     if (ap_is_empty_table(sconf->files))
 	return DECLINED;
 
-    res = core_translate_copy(r);
-    if (res == DECLINED || !r->filename) {
+    res = ap_core_translate(r);
+    if (res != OK || !r->filename) {
 	return res;
     }
-    if (!r->filename)
-        return DECLINED;
+
     tmp.filename = r->filename;
     match = (a_file *)bsearch(&tmp, sconf->files->elts, sconf->files->nelts,
 	sizeof(a_file), file_compare);
+
     if (match == NULL)
-	    return DECLINED;
+        return DECLINED;
+
+    /* pass bsearch results to handler */
+    ap_set_module_config(r->request_config, &file_cache_module, match);
 
     /* shortcircuit the get_path_info() stat() calls and stuff */
     r->finfo = match->finfo;
@@ -396,43 +313,18 @@ static int file_cache_xlat(request_rec *r)
 
 static int file_cache_handler(request_rec *r)
 {
-    a_server_config *sconf;
-    a_file tmp;
-    a_file *ptmp;
     a_file *match;
     int rangestatus, errstatus;
-#ifndef WIN32
-    a_file **pmatch;
-#endif
 
     /* we don't handle anything but GET */
     if (r->method_number != M_GET) return DECLINED;
 
-    /* file doesn't exist, we won't be dealing with it */
-    if (r->finfo.protection == 0) return DECLINED;
+    /* did xlat phase find the file? */
+    match = ap_get_module_config(r->request_config, &file_cache_module);
 
-    sconf = ap_get_module_config(r->server->module_config, &file_cache_module);
-#ifdef WIN32
-    tmp.filename = r->filename;
-#else
-    tmp.finfo.st_dev = r->finfo.st_dev;
-    tmp.finfo.st_ino = r->finfo.st_ino;
-#endif
-    ptmp = &tmp;
-#ifdef WIN32
-    match = (a_file *)bsearch(ptmp, sconf->files->elts,
-	sconf->files->nelts, sizeof(a_file), file_compare);
     if (match == NULL) {
 	return DECLINED;
     }
-#else
-    pmatch = (a_file **)bsearch(&ptmp, sconf->inode_sorted->elts,
-	sconf->inode_sorted->nelts, sizeof(a_file *), inode_compare);
-    if (pmatch == NULL) {
-	return DECLINED;
-    }
-    match = *pmatch;
-#endif
 
     /* note that we would handle GET on this resource */
     r->allowed |= (1 << M_GET);
