@@ -449,7 +449,8 @@ URL-space</description>
 the local server; the local server does not act as a proxy in the
 conventional sense, but appears to be a mirror of the remote
 server. <em>path</em> is the name of a local virtual path;
-<em>url</em> is a partial URL for the remote server.</p>
+<em>url</em> is a partial URL for the remote server and cannot
+include a query string.</p>
 
 <p>Suppose the local server has address <code>http://wibble.org/</code>; 
 then</p>
@@ -475,6 +476,11 @@ a subdirectory. eg.</p>
 module="core">Location</directive> section, the first argument is
 ommitted and the local directory is obtained from the <directive
 type="section" module="core">Location</directive>.</p>
+
+<p>If you require a more flexible reverse-proxy configuration, see
+the <directive module="mod_rewrite">RewriteRule</directive> directive
+with the <code>[P]</code> flag.</p>
+
 </usage>
 
 </directivesynopsis>

@@ -451,7 +451,8 @@ URL-space</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" 
 the local server; the local server does not act as a proxy in the
 conventional sense, but appears to be a mirror of the remote
 server. <em>path</em> is the name of a local virtual path;
-<em>url</em> is a partial URL for the remote server.</p>
+<em>url</em> is a partial URL for the remote server and cannot
+include a query string.</p>
 
 <p>Suppose the local server has address <code>http://wibble.org/</code>; 
 then</p>
@@ -475,6 +476,11 @@ a subdirectory. eg.</p>
 
 <p>When used inside a <a href="core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a> section, the first argument is
 ommitted and the local directory is obtained from the <a href="core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a>.</p>
+
+<p>If you require a more flexible reverse-proxy configuration, see
+the <a href="mod_rewrite.html#rewriterule" class="directive"><code class="directive">RewriteRule</code></a> directive
+with the <code>[P]</code> flag.</p>
+
 <hr/><h2><a name="ProxyPassReverse">ProxyPassReverse</a> <a name="proxypassreverse">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Adjusts the URL in HTTP response headers sent from
 a reverse proxied server</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyPassReverse [<em>path</em>] <em>url</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table>
 <p>This directive lets Apache adjust the URL in the <code>Location</code>,
