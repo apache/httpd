@@ -5,6 +5,8 @@ PLATFORM=`${CONFIG_SHELL-/bin/sh} $ac_config_guess`
 case "$PLATFORM" in
 *beos*)
   OS="beos";;
+*pc-os2_emx*)
+  OS="os2";;
 *)
   OS="unix";;
 esac

@@ -5,6 +5,8 @@
 #define HAVE_CANONICAL_FILENAME
 #define HAVE_DRIVE_LETTERS
 
+#include <apr_general.h>
+
 /*
  * This file in included in all Apache source code. It contains definitions
  * of facilities available on _this_ operating system (HAVE_* macros),
@@ -29,7 +31,7 @@ INLINE int ap_os_is_path_absolute(const char *file);
 extern int ap_os_is_path_absolute(const char *file);
 #endif
 
-API_EXPORT(char *) ap_os_canonical_filename(ap_context_t *p, const char *file);
+char *ap_os_canonical_filename(ap_context_t *p, const char *file);
 #define ap_os_case_canonical_filename(p,f) ap_os_canonical_filename(p,f)
 #define ap_os_systemcase_filename(p,f) ap_os_canonical_filename(p,f)
 /* FIXME: the following should be implemented on this platform */

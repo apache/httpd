@@ -62,6 +62,7 @@
 #define INCL_DOSERRORS
 
 #include "httpd.h"
+#include "ap_config.h"
 #include "mpm_default.h"
 #include "http_main.h"
 #include "http_log.h"
@@ -76,6 +77,7 @@
 
 #include <os2.h>
 #include <stdlib.h>
+#include <sys/signal.h>
 
 /* config globals */
 
@@ -175,7 +177,6 @@ static void clean_child_exit(int code)
 }
 
 
-#if defined(USE_OS2SEM_SERIALIZED_ACCEPT)
 
 static HMTX lock_sem = -1;
 
@@ -242,7 +243,6 @@ static void accept_mutex_off(void)
     }
 }
 
-#endif
 
 
 /* On some architectures it's safe to do unserialized accept()s in the single
