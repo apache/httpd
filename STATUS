@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/15 01:02:50 $]
+Last modified at [$Date: 2003/05/15 14:03:19 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -28,7 +28,7 @@ CURRENT VOTES:
     * Promote mod_cache from experimental to non-experimental
       status (keep issues noted below in EXPERIMENTAL MODULES as
       items to be addressed as a supported module).
-      +1: jim, stoddard
+      +1: jim, stoddard, bnicholes
       -0: jerenkrantz
 
       jerenkrantz: There are a slew of RFC compliance bugs filed in Bugzilla
