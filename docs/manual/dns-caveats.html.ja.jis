@@ -18,7 +18,7 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>DNS と Apache にまつわる注意事項</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./en/dns-caveats.html">&nbsp;en&nbsp;</a> | <a href="./ja/dns-caveats.html">&nbsp;ja&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="./en/dns-caveats.html">&nbsp;en&nbsp;</a> | <a href="./ja/dns-caveats.html">&nbsp;ja&nbsp;</a> | <a href="./ko/dns-caveats.html">&nbsp;ko&nbsp;</a></p>
 </div>
 
     <p>本文書の内容は次の一言に尽きます。「Apache が設定ファイルを読み込むときに
@@ -230,7 +230,7 @@
     これらの機能は広く開発が進んでいません。</p>
   </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./en/dns-caveats.html">&nbsp;en&nbsp;</a> | <a href="./ja/dns-caveats.html">&nbsp;ja&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="./en/dns-caveats.html">&nbsp;en&nbsp;</a> | <a href="./ja/dns-caveats.html">&nbsp;ja&nbsp;</a> | <a href="./ko/dns-caveats.html">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>

@@ -1,169 +1,182 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>1.3에서 2.0으로 업그레이드 - Apache HTTP Server</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/directives.html">지시어들</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>1.3에서 2.0으로 업그레이드</h1>
+<div class="toplang">
+<p><span>가능한 언어: </span><a href="./de/upgrading.html">&nbsp;de&nbsp;</a> | <a href="./en/upgrading.html">&nbsp;en&nbsp;</a> | <a href="./fr/upgrading.html">&nbsp;fr&nbsp;</a> | <a href="./ja/upgrading.html">&nbsp;ja&nbsp;</a> | <a href="./ko/upgrading.html">&nbsp;ko&nbsp;</a> | <a href="./ru/upgrading.html">&nbsp;ru&nbsp;</a></p>
+</div>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Upgrading to 2.0 from 1.3</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-        <div align="center">
-      <img src="images/sub.gif" alt="[APACHE DOCUMENTATION]" /> 
-
-      <h3>Apache HTTP Server Version 2.1</h3>
-    </div>
-
-
-
-
-    <h1 align="center">1.3에서 2.0으로 업그레이드</h1>
-
-    <p>우리는 기존 아파치 사용자가 업그레이드하는 것을 돕기위해 중요한
-    정보를 알려주는 문서를 유지한다. 이 문서는 간단한 설명이므로,
-    <a href="new_features_2_0.html">새로운 기능</a> 문서나
-    <code>src/CHANGES</code> 파일에서 정보를 찾아봐야 한다.</p>
-
-    <h3>컴파일시 구성 변화</h3>
+  <p>우리는 기존 아파치 사용자가 업그레이드하는 것을 돕기위해
+  중요한 정보를 알려주는 문서를 제공한다. 이 문서는 간단한
+  요약이므로, <a href="new_features_2_0.html">새로운 기능</a>
+  문서나 <code>src/CHANGES</code> 파일에서 정보를 찾아봐야
+  한다.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">컴파일시 구성 변화</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#run-time">실행시 설정 변화</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#misc">기타 변화</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#third-party">제삼자가 만든 모듈</a></li>
+</ul><h3>참고</h3><ul class="seealso"><li><a href="new_features_2_0.html">아파치 2.0의 새로운
+기능 요약</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="compile-time" id="compile-time">컴파일시 구성 변화</a></h2>
+    
 
     <ul>
-      <li>아파치는 이제 <a
-      href="install.html">아파치 컴파일과 설치</a>를 위해
-      <code>autoconf</code>와 <code>libtool</code> 시스템을 사용한다.
-      이 시스템의 사용법은 Apache 1.3의 APACI 시스템과 같지는 않지만
-      비슷하다.</li>
+      <li>아파치는 이제 <a href="install.html">아파치 컴파일과 설치</a>를 위해
+      <code>autoconf</code>와 <code>libtool</code> 시스템을
+      사용한다. 이 시스템의 사용법은 Apache 1.3의 APACI 시스템과
+      같지는 않지만 비슷하다.</li>
 
-      <li>컴파일 여부를 선택할 모듈외에 Apache 2.0은 요청을 처리하는
-      주요 부분을 <a href="mpm.html">아파치 다중처리 모듈</a>
-      (Multi-Processing Modules, MPMs)로 옮겼다.</li>
+      <li>컴파일 여부를 선택할 모듈외에 Apache 2.0은 요청을
+      처리하는 주요 부분을 <a href="mpm.html">다중처리 모듈
+      (Multi-Processing Modules)</a> (MPM)로 옮겼다.</li>
     </ul>
-
-    <h3>실행시 설정 변화</h3>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="run-time" id="run-time">실행시 설정 변화</a></h2>
+    
 
     <ul>
-      <li>Apache 1.3에서 서버 핵심에 있었던 많은 지시어들이 이제는 MPM에
-      있다. 서버가 Apache 1.3과 최대한 비슷하게 동작하길 바란다면
-      <a href="mod/prefork.html">prefork</a> MPM을 선택해야 한다.
-      다른 MPM은 프로세스 생성과 요청 처리를 조절하는데 다른 지시어를
-      사용한다.</li>
+      <li>Apache 1.3에서 서버 핵심에 있었던 많은 지시어들이
+      이제는 MPM에 있다. 서버가 Apache 1.3과 최대한 비슷하게
+      동작하길 바란다면 <code class="module"><a href="./mod/prefork.html">prefork</a></code> MPM을 선택해야
+      한다. 다른 MPM은 다른 지시어를 사용하여 프로세스 생성과
+      요청의 처리를 조절한다.</li>
 
-      <li><a href="mod/mod_proxy.html">프록시 모듈</a>는 HTTP/1.1에 맞추어
-      수정되었다. 중요한 변화중 하나는 이제 프록시 접근 제어가
-      &lt;Directory proxy:&gt; 블록이 아닌 &lt;Proxy&gt; 블록에
-      위치하는 점이다.</li>
+      <li><a href="mod/mod_proxy.html">proxy 모듈</a>은 HTTP/1.1에
+      맞추어 수정되었다. 중요한 변화중 하나는 이제 프록시 접근제어가
+      <code>&lt;Directory proxy:&gt;</code> 블록이 아니라
+      <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
+      블록에 위치하는 점이다.</li>
 
-      <li>몇몇 모듈에서 PATH_INFO (진짜 경로명 뒤에 나오는 경로 정보)
-      처리가 변경되었다. 전에 핸들러였지만 이제 이제 필터로
-      구현되는 모듈은 더 이상 PATH_INFO가 있는 요청을 받아들이지
-      못한다. <a href="mod/mod_include.html">INCLUDES</a>와 같은
-      필터는 core 핸들러 상위에 구현되기때문에 PATH_INFO가 있는
-      요청을 거부한다. core 핸들러가 PATH_INFO가 있는 요청을 받아들이고
-      server-side include에서 PATH_INFO를 사용하게 하려면, <a
-      href="mod/core.html#acceptpathinfo">AcceptPathInfo</a> 지시어를
-      사용해야 한다.</li>
+      <li>몇몇 모듈에서 <code>PATH_INFO</code> (진짜 경로명
+      뒤에 나오는 경로 정보) 처리 방식이 변경되었다. 전에
+      핸들러였지만 이제 필터로 구현되는 모듈은 더 이상
+      <code>PATH_INFO</code>가 있는 요청을 받아들이지 못한다.
+      <a href="mod/mod_include.html">INCLUDES</a>나 <a href="http://www.php.net/">PHP</a>와 같은 필터는
+      core 핸들러 위에 구현되기때문에 <code>PATH_INFO</code>가
+      있는 요청을 거부한다. core 핸들러가 <code>PATH_INFO</code>가
+      있는 요청을 받아들이고 server-side include에서
+      <code>PATH_INFO</code>를 사용하게 하려면, <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> 지시어를 사용해야
+      한다.</li>
 
-      <li><code>CacheNegotiatedDocs</code> 지시어는 이제 아규먼트로
-      <code>on</code>과 <code>off</code>를 받는다. 기존의
-      <code>CacheNegotiatedDocs</code>는
-      <code>CacheNegotiatedDocs on</code>으로 대체되야 한다.</li>
+      <li><code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code>
+      지시어는 이제 아규먼트로 <code>on</code>과 <code>off</code>를
+      받는다. 기존의 <code class="directive">CacheNegotiatedDocs</code>는
+      <code>CacheNegotiatedDocs on</code>으로 수정해야 한다.</li>
 
       <li>
-        <code>ErrorDocument</code> 지시어는 더이상 메세지를 나타내는
-        아규먼트 앞에 따옴표를 사용하지 않는다. 대신 쌍따옴표로
-        메세지를 묶어야 한다. 예를 들어 과거
+        <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> 지시어는
+        더이상 메세지를 나타내는 아규먼트 앞에 따옴표를 사용하지
+        않는다. 대신 쌍따옴표로 메세지를 묶어야 한다. 예를 들어 과거
 
-        <blockquote>
-          <code>ErrorDocument 403 "Some Message</code>
-        </blockquote>
-        는 다음과 같이 수정되야 한다.
+        <div class="example"><p><code>
+          ErrorDocument 403 "Some Message
+        </code></p></div>
+        는 다음과 같이 수정해야 한다.
 
-        <blockquote>
-          <code>ErrorDocument 403 "Some Message"</code>
-        </blockquote>
-        두번째 아규먼트가 유효한 URL이나 경로명이 아니라면
-        메세지로 간주한다.
+        <div class="example"><p><code>
+          ErrorDocument 403 "Some Message"
+        </code></p></div>
+        두번째 아규먼트가 유효한 URL이나 경로명이 아니라면 메세지로
+        간주한다.
       </li>
 
       <li><code>AccessConfig</code>와 <code>ResourceConfig</code>
-      지시어는 더이상 없다. 기존에 사용하던 지시어는 같은 기능을 하는
-      <a href="mod/core.html#include"><code>Include</code></a>
-      지시어로 대체할 수 있다. 과거에 내용을 설정파일에 포함하지 않고
-      이 지시어들의 기본값을 사용했다면, http.conf에
+      지시어는 사라졌다. 기존에 사용하던 지시어는 같은 기능을
+      하는 <code class="directive"><a href="./mod/core.html#include">Include</a></code> 지시어로
+      대체할 수 있다. 과거에 설정파일에서 이 지시어들을 사용하지않고
+      이 지시어들의 기본값을 사용했다면, <code>http.conf</code>에
       <code>Include conf/access.conf</code>와 <code>Include
-      conf/srm.conf</code>를 추가할 필요가 있다. 아파치가 이전 지시어와
-      같은 순서로 설정파일을 읽게하려면 <code>Include</code> 지시어를
-      httpd.conf 끝에 두고, <code>srm.conf</code>이
+      conf/srm.conf</code>를 추가할 필요가 있다. 아파치가 이전
+      지시어와 같은 순서로 설정파일을 읽게하려면
+      <code class="directive"><a href="./mod/core.html#include">Include</a></code> 지시어를
+      <code>httpd.conf</code> 끝에 두고, <code>srm.conf</code>이
       <code>access.conf</code> 앞에 나와야 한다.</li>
 
       <li><code>BindAddress</code>와 <code>Port</code> 지시어는
-      더이상 없다. 더 유연한
-      <code><a href="mod/mpm_common.html#listen">Listen</a></code>
+      사라졌다. 더 유연한 <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
       지시어가 같은 기능을 한다.</li>
 
-      <li>Apache-1.3에서 <code>Port</code>의 다른 용도는 자기참조 URL의
-      포트 번호를 설정하는 일이였다. Apache-2.0에서 이 기능은
-      새로운 <a href="mod/core.html#servername"><code>ServerName</code></a>으로
-      한다. 이는 한 지시어에 호스트명<em>과</em> 자기참조 URL을 위한
-      포트 번호를 같이 설정할 수 있게 수정되었다.</li>
+      <li>Apache-1.3에서 <code>Port</code>는 자기참조
+      URL의 포트 번호를 설정하는 일도 했다. Apache-2.0에서 이
+      기능은 새로운 <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>으로
+      한다. 한 지시어에 호스트명<em>과</em> 자기참조 URL을 위한
+      포트 번호를 같이 설정할 수 있다.</li>
 
-      <li><code>ServerType</code> 지시어는 더이상 없다.
-      요청을 서비스하는 방법은 이제 MPM 선택에 달렸다.
-      현재 inetd에서 시작하도록 설계된 MPM은 없다.</li>
+      <li><code>ServerType</code> 지시어는 사라졌다. 요청을
+      서비스하는 방법은 이제 MPM 선택에 달렸다. 현재 inetd에서
+      시작하도록 설계된 MPM은 없다.</li>
 
       <li><code>AgentLog</code>, <code>RefererLog</code>,
       <code>RefererIgnore</code> 지시어를 제공한
-      mod_log_agent와 mod_log_referer 모듈이 없어졌다.
-      agent 로그와 referer 로그는 mod_log_config의
-      <a href="mod/mod_log_config.html#customlog">CustomLog</a>
-      지시어를 사용하여 계속 제공된다.</li>
+      <code>mod_log_agent</code>와 <code>mod_log_referer</code>
+      모듈이 없어졌다. agent 로그와 referer 로그는
+      <code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code>의 <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> 지시어를
+      사용하여 계속 제공된다.</li>
 
-      <li><code>AddModule</code>과 <code>ClearModuleList</code> 지시어는
-      더이상 없다. 이 지시어들은 모듈을 올바른 순서로 활성화하려고
-      사용되었다. 새로운 Apache 2.0 API는 모듈이 활성화되는 순서를 명시적으로
-      지정할 수 있게하여, 이 지시어들이 불필요하게 되었다.</li>
+      <li><code>AddModule</code>과 <code>ClearModuleList</code>
+      지시어는 사라졌다. 이 지시어들은 모듈을 올바른 순서로
+      활성화하려고 사용했다. 새로운 Apache 2.0 API는 모듈이
+      활성화되는 순서를 명시적으로 지정할 수 있어서, 이 지시어들이
+      필요없게 되었다.</li>
 
       <li><code>FancyIndexing</code> 지시어가 없어졌다.
-      같은 기능이 <a
-      href="mod/mod_autoindex.html#indexoptions">IndexOptions</a>
-      지시어의 <code>FancyIndexing</code> 옵션으로 제공된다.</li>
+      <code class="directive"><a href="./mod/mod_autoindex.html#indexoptions">IndexOptions</a></code>
+      지시어의 <code>FancyIndexing</code> 옵션이 같은 기능을 한다.</li>
+
+      <li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>의 MultiViews 내용협상이
+      더 엄격하게 기본파일을 찾는다. 내용협상은 <em>협상가능한</em>
+      파일 중에서만 선택한다. <code class="directive"><a href="./mod/mod_mime.html#multiviewsmatch">MultiviewsMatch</a></code> 지시어를
+      사용하여 이전과 같이 동작하게 할 수 있다.</li>
 
     </ul>
-
-    <h3>기타 변화</h3>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="misc" id="misc">기타 변화</a></h2>
+    
 
     <ul>
-      <li>가상호스트 설정을 출력하기위한 <code>httpd</code>의 명령행
-      옵션 <code>-S</code>가 <code>-t -D
-      DUMP_VHOSTS</code>로 대체되었다.</li>
+      <li>Apache 1.3에서 실험적이였던 <code class="module"><a href="./mod/mod_auth_digest.html">mod_auth_digest</a></code>
+      모듈이 이제 표준 모듈이 되었다.</li>
 
-      <li>Apache 1.3에서 실험적이였던 mod_auth_digest 모듈이
-      이제 표준 모듈이 되었다.</li>
-
-      <li>Apache 1.3에서 실험적이였던 mod_mmap_static 모듈이
-      mod_file_cache로 대체되었다.</li>
+      <li>Apache 1.3에서 실험적이였던 <code>mod_mmap_static</code>
+      모듈이 <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>로 대체되었다.</li>
 
       <li>배포본이 완전히 새로 구성되어 더이상 독립된 <code>src</code>
       디렉토리가 없다. 대신 소스는 주 배포본 디렉토리 아래 논리적으로
-      구성되고, 컴파일된 서버는 독립된 디렉토리에 설치해야 한다.</li>
+      구성되있고, 컴파일한 서버는 다른 디렉토리로 설치된다.</li>
     </ul>
-
-    <h3>추가 모듈</h3>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="third-party" id="third-party">제삼자가 만든 모듈</a></h2>
+    
 
     <p>Apache 2.0에서 서버 API가 많이 변경되었다. Apache 1.3 API에
-    맞춰진 기존 모듈은 수정없이 Apache 2.0에서 사용할 수
+    맞춰진 기존 모듈을 수정없이 Apache 2.0에서 사용할 수
     <strong>없다</strong>. 자세한 정보는 <a href="developer/">개발자
     문서</a>를 참고하라.</p>
-        <hr />
-
-    <h3 align="center">Apache HTTP Server Version 2.1</h3>
-    <a href="./"><img src="images/index.gif" alt="Index" /></a>
-
-
-
-  </body>
-</html>
-
+  </div></div>
+<div class="bottomlang">
+<p><span>가능한 언어: </span><a href="./de/upgrading.html">&nbsp;de&nbsp;</a> | <a href="./en/upgrading.html">&nbsp;en&nbsp;</a> | <a href="./fr/upgrading.html">&nbsp;fr&nbsp;</a> | <a href="./ja/upgrading.html">&nbsp;ja&nbsp;</a> | <a href="./ko/upgrading.html">&nbsp;ko&nbsp;</a> | <a href="./ru/upgrading.html">&nbsp;ru&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/directives.html">지시어들</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p></div>
+</body></html>
