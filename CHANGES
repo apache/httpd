@@ -1,5 +1,8 @@
 Changes with Apache 2.0.31-dev
 
+  *) Fixed a segfault that happened during graceful shutdown (or when
+     the httpd ran out of file descriptors) with the worker MPM [Brian Pane]
+
   *) Split all Win32 modules [excluding the core components mod_core, 
      mod_so, mod_win32 and the winnt mpm] into individual loadable
      modules, so the administrator may individually disable the former
