@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) When using ap_log_rerror(), make the error message available to the
+     *ERROR_NOTES envariables by default.  [Ken Coar]
+
   *) BS2000 platform only: get rid of the nasty BS2000AuthFile.
      You now must define a BS2000Account name for the server User.
      This has fewer security implications than the old approach.

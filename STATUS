@@ -63,12 +63,6 @@ Documentation that needs writing:
 
 Available Patches:
 
-    * Ken's patch to set *ERROR_NOTES by default in ap_log_rerror()
-      Avoids special-casing the setting everywhere, and allows sensitive
-      error_log-only messages to be kept out of *ERROR_NOTES.
-	Message-ID: <35F68AD7.FDBF22AC@Golux.Com>
-	Status: Ken +1, Doug +1
-
     * Patches for the DSO/mod_perl problem (see below for description):
 
       Doug MacEachern's "[PATCH] fix for dso/mod_perl" 
