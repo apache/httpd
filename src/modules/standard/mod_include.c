@@ -95,7 +95,11 @@
 #define DEFAULT_TIME_FORMAT "%A, %d-%b-%Y %H:%M:%S %Z"
 #define SIZEFMT_BYTES 0
 #define SIZEFMT_KMG 1
-
+#ifdef CHARSET_EBCDIC
+#define RAW_ASCII_CHAR(ch)  _toebcdic[(unsigned char)ch]
+#else /*CHARSET_EBCDIC*/
+#define RAW_ASCII_CHAR(ch)  (ch)
+#endif /*CHARSET_EBCDIC*/
 
 /* ------------------------ Environment function -------------------------- */
 
@@ -165,11 +169,20 @@ static void add_include_vars(request_rec *r, char *timefmt)
  * errors is and little can really be done to help the error in 
  * any case.
  */
+#ifndef CHARSET_EBCDIC
 #define FLUSH_BUF(r) \
  { \
    rwrite(outbuf, outind, r); \
    outind = 0; \
  }
+#else /*CHARSET_EBCDIC*/
+#define FLUSH_BUF(r) \
+ { \
+   ebcdic2ascii(outbuf, outbuf, outind); \
+   rwrite(outbuf, outind, r); \
+   outind = 0; \
+ }
+#endif /*CHARSET_EBCDIC*/
 
 /*
  * f: file handle being read from
@@ -306,18 +319,18 @@ otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
                 p--;            /* no data to output */
             }
             else {
-                *p = val;
+                *p = RAW_ASCII_CHAR(val);
             }
         }
         else {
             j = i - 1;
-            if (i - 1 > MAXENTLEN || entlist[i - 1] == NULL) {
+            if (j > MAXENTLEN || entlist[j] == NULL) {
                 /* wrong length */
                 *p = '&';
                 continue;       /* skip it */
             }
-            for (ents = entlist[i - 1]; *ents != '\0'; ents += i) {
-                if (strncmp(s + 1, ents, i - 1) == 0) {
+            for (ents = entlist[j]; *ents != '\0'; ents += i) {
+                if (strncmp(s + 1, ents, j) == 0) {
                     break;
                 }
             }
@@ -326,7 +339,7 @@ otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
                 *p = '&';       /* unknown */
             }
             else {
-                *p = ((const unsigned char *) ents)[i - 1];
+                *p = RAW_ASCII_CHAR(((const unsigned char *) ents)[j]);
                 s += i;
             }
         }
@@ -793,7 +806,11 @@ static int include_cmd(char *s, request_rec *r)
         return -1;
     }
 
+#ifndef CHARSET_EBCDIC
     send_fd(f, r);
+#else /*CHARSET_EBCDIC*/
+    send_fd_length_cnv(f, r, -1, 1);
+#endif /*CHARSET_EBCDIC*/
     pfclose(r->pool, f);        /* will wait for zombie when
                                  * r->pool is cleared
                                  */

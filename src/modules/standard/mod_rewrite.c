@@ -2266,9 +2266,14 @@ static char *expand_tildepaths(request_rec *r, char *uri)
     if (uri != NULL && strlen(uri) > 2 && uri[0] == '/' && uri[1] == '~') {
         /* cut out the username */
         for (j = 0, i = 2; j < sizeof(user)-1 && uri[i] != '\0' && 
+#ifndef CHARSET_EBCDIC
                        (   (uri[i] >= '0' && uri[i] <= '9')
                         || (uri[i] >= 'a' && uri[i] <= 'z')
-                        || (uri[i] >= 'A' && uri[i] <= 'Z')); )
+                        || (uri[i] >= 'A' && uri[i] <= 'Z'))
+#else
+                       isalnum(uri[i])
+#endif
+                        ; )
             user[j++] = uri[i++];
         user[j] = '\0';
 

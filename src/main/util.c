@@ -989,9 +989,19 @@ static char x2c(const char *what)
 {
     register char digit;
 
+#ifndef CHARSET_EBCDIC
     digit = ((what[0] >= 'A') ? ((what[0] & 0xdf) - 'A') + 10 : (what[0] - '0'));
     digit *= 16;
     digit += (what[1] >= 'A' ? ((what[1] & 0xdf) - 'A') + 10 : (what[1] - '0'));
+#else /*CHARSET_EBCDIC*/
+    char xstr[5];
+    xstr[0]='0';
+    xstr[1]='x';
+    xstr[2]=what[0];
+    xstr[3]=what[1];
+    xstr[4]='\0';
+    digit = _toebcdic[0xFF & strtol(xstr, NULL, 16)];
+#endif /*CHARSET_EBCDIC*/
     return (digit);
 }
 
@@ -1081,7 +1091,11 @@ API_EXPORT(char *) escape_path_segment(pool *p, const char *segment)
 
     for (x = 0, y = 0; segment[x]; x++, y++) {
 	char c = segment[x];
+#ifndef CHARSET_EBCDIC
 	if ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z') && (c < '0' || c > '9')
+#else /* CHARSET_EBCDIC*/
+	if (!isalnum(c)
+#endif /*CHARSET_EBCDIC*/
 	    && ind("$-_.+!*'(),:@&=~", c) == -1) {
 	    c2x(c, &copy[y]);
 	    y += 2;
@@ -1109,7 +1123,11 @@ API_EXPORT(char *) os_escape_path(pool *p, const char *path, int partial)
     }
     for (; *path; ++path) {
 	char c = *path;
+#ifndef CHARSET_EBCDIC
 	if ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z') && (c < '0' || c > '9')
+#else /* CHARSET_EBCDIC*/
+	if (!isalnum(c)
+#endif /*CHARSET_EBCDIC*/
 	    && ind("$-_.+!*'(),:@&=/~", c) == -1) {
 	    c2x(c, s);
 	    s += 3;
@@ -1285,7 +1303,7 @@ int strncasecmp(const char *a, const char *b, int n)
 #ifdef NEED_INITGROUPS
 int initgroups(const char *name, gid_t basegid)
 {
-#if defined(QNX) || defined(MPE) || defined(BEOS)
+#if defined(QNX) || defined(MPE) || defined(BEOS) || defined(_OSD_POSIX)
 /* QNX, MPE and BeOS do not appear to support supplementary groups. */
     return 0;
 #else /* ndef QNX */
@@ -1552,6 +1570,7 @@ API_EXPORT(char *) uudecode(pool *p, const char *bufcoded)
     /* Figure out how many characters are in the input buffer.
      * Allocate this many from the per-transaction pool for the result.
      */
+#ifndef CHARSET_EBCDIC
     bufin = (const unsigned char *) bufcoded;
     while (pr2six[*(bufin++)] <= 63);
     nprbytes = (bufin - (const unsigned char *) bufcoded) - 1;
@@ -1580,6 +1599,36 @@ API_EXPORT(char *) uudecode(pool *p, const char *bufcoded)
 	    nbytesdecoded -= 1;
     }
     bufplain[nbytesdecoded] = '\0';
+#else /*CHARSET_EBCDIC*/
+    bufin = (const unsigned char *) bufcoded;
+    while (pr2six[_toascii[(unsigned char)*(bufin++)]] <= 63);
+    nprbytes = (bufin - (const unsigned char *) bufcoded) - 1;
+    nbytesdecoded = ((nprbytes + 3) / 4) * 3;
+
+    bufplain = palloc(p, nbytesdecoded + 1);
+    bufout = (unsigned char *) bufplain;
+
+    bufin = (const unsigned char *) bufcoded;
+
+    while (nprbytes > 0) {
+	*(bufout++) = _toebcdic[
+	    (unsigned char) (pr2six[_toascii[*bufin]] << 2 | pr2six[_toascii[bufin[1]]] >> 4)];
+	*(bufout++) = _toebcdic[
+	    (unsigned char) (pr2six[_toascii[bufin[1]]] << 4 | pr2six[_toascii[bufin[2]]] >> 2)];
+	*(bufout++) = _toebcdic[
+	    (unsigned char) (pr2six[_toascii[bufin[2]]] << 6 | pr2six[_toascii[bufin[3]]])];
+	bufin += 4;
+	nprbytes -= 4;
+    }
+
+    if (nprbytes & 03) {
+	if (pr2six[_toascii[bufin[-2]]] > 63)
+	    nbytesdecoded -= 2;
+	else
+	    nbytesdecoded -= 1;
+    }
+    bufplain[nbytesdecoded] = '\0';
+#endif /*CHARSET_EBCDIC*/
     return bufplain;
 }
 

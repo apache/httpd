@@ -146,6 +146,9 @@ API_EXPORT(int) blookc(char *buff, BUFF *fb);
 API_EXPORT(int) bskiplf(BUFF *fb);
 API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte);
 API_EXPORT(int) bflush(BUFF *fb);
+#ifdef CHARSET_EBCDIC
+API_EXPORT(int) bnputs(const char *x, BUFF *fb, size_t amount);
+#endif /*CHARSET_EBCDIC*/
 API_EXPORT(int) bputs(const char *x, BUFF *fb);
 API_EXPORT(int) bvputs(BUFF *fb,...);
 API_EXPORT_NONSTD(int) bprintf(BUFF *fb, const char *fmt,...)
@@ -156,6 +159,8 @@ API_EXPORT_NONSTD(int) vbprintf(BUFF *fb, const char *fmt, va_list vlist);
 API_EXPORT(int) bflsbuf(int c, BUFF *fb);
 API_EXPORT(int) bfilbuf(BUFF *fb);
 
+#ifndef CHARSET_EBCDIC
+
 #define bgetc(fb)   ( ((fb)->incnt == 0) ? bfilbuf(fb) : \
 		    ((fb)->incnt--, *((fb)->inptr++)) )
 
@@ -163,6 +168,16 @@ API_EXPORT(int) bfilbuf(BUFF *fb);
 		     (fb)->outcnt == (fb)->bufsiz) ? bflsbuf(c, (fb)) : \
 		     ((fb)->outbase[(fb)->outcnt++] = (c), 0))
 
+#else /*CHARSET_EBCDIC*/
+
+#define bgetc(fb)   ( ((fb)->incnt == 0) ? bfilbuf(fb) : \
+		    ((fb)->incnt--, _toebcdic[(unsigned char)*((fb)->inptr++)]) )
+
+#define bputc(c, fb) ((((fb)->flags & (B_EOUT|B_WRERR|B_WR)) != B_WR || \
+		     (fb)->outcnt == (fb)->bufsiz) ? bflsbuf(c, (fb)) : \
+		     ((fb)->outbase[(fb)->outcnt++] = _toascii[(unsigned char)c], 0))
+
+#endif /*CHARSET_EBCDIC*/
 API_EXPORT(int) spawn_child_err_buff(pool *, int (*)(void *), void *,
 		      enum kill_conditions, BUFF **pipe_in, BUFF **pipe_out,
 				     BUFF **pipe_err);

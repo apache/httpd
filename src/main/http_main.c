@@ -2494,11 +2494,13 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 
 #ifndef MPE
 /* MPE does not support SO_REUSEADDR and SO_KEEPALIVE */
+#ifndef _OSD_POSIX
     if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *) &one, sizeof(int)) < 0) {
 	aplog_error(APLOG_MARK, APLOG_CRIT, server_conf,
 		    "setsockopt: (SO_REUSEADDR)");
 	exit(1);
     }
+#endif /*_OSD_POSIX*/
     one = 1;
 #ifndef BEOS
 /* BeOS does not support SO_KEEPALIVE */

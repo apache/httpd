@@ -518,6 +518,14 @@ API_EXPORT(void) add_module(module *m)
     if (strrchr(m->name, '\\'))
 	m->name = 1 + strrchr(m->name, '\\');
 
+#ifdef _OSD_POSIX /* __FILE__="*POSIX(/home/martin/apache/src/modules/standard/mod_info.c)" */
+    /* We cannot fix the string in-place, because it's const */
+    if (m->name[strlen(m->name)-1]==')') {
+	char *tmp = strdup(m->name);	/* FIXME:memory leak, albeit a small one */
+	tmp[strlen(tmp)-1] = '\0';
+	m->name = tmp;
+    }
+#endif /*_OSD_POSIX*/
 /** XXX: this will be slow if there's lots of add_modules */
     build_method_shortcuts();
 }

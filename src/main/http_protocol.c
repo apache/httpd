@@ -1614,6 +1614,18 @@ API_EXPORT(long) send_fd(FILE *f, request_rec *r)
 }
 
 API_EXPORT(long) send_fd_length(FILE *f, request_rec *r, long length)
+#ifdef CHARSET_EBCDIC
+{
+    return send_fd_length_cnv(f, r, length, 0);
+}
+
+API_EXPORT(long) send_fd_cnv(FILE *f, request_rec *r)
+{
+    return send_fd_length_cnv(f, r, -1, 1);
+}
+
+API_EXPORT(long) send_fd_length_cnv(FILE *f, request_rec *r, long length, int convert_to_ascii)
+#endif /*CHARSET_EBCDIC*/
 {
     char buf[IOBUFSIZE];
     long total_bytes_sent = 0;
@@ -1633,6 +1645,11 @@ API_EXPORT(long) send_fd_length(FILE *f, request_rec *r, long length)
         while ((n = fread(buf, sizeof(char), len, f)) < 1
                && ferror(f) && errno == EINTR && !r->connection->aborted)
             continue;
+
+#ifdef CHARSET_EBCDIC
+	if (convert_to_ascii)
+	    ebcdic_to_ascii(buf, buf, n);
+#endif /*CHARSET_EBCDIC*/
 
         if (n < 1) {
             break;
@@ -1885,7 +1902,11 @@ API_EXPORT_NONSTD(int) rvputs(request_rec *r,...)
         if (x == NULL)
             break;
         j = strlen(x);
+#ifndef CHARSET_EBCDIC
         i = bwrite(fb, x, j);
+#else /*CHARSET_EBCDIC*/
+        i = bputs(x, fb);
+#endif /*CHARSET_EBCDIC*/
         if (i != j) {
             va_end(args);
             return -1;

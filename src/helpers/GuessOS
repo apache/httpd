@@ -199,6 +199,10 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	echo "${MACHINE}-sni-sysv4"; exit 0
 	;;
 
+    POSIX*BS2000)
+	echo "${MACHINE}-sni-sysv4"; exit 0
+	;;
+
     machten:*)
        echo "${MACHINE}-tenon-${SYSTEM}"; exit 0;
        ;;

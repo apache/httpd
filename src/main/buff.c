@@ -419,6 +419,9 @@ static void end_chunk(BUFF *fb)
 	/* we overwrote the \r, so put it back */
 	fb->outbase[i - 1] = '\015';
     }
+#ifdef CHARSET_EBCDIC
+    ebcdic2ascii(&fb->outbase[fb->outchunk], &fb->outbase[fb->outchunk], fb->outchunk_header_size);
+#endif /*CHARSET_EBCDIC*/
 
     /* tack on the trailing CRLF, we've reserved room for this */
     fb->outbase[fb->outcnt++] = '\015';
@@ -662,7 +665,7 @@ API_EXPORT(int) bread(BUFF *fb, void *buf, int nbyte)
  * transmission, or -1 on an error.
  *
  * Notes:
- *  If null characters are exepected in the data stream, then
+ *  If null characters are expected in the data stream, then
  * buff should not be treated as a null terminated C string; instead
  * the returned count should be used to determine the length of the
  * string.
@@ -702,6 +705,7 @@ API_EXPORT(int) bgets(char *buff, int n, BUFF *fb)
 	    continue;		/* restart with the new data */
 	}
 
+#ifndef CHARSET_EBCDIC
 	ch = fb->inptr[i++];
 	if (ch == '\012') {	/* got LF */
 	    if (ct == 0)
@@ -722,6 +726,28 @@ API_EXPORT(int) bgets(char *buff, int n, BUFF *fb)
 
 	buff[ct++] = ch;
     }
+#else /* an EBCDIC machine: do the same, but convert to EBCDIC on the fly: */
+	ch = _toebcdic[(unsigned char)fb->inptr[i++]];
+	if (ch == _toebcdic['\012']) {	/* got LF */
+	    if (ct == 0)
+		buff[ct++] = '\n';
+/* if just preceeded by CR, replace CR with LF */
+	    else if (buff[ct - 1] == _toebcdic['\015'])
+		buff[ct - 1] = '\n';
+	    else if (ct < n - 1)
+		buff[ct++] = '\n';
+	    else
+		i--;		/* no room for LF */
+	    break;
+	}
+	if (ct == n - 1) {
+	    i--;		/* push back ch */
+	    break;
+	}
+
+	buff[ct++] = ch;
+    }
+#endif
     fb->incnt -= i;
     fb->inptr += i;
 
@@ -761,7 +787,11 @@ API_EXPORT(int) blookc(char *buff, BUFF *fb)
 	fb->incnt = i;
     }
 
+#ifndef CHARSET_EBCDIC
     *buff = fb->inptr[0];
+#else /*CHARSET_EBCDIC*/
+    *buff = _toebcdic[(unsigned char)fb->inptr[0]];
+#endif /*CHARSET_EBCDIC*/
     return 1;
 }
 
@@ -803,14 +833,18 @@ API_EXPORT(int) bskiplf(BUFF *fb)
 }
 
 /*
- * Emtpy the buffer after putting a single character in it
+ * Empty the buffer after putting a single character in it
  */
 API_EXPORT(int) bflsbuf(int c, BUFF *fb)
 {
     char ss[1];
     int rc;
 
+#ifndef CHARSET_EBCDIC
     ss[0] = c;
+#else
+    ss[0] = _toascii[(unsigned char)c];
+#endif
     rc = bwrite(fb, ss, 1);
     /* We do start_chunk() here so that the bputc macro can be smaller
      * and faster
@@ -834,7 +868,11 @@ API_EXPORT(int) bfilbuf(BUFF *fb)
     if (i != 1)
 	return EOF;
     else
+#ifndef CHARSET_EBCDIC
 	return buf[0];
+#else /*CHARSET_EBCDIC*/
+	return _toebcdic[(unsigned char)buf[0]];
+#endif /*CHARSET_EBCDIC*/
 }
 
 
@@ -983,9 +1021,12 @@ static int bcwrite(BUFF *fb, const void *buf, int nbyte)
     vec[0].iov_base = chunksize;
     vec[0].iov_len = ap_snprintf(chunksize, sizeof(chunksize), "%x\015\012",
 				 nbyte);
+#ifdef CHARSET_EBCDIC
+    ebcdic2ascii(chunksize, chunksize, strlen(chunksize));
+#endif /*CHARSET_EBCDIC*/
     vec[1].iov_base = (void *) buf;	/* cast is to avoid const warning */
     vec[1].iov_len = nbyte;
-    vec[2].iov_base = "\r\n";
+    vec[2].iov_base = "\015\012";
     vec[2].iov_len = 2;
 
     return writev_it_all(fb, vec, (sizeof(vec) / sizeof(vec[0]))) ? -1 : nbyte;
@@ -1019,11 +1060,14 @@ static int large_write(BUFF *fb, const void *buf, int nbyte)
 	vec[nvec].iov_base = chunksize;
 	vec[nvec].iov_len = ap_snprintf(chunksize, sizeof(chunksize),
 					"%x\015\012", nbyte);
+#ifdef CHARSET_EBCDIC
+	ebcdic2ascii(chunksize, chunksize, strlen(chunksize));
+#endif /*CHARSET_EBCDIC*/
 	++nvec;
 	vec[nvec].iov_base = (void *) buf;
 	vec[nvec].iov_len = nbyte;
 	++nvec;
-	vec[nvec].iov_base = "\r\n";
+	vec[nvec].iov_base = "\015\012";
 	vec[nvec].iov_len = 2;
 	++nvec;
     }
@@ -1257,17 +1301,54 @@ API_EXPORT(int) bclose(BUFF *fb)
 	return rc3;
 }
 
+#ifdef CHARSET_EBCDIC
+/*
+ * returns the number of bytes written or -1 on error
+ */
+API_EXPORT(int) bnputs(const char *x, BUFF *fb, size_t amount)
+{
+    int i;
+    const char *endp = &x[amount];
+    /* @@@FIXME: This probably could use some performance improvement */
+    for ( ; x < endp; ++x) {
+	int ch = *x;
+	/* This test is a workaround: at many places in Apache, the (ASCII)
+	 * constants \012 and \015 are used in strings in place of \n and \r.
+	 * In an EBCDIC environment, the rest of the strings is interpreted
+	 * as EBCDIC characters, so we need the EBCDIC equivalent of \n and \r
+	 * instead of \012 and \015. So, for the HTTP protocol level, 
+	 * conversion is limited to characters other than \012 and \015 (in
+	 * ebcdic2ascii(), I handled it similarly).
+	 * Of course, on all ASCII based environments, the decision to use
+	 * \012 and \015 in strings makes perfectly sense, because on, e.g.,
+	 * OS-9/68k machines (or MACs), \n is compiled to \015
+	 * (as is \r; the \012 escape must be written \l) which would violate
+	 * the HTTP protocol.
+	 */
+	if (ch == '\012' || ch == '\015')
+	    ch = _toebcdic[ch];
+	if (bputc(ch, fb) != 0)
+	    return -1;
+    }
+    return amount;
+}
+#endif /*CHARSET_EBCDIC*/
+
 /*
  * returns the number of bytes written or -1 on error
  */
 API_EXPORT(int) bputs(const char *x, BUFF *fb)
 {
+#ifndef CHARSET_EBCDIC
     int i, j = strlen(x);
     i = bwrite(fb, x, j);
     if (i != j)
 	return -1;
     else
 	return j;
+#else /*CHARSET_EBCDIC*/
+    return bnputs(x, fb, strlen(x));
+#endif /*CHARSET_EBCDIC*/
 }
 
 /*
@@ -1285,7 +1366,11 @@ API_EXPORT_NONSTD(int) bvputs(BUFF *fb,...)
 	if (x == NULL)
 	    break;
 	j = strlen(x);
+#ifndef CHARSET_EBCDIC
 	i = bwrite(fb, x, j);
+#else /*CHARSET_EBCDIC*/
+	i = bputs(x, fb);
+#endif /*CHARSET_EBCDIC*/
 	if (i != j) {
 	    va_end(v);
 	    return -1;

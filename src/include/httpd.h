@@ -464,14 +464,30 @@ extern MODULE_VAR_EXPORT const char SERVER_BUILT[];
 #define CGI_MAGIC_TYPE "application/x-httpd-cgi"
 #define INCLUDES_MAGIC_TYPE "text/x-server-parsed-html"
 #define INCLUDES_MAGIC_TYPE3 "text/x-server-parsed-html3"
+#ifdef CHARSET_EBCDIC
+#define ASCIITEXT_MAGIC_TYPE_PREFIX "text/x-ascii-" /* Text files whose content-type starts with this are passed thru unconverted */
+#endif /*CHARSET_EBCDIC*/
 #define MAP_FILE_MAGIC_TYPE "application/x-type-map"
 #define ASIS_MAGIC_TYPE "httpd/send-as-is"
 #define DIR_MAGIC_TYPE "httpd/unix-directory"
 #define STATUS_MAGIC_TYPE "application/x-httpd-status"
 
 /* Just in case your linefeed isn't the one the other end is expecting. */
+#ifndef CHARSET_EBCDIC
 #define LF 10
 #define CR 13
+#else /* CHARSET_EBCDIC */
+#include "ebcdic.h"
+/* OSD_POSIX uses the EBCDIC charset. The transition ASCII->EBCDIC is done in
+ * the buff package (bread/bputs/bwrite), so everywhere else, we use
+ * "native EBCDIC" CR and NL characters. These are therefore defined as
+ * '\r' and '\n'.
+ * NB: this is not the whole truth - sometimes \015 and \012 are contained
+ * in literal (EBCDIC!) strings, so these are not converted but passed.
+ */
+#define CR '\r'
+#define LF '\n'
+#endif /* CHARSET_EBCDIC */
 
 /* Possible values for request_rec.read_body (set by handling module):
  *    REQUEST_NO_BODY          Send 413 error if message has any body

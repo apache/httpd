@@ -113,3 +113,10 @@ features:
        given HTTP request.  If the request is a sub-request or
        internal redirect, the function will return false.
 
+  *) Apache now ported to a mainframe machine with EBCDIC charset
+       This new port makes apache-1.3 compile and run on a
+       Siemens Nixdorf mainframe running under the BS2000-OSD
+       operating system in the POSIX subsystem. The server is capable
+       of serving either "binary-ASCII" or EBCDIC coded HTML text
+       documents. See the file README.EBCDIC in the src directory;
+       it also explains which modules still need porting (most are ready).

@@ -444,6 +444,11 @@ extern char *crypt();
 #define HAVE_SYSLOG
 #define NET_SIZE_T size_t
 #define HAVE_SHMGET
+#ifdef _OSD_POSIX /* BS2000-POSIX mainframe does not have syslog and needs initgroups */
+#define NEED_INITGROUPS
+#undef HAVE_SYSLOG
+#undef HAVE_SHMGET
+#endif /*_OSD_POSIX*/
 
 #elif defined(UW)
 #define NO_LINGCLOSE
