@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.3 -->
+<!-- English revision: 1.4 -->
 
 <manualpage>
   <relativepath href="."/>
@@ -23,6 +23,8 @@
       <directivelist>
         <directive module="mod_mime">AddInputFilter</directive>
         <directive module="mod_mime">AddOutputFilter</directive>
+        <directive module="mod_mime">RemoveInputFilter</directive>
+        <directive module="mod_mime">RemoveOutputFilter</directive>
         <directive module="mod_ext_filter">ExtFilterDefine</directive>
         <directive module="mod_ext_filter">ExtFilterOptions</directive>
         <directive module="core">SetInputFilter</directive>
@@ -46,7 +48,9 @@
     <directive module="core">SetInputFilter</directive>,
     <directive module="core">SetOutputFilter</directive>,
     <directive module="core">AddInputFilter</directive>,
-    <directive module="core">AddOutputFilter</directive>
+    <directive module="core">AddOutputFilter</directive>,
+    <directive module="mod_mime">RemoveInputFilter</directive>,
+    <directive module="mod_mime">RemoveOutputFilter</directive>
     ディレクティブで制御できます。</p>
 
     <p>現行の Apache HTTP サーバの配布では、
