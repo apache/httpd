@@ -7,9 +7,12 @@
 #ifndef _PCRE_H
 #define _PCRE_H
 
+/* The file pcre.h is build by "configure" or copied from pcre.hw
+Do not edit it; instead make changes to pcre.in and/or pcre.hw */
+
 #define PCRE_MAJOR 3
-#define PCRE_MINOR 1
-#define PCRE_DATE  09-Feb-2000
+#define PCRE_MINOR 2
+#define PCRE_DATE  12-May-2000
 
 /* Win32 uses DLL by default */
 
@@ -26,7 +29,6 @@
 /* Have to include stdlib.h in order to ensure that size_t is defined;
 it is needed here for malloc. */
 
-#include <sys/types.h>
 #include <stdlib.h>
 
 /* Allow for C++ users */
