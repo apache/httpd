@@ -1,4 +1,4 @@
-Changes with Apache 2.0.32-dev
+Changes with Apache 2.0.32
 
   *) mod_negotiation: ForceLanguagePriority now uses 'Prefer' as the
      default if the directive is not specified.  This mirrors older
