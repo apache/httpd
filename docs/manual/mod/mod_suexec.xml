@@ -1,15 +1,16 @@
 <?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
 <modulesynopsis>
 
 <name>mod_suexec</name>
+<description>Allows CGI scripts to run as a specified user
+and Group</description>
 <status>Extension</status>
-<identifier>suexec_module</identifier>
 <sourcefile>mod_suexec.c</sourcefile>
+<identifier>suexec_module</identifier>
 <compatibility>Available in Apache 2.0 and later</compatibility>
 
-<description>This module allows CGI scripts to run as a specified user
-and Group.</description>
 
 <summary>
     <p>This module allows CGI scripts to run as a specified user

@@ -1,15 +1,14 @@
 <?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
 <modulesynopsis>
 
 <name>mod_unique_id</name>
+<description>Provides an environment variable with a unique
+identifier for each request</description>
 <status>Extension</status>
-<identifier>unique_id_module</identifier>
 <sourcefile>mod_unique_id.c</sourcefile>
-<compatibility>Available in Apache 1.3 and later.</compatibility>
-
-<description>This module provides an environment variable with a unique
-identifier for each request.</description>
+<identifier>unique_id_module</identifier>
 
 <summary>
 
