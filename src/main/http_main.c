@@ -898,8 +898,8 @@ static void accept_mutex_child_init(pool *p)
     int rc = DosOpenMutexSem(NULL, &lock_sem);
 
     if (rc != 0) {
-	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
-		    "Child cannot open lock semaphore");
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, server_conf,
+		    "Child cannot open lock semaphore, rc=%d", rc);
 	clean_child_exit(APEXIT_CHILDINIT);
     }
 }
@@ -913,8 +913,8 @@ static void accept_mutex_init(pool *p)
     int rc = DosCreateMutexSem(NULL, &lock_sem, DC_SEM_SHARED, FALSE);
 
     if (rc != 0) {
-	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
-		    "Parent cannot create lock semaphore");
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, server_conf,
+		    "Parent cannot create lock semaphore, rc=%d", rc);
 	exit(APEXIT_INIT);
     }
 
@@ -926,7 +926,7 @@ static void accept_mutex_on(void)
     int rc = DosRequestMutexSem(lock_sem, SEM_INDEFINITE_WAIT);
 
     if (rc != 0) {
-	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, server_conf,
 		    "OS2SEM: Error %d getting accept lock. Exiting!", rc);
 	clean_child_exit(APEXIT_CHILDFATAL);
     }
@@ -937,7 +937,7 @@ static void accept_mutex_off(void)
     int rc = DosReleaseMutexSem(lock_sem);
     
     if (rc != 0) {
-	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, server_conf,
 		    "OS2SEM: Error %d freeing accept lock. Exiting!", rc);
 	clean_child_exit(APEXIT_CHILDFATAL);
     }
