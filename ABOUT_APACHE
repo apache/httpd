@@ -1,9 +1,9 @@
 
                      The Apache HTTP Server Project
 
-                         http://www.apache.org/
+                       http://www.apache.org/httpd
 
-                              February 1999
+                               July 2000
 
 The Apache Project is a collaborative software development effort aimed
 at creating a robust, commercial-grade, featureful, and freely-available
@@ -70,34 +70,44 @@ is today more widely used than all other web servers combined.
 
  ============================================================================
 
-Current Apache Group in alphabetical order as of 14 February 1999:
+Current Apache Group in alphabetical order as of 27 July 2000:
 
-   Brian Behlendorf       O'Reilly and Associates, California 
+   Brian Behlendorf       Collab.Net, California 
+   Ryan Bloom             Covalent Technologies, California 
    Ken Coar               IBM Corporation, Research Triangle Park, NC, USA
    Mark J. Cox            C2Net Europe, UK 
-   Lars Eilebrecht        Cable & Wireless ECRC, Munich, Germany 
+   Lars Eilebrecht        CyberSolutions, Munich, Germany 
    Ralf S. Engelschall    Munich, Germany.
-   Roy T. Fielding        UC Irvine, California 
+   Roy T. Fielding        eBuilt, California 
+   Tony Finch             Covalent Technologies, UK
    Dean Gaudet            Critical Path, California 
-   Rob Hartill            Internet Movie DB, UK 
+   Dirk-Willem van Gulik  Covalent Technologies, California 
+   Brian Havard           Australia
    Ben Hyde               Gensym, Massachusetts
-   Jim Jagielski          jaguNET ISP, Maryland 
+   Jim Jagielski          jaguNET Access Services, Maryland 
+   Manoj Kasichainula     Collab.Net, California
    Alexei Kosut           Stanford University, California 
    Martin Kraemer         Munich, Germany
    Ben Laurie             Freelance Consultant, UK 
-   Doug MacEachern        Critical Path, California
-   Aram W. Mirzadeh       Qosina Corporation, New York 
-   Sameer Parekh          C2Net, California 
-   Cliff Skolnick         Freelance, California
-   Marc Slemko            Canada 
-   Bill Stoddard          IBM Corp., Research Triangle Park, NC
-   Paul Sutton            C2Net Europe, UK 
-   Randy Terbush          Covalent Technologies, Nebraska 
-   Dirk-Willem van Gulik  Freelance Consultant, Italy 
-
-Apache Emeritae (old group members now off doing other things)
-
+   Rasmus Lerdorf         Linuxcare, California
+   Daniel Lopez Ridruejo  Covalent Technologies, California
+   Doug MacEachern        Covalent Technologies, California
+   Aram W. Mirzadeh       CableVision, New York 
    Chuck Murcko           The Topsail Group, Pennsylvania 
+   Sameer Parekh          C2Net, California 
+   David Reid             UK
+   William A. Rowe        Chicago
+   Wilfredo Sanchez       Apple Computer, California
+   Cliff Skolnick         California
+   Marc Slemko            Canada 
+   Greg Stein             California
+   Bill Stoddard          IBM Corporation, Research Triangle Park, NC
+   Paul Sutton            C2Net Europe, UK 
+   Randy Terbush          Covalent Technologies, California 
+
+Apache Emeritus (old group members now off doing other things)
+
+   Rob Hartill            Internet Movie DB, UK 
    David Robinson         Cambridge University, UK
    Robert S. Thau         MIT, Massachusetts
    Andrew Wilson          Freelance Consultant, UK 
@@ -107,7 +117,6 @@ Other major contributors
    Howard Fear (mod_include), Florent Guillaume (language negotiation),
    Koen Holtman (rewrite of mod_negotiation),
    Kevin Hughes (creator of all those nifty icons),
-   Rasmus Lerdorf (mod_info, mod_php, mod_php3),
    Brandon Long and Beth Frank (NCSA Server Development Team, post-1.3),
    Ambarish Malpani (Beginning of the NT port),
    Rob McCool (original author of the NCSA httpd 1.3),
@@ -117,8 +126,7 @@ Other major contributors
 Many 3rd-party modules, frequently used and recommended, are also
 freely-available and linked from the related projects page:
 <http://modules.apache.org/>, and their authors frequently
-contribute ideas, patches, and testing.  In particular, Doug MacEachern
-(mod_perl) and Rasmus Lerdorf (mod_php).
+contribute ideas, patches, and testing.
 
 Hundreds of people have made individual contributions to the Apache
 project.  Patch contributors are listed in the src/CHANGES file.
@@ -164,7 +172,7 @@ technically refers to this core of project contributors.
 The Apache project is a meritocracy -- the more work you have done, the more
 you are allowed to do.  The group founders set the original rules, but
 they can be changed by vote of the active members.  There is a group
-of people who have logins on our server (hyperreal.com) and access to the
+of people who have logins on our server (apache.org) and access to the
 CVS repository.  Everyone has access to the CVS snapshots.  Changes to
 the code are proposed on the mailing list and usually voted on by active
 members -- three +1 (yes votes) and no -1 (no votes, or vetoes) are needed
@@ -188,9 +196,29 @@ nominated by one member and unanimously approved by the voting members.
 In most cases, this "new" member has been actively contributing to the
 group's work for over six months, so it's usually an easy decision.
 
-The above describes our past and current (as of April 1998) guidelines,
+The above describes our past and current (as of July 2000) guidelines,
 which will probably change over time as the membership of the group
 changes and our development/coordination tools improve.
+
+ ============================================================================
+
+The Apache Software Foundation (www.apache.org)
+
+The Apache Software Foundation exists to provide organizational, legal,
+and financial support for the Apache open-source software projects.
+Founded in June 1999 by the Apache Group, the Foundation has been
+incorporated as a membership-based, not-for-profit corporation in order
+to ensure that the Apache projects continue to exist beyond the participation
+of individual volunteers, to enable contributions of intellectual property
+and funds on a sound basis, and to provide a vehicle for limiting legal
+exposure while participating in open-source software projects. 
+
+You are invited to participate in The Apache Software Foundation. We welcome
+contributions in many forms.  Our membership consists of those individuals
+who have demonstrated a commitment to collaborative open-source software
+development through sustained participation and contributions within the
+Foundation's projects.  Many people and companies have contributed towards
+the success of the Apache projects. 
 
  ============================================================================
 
@@ -236,5 +264,3 @@ as described in the LICENSE file.
 
 Thanks for using Apache!
 
- ============================================================================
-Roy Fielding, June 1997
