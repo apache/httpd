@@ -1079,6 +1079,8 @@ const char *set_server_string_slot (cmd_parms *cmd, void *dummy, char *arg)
 
 const char *server_type (cmd_parms *cmd, void *dummy, char *arg)
 {
+    if (cmd->server->is_virtual)
+	return "ServerType directive not allowed in <VirtualHost>";
     if (!strcasecmp (arg, "inetd")) standalone = 0;
     else if (!strcasecmp (arg, "standalone")) standalone = 1;
     else return "ServerType must be either 'inetd' or 'standalone'";
@@ -1154,6 +1156,8 @@ const char *set_group (cmd_parms *cmd, void *dummy, char *arg)
 }
 
 const char *set_server_root (cmd_parms *cmd, void *dummy, char *arg) {
+    if (cmd->server->is_virtual)
+	return "ServerRoot directive not allowed in <VirtualHost>";
     if (!is_directory (arg)) return "ServerRoot must be a valid directory";
     strncpy (server_root, arg, sizeof(server_root)-1);
     server_root[sizeof(server_root)-1] = '\0';
@@ -1187,16 +1191,22 @@ const char *set_keep_alive_max (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_pidfile (cmd_parms *cmd, void *dummy, char *arg) {
+    if (cmd->server->is_virtual)
+	return "PidFile directive not allowed in <VirtualHost>";
     pid_fname = pstrdup (cmd->pool, arg);
     return NULL;
 }
 
 const char *set_scoreboard (cmd_parms *cmd, void *dummy, char *arg) {
+    if (cmd->server->is_virtual)
+	return "ScoreBoardFile directive not allowed in <VirtualHost>";
     scoreboard_fname = pstrdup (cmd->pool, arg);
     return NULL;
 }
 
 const char *set_lockfile (cmd_parms *cmd, void *dummy, char *arg) {
+    if (cmd->server->is_virtual)
+	return "LockFile directive not allowed in <VirtualHost>";
     lock_fname = pstrdup (cmd->pool, arg);
     return NULL;
 }
@@ -1232,11 +1242,15 @@ const char *set_content_md5 (cmd_parms *cmd, core_dir_config *d, int arg) {
 }
 
 const char *set_daemons_to_start (cmd_parms *cmd, void *dummy, char *arg) {
+    if (cmd->server->is_virtual)
+	return "StartServers directive not allowed in <VirtualHost>";
     daemons_to_start = atoi (arg);
     return NULL;
 }
 
 const char *set_min_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
+    if (cmd->server->is_virtual)
+	return "MinSpareServers directive not allowed in <VirtualHost>";
     daemons_min_free = atoi (arg);
     if (daemons_min_free <= 0) {
        fprintf(stderr, "WARNING: detected MinSpareServers set to non-positive.\n");
@@ -1249,11 +1263,15 @@ const char *set_min_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_max_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
+    if (cmd->server->is_virtual)
+	return "MaxSpareServers directive not allowed in <VirtualHost>";
     daemons_max_free = atoi (arg);
     return NULL;
 }
 
 const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) {
+    if (cmd->server->is_virtual)
+	return "MaxClients directive not allowed in <VirtualHost>";
     daemons_limit = atoi (arg);
     if (daemons_limit > HARD_SERVER_LIMIT) {
        fprintf(stderr, "WARNING: MaxClients of %d exceeds compile time limit "
@@ -1270,16 +1288,22 @@ const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_max_requests (cmd_parms *cmd, void *dummy, char *arg) {
+    if (cmd->server->is_virtual)
+	return "MaxRequestsPerChild directive not allowed in <VirtualHost>";
     max_requests_per_child = atoi (arg);
     return NULL;
 }
 
 const char *set_threads (cmd_parms *cmd, void *dummy, char *arg) {
+    if (cmd->server->is_virtual)
+	return "ThreadsPerChild directive not allowed in <VirtualHost>";
     threads_per_child = atoi (arg);
     return NULL;
 }
 
 const char *set_excess_requests (cmd_parms *cmd, void *dummy, char *arg) {
+    if (cmd->server->is_virtual)
+	return "ExcessRequestsPerChild directive not allowed in <VirtualHost>";
     excess_requests_per_child = atoi (arg);
     return NULL;
 }
@@ -1373,6 +1397,8 @@ const char *set_limit_nproc (cmd_parms *cmd, core_dir_config *conf, char *arg, c
 #endif
 
 const char *set_bind_address (cmd_parms *cmd, void *dummy, char *arg) {
+    if (cmd->server->is_virtual)
+	return "BindAddress directive not allowed in <VirtualHost>";
     bind_address.s_addr = get_virthost_addr (arg, NULL);
     return NULL;
 }
