@@ -124,14 +124,13 @@ static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listensocks = 0;
 static apr_socket_t **listensocks;
-static FDQueue *worker_queue;
+static fd_queue_t *worker_queue;
 
 /* The structure used to pass unique initialization info to each thread */
 typedef struct {
     int pid;
     int tid;
     int sd;
-    apr_pool_t *tpool; /* "pthread" would be confusing */
 } proc_info;
 
 /* Structure used to pass information to the thread responsible for 
@@ -201,7 +200,9 @@ static const char *lock_fname;
 static void signal_workers(void)
 {
     workers_may_exit = 1;
-    ap_queue_signal_all_wakeup(worker_queue);
+    /* XXX: This will happen naturally on a graceful, and we don't care otherwise.
+    ap_queue_signal_all_wakeup(worker_queue); */
+    ap_queue_interrupt_all(worker_queue);
 }
 
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
@@ -553,7 +554,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     proc_info * ti = dummy;
     int process_slot = ti->pid;
     int thread_slot = ti->tid;
-    apr_pool_t *tpool = ti->tpool;
+    apr_pool_t *tpool = apr_thread_pool_get(thd);
     apr_socket_t *csd = NULL;
     apr_pool_t *ptrans;		/* Pool for per-transaction stuff */
     apr_socket_t *sd = NULL;
@@ -564,8 +565,6 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
 
     free(ti);
 
-    apr_pool_create(&ptrans, tpool);
-
     apr_lock_acquire(worker_thread_count_mutex);
     worker_thread_count++;
     apr_lock_release(worker_thread_count_mutex);
@@ -574,12 +573,10 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     for(n=0 ; n <= num_listensocks ; ++n)
 	apr_poll_socket_add(pollset, listensocks[n], APR_POLLIN);
 
-    worker_queue = apr_pcalloc(pchild, sizeof(*worker_queue));
-    ap_queue_init(worker_queue, ap_threads_per_child, pchild);
-
     /* TODO: Switch to a system where threads reuse the results from earlier
        poll calls - manoj */
     while (1) {
+        /* TODO: requests_this_child should be synchronized - aaron */
         if (requests_this_child <= 0) {
             check_infinite_requests();
         }
@@ -644,6 +641,9 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         }
     got_fd:
         if (!workers_may_exit) {
+            /* create a new transaction pool for each accepted socket */
+            apr_pool_create(&ptrans, tpool);
+
             if ((rv = apr_accept(&csd, sd, ptrans)) != APR_SUCCESS) {
                 csd = NULL;
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, 
@@ -658,7 +658,6 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             }
             if (csd != NULL) {
                 ap_queue_push(worker_queue, csd, ptrans);
-                ap_block_on_queue(worker_queue);
             }
         }
         else {
@@ -673,13 +672,15 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         }
     }
 
-    apr_pool_destroy(tpool);
     ap_update_child_status(process_slot, thread_slot, (dying) ? SERVER_DEAD : SERVER_GRACEFUL,
         (request_rec *) NULL);
     dying = 1;
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
     kill(ap_my_pid, SIGTERM);
 
+/* this is uncommented when we make a pool-pool
+    apr_thread_exit(thd, APR_SUCCESS);
+*/
     return NULL;
 }
 
@@ -688,30 +689,35 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
     proc_info * ti = dummy;
     int process_slot = ti->pid;
     int thread_slot = ti->tid;
-    apr_pool_t *tpool = ti->tpool;
     apr_socket_t *csd = NULL;
     apr_pool_t *ptrans;		/* Pool for per-transaction stuff */
+    apr_status_t rv;
 
     free(ti);
 
+    /* apr_pool_create(&ptrans, tpool); */
+
     while (!workers_may_exit) {
-        ap_queue_pop(worker_queue, &csd, &ptrans);
-        if (!csd) {
+        rv = ap_queue_pop(worker_queue, &csd, &ptrans);
+        /* We get FD_QUEUE_EINTR whenever ap_queue_pop() has been interrupted
+         * from an explicit call to ap_queue_interrupt_all(). This allows
+         * us to unblock threads stuck in ap_queue_pop() when a shutdown
+         * is pending. */
+        if (rv == FD_QUEUE_EINTR || !csd) {
             continue;
         }
-        ap_increase_blanks(worker_queue);
         process_socket(ptrans, csd, process_slot, thread_slot);
-        requests_this_child--;
-        apr_pool_clear(ptrans);
+        requests_this_child--; /* FIXME: should be synchronized - aaron */
+        apr_pool_destroy(ptrans);
     }
 
-    apr_pool_destroy(tpool);
     ap_update_child_status(process_slot, thread_slot, (dying) ? SERVER_DEAD : SERVER_GRACEFUL,
         (request_rec *) NULL);
     apr_lock_acquire(worker_thread_count_mutex);
     worker_thread_count--;
     apr_lock_release(worker_thread_count_mutex);
 
+    apr_thread_exit(thd, APR_SUCCESS);
     return NULL;
 }
 
@@ -738,14 +744,20 @@ static void *start_threads(apr_thread_t *thd, void * dummy)
     int threads_created = 0;
     apr_thread_t *listener;
 
+    /* We must create the fd queue before we start up the listener
+     * and worker threads. */
+    worker_queue = apr_pcalloc(pchild, sizeof(*worker_queue));
+    ap_queue_init(worker_queue, ap_threads_per_child, pchild);
+
     my_info = (proc_info *)malloc(sizeof(proc_info));
     my_info->pid = my_child_num;
     my_info->tid = i;
     my_info->sd = 0;
-    apr_pool_create(&my_info->tpool, pchild);
     apr_thread_create(&listener, thread_attr, listener_thread, my_info, pchild);
     while (1) {
-        for (i=1; i < ap_threads_per_child; i++) {
+        /* Does ap_threads_per_child include the listener thread?
+         * Why does this forloop start at 1? -aaron */
+        for (i = 1; i < ap_threads_per_child; i++) {
             int status = ap_scoreboard_image->servers[child_num_arg][i].status;
 
             if (status != SERVER_GRACEFUL && status != SERVER_DEAD) {
@@ -761,7 +773,6 @@ static void *start_threads(apr_thread_t *thd, void * dummy)
 	    my_info->pid = my_child_num;
             my_info->tid = i;
 	    my_info->sd = 0;
-	    apr_pool_create(&my_info->tpool, pchild);
 	
   	    /* We are creating threads right now */
 	    (void) ap_update_child_status(my_child_num, i, SERVER_STARTING, 
@@ -794,6 +805,7 @@ static void *start_threads(apr_thread_t *thd, void * dummy)
      *  "life_status" is almost right, but it's in the worker's structure, and 
      *  the name could be clearer.   gla
      */
+    apr_thread_exit(thd, APR_SUCCESS);
     return NULL;
 }
 
@@ -870,7 +882,7 @@ static void child_main(int child_num_arg)
     apr_lock_create(&pipe_of_death_mutex, APR_MUTEX, APR_INTRAPROCESS, 
                     NULL, pchild);
 
-    ts = apr_palloc(pchild, sizeof(*ts));
+    ts = (thread_starter *)apr_palloc(pchild, sizeof(*ts));
 
     apr_threadattr_create(&thread_attr, pchild);
     apr_threadattr_detach_set(thread_attr, 0);    /* 0 means PTHREAD_CREATE_JOINABLE */

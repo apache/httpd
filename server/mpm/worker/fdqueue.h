@@ -66,34 +66,35 @@
 #include <pthread.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <apr_errno.h>
 
 #define FD_QUEUE_SUCCESS 0
 #define FD_QUEUE_FAILURE -1 /* Needs to be an invalid file descriptor because
                                of queue_pop semantics */
+#define FD_QUEUE_EINTR APR_EINTR
 
-typedef struct fd_queue_elem {
-    apr_socket_t *sd;
-    apr_pool_t *p;
-} FDQueueElement;
+struct fd_queue_elem_t {
+    apr_socket_t      *sd;
+    apr_pool_t        *p;
+};
+typedef struct fd_queue_elem_t fd_queue_elem_t;
 
-typedef struct fd_queue {
-    int head;
-    int tail;
-    FDQueueElement *data;
-    int bounds;
-    int blanks;
-    pthread_mutex_t one_big_mutex;
-    pthread_cond_t not_empty;
-    pthread_cond_t not_full;
-} FDQueue;
+struct fd_queue_t {
+    int                head;
+    int                tail;
+    fd_queue_elem_t   *data;
+    int                bounds;
+    int                blanks;
+    pthread_mutex_t    one_big_mutex;
+    pthread_cond_t     not_empty;
+    pthread_cond_t     not_full;
+    int                cancel_state;
+};
+typedef struct fd_queue_t fd_queue_t;
 
-int ap_queue_init(FDQueue *queue, int queue_size, apr_pool_t *a);
-int ap_queue_push(FDQueue *queue, apr_socket_t *sd, apr_pool_t *p);
-apr_status_t ap_queue_pop(FDQueue *queue, apr_socket_t **sd, apr_pool_t **p);
-int ap_queue_size(FDQueue *queue);
-int ap_queue_full(FDQueue *queue);
-int ap_block_on_queue(FDQueue *queue);
-void ap_queue_signal_all_wakeup(FDQueue *queue);
-int ap_increase_blanks(FDQueue *queue);
+int ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a);
+int ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p);
+apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p);
+apr_status_t ap_queue_interrupt_all(fd_queue_t *queue);
 
 #endif /* FDQUEUE_H */
