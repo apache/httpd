@@ -68,8 +68,10 @@
  * LDAP Cache Manager
  */
 
+#if APR_HAS_SHARED_MEMORY
 #include <apr_shm.h>
 #include <apr_rmm.h> /* EDD */
+#endif
 
 typedef struct util_cache_node_t {
     void *payload;		/* Pointer to the payload */
@@ -212,9 +214,9 @@ void util_ldap_dn_compare_node_free(util_ald_cache_t *cache, void *n);
 /* util_ldap_cache_mgr.c */
 
 /* Cache alloc and free function, dealing or not with shm */
-void util_ald_free(apr_rmm_t *rmm_addr, const void *ptr);
-void *util_ald_alloc(apr_rmm_t *rmm_addr, unsigned long size);
-const char *util_ald_strdup(apr_rmm_t *rmm_addr, const char *s);
+void util_ald_free(util_ald_cache_t *cache, const void *ptr);
+void *util_ald_alloc(util_ald_cache_t *cache, unsigned long size);
+const char *util_ald_strdup(util_ald_cache_t *cache, const char *s);
 
 /* Cache managing function */
 unsigned long util_ald_hash_string(int nstr, ...);

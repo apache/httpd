@@ -112,13 +112,13 @@ static const unsigned long primes[] =
   0
 };
 
-void util_ald_free(apr_rmm_t *rmm_addr, const void *ptr)
+void util_ald_free(util_ald_cache_t *cache, const void *ptr)
 {
 #if APR_HAS_SHARED_MEMORY
-    if (rmm_addr) {
+    if (cache->rmm_addr) {
         if (ptr)
             /* Free in shared memory */
-            apr_rmm_free(rmm_addr, apr_rmm_offset_get(rmm_addr, (void *)ptr));
+            apr_rmm_free(cache->rmm_addr, apr_rmm_offset_get(cache->rmm_addr, (void *)ptr));
     }
     else {
         if (ptr)
@@ -131,14 +131,14 @@ void util_ald_free(apr_rmm_t *rmm_addr, const void *ptr)
 #endif
 }
 
-void *util_ald_alloc(apr_rmm_t *rmm_addr, unsigned long size)
+void *util_ald_alloc(util_ald_cache_t *cache, unsigned long size)
 {
     if (0 == size)
         return NULL;
 #if APR_HAS_SHARED_MEMORY
-    if (rmm_addr) {
+    if (cache->rmm_addr) {
         /* allocate from shared memory */
-        return (void *)apr_rmm_addr_get(rmm_addr, apr_rmm_calloc(rmm_addr, size));
+        return (void *)apr_rmm_addr_get(cache->rmm_addr, apr_rmm_calloc(cache->rmm_addr, size));
     }
     else {
         /* Cache shm is not used */
@@ -149,12 +149,12 @@ void *util_ald_alloc(apr_rmm_t *rmm_addr, unsigned long size)
 #endif
 }
 
-const char *util_ald_strdup(apr_rmm_t *rmm_addr, const char *s)
+const char *util_ald_strdup(util_ald_cache_t *cache, const char *s)
 {
 #if APR_HAS_SHARED_MEMORY
-    if (rmm_addr) {
+    if (cache->rmm_addr) {
         /* allocate from shared memory */
-        char *buf = (char *)apr_rmm_addr_get(rmm_addr, apr_rmm_calloc(rmm_addr, strlen(s)+1));
+        char *buf = (char *)apr_rmm_addr_get(cache->rmm_addr, apr_rmm_calloc(cache->rmm_addr, strlen(s)+1));
         if (buf) {
             strcpy(buf, s);
             return buf;
@@ -226,7 +226,7 @@ void util_ald_cache_purge(util_ald_cache_t *cache)
             if (p->add_time < cache->marktime) {
 	        q = p->next;
 	        (*cache->free)(cache, p->payload);
-	        util_ald_free(cache->rmm_addr, p);
+	        util_ald_free(cache, p);
 	        cache->numentries--;
 	        cache->npurged++;
 	        p = q;
@@ -300,7 +300,11 @@ util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
     if (st->search_cache_size <= 0)
         return NULL;
 
+#if APR_HAS_SHARED_MEMORY
     cache = (util_ald_cache_t *)util_ald_alloc(st->cache_rmm, sizeof(util_ald_cache_t));
+#else
+    cache = (util_ald_cache_t *)util_ald_alloc(NULL, sizeof(util_ald_cache_t));
+#endif
     if (!cache)
         return NULL;
 
@@ -311,9 +315,9 @@ util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
         for (i = 0; primes[i] && primes[i] < cache->size; ++i) ;
             cache->size = primes[i]? primes[i] : primes[i-1];
 
-    cache->nodes = (util_cache_node_t **)util_ald_alloc(cache->rmm_addr, cache->size * sizeof(util_cache_node_t *));
+    cache->nodes = (util_cache_node_t **)util_ald_alloc(cache, cache->size * sizeof(util_cache_node_t *));
     if (!cache->nodes) {
-        util_ald_free(cache->rmm_addr, cache);
+        util_ald_free(cache, cache);
         return NULL;
     }
 
@@ -354,12 +358,12 @@ void util_ald_destroy_cache(util_ald_cache_t *cache)
         while (p != NULL) {
             q = p->next;
            (*cache->free)(cache, p->payload);
-           util_ald_free(cache->rmm_addr, p);
+           util_ald_free(cache, p);
            p = q;
         }
     }
-    util_ald_free(cache->rmm_addr, cache->nodes);
-    util_ald_free(cache->rmm_addr, cache);
+    util_ald_free(cache, cache->nodes);
+    util_ald_free(cache, cache);
 }
 
 void *util_ald_cache_fetch(util_ald_cache_t *cache, void *payload)
@@ -398,7 +402,7 @@ void util_ald_cache_insert(util_ald_cache_t *cache, void *payload)
     if (cache == NULL || payload == NULL)
         return;
 
-    if ((node = (util_cache_node_t *)util_ald_alloc(cache->rmm_addr, sizeof(util_cache_node_t))) == NULL)
+    if ((node = (util_cache_node_t *)util_ald_alloc(cache, sizeof(util_cache_node_t))) == NULL)
         return;
 
     cache->inserts++;
@@ -442,7 +446,7 @@ void util_ald_cache_remove(util_ald_cache_t *cache, void *payload)
         q->next = p->next;
     }
     (*cache->free)(cache, p->payload);
-    util_ald_free(cache->rmm_addr, p);
+    util_ald_free(cache, p);
     cache->numentries--;
 }
 
