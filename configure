@@ -1537,6 +1537,10 @@ case $PLATFORM in
         echo $SEO "s%/mod_\\(.\\{1,8\\}\\).*\\.so%/\\1\\.dll%" >>$sedsubst
         echo $SEO "s%/\\(lib.*\\)\\.so$%/\\1.dll%" >>$sedsubst
         ;;
+    *cygwin* ) 
+        echo $SEO "s%/\\(mod_.*\\)\\.so$%/\\1.dll%" >>$sedsubst
+        echo $SEO "s%/\\(lib.*\\)\\.so$%/\\1.dll%" >>$sedsubst
+        ;;
 esac
 
 #   split sedsubst into chunks of 50 commands

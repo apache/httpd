@@ -41,7 +41,7 @@ target_compile_only: subdirs modules.o
 target_shared: $(SHCORE_IMPLIB) $(SHARED_CORE_EP) lib$(TARGET).$(SHLIB_SUFFIX_NAME)
 	$(CC) $(INCLUDES) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
 	      -o $(TARGET) -DSHARED_CORE_BOOTSTRAP main/http_main.c \
-	      ap/libap.a $(LIBS) $(SHCORE_IMPLIB) $(DLL_IMPORT_LIB)
+	      ap/libap.a $(LIBS) $(SHCORE_IMPLIB)
 
 lib$(TARGET).ep: lib$(TARGET).$(SHLIB_SUFFIX_NAME)
 	$(CC) $(INCLUDES) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \

@@ -5137,6 +5137,15 @@ void STANDALONE_MAIN(int argc, char **argv);
 extern char *optarg;
 extern int optind;
 
+/* Cygwin 1.x SHARED_CORE support needs REALMAIN to be declared as dllexport,
+ * so we can later while SHARED_CORE_BOOTSTRAP is compiled and linked see the 
+ * dllimport for it. -- Stipe Tolj <tolj@wapme-systems.de>
+ */
+
+#if defined(CYGWIN)
+__declspec(dllexport)  
+#endif
+
 int REALMAIN(int argc, char *argv[])
 {
     int c;
@@ -7467,6 +7476,7 @@ int main(int argc, char *argv[])
 #if defined(CYGWIN)
 __declspec(dllimport) 
 #endif
+
 
 int ap_main(int argc, char *argv[]); /* Load time linked from libhttpd.dll */
 

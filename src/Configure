@@ -1924,12 +1924,6 @@ if [ "x$using_shlib" = "x1" ] ; then
     if [ "x$TCFLAGS_SHLIB" = "x" ]; then
 	echo "CFLAGS_SHLIB=$CFLAGS_SHLIB -DSHARED_MODULE" >> Makefile.config
     fi
-    if [ "x$TDLL_IMPORT_DEF" = "x" ]; then
-	echo "DLL_IMPORT_DEF=$DLL_IMPORT_DEF" >> Makefile.config
-    fi
-    if [ "x$TDLL_IMPORT_LIB" = "x" ]; then
-	echo "DLL_IMPORT_LIB=$DLL_IMPORT_LIB" >> Makefile.config
-    fi
     if [ "x$TLD_SHLIB" = "x" ]; then
 	echo "LD_SHLIB=$LD_SHLIB" >> Makefile.config
     fi
