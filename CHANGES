@@ -2,21 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
-  *) Use appropriate language code for Czech (cs) in default config
-     files. PR 9427.  [André Malo]
-
-  *) mod_auth_ldap: Use generic whitespace character class when parsing
-     "require" directives, instead of literal spaces only. PR 17135.
-     [André Malo]
-
   *) Ensure that ssl-std.conf is generated at configure time, and switch
      to using the expanded config variables to work the same as
      httpd-std.conf PR 19611
      [Thom May]
-
-  *) Hook mod_rewrite's type checker before mod_mime's one. That way the
-     RewriteRule [T=...] Flag should work as expected now. PR 19626.
-     [André Malo]
 
   *) Fix a problem with namespace mappings being dropped in mod_dav_fs; 
      if any property values were set which defined namespaces these 
@@ -163,6 +152,17 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.46
+
+  *) Use appropriate language code for Czech (cs) and Traditional Chinese
+     (zh-tw) in default config files. PR 9427.  [André Malo]
+
+  *) mod_auth_ldap: Use generic whitespace character class when parsing
+     "require" directives, instead of literal spaces only. PR 17135.
+     [André Malo]
+
+  *) Hook mod_rewrite's type checker before mod_mime's one. That way the
+     RewriteRule [T=...] Flag should work as expected now. PR 19626.
+     [André Malo]
 
   *) htpasswd: Check the processed file on validity. If a line is not empty
      and not a comment, it must contain at least one colon. Otherwise exit
