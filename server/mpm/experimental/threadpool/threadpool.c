@@ -1028,7 +1028,6 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
     proc_info * ti = dummy;
     int process_slot = ti->pid;
     int thread_slot = ti->tid;
-    apr_socket_t *csd = NULL;
     apr_bucket_alloc_t *bucket_alloc;
     apr_pool_t *tpool = apr_thread_pool_get(thd);
     apr_pool_t *ptrans;                /* Pool for per-transaction stuff */
