@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/17 10:53:32 $]
+Last modified at [$Date: 2003/09/18 12:37:52 $]
 
 Release:
 
@@ -291,7 +291,7 @@ PATCHES TO PORT FROM 2.1
 
     * Fix mod_log_config's %b format to write "-" in case of bytes_sent == 0.
         modules/loggers/mod_log_config.c: r1.106
-      +1: nd, jorton
+      +1: nd, jorton, trawick
 
     * Overhaul of mod_include's filter parser.
         modules/filters/mod_include.c: r1.235, r1.236
@@ -315,7 +315,7 @@ PATCHES TO PORT FROM 2.1
       There's also a practical advantage; it saves some CPU cycles, since the
       tree walk is shorter.
         modules/filters/mod_include.c: r1.261
-      +1: nd, brianp
+      +1: nd, brianp, trawick
 
     * mod_include's expression tokenizer: don't skip the first character of
       a string, it may be a backslash. (2.0 + 1.3)
