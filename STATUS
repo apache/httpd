@@ -13,9 +13,6 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-    * need to ensure it compiles properly on win32 before rolling the 
-      tarball, and that no last minute changes break it
-
     * How should an Apache binary release tarball look?
 
       1. The "old" way where it is just a source release tarball
@@ -86,6 +83,9 @@ Available Patches:
         Message-ID: <19980923190915.B15359@raleigh.ibm.com>
         Status: Roy thinks we should put a common_mime_types.txt file in
                 the documentation and remove the unused entries from conf.
+                Ralf +1 for both Manoj's patch and Roys suggestion with
+                        a slight preference for Manoj's patch because the
+                        overhead of more entries is not noticeable to me.
 
     * Wilfredo Sanchez's [PATCH] Build outside of source tree
         Message-ID: <199810020251.TAA20588@scv2.apple.com>
@@ -203,7 +203,7 @@ Open issues:
 	BB: beta number
 
       See: <199806071444.KAA23147@devsys.jaguNET.com>
-      Status: Jim +1, Ben +1, Martin +1
+      Status: Jim +1, Ben +1, Martin +1, Ralf +1
 
     * Someone other than Dean has to do a security/correctness review on
       psprintf(), bprintf(), and ap_snprintf().  In particular these routines
