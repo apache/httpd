@@ -605,10 +605,10 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 
 static int getsfunc_FILE(char *buf, int len, void *f)
 {
-    return fgets(buf, len, (FILE *) f) != NULL;
+    return ap_fgets(buf, len, (ap_file_t *) f) == APR_SUCCESS;
 }
 
-API_EXPORT(int) ap_scan_script_header_err(request_rec *r, FILE *f,
+API_EXPORT(int) ap_scan_script_header_err(request_rec *r, ap_file_t *f,
 					  char *buffer)
 {
     return ap_scan_script_header_err_core(r, buffer, getsfunc_FILE, f);
