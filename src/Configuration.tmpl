@@ -285,7 +285,7 @@ Module auth_module         mod_auth.o
 ## You do not need this, or any other module to allow your site
 ## to use Cookies.  This module is for user tracking only
 
-# Module usertrack_module      mod_usertrack.o
+# Module usertrack_module    mod_usertrack.o
 
 ## The example module, which demonstrates the use of the API.  See
 ## the file modules/example/README for details.  This module should
@@ -293,9 +293,9 @@ Module auth_module         mod_auth.o
 
 # Module example_module      modules/example/mod_example.o
 
-## mod_browser lets you set environment variables based on the User-Agent
-## string in the request; this is useful for conditional HTML, for example.
+## mod_setenvif lets you set environment variables based on the HTTP header
+## fields in the request; this is useful for conditional HTML, for example.
 ## Since it is also used to detect buggy browsers for workarounds, it
 ## should be the last (highest priority) module.
 
-Module browser_module      mod_browser.o
+Module setenvif_module     mod_setenvif.o
