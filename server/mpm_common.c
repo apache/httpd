@@ -81,7 +81,7 @@
 #include <sys/socket.h> /* for setsockopt prototype */
 #endif
 
-#if defined(DEXTER_MPM) || defined(MPMT_BEOS_MPM) || defined(BEOS_MPM) || defined(PERCHILD)
+#if defined(DEXTER_MPM) || defined(MPMT_BEOS_MPM) || defined(BEOS_MPM) || defined(PERCHILD_MPM)
 #define CHILD_TABLE 1
 #define CHILD_INFO_TABLE     ap_child_table
 #elif defined(MPMT_PTHREAD) || defined(PREFORK_MPM)
