@@ -1,5 +1,7 @@
 Changes with Apache 2.0.36
 
+  *) add optional fixup hook to proxy [Daniel Lopez <daniel@covalent.net>]
+
   *) Remind the admin about the User and Group directives when we are
      unable to set permissions on a semaphore.  PR 7812  [Jeff Trawick]
 

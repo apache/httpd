@@ -1124,3 +1124,6 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, scheme_handler,
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, canon_handler, 
                                      (request_rec *r, char *url),(r,
                                      url),DECLINED)
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, fixups,
+				    (request_rec *r), (r),
+				    OK, DECLINED)
