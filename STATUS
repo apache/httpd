@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/07/02 12:40:44 $]
+Last modified at [$Date: 2004/07/02 17:17:37 $]
 
 Release:
 
@@ -1287,14 +1287,15 @@ Binaries (2.0.50):
  Mandrake 8.1                  no      open
  FreeBSD 4.1                   no      open
  hppa2.0w-hp-hpux11.00         no      Cliff Woolley
- i386-pc-solaris2.8            no      Aaron Bannert
+ i386-pc-solaris2.9            yes     Aaron Bannert
  i386-unknown-freebsd4.5       no
  i386-unknown-freebsd4.6       no      Cliff Woolley
+ i386-unknown-freebsd4.10      yes     Aaron Bannert
  i686-pc-linux-gnu-slackware81 no      Cliff Woolley
  i686-pc-linux-gnu-rh70        no      Aaron Bannert
  i686-pc-linux-gnu-rh73        no      Cliff Woolley
  ia64-hp-hpux11.20             no
- powerpc-apple-darwin5.5       no      Aaron Bannert
+ powerpc-apple-darwin7.4.0     yes     Aaron Bannert
  powerpc-unknown-linux-gnu     no      Graham Leggett
  s390-ibm-linux                no      Greg Ames
  sparc-sun-solaris2.8          no      Jim Jagielski
