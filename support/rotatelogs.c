@@ -99,7 +99,7 @@ int main (int argc, const char * const argv[])
     int nMessCount = 0;
     apr_size_t nRead, nWrite;
     int use_strftime = 0;
-    int now;
+    int now = 0;
     const char *szLogRoot;
     apr_file_t *f_stdin, *nLogFD = NULL, *nLogFDprev = NULL;
     apr_pool_t *pool;
