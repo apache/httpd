@@ -100,14 +100,6 @@
 
 module isapi_module;
 
-/* Our "Connection ID" structure */
-
-typedef struct {
-    LPEXTENSION_CONTROL_BLOCK ecb;
-    request_rec *r;
-    int status;
-} isapi_cid;
-
 /* Declare the ISAPI functions */
 
 BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
@@ -122,113 +114,172 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 /*
     The optimiser blows it totally here. What happens is that autos are addressed relative to the
     stack pointer, which, of course, moves around. The optimiser seems to lose track of it somewhere
-    between setting isapi_entry and calling through it. We work around the problem by forcing it to
-    use frame pointers.
+    between setting HttpExtensionProc's address and calling through it. We work around the problem by 
+    forcing it to use frame pointers.
+
+    The revisions below may eliminate this artifact.
 */
 #pragma optimize("y",off)
 
-int isapi_handler (request_rec *r)
+/* Our loaded isapi module description structure */
+
+typedef struct {
+    HINSTANCE handle;
+    HSE_VERSION_INFO *pVer;
+    PFN_GETEXTENSIONVERSION GetExtensionVersion;
+    PFN_HTTPEXTENSIONPROC   HttpExtensionProc;
+    PFN_TERMINATEEXTENSION  TerminateExtension;
+    int   refcount;
+    DWORD timeout;
+    BOOL  fakeasync;
+    DWORD reportversion;
+} isapi_loaded;
+
+/* Our "Connection ID" structure */
+
+typedef struct {
+    LPEXTENSION_CONTROL_BLOCK ecb;
+    isapi_loaded *isa;
+    request_rec  *r;
+    PFN_HSE_IO_COMPLETION completion;
+    PVOID  completion_arg;
+    HANDLE complete;
+    ap_status_t retval;
+} isapi_cid;
+
+ap_status_t isapi_handler (request_rec *r)
 {
-    ap_status_t rv;
-
-    LPEXTENSION_CONTROL_BLOCK ecb =
-        ap_pcalloc(r->pool, sizeof(struct _EXTENSION_CONTROL_BLOCK));
-    HSE_VERSION_INFO *pVer = ap_pcalloc(r->pool, sizeof(HSE_VERSION_INFO));
-
-    HINSTANCE isapi_handle;
-    BOOL (*isapi_version)(HSE_VERSION_INFO *); /* entry point 1 */
-    DWORD (*isapi_entry)(LPEXTENSION_CONTROL_BLOCK); /* entry point 2 */
-    BOOL (*isapi_term)(DWORD); /* optional entry point 3 */
-
-    isapi_cid *cid = ap_pcalloc(r->pool, sizeof(isapi_cid));
     ap_table_t *e = r->subprocess_env;
-    int retval;
+    isapi_loaded *isa;
+    isapi_cid *cid;
 
-    /* Use similar restrictions as CGIs */
-
+    /* Use similar restrictions as CGIs
+     *
+     * If this fails, it's pointless to load the isapi dll.
+     */
     if (!(ap_allow_options(r) & OPT_EXECCGI))
         return HTTP_FORBIDDEN;
 
     if (r->finfo.protection == 0)
-            return HTTP_NOT_FOUND;
+        return HTTP_NOT_FOUND;
 
     if (r->finfo.filetype == APR_DIR)
-            return HTTP_FORBIDDEN;
+        return HTTP_FORBIDDEN;
 
-    /* Load the module */
+    /* Load the module 
+     *
+     * TODO: Critical section
+     *
+     * Warning: cid should not be allocated from pool if we 
+     * cache the isapi process in-memory.
+     *
+     * This code could use cacheing... everything that follows
+     * should only be performed on the first isapi dll invocation, 
+     * not with every HttpExtensionProc()
+     */
+    isa = ap_pcalloc(r->pool, sizeof(isapi_module));
+    isa->pVer = ap_pcalloc(r->pool, sizeof(HSE_VERSION_INFO));
+    isa->refcount = 0;
 
-    if (!(isapi_handle = LoadLibraryEx(r->filename, NULL,
-                                       LOAD_WITH_ALTERED_SEARCH_PATH))) {
-            rv = GetLastError();
-        ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
-                              "Could not load DLL: %s", r->filename);
-            return HTTP_INTERNAL_SERVER_ERROR;
+    /* TODO: These may need to become overrideable, so that we
+     * assure a given isapi can be fooled into behaving well.
+     */
+    isa->timeout = INFINITE; /* microsecs */
+    isa->fakeasync = TRUE;
+    isa->reportversion = MAKELONG(0, 5); /* Revision 5.0 */
+    
+    if (!(isa->handle = LoadLibraryEx(r->filename, NULL,
+                                      LOAD_WITH_ALTERED_SEARCH_PATH))) {
+        ap_log_rerror(APLOG_MARK, APLOG_ALERT, GetLastError(), r,
+                      "ISAPI %s failed to load", r->filename);
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    if (!(isapi_version =
-          (void *)(GetProcAddress(isapi_handle, "GetExtensionVersion")))) {
-            rv = GetLastError();
-        ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
-                              "Could not load DLL %s symbol GetExtensionVersion()",
+    if (!(isa->GetExtensionVersion =
+          (void *)(GetProcAddress(isa->handle, "GetExtensionVersion")))) {
+        ap_log_rerror(APLOG_MARK, APLOG_ALERT, GetLastError(), r,
+                      "ISAPI %s is missing GetExtensionVersion()",
                       r->filename);
-            FreeLibrary(isapi_handle);
-            return HTTP_INTERNAL_SERVER_ERROR;
+        FreeLibrary(isa->handle);
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    if (!(isapi_entry =
-          (void *)(GetProcAddress(isapi_handle, "HttpExtensionProc")))) {
-            rv = GetLastError();
-        ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
-                              "Could not load DLL %s symbol HttpExtensionProc()",
+    if (!(isa->HttpExtensionProc =
+          (void *)(GetProcAddress(isa->handle, "HttpExtensionProc")))) {
+        ap_log_rerror(APLOG_MARK, APLOG_ALERT, GetLastError(), r,
+                      "ISAPI %s is missing HttpExtensionProc()",
                       r->filename);
-            FreeLibrary(isapi_handle);
-            return HTTP_INTERNAL_SERVER_ERROR;
+        FreeLibrary(isa->handle);
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /* TerminateExtension() is an optional interface */
 
-    isapi_term = (void *)(GetProcAddress(isapi_handle, "TerminateExtension"));
+    isa->TerminateExtension = (void *)(GetProcAddress(isa->handle, "TerminateExtension"));
 
     /* Run GetExtensionVersion() */
 
-    if (!(*isapi_version)(pVer)) {
+    if (!(*isa->GetExtensionVersion)(isa->pVer)) {
         /* ### euh... we're passing the wrong type of error code here */
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, HTTP_INTERNAL_SERVER_ERROR, r,
-                    "ISAPI %s GetExtensionVersion() call failed", r->filename);
-            FreeLibrary(isapi_handle);
-            return HTTP_INTERNAL_SERVER_ERROR;
+                      "ISAPI %s call GetExtensionVersion() failed", 
+                      r->filename);
+        FreeLibrary(isa->handle);
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
+    /* Load of this module completed, this is the point at which *isa
+     * could be cached for later invocation.
+     *
+     * on to invoking this request... 
+     */
+    
     /* Set up variables */
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
 
-    /* Set up connection ID */
-    ecb->ConnID = (HCONN)cid;
-    cid->ecb = ecb;
+    /* Set up connection structure and ecb */
+    cid = ap_pcalloc(r->pool, sizeof(isapi_cid));
+    cid->ecb = ap_pcalloc(r->pool, sizeof(struct _EXTENSION_CONTROL_BLOCK));
+    cid->ecb->ConnID = (HCONN)cid;
+    /* TODO: Critical section */
+    ++isa->refcount;
+    cid->isa = isa;
     cid->r = r;
-    cid->status = 0;
+    cid->r->status = 0;
+    cid->complete = NULL;
+    cid->completion = NULL;
+    cid->retval = APR_SUCCESS;
 
-    ecb->cbSize = sizeof(struct _EXTENSION_CONTROL_BLOCK);
-    ecb->dwVersion = MAKELONG(0, 2);
-    ecb->dwHttpStatusCode = 0;
-    strcpy(ecb->lpszLogData, "");
-    // TODO: is a copy needed here?
-    ecb->lpszMethod = (char*) r->method;
-    // TODO: is a copy needed here?
-    ecb->lpszQueryString = (char*) ap_table_get(e, "QUERY_STRING");
-    // TODO: is a copy needed here?
-    ecb->lpszPathInfo = (char*) ap_table_get(e, "PATH_INFO");
-    // TODO: is a copy needed here?
-    ecb->lpszPathTranslated = (char*) ap_table_get(e, "PATH_TRANSLATED");
-    // TODO: is a copy needed here?
-    ecb->lpszContentType = (char*) ap_table_get(e, "CONTENT_TYPE");
+    cid->ecb->cbSize = sizeof(EXTENSION_CONTROL_BLOCK);
+    cid->ecb->dwVersion = isa->reportversion;
+    cid->ecb->dwHttpStatusCode = 0;
+    strcpy(cid->ecb->lpszLogData, "");
+    // TODO: are copies really needed here?
+    cid->ecb->lpszMethod = ap_pstrdup(r->pool, (char*) r->method);
+    cid->ecb->lpszQueryString = ap_pstrdup(r->pool, 
+                                (char*) ap_table_get(e, "QUERY_STRING"));
+    cid->ecb->lpszPathInfo = ap_pstrdup(r->pool, 
+                             (char*) ap_table_get(e, "PATH_INFO"));
+    cid->ecb->lpszPathTranslated = ap_pstrdup(r->pool, 
+                                   (char*) ap_table_get(e, "PATH_TRANSLATED"));
+    cid->ecb->lpszContentType = ap_pstrdup(r->pool, 
+                                (char*) ap_table_get(e, "CONTENT_TYPE"));
+    /* Set up the callbacks */
+    cid->ecb->GetServerVariable = &GetServerVariable;
+    cid->ecb->WriteClient = &WriteClient;
+    cid->ecb->ReadClient = &ReadClient;
+    cid->ecb->ServerSupportFunction = &ServerSupportFunction;
 
+    
     /* Set up client input */
-    if ((retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) {
-        if (isapi_term) (*isapi_term)(HSE_TERM_MUST_UNLOAD);
-            FreeLibrary(isapi_handle);
-            return retval;
+    cid->retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR);
+    if (cid->retval) {
+        if (isa->TerminateExtension) {
+            (*isa->TerminateExtension)(HSE_TERM_MUST_UNLOAD);
+        }
+        FreeLibrary(isa->handle);
+        return cid->retval;
     }
 
     if (ap_should_client_block(r)) {
@@ -249,16 +300,18 @@ int isapi_handler (request_rec *r)
          */
 
         if (to_read > 49152) {
-            if (isapi_term) (*isapi_term)(HSE_TERM_MUST_UNLOAD);
-            FreeLibrary(isapi_handle);
+            if (isa->TerminateExtension) 
+                (*isa->TerminateExtension)(HSE_TERM_MUST_UNLOAD);
+            FreeLibrary(isa->handle);
             return HTTP_REQUEST_ENTITY_TOO_LARGE;
         }
 
-        ecb->lpbData = ap_pcalloc(r->pool, 1 + to_read);
+        cid->ecb->lpbData = ap_pcalloc(r->pool, 1 + to_read);
 
-        if ((read = ap_get_client_block(r, ecb->lpbData, to_read)) < 0) {
-            if (isapi_term) (*isapi_term)(HSE_TERM_MUST_UNLOAD);
-            FreeLibrary(isapi_handle);
+        if ((read = ap_get_client_block(r, cid->ecb->lpbData, to_read)) < 0) {
+            if (isa->TerminateExtension) 
+                (*isa->TerminateExtension)(HSE_TERM_MUST_UNLOAD);
+            FreeLibrary(isa->handle);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
@@ -267,77 +320,96 @@ int isapi_handler (request_rec *r)
          * cbAvailable matches cbTotalBytes, we'll up the latter
          * and equalize them.
          */
-        ecb->cbAvailable = ecb->cbTotalBytes = read + 1;
-        ecb->lpbData[read] = '\0';
+        cid->ecb->cbAvailable = cid->ecb->cbTotalBytes = read + 1;
+        cid->ecb->lpbData[read] = '\0';
     }
     else {
-        ecb->cbTotalBytes = 0;
-        ecb->cbAvailable = 0;
-        ecb->lpbData = NULL;
+        cid->ecb->cbTotalBytes = 0;
+        cid->ecb->cbAvailable = 0;
+        cid->ecb->lpbData = NULL;
     }
 
-    /* Set up the callbacks */
-
-    ecb->GetServerVariable = &GetServerVariable;
-    ecb->WriteClient = &WriteClient;
-    ecb->ReadClient = &ReadClient;
-    ecb->ServerSupportFunction = &ServerSupportFunction;
-
-    /* All right... try and load the sucker */
-    retval = (*isapi_entry)(ecb);
+    /* All right... try and run the sucker */
+    cid->retval = (*isa->HttpExtensionProc)(cid->ecb);
 
     /* Set the status (for logging) */
-    if (ecb->dwHttpStatusCode)
-        r->status = ecb->dwHttpStatusCode;
+    if (cid->ecb->dwHttpStatusCode) {
+        cid->r->status = cid->ecb->dwHttpStatusCode;
+    }
 
     /* Check for a log message - and log it */
-    if (ecb->lpszLogData && strcmp(ecb->lpszLogData, ""))
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
-                      "ISAPI %s: %s", r->filename, ecb->lpszLogData);
+    if (cid->ecb->lpszLogData && *cid->ecb->lpszLogData)
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                      "ISAPI %s: %s", r->filename, cid->ecb->lpszLogData);
 
-    /* All done with the DLL... get rid of it */
-    if (isapi_term) (*isapi_term)(HSE_TERM_MUST_UNLOAD);
-        FreeLibrary(isapi_handle);
-
-    switch(retval) {
+    switch(cid->retval) {
         case HSE_STATUS_SUCCESS:
-            /* TODO: If content length was missing or incorrect, and the response
-             * was not chunked, we need to close the connection here.
-             * If the response was chunked, and no closing chunk was sent, we aught
-             * to transmit one here
-             */
-
-            /* fall through... */
         case HSE_STATUS_SUCCESS_AND_KEEP_CONN:
             /* Ignore the keepalive stuff; Apache handles it just fine without
              * the ISA's "advice".
+             * Per Microsoft: "In IIS versions 4.0 and later, the return
+             * values HSE_STATUS_SUCCESS and HSE_STATUS_SUCCESS_AND_KEEP_CONN
+             * are functionally identical: Keep-Alive connections are
+             * maintained, if supported by the client."
+             * ... so we were pat all this time
              */
-
-            if (cid->status) /* We have a special status to return */
-                return cid->status;
-
-            return OK;
-
+            break;
+            
         case HSE_STATUS_PENDING:    
-            /* We don't support this, but we need to... we should simply create a
-             * wait event and die on timeout or resume with the callback to our
-             * ServerSupportFunction with HSE_REQ_DONE_WITH_SESSION to emulate
-             * async behavior.
+            /* emulating async behavior...
+             *
+             * Create a cid->completed event and wait on it for some timeout
+             * so that the app thinks is it running async.
+             *
+             * All async ServerSupportFunction calls will be handled through
+             * the registered IO_COMPLETION hook.
              */
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, APR_ENOTIMPL, r,
-                          "ISAPI asynchronous I/O not supported: %s", r->filename);
+            
+            if (!isa->fakeasync) {
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, APR_ENOTIMPL, r,
+                              "ISAPI %s asynch I/O request refused", 
+                              r->filename);
+                cid->retval = APR_ENOTIMPL;
+            }
+            else {
+                cid->complete = CreateEvent(NULL, FALSE, FALSE, NULL);
+                if (WaitForSingleObject(cid->complete, isa->timeout)
+                        == WAIT_TIMEOUT) {
+                    /* TODO: Now what... if this hung, then do we kill our own
+                     * thread to force it's death?  For now leave timeout = -1
+                     */
+                }
+            }
+            break;
 
         case HSE_STATUS_ERROR:    
             /* end response if we have yet to do so.
              */
-            return HTTP_INTERNAL_SERVER_ERROR;
+            cid->retval = HTTP_INTERNAL_SERVER_ERROR;
+            break;
 
         default:
             /* TODO: log unrecognized retval for debugging 
              */
-            return HTTP_INTERNAL_SERVER_ERROR;
+            cid->retval = HTTP_INTERNAL_SERVER_ERROR;
+            break;
     }
 
+    /* All done with the DLL... get rid of it...
+     *
+     * If optionally cached, pass HSE_TERM_ADVISORY_UNLOAD,
+     * and if it returns TRUE, unload, otherwise, cache it.
+     */
+    if (isa->TerminateExtension) {
+        (*isa->TerminateExtension)(HSE_TERM_MUST_UNLOAD);
+    }
+    FreeLibrary(isa->handle);
+    /* TODO: Crit section */
+    cid->isa = NULL;
+    --isa->refcount;
+    isa->handle = NULL;
+    
+    return cid->retval;
 }
 #pragma optimize("",on)
 
@@ -353,33 +425,33 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
      */
 
     if (!strcasecmp(lpszVariableName, "UNMAPPED_REMOTE_USER")) {
-            /* We don't support NT users, so this is always the same as
-             * REMOTE_USER
-             */
-            result = ap_table_get(e, "REMOTE_USER");
+        /* We don't support NT users, so this is always the same as
+         * REMOTE_USER
+         */
+        result = ap_table_get(e, "REMOTE_USER");
     }
     else if (!strcasecmp(lpszVariableName, "SERVER_PORT_SECURE")) {
-            /* Apache doesn't support secure requests inherently, so
-             * we have no way of knowing. We'll be conservative, and say
-             * all requests are insecure.
-             */
-            result = "0";
+        /* Apache doesn't support secure requests inherently, so
+         * we have no way of knowing. We'll be conservative, and say
+         * all requests are insecure.
+         */
+        result = "0";
     }
     else if (!strcasecmp(lpszVariableName, "URL")) {
         result = r->uri;
     }
     else {
-            result = ap_table_get(e, lpszVariableName);
+        result = ap_table_get(e, lpszVariableName);
     }
 
     if (result) {
-            if (strlen(result) > *lpdwSizeofBuffer) {
-                *lpdwSizeofBuffer = strlen(result);
-                SetLastError(ERROR_INSUFFICIENT_BUFFER);
-                return FALSE;
-            }
-            strncpy(lpvBuffer, result, *lpdwSizeofBuffer);
-            return TRUE;
+        if (strlen(result) > *lpdwSizeofBuffer) {
+            *lpdwSizeofBuffer = strlen(result);
+            SetLastError(ERROR_INSUFFICIENT_BUFFER);
+            return FALSE;
+        }
+        strncpy(lpvBuffer, result, *lpdwSizeofBuffer);
+        return TRUE;
     }
 
     /* Didn't find it */
@@ -388,22 +460,22 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
 }
 
 BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpwdwBytes,
-                                 DWORD dwReserved)
+                         DWORD dwReserved)
 {
     request_rec *r = ((isapi_cid *)ConnID)->r;
     int writ;   /* written, actually, but why shouldn't I make up words? */
 
     /* We only support synchronous writing */
     if (dwReserved && dwReserved != HSE_IO_SYNC) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, ERROR_INVALID_PARAMETER, r,
-                      "ISAPI asynchronous I/O not supported: %s", r->filename);
-            SetLastError(ERROR_INVALID_PARAMETER);
-            return FALSE;
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, ERROR_INVALID_PARAMETER, r,
+                      "ISAPI %s asynch write", r->filename);
+        SetLastError(ERROR_INVALID_PARAMETER);
+        return FALSE;
     }
 
     if ((writ = ap_rwrite(Buffer, *lpwdwBytes, r)) == EOF) {
-            SetLastError(WSAEDISCON); /* TODO: Find the right error code */
-            return FALSE;
+        SetLastError(WSAEDISCON); /* TODO: Find the right error code */
+        return FALSE;
     }
 
     *lpwdwBytes = writ;
@@ -418,13 +490,103 @@ BOOL WINAPI ReadClient (HCONN ConnID, LPVOID lpvBuffer, LPDWORD lpdwSize)
     return TRUE;
 }
 
+static char* ComposeHeaders(request_rec *r, char* data)
+{
+    /* We *should* break before this while loop ends */
+    while (*data) 
+    {
+        char *value, *lf = strchr(data, '\n');
+        int p;
+
+#ifdef RELAX_HEADER_RULE
+        if (lf)
+            *lf = '\0';
+#else
+        if (!lf) { /* Huh? Invalid data, I think */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+                          "ISAPI %s sent invalid headers", r->filename);
+            SetLastError(TODO_ERROR);
+            return FALSE;
+        }
+
+        /* Get rid of \n and \r */
+        *lf = '\0';
+#endif
+        p = strlen(data);
+        if (p > 0 && data[p-1] == '\r') data[p-1] = '\0';
+
+        /* End of headers */
+        if (*data == '\0') {
+#ifdef RELAX_HEADER_RULE
+            if (lf)
+#endif
+                data = lf + 1;  /* Reset data */
+            break;
+        }
+
+        if (!(value = strchr(data, ':'))) {
+            SetLastError(TODO_ERROR);
+            /* ### euh... we're passing the wrong type of error
+               ### code here */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, HTTP_INTERNAL_SERVER_ERROR, r,
+                          "ISAPI %s sent invalid headers", r->filename);
+            return FALSE;
+        }
+
+        *value++ = '\0';
+        while (*value && ap_isspace(*value)) ++value;
+
+        /* Check all the special-case headers. Similar to what
+         * ap_scan_script_header_err() does (see that function for
+         * more detail)
+         */
+
+        if (!strcasecmp(data, "Content-Type")) 
+        {
+            /* Nuke trailing whitespace */    
+            char *tmp;
+            char *endp = value + strlen(value) - 1;
+            while (endp > value && ap_isspace(*endp)) 
+                *endp-- = '\0';
+
+            tmp = ap_pstrdup (r->pool, value);
+            ap_str_tolower(tmp);
+            r->content_type = tmp;
+        }
+        else if (!strcasecmp(data, "Content-Length")) {
+            ap_table_set(r->headers_out, data, value);
+        }
+        else if (!strcasecmp(data, "Transfer-Encoding")) {
+            ap_table_set(r->headers_out, data, value);
+        }
+        else if (!strcasecmp(data, "Set-Cookie")) {
+            ap_table_add(r->err_headers_out, data, value);
+        }
+        else {
+            ap_table_merge(r->err_headers_out, data, value);
+        }
+
+        /* Reset data */
+#ifdef RELAX_HEADER_RULE
+        if (!lf) {
+            data += p;
+            break;
+        }
+#endif
+        data = lf + 1;
+    }
+    return data;
+}
+
+
 /* XXX: There is an O(n^2) attack possible here. */
 BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
-                                                   LPVOID lpvBuffer, LPDWORD lpdwSize,
-                                                   LPDWORD lpdwDataType)
+                                   LPVOID lpvBuffer, LPDWORD lpdwSize,
+                                   LPDWORD lpdwDataType)
 {
     isapi_cid *cid = (isapi_cid *)hConn;
-    request_rec *subreq, *r = cid->r;
+    request_rec *r = cid->r;
+    request_rec *subreq;
     char *data;
 
     switch (dwHSERequest) {
@@ -433,8 +595,8 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
              * is done.
              */
             ap_table_set (r->headers_out, "Location", lpvBuffer);
-            cid->status = cid->r->status = cid->ecb->dwHttpStatusCode =
-                HTTP_MOVED_TEMPORARILY;
+            cid->r->status = cid->ecb->dwHttpStatusCode 
+                                                   = HTTP_MOVED_TEMPORARILY;
             return TRUE;
 
         case HSE_REQ_SEND_URL:
@@ -456,27 +618,6 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
             ap_internal_redirect((char *)lpvBuffer, r);
             return TRUE;
 
-        case HSE_REQ_SEND_RESPONSE_HEADER_EX:
-            SetLastError(ERROR_INVALID_PARAMETER);
-            return FALSE;
-
-            /* Not yet - but here's the idea...
-            if (((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->pszStatus
-                && ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->cchStatus)
-                r->status_line = ap_pstrndup(r->pool, 
-                                             ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->pszStatus,
-                                             ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->cchStatus);
-            else
-                r->status_line = ap_pstrdup(r->pool, "200 OK");
-            sscanf(r->status_line, "%d", &r->status);
-            cid->ecb->dwHttpStatusCode = r->status;
-
-             * plus we need to handle...
-             * ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->pszHeader; // HTTP header
-             * ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->cchHeader; // HTTP header len          
-             * ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->fKeepConn; // Keep alive? (bool)
-             */
-
         case HSE_REQ_SEND_RESPONSE_HEADER:
             r->status_line = lpvBuffer ? lpvBuffer : ap_pstrdup(r->pool, "200 OK");
             sscanf(r->status_line, "%d", &r->status);
@@ -493,100 +634,29 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
                 ap_send_http_header(r);
                 return TRUE;
             }
-
+                        
             /* Make a copy - don't disturb the original */
             data = ap_pstrdup(r->pool, (char *)lpdwDataType);
-
-            /* We *should* break before this while loop ends */
-            while (*data) {
-                char *value, *lf = strchr(data, '\n');
-                int p;
-
-#ifdef RELAX_HEADER_RULE
-                if (lf)
-                    *lf = '\0';
-#else
-                if (!lf) { /* Huh? Invalid data, I think */
-                        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-                                    "ISA sent invalid headers: %s", r->filename);
-                        SetLastError(TODO_ERROR);
-                        return FALSE;
-                }
-
-                /* Get rid of \n and \r */
-                *lf = '\0';
-#endif
-                p = strlen(data);
-                if (p > 0 && data[p-1] == '\r') data[p-1] = '\0';
-        
-                /* End of headers */
-                if (*data == '\0') {
-#ifdef RELAX_HEADER_RULE
-                    if (lf)
-#endif
-                    data = lf + 1;  /* Reset data */
-                    break;
-                }
-
-                if (!(value = strchr(data, ':'))) {
-                    SetLastError(TODO_ERROR);
-                    /* ### euh... we're passing the wrong type of error
-                       ### code here */
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR,
-                                  HTTP_INTERNAL_SERVER_ERROR, r,
-                                  "ISA sent invalid headers", r->filename);
-                    return FALSE;
-                }
-
-                *value++ = '\0';
-                while (*value && ap_isspace(*value)) ++value;
-
-                /* Check all the special-case headers. Similar to what
-                 * ap_scan_script_header_err() does (see that function for
-                 * more detail)
-                 */
-
-                if (!strcasecmp(data, "Content-Type")) {
-                    char *tmp;
-                    /* Nuke trailing whitespace */
             
-                    char *endp = value + strlen(value) - 1;
-                    while (endp > value && ap_isspace(*endp)) *endp-- = '\0';
-
-                    tmp = ap_pstrdup (r->pool, value);
-                    ap_str_tolower(tmp);
-                    r->content_type = tmp;
-                }
-                else if (!strcasecmp(data, "Content-Length")) {
-                    ap_table_set(r->headers_out, data, value);
-                }
-                else if (!strcasecmp(data, "Transfer-Encoding")) {
-                    ap_table_set(r->headers_out, data, value);
-                }
-                else if (!strcasecmp(data, "Set-Cookie")) {
-                    ap_table_add(r->err_headers_out, data, value);
-                }
-                else {
-                    ap_table_merge(r->err_headers_out, data, value);
-                }
-
-                /* Reset data */
-#ifdef RELAX_HEADER_RULE
-                if (!lf) {
-                    data += p;
-                    break;
-                }
-#endif
-                data = lf + 1;
-            }
+            /* Parse them out, or die trying */
+            data = ComposeHeaders(r, data);
+            if (!data)
+                return FALSE;
 
             /* All the headers should be set now */
-
             ap_send_http_header(r);
 
             /* Any data left should now be sent directly */
-            ap_rputs(data, r);
+            if (*data)
+                ap_rputs(data, r);
 
+            return TRUE;
+
+        case HSE_REQ_DONE_WITH_SESSION:
+            /* Signal to resume the thread completing this request
+             */
+            if (cid->complete)
+                SetEvent(cid->complete);
             return TRUE;
 
         case HSE_REQ_MAP_URL_TO_PATH:
@@ -607,23 +677,35 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 
             return TRUE;
 
-        case HSE_REQ_DONE_WITH_SESSION:
-            /* TODO: Signal the main request with the event to complete the session
-             */
-            return TRUE;
-
-        /* We don't support all this async I/O, Microsoft-specific stuff */
-        case HSE_REQ_IO_COMPLETION:
+        case HSE_REQ_GET_SSPI_INFO:
             SetLastError(ERROR_INVALID_PARAMETER);
             return FALSE;
+        
+        case HSE_APPEND_LOG_PARAMETER:
+            /* Log lpvBuffer, of lpdwSize bytes, in the URI Query (cs-uri-query) field 
+             * This code will do for now...
+             */
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                      "ISAPI %s: %s", cid->r->filename, 
+                      (char*) lpvBuffer);
+            return TRUE;
+        
+        case HSE_REQ_IO_COMPLETION:
             /* TODO: Emulate a completion port, if we can...
              * Record the callback address and user defined argument...
-             * we will call this after any async request (including transmitfile)
-             * as if the request had been async.
+             * we will call this after any async request (e.g. transmitfile)
+             * as if the request had completed async execution.
+             * Per MS docs... HSE_REQ_IO_COMPLETION replaces any prior call
+             * to HSE_REQ_IO_COMPLETION, and lpvBuffer may be set to NULL.
              */
+            if (!cid->isa->fakeasync)
+                return FALSE;
+            cid->completion = (PFN_HSE_IO_COMPLETION) lpvBuffer;
+            cid->completion_arg = (PVOID) lpdwDataType;
+            return TRUE;
 
         case HSE_REQ_TRANSMIT_FILE:
-            /* Use TransmitFile (in leiu of WriteClient)... nothing wrong with that
+            /* Use TransmitFile... nothing wrong with that :)
              */
 
             /* ### euh... we're passing the wrong type of error code here */
@@ -633,23 +715,139 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
                           r->filename);
             return FALSE;
             
-        case HSE_APPEND_LOG_PARAMETER:
-            /* Log lpvBuffer, of lpdwSize bytes */
+        case HSE_REQ_REFRESH_ISAPI_ACL:
+            SetLastError(ERROR_INVALID_PARAMETER);
+            return FALSE;
+
+        case HSE_REQ_IS_KEEP_CONN:
+            SetLastError(ERROR_INVALID_PARAMETER);
+            return FALSE;
+        
+        case HSE_REQ_ASYNC_READ_CLIENT:
+            SetLastError(ERROR_INVALID_PARAMETER);
+            return FALSE;
+        
+        case HSE_REQ_GET_IMPERSONATION_TOKEN:  /* Added in ISAPI 4.0 */
+            SetLastError(ERROR_INVALID_PARAMETER);
+            return FALSE;
+
+        case HSE_REQ_MAP_URL_TO_PATH_EX:
+            SetLastError(ERROR_INVALID_PARAMETER);
+            return FALSE;
+
+            /* TODO: Not quite ready for prime time yet */
+
+            /* Map a URL to a filename */
+            subreq = ap_sub_req_lookup_uri(ap_pstrndup(r->pool, (char *)lpvBuffer,
+                                           *lpdwSize), r);
+
+            GetFullPathName(subreq->filename, *lpdwSize - 1, (char *)lpvBuffer, NULL);
+
+            /* IIS puts a trailing slash on directories, Apache doesn't */
+
+            if (subreq->finfo.filetype == APR_DIR) {
+                int l = strlen((char *)lpvBuffer);
+
+                ((char *)lpvBuffer)[l] = '\\';
+                ((char *)lpvBuffer)[l + 1] = '\0';
+            }
+
+            lpdwDataType = (LPDWORD) ap_palloc(r->pool, sizeof(HSE_URL_MAPEX_INFO));
+            strncpy(((LPHSE_URL_MAPEX_INFO)lpdwDataType)->lpszPath,
+                    (char *) lpvBuffer, MAX_PATH);
+            ((LPHSE_URL_MAPEX_INFO)lpdwDataType)->dwFlags = 0;
+            /* is a combination of:
+             * HSE_URL_FLAGS_READ       Allow for read. 
+             * HSE_URL_FLAGS_WRITE      Allow for write. 
+             * HSE_URL_FLAGS_EXECUTE    Allow for execute. 
+             * HSE_URL_FLAGS_SSL        Require SSL. 
+             * HSE_URL_FLAGS_DONT_CACHE Don't cache (virtual root only). 
+             * HSE_URL_FLAGS_NEGO_CERT  Allow client SSL certifications. 
+             * HSE_URL_FLAGS_REQUIRE_CERT Require client SSL certifications. 
+             * HSE_URL_FLAGS_MAP_CERT   Map SSL certification to a Windows account. 
+             * HSE_URL_FLAGS_SSL128     Requires a 128-bit SSL. 
+             * HSE_URL_FLAGS_SCRIPT     Allows for script execution. 
+             */
+            /* (LPHSE_URL_MAPEX_INFO)lpdwDataType)->cchMatchingPath
+             * (LPHSE_URL_MAPEX_INFO)lpdwDataType)->cchMatchingURL
+             */
+
+            return TRUE;
+        
+        case HSE_REQ_ABORTIVE_CLOSE:
+            SetLastError(ERROR_INVALID_PARAMETER);
+            return FALSE;
+                
+        case HSE_REQ_GET_CERT_INFO_EX:  /* Added in ISAPI 4.0 */
+            SetLastError(ERROR_INVALID_PARAMETER);
+            return FALSE;
+
+        case HSE_REQ_SEND_RESPONSE_HEADER_EX:  /* Added in ISAPI 4.0 */
+            SetLastError(ERROR_INVALID_PARAMETER);
+            return FALSE;
+
+            /* TODO: Not quite ready for prime time */
+
+            if (((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->pszStatus
+                && ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->cchStatus) {
+                r->status_line = ap_pstrndup(r->pool, 
+                           ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->pszStatus,
+                           ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->cchStatus);
+            }
+            else {
+                r->status_line = ap_pstrdup(r->pool, "200 OK");
+            }
+            sscanf(r->status_line, "%d", &r->status);
+            cid->ecb->dwHttpStatusCode = r->status;
+
+            if (((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->pszHeader
+                && ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->cchHeader)
+            {
+                /* Make a copy - don't disturb the original */
+                data = ap_pstrndup(r->pool, 
+                           ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->pszHeader,
+                           ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->cchHeader);
+                
+                /* Parse them out, or die trying */
+                data = ComposeHeaders(r, data);
+                if (!data)
+                    return FALSE;
+
+            }
+            else {
+                data = "\0";
+            }
+            
+            /* ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->fKeepConn; 
+             *
+             * Now how are we about to start listening to an ISAPI's
+             * idea of keeping or closing a connection?  Seriously :)
+             */
+
+            /* All the headers should be set now */
+            ap_send_http_header(r);
+
+            /* Any data left should now be sent directly */
+            if (*data)
+                ap_rputs(data, r);
+
             return TRUE;
 
-        
-        /* Need to implement all applicable for ISAPI 5.0 support */
-        case HSE_REQ_ABORTIVE_CLOSE:
-        case HSE_REQ_ASYNC_READ_CLIENT:
-        case HSE_REQ_CLOSE_CONNECTION:
-        case HSE_REQ_GET_CERT_INFO_EX:
-        case HSE_REQ_GET_IMPERSONATION_TOKEN:
-        case HSE_REQ_GET_SSPI_INFO:
-        case HSE_REQ_IS_KEEP_CONN:
-        case HSE_REQ_MAP_URL_TO_PATH_EX:
-        case HSE_REQ_REFRESH_ISAPI_ACL:
+        case HSE_REQ_CLOSE_CONNECTION:  /* Added after ISAPI 4.0 */
+            SetLastError(ERROR_INVALID_PARAMETER);
+            return FALSE;
 
+        case HSE_REQ_IS_CONNECTED:  /* Added after ISAPI 4.0 */
+            /* Returns True if client is connected c.f. Q188346*/
+            return TRUE;
+
+     /* case HSE_REQ_EXTENSION_TRIGGER:  
+      *     Added after ISAPI 4.0? 
+      *      Undocumented - from the Microsoft Jan '00 Platform SDK
+      */
         default:
+            /* TODO: log unrecognized ServerSupportCommand for debugging 
+             */
             SetLastError(ERROR_INVALID_PARAMETER);
             return FALSE;
     }
