@@ -804,9 +804,8 @@ int ssl_hook_Access(request_rec *r)
          * Remember the peer certificate's DN
          */
         if ((cert = SSL_get_peer_certificate(ssl)) != NULL) {
-            cp = X509_NAME_oneline(X509_get_subject_name(cert), NULL, 0);
-            sslconn->client_dn = apr_pstrdup(r->connection->pool, cp);
-            free(cp);
+            sslconn->client_cert = cert;
+            sslconn->client_dn = NULL;
         }
 
         /*
@@ -948,8 +947,17 @@ int ssl_hook_UserCheck(request_rec *r)
         return DECLINED;
     if (r->user)
         return DECLINED;
-    if ((clientdn = (char *)sslconn->client_dn) == NULL)
+    if (sslconn->client_cert == NULL)
         return DECLINED;
+
+    if (!sslconn->client_dn) {
+        X509_NAME *name = X509_get_subject_name(sslconn->client_cert);
+        char *cp = X509_NAME_oneline(name, NULL, 0);
+        sslconn->client_dn = apr_pstrdup(r->connection->pool, cp);
+        free(cp);
+    }
+
+    clientdn = (char *)sslconn->client_dn;
 
     /*
      * Fake a password - which one would be immaterial, as, it seems, an empty
@@ -1304,7 +1312,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     if (!ok) {
         ssl_log(s, SSL_LOG_ERROR, "Certificate Verification: Error (%d): %s",
                 errnum, X509_verify_cert_error_string(errnum));
-        sslconn->client_dn = NULL;
+        sslconn->client_cert = sslconn->client_dn = NULL;
         sslconn->verify_error = 
             X509_verify_cert_error_string(errnum);
     }

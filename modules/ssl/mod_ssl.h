@@ -455,6 +455,7 @@ typedef enum {
 typedef struct {
     SSL *ssl;
     const char *client_dn;
+    X509 *client_cert;
     ssl_shutdown_type_e shutdown_type;
     const char *verify_info;
     const char *verify_error;
