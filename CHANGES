@@ -1,5 +1,8 @@
 Changes with Apache 2.0.33-dev
 
+  *) Remove spurious debug messsages that are normal under HTTP
+     keep-alive logic.  [Jeff Trawick, Justin Erenkrantz]
+
   *) Fix a bug in mod_cgid that would prevent proper shutdown death
      of the cgid process.  [Aaron Bannert]
 
