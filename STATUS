@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/28 18:44:48 $]
+Last modified at [$Date: 2004/03/29 02:37:57 $]
 
 Release:
 
@@ -287,6 +287,10 @@ PATCHES TO BACKPORT FROM 2.1
 
     * core_output_filter: tag the deferred write_pool
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.269&r2=1.270
+      +1: trawick
+
+    * Don't include newlines in strings passed to ap_log_error.
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/main.c?r1=1.155&r2=1.156
       +1: trawick
 
 CURRENT RELEASE NOTES:
