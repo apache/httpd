@@ -2133,6 +2133,12 @@ static int handle_autoindex(request_rec *r)
     /* OK, nothing easy.  Trot out the heavy artillery... */
 
     if (allow_opts & OPT_INDEXES) {
+        int errstatus;
+
+        if ((errstatus = ap_discard_request_body(r)) != OK) {
+            return errstatus;
+        }
+
         /* KLUDGE --- make the sub_req lookups happen in the right directory.
          * Fixing this in the sub_req_lookup functions themselves is difficult,
          * and would probably break virtual includes...
