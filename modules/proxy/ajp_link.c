@@ -118,7 +118,7 @@ apr_status_t ajp_ilink_receive(apr_socket_t *sock, ajp_msg_t *msg)
 
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, NULL,
-                      "ajp_ilink_receive() error while receiving message body %of length %d\n",
+                      "ajp_ilink_receive() error while receiving message body of length %d\n",
                       hlen);
         return AJP_EBAD_MESSAGE;
     }
