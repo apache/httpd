@@ -97,53 +97,55 @@
         <td>Remote host</td></tr>
 <tr><td><code>%...H</code></td>
         <td>The request protocol</td></tr>
-<tr class="odd"><td><code>%...{<var>Foobar</var>}i</code></td>
+<tr class="odd"><td><code>%...I</code></td>
+        <td>The thread id if APR supports threads, otherwise 0</td></tr>
+<tr><td><code>%...{<var>Foobar</var>}i</code></td>
         <td>The contents of <code><var>Foobar</var>:</code> header line(s)
         in the request sent to the server.</td></tr>
-<tr><td><code>%...l</code></td>
+<tr class="odd"><td><code>%...l</code></td>
         <td>Remote logname (from identd, if supplied). This will return a
         dash unless <code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> is present and <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code> is set
         <code>On</code>.</td></tr>
-<tr class="odd"><td><code>%...m</code></td>
+<tr><td><code>%...m</code></td>
         <td>The request method</td></tr>
-<tr><td><code>%...{<var>Foobar</var>}n</code></td>
+<tr class="odd"><td><code>%...{<var>Foobar</var>}n</code></td>
         <td>The contents of note <var>Foobar</var> from another
         module.</td></tr>
-<tr class="odd"><td><code>%...{<var>Foobar</var>}o</code></td>
+<tr><td><code>%...{<var>Foobar</var>}o</code></td>
         <td>The contents of <code><var>Foobar</var>:</code> header line(s)
         in the reply.</td></tr>
-<tr><td><code>%...p</code></td>
+<tr class="odd"><td><code>%...p</code></td>
         <td>The canonical port of the server serving the request</td></tr>
-<tr class="odd"><td><code>%...P</code></td>
+<tr><td><code>%...P</code></td>
         <td>The process ID of the child that serviced the request.</td></tr>
-<tr><td><code>%...q</code></td>
+<tr class="odd"><td><code>%...q</code></td>
         <td>The query string (prepended with a <code>?</code> if a query
         string exists, otherwise an empty string)</td></tr>
-<tr class="odd"><td><code>%...r</code></td>
+<tr><td><code>%...r</code></td>
         <td>First line of request</td></tr>
-<tr><td><code>%...s</code></td>
+<tr class="odd"><td><code>%...s</code></td>
         <td>Status. For requests that got internally redirected, this is
         the status of the *original* request --- <code>%...&gt;s</code>
         for the last.</td></tr>
-<tr class="odd"><td><code>%...t</code></td>
+<tr><td><code>%...t</code></td>
         <td>Time, in common log format time format (standard english
         format)</td></tr>
-<tr><td><code>%...{<var>format</var>}t</code></td>
+<tr class="odd"><td><code>%...{<var>format</var>}t</code></td>
         <td>The time, in the form given by format, which should be in
         <code>strftime(3)</code> format. (potentially localized)</td></tr>
-<tr class="odd"><td><code>%...T</code></td>
+<tr><td><code>%...T</code></td>
         <td>The time taken to serve the request, in seconds.</td></tr>
-<tr><td><code>%...u</code></td>
+<tr class="odd"><td><code>%...u</code></td>
         <td>Remote user (from auth; may be bogus if return status
         (<code>%s</code>) is 401)</td></tr>
-<tr class="odd"><td><code>%...U</code></td>
+<tr><td><code>%...U</code></td>
         <td>The URL path requested, not including any query string.</td></tr>
-<tr><td><code>%...v</code></td>
+<tr class="odd"><td><code>%...v</code></td>
         <td>The canonical <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>
         of the server serving the request.</td></tr>
-<tr class="odd"><td><code>%...V</code></td>
+<tr><td><code>%...V</code></td>
         <td>The server name according to the <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> setting.</td></tr>
-<tr><td><code>%...X</code></td>
+<tr class="odd"><td><code>%...X</code></td>
         <td>Connection status when response is completed:
 
         <table>
@@ -160,10 +162,10 @@
         <p>(This directive was <code>%...c</code> in late versions of Apache
         1.3, but this conflicted with the historical ssl
         <code>%...{<var>var</var>}c</code> syntax.)</p></td></tr>
-<tr class="odd"><td><code>%...I</code></td>
+<tr><td><code>%...I</code></td>
         <td>Bytes received, including request and headers, cannot be zero.
         You need to enable <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> to use this.</td></tr>
-<tr><td><code>%...O</code></td>
+<tr class="odd"><td><code>%...O</code></td>
         <td>Bytes sent, including headers, cannot be zero. You need to
         enable <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> to use this.</td></tr>
 </table>
