@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Do not bypass output filters when redirecting subrequests internally.
+     PR 17629.  [André Malo]
+
   *) OpenSSL headers should be included as "openssl/ssl.h", and not rely on
      the INCLUDE path to be defined properly.
      PR 11310. [Geoff Thrope <geoff@geoffthorpe.net>]
