@@ -1,5 +1,17 @@
 Changes with Apache 1.3a2
 
+  *) Enhanced and cleaned up the URL rewriting engine of mod_rewrite:
+     First the grouped parts of RewriteRule pattern matches (parenthesis!) can
+     be accessed now via backreferences $1..$9 in RewriteConds test-against
+     strings in addition to RewriteRules subst string. Second the grouped
+     parts of RewriteCond pattern matches (parenthesis!) can be accessed now
+     via backreferences %1..%9 both in following RewriteCond test-against
+     strings and RewriteRules subst string. This provides maximum flexibility
+     through the use of backreferences.
+     Additionally the rewriting engine was cleaned up by putting common
+     code to the new expand_backrefs_inbuffer() function. 
+     [Ralf S. Engelschall]
+
   *) When merging the main server's <Directory> and <Location> sections into
      a vhost, put the main server's first and the vhost's second.  Otherwise
      the vhost can't override the main server.  [Dean Gaudet] PR#717

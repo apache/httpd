@@ -471,7 +471,34 @@ The following rewriting rule is only used if its pattern matches the current
 state of the URI <b>AND</b> if these additional conditions apply, too.
 
 <p>
-<em>TestString</em> is a string which contains server-variables of the form
+<em>TestString</em> is a string which can contains the following
+expanded constructs in addition to plain text:
+
+<ul>
+<li><b>RewriteRule backreferences</b>: These are backreferences of the form
+
+<blockquote><strong>
+<tt>$N</tt>
+</strong></blockquote>
+
+(1 <= N <= 9) which provide access to the grouped parts (parenthesis!) of the
+pattern from the corresponding <tt>RewriteRule</tt> directive (the one
+following the current bunch of <tt>RewriteCond</tt> directives).
+
+<p>
+<li><b>RewriteCond backreferences</b>: These are backreferences of the form
+
+<blockquote><strong>
+<tt>%N</tt>
+</strong></blockquote>
+
+(1 <= N <= 9) which provide access to the grouped parts (parenthesis!) of the
+pattern from the last matched <tt>RewriteCond</tt> directive in the current
+bunch of conditions.
+
+<p>
+<li><b>Server-Variables</b>: These are variables
+    of the form
 
 <blockquote><strong>
 <tt>%{</tt> <em>NAME_OF_VARIABLE</em> <tt>}</tt>
@@ -554,7 +581,6 @@ IS_SUBREQ<br>
 </tr>
 </table>
 
-
 <p>
 <table width="70%" border=0 bgcolor="#f0f0f0" cellspacing=0 cellpadding=10>
 <tr><td>
@@ -563,6 +589,8 @@ variables of the Apache server or <tt>struct tm</tt> fields of the Unix
 system.
 </td></tr>
 </table>
+
+</ul>
 
 <p>
 Special Notes:
@@ -796,7 +824,8 @@ which is substituted for (or replaces) the original URL for which
 <em>Pattern</em> matched.  Beside plain text you can use
 
 <ol>
-<li>pattern-group back-references (<code>$N</code>)
+<li>back-references <code>$N</code> to the RewriteRule pattern
+<li>back-references <code>%N</code> to the last matched RewriteCond pattern
 <li>server-variables as in rule condition test-strings (<code>%{VARNAME}</code>)
 <li><a href="#mapfunc">mapping-function</a> calls (<code>${mapname:key|default}</code>)
 </ol>
@@ -1007,15 +1036,15 @@ comma-separated list of the following flags:
     (This is <b>not</b> the same as the 'chain|C' flag!)
 <p>
 <li>'<strong><code>env|E=</code></strong><i>VAR</i>:<i>VAL</i>' (set <b>e</b>nvironment variable)<br>
-    This forces an environment variable named <i>VAR</i> to be set to the value
-    <i>VAL</i>, where <i>VAL</i> can contain regexp backreferences <tt>$N</tt>
-    which will be expanded. You can use this flag more than once to set more
-    than one variable. The variables can be later dereferenced at a lot of
-    situations, but the usual location will be from within XSSI (via
-        <tt>&lt;!--#echo var="VAR"--&gt;</tt>) or CGI (e.g. <tt>$ENV{'VAR'}</tt>).
-        But additionally you can also dereference it in a following RewriteCond
-        pattern via <tt>%{ENV:VAR}</tt>. Use this to strip but remember
-        information from URLs.
+	This forces an environment variable named <i>VAR</i> to be set to the
+	value <i>VAL</i>, where <i>VAL</i> can contain regexp backreferences
+	<tt>$N</tt> and <tt>%N</tt> which will be expanded. You can use this flag
+	more than once to set more than one variable. The variables can be later
+	dereferenced at a lot of situations, but the usual location will be from
+	within XSSI (via <tt>&lt;!--#echo var="VAR"--&gt;</tt>) or CGI (e.g.
+	<tt>$ENV{'VAR'}</tt>).  But additionally you can also dereference it in a
+	following RewriteCond pattern via <tt>%{ENV:VAR}</tt>. Use this to strip
+	but remember information from URLs.
 </ul>
 
 <p>

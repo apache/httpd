@@ -205,7 +205,8 @@
 
 #define MAX_ENV_FLAGS 5
 
-#define EOS_PARANOIA(ca) ca[sizeof(ca)-1] = '\0'
+#define EOS_PARANOIA(ca)            ca[sizeof(ca)-1] = '\0'
+#define EOS_PARANOIA_SIZE(cp, size) cp[size-1] = '\0'
 
 
 /*
@@ -292,6 +293,15 @@ typedef struct cache {
     array_header *lists;
 } cache;
 
+    /* the regex structure for the
+       substitution of backreferences */
+
+typedef struct backrefinfo {
+    char *source;
+    int nsub;
+    regmatch_t regmatch[10];
+} backrefinfo;
+
 
 /*
 **
@@ -335,11 +345,12 @@ static int handler_redirect(request_rec *r);
     /* rewriting engine */
 static int apply_rewrite_list(request_rec *r, array_header *rewriterules, char *perdir);
 static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir); 
-static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir); 
+static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir, backrefinfo *briRR, backrefinfo *briRC); 
 
     /* URI transformation function */
 static void  splitout_queryargs(request_rec *r, int qsappend);
 static void  reduce_uri(request_rec *r);
+static void  expand_backref_inbuffer(pool *p, char *buf, int nbuf, backrefinfo *bri, char c);
 static char *expand_tildepaths(request_rec *r, char *uri);
 static void  expand_map_lookups(request_rec *r, char *uri, int uri_len);
 

@@ -1442,16 +1442,17 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
     char newuri[MAX_STRING_LEN];
     char env[MAX_STRING_LEN];
     char port[32];
-    char env2[MAX_STRING_LEN];
     regex_t *regexp;
     regmatch_t regmatch[10];
-    int rc;
+    backrefinfo *briRR = NULL;
+    backrefinfo *briRC = NULL;
     int prefixstrip;
-    int i;
     int failed;
     array_header *rewriteconds;
     rewritecond_entry *conds;
     rewritecond_entry *c;
+    int i;
+    int rc;
 
     uri     = r->filename;
     regexp  = p->regexp;
@@ -1481,6 +1482,24 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
     if (( rc && !(p->flags & RULEFLAG_NOTMATCH)) ||
         (!rc &&  (p->flags & RULEFLAG_NOTMATCH))   ) {     
 
+        /* create the RewriteRule regsubinfo */
+        briRR = (backrefinfo *)palloc(r->pool, sizeof(backrefinfo));
+        if (!rc && (p->flags & RULEFLAG_NOTMATCH)) {
+            briRR->source = "";
+            briRR->nsub   = 0;
+        }
+        else {
+            briRR->source = pstrdup(r->pool, uri);
+            briRR->nsub   = regexp->re_nsub;
+            memcpy((void *)(briRR->regmatch), (void *)(regmatch), sizeof(regmatch_t)*10);
+        }
+
+        /* create the RewriteCond backrefinfo, but
+           initialized as empty backrefinfo, i.e. not subst */
+        briRC = (backrefinfo *)pcalloc(r->pool, sizeof(backrefinfo));
+        briRC->source = "";
+        briRC->nsub   = 0;
+
         /* ok, the pattern matched, but we now additionally have to check 
            for any preconditions which have to be also true. We do this
            at this very late stage to avoid unnessesary checks which
@@ -1490,7 +1509,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
         failed = 0;
         for (i = 0; i < rewriteconds->nelts; i++) {
             c = &conds[i];
-            rc = apply_rewrite_cond(r, c, perdir);
+            rc = apply_rewrite_cond(r, c, perdir, briRR, briRC);
             if (c->flags & CONDFLAG_ORNEXT) {
                 /* there is a "or" flag */
                 if (rc == 0) {
@@ -1523,10 +1542,10 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
         if (strcmp(output, "-") == 0) {
             /* but before we set the env variables... */
             for (i = 0; p->env[i] != NULL; i++) {
-                strncpy(env2, p->env[i], sizeof(env2)-1);
-                EOS_PARANOIA(env2);
-                strncpy(env, pregsub(r->pool, env2, uri, regexp->re_nsub+1, regmatch), sizeof(env)-1);    /* substitute in output */
+                strncpy(env, p->env[i], sizeof(env)-1);
                 EOS_PARANOIA(env);
+                expand_backref_inbuffer(r->pool, env, sizeof(env), briRR, '$');
+                expand_backref_inbuffer(r->pool, env, sizeof(env), briRC, '%');
                 add_env_variable(r, env);
             }
             return 2;
@@ -1534,27 +1553,13 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
 
         /* if this is a forced proxy request ... */
         if (p->flags & RULEFLAG_PROXY) {
-            if (p->flags & RULEFLAG_NOTMATCH) {
-                output = pstrcat(r->pool, "proxy:", output, NULL);
-                strncpy(newuri, output, sizeof(newuri)-1);
-                EOS_PARANOIA(newuri);
-                expand_variables_inbuffer(r, newuri, sizeof(newuri));/* expand %{...} */
-                expand_map_lookups(r, newuri, sizeof(newuri));       /* expand ${...} */
-            }
-            else {
-                output = pstrcat(r->pool, "proxy:", output, NULL);
-                strncpy(newuri, pregsub(r->pool, output, uri, regexp->re_nsub+1, regmatch), sizeof(newuri)-1);    /* substitute in output */
-                EOS_PARANOIA(newuri);
-                for (i = 0; p->env[i] != NULL; i++) {
-                    strncpy(env2, p->env[i], sizeof(env2)-1);
-                    EOS_PARANOIA(env2);
-                    strncpy(env, pregsub(r->pool, env2, uri, regexp->re_nsub+1, regmatch), sizeof(env)-1);    /* substitute in output */
-                    EOS_PARANOIA(env);
-                    add_env_variable(r, env);
-                }
-                expand_variables_inbuffer(r, newuri, sizeof(newuri));   /* expand %{...} */
-                expand_map_lookups(r, newuri, sizeof(newuri));          /* expand ${...} */
-            }
+            output = pstrcat(r->pool, "proxy:", output, NULL);
+            strncpy(newuri, output, sizeof(newuri)-1);
+            EOS_PARANOIA(newuri);
+            expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRR, '$'); /* expand $N */
+            expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRC, '%'); /* expand %N */
+            expand_variables_inbuffer(r, newuri, sizeof(newuri));                 /* expand %{...} */
+            expand_map_lookups(r, newuri, sizeof(newuri));                        /* expand ${...} */
             if (perdir == NULL)
                 rewritelog(r, 2, "rewrite %s -> %s", r->filename, newuri);
             else
@@ -1570,24 +1575,18 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
                 || (i > 8 && strncmp(output, "https://", 8) == 0)
                 || (i > 9 && strncmp(output, "gopher://", 9) == 0)
                 || (i > 6 && strncmp(output, "ftp://", 6) == 0)   ) ) {
-            if (p->flags & RULEFLAG_NOTMATCH) {
-                strncpy(newuri, output, sizeof(newuri)-1);
-                EOS_PARANOIA(newuri);
-                expand_variables_inbuffer(r, newuri, sizeof(newuri));/* expand %{...} */
-                expand_map_lookups(r, newuri, sizeof(newuri));       /* expand ${...} */
-            }
-            else {
-                strncpy(newuri, pregsub(r->pool, output, uri, regexp->re_nsub+1, regmatch), sizeof(newuri)-1);    /* substitute in output */
-                EOS_PARANOIA(newuri);
-                for (i = 0; p->env[i] != NULL; i++) {
-                    strncpy(env2, p->env[i], sizeof(env2)-1);
-                    EOS_PARANOIA(env2);
-                    strncpy(env, pregsub(r->pool, env2, uri, regexp->re_nsub+1, regmatch), sizeof(env)-1);    /* substitute in output */
-                    EOS_PARANOIA(env);
-                    add_env_variable(r, env);
-                }
-                expand_variables_inbuffer(r, newuri, sizeof(newuri));/* expand %{...} */
-                expand_map_lookups(r, newuri, sizeof(newuri));       /* expand ${...} */
+            strncpy(newuri, output, sizeof(newuri)-1);
+            EOS_PARANOIA(newuri);
+            expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRR, '$'); /* expand $N */
+            expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRC, '%'); /* expand %N */
+            expand_variables_inbuffer(r, newuri, sizeof(newuri));                 /* expand %{...} */
+            expand_map_lookups(r, newuri, sizeof(newuri));                        /* expand ${...} */
+            for (i = 0; p->env[i] != NULL; i++) {
+                strncpy(env, p->env[i], sizeof(env)-1);
+                EOS_PARANOIA(env);
+                expand_backref_inbuffer(r->pool, env, sizeof(env), briRR, '$');
+                expand_backref_inbuffer(r->pool, env, sizeof(env), briRC, '%');
+                add_env_variable(r, env);
             }
             rewritelog(r, 2, "[per-dir %s] redirect %s -> %s", perdir, r->filename, newuri);
             r->filename = pstrdup(r->pool, newuri);
@@ -1603,25 +1602,20 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
             output = pstrcat(r->pool, perdir, output, NULL);
         }
 
-        if (p->flags & RULEFLAG_NOTMATCH) {
-            /* just overtake the URI */
-            strncpy(newuri, output, sizeof(newuri)-1);
-            EOS_PARANOIA(newuri);
+        /* standard case: create the substitution string */
+        strncpy(newuri, output, sizeof(newuri)-1);
+        EOS_PARANOIA(newuri);
+        expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRR, '$'); /* expand $N */
+        expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRC, '%'); /* expand %N */
+        expand_variables_inbuffer(r, newuri, sizeof(newuri));                 /* expand %{...} */
+        expand_map_lookups(r, newuri, sizeof(newuri));                        /* expand ${...} */
+        for (i = 0; p->env[i] != NULL; i++) {
+            strncpy(env, p->env[i], sizeof(env)-1);
+            EOS_PARANOIA(env);
+            expand_backref_inbuffer(r->pool, env, sizeof(env), briRR, '$');
+            expand_backref_inbuffer(r->pool, env, sizeof(env), briRC, '%');
+            add_env_variable(r, env);
         }
-        else {
-            /* substitute in output */
-            strncpy(newuri, pregsub(r->pool, output, uri, regexp->re_nsub+1, regmatch), sizeof(newuri)-1);    /* substitute in output */
-            EOS_PARANOIA(newuri);
-            for (i = 0; p->env[i] != NULL; i++) {
-                strncpy(env2, p->env[i], sizeof(env2)-1);
-                EOS_PARANOIA(env2);
-                strncpy(env, pregsub(r->pool, env2, uri, regexp->re_nsub+1, regmatch), sizeof(env)-1);    /* substitute in output */
-                EOS_PARANOIA(env);
-                add_env_variable(r, env);
-            }
-        }
-        expand_variables_inbuffer(r, newuri, sizeof(newuri));  /* expand %{...} */
-        expand_map_lookups(r, newuri, sizeof(newuri));         /* expand ${...} */
 
         if (perdir == NULL)
             rewritelog(r, 2, "rewrite %s -> %s", uri, newuri);
@@ -1694,15 +1688,30 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
     return 0;
 }
 
-static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir)
+static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir, backrefinfo *briRR, backrefinfo *briRC)
 {
-    char *input;
-    int rc;
+    char input[MAX_STRING_LEN];
     struct stat sb;
     request_rec *rsub;
+    regmatch_t regmatch[10];
+    int rc;
 
-    /* first, we have to expand the input string to match */
-    input = expand_variables(r, p->input);
+    /*
+     *   Construct the string we match against
+     */
+
+    /* expand the regex backreferences from the RewriteRule ($0-$9), 
+       then from the last RewriteCond (%0-%9) and then expand the 
+       variables (%{....}) */
+    strncpy(input, p->input, sizeof(input)-1);
+    EOS_PARANOIA(input);
+    expand_backref_inbuffer(r->pool, input, sizeof(input), briRR, '$');
+    expand_backref_inbuffer(r->pool, input, sizeof(input), briRC, '%');
+    expand_variables_inbuffer(r, input, sizeof(input));
+
+    /*
+     *   Apply the patterns
+     */
 
     rc = 0;
     if (strcmp(p->pattern, "-f") == 0) {
@@ -1791,7 +1800,15 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
     }
     else {
         /* it is really a regexp pattern, so apply it */
-        rc = (regexec(p->regexp, input, 0, NULL, 0) == 0);
+        rc = (regexec(p->regexp, input, p->regexp->re_nsub+1, regmatch, 0) == 0);
+
+        /* if it isn't a negated pattern and really matched
+           we update the passed-through regex subst info structure */
+        if (rc && !(p->flags & CONDFLAG_NOTMATCH)) { 
+            briRC->source = pstrdup(r->pool, input);
+            briRC->nsub   = p->regexp->re_nsub;
+            memcpy((void *)(briRC->regmatch), (void *)(regmatch), sizeof(regmatch_t)*10);
+        }
     }
 
     /* if this is a non-matching regexp, just negate the result */ 
@@ -1937,6 +1954,43 @@ static void reduce_uri(request_rec *r)
         }
     }
     return;            
+}
+
+
+/*
+**
+**  Expand the %0-%9 or $0-$9 regex backreferences
+**
+*/
+
+static void expand_backref_inbuffer(pool *p, char *buf, int nbuf, backrefinfo *bri, char c)
+{
+    int i;
+
+    if (bri->nsub < 1)
+        return;
+
+    if (c != '$') {
+        /* safe existing $N backrefs and replace <c>N with $N backrefs */
+        for (i = 0; buf[i] != '\0' && i < nbuf; i++) {
+            if (buf[i] == '$' && (buf[i+1] >= '0' && buf[i+1] <= '9'))
+                buf[i++] = '\001';
+            else if (buf[i] == c && (buf[i+1] >= '0' && buf[i+1] <= '9'))
+                buf[i++] = '$';
+        }
+    }
+
+    /* now apply the pregsub() function */
+    strncpy(buf, pregsub(p, buf, bri->source, 
+                         bri->nsub+1, bri->regmatch), nbuf-1);
+    EOS_PARANOIA_SIZE(buf, nbuf);
+
+    if (c != '$') {
+        /* restore the original $N backrefs */
+        for (i = 0; buf[i] != '\0' && i < nbuf; i++)
+            if (buf[i] == '\001' && (buf[i+1] >= '0' && buf[i+1] <= '9'))
+                buf[i++] = '$';
+    }
 }
 
 
