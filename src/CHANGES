@@ -1,5 +1,9 @@
 Changes with Apache 1.2b7
 
+  *) changed status check mask in proxy_http.c from "HTTP/#.# ### *" to
+     "HTTP/#.# ###*" to be more lenient about what we accept.
+     [Chuck Murcko]
+
   *) more proxy FTP bug fixes:
      - remove setting of SO_DEBUG socket option
      - Make ftp_getrc() more lenient about multiline responses,
