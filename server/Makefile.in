@@ -17,7 +17,7 @@ LTLIBRARY_SOURCES = \
         util_filter.c exports.c buildmark.c scoreboard.c \
 	error_bucket.c protocol.c core.c request.c
 
-TARGETS = $(LTLIBRARY_NAME) $(CORE_IMPLIB_FILE) export_vars.h httpd.exp
+TARGETS = delete-exports $(LTLIBRARY_NAME) $(CORE_IMPLIB_FILE) export_vars.h httpd.exp
 
 include $(top_srcdir)/build/rules.mk
 include $(top_srcdir)/build/library.mk
@@ -36,7 +36,17 @@ EXPORT_FILES = $(top_srcdir)/include/*.h \
        $(top_srcdir)/srclib/apr/include/*.h \
        $(top_srcdir)/srclib/apr-util/include/*.h
 
-exports.c: $(EXPORT_FILES)
+delete-exports:
+	@if test -f exports.c; then \
+		    headers="`find $(top_srcdir)/include/*.h -newer exports.c`" ; \
+		    if test -n "$$headers"; then \
+		        echo Found newer headers. Will rebuild exports.c. ; \
+		        echo rm -f exports.c ; \
+		        rm -f exports.c ; \
+		    fi \
+	fi
+
+exports.c:
 	$(AWK) -f $(top_srcdir)/build/make_exports.awk $(EXPORT_FILES) > $@
 
 export_vars.h:

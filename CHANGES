@@ -1,5 +1,10 @@
 Changes with Apache 2.0.24-dev
 
+  *) Tweak server/Makefile so that the rules for generating exports.c
+     are compatible with make utilities which don't expand wildcards
+     in a dependency list (e.g., OS/390 make, certain levels of GNU
+     make).  [Jeff Trawick]
+
   *) Install the SSL headers.  [John Sterling <sterling@covalent.net>]
 
   *) Begin to sanitize the MPM configuration directives.  Now, all
