@@ -419,7 +419,7 @@ PROXY_DECLARE(apr_table_t *)ap_proxy_read_headers(request_rec *r, request_rec *r
 	     * way, but log the fact.
 	     * XXX: The mask check is buggy if we ever see an HTTP/1.10 */
 
-	    if (!ap_checkmask(buffer, "HTTP/#.# ###*")) {
+	    if (!apr_date_checkmask(buffer, "HTTP/#.# ###*")) {
 		/* Nope, it wasn't even an extra HTTP header. Give up. */
 		return NULL;
 	    }
