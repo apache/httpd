@@ -106,7 +106,7 @@ PATCHES TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewcvs.cgi?rev=102869&view=rev
        http://svn.apache.org/viewcvs.cgi?rev=105264&view=rev
        rediffed for 2.0 as: http://www.apache.org/~jorton/ap_dummy.diff
-       +1: jorton, trawick
+       +1: jorton, trawick, stoddard
 
     *) mod_ssl: Set r->user from SSLUsername earlier so that it's
        actually useful.
@@ -230,7 +230,7 @@ PATCHES TO BACKPORT FROM TRUNK:
         modules/experimental/mod_cache.h: 1.52
         modules/experimental/mod_disk_cache.c: 1.67
         modules/experimental/mod_mem_cache.c: 1.119
-      +1: jerenkrantz
+      +1: jerenkrantz, stoddard
       +0: sounds like a nice 'feature' v.s. rfc-required behavior, great for 2.2
 
     * support/check_forensic: Fix tempfile usage
@@ -251,13 +251,18 @@ PATCHES TO BACKPORT FROM TRUNK:
       reliability issue)
       http://svn.apache.org/viewcvs.cgi?rev=109510&view=rev
       http://svn.apache.org/viewcvs.cgi?rev=105195&view=rev
-      +1: trawick
+      +1: trawick, stoddard
 
     * modules/http/http_request.c (ap_internal_fast_redirect): Take over
       important members of the subrequest. Especially the proxyreq copying
       is interesting for proxying DirectoryIndex'd resources:
         http://svn.apache.org/viewcvs.cgi?rev=102330&view=rev
       +1: nd
+
+    * Win32: Move call to mpm_service_install to the rewrite_args hook
+      from the post_config hook.
+      http://svn.apache.org/viewcvs?view=rev&rev=154319
+      +1: stoddard
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
