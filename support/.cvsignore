@@ -16,6 +16,7 @@ apxs
 Debug
 Release
 apachectl
+checkgid
 dbmmanage
 log_server_status
 logresolve.pl
