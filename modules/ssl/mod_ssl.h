@@ -200,9 +200,9 @@
 (SSLConnRec *)ap_get_module_config(c->conn_config, &ssl_module)
 #define myConnConfigSet(c, val) \
 ap_set_module_config(c->conn_config, &ssl_module, val)
-#define myModConfig(srv) (SSLModConfigRec *)ssl_util_getmodconfig(srv, "ssl_module")
 #define mySrvConfig(srv) (SSLSrvConfigRec *)ap_get_module_config(srv->module_config,  &ssl_module)
 #define myDirConfig(req) (SSLDirConfigRec *)ap_get_module_config(req->per_dir_config, &ssl_module)
+#define myModConfig(srv) (mySrvConfig((srv)))->mc
 
 #define myCtxVarSet(mc,num,val)  mc->rCtx.pV##num = val
 #define myCtxVarGet(mc,num,type) (type)(mc->rCtx.pV##num)
@@ -498,6 +498,7 @@ typedef struct {
  *  and all <VirtualHost> contexts)
  */
 typedef struct {
+    SSLModConfigRec *mc;
     const char  *szVHostID;
     int          nVHostID_length;
     BOOL         bEnabled;
@@ -750,8 +751,5 @@ ssl_algo_t   ssl_util_algotypeof(X509 *, EVP_PKEY *);
 char        *ssl_util_algotypestr(ssl_algo_t);
 char        *ssl_util_ptxtsub(apr_pool_t *, const char *, const char *, char *);
 void         ssl_util_thread_setup(server_rec *, apr_pool_t *);
-apr_status_t     ssl_util_setmodconfig(server_rec *, const char *, SSLModConfigRec *);
-SSLModConfigRec *ssl_util_getmodconfig(server_rec *, const char *);
-SSLModConfigRec *ssl_util_getmodconfig_ssl(SSL *, const char *);
 
 #endif /* __MOD_SSL_H__ */

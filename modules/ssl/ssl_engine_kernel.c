@@ -1170,7 +1170,8 @@ int ssl_hook_Fixup(request_rec *r)
  */
 RSA *ssl_callback_TmpRSA(SSL *pSSL, int nExport, int nKeyLen)
 {
-    SSLModConfigRec *mc = ssl_util_getmodconfig_ssl(pSSL, "ssl_module");
+    conn_rec *c = (conn_rec *)SSL_get_app_data(pSSL);
+    SSLModConfigRec *mc = myModConfig(c->base_server);
     RSA *rsa;
 
     rsa = NULL;
@@ -1196,7 +1197,8 @@ RSA *ssl_callback_TmpRSA(SSL *pSSL, int nExport, int nKeyLen)
  */
 DH *ssl_callback_TmpDH(SSL *pSSL, int nExport, int nKeyLen)
 {
-    SSLModConfigRec *mc = ssl_util_getmodconfig_ssl(pSSL, "ssl_module");
+    conn_rec *c = (conn_rec *)SSL_get_app_data(pSSL);
+    SSLModConfigRec *mc = myModConfig(c->base_server);
     DH *dh;
 
     dh = NULL;
