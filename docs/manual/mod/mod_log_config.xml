@@ -230,7 +230,7 @@ host</context></contextlist>
     <p>The <directive>CookieLog</directive> directive sets the 
     filename for logging of cookies. The filename is relative to the
     <directive module="core">serverroot</directive>. This directive is
-    included only for compatibility with <module>mod_cookies</module>,
+    included only for compatibility with <code>mod_cookies</code>,
     and is deprecated.</p>
 </usage>
 

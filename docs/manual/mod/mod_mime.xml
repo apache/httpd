@@ -172,14 +172,18 @@
     which document to give to the client, when there are
     alternative documents in more than one character set, language, 
     encoding or mime type.  All filename extensions associations
-    created with <module>AddCharset</module>, <module>AddEncoding</module>, 
-    <module>AddLanguage</module> and <module>AddType</module> directives
-    (and extensions listed in the <module>MimeMagicFile</module>)
-    participate in this select process.  Filename extensions that
-    are only associated using the <module>AddHandler</module>,
-    <module>AddInputFilter</module> or <module>AddOutputFilter</module>
-    directives may be included or excluded from matching by using 
-    the <directive>MultiviewsMatch</directive> directive.</p>
+    created with <directive module="mod_mime">AddCharset</directive>,
+    <directive module="mod_mime">AddEncoding</directive>, <directive
+    module="mod_mime">AddLanguage</directive> and <directive
+    module="mod_mime">AddType</directive> directives
+    (and extensions listed in the <directive module="mod_mime_magic"
+    >MimeMagicFile</directive>) participate in this select process.
+    Filename extensions that are only associated using the <directive
+    module="mod_mime">AddHandler</directive>, <directive module="mod_mime"
+    >AddInputFilter</directive> or <directive module="mod_mime"
+    >AddOutputFilter</directive> directives may be included or excluded
+    from matching by using the <directive module="mod_mime"
+    >MultiviewsMatch</directive> directive.</p>
 
 <section>
 <title>Charset</title>

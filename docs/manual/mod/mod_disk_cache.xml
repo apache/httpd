@@ -14,7 +14,7 @@
 <note type="warning">
 This module is experimental. Documentation is still under development...
 </note>
-    <p><module>mod_disk_cache</module> implements a disk based storage manager for use with <module>mod_proxy.</module></p>
+    <p><module>mod_disk_cache</module> implements a disk based storage manager for use with <module>mod_proxy</module>.</p>
     <p>Content stored and retrived keyed to the URL. Content with
     access protections is not cached.</p>
 <note>
