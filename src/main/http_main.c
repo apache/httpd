@@ -2546,6 +2546,10 @@ static void set_signals(void)
 	if (sigaction(SIGABRT, &sa, NULL) < 0)
 	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGABRT)");
 #endif
+#ifdef SIGILL
+	if (sigaction(SIGILL, &sa, NULL) < 0)
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGILL)");
+#endif
 	sa.sa_flags = 0;
     }
     sa.sa_handler = sig_term;
@@ -2586,6 +2590,9 @@ static void set_signals(void)
 #ifdef SIGABRT
 	signal(SIGABRT, sig_coredump);
 #endif /* SIGABRT */
+#ifdef SIGILL
+	signal(SIGILL, sig_coredump);
+#endif /* SIGILL */
 #ifdef SIGXCPU
 	signal(SIGXCPU, SIG_DFL);
 #endif /* SIGXCPU */
