@@ -430,6 +430,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     void *scache = r->request_config;
     cache_request_rec *cache =
         (cache_request_rec *) ap_get_module_config(scache, &cache_module);
+    apr_bucket *split_point = NULL;
 
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, f->r->server,
@@ -449,6 +450,16 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
         ap_set_module_config(r->request_config, &cache_module, cache);
     }
+
+/* If we've previously processed and set aside part of this
+ * response, skip the cacheability checks
+ */
+if (cache->saved_brigade != NULL) {
+    exp = cache->exp;
+    lastmod = cache->lastmod;
+    info = cache->info;
+}
+else {
 
     /*
      * Pass Data to Cache
@@ -579,6 +590,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         return ap_pass_brigade(f->next, in);
     }
     cache->in_checked = 1;
+} /* if cache->saved_brigade==NULL */
 
     /* Set the content length if known.  We almost certainly do NOT want to
      * cache streams with unknown content lengths in the in-memory cache.
@@ -599,6 +611,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
              */
             apr_bucket *e;
             int all_buckets_here=0;
+            int unresolved_length = 0;
             size=0;
             APR_BRIGADE_FOREACH(e, in) {
                 if (APR_BUCKET_IS_EOS(e)) {
@@ -606,6 +619,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
                     break;
                 }
                 if (APR_BUCKET_IS_FLUSH(e)) {
+                    unresolved_length = 1;
                     continue;
                 }
                 if (e->length < 0) {
@@ -615,7 +629,76 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
             }
 
             if (!all_buckets_here) {
-                size = -1;
+                /* Attempt to set aside a copy of a partial response
+                 * in hopes of caching it once the rest of the response
+                 * is available.  There are special cases in which we
+                 * don't try to set aside the content, though:
+                 *   1. The brigade contains at least one bucket of
+                 *      unknown length, such as a pipe or socket bucket.
+                 *   2. The size of the response exceeds the limit set
+                 *      by the CacheMaxStreamingBuffer  directive.
+                 */
+                if (unresolved_length ||
+                    (cache->saved_size + size >
+                     conf->max_streaming_buffer_size)) {
+
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                                 "cache: not caching streamed response for "
+                                 "%s because length %s", url,
+                                 (unresolved_length ?
+                                  "cannot be determined" :
+                                  "> CacheMaxStreamingBuffer"));
+
+                    if (cache->saved_brigade != NULL) {
+                        apr_brigade_destroy(cache->saved_brigade);
+                        cache->saved_brigade = NULL;
+                        cache->saved_size = 0;
+                    }
+                    ap_remove_output_filter(f);
+                    return ap_pass_brigade(f->next, in);
+                }
+
+                /* Add a copy of the new brigade's buckets to the
+                 * saved brigade.  The reason for the copy is so
+                 * that we can output the new buckets immediately,
+                 * rather than having to buffer up the entire
+                 * response before sending anything.
+                 */
+                if (cache->saved_brigade == NULL) {
+                    cache->saved_brigade =
+                        apr_brigade_create(r->pool,
+                                           r->connection->bucket_alloc);
+                    cache->exp = exp;
+                    cache->lastmod = lastmod;
+                    cache->info = info;
+                }
+                APR_BRIGADE_FOREACH(e, in) {
+                    apr_bucket *copy;
+                    apr_bucket_copy(e, &copy);
+                    APR_BRIGADE_INSERT_TAIL(cache->saved_brigade, copy);
+                }
+                cache->saved_size += size;
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                             "cache: Response length still unknown, setting "
+                             "aside content for url: %s", url);
+
+                return ap_pass_brigade(f->next, in);
+            }
+            else {
+                /* Now that we've seen an EOS, it's appropriate
+                 * to try caching the response.  If any content
+                 * has been copied into cache->saved_brigade in
+                 * previous passes through this filter, the
+                 * content placed in the cache must be the
+                 * concatenation of the saved brigade and the
+                 * current brigade.
+                 */
+                if (cache->saved_brigade != NULL) {
+                    split_point = APR_BRIGADE_FIRST(in);
+                    APR_BRIGADE_CONCAT(cache->saved_brigade, in);
+                    in = cache->saved_brigade;
+                    size += cache->saved_size;
+                }
             }
         }
     }
@@ -658,6 +741,11 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     if (rv != OK) {
         /* Caching layer declined the opportunity to cache the response */
         ap_remove_output_filter(f);
+        if (split_point) {
+            apr_bucket_brigade *already_sent = in;
+            in = apr_brigade_split(in, split_point);
+            apr_brigade_destroy(already_sent);
+        }
         return ap_pass_brigade(f->next, in);
     }
 
@@ -754,6 +842,11 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     if (rv != APR_SUCCESS) {
         ap_remove_output_filter(f);
     }
+    if (split_point) {
+        apr_bucket_brigade *already_sent = in;
+        in = apr_brigade_split(in, split_point);
+        apr_brigade_destroy(already_sent);
+    }
     return ap_pass_brigade(f->next, in);
 }
 
@@ -784,6 +877,7 @@ static void * create_cache_config(apr_pool_t *p, server_rec *s)
     ps->no_last_mod_ignore = 0;
     ps->ignorecachecontrol = 0;
     ps->ignorecachecontrol_set = 0 ;
+    ps->max_streaming_buffer_size = 0;
     return ps;
 }
 
@@ -939,6 +1033,25 @@ static const char *set_cache_complete(cmd_parms *parms, void *dummy,
     conf->complete_set = 1;
     return NULL;
 }
+
+static const char *set_max_streaming_buffer(cmd_parms *parms, void *dummy,
+                                            const char *arg)
+{
+    cache_server_conf *conf;
+    apr_off_t val;
+    char *err;
+
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
+    val = (apr_off_t)strtol(arg, &err, 10);
+    if (*err != 0) {
+        return "CacheMaxStreamingBuffer value must be a percentage";
+    }
+    conf->max_streaming_buffer_size = val;
+    return NULL;
+}
+
 static int cache_post_config(apr_pool_t *p, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
@@ -985,6 +1098,10 @@ static const command_rec cache_cmds[] =
     AP_INIT_TAKE1("CacheForceCompletion", set_cache_complete, NULL, RSRC_CONF,
                   "Percentage of download to arrive for the cache to force "
                   "complete transfer"),
+    AP_INIT_TAKE1("CacheMaxStreamingBuffer", set_max_streaming_buffer, NULL,
+                  RSRC_CONF,
+                  "Maximum number of bytes of content to buffer for "
+                  "a streamed response"),
     {NULL}
 };
 

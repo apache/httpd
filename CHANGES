@@ -1,5 +1,8 @@
 Changes with Apache 2.0.41
 
+  *) mod_cache: added support for caching streamed responses (proxy,
+     CGI, etc) with optional CacheMaxStreamingBuffer setting [Brian Pane]
+
   *) Add image/x-icon to httpd.conf PR 10993.
      [Ian Holsman, Peter Bieringer <pb@bieringer.de>]
 
