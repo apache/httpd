@@ -100,13 +100,16 @@ static int parse_byterange(char *range, long clength, long *start, long *end)
             *end = clength - 1;
     }
 
-    if (*start > *end)
-        return 0;
+    if (*start < 0)
+	*start = 0;
 
     if (*end >= clength)
         *end = clength - 1;
 
-    return 1;
+    if (*start > *end)
+	return 0;
+
+    return (*start > 0 || *end < clength - 1);
 }
 
 static int internal_byterange(int, long *, request_rec *, char **, long *,
