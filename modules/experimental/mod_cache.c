@@ -173,6 +173,13 @@ static int cache_url_handler(request_rec *r, int lookup)
             if (lookup) {
                 return OK;
             }
+
+            info = &(cache->handle->cache_obj->info);
+
+            if (info && info->lastmod) {
+                ap_update_mtime(r, info->lastmod);
+            }
+
             rv = ap_meets_conditions(r);
             if (rv != OK) {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
