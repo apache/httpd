@@ -114,7 +114,7 @@
  *             debugging purposes.
  */
 #ifndef LOG_EXEC
-#define LOG_EXEC "/usr/local/etc/httpd/logs/cgi.log" /* Need me? */
+#define LOG_EXEC "/usr/local/etc/httpd/logs/cgi.log"	/* Need me? */
 #endif
 
 /*
@@ -134,4 +134,4 @@
 #define SAFE_PATH "/usr/local/bin:/usr/bin:/bin"
 #endif
 
-#endif  /* _SUEXEC_H */
+#endif /* _SUEXEC_H */

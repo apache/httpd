@@ -95,7 +95,7 @@
 int initgroups(const char *name, gid_t basegid)
 {
 /* QNX and MPE do not appear to support supplementary groups. */
-	return 0;
+    return 0;
 }
 #endif
 
@@ -168,20 +168,20 @@ static void err_output(const char *fmt, va_list ap)
 
     time(&timevar);
     lt = localtime(&timevar);
-    
+
     fprintf(log, "[%.2d:%.2d:%.2d %.2d-%.2d-%.2d]: ", lt->tm_hour, lt->tm_min,
 	    lt->tm_sec, lt->tm_mday, (lt->tm_mon + 1), lt->tm_year);
-    
+
     vfprintf(log, fmt, ap);
 
     fflush(log);
     return;
 }
 
-void log_err(const char *fmt, ...)
+void log_err(const char *fmt,...)
 {
 #ifdef LOG_EXEC
-    va_list     ap;
+    va_list ap;
 
     va_start(ap, fmt);
     err_output(fmt, ap);
@@ -190,20 +190,20 @@ void log_err(const char *fmt, ...)
     return;
 }
 
-void clean_env() 
+void clean_env()
 {
     char pathbuf[512];
     char **cleanenv;
     char **ep;
     int cidx = 0;
     int idx;
-    
 
-    if ((cleanenv = (char **)calloc(AP_ENVBUF, sizeof(char *))) == NULL) {
+
+    if ((cleanenv = (char **) calloc(AP_ENVBUF, sizeof(char *))) == NULL) {
 	log_err("failed to malloc env mem\n");
 	exit(120);
     }
-    
+
     for (ep = environ; *ep && cidx < AP_ENVBUF; ep++) {
 	if (!strncmp(*ep, "HTTP_", 5)) {
 	    cleanenv[cidx] = *ep;
@@ -223,30 +223,30 @@ void clean_env()
     sprintf(pathbuf, "PATH=%s", SAFE_PATH);
     cleanenv[cidx] = strdup(pathbuf);
     cleanenv[++cidx] = NULL;
-	    
+
     environ = cleanenv;
 }
 
 int main(int argc, char *argv[])
 {
-    int userdir = 0;        /* ~userdir flag             */
-    uid_t uid;              /* user information          */
-    gid_t gid;              /* target group placeholder  */
-    char *target_uname;     /* target user name          */
-    char *target_gname;     /* target group name         */
-    char *target_homedir;   /* target home directory     */
-    char *actual_uname;     /* actual user name            */
-    char *actual_gname;     /* actual group name           */
-    char *prog;             /* name of this program      */
-    char *cmd;              /* command to be executed    */
-    char cwd[AP_MAXPATH];   /* current working directory */
-    char dwd[AP_MAXPATH];   /* docroot working directory */
-    struct passwd *pw;      /* password entry holder     */
-    struct group *gr;       /* group entry holder        */
-    struct stat dir_info;   /* directory info holder     */
-    struct stat prg_info;   /* program info holder       */
+    int userdir = 0;		/* ~userdir flag             */
+    uid_t uid;			/* user information          */
+    gid_t gid;			/* target group placeholder  */
+    char *target_uname;		/* target user name          */
+    char *target_gname;		/* target group name         */
+    char *target_homedir;	/* target home directory     */
+    char *actual_uname;		/* actual user name            */
+    char *actual_gname;		/* actual group name           */
+    char *prog;			/* name of this program      */
+    char *cmd;			/* command to be executed    */
+    char cwd[AP_MAXPATH];	/* current working directory */
+    char dwd[AP_MAXPATH];	/* docroot working directory */
+    struct passwd *pw;		/* password entry holder     */
+    struct group *gr;		/* group entry holder        */
+    struct stat dir_info;	/* directory info holder     */
+    struct stat prg_info;	/* program info holder       */
 
-    
+
 
     /*
      * If there are a proper number of arguments, set
@@ -270,7 +270,7 @@ int main(int argc, char *argv[])
 	log_err("invalid uid: (%ld)\n", uid);
 	exit(102);
     }
-    
+
     /*
      * Check to see if the user running this program
      * is the user allowed to do so as defined in
@@ -280,19 +280,16 @@ int main(int argc, char *argv[])
 	log_err("user mismatch (%s)\n", pw->pw_name);
 	exit(103);
     }
-    
+
     /*
      * Check for a leading '/' (absolute path) in the command to be executed,
      * or attempts to back up out of the current directory,
      * to protect against attacks.  If any are
      * found, error out.  Naughty naughty crackers.
      */
-    if (
-	    (cmd[0] == '/') ||
-	    (! strncmp (cmd, "../", 3)) ||
-	    (strstr (cmd, "/../") != NULL)
-       ) {
-	log_err("invalid command (%s)\n", cmd);
+    if ((cmd[0] == '/') || (!strncmp(cmd, "../", 3))
+	|| (strstr(cmd, "/../") != NULL)) {
+        log_err("invalid command (%s)\n", cmd);
 	exit(104);
     }
 
@@ -342,16 +339,15 @@ int main(int argc, char *argv[])
      * before we setuid().
      */
     log_err("uid: (%s/%s) gid: (%s/%s) %s\n",
-             target_uname, actual_uname,
-             target_gname, actual_gname,
-             cmd);
+	    target_uname, actual_uname,
+	    target_gname, actual_gname,
+	    cmd);
 
     /*
      * Error out if attempt is made to execute as root or as
      * a UID less than UID_MIN.  Tsk tsk.
      */
-    if ((uid == 0) ||
-        (uid < UID_MIN)) {
+    if ((uid == 0) || (uid < UID_MIN)) {
 	log_err("cannot run as forbidden uid (%d/%s)\n", uid, cmd);
 	exit(107);
     }
@@ -360,8 +356,7 @@ int main(int argc, char *argv[])
      * Error out if attempt is made to execute as root group
      * or as a GID less than GID_MIN.  Tsk tsk.
      */
-    if ((gid == 0) ||
-        (gid < GID_MIN)) {
+    if ((gid == 0) || (gid < GID_MIN)) {
 	log_err("cannot run as forbidden gid (%d/%s)\n", gid, cmd);
 	exit(108);
     }
@@ -372,9 +367,9 @@ int main(int argc, char *argv[])
      * Initialize the group access list for the target user,
      * and setgid() to the target group. If unsuccessful, error out.
      */
-    if (((setgid(gid)) != 0) || (initgroups(actual_uname,gid) != 0)) {
-        log_err("failed to setgid (%ld: %s/%s)\n", gid, cwd, cmd);
-        exit(109);
+    if (((setgid(gid)) != 0) || (initgroups(actual_uname, gid) != 0)) {
+	log_err("failed to setgid (%ld: %s/%s)\n", gid, cwd, cmd);
+	exit(109);
     }
 
     /*
@@ -394,33 +389,31 @@ int main(int argc, char *argv[])
      * directories.  Yuck.
      */
     if (getcwd(cwd, AP_MAXPATH) == NULL) {
-        log_err("cannot get current working directory\n");
-        exit(111);
+	log_err("cannot get current working directory\n");
+	exit(111);
     }
-    
+
     if (userdir) {
-        if (((chdir(target_homedir)) != 0) ||
-            ((chdir(USERDIR_SUFFIX)) != 0) ||
+	if (((chdir(target_homedir)) != 0) ||
+	    ((chdir(USERDIR_SUFFIX)) != 0) ||
 	    ((getcwd(dwd, AP_MAXPATH)) == NULL) ||
-            ((chdir(cwd)) != 0))
-        {
-            log_err("cannot get docroot information (%s)\n", target_homedir);
-            exit(112);
-        }
+	    ((chdir(cwd)) != 0)) {
+	    log_err("cannot get docroot information (%s)\n", target_homedir);
+	    exit(112);
+	}
     }
     else {
-        if (((chdir(DOC_ROOT)) != 0) ||
+	if (((chdir(DOC_ROOT)) != 0) ||
 	    ((getcwd(dwd, AP_MAXPATH)) == NULL) ||
-	    ((chdir(cwd)) != 0))
-        {
-            log_err("cannot get docroot information (%s)\n", DOC_ROOT);
-            exit(113);
-        }
+	    ((chdir(cwd)) != 0)) {
+	    log_err("cannot get docroot information (%s)\n", DOC_ROOT);
+	    exit(113);
+	}
     }
 
     if ((strncmp(cwd, dwd, strlen(dwd))) != 0) {
-        log_err("command not in docroot (%s/%s)\n", cwd, cmd);
-        exit(114);
+	log_err("command not in docroot (%s/%s)\n", cwd, cmd);
+	exit(114);
     }
 
     /*
@@ -459,7 +452,7 @@ int main(int argc, char *argv[])
      * Error out if the file is setuid or setgid.
      */
     if ((prg_info.st_mode & S_ISUID) || (prg_info.st_mode & S_ISGID)) {
-	log_err("file is either setuid or setgid: (%s/%s)\n",cwd,cmd);
+	log_err("file is either setuid or setgid: (%s/%s)\n", cwd, cmd);
 	exit(119);
     }
 
@@ -470,12 +463,12 @@ int main(int argc, char *argv[])
     if ((uid != dir_info.st_uid) ||
 	(gid != dir_info.st_gid) ||
 	(uid != prg_info.st_uid) ||
-	(gid != prg_info.st_gid))
-    {
-	log_err("target uid/gid (%ld/%ld) mismatch with directory (%ld/%ld) or program (%ld/%ld)\n",
-		 uid, gid,
-		 dir_info.st_uid, dir_info.st_gid,
-		 prg_info.st_uid, prg_info.st_gid);
+	(gid != prg_info.st_gid)) {
+	log_err("target uid/gid (%ld/%ld) mismatch with directory ",
+		"(%ld/%ld) or program (%ld/%ld)\n",
+		uid, gid,
+		dir_info.st_uid, dir_info.st_gid,
+		prg_info.st_uid, prg_info.st_gid);
 	exit(120);
     }
 
@@ -488,7 +481,7 @@ int main(int argc, char *argv[])
      */
     fclose(log);
     log = NULL;
-    
+
     /*
      * Execute the command, replacing our image with its own.
      */
