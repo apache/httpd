@@ -1,5 +1,8 @@
 Changes with Apache 1.3
 
+  *) Extended SSI (mod_include) now handles additional relops for
+     string comparisons (<, >, <=, and >=).  [Bruno Wolff III] PR#41
+
   *) Configure fixed to correctly propagate user-selected options and
      settings (such as CC and OPTIM) to Makefiles other than
      src/Makefile (notably support/Makefile).  [Ken Coar] PR#666, #834
