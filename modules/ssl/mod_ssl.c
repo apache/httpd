@@ -56,14 +56,6 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-                             /* ``I'll be surprised if
-                                  others think that what you
-                                  are doing is honourable.''
-                                    -- Ben Laurie, Apache-SSL author */
-#include "httpd.h"
-#include "http_config.h"
-
-#if 0 /* XXX */
 
 #include "mod_ssl.h"
 
@@ -74,15 +66,9 @@
 */
 
 /*
- *  identify the module to SCCS `what' and RCS `ident' commands
- */
-static char const sccsid[] = "@(#) mod_ssl/" MOD_SSL_VERSION " >";
-static char const rcsid[]  = "$Id: mod_ssl.c,v 1.3 2001/05/05 09:25:52 rse Exp $";
-
-/*
  *  the table of configuration directives we provide
  */
-static command_rec ssl_config_cmds[] = {
+static const command_rec ssl_config_cmds[] = {
     /*
      * Global (main-server) context configuration directives
      */
@@ -208,6 +194,8 @@ static command_rec ssl_config_cmds[] = {
     AP_END_CMD
 };
 
+#if 0 /* XXX */
+
 static const handler_rec ssl_config_handler[] = {
     { "mod_ssl:content-handler", ssl_hook_Handler },
     { NULL, NULL }
@@ -257,7 +245,7 @@ module AP_MODULE_DECLARE_DATA ssl_module = {
     NULL,                       /* merge per-directory config structures */
     NULL,                       /* create per-server config structure */
     NULL,                       /* merge per-server config structures */
-    NULL,                       /* command apr_table_t */
+    ssl_config_cmds,            /* command apr_table_t */
     NULL                        /* register hooks */
 };
 
