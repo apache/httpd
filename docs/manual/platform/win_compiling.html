@@ -51,14 +51,24 @@
    the projects to assure that they are built in the appropriate order.</P>
 
 <P><STRONG>Notice: The Apache/VisualStudio project files are distributed
-   in VisualStudio 6.0 (98) format.  In fact you may use VisualStudio
-   5.0 (97) but you must first use the perl script command:<BR>
+   in VisualStudio 6.0 (98) format.</STRONG>  In fact you may build with
+   VisualStudio 5.0 (97) but you must first use the perl script command:</P>
+
 <PRE>
-<BR>
-    CD src\helpers<BR>
-    cvstodsp5.pl<BR>
-<BR>
+    cd src\helpers
+    cvstodsp5.pl
 </PRE>
+
+<P>Without running the script you will be able to load and build Apache,
+   however VisualStudio 97 in particular will not recognize the /ZI flag
+   to the C compiler for the debugging mode.  This script toggles the
+   new /ZI flag back to /Zi for Debug builds, among other adjustments.
+   The converse script in <CODE>src/helpers/dsp5tocvs.pl</CODE> will 
+   reverse the adjustments, and we ask you to do so before submitting 
+   patches against any .dsp project files.</P>
+
+<P>The Apache.dsw workspace and makefile.win nmake script both build the
+   .dsp projects of the Apache server in the following sequence:</P>
 
 <OL>
    <LI><CODE>lib\apr\aprlib.dsp</CODE>
@@ -157,9 +167,9 @@
 <P>Only the .dsp files are distributed between release builds.  The
    .mak files are NOT regenerated, due to the tremendous waste of
    reviewer's time.  Therefore, you cannot rely on the NMAKE commands 
-   above unless you -frequently- export all .mak files yourself from 
-   the project.  This is unnecessary if you build from withing the
-   Microsoft DeveloperStudio environment.</P>   
+   above to build revised .dsp project files unless you then export
+   all .mak files yourself from the project.  This is unnecessary if 
+   you build from withing the Microsoft DeveloperStudio environment.</P>   
 
 <P>Before running the server you must fill out the conf directory.
    Copy the *.conf-dist-win from the distribution conf directory
