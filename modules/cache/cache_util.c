@@ -116,6 +116,7 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
     apr_int64_t age, maxage_req, maxage_cresp, maxage, smaxage, maxstale;
     apr_int64_t minfresh;
     const char *cc_cresp, *cc_req;
+    const char *pragma;
     const char *agestr = NULL;
     const char *expstr = NULL;
     char *val;
@@ -154,8 +155,27 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
      * entity, and it's value is in the past, it has expired.
      * 
      */
+
     /* This value comes from the client's initial request. */
     cc_req = apr_table_get(r->headers_in, "Cache-Control");
+    pragma = apr_table_get(r->headers_in, "Pragma");
+
+    if (ap_cache_liststr(NULL, pragma, "no-cache", NULL)
+        || ap_cache_liststr(NULL, cc_req, "no-cache", NULL)) {
+        cache_server_conf *conf =
+          (cache_server_conf *)ap_get_module_config(r->server->module_config,
+                                                    &cache_module);
+
+        if (!conf->ignorecachecontrol) {
+	    /* Treat as stale, causing revalidation */
+	    return 0;
+	}
+
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
+                     "Incoming request may be asking for a uncached version of "
+                     "%s, but we know better and are ignoring it",
+                     r->unparsed_uri);
+    }
 
     /* These come from the cached entity. */
     cc_cresp = apr_table_get(h->resp_hdrs, "Cache-Control");
@@ -188,8 +208,7 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
     if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "max-age", &val)) {
         maxage_cresp = apr_atoi64(val);
     }
-    else
-    {
+    else {
         maxage_cresp = -1;
     }
 
@@ -279,6 +298,7 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
         }
         return 1;    /* Cache object is fresh (enough) */
     }
+
     return 0;        /* Cache object is stale */
 }
 
