@@ -79,19 +79,11 @@ void unixd_detach(void)
     }
     RAISE_SIGSTOP(DETACH);
 
-#ifndef NO_SETSID
     if ((pgrp = setsid()) == -1) {
 	perror("setsid");
 	fprintf(stderr, "%s: setsid failed\n", ap_server_argv0);
 	exit(1);
     }
-#else
-    if ((pgrp = setpgrp(getpid(), 0)) == -1) {
-	perror("setpgrp");
-	fprintf(stderr, "%s: setpgrp failed\n", ap_server_argv0);
-	exit(1);
-    }
-#endif
 
     /* close out the standard file descriptors */
     if (freopen("/dev/null", "r", stdin) == NULL) {
