@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.3 $ ($Date: 1999/12/31 23:11:17 $)
+  $Revision: 1.4 $ ($Date: 2000/04/04 17:06:14 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -70,10 +70,7 @@
   <OL>
    <LI><A HREF="#what">What is Apache?</A>
    </LI>
-   <LI><A HREF="#why">Why was Apache created?</A>
-   </LI>
-   <LI><A HREF="#relate">How does The Apache Group's work relate to
-    other servers?</A>
+   <LI><A HREF="#why">How and why was Apache created?</A>
    </LI>
    <LI><A HREF="#name">Why the name &quot;Apache&quot;?</A>
    </LI>
@@ -105,43 +102,72 @@
  <LI><A NAME="what">
       <STRONG>What is Apache?</STRONG>
      </A>
-  <P>
-  Apache was originally based on code and ideas found in the most
-  popular HTTP server of the time.. NCSA httpd 1.3 (early 1995). It has
-  since evolved into a far superior system which can rival (and probably
-  surpass) almost any other UNIX based HTTP server in terms of functionality,
-  efficiency and speed.
-  </P>
-  <P>
-  Since it began, it has been completely rewritten, and includes many new
-  features. Apache is, as of January 1997, the most popular WWW server on
-  the Internet, according to the
-  <A HREF="http://www.netcraft.com/Survey/">Netcraft Survey</A>.
+  <P>The Apache httpd server
+<UL>
+ <LI>is a powerful, flexible, HTTP/1.1 compliant web server
+ <LI>implements the latest protocols, including HTTP/1.1 (RFC2616)
+ <LI>is highly configurable and extensible with third-party modules
+ <LI>can be customised by writing 'modules' using the Apache module API
+ <LI>provides full source code and comes with an unrestrictive license
+ <LI>runs on Windows NT/9x, Netware 5.x, OS/2, and most versions of Unix, 
+     as well as several other operating systems
+ <LI>is actively being developed
+ <LI>encourages user feedback through new ideas, bug reports and patches
+ <LI>implements many frequently requested features, including:<BR><BR>
+  <DL>
+    <DT>DBM databases for authentication</DT>
+    <DD>allows you to easily set up password-protected pages with 
+    enormous numbers of authorized users, without bogging down the server.
+    <DT>Customized responses to errors and problems</DT>
+     <DD>Allows you to set up files, or even CGI scripts, which are
+      returned by the server in response
+      to errors and problems, e.g. setup a script to intercept
+      <STRONG>500 Server Error</STRONG>s and perform on-the-fly diagnostics for
+      both users and yourself. </DD>
+    <DT> Multiple DirectoryIndex directives </DT>
+    <DD> Allows you to say <CODE>DirectoryIndex index.html
+         index.cgi</CODE>, which instructs the server to either send
+         back <CODE>index.html</CODE> or run <CODE>index.cgi</CODE>
+         when a directory URL is requested, whichever it finds in the
+          directory.
+    <DT> Unlimited flexible URL rewriting and aliasing </DT>
+    <DD> Apache has no fixed limit on the numbers of Aliases and
+         Redirects which may be declared in the config files.  In addition,
+	 a powerful rewriting engine can be used to solve most URL
+         manipulation problems.
+    <DT>Content negotiation</DT>
+    <DD>i.e. the ability to automatically serve clients of varying
+     sophistication and HTML level compliance, with documents which
+     offer the best representation of information that the client is
+     capable of accepting.</DD>
+    <DT>Virtual Hosts</DT>
+     <DD>A much requested feature, sometimes known as multi-homed servers.
+      This allows the server to distinguish between requests made to
+      different IP addresses or names (mapped to the same machine).  Apache
+      also offers dynamically configurable mass-virtual hosting.
+     </DD>
+    <DT>Configurable Reliable Piped Logs</DT> 
+     <DD>You can configure
+     Apache to generate logs in the format that you want.  In addition, on
+     most Unix architectures, Apache can send log files to a pipe, allowing
+     for log rotation, hit filtering, real-time splitting of multiple vhosts
+     into separate logs, and asynchronous DNS resolving on the fly.
+  </DL>
+</UL>
+
   </P>
   <HR>
  </LI>
 
  <LI><A NAME="why">
-      <STRONG>Why was Apache created?</STRONG>
+      <STRONG>How and why was Apache created?</STRONG>
      </A>
   <P>
-  To address the concerns of a group of WWW providers and part-time httpd
-  programmers that httpd didn't behave as they wanted it to behave.
-  Apache is an entirely volunteer effort, completely funded by its
-  members, not by commercial sales.
-  </P>
-  <HR>
- </LI>
-
- <LI><A NAME="relate">
-      <STRONG>How does The Apache Group's work relate to other
-      server efforts, such as NCSA's?</STRONG>
-     </A>
-  <P>
-  We, of course, owe a great debt to NCSA and their programmers for
-  making the server Apache was based on. We now, however, have our own
-  server, and our project is mostly our own. The Apache Project is an
-  entirely independent venture.
+  The <A HREF="http://www.apache.org/ABOUT_APACHE.html">About Apache</A>
+  document explains how the Apache project evolved from its beginnings
+  as an outgrowth of the NCSA httpd project to its current status as
+  one of the fastest, most efficient, and most functional web servers
+  in existence.
   </P>
   <HR>
  </LI>
@@ -156,7 +182,7 @@
   </P>
 
   <P>
-  For many developers it is also a reverant connotation to the Native
+  For many developers it is also a reverent connotation to the Native
   American Indian tribe of Apache, <A
   HREF="http://www.indians.org/welker/apache.htm">well-known for their
   superior skills in warfare strategy and inexhaustible endurance</A>.
@@ -185,14 +211,15 @@
   comparison chart.
   </P>
   <P>
-  Apache has been shown to be substantially faster than many other
-  free servers. Although certain commercial servers have claimed to
-  surpass Apache's speed (it has not been demonstrated that any of these
-  &quot;benchmarks&quot; are a good way of measuring WWW server speed at any
-  rate), we feel that it is better to have a mostly-fast free server
-  than an extremely-fast server that costs thousands of dollars. Apache
-  is run on sites that get millions of hits per day, and they have
-  experienced no performance difficulties.
+  Apache has been shown to be substantially faster, more stable, and
+  more feature-full than many other web servers. Although certain
+  commercial servers have claimed to surpass Apache's speed (it has
+  not been demonstrated that any of these &quot;benchmarks&quot; are a
+  good way of measuring WWW server speed at any rate), we feel that it
+  is better to have a mostly-fast free server than an extremely-fast
+  server that costs thousands of dollars. Apache is run on sites that
+  get millions of hits per day, and they have experienced no
+  performance difficulties.
   </P>
   <HR>
  </LI>
@@ -201,17 +228,13 @@
       <STRONG>How thoroughly tested is Apache?</STRONG>
      </A>
   <P>
-  Apache is run on over 3 million Internet servers (as of June 1999). It has
-  been tested thoroughly by both developers and users. The Apache Group
-  maintains rigorous standards before releasing new versions of their
-  server, and our server runs without a hitch on over one half of all
-  WWW servers available on the Internet.  When bugs do show up, we
-  release patches and new versions as soon as they are available.
-  </P>
-  <P>
-  The Apache project's web site includes a page with a partial list of
-  <A HREF="http://www.apache.org/info/apache_users.html">sites running
-  Apache</A>.
+  Apache is run on over 6 million Internet servers (as of February
+  2000).  It has been tested thoroughly by both developers and
+  users. The Apache Group maintains rigorous standards before
+  releasing new versions of their server, and our server runs without
+  a hitch on over one half of all WWW servers available on the
+  Internet.  When bugs do show up, we release patches and new versions
+  as soon as they are available.
   </P>
   <HR>
  </LI>
@@ -266,7 +289,7 @@
      </A>
   <P>
   Indeed there is.  See the main
-  <A HREF="http://www.apache.org/">Apache web site</A>.
+  <A HREF="http://www.apache.org/httpd">Apache web site</A>.
   There is also a regular electronic publication called
   <A HREF="http://www.apacheweek.com/" REL="Help"><CITE>Apache Week</CITE></A>
   available.  Links to relevant <CITE>Apache Week</CITE> articles are
@@ -283,7 +306,7 @@
   <P>
   You can find out how to download the source for Apache at the
   project's
-  <A HREF="http://www.apache.org/">main web page</A>.
+  <A HREF="http://www.apache.org/httpd">main web page</A>.
   </P>
   <HR>
  </LI>
