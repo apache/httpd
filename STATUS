@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/14 17:06:14 $]
+Last modified at [$Date: 2003/07/14 17:31:00 $]
 
 Release:
 
@@ -270,6 +270,12 @@ PATCHES TO PORT FROM 2.1
 
     * mod_ext_filter: Set additional environment variables for use by
       the external filter.  PR 20944.
+        modules/filters/mod_ext_filter.c:  r1.7
+      +1: trawick
+
+    * mod_ssl: Fix a problem setting variables that represent the
+      client certificate chain.  PR 21397
+        modules/ssl/ssl_engine_vars.c:  r1.24
       +1: trawick
 
 CURRENT RELEASE NOTES:
