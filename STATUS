@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/21 01:14:09 $]
+Last modified at [$Date: 2004/05/21 03:16:31 $]
 
 Release:
 
@@ -71,6 +71,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) Quotes cannot be used around require group and require dn
+       directives, update the documentation to reflect this. Also add
+       quotes around the dn and group within debug messages, to make it
+       more obvious why authentication is failing if quotes are used in
+       error.
+       docs/manual/mod/mod_auth_ldap.xml r1.18
+       modules/experimental/mod_auth_ldap.c r1.27
+       PR 19304
+       +1: minfrin
 
     *) The Microsoft LDAP SDK escapes filters for us, stop util_ldap
        from escaping filters twice when the backslash character is used.
