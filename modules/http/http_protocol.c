@@ -2519,8 +2519,25 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
         apr_table_unset(r->headers_out, "Content-Length");
     }
 
-    apr_table_do((int (*) (void *, const char *, const char *)) compute_header_len,
+    if (r->status == HTTP_NOT_MODIFIED) {
+        apr_table_do((int (*)(void *, const char *, const char *)) compute_header_len,
+                    (void *) &len, r->headers_out,
+                    "Connection",
+                    "Keep-Alive",
+                    "ETag",
+                    "Content-Location",
+                    "Expires",
+                    "Cache-Control",
+                    "Vary",
+                    "Warning",
+                    "WWW-Authenticate",
+                    "Proxy-Authenticate",
+                    NULL);
+    }
+    else {
+        apr_table_do((int (*) (void *, const char *, const char *)) compute_header_len,
                  (void *) &len, r->headers_out, NULL);
+    }
     
     /* Need to add a fudge factor so that the CRLF at the end of the headers
      * and the basic http headers don't overflow this buffer.
@@ -2533,8 +2550,25 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
     h.r = r;
     h.buf = buff;
 
-    apr_table_do((int (*) (void *, const char *, const char *)) form_header_field,
+    if (r->status == HTTP_NOT_MODIFIED) {
+        apr_table_do((int (*)(void *, const char *, const char *)) form_header_field,
+                    (void *) &h, r->headers_out,
+                    "Connection",
+                    "Keep-Alive",
+                    "ETag",
+                    "Content-Location",
+                    "Expires",
+                    "Cache-Control",
+                    "Vary",
+                    "Warning",
+                    "WWW-Authenticate",
+                    "Proxy-Authenticate",
+                    NULL);
+    }
+    else {
+        apr_table_do((int (*) (void *, const char *, const char *)) form_header_field,
 		 (void *) &h, r->headers_out, NULL);
+    }
 
     terminate_header(buff);
 
@@ -3294,51 +3328,6 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
      * message body.  Note that being assbackwards here is not an option.
      */
     if (status == HTTP_NOT_MODIFIED) {
-        char *buff;
-        header_struct h;
-        ap_bucket *e;
-        ap_bucket_brigade *bb;
-        apr_size_t len = 0;
-
-        if (!apr_is_empty_table(r->err_headers_out))
-            r->headers_out = apr_overlay_tables(r->pool, r->err_headers_out,
-						r->headers_out);
-
-        apr_table_do((int (*) (void *, const char *, const char *)) compute_header_len,
-                     (void *) &len, r->headers_out, NULL);
-     
-        /* Need to add a fudge factor so that the CRLF at the end of the headers
-         * and the basic http headers don't overflow this buffer.
-         */
-        len += strlen(ap_get_server_version()) + 100;
-        buff = apr_pcalloc(r->pool, len);
-        e = ap_bucket_create_pool(buff, len, r->pool);
-        ap_basic_http_header(r, buff);
-        ap_set_keepalive(r);
-
-        h.r = r;
-        h.buf = buff;
-
-        apr_table_do((int (*)(void *, const char *, const char *)) form_header_field,
-                    (void *) &h, r->headers_out,
-                    "Connection",
-                    "Keep-Alive",
-                    "ETag",
-                    "Content-Location",
-                    "Expires",
-                    "Cache-Control",
-                    "Vary",
-                    "Warning",
-                    "WWW-Authenticate",
-                    "Proxy-Authenticate",
-                    NULL);
-
-        terminate_header(buff);
-       
-        bb = ap_brigade_create(r->pool);
-        AP_BRIGADE_INSERT_HEAD(bb, e);
-        ap_pass_brigade(r->connection->output_filters, bb);
-
         ap_finalize_request_protocol(r);
         return;
     }
