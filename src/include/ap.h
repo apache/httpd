@@ -67,8 +67,6 @@ extern "C" {
 
 API_EXPORT(char *) ap_cpystrn(char *, const char *, size_t);
 int ap_slack(int, int);
-API_EXPORT(int) ap_snprintf(char *, size_t, const char *, ...);
-API_EXPORT(int) ap_vsnprintf(char *, size_t, const char *, va_list ap);
 int ap_execle(const char *, const char *, ...);
 int ap_execve(const char *, const char *argv[], const char *envp[]);
 
