@@ -29,6 +29,14 @@
                    files="allmodules.xml"/>
     </dependset>
 
+    <dependset>
+      <targetfileset dir="../mod/"
+                     includes="*.html.*"
+                     excludes="*-dict.html.*"/>
+      <srcfilelist dir="./"
+                   files="common.xsl"/>
+    </dependset>
+
     <!-- Transform the modules directory -->
     <style   basedir="../mod/"
              destdir="../mod/"
