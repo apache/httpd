@@ -465,7 +465,7 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
             apr_pool_note_subprocess(p, procnew, kill_after_timeout);
 
             *script_in = procnew->out;
-            if (!script_in)
+            if (!*script_in)
                 return APR_EBADF;
             apr_file_pipe_timeout_set(*script_in, (int)(r->server->timeout * APR_USEC_PER_SEC));
 
