@@ -1,5 +1,9 @@
 Changes with Apache 2.0.12-dev
 
+  *) Modify mod_file_cache to save pre-formatted strings for 
+     content-length and last-modified headers for performance. 
+     [Mike Abbot <mja@trudge.engr.sgi.com>]
+
   *) Namespace protect IOBUFSIZ since it is exposed in the API.
      [Jon Travis <jtravis@covalent.net>]
 
