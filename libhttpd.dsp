@@ -46,8 +46,8 @@ RSC=rc.exe
 # ADD CPP /nologo /MD /W3 /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I "./os/win32" /I "./modules/http" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Release\libhttpd" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x809 /d "NDEBUG"
-# ADD RSC /l 0x809 /d "NDEBUG"
+# ADD BASE RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -72,8 +72,8 @@ LINK32=link.exe
 # ADD CPP /nologo /MDd /W3 /GX /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I "./os/win32" /I "./modules/http" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd" /FD /ZI /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x809 /d "_DEBUG"
-# ADD RSC /l 0x809 /d "_DEBUG"
+# ADD BASE RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -448,5 +448,41 @@ SOURCE=.\server\mpm\winnt\registry.c
 SOURCE=.\server\mpm\winnt\service.c
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=.\build\win32\libhttpd.rc
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\build\win32\win32ver.awk
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=.\build\win32\win32ver.awk
+
+".\build\win32\libhttpd.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ./build/win32/win32ver.awk libhttpd "Apache http Server Core"\
+ ./include/ap_release.h > .\build\win32\libhttpd.rc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=.\build\win32\win32ver.awk
+
+".\build\win32\libhttpd.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ./build/win32/win32ver.awk libhttpd "Apache http Server Core"\
+ ./include/ap_release.h > .\build\win32\libhttpd.rc
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project
