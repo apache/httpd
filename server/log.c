@@ -411,18 +411,9 @@ static void log_error_core(const char *file, int line, int level,
     }
     if (!(level & APLOG_NOERRNO)
 	&& (status != 0)) {
-        ap_pool_t *p;
-        if (r) {
-            p = r->pool;
-        }
-        else if (s) {
-            p = s->process->pool;
-        }
-        else {
-            p = pool;
-        }
+        char buf[100];
 	len += ap_snprintf(errstr + len, MAX_STRING_LEN - len,
-		"(%d)%s: ", status, ap_strerror(status, p));
+		"(%d)%s: ", status, ap_strerror(status, buf, sizeof(buf)));
     }
 
     len += ap_vsnprintf(errstr + len, MAX_STRING_LEN - len, fmt, args);
