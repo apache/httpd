@@ -566,8 +566,12 @@ static int read_request_line(request_rec *r)
                          &len, r, 0);
 
         if (rv != APR_SUCCESS) {
-            /* Something went horribly wrong. */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "read_request_line() failed");
+            /* We'll get TIMEUP or EOF on keepalives, so those are common
+             * errors that we don't want to log.
+             */
+            if (!APR_STATUS_IS_TIMEUP(rv) && !APR_STATUS_IS_EOF(rv)) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "read_request_line() failed");
+            }
 	        r->request_time = apr_time_now();
             return 0;
         }
