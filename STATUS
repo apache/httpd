@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/27 18:34:56 $]
+Last modified at [$Date: 2003/09/27 18:47:05 $]
 
 Release:
 
@@ -232,11 +232,6 @@ PATCHES TO PORT FROM 2.1
                         AddEncoding directives?  This is a typo, right?
             nd replies: Sure. 1.53 fixes that.
       +1: fielding, nd, jerenkrantz, erikabele
-
-    * mod_ssl: Fix segfaults after renegotiation failure.  PR 21370
-        modules/ssl/ssl_engine_io.c:  r1.110
-        modules/ssl/ssl_engine_kernel.c: r1.196
-      +1: trawick, jorton, striker
 
     * More ab fixes; r1.129 fixes what looks like a trivial error in the 
       SSL support; r1.130 adds some state-handling fixes related to

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.48
 
+  *) mod_ssl: Fix segfaults after renegotiation failure. PR 21370
+     [Hartmut Keil <Hartmut.Keil@adnovum.ch>]
+
   *) mod_autoindex: If a directory contains a file listed in the
      DirectoryIndex directive, the folder icon is no longer replaced
      by the icon of that file. PR 9587.
