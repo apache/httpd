@@ -1,5 +1,10 @@
 Changes with Apache 2.0.34-dev
 
+  *) Allow URIs specifying CGI scripts to include '/' at the end
+     (e.g., /cgi-bin/printenv/) on AIX and Solaris (and other OSs
+     which ignore '/' at the end of the names of non-directories).
+     PR 10138  [Jeff Trawick]
+
   *) implement SSLSessionCache shmht and shmcb based on apr_rmm and
      apr_shm.  [Madhusudan Mathihalli <madhusudan_mathihalli@hp.com>]
 

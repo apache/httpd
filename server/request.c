@@ -556,6 +556,20 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
      */
     if (!r->finfo.filetype || r->finfo.filetype == APR_LNK) {
         apr_stat(&r->finfo, r->filename, APR_FINFO_MIN, r->pool);
+
+        /* some OSs will return APR_SUCCESS/APR_REG if we stat
+         * a regular file but we have '/' at the end of the name;
+         *
+         * other OSs will return APR_ENOTDIR for that situation;
+         *
+         * handle it the same everywhere by simulating a failure
+         * if it looks like a directory but really isn't
+         */
+        if (r->finfo.filetype &&
+            r->finfo.filetype != APR_DIR &&
+            r->filename[strlen(r->filename) - 1] == '/') {
+            r->finfo.filetype = 0; /* forget what we learned */
+        }
     }
 
     if (r->finfo.filetype == APR_REG) {
