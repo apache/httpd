@@ -1904,18 +1904,21 @@ char *ap_get_local_host(ap_pool_t *a)
             if (!str && p->h_addr_list[0]) {
                 ap_snprintf(str, sizeof(str), "%pA", p->h_addr_list[0]);
 	        server_hostname = ap_pstrdup(a, str);
+                /* We will drop through to report the IP-named server */
             }
+        }
+        else {
+            /* Since we found a fdqn, return it with no logged message. */
+            return server_hostname;
         }
     }
 
     if (!server_hostname) 
         server_hostname = ap_pstrdup(a, "127.0.0.1");
 
-    ap_log_error(APLOG_MARK, APLOG_ALERT | APLOG_NOERRNO, 0,
-                 NULL, "%s: Missing ServerName directive in httpd.conf.",
-                 ap_server_argv0);
-    ap_log_error(APLOG_MARK, APLOG_ALERT | APLOG_NOERRNO, 0,
-                 NULL, "%s: assumed ServerName of %s",
+    ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, NULL,
+                 "%s: Could not find determine the server's fully qualified "
+                 "domain name, using %s for ServerName\n",
                  ap_server_argv0, server_hostname);
              
     return server_hostname;
