@@ -219,7 +219,7 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
                  "cache: running CACHE_OUT filter");
 
-    /* recall_body() was called in cache_select_url() */
+    /* recall_headers() was called in cache_select_url() */
     cache->provider->recall_body(cache->handle, r->pool, bb);
 
     /* This filter is done once it has served up its content */
@@ -290,6 +290,12 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * This section passes the brigades into the cache modules, but only
      * if the setup section (see below) is complete.
      */
+    if (cache->block_response) {
+        /* We've already sent down the response and EOS.  So, ignore
+         * whatever comes now.
+         */
+        return APR_SUCCESS;
+    }
 
     /* have we already run the cachability check and set up the
      * cached file handle? 
@@ -312,7 +318,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * parameters, and decides whether this URL should be cached at
      * all. This section is* run before the above section.
      */
-    info = apr_pcalloc(r->pool, sizeof(cache_info));
 
     /* read expiry date; if a bad date, then leave it so the client can
      * read it 
@@ -332,7 +337,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     /* read the last-modified date; if the date is bad, then delete it */
     lastmods = apr_table_get(r->err_headers_out, "Last-Modified");
-    if (lastmods ==NULL) {
+    if (lastmods == NULL) {
         lastmods = apr_table_get(r->headers_out, "Last-Modified");
     }
     if (lastmods != NULL) {
@@ -384,7 +389,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          */
         reason = "Query string present but no expires header";
     }
-    else if (r->status == HTTP_NOT_MODIFIED && (NULL == cache->handle)) {
+    else if (r->status == HTTP_NOT_MODIFIED &&
+             !cache->handle && !cache->stale_handle) {
         /* if the server said 304 Not Modified but we have no cache
          * file - pass this untouched to the user agent, it's not for us.
          */
@@ -510,35 +516,36 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * - cache->handle == NULL. In this case there is no previously
      * cached entity anywhere on the system. We must create a brand
      * new entity and store the response in it.
-     * - cache->handle != NULL. In this case there is a stale
+     * - cache->stale_handle != NULL. In this case there is a stale
      * entity in the system which needs to be replaced by new
      * content (unless the result was 304 Not Modified, which means
      * the cached entity is actually fresh, and we should update
      * the headers).
      */
+
+    /* Did we have a stale cache entry that really is stale? */
+    if (cache->stale_handle) {
+        if (r->status == HTTP_NOT_MODIFIED) {
+            /* Oh, hey.  It isn't that stale!  Yay! */
+            cache->handle = cache->stale_handle;
+            info = &cache->handle->cache_obj->info;
+        }
+        else {
+            /* Oh, well.  Toss it. */
+            cache->provider->remove_entity(cache->stale_handle);
+            /* Treat the request as if it wasn't conditional. */
+            cache->stale_handle = NULL;
+        }
+    }
+
     /* no cache handle, create a new entity */
     if (!cache->handle) {
         rv = cache_create_entity(r, url, size);
+        info = apr_pcalloc(r->pool, sizeof(cache_info));
+        /* We only set info->status upon the initial creation. */
+        info->status = r->status;
     }
-    /* pre-existing cache handle and 304, make entity fresh */
-    else if (r->status == HTTP_NOT_MODIFIED) {
-        /* update headers: TODO */
 
-        /* remove this filter ??? */
-
-        /* XXX is this right?  we must set rv to something other than OK 
-         * in this path
-         */
-        rv = HTTP_NOT_MODIFIED;
-    }
-    /* pre-existing cache handle and new entity, replace entity
-     * with this one
-     */
-    else {
-        cache->provider->remove_entity(cache->handle);
-        rv = cache_create_entity(r, url, size);
-    }
-    
     if (rv != OK) {
         /* Caching layer declined the opportunity to cache the response */
         ap_remove_output_filter(f);
@@ -647,6 +654,31 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * Write away header information to cache.
      */
     rv = cache->provider->store_headers(cache->handle, r, info);
+
+    /* Did we actually find an entity before, but it wasn't really stale? */
+    if (rv == APR_SUCCESS && cache->stale_handle) {
+        apr_bucket_brigade *bb;
+        apr_bucket *bkt;
+
+        bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+
+        /* Were we initially a conditional request? */
+        if (ap_cache_request_is_conditional(cache->stale_headers)) {
+            /* FIXME: Should we now go and make sure it's really not
+             * modified since what the user thought?
+             */
+            bkt = apr_bucket_eos_create(bb->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb, bkt);
+        }
+        else {
+            r->status = info->status;
+            cache->provider->recall_body(cache->handle, r->pool, bb);
+        }
+
+        cache->block_response = 1;
+        return ap_pass_brigade(f->next, bb);
+    }
+
     if (rv == APR_SUCCESS) {
         rv = cache->provider->store_body(cache->handle, r, in);
     }

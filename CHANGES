@@ -1,5 +1,8 @@
 Changes with Apache 2.0.53
 
+  *) mod_cache: Try to correctly follow RFC 2616 13.3 on validating stale
+     cache responses.  [Justin Erenkrantz]
+
   *) mod_rewrite: Handle per-location rules when r->filename is unset.
      Previously this would segfault or simply not match as expected,
      depending on the platform.  [Jeff Trawick]

@@ -245,10 +245,32 @@ int cache_select_url(request_rec *r, char *url)
                 }
             }
 
+            cache->provider = list->provider;
+            cache->provider_name = list->provider_name;
+
             /* Is our cached response fresh enough? */
             fresh = ap_cache_check_freshness(h, r);
             if (!fresh) {
-                list->provider->remove_entity(h);
+                cache_info *info = &(h->cache_obj->info);
+
+                /* Make response into a conditional */
+                /* FIXME: What if the request is already conditional? */
+                if (info && info->etag) {
+                    /* if we have a cached etag */
+                    cache->stale_headers = apr_table_copy(r->pool,
+                                                          r->headers_in);
+                    apr_table_set(r->headers_in, "If-None-Match", info->etag);
+                    cache->stale_handle = h;
+                }
+                else if (info && info->lastmods) {
+                    /* if we have a cached Last-Modified header */
+                    cache->stale_headers = apr_table_copy(r->pool,
+                                                          r->headers_in);
+                    apr_table_set(r->headers_in, "If-Modified-Since",
+                                  info->lastmods);
+                    cache->stale_handle = h;
+                }
+
                 return DECLINED;
             }
 
@@ -258,8 +280,6 @@ int cache_select_url(request_rec *r, char *url)
             r->filename = apr_pstrdup(r->pool, h->cache_obj->info.filename);
             accept_headers(h, r);
 
-            cache->provider = list->provider;
-            cache->provider_name = list->provider_name;
             cache->handle = h;
             return OK;
         }

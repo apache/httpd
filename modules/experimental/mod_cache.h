@@ -138,6 +138,7 @@ typedef struct {
 /* cache info information */
 typedef struct cache_info cache_info;
 struct cache_info {
+    int status;
     char *content_type;
     char *etag;
     char *lastmods;         /* last modified of cache entity */
@@ -153,7 +154,6 @@ struct cache_info {
     apr_time_t ius;    /*  If-UnModified_Since header value    */
     const char *im;         /* If-Match header value */
     const char *inm;         /* If-None-Match header value */
-
 };
 
 /* cache handle information */
@@ -218,7 +218,10 @@ typedef struct {
     const char *provider_name;              /* current cache provider name */
     int fresh;				/* is the entitey fresh? */
     cache_handle_t *handle;		/* current cache handle */
-    int in_checked;			/* CACHE_IN must cache the entity */
+    cache_handle_t *stale_handle;	/* stale cache handle */
+    apr_table_t *stale_headers;		/* original request headers. */
+    int in_checked;			/* CACHE_SAVE must cache the entity */
+    int block_response;			/* CACHE_SAVE must block response. */
     apr_bucket_brigade *saved_brigade;  /* copy of partial response */
     apr_off_t saved_size;               /* length of saved_brigade */
     apr_time_t exp;                     /* expiration */
@@ -244,7 +247,7 @@ CACHE_DECLARE(void) ap_cache_usec2hex(apr_time_t j, char *y);
 CACHE_DECLARE(char *) generate_name(apr_pool_t *p, int dirlevels, 
                                     int dirlength, 
                                     const char *name);
-CACHE_DECLARE(int) ap_cache_request_is_conditional(request_rec *r);
+CACHE_DECLARE(int) ap_cache_request_is_conditional(apr_table_t *table);
 CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r, cache_server_conf *conf, const char *url);
 CACHE_DECLARE(int) ap_cache_liststr(apr_pool_t *p, const char *list,
                                     const char *key, char **val);
