@@ -301,6 +301,27 @@
 #endif
 
 /*
+ * Special Apache error codes. These are basically used
+ *  in http_main.c so we can keep track of various errors.
+ *
+ *   APEXIT_OK:
+ *     A normal exit
+ *   APEXIT_INIT:
+ *     A fatal error arising during the server's init sequence
+ *   APEXIT_CHILDINIT:
+ *     The child died during it's init sequence
+ *   APEXIT_CHILDFATAL:
+ *     A fatal error, resulting in the whole server aborting.
+ *     If a child exits with this error, the parent process
+ *     considers this a server-wide fatal error and aborts.
+ *                 
+ */
+#define APEXIT_OK		0x0
+#define APEXIT_INIT		0x2
+#define APEXIT_CHILDINIT	0x3
+#define APEXIT_CHILDFATAL	0xf
+
+/*
  * (Unix, OS/2 only)
  * Interval, in microseconds, between scoreboard maintenance.  During
  * each scoreboard maintenance cycle the parent decides if it needs to

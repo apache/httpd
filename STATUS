@@ -83,6 +83,8 @@ Committed Code Changes:
     * Ben's WIN32: Extensive overhaul of the way UNCs are handled.
     * Ralf's fix for referer/agent log entries in installed httpd.conf, PR#2175
     * Jim's fix for MIME type case sensitivity disparity, PR#2112
+    * Child processes can now "signal" to the parent process that
+      it (the parent process) should abort, shutting down the server.
 
 Available Patches:
 
@@ -147,14 +149,6 @@ FINAL RELEASE SHOWSTOPPERS:
       errors.  The respective flush_funcs also need to be exercised.
        o Jim's looked over the ap_snprintf() stuff (the changes that Dean
          did to make thread-safe) and they look fine.
-
-    * The fatal errors that the children detect and fill up the log with
-      (such as bogus group id) need to be stopped.  The proposed fix is to
-      make the child exit with a special code when a fatal error occurs; the
-      parent would then abort.  See
-      <Pine.LNX.3.96dg4.980413204700.6322R-100000@twinlark.arctic.org>
-      [PATCH] <199805022019.QAA01941@devsys.jaguNET.com>
-      Status: Jim, Dean +1, Ralf +1
 
     * The DoS issue about symlinks to /dev/zero is still present.
       A device checker patch had been sent to the list a while ago.

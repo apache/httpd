@@ -1,5 +1,10 @@
 Changes with Apache 1.3b7
 
+  *) Child processes can now "signal" (by exiting with a status
+     of APEXIT_CHILDFATAL) the parent process to abort and
+     shutdown the server if the error in the child process was
+     fatal enough. [Jim Jagielski]
+
   *) mod_autoindex's find_itme() was sensitive to MIME type case.
      [Jim Jagielski] PR#2112
 

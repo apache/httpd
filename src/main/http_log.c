@@ -177,6 +177,7 @@ static int error_log_child (void *cmd)
     execl (SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
 #endif    
     exit (1);
+    /* NOT REACHED */
     return(child_pid);
 }
 

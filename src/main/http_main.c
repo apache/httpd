@@ -404,10 +404,10 @@ static void accept_mutex_on()
 	break;
     case 0:
 	fprintf(stderr, "didn't get lock\n");
-	exit(-1);
+	clean_child_exit(APEXIT_CHILDFATAL);
     case -1:
 	perror("ussetlock");
-	exit(-1);
+	clean_child_exit(APEXIT_CHILDFATAL);
     }
 }
 
@@ -415,7 +415,7 @@ static void accept_mutex_off()
 {
     if (usunsetlock(uslock) == -1) {
 	perror("usunsetlock");
-	exit(-1);
+	clean_child_exit(APEXIT_CHILDFATAL);
     }
 }
 
@@ -464,27 +464,27 @@ static void accept_mutex_init(pool *p)
     fd = open("/dev/zero", O_RDWR);
     if (fd == -1) {
 	perror("open(/dev/zero)");
-	exit(1);
+	exit(APEXIT_INIT);
     }
     accept_mutex = (pthread_mutex_t *) mmap((caddr_t) 0, sizeof(*accept_mutex),
 				 PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (accept_mutex == (void *) (caddr_t) - 1) {
 	perror("mmap");
-	exit(1);
+	exit(APEXIT_INIT);
     }
     close(fd);
     if ((errno = pthread_mutexattr_init(&mattr))) {
 	perror("pthread_mutexattr_init");
-	exit(1);
+	exit(APEXIT_INIT);
     }
     if ((errno = pthread_mutexattr_setpshared(&mattr,
 						PTHREAD_PROCESS_SHARED))) {
 	perror("pthread_mutexattr_setpshared");
-	exit(1);
+	exit(APEXIT_INIT);
     }
     if ((errno = pthread_mutex_init(accept_mutex, &mattr))) {
 	perror("pthread_mutex_init");
-	exit(1);
+	exit(APEXIT_INIT);
     }
     sigfillset(&accept_block_mask);
     sigdelset(&accept_block_mask, SIGHUP);
@@ -499,12 +499,12 @@ static void accept_mutex_on()
 
     if (sigprocmask(SIG_BLOCK, &accept_block_mask, &accept_previous_mask)) {
 	perror("sigprocmask(SIG_BLOCK)");
-	clean_child_exit(1);
+	clean_child_exit(APEXIT_CHILDFATAL);
     }
     if ((err = pthread_mutex_lock(accept_mutex))) {
 	errno = err;
 	perror("pthread_mutex_lock");
-	clean_child_exit(1);
+	clean_child_exit(APEXIT_CHILDFATAL);
     }
     have_accept_mutex = 1;
 }
@@ -516,7 +516,7 @@ static void accept_mutex_off()
     if ((err = pthread_mutex_unlock(accept_mutex))) {
 	errno = err;
 	perror("pthread_mutex_unlock");
-	clean_child_exit(1);
+	clean_child_exit(APEXIT_CHILDFATAL);
     }
     /* There is a slight race condition right here... if we were to die right
      * now, we'd do another pthread_mutex_unlock.  Now, doing that would let
@@ -584,12 +584,12 @@ static void accept_mutex_init(pool *p)
     sem_id = semget(IPC_PRIVATE, 1, IPC_CREAT | 0600);
     if (sem_id < 0) {
 	perror("semget");
-	exit(1);
+	exit(APEXIT_INIT);
     }
     ick.val = 1;
     if (semctl(sem_id, 0, SETVAL, ick) < 0) {
 	perror("semctl(SETVAL)");
-	exit(1);
+	exit(APEXIT_INIT);
     }
     if (!getuid()) {
 	/* restrict it to use only by the appropriate user_id ... not that this
@@ -601,7 +601,7 @@ static void accept_mutex_init(pool *p)
 	ick.buf = &buf;
 	if (semctl(sem_id, 0, IPC_SET, ick) < 0) {
 	    perror("semctl(IPC_SET)");
-	    exit(1);
+	    exit(APEXIT_INIT);
 	}
     }
     ap_register_cleanup(p, NULL, accept_mutex_cleanup, ap_null_cleanup);
@@ -619,7 +619,7 @@ static void accept_mutex_on()
 {
     if (semop(sem_id, &op_on, 1) < 0) {
 	perror("accept_mutex_on");
-	clean_child_exit(1);
+	clean_child_exit(APEXIT_CHILDFATAL);
     }
 }
 
@@ -627,7 +627,7 @@ static void accept_mutex_off()
 {
     if (semop(sem_id, &op_off, 1) < 0) {
 	perror("accept_mutex_off");
-	clean_child_exit(1);
+	clean_child_exit(APEXIT_CHILDFATAL);
     }
 }
 
@@ -662,7 +662,7 @@ static void accept_mutex_init(pool *p)
     if (lock_fd == -1) {
 	perror("open");
 	fprintf(stderr, "Cannot open lock file: %s\n", ap_lock_fname);
-	exit(1);
+	exit(APEXIT_INIT);
     }
     unlink(ap_lock_fname);
 }
@@ -680,7 +680,7 @@ static void accept_mutex_on(void)
 		    "fcntl: F_SETLKW: Error getting accept lock, exiting!  "
 		    "Perhaps you need to use the LockFile directive to place "
 		    "your lock file on a local disk!");
-	clean_child_exit(1);
+	clean_child_exit(APEXIT_CHILDFATAL);
     }
 }
 
@@ -696,7 +696,7 @@ static void accept_mutex_off(void)
 		    "fcntl: F_SETLKW: Error freeing accept lock, exiting!  "
 		    "Perhaps you need to use the LockFile directive to place "
 		    "your lock file on a local disk!");
-	clean_child_exit(1);
+	clean_child_exit(APEXIT_CHILDFATAL);
     }
 }
 
@@ -720,7 +720,7 @@ static void accept_mutex_child_init(pool *p)
     if (lock_fd == -1) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
 		    "Child cannot open lock file: %s\n", ap_lock_fname);
-	clean_child_exit(1);
+	clean_child_exit(APEXIT_CHILDINIT);
     }
 }
 
@@ -736,7 +736,7 @@ static void accept_mutex_init(pool *p)
     if (lock_fd == -1) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
 		    "Parent cannot open lock file: %s\n", ap_lock_fname);
-	exit(1);
+	exit(APEXIT_INIT);
     }
     ap_register_cleanup(p, NULL, accept_mutex_cleanup, ap_null_cleanup);
 }
@@ -751,7 +751,7 @@ static void accept_mutex_on(void)
     if (ret < 0) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
 		    "flock: LOCK_EX: Error getting accept lock. Exiting!");
-	clean_child_exit(1);
+	clean_child_exit(APEXIT_CHILDFATAL);
     }
 }
 
@@ -760,7 +760,7 @@ static void accept_mutex_off(void)
     if (flock(lock_fd, LOCK_UN) < 0) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
 		    "flock: LOCK_UN: Error freeing accept lock. Exiting!");
-	clean_child_exit(1);
+	clean_child_exit(APEXIT_CHILDFATAL);
     }
 }
 
@@ -1419,7 +1419,7 @@ static void setup_shared_mem(pool *p)
     m = (caddr_t) create_shared_heap("\\SHAREMEM\\SCOREBOARD", SCOREBOARD_SIZE);
     if (m == 0) {
 	fprintf(stderr, "httpd: Could not create OS/2 Shared memory pool.\n");
-	exit(1);
+	exit(APEXIT_INIT);
     }
 
     rc = _uopen((Heap_t) m);
@@ -1438,7 +1438,7 @@ static void reopen_scoreboard(pool *p)
     m = (caddr_t) get_shared_heap("\\SHAREMEM\\SCOREBOARD");
     if (m == 0) {
 	fprintf(stderr, "httpd: Could not find existing OS/2 Shared memory pool.\n");
-	exit(1);
+	exit(APEXIT_INIT);
     }
 
     rc = _uopen((Heap_t) m);
@@ -1488,19 +1488,19 @@ static void setup_shared_mem(pool *p)
     fd = shm_open(ap_scoreboard_fname, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
     if (fd == -1) {
 	perror("httpd: could not open(create) scoreboard");
-	exit(1);
+	exit(APEXIT_INIT);
     }
     if (ltrunc(fd, (off_t) SCOREBOARD_SIZE, SEEK_SET) == -1) {
 	perror("httpd: could not ltrunc scoreboard");
 	shm_unlink(ap_scoreboard_fname);
-	exit(1);
+	exit(APEXIT_INIT);
     }
     if ((m = (caddr_t) mmap((caddr_t) 0,
 			    (size_t) SCOREBOARD_SIZE, PROT_READ | PROT_WRITE,
 			    MAP_SHARED, fd, (off_t) 0)) == (caddr_t) - 1) {
 	perror("httpd: cannot mmap scoreboard");
 	shm_unlink(ap_scoreboard_fname);
-	exit(1);
+	exit(APEXIT_INIT);
     }
     close(fd);
     ap_register_cleanup(p, NULL, cleanup_shared_mem, ap_null_cleanup);
@@ -1544,7 +1544,7 @@ static void setup_shared_mem(pool *p)
     if (m == (caddr_t) - 1) {
 	perror("mmap");
 	fprintf(stderr, "httpd: Could not mmap memory\n");
-	exit(1);
+	exit(APEXIT_INIT);
     }
 #else
 /* Sun style */
@@ -1554,14 +1554,14 @@ static void setup_shared_mem(pool *p)
     if (fd == -1) {
 	perror("open");
 	fprintf(stderr, "httpd: Could not open /dev/zero\n");
-	exit(1);
+	exit(APEXIT_INIT);
     }
     m = mmap((caddr_t) 0, SCOREBOARD_SIZE,
 	     PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (m == (caddr_t) - 1) {
 	perror("mmap");
 	fprintf(stderr, "httpd: Could not mmap /dev/zero\n");
-	exit(1);
+	exit(APEXIT_INIT);
     }
     close(fd);
 #endif
@@ -1594,7 +1594,7 @@ static void setup_shared_mem(pool *p)
 #endif
 	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
 		    "could not call shmget");
-	exit(1);
+	exit(APEXIT_INIT);
     }
 
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
@@ -1647,7 +1647,7 @@ static void setup_shared_mem(pool *p)
 		shmid);
     }
     if (ap_scoreboard_image == BADSHMAT)	/* now bailout */
-	exit(1);
+	exit(APEXIT_INIT);
 
 #ifdef MOVEBREAK
     if (obrk == (char *) -1)
@@ -1742,7 +1742,7 @@ static void reinit_scoreboard(pool *p)
     if (scoreboard_fd == -1) {
 	perror(ap_scoreboard_fname);
 	fprintf(stderr, "Cannot open scoreboard file:\n");
-	exit(1);
+	exit(APEXIT_INIT);
     }
     ap_register_cleanup(p, NULL, cleanup_scoreboard_file, ap_null_cleanup);
 
@@ -2507,7 +2507,7 @@ static void set_group_privs(void)
 			 "getpwuid: couldn't determine user name from uid %u, "
 			 "you probably need to modify the User directive",
 			 (unsigned)uid);
-		exit(1);
+		clean_child_exit(APEXIT_CHILDFATAL);
 	    }
 
 	    name = ent->pw_name;
@@ -2524,20 +2524,20 @@ static void set_group_privs(void)
 	    ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
 			"initgroups: unable to set groups for User %s "
 			"and Group %u", name, (unsigned)ap_group_id);
-	    exit(1);
+	    clean_child_exit(APEXIT_CHILDFATAL);
 	}
 #ifdef MULTIPLE_GROUPS
 	if (getgroups(NGROUPS_MAX, group_id_list) == -1) {
 	    ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
 			"getgroups: unable to get group list");
-	    exit(1);
+	    clean_child_exit(APEXIT_CHILDFATAL);
 	}
 #endif
 	if (setgid(ap_group_id) == -1) {
 	    ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
 			"setgid: unable to set group id to Group %u",
 			(unsigned)ap_group_id);
-	    exit(1);
+	    clean_child_exit(APEXIT_CHILDFATAL);
 	}
 #endif
     }
@@ -3150,7 +3150,7 @@ static void child_main(int child_num_arg)
     if (!geteuid() && setuid(ap_user_id) == -1) {
 	ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
 		    "setuid: unable to change uid");
-	clean_child_exit(1);
+	clean_child_exit(APEXIT_CHILDFATAL);
     }
 #endif
 
@@ -3823,7 +3823,18 @@ static void standalone_main(int argc, char **argv)
 	     * extra child
 	     */
 	    if (pid >= 0) {
-		/* Child died... note that it's gone in the scoreboard. */
+	        /* Child died... if it died due to a fatal error,
+		 * we should simply bail out.
+		 */
+		if ((WIFEXITED(status)) &&
+		   WEXITSTATUS(status) == APEXIT_CHILDFATAL) {
+		    ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
+				 "Child %d returned a Fatal error... \n"
+				 "Apache is exiting!",
+				 pid);
+		    exit(APEXIT_CHILDFATAL);
+		}
+		/* non-fatal death... note that it's gone in the scoreboard. */
 		ap_sync_scoreboard_image();
 		child_slot = find_child_by_pid(pid);
 		Explain2("Reaping child %d slot %d", pid, child_slot);
