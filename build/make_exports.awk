@@ -79,7 +79,7 @@ function add_symbol(symbol) {
 /^[ \t]*AP[RU]?_DECLARE[^(]*[(][^)]*[)]([^ ]* )*[^(]+[(]/ {
     sub("[ \t]*AP[RU]?_DECLARE[^(]*[(][^)]*[)][ \t]*", "")
     sub("[(].*", "")
-    sub("([^ ]* ^([ \t]*[(]))*", "")
+    sub("([^ ]* (^([ \t]*[(])))+", "")
 
     add_symbol($0)
     next
