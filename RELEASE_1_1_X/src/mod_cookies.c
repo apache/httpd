@@ -119,7 +119,7 @@ typedef struct {
 void make_cookie(request_rec *r)
 {
     struct timeval tv;
-    char new_cookie[100];	/* blurgh */
+    char new_cookie[1024];	/* blurgh */
     char *dot;
     const char *rname = pstrdup(r->pool, 
 				get_remote_host(r->connection, r->per_dir_config,
@@ -128,6 +128,9 @@ void make_cookie(request_rec *r)
     struct timezone tz = { 0 , 0 };
 
     if ((dot = strchr(rname,'.'))) *dot='\0';	/* First bit of hostname */
+    if (strlen (rname) > 255)
+      rname[256] = 0;
+
     gettimeofday(&tv, &tz);
     sprintf(new_cookie,"%s%s%d%ld%d; path=/",
         COOKIE_NAME, rname,
