@@ -276,7 +276,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
                                              const char *proxyname) {
     int failed=0, new=0;
     apr_status_t rv;
-    apr_socket_t *client_socket;
+    apr_socket_t *client_socket = NULL;
 
     /* We have determined who to connect to. Now make the connection, supporting
      * a KeepAlive connection.
