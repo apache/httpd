@@ -122,8 +122,8 @@ static char *http2env(apr_pool_t *a, const char *w)
 
 AP_DECLARE(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t)
 {
-    apr_array_header_t *env_arr = apr_table_elts(t);
-    apr_table_entry_t *elts = (apr_table_entry_t *) env_arr->elts;
+    const apr_array_header_t *env_arr = apr_table_elts(t);
+    const apr_table_entry_t *elts = (const apr_table_entry_t *) env_arr->elts;
     char **env = (char **) apr_palloc(p, (env_arr->nelts + 2) * sizeof(char *));
     int i, j;
     char *tz;
@@ -169,8 +169,8 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     char *env_temp;
 #endif
     const char *host;
-    apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in);
-    apr_table_entry_t *hdrs = (apr_table_entry_t *) hdrs_arr->elts;
+    const apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in);
+    const apr_table_entry_t *hdrs = (const apr_table_entry_t *) hdrs_arr->elts;
     int i;
     apr_port_t rport;
     apr_sockaddr_t *remotesa;

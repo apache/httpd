@@ -567,7 +567,7 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
         /* lf delimited, colon split, comma seperated and 
          * null terminated list of HTTP_ vars 
          */
-        char **env = (char**) apr_table_elts(r->subprocess_env)->elts;
+        const char * const *env = (const char* const *) apr_table_elts(r->subprocess_env)->elts;
         int nelts = 2 * apr_table_elts(r->subprocess_env)->nelts;
         int i;
 
@@ -601,7 +601,7 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
         /* lf delimited, colon split, comma seperated and 
          * null terminated list of the raw request header
          */
-        char **raw = (char**) apr_table_elts(r->headers_in)->elts;
+        const char * const *raw = (const char* const *) apr_table_elts(r->headers_in)->elts;
         int nelts = 2 * apr_table_elts(r->headers_in)->nelts;
         int i;
 

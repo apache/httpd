@@ -448,8 +448,8 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     char buffer[HUGE_STRING_LEN];
     char *buf;
     apr_bucket *e;
-    apr_array_header_t *headers_in_array;
-    apr_table_entry_t *headers_in;
+    const apr_array_header_t *headers_in_array;
+    const apr_table_entry_t *headers_in;
     int counter;
     /*
      * Send the HTTP/1.1 request to the remote server
@@ -551,7 +551,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
 
     /* send request headers */
     headers_in_array = apr_table_elts(r->headers_in);
-    headers_in = (apr_table_entry_t *) headers_in_array->elts;
+    headers_in = (const apr_table_entry_t *) headers_in_array->elts;
     for (counter = 0; counter < headers_in_array->nelts; counter++) {
         if (headers_in[counter].key == NULL || headers_in[counter].val == NULL
 

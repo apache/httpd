@@ -92,8 +92,8 @@ static void *merge_env_dir_configs(apr_pool_t *p, void *basev, void *addv)
     env_dir_config_rec *add = addv;
     env_dir_config_rec *res = apr_palloc(p, sizeof(*res));
 
-    apr_table_entry_t *elts;
-    apr_array_header_t *arr;
+    const apr_table_entry_t *elts;
+    const apr_array_header_t *arr;
 
     int i;
 
@@ -111,14 +111,14 @@ static void *merge_env_dir_configs(apr_pool_t *p, void *basev, void *addv)
     res->unsetenv = NULL;
 
     arr = apr_table_elts(add->unsetenv);
-    elts = (apr_table_entry_t *)arr->elts;
+    elts = (const apr_table_entry_t *)arr->elts;
 
     for (i = 0; i < arr->nelts; ++i) {
         apr_table_unset(res->vars, elts[i].key);
     }
 
     arr = apr_table_elts(add->vars);
-    elts = (apr_table_entry_t *)arr->elts;
+    elts = (const apr_table_entry_t *)arr->elts;
 
     for (i = 0; i < arr->nelts; ++i) {
         apr_table_setn(res->vars, elts[i].key, elts[i].val);
