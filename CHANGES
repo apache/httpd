@@ -1,6 +1,9 @@
 
 Changes with Apache 2.0.40
 
+  *) Fix perchild to work with apachectl by adding -k support to perchild.
+     PR 10074  [Jeff Trawick]
+
   *) Fix a silly htpasswd.c logic error that incorrectly reported that
      both -c and -n had been used.  PR 9989  [Cliff Woolley]
 
