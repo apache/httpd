@@ -119,6 +119,7 @@ Define export types. API_EXPORT_NONSTD is a nasty hack to avoid having to declar
 every configuration function as __stdcall.
 */
 
+#if 0 /* Handled by APR... */
 #ifdef SHARED_MODULE
 # define API_VAR_EXPORT		__declspec(dllimport)
 # define API_EXPORT(type)    __declspec(dllimport) type __stdcall
@@ -128,6 +129,8 @@ every configuration function as __stdcall.
 # define API_EXPORT(type)    __declspec(dllexport) type __stdcall
 # define API_EXPORT_NONSTD(type)    __declspec(dllexport) type
 #endif
+#endif
+
 #define MODULE_VAR_EXPORT   __declspec(dllexport)
 
 #define strcasecmp(s1, s2) stricmp(s1, s2)
@@ -145,10 +148,8 @@ every configuration function as __stdcall.
 #define STDOUT_FILENO 1
 #define STDERR_FILENO 2
 #define JMP_BUF jmp_buf
-#define sleep(t) Sleep(t*1000)
 #define O_CREAT _O_CREAT
 #define O_RDWR _O_RDWR
-#define SIGPIPE 17
 /* Seems Windows is not a subgenius */
 #define NO_SLACK
 #include <stddef.h>
@@ -162,23 +163,16 @@ __inline int ap_os_is_path_absolute(const char *file)
 }
 
 #define stat(f,ps)  os_stat(f,ps)
-API_EXPORT(int) os_stat(const char *szPath,struct stat *pStat);
-
-API_EXPORT(int) os_strftime(char *s, size_t max, const char *format, const struct tm *tm);
 
 #define _spawnv(mode,cmdname,argv)	    os_spawnv(mode,cmdname,argv)
 #define spawnv(mode,cmdname,argv)	    os_spawnv(mode,cmdname,argv)
-API_EXPORT(int) os_spawnv(int mode,const char *cmdname,const char *const *argv);
 #define _spawnve(mode,cmdname,argv,envp)    os_spawnve(mode,cmdname,argv,envp)
 #define spawnve(mode,cmdname,argv,envp)	    os_spawnve(mode,cmdname,argv,envp)
-API_EXPORT(int) os_spawnve(int mode,const char *cmdname,const char *const *argv,const char *const *envp);
 #define _spawnle			    os_spawnle
 #define spawnle				    os_spawnle
-API_EXPORT(int) os_spawnle(int mode,const char *cmdname,...);
 
 /* OS-dependent filename routines in util_win32.c */
 
-API_EXPORT(int) ap_os_is_filename_valid(const char *file);
 
 /* Abstractions for dealing with shared object files (DLLs on Win32).
  * These are used by mod_so.c
@@ -209,12 +203,6 @@ int kill_thread(thread *thread_id);
 int await_thread(thread *thread_id, int sec_to_wait);
 void exit_thread(int status);
 void free_thread(thread *thread_id);
-
-API_EXPORT(mutex *) ap_create_mutex(char *name);
-API_EXPORT(mutex *) ap_open_mutex(char *name);
-API_EXPORT(int) ap_acquire_mutex(mutex *mutex_id);
-API_EXPORT(int) ap_release_mutex(mutex *mutex_id);
-API_EXPORT(void) ap_destroy_mutex(mutex *mutex_id);
 
 semaphore *create_semaphore(int initial);
 int acquire_semaphore(semaphore *semaphore_id);
