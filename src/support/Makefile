@@ -1,15 +1,15 @@
-# $Id: Makefile,v 1.11 1996/08/20 13:25:02 paul Exp $
+# $Id: Makefile,v 1.12 1996/11/01 19:07:39 ben Exp $
 # For gcc
-CC= gcc
+#CC= gcc
 # For ANSI compilers
-#CC= cc
+CC= cc
 
 #For Optimization
 #CFLAGS= -O2
 #For debugging
 CFLAGS= -g
 # For SCO ODT
-#EXTRA_LIBS= -lcrypt_i
+EXTRA_LIBS= -lcrypt_i
 # For OS/2 port
 #EXTRA_LIBS= -llibufc -lsocket
 
