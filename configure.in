@@ -240,6 +240,19 @@ initgroups \
 bindprocessor \
 )
 
+dnl ## Set up any appropriate OS-specific environment variables for apachectl
+
+case $host in
+    *aix*)
+        OS_SPECIFIC_VARS="set LDR_CNTRL=\"MAXDATA=0x80000000\" ; export LDR_CNTRL ; set AIXTHREAD_SCOPE=S ; export AIXTHREAD_SCOPE"
+        ;;
+    *os390*)
+        OS_SPECIFIC_VARS="export _CEE_RUNOPTS=\"(STACK(,,ANY))\" ; export _EDC_ADD_ERRNO2=1"
+        ;;
+    *)
+        OS_SPECIFIC_VARS=""
+esac
+      
 AC_ARG_WITH(port,APACHE_HELP_STRING(--with-port=PORT,Port on which to listen (default is 80)),
         [if test "$withval" = "yes"; then AC_MSG_ERROR('option --with-port requires a value (the TCP port number)'); else PORT="$withval"; fi],
 	[PORT=80])
@@ -262,6 +275,7 @@ APACHE_SUBST(OS)
 APACHE_SUBST(OS_DIR)
 APACHE_SUBST(BUILTIN_LIBS)
 APACHE_SUBST(SHLIBPATH_VAR)
+APACHE_SUBST(OS_SPECIFIC_VARS)
 
 PRE_SHARED_CMDS='echo ""'
 POST_SHARED_CMDS='echo ""'
@@ -437,7 +451,7 @@ case $host in
     ;;
 esac
 
-AC_OUTPUT($APACHE_OUTPUT_FILES support/apxs support/apachectl support/dbmmanage support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile build/rules.mk,,[
+AC_OUTPUT($APACHE_OUTPUT_FILES support/apxs support/apachectl support/dbmmanage support/envvars-std support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile build/rules.mk,,[
   APACHE_GEN_MAKEFILES
 ])
 

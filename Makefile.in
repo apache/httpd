@@ -76,6 +76,12 @@ install-conf:
 			$(INSTALL_DATA) $(sysconfdir)/$$i $(sysconfdir)/$$file; \
 		fi; \
 	done
+	@if test -f "$(builddir)/envvars-std"; then \
+	    cp -p envvars-std $(sbindir); \
+	    if test ! -f $(sbindir)/envvars; then \
+	        cp -p envvars-std $(sbindir)/envvars ; \
+	    fi ; \
+	fi
 
 install-build:
 	@echo Installing build system files 

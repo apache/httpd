@@ -1,5 +1,12 @@
 Changes with Apache 2.0.30-dev
 
+  *) Move any load library path environment variables out of 
+     apachectl and into a separate environment variable file which
+     can be more easily tailored by the admin.  The environment
+     variable file as built by Apache may have additional system-
+     specific settings.  For example, on OS/390 we tailor the heap
+     settings to allow lots of threads.  [Jeff Trawick]
+    
   *) Use the new APR pool code to reduce pool-related lock
      contention in the worker MPM.  [Sander Striker]
 
