@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/16 23:09:46 $]
+Last modified at [$Date: 2003/05/17 10:05:36 $]
 
 Release:
 
@@ -214,7 +214,7 @@ PATCHES TO PORT FROM 2.1
     * Add another check for already compressed content in mod_deflate.
       PR 19913.
       modules/filters/mod_deflate.c: r1.34
-      +1: nd
+      +1: nd, trawick
 
 CURRENT RELEASE NOTES:
 
