@@ -9,36 +9,6 @@ Release:
 
     2.0  : In pre-alpha development, see apache-2.0 repository
 
-Guidelines:
-
-    o For the past few months we have been working on a commit-then-review
-      basis.  It is now time to decide whether or not we want to work
-      under the guidelines in <http://dev.apache.org/guidelines.html>
-      or not, and if not, what changes are needed to make it right.
-
-      Approve guidelines as written:
-         +1: Paul, Jim, Martin, Ralf, Randy, Brian, Ken
-         +0:
-         -1:
-
-      Notes:
-      - Ken: 'lazy consensus' needs to be defined.
-      - Ralf: At least the following points should be added:
-              1. A statement that really everyone has the equal right to veto
-                 in general and that only the one can rescind a veto who has
-                 done it originally.
-              2. The statements that although a veto can be done at any point
-                 if it gets done more then approximately two weeks after some
-                 stuff already went in or was changed, the guy who vetoes
-                 really  _HAS_ to provide a reasonable alternative solution
-                 idea _AND_ at least someone (not really the guy who vetoes)
-                 who wants to volunteer for this alternative solution.  Or
-                 the veto will not make much sense IMHO at this stage and
-                 always just creates flamewars! I think only this way it's
-                 fair.
-
-Plan:
-
 Showstoppers:
 
 Available Patches:
