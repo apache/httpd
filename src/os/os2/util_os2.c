@@ -1,6 +1,5 @@
-#define INCL_DOSFILEMGR
+#define INCL_DOS
 #define INCL_DOSERRORS
-#define INCL_DOSEXCEPTIONS
 #include <os2.h>
 #include "httpd.h"
 #include "http_log.h"
