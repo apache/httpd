@@ -1,9 +1,12 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/07/31 09:25:40 $]
+  Last modified at [$Date: 1999/08/03 17:53:18 $]
 
 Release:
 
-    1.3.8-dev: current. 
+    1.3.8-dev: current.  'Quiet mode' on 6 August 1999, then internal
+               testing until 12 August 1999.  If no problems, roll on
+	       12 August and submit to -testers lists, then release on
+	       Monday 16 August 1999.  Ken is RM.
 
     1.3.7: Not released.
     1.3.6. Tagged and rolled on Mar. 22. Released and announced on 24th.
@@ -93,7 +96,7 @@ Available Patches:
 
     * Stipe Tolj's Cygwin32 port
 	PR#: 2936
-        Status: Lars +1 (on concept), Martin +1 (on concept)
+        Status: Lars +1 (on concept), Martin +1 (on concept), Ken +1 (concept)
 
     * Salvador Ortiz Garcia <sog@msg.com.mx>' patch to allow DirectoryIndex
       to refer to URIs for non-static resources.
@@ -117,7 +120,6 @@ Available Patches:
       to either the server UID or the file's owner.
 	Message-ID: <37306CB4.8EA9D76C@Golux.Com>
 	Status: Ken +1, Dean +1, Randy +1, Lars +0, Jim +1
-		(On hold until Aidan submits an update)
 
     * Keith Wannamaker's NT multiple services patch
 	Message-ID: <85256730.0073D841.00@d54mta06.raleigh.ibm.com>
@@ -131,7 +133,7 @@ Available Patches:
 
     * Jim Patterson's patch to make mod_info work on Win32
         Message-ID: PR#1442
-        Status: Lars +1 (on concept)
+        Status: Lars +1 (on concept), Ken +1 (concept)
 
     * Peter Greis' new '%m' CustomLog option: the time taken to serve the
       request, in milli-seconds.
@@ -166,7 +168,6 @@ Available Patches:
         Message-ID: <3764E070.381B1B8E@lyra.org>
         Message-ID: <3760EC9C.1CB6398E@lyra.org>
         Status: Greg +1, Martin +1 (on concept)
-
 
 In progress:
 
