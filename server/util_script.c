@@ -313,6 +313,34 @@ AP_DECLARE(int) ap_find_path_info(const char *uri, const char *path_info)
     return lu;
 }
 
+/* Obtain the Request-URI from the original request-line, returning
+ * a new string from the request pool containing the URI or "".
+ */
+static char *original_uri(request_rec *r)
+{
+    char *first, *last;
+
+    if (r->the_request == NULL) {
+	return (char *) apr_pcalloc(r->pool, 1);
+    }
+
+    first = r->the_request;	/* use the request-line */
+
+    while (*first && !apr_isspace(*first)) {
+	++first;		/* skip over the method */
+    }
+    while (apr_isspace(*first)) {
+	++first;		/*   and the space(s)   */
+    }
+
+    last = first;
+    while (*last && !apr_isspace(*last)) {
+	++last;			/* end at next whitespace */
+    }
+
+    return apr_pstrndup(r->pool, first, last - first);
+}
+
 AP_DECLARE(void) ap_add_cgi_vars(request_rec *r)
 {
     apr_table_t *e = r->subprocess_env;
@@ -321,7 +349,7 @@ AP_DECLARE(void) ap_add_cgi_vars(request_rec *r)
     apr_table_setn(e, "SERVER_PROTOCOL", r->protocol);
     apr_table_setn(e, "REQUEST_METHOD", r->method);
     apr_table_setn(e, "QUERY_STRING", r->args ? r->args : "");
-    apr_table_setn(e, "REQUEST_URI", r->unparsed_uri);
+    apr_table_setn(e, "REQUEST_URI", original_uri(r)); 
 
     /* Note that the code below special-cases scripts run from includes,
      * because it "knows" that the sub_request has been hacked to have the
