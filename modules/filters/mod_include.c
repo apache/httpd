@@ -1263,7 +1263,7 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb,
                                     "in parsed file %s";
                     }
                     else {
-                        rr = ap_sub_req_lookup_file(parsed_string, r, f->next);
+                        rr = ap_sub_req_lookup_uri(parsed_string, r, f->next);
                     }
                 }
                 else {

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Fix suexec execution of CGI scripts from mod_include.
+     PR 7791, 8291  [Colm MacCarthaigh <colmmacc@redbrick.dcu.ie>]
+
   *) Fix segfaults at startup on some platforms when mod_auth_digest,
      mod_suexec, or mod_ssl were used as DSO's due to the way they
      were tracking the current init phase since DSO's get completely

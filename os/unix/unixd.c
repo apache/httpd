@@ -350,16 +350,25 @@ static apr_status_t ap_unix_create_privileged_process(
 	    }
     }
     /* allocate space for 4 new args, the input args, and a null terminator */
-    newargs = apr_palloc(p, sizeof(char *) * (i + 5));
+    newargs = apr_palloc(p, sizeof(char *) * (i + 4));
     newprogname = SUEXEC_BIN;
     newargs[0] = SUEXEC_BIN;
     newargs[1] = execuser;
     newargs[2] = execgroup;
     newargs[3] = apr_pstrdup(p, progname);
 
-    i = 0;
+    /*
+    ** using a shell to execute suexec makes no sense thus
+    ** we force everything to be APR_PROGRAM, and never
+    ** APR_SHELLCMD
+    */
+    if(apr_procattr_cmdtype_set(attr, APR_PROGRAM) != APR_SUCCESS) {
+        return APR_EGENERAL;
+    }
+
+    i = 1;
     do {
-        newargs[i + 4] = args[i];
+        newargs[i + 3] = args[i];
     } while (args[i++]);
 
     return apr_proc_create(newproc, newprogname, newargs, env, attr, p);
