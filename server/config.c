@@ -1156,18 +1156,12 @@ AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, void *struct_pt
                                                  const char *arg)
 {
     /* Prepend server_root to relative arg.
-       This allows .htaccess to be independent of server_root,
+       This allows most args to be independent of server_root,
        so the server can be moved or mirrored with less pain.  */
-    char *p;
+    const char *p;
     int offset = (int) (long) cmd->info;
-#ifndef OS2
-    arg = ap_os_canonical_filename(cmd->pool, arg);
-#endif
-    if (ap_os_is_path_absolute(arg))
-	p = apr_pstrdup(cmd->pool, arg);
-    else
-	p = ap_make_full_path(cmd->pool, ap_server_root, arg);
-    *(char **) ((char*)struct_ptr + offset) = p;
+    p = ap_server_root_relative(cmd->pool, arg);
+    *(const char **) ((char*)struct_ptr + offset) = p;
     return NULL;
 }
 
@@ -1187,14 +1181,14 @@ AP_DECLARE_NONSTD(const char *) ap_set_deprecated(cmd_parms *cmd,
 static cmd_parms default_parms =
 {NULL, 0, -1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 
-AP_DECLARE(const char *) ap_server_root_relative(apr_pool_t *p, const char *file)
+AP_DECLARE(char *) ap_server_root_relative(apr_pool_t *p, const char *file)
 {
-#ifndef OS2
-    file = ap_os_canonical_filename(p, file);
-#endif
-    if(ap_os_is_path_absolute(file))
-	return file;
-    return ap_make_full_path(p, ap_server_root, file);
+    char *newpath;
+    if (apr_filepath_merge(&newpath, ap_server_root, file, 
+                           APR_FILEPATH_TRUENAME, p) == APR_SUCCESS)
+        return newpath;
+    else
+        return NULL;
 }
 
 AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive)
@@ -1346,8 +1340,6 @@ AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname,
     const char *errmsg;
     ap_configfile_t *cfp;
 
-    fname = ap_server_root_relative(p, fname);
-
     /* don't require conf/httpd.conf if we have a -C or -c switch */
     if ((ap_server_pre_read_config->nelts
 	 || ap_server_post_read_config->nelts)
@@ -1498,6 +1490,10 @@ AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
     /* loop through the access names and find the first one */
 
     while (access_name[0]) {
+        /* AFAICT; there is no use of the actual 'filename' against
+         * any canonicalization, so we will simply take the given
+         * name, ignoring case sensitivity and aliases
+         */
         filename = ap_make_full_path(r->pool, d,
                                      ap_getword_conf(r->pool, &access_name));
         status = ap_pcfg_openfile(&f, r->pool, filename);
@@ -1671,9 +1667,10 @@ static server_rec *init_server_config(process_rec *process, apr_pool_t *p)
 
 
 AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
-                                       const char *confname, 
+                                       const char *filename, 
                                        ap_directive_t **conftree)
 {
+    const char *confname;
     apr_pool_t *p = process->pconf;
     server_rec *s = init_server_config(process, p);
 
@@ -1683,6 +1680,11 @@ AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
 
     process_command_config(s, ap_server_pre_read_config, conftree,
                                       p, ptemp);
+
+    /* process_command_config may change the ServerRoot so
+     * compute this config file name afterwards.
+     */
+    confname = ap_server_root_relative(p, filename);
 
     ap_process_resource_config(s, confname, conftree, p, ptemp);
 
