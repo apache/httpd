@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/12/15 18:32:29 $]
+Last modified at [$Date: 2001/12/17 22:05:58 $]
 
 Release:
 
@@ -38,6 +38,13 @@ on related projects:
     * docs/STATUS
 
 RELEASE SHOWSTOPPERS:
+
+    * Test suite failures:
+      o perchild doesn't even build
+      o all MPMs fail the LimitRequestBody directive test
+      o both worker and prefork are failing some of the 'chunked' subtests
+      o worker is also failing some of the 'cgi' subtests
+      (see <URL:http://Source-Zone.Org/Apache/regression/>):
 
     * If any request gets to the core handler, without a flag that this 
       r->filename was tested by dir/file_walk, we need to 500 at the very 
@@ -93,6 +100,19 @@ RELEASE SHOWSTOPPERS:
       errors on some other platforms.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Handling of %2f in URIs.  Currently both 1.3 and 2.0
+      completely disallow %2f in the request URI path (see
+      ap_unescape_url() in util.c).  It's permitted and passed
+      through in the query string, however.  Roy says the
+      original reason for disallowing it, from five years ago,
+      was to protect CGI scripts that applied PATH_INFO to
+      a filesystem location and which might be tricked by
+      ..%2f..%2f(...).  We *should* allow path-info of the
+      form 'http://foo.com/index.cgi/path/to/path%2finfo'.
+      Since we've revamped a lot of our processing of path
+      segments, it would be nice to allow this, or at least
+      allow it conditionally with a directive.
 
     * FreeBSD, threads, and worker MPM.  All seems to work fine 
       if you only have one worker process with many threads.  Add 
