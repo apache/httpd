@@ -67,7 +67,7 @@
 
 /* ----------------------------- config dir ------------------------------ */
 
-/* Define this to be the default server home dir. Anything later in this
+/* Define this to be the default server home dir. Most things later in this
  * file with a relative pathname will have this added.
  */
 #ifndef HTTPD_ROOT
@@ -82,13 +82,15 @@
 #endif
 #endif /* HTTPD_ROOT */
 
-/* Root of server */
+/* Default location of documents.  Can be overridden by the DocumentRoot
+ * directive.
+ */
 #ifndef DOCUMENT_LOCATION
 #ifdef __EMX__
 /* Set default for OS/2 file system */
-#define DOCUMENT_LOCATION "/os2httpd/docs"
+#define DOCUMENT_LOCATION  HTTPD_ROOT "/docs"
 #else
-#define DOCUMENT_LOCATION "/usr/local/apache/htdocs"
+#define DOCUMENT_LOCATION  HTTPD_ROOT "/htdocs"
 #endif
 #endif /* DOCUMENT_LOCATION */
 
@@ -233,7 +235,7 @@
 
 /* The path to the suExec wrapper, can be overridden in Configuration */
 #ifndef SUEXEC_BIN
-#define SUEXEC_BIN "/usr/local/apache/sbin/suexec"
+#define SUEXEC_BIN  HTTPD_ROOT "/sbin/suexec"
 #endif
 
 /* The default string lengths */
