@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/11/21 18:19:06 $]
+Last modified at [$Date: 2001/11/27 05:19:39 $]
 
 Release:
 
@@ -60,20 +60,14 @@ RELEASE SHOWSTOPPERS:
       administrator to order filters, beyond the order of filename (mime)
       extensions.  It isn't clear if Set...Filter(s) should be inserted 
       before or after the Add...Filter(s) which are ordered by sequence of
-      filename extensions.  Add...FilterByType will add to this quandry.
-      Some sort of resolution needs to be proposed, 
+      filename extensions.  At minimum, some sort of +-[0-10] syntax seems
+      like the quickest fix for a 2.0 gold release.
 
     * mod_negotiation needs a new option or directive, something like
       ForceLanguagePriority, to fall back to the LanguagePriority
       directive instead of returning a "no acceptable variant" error.
         Status: Bill has some code in his tree that accomplishes
                 this, and will commit it Friday after it's tested.
-
-    * revamp the input filter syntax to provide for ordering of
-      filters created with the Set{Input|Output}Filter and the
-      Add{Input|Output}Filter directives.  At minimum, some sort
-      of insert first v.s. append to end or 'relative to x' is
-      probably needed.
 
     * revamp the input filter behavior, per discussions since
       February (and especially at the hackathon last
@@ -132,11 +126,6 @@ RELEASE SHOWSTOPPERS:
                 with limited OS exposure.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
-
-    * Source code should follow style guidelines.
-        This shouldn't wait until we have a 2.0-gold release because 
-        then style corrections will conflict with bug fixes found after
-        release which is not nice.
 
     * Allow the DocumentRoot directive within <Location > scopes?  This
       allows the beloved (crusty) Alias /foo/ /somepath/foo/ followed
