@@ -1,9 +1,9 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/01/08 22:37:02 $]
+  Last modified at [$Date: 1999/01/10 06:45:33 $]
 
 Release:
 
-    1.3.4-dev: current.
+    1.3.4: current.
            Tarball planned for Saturday afternoon PST, Roy is RM
            Release planned for Monday, January 11.
 
@@ -44,8 +44,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Status: Marc was looking at it.
 
 Documentation that needs writing:
-
-    * Document compilation on Win95 and NT
 
     * Need a document explaining mod_rewrite/"UseCanonicalName off" based
       virtualhosting.  (If it exists already I can't find it easily.)
@@ -163,17 +161,6 @@ Open issues:
 
     * Official retirement of 1.2; when?  Ken suggests as of 1.3.4.
 	Status: Ken +1
-
-    * Redefine APACHE_RELEASE. Add another 'bit' to signify whether
-      it's a beta or final release. Maybe 'MMNNFFRBB' which means:
-        MM: Major release #
-	NN: Minor release #
-	FF: "fix" level
-	R:  0 if beta, 1 if final release
-	BB: beta number
-
-      See: <199806071444.KAA23147@devsys.jaguNET.com>
-      Status: Jim +1, Ben +1, Martin +1, Ralf +1
 
     * Someone other than Dean has to do a security/correctness review on
       psprintf(), bprintf(), and ap_snprintf().  In particular these routines

@@ -415,7 +415,7 @@ extern "C" {
  * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
  */
 
-#define SERVER_BASEVERSION "Apache/1.3.4-dev"       /* SEE COMMENTS ABOVE */
+#define SERVER_BASEVERSION "Apache/1.3.4"       /* SEE COMMENTS ABOVE */
 #define SERVER_VERSION  SERVER_BASEVERSION
 enum server_token_type {
     SrvTk_MIN,		/* eg: Apache/1.3.0 */
@@ -427,12 +427,11 @@ API_EXPORT(const char *) ap_get_server_version(void);
 API_EXPORT(void) ap_add_version_component(const char *component);
 API_EXPORT(const char *) ap_get_server_built(void);
 
-/* Numeric release version identifier: major minor bugfix betaseq
+/* Numeric release version identifier: MMNNFFRBB: major minor fix final beta
  * Always increases along the same track as the source branch.
- * For a final release, 'betaseq' should be set to '99'.
- * For example, Apache 1.4.2 should be '1040299'
+ * For example, Apache 1.4.2 would be '10402100', 2.5b7 would be '20500007'.
  */
-#define APACHE_RELEASE 1030401
+#define APACHE_RELEASE 10304100
 
 #define SERVER_PROTOCOL "HTTP/1.1"
 #ifndef SERVER_SUPPORT
