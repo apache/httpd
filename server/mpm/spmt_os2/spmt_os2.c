@@ -727,6 +727,7 @@ static void child_main(void *child_num_arg)
     ap_pollfd_t *listen_poll;
     ap_socket_t *csd = NULL;
     int nsds, rv;
+    int num_listensocks;
 
     /* Disable the restart signal handlers and enable the just_die stuff.
      * Note that since restart() just notes that a restart has been
@@ -748,8 +749,15 @@ static void child_main(void *child_num_arg)
     THREAD_GLOBAL(pchild) = pchild;
     ap_create_pool(&ptrans, pchild);
 
-    if (ap_setup_listeners(pchild, &listen_poll)) {
-	clean_child_exit(1);
+    if ((num_listensocks = ap_setup_listeners(s)) < 1) {
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
+		    "no listening sockets available, shutting down");
+	return -1;
+    }
+
+    ap_setup_poll(&listen_poll, num_listensocks+1, pchild);
+    for (lr = ap_listeners; lr; lr = lr->next) {
+        ap_add_poll_socket(*listen_poll, lr->sd, APR_POLLIN);
     }
 
     /* needs to be done before we switch UIDs so we have permissions */
@@ -1166,12 +1174,6 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     pconf = _pconf;
     server_conf = s;
     ap_log_pid(pconf, ap_pid_fname);
-
-    if ((status = ap_listen_open(s->process, s->port)) != APR_SUCCESS) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, status, s,
-		    "no listening sockets available, shutting down");
-	return -1;
-    }
 
     SAFE_ACCEPT(accept_mutex_init(pconf));
 
