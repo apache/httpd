@@ -73,7 +73,7 @@ content-type</td></tr>
 <tr><td><a href="mod_mime.html#addlanguage">AddLanguage
     <em>MIME-lang extension</em> [<em>extension</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extension
 to the specified content language</td></tr>
-<tr class="odd"><td><a href="mod_info.html#addmoduleinfo">AddModuleInfo <em>module-name string</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Adds additional information to the module
+<tr class="odd"><td><a href="mod_info.html#addmoduleinfo">AddModuleInfo <var>module-name</var> <var>string</var></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Adds additional information to the module
 information displayed by the server-info handler</td></tr>
 <tr><td><a href="mod_mime.html#addoutputfilter">AddOutputFilter
     <em>filter</em>[<em>;filter</em>...] extension
