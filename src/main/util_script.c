@@ -271,7 +271,7 @@ API_EXPORT(void) add_common_vars(request_rec *r)
  * and find as much of the two that match as possible.
  */
 
-API_EXPORT(int) find_path_info(char *uri, char *path_info)
+API_EXPORT(int) find_path_info(const char *uri, const char *path_info)
 {
     int lu = strlen(uri);
     int lp = strlen(path_info);

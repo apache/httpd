@@ -63,7 +63,7 @@
 #endif
 
 API_EXPORT(char **) create_environment(pool *p, table *t);
-API_EXPORT(int) find_path_info(char *uri, char *path_info);
+API_EXPORT(int) find_path_info(const char *uri, const char *path_info);
 API_EXPORT(void) add_cgi_vars(request_rec *r);
 API_EXPORT(void) add_common_vars(request_rec *r);
 #define scan_script_header(a1,a2) scan_script_header_err(a1,a2,NULL)
