@@ -869,9 +869,19 @@ static const char * ap_build_config_sub(ap_pool_t *p, ap_pool_t *temp_pool,
 
             retval = execute_now(cmd_name, args, parms, p, temp_pool, 
                                  &sub_tree, *curr_parent);
-            (*current)->next = sub_tree;
-            while ((*current)->next != NULL) {
-                (*current) = (*current)->next;
+            if (*current) {
+                (*current)->next = sub_tree;
+            }
+            else {
+                (*current) = sub_tree;
+                (*curr_parent)->first_child = (*current);
+                (*current)->parent = (*curr_parent);
+            }
+            if (*current) {
+                while ((*current)->next != NULL) {
+                    (*current) = (*current)->next;
+                    (*current)->parent = (*curr_parent);
+                }
             }
             return retval;
         }
