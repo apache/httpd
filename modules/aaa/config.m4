@@ -32,8 +32,13 @@ dnl keep the bad guys out.
 APACHE_MODULE(authz_default, authorization control backstopper, , , yes)
 
 dnl these are the front-end authentication modules
-APACHE_MODULE(auth_basic, basic authentication, , , yes)
-APACHE_MODULE(auth_digest, RFC2617 Digest authentication, , , most, [
+
+std_auth_provider_objects="auth_provider.lo"
+
+APACHE_MODULE(auth_basic, basic authentication,
+              mod_auth_basic.lo $std_auth_provider_objects, , yes)
+APACHE_MODULE(auth_digest, RFC2617 Digest authentication,
+              mod_auth_digest.lo $std_auth_provider_objects , , most, [
   ap_old_cppflags=$CPPFLAGS
   CPPFLAGS="$CPPFLAGS -I$APR_SOURCE_DIR/include -I$abs_builddir/srclib/apr/include"
   AC_TRY_COMPILE([#include <apr.h>], [

@@ -81,6 +81,8 @@
 #include "http_protocol.h"
 #include "http_request.h"
 
+#include "mod_auth.h"
+
 typedef struct {
     char *pwfile;
     int authoritative;
@@ -121,103 +123,110 @@ static const command_rec authn_file_cmds[] =
 
 module AP_MODULE_DECLARE_DATA authn_file_module;
 
-static apr_status_t get_pw(request_rec *r, char *user, char *pwfile, 
-                           char ** out)
+static authn_status check_password(request_rec *r, const char *user,
+                                   const char *password)
 {
+    authn_file_config_rec *conf = ap_get_module_config(r->per_dir_config,
+                                                       &authn_file_module);
     ap_configfile_t *f;
     char l[MAX_STRING_LEN];
-    const char *rpw, *w;
     apr_status_t status;
+    char *file_password = NULL;
 
-    *out = NULL;
+    status = ap_pcfg_openfile(&f, r->pool, conf->pwfile);
 
-    if ((status = ap_pcfg_openfile(&f, r->pool, pwfile)) != APR_SUCCESS) {
-        return status;
+    if (status != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                      "Could not open password file: %s", conf->pwfile);
+        return AUTH_GENERAL_ERROR;
     }
 
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
+        const char *rpw, *w;
+
+        /* Skip # or blank lines. */
         if ((l[0] == '#') || (!l[0])) {
             continue;
         }
+
         rpw = l;
         w = ap_getword(r->pool, &rpw, ':');
 
         if (!strcmp(user, w)) {
-            ap_cfg_closefile(f);
-            *out = ap_getword(r->pool, &rpw, ':');
-            return APR_SUCCESS;
+            file_password = ap_getword(r->pool, &rpw, ':');
+            break;
         }
     }
     ap_cfg_closefile(f);
 
-    return APR_SUCCESS;
+    if (!file_password) {
+        return AUTH_USER_NOT_FOUND;
+    }
+
+    status = apr_password_validate(password, file_password);
+    if (status != APR_SUCCESS) {
+        return AUTH_DENIED;
+    }
+
+    return AUTH_GRANTED;
 }
 
-/* These functions return 0 if client is OK, and proper error status
- * if not... either HTTP_UNAUTHORIZED, if we made a check, and it failed, or
- * HTTP_INTERNAL_SERVER_ERROR, if things are so totally confused that we
- * couldn't figure out how to tell if the client is authorized or not.
- *
- * If they return DECLINED, and all other modules also decline, that's
- * treated by the server core as a configuration error, logged and
- * reported as such.
- */
-
-/* Determine user ID, and check if it really is that user, for HTTP
- * basic authentication...
- */
-
-static int authenticate_basic_user(request_rec *r)
+static authn_status get_realm_hash(request_rec *r, const char *user,
+                                   const char *realm, char **rethash)
 {
     authn_file_config_rec *conf = ap_get_module_config(r->per_dir_config,
                                                        &authn_file_module);
-    const char *sent_pw;
-    char *real_pw = NULL;
+    ap_configfile_t *f;
+    char l[MAX_STRING_LEN];
     apr_status_t status;
-    int res;
+    char *file_hash = NULL;
 
-    if ((res = ap_get_basic_auth_pw(r, &sent_pw))) {
-        return res;
-    }
-
-    if (!conf->pwfile) {
-        return DECLINED;
-    }
-
-    if ((status = get_pw(r, r->user, conf->pwfile, &real_pw)) != APR_SUCCESS) 
-    {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
-                      "Could not open password file: %s", conf->pwfile);
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
-
-    if (real_pw == NULL) {
-        if (!conf->authoritative) {
-           return DECLINED;
-        } 
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "user %s not found: %s", r->user, r->uri);
-        ap_note_basic_auth_failure(r);
-        return HTTP_UNAUTHORIZED;
-    }
-
-    status = apr_password_validate(sent_pw, real_pw);
+    status = ap_pcfg_openfile(&f, r->pool, conf->pwfile);
 
     if (status != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "user %s: authentication failure for \"%s\": "
-                      "Password Mismatch",
-                      r->user, r->uri);
-        ap_note_basic_auth_failure(r);
-        return HTTP_UNAUTHORIZED;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                      "Could not open password file: %s", conf->pwfile);
+        return AUTH_GENERAL_ERROR;
     }
 
-    return OK;
+    while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
+        const char *rpw, *w, *x;
+
+        /* Skip # or blank lines. */
+        if ((l[0] == '#') || (!l[0])) {
+            continue;
+        }
+
+        rpw = l;
+        w = ap_getword(r->pool, &rpw, ':');
+        x = ap_getword(r->pool, &rpw, ':');
+
+        if (x && w && !strcmp(user, w) && !strcmp(realm, x)) {
+            /* Remember that this is a md5 hash of user:realm:password.  */
+            file_hash = ap_getword(r->pool, &rpw, ':');
+            break;
+        }
+    }
+    ap_cfg_closefile(f);
+
+    if (!file_hash) {
+        return AUTH_USER_NOT_FOUND;
+    }
+
+    *rethash = file_hash;
+
+    return AUTH_USER_FOUND;
 }
+
+static const authn_provider authn_file_provider =
+{
+    &check_password,
+    &get_realm_hash,
+};
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_check_user_id(authenticate_basic_user,NULL,NULL,APR_HOOK_MIDDLE);
+    authn_register_provider(p, "file", &authn_file_provider);
 }
 
 module AP_MODULE_DECLARE_DATA authn_file_module =

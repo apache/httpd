@@ -119,6 +119,8 @@
 #include "apr_shm.h"
 #include "apr_rmm.h"
 
+#include "mod_auth.h"
+
 /* Disable shmem until pools/init gets sorted out 
  * remove following two lines when fixed 
  */
@@ -129,7 +131,8 @@
 
 typedef struct digest_config_struct {
     const char  *dir_name;
-    const char  *pwfile;
+    const char *provider_name;
+    const authn_provider *provider;
     const char  *realm;
     char **qop_list;
     apr_sha1_ctx_t  nonce_ctx;
@@ -479,10 +482,35 @@ static const char *set_realm(cmd_parms *cmd, void *config, const char *realm)
     return DECLINE_CMD;
 }
 
-static const char *set_digest_file(cmd_parms *cmd, void *config,
-                                   const char *file)
+static const char *add_authn_provider(cmd_parms *cmd, void *config,
+                                      const char *arg)
 {
-    ((digest_config_rec *) config)->pwfile = file;
+    digest_config_rec *conf = (digest_config_rec*)config;
+
+    if (strcasecmp(arg, "on") == 0) {
+        conf->provider_name = AUTHN_DEFAULT_PROVIDER;
+    }
+    else if (strcasecmp(arg, "off") == 0) {
+        conf->provider_name = NULL;
+        conf->provider = NULL;
+    }
+    else {
+        conf->provider_name = apr_pstrdup(cmd->pool, arg);
+    }
+
+    if (conf->provider_name != NULL) {
+        /* lookup and cache the actual provider now */
+        conf->provider = authn_lookup_provider(conf->provider_name);
+
+        if (conf->provider == NULL) {
+            /* by the time they use it, the provider should be loaded and
+               registered with us. */
+            return apr_psprintf(cmd->pool,
+                                "Unknown Authn provider: %s",
+                                conf->provider_name);
+        }
+    }
+
     return NULL;
 }
 
@@ -635,8 +663,8 @@ static const command_rec digest_cmds[] =
 {
     AP_INIT_TAKE1("AuthName", set_realm, NULL, OR_AUTHCFG, 
      "The authentication realm (e.g. \"Members Only\")"),
-    AP_INIT_TAKE1("AuthDigestFile", set_digest_file, NULL, OR_AUTHCFG, 
-     "The name of the file containing the usernames and password hashes"),
+    AP_INIT_ITERATE("AuthDigestProvider", add_authn_provider, NULL, ACCESS_CONF,
+                     "specify the auth providers for a directory or location"),
     AP_INIT_ITERATE("AuthDigestQop", set_qop, NULL, OR_AUTHCFG, 
      "A list of quality-of-protection options"),
     AP_INIT_TAKE1("AuthDigestNonceLifetime", set_nonce_lifetime, NULL, OR_AUTHCFG, 
@@ -1415,34 +1443,27 @@ static void note_digest_auth_failure(request_rec *r,
  */
 
 static const char *get_hash(request_rec *r, const char *user,
-                            const char *realm, const char *auth_pwfile)
+                            digest_config_rec *conf)
 {
-    ap_configfile_t *f;
-    char l[MAX_STRING_LEN];
-    const char *rpw;
-    char *w, *x;
-    apr_status_t sts;
+    authn_status auth_result;
+    char *password;
 
-    if ((sts = ap_pcfg_openfile(&f, r->pool, auth_pwfile)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, sts, r,
-                      "Digest: Could not open password file: %s", auth_pwfile);
+    /* To be nice, if we make it this far and we don't have a provider set,
+     * we'll use the default provider.
+     */
+    if (!conf->provider) {
+        conf->provider = authn_lookup_provider(AUTHN_DEFAULT_PROVIDER);
+    }
+
+    /* We expect the password to be md5 hash of user:realm:password */
+    auth_result = conf->provider->get_realm_hash(r, user, conf->realm,
+                                                 &password);
+
+    if (auth_result != AUTH_USER_FOUND) {
         return NULL;
     }
-    while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
-        if ((l[0] == '#') || (!l[0])) {
-            continue;
-        }
-        rpw = l;
-        w = ap_getword(r->pool, &rpw, ':');
-        x = ap_getword(r->pool, &rpw, ':');
 
-        if (x && w && !strcmp(user, w) && !strcmp(realm, x)) {
-            ap_cfg_closefile(f);
-            return apr_pstrdup(r->pool, rpw);
-        }
-    }
-    ap_cfg_closefile(f);
-    return NULL;
+    return password;
 }
 
 static int check_nc(const request_rec *r, const digest_header_rec *resp,
@@ -1801,11 +1822,11 @@ static int authenticate_digest_user(request_rec *r)
         return HTTP_UNAUTHORIZED;
     }
 
-    if (!conf->pwfile) {
+    if (!conf->provider) {
         return DECLINED;
     }
 
-    if (!(conf->ha1 = get_hash(r, r->user, conf->realm, conf->pwfile))) {
+    if (!(conf->ha1 = get_hash(r, r->user, conf))) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Digest: user `%s' in realm `%s' not found: %s",
                       r->user, conf->realm, r->uri);
