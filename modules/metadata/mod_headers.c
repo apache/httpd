@@ -60,13 +60,15 @@
  * mod_headers.c: Add/append/remove HTTP response headers
  *     Written by Paul Sutton, paul@ukweb.com, 1 Oct 1996
  *
- * HeaderIn and HeaderOut can be used to add/replace/remove HTTP headers.
+ * The Header directive can be used to add/replace/remove HTTP headers
+ * within the response message.  The RequestHeader directive can be used
+ * to add/replace/remove HTTP headers before a request message is processed.
  * Valid in both per-server and per-dir configurations.
  *
  * Syntax is:
  *
- *   HeaderIn action header value
- *   HeaderOut action header value
+ *   Header action header value
+ *   RequestHeader action header value
  *
  * Where action is one of:
  *     set    - set this header, replacing any old value
@@ -78,8 +80,8 @@
  * Where action is unset, the third argument (value) should not be given.
  * The header name can include the colon, or not.
  *
- * The Header(In|Out) directive can only be used where allowed by the
- * FileInfo override.
+ * The Header and RequestHeader directives can only be used where allowed
+ * by the FileInfo override.
  *
  * When the request is processed, the header directives are processed in
  * this order: firstly, the main server, then the virtual server handling
@@ -90,16 +92,16 @@
  * the following two directives have different effect if applied in
  * the reverse order:
  *
- *   HeaderOut append Author "John P. Doe"
- *   HeaderOut unset Author
+ *   Header append Author "John P. Doe"
+ *   Header unset Author
  *
  * Examples:
  *
  *  To set the "Author" header, use
- *     HeaderOut add Author "John P. Doe"
+ *     Header add Author "John P. Doe"
  *
  *  To remove a header:
- *     HeaderOut unset Author
+ *     Header unset Author
  *
  */
 
@@ -124,8 +126,8 @@ typedef enum {
 } hdr_actions;
 
 typedef enum {
-    hdr_in = 0,                 /* HeaderIn */
-    hdr_out = 1,                /* HeaderOut */
+    hdr_in = 0,                 /* RequestHeader */
+    hdr_out = 1,                /* Header */
 } hdr_inout;
 
 typedef struct {
@@ -173,7 +175,7 @@ static void *merge_headers_config(apr_pool_t *p, void *basev, void *overridesv)
 }
 
 
-/* handle HeaderIn and HeaderOut directive */
+/* handle RequestHeader and Header directive */
 static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indirconf,
                               const char *action, const char *inhdr,
                               const char *value)
@@ -206,10 +208,10 @@ static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indir
 
     if (new->action == hdr_unset) {
         if (value)
-            return "Header(In|Out) unset takes two arguments";
+            return "header unset takes two arguments";
     }
     else if (!value)
-        return "Header(In|Out) requires three arguments";
+        return "header requires three arguments";
 
     if ((colon = strchr(hdr, ':')))
         *colon = '\0';
@@ -220,23 +222,15 @@ static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indir
     return NULL;
 }
 
-/* handle deprecated Header directive */
+/* handle Header directive */
 static const char *header_cmd(cmd_parms *cmd, void *indirconf,
-                              const char *action, const char *inhdr,
-                              const char *value)
-{
-    return "The Header directive has been deprecated. Use HeaderOut instead.";
-}
-
-/* handle HeaderOut directive */
-static const char *header_out_cmd(cmd_parms *cmd, void *indirconf,
                               const char *action, const char *inhdr,
                               const char *value)
 {
     return header_inout_cmd(hdr_out, cmd, indirconf, action, inhdr, value);
 }
 
-/* handle HeaderIn directive */
+/* handle RequestHeader directive */
 static const char *header_in_cmd(cmd_parms *cmd, void *indirconf,
                               const char *action, const char *inhdr,
                               const char *value)
@@ -322,10 +316,8 @@ static apr_status_t ap_headers_fixup(request_rec *r)
 static const command_rec headers_cmds[] =
 {
     AP_INIT_TAKE23("Header", header_cmd, NULL, OR_FILEINFO,
-                   "deprecated, use HeaderOut instead"),
-    AP_INIT_TAKE23("HeaderIn", header_in_cmd, NULL, OR_FILEINFO,
                    "an action, header and value"),
-    AP_INIT_TAKE23("HeaderOut", header_out_cmd, NULL, OR_FILEINFO,
+    AP_INIT_TAKE23("RequestHeader", header_in_cmd, NULL, OR_FILEINFO,
                    "an action, header and value"),
     {NULL}
 };
