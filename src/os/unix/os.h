@@ -74,9 +74,9 @@
  */
 #define INLINE extern ap_inline
 #include "os-inline.c"
-#endif
 
-#ifndef INLINE
+#else
+
 /* Compiler does not support inline, so prototype the inlineable functions
  * as normal
  */

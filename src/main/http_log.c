@@ -176,7 +176,7 @@ static int error_log_child (void *cmd)
     return(child_pid);
 }
 
-void open_error_log (server_rec *s, pool *p)
+static void open_error_log (server_rec *s, pool *p)
 {
     char *fname;
 

@@ -100,7 +100,7 @@
  * the http_conf_globals.
  */
 
-void *create_core_dir_config (pool *a, char *dir)
+static void *create_core_dir_config (pool *a, char *dir)
 {
     core_dir_config *conf =
       (core_dir_config *)pcalloc(a, sizeof(core_dir_config));
@@ -138,7 +138,7 @@ void *create_core_dir_config (pool *a, char *dir)
     return (void *)conf;
 }
 
-void *merge_core_dir_configs (pool *a, void *basev, void *newv)
+static void *merge_core_dir_configs (pool *a, void *basev, void *newv)
 {
     core_dir_config *base = (core_dir_config *)basev;
     core_dir_config *new = (core_dir_config *)newv;
@@ -219,7 +219,7 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
     return (void*)conf;
 }
 
-void *create_core_server_config (pool *a, server_rec *s)
+static void *create_core_server_config (pool *a, server_rec *s)
 {
     core_server_config *conf =
       (core_server_config *)pcalloc(a, sizeof(core_server_config));
@@ -233,7 +233,7 @@ void *create_core_server_config (pool *a, server_rec *s)
     return (void *)conf;
 }
 
-void *merge_core_server_configs (pool *p, void *basev, void *virtv)
+static void *merge_core_server_configs (pool *p, void *basev, void *virtv)
 {
     core_server_config *base = (core_server_config *)basev;
     core_server_config *virt = (core_server_config *)virtv;
@@ -253,7 +253,7 @@ void *merge_core_server_configs (pool *p, void *basev, void *virtv)
  * these are part of the core server config.
  */
 
-API_EXPORT(void) add_per_dir_conf (server_rec *s, void *dir_config)
+CORE_EXPORT(void) add_per_dir_conf (server_rec *s, void *dir_config)
 {
     core_server_config *sconf = get_module_config (s->module_config,
 						   &core_module);
@@ -262,7 +262,7 @@ API_EXPORT(void) add_per_dir_conf (server_rec *s, void *dir_config)
     *new_space = dir_config;
 }
 
-API_EXPORT(void) add_per_url_conf (server_rec *s, void *url_config)
+CORE_EXPORT(void) add_per_url_conf (server_rec *s, void *url_config)
 {
     core_server_config *sconf = get_module_config (s->module_config,
 						   &core_module);
@@ -271,7 +271,7 @@ API_EXPORT(void) add_per_url_conf (server_rec *s, void *url_config)
     *new_space = url_config;
 }
 
-void add_file_conf (core_dir_config *conf, void *url_config)
+static void add_file_conf (core_dir_config *conf, void *url_config)
 {
     void **new_space = (void **) push_array (conf->sec);
     
@@ -852,7 +852,7 @@ static const char *set_options (cmd_parms *cmd, core_dir_config *d, const char *
     return NULL;
 }
 
-const char *satisfy (cmd_parms *cmd, core_dir_config *c, char *arg)
+static const char *satisfy (cmd_parms *cmd, core_dir_config *c, char *arg)
 {
     if(!strcasecmp(arg,"all"))
         c->satisfy = SATISFY_ALL;
@@ -863,7 +863,7 @@ const char *satisfy (cmd_parms *cmd, core_dir_config *c, char *arg)
     return NULL;
 }
 
-const char *require (cmd_parms *cmd, core_dir_config *c, char *arg)
+static const char *require (cmd_parms *cmd, core_dir_config *c, char *arg)
 {
     require_line *r;
   
@@ -876,7 +876,7 @@ const char *require (cmd_parms *cmd, core_dir_config *c, char *arg)
     return NULL;
 }
 
-API_EXPORT(const char *) limit_section (cmd_parms *cmd, void *dummy, const char *arg)
+CORE_EXPORT(const char *) limit_section (cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *limited_methods = getword(cmd->pool,&arg,'>');
     int limited = 0;
@@ -1987,7 +1987,7 @@ static const command_rec core_cmds[] = {
  * Core handlers for various phases of server operation...
  */
 
-int core_translate (request_rec *r)
+static int core_translate (request_rec *r)
 {
     void *sconf = r->server->module_config;
     core_server_config *conf = get_module_config (sconf, &core_module);
@@ -2012,7 +2012,7 @@ int core_translate (request_rec *r)
     return OK;
 }
 
-int do_nothing (request_rec *r) { return OK; }
+static int do_nothing (request_rec *r) { return OK; }
 
 #ifdef USE_MMAP_FILES
 struct mmap {

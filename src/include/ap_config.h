@@ -759,6 +759,11 @@ typedef int rlim_t;
 #define API_VAR_EXPORT
 #endif
 
+/* modules should not used functions marked CORE_EXPORT */
+#ifndef CORE_EXPORT
+#define CORE_EXPORT	API_EXPORT
+#endif
+
 /* So that we can use inline on some critical functions, and use
  * GNUC attributes (such as to get -Wall warnings for printf-like
  * functions).  Only do this in gcc 2.7 or later ... it may work

@@ -150,7 +150,9 @@
  * make all the modules into shared libraries that core httpd still
  * includes the full Apache API. Without this function the objects in
  * main/util_script.c would not be linked into a minimal httpd.
+ * And the extra prototype is to make gcc -Wmissing-prototypes quiet.
  */
+extern void force_library_loading(void);
 void force_library_loading(void) {
     add_cgi_vars(NULL);
 }
@@ -775,7 +777,7 @@ static void accept_mutex_off(void)
 #define SAFE_ACCEPT(stmt) do {stmt;} while(0)
 #endif
 
-void usage(char *bin)
+static void usage(char *bin)
 {
     char pad[MAX_STRING_LEN];
     int i;
@@ -811,7 +813,7 @@ static APACHE_TLS const char *volatile timeout_name = NULL;
 static APACHE_TLS int volatile alarms_blocked = 0;
 static APACHE_TLS int volatile alarm_pending = 0;
 
-void timeout(int sig)
+static void timeout(int sig)
 {				/* Also called on SIGPIPE */
     char errstr[MAX_STRING_LEN];
     void *dirconf;
@@ -1328,7 +1330,7 @@ static int reap_other_child(int pid, int status)
  * shared memory (so they use memcpy etc.)
  */
 
-void reinit_scoreboard(pool *p)
+static void reinit_scoreboard(pool *p)
 {
     ap_assert(!scoreboard_image);
     scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
@@ -1414,7 +1416,7 @@ static void setup_shared_mem(pool *p)
     scoreboard_image->global.exit_generation = 0;
 }
 
-void reopen_scoreboard(pool *p)
+static void reopen_scoreboard(pool *p)
 {
     caddr_t m;
     int rc;
@@ -1492,7 +1494,7 @@ static void setup_shared_mem(pool *p)
     scoreboard_image->global.exit_generation = 0;
 }
 
-void reopen_scoreboard(pool *p)
+static void reopen_scoreboard(pool *p)
 {
 }
 
@@ -1553,7 +1555,7 @@ static void setup_shared_mem(pool *p)
     scoreboard_image->global.exit_generation = 0;
 }
 
-void reopen_scoreboard(pool *p)
+static void reopen_scoreboard(pool *p)
 {
 }
 
@@ -1644,7 +1646,7 @@ static void setup_shared_mem(pool *p)
     scoreboard_image->global.exit_generation = 0;
 }
 
-void reopen_scoreboard(pool *p)
+static void reopen_scoreboard(pool *p)
 {
 }
 
@@ -1706,7 +1708,7 @@ void reopen_scoreboard(pool *p)
 #endif
 
 /* Called by parent process */
-void reinit_scoreboard(pool *p)
+static void reinit_scoreboard(pool *p)
 {
     int exit_gen = 0;
     if (scoreboard_image)
@@ -2125,7 +2127,7 @@ static int wait_or_timeout(int *status)
 
 
 /* handle all varieties of core dumping signals */
-void sig_coredump(int sig)
+static void sig_coredump(int sig)
 {
     char emsg[256];
     const char *s;
@@ -2174,7 +2176,7 @@ void sig_coredump(int sig)
  * Connection structures and accounting...
  */
 
-void just_die(int sig)
+static void just_die(int sig)
 {				/* SIGHUP to child process??? */
     /* if alarms are blocked we have to wait to die otherwise we might
      * end up with corruption in alloc.c's internal structures */
@@ -2289,7 +2291,7 @@ static void restart(int sig)
 #endif
 }
 
-void set_signals(void)
+static void set_signals(void)
 {
 #ifndef NO_USE_SIGACTION
     struct sigaction sa;
@@ -2365,7 +2367,7 @@ void set_signals(void)
  * Here follows a long bunch of generic server bookkeeping stuff...
  */
 
-void detach(void)
+static void detach(void)
 {
 #if !defined(WIN32)
     int x;
@@ -2488,7 +2490,7 @@ static void set_group_privs(void)
 }
 
 /* check to see if we have the 'suexec' setuid wrapper installed */
-int init_suexec(void)
+static int init_suexec(void)
 {
 #ifndef WIN32
     struct stat wrapper;
@@ -2509,7 +2511,7 @@ int init_suexec(void)
  */
 
 
-conn_rec *ap__new_connection(pool *p, server_rec *server, BUFF *inout,
+static conn_rec *new_connection(pool *p, server_rec *server, BUFF *inout,
 			     const struct sockaddr_in *remaddr,
 			     const struct sockaddr_in *saddr,
 			     int child_num)
@@ -2823,11 +2825,11 @@ static ap_inline listen_rec *find_ready_listener(fd_set * main_fds)
 }
 
 
+#ifdef WIN32
 static int s_iInitCount = 0;
 
-int AMCSocketInitialize(void)
+static int AMCSocketInitialize(void)
 {
-#ifdef WIN32
     int iVersionRequested;
     WSADATA wsaData;
     int err;
@@ -2852,9 +2854,6 @@ int AMCSocketInitialize(void)
 	WSACleanup();
 	return (s_iInitCount);
     }
-#else
-    signal(SIGPIPE, SIG_IGN);
-#endif /* WIN32 */
 
     s_iInitCount++;
     return (s_iInitCount);
@@ -2862,16 +2861,13 @@ int AMCSocketInitialize(void)
 }
 
 
-void AMCSocketCleanup(void)
+static void AMCSocketCleanup(void)
 {
-#ifdef WIN32
     if (--s_iInitCount == 0)
 	WSACleanup();
-#else /* not WIN32 */
-    s_iInitCount--;
-#endif /* WIN32 */
     return;
 }
+#endif
 
 static void show_compile_settings(void)
 {
@@ -2966,9 +2962,6 @@ static void show_compile_settings(void)
 }
 
 
-/* DEAN WILL CLEAN THIS UP! */
-extern void util_init(void);
-
 /* Some init code that's common between win32 and unix... well actually
  * some of it is #ifdef'd but was duplicated before anyhow.  This stuff
  * is still a mess.
@@ -2994,8 +2987,7 @@ static void common_init(void)
     AMCSocketInitialize();
 #endif /* WIN32 */
 
-    init_alloc();
-    pconf = permanent_pool;
+    pconf = init_alloc();
     ptrans = make_sub_pool(pconf);
 
     util_init();
@@ -3025,7 +3017,7 @@ API_EXPORT(void) child_terminate(request_rec *r)
     requests_this_child = max_requests_per_child = 1;
 }
 
-void child_main(int child_num_arg)
+static void child_main(int child_num_arg)
 {
     NET_SIZE_T clen;
     struct sockaddr sa_server;
@@ -3321,7 +3313,7 @@ void child_main(int child_num_arg)
 #endif
 	bpushfd(conn_io, csd, dupped_csd);
 
-	current_conn = ap__new_connection(ptrans, server_conf, conn_io,
+	current_conn = new_connection(ptrans, server_conf, conn_io,
 				          (struct sockaddr_in *) &sa_client,
 				          (struct sockaddr_in *) &sa_server,
 				          my_child_num);
@@ -3638,7 +3630,7 @@ static void perform_idle_server_maintenance(void)
 #ifndef STANDALONE_MAIN
 #define STANDALONE_MAIN standalone_main
 
-void standalone_main(int argc, char **argv)
+static void standalone_main(int argc, char **argv)
 {
     int remaining_children_to_start;
 
@@ -3998,7 +3990,7 @@ int main(int argc, char *argv[])
 	cio->fd = fileno(stdout);
 #endif
 	cio->fd_in = fileno(stdin);
-	conn = ap__new_connection(ptrans, server_conf, cio,
+	conn = new_connection(ptrans, server_conf, cio,
 			          (struct sockaddr_in *) &sa_client,
 			          (struct sockaddr_in *) &sa_server, -1);
 	r = read_request(conn);
@@ -4210,7 +4202,7 @@ int remove_job()
  *    accepted socket, instead of blocking on a mutex or select().
  */
 
-void child_sub_main(int child_num)
+static void child_sub_main(int child_num)
 {
     NET_SIZE_T clen;
     struct sockaddr sa_server;
@@ -4301,7 +4293,7 @@ void child_sub_main(int child_num)
 #endif
 	bpushfd(conn_io, csd, dupped_csd);
 
-	current_conn = ap__new_connection(ptrans, server_conf, conn_io,
+	current_conn = new_connection(ptrans, server_conf, conn_io,
 				          (struct sockaddr_in *) &sa_client,
 				          (struct sockaddr_in *) &sa_server,
 				          child_num);

@@ -82,8 +82,7 @@
 
 typedef struct pool pool;
 
-extern pool *permanent_pool;
-void init_alloc(void);		/* Set up everything */
+pool * init_alloc(void);		/* Set up everything */
 API_EXPORT(pool *) make_sub_pool(pool *);	/* All pools are subpools of permanent_pool */
 API_EXPORT(void) destroy_pool(pool *);
 

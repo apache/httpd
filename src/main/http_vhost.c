@@ -764,7 +764,7 @@ found:
 }
 
 
-void check_serverpath(request_rec *r)
+static void check_serverpath(request_rec *r)
 {
     server_rec *s;
     server_rec *last_s;

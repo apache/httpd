@@ -106,7 +106,7 @@ static int check_safe_file(request_rec *r)
 }
 
 
-int check_symlinks(char *d, int opts)
+static int check_symlinks(char *d, int opts)
 {
 #if defined(__EMX__) || defined(WIN32)
     /* OS/2 doesn't have symlinks */
@@ -166,7 +166,7 @@ int check_symlinks(char *d, int opts)
 
 /* Dealing with the file system to get PATH_INFO
  */
-int get_path_info(request_rec *r)
+static int get_path_info(request_rec *r)
 {
     char *cp;
     char *path = r->filename;
@@ -263,7 +263,7 @@ int get_path_info(request_rec *r)
     return OK;
 }
 
-int directory_walk(request_rec *r)
+static int directory_walk(request_rec *r)
 {
     core_server_config *sconf = get_module_config(r->server->module_config,
                                                   &core_module);
@@ -492,7 +492,7 @@ int directory_walk(request_rec *r)
                                  * symlink goop. */
 }
 
-int location_walk(request_rec *r)
+static int location_walk(request_rec *r)
 {
     core_server_config *sconf = get_module_config(r->server->module_config,
                                                   &core_module);
@@ -562,7 +562,7 @@ int location_walk(request_rec *r)
     return OK;
 }
 
-int file_walk(request_rec *r)
+static int file_walk(request_rec *r)
 {
     core_dir_config *conf = get_module_config(r->per_dir_config, &core_module);
     void *per_dir_defaults = r->per_dir_config;
@@ -641,7 +641,7 @@ int file_walk(request_rec *r)
  * structure...
  */
 
-request_rec *make_sub_request(const request_rec *r)
+static request_rec *make_sub_request(const request_rec *r)
 {
     pool *rrp = make_sub_pool(r->pool);
     request_rec *rr = pcalloc(rrp, sizeof(request_rec));
@@ -983,7 +983,7 @@ API_EXPORT(int) some_auth_required(request_rec *r)
     return 0;
 }
 
-void process_request_internal(request_rec *r)
+static void process_request_internal(request_rec *r)
 {
     int access_status;
 
@@ -1181,7 +1181,7 @@ void process_request(request_rec *r)
 #endif
 }
 
-table *rename_original_env(pool *p, table *t)
+static table *rename_original_env(pool *p, table *t)
 {
     array_header *env_arr = table_elts(t);
     table_entry *elts = (table_entry *) env_arr->elts;
@@ -1198,7 +1198,7 @@ table *rename_original_env(pool *p, table *t)
     return new;
 }
 
-request_rec *internal_internal_redirect(const char *new_uri, request_rec *r)
+static request_rec *internal_internal_redirect(const char *new_uri, request_rec *r)
 {
     int access_status;
     request_rec *new = (request_rec *) pcalloc(r->pool, sizeof(request_rec));

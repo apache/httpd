@@ -195,7 +195,7 @@ static ap_inline void debug_verify_filled(const char *ptr,
 /* Get a completely new block from the system pool. Note that we rely on
    malloc() to provide aligned memory. */
 
-union block_hdr *malloc_block(int size)
+static union block_hdr *malloc_block(int size)
 {
     union block_hdr *blok =
     (union block_hdr *) malloc(size + sizeof(union block_hdr));
@@ -237,7 +237,7 @@ static void chk_on_blk_list(union block_hdr *blok, union block_hdr *free_blk)
 
 /* Free a chain of blocks --- must be called with alarms blocked. */
 
-void free_blocks(union block_hdr *blok)
+static void free_blocks(union block_hdr *blok)
 {
 #ifdef ALLOC_USE_MALLOC
     union block_hdr *next;
@@ -296,7 +296,7 @@ void free_blocks(union block_hdr *blok)
  * if necessary.  Must be called with alarms blocked.
  */
 
-union block_hdr *new_block(int min_size)
+static union block_hdr *new_block(int min_size)
 {
     union block_hdr **lastptr = &block_freelist;
     union block_hdr *blok = block_freelist;
@@ -331,7 +331,7 @@ union block_hdr *new_block(int min_size)
 
 /* Accounting */
 
-long bytes_in_block_list(union block_hdr *blok)
+static long bytes_in_block_list(union block_hdr *blok)
 {
     long size = 0;
 
@@ -436,7 +436,7 @@ static void stack_var_init(char *s)
 }
 #endif
 
-void init_alloc(void)
+pool *init_alloc(void)
 {
 #ifdef POOL_DEBUG
     char s;
@@ -447,6 +447,8 @@ void init_alloc(void)
     alloc_mutex = create_mutex(NULL);
     spawn_mutex = create_mutex(NULL);
     permanent_pool = make_sub_pool(NULL);
+
+    return permanent_pool;
 }
 
 API_EXPORT(void) clear_pool(struct pool *a)

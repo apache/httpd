@@ -331,5 +331,6 @@ static const char **hashbang(const char *filename, char **argv)
     return NULL;
 }
 #else
+extern void ap_execve_is_not_here(void);
 void ap_execve_is_not_here(void) {}
 #endif /* NEED_HASHBANG_EMUL */

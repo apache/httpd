@@ -8,6 +8,7 @@
 
 
 /* some linkers complain unless there's at least one function in each
- * .o file
+ * .o file... and extra prototype is for gcc -Wmissing-prototypes
  */
+extern void os_is_not_here(void);
 void os_is_not_here(void) {}

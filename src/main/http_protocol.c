@@ -619,7 +619,7 @@ void parse_uri(request_rec *r, const char *uri)
     }
 }
 
-int read_request_line(request_rec *r)
+static int read_request_line(request_rec *r)
 {
     char l[HUGE_STRING_LEN];
     const char *ll = l, *uri;
@@ -678,7 +678,7 @@ int read_request_line(request_rec *r)
     return 1;
 }
 
-void get_mime_headers(request_rec *r)
+static void get_mime_headers(request_rec *r)
 {
     conn_rec *c = r->connection;
     int len;
@@ -995,14 +995,14 @@ int index_of_response(int status)
  * In other words, don't change this one without checking table_do in alloc.c.
  * It returns true unless there was a write error of some kind.
  */
-int send_header_field(request_rec *r, const char *fieldname,
-                      const char *fieldval)
+API_EXPORT_NONSTD(int) send_header_field(request_rec *r,
+    const char *fieldname, const char *fieldval)
 {
     return (0 < bvputs(r->connection->client,
                        fieldname, ": ", fieldval, "\015\012", NULL));
 }
 
-void basic_http_header(request_rec *r)
+API_EXPORT(void) basic_http_header(request_rec *r)
 {
     char *protocol;
 #ifdef CHARSET_EBCDIC

@@ -806,6 +806,8 @@ struct listen_rec {
 /* Prototypes for utilities... util.c.
  */
 
+extern void util_init(void);
+
 /* Time */
 extern API_VAR_EXPORT const char month_snames[12][4];
 extern API_VAR_EXPORT const char day_snames[7][4];

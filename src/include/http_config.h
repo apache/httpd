@@ -300,6 +300,9 @@ API_EXPORT(void) clear_module_list(void);
 API_EXPORT(const char *) find_module_name(module *m);
 API_EXPORT(module *) find_linked_module(const char *name);
 
+/* for implementing subconfigs and customized config files */
+API_EXPORT(const char *) srm_command_loop(cmd_parms *parms, void *config);
+
 #ifdef CORE_PRIVATE
 
 extern API_VAR_EXPORT module *top_module;
@@ -320,19 +323,16 @@ void show_modules(void);
 /* For http_request.c... */
 
 void *create_request_config(pool *p);
-API_EXPORT(void *) create_per_dir_config(pool *p);
+CORE_EXPORT(void *) create_per_dir_config(pool *p);
 void *merge_per_dir_configs(pool *p, void *base, void *new);
 void *create_empty_config(pool *p);
-
-void core_reorder_directories(pool *, server_rec *);
 
 /* For http_core.c... (<Directory> command and virtual hosts) */
 
 int parse_htaccess(void **result, request_rec *r, int override,
 		const char *path, const char *access_name);
-API_EXPORT(const char *) srm_command_loop(cmd_parms *parms, void *config);
 
-API_EXPORT(const char *) init_virtual_host(pool *p, const char *hostname,
+CORE_EXPORT(const char *) init_virtual_host(pool *p, const char *hostname,
 				server_rec *main_server, server_rec **);
 void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp);
 
@@ -352,7 +352,6 @@ extern const char *check_cmd_context(cmd_parms *cmd, unsigned forbidden);
 /* Module-method dispatchers, also for http_request.c */
 
 int translate_name(request_rec *);
-int directory_walk(request_rec *);		/* check symlinks, get per-dir config */
 int check_access(request_rec *);	/* check access on non-auth basis */
 int check_user_id(request_rec *);	/* obtain valid username from client auth */
 int check_auth(request_rec *);	/* check (validated) user is authorized here */
@@ -362,6 +361,12 @@ int invoke_handler(request_rec *);
 int log_transaction(request_rec *r);
 int header_parse(request_rec *);
 int run_post_read_request(request_rec *);
+
+/* for mod_perl */
+
+CORE_EXPORT(const command_rec *) find_command(const char *name, const command_rec *cmds);
+CORE_EXPORT(const command_rec *) find_command_in_modules(const char *cmd_name, module **mod);
+CORE_EXPORT(const char *) handle_command(cmd_parms *parms, void *config, const char *l);
 
 #endif
 

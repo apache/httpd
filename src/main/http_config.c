@@ -131,8 +131,7 @@ void *
     return (void *) conf_vector;
 }
 
-void *
-     create_default_per_dir_config(pool *p)
+static void *create_default_per_dir_config(pool *p)
 {
     void **conf_vector = (void **) pcalloc(p, sizeof(void *) * (total_modules + DYNAMIC_MODULE_LIMIT));
     module *modp;
@@ -168,8 +167,7 @@ void *
     return (void *) conf_vector;
 }
 
-void *
-     create_server_config(pool *p, server_rec *s)
+static void *create_server_config(pool *p, server_rec *s)
 {
     void **conf_vector = (void **) pcalloc(p, sizeof(void *) * (total_modules + DYNAMIC_MODULE_LIMIT));
     module *modp;
@@ -182,7 +180,7 @@ void *
     return (void *) conf_vector;
 }
 
-void merge_server_configs(pool *p, void *base, void *virt)
+static void merge_server_configs(pool *p, void *base, void *virt)
 {
     /* Can reuse the 'virt' vector for the spine of it, since we don't
      * have to deal with the moral equivalent of .htaccess files here...
@@ -201,11 +199,6 @@ void merge_server_configs(pool *p, void *base, void *virt)
 	else if (df)
 	    virt_vector[i] = (*df) (p, base_vector[i], virt_vector[i]);
     }
-}
-
-void *create_connection_config(pool *p)
-{
-    return create_empty_config(p);
 }
 
 void *create_request_config(pool *p)
@@ -696,8 +689,8 @@ API_EXPORT(void) clear_module_list()
  * invoking the function...
  */
 
-const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
-		       const char *args)
+static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
+			    void *mconfig, const char *args)
 {
     char *w, *w2, *w3;
     const char *errmsg;
@@ -861,7 +854,7 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
     }
 }
 
-API_EXPORT(const command_rec *) find_command(const char *name, const command_rec *cmds)
+CORE_EXPORT(const command_rec *) find_command(const char *name, const command_rec *cmds)
 {
     while (cmds->name)
 	if (!strcasecmp(name, cmds->name))
@@ -872,7 +865,7 @@ API_EXPORT(const command_rec *) find_command(const char *name, const command_rec
     return NULL;
 }
 
-API_EXPORT(const command_rec *) find_command_in_modules(const char *cmd_name, module **mod)
+CORE_EXPORT(const command_rec *) find_command_in_modules(const char *cmd_name, module **mod)
 {
     const command_rec *cmdp;
     module *modp;
@@ -886,7 +879,7 @@ API_EXPORT(const command_rec *) find_command_in_modules(const char *cmd_name, mo
     return NULL;
 }
 
-API_EXPORT(const char *) handle_command(cmd_parms *parms, void *config, const char *l)
+CORE_EXPORT(const char *) handle_command(cmd_parms *parms, void *config, const char *l)
 {
     const char *args, *cmd_name, *retval;
     const command_rec *cmd;
@@ -1051,7 +1044,8 @@ static int arr_elts_close(void *param)
     return 0;
 }
 
-void process_command_config(server_rec *s, array_header *arr, pool *p, pool *ptemp)
+static void process_command_config(server_rec *s, array_header *arr, pool *p,
+				    pool *ptemp)
 {
     const char *errmsg;
     cmd_parms parms;
@@ -1201,7 +1195,7 @@ int parse_htaccess(void **result, request_rec *r, int override,
 }
 
 
-API_EXPORT(const char *) init_virtual_host(pool *p, const char *hostname,
+CORE_EXPORT(const char *) init_virtual_host(pool *p, const char *hostname,
 			      server_rec *main_server, server_rec **ps)
 {
     server_rec *s = (server_rec *) pcalloc(p, sizeof(server_rec));
@@ -1250,7 +1244,7 @@ API_EXPORT(const char *) init_virtual_host(pool *p, const char *hostname,
 }
 
 
-void fixup_virtual_hosts(pool *p, server_rec *main_server)
+static void fixup_virtual_hosts(pool *p, server_rec *main_server)
 {
     server_rec *virt;
 
@@ -1298,7 +1292,7 @@ void fixup_virtual_hosts(pool *p, server_rec *main_server)
  * Getting *everything* configured... 
  */
 
-void init_config_globals(pool *p)
+static void init_config_globals(pool *p)
 {
     /* ServerRoot, server_confname set in httpd.c */
 
@@ -1324,7 +1318,7 @@ void init_config_globals(pool *p)
     ap_cpystrn(coredump_dir, server_root, sizeof(coredump_dir));
 }
 
-server_rec *init_server_config(pool *p)
+static server_rec *init_server_config(pool *p)
 {
     server_rec *s = (server_rec *) pcalloc(p, sizeof(server_rec));
 
@@ -1451,7 +1445,7 @@ void child_exit_modules(pool *p, server_rec *s)
  * a particular directive is allowed to be used.  This procedure prints
  * in English where the given (pc) directive can be used.
  */
-void show_overrides(const command_rec *pc, module *pm)
+static void show_overrides(const command_rec *pc, module *pm)
 {
     int n = 0;
 
