@@ -1,5 +1,10 @@
 Changes with Apache 2.0.29-dev
 
+  *) Fix the installation target to make sure that the manual is 
+     installed in the correct location.
+     [Yoshifumi Hiramatsu <hiramatu@boreas.dti.ne.jp> and
+      Gomez Henri <hgomez@slib.fr>]
+
   *) Fix the cmd command for mod_include.  When we are processing
      a cmd command, we do not want to use the r->filename to set
      the command name.  The command comes from the SSI tag.  To do this,
