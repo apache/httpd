@@ -583,8 +583,6 @@ AP_DECLARE(void) ap_log_assert(const char *szExp, const char *szFile,
                  time_str, szFile, nLine, szExp);
 #if defined(WIN32)
     DebugBreak();
-#elif defined(NETWARE)
-    exit(1);
 #else
     /* unix assert does an abort leading to a core dump */
     abort();
