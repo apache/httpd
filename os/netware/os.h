@@ -63,12 +63,14 @@
 #define PLATFORM "NETWARE"
 #endif
 
+#include <screen.h>
+
 #define CASE_BLIND_FILESYSTEM
 #define NO_WRITEV
 
 #define APACHE_MPM_DIR  "server/mpm/netware" /* generated on unix */
 
 #define getpid NXThreadGetId
-//#define exit(s) _exit(s)
+#define exit(s) if(s){pressanykey();apr_terminate();}exit(s);
 
 #endif   /* ! APACHE_OS_H */
