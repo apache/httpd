@@ -396,18 +396,27 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
 {
     apr_finfo_t fi;
     int res;
+    const char *savename;
 
     if (!(opts & (OPT_SYM_OWNER | OPT_SYM_LINKS))) {
         return HTTP_FORBIDDEN;
     }
 
+    /* Save the name from the valid bits. */
+    savename = (lfi->valid & APR_FINFO_NAME) ? lfi->name : NULL;
+
     if (opts & OPT_SYM_LINKS) {
-        if ((res = apr_stat(&fi, d, lfi->valid, p)) != APR_SUCCESS) {
+        if ((res = apr_stat(&fi, d, lfi->valid & ~(APR_FINFO_NAME), 
+                            p)) != APR_SUCCESS) {
             return HTTP_FORBIDDEN;
         }
 
         /* Give back the target */
         memcpy(lfi, &fi, sizeof(fi));
+        if (savename) {
+            lfi->name = savename;
+            lfi->valid |= APR_FINFO_NAME;
+        }
         return OK;
     }
 
@@ -422,7 +431,7 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
         }
     }
 
-    if ((res = apr_stat(&fi, d, lfi->valid, p)) != APR_SUCCESS) {
+    if ((res = apr_stat(&fi, d, lfi->valid & ~(APR_FINFO_NAME), p)) != APR_SUCCESS) {
         return HTTP_FORBIDDEN;
     }
 
@@ -432,6 +441,10 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
 
     /* Give back the target */
     memcpy(lfi, &fi, sizeof(fi));
+    if (savename) {
+        lfi->name = savename;
+        lfi->valid |= APR_FINFO_NAME;
+    }
     return OK;
 }
 
