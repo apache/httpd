@@ -28,9 +28,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "gen_test_char - Win32 Release"
 
 OUTDIR=.
@@ -57,10 +54,43 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\include" /I "..\os\win32" /D "WIN32" /D\
  "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\gen_test_char_R/
 CPP_SBRS=.
+
+.c{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\gen_test_char.bsc" 
 BSC32_SBRS= \
@@ -119,10 +149,44 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\include" /D "WIN32" /D\
- "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP=cl.exe
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\include" /I "..\os\win32" /D\
+ "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\"\
+ /FD /c 
 CPP_OBJS=.\gen_test_char_D/
 CPP_SBRS=.
+
+.c{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\gen_test_char.bsc" 
 BSC32_SBRS= \
@@ -155,36 +219,6 @@ $(DS_POSTBUILD_DEP) : "$(OUTDIR)\gen_test_char.exe"
 
 !ENDIF 
 
-.c{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
 
 !IF "$(CFG)" == "gen_test_char - Win32 Release" || "$(CFG)" ==\
  "gen_test_char - Win32 Debug"
@@ -205,37 +239,14 @@ DEP_CPP_GEN_T=\
 	"..\os\win32\os.h"\
 	"..\os\win32\readdir.h"\
 	
-NODEP_CPP_GEN_T=\
-	"..\include\ap_config_auto.h"\
-	"..\include\ebcdic.h"\
-	"..\include\sfio.h"\
-	
 
 "$(INTDIR)\gen_test_char.obj" : $(SOURCE) $(DEP_CPP_GEN_T) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "gen_test_char - Win32 Debug"
 
-DEP_CPP_GEN_T=\
-	"..\include\ap.h"\
-	"..\include\ap_alloc.h"\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\buff.h"\
-	"..\include\hsregex.h"\
-	"..\include\httpd.h"\
-	"..\include\util_uri.h"\
-	"..\os\win32\readdir.h"\
-	
-NODEP_CPP_GEN_T=\
-	"..\include\ap_config_auto.h"\
-	"..\include\ebcdic.h"\
-	"..\include\os.h"\
-	"..\include\sfio.h"\
-	
 
-"$(INTDIR)\gen_test_char.obj" : $(SOURCE) $(DEP_CPP_GEN_T) "$(INTDIR)"
+"$(INTDIR)\gen_test_char.obj" : $(SOURCE) "$(INTDIR)"
 
 
 !ENDIF 
