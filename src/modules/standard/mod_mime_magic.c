@@ -144,26 +144,26 @@
 
 #define MAXMIMESTRING        256
 
-#define HOWMANY 1024            /* big enough to recognize most WWW files */
-#define MAXDESC    50           /* max leng of text description */
-#define MAXstring 64            /* max leng of "string" types */
+#define HOWMANY 1024		/* big enough to recognize most WWW files */
+#define MAXDESC    50		/* max leng of text description */
+#define MAXstring 64		/* max leng of "string" types */
 
 struct magic {
-    struct magic *next;         /* link to next entry */
-    int lineno;                 /* line number from magic file */
+    struct magic *next;		/* link to next entry */
+    int lineno;			/* line number from magic file */
 
     short flag;
-#define INDIR    1              /* if '>(...)' appears,  */
-#define    UNSIGNED 2           /* comparison is unsigned */
-    short cont_level;           /* level of ">" */
+#define INDIR    1		/* if '>(...)' appears,  */
+#define    UNSIGNED 2		/* comparison is unsigned */
+    short cont_level;		/* level of ">" */
     struct {
-        char type;              /* byte short long */
-        long offset;            /* offset from indirection */
-    }      in;
-    long offset;                /* offset to magic number */
-    unsigned char reln;         /* relation (0=eq, '>'=gt, etc) */
-    char type;                  /* int, short, long or string. */
-    char vallen;                /* length of string value, if any */
+	char type;		/* byte short long */
+	long offset;		/* offset from indirection */
+    } in;
+    long offset;		/* offset to magic number */
+    unsigned char reln;		/* relation (0=eq, '>'=gt, etc) */
+    char type;			/* int, short, long or string. */
+    char vallen;		/* length of string value, if any */
 #define BYTE    1
 #define SHORT    2
 #define LONG    4
@@ -176,18 +176,18 @@ struct magic {
 #define LELONG    11
 #define LEDATE    12
     union VALUETYPE {
-        unsigned char b;
-        unsigned short h;
-        unsigned long l;
-        char s[MAXstring];
-        unsigned char hs[2];    /* 2 bytes of a fixed-endian "short" */
-        unsigned char hl[4];    /* 2 bytes of a fixed-endian "long" */
-    }         value;            /* either number or string */
-    unsigned long mask;         /* mask before comparison with value */
-    char nospflag;              /* supress space character */
+	unsigned char b;
+	unsigned short h;
+	unsigned long l;
+	char s[MAXstring];
+	unsigned char hs[2];	/* 2 bytes of a fixed-endian "short" */
+	unsigned char hl[4];	/* 2 bytes of a fixed-endian "long" */
+    } value;			/* either number or string */
+    unsigned long mask;		/* mask before comparison with value */
+    char nospflag;		/* supress space character */
 
     /* NOTE: this string is suspected of overrunning - find it! */
-    char desc[MAXDESC];         /* description */
+    char desc[MAXDESC];		/* description */
 };
 
 /*
@@ -212,37 +212,34 @@ struct magic {
 union record {
     char charptr[RECORDSIZE];
     struct header {
-        char name[NAMSIZ];
-        char mode[8];
-        char uid[8];
-        char gid[8];
-        char size[12];
-        char mtime[12];
-        char chksum[8];
-        char linkflag;
-        char linkname[NAMSIZ];
-        char magic[8];
-        char uname[TUNMLEN];
-        char gname[TGNMLEN];
-        char devmajor[8];
-        char devminor[8];
-    }      header;
+	char name[NAMSIZ];
+	char mode[8];
+	char uid[8];
+	char gid[8];
+	char size[12];
+	char mtime[12];
+	char chksum[8];
+	char linkflag;
+	char linkname[NAMSIZ];
+	char magic[8];
+	char uname[TUNMLEN];
+	char gname[TGNMLEN];
+	char devmajor[8];
+	char devminor[8];
+    } header;
 };
 
 /* The magic field is filled with this if uname and gname are valid. */
-#define    TMAGIC        "ustar  "      /* 7 chars and a null */
+#define    TMAGIC        "ustar  "	/* 7 chars and a null */
 
 /*
  * file-function prototypes
  */
-static int apprentice(server_rec *, pool *);
 static int ascmagic(request_rec *, unsigned char *, int);
 static int is_tar(unsigned char *, int);
-static void magic_process(request_rec *);
 static int softmagic(request_rec *, unsigned char *, int);
 static void tryit(request_rec *, unsigned char *, int);
 static int zmagic(request_rec *, unsigned char *, int);
-static unsigned long signextend(server_rec *, struct magic *, unsigned long);
 
 static int getvalue(server_rec *, struct magic *, char **);
 static int hextoint(int);
@@ -251,15 +248,14 @@ static int parse(server_rec *, pool *p, char *, int);
 
 static int match(request_rec *, unsigned char *, int);
 static int mget(request_rec *, union VALUETYPE *, unsigned char *,
-                    struct magic *, int);
+		struct magic *, int);
 static int mcheck(request_rec *, union VALUETYPE *, struct magic *);
 static void mprint(request_rec *, union VALUETYPE *, struct magic *);
-static int mconvert(request_rec *, union VALUETYPE *, struct magic *);
 
 static int uncompress(request_rec *, int, const unsigned char *,
-                          unsigned char **, int);
+		      unsigned char **, int);
 static long from_oct(int, char *);
-static int fsmagic(request_rec *r, const char *fn, struct stat * sb);
+static int fsmagic(request_rec *r, const char *fn, struct stat *sb);
 
 /*
  * includes for ASCII substring recognition formerly "names.h" in file
@@ -273,111 +269,113 @@ static int fsmagic(request_rec *r, const char *fn, struct stat * sb);
 
 /* these types are used to index the table 'types': keep em in sync! */
 /* HTML inserted in first because this is a web server module now */
-#define L_HTML    0             /* HTML */
-#define L_C       1             /* first and foremost on UNIX */
-#define L_FORT    2             /* the oldest one */
-#define L_MAKE    3             /* Makefiles */
-#define L_PLI     4             /* PL/1 */
-#define L_MACH    5             /* some kinda assembler */
-#define L_ENG     6             /* English */
-#define L_PAS     7             /* Pascal */
-#define L_MAIL    8             /* Electronic mail */
-#define L_NEWS    9             /* Usenet Netnews */
+#define L_HTML    0		/* HTML */
+#define L_C       1		/* first and foremost on UNIX */
+#define L_FORT    2		/* the oldest one */
+#define L_MAKE    3		/* Makefiles */
+#define L_PLI     4		/* PL/1 */
+#define L_MACH    5		/* some kinda assembler */
+#define L_ENG     6		/* English */
+#define L_PAS     7		/* Pascal */
+#define L_MAIL    8		/* Electronic mail */
+#define L_NEWS    9		/* Usenet Netnews */
 
-static char *types[] = {
-    "text/html",                /* HTML */
-    "text/plain",               /* "c program text", */
-    "text/plain",               /* "fortran program text", */
-    "text/plain",               /* "make commands text", */
-    "text/plain",               /* "pl/1 program text", */
-    "text/plain",               /* "assembler program text", */
-    "text/plain",               /* "English text", */
-    "text/plain",               /* "pascal program text", */
-    "message/rfc822",           /* "mail text", */
-    "message/news",             /* "news text", */
-    "application/binary",       /* "can't happen error on names.h/types", */
-0};
+static char *types[] =
+{
+    "text/html",		/* HTML */
+    "text/plain",		/* "c program text", */
+    "text/plain",		/* "fortran program text", */
+    "text/plain",		/* "make commands text", */
+    "text/plain",		/* "pl/1 program text", */
+    "text/plain",		/* "assembler program text", */
+    "text/plain",		/* "English text", */
+    "text/plain",		/* "pascal program text", */
+    "message/rfc822",		/* "mail text", */
+    "message/news",		/* "news text", */
+    "application/binary",	/* "can't happen error on names.h/types", */
+    0};
 
 static struct names {
     char *name;
     short type;
-}     names[] = {
+} names[] = {
+
     /* These must be sorted by eye for optimal hit rate */
     /* Add to this list only after substantial meditation */
     {
-        "<html>", L_HTML
+	"<html>", L_HTML
     },
     {
-        "<HTML>", L_HTML
+	"<HTML>", L_HTML
     },
     {
-        "<head>", L_HTML
+	"<head>", L_HTML
     },
     {
-        "<HEAD>", L_HTML
+	"<HEAD>", L_HTML
     },
     {
-        "<title>", L_HTML
+	"<title>", L_HTML
     },
     {
-        "<TITLE>", L_HTML
+	"<TITLE>", L_HTML
     },
     {
-        "<h1>", L_HTML
+	"<h1>", L_HTML
     },
     {
-        "<H1>", L_HTML
+	"<H1>", L_HTML
     },
     {
-        "<!--", L_HTML
+	"<!--", L_HTML
     },
     {
-        "<!DOCTYPE HTML", L_HTML
+	"<!DOCTYPE HTML", L_HTML
     },
     {
-        "/*", L_C
-    },                          /* must precede "The", "the", etc. */
+	"/*", L_C
+    },				/* must precede "The", "the", etc. */
     {
-        "#include", L_C
+	"#include", L_C
     },
     {
-        "char", L_C
+	"char", L_C
     },
     {
-        "The", L_ENG
+	"The", L_ENG
     },
     {
-        "the", L_ENG
+	"the", L_ENG
     },
     {
-        "double", L_C
+	"double", L_C
     },
     {
-        "extern", L_C
+	"extern", L_C
     },
     {
-        "float", L_C
+	"float", L_C
     },
     {
-        "real", L_C
+	"real", L_C
     },
     {
-        "struct", L_C
+	"struct", L_C
     },
     {
-        "union", L_C
+	"union", L_C
     },
     {
-        "CFLAGS", L_MAKE
+	"CFLAGS", L_MAKE
     },
     {
-        "LDFLAGS", L_MAKE
+	"LDFLAGS", L_MAKE
     },
     {
-        "all:", L_MAKE
+	"all:", L_MAKE
     },
     {
-        ".PRECIOUS", L_MAKE
+	".PRECIOUS", L_MAKE
     },
     /*
      * Too many files of text have these words in them.  Find another way to
@@ -385,74 +383,74 @@ static struct names {
      */
 #ifdef    NOTDEF
     {
-        "subroutine", L_FORT
+	"subroutine", L_FORT
     },
     {
-        "function", L_FORT
+	"function", L_FORT
     },
     {
-        "block", L_FORT
+	"block", L_FORT
     },
     {
-        "common", L_FORT
+	"common", L_FORT
     },
     {
-        "dimension", L_FORT
+	"dimension", L_FORT
     },
     {
-        "integer", L_FORT
+	"integer", L_FORT
     },
     {
-        "data", L_FORT
+	"data", L_FORT
     },
-#endif                          /* NOTDEF */
+#endif /* NOTDEF */
     {
-        ".ascii", L_MACH
-    },
-    {
-        ".asciiz", L_MACH
+	".ascii", L_MACH
     },
     {
-        ".byte", L_MACH
+	".asciiz", L_MACH
     },
     {
-        ".even", L_MACH
+	".byte", L_MACH
     },
     {
-        ".globl", L_MACH
+	".even", L_MACH
     },
     {
-        "clr", L_MACH
+	".globl", L_MACH
     },
     {
-        "(input,", L_PAS
+	"clr", L_MACH
     },
     {
-        "dcl", L_PLI
+	"(input,", L_PAS
     },
     {
-        "Received:", L_MAIL
+	"dcl", L_PLI
     },
     {
-        ">From", L_MAIL
+	"Received:", L_MAIL
     },
     {
-        "Return-Path:", L_MAIL
+	">From", L_MAIL
     },
     {
-        "Cc:", L_MAIL
+	"Return-Path:", L_MAIL
     },
     {
-        "Newsgroups:", L_NEWS
+	"Cc:", L_MAIL
     },
     {
-        "Path:", L_NEWS
+	"Newsgroups:", L_NEWS
     },
     {
-        "Organization:", L_NEWS
+	"Path:", L_NEWS
     },
     {
-        NULL, 0
+	"Organization:", L_NEWS
+    },
+    {
+	NULL, 0
     }
 };
 
@@ -467,9 +465,9 @@ static struct names {
  */
 
 typedef struct magic_rsl_s {
-    char *str;                  /* string, possibly a fragment */
-    struct magic_rsl_s *next;   /* pointer to next fragment */
-}           magic_rsl;
+    char *str;			/* string, possibly a fragment */
+    struct magic_rsl_s *next;	/* pointer to next fragment */
+} magic_rsl;
 
 /*
  * Apache module configuration structures
@@ -477,17 +475,17 @@ typedef struct magic_rsl_s {
 
 /* per-server info */
 typedef struct {
-    char *magicfile;            /* where magic be found */
-    struct magic *magic,        /* head of magic config list */
-         *last;
-}      magic_server_config_rec;
+    char *magicfile;		/* where magic be found */
+    struct magic *magic;	/* head of magic config list */
+    struct magic *last;
+} magic_server_config_rec;
 
 /* per-request info */
 typedef struct {
-    magic_rsl *head,            /* result string list */
-             *tail;
-    unsigned suf_recursion;     /* recursion depth in suffix check */
-}      magic_req_rec;
+    magic_rsl *head;		/* result string list */
+    magic_rsl *tail;
+    unsigned suf_recursion;	/* recursion depth in suffix check */
+} magic_req_rec;
 
 /*
  * configuration functions - called by Apache API routines
@@ -496,45 +494,42 @@ typedef struct {
 module mime_magic_module;
 extern module mime_module;
 
-static void *
-     create_magic_server_config(pool *p, server_rec *d)
+static void *create_magic_server_config(pool *p, server_rec *d)
 {
     /* allocate the config - use pcalloc because it needs to be zeroed */
     return pcalloc(p, sizeof(magic_server_config_rec));
 }
 
-static void *
-     merge_magic_server_config(pool *p, void *basev, void *addv)
+static void *merge_magic_server_config(pool *p, void *basev, void *addv)
 {
     magic_server_config_rec *base = (magic_server_config_rec *) basev;
     magic_server_config_rec *add = (magic_server_config_rec *) addv;
-    magic_server_config_rec *new = (magic_server_config_rec *)
-    palloc(p, sizeof(magic_server_config_rec));
+    magic_server_config_rec *new
+    = (magic_server_config_rec *) palloc(p, sizeof(magic_server_config_rec));
 
     new->magicfile = add->magicfile ? add->magicfile : base->magicfile;
     if (add->magic && add->last) {
-        new->magic = add->magic;
-        new->last = add->last;
+	new->magic = add->magic;
+	new->last = add->last;
     }
     else if (base->magic && base->last) {
-        new->magic = base->magic;
-        new->last = base->last;
+	new->magic = base->magic;
+	new->last = base->last;
     }
     else {
-        new->magic = new->last = NULL;
+	new->magic = new->last = NULL;
     }
     return new;
 }
 
-static const char *
-     set_magicfile(cmd_parms *cmd, char *d, char *arg)
+static const char *set_magicfile(cmd_parms *cmd, char *d, char *arg)
 {
     magic_server_config_rec *conf = (magic_server_config_rec *)
     get_module_config(cmd->server->module_config,
-                      &mime_magic_module);
+		      &mime_magic_module);
 
     if (!conf) {
-        return MODNAME ": server structure not allocated";
+	return MODNAME ": server structure not allocated";
     }
     conf->magicfile = arg;
     return NULL;
@@ -544,9 +539,10 @@ static const char *
  * configuration file commands - exported to Apache API
  */
 
-static command_rec mime_magic_cmds[] = {
+static command_rec mime_magic_cmds[] =
+{
     {"MimeMagicFile", set_magicfile, NULL, RSRC_CONF, TAKE1,
-    "Path to MIME Magic file (in file(1) format, default " MAGIC ")"},
+     "Path to MIME Magic file (in file(1) format, default " MAGIC ")"},
     {NULL}
 };
 
@@ -564,17 +560,16 @@ static command_rec mime_magic_cmds[] = {
  */
 
 /* allocate a per-request structure and put it in the request record */
-static magic_req_rec *
-              magic_set_config(request_rec *r)
+static magic_req_rec *magic_set_config(request_rec *r)
 {
-    magic_req_rec *req_dat = (magic_req_rec *)
-    palloc(r->pool, sizeof(magic_req_rec));
+    magic_req_rec *req_dat = (magic_req_rec *) palloc(r->pool,
+						      sizeof(magic_req_rec));
 
     if (!req_dat) {
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                    "%s: memory allocation failure in magic_set_config()",
-                    MODNAME);
-        return NULL;
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+		    "%s: memory allocation failure in magic_set_config()",
+		    MODNAME);
+	return NULL;
     }
     req_dat->head = req_dat->tail = (magic_rsl *) NULL;
     set_module_config(r->request_config, &mime_magic_module, req_dat);
@@ -586,27 +581,27 @@ static magic_req_rec *
 static int magic_rsl_add(request_rec *r, char *str)
 {
     magic_req_rec *req_dat = (magic_req_rec *)
-    get_module_config(r->request_config, &mime_magic_module);
+		    get_module_config(r->request_config, &mime_magic_module);
     magic_rsl *rsl;
 
     /* make sure we have a list to put it in */
     if (!req_dat) {
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                    "%s: request config should not be NULL",
-                    MODNAME);
-        if (!(req_dat = magic_set_config(r))) {
-            /* failure */
-            return -1;
-        }
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+		    "%s: request config should not be NULL",
+		    MODNAME);
+	if (!(req_dat = magic_set_config(r))) {
+	    /* failure */
+	    return -1;
+	}
     }
 
     /* allocate the list entry */
     if (!(rsl = (magic_rsl *) palloc(r->pool, sizeof(magic_rsl)))) {
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                    "%s: memory allocation failure in magic_rsl_add()",
-                    MODNAME);
-        /* failure */
-        return -1;
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+		    "%s: memory allocation failure in magic_rsl_add()",
+		    MODNAME);
+	/* failure */
+	return -1;
     }
 
     /* fill it */
@@ -615,11 +610,11 @@ static int magic_rsl_add(request_rec *r, char *str)
 
     /* append to the list */
     if (req_dat->head && req_dat->tail) {
-        req_dat->tail->next = rsl;
-        req_dat->tail = rsl;
+	req_dat->tail->next = rsl;
+	req_dat->tail = rsl;
     }
     else {
-        req_dat->head = req_dat->tail = rsl;
+	req_dat->head = req_dat->tail = rsl;
     }
 
     /* success */
@@ -660,55 +655,53 @@ static int magic_rsl_putchar(request_rec *r, char c)
 }
 
 /* allocate and copy a contiguous string from a result string list */
-static char *
-     rsl_strdup(request_rec *r, int start_frag, int start_pos, int len)
+static char *rsl_strdup(request_rec *r, int start_frag, int start_pos, int len)
 {
-    char *result;               /* return value */
-    int cur_frag,               /* current fragment number/counter */
-        cur_pos,                /* current position within fragment */
-        res_pos;                /* position in result string */
-    magic_rsl *frag;            /* list-traversal pointer */
-
+    char *result;		/* return value */
+    int cur_frag,		/* current fragment number/counter */
+        cur_pos,		/* current position within fragment */
+        res_pos;		/* position in result string */
+    magic_rsl *frag;		/* list-traversal pointer */
     magic_req_rec *req_dat = (magic_req_rec *)
-    get_module_config(r->request_config, &mime_magic_module);
+		    get_module_config(r->request_config, &mime_magic_module);
 
     /* allocate the result string */
     if (!(result = (char *) palloc(r->pool, len + 1))) {
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                    "%s: memory allocation failure in rsl_strdup()",
-                    MODNAME);
-        return NULL;
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+		    "%s: memory allocation failure in rsl_strdup()",
+		    MODNAME);
+	return NULL;
     }
 
     /* loop through and collect the string */
     res_pos = 0;
     for (frag = req_dat->head, cur_frag = 0;
-         frag->next;
-         frag = frag->next, cur_frag++) {
-        /* loop to the first fragment */
-        if (cur_frag < start_frag)
-            continue;
+	 frag->next;
+	 frag = frag->next, cur_frag++) {
+	/* loop to the first fragment */
+	if (cur_frag < start_frag)
+	    continue;
 
-        /* loop through and collect chars */
-        for (cur_pos = (cur_frag == start_frag) ? start_pos : 0;
-             frag->str[cur_pos];
-             cur_pos++) {
-            if (cur_frag >= start_frag
-                && cur_pos >= start_pos
-                && res_pos <= len) {
-                result[res_pos++] = frag->str[cur_pos];
-                if (res_pos > len) {
-                    break;
-                }
-            }
-        }
+	/* loop through and collect chars */
+	for (cur_pos = (cur_frag == start_frag) ? start_pos : 0;
+	     frag->str[cur_pos];
+	     cur_pos++) {
+	    if (cur_frag >= start_frag
+		&& cur_pos >= start_pos
+		&& res_pos <= len) {
+		result[res_pos++] = frag->str[cur_pos];
+		if (res_pos > len) {
+		    break;
+		}
+	    }
+	}
     }
 
     /* clean up and return */
     result[res_pos] = 0;
 #if MIME_MAGIC_DEBUG
-    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-             "%s: rsl_strdup() %d chars: %s", MODNAME, res_pos - 1, result);
+    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+	     "%s: rsl_strdup() %d chars: %s", MODNAME, res_pos - 1, result);
 #endif
     return result;
 }
@@ -716,30 +709,30 @@ static char *
 /* states for the state-machine algorithm in magic_rsl_to_request() */
 typedef enum {
     rsl_leading_space, rsl_type, rsl_subtype, rsl_separator, rsl_encoding
-}    rsl_states;
+} rsl_states;
 
 /* process the RSL and set the MIME info in the request record */
 static int magic_rsl_to_request(request_rec *r)
 {
-    int cur_frag,               /* current fragment number/counter */
-        cur_pos,                /* current position within fragment */
-        type_frag,              /* content type starting point: fragment */
-        type_pos,               /* content type starting point: position */
-        type_len,               /* content type length */
-        encoding_frag,          /* content encoding starting point: fragment */
-        encoding_pos,           /* content encoding starting point: position */
-        encoding_len;           /* content encoding length */
+    int cur_frag,		/* current fragment number/counter */
+        cur_pos,		/* current position within fragment */
+        type_frag,		/* content type starting point: fragment */
+        type_pos,		/* content type starting point: position */
+        type_len,		/* content type length */
+        encoding_frag,		/* content encoding starting point: fragment */
+        encoding_pos,		/* content encoding starting point: position */
+        encoding_len;		/* content encoding length */
 
-    magic_rsl *frag;            /* list-traversal pointer */
+    magic_rsl *frag;		/* list-traversal pointer */
     rsl_states state;
 
     magic_req_rec *req_dat = (magic_req_rec *)
-    get_module_config(r->request_config, &mime_magic_module);
+		    get_module_config(r->request_config, &mime_magic_module);
 
     /* check if we have a result */
     if (!req_dat || !req_dat->head) {
-        /* empty - no match, we defer to other Apache modules */
-        return DECLINED;
+	/* empty - no match, we defer to other Apache modules */
+	return DECLINED;
     }
 
     /* start searching for the type and encoding */
@@ -747,113 +740,113 @@ static int magic_rsl_to_request(request_rec *r)
     type_frag = type_pos = type_len = 0;
     encoding_frag = encoding_pos = encoding_len = 0;
     for (frag = req_dat->head, cur_frag = 0;
-         frag && frag->next;
-         frag = frag->next, cur_frag++) {
-        /* loop through the characters in the fragment */
-        for (cur_pos = 0; frag->str[cur_pos]; cur_pos++) {
-            if (isspace(frag->str[cur_pos])) {
-                /* process whitespace actions for each state */
-                if (state == rsl_leading_space) {
-                    /* eat whitespace in this state */
-                    continue;
-                }
-                else if (state == rsl_type) {
-                    /* whitespace: type has no slash! */
-                    return DECLINED;
-                }
-                else if (state == rsl_subtype) {
-                    /* whitespace: end of MIME type */
-                    state++;
-                    continue;
-                }
-                else if (state == rsl_separator) {
-                    /* eat whitespace in this state */
-                    continue;
-                }
-                else if (state == rsl_encoding) {
-                    /* whitespace: end of MIME encoding */
-                    /* we're done */
-                    frag = req_dat->tail;
-                    break;
-                }
-                else {
-                    /* should not be possible */
-                    /* abandon malfunctioning module */
-                    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                                "%s: bad state %d (ws)", MODNAME, state);
-                    return DECLINED;
-                }
-                /* NOTREACHED */
-            }
-            else if (state == rsl_type &&
-                     frag->str[cur_pos] == '/') {
-                /* copy the char and go to rsl_subtype state */
-                type_len++;
-                state++;
-            }
-            else {
-                /* process non-space actions for each state */
-                if (state == rsl_leading_space) {
-                    /* non-space: begin MIME type */
-                    state++;
-                    type_frag = cur_frag;
-                    type_pos = cur_pos;
-                    type_len = 1;
-                    continue;
-                }
-                else if (state == rsl_type ||
-                         state == rsl_subtype) {
-                    /* non-space: adds to type */
-                    type_len++;
-                    continue;
-                }
-                else if (state == rsl_separator) {
-                    /* non-space: begin MIME encoding */
-                    state++;
-                    encoding_frag = cur_frag;
-                    encoding_pos = cur_pos;
-                    encoding_len = 1;
-                    continue;
-                }
-                else if (state == rsl_encoding) {
-                    /* non-space: adds to encoding */
-                    encoding_len++;
-                    continue;
-                }
-                else {
-                    /* should not be possible */
-                    /* abandon malfunctioning module */
-                    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                                "%s: bad state %d (ns)", MODNAME, state);
-                    return DECLINED;
-                }
-                /* NOTREACHED */
-            }
-            /* NOTREACHED */
-        }
+	 frag && frag->next;
+	 frag = frag->next, cur_frag++) {
+	/* loop through the characters in the fragment */
+	for (cur_pos = 0; frag->str[cur_pos]; cur_pos++) {
+	    if (isspace(frag->str[cur_pos])) {
+		/* process whitespace actions for each state */
+		if (state == rsl_leading_space) {
+		    /* eat whitespace in this state */
+		    continue;
+		}
+		else if (state == rsl_type) {
+		    /* whitespace: type has no slash! */
+		    return DECLINED;
+		}
+		else if (state == rsl_subtype) {
+		    /* whitespace: end of MIME type */
+		    state++;
+		    continue;
+		}
+		else if (state == rsl_separator) {
+		    /* eat whitespace in this state */
+		    continue;
+		}
+		else if (state == rsl_encoding) {
+		    /* whitespace: end of MIME encoding */
+		    /* we're done */
+		    frag = req_dat->tail;
+		    break;
+		}
+		else {
+		    /* should not be possible */
+		    /* abandon malfunctioning module */
+		    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+				"%s: bad state %d (ws)", MODNAME, state);
+		    return DECLINED;
+		}
+		/* NOTREACHED */
+	    }
+	    else if (state == rsl_type &&
+		     frag->str[cur_pos] == '/') {
+		/* copy the char and go to rsl_subtype state */
+		type_len++;
+		state++;
+	    }
+	    else {
+		/* process non-space actions for each state */
+		if (state == rsl_leading_space) {
+		    /* non-space: begin MIME type */
+		    state++;
+		    type_frag = cur_frag;
+		    type_pos = cur_pos;
+		    type_len = 1;
+		    continue;
+		}
+		else if (state == rsl_type ||
+			 state == rsl_subtype) {
+		    /* non-space: adds to type */
+		    type_len++;
+		    continue;
+		}
+		else if (state == rsl_separator) {
+		    /* non-space: begin MIME encoding */
+		    state++;
+		    encoding_frag = cur_frag;
+		    encoding_pos = cur_pos;
+		    encoding_len = 1;
+		    continue;
+		}
+		else if (state == rsl_encoding) {
+		    /* non-space: adds to encoding */
+		    encoding_len++;
+		    continue;
+		}
+		else {
+		    /* should not be possible */
+		    /* abandon malfunctioning module */
+		    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+				"%s: bad state %d (ns)", MODNAME, state);
+		    return DECLINED;
+		}
+		/* NOTREACHED */
+	    }
+	    /* NOTREACHED */
+	}
     }
 
     /* if we ended prior to state rsl_subtype, we had incomplete info */
     if (state != rsl_subtype && state != rsl_separator &&
-        state != rsl_encoding) {
-        /* defer to other modules */
-        return DECLINED;
+	state != rsl_encoding) {
+	/* defer to other modules */
+	return DECLINED;
     }
 
     /* save the info in the request record */
     if (state == rsl_subtype || state == rsl_encoding ||
-        state == rsl_encoding) {
-        r->content_type = rsl_strdup(r, type_frag, type_pos, type_len);
+	state == rsl_encoding) {
+	r->content_type = rsl_strdup(r, type_frag, type_pos, type_len);
     }
     if (state == rsl_encoding) {
-        r->content_encoding = rsl_strdup(r, encoding_frag,
-                                         encoding_pos, encoding_len);
+	r->content_encoding = rsl_strdup(r, encoding_frag,
+					 encoding_pos, encoding_len);
     }
 
     /* detect memory allocation errors */
     if (!r->content_type ||
-        (state == rsl_encoding && !r->content_encoding)) {
-        return HTTP_INTERNAL_SERVER_ERROR;
+	(state == rsl_encoding && !r->content_encoding)) {
+	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /* success! */
@@ -868,43 +861,43 @@ static int magic_rsl_to_request(request_rec *r)
 static void magic_process(request_rec *r)
 {
     int fd = 0;
-    unsigned char buf[HOWMANY + 1];     /* one extra for terminating '\0' */
+    unsigned char buf[HOWMANY + 1];	/* one extra for terminating '\0' */
     struct utimbuf utbuf;
     struct stat sb;
-    int nbytes = 0;             /* number of bytes read from a datafile */
+    int nbytes = 0;		/* number of bytes read from a datafile */
 
     /*
      * first try judging the file based on its filesystem status
      */
     if (fsmagic(r, r->filename, &sb) != 0) {
-        magic_rsl_putchar(r, '\n');
-        return;
+	magic_rsl_putchar(r, '\n');
+	return;
     }
 
     if ((fd = open(r->filename, O_RDONLY)) < 0) {
-        /* We can't open it, but we were able to stat it. */
-        /*
-         * if (sb.st_mode & 0002) magic_rsl_puts(r,"writable, ");
-         * if (sb.st_mode & 0111) magic_rsl_puts(r,"executable, ");
-         */
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server, "can't read `%s'",
+	/* We can't open it, but we were able to stat it. */
+	/*
+	 * if (sb.st_mode & 0002) magic_rsl_puts(r,"writable, ");
+	 * if (sb.st_mode & 0111) magic_rsl_puts(r,"executable, ");
+	 */
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "can't read `%s'",
 		    r->filename);
-        return;
+	return;
     }
 
     /*
      * try looking at the first HOWMANY bytes
      */
     if ((nbytes = read(fd, (char *) buf, HOWMANY)) == -1) {
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server, "read failed");
-        /* NOTREACHED */
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "read failed");
+	/* NOTREACHED */
     }
 
     if (nbytes == 0)
-        magic_rsl_puts(r, MIME_TEXT_UNKNOWN);
+	magic_rsl_puts(r, MIME_TEXT_UNKNOWN);
     else {
-        buf[nbytes++] = '\0';   /* null-terminate it */
-        tryit(r, buf, nbytes);
+	buf[nbytes++] = '\0';	/* null-terminate it */
+	tryit(r, buf, nbytes);
     }
 
     /*
@@ -912,7 +905,7 @@ static void magic_process(request_rec *r)
      */
     utbuf.actime = sb.st_atime;
     utbuf.modtime = sb.st_mtime;
-    (void) utime(r->filename, &utbuf);  /* don't care if loses */
+    (void) utime(r->filename, &utbuf);	/* don't care if loses */
     (void) close(fd);
     (void) magic_rsl_putchar(r, '\n');
 }
@@ -924,19 +917,19 @@ static void tryit(request_rec *r, unsigned char *buf, int nb)
      * Try compression stuff
      */
     if (zmagic(r, buf, nb) == 1)
-        return;
+	return;
 
     /*
      * try tests in /etc/magic (or surrogate magic file)
      */
     if (softmagic(r, buf, nb) == 1)
-        return;
+	return;
 
     /*
      * try known keywords, check for ascii-ness too.
      */
     if (ascmagic(r, buf, nb) == 1)
-        return;
+	return;
 
     /*
      * abandon hope, all ye who remain here
@@ -964,17 +957,17 @@ static int apprentice(server_rec *s, pool *p)
     char *fname;
 
     magic_server_config_rec *conf = (magic_server_config_rec *)
-    get_module_config(s->module_config, &mime_magic_module);
+		    get_module_config(s->module_config, &mime_magic_module);
 
     if (!conf->magicfile) {
-        conf->magicfile = pstrdup(p, MAGIC);
+	conf->magicfile = pstrdup(p, MAGIC);
     }
     fname = server_root_relative(p, conf->magicfile);
     f = pfopen(p, fname, "r");
     if (f == NULL) {
-        aplog_error(APLOG_MARK, APLOG_ERR, s,
-                    "%s: can't read magic file %s", MODNAME, fname);
-        return -1;
+	aplog_error(APLOG_MARK, APLOG_ERR, s,
+		    "%s: can't read magic file %s", MODNAME, fname);
+	return -1;
     }
 
     /* set up the magic list (empty) */
@@ -982,73 +975,73 @@ static int apprentice(server_rec *s, pool *p)
 
     /* parse it */
     for (lineno = 1; fgets(line, BUFSIZ, f) != NULL; lineno++) {
-        int ws_offset;
+	int ws_offset;
 
-        /* delete newline */
-        if (line[0]) {
-            line[strlen(line) - 1] = '\0';
-        }
+	/* delete newline */
+	if (line[0]) {
+	    line[strlen(line) - 1] = '\0';
+	}
 
-        /* skip leading whitespace */
-        ws_offset = 0;
-        while (line[ws_offset] && isspace(line[ws_offset])) {
-            ws_offset++;
-        }
+	/* skip leading whitespace */
+	ws_offset = 0;
+	while (line[ws_offset] && isspace(line[ws_offset])) {
+	    ws_offset++;
+	}
 
-        /* skip blank lines */
-        if (line[ws_offset] == 0) {
-            continue;
-        }
+	/* skip blank lines */
+	if (line[ws_offset] == 0) {
+	    continue;
+	}
 
-        /* comment, do not parse */
-        if (line[ws_offset] == '#')
-            continue;
+	/* comment, do not parse */
+	if (line[ws_offset] == '#')
+	    continue;
 
 #if MIME_MAGIC_DEBUG
-        /* if we get here, we're going to use it so count it */
-        rule++;
+	/* if we get here, we're going to use it so count it */
+	rule++;
 #endif
 
-        /* parse it */
-        if (parse(s, p, line + ws_offset, lineno) != 0)
-            ++errs;
+	/* parse it */
+	if (parse(s, p, line + ws_offset, lineno) != 0)
+	    ++errs;
     }
 
     (void) pfclose(p, f);
 
 #if MIME_MAGIC_DEBUG
-    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, s,
-                "%s: apprentice conf=%x file=%s m=%s m->next=%s last=%s",
-                MODNAME, conf,
-                conf->magicfile ? conf->magicfile : "NULL",
-                conf->magic ? "set" : "NULL",
-                (conf->magic && conf->magic->next) ? "set" : "NULL",
-                conf->last ? "set" : "NULL");
-    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, s,
-                "%s: apprentice read %d lines, %d rules, %d errors",
-                MODNAME, lineno, rule, errs);
+    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, s,
+		"%s: apprentice conf=%x file=%s m=%s m->next=%s last=%s",
+		MODNAME, conf,
+		conf->magicfile ? conf->magicfile : "NULL",
+		conf->magic ? "set" : "NULL",
+		(conf->magic && conf->magic->next) ? "set" : "NULL",
+		conf->last ? "set" : "NULL");
+    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, s,
+		"%s: apprentice read %d lines, %d rules, %d errors",
+		MODNAME, lineno, rule, errs);
 #endif
 
 #if MIME_MAGIC_DEBUG
     prevm = 0;
-    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, s,
+    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, s,
 		"%s: apprentice test", MODNAME);
     for (m = conf->magic; m; m = m->next) {
-        if (isprint((((unsigned long) m) >> 24) & 255) &&
-            isprint((((unsigned long) m) >> 16) & 255) &&
-            isprint((((unsigned long) m) >> 8) & 255) &&
-            isprint(((unsigned long) m) & 255)) {
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, s,
-                        "%s: apprentice: POINTER CLOBBERED! "
-                        "m=\"%c%c%c%c\" line=%d", MODNAME,
-                        (((unsigned long) m) >> 24) & 255,
-                        (((unsigned long) m) >> 16) & 255,
-                        (((unsigned long) m) >> 8) & 255,
-                        ((unsigned long) m) & 255,
-                        prevm ? prevm->lineno : -1);
-            break;
-        }
-        prevm = m;
+	if (isprint((((unsigned long) m) >> 24) & 255) &&
+	    isprint((((unsigned long) m) >> 16) & 255) &&
+	    isprint((((unsigned long) m) >> 8) & 255) &&
+	    isprint(((unsigned long) m) & 255)) {
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, s,
+			"%s: apprentice: POINTER CLOBBERED! "
+			"m=\"%c%c%c%c\" line=%d", MODNAME,
+			(((unsigned long) m) >> 24) & 255,
+			(((unsigned long) m) >> 16) & 255,
+			(((unsigned long) m) >> 8) & 255,
+			((unsigned long) m) & 255,
+			prevm ? prevm->lineno : -1);
+	    break;
+	}
+	prevm = m;
     }
 #endif
 
@@ -1058,37 +1051,37 @@ static int apprentice(server_rec *s, pool *p)
 /*
  * extend the sign bit if the comparison is to be signed
  */
-static unsigned long signextend(server_rec *s, struct magic * m, unsigned long v)
+static unsigned long signextend(server_rec *s, struct magic *m, unsigned long v)
 {
     if (!(m->flag & UNSIGNED))
-        switch (m->type) {
-            /*
-             * Do not remove the casts below.  They are vital. When later
-             * compared with the data, the sign extension must have happened.
-             */
-            case BYTE:
-            v = (char) v;
-            break;
-        case SHORT:
-        case BESHORT:
-        case LESHORT:
-            v = (short) v;
-            break;
-        case DATE:
-        case BEDATE:
-        case LEDATE:
-        case LONG:
-        case BELONG:
-        case LELONG:
-            v = (long) v;
-            break;
-        case STRING:
-            break;
-        default:
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, s,
-                        "%s: can't happen: m->type=%d", MODNAME, m->type);
-            return -1;
-        }
+	switch (m->type) {
+	    /*
+	     * Do not remove the casts below.  They are vital. When later
+	     * compared with the data, the sign extension must have happened.
+	     */
+	case BYTE:
+	    v = (char) v;
+	    break;
+	case SHORT:
+	case BESHORT:
+	case LESHORT:
+	    v = (short) v;
+	    break;
+	case DATE:
+	case BEDATE:
+	case LEDATE:
+	case LONG:
+	case BELONG:
+	case LELONG:
+	    v = (long) v;
+	    break;
+	case STRING:
+	    break;
+	default:
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, s,
+			"%s: can't happen: m->type=%d", MODNAME, m->type);
+	    return -1;
+	}
     return v;
 }
 
@@ -1101,23 +1094,23 @@ static int parse(server_rec *serv, pool *p, char *l, int lineno)
     struct magic *m;
     char *t, *s;
     magic_server_config_rec *conf = (magic_server_config_rec *)
-    get_module_config(serv->module_config, &mime_magic_module);
+		    get_module_config(serv->module_config, &mime_magic_module);
 
     /* allocate magic structure entry */
     if ((m = (struct magic *) pcalloc(p, sizeof(struct magic))) == NULL) {
-        (void) aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, serv,
-                           "%s: Out of memory.", MODNAME);
-        return -1;
+	(void) aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, serv,
+			   "%s: Out of memory.", MODNAME);
+	return -1;
     }
 
     /* append to linked list */
     m->next = NULL;
     if (!conf->magic || !conf->last) {
-        conf->magic = conf->last = m;
+	conf->magic = conf->last = m;
     }
     else {
-        conf->last->next = m;
-        conf->last = m;
+	conf->last->next = m;
+	conf->last = m;
     }
 
     /* set values in magic structure */
@@ -1126,201 +1119,201 @@ static int parse(server_rec *serv, pool *p, char *l, int lineno)
     m->lineno = lineno;
 
     while (*l == '>') {
-        ++l;                    /* step over */
-        m->cont_level++;
+	++l;			/* step over */
+	m->cont_level++;
     }
 
     if (m->cont_level != 0 && *l == '(') {
-        ++l;                    /* step over */
-        m->flag |= INDIR;
+	++l;			/* step over */
+	m->flag |= INDIR;
     }
 
     /* get offset, then skip over it */
     m->offset = (int) strtol(l, &t, 0);
     if (l == t) {
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, serv,
-                    "%s: offset %s invalid", MODNAME, l);
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, serv,
+		    "%s: offset %s invalid", MODNAME, l);
     }
     l = t;
 
     if (m->flag & INDIR) {
-        m->in.type = LONG;
-        m->in.offset = 0;
-        /*
-         * read [.lbs][+-]nnnnn)
-         */
-        if (*l == '.') {
-            switch (*++l) {
-            case 'l':
-                m->in.type = LONG;
-                break;
-            case 's':
-                m->in.type = SHORT;
-                break;
-            case 'b':
-                m->in.type = BYTE;
-                break;
-            default:
-                aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, serv,
-                        "%s: indirect offset type %c invalid", MODNAME, *l);
-                break;
-            }
-            l++;
-        }
-        s = l;
-        if (*l == '+' || *l == '-')
-            l++;
-        if (isdigit((unsigned char) *l)) {
-            m->in.offset = strtol(l, &t, 0);
-            if (*s == '-')
-                m->in.offset = -m->in.offset;
-        }
-        else
-            t = l;
-        if (*t++ != ')') {
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, serv,
-                        "%s: missing ')' in indirect offset", MODNAME);
-        }
-        l = t;
+	m->in.type = LONG;
+	m->in.offset = 0;
+	/*
+	 * read [.lbs][+-]nnnnn)
+	 */
+	if (*l == '.') {
+	    switch (*++l) {
+	    case 'l':
+		m->in.type = LONG;
+		break;
+	    case 's':
+		m->in.type = SHORT;
+		break;
+	    case 'b':
+		m->in.type = BYTE;
+		break;
+	    default:
+		aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, serv,
+			"%s: indirect offset type %c invalid", MODNAME, *l);
+		break;
+	    }
+	    l++;
+	}
+	s = l;
+	if (*l == '+' || *l == '-')
+	    l++;
+	if (isdigit((unsigned char) *l)) {
+	    m->in.offset = strtol(l, &t, 0);
+	    if (*s == '-')
+		m->in.offset = -m->in.offset;
+	}
+	else
+	    t = l;
+	if (*t++ != ')') {
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, serv,
+			"%s: missing ')' in indirect offset", MODNAME);
+	}
+	l = t;
     }
 
 
     while (isascii((unsigned char) *l) && isdigit((unsigned char) *l))
-        ++l;
+	++l;
     EATAB;
 
-#define NBYTE        4
-#define NSHORT        5
-#define NLONG        4
-#define NSTRING     6
-#define NDATE        4
-#define NBESHORT    7
-#define NBELONG        6
-#define NBEDATE        6
-#define NLESHORT    7
-#define NLELONG        6
-#define NLEDATE        6
+#define NBYTE           4
+#define NSHORT          5
+#define NLONG           4
+#define NSTRING         6
+#define NDATE           4
+#define NBESHORT        7
+#define NBELONG         6
+#define NBEDATE         6
+#define NLESHORT        7
+#define NLELONG         6
+#define NLEDATE         6
 
     if (*l == 'u') {
-        ++l;
-        m->flag |= UNSIGNED;
+	++l;
+	m->flag |= UNSIGNED;
     }
 
     /* get type, skip it */
     if (strncmp(l, "byte", NBYTE) == 0) {
-        m->type = BYTE;
-        l += NBYTE;
+	m->type = BYTE;
+	l += NBYTE;
     }
     else if (strncmp(l, "short", NSHORT) == 0) {
-        m->type = SHORT;
-        l += NSHORT;
+	m->type = SHORT;
+	l += NSHORT;
     }
     else if (strncmp(l, "long", NLONG) == 0) {
-        m->type = LONG;
-        l += NLONG;
+	m->type = LONG;
+	l += NLONG;
     }
     else if (strncmp(l, "string", NSTRING) == 0) {
-        m->type = STRING;
-        l += NSTRING;
+	m->type = STRING;
+	l += NSTRING;
     }
     else if (strncmp(l, "date", NDATE) == 0) {
-        m->type = DATE;
-        l += NDATE;
+	m->type = DATE;
+	l += NDATE;
     }
     else if (strncmp(l, "beshort", NBESHORT) == 0) {
-        m->type = BESHORT;
-        l += NBESHORT;
+	m->type = BESHORT;
+	l += NBESHORT;
     }
     else if (strncmp(l, "belong", NBELONG) == 0) {
-        m->type = BELONG;
-        l += NBELONG;
+	m->type = BELONG;
+	l += NBELONG;
     }
     else if (strncmp(l, "bedate", NBEDATE) == 0) {
-        m->type = BEDATE;
-        l += NBEDATE;
+	m->type = BEDATE;
+	l += NBEDATE;
     }
     else if (strncmp(l, "leshort", NLESHORT) == 0) {
-        m->type = LESHORT;
-        l += NLESHORT;
+	m->type = LESHORT;
+	l += NLESHORT;
     }
     else if (strncmp(l, "lelong", NLELONG) == 0) {
-        m->type = LELONG;
-        l += NLELONG;
+	m->type = LELONG;
+	l += NLELONG;
     }
     else if (strncmp(l, "ledate", NLEDATE) == 0) {
-        m->type = LEDATE;
-        l += NLEDATE;
+	m->type = LEDATE;
+	l += NLEDATE;
     }
     else {
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, serv,
-                    "%s: type %s invalid", MODNAME, l);
-        return -1;
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, serv,
+		    "%s: type %s invalid", MODNAME, l);
+	return -1;
     }
     /* New-style anding: "0 byte&0x80 =0x80 dynamically linked" */
     if (*l == '&') {
-        ++l;
-        m->mask = signextend(serv, m, strtol(l, &l, 0));
+	++l;
+	m->mask = signextend(serv, m, strtol(l, &l, 0));
     }
     else
-        m->mask = ~0L;
+	m->mask = ~0L;
     EATAB;
 
     switch (*l) {
     case '>':
     case '<':
-        /* Old-style anding: "0 byte &0x80 dynamically linked" */
+	/* Old-style anding: "0 byte &0x80 dynamically linked" */
     case '&':
     case '^':
     case '=':
-        m->reln = *l;
-        ++l;
-        break;
+	m->reln = *l;
+	++l;
+	break;
     case '!':
-        if (m->type != STRING) {
-            m->reln = *l;
-            ++l;
-            break;
-        }
-        /* FALL THROUGH */
+	if (m->type != STRING) {
+	    m->reln = *l;
+	    ++l;
+	    break;
+	}
+	/* FALL THROUGH */
     default:
-        if (*l == 'x' && isascii((unsigned char) l[1]) &&
-            isspace((unsigned char) l[1])) {
-            m->reln = *l;
-            ++l;
-            goto GetDesc;       /* Bill The Cat */
-        }
-        m->reln = '=';
-        break;
+	if (*l == 'x' && isascii((unsigned char) l[1]) &&
+	    isspace((unsigned char) l[1])) {
+	    m->reln = *l;
+	    ++l;
+	    goto GetDesc;	/* Bill The Cat */
+	}
+	m->reln = '=';
+	break;
     }
     EATAB;
 
     if (getvalue(serv, m, &l))
-        return -1;
+	return -1;
     /*
      * now get last part - the description
      */
-GetDesc:
+  GetDesc:
     EATAB;
     if (l[0] == '\b') {
-        ++l;
-        m->nospflag = 1;
+	++l;
+	m->nospflag = 1;
     }
     else if ((l[0] == '\\') && (l[1] == 'b')) {
-        ++l;
-        ++l;
-        m->nospflag = 1;
+	++l;
+	++l;
+	m->nospflag = 1;
     }
     else
-        m->nospflag = 0;
+	m->nospflag = 0;
     while ((m->desc[i++] = *l++) != '\0' && i < MAXDESC)
-         /* NULLBODY */ ;
+	/* NULLBODY */ ;
 
 #if MIME_MAGIC_DEBUG
-    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, serv,
-                "%s: parse line=%d m=%x next=%x cont=%d desc=%s",
-                MODNAME, lineno, m, m->next, m->cont_level,
-                m->desc ? m->desc : "NULL");
-#endif                          /* MIME_MAGIC_DEBUG */
+    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, serv,
+		"%s: parse line=%d m=%x next=%x cont=%d desc=%s",
+		MODNAME, lineno, m, m->next, m->cont_level,
+		m->desc ? m->desc : "NULL");
+#endif /* MIME_MAGIC_DEBUG */
 
     return 0;
 }
@@ -1330,16 +1323,16 @@ GetDesc:
  * pointer, according to the magic type.  Update the string pointer to point
  * just after the number read.  Return 0 for success, non-zero for failure.
  */
-static int getvalue(server_rec *s, struct magic * m, char **p)
+static int getvalue(server_rec *s, struct magic *m, char **p)
 {
     int slen;
 
     if (m->type == STRING) {
-        *p = getstr(s, *p, m->value.s, sizeof(m->value.s), &slen);
-        m->vallen = slen;
+	*p = getstr(s, *p, m->value.s, sizeof(m->value.s), &slen);
+	m->vallen = slen;
     }
     else if (m->reln != 'x')
-        m->value.l = signextend(s, m, strtol(*p, p, 0));
+	m->value.l = signextend(s, m, strtol(*p, p, 0));
     return 0;
 }
 
@@ -1348,9 +1341,8 @@ static int getvalue(server_rec *s, struct magic * m, char **p)
  * space or tab. Copy the converted version to "p", returning its length in
  * *slen. Return updated scan pointer as function result.
  */
-static char *
-     getstr(server_rec *serv, register char *s, register char *p,
-                 int plen, int *slen)
+static char *getstr(server_rec *serv, register char *s, register char *p,
+		    int plen, int *slen)
 {
     char *origs = s, *origp = p;
     char *pmax = p + plen - 1;
@@ -1358,100 +1350,100 @@ static char *
     register int val;
 
     while ((c = *s++) != '\0') {
-        if (isspace((unsigned char) c))
-            break;
-        if (p >= pmax) {
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, serv,
+	if (isspace((unsigned char) c))
+	    break;
+	if (p >= pmax) {
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, serv,
 			"String too long: %s", origs);
-            break;
-        }
-        if (c == '\\') {
-            switch (c = *s++) {
+	    break;
+	}
+	if (c == '\\') {
+	    switch (c = *s++) {
 
-            case '\0':
-                goto out;
+	    case '\0':
+		goto out;
 
-            default:
-                *p++ = (char) c;
-                break;
+	    default:
+		*p++ = (char) c;
+		break;
 
-            case 'n':
-                *p++ = '\n';
-                break;
+	    case 'n':
+		*p++ = '\n';
+		break;
 
-            case 'r':
-                *p++ = '\r';
-                break;
+	    case 'r':
+		*p++ = '\r';
+		break;
 
-            case 'b':
-                *p++ = '\b';
-                break;
+	    case 'b':
+		*p++ = '\b';
+		break;
 
-            case 't':
-                *p++ = '\t';
-                break;
+	    case 't':
+		*p++ = '\t';
+		break;
 
-            case 'f':
-                *p++ = '\f';
-                break;
+	    case 'f':
+		*p++ = '\f';
+		break;
 
-            case 'v':
-                *p++ = '\v';
-                break;
+	    case 'v':
+		*p++ = '\v';
+		break;
 
-                /* \ and up to 3 octal digits */
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-                val = c - '0';
-                c = *s++;       /* try for 2 */
-                if (c >= '0' && c <= '7') {
-                    val = (val << 3) | (c - '0');
-                    c = *s++;   /* try for 3 */
-                    if (c >= '0' && c <= '7')
-                        val = (val << 3) | (c - '0');
-                    else
-                        --s;
-                }
-                else
-                    --s;
-                *p++ = (char) val;
-                break;
+		/* \ and up to 3 octal digits */
+	    case '0':
+	    case '1':
+	    case '2':
+	    case '3':
+	    case '4':
+	    case '5':
+	    case '6':
+	    case '7':
+		val = c - '0';
+		c = *s++;	/* try for 2 */
+		if (c >= '0' && c <= '7') {
+		    val = (val << 3) | (c - '0');
+		    c = *s++;	/* try for 3 */
+		    if (c >= '0' && c <= '7')
+			val = (val << 3) | (c - '0');
+		    else
+			--s;
+		}
+		else
+		    --s;
+		*p++ = (char) val;
+		break;
 
-                /* \x and up to 3 hex digits */
-            case 'x':
-                val = 'x';      /* Default if no digits */
-                c = hextoint(*s++);     /* Get next char */
-                if (c >= 0) {
-                    val = c;
-                    c = hextoint(*s++);
-                    if (c >= 0) {
-                        val = (val << 4) + c;
-                        c = hextoint(*s++);
-                        if (c >= 0) {
-                            val = (val << 4) + c;
-                        }
-                        else
-                            --s;
-                    }
-                    else
-                        --s;
-                }
-                else
-                    --s;
-                *p++ = (char) val;
-                break;
-            }
-        }
-        else
-            *p++ = (char) c;
+		/* \x and up to 3 hex digits */
+	    case 'x':
+		val = 'x';	/* Default if no digits */
+		c = hextoint(*s++);	/* Get next char */
+		if (c >= 0) {
+		    val = c;
+		    c = hextoint(*s++);
+		    if (c >= 0) {
+			val = (val << 4) + c;
+			c = hextoint(*s++);
+			if (c >= 0) {
+			    val = (val << 4) + c;
+			}
+			else
+			    --s;
+		    }
+		    else
+			--s;
+		}
+		else
+		    --s;
+		*p++ = (char) val;
+		break;
+	    }
+	}
+	else
+	    *p++ = (char) c;
     }
-out:
+  out:
     *p = '\0';
     *slen = p - origp;
     return s;
@@ -1459,22 +1451,21 @@ out:
 
 
 /* Single hex char to int; -1 if not a hex char. */
-static int hextoint(c)
-    int c;
+static int hextoint(int c)
 {
     if (!isascii((unsigned char) c))
-        return -1;
+	return -1;
     if (isdigit((unsigned char) c))
-        return c - '0';
+	return c - '0';
     if ((c >= 'a') && (c <= 'f'))
-        return c + 10 - 'a';
+	return c + 10 - 'a';
     if ((c >= 'A') && (c <= 'F'))
-        return c + 10 - 'A';
+	return c + 10 - 'A';
     return -1;
 }
 
 
-static int fsmagic(request_rec *r, const char *fn, struct stat * sb)
+static int fsmagic(request_rec *r, const char *fn, struct stat *sb)
 {
     int ret = 0;
 
@@ -1482,10 +1473,10 @@ static int fsmagic(request_rec *r, const char *fn, struct stat * sb)
      * Fstat is cheaper but fails for files you don't have read perms on. On
      * 4.2BSD and similar systems, use lstat() to identify symlinks.
      */
-    ret = stat(fn, sb);         /* don't merge into if; see "ret =" above */
+    ret = stat(fn, sb);		/* don't merge into if; see "ret =" above */
 
     if (ret) {
-        return 1;
+	return 1;
     }
 
     /*
@@ -1496,109 +1487,109 @@ static int fsmagic(request_rec *r, const char *fn, struct stat * sb)
 
     switch (sb->st_mode & S_IFMT) {
     case S_IFDIR:
-        magic_rsl_puts(r, DIR_MAGIC_TYPE);
-        return 1;
+	magic_rsl_puts(r, DIR_MAGIC_TYPE);
+	return 1;
     case S_IFCHR:
-        /*
-         * (void) magic_rsl_printf(r,"character special (%d/%d)",
-         * major(sb->st_rdev), minor(sb->st_rdev));
-         */
-        (void) magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
-        return 1;
+	/*
+	 * (void) magic_rsl_printf(r,"character special (%d/%d)",
+	 * major(sb->st_rdev), minor(sb->st_rdev));
+	 */
+	(void) magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
+	return 1;
     case S_IFBLK:
-        /*
-         * (void) magic_rsl_printf(r,"block special (%d/%d)",
-         * major(sb->st_rdev), minor(sb->st_rdev));
-         */
-        (void) magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
-        return 1;
-        /* TODO add code to handle V7 MUX and Blit MUX files */
+	/*
+	 * (void) magic_rsl_printf(r,"block special (%d/%d)",
+	 * major(sb->st_rdev), minor(sb->st_rdev));
+	 */
+	(void) magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
+	return 1;
+	/* TODO add code to handle V7 MUX and Blit MUX files */
 #ifdef    S_IFIFO
     case S_IFIFO:
-        /*
-         * magic_rsl_puts(r,"fifo (named pipe)");
-         */
-        (void) magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
-        return 1;
+	/*
+	 * magic_rsl_puts(r,"fifo (named pipe)");
+	 */
+	(void) magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
+	return 1;
 #endif
 #ifdef    S_IFLNK
     case S_IFLNK:
-        {
-            char buf[BUFSIZ + 4];
-            register int nch;
-            struct stat tstatbuf;
+	{
+	    char buf[BUFSIZ + 4];
+	    register int nch;
+	    struct stat tstatbuf;
 
-            if ((nch = readlink(fn, buf, BUFSIZ - 1)) <= 0) {
-                /*
-                 * magic_rsl_printf(r, "unreadable symlink (%s).",
-                 * strerror(errno));
-                 */
-                magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
-                return 1;
-            }
-            buf[nch] = '\0';    /* readlink(2) forgets this */
+	    if ((nch = readlink(fn, buf, BUFSIZ - 1)) <= 0) {
+		/*
+		 * magic_rsl_printf(r, "unreadable symlink (%s).",
+		 * strerror(errno));
+		 */
+		magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
+		return 1;
+	    }
+	    buf[nch] = '\0';	/* readlink(2) forgets this */
 
-            /* If broken symlink, say so and quit early. */
-            if (*buf == '/') {
-                if (stat(buf, &tstatbuf) < 0) {
-                    /*
-                     * magic_rsl_printf(r, "broken symbolic link to %s",
-                     * buf);
-                     */
-                    magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
-                    return 1;
-                }
-            }
-            else {
-                char *tmp;
-                char buf2[BUFSIZ + BUFSIZ + 4];
+	    /* If broken symlink, say so and quit early. */
+	    if (*buf == '/') {
+		if (stat(buf, &tstatbuf) < 0) {
+		    /*
+		     * magic_rsl_printf(r, "broken symbolic link to %s",
+		     * buf);
+		     */
+		    magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
+		    return 1;
+		}
+	    }
+	    else {
+		char *tmp;
+		char buf2[BUFSIZ + BUFSIZ + 4];
 
-                if ((tmp = strrchr(fn, '/')) == NULL) {
-                    tmp = buf;  /* in current directory anyway */
-                }
-                else {
-                    /* directory part plus (relative) symlink */
-                    ap_snprintf(buf2, sizeof(buf2), "%s%s",
-                                fn, buf);
-                    tmp = buf2;
-                }
-                if (stat(tmp, &tstatbuf) < 0) {
-                    /*
-                     * magic_rsl_printf(r, "broken symbolic link to %s",
-                     * buf);
-                     */
-                    magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
-                    return 1;
-                }
-            }
+		if ((tmp = strrchr(fn, '/')) == NULL) {
+		    tmp = buf;	/* in current directory anyway */
+		}
+		else {
+		    /* directory part plus (relative) symlink */
+		    ap_snprintf(buf2, sizeof(buf2), "%s%s",
+				fn, buf);
+		    tmp = buf2;
+		}
+		if (stat(tmp, &tstatbuf) < 0) {
+		    /*
+		     * magic_rsl_printf(r, "broken symbolic link to %s",
+		     * buf);
+		     */
+		    magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
+		    return 1;
+		}
+	    }
 
-            /* At MIME-typing time we want to follow symlinks */
-            /* So just handle it. */
-            magic_process(r);
-        }
-        return 1;
+	    /* At MIME-typing time we want to follow symlinks */
+	    /* So just handle it. */
+	    magic_process(r);
+	}
+	return 1;
 #endif
 #ifdef    S_IFSOCK
 #ifndef __COHERENT__
     case S_IFSOCK:
-        magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
-        return 1;
+	magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
+	return 1;
 #endif
 #endif
     case S_IFREG:
-        break;
+	break;
     default:
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                    "%s: invalid mode 0%o.", MODNAME, sb->st_mode);
-        /* NOTREACHED */
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+		    "%s: invalid mode 0%o.", MODNAME, sb->st_mode);
+	/* NOTREACHED */
     }
 
     /*
      * regular file, check next possibility
      */
     if (sb->st_size == 0) {
-        magic_rsl_puts(r, MIME_TEXT_UNKNOWN);
-        return 1;
+	magic_rsl_puts(r, MIME_TEXT_UNKNOWN);
+	return 1;
     }
     return 0;
 }
@@ -1607,11 +1598,11 @@ static int fsmagic(request_rec *r, const char *fn, struct stat * sb)
  * softmagic - lookup one file in database (already read from /etc/magic by
  * apprentice.c). Passed the name and FILE * of one file to be typed.
  */
- /* ARGSUSED1 *//* nbytes passed for regularity, maybe need later */
+		/* ARGSUSED1 *//* nbytes passed for regularity, maybe need later */
 static int softmagic(request_rec *r, unsigned char *buf, int nbytes)
 {
     if (match(r, buf, nbytes))
-        return 1;
+	return 1;
 
     return 0;
 }
@@ -1651,204 +1642,203 @@ static int match(request_rec *r, unsigned char *s, int nbytes)
     int need_separator = 0;
     union VALUETYPE p;
     magic_server_config_rec *conf = (magic_server_config_rec *)
-    get_module_config(r->server->module_config, &mime_magic_module);
+		get_module_config(r->server->module_config, &mime_magic_module);
     struct magic *m;
 
 #if MIME_MAGIC_DEBUG
-    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                "%s: match conf=%x file=%s m=%s m->next=%s last=%s",
-                MODNAME, conf,
-                conf->magicfile ? conf->magicfile : "NULL",
-                conf->magic ? "set" : "NULL",
-                (conf->magic && conf->magic->next) ? "set" : "NULL",
-                conf->last ? "set" : "NULL");
+    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+		"%s: match conf=%x file=%s m=%s m->next=%s last=%s",
+		MODNAME, conf,
+		conf->magicfile ? conf->magicfile : "NULL",
+		conf->magic ? "set" : "NULL",
+		(conf->magic && conf->magic->next) ? "set" : "NULL",
+		conf->last ? "set" : "NULL");
 #endif
 
 #if MIME_MAGIC_DEBUG
     for (m = conf->magic; m; m = m->next) {
-        if (isprint((((unsigned long) m) >> 24) & 255) &&
-            isprint((((unsigned long) m) >> 16) & 255) &&
-            isprint((((unsigned long) m) >> 8) & 255) &&
-            isprint(((unsigned long) m) & 255)) {
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                        "%s: match: POINTER CLOBBERED! "
-                        "m=\"%c%c%c%c\"", MODNAME,
-                        (((unsigned long) m) >> 24) & 255,
-                        (((unsigned long) m) >> 16) & 255,
-                        (((unsigned long) m) >> 8) & 255,
-                        ((unsigned long) m) & 255);
-            break;
-        }
+	if (isprint((((unsigned long) m) >> 24) & 255) &&
+	    isprint((((unsigned long) m) >> 16) & 255) &&
+	    isprint((((unsigned long) m) >> 8) & 255) &&
+	    isprint(((unsigned long) m) & 255)) {
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+			"%s: match: POINTER CLOBBERED! "
+			"m=\"%c%c%c%c\"", MODNAME,
+			(((unsigned long) m) >> 24) & 255,
+			(((unsigned long) m) >> 16) & 255,
+			(((unsigned long) m) >> 8) & 255,
+			((unsigned long) m) & 255);
+	    break;
+	}
     }
 #endif
 
     for (m = conf->magic; m; m = m->next) {
 #if MIME_MAGIC_DEBUG
-        rule_counter++;
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                    "%s: line=%d desc=%s", MODNAME, m->lineno, m->desc);
+	rule_counter++;
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+		    "%s: line=%d desc=%s", MODNAME, m->lineno, m->desc);
 #endif
 
-        /* check if main entry matches */
-        if (!mget(r, &p, s, m, nbytes) ||
-            !mcheck(r, &p, m)) {
-            struct magic *m_cont;
+	/* check if main entry matches */
+	if (!mget(r, &p, s, m, nbytes) ||
+	    !mcheck(r, &p, m)) {
+	    struct magic *m_cont;
 
-            /*
-             * main entry didn't match, flush its continuations
-             */
-            if (!m->next || (m->next->cont_level == 0)) {
-                continue;
-            }
+	    /*
+	     * main entry didn't match, flush its continuations
+	     */
+	    if (!m->next || (m->next->cont_level == 0)) {
+		continue;
+	    }
 
-            m_cont = m->next;
-            while (m_cont && (m_cont->cont_level != 0)) {
+	    m_cont = m->next;
+	    while (m_cont && (m_cont->cont_level != 0)) {
 #if MIME_MAGIC_DEBUG
-                rule_counter++;
-                aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                            "%s: line=%d mc=%x mc->next=%x cont=%d desc=%s",
-                            MODNAME, m_cont->lineno, m_cont,
-                            m_cont->next, m_cont->cont_level,
-                            m_cont->desc ? m_cont->desc : "NULL");
+		rule_counter++;
+		aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+			    "%s: line=%d mc=%x mc->next=%x cont=%d desc=%s",
+			    MODNAME, m_cont->lineno, m_cont,
+			    m_cont->next, m_cont->cont_level,
+			    m_cont->desc ? m_cont->desc : "NULL");
 #endif
-                /*
-                 * this trick allows us to keep *m in sync when the continue
-                 * advances the pointer
-                 */
-                m = m_cont;
-                m_cont = m_cont->next;
-            }
-            continue;
-        }
+		/*
+		 * this trick allows us to keep *m in sync when the continue
+		 * advances the pointer
+		 */
+		m = m_cont;
+		m_cont = m_cont->next;
+	    }
+	    continue;
+	}
 
-        /* if we get here, the main entry rule was a match */
-        /* this will be the last run through the loop */
+	/* if we get here, the main entry rule was a match */
+	/* this will be the last run through the loop */
 #if MIME_MAGIC_DEBUG
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                    "%s: rule matched, line=%d type=%d %s",
-                    MODNAME, m->lineno, m->type,
-                    (m->type == STRING) ? m->value.s : "");
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+		    "%s: rule matched, line=%d type=%d %s",
+		    MODNAME, m->lineno, m->type,
+		    (m->type == STRING) ? m->value.s : "");
 #endif
 
-        /* print the match */
-        mprint(r, &p, m);
+	/* print the match */
+	mprint(r, &p, m);
 
-        /*
-         * If we printed something, we'll need to print a blank before we
-         * print something else.
-         */
-        if (m->desc[0])
-            need_separator = 1;
-        /* and any continuations that match */
-        cont_level++;
-        /*
-         * while (m && m->next && m->next->cont_level != 0 && ( m = m->next
-         * ))
-         */
-        m = m->next;
-        while (m && (m->cont_level != 0)) {
+	/*
+	 * If we printed something, we'll need to print a blank before we
+	 * print something else.
+	 */
+	if (m->desc[0])
+	    need_separator = 1;
+	/* and any continuations that match */
+	cont_level++;
+	/*
+	 * while (m && m->next && m->next->cont_level != 0 && ( m = m->next
+	 * ))
+	 */
+	m = m->next;
+	while (m && (m->cont_level != 0)) {
 #if MIME_MAGIC_DEBUG
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                        "%s: match line=%d cont=%d type=%d %s",
-                        MODNAME, m->lineno, m->cont_level, m->type,
-                        (m->type == STRING) ? m->value.s : "");
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+			"%s: match line=%d cont=%d type=%d %s",
+			MODNAME, m->lineno, m->cont_level, m->type,
+			(m->type == STRING) ? m->value.s : "");
 #endif
-            if (cont_level >= m->cont_level) {
-                if (cont_level > m->cont_level) {
-                    /*
-                     * We're at the end of the level "cont_level"
-                     * continuations.
-                     */
-                    cont_level = m->cont_level;
-                }
-                if (mget(r, &p, s, m, nbytes) &&
-                    mcheck(r, &p, m)) {
-                    /*
-                     * This continuation matched. Print its message, with a
-                     * blank before it if the previous item printed and this
-                     * item isn't empty.
-                     */
-                    /* space if previous printed */
-                    if (need_separator
-                        && (m->nospflag == 0)
-                        && (m->desc[0] != '\0')
-                        ) {
-                        (void) magic_rsl_putchar(r, ' ');
-                        need_separator = 0;
-                    }
-                    mprint(r, &p, m);
-                    if (m->desc[0])
-                        need_separator = 1;
+	    if (cont_level >= m->cont_level) {
+		if (cont_level > m->cont_level) {
+		    /*
+		     * We're at the end of the level "cont_level"
+		     * continuations.
+		     */
+		    cont_level = m->cont_level;
+		}
+		if (mget(r, &p, s, m, nbytes) &&
+		    mcheck(r, &p, m)) {
+		    /*
+		     * This continuation matched. Print its message, with a
+		     * blank before it if the previous item printed and this
+		     * item isn't empty.
+		     */
+		    /* space if previous printed */
+		    if (need_separator
+			&& (m->nospflag == 0)
+			&& (m->desc[0] != '\0')
+			) {
+			(void) magic_rsl_putchar(r, ' ');
+			need_separator = 0;
+		    }
+		    mprint(r, &p, m);
+		    if (m->desc[0])
+			need_separator = 1;
 
-                    /*
-                     * If we see any continuations at a higher level, process
-                     * them.
-                     */
-                    cont_level++;
-                }
-            }
+		    /*
+		     * If we see any continuations at a higher level, process
+		     * them.
+		     */
+		    cont_level++;
+		}
+	    }
 
-            /* move to next continuation record */
-            m = m->next;
-        }
+	    /* move to next continuation record */
+	    m = m->next;
+	}
 #if MIME_MAGIC_DEBUG
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                    "%s: matched after %d rules", MODNAME, rule_counter);
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+		    "%s: matched after %d rules", MODNAME, rule_counter);
 #endif
-        return 1;               /* all through */
+	return 1;		/* all through */
     }
 #if MIME_MAGIC_DEBUG
-    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                "%s: failed after %d rules", MODNAME, rule_counter);
+    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+		"%s: failed after %d rules", MODNAME, rule_counter);
 #endif
-    return 0;                   /* no match at all */
+    return 0;			/* no match at all */
 }
 
-static void mprint(request_rec *r, union VALUETYPE * p, struct magic * m)
+static void mprint(request_rec *r, union VALUETYPE *p, struct magic *m)
 {
     char *pp, *rt;
     unsigned long v;
 
-
     switch (m->type) {
     case BYTE:
-        v = p->b;
-        break;
+	v = p->b;
+	break;
 
     case SHORT:
     case BESHORT:
     case LESHORT:
-        v = p->h;
-        break;
+	v = p->h;
+	break;
 
     case LONG:
     case BELONG:
     case LELONG:
-        v = p->l;
-        break;
+	v = p->l;
+	break;
 
     case STRING:
-        if (m->reln == '=') {
-            (void) magic_rsl_printf(r, m->desc, m->value.s);
-        }
-        else {
-            (void) magic_rsl_printf(r, m->desc, p->s);
-        }
-        return;
+	if (m->reln == '=') {
+	    (void) magic_rsl_printf(r, m->desc, m->value.s);
+	}
+	else {
+	    (void) magic_rsl_printf(r, m->desc, p->s);
+	}
+	return;
 
     case DATE:
     case BEDATE:
     case LEDATE:
-        pp = ctime((time_t *) & p->l);
-        if ((rt = strchr(pp, '\n')) != NULL)
-            *rt = '\0';
-        (void) magic_rsl_printf(r, m->desc, pp);
-        return;
+	pp = ctime((time_t *) & p->l);
+	if ((rt = strchr(pp, '\n')) != NULL)
+	    *rt = '\0';
+	(void) magic_rsl_printf(r, m->desc, pp);
+	return;
     default:
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                    "%s: invalid m->type (%d) in mprint().",
-                    MODNAME, m->type);
-        return;
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+		    "%s: invalid m->type (%d) in mprint().",
+		    MODNAME, m->type);
+	return;
     }
 
     v = signextend(r->server, m, v) & m->mask;
@@ -1858,7 +1848,7 @@ static void mprint(request_rec *r, union VALUETYPE * p, struct magic * m)
 /*
  * Convert the byte order of the data we are looking at
  */
-static int mconvert(request_rec *r, union VALUETYPE * p, struct magic * m)
+static int mconvert(request_rec *r, union VALUETYPE *p, struct magic *m)
 {
     char *rt;
 
@@ -1867,97 +1857,95 @@ static int mconvert(request_rec *r, union VALUETYPE * p, struct magic * m)
     case SHORT:
     case LONG:
     case DATE:
-        return 1;
+	return 1;
     case STRING:
-        /* Null terminate and eat the return */
-        p->s[sizeof(p->s) - 1] = '\0';
-        if ((rt = strchr(p->s, '\n')) != NULL)
-            *rt = '\0';
-        return 1;
+	/* Null terminate and eat the return */
+	p->s[sizeof(p->s) - 1] = '\0';
+	if ((rt = strchr(p->s, '\n')) != NULL)
+	    *rt = '\0';
+	return 1;
     case BESHORT:
-        p->h = (short) ((p->hs[0] << 8) | (p->hs[1]));
-        return 1;
+	p->h = (short) ((p->hs[0] << 8) | (p->hs[1]));
+	return 1;
     case BELONG:
     case BEDATE:
-        p->l = (long)
-            ((p->hl[0] << 24) | (p->hl[1] << 16) | (p->hl[2] << 8) | (p->hl[3]));
-        return 1;
+	p->l = (long)
+	    ((p->hl[0] << 24) | (p->hl[1] << 16) | (p->hl[2] << 8) | (p->hl[3]));
+	return 1;
     case LESHORT:
-        p->h = (short) ((p->hs[1] << 8) | (p->hs[0]));
-        return 1;
+	p->h = (short) ((p->hs[1] << 8) | (p->hs[0]));
+	return 1;
     case LELONG:
     case LEDATE:
-        p->l = (long)
-            ((p->hl[3] << 24) | (p->hl[2] << 16) | (p->hl[1] << 8) | (p->hl[0]));
-        return 1;
+	p->l = (long)
+	    ((p->hl[3] << 24) | (p->hl[2] << 16) | (p->hl[1] << 8) | (p->hl[0]));
+	return 1;
     default:
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                    "%s: invalid type %d in mconvert().", MODNAME, m->type);
-        return 0;
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+		    "%s: invalid type %d in mconvert().", MODNAME, m->type);
+	return 0;
     }
 }
 
 
-static int mget(request_rec *r, union VALUETYPE * p, unsigned char *s, struct magic * m,
-                    int nbytes)
+static int mget(request_rec *r, union VALUETYPE *p, unsigned char *s,
+		struct magic *m, int nbytes)
 {
     long offset = m->offset;
     if (offset + sizeof(union VALUETYPE) > nbytes)
-        return 0;
-
+	          return 0;
 
     memcpy(p, s + offset, sizeof(union VALUETYPE));
 
     if (!mconvert(r, p, m))
-        return 0;
+	return 0;
 
     if (m->flag & INDIR) {
 
-        switch (m->in.type) {
-        case BYTE:
-            offset = p->b + m->in.offset;
-            break;
-        case SHORT:
-            offset = p->h + m->in.offset;
-            break;
-        case LONG:
-            offset = p->l + m->in.offset;
-            break;
-        }
+	switch (m->in.type) {
+	case BYTE:
+	    offset = p->b + m->in.offset;
+	    break;
+	case SHORT:
+	    offset = p->h + m->in.offset;
+	    break;
+	case LONG:
+	    offset = p->l + m->in.offset;
+	    break;
+	}
 
-        if (offset + sizeof(union VALUETYPE) > nbytes)
-            return 0;
+	if (offset + sizeof(union VALUETYPE) > nbytes)
+	              return 0;
 
-        memcpy(p, s + offset, sizeof(union VALUETYPE));
+	memcpy(p, s + offset, sizeof(union VALUETYPE));
 
-        if (!mconvert(r, p, m))
-            return 0;
+	if (!mconvert(r, p, m))
+	    return 0;
     }
     return 1;
 }
 
-static int mcheck(request_rec *r, union VALUETYPE * p, struct magic * m)
+static int mcheck(request_rec *r, union VALUETYPE *p, struct magic *m)
 {
     register unsigned long l = m->value.l;
     register unsigned long v;
     int matched;
 
     if ((m->value.s[0] == 'x') && (m->value.s[1] == '\0')) {
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server, "BOINK");
-        return 1;
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server, "BOINK");
+	return 1;
     }
-
 
     switch (m->type) {
     case BYTE:
-        v = p->b;
-        break;
+	v = p->b;
+	break;
 
     case SHORT:
     case BESHORT:
     case LESHORT:
-        v = p->h;
-        break;
+	v = p->h;
+	break;
 
     case LONG:
     case BELONG:
@@ -1965,31 +1953,31 @@ static int mcheck(request_rec *r, union VALUETYPE * p, struct magic * m)
     case DATE:
     case BEDATE:
     case LEDATE:
-        v = p->l;
-        break;
+	v = p->l;
+	break;
 
     case STRING:
-        l = 0;
-        /*
-         * What we want here is: v = strncmp(m->value.s, p->s, m->vallen);
-         * but ignoring any nulls.  bcmp doesn't give -/+/0 and isn't
-         * universally available anyway.
-         */
-        v = 0;
-        {
-            register unsigned char *a = (unsigned char *) m->value.s;
-            register unsigned char *b = (unsigned char *) p->s;
-            register int len = m->vallen;
+	l = 0;
+	/*
+	 * What we want here is: v = strncmp(m->value.s, p->s, m->vallen);
+	 * but ignoring any nulls.  bcmp doesn't give -/+/0 and isn't
+	 * universally available anyway.
+	 */
+	v = 0;
+	{
+	    register unsigned char *a = (unsigned char *) m->value.s;
+	    register unsigned char *b = (unsigned char *) p->s;
+	    register int len = m->vallen;
 
-            while (--len >= 0)
-                if ((v = *b++ - *a++) != 0)
-                    break;
-        }
-        break;
+	    while (--len >= 0)
+		if ((v = *b++ - *a++) != 0)
+		    break;
+	}
+	break;
     default:
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                    "%s: invalid type %d in mcheck().", MODNAME, m->type);
-        return 0;               /* NOTREACHED */
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+		    "%s: invalid type %d in mcheck().", MODNAME, m->type);
+	return 0;		/* NOTREACHED */
     }
 
     v = signextend(r->server, m, v) & m->mask;
@@ -1997,83 +1985,83 @@ static int mcheck(request_rec *r, union VALUETYPE * p, struct magic * m)
     switch (m->reln) {
     case 'x':
 #if MIME_MAGIC_DEBUG
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server, "%lu == *any* = 1", v);
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server, "%lu == *any* = 1", v);
 #endif
-        matched = 1;
-        break;
+	matched = 1;
+	break;
 
     case '!':
-        matched = v != l;
+	matched = v != l;
 #if MIME_MAGIC_DEBUG
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                    "%lu != %lu = %d", v, l, matched);
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+		    "%lu != %lu = %d", v, l, matched);
 #endif
-        break;
+	break;
 
     case '=':
-        matched = v == l;
+	matched = v == l;
 #if MIME_MAGIC_DEBUG
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                    "%lu == %lu = %d", v, l, matched);
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+		    "%lu == %lu = %d", v, l, matched);
 #endif
-        break;
+	break;
 
     case '>':
-        if (m->flag & UNSIGNED) {
-            matched = v > l;
+	if (m->flag & UNSIGNED) {
+	    matched = v > l;
 #if MIME_MAGIC_DEBUG
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                        "%lu > %lu = %d", v, l, matched);
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+			"%lu > %lu = %d", v, l, matched);
 #endif
-        }
-        else {
-            matched = (long) v > (long) l;
+	}
+	else {
+	    matched = (long) v > (long) l;
 #if MIME_MAGIC_DEBUG
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                        "%ld > %ld = %d", v, l, matched);
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+			"%ld > %ld = %d", v, l, matched);
 #endif
-        }
-        break;
+	}
+	break;
 
     case '<':
-        if (m->flag & UNSIGNED) {
-            matched = v < l;
+	if (m->flag & UNSIGNED) {
+	    matched = v < l;
 #if MIME_MAGIC_DEBUG
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                        "%lu < %lu = %d", v, l, matched);
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+			"%lu < %lu = %d", v, l, matched);
 #endif
-        }
-        else {
-            matched = (long) v < (long) l;
+	}
+	else {
+	    matched = (long) v < (long) l;
 #if MIME_MAGIC_DEBUG
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                        "%ld < %ld = %d", v, l, matched);
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+			"%ld < %ld = %d", v, l, matched);
 #endif
-        }
-        break;
+	}
+	break;
 
     case '&':
-        matched = (v & l) == l;
+	matched = (v & l) == l;
 #if MIME_MAGIC_DEBUG
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                    "((%lx & %lx) == %lx) = %d", v, l, l, matched);
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+		    "((%lx & %lx) == %lx) = %d", v, l, l, matched);
 #endif
-        break;
+	break;
 
     case '^':
-        matched = (v & l) != l;
+	matched = (v & l) != l;
 #if MIME_MAGIC_DEBUG
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                    "((%lx & %lx) != %lx) = %d", v, l, l, matched);
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+		    "((%lx & %lx) != %lx) = %d", v, l, l, matched);
 #endif
-        break;
+	break;
 
     default:
-        matched = 0;
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                    "%s: mcheck: can't happen: invalid relation %d.",
-                    MODNAME, m->reln);
-        break;                  /* NOTREACHED */
+	matched = 0;
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+		    "%s: mcheck: can't happen: invalid relation %d.",
+		    MODNAME, m->reln);
+	break;			/* NOTREACHED */
     }
 
     return matched;
@@ -2086,7 +2074,7 @@ static int ascmagic(request_rec *r, unsigned char *buf, int nbytes)
 {
     int i, has_escapes = 0;
     unsigned char *s;
-    char nbuf[HOWMANY + 1];     /* one extra for terminating '\0' */
+    char nbuf[HOWMANY + 1];	/* one extra for terminating '\0' */
     char *token;
     register struct names *p;
 
@@ -2098,21 +2086,21 @@ static int ascmagic(request_rec *r, unsigned char *buf, int nbytes)
      * input.
      */
     if (*buf == '.') {
-        unsigned char *tp = buf + 1;
+	unsigned char *tp = buf + 1;
 
-        while (isascii(*tp) && isspace(*tp))
-            ++tp;               /* skip leading whitespace */
-        if ((isascii(*tp) && (isalnum(*tp) || *tp == '\\') &&
-             isascii(*(tp + 1)) && (isalnum(*(tp + 1)) || *tp == '"'))) {
-            magic_rsl_puts(r, "application/x-troff");
-            return 1;
-        }
+	while (isascii(*tp) && isspace(*tp))
+	    ++tp;		/* skip leading whitespace */
+	if ((isascii(*tp) && (isalnum(*tp) || *tp == '\\') &&
+	     isascii(*(tp + 1)) && (isalnum(*(tp + 1)) || *tp == '"'))) {
+	    magic_rsl_puts(r, "application/x-troff");
+	    return 1;
+	}
     }
     if ((*buf == 'c' || *buf == 'C') &&
-        isascii(*(buf + 1)) && isspace(*(buf + 1))) {
-        /* Fortran */
-        magic_rsl_puts(r, "text/plain");
-        return 1;
+	isascii(*(buf + 1)) && isspace(*(buf + 1))) {
+	/* Fortran */
+	magic_rsl_puts(r, "text/plain");
+	return 1;
     }
 
     /* look for tokens from names.h - this is expensive! */
@@ -2121,42 +2109,42 @@ static int ascmagic(request_rec *r, unsigned char *buf, int nbytes)
     s[nbytes] = '\0';
     has_escapes = (memchr(s, '\033', nbytes) != NULL);
     while ((token = strtok((char *) s, " \t\n\r\f")) != NULL) {
-        s = NULL;               /* make strtok() keep on tokin' */
-        for (p = names; p < names + NNAMES; p++) {
-            if (STREQ(p->name, token)) {
-                magic_rsl_puts(r, types[p->type]);
-                if (has_escapes)
-                    magic_rsl_puts(r, " (with escape sequences)");
-                return 1;
-            }
-        }
+	s = NULL;		/* make strtok() keep on tokin' */
+	for (p = names; p < names + NNAMES; p++) {
+	    if (STREQ(p->name, token)) {
+		magic_rsl_puts(r, types[p->type]);
+		if (has_escapes)
+		    magic_rsl_puts(r, " (with escape sequences)");
+		return 1;
+	    }
+	}
     }
 
     switch (is_tar(buf, nbytes)) {
     case 1:
-        /* V7 tar archive */
-        magic_rsl_puts(r, "application/x-tar");
-        return 1;
+	/* V7 tar archive */
+	magic_rsl_puts(r, "application/x-tar");
+	return 1;
     case 2:
-        /* POSIX tar archive */
-        magic_rsl_puts(r, "application/x-tar");
-        return 1;
+	/* POSIX tar archive */
+	magic_rsl_puts(r, "application/x-tar");
+	return 1;
     }
 
     for (i = 0; i < nbytes; i++) {
-        if (!isascii(*(buf + i)))
-            return 0;           /* not all ascii */
+	if (!isascii(*(buf + i)))
+	    return 0;		/* not all ascii */
     }
 
     /* all else fails, but it is ascii... */
     if (has_escapes) {
-        /* text with escape sequences */
-        /* we leave this open for further differentiation later */
-        magic_rsl_puts(r, "text/plain");
+	/* text with escape sequences */
+	/* we leave this open for further differentiation later */
+	magic_rsl_puts(r, "text/plain");
     }
     else {
-        /* plain text */
-        magic_rsl_puts(r, "text/plain");
+	/* plain text */
+	magic_rsl_puts(r, "text/plain");
     }
     return 1;
 }
@@ -2174,25 +2162,26 @@ static struct {
     char *argv[3];
     int silent;
     char *encoding;
-}      compr[] = {
+} compr[] = {
+
     {
-        "\037\235", 2, {
-            "uncompress", "-c", NULL
-        }, 0, "x-compress"
+	"\037\235", 2, {
+	    "uncompress", "-c", NULL
+	}, 0, "x-compress"
     },
     {
-        "\037\213", 2, {
-            "gzip", "-dcq", NULL
-        }, 1, "x-gzip"
+	"\037\213", 2, {
+	    "gzip", "-dcq", NULL
+	}, 1, "x-gzip"
     },
     /*
      * XXX pcat does not work, cause I don't know how to make it read stdin,
      * so we use gzip
      */
     {
-        "\037\036", 2, {
-            "gzip", "-dcq", NULL
-        }, 0, "x-gzip"
+	"\037\036", 2, {
+	    "gzip", "-dcq", NULL
+	}, 0, "x-gzip"
     },
 };
 
@@ -2205,80 +2194,80 @@ static int zmagic(request_rec *r, unsigned char *buf, int nbytes)
     int i;
 
     for (i = 0; i < ncompr; i++) {
-        if (nbytes < compr[i].maglen)
-            continue;
-        if (memcmp(buf, compr[i].magic, compr[i].maglen) == 0)
-            break;
+	if (nbytes < compr[i].maglen)
+	    continue;
+	if (memcmp(buf, compr[i].magic, compr[i].maglen) == 0)
+	    break;
     }
 
     if (i == ncompr)
-        return 0;
+	return 0;
 
     if ((newsize = uncompress(r, i, buf, &newbuf, nbytes)) > 0) {
-        tryit(r, newbuf, newsize);
+	tryit(r, newbuf, newsize);
 
-        /* set encoding type in the request record */
-        r->content_encoding = pstrdup(r->pool, compr[i].encoding);
+	/* set encoding type in the request record */
+	r->content_encoding = pstrdup(r->pool, compr[i].encoding);
     }
     return 1;
 }
 
 
 static int uncompress(request_rec *r, int method, const unsigned char *old,
-                          unsigned char **newch, int n)
+		      unsigned char **newch, int n)
 {
     int fdin[2], fdout[2];
 
     if (pipe(fdin) == -1 || pipe(fdout) == -1) {
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-                    "%s: cannot create pipe.", MODNAME);
-        return -1;
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "%s: cannot create pipe.", MODNAME);
+	return -1;
     }
     switch (fork()) {
-    case 0:                     /* child */
-        (void) close(STDIN_FILENO);
-        (void) dup(fdin[0]);
-        (void) close(fdin[0]);
-        (void) close(fdin[1]);
+    case 0:			/* child */
+	(void) close(STDIN_FILENO);
+	(void) dup(fdin[0]);
+	(void) close(fdin[0]);
+	(void) close(fdin[1]);
 
-        (void) close(STDOUT_FILENO);
-        (void) dup(fdout[1]);
-        (void) close(fdout[0]);
-        (void) close(fdout[1]);
-        if (compr[method].silent)
-            (void) close(STDERR_FILENO);
+	(void) close(STDOUT_FILENO);
+	(void) dup(fdout[1]);
+	(void) close(fdout[0]);
+	(void) close(fdout[1]);
+	if (compr[method].silent)
+	    (void) close(STDERR_FILENO);
 
-        execvp(compr[method].argv[0], compr[method].argv);
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-             "%s: could not execute `%s'.", MODNAME, compr[method].argv[0]);
-        return -1;
+	execvp(compr[method].argv[0], compr[method].argv);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	     "%s: could not execute `%s'.", MODNAME, compr[method].argv[0]);
+	return -1;
     case -1:
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-                    "%s: could not fork.", MODNAME);
-        return -1;
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "%s: could not fork.", MODNAME);
+	return -1;
 
-    default:                    /* parent */
-        (void) close(fdin[0]);
-        (void) close(fdout[1]);
-        if (write(fdin[1], old, n) != n) {
-            aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-                        "%s: write failed.", MODNAME);
-            return -1;
-        }
-        (void) close(fdin[1]);
-        if ((*newch = (unsigned char *) palloc(r->pool, n)) == NULL) {
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                        "%s: out of memory in uncompress()", MODNAME);
-            return -1;
-        }
-        if ((n = read(fdout[0], *newch, n)) <= 0) {
-            aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-                        "%s: read failed", MODNAME);
-            return -1;
-        }
-        (void) close(fdout[0]);
-        (void) wait(NULL);
-        return n;
+    default:			/* parent */
+	(void) close(fdin[0]);
+	(void) close(fdout[1]);
+	if (write(fdin[1], old, n) != n) {
+	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"%s: write failed.", MODNAME);
+	    return -1;
+	}
+	(void) close(fdin[1]);
+	if ((*newch = (unsigned char *) palloc(r->pool, n)) == NULL) {
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
+			"%s: out of memory in uncompress()", MODNAME);
+	    return -1;
+	}
+	if ((n = read(fdout[0], *newch, n)) <= 0) {
+	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"%s: read failed", MODNAME);
+	    return -1;
+	}
+	(void) close(fdout[0]);
+	(void) wait(NULL);
+	return n;
     }
 }
 
@@ -2302,9 +2291,7 @@ static int uncompress(request_rec *r, int method, const unsigned char *old,
  * old UNIX tar file, 2 for Unix Std (POSIX) tar file.
  */
 
-static int is_tar(buf, nbytes)
-    unsigned char *buf;
-    int nbytes;
+static int is_tar(unsigned char *buf, int nbytes)
 {
     register union record *header = (union record *) buf;
     register int i;
@@ -2312,31 +2299,31 @@ static int is_tar(buf, nbytes)
     register char *p;
 
     if (nbytes < sizeof(union record))
-        return 0;
+	       return 0;
 
     recsum = from_oct(8, header->header.chksum);
 
     sum = 0;
     p = header->charptr;
     for (i = sizeof(union record); --i >= 0;) {
-        /*
-         * We can't use unsigned char here because of old compilers, e.g. V7.
-         */
-        sum += 0xFF & *p++;
+	/*
+	 * We can't use unsigned char here because of old compilers, e.g. V7.
+	 */
+	sum += 0xFF & *p++;
     }
 
     /* Adjust checksum to count the "chksum" field as blanks. */
     for (i = sizeof(header->header.chksum); --i >= 0;)
-        sum -= 0xFF & header->header.chksum[i];
+	sum -= 0xFF & header->header.chksum[i];
     sum += ' ' * sizeof header->header.chksum;
 
     if (sum != recsum)
-        return 0;               /* Not a tar archive */
+	return 0;		/* Not a tar archive */
 
     if (0 == strcmp(header->header.magic, TMAGIC))
-        return 2;               /* Unix Standard tar archive */
+	return 2;		/* Unix Standard tar archive */
 
-    return 1;                   /* Old fashioned tar archive */
+    return 1;			/* Old fashioned tar archive */
 }
 
 
@@ -2349,19 +2336,19 @@ static long from_oct(int digs, char *where)
 {
     register long value;
 
-    while (isspace(*where)) {   /* Skip spaces */
-        where++;
-        if (--digs <= 0)
-            return -1;          /* All blank field */
+    while (isspace(*where)) {	/* Skip spaces */
+	where++;
+	if (--digs <= 0)
+	    return -1;		/* All blank field */
     }
     value = 0;
-    while (digs > 0 && isodigit(*where)) {      /* Scan til nonoctal */
-        value = (value << 3) | (*where++ - '0');
-        --digs;
+    while (digs > 0 && isodigit(*where)) {	/* Scan til nonoctal */
+	value = (value << 3) | (*where++ - '0');
+	--digs;
     }
 
     if (digs > 0 && *where && !isspace(*where))
-        return -1;              /* Ended on non-space/nul */
+	return -1;		/* Ended on non-space/nul */
 
     return value;
 }
@@ -2383,45 +2370,45 @@ static int revision_suffix(request_rec *r)
     request_rec *sub;
 
 #if MIME_MAGIC_DEBUG
-    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                "%s: revision_suffix checking%s", MODNAME, r->filename);
-#endif                          /* MIME_MAGIC_DEBUG */
+    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+		"%s: revision_suffix checking%s", MODNAME, r->filename);
+#endif /* MIME_MAGIC_DEBUG */
 
     /* check for recognized revision suffix */
     suffix_pos = strlen(r->filename) - 1;
     if (!isdigit(r->filename[suffix_pos])) {
-        return 0;
+	return 0;
     }
     while (suffix_pos >= 0 && isdigit(r->filename[suffix_pos]))
-        suffix_pos--;
+	suffix_pos--;
     if (suffix_pos < 0 || r->filename[suffix_pos] != '@') {
-        return 0;
+	return 0;
     }
 
     /* perform sub-request for the file name without the suffix */
     result = 0;
     sub_filename = pstrndup(r->pool, r->filename, suffix_pos);
 #if MIME_MAGIC_DEBUG
-    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                "%s: subrequest lookup for %s", MODNAME, sub_filename);
-#endif                          /* MIME_MAGIC_DEBUG */
+    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+		"%s: subrequest lookup for %s", MODNAME, sub_filename);
+#endif /* MIME_MAGIC_DEBUG */
     sub = sub_req_lookup_file(sub_filename, r);
 
     /* extract content type/encoding/language from sub-request */
     if (sub->content_type) {
-        r->content_type = pstrdup(r->pool, sub->content_type);
+	r->content_type = pstrdup(r->pool, sub->content_type);
 #if MIME_MAGIC_DEBUG
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
-                    "%s: subrequest %s got %s",
-                    MODNAME, sub_filename, r->content_type);
-#endif                          /* MIME_MAGIC_DEBUG */
-        if (sub->content_encoding)
-            r->content_encoding =
-                pstrdup(r->pool, sub->content_encoding);
-        if (sub->content_language)
-            r->content_language =
-                pstrdup(r->pool, sub->content_language);
-        result = 1;
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, r->server,
+		    "%s: subrequest %s got %s",
+		    MODNAME, sub_filename, r->content_type);
+#endif /* MIME_MAGIC_DEBUG */
+	if (sub->content_encoding)
+	    r->content_encoding =
+		pstrdup(r->pool, sub->content_encoding);
+	if (sub->content_language)
+	    r->content_language =
+		pstrdup(r->pool, sub->content_language);
+	result = 1;
     }
 
     /* clean up */
@@ -2438,42 +2425,42 @@ static void magic_init(server_rec *s, pool *p)
 {
     int result;
     magic_server_config_rec *conf = (magic_server_config_rec *)
-    get_module_config(s->module_config, &mime_magic_module);
+			get_module_config(s->module_config, &mime_magic_module);
 #if MIME_MAGIC_DEBUG
     struct magic *m, *prevm;
-#endif                          /* MIME_MAGIC_DEBUG */
+#endif /* MIME_MAGIC_DEBUG */
 
     /* on the first time through we read the magic file */
     if (conf->magicfile && !conf->magic) {
-        result = apprentice(s, p);
-        if (result == -1)
-            return;
+	result = apprentice(s, p);
+	if (result == -1)
+	    return;
 #if MIME_MAGIC_DEBUG
-        prevm = 0;
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, s,
+	prevm = 0;
+	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, s,
 		    "%s: magic_init 1 test", MODNAME);
-        for (m = conf->magic; m; m = m->next) {
-            if (isprint((((unsigned long) m) >> 24) & 255) &&
-                isprint((((unsigned long) m) >> 16) & 255) &&
-                isprint((((unsigned long) m) >> 8) & 255) &&
-                isprint(((unsigned long) m) & 255)) {
-                aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, s,
-                            "%s: magic_init 1: POINTER CLOBBERED! "
-                            "m=\"%c%c%c%c\" line=%d", MODNAME,
-                            (((unsigned long) m) >> 24) & 255,
-                            (((unsigned long) m) >> 16) & 255,
-                            (((unsigned long) m) >> 8) & 255,
-                            ((unsigned long) m) & 255,
-                            prevm ? prevm->lineno : -1);
-                break;
-            }
-            prevm = m;
-        }
+	for (m = conf->magic; m; m = m->next) {
+	    if (isprint((((unsigned long) m) >> 24) & 255) &&
+		isprint((((unsigned long) m) >> 16) & 255) &&
+		isprint((((unsigned long) m) >> 8) & 255) &&
+		isprint(((unsigned long) m) & 255)) {
+		aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, s,
+			    "%s: magic_init 1: POINTER CLOBBERED! "
+			    "m=\"%c%c%c%c\" line=%d", MODNAME,
+			    (((unsigned long) m) >> 24) & 255,
+			    (((unsigned long) m) >> 16) & 255,
+			    (((unsigned long) m) >> 8) & 255,
+			    ((unsigned long) m) & 255,
+			    prevm ? prevm->lineno : -1);
+		break;
+	    }
+	    prevm = m;
+	}
 #endif
     }
 
     if (!conf->magic)
-        return;
+	return;
     return;
 }
 
@@ -2487,26 +2474,26 @@ static int magic_find_ct(request_rec *r)
 
     /* was someone else already here? */
     if (r->content_type) {
-        return DECLINED;
+	return DECLINED;
     }
 
     /* make sure mime_module was called first - it's cheaper! */
     if (mime_module.type_checker) {
-        result = (mime_module.type_checker) (r);
-        if (result == OK) {
-            return OK;
-        }
+	result = (mime_module.type_checker) (r);
+	if (result == OK) {
+	    return OK;
+	}
     }
 
     /* initialize per-request info */
     if (!magic_set_config(r)) {
-        return HTTP_INTERNAL_SERVER_ERROR;
+	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /* try excluding file-revision suffixes */
     if (revision_suffix(r) != 1) {
-        /* process it based on the file contents */
-        magic_process(r);
+	/* process it based on the file contents */
+	magic_process(r);
     }
 
     /* if we have any results, put them in the request structure */
@@ -2517,24 +2504,25 @@ static int magic_find_ct(request_rec *r)
  * Apache API module interface
  */
 
-module mime_magic_module = {
+module mime_magic_module =
+{
     STANDARD_MODULE_STUFF,
-    magic_init,                 /* initializer */
-    NULL,                       /* dir config creator */
-    NULL,                       /* dir merger --- default is to override */
-    create_magic_server_config, /* server config */
-    merge_magic_server_config,  /* merge server config */
-    mime_magic_cmds,            /* command table */
-    NULL,                       /* handlers */
-    NULL,                       /* filename translation */
-    NULL,                       /* check_user_id */
-    NULL,                       /* check auth */
-    NULL,                       /* check access */
-    magic_find_ct,              /* type_checker */
-    NULL,                       /* fixups */
-    NULL,                       /* logger */
-    NULL,                       /* header parser */
-    NULL,                       /* child_init */
-    NULL,                       /* child_exit */
-    NULL                        /* post read-request */
+    magic_init,			/* initializer */
+    NULL,			/* dir config creator */
+    NULL,			/* dir merger --- default is to override */
+    create_magic_server_config,	/* server config */
+    merge_magic_server_config,	/* merge server config */
+    mime_magic_cmds,		/* command table */
+    NULL,			/* handlers */
+    NULL,			/* filename translation */
+    NULL,			/* check_user_id */
+    NULL,			/* check auth */
+    NULL,			/* check access */
+    magic_find_ct,		/* type_checker */
+    NULL,			/* fixups */
+    NULL,			/* logger */
+    NULL,			/* header parser */
+    NULL,			/* child_init */
+    NULL,			/* child_exit */
+    NULL			/* post read-request */
 };
