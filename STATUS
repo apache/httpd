@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/06 15:56:07 $]
+Last modified at [$Date: 2002/02/06 17:11:38 $]
 
 Release:
 
@@ -88,7 +88,7 @@ RELEASE SHOWSTOPPERS:
               before any POST body bytes are received.
                 Jeff committed a fix with server/core.c revision 1.144.
                 Justin committed a fix with server/protocol.c revision 1.78
-                (server/protocol.c revision 1.79 demotes a potentially
+                (server/protocol.c revision 1.81 demotes a potentially
                  annoying error message)
 
             * FirstBill reports problem [re]starting as-a-service, shared
