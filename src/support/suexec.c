@@ -123,6 +123,7 @@ char *safe_env_lst[] =
     "SERVER_PROTOCOL",
     "SERVER_SOFTWARE",
     "USER_NAME",
+    "TZ",
     NULL
 };
 
