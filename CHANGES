@@ -1,5 +1,9 @@
 Changes with Apache 2.0.46
 
+  *) Linux 2.4+: If Apache is started as root and you code 
+     CoreDumpDirectory, coredumps are enabled via the prctl() syscall.
+     [Greg Ames]
+
   *) ap_get_mime_headers_core: allocate space for the trailing null
      when folding is in effect.
      PR 18170 [Peter Mayne <PeterMayne@SPAM_SUX.ap.spherion.com>]

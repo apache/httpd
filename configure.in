@@ -275,6 +275,7 @@ sys/socket.h \
 pwd.h \
 grp.h \
 strings.h \
+sys/prctl.h \
 sys/processor.h \
 sys/sem.h
 )
@@ -296,6 +297,7 @@ getpwnam \
 getgrnam \
 initgroups \
 bindprocessor \
+prctl \
 timegm \
 )
 

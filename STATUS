@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/15 18:08:38 $]
+Last modified at [$Date: 2003/05/15 20:28:16 $]
 
 Release:
 
@@ -186,19 +186,6 @@ PATCHES TO PORT FROM 2.1
                interested in wrowe's extensive compatibility cleanup
                (above) will look at this independently
       DELETE ME when the SSLC 2.3 compatibility entry above is removed
-
-    * Enable coredumps on Linux 2.4+ if CoreDumpDirectory is coded
-      os/unix/unixd.c                 r1.57
-      configure.in                    r1.245   
-      docs/manual/mod/mpm_common.xml  r1.23
-      include/mpm_common.h            r1.41
-      server/mpm_common.c             r1.104
-      +1: gregames, trawick, jim, nd
-      (trawick volunteers to regenerate/commit/site-update the html
-      corresponding to mpm_common.xml if that isn't something you're
-      comfortable with doing)
-      (the docs should explain the thing better. Currently it's not
-       really understandable for users. If nobody else does, nd tries to.)
 
     * Ensure that ssl-std.conf is generated at configure time, and switch
       to using the expanded config variables to work the same as 

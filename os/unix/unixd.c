@@ -89,6 +89,9 @@
 #ifdef HAVE_SYS_SEM_H
 #include <sys/sem.h>
 #endif
+#ifdef HAVE_SYS_PRCTL_H
+#include <sys/prctl.h>
+#endif
 
 unixd_config_rec unixd_config;
 
@@ -181,6 +184,18 @@ AP_DECLARE(int) unixd_setup_child(void)
                     (long) unixd_config.user_id);
 	return -1;
     }
+#if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE) 
+    /* this applies to Linux 2.4+ */
+#ifdef AP_MPM_WANT_SET_COREDUMPDIR
+    if (ap_coredumpdir_configured) {
+        if (prctl(PR_SET_DUMPABLE, 1)) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                         "set dumpable failed - this child will not coredump"
+                         " after software errors");
+        }
+    }
+#endif
+#endif
 #endif
     return 0;
 }

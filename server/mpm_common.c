@@ -634,6 +634,7 @@ const char *ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
 
 #ifdef AP_MPM_WANT_SET_COREDUMPDIR
 char ap_coredump_dir[MAX_STRING_LEN];
+int ap_coredumpdir_configured;
 
 const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
                                    const char *arg)
@@ -660,6 +661,7 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
                            " is not a directory", NULL);
     }
     apr_cpystrn(ap_coredump_dir, fname, sizeof(ap_coredump_dir));
+    ap_coredumpdir_configured = 1;
     return NULL;
 }
 #endif
