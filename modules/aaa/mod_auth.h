@@ -65,6 +65,23 @@
 extern "C" {
 #endif
 
+/* Create a set of AAA_DECLARE(type) and AAA_DECLARE_DATA with 
+ * appropriate export and import tags for the platform
+ */
+#if !defined(WIN32)
+#define AAA_DECLARE(type)            type
+#define AAA_DECLARE_DATA
+#elif defined(AAA_DECLARE_STATIC)
+#define AAA_DECLARE(type)            type __stdcall
+#define AAA_DECLARE_DATA
+#elif defined(AAA_DECLARE_EXPORT)
+#define AAA_DECLARE(type)            __declspec(dllexport) type __stdcall
+#define AAA_DECLARE_DATA             __declspec(dllexport)
+#else
+#define AAA_DECLARE(type)            __declspec(dllimport) type __stdcall
+#define AAA_DECLARE_DATA             __declspec(dllimport)
+#endif
+
 #define AUTHN_DEFAULT_PROVIDER "file"
 
 typedef enum {
@@ -89,18 +106,18 @@ typedef struct {
                                    const char *realm, char **rethash);
 } authn_provider;
 
-AP_DECLARE(void) authn_register_provider(apr_pool_t *p, const char *name,
+AAA_DECLARE(void) authn_register_provider(apr_pool_t *p, const char *name,
                                          const authn_provider *provider);
-AP_DECLARE(const authn_provider *) authn_lookup_provider(const char *name);
+AAA_DECLARE(const authn_provider *) authn_lookup_provider(const char *name);
 
 typedef struct {
     /* For a given user, return a hash of all groups the user belongs to.  */
     apr_hash_t * (*get_user_groups)(request_rec *r, const char *user);
 } authz_provider;
 
-AP_DECLARE(void) authz_register_provider(apr_pool_t *p, const char *name,
+AAA_DECLARE(void) authz_register_provider(apr_pool_t *p, const char *name,
                                          const authz_provider *provider);
-AP_DECLARE(const authz_provider *) authz_lookup_provider(const char *name);
+AAA_DECLARE(const authz_provider *) authz_lookup_provider(const char *name);
 #ifdef __cplusplus
 }
 #endif

@@ -66,9 +66,6 @@ Package=<4>
     Project_Dep_Name mod_asis
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_auth_basic
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name mod_auth_digest
     End Project Dependency
     Begin Project Dependency
@@ -605,6 +602,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name libhttpd
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_basic
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -625,6 +625,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_basic
     End Project Dependency
 }}}
 
@@ -647,6 +650,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name libhttpd
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_basic
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -667,6 +673,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_basic
     End Project Dependency
 }}}
 
@@ -689,6 +698,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name libhttpd
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_basic
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -709,6 +721,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_basic
     End Project Dependency
 }}}
 
@@ -731,6 +746,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name libhttpd
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_basic
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -751,6 +769,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_basic
     End Project Dependency
 }}}
 
@@ -773,6 +794,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name libhttpd
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_basic
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -793,6 +817,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_basic
     End Project Dependency
 }}}
 

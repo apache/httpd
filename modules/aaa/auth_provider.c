@@ -73,7 +73,7 @@ static apr_status_t authz_cleanup_providers(void *ctx)
     return APR_SUCCESS;
 }
 
-AP_DECLARE(void) authn_register_provider(apr_pool_t *p, const char *name,
+AAA_DECLARE(void) authn_register_provider(apr_pool_t *p, const char *name,
                                          const authn_provider *provider)
 {
     if (authn_repos_providers == NULL) {
@@ -86,7 +86,7 @@ AP_DECLARE(void) authn_register_provider(apr_pool_t *p, const char *name,
     apr_hash_set(authn_repos_providers, name, APR_HASH_KEY_STRING, provider);
 }
 
-AP_DECLARE(const authn_provider *) authn_lookup_provider(const char *name)
+AAA_DECLARE(const authn_provider *) authn_lookup_provider(const char *name)
 {
     /* Better watch out against no registered providers */
     if (authn_repos_providers == NULL) {
@@ -96,7 +96,7 @@ AP_DECLARE(const authn_provider *) authn_lookup_provider(const char *name)
     return apr_hash_get(authn_repos_providers, name, APR_HASH_KEY_STRING);
 }
 
-AP_DECLARE(void) authz_register_provider(apr_pool_t *p, const char *name,
+AAA_DECLARE(void) authz_register_provider(apr_pool_t *p, const char *name,
                                          const authz_provider *provider)
 {
     if (authz_repos_providers == NULL) {
@@ -109,7 +109,7 @@ AP_DECLARE(void) authz_register_provider(apr_pool_t *p, const char *name,
     apr_hash_set(authz_repos_providers, name, APR_HASH_KEY_STRING, provider);
 }
 
-AP_DECLARE(const authz_provider *) authz_lookup_provider(const char *name)
+AAA_DECLARE(const authz_provider *) authz_lookup_provider(const char *name)
 {
     /* Better watch out against no registered providers */
     if (authz_repos_providers == NULL) {
