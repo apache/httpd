@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/09/28 17:35:21 $]
+Last modified at [$Date: 2002/09/28 18:20:43 $]
 
 Release:
 
@@ -49,6 +49,10 @@ on related projects:
     * srclib/apr/STATUS
     * srclib/apr-util/STATUS
     * docs/STATUS
+
+Contributors looking for a mission:
+
+    * just do an egrep on "TODO" and see what's there
 
 
 CURRENT RELEASE NOTES:
@@ -102,16 +106,32 @@ CURRENT VOTES:
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
+    * There is a bug in how we sort some hooks, at least the pre-config
+      hook.  The first time we call the hooks, they are in the correct 
+      order, but the second time, we don't sort them correctly.  Currently,
+      the modules/http/config.m4 file has been renamed to 
+      modules/http/config2.m4 to work around this problem, it should moved
+      back when this is fixed.    rbb
+
+        OtherBill offers that this is a SERIOUS problem.  We do not sort
+        correctly by the ordering arguments passed to the register hook
+        functions.  This was proven when I reordered the open_logs hook
+        to attempt to open the error logs prior to the access logs.  Possibly
+        the entire sorting code needs to be refactored.
+
+    * pipes deadlock on all platforms with limited pipe buffers (e.g. both
+      Linux and Win32, as opposed to only Win32 on 1.3).  The right solution
+      is either GStein's proposal for a "CGI Brigade", or OtherBill's proposal
+      for "Poll Buckets" for "Polling Filter Chains".
+
+    * server pushed CGI's not working.
+      This might be an interaction with the above pipes deadlock issue.
+      PR: 8482
+      Message-ID: <3CE15B85.2FF45121@apache.org>
+
     * All handlers should always send content down even if r->header_only
       is set.  If not, it means that the HEAD requests don't generate the
       same headers as a GET which is wrong.
-      Is this a showstopper?
-        +1: Justin, Ken
-        -1: Aaron
-
-    * server pushed CGI's not working.  (Is this a showstopper??)
-      PR: 8482
-      Message-ID: <3CE15B85.2FF45121@apache.org>
 
     * HP/UX 10.20: compile breakage in APR.  Looks like it should be easy
       to fix, probably just some extraneous #include's that are fouling
@@ -131,9 +151,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Status: Patches proposed
       Message-ID: <20020526041748.A29148@prodigy.Redbrick.DCU.IE>
       (see the "proc.patch" and "suexec-shell.patch" links in this message)
-
-    * Get mod_cache/mod_mem_cache out of experimental (still some
-      work items left to complete)
 
     * The 2.0.36 worker MPM graceless shutdown changes work but are
       a bit clunky on some platforms; eg, on Linux, the loop to
@@ -168,7 +185,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         wrowe counters: no, it shouldn't happen unless the module is broken.
             But the right answer is to fail the request up-front in dir/file
             walk if the path was entirely invalid; and we can't do that either
-            or we break modules that are unwilling to hook map_to_storage.
+            UNTIL 2.1 or we break modules that haven't hooked map_to_storage.
 
     * Rewrite core_output_filter. It is nearly impossible to support
       it with predictable results as it is implemented now.
@@ -194,10 +211,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       o worker is also failing some of the 'cgi' subtests
       (see <URL:http://Source-Zone.Org/Apache/regression/>):
         Justin says: "Worker should be fine and passes httpd-test here.
-                      If you can provide evidence that it can be reproduced
-                      outside of httpd-test, then it's a showstopper.  I
-                      think it's a perl or a httpd-test problem."
-        Not a showstopper: Justin
+                      I think it's a perl or a httpd-test problem."
 
     * Usage of APR_BRIGADE_NORMALIZE in core_input_filter should be
       removed if possible.
@@ -205,26 +219,12 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Jeff wonders if we still care about this.  It is no longer an
         API issue but simply an extra trip through the brigade.
 
-    * There is a bug in how we sort some hooks, at least the pre-config
-      hook.  The first time we call the hooks, they are in the correct 
-      order, but the second time, we don't sort them correctly.  Currently,
-      the modules/http/config.m4 file has been renamed to 
-      modules/http/config2.m4 to work around this problem, it should moved
-      back when this is fixed.    rbb
-        Justin says: "Is this really a showstopper?  This has been here
-                      forever.  What's wrong?  Does this have to do with
-                      autoconf or m4?"
-        Not a showstopper: Justin, BrianP, trawick, gregames
-
     * The Add...Filter and Set...Filter directives do not allow the
       administrator to order filters, beyond the order of filename (mime)
       extensions.  It isn't clear if Set...Filter(s) should be inserted 
       before or after the Add...Filter(s) which are ordered by sequence of
       filename extensions.  At minimum, some sort of +-[0-10] syntax seems
-      like the quickest fix for a 2.0 gold release.
-        Justin says: "Could we delay this for a point release or 2.1?"
-        Not a showstopper: justin, wrowe, trawick, stoddard, Jim, Ian, Aaron,
-                           gregames
+      like a nice solution.  See ROADMAP.
 
     * Get perchild to work on platforms other than Linux. This
       will require a portable mechanism to pass data and file/socket
@@ -255,6 +255,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       segments, it would be nice to allow this, or at least
       allow it conditionally with a directive.
 
+        OtherBill adds that %2f as the SECOND character of a multibyte
+        sequence causes the request to fail!  This happens notably in
+        the ja-jis encoding.
+
     * FreeBSD, threads, and worker MPM.  All seems to work fine 
       if you only have one worker process with many threads.  Add 
       a second worker process and the accept lock seems to be
@@ -264,9 +268,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Status: This has also been reported on Cygwin.  
         Message-ID: <3C2CC514.8EF3BED1@wapme-systems.de> (cygnus)
 
-      Justin says: So, FreeBSD-CURRENT and Cywin have the same 
-                   problem.  Yum.  If another platform has this
-                   with worker, this becomes a showstopper.
       Aaron says: I spent some time disecting this and have come to
               the conclusion that it is not a problem in the worker MPM
               (or at least, it is not isolated to a problem in worker).
@@ -321,25 +322,14 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         striker: See the thread starting with Message-ID:
           JLEGKKNELMHCJPNMOKHOGEEJFBAA.striker@apache.org.
 
-
     * Win32: Rotatelogs sometimes is not terminated when Apache
       goes down hard.  FirstBill was looking at possibly tracking the 
       child's-child processes in the parent process.
-        OtherBill asks, wasn't this fixed? 
-        stoddard: Not fixed. Shared scoreboard might offer a good
-        way for the parent to keep track of 'other child' processes
-        and whack them if the child goes down.
+        stoddard: Shared scoreboard might offer a good way for the parent 
+        to keep track of 'other child' processes and whack them if the child 
+        goes down.
         Other thoughts on walking the process chain using the NT kernel
         have also been proposed on APR.
-
-    * Win32: Add a simple hold console open patch (wait for close or
-        the ESC key, with a nice message) if the server died a bad 
-        death (non-zero exit code) in console mode.
-        Resolution: bring forward same ugly hacks from 1.3.13-.20
-        This is not so simple.  Any exit() from APR or other libraries
-        can't be caught unless we add some sort of apr_exit(rv) with
-        registered apr_atexit() fn's that have the return code as an
-        argument to the registered fn.
 
     * Eliminate unnecessary creation of pipes in mod_cgid
 
@@ -890,31 +880,4 @@ Binaries (2.0.40):
  NetWare                       yes     Brad Nicholes
  OS/2                          no      Brian Havard
  OS/390                        yes     Greg Ames
- Win32-x86                     no      William Rowe
-
-Other features that need writing:
-
-    * Finish infrastructure in core for async MPMs
-        Status: post 2.0
-
-    * TODO in source -- just do an egrep on "TODO" and see what's there
-
-Available Patches:
-
-   * Martin Sojka <msojka@gmx.de>'s patch to add error reporting for failed 
-     htpasswd actions due to a full /tmp volume (other programs may have
-     similar problems?)
-        PR: 6475
-        Status:
-
-   * Mike Abbott's <mja@trudge.engr.sgi.com> patches to improve
-     performance
-       Status: These were written for 1.3, and are awaiting a port to
-       2.0
- 
-   * Jim Winstead's <jimw@trainedmonkey.com> patch to add CookieDomain and 
-     other small mod_usertrack features
-
-   * Dan Rench's <drench@xnet.com> patch to add allow the errmsg and timefmt 
-     of SSI's to be modified in the config file.  Patch is available in 
-     PR6193
+ Win32-x86                     yes     William Rowe
