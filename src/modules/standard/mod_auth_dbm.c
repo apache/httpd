@@ -79,6 +79,17 @@
  * MODULE-DEFINITION-START
  * Name: dbm_auth_module
  * ConfigStart
+    case "$PLAT" in
+	*-linux*)
+	    # many systems don't have -ldbm
+	    DBM_LIB=""
+	    if ./helpers/TestCompile lib dbm; then
+		DBM_LIB="-ldbm"
+	    elif ./helpers/TestCompile lib ndbm; then
+		DBM_LIB="-lndbm"
+	    fi
+	    ;;
+    esac
     LIBS="$LIBS $DBM_LIB"
     if [ "X$DBM_LIB" != "X" ]; then
 	echo " + using $DBM_LIB for mod_auth_dbm"

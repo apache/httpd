@@ -618,18 +618,6 @@ case "$PLAT" in
 	if ./helpers/TestCompile lib crypt; then
 	    LIBS="$LIBS -lcrypt"
 	fi
-	# many systems have -ldb installed
-	DB_LIB=""
-	if ./helpers/TestCompile lib db; then
-	    DB_LIB="-ldb"
-	fi;
-	# many systems don't have -ldbm
-	DBM_LIB=""
-	if ./helpers/TestCompile lib dbm; then
-	    DBM_LIB="-ldbm"
-	elif ./helpers/TestCompile lib ndbm; then
-	    DBM_LIB="-lndbm"
-	fi
 	;;
 
     *-dg-dgux*)
