@@ -65,7 +65,7 @@ typedef struct {
     char *real;
     char *fake;
     char *handler;
-    int redir_status;		/* 301, 302, 303 */
+    int redir_status;		/* 301, 302, 303, 410, etc */
 } alias_entry;
 
 typedef struct {
@@ -130,21 +130,40 @@ const char *add_alias(cmd_parms *cmd, void *dummy, char *f, char *r)
     return NULL;
 }
 
-const char *add_redirect(cmd_parms *cmd, alias_dir_conf *dirconf, char *f,
-			 char *url)
+const char *add_redirect(cmd_parms *cmd, alias_dir_conf *dirconf, char *arg1,
+			 char *arg2, char *arg3)
 {
     alias_entry *new;
     server_rec *s = cmd->server;
     alias_server_conf *serverconf =
         (alias_server_conf *)get_module_config(s->module_config,&alias_module);
-    int status;
+    int status = (int)cmd->info;
+    char *f = arg2;
+    char *url = arg3;
 
-    if (!strcasecmp(url, "gone"))
+    if (!strcasecmp(arg1, "gone"))
 	status = HTTP_GONE;
+    else if (!strcasecmp(arg1, "permanent"))
+	status = HTTP_MOVED_PERMANENTLY;
+    else if (!strcasecmp(arg1, "temp"))
+	status = HTTP_MOVED_TEMPORARILY;
+    else if (!strcasecmp(arg1, "seeother"))
+	status = HTTP_SEE_OTHER;
+    else if (isdigit(*arg1))
+	status = atoi(arg1);
     else {
-	if (!is_url (url)) return "Redirect to non-URL";
-	status = (int)cmd->info;
+	f = arg1;
+	url = arg2;
     }
+
+    if (is_HTTP_REDIRECT(status)) {
+	if (!url) return "URL to redirect to is missing";
+	if (!is_url (url)) return "Redirect to non-URL";
+    }
+    else {
+	if (url) return "Redirect URL not valid for this status";
+    }
+
     if ( cmd->path )
         new = push_array (dirconf->redirects);
     else
@@ -160,12 +179,15 @@ command_rec alias_cmds[] = {
     "a fakename and a realname"},
 { "ScriptAlias", add_alias, "cgi-script", RSRC_CONF, TAKE2, 
     "a fakename and a realname"},
-{ "Redirect", add_redirect, (void*)302, OR_FILEINFO, TAKE2, 
-    "a document to be redirected, then the destination URL (or \"Gone\")" },
-{ "RedirectTemp", add_redirect, (void*)302, OR_FILEINFO, TAKE2, 
+{ "Redirect", add_redirect, (void*)HTTP_MOVED_TEMPORARILY, 
+    OR_FILEINFO, TAKE23, 
+    "an optional status, then document to be redirected and destination URL" },
+{ "RedirectTemp", add_redirect, (void*)HTTP_MOVED_TEMPORARILY, 
+    OR_FILEINFO, TAKE2, 
     "a document to be redirected, then the destination URL" },
-{ "RedirectPermanent", add_redirect, (void*)301, OR_FILEINFO, TAKE2, 
-    "a document to be redirected, then the destination URL" },
+{ "RedirectPermanent", add_redirect, (void*)HTTP_MOVED_PERMANENTLY, 
+    OR_FILEINFO, TAKE2, 
+      "a document to be redirected, then the destination URL" },
 { NULL }
 };
 
@@ -250,7 +272,8 @@ int translate_alias_redir(request_rec *r)
         return DECLINED;
 
     if ((ret = try_alias_list (r, serverconf->redirects, 1, &status)) != NULL) {
-        table_set (r->headers_out, "Location", ret);
+	if (is_HTTP_REDIRECT(status))
+	    table_set (r->headers_out, "Location", ret);
         return status;
     }
     
@@ -273,7 +296,8 @@ int fixup_redir(request_rec *r)
     /* It may have changed since last time, so try again */
 
     if ((ret = try_alias_list (r, dirconf->redirects, 1, &status)) != NULL) {
-        table_set (r->headers_out, "Location", ret);
+	if (is_HTTP_REDIRECT(status))
+	    table_set (r->headers_out, "Location", ret);
         return status;
     }
 
