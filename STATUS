@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2001/08/21 15:21:24 $]
+  Last modified at [$Date: 2001/08/21 15:29:52 $]
 
 Release:
 
@@ -325,6 +325,7 @@ Binaries (1.3.20):
  alpha-whatever-linux2         no      Randy Terbush
  armv4l-whatever-linux2        no      Rasmus Lerdorf
  hppa1.1-hp-hpux-10.x          no      Rob Hartill, Randy Terbush
+ 9000_715-hp-hpux11.00         yes     Jeff Trawick
  ia64-whatever-linux22         yes     Martin Kraemer
  i386-be-beos                  no      David Reid
  i686-whatever-cygwin          yes     Stipe Tolj
@@ -372,9 +373,11 @@ Binaries (1.3.20):
  rs6000-ibm-aix4.1             no      Lars Eilebrecht
  rs6000-ibm-aix4.2             no      Bill Stoddard
  rs6000-ibm-aix4.3.x           no      Bill Stoddard, Randy Terbush
+ 000964804C00-ibm-aix4.3       yes     Bill Stoddard
  sparc-sun-solaris2.5          no      Lars Eilebrecht, Randy Terbush
  sparc-sun-solaris2.6          no      Lars Eilebrecht
  sparc-sun-solaris2.7          no      Cliff Skolnick
  sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
+ sun4u-sun-solaris2.280        yes     Jeff Trawick
  sparc-unknown-linux           no      Lars Eilebrecht, Randy Terbush
  win32                         yes     William Rowe
