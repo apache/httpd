@@ -57,7 +57,7 @@
 
 /*
  * This file will include OS specific functions which are not inlineable.
- * Any inlineable functions should be defined in os ap_context_t nline.c instead.
+ * Any inlineable functions should be defined in os-inline.c instead.
  */
 
 #include "httpd.h"
