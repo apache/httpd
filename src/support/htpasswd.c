@@ -437,6 +437,11 @@ int main(int argc, char *argv[])
     if ((argc - i) != args_left) {
 	return usage();
     }
+#ifdef NETWARE
+    UnAugmentAsterisk(TRUE);
+    SetCurrentNameSpace(NW_NS_LONG);
+    SetTargetNameSpace(NW_NS_LONG);
+#endif
     if (newfile && nofile) {
 	fprintf(stderr, "%s: -c and -n options conflict\n", argv[0]);
 	return ERR_SYNTAX;

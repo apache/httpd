@@ -222,6 +222,11 @@ int main(int argc, char *argv[])
     if (argc == 5) {
 	if (strcmp(argv[1], "-c"))
 	    usage();
+#ifdef NETWARE
+    UnAugmentAsterisk(TRUE);
+    SetCurrentNameSpace(NW_NS_LONG);
+    SetTargetNameSpace(NW_NS_LONG);
+#endif
 	if (!(tfp = fopen(argv[2], "w"))) {
 	    fprintf(stderr, "Could not open passwd file %s for writing.\n",
 		    argv[2]);
