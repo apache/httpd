@@ -20,7 +20,7 @@ INSTALL_TARGETS = install-conf install-htdocs install-error install-icons \
 
 DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_layout.h \
 	modules.c config.cache config.log config.status build/config_vars.mk \
-        build/rules.mk docs/conf/httpd-std.conf
+	build/rules.mk docs/conf/httpd-std.conf shlibtool
 EXTRACLEAN_TARGETS = configure include/ap_config_auto.h.in generated_lists
 
 include $(top_builddir)/build/rules.mk
