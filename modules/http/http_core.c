@@ -770,16 +770,62 @@ API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r)
 }
 
 #ifdef WIN32
-static char* get_interpreter_from_win32_registry(ap_pool_t *p, const char* ext) 
+static DWORD get_win32_registry_default_value(ap_pool_t *p, HKEY hkey, 
+                                              char* relativepath, char **value)
 {
-    char extension_path[] = "SOFTWARE\\Classes\\";
-    char executable_path[] = "\\SHELL\\OPEN\\COMMAND";
-
     HKEY hkeyOpen;
+    DWORD type;
+    DWORD size = 0;
+    DWORD result = RegOpenKeyEx(hkey, relativepath, 0, 
+                                KEY_QUERY_VALUE, &hkeyOpen);
+    
+    if (result != ERROR_SUCCESS) 
+        return result;
+
+    /* Read to NULL buffer to determine value size */
+    result = RegQueryValueEx(hkeyOpen, "", 0, &type, NULL, &size);
+    
+   if (result == ERROR_SUCCESS) {
+        if ((size < 2) || (type != REG_SZ && type != REG_EXPAND_SZ)) {
+            result = ERROR_INVALID_PARAMETER;
+        }
+        else {
+            *value = ap_palloc(p, size);
+            /* Read value based on size query above */
+            result = RegQueryValueEx(hkeyOpen, "", 0, &type, *value, &size);
+        }
+    }
+
+    /* TODO: This might look fine, but we need to provide some warning
+     * somewhere that some environment variables may -not- be translated,
+     * seeing as we may have chopped the environment table down somewhat.
+     */
+    if ((result == ERROR_SUCCESS) && (type == REG_EXPAND_SZ)) 
+    {
+        char *tmp = *value;
+        size = ExpandEnvironmentStrings(tmp, *value, 0);
+        if (size) {
+            *value = ap_palloc(p, size);
+            size = ExpandEnvironmentStrings(tmp, *value, size);
+        }
+    }
+
+    RegCloseKey(hkeyOpen);
+    return result;
+}
+
+static char* get_interpreter_from_win32_registry(ap_pool_t *p, const char* ext,
+                                                 char** arguments) 
+{
+    char execcgi_path[] = "SHELL\\EXECCGI\\COMMAND";
+    char execopen_path[] = "SHELL\\OPEN\\COMMAND";
+    char typeName[MAX_PATH];
+    int cmdOfName = FALSE;
+    HKEY hkeyName;
+    HKEY hkeyType;
     DWORD type;
     int size;
     int result;
-    char *keyName;
     char *buffer;
     char *s;
 
@@ -787,52 +833,50 @@ static char* get_interpreter_from_win32_registry(ap_pool_t *p, const char* ext)
         return NULL;
     /* 
      * Future optimization:
-     * When the registry is successfully searched, store the interpreter
-     * string in a ap_table_t to make subsequent look-ups faster
+     * When the registry is successfully searched, store the strings for
+     * interpreter and arguments in an ext hash to speed up subsequent look-ups
      */
 
-    /* Open the key associated with the script extension */
-    keyName = ap_pstrcat(p, extension_path, ext, NULL);
-
-    result = RegOpenKeyEx(HKEY_LOCAL_MACHINE, keyName, 0, KEY_QUERY_VALUE, 
-                          &hkeyOpen);
+    /* Open the key associated with the script filetype extension */
+    result = RegOpenKeyEx(HKEY_CLASSES_ROOT, ext, 0, KEY_QUERY_VALUE, 
+                          &hkeyType);
 
     if (result != ERROR_SUCCESS) 
         return NULL;
 
-    /* Read to NULL buffer to find value size */
-    size = 0;
-    result = RegQueryValueEx(hkeyOpen, "", NULL, &type, NULL, &size);
+    /* Retrieve the name of the script filetype extension */
+    size = sizeof(typeName);
+    result = RegQueryValueEx(hkeyType, "", NULL, &type, typeName, &size);
+    
+    if (result == ERROR_SUCCESS && type == REG_SZ && typeName[0]) {
+        /* Open the key associated with the script filetype extension */
+        result = RegOpenKeyEx(HKEY_CLASSES_ROOT, typeName, 0, 
+                              KEY_QUERY_VALUE, &hkeyName);
 
-    if (result == ERROR_SUCCESS) {
-        buffer = ap_palloc(p, size);
-        result = RegQueryValueEx(hkeyOpen, "", NULL, &type, buffer, &size);
+        if (result == ERROR_SUCCESS)
+            cmdOfName = TRUE;
     }
 
-    RegCloseKey(hkeyOpen);
-
-    if (result != ERROR_SUCCESS)
-        return NULL;
-
-    /* Open the key associated with the interpreter path */
-    keyName = ap_pstrcat(p, extension_path, buffer, executable_path, NULL);
-
-    result = RegOpenKeyEx(HKEY_LOCAL_MACHINE, keyName, 0, KEY_QUERY_VALUE, 
-                          &hkeyOpen);
-
-    if (result != ERROR_SUCCESS)
-        return NULL;
-
-    /* Read to NULL buffer to find value size */
-    size = 0;
-    result = RegQueryValueEx(hkeyOpen, "", 0, &type, NULL, &size);
-
-    if (result == ERROR_SUCCESS) {
-        buffer = ap_palloc(p, size);
-        result = RegQueryValueEx(hkeyOpen, "", 0, &type, buffer, &size);
+    /* Open the key for the script command path by:
+     * 
+     *   1) the 'named' filetype key for Open/Command
+     *   2) the extension's type key for Open/Command
+     */
+    
+    if (cmdOfName) {
+        result = get_win32_registry_default_value(p, hkeyName, 
+                                                  execopen_path, &buffer);
     }
 
-    RegCloseKey(hkeyOpen);
+    if (result != ERROR_SUCCESS) {
+        result = get_win32_registry_default_value(p, hkeyType, 
+                                                  execopen_path, &buffer);
+    }
+
+    if (cmdOfName)
+        RegCloseKey(hkeyName);
+
+    RegCloseKey(hkeyType);
 
     if (result != ERROR_SUCCESS)
         return NULL;
@@ -840,7 +884,7 @@ static char* get_interpreter_from_win32_registry(ap_pool_t *p, const char* ext)
     /*
      * The canonical way shell command entries are entered in the Win32 
      * registry is as follows:
-     *   shell [options] "%1"
+     *   shell [options] "%1" [args]
      * where
      *   shell - full path name to interpreter or shell to run.
      *           E.g., c:\usr\local\ntreskit\perl\bin\perl.exe
@@ -848,21 +892,34 @@ static char* get_interpreter_from_win32_registry(ap_pool_t *p, const char* ext)
      *              E.g., \C
      *   "%1" - Place holder for file to run the shell against. 
      *          Typically quoted.
+     *   options - additional arguments
+     *              E.g., /silent
      *
      * If we find a %1 or a quoted %1, lop it off. 
      */
     if (buffer && *buffer) {
         if ((s = strstr(buffer, "\"%1")))
+        {
             *s = '\0';
+            *arguments = s + 4;
+        }
         else if ((s = strstr(buffer, "%1"))) 
+        {
             *s = '\0';
+            *arguments = buffer + 2;
+        }
+        else
+            *arguments = strchr(buffer, '\0');
+        while (**arguments && isspace(**arguments))
+            ++*arguments;
     }
 
     return buffer;
 }
 
 API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r, 
-                                                  char** interpreter )
+                                                  char** interpreter,
+                                                  char** arguments)
 {
     HANDLE hFile;
     DWORD nBytesRead;
@@ -890,8 +947,17 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
     }
     ext = strrchr(exename, '.');
 
-    if (ext && (!strcasecmp(ext,".bat") || !strcasecmp(ext,".cmd"))) {
-        return eFileTypeEXE32;
+    if (ext && (!strcasecmp(ext,".bat") || !strcasecmp(ext,".cmd"))) 
+    {
+        char *comspec = getenv("COMSPEC");
+        if (comspec) {
+            *interpreter = ap_pstrcat(r->pool, "\"", comspec, "\" /c ", NULL);
+            return eFileTypeSCRIPT;
+        }
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r->server,
+         "Failed to start a '%s' file as a script.\n\t"
+         "COMSPEC variable is missing from the environment.", ext);
+        return eFileTypeUNKNOWN;
     }
 
     /* If the file has an extension and it is not .com and not .exe and
@@ -900,7 +966,8 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
     if (ext && strcasecmp(ext,".exe") && strcasecmp(ext,".com") &&
         d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY) {
          /* Check the registry */
-        *interpreter = get_interpreter_from_win32_registry(r->pool, ext);
+        *interpreter = get_interpreter_from_win32_registry(r->pool, ext, 
+                                                           arguments);
         if (*interpreter)
             return eFileTypeSCRIPT;
         else {
