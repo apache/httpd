@@ -15,6 +15,7 @@ OBJS= \
 	$(CC) -c $(INCLUDES) $(CFLAGS) $<
 
 # Used to generate import library for OS/2
+.SUFFIXES: .def
 .def.a:
 	emximp -o $@ $<
 
