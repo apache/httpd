@@ -94,25 +94,9 @@
 #include "ap_mpm.h"
 #include "mod_core.h"
 #include "../filters/mod_include.h"
-
+#include "mod_cgi.h"
 
 module AP_MODULE_DECLARE_DATA cgi_module;
-
-/* There has to be a better place to put this - uhm... where exactly? */
-/**
- * Reprocess the command and arguments to execute the given CGI script.
- * @param cmd Pointer to the command to execute (may be overridden)
- * @param argv Pointer to the arguments to pass (may be overridden)
- * @param r The current request
- * @param p The pool to allocate correct cmd/argv elements within.
- * @deffunc apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv, request_rec *r, apr_pool_t *p)
- * @tip This callback may be registered by the os-specific module 
- * to correct the command and arguments for apr_proc_create invocation
- * on a given os.  mod_cgi will call the function if registered.
- */
-APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_cgi_build_command, 
-                        (const char **cmd, const char ***argv,
-                         request_rec *r, apr_pool_t *p));
 
 static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *cgi_pfn_reg_with_ssi;
 static APR_OPTIONAL_FN_TYPE(ap_ssi_get_tag_and_value) *cgi_pfn_gtv;
