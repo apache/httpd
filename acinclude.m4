@@ -58,7 +58,8 @@ YES_IS_DEFINED
 #endif
   ], ac_cv_define_$1=yes, ac_cv_define_$1=no))
   if test "$ac_cv_define_$1" = "yes" ; then
-      AC_DEFINE(HAVE_$1)
+      AC_DEFINE(HAVE_$1,,
+          [Define if the macro "$1" is defined on this system])
   fi
 ])
 
@@ -75,7 +76,8 @@ AC_DEFUN(AC_TYPE_RLIM_T, [
     ])
   ])
   if test "$ac_ac_type_rlim_t" = "no" ; then
-      AC_DEFINE(rlim_t, int)
+      AC_DEFINE(rlim_t, int,
+          [Define to 'int' if <sys/resource.h> doesn't define it for us])
   fi
 ])
 
