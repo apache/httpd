@@ -3108,7 +3108,7 @@ static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
         else {
             const char *str;
             apr_ssize_t n;
-            rv = ap_bucket_read(e, &str, &n, 0);
+            rv = ap_bucket_read(e, &str, &n, AP_BLOCK_READ);
             if (rv != APR_SUCCESS) {
                 /* XXX: log error */
                 return rv;
@@ -3222,7 +3222,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 		const char *data;
 		apr_ssize_t len;
 
-		rv = ap_bucket_read(e, &data, &len, 1);
+		rv = ap_bucket_read(e, &data, &len, AP_BLOCK_READ);
 		if (rv != APR_SUCCESS) {
 		    return rv;
 		}
@@ -3385,7 +3385,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
             else {
                 const char *str;
                 apr_ssize_t n;
-                rv = ap_bucket_read(e, &str, &n, 0);
+                rv = ap_bucket_read(e, &str, &n, AP_BLOCK_READ);
                 if (n) {
                     nbytes += n;
                     if (!fd) {
