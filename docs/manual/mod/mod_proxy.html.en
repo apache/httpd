@@ -33,10 +33,14 @@ and filter support was enabled.</p>
 
 <p>Please note that the <strong>caching</strong> function present in
 mod_proxy up to Apache v1.3.x has been <strong>removed</strong> from
-mod_proxy and will be incorporated into a new module, mod_cache.</p>
+mod_proxy and will be incorporated into a new module, mod_cache. In other words:
+the Apache 2.0.x-Proxy doesn't 
+cache at all - all caching functionality has been moved into mod_cache, 
+which is capable of caching any content, not only content from proxy.
+</p>
 
 <p>If you need to use SSL when contacting remote servers, have a look at the
-<code>SSLProxy*</code> directives in mod_ssl.</p>
+<code>SSLProxy*</code> directives in <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.</p>
 
 <div class="warning"><p>Do not enable proxying with <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> until you have 
 <a href="#access">secured your server</a>.  Open proxy servers are
