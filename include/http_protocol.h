@@ -388,7 +388,6 @@ AP_DECLARE(const char *) ap_get_status_line(int status);
  *    REQUEST_NO_BODY          Send 413 error if message has any body
  *    REQUEST_CHUNKED_ERROR    Send 411 error if body without Content-Length
  *    REQUEST_CHUNKED_DECHUNK  If chunked, remove the chunks for me.
- *    REQUEST_CHUNKED_PASS     Pass the chunks to me without removal.
  * </PRE>
  * @return either OK or an error code
  * @deffunc int ap_setup_cleint_block(request_rec *r, int read_policy)

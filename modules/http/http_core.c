@@ -2908,25 +2908,6 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
 
 static int do_nothing(request_rec *r) { return OK; }
 
-#define POST_CHUNK_SIZE 4096
-
-static int handle_request_body(request_rec *r)
-{
-    int rv;
-    char buf[POST_CHUNK_SIZE];
-    long n;
-
-    if ((rv = ap_setup_client_block(r, REQUEST_CHUNKED_DECHUNK)))
-        return rv;
-
-    if ((rv = ap_should_client_block(r)) == 0)
-        return APR_SUCCESS;
-
-    while ((n = ap_get_client_block(r, buf, POST_CHUNK_SIZE)) > 0);
-
-    return APR_SUCCESS;
-}
-
 static int default_handler(request_rec *r)
 {
     core_dir_config *d =
@@ -2949,11 +2930,7 @@ static int default_handler(request_rec *r)
 
     ap_allow_methods(r, MERGE_ALLOW, "GET", "OPTIONS", "POST", NULL);
 
-    if (r->method_number == M_POST) {
-        if ((errstatus = handle_request_body(r)) != APR_SUCCESS) {
-            return errstatus;
-        }
-    } else if ((errstatus = ap_discard_request_body(r)) != OK) {
+    if ((errstatus = ap_discard_request_body(r)) != OK) {
         return errstatus;
     }
     

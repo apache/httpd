@@ -816,7 +816,6 @@ struct dechunk_ctx {
     apr_ssize_t chunk_size;
     apr_ssize_t bytes_delivered;
     enum {WANT_HDR /* must have value zero */, WANT_BODY, WANT_TRL} state;
-    int remove_chunk_proto;
 };
 
 static long get_chunk_size(char *);
@@ -833,7 +832,6 @@ apr_status_t ap_dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
 
     if (!ctx) {
         f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(struct dechunk_ctx));
-        ctx->remove_chunk_proto = f->r->read_body != REQUEST_CHUNKED_PASS;
     }
 
     do {
@@ -2487,7 +2485,6 @@ AP_DECLARE(void) ap_finalize_request_protocol(request_rec *r)
  *    REQUEST_NO_BODY          Send 413 error if message has any body
  *    REQUEST_CHUNKED_ERROR    Send 411 error if body without Content-Length
  *    REQUEST_CHUNKED_DECHUNK  If chunked, remove the chunks for me.
- *    REQUEST_CHUNKED_PASS     Pass the chunks to me without removal.
  *
  *    In order to use the last two options, the caller MUST provide a buffer
  *    large enough to hold a chunk-size line, including any extensions.
@@ -2530,10 +2527,6 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
         }
 
         r->read_chunked = 1;
-        if (r->read_body == REQUEST_CHUNKED_PASS) {
-            /* can't filter the body *and* preserve the chunk headers */
-            r->input_filters = r->connection->input_filters;
-        }
         ap_add_input_filter("DECHUNK", NULL, r, r->connection);
     }
     else if (lenp) {
@@ -2718,7 +2711,7 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
 {
     int rv;
 
-    if ((rv = ap_setup_client_block(r, REQUEST_CHUNKED_PASS)))
+    if ((rv = ap_setup_client_block(r, REQUEST_CHUNKED_DECHUNK)))
         return rv;
 
     /* In order to avoid sending 100 Continue when we already know the
