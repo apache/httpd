@@ -312,7 +312,7 @@ static int file_cache_write_mydata(apr_file_t *fd , cache_handle_t *h, request_r
 static int create_entity(cache_handle_t *h, request_rec *r,
                          const char *type, 
                          const char *key, 
-                         apr_size_t len)
+                         apr_off_t len)
 { 
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config, 
                                                  &disk_cache_module);

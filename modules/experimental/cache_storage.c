@@ -108,7 +108,7 @@ int cache_remove_url(request_rec *r, const char *types, char *url)
  * decide whether or not it wants to cache this particular entity.
  * If the size is unknown, a size of -1 should be set.
  */
-int cache_create_entity(request_rec *r, const char *types, char *url, apr_size_t size)
+int cache_create_entity(request_rec *r, const char *types, char *url, apr_off_t size)
 {
     cache_handle_t *h = apr_pcalloc(r->pool, sizeof(cache_handle_t));
     const char *next = types;
@@ -300,7 +300,7 @@ apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key
 
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, create_entity, 
                                       (cache_handle_t *h, request_rec *r, const char *type, 
-                                      const char *urlkey, apr_size_t len),
+                                      const char *urlkey, apr_off_t len),
                                       (h, r, type,urlkey,len),DECLINED)
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, open_entity,  
                                       (cache_handle_t *h, request_rec *r, const char *type, 
