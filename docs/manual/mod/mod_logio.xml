@@ -22,36 +22,36 @@
 
 </summary>
 
+<seealso><module>mod_log_config</module></seealso>
 <seealso><a href="../logs.html">Apache Log Files</a></seealso>
 
 <section id="formats">
 <title>Custom Log Formats</title>
 
     <p>This modules adds two new logging directives. The characteristics of the
-    request itself are logged by placing "%" directives in the format string,
-    which are replaced in the log file by the values as follows:</p>
+    request itself are logged by placing "<code>%</code>" directives in
+    the format string, which are replaced in the log file by the values as
+    follows:</p>
 
-<table>
+    <table border="1" style="zebra">
+    <tr><th>Format&nbsp;String</th>
+        <th>Description</th></tr>
 
-<tr><td>%...I:</td>
-<td>Bytes received, including request and headers, cannot be zero.</td></tr>
+    <tr><td><code>%...I</code></td>
+        <td>Bytes received, including request and headers, cannot be
+        zero.</td></tr>
 
-<tr><td>%...O:</td>
-<td>Bytes sent, including headers, cannot be zero.</td></tr>
-
-</table>
+    <tr><td><code>%...O</code></td>
+        <td>Bytes sent, including headers, cannot be zero.</td></tr>
+    </table>
 
     <p>Usually, the functionality is used like this:</p>
 
     <dl>
-
       <dt>Combined I/O log format:</dt>
-
       <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
       \"%{User-agent}i\" %I %O"</code></dd>
-
     </dl>
-
 </section>
 
 </modulesynopsis>
