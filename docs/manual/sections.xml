@@ -331,7 +331,7 @@ sections is also syntactically allowed in
 <directive type="section" module="core">LocationMatch</directive>,
 <directive type="section" module="mod_proxy">Proxy</directive>,
 and <directive type="section" module="mod_proxy">ProxyMatch</directive>
-sections.  There are some exceptions, however.</p>
+sections.  There are some exceptions, however:</p>
 
 <ul>
 <li>The <directive module="core">AllowOverride</directive> directive
@@ -362,9 +362,9 @@ are interpreted, it is important to understand how this works.</p>
     <ol>
       <li> <directive type="section"
       module="core">Directory</directive> (except regular expressions)
-      and .htaccess done simultaneously (with .htaccess, if allowed,
-      overriding <directive type="section"
-      module="core">Directory</directive>)</li>
+      and <code>.htaccess</code> done simultaneously (with
+      <code>.htaccess</code>, if allowed, overriding
+      <directive type="section" module="core">Directory</directive>)</li>
 
       <li><directive type="section" module="core">DirectoryMatch</directive>
       (and <code>&lt;Directory ~&gt;</code>)</li>
