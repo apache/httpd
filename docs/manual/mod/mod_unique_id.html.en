@@ -13,7 +13,7 @@ identifier for each request</td></tr><tr><td><a href="module-dict.html#Status" c
     set to the identifier for each request. Unique identifiers are
     useful for various reasons which are beyond the scope of this
     document.</p>
-<h2>Directives</h2><p/><h2>Theory</h2>
+<h2>Directives</h2><p>This module provides no directives.</p><h2>Theory</h2>
     
 
     <p>First a brief recap of how the Apache server works on Unix
