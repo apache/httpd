@@ -50,6 +50,7 @@ extern void *dummy_mutex;
 #define create_mutex(name)	((mutex *)dummy_mutex)
 #define acquire_mutex(mutex_id)	((int)MULTI_OK)
 #define release_mutex(mutex_id)	((int)MULTI_OK)
+#define destroy_mutex(mutex_id)	(0)
 
 #endif /* ndef MULTITHREAD */
 

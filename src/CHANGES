@@ -1,5 +1,7 @@
 Changes with Apache 1.3b4
   
+  *) non-WIN32 was missing destroy_mutex definition.  [Ben Hyde]
+  
   *) send_fd_length() did not calculate total_bytes_sent properly.
      [Ben Reser <breser@regnow.com>] PR#1366
 
