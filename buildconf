@@ -88,6 +88,9 @@ touch .deps
 rm -f aclocal.m4
 rm -f generated_lists
 
+# Remove autoconf 2.5x's cache directory
+rm -rf autom4te*.cache
+
 case "`uname`" in
 *BSD/OS*)
     ./build/bsd_makefile;;
