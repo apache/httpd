@@ -460,6 +460,8 @@ typedef struct {
     SSL *ssl;
     const char *client_dn;
     ssl_shutdown_type_e shutdown_type;
+    const char *verify_info;
+    const char *verify_error;
 } SSLConnRec;
 
 typedef struct {

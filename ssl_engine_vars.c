@@ -499,15 +499,15 @@ static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, conn_rec *c)
     SSLConnRec *sslconn = myConnConfig(c);
     char *result;
     long vrc;
-    char *verr;
-    char *vinfo;
+    const char *verr;
+    const char *vinfo;
     SSL *ssl;
     X509 *xs;
 
     result = NULL;
     ssl   = sslconn->ssl;
-    verr  = (char *)apr_table_get(c->notes, "ssl::verify::error");
-    vinfo = (char *)apr_table_get(c->notes, "ssl::verify::info");
+    verr  = sslconn->verify_error;
+    vinfo = sslconn->verify_info;
     vrc   = SSL_get_verify_result(ssl);
     xs    = SSL_get_peer_certificate(ssl);
 
@@ -649,7 +649,7 @@ static const char *ssl_var_log_handler_c(request_rec *r, char *a)
     else if (strEQ(a, "errcode"))
         result = "-";
     else if (strEQ(a, "errstr"))
-        result = (char *)apr_table_get(r->connection->notes, "ssl::verify::error");
+        result = (char *)sslconn->verify_error;
     if (result != NULL && result[0] == NUL)
         result = NULL;
     return result;
