@@ -244,7 +244,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 
     clear_connection(r->headers_in);	/* Strip connection-based headers */
 
-    f = bcreate(pool, B_RDWR, 1);
+    f = bcreate(pool, B_RDWR | B_SOCKET);
     bpushfd(f, sock, sock);
 
     hard_timeout ("proxy send", r);

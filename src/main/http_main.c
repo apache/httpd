@@ -2194,7 +2194,7 @@ void child_main(int child_num_arg)
 	(void)update_child_status(child_num, SERVER_BUSY_READ,
 	                          (request_rec*)NULL);
 
-	conn_io = bcreate(ptrans, B_RDWR, 1);
+	conn_io = bcreate(ptrans, B_RDWR | B_SOCKET);
 	dupped_csd = csd;
 #if defined(NEED_DUPPED_CSD)
 	if ((dupped_csd = dup(csd)) < 0) {
@@ -2671,7 +2671,7 @@ main(int argc, char *argv[])
 	    exit(1);
 	}
 	server_conf->port =ntohs(((struct sockaddr_in *)&sa_server)->sin_port);
-	cio = bcreate(ptrans, B_RDWR, 1);
+	cio = bcreate(ptrans, B_RDWR | B_SOCKET);
 #ifdef MPE
 /* HP MPE 5.5 inetd only passes the incoming socket as stdin (fd 0), whereas
    HPUX inetd passes the incoming socket as stdin (fd 0) and stdout (fd 1).
@@ -2903,7 +2903,7 @@ void child_sub_main(int child_num, int srv,
 	(void)update_child_status(child_num, SERVER_BUSY_READ,
 	                          (request_rec*)NULL);
 
-	conn_io = bcreate(pchild, B_RDWR, 1);
+	conn_io = bcreate(pchild, B_RDWR | B_SOCKET);
 	dupped_csd = csd;
 #if defined(NEED_DUPPED_CSD)
 	if ((dupped_csd = dup(csd)) < 0) {

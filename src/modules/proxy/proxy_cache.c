@@ -511,7 +511,7 @@ proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	if (cfd != -1)
 	{
 	    note_cleanups_for_fd(r->pool, cfd);
-	    cachefp = bcreate(r->pool, B_RD | B_WR, 0);
+	    cachefp = bcreate(r->pool, B_RD | B_WR);
 	    bpushfd(cachefp, cfd, cfd);
 	} else if (errno != ENOENT)
 	    proxy_log_uerror("open", c->filename,
@@ -856,7 +856,7 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 	return DECLINED;
     }
     note_cleanups_for_fd(r->pool, i);
-    c->fp = bcreate(r->pool, B_WR, 0);
+    c->fp = bcreate(r->pool, B_WR);
     bpushfd(c->fp, -1, i);
 
     if (bvputs(c->fp, buff, "X-URL: ", c->url, "\n", NULL) == -1)

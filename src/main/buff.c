@@ -50,9 +50,8 @@
  *
  */
 
-#include "conf.h"
-#include "alloc.h"
-#include "buff.h"
+#include "httpd.h"
+#include "http_main.h"
 
 #include <errno.h>
 #include <stdio.h>
@@ -71,8 +70,6 @@
 #endif
 
 #define DEFAULT_BUFSIZE (4096)
-
-extern int check_alarm(); /* didn't want to include http_main.h */
 
 /*
  * Buffered I/O routines.
@@ -194,6 +191,48 @@ recvwithtimeout(int sock, char *buf, int len, int flags)
 
 #endif /* WIN32 */    
 
+
+/* these are wrappers to make code below more readable */
+#if !defined (__GNUC__)
+#define inline
+#endif
+
+static inline int buff_read (BUFF *fb, void *buf, int nbyte)
+{
+    int rv;
+
+#ifdef WIN32
+    if (fb->flags & B_SOCKET) {
+	rv = recvwithtimeout( fb->fd_in, buf, nbyte, 0 );
+	if (rv == SOCKET_ERROR)
+	    errno = WSAGetLastError() - WSABASEERR;
+    }
+    else
+	rv = read( fb->fd_in, buf, nbyte );
+#else
+    rv = read( fb->fd_in, buf, nbyte );
+#endif /* WIN32 */
+    return rv;
+}
+
+static inline int buff_write (BUFF *fb, const void *buf, int nbyte)
+{
+    int rv;
+
+#ifdef WIN32
+    if (fb->flags & B_SOCKET) {
+	rv = sendwithtimeout( fb->fd, buf, nbyte, 0);
+	if (rv == SOCKET_ERROR)
+	    errno = WSAGetLastError() - WSABASEERR;
+    }
+    else
+	rv = write( fb->fd, buf, nbyte );
+#else
+    rv = write( fb->fd, buf, nbyte );
+#endif /* WIN32 */
+    return rv;
+}
+
 static void
 doerror(BUFF *fb, int err)
 {
@@ -213,7 +252,7 @@ doerror(BUFF *fb, int err)
  * Create a new buffered stream
  */
 BUFF *
-bcreate(pool *p, int flags, int is_socket)
+bcreate(pool *p, int flags)
 {
     BUFF *fb;
 
@@ -240,7 +279,6 @@ bcreate(pool *p, int flags, int is_socket)
 
     fb->fd = -1;
     fb->fd_in = -1;
-    fb->is_socket = is_socket;
 
     return fb;
 }
@@ -423,18 +461,7 @@ saferead( BUFF *fb, void *buf, int nbyte )
 	}
     }
     do {
-#ifdef WIN32
-        if(fb->is_socket)
-        {
-            rv = recvwithtimeout( fb->fd_in, buf, nbyte, 0 );
-            if(rv == SOCKET_ERROR)
-                errno = WSAGetLastError() - WSABASEERR;
-        }
-        else
-            rv = read( fb->fd_in, buf, nbyte );
-#else
-	rv = read( fb->fd_in, buf, nbyte );
-#endif /* WIN32 */
+	rv = buff_read (fb, buf, nbyte);
     } while (rv == -1 && errno == EINTR && !(fb->flags & B_EOUT));
     return( rv );
 }
@@ -731,18 +758,7 @@ write_it_all(BUFF *fb, const void *buf, int nbyte)
 	return -1;
 
     while (nbyte > 0) {
-#ifdef WIN32
-        if(fb->is_socket)
-        {
-            i = sendwithtimeout( fb->fd, buf, nbyte, 0);
-            if(i == SOCKET_ERROR)
-                errno = WSAGetLastError() - WSABASEERR;
-        }
-        else
-            i = write( fb->fd, buf, nbyte );
-#else
-	i = write( fb->fd, buf, nbyte );
-#endif /* WIN32 */
+	i = buff_write( fb, buf, nbyte );
 	if( i < 0 ) {
 	    if( errno != EAGAIN && errno != EINTR ) {
 		return -1;
@@ -780,18 +796,7 @@ bcwrite(BUFF *fb, const void *buf, int nbyte)
 
     if (!(fb->flags & B_CHUNK))
     {
-#ifdef WIN32
-        if(fb->is_socket)
-        {
-            i = sendwithtimeout(fb->fd, buf, nbyte, 0 );
-            if(i == SOCKET_ERROR)
-                errno = WSAGetLastError() - WSABASEERR;
-        }
-        else
-            i = write(fb->fd, buf, nbyte);
-#else
-	i = write(fb->fd, buf, nbyte);
-#endif /* WIN32 */
+	i = buff_write(fb, buf, nbyte);
         return(i);
     }
 
@@ -916,19 +921,7 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
 	            -1 : fb->outcnt;
 	} else {
 	    do {
-#ifdef WIN32
-                if(fb->is_socket)
-                {
-                    i = sendwithtimeout(fb->fd, fb->outbase, fb->outcnt, 0 );
-                    if(i == SOCKET_ERROR)
-                        errno = WSAGetLastError() - WSABASEERR;
-                }
-                else
-                    i = write(fb->fd, fb->outbase, fb->outcnt);
-
-#else
-	        i = write(fb->fd, fb->outbase, fb->outcnt);
-#endif /* WIN32 */
+	        i = buff_write(fb, fb->outbase, fb->outcnt);
 	    } while (i == -1 && errno == EINTR && !(fb->flags & B_EOUT));
 	}
 	if (i <= 0) {
@@ -1011,18 +1004,7 @@ bflush(BUFF *fb)
     {
 	/* the buffer must be full */
 	do {
-#ifdef WIN32
-                if(fb->is_socket)
-                {
-                    i = sendwithtimeout(fb->fd, fb->outbase, fb->outcnt, 0 );
-                    if(i == SOCKET_ERROR)
-                        errno = WSAGetLastError() - WSABASEERR;
-                }
-                else
-                    i = write(fb->fd, fb->outbase, fb->outcnt);
-#else
-	        i = write(fb->fd, fb->outbase, fb->outcnt);
-#endif /* WIN32 */
+	    i = buff_write(fb, fb->outbase, fb->outcnt);
 	} while (i == -1 && errno == EINTR && !(fb->flags & B_EOUT));
 	if (i == 0) {
 	    errno = EAGAIN;

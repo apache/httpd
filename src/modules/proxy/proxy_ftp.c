@@ -520,7 +520,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     if (i == -1)
 	return proxyerror(r, "Could not connect to remote machine");
 
-    f = bcreate(pool, B_RDWR, 1);
+    f = bcreate(pool, B_RDWR | B_SOCKET);
     bpushfd(f, sock, sock);
 /* shouldn't we implement telnet control options here? */
 
@@ -721,7 +721,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 		return proxyerror(r, "Could not connect to remote machine");
 	    }
 	    else {
-	        data = bcreate(pool, B_RDWR, 1); 
+	        data = bcreate(pool, B_RDWR | B_SOCKET); 
 	        bpushfd(data, dsock, dsock);
 	        pasvmode = 1;
 	    }
@@ -935,7 +935,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    return BAD_GATEWAY;
         }
         note_cleanups_for_socket(pool, csd);
-        data = bcreate(pool, B_RDWR, 1);
+        data = bcreate(pool, B_RDWR | B_SOCKET);
         bpushfd(data, csd, -1);
 	kill_timeout(r);
     }
