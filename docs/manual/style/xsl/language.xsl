@@ -200,14 +200,25 @@
             </target>
             &lf;
 
-            <target name="zip-{.}"
+            <target name="-off-{.}" depends="metafiles"
+                  unless="-off.{.}.done">&lf;
+                <xsl:text>    </xsl:text>
+                <dependencies.offline lang="{.}" style="zip" dir="_off" />&lf;
+                <xsl:text>    </xsl:text>
+                <offline.generic lang="{.}" style="zip" dir="_off" />&lf;
+                <xsl:text>    </xsl:text>
+                <property name="-off.{.}.done" value="yes" />&lf;
+            </target>
+            &lf;
+
+            <target name="zip-{.}" depends="-off-{.}"
                     description="- builds the {$file/name} zipped download package">&lf;
                 <xsl:text>    </xsl:text>
                 <zip.generic lang="{.}" />&lf;
             </target>
             &lf;
 
-            <target name="war-{.}"
+            <target name="war-{.}" depends="-off-{.}"
                     description="- builds the {$file/name} Konqueror Web Archive">&lf;
                 <xsl:text>    </xsl:text>
                 <war.generic lang="{.}" />&lf;
