@@ -513,10 +513,6 @@ Other bugs that need fixing:
                             the <Container ~ foo> forms, and using only
                             <ContainerMatch foo> semantics.
 
-    * SIGSEGV on Linux (glibc 2.1.2) isn't caught properly by a
-      sigwaiting thread. We need to work around this, perhaps unless
-      there is hope soon for a fixed glibc.
-
     * orig_ct in the byterange/multipart handling may not be
       needed. Apache 1.3 just never stashed "multipart" into
       r->content_type. We should probably follow suit since the
