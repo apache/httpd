@@ -641,6 +641,12 @@ static int cgid_server(void *data)
         len = sizeof(unix_addr);
         sd2 = accept(sd, (struct sockaddr *)&unix_addr, &len);
         if (sd2 < 0) {
+#if defined(ENETDOWN)
+            if (errno == ENETDOWN) {
+                /* The network has been shut down, no need to continue. Die gracefully */
+		++daemon_should_exit;
+	    }
+#endif
             if (errno != EINTR) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, errno, 
                              (server_rec *)data,
