@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/11/19 13:48:57 $]
+Last modified at [$Date: 2001/11/19 18:07:27 $]
 
 Release:
 
@@ -191,7 +191,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                 decoupled now, but isn't really sure.
 
     * Performance: Get the SINGLE_LISTEN_UNSERIALIZED_ACCEPT
-      optimization working in threaded.  prefork's new design for how
+      optimization working in worker.  prefork's new design for how
       to notice data on the pod should be sufficient.
 
     * Performance & Debug: Eliminate most (and perhaps all) of the 
@@ -250,7 +250,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                 Key question, part of htpasswd, or a seperate utility?
                 prefer htpasswd:
                 prefer seperate: OtherBill
-
 
     * use apu_dbm in mod_auth_dbm
         Status: Greg +1 (low-priority volunteer)
@@ -315,15 +314,12 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       search for libssl and libcrypto and properly add them to mod_ssl's
       link flags.
 
-    * Remove the threaded MPM.
-      +1:   Ryan, Justin, Jeff, Ian, Aaron, Cliff, Greg Ames
-      +0:
-      -1:
-
     * Make the worker MPM the default MPM for threaded Unix boxes.
       +1:   Justin, Jeff, Ian
       -0:   Aaron (premature decision, needs more discussion)
       -0:   Cliff (I think the default config should be the safest possible)
+
+    * The worker MPM needs some doc.
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
