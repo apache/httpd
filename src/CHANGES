@@ -31,8 +31,8 @@ Changes with Apache 1.3.25
   *) Made AB's use of the Host: header rfc2616 compliant
      by Taisuke Yamada <tai@iij.ad.jp> [Dirl-Willem van Gulik].
      
-  *) Update the Redhat Layout to match Redhat version 7. PR BZ-7422
-     [Joe Orton] 
+  *) Update the Red Hat Layout to match Red Hat Linux version 7. 
+     PR BZ-7422 [Joe Orton] 
 
   *) Add some popular types to the mime magic file.  PR 7730.
      [Linus Walleij <triad@df.lth.se>, Justin Erenkrantz]
@@ -4373,7 +4373,7 @@ Changes with Apache 1.3b7
 
   *) Just having APACI's localstatedir is too general and not enough for most
      of the systems. 1.3b6 again required manual APACI patches by package
-     maintainers from RedHat and FreeBSD because for their filesystem layout a
+     maintainers from Red Hat and FreeBSD because for their filesystem layout a
      little bit more flexibility in configuring the paths is needed. Hence we
      provide three additional configure options (--runtimedir, --logfiledir,
      --proxycachedir) which now can be used for more granular adjustments if
@@ -4383,7 +4383,7 @@ Changes with Apache 1.3b7
 
   *) Make the install root for "make install" in APACI's Makefile overrideable
      by package authors.  This way we are even more friendly to package
-     maintainers (especially Debian and RedHat) who build for the real prefix
+     maintainers (especially Debian and Red Hat) who build for the real prefix
      via "configure --prefix=/<real>" but use a different local prefix via
      "make root=/tmp/apache install" for rolling the package without bristling
      the target location on their system. 
