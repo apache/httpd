@@ -331,7 +331,7 @@ static void help_proxy_garbage_coll(request_rec *r)
     if (cmp_long61(&curbytes, &cachesize) < 0L) {
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server,
 			 "proxy GC: Cache is %ld%% full (nothing deleted)",
-			 ((curbytes.upper<<20)|(curbytes.lower>>10))*100/conf->space);
+			 (long)((curbytes.upper<<20)|(curbytes.lower>>10))*100/conf->space);
 	ap_unblock_alarms();
 	return;
     }
@@ -362,7 +362,7 @@ static void help_proxy_garbage_coll(request_rec *r)
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server,
 			 "proxy GC: Cache is %ld%% full (%d deleted)",
-			 ((curbytes.upper<<20)|(curbytes.lower>>10))*100/conf->space, i);
+			 (long)((curbytes.upper<<20)|(curbytes.lower>>10))*100/conf->space, i);
     ap_unblock_alarms();
 }
 
@@ -594,7 +594,7 @@ static int rdcache(pool *p, BUFF *cachefp, struct cache_req *c)
 	q = ap_proxy_get_header(c->hdrs, "Content-Length");
 	if (q == NULL) {
 	    strp = ap_palloc(p, 15);
-	    ap_snprintf(strp, 15, "%lu", c->len);
+	    ap_snprintf(strp, 15, "%lu", (unsigned long)c->len);
 	    ap_proxy_add_header(c->hdrs, "Content-Length", strp, HDR_REP);
 	}
     }
