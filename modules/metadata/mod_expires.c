@@ -205,6 +205,7 @@
 #include "http_config.h"
 #include "http_log.h"
 #include "http_request.h"
+#include "http_protocol.h"
 
 typedef struct {
     int active;
@@ -548,6 +549,7 @@ static void register_hooks(apr_pool_t *p)
 {
     ap_register_output_filter("MOD_EXPIRES", expires_filter, NULL,
                               AP_FTYPE_CONTENT_SET);
+    ap_hook_insert_error_filter(expires_insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_insert_filter(expires_insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
 }
 

@@ -74,6 +74,13 @@ extern "C" {
  * @package HTTP protocol handling
  */
 
+/**
+ * This hook allows modules to insert filters for the current error response
+ * @param r the current request
+ * @ingroup hooks
+ */
+AP_DECLARE_HOOK(void,insert_error_filter,(request_rec *r))
+
 /* This is an optimization.  We keep a record of the filter_rec that
  * stores the old_write filter, so that we can avoid strcmp's later.
  */

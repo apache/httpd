@@ -1,5 +1,11 @@
 Changes with Apache 2.0.49
 
+  *) Add a hook (insert_error_filter) to allow filters to re-insert
+     themselves during processing of error responses. Enable mod_expires
+     to use the new hook to include Expires headers in valid error
+     responses. This addresses an RFC violation. It fixes PRs 19794,
+     24884, and 25123. [Paul J. Reder]
+
   *) Add Polish translation of error messages.  PR 25101.
      [Tomasz Kepczynski <tomek jot23.org>]
 
