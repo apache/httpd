@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) prefork: Don't segfault when we are able to listen on some but
+     not all of the configured ports.  [Jeff Trawick]
+
   *) Build mod_so even if no core modules are built shared.
      [Aaron Bannert <aaron@clove.org>]
 
