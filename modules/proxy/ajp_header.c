@@ -211,7 +211,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t    *msg,
     apr_byte_t is_ssl;
     char *remote_host;
     char *uri;
-    
+    const char *session_route;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "Into ajp_marshal_into_msgb");
@@ -334,16 +334,16 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t    *msg,
             return APR_EGENERAL;
         }
     }
-/* XXXX ignored for the moment
-    if (s->jvm_route) {
+    if ((session_route = apr_table_get(r->notes, "session-route"))) {
         if (ajp_msg_append_uint8(msg, SC_A_JVM_ROUTE) ||
-            ajp_msg_append_string(msg, s->jvm_route)) {
+            ajp_msg_append_string(msg, session_route)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                    "Error ajp_marshal_into_msgb - "
                    "Error appending the jvm route");
             return APR_EGENERAL;
         }
     }
+/* XXXX ignored for the moment
     if (s->ssl_cert_len) {
         if (ajp_msg_append_uint8(msg, SC_A_SSL_CERT) ||
             ajp_msg_append_string(msg, s->ssl_cert)) {
