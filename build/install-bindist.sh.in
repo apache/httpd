@@ -86,9 +86,12 @@ if [ -f $SR/bin/envvars ]
 then
   echo "[Preserving existing envvars settings.]"
   cp -p $SR/bin/envvars ./envvars.orig
+  HAD_ENVVARS=yes
+else
+  HAD_ENVVARS=no
 fi
 lcopy bindist/bin $SR/bin 750 750
-if [ -f ./envvars.orig ]
+if [ $HAD_ENVVARS = yes ]
 then
   cp -p ./envvars.orig $SR/bin/envvars
   rm ./envvars.orig
@@ -121,6 +124,12 @@ sed -e "s;^#!/.*;#!$PERL;" -e "s;\@prefix\@;$SR;" -e "s;\@sbindir\@;$SR/bin;" \
 sed -e "s;^#!/.*;#!$PERL;" bindist/bin/dbmmanage > $SR/bin/dbmmanage
 sed -e "s%@default_dir@%$SR%" \
         -e "s%^HTTPD=.*$%HTTPD=\"$SR/bin/httpd -d $SR\"%" bindist/bin/apachectl > $SR/bin/apachectl
+sed -e "s%@default_dir@%$SR%" \
+        bindist/bin/envvars-std > $SR/bin/envvars-std
+if [ $HAD_ENVVARS = no ]
+then
+    cp -p $SR/bin/envvars-std $SR/bin/envvars
+fi
  
 echo "Ready."
 echo " +--------------------------------------------------------+"
