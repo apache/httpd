@@ -68,6 +68,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#define CORE_PRIVATE
 #include "http_core.h"
 #include "http_log.h"
 #include "http_main.h"
@@ -82,7 +83,15 @@
 #error mod_charset_lite cannot work without APACHE_XLATE enabled
 #endif
 
-#define XLATE_BUF_SIZE (16*1024) /* we try to send down brigades of this len, but... */
+#define OUTPUT_XLATE_BUF_SIZE (16*1024) /* size of translation buffer used on output */
+#define INPUT_XLATE_BUF_SIZE  (8*1024)  /* size of translation buffer used on input */
+
+/* XXX this works around an issue with the heap bucket: ap_bucket_create_heap will 
+ *     copy only the first 4096 bytes
+ */
+#undef INPUT_XLATE_BUF_SIZE         /* XXX */
+#define INPUT_XLATE_BUF_SIZE (4096) /* XXX must match DEFAULT_BUCKET_SIZE */
+
 #define XLATE_MIN_BUFF_LEFT 128  /* flush once there is no more than this much
                                   * space is left in the translation buffer 
                                   */
@@ -130,9 +139,8 @@ typedef struct charset_filter_ctx_t {
     int ran;                /* has filter instance run before? */
     int noop;               /* should we pass brigades through unchanged? */
     char *tmp;              /* buffer for input filtering */
+    ap_bucket_brigade *bb;  /* input buckets we couldn't finish translating */
 } charset_filter_ctx_t;
-
-#define INPUT_BUFFER_SIZE     16384    /* real big because we don't handle running out of space now :) */
 
 /* charset_req_t is available via r->request_config if any translation is
  * being performed
@@ -329,6 +337,8 @@ static int find_code_page(request_rec *r)
          * of it.
          */
         input_ctx = apr_pcalloc(r->pool, sizeof(charset_filter_ctx_t));
+        input_ctx->bb = ap_brigade_create(r->pool);
+        input_ctx->tmp = apr_palloc(r->pool, INPUT_XLATE_BUF_SIZE);
         input_ctx->dc = dc;
         reqinfo->input_ctx = input_ctx;
         rv = apr_xlate_open(&input_ctx->xlate, dc->charset_source, 
@@ -344,6 +354,36 @@ static int find_code_page(request_rec *r)
     return DECLINED;
 }
 
+static int configured_on_input(request_rec *r, const char *filter_name)
+{
+    int i;
+    core_dir_config *conf =
+        (core_dir_config *)ap_get_module_config(r->per_dir_config,
+                                                &core_module);
+    char **items = (char **)conf->input_filters->elts;
+
+    for (i = 0; i < conf->input_filters->nelts; i++) {
+        if (!strcmp(items[i], filter_name))
+            return 1;
+    }
+    return 0;
+}
+
+static int configured_on_output(request_rec *r, const char *filter_name)
+{
+    int i;
+    core_dir_config *conf =
+        (core_dir_config *)ap_get_module_config(r->per_dir_config,
+                                                &core_module);
+    char **items = (char **)conf->output_filters->elts;
+
+    for (i = 0; i < conf->output_filters->nelts; i++) {
+        if (!strcmp(items[i], filter_name))
+            return 1;
+    }
+    return 0;
+}
+
 /* xlate_insert_filter() is a filter hook which decides whether or not
  * to insert a translation filter for the current request.
  */
@@ -355,25 +395,29 @@ static void xlate_insert_filter(request_rec *r)
     charset_dir_t *dc = ap_get_module_config(r->per_dir_config, 
                                              &charset_lite_module);
 
-    if (dc->debug >= DBGLVL_GORY) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
-                      "xlate_insert_filter() - "
-                      "charset_source: %s charset_default: %s "
-                      "impadd %d",
-                      dc && dc->charset_source ? dc->charset_source : "(none)",
-                      dc && dc->charset_default ? dc->charset_default : "(none)",
-                      (int)dc->implicit_add);
-    }
-
-    if (reqinfo && 
-        dc->implicit_add == IA_IMPADD) {
-        if (reqinfo->output_ctx) {
+    if (reqinfo) {
+        if (reqinfo->output_ctx && !configured_on_output(r, XLATEOUT_FILTER_NAME)) {
             ap_add_output_filter(XLATEOUT_FILTER_NAME, reqinfo->output_ctx, r, 
                                  r->connection);
         }
-        if (reqinfo->input_ctx) {
+        else if (dc->debug >= DBGLVL_FLOW) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
+                          "xlate output filter not added implicitly because %s",
+                          !reqinfo->output_ctx ? 
+                          "no output configuration available" :
+                          "AddOutputFilter was used to add the filter");
+        }
+
+        if (reqinfo->input_ctx && !configured_on_input(r, XLATEIN_FILTER_NAME)) {
             ap_add_input_filter(XLATEIN_FILTER_NAME, reqinfo->input_ctx, r,
                                 r->connection);
+        }
+        else if (dc->debug >= DBGLVL_FLOW) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
+                          "xlate input filter not added implicitly because %s",
+                          !reqinfo->input_ctx ?
+                          "no input configuration available" :
+                          "AddInputFilter was used to add the filter");
         }
     }
 }
@@ -382,7 +426,8 @@ static void xlate_insert_filter(request_rec *r)
  *
  * bucket handling:
  *  why create an eos bucket when we see it come down the stream?  just send the one
- *  passed as input
+ *  passed as input...  news flash: this will be fixed when xlate_out_filter() starts
+ *  using the more generic xlate_brigade()
  *
  * translation mechanics:
  *   we don't handle characters that straddle more than two buckets; an error
@@ -414,10 +459,10 @@ static apr_status_t send_eos(ap_filter_t *f)
     return ap_pass_brigade(f->next, bb);
 }
 
-static apr_status_t set_aside_partial_char(ap_filter_t *f, const char *partial,
+static apr_status_t set_aside_partial_char(charset_filter_ctx_t *ctx, 
+                                           const char *partial,
                                            apr_ssize_t partial_len)
 {
-    charset_filter_ctx_t *ctx = f->ctx;
     apr_status_t rv;
 
     if (sizeof(ctx->buf) > partial_len) {
@@ -434,8 +479,7 @@ static apr_status_t set_aside_partial_char(ap_filter_t *f, const char *partial,
     return rv;
 }
 
-static apr_status_t finish_partial_char(ap_filter_t *f,
-                                        charset_req_t *reqinfo,
+static apr_status_t finish_partial_char(charset_filter_ctx_t *ctx,
                                         /* input buffer: */
                                         const char **cur_str, 
                                         apr_ssize_t *cur_len,
@@ -444,7 +488,6 @@ static apr_status_t finish_partial_char(ap_filter_t *f,
                                         apr_ssize_t *out_len)
 {
     apr_status_t rv;
-    charset_filter_ctx_t *ctx = f->ctx;
     apr_size_t tmp_input_len;
 
     /* Keep adding bytes from the input string to the saved string until we
@@ -470,7 +513,7 @@ static apr_status_t finish_partial_char(ap_filter_t *f,
         ctx->saved = 0;
     }
     else {
-        ctx->ees = EES_LIMIT; /* code isn't smart enough to handle chars '
+        ctx->ees = EES_LIMIT; /* code isn't smart enough to handle chars
                                * straddling more than two buckets
                                */
     }
@@ -545,24 +588,29 @@ static void log_xlate_error(ap_filter_t *f, apr_status_t rv)
 static void chk_filter_chain(ap_filter_t *f)
 {
     ap_filter_t *curf;
-    charset_filter_ctx_t *curctx, *last_xlate_ctx = NULL;
-    int debug = ((charset_filter_ctx_t *)f->ctx)->dc->debug;
-    int output = !strcasecmp(f->frec->name, XLATEOUT_FILTER_NAME);
+    charset_filter_ctx_t *curctx, *last_xlate_ctx = NULL,
+        *ctx = f->ctx;
+    int debug = ctx->dc->debug;
+    int output = !strcmp(f->frec->name, XLATEOUT_FILTER_NAME);
+
+    if (ctx->noop) {
+        return;
+    }
 
     /* walk the filter chain; see if it makes sense for our filter to
      * do any translation
      */
     curf = output ? f->r->output_filters : f->r->input_filters;
     while (curf) {
-        if (!strcasecmp(curf->frec->name, f->frec->name) &&
+        if (!strcmp(curf->frec->name, f->frec->name) &&
             curf->ctx) {
             curctx = (charset_filter_ctx_t *)curf->ctx;
             if (!last_xlate_ctx) {
                 last_xlate_ctx = curctx;
             }
             else {
-                if (strcasecmp(last_xlate_ctx->dc->charset_default,
-                               curctx->dc->charset_source)) {
+                if (strcmp(last_xlate_ctx->dc->charset_default,
+                           curctx->dc->charset_source)) {
                     /* incompatible translation 
                      * if our filter instance is incompatible with an instance
                      * already in place, noop our instance
@@ -618,131 +666,128 @@ static void chk_filter_chain(ap_filter_t *f)
 }
 
 /* xlate_brigade() is used to filter request and response bodies
+ *
+ * we'll stop when one of the following occurs:
+ * . we run out of buckets
+ * . we run out of space in the output buffer
+ * . we hit an error
+ *
+ * inputs:
+ *   bb:               brigade to process
+ *   buffer:           storage to hold the translated characters
+ *   buffer_size:      size of buffer
+ *   (and a few more uninteresting parms)
+ *
+ * outputs:
+ *   return value:     APR_SUCCESS or some error code
+ *   bb:               we've removed any buckets representing the
+ *                     translated characters; the eos bucket, if
+ *                     present, will be left in the brigade
+ *   buffer:           filled in with translated characters
+ *   buffer_size:      updated with the bytes remaining
+ *   hit_eos:          did we hit an EOS bucket?
  */
-
-static apr_status_t xlate_brigade(ap_filter_t *f, 
-                                  charset_req_t *reqinfo,
-                                  charset_dir_t *dc,
+static apr_status_t xlate_brigade(charset_filter_ctx_t *ctx,
                                   ap_bucket_brigade *bb,
                                   char *buffer, 
-                                  apr_size_t *buffer_size,
-                                  int output)
+                                  apr_size_t *buffer_avail,
+                                  int *hit_eos)
 {
-    charset_filter_ctx_t *ctx = f->ctx;
-    ap_bucket *dptr, *consumed_bucket;
-    const char *cur_str;
-    apr_ssize_t cur_len, cur_bucket_len, cur_avail;
-    apr_ssize_t space_avail;
-    int done;
+    ap_bucket *b, *consumed_bucket;
+    const char *bucket;
+    apr_ssize_t bytes_in_bucket; /* total bytes read from current bucket */
+    apr_ssize_t bucket_avail;    /* bytes left in current bucket */
     apr_status_t rv = APR_SUCCESS;
 
-    dptr = AP_BRIGADE_FIRST(bb);
-    done = 0;
-    cur_len = 0;
-    space_avail = *buffer_size;
+    *hit_eos = 0;
+    bucket_avail = 0;
     consumed_bucket = NULL;
-    while (!done) {
-        if (!cur_len) { /* no bytes left to process in the current bucket... */
+    while (1) {
+        if (!bucket_avail) { /* no bytes left to process in the current bucket... */
             if (consumed_bucket) {
                 AP_BUCKET_REMOVE(consumed_bucket);
                 ap_bucket_destroy(consumed_bucket);
                 consumed_bucket = NULL;
             }
-            if (dptr == AP_BRIGADE_SENTINEL(bb)) {
-                done = 1;
+            b = AP_BRIGADE_FIRST(bb);
+            if (b == AP_BRIGADE_SENTINEL(bb) ||
+                AP_BUCKET_IS_EOS(b)) {
                 break;
             }
-            if (AP_BUCKET_IS_EOS(dptr)) {
-                done = 1;
-                cur_len = AP_END_OF_BRIGADE; /* XXX yuck, but that tells us to send
-                                 * eos down; when we minimize our bb construction
-                                 * we'll fix this crap */
-                if (ctx->saved) {
-                    /* Oops... we have a partial char from the previous bucket
-                     * that won't be completed because there's no more data.
-                     */
-                    rv = APR_INCOMPLETE;
-                    ctx->ees = EES_INCOMPLETE_CHAR;
-                }
-                break;
-            }
-            rv = ap_bucket_read(dptr, &cur_str, &cur_len, 0);
+            rv = ap_bucket_read(b, &bucket, &bytes_in_bucket, 0);
             if (rv != APR_SUCCESS) {
-                done = 1;
                 ctx->ees = EES_BUCKET_READ;
                 break;
             }
-            cur_bucket_len = cur_len;
-            consumed_bucket = dptr; /* for axing when we're done reading it */
-            dptr = AP_BUCKET_NEXT(dptr); /* get ready for when we access the 
-                                          * next bucket */
+            bucket_avail = bytes_in_bucket;
+            consumed_bucket = b;   /* for axing when we're done reading it */
         }
-        /* Try to fill up our buffer with translated data. */
-        cur_avail = cur_len;
-
-        if (cur_len) { /* maybe we just hit the end of a pipe (len = 0) ? */
+        if (bucket_avail) {
+            /* We've got data, so translate it. */
             if (ctx->saved) {
                 /* Rats... we need to finish a partial character from the previous
                  * bucket.
+                 *
+                 * Strangely, finish_partial_char() increments the input buffer
+                 * pointer but does not increment the output buffer pointer.
                  */
-                char *tmp_tmp;
-                
-                tmp_tmp = buffer + *buffer_size - space_avail;
-                rv = finish_partial_char(f, reqinfo, 
-                                         &cur_str, &cur_len,
-                                         &tmp_tmp, &space_avail);
+                apr_ssize_t old_buffer_avail = *buffer_avail;
+                rv = finish_partial_char(ctx,
+                                         &bucket, &bucket_avail,
+                                         &buffer, buffer_avail);
+                buffer += old_buffer_avail - *buffer_avail;
             }
             else {
+                apr_ssize_t old_buffer_avail = *buffer_avail;
+                apr_ssize_t old_bucket_avail = bucket_avail;
                 rv = apr_xlate_conv_buffer(ctx->xlate,
-                                           cur_str, &cur_avail,
-                                           buffer + *buffer_size - space_avail, 
-                                           &space_avail);
-                
-                /* Update input ptr and len after consuming some bytes */
-                cur_str += cur_len - cur_avail;
-                cur_len = cur_avail;
+                                           bucket, &bucket_avail,
+                                           buffer,
+                                           buffer_avail);
+                buffer  += old_buffer_avail - *buffer_avail;
+                bucket  += old_bucket_avail - bucket_avail;
                 
                 if (rv == APR_INCOMPLETE) { /* partial character at end of input */
                     /* We need to save the final byte(s) for next time; we can't
                      * convert it until we look at the next bucket.
                      */
-                    rv = set_aside_partial_char(f, cur_str, cur_len);
-                    cur_len = 0;
+                    rv = set_aside_partial_char(ctx, bucket, bucket_avail);
+                    bucket_avail = 0;
                 }
             }
-        }
-
-        if (rv != APR_SUCCESS) {
-            /* bad input byte or partial char too big to store */
-            done = 1;
-        }
-
-        if (space_avail < XLATE_MIN_BUFF_LEFT) {
-            if (output) {
-                /* It is time to flush, as there is not enough space left in the
-                 * current output buffer to bother with converting more data.
-                 */
-                rv = send_downstream(f, buffer, *buffer_size - space_avail);
-                if (rv != APR_SUCCESS) {
-                    done = 1;
-                }
-            
-                /* the buffer is now empty */
-                space_avail = *buffer_size;
+            if (rv != APR_SUCCESS) {
+                /* bad input byte or partial char too big to store */
+                break;
             }
-            else {
+            if (*buffer_avail < XLATE_MIN_BUFF_LEFT) {
                 /* if any data remains in the current bucket, split there */
-                if (cur_len) {
-                    ap_assert(1 != 1);
+                if (bucket_avail) {
+                    ap_bucket_split(b, bytes_in_bucket - bucket_avail);
                 }
+                AP_BUCKET_REMOVE(b);
+                ap_bucket_destroy(b);
                 break;
             }
         }
     }
-    if (!output) {
-        /* tell caller how many bytes are now in the buffer */
-        *buffer_size = space_avail;
+
+    if (!AP_BRIGADE_EMPTY(bb)) {
+        b = AP_BRIGADE_FIRST(bb);
+        if (AP_BUCKET_IS_EOS(b)) {
+            /* Leave the eos bucket in the brigade for reporting to
+             * subsequent filters.
+             */
+            *hit_eos = 1;
+            if (ctx->saved) {
+                /* Oops... we have a partial char from the previous bucket
+                 * that won't be completed because there's no more data.
+                 */
+                rv = APR_INCOMPLETE;
+                ctx->ees = EES_INCOMPLETE_CHAR;
+            }
+        }
     }
+
     return rv;
 }
 
@@ -761,19 +806,24 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, ap_bucket_brigade *bb)
     ap_bucket *dptr, *consumed_bucket;
     const char *cur_str;
     apr_ssize_t cur_len, cur_avail;
-    char tmp[XLATE_BUF_SIZE];
+    char tmp[OUTPUT_XLATE_BUF_SIZE];
     apr_ssize_t space_avail;
     int done;
     apr_status_t rv = APR_SUCCESS;
 
     if (!ctx) { 
-        /* this is AddOutputFilter path */
-        AP_DEBUG_ASSERT(dc->implicit_add == IA_NOIMPADD); 
-        if (!strcmp(f->frec->name, XLATEOUT_FILTER_NAME)) {
-            ctx = f->ctx = reqinfo->output_ctx;
-        }
-        else {
-            ap_assert(1 != 1);
+        /* this is AddOutputFilter path; grab the preallocated context,
+         * if any 
+         */
+        ctx = f->ctx = reqinfo->output_ctx;
+        reqinfo->output_ctx = NULL;   /* prevent SNAFU if user coded us twice
+                                       * in the filter chain; we can't have two
+                                       * instances using the same context
+                                       */
+        if (!ctx) {                   /* no idea how to translate; don't do anything */
+            ctx = f->ctx = apr_pcalloc(f->r->pool, sizeof(charset_filter_ctx_t));
+            ctx->dc = dc;
+            ctx->noop = 1;
         }
     }
 
@@ -845,7 +895,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, ap_bucket_brigade *bb)
                 char *tmp_tmp;
                 
                 tmp_tmp = tmp + sizeof(tmp) - space_avail;
-                rv = finish_partial_char(f, reqinfo, 
+                rv = finish_partial_char(ctx,
                                          &cur_str, &cur_len,
                                          &tmp_tmp, &space_avail);
             }
@@ -862,7 +912,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, ap_bucket_brigade *bb)
                     /* We need to save the final byte(s) for next time; we can't
                      * convert it until we look at the next bucket.
                      */
-                    rv = set_aside_partial_char(f, cur_str, cur_len);
+                    rv = set_aside_partial_char(ctx, cur_str, cur_len);
                     cur_len = 0;
                 }
             }
@@ -904,6 +954,17 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, ap_bucket_brigade *bb)
     return rv;
 }
 
+static void transfer_brigade(ap_bucket_brigade *in, ap_bucket_brigade *out)
+{
+    ap_bucket *b;
+
+    while (!AP_BRIGADE_EMPTY(in)) {
+        b = AP_BRIGADE_FIRST(in);
+        AP_BUCKET_REMOVE(b);
+        AP_BRIGADE_INSERT_TAIL(out, b);
+    }
+}
+
 static int xlate_in_filter(ap_filter_t *f, ap_bucket_brigade *bb, 
                            ap_input_mode_t mode)
 {
@@ -913,14 +974,21 @@ static int xlate_in_filter(ap_filter_t *f, ap_bucket_brigade *bb,
     charset_dir_t *dc = reqinfo->dc;
     charset_filter_ctx_t *ctx = f->ctx;
     apr_size_t buffer_size;
+    int hit_eos;
 
-    if (!ctx) { /* this is AddInputFilter path */
-        AP_DEBUG_ASSERT(dc->implicit_add == IA_NOIMPADD);
-        if (!strcmp(f->frec->name, XLATEOUT_FILTER_NAME)) {
-            ctx = f->ctx = reqinfo->output_ctx;
-        }
-        else {
-            ap_assert(1 != 1);
+    if (!ctx) { 
+        /* this is AddInputFilter path; grab the preallocated context,
+         * if any
+         */
+        ctx = f->ctx = reqinfo->input_ctx;
+        reqinfo->input_ctx = NULL;    /* prevent SNAFU if user coded us twice
+                                       * in the filter chain; we can't have two
+                                       * instances using the same context
+                                       */
+        if (!ctx) {                   /* no idea how to translate; don't do anything */
+            ctx = f->ctx = apr_pcalloc(f->r->pool, sizeof(charset_filter_ctx_t));
+            ctx->dc = dc;
+            ctx->noop = 1;
         }
     }
 
@@ -933,31 +1001,53 @@ static int xlate_in_filter(ap_filter_t *f, ap_bucket_brigade *bb,
     }
 
     if (!ctx->ran) {  /* filter never ran before */
-        /* we don't chk_filter_chain(f) on input yet; it makes sense to 
-         * do so to catch some incorrect configurations */
+        chk_filter_chain(f);
         ctx->ran = 1;
-        ctx->tmp = apr_palloc(f->r->pool, INPUT_BUFFER_SIZE);
-    }
-
-    if ((rv = ap_get_brigade(f->next, bb, mode)) != APR_SUCCESS) {
-        return rv;
     }
 
     if (ctx->noop) {
-        return APR_SUCCESS;
+        return ap_get_brigade(f->next, bb, mode);
     }
 
-    buffer_size = INPUT_BUFFER_SIZE;
-    rv = xlate_brigade(f, reqinfo, dc, bb, ctx->tmp, &buffer_size, 
-                       0 /* input */);
+    if (AP_BRIGADE_EMPTY(ctx->bb)) {
+        if ((rv = ap_get_brigade(f->next, bb, mode)) != APR_SUCCESS) {
+            return rv;
+        }
+    }
+    else {
+        transfer_brigade(ctx->bb, bb); /* first use the leftovers */
+    }
 
+    buffer_size = INPUT_XLATE_BUF_SIZE;
+    rv = xlate_brigade(ctx, bb, ctx->tmp, &buffer_size, &hit_eos);
     if (rv == APR_SUCCESS) {
-        ap_bucket *e;
+        if (!hit_eos) {
+            /* move anything leftover into our context for next time;
+             * we don't currently "set aside" since the data came from
+             * down below, but I suspect that for long-term we need to
+             * do that
+             */
+            transfer_brigade(bb, ctx->bb);
+        }
+        if (buffer_size < INPUT_XLATE_BUF_SIZE) { /* do we have output? */
+            ap_bucket *e;
 
-        e = ap_bucket_create_heap(ctx->tmp, 
-                                  INPUT_BUFFER_SIZE - buffer_size, 1, 
-                                  NULL);
-        AP_BRIGADE_INSERT_HEAD(bb, e);
+            e = ap_bucket_create_heap(ctx->tmp, 
+                                      INPUT_XLATE_BUF_SIZE - buffer_size, 1, 
+                                      NULL);
+            /* make sure we insert at the head, because there may be
+             * an eos bucket already there, and the eos bucket should 
+             * come after the data
+             */
+            AP_BRIGADE_INSERT_HEAD(bb, e);
+        }
+        else {
+            /* XXX need to get some more data... what if the last brigade
+             * we got had only the first byte of a multibyte char?  we need
+             * to grab more data from the network instead of returning an
+             * empty brigade
+             */
+        }
     }
     else {
         log_xlate_error(f, rv);
