@@ -64,7 +64,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f aprlibdll.mak CFG="aprlibdll - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd srclib\apr-util
-#	 aprlibdll creates the dynamic aprlib.dll from the static library project aprlib.dsp
+#	 aprutildll creates the dynamic apr-util.dll from the static library project aprutil.dsp
 	 $(MAKE) $(MAKEOPT) -f aprutil.mak CFG="aprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f aprutildll.mak CFG="aprutildll - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
@@ -136,7 +136,7 @@ _install:
 	copy Apache$(SHORT)\Apache.exe $(INSTDIR)
 	copy Core$(SHORT)\ApacheCore.dll $(INSTDIR)
 	copy srclib\apr\$(LONG)\aprlib.dll $(INSTDIR)
-        copy srclib\apr-util\$(LONG)\aprutil.dll $(INSTDIR)
+        copy srclib\apr-util\$(LONG)\apr-util.dll $(INSTDIR)
         copy srclib\expat-lite\$(LONG)\expatlib.dll $(INSTDIR)
         copy modules\aaa\mod_auth_anon$(SHORT)\mod_auth_anon.dll $(INSTDIR)\modules
 	copy modules\aaa\mod_auth_dbm$(SHORT)\mod_auth_dbm.dll $(INSTDIR)\modules
