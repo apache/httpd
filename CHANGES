@@ -1,5 +1,9 @@
 Changes with Apache 2.0.36
 
+  *) Swap downgrade-1.0 and force-response-1.0 conditional checks so
+     that downgraded responses can have force-response.  PR 8357.
+     [Justin Erenkrantz]
+
   *) Fix perchild MPM so that it can be configured with the move to the
      experimental directory.  [Scott Lamb <slamb@slamb.org>]
 
