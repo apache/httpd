@@ -185,6 +185,7 @@
 #define RULEFLAG_QSAPPEND           1<<11
 #define RULEFLAG_NOCASE             1<<12
 #define RULEFLAG_NOESCAPE           1<<13
+#define RULEFLAG_NOSUB              1<<14
 
 /* return code of the rewrite rule
  * the result may be escaped - or not
@@ -383,12 +384,12 @@ typedef struct result_list {
  */
 typedef struct {
     request_rec *r;
-    backrefinfo *briRR;
-    backrefinfo *briRC;
     const char  *uri;
     const char  *vary_this;
     const char  *vary;
     char        *perdir;
+    backrefinfo briRR;
+    backrefinfo briRC;
 } rewrite_ctx;
 
 /*
@@ -2148,10 +2149,10 @@ static char *do_expand(char *input, rewrite_ctx *ctx)
         /* backreference */
         else if (apr_isdigit(p[1])) {
             int n = p[1] - '0';
-            backrefinfo *bri = (*p == '$') ? ctx->briRR : ctx->briRC;
+            backrefinfo *bri = (*p == '$') ? &ctx->briRR : &ctx->briRC;
 
             /* see ap_pregsub() in server/util.c */
-            if (bri && n <= bri->nsub
+            if (bri->source && n <= bri->nsub
                 && bri->regmatch[n].rm_eo > bri->regmatch[n].rm_so) {
                 span = bri->regmatch[n].rm_eo - bri->regmatch[n].rm_so;
 
@@ -3296,6 +3297,9 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
 
     /* arg2: the output string */
     newrule->output = a2;
+    if (*a2 == '-' && !a2[1]) {
+        newrule->flags |= RULEFLAG_NOSUB;
+    }
 
     /* now, if the server or per-dir config holds an
      * array of RewriteCond entries, we take it for us
@@ -3438,9 +3442,9 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
 
         /* update briRC backref info */
         if (rc && !(p->flags & CONDFLAG_NOTMATCH)) {
-            ctx->briRC->source = input;
-            ctx->briRC->nsub   = p->regexp->re_nsub;
-            memcpy(ctx->briRC->regmatch, regmatch, sizeof(regmatch));
+            ctx->briRC.source = input;
+            ctx->briRC.nsub   = p->regexp->re_nsub;
+            memcpy(ctx->briRC.regmatch, regmatch, sizeof(regmatch));
         }
         break;
     }
@@ -3459,136 +3463,105 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
 }
 
 /*
- *  Apply a single RewriteRule
+ * Apply a single RewriteRule
  */
 static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
 {
-    char *uri;
-    char *output;
-    char *newuri;
-    regex_t *regexp;
     regmatch_t regmatch[MAX_NMATCH];
     apr_array_header_t *rewriteconds;
     rewritecond_entry *conds;
-    rewritecond_entry *c;
-    int i;
-    int rc;
+    int i, rc;
+    char *newuri = NULL;
     request_rec *r = ctx->r;
-    char *perdir = ctx->perdir;
 
-    /*
-     *  Initialisation
-     */
-    uri     = r->filename;
-    regexp  = p->regexp;
-    output  = p->output;
+    ctx->uri = r->filename;
 
-    /*
-     *  Add (perhaps splitted away) PATH_INFO postfix to URL to
-     *  make sure we really match against the complete URL.
-     */
-    if (perdir != NULL && r->path_info != NULL && r->path_info[0] != '\0') {
-        rewritelog((r, 3, perdir, "add path info postfix: %s -> %s%s",
-                    uri, uri, r->path_info));
-        uri = apr_pstrcat(r->pool, uri, r->path_info, NULL);
-    }
+    if (ctx->perdir) {
+        apr_size_t dirlen = strlen(ctx->perdir);
 
-    /*
-     *  On per-directory context (.htaccess) strip the location
-     *  prefix from the URL to make sure patterns apply only to
-     *  the local part.  Additionally indicate this special
-     *  threatment in the logfile.
-     */
-    if (perdir) {
-        if (   strlen(uri) >= strlen(perdir)
-            && strncmp(uri, perdir, strlen(perdir)) == 0) {
-            rewritelog((r, 3, perdir, "strip per-dir prefix: %s -> %s",
-                        uri, uri+strlen(perdir)));
-            uri = uri+strlen(perdir);
+        /* Since we want to match against the (so called) full URL, we have
+         * to re-add the PATH_INFO postfix
+         */
+        if (r->path_info && *r->path_info) {
+            rewritelog((r, 3, ctx->perdir, "add path info postfix: %s -> %s%s",
+                        ctx->uri, ctx->uri, r->path_info));
+            ctx->uri = apr_pstrcat(r->pool, ctx->uri, r->path_info, NULL);
+        }
+
+        /* Additionally we strip the physical path from the url to match
+         * it independent from the underlaying filesystem.
+         */
+        if (strlen(ctx->uri) >= dirlen &&
+            !strncmp(ctx->uri, ctx->perdir, dirlen)) {
+
+            rewritelog((r, 3, ctx->perdir, "strip per-dir prefix: %s -> %s",
+                        ctx->uri, ctx->uri + dirlen));
+            ctx->uri = ctx->uri + dirlen;
         }
     }
 
-    /*
-     *  Try to match the URI against the RewriteRule pattern
-     *  and exit immeddiately if it didn't apply.
+    /* Try to match the URI against the RewriteRule pattern
+     * and exit immediately if it didn't apply.
      */
-    rewritelog((r, 3, perdir, "applying pattern '%s' to uri '%s'", p->pattern,
-                uri));
+    rewritelog((r, 3, ctx->perdir, "applying pattern '%s' to uri '%s'",
+                p->pattern, ctx->uri));
 
-    rc = (ap_regexec(regexp, uri, regexp->re_nsub+1, regmatch, 0) == 0);
+    rc = !ap_regexec(p->regexp, ctx->uri, p->regexp->re_nsub+1, regmatch, 0);
     if (! (( rc && !(p->flags & RULEFLAG_NOTMATCH)) ||
            (!rc &&  (p->flags & RULEFLAG_NOTMATCH))   ) ) {
         return 0;
     }
 
-    /*
-     * init context data for this particular rule
+    /* It matched, wow! Now it's time to prepare the context structure for
+     * further processing
      */
-    ctx->uri       = uri;
     ctx->vary_this = NULL;
+    ctx->briRC.source = NULL;
 
-    ctx->briRR = apr_palloc(r->pool, sizeof(*ctx->briRR));
-    if (!rc && (p->flags & RULEFLAG_NOTMATCH)) {
-        /* empty info on negative patterns  */
-        ctx->briRR->source = "";
-        ctx->briRR->nsub   = 0;
+    if (p->flags & RULEFLAG_NOTMATCH) {
+        ctx->briRR.source = NULL;
     }
     else {
-        ctx->briRR->source = apr_pstrdup(r->pool, uri);
-        ctx->briRR->nsub   = regexp->re_nsub;
-        memcpy((void *)(ctx->briRR->regmatch), (void *)(regmatch),
-               sizeof(regmatch));
+        ctx->briRR.source = apr_pstrdup(r->pool, ctx->uri);
+        ctx->briRR.nsub   = p->regexp->re_nsub;
+        memcpy(ctx->briRR.regmatch, regmatch, sizeof(regmatch));
     }
 
-    ctx->briRC = apr_pcalloc(r->pool, sizeof(*ctx->briRC));
-    ctx->briRC->source = "";
-    ctx->briRC->nsub   = 0;
-
-    /*
-     *  Ok, we already know the pattern has matched, but we now
-     *  additionally have to check for all existing preconditions
-     *  (RewriteCond) which have to be also true. We do this at
-     *  this very late stage to avoid unnessesary checks which
-     *  would slow down the rewriting engine!!
+    /* Ok, we already know the pattern has matched, but we now
+     * additionally have to check for all existing preconditions
+     * (RewriteCond) which have to be also true. We do this at
+     * this very late stage to avoid unnessesary checks which
+     * would slow down the rewriting engine.
      */
     rewriteconds = p->rewriteconds;
     conds = (rewritecond_entry *)rewriteconds->elts;
 
-    for (i = 0; i < rewriteconds->nelts; i++) {
-        c = &conds[i];
+    for (i = 0; i < rewriteconds->nelts; ++i) {
+        rewritecond_entry *c = &conds[i];
+
         rc = apply_rewrite_cond(c, ctx);
         if (c->flags & CONDFLAG_ORNEXT) {
-            /*
-             *  The "OR" case
-             */
-            if (rc == 0) {
-                /*  One condition is false, but another can be
-                 *  still true, so we have to continue...
-                 */
+            if (!rc) {
+                /* One condition is false, but another can be still true. */
                 ctx->vary_this = NULL;
                 continue;
             }
             else {
-                /*  One true condition is enough in "or" case, so
-                 *  skip the other conditions which are "ornext"
-                 *  chained
-                 */
+                /* skip the rest of the chained OR conditions */
                 while (   i < rewriteconds->nelts
                        && c->flags & CONDFLAG_ORNEXT) {
-                    i++;
-                    c = &conds[i];
+                    c = &conds[++i];
                 }
                 continue;
             }
         }
-        else {
-            /* The "AND" case, i.e. no "or" flag,
-             * so a single failure means total failure.
-             */
-            if (rc == 0) {
-                return 0;
-            }
+        else if (!rc) {
+            return 0;
         }
+
+        /* If some HTTP header was involved in the condition, remember it
+         * for later use
+         */
         if (ctx->vary_this) {
             ctx->vary = ctx->vary
                         ? apr_pstrcat(r->pool, ctx->vary, ", ", ctx->vary_this,
@@ -3598,19 +3571,23 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
         }
     }
 
-    /*
-     *  If this is a pure matching rule (`RewriteRule <pat> -')
-     *  we stop processing and return immediately. The only thing
-     *  we have not to forget are the environment variables and
-     *  cookies:
-     *  (`RewriteRule <pat> - [E=...,CO=...,T=...]')
-     */
-    if (output[0] == '-' && !output[1]) {
-        do_expand_env(p->env, ctx);
-        do_expand_cookie(p->cookie, ctx);
+    /* expand the result */
+    if (!(p->flags & RULEFLAG_NOSUB)) {
+        newuri = do_expand(p->output, ctx);
+        rewritelog((r, 2, ctx->perdir, "rewrite '%s' -> '%s'", ctx->uri,
+                    newuri));
+    }
+
+    /* expand [E=var:val] and [CO=<cookie>] */
+    do_expand_env(p->env, ctx);
+    do_expand_cookie(p->cookie, ctx);
+
+    /* non-substitution rules ('RewriteRule <pat> -') end here. */
+    if (p->flags & RULEFLAG_NOSUB) {
         if (p->forced_mimetype) {
-            rewritelog((r, 2, perdir, "remember %s to have MIME-type '%s'",
+            rewritelog((r, 2, ctx->perdir, "remember %s to have MIME-type '%s'",
                         r->filename, p->forced_mimetype));
+
             apr_table_setn(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR,
                            p->forced_mimetype);
         }
@@ -3618,120 +3595,86 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
         return 2;
     }
 
-    /*
-     *  Ok, now we finally know all patterns have matched and
-     *  that there is something to replace, so we create the
-     *  substitution URL string in `newuri'.
-     */
-    newuri = do_expand(output, ctx);
-    rewritelog((r, 2, perdir, "rewrite %s -> %s", uri, newuri));
-
-    /*
-     *  Additionally do expansion for the environment variable
-     *  strings (`RewriteRule .. .. [E=<string>]').
-     */
-    do_expand_env(p->env, ctx);
-
-    /*
-     *  Also set cookies for any cookie strings
-     *  (`RewriteRule .. .. [CO=<string>]').
-     */
-    do_expand_cookie(p->cookie, ctx);
-
-    /*
-     *  Now replace API's knowledge of the current URI:
-     *  Replace r->filename with the new URI string and split out
-     *  an on-the-fly generated QUERY_STRING part into r->args
-     */
-    r->filename = apr_pstrdup(r->pool, newuri);
+    /* Now adjust API's knowledge about r->filename and r->args */
+    r->filename = newuri;
     splitout_queryargs(r, p->flags & RULEFLAG_QSAPPEND);
 
-    /*
-     *   Add the previously stripped per-directory location
-     *   prefix if the new URI is not a new one for this
-     *   location, i.e. if it's not an absolute URL (!) path nor
-     *   a fully qualified URL scheme.
+    /* Add the previously stripped per-directory location prefix, unless
+     * (1) it's an absolute URL path and
+     * (2) it's a full qualified URL
      */
-    if (perdir && *r->filename != '/' && !is_absolute_uri(r->filename)) {
-        rewritelog((r, 3, perdir, "add per-dir prefix: %s -> %s%s",
-                    r->filename, perdir, r->filename));
-        r->filename = apr_pstrcat(r->pool, perdir, r->filename, NULL);
+    if (ctx->perdir && *r->filename != '/' && !is_absolute_uri(r->filename)) {
+        rewritelog((r, 3, ctx->perdir, "add per-dir prefix: %s -> %s%s",
+                    r->filename, ctx->perdir, r->filename));
+
+        r->filename = apr_pstrcat(r->pool, ctx->perdir, r->filename, NULL);
     }
 
-    /*
-     *  If this rule is forced for proxy throughput
-     *  (`RewriteRule ... ... [P]') then emulate mod_proxy's
-     *  URL-to-filename handler to be sure mod_proxy is triggered
-     *  for this URL later in the Apache API. But make sure it is
-     *  a fully-qualified URL. (If not it is qualified with
-     *  ourself).
+    /* If this rule is forced for proxy throughput
+     * (`RewriteRule ... ... [P]') then emulate mod_proxy's
+     * URL-to-filename handler to be sure mod_proxy is triggered
+     * for this URL later in the Apache API. But make sure it is
+     * a fully-qualified URL. (If not it is qualified with
+     * ourself).
      */
     if (p->flags & RULEFLAG_PROXY) {
         fully_qualify_uri(r);
-        rewritelog((r, 2, perdir, "forcing proxy-throughput with %s",
+
+        rewritelog((r, 2, ctx->perdir, "forcing proxy-throughput with %s",
                     r->filename));
+
         r->filename = apr_pstrcat(r->pool, "proxy:", r->filename, NULL);
         return 1;
     }
 
-    /*
-     *  If this rule is explicitly forced for HTTP redirection
-     *  (`RewriteRule .. .. [R]') then force an external HTTP
-     *  redirect. But make sure it is a fully-qualified URL. (If
-     *  not it is qualified with ourself).
+    /* If this rule is explicitly forced for HTTP redirection
+     * (`RewriteRule .. .. [R]') then force an external HTTP
+     * redirect. But make sure it is a fully-qualified URL. (If
+     * not it is qualified with ourself).
      */
     if (p->flags & RULEFLAG_FORCEREDIRECT) {
         fully_qualify_uri(r);
-        rewritelog((r, 2, perdir, "explicitly forcing redirect with %s",
+
+        rewritelog((r, 2, ctx->perdir, "explicitly forcing redirect with %s",
                     r->filename));
 
         r->status = p->forced_responsecode;
         return 1;
     }
 
-    /*
-     *  Special Rewriting Feature: Self-Reduction
-     *  We reduce the URL by stripping a possible
-     *  http[s]://<ourhost>[:<port>] prefix, i.e. a prefix which
-     *  corresponds to ourself. This is to simplify rewrite maps
-     *  and to avoid recursion, etc. When this prefix is not a
-     *  coincidence then the user has to use [R] explicitly (see
-     *  above).
+    /* Special Rewriting Feature: Self-Reduction
+     * We reduce the URL by stripping a possible
+     * http[s]://<ourhost>[:<port>] prefix, i.e. a prefix which
+     * corresponds to ourself. This is to simplify rewrite maps
+     * and to avoid recursion, etc. When this prefix is not a
+     * coincidence then the user has to use [R] explicitly (see
+     * above).
      */
     reduce_uri(r);
 
-    /*
-     *  If this rule is still implicitly forced for HTTP
-     *  redirection (`RewriteRule .. <scheme>://...') then
-     *  directly force an external HTTP redirect.
+    /* If this rule is still implicitly forced for HTTP
+     * redirection (`RewriteRule .. <scheme>://...') then
+     * directly force an external HTTP redirect.
      */
     if (is_absolute_uri(r->filename)) {
-        rewritelog((r, 2, perdir, "implicitly forcing redirect (rc=%d) with %s",
-                    p->forced_responsecode, r->filename));
+        rewritelog((r, 2, ctx->perdir, "implicitly forcing redirect (rc=%d) "
+                    "with %s", p->forced_responsecode, r->filename));
 
         r->status = p->forced_responsecode;
         return 1;
     }
 
-    /*
-     *  Finally we had to remember if a MIME-type should be
-     *  forced for this URL (`RewriteRule .. .. [T=<type>]')
-     *  Later in the API processing phase this is forced by our
-     *  MIME API-hook function. This time it's no problem even for
-     *  the per-directory context (where the MIME-type hook was
-     *  already processed) because a sub-request happens ;-)
-     */
-    if (p->forced_mimetype != NULL) {
-        apr_table_setn(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR,
-                      p->forced_mimetype);
-        
-        rewritelog((r, 2, perdir, "remember %s to have MIME-type '%s'",
+    /* Finally remember the forced mime-type */
+    if (p->forced_mimetype) {
+        rewritelog((r, 2, ctx->perdir, "remember %s to have MIME-type '%s'",
                     r->filename, p->forced_mimetype));
+
+        apr_table_setn(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR,
+                       p->forced_mimetype);
     }
 
-    /*
-     *  Puuhhhhhhhh... WHAT COMPLICATED STUFF ;_)
-     *  But now we're done for this particular rule.
+    /* Puuhhhhhhhh... WHAT COMPLICATED STUFF ;_)
+     * But now we're done for this particular rule.
      */
     return 1;
 }
