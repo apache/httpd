@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_log_config.c,v 1.10 1996/08/20 11:51:15 paul Exp $  */
+/* $Id: mod_log_config.c,v 1.11 1996/08/27 03:34:45 akosut Exp $  */
 
 /*
  * This is module implements the TransferLog directive (same as the
@@ -586,10 +586,10 @@ void *merge_config_log_state (pool *p, void *basev, void *addv)
 {
     multi_log_state *base = (multi_log_state *)basev;
     multi_log_state *add = (multi_log_state *)addv;
-    multi_log_state *new = 
-	(multi_log_state *)palloc (p, sizeof(multi_log_state));
     
     add->server_config_logs = base->config_logs;
+    if (!add->default_format)
+        add->default_format = base->default_format;
     
     return add;
 }
