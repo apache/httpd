@@ -1043,7 +1043,28 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
                 if (sconf->lock) {
                     apr_thread_mutex_lock(sconf->lock);
                 }
-                cache_remove(sconf->cache_cache, obj);
+                if (obj->cleanup) {
+                    /* If obj->cleanup is set, the object has been prematurly 
+                     * ejected from the cache by the garbage collector. Add the
+                     * object back to the cache. If an object with the same key is 
+                     * found in the cache, eject it in favor of the completed obj.
+                     */
+                    cache_object_t *tmp_obj =
+                      (cache_object_t *) cache_find(sconf->cache_cache, obj->key);
+                    if (tmp_obj) {
+                        cache_remove(sconf->cache_cache, tmp_obj);
+                        sconf->object_cnt--;
+                        sconf->cache_size -= mobj->m_len;
+                        tmp_obj->cleanup = 1;
+                        if (!tmp_obj->refcount) {
+                            cleanup_cache_object(tmp_obj);
+                        }
+                    }
+                    obj->cleanup = 0;
+                }
+                else {
+                    cache_remove(sconf->cache_cache, obj);
+                }
                 mobj->m_len = obj->count;
                 cache_insert(sconf->cache_cache, obj);                
                 sconf->cache_size -= (mobj->m_len - obj->count);
