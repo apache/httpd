@@ -108,6 +108,8 @@ static int max_requests_per_child = 0;
 static const char *ap_pid_fname=NULL;
 API_VAR_EXPORT const char *ap_scoreboard_fname=NULL;
 static int num_daemons=0;
+static int curr_child_num=0;
+static int socket_num=0;
 static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listenfds = 0;
@@ -116,11 +118,14 @@ static ap_socket_t **listenfds;
 struct child_info_t {
     uid_t uid;
     gid_t gid;
+    char *name;          /* The extention for this socket.  "uig:gid" */
+    int num;
+    int sd;
 };
 
 struct socket_info_t {
     const char *sname;   /* The servername */
-    int        cnum;     /* The child number */
+    int        cnum;     /* The socket number */
 };
 
 typedef struct {
@@ -772,9 +777,10 @@ static int create_child_socket(int child_num, ap_pool_t *p)
     int sd;
     perchild_server_conf *sconf = (perchild_server_conf *)
               ap_get_module_config(ap_server_conf->module_config, &mpm_perchild_module);
-    char *socket_name = ap_palloc(p, strlen(sconf->sockname) + 6);
+    int len = strlen(sconf->sockname) + strlen(child_info_table[child_num].name) + 3;
+    char *socket_name = ap_palloc(p, len);
 
-    ap_snprintf(socket_name, strlen(socket_name), "%s.%d", sconf->sockname, child_num);
+    ap_snprintf(socket_name, len, "%s.%s", sconf->sockname, child_info_table[child_num].name);
     if (unlink(socket_name) < 0 &&
         errno != ENOENT) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, ap_server_conf,
@@ -843,9 +849,6 @@ static void child_main(int child_num_arg)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    /* Add the sockets for this child process's virtual hosts */
-    sd = create_child_socket(child_num, pchild);
-
     if (perchild_setup_child(child_num)) {
 	clean_child_exit(APEXIT_CHILDFATAL);
     }
@@ -880,7 +883,10 @@ static void child_main(int child_num_arg)
 #if APR_FILES_AS_SOCKETS
     ap_socket_from_file(&listenfds[0], pipe_of_death_in);
 #endif
-    for (lr = ap_listeners, i = 1; i <= num_listenfds; lr = lr->next, ++i)
+    /* The child socket */
+    ap_put_os_sock(&listenfds[1], &sd, pchild);
+    num_listenfds++;
+    for (lr = ap_listeners, i = 2; i <= num_listenfds; lr = lr->next, ++i)
         listenfds[i]=lr->sd;
 
     /* Setup worker threads */
@@ -1175,6 +1181,27 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     }
     ap_log_pid(pconf, ap_pid_fname);
 
+    /* Create all of the sockets for the child processes. */
+    for (i = 0; i <= socket_num; i++) {
+        int sd;
+        int j;
+
+        sd = create_child_socket(i, pchild);
+       
+        for(j = i; ;) {
+            if (child_info_table[j].num == i) {
+                child_info_table[j].sd = sd;
+                j++;
+            }
+            else {
+                break;
+            }
+        }
+        if (j >= num_daemons) { 
+            break;
+        }
+    } 
+
     /* Initialize cross-process accept lock */
     lock_fname = ap_psprintf(_pconf, "%s.%u",
                              ap_server_root_relative(_pconf, lock_fname),
@@ -1306,15 +1333,17 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 static void perchild_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
 {
     static int restart_num = 0;
+    int no_detach = 0;
     int i;
 
     one_process = !!getenv("ONE_PROCESS");
+    no_detach = !!getenv("NO_DETACH");
 
     /* sigh, want this only the second time around */
     if (restart_num++ == 1) {
 	is_graceful = 0;
 
-	if (!one_process) {
+	if (!one_process && !no_detach) {
 	    ap_detach();
 	}
 
@@ -1333,12 +1362,28 @@ static void perchild_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
     lock_fname = DEFAULT_LOCKFILE;
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_perchild_set_maintain_connection_status(1);
+    curr_child_num = 0;
+    socket_num = 0;
 
     ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 
     for (i = 0; i < HARD_SERVER_LIMIT; i++) {
         child_info_table[i].uid = -1;
         child_info_table[i].gid = -1;
+        child_info_table[i].name = NULL;
+        child_info_table[i].num = -1;
+    }
+}
+
+static void perchild_post_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s)
+{
+    int i;
+
+    for (i = 0; i < num_daemons; i++) {
+        if (child_info_table[i].name == NULL) {
+            child_info_table[i].name = ap_pstrdup(p, "DEFAULT");
+            child_info_table[i].num = socket_num;
+        }
     }
 }
 
@@ -1362,7 +1407,6 @@ fprintf(stderr, "In perchild_post_read\n");
 fprintf(stderr, "leaving DECLINED\n");
         return DECLINED;
     }
-fprintf(stderr, "leaving OK\n");
     return OK;
 }
 
@@ -1372,6 +1416,7 @@ static void perchild_hooks(void)
     one_process = 0;
 
     ap_hook_pre_config(perchild_pre_config, NULL, NULL, AP_HOOK_MIDDLE); 
+    ap_hook_post_config(perchild_post_config, NULL, NULL, AP_HOOK_MIDDLE); 
     /* This must be run absolutely first.  If this request isn't for this
      * server then we need to forward it to the proper child.  No sense
      * tying up this server running more post_read request hooks if it is
@@ -1571,20 +1616,25 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, const char *arg
     return NULL;
 }
 
-static const char *set_childprocess(cmd_parms *cmd, void *dummy, const char *p,
-                                    const char *u, const char *g) 
+static const char *set_child_per_uid(cmd_parms *cmd, void *dummy, const char *u,
+                                     const char *g, const char *num)
 {
-    int curr_child_num = atoi(p);
-    child_info_t *ug = &child_info_table[curr_child_num - 1];
+    int i;
+    int max_this_time = atoi(num) + curr_child_num;
+    for (i = curr_child_num; i < max_this_time; i++, curr_child_num++); {
+        child_info_t *ug = &child_info_table[i - 1];
 
-    if (curr_child_num > num_daemons) {
-        return "Trying to use more child ID's than NumServers.  Increase "
-               "NumServers in your config file.";
+        if (i > num_daemons) {
+            return "Trying to use more child ID's than NumServers.  Increase "
+                   "NumServers in your config file.";
+        }
+    
+        ug->uid = atoi(u);
+        ug->gid = atoi(g); 
+        ug->name = ap_pstrcat(cmd->pool, u, ":", g, NULL);
+        ug->num = socket_num;
     }
-   
-    ug->uid = atoi(u);
-    ug->gid = atoi(g); 
-
+    socket_num++;
     return NULL;
 }
 
@@ -1604,13 +1654,15 @@ static ap_status_t cleanup_hash(void *dptr)
     return APR_SUCCESS;
 }
 
-static const char *assign_childprocess(cmd_parms *cmd, void *dummy, const char *p)
+static const char *assign_childuid(cmd_parms *cmd, void *dummy, const char *uid,
+                                   const char *gid)
 {
+    char *socketname = ap_pstrcat(cmd->pool, uid, ":", gid, NULL);
     if (socket_info_table == NULL) {
         socket_info_table = ap_make_hash(cmd->pool);
         ap_register_cleanup(cmd->pool, socket_info_table, cleanup_hash, NULL);
     }
-    ap_hash_set(socket_info_table, cmd->server->server_hostname, 0, p);
+    ap_hash_set(socket_info_table, cmd->server->server_hostname, 0, socketname);
     return NULL;
 }
 
@@ -1640,9 +1692,9 @@ AP_INIT_FLAG("ConnectionStatus", set_maintain_connection_status, NULL, RSRC_CONF
              "Whether or not to maintain status information on current connections"),
 AP_INIT_TAKE1("CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF,
               "The location of the directory Apache changes to before dumping core"),
-AP_INIT_TAKE3("ChildProcess", set_childprocess, NULL, RSRC_CONF,
+AP_INIT_TAKE3("ChildperUserID", set_child_per_uid, NULL, RSRC_CONF,
               "Specify a User and Group for a specific child process."),
-AP_INIT_TAKE1("AssignChild", assign_childprocess, NULL, RSRC_CONF,
+AP_INIT_TAKE2("AssignUserID", assign_childuid, NULL, RSRC_CONF,
               "Tie a virtual host to a specific child process."),
 AP_INIT_TAKE1("ChildSockName", set_socket_name, NULL, RSRC_CONF,
               "the base name of the socket to use for communication between "
