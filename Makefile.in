@@ -92,7 +92,7 @@ install-build:
 	@echo Installing build system files 
 	@test -d $(DESTDIR)$(installbuilddir) || $(MKINSTALLDIRS) $(DESTDIR)$(installbuilddir) 
 	@cp $(top_srcdir)/build/*.mk $(DESTDIR)$(installbuilddir); \
-	@cp build/*.mk $(DESTDIR)$(installbuilddir); \
+	cp build/*.mk $(DESTDIR)$(installbuilddir); \
 	sed 's#LIBTOOL = \(.*\)#LIBTOOL = $(SHELL) $(installbuilddir)/libtool $(LTFLAGS)#' \
 	    build/config_vars.mk > $(DESTDIR)$(installbuilddir)/config_vars.mk; \
 	cp $(top_srcdir)/build/instdso.sh $(DESTDIR)$(installbuilddir);
