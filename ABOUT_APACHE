@@ -3,7 +3,7 @@
 
                          http://www.apache.org/
 
-                               July 1998
+                             September 1998
 
 The Apache Project is a collaborative software development effort aimed
 at creating a robust, commercial-grade, featureful, and freely-available
@@ -67,10 +67,10 @@ NCSA's httpd as the #1 server on the Internet.
 
  ============================================================================
 
-Current Apache Group in alphabetical order as of 14 July 1998:
+Current Apache Group in alphabetical order as of 23 September 1998:
 
    Brian Behlendorf       Organic Online, California 
-   Ken Coar               MeepZor Consulting, New England, USA 
+   Ken Coar               IBM Corporation, Research Triangle Park, NC, USA
    Mark J. Cox            C2Net Europe, UK 
    Lars Eilebrecht        Kreuztal, Germany 
    Ralf S. Engelschall    Munich, Germany.
@@ -87,6 +87,7 @@ Current Apache Group in alphabetical order as of 14 July 1998:
    Sameer Parekh          C2Net, California 
    Marc Slemko            Canada 
    Cliff Skolnick         Freelance, California
+   Bill Stoddard          IBM Corp., Research Triangle Park, NC
    Paul Sutton            C2Net Europe, UK 
    Randy Terbush          Zyzzyva ISP, Nebraska 
    Dirk-Willem van Gulik  Freelance Consultant, Italy 
