@@ -1463,7 +1463,7 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     update_scoreboard_global();
 
     if (is_graceful) {
-	int i, j;
+	int i, j, bytes_to_write;
         char char_of_death = '!';
 
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
@@ -1472,8 +1472,17 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
         /* give the children the signal to die. Sending more bytes than
          * children is okay, because the pipe is recreated for every
          * generation */
-        if (write(pipe_of_death[1], &char_of_death, ap_daemons_limit) == -1) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "write pipe_of_death");
+        /* XXX - This while loop logic should be made into a utility function */
+        bytes_to_write = ap_daemons_limit;
+        while (bytes_to_write > 0) {
+            i = write(pipe_of_death[1], &char_of_death, bytes_to_write);
+            if (i == -1) {
+                if (errno == EINTR) continue;
+                ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf,
+                             "write pipe_of_death");
+                break;
+            }
+            bytes_to_write -= i;
         }
 
 	/* This is mostly for debugging... so that we know what is still
