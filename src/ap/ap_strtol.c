@@ -106,6 +106,9 @@
  *
  * Assumes that the upper and lower case
  * alphabets and digits are each contiguous.
+ * As such, this will break on EBCDIC machines
+ * if base is >19. The highest we use is 16
+ * so we're OK, but you are warned!
  */
 
 API_EXPORT(long) ap_strtol(const char *nptr, char **endptr, int base)
