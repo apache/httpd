@@ -1,5 +1,9 @@
 Changes with Apache 2.0.35
 
+  *) Prevent ap_add_output_filters_by_type from being called in
+     ap_set_content_type if the content-type hasn't changed.
+     [Justin Erenkrantz]
+
   *) Performance: implemented the bucket allocator made possible by the
      API change in 2.0.34.  [Cliff Woolley]
 

@@ -1272,14 +1272,16 @@ static void fixup_vary(request_rec *r)
 
 AP_DECLARE(void) ap_set_content_type(request_rec *r, const char *ct)
 {
-    r->content_type = ct;
+    if (!r->content_type || strcmp(r->content_type, ct)) {
+        r->content_type = ct;
 
-    /* Insert filters requested by the AddOutputFiltersByType 
-     * configuration directive. Content-type filters must be 
-     * inserted after the content handlers have run because 
-     * only then, do we reliably know the content-type.
-     */
-    ap_add_output_filters_by_type(r);
+        /* Insert filters requested by the AddOutputFiltersByType 
+         * configuration directive. Content-type filters must be 
+         * inserted after the content handlers have run because 
+         * only then, do we reliably know the content-type.
+         */
+        ap_add_output_filters_by_type(r);
+    }
 }
 
 typedef struct header_filter_ctx {
