@@ -1269,7 +1269,10 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
     }
 
     p = (struct ent *) apr_pcalloc(r->pool, sizeof(struct ent));
-    p->name = apr_pstrdup(r->pool, dirent->name);
+    if (rr->finfo.filetype == APR_DIR)
+        p->name = apr_pstrcat(r->pool, dirent->name, "/", NULL);
+    else
+        p->name = apr_pstrdup(r->pool, dirent->name);
     p->size = -1;
     p->icon = NULL;
     p->alt = NULL;
@@ -1293,7 +1296,6 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
 		if (!(p->alt = find_default_alt(d, "^^DIRECTORY^^")))
 		    p->alt = "DIR";
 	    }
-	    p->name = apr_pstrcat(r->pool, dirent->name, "/", NULL);
 	}
 	else {
 	    p->icon = find_icon(d, rr, 0);
