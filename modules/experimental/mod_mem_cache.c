@@ -223,10 +223,8 @@ static apr_status_t cleanup_cache_mem(void *sconfv)
     for (hi = apr_hash_first(NULL, co->cacheht); hi; hi=apr_hash_next(hi)) {
         apr_hash_this(hi, NULL, NULL, (void **)&obj);
         if (obj) {
-            if (obj->refcount) {
-                obj->cleanup = 1;
-            }
-            else {
+            obj->cleanup = 1;
+            if (!obj->refcount) {
                 cleanup_cache_object(obj);
             }
         }
@@ -390,12 +388,11 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     }
     obj = (cache_object_t *) apr_hash_get(sconf->cacheht, key, 
                                           APR_HASH_KEY_STRING);
-    
     if (obj) {
-        mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
         if (obj->complete) {
             obj->refcount++;
-            apr_pool_cleanup_register(r->pool, obj, decrement_refcount, apr_pool_cleanup_null);
+            apr_pool_cleanup_register(r->pool, obj, decrement_refcount,
+                                      apr_pool_cleanup_null);
         }
         else {
             obj = NULL;
