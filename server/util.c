@@ -213,50 +213,50 @@ AP_DECLARE(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt,
  * Based loosely on sections of wildmat.c by Rich Salz
  * Hmmm... shouldn't this really go component by component?
  */
-AP_DECLARE(int) ap_strcmp_match(const char *str, const char *exp)
+AP_DECLARE(int) ap_strcmp_match(const char *str, const char *expected)
 {
     int x, y;
 
-    for (x = 0, y = 0; exp[y]; ++y, ++x) {
-        if ((!str[x]) && (exp[y] != '*'))
+    for (x = 0, y = 0; expected[y]; ++y, ++x) {
+        if ((!str[x]) && (expected[y] != '*'))
             return -1;
-        if (exp[y] == '*') {
-            while (exp[++y] == '*');
-            if (!exp[y])
+        if (expected[y] == '*') {
+            while (expected[++y] == '*');
+            if (!expected[y])
                 return 0;
             while (str[x]) {
                 int ret;
-                if ((ret = ap_strcmp_match(&str[x++], &exp[y])) != 1)
+                if ((ret = ap_strcmp_match(&str[x++], &expected[y])) != 1)
                     return ret;
             }
             return -1;
         }
-        else if ((exp[y] != '?') && (str[x] != exp[y]))
+        else if ((expected[y] != '?') && (str[x] != expected[y]))
             return 1;
     }
     return (str[x] != '\0');
 }
 
-AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *exp)
+AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *expected)
 {
     int x, y;
 
-    for (x = 0, y = 0; exp[y]; ++y, ++x) {
-        if (!str[x] && exp[y] != '*')
+    for (x = 0, y = 0; expected[y]; ++y, ++x) {
+        if (!str[x] && expected[y] != '*')
             return -1;
-        if (exp[y] == '*') {
-            while (exp[++y] == '*');
-            if (!exp[y])
+        if (expected[y] == '*') {
+            while (expected[++y] == '*');
+            if (!expected[y])
                 return 0;
             while (str[x]) {
                 int ret;
-                if ((ret = ap_strcasecmp_match(&str[x++], &exp[y])) != 1)
+                if ((ret = ap_strcasecmp_match(&str[x++], &expected[y])) != 1)
                     return ret;
             }
             return -1;
         }
-        else if (exp[y] != '?'
-                 && apr_tolower(str[x]) != apr_tolower(exp[y]))
+        else if (expected[y] != '?'
+                 && apr_tolower(str[x]) != apr_tolower(expected[y]))
             return 1;
     }
     return (str[x] != '\0');
