@@ -351,29 +351,27 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
                                LPVOID lpvBuffer, LPDWORD lpdwSizeofBuffer) {
     request_rec *r = ((isapi_cid *)hConn)->r;
     const char *result;
+    DWORD len;
 
     if (!strcmp(lpszVariableName, "ALL_HTTP")) {
         /* lf delimited, colon split, comma seperated and 
          * null terminated list of HTTP_ vars 
          */
         char **env = (char**) ap_table_elts(r->subprocess_env)->elts;
-        int n = ap_table_elts(r->subprocess_env)->nelts;
-        DWORD len = 0;
-        int i = 0;
+        int nelts = 2 * ap_table_elts(r->subprocess_env)->nelts;
+        int i;
 
-        while (i < n * 2) {
+        for (len = 0, i = 0; i < nelts; i += 2)
             if (!strncmp(env[i], "HTTP_", 5))
                 len += strlen(env[i]) + strlen(env[i + 1]) + 2;
-            i += 2;
-        }
   
         if (*lpdwSizeofBuffer < len + 1) {
+            *lpdwSizeofBuffer = len + 1;
             SetLastError(ERROR_INSUFFICIENT_BUFFER);
             return FALSE;
         }
     
-        i = 0;
-        while (i < n * 2) {
+        for (i = 0; i < nelts; i += 2)
             if (!strncmp(env[i], "HTTP_", 5)) {
                 strcpy(lpvBuffer, env[i]);
                 ((char*)lpvBuffer) += strlen(env[i]);
@@ -381,34 +379,30 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
                 strcpy(lpvBuffer, env[i + 1]);
                 ((char*)lpvBuffer) += strlen(env[i + 1]);
                 *(((char*)lpvBuffer)++) = '\n';
-            }
-            i += 2;
-        }
+            }            
         *(((char*)lpvBuffer)++) = '\0';
         *lpdwSizeofBuffer = len;
         return TRUE;
     }
-    else if (!strcmp(lpszVariableName, "ALL_RAW")) {
+
+    if (!strcmp(lpszVariableName, "ALL_RAW")) {
         /* lf delimited, colon split, comma seperated and 
          * null terminated list of the raw request header
          */
         char **raw = (char**) ap_table_elts(r->headers_in)->elts;
-        int n = ap_table_elts(r->headers_in)->nelts;
-        DWORD len = 0;
-        int i = 0;
-
-        while (i < n * 2) {
+        int nelts = 2 * ap_table_elts(r->headers_in)->nelts;
+        int i;        
+        
+        for (len = 0, i = 0; i < nelts; i += 2)
             len += strlen(raw[i]) + strlen(raw[i + 1]) + 2;
-            i += 2;
-        }
   
         if (*lpdwSizeofBuffer < len + 1) {
+            *lpdwSizeofBuffer = len + 1;
             SetLastError(ERROR_INSUFFICIENT_BUFFER);
             return FALSE;
         }
     
-        i = 0;
-        while (i < n * 2) {
+        for (i = 0; i < nelts; i += 2) {
             strcpy(lpvBuffer, raw[i]);
             ((char*)lpvBuffer) += strlen(raw[i]);
             *(((char*)lpvBuffer)++) = ':';
@@ -422,20 +416,22 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
         *lpdwSizeofBuffer = len;
         return TRUE;
     }
-    else {    
-        result = ap_table_get(r->subprocess_env, lpszVariableName);
-    }
+
+    /* Not a special case */
+    result = ap_table_get(r->subprocess_env, lpszVariableName);
     if (result) {
-        if (strlen(result) > *lpdwSizeofBuffer) {
-            *lpdwSizeofBuffer = strlen(result);
+        len = strlen(result);
+        if (*lpdwSizeofBuffer < len + 1) {
+            *lpdwSizeofBuffer = len + 1;
             SetLastError(ERROR_INSUFFICIENT_BUFFER);
             return FALSE;
         }
-        strncpy(lpvBuffer, result, *lpdwSizeofBuffer);
+        strcpy(lpvBuffer, result);
+        *lpdwSizeofBuffer = len;
         return TRUE;
     }
 
-    /* Didn't find it - should this be ERROR_NO_DATA? */
+    /* Not Found */
     SetLastError(ERROR_INVALID_INDEX);
     return FALSE;
 }
@@ -489,32 +485,32 @@ BOOL WINAPI ReadClient (HCONN ConnID, LPVOID lpvBuffer, LPDWORD lpdwSize) {
 }
 
 static BOOL SendResponseHeaderEx(isapi_cid *cid, const char *stat,
-                                 const char *head, size_t statlen,
-                                 size_t headlen)
+                                 const char *head, DWORD statlen,
+                                 DWORD headlen)
 {
     int termarg;
     char *termch;
 
-    if (!stat || !*stat) {
+    if (!stat || statlen == 0 || !*stat) {
         stat = "Status: 200 OK";
     }
     else {
         char *newstat;
-        if (statlen == 0)
-            statlen = strlen(stat);
-        /* Whoops... not NULL terminated */
         newstat = ap_palloc(cid->r->pool, statlen + 9);
         strcpy(newstat, "Status: ");
-        strncpy(newstat + 8, stat, statlen);
+        ap_cpystrn(newstat + 8, stat, statlen + 1);
         stat = newstat;
     }
 
-    if (!head || !*head) {
+    if (!head || headlen == 0 || !*head) {
         head = "\r\n";
     }
-    else if ((headlen >= 0) && head[headlen]) {
-        /* Whoops... not NULL terminated */
-        head = ap_pstrndup(cid->r->pool, head, headlen);
+    else
+    {
+        if (head[headlen]) {
+            /* Whoops... not NULL terminated */
+            head = ap_pstrndup(cid->r->pool, head, headlen);
+        }
     }
 
     /* Parse them out, or die trying */
@@ -581,9 +577,16 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
         return TRUE;
 
     case 3: /* HSE_REQ_SEND_RESPONSE_HEADER */
+    {
         /* Parse them out, or die trying */
-        return SendResponseHeaderEx(cid, (char*) lpvBuffer,
-                                    (char*) lpdwDataType, -1, -1);
+        DWORD statlen = 0, headlen = 0;
+	if (lpvBuffer)
+	    statlen = strlen((char*) lpvBuffer);
+	if (lpdwDataType)
+	    headlen = strlen((char*) lpdwDataType);
+        return SendResponseHeaderEx(cid, (char*) lpvBuffer, (char*) lpdwDataType, 
+                                    statlen, headlen);
+    }
 
     case 4: /* HSE_REQ_DONE_WITH_SESSION */
         /* Do nothing... since we don't support async I/O, they'll
@@ -595,19 +598,19 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
     {
         /* Map a URL to a filename */
         char *file = (char *)lpvBuffer;
+	DWORD len;
         subreq = ap_sub_req_lookup_uri(ap_pstrndup(r->pool, file, *lpdwSize), r);
 
-        strncpy(file, subreq->filename, *lpdwSize - 1);
-        file[*lpdwSize - 1] = '\0';
-
+        len = ap_cpystrn(file, subreq->filename, *lpdwSize) - file;
+	
         /* IIS puts a trailing slash on directories, Apache doesn't */
         if (S_ISDIR (subreq->finfo.st_mode)) {
-            DWORD l = strlen(file);
-            if (l < *lpdwSize - 1) {
-                file[l] = '\\';
-                file[l + 1] = '\0';
+            if (len < *lpdwSize - 1) {
+                file[len++] = '\\';
+                file[len] = '\0';
             }
         }
+        *lpdwSize = len;
         return TRUE;
     }
 
@@ -685,17 +688,17 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
         char* test_uri = ap_pstrndup(r->pool, (char *)lpvBuffer, *lpdwSize);
 
         subreq = ap_sub_req_lookup_uri(test_uri, r);
-        info->lpszPath[MAX_PATH - 1] = '\0';
-        strncpy(info->lpszPath, subreq->filename, MAX_PATH - 1);
         info->cchMatchingURL = strlen(test_uri);        
-        info->cchMatchingPath = strlen(info->lpszPath);
+        info->cchMatchingPath = ap_cpystrn(info->lpszPath, subreq->filename, 
+                                           MAX_PATH) - info->lpszPath;
+        
         /* Mapping started with assuming both strings matched.
          * Now roll on the path_info as a mismatch and handle
          * terminating slashes for directory matches.
          */
         if (subreq->path_info && *subreq->path_info) {
-            strncpy(info->lpszPath + info->cchMatchingPath, subreq->path_info,
-                    MAX_PATH - info->cchMatchingPath - 1);
+            ap_cpystrn(info->lpszPath + info->cchMatchingPath, 
+                       subreq->path_info, MAX_PATH - info->cchMatchingPath);
             info->cchMatchingURL -= strlen(subreq->path_info);
             if (S_ISDIR(subreq->finfo.st_mode)
                  && info->cchMatchingPath < MAX_PATH - 1) {
