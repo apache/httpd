@@ -1,5 +1,9 @@
 Changes with Apache 1.3b6
 
+  *) [PORT] Work around the fact that NeXT runs on more than the
+     m68k chips in mod_status [Scott Anguish and Timothy Luoma
+     <luomat@peak.org>]
+
   *) [PORT] Recognize FreeBSD versions so we can use the OS regex as well
      as handling unsigned-chars for FreeBSD v3 and v2 [Andrey Chernov
      <ache@nagual.pp.ru> and Jim] PR#1450
