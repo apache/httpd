@@ -1,5 +1,8 @@
 Changes with Apache 2.0.34-dev
 
+  *) Add some popular types to the mime magic file.  PR 7730.
+     [Linus Walleij <triad@df.lth.se>, Justin Erenkrantz]
+
   *) Remove the single-byte socket reads for CGI headers [Brian Pane]
 
   *) When a proxied site was being served, Apache was replacing
