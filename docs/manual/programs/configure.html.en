@@ -540,7 +540,7 @@
 
         <dt><code>--enable-speling</code></dt>
         <dd>Enable the functionality to correct common URL misspellings, which
-          is provided by <code class="module"><a href="../mod/mod_spelling.html">mod_spelling</a></code>.</dd>
+          is provided by <code class="module"><a href="../mod/mod_speling.html">mod_speling</a></code>.</dd>
 
         <dt><code>--enable-ssl</code></dt>
         <dd>Enable support for SSL/TLS provided by
