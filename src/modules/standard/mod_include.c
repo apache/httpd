@@ -1542,6 +1542,7 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
                     goto RETURN;
                 }
                 break;
+            /* NOTREACHED */
             }
             if (current == (struct parse_node *) NULL) {
                 new->left = root;
@@ -1666,6 +1667,7 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
                     goto RETURN;
                 }
                 break;
+            /* NOTREACHED */
             }
             if (current == (struct parse_node *) NULL) {
                 new->left = root;
