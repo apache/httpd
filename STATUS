@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/01/10 21:32:58 $]
+  Last modified at [$Date: 2000/01/11 12:47:10 $]
 
 Release:
 
@@ -68,7 +68,7 @@ Available Patches:
     * Ken's patch to allow for umask settings for suExec. Suggested
       by PR#4178.
         Message-ID: <3879FBAB.EA367B3F@Golux.Com>
-        Status: Ken +1
+        Status: Ken +1, Ryan +1
 
     * Andrew Ford's patch (1999/12/05) to add absolute times to mod_expires
 	Message-ID: <m3wvqtcoqx.fsf@icarus.demon.co.uk>
