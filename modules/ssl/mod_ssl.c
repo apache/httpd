@@ -79,13 +79,36 @@
 
 #define AP_END_CMD { NULL }
 
+const char ssl_valid_ssl_mutex_string[] =
+    "Valid SSLMutex mechanisms are: `none', `default'"
+#if APR_HAS_FLOCK_SERIALIZE
+    ", `flock:/path/to/file'"
+#endif
+#if APR_HAS_FCNTL_SERIALIZE
+    ", `fcntl:/path/to/file'"
+#endif
+#if APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)
+    ", `sysvsem'"
+#endif
+#if APR_HAS_POSIXSEM_SERIALIZE
+    ", `posixsem'"
+#endif
+#if APR_HAS_PROC_PTHREAD_SERIALIZE
+    ", `pthread'"
+#endif
+#if APR_HAS_FLOCK_SERIALIZE || APR_HAS_FCNTL_SERIALIZE
+    ", `file:/path/to/file'"
+#endif
+#if (APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)) || APR_HAS_POSIXSEM_SERIALIZE
+    ", `sem'"
+#endif
+    " ";
+
 static const command_rec ssl_config_cmds[] = {
     /*
      * Global (main-server) context configuration directives
      */
-    SSL_CMD_SRV(Mutex, TAKE1,
-                "SSL lock for handling internal mutual exclusions "
-                "(`none', `file:/path/to/file')")
+    SSL_CMD_SRV(Mutex, TAKE1, ssl_valid_ssl_mutex_string)
     SSL_CMD_SRV(PassPhraseDialog, TAKE1,
                 "SSL dialog mechanism for the pass phrase query "
                 "(`builtin', `|/path/to/pipe_program`, "

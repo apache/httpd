@@ -75,9 +75,13 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
 
     if ((rv = apr_global_mutex_create(&mc->pMutex, mc->szMutexFile,
                                 APR_LOCK_DEFAULT, p)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "Cannot create SSLMutex file `%s'",
-                     mc->szMutexFile);
+        if (mc->szMutexFile)
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                         "Cannot create SSLMutex with file `%s'",
+                         mc->szMutexFile);
+        else
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                         "Cannot create SSLMutex");
         return FALSE;
     }
 
@@ -96,13 +100,22 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
 int ssl_mutex_reinit(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
+    apr_status_t rv;
 
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE)
         return TRUE;
 
-    if (apr_global_mutex_child_init(&mc->pMutex,
-                                    mc->szMutexFile, p) != APR_SUCCESS)
+    if ((rv = apr_global_mutex_child_init(&mc->pMutex,
+                                    mc->szMutexFile, p)) != APR_SUCCESS) {
+        if (mc->szMutexFile)
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                         "Cannot reinit SSLMutex with file `%s'",
+                         mc->szMutexFile);
+        else
+            ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
+                         "Cannot reinit SSLMutex");
         return FALSE;
+    }
     return TRUE;
 }
 

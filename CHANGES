@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Allow SSLMutex to select/use the full range of APR locking
+     mechanisms available to it. Also, fix the bug that SSLMutex uses
+     APR_LOCK_DEFAULT no matter what.  PR 8122  [Jim Jagielski,
+     martin.t.kutschker@blackbox.net (Martin Kutschker)]
+
   *) Return 413 if chunk-ext-header is too long rather than reading from
      the truncated line.  PR 15857.  [Justin Erenkrantz]
 
