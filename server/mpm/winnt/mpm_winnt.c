@@ -884,15 +884,20 @@ static int create_acceptex_context(apr_pool_t *_pconf, ap_listen_rec *lr)
 
     apr_create_pool(&context->ptrans, _pconf);
     context->conn_io = ap_bcreate(context->ptrans, B_RDWR);
-    context->recv_buf = context->conn_io->inbase;
-    context->recv_buf_size = context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE;
 
+    /* recv_buf must be large enough to hold the remote and local
+     * addresses. Note that recv_buf_size is the amount of recv_buf
+     * available for AcceptEx to receive bytes into. Since we 
+     * don't want AcceptEx to do a recv, set the size to 0.
+     */
+    context->recv_buf = apr_pcalloc(_pconf, 2*PADDED_ADDR_SIZE);
+    context->recv_buf_size = 0;
 
     /* AcceptEx on the completion context. The completion context will be signaled
      * when a connection is accepted. */
     if (!AcceptEx(nsd, context->accept_socket,
                   context->recv_buf, 
-                  0, //context->recv_buf_size,
+                  context->recv_buf_size,
                   PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
                   &BytesRead,
                   (LPOVERLAPPED) context)) {
@@ -918,8 +923,6 @@ static apr_inline apr_status_t reset_acceptex_context(PCOMP_CONTEXT context)
     apr_clear_pool(context->ptrans);
     context->sock = NULL;
     context->conn_io = ap_bcreate(context->ptrans, B_RDWR);
-    context->recv_buf = context->conn_io->inbase;
-    context->recv_buf_size = context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE;
 
     /* recreate and initialize the accept socket if it is not being reused */
     apr_get_os_sock(&nsd, context->lr->sd);
@@ -951,9 +954,14 @@ static apr_inline apr_status_t reset_acceptex_context(PCOMP_CONTEXT context)
             }
         }
 
-        if (!AcceptEx(nsd, context->accept_socket, context->recv_buf, 0,
-                      PADDED_ADDR_SIZE, PADDED_ADDR_SIZE, &BytesRead, 
+        if (!AcceptEx(nsd, context->accept_socket, 
+                      context->recv_buf,                   
+                      context->recv_buf_size,
+                      PADDED_ADDR_SIZE, 
+                      PADDED_ADDR_SIZE, 
+                      &BytesRead, 
                       (LPOVERLAPPED) context)) {
+
             rc = apr_get_netos_error();
             if (rc != APR_FROM_OS_ERROR(ERROR_IO_PENDING)) {
                 ap_log_error(APLOG_MARK, APLOG_INFO, rc, server_conf,
@@ -1086,7 +1094,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
     /* Received a connection */
     context->conn_io->incnt = BytesRead;
     GetAcceptExSockaddrs(context->recv_buf, 
-                         0, //context->recv_buf_size,
+                         context->recv_buf_size,
                          PADDED_ADDR_SIZE,
                          PADDED_ADDR_SIZE,
                          &context->sa_server,
