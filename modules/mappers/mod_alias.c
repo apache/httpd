@@ -338,13 +338,17 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases, int doe
 		    if (found && doesc) {
                         apr_uri_t uri;
                         apr_uri_parse(r->pool, found, &uri);
-			found = ap_escape_uri(r->pool, uri.path);
+                        /* Do not escape the query string or fragment. */
+                        found = apr_uri_unparse(r->pool, &uri, 
+                                                APR_URI_UNP_OMITQUERY);
+                        found = ap_escape_uri(r->pool, found);
                         if (uri.query) {
-                            found = apr_pstrcat(r->pool, found, "?", uri.query, NULL);
+                            found = apr_pstrcat(r->pool, found, "?", 
+                                                uri.query, NULL);
                         }
-                        else if (uri.fragment) {
-                            found = apr_pstrcat(r->pool, found, "#", uri.fragment, NULL);
-
+                        if (uri.fragment) {
+                            found = apr_pstrcat(r->pool, found, "#", 
+                                                uri.fragment, NULL);
                         }
 		    }
 		}
