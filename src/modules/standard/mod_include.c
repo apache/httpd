@@ -1959,7 +1959,7 @@ static int handle_if(FILE *in, request_rec *r, const char *error,
     expr = NULL;
     while (1) {
         tag_val = get_tag(r->pool, in, tag, sizeof(tag), 0);
-        if (*tag == '\0') {
+        if (!tag_val || *tag == '\0') {
             return 1;
         }
         else if (!strcmp(tag, "done")) {
@@ -2002,7 +2002,7 @@ static int handle_elif(FILE *in, request_rec *r, const char *error,
     expr = NULL;
     while (1) {
         tag_val = get_tag(r->pool, in, tag, sizeof(tag), 0);
-        if (*tag == '\0') {
+        if (!tag_val || *tag == '\0') {
             return 1;
         }
         else if (!strcmp(tag, "done")) {
