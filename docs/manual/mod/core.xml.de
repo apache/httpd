@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 124547:151420 (outdated) -->
+<!-- English Revision: 151420 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -148,8 +148,8 @@ Servers</description>
 
 <directivesynopsis>
 <name>AddDefaultCharset</name>
-<description>Standard-Zeichenkodierung f&uuml;r Antworten ohne
-explizit angegebene Zeichenkodierung
+<description>Standard-Charset-Parameter, der bei Antworten vom Content-Type 
+  <code>text/plain</code> oder <code>text/html</code> hinzugef&uuml;gt wird
 </description>
 <syntax>AddDefaultCharset On|Off|<var>Zeichenkodierung</var></syntax>
 <default>AddDefaultCharset Off</default>
@@ -159,21 +159,39 @@ explizit angegebene Zeichenkodierung
 <override>FileInfo</override>
 
 <usage>
-    <p>Die Direktive gibt den Namen der Zeichenkodierung an, die
-    jeder Antwort hinzugef&uuml;gt wird, welche in den HTTP-Headern
-    keinen Parameter zum Content-Type enth&auml;lt. Dies &uuml;berschreibt
-    jede Zeichenkodierung, die mittels <code>META</code>-Tag im Dokument
-    angegeben ist. Die Angabe von <code>AddDefaultCharset Off</code>
-    deaktiviert die Funktion. <code>AddDefaultCharset On</code>
-    erm&ouml;glicht es, mit der Direktive die Apache-interne
-    Standard-Zeichenkodierung <code>iso-8859-1</code> vorzuschreiben.
-    Sie k&ouml;nnen auch angeben, dass eine andere
-    <var>Zeichenkodierung</var> verwendet werden soll. Zum Beispiel:</p>
+  <p>Die Direktive gibt einen Standardwert f&uuml;r den Charset-Paramter des
+    Medientyps (den Namen einer Zeichencodierung) an, der einer Antwort
+    genau dann hinzugef&uuml;gt wird, wenn der Content-Type der Antwort entweder
+    <code>text/plain</code> oder <code>text/html</code> ist. Dies sollte jedes
+    mittels <code>META</code>-Element im Datenteil der Antwort angegebene
+    Charset &uuml;berschreiben. Das genaue Verhalten h&auml;ngt jedoch oft von
+    der Client-Konfiguration des Benutzers ab. Die Einstellung
+    <code>AddDefaultCharset Off</code> deaktiviert diese Funktionalit&auml;t.
+    <code>AddDefaultCharset On</code> aktiviert die Standard-Zeichenkodierung
+    <code>iso-8859-1</code>. Jeder andere Wert wird als die zu verwendende
+    <var>Zeichenkodierung</var> aufgefa&szlig;t, die eines der bei <a
+      href="http://www.iana.org/assignments/character-sets">IANA registrierten
+      Charset-Werte</a> zur Verwendung in MIME-Medientypen sein sollte. Zum
+    Beispiel:</p>
 
     <example>
       AddDefaultCharset utf-8
     </example>
+
+    <p><directive>AddDefaultCharset</directive> sollte nur verwendet werden,
+      wenn von allen Textressourcen, f&uuml;r die es gilt, bekannt ist, dass sie
+      in dieser Zeichkodierung vorliegen, oder wenn es zu unbequem ist, ihre
+      Zeichenkodierung indivuell zu benennen. Ein solches Beispiel ist das
+      Hinzuf&uuml;gen des Charset-Parameters zu Ressourcen, die generierte
+      Inhalte enthalten. Ein Beispiel sind CGI-Skript-Altlasten, die aufgrund von
+      in die Ausgabe integrierten Daten, die durch den Benutzer &uuml;bermittelt
+      wurden, gegen Cross-Site-Scripting-Angriffe verwundbar sind. Eine bessere
+      L&ouml;sung w&auml;re jedoch, diese Skripte zu korrigieren (oder zu
+      l&ouml;schen), da die Angabe einer Standard-Zeichencodierung keine
+      Anwender sch&uuml;tzt, die in ihrem Browser die Funktion zur
+      automatischen Erkennung der Zeichenkodierung aktiviert haben.</p>
 </usage>
+<seealso><directive module="mod_mime">AddCharset</directive></seealso> 
 </directivesynopsis>
 
 <directivesynopsis>
