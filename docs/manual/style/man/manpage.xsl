@@ -17,7 +17,7 @@
 -->
 
 <!--
- * This software is based on initial work of Joe Orton <jorton@redhat.com>
+ * This software is based on initial work of Joe Orton <jorton redhat.com>
  * (contributed to the ASF) which is based on the db2man stylesheets developed
  * by Martijn van Beers. db2man is now part of docbook-xsl, which is
  * licensed under the following terms:
@@ -239,8 +239,8 @@
 &lf;
 <xsl:text>.SH "</xsl:text>
     <xsl:call-template name="filter.escape">
-        <xsl:with-param name="text" select="normalize-space(translate($messages
-                          /message[@name='summary'], $lowercase, $uppercase))"/>
+        <xsl:with-param name="text" select="normalize-space(translate($message
+                          [@id='summary'], $lowercase, $uppercase))"/>
     </xsl:call-template>
 <xsl:text>"</xsl:text>&lf;
 <xsl:apply-templates />
