@@ -75,10 +75,6 @@ module AP_MODULE_DECLARE_DATA mem_cache_module;
  * malloc/free rather than pools to manage their storage requirements.
  */
 
-/*
- * XXX Introduce a type field that identifies whether the cache obj
- * references malloc'ed or mmap storage or a file descriptor
- */
 typedef enum {
     CACHE_TYPE_FILE = 1,
     CACHE_TYPE_HEAP,
@@ -194,7 +190,6 @@ static void cleanup_cache_object(cache_object_t *obj)
 static apr_status_t decrement_refcount(void *arg) 
 {
     cache_object_t *obj = (cache_object_t *) arg;
-    mem_cache_object_t *mobj = (mem_cache_object_t*) obj->vobj;
 
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
@@ -214,7 +209,6 @@ static apr_status_t decrement_refcount(void *arg)
 static apr_status_t cleanup_cache_mem(void *sconfv)
 {
     cache_object_t *obj;
-    mem_cache_object_t *mobj;
     apr_hash_index_t *hi;
     mem_cache_conf *co = (mem_cache_conf*) sconfv;
 
@@ -222,14 +216,13 @@ static apr_status_t cleanup_cache_mem(void *sconfv)
         return APR_SUCCESS;
     }
 
-    /* Iterate over the frag hash table and clean up each entry */
+    /* Iterate over the cache and clean up each entry */
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
     for (hi = apr_hash_first(NULL, co->cacheht); hi; hi=apr_hash_next(hi)) {
         apr_hash_this(hi, NULL, NULL, (void **)&obj);
         if (obj) {
-            mobj = (mem_cache_object_t *) obj->vobj;
             if (obj->refcount) {
                 obj->cleanup = 1;
             }
@@ -339,8 +332,6 @@ static int create_entity(cache_handle_t *h, request_rec *r,
      * rather than after the cache object has been completely built and
      * initialized...
      * XXX Need a way to insert into the cache w/o such coarse grained locking 
-     * XXX Need to enable caching multiple cache objects (representing different
-     * views of the same content) under a single search key
      */
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
