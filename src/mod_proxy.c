@@ -51,6 +51,10 @@
  */
 
 /*
+ * $Id: mod_proxy.c,v 1.35 1996/07/28 22:17:51 chuck Exp $
+ */
+
+/*
 Note that the Explain() stuff is not yet complete.
 Also note numerous FIXMEs and CHECKMEs which should be eliminated.
 
@@ -71,17 +75,19 @@ two passes). Consider doing them the first time round.
 
 Ben Laurie <ben@algroup.co.uk> 30 Mar 96
 
-More changes:
+More things to do:
 
-0) tested w/SOCKS proxy for http
-1) fixed IP address formation in host2addr()
-2) fixed SIGALRM on big cache cleanup
-3) fixed temp files #tmp not removed
-4) changed PF_INET to AF_INET in socket() calls
-5) installed CONNECT code from Troy Morrison <spiffnet@zoom.com> for testing
-6) added NoCache config directive to disallow caching for selected hosts
+0. Massive code cleanup & break into multiple files; link as a lib
 
-Chuck Murcko <chuck@telebase.com> 2 Jun 96
+1. Check date routines
+
+2. Get ftp working, add PASV mode
+
+3. Add gopher & WAIS
+
+4. Various other fixups to insure no NULL strings parsed, etc.
+
+Chuck Murcko <chuck@telebase.com> 28 Jul 96
 
 */
 
@@ -1413,7 +1419,7 @@ static int sub_garbage_coll(request_rec *r,array_header *files,
 	sprintf(filename, "%s%s", cachedir, ent->d_name);
 	Explain1("GC Examining file %s",filename);
 /* is it a temporary file? */
-	if (strncmp(ent->d_name, "#tmp", 4) == 0)
+	if (strncmp(ent->d_name, "tmp", 3) == 0)
 	{
 /* then stat it to see how old it is; delete temporary files > 1 day old */
 	    if (stat(filename, &buf) == -1)
@@ -1783,7 +1789,7 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
 /* read expiry date; if a bad date, then leave it so the client can
  * read it
  */
-    expire = get_header(resp_hdrs, "Expire");
+    expire = get_header(resp_hdrs, "Expires");
     if (expire != NULL) expc = parsedate(expire->value, NULL);
     else expc = -1;
 
@@ -1974,7 +1980,7 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
     buff[35] = ' ';
 
 /* open temporary file */
-#define TMPFILESTR	"/#tmpXXXXXX"
+#define TMPFILESTR	"/tmpXXXXXX"
     c->tempfile=palloc(r->pool,strlen(conf->cache.root)+sizeof TMPFILESTR-1);
     strcpy(c->tempfile,conf->cache.root);
     /*
@@ -2923,7 +2929,8 @@ http_handler(request_rec *r, struct cache_req *c, char *url,
 /* check if NoCache directive on this host */
     for (i=0; i < conf->nocaches->nelts; i++)
     {
-        if (ent[i].name != NULL && strstr(host, ent[i].name) != NULL)
+        if (ent[i].name[0] == '*' || (ent[i].name != NULL &&
+          strstr(host, ent[i].name) != NULL))
 	    nocache = 1; 
     }
 

@@ -1,5 +1,19 @@
 Changes with Apache 1.2b1:
 
+  *) Changes to mod_proxy since 1.1beta:
+      tested w/SOCKS proxy for http
+      fixed IP address formation in host2addr()
+      fixed SIGALRM on big cache cleanup
+      fixed temp files #tmp not removed
+      changed PF_INET to AF_INET in socket() calls
+      installed CONNECT code from Troy Morrison <spiffnet@zoom.com> for testing
+      added NoCache config directive to disallow caching for selected hosts
+      added NoCache * directive to enable proper operation w/o caching
+      changed #tmpXXXX to tmpXXXX in temp file template, for broken link/unlink
+      changed Expire to Expires in cache_update()
+      added appropriate #defines for Next compile
+      added $Id: CHANGES,v 1.45 1996/07/28 22:17:49 chuck Exp $ for RCS/CVS [Chuck Murcko]
+
   *) Fix ErrorDocument handling.  When ErrorDocument failed it used to 
      display filename instead of error message. [Paul Sutton]
 
