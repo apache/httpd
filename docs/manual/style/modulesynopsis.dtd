@@ -15,10 +15,11 @@
 
 <!ELEMENT modulesynopsis (name , description, status , sourcefile?,
 identifier? , compatibility? , summary? , seealso* , section*,
-directivesynopsis+)>
+directivesynopsis*)>
 
 <!ELEMENT directivesynopsis (name , description? , syntax? , default?
-, contextlist? , override? , modulelist?, compatibility? , usage?, seealso*)>
+, contextlist? , override? , modulelist?, status?, compatibility? ,
+usage?, seealso*)>
 
 <!ELEMENT name (#PCDATA)>
 
@@ -34,6 +35,8 @@ directivesynopsis+)>
 
 <!ELEMENT section (section | title | %blocktags;)*>
 
+<!ATTLIST section id CDATA #IMPLIED>
+
 <!ELEMENT module (#PCDATA)>
 
 <!ELEMENT example (#PCDATA | title | %inlinetags; | %blocktags;)*>
@@ -42,7 +45,8 @@ directivesynopsis+)>
 
 <!ELEMENT a %Inline;>
 
-<!ATTLIST a  href CDATA  #REQUIRED >
+<!ATTLIST a  href CDATA #IMPLIED 
+             name CDATA #IMPLIED>
 
 <!ATTLIST directivesynopsis  type CDATA  #IMPLIED
                              location CDATA  #IMPLIED >
@@ -78,9 +82,11 @@ directivesynopsis+)>
 
 <!ELEMENT table (tr)+>
 
-<!ELEMENT tr (td)+>
+<!ELEMENT tr (th | td)+>
 
 <!ELEMENT td %BlockOrInline;>
+
+<!ELEMENT th %BlockOrInline;>
 
 <!ATTLIST td  colspan CDATA  #IMPLIED
                 rowspan CDATA  #IMPLIED
