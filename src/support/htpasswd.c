@@ -39,15 +39,18 @@ static void getword(char *word, char *line, char stop)
 {
     int x = 0, y;
 
-    for (x = 0; ((line[x]) && (line[x] != stop)); x++)
+    for (x = 0; ((line[x]) && (line[x] != stop)); x++) {
 	word[x] = line[x];
+    }
 
     word[x] = '\0';
-    if (line[x])
+    if (line[x]) {
 	++x;
+    }
     y = 0;
 
-    while ((line[y++] = line[x++]));
+    while ((line[y++] = line[x++]))
+	;
 }
 
 static int getline(char *s, int n, FILE *f)
@@ -57,8 +60,9 @@ static int getline(char *s, int n, FILE *f)
     while (1) {
 	s[i] = (char) fgetc(f);
 
-	if (s[i] == CR)
+	if (s[i] == CR) {
 	    s[i] = fgetc(f);
+	}
 
 	if ((s[i] == 0x4) || (s[i] == LF) || (i == (n - 1))) {
 	    s[i] = '\0';
@@ -72,8 +76,9 @@ static void putline(FILE *f, char *l)
 {
     int x;
 
-    for (x = 0; l[x]; x++)
+    for (x = 0; l[x]; x++) {
 	fputc(l[x], f);
+    }
     fputc('\n', f);
 }
 
@@ -97,7 +102,6 @@ static void to64(register char *s, register long v, register int n)
 
 static char *getpass(const char *prompt)
 {
-
     static char password[81];
 
     fputs(prompt, stderr);
@@ -119,8 +123,9 @@ static void add_password(char *user, FILE *f)
     pw = strd((char *) getpass("New password:"));
     if (strcmp(pw, (char *) getpass("Re-type new password:"))) {
 	fprintf(stderr, "They don't match, sorry.\n");
-	if (tn)
+	if (tn) {
 	    unlink(tn);
+	}
 	exit(1);
     }
     (void) srand((int) time((time_t *) NULL));
@@ -141,8 +146,9 @@ static void usage(void)
 static void interrupted(void)
 {
     fprintf(stderr, "Interrupted.\n");
-    if (tn)
+    if (tn) {
 	unlink(tn);
+    }
     exit(1);
 }
 
@@ -159,9 +165,10 @@ int main(int argc, char *argv[])
     tn = NULL;
     signal(SIGINT, (void (*)()) interrupted);
     if (argc == 4) {
-	if (strcmp(argv[1], "-c"))
+	if (strcmp(argv[1], "-c")) {
 	    usage();
-      if (!(tfp = fopen(argv[2], "w+"))) {
+	}
+	if (!(tfp = fopen(argv[2], "w+"))) {
 	    fprintf(stderr, "Could not open passwd file %s for writing.\n",
 		    argv[2]);
 	    perror("fopen");
@@ -172,8 +179,9 @@ int main(int argc, char *argv[])
 	fclose(tfp);
 	exit(0);
     }
-    else if (argc != 3)
+    else if (argc != 3) {
 	usage();
+    }
 
     tn = tmpnam(NULL);
     if (!(tfp = fopen(tn, "w+"))) {
@@ -212,14 +220,13 @@ int main(int argc, char *argv[])
 	add_password(user, tfp);
     }
 /*
-* make a copy from the tmp file to the actual file
-*/  
-        rewind(f);
-        rewind(tfp);
-        while ( fgets(command,MAX_STRING_LEN,tfp) != NULL)
-        {
-                fputs(command,f);
-        } 
+ * make a copy from the tmp file to the actual file
+ */  
+    rewind(f);
+    rewind(tfp);
+    while ( fgets(command,MAX_STRING_LEN,tfp) != NULL) {
+	fputs(command,f);
+    } 
 
     fclose(f);
     fclose(tfp);
