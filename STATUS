@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/03 00:13:11 $]
+Last modified at [$Date: 2003/12/03 06:28:14 $]
 
 Release:
 
@@ -94,6 +94,8 @@ PATCHES TO BACKPORT FROM 2.1
       server/mpm/winnt/mpm.h: r1.14
       +1: stoddard
       +1 (concept): trawick (looks reasonable when compared with worker)
+      +1 (concept): jwoolley (same reason.  though why is ptrans no longer
+                              a child pool of pchild?)
 
     * parsed_uri.port is only valid iff parsed_uri.port_str != NULL.
       Old code simply checked if it was non-zero, not if it
