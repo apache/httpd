@@ -12,14 +12,11 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="module-index"><div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p>
-<p class="apache">Apache HTTP Server Version 2.1</p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>모듈 목록</h1>
-<div class="toplang">
-<p><span>가능한 언어: </span><a href="../de/mod/">&nbsp;de&nbsp;</a> | <a href="../en/mod/">&nbsp;en&nbsp;</a> | <a href="../ja/mod/">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/">&nbsp;ko&nbsp;</a></p>
-</div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>모듈 목록</h1>
 
     <p>
       다음은 아파치 배포본에 포함된 모든 모듈 목록이다. <a href="directives.html">모든 아파치 지시어</a> 목록도
@@ -59,28 +56,22 @@ NT.</dd>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section"><h2><a id="other" name="other">다른 모듈</a></h2>
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a></p>
-<dl><dt><a href="mod_actions.html" id="A" name="A">mod_actions</a></dt><dd>이 모듈은 미디어종류나 요청메서드에 따라 CGI
+<dl><dt><a href="mod_access.html" id="A" name="A">mod_access</a></dt><dd>Provides access control based on client hostname, IP
+address, or other characteristics of the client request.</dd>
+<dt><a href="mod_actions.html">mod_actions</a></dt><dd>이 모듈은 미디어종류나 요청메서드에 따라 CGI
 스크립트를 실행한다.</dd>
 <dt><a href="mod_alias.html">mod_alias</a></dt><dd>Provides for mapping different parts of the host
     filesystem in the document tree and for URL redirection</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>HTTP 헤더를 포함한 파일을 보낸다</dd>
-<dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic authentication</dd>
+<dt><a href="mod_auth.html">mod_auth</a></dt><dd>User authentication using text files</dd>
+<dt><a href="mod_auth_anon.html">mod_auth_anon</a></dt><dd>Allows "anonymous" user access to authenticated
+areas</dd>
+<dt><a href="mod_auth_dbm.html">mod_auth_dbm</a></dt><dd>Provides for user authentication using DBM
+    files</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication.</dd>
 <dt><a href="mod_auth_ldap.html">mod_auth_ldap</a></dt><dd>Allows an LDAP directory to be used to store the database
 for HTTP Basic authentication.</dd>
-<dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>Allows "anonymous" user access to authenticated
-    areas</dd>
-<dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>User authentication using DBM files</dd>
-<dt><a href="mod_authn_default.html">mod_authn_default</a></dt><dd>Authentication fallback module</dd>
-<dt><a href="mod_authn_file.html">mod_authn_file</a></dt><dd>User authentication using text files</dd>
-<dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Group authorization using DBM files</dd>
-<dt><a href="mod_authz_default.html">mod_authz_default</a></dt><dd>Authorization fallback module</dd>
-<dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>Group authorization using plaintext files</dd>
-<dt><a href="mod_authz_host.html">mod_authz_host</a></dt><dd>Group authorizations based on host (name or IP
-address)</dd>
-<dt><a href="mod_authz_owner.html">mod_authz_owner</a></dt><dd>Authorization based on file ownership</dd>
-<dt><a href="mod_authz_user.html">mod_authz_user</a></dt><dd>User Authorization</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>자동으로 유닉스의 <code>ls</code> 명령어나 Win32의
     <code>dir</code> 쉘명령어와 유사한 디렉토리 목록을 만든다</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>Content cache keyed to URIs.</dd>
@@ -109,8 +100,7 @@ delivery to the client</dd>
 <dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>Caches a static list of files in memory</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>Customization of HTTP request and response
 headers</dd>
-<dt><a href="mod_ident.html" id="I" name="I">mod_ident</a></dt><dd>RFC 1413 ident lookups</dd>
-<dt><a href="mod_imap.html">mod_imap</a></dt><dd>Server-side imagemap processing</dd>
+<dt><a href="mod_imap.html" id="I" name="I">mod_imap</a></dt><dd>Server-side imagemap processing</dd>
 <dt><a href="mod_include.html">mod_include</a></dt><dd>Server-parsed html documents (Server Side Includes)</dd>
 <dt><a href="mod_info.html">mod_info</a></dt><dd>Provides a comprehensive overview of the server
 configuration</dd>
@@ -159,9 +149,7 @@ identifier for each request</dd>
 <dt><a href="mod_vhost_alias.html" id="V" name="V">mod_vhost_alias</a></dt><dd>Provides for dynamically configured mass virtual
 hosting</dd>
 </dl></div></div>
-<div class="bottomlang">
-<p><span>가능한 언어: </span><a href="../de/mod/">&nbsp;de&nbsp;</a> | <a href="../en/mod/">&nbsp;en&nbsp;</a> | <a href="../ja/mod/">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/">&nbsp;ko&nbsp;</a></p>
-</div><div id="footer">
+<div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div>
 </body></html>
