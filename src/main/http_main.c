@@ -1284,16 +1284,31 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
     
     if((setsockopt(s, SOL_SOCKET,SO_REUSEADDR,(char *)&one,sizeof(one)))
        == -1) {
-        perror("setsockopt");
-        fprintf(stderr,"httpd: could not set socket option\n");
+	perror("setsockopt(SO_REUSEADDR)");
+	fprintf(stderr,"httpd: could not set socket option SO_REUSEADDR\n");
         exit(1);
     }
     if((setsockopt(s, SOL_SOCKET,SO_KEEPALIVE,(char *)&keepalive_value,
         sizeof(keepalive_value))) == -1) {
-        perror("setsockopt"); 
+	perror("setsockopt(SO_KEEPALIVE)"); 
         fprintf(stderr,"httpd: could not set socket option SO_KEEPALIVE\n"); 
         exit(1); 
     }
+
+#ifdef NEED_LINGER   /* If puts don't complete, you could try this. */
+    {
+	struct linger li;
+	li.l_onoff = 1;
+	li.l_linger = 900;
+
+	if (setsockopt(s, SOL_SOCKET, SO_LINGER,
+	    (char *)&li, sizeof(struct linger)) < 0) {
+	    perror("setsockopt(SO_LINGER)");
+	    fprintf(stderr,"httpd: could not set socket option SO_LINGER\n");
+	    exit(1);
+	}
+    }
+#endif  /* NEED_LINGER */
 
     if(bind(s, (struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1)
     {

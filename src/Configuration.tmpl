@@ -108,10 +108,12 @@ EXTRA_LIBS=
 #AUX_LIBS=-lsocket -lmalloc -lprot
 #BROKEN_BPRINTF_FLAGS=-K noinline
 # For SVR4
+# Some SVR4 implementations will require SO_LINGER option to be set in order
+# to guarantee buffer flushes. Dell, Esix, and UnixWare are a few of these.
+# Use -DNEED_LINGER in addition to other AUX_CFLAGS for these.
 #AUX_CFLAGS= -DSVR4
 #AUX_LIBS= -lsocket -lnsl -lc
 # For UnixWare 2.x, no longer just SVR4 (sigh) - use cc, not gcc
-# AUX_CFLAGS= -DSVR4 -DUW2
 # AUX_LIBS= -lsocket -lnsl -lcrypt
 # For Amdahl UTS 2.1
 # -Xa enables ANSI mode, -eft is expanded types
