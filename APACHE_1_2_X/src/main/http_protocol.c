@@ -1444,7 +1444,11 @@ long get_client_block (request_rec *r, char *buffer, int bufsiz)
             buffer[chunk_start++] = LF;
             buffer += chunk_start;       /* and pass line on to caller   */
             bufsiz -= chunk_start;
-        }
+        } else {
+	    /* REQUEST_CHUNKED_DECHUNK -- do not include the length of
+	     * the header in the return value */
+	    chunk_start = 0;
+	}
     }
                                      /* When REQUEST_CHUNKED_PASS, we are */
     if (r->remaining == -1) {        /* reading footers until empty line  */

@@ -1,5 +1,9 @@
 Changes with Apache 1.2.2
 
+  *) get_client_block() returns wrong length if policy is 
+     REQUEST_CHUNKED_DECHUNK.
+     [Kenichi Hori <ken@d2.bs1.fc.nec.co.jp>] PR#815
+
   *) Properly treat <files> container like other containers in mod_info.
      [Marc Slemko] PR#848
 
