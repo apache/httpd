@@ -22,12 +22,6 @@
 
 module AP_MODULE_DECLARE_DATA proxy_connect_module;
 
-int ap_proxy_connect_canon(request_rec *r, char *url);
-int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
-                             proxy_server_conf *conf, 
-                             char *url, const char *proxyname, 
-                             apr_port_t proxyport);
-
 /*  
  * This handles Netscape CONNECT method secure proxy requests.
  * A connection is opened to the specified host and data is
@@ -51,8 +45,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
  * FIXME: no check for r->assbackwards, whatever that is.
  */
 
-static int
-allowed_port(proxy_server_conf *conf, int port)
+static int allowed_port(proxy_server_conf *conf, int port)
 {
     int i;
     int *list = (int *) conf->allowed_connect_ports->elts;
@@ -65,7 +58,7 @@ allowed_port(proxy_server_conf *conf, int port)
 }
 
 /* canonicalise CONNECT URLs. */
-int ap_proxy_connect_canon(request_rec *r, char *url)
+static int proxy_connect_canon(request_rec *r, char *url)
 {
 
     if (r->method_number != M_CONNECT) {
@@ -78,10 +71,10 @@ int ap_proxy_connect_canon(request_rec *r, char *url)
 }
 
 /* CONNECT handler */
-int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
-                             proxy_server_conf *conf, 
-                             char *url, const char *proxyname, 
-                             apr_port_t proxyport)
+static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
+                                 proxy_server_conf *conf, 
+                                 char *url, const char *proxyname, 
+                                 apr_port_t proxyport)
 {
     apr_pool_t *p = r->pool;
     apr_socket_t *sock;
@@ -390,8 +383,8 @@ int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
 
 static void ap_proxy_connect_register_hook(apr_pool_t *p)
 {
-    proxy_hook_scheme_handler(ap_proxy_connect_handler, NULL, NULL, APR_HOOK_MIDDLE);
-    proxy_hook_canon_handler(ap_proxy_connect_canon, NULL, NULL, APR_HOOK_MIDDLE);
+    proxy_hook_scheme_handler(proxy_connect_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    proxy_hook_canon_handler(proxy_connect_canon, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA proxy_connect_module = {
