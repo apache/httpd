@@ -462,7 +462,7 @@ if ($opt_c) {
             exit(1);
         }
         
-        my $apr_libs=`$apr_bindir/apr-config --ldflags --link-libtool --libs`;
+        my $apr_libs=`$apr_bindir/apr-config --cflags --ldflags --link-libtool --libs`;
         chomp($apr_libs);
         my $apu_libs=`$apu_bindir/apu-config --ldflags --link-libtool --libs`;
         chomp($apu_libs);
