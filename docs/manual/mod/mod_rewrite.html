@@ -275,6 +275,17 @@ rule fails.  If the pattern matches, then the next condition is processed
 until no more conditions are available. If all conditions match, processing
 is continued with the substitution of the URL with <EM>Substitution</EM>.
 
+<h2><a name="quoting">Quoting Special Characters</a></h2>
+<p>
+As of Apache 1.3.20, special characters in <i>TestString</i> and
+<i>Substitution</i> strings can be escaped (that is, treated as
+normal characters without their usual special meaning) by prefixing them
+with a slosh ('\') character.  In other words, you can include an
+actual dollar-sign character in a <i>Substitution</i> string
+by using '<code>\$</code>'; this keeps mod_rewrite from trying
+to treat it as a backreference.
+</p>
+
 <H2><A NAME="InternalBackRefs">Regex Back-Reference Availability</A></H2>
 
 One important thing here has to be remembered: Whenever you
@@ -1660,6 +1671,25 @@ comma-separated list of the following flags:
     string part in the substitution string to the existing one instead of
     replacing it.  Use this when you want to add more data to the query string
     via a rewrite rule.
+<P>
+<LI>'<STRONG><CODE>noescape|NE</CODE></STRONG>' (<STRONG>n</STRONG>o URI <STRONG>e</STRONG>scaping of output)<BR>
+    This flag keeps mod_rewrite from applying the usual URI escaping
+    rules to the result of a rewrite.  Ordinarily, special characters
+    (such as '%', '$', ';', and so on) will be escaped into their
+    hexcode equivalents ('%25', '%24', and '%3B', respectively); this
+    flag prevents this from being done.  This allows percent symbols
+    to appear in the output, as in
+    <pre>
+    RewriteRule /foo/(.*) /bar?arg=P1\%3d$1 [R,NE]
+    </pre>
+    which would turn '<code>/foo/zed</code>' into a safe request
+    for '<code>/bar?arg=P1=zed</code>'.
+    <TABLE WIDTH="70%" BORDER=0 BGCOLOR="#E0E0F0" CELLSPACING=0 CELLPADDING=10>
+    <TR><TD>
+    <STRONG>Notice:</STRONG> The <code>noescape</code> flag is only available
+    with Apache 1.3.20 and later versions.
+    </TD></TR>
+    </TABLE>
 <P>
 <LI>'<STRONG><CODE>passthrough|PT</CODE></STRONG>' (<STRONG>p</STRONG>ass <STRONG>t</STRONG>hrough to next handler)<BR>
     This flag forces the rewriting engine to set the <CODE>uri</CODE> field
