@@ -148,6 +148,61 @@ response without an explicit character set</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>AddOutputFilterByType</name>
+<description>assigns an output filter to a particular MIME-type</description>
+<syntax>AddOutputFilterByType <var>filter</var>[;<var>filter</var>...] <var>MIME-type</var>
+[<var>MIME-type</var>] ...</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>Available in Apache 2.0.33 and later</compatibility>
+
+<usage>
+    <p>This directive activates a particular output <a
+    href="../filter.html">filter</a> for a request depending on the
+    response MIME-type.</p>
+
+    <p>The following example uses the DEFLATE filter, which is provided by
+    <module>mod_deflate</module>. It will compress all output (either static
+    or dynamic) which is labeled as <code>text/html</code> or
+    <code>text/plain</code> before it is sent to the client.</p>
+
+    <example>
+      AddOutputFilterByType DEFLATE text/html text/plain
+    </example>
+
+    <p>If you want the content to be processed by more than one filter, they
+    have to be separated by semicolons. It's also possible to use one
+    <directive>AddOutputFilterByType</directive> directive for each of
+    them.</p>
+
+    <p>The configuration below causes all script output labeled as
+    <code>text/html</code> to be processed at first by the INCLUDES filter
+    and then by the DEFLATE filter.</p>
+
+    <example>
+    &lt;Location /cgi-bin/&gt;<br />
+    <indent>
+      Options Includes<br />
+      AddOutputFilterByType INCLUDES;DEFLATE text/html<br />
+    </indent>
+    &lt;/Location&gt;
+    </example>
+
+    <note><title>Note:</title>
+    <p>The output filters are not applied on proxy requests.</p>
+    </note>
+</usage>
+
+<seealso><directive module="mod_mime">AddOutputFilter</directive></seealso>
+<seealso><directive module="core">SetOutputFilter</directive></seealso>
+<seealso><module>mod_include</module></seealso>
+<seealso><module>mod_deflate</module></seealso>
+<seealso><a href="../filter.html">The filters documentation</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>AllowOverride</name>
 <description>Types of directives that are allowed in
 .htaccess files</description>
