@@ -1,0 +1,16 @@
+#!/bin/sh
+# Look for $1 somewhere in $PATH
+
+for path in `echo $PATH |
+ sed 's/^:/.:/
+      s/::/:.:/g
+      s/:$/:./
+      s/:/ /g' `
+do
+    if [ -x $path/$1 ]; then
+	echo $path/$1
+	exit 0
+    fi
+done
+echo "not found"
+exit 1

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Configure,v 1.27 1996/10/10 02:24:37 chuck Exp $
+# $Id: Configure,v 1.28 1996/10/22 00:03:06 jim Exp $
 trap 'rm $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
@@ -314,7 +314,10 @@ echo "Configured for $OS platform"
 # set above. If so, then we honor that; if not, then we set some
 # defaults (gcc and -O2)
 #
-COMPILER=`./GuessCC`
+COMPILER=`./GuessWhere gcc`
+if [ "$COMPILER" = "not found" ]; then
+    COMPILER=`./GuessWhere cc`
+fi
 
 if grep "CC=" Makefile > /dev/null; then
     CC=""	# clear it just in case
@@ -385,6 +388,11 @@ if [ "$RULE_SOCKS4" = "yes" ]; then
     fi
 fi
 #
+# Look for ranlib
+#
+RANLIB=`./GuessWhere ranlib`
+
+#
 # Good enough
 #
 echo  >> Makefile
@@ -400,6 +408,7 @@ echo "LIBS1=$LIBS">> Makefile
 echo "LFLAGS1=$LFLAGS">> Makefile
 echo "BROKEN_BPRINTF_FLAGS=$OSBPRINTF">> Makefile
 echo "REGLIB=$REGLIB">> Makefile
+echo "RANLIB=$RANLIB">> Makefile
 echo >> Makefile
 echo "#### End of Configure created section ####">> Makefile
 echo >> Makefile
