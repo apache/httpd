@@ -87,6 +87,7 @@ _install:
 	-mkdir $(INSTDIR)\modules
 	-mkdir $(INSTDIR)\logs
 	-mkdir $(INSTDIR)\conf
+	-mkdir $(INSTDIR)\bin
 	copy Apache%SHORT%\Apache.exe $(INSTDIR)
 	copy Core%SHORT%\ApacheCore.dll $(INSTDIR)
 	copy os\win32\ApacheModuleStatus%SHORT%\ApacheModuleStatus.dll $(INSTDIR)\modules
@@ -100,6 +101,7 @@ _install:
 	copy os\win32\ApacheModuleSpeling%SHORT%\ApacheModuleSpeling.dll $(INSTDIR)\modules
 	copy os\win32\ApacheModuleUserTrack%SHORT%\ApacheModuleUserTrack.dll $(INSTDIR)\modules
 	copy modules\proxy\%LONG%\ApacheModuleProxy.dll $(INSTDIR)\modules
+	copy support\%LONG%\htpasswd.exe $(INSTDIR)\bin
 
 _clean:
 	cd os\win32
@@ -110,6 +112,9 @@ _clean:
 	cd ..
 	cd ap
 	 nmake /nologo CFG="ap - Win32 %LONG%" -f ap.mak clean
+	cd ..
+	cd support
+	 nmake /nologo CFG="htpasswd - Win32 %LONG%" -f htpasswd.mak clean
 	cd ..
 	cd main
 	 nmake /nologo CFG="gen_uri_delims - Win32 %LONG%" -f gen_uri_delims.mak clean
