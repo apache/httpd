@@ -78,20 +78,22 @@
 	module="core">NameVirtualHost</directive> directive.
 	In the normal case where any and all IP addresses on the server should
 	be used, you can use <code>*</code> as the argument to
-	<code>NameVirtualHost</code>.  Note that mentioning an IP address in a
-	<code>NameVirtualHost</code> directive does not automatically make the
-	server listen to that IP address.  See <a href="../bind.html">Setting
-	which addresses and ports Apache uses</a> for more details.  In addition,
-	any IP address specified here must be associated with a network interface
+  <directive module="core">NameVirtualHost</directive>.  Note that mentioning an
+  IP address in a	<directive module="core">NameVirtualHost</directive> directive
+  does not automatically make the	server listen to that IP address.  See 
+  <a href="../bind.html">Setting which addresses and ports Apache uses</a> 
+  for more details.  In addition,	any IP address specified here must be 
+  associated with a network interface
 	on the server.</p>
 
 	<p>The next step is to create a <directive type="section"
 	module="core">VirtualHost</directive> block for
 	each different host that you would like to serve.  The argument to the
-	<code>&lt;VirtualHost&gt;</code> directive should be the same as the
-	argument to the <code>NameVirtualHost</code> directive (ie, an IP
-	address, or <code>*</code> for all addresses).  Inside each
-	<code>&lt;VirtualHost&gt;</code> block, you will need at minimum a
+  <directive type="section"	module="core">VirtualHost</directive> directive 
+  should be the same as the argument to the <directive
+  module="core">NameVirtualHost</directive> directive (ie, an IP address, 
+  or <code>*</code> for all addresses).  Inside each <directive type="section"	
+  module="core">VirtualHost</directive> block, you will need at minimum a
 	<directive module="core">ServerName</directive> directive to
 	designate which host is served and a <directive
 	module="core">DocumentRoot</directive> directive to
@@ -99,12 +101,14 @@
 
     <note><title>Main host goes away</title>
 	If you are adding virtual hosts to an existing web server, you
-	must also create a &lt;VirtualHost&gt; block for the existing host.
-	The <code>ServerName</code> and <code>DocumentRoot</code> included in
-	this virtual host should be the same as the global
-	<code>ServerName</code> and <code>DocumentRoot</code>.  List this
-	virtual host first in the configuration file so that it will act as
-	the default host.
+	must also create a <directive type="section"	
+  module="core">VirtualHost</directive> block for the existing host.
+  The <directive module="core">ServerName</directive> and 
+  <directive module="core">DocumentRoot</directive> included in this virtual 
+  host should be the same as the global	<directive 
+  module="core">ServerName</directive> and <directive 
+  module="core">DocumentRoot</directive>.  List this	virtual host first in 
+  the configuration file so that it will act as	the default host.
     </note>
 
 	<p>For example, suppose that you are serving the domain
@@ -131,19 +135,22 @@
 	</example>
 
 	<p>You can alternatively specify an explicit IP address in place of
-	the * in both the <code>NameVirtualHost</code> and
-	<code>&lt;VirtualHost&gt;</code> directives. For example, you might
-    want to do this in order to run some name-based virtual hosts on one
-    IP address, and either IP-based, or another set of name-based
-    virtual hosts on another address.</p>
+  the <code>*</code> in both the <directive 
+  module="core">NameVirtualHost</directive> and <directive 
+  type="section"	module="core">VirtualHost</directive> directives. 
+  For example, you might want to do this in order to run some name-based virtual 
+  hosts on one IP address, and either IP-based, or another set of name-based
+  virtual hosts on another address.</p>
 
 	<p>Many servers want to be accessible by more than one name.  This is
 	possible with the <directive module="core">ServerAlias</directive>
-	directive, placed inside the &lt;VirtualHost&gt; section. For
-	example in the first &lt;VirtualHost&gt; block above, the <directive
-    module="core">ServerAlias</directive> directive indicates that the
-    listed names are other names which people can use to see that same
-    web site:</p>
+	directive, placed inside the <directive type="section"	
+  module="core">VirtualHost</directive> section. For
+  example in the first <directive type="section"	
+  module="core">VirtualHost</directive> block above, the <directive
+  module="core">ServerAlias</directive> directive indicates that the
+  listed names are other names which people can use to see that same
+  web site:</p>
 
 	<example>
     ServerAlias domain.tld *.domain.tld
@@ -151,42 +158,44 @@
 
 	<p>then requests for all hosts in the <code>domain.tld</code> domain
 	will be served by the <code>www.domain.tld</code> virtual host.  The
-	wildcard characters * and ? can be used to match names.  Of course,
-	you can't just make up names and place them in <code>ServerName</code>
-	or <code>ServerAlias</code>.  You must first have your DNS server
-	properly configured to map those names to an IP address associated
-	with your server.</p>
+  wildcard characters <code>*</code> and <code>?</code> can be used to match 
+  names.  Of course, you can't just make up names and place them in <directive 
+  module="core">ServerName</directive> or <code>ServerAlias</code>.  
+  You must first have your DNS server	properly configured to map those names 
+  to an IP address associated	with your server.</p>
 
 	<p>Finally, you can fine-tune the configuration of the virtual hosts
 	by placing other directives inside the
-	<code>&lt;VirtualHost&gt;</code> containers.  Most directives can be
-	placed in these containers and will then change the configuration only
-	of the relevant virtual host.  To find out if a particular directive
-	is allowed, check the <a
+  <directive type="section"	module="core">VirtualHost</directive> containers.  
+  Most directives can be placed in these containers and will then change the 
+  configuration only of the relevant virtual host.  To find out if a particular 
+  directive	is allowed, check the <a
 	href="../mod/directive-dict.html#Context">Context</a> of the
 	directive.  Configuration directives set in the <em>main server
-	context</em> (outside any <code>&lt;VirtualHost&gt;</code> container)
-	will be used only if they are not overridden by the virtual host
-	settings.</p>
+  context</em> (outside any <directive type="section"	
+  module="core">VirtualHost</directive> container) will be used only if they 
+  are not overridden by the virtual host settings.</p>
 
 	<p>Now when a request arrives, the server will first check if it is
-	using an IP address that matches the <code>NameVirtualHost</code>.  If
-	it is, then it will look at each <code>&lt;VirtualHost&gt;</code>
-	section with a matching IP address and try to find one where the
-	<code>ServerName</code> or <code>ServerAlias</code> matches the
-	requested hostname.  If it finds one, then it uses the configuration
-	for that server.  If no matching virtual host is found, then
-	<strong>the first listed virtual host</strong> that matches the IP
-	address will be used.</p>
+  using an IP address that matches the <directive
+  module="core">NameVirtualHost</directive>.  If it is, then it will look at
+  each <directive type="section"	module="core">VirtualHost</directive>	
+  section with a matching IP address and try to find one where the	
+  <directive module="core">ServerName</directive> or 
+  <code>ServerAlias</code> matches the requested hostname.  If it finds one, 
+  then it uses the configuration for that server. If no matching virtual host 
+  is found, then	<strong>the first listed virtual host</strong> that matches 
+  the IP address will be used.</p>
 
 	<p>As a consequence, the first listed virtual host is the
-	<em>default</em> virtual host.  The <code>DocumentRoot</code> from the
+  <em>default</em> virtual host.  The <directive 
+  module="core">DocumentRoot</directive> from the
 	<em>main server</em> will <strong>never</strong> be used when an IP
-	address matches the <code>NameVirtualHost</code> directive.  If you
-	would like to have a special configuration for requests that do not
-	match any particular virtual host, simply put that configuration in a
-	<code>&lt;VirtualHost&gt;</code> container and list it first in the
-	configuration file.</p>
+  address matches the <directive module="core">NameVirtualHost</directive> 
+  directive.  If you would like to have a special configuration for requests 
+  that do not	match any particular virtual host, simply put that configuration 
+  in a <directive type="section"	module="core">VirtualHost</directive> 
+  container and list it first in the configuration file.</p>
 
 </section>
 
@@ -225,18 +234,17 @@
 
     <p>What does this mean? It means that a request for any URI
     beginning with "<code>/domain</code>" will be served from the
-    virtual host <code>www.domain.tld</code> This means that the
-    pages can be accessed as
-    <code>http://www.domain.tld/domain/</code> for all clients,
-    although clients sending a <code>Host:</code> header can also
-    access it as <code>http://www.domain.tld/</code>.</p>
+    virtual host <code>www.domain.tld</code>. This means that the
+    pages can be accessed as <code>http://www.domain.tld/domain/</code> 
+    for all clients, although clients sending a <code>Host:</code> header 
+    can also access it as <code>http://www.domain.tld/</code>.</p>
 
     <p>In order to make this work, put a link on your primary
     virtual host's page to
-    <code>http://www.domain.tld/domain/</code> Then, in the virtual
+    <code>http://www.domain.tld/domain/</code>. Then, in the virtual
     host's pages, be sure to use either purely relative links
     (<em>e.g.</em>, "<code>file.html</code>" or
-    "<code>../icons/image.gif</code>" or links containing the
+    "<code>../icons/image.gif</code>") or links containing the
     prefacing <code>/domain/</code> (<em>e.g.</em>,
     "<code>http://www.domain.tld/domain/misc/file.html</code>" or
     "<code>/domain/misc/file.html</code>").</p>
