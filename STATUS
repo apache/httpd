@@ -102,6 +102,8 @@ Committed Code Changes:
     * Ralf's reanim. of undocum. directive: ProxyReceiveBufferSize, PR#1348
     * Ralf's mod_proxy fix to use FTP SIZE response for Content-Length, PR#1183
     * Ralf's change to make the shared object compilation command more portable
+    * Dean's protect against FD_SETSIZE mismatches
+    * Ralf's fallback stategy because of HIDE for loading shared object modules
 
 Available Patches:
 

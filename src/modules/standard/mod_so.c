@@ -222,6 +222,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     so_server_conf *sconf;
     moduleinfo *modi;
     moduleinfo *modie;
+    char *modname_hidden;
     int i;
 
     /* 
@@ -240,7 +241,53 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     modi->name = modname;
 
     /*
-     * Actually load the file into the address space 
+     * NOW COMES THE PROBLEMATIC PART:
+     *
+     * Because of the -DHIDE/hide.h feature of Apache 1.3 we have eight
+     * situations from which four doesn't work at all and four are a bit
+     * different because of the AP_ hiding stuff and the fact that this symbol
+     * hiding applies only to distributed modules.
+     *
+     * Apache ...... means the Apache code itself
+     * S-Module .... means a standard module which is distributed with Apache
+     * C-Module .... means a custom module which is not distributed with Apache
+     * HIDE ........ means -DHIDE was used when compiling
+     * !HIDE ....... means -DHIDE was not used when compiling
+     * xxx ......... means the symbol "<name>_module" of the module structure
+     *
+     *                      Resolving| dlopen()     dlsym()
+     *                               | (implicit)   (explicit)
+     * Situation                     | core->module core<-module
+     * ------------------------------+-----------------------------------
+     * The compatible variants:      |
+     * Apache+!HIDE & S-Module+!HIDE | succeeds     succeeds only w/ xxx
+     * Apache+ HIDE & S-Module+ HIDE | succeeds     succeeds only w/ AP_xxx
+     * Apache+!HIDE & C-Module+!HIDE | succeeds     succeeds only w/ xxx
+     * Apache+ HIDE & C-Module+ HIDE | succeeds     succeeds only w/ xxx  <<==
+     * The incompatible variants:    |
+     * Apache+!HIDE & S-Module+ HIDE | fails        would succeed w/ AP_xxx
+     * Apache+ HIDE & S-Module+!HIDE | fails        would succeed w/ xxx
+     * Apache+!HIDE & C-Module+ HIDE | fails        would succeed w/ xxx
+     * Apache+ HIDE & C-Module+!HIDE | fails        would succeed w/ xxx
+     *
+     * In other words: For the incompatible variants where the Apache core was
+     * built with a different setting than the ones the module was compiled
+     * with, we have no chance at all because the implicit resolving of
+     * Apache's core symbols in dlopen() already fails for the module (because
+     * for instance the module needs palloc while Apache exports AP_palloc).
+     *
+     * So, only for the compatible variants we have a chance. And here we
+     * succeed by always trying to resolve the plain xxx symbol and only for
+     * the case of a distributed standard module we have to resolve via the
+     * AP_xxx variant. Because we cannot decide if the module to be loaded is
+     * a distributed one or a custom one we really have to try both: First for
+     * AP_xxx and if this fails additionally for xxx.
+     *
+     *                                                        -- rse
+     */
+
+    /*
+     * Load the file into the Apache address space
      */
     if (!(modhandle = os_dl_load(szModuleFile))) {
 	const char *my_error = os_dl_error();
@@ -252,21 +299,31 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL,
 		"loaded module %s", modname);
 
-#ifdef HIDE
-    modname = pstrcat(cmd->pool, "AP_", modname, NULL);
-#endif
+    /*
+     * Create the symbol variant for the case where
+     * we have to load a distributed module compiled with -DHIDE
+     */
+    modname_hidden = pstrcat(cmd->pool, "AP_", modname, NULL);
 
+    /*
+     * Optionally prefix the symbol with an underscore
+     * for some platforms.
+     */
 #ifdef NEED_UNDERSCORE_SYM
+    modname_hidden = pstrcat(cmd->pool, "_", modname_hidden, NULL);
     modname = pstrcat(cmd->pool, "_", modname, NULL);
 #endif
 
     /*
-     * Retrieve the pointer to the module structure 
-     * through the module name
+     * Retrieve the pointer to the module structure through the module name:
+     * First with the hidden variant (prefix `AP_') and then with the plain
+     * symbol name.
      */
-    if (!(modp = (module *)(os_dl_sym (modhandle, modname)))) {
-	return pstrcat(cmd->pool, "Can't find module ", modname,
-		       " in file ", filename, ":", os_dl_error(), NULL);
+    if (!(modp = (module *)(os_dl_sym (modhandle, modname_hidden)))) {
+	if (!(modp = (module *)(os_dl_sym (modhandle, modname)))) {
+	    return pstrcat(cmd->pool, "Can't find module ", modname,
+			   " in file ", filename, ":", os_dl_error(), NULL);
+	}
     }
     modi->modp = modp;
     modp->dynamic_load_handle = modhandle;
