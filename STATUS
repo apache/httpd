@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/07 13:46:02 $]
+Last modified at [$Date: 2003/03/07 13:58:44 $]
 
 Release:
 
@@ -101,7 +101,7 @@ PATCHES TO PORT FROM 2.1
       modules/ssl/mod_ssl.h r1.125
       modules/ssl/ssl_engine_config.c r1.73
       modules/ssl/ssl_engine_mutex.c r1.19
-      +1: jim, wrowe, stoddard
+      +1: jim, wrowe, stoddard, trawick
       -1:
 
     * Rewrite how proxy sends its request to allow input bodies to 
@@ -219,11 +219,14 @@ PATCHES TO PORT FROM 2.1
       configure.in: r1.239, r1.240
       +1: thommay, striker, ianh 
           wrowe (but we must add server/mpm/config.m4 r1.47 to that list)
+      +1(concept): trawick...  I won't be putting my name next to any
+          specific revisions (no confidence on my part), but I will
+          try to help sort out what may go wrong.
 
     * New Directive for mod_deflate (compressionlevel), and change to default
       compression level
       mod_deflate.c 1.31
-      +1: ianh, wrowe, nd
+      +1: ianh, wrowe, nd, trawick
 
     * mod_usertrack: don't set the cookie in subrequests. This works
       around the problem that cookies were set twice during fast internal
