@@ -71,9 +71,9 @@ partial URL for the remote server. Syntax:
 <pre>
   &lt;remote-server&gt; = &lt;protocol&gt;://&lt;hostname&gt;[:port]
 </pre>
-&lt;protocol&gt; is the protocol that should be used to communicate with the
-remote
-server; only "http" is supported by this module.
+
+&lt;protocol&gt; is the protocol that should be used to communicate
+with the remote server; only "http" is supported by this module.
 
 Example:
 <pre>
@@ -186,7 +186,7 @@ then the latter takes precedence.
 Apache 1.1 and later.<p>
 
 If the document is fetched via a protocol that does not support expirytimes,
-then use &lt;time&gt; as the expiry time.
+then use &lt;time&gt; hours as the expiry time.
 <a href="#cachemaxexpire">CacheMaxExpire</a> does <strong>not</strong>
 override.
 

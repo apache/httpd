@@ -224,13 +224,14 @@ elements are:
     Regular expressions have the same syntax as those found in the
     Unix egrep command.
 
-<DT>( <I>test_condition</I> )<DD>true if <I>test_condition</I> is true 
-<DT>! <I>test_condition</I><DD>true if <I>test_condition</I> is false
-    <I>test_condition1</I> and <I>test_condition2</I> are true
-<DT><I>test_condition1</I> && <I>test_condition2</I><DD>true if both
-    <I>test_condition1</I> and <I>test_condition2</I> are true
-<DT><I>test_condition1</I> || <I>test_condition2</I><DD>true if either
-    <I>test_condition1</I> or <I>test_condition2</I> is true
+<DT>( <I>test_condition</I> )
+	<DD>true if <I>test_condition</I> is true 
+<DT>! <I>test_condition</I>
+	<DD>true if <I>test_condition</I> is false
+<DT><I>test_condition1</I> && <I>test_condition2</I>
+	<DD>true if both <I>test_condition1</I> and <I>test_condition2</I> are true
+<DT><I>test_condition1</I> || <I>test_condition2</I>
+	<DD>true if either <I>test_condition1</I> or <I>test_condition2</I> is true
 </DL>
 
 <P> "<I>=</I>" and "</I>!=</I>" bind more tightly than "<I>&&</I>" and "<I>||</I>".
