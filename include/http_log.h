@@ -215,16 +215,6 @@ API_EXPORT(void) ap_error_log2stderr (server_rec *);
  * @param fname The name of the file to log to
  */
 void ap_log_pid (apr_pool_t *p, const char *fname);
-/* These are for legacy code, new code should use ap_log_error,
- * or ap_log_rerror.
- */
-API_EXPORT(void) ap_log_error_old(const char *err, server_rec *s);
-API_EXPORT(void) ap_log_unixerr(const char *routine, const char *file,
-			     const char *msg, server_rec *s);
-API_EXPORT(void) ap_log_printf(const server_rec *s, const char *fmt, ...)
-			    __attribute__((format(printf,2,3)));
-API_EXPORT(void) ap_log_reason(const char *reason, const char *fname,
-			    request_rec *r);
 
 typedef struct piped_log piped_log;
 
