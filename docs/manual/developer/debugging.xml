@@ -4,6 +4,7 @@
 
 <manualpage>
 <relativepath href=".."/>
+<parentdocument href="./">Developer Documentation</parentdocument>
 
 <title>Debugging Memory Allocation in APR</title>
 

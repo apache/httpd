@@ -4,6 +4,7 @@
 
 <manualpage>
 <relativepath href=".."/>
+<parentdocument href="./">Developer Documentation</parentdocument>
 
 <title>Apache 2.0 Thread Safety Issues</title>
 
