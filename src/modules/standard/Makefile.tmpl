@@ -147,6 +147,10 @@ mod_status.o: mod_status.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
 	$(INCDIR)/http_main.h $(INCDIR)/util_script.h \
 	$(INCDIR)/scoreboard.h $(INCDIR)/http_log.h
 
+mod_unique_id.o: mod_unique_id.c $(INCDIR)/httpd.h \
+	$(INCDIR)/http_config.h $(INCDIR)/http_log.h \
+	$(INCDIR)/multithread.h
+
 mod_userdir.o: mod_userdir.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
 	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h
 
