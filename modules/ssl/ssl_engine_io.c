@@ -640,13 +640,11 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
              */
             if (APR_STATUS_IS_EAGAIN(inctx->rc)
                     || APR_STATUS_IS_EINTR(inctx->rc)) {
-                if (inctx->block == APR_NONBLOCK_READ) {
-                    /* Already read something, return APR_SUCCESS instead. */
-                    if (*len > 0) {
-                        inctx->rc = APR_SUCCESS;
-                    }
-                    break;
+                /* Already read something, return APR_SUCCESS instead. */
+                if (*len > 0) {
+                    inctx->rc = APR_SUCCESS;
                 }
+                break;
             }
             else {
                 if (*len > 0) {
@@ -683,8 +681,18 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                 continue; /* try again */
             }
             else if (ssl_err == SSL_ERROR_SYSCALL) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, inctx->rc, c->base_server,
-                            "SSL filter in error reading data");
+                if (APR_STATUS_IS_EAGAIN(inctx->rc)
+                        || APR_STATUS_IS_EINTR(inctx->rc)) {
+                    /* Already read something, return APR_SUCCESS instead. */
+                    if (*len > 0) {
+                        inctx->rc = APR_SUCCESS;
+                    }
+                    break;
+                }
+                else {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, inctx->rc, c->base_server,
+                                "SSL input filter read failed.");
+                }
             }
             else /* if (ssl_err == SSL_ERROR_SSL) */ {
                 /*
@@ -773,6 +781,7 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
 
     if (res < 0) {
         int ssl_err = SSL_get_error(filter_ctx->pssl, res);
+        conn_rec *c = (conn_rec*)SSL_get_app_data(outctx->filter_ctx->pssl);
 
         if (ssl_err == SSL_ERROR_WANT_WRITE) {
             /*
@@ -786,19 +795,16 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
             outctx->rc = APR_EAGAIN;
         }
         else if (ssl_err == SSL_ERROR_SYSCALL) {
-            conn_rec *c = (conn_rec*)SSL_get_app_data(outctx->filter_ctx->pssl);
             ap_log_error(APLOG_MARK, APLOG_ERR, outctx->rc, c->base_server,
-                        "SSL filter out error writing data");
+                        "SSL output filter write failed.");
         }
         else /* if (ssl_err == SSL_ERROR_SSL) */ {
             /*
              * Log SSL errors
              */
-            conn_rec *c = (conn_rec *)SSL_get_app_data(filter_ctx->pssl);
             ap_log_error(APLOG_MARK, APLOG_ERR, outctx->rc, c->base_server,
-                    "SSL library out error writing data");
+                         "SSL library error %d writing data", ssl_err);
             ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
-
         }
         if (outctx->rc == APR_SUCCESS) {
             outctx->rc = APR_EGENERAL;
@@ -1014,7 +1020,8 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
     SSLConnRec *sslconn = myConnConfig(c);
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
     X509 *cert;
-    int n, err;
+    int n;
+    int ssl_err;
     long verify_result;
 
     if (SSL_is_init_finished(filter_ctx->pssl)) {
@@ -1034,24 +1041,30 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
     }
 
     if ((n = SSL_accept(filter_ctx->pssl)) <= 0) {
-        err = SSL_get_error(filter_ctx->pssl, n);
-
-        if (err == SSL_ERROR_ZERO_RETURN) {
+        bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)
+                                     (filter_ctx->pbioRead->ptr);
+        bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)
+                                       (filter_ctx->pbioWrite->ptr);
+        apr_status_t rc = inctx->rc ? inctx->rc : outctx->rc ;
+        ssl_err = SSL_get_error(filter_ctx->pssl, n);
+        
+        if (ssl_err == SSL_ERROR_ZERO_RETURN) {
             /*
              * The case where the connection was closed before any data
              * was transferred. That's not a real error and can occur
              * sporadically with some clients.
              */
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0,
+            ap_log_error(APLOG_MARK, APLOG_INFO, rc,
                          c->base_server,
                          "SSL handshake stopped: connection was closed");
         }
-        else if (err == SSL_ERROR_WANT_READ) {
+        else if (ssl_err == SSL_ERROR_WANT_READ) {
             /*
              * This is in addition to what was present earlier. It is 
              * borrowed from openssl_state_machine.c [mod_tls].
              * TBD.
              */
+            outctx->rc = APR_EAGAIN;
             return SSL_ERROR_WANT_READ;
         }
         else if (ERR_GET_REASON(ERR_peek_error()) == SSL_R_HTTP_REQUEST) {
@@ -1063,35 +1076,25 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
              */
             return HTTP_BAD_REQUEST;
         }
-        else if ((SSL_get_error(filter_ctx->pssl, n) == SSL_ERROR_SYSCALL) &&
-                 (errno != EINTR))
-        {
-            if (errno > 0) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0,
-                             c->base_server,
-                             "SSL handshake interrupted by system "
-                             "[Hint: Stop button pressed in browser?!]");
-                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
-            }
-            else {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, 
-                             c->base_server,
-                             "Spurious SSL handshake interrupt [Hint: "
-                             "Usually just one of those OpenSSL "
-                             "confusions!?]");
-                ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
-            }
+        else if (ssl_err == SSL_ERROR_SYSCALL) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rc, c->base_server,
+                         "SSL handshake interrupted by system "
+                         "[Hint: Stop button pressed in browser?!]");
         }
-        else {
+        else /* if (ssl_err == SSL_ERROR_SSL) */ {
             /*
-             * Ok, anything else is a fatal error
+             * Log SSL errors and any unexpected conditions.
              */
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, 
-                         c->base_server,
-                         "SSL handshake failed (server %s, client %s)",
+            ap_log_error(APLOG_MARK, APLOG_ERR, rc, c->base_server,
+                         "SSL library error %d in handshake "
+                         "(server %s, client %s)", ssl_err,
                          ssl_util_vhostid(c->pool, c->base_server),
                          c->remote_ip ? c->remote_ip : "unknown");
             ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
+
+        }
+        if (inctx->rc == APR_SUCCESS) {
+            inctx->rc = APR_EGENERAL;
         }
 
         return ssl_filter_io_shutdown(filter_ctx, c, 1);
@@ -1204,9 +1207,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
      * AP_MODE_INIT for protocols that may upgrade the connection
      * rather than have SSLEngine On configured.
      */
-    status = ssl_io_filter_connect(inctx->filter_ctx);
-
-    if (status != APR_SUCCESS) {
+    if ((status = ssl_io_filter_connect(inctx->filter_ctx)) != APR_SUCCESS) {
         return ssl_io_filter_error(f, bb, status);
     }
 
@@ -1265,7 +1266,7 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
     }
 
     if ((status = ssl_io_filter_connect(filter_ctx)) != APR_SUCCESS) {
-        return status;
+        return ssl_io_filter_error(f, bb, status);
     }
 
     while (!APR_BRIGADE_EMPTY(bb)) {
