@@ -1,6 +1,7 @@
 Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
+
   *) Win32: apache -k start|restart|install|config can leave stranded
      piped logger processes (eg, rotatelogs.exe) due to improper
      server shutdown on these code paths.
@@ -417,6 +418,13 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.51
 
+  *) mod_autoindex: Don't truncate the directory listing if a stat()
+     call fails (for instance on a >2Gb file).  PR 17357.
+     [Joe Orton]
+
+  *) Makefile fix: httpd is linked against LIBS given to the
+     'make' invocation.  PR 7882.  [Joe Orton]
+
   *) WinNT MPM: Fix a broken log message at termination.  PR 28063.
      [Eider Oliveira <eider bol.com.br>]
 
@@ -543,7 +551,7 @@ Changes with Apache 2.0.50
      [Edward Rudd <eddie omegaware.com>, André Malo]
 
   *) Restore the ability to disable the use of AcceptEx on Win9x systems
-     automatically (broken in2.0.49). PR 28529.  [André Malo]
+     automatically (broken in 2.0.49). PR 28529.  [André Malo]
 
   *) <VirtualHost myhost> now applies to all IP addresses for myhost
      instead of just the first one reported by the resolver.  This
