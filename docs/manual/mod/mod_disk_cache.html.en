@@ -26,18 +26,14 @@
 <a href="../ko/mod/mod_disk_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Content cache storage manager keyed to URIs</td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>disk_cache_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_disk_cache.c</td></tr></table>
 <h3>Summary</h3>
 
-    <div class="warning">
-      This module is experimental. Documentation is still under development...
-    </div>
-
     <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> implements a disk based storage
-    manager. It is primarily of use in conjunction with
-    <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
+    manager. It is primarily of use in conjunction
+    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
 
     <p>Content is stored in and retrieved from the cache using URI based
     keys. Content with access protection is not cached.</p>
@@ -64,7 +60,7 @@
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheDirLength <var>length</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheDirLength 2</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
 </table>
     <p>The <code class="directive">CacheDirLength</code> directive sets the number
@@ -88,7 +84,7 @@ cache.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheDirLevels <var>levels</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheDirLevels 3</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
 </table>
     <p>The <code class="directive">CacheDirLevels</code> directive sets the number
@@ -114,7 +110,7 @@ cache</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheMaxFileSize <var>bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheMaxFileSize 1000000</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
 </table>
     <p>The <code class="directive">CacheMaxFileSize</code> directive sets the
@@ -134,7 +130,7 @@ cache</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheMinFileSize <var>bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheMinFileSize 1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
 </table>
     <p>The <code class="directive">CacheMinFileSize</code> directive sets the
@@ -153,7 +149,7 @@ cache</td></tr>
 stored</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheRoot <var>directory</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
 </table>
     <p>The <code class="directive">CacheRoot</code> directive defines the name of

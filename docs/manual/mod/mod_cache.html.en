@@ -26,14 +26,10 @@
 <a href="../ko/mod/mod_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Content cache keyed to URIs.</td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>cache_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_cache.c</td></tr></table>
 <h3>Summary</h3>
-
-    <div class="warning">
-      This module is experimental. Documentation is still under development...
-    </div>
 
     <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> implements an <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> compliant HTTP
     content cache that can be used to cache either local or proxied content.
@@ -77,7 +73,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">Related Modules and Directives</a></h2>
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachesize">CacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcinterval">CacheGcInterval</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheexpirycheck">CacheExpiryCheck</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachetimemargin">CacheTimeMargin</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcdaily">CacheGcDaily</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcunused">CacheGcUnused</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcclean">CacheGcClean</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcmemusage">CacheGcMemUsage</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachesize">MCacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachesize">CacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachesize">MCacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sampleconf" id="sampleconf">Sample Configuration</a></h2>
@@ -95,7 +91,6 @@
         &lt;IfModule mod_disk_cache.c&gt;<br />
         <span class="indent">
           CacheRoot c:/cacheroot<br />
-          CacheSize 256<br />
           CacheEnable disk  /<br />
           CacheDirLevels 5<br />
           CacheDirLength 3<br />
@@ -123,7 +118,7 @@
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheDefaultExpire <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheDefaultExpire 3600 (one hour)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>The <code class="directive">CacheDefaultExpire</code> directive specifies a default time,
@@ -142,7 +137,7 @@
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Disable caching of specified URLs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheDisable <var> url-string</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>The <code class="directive">CacheDisable</code> directive instructs
@@ -161,7 +156,7 @@
 manager</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheEnable <var>cache_type</var> <var>url-string</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>The <code class="directive">CacheEnable</code> directive instructs
@@ -198,7 +193,7 @@ will complete caching the file even if the request is cancelled.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheForceCompletion <var>Percentage</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheForceCompletion 60</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>Ordinarily, if a request is cancelled while the response is being
@@ -231,7 +226,7 @@ cached.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheIgnoreCacheControl On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheIgnoreCacheControl Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>Ordinarily, documents with no-cache or no-store header values will not be stored in the cache.
@@ -253,7 +248,7 @@ cached.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheIgnoreHeaders None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>According to RFC 2616, hop-by-hop HTTP headers are not stored in
@@ -306,7 +301,7 @@ header.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheIgnoreNoLastMod On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheIgnoreNoLastMod Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>Ordinarily, documents without a last-modified date are not cached.
@@ -333,7 +328,7 @@ LastModified date.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheLastModifiedFactor <var>float</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheLastModifiedFactor 0.1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>In the event that a document does not provide an expiry date but does
@@ -367,7 +362,7 @@ LastModified date.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheMaxExpire <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheMaxExpire 86400 (one day)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>The <code class="directive">CacheMaxExpire</code> directive specifies the maximum number of
