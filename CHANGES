@@ -1,5 +1,11 @@
 Changes with Apache 2.0.44
 
+  *) Fix for PR 14556. The expiry calculations in mod_cache were
+     trying to perform "now + ((date - lastmod) * factor)" where
+     date == lastmod resulting in "now + 0". The code now follows
+     the else path (using the default expiration) if date is
+     equal to lastmod. [rx@armstrike.com (Sergey), Paul J. Reder]
+
   *) Use AP_DECLARE in the debug versions of ap_strXXX in case the
      default calling convention is not the same as the one used by
      AP_DECLARE.  [Juan Rivera <Juan.Rivera@citrix.com>]

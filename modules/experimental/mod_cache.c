@@ -850,7 +850,11 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
      *      expire date = now + defaultexpire
      */
     if (exp == APR_DATE_BAD) {
-        if (lastmod != APR_DATE_BAD) {
+        /* if lastmod == date then you get 0*conf->factor which results in
+         *   an expiration time of now. This causes some problems with
+         *   freshness calculations, so we choose the else path...
+         */
+        if ((lastmod != APR_DATE_BAD) && (lastmod < date)) {
             apr_time_t x = (apr_time_t) ((date - lastmod) * conf->factor);
             if (x > conf->maxex) {
                 x = conf->maxex;
