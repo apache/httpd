@@ -99,6 +99,83 @@
 #include <unistd.h>
 #endif
 
+/* New Apache routine to map status codes into array indicies
+ *  e.g.  100 -> 0,  101 -> 1,  200 -> 2 ...
+ * The number of status lines must equal the value of RESPONSE_CODES (httpd.h)
+ * and must be listed in order.
+ */
+
+#ifdef UTS21
+/* The second const triggers an assembler bug on UTS 2.1.
+ * Another workaround is to move some code out of this file into another,
+ *   but this is easier.  Dave Dykstra, 3/31/99
+ */
+static const char * status_lines[RESPONSE_CODES] =
+#else
+static const char * const status_lines[RESPONSE_CODES] =
+#endif
+{
+    "100 Continue",
+    "101 Switching Protocols",
+    "102 Processing",
+#define LEVEL_200  3
+    "200 OK",
+    "201 Created",
+    "202 Accepted",
+    "203 Non-Authoritative Information",
+    "204 No Content",
+    "205 Reset Content",
+    "206 Partial Content",
+    "207 Multi-Status",
+#define LEVEL_300 11
+    "300 Multiple Choices",
+    "301 Moved Permanently",
+    "302 Found",
+    "303 See Other",
+    "304 Not Modified",
+    "305 Use Proxy",
+    "306 unused",
+    "307 Temporary Redirect",
+#define LEVEL_400 19
+    "400 Bad Request",
+    "401 Authorization Required",
+    "402 Payment Required",
+    "403 Forbidden",
+    "404 Not Found",
+    "405 Method Not Allowed",
+    "406 Not Acceptable",
+    "407 Proxy Authentication Required",
+    "408 Request Time-out",
+    "409 Conflict",
+    "410 Gone",
+    "411 Length Required",
+    "412 Precondition Failed",
+    "413 Request Entity Too Large",
+    "414 Request-URI Too Large",
+    "415 Unsupported Media Type",
+    "416 Requested Range Not Satisfiable",
+    "417 Expectation Failed",
+    "418 unused",
+    "419 unused",
+    "420 unused",
+    "421 unused",
+    "422 Unprocessable Entity",
+    "423 Locked",
+    "424 Failed Dependency",
+#define LEVEL_500 44
+    "500 Internal Server Error",
+    "501 Method Not Implemented",
+    "502 Bad Gateway",
+    "503 Service Temporarily Unavailable",
+    "504 Gateway Time-out",
+    "505 HTTP Version Not Supported",
+    "506 Variant Also Negotiates",
+    "507 Insufficient Storage",
+    "508 unused",
+    "509 unused",
+    "510 Not Extended"
+};
+
 
 /* The index of the first bit field that is used to index into a limit
  * bitmask. M_INVALID + 1 to METHOD_NUMBER_LAST.
@@ -703,13 +780,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
         if (tenc) {
             if (!strcasecmp(tenc, "chunked")) {
-                char line[30];
-
-                if ((rv = ap_getline(line, sizeof(line), f->r, 0)) < 0) {
-                    return rv;
-                }
                 ctx->state = BODY_CHUNK;
-                ctx->remaining = get_chunk_size(line);
             }
         }
         else if (lenp) {
@@ -736,6 +807,36 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 return APR_EGENERAL;
             }
         }
+
+        /* Since we're about to read data, send 100-Continue if needed.
+         * Only valid on chunked and C-L bodies where the C-L is > 0. */
+        if ((ctx->state == BODY_CHUNK || 
+            (ctx->state == BODY_LENGTH && ctx->remaining > 0)) &&
+            f->r->expecting_100 && f->r->proto_num >= HTTP_VERSION(1,1)) {
+            char *tmp;
+            apr_bucket_brigade *bb;
+
+            tmp = apr_pstrcat(f->r->pool, AP_SERVER_PROTOCOL, " ",
+                              status_lines[0], CRLF CRLF, NULL);
+            bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+            e = apr_bucket_pool_create(tmp, strlen(tmp), f->r->pool,
+                                       f->c->bucket_alloc);
+            APR_BRIGADE_INSERT_HEAD(bb, e);
+            e = apr_bucket_flush_create(f->c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb, e);
+
+            ap_pass_brigade(f->c->output_filters, bb);
+        }
+
+        /* We can't read the chunk until after sending 100 if required. */
+        if (ctx->state == BODY_CHUNK) {
+            char line[30];
+
+            if ((rv = ap_getline(line, sizeof(line), f->r, 0)) < 0) {
+                return rv;
+            }
+            ctx->remaining = get_chunk_size(line);
+        } 
     }
 
     if (!ctx->remaining) {
@@ -820,83 +921,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
     return APR_SUCCESS;
 }
-
-/* New Apache routine to map status codes into array indicies
- *  e.g.  100 -> 0,  101 -> 1,  200 -> 2 ...
- * The number of status lines must equal the value of RESPONSE_CODES (httpd.h)
- * and must be listed in order.
- */
-
-#ifdef UTS21
-/* The second const triggers an assembler bug on UTS 2.1.
- * Another workaround is to move some code out of this file into another,
- *   but this is easier.  Dave Dykstra, 3/31/99
- */
-static const char * status_lines[RESPONSE_CODES] =
-#else
-static const char * const status_lines[RESPONSE_CODES] =
-#endif
-{
-    "100 Continue",
-    "101 Switching Protocols",
-    "102 Processing",
-#define LEVEL_200  3
-    "200 OK",
-    "201 Created",
-    "202 Accepted",
-    "203 Non-Authoritative Information",
-    "204 No Content",
-    "205 Reset Content",
-    "206 Partial Content",
-    "207 Multi-Status",
-#define LEVEL_300 11
-    "300 Multiple Choices",
-    "301 Moved Permanently",
-    "302 Found",
-    "303 See Other",
-    "304 Not Modified",
-    "305 Use Proxy",
-    "306 unused",
-    "307 Temporary Redirect",
-#define LEVEL_400 19
-    "400 Bad Request",
-    "401 Authorization Required",
-    "402 Payment Required",
-    "403 Forbidden",
-    "404 Not Found",
-    "405 Method Not Allowed",
-    "406 Not Acceptable",
-    "407 Proxy Authentication Required",
-    "408 Request Time-out",
-    "409 Conflict",
-    "410 Gone",
-    "411 Length Required",
-    "412 Precondition Failed",
-    "413 Request Entity Too Large",
-    "414 Request-URI Too Large",
-    "415 Unsupported Media Type",
-    "416 Requested Range Not Satisfiable",
-    "417 Expectation Failed",
-    "418 unused",
-    "419 unused",
-    "420 unused",
-    "421 unused",
-    "422 Unprocessable Entity",
-    "423 Locked",
-    "424 Failed Dependency",
-#define LEVEL_500 44
-    "500 Internal Server Error",
-    "501 Method Not Implemented",
-    "502 Bad Gateway",
-    "503 Service Temporarily Unavailable",
-    "504 Gateway Time-out",
-    "505 HTTP Version Not Supported",
-    "506 Variant Also Negotiates",
-    "507 Insufficient Storage",
-    "508 unused",
-    "509 unused",
-    "510 Not Extended"
-};
 
 /* The index is found by its offset from the x00 code of each level.
  * Although this is fast, it will need to be replaced if some nutcase
@@ -1577,24 +1601,6 @@ AP_DECLARE(int) ap_should_client_block(request_rec *r)
 
     if (r->read_length || (!r->read_chunked && (r->remaining <= 0))) {
         return 0;
-    }
-
-    if (r->expecting_100 && r->proto_num >= HTTP_VERSION(1,1)) {
-        conn_rec *c = r->connection;
-        char *tmp;
-        apr_bucket *e;
-        apr_bucket_brigade *bb;
-
-        /* sending 100 Continue interim response */
-        tmp = apr_pstrcat(r->pool, AP_SERVER_PROTOCOL, " ", status_lines[0],
-                          CRLF CRLF, NULL);
-        bb = apr_brigade_create(r->pool, c->bucket_alloc);
-        e = apr_bucket_pool_create(tmp, strlen(tmp), r->pool, c->bucket_alloc);
-        APR_BRIGADE_INSERT_HEAD(bb, e);
-        e = apr_bucket_flush_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, e);
-
-        ap_pass_brigade(r->connection->output_filters, bb);
     }
 
     return 1;
