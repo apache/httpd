@@ -18,7 +18,7 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Developer Documentation</a></div><div id="page-content"><div id="preamble"><h1>Documenting Apache 2.0</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/developer/documenting.html">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/developer/documenting.html" hreflang="en" title="English">&nbsp;en&nbsp;</a></p>
 </div>
 
     <p>Apache 2.0 uses <a href="http://www.doxygen.org/">Doxygen</a> to
@@ -77,7 +77,7 @@
     <a href="http://www.doxygen.org/">the Doxygen site</a>.</p>
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/developer/documenting.html">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/developer/documenting.html" hreflang="en" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>

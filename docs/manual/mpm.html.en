@@ -18,7 +18,7 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>Multi-Processing Modules (MPMs)</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./en/mpm.html">&nbsp;en&nbsp;</a> | <a href="./ja/mpm.html">&nbsp;ja&nbsp;</a> | <a href="./ko/mpm.html">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="./en/mpm.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="./ja/mpm.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="./ko/mpm.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
 <p>This document describes what a Multi-Processing Module is and
@@ -113,7 +113,7 @@ choice at compile-time.</p>
 </table>
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./en/mpm.html">&nbsp;en&nbsp;</a> | <a href="./ja/mpm.html">&nbsp;ja&nbsp;</a> | <a href="./ko/mpm.html">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="./en/mpm.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="./ja/mpm.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="./ko/mpm.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>

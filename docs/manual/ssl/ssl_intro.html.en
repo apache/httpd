@@ -18,7 +18,7 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>SSL/TLS Strong Encryption: An Introduction</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/ssl/ssl_intro.html">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/ssl/ssl_intro.html" hreflang="en" title="English">&nbsp;en&nbsp;</a></p>
 </div>
 
 <blockquote>
@@ -629,7 +629,7 @@ Version 3.0</q>, 1996. See <a href="http://www.netscape.com/eng/ssl3/draft302.tx
 </dl>
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/ssl/ssl_intro.html">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/ssl/ssl_intro.html" hreflang="en" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
