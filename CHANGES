@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
+     [Graham Leggett]
+
   *) Remove deprecated/removed APR_STATUS_IS_SUCCESS().  [Justin Erenkrantz]
 
   *) perchild MPM: Fix thread safety problem in the use of longjmp().
