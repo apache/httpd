@@ -686,19 +686,13 @@ static char **create_argv_cmd(pool *p, char *av0, const char *args, char *path)
 }
 #endif
 
-
+/* ZZZ need to look at this in more depth and convert to an AP func so we 
+   can get rid of OS specific code.
+   */
 API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 			     char **env, int shellcmd)
 {
     int pid = 0;
-#if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
-    defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
-
-    core_dir_config *conf;
-    conf = (core_dir_config *) ap_get_module_config(r->per_dir_config,
-						    &core_module);
-
-#endif
 
 #if !defined(WIN32) && !defined(OS2)
     /* the fd on r->server->error_log is closed, but we need somewhere to
@@ -709,47 +703,10 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
     r->server->error_log = stderr;
 #endif
 
-#ifdef RLIMIT_CPU
-    if (conf->limit_cpu != NULL) {
-        if ((setrlimit(RLIMIT_CPU, conf->limit_cpu)) != 0) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-			 "setrlimit: failed to set CPU usage limit");
-	}
-    }
-#endif
-#ifdef RLIMIT_NPROC
-    if (conf->limit_nproc != NULL) {
-        if ((setrlimit(RLIMIT_NPROC, conf->limit_nproc)) != 0) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-			 "setrlimit: failed to set process limit");
-	}
-    }
-#endif
-#if defined(RLIMIT_AS)
-    if (conf->limit_mem != NULL) {
-        if ((setrlimit(RLIMIT_AS, conf->limit_mem)) != 0) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-			 "setrlimit(RLIMIT_AS): failed to set memory "
-			 "usage limit");
-	}
-    }
-#elif defined(RLIMIT_DATA)
-    if (conf->limit_mem != NULL) {
-        if ((setrlimit(RLIMIT_DATA, conf->limit_mem)) != 0) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-			 "setrlimit(RLIMIT_DATA): failed to set memory "
-			 "usage limit");
-	}
-    }
-#elif defined(RLIMIT_VMEM)
-    if (conf->limit_mem != NULL) {
-        if ((setrlimit(RLIMIT_VMEM, conf->limit_mem)) != 0) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-			 "setrlimit(RLIMIT_VMEM): failed to set memory "
-			 "usage limit");
-	}
-    }
-#endif
+    /* TODO: all that RLimit stuff should become part of the spawning API,
+     * and not something in the core_dir_config... define a special rlimit
+     * structure and pass it in here.
+     */
 
 #ifdef OS2
     {
@@ -1044,6 +1001,8 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
     }
 
 #else
+    /* TODO: re-implement suexec */
+#if 0
     if (ap_suexec_enabled
 	&& ((r->server->server_uid != ap_user_id)
 	    || (r->server->server_gid != ap_group_id)
@@ -1118,6 +1077,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 	}
     }
     else {
+#endif
         if (shellcmd) {
 	    execle(SHELL_PATH, SHELL_PATH, "-c", argv0, NULL, env);
 	}
@@ -1131,7 +1091,9 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 		   create_argv(r->pool, NULL, NULL, NULL, argv0, r->args),
 		   env);
 	}
+#if 0
     }
+#endif
     return (pid);
 #endif
 }
