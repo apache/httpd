@@ -232,12 +232,17 @@
 
 #define DEFAULT_MAX_REQUESTS_PER_CHILD 0
 
-/* If you have altered Apache and wish to change the SERVER_VERSION define
- * below, please keep to the HTTP specification.  This states that
+/* If you have altered Apache and wish to change the SERVER_VERSION
+ * identifier below, please keep to the HTTP specification.  This states that
  * the identification string should consist of product tokens with an optional
  * slash and version designator.  Sub-products which form a significant part 
- * of the application can be listed, separated by whitespace.  The tokens
- * are listed in order of their significance for identifying the application.
+ * of the application can be listed, separated by whitespace, by adding
+ * their product tokens to EXTRA_CFLAGS in the Configuration file like so.
+ *
+ * EXTRA_CFLAGS="-DSERVER_SUBVERSION="MrWidget/0.1-alpha"
+ *
+ * The tokens are listed in order of their significance for identifying the
+ * application.
  *
  * "Product tokens should be short and to the point -- use of them for 
  * advertizing or other non-essential information is explicitly forbidden."
@@ -245,7 +250,12 @@
  * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
  */
 
-#define SERVER_VERSION "Apache/1.2b3-dev" /* SEE COMMENTS ABOVE */
+#define SERVER_BASEVERSION "Apache/1.2b3-dev" /* SEE COMMENTS ABOVE */
+#ifdef SERVER_SUBVERSION
+#define SERVER_VERSION	SERVER_BASEVERSION " " SERVER_SUBVERSION
+#else
+#define SERVER_VERSION	SERVER_BASEVERSION
+#endif
 
 #define SERVER_PROTOCOL "HTTP/1.1"
 #define SERVER_SUPPORT "http://www.apache.org/"
