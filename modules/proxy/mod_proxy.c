@@ -1114,19 +1114,17 @@ static const char *
 static const char *
     set_proxy_req(cmd_parms *parms, void *dummy, int flag)
 {
-    const char *err;
     proxy_server_conf *psf =
     ap_get_module_config(parms->server->module_config, &proxy_module);
 
     psf->req = flag;
     psf->req_set = 1;
 
-    if (flag) {
-        /* Add default forward proxy worker */
-        if ((err = ap_proxy_add_worker(&(psf->forward), parms->pool,
-                                       psf, "*://*:0"))) {
-            return apr_pstrcat(parms->temp_pool, "ProxyRequests ", err, NULL); 
-        }
+    if (flag && !psf->forward) {
+        psf->forward = ap_proxy_create_worker(parms->pool);
+        psf->forward->name     = "proxy:forward";
+        psf->forward->hostname = "*";
+        psf->forward->scheme   = "*";
 
         /* Do not disable worker in case of errors */
         psf->forward->status = PROXY_WORKER_IGNORE_ERRORS;
@@ -1610,8 +1608,8 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         ap_proxy_initialize_worker(worker, s);
         worker++;
     }
-
-    ap_proxy_initialize_worker(conf->forward, s);
+    if (conf->forward)
+        ap_proxy_initialize_worker(conf->forward, s);
 
     return OK;
 }
