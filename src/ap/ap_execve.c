@@ -126,7 +126,8 @@ int ap_execle(const char *filename, const char *argv0, ...)
     }
     va_end(adummy);
 
-    argv = (char **) malloc((argc + 2) * sizeof(*argv));
+    if ((argv = (char **) malloc((argc + 2) * sizeof(*argv))) == NULL)
+	return -1;
 
     /* Pass two --- copy the argument strings into the result space */
     va_start(adummy, argv0);
@@ -143,10 +144,27 @@ int ap_execle(const char *filename, const char *argv0, ...)
     return ret;
 }
 
+/* Count number of entries in vector "args", including the trailing NULL entry
+ */
+static int
+count_args(const char **args)
+{
+    int i;
+    for (i = 0; args[i] != NULL; ++i) {
+	continue;
+    }
+    return i+1;
+}
+
+/* Emulate the execve call, respecting a #!/interpreter line if present.
+ * On "real" unixes, the kernel does this.
+ * We have to fiddle with the argv array to make it work on platforms
+ * which don't support the "hashbang" interpreter line by default.
+ */
 int ap_execve(const char *filename, const char *argv[],
 	      const char *envp[])
 {
-    const char *argv0 = argv[0];
+    const char **script_argv;
     extern char **environ;
 
     if (envp == NULL) {
@@ -174,26 +192,50 @@ int ap_execve(const char *filename, const char *argv[],
      * ELOOP  filename contains a circular reference (i.e., via a symbolic link)
      */
 
-    if (errno == ENOEXEC
-    /* Probably a script.
-     * Have a look; if there's a "#!" header then try to emulate
-     * the feature found in all modern OS's:
-     * Interpret the line following the #! as a command line
-     * in shell style.
-     */
-	&& (argv = hashbang(filename, argv)) != NULL) {
+    if (errno == ENOEXEC) {
+	/* Probably a script.
+	 * Have a look; if there's a "#!" header then try to emulate
+	 * the feature found in all modern OS's:
+	 * Interpret the line following the #! as a command line
+	 * in shell style.
+	 */
+	if ((script_argv = hashbang(filename, argv)) != NULL) {
 
-	/* new filename is the interpreter to call */
-	filename = argv[0];
+	    /* new filename is the interpreter to call */
+	    filename = script_argv[0];
 
-	/* Restore argv[0] as on entry */
-	if (argv0 != NULL) {
-	    argv[0] = argv0;
+	    /* Restore argv[0] as on entry */
+	    if (argv[0] != NULL) {
+		script_argv[0] = argv[0];
+	    }
+
+	    execve(filename, script_argv, envp);
+
+	    free(script_argv);
 	}
+	/*
+	 * Script doesn't start with a hashbang line!
+	 * So, try to have the default shell execute it.
+	 * For this, the size of argv must be increased by one
+	 * entry: the shell's name. The remaining args are appended.
+	 */
+	else {
+	    int i = count_args(argv) + 1;   /* +1 for leading SHELL_PATH */
 
-	execve(filename, argv, envp);
+	    if ((script_argv = malloc(sizeof(*script_argv) * i)) == NULL)
+		return -1;
 
-	free(argv);
+	    script_argv[0] = SHELL_PATH;
+
+	    while (i > 0) {
+		script_argv[i] = argv[i-1];
+		--i;
+	    }
+
+	    execve(SHELL_PATH, script_argv, envp);
+
+	    free(script_argv);
+	}
     }
     return -1;
 }
