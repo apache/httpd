@@ -24,7 +24,11 @@
  *    prior written permission. For written permission, please contact
  *    apache@apache.org.
  *
- * 5. Redistributions of any form whatsoever must retain the following
+ * 5. Products derived from this software may not be called "Apache"
+ *    nor may "Apache" appear in their names without prior written
+ *    permission of the Apache Group.
+ *
+ * 6. Redistributions of any form whatsoever must retain the following
  *    acknowledgment:
  *    "This product includes software developed by the Apache Group
  *    for use in the Apache HTTP server project (http://www.apache.org/)."

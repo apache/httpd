@@ -4,6 +4,10 @@ New features with this release, as extensions of the Apache functionality
 For more information, see the documentation included with this release
 (htdocs/manual/) or http://www.apache.org/docs/
 
+The Apache license has been modified slightly for this version; the
+change simply prohibits derived products from claiming themselves to
+be "Apache."
+
 In addition to a number of bug fixes and internal performance
 enhancements, Apache 1.3 has the following specific new user
 features:

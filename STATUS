@@ -130,14 +130,10 @@ Committed Code Changes:
     * Dean's floating point ap_snprintf code wasn't threadsafe.
     * Ralf's add of the new Apache Autoconf-style Interface (APACI)
     * Rainer Scherg's fix for CONNECT proxy support: #1326, #1573, #1942
+    * Ken's reworking of the Apache LICENSE
 
 Available Patches:
 
-    * Ken's slight reworking of the Apache LICENSE to clarify the restricted
-      nature of usage of the name "Apache" in derived products
-	Status: Ken +1, Paul +1, Ben +1, Jim +1, Randy +1, Roy +1,
-		Chuck +1, MarkC +1, Ralf +1, Sameer +1, Martin +1, Dean +1
-	        Brian +1
 
 In progress:
 
