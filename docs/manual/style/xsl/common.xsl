@@ -791,7 +791,7 @@
 
                 <xsl:when
                     test="position() mod 2 =
-                            (count(preceding-sibling::*[count(td) = 0]) mod 2)">
+                            (count(preceding-sibling::tr[count(td) = 0]) mod 2)">
                     <xsl:attribute name="class">odd</xsl:attribute>
                 </xsl:when>
                 </xsl:choose>
