@@ -349,11 +349,11 @@ pid_t os_fork(server_rec *s, int slot)
 
     fflush(stdin);
     if (dup2(fileno(sock_fp), STDIN_FILENO) == -1)
-        ap_log_error(APLOG_MARK, APLOG_CRIT, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, errno, s,
         "unable to replace stdin with sock device driver");
     fflush(stdout);
     if (dup2(fileno(sock_fp), STDOUT_FILENO) == -1)
-        ap_log_error(APLOG_MARK, APLOG_CRIT, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, errno, s,
         "unable to replace stdout with sock device driver");
     input_parms.generation = ap_my_generation;
 #ifdef SCOREBOARD_FILE

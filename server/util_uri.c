@@ -272,7 +272,7 @@ API_EXPORT(void) ap_util_uri_init(void)
 
 	/* Make a readable error message */
 	ret = regerror(ret, &re_uri, line, sizeof line);
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, NULL,
 		"Internal error: regcomp(\"%s\") returned non-zero (%s) - "
 		"possibly due to broken regex lib! "
 		"Did you define WANTHSREGEX=yes?",
@@ -291,7 +291,7 @@ API_EXPORT(void) ap_util_uri_init(void)
 
 	/* Make a readable error message */
 	ret = regerror(ret, &re_hostpart, line, sizeof line);
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, NULL,
 		"Internal error: regcomp(\"%s\") returned non-zero (%s) - "
 		"possibly due to broken regex lib! "
 		"Did you define WANTHSREGEX=yes?",
@@ -327,7 +327,7 @@ API_EXPORT(int) ap_parse_uri_components(ap_pool_t *p, const char *uri, uri_compo
     ret = ap_regexec(&re_uri, uri, re_uri.re_nsub + 1, match, 0);
 
     if (ret != 0) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, NULL,
                     "ap_regexec() could not parse uri (\"%s\")",
 		    uri);
 
@@ -356,7 +356,7 @@ API_EXPORT(int) ap_parse_uri_components(ap_pool_t *p, const char *uri, uri_compo
 	/* Parse the hostinfo part to extract user, password, host, and port */
 	ret = ap_regexec(&re_hostpart, uptr->hostinfo, re_hostpart.re_nsub + 1, match, 0);
 	if (ret != 0) {
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, NULL,
                     "ap_regexec() could not parse (\"%s\") as host part",
 		    uptr->hostinfo);
 

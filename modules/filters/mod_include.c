@@ -1139,6 +1139,9 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 
         if (error_fmt) {
             ret = -1;
+            /* TODO: pass APLOG_NOERRNO if no ap_stat() failure; pass rv from ap_stat()
+             * otherwise
+             */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, error_fmt, to_send, r->filename);
             ap_rputs(error, r);
         }

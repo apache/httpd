@@ -118,7 +118,7 @@ static void sock_enable_linger(int s)
 
     if (setsockopt(s, SOL_SOCKET, SO_LINGER, 
 		   (char *) &li, sizeof(struct linger)) < 0) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf,
 	            "setsockopt: (SO_LINGER)");
 	/* not a fatal error */
     }
