@@ -1,5 +1,29 @@
 Changes with Apache 2.0.40
 
+  *) SECURITY: [CAN-2002-0661] Close a very significant security hole that 
+     applies only to the Win32, OS2 and Netware platforms.  Unix was not 
+     affected, Cygwin may be affected.  Certain URIs will bypass security
+     and allow users to invoke or access any file depending on the system 
+     configuration.  Without upgrading, a single .conf change will close 
+     the vulnerability.  Add the following directive in the global server
+     httpd.conf context before any other Alias or Redirect directives;
+         RedirectMatch 400 "\\\.\."
+     Reported by Auriemma Luigi <bugtest@sitoverde.com>.
+     [Brad Nicholes]
+
+  *) SECURITY:  Close a path-revealing exposure in multiview type
+     map negotiation (such as the default error documents) where the
+     module would report the full path of the typemapped .var file when
+     multiple documents or no documents could be served based on the mime
+     negotiation.  Reported by Auriemma Luigi <bugtest@sitoverde.com>.
+     [CAN-2002-0654]  [William Rowe]
+
+  *) SECURITY:  Close a path-revealing exposure in cgi/cgid when we 
+     fail to invoke a script.  The modules would report "couldn't create 
+     child process /path-to-script/script.pl" revealing the full path
+     of the script.  Reported by Jim Race <jrace@qualys.com>.
+     [CAN-2002-0654]  [Bill Stoddard]
+
   *) Set aside the apr-iconv and apr_xlate() features for the Win32
      build of 2.0.40 so development can be completed.  A patch, from
      <http://www.apache.org/dist/httpd/patches/apply_to_2.0.40/>
