@@ -1,5 +1,8 @@
 Changes with Apache 2.0.41
 
+  *) Fix "ab -g"'s truncated year: the last digit was cut off.
+     [Leon Brocard <acme@astray.com>]
+
   *) mod_rewrite can now sets cookies in err_headers, uses the correct
      expiry date, and can now set the path as well
      PR 12132,12181,12172.
