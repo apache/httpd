@@ -1,3 +1,5 @@
+Changes with Apache 1.3.14
+
 Changes with Apache 1.3.13
 
   *) NOTE: A number of Win32 symbols were exported without explicit
