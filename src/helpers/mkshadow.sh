@@ -52,7 +52,7 @@ fi
 if [ ! -d $dst ]; then
     mkdir $dst
 fi
-DIRS="`cd $src
+DIRS="`cd $src; \
        find . -type d -print |\
        sed -e '/\/CVS/d' \
            -e '/^\.$/d' \
@@ -64,7 +64,7 @@ done
 IFS="$OIFS"
 
 #   fill directory tree with symlinks to files
-FILES="`cd $src
+FILES="`cd $src; \
         find . -depth -print |\
         sed -e '/\.o$/d' \
             -e '/\.a$/d' \
@@ -81,7 +81,7 @@ FILES="`cd $src
 OIFS="$IFS" IFS="$DIFS"
 for file in $FILES; do
      #  don't use `-type f' above for find because of symlinks
-     if [ -d $file ]; then
+     if [ -d "$src/$file" ]; then
          continue
      fi
      basename=`echo $file | sed -e 's:^.*/::'`
