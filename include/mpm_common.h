@@ -72,7 +72,7 @@
 
 #include "ap_config.h"
 
-#ifdef HAVE_NETINET_TCP_H
+#if APR_HAVE_NETINET_TCP_H
 #include <netinet/tcp.h>    /* for TCP_NODELAY */
 #endif
 
