@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/05/30 15:14:23 $]
+Last modified at [$Date: 2000/06/01 23:07:17 $]
 
 Release:
 
@@ -9,6 +9,8 @@ Release:
     2.0a1   : released March 10, 2000
 
 RELEASE SHOWSTOPPERS:
+    * Reimplement the server tokens
+
     * Win32: Get mod_auth_digest working under win32
       - APR_HAS_RANDOM should be defined on windows and there is a 
       lib/apr/misc/win32/rand.c which is basically a copy of what
