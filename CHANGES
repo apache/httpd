@@ -1,5 +1,8 @@
 Changes with Apache 2.0.44
 
+  *) Move mod_ext_filter out of experimental and into filters.
+     [Jeff Trawick]
+
   *) Fixed a memory leak in mod_deflate with dynamic content.
      PR 14321  [Ken Franken <kfranken@decisionmark.com>]
 
