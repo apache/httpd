@@ -59,17 +59,23 @@
 #include "http_config.h"
 #include "http_main.h"
 #include "http_log.h"
-#include "unixd.h"
+#include "beosd.h"
 
-unixd_config_rec unixd_config;
+beosd_config_rec beosd_config;
 
-void unixd_detach(void)
+void beosd_detach(void)
 {
-    int x;
+/*    int x;  This isn't needed due to the fork() issue */
     pid_t pgrp;
 
     chdir("/");
 
+/* ZZZ
+ * fork() is evil if we're also doing spawn_thread...so we don't use it.
+ * This means that it won't detach properly, so we'll have to find a way
+ * round this. 
+ */
+/*
     if ((x = fork()) > 0)
 	exit(0);
     else if (x == -1) {
@@ -77,6 +83,7 @@ void unixd_detach(void)
 	fprintf(stderr, "%s: unable to fork new process\n", ap_server_argv0);
 	exit(1);
     }
+*/
     RAISE_SIGSTOP(DETACH);
 
     if ((pgrp = setsid()) == -1) {
@@ -119,9 +126,9 @@ static int set_group_privs(void)
 
 	/* Get username if passed as a uid */
 
-	if (unixd_config.user_name[0] == '#') {
+	if (beosd_config.user_name[0] == '#') {
 	    struct passwd *ent;
-	    uid_t uid = atoi(&unixd_config.user_name[1]);
+	    uid_t uid = atoi(&beosd_config.user_name[1]);
 
 	    if ((ent = getpwuid(uid)) == NULL) {
 		ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
@@ -134,21 +141,21 @@ static int set_group_privs(void)
 	    name = ent->pw_name;
 	}
 	else
-	    name = unixd_config.user_name;
+	    name = beosd_config.user_name;
 
-	if (setgid(unixd_config.group_id) == -1) {
+	if (setgid(beosd_config.group_id) == -1) {
 	    ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
 			"setgid: unable to set group id to Group %u",
-			(unsigned)unixd_config.group_id);
+			(unsigned)beosd_config.group_id);
 	    return -1;
 	}
 
 	/* Reset `groups' attributes. */
 
-	if (initgroups(name, unixd_config.group_id) == -1) {
+	if (initgroups(name, beosd_config.group_id) == -1) {
 	    ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
 			"initgroups: unable to set groups for User %s "
-			"and Group %u", name, (unsigned)unixd_config.group_id);
+			"and Group %u", name, (unsigned)beosd_config.group_id);
 	    return -1;
 	}
     }
@@ -156,7 +163,7 @@ static int set_group_privs(void)
 }
 
 
-int unixd_setup_child(void)
+int beosd_setup_child(void)
 {
     if (set_group_privs()) {
 	return -1;
@@ -164,7 +171,7 @@ int unixd_setup_child(void)
 
     /* Only try to switch if we're running as root */
     if (!geteuid() && (
-	setuid(unixd_config.user_id) == -1)) {
+	setuid(beosd_config.user_id) == -1)) {
 	ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
 		    "setuid: unable to change uid");
 	return -1;
@@ -173,17 +180,17 @@ int unixd_setup_child(void)
 }
 
 
-const char *unixd_set_user(cmd_parms *cmd, void *dummy, char *arg)
+const char *beosd_set_user(cmd_parms *cmd, void *dummy, char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
 
-    unixd_config.user_name = arg;
-    unixd_config.user_id = ap_uname2id(arg);
+    beosd_config.user_name = arg;
+    beosd_config.user_id = ap_uname2id(arg);
 #if !defined (BIG_SECURITY_HOLE) && !defined (OS2)
-    if (unixd_config.user_id == 0) {
+    if (beosd_config.user_id == 0) {
 	return "Error:\tApache has not been designed to serve pages while\n"
 		"\trunning as root.  There are known race conditions that\n"
 		"\twill allow any local user to read any file on the system.\n"
@@ -199,21 +206,21 @@ const char *unixd_set_user(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-const char *unixd_set_group(cmd_parms *cmd, void *dummy, char *arg)
+const char *beosd_set_group(cmd_parms *cmd, void *dummy, char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
 
-    unixd_config.group_id = ap_gname2id(arg);
+    beosd_config.group_id = ap_gname2id(arg);
 
     return NULL;
 }
 
-void unixd_pre_config(void)
+void beosd_pre_config(void)
 {
-    unixd_config.user_name = DEFAULT_USER;
-    unixd_config.user_id = ap_uname2id(DEFAULT_USER);
-    unixd_config.group_id = ap_gname2id(DEFAULT_GROUP);
+    beosd_config.user_name = DEFAULT_USER;
+    beosd_config.user_id = ap_uname2id(DEFAULT_USER);
+    beosd_config.group_id = ap_gname2id(DEFAULT_GROUP);
 }
