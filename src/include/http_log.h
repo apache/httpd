@@ -91,7 +91,7 @@
 #endif
 
 #ifndef DEFAULT_LOGLEVEL
-#define DEFAULT_LOGLEVEL	APLOG_ERR
+#define DEFAULT_LOGLEVEL	APLOG_WARNING
 #endif
 
 #define APLOG_MARK	__FILE__,__LINE__
