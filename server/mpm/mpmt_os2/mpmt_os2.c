@@ -494,7 +494,7 @@ int ap_graceful_stop_signalled(void)
 
 /* Configuration handling stuff */
 
-static void mpmt_os2_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
+static int mpmt_os2_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     one_process = ap_exists_config_define("ONE_PROCESS") || 
                   ap_exists_config_define("DEBUG");
@@ -507,6 +507,8 @@ static void mpmt_os2_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t 
     ap_extended_status = 0;
     ap_min_spare_threads = DEFAULT_MIN_SPARE_THREAD;
     ap_max_spare_threads = DEFAULT_MAX_SPARE_THREAD;
+
+    return OK;
 }
 
 

@@ -334,10 +334,12 @@ static apr_status_t nwssl_socket_cleanup(void *data)
     return APR_SUCCESS;
 }
 
-static void nwssl_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
+static int nwssl_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                          apr_pool_t *ptemp)
 {
     ap_seclisteners = NULL;
+
+    return OK;
 }
 
 static int nwssl_post_config(apr_pool_t *pconf, apr_pool_t *plog,

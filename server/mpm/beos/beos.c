@@ -992,7 +992,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     return 0;
 }
 
-static void beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
+static int beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     static int restart_num = 0;
     int no_detach, debug;
@@ -1028,6 +1028,8 @@ static void beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
     ap_scoreboard_fname = DEFAULT_SCOREBOARD;
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
+
+    return OK;
 }
 
 static void beos_hooks(apr_pool_t *p)

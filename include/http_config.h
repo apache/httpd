@@ -970,8 +970,9 @@ AP_DECLARE_HOOK(int,header_parser,(request_rec *r))
  * @param pconf The config pool
  * @param plog The logging streams pool
  * @param ptemp The temporary pool
+ * @return OK or DECLINED on success anything else is a error
  */
-AP_DECLARE_HOOK(void,pre_config,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp))
+AP_DECLARE_HOOK(int,pre_config,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp))
 
 /**
  * Run the post_config function for each module

@@ -1424,7 +1424,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     return 0;
 }
 
-static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
+static int perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     static int restart_num = 0;
     int no_detach, debug;
@@ -1497,6 +1497,8 @@ static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
         child_info_table[i].gid = -1;
         child_info_table[i].sd = -1;
     }
+
+    return OK;
 }
 
 static int pass_request(request_rec *r)

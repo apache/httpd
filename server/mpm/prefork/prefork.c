@@ -1200,7 +1200,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     return 0;
 }
 
-static void prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
+static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     static int restart_num = 0;
     int no_detach, debug;
@@ -1239,6 +1239,8 @@ static void prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
     ap_extended_status = 0;
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
+
+    return OK;
 }
 
 static void prefork_hooks(apr_pool_t *p)

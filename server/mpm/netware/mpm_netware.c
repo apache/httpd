@@ -953,7 +953,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     return 0;
 }
 
-static void netware_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
+static int netware_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     int debug;
 
@@ -970,6 +970,8 @@ static void netware_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
     ap_scoreboard_fname = DEFAULT_SCOREBOARD;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_extended_status = 0;
+
+    return OK;
 }
 
 static void netware_mpm_hooks(apr_pool_t *p)

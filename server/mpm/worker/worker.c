@@ -1540,7 +1540,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     return 0;
 }
 
-static void worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog, 
+static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog, 
                               apr_pool_t *ptemp)
 {
     static int restart_num = 0;
@@ -1618,6 +1618,8 @@ static void worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     ap_extended_status = 0;
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
+
+    return OK;
 }
 
 static void worker_hooks(apr_pool_t *p)
