@@ -667,11 +667,9 @@ case "$PLAT" in
 	uname -X
 	echo Ideally, read the file PORTING, do what it says, and send the
 	echo resulting patches to The Apache Group by filling out a report
-	echo form at http://www.apache.org/bug_report.html - or, if your 
-	echo browser isn\'t forms-capable, you can send them via email to 
-	echo new-httpd@apache.org. If you don\'t wish to do the port
-	echo yourself, please submit this output rather than the patches.
-	echo Thank you
+	echo form at http://www.apache.org/bug_report.html. If you don\'t 
+        echo wish to do the port yourself, please submit this output rather 
+        echo than the patches. Thank you.
 	echo
 	echo Pressing on with the build process, but all bets are off.
 	echo Do not be surprised if it fails. If it works, and even
