@@ -73,8 +73,6 @@
 #define SSL_LIBRARY_TEXT    "OtherSSL 0.0.0 00 XXX 0000"
 #endif
 
-#if 0 /* XXX */
-
 /*
  * Support for retrieving/overriding states
  */
@@ -101,17 +99,15 @@ EVP_PKEY   *SSL_read_PrivateKey(FILE *, EVP_PKEY **, int (*)());
 int         SSL_smart_shutdown(SSL *ssl);
 X509_STORE *SSL_X509_STORE_create(char *, char *);
 int         SSL_X509_STORE_lookup(X509_STORE *, int, X509_NAME *, X509_OBJECT *);
-char       *SSL_make_ciphersuite(pool *, SSL *);
+char       *SSL_make_ciphersuite(apr_pool_t *, SSL *);
 BOOL        SSL_X509_isSGC(X509 *);
 BOOL        SSL_X509_getBC(X509 *, int *, int *);
-BOOL        SSL_X509_getCN(pool *, X509 *, char **);
+BOOL        SSL_X509_getCN(apr_pool_t *, X509 *, char **);
 #ifdef SSL_EXPERIMENTAL_PROXY
-BOOL        SSL_load_CrtAndKeyInfo_file(pool *, STACK_OF(X509_INFO) *, char *);
-BOOL        SSL_load_CrtAndKeyInfo_path(pool *, STACK_OF(X509_INFO) *, char *);
+BOOL        SSL_load_CrtAndKeyInfo_file(apr_pool_t *, STACK_OF(X509_INFO) *, char *);
+BOOL        SSL_load_CrtAndKeyInfo_path(apr_pool_t *, STACK_OF(X509_INFO) *, char *);
 #endif /* SSL_EXPERIMENTAL_PROXY */
 int         SSL_CTX_use_certificate_chain(SSL_CTX *, char *, int, int (*)());
 char       *SSL_SESSION_id2sz(unsigned char *, int);
-
-#endif /* XXX */
 
 #endif /* __SSL_UTIL_SSL_H__ */

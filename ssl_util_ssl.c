@@ -59,8 +59,6 @@
 
 #include "mod_ssl.h"
 
-#if 0 /* XXX */
-
 /*  _________________________________________________________________
 **
 **  Additional High-Level Functions for OpenSSL
@@ -269,7 +267,7 @@ int SSL_X509_STORE_lookup(X509_STORE *pStore, int nType,
 **  _________________________________________________________________
 */
 
-char *SSL_make_ciphersuite(pool *p, SSL *ssl)
+char *SSL_make_ciphersuite(apr_pool_t *p, SSL *ssl)
 {
     STACK_OF(SSL_CIPHER) *sk;
     SSL_CIPHER *c;
@@ -289,7 +287,7 @@ char *SSL_make_ciphersuite(pool *p, SSL *ssl)
     }
     if (l == 0)
         return "";
-    cpCipherSuite = (char *)ap_palloc(p, l+1);
+    cpCipherSuite = (char *)apr_palloc(p, l+1);
     cp = cpCipherSuite;
     for (i = 0; i < sk_SSL_CIPHER_num(sk); i++) {
         c = sk_SSL_CIPHER_value(sk, i);
@@ -369,7 +367,7 @@ BOOL SSL_X509_getBC(X509 *cert, int *ca, int *pathlen)
 }
 
 /* retrieve subject CommonName of certificate */
-BOOL SSL_X509_getCN(pool *p, X509 *xs, char **cppCN)
+BOOL SSL_X509_getCN(apr_pool_t *p, X509 *xs, char **cppCN)
 {
     X509_NAME *xsn;
     X509_NAME_ENTRY *xsne;
@@ -380,8 +378,8 @@ BOOL SSL_X509_getCN(pool *p, X509 *xs, char **cppCN)
         xsne = sk_X509_NAME_ENTRY_value(xsn->entries, i);
         nid = OBJ_obj2nid(xsne->object);
         if (nid == NID_commonName) {
-            *cppCN = ap_palloc(p, xsne->value->length+1);
-            ap_cpystrn(*cppCN, (char *)xsne->value->data, xsne->value->length+1);
+            *cppCN = apr_palloc(p, xsne->value->length+1);
+            apr_cpystrn(*cppCN, (char *)xsne->value->data, xsne->value->length+1);
             (*cppCN)[xsne->value->length] = NUL;
 #ifdef CHARSET_EBCDIC
             ascii2ebcdic(*cppCN, *cppCN, strlen(*cppCN));
@@ -400,7 +398,7 @@ BOOL SSL_X509_getCN(pool *p, X509 *xs, char **cppCN)
 
 #ifdef SSL_EXPERIMENTAL_PROXY
 
-BOOL SSL_load_CrtAndKeyInfo_file(pool *p, STACK_OF(X509_INFO) *sk, char *filename)
+BOOL SSL_load_CrtAndKeyInfo_file(apr_pool_t *p, STACK_OF(X509_INFO) *sk, char *filename)
 {
     BIO *in;
 
@@ -420,32 +418,29 @@ BOOL SSL_load_CrtAndKeyInfo_file(pool *p, STACK_OF(X509_INFO) *sk, char *filenam
     return TRUE;
 }
 
-BOOL SSL_load_CrtAndKeyInfo_path(pool *p, STACK_OF(X509_INFO) *sk, char *pathname)
+BOOL SSL_load_CrtAndKeyInfo_path(apr_pool_t *p, STACK_OF(X509_INFO) *sk, char *pathname)
 {
-    struct stat st;
-    DIR *dir;
-    pool *sp;
-    struct dirent *nextent;
+    apr_pool_t *sp;
+    apr_dir_t *dir;
+    apr_finfo_t dirent;
     char *fullname;
     BOOL ok;
 
-    sp = ap_make_sub_pool(p);
-    if ((dir = ap_popendir(sp, pathname)) == NULL) {
-        ap_destroy_pool(sp);
+    sp = apr_pool_sub_make(p, NULL);
+    if (apr_dir_open(&dir, pathname, sp)) != APR_SUCCESS) {
+        apr_pool_destroy(sp);
         return FALSE;
     }
     ok = FALSE;
-    while ((nextent = readdir(dir)) != NULL) {
-        fullname = ap_pstrcat(sp, pathname, "/", nextent->d_name, NULL);
-        if (stat(fullname, &st) != 0)
-            continue;
-        if (!S_ISREG(st.st_mode))
+    while ((apr_dir_read(&dirent, APR_FINFO_DIRENT, dir)) == APR_SUCCESS) {
+        fullname = apr_pstrcat(sp, pathname, "/", dirent.name, NULL);
+        if (dirent.filetype != APR_REG)
             continue;
         if (SSL_load_CrtAndKeyInfo_file(sp, sk, fullname))
             ok = TRUE;
     }
-    ap_pclosedir(p, dir);
-    ap_destroy_pool(sp);
+    apr_dir_close(dir);
+    apr_pool_destroy(sp);
     return ok;
 }              
 
@@ -534,12 +529,10 @@ char *SSL_SESSION_id2sz(unsigned char *id, int idlen)
 
     cp = str;
     for (n = 0; n < idlen && n < SSL_MAX_SSL_SESSION_ID_LENGTH; n++) {
-        ap_snprintf(cp, sizeof(str)-(cp-str), "%02X", id[n]);
+        apr_snprintf(cp, sizeof(str)-(cp-str), "%02X", id[n]);
         cp += 2;
     }
     *cp = NUL;
     return str;
 }
-
-#endif /* XXX */
 
