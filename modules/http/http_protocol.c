@@ -2043,22 +2043,28 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
         /* folks decided they didn't want the error code in the H1 text */
         h1 = &title[4];
 
-        ap_rvputs(rlast,
+        /* can't count on a charset filter being in place here, 
+         * so do ebcdic->ascii translation explicity (if needed)
+         */
+
+        ap_rvputs_proto_in_ascii(rlast,
                   DOCTYPE_HTML_2_0
                   "<HTML><HEAD>\n<TITLE>", title,
                   "</TITLE>\n</HEAD><BODY>\n<H1>", h1, "</H1>\n",
                   NULL);
         
-        ap_rputs(get_canned_error_string(status, r, location),rlast); 
+        ap_rvputs_proto_in_ascii(rlast,
+                                 get_canned_error_string(status, r, location),
+                                 NULL); 
 
         if (recursive_error) {
-            ap_rvputs(rlast, "<P>Additionally, a ",
+            ap_rvputs_proto_in_ascii(rlast, "<P>Additionally, a ",
                       status_lines[ap_index_of_response(recursive_error)],
                       "\nerror was encountered while trying to use an "
                       "ErrorDocument to handle the request.\n", NULL);
         }
-        ap_rputs(ap_psignature("<HR>\n", r), rlast);
-        ap_rputs("</BODY></HTML>\n", rlast);
+        ap_rvputs_proto_in_ascii(rlast, ap_psignature("<HR>\n", r), NULL);
+        ap_rvputs_proto_in_ascii(rlast, "</BODY></HTML>\n", NULL);
     }
     ap_finalize_request_protocol(r);
 }
