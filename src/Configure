@@ -104,9 +104,12 @@ if [ -f modules.c ] ; then mv modules.c modules.c.bak; fi
 # and issue a notice about it.
 #
 
-test ! -d /usr/local/etc/httpd/ \
- || if ! egrep '^EXTRA_CFLAGS.*HTTPD_ROOT' $file >/dev/null
+if [ -d /usr/local/etc/httpd/ ]
+then
+    if egrep '^EXTRA_CFLAGS.*HTTPD_ROOT' $file >/dev/null
     then
+      :
+    else
       echo " | Please note that the default httpd root directory has changed"
       echo " | from '/usr/local/etc/httpd/' to '/usr/local/apache/.'"
       echo " | You may add '-DHTTPD_ROOT=\\\"/usr/local/etc/httpd\\\"' to EXTRA_CFLAGS"
@@ -114,6 +117,7 @@ test ! -d /usr/local/etc/httpd/ \
       echo " | httpd with the option '-d /usr/local/etc/httpd' if you still"
       echo " | want to use the old root directory for your server."
     fi
+fi
 
 ####################################################################
 # Start creating the Makefile. We add some comments and
