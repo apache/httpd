@@ -188,10 +188,6 @@ SSLCertificateKeyFile @exp_sysconfdir@/ssl.key/server.key
 #     because the extraction step is an expensive operation and is usually
 #     useless for serving static content. So one usually enables the
 #     exportation for CGI and SSI requests only.
-#   o CompatEnvVars:
-#     This exports obsolete environment variables for backward compatibility
-#     to Apache-SSL 1.x, mod_ssl 2.0.x, Sioux 1.0 and Stronghold 2.x. Use this
-#     to provide compatibility to existing CGI scripts.
 #   o StrictRequire:
 #     This denies access when "SSLRequireSSL" or "SSLRequire" applied even
 #     under a "Satisfy any" situation, i.e. when it applies access is denied
@@ -199,7 +195,7 @@ SSLCertificateKeyFile @exp_sysconfdir@/ssl.key/server.key
 #   o OptRenegotiate:
 #     This enables optimized SSL connection renegotiation handling when SSL
 #     directives are used in per-directory context. 
-#SSLOptions +FakeBasicAuth +ExportCertData +CompatEnvVars +StrictRequire
+#SSLOptions +FakeBasicAuth +ExportCertData +StrictRequire
 <Files ~ "\.(cgi|shtml|phtml|php3?)$">
     SSLOptions +StdEnvVars
 </Files>
