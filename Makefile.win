@@ -231,7 +231,10 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_isapi.mak       CFG="mod_isapi - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
 	cd modules\cache
+	 $(MAKE) $(MAKEOPT) -f mod_cache.mak       CFG="mod_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_file_cache.mak  CFG="mod_file_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_mem_cache.mak   CFG="mod_mem_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_disk_cache.mak  CFG="mod_disk_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\dav\main
 	 $(MAKE) $(MAKEOPT) -f mod_dav.mak         CFG="mod_dav - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -240,10 +243,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_dav_fs.mak      CFG="mod_dav_fs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
 	cd modules\experimental
-	 $(MAKE) $(MAKEOPT) -f mod_cache.mak       CFG="mod_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_charset_lite.mak CFG="mod_charset_lite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_mem_cache.mak   CFG="mod_mem_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_disk_cache.mak  CFG="mod_disk_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\filters
 !IF EXIST("srclib\zlib")
@@ -388,13 +388,13 @@ _copybin:
 	copy modules\aaa\$(LONG)\mod_authz_user.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authnz_ldap.$(src_so)	"$(inst_so)" <.y
 	copy modules\arch\win32\$(LONG)\mod_isapi.$(src_so) 	"$(inst_so)" <.y
+	copy modules\cache\$(LONG)\mod_cache.$(src_so)		"$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_file_cache.$(src_so) 	"$(inst_so)" <.y
+	copy modules\cache\$(LONG)\mod_mem_cache.$(src_so)	"$(inst_so)" <.y
+	copy modules\cache\$(LONG)\mod_disk_cache.$(src_so)	"$(inst_so)" <.y
 	copy modules\dav\fs\$(LONG)\mod_dav_fs.$(src_so) 	"$(inst_so)" <.y
 	copy modules\dav\main\$(LONG)\mod_dav.$(src_so)		"$(inst_so)" <.y
-	copy modules\experimental\$(LONG)\mod_cache.$(src_so)		"$(inst_so)" <.y
 	copy modules\experimental\$(LONG)\mod_charset_lite.$(src_so)	"$(inst_so)" <.y
-	copy modules\experimental\$(LONG)\mod_mem_cache.$(src_so)	"$(inst_so)" <.y
-	copy modules\experimental\$(LONG)\mod_disk_cache.$(src_so)	"$(inst_so)" <.y
 !IF EXIST("srclib\zlib")
 	copy modules\filters\$(LONG)\mod_deflate.$(src_so) 	"$(inst_so)" <.y
 !IF EXIST("srclib\zlib\zlib1.$(src_dll)")
