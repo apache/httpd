@@ -1,0 +1,80 @@
+#
+# Declare the sub-directories to be built here
+#
+
+SUBDIRS = \
+	$(EOLIST) 
+
+#
+# Get the 'head' of the build environment.  This includes default targets and
+# paths to tools
+#
+
+include $(AP_WORK)\build\NWGNUhead.inc
+
+#
+# build this level's files
+
+FILES_prebuild_headers = \
+	$(APR)/include/apr.h \
+	$(APRUTIL)/include/apu.h \
+	$(APRUTIL)/include/apr_ldap.h \
+	$(PCRE)/config.h \
+	$(PCRE)/pcre.h \
+	$(EOLIST) 
+    
+nlms :: $(NWOS)/httpd.imp
+
+$(NWOS)/httpd.imp : make_nw_export.awk nw_export.i
+	@echo Generating $(subst /,\,$@)
+	awk -f make_nw_export.awk nw_export.i | sort >$(NWOS)/httpd.imp
+    
+nw_export.i : nw_export.inc $(FILES_prebuild_headers) cc.opt
+	@echo Generating $(subst /,\,$@)
+	$(CC) $< @cc.opt
+
+cc.opt : NWGNUmakefile $(AP_WORK)\build\NWGNUenvironment.inc $(AP_WORK)\build\NWGNUtail.inc $(AP_WORK)\build\NWGNUhead.inc
+	$(CHK) $@ $(DEL) $@
+	@echo -P >> $@
+	@echo -EP >> $@
+	@echo -nosyspath >> $@
+	@echo -w nocmdline >> $@
+	@echo -DNETWARE >> $@
+	@echo -DCORE_PRIVATE >> $@
+	@echo -I..\include >> $@
+	@echo -I..\modules\http >> $@
+	@echo -I..\os\netware >> $@
+	@echo -I..\server\mpm\netware >> $@
+	@echo -I..\srclib\apr\include >> $@
+	@echo -I..\srclib\apr-util\include >> $@
+	@echo -ir $(NOVELLLIBC) >> $@
+
+$(APR)/include/%.h: $(subst /,\,$(APR))\include\%.hnw
+	@echo Creating $(subst /,\,$@)
+	copy $< $(subst /,\,$(APR))\include\$(@F)
+
+$(APRUTIL)/include/%.h: $(subst /,\,$(APRUTIL))\include\%.hnw
+	@echo Creating $(subst /,\,$@)
+	copy $< $(subst /,\,$(APRUTIL))\include\$(@F)
+
+$(PCRE)/%.h: $(subst /,\,$(PCRE))\%.hw
+	@echo Creating $(subst /,\,$@)
+	copy $< $(subst /,\,$(PCRE))\$(@F)
+
+#
+# You can use this target if all that is needed is to copy files to the
+# installation area
+#
+install :: nlms FORCE
+	
+
+clean ::
+	$(CHK) nw_export.i                                  $(DEL) nw_export.i
+	$(CHK) cc.opt                                       $(DEL) cc.opt
+	$(CHK) $(subst /,\,$(APR))\include\apr.h            $(DEL) $(subst /,\,$(APR))\include\apr.h
+	$(CHK) $(subst /,\,$(APRUTIL))\include\apu.h        $(DEL) $(subst /,\,$(APRUTIL))\include\apu.h
+	$(CHK) $(subst /,\,$(APRUTIL))\include\apr_ldap.h   $(DEL) $(subst /,\,$(APRUTIL))\include\apr_ldap.h
+	$(CHK) $(subst /,\,$(PCRE))\config.h                $(DEL) $(subst /,\,$(PCRE))\config.h
+	$(CHK) $(subst /,\,$(PCRE))\pcre.h                  $(DEL) $(subst /,\,$(PCRE))\pcre.h
+	$(CHK) $(subst /,\,$(NWOS))\httpd.imp               $(DEL) $(subst /,\,$(NWOS))\httpd.imp
+    
