@@ -261,10 +261,36 @@ int main(int argc, char *argv[])
     if (argc < 4) {
         char msgbuf[2048];
 	int i;
+	int clen;
+	static char *omsg = " {buffer overflow}";
+	int olen = strlen(omsg);
 
 	ap_snprintf(msgbuf, sizeof(msgbuf), "too few (%d) arguments:", argc);
+	clen = strlen(msgbuf);
 	for (i = 0; i < argc; i++) {
-	    ap_snprintf(msgbuf, sizeof(msgbuf), "%s [%s]", msgbuf, argv[i]);
+	    int alen = strlen(argv[i]) + 4;
+	    int rlen = sizeof(msgbuf) - clen - 1;
+	    int oflow = (alen > rlen);
+
+	    alen = oflow ? rlen : alen;
+	    if (rlen > 1) {
+	        msgbuf[clen++] = ' ';
+		alen--;
+	    }
+	    if (rlen > 2) {
+	        msgbuf[clen++] = '[';
+		alen--;
+	    }
+	    ap_cpystrn(&msgbuf[clen], argv[i], alen);
+	    if (oflow) {
+	        ap_cpystrn(&msgbuf[sizeof(msgbuf) - olen - 1], omsg, olen + 1);
+		break;
+	    }
+	    else {
+	        clen += alen - 2;
+		msgbuf[clen++] = ']';
+		msgbuf[clen] = '\0';
+	    }
 	}
 	log_err("%s\n", msgbuf);
 	exit(101);
