@@ -1,5 +1,8 @@
 Changes with Apache 1.3b7
 
+  *) PORT: Dynamic Shared Object (DSO) support for NetBSD.
+     [Jaromir Dolecek <dolecek@ics.muni.cz>, Ralf S. Engelschall] PR#2158
+
   *) Add Dynamic Shared Object (DSO) support for AIX (at least 4.2 but older
      AIX variants should work fine, too. Even AIX 3.x should work). This is
      accomplished by using the free DSO emulation code from Jens-Uwe Mager

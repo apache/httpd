@@ -89,8 +89,10 @@ extern int ap_os_is_path_absolute(const char *f);
 #define HAVE_DL_H 1
 #endif
 
-#if defined(LINUX) || defined(__FreeBSD__) || defined(SOLARIS2) || \
-    defined(__bsdi__) || defined(IRIX) || defined(SVR4) || defined(OSF1)
+#if defined(LINUX) || defined(__FreeBSD__) ||\
+    defined(__OpenBSD__) || defined(__NetBSD__) || \
+    defined(SOLARIS2) || defined(__bsdi__) || \
+    defined(IRIX) || defined(SVR4) || defined(OSF1)
 #define HAVE_DLFCN_H 1
 #endif
 
@@ -115,7 +117,7 @@ const char *dlerror(void);
 #define RTLD_NOW 1
 #endif
 
-#if defined(__FreeBSD__)
+#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
 #define DLSYM_NEEDS_UNDERSCORE
 #endif
 

@@ -788,6 +788,18 @@ if [ "x$using_shlib" = "x1" ] ; then
             LDFLAGS_SHLIB_EXPORT=""
             SHLIB_SUFFIX_DEPTH=2
             ;;
+        alpha-*-netbsd*|mips-*-netbsd*|powerpc-*-netbsd*)
+            CFLAGS_SHLIB="-fpic -DPIC"
+            LDFLAGS_SHLIB="-shared"
+            LDFLAGS_SHLIB_EXPORT=""
+            SHLIB_SUFFIX_DEPTH=2
+            ;;
+        *-netbsd*)
+            CFLAGS_SHLIB="-fpic -DPIC"
+            LDFLAGS_SHLIB="-Bshareable"
+            LDFLAGS_SHLIB_EXPORT=""
+            SHLIB_SUFFIX_DEPTH=2
+            ;;
         *-solaris2*)
             case $CC in
                 */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
