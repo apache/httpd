@@ -222,14 +222,14 @@ h3 + *, h4 + * {
     margin-top: 0;
 }
 
-/* IE confuses the + * :-( 
+/* IE confuses the + * :-(
  * so reset some things
  */
 ul, .section table, .directive-section table {
     margin-bottom: 1em;
 }
 
-/* titles for 
+/* titles for
  * examples, notes and warnings
  */
 div.example h3,
@@ -343,7 +343,7 @@ tr.header, tr.header th {
 /* bordered table cells   */
 /* ====================== */
 
-/* turn off borders in tables nested in 
+/* turn off borders in tables nested in
  * bordered tables per default
  */
 table.bordered table td,
@@ -817,7 +817,7 @@ p.indent {
 }
 
 span.indent {
-    padding-left: 1em;
+    padding-left: 1.5em;
     display: block;
 }
 
