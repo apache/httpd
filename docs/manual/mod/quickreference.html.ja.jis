@@ -38,7 +38,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$r(B$BD>Ns2
 $B;H$&J}K!(B</td></tr>
 <tr class="odd"><td><a href="core.html#acceptpathinfo">AcceptPathInfo On|Off|Default</a></td><td> Default </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Resources accept trailing pathname information</td></tr>
 <tr><td><a href="core.html#accessfilename">AccessFileName <var>filename</var> [<var>filename</var>] ...</a></td><td> .htaccess </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Name of the distributed configuration file</td></tr>
-<tr class="odd"><td><a href="mod_actions.html#action">Action <em>action-type cgi-script</em></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$BFCDj$N%O%s%I%i$d%3%s%F%s%H%?%$%W$KBP$7$F(B CGI $B$r<B9T$9$k$h$&(B$B$K(B
+<tr class="odd"><td><a href="mod_actions.html#action">Action <var>action-type</var> <var>cgi-script</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$BFCDj$N%O%s%I%i$d%3%s%F%s%H%?%$%W$KBP$7$F(B CGI $B$r<B9T$9$k$h$&(B$B$K(B
 $B@_Dj(B</td></tr>
 <tr><td><a href="mod_autoindex.html#addalt">AddAlt <em>string file</em> [<em>file</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%"%$%3%s$NBe$o$j$K(B
 $BI=<($5$l$k!"%U%!%$%kL>$GA*Br$5$l$?BeBX%F%-%9(B$B%H(B</td></tr>
@@ -89,10 +89,10 @@ responses from the server</td></tr>
 <tr><td><a href="mod_mime.html#addtype">AddType <em>MIME-type
     extension</em> [<em>extension</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions
 onto the specified content type</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#alias"> Alias <em>URL-path
-    file-path</em>|<em>directory-path</em></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">URL $B$r%U%!%$%k%7%9%F%`$N0LCV$K%^%C%W$9$k(B</td></tr>
-<tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <em>regex
-    file-path</em>|<em>directory-path</em></a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">$B@55,I=8=$r;H$C$F(B URL $B$r%U%!%$%k%7%9%F%`$N0LCV$K%^%C%W$9$k(B</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#alias">Alias <var>URL-path</var>
+<var>file-path</var>|<var>directory-path</var></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">URL $B$r%U%!%$%k%7%9%F%`$N0LCV$K%^%C%W$9$k(B</td></tr>
+<tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
+<var>file-path</var>|<var>directory-path</var></a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">$B@55,I=8=$r;H$C$F(B URL $B$r%U%!%$%k%7%9%F%`$N0LCV$K%^%C%W$9$k(B</td></tr>
 <tr class="odd"><td><a href="mod_authz_host.html#allow"> Allow from
     all|<em>host</em>|env=<em>env-variable</em>
     [<em>host</em>|env=<em>env-variable</em>] ...</a></td><td /><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%5!<%P$N$"$kNN0h$K%"%/%;%9$G$-$k%[%9%H$r@)8f$9$k(B</td></tr>
@@ -111,7 +111,7 @@ error log</td></tr>
 <tr><td><a href="mod_authn_anon.html#anonymous_nouserid">Anonymous_NoUserID on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether the userID field may be empty</td></tr>
 <tr class="odd"><td><a href="mod_authn_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether to check the password field for a correctly
 formatted email address</td></tr>
-<tr><td><a href="perchild.html#assignuserid">AssignUserID <em>user_id</em> <em>group_id</em></a></td><td /><td>v</td><td>M</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="perchild.html#assignuserid">AssignUserID <var>user_id</var> <var>group_id</var></a></td><td /><td>v</td><td>M</td></tr><tr><td class="descr" colspan="4">-</td></tr>
 <tr class="odd"><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative on|off</a></td><td> on </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$BG'>Z$H>5G'$r!"$h$jDc$$%l%Y%k$N%b%8%e!<%k$K0\9T$5$;$k$+$r(B
 $B@_Dj$7(B$B$^$9!#(B</td></tr>
 <tr><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider <em>provider-name</em></a></td><td /><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B$3$N0LCV$KBP$9$kG'>Z%W%m%P%$%@$r@_Dj$7$^$9!#(B</td></tr>
@@ -187,8 +187,8 @@ scripts</td></tr>
 NoImp +</td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Configures charset tranlation behavior</td></tr>
 <tr class="odd"><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <em>charset</em></a></td><td /><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Source charset of files</td></tr>
 <tr><td><a href="mod_speling.html#checkspelling">CheckSpelling on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">spelling $B%b%8%e!<%k$r;HMQ$9$k$h$&$K$9$k(B</td></tr>
-<tr class="odd"><td><a href="perchild.html#childperuserid">ChildPerUserID <em>user_id</em>
-<em>group_id</em> <em>num_children</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="perchild.html#childperuserid">ChildPerUserID <var>user_id</var>
+<var>group_id</var> <var>num_children</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
 <tr><td><a href="core.html#contentdigest">ContentDigest on|off</a></td><td> off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables the generation of Content-MD5 HTTP Response
 headers</td></tr>
 <tr class="odd"><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domain</em></a></td><td /><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The domain to which the tracking cookie applies</td></tr>
@@ -352,7 +352,7 @@ connection</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild <em>number</em></a></td><td> 10000 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B8D!9$N;R%5!<%P$,2TF/Cf$K07$&%j%/%(%9%H?t$N>e8B(B</td></tr>
 <tr><td><a href="prefork.html#maxspareservers">MaxSpareServers <em>number</em><br /></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">$B%"%$%I%k$J;R%5!<%P%W%m%;%9$N:GBg8D?t(B</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <em>number</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B%"%$%I%k%9%l%C%I$N:GBg?t(B</td></tr>
-<tr><td><a href="mpm_netware.html#maxthreads">MaxThreads <em>number</em></a></td><td> 250 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="mpm_netware.html#maxthreads">MaxThreads <var>number</var></a></td><td> 250 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">-</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild <em>number</em></a></td><td> 64 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B;R%W%m%;%9Kh$N%9%l%C%I?t$N:GBg?t(B</td></tr>
 <tr><td><a href="mod_cern_meta.html#metadir">MetaDir <em>directory</em></a></td><td> .web </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name of the directory to find CERN-style meta information
 files</td></tr>
@@ -365,7 +365,7 @@ using the specified magic file</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#minsparethreads">MinSpareServers <em>number</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B%j%/%(%9%H$K1~Ez$9$k$3$H$N$G$-$k(B
 $B%"%$%I%k%9%l%C%I?t$N:G>.?t(B</td></tr>
 <tr><td><a href="mod_file_cache.html#mmapfile">MMapFile <em>file-path</em> [<em>file-path</em>] ...</a></td><td /><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Tells mod_mime to treat path_info components as part of the filename</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td /><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Tells mod_mime to treat path_info components as part of the filename</td></tr>
 <tr><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch
     <em>[NegotiatedOnly] [Handlers] [Filters] [Any]</em></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">The types of files that will be included when 
 searching for a matching file with MultiViews</td></tr>
@@ -413,13 +413,15 @@ matched by regular expressions</td></tr>
 <tr><td><a href="mod_proxy.html#proxyvia">ProxyVia on|off|full|block</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Information provided in the <code>Via</code> HTTP response
 header for proxied requests</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <em>filename</em></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%$%s%G%C%/%90lMw$N:G8e$KA^F~$5$l$k%U%!%$%k$NL>A0(B</td></tr>
-<tr><td><a href="mod_alias.html#redirect">Redirect [<em>status</em>] <em>URL-path URL</em></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%/%i%$%"%s%H$,0c$&(B URL $B$r<hF@$9$k$h$&$K30It$X$N%j%@%$%l%/%H(B$B$r(B
+<tr><td><a href="mod_alias.html#redirect">Redirect [<var>status</var>] <var>URL-path</var>
+<var>URL</var></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%/%i%$%"%s%H$,0c$&(B URL $B$r<hF@$9$k$h$&$K30It$X$N%j%@%$%l%/%H(B$B$r(B
 $BAw$k(B</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<em>status</em>] <em>regex URL</em></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B8=:_$N(B URL $B$X$N@55,I=8=$N%^%C%A$K$h$j(B
+<tr class="odd"><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>status</var>] <var>regex</var>
+<var>URL</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B8=:_$N(B URL $B$X$N@55,I=8=$N%^%C%A$K$h$j(B
 $B30It$X$N%j%@%$%l%/%H(B$B$rAw$k(B</td></tr>
-<tr><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <em>URL-path URL</em></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%/%i%$%"%s%H$,0c$&(B URL $B$r<hF@$9$k$h$&$K30It$X$N1J5WE*$J(B
+<tr><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <var>URL-path</var> <var>URL</var></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%/%i%$%"%s%H$,0c$&(B URL $B$r<hF@$9$k$h$&$K30It$X$N1J5WE*$J(B
 $B%j(B$B%@%$%l%/%H$rAw$k(B</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <em>URL-path URL</em></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%/%i%$%"%s%H$,0c$&(B URL $B$r<hF@$9$k$h$&$K30It$X$N0l;~E*$J(B
+<tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-path</var> <var>URL</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%/%i%$%"%s%H$,0c$&(B URL $B$r<hF@$9$k$h$&$K30It$X$N0l;~E*$J(B
 $B%j(B$B%@%$%l%/%H$rAw$k(B</td></tr>
 <tr><td><a href="mod_mime.html#removecharset">RemoveCharset
     <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any character set associations for a set of file
@@ -472,13 +474,13 @@ processes launched by Apache children</td></tr>
 user authentication</td></tr>
 <tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <em>file-path</em></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">$B;R%W%m%;%9$HO"7H$9$k$?$a$N%G!<%?$rJ]B8$9$k(B
 $B%U%!%$%k$N0LCV(B</td></tr>
-<tr class="odd"><td><a href="mod_actions.html#script"> Script <em>method cgi-script</em></a></td><td /><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$BFCDj$N%j%/%(%9%H%a%=%C%I$KBP$7$F(B CGI $B%9%/%j%W%H$r(B
+<tr class="odd"><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td /><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$BFCDj$N%j%/%(%9%H%a%=%C%I$KBP$7$F(B CGI $B%9%/%j%W%H$r(B
 $B<B9T$9$k(B$B$h$&$K@_Dj(B</td></tr>
-<tr><td><a href="mod_alias.html#scriptalias">ScriptAlias 
-<em>URL-path file-path</em>|<em>directory-path</em></a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">URL $B$r%U%!%$%k%7%9%F%`$N0LCV$X%^%C%W$7!"%^%C%W@h$r(B
+<tr><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-path</var>
+<var>file-path</var>|<var>directory-path</var></a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">URL $B$r%U%!%$%k%7%9%F%`$N0LCV$X%^%C%W$7!"%^%C%W@h$r(B
 CGI $B%9%/%j%W%H$K;XDj(B</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch
-<em>regex file-path</em>|<em>directory-path</em></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">URL $B$r@55,I=8=$r;H$C$F%U%!%$%k%7%9%F%`$N0LCV$X%^%C%W$7!"%^%C(B$B%W@h$r(B
+<tr class="odd"><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>regex</var>
+<var>file-path</var>|<var>directory-path</var></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">URL $B$r@55,I=8=$r;H$C$F%U%!%$%k%7%9%F%`$N0LCV$X%^%C%W$7!"%^%C(B$B%W@h$r(B
 CGI $B%9%/%j%W%H$K;XDj(B</td></tr>
 <tr><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource registry|script</a></td><td> script </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Technique for locating the interpreter for CGI 
 scripts</td></tr>
@@ -578,7 +580,7 @@ Certificate verification</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <em>number</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B@_Dj2DG=$J;R%W%m%;%9Kh$N%9%l%C%I?t$N>e8B$r(B
 $B@_Dj$7$^$9(B</td></tr>
 <tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <em>number</em></a></td><td> 50 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">$B;R%W%m%;%9$=$l$>$l$K@8@.$5$l$k%9%l%C%I?t(B</td></tr>
-<tr class="odd"><td><a href="mpm_netware.html#threadstacksize">ThreadStackSize <em>number</em></a></td><td> 65536 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mpm_netware.html#threadstacksize">ThreadStackSize <var>number</var></a></td><td> 65536 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
 <tr><td><a href="core.html#timeout">TimeOut <var>number</var></a></td><td> 300 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Amount of time the server will wait for
 certain events before failing a request</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#transferlog">TransferLog <em>file</em>|<em>pipe</em></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Specifly location of a log file</td></tr>
