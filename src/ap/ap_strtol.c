@@ -118,6 +118,7 @@ API_EXPORT(long) ap_strtol(const char *nptr, char **endptr, int base)
 	char c;
 	unsigned long cutoff;
 	int neg, any, cutlim;
+        long result;
 
 	/*
 	 * Skip white space and pick up leading +/- sign if any.
@@ -189,15 +190,16 @@ API_EXPORT(long) ap_strtol(const char *nptr, char **endptr, int base)
 		}
 	}
 	if (any < 0) {
-		acc = neg ? LONG_MIN : LONG_MAX;
+		result = neg ? LONG_MIN : LONG_MAX;
 		errno = ERANGE;
 	} else if (!any) {
 noconv:
+                result = (long)acc;
 		errno = EINVAL;
 	} else if (neg)
-		acc = -acc;
+		result = -(long)acc;
 	if (endptr != NULL)
 		*endptr = (char *)(any ? s - 1 : nptr);
-	return (acc);
+	return (result);
 }
 
