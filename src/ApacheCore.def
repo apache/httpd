@@ -360,12 +360,30 @@ EXPORTS
 	ap_SHA1Final   @355
 	ap_sha1_base64   @356
         ap_send_error_response @357
-	ap_remove_spaces @358
-	ap_get_service_key @359
-	ap_registry_get_server_root @360
-	ap_registry_get_service_conf @361
-	ap_registry_set_service_conf @362
-	ap_start_shutdown @363
-	ap_start_restart @364
-        ap_configtestonly @365 DATA
-	ap_scan_script_header_err_strs @366
+        ap_my_generation @358 DATA
+
+        ; These were exported implicitly prior to 1.3.13, so they
+        ; had _prefixed names, maintain ordinal values from 1.3.12:
+        ap_os_case_canonical_filename @359
+        ap_os_systemcase_filename @360
+        ap_set_config_vectors @361
+        ap_strcasestr @362
+        ap_to64 @363
+        ap_vrprintf @365
+        os_strftime @366
+        regerror @367
+
+        ; Introduced in 1.3.13
+        ap_add_file_conf @368
+        ap_configtestonly @369 DATA
+	ap_get_service_key @370
+        ap_get_win32_interpreter @371
+        ap_is_rdirectory @372
+        ap_registry_get_server_root @373
+	ap_registry_get_service_conf @374
+	ap_registry_set_service_conf @375
+        ap_remove_spaces @376
+	ap_scan_script_header_err_strs @377
+        ap_start_shutdown @378
+	ap_start_restart @379
+	ap_stripprefix @380
