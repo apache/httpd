@@ -604,7 +604,7 @@ AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
     }
 #endif
 #if APR_HAS_PROC_PTHREAD_SERIALIZE
-    else if (!strcasecmp(arg, "proc_pthread")) {
+    else if (!strcasecmp(arg, "pthread")) {
         ap_accept_lock_mech = APR_LOCK_PROC_PTHREAD;
     }
 #endif
@@ -621,7 +621,7 @@ AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
                            ", sysvsem"
 #endif
 #if APR_HAS_PROC_PTHREAD_SERIALIZE
-                           ", proc_pthread"
+                           ", pthread"
 #endif
                            , NULL);
     }
