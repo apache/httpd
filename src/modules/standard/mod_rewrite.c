@@ -2279,16 +2279,106 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
 static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
 		       backrefinfo *briRR, backrefinfo *briRC)
 {
-    /*  1. take the string  */
-    ap_cpystrn(buffer, input, nbuf);
-    /*  2. expand $N (i.e. backrefs to RewriteRule pattern)  */
-    expand_backref_inbuffer(r->pool, buffer, nbuf, briRR, '$');
-    /*  3. expand %N (i.e. backrefs to latest RewriteCond pattern)  */
-    expand_backref_inbuffer(r->pool, buffer, nbuf, briRC, '%');
-    /*  4. expand %{...} (i.e. variables) */
-    expand_variables_inbuffer(r, buffer, nbuf);
-    /*  5. expand ${...} (RewriteMap lookups)  */
-    expand_map_lookups(r, buffer, nbuf);
+    char *inp, *outp;
+    size_t span, space;
+
+    /*
+     * for security reasons this expansion must be perfomed in a
+     * single pass, otherwise an attacker can arrange for the result
+     * of an earlier expansion to include expansion specifiers that
+     * are interpreted by a later expansion, producing results that
+     * were not intended by the administrator.
+     */
+
+    inp = input;
+    outp = buffer;
+    space = nbuf - 1; /* room for '\0' */
+
+    for (;;) {
+	span = strcspn(inp, "$%");
+	if (span > space) {
+	    span = space;
+	}
+	memcpy(outp, inp, span);
+	inp += span;
+	outp += span;
+	space -= span;
+	if (space == 0 || *inp == '\0') {
+	    break;
+	}
+	/* now we have a '$' or a '%' */
+	if (inp[1] == '{') {
+	    char *endp;
+	    endp = strchr(inp, '}');
+	    if (endp == NULL) {
+		goto skip;
+	    }
+	    *endp = '\0';
+	    if (inp[0] == '$') {
+		/* ${...} map lookup expansion */
+		char *key, *dflt, *result;
+		key = strchr(inp, ':');
+		if (key == NULL) {
+		    goto skip;
+		}
+		*key++ = '\0';
+		dflt = strchr(key, '|');
+		if (dflt) {
+		    *dflt++ = '\0';
+		}
+		result = lookup_map(r, inp+2, key);
+		if (result == NULL) {
+		    result = dflt ? dflt : "";
+		}
+		span = ap_cpystrn(outp, result, space) - outp;
+		key[-1] = ':';
+		if (dflt) {
+		    dflt[-1] = '|';
+		}
+	    }
+	    else if (inp[0] == '%') {
+		/* %{...} variable lookup expansion */
+		span = ap_cpystrn(outp, lookup_variable(r, inp+2), space) - outp;
+	    }
+	    else {
+		span = 0;
+	    }
+	    *endp = '}';
+	    inp = endp+1;
+	    outp += span;
+	    space -= span;
+	    continue;
+	}
+	else if (ap_isdigit(inp[1])) {
+	    int n = inp[1] - '0';
+	    backrefinfo *bri = NULL;
+	    if (inp[0] == '$') {
+		/* $N RewriteRule regexp backref expansion */
+		bri = briRR;
+	    }
+	    else if (inp[0] == '%') {
+		/* %N RewriteCond regexp backref expansion */
+		bri = briRC;
+	    }
+	    /* see ap_pregsub() in src/main/util.c */
+            if (bri && n <= bri->nsub &&
+		bri->regmatch[n].rm_eo > bri->regmatch[n].rm_so) {
+		span = bri->regmatch[n].rm_eo - bri->regmatch[n].rm_so;
+		if (span > space) {
+		    span = space;
+		}
+		memcpy(outp, bri->source + bri->regmatch[n].rm_so, span);
+		outp += span;
+		space -= span;
+	    }
+	    inp += 2;
+	    continue;
+	}
+    skip:
+	*outp++ = *inp++;
+	space--;
+    }
+    *outp++ = '\0';
 }
 
 
@@ -2481,51 +2571,6 @@ static void fully_qualify_uri(request_rec *r)
 
 /*
 **
-**  Expand the %0-%9 or $0-$9 regex backreferences
-**
-*/
-
-static void expand_backref_inbuffer(pool *p, char *buf, int nbuf,
-                                    backrefinfo *bri, char c)
-{
-    register int i;
-
-    /* protect existing $N and & backrefs and replace <c>N with $N backrefs */
-    for (i = 0; buf[i] != '\0' && i < nbuf; i++) {
-        if (buf[i] == '\\' && (buf[i+1] != '\0' && i < (nbuf-1))) {
-            i++; /* protect next */
-        }
-        else if (buf[i] == '&') {
-            buf[i] = '\001';
-        }
-        else if (c != '$' && buf[i] == '$' && (buf[i+1] >= '0' && buf[i+1] <= '9')) {
-            buf[i] = '\002';
-            i++; /* speedup */
-        }
-        else if (buf[i] == c && (buf[i+1] >= '0' && buf[i+1] <= '9')) {
-            buf[i] = '$';
-            i++; /* speedup */
-        }
-    }
-
-    /* now apply the standard regex substitution function */
-    ap_cpystrn(buf, ap_pregsub(p, buf, bri->source,
-                               bri->nsub+1, bri->regmatch), nbuf);
-
-    /* restore the original $N and & backrefs */
-    for (i = 0; buf[i] != '\0' && i < nbuf; i++) {
-        if (buf[i] == '\001') {
-            buf[i] = '&';
-        }
-        else if (buf[i] == '\002') {
-            buf[i] = '$';
-        }
-    }
-}
-
-
-/*
-**
 **  Expand tilde-paths (/~user) through
 **  Unix /etc/passwd database information
 **
@@ -2567,119 +2612,6 @@ static char *expand_tildepaths(request_rec *r, char *uri)
     return newuri;
 }
 #endif
-
-/*
-**
-**  mapfile expansion support
-**  i.e. expansion of MAP lookup directives
-**  ${<mapname>:<key>} in RewriteRule rhs
-**
-*/
-
-#define limit_length(n) (n > LONG_STRING_LEN-1 ? LONG_STRING_LEN-1 : n)
-
-static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
-{
-    char newuri[MAX_STRING_LEN];
-    char *cpI;
-    char *cpIE;
-    char *cpO;
-    char *cpT;
-    char *cpT2;
-    char mapname[LONG_STRING_LEN];
-    char mapkey[LONG_STRING_LEN];
-    char defaultvalue[LONG_STRING_LEN];
-    int n;
-
-    cpI = uri;
-    cpIE = cpI+strlen(cpI);
-    cpO = newuri;
-    while (cpI < cpIE) {
-        if (cpI+6 < cpIE && strncmp(cpI, "${", 2) == 0) {
-            /* missing delimiter -> take it as plain text */
-            if (   strchr(cpI+2, ':') == NULL
-                || strchr(cpI+2, '}') == NULL) {
-                memcpy(cpO, cpI, 2);
-                cpO += 2;
-                cpI += 2;
-                continue;
-            }
-            cpI += 2;
-
-            cpT = strchr(cpI, ':');
-            n = cpT-cpI;
-            memcpy(mapname, cpI, limit_length(n));
-            mapname[limit_length(n)] = '\0';
-            cpI += n+1;
-
-            cpT2 = strchr(cpI, '|');
-            cpT = strchr(cpI, '}');
-            if (cpT2 != NULL && cpT2 < cpT) {
-                n = cpT2-cpI;
-                memcpy(mapkey, cpI, limit_length(n));
-                mapkey[limit_length(n)] = '\0';
-                cpI += n+1;
-
-                n = cpT-cpI;
-                memcpy(defaultvalue, cpI, limit_length(n));
-                defaultvalue[limit_length(n)] = '\0';
-                cpI += n+1;
-            }
-            else {
-                n = cpT-cpI;
-                memcpy(mapkey, cpI, limit_length(n));
-                mapkey[limit_length(n)] = '\0';
-                cpI += n+1;
-
-                defaultvalue[0] = '\0';
-            }
-
-            cpT = lookup_map(r, mapname, mapkey);
-            if (cpT != NULL) {
-                n = strlen(cpT);
-                if (cpO + n >= newuri + sizeof(newuri)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
-                                 r, "insufficient space in "
-                                 "expand_map_lookups, aborting");
-                    return;
-                }
-                memcpy(cpO, cpT, n);
-                cpO += n;
-            }
-            else {
-                n = strlen(defaultvalue);
-                if (cpO + n >= newuri + sizeof(newuri)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 
-                                 r, "insufficient space in "
-                                 "expand_map_lookups, aborting");
-                    return;
-                }
-                memcpy(cpO, defaultvalue, n);
-                cpO += n;
-            }
-        }
-        else {
-            cpT = strstr(cpI, "${");
-            if (cpT == NULL)
-                cpT = cpI+strlen(cpI);
-            n = cpT-cpI;
-            if (cpO + n >= newuri + sizeof(newuri)) {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 
-                             r, "insufficient space in "
-                             "expand_map_lookups, aborting");
-                return;
-            }
-            memcpy(cpO, cpI, n);
-            cpO += n;
-            cpI += n;
-        }
-    }
-    *cpO = '\0';
-    ap_cpystrn(uri, newuri, uri_len);
-    return;
-}
-
-#undef limit_length
 
 
 
@@ -3475,53 +3407,6 @@ static int rewritemap_program_child(void *cmd, child_info *pinfo)
 ** +-------------------------------------------------------+
 */
 
-
-static void expand_variables_inbuffer(request_rec *r, char *buf, int buf_len)
-{
-    char *newbuf;
-    newbuf = expand_variables(r, buf);
-    if (strcmp(newbuf, buf) != 0) {
-        ap_cpystrn(buf, newbuf, buf_len);
-    }
-    return;
-}
-
-static char *expand_variables(request_rec *r, char *str)
-{
-    char output[MAX_STRING_LEN];
-    char input[MAX_STRING_LEN];
-    char *cp;
-    char *cp2;
-    char *cp3;
-    int expanded;
-    char *outp;
-    char *endp;
-
-    ap_cpystrn(input, str, sizeof(input));
-    output[0] = '\0';
-    outp = output;
-    endp = output + sizeof(output);
-    expanded = 0;
-    for (cp = input; cp < input+MAX_STRING_LEN; ) {
-        if ((cp2 = strstr(cp, "%{")) != NULL) {
-            if ((cp3 = strstr(cp2, "}")) != NULL) {
-                *cp2 = '\0';
-                outp = ap_cpystrn(outp, cp, endp - outp);
-
-                cp2 += 2;
-                *cp3 = '\0';
-                outp = ap_cpystrn(outp, lookup_variable(r, cp2), endp - outp);
-
-                cp = cp3+1;
-                expanded = 1;
-                continue;
-            }
-        }
-        outp = ap_cpystrn(outp, cp, endp - outp);
-        break;
-    }
-    return expanded ? ap_pstrdup(r->pool, output) : str;
-}
 
 static char *lookup_variable(request_rec *r, char *var)
 {

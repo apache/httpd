@@ -168,7 +168,7 @@
 #include <fcntl.h>
 #endif
 #endif
-#if defined(AIX) || defined(AIXIA64)
+#ifdef AIX
 #undef USE_FLOCK
 #define USE_FCNTL 1
 #include <fcntl.h>
@@ -429,10 +429,7 @@ static void do_expand_env(request_rec *r, char *env[],
 static void  splitout_queryargs(request_rec *r, int qsappend);
 static void  fully_qualify_uri(request_rec *r);
 static void  reduce_uri(request_rec *r);
-static void  expand_backref_inbuffer(pool *p, char *buf, int nbuf,
-                                     backrefinfo *bri, char c);
 static char *expand_tildepaths(request_rec *r, char *uri);
-static void  expand_map_lookups(request_rec *r, char *uri, int uri_len);
 
     /* rewrite map support functions */
 static char *lookup_map(request_rec *r, char *name, char *key);
@@ -471,8 +468,6 @@ static void  run_rewritemap_programs(server_rec *s, pool *p);
 static int   rewritemap_program_child(void *cmd, child_info *pinfo);
 
     /* env variable support */
-static void  expand_variables_inbuffer(request_rec *r, char *buf, int buf_len);
-static char *expand_variables(request_rec *r, char *str);
 static char *lookup_variable(request_rec *r, char *var);
 static char *lookup_header(request_rec *r, const char *name);
 
