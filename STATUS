@@ -69,6 +69,12 @@ Documentation that needs writing:
 
 Available Patches:
 
+    * Juan Gallego's patch to add CSH-style modifiers (:h, :r, :t, :e)
+      to mod_include's variable processing.
+	Mesage-ID: PR#3246, also available at
+		  <http://www.physics.mcgill.ca/~juan/mod_include.patch>
+	Status: Ken -0 for 1.3/+0 for 2.0
+
     * Ken's merge of the Three Config Files into one, with srm.conf and
       access.conf made into "go see the One True Config File" placeholders.
 	Message-ID: <3624C175.D0C18CAA@Golux.Com>
