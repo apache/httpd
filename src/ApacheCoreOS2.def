@@ -370,3 +370,4 @@ EXPORTS
 	ap_find_types  @364
 	ap_is_rdirectory  @365
 	ap_stripprefix  @366
+	ap_child_terminate  @367
