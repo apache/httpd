@@ -16,28 +16,29 @@
 /**
  * This MPM tries to fix the 'keep alive problem' in HTTP.
  *
- * After a client completes the first request, it can keep it open to send more 
- * requests with the same socket.  This can save signifigant overhead in 
- * creating TCP connections.  However, the major disadvantage is that Apache
- * traditionally keeps an entire child process/thread waiting for data from
- * the client.  This MPM has a dedicated thread for handling both the 
- * Listenting sockets, and all sockets that are in a Keep Alive status.
- * 
- * The MPM assumes the underlying apr_pollset implmentation is somewhat threadsafe.
- * This currently is only comptaible with KQueue and EPoll.  This enables the
- * MPM to avoid extra high level locking or having to wake up the listener 
- * thread when a keep-alive socket needs to be sent to it.
- * 
- * This MPM not preform well on older platforms that do not have very good 
- * threading, like Linux with a 2.4 kernel, but this does not matter, since we 
+ * After a client completes the first request, the client can keep the
+ * connection open to send more requests with the same socket.  This can save
+ * signifigant overhead in creating TCP connections.  However, the major
+ * disadvantage is that Apache traditionally keeps an entire child
+ * process/thread waiting for data from the client.  To solve this problem,
+ * this MPM has a dedicated thread for handling both the Listenting sockets,
+ * and all sockets that are in a Keep Alive status.
+ *
+ * The MPM assumes the underlying apr_pollset implmentation is somewhat
+ * threadsafe.  This currently is only compatible with KQueue and EPoll.  This
+ * enables the MPM to avoid extra high level locking or having to wake up the
+ * listener thread when a keep-alive socket needs to be sent to it.
+ *
+ * This MPM not preform well on older platforms that do not have very good
+ * threading, like Linux with a 2.4 kernel, but this does not matter, since we
  * require EPoll or KQueue.
  *
- * For FreeBSD, use 5.3.  It is possible to run this MPM
- * on FreeBSD 5.2.1, if you use libkse (see `man libmap.conf`).
+ * For FreeBSD, use 5.3.  It is possible to run this MPM on FreeBSD 5.2.1, if
+ * you use libkse (see `man libmap.conf`).
  *
  * For NetBSD, use at least 2.0.
  *
- * For Linux, you should use a2.6 kernel, and make sure your glibc has epoll 
+ * For Linux, you should use a 2.6 kernel, and make sure your glibc has epoll
  * support compiled in.
  *
  */
@@ -111,8 +112,8 @@
 
 /* Admin can't tune ServerLimit beyond MAX_SERVER_LIMIT.  We want
  * some sort of compile-time limit to help catch typos.
- */   
-#ifndef MAX_SERVER_LIMIT   
+ */
+#ifndef MAX_SERVER_LIMIT
 #define MAX_SERVER_LIMIT 20000
 #endif
 
@@ -249,7 +250,8 @@ static apr_os_thread_t *listener_os_thread;
 #define LISTENER_SIGNAL     SIGHUP
 
 /* An array of socket descriptors in use by each thread used to
- * perform a non-graceful (forced) shutdown of the server. */
+ * perform a non-graceful (forced) shutdown of the server.
+ */
 static apr_socket_t **worker_sockets;
 
 static void close_worker_sockets(void)
@@ -636,13 +638,13 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
         apr_status_t rc;
         listener_poll_type *pt = (listener_poll_type *) cs->pfd.client_data;
 
-        /* It greatly simplifies the logic to use a single timeout value here 
-         * because the new element can just be added to the end of the list 
-         * and it will stay sorted in expiration time sequence.  If brand new 
-         * sockets are sent to the event thread for a readability check, this 
-         * will be a slight behavior change - they use the non-keepalive timeout 
-         * today.  With a normal client, the socket will be readable in a few 
-         * milliseconds anyway.    
+        /* It greatly simplifies the logic to use a single timeout value here
+         * because the new element can just be added to the end of the list and
+         * it will stay sorted in expiration time sequence.  If brand new
+         * sockets are sent to the event thread for a readability check, this
+         * will be a slight behavior change - they use the non-keepalive
+         * timeout today.  With a normal client, the socket will be readable in
+         * a few milliseconds anyway.
          */
         cs->expiration_time = ap_server_conf->keep_alive_timeout + time_now;
         apr_thread_mutex_lock(timeout_mutex);
@@ -674,11 +676,11 @@ static void check_infinite_requests(void)
     else {
         /* wow! if you're executing this code, you may have set a record.
          * either this child process has served over 2 billion requests, or
-         * you're running a threaded 2.0 on a 16 bit machine.  
+         * you're running a threaded 2.0 on a 16 bit machine.
          *
          * I'll buy pizza and beers at Apachecon for the first person to do
          * the former without cheating (dorking with INT_MAX, or running with
-         * uncommitted performance patches, for example).    
+         * uncommitted performance patches, for example).
          *
          * for the latter case, you probably deserve a beer too.   Greg Ames
          */
@@ -752,8 +754,7 @@ static apr_status_t push2worker(const apr_pollfd_t * pfd,
  *     reserve a worker thread, block if all are currently busy.
  *     this prevents the worker queue from overflowing and lets
  *     other processes accept new connections in the mean time.
- */ 
-
+ */
 static int get_worker(int *have_idle_worker_p)
 {
     apr_status_t rc;
@@ -768,7 +769,7 @@ static int get_worker(int *have_idle_worker_p)
         else {
             if (!APR_STATUS_IS_EOF(rc)) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
-                             "ap_queue_info_wait_for_idler failed.  "  
+                             "ap_queue_info_wait_for_idler failed.  "
                              "Attempting to shutdown process gracefully");
                 signal_threads(ST_GRACEFUL);
             }
@@ -778,10 +779,10 @@ static int get_worker(int *have_idle_worker_p)
     else {
         /* already reserved a worker thread - must have hit a
          * transient error on a previous pass
-         */  
-        return 1; 
+         */
+        return 1;
     }
-}        
+}
 
 static void *listener_thread(apr_thread_t * thd, void *dummy)
 {
@@ -806,14 +807,14 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
     /* We set this to force apr_pollset to wakeup if there hasn't been any IO
      * on any of its sockets.  This allows sockets to have been added
      * when no other keepalive operations where going on.
-     *   
+     *
      * current value is 1 second
      */
     timeout_interval = 1000000;
 
     /* the following times out events that are really close in the future
      *   to prevent extra poll calls
-     *   
+     *
      * current value is .1 second
      */
 #define TIMEOUT_FUDGE_FACTOR 100000
@@ -821,7 +822,7 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
     /* POLLSET_SCALE_FACTOR * ap_threads_per_child sets the size of
      * the pollset.  I've seen 15 connections per active worker thread
      * running SPECweb99. 
-     * 
+     *
      * However, with the newer apr_pollset, this is the number of sockets that
      * we will return to any *one* call to poll().  Therefore, there is no
      * reason to make it more than ap_threads_per_child.
@@ -846,8 +847,8 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
                             tpool, APR_POLLSET_THREADSAFE);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
-                     "apr_pollset_create with Thread Safety failed.  Attempting to "
-                     "shutdown process gracefully");
+                     "apr_pollset_create with Thread Safety failed. "
+                     "Attempting to shutdown process gracefully");
         signal_threads(ST_GRACEFUL);
         return NULL;
     }
@@ -961,8 +962,9 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
 
                 rc = lr->accept_func(&csd, lr, ptrans);
 
-                /* later we trash rv and rely on csd to indicate success/failure */
-
+                /* later we trash rv and rely on csd to indicate
+                 * success/failure
+                 */
                 AP_DEBUG_ASSERT(rc == APR_SUCCESS || !csd);
 
                 if (rc == APR_EGENERAL) {
@@ -1088,8 +1090,8 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
         rv = ap_queue_pop(worker_queue, &csd, &cs, &ptrans);
 
         if (rv != APR_SUCCESS) {
-            /* We get APR_EOF during a graceful shutdown once all the connections
-             * accepted by this server process have been handled.
+            /* We get APR_EOF during a graceful shutdown once all the
+             * connections accepted by this server process have been handled.
              */
             if (APR_STATUS_IS_EOF(rv)) {
                 break;
@@ -1464,10 +1466,12 @@ static void child_main(int child_num_arg)
          *     shutdown this child
          */
         join_start_thread(start_thread_id);
-        signal_threads(ST_UNGRACEFUL);  /* helps us terminate a little more
-                                         * quickly than the dispatch of the signal thread
-                                         * beats the Pipe of Death and the browsers
-                                         */
+
+        /* helps us terminate a little more quickly than the dispatch of the
+         * signal thread; beats the Pipe of Death and the browsers
+         */
+        signal_threads(ST_UNGRACEFUL);
+
         /* A terminating signal was received. Now join each of the
          * workers to clean them up.
          *   If the worker already exited, then the join frees
@@ -2007,7 +2011,8 @@ static int worker_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     for (pdir = ap_conftree; pdir != NULL; pdir = pdir->next) {
         if (strncasecmp(pdir->directive, "ThreadsPerChild", 15) == 0) {
             if (!max_clients) {
-                break;          /* we're in the clear, got ThreadsPerChild first */
+                /* we're in the clear, got ThreadsPerChild first */
+                break;
             }
             else {
                 /* now to swap the data */
@@ -2119,7 +2124,7 @@ static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy,
     if (err != NULL) {
         return err;
     }
-        
+
     ap_daemons_to_start = atoi(arg);
     return NULL;
 }
@@ -2231,8 +2236,8 @@ static const char *set_threads_per_child(cmd_parms * cmd, void *dummy,
                      "WARNING: ThreadsPerChild of %d exceeds ThreadLimit "
                      "value of %d", ap_threads_per_child, thread_limit);
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "threads, lowering ThreadsPerChild to %d. To increase, please"
-                     " see the", thread_limit);
+                     "threads, lowering ThreadsPerChild to %d. To increase, "
+                     "please see the", thread_limit);
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                      " ThreadLimit directive.");
         ap_threads_per_child = thread_limit;
@@ -2267,7 +2272,7 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *ar
         return NULL;
     }
     server_limit = tmp_server_limit;
-  
+
     if (server_limit > MAX_SERVER_LIMIT) {
        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                     "WARNING: ServerLimit of %d exceeds compile time limit "
