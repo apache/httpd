@@ -118,7 +118,6 @@
 <li><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
 <li><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire</a></li>
 <li><a href="mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></li>
-<li><a href="mod_cache.html#cachemaxstreamingbuffer">CacheMaxStreamingBuffer</a></li>
 <li><a href="mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></li>
 <li><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></li>
 <li><a href="mod_disk_cache.html#cacheroot">CacheRoot</a></li>
@@ -227,6 +226,7 @@
 <li><a href="perchild.html#maxthreadsperchild">MaxThreadsPerChild</a></li>
 <li><a href="mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></li>
 <li><a href="mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></li>
+<li><a href="mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></li>
 <li><a href="mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></li>
 <li><a href="mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></li>
 <li><a href="mod_mem_cache.html#mcachesize">MCacheSize</a></li>
