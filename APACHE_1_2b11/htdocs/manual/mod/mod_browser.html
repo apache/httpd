@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache module mod_browser</TITLE>
+</HEAD>
+
+<BODY>
+<!--#include virtual="header.html" -->
+<H1>Apache module mod_browser</h1>
+
+This module is contained in the <code>mod_browser.c</code> file, and
+is compiled in by default with Apache 1.2 and above. It provides for
+setting environment variables based on the browser.
+
+<h2>Summary</h2>
+
+<p>This module allows you to set environment variables based on the name of
+the browser accessing your document, based on the <code>User-Agent</code>
+header field. This is especially useful when combined with a conditional
+HTML language such as <a href="mod_include.html">XSSI</a> or PHP, and
+can provide for simple browser-based negotiation of HTML features.</p>
+
+<h2>Directives</h2>
+<ul>
+<li><A HREF="#browsermatch">BrowserMatch</A>
+<li><A HREF="#browsermatchnocase">BrowserMatchNoCase</A>
+</ul>
+
+<hr>
+
+<h2><A name="browsermatch">BrowserMatch</A></h2>
+<strong>Syntax:</strong> BrowserMatch <em>regex attr1 attr2...</em><br>
+<strong>Context:</strong> server config<br>
+<strong>Status:</strong> base<br>
+<strong>Module:</strong> mod_browser<br>
+<strong>Compatibility:</strong> Apache 1.2 and above<p>
+
+The BrowserMatch directive defines environment variables based on the
+User-Agent
+header. The first argument should be a POSIX.2 extended regular
+expression (similar to an egrep-style regex). The rest of the arguments
+give names of variables to set. These take the form of either
+"<code>varname</code>", "<code>!varname</code>" or
+"<code>varname=value</code>". In the first form, the value will be set
+to "1". The second will remove the given variable if already defined,
+and the third will set the variable to the value given by <code>value</code>. If a User-Agent
+string matches more than one entry, they will
+be merged. Entries are processed in the order they appear, and later
+entries can override earlier ones.
+
+<p>For example:</p>
+<pre>
+    BrowserMatch ^Mozilla forms jpeg=yes browser=netscape
+    BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript
+    BrowserMatch MSIE !javascript
+</pre>
+
+<p><h2><A name="browsermatchnocase">BrowserMatchNoCase</A></h2>
+<strong>Syntax:</strong> BrowserMatchNoCase <em>regex attr1 attr2...</em><br>
+<strong>Context:</strong> server config<br>
+<strong>Status:</strong> base<br>
+<strong>Module:</strong> mod_browser<br>
+<strong>Compatibility:</strong> Apache 1.2 and above
+
+<p>The <code>BrowserMatchNoCase</code> directive is semantically identical to
+   the <a href="#browsermatch"><code>BrowserMatch</code></a>
+   directive. However, it provides for case-insensitive matching. For
+   example:</p>
+<pre>
+    BrowserMatchNoCase mac platform=macintosh
+    BrowserMatchNoCase win platform=windows
+</pre>
+
+
+<p>
+<!--#include virtual="footer.html" -->
+
+</BODY>
+</HTML>
+
