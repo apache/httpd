@@ -161,7 +161,11 @@ static int handle_dir(request_rec *r)
      */
 
     if (r->filename[strlen(r->filename) - 1] != '/') {
+        if (r->filename != r->canonical_filename)
+            r->canonical_filename = NULL;
         r->filename = apr_pstrcat(r->pool, r->filename, "/", NULL);
+        if (r->canonical_filename)
+            r->canonical_filename = r->filename;
     }
 
     if (d->index_names) {
