@@ -1,5 +1,9 @@
 Changes with Apache 1.3b3
 
+  *) When a configuration parse complained about a bad directive,
+     the logger would use whatever (unrelated) value was in errno.
+     errno is now forced to EINVAL first in this case.  [Ken Coar]
+
   *) A sed command in the Configure script pushed the edge of POSIXness,
      breaking on some systems.  [Bhaba R.Misra <system@vt.edu>] PR#1368
   
