@@ -684,9 +684,9 @@ static void flush_log(config_log_state *cls)
 static int config_log_transaction(request_rec *r, config_log_state *cls,
                                   array_header *default_format)
 {
-    array_header *strsa;
     log_format_item *items;
     char *str, **strs, *s;
+    int *strl;
     request_rec *orig;
     int i;
     int len = 0;
@@ -698,7 +698,8 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
 
     format = cls->format ? cls->format : default_format;
 
-    strsa = make_array(r->pool, format->nelts, sizeof(char *));
+    strs = palloc(r->pool, sizeof(char *) * (format->nelts));
+    strl = palloc(r->pool, sizeof(int) * (format->nelts));
     items = (log_format_item *) format->elts;
 
     orig = r;
@@ -710,20 +711,11 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
     }
 
     for (i = 0; i < format->nelts; ++i) {
-        *((char **) push_array(strsa)) = process_item(r, orig, &items[i]);
+        strs[i] = process_item(r, orig, &items[i]);
     }
-
-    strs = (char **) strsa->elts;
 
     for (i = 0; i < format->nelts; ++i) {
-        len += strlen(strs[i]);
-    }
-
-    str = palloc(r->pool, len + 1);
-
-    for (i = 0, s = str; i < format->nelts; ++i) {
-        strcpy(s, strs[i]);
-        s += strlen(strs[i]);
+        len += strl[i] = strlen(strs[i]);
     }
 
 #ifdef BUFFERED_LOGS
@@ -731,13 +723,28 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
         flush_log(cls);
     }
     if (len >= LOG_BUFSIZE) {
+        str = palloc(r->pool, len + 1);
+        for (i = 0, s = str; i < format->nelts; ++i) {
+            memcpy(s, strs[i], strl[i]);
+            s += strl[i];
+        }
         write(cls->log_fd, str, len);
     }
     else {
-        memcpy(&cls->outbuf[cls->outcnt], str, len);
+        for (i = 0, s = &cls->outbuf[cls->outcnt]; i < format->nelts; ++i) {
+            memcpy(s, strs[i], strl[i]);
+            s += strl[i];
+        }
         cls->outcnt += len;
     }
 #else
+    str = palloc(r->pool, len + 1);
+
+    for (i = 0, s = str; i < format->nelts; ++i) {
+        memcpy(s, strs[i], strl[i]);
+        s += strl[i];
+    }
+
     write(cls->log_fd, str, len);
 #endif
 

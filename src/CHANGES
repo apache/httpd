@@ -1,5 +1,7 @@
 Changes with Apache 1.3b6
 
+  *) Performance tweak to mod_log_config.  [Dmitry Khrustalev]
+
   *) Clean up some undocumented behaviour of mod_setenvif related to
      "merging" two SetEnvIf directives when they match the same header
      and regex.  Document that mod_setenvif will perform comparisons in
