@@ -737,7 +737,7 @@ ServerSignature On
     AddLanguage ltz .lu
     AddLanguage ca .ca
     AddLanguage es .es
-    AddLanguage sv .se
+    AddLanguage sv .sv
     AddLanguage cz .cz
     AddLanguage ru .ru
     AddLanguage zh-tw .tw
