@@ -78,6 +78,13 @@
 #include "mpm.h"
 #include "mpm_common.h"
 
+#ifdef HAVE_PWD_H
+#include <pwd.h>
+#endif
+#ifdef HAVE_GRP_H
+#include <grp.h>
+#endif
+
 #ifdef MPM_NEEDS_RECLAIM_CHILD_PROCESSES
 void ap_reclaim_child_processes(int terminate)
 {
