@@ -1,6 +1,10 @@
-Changes with Apache 2.0.25-dev
-
 Changes with Apache 2.0.24
+
+  *) Fixed the segfaults in mod_mime introduced by hash tables in 2.0.20.
+     [William Rowe, Greg Ames]
+
+  *) Rounded out the mod_mime Add/Remove pairs by adding RemoveLanguage
+     and RemoveCharset directives.  [William Rowe]
 
   *) The Unix MPMs other than perchild now allow child server 
      processes to use the accept mutex when starting as root and 
