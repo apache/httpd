@@ -127,7 +127,7 @@
     は、<code>--disable-v4-mapped</code> configure
     オプションを指定して、次のように個別指定の
     <directive module="mpm_common">Listen</directive>
-    ディレクティブを使用してください。
+    ディレクティブを使用してください。</p>
 
     <example>
        Listen [::]:80<br />
