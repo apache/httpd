@@ -505,7 +505,7 @@ API_EXPORT(void) ap_no2slash(char *name)
 
     s = d = name;
 
-#ifdef WIN32
+#ifdef HAVE_UNC_PATHS
     /* Check for UNC names.  Leave leading two slashes. */
     if (s[0] == '/' && s[1] == '/')
         *d++ = *s++;
@@ -536,9 +536,21 @@ API_EXPORT(void) ap_no2slash(char *name)
  *    /a/b, 2  ==> /a/
  *    /a/b, 3  ==> /a/b/
  *    /a/b, 4  ==> /a/b/
+ *
+ * MODIFIED FOR HAVE_DRIVE_LETTERS and NETWARE environments, 
+ * so that if n == 0, "/" is returned in d with n == 1 
+ * and s == "e:/test.html", "e:/" is returned in d
+ * *** See also directory_walk in src/main/http_request.c
  */
 API_EXPORT(char *) ap_make_dirstr_prefix(char *d, const char *s, int n)
 {
+#if defined(HAVE_DRIVE_LETTERS) || defined(NETWARE)
+    if (!n) {
+        *d = '/';
+        *++d = '\0';
+        return (d);
+    }
+#endif /* def HAVE_DRIVE_LETTERS || NETWARE */
     for (;;) {
 	*d = *s;
 	if (*d == '\0') {
