@@ -77,7 +77,7 @@ AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c)
     APR_BRIGADE_INSERT_TAIL(bb, b);
 
     /* End Of Connection bucket */
-    b = apr_bucket_eoc_create(c->bucket_alloc);
+    b = ap_bucket_eoc_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
 
     ap_pass_brigade(c->output_filters, bb);
