@@ -882,8 +882,8 @@ static int make_child(server_rec *s, int slot)
 	int status = bindprocessor(BINDPROCESS, (int)getpid(), 
 				   PROCESSOR_CLASS_ANY);
 	if (status != OK) {
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, ap_server_conf,
-			"processor unbind failed %d", status);
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, errno, 
+                         ap_server_conf, "processor unbind failed %d", status);
 	}
 #endif
 	RAISE_SIGSTOP(MAKE_CHILD);
