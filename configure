@@ -87,7 +87,9 @@ help=no
 quiet=no
 verbose=no
 case "$*" in
-    --help|*--help|*--help* ) help=yes; quiet=yes ;;
+    --help|*--help|*--help* ) help=yes; quiet=yes
+      echo "hang on a moment, generating help"
+     ;;
     --quiet|*--quiet|*--quiet* ) quiet=yes ;;
     --verbose|*--verbose|*--verbose*|-v|*-v|*-v* ) verbose=yes ;;
     * ) ;;
