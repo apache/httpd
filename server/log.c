@@ -359,7 +359,11 @@ static void log_error_core(const char *file, int line, int level,
     }
 
     if (logf && ((level & APLOG_STARTUP) != APLOG_STARTUP)) {
-	len = ap_snprintf(errstr, MAX_STRING_LEN, "[%s] ", ap_get_time());
+	errstr[0] = '[';
+	ap_ctime(errstr + 1, ap_now());
+	errstr[1 + AP_CTIME_LEN - 1] = ']';
+	errstr[1 + AP_CTIME_LEN    ] = ' ';
+	len = 1 + AP_CTIME_LEN + 1;
     } else {
 	len = 0;
     }
@@ -581,9 +585,12 @@ API_EXPORT(void) ap_log_reason(const char *reason, const char *file, request_rec
 
 API_EXPORT(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 {
+    char time_str[AP_CTIME_LEN];
+
+    ap_ctime(time_str, ap_now());
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
                  "[%s] file %s, line %d, assertion \"%s\" failed",
-	         ap_get_time(), szFile, nLine, szExp);
+	         time_str, szFile, nLine, szExp);
 #ifndef WIN32
     /* unix assert does an abort leading to a core dump */
     abort();

@@ -380,34 +380,46 @@ static const char *log_env_var(request_rec *r, char *a)
 
 static const char *log_request_time(request_rec *r, char *a)
 {
-    int timz;
-    ap_int32_t mday, year, hour, min, sec, month;
-    ap_time_t *t;
+    ap_exploded_time_t xt;
+    ap_status_t retcode;
     char tstr[MAX_STRING_LEN];
-    ap_int32_t retcode;
 
-    ap_make_time(&t, r->pool);
-    ap_get_gmtoff(&timz, t, r->pool);
-
+    /*
+	hi.  i think getting the time again at the end of the request
+	just for logging is dumb.  i know it's "required" for CLF.
+	folks writing log parsing tools don't realise that out of order
+	times have always been possible (consider what happens if one
+	process calculates the time to log, but then there's a context
+	switch before it writes and before that process is run again the
+	log rotation occurs) and they should just fix their tools rather
+	than force the server to pay extra cpu cycles.	if you've got
+	a problem with this, you can set the define.  -djg
+    */
+#ifdef I_INSIST_ON_EXTRA_CYCLES_FOR_CLF_COMPLIANCE
+    ap_explode_localtime(&xt, ap_now());
+#else
+    ap_explode_localtime(&xt, r->request_time);
+#endif
     if (a && *a) {              /* Custom format */
-        ap_strftime(tstr, &retcode, MAX_STRING_LEN, a, t);
+        ap_strftime(tstr, &retcode, MAX_STRING_LEN, a, &xt);
     }
     else {                      /* CLF format */
-        char sign = (timz < 0 ? '-' : '+');
+	char sign;
+	int timz;
 
-        if (timz < 0) {
-            timz = -timz;
-        }
-        ap_get_mday(t, &mday);
-        ap_get_year(t, &year);
-        ap_get_hour(t, &month);
-        ap_get_hour(t, &hour);
-        ap_get_min(t, &min);
-        ap_get_sec(t, &sec);
+	timz = xt.tm_gmtoff;
+	if (timz < 0) {
+	    timz = -timz;
+	    sign = '-';
+	}
+	else {
+	    sign = '+';
+	}
+
         ap_snprintf(tstr, sizeof(tstr), "[%02d/%s/%d:%02d:%02d:%02d %c%.2d%.2d]",
-                mday, ap_month_snames[month], year+1900, 
-                hour, min, sec,
-                sign, timz / 60, timz % 60);
+                xt.tm_mday, ap_month_snames[xt.tm_mon], xt.tm_year+1900,
+                xt.tm_hour, xt.tm_min, xt.tm_sec,
+                sign, timz / (60*60), timz % (60*60));
     }
 
     return ap_pstrdup(r->pool, tstr);
@@ -415,13 +427,7 @@ static const char *log_request_time(request_rec *r, char *a)
 
 static const char *log_request_duration(request_rec *r, char *a)
 {
-    ap_time_t *currtime = NULL;
-    ap_int32_t diff;
-    ap_make_time(&currtime, r->pool);
-    ap_current_time(currtime);
-
-    ap_timediff(currtime, r->request_time, &diff); 
-    return ap_psprintf(r->pool, "%ld", diff);
+    return ap_psprintf(r->pool, "%ld", (ap_now() - r->request_time) / AP_USEC_PER_SEC);
 }
 
 /* These next two routines use the canonical name:port so that log

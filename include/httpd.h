@@ -668,7 +668,7 @@ struct request_rec {
     int proto_num;		/* Number version of protocol; 1.1 = 1001 */
     const char *hostname;	/* Host, as set by full URI or Host: */
 
-    ap_time_t *request_time;	/* When the request started */
+    ap_time_t request_time;	/* When the request started */
 
     const char *status_line;	/* Status line, if set by script */
     int status;			/* In any case */
@@ -704,7 +704,7 @@ struct request_rec {
 
     int sent_bodyct;		/* byte count in stream is for body */
     long bytes_sent;		/* body byte count, for easy access */
-    ap_time_t *mtime;		/* Time the resource was last modified */
+    ap_time_t mtime;		/* Time the resource was last modified */
 
     /* HTTP/1.1 connection-level features */
 
@@ -914,9 +914,9 @@ struct server_rec {
  */
 
 /* Time */
-API_EXPORT(char *) ap_get_time(void);
+
 API_EXPORT(char *) ap_field_noparam(ap_context_t *p, const char *intype);
-API_EXPORT(char *) ap_ht_time(ap_context_t *p, ap_time_t *t, const char *fmt, int gmt);
+API_EXPORT(char *) ap_ht_time(ap_context_t *p, ap_time_t t, const char *fmt, int gmt);
 
 /* String handling. The *_nc variants allow you to use non-const char **s as
    arguments (unfortunately C won't automatically convert a char ** to a const

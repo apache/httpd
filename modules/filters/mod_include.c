@@ -124,9 +124,7 @@ static void add_include_vars(request_rec *r, char *timefmt)
 #endif /* ndef WIN32 */
     ap_table_t *e = r->subprocess_env;
     char *t;
-    ap_time_t *date = r->request_time;
-    ap_time_t *mtime = NULL;
-
+    ap_time_t date = r->request_time;
 
     ap_table_setn(e, "DATE_LOCAL", ap_ht_time(r->pool, date, timefmt, 0));
     ap_table_setn(e, "DATE_GMT", ap_ht_time(r->pool, date, timefmt, 1));
@@ -1023,7 +1021,7 @@ static int handle_config(ap_file_t *in, request_rec *r, char *error, char *tf,
             parse_string(r, tag_val, error, MAX_STRING_LEN, 0);
         }
         else if (!strcmp(tag, "timefmt")) {
-            ap_time_t *date = r->request_time;
+            ap_time_t date = r->request_time;
 
             parse_string(r, tag_val, tf, MAX_STRING_LEN, 0);
             ap_table_setn(env, "DATE_LOCAL", ap_ht_time(r->pool, date, tf, 0));
@@ -1170,7 +1168,6 @@ static int handle_flastmod(ap_file_t *in, request_rec *r, const char *error, con
     char *tag_val;
     struct stat finfo;
     char parsed_string[MAX_STRING_LEN];
-    ap_time_t *mtime = NULL;
 
     while (1) {
         if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
@@ -1182,8 +1179,9 @@ static int handle_flastmod(ap_file_t *in, request_rec *r, const char *error, con
         else {
             parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
             if (!find_file(r, "flastmod", tag, parsed_string, &finfo, error)) {
-                ap_make_time(&mtime, r->pool);
-                ap_set_ansitime(mtime, finfo.st_mtime);
+		ap_time_t mtime;
+
+		ap_ansi_time_to_ap_time(&mtime, finfo.st_mtime);
                 ap_rputs(ap_ht_time(r->pool, mtime, tf, 0), r);
             }
         }
@@ -2346,7 +2344,6 @@ static int send_parsed_file(request_rec *r)
     (enum xbithack *) ap_get_module_config(r->per_dir_config, &includes_module);
     int errstatus;
     request_rec *parent;
-    ap_time_t *mtime = NULL;
 
     if (!(ap_allow_options(r) & OPT_INCLUDES)) {
         return DECLINED;

@@ -168,6 +168,7 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
 {
     ap_file_t *f = NULL;
     struct stat finfo;
+    char time_str[AP_CTIME_LEN];
 
     ap_log_rerror(APLOG_MARK, show_errno|APLOG_ERR, errno, r, 
 		"%s: %s", error, r->filename);
@@ -181,7 +182,8 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
     }
 
     /* "%% [Wed Jun 19 10:53:21 1996] GET /cgi-bin/printenv HTTP/1.0" */
-    ap_fprintf(f, "%%%% [%s] %s %s%s%s %s\n", ap_get_time(), r->method, r->uri,
+    ap_ctime(time_str, ap_now());
+    ap_fprintf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri,
 	    r->args ? "?" : "", r->args ? r->args : "", r->protocol);
     /* "%% 500 /usr/local/apache/cgi-bin */
     ap_fprintf(f, "%%%% %d %s\n", ret, r->filename);
@@ -201,6 +203,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     ap_file_t *f = NULL;
     int i;
     struct stat finfo;
+    char time_str[AP_CTIME_LEN];
 
     if (!conf->logname ||
 	((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0)
@@ -227,7 +230,8 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     }
 
     /* "%% [Wed Jun 19 10:53:21 1996] GET /cgi-bin/printenv HTTP/1.0" */
-    ap_fprintf(f, "%%%% [%s] %s %s%s%s %s\n", ap_get_time(), r->method, r->uri,
+    ap_ctime(time_str, ap_now());
+    ap_fprintf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri,
 	    r->args ? "?" : "", r->args ? r->args : "", r->protocol);
     /* "%% 500 /usr/local/apache/cgi-bin" */
     ap_fprintf(f, "%%%% %d %s\n", ret, r->filename);

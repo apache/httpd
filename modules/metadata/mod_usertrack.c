@@ -102,29 +102,19 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
-#if !defined(WIN32) && !defined(MPE)
-#include <sys/time.h>
-#endif
-#ifdef HAVE_SYS_TIMES_H
-#include <sys/times.h>
-#endif
+#include "http_request.h"
 
 module MODULE_VAR_EXPORT usertrack_module;
 
 typedef struct {
     int always;
-    time_t expires;
+    int expires;
 } cookie_log_state;
 
 typedef struct {
     int enabled;
     char *cookie_name;
 } cookie_dir_rec;
-
-/* Define this to allow post-2000 cookies. Cookies use two-digit dates,
- * so it might be dicey. (Netscape does it correctly, but others may not)
- */
-#define MILLENIAL_COOKIES
 
 /* Make Cookie: Now we have to generate something that is going to be
  * pretty unique.  We can base it on the pid, time, hostip */
@@ -135,13 +125,6 @@ static void make_cookie(request_rec *r)
 {
     cookie_log_state *cls = ap_get_module_config(r->server->module_config,
 						 &usertrack_module);
-#if !defined(HAVE_GETTIMEOFDAY) && defined(HAVE_TIMES)
-    clock_t mpe_times;
-    struct tms mpe_tms;
-#elif !defined(WIN32)
-    struct timeval tv;
-    struct timezone tz = {0, 0};
-#endif
     /* 1024 == hardcoded constant */
     char cookiebuf[1024];
     char *new_cookie;
@@ -151,61 +134,21 @@ static void make_cookie(request_rec *r)
 
     dcfg = ap_get_module_config(r->per_dir_config, &usertrack_module);
 
-#if !defined(HAVE_GETTIMEOFDAY) && defined(HAVE_TIMES)
-/* We lack gettimeofday(), so we must use time() to obtain the epoch
-   seconds, and then times() to obtain CPU clock ticks (milliseconds).
-   Combine this together to obtain a hopefully unique cookie ID. */
-
-    mpe_times = times(&mpe_tms);
-
-    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%d%ld%ld", rname,
-		(int) getpid(),
-                (long) r->request_time, (long) mpe_tms.tms_utime);
-#elif defined(WIN32)
-    /*
-     * We lack gettimeofday() and we lack times(). So we'll use a combination
-     * of time() and GetTickCount(), which returns milliseconds since Windows
-     * was started. It should be relatively unique.
-     */
-
-    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%d%ld%ld", rname,
-		(int) getpid(),
-                (long) r->request_time, (long) GetTickCount());
-
-#else
-    gettimeofday(&tv, &tz);
-
-    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%d%ld%d", rname,
-		(int) getpid(),
-                (long) tv.tv_sec, (int) tv.tv_usec / 1000);
-#endif
+    /* XXX: hmm, this should really tie in with mod_unique_id */
+    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%qd", rname, ap_now());
 
     if (cls->expires) {
-        ap_time_t *when = NULL;
-        ap_int64_t req_time;
-        char *temp_cookie = NULL;
-        ap_size_t retsize;
-        
-        ap_make_time(&when, r->pool);
-        ap_get_ansitime(when, &req_time);
-#ifndef MILLENIAL_COOKIES
-        /*
-         * Only two-digit date string, so we can't trust "00" or more.
-         * Therefore, we knock it all back to just before midnight on
-         * 1/1/2000 (which is 946684799)
-         */
+	ap_exploded_time_t tms;
 
-        if (req_time + cls->expires > 946684799) {
-            ap_set_ansitime(when, 946684799);
-        }
-        else
-#endif
-            ap_set_ansitime(when,  req_time + cls->expires);
+	ap_explode_gmt(&tms, r->request_time + cls->expires * AP_USEC_PER_SEC);
 
         /* Cookie with date; as strftime '%a, %d-%h-%y %H:%M:%S GMT' */
-        ap_strftime(temp_cookie, &retsize, MAX_STRING_LEN, "%a, %d-%h-%y %H:%M:%S GMT", when); 
-        new_cookie = ap_psprintf(r->pool, "%s=%s; path=/; expires=%s", 
-                                 dcfg->cookie_name, cookiebuf, temp_cookie);
+        new_cookie = ap_psprintf(r->pool,
+                "%s=%s; path=/; expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
+                    dcfg->cookie_name, cookiebuf, ap_day_snames[tms.tm_wday],
+                    tms.tm_mday, ap_month_snames[tms.tm_mon],
+                    tms.tm_year % 100,
+                    tms.tm_hour, tms.tm_min, tms.tm_sec);
     }
     else {
 	new_cookie = ap_psprintf(r->pool, "%s=%s; path=/",

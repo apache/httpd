@@ -678,7 +678,7 @@ struct ent {
     char *alt;
     char *desc;
     off_t size;
-    time_t lm;
+    ap_time_t lm;
     struct ent *next;
     int ascending;
     char key;
@@ -1162,7 +1162,7 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
         request_rec *rr = ap_sub_req_lookup_file(name, r);
 
 	if (rr->finfo.protection != 0) {
-	    ap_get_ansitime(rr->finfo.mtime, (ap_int64_t *)&p->lm);
+	    p->lm = rr->finfo.mtime;
 	    if (S_ISDIR(rr->finfo.protection)) {
 	        if (!(p->icon = find_icon(d, rr, 1))) {
 		    p->icon = find_default_icon(d, "^^DIRECTORY^^");
@@ -1404,11 +1404,10 @@ static void output_directories(struct ent **ar, int n,
 	    if (!(autoindex_opts & SUPPRESS_LAST_MOD)) {
 		if (ar[x]->lm != -1) {
 		    char time_str[MAX_STRING_LEN];
-		    ap_time_t *ts = NULL;
-                    ap_make_time(&ts, r->pool);
-                    ap_set_ansitime(ts, ar[x]->lm);
+		    ap_exploded_time_t ts;
+                    ap_explode_localtime(&ts, ar[x]->lm);
 		    ap_strftime(time_str, &rv, MAX_STRING_LEN, 
-                                "%d-%b-%Y %H:%M  ", ts);
+                                "%d-%b-%Y %H:%M  ", &ts);
 		    ap_rputs(time_str, r);
 		}
 		else {

@@ -76,7 +76,7 @@ extern "C" {
 #define BAD_DATE (time_t)0
 
 API_EXPORT(int) ap_checkmask(const char *data, const char *mask);
-API_EXPORT(ap_time_t *) ap_parseHTTPdate(const char *date, ap_context_t *cont);
+API_EXPORT(ap_time_t) ap_parseHTTPdate(const char *date);
 
 #ifdef __cplusplus
 }

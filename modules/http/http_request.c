@@ -1374,10 +1374,9 @@ API_EXPORT(int) ap_is_initial_req(request_rec *r)
  * Function to set the r->mtime field to the specified value if it's later
  * than what's already there.
  */
-API_EXPORT(ap_time_t *) ap_update_mtime(request_rec *r, ap_time_t *dependency_mtime)
+API_EXPORT(void) ap_update_mtime(request_rec *r, ap_time_t dependency_mtime)
 {
-    if (ap_timecmp(r->mtime, dependency_mtime) == APR_LESS) {
-        r->mtime = dependency_mtime;
+    if (r->mtime < dependency_mtime) {
+	r->mtime = dependency_mtime;
     }
-    return r->mtime;
 }
