@@ -782,7 +782,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             "couldn't create control socket information, shutting down");
         return 1;
     }
-    if (apr_socket_create(&udp_sock, udp_sa->sa.sin.sin_family, SOCK_DGRAM,
+    if (apr_socket_create(&udp_sock, udp_sa->family, SOCK_DGRAM,
                       _pconf) != APR_SUCCESS){
         ap_log_error(APLOG_MARK, APLOG_ALERT, errno, s,
             "couldn't create control socket, shutting down");

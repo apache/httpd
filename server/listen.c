@@ -272,7 +272,7 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
         return;
     }
     if ((status = apr_socket_create(&new->sd,
-                                    new->bind_addr->sa.sin.sin_family,
+                                    new->bind_addr->family,
                                     SOCK_STREAM, process->pool))
         != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
