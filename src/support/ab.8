@@ -1,5 +1,5 @@
 .TH ab 1 "March 1998"
-.\" $Id: ab.8,v 1.6 1999/04/07 14:51:43 martin Exp $
+.\" $Id: ab.8,v 1.7 1999/09/27 20:27:27 dirkx Exp $
 .\" Copyright (c) 1998-1999 The Apache Group. All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -59,6 +59,8 @@ ab \- Apache HTTP server benchmarking tool
 [
 .B \-k
 ] [
+.B \-i
+] [
 .BI \-n " requests"
 ] [
 .BI \-t " timelimit"
@@ -112,6 +114,9 @@ time your Apache installation is capable to serve.
 .B \-k 
 Enable the HTTP KeepAlive feature, i.e. perform multiple requests within one
 HTTP session instead. Default is no KeepAlive.
+.TP 12
+.B \-i
+Use an HTTP 'HEAD' instead of the GET method. Cannot be mixed with POST.
 .TP 12
 .BI \-n " requests"
 Number of requests to perform for the benchmarking session.  The default is to
