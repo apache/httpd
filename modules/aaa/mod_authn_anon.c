@@ -108,13 +108,13 @@
 
 #include "mod_auth.h"
 
-typedef struct anon_auth_pw {
-    char *password;
-    struct anon_auth_pw *next;
-} anon_auth_pw;
+typedef struct anon_auth_user {
+    char *user;
+    struct anon_auth_user *next;
+} anon_auth_user;
 
 typedef struct {
-    anon_auth_pw *passwords;
+    anon_auth_user *users;
     int nouserid;
     int logemail;
     int verifyemail;
@@ -126,7 +126,7 @@ static void *create_authn_anon_dir_config(apr_pool_t *p, char *d)
     authn_anon_config_rec *conf = apr_palloc(p, sizeof(*conf));
 
     /* just to illustrate the defaults really. */
-    conf->passwords = NULL;
+    conf->users = NULL;
 
     conf->nouserid = 0;
     conf->logemail = 1;
@@ -139,22 +139,17 @@ static const char *anon_set_string_slots(cmd_parms *cmd,
                                          void *my_config, const char *arg)
 {
     authn_anon_config_rec *conf = my_config;
-    anon_auth_pw *first;
+    anon_auth_user *first;
 
-    if (!(*arg)) {
+    if (!*arg) {
         return "Anonymous string cannot be empty, use Anonymous_NoUserId";
     }
 
     /* squeeze in a record */
-    first = conf->passwords;
-
-    if (!(conf->passwords = apr_palloc(cmd->pool, sizeof(anon_auth_pw))) ||
-        !(conf->passwords->password = apr_pstrdup(cmd->pool, arg))) {
-        return "Failed to claim memory for an anonymous password...";
-    }
-
-    /* and repair the next */
-    conf->passwords->next = first;
+    first = conf->users;
+    conf->users = apr_palloc(cmd->pool, sizeof(*conf->users));
+    conf->users->user = apr_pstrdup(cmd->pool, arg);
+    conf->users->next = first;
 
     return NULL;
 }
@@ -188,38 +183,40 @@ static authn_status check_anonymous(request_rec *r, const char *user,
     authn_status res = AUTH_USER_NOT_FOUND;
 
     /* Ignore if we are not configured */
-    if (!conf->passwords) {
+    if (!conf->users) {
         return AUTH_USER_NOT_FOUND;
     }
 
     /* Do we allow an empty userID and/or is it the magic one
      */
-
-    if ((!user[0]) && (conf->nouserid)) {
-        res = AUTH_USER_FOUND;
+    if (!*user) {
+        if (conf->nouserid) {
+            res = AUTH_USER_FOUND;
+        }
     }
     else {
-        anon_auth_pw *p = conf->passwords;
-        res = AUTH_USER_NOT_FOUND;
-        while ((res == AUTH_USER_NOT_FOUND) && (p != NULL)) {
-            if (!strcasecmp(user, p->password)) {
+        anon_auth_user *p = conf->users;
+
+        while (p) {
+            if (!strcasecmp(user, p->user)) {
                 res = AUTH_USER_FOUND;
+                break;
             }
             p = p->next;
         }
     }
 
-    /* Is username is OK and password been filled out (if required) */
-    if ((res == AUTH_USER_FOUND) && ((!conf->mustemail) || strlen(sent_pw)) &&
-        /* does the password look like an email address ? */
-        ((!conf->verifyemail) ||
-          ((strpbrk("@", sent_pw) != NULL) && 
-           (strpbrk(".", sent_pw) != NULL)))) {
+    if (   (res == AUTH_USER_FOUND)
+        && (!conf->mustemail || *sent_pw)
+        && (   !conf->verifyemail
+            || (ap_strchr_c(sent_pw, '@') && ap_strchr_c(sent_pw, '.'))))
+    {
         if (conf->logemail && ap_is_initial_req(r)) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO, APR_SUCCESS, r,
-                        "Anonymous: Passwd <%s> Accepted",
-                        sent_pw ? sent_pw : "\'none\'");
+                          "Anonymous: Passwd <%s> Accepted",
+                          sent_pw ? sent_pw : "\'none\'");
         }
+
         return AUTH_GRANTED;
     }
 
