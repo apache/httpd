@@ -1,3 +1,9 @@
+Changes with Apache 2.0.45
+
+  *) Fix the building of cgi command lines when the query string
+     contains '='.  PR 13914  [Ville Skyttä <ville.skytta@iki.fi>,
+     Jeff Trawick]
+
 Changes with Apache 2.0.44
 
   *) Replace APU_HAS_LDAPSSL_CLIENT_INIT with APU_HAS_LDAP_NETSCAPE_SSL
