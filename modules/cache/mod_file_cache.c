@@ -391,7 +391,7 @@ static int mmap_handler(request_rec *r, a_file *file, int rangestatus)
         ap_send_mmap (file->mm, r, 0, file->finfo.size);
     }
     else {
-        long length;
+        ap_size_t length;
         ap_off_t offset;
         while (ap_each_byterange(r, &offset, &length)) {
             ap_send_mmap(file->mm, r, offset, length);
@@ -406,7 +406,7 @@ static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
 #if APR_HAS_SENDFILE
     ap_size_t length, nbytes;
     ap_off_t offset = 0;
-    ap_status_t rv; 
+    ap_status_t rv = APR_EINIT;
 
     if (!rangestatus) {
         rv = ap_send_fd(file->file, r, 0, file->finfo.size, &nbytes);
@@ -562,7 +562,7 @@ static void register_hooks(void)
     ap_hook_translate_name(file_cache_xlat, aszPre, NULL, AP_HOOK_MIDDLE); 
     */
 
-};
+}
 
 static const handler_rec file_cache_handlers[] =
 {
