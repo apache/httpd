@@ -71,7 +71,7 @@
 #include "mod_cache.h"
 #include "apr_hooks.h"
 
-module MODULE_VAR_EXPORT cache_module;
+module AP_DECLARE_DATA cache_module;
 
 APR_HOOK_STRUCT(
             APR_HOOK_LINK(serve_cache)
@@ -109,22 +109,16 @@ static int cache_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
 static void cache_register_hook(apr_pool_t *p)
 {
+    ap_hook_handler(cache_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_register_output_filter("CACHE", cache_filter, AP_FTYPE_HTTP_HEADER);
 }
 
-static const handler_rec cache_handlers[] =
-{
-    {"*/*", cache_handler},
-    {NULL}
-};
-
-module MODULE_VAR_EXPORT cache_module = {
+module AP_DECLARE_DATA cache_module = {
     STANDARD20_MODULE_STUFF,
     NULL,			/* create per-directory config structure */
     NULL,        		/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     NULL,			/* command apr_table_t */
-    cache_handlers,      	/* handlers */
     cache_register_hook		/* register hooks */
 };
