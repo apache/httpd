@@ -91,7 +91,7 @@ AND don't forget to run expand on the file after it has been indent'd.
    mod_status.c
    mod_unique_id.c
    mod_userdir.c
-   mod_usertrack.c
+   mod_usertrack.c		RESERVED by Brian
 
 ./os/unix:
    os-inline.c
