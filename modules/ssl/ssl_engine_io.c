@@ -780,8 +780,7 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
                                      apr_size_t len)
 {
     ssl_filter_ctx_t *filter_ctx = f->ctx;
-    bio_filter_out_ctx_t *outctx = 
-           (bio_filter_out_ctx_t *)(filter_ctx->pbioWrite->ptr);
+    bio_filter_out_ctx_t *outctx;
     int res;
 
     /* write SSL */
@@ -789,6 +788,7 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
         return APR_EGENERAL;
     }
 
+    outctx = (bio_filter_out_ctx_t *)filter_ctx->pbioWrite->ptr;
     res = SSL_write(filter_ctx->pssl, (unsigned char *)data, len);
 
     if (res < 0) {
@@ -1002,6 +1002,11 @@ static apr_status_t ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
     SSL_free(ssl);
     sslconn->ssl = NULL;
     filter_ctx->pssl = NULL; /* so filters know we've been shutdown */
+
+    if (abortive) {
+        /* prevent any further I/O */
+        c->aborted = 1;
+    }
 
     return APR_SUCCESS;
 }
@@ -1362,8 +1367,7 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
 {
     apr_status_t status = APR_SUCCESS;
     ssl_filter_ctx_t *filter_ctx = f->ctx;
-    bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)
-                                 (filter_ctx->pbioRead->ptr);
+    bio_filter_in_ctx_t *inctx;
 
     if (f->c->aborted) {
         apr_brigade_cleanup(bb);
@@ -1375,6 +1379,7 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
         return ap_pass_brigade(f->next, bb);
     }
 
+    inctx = (bio_filter_in_ctx_t *)filter_ctx->pbioRead->ptr;
     /* When we are the writer, we must initialize the inctx
      * mode so that we block for any required ssl input, because
      * output filtering is always nonblocking.

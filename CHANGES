@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_ssl: Fix segfaults after renegotiation failure. PR 21370
+     [Hartmut Keil <Hartmut.Keil@adnovum.ch>]
+
   *) ab: Overlong credentials given via command line no longer clobber
      the buffer. [André Malo]
 
