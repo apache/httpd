@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/04 17:40:32 $]
+Last modified at [$Date: 2002/02/04 18:41:45 $]
 
 Release:
 
@@ -147,20 +147,6 @@ RELEASE SHOWSTOPPERS:
                 libapr/libaprutil/etc and then enable it in binbuild.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
-
-    * Runtime startup failures don't reliably set the exit status.
-      For instance, try listening to port 80 and starting as non-root;
-      server fails with make_sock and 'no listening sockets' errors
-      but exits with 0 status.  Even with -DONE_PROCESS -DNO_DETACH.
-        Justin says: "Is this really a showstopper?  Most people won't
-                      be using -DNO_DETACH and will look at the error
-                      logs anyway."
-        Ken says: "Yes, it's a showstopper -- because it exits with
-                  a 0 status on startup failure, whether it spawns
-                  or not, before doing any work.  A script will
-                  incorrectly think it successfully daemonised."
-        Showstopper: Ken, BrianP, Martin
-        Not a showstopper: trawick, stoddard, Jim, Justin, Aaron
 
     * The Add...Filter and Set...Filter directives do not allow the
       administrator to order filters, beyond the order of filename (mime)

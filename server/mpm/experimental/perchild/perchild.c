@@ -1257,8 +1257,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     apr_status_t rv;
     apr_size_t one = 1;
 
-    pconf = _pconf;
-    ap_server_conf = s;
+    ap_log_pid(pconf, ap_pid_fname);
+
     first_server_limit = server_limit;
     first_thread_limit = thread_limit;
     if (changed_limit_at_restart) {
@@ -1289,7 +1289,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                      "no listening sockets available, shutting down");
         return 1;
     }
-    ap_log_pid(pconf, ap_pid_fname);
 
     /* Initialize cross-process accept lock */
     ap_lock_fname = apr_psprintf(_pconf, "%s.%u",
@@ -1422,6 +1421,32 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                      ap_server_conf, "SIGHUP received.  Attempting to restart");
     }
     return 0;
+}
+
+/* This really should be a post_config hook, but the error log is already
+ * redirected by that point, so we need to do this in the open_logs phase.
+ */
+static int perchild_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
+{
+    apr_status_t rv;
+
+    pconf = p;
+    ap_server_conf = s;
+
+    if ((num_listensocks = ap_setup_listeners(ap_server_conf)) < 1) {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT|APLOG_STARTUP, 0,
+                     NULL, "no listening sockets available, shutting down");
+        return DONE;
+    }
+
+    ap_log_pid(pconf, ap_pid_fname);
+
+    if ((rv = ap_mpm_pod_open(pconf, &pod))) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT|APLOG_STARTUP, rv, NULL,
+                "Could not open pipe-of-death.");
+        return DONE;
+    }
+    return OK;
 }
 
 static int perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
@@ -1709,8 +1734,14 @@ static int perchild_pre_connection(conn_rec *c)
 
 static void perchild_hooks(apr_pool_t *p)
 {
+    /* The perchild open_logs phase must run before the core's, or stderr
+     * will be redirected to a file, and the messages won't print to the
+     * console.
+     */
+    static const char *const aszSucc[] = {"core.c", NULL};
     one_process = 0;
 
+    ap_hook_open_logs(perchild_open_logs, NULL, aszSucc, APR_HOOK_MIDDLE);
     ap_hook_pre_config(perchild_pre_config, NULL, NULL, APR_HOOK_MIDDLE); 
     ap_hook_post_config(perchild_post_config, NULL, NULL, APR_HOOK_MIDDLE); 
     ap_hook_pre_connection(perchild_pre_connection,NULL,NULL, APR_HOOK_MIDDLE);
