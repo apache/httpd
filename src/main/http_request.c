@@ -1131,3 +1131,15 @@ void internal_redirect_handler (const char *new_uri, request_rec *r)
         new->content_type = r->content_type;
     process_request_internal (new);
 }
+
+/* if we return TRUE here, 
+ * it is the initial main request, which we only get *once* per HTTP request 
+ */
+
+int is_initial_req(request_rec *r)
+{
+    return
+	(r->main == NULL) /* otherwise, this is a sub-request */
+	&&
+	(r->prev == NULL); /* otherwise, this is an internal redirect */
+}
