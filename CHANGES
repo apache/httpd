@@ -1,5 +1,20 @@
 Changes with Apache 2.0.44
 
+  *) mod_isapi: Stop unsetting the 'empty' query string result with
+     a NULL argument in ecb->lpszQueryString, eliminating segfaults
+     for some ISAPI modules.  PR 14399
+     [Detlev Vendt <detlev.vendt@brillit.de>]
+
+  *) mod_isapi: Fix an issue where the HSE_REQ_DONE_WITH_SESSION
+     notification is received before the HttpExtensionProc() returns 
+     HSE_STATUS_PENDING.  This only affected isapi .dll's configured 
+     with the ISAPIFakeAsync on directive.  PR 11918
+     [John DeSetto <jdesetto@radiantsystems.com>, William Rowe]
+
+  *) mod_isapi: Fix the issue where all results from mod_isapi would
+     run through the core die handler resulting in invalid responses
+     or access log entries.  PR 10216 [William Rowe]
+
   *) Improves the user friendliness of the CacheRoot processing
      over my last pass. This version avoids the pool allocations
      but doesn't avoid all of the runtime checks. It no longer
