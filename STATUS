@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/30 14:11:16 $]
+Last modified at [$Date: 2003/07/30 19:08:46 $]
 
 Release:
 
@@ -246,6 +246,11 @@ PATCHES TO PORT FROM 2.1
       client certificate chain.  PR 21397
         modules/ssl/ssl_engine_vars.c:  r1.24
       +1: trawick, nd
+
+    * mod_ssl: Fix segfaults after renegotiation failure.  PR 21370
+        modules/ssl/ssl_engine_io.c:  r1.110
+        modules/ssl/ssl_engine_kernel.c: r1.196
+      +1: trawick
 
     * use the appropriate folder icon, even if there's a directoryindex
       listed file in the particular folder. PR 9587
