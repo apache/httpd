@@ -269,6 +269,7 @@ extern int select(), killpg(), shutdown();
 extern int initgroups(), setsockopt();
 extern char *crypt();
 extern char *getwd();
+#include <sys/time.h>
 #undef HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
