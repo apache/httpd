@@ -126,7 +126,6 @@
  */
 
 #include "apr.h"
-#include "apr_general.h" /* for APR_GET_POOL() */
 #include "apr_dso.h"
 #include "apr_strings.h"
 #include "apr_errno.h"
