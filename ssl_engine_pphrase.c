@@ -299,18 +299,17 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                 }
 
                 /*
-                 * isatty() returns false once httpd has detached from the terminal.
                  * if the private key is encrypted and SSLPassPhraseDialog is configured to "builtin"
                  * it isn't possible to prompt for a password.  in this case if we already have a
                  * private key and the file name/mtime hasn't changed, then reuse the existing key.
                  * of course this will not work if the server was started without LoadModule ssl_module
                  * configured, then restarted with it configured.  but we fall through with a chance of
                  * success if the key is not encrypted.  and in the case of fallthrough, pkey_mtime and
-                 * isterm values are used to give a better idea as to what failed.
+                 * isatty() are used to give a better idea as to what failed.
+                 * even if we could prompt for password again, users won't like getting prompted twice
+                 * at startup.
                  */
-                if ((sc->nPassPhraseDialogType == SSL_PPTYPE_BUILTIN) &&
-                    !(isterm = isatty(fileno(stdout)))) /* XXX: apr_isatty() */
-                {
+                if (sc->nPassPhraseDialogType == SSL_PPTYPE_BUILTIN) {
                     char *key_id = apr_psprintf(p, "%s:%s", cpVHostID, "RSA"); /* XXX: check for DSA key too? */
                     ssl_asn1_t *asn1 = ssl_asn1_table_get(mc->tPrivateKey, key_id);
                     
@@ -380,7 +379,9 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                  * Ok, anything else now means a fatal error.
                  */
                 if (cpPassPhraseCur == NULL) {
-                    if (nPassPhraseDialogCur && pkey_mtime && !isterm) {
+                    if (nPassPhraseDialogCur && pkey_mtime &&
+                        !(isterm = isatty(fileno(stdout)))) /* XXX: apr_isatty() */
+                    {
                         ssl_log(pServ, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                                 "Init: Unable read passphrase "
                                 "[Hint: key introduced or changed before restart?]");
