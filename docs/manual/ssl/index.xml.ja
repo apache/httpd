@@ -2,7 +2,8 @@
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <manualpage metafile="index.xml.meta">
-<!-- English revision: 1.2 -->
+<parentdocument href="../"/>
+<!-- English revision: 1.5 -->
 
   <title>Apache の SSL/TLS 暗号化</title>
 
