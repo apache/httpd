@@ -2049,7 +2049,7 @@ static char *do_expand(char *input, rewrite_ctx *ctx)
         if (current->len) {
             current->next = (spc < SMALL_EXPANSION)
                             ? &(sresult[spc++])
-                            : apr_palloc(pool, sizeof(result_list));
+                            : (result_list *)apr_palloc(pool, sizeof(result_list));
             current = current->next;
             current->next = NULL;
             current->len = 0;
@@ -2176,7 +2176,7 @@ static char *do_expand(char *input, rewrite_ctx *ctx)
             if (current->len) {
                 current->next = (spc < SMALL_EXPANSION)
                                 ? &(sresult[spc++])
-                                : apr_palloc(pool, sizeof(result_list));
+                                : (result_list *)apr_palloc(pool, sizeof(result_list));
                 current = current->next;
                 current->next = NULL;
             }
