@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_env.xml.meta">
-<!-- English revision: 1.4 -->
+<!-- English revision: 1.5 -->
 
 <name>mod_env</name>
 <description>CGI スクリプト及び SSI

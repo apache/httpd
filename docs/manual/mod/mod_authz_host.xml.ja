@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_authz_host.xml.meta">
-<!-- English revision: 1.4 -->
+<!-- English revision: 1.5 -->
 
 <name>mod_authz_host</name> 
 <description>ホスト (名前もしくは IP アドレス) に基づいたグループ承認</description>

@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_info.xml.meta">
-<!-- English revision: 1.12 -->
+<!-- English revision: 1.13 -->
 
 <name>mod_info</name>
 <description>サーバの設定の包括的な概観を提供する</description>

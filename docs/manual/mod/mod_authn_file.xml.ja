@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_authn_file.xml.meta">
-<!-- English revision: 1.5 -->
+<!-- English revision: 1.6 -->
 
 <name>mod_authn_file</name>
 <description>テキストファイルを用いたユーザ認証</description>

@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_auth_basic.xml.meta">
-<!-- English revision: 1.7 -->
+<!-- English revision: 1.8 -->
 
 <name>mod_auth_basic</name>
 <description>基本認証</description>

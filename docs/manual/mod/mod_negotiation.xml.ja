@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_negotiation.xml.meta">
-<!-- English revision: 1.11 -->
+<!-- English revision: 1.12 -->
 
 <name>mod_negotiation</name>
 <description><a href="../content-negotiation.html">コンテントネゴシエーション</a>
