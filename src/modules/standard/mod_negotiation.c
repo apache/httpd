@@ -79,7 +79,7 @@
 /*#define TCN_02 */
 
 /* Commands --- configuring document caching on a per (virtual?)
- * server basis...
+ * server basis... 
  */
 
 typedef struct {

@@ -62,10 +62,6 @@ Available Patches:
       414 responses.
       <Pine.GSO.3.95.980204191834.4314K-200000@aether.organic.com>
 
-    * Ronald Tschalaer's Accept-Encoding patch
-      <Pine.LNX.3.96dg4.980418001055.4893D-100000@twinlark.arctic.org>
-      Status: Dean +1
-
     * Wilfredo Sanchez's port to Rhapsody 5.1 for 1.2.6 - forward port to
       1.3?
       <199804182347.QAA05438@scv2.apple.com>

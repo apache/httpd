@@ -1,5 +1,10 @@
 Changes with Apache 1.3b7
 
+  *) Ronald Tschalaer's Accept-Encoding patch - preserve the "x-" in
+     the encoding type from the Accept-Encoding header (if it's there)
+     and use it in the response, as that's probably what it'll be expecting.
+     [Ronald.Tschalaer@psi.ch]
+
   *) Fix to mod_alias: translate_alias_redir is dealing with
      a URI, not a filename, so the check for drive letters for win32 
      and emx is not necessary. [Dean Gaudet]
