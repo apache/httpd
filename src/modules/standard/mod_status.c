@@ -125,7 +125,7 @@
 #endif
 #else
 #include <machine/param.h>
-#ndif
+#endif
 #endif
 
 #define STATUS_MAXLINE		64
