@@ -399,7 +399,7 @@ proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
      */
     hard_timeout("proxy send body", r);
 
-    while (!con->aborted) {
+    while (!con->aborted && f != NULL) {
 	n = bread(f, buf, IOBUFSIZE);
 	if (n == -1) /* input error */
 	{
@@ -717,7 +717,7 @@ proxy_host2addr(const char *host, struct hostent *reqhp)
 	ipaddr = inet_addr(host);
 	hp = gethostbyaddr((char *)&ipaddr, sizeof(u_long), AF_INET);
 	if (hp == NULL) {
-	    memchr(&hpbuf, 0, sizeof(hpbuf));
+	    memset(&hpbuf, 0, sizeof(hpbuf));
 	    hpbuf.h_name = 0;
 	    hpbuf.h_addrtype = AF_INET;
 	    hpbuf.h_length = sizeof(u_long);
