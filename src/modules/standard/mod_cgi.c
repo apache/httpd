@@ -315,7 +315,9 @@ static int cgi_child(void *child_stuff)
 	fprintf(dbg, "'%s'\n", env[i]);
 #endif
 
+#ifndef WIN32
     ap_chdir_file(r->filename);
+#endif
     if (!cld->debug)
 	ap_error_log2stderr(r->server);
 

@@ -607,7 +607,9 @@ static int include_cgi(char *s, request_rec *r)
     }
 
     ap_destroy_sub_req(rr);
+#ifndef WIN32
     ap_chdir_file(r->filename);
+#endif
 
     return 0;
 }
@@ -699,8 +701,9 @@ static int handle_include(FILE *in, request_rec *r, const char *error, int noexe
             if (!error_fmt && ap_run_sub_req(rr)) {
                 error_fmt = "unable to include \"%s\" in parsed file %s";
             }
+#ifndef WIN32
             ap_chdir_file(r->filename);
-
+#endif
             if (error_fmt) {
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
 			    r->server, error_fmt, tag_val, r->filename);
@@ -845,7 +848,9 @@ static int handle_exec(FILE *in, request_rec *r, const char *error)
                 ap_rputs(error, r);
             }
             /* just in case some stooge changed directories */
+#ifndef WIN32
             ap_chdir_file(r->filename);
+#endif
         }
         else if (!strcmp(tag, "cgi")) {
             parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
@@ -855,7 +860,9 @@ static int handle_exec(FILE *in, request_rec *r, const char *error)
                 ap_rputs(error, r);
             }
             /* grumble groan */
+#ifndef WIN32
             ap_chdir_file(r->filename);
+#endif
         }
         else if (!strcmp(tag, "done")) {
             return 0;
@@ -2080,7 +2087,9 @@ static void send_parsed_content(FILE *f, request_rec *r)
     printing = conditional_status = 1;
     if_nesting = 0;
 
+#ifndef WIN32
     ap_chdir_file(r->filename);
+#endif
     if (r->args) {              /* add QUERY stuff to env cause it ain't yet */
         char *arg_copy = ap_pstrdup(r->pool, r->args);
 

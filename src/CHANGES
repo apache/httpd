@@ -1,5 +1,14 @@
 Changes with Apache 1.3b7
 
+  *) chdir() doesn't make sense in a multithreaded environment like WIN32.
+     Before, Win32 CGI's could have had sporadic failures if a chdir call
+     from one thread was made between another chdir call and a spawn in
+     another thread.  So, for now don't chdir for CGI scripts in WIN32.
+     The current CGI "spec" is unclear as to whether it's necessary.  Long-
+     term fix is to either serialize the chdir/spawn combo or use WIN32
+     native calls to spawn a process.  This temp fix was necessary to remove 
+     this as a showstopper for 1.3's release. [Brian Behlendorf]
+
   *) Cleanup the suEXEC support in APACI and make it more safe:
      1. Add big fat hint in INSTALL about risks and to read the
         htdocs/manual/suexec.html document before using the suexec-related
