@@ -416,9 +416,12 @@ static int mva_translate(request_rec *r)
   
     conf = (mva_sconf_t *) ap_get_module_config(r->server->module_config,
 					      &vhost_alias_module);
-    cgi = strstr(r->uri, "cgi-bin/");
-    if (cgi && cgi - r->uri != strspn(r->uri, "/")) {
-        cgi = NULL;
+    cgi = NULL;
+    if (conf->cgi_root) {
+	cgi = strstr(r->uri, "cgi-bin/");
+	if (cgi && cgi - r->uri != strspn(r->uri, "/")) {
+	    cgi = NULL;
+	}
     }
     if (cgi) {
 	mode = conf->cgi_root_mode;

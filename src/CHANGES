@@ -1,5 +1,8 @@
 Changes with Apache 1.3.15
 
+  *) Make cgi-bin work as a regular directory when using mod_vhost_alias
+     with no VirtualScriptAlias directives. PR#6829 [Tony Finch]
+
   *) Move the check of the Expect request header field after the hook
      for ap_post_read_request, since that is the only opportunity for
      modules to handle Expect extensions.
