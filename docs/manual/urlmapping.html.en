@@ -92,7 +92,7 @@
     directives to do powerful regular-expression based matching and
     substitution. For example,</p>
 
-<div class="example"><p><code>ScriptAliasMatch ^/~([a-zA-Z0-9]*)/cgi-bin/(.*)
+<div class="example"><p><code>ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)
       /home/$1/cgi-bin/$2</code></p></div>
 
     <p>will map a request to
@@ -139,7 +139,7 @@
     <code>/home/user/public_html/file.html</code>, use the following
     <code>AliasMatch</code> directive:</p>
 
-<div class="example"><p><code>AliasMatch ^/upages/([a-zA-Z0-9]*)/?(.*)
+<div class="example"><p><code>AliasMatch ^/upages/([a-zA-Z0-9]+)/?(.*)
       /home/$1/public_html/$2</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
