@@ -91,10 +91,11 @@
 #include "iol_socket.h"
 #include "unixd.h"
 #include <sys/stat.h>
-#include <sys/socket.h> /* for sockaddr_un */
+#ifdef HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
 #include <sys/un.h> /* for sockaddr_un */
 #include <sys/types.h>
-#include <sys/stat.h>
 
 module MODULE_VAR_EXPORT cgid_module; 
 

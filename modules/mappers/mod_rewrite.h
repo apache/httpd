@@ -94,16 +94,27 @@
 
 
     /* Include from the underlaying Unix system ... */
+#ifdef HAVE_STRING_H
 #include <string.h>
+#endif
+#ifdef HAVE_STDARG_H
 #include <stdarg.h>
+#endif
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
+#ifdef HAVE_TIME_H
 #include <time.h>
-#include <signal.h>
-#include <errno.h>
+#endif
+#ifdef HAVE_CTYPE_H
 #include <ctype.h>
+#endif
 #ifndef NETWARE
 #include <sys/types.h>
 #endif
+/* are these needed anymore?  rbb */
+#include <signal.h>
+#include <errno.h>
 
     /* Include from the Apache server ... */
 #define CORE_PRIVATE

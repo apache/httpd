@@ -132,8 +132,12 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "util_script.h"
+#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
+#endif
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #ifdef HAVE_UTIME_H
 #include <utime.h>
 #endif

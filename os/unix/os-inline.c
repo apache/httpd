@@ -74,7 +74,9 @@
  * INLINE will _not_ be set so we can use this to test if we are
  * compiling this source file.  
  */
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 
 #ifndef INLINE
 #define INLINE

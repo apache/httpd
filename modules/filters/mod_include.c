@@ -97,7 +97,9 @@
 #include "http_main.h"
 #include "util_script.h"
 #include "http_core.h"
+#ifdef HAVE_STRING_H
 #include <string.h>
+#endif
 #ifdef HAVE_PWD_H
 #include <pwd.h>
 #endif

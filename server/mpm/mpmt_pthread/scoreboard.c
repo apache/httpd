@@ -68,7 +68,9 @@
 #include "mpm_status.h"
 #include "mpm.h"
 #include "scoreboard.h"
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
 
 scoreboard *ap_scoreboard_image = NULL;
 new_scoreboard *ap_new_scoreboard_image = NULL;
