@@ -106,7 +106,7 @@ static void *create_neg_dir_config(apr_pool_t *p, char *dummy)
     neg_dir_config *new = (neg_dir_config *) apr_palloc(p, sizeof(neg_dir_config));
 
     new->forcelangpriority = FLP_UNDEF;
-    new->language_priority = apr_array_make(p, 4, sizeof(char *));
+    new->language_priority = NULL;
     return new;
 }
 
@@ -128,9 +128,12 @@ static const char *set_language_priority(cmd_parms *cmd, void *n_,
 					 const char *lang)
 {
     neg_dir_config *n = n_;
-    apr_array_header_t *arr = n->language_priority;
-    const char **langp = (const char **) apr_array_push(arr);
+    const char **langp;
 
+    if (!n->language_priority)
+        n->language_priority = apr_array_make(cmd->pool, 4, sizeof(char *));
+
+    langp = (const char **) apr_array_push(n->language_priority);
     *langp = lang;
     return NULL;
 }
