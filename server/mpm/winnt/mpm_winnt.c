@@ -71,6 +71,7 @@
 #include "mpm_default.h"
 #include "iol_socket.h"
 #include "mpm_winnt.h"
+#include "mpm_common.h"
 
 /*
  * Definitions of WINNT MPM specific config globals
