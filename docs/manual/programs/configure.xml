@@ -444,7 +444,7 @@
           <code>http</code> protocol module.</dd>
 
         <dt><code>--enable-dav-fs</code></dt>
-        <dd>Enable DAV support for filesystem resources, which is provides by
+        <dd>Enable DAV support for filesystem resources, which is provided by
           <module>mod_dav_fs</module>. This module is a provider for the
           <module>mod_dav</module> module, so you should also use
           <code>--enable-dav</code>.</dd> 
