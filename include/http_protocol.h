@@ -321,9 +321,15 @@ AP_DECLARE(void) ap_method_list_remove(ap_method_list_t *l,
 AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l);
     
 /**
- *
+ * Set the content type for this request (r->content_type). 
+ * Note:
+ * This function must be called to set r->content_type in order 
+ * for the AddOutputFilterByType directive to work correctly.
+ * @param r The current request
+ * @param length The new content type
+ * @deffunc void ap_set_content_type(request_rec *r, const char* ct)
  */
-AP_DECLARE(void) ap_rset_content_type(const char *str, request_rec *r);
+AP_DECLARE(void) ap_set_content_type(request_rec *r, const char *ct);
 
 /* Hmmm... could macrofy these for now, and maybe forever, though the
  * definitions of the macros would get a whole lot hairier.
