@@ -254,7 +254,7 @@ static int status_handler(request_rec *r)
     char stat_buffer[HARD_SERVER_LIMIT];
     int pid_buffer[HARD_SERVER_LIMIT];
     clock_t tu, ts, tcu, tcs;
-    char *vhost;
+    server_rec *vhost;
 
     tu = ts = tcu = tcs = 0;
 
@@ -309,10 +309,6 @@ static int status_handler(request_rec *r)
     for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
 	score_record = ap_scoreboard_image->servers[i];
 	ps_record = ap_scoreboard_image->parent[i];
-	if (score_record.vhostrec)
-	    vhost = score_record.vhostrec->server_hostname;
-	else
-	    vhost = "NULL";
 	res = score_record.status;
 	stat_buffer[i] = status_flags[res];
 	pid_buffer[i] = (int) ps_record.pid;
@@ -492,6 +488,10 @@ static int status_handler(request_rec *r)
 	for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
 	    score_record = ap_scoreboard_image->servers[i];
 	    ps_record = ap_scoreboard_image->parent[i];
+	    vhost = score_record.vhostrec;
+	    if (ps_record.generation != ap_my_generation) {
+		vhost = NULL;
+	    }
 
 #if defined(NO_GETTIMEOFDAY)
 #ifndef NO_TIMES
@@ -658,7 +658,7 @@ static int status_handler(request_rec *r)
 			    ap_rprintf(r,
 			     "<td>%s<td nowrap>%s<td nowrap>%s</tr>\n\n",
 			     score_record.client,
-			     (score_record.vhostrec ? vhost : "NULL"),
+			     vhost ? vhost->server_hostname : "(unavailable)",
 			     ap_escape_html(r->pool, score_record.request));
 		    }		/* no_table_report */
 		}			/* !short_report */

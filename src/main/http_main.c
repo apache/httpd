@@ -1531,12 +1531,6 @@ static int reap_other_child(int pid, ap_wait_t status)
  * We begin with routines which deal with the file itself... 
  */
 
-/* volatile just in case */
-static int volatile shutdown_pending;
-static int volatile restart_pending;
-static int volatile is_graceful;
-static int volatile generation;
-
 #ifdef MULTITHREAD
 /*
  * In the multithreaded mode, have multiple threads - not multiple
@@ -1548,14 +1542,8 @@ static int volatile generation;
 static void reinit_scoreboard(pool *p)
 {
     ap_assert(!ap_scoreboard_image);
-    if (is_graceful) {
-        int i;
-        for (i = 0; i < HARD_SERVER_LIMIT; i++)
-            ap_scoreboard_image->servers[i].vhostrec = NULL;
-    } else {
-        ap_scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
-        memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
-    }
+    ap_scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
+    memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
 }
 
 void cleanup_scoreboard(void)
@@ -1636,7 +1624,7 @@ static void setup_shared_mem(pool *p)
 		ap_server_argv0);
     }
     ap_scoreboard_image = (scoreboard *) m;
-    ap_scoreboard_image->global.exit_generation = 0;
+    ap_scoreboard_image->global.running_generation = 0;
 }
 
 static void reopen_scoreboard(pool *p)
@@ -1723,7 +1711,7 @@ static void setup_shared_mem(pool *p)
     close(fd);
     ap_register_cleanup(p, NULL, cleanup_shared_mem, ap_null_cleanup);
     ap_scoreboard_image = (scoreboard *) m;
-    ap_scoreboard_image->global.exit_generation = 0;
+    ap_scoreboard_image->global.running_generation = 0;
 }
 
 static void reopen_scoreboard(pool *p)
@@ -1803,7 +1791,7 @@ static void setup_shared_mem(pool *p)
     close(fd);
 #endif
     ap_scoreboard_image = (scoreboard *) m;
-    ap_scoreboard_image->global.exit_generation = 0;
+    ap_scoreboard_image->global.running_generation = 0;
 }
 
 static void reopen_scoreboard(pool *p)
@@ -1895,7 +1883,7 @@ static void setup_shared_mem(pool *p)
 	    "sbrk() could not move break back");
     }
 #endif
-    ap_scoreboard_image->global.exit_generation = 0;
+    ap_scoreboard_image->global.running_generation = 0;
 }
 
 static void reopen_scoreboard(pool *p)
@@ -1962,41 +1950,32 @@ void reopen_scoreboard(pool *p)
 /* Called by parent process */
 static void reinit_scoreboard(pool *p)
 {
-    if (is_graceful && ap_scoreboard_image) {
-        int i;
-        for (i = 0; i < HARD_SERVER_LIMIT; i++)
-            ap_scoreboard_image->servers[i].vhostrec = NULL;
-#ifdef SCOREBOARD_FILE
-            force_write(scoreboard_fd, ap_scoreboard_image, sizeof(*ap_scoreboard_image));
-#endif
-    } else {
-        int exit_gen = 0;
-        if (ap_scoreboard_image)
-            exit_gen = ap_scoreboard_image->global.exit_generation;
+    int running_gen = 0;
+    if (ap_scoreboard_image)
+	running_gen = ap_scoreboard_image->global.running_generation;
 
 #ifndef SCOREBOARD_FILE
-        if (ap_scoreboard_image == NULL) {
-            setup_shared_mem(p);
-        }
-        memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
-        ap_scoreboard_image->global.exit_generation = exit_gen;
-#else
-        ap_scoreboard_image = &_scoreboard_image;
-        ap_scoreboard_fname = ap_server_root_relative(p, ap_scoreboard_fname);
-
-        scoreboard_fd = ap_popenf(p, ap_scoreboard_fname, O_CREAT | O_BINARY | O_RDWR, 0644);
-        if (scoreboard_fd == -1) {
-            perror(ap_scoreboard_fname);
-            fprintf(stderr, "Cannot open scoreboard file:\n");
-            exit(APEXIT_INIT);
-        }
-        ap_register_cleanup(p, NULL, cleanup_scoreboard_file, ap_null_cleanup);
-
-        memset((char *) ap_scoreboard_image, 0, sizeof(*ap_scoreboard_image));
-        ap_scoreboard_image->global.exit_generation = exit_gen;
-        force_write(scoreboard_fd, ap_scoreboard_image, sizeof(*ap_scoreboard_image));
-#endif
+    if (ap_scoreboard_image == NULL) {
+	setup_shared_mem(p);
     }
+    memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
+    ap_scoreboard_image->global.running_generation = running_gen;
+#else
+    ap_scoreboard_image = &_scoreboard_image;
+    ap_scoreboard_fname = ap_server_root_relative(p, ap_scoreboard_fname);
+
+    scoreboard_fd = ap_popenf(p, ap_scoreboard_fname, O_CREAT | O_BINARY | O_RDWR, 0644);
+    if (scoreboard_fd == -1) {
+	perror(ap_scoreboard_fname);
+	fprintf(stderr, "Cannot open scoreboard file:\n");
+	exit(APEXIT_INIT);
+    }
+    ap_register_cleanup(p, NULL, cleanup_scoreboard_file, ap_null_cleanup);
+
+    memset((char *) ap_scoreboard_image, 0, sizeof(*ap_scoreboard_image));
+    ap_scoreboard_image->global.running_generation = running_gen;
+    force_write(scoreboard_fd, ap_scoreboard_image, sizeof(*ap_scoreboard_image));
+#endif
 }
 
 /* Routines called to deal with the scoreboard image
@@ -2571,6 +2550,12 @@ static void usr1_handler(int sig)
     }
     deferred_die = 1;
 }
+
+/* volatile just in case */
+static int volatile shutdown_pending;
+static int volatile restart_pending;
+static int volatile is_graceful;
+int volatile ap_my_generation;
 
 #ifdef WIN32
 /*
@@ -3618,7 +3603,7 @@ static void child_main(int child_num_arg)
 	ap_clear_pool(ptrans);
 
 	ap_sync_scoreboard_image();
-	if (ap_scoreboard_image->global.exit_generation >= generation) {
+	if (ap_scoreboard_image->global.running_generation != ap_my_generation) {
 	    clean_child_exit(0);
 	}
 
@@ -3759,7 +3744,7 @@ static void child_main(int child_num_arg)
 	     * without reliable signals
 	     */
 	    ap_sync_scoreboard_image();
-	    if (ap_scoreboard_image->global.exit_generation >= generation) {
+	    if (ap_scoreboard_image->global.running_generation != ap_my_generation) {
 		clean_child_exit(0);
 	    }
 	}
@@ -3864,7 +3849,7 @@ static void child_main(int child_num_arg)
 				       (request_rec *) NULL);
 
 	    ap_sync_scoreboard_image();
-	    if (ap_scoreboard_image->global.exit_generation >= generation) {
+	    if (ap_scoreboard_image->global.running_generation != ap_my_generation) {
 		ap_bclose(conn_io);
 		clean_child_exit(0);
 	    }
@@ -3931,6 +3916,16 @@ static int make_child(server_rec *s, int slot, time_t now)
 
     Explain1("Starting new child in slot %d", slot);
     (void) ap_update_child_status(slot, SERVER_STARTING, (request_rec *) NULL);
+
+    /* clean up the slot's vhostrec pointer now that it is being re-used,
+     * and mark the slot as beloging to a new generation.
+     */
+    /* XXX: there's still a race condition here for file-based scoreboards...
+     * but... like, do we really care to spend yet another write() operation
+     * here? -djg
+     */
+    ap_scoreboard_image->servers[slot].vhostrec = NULL;
+    ap_scoreboard_image->parent[slot].generation = ap_my_generation;
 
 #ifndef _OSD_POSIX
     if ((pid = fork()) == -1) {
@@ -4229,7 +4224,6 @@ static void standalone_main(int argc, char **argv)
     ap_standalone = 1;
 
     is_graceful = 0;
-    ++generation;
 
     if (!one_process) {
 	detach();
@@ -4262,7 +4256,9 @@ static void standalone_main(int argc, char **argv)
 	ap_init_modules(pconf, server_conf);
 	version_locked++;	/* no more changes to server_version */
 	SAFE_ACCEPT(accept_mutex_init(pconf));
-	reinit_scoreboard(pconf);
+	if (!is_graceful) {
+	    reinit_scoreboard(pconf);
+	}
 #ifdef SCOREBOARD_FILE
 	else {
 	    ap_scoreboard_fname = ap_server_root_relative(pconf, ap_scoreboard_fname);
@@ -4406,14 +4402,16 @@ static void standalone_main(int argc, char **argv)
 	    clean_parent_exit(0);
 	}
 
+	/* advance to the next generation */
+	/* XXX: we really need to make sure this new generation number isn't in
+	 * use by any of the children.
+	 */
+	++ap_my_generation;
 	if (is_graceful) {
 #ifndef SCOREBOARD_FILE
 	    int i;
 #endif
-
-	    /* USE WITH CAUTION:  Graceful restarts are not known to work
-	     * in various configurations on the architectures we support. */
-	    ap_scoreboard_image->global.exit_generation = generation;
+	    ap_scoreboard_image->global.running_generation = ap_my_generation;
 	    update_scoreboard_global();
 
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
@@ -4446,7 +4444,6 @@ static void standalone_main(int argc, char **argv)
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
 			"SIGHUP received.  Attempting to restart");
 	}
-	++generation;
     } while (restart_pending);
 
     /*add_common_vars(NULL);*/
@@ -5168,7 +5165,7 @@ void worker_main(void)
 
     my_pid = getpid();
 
-    ++generation;
+    ++ap_my_generation;
 
     copy_listeners(pconf);
     ap_restart_time = time(NULL);
@@ -5548,7 +5545,6 @@ int master_main(int argc, char **argv)
     processes_to_create = nchild;
 
     is_graceful = 0;
-    ++generation;
 
     ap_snprintf(signal_prefix_string, sizeof(signal_prefix_string),
 	        "ap%d", getpid());
@@ -5709,7 +5705,7 @@ int master_main(int argc, char **argv)
  			"SetEvent for child process in slot #%d", i);
 	    }
 	}
-	++generation;
+	++ap_my_generation;
     } while (restart_pending);
 
     /* If we dropped out of the loop we definitly want to die completely. We need to

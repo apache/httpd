@@ -184,11 +184,14 @@
  * 19981108 (1.3.4-dev) - added ap_method_number_of()
  *                      - changed value of M_INVALID and added WebDAV methods
  * 19981108.1           - ap_exists_config_define() is now public (minor bump)
- *
+ * 19981204             - scoreboard changes -- added generation, changed
+ *                        exit_generation to running_generation.  Somewhere
+ *                        earlier vhostrec was added, but it's only safe to use
+ *                        as of this rev.  See scoreboard.h for documentation.
  */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 19981108
+#define MODULE_MAGIC_NUMBER_MAJOR 19981204
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */

@@ -106,6 +106,29 @@ extern "C" {
  */
 typedef unsigned vtime_t;
 
+/* Type used for generation indicies.  Startup and every restart cause a
+ * new generation of children to be spawned.  Children within the same
+ * generation share the same configuration information -- pointers to stuff
+ * created at config time in the parent are valid across children.  For
+ * example, the vhostrec pointer in the scoreboard below is valid in all
+ * children of the same generation.
+ *
+ * The safe way to access the vhost pointer is like this:
+ *
+ * short_score *ss = pointer to whichver slot is interesting;
+ * parent_score *ps = pointer to whichver slot is interesting;
+ * server_rec *vh = ss->vhostrec;
+ *
+ * if (ps->generation != ap_my_generation) {
+ *     vh = NULL;
+ * }
+ *
+ * then if vh is not NULL it's valid in this child.
+ *
+ * This avoids various race conditions around restarts.
+ */
+typedef int ap_generation_t;
+
 /* stuff which the children generally write, and the parent mainly reads */
 typedef struct {
 #ifdef OPTIMIZE_TIMEOUTS
@@ -135,11 +158,12 @@ typedef struct {
     char client[32];		/* Keep 'em small... */
     char request[64];		/* We just want an idea... */
     server_rec *vhostrec;	/* What virtual host is being accessed? */
+                                /* SEE ABOVE FOR SAFE USAGE! */
 } short_score;
 
 typedef struct {
-    int exit_generation;	/* Set by the main process if a graceful
-				   restart is required */
+    ap_generation_t running_generation;	/* the generation of children which
+                                         * should still be serving requests. */
 } global_score;
 
 /* stuff which the parent generally writes and the children rarely read */
@@ -149,6 +173,7 @@ typedef struct {
     time_t last_rtime;		/* time(0) of the last change */
     vtime_t last_vtime;		/* the last vtime the parent has seen */
 #endif
+    ap_generation_t generation;	/* generation of this child */
 } parent_score;
 
 typedef struct {
@@ -163,6 +188,8 @@ API_EXPORT(void) ap_sync_scoreboard_image(void);
 API_EXPORT(int) ap_exists_scoreboard_image(void);
 
 API_VAR_EXPORT extern scoreboard *ap_scoreboard_image;
+
+API_VAR_EXPORT extern ap_generation_t ap_my_generation;
 
 /* for time_process_request() in http_main.c */
 #define START_PREQUEST 1
