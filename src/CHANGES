@@ -1,4 +1,39 @@
 Changes with Apache 1.3.23
+  *) mod_proxy changes:
+
+    *) Bug fix for ap_proxy_cache_conditional(), unititialized wetag
+       [Zvi Har'El <rl@math.technion.ac.il>]
+
+    *) Add persistent connection handling
+       The patch changes mod_proxy to write the reply-headers using
+       ap_send_http_header() instead of directly using ap_bvputs(). This not
+       only simplifies mod_proxy, in my opinion at least, but enables it to
+       make use of the features of Apache's normal header and persistent
+       connection machinery.
+       [Christian von Roques <roques@mti.ag>]
+
+    *) Graham Leggett's original 1.3.12 patch, updated for 1.3.19+
+       Original comments:
+
+       HTTP/1.1 support for mod_proxy:
+       - support for Cache-Control
+       - conditional support If-Match, If-None-Match,
+       If-Unmodified-Since, Etag
+       - support for content negotiation using Vary
+       - storing of request headers (for Vary support) in cache file 
+       - storing of updated response headers (with 304 Not Modified) in 
+         cache file
+       - support for 64 bit dates and content-lengths in cache file
+       Fixes:
+       - ProxyPassReverse applied to Content-Location
+       - entity headers no longer stripped from response after cache
+         revalidation 
+       - annotation of mod_proxy cache code
+       [Graham Leggett <minfrin@sharp.fm>]
+
+       changes to preserve binary compatibility with httpd core, clean up
+       [Chuck Murcko <chuck@topsail.org>]
+
   *) HPUX 11.*: Do not kill the child process when accept() 
      returns ENOBUFS on HPUX 11.*.
      [madhusudan_mathihalli@hp.com]
