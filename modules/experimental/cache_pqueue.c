@@ -81,14 +81,14 @@ struct cache_pqueue_t
     apr_ssize_t size;
     apr_ssize_t avail;
     apr_ssize_t step;
-    cache_pqueue_get_priority* pri;
-    cache_pqueue_getpos* get;
-    cache_pqueue_setpos* set;
+    cache_pqueue_get_priority pri;
+    cache_pqueue_getpos get;
+    cache_pqueue_setpos set;
     void **d;
 };
 
 cache_pqueue_t *cache_pq_init(apr_ssize_t n,
-                              cache_pqueue_get_priority* pri,
+                              cache_pqueue_get_priority pri,
                               cache_pqueue_getpos get,
                               cache_pqueue_setpos set)
 {
@@ -250,31 +250,16 @@ apr_status_t cache_pq_remove(cache_pqueue_t *q, void *d)
 
 void *cache_pq_pop(cache_pqueue_t *q)
 {
-    void *tmp;
-    void *d;
-    int i = 1;
-    int j;
+    void *head;
 
     if (!q || q->size == 1)
         return NULL;
 
-    d = q->d[1];
-    tmp = q->d[--q->size];
-    while (i <= q->size / 2) {
-        j = 2 * i;
-        if (j < q->size && q->pri(q->d[j]) < q->pri(q->d[j + 1])) {
-            j++;
-        }
-        if (q->pri(q->d[j]) <= q->pri(tmp)) {
-            break;
-        }
-        q->d[i] = q->d[j];
-        q->set(q->d[i], i);
-        i = j;
-    }
-    q->d[i] = tmp;
-    q->set(q->d[i], i);
-    return d;
+    head = q->d[1];
+    q->d[1] = q->d[--q->size];
+    cache_pq_percolate_down(q, 1);
+
+    return head;
 }
 
 void *cache_pq_peek(cache_pqueue_t *q)
