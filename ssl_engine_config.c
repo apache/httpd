@@ -368,7 +368,8 @@ void *ssl_config_perdir_merge(apr_pool_t *p, void *basev, void *addv)
  *  Configuration functions for particular directives
  */
 
-const char *ssl_cmd_SSLMutex(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLMutex(cmd_parms *cmd,
+                             void *dcfg,
                              const char *arg)
 {
     const char *err;
@@ -408,7 +409,8 @@ const char *ssl_cmd_SSLMutex(cmd_parms *cmd, void *ctx,
     return NULL;
 }
 
-const char *ssl_cmd_SSLPassPhraseDialog(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLPassPhraseDialog(cmd_parms *cmd,
+                                        void *dcfg,
                                         const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
@@ -456,7 +458,8 @@ const char *ssl_cmd_SSLPassPhraseDialog(cmd_parms *cmd, void *ctx,
 }
 
 #ifdef SSL_EXPERIMENTAL_ENGINE
-const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
+                                    void *dcfg,
                                     const char *arg)
 {
     SSLModConfigRec *mc = myModConfig(cmd->server);
@@ -491,7 +494,8 @@ const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd, void *ctx,
 }
 #endif
 
-const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd,
+                                  void *dcfg,
                                   const char *arg1, 
                                   const char *arg2,
                                   const char *arg3)
@@ -580,7 +584,7 @@ const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd, void *ctx,
     return NULL;
 }
 
-const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *ctx, int flag)
+const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, int flag)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
@@ -589,11 +593,12 @@ const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *ctx, int flag)
     return NULL;
 }
 
-const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd,
+                                   void *dcfg,
                                    const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
+    SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
 
     if (cmd->path) {
         dc->szCipherSuite = arg;
@@ -692,7 +697,8 @@ static const char *ssl_cmd_check_aidx_max(cmd_parms *parms,
                          parms->cmd->name, SSL_AIDX_MAX, desc);
 }
 
-const char *ssl_cmd_SSLCertificateFile(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLCertificateFile(cmd_parms *cmd,
+                                       void *dcfg,
                                        const char *arg)
 {
 
@@ -705,7 +711,8 @@ const char *ssl_cmd_SSLCertificateFile(cmd_parms *cmd, void *ctx,
     return NULL;
 }
 
-const char *ssl_cmd_SSLCertificateKeyFile(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLCertificateKeyFile(cmd_parms *cmd,
+                                          void *dcfg,
                                           const char *arg)
 {
     const char *err;
@@ -717,7 +724,8 @@ const char *ssl_cmd_SSLCertificateKeyFile(cmd_parms *cmd, void *ctx,
     return NULL;
 }
 
-const char *ssl_cmd_SSLCertificateChainFile(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLCertificateChainFile(cmd_parms *cmd,
+                                            void *dcfg,
                                             const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
@@ -750,10 +758,11 @@ const char *ssl_cmd_SSLCertificateChainFile(cmd_parms *cmd, void *ctx,
     else \
         sc->f = arg \
 
-const char *ssl_cmd_SSLCACertificatePath(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLCACertificatePath(cmd_parms *cmd,
+                                         void *dcfg,
                                          const char *arg)
 {
-    /*SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;*/
+    /*SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;*/
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
 
@@ -767,10 +776,11 @@ const char *ssl_cmd_SSLCACertificatePath(cmd_parms *cmd, void *ctx,
     return NULL;
 }
 
-const char *ssl_cmd_SSLCACertificateFile(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLCACertificateFile(cmd_parms *cmd,
+                                         void *dcfg,
                                          const char *arg)
 {
-    /*SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;*/
+    /*SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;*/
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
 
@@ -784,7 +794,8 @@ const char *ssl_cmd_SSLCACertificateFile(cmd_parms *cmd, void *ctx,
     return NULL;
 }
 
-const char *ssl_cmd_SSLCARevocationPath(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLCARevocationPath(cmd_parms *cmd,
+                                        void *dcfg,
                                         const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
@@ -799,7 +810,8 @@ const char *ssl_cmd_SSLCARevocationPath(cmd_parms *cmd, void *ctx,
     return NULL;
 }
 
-const char *ssl_cmd_SSLCARevocationFile(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLCARevocationFile(cmd_parms *cmd,
+                                        void *dcfg,
                                         const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
@@ -839,10 +851,11 @@ static const char *ssl_cmd_verify_parse(cmd_parms *parms,
     return NULL;
 }
 
-const char *ssl_cmd_SSLVerifyClient(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLVerifyClient(cmd_parms *cmd,
+                                    void *dcfg,
                                     const char *arg)
 {
-    SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
+    SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     ssl_verify_t id;
     const char *err;
@@ -874,10 +887,11 @@ static const char *ssl_cmd_verify_depth_parse(cmd_parms *parms,
                        NULL);
 }
 
-const char *ssl_cmd_SSLVerifyDepth(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLVerifyDepth(cmd_parms *cmd,
+                                   void *dcfg,
                                    const char *arg)
 {
-    SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
+    SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     int depth;
     const char *err;
@@ -899,7 +913,8 @@ const char *ssl_cmd_SSLVerifyDepth(cmd_parms *cmd, void *ctx,
 #define MODSSL_NO_SHARED_MEMORY_ERROR \
     "SSLSessionCache: shared memory cache not useable on this platform"
 
-const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
+                                    void *dcfg,
                                     const char *arg)
 {
     SSLModConfigRec *mc = myModConfig(cmd->server);
@@ -1020,7 +1035,8 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd, void *ctx,
     return NULL;
 }
 
-const char *ssl_cmd_SSLSessionCacheTimeout(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLSessionCacheTimeout(cmd_parms *cmd,
+                                           void *dcfg,
                                            const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
@@ -1037,7 +1053,8 @@ const char *ssl_cmd_SSLSessionCacheTimeout(cmd_parms *cmd, void *ctx,
 #define SSL_FLAGS_LOG_CONTEXT \
     (NOT_IN_LIMIT|NOT_IN_DIRECTORY|NOT_IN_LOCATION|NOT_IN_FILES)
 
-const char *ssl_cmd_SSLLog(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLLog(cmd_parms *cmd,
+                           void *dcfg,
                            const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
@@ -1052,7 +1069,8 @@ const char *ssl_cmd_SSLLog(cmd_parms *cmd, void *ctx,
     return NULL;
 }
 
-const char *ssl_cmd_SSLLogLevel(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLLogLevel(cmd_parms *cmd,
+                                void *dcfg,
                                 const char *level)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
@@ -1087,10 +1105,11 @@ const char *ssl_cmd_SSLLogLevel(cmd_parms *cmd, void *ctx,
     return NULL;
 }
 
-const char *ssl_cmd_SSLOptions(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLOptions(cmd_parms *cmd,
+                               void *dcfg,
                                const char *arg)
 {
-    SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
+    SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
     ssl_opt_t opt;
     int first = TRUE;
     char action, *w;
@@ -1151,19 +1170,20 @@ const char *ssl_cmd_SSLOptions(cmd_parms *cmd, void *ctx,
     return NULL;
 }
 
-const char *ssl_cmd_SSLRequireSSL(cmd_parms *cmd, void *ctx)
+const char *ssl_cmd_SSLRequireSSL(cmd_parms *cmd, void *dcfg)
 {
-    SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
+    SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
 
     dc->bSSLRequired = TRUE;
 
     return NULL;
 }
 
-const char *ssl_cmd_SSLRequire(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLRequire(cmd_parms *cmd,
+                               void *dcfg,
                                const char *arg)
 {
-    SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
+    SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
     ssl_expr *expr;
     ssl_require_t *require;
 
@@ -1230,11 +1250,11 @@ static const char *ssl_cmd_protocol_parse(cmd_parms *parms,
 
 const char *ssl_cmd_SSLProtocol(cmd_parms *cmd,
                                 void *dcfg,
-                                const char *opt)
+                                const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
-    return ssl_cmd_protocol_parse(cmd, opt, &sc->server->protocol);
+    return ssl_cmd_protocol_parse(cmd, arg, &sc->server->protocol);
 }
 
 const char *ssl_cmd_SSLProxyProtocol(cmd_parms *cmd, 
