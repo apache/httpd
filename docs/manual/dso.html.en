@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML><HEAD>
-<TITLE>Apache 1.3 Dynamic Shared Object (DSO) support</TITLE>
+<TITLE>Apache 2.0 Dynamic Shared Object (DSO) support</TITLE>
 </HEAD>
 
 <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
@@ -17,7 +17,7 @@
 <DIV ALIGN=CENTER>
 
 <H1>
-Apache 1.3<BR>
+Apache 2.0<BR>
 Dynamic Shared Object (DSO)<BR>
 Support
 </H1>
@@ -110,23 +110,16 @@ concept to extend its functionality and internally uses a dispatch-list-based
 approach to link external modules into the Apache core functionality. So,
 Apache is really predestined for using DSO to load its modules at run-time.
 
-<P>As of Apache 1.3, the configuration system supports two optional features
-for taking advantage of the modular DSO approach: compilation of the Apache
-core program into a DSO library for shared usage and compilation of the
-Apache modules into DSO files for explicit loading at run-time.
-
 <H3>Implementation</H3>
 
 <P>The DSO support for loading individual Apache modules is based on a module
 named <A HREF="mod/mod_so.html"><CODE>mod_so.c</CODE></A> which has to be
 statically compiled into the Apache core. It is the only module besides
-<CODE>http_core.c</CODE> which cannot be put into a DSO itself
+<CODE>core.c</CODE> which cannot be put into a DSO itself
 (bootstrapping!). Practically all other distributed Apache modules then can
 then be placed into a DSO by individually enabling the DSO build for them via
-<CODE>configure</CODE>'s <CODE>--enable-shared</CODE> option (see top-level
-<CODE>INSTALL</CODE> file) or by changing the <CODE>AddModule</CODE> command
-in your <CODE>src/Configuration</CODE> into a <CODE>SharedModule</CODE>
-command (see <CODE>src/INSTALL</CODE> file).  After a module is compiled into
+<CODE>configure</CODE>'s <CODE>--enable-<i>module</i>=shared</CODE> option 
+(see top-level <CODE>INSTALL</CODE> file).  After a module is compiled into
 a DSO named <CODE>mod_foo.so</CODE> you can use <A
 HREF="mod/mod_so.html"><CODE>mod_so</CODE></A>'s <A
 HREF="mod/mod_so.html#loadmodule"><CODE>LoadModule</CODE></A> command in your
@@ -144,23 +137,6 @@ into the <CODE>apxs</CODE> program.  This way the user can use
 <CODE>apxs</CODE> to compile his Apache module sources without the
 Apache distribution source tree and without having to fiddle with the
 platform-dependent compiler and linker flags for DSO support.
-
-<P>To place the complete Apache core program into a DSO library (only required
-on some of the supported platforms to force the linker to export the apache
-core symbols -- a prerequisite for the DSO modularization) the rule
-<CODE>SHARED_CORE</CODE> has to be enabled via <CODE>configure</CODE>'s
-<CODE>--enable-rule=SHARED_CORE</CODE> option (see top-level
-<CODE>INSTALL</CODE> file) or by changing the <CODE>Rule</CODE> command in
-your <CODE>Configuration</CODE> file to <CODE>Rule SHARED_CORE=yes</CODE> (see
-<CODE>src/INSTALL</CODE> file). The Apache core code is then placed into a DSO
-library named <CODE>libhttpd.so</CODE>. Because one cannot link a DSO against
-static libraries on all platforms, an additional executable program named
-<CODE>libhttpd.ep</CODE> is created which both binds this static code and
-provides a stub for the <CODE>main()</CODE> function.  Finally the
-<CODE>httpd</CODE> executable program itself is replaced by a bootstrapping
-code which automatically makes sure the Unix loader is able to load and start
-<CODE>libhttpd.ep</CODE> by providing the <CODE>LD_LIBRARY_PATH</CODE> to
-<CODE>libhttpd.so</CODE>.
 
 <H3>Supported Platforms</H3>
 
@@ -208,42 +184,19 @@ o  Ultrix             (no dlopen-style interface under this platform)
 
 <H3>Usage Summary</H3>
 
-<P>To give you an overview of the DSO features of Apache 1.3, here is a short
+<P>To give you an overview of the DSO features of Apache 2.0, here is a short
 and concise summary:
 
 <OL>
 
-<LI>Placing the Apache core code (all the stuff which usually forms the
-<CODE>httpd</CODE> binary) into a DSO <CODE>libhttpd.so</CODE>, an executable
-program <CODE>libhttpd.ep</CODE> and a bootstrapping executable program
-<CODE>httpd</CODE> (Notice: this is only required on some of the supported
-platforms to force the linker to export the Apache core symbols, which in turn
-is a prerequisite for the DSO modularization):
-
 <P>
 <UL>
-<LI>Build and install via <CODE>configure</CODE> (preferred):
+<LI>Build and install via <CODE>configure</CODE>:
 <TABLE BGCOLOR="#f0f0f0" CELLPADDING=10><TR><TD>
 <PRE>
-$ ./configure --prefix=/path/to/install
-              --enable-rule=SHARED_CORE ...
+$ ./configure --prefix=/path/to/install ...
 $ make install
 </PRE>
-</TD></TR></TABLE>
-
-<LI>Build and install manually: 
-<TABLE BGCOLOR="#f0f0f0" CELLPADDING=10><TR><TD>
-<PRE>
-- Edit src/Configuration:
-  &lt;&lt; Rule SHARED_CORE=default
-  &gt;&gt; Rule SHARED_CORE=yes
-  &lt;&lt; EXTRA_CFLAGS= 
-  &gt;&gt; EXTRA_CFLAGS= -DSHARED_CORE_DIR=\"/path/to/install/modules\"
-$ make 
-$ cp src/libhttpd.so* /path/to/install/modules/
-$ cp src/libhttpd.ep  /path/to/install/modules/
-$ cp src/httpd        /path/to/install/bin/
-</PRE>    
 </TD></TR></TABLE>
 </UL>
 
@@ -252,25 +205,12 @@ $ cp src/httpd        /path/to/install/bin/
 
 <P>
 <UL>
-<LI>Build and install via <CODE>configure</CODE> (preferred):
+<LI>Build and install via <CODE>configure</CODE>:
 <TABLE BGCOLOR="#f0f0f0" CELLPADDING=10><TR><TD>
 <PRE>
 $ ./configure --prefix=/path/to/install
-        --enable-shared=foo
+        --enable-foo=shared
 $ make install
-</PRE>
-</TD></TR></TABLE>
-
-<LI>Build and install manually: 
-<TABLE BGCOLOR="#f0f0f0" CELLPADDING=10><TR><TD>
-<PRE>
-- Edit src/Configuration:
-  &lt;&lt; AddModule    modules/xxxx/mod_foo.o
-  &gt;&gt; SharedModule modules/xxxx/mod_foo.so
-$ make
-$ cp src/xxxx/mod_foo.so /path/to/install/modules
-- Edit /path/to/install/etc/httpd.conf
-  &gt;&gt; LoadModule foo_module /path/to/install/modules/mod_foo.so
 </PRE>
 </TD></TR></TABLE>
 </UL>
@@ -280,25 +220,12 @@ $ cp src/xxxx/mod_foo.so /path/to/install/modules
 
 <P>
 <UL>
-<LI>Build and install via <CODE>configure</CODE> (preferred):
+<LI>Build and install via <CODE>configure</CODE>:
 <TABLE BGCOLOR="#f0f0f0" CELLPADDING=10><TR><TD>
 <PRE>
-$ ./configure --add-module=/path/to/3rdparty/mod_foo.c 
-        --enable-shared=foo
+$ ./configure --add-module=module_type:/path/to/3rdparty/mod_foo.c 
+        --enable-foo=shared
 $ make install
-</PRE>
-</TD></TR></TABLE>
-
-<LI>Build and install manually: 
-<TABLE BGCOLOR="#f0f0f0" CELLPADDING=10><TR><TD>
-<PRE>
-$ cp /path/to/3rdparty/mod_foo.c /path/to/apache-1.3/src/modules/extra/
-- Edit src/Configuration:
-  &gt;&gt; SharedModule modules/extra/mod_foo.so
-$ make
-$ cp src/xxxx/mod_foo.so /path/to/install/modules
-- Edit /path/to/install/etc/httpd.conf
-  &gt;&gt; LoadModule foo_module /path/to/install/modules/mod_foo.so
 </PRE>
 </TD></TR></TABLE>
 </UL>
@@ -324,14 +251,14 @@ $ apxs -i -a -n foo mod_foo.so
 
 <H3>Advantages & Disadvantages</H3>
 
-<P>The above DSO based features of Apache 1.3 have the following advantages:
+<P>The above DSO based features of Apache 2.0 have the following advantages:
 
 <UL>
 <LI> The server package is more flexible at run-time because the actual server
      process can be assembled at run-time via <A
      HREF="mod/mod_so.html#loadmodule"><CODE>LoadModule</CODE></A>
      <CODE>httpd.conf</CODE> configuration commands instead of
-     <CODE>Configuration</CODE> <CODE>AddModule</CODE> commands at build-time.
+     <CODE>configure</CODE> options at build-time.
      For instance this way one is able to run different server instances
      (standard &amp; SSL version, minimalistic &amp; powered up version
      [mod_perl, PHP3], <EM>etc.</EM>) with only one Apache installation.
@@ -372,20 +299,9 @@ $ apxs -i -a -n foo mod_foo.so
      and all other dynamic or static libraries used by the Apache core, or
      from static library archives (<CODE>libfoo.a</CODE>) containing position
      independent code. The only chances to use other code is to either make
-     sure the Apache core itself already contains a reference to it, loading
-     the code yourself via <CODE>dlopen()</CODE> or enabling the
-     <CODE>SHARED_CHAIN</CODE> rule while building Apache when your platform
-     supports linking DSO files against DSO libraries.
+     sure the Apache core itself already contains a reference to it or loading
+     the code yourself via <CODE>dlopen()</CODE>.
 <P>
-<LI> Under some platforms (many SVR4 systems) there is no way to force the
-     linker to export all global symbols for use in DSO's when linking the
-     Apache httpd executable program. But without the visibility of the Apache
-     core symbols no standard Apache module could be used as a DSO. The only
-     chance here is to use the <CODE>SHARED_CORE</CODE> feature because this
-     way the global symbols are forced to be exported. As a consequence the
-     Apache <CODE>src/Configure</CODE> script automatically enforces
-     <CODE>SHARED_CORE</CODE> on these platforms when DSO features are used in
-     the <CODE>Configuration</CODE> file or on the configure command line.
 </UL>
 
 <!--#include virtual="footer.html" -->
