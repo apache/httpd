@@ -1,4 +1,7 @@
 Changes with Apache 1.2.1
+
+  *) Support for dec cc compiler under ultrix.
+     ["P. Alejandro Lopez-Valencia" <alejolo@ideam.gov.co>] PR#388
   
   *) Support for Maxion/OS SVR4.2 Real Time Unix. [no name given] PR#383
   
