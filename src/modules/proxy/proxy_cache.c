@@ -130,7 +130,7 @@ void proxy_garbage_coll(request_rec *r)
 }
 
 
-void help_proxy_garbage_coll(request_rec *r)
+static void help_proxy_garbage_coll(request_rec *r)
 {
     const char *cachedir;
     void *sconf = r->server->module_config;
