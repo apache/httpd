@@ -809,7 +809,8 @@ minimerge2:
             if ((r->finfo.valid & APR_FINFO_NAME) 
                 && strcmp(seg_name, r->finfo.name)) {
                 /* TODO: provide users an option that an internal/external
-                 * redirect is required here?
+                 * redirect is required here?  We need to walk the URI and
+                 * filename in tandem to properly correlate these.
                  */
                 strcpy(seg_name, r->finfo.name);
             }
@@ -1376,28 +1377,22 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
      */
     ap_run_create_request(rnew);
 
-    fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
-
-    /*
-     * Special case: we are looking at a relative lookup in the same directory. 
-     * That means we won't have to redo directory_walk, and we may
-     * not even have to redo access checks.
+    /* Special case: we are looking at a relative lookup in the same directory. 
+     * This is 100% safe, since dirent->name just came from the filesystem.
      */
-
     udir = ap_make_dirstr_parent(rnew->pool, r->uri);
-
-    /* This is 100% safe, since dirent->name just came from the filesystem */
     rnew->uri = ap_make_full_path(rnew->pool, udir, dirent->name);
+    fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
     rnew->filename = ap_make_full_path(rnew->pool, fdir, dirent->name);
     if (r->canonical_filename == r->filename)
         rnew->canonical_filename = rnew->filename;
     
-    ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
-
-    /* Preserve the apr_stat results, and perhaps we also tag that
-     * symlinks were tested and/or found for r->filename.  
+    /* XXX This is now less relevant; we will do a full location walk
+     * these days for this case.  Preserve the apr_stat results, and 
+     * perhaps we also tag that symlinks were tested and/or found for 
+     * r->filename.
      */
-    rnew->per_dir_config = r->per_dir_config;
+    rnew->per_dir_config = r->per_dir_default;
 
     if ((dirent->valid & APR_FINFO_MIN) != APR_FINFO_MIN) {
         /*
@@ -1423,6 +1418,29 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
     else {
         memcpy (&rnew->finfo, dirent, sizeof(apr_finfo_t));
     }
+
+    if (rnew->finfo.filetype == APR_LNK) {
+        /*
+         * Resolve this symlink.  We should tie this back to dir_walk's cache
+         */
+        if (!(res = resolve_symlink(rnew->filename, &rnew->finfo, 
+                                    ap_allow_options(rnew), rnew->pool)) {
+            rnew->status = res;
+            return rnew;
+        }
+    }
+
+    if (rnew->finfo.filetype == APR_DIR) {
+        /* ### Would be real nice if apr_make_full_path overallocated 
+         * the buffer by one character instead of a complete copy.
+         */
+        rnew->filename = apr_pstrcat(rnew->pool, rnew->filename, "/", NULL);
+        rnew->uri = ap_make_full_path(rnew->pool, rnew->uri, "/", NULL);
+        if (r->canonical_filename == r->filename)
+            r->canonical_filename = r->filename;
+    }
+
+    ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
 
     if ((res = ap_process_request_internal(rnew))) {
         rnew->status = res;
