@@ -96,7 +96,7 @@ APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , no, [
     AC_MSG_CHECKING(for SSL/TLS toolkit frontend)
     ssltk_frontend=""
     if test ".$ssltk_base" = .SYSTEM; then
-        for p in . `echo $PATH | sed -e 's/:/ /g'`; do
+        for p in . `echo $PATH | sed -e 's/:/ /g'` /usr/local/openssl/bin /usr/local/ssl/bin; do
             if test -f "$p/openssl"; then
                 ssltk_frontend="$p/openssl"
                 break
@@ -127,7 +127,7 @@ APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , no, [
     AC_MSG_CHECKING(for SSL/TLS toolkit includes)
     ssltk_incdir=""
     if test ".$ssltk_base" = .SYSTEM; then
-        for p in . /usr/include /usr/include/ssl/ /usr/local/include /usr/local/include/ssl; do
+        for p in . /usr/local/openssl/include /usr/local/ssl/include /usr/local/include/ssl /usr/local/include /usr/include/ssl /usr/include; do
             if test -f "$p/openssl/ssl.h"; then
                 ssltk_incdir="$p"
                 break
@@ -149,7 +149,7 @@ APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , no, [
     AC_MSG_CHECKING(for SSL/TLS toolkit libraries)
     ssltk_libdir=""
     if test ".$ssltk_base" = .SYSTEM; then
-        for p in . /lib /usr/lib /usr/local/lib; do
+        for p in . /usr/local/openssl/lib /usr/local/ssl/lib /usr/local/lib/ssl /usr/local/lib /usr/lib/ssl /usr/lib /lib; do
             if test -f "$p/libssl.a" -o -f "$p/libssl.so"; then
                 ssltk_libdir="$p"
                 break
@@ -171,11 +171,12 @@ APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , no, [
 
     dnl #  annotate the Apache build environment with determined information
     if test ".$ssltk_incdir" != "./usr/include"; then
-        INCLUDES="$INCLUDES -I$ssltk_incdir"
+        APR_ADDTO(INCLUDES, [-I$ssltk_incdir])
     fi
     if test ".$ssltk_libdir" != "./usr/lib"; then
-        LIBS="$LIBS -L$ssltk_libdir -lssl -lcrypto"
+        APR_ADDTO(LIBS, [-L$ssltk_libdir])
     fi
+    APR_ADDTO(LIBS, [-lssl -lcrypto])
 ])
 
 dnl #  end of module specific part
