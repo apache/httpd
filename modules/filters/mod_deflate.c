@@ -376,9 +376,17 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
         token = ap_get_token(r->pool, &accepts, 0);
         while (token && token[0] && strcasecmp(token, "gzip")) {
-            /* skip token */
-            accepts++;
-            token = ap_get_token(r->pool, &accepts, 0);
+            /* skip parameters, XXX: ;q=foo evaluation? */
+            while (*accepts == ';') { 
+                ++accepts;
+                token = ap_get_token(r->pool, &accepts, 1);
+            }
+
+            /* retrieve next token */
+            if (*accepts == ',') {
+                ++accepts;
+            }
+            token = (*accepts) ? ap_get_token(r->pool, &accepts, 0) : NULL;
         }
 
         /* No acceptable token found. */
