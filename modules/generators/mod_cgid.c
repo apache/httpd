@@ -745,7 +745,7 @@ static int cgid_handler(request_rec *r)
     char **env; 
     struct sockaddr_un unix_addr;
     apr_file_t *tempsock = NULL;
-    apr_ssize_t nbytes;
+    apr_size_t nbytes;
 
     if (r->method_number == M_OPTIONS) { 
         /* 99 out of 100 cgid scripts, this is all they support */ 
