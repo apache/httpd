@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2000/12/20 06:17:52 $]
+Last modified at [$Date: 2000/12/20 06:26:58 $]
 
 Release:
 
@@ -65,10 +65,6 @@ RELEASE SHOWSTOPPERS:
       added to the filter chain after any filters specified in enclosing
       containers.
 
-    * release distros do not include a "test" dir. don't put it in the
-      top-level SUBDIRS list, but definitely get it cleaned for the
-      dev guys.  (Greg volunteers)
-
     * The instructions for rolling a release need to be updated for
       2.0.
 	Status: rbb volunteers
@@ -78,6 +74,9 @@ RELEASE SHOWSTOPPERS:
 	Status: rbb volunteers
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * release distros do not include a "test" dir.  It should be
+      cleaned for the dev guys.  (Greg volunteers)
 
     * Combine log_child and piped_log_spawn. Clean up http_log.c.
       Common logging API.
