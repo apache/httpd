@@ -91,6 +91,10 @@
 
 #include "mod_rewrite.h"
 
+#ifndef NO_WRITEV
+#include <sys/types.h>
+#include <sys/uio.h>
+#endif
 
 /*
 ** +-------------------------------------------------------+
@@ -208,6 +212,8 @@ static cache *cachep;
     /* whether proxy module is available or not */
 static int proxy_available;
 
+static char *lockname;
+static int lockfd = -1;
 
 /*
 ** +-------------------------------------------------------+
@@ -234,8 +240,6 @@ static void *config_server_create(pool *p, server_rec *s)
     a->rewritelogfile  = NULL;
     a->rewritelogfp    = -1;
     a->rewriteloglevel = 0;
-    a->rewritelockfile = NULL;
-    a->rewritelockfp   = -1;
     a->rewritemaps     = ap_make_array(p, 2, sizeof(rewritemap_entry));
     a->rewriteconds    = ap_make_array(p, 2, sizeof(rewritecond_entry));
     a->rewriterules    = ap_make_array(p, 2, sizeof(rewriterule_entry));
@@ -270,12 +274,6 @@ static void *config_server_merge(pool *p, void *basev, void *overridesv)
         a->rewritelogfp    = overrides->rewritelogfp != -1 
                              ? overrides->rewritelogfp 
                              : base->rewritelogfp;
-        a->rewritelockfile = overrides->rewritelockfile != NULL
-                             ? overrides->rewritelockfile
-                             : base->rewritelockfile;
-        a->rewritelockfp   = overrides->rewritelockfp != -1
-                             ? overrides->rewritelockfp
-                             : base->rewritelockfp;
         a->rewritemaps     = ap_append_arrays(p, overrides->rewritemaps,
                                               base->rewritemaps);
         a->rewriteconds    = ap_append_arrays(p, overrides->rewriteconds,
@@ -291,8 +289,6 @@ static void *config_server_merge(pool *p, void *basev, void *overridesv)
         a->rewriteloglevel = overrides->rewriteloglevel;
         a->rewritelogfile  = overrides->rewritelogfile;
         a->rewritelogfp    = overrides->rewritelogfp;
-        a->rewritelockfile = overrides->rewritelockfile;
-        a->rewritelockfp   = overrides->rewritelockfp;
         a->rewritemaps     = overrides->rewritemaps;
         a->rewriteconds    = overrides->rewriteconds;
         a->rewriterules    = overrides->rewriterules;
@@ -528,15 +524,12 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
 
 static const char *cmd_rewritelock(cmd_parms *cmd, void *dconf, char *a1)
 {
-    rewrite_server_conf *sconf;
     const char *error;
 
     if ((error = ap_check_cmd_context(cmd, GLOBAL_ONLY)) != NULL)
         return error;
-    sconf = (rewrite_server_conf *)
-            ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
-    sconf->rewritelockfile = a1;
+    lockname = a1;
 
     return NULL;
 }
@@ -2920,6 +2913,9 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key)
     char buf[LONG_STRING_LEN];
     char c;
     int i;
+#ifndef NO_WRITEV
+    struct iovec iov[2];
+#endif
 
     /* when `RewriteEngine off' was used in the per-server
      * context then the rewritemap-programs were not spawned.
@@ -2934,8 +2930,16 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key)
     rewritelock_alloc(r);
 
     /* write out the request key */
+#ifdef NO_WRITEV
     write(fpin, key, strlen(key));
     write(fpin, "\n", 1);
+#else
+    iov[0].iov_base = key;
+    iov[0].iov_len = strlen(key);
+    iov[1].iov_base = "\n";
+    iov[1].iov_len = 1;
+    writev(fpin, iov, 2);
+#endif
 
     /* read in the response value */
     i = 0;
@@ -3254,28 +3258,26 @@ static void rewritelock_create(server_rec *s, pool *p)
     conf = ap_get_module_config(s->module_config, &rewrite_module);
 
     /* only operate if a lockfile is used */
-    if (conf->rewritelockfile == NULL
-        || *(conf->rewritelockfile) == '\0') {
+    if (lockname == NULL || *(lockname) == '\0') {
         return;
     }
 
     /* fixup the path, especially for rewritelock_remove() */
-    conf->rewritelockfile = ap_server_root_relative(p, conf->rewritelockfile);
+    lockname = ap_server_root_relative(p, lockname);
 
     /* create the lockfile */
-    unlink(conf->rewritelockfile);
-    if ((conf->rewritelockfp = ap_popenf(p, conf->rewritelockfile,
-                                         O_WRONLY|O_CREAT,
+    unlink(lockname);
+    if ((lockfd = ap_popenf(p, lockname, O_WRONLY|O_CREAT,
                                          REWRITELOCK_MODE)) < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, s,
                      "mod_rewrite: Parent could not create RewriteLock "
-                     "file %s", conf->rewritelockfile);
+                     "file %s", lockname);
         exit(1);
     }
 #if !defined(OS2) && !defined(WIN32)
     /* make sure the childs have access to this file */
     if (geteuid() == 0 /* is superuser */)
-        chown(conf->rewritelockfile, ap_user_id, -1 /* no gid change */);
+        chown(lockname, ap_user_id, -1 /* no gid change */);
 #endif
 
     return;
@@ -3288,18 +3290,16 @@ static void rewritelock_open(server_rec *s, pool *p)
     conf = ap_get_module_config(s->module_config, &rewrite_module);
 
     /* only operate if a lockfile is used */
-    if (conf->rewritelockfile == NULL
-        || *(conf->rewritelockfile) == '\0') {
+    if (lockname == NULL || *(lockname) == '\0') {
         return;
     }
 
     /* open the lockfile (once per child) to get a unique fd */
-    if ((conf->rewritelockfp = ap_popenf(p, conf->rewritelockfile,
-                                         O_WRONLY,
+    if ((lockfd = ap_popenf(p, lockname, O_WRONLY,
                                          REWRITELOCK_MODE)) < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, s,
                      "mod_rewrite: Child could not open RewriteLock "
-                     "file %s", conf->rewritelockfile);
+                     "file %s", lockname);
         exit(1);
     }
     return;
@@ -3307,43 +3307,29 @@ static void rewritelock_open(server_rec *s, pool *p)
 
 static void rewritelock_remove(void *data)
 {
-    server_rec *s;
-    rewrite_server_conf *conf;
-
-    /* the data is really the server_rec */
-    s = (server_rec *)data;
-    conf = ap_get_module_config(s->module_config, &rewrite_module);
-
     /* only operate if a lockfile is used */
-    if (conf->rewritelockfile == NULL
-        || *(conf->rewritelockfile) == '\0') {
+    if (lockname == NULL || *(lockname) == '\0') {
         return;
     }
 
     /* remove the lockfile */
-    unlink(conf->rewritelockfile);
+    unlink(lockname);
+    lockname = NULL;
+    lockfd = -1;
 }
 
 static void rewritelock_alloc(request_rec *r)
 {
-    rewrite_server_conf *conf;
-
-    conf = ap_get_module_config(r->server->module_config, &rewrite_module);
-
-    if (conf->rewritelockfp != -1) {
-        fd_lock(r, conf->rewritelockfp);
+    if (lockfd != -1) {
+        fd_lock(r, lockfd);
     }
     return;
 }
 
 static void rewritelock_free(request_rec *r)
 {
-    rewrite_server_conf *conf;
-
-    conf = ap_get_module_config(r->server->module_config, &rewrite_module);
-
-    if (conf->rewritelockfp != -1) {
-        fd_unlock(r, conf->rewritelockfp);
+    if (lockfd != -1) {
+        fd_unlock(r, lockfd);
     }
     return;
 }

@@ -302,8 +302,6 @@ typedef struct {
     char         *rewritelogfile;  /* the RewriteLog filename */
     int           rewritelogfp;    /* the RewriteLog open filepointer */
     int           rewriteloglevel; /* the RewriteLog level of verbosity */
-    char         *rewritelockfile; /* the RewriteLock filename */
-    int           rewritelockfp;   /* the RewriteLock open filepointer */
     array_header *rewritemaps;     /* the RewriteMap entries */
     array_header *rewriteconds;    /* the RewriteCond entries (temporary) */
     array_header *rewriterules;    /* the RewriteRule entries */
