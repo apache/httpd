@@ -75,16 +75,18 @@
 #include "util_filter.h"
 
 APR_HOOK_STRUCT(
-	    APR_HOOK_LINK(pre_connection)
+            APR_HOOK_LINK(create_connection)
 	    APR_HOOK_LINK(process_connection)
             APR_HOOK_LINK(install_transport_filters)
+	    APR_HOOK_LINK(pre_connection)
 )
-
-AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c),(c),OK,DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_connection,
+                            (apr_pool_t *p, server_rec *server, apr_socket_t *csd, long conn_id, void *sbh),
+                            (p, server, csd, conn_id, sbh), NULL)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, install_transport_filters, 
                             (conn_rec *c, apr_socket_t *csd),(c, csd), DECLINED)
-
+AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c),(c),OK,DECLINED)
 /*
  * More machine-dependent networking gooo... on some systems,
  * you've got to be *really* sure that all the packets are acknowledged
@@ -231,40 +233,4 @@ AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c, apr_socket_t *csd)
         ap_run_process_connection(c);
     }
 }
-AP_CORE_DECLARE(conn_rec *)ap_new_connection(apr_pool_t *ptrans, server_rec *server, 
-                                             apr_socket_t *csd, long id, void *sbh)
-{
-    apr_status_t rv;
-    conn_rec *c = (conn_rec *) apr_pcalloc(ptrans, sizeof(conn_rec));
 
-    c->sbh = sbh; 
-    (void) ap_update_child_status(c->sbh, SERVER_BUSY_READ, (request_rec *) NULL);
-
-    /* Got a connection structure, so initialize what fields we can
-     * (the rest are zeroed out by pcalloc).
-     */
-    c->conn_config=ap_create_conn_config(ptrans);
-    c->notes = apr_table_make(ptrans, 5);
- 
-    c->pool = ptrans;
-    if ((rv = apr_socket_addr_get(&c->local_addr, APR_LOCAL, csd))
-        != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, rv, server,
-                     "apr_socket_addr_get(APR_LOCAL)");
-        apr_socket_close(csd);
-        return NULL;
-    }
-    apr_sockaddr_ip_get(&c->local_ip, c->local_addr);
-    if ((rv = apr_socket_addr_get(&c->remote_addr, APR_REMOTE, csd))
-        != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, rv, server,
-                     "apr_socket_addr_get(APR_REMOTE)");
-        apr_socket_close(csd);
-        return NULL;
-    }
-    apr_sockaddr_ip_get(&c->remote_ip, c->remote_addr);
-    c->base_server = server;
- 
-    c->id = id;
-    return c;
-}

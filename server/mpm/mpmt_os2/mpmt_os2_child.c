@@ -430,7 +430,7 @@ static void worker_main(void *vpArg)
            rc == 0 && rd.ulData != WORKTYPE_EXIT) {
         pconn = worker_args->pconn;
         ap_create_sb_handle(&sbh, pconn, child_slot, thread_slot);
-        current_conn = ap_new_connection(pconn, ap_server_conf, worker_args->conn_sd, conn_id, sbh);
+        current_conn = ap_run_create_connection(pconn, ap_server_conf, worker_args->conn_sd, conn_id, sbh);
 
         if (current_conn) {
             ap_process_connection(current_conn, worker_args->conn_sd);
