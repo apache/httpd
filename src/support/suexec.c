@@ -86,7 +86,7 @@
 #elif defined(MAXPATHLEN)
 #define AP_MAXPATH MAXPATHLEN
 #else
-#define AP_MAXPATH 256
+#define AP_MAXPATH 8192
 #endif
 
 #define AP_ENVBUF 256
