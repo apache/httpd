@@ -792,6 +792,15 @@ static int check_signal(int signum)
     return 0;
 }
 
+/* XXX unfortunate issue:
+ *     with apachectl restart (not graceful), previous generation dies
+ *     abruptly with no chance to clean up scoreboard entries; when new
+ *     generation is started, processes can loop forever in start_threads()
+ *     waiting for scoreboard entries for threads of prior generation to
+ *     get cleaned up...  but it will never happen and the new generation
+ *     child looping here, waiting for scoreboard to get cleaned up, is
+ *     wasted
+ */
 static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
 {
     thread_starter *ts = dummy;
@@ -914,6 +923,9 @@ static void join_start_thread(apr_thread_t *start_thread_id)
 {
     apr_status_t rv, thread_rv;
 
+    workers_may_exit = 1; /* start thread may not want to exit until this
+                           * is set
+                           */
     rv = apr_thread_join(&thread_rv, start_thread_id);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
