@@ -200,6 +200,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/mod_asis.o \
 	$(OBJDIR)/mod_auth.o \
 	$(OBJDIR)/mod_autoindex.o \
+	$(OBJDIR)/mod_cgi.o \
 	$(OBJDIR)/mod_dir.o \
 	$(OBJDIR)/mod_env.o \
 	$(OBJDIR)/mod_imap.o \
@@ -207,6 +208,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/mod_log_config.o \
 	$(OBJDIR)/mod_mime.o \
 	$(OBJDIR)/mod_negotiation.o \
+	$(OBJDIR)/mod_netware.o \
 	$(OBJDIR)/mod_nw_ssl.o \
 	$(OBJDIR)/mod_setenvif.o \
 	$(OBJDIR)/mod_so.o \
