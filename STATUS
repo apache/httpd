@@ -338,6 +338,8 @@ Win32 specific issues:
 
  Help:
 
+    * should have a pretty little icon for Apache on Win32
+
     * proxy module doesn't load on Win95.  Why?  Good question.  PR#1462.
 
     * "Directory /", "Directory C:/" both fail to do anything, 
