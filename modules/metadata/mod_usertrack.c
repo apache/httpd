@@ -132,7 +132,7 @@ static void make_cookie(request_rec *r)
 {
     cookie_log_state *cls = ap_get_module_config(r->server->module_config,
 						 &usertrack_module);
-#if defined(NO_GETTIMEOFDAY) && !defined(NO_TIMES)
+#if !defined(HAVE_GETTIMEOFDAY) && !defined(NO_TIMES)
     clock_t mpe_times;
     struct tms mpe_tms;
 #elif !defined(WIN32)
@@ -148,7 +148,7 @@ static void make_cookie(request_rec *r)
 
     dcfg = ap_get_module_config(r->per_dir_config, &usertrack_module);
 
-#if defined(NO_GETTIMEOFDAY) && !defined(NO_TIMES)
+#if !defined(HAVE_GETTIMEOFDAY) && !defined(NO_TIMES)
 /* We lack gettimeofday(), so we must use time() to obtain the epoch
    seconds, and then times() to obtain CPU clock ticks (milliseconds).
    Combine this together to obtain a hopefully unique cookie ID. */

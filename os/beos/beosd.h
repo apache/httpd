@@ -85,6 +85,8 @@ const char *beosd_set_group(cmd_parms *cmd, void *dummy, char *arg);
 
 #define INIT_SIGLIST()  /* nothing */
 
+#define beosd_killpg(x, y)	(kill (-(x), (y)))
+
 #define UNIX_DAEMON_COMMANDS	\
 { "User", beosd_set_user, NULL, RSRC_CONF, TAKE1, \
   "Effective user id for this server"}, \

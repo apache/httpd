@@ -98,10 +98,9 @@
 #endif
 #define CASE_BLIND_FILESYSTEM
 #define NO_WRITEV
-#define NO_SETSID
 #define NO_USE_SIGACTION
 #define NO_TIMES
-#define NO_GETTIMEOFDAY
+/* #undef HAVE_GETTIMEOFDAY */
 #define USE_LONGJMP
 #define HAVE_MMAP
 #define USE_MMAP_SCOREBOARD
