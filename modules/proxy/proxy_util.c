@@ -1471,6 +1471,31 @@ static apr_status_t init_conn_worker(proxy_worker *worker, server_rec *s)
     return rv;
 }
 
+PROXY_DECLARE(int) ap_proxy_retry_worker(const char *proxy_function,
+                                         proxy_worker *worker,
+                                         server_rec *s)
+{
+    if (worker->status & PROXY_WORKER_IN_ERROR) {
+        apr_interval_time_t diff;
+        apr_time_t now = apr_time_now();
+        if (worker->retry)
+            diff = worker->retry;
+        else
+            diff = apr_time_from_sec(60 + 60 * worker->retries++);
+        if (now > worker->error_time + diff) {
+            worker->status &= ~PROXY_WORKER_IN_ERROR;
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                         "proxy: %s: retrying the worker for (%s)",
+                         proxy_function, worker->hostname);
+            return OK;
+        }
+        else
+            return DECLINED;
+    }
+    else
+        return OK;
+}
+
 PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
                                                proxy_conn_rec **conn,
                                                proxy_worker *worker,
@@ -1483,9 +1508,21 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                          "proxy: %s: failed to initialize worker for (%s)",
                          proxy_function, worker->hostname);
-            return DECLINED;
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
         worker->status = PROXY_WORKER_INITIALIZED;
+    }
+
+    if (!PROXY_WORKER_IS_USABLE(worker)) {
+        /* Retry the worker */
+        ap_proxy_retry_worker(proxy_function, worker, s);
+    
+        if (!PROXY_WORKER_IS_USABLE(worker)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                         "proxy: %s: disabled connection for (%s)",
+                         proxy_function, worker->hostname);
+            return HTTP_SERVICE_UNAVAILABLE;
+        }
     }
 #if APR_HAS_THREADS
     if (worker->hmax) {
@@ -1508,7 +1545,7 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                      "proxy: %s: failed to acquire connection for (%s)",
                      proxy_function, worker->hostname);
-        return DECLINED;
+        return HTTP_SERVICE_UNAVAILABLE;
     }
     return OK;
 }
@@ -1722,6 +1759,14 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         conn->sock   = newsock;
         conn->worker = worker;
         connected    = 1;
+    }
+    /* Put the entire worker to error state
+     * Altrough some connections may be alive
+     * no further connections to the worker could be made
+     */
+    if (!connected && PROXY_WORKER_IS_USABLE(worker)) {
+        worker->status |= PROXY_WORKER_IN_ERROR;
+        worker->error_time = apr_time_now();
     }
     return connected ? OK : DECLINED;
 }
