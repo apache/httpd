@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/10/06 00:48:03 $]
+Last modified at [$Date: 2001/10/09 03:11:08 $]
 
 Release:
 
@@ -34,13 +34,17 @@ on related projects:
 
 RELEASE SHOWSTOPPERS:
 
-    * Revert to a 1.3 behavior and allow a non-file request to travel
-      through the request cycle.  If any request gets to the core handler,
-      without a flag that this r->filename was tested by dir/file_walk,
-      then we 500 at the very end of the request cycle.  This provides
+    * Handler and Filter filetypes in mod_mime now trigger mod_negotiation 
+      recognition of files, but no mechanism exists to prioritize which of
+      several mod_negotation files aught to be served by handler or filter.
+      There needs to be a mechanism, or the change to reenable this match
+      behavior must be reverted [OtherBill's veto of 1.3 behavior].
+
+    * If any request gets to the core handler, without a flag that this 
+      r->filename was tested by dir/file_walk, we need to 500 at the very 
+      end of the ap_process_request_internal() processing.  This provides
       authors of older modules better compatibility, while still improving
-      the security and robustness of 2.0.  This does not remove the new
-      map_to_storage hook itself, but makes it optional for some cases.
+      the security and robustness of 2.0. 
         Status: still need to decide where this goes, OtherBill comments...
         Message-ID: <065701c14526$495203b0$96c0b0d0@roweclan.net>
         we need to look at halting this in the 'default handler' case,
@@ -68,16 +72,6 @@ RELEASE SHOWSTOPPERS:
         Status: Greg volunteers
         MsgId: <20010227104646.E2297@lyra.org>
         MsgId: <3A9C0097.9C83F07C@Golux.Com>
-
-    * mod_negotiation will not serve a request when an early extention
-      is understood, but a later extention is not.  e.g. if the request
-      index.html.bak is recieved, and negotition could find the file
-      index.html.bak.en, it still won't be served because the 
-      ap-mime-exception-list will contain "index" and "bak", and the
-      string "index.bak" doesn't match "index.html.bak".  Need to
-      review the ap-mime-exception-list component by component to be
-      allow these cases.  [This could be part of a patch to allow the
-      name index.bak in the case above to match index.html.bak.en]
 
     * mod_negotiation needs a new option or directive, something like
       ForceLanguagePriority, to fall back to the LanguagePriority
@@ -131,13 +125,20 @@ RELEASE SHOWSTOPPERS:
       - thoughts on filter modes:
           Message-ID: <021b01c14dee$09782af0$93c0b0d0@roweclan.net>
 
+    * Fold mod_auth_db features back into mod_auth_dbm, and depricate it.
+        This can't wait until we have a 2.0-gold release, if folks need
+        to move over to auth_dbm, we can't do that to them after 2.0 gold.
+
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Allow the DocumentRoot directive within <Location > scopes?  This
       allows the beloved (crusty) Alias /foo/ /somepath/foo/ followed
       by a <Directory /somepath/foo> to become simply 
       <Location /foo/> DocumentRoot /somefile/foo (IMHO a bit more legible
-      and in-your-face.)  This proposed change would not depricate Alias.
+      and in-your-face.)  DocumentRoot unset would be accepted [and would
+      not permit content to be served, only virtual resources such as
+      server-info or server-status.
+        This proposed change would _not_ depricate Alias.
 
     * add mod_gz to httpd-2.0 (in modules/experimental/)
       +1: Greg, Justin, ben, Ken, Jeff, Bill
@@ -155,6 +156,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Win32: Rotatelogs sometimes is not terminated when Apache
       goes down hard.  FirstBill was looking at possibly tracking the 
       child's-child processes in the parent process.
+        OtherBill asks, wasn't this fixed?
 
     * Win32: Add a simple hold console open patch (wait for close or
         the ESC key, with a nice message) if the server died a bad 
@@ -175,9 +177,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Performance: Get the SINGLE_LISTEN_UNSERIALIZED_ACCEPT
       optimization working in threaded.  prefork's new design for how
       to notice data on the pod should be sufficient.
-
-    * mod_tls is very specific to OpenSSL. Make the API calls
-      more generic to support other encryption libraries.
 
     * Performance & Debug: Eliminate most (and perhaps all) of the 
       malloc/free calls in the bucket brigade code.  Need some 
@@ -231,6 +230,11 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         necessarily the library that Apache was built with.  Aught to
         rewrite dbmmanage upon installation to bin/ with the proper library 
         for predictable mod_auth_db/dbm administration.
+        Status: Mladen Turk has posted several patches and ideas.
+                Key question, part of htpasswd, or a seperate utility?
+                prefer htpasswd:
+                prefer seperate: OtherBill
+
 
     * use apu_dbm in mod_auth_dbm
         Status: Greg +1 (low-priority volunteer)
@@ -243,8 +247,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                     a userlist via dbm, which has to remain readable between
                     builds/machines, etc.  The use-multiple database schema
                     for apr-util would let us do this with just apr, though."
-
-    * Fold mod_auth_db features back into mod_auth_dbm, and depricate it.
 
     * Integrate mod_dav.
         Some additional items remaining:
@@ -722,8 +724,6 @@ Available Patches:
      PR6193
 
 Open issues:
-
-   * What do we do about mod_proxy?
 
    * Which MPMs will be included with Apache 2.0?
 
