@@ -3398,6 +3398,30 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	exit(1);
     }
 
+#ifdef SO_ACCEPTFILTER
+    {
+#ifndef ACCEPT_FILTER_NAME
+#define ACCEPT_FILTER_NAME "dataready"
+#endif
+	/*
+	 * See htdocs/manual/misc/perf-bsd44.html for a discussion of
+	 * how to enable this feature and various issues with it.
+	 */
+	struct accept_filter_arg af = {
+	    ACCEPT_FILTER_NAME, ""
+	};
+	if (setsockopt(s, SOL_SOCKET, SO_ACCEPTFILTER, &af, sizeof(af)) < 0
+	    && errno != ENOENT) {
+	    ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
+			 "make_sock: for %s, setsockopt: (SO_ACCEPTFILTER)",
+			 addr);
+	    close(s);
+	    ap_unblock_alarms();
+	    exit(1);
+	}
+    }
+#endif
+
 #ifdef WORKAROUND_SOLARIS_BUG
     s = ap_slack(s, AP_SLACK_HIGH);
 

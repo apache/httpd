@@ -1,5 +1,10 @@
 Changes with Apache 1.3.13
 
+  *) Use "accept filtering" on recent versions of FreeBSD iff the
+     kernel is configured to support them. This allows Apache to avoid
+     having to handle new connections until the request has arrived.
+     [Tony Finch]
+
   *) Fix error handling in make_sock. [Tony Finch]
 
   *) The htdocs/ tree has been moved out of the CVS source tree into
