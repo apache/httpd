@@ -4,8 +4,8 @@
 </head>
 
 <body>
-<IMG SRC="../images/apache_sub.gif" ALT="">
-<h3>Content Arbitration:  MultiViews and *.var files</h3>
+<!--#include virtual="header.html" -->
+<h1>Content Arbitration:  MultiViews and *.var files</h1>
 
 The HTTP standard allows clients (i.e., browsers like Mosaic or
 Netscape) to specify what data formats they are prepared to accept.
@@ -209,8 +209,5 @@ does, it is simply retrieved as usual.  (So, someone who actually asks
 for <code>foo.jpeg</code>, as opposed to <code>foo</code>, never gets
 <code>foo.gif</code>).
 
-<P><HR><P>
-<A HREF="../"><IMG SRC="../images/apache_home.gif" ALT="Home"></A>
-<A HREF="./"><IMG SRC="../images/apache_index.gif" ALT="Index"></A>
-
+<!--#include virtual="footer.html" -->
 </body> </html>
