@@ -1,3 +1,4 @@
+
 /* ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -212,7 +213,6 @@ typedef struct {
 AP_DECLARE(int) ap_exists_scoreboard_image(void);
 void reinit_scoreboard(apr_pool_t *p);
 apr_status_t ap_cleanup_shared_mem(void *d);
-AP_DECLARE(void) ap_sync_scoreboard_image(void);
 
 AP_DECLARE(void) reopen_scoreboard(apr_pool_t *p);
 
