@@ -144,48 +144,7 @@ void cgi_child (void *child_stuff)
     
     cleanup_for_exec();
     
-#ifdef __EMX__    
-    if((!r->args) || (!r->args[0]) || (ind(r->args,'=') >= 0)) {
-            int emxloop;
-            char *emxtemp;
-
-            /* For OS/2 place the variables in the current
-            enviornment then it will be inherited. This way
-            the program will also get all of OS/2's other SETs. */
-            for (emxloop=0; ((emxtemp = env[emxloop]) != NULL); emxloop++)
-                putenv(emxtemp);
-                
-            if (strstr(strupr(r->filename), ".CMD") > 0) {
-                /* Special case to allow use of REXX commands as scripts. */
-                os2pathname(r->filename);
-                execl("CMD.EXE", "CMD.EXE", "/C", r->filename, NULL);
-            } else {
-                execl(r->filename, argv0, NULL);
-            }
-    } else {
-            int emxloop;
-            char *emxtemp;
-            
-            /* For OS/2 place the variables in the current
-            enviornment then it will be inherited. This way
-            the program will also get all of OS/2's other SETs. */
-            for (emxloop=0; ((emxtemp = env[emxloop]) != NULL); emxloop++)
-                putenv(emxtemp);
-                
-            if (strstr(strupr(r->filename), ".CMD") > 0) {
-                /* Special case to allow use of REXX commands as scripts. */
-                os2pathname(r->filename);
-                execv("CMD.EXE", create_argv_cmd(r->pool, argv0, r->args, r->filename));
-            } else {
-                execv(r->filename, create_argv(r->pool, argv0, r->args));
-            }
-    }
-#else
-    if((!r->args) || (!r->args[0]) || (ind(r->args,'=') >= 0)) 
-        execle(r->filename, argv0, NULL, env);
-    else 
-        execve(r->filename, create_argv(r->pool, argv0, r->args), env);
-#endif        
+    call_exec(r, argv0, env, 0);
 
     /* Uh oh.  Still here.  Where's the kaboom?  There was supposed to be an
      * EARTH-shattering kaboom!

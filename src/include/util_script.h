@@ -61,4 +61,5 @@ void add_cgi_vars(request_rec *r);
 void add_common_vars(request_rec *r);
 int scan_script_header(request_rec *r, FILE *f);
 void send_size(size_t size, request_rec *r);
+void call_exec (request_rec *r, char *argv0, char **env, int shellcmd);
 

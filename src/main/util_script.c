@@ -362,3 +362,91 @@ char **create_argv_cmd(pool *p, char *av0, char *args, char *path) {
 }
 #endif
 
+
+void call_exec (request_rec *r, char *argv0, char **env, int shellcmd) 
+{
+    
+#ifdef RLIMIT_CPU
+    struct rlimit cpulim = { 9, 10 };
+#endif
+
+#ifdef RLIMIT_DATA
+    struct rlimit datalim = { 2000000, 2500000 };
+#endif
+
+#ifdef RLIMIT_NPROC
+    struct rlimit proclim = { 20, 40 };
+#endif
+    
+#ifdef RLIMIT_VMEM
+    struct rlimit vmlim = { 2000000, 2500000 };
+#endif
+    
+#ifdef RLIMIT_CPU
+    setrlimit (RLIMIT_CPU, &cpulim);
+#endif
+
+#ifdef RLIMIT_DATA
+    setrlimit (RLIMIT_DATA, &datalim);
+#endif
+
+#ifdef RLIMIT_NPROC
+    setrlimit (RLIMIT_NPROC, &proclim);
+#endif
+    
+#ifdef RLIMIT_VMEM
+    setrlimit (RLIMIT_VMEM, &vmlim);
+#endif
+    
+
+#ifdef __EMX__    
+    if ((!r->args) || (!r->args[0]) || (ind(r->args,'=') >= 0)) {
+	int emxloop;
+	char *emxtemp;
+
+	/* For OS/2 place the variables in the current
+	   enviornment then it will be inherited. This way
+	   the program will also get all of OS/2's other SETs. */
+	for (emxloop=0; ((emxtemp = env[emxloop]) != NULL); emxloop++)
+	    putenv(emxtemp);
+                
+	if (strstr(strupr(r->filename), ".CMD") > 0) {
+	    /* Special case to allow use of REXX commands as scripts. */
+	    os2pathname(r->filename);
+	    execl("CMD.EXE", "CMD.EXE", "/C", r->filename, NULL);
+	}
+	else {
+	    execl(r->filename, argv0, NULL);
+	}
+    }
+    else {
+	int emxloop;
+	char *emxtemp;
+            
+	/* For OS/2 place the variables in the current
+	   enviornment then it will be inherited. This way
+	   the program will also get all of OS/2's other SETs. */
+	for (emxloop=0; ((emxtemp = env[emxloop]) != NULL); emxloop++)
+	    putenv(emxtemp);
+                
+	if (strstr(strupr(r->filename), ".CMD") > 0) {
+	    /* Special case to allow use of REXX commands as scripts. */
+	    os2pathname(r->filename);
+	    execv("CMD.EXE", create_argv_cmd(r->pool, argv0, r->args, r->filename));
+	}
+	else
+	    execv(r->filename, create_argv(r->pool, argv0, r->args));
+    }
+#else
+
+    if (shellcmd) 
+	execle(SHELL_PATH, SHELL_PATH, "-c", argv0, NULL, env);
+
+    else if((!r->args) || (!r->args[0]) || (ind(r->args,'=') >= 0))
+	execle(r->filename, argv0, NULL, env);
+
+    else
+	execve(r->filename, create_argv(r->pool, argv0, r->args), env);
+    
+#endif
+}

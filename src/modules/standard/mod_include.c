@@ -479,8 +479,8 @@ void include_cmd_child (void *arg)
     fprintf (dbg, "Attempting to exec '%s'\n", s);
 #endif    
     cleanup_for_exec();
-    execle(SHELL_PATH, SHELL_PATH, "-c", s, NULL,
-	   create_environment (r->pool, env));
+    /* set shellcmd flag to pass arg to SHELL_PATH */
+    call_exec(r, s, create_environment (r->pool, env), 1);
     
     /* Oh, drat.  We're still here.  The log file descriptors are closed,
      * so we have to whimper a complaint onto stderr...
