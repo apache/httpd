@@ -1,4 +1,4 @@
-Changes with Apache 2.0.42
+Changes with Apache 2.0.41
 
   *) Allow AddOutputFilterByType to add multiple filters per directive.
      [Justin Erenkrantz]
@@ -7,8 +7,6 @@ Changes with Apache 2.0.42
 
   *) Fixed mod_disk_cache's generation of 304s
      [Kris Verbeeck <Kris.Verbeeck@ubizen.com>]
-
-Changes with Apache 2.0.41
 
   *) Add support for using fnmatch patterns in the final path
      segment of an Include statement (eg.. include /foo/bar/*.conf).
