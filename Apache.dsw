@@ -117,13 +117,13 @@ Package=<4>
     Project_Dep_Name mod_vhost_alias
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name proxy_connect
+    Project_Dep_Name mod_proxy_connect
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name proxy_ftp
+    Project_Dep_Name mod_proxy_ftp
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name proxy_http
+    Project_Dep_Name mod_proxy_http
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name ab
@@ -1192,7 +1192,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "proxy_connect"=".\modules\proxy\proxy_connect.dsp" - Package Owner=<4>
+Project: "mod_proxy_connect"=".\modules\proxy\mod_proxy_connect.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1216,7 +1216,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "proxy_ftp"=".\modules\proxy\proxy_ftp.dsp" - Package Owner=<4>
+Project: "mod_proxy_ftp"=".\modules\proxy\mod_proxy_ftp.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1240,7 +1240,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "proxy_http"=".\modules\proxy\proxy_http.dsp" - Package Owner=<4>
+Project: "mod_proxy_http"=".\modules\proxy\mod_proxy_http.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
