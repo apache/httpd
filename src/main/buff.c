@@ -237,7 +237,11 @@ int recvwithtimeout(int sock, char *buf, int len, int flags)
                             ap_log_error(APLOG_MARK, APLOG_DEBUG, NULL,
                                          "select claimed we could read, but in fact we couldn't.");
                             retry = 1;
+#ifdef NETWARE
+                            ThreadSwitchWithDelay();
+#else
                             Sleep(100);
+#endif
                         }
                     }
                 }
