@@ -331,7 +331,7 @@ static const char *filter_protocol(cmd_parms *cmd, void *CFG, const char *fname,
     }
     else {
         /* Find provider */
-        for (provider = filter->providers; provider; provider = provider->next) {
+        for (provider = filter->providers; provider; provider = provider->next){
             if (!strcasecmp(provider->frec->name, pname)) {
                 break;
             }
@@ -456,13 +456,15 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG,
 
     /* fname has been declared with DeclareFilter, so we can look it up */
     mod_filter_cfg *cfg = CFG;
-    ap_filter_rec_t *frec = apr_hash_get(cfg->live_filters, fname, APR_HASH_KEY_STRING);
+    ap_filter_rec_t *frec = apr_hash_get(cfg->live_filters, fname,
+                                         APR_HASH_KEY_STRING);
     /* if provider has been registered, we can look it up */
     ap_filter_rec_t *provider_frec = ap_get_output_filter_handle(pname);
     /* or if provider is mod_filter itself, we can also look it up */
 
     if (!provider_frec) {
-        provider_frec = apr_hash_get(cfg->live_filters, pname, APR_HASH_KEY_STRING);
+        provider_frec = apr_hash_get(cfg->live_filters, pname,
+                                     APR_HASH_KEY_STRING);
     }
 
     if (!frec) {
