@@ -1,5 +1,10 @@
 Changes with Apache 2.0.49
 
+  *) Fix a problem with namespace mappings being dropped in mod_dav_fs;
+     if any property values were set which defined namespaces these
+     came out mangled in the PROPFIND response.  PR 11637.
+     [Amit Athavale <amit_athavale persistent.co.in>]
+
   *) mod_dav: Return a WWW-auth header for MOVE/COPY requests where
      the destination resource gives a 401.  PR 15571.  [Joe Orton]
 

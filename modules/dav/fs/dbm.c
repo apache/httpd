@@ -599,7 +599,7 @@ static dav_error * dav_propdb_map_namespaces(
     ** we don't know the namespace yet, then add it to the map and to our
     ** table of known namespaces.
     */
-    pmap = apr_palloc(db->pool, namespaces->nelts * sizeof(*pmap));
+    m->ns_map = pmap = apr_palloc(db->pool, namespaces->nelts * sizeof(*pmap));
     for (i = namespaces->nelts, puri = (const char **)namespaces->elts;
          i-- > 0;
          ++puri, ++pmap) {
@@ -627,7 +627,6 @@ static dav_error * dav_propdb_map_namespaces(
         }
     }
 
-    m->ns_map = pmap;
     *mapping = m;
     return NULL;
 }
