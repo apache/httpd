@@ -392,16 +392,6 @@ apr_status_t ssl_hook_CloseConnection(SSLFilterRec *filter)
         return APR_SUCCESS;
 
     /*
-     * First make sure that no more data is pending in Apache's BUFF,
-     * because when it's (implicitly) flushed later by the ap_bclose()
-     * calls of Apache it would lead to an I/O error in the browser due
-     * to the fact that the SSL layer was already removed by us.
-     */
-#if 0 /* XXX We've flush the OpenSSL buffer and not connection buffer - TBD */
-    ap_flush_conn(conn);
-#endif
-
-    /*
      * Now close the SSL layer of the connection. We've to take
      * the TLSv1 standard into account here:
      *
