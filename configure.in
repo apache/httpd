@@ -27,6 +27,7 @@ APACHE_HELP_STRING(--enable-layout=LAYOUT,Default file layout),[
   APACHE_LAYOUT($srcdir/config.layout, $LAYOUT)
   AC_MSG_RESULT($LAYOUT)
 ], [
+  APACHE_LAYOUT_DEFAULTS
   AC_MSG_RESULT([Autoconf Defaults])
 ])
 
