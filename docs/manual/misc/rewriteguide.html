@@ -1511,11 +1511,11 @@ ResourceConfig       /dev/null
 #   speed up and secure processing
 &lt;Directory /&gt;
 Options -FollowSymLinks -SymLinksIfOwnerMatch
-AllowOverwrite None
+AllowOverride None
 &lt;/Directory&gt;
 
 #   the status page for monitoring the reverse proxy
-&lt;Location /rproxy-status&gt;
+&lt;Location /apache-rproxy-status&gt;
 SetHandler server-status
 &lt;/Location&gt;
 
