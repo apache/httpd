@@ -1823,7 +1823,7 @@ static const dav_hooks_repository dav_hooks_repository_fs =
 
 static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 					  int propid, dav_prop_insert what,
-					  ap_text_header *phdr)
+					  apr_text_header *phdr)
 {
     const char *value;
     const char *s;
@@ -1923,7 +1923,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
                          "D:namespace=\"%s\"/>" DEBUG_CR,
                          info->name, dav_fs_namespace_uris[info->ns]);
     }
-    ap_text_append(p, phdr, s);
+    apr_text_append(p, phdr, s);
 
     /* we inserted what was asked for */
     return what;
@@ -1945,13 +1945,13 @@ static int dav_fs_is_writable(const dav_resource *resource, int propid)
 }
 
 static dav_error *dav_fs_patch_validate(const dav_resource *resource,
-					const ap_xml_elem *elem,
+					const apr_xml_elem *elem,
 					int operation,
 					void **context,
 					int *defer_to_dead)
 {
-    const ap_text *cdata;
-    const ap_text *f_cdata;
+    const apr_text *cdata;
+    const apr_text *f_cdata;
     char value;
     dav_elem_private *priv = elem->priv;
 
@@ -2010,7 +2010,7 @@ static dav_error *dav_fs_patch_validate(const dav_resource *resource,
 }
 
 static dav_error *dav_fs_patch_exec(const dav_resource *resource,
-				    const ap_xml_elem *elem,
+				    const apr_xml_elem *elem,
 				    int operation,
 				    void *context,
 				    dav_liveprop_rollback **rollback_ctx)
@@ -2120,7 +2120,7 @@ int dav_fs_find_liveprop(const dav_resource *resource,
 }
 
 void dav_fs_insert_all_liveprops(request_rec *r, const dav_resource *resource,
-                                 dav_prop_insert what, ap_text_header *phdr)
+                                 dav_prop_insert what, apr_text_header *phdr)
 {
     /* don't insert any liveprops if this isn't "our" resource */
     if (resource->hooks != &dav_hooks_repository_fs)
