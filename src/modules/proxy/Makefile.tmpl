@@ -19,7 +19,7 @@ libproxy.a: $(OBJS)
 
 libproxy.so: $(OBJS_PIC)
 	rm -f $@
-	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o $@ $(OBJS_PIC)
+	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o $@ $(OBJS_PIC) $(LIBS_SHLIB)
 
 .SUFFIXES: .o .lo
 

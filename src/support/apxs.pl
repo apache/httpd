@@ -73,6 +73,7 @@ my $CFG_CFLAGS        = '@CFLAGS@';        # substituted via Makefile.tmpl
 my $CFG_CFLAGS_SHLIB  = '@CFLAGS_SHLIB@';  # substituted via Makefile.tmpl
 my $CFG_LD_SHLIB      = '@LD_SHLIB@';      # substituted via Makefile.tmpl
 my $CFG_LDFLAGS_SHLIB = '@LDFLAGS_SHLIB@'; # substituted via Makefile.tmpl 
+my $CFG_LIBS_SHLIB    = '@LIBS_SHLIB@';    # substituted via Makefile.tmpl 
 my $CFG_PREFIX        = '@prefix@';        # substituted via APACI install
 my $CFG_SBINDIR       = '@sbindir@';       # substituted via APACI install
 my $CFG_INCLUDEDIR    = '@includedir@';    # substituted via APACI install
@@ -352,6 +353,7 @@ if ($opt_c) {
         $opt .= " -l$opt_l";
     }
     $cmd .= $opt;
+    $cmd .= " $CFG_LIBS_SHLIB";
     push(@cmds, $cmd);
 
     #   execute the commands

@@ -77,6 +77,7 @@
 #	 (i.e., a simple "sanity check")
 #	mfhead:
 #	fp2rp:
+#	slo.sh:
 
 exitcode=0
 trap 'rm -f $tmpfile $tmpfile2 $tmpfile3 $tmpconfig $awkfile; exit $exitcode' 0 1 2 3 15
@@ -237,6 +238,7 @@ RULE_IRIXNIS=`./helpers/CutRule IRIXNIS $file`
 RULE_IRIXN32=`./helpers/CutRule IRIXN32 $file`
 RULE_PARANOID=`./helpers/CutRule PARANOID $file`
 RULE_SHARED_CORE=`./helpers/CutRule SHARED_CORE $file`
+RULE_SHARED_CHAIN=`./helpers/CutRule SHARED_CHAIN $file`
 
 ####################################################################
 ## Rule SHARED_CORE implies required DSO support
@@ -812,6 +814,7 @@ TCFLAGS_SHLIB=`egrep '^CFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{prin
 if [ "x$using_shlib" = "x1" ] ; then
     LD_SHLIB="ld"
     DEF_SHARED_CORE=no
+    DEF_SHARED_CHAIN=no
     SHLIB_SUFFIX_DEPTH=all
     SHLIB_EXPORT_FILES=no
     case "$PLAT" in
@@ -1375,6 +1378,25 @@ if [ "$RULE_WANTHSREGEX" = "yes" ]; then
 fi
 
 ####################################################################
+## Now the SHARED_CHAIN stuff
+##
+LIBS_SHLIB=''
+if [ "x$using_shlib" = "x1" ] ; then
+    if [ ".$RULE_SHARED_CHAIN" = .default ] ; then
+        RULE_SHARED_CHAIN=$DEF_SHARED_CHAIN
+    fi
+    if [ ".$RULE_SHARED_CHAIN" = .yes ]; then
+        echo " + enabling DSO files to be linked against others"
+        #   determine libraries which can be safely linked
+        #   to our DSO files, i.e. PIC libraries and shared libraries
+        extra_ldflags="`grep EXTRA_LDFLAGS= Makefile.config`"
+        extra_libs="`grep EXTRA_LIBS= Makefile.config`"
+        eval "`./helpers/slo.sh $LDFLAGS $LIBS $extra_ldflags $extra_libs`"
+        LIBS_SHLIB="$SLO_DIRS_PIC $SLO_LIBS_PIC $SLO_DIRS_DSO $SLO_LIBS_DSO"
+    fi
+fi
+
+####################################################################
 ## Now the SHARED_CORE stuff
 ##
 if [ "x$using_shlib" = "x1" ] ; then
@@ -1600,6 +1622,7 @@ echo "OSDIR=\$(SRCDIR)/$OSDIR">> Makefile.config
 echo "INCDIR=\$(SRCDIR)/include" >>Makefile.config
 echo "INCLUDES0=-I\$(OSDIR) -I\$(INCDIR)">> Makefile.config
 echo "INCLUDES1=$INCLUDES">> Makefile.config
+echo "LIBS_SHLIB=$LIBS_SHLIB">> Makefile.config
 echo "LDFLAGS1=$LDFLAGS">> Makefile.config
 echo "MFLAGS_STATIC=$MFLAGS_STATIC">> Makefile.config
 echo "REGLIB=$REGLIB">> Makefile.config
@@ -1839,7 +1862,7 @@ dummy $(LIB): $(OBJS)
 
 .c.so:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(CFLAGS_SHLIB) $< && mv $*.o $*.lo
-	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o $@ $*.lo
+	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o $@ $*.lo $(LIBS_SHLIB)
 
 clean:
 	rm -f $(LIB) $(OBJS) $(SHLIBS) $(OBJS_PIC)

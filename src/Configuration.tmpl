@@ -89,6 +89,19 @@ EXTRA_DEPS=
 # Then enable the DSO feature for particular modules individually
 # by replacing their `AddModule' command with `SharedModule' and
 # change the filename extension from `.o' to `.so'. 
+#
+# Sometimes the DSO files need to be linked against other shared
+# libraries to explicitly resolve symbols from them when the
+# httpd program not already contains references to them. For
+# instance when buidling mod_auth_db as a DSO you need to link
+# the DSO against the libdb explicity because the Apache kernel
+# has no references for this library. But the problem is that
+# this "chaining" is not supported on all platforms. Although one
+# usually can link a DSO against another DSO without linker
+# complains the linkage is not really done on these platforms.
+# So, when you receive "unresolved symbol" errors under runtime
+# when using the LoadModule directive for a particular module try
+# to enable the SHARED_CHAIN rule below.
 
 #CFLAGS_SHLIB=
 #LD_SHLIB=
@@ -96,6 +109,7 @@ EXTRA_DEPS=
 #LDFLAGS_SHLIB_EXPORT=
 
 Rule SHARED_CORE=default
+Rule SHARED_CHAIN=default
 
 ################################################################
 # Rules configuration

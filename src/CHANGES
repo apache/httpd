@@ -1,5 +1,14 @@
 Changes with Apache 1.3.2
 
+  *) Add new Rule SHARED_CHAIN which can be used to enable linking of DSO
+     files (here modules) against other DSO files (here shared libraries).
+     This is done by determining a subset of LIBS which can be safely used for
+     linking the DSOs, i.e. PIC libs and shared libs.  Currently the rule is
+     disabled for all platforms to avoid problems with this (experimental)
+     rule. But we provide it now for those people how ran into problems and
+     want to came out by forcing linking against DSOs.
+     [Ralf S. Engelschall] PR#2587
+
   *) Fix suEXEC start message: Has to be of `notice' level to really get
      printed together with the standard startup message because the `notice'
      level is handled special inside ap_log_error() for startup messages.

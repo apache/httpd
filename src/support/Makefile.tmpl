@@ -31,10 +31,11 @@ ab: ab.o
 apxs: apxs.pl
 	sed <apxs.pl >apxs \
 	    -e 's%@CC@%$(CC)%g' \
-	    -e 's%@LD_SHLIB@%$(LD_SHLIB)%g' \
 	    -e 's%@CFLAGS@%$(CFLAGS)%g' \
 	    -e 's%@CFLAGS_SHLIB@%$(CFLAGS_SHLIB)%g' \
-	    -e 's%@LDFLAGS_SHLIB@%$(LDFLAGS_SHLIB)%g' && chmod a+x apxs
+	    -e 's%@LD_SHLIB@%$(LD_SHLIB)%g' \
+	    -e 's%@LDFLAGS_SHLIB@%$(LDFLAGS_SHLIB)%g' \
+	    -e 's%@LIBS_SHLIB@%$(LIBS_SHLIB)%g' && chmod a+x apxs
 
 suexec: suexec.o
 	$(CC) $(CFLAGS) suexec.o -o suexec $(LDFLAGS) $(LIBS)
