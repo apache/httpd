@@ -243,8 +243,8 @@ if test "$apache_need_shared" = "yes"; then
       POST_SHARED_CMDS='rm $(top_builddir)/_APP_'
       ;;
     *os390)
-      APR_ADDTO(CFLAGS, [-Wc,DLL,EXPORTALL])
-      ;;
+      HTTPD_LDFLAGS="$HTTPD_LDFLAGS --main=$abs_srcdir/server/main.o --core-dll=$abs_srcdir/apachecore.dll"
+      SH_LDFLAGS="$SH_LDFLAGS --core-dll=$abs_srcdir/apachecore.dll"
   esac
   shared_build="shared-modules"
 fi

@@ -6,5 +6,6 @@ Makefile
 *.lo
 *.slo
 *.so
+*.x
 Debug
 Release
