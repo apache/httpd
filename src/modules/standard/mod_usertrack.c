@@ -97,7 +97,9 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
+#ifndef WIN32
 #include <sys/time.h>
+#endif
 
 module usertrack_module;
 
@@ -105,6 +107,10 @@ typedef struct {
     int always;
     time_t expires;
 } cookie_log_state;
+
+static const char month_names[12][4] = {
+    "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
+};
 
 /* Define this to allow post-2000 cookies. Cookies use two-digit dates,
  * so it might be dicey. (Netscape does it correctly, but others may not)
@@ -123,7 +129,7 @@ void make_cookie(request_rec *r)
 #if defined(NO_GETTIMEOFDAY)
     clock_t mpe_times;
     struct tms mpe_tms;
-#else
+#elif !defined(WIN32)
     struct timeval tv;
     struct timezone tz = { 0 , 0 };
 #endif
@@ -146,6 +152,16 @@ void make_cookie(request_rec *r)
 
     ap_snprintf(cookiebuf, 1024, "%s%d%ld%ld", rname, (int)getpid(),
               (long)time(NULL), (long)mpe_tms.tms_utime);
+#elif defined(WIN32)
+    /* We lack gettimeofday() and we lack times(). So we'll use
+     * a combination of time() and GetTickCount(), which returns
+     * milliseconds since Windows was started. It should be relatively
+     * unique.
+     */
+
+     ap_snprintf(cookiebuf, 1024, "%s%d%ld%ld", rname, (int)getpid(),
+                 (long)time(NULL), (long)GetTickCount());
+
 #else
     gettimeofday(&tv, &tz);
 
@@ -174,7 +190,7 @@ void make_cookie(request_rec *r)
       ap_snprintf(new_cookie, 1024,
 	   "%s%s; path=/; expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
 	      COOKIE_NAME, cookiebuf, days[tms->tm_wday],
-	      tms->tm_mday, month_snames[tms->tm_mon],
+	      tms->tm_mday, month_names[tms->tm_mon],
 	      (tms->tm_year >= 100) ? tms->tm_year - 100 : tms->tm_year,
 	      tms->tm_hour, tms->tm_min, tms->tm_sec);
     }
