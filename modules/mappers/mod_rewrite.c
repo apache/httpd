@@ -3209,7 +3209,7 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     }
 
     apr_snprintf(str3, sizeof(str3),
-                "%s %s [%s/sid#%lx][rid#%lx/%s%s] (%d) %s\n", str1,
+                "%s %s [%s/sid#%lx][rid#%lx/%s%s] (%d) %s" APR_EOL_STR, str1,
                 current_logtime(r), ap_get_server_name(r),
                 (unsigned long)(r->server), (unsigned long)r,
                 type, redir, level, str2);
