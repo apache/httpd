@@ -379,6 +379,11 @@ typedef struct {
     const char  *key_files[SSL_AIDX_MAX];
     X509        *certs[SSL_AIDX_MAX];
     EVP_PKEY    *keys[SSL_AIDX_MAX];
+
+    /* Certificates which specify the set of CA names which should be
+     * sent in the CertificateRequest message: */
+    const char  *ca_name_path;
+    const char  *ca_name_file;
 } modssl_pk_server_t;
 
 typedef struct {
@@ -487,6 +492,8 @@ const char  *ssl_cmd_SSLCertificateKeyFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateChainFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCACertificatePath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCACertificateFile(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLCADNRequestPath(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLCADNRequestFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCARevocationPath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCARevocationFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLHonorCipherOrder(cmd_parms *cmd, void *dcfg, int flag);
