@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/13 06:09:02 $]
+Last modified at [$Date: 2002/02/13 16:03:21 $]
 
 Release:
 
@@ -45,14 +45,11 @@ CURRENT RELEASE NOTES:
     * 32 status:
       Proposed tag is JRE_1.  A proposed tarball is at:
         http://www.apache.org/~jerenkrantz/2.0.32-jre/httpd-2.0.32-JRE-1-alpha.tar.gz
-      Win32 is not expected to work.
-        +1 (concept): trawick, BillS
-
-    * 31 + fixes for all resolved problems and call it 32 (instead of HEAD)
-        See: http://www.apache.org/~jerenkrantz/httpd-2.0.jre.patch
-        +1: trawick, Justin, Ian, BillS
-        +0:
-        -1:
+      Win32 is expected to work, but it is not confirmed whether this tag
+      has all of the right files for Win32.
+      Tested on: Linux 2.4
+      Make JRE_1 .32:
+        +1: Justin
 
 FINAL RELEASE SHOWSTOPPERS:
 
@@ -115,6 +112,7 @@ FINAL RELEASE SHOWSTOPPERS:
       lingering problems:
         * mod_cgid doesn't die at shutdown
         * httpd -X and -DONE_PROCESS is broken
+        Justin says: JRE_1 does not have the signal-less worker MPM.
         Status: Aaron volunteers. (This is a -1 for beta from him)
 
 CURRENT VOTES:
