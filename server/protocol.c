@@ -1256,6 +1256,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(
                  */
                 if (e != APR_BRIGADE_FIRST(b)) {
                     apr_bucket_brigade *split = apr_brigade_split(b, e);
+                    apr_bucket *flush = apr_bucket_flush_create(r->connection->bucket_alloc);
+
+                    APR_BRIGADE_INSERT_TAIL(b, flush);
                     rv = ap_pass_brigade(f->next, b);
                     if (rv != APR_SUCCESS) {
                         apr_brigade_destroy(split);
