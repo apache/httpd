@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/07/24 10:44:48 $]
+Last modified at [$Date: 2002/07/24 14:01:00 $]
 
 Release:
 
@@ -81,15 +81,6 @@ CURRENT VOTES:
          +1:   rbb, striker
            ianh - medium/big sites don't use 'standard config' anyway, as it
                   usually needs major customizations
-
-    * apachectl should revert to just being an init script and
-      httpd.sh should be the wrapper for httpd which sources envvars
-      and allows any options to be passed through
-
-        +1:  gregames
-      -0.5:  ianh - a wrapper which calls another wrapper which then sources
-                    envvars ?? i'm not sure why calling apachectl -V is a bad
-                    thing.
 
     * Should we always build [support*] binaries statically unless otherwise
       indicated?
