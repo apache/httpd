@@ -4,16 +4,14 @@
  * author: oz@nexus.yorku.ca
  * status: public domain. 
  */
-/* increase the block/page size and what can be inserted */
-#if 1
-#define DBLKSIZ 16384
-#define PBLKSIZ 8192
-#define PAIRMAX 8008			/* arbitrary on PBLKSIZ-N */
-#else
+
+/* These settings are -incompatible- with mod_dav [www.webdav.org/mod_dav/]
+ * but are required for compatibility with mod_auth_dbm.  Do not link this 
+ * build of sdbm into mod_dav and expect success, dav requires big records.
+ */
 #define DBLKSIZ 4096
 #define PBLKSIZ 1024
 #define PAIRMAX 1008			/* arbitrary on PBLKSIZ-N */
-#endif
 #define SPLTMAX	10			/* maximum allowed splits */
 					/* for a single insertion */
 #define DIRFEXT	".dir"

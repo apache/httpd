@@ -1,5 +1,10 @@
 Changes with Apache 1.3.17
 
+  *) Fixed the sdbm.h bundled in Apache for Win32, bringing it in sync
+     with Perl.  Because it didn't have the same geometry as Perl, 
+     users reported the first user added with dbmmanage was not 
+     recognized.  [William Rowe]
+
   *) Fixed ap_os_canonical_filename to append a the default volume 
      name if the the path is a full path and does not include the
      volume name.  Since NetWare's current working directory always 
