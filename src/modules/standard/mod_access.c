@@ -81,7 +81,7 @@ typedef struct {
 
 module MODULE_VAR_EXPORT access_module;
 
-void *create_access_dir_config (pool *p, char *dummy)
+static void *create_access_dir_config (pool *p, char *dummy)
 {
     access_dir_conf *conf =
         (access_dir_conf *)pcalloc(p, sizeof(access_dir_conf));
@@ -94,7 +94,7 @@ void *create_access_dir_config (pool *p, char *dummy)
     return (void *)conf;
 }
 
-const char *order (cmd_parms *cmd, void *dv, char *arg)
+static const char *order (cmd_parms *cmd, void *dv, char *arg)
 {
     access_dir_conf *d = (access_dir_conf *)dv;
     int i, o;
@@ -111,7 +111,7 @@ const char *order (cmd_parms *cmd, void *dv, char *arg)
     return NULL;
 }
 
-const char *allow_cmd (cmd_parms *cmd, void *dv, char *from, char *where)
+static const char *allow_cmd (cmd_parms *cmd, void *dv, char *from, char *where)
 {
     access_dir_conf *d = (access_dir_conf *)dv;
     allowdeny *a;
@@ -127,7 +127,7 @@ const char *allow_cmd (cmd_parms *cmd, void *dv, char *from, char *where)
 
 static char its_an_allow;
 
-command_rec access_cmds[] = {
+static command_rec access_cmds[] = {
 { "order", order, NULL, OR_LIMIT, TAKE1,
     "'allow,deny', 'deny,allow', or 'mutual-failure'" },
 { "allow", allow_cmd, &its_an_allow, OR_LIMIT, ITERATE2,
@@ -137,7 +137,7 @@ command_rec access_cmds[] = {
 {NULL}
 };
 
-int in_domain(const char *domain, const char *what) {
+static int in_domain(const char *domain, const char *what) {
     int dl=strlen(domain);
     int wl=strlen(what);
 
@@ -155,7 +155,7 @@ int in_domain(const char *domain, const char *what) {
         return 0;
 }
 
-int in_ip(char *domain, char *what) {
+static int in_ip(char *domain, char *what) {
 
     /* Check a similar screw case to the one checked above ---
      * "allow from 204.26.2" shouldn't let in people from 204.26.23
@@ -174,7 +174,7 @@ static int is_ip(const char *host)
     return (*host == '\0');
 }
 
-int find_allowdeny (request_rec *r, array_header *a, int method)
+static int find_allowdeny (request_rec *r, array_header *a, int method)
 {
     allowdeny *ap = (allowdeny *)a->elts;
     int mmask = (1 << method);
@@ -224,7 +224,7 @@ int find_allowdeny (request_rec *r, array_header *a, int method)
     return 0;
 }
 
-int check_dir_access (request_rec *r)
+static int check_dir_access (request_rec *r)
 {
     int method = r->method_number;
     access_dir_conf *a =

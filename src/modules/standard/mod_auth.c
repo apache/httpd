@@ -79,7 +79,7 @@ typedef struct auth_config_struct {
     int auth_authoritative;
 } auth_config_rec;
 
-void *create_auth_dir_config (pool *p, char *d)
+static void *create_auth_dir_config (pool *p, char *d)
 {
     auth_config_rec *sec =
     	(auth_config_rec *) pcalloc (p, sizeof(auth_config_rec));
@@ -89,7 +89,7 @@ void *create_auth_dir_config (pool *p, char *d)
     return sec;
 }
 
-const char *set_auth_slot (cmd_parms *cmd, void *offset, char *f, char *t)
+static const char *set_auth_slot (cmd_parms *cmd, void *offset, char *f, char *t)
 {
     if (t && strcmp(t, "standard"))
         return pstrcat(cmd->pool, "Invalid auth file type: ",  t, NULL);
@@ -97,7 +97,7 @@ const char *set_auth_slot (cmd_parms *cmd, void *offset, char *f, char *t)
     return set_string_slot(cmd, offset, f);
 }
 
-command_rec auth_cmds[] = {
+static command_rec auth_cmds[] = {
 { "AuthUserFile", set_auth_slot,
   (void*)XtOffsetOf(auth_config_rec,auth_pwfile), OR_AUTHCFG, TAKE12, 
   "text file containing user IDs and passwords" },
@@ -113,7 +113,7 @@ command_rec auth_cmds[] = {
 
 module MODULE_VAR_EXPORT auth_module;
 
-char *get_pw(request_rec *r, char *user, char *auth_pwfile)
+static char *get_pw(request_rec *r, char *user, char *auth_pwfile)
 {
     FILE *f;
     char l[MAX_STRING_LEN];
@@ -137,7 +137,7 @@ char *get_pw(request_rec *r, char *user, char *auth_pwfile)
     return NULL;
 }
 
-table *groups_for_user (pool *p, char *user, char *grpfile) {
+static table *groups_for_user (pool *p, char *user, char *grpfile) {
     FILE *f;
     table *grps = make_table (p, 15);
     pool *sp;
@@ -183,7 +183,7 @@ table *groups_for_user (pool *p, char *user, char *grpfile) {
  * basic authentication...
  */
 
-int authenticate_basic_user (request_rec *r)
+static int authenticate_basic_user (request_rec *r)
 {
     auth_config_rec *sec =
       (auth_config_rec *)get_module_config (r->per_dir_config, &auth_module);
@@ -217,7 +217,7 @@ int authenticate_basic_user (request_rec *r)
     
 /* Checking ID */
     
-int check_user_access (request_rec *r) {
+static int check_user_access (request_rec *r) {
     auth_config_rec *sec =
       (auth_config_rec *)get_module_config (r->per_dir_config, &auth_module);
     char *user = r->connection->user;

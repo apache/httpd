@@ -208,7 +208,7 @@ typedef struct {
 
 module MODULE_VAR_EXPORT expires_module;
 
-void *create_dir_expires_config (pool *p, char *dummy)
+static void *create_dir_expires_config (pool *p, char *dummy)
 {     
     expires_dir_config *new =
         (expires_dir_config *) pcalloc (p, sizeof(expires_dir_config));
@@ -218,7 +218,7 @@ void *create_dir_expires_config (pool *p, char *dummy)
     return (void *)new;
 }   
 
-const char *set_expiresactive (cmd_parms *cmd, expires_dir_config *dir_config, int arg)
+static const char *set_expiresactive (cmd_parms *cmd, expires_dir_config *dir_config, int arg)
 {
     /* if we're here at all it's because someone explicitly
      * set the active flag
@@ -234,7 +234,7 @@ const char *set_expiresactive (cmd_parms *cmd, expires_dir_config *dir_config, i
  * string.  If we return NULL then real_code contains code converted
  * to the cnnnn format.
  */
-char *check_code( pool *p, const char *code, char **real_code )
+static char *check_code( pool *p, const char *code, char **real_code )
 {
     char *word;
     char base = 'X';
@@ -327,7 +327,7 @@ char *check_code( pool *p, const char *code, char **real_code )
     return NULL;
 }
 
-const char *set_expiresbytype(cmd_parms *cmd, expires_dir_config *dir_config, char *mime, char *code)
+static const char *set_expiresbytype(cmd_parms *cmd, expires_dir_config *dir_config, char *mime, char *code)
 {
     char *response, *real_code;
 
@@ -339,7 +339,7 @@ const char *set_expiresbytype(cmd_parms *cmd, expires_dir_config *dir_config, ch
 	"'ExpiresByType ", mime, " ", code, "': ", response, NULL );
 } 
 
-const char *set_expiresdefault (cmd_parms *cmd, expires_dir_config *dir_config, char *code)
+static const char *set_expiresdefault (cmd_parms *cmd, expires_dir_config *dir_config, char *code)
 {
     char *response, *real_code;
 
@@ -351,7 +351,7 @@ const char *set_expiresdefault (cmd_parms *cmd, expires_dir_config *dir_config, 
 	"'ExpiresDefault ", code, "': ", response, NULL );
 } 
 
-command_rec expires_cmds[] = {
+static command_rec expires_cmds[] = {
 { "ExpiresActive", set_expiresactive, NULL, DIR_CMD_PERMS, FLAG,
     "Limited to 'on' or 'off'"},
 { "ExpiresBytype", set_expiresbytype, NULL, DIR_CMD_PERMS, TAKE2,
@@ -361,7 +361,7 @@ command_rec expires_cmds[] = {
 { NULL }
 };  
 
-void *merge_expires_dir_configs (pool *p, void *basev, void *addv)
+static void *merge_expires_dir_configs (pool *p, void *basev, void *addv)
 {
     expires_dir_config *new= (expires_dir_config*)pcalloc (p, sizeof(expires_dir_config));
     expires_dir_config *base = (expires_dir_config *)basev;
@@ -382,7 +382,7 @@ void *merge_expires_dir_configs (pool *p, void *basev, void *addv)
     return new;
 }  
 
-int add_expires(request_rec *r)
+static int add_expires(request_rec *r)
 {
     expires_dir_config *conf;
     char *code;

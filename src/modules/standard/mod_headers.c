@@ -122,7 +122,7 @@ typedef struct {
 
 module MODULE_VAR_EXPORT headers_module;
 
-void *create_headers_config (pool *p, server_rec *s)
+static void *create_headers_config (pool *p, server_rec *s)
 {
     headers_conf *a =
       (headers_conf *)pcalloc (p, sizeof(headers_conf));
@@ -131,12 +131,12 @@ void *create_headers_config (pool *p, server_rec *s)
     return a;
 }
 
-void *create_headers_dir_config (pool *p, char *d)
+static void *create_headers_dir_config (pool *p, char *d)
 {
     return (headers_conf*)create_headers_config(p, NULL);
 }
 
-void *merge_headers_config (pool *p, void *basev, void *overridesv)
+static void *merge_headers_config (pool *p, void *basev, void *overridesv)
 {
     headers_conf *a =
 	(headers_conf *)pcalloc (p, sizeof(headers_conf));
@@ -149,7 +149,7 @@ void *merge_headers_config (pool *p, void *basev, void *overridesv)
 }
 
 
-const char *header_cmd(cmd_parms *cmd, headers_conf *dirconf, char *action, char *hdr, char *value)
+static const char *header_cmd(cmd_parms *cmd, headers_conf *dirconf, char *action, char *hdr, char *value)
 {
     header_entry *new;
     server_rec *s = cmd->server;
@@ -188,13 +188,13 @@ const char *header_cmd(cmd_parms *cmd, headers_conf *dirconf, char *action, char
     return NULL;
 }
 
-command_rec headers_cmds[] = {
+static command_rec headers_cmds[] = {
 { "Header", header_cmd, NULL, OR_FILEINFO, TAKE23, 
     "an action, header and value"},
 { NULL }
 };
 
-void do_headers_fixup(request_rec *r, array_header *headers)
+static void do_headers_fixup(request_rec *r, array_header *headers)
 {
     int i;
 
@@ -218,7 +218,7 @@ void do_headers_fixup(request_rec *r, array_header *headers)
 
 }
 
-int fixup_headers(request_rec *r)
+static int fixup_headers(request_rec *r)
 {
     void *sconf = r->server->module_config;
     headers_conf *serverconf =

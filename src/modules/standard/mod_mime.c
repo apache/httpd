@@ -75,7 +75,7 @@ typedef struct {
 
 module MODULE_VAR_EXPORT mime_module;
 
-void *create_mime_dir_config (pool *p, char *dummy)
+static void *create_mime_dir_config (pool *p, char *dummy)
 {
     mime_dir_config *new =
       (mime_dir_config *) palloc (p, sizeof(mime_dir_config));
@@ -91,7 +91,7 @@ void *create_mime_dir_config (pool *p, char *dummy)
     return new;
 }
 
-void *merge_mime_dir_configs (pool *p, void *basev, void *addv)
+static void *merge_mime_dir_configs (pool *p, void *basev, void *addv)
 {
     mime_dir_config *base = (mime_dir_config *)basev;
     mime_dir_config *add = (mime_dir_config *)addv;
@@ -113,14 +113,14 @@ void *merge_mime_dir_configs (pool *p, void *basev, void *addv)
     return new;
 }
 
-const char *add_type(cmd_parms *cmd, mime_dir_config *m, char *ct, char *ext)
+static const char *add_type(cmd_parms *cmd, mime_dir_config *m, char *ct, char *ext)
 {
     if (*ext == '.') ++ext;
     table_set (m->forced_types, ext, ct);
     return NULL;
 }
 
-const char *add_encoding(cmd_parms *cmd, mime_dir_config *m, char *enc,
+static const char *add_encoding(cmd_parms *cmd, mime_dir_config *m, char *enc,
 			 char *ext)
 {
     if (*ext == '.') ++ext;
@@ -128,7 +128,7 @@ const char *add_encoding(cmd_parms *cmd, mime_dir_config *m, char *enc,
     return NULL;
 }
 
-const char *add_language(cmd_parms *cmd, mime_dir_config *m, char *lang,
+static const char *add_language(cmd_parms *cmd, mime_dir_config *m, char *lang,
 			 char *ext)
 {
     if (*ext == '.') ++ext;
@@ -136,7 +136,7 @@ const char *add_language(cmd_parms *cmd, mime_dir_config *m, char *lang,
     return NULL;
 }
 
-const char *add_handler(cmd_parms *cmd, mime_dir_config *m, char *hdlr,
+static const char *add_handler(cmd_parms *cmd, mime_dir_config *m, char *hdlr,
 			char *ext)
 {
     if (*ext == '.') ++ext;
@@ -148,14 +148,14 @@ const char *add_handler(cmd_parms *cmd, mime_dir_config *m, char *hdlr,
  * the name of its config file, so...
  */
 
-const char *set_types_config (cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_types_config (cmd_parms *cmd, void *dummy, char *arg)
 {
     set_module_config (cmd->server->module_config, &mime_module,
 		       pstrdup (cmd->pool, arg));
     return NULL;
 }
 
-command_rec mime_cmds[] = {
+static command_rec mime_cmds[] = {
 { "AddType", add_type, NULL, OR_FILEINFO, ITERATE2,
     "a mime type followed by one or more file extensions" },
 { "AddEncoding", add_encoding, NULL, OR_FILEINFO, ITERATE2,
@@ -182,7 +182,7 @@ command_rec mime_cmds[] = {
 
 static table *hash_buckets[MIME_HASHSIZE];
 
-void init_mime (server_rec *s, pool *p)
+static void init_mime (server_rec *s, pool *p)
 {
     FILE *f;
     char l[MAX_STRING_LEN];
@@ -218,8 +218,8 @@ void init_mime (server_rec *s, pool *p)
     fclose(f);
 }
 
-/* note that the proxy module uses this */
-int find_ct(request_rec *r)
+/* note that the proxy module uses this via mime_find_ct */
+static int find_ct(request_rec *r)
 {
     const char *fn = strrchr(r->filename, '/');
     mime_dir_config *conf =

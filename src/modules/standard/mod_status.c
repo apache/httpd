@@ -111,7 +111,7 @@ module MODULE_VAR_EXPORT status_module;
 
 /* Format the number of bytes nicely */
 
-void format_byte_out(request_rec *r,unsigned long bytes)
+static void format_byte_out(request_rec *r,unsigned long bytes)
 {
     if (bytes < (5 * KBYTE))
 	rprintf(r,"%d B",(int)bytes);
@@ -123,7 +123,7 @@ void format_byte_out(request_rec *r,unsigned long bytes)
 	rprintf(r,"%.1f GB",(float)bytes/GBYTE);
 }
 
-void format_kbyte_out(request_rec *r,unsigned long kbytes)
+static void format_kbyte_out(request_rec *r,unsigned long kbytes)
 {
     if (kbytes < KBYTE)
 	rprintf(r,"%d kB",(int)kbytes);
@@ -133,7 +133,7 @@ void format_kbyte_out(request_rec *r,unsigned long kbytes)
 	rprintf(r,"%.1f GB",(float)kbytes/MBYTE);
 }
 
-void show_time(request_rec *r,time_t tsecs)
+static void show_time(request_rec *r,time_t tsecs)
 {
     long days,hrs,mins,secs;
     char buf[100];
@@ -173,7 +173,7 @@ struct stat_opt
     char *hdr_out_str;
 };
 
-int status_handler (request_rec *r)
+static int status_handler (request_rec *r)
 {
     struct stat_opt options[] =        /* see #defines above */
     {
@@ -636,7 +636,7 @@ int status_handler (request_rec *r)
     return 0;
 }
 
-handler_rec status_handlers[] =
+static handler_rec status_handlers[] =
 {
 { STATUS_MAGIC_TYPE, status_handler },
 { "server-status", status_handler },

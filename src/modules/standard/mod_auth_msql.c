@@ -449,29 +449,29 @@ void *create_msql_auth_dir_config (pool *p, char *d)
     return sec;
 }
 
-const char *set_passwd_flag (cmd_parms *cmd, msql_auth_config_rec *sec, int arg) {
+static const char *set_passwd_flag (cmd_parms *cmd, msql_auth_config_rec *sec, int arg) {
     sec->auth_msql_nopasswd=arg;
     return NULL;
 }
 
-const char *set_authoritative_flag (cmd_parms *cmd, msql_auth_config_rec *sec, int arg) {
+static const char *set_authoritative_flag (cmd_parms *cmd, msql_auth_config_rec *sec, int arg) {
     sec->auth_msql_authoritative=arg;
     return NULL;
 }
 
-const char *set_crypted_password_flag (cmd_parms *cmd, msql_auth_config_rec *sec , int arg) {
+static const char *set_crypted_password_flag (cmd_parms *cmd, msql_auth_config_rec *sec , int arg) {
     sec->auth_msql_encrypted = arg;
     return NULL;
 }
 
-const char *msql_set_string_slot (cmd_parms *cmd, char *struct_ptr, char *arg) {
+static const char *msql_set_string_slot (cmd_parms *cmd, char *struct_ptr, char *arg) {
     int offset = (int)cmd->info;
     *(char **)(struct_ptr + offset) = pstrdup (cmd->pool, arg);
     return NULL;
 }
 
 
-command_rec msql_auth_cmds[] = {
+static command_rec msql_auth_cmds[] = {
 { "Auth_MSQLhost", msql_set_string_slot,
     (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_host),
     OR_AUTHCFG, TAKE1, "Host on which the mSQL database engine resides (defaults to localhost)" },
@@ -550,7 +550,7 @@ module msql_auth_module;
  * SQL query. See the mSQL FAQ for more information :-) on
  * this very popular subject in the msql-mailing list.
  */
-char *msql_escape(char *out, char *in, char *msql_errstr) {
+static char *msql_escape(char *out, char *in, char *msql_errstr) {
 
   register int i=0,j=0;
 
@@ -580,7 +580,7 @@ char *msql_escape(char *out, char *in, char *msql_errstr) {
  * into r. Assume that user is a string and stored
  * as such in the mSQL database
  */
-char *do_msql_query(request_rec *r, char *query, msql_auth_config_rec *sec, int once , char *msql_errstr) {
+static char *do_msql_query(request_rec *r, char *query, msql_auth_config_rec *sec, int once , char *msql_errstr) {
 
     	static int 	sock=-1;
     	int		hit;
@@ -691,7 +691,7 @@ char *do_msql_query(request_rec *r, char *query, msql_auth_config_rec *sec, int 
 	return result;
 }
 
-char *get_msql_pw(request_rec *r, char *user, msql_auth_config_rec *sec ,char *msql_errstr) {
+static char *get_msql_pw(request_rec *r, char *user, msql_auth_config_rec *sec ,char *msql_errstr) {
   	char 		query[MAX_QUERY_LEN];
 	char 		esc_user[MAX_FIELD_LEN];
 
@@ -726,7 +726,7 @@ char *get_msql_pw(request_rec *r, char *user, msql_auth_config_rec *sec ,char *m
 	return do_msql_query(r,query,sec,ONLY_ONCE,msql_errstr);
 }
 
-char *get_msql_grp(request_rec *r, char *group,char *user, msql_auth_config_rec *sec, char *msql_errstr) {
+static char *get_msql_grp(request_rec *r, char *group,char *user, msql_auth_config_rec *sec, char *msql_errstr) {
   	char 		query[MAX_QUERY_LEN];
 
 	char 		esc_user[MAX_FIELD_LEN];
@@ -772,7 +772,7 @@ char *get_msql_grp(request_rec *r, char *group,char *user, msql_auth_config_rec 
 }
 
 
-int msql_authenticate_basic_user (request_rec *r)
+static int msql_authenticate_basic_user (request_rec *r)
 {
     msql_auth_config_rec *sec =
       (msql_auth_config_rec *)get_module_config (r->per_dir_config,
@@ -867,7 +867,7 @@ int msql_authenticate_basic_user (request_rec *r)
 
 /* Checking ID */
 
-int msql_check_auth (request_rec *r) {
+static int msql_check_auth (request_rec *r) {
     int user_result=DECLINED,group_result=DECLINED;
 
     msql_auth_config_rec *sec =

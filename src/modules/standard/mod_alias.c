@@ -80,7 +80,7 @@ typedef struct {
 
 module MODULE_VAR_EXPORT alias_module;
 
-void *create_alias_config (pool *p, server_rec *s)
+static void *create_alias_config (pool *p, server_rec *s)
 {
     alias_server_conf *a =
       (alias_server_conf *)pcalloc (p, sizeof(alias_server_conf));
@@ -90,14 +90,15 @@ void *create_alias_config (pool *p, server_rec *s)
     return a;
 }
 
-void *create_alias_dir_config (pool *p, char *d)
+static void *create_alias_dir_config (pool *p, char *d)
 {
     alias_dir_conf *a =
       (alias_dir_conf *)pcalloc (p, sizeof(alias_dir_conf));
     a->redirects = make_array (p, 2, sizeof(alias_entry));
     return a;
 }
-void *merge_alias_config (pool *p, void *basev, void *overridesv)
+
+static void *merge_alias_config (pool *p, void *basev, void *overridesv)
 {
     alias_server_conf *a =
 	(alias_server_conf *)pcalloc (p, sizeof(alias_server_conf));
@@ -109,7 +110,7 @@ void *merge_alias_config (pool *p, void *basev, void *overridesv)
     return a;
 }
 
-void *merge_alias_dir_config (pool *p, void *basev, void *overridesv)
+static void *merge_alias_dir_config (pool *p, void *basev, void *overridesv)
 {
     alias_dir_conf *a =
       (alias_dir_conf *)pcalloc (p, sizeof(alias_dir_conf));
@@ -119,7 +120,7 @@ void *merge_alias_dir_config (pool *p, void *basev, void *overridesv)
     return a;
 }
 
-const char *add_alias_internal(cmd_parms *cmd, void *dummy, char *f, char *r,
+static const char *add_alias_internal(cmd_parms *cmd, void *dummy, char *f, char *r,
 			       int use_regex)
 {
     server_rec *s = cmd->server;
@@ -140,15 +141,15 @@ const char *add_alias_internal(cmd_parms *cmd, void *dummy, char *f, char *r,
     return NULL;
 }
 
-const char *add_alias(cmd_parms *cmd, void *dummy, char *f, char *r) {
+static const char *add_alias(cmd_parms *cmd, void *dummy, char *f, char *r) {
     return add_alias_internal(cmd, dummy, f, r, 0);
 }
 
-const char *add_alias_regex(cmd_parms *cmd, void *dummy, char *f, char *r) {
+static const char *add_alias_regex(cmd_parms *cmd, void *dummy, char *f, char *r) {
     return add_alias_internal(cmd, dummy, f, r, 1);
 }
 
-const char *add_redirect_internal(cmd_parms *cmd, alias_dir_conf *dirconf, 
+static const char *add_redirect_internal(cmd_parms *cmd, alias_dir_conf *dirconf, 
 				  char *arg1, char *arg2, char *arg3,
 				  int use_regex)
 {
@@ -200,17 +201,17 @@ const char *add_redirect_internal(cmd_parms *cmd, alias_dir_conf *dirconf,
     return NULL;
 }
 
-const char *add_redirect(cmd_parms *cmd, alias_dir_conf *dirconf, char *arg1,
+static const char *add_redirect(cmd_parms *cmd, alias_dir_conf *dirconf, char *arg1,
 			 char *arg2, char *arg3) {
     return add_redirect_internal(cmd, dirconf, arg1, arg2, arg3, 0);
 }
 
-const char *add_redirect_regex(cmd_parms *cmd, alias_dir_conf *dirconf,
+static const char *add_redirect_regex(cmd_parms *cmd, alias_dir_conf *dirconf,
 			       char *arg1, char *arg2, char *arg3) {
     return add_redirect_internal(cmd, dirconf, arg1, arg2, arg3, 1);
 }
 
-command_rec alias_cmds[] = {
+static command_rec alias_cmds[] = {
 { "Alias", add_alias, NULL, RSRC_CONF, TAKE2, 
     "a fakename and a realname"},
 { "ScriptAlias", add_alias, "cgi-script", RSRC_CONF, TAKE2, 
@@ -234,7 +235,7 @@ command_rec alias_cmds[] = {
 { NULL }
 };
 
-int alias_matches (char *uri, char *alias_fakename)
+static int alias_matches (char *uri, char *alias_fakename)
 {
     char *end_fakename = alias_fakename + strlen (alias_fakename);
     char *aliasp = alias_fakename, *urip = uri;
@@ -268,7 +269,7 @@ int alias_matches (char *uri, char *alias_fakename)
     return urip - uri;
 }
 
-char *try_alias_list (request_rec *r, array_header *aliases, int doesc, int *status)
+static char *try_alias_list (request_rec *r, array_header *aliases, int doesc, int *status)
 {
     alias_entry *entries = (alias_entry *)aliases->elts;
     regmatch_t regm[10];
@@ -314,7 +315,7 @@ char *try_alias_list (request_rec *r, array_header *aliases, int doesc, int *sta
     return NULL;
 }
 
-int translate_alias_redir(request_rec *r)
+static int translate_alias_redir(request_rec *r)
 {
     void *sconf = r->server->module_config;
     alias_server_conf *serverconf =
@@ -349,7 +350,7 @@ int translate_alias_redir(request_rec *r)
     return DECLINED;
 }
 
-int fixup_redir(request_rec *r)
+static int fixup_redir(request_rec *r)
 {
     void *dconf = r->per_dir_config;
     alias_dir_conf *dirconf =

@@ -85,7 +85,7 @@ typedef struct {
 
 module action_module;
 
-void *create_action_dir_config (pool *p, char *dummy)
+static void *create_action_dir_config (pool *p, char *dummy)
 {
     action_dir_config *new =
       (action_dir_config *) palloc (p, sizeof(action_dir_config));
@@ -99,7 +99,7 @@ void *create_action_dir_config (pool *p, char *dummy)
     return new;
 }
 
-void *merge_action_dir_configs (pool *p, void *basev, void *addv)
+static void *merge_action_dir_configs (pool *p, void *basev, void *addv)
 {
     action_dir_config *base = (action_dir_config *)basev;
     action_dir_config *add = (action_dir_config *)addv;
@@ -117,14 +117,14 @@ void *merge_action_dir_configs (pool *p, void *basev, void *addv)
     return new;
 }
 
-const char *add_action(cmd_parms *cmd, action_dir_config *m, char *type,
+static const char *add_action(cmd_parms *cmd, action_dir_config *m, char *type,
 		       char *script)
 {
     table_set (m->action_types, type, script);
     return NULL;
 }
 
-const char *set_script (cmd_parms *cmd, action_dir_config *m, char *method,
+static const char *set_script (cmd_parms *cmd, action_dir_config *m, char *method,
 			char *script)
 {
     if (!strcmp(method, "GET"))
@@ -141,7 +141,7 @@ const char *set_script (cmd_parms *cmd, action_dir_config *m, char *method,
     return NULL;
 }
 
-command_rec action_cmds[] = {
+static command_rec action_cmds[] = {
 { "Action", add_action, NULL, OR_FILEINFO, TAKE2, 
     "a media type followed by a script name" },
 { "Script", set_script, NULL, ACCESS_CONF|RSRC_CONF, TAKE2,
@@ -149,7 +149,7 @@ command_rec action_cmds[] = {
 { NULL }
 };
 
-int action_handler (request_rec *r)
+static int action_handler (request_rec *r)
 {
     action_dir_config *conf =
       (action_dir_config *)get_module_config(r->per_dir_config,&action_module);
@@ -194,7 +194,7 @@ int action_handler (request_rec *r)
     return OK;
 }
 
-handler_rec action_handlers[] = {
+static handler_rec action_handlers[] = {
 { "*/*", action_handler },
 { NULL }
 };

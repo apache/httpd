@@ -83,7 +83,7 @@ typedef struct {
 
 module MODULE_VAR_EXPORT negotiation_module;
 
-char *merge_string_array (pool *p, array_header *arr, char *sep)
+static char *merge_string_array (pool *p, array_header *arr, char *sep)
 {
     int i;
     char *t = "";
@@ -94,7 +94,7 @@ char *merge_string_array (pool *p, array_header *arr, char *sep)
     return t;
 }
 
-void *create_neg_dir_config (pool *p, char *dummy)
+static void *create_neg_dir_config (pool *p, char *dummy)
 {
     neg_dir_config *new =
       (neg_dir_config *) palloc (p, sizeof (neg_dir_config));
@@ -103,7 +103,7 @@ void *create_neg_dir_config (pool *p, char *dummy)
     return new;
 }
 
-void *merge_neg_dir_configs (pool *p, void *basev, void *addv)
+static void *merge_neg_dir_configs (pool *p, void *basev, void *addv)
 {
     neg_dir_config *base = (neg_dir_config *)basev;
     neg_dir_config *add = (neg_dir_config *)addv;
@@ -116,7 +116,7 @@ void *merge_neg_dir_configs (pool *p, void *basev, void *addv)
     return new;
 }
 
-const char *set_language_priority (cmd_parms *cmd, void *n, char *lang)
+static const char *set_language_priority (cmd_parms *cmd, void *n, char *lang)
 {
     array_header *arr = ((neg_dir_config *) n)->language_priority;
     char **langp = (char **) push_array (arr);
@@ -125,7 +125,7 @@ const char *set_language_priority (cmd_parms *cmd, void *n, char *lang)
     return NULL;
 }
 
-const char *cache_negotiated_docs (cmd_parms *cmd, void *dummy, char *dummy2)
+static const char *cache_negotiated_docs (cmd_parms *cmd, void *dummy, char *dummy2)
 {
     void *server_conf = cmd->server->module_config;
     
@@ -133,12 +133,12 @@ const char *cache_negotiated_docs (cmd_parms *cmd, void *dummy, char *dummy2)
     return NULL;
 }
 
-int do_cache_negotiated_docs (server_rec *s)
+static int do_cache_negotiated_docs (server_rec *s)
 {
     return (get_module_config (s->module_config, &negotiation_module) != NULL);
 }
 
-command_rec negotiation_cmds[] = {
+static command_rec negotiation_cmds[] = {
 { "CacheNegotiatedDocs", cache_negotiated_docs, NULL, RSRC_CONF, NO_ARGS,
     "no arguments (either present or absent)" },
 { "LanguagePriority", set_language_priority, NULL, OR_FILEINFO, ITERATE,
@@ -236,7 +236,7 @@ typedef struct {
  * Cleaning out the fields...
  */
 
-void clean_var_rec (var_rec *mime_info)
+static void clean_var_rec (var_rec *mime_info)
 {
     mime_info->sub_req = NULL;
     mime_info->type_name = "";
@@ -265,7 +265,7 @@ void clean_var_rec (var_rec *mime_info)
  * accept_info read out of its content-type, one way or another.
  */
 
-void set_mime_fields (var_rec *var, accept_rec *mime_info)
+static void set_mime_fields (var_rec *var, accept_rec *mime_info)
 {
     var->type_name = mime_info->type_name;
     var->type_quality = mime_info->quality;
@@ -289,7 +289,7 @@ void set_mime_fields (var_rec *var, accept_rec *mime_info)
  * enter the values we recognize into the argument accept_rec
  */
 
-char *get_entry (pool *p, accept_rec *result, char *accept_line)
+static char *get_entry (pool *p, accept_rec *result, char *accept_line)
 {
     result->quality = 1.0f;
     result->max_bytes = 0.0f;
@@ -390,7 +390,7 @@ char *get_entry (pool *p, accept_rec *result, char *accept_line)
  * and charset is only valid in Accept.
  */
 
-array_header *do_header_line (pool *p, char *accept_line)
+static array_header *do_header_line (pool *p, char *accept_line)
 {
     array_header *accept_recs = make_array (p, 40, sizeof (accept_rec));
   
@@ -408,7 +408,7 @@ array_header *do_header_line (pool *p, char *accept_line)
  * return an array containing the languages of this variant
  */
 
-array_header *do_languages_line (pool *p, char **lang_line)
+static array_header *do_languages_line (pool *p, char **lang_line)
 {
     array_header *lang_recs = make_array (p, 2, sizeof (char *));
   
@@ -430,7 +430,7 @@ array_header *do_languages_line (pool *p, char **lang_line)
  * Handling header lines from clients...
  */
 
-negotiation_state *parse_accept_headers (request_rec *r)
+static negotiation_state *parse_accept_headers (request_rec *r)
 {
     negotiation_state *new =
         (negotiation_state *)pcalloc (r->pool, sizeof (negotiation_state));
@@ -501,7 +501,7 @@ negotiation_state *parse_accept_headers (request_rec *r)
  * e.g., POST).
  */
 
-void maybe_add_default_encodings(negotiation_state *neg, int prefer_scripts)
+static void maybe_add_default_encodings(negotiation_state *neg, int prefer_scripts)
 {
     accept_rec *new_accept = (accept_rec *)push_array (neg->accepts); 
   
@@ -532,7 +532,7 @@ void maybe_add_default_encodings(negotiation_state *neg, int prefer_scripts)
 
 enum header_state { header_eof, header_seen, header_sep };
 
-enum header_state get_header_line (char *buffer, int len, FILE *map)
+static enum header_state get_header_line (char *buffer, int len, FILE *map)
 {
     char *buf_end = buffer + len;
     char *cp;
@@ -598,7 +598,7 @@ enum header_state get_header_line (char *buffer, int len, FILE *map)
 
 /* Stripping out RFC822 comments */
 
-void strip_paren_comments (char *hdr)
+static void strip_paren_comments (char *hdr)
 {
     /* Hmmm... is this correct?  In Roy's latest draft, (comments) can nest! */
   
@@ -619,7 +619,7 @@ void strip_paren_comments (char *hdr)
 
 /* Getting to a header body from the header */
 
-char *lcase_header_name_return_body (char *header, request_rec *r)
+static char *lcase_header_name_return_body (char *header, request_rec *r)
 {
     char *cp = header;
     
@@ -715,7 +715,7 @@ static int read_type_map (negotiation_state *neg, request_rec *rr)
  * Same, except we use a filtered directory listing as the map...
  */
 
-int read_types_multi (negotiation_state *neg)
+static int read_types_multi (negotiation_state *neg)
 {
     request_rec *r = neg->r;
     
@@ -835,7 +835,7 @@ int read_types_multi (negotiation_state *neg)
  * be 1 for star/star, 2 for type/star and 3 for type/subtype.
  */
 
-int mime_match (accept_rec *accept_r, var_rec *avail)
+static int mime_match (accept_rec *accept_r, var_rec *avail)
 {
     char *accept_type = accept_r->type_name;
     char *avail_type = avail->type_name;
@@ -891,7 +891,7 @@ int mime_match (accept_rec *accept_r, var_rec *avail)
  * where the standard does not specify a unique course of action).
  */
 
-int level_cmp (var_rec *var1, var_rec *var2)
+static int level_cmp (var_rec *var1, var_rec *var2)
 {
     /* Levels are only comparable between matching media types */
 
@@ -935,7 +935,7 @@ int level_cmp (var_rec *var1, var_rec *var2)
  * to set lang_index.
  */
 
-int find_lang_index (array_header *accept_langs, char *lang)
+static int find_lang_index (array_header *accept_langs, char *lang)
 {
     accept_rec *accs;
     int i;
@@ -957,7 +957,7 @@ int find_lang_index (array_header *accept_langs, char *lang)
  * between several languages.
  */
 
-int find_default_index (neg_dir_config *conf, char *lang)
+static int find_default_index (neg_dir_config *conf, char *lang)
 {
     array_header *arr;
     int nelts;
@@ -993,7 +993,7 @@ int find_default_index (neg_dir_config *conf, char *lang)
  * we don't use this fiddle.
  */
 
-void set_default_lang_quality(negotiation_state *neg)
+static void set_default_lang_quality(negotiation_state *neg)
 {
     var_rec *avail_recs = (var_rec *)neg->avail_vars->elts;
     int j;
@@ -1042,7 +1042,7 @@ void set_default_lang_quality(negotiation_state *neg)
  * in the negotiation if the language qualities tie.
  */
 
-void set_language_quality(negotiation_state *neg, var_rec *variant)
+static void set_language_quality(negotiation_state *neg, var_rec *variant)
 {
     int i;
     int naccept = neg->accept_langs->nelts;
@@ -1187,7 +1187,7 @@ void set_language_quality(negotiation_state *neg, var_rec *variant)
  * machinery.  At some point, that ought to be fixed.
  */
 
-float find_content_length(negotiation_state *neg, var_rec *variant)
+static float find_content_length(negotiation_state *neg, var_rec *variant)
 {
     struct stat statb;
 
@@ -1208,7 +1208,7 @@ float find_content_length(negotiation_state *neg, var_rec *variant)
  * determining the best matching variant.
  */
 
-void set_accept_quality(negotiation_state *neg, var_rec *variant)
+static void set_accept_quality(negotiation_state *neg, var_rec *variant)
 {
     int i;
     accept_rec *accept_recs = (accept_rec *)neg->accepts->elts;
@@ -1277,7 +1277,7 @@ void set_accept_quality(negotiation_state *neg, var_rec *variant)
  * assume value of '1'.
  */
 
-void set_charset_quality(negotiation_state *neg, var_rec *variant)
+static void set_charset_quality(negotiation_state *neg, var_rec *variant)
 {
     int i;
     accept_rec *accept_recs = (accept_rec *)neg->accept_charsets->elts;
@@ -1331,13 +1331,13 @@ void set_charset_quality(negotiation_state *neg, var_rec *variant)
  * use 7bit, 8bin or binary in their var files??
  */
 
-int is_identity_encoding (char *enc)
+static int is_identity_encoding (char *enc)
 {
     return (!enc || !enc[0] || !strcmp (enc, "7bit") || !strcmp (enc, "8bit")
             || !strcmp (enc, "binary"));
 }
 
-void set_encoding_quality(negotiation_state *neg, var_rec *variant)
+static void set_encoding_quality(negotiation_state *neg, var_rec *variant)
 {
     int i;
     accept_rec *accept_recs = (accept_rec *)neg->accept_encodings->elts;
@@ -1408,7 +1408,7 @@ enum algorithm_results {
 /* Firstly, the negotiation 'network algorithm' from Holtman.
  */
 
-int is_variant_better_na(negotiation_state *neg, var_rec *variant, var_rec *best, float *p_bestq)
+static int is_variant_better_na(negotiation_state *neg, var_rec *variant, var_rec *best, float *p_bestq)
 {
     float bestq = *p_bestq, q;
 
@@ -1460,7 +1460,7 @@ int is_variant_better_na(negotiation_state *neg, var_rec *variant, var_rec *best
  * (just about). 
  */
 
-int is_variant_better(negotiation_state *neg, var_rec *variant, var_rec *best, float *p_bestq)
+static int is_variant_better(negotiation_state *neg, var_rec *variant, var_rec *best, float *p_bestq)
 {
     float bestq = *p_bestq, q;
     int levcmp;
@@ -1569,7 +1569,7 @@ int is_variant_better(negotiation_state *neg, var_rec *variant, var_rec *best, f
     return 1;
 }
 
-int best_match(negotiation_state *neg, var_rec **pbest)
+static int best_match(negotiation_state *neg, var_rec **pbest)
 {
     int j;
     var_rec *best = NULL;
@@ -1660,7 +1660,7 @@ int best_match(negotiation_state *neg, var_rec **pbest)
  * configurable in the map file.
  */
 
-void set_neg_headers(request_rec *r, negotiation_state *neg, int na_result)
+static void set_neg_headers(request_rec *r, negotiation_state *neg, int na_result)
 {
     int j;
     var_rec *avail_recs = (var_rec *)neg->avail_vars->elts;
@@ -1758,7 +1758,7 @@ void set_neg_headers(request_rec *r, negotiation_state *neg, int na_result)
  * 300 or 406 status body.
  */
 
-char *make_variant_list (request_rec *r, negotiation_state *neg)
+static char *make_variant_list (request_rec *r, negotiation_state *neg)
 {
     int i;
     char *t;
@@ -1790,7 +1790,7 @@ char *make_variant_list (request_rec *r, negotiation_state *neg)
     return t;
 }
 
-void store_variant_list (request_rec *r, negotiation_state *neg)
+static void store_variant_list (request_rec *r, negotiation_state *neg)
 {
   if (r->main == NULL) {
      table_set (r->notes, "variant-list", make_variant_list (r, neg));
@@ -1805,7 +1805,7 @@ void store_variant_list (request_rec *r, negotiation_state *neg)
  * Otherwise, add the appropriate headers to the current response.
  */
 
-int setup_choice_response(request_rec *r, negotiation_state *neg, var_rec *variant)
+static int setup_choice_response(request_rec *r, negotiation_state *neg, var_rec *variant)
 {
     request_rec *sub_req;
     char *sub_vary;
@@ -1852,7 +1852,7 @@ int setup_choice_response(request_rec *r, negotiation_state *neg, var_rec *varia
  * Executive...
  */
 
-int handle_map_file (request_rec *r)
+static int handle_map_file (request_rec *r)
 {
     negotiation_state *neg = parse_accept_headers (r);
     var_rec *best;
@@ -1911,7 +1911,7 @@ int handle_map_file (request_rec *r)
     return OK;
 }
 
-int handle_multi (request_rec *r)
+static int handle_multi (request_rec *r)
 {
     negotiation_state *neg;
     var_rec *best, *avail_recs;
@@ -2026,7 +2026,7 @@ return_from_multi:
     return OK;
 }
 
-handler_rec negotiation_handlers[] = {
+static handler_rec negotiation_handlers[] = {
 { MAP_FILE_MAGIC_TYPE, handle_map_file },
 { "type-map", handle_map_file },
 { NULL }

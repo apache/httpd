@@ -79,7 +79,7 @@ typedef struct  {
 
 } dbm_auth_config_rec;
 
-void *create_dbm_auth_dir_config (pool *p, char *d)
+static void *create_dbm_auth_dir_config (pool *p, char *d)
 {
     dbm_auth_config_rec *sec
        = (dbm_auth_config_rec *)pcalloc (p, sizeof(dbm_auth_config_rec));
@@ -91,7 +91,7 @@ void *create_dbm_auth_dir_config (pool *p, char *d)
     return sec;
 }
 
-const char *set_dbm_slot (cmd_parms *cmd, void *offset, char *f, char *t)
+static const char *set_dbm_slot (cmd_parms *cmd, void *offset, char *f, char *t)
 {
     if (!t || strcmp(t, "dbm"))
 	return DECLINE_CMD;
@@ -99,7 +99,7 @@ const char *set_dbm_slot (cmd_parms *cmd, void *offset, char *f, char *t)
     return set_string_slot(cmd, offset, f);
 }
 
-command_rec dbm_auth_cmds[] = {
+static command_rec dbm_auth_cmds[] = {
 { "AuthDBMUserFile", set_string_slot,
     (void*)XtOffsetOf(dbm_auth_config_rec, auth_dbmpwfile),
     OR_AUTHCFG, TAKE1, NULL },
@@ -120,7 +120,7 @@ command_rec dbm_auth_cmds[] = {
 
 module dbm_auth_module;
 
-char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile) {
+static char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile) {
     DBM *f; 
     datum d, q; 
     char *pw = NULL;
@@ -161,7 +161,7 @@ char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile) {
  * mark@telescope.org, 22Sep95
  */
 
-char  *get_dbm_grp(request_rec *r, char *user, char *auth_dbmgrpfile) {
+static char  *get_dbm_grp(request_rec *r, char *user, char *auth_dbmgrpfile) {
     char *grp_data = get_dbm_pw (r, user, auth_dbmgrpfile);
     char *grp_colon; char *grp_colon2;
 
@@ -175,7 +175,7 @@ char  *get_dbm_grp(request_rec *r, char *user, char *auth_dbmgrpfile) {
     return grp_data;
 }
 
-int dbm_authenticate_basic_user (request_rec *r)
+static int dbm_authenticate_basic_user (request_rec *r)
 {
     dbm_auth_config_rec *sec =
       (dbm_auth_config_rec *)get_module_config (r->per_dir_config,
@@ -215,7 +215,7 @@ int dbm_authenticate_basic_user (request_rec *r)
     
 /* Checking ID */
     
-int dbm_check_auth(request_rec *r) {
+static int dbm_check_auth(request_rec *r) {
     dbm_auth_config_rec *sec =
       (dbm_auth_config_rec *)get_module_config (r->per_dir_config,
 						&dbm_auth_module);

@@ -69,7 +69,7 @@
 static int been_there_done_that = 0; /* Loaded the modules yet? */
 static int have_symbol_table = 0;
 
-char *insure_dld_sane()
+static char *insure_dld_sane()
 {
     int errcode;
     char *bin_name;
@@ -87,7 +87,7 @@ char *insure_dld_sane()
     return NULL;
 }
 
-char *link_file (pool *p, char *filename)
+static char *link_file (pool *p, char *filename)
 {
     int errcode;
     
@@ -99,7 +99,7 @@ char *link_file (pool *p, char *filename)
     return NULL;
 }
 
-char *load_module (cmd_parms *cmd, void *dummy, char *modname, char *filename)
+static char *load_module (cmd_parms *cmd, void *dummy, char *modname, char *filename)
 {
     char *errname;
     module *modp;
@@ -130,7 +130,7 @@ char *load_module (cmd_parms *cmd, void *dummy, char *modname, char *filename)
     return NULL;
 }
 
-char *load_file (cmd_parms *cmd, void *dummy, char *filename)
+static char *load_file (cmd_parms *cmd, void *dummy, char *filename)
 {
     char *errname;
     
@@ -141,7 +141,7 @@ char *load_file (cmd_parms *cmd, void *dummy, char *filename)
     return NULL;
 }
 
-void check_loaded_modules (server_rec *dummy, pool *p)
+static void check_loaded_modules (server_rec *dummy, pool *p)
 {
     if (been_there_done_that) return;
 
@@ -163,7 +163,7 @@ void check_loaded_modules (server_rec *dummy, pool *p)
     been_there_done_that = 1;
 }
 
-command_rec dld_cmds[] = {
+static command_rec dld_cmds[] = {
 { "LoadModule", load_module, NULL, RSRC_CONF, TAKE2,
   "a module name, and the name of a file to load it from"},
 { "LoadFile", load_file, NULL, RSRC_CONF, ITERATE,

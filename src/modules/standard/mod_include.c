@@ -95,14 +95,10 @@
 #define SIZEFMT_BYTES 0
 #define SIZEFMT_KMG 1
 
-static void decodehtml(char *s);
-static char *get_tag(pool *p, FILE *in, char *tag, int tag_len, int dodecode);
-static int get_directive(FILE *in, char *d, pool *p);
-
 
 /* ------------------------ Environment function -------------------------- */
 
-void add_include_vars(request_rec *r, char *timefmt)
+static void add_include_vars(request_rec *r, char *timefmt)
 {
 #ifndef WIN32
     struct passwd *pw;
@@ -192,7 +188,7 @@ void add_include_vars(request_rec *r, char *timefmt)
    c = (char)i; \
  }
 
-int find_string(FILE *in, char *str, request_rec *r, int printing) {
+static int find_string(FILE *in, char *str, request_rec *r, int printing) {
     int x, l = strlen(str), p;
     char outbuf[OUTBUFSIZE];
     int outind = 0;
@@ -427,7 +423,7 @@ get_directive(FILE *in, char *d, pool *p) {
 /*
  * Do variable substitution on strings
  */
-void parse_string(request_rec *r, char *in, char *out, int length,
+static void parse_string(request_rec *r, char *in, char *out, int length,
                   int leave_name)
 {
     char ch;
@@ -510,7 +506,7 @@ void parse_string(request_rec *r, char *in, char *out, int length,
 
 /* --------------------------- Action handlers ---------------------------- */
 
-int include_cgi(char *s, request_rec *r)
+static int include_cgi(char *s, request_rec *r)
 {
     request_rec *rr = sub_req_lookup_uri (s, r);
     
@@ -549,7 +545,7 @@ int include_cgi(char *s, request_rec *r)
     return 0;
 }
 
-int handle_include(FILE *in, request_rec *r, char *error, int noexec) {
+static int handle_include(FILE *in, request_rec *r, char *error, int noexec) {
     char tag[MAX_STRING_LEN];
     char parsed_string[MAX_STRING_LEN];
     char *tag_val;
@@ -617,7 +613,7 @@ typedef struct {
     char *s;
 } include_cmd_arg;
 
-int include_cmd_child (void *arg)
+static int include_cmd_child (void *arg)
 {
     request_rec *r =  ((include_cmd_arg *)arg)->r;
     char *s = ((include_cmd_arg *)arg)->s;
@@ -688,7 +684,7 @@ int include_cmd_child (void *arg)
 #endif /* WIN32 */
 }
 
-int include_cmd(char *s, request_rec *r) {
+static int include_cmd(char *s, request_rec *r) {
     include_cmd_arg arg;
     FILE *f;
 
@@ -706,7 +702,7 @@ int include_cmd(char *s, request_rec *r) {
 }
 
 
-int handle_exec(FILE *in, request_rec *r, char *error)
+static int handle_exec(FILE *in, request_rec *r, char *error)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
@@ -746,7 +742,7 @@ int handle_exec(FILE *in, request_rec *r, char *error)
 
 }
 
-int handle_echo (FILE *in, request_rec *r, char *error) {
+static int handle_echo (FILE *in, request_rec *r, char *error) {
     char tag[MAX_STRING_LEN];
     char *tag_val;
 
@@ -768,8 +764,9 @@ int handle_echo (FILE *in, request_rec *r, char *error) {
         }
     }
 }
+
 #ifdef USE_PERL_SSI
-int handle_perl (FILE *in, request_rec *r, char *error) {
+static int handle_perl (FILE *in, request_rec *r, char *error) {
     char tag[MAX_STRING_LEN];
     char *tag_val;
     SV *sub = Nullsv;
@@ -799,7 +796,7 @@ int handle_perl (FILE *in, request_rec *r, char *error) {
 /* error and tf must point to a string with room for at 
  * least MAX_STRING_LEN characters 
  */
-int handle_config(FILE *in, request_rec *r, char *error, char *tf,
+static int handle_config(FILE *in, request_rec *r, char *error, char *tf,
                   int *sizefmt) {
     char tag[MAX_STRING_LEN];
     char *tag_val;
@@ -841,8 +838,7 @@ int handle_config(FILE *in, request_rec *r, char *error, char *tf,
 }
 
 
-
-int find_file(request_rec *r, char *directive, char *tag, 
+static int find_file(request_rec *r, char *directive, char *tag, 
               char *tag_val, struct stat *finfo, char *error)
 {
     char *dir = "./";
@@ -885,7 +881,7 @@ int find_file(request_rec *r, char *directive, char *tag,
 }
 
 
-int handle_fsize(FILE *in, request_rec *r, char *error, int sizefmt) 
+static int handle_fsize(FILE *in, request_rec *r, char *error, int sizefmt) 
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
@@ -924,7 +920,7 @@ int handle_fsize(FILE *in, request_rec *r, char *error, int sizefmt)
     }
 }
 
-int handle_flastmod(FILE *in, request_rec *r, char *error, char *tf) 
+static int handle_flastmod(FILE *in, request_rec *r, char *error, char *tf) 
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
@@ -944,7 +940,7 @@ int handle_flastmod(FILE *in, request_rec *r, char *error, char *tf)
     }
 }    
 
-int re_check(request_rec *r, char *string, char *rexp) 
+static int re_check(request_rec *r, char *string, char *rexp) 
 {
     regex_t *compiled;
     int regex_error;
@@ -969,7 +965,7 @@ struct token {
     char value[MAX_STRING_LEN];
 };
 
-char *get_ptoken(request_rec *r, char *string, struct token *token) {
+static char *get_ptoken(request_rec *r, char *string, struct token *token) {
     char ch;
     int next = 0;
     int qs = 0;
@@ -1106,7 +1102,7 @@ TOKEN_DONE:
  * cases.  And, without rewriting this completely, the easiest way
  * is to just branch to the return code which cleans it up.
  */
-int parse_expr(request_rec *r, char *expr, char *error)
+static int parse_expr(request_rec *r, char *expr, char *error)
 {
     struct parse_node {
         struct parse_node *left, *right, *parent;
@@ -1630,7 +1626,7 @@ RETURN:
     return (retval);
 }    
 
-int handle_if(FILE *in, request_rec *r, char *error,
+static int handle_if(FILE *in, request_rec *r, char *error,
               int *conditional_status, int *printing) 
 {
     char tag[MAX_STRING_LEN];
@@ -1660,7 +1656,7 @@ rvputs(r, "**** if expr=\"", expr, "\"\n", NULL);
     }
 }    
 
-int handle_elif(FILE *in, request_rec *r, char *error,
+static int handle_elif(FILE *in, request_rec *r, char *error,
               int *conditional_status, int *printing) 
 {
     char tag[MAX_STRING_LEN];
@@ -1697,7 +1693,7 @@ rvputs(r, "**** if expr=\"", expr, "\"\n", NULL);
     }
 }
 
-int handle_else(FILE *in, request_rec *r, char *error,
+static int handle_else(FILE *in, request_rec *r, char *error,
               int *conditional_status, int *printing) 
 {
     char tag[MAX_STRING_LEN];
@@ -1720,7 +1716,7 @@ rvputs(r, "**** else conditional_status=\"", *conditional_status ? "1" : "0", "\
     }
 }    
 
-int handle_endif(FILE *in, request_rec *r, char *error, 
+static int handle_endif(FILE *in, request_rec *r, char *error, 
               int *conditional_status, int *printing) 
 {
     char tag[MAX_STRING_LEN];
@@ -1741,7 +1737,7 @@ rvputs(r, "**** endif conditional_status=\"", *conditional_status ? "1" : "0", "
     }
 }    
 
-int handle_set(FILE *in, request_rec *r, char *error) 
+static int handle_set(FILE *in, request_rec *r, char *error) 
 {
     char tag[MAX_STRING_LEN];
     char parsed_string[MAX_STRING_LEN];
@@ -1769,7 +1765,7 @@ int handle_set(FILE *in, request_rec *r, char *error)
     }
 }    
 
-int handle_printenv(FILE *in, request_rec *r, char *error) 
+static int handle_printenv(FILE *in, request_rec *r, char *error) 
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
@@ -1795,7 +1791,7 @@ int handle_printenv(FILE *in, request_rec *r, char *error)
 
 /* This is a stub which parses a file descriptor. */
 
-void send_parsed_content(FILE *f, request_rec *r)
+static void send_parsed_content(FILE *f, request_rec *r)
 {
     char directive[MAX_STRING_LEN], error[MAX_STRING_LEN];
     char timefmt[MAX_STRING_LEN];
@@ -1916,14 +1912,14 @@ enum xbithack { xbithack_off, xbithack_on, xbithack_full };
 #define DEFAULT_XBITHACK xbithack_off
 #endif
 
-void *create_includes_dir_config (pool *p, char *dummy)
+static void *create_includes_dir_config (pool *p, char *dummy)
 {
     enum xbithack *result = (enum xbithack*)palloc(p, sizeof (enum xbithack));
     *result = DEFAULT_XBITHACK;
     return result;
 }
 
-const char *set_xbithack (cmd_parms *cmd, void *xbp, char *arg)
+static const char *set_xbithack (cmd_parms *cmd, void *xbp, char *arg)
 {
     enum xbithack *state = (enum xbithack *)xbp;
 
@@ -1938,7 +1934,7 @@ const char *set_xbithack (cmd_parms *cmd, void *xbp, char *arg)
    return NULL;
 }
 
-int send_parsed_file(request_rec *r)
+static int send_parsed_file(request_rec *r)
 {
     FILE *f;
     enum xbithack *state =
@@ -1998,13 +1994,13 @@ int send_parsed_file(request_rec *r)
     return OK;
 }
 
-int send_shtml_file (request_rec *r)
+static int send_shtml_file (request_rec *r)
 {
     r->content_type = "text/html";
     return send_parsed_file(r);
 }
 
-int xbithack_handler (request_rec *r)
+static int xbithack_handler (request_rec *r)
 {
 #if defined(__EMX__) || defined(WIN32)
     /* OS/2 dosen't currently support the xbithack. This is being worked on. */
@@ -2024,12 +2020,12 @@ int xbithack_handler (request_rec *r)
 #endif
 }
 
-command_rec includes_cmds[] = {
+static command_rec includes_cmds[] = {
     { "XBitHack", set_xbithack, NULL, OR_OPTIONS, TAKE1, "Off, On, or Full" },
     { NULL }    
 };
 
-handler_rec includes_handlers[] = {
+static handler_rec includes_handlers[] = {
     { INCLUDES_MAGIC_TYPE, send_shtml_file },
     { INCLUDES_MAGIC_TYPE3, send_shtml_file },
     { "server-parsed", send_parsed_file },

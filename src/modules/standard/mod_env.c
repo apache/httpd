@@ -104,7 +104,7 @@ typedef struct {
 
 module MODULE_VAR_EXPORT env_module;
 
-void *create_env_server_config (pool *p, server_rec *dummy)
+static void *create_env_server_config (pool *p, server_rec *dummy)
 {
     env_server_config_rec *new =
       (env_server_config_rec *) palloc (p, sizeof(env_server_config_rec));
@@ -114,7 +114,7 @@ void *create_env_server_config (pool *p, server_rec *dummy)
     return (void *) new;
 }
 
-void *merge_env_server_configs (pool *p, void *basev, void *addv)
+static void *merge_env_server_configs (pool *p, void *basev, void *addv)
 {
     env_server_config_rec *base = (env_server_config_rec *)basev;
     env_server_config_rec *add = (env_server_config_rec *)addv;
@@ -159,7 +159,7 @@ void *merge_env_server_configs (pool *p, void *basev, void *addv)
     return new;
 }
 
-const char *add_env_module_vars_passed (cmd_parms *cmd, char *struct_ptr,
+static const char *add_env_module_vars_passed (cmd_parms *cmd, char *struct_ptr,
 				  const char *arg)
 {
     env_server_config_rec *sconf =
@@ -179,7 +179,7 @@ const char *add_env_module_vars_passed (cmd_parms *cmd, char *struct_ptr,
     return NULL;
 }
 
-const char *add_env_module_vars_set (cmd_parms *cmd, char *struct_ptr,
+static const char *add_env_module_vars_set (cmd_parms *cmd, char *struct_ptr,
 				     const char *arg)
 {
     env_server_config_rec *sconf =
@@ -205,7 +205,7 @@ const char *add_env_module_vars_set (cmd_parms *cmd, char *struct_ptr,
     return NULL;
 }
 
-const char *add_env_module_vars_unset (cmd_parms *cmd, char *struct_ptr,
+static const char *add_env_module_vars_unset (cmd_parms *cmd, char *struct_ptr,
 				       char *arg)
 {
     env_server_config_rec *sconf =
@@ -216,7 +216,7 @@ const char *add_env_module_vars_unset (cmd_parms *cmd, char *struct_ptr,
     return NULL;
 }
 
-command_rec env_module_cmds[] = {
+static command_rec env_module_cmds[] = {
 { "PassEnv", add_env_module_vars_passed, NULL,
     RSRC_CONF, RAW_ARGS, "a list of environment variables to pass to CGI." },
 { "SetEnv", add_env_module_vars_set, NULL,
@@ -226,7 +226,7 @@ command_rec env_module_cmds[] = {
 { NULL },
 };
 
-int fixup_env_module(request_rec *r)
+static int fixup_env_module(request_rec *r)
 {
     table *e = r->subprocess_env;
     server_rec *s = r->server;

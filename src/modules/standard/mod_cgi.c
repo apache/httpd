@@ -81,7 +81,7 @@ module MODULE_VAR_EXPORT cgi_module;
  * leaves a note for us.
  */
 
-int is_scriptaliased (request_rec *r)
+static int is_scriptaliased (request_rec *r)
 {
     char *t = table_get (r->notes, "alias-forced-type");
     return t && (!strcmp (t, "cgi-script"));
@@ -98,7 +98,7 @@ typedef struct {
     int bufbytes;
 } cgi_server_conf;
 
-void *create_cgi_config (pool *p, server_rec *s)
+static void *create_cgi_config (pool *p, server_rec *s)
 {
     cgi_server_conf *c = 
       (cgi_server_conf *)pcalloc (p, sizeof(cgi_server_conf));
@@ -110,7 +110,7 @@ void *create_cgi_config (pool *p, server_rec *s)
     return c;
 }
 
-void *merge_cgi_config (pool *p, void *basev, void *overridesv)
+static void *merge_cgi_config (pool *p, void *basev, void *overridesv)
 {
     cgi_server_conf *base = (cgi_server_conf *)basev,
       *overrides = (cgi_server_conf *)overridesv;
@@ -118,7 +118,7 @@ void *merge_cgi_config (pool *p, void *basev, void *overridesv)
     return overrides->logname ? overrides : base;
 }
 
-const char *set_scriptlog (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_scriptlog (cmd_parms *cmd, void *dummy, char *arg) {
     server_rec *s = cmd->server;
     cgi_server_conf *conf = 
       (cgi_server_conf *)get_module_config(s->module_config, &cgi_module);
@@ -127,7 +127,7 @@ const char *set_scriptlog (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_scriptlog_length (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_scriptlog_length (cmd_parms *cmd, void *dummy, char *arg) {
     server_rec *s = cmd->server;
     cgi_server_conf *conf = 
       (cgi_server_conf *)get_module_config(s->module_config, &cgi_module);
@@ -136,7 +136,7 @@ const char *set_scriptlog_length (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-const char *set_scriptlog_buffer (cmd_parms *cmd, void *dummy, char *arg) {
+static const char *set_scriptlog_buffer (cmd_parms *cmd, void *dummy, char *arg) {
     server_rec *s = cmd->server;
     cgi_server_conf *conf = 
       (cgi_server_conf *)get_module_config(s->module_config, &cgi_module);
@@ -145,7 +145,7 @@ const char *set_scriptlog_buffer (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-command_rec cgi_cmds[] = {
+static command_rec cgi_cmds[] = {
 { "ScriptLog", set_scriptlog, NULL, RSRC_CONF, TAKE1,
   "the name of a log for script debugging info"},
 { "ScriptLogLength", set_scriptlog_length, NULL, RSRC_CONF, TAKE1,
@@ -339,7 +339,7 @@ static int cgi_child (void *child_stuff)
 #endif
 }
 
-int cgi_handler (request_rec *r)
+static int cgi_handler (request_rec *r)
 {
     int retval, nph, dbpos = 0;
     char *argv0, *dbuf = NULL;
@@ -539,7 +539,7 @@ int cgi_handler (request_rec *r)
     return OK;			/* NOT r->status, even if it has changed. */
 }
 
-handler_rec cgi_handlers[] = {
+static handler_rec cgi_handlers[] = {
 { CGI_MAGIC_TYPE, cgi_handler },
 { "cgi-script", cgi_handler },
 { NULL }

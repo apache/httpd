@@ -94,7 +94,7 @@ typedef struct  {
     int   auth_dbauthoritative;
 } db_auth_config_rec;
 
-void *create_db_auth_dir_config (pool *p, char *d)
+static void *create_db_auth_dir_config (pool *p, char *d)
 {
     db_auth_config_rec *sec
 	= (db_auth_config_rec *)pcalloc (p, sizeof(db_auth_config_rec));
@@ -104,7 +104,7 @@ void *create_db_auth_dir_config (pool *p, char *d)
     return sec;
 }
 
-const char *set_db_slot (cmd_parms *cmd, void *offset, char *f, char *t)
+static const char *set_db_slot (cmd_parms *cmd, void *offset, char *f, char *t)
 {
     if (!t || strcmp(t, "db"))
         return DECLINE_CMD;
@@ -112,7 +112,7 @@ const char *set_db_slot (cmd_parms *cmd, void *offset, char *f, char *t)
     return set_string_slot(cmd, offset, f);
 }
 
-command_rec db_auth_cmds[] = {
+static command_rec db_auth_cmds[] = {
 { "AuthDBUserFile", set_string_slot,
     (void*)XtOffsetOf(db_auth_config_rec, auth_dbpwfile),
     OR_AUTHCFG, TAKE1, NULL },
@@ -134,7 +134,7 @@ command_rec db_auth_cmds[] = {
 
 module db_auth_module;
 
-char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile) {
+static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile) {
     DB *f; 
     DBT d, q; 
     char *pw = NULL;
@@ -168,7 +168,7 @@ char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile) {
  * mark@telescope.org, 22Sep95
  */
 
-char  *get_db_grp(request_rec *r, char *user, const char *auth_dbgrpfile) {
+static char *get_db_grp(request_rec *r, char *user, const char *auth_dbgrpfile) {
     char *grp_data = get_db_pw (r, user, auth_dbgrpfile);
     char *grp_colon; char *grp_colon2;
 
@@ -182,7 +182,7 @@ char  *get_db_grp(request_rec *r, char *user, const char *auth_dbgrpfile) {
     return grp_data;
 }
 
-int db_authenticate_basic_user (request_rec *r)
+static int db_authenticate_basic_user (request_rec *r)
 {
     db_auth_config_rec *sec =
       (db_auth_config_rec *)get_module_config (r->per_dir_config,
@@ -222,7 +222,7 @@ int db_authenticate_basic_user (request_rec *r)
     
 /* Checking ID */
     
-int db_check_auth(request_rec *r) {
+static int db_check_auth(request_rec *r) {
     db_auth_config_rec *sec =
       (db_auth_config_rec *)get_module_config (r->per_dir_config,
 						&db_auth_module);

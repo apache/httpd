@@ -118,7 +118,7 @@ typedef struct {
   char *imap_base;
 } imap_conf_rec;
 
-void *create_imap_dir_config (pool *p, char *dummy) { 
+static void *create_imap_dir_config (pool *p, char *dummy) { 
   imap_conf_rec *icr = 
     (imap_conf_rec *)palloc(p, sizeof(imap_conf_rec));
 
@@ -129,7 +129,7 @@ void *create_imap_dir_config (pool *p, char *dummy) {
   return icr;
 }
 
-void *merge_imap_dir_configs (pool *p, void *basev, void *addv)
+static void *merge_imap_dir_configs (pool *p, void *basev, void *addv)
 {
   imap_conf_rec *new=(imap_conf_rec *)pcalloc (p, sizeof(imap_conf_rec));
   imap_conf_rec *base = (imap_conf_rec *)basev;
@@ -143,7 +143,7 @@ void *merge_imap_dir_configs (pool *p, void *basev, void *addv)
 }
 
 
-command_rec imap_cmds[] = {
+static command_rec imap_cmds[] = {
 { "ImapMenu", set_string_slot, 
     (void*)XtOffsetOf(imap_conf_rec, imap_menu), OR_INDEXES, TAKE1,
     "the type of menu generated: none, formatted, semiformatted, unformatted"},
@@ -156,7 +156,7 @@ command_rec imap_cmds[] = {
 { NULL }
 };
 
-int pointinrect(double point[2], double coords[MAXVERTS][2])
+static int pointinrect(double point[2], double coords[MAXVERTS][2])
 {
     double max[2], min[2];
     if (coords[0][X] > coords[1][X]) {
@@ -179,7 +179,7 @@ int pointinrect(double point[2], double coords[MAXVERTS][2])
 	    (point[Y] >= min[1] && point[Y] <= max[1]));
 }
 
-int pointincircle(double point[2], double coords[MAXVERTS][2])
+static int pointincircle(double point[2], double coords[MAXVERTS][2])
 {
     double radius1, radius2;
 
@@ -192,7 +192,7 @@ int pointincircle(double point[2], double coords[MAXVERTS][2])
     return (radius2 <= radius1);
 }
 
-int pointinpoly(double point[2], double pgon[MAXVERTS][2])
+static int pointinpoly(double point[2], double pgon[MAXVERTS][2])
 {
     int i, numverts, inside_flag, xflag0;
     int crossings;
@@ -266,7 +266,7 @@ int pointinpoly(double point[2], double pgon[MAXVERTS][2])
 }
 
 
-int is_closer(double point[2], double coords[MAXVERTS][2], double *closest)
+static int is_closer(double point[2], double coords[MAXVERTS][2], double *closest)
 {
   double dist_squared =((point[X] - coords[0][X]) * (point[X] - coords[0][X]))
 	     + ((point[Y] - coords[0][Y]) * (point[Y] - coords[0][Y]));
@@ -284,7 +284,7 @@ int is_closer(double point[2], double coords[MAXVERTS][2], double *closest)
 
 }
 
-double get_x_coord(char *args) 
+static double get_x_coord(char *args) 
 {
   char *endptr;           /* we want it non-null */
   double x_coord = -1;    /* -1 is returned if no coordinate is given */
@@ -303,7 +303,7 @@ double get_x_coord(char *args)
   return(-1);  /* else if no conversion was made, or if no args was given */
 }
 
-double get_y_coord(char *args) 
+static double get_y_coord(char *args) 
 {
   char *endptr;        /* we want it non-null */
   char *start_of_y = NULL;
@@ -331,7 +331,7 @@ double get_y_coord(char *args)
 }
   
 
-int read_quoted(char *string, char *quoted_part)
+static int read_quoted(char *string, char *quoted_part)
 { 
   char *starting_pos = string;
   
@@ -357,7 +357,7 @@ int read_quoted(char *string, char *quoted_part)
 /*
  * url needs to point to a string with at least SMALLBUF memory allocated
  */
-void imap_url(request_rec *r, char *base, char *value, char *url) 
+static void imap_url(request_rec *r, char *base, char *value, char *url) 
 {
 /* translates a value into a URL. */
   int slen, clen;
@@ -494,7 +494,7 @@ void imap_url(request_rec *r, char *base, char *value, char *url)
   return;
 }
 
-int imap_reply(request_rec *r, char *redirect)
+static int imap_reply(request_rec *r, char *redirect)
 { 
   if ( ! strcasecmp(redirect, "error") ) {
     return SERVER_ERROR;  /* they actually requested an error! */
@@ -509,7 +509,7 @@ int imap_reply(request_rec *r, char *redirect)
   return SERVER_ERROR;
 }
 
-void menu_header(request_rec *r, char *menu)
+static void menu_header(request_rec *r, char *menu)
 {
   r->content_type = "text/html";
   send_http_header(r);
@@ -525,7 +525,7 @@ void menu_header(request_rec *r, char *menu)
   return;
 }
 
-void menu_blank(request_rec *r, char *menu)
+static void menu_blank(request_rec *r, char *menu)
 {
   if (! strcasecmp(menu, "formatted") ) {
     rputs("\n", r);
@@ -539,7 +539,7 @@ void menu_blank(request_rec *r, char *menu)
   return;  
 }
 
-void menu_comment(request_rec *r, char *menu, char *comment)
+static void menu_comment(request_rec *r, char *menu, char *comment)
 {
   if (! strcasecmp(menu, "formatted") ) {
     rputs("\n", r);  /* print just a newline if 'formatted' */
@@ -553,7 +553,7 @@ void menu_comment(request_rec *r, char *menu, char *comment)
   return;    /* comments are ignored in the 'formatted' form */
 }
 
-void menu_default(request_rec *r, char *menu, char *href, char *text)
+static void menu_default(request_rec *r, char *menu, char *href, char *text)
 {
   if ( ! strcasecmp(href, "error") || ! strcasecmp(href, "nocontent") ) {
     return;   /* don't print such lines, these aren'te really href's */
@@ -572,7 +572,7 @@ void menu_default(request_rec *r, char *menu, char *href, char *text)
   return;
 }
 
-void menu_directive(request_rec *r, char *menu, char *href, char *text)
+static void menu_directive(request_rec *r, char *menu, char *href, char *text)
 {
   if ( ! strcasecmp(href, "error") || ! strcasecmp(href, "nocontent") ) {
     return;   /* don't print such lines, as this isn't really an href */
@@ -591,13 +591,13 @@ void menu_directive(request_rec *r, char *menu, char *href, char *text)
   return;
 }
 
-void menu_footer(request_rec *r)
+static void menu_footer(request_rec *r)
 {
   rputs("\n\n</body>\n</html>\n", r);  /* finish the menu */
   kill_timeout(r);
 }
 
-int imap_handler(request_rec *r)
+static int imap_handler(request_rec *r)
 {
   char input[LARGEBUF] = {'\0'};
 	/* size of input can not be lowered without changing hard-coded
@@ -811,7 +811,7 @@ int imap_handler(request_rec *r)
 }
 
 
-handler_rec imap_handlers[] = {
+static handler_rec imap_handlers[] = {
 { IMAP_MAGIC_TYPE, imap_handler },
 { "imap-file", imap_handler },
 { NULL }

@@ -180,7 +180,7 @@ proxy_fixup(request_rec *r)
     else return OK; /* otherwise; we've done the best we can */
 }
 
-void
+static void
 proxy_init(server_rec *r, pool *p)
 {
     proxy_garbage_init(r, p);
@@ -194,7 +194,7 @@ proxy_init(server_rec *r, pool *p)
 /* domain in this case. I think it is better to redirect to a FQDN, since */
 /* these will later be found in the bookmarks files. */
 /* The "ProxyDomain" directive determines what domain will be appended */
-int
+static int
 proxy_needsdomain(request_rec *r, const char *url, const char *domain)
 {
     char *scheme = pstrdup (r->pool, url);

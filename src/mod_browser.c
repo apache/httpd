@@ -72,7 +72,7 @@ typedef struct {
 
 module MODULE_VAR_EXPORT browser_module;
 
-void *create_browser_config (pool *p, server_rec *dummy)
+static void *create_browser_config (pool *p, server_rec *dummy)
 {
     browser_server_config_rec *new =
    (browser_server_config_rec *) palloc (p, sizeof(browser_server_config_rec));
@@ -81,7 +81,7 @@ void *create_browser_config (pool *p, server_rec *dummy)
     return (void *)new;
 }
 
-void *merge_browser_config (pool *p, void *basev, void *overridesv)
+static void *merge_browser_config (pool *p, void *basev, void *overridesv)
 {
     browser_server_config_rec *a =
 	pcalloc(p, sizeof(browser_server_config_rec));
@@ -91,7 +91,7 @@ void *merge_browser_config (pool *p, void *basev, void *overridesv)
     return a;
 }
 
-const char *add_browser(cmd_parms *cmd, void *dummy, char *name,
+static const char *add_browser(cmd_parms *cmd, void *dummy, char *name,
 			const char *feature)
 {
     browser_server_config_rec *sconf =
@@ -131,7 +131,7 @@ const char *add_browser(cmd_parms *cmd, void *dummy, char *name,
     return NULL;
 }
 
-command_rec browser_module_cmds[] = {
+static command_rec browser_module_cmds[] = {
 { "BrowserMatch", add_browser, (void*)0,
     RSRC_CONF, ITERATE2, "A browser regex and a list of variables." },
 { "BrowserMatchNoCase", add_browser, (void*)REG_ICASE,

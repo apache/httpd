@@ -100,7 +100,7 @@ typedef struct mod_info_config_lines {
 module MODULE_VAR_EXPORT info_module;
 extern module *top_module;
 
-void *create_info_config(pool *p, server_rec *s)
+static void *create_info_config(pool *p, server_rec *s)
 {
     mod_info_server_conf *conf = (mod_info_server_conf *)
 	pcalloc(p, sizeof(mod_info_server_conf));
@@ -109,7 +109,7 @@ void *create_info_config(pool *p, server_rec *s)
     return conf;
 }
 
-void *merge_info_config(pool *p, void *basev, void *overridesv)
+static void *merge_info_config(pool *p, void *basev, void *overridesv)
 {
     mod_info_server_conf *new = (mod_info_server_conf *)
 	pcalloc(p, sizeof(mod_info_server_conf));
@@ -120,7 +120,7 @@ void *merge_info_config(pool *p, void *basev, void *overridesv)
     return new;
 }
 
-char *mod_info_html_cmd_string(char *string) {
+static char *mod_info_html_cmd_string(char *string) {
 	char *s,*t;
 	static char ret[256];  /* What is the max size of a command? */
 	char *end_ret;
@@ -148,7 +148,7 @@ char *mod_info_html_cmd_string(char *string) {
 	return(ret);
 }
 
-mod_info_config_lines *mod_info_load_config(pool *p, char *filename, request_rec *r) {
+static mod_info_config_lines *mod_info_load_config(pool *p, char *filename, request_rec *r) {
 	char s[MAX_STRING_LEN];
 	FILE *fp;
 	mod_info_config_lines *new, *ret=NULL, *prev=NULL;
@@ -192,7 +192,7 @@ mod_info_config_lines *mod_info_load_config(pool *p, char *filename, request_rec
 	return(ret);
 }
 
-void mod_info_module_cmds(request_rec *r, mod_info_config_lines *cfg, command_rec *cmds,char *label) {
+static void mod_info_module_cmds(request_rec *r, mod_info_config_lines *cfg, command_rec *cmds,char *label) {
 	command_rec *cmd=cmds;
 	mod_info_config_lines *li=cfg,*li_st=NULL,*li_se=NULL,*block_start=NULL;
 	int lab=0, nest=0;
@@ -292,7 +292,7 @@ void mod_info_module_cmds(request_rec *r, mod_info_config_lines *cfg, command_re
 	}
 }
 
-char *find_more_info(server_rec *serv, const char *module_name)
+static char *find_more_info(server_rec *serv, const char *module_name)
 {
     int i;
     mod_info_server_conf *conf = (mod_info_server_conf *)
@@ -309,7 +309,7 @@ char *find_more_info(server_rec *serv, const char *module_name)
     return 0;
 }
 
-int display_info(request_rec *r) {
+static int display_info(request_rec *r) {
 	module *modp = NULL;
 	char buf[512], *cfname;
 	char *more_info;
@@ -476,7 +476,7 @@ int display_info(request_rec *r) {
 	return 0;
 }
 
-const char *add_module_info(cmd_parms *cmd, void *dummy, char *name, char *info)
+static const char *add_module_info(cmd_parms *cmd, void *dummy, char *name, char *info)
 {
     server_rec *s = cmd->server;
     mod_info_server_conf *conf = (mod_info_server_conf *)
@@ -488,13 +488,13 @@ const char *add_module_info(cmd_parms *cmd, void *dummy, char *name, char *info)
     return NULL;
 }
 
-command_rec info_cmds[] = {
+static command_rec info_cmds[] = {
 { "AddModuleInfo", add_module_info, NULL, RSRC_CONF, TAKE2,
     "a module name and additional information on that module"},
 { NULL }
 };
 
-handler_rec info_handlers[] = {
+static handler_rec info_handlers[] = {
 	{ "server-info", display_info },
 	{ NULL }
 };

@@ -103,7 +103,7 @@ typedef struct userdir_config {
  * explicit) disablement, and the replacement string for all others.
  */
 
-void *create_userdir_config (pool *p, server_rec *s) { 
+static void *create_userdir_config (pool *p, server_rec *s) { 
     userdir_config
             *newcfg = (userdir_config *) pcalloc (p, sizeof(userdir_config));
 
@@ -118,7 +118,7 @@ void *create_userdir_config (pool *p, server_rec *s) {
 #define O_ENABLE 1
 #define O_DISABLE 2
 
-const char *set_user_dir (cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_user_dir (cmd_parms *cmd, void *dummy, char *arg)
 {
     userdir_config
             *s_cfg = (userdir_config *) get_module_config
@@ -179,13 +179,13 @@ const char *set_user_dir (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-command_rec userdir_cmds[] = {
+static command_rec userdir_cmds[] = {
 { "UserDir", set_user_dir, NULL, RSRC_CONF, RAW_ARGS,
     "the public subdirectory in users' home directories, or 'disabled', or 'disabled username username...', or 'enabled username username...'" },
 { NULL }
 };
 
-int translate_userdir (request_rec *r)
+static int translate_userdir (request_rec *r)
 {
     void *server_conf = r->server->module_config;
     const userdir_config *s_cfg =

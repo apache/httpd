@@ -222,7 +222,7 @@ typedef struct {
     array_header *conditions;
 } log_format_item;
 
-char *format_integer(pool *p, int i)
+static char *format_integer(pool *p, int i)
 {
     char dummy[40];
     ap_snprintf (dummy, sizeof(dummy), "%d", i);
@@ -235,15 +235,15 @@ static char *pfmt(pool *p, int i)
     else return format_integer (p, i);
 }
 
-char *constant_item (request_rec *dummy, char *stuff) { return stuff; }
+static char *constant_item (request_rec *dummy, char *stuff) { return stuff; }
 
-char *log_remote_host (request_rec *r, char *a)
+static char *log_remote_host (request_rec *r, char *a)
 { return (char *)get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME); }
 
-char *log_remote_logname(request_rec *r, char *a)
+static char *log_remote_logname(request_rec *r, char *a)
 {return (char *)get_remote_logname(r);}
 
-char *log_remote_user (request_rec *r, char *a) {
+static char *log_remote_user (request_rec *r, char *a) {
     char *rvalue = r->connection->user;
 
     if (rvalue == NULL) {
@@ -254,17 +254,17 @@ char *log_remote_user (request_rec *r, char *a) {
     return rvalue;
 }
 
-char *log_request_line (request_rec *r, char *a)
+static char *log_request_line (request_rec *r, char *a)
 { return r->the_request; }
 
-char *log_request_file (request_rec *r, char *a)
+static char *log_request_file (request_rec *r, char *a)
 { return r->filename; }
-char *log_request_uri (request_rec *r, char *a)
+static char *log_request_uri (request_rec *r, char *a)
 { return r->uri; }
-char *log_status (request_rec *r, char *a)
+static char *log_status (request_rec *r, char *a)
 { return pfmt(r->pool, r->status); }
 
-char *log_bytes_sent (request_rec *r, char *a)
+static char *log_bytes_sent (request_rec *r, char *a)
 {
     if (!r->sent_bodyct) return "-";
     else
@@ -277,10 +277,10 @@ char *log_bytes_sent (request_rec *r, char *a)
     }
 }
 
-char *log_header_in (request_rec *r, char *a)
+static char *log_header_in (request_rec *r, char *a)
 { return table_get (r->headers_in, a); }
 
-char *log_header_out (request_rec *r, char *a)
+static char *log_header_out (request_rec *r, char *a)
 {
     char *cp = table_get (r->headers_out, a);
     if (!strcasecmp(a, "Content-type") && r->content_type)
@@ -289,12 +289,12 @@ char *log_header_out (request_rec *r, char *a)
     return table_get (r->err_headers_out, a);
 }
 
-char *log_note (request_rec *r, char *a)
+static char *log_note (request_rec *r, char *a)
 { return table_get (r->notes, a); }
-char *log_env_var (request_rec *r, char *a)
+static char *log_env_var (request_rec *r, char *a)
 { return table_get (r->subprocess_env, a); }
 
-char *log_request_time (request_rec *r, char *a)
+static char *log_request_time (request_rec *r, char *a)
 {
     int timz;
     struct tm *t;
@@ -317,25 +317,25 @@ char *log_request_time (request_rec *r, char *a)
     return pstrdup (r->pool, tstr);
 }
 
-char *log_request_duration (request_rec *r, char *a) {
+static char *log_request_duration (request_rec *r, char *a) {
     char duration[22];	/* Long enough for 2^64 */
 
     ap_snprintf(duration, sizeof(duration), "%ld", time(NULL) - r->request_time);
     return pstrdup(r->pool, duration);
 }
 
-char *log_virtual_host (request_rec *r, char *a) {
+static char *log_virtual_host (request_rec *r, char *a) {
     return pstrdup(r->pool, r->server->server_hostname);
 }
 
-char *log_server_port (request_rec *r, char *a) {
+static char *log_server_port (request_rec *r, char *a) {
     char portnum[22];
 
     ap_snprintf(portnum, sizeof(portnum), "%u", r->server->port);
     return pstrdup(r->pool, portnum);
 }
 
-char *log_child_pid (request_rec *r, char *a) {
+static char *log_child_pid (request_rec *r, char *a) {
     char pidnum[22];
     ap_snprintf(pidnum, sizeof(pidnum), "%ld", (long)getpid());
     return pstrdup(r->pool, pidnum);
@@ -345,7 +345,7 @@ char *log_child_pid (request_rec *r, char *a) {
  * Parsing the log format string
  */
 
-struct log_item_list {
+static struct log_item_list {
     char ch;
     item_key_func func;
     int want_orig_default;
@@ -370,7 +370,7 @@ struct log_item_list {
     { '\0' }
 };
 
-struct log_item_list  *find_log_func (char k)
+static struct log_item_list  *find_log_func (char k)
 {
     int i;
 
@@ -381,7 +381,7 @@ struct log_item_list  *find_log_func (char k)
     return NULL;
 }
 
-char *log_format_substring (pool *p, const char *start, const char *end)
+static char *log_format_substring (pool *p, const char *start, const char *end)
 {
     char *res = palloc (p, end - start + 1);
     strncpy (res, start, end - start);
@@ -389,7 +389,7 @@ char *log_format_substring (pool *p, const char *start, const char *end)
     return res;
 }
 
-char *parse_log_misc_string (pool *p, log_format_item *it, const char **sa)
+static char *parse_log_misc_string (pool *p, log_format_item *it, const char **sa)
 {
     const char *s = *sa;
     
@@ -403,7 +403,7 @@ char *parse_log_misc_string (pool *p, log_format_item *it, const char **sa)
     return NULL;
 }
 
-char *parse_log_item (pool *p, log_format_item *it, const char **sa)
+static char *parse_log_item (pool *p, log_format_item *it, const char **sa)
 {
     const char *s = *sa;
     if (*s != '%') return parse_log_misc_string (p, it, sa);
@@ -470,7 +470,7 @@ char *parse_log_item (pool *p, log_format_item *it, const char **sa)
     return "Ran off end of LogFormat parsing args to some directive";
 }
 
-array_header *parse_log_string (pool *p, const char *s, const char **err)
+static array_header *parse_log_string (pool *p, const char *s, const char **err)
 {
     array_header *a = make_array (p, 30, sizeof (log_format_item));
     char *res;
@@ -492,7 +492,7 @@ array_header *parse_log_string (pool *p, const char *s, const char **err)
  * Actually logging.
  */
 
-char *process_item(request_rec *r, request_rec *orig, log_format_item *item)
+static char *process_item(request_rec *r, request_rec *orig, log_format_item *item)
 {
     char *cp;
     
@@ -522,7 +522,7 @@ char *process_item(request_rec *r, request_rec *orig, log_format_item *item)
     return cp ? cp : "-";
 }
 
-int config_log_transaction(request_rec *r, config_log_state *cls,
+static int config_log_transaction(request_rec *r, config_log_state *cls,
 			   array_header *default_format) {
     array_header *strsa;
     log_format_item *items;
@@ -561,7 +561,7 @@ int config_log_transaction(request_rec *r, config_log_state *cls,
     return OK;
 }
 
-int multi_log_transaction(request_rec *r)
+static int multi_log_transaction(request_rec *r)
 {
     multi_log_state *mls = get_module_config (r->server->module_config,
                                                &config_log_module);
@@ -593,7 +593,7 @@ int multi_log_transaction(request_rec *r)
  * Module glue...
  */
 
-void *make_config_log_state (pool *p, server_rec *s)
+static void *make_config_log_state (pool *p, server_rec *s)
 {
     multi_log_state *mls =
 	(multi_log_state *)palloc(p, sizeof (multi_log_state));
@@ -611,7 +611,7 @@ void *make_config_log_state (pool *p, server_rec *s)
  * to the log of logs specified for the non-vhost configuration
  */
 
-void *merge_config_log_state (pool *p, void *basev, void *addv)
+static void *merge_config_log_state (pool *p, void *basev, void *addv)
 {
     multi_log_state *base = (multi_log_state *)basev;
     multi_log_state *add = (multi_log_state *)addv;
@@ -623,7 +623,7 @@ void *merge_config_log_state (pool *p, void *basev, void *addv)
     return add;
 }
 
-const char *log_format (cmd_parms *cmd, void *dummy, char *arg)
+static const char *log_format (cmd_parms *cmd, void *dummy, char *arg)
 {
     const char *err_string = NULL;
     multi_log_state *mls = get_module_config (cmd->server->module_config,
@@ -633,7 +633,7 @@ const char *log_format (cmd_parms *cmd, void *dummy, char *arg)
     return err_string;
 }
 
-const char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn, char *fmt)
+static const char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn, char *fmt)
 {
     const char *err_string = NULL;
     multi_log_state *mls = get_module_config (cmd->server->module_config,
@@ -651,17 +651,17 @@ const char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn, char *fmt)
     return err_string;
 }
 
-const char *set_transfer_log(cmd_parms *cmd, void *dummy, char *fn)
+static const char *set_transfer_log(cmd_parms *cmd, void *dummy, char *fn)
 {
     return add_custom_log(cmd, dummy, fn, NULL);
 }
 
-const char *set_cookie_log(cmd_parms *cmd, void *dummy, char *fn)
+static const char *set_cookie_log(cmd_parms *cmd, void *dummy, char *fn)
 {
     return add_custom_log(cmd, dummy, fn, "%{Cookie}n \"%r\" %t");
 }
 
-command_rec config_log_cmds[] = {
+static command_rec config_log_cmds[] = {
 { "CustomLog", add_custom_log, NULL, RSRC_CONF, TAKE2,
     "a file name and a custom log format string" },
 { "TransferLog", set_transfer_log, NULL, RSRC_CONF, TAKE1,
@@ -699,7 +699,7 @@ static int config_log_child (void *cmd)
     return(child_pid);
 }
 
-config_log_state *open_config_log (server_rec *s, pool *p,
+static config_log_state *open_config_log (server_rec *s, pool *p,
 				   config_log_state *cls,
 				   array_header *default_format) {
     if (cls->log_fd > 0) return cls; /* virtual config shared w/main server */
@@ -729,7 +729,7 @@ config_log_state *open_config_log (server_rec *s, pool *p,
     return cls;
 }
 
-config_log_state *open_multi_logs (server_rec *s, pool *p)
+static config_log_state *open_multi_logs (server_rec *s, pool *p)
 {
     int i;
     multi_log_state *mls = get_module_config(s->module_config,
@@ -760,7 +760,7 @@ config_log_state *open_multi_logs (server_rec *s, pool *p)
     return NULL;
 }
 
-void init_config_log (server_rec *s, pool *p)
+static void init_config_log (server_rec *s, pool *p)
 {
     /* First, do "physical" server, which gets default log fd and format
      * for the virtual servers, if they don't override...
