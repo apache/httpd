@@ -360,7 +360,7 @@ AC_DEFUN(APACHE_ENABLE_MODULES,[
   ])
   
   AC_ARG_ENABLE(mods-shared,
-  APACHE_HELP_STRING(--enable-mod-shared=MODULE-LIST,Shared modules to enable),[
+  APACHE_HELP_STRING(--enable-mods-shared=MODULE-LIST,Shared modules to enable),[
     for i in $enableval; do
       if test "$i" = "all" -o "$i" = "most"; then
         module_selection=$i
