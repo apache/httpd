@@ -64,6 +64,11 @@
 
 module AP_MODULE_DECLARE_DATA proxy_connect_module;
 
+PROXY_DECLARE (int) ap_proxy_connect_canon(request_rec *r, char *url);
+PROXY_DECLARE (int) ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf, 
+                             char *url, const char *proxyname, 
+                             apr_port_t proxyport);
+
 /*  
  * This handles Netscape CONNECT method secure proxy requests.
  * A connection is opened to the specified host and data is
@@ -101,19 +106,22 @@ allowed_port(proxy_server_conf *conf, int port)
 }
 
 /* canonicalise CONNECT URLs. */
-int ap_proxy_connect_canon(request_rec *r, char *url)
+PROXY_DECLARE (int) ap_proxy_connect_canon(request_rec *r, char *url)
 {
 
     if (r->method_number != M_CONNECT) {
 	return DECLINED;
     }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		 "proxy: CONNECT: canonicalising URL %s", url);
 
     return OK;
 }
 
 /* CONNECT handler */
-int ap_proxy_connect_handler(request_rec *r, char *url,
-			  const char *proxyname, apr_port_t proxyport)
+PROXY_DECLARE (int) ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf, 
+                             char *url, const char *proxyname, 
+                             apr_port_t proxyport)
 {
     apr_pool_t *p = r->pool;
     apr_socket_t *sock;
@@ -130,14 +138,15 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
     const char *connectname;
     int connectport = 0;
 
-    void *sconf = r->server->module_config;
-    proxy_server_conf *conf =
-    (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
-
     /* is this for us? */
     if (r->method_number != M_CONNECT) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		     "proxy: CONNECT: rejecting URL %s", url);
 	return DECLINED;
     }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		 "proxy: CONNECT: serving URL %s", url);
+
 
     /*
      * Step One: Determine Who To Connect To
@@ -403,8 +412,8 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
 
 static void ap_proxy_connect_register_hook(apr_pool_t *p)
 {
-    ap_hook_proxy_scheme_handler(ap_proxy_connect_handler, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_proxy_canon_handler(ap_proxy_connect_canon, NULL, NULL, APR_HOOK_MIDDLE);
+    proxy_hook_scheme_handler(ap_proxy_connect_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    proxy_hook_canon_handler(ap_proxy_connect_canon, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA proxy_connect_module = {

@@ -62,13 +62,19 @@
 
 module AP_MODULE_DECLARE_DATA proxy_http_module;
 
+PROXY_DECLARE (int) ap_proxy_http_canon(request_rec *r, char *url);
+PROXY_DECLARE (int) ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
+                          char *url, const char *proxyname, 
+                          apr_port_t proxyport);
+
+
 /*
  * Canonicalise http-like URLs.
  *  scheme is the scheme for the URL
  *  url    is the URL starting with the first '/'
  *  def_port is the default port for this scheme.
  */
-int ap_proxy_http_canon(request_rec *r, char *url)
+PROXY_DECLARE (int) ap_proxy_http_canon(request_rec *r, char *url)
 {
     char *host, *path, *search, sport[7];
     const char *err;
@@ -88,6 +94,9 @@ int ap_proxy_http_canon(request_rec *r, char *url)
 	return DECLINED;
     }
     def_port = ap_default_port_for_scheme(scheme);
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		 "proxy: HTTP: canonicalising URL %s", url);
 
     /* do syntatic check.
      * We break the URL into host, port, path, search
@@ -125,10 +134,8 @@ int ap_proxy_http_canon(request_rec *r, char *url)
     return OK;
 }
  
-static const char *ap_proxy_location_reverse_map(request_rec *r, const char *url)
+static const char *ap_proxy_location_reverse_map(request_rec *r, proxy_server_conf *conf, const char *url)
 {
-    void *sconf;
-    proxy_server_conf *conf;
     struct proxy_alias *ent;
     int i, l1, l2;
     char *u;
@@ -136,8 +143,6 @@ static const char *ap_proxy_location_reverse_map(request_rec *r, const char *url
     /* XXX FIXME: Make sure this handled the ambiguous case of the :80
      * after the hostname */
 
-    sconf = r->server->module_config;
-    conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
     l1 = strlen(url);
     ent = (struct proxy_alias *)conf->raliases->elts;
     for (i = 0; i < conf->raliases->nelts; i++) {
@@ -182,8 +187,9 @@ static void ap_proxy_clear_connection(apr_pool_t *p, apr_table_t *headers)
  * we return DECLINED so that we can try another proxy. (Or the direct
  * route.)
  */
-int ap_proxy_http_handler(request_rec *r, char *url,
-		       const char *proxyname, apr_port_t proxyport)
+PROXY_DECLARE (int) ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
+                          char *url, const char *proxyname, 
+                          apr_port_t proxyport)
 {
     request_rec *rp;
     const char *connectname;
@@ -200,10 +206,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     char *buf;
     conn_rec *origin;
     uri_components uri;
-
-    void *sconf = r->server->module_config;
-    proxy_server_conf *conf =
-    (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
+    proxy_conn_rec *backend;
 
     /* Note: Memory pool allocation.
      * A downstream keepalive connection is always connected to the existence
@@ -223,14 +226,23 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     apr_bucket *e;
     apr_bucket_brigade *bb = apr_brigade_create(p);
 
-    proxy_conn_rec *backend =
-    (proxy_conn_rec *) ap_get_module_config(c->conn_config, &proxy_module);
+    /* is it for us? */
+    if (strncasecmp(url, "http:", 5)) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		     "proxy: HTTP: rejecting URL %s", url);
+	return DECLINED; /* only interested in HTTP */
+    }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		 "proxy: HTTP: serving URL %s", url);
+    
+    /* create space for state information */
+    backend = (proxy_conn_rec *) ap_get_module_config(c->conn_config, &proxy_http_module);
     if (!backend) {
 	backend = ap_pcalloc(c->pool, sizeof(proxy_conn_rec));
 	backend->connection = NULL;
 	backend->hostname = NULL;
 	backend->port = 0;
-	ap_set_module_config(c->conn_config, &proxy_module, backend);
+	ap_set_module_config(c->conn_config, &proxy_http_module, backend);
     }
 
     /*
@@ -697,13 +709,13 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     {
 	const char *buf;
         if ((buf = apr_table_get(r->headers_out, "Location")) != NULL) {
-	    apr_table_set(r->headers_out, "Location", ap_proxy_location_reverse_map(r, buf));
+	    apr_table_set(r->headers_out, "Location", ap_proxy_location_reverse_map(r, conf, buf));
 	}
         if ((buf = apr_table_get(r->headers_out, "Content-Location")) != NULL) {
-	    apr_table_set(r->headers_out, "Content-Location", ap_proxy_location_reverse_map(r, buf));
+	    apr_table_set(r->headers_out, "Content-Location", ap_proxy_location_reverse_map(r, conf, buf));
 	}
         if ((buf = apr_table_get(r->headers_out, "URI")) != NULL) {
-	    apr_table_set(r->headers_out, "URI", ap_proxy_location_reverse_map(r, buf));
+	    apr_table_set(r->headers_out, "URI", ap_proxy_location_reverse_map(r, conf, buf));
 	}
     }
 
@@ -787,8 +799,8 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 
 static void ap_proxy_http_register_hook(apr_pool_t *p)
 {
-    ap_hook_proxy_scheme_handler(ap_proxy_http_handler, NULL, NULL, APR_HOOK_FIRST);
-    ap_hook_proxy_canon_handler(ap_proxy_http_canon, NULL, NULL, APR_HOOK_FIRST);
+    proxy_hook_scheme_handler(ap_proxy_http_handler, NULL, NULL, APR_HOOK_FIRST);
+    proxy_hook_canon_handler(ap_proxy_http_canon, NULL, NULL, APR_HOOK_FIRST);
 }
 
 module AP_MODULE_DECLARE_DATA proxy_http_module = {
