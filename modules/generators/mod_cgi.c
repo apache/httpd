@@ -278,37 +278,16 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     ap_close(f);
     return ret;
 }
-
-/****************************************************************
- *
- * Actual CGI handling...
- */
-
-
-struct cgi_child_stuff {
-#ifdef TPF
-    TPF_FORK_CHILD t;
-#endif
-    request_rec *r;
-    int nph;
-    int debug;
-    char *argv0;
-};
-
-static ap_status_t cgi_child(struct cgi_child_stuff *child_stuff,
-                      BUFF **script_out, BUFF **script_in, BUFF **script_err)
+static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **script_err, 
+                                 char *command, char *const argv[], request_rec *r, ap_context_t *p)
 {
-    struct cgi_child_stuff *cld = child_stuff;
-    request_rec *r = cld->r;
-    char err_string[MAX_STRING_LEN];
-    char *argv0 = cld->argv0;
-    char **args = NULL;
     char **env;
-    ap_context_t *child_context;
     ap_procattr_t *procattr;
     ap_proc_t *procnew;
     ap_os_proc_t fred;
     ap_status_t rc = APR_SUCCESS;
+    ap_file_t *file;
+    ap_iol *iol;
 
 #ifdef DEBUG_CGI
 #ifdef OS2
@@ -322,8 +301,6 @@ static ap_status_t cgi_child(struct cgi_child_stuff *child_stuff,
 
     ap_block_alarms();
 
-    child_context = r->main ? r->main->pool : r->pool;
-
     RAISE_SIGSTOP(CGI_CHILD);
 #ifdef DEBUG_CGI
     fprintf(dbg, "Attempting to exec %s as %sCGI child (argv0 = %s)\n",
@@ -331,7 +308,7 @@ static ap_status_t cgi_child(struct cgi_child_stuff *child_stuff,
 #endif
 
     ap_add_cgi_vars(r);
-    env = ap_create_environment(child_context, r->subprocess_env);
+    env = ap_create_environment(p, r->subprocess_env);
 
 #ifdef DEBUG_CGI
     fprintf(dbg, "Environment: \n");
@@ -339,21 +316,17 @@ static ap_status_t cgi_child(struct cgi_child_stuff *child_stuff,
 	fprintf(dbg, "'%s'\n", env[i]);
 #endif
 
-    if (!cld->debug)
-	ap_error_log2stderr(r->server);
-
     /* Transumute ourselves into the script.
      * NB only ISINDEX scripts get decoded arguments.
      */
-
     ap_cleanup_for_exec();
 
-    if ((ap_createprocattr_init(&procattr, child_context) != APR_SUCCESS) ||
+    if ((ap_createprocattr_init(&procattr, p) != APR_SUCCESS) ||
         (ap_setprocattr_io(procattr,
                            script_in  ? 1 : 0,
                            script_out ? 1 : 0,
                            script_err ? 1 : 0)            != APR_SUCCESS) ||
-        (ap_setprocattr_dir(procattr,  ap_make_dirstr_parent(r->pool, r->filename)) != APR_SUCCESS) ||
+        (ap_setprocattr_dir(procattr, ap_make_dirstr_parent(r->pool, r->filename))        != APR_SUCCESS) ||
         (ap_setprocattr_cmdtype(procattr, APR_PROGRAM)    != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
@@ -361,20 +334,7 @@ static ap_status_t cgi_child(struct cgi_child_stuff *child_stuff,
         rc = !APR_SUCCESS;
     }
     else {
-
-        rc = ap_tokenize_to_argv(child_context, argv0, &args);
-        if (rc != APR_SUCCESS) {
-            ap_snprintf(err_string, sizeof(err_string),
-                        "argv[] allocation failed, reason: %s (errno = %d)\n",
-                        strerror(errno), errno);
-            write(STDERR_FILENO, err_string, strlen(err_string));
-            ap_unblock_alarms();
-
-            exit(0);
-        }
-
-        rc = ap_create_process(&procnew, r->filename, args,
-                               env, procattr, child_context);
+        rc = ap_create_process(&procnew, command, argv, env, procattr, p);
     
         if (rc != APR_SUCCESS) {
             /* Bad things happened. Everyone should have cleaned up. */
@@ -388,37 +348,121 @@ static ap_status_t cgi_child(struct cgi_child_stuff *child_stuff,
              *       to make use of ap_proc_t instead of pid.
              */
             ap_get_os_proc(&fred, procnew);
-            ap_note_subprocess(child_context, fred, kill_after_timeout);
+            ap_note_subprocess(p, fred, kill_after_timeout);
 #endif
             if (script_in) {
-                *script_in = ap_bcreate(child_context, B_WR);
+                ap_get_childout(&file, procnew);
+                iol = ap_create_file_iol(file);
+                if (!iol)
+                    return APR_EBADF;
+                *script_in = ap_bcreate(p, B_RD);
+                ap_bpush_iol(*script_in, iol);
             }
 
             if (script_out) {
-                *script_out = ap_bcreate(child_context, B_RD);
+                ap_get_childin(&file, procnew);
+                iol = ap_create_file_iol(file);
+                if (!iol)
+                    return APR_EBADF;
+                *script_out = ap_bcreate(p, B_WR);
+                ap_bpush_iol(*script_out, iol);
             }
 
             if (script_err) {
-                *script_err = ap_bcreate(child_context, B_RD);
+                ap_get_childerr(&file, procnew);
+                iol = ap_create_file_iol(file);
+                if (!iol)
+                    return APR_EBADF;
+                *script_err = ap_bcreate(p, B_RD);
+                ap_bpush_iol(*script_err, iol);
             }
         }
     }
     ap_unblock_alarms();
     return (rc);
 }
+static ap_status_t build_argv_list(char **argv, request_rec *r, ap_context_t *p) 
+{
+    int numwords, x, idx;
+    char *w;
+    const char *args = r->args;
+
+    if (!args || !args[0] || strchr(args, '=')) {
+       *argv = NULL;
+    }
+    else {
+        /* count the number of keywords */
+        for (x = 0, numwords = 1; args[x]; x++) {
+            if (args[x] == '+') {
+                ++numwords;
+            }
+        }
+        if (numwords > APACHE_ARG_MAX) {
+            numwords = APACHE_ARG_MAX;	/* Truncate args to prevent overrun */
+        }
+        argv = (char **) ap_palloc(p, numwords * sizeof(char *));
+
+        for (x = 0; x < numwords; x++) {
+            w = ap_getword_nulls(p, &args, '+');
+            ap_unescape_url(w);
+            argv[idx++] = ap_escape_shell_cmd(p, w);
+        }
+        argv[idx] = NULL;
+    }
+
+    return APR_SUCCESS;
+}
+
+static ap_status_t build_command_line(char **c, request_rec *r, ap_context_t *p) 
+{
+#ifdef WIN32
+    char *quoted_filename = NULL;
+    char *interpreter = NULL;
+    file_type_e fileType;
+
+    *c = NULL;
+    fileType = ap_get_win32_interpreter(r, &interpreter);
+
+    if (fileType == eFileTypeUNKNOWN) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
+                      "%s is not executable; ensure interpreted scripts have "
+                      "\"#!\" first line", 
+                      r->filename);
+        return APR_EBADF;
+    }
+
+    /*
+     * Build the command string to pass to ap_create_process()
+     */
+    quoted_filename = ap_pstrcat(p, "\"", r->filename, "\"", NULL);
+    if (interpreter && *interpreter) {
+        *c = ap_pstrcat(p, interpreter, " ", quoted_filename, " ", NULL);
+    }
+    else {
+        *c = ap_pstrcat(p, quoted_filename, " ", NULL);
+    }
+#else
+    *c = ap_pstrcat(p, r->filename, NULL);
+#endif
+    return APR_SUCCESS;
+}
 
 static int cgi_handler(request_rec *r)
 {
     int retval, nph, dbpos = 0;
     char *argv0, *dbuf = NULL;
+    char *command;
+    char *argv;
+
     BUFF *script_out, *script_in, *script_err;
     char argsbuffer[HUGE_STRING_LEN];
     int is_included = !strcmp(r->protocol, "INCLUDED");
     void *sconf = r->server->module_config;
+    ap_context_t *p;
     cgi_server_conf *conf =
     (cgi_server_conf *) ap_get_module_config(sconf, &cgi_module);
 
-    struct cgi_child_stuff cld;
+    p = r->main ? r->main->pool : r->pool;
 
     if (r->method_number == M_OPTIONS) {
 	/* 99 out of 100 CGI scripts, this is all they support */
@@ -465,32 +509,33 @@ static int cgi_handler(request_rec *r)
 	return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
 			       "attempt to invoke directory as script");
 
+/*
+    if (!ap_suexec_enabled) {
+	if (!ap_can_exec(&r->finfo))
+	    return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
+				   "file permissions deny server execution");
+    }
+
+*/
     if ((retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR)))
 	return retval;
 
     ap_add_common_vars(r);
-    cld.argv0 = argv0;
-    cld.r = r;
-    cld.nph = nph;
-    cld.debug = conf->logname ? 1 : 0;
-#ifdef TPF
-    cld.t.filename = r->filename;
-    cld.t.subprocess_env = r->subprocess_env;
-    cld.t.prog_type = FORK_FILE;
-#endif   /* TPF */
 
-#ifdef CHARSET_EBCDIC
-    /* XXX:@@@ Is the generated/included output ALWAYS in text/ebcdic format? */
-    /* Or must we check the Content-Type first? */
-    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, 1);
-#endif /*CHARSET_EBCDIC*/
-
-    /*
-     * we spawn out of r->main if it's there so that we can avoid
-     * waiting for free_proc_chain to cleanup in the middle of an
-     * SSI request -djg
-     */
-    if (cgi_child(&cld, &script_out, &script_in, &script_err) != APR_SUCCESS) {
+    /* build the command line */
+    if (build_command_line(&command, r, p) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+                      "couldn't spawn child process: %s", r->filename);
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+    /* build the argument list */
+    else if (build_argv_list(&argv, r, p) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+                      "couldn't spawn child process: %s", r->filename);
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+    /* run the script in its own process */
+    else if (run_cgi_child(&script_out, &script_in, &script_err, command, &argv, r, p) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                       "couldn't spawn child process: %s", r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -499,7 +544,6 @@ static int cgi_handler(request_rec *r)
     /* Transfer any put/post args, CERN style...
      * Note that we already ignore SIGPIPE in the core server.
      */
-
     if (ap_should_client_block(r)) {
 	int dbsize, len_read;
 
@@ -528,9 +572,7 @@ static int cgi_handler(request_rec *r)
 		break;
 	    }
 	}
-
 	ap_bflush(script_out);
-
     }
 
     ap_bclose(script_out);
