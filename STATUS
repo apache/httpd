@@ -79,7 +79,7 @@ PATCHES TO BACKPORT FROM 2.1
        off an N*64 character variable expansion (in some cases).
        http://issues.apache.org/bugzilla/attachment.cgi?id=14025
        PR: 32985
-       +1: jorton, trawick
+       +1: jorton, trawick, stoddard
 
     *) mod_ssl: fail quickly if SSL connection is aborted rather than
        making many doomed ap_pass_brigade calls
@@ -90,7 +90,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) mod_proxy: abort if client-connection is aborted.
        http://issues.apache.org/bugzilla/attachment.cgi?id=14046
        PR: 32443
-       +1: jorton
+       +1: jorton, stoddard
 
     *) mod_ssl: fix to access mod_ssl-specific X509_STORE_CTX userdata
        using the proper accessor function; matters only in some
@@ -104,7 +104,7 @@ PATCHES TO BACKPORT FROM 2.1
        sizeof(apr_off_t)>sizeof(apr_size_t)
        http://www.apache.org/~jorton/ap_splitlfs.diff
        PR: 28898
-       +1: jorton, trawick
+       +1: jorton, trawick, stoddard
 
     *) modules/config5.m4 & docs/manual/programs/configure.xml:
        --with-module can now take more than one module to be statically
@@ -170,7 +170,7 @@ PATCHES TO BACKPORT FROM 2.1
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.289&r2=1.291
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/log.c?r1=1.150&r2=1.151
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/include/http_log.h?r1=1.46&r2=1.48
-       +1: trawick
+       +1: trawick, stoddard
 
     *) mod_auth_ldap: Handle the inconsistent way in which the MS LDAP
        library handles special characters.
@@ -181,7 +181,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) Fix ap_save_brigade's handling of ENOTIMPL setaside functions.
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_filter.c?r1=1.100&r2=1.102
        PR: 31247
-       +1: jorton, trawick
+       +1: jorton, trawick, stoddard
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
