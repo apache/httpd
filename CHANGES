@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_headers: Allow %% in header values to represent a literal %.
+     [André Malo]
+
   *) mod_headers: Allow env clauses also for 'echo' and 'unset' actions.
      [André Malo]
 

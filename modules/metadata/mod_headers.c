@@ -299,6 +299,15 @@ static char *parse_format_tag(apr_pool_t *p, format_tag *tag, const char **sa)
         return parse_misc_string(p, tag, sa);
     }
     s++; /* skip the % */
+
+    /* Pass through %% as % */
+    if (*s == '%') {
+        tag->func = constant_item;
+        tag->arg = "%";
+        *sa = ++s;
+        return NULL;
+    }
+
     tag->arg = '\0';
     /* grab the argument if there is one */
     if (*s == '{') {
@@ -312,8 +321,7 @@ static char *parse_format_tag(apr_pool_t *p, format_tag *tag, const char **sa)
         char dummy[2];
         dummy[0] = s[-1];
         dummy[1] = '\0';
-        return apr_pstrcat(p, "Unrecognized Header or RequestHeader directive %",
-                           dummy, NULL);
+        return apr_pstrcat(p, "Unrecognized header format %", dummy, NULL);
     }
     tag->func = tag_handler;
 
