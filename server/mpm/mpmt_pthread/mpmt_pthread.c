@@ -725,7 +725,7 @@ int ap_graceful_stop_signalled(void)
  * Child process main loop.
  */
 
-static void process_socket(ap_context_t *p, struct sockaddr *sa_client, int csd, int my_child_num, int my_thread_num)
+static void process_socket(ap_context_t *p, struct sockaddr *sa_client, ap_socket_t *sock, int my_child_num, int my_thread_num)
 {
     struct sockaddr sa_server; /* ZZZZ */
     size_t len = sizeof(struct sockaddr);
@@ -733,6 +733,9 @@ static void process_socket(ap_context_t *p, struct sockaddr *sa_client, int csd,
     conn_rec *current_conn;
     ap_iol *iol;
     long conn_id = my_child_num * HARD_THREAD_LIMIT + my_thread_num;
+    int csd;
+
+    (void) ap_get_os_sock(&csd, sock);
 
     if (getsockname(csd, &sa_server, &len) < 0) { 
 	ap_log_error(APLOG_MARK, APLOG_ERR, errno, server_conf, "getsockname");
@@ -754,7 +757,7 @@ static void process_socket(ap_context_t *p, struct sockaddr *sa_client, int csd,
             ap_log_error(APLOG_MARK, APLOG_WARNING, errno, NULL,
                 "error attaching to socket");
         }
-        close(csd);
+        ap_close_socket(sock);
 	return;
     }
 
@@ -763,7 +766,8 @@ static void process_socket(ap_context_t *p, struct sockaddr *sa_client, int csd,
     conn_io = ap_bcreate(p, B_RDWR);
     ap_bpush_iol(conn_io, iol);
 
-    current_conn = ap_new_apr_connection(p, server_conf, conn_io, csd, conn_id);
+    current_conn = ap_new_apr_connection(p, server_conf, conn_io, sock,
+                                         conn_id);
 
     ap_process_connection(current_conn);
 }
@@ -802,7 +806,6 @@ static void * worker_thread(void * dummy)
     ap_socket_t *sd = NULL;
     int n;
     int curr_pollfd, last_pollfd = 0;
-    int thesock;
     ap_pollfd_t *pollset;
 
     free(ti);
@@ -891,8 +894,7 @@ static void * worker_thread(void * dummy)
             SAFE_ACCEPT(intra_mutex_off(0));
             break;
         }
-        ap_get_os_sock(&thesock, csd);
-        process_socket(ptrans, &sa_client, thesock, process_slot, thread_slot);
+        process_socket(ptrans, &sa_client, csd, process_slot, thread_slot);
         ap_clear_pool(ptrans);
         requests_this_child--;
     }
@@ -917,7 +919,6 @@ static void child_main(int child_num_arg)
 {
     sigset_t sig_mask;
     int signal_received;
-    pthread_t thread;
     pthread_attr_t thread_attr;
     int i;
     int my_child_num = child_num_arg;
