@@ -1,5 +1,7 @@
 Changes with Apache 2.0.52
 
+  *) Use HTML 2.0 <hr> for error pages. PR 30732 [André Malo]
+
   *) Fix the global mutex crash when the global mutex is never allocated
      due to disabled/empty caches. [Jess Holle <jessh ptc.com>]
 

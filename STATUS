@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/23 17:08:25 $]
+Last modified at [$Date: 2004/09/23 17:27:20 $]
 
 Release:
 
@@ -99,10 +99,6 @@ PATCHES TO BACKPORT FROM 2.1
 	    should eliminate the need to backport the "else" condition included
 	    in this patch.
        minfrin: The excess "else" condition has been removed in v1.10.
-
-    *) Use HTML 2.0 <hr> for error pages. PR 30732
-         modules/http/http_protocol.c: r1.483
-       +1: nd, jorton, trawick, jerenkrantz
 
     *) mod_rewrite: Fix 0 bytes write into random memory position. PR 31036.
        (2.0 + 1.3)
