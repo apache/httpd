@@ -64,7 +64,7 @@ Apache 1.1 and later.<p>
 
 This defines remote proxies to this proxy. &lt;match&gt; is either the
 name of a URL-scheme that the remote server supports, or a partial URL
-for which the remote server should be used, or '$' to indicate the
+for which the remote server should be used, or '*' to indicate the
 server should be contacted for all requests. &lt;remote-server&gt; is a
 partial URL for the remote server. Syntax:
 
@@ -77,10 +77,14 @@ server; only "http" is supported by this module.
 
 Example:
 <pre>
-  ProxyRemote ftp http://ftpproxy.mydomain.com:8080
   ProxyRemote http://goodguys.com/ http://mirrorguys.com:8000
   ProxyRemote * http://cleversite.com
+  ProxyRemote ftp http://ftpproxy.mydomain.com:8080
 </pre>
+
+In the last example, the proxy will forward FTP requests, encapsulated
+as yet another HTTP proxy request, to another proxy which can handle
+them.  Apache itself can not directly handle FTP requests currently.
 
 <A name="proxypass"><h2>ProxyPass</h2></A>
 <strong>Syntax:</strong> ProxyPass <em>&lt;path&gt; &lt;url&gt;</em><br>
