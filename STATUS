@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/12/07 08:56:17 $]
+Last modified at [$Date: 2000/12/08 09:33:31 $]
 
 Release:
 
@@ -14,6 +14,7 @@ Release:
     2.0a1   : released March 10, 2000
 
 RELEASE SHOWSTOPPERS:
+
     * Perchild MPM doesn't build anymore.  This is still relying on the
       BUFF code, which is no longer there.  This should just be modified
       to do the passing in an input filter instead of relying on the
@@ -69,6 +70,7 @@ RELEASE SHOWSTOPPERS:
       containers.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
     * Combine log_child and piped_log_spawn. Clean up http_log.c.
       Common logging API.
 
@@ -158,6 +160,11 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * (possibly) port the bug fix for PR 6942 (segv when LoadModule is put
       into a VirtualHost container) to 2.0.
+
+    * the LTFLAGS = -export-dynamic in the config.m4 is wrong. it is getting
+      added multiple times during the config process. The -export-dynamic
+      should probably move into build/special.mk (the make file used for
+      building Apache modules).
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
