@@ -968,7 +968,7 @@ static char *status_lines[] = {
  * If that sad event occurs, replace the code below with a linear search
  * from status_lines[shortcut[i]] to status_lines[shortcut[i+1]-1];
  */
-int index_of_response(int status)
+API_EXPORT(int) index_of_response(int status)
 {
     static int shortcut[6] = {0, LEVEL_200, LEVEL_300, LEVEL_400,
     LEVEL_500, RESPONSE_CODES};
