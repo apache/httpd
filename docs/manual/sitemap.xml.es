@@ -3,7 +3,7 @@
   [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml"> ]
 >
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1.36 -->
+<!-- English Revision: 1.12.2.18  -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -27,7 +27,7 @@
 
 <summary>
 <p>Esta p&#225;gina contiene la lista con los documentos actualmente
-disponibles de la <a href="./">Versi&#243;n 2.1 de la Documentaci&#243;n del
+disponibles de la <a href="./">Versi&#243;n 2.0 de la Documentaci&#243;n del
 Servidor HTTP Apache</a>.</p>
 </summary>
 
@@ -97,6 +97,7 @@ Servidor HTTP Apache</a>.</p>
 <page href="howto/cgi.html">Contenido Din&#225;mico con CGIs</page>
 <page href="howto/ssi.html">Introducci&#243;n a Server Side Includes</page>
 <page href="howto/htaccess.html">Archivos .htaccess</page>
+<page href="misc/tutorials.html">Tutoriales de Apache</page>
 <page href="howto/public_html.html">Directorios web para cada usuario</page>
 </category>
 
@@ -132,6 +133,10 @@ Apache</page>
 <category id="misc">
 <title>Documentaci&#243;n adicional sobre Apache</title>
 <page separate="yes" href="misc/">Visi&#243;n General</page>
+<page href="misc/custom_errordocs.html">Mensajes de error particulares para cada idioma</page>
+<page href="misc/fin_wait_2.html">Conexiones en FIN_WAIT_2 y Apache</page>
+<page href="misc/known_client_problems.html">Problemas conocidos de clientes</page>
+<page href="misc/descriptors.html">Descriptores y Apache</page>
 <page href="cgi_path.html">Cambios en PATH_INFO en el entorno CGI</page>
 <page href="misc/relevant_standards.html">Est&#225;ndares Importantes</page>
 </category>

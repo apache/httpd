@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1.30 -->
+<!-- English Revision: 1.11.2.17  -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -67,8 +67,8 @@ href="stopping.html">Parar y reiniciar Apache</a></seealso>
       <tr>
         <td><a href="#extract">Descomprimir</a></td>
 
-        <td><code>$ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
-         $ tar xvf httpd-2_1_<em>NN</em>.tar</code> </td>
+        <td><code>$ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br />
+         $ tar xvf httpd-2_0_<em>NN</em>.tar</code> </td>
       </tr>
 
       <tr>
@@ -204,8 +204,8 @@ href="stopping.html">Parar y reiniciar Apache</a></seealso>
     descargar es muy f&#225;cil. Ejecute los siguientes comandos:</p>
 
 <example>
-      $ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
-       $ tar xvf httpd-2_1_<em>NN</em>.tar
+      $ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br />
+       $ tar xvf httpd-2_0_<em>NN</em>.tar
 </example>
 
     <p>Estos comandos crear&#225;n un nuevo directorio dentro del
@@ -271,8 +271,8 @@ directorios</title>
     su compilador, librerias o ficheros de cabecera.  Esto se puede
     hacer, tanto pasando variables de entorno, como pasandole opciones
     a <code>configure</code> a trav&#233;s de la l&#237;nea de
-    comandos.  Para m&#225;s informaci&#243;n, consulte el <a
-    href="programs/configure.html">Manual del script
+    comandos.  Para m&#225;s informaci&#243;n, consulte la <a
+    href="programs/configure.html">p&#225;gina de ayuda del script
     configure</a>.</p>
 
     <p>Para que se haga una idea sobre las posibilidades que tiene,
@@ -339,8 +339,8 @@ directorios</title>
 
     <p>&#233;chele un vistazo al Manual de Apache que est&#225; en <a
     href="./">docs/manual/</a> o consulte en <a
-    href="http://httpd.apache.org/docs-2.1/"
-    >http://httpd.apache.org/docs-2.1/</a> la versi&#243;n m&#225;s
+    href="http://httpd.apache.org/docs-2.0/"
+    >http://httpd.apache.org/docs-2.0/</a> la versi&#243;n m&#225;s
     reciente de este manual y la Guia de Referencia de todas las <a
     href="mod/directives.html">directivas de configuraci&#243;n</a>
     disponibles.</p>
