@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/17 10:47:38 $]
+Last modified at [$Date: 2003/09/17 10:53:32 $]
 
 Release:
 
@@ -310,11 +310,6 @@ PATCHES TO PORT FROM 2.1
                wrapper code to the patch, which fills in the fields in question
                with some valid "fake" values. Though I don't think that it's
                really necessary -- how does this sound?
-
-    * Fix include_cmd in mod_cgid, not to treat the cmd output (partially)
-      as CGI output.
-        modules/generators/mod_cgid.c: r1.153
-      +1: nd, trawick, brianp
 
     * Fix inconsistency in generated expression parse tree. (2.0 + 1.3)
       There's also a practical advantage; it saves some CPU cycles, since the
