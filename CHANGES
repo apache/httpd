@@ -1,5 +1,10 @@
 Changes with Apache 2.0.34-dev
 
+  *) Rename the filter ordering priorities.  The recent filtering fixes
+     have showcased problems with their usage.  Therefore, we need to
+     rename them to increase the clarity.  (CONTENT->RESOURCE,
+     HTTP_HEADER->CONTENT_SET/PROTOCOL)  [Justin Erenkrantz]
+
 Changes with Apache 2.0.33
 
   *) Fix a problem in the new --enable-layout functionality where
