@@ -2,6 +2,12 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Add a hook (insert_error_filter) to allow filters to re-insert
+     themselves during processing of error responses. Enable mod_expires
+     to use the new hook to include Expires headers in valid error
+     responses. This addresses an RFC violation. It fixes PRs 19794,
+     24884, and 25123. [Paul J. Reder]
+
   *) Fix <Limit> and <LimitExcept> parsing to require a closing '>' 
      in the initial container.  PR 25414. 
      [Geoffrey Young <geoff apache.org>]
