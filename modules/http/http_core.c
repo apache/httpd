@@ -3089,7 +3089,7 @@ static unsigned short core_port(const request_rec *r)
 
 static void core_register_filter(request_rec *r)
 {
-    ap_add_filter("CORE", NULL, r, NULL);
+    ap_add_filter("CORE", NULL, r);
 }
 
 static void register_hooks(void)
@@ -3109,7 +3109,7 @@ static void register_hooks(void)
      * request-processing time.
      */
     ap_hook_insert_filter(core_register_filter, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_register_filter("CORE", core_filter, AP_FTYPE_CONNECTION);
+    ap_register_filter("CORE", core_filter, AP_FTYPE_CONNECTION + 1);
     ap_register_filter("CHUNK", chunk_filter, AP_FTYPE_CONNECTION);
 }
 
