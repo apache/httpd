@@ -2063,6 +2063,7 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
     if (r->chunked) {
         apr_table_mergen(r->headers_out, "Transfer-Encoding", "chunked");
         apr_table_unset(r->headers_out, "Content-Length");
+        ap_add_filter("BUFFER", NULL, r);
         ap_add_filter("CHUNK", NULL, r);
     }
 
