@@ -8,6 +8,19 @@ BEGIN {
 # List of functions that we don't support, yet??
 #/ap_some_name/{next}
 
+# The following APIs are actually defined as macros and
+# should not be included in the export list. If util_debug.c
+# is included or AP_DEBUG is defined, these macros turn
+# into functions and should be included in the export list.
+/ap_get_module_config/{next}
+/ap_set_module_config/{next}
+/ap_strchr/{next}
+/ap_strchr_c/{next}
+/ap_strrchr/{next}
+/ap_strrchr_c/{next}
+/ap_strstr/{next}
+/ap_strstr_c/{next}
+
 
 function add_symbol (sym_name) {
 	if (count) {
