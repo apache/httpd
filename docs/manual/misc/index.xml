@@ -12,6 +12,13 @@
     <p>Below is a list of additional documentation pages that apply
     to the Apache web server development project.</p>
 
+    <note type="warning"><title>Warning</title>
+    <p>The documents below have not been fully updated
+    to take into account changes made in the 2.1 version of the
+    Apache HTTP Server. Some of the information may still be
+    relevant, but please use it with care.</p>
+    </note>
+
     <dl>
       <dt><a href="perf-tuning.html">Performance Notes - Apache
       Tuning</a></dt>
@@ -21,14 +28,6 @@
         Apache for highest performance. Notes explaining why Apache
         does some things, and why it doesn't do other things (which
         make it slower/faster).</p>
-
-        <note type="warning"><title>Warning</title>
-        <p>This document has not been fully updated
-        to take into account changes made in the 2.0 version of the
-        Apache HTTP Server. Some of the information may still be
-        relevant, but please use it with care.</p>
-        </note>
-
       </dd>
 
       <dt><a href="security_tips.html">Security Tips</a></dt>
