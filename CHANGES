@@ -1,5 +1,10 @@
 Changes with Apache 2.0.38
 
+  *) Make the default_handler catch all requests that aren't served by
+     another handler.  This also gets us to return a 404 if a directory
+     is requested, there is no DirectoryIndex, and mod_autoindex isn't
+     loaded.  [Justin Erenkrantz]
+
   *) Fixed the handling of nested if-statements in shtml files.
      PR 9866  [Brian Pane]
 
