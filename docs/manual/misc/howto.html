@@ -85,8 +85,9 @@ and here's a simple perl script to redirect requests:
 <BLOCKQUOTE><PRE>
 #!/usr/local/bin/perl
 
-print "Status: 302 Moved Temporarily\r
-Location: http://www.some.where.else.com/\r\n\r\n";
+print "Status: 302 Moved Temporarily\r\n" .
+      "Location: http://www.some.where.else.com/\r\n" .
+      "\r\n";
 
 </PRE></BLOCKQUOTE></P>
 
