@@ -394,3 +394,6 @@ EXPORTS
         ap_hook_post_config @389
         ap_hook_open_logs @390
         ap_hook_child_init @391
+        ap_get_status_table @392
+        ap_run_default_port @393
+        ap_run_http_method @394

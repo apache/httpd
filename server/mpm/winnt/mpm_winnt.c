@@ -1837,6 +1837,12 @@ API_EXPORT(void) ap_reset_connection_status(long conn_id)
     /* NOP */
 }
 
+API_EXPORT(ap_array_header_t *) ap_get_status_table(ap_context_t *p)
+{
+    /* NOP */
+    return NULL;
+}
+
 static const command_rec winnt_cmds[] = {
 LISTEN_COMMANDS
 { "PidFile", set_pidfile, NULL, RSRC_CONF, TAKE1,
