@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
+<modulesynopsis metafile="mod_actions.xml.meta">
+<!-- English revision: 1.14 -->
+
+<name>mod_actions</name> 
+
+<description>Dieses Modul erm&ouml;glicht die Ausf&uuml;hrung von CGI-Skripten
+  in Abh&auml;ngigkeit von Medientypen und Anfragemethoden.</description>
+
+<status>Base</status>
+<sourcefile>mod_actions.c</sourcefile>
+<identifier>actions_module</identifier>
+
+<summary>
+    <p>Das Modul besitzt zwei Direktiven. Die Direktive <directive
+      module="mod_actions">Action</directive> erlaubt die Ausf&uuml;hrung von 
+      CGI-Skripten immer dann, wenn eine Anfrage zu einem bestimmten MIME-Type
+      erfolgt. Die Direktive <directive module="mod_actions">Script</directive>
+      erlaubt die Ausf&uuml;hrung von CGI-Skripten abh&auml;ngig von einer
+      bestimmten Methode, die in der Anfrage verwendet wird. Dies macht es
+      deutlich einfacher, Skripte auszuf&uuml;hren, die Dateien
+      verarbeiten.</p>
+</summary>
+
+<seealso><module>mod_cgi</module></seealso>
+<seealso><a href="../howto/cgi.html">Dynamische Inhalte mit CGI</a></seealso>
+<seealso><a href="../handler.html">Die Verwendung von Handlern</a></seealso>
+
+<directivesynopsis>
+<name>Action</name>
+<description>Aktiviert ein CGI-Skript f&uuml;r einen bestimmten Handler oder
+  Content-Type</description>
+<syntax>Action <var>Aktionsart</var> <var>CGI-Skript</var> [virtual]</syntax>
+<contextlist>
+<context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>Der Schalter <code>virtual</code> und die &Uuml;bergabe des 
+  Handlers wurden in Apache 2.1 eingef&uuml;hrt.</compatibility>
+
+<usage>
+    <p>Die Direktive f&uuml;gt eine Aktion hinzu, welche das
+      <var>CGI-Skript</var> aktiviert, sobald die <var>Aktionsart</var> durch
+      eine Anfrage ausgel&ouml;st wird. <var>CGI-Skript</var> ist der URL-Pfad
+      zu einer Ressource, die unter Verwendung von <directive
+      module="mod_alias">ScriptAlias</directive> oder <directive
+      module="mod_mime">AddHandler</directive> als CGI-Skript gekennzeichnet
+      wurde. Die <var>Aktionsart</var> kann entweder ein <a
+      href="../handler.html">Handler</a> oder ein MIME-Type sein. Die URL und
+      den Dateipfad des angeforderten Dokuments in den 
+      Standard-CGI-Umgebungsvariablen <code>PATH_INFO</code> und
+      <code>PATH_TRANSLATED</code> &uuml;bergeben. Der f&uuml;r die jeweilige 
+      Anfrage verwendete Handler wird in der Umgebungsvariablen
+      <code>REDIRECT_HANDLER</code> &uuml;bergeben.</p>
+
+    <example><title>Beispiele</title>
+      # Anfragen f&uuml;r Dateien eines bestimmten MIME-Types:<br />
+      Action image/gif /cgi-bin/images.cgi<br />
+      <br />
+      # Dateien einer bestimmten Dateiendung<br />
+      AddHandler my-file-type .xyz<br />
+      Action my-file-type /cgi-bin/program.cgi<br />
+    </example>
+
+    <p>Im ersten Beispiel werden Anfragen f&uuml;r Dateien mit dem MIME-Type
+      <code>image/gif</code> von dem angegebenen CGI-Skript
+      <code>/cgi-bin/images.cgi</code> bearbeitet.</p>
+
+    <p>Im zweiten Beispiel werden Anfragen f&uuml;r Dateien mit der Dateiendung
+      <code>.xyz</code> von dem angegebenen CGI-Skript 
+      <code>/cgi-bin/program.cgi</code> bearbeitet.</p>
+
+    <p>Der optionale Schalter <code>virtual</code> deaktiviert die Pr&uuml;fung
+      auf Existenz der angeforderten Datei. Dies ist beispielsweise 
+      n&uuml;tzlich, wenn Sie die Direktive <directive>Action</directive> in 
+      Verbindung mit virtuellen Adressr&auml;umen verwenden m&ouml;chten.</p> 
+
+    <example><title>Beispiel</title>
+      &lt;Location /news&gt;<br />
+      <indent>
+        SetHandler news-handler<br />
+        Action news-handler /cgi-bin/news.cgi virtual<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+</usage>
+
+<seealso><directive module="mod_mime">AddHandler</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Script</name>
+<description>Aktiviert ein CGI-Skript f&uuml;r eine bestimmte 
+  Anfragemethode.</description>
+<syntax>Script <var>Methode</var> <var>CGI-Skript</var></syntax>
+<contextlist>
+<context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<usage>
+  <p>Die Direktive f&uuml;gt eine Aktion hinzu, welche das
+    <var>CGI-Skript</var> aktiviert, wenn eine Datei unter der Verwendung der
+    Methode <var>Methode</var> angefordert wird. <var>CGI-Skript</var> ist der 
+    URL-Pfad zu einer Ressource, die unter Verwendung von <directive
+    module="mod_alias">ScriptAlias</directive> oder <directive
+    module="mod_mime">AddHandler</directive> als CGI-Skript gekennzeichnet
+    wurde. Die URL und der Dateipfad des angeforderten Dokuments werden in den
+    Standard-CGI-Umgebungsvariablen <code>PATH_INFO</code> und
+    <code>PATH_TRANSLATED</code> &uuml;bergeben.</p>
+
+    <note>
+      Der Methodenname kann frei gew&auml;hlt werden. Bei <strong>Methodennamen
+      wird zwischen Gro&szlig;- und Kleinschreibung</strong> unterschieden, so
+      dass <code>Script PUT</code> und <code>Script put</code> zu vollkommen
+      unterschiedlichen Ergebnissen f&uuml;hren.
+    </note>
+
+    <p>Beachten Sie, dass der <directive>Script</directive>-Befehl nur
+      Voreinstellungen f&uuml;r Aktionen definiert. Wird ein CGI-Skript
+      - oder eine andere Ressource, die in der Lage ist, die angeforderte 
+      Methode intern zu bearbeiten - aufgerufen, so wird diese(s) verwendet.
+      Beachten Sie auch, dass <directive>Script</directive> mit der Methode
+      <code>GET</code> nur dann aufgerufen wird, wenn Query-Argumente vorhanden
+      sind (<em>z.B.</em> foo.html?hi). Andernfalls wird die Anfrage normal
+      bearbeitet.</p>
+
+    <example><title>Beispiele</title>
+      # F&uuml;r &lt;ISINDEX&gt;-&auml;hnliches Suchen<br />
+      Script GET /cgi-bin/search<br />
+      <br />
+      # Ein CGI-PUT-Handler<br />
+      Script PUT /~bob/put.cgi<br />
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
