@@ -177,8 +177,8 @@ apr_status_t cache_pq_remove(cache_pqueue_t *q, void* d)
     long pri_popped;
     long pri_removed;
 
-    posn  = q->get(d);
     popped = cache_pq_pop(q);
+    posn  = q->get(d);
 
     if (!popped)
         return APR_EGENERAL;
@@ -220,11 +220,11 @@ void *cache_pq_pop(cache_pqueue_t *q)
             break;
         }
         q->d[i] = q->d[j];
-        q->set(d, i);
+        q->set(q->d[i], i);
         i = j;
     }
     q->d[i] = tmp;
-    q->set(d, i);
+    q->set(q->d[i], i);
     return d;
 }
 
