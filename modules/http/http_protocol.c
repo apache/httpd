@@ -73,6 +73,7 @@
 #include "http_log.h"           /* For errors detected in basic auth common
                                  * support code... */
 #include "util_date.h"          /* For parseHTTPdate and BAD_DATE */
+#include "mpm_status.h"
 #include <stdarg.h>
 
 HOOK_STRUCT(
@@ -826,6 +827,7 @@ static int read_request_line(request_rec *r)
     r->request_time = time(NULL);
     r->the_request = ap_pstrdup(r->pool, l);
     r->method = ap_getword_white(r->pool, &ll);
+    ap_update_connection_status(conn->id, "Method", r->method);
     uri = ap_getword_white(r->pool, &ll);
 
     /* Provide quick information about the request method as soon as known */
@@ -850,6 +852,7 @@ static int read_request_line(request_rec *r)
 
     r->assbackwards = (ll[0] == '\0');
     r->protocol = ap_pstrdup(r->pool, ll[0] ? ll : "HTTP/0.9");
+    ap_update_connection_status(conn->id, "Protocol", r->protocol);
 
     if (2 == sscanf(r->protocol, "HTTP/%u.%u", &major, &minor)
       && minor < HTTP_VERSION(1,0))	/* don't allow HTTP/0.1000 */

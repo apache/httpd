@@ -55,86 +55,62 @@
  *
  */
 
-#define CORE_PRIVATE
-#include "httpd.h"
-#include "http_config.h"
-#include "http_core.h"
-#include "http_protocol.h"
-#include "mpm_status.h"
-#include <time.h>
+/*
+ * TODO: Possible additions to this API include getting a list of connection
+ * IDs and a list of keys in a particular row.
+ */
 
-#ifndef DEFAULT_TIME_FORMAT 
-#define DEFAULT_TIME_FORMAT "%A, %d-%b-%Y %H:%M:%S %Z"
-#endif
+#ifndef APACHE_MPM_STATUS_H
+#define APACHE_MPM_STATUS_H
 
-module MODULE_VAR_EXPORT status_module;
+#include "apr_lib.h"
 
-static int print_status_value(void *data, const char *key, const char *val)
-{
-    request_rec *r = (request_rec *) data;
+typedef struct {
+    long conn_id;
+    ap_table_t *data;
+} ap_status_table_row_t;
 
-    ap_rprintf(r, "<dt>%s\n<dd>%s\n", key, val);
-    return 1;
-}
+/**
+ *
+ * Get a cell from the status table. Don't mess with the string you get.
+ *
+ * conn_id = Connection ID
+ * key = key
+ *
+ */
+API_EXPORT(const char *) ap_get_connection_status(long conn_id, const char *key);
 
-static int status_handler(request_rec *r)
-{
-    int i;
-    ap_array_header_t *server_status;
-    ap_status_table_row_t *status_rows;
-    time_t nowtime = time(NULL);
+/**
+ *
+ * Set a cell in the status table. No guarantees are made that long strings
+ * won't be truncated.
+ *
+ * conn_id = Connection ID
+ * key = key
+ * value = value
+ *
+ */
+API_EXPORT(void) ap_update_connection_status(long conn_id, const char *key, const char *value);
 
-    r->allowed = (1 << M_GET);
-    if (r->method_number != M_GET)
-	return DECLINED;
+/**
+ *
+ * Clear out this connection's status values. Normally called when a
+ * connection is closed
+ *
+ * conn_id = Connection ID
+ *
+ */
+API_EXPORT(void) ap_reset_connection_status(long conn_id);
 
-    r->content_type = "text/html";
+/**
+ *
+ * Returns the most up-to-date status table available, in the form of an array
+ * of ap_status_row_t's.
+ *
+ * p = context, generally of the request
+ *
+ */
+API_EXPORT(ap_array_header_t *) ap_get_status_table(ap_context_t *p);
 
-    ap_send_http_header(r);
+#endif /* APACHE_SERVER_STATS_H */
 
-    if (r->header_only)
-	return 0;
-
-    server_status = ap_get_status_table(r->pool);
-
-    ap_rputs(DOCTYPE_HTML_3_2
-    	 "<html><head>\n<title>Apache Status</title>\n</head><body>\n",
-    	 r);
-    ap_rputs("<H1>Apache Server Status for ", r);
-    ap_rvputs(r, ap_get_server_name(r), "</H1>\n\n", NULL);
-    ap_rvputs(r, "Server Version: ",
-      ap_get_server_version(), "<br>\n", NULL);
-    ap_rvputs(r, "Server Built: ",
-      ap_get_server_built(), "<br>\n<hr>\n", NULL);
-    ap_rvputs(r, "Current Time: ",
-      ap_ht_time(r->pool, nowtime, DEFAULT_TIME_FORMAT, 0), "<br>\n", NULL);
-    ap_rprintf(r, "\n%d connections currently being processed\n",
-               server_status->nelts);
-
-    status_rows = (ap_status_table_row_t *) server_status->elts;
-    for (i = 0; i < server_status->nelts; i++) {
-	ap_rprintf(r, "<h2>Connection %ld</h2>\n", status_rows[i].conn_id);
-        ap_table_do(print_status_value, (void *) r, status_rows[i].data, NULL);
-    }
-    ap_rputs("</body></html>\n", r);
-    return 0;
-}
-
-static const handler_rec status_handlers[] =
-{
-    {STATUS_MAGIC_TYPE, status_handler},
-    {"server-status", status_handler},
-    {NULL}
-};
-
-module MODULE_VAR_EXPORT status_module =
-{
-    STANDARD20_MODULE_STUFF,
-    NULL,			/* create per-dir config */
-    NULL,			/* merge per-dir config */
-    NULL,			/* server config */
-    NULL,			/* merge server config */
-    NULL,			/* command table */
-    status_handlers,		/* handlers */
-    NULL                        /* register hooks */
-};

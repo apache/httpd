@@ -71,6 +71,7 @@
 #include "acceptlock.h"
 #include "mpm_default.h"
 #include "dexter.h"
+#include "scoreboard.h"
 
 #include <poll.h>
 #include <netinet/tcp.h> 
@@ -1204,11 +1205,17 @@ static void server_main_loop(int remaining_children_to_start)
         
         if (pid >= 0) {
             process_child_status(pid, status);
-            /* non-fatal death... note that it's gone in the child table. */
+            /* non-fatal death... note that it's gone in the child table and
+             * clean out the status table. */
             child_slot = -1;
             for (i = 0; i < max_daemons_limit; ++i) {
         	if (child_table[i].pid == pid) {
+                    int j;
+
                     child_slot = i;
+                    for (j = 0; j < HARD_THREAD_LIMIT; j++) {
+                        ap_reset_connection_status(i * HARD_THREAD_LIMIT + j);
+                    }
                     break;
                 }
             }
@@ -1301,6 +1308,9 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     }
     ap_log_pid(pconf, ap_pid_fname);
     SAFE_ACCEPT(accept_mutex_init(pconf, 1));
+    if (!is_graceful) {
+        reinit_scoreboard(pconf);
+    }
     /* Initialize the child table */
     if (!is_graceful) {
         for (i = 0; i < HARD_SERVER_LIMIT; i++) {

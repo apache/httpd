@@ -61,6 +61,7 @@
 #include "http_request.h"
 #include "http_protocol.h"
 #include "ap_mpm.h"
+#include "mpm_status.h"
 #include "http_config.h"
 #include "http_vhost.h"
 
@@ -230,16 +231,19 @@ int ap_process_http_connection(conn_rec *c)
      * until no requests are left or we decide to close.
      */
 
+    ap_update_connection_status(c->id, "Status", "Reading");
     while ((r = ap_read_request(c)) != NULL) {
 
 	/* process the request if it was read without error */
 
+        ap_update_connection_status(c->id, "Status", "Writing");
 	if (r->status == HTTP_OK)
 	    ap_process_request(r);
 
 	if (!c->keepalive || c->aborted)
 	    break;
 
+        ap_update_connection_status(c->id, "Status", "Keepalive");
 	ap_destroy_pool(r->pool);
 
 	if (ap_graceful_stop_signalled()) {
@@ -249,6 +253,7 @@ int ap_process_http_connection(conn_rec *c)
 	}
     }
 
+    ap_reset_connection_status(c->id);
     return OK;
 }
 
