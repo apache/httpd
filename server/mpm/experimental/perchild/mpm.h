@@ -65,6 +65,11 @@
 
 #define PERCHILD_MPM
 
+#define MPM_NEEDS_RECLAIM_CHILD_PROCESSES 1
+#define MPM_SYNC_CHILD_TABLE() (ap_sync_scoreboard_image())
+#define MPM_CHILD_PID(i) (ap_child_table[i].pid)
+#define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
+
 /* Table of child status */
 #define SERVER_DEAD 0
 #define SERVER_DYING 1
