@@ -1,4 +1,8 @@
 Changes with Apache 1.3.4
+  
+  *) Small fix for mod_env.html: The module was documented as to be _not_
+     compiled into Apache per default, although it _IS_ compiled into 
+     Apache per default. [Sim Harbert <sim@mindspring.com>] PR#3572
 
   *) Instead of fixing a bug in the generation procedure for config.status (a
      backslash was missing) we remove the bug together with it's complete
