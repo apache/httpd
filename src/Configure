@@ -1093,9 +1093,11 @@ if [ "x$using_shlib" = "x1" ] ; then
 	*-openbsd*)
 	    PLATOSVERS=`echo $PLAT | sed 's/^.*openbsd//'`
 	    CFLAGS_SHLIB="-fPIC"
+	    LDFLAGS_SHLIB_EXPORT=""
+	    SHLIB_SUFFIX_DEPTH=2
 	    case "$PLATOSVERS" in
-		2.[01234567])
-		   LDFLAGS_SHLIB="-Bshareable -Bforcearchive"
+		[01].*|2.[0-7]|2.[0-7].*)
+		   LDFLAGS_SHLIB="-Bshareable"
 		;;
 		*)
 		   LD_SHLIB="gcc"
@@ -1103,8 +1105,6 @@ if [ "x$using_shlib" = "x1" ] ; then
 		;;
 	    esac
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
-	    LDFLAGS_SHLIB_EXPORT=""
-	    SHLIB_SUFFIX_DEPTH=2
 	    ;;
 	*-netbsd*)
 	    CFLAGS_SHLIB="-fPIC -DPIC"
