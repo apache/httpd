@@ -126,9 +126,9 @@ client</td></tr><tr><th><a href="module-dict.html#Status">Status:
       the input filter chain using <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>, for example:</p>
 
       <div class="example"><p><code>
-        &lt;Location /dav-area&gt;
+        &lt;Location /dav-area&gt;<br />
         <span class="indent">
-          SetInputFilter DEFLATE
+          SetInputFilter DEFLATE<br />
         </span>
         &lt;/Location&gt;
       </code></p></div>
