@@ -12,10 +12,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name aprlibdll
+    Project_Dep_Name ApacheCore
     End Project Dependency
 }}}
 
@@ -30,10 +30,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ap
+    Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name aprlibdll
+    Project_Dep_Name ap
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name regex
@@ -57,10 +57,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name aprlibdll
+    Project_Dep_Name ApacheCore
     End Project Dependency
 }}}
 
@@ -75,10 +75,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name aprlibdll
+    Project_Dep_Name ApacheCore
     End Project Dependency
 }}}
 
@@ -93,10 +93,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name aprlibdll
+    Project_Dep_Name ApacheCore
     End Project Dependency
 }}}
 
@@ -111,10 +111,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name aprlibdll
+    Project_Dep_Name ApacheCore
     End Project Dependency
 }}}
 
@@ -129,10 +129,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name aprlibdll
+    Project_Dep_Name ApacheCore
     End Project Dependency
 }}}
 
@@ -147,10 +147,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name aprlibdll
+    Project_Dep_Name ApacheCore
     End Project Dependency
 }}}
 
@@ -165,10 +165,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name aprlibdll
+    Project_Dep_Name ApacheCore
     End Project Dependency
 }}}
 
@@ -183,10 +183,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name aprlibdll
+    Project_Dep_Name ApacheCore
     End Project Dependency
 }}}
 
@@ -201,10 +201,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name aprlibdll
+    Project_Dep_Name ApacheCore
     End Project Dependency
 }}}
 
@@ -219,10 +219,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name aprlibdll
+    Project_Dep_Name ApacheCore
     End Project Dependency
 }}}
 
@@ -237,10 +237,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name aprlibdll
+    Project_Dep_Name ApacheCore
     End Project Dependency
 }}}
 
@@ -255,10 +255,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name aprlibdll
+    Project_Dep_Name ApacheCore
     End Project Dependency
 }}}
 
@@ -273,10 +273,13 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name Apache
+    Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name ApacheCore
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Apache
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name ApacheModuleAuthAnon
@@ -307,9 +310,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name ApacheModuleUserTrack
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name htpasswd
@@ -377,12 +377,6 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name aprlib
     End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name htdigest
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name logresolve
-    End Project Dependency
 }}}
 
 ###############################################################################
@@ -435,10 +429,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ap
+    Project_Dep_Name aprlib
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name aprlib
+    Project_Dep_Name ap
     End Project Dependency
 }}}
 
