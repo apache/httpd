@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2003/10/30 09:34:17 $]
+  Last modified at [$Date: 2003/10/30 19:22:58 $]
 
 Release:
 
@@ -263,6 +263,7 @@ Binaries (1.3.29):
  powerpc+i386-apple-darwin1.2  no      Wilfredo Sanchez
  powerpc-apple-rhapsody5.5     no      Wilfredo Sanchez
  powerpc-apple-darwin5.5       no      Aaron Bannert
+ powerpc-apple-darwin7.0.0     yes     Jim Jagielski
  ppc-whatever-linux22          no      Graham Leggett
  rs6000-ibm-aix3.2.5           no      Sameer Parekh
  rs6000-ibm-aix4.1             no      Lars Eilebrecht
