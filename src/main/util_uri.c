@@ -186,11 +186,18 @@ API_EXPORT(char *) ap_unparse_uri_components(pool *p, const uri_components *uptr
 
 	/* Construct scheme://site string */
 	if (uptr->hostname) {
+	    int is_default_port;
+
+	    is_default_port =
+		(uptr->port_str == NULL ||
+		 uptr->port == 0 ||
+		 uptr->port == ap_default_port_for_scheme(uptr->scheme));
+
 	    ret = ap_pstrcat (p,
 			uptr->scheme, "://", ret, 
 			uptr->hostname ? uptr->hostname : "",
-			uptr->port_str ? ":" : "",
-			uptr->port_str ? uptr->port_str : "",
+			is_default_port ? "" : ":",
+			is_default_port ? "" : uptr->port_str,
 			NULL);
 	}
     }
@@ -266,8 +273,8 @@ void ap_util_uri_init(void)
     /* This is a sub-RE which will break down the hostinfo part,
      * i.e., user, password, hostname and port.
      * $          12      3 4        5       6 7    */
-    re_str    = "^(([^:]*)(:(.*))?@)?([^@:]*)(:(.*))?$";
-    /*             ^^user^ :pw      ^host^   port */
+    re_str    = "^(([^:]*)(:(.*))?@)?([^@:]*)(:([0-9]*))?$";
+    /*             ^^user^ :pw        ^host^ ^:[port]^ */
     if ((ret = regcomp(&re_hostpart, re_str, REG_EXTENDED)) != 0) {
 	char line[1024];
 
@@ -345,9 +352,9 @@ API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri, uri_components
 	    return HTTP_BAD_REQUEST;
 	}
 
-	/* $          12      3 4        5       6 7    */
-	/*        = "^(([^:]*)(:(.*))?@)?([^@:]*)(:(.*))?$" */
-	/*             ^^user^ :pw      ^host^   port */
+	/* $      12      3 4        5       6 7            */
+	/*      "^(([^:]*)(:(.*))?@)?([^@:]*)(:([0-9]*))?$" */
+	/*         ^^user^ :pw        ^host^ ^:[port]^      */
 
 	/* empty user is valid, that's why we test $1 but use $2 */
 	if (match[1].rm_so != match[1].rm_eo)
@@ -371,7 +378,7 @@ API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri, uri_components
 
 		port = strtol(uptr->port_str, &endstr, 10);
 		uptr->port = port;
-		if (*endstr != '\0' || uptr->port != port) {
+		if (*endstr != '\0') {
 		    /* Invalid characters after ':' found */
 		    return HTTP_BAD_REQUEST;
 		}
