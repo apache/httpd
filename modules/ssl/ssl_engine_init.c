@@ -439,6 +439,14 @@ static void ssl_init_ctx_protocol(server_rec *s,
      * Configure additional context ingredients
      */
     SSL_CTX_set_options(ctx, SSL_OP_SINGLE_DH_USE);
+
+#ifdef SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION
+    /* 
+     * Disallow a session from being resumed during a renegotiation,
+     * so that an acceptable cipher suite can be negotiated.
+     */
+    SSL_CTX_set_options(ctx, SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION);
+#endif
 }
 
 static void ssl_init_ctx_session_cache(server_rec *s,
