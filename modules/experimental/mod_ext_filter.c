@@ -88,8 +88,7 @@ typedef struct ef_filter_t {
     const char *command;
     const char *enable_env;
     const char *disable_env;
-    int numArgs;
-    char *args[30];
+    char **args;
     const char *intype;             /* list of IMTs we process (well, just one for now) */
 #define INTYPE_ALL (char *)1
     const char *outtype;            /* IMT of filtered output */
@@ -193,38 +192,45 @@ static const char *parse_cmd(apr_pool_t *p, const char **args, ef_filter_t *filt
     if (**args == '"') {
         const char *start = *args + 1;
         char *parms;
+        int escaping = 0;
+        apr_status_t rv;
 
         ++*args; /* move past leading " */
-        while (**args && **args != '"') {
+        /* find true end of args string (accounting for escaped quotes) */
+        while (**args && (**args != '"' || (**args == '"' && escaping))) {
+            if (escaping) {
+                escaping = 0;
+            }
+            else if (**args == '\\') {
+                escaping = 1;
+            }
             ++*args;
         }
         if (**args != '"') {
             return "Expected cmd= delimiter";
         }
+        /* copy *just* the arg string for parsing, */
         parms = apr_pstrndup(p, start, *args - start);
         ++*args; /* move past trailing " */
 
-        /* parms now has the command-line to parse */
-        while (filter->numArgs < 30 &&
-               strlen(filter->args[filter->numArgs] = ap_getword_white_nc(p, &parms))) {
-            ++filter->numArgs;
-        }
-        if (filter->numArgs < 1) {
+        /* parse and tokenize the args. */
+        rv = apr_tokenize_to_argv(parms, &(filter->args), p);
+        if (rv != APR_SUCCESS) {
             return "cmd= parse error";
         }
-        filter->args[filter->numArgs] = NULL; /* we stored "" in the while() loop */
-        filter->command = filter->args[0];
     }
     else
     {
         /* simple path */
+        /* Allocate space for one argv pointer and parse the args. */
+        filter->args = (char **)apr_palloc(p, sizeof(char *));
         filter->args[0] = ap_getword_white(p, args);
-        if (!filter->args[0]) {
-            return "Invalid cmd= parameter";
-        }
-        filter->numArgs = 1;
-        filter->command = filter->args[0];
     }
+    if (!filter->args[0]) {
+        return "Invalid cmd= parameter";
+    }
+    filter->command = filter->args[0];
+    
     return NULL;
 }
 
