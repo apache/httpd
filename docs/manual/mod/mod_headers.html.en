@@ -45,6 +45,7 @@ is available only in Apache 2.0</td></tr></table>
 <h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#order">Order of Processing</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#early">Early and Late Processing</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -66,6 +67,27 @@ is available only in Apache 2.0</td></tr></table>
 
     <p>This way round, the <code>MirrorID</code> header is not set. If
     reversed, the MirrorID header is set to "mirror 12".</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="early" id="early">Early and Late Processing</a></h2>
+    <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> can be applied either early or late
+    in the request.  The normal mode is late, when Request Headers are
+    set immediately before running the content generator and Response
+    Headers just as the response is sent down the wire.  Always use
+    Late mode in an operational server.</p>
+
+    <p>Early mode is designed as a test/debugging aid for developers.
+    Directives defined using the <code>early</code> keyword are set
+    right at the beginning of processing the request.  This means
+    they can be used to simulate different requests and set up test
+    cases, but it also means that headers may be changed at any time
+    by other modules before generating a Response.</p>
+
+    <p>Because early directives are processed before the request path's
+    configuration is traversed, early headers can only be set in a
+    main server or virtual host context.  Early directives cannot depend
+    on a request path, so they will fail in contexts such as
+    <code>&lt;Directory&gt;</code> or <code>&lt;Location&gt;</code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="examples" id="examples">Examples</a></h2>
@@ -140,7 +162,7 @@ is available only in Apache 2.0</td></tr></table>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] set|append|add|unset|echo
-<var>header</var> [<var>value</var>] [env=[!]<var>variable</var>]</code></td></tr>
+<var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -232,15 +254,18 @@ is available only in Apache 2.0</td></tr></table>
     </div> 
 
     <p>The <code class="directive">Header</code> directive may be followed by an
-    additional argument, which may be used to specify conditions
-    under which the action will be taken. If the <a href="../env.html">environment variable</a> specified in the
+    an additional argument, which may be used to specify conditions under
+    which the action will be taken, or may be the keyword <code>early</code>
+    to specify <a href="#early">early processing</a>. If the
+    <a href="../env.html">environment variable</a> specified in the
     <code>env=<var>...</var></code> argument exists (or if the environment
     variable does not exist and <code>env=!<var>...</var></code> is specified)
     then the action specified by the <code class="directive">Header</code> directive
     will take effect. Otherwise, the directive will have no effect
     on the request.</p>
 
-    <p>The <code class="directive">Header</code> directives are processed just
+    <p>Except in <a href="#early">early</a> mode, the
+    <code class="directive">Header</code> directives are processed just
     before the response is sent to the network. These means that it is
     possible to set and/or override most headers, except for those headers
     added by the header filter.</p>
@@ -251,7 +276,7 @@ is available only in Apache 2.0</td></tr></table>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP request headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader set|append|add|unset <var>header</var>
-[<var>value</var>] [env=[!]<var>variable</var>]</code></td></tr>
+[<var>value</var>] [early|env=[!]<var>variable</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -301,14 +326,17 @@ is available only in Apache 2.0</td></tr></table>
 
     <p>The <code class="directive">RequestHeader</code> directive may be followed by
     an additional argument, which may be used to specify conditions under
-    which the action will be taken. If the <a href="../env.html">environment
+    which the action will be taken, or may be the keyword <code>early</code>
+    to specify <a href="#early">early processing</a>. If the
+    <a href="../env.html">environment
     variable</a> specified in the <code>env=<var>...</var></code> argument
     exists (or if the environment variable does not exist and
     <code>env=!<var>...</var></code> is specified) then the action specified
     by the <code class="directive">RequestHeader</code> directive will take effect.
     Otherwise, the directive will have no effect on the request.</p>
 
-    <p>The <code class="directive">RequestHeader</code> directive is processed
+    <p>Except in <a href="#early">early</a> mode, the
+    <code class="directive">RequestHeader</code> directive is processed
     just before the request is run by its handler in the fixup phase.
     This should allow headers generated by the browser, or by Apache
     input filters to be overridden or modified.</p>
