@@ -140,6 +140,8 @@ static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
 static int ap_daemons_limit=0;
 
+static ap_pod_t *pod;
+
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
  * to deal with MaxClients changes across SIGWINCH restarts.  We use this
@@ -181,6 +183,8 @@ static int my_child_num;
 int tpf_child = 0;
 char tpf_server_name[INETD_SERVNAME_LENGTH+1];
 #endif /* TPF */
+
+int die_now = 0;
 
 #ifdef GPROF
 /* 
@@ -232,7 +236,7 @@ static void clean_child_exit(int code)
     if (pchild) {
 	apr_pool_destroy(pchild);
     }
-    ap_scoreboard_image->parent[my_child_num].process_status = SB_WORKING;
+    ap_mpm_pod_close(pod);
     chdir_for_gprof();
     exit(code);
 }
@@ -378,15 +382,7 @@ static void just_die(int sig)
 static void please_die_gracefully(int sig)
 {
     /* clean_child_exit(0); */
-    ap_scoreboard_image->parent[my_child_num].process_status = SB_IDLE_DIE;
-    if (sig == SIGHUP) {
-        (void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(my_child_num),
-                                      SERVER_GRACEFUL, (request_rec *) NULL);
-    }
-    else {
-        (void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(my_child_num),
-                                      SERVER_IDLE_KILL, (request_rec *) NULL);
-    }
+    die_now = 1;
 }
 
 /* volatile just in case */
@@ -414,9 +410,11 @@ static void restart(int sig)
 	return;
     }
     restart_pending = 1;
+#if 0
     if ((is_graceful = (sig == SIGWINCH))) {
         apr_pool_cleanup_kill(pconf, NULL, ap_cleanup_scoreboard);
     }
+#endif
 }
 
 static void set_signals(void)
@@ -479,12 +477,9 @@ static void set_signals(void)
 
     /* we want to ignore HUPs and WINCH while we're busy processing one */
     sigaddset(&sa.sa_mask, SIGHUP);
-    sigaddset(&sa.sa_mask, SIGWINCH);
     sa.sa_handler = restart;
     if (sigaction(SIGHUP, &sa, NULL) < 0)
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGHUP)");
-    if (sigaction(SIGWINCH, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGWINCH)");
 #else
     if (!one_process) {
 	apr_signal(SIGSEGV, sig_coredump);
@@ -513,7 +508,7 @@ static void set_signals(void)
     apr_signal(SIGHUP, restart);
 #endif /* SIGHUP */
 #ifdef SIGWINCH
-    apr_signal(SIGWINCH, restart);
+    apr_signal(SIGWINCH, SIG_IGN);
 #endif /* SIGWINCH */
 #ifdef SIGPIPE
     apr_signal(SIGPIPE, SIG_IGN);
@@ -533,9 +528,6 @@ static apr_socket_t *csd;
 static int requests_this_child;
 static fd_set main_fds;
 
-#define I_AM_TO_SHUTDOWN()                                                   \
-(ap_scoreboard_image->parent[my_child_num].process_status != SB_WORKING)
-   
 int ap_graceful_stop_signalled(void)
 {
     /* not ever called anymore... */
@@ -581,12 +573,11 @@ static void child_main(int child_num_arg)
     apr_signal(SIGHUP, please_die_gracefully);
 
     ap_sync_scoreboard_image();
-    while (!I_AM_TO_SHUTDOWN()) {
+    while (!die_now) {
 
 	/* Prepare to receive a SIGWINCH due to graceful restart so that
 	 * we can exit cleanly.
 	 */
-	apr_signal(SIGWINCH, please_die_gracefully);
         apr_signal(SIGTERM, just_die);
 
 	/*
@@ -669,13 +660,20 @@ static void child_main(int child_num_arg)
 	     */
 	    for (;;) {
                 ap_sync_scoreboard_image();
-		if (I_AM_TO_SHUTDOWN()) {
+		if (die_now) {
 		    /* we didn't get a socket, and we were told to die */
 		    clean_child_exit(0);
 		}
 		stat = apr_accept(&csd, sd, ptrans);
 		if (stat == APR_SUCCESS || !APR_STATUS_IS_EINTR(stat))
 		    break;
+                /* In reality, this could be done later, but to keep it
+                 * consistent with MPMs that have a thread race-condition,
+                 * we will do it here.
+                 */
+                if (!ap_mpm_pod_check(pod)) {
+                    die_now = 1;
+                }
 	    }
 
 	    if (stat == APR_SUCCESS)
@@ -777,19 +775,13 @@ static void child_main(int child_num_arg)
 	    }
 
             ap_sync_scoreboard_image();
-	    if (I_AM_TO_SHUTDOWN()) {
+	    if (die_now) {
 		clean_child_exit(0);
 	    }
 	}
 
 	SAFE_ACCEPT(accept_mutex_off());	/* unlock after "accept" */
 
-	/* We've got a socket, let's at least process one request off the
-	 * socket before we accept a graceful restart request.  We set
-	 * the signal to ignore because we don't want to disturb any
-	 * third party code.
-	 */
-	apr_signal(SIGWINCH, SIG_IGN);
 	/*
 	 * We now have a connection, so set it up with the appropriate
 	 * socket options, file descriptors, and read/write buffers.
@@ -894,7 +886,6 @@ static int make_child(server_rec *s, int slot)
 	 * requested there's no race condition here.
 	 */
 	apr_signal(SIGHUP, please_die_gracefully);
-	apr_signal(SIGWINCH, please_die_gracefully);
 	apr_signal(SIGTERM, just_die);
         ap_scoreboard_image->parent[slot].process_status = SB_WORKING;
 	child_main(slot);
@@ -940,7 +931,7 @@ static int idle_spawn_rate = 1;
 #endif
 static int hold_off_on_exponential_spawning;
 
-static void perform_idle_server_maintenance(void)
+static void perform_idle_server_maintenance(apr_pool_t *p)
 {
     int i;
     int to_kill;
@@ -1002,7 +993,7 @@ static void perform_idle_server_maintenance(void)
 	 * shut down gracefully, in case it happened to pick up a request
 	 * while we were counting
 	 */
-	kill(ap_scoreboard_image->parent[to_kill].pid, SIGWINCH);
+	ap_mpm_pod_signal(pod);
 	idle_spawn_rate = 1;
     }
     else if (idle_count < ap_daemons_min_free) {
@@ -1088,6 +1079,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 {
     int index;
     int remaining_children_to_start;
+    apr_status_t rv;
 
     pconf = _pconf;
 
@@ -1098,6 +1090,11 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     if (setup_listeners(s)) {
 	/* XXX: hey, what's the right way for the mpm to indicate a fatal error? */
 	return 1;
+    }
+    if ((rv = ap_mpm_pod_open(pconf, &pod))) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+		"Could not open pipe-of-death.");
+        return 1;
     }
 
     SAFE_ACCEPT(accept_mutex_init(pconf));
@@ -1209,7 +1206,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	    continue;
 	}
 
-	perform_idle_server_maintenance();
+	perform_idle_server_maintenance(pconf);
 #ifdef TPF
     shutdown_pending = os_check_server(tpf_server_name);
     ap_check_signals();
@@ -1244,7 +1241,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     /* we've been told to restart */
     apr_signal(SIGHUP, SIG_IGN);
-    apr_signal(SIGWINCH, SIG_IGN);
     if (one_process) {
 	/* not worth thinking about */
 	return 1;
@@ -1264,12 +1260,11 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     if (is_graceful) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
-		    "SIGWINCH received.  Doing graceful restart");
+		    "Graceful restart requested, doing restart");
 
 	/* kill off the idle ones */
-	if (unixd_killpg(getpgrp(), SIGWINCH) < 0) {
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "killpg SIGWINCH");
-	}
+        ap_mpm_pod_killpg(pod, ap_daemons_limit);
+
 #ifndef SCOREBOARD_FILE
 	/* This is mostly for debugging... so that we know what is still
 	    * gracefully dealing with existing request.  But we can't really

@@ -78,6 +78,7 @@
 #include "mpm.h"
 #include "mpm_common.h"
 #include "ap_mpm.h"
+#include "ap_listen.h"
 
 #ifdef HAVE_PWD_H
 #include <pwd.h>
@@ -338,4 +339,87 @@ int initgroups(const char *name, gid_t basegid)
 }
 #endif /* def NEED_INITGROUPS */
 
+#ifdef AP_MPM_USES_POD
 
+AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod)
+{
+    apr_status_t rv;
+
+    *pod = apr_palloc(p, sizeof(**pod));
+    rv = apr_file_pipe_create(&((*pod)->pod_in), &((*pod)->pod_out), p);
+    apr_file_pipe_timeout_set((*pod)->pod_out, 0);
+    (*pod)->p = p;
+    return rv;
+}
+
+AP_DECLARE(apr_status_t) ap_mpm_pod_check(ap_pod_t *pod)
+{
+    char c;
+    apr_size_t len = 1;
+    apr_status_t rv;
+
+    rv = apr_file_read(pod->pod_in, &c, &len);
+
+    if ((rv == APR_SUCCESS) && (len == 1)) {
+        return APR_SUCCESS;
+    }
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    return AP_NORESTART;
+}
+
+AP_DECLARE(apr_status_t) ap_mpm_pod_close(ap_pod_t *pod)
+{
+    apr_status_t rv;
+
+    rv = apr_file_close(pod->pod_out);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+
+    rv = apr_file_close(pod->pod_in);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    return rv;
+}
+
+AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod)
+{
+    apr_socket_t *sock;
+    apr_sockaddr_t *sa;
+    apr_status_t rv;
+    char char_of_death = '!';
+    apr_size_t one = 1;
+
+    do {
+        if ((rv = apr_file_write(pod->pod_out, &char_of_death, &one))
+                                 != APR_SUCCESS) {
+            if (APR_STATUS_IS_EINTR(rv)) {
+                continue;
+            }
+            else {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
+                             "write pipe_of_death");
+                return rv;
+            }
+        }
+    } while (1);
+    
+    apr_sockaddr_info_get(&sa, "127.0.0.1", APR_UNSPEC, ap_listeners->bind_addr->port, 0, pod->p);
+    apr_socket_create(&sock, sa->family, SOCK_STREAM, pod->p);
+    apr_connect(sock, sa);    
+    apr_socket_close(sock);
+
+    return APR_SUCCESS;
+}
+
+AP_DECLARE(void) ap_mpm_pod_killpg(ap_pod_t *pod, int num)
+{
+    int i;
+    for (i = 0; i < num; i++) {
+        ap_mpm_pod_signal(pod);
+    }
+}
+#endif
