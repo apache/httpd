@@ -1129,9 +1129,11 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
     ap_str_tolower(uri);
     *worker = apr_array_push(conf->workers);
     memset(*worker, 0, sizeof(proxy_worker));
-    (*worker)->name = (*worker)->hostname = apr_pstrdup(p, uri);
+    (*worker)->name = apr_pstrdup(p, uri);
     *c = '\0';
     (*worker)->scheme = uri;
+    (*worker)->hostname = c + 3;
+
     if (port == -1)
         port = apr_uri_port_of_scheme((*worker)->scheme);
     (*worker)->port = port;
