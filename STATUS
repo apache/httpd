@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/12/21 13:50:41 $]
+Last modified at [$Date: 2001/12/24 13:24:30 $]
 
 Release:
 
@@ -91,6 +91,11 @@ RELEASE SHOWSTOPPERS:
                 LOCKALL and CROSS_PROCESS are not yet complete on all
                 platforms, and should only be used in MPMs like worker
                 with limited OS exposure.
+
+    * ap_create_scoreboard() can exit the process, leaving stuff like
+      mod_cgid's daemon process stranded.  Either ap_create_scoreboard()
+      needs to be called at a different time or the pre-mpm hook needs
+      to be able to return an error code.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
