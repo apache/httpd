@@ -1115,7 +1115,7 @@ static int read_types_multi(negotiation_state *neg)
          * might be doing.
          */
         if (sub_req->handler && !sub_req->content_type) {
-            ap_rset_content_type(CGI_MAGIC_TYPE, sub_req);
+            ap_set_content_type(sub_req, CGI_MAGIC_TYPE);
         }
 
         /* 

@@ -701,7 +701,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                                   "close");
                 ap_proxy_clear_connection(p, r->headers_out);
                 if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
-                    ap_rset_content_type(apr_pstrdup(p, buf), r);
+                    ap_set_content_type(r, apr_pstrdup(p, buf));
                 }            
                 ap_proxy_pre_http_request(origin,rp);
             }

@@ -552,7 +552,7 @@ static int x_handler(request_rec *r)
      * We also need to start a timer so the server can know if the connexion
      * is broken.
      */
-    ap_rset_content_type("text/html", r);
+    ap_set_content_type(r, "text/html");
     /*
      * If we're only supposed to send header information (HEAD request), we're
      * already there.
