@@ -500,12 +500,6 @@ static void remove_unused_name_vhosts(server_rec *main_s, ipaddr_chain **pic)
                          ic->sar->virthost, ic->sar->host_port);
             *pic = ic->next;
         }
-        else if (ic->names == NULL) {
-            /* if server != NULL and names == NULL then we're done
-             * looking at NameVirtualHosts
-             */
-            break;
-        }
         else {
             pic = &ic->next;
         }
