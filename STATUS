@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/17 19:58:06 $]
+Last modified at [$Date: 2003/02/18 00:29:18 $]
 
 Release:
 
@@ -137,6 +137,13 @@ PATCHES TO PORT FROM 2.1
     * Rework ap_xml_parse_input to work with bucket brigades.  PR 16134.
       server/util_xml.c: r1.22
       +1: jerenkrantz, trawick
+
+    * While processing filters on internal redirects, remember seen EOS
+      buckets also in the request structure of the redirect issuer(s). This
+      prevents filters (such as mod_deflate) to add garbage to the response.
+      PR 14451.
+      server/util_filter.c: r1.95
+      +1: nd
 
 CURRENT RELEASE NOTES:
 
