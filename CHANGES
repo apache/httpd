@@ -1,5 +1,10 @@
 Changes with Apache 2.0.33-dev
 
+  *) ap_get_*_filter_handle() functions to allow 3rd party modules
+     to lookup filter handles so they can bypass the filter name
+     lookup when adding filters to a request (via ap_add_*_filter_handle())
+     [Ryan Morgan <rmorgan@covalent.net>]
+
   *) Fix for multiple file buckets on Win32, where the first file
      bucket would cause the immediate closure of the socket on any
      non-keepalive requests.  [Ryan Morgan <rmorgan@covalent.net>]
