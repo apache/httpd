@@ -252,9 +252,9 @@ static int cache_url_handler(request_rec *r, int lookup)
                              r->server,
                              "cache: conditional - add cache_in filter and "
                              "DECLINE");
-                /* add cache_in filter */
+
                 ap_add_output_filter("CACHE_IN", NULL, r, r->connection);
-                /* return DECLINED */
+
                 return DECLINED;
             }
             /* else if non-conditional request */
@@ -284,9 +284,9 @@ static int cache_url_handler(request_rec *r, int lookup)
                                  r->server,
                                  "cache: nonconditional - no cached "
                                  "etag/lastmods - add cache_in and DECLINE");
-                    /* add cache_in filter to cache this request */
+
                     ap_add_output_filter("CACHE_IN", NULL, r, r->connection);
-                    /* return DECLINED */
+
                     return DECLINED;
                 }
                 /* add cache_conditional filter */
@@ -298,7 +298,7 @@ static int cache_url_handler(request_rec *r, int lookup)
                                      NULL, 
                                      r, 
                                      r->connection);
-                /* return DECLINED */
+
                 return DECLINED;
             }
         }
@@ -339,7 +339,9 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
             "cache: running CACHE_OUT filter");
 
-    /* TODO: Handle getting errors on either of these calls */
+    /* TODO: Handle getting errors on either of these calls 
+     * ???: Should we return headers on a subrequest?
+     */
     cache_read_entity_headers(cache->handle, r);    
     cache_read_entity_body(cache->handle, r->pool, bb);
 
