@@ -1235,8 +1235,6 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     X509 *xs;
     int errnum;
     int errdepth;
-    char *cp;
-    char *cp2;
     int depth;
     int verify;
 
@@ -1261,16 +1259,18 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     /*
      * Log verification information
      */
-    cp  = X509_NAME_oneline(X509_get_subject_name(xs), NULL, 0);
-    cp2 = X509_NAME_oneline(X509_get_issuer_name(xs),  NULL, 0);
-    ssl_log(s, SSL_LOG_TRACE,
-            "Certificate Verification: depth: %d, subject: %s, issuer: %s",
-            errdepth, cp != NULL ? cp : "-unknown-",
-            cp2 != NULL ? cp2 : "-unknown");
-    if (cp)
-        free(cp);
-    if (cp2)
-        free(cp2);
+    if (sc->nLogLevel >= SSL_LOG_TRACE) {
+        char *cp  = X509_NAME_oneline(X509_get_subject_name(xs), NULL, 0);
+        char *cp2 = X509_NAME_oneline(X509_get_issuer_name(xs),  NULL, 0);
+        ssl_log(s, SSL_LOG_TRACE,
+                "Certificate Verification: depth: %d, subject: %s, issuer: %s",
+                errdepth, cp != NULL ? cp : "-unknown-",
+                cp2 != NULL ? cp2 : "-unknown");
+        if (cp)
+            free(cp);
+        if (cp2)
+            free(cp2);
+    }
 
     /*
      * Check for optionally acceptable non-verifiable issuer situation
