@@ -1008,7 +1008,7 @@ static void x_insert_filter(request_rec *r)
  * server will still call any remaining modules with an handler for this
  * phase.
  */
-static int x_quick_handler(request_rec *r)
+static int x_quick_handler(request_rec *r, int lookup_uri)
 {
     x_cfg *cfg;
 
