@@ -1004,7 +1004,7 @@ static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
 	return;
 	}
 
-    if ((str = getword_conf(cmd->pool, &arg)))
+    if (arg2 && (str = getword_conf(cmd->pool, &arg)))
 	if (!strcasecmp(str, "max"))
 	    cur = limit->rlim_max;
 	else
