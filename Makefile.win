@@ -55,10 +55,10 @@ SSLBIN=out32dll
 _tryssl:
 !IF EXIST("modules\ssl\mod_ssl.mak")
 	cd modules\ssl
-	$(MAKE) $(MAKEOPT) -f mod_ssl.mak CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 $(LONG)\mod_ssl.so
+	$(MAKE) $(MAKEOPT) -f mod_ssl.mak CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 .\$(LONG)\mod_ssl.so
 	cd ..\..
 	cd support
-	$(MAKE) $(MAKEOPT) -f abs.mak CFG="abs - Win32 $(LONG)" RECURSE=0 $(LONG)\abs.exe
+	$(MAKE) $(MAKEOPT) -f abs.mak CFG="abs - Win32 $(LONG)" RECURSE=0 .\$(LONG)\abs.exe
 	cd ..
 !ELSE
 	msdev Apache.dsw /USEENV /MAKE \
