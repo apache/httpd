@@ -926,6 +926,14 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
     my_info->pid = my_child_num;
     my_info->tid = i;
     my_info->sd = 0;
+
+    /* XXX we shouldn't create the listener thread until we have at least
+     *     one worker thread...  for now I'll blame this bug for some very
+     *     rare hung connections I've seen during restart testing
+     *     (I've also seen cases where a child process starts but is
+     *     never able to take over worker thread slots, so the theory
+     *     does make sense.)  Jeff
+     */
     rv = apr_thread_create(&ts->listener, thread_attr, listener_thread,
                            my_info, pchild);
     if (rv != APR_SUCCESS) {
