@@ -65,7 +65,7 @@ requests</description>
     fail to change to the specified group, and will instead
     continue to run as the group of the original user.</p>
 
-    <p>Special note: Use of this directive in &lt;VirtualHost&lt; is
+    <p>Special note: Use of this directive in &lt;VirtualHost&gt; is
     no longer supported. To implement the <a
     href="../suexec.html">suEXEC wrapper</a> with Apache 2.0, use the
     <directive module="mod_suexec">SuexecUserGroup</directive>
