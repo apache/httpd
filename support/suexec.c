@@ -131,46 +131,51 @@ static FILE *log = NULL;
 
 char *safe_env_lst[] =
 {
-    "AUTH_TYPE",
-    "CONTENT_LENGTH",
-    "CONTENT_TYPE",
-    "DATE_GMT",
-    "DATE_LOCAL",
-    "DOCUMENT_NAME",
-    "DOCUMENT_PATH_INFO",
-    "DOCUMENT_ROOT",
-    "DOCUMENT_URI",
-    "FILEPATH_INFO",
-    "GATEWAY_INTERFACE",
-    "HTTPS",
-    "LAST_MODIFIED",
-    "PATH_INFO",
-    "PATH_TRANSLATED",
-    "QUERY_STRING",
-    "QUERY_STRING_UNESCAPED",
-    "REMOTE_ADDR",
-    "REMOTE_HOST",
-    "REMOTE_IDENT",
-    "REMOTE_PORT",
-    "REMOTE_USER",
-    "REDIRECT_QUERY_STRING",
-    "REDIRECT_STATUS",
-    "REDIRECT_URL",
-    "REQUEST_METHOD",
-    "REQUEST_URI",
-    "SCRIPT_FILENAME",
-    "SCRIPT_NAME",
-    "SCRIPT_URI",
-    "SCRIPT_URL",
-    "SERVER_ADMIN",
-    "SERVER_NAME",
-    "SERVER_ADDR",
-    "SERVER_PORT",
-    "SERVER_PROTOCOL",
-    "SERVER_SOFTWARE",
-    "UNIQUE_ID",
-    "USER_NAME",
-    "TZ",
+    /* variable name starts with */
+    "HTTP_",
+    "SSL_",
+
+    /* variable name is */
+    "AUTH_TYPE=",
+    "CONTENT_LENGTH=",
+    "CONTENT_TYPE=",
+    "DATE_GMT=",
+    "DATE_LOCAL=",
+    "DOCUMENT_NAME=",
+    "DOCUMENT_PATH_INFO=",
+    "DOCUMENT_ROOT=",
+    "DOCUMENT_URI=",
+    "FILEPATH_INFO=",
+    "GATEWAY_INTERFACE=",
+    "HTTPS=",
+    "LAST_MODIFIED=",
+    "PATH_INFO=",
+    "PATH_TRANSLATED=",
+    "QUERY_STRING=",
+    "QUERY_STRING_UNESCAPED=",
+    "REMOTE_ADDR=",
+    "REMOTE_HOST=",
+    "REMOTE_IDENT=",
+    "REMOTE_PORT=",
+    "REMOTE_USER=",
+    "REDIRECT_QUERY_STRING=",
+    "REDIRECT_STATUS=",
+    "REDIRECT_URL=",
+    "REQUEST_METHOD=",
+    "REQUEST_URI=",
+    "SCRIPT_FILENAME=",
+    "SCRIPT_NAME=",
+    "SCRIPT_URI=",
+    "SCRIPT_URL=",
+    "SERVER_ADMIN=",
+    "SERVER_NAME=",
+    "SERVER_ADDR=",
+    "SERVER_PORT=",
+    "SERVER_PROTOCOL=",
+    "SERVER_SOFTWARE=",
+    "UNIQUE_ID=",
+    "USER_NAME=",
+    "TZ=",
     NULL
 };
 
@@ -240,7 +245,17 @@ static void clean_env(void)
     int cidx = 0;
     int idx;
 
-
+    /* While cleaning the environment, the environment should be clean.
+     * (e.g. malloc() may get the name of a file for writing debugging info.
+     * Bad news if MALLOC_DEBUG_FILE is set to /etc/passwd.  Sprintf() may be
+     * susceptible to bad locale settings....)
+     * (from PR 2790)
+     */
+    char **envp = environ;
+    char *empty_ptr = NULL;
+ 
+    environ = &empty_ptr; /* VERY safe environment */
+    
     if ((cleanenv = (char **) calloc(AP_ENVBUF, sizeof(char *))) == NULL) {
         log_err("failed to malloc memory for environment\n");
         exit(120);
@@ -250,19 +265,13 @@ static void clean_env(void)
     cleanenv[cidx] = strdup(pathbuf);
     cidx++;
 
-    for (ep = environ; *ep && cidx < AP_ENVBUF-1; ep++) {
-        if (!strncmp(*ep, "HTTP_", 5) || !strncmp(*ep, "SSL_", 4)) {
-            cleanenv[cidx] = *ep;
-            cidx++;
-        }
-        else {
-            for (idx = 0; safe_env_lst[idx]; idx++) {
-                if (!strncmp(*ep, safe_env_lst[idx],
-                             strlen(safe_env_lst[idx]))) {
-                    cleanenv[cidx] = *ep;
-                    cidx++;
-                    break;
-                }
+    for (ep = envp; *ep && cidx < AP_ENVBUF-1; ep++) {
+        for (idx = 0; safe_env_lst[idx]; idx++) {
+            if (!strncmp(*ep, safe_env_lst[idx],
+                         strlen(safe_env_lst[idx]))) {
+                cleanenv[cidx] = *ep;
+                cidx++;
+                break;
             }
         }
     }
@@ -290,6 +299,11 @@ int main(int argc, char *argv[])
     struct group *gr;       /* group entry holder        */
     struct stat dir_info;   /* directory info holder     */
     struct stat prg_info;   /* program info holder       */
+
+    /*
+     * Start with a "clean" environment
+     */
+    clean_env();
 
     prog = argv[0];
     /*
@@ -616,7 +630,6 @@ int main(int argc, char *argv[])
     }
     umask(AP_SUEXEC_UMASK);
 #endif /* AP_SUEXEC_UMASK */
-    clean_env();
 
     /* 
      * Be sure to close the log file so the CGI can't
