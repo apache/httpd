@@ -280,12 +280,12 @@ int mod_auth_ldap_check_user_id(request_rec *r)
                       "[%d] auth_ldap authenticate: "
                       "user %s authentication failed; URI %s [%s][%s]",
 		      getpid(), r->user, r->uri, ldc->reason, ldap_err2string(result));
-        if (LDAP_INVALID_CREDENTIALS == result) {
+        if ((LDAP_INVALID_CREDENTIALS == result) || sec->auth_authoritative) {
             ap_note_basic_auth_failure(r);
             return HTTP_UNAUTHORIZED;
         }
         else {
-            return sec->auth_authoritative? HTTP_UNAUTHORIZED: DECLINED;
+            return DECLINED;
         }
     }
 
