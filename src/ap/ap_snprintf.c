@@ -998,22 +998,22 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 		     * If the pointer size is equal to or smaller than the size
 		     * of the largest unsigned int, we convert the pointer to a
 		     * hex number, otherwise we print "%p" to indicate that we
-		     * don't handle "%p". Note that depending on the
-		     * sizes of the various pointers and u_wide_int
-		     * and u_widest_int, gcc will warn about the
-		     * assignments, but we are actually OK.
+		     * don't handle "%p".
 		     */
 		case 'p':
-		    if (sizeof(char *) <= sizeof(u_wide_int)) {
-		    	ui_num = (u_wide_int) va_arg(ap, void *);
-			s = conv_p2(ui_num, 4, 'x',
-				&num_buf[NUM_BUF_SIZE], &s_len);
-		    }
-		    else if (sizeof(char *) <= sizeof(u_widest_int)) {
+#ifdef AP_VOID_P_IS_QUAD
+		    if (sizeof(void *) <= sizeof(u_widest_int)) {
 		    	ui_quad = (u_widest_int) va_arg(ap, void *);
 			s = conv_p2_quad(ui_quad, 4, 'x',
 				&num_buf[NUM_BUF_SIZE], &s_len);
 		    }
+#else
+		    if (sizeof(void *) <= sizeof(u_wide_int)) {
+		    	ui_num = (u_wide_int) va_arg(ap, void *);
+			s = conv_p2(ui_num, 4, 'x',
+				&num_buf[NUM_BUF_SIZE], &s_len);
+		    }
+#endif
 		    else {
 			s = "%p";
 			s_len = 2;

@@ -1847,14 +1847,17 @@ fi
 ####################################################################
 ## More building ap_config_auto.h
 ##
-## We check to see if this OS and/or compiler supports long-long
+## We check the sizeof various data types
 ##
-echo " + checking for the long long data type"
-if ./helpers/TestCompile sizeof "long long"; then
-    AP_LONGEST_LONG="long long"
-else
+echo " + checking sizeof various data types"
+AP_TYPE_QUAD=`./helpers/TestCompile -r sizeof 'long long'`
+if [ "x$AP_TYPE_QUAD" = "x" ]; then
+    AP_TYPE_QUAD="unknown_quad"
     AP_LONGEST_LONG="long"
+else
+    AP_LONGEST_LONG="long long"
 fi
+
 echo "" >>$AP_CONFIG_AUTO_H
 echo "/* determine: longest possible integer type */" >>$AP_CONFIG_AUTO_H
 echo "#ifndef AP_LONGEST_LONG" >>$AP_CONFIG_AUTO_H
@@ -1864,11 +1867,17 @@ echo "#endif" >>$AP_CONFIG_AUTO_H
 ##
 ## Now compare the sizes of off_t to long
 ##
-echo " + determining if off_t is quad or long"
 AP_TYPE_OFF_T=`./helpers/TestCompile -r sizeof off_t`
+if [ "x$AP_TYPE_OFF_T" = "x" ]; then
+    AP_TYPE_OFF_T="unknown_off_t"
+fi
+
 AP_TYPE_LONG=`./helpers/TestCompile -r sizeof long`
-if [ "x$AP_TYPE_OFF_T" != "x" ] && [ "x$AP_TYPE_OFF_T" != "x$AP_TYPE_LONG" ]
-then
+if [ "x$AP_TYPE_LONG" = "x" ]; then
+    AP_TYPE_LONG="unknown_long"
+fi
+
+if [ "x$AP_TYPE_OFF_T" != "x$AP_TYPE_LONG" ]; then
     echo "" >>$AP_CONFIG_AUTO_H
     echo "/* determine: is off_t a quad */" >>$AP_CONFIG_AUTO_H
     echo "#ifndef AP_OFF_T_IS_QUAD" >>$AP_CONFIG_AUTO_H
@@ -1879,6 +1888,28 @@ else
     echo "/* determine: is off_t a quad */" >>$AP_CONFIG_AUTO_H
     echo "#ifndef AP_OFF_T_IS_QUAD" >>$AP_CONFIG_AUTO_H
     echo "#undef AP_OFF_T_IS_QUAD" >>$AP_CONFIG_AUTO_H
+    echo "#endif" >>$AP_CONFIG_AUTO_H
+fi
+
+##
+## Now see of void * is as big as a quad (long long)
+##
+AP_TYPE_VOID_P=`./helpers/TestCompile -r sizeof 'void *'`
+if [ "x$AP_TYPE_VOID_P" = "x" ]; then
+    AP_TYPE_VOID_P="unknown_void_p"
+fi
+
+if [ "x$AP_TYPE_VOID_P" = "x$AP_TYPE_QUAD" ]; then
+    echo "" >>$AP_CONFIG_AUTO_H
+    echo "/* determine: is void * a quad */" >>$AP_CONFIG_AUTO_H
+    echo "#ifndef AP_VOID_P_IS_QUAD" >>$AP_CONFIG_AUTO_H
+    echo "#define AP_VOID_P_IS_QUAD 1" >>$AP_CONFIG_AUTO_H
+    echo "#endif" >>$AP_CONFIG_AUTO_H
+else
+    echo "" >>$AP_CONFIG_AUTO_H
+    echo "/* determine: is void * a quad */" >>$AP_CONFIG_AUTO_H
+    echo "#ifndef AP_VOID_P_IS_QUAD" >>$AP_CONFIG_AUTO_H
+    echo "#undef AP_VOID_P_IS_QUAD" >>$AP_CONFIG_AUTO_H
     echo "#endif" >>$AP_CONFIG_AUTO_H
 fi
 
