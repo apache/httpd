@@ -79,7 +79,7 @@ extern "C" {
 #include "ap_config.h"
 #include "ap_mmn.h"
 
-#include "release.h"
+#include "ap_release.h"
 #include "os.h"
 
 #include "apr_tables.h"
