@@ -515,11 +515,11 @@ static apr_status_t default_build_command(const char **cmd, const char ***argv,
     int numwords, x, idx;
     char *w;
     const char *args = r->args;
-    const char *argv0;
 
     if (replace_cmd) {
         /* Allow suexec's "/" check to succeed */
-        if ((argv0 = strrchr(r->filename, '/')) != NULL)
+        const char *argv0 = strrchr(r->filename, '/');
+        if (argv0 != NULL)
             argv0++;
         else
             argv0 = r->filename;
