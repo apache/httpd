@@ -147,7 +147,11 @@
 </pre>
 
     <p>This tells Apache that you want to permit files to be parsed
-    for SSI directives.</p>
+    for SSI directives.  Note that most configurations contain
+    multiple <a href="../mod/core.html#options">Options</a> directives
+    that can override each other.  You will probably need to apply the
+    <code>Options</code> to the specific directory where you want SSI
+    enabled in order to assure that it gets evaluated last.</p>
 
     <p>Not just any file is parsed for SSI directives. You have to
     tell Apache which files should be parsed. There are two ways to
