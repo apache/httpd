@@ -93,7 +93,7 @@ client requests</td></tr>
 <tr><td><a href="mod_mime.html#addlanguage">AddLanguage <var>MIME-lang</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extension to the specified content
 language</td></tr>
-<tr class="odd"><td><a href="mod_info.html#addmoduleinfo">AddModuleInfo <em>module-name string</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">server-info ハンドラにより表示されるモジュールの情報に
+<tr class="odd"><td><a href="mod_info.html#addmoduleinfo">AddModuleInfo <var>module-name</var> <var>string</var></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">server-info ハンドラにより表示されるモジュールの情報に
 追加の情報を付け加える</td></tr>
 <tr><td><a href="mod_mime.html#addoutputfilter">AddOutputFilter <var>filter</var>[;<var>filter</var>...]
 <var>extension</var> [<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps filename extensions to the filters that will process
@@ -221,7 +221,7 @@ LastModified date.</td></tr>
 cache</td></tr>
 <tr><td><a href="mod_disk_cache.html#cacheminfilesize">CacheMinFileSize <var>bytes</var></a></td><td> 1 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">The minimum size (in bytes) of a document to be placed in the
 cache</td></tr>
-<tr class="odd"><td><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs on|off</a></td><td> off </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">コンテントネゴシエーションされたドキュメントをプロキシサーバが
+<tr class="odd"><td><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs On|Off</a></td><td> Off </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">コンテントネゴシエーションされたドキュメントをプロキシサーバが
 キャッシュできるようにする</td></tr>
 <tr><td><a href="mod_disk_cache.html#cacheroot">CacheRoot <var>directory</var></a></td><td /><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">The directory root under which cache files are
 stored</td></tr>
@@ -351,7 +351,8 @@ extensions</td></tr>
 <tr><td><a href="core.html#keepalive" id="K" name="K">KeepAlive On|Off</a></td><td> On </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables HTTP persistent connections</td></tr>
 <tr class="odd"><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>seconds</var></a></td><td> 15 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Amount of time the server will wait for subsequent
 requests on a persistent connection</td></tr>
-<tr><td><a href="mod_negotiation.html#languagepriority" id="L" name="L">LanguagePriority <em>MIME-lang</em> [<em>MIME-lang</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">クライアントが優先度を示さなかったときの言語の variant の優先度を
+<tr><td><a href="mod_negotiation.html#languagepriority" id="L" name="L">LanguagePriority <var>MIME-lang</var> [<var>MIME-lang</var>]
+...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">クライアントが優先度を示さなかったときの言語の variant の優先度を
 指定</td></tr>
 <tr class="odd"><td><a href="mod_ldap.html#ldapcacheentries">LDAPCacheEntries <var>number</var></a></td><td> 1024 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of entires in the primary LDAP cache</td></tr>
 <tr><td><a href="mod_ldap.html#ldapcachettl">LDAPCacheTTL <var>seconds</var></a></td><td> 600 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Time that cached items remain valid</td></tr>
