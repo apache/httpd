@@ -308,7 +308,7 @@ static char *parse_format_string(apr_pool_t *p, header_entry *hdr, const char *s
 }
 
 /* handle RequestHeader and Header directive */
-static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indirconf,
+static const char *header_inout_cmd(cmd_parms *cmd, void *indirconf,
                               const char *action, const char *inhdr,
                               const char *value, const char* envclause)
 {
@@ -320,6 +320,7 @@ static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indir
     server_rec *s = cmd->server;
     headers_conf *serverconf = ap_get_module_config(s->module_config,
                                                     &headers_module);
+    hdr_inout inout = (hdr_inout)cmd->info;
 
     if (cmd->path) {
         new = (header_entry *) apr_array_push((hdr_in == inout) ? dirconf->fixup_in : dirconf->fixup_out);
@@ -364,9 +365,6 @@ static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indir
 
     /* Handle the envclause on Header */
     if (envclause != NULL) {
-        if (inout != hdr_out) {
-            return "error: envclause (env=...) only valid on Header directive";
-        }
         if (strncasecmp(envclause, "env=", 4) != 0) {
             return "error: envclause should be in the form env=envar";
         }
@@ -386,7 +384,7 @@ static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indir
     return parse_format_string(cmd->pool, new, value);
 }
 
-/* Handle Header directive */
+/* Handle all (xxx)Header directives */
 static const char *header_cmd(cmd_parms *cmd, void *indirconf,
                               const char *args)
 {
@@ -402,15 +400,7 @@ static const char *header_cmd(cmd_parms *cmd, void *indirconf,
     val = *s ? ap_getword_conf(cmd->pool, &s) : NULL;
     envclause = *s ? ap_getword_conf(cmd->pool, &s) : NULL;
 
-    return header_inout_cmd(hdr_out, cmd, indirconf, action, hdr, val, envclause);
-}
-
-/* handle RequestHeader directive */
-static const char *request_header_cmd(cmd_parms *cmd, void *indirconf,
-                              const char *action, const char *inhdr,
-                              const char *value)
-{
-    return header_inout_cmd(hdr_in, cmd, indirconf, action, inhdr, value, NULL);
+    return header_inout_cmd(cmd, indirconf, action, hdr, val, envclause);
 }
 
 /*
@@ -550,9 +540,9 @@ static apr_status_t ap_headers_fixup(request_rec *r)
                                         
 static const command_rec headers_cmds[] =
 {
-    AP_INIT_RAW_ARGS("Header", header_cmd, NULL, OR_FILEINFO,
+    AP_INIT_RAW_ARGS("Header", header_cmd, (void *)hdr_out, OR_FILEINFO,
                    "an action, header and value followed by optional env clause"),
-    AP_INIT_TAKE23("RequestHeader", request_header_cmd, NULL, OR_FILEINFO,
+    AP_INIT_RAW_ARGS("RequestHeader", header_cmd, (void *)hdr_in, OR_FILEINFO,
                    "an action, header and value"),
     {NULL}
 };

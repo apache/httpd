@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) Allow RequestHeader directives to be conditional. PR 27951.
+     [Vincent Deffontaines <vincent gryzor.com>, André Malo]
+
   *) Allow LimitRequestBody to be reset to unlimited. PR 29106
      [André Malo]
 

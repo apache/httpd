@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/06 13:23:26 $]
+Last modified at [$Date: 2004/06/06 22:19:38 $]
 
 Release:
 
@@ -160,10 +160,6 @@ PATCHES TO BACKPORT FROM 2.1
 	     the directive should be renamed or a "persist" option added
 	     to the Header directive that allows a standard header definition
 	     to appear for all response types.
-
-    *) mod_headers: Allow conditional RequestHeader directives. PR 27951
-         modules/metadata/mod_headers.c: r1.52
-       +1: nd, trawick, bnicholes
 
     *) Allow URLs for ServerAdmin. PR 28174.
          server/core.c: r1.274
