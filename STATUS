@@ -1,8 +1,10 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/03 02:47:19 $]
+Last modified at [$Date: 2004/11/06 08:10:35 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
+    2.1.1   : Proposed roll on 11/14/2004 (around/after Hackathon).
+              Justin volunteers as RM.
     2.1.0   : in development
 
 Please consult the following STATUS files for information
@@ -30,19 +32,26 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+    * Convert httpd-2.x to Subversion.  Yes, we've voted on this a billion
+      times on dev@httpd, but let's make this one official.  Majority rules.
+
+      +1: jerenkrantz
+
     * Handling of non-trailing / config by non-default handler is broken
       http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105451701628081&w=2
+      jerenkrantz asks: Why should this block a release?
 
     * the edge connection filter cannot be removed 
       http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105366252619530&w=2
+      jerenkrantz asks: Why should this block a release?
 
 CURRENT VOTES:
 
     * Promote mod_cache from experimental to non-experimental
       status (keep issues noted below in EXPERIMENTAL MODULES as
       items to be addressed as a supported module).
-      +1: jim, bnicholes
-      -0: jerenkrantz
+      +1: jerenkrantz
+      +0: jim, bnicholes
       -1: stoddard
           There are a couple of problems that need to be resolved
       before this module is moved out of experimental. 
@@ -61,11 +70,12 @@ CURRENT VOTES:
       mod_cache (out of the quick_handler) bypass -all- the request
       line server hooks (Ryan really hated this. It is great for
       performance, but bad because of the complications listed above).
- 
 
-      jerenkrantz: There are a slew of RFC compliance bugs filed in Bugzilla
-                   for mod_cache (see 'RFC 2616 violations' below).  I think
-                   fixing them is a pre-requisite before it isn't experimental.
+      jerenkrantz: I think it's time.  We've done a *lot* of work to it, and
+                   we think most of the blatant RFC violations are now gone.
+                   mod_cache just belongs in cache/.  There may still be bugs,
+                   but not likely to be major ones.  Note that I'm not moving
+                   *anything* until we switch to SVN.
 
     * httpd-std.conf and friends
 
@@ -485,20 +495,18 @@ EXPERIMENTAL MODULES:
     get the modules promoted to fully supported status.
 
     mod_cache/mod_mem_cache/mod_disk_cache:
-    * mod_cache: handle cache_control: no_cache "field_name" to enable 
-      cacheing the response w/o header "field_name"
-      See RFC2616 section 14.9.1
 
     * mod_mem_cache: Consider adding a RevalidateTimeout directive to
       specify time at which local cached content is to be revalidated
       (ie, underlying file stat'ed to see if it has changed).
 
     * mod_cache: CacheEnable/CacheDisable should accept regular expressions.
+      jerenkrantz says: Too slow.  Get regexs away from speedy caches by
+                        default.  Introduce a new CacheEnableRegex if you want.
 
     * mod_cache: Fix dependency on ATOMIC operators. Need
       APR_HAS_ATOMIC_* feature macros.
-
-    * mod_disk_cache: Implement garbage collection
+      jerenkrantz says: APR 1.0+ has some guaranteed form of atomics.
 
     * mod_mem_cache/mod_disk_cache: Need to be able to query cache
       status (num of entries, cache object properties, etc.).
@@ -507,19 +515,7 @@ EXPERIMENTAL MODULES:
       mod_cache (et. al.) could define optional hooks that are called
       to collect status.  Status should be queryable by
       HTTP or SNMP?
-
-    * Enable mod_cache/mod_mem_cache/mod_disk_cache to handle
-      multiviews
-
-    * mod_mem_cache/mod_disk_cache: Complete implementing config
-      directives (mod_disk_cache: CacheExpiryCheck and GC directives
-      including CacheGc*, CacheSize, and, CacheTimeMargin)
-      (mod_mem_cache: MCacheMaxObjectCount) and
-      (mod_cache: CacheForceCompletion). 
-
-    mod_auth_ldap/util_ldap:
-    * General stabilization and testing
-    
+      jerenkrantz says: Yawn.  Who cares.
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
