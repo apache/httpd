@@ -296,7 +296,6 @@ static int file_cache_store_mydata(apr_file_t *fd , cache_handle_t *h, request_r
  */
 #define AP_TEMPFILE "/aptmpXXXXXX"
 static int create_entity(cache_handle_t *h, request_rec *r,
-                         const char *type,
                          const char *key,
                          apr_off_t len)
 {
@@ -306,10 +305,6 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     cache_object_t *obj;
     disk_cache_object_t *dobj;
     apr_file_t *tmpfile;
-
-    if (strcasecmp(type, "disk")) {
-        return DECLINED;
-    }
 
     if (conf->cache_root == NULL) {
         return DECLINED;
@@ -343,11 +338,6 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     if (rv == APR_SUCCESS) {
         /* Populate the cache handle */
         h->cache_obj = obj;
-        h->recall_body = &recall_body;
-        h->recall_headers = &recall_headers;
-        h->store_body = &store_body;
-        h->store_headers = &store_headers;
-        h->remove_entity = &remove_entity;
 
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
                      "disk_cache: Storing URL %s",  key);
@@ -362,7 +352,7 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     return OK;
 }
 
-static int open_entity(cache_handle_t *h, request_rec *r, const char *type, const char *key)
+static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
 {
     apr_status_t rc;
     static int error_logged = 0;
@@ -377,10 +367,6 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     h->cache_obj = NULL;
 
     /* Look up entity keyed to 'url' */
-    if (strcasecmp(type, "disk")) {
-        return DECLINED;
-    }
-
     if (conf->cache_root == NULL) {
         if (!error_logged) {
             error_logged = 1;
@@ -433,12 +419,6 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     }
 
     /* Initialize the cache_handle callback functions */
-    h->recall_body = &recall_body;
-    h->recall_headers = &recall_headers;
-    h->store_body = &store_body;
-    h->store_headers = &store_headers;
-    h->remove_entity = &remove_entity;
-
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "disk_cache: Recalled cached URL info header %s",  dobj->name);
     return OK;
@@ -448,6 +428,12 @@ static int remove_entity(cache_handle_t *h)
 {
     /* Null out the cache object pointer so next time we start from scratch  */
     h->cache_obj = NULL;
+    return OK;
+}
+
+static int remove_url(const char *key)
+{
+    /* XXX: Delete file from cache! */
     return OK;
 }
 
@@ -895,12 +881,23 @@ static const command_rec disk_cache_cmds[] =
     {NULL}
 };
 
+static const cache_provider cache_disk_provider =
+{
+    &remove_entity,
+    &store_headers,
+    &store_body,
+    &recall_headers,
+    &recall_body,
+    &create_entity,
+    &open_entity,
+    &remove_url,
+};
+
 static void disk_cache_register_hook(apr_pool_t *p)
 {
     /* cache initializer */
-    cache_hook_create_entity(create_entity, NULL, NULL, APR_HOOK_MIDDLE);
-    cache_hook_open_entity(open_entity,  NULL, NULL, APR_HOOK_MIDDLE);
-/*    cache_hook_remove_entity(remove_entity, NULL, NULL, APR_HOOK_MIDDLE); */
+    ap_register_provider(p, CACHE_PROVIDER_GROUP, "disk", "0",
+                         &cache_disk_provider);
 }
 
 module AP_MODULE_DECLARE_DATA disk_cache_module = {

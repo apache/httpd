@@ -17,12 +17,6 @@
 
 #include "mod_cache.h"
 
-APR_HOOK_STRUCT(
-	APR_HOOK_LINK(remove_url)
-	APR_HOOK_LINK(create_entity)
-	APR_HOOK_LINK(open_entity)
-)
-
 extern APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;
 
 extern module AP_MODULE_DECLARE_DATA cache_module;
@@ -33,22 +27,25 @@ extern module AP_MODULE_DECLARE_DATA cache_module;
  * delete all URL entities from the cache
  *
  */
-int cache_remove_url(request_rec *r, const char *types, char *url)
+int cache_remove_url(request_rec *r, char *url)
 {
-    const char *next = types;
-    const char *type;
+    cache_provider_list *list;
     apr_status_t rv;
     char *key;
+    cache_request_rec *cache = (cache_request_rec *) 
+                         ap_get_module_config(r->request_config, &cache_module);
 
     rv = cache_generate_key(r,r->pool,&key);
     if (rv != APR_SUCCESS) {
         return rv;
     }
 
+    list = cache->providers;
+
     /* for each specified cache type, delete the URL */
-    while(next) {
-        type = ap_cache_tokstr(r->pool, next, &next);
-        cache_run_remove_url(type, key);
+    while(list) {
+        list->provider->remove_url(key);
+        list = list->next;
     }
     return OK;
 }
@@ -65,11 +62,10 @@ int cache_remove_url(request_rec *r, const char *types, char *url)
  * decide whether or not it wants to cache this particular entity.
  * If the size is unknown, a size of -1 should be set.
  */
-int cache_create_entity(request_rec *r, const char *types, char *url, apr_off_t size)
+int cache_create_entity(request_rec *r, char *url, apr_off_t size)
 {
+    cache_provider_list *list;
     cache_handle_t *h = apr_pcalloc(r->pool, sizeof(cache_handle_t));
-    const char *next = types;
-    const char *type;
     char *key;
     apr_status_t rv;
     cache_request_rec *cache = (cache_request_rec *) 
@@ -79,15 +75,19 @@ int cache_create_entity(request_rec *r, const char *types, char *url, apr_off_t 
     if (rv != APR_SUCCESS) {
         return rv;
     }
+
+    list = cache->providers;
     /* for each specified cache type, delete the URL */
-    while (next) {
-        type = ap_cache_tokstr(r->pool, next, &next);
-        switch (rv = cache_run_create_entity(h, r, type, key, size)) {
+    while (list) {
+        switch (rv = list->provider->create_entity(h, r, key, size)) {
         case OK: {
             cache->handle = h;
+            cache->provider = list->provider;
+            cache->provider_name = list->provider_name;
             return OK;
         }
         case DECLINED: {
+            list = list->next;
             continue;
         }
         default: {
@@ -96,19 +96,6 @@ int cache_create_entity(request_rec *r, const char *types, char *url, apr_off_t 
         }
     }
     return DECLINED;
-}
-
-/*
- * remove a specific URL entity from the cache
- *
- * The specific entity referenced by the cache_handle is removed
- * from the cache, and the cache_handle is closed.
- */
-/* XXX Don't think we need to pass in request_rec or types ... */
-int cache_remove_entity(request_rec *r, const char *types, cache_handle_t *h)
-{
-    h->remove_entity(h);
-    return 1;
 }
 
 /*
@@ -122,10 +109,9 @@ int cache_remove_entity(request_rec *r, const char *types, cache_handle_t *h)
  * This function returns OK if successful, DECLINED if no
  * cached entity fits the bill.
  */
-int cache_select_url(request_rec *r, const char *types, char *url)
+int cache_select_url(request_rec *r, char *url)
 {
-    const char *next = types;
-    const char *type;
+    cache_provider_list *list;
     apr_status_t rv;
     cache_handle_t *h;
     char *key;
@@ -139,16 +125,19 @@ int cache_select_url(request_rec *r, const char *types, char *url)
     /* go through the cache types till we get a match */
     h = cache->handle = apr_palloc(r->pool, sizeof(cache_handle_t));
 
-    while (next) {
-        type = ap_cache_tokstr(r->pool, next, &next);
-        switch ((rv = cache_run_open_entity(h, r, type, key))) {
+    list = cache->providers;
+
+    while (list) {
+        switch ((rv = list->provider->open_entity(h, r, key))) {
         case OK: {
             char *vary = NULL;
             const char *varyhdr = NULL;
-            if (cache_recall_entity_headers(h, r) != APR_SUCCESS) {
+            if (list->provider->recall_headers(h, r) != APR_SUCCESS) {
                 /* TODO: Handle this error */
                 return DECLINED;
             }
+
+            r->filename = apr_pstrdup(r->pool, h->cache_obj->info.filename);
 
             /*
              * Check Content-Negotiation - Vary
@@ -205,10 +194,13 @@ int cache_select_url(request_rec *r, const char *types, char *url)
                     return DECLINED;
                 }
             }
+            cache->provider = list->provider;
+            cache->provider_name = list->provider_name;
             return OK;
         }
         case DECLINED: {
             /* try again with next cache type */
+            list = list->next;
             continue;
         }
         default: {
@@ -222,41 +214,6 @@ int cache_select_url(request_rec *r, const char *types, char *url)
     return DECLINED;
 }
 
-apr_status_t cache_store_entity_headers(cache_handle_t *h, 
-                                        request_rec *r, 
-                                        cache_info *info)
-{
-    return (h->store_headers(h, r, info));
-}
-
-apr_status_t cache_store_entity_body(cache_handle_t *h, request_rec *r,
-                                     apr_bucket_brigade *b) 
-{
-    return (h->store_body(h, r, b));
-}
-
-apr_status_t cache_recall_entity_headers(cache_handle_t *h, request_rec *r)
-{
-    apr_status_t rv;
-    cache_info *info = &(h->cache_obj->info);
-
-    /* Build the header table from info in the info struct */
-    rv = h->recall_headers(h, r);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
-
-    r->filename = apr_pstrdup(r->pool, info->filename );
-
-    return APR_SUCCESS;
-}
-
-apr_status_t cache_recall_entity_body(cache_handle_t *h, apr_pool_t *p,
-                                    apr_bucket_brigade *b)
-{
-    return (h->recall_body(h, p, b));
-}
-
 apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key ) 
 {
     if (r->hostname) {
@@ -267,17 +224,3 @@ apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key
     }
     return APR_SUCCESS;
 }
-
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, create_entity, 
-                                      (cache_handle_t *h, request_rec *r, const char *type, 
-                                      const char *urlkey, apr_off_t len),
-                                      (h, r, type,urlkey,len),DECLINED)
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, open_entity,  
-                                      (cache_handle_t *h, request_rec *r, const char *type, 
-                                      const char *urlkey),(h,r,type,urlkey),
-                                      DECLINED)
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(cache, CACHE, int, remove_url, 
-                                    (const char *type, const char *urlkey),
-                                    (type,urlkey),OK,DECLINED)
-
-

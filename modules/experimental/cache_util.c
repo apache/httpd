@@ -17,7 +17,7 @@
 
 #include "mod_cache.h"
 
-
+#include <ap_provider.h>
 
 /* -------------------------------------------------------------- */
 
@@ -33,28 +33,46 @@ CACHE_DECLARE(int) ap_cache_request_is_conditional(request_rec *r)
     return 0;
 }
 
-CACHE_DECLARE(const char *)ap_cache_get_cachetype(request_rec *r, 
+CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r,
                                                   cache_server_conf *conf, 
                                                   const char *url)
 {
-    const char *type = NULL;
+    cache_provider_list *providers = NULL;
     int i;
 
     /* we can't cache if there's no URL */
+    /* Is this case even possible?? */
     if (!url) return NULL;
 
     /* loop through all the cacheenable entries */
     for (i = 0; i < conf->cacheenable->nelts; i++) {
         struct cache_enable *ent = 
                                 (struct cache_enable *)conf->cacheenable->elts;
-        const char *thisurl = ent[i].url;
-        const char *thistype = ent[i].type;
-        if ((thisurl) && !strncasecmp(thisurl, url, strlen(thisurl))) {
-            if (!type) {
-                type = thistype;
+        if ((ent[i].url) && !strncasecmp(url, ent[i].url, ent[i].urllen)) {
+            /* Fetch from global config and add to the list. */
+            cache_provider *provider;
+            provider = ap_lookup_provider(CACHE_PROVIDER_GROUP, ent[i].type,
+                                          "0");
+            if (!provider) {
+                /* Log an error! */
             }
             else {
-                type = apr_pstrcat(r->pool, type, ",", thistype, NULL);
+                cache_provider_list *newp;
+                newp = apr_pcalloc(r->pool, sizeof(cache_provider_list));
+                newp->provider_name = ent[i].type;
+                newp->provider = provider;
+
+                if (!providers) {
+                    providers = newp;
+                }
+                else {
+                    cache_provider_list *last = providers;
+
+                    while (last->next) {
+                        last = last->next;
+                    }
+                    last->next = newp;
+                }
             }
         }
     }
@@ -67,13 +85,13 @@ CACHE_DECLARE(const char *)ap_cache_get_cachetype(request_rec *r,
     for (i = 0; i < conf->cachedisable->nelts; i++) {
         struct cache_disable *ent = 
                                (struct cache_disable *)conf->cachedisable->elts;
-        const char *thisurl = ent[i].url;
-        if ((thisurl) && !strncasecmp(thisurl, url, strlen(thisurl))) {
-            type = NULL;
+        if ((ent[i].url) && !strncasecmp(url, ent[i].url, ent[i].urllen)) {
+            /* Stop searching now. */
+            return NULL;
         }
     }
 
-    return type;
+    return providers;
 }
 
 

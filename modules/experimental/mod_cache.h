@@ -107,10 +107,12 @@
 struct cache_enable {
     const char *url;
     const char *type;
+    apr_size_t urllen;
 };
 
 struct cache_disable {
     const char *url;
+    apr_size_t urllen;
 };
 
 /* static information about the local cache */
@@ -175,20 +177,41 @@ struct cache_object {
 };
 
 typedef struct cache_handle cache_handle_t;
-struct cache_handle {
-    cache_object_t *cache_obj;
+
+#define CACHE_PROVIDER_GROUP "cache"
+
+typedef struct {
     int (*remove_entity) (cache_handle_t *h);
     apr_status_t (*store_headers)(cache_handle_t *h, request_rec *r, cache_info *i);
     apr_status_t (*store_body)(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
     apr_status_t (*recall_headers) (cache_handle_t *h, request_rec *r);
     apr_status_t (*recall_body) (cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb); 
+    int (*create_entity) (cache_handle_t *h, request_rec *r,
+                           const char *urlkey, apr_off_t len);
+    int (*open_entity) (cache_handle_t *h, request_rec *r,
+                           const char *urlkey);
+    int (*remove_url) (const char *urlkey);
+} cache_provider;
+
+/* A linked-list of authn providers. */
+typedef struct cache_provider_list cache_provider_list;
+
+struct cache_provider_list {
+    const char *provider_name;
+    const cache_provider *provider;
+    cache_provider_list *next;
+};
+
+struct cache_handle {
+    cache_object_t *cache_obj;
     apr_table_t *req_hdrs;   /* These are the original request headers */
 };
 
 /* per request cache information */
 typedef struct {
-    const char *types;			/* the types of caches allowed */
-    const char *type;			/* the type of cache selected */
+    cache_provider_list *providers;         /* possible cache providers */
+    const cache_provider *provider;         /* current cache provider */
+    const char *provider_name;              /* current cache provider name */
     int fresh;				/* is the entitey fresh? */
     cache_handle_t *handle;		/* current cache handle */
     int in_checked;			/* CACHE_IN must cache the entity */
@@ -218,7 +241,7 @@ CACHE_DECLARE(char *) generate_name(apr_pool_t *p, int dirlevels,
                                     int dirlength, 
                                     const char *name);
 CACHE_DECLARE(int) ap_cache_request_is_conditional(request_rec *r);
-CACHE_DECLARE(const char *)ap_cache_get_cachetype(request_rec *r, cache_server_conf *conf, const char *url);
+CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r, cache_server_conf *conf, const char *url);
 CACHE_DECLARE(int) ap_cache_liststr(apr_pool_t *p, const char *list,
                                     const char *key, char **val);
 CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str);
@@ -231,10 +254,9 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool, apr_ta
 /**
  * cache_storage.c
  */
-int cache_remove_url(request_rec *r, const char *types, char *url);
-int cache_create_entity(request_rec *r, const char *types, char *url, apr_off_t size);
-int cache_remove_entity(request_rec *r, const char *types, cache_handle_t *h);
-int cache_select_url(request_rec *r, const char *types, char *url);
+int cache_remove_url(request_rec *r, char *url);
+int cache_create_entity(request_rec *r, char *url, apr_off_t size);
+int cache_select_url(request_rec *r, char *url);
 apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key );
 /**
  * create a key for the cache based on the request record
@@ -242,12 +264,13 @@ apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key
  */
 const char* cache_create_key( request_rec*r );
 
+/*
 apr_status_t cache_store_entity_headers(cache_handle_t *h, request_rec *r, cache_info *info);
 apr_status_t cache_store_entity_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *bb);
 
 apr_status_t cache_recall_entity_headers(cache_handle_t *h, request_rec *r);
 apr_status_t cache_recall_entity_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
-
+*/
 
 /* hooks */
 
@@ -271,17 +294,6 @@ apr_status_t cache_recall_entity_body(cache_handle_t *h, apr_pool_t *p, apr_buck
 #define CACHE_DECLARE_NONSTD(type)     __declspec(dllimport) type
 #define CACHE_DECLARE_DATA             __declspec(dllimport)
 #endif
-
-APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, create_entity, 
-                          (cache_handle_t *h, request_rec *r, const char *type,
-                           const char *urlkey, apr_off_t len))
-APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, open_entity,  
-                          (cache_handle_t *h, request_rec *r, const char *type,
-                           const char *urlkey))
-APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, remove_url, 
-                          (const char *type, const char *urlkey))
-
-
 
 APR_DECLARE_OPTIONAL_FN(apr_status_t, 
                         ap_cache_generate_key, 
