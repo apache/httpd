@@ -7,19 +7,15 @@
 # See http://www.apache.org/docs/LICENSE
 
 OS=`./config.guess`
-#case "x$OS" in
-#  x*390*) CONFIGPARAM="--with-layout=BinaryDistribution --enable-module=most";;
-#      *) CONFIGPARAM="--with-layout=BinaryDistribution --enable-module=most --enable-shared=max";;
-#esac
+CONFIGPARAM="--with-layout=BinaryDistribution --prefix=`pwd`/bindist"
 APDIR=`pwd`
 APDIR=`basename $APDIR`
-VER=`echo $APDIR |sed s/httpd_//`
+VER=`echo $APDIR |sed s/apache_//`
 TAR="`build/PrintPath tar`"
 GTAR="`build/PrintPath gtar`"
 GZIP="`build/PrintPath gzip`"
 
-if [ x$1 != x ]
-then
+if [ x$1 != x ]; then
   USER=$1
 else
   USER="`build/buildinfo.sh -n %u@%h%d`"
@@ -54,7 +50,7 @@ echo "Platform is \"$OS\"..."
   echo "----------------------------------------------------------------------" && \
   make && \
   echo "----------------------------------------------------------------------" && \
-  make install-quiet root="bindist/" && \
+  make install root="bindist/" && \
   echo "----------------------------------------------------------------------" && \
   make clean && \
   echo "----------------------------------------------------------------------" && \
