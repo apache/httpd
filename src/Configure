@@ -667,15 +667,6 @@ case "$PLAT" in
 esac
 
 #
-# Now HS's POSIX regex implementation if needed/wanted
-#
-if [ "$RULE_WANTHSREGEX" = "yes" ]; then
-    REGLIB="regex/libregex.a"
-    SUBDIRS="$SUBDIRS regex"
-    INCLUDES_AUTODEPTH="$INCLUDES_AUTODEPTH regex"
-fi
-
-#
 # Now SOCKS4.
 #  NOTE: We assume that if they are using SOCKS4, then they've
 #   adjusted EXTRA_LIBS and/or EXTRA_LDFLAGS as required,
@@ -829,6 +820,16 @@ for modfile in $MODFILES ; do
 done
 
 # $tmpfile now contains Module lines for all the modules we want
+
+#
+# Now HS's POSIX regex implementation if needed/wanted. We do it
+# now since AddModule may have changed it
+#
+if [ "$RULE_WANTHSREGEX" = "yes" ]; then
+    REGLIB="regex/libregex.a"
+    SUBDIRS="$SUBDIRS regex"
+    INCLUDES_AUTODEPTH="$INCLUDES_AUTODEPTH regex"
+fi
 
 # create modules.c
 
