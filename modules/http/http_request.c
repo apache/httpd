@@ -192,11 +192,13 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
 
 static void check_pipeline_flush(request_rec *r)
 {
+    apr_bucket *e;
+    apr_bucket_brigade *bb;
     conn_rec *c = r->connection;
     /* ### if would be nice if we could PEEK without a brigade. that would
        ### allow us to defer creation of the brigade to when we actually
        ### need to send a FLUSH. */
-    apr_bucket_brigade *bb = apr_brigade_create(r->pool, c->bucket_alloc);
+    bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
     /* Flush the filter contents if:
      *
@@ -216,7 +218,7 @@ static void check_pipeline_flush(request_rec *r)
         }
     }
 
-        apr_bucket *e = apr_bucket_flush_create(c->bucket_alloc);
+        e = apr_bucket_flush_create(c->bucket_alloc);
 
         /* We just send directly to the connection based filters.  At
          * this point, we know that we have seen all of the data
