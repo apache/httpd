@@ -109,10 +109,6 @@ SOURCE=.\buildmark.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\explain.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\main\fnmatch.c
 # End Source File
 # Begin Source File

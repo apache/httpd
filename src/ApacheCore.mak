@@ -54,7 +54,6 @@ CLEAN :
 	-@erase "$(INTDIR)\alloc.obj"
 	-@erase "$(INTDIR)\buff.obj"
 	-@erase "$(INTDIR)\buildmark.obj"
-	-@erase "$(INTDIR)\explain.obj"
 	-@erase "$(INTDIR)\fnmatch.obj"
 	-@erase "$(INTDIR)\getopt.obj"
 	-@erase "$(INTDIR)\http_bprintf.obj"
@@ -125,7 +124,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\alloc.obj" \
 	"$(INTDIR)\buff.obj" \
 	"$(INTDIR)\buildmark.obj" \
-	"$(INTDIR)\explain.obj" \
 	"$(INTDIR)\fnmatch.obj" \
 	"$(INTDIR)\getopt.obj" \
 	"$(INTDIR)\http_bprintf.obj" \
@@ -196,8 +194,6 @@ CLEAN :
 	-@erase "$(INTDIR)\buff.sbr"
 	-@erase "$(INTDIR)\buildmark.obj"
 	-@erase "$(INTDIR)\buildmark.sbr"
-	-@erase "$(INTDIR)\explain.obj"
-	-@erase "$(INTDIR)\explain.sbr"
 	-@erase "$(INTDIR)\fnmatch.obj"
 	-@erase "$(INTDIR)\fnmatch.sbr"
 	-@erase "$(INTDIR)\getopt.obj"
@@ -300,7 +296,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\alloc.sbr" \
 	"$(INTDIR)\buff.sbr" \
 	"$(INTDIR)\buildmark.sbr" \
-	"$(INTDIR)\explain.sbr" \
 	"$(INTDIR)\fnmatch.sbr" \
 	"$(INTDIR)\getopt.sbr" \
 	"$(INTDIR)\http_bprintf.sbr" \
@@ -359,7 +354,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\alloc.obj" \
 	"$(INTDIR)\buff.obj" \
 	"$(INTDIR)\buildmark.obj" \
-	"$(INTDIR)\explain.obj" \
 	"$(INTDIR)\fnmatch.obj" \
 	"$(INTDIR)\getopt.obj" \
 	"$(INTDIR)\http_bprintf.obj" \
@@ -538,47 +532,6 @@ SOURCE=.\buildmark.c
 
 
 "$(INTDIR)\buildmark.obj"	"$(INTDIR)\buildmark.sbr" : $(SOURCE) "$(INTDIR)"
-
-
-!ENDIF 
-
-SOURCE=.\main\explain.c
-
-!IF  "$(CFG)" == "ApacheCore - Win32 Release"
-
-DEP_CPP_EXPLA=\
-	".\include\alloc.h"\
-	".\include\ap.h"\
-	".\include\buff.h"\
-	".\include\conf.h"\
-	".\include\explain.h"\
-	".\include\hsregex.h"\
-	".\include\httpd.h"\
-	".\os\win32\os.h"\
-	".\os\win32\readdir.h"\
-	
-
-"$(INTDIR)\explain.obj" : $(SOURCE) $(DEP_CPP_EXPLA) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
-
-DEP_CPP_EXPLA=\
-	".\include\alloc.h"\
-	".\include\ap.h"\
-	".\include\buff.h"\
-	".\include\conf.h"\
-	".\include\explain.h"\
-	".\include\hsregex.h"\
-	".\include\httpd.h"\
-	".\os\win32\os.h"\
-	".\os\win32\readdir.h"\
-	
-
-"$(INTDIR)\explain.obj"	"$(INTDIR)\explain.sbr" : $(SOURCE) $(DEP_CPP_EXPLA)\
- "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
 !ENDIF 
@@ -849,6 +802,7 @@ DEP_CPP_HTTP_M=\
 	".\include\httpd.h"\
 	".\include\multithread.h"\
 	".\include\scoreboard.h"\
+	".\include\util_script.h"\
 	".\os\win32\getopt.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
@@ -879,6 +833,7 @@ DEP_CPP_HTTP_M=\
 	".\include\httpd.h"\
 	".\include\multithread.h"\
 	".\include\scoreboard.h"\
+	".\include\util_script.h"\
 	".\os\win32\getopt.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
@@ -1054,6 +1009,9 @@ DEP_CPP_HTTP_V=\
 !ENDIF 
 
 SOURCE=.\main\md5c.c
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
 DEP_CPP_MD5C_=\
 	".\include\conf.h"\
 	".\include\hsregex.h"\
@@ -1061,15 +1019,18 @@ DEP_CPP_MD5C_=\
 	".\os\win32\os.h"\
 	
 
-!IF  "$(CFG)" == "ApacheCore - Win32 Release"
-
-
 "$(INTDIR)\md5c.obj" : $(SOURCE) $(DEP_CPP_MD5C_) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
+DEP_CPP_MD5C_=\
+	".\include\conf.h"\
+	".\include\hsregex.h"\
+	".\include\md5.h"\
+	".\os\win32\os.h"\
+	
 
 "$(INTDIR)\md5c.obj"	"$(INTDIR)\md5c.sbr" : $(SOURCE) $(DEP_CPP_MD5C_)\
  "$(INTDIR)"
@@ -1489,7 +1450,6 @@ DEP_CPP_MOD_DL=\
 	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
-	".\include\http_log.h"\
 	".\include\httpd.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
@@ -1508,7 +1468,6 @@ DEP_CPP_MOD_DL=\
 	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
-	".\include\http_log.h"\
 	".\include\httpd.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
@@ -2166,6 +2125,9 @@ DEP_CPP_UTIL_=\
 !ENDIF 
 
 SOURCE=.\main\util_date.c
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
 DEP_CPP_UTIL_D=\
 	".\include\conf.h"\
 	".\include\hsregex.h"\
@@ -2173,15 +2135,18 @@ DEP_CPP_UTIL_D=\
 	".\os\win32\os.h"\
 	
 
-!IF  "$(CFG)" == "ApacheCore - Win32 Release"
-
-
 "$(INTDIR)\util_date.obj" : $(SOURCE) $(DEP_CPP_UTIL_D) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
+DEP_CPP_UTIL_D=\
+	".\include\conf.h"\
+	".\include\hsregex.h"\
+	".\include\util_date.h"\
+	".\os\win32\os.h"\
+	
 
 "$(INTDIR)\util_date.obj"	"$(INTDIR)\util_date.sbr" : $(SOURCE)\
  $(DEP_CPP_UTIL_D) "$(INTDIR)"
