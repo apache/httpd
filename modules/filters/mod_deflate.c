@@ -863,9 +863,8 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
 
     if (!ctx) {
         int found = 0;
-        char *token, deflate_hdr[10];
+        char *token;
         const char *encoding;
-        apr_size_t len;
 
         /* only work on main request/no subrequests */
         if (r->main) {
