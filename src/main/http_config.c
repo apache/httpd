@@ -804,8 +804,9 @@ const char *handle_command(cmd_parms *parms, void *config, const char *l)
     do {
 	if (!(cmd = find_command_in_modules(cmd_name, &mod))) {
             errno = EINVAL;
-            return pstrcat(parms->pool, "Invalid command '", cmd_name, "'",
-                           NULL);
+            return pstrcat(parms->pool, "Invalid command '", cmd_name,
+                           "', perhaps mis-spelled or defined by a module "
+                           "not included in the server configuration", NULL);
 	}
 	else {
 	    void *mconfig = get_module_config(config, mod);
