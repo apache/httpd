@@ -387,7 +387,7 @@ if test -z "$LAYOUT"; then
   iconsdir='$(prefix)/icons'
   cgidir='$(prefix)/cgi-bin'
   logdir='$(prefix)/logs'
-  sysconfdir='$(prefix)/conf'
+  sysconfdir='${prefix}/conf'
   layout_name=Apache
 else  
   APACHE_LAYOUT($srcdir/../config.layout, $LAYOUT)
