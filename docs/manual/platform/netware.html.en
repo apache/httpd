@@ -514,28 +514,14 @@
         <li>Download the source code and unzip to an appropriate directory on
         your workstation.</li>
 
-        <li>Change directory to <code>\httpd-2.0\srclib\apr-util\uri</code> and build
-        <code>GENURI.nlm</code> by running "<code>gmake -f nwgnumakefile</code>".</li>
-
-        <li>Copy the file <code>GENURI.nlm</code> to the <code>SYS:</code> volume
-        of a NetWare server and run using the following command:
-          <div class="example"><p><code>SYS:\genuri &gt; sys:\uri_delims.h</code></p></div>
+        <li>Change directory to <code>\httpd-2.0</code> and build the prebuild utilities
+        by running "<code>gmake -f nwgnumakefile prebuild</code>". This target will create
+        the directory <code>\httpd-2.0\nwprebuild</code> and copy each of the utilities 
+        to this location that are necessary to complete the following build steps.
         </li>
 
-        <li>Copy the file <code>uri_delims.h</code> to the directory
-        <code>\httpd-2.0\srclib\apr-util\uri</code> on the build machine.</li>
-
-        <li>Change directory to <code>\httpd-2.0\srclib\apr</code> and build APR
-        by running "<code>gmake -f nwgnumakefile</code>"</li>
-
-        <li>Change directory to <code>\httpd-2.0\srclib\pcre</code> and build
-        <code>DFTABLES.nlm</code> by running "<code>gmake -f nwgnumakefile</code>"</li>
-
-        <li>Change directory to <code>\httpd-2.0\server</code> and build
-        <code>GENCHARS.nlm</code> by running "<code>gmake -f nwgnumakefile</code>"</li>
-
-        <li>Copy the files <code>GENCHARS.nlm</code> and <code>DFTABLES.nlm</code>
-        from their respective directories to the <code>SYS:</code> volume of a
+        <li>Copy the files <code>\httpd-2.0\nwprebuild\GENCHARS.nlm</code> and 
+        <code>\httpd-2.0\nwprebuild\DFTABLES.nlm</code> to the <code>SYS:</code> volume of a
         NetWare server and run them using the following commands:
           <div class="example"><p><code>
             SYS:\genchars &gt; sys:\test_char.h<br />
@@ -570,12 +556,15 @@
         distribution with binaries, docs and additional support files in a
         <code>\dist\Apache2</code> directory.</p></li>
 
+        <li><code>gmake -f nwgnumakefile prebuild</code><p>Builds all of the prebuild utilities
+        and copies them to the <code>\nwprebuild</code> directory.</p></li>
+
         <li><code>gmake -f nwgnumakefile installdev</code><p>Same as install but also creates a
         <code>\lib</code> and <code>\include</code> directory in the destination directory
         and copies headers and import files.</p></li>
 
         <li><code>gmake -f nwgnumakefile clean</code><p>Cleans all object files and binaries
-        from the <code>\release</code> or <code>\debug</code> build areas depending on whether
+        from the <code>\release.o</code> or <code>\debug.o</code> build areas depending on whether
         <code>DEBUG</code> has been defined.</p></li>
 
         <li><code>gmake -f nwgnumakefile clobber_all</code><p>Same as clean and also deletes

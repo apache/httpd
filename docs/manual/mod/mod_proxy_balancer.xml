@@ -23,8 +23,7 @@
 <modulesynopsis metafile="mod_proxy_balancer.xml.meta">
 
 <name>mod_proxy_balancer</name>
-<description><module>mod_proxy</module> extension for
-load balancing </description>
+<description><module>mod_proxy</module> extension for load balancing </description>
 <status>Extension</status>
 <sourcefile>proxy_balancer.c</sourcefile>
 <identifier>proxy_balancer_module</identifier>
@@ -51,10 +50,25 @@ load balancing </description>
 
 <section id="scheduler">
     <title>Load balancer scheduler algorithm</title>
-    <p>The idea behind this scheduler is the following:</p>
+    <p>At present, there are 2 load balancer scheduler algorithms available
+    for use: Request Counting and Weighted Traffic Counting. These are controlled
+    via the <code>lbmethod</code> value of the Balancer definition. See
+    the <directive module="mod_proxy">Proxy</directive> directive for
+    more information.</p>
+
+</section>
+
+<section id="requests">
+    <title>Request Counting Algorithm</title>
+    <p>Enabled via <code>lbmethod=requests</code>, the idea behind this
+    scheduler is that we distribute the requests among the
+    various workers to ensure that each gets their configured share
+    of the number of requests. It works as follows:</p>
 
     <p><dfn>lbfactor</dfn> is <em>how much we expect this worker
-    to work</em>, or <em>the workers's work quota</em>.</p>
+    to work</em>, or <em>the workers's work quota</em>. This is
+    a normalized value representing their "share" of the amount of
+    work to be done.</p>
 
     <p><dfn>lbstatus</dfn> is <em>how urgent this worker has to work
     to fulfill its quota of work</em>.</p>
@@ -66,7 +80,8 @@ load balancing </description>
     which of them needs to work most urgently (biggest lbstatus).  This
     worker is then selected for work, and its lbstatus reduced by the
     total work quota we distributed to all workers.  Thus the sum of all
-    lbstatus does not change.(*)</p>
+    lbstatus does not change(*) and we distribute the requests
+    as desired.</p>
 
     <p>If some workers are disabled, the others will
     still be scheduled correctly.</p>
@@ -128,7 +143,52 @@ candidate lbstatus -= total factor</code></pre>
 
     <p>That is it schedules: <var>a</var> <var>c</var> <var>d</var>
     <var>a</var> <var>c</var> <var>d</var> <var>a</var> <var>c</var>
-    <var>d</var> ...</p>
+    <var>d</var> ... Please note that:</p>
+
+    <table style="data">
+    <tr><th>worker</th>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th>
+        <th>d</th></tr>
+    <tr><th>lbfactor</th>
+        <td>25</td>
+        <td>25</td>
+        <td>25</td>
+        <td>25</td></tr>
+    </table>
+
+    <p>Has the exact same behavior as:</p>
+
+    <table style="data">
+    <tr><th>worker</th>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th>
+        <th>d</th></tr>
+    <tr><th>lbfactor</th>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td></tr>
+    </table>
+
+    <p>This is because all values of <dfn>lbfactor</dfn> are normalized
+    with respect to the others. For:</p>
+
+    <table style="data">
+    <tr><th>worker</th>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th></tr>
+    <tr><th>lbfactor</th>
+        <td>1</td>
+        <td>4</td>
+        <td>1</td></tr>
+    </table>
+
+    <p>worker <var>b</var> will, on average, get 4 times the requests
+    that <var>a</var> and <var>c</var> will.</p>
 
     <p>The following asymmetric configuration works as one would expect:</p>
 
@@ -175,6 +235,40 @@ candidate lbstatus -= total factor</code></pre>
 
     <p>That is after 10 schedules, the schedule repeats and 7 <var>a</var>
     are selected with 3 <var>b</var> interspersed.</p>
+</section>
+
+<section id="traffic">
+    <title>Weighted Traffic Counting Algorithm</title>
+    <p>Enabled via <code>lbmethod=traffic</code>, the idea behind this
+    scheduler is very similar to the Request Counting method, with
+    the following changes:</p>
+
+    <p><dfn>lbfactor</dfn> is <em>how much traffic, in bytes, we want
+    this worker to handle</em>. This is also a normalized value
+    representing their "share" of the amount of work to be done,
+    but instead of simply counting the number of requests, we take
+    into account the amount of traffic this worker has seen.</p>
+
+    <p>If a balancer is configured as follows:</p>
+    
+    <table style="data">
+    <tr><th>worker</th>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th></tr>
+    <tr><th>lbfactor</th>
+        <td>1</td>
+        <td>2</td>
+        <td>1</td></tr>
+    </table>
+
+    <p>Then we mean that we want <var>b</var> to process twice the
+    amount of bytes than <var>a</var> or <var>c</var> should. It does
+    not necessarily mean that <var>b</var> would handle twice as
+    many requests, but it would process twice the I/O. Thus, the
+    size of the request and response are applied to the weighting
+    and selection algorithm.</p>
+
 </section>
 
 <section id="enable">
