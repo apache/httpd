@@ -24,8 +24,8 @@
 
 </summary>
 
-<seealso><a href="invoking.html">Starting</a></seealso>
-<seealso><a href="stopping.html">Stopping or Restarting</a></seealso>
+<seealso><a href="invoking.html">Starting Apache</a></seealso>
+<seealso><a href="stopping.html">Stopping and Restarting</a></seealso>
 
 <section id="overview"><title>Overview for the
     impatient</title>
@@ -144,19 +144,9 @@
 <section id="download"><title>Download</title>
 
     <p>Apache can be downloaded from the <a
-    href="http://www.apache.org/dist/httpd/">Apache Software
-    Foundation download site</a> or from a <a
-    href="http://www.apache.org/dyn/closer.cgi/httpd/">nearby
-    mirror</a>.</p>
-
-    <p>Version numbers that end in <code>alpha</code> indicate
-    early pre-test versions which may or may not work. Version
-    numbers ending in <code>beta</code> indicate more reliable
-    releases that still require further testing or bug fixing. If
-    you wish to download the best available production release of
-    the Apache HTTP Server, you should choose the latest version
-    with neither <code>alpha</code> nor <code>beta</code> in its
-    filename.</p>
+    href="http://httpd.apache.org/download.cgi">Apache HTTP Server
+    download site</a> which lists several mirrors. You'll find here
+    the latest stable release.</p>
 
     <p>After downloading, especially if a mirror site is used, it
     is important to verify that you have a complete and unmodified
@@ -164,10 +154,10 @@
     testing the downloaded tarball against the PGP signature. This,
     in turn, is a two step procedure. First, you must obtain the
     <code>KEYS</code> file from the <a
-    href="http://www.apache.org/dist/httpd/">Apache distribution
-    site</a>. (To assure that the <code>KEYS</code> file itself has
-    not been modified, it may be a good idea to use a file from a
-    previous distribution of Apache or import the keys from a
+    href="http://httpd.apache.org/download.cgi">Apache HTTP
+    Server download site</a>, too. (To assure that the <code>KEYS</code>
+    file itself has not been modified, it may be a good idea to use a
+    file from a previous distribution of Apache or import the keys from a
     public key server.) The keys are imported into your personal
     key ring using one of the following commands (depending on your
     pgp version):</p>
@@ -180,7 +170,7 @@
 
     <p>The next step is to test the tarball against the PGP
     signature, which should always be obtained from the <a
-    href="http://www.apache.org/dist/httpd/">main Apache
+    href="http://httpd.apache.org/download.cgi">main Apache
     website</a>. The signature file has a filename identical to the
     source tarball with the addition of <code>.asc</code>. Then you
     can check the distribution with one of the following commands
