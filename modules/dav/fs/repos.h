@@ -95,5 +95,7 @@ void dav_dbm_get_statefiles(ap_pool_t *p, const char *fname,
 /* where is the lock database located? */
 const char *dav_get_lockdb_path(const request_rec *r);
 
+int dav_fs_hook_get_resource(request_rec *r, const char *root_dir,
+                             const char *workspace);
 
 #endif /* _DAV_FS_REPOS_H_ */
