@@ -3239,6 +3239,10 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                "core_output_filter: writing data to the network");
             if (more)
                 apr_brigade_destroy(more);
+            if (APR_STATUS_IS_ECONNABORTED(rv) ||
+                APR_STATUS_IS_ECONNRESET(rv)) {
+                c->aborted = 1;
+            }
             return rv;
         }
     
