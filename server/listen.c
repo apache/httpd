@@ -85,11 +85,21 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     apr_status_t stat;
     apr_port_t port;
     char *ipaddr;
+    apr_sockaddr_t *localsa;
 
     apr_get_port(&port, APR_LOCAL, s);
     apr_get_ipaddr(&ipaddr, APR_LOCAL, s);
     apr_snprintf(addr, sizeof(addr), "address %s port %u", ipaddr,
 		(unsigned) port);
+
+    stat = apr_getaddrinfo(&localsa, ipaddr, APR_INET, port, 0, p);
+    if (stat != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, stat, NULL,
+                     "make_sock: for %s/%hu, apr_getaddrinfo() failed", 
+                     ipaddr, port);
+        apr_close_socket(s);
+        return stat;
+    }
 
     stat = apr_setsocketopt(s, APR_SO_REUSEADDR, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
@@ -140,7 +150,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     ap_sock_disable_nagle(s);
 #endif
 
-    if ((stat = apr_bind(s)) != APR_SUCCESS) {
+    if ((stat = apr_bind(s, localsa)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, stat, NULL,
 	    "make_sock: could not bind to %s", addr);
 	apr_close_socket(s);
@@ -197,7 +207,8 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
     /* this has to survive restarts */
     new = apr_palloc(process->pool, sizeof(ap_listen_rec));
     new->active = 0;
-    if ((status = apr_create_tcp_socket(&new->sd, process->pool)) != APR_SUCCESS) {
+    if ((status = apr_create_socket(&new->sd, APR_INET, SOCK_STREAM, 
+                                    process->pool)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL,
                  "make_sock: failed to get a socket for %s", addr);
         return;

@@ -486,6 +486,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
     (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
     struct noproxy_entry *npent = (struct noproxy_entry *) conf->noproxies->elts;
     struct nocache_entry *ncent = (struct nocache_entry *) conf->nocaches->elts;
+    apr_sockaddr_t *localsa;
 
 /* stuff for PASV mode */
     unsigned int presult, h0, h1, h2, h3, p0, p1;
@@ -566,7 +567,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
     if (parms != NULL)
 	*(parms++) = '\0';
 
-    if ((apr_create_tcp_socket(&sock, r->pool)) != APR_SUCCESS) {
+    if ((apr_create_socket(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "proxy: error creating socket");
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -787,7 +788,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
     }
 
 /* try to set up PASV data connection first */
-    if ((apr_create_tcp_socket(&dsock, r->pool)) != APR_SUCCESS) {
+    if ((apr_create_socket(&dsock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		     "proxy: error creating PASV socket");
 	ap_bclose(f);
@@ -865,7 +866,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
     }
 
     if (!pasvmode) {		/* set up data connection */
-	if ((apr_create_tcp_socket(&dsock, r->pool)) != APR_SUCCESS) {
+	if ((apr_create_socket(&dsock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 			 "proxy: error creating socket");
 	    ap_bclose(f);
@@ -873,8 +874,6 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
 	}
         apr_get_port(&npport, APR_LOCAL, sock);
         apr_get_ipaddr(&npaddr, APR_LOCAL, sock);
-        apr_set_port(dsock, APR_LOCAL, npport);
-        apr_set_ipaddr(dsock, APR_LOCAL, npaddr);
 
 	if (apr_setsocketopt(dsock, APR_SO_REUSEADDR, one) != APR_SUCCESS) {
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */
@@ -886,7 +885,15 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
 #endif /*_OSD_POSIX*/
 	}
 
-	if (apr_bind(dsock) != APR_SUCCESS) {
+        if (apr_getaddrinfo(&localsa, npaddr, APR_INET, npport, 0, r->pool) 
+            != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "proxy: error creating local socket address");
+            ap_bclose(f);
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+
+	if (apr_bind(dsock, localsa) != APR_SUCCESS) {
 	    char buff[22];
 
 	    apr_snprintf(buff, sizeof(buff), "%s:%d", npaddr, npport);
