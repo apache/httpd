@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/11/06 22:08:36 $]
+  Last modified at [$Date: 2000/11/10 01:30:55 $]
 
 Release:
 
@@ -35,13 +35,6 @@ RELEASE SHOWSTOPPERS:
       Message-ID: <20001101001706.G16227@hand.dotat.at>
       which has now been committed. There have been a couple of
       reports that it fixes the problem.
-
-    * Parse the ServerName arg for invalid characters at startup.
-      Bug report 6787 and others are very confused that these bugs
-      don't appear until requests to the invalid hostname are
-      rejected in http_protocol.c - wasting bug reviewers time.
-      This problem can also be addressed by relaxing the host
-      header syntax check. fanf has a patch.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 

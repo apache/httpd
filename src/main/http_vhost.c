@@ -685,6 +685,16 @@ void ap_fini_vhost_config(pool *p, server_rec *main_s)
 
 /* Lowercase and remove any trailing dot and/or :port from the hostname,
  * and check that it is sane.
+ *
+ * In most configurations the exact syntax of the hostname isn't
+ * important so strict sanity checking isn't necessary. However, in
+ * mass hosting setups (using mod_vhost_alias or mod_rewrite) where
+ * the hostname is interpolated into the filename, we need to be sure
+ * that the interpolation doesn't expose parts of the filesystem.
+ * We don't do strict RFC 952 / RFC 1123 syntax checking in order
+ * to support iDNS and people who erroneously use underscores.
+ * Instead we just check for filesystem metacharacters: directory
+ * separators / and \ and sequences of more than one dot.
  */
 static void fix_hostname(request_rec *r)
 {
@@ -696,21 +706,17 @@ static void fix_hostname(request_rec *r)
     src = r->hostname;
     dst = host;
     while (*src) {
-	if (!ap_isalnum(*src) && *src != '-') {
-	    if (*src == '.') {
-		*dst++ = *src++;
-		if (*src == '.')
-		    goto bad;
-		else
-		    continue;
-	    }
-	    if (*src == ':')
-		break;
-	    else
-		goto bad;
-	} else {
+	if (*src == '.') {
 	    *dst++ = *src++;
+	    if (*src == '.')
+		goto bad;
+	    else
+		continue;
 	}
+	if (*src == '/' || *src == '\\') {
+	    goto bad;
+	}
+	*dst++ = *src++;
     }
     /* check the port part */
     if (*src++ == ':') {
