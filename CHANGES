@@ -1,5 +1,9 @@
 Changes with Apache 2.0.50
 
+  *) Fix a bunch of cases where the return code of the regex compiler
+     was not checked properly. This affects: mod_setenvif, mod_usertrack,
+     mod_proxy, mod_proxy_ftp and core. PR 28218.  [André Malo]
+
   *) mod_ssl: Fix a potential segfault in the 'shmcb' session cache for
      small cache sizes.  PR 27751.  [Geoff Thorpe <geoff geoffthorpe.net>]
 

@@ -174,11 +174,12 @@ static int is_header_regex(apr_pool_t *p, const char* name)
      */
     regex_t *preg = ap_pregcomp(p, "^[-A-Za-z0-9_]*$",
                                 (REG_EXTENDED | REG_NOSUB ));
-    if (preg) {
-        if (ap_regexec(preg, name, 0, NULL, 0)) {
-            return 1;
-        }
+    ap_assert(preg != NULL);
+
+    if (ap_regexec(preg, name, 0, NULL, 0)) {
+        return 1;
     }
+
     return 0;
 }
 

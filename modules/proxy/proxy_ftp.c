@@ -430,6 +430,7 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
         /* Compile the output format of "ls -s1" as a fallback for non-unix ftp listings */
         re = ap_pregcomp(p, LS_REG_PATTERN, REG_EXTENDED);
+        ap_assert(re != NULL);
 
         /* get a complete line */
         /* if the buffer overruns - throw data away */
