@@ -2342,19 +2342,30 @@
     rel="Help"><strong>Context:</strong></a> server config, virtual
     host<br />
      <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> core 
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> In version 2.0, this
+     directive supercedes the functionality of the <code>Port</code>
+     directive from version 1.3.
 
-    <p>The ServerName directive sets the hostname of the server;
-    this is used when creating redirection URLs. If it is not
-    specified, then the server attempts to deduce it from its own
-    IP address; however this may not work reliably, or may not
-    return the preferred hostname. For example:</p>
+    <p>The <code>ServerName</code> directive sets the hostname and
+    port that the server uses to identify itself.  This is used when
+    creating redirection URLs.  For example, if the name of the
+    machine hosting the webserver is <code>simple.example.com</code>,
+    but the machine also has the DNS alias <code>www.example.com</code>
+    and you wish the webserver to be so identified, the following
+    directive should be used:</p>
 
     <blockquote>
       <code>ServerName www.example.com:80</code>
     </blockquote>
-    would be used if the canonical (main) name of the actual
-    machine were <code>simple.example.com</code>. 
+
+    <p>If no <code>ServerName</code> is specified, then the server attempts
+    to deduce the hostname by performing a reverse lookup on the IP
+    address.  If no port is specified in the servername, then the 
+    server will use the port from the incoming request.  For optimal
+    reliability and predictability, you should specify an explict
+    hostname and port using the <code>ServerName</code> directive.</p>
 
     <p>If you are using <a
     href="../vhosts/name-based.html">name-based virtual hosts</a>,
@@ -2362,14 +2373,6 @@
     href="#virtualhost"><code>&lt;VirtualHost&gt;</code></a>
     section specifies what hostname must appear in the request's
     <code>Host:</code> header to match this virtual host.</p>
-
-    <p>This directive now allows a port to be added to the
-    server name.  This allows an admin to assign the canonical
-    port at the same time that the canonical name is assigned.
-    If no port was specified, Apache implies port 80 for http://
-    and port 443 for https:// requests.<br>
-    The <b>Port</b> directive in Apache-1.3, which used to perform
-    this role, has been removed, easing configuration for all users.</p>
 
     <p>See the description of the
     <a href="#usecanonicalname">UseCanonicalName</a> directive for
