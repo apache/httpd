@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
-<!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd"
-  [ <!ENTITY allmodules SYSTEM "allmodules.xml.ja"> ]
->
+<!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.7.2.5 -->
+<!-- English Revision: 1.7.2.6 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -36,6 +34,4 @@
       あります。
     </p>
   </summary>
-
-  &allmodules;
 </directiveindex>

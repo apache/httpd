@@ -1,9 +1,7 @@
 <?xml version='1.0' encoding='KOI8-R' ?>
-<!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd"
-  [ <!ENTITY allmodules SYSTEM "allmodules.xml.ru"> ]
->
+<!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ru.xsl"?>
-<!-- English Revision: 1.7 (outdated: 1.7.2.5) -->
+<!-- English Revision: 1.7 (outdated: 1.7.2.6) -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -44,6 +42,4 @@
       по всем директивам.
     </p>
   </summary>
-
-  &allmodules;
 </directiveindex>
