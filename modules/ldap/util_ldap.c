@@ -261,22 +261,16 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
     */
     if (NULL == ldc->ldap)
     {
-        /* To work around a bug in the Netware SDK, if no client certs are
-         * present (Netware client certs are global), we apply the SSL
-         * settings immediately. If client certs are present, we defer the
-         * setting of SSL on the connection until later.
-         */
-
         /* Since the host will include a port if the default port is not used,
-         * always specify the default ports for the port parameter.  This will allow
-         * a host string that contains multiple hosts the ability to mix some
-         * hosts with ports and some without. All hosts which do not specify 
-         * a port will use the default port.
+         * always specify the default ports for the port parameter.  This will
+         * allow a host string that contains multiple hosts the ability to mix
+         * some hosts with ports and some without. All hosts which do not
+         * specify a port will use the default port.
          */
         apr_ldap_init(ldc->pool, &(ldc->ldap),
                       ldc->host,
                       APR_LDAP_SSL == ldc->secure ? LDAPS_PORT : LDAP_PORT,
-                      apr_is_empty_array(ldc->client_certs) ? ldc->secure : APR_LDAP_NONE,
+                      APR_LDAP_NONE,
                       &(result));
 
 
@@ -310,8 +304,7 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
         }
 
         /* switch on SSL/TLS */
-        if (!apr_is_empty_array(ldc->client_certs)) {
-
+        if (APR_LDAP_NONE != ldc->secure) {
             apr_ldap_set_option(ldc->pool, ldc->ldap, 
                                 APR_LDAP_OPT_TLS, &ldc->secure, &(result));
             if (LDAP_SUCCESS != result->rc) {
