@@ -396,9 +396,7 @@ PATCHES TO BACKPORT FROM 2.1
 	   "as is". 
 
     * ThreadStackSize for Win32 and threaded MPMs
-      (if there is sufficient interest I'll pursue getting APR 0.9
-      fixed up as well as putting together a patch for httpd 2.0.next
-      which integrates the two rounds of changes)
+      trawick will eventually put together a patch for httpd 2.0.next
       +1 concept: trawick, nd, stoddard, wrowe
 
     * mod_cache: Add CacheIgnoreHeaders directive.
