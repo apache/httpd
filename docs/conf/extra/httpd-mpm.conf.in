@@ -5,6 +5,15 @@
 # installed httpd.  Use "apachectl -l" to find out the
 # active mpm.
 
+#
+# PidFile: The file in which the server should record its process
+# identification number when it starts.
+#
+# Note that this is the default PidFile for most MPMs.
+#
+<IfModule !mpm_netware_module>
+    PidFile @rel_runtimedir@/httpd.pid
+</IfModule>
 
 # prefork MPM
 # StartServers: number of server processes to start
