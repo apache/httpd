@@ -1777,8 +1777,6 @@ module MODULE_VAR_EXPORT mpm_mpmt_pthread_module = {
     NULL,			/* handlers */
     NULL,			/* check auth */
     NULL,			/* check access */
-    NULL,			/* type_checker */
-    NULL,			/* pre-run fixups */
     NULL			/* register hooks */
 };
 
