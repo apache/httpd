@@ -918,10 +918,13 @@ unaffected by the &lt;Limit&gt;. Example:
 &lt;Limit GET POST&gt;<br>
 require valid-user<br>
 &lt;/Limit&gt;</code></blockquote>
-If an access control directive appears outside a &lt;Limit&gt; directive,
-then it applies to all access methods.  <STRONG>If you wish to limit
-all methods, do not include any &lt;Limit&gt; directive at all.</STRONG>
-<p><hr>
+
+If an access control directive appears outside a &lt;Limit&gt;
+directive, then it applies to all access methods. The method names
+listed can be one or more of: GET, POST, PUT, DELETE, CONNECT or
+OPTIONS. If GET is used it will also restrict HEAD requests.
+<STRONG>If you wish to limit all methods, do not include any
+&lt;Limit&gt; directive at all.</STRONG> <p><hr>
 
 <h2><a name="location">&lt;Location&gt; directive</a></h2>
 
