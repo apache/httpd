@@ -102,8 +102,6 @@ module status_module;
 
 void format_byte_out(request_rec *r,unsigned long bytes)
 {
-    char ss[20];
-
     if (bytes < (5 * KBYTE))
 	rprintf(r,"%d B",(int)bytes);
     else if (bytes < (MBYTE / 2))
