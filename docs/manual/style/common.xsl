@@ -9,8 +9,6 @@
   <!-- files and the translation "stuff"...                     -->
   <!--                                                          -->
 
-
-
   <!-- Constants used for case translation -->
   <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
   <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
@@ -347,8 +345,21 @@
 
   <xsl:template name="head">
     <head>
+      <xsl:comment>
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      </xsl:comment>
       <title>
-        <xsl:value-of select="title"/>
+        <xsl:choose>
+          <xsl:when test="name">
+            <xsl:value-of select="name"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="title"/>
+          </xsl:otherwise>
+        </xsl:choose>
+        <xsl:text> </xsl:text>
         <xsl:value-of select="$messages/message[@name='apachetitle']"/>
       </title>
       
