@@ -78,7 +78,6 @@
 static struct
 {
     int (*main_fn)(int, char **);
-    event *stop_event;
     int connected;
     SERVICE_STATUS_HANDLE hServiceStatus;
     char *name;
@@ -430,7 +429,6 @@ int service_main(int (*main_fn)(int, char **), int argc, char **argv )
     is_service = 1;
 
     globdat.main_fn = main_fn;
-    globdat.stop_event = create_event(0, 0, "apache-signal");
     globdat.connected = 1;
 
     if(!StartServiceCtrlDispatcher(dispatchTable))
@@ -442,7 +440,6 @@ int service_main(int (*main_fn)(int, char **), int argc, char **argv )
     }
     else
     {
-
         return(globdat.exit_status);
     }
 }
@@ -770,13 +767,10 @@ void service_set_status(int status)
 //  RETURN VALUE:
 //    none
 //
-//  COMMENTS:
+//  COMMENTS:  See the user-defined Handler() entry in the PSDK
 //
 VOID WINAPI service_ctrl(DWORD dwCtrlCode)
 {
-    int state;
-
-    state = globdat.ssStatus.dwCurrentState;
     switch(dwCtrlCode)
     {
         // Stop the service.
@@ -785,31 +779,29 @@ VOID WINAPI service_ctrl(DWORD dwCtrlCode)
         case SERVICE_CONTROL_STOP:
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, NULL,
                          "Service Stop/Shutdown signaled, shutting down server.");
-            state = SERVICE_STOP_PENDING;
-	    ap_start_shutdown();
+            ReportStatusToSCMgr(SERVICE_STOP_PENDING, NO_ERROR, 15000);
+            ap_start_shutdown();
+            ReportStatusToSCMgr(SERVICE_STOPPED, NO_ERROR, 0);
             break;
 
         case SERVICE_APACHE_RESTART:
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, NULL,
                          "Service Restart signaled, shutting down server.");
-            state = SERVICE_START_PENDING;
-	    ap_start_restart(1);
+            ReportStatusToSCMgr(SERVICE_START_PENDING, NO_ERROR, 15000);
+            ap_start_restart(1);
             break;
 
         // Update the service status.
         //
         case SERVICE_CONTROL_INTERROGATE:
-            ReportStatusToSCMgr(state, NO_ERROR, 0);
-            return;
+            ReportStatusToSCMgr(globdat.ssStatus.dwCurrentState, NO_ERROR, 0);
+            break;
 
-        // invalid control code
+        // invalid control code, ignored
         //
         default:
-            return;
-
+            break;
     }
-
-    ReportStatusToSCMgr(state, NO_ERROR, 15000);
 }
 
 
@@ -819,7 +811,7 @@ int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
     static int checkPoint = 1;
     int rv;
     
-    if(firstTime)
+    if (firstTime)
     {
         firstTime = 0;
         globdat.ssStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
@@ -827,7 +819,7 @@ int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
         globdat.ssStatus.dwCheckPoint = 1;
     }
 
-    if(globdat.connected)
+    if (globdat.connected)
     {
         if ((currentState == SERVICE_START_PENDING)
          || (currentState == SERVICE_STOP_PENDING))
@@ -838,8 +830,6 @@ int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
 
         globdat.ssStatus.dwCurrentState = currentState;
         globdat.ssStatus.dwWin32ExitCode = exitCode;
-        if(waitHint)
-            globdat.ssStatus.dwWaitHint = waitHint;
 
         if ( ( currentState == SERVICE_RUNNING ) ||
              ( currentState == SERVICE_STOPPED ) )
@@ -847,8 +837,12 @@ int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
             globdat.ssStatus.dwWaitHint = 0;
             globdat.ssStatus.dwCheckPoint = 0;
         }
-        else
+        else 
+        {
+            if(waitHint)
+                globdat.ssStatus.dwWaitHint = waitHint;
             globdat.ssStatus.dwCheckPoint = ++checkPoint;
+        }
 
         rv = SetServiceStatus(globdat.hServiceStatus, &globdat.ssStatus);
     }
