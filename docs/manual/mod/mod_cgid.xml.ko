@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English revision: 1.8 -->
+<modulesynopsis metafile="mod_cgid.xml.meta">
+
+<name>mod_cgid</name>
+<description>외부 CGI 데몬을 사용하여 CGI 스크립트를 실행</description>
+<status>Base</status>
+<sourcefile>mod_cgid.c</sourcefile>
+<identifier>cgid_module</identifier>
+<compatibility>유닉스에서 쓰레드를 사용하는 MPMs 전용</compatibility>
+
+<summary>
+    <p>아래에서 설명하는 추가된 <directive
+    module="mod_cgid">ScriptSock</directive> 지시어를 제외하고
+    <module>mod_cgid</module>는 <module>mod_cgi</module>와
+    비슷하게 동작한다. <strong>아파치와 CGI에 대한 자세한 설명은
+    <module>mod_cgi</module>를 참고하라.</strong></p>
+
+    <p>어떤 유닉스 운영체제의 경우 다중쓰레드 서버에서 프로세스를
+    포크(fork)하면 새로운 프로세스가 부모 프로세스의 모든 쓰레드를
+    복제해야 하므로 부담이 된다. CGI 실행마다 이런 부담을 주지
+    않기위해 <module>mod_cgid</module>는 CGI 스크립트를 실행하는
+    자식 프로세스를 포크하는 외부 데몬을 만든다. 주서버는 이
+    데몬과 유닉스소켓(unix domain socket)을 사용하여 통신한다.</p>
+
+    <p>컴파일할때 다중쓰레드 MPM을 선택하면 기본적으로
+    <module>mod_cgi</module> 대신 이 모듈을 사용한다. 사용자
+    입장에서 이 모듈의 설정과 동작은 <module>mod_cgi</module>와
+    동일하다. 유일한 차이점은 cgi 데몬과 통신을 위해 사용할
+    소켓의 이름을 설정하는 <code>ScriptSock</code> 지시어가
+    추가된 점이다.</p>
+</summary>
+
+<seealso><module>mod_cgi</module></seealso>
+<seealso><a href="../suexec.html">다른 사용자 ID로 CGI 프로그램
+실행하기</a></seealso>
+
+<directivesynopsis location="mod_cgi">
+<name>ScriptLog</name>
+</directivesynopsis>
+
+<directivesynopsis location="mod_cgi">
+<name>ScriptLogLength</name>
+</directivesynopsis>
+
+<directivesynopsis location="mod_cgi">
+<name>ScriptLogBuffer</name>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ScriptSock</name>
+<description>cgi 데몬과 통신을 위해 사용할 소켓의 이름</description>
+<syntax>ScriptSock <var>file-path</var></syntax>
+<default>ScriptSock logs/cgisock</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+    <p>이 지시어는 CGI 데몬과 통신을 위해 사용할 소켓의 이름을
+    지정한다. 아파치를 시작한 사용자 (보통 root) 권한으로 소켓을
+    연다. CGI 스크립트와 통신의 보안을 위해 다른 사용자가 소켓이
+    있는 디렉토리에 쓰기권한을 가지지않는 것이 중요하다.</p>
+
+    <example><title>예제</title>
+      ScriptSock /var/run/cgid.sock
+    </example>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+

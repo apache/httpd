@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English revision: 1.7 -->
+<modulesynopsis metafile="mod_disk_cache.xml.meta">
+
+<name>mod_disk_cache</name>
+<description>Content cache storage manager keyed to URIs</description>
+<status>Experimental</status>
+<sourcefile>mod_disk_cache.c</sourcefile>
+<identifier>disk_cache_module</identifier>
+
+<summary>
+    <note type="warning">
+      이 모듈은 실험적인 상태이다. 문서는 아직 작업중이다...
+    </note>
+
+    <p><module>mod_disk_cache</module>는 디스크기반 저장관리자를
+    구현한다. 이 모듈은 기본적으로 <module>mod_proxy</module>와
+    같이 사용한다.</p>
+
+    <p>내용을 URI를 토대로 만든 키로 캐쉬에 저장하고 가져온다.
+    접근보호가 된 내용은 캐쉬하지않는다.</p>
+
+    <note><title>주의:</title>
+      <p><module>mod_disk_cache</module>는
+      <module>mod_cache</module>가 필요하다.</p>
+    </note>
+</summary>
+
+<directivesynopsis>
+<name>CacheRoot</name>
+<description>캐쉬 파일을 저장할 디렉토리 root</description>
+<syntax>CacheRoot <var>directory</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>CacheRoot</directive> 지시어는 디스크에서
+    캐쉬 파일을 저장할 디렉토리를 지정한다. <module
+    >mod_disk_cache</module> 모듈을 아파치 서버와 같이 컴파일하였거나
+    읽어들인 경우 <em>반드시</em> 이 지시어를 정의해야 한다.
+    <directive>CacheRoot</directive>에 값이 없으면 설정파일을
+    처리하지 않는다. <directive
+    module="mod_disk_cache">CacheDirLevels</directive>와 <directive
+    module="mod_disk_cache">CacheDirLength</directive> 지시어는
+    이 지시어로 지정한 root 디렉토리의 하위디렉토리 구조를 지시한다.</p>
+
+    <example>
+      CacheRoot c:/cacheroot
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheSize</name>
+<description>캐쉬로 사용할 최대 디스크공간 (KByte 단위)</description>
+<syntax>CacheSize <var>KBytes</var></syntax>
+<default>CacheSize 1000000</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>CacheSize</directive> 지시어는 캐쉬로 사용할
+    디스크공간 크기를 KByte (1024 바이트) 단위로 지정한다. 이
+    지시어는 캐쉬 크기를 제한하지 않는다. 가비지컬랙터가 캐쉬
+    사용량이 설정한 값보다 작게될때까지 파일을 지운다. 항상
+    사용가능한 디스크공간 보다 작은 값을 사용하라.</p>
+
+    <example>
+      CacheSize  5000000
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheGcInterval</name>
+<description>가비지컬랙터를 실행하는 간격.</description>
+<syntax>CacheGcInterval <var>hours</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>CacheGcInterval</directive> 지시어는 카비지컬랙터가
+    디스크공간을 비우는 시간 간격을 시간단위로 지정한다.</p>
+    <p>함수가 구현되면 더 자세한 내용이 여기 나온다.</p>
+
+    <example>
+      CacheGcInterval  24<br />
+    </example>
+
+    <note type="warning">
+      <directive>CacheGcInterval</directive> 지시어는 현재 구현되지
+      <em>않았다</em>.
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDirLevels</name>
+<description>캐쉬의 하위디렉토리 깊이.</description>
+<syntax>CacheDirLevels <var>levels</var></syntax>
+<default>CacheDirLevels 3</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>CacheDirLevels</directive> 지시어는 캐쉬의
+    하위디렉토리 깊이를 지정한다. 캐쉬된 자료를 <directive
+    module="mod_disk_cache">CacheRoot</directive> 디렉토리
+    아래 이 깊이까지 저장한다.</p>
+
+    <note>
+      <p><directive>CacheDirLevels</directive>와 <directive
+      module="mod_disk_cache">CacheDirLength</directive>를
+      곱하여 20 보다 크면 안된다.</p>
+    </note>
+
+    <example>
+      CacheDirLevels  5
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDirLength</name>
+<description>하위디렉토리명의 문자개수</description>
+<syntax>CacheDirLength <var>length</var></syntax>
+<default>CacheDirLength 2</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>CacheDirLength</directive> 지시어는 캐쉬
+    계층구조에서 각 하위디렉토리명의 문자수를 지정한다.</p>
+
+    <note>
+      <p><directive module="mod_disk_cache">CacheDirLevels</directive>와
+      <directive>CacheDirLength</directive>를 곱하여 20 보다
+      크면 안된다.</p>
+    </note>
+
+    <example>
+      CacheDirLength  4
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheExpiryCheck</name>
+<description>캐쉬에서 파일을 찾을때 만기시간을 고려할지 여부</description>
+<syntax>CacheExpiryCheck On|Off</syntax>
+<default>CacheExpiryCheck On</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>함수가 구현되면 더 자세한 내용이 여기 나온다.</p>
+
+    <example>
+      CacheExpiryCheck Off<br />
+    </example>
+
+    <note type="warning">
+      <directive>CacheExpiryCheck</directive> 지시어는 현재
+      구현되지 <em>않았다</em>.
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheMinFileSize</name>
+<description>캐쉬에 저장할 문서의 최소크기 (바이트 단위)</description>
+<syntax>CacheMinFileSize <var>bytes</var></syntax>
+<default>CacheMinFileSize 1</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>CacheMinFileSize</directive> 지시어는 캐쉬에
+    저장할 문서의 최소크기를 바이트 단위로 지정한다.</p>
+
+    <example>
+      CacheMinFileSize 64
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheMaxFileSize</name>
+<description>캐쉬에 저장할 문서의 최대크기 (바이트 단위)</description>
+<syntax>CacheMaxFileSize <var>bytes</var></syntax>
+<default>CacheMaxFileSize 1000000</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>CacheMaxFileSize</directive> 지시어는 캐쉬에
+    저장할 문서의 최대크기를 바이트 단위로 지정한다.</p>
+
+    <example>
+      CacheMaxFileSize 64000
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheTimeMargin</name>
+<description>문서를 캐쉬할 최소시간 한계</description>
+<syntax>CacheTimeMargin <var>?</var></syntax>
+<default>CacheTimeMargin ?</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>함수가 구현되면 더 자세한 내용이 여기 나온다.</p>
+
+    <example>
+      CacheTimeMargin X
+    </example>
+
+    <note type="warning">
+      <directive>CacheTimeMargin</directive> 지시어는 현재
+      구현되지 <em>않았다</em>.
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheGcDaily</name>
+<description>매일 가비지컬랙터를 실행할 반복 시간 (24시 시계)</description>
+<syntax>CacheGcDaily <var>time</var></syntax>
+<default>CacheGcDaily ?</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>함수가 구현되면 더 자세한 내용이 여기 나온다.</p>
+
+    <example>
+      CacheGcDaily 23:59
+    </example>
+
+    <note type="warning">
+      <directive>CacheGcDaily</directive> 지시어는 현재 구현되지
+      <em>않았다</em>.
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheGcUnused</name>
+<description>URL에 해당하는 참조되지않은 캐쉬파일을 유지할 기간.</description>
+<syntax>CacheGcUnused <var>hours</var> <var>url-string</var></syntax>
+<default>CacheGcUnused ?</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>함수가 구현되면 더 자세한 내용이 여기 나온다.</p>
+
+    <example>
+      CacheGcUnused 12 /local_images
+    </example>
+
+    <note type="warning">
+      <directive>CacheGcUnused</directive> 지시어는 현재 구현되지
+      <em>않았다</em>.
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheGcClean</name>
+<description>URL에 해당하는 변하지않은 캐쉬파일을 유지할 시간</description>
+<syntax>CacheGcClean <var>hours</var> <var>url-string</var></syntax>
+<default>CacheGcClean ?</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>함수가 구현되면 더 자세한 내용이 여기 나온다.</p>
+
+    <example>
+      CacheGcClean 12 /daily_scripts
+    </example>
+
+    <note type="warning">
+      <directive>CacheGcClean</directive> 지시어는 현재 구현되지
+      <em>않았다</em>.
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheGcMemUsage</name>
+<description>가비지컬랙터가 사용할 최대 메모리량 (kilobyte 단위)</description>
+<syntax>CacheGcMemUsage <var>KBytes</var></syntax>
+<default>CacheGcMemUsage ?</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>함수가 구현되면 더 자세한 내용이 여기 나온다.</p>
+
+    <example>
+      CacheGcMemUsage 16
+    </example>
+
+    <note type="warning">
+      <directive>CacheGcMemUsage</directive> 지시어는 현재
+      구현되지 <em>않았다</em>.
+    </note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
