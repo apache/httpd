@@ -209,18 +209,9 @@ SOURCE=".\hashtable.c"
 DEP_CPP_HASHT=\
 	".\hashtable.h"\
 	".\xmldef.h"\
-	{$(INCLUDE)}"ap_config.h"\
-	{$(INCLUDE)}"ap_ctype.h"\
-	{$(INCLUDE)}"ap_mmn.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
-	{$(INCLUDE)}"hsregex.h"\
-	{$(INCLUDE)}"netdb.h"\
-	{$(INCLUDE)}"os.h"\
-	{$(INCLUDE)}"sys\socket.h"\
 	
 NODEP_CPP_HASHT=\
-	"..\..\..\..\apache\include\ap_config_auto.h"\
+	".\ap_config.h"\
 	".\nspr.h"\
 	
 
@@ -234,18 +225,9 @@ DEP_CPP_XMLPA=\
 	".\xmlparse.h"\
 	".\xmlrole.h"\
 	".\xmltok.h"\
-	{$(INCLUDE)}"ap_config.h"\
-	{$(INCLUDE)}"ap_ctype.h"\
-	{$(INCLUDE)}"ap_mmn.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
-	{$(INCLUDE)}"hsregex.h"\
-	{$(INCLUDE)}"netdb.h"\
-	{$(INCLUDE)}"os.h"\
-	{$(INCLUDE)}"sys\socket.h"\
 	
 NODEP_CPP_XMLPA=\
-	"..\..\..\..\apache\include\ap_config_auto.h"\
+	".\ap_config.h"\
 	".\nspr.h"\
 	
 
@@ -257,18 +239,9 @@ DEP_CPP_XMLRO=\
 	".\xmldef.h"\
 	".\xmlrole.h"\
 	".\xmltok.h"\
-	{$(INCLUDE)}"ap_config.h"\
-	{$(INCLUDE)}"ap_ctype.h"\
-	{$(INCLUDE)}"ap_mmn.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
-	{$(INCLUDE)}"hsregex.h"\
-	{$(INCLUDE)}"netdb.h"\
-	{$(INCLUDE)}"os.h"\
-	{$(INCLUDE)}"sys\socket.h"\
 	
 NODEP_CPP_XMLRO=\
-	"..\..\..\..\apache\include\ap_config_auto.h"\
+	".\ap_config.h"\
 	".\nspr.h"\
 	
 
@@ -287,18 +260,9 @@ DEP_CPP_XMLTO=\
 	".\xmltok_impl.c"\
 	".\xmltok_impl.h"\
 	".\xmltok_ns.c"\
-	{$(INCLUDE)}"ap_config.h"\
-	{$(INCLUDE)}"ap_ctype.h"\
-	{$(INCLUDE)}"ap_mmn.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
-	{$(INCLUDE)}"hsregex.h"\
-	{$(INCLUDE)}"netdb.h"\
-	{$(INCLUDE)}"os.h"\
-	{$(INCLUDE)}"sys\socket.h"\
 	
 NODEP_CPP_XMLTO=\
-	"..\..\..\..\apache\include\ap_config_auto.h"\
+	".\ap_config.h"\
 	".\nspr.h"\
 	
 

@@ -358,7 +358,6 @@ DEP_CPP_MAIN_=\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
 	".\srclib\apr\include\apr_xlate.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_MAIN_=\
 	".\include\ap_config_auto.h"\

@@ -426,7 +426,6 @@ DEP_CPP_BUILD=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_BUILD=\
 	".\include\ap_config_auto.h"\
@@ -460,7 +459,6 @@ DEP_CPP_MODUL=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_MODUL=\
 	".\include\ap_config_auto.h"\
@@ -553,8 +551,6 @@ DEP_CPP_CONFI=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_CONFI=\
 	".\include\ap_config_auto.h"\
@@ -605,8 +601,6 @@ DEP_CPP_CONNE=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_CONNE=\
 	".\include\ap_config_auto.h"\
@@ -647,7 +641,6 @@ DEP_CPP_LOG_C=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_LOG_C=\
 	".\include\ap_config_auto.h"\
@@ -695,8 +688,6 @@ DEP_CPP_SCORE=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_SCORE=\
 	".\include\ap_config_auto.h"\
@@ -743,8 +734,6 @@ DEP_CPP_VHOST=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_VHOST=\
 	".\include\ap_config_auto.h"\
@@ -804,8 +793,6 @@ DEP_CPP_HTTP_=\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
 	".\srclib\apr\include\apr_xlate.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_HTTP_=\
 	".\include\ap_config_auto.h"\
@@ -861,8 +848,6 @@ DEP_CPP_HTTP_P=\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
 	".\srclib\apr\include\apr_xlate.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_HTTP_P=\
 	".\include\ap_config_auto.h"\
@@ -914,8 +899,6 @@ DEP_CPP_HTTP_R=\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
 	".\srclib\apr\include\apr_xlate.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_HTTP_R=\
 	".\include\ap_config_auto.h"\
@@ -959,7 +942,6 @@ DEP_CPP_MOD_A=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_MOD_A=\
 	".\include\ap_config_auto.h"\
@@ -1008,8 +990,6 @@ DEP_CPP_MOD_AC=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MOD_AC=\
 	".\include\ap_config_auto.h"\
@@ -1050,7 +1030,6 @@ DEP_CPP_MOD_AL=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_MOD_AL=\
 	".\include\ap_config_auto.h"\
@@ -1098,8 +1077,6 @@ DEP_CPP_MOD_AS=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MOD_AS=\
 	".\include\ap_config_auto.h"\
@@ -1147,8 +1124,6 @@ DEP_CPP_MOD_AU=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MOD_AU=\
 	".\include\ap_config_auto.h"\
@@ -1199,8 +1174,6 @@ DEP_CPP_MOD_AUT=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MOD_AUT=\
 	".\include\ap_config_auto.h"\
@@ -1252,8 +1225,6 @@ DEP_CPP_MOD_C=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MOD_C=\
 	".\include\ap_config_auto.h"\
@@ -1302,8 +1273,6 @@ DEP_CPP_MOD_D=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MOD_D=\
 	".\include\ap_config_auto.h"\
@@ -1343,7 +1312,6 @@ DEP_CPP_MOD_E=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_MOD_E=\
 	".\include\ap_config_auto.h"\
@@ -1393,8 +1361,6 @@ DEP_CPP_MOD_I=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MOD_I=\
 	".\include\ap_config_auto.h"\
@@ -1450,8 +1416,6 @@ DEP_CPP_MOD_IN=\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
 	".\srclib\apr\include\apr_xlate.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MOD_IN=\
 	".\include\ap_config_auto.h"\
@@ -1499,8 +1463,6 @@ DEP_CPP_MOD_IS=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MOD_IS=\
 	".\include\ap_config_auto.h"\
@@ -1546,8 +1508,6 @@ DEP_CPP_MOD_L=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MOD_L=\
 	".\include\ap_config_auto.h"\
@@ -1590,7 +1550,6 @@ DEP_CPP_MOD_M=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_MOD_M=\
 	".\include\ap_config_auto.h"\
@@ -1639,8 +1598,6 @@ DEP_CPP_MOD_N=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MOD_N=\
 	".\include\ap_config_auto.h"\
@@ -1685,8 +1642,6 @@ DEP_CPP_MOD_S=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MOD_S=\
 	".\include\ap_config_auto.h"\
@@ -1724,7 +1679,6 @@ DEP_CPP_MOD_SO=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_MOD_SO=\
 	".\include\ap_config_auto.h"\
@@ -1764,7 +1718,6 @@ DEP_CPP_MOD_U=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_MOD_U=\
 	".\include\ap_config_auto.h"\
@@ -1806,8 +1759,6 @@ DEP_CPP_ERROR=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_ERROR=\
 	".\include\ap_config_auto.h"\
@@ -1848,7 +1799,6 @@ DEP_CPP_RFC14=\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
 	".\srclib\apr\include\apr_xlate.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_RFC14=\
 	".\include\ap_config_auto.h"\
@@ -1899,10 +1849,6 @@ DEP_CPP_UTIL_=\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
 	".\srclib\apr\include\apr_xlate.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
-	{$(INCLUDE)}"netdb.h"\
-	{$(INCLUDE)}"sys\socket.h"\
 	
 NODEP_CPP_UTIL_=\
 	".\include\ap_config_auto.h"\
@@ -1949,7 +1895,6 @@ DEP_CPP_UTIL_D=\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_UTIL_D=\
 	".\include\ap_config_auto.h"\
@@ -1987,7 +1932,6 @@ DEP_CPP_UTIL_F=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_UTIL_F=\
 	".\include\ap_config_auto.h"\
@@ -2029,8 +1973,6 @@ DEP_CPP_UTIL_M=\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
 	".\srclib\apr\include\apr_xlate.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_UTIL_M=\
 	".\include\ap_config_auto.h"\
@@ -2084,8 +2026,6 @@ DEP_CPP_UTIL_S=\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
 	".\srclib\apr\include\apr_xlate.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_UTIL_S=\
 	".\include\ap_config_auto.h"\
@@ -2121,7 +2061,6 @@ DEP_CPP_UTIL_U=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_UTIL_U=\
 	".\include\ap_config_auto.h"\
@@ -2157,7 +2096,6 @@ DEP_CPP_UTIL_W=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_UTIL_W=\
 	".\include\ap_config_auto.h"\
@@ -2203,8 +2141,6 @@ DEP_CPP_UTIL_X=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_UTIL_X=\
 	".\include\ap_config_auto.h"\
@@ -2244,7 +2180,6 @@ DEP_CPP_LISTE=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_LISTE=\
 	".\include\ap_config_auto.h"\
@@ -2296,8 +2231,6 @@ DEP_CPP_MPM_W=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MPM_W=\
 	".\include\ap_config_auto.h"\
@@ -2337,7 +2270,6 @@ DEP_CPP_REGIS=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_REGIS=\
 	".\include\ap_config_auto.h"\
@@ -2378,7 +2310,6 @@ DEP_CPP_SERVI=\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
 	".\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_SERVI=\
 	".\include\ap_config_auto.h"\

@@ -227,12 +227,12 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_file_cache - Win32 Release"
 
 "libapr - Win32 Release" : 
-   cd "\clean\httpd-2.0\srclib\apr"
+   cd "..\..\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Release" 
    cd "..\..\modules\cache"
 
 "libapr - Win32 ReleaseCLEAN" : 
-   cd "\clean\httpd-2.0\srclib\apr"
+   cd "..\..\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Release"\
  RECURSE=1 
    cd "..\..\modules\cache"
@@ -240,12 +240,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "mod_file_cache - Win32 Debug"
 
 "libapr - Win32 Debug" : 
-   cd "\clean\httpd-2.0\srclib\apr"
+   cd "..\..\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Debug" 
    cd "..\..\modules\cache"
 
 "libapr - Win32 DebugCLEAN" : 
-   cd "\clean\httpd-2.0\srclib\apr"
+   cd "..\..\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Debug"\
  RECURSE=1 
    cd "..\..\modules\cache"
@@ -255,12 +255,12 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_file_cache - Win32 Release"
 
 "libhttpd - Win32 Release" : 
-   cd "\clean\httpd-2.0"
+   cd "..\.."
    $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Release" 
    cd ".\modules\cache"
 
 "libhttpd - Win32 ReleaseCLEAN" : 
-   cd "\clean\httpd-2.0"
+   cd "..\.."
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak"\
  CFG="libhttpd - Win32 Release" RECURSE=1 
    cd ".\modules\cache"
@@ -268,12 +268,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "mod_file_cache - Win32 Debug"
 
 "libhttpd - Win32 Debug" : 
-   cd "\clean\httpd-2.0"
+   cd "..\.."
    $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug" 
    cd ".\modules\cache"
 
 "libhttpd - Win32 DebugCLEAN" : 
-   cd "\clean\httpd-2.0"
+   cd "..\.."
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug"\
  RECURSE=1 
    cd ".\modules\cache"
@@ -317,8 +317,6 @@ DEP_CPP_MOD_F=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MOD_F=\
 	"..\..\include\ap_config_auto.h"\

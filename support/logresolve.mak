@@ -204,9 +204,6 @@ DEP_CPP_LOGRE=\
 	"..\srclib\apr\include\apr.h"\
 	"..\srclib\apr\include\apr_errno.h"\
 	"..\srclib\apr\include\apr_lib.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"netdb.h"\
-	{$(INCLUDE)}"sys\socket.h"\
 	
 
 "$(INTDIR)\logresolve.obj" : $(SOURCE) $(DEP_CPP_LOGRE) "$(INTDIR)"
