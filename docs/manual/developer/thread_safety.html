@@ -53,35 +53,181 @@ individual symbols in the module.</p>
     <h2>Library List</h2>
     <p>Please drop a note to dev@httpd.apache.org if you have additions or
        corrections to this list.</p>
-    <table><tr><th>Library</th><th>Version</th><th>Thread Safe?</th><th>Notes</th></tr>
-    <tr><td><a href="http://aspell.sourceforge.net/">ASpell/PSpell</a></td><td> </td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.sleepycat.com/">Berkeley DB</a></td><td>3.x,4.x </td><td>Yes</td><td>Be careful about sharing a connection across threads.</td></tr>
-    <tr><td><a href="http://sources.redhat.com/bzip2/index.html">BZip2</a></td><td> </td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://cr.yp.to/cdb.html">cdb</a></td><td> </td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.washington.edu/imap/">C-Client</a></td><td> </td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.fastio.com/">cpdflib</a></td><td> </td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.ijg.org/files/">libcrypt</a></td><td> </td><td>?</td><td> </td></tr>
-    <tr><td>Expat</td><td> </td><td>Yes</td><td>Need a separate parser instance per thread</td></tr>
-    <tr><td><a href="http://www.freetds.org/">FreeTDS</a></td><td> </td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.freetype.org/">FreeType</a></td><td> </td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.boutell.com/gd/">GD 1.8.x</a></td><td> </td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.boutell.com/gd/">GD 2.0.x</a></td><td> </td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.gnu.org/software/gdbm/gdbm.html">gdbm</a></td><td> </td><td>No</td><td>Errors returned via a static gdbm_error variable</td></tr>
-    <tr><td><a href="http://www.imagemagick.org/">ImageMagick</a></td><td> </td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.enlightenment.org/pages/imlib2.html">Imlib2</a></td><td> </td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.ijg.org/files/">libjpeg</a></td><td>v6b</td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://mysql.com">libmysqlclient</a></td><td> </td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.opaque.net/ming/">Ming</a></td><td>0.2a</td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://net-snmp.sourceforge.net/">Net-SNMP</a></td><td>5.0.x</td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.openldap.org/">OpenLDAP</a></td><td>2.1.x</td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.openssl.org/">OpenSSL</a></td><td>0.96g</td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.oracle.com/">liboci8 (Oracle 8+)</a></td><td>8.x,9.x</td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://pdflib.com/">pdflib</a></td><td>4.0.x</td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.libpng.org/pub/png/libpng.html">libpng</a></td><td>1.0.x</td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.libpng.org/pub/png/libpng.html">libpng</a></td><td>1.2.x</td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.postgresql.org/idocs/index.php?libpq-threading.html">libpq (PostgreSQL)</a></td><td>7.x</td><td>Yes</td><td>Don't share connections across threads and watch out for crypt() calls</td></tr>
-    <tr><td><a href="http://www.gingerall.com/charlie/ga/xml/p_sab.xml">Sablotron</a></td><td>0.95</td><td>?</td><td> </td></tr>
-    <tr><td><a href="http://www.gzip.org/zlib/">zlib</a></td><td>1.1.4</td><td>Yes?</td><td> </td></tr>
+    <table>
+      <tr>
+        <th>Library</th>
+        <th>Version</th>
+        <th>Thread Safe?</th>
+        <th>Notes</th>
+      </tr>
+      <tr>
+        <td><a href="http://aspell.sourceforge.net/">ASpell/PSpell</a></td>
+        <td></td>
+        <td>?</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a href="http://www.sleepycat.com/">Berkeley DB</a></td>
+        <td>3.x, 4.x</td>
+        <td>Yes</td>
+        <td>Be careful about sharing a connection across threads.</td>
+      </tr>
+      <tr>
+        <td><a href="http://sources.redhat.com/bzip2/index.html">BZip2</a></td>
+        <td> </td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://cr.yp.to/cdb.html">cdb</a></td>
+        <td> </td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://www.washington.edu/imap/">C-Client</a></td>
+        <td> </td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://www.fastio.com/">cpdflib</a></td>
+        <td> </td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://www.ijg.org/files/">libcrypt</a></td>
+        <td> </td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td>Expat</td>
+        <td> </td>
+        <td>Yes</td>
+        <td>Need a separate parser instance per thread</td>
+      </tr>
+      <tr>
+        <td><a href="http://www.freetds.org/">FreeTDS</a></td>
+        <td> </td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://www.freetype.org/">FreeType</a></td>
+        <td> </td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://www.boutell.com/gd/">GD 1.8.x</a></td>
+        <td> </td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://www.boutell.com/gd/">GD 2.0.x</a></td>
+        <td> </td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://www.gnu.org/software/gdbm/gdbm.html">gdbm</a></td>
+        <td> </td>
+        <td>No</td>
+        <td>Errors returned via a static gdbm_error variable</td>
+      </tr>
+      <tr>
+        <td><a href="http://www.imagemagick.org/">ImageMagick</a></td>
+        <td> </td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://www.enlightenment.org/pages/imlib2.html">Imlib2</a></td>
+        <td> </td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://www.ijg.org/files/">libjpeg</a></td>
+        <td>v6b</td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://mysql.com">libmysqlclient</a></td>
+        <td> </td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://www.opaque.net/ming/">Ming</a></td>
+        <td>0.2a</td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://net-snmp.sourceforge.net/">Net-SNMP</a></td>
+        <td>5.0.x</td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://www.openldap.org/">OpenLDAP</a></td>
+        <td>2.1.x</td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://www.openssl.org/">OpenSSL</a></td>
+        <td>0.96g</td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://www.oracle.com/">liboci8 (Oracle 8+)</a></td>
+        <td>8.x,9.x</td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://pdflib.com/">pdflib</a></td>
+        <td>4.0.x</td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://www.libpng.org/pub/png/libpng.html">libpng</a></td>
+        <td>1.0.x</td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://www.libpng.org/pub/png/libpng.html">libpng</a></td>
+        <td>1.2.x</td>
+        <td>?</td>
+        <td> </td>
+      </tr>
+      <tr>
+        <td><a href="http://www.postgresql.org/idocs/index.php?libpq-threading.html">libpq (PostgreSQL)</a></td>
+        <td>7.x</td>
+        <td>Yes</td>
+        <td>Don't share connections across threads and watch out for crypt() calls</td>
+      </tr>
+      <tr>
+        <td><a href="http://www.gingerall.com/charlie/ga/xml/p_sab.xml">Sablotron</a></td>
+        <td>0.95</td>
+        <td>?</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a href="http://www.gzip.org/zlib/">zlib</a></td>
+        <td>1.1.4</td>
+        <td>Yes?</td>
+        <td></td>
+      </tr>
     </table>
     <!--#include virtual="footer.html" -->
   </body>
