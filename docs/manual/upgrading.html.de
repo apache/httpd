@@ -1,138 +1,141 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Upgrade von 1.3 auf 2.0 - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Upgrade von 1.3 auf 2.0</h1>
-    <p>Dieses Dokument dient der Unterst&uuml;tzung beim Upgrade. Es
-    enth&auml;lt die entscheidenden Informationen f&uuml;r bisherige
+      --><title>Upgrade von 1.3 auf 2.0 - Apache HTTP Server</title><link href="./style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="./style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="./style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="./style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="./style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="./style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="./style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="./style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Dokumentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Upgrade von 1.3 auf 2.0</h1>
+    <p>Dieses Dokument dient der Unterstützung beim Upgrade. Es
+    enthält die entscheidenden Informationen für bisherige
     Apache-Nutzer. Diese sind als kurze Anmerkungen
     gedacht. Weitere Informationen finden Sie entweder unter
     <a href="new_features_2_0.html">Neue Funktionen</a> oder in
     den <code>src/CHANGES</code>-Dateien.</p>
-<ul><li><a href="#compile-time">&Auml;nderungen der Konfiguration bei der Kompilierung</a></li><li><a href="#run-time">&Auml;nderungen der Laufzeit-Konfiguration</a></li><li><a href="#misc">Sonstige &Auml;nderungen</a></li><li><a href="#third-party">Module von Drittanbietern</a></li></ul><hr><h2><a name="compile-time">&Auml;nderungen der Konfiguration bei der Kompilierung</a></h2>
+</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">Änderungen der Konfiguration bei der Kompilierung</a></li><li><img alt="" src="./images/down.gif" /> <a href="#run-time">Änderungen der Laufzeit-Konfiguration</a></li><li><img alt="" src="./images/down.gif" /> <a href="#misc">Sonstige Änderungen</a></li><li><img alt="" src="./images/down.gif" /> <a href="#third-party">Module von Drittanbietern</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="compile-time" id="compile-time">Änderungen der Konfiguration bei der Kompilierung</a></h2>
     
 
     <ul>
       <li>Der Apache benutzt jetzt ein <code>autoconf</code>- und
       <code>libtool</code>-System zur <a href="install.html">Konfiguration des
       Erstellungsverfahrens</a>. Die Verwendung dieses Systems ist
-      &auml;hnlich, aber nicht identisch mit dem APACI-System des
+      ähnlich, aber nicht identisch mit dem APACI-System des
 	  Apache 1.3.</li>
 
-      <li>Zus&auml;tzlich zu der &uuml;blichen Auswahl von Modulen, die
+      <li>Zusätzlich zu der üblichen Auswahl von Modulen, die
       kompiliert werden sollen, wurde der Hauptteil der
       Request-Verarbeitung im Apache 2.0 in die <a href="mpm.html">
       Multi-Processing-Module</a> (MPMs) verschoben.</li>
     </ul>
-  <h2><a name="run-time">&Auml;nderungen der Laufzeit-Konfiguration</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="run-time" id="run-time">Änderungen der Laufzeit-Konfiguration</a></h2>
     
 
     <ul>
       <li>Viele Anweisungen aus dem Serverkern des Apache 1.3 sind
       jetzt in den MPMs enthalten. Wenn Sie ein Serververhalten
-      w&uuml;nschen, das demjenigen des Apache 1.3 m&ouml;glichst
-      &auml;hnlich ist, sollten Sie das <a href="mod/prefork.html">prefork</a>-MPM
-      ausw&auml;hlen. Andere MPMs verwenden abweichende Anweisungen
-      f&uuml;r die Prozess-Erstellung und Request-Verarbeitung.</li>
+      wünschen, das demjenigen des Apache 1.3 möglichst
+      ähnlich ist, sollten Sie das <a href="mod/prefork.html">prefork</a>-MPM
+      auswählen. Andere MPMs verwenden abweichende Anweisungen
+      für die Prozess-Erstellung und Request-Verarbeitung.</li>
 
       <li>Das <a href="mod/mod_proxy.html">Proxy-Modul</a> wurde
       umgearbeitet, um es auf den Stand von HTTP/1.1 zu bringen. Eine
-      der bedeutendsten &Auml;nderungen ist die Platzierung der
+      der bedeutendsten Änderungen ist die Platzierung der
       Proxy-Zugriffskontrolle innerhalb eines &lt;Proxy&gt;-Blocks,
       statt innerhalb eines &lt;Directory proxy:&gt;-Blocks.</li>
 
-      <li>Die Behandlung von PATH_INFO (hinter dem tats&auml;chlichen
-      Dateinamen angef&uuml;gte Pfadangaben) wurde f&uuml;r einige Module
-      ge&auml;ndert. Module, die bisher als Handler implementiert
+      <li>Die Behandlung von PATH_INFO (hinter dem tatsächlichen
+      Dateinamen angefügte Pfadangaben) wurde für einige Module
+      geändert. Module, die bisher als Handler implementiert
       waren, jetzt aber als Filter implementiert sind, akzeptieren
-      m&ouml;glicherweise keine Requests mit PATH_INFO mehr.
+      möglicherweise keine Requests mit PATH_INFO mehr.
       Filter wie <a href="mod/mod_include.html">INCLUDES</a> sind
       gleich oben im Core-Handler implementiert und weisen deshalb
-      Requests mit PATH_INFO ab. Sie k&ouml;nnen die <a href="./mod/core.html#acceptpathinfo" class="directive"><code class="directive">AcceptPathInfo</code></a>-Direktive
+      Requests mit PATH_INFO ab. Sie können die <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code>-Direktive
       verwenden, um den Core-Handler zu zwingen, Requests mit
-      PATH_INFO zu akzeptieren, und dadurch die F&auml;higkeit
+      PATH_INFO zu akzeptieren, und dadurch die Fähigkeit
       wiederherstellen, PATH_INFO in Server Side Includes zu benutzen.
       </li>
 
-      <li>Die <a href="./mod/mod_negotiation.html#cachenegotiateddocs" class="directive"><code class="directive">CacheNegotiatedDocs</code></a>-Direktive
+      <li>Die <code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code>-Direktive
       hat jetzt das Argument an (<code>on</code>) oder aus
       (<code>off</code>). Die vorhandenen Anweisungen
       <code>CacheNegotiatedDocs</code> sollten durch
       <code>CacheNegotiatedDocs on</code> ersetzt werden.</li>
 
       <li>
-        Die <a href="./mod/core.html#errordocument" class="directive"><code class="directive">ErrorDocument</code></a>-Direktive
-        verwendet kein Anf&uuml;hrungszeichen mehr am Anfang des
+        Die <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code>-Direktive
+        verwendet kein Anführungszeichen mehr am Anfang des
         Arguments, um eine
         Textnachricht anzuzeigen. Stattdessen sollten Sie die
-        Nachricht in doppelte Anf&uuml;hrungszeichen einschlie&szlig;en.
+        Nachricht in doppelte Anführungszeichen einschließen.
         Zum Beispiel sollten existierende Angaben wie
 
-        <blockquote>
-          <code>ErrorDocument 403 "Eine Nachricht</code>
-        </blockquote>
+        <div class="example"><p><code>
+          ErrorDocument 403 "Eine Nachricht
+        </code></p></div>
         durch
 
-        <blockquote>
-          <code>ErrorDocument 403 "Eine Nachricht"</code>
-        </blockquote>
+        <div class="example"><p><code>
+          ErrorDocument 403 "Eine Nachricht"
+        </code></p></div>
+
         ersetzt werden.
-        Solange das zweite Argument kein g&uuml;ltiger URL oder
+        Solange das zweite Argument kein gültiger URL oder
         Pfadname ist, wird es als Textnachricht behandelt.
       </li>
 
       <li>Die Direktiven <code>AccessConfig</code> und
       <code>ResourceConfig</code> sind entfallen.
-      Diese Direktiven k&ouml;nnen durch die <a href="./mod/core.html#include" class="directive"><code class="directive">Include</code></a>-Direktive
-      ersetzt werden, die eine &auml;quivalente Funktionalit&auml;t besitzt.
+      Diese Direktiven können durch die <code class="directive"><a href="./mod/core.html#include">Include</a></code>-Direktive
+      ersetzt werden, die eine äquivalente Funktionalität besitzt.
       Wenn Sie die Defaultwerte dieser Direktiven verwendet haben,
-      ohne sie in die Konfigurationsdateien einzuf&uuml;gen, m&uuml;ssen Sie
-      m&ouml;glicherweise <code>Include conf/access.conf</code> und
-      <code>Include conf/srm.conf</code> zu Ihrer httpd.conf hinzuf&uuml;gen.
-      Um sicherzustellen, da&szlig; der Apache die Konfigurationsdateien in
-      der gleichen Reihenfolge liest, wie sie von den &auml;lteren Direktiven
+      ohne sie in die Konfigurationsdateien einzufügen, müssen Sie
+      möglicherweise <code>Include conf/access.conf</code> und
+      <code>Include conf/srm.conf</code> zu Ihrer httpd.conf hinzufügen.
+      Um sicherzustellen, daß der Apache die Konfigurationsdateien in
+      der gleichen Reihenfolge liest, wie sie von den älteren Direktiven
       impliziert wurde, sollten die <code>Include</code>-Direktiven ans
-      Ende der httpd.conf gestellt werden, wobei die Direktive f&uuml;r
-      <code>srm.conf</code> derjenigen f&uuml;r <code>access.conf</code>
+      Ende der httpd.conf gestellt werden, wobei die Direktive für
+      <code>srm.conf</code> derjenigen für <code>access.conf</code>
       vorangeht.</li>
 
       <li>Die Direktiven <code>BindAddress</code> und <code>Port</code>
-      sind entfallen. Eine &auml;quivalente Funktionalit&auml;t wird von der
-      flexibleren Direktive  <a href="./mod/mpm_common.html#listen" class="directive"><code class="directive">Listen</code></a> bereitgestellt.</li>
+      sind entfallen. Eine äquivalente Funktionalität wird von der
+      flexibleren Direktive  <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> bereitgestellt.</li>
 
-      <li>Im Apache 1.3 wurde die <code>Port</code>-Direktive au&szlig;erdem
-      dazu verwendet, die Portnummer f&uuml;r
+      <li>Im Apache 1.3 wurde die <code>Port</code>-Direktive außerdem
+      dazu verwendet, die Portnummer für
       selbstreferenzierende URLs festzulegen.
-      Die neue <a href="./mod/core.html#servername" class="directive"><code class="directive">ServerName</code></a>-Syntax
-      stellt das Apache-2.0-&Auml;quivalent dar:
-      sie wurde dahingehend ver&auml;ndert, sowohl den Hostnamen
-      <em>als auch</em> die Portnummer f&uuml;r selbstreferenzierende URLs
-      in einer Direktive angeben zu k&ouml;nnen.</li>
+      Die neue <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>-Syntax
+      stellt das Apache-2.0-Äquivalent dar:
+      sie wurde dahingehend verändert, sowohl den Hostnamen
+      <em>als auch</em> die Portnummer für selbstreferenzierende URLs
+      in einer Direktive angeben zu können.</li>
 
-      <li>Die <code>ServerType</code>-Direktive entf&auml;llt.
+      <li>Die <code>ServerType</code>-Direktive entfällt.
       Die Methode zum Bedienen der Requests wird nun durch die Auswahl
-      des MPM ermittelt. Derzeit ist kein MPM daf&uuml;r bestimmt, von inetd
+      des MPM ermittelt. Derzeit ist kein MPM dafür bestimmt, von inetd
       gestartet zu werden.</li>
 
       <li>Die Module mod_log_agent und mod_log_referer, welche die
       Direktiven <code>AgentLog</code>, <code>RefererLog</code> und
       <code>RefererIgnore</code> bereitgestellt hatten, wurden entfernt.
-      Durch Verwendung der Direktive <a href="./mod/mod_log_config.html#customlog" class="directive"><code class="directive">CustomLog</code></a> aus mod_log_config
-      sind die Agent- und Refererlogs auch weiterhin verf&uuml;gbar.</li>
+      Durch Verwendung der Direktive <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> aus mod_log_config
+      sind die Agent- und Refererlogs auch weiterhin verfügbar.</li>
 
       <li>Die Direktiven <code>AddModule</code> und
       <code>ClearModuleList</code> sind entfallen.
-      Diese Direktiven wurden benutzt, um sicherzustellen, da&szlig; die
-      Module in der richtigen Reihenfolge aktiviert werden k&ouml;nnen.
+      Diese Direktiven wurden benutzt, um sicherzustellen, daß die
+      Module in der richtigen Reihenfolge aktiviert werden können.
       Die neue Apache 2.0 API erlaubt es Modulen, ihre Reihenfolge
       explizit anzugeben, und macht diese Direktiven damit
-      &uuml;berfl&uuml;ssig.</li>
+      überflüssig.</li>
 
       <li>Die Direktive <code>FancyIndexing</code> wurde entfernt.
-      Die gleiche Funktionalit&auml;t ist nun mit der Option
-      <code>FancyIndexing</code> der Direktive <a href="./mod/mod_autoindex.html#indexoptions" class="directive"><code class="directive">IndexOptions</code></a> verf&uuml;gbar.</li>
+      Die gleiche Funktionalität ist nun mit der Option
+      <code>FancyIndexing</code> der Direktive <code class="directive"><a href="./mod/mod_autoindex.html#indexoptions">IndexOptions</a></code> verfügbar.</li>
      </ul>
-  <h2><a name="misc">Sonstige &Auml;nderungen</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="misc" id="misc">Sonstige Änderungen</a></h2>
     
 
     <ul>
@@ -147,17 +150,17 @@
       <li>Das Modul mod_mmap_static, das im Apache 1.3 experimentellen
       Status hatte, wurde durch das Modul mod_file_cache ersetzt.</li>
 
-      <li>Die Distribution wurde komplett reorganisiert und enth&auml;lt kein
-      unabh&auml;ngiges <code>src</code>-Verzeichnis mehr. Stattdessen wurden
+      <li>Die Distribution wurde komplett reorganisiert und enthält kein
+      unabhängiges <code>src</code>-Verzeichnis mehr. Stattdessen wurden
       die Quellcodes logisch unterhalb des Hauptverzeichnisses der
       Distribution angeordnet. Installationen des kompilierten Servers
       sollten in ein separates Verzeichnis erfolgen.</li>
     </ul>
-  <h2><a name="third-party">Module von Drittanbietern</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="third-party" id="third-party">Module von Drittanbietern</a></h2>
     
 
-    <p>An der API des Apache 2.0 wurden umfassende &Auml;nderungen
-    vorgenommen. Bestehende Module, die f&uuml;r die Apache 1.3 API
+    <p>An der API des Apache 2.0 wurden umfassende Änderungen
+    vorgenommen. Bestehende Module, die für die Apache 1.3 API
     entwickelt wurden, werden <strong>nicht</strong> ohne Modifikationen mit
-    der Version 2.0 des Apache zusammenarbeiten. Details sind in der <a href="developer/">Dokumentation f&uuml;r Entwickler</a> beschrieben.</p>
-  <hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"></a><a href="./"><img src="./images/home.gif" alt="Startseite"></a></body></html>
+    der Version 2.0 des Apache zusammenarbeiten. Details sind in der <a href="developer/">Dokumentation für Entwickler</a> beschrieben.</p>
+  </div></div><div id="footer"><p class="apache">Gepflegt durch das <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p></div></body></html>

@@ -80,14 +80,15 @@
         Nachricht in doppelte Anf&#252;hrungszeichen einschlie&#223;en.
         Zum Beispiel sollten existierende Angaben wie
 
-        <blockquote>
-          <code>ErrorDocument 403 "Eine Nachricht</code>
-        </blockquote>
+        <example>
+          ErrorDocument 403 "Eine Nachricht
+        </example>
         durch
 
-        <blockquote>
-          <code>ErrorDocument 403 "Eine Nachricht"</code>
-        </blockquote>
+        <example>
+          ErrorDocument 403 "Eine Nachricht"
+        </example>
+
         ersetzt werden.
         Solange das zweite Argument kein g&#252;ltiger URL oder
         Pfadname ist, wird es als Textnachricht behandelt.

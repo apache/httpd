@@ -1,8 +1,10 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Compiling and Installing - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Compiling and Installing</h1>
+      --><title>Compiling and Installing - Apache HTTP Server</title><link href="./style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="./style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="./style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="./style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="./style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="./style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="./style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="./style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Compiling and Installing</h1>
 
     <p>This document covers compilation and installation of Apache
     on Unix and Unix-like systems only. For compiling and
@@ -15,8 +17,8 @@
     uses libtool and autoconf to create an environment that looks
     like many other Open Source projects.</p>
 
-<ul><li><a href="#overview">Overview for the
-    impatient</a></li><li><a href="#requirements">Requirements</a></li><li><a href="#download">Download</a></li><li><a href="#extract">Extract</a></li><li><a href="#configure">Configuring the source tree</a><ul><li><a href="#environment">Environment Variables</a></li><li><a href="#output">autoconf Output Options</a></li><li><a href="#pathnames">Pathnames</a></li><li><a href="#modules">Modules</a></li><li><a href="#dbm">DBM</a></li><li><a href="#suexec">Suexec</a></li></ul></li><li><a href="#compile">Build</a></li><li><a href="#install">Install</a></li><li><a href="#customize">Customize</a></li><li><a href="#test">Test</a></li></ul><hr><h2><a name="overview">Overview for the
+</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Overview for the
+    impatient</a></li><li><img alt="" src="./images/down.gif" /> <a href="#requirements">Requirements</a></li><li><img alt="" src="./images/down.gif" /> <a href="#download">Download</a></li><li><img alt="" src="./images/down.gif" /> <a href="#extract">Extract</a></li><li><img alt="" src="./images/down.gif" /> <a href="#configure">Configuring the source tree</a></li><li><img alt="" src="./images/down.gif" /> <a href="#compile">Build</a></li><li><img alt="" src="./images/down.gif" /> <a href="#install">Install</a></li><li><img alt="" src="./images/down.gif" /> <a href="#customize">Customize</a></li><li><img alt="" src="./images/down.gif" /> <a href="#test">Test</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="overview" id="overview">Overview for the
     impatient</a></h2>
 
     <table>
@@ -31,7 +33,7 @@
       <tr>
         <td><a href="#extract">Extract</a></td>
 
-        <td><code>$ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br>
+        <td><code>$ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br />
          $ tar xvf httpd-2_0_<em>NN</em>.tar</code> </td>
       </tr>
 
@@ -77,34 +79,34 @@
     <p>Each section of the compilation and installation process is
     described in more detail below, beginning with the requirements
     for compiling and installing Apache HTTPD.</p>
-<h2><a name="requirements">Requirements</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="requirements" id="requirements">Requirements</a></h2>
 
     <p>The following requirements exist for building Apache:</p>
 
     <ul>
-      <li>Disk Space<br>
-      <br>
+      <li>Disk Space<br />
+      <br />
        Make sure you have at least 50 MB of temporary free disk
       space available. After installation Apache occupies
       approximately 10 MB of disk space. The actual disk space
       requirements will vary considerably based on your chosen
-      configuration options and any third-party modules.<br>
-      <br>
+      configuration options and any third-party modules.<br />
+      <br />
       </li>
 
-      <li>ANSI-C Compiler and Build System<br>
-      <br>
+      <li>ANSI-C Compiler and Build System<br />
+      <br />
        Make sure you have an ANSI-C compiler installed. The <a href="http://www.gnu.org/software/gcc/gcc.html">GNU C
       compiler (GCC)</a> from the <a href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
       is recommended (version 2.7.2 is fine). If you don't have GCC
       then at least make sure your vendor's compiler is ANSI
       compliant. In addition, your <code>PATH</code> must contain
-      basic build tools such as <code>make</code>.<br>
-      <br>
+      basic build tools such as <code>make</code>.<br />
+      <br />
       </li>
 
-      <li>Accurate time keeping<br>
-      <br>
+      <li>Accurate time keeping<br />
+      <br />
        Elements of the HTTP protocol are expressed as the time of
       day. So, it's time to investigate setting some time
       synchronization facility on your system. Usually the ntpdate
@@ -113,13 +115,13 @@
       <a href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a>
       and the <a href="http://www.eecis.udel.edu/~ntp/">NTP
       homepage</a> for more details about NTP software and public
-      time servers.<br>
-      <br>
+      time servers.<br />
+      <br />
       </li>
 
       <li><a href="http://www.perl.org/">Perl 5</a>
-      [OPTIONAL]<br>
-      <br>
+      [OPTIONAL]<br />
+      <br />
        For some of the support scripts like <a href="programs/apxs.html">apxs</a> or <a href="programs/dbmmanage.html">dbmmanage</a> (which are
       written in Perl) the Perl 5 interpreter is required (versions
       5.003 and 5.004 are fine). If no such interpreter is found by
@@ -129,11 +131,11 @@
       installed (perhaps a Perl 4 from the vendor and a Perl 5 from
       your own), then it is recommended to use the --with-perl
       option (see below) to make sure the correct one is selected
-      by ./configure.<br>
-      <br>
+      by ./configure.<br />
+      <br />
       </li>
     </ul>
-<h2><a name="download">Download</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="download" id="download">Download</a></h2>
 
     <p>Apache can be downloaded from the <a href="http://www.apache.org/dist/httpd/">Apache Software
     Foundation download site</a> or from a <a href="http://www.apache.org/dyn/closer.cgi/httpd/">nearby
@@ -161,11 +163,11 @@
     key ring using one of the following commands (depending on your
     pgp version):</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>$ pgp &lt; KEYS</code></td></tr></table></blockquote>
+<div class="example"><p><code>$ pgp &lt; KEYS</code></p></div>
 
     <p>or </p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>$ gpg --import KEYS</code></td></tr></table></blockquote>
+<div class="example"><p><code>$ gpg --import KEYS</code></p></div>
 
     <p>The next step is to test the tarball against the PGP
     signature, which should always be obtained from the <a href="http://www.apache.org/dist/httpd/">main Apache
@@ -174,16 +176,16 @@
     can check the distribution with one of the following commands
     (again, depending on your pgp version):</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>$ pgp httpd-2_0_<em>NN</em>.tar.gz.asc</code></td></tr></table></blockquote>
+<div class="example"><p><code>$ pgp httpd-2_0_<em>NN</em>.tar.gz.asc</code></p></div>
     
     <p>or</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>$ gpg --verify httpd-2_0_<em>NN</em>.tar.gz.asc</code></td></tr></table></blockquote>
+<div class="example"><p><code>$ gpg --verify httpd-2_0_<em>NN</em>.tar.gz.asc</code></p></div>
     
     <p>You should receive a message like</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>Good signature from user "Martin Kraemer
-      &lt;martin@apache.org&gt;".</code></td></tr></table></blockquote>
+<div class="example"><p><code>Good signature from user "Martin Kraemer
+      &lt;martin@apache.org&gt;".</code></p></div>
 
     <p>Depending on the trust relationships contained in your key
     ring, you may also receive a message saying that the
@@ -191,21 +193,21 @@
     be verified. This is not a problem if you trust the
     authenticity of the <code>KEYS</code> file.</p>
 
-<h2><a name="extract">Extract</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="extract" id="extract">Extract</a></h2>
 
     <p>Extracting the source from the Apache HTTPD tarball is a
     simple matter of uncompressing, and then untarring:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      $ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br>
+<div class="example"><p><code>
+      $ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br />
        $ tar xvf httpd-2_0_<em>NN</em>.tar
-</code></td></tr></table></blockquote>
+</code></p></div>
 
     <p>This will create a new directory under the current directory
     containing the source code for the distribution. You should
     <code>cd</code> into that directory before proceeding with
     compiling the server.</p>
-<h2><a name="configure">Configuring the source tree</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="configure" id="configure">Configuring the source tree</a></h2>
 
     <p>The next step is to configure the Apache source tree for
     your particular platform and personal requirements. This is
@@ -234,12 +236,12 @@
     the two additional modules mod_rewrite and mod_speling for
     later loading through the DSO mechanism:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      $ CC="pgcc" CFLAGS="-O2" \<br>
-       ./configure --prefix=/sw/pkg/apache \<br>
-       --enable-rewrite=shared \<br>
+<div class="example"><p><code>
+      $ CC="pgcc" CFLAGS="-O2" \<br />
+       ./configure --prefix=/sw/pkg/apache \<br />
+       --enable-rewrite=shared \<br />
        --enable-speling=shared
-</code></td></tr></table></blockquote>
+</code></p></div>
 
     <p>When configure is run it will take several minutes to test
     for the availability of features on your system and build
@@ -250,7 +252,7 @@
     description of most of the arguments and environment
     variables.</p>
 
-<h3><a name="environment">Environment Variables</a></h3>
+<h3><a name="environment" id="environment">Environment Variables</a></h3>
 
     <p>The autoconf build process uses several environment
     variables to configure the build environment. In general, these
@@ -314,7 +316,7 @@
     </dl>
 
 
-<h3><a name="output">autoconf Output Options</a></h3>
+<h3><a name="output" id="output">autoconf Output Options</a></h3>
 
     <dl>
       <dt><code>--help</code></dt>
@@ -334,7 +336,7 @@
     </dl>
 
 
-<h3><a name="pathnames">Pathnames</a></h3>
+<h3><a name="pathnames" id="pathnames">Pathnames</a></h3>
 
     <p>There are currently two ways to configure the pathnames
     under which Apache will install its files. First, you can
@@ -389,7 +391,7 @@
     <code>--enable-layout</code> option.</p>
 
 
-<h3><a name="modules">Modules</a></h3>
+<h3><a name="modules" id="modules">Modules</a></h3>
 
     <p>Apache is a modular server. Only the most basic
     functionality is included in the core server. Extended features
@@ -409,7 +411,7 @@
     modules may be <em>dynamically compiled</em>. DSO modules are
     stored separately from the Apache binary, and may be included
     or excluded from the server using the run-time configuration
-    directives provided by <code><a href="./mod/mod_so.html">mod_so</a></code>.
+    directives provided by <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>.
     The mod_so is automatically included in the server if any
     dynamic modules are included in the compilation. If you would
     like to make your server capable of loading DSOs without
@@ -449,11 +451,11 @@
     space-separated list of module identifiers. For example, to
     enable mod_dav and mod_info, you can either use</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>./configure --enable-dav --enable-info</code></td></tr></table></blockquote>
+<div class="example"><p><code>./configure --enable-dav --enable-info</code></p></div>
 
     <p>or, equivalently,</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>./configure --enable-modules="dav info"</code></td></tr></table></blockquote>
+<div class="example"><p><code>./configure --enable-modules="dav info"</code></p></div>
 
     <p>In addition, the special keywords <code>all</code> or
     <code>most</code> can be used to add all or most of the modules
@@ -462,10 +464,10 @@
     For example, to include all modules as DSOs with the exception
     of mod_info, you can use</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
       ./configure --enable-mods-shared=all
       --disable-info
-</code></td></tr></table></blockquote>
+</code></p></div>
 
     <p>In addition to the standard set of modules, Apache 2.0 also
     includes a choice of <a href="mpm.html">Multi-Processing
@@ -482,11 +484,11 @@
     </dl>
 
 
-<h3><a name="dbm">DBM</a></h3>
+<h3><a name="dbm" id="dbm">DBM</a></h3>
 
     <p>Several Apache features, including
-    <code><a href="./mod/mod_auth_dbm.html">mod_auth_dbm</a></code> and <code><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>'s
-    DBM <a href="./mod/mod_rewrite.html#rewritemap" class="directive"><code class="directive">RewriteMap</code></a> use
+    <code class="module"><a href="./mod/mod_auth_dbm.html">mod_auth_dbm</a></code> and <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>'s
+    DBM <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> use
     simple key/value databases for quick lookups of information.  Apache
     includes SDBM with its source-code, so this database is always
     available.  If you would like to use other database types, the
@@ -508,7 +510,7 @@ seperated by a colon.</dd>
 
 
 
-<h3><a name="suexec">Suexec</a></h3>
+<h3><a name="suexec" id="suexec">Suexec</a></h3>
 
     <p>Apache includes a support program called <a href="suexec.html">suexec</a> which can be used to isolate user
     CGI programs. However, if suexec is improperly configured, it
@@ -516,50 +518,50 @@ seperated by a colon.</dd>
     carefully read and consider the <a href="suexec.html">suexec
     documentation</a> before implementing this feature.</p>
 
-<h2><a name="compile">Build</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="compile" id="compile">Build</a></h2>
 
     <p>Now you can build the various parts which form the Apache
     package by simply running the command:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>$ make</code></td></tr></table></blockquote>
+<div class="example"><p><code>$ make</code></p></div>
 
     <p>Please be patient here, since a base configuration takes
     approximately 3 minutes to compile under a Pentium III/Linux
     2.2 system, but this will vary widely depending on your
     hardware and the number of modules which you have enabled.</p>
-<h2><a name="install">Install</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="install" id="install">Install</a></h2>
 
     <p>Now its time to install the package under the configured
     installation <em>PREFIX</em> (see <code>--prefix</code> option
     above) by running:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>$ make install</code></td></tr></table></blockquote>
+<div class="example"><p><code>$ make install</code></p></div>
 
     <p>If you are upgrading, the installation will not overwrite
     your configuration files or documents.</p>
-<h2><a name="customize">Customize</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="customize" id="customize">Customize</a></h2>
 
     <p>Next, you can customize your Apache HTTP server by editing
     the <a href="configuring.html">configuration files</a> under
     <em>PREFIX</em>/conf/.</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></td></tr></table></blockquote>
+<div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
     <p>Have a look at the Apache manual under <a href="./">docs/manual/</a> or <a href="http://httpd.apache.org/docs/">http://httpd.apache.org/docs-2.0/</a>
     for a complete reference of available <a href="mod/directives.html">configuration directives</a>.</p>
-<h2><a name="test">Test</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="test" id="test">Test</a></h2>
 
     <p>Now you can <a href="invoking.html">start</a> your Apache
     HTTP server by immediately running:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>$ <em>PREFIX</em>/bin/apachectl start</code></td></tr></table></blockquote>
+<div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl start</code></p></div>
 
     <p>and then you should be able to request your first document
     via URL http://localhost/. The web page you see is located
-    under the <a href="./mod/core.html#documentroot" class="directive"><code class="directive">DocumentRoot</code></a>
+    under the <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>
     which will usually be <code><em>PREFIX</em>/htdocs/</code>.
     Then <a href="stopping.html">stop</a> the server again by
     running:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>$ <em>PREFIX</em>/bin/apachectl stop</code></td></tr></table></blockquote>
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"></a><a href="./"><img src="./images/home.gif" alt="Home"></a></body></html>
+<div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl stop</code></p></div>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>

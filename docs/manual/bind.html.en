@@ -1,13 +1,15 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Binding - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Binding</h1>
+      --><title>Binding - Apache HTTP Server</title><link href="./style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="./style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="./style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="./style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="./style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="./style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="./style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="./style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Binding</h1>
     <p>Configuring Apache to listen on specific addresses and ports.</p>
-  <ul><li><a href="#overview">Overview</a></li><li><a href="#ipv6">Special IPv6 Considerations</a></li><li><a href="#virtualhost">How This Works With Virtual Hosts</a></li></ul><hr/><p><strong>See also </strong></p><ul><li><a href="vhosts/">Virtual Hosts</a></li><li><a href="dns-caveats.html">DNS Issues</a></li></ul><h2><a name="overview">Overview</a></h2>
+  </div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Overview</a></li><li><img alt="" src="./images/down.gif" /> <a href="#ipv6">Special IPv6 Considerations</a></li><li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">How This Works With Virtual Hosts</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="vhosts/">Virtual Hosts</a></li><li><a href="dns-caveats.html">DNS Issues</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="overview" id="overview">Overview</a></h2>
     
     
-    <table border="1"><tr><td valign="top"><strong>Related Modules</strong><br/><br/><code><a href="./mod/core.html">core</a></code><br/><code><a href="./mod/mpm_common.html">mpm_common</a></code><br/></td><td valign="top"><strong>Related Directives</strong><br/><br/><a href="./mod/core.html#virtualhost" class="directive"><code class="directive">VirtualHost</code></a><br/><a href="./mod/mpm_common.html#listen" class="directive"><code class="directive">Listen</code></a><br/></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
     
     
     <p>When Apache starts, it binds to some port and address on
@@ -18,11 +20,11 @@
     Virtual Host feature which determines how Apache responds to 
     different IP addresses, hostnames and ports.</p>
 
-    <p>The <a href="./mod/mpm_common.html#listen" class="directive"><code class="directive">Listen</code></a>
+    <p>The <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
     directive tells the server to accept
     incoming requests only on the specified port or
     address-and-port combinations. If only a port number is
-    specified in the <a href="./mod/mpm_common.html#listen" class="directive"><code class="directive">Listen</code></a>
+    specified in the <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
     directive, the server
     listens to the given port on all interfaces. If an IP address
     is given as well as a port, the server will listen on the given
@@ -34,83 +36,83 @@
     <p>For example, to make the server accept connections on both
     port 80 and port 8000, use:</p>
 
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      Listen 80<br>
+    <div class="example"><p><code>
+      Listen 80<br />
       Listen 8000
-    </code></td></tr></table></blockquote>
+    </code></p></div>
 
     <p>To make the server accept connections on two specified
     interfaces and port numbers, use</p>
 
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      Listen 192.170.2.1:80<br>
+    <div class="example"><p><code>
+      Listen 192.170.2.1:80<br />
       Listen 192.170.2.5:8000
-    </code></td></tr></table></blockquote>
+    </code></p></div>
 
     <p>IPv6 addresses must be surrounded in square brackets, as in the
     following example:</p>
 
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    <div class="example"><p><code>
       Listen [fe80::a00:20ff:fea7:ccea]:80
-    </code></td></tr></table></blockquote>
-  <h2><a name="ipv6">Special IPv6 Considerations</a></h2>
+    </code></p></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="ipv6" id="ipv6">Special IPv6 Considerations</a></h2>
     
 
     <p>When APR supports IPv6, Apache will create IPv6-capable listening
     sockets by default (i.e., when no IP address is specified on the
     Listen directive).  In other words, when APR supports IPv6,</p>
 
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    <div class="example"><p><code>
       Listen 80
-    </code></td></tr></table></blockquote>
+    </code></p></div>
 
     <p>is equivalent to</p>
 
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    <div class="example"><p><code>
       Listen [::]:80
-    </code></td></tr></table></blockquote>
+    </code></p></div>
 
     <p>When APR does not support IPv6,</p>
 
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    <div class="example"><p><code>
       Listen 80
-    </code></td></tr></table></blockquote>
+    </code></p></div>
 
     <p>is equivalent to</p>
 
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    <div class="example"><p><code>
       Listen 0.0.0.0:80
-    </code></td></tr></table></blockquote>
+    </code></p></div>
 
     <p>On some platforms, such as NetBSD, binding to the IPv6 wildcard address 
     ("::") does not allow Apache to accept connections on IPv4 interfaces.
     In this situation, multiple Listen directives are required, as shown
     below:</p>
 
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      Listen 0.0.0.0:80<br>
+    <div class="example"><p><code>
+      Listen 0.0.0.0:80<br />
       Listen [::]:0
-    </code></td></tr></table></blockquote>
+    </code></p></div>
 
     <p>Apache does not currently detect this, so the Listen statements must
     be edited manually by the administrator.</p>
-  <h2><a name="virtualhost">How This Works With Virtual Hosts</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="virtualhost" id="virtualhost">How This Works With Virtual Hosts</a></h2>
     
 
     <p>Listen does not implement Virtual Hosts. It only tells the
     main server what addresses and ports to listen to. If no
-    <a href="./mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a>
+    <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     directives are used, the server will behave
     the same for all accepted requests. However,
-    <a href="./mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a>
+    <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     can be used to specify a different behavior
     for one or more of the addresses and ports. To implement a
     VirtualHost, the server must first be told to listen to the
     address and port to be used. Then a
-    <a href="./mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a> section
+    <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> section
     should be created for a specified address and port to set the
     behavior of this virtual host. Note that if the
-    <a href="./mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a>
+    <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     is set for an address and port that the
     server is not listening to, it cannot be accessed.</p>
-  <hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"/></a><a href="./"><img src="./images/home.gif" alt="Home"/></a></body></html>
+  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>
