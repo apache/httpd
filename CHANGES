@@ -1,5 +1,9 @@
 Changes with Apache 2.0.46
 
+  *) Fix ap_construct_url() so that it surrounds IPv6 literal address
+     strings with [].  This fixes certain types of redirection.
+     PR 19207.  [Jeff Trawick]
+
   *) forward port of buffer overflow fixes for htdigest. [Thom May]
 
   *) Added AllowEncodedSlashes directive to permit control of whether

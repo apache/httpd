@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/13 15:51:04 $]
+Last modified at [$Date: 2003/05/13 16:01:03 $]
 
 Release:
 
@@ -216,18 +216,6 @@ PATCHES TO PORT FROM 2.1
       (explicitly add --enable-so).
       modules/mappers/config9.m4 r1.16
       +1: trawick, nd, stoddard
-
-    * Fix ap_construct_url() so that it surrounds IPv6 literal address
-      strings with [].  This fixes certain types of redirection.
-      PR 19207.
-      server/core.c r1.232
-      +1: nd
-      Oops!  While r1.232 isn't actually broken functionally, it will 
-      do an unnecessary string search with non-IPv6 builds because of a 
-      bogus check for IPv6 capability.
-      server/core.c r1.232+r1.235
-      +1: trawick, stoddard, thommay
-
 
     * Hook mod_rewrite's type checker before mod_mime's one. That way the
       RewriteRule [T=...] Flag should work as expected now. PR 19626.
