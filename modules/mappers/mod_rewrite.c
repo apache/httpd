@@ -987,8 +987,11 @@ static int post_config(apr_pool_t *p,
      */
     for (; s; s = s->next) {
         open_rewritelog(s, p);
-        if (!first_time)
-           run_rewritemap_programs(s, p);
+        if (!first_time) {
+            if (run_rewritemap_programs(s, p) != APR_SUCCESS) {
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+        }
     }
     return OK;
 }
@@ -3365,7 +3368,7 @@ static apr_status_t rewritelock_remove(void *data)
 ** +-------------------------------------------------------+
 */
 
-static void run_rewritemap_programs(server_rec *s, apr_pool_t *p)
+static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
 {
     rewrite_server_conf *conf;
     apr_file_t *fpin = NULL;
@@ -3383,7 +3386,7 @@ static void run_rewritemap_programs(server_rec *s, apr_pool_t *p)
      *  don't even try to do anything.
      */
     if (conf->state == ENGINE_DISABLED) {
-        return;
+        return APR_SUCCESS;
     }
 
     rewritemaps = conf->rewritemaps;
@@ -3405,15 +3408,15 @@ static void run_rewritemap_programs(server_rec *s, apr_pool_t *p)
                                      &fpout, &fpin, &fperr);
         if (rc != APR_SUCCESS || fpin == NULL || fpout == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rc, s,
-                         "mod_rewrite: could not fork child for "
-                         "RewriteMap process");
-            exit(1);
+                         "mod_rewrite: could not startup RewriteMap "
+                         "program %s", map->datafile);
+            return rc;
         }
         map->fpin  = fpin;
         map->fpout = fpout;
         map->fperr = fperr;
     }
-    return;
+    return APR_SUCCESS;
 }
 
 /* child process code */
@@ -3424,11 +3427,13 @@ static apr_status_t rewritemap_program_child(apr_pool_t *p, const char *progname
     apr_status_t rc;
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
+    apr_finfo_t st;
     char **argv;
 
     rc = apr_tokenize_to_argv(progname, &argv, p);
 
-    if (((rc = apr_procattr_create(&procattr, p)) != APR_SUCCESS) ||
+    if (((rc = apr_stat(&st, argv[0], APR_FINFO_MIN, p)) != APR_SUCCESS) ||
+        ((rc = apr_procattr_create(&procattr, p)) != APR_SUCCESS) ||
         ((rc = apr_procattr_io_set(procattr, APR_FULL_BLOCK,
                                   APR_FULL_NONBLOCK,
                                   APR_FULL_NONBLOCK)) != APR_SUCCESS) ||

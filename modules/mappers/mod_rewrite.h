@@ -455,7 +455,7 @@ static apr_status_t rewritelock_create(server_rec *s, apr_pool_t *p);
 static apr_status_t rewritelock_remove(void *data);
 
     /* program map support */
-static void  run_rewritemap_programs(server_rec *s, apr_pool_t *p);
+static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p);
 static apr_status_t rewritemap_program_child(apr_pool_t *p, const char *progname,
                                              apr_file_t **fpout, apr_file_t **fpin,
                                              apr_file_t **fperr);
