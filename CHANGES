@@ -149,6 +149,11 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.46
 
+  *) Fixes for VPATH builds; copying special.mk and any future .mk files 
+     from the source tree as well as the build tree (now creates a usable
+     configuration for apxs), and eliminated redundant -I'nclude paths.
+     [William Rowe]
+
   *) Code fixes, constness corrections and ssl_toolkit_compat.h updates
      for SSLC and OpenSSL toolkit compatibility.  Still work remains to
      be done to cripple features based on the limitations of RSA's binary 
