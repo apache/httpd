@@ -11,7 +11,7 @@
 <!--***************************************************-->
 
 <?xml-stylesheet type="text/xsl" href="./style/manual.ru.xsl"?>
-<manualpage>
+<manualpage metafile="new_features_2_0.xml.meta">
 <relativepath href="."/>
 
 <title>Обзор новых возможностей в Apache 2.0</title>

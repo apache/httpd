@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
-<manualpage>
+<manualpage metafile="ip-based.xml.meta">
 <relativepath href=".."/>
 <parentdocument href="./">Virtual Hosts</parentdocument>
    <title>Apache IP-based Virtual Host Support</title>

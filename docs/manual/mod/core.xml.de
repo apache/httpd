@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
 <!-- English revision: 1.52 -->
 
-<modulesynopsis>
+<modulesynopsis metafile="core.xml.meta">
 
 <name>core</name>
 <description>St&auml;ndig verf&uuml;gbare Kernfunktionen des Apache HTTP

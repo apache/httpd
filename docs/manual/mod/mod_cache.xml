@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<modulesynopsis>
+<modulesynopsis metafile="mod_cache.xml.meta">
 
 <name>mod_cache</name>
 <description>Content cache keyed to URIs.</description>

@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English revision: 1.8 -->
-<modulesynopsis>
+<modulesynopsis metafile="worker.xml.meta">
 <name>worker</name>
 <description>マルチスレッドとマルチプロセスのハイブリッド型
 ウェブサーバを実装したマルチプロセッシングモジュール</description>

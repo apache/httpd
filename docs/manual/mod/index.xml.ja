@@ -5,7 +5,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English revision: 1.5 -->
 
-<moduleindex>
+<moduleindex metafile="index.xml.meta">
   <title>モジュール一覧</title>
   <summary>
     <p>

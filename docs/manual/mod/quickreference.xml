@@ -4,7 +4,7 @@
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
-<quickreference>
+<quickreference metafile="quickreference.xml.meta">
   <title>Directive Quick Reference</title>
   <summary>
     <p>The directive quick reference shows the usage, default, status,
