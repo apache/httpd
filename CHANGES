@@ -1,5 +1,8 @@
 Changes with Apache 2.0.48
 
+  *) Assure that we block properly when reading input bodies with SSL.
+     PR 19242.  [David Deaves <David.Deaves@dd.id.au>, William Rowe]
+
   *) Update mime.types to include latest IANA and W3C types.  [Roy Fielding]
 
   *) mod_ext_filter: Set additional environment variables for use by
