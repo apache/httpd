@@ -657,7 +657,7 @@ ServerSignature On
     #
     # Note 2: The example entries below illustrate that in quite
     # some cases the two character 'Language' abbriviation is not
-    # identical to the two character 'Country' code for it's country,
+    # identical to the two character 'Country' code for its country,
     # E.g. 'Danmark/dk' versus 'Danish/da'.
     #
     # Note 3: In the case of 'ltz' we violate the RFC by using a three char 
@@ -666,8 +666,9 @@ ServerSignature On
     #
     # Danish (da) - Dutch (nl) - English (en) - Estonian (ee)
     # French (fr) - German (de) - Greek-Modern (el)
-    # Italian (it) -Portugese (pt) - Luxembourgeois* (ltz)
+    # Italian (it) - Portugese (pt) - Luxembourgeois* (ltz)
     # Spanish (es) - Swedish (sv) - Catalan (ca) - Czech(cz)
+    # Polish (pl) - Brazilian Portuguese (pt-br) - Japanese (ja)
     #
     AddLanguage da .dk
     AddLanguage nl .nl
@@ -677,7 +678,12 @@ ServerSignature On
     AddLanguage de .de
     AddLanguage el .el
     AddLanguage it .it
+    AddLanguage ja .ja
+    AddCharset ISO-2022-JP .jis
+    AddLanguage pl .po
+    AddCharset ISO-8859-2 .iso-pl
     AddLanguage pt .pt
+    AddLanguage pt-br .pt-br
     AddLanguage ltz .lu
     AddLanguage ca .ca
     AddLanguage es .es
@@ -691,7 +697,7 @@ ServerSignature On
     # more or less alphabetized them here. You probably want to change this.
     #
     <IfModule mod_negotiation.c>
-        LanguagePriority en da nl et fr de el it pt ltz ca es sv
+        LanguagePriority en da nl et fr de el it ja pl pt pt-br ltz ca es sv
     </IfModule>
 
     #
