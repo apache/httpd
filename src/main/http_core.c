@@ -1368,9 +1368,14 @@ int default_handler (request_rec *r)
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
     int rangestatus, errstatus;
     FILE *f;
-    
+
+    /* This handler has no use for a request body (yet), but we still
+     * need to read and discard it if the client sent one.
+     */
+    if ((errstatus = discard_request_body(r)) != OK)
+        return errstatus;
+
     r->allowed |= (1 << M_GET);
-    r->allowed |= (1 << M_TRACE);
     r->allowed |= (1 << M_OPTIONS);
 
     if (r->method_number == M_INVALID) {

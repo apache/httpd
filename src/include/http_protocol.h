@@ -134,6 +134,7 @@ int index_of_response (int status);
 API_EXPORT(int) setup_client_block (request_rec *r, int read_policy);
 API_EXPORT(int) should_client_block (request_rec *r);
 API_EXPORT(long) get_client_block (request_rec *r, char *buffer, int bufsiz);
+API_EXPORT(int) discard_request_body (request_rec *r);
 
 /* Sending a byterange */
 

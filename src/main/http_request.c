@@ -930,8 +930,10 @@ void process_request_internal (request_rec *r)
          * we handle it specially.
          */
         if (r->method_number == M_TRACE) {
-            send_http_trace(r);
-            finalize_request_protocol(r);
+            if ((access_status = send_http_trace(r)))
+	        die(access_status, r);
+            else
+                finalize_request_protocol(r);
             return;
         }
 

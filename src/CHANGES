@@ -177,6 +177,14 @@ Changes with Apache 1.3
 
 Changes with Apache 1.2.2
 
+  *) API: In HTTP/1.1, whether or not a request message contains a body
+     is independent of the request method and based solely on the presence
+     of a Content-Length or Transfer-Encoding.  Therefore, our default
+     handlers need to be prepared to read a body even if they don't know
+     what to do with it; otherwise, the body would be mistaken for the
+     next request on a persistent connection.  discard_request_body()
+     has been added to take care of that.  [Roy Fielding] PR#378
+
   *) API: Symbol APACHE_RELEASE provides a numeric form of the Apache
      release version number, such that it always increases along the
      same lines as our source code branching.  [Roy Fielding]
