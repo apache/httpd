@@ -29,30 +29,27 @@
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Synopsis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="../invoking.html">Starting Apache</a></li><li><a href="../stopping.html">Stopping Apache</a></li><li><a href="../configuring.html">Configuration Files</a></li><li><a href="../platform/">Platform Docs</a></li><li><a href="apachectl.html">apachectl</a></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../invoking.html">Starting Apache</a></li><li><a href="../stopping.html">Stopping Apache</a></li><li><a href="../configuring.html">Configuration Files</a></li><li><a href="../platform/">Platform-specific Documentation</a></li><li><a href="apachectl.html">apachectl</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="synopsis" id="synopsis">Synopsis</a></h2>
+     <p><code><strong>httpd</strong> [ -<strong>d</strong>
+     <var>serverroot</var> ] [ -<strong>f</strong> <var>config</var> ]
+     [ -<strong>C</strong> <var>directive</var> ] [ -<strong>c</strong>
+     <var>directive</var> ] [ -<strong>D</strong> <var>parameter</var> ]
+     [ -<strong>e</strong> <var>level</var> ] [ -<strong>E</strong>
+     <var>file</var> ] [ <strong>-k</strong> start|restart|graceful|stop ]
+     [ -<strong>R</strong> <var>directory</var> ] [ -<strong>h</strong> ]
+     [ -<strong>l</strong> ] [ -<strong>L</strong> ] [ -<strong>S</strong> ]
+     [ -<strong>t</strong> ] [ -<strong>v</strong> ] [ -<strong>V</strong> ]
+     [ -<strong>X</strong> ]</code></p>
 
-     <p><code><strong>httpd </strong>[ -<strong>d </strong><var>serverroot
-     </var>] [ -<strong>f </strong><var>config </var>] [ -<strong>C
-     </strong> <var>directive </var>] [ -<strong>c </strong>
-     <var>directive</var>] [ -<strong>D </strong> <var>parameter
-     </var>] [ -<strong>e </strong> <var>level</var> ] [ -<strong>E
-     </strong> <var>file</var> ] [ <strong>-k </strong>
-     <code>start|restart|graceful|stop</code> ] [ -<strong>R </strong>
-     <var>directory</var> ] [ -<strong>h </strong>] [ -<strong>l
-     </strong>] [ -<strong>L </strong>] [-<strong>S</strong>] [
-     -<strong>t </strong>] [ -<strong>v </strong>] [ -<strong>V
-     </strong>] [ -<strong>X </strong>]</code></p>
-
-     <p>On <a href="../platform/windows.html">Win32 systems</a>, the
+     <p>On <a href="../platform/windows.html">Windows systems</a>, the
      following additional arguments are available:</p>
 
-     <p><code><strong>httpd </strong> [ -<strong>k </strong>
-     <code>install|config|uninstall</code> ] [ -<strong>n </strong>
-     <var>name</var> ] [ -<strong>w</strong> ]</code></p>
-
+     <p><code><strong>httpd</strong> [ -<strong>k</strong>
+     install|config|uninstall ] [ -<strong>n</strong> <var>name</var> ]
+     [ -<strong>w</strong> ]</code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="options" id="options">Options</a></h2>
@@ -155,11 +152,11 @@ server will not detach from the console.</dd>
 
 </dl>
 
-<p>The following arguments are available only on the <a href="../platform/windows.html">win32 platform</a>:</p>
+<p>The following arguments are available only on the <a href="../platform/windows.html">Windows platform</a>:</p>
 
 <dl>
 
-<dt><code>-k <code>install|config|uninstall</code></code></dt>
+<dt><code>-k install|config|uninstall</code></dt>
 
 <dd>Install Apache as a Windows NT service; change startup options for
 the Apache service; and uninstall the Apache service.</dd>
@@ -170,7 +167,7 @@ the Apache service; and uninstall the Apache service.</dd>
 
 <dt><code>-w</code></dt>
 
-<dd>Hold the console window open on error so that the error message can 
+<dd>Keep the console window open on error so that the error message can 
 be read.</dd>
 
 </dl>
