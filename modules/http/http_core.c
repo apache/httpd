@@ -2609,7 +2609,7 @@ AP_INIT_TAKE12("RLimitNPROC", no_set_limit, NULL,
  * Core handlers for various phases of server operation...
  */
 
-int ap_core_translate(request_rec *r)
+API_EXPORT_NONSTD(int) ap_core_translate(request_rec *r)
 {
     void *sconf = r->server->module_config;
     core_server_config *conf = ap_get_module_config(sconf, &core_module);
