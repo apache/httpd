@@ -173,8 +173,8 @@ int get_digest_rec(request_rec *r, digest_header_rec * response)
 
     while (s != D_EXIT) {
 	switch (s) {
-	    case D_STRING:
-		if (auth_line[0] == '\"') {
+	case D_STRING:
+	    if (auth_line[0] == '\"') {
 		s = D_VALUE;
 	    }
 	    else {
@@ -184,8 +184,8 @@ int get_digest_rec(request_rec *r, digest_header_rec * response)
 	    auth_line++;
 	    break;
 
-	    case D_VALUE:
-		if (isalnum(auth_line[0])) {
+	case D_VALUE:
+	    if (isalnum(auth_line[0])) {
 		value[vv] = auth_line[0];
 		vv++;
 	    }
@@ -212,8 +212,8 @@ int get_digest_rec(request_rec *r, digest_header_rec * response)
 	    auth_line++;
 	    break;
 
-	    case D_KEY:
-		if (isalnum(auth_line[0])) {
+	case D_KEY:
+	    if (isalnum(auth_line[0])) {
 		key[vk] = auth_line[0];
 		vk++;
 	    }
