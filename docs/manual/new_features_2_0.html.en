@@ -30,13 +30,13 @@
 <DD>Apache now has some of the infrastructure in place to support serving
     multiple protocols. mod_echo has been written as an example.
 
-<DT><STRONG>Better support for non-Unix platforms</STRONG>
-<DD>Apache 2.0 is faster and more stable on non-Unix platforms such as
-    BeOS, OS/2, and Windows. With the introduction of platform-specific
-    multiprocessing modules (MPM) and the Apache Portable Runtime (APR), 
-    these platforms are now implemented in their native API, avoiding the 
-    often buggy and poorly performing POSIX-emulation layers.
-<DD>A list of the MPM's currently available is <a href="mpm.html">here</a>.
+<DT><STRONG>Better support for non-Unix platforms</STRONG> <DD>Apache
+    2.0 is faster and more stable on non-Unix platforms such as BeOS,
+    OS/2, and Windows. With the introduction of platform-specific <a
+    href="mpm.html">multi-processing modules</a> (MPMs) and the Apache
+    Portable Runtime (APR), these platforms are now implemented in their
+    native API, avoiding the often buggy and poorly performing
+    POSIX-emulation layers.
 
 <DT><STRONG>New Apache API</STRONG>
 <DD>The API for modules has changed significantly for 2.0. Many of the
