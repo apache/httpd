@@ -975,6 +975,7 @@ static int connect_to_daemon(int *sdptr, request_rec *r,
  */ 
 static int cgid_handler(request_rec *r) 
 { 
+    conn_rec *c = r->connection;
     int retval, nph, dbpos = 0; 
     char *argv0, *dbuf = NULL; 
     apr_bucket_brigade *bb;
@@ -1156,10 +1157,10 @@ static int cgid_handler(request_rec *r)
              */
             apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
 
-            bb = apr_brigade_create(r->pool);
-            b = apr_bucket_pipe_create(tempsock);
+            bb = apr_brigade_create(r->pool, c->bucket_alloc);
+            b = apr_bucket_pipe_create(tempsock, c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
-            b = apr_bucket_eos_create();
+            b = apr_bucket_eos_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
             ap_pass_brigade(r->output_filters, bb);
         } 
@@ -1185,10 +1186,10 @@ static int cgid_handler(request_rec *r)
         }
         r->output_filters = r->proto_output_filters = cur;
 
-        bb = apr_brigade_create(r->pool);
-        b = apr_bucket_pipe_create(tempsock);
+        bb = apr_brigade_create(r->pool, c->bucket_alloc);
+        b = apr_bucket_pipe_create(tempsock, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
-        b = apr_bucket_eos_create();
+        b = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
         ap_pass_brigade(r->output_filters, bb);
     } 
@@ -1244,6 +1245,7 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
     if (ap_is_HTTP_REDIRECT(rr_status)) {
         apr_size_t len_loc;
         const char *location = apr_table_get(rr->headers_out, "Location");
+        conn_rec *c = r->connection;
 
         location = ap_escape_html(rr->pool, location);
         len_loc = strlen(location);
@@ -1253,15 +1255,20 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
          * and a single pool bucket */
 
         tmp_buck = apr_bucket_immortal_create("<A HREF=\"",
-                                              sizeof("<A HREF=\"") - 1);
+                                              sizeof("<A HREF=\"") - 1,
+                                              c->bucket_alloc);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
-        tmp2_buck = apr_bucket_heap_create(location, len_loc, 1);
+        tmp2_buck = apr_bucket_heap_create(location, len_loc, NULL,
+                                           c->bucket_alloc);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_immortal_create("\">", sizeof("\">") - 1);
+        tmp2_buck = apr_bucket_immortal_create("\">", sizeof("\">") - 1,
+                                               c->bucket_alloc);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_heap_create(location, len_loc, 1);
+        tmp2_buck = apr_bucket_heap_create(location, len_loc, NULL,
+                                           c->bucket_alloc);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_immortal_create("</A>", sizeof("</A>") - 1);
+        tmp2_buck = apr_bucket_immortal_create("</A>", sizeof("</A>") - 1,
+                                               c->bucket_alloc);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
 
         if (*inserted_head == NULL) {
@@ -1381,8 +1388,8 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
          */
         apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
 
-        bcgi = apr_brigade_create(r->pool);
-        b    = apr_bucket_pipe_create(tempsock);
+        bcgi = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+        b    = apr_bucket_pipe_create(tempsock, r->connection->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bcgi, b);
         ap_pass_brigade(f->next, bcgi);
     } 

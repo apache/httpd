@@ -324,7 +324,8 @@ int ap_graceful_stop_signalled(void)
  * Child process main loop.
  */
 
-static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num)
+static void process_socket(apr_pool_t *p, apr_socket_t *sock,
+                           int my_child_num, apr_bucket_alloc_t *bucket_alloc)
 {
     conn_rec *current_conn;
     long conn_id = my_child_num;
@@ -359,6 +360,7 @@ static int32 worker_thread(void * dummy)
     apr_allocator_t *allocator;
     apr_socket_t *csd = NULL;
     apr_pool_t *ptrans;		/* Pool for per-transaction stuff */
+    apr_bucket_alloc_t *bucket_alloc;
     apr_socket_t *sd = NULL;
     apr_status_t rv = APR_EINIT;
     int srv , n;
@@ -392,6 +394,8 @@ static int32 worker_thread(void * dummy)
     apr_poll_setup(&pollset, num_listening_sockets, tpool);
     for(n=0 ; n <= num_listening_sockets ; n++)
         apr_poll_socket_add(pollset, listening_sockets[n], APR_POLLIN);
+
+    bucket_alloc = apr_bucket_alloc_create(tpool);
 
     while (1) {
         /* If we're here, then chances are (unless we're the first thread created) 
@@ -480,7 +484,7 @@ static int32 worker_thread(void * dummy)
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
                   "apr_accept");
             } else {
-                process_socket(ptrans, csd, child_slot);
+                process_socket(ptrans, csd, child_slot, bucket_alloc);
                 requests_this_child--;
             }
         }
@@ -492,6 +496,8 @@ static int32 worker_thread(void * dummy)
     }
 
     ap_update_child_status_from_indexes(0, child_slot, SERVER_DEAD, (request_rec*)NULL);
+
+    apr_bucket_alloc_destroy(bucket_alloc);
 
 ap_log_error(APLOG_MARK, APLOG_NOTICE | APLOG_NOERRNO, 0, NULL,
              "worker_thread %ld exiting", find_thread(NULL));

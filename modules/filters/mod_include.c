@@ -1358,6 +1358,7 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 }
             }
             if (!strcmp(tag, "var")) {
+                conn_rec *c = r->connection;
                 const char *val =
                     get_include_var(r, ctx,
                                     ap_ssi_parse_string(r, ctx, tag_val, NULL,
@@ -1377,7 +1378,7 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb,
 
                     e_len = strlen(echo_text);
                     tmp_buck = apr_bucket_pool_create(echo_text, e_len,
-                                                      r->pool);
+                                                      r->pool, c->bucket_alloc);
                 }
                 else {
                     include_server_config *sconf= 
@@ -1385,7 +1386,7 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb,
                                              &include_module);
                     tmp_buck = apr_bucket_pool_create(sconf->undefinedEcho, 
                                                       sconf->undefinedEchoLen,
-                                                      r->pool);
+                                                      r->pool, c->bucket_alloc);
                 }
                 APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                 if (*inserted_head == NULL) {
@@ -1623,7 +1624,8 @@ static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb,
                         s_len = pos;
                     }
 
-                    tmp_buck = apr_bucket_heap_create(buff, s_len, 1);
+                    tmp_buck = apr_bucket_heap_create(buff, s_len, NULL,
+                                                  r->connection->bucket_alloc);
                     APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                     if (*inserted_head == NULL) {
                         *inserted_head = tmp_buck;
@@ -1671,7 +1673,8 @@ static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb,
                     t_val = ap_ht_time(r->pool, finfo.mtime, ctx->time_str, 0);
                     t_len = strlen(t_val);
 
-                    tmp_buck = apr_bucket_pool_create(t_val, t_len, r->pool);
+                    tmp_buck = apr_bucket_pool_create(t_val, t_len, r->pool,
+                                                  r->connection->bucket_alloc);
                     APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                     if (*inserted_head == NULL) {
                         *inserted_head = tmp_buck;
@@ -2504,8 +2507,9 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
     if (cntx->flags & FLAG_COND_TRUE) {                                    \
         cond_txt[31] = '1';                                                \
     }                                                                      \
-    memcpy(&cond_txt[5], tag_text, sizeof(tag_text));                      \
-    t_buck = apr_bucket_heap_create(cond_txt, sizeof(cond_txt), 1);        \
+    memcpy(&cond_txt[5], tag_text, sizeof(tag_text)-1);                    \
+    t_buck = apr_bucket_heap_create(cond_txt, sizeof(cond_txt)-1,          \
+                                    NULL, h_ptr->list);                    \
     APR_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                               \
                                                                            \
     if (ins_head == NULL) {                                                \
@@ -2515,7 +2519,8 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
 #define DUMP_PARSE_EXPR_DEBUG(t_buck, h_ptr, d_buf, ins_head)            \
 {                                                                        \
     if (d_buf[0] != '\0') {                                              \
-        t_buck = apr_bucket_heap_create(d_buf, strlen(d_buf), 1);        \
+        t_buck = apr_bucket_heap_create(d_buf, strlen(d_buf),            \
+                                        NULL, h_ptr->list);              \
         APR_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                         \
                                                                          \
         if (ins_head == NULL) {                                          \
@@ -2591,7 +2596,8 @@ static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 if (1) {
                     apr_size_t d_len = 0;
                     d_len = sprintf(debug_buf, "**** if expr=\"%s\"\n", expr);
-                    tmp_buck = apr_bucket_heap_create(debug_buf, d_len, 1);
+                    tmp_buck = apr_bucket_heap_create(debug_buf, d_len, NULL,
+                                                  r->connection->bucket_alloc);
                     APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
 
                     if (*inserted_head == NULL) {
@@ -2673,7 +2679,8 @@ static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 if (1) {
                     apr_size_t d_len = 0;
                     d_len = sprintf(debug_buf, "**** elif expr=\"%s\"\n", expr);
-                    tmp_buck = apr_bucket_heap_create(debug_buf, d_len, 1);
+                    tmp_buck = apr_bucket_heap_create(debug_buf, d_len, NULL,
+                                                  r->connection->bucket_alloc);
                     APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
 
                     if (*inserted_head == NULL) {
@@ -2854,7 +2861,8 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 *next++ = '\n';
                 *next = 0;
                 tmp_buck = apr_bucket_pool_create(key_val, kv_length - 1,
-                                                  r->pool);
+                                                  r->pool,
+                                                  r->connection->bucket_alloc);
                 APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                 if (*inserted_head == NULL) {
                     *inserted_head = tmp_buck;
@@ -2912,7 +2920,8 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
                 apr_bucket *tmp_bkt;
 
                 tmp_bkt = apr_bucket_immortal_create(ctx->start_seq,
-                                                     cleanup_bytes);
+                                                  cleanup_bytes,
+                                                  r->connection->bucket_alloc);
                 APR_BRIGADE_INSERT_HEAD(*bb, tmp_bkt);
                 apr_brigade_cleanup(ctx->ssi_tag_brigade);
             }
@@ -2946,7 +2955,7 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
                 /* Send the large chunk of pre-tag bytes...  */
                 tag_and_after = apr_brigade_split(*bb, tmp_dptr);
                 if (ctx->output_flush) {
-                    APR_BRIGADE_INSERT_TAIL(*bb, apr_bucket_flush_create());
+                    APR_BRIGADE_INSERT_TAIL(*bb, apr_bucket_flush_create((*bb)->bucket_alloc));
                 }
 
                 rv = ap_pass_brigade(f->next, *bb);
@@ -3281,7 +3290,8 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
         if (ap_allow_options(r) & OPT_INCNOEXEC) {
             ctx->flags |= FLAG_NO_EXEC;
         }
-        ctx->ssi_tag_brigade = apr_brigade_create(f->c->pool);
+        ctx->ssi_tag_brigade = apr_brigade_create(f->c->pool,
+                                                  f->c->bucket_alloc);
         ctx->status = APR_SUCCESS;
 
         ctx->error_str = conf->default_error_msg;

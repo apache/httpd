@@ -375,7 +375,8 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
 
         /* the socket is now open, create a new backend server connection */
         *origin = ap_run_create_connection(c->pool, r->server, p_conn->sock,
-                                           r->connection->id, r->connection->sbh);
+                                           r->connection->id,
+                                           r->connection->sbh, c->bucket_alloc);
         if (!origin) {
         /* the peer reset the connection already; ap_run_create_connection() 
          * closed the socket
@@ -412,6 +413,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                                    apr_uri_t *uri,
                                    char *url, apr_bucket_brigade *bb,
                                    char *server_portstr) {
+    conn_rec *c = r->connection;
     char buffer[HUGE_STRING_LEN];
     char *buf;
     apr_bucket *e;
@@ -442,7 +444,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     }
 
     buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
-    e = apr_bucket_pool_create(buf, strlen(buf), p);
+    e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, e);
     if ( conf->preserve_host == 0 ) {
         if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
@@ -468,7 +470,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         }
         buf = apr_pstrcat(p, "Host: ", hostname, CRLF, NULL);
     }
-    e = apr_bucket_pool_create(buf, strlen(buf), p);        
+    e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);        
     APR_BRIGADE_INSERT_TAIL(bb, e);
 
     /* handle Via */
@@ -583,14 +585,14 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         buf = apr_pstrcat(p, headers_in[counter].key, ": ",
                           headers_in[counter].val, CRLF,
                           NULL);
-        e = apr_bucket_pool_create(buf, strlen(buf), p);
+        e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, e);
     }
 
     /* add empty line at the end of the headers */
-    e = apr_bucket_immortal_create(CRLF, sizeof(CRLF)-1);
+    e = apr_bucket_immortal_create(CRLF, sizeof(CRLF)-1, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, e);
-    e = apr_bucket_flush_create();
+    e = apr_bucket_flush_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, e);
 
     ap_pass_brigade(origin->output_filters, bb);
@@ -598,9 +600,9 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     /* send the request data, if any. */
     if (ap_should_client_block(r)) {
         while ((counter = ap_get_client_block(r, buffer, sizeof(buffer))) > 0) {
-            e = apr_bucket_pool_create(buffer, counter, p);
+            e = apr_bucket_pool_create(buffer, counter, p, c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, e);
-            e = apr_bucket_flush_create();
+            e = apr_bucket_flush_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, e);
             ap_pass_brigade(origin->output_filters, bb);
             apr_brigade_cleanup(bb);
@@ -617,6 +619,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                             proxy_server_conf *conf,
                                             apr_bucket_brigade *bb,
                                             char *server_portstr) {
+    conn_rec *c = r->connection;
     char buffer[HUGE_STRING_LEN];
     request_rec *rp;
     apr_bucket *e;
@@ -789,7 +792,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         /* Is it an HTTP/0.9 response? If so, send the extra data */
         if (backasswards) {
             apr_ssize_t cntr = len;
-            e = apr_bucket_heap_create(buffer, cntr, 1);
+            e = apr_bucket_heap_create(buffer, cntr, NULL, c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, e);
         }
 
@@ -859,7 +862,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
                     /* if no EOS yet, then we must flush */
                     if (FALSE == finish) {
-                        e = apr_bucket_flush_create();
+                        e = apr_bucket_flush_create(c->bucket_alloc);
                         APR_BRIGADE_INSERT_TAIL(bb, e);
                     }
 
@@ -958,7 +961,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
      */
     apr_pool_t *p = r->connection->pool;
     conn_rec *c = r->connection;
-    apr_bucket_brigade *bb = apr_brigade_create(p);
+    apr_bucket_brigade *bb = apr_brigade_create(p, c->bucket_alloc);
     apr_uri_t *uri = apr_palloc(r->connection->pool, sizeof(*uri));
     proxy_http_conn_t *p_conn = apr_pcalloc(r->connection->pool,
                                            sizeof(*p_conn));

@@ -273,8 +273,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         }
 
         /* We're cool with filtering this. */
-        ctx = f->ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
-        ctx->bb = apr_brigade_create(f->r->pool);
+        ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
+        ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
 /*
         ctx->stream.zalloc = (alloc_func) 0;
         ctx->stream.zfree = (free_func) 0;
@@ -297,7 +297,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         buf = apr_psprintf(r->pool, "%c%c%c%c%c%c%c%c%c%c", deflate_magic[0],
                            deflate_magic[1], Z_DEFLATED, 0 /* flags */ , 0, 0,
                            0, 0 /* time */ , 0 /* xflags */ , OS_CODE);
-        e = apr_bucket_pool_create(buf, 10, r->pool);
+        e = apr_bucket_pool_create(buf, 10, r->pool, f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
 
         apr_table_setn(r->headers_out, "Content-Encoding", "gzip");
@@ -323,7 +323,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
                 if (deflate_len != 0) {
                     b = apr_bucket_heap_create((char *)ctx->buffer,
-                                               deflate_len, 1);
+                                               deflate_len, NULL,
+                                               f->c->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
                     ctx->stream.next_out = ctx->buffer;
                     ctx->stream.avail_out = FILTER_BUFSIZE;
@@ -359,7 +360,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             *p++ = len_array[2];
             *p++ = len_array[3];
 
-            b = apr_bucket_pool_create(buf, 8, r->pool);
+            b = apr_bucket_pool_create(buf, 8, r->pool, f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r,
                           "Zlib: Compressed %ld to %ld : URL %s",
@@ -421,7 +422,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                 ctx->stream.next_out = ctx->buffer;
                 len = FILTER_BUFSIZE - ctx->stream.avail_out;
 
-                b = apr_bucket_heap_create((char *)ctx->buffer, len, 1);
+                b = apr_bucket_heap_create((char *)ctx->buffer, len,
+                                           NULL, f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
                 ctx->stream.avail_out = FILTER_BUFSIZE;
             }

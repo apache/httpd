@@ -122,7 +122,7 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
 
         /* We're cool with filtering this. */
         ctx = f->ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
-        ctx->bb = apr_brigade_create(f->r->pool); 
+        ctx->bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc); 
         apr_table_unset(f->r->headers_out, "Content-Length");
     }
 
@@ -163,13 +163,13 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
                         p = apr_bucket_pool_create(apr_pmemdup( f->r->pool,
                                                             &data[lastpos],
                                                             i-lastpos),
-                                                    i-lastpos,
-                                                    f->r->pool);
+                                                    i-lastpos, f->r->pool,
+                                                    f->c->bucket_alloc);
                         APR_BRIGADE_INSERT_TAIL(ctx->bb,p);
                     }
                     lastpos=i+1;
                     if ( data[i] == c->flushdelimiter) {
-                        p = apr_bucket_flush_create();
+                        p = apr_bucket_flush_create(f->c->bucket_alloc);
                         APR_BRIGADE_INSERT_TAIL(ctx->bb,p);
                     }
                     if ( data[i] == c->flushdelimiter || data[i] == c->passdelimiter ) {
@@ -181,7 +181,11 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
             /* XXX: really should append this to the next 'real' bucket */
             if ( lastpos < i ) {
                 apr_bucket *p;
-                p = apr_bucket_pool_create(apr_pmemdup( f->r->pool,&data[lastpos],i-lastpos),i-lastpos,f->r->pool);
+                p = apr_bucket_pool_create(apr_pmemdup(f->r->pool,
+                                                       &data[lastpos],
+                                                       i-lastpos),
+                                           i-lastpos, f->r->pool,
+                                           f->c->bucket_alloc);
                 lastpos=i;
                 APR_BRIGADE_INSERT_TAIL(ctx->bb,p);
             }

@@ -353,6 +353,7 @@ void worker_main(void *arg)
     ap_listen_rec *last_lr = NULL;
     apr_pool_t *ptrans;
     apr_allocator_t *allocator;
+    apr_bucket_alloc_t *bucket_alloc;
     conn_rec *current_conn;
     apr_status_t stat = APR_EINIT;
     int worker_num_arg = (int)arg;
@@ -373,6 +374,8 @@ void worker_main(void *arg)
     apr_allocator_create(&allocator);
     apr_pool_create_ex(&ptrans, NULL, NULL, allocator);
     apr_allocator_set_owner(allocator, ptrans);
+
+    bucket_alloc = apr_bucket_alloc_create(ptrans);
 
     apr_pool_tag(ptrans, "transaction");
 
@@ -533,7 +536,8 @@ got_listener:
         * socket options, file descriptors, and read/write buffers.
         */
         current_conn = ap_run_create_connection(ptrans, ap_server_conf, csd, 
-                                                my_worker_num, sbh);
+                                                my_worker_num, sbh,
+                                                bucket_alloc);
         if (current_conn) {
             ap_process_connection(current_conn, csd);
             ap_lingering_close(current_conn);

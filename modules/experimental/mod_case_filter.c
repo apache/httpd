@@ -40,11 +40,12 @@ static void CaseFilterInsertFilter(request_rec *r)
 static apr_status_t CaseFilterOutFilter(ap_filter_t *f,
 					apr_bucket_brigade *pbbIn)
     {
+    request_rec *r = f->r;
+    conn_rec *c = r->connection;
     apr_bucket *pbktIn;
     apr_bucket_brigade *pbbOut;
 
-    /* XXX: is this the most appropriate pool? */
-    pbbOut=apr_brigade_create(f->r->pool);
+    pbbOut=apr_brigade_create(r->pool, c->bucket_alloc);
     APR_BRIGADE_FOREACH(pbktIn,pbbIn)
 	{
 	const char *data;
@@ -55,8 +56,7 @@ static apr_status_t CaseFilterOutFilter(ap_filter_t *f,
 
 	if(APR_BUCKET_IS_EOS(pbktIn))
 	    {
-            /* XXX: why can't I reuse pbktIn??? */
-	    apr_bucket *pbktEOS=apr_bucket_eos_create();
+	    apr_bucket *pbktEOS=apr_bucket_eos_create(c->bucket_alloc);
 	    APR_BRIGADE_INSERT_TAIL(pbbOut,pbktEOS);
 	    continue;
 	    }
@@ -65,11 +65,12 @@ static apr_status_t CaseFilterOutFilter(ap_filter_t *f,
 	apr_bucket_read(pbktIn,&data,&len,APR_BLOCK_READ);
 
 	/* write */
-	buf=malloc(len);
+	buf = apr_bucket_alloc(len, c->bucket_alloc);
 	for(n=0 ; n < len ; ++n)
 	    buf[n]=toupper(data[n]);
 
-	pbktOut=apr_bucket_heap_create(buf,len,0);
+	pbktOut = apr_bucket_heap_create(buf, len, apr_bucket_free,
+	                                 c->bucket_alloc);
 	APR_BRIGADE_INSERT_TAIL(pbbOut,pbktOut);
 	}
 

@@ -1008,6 +1008,8 @@ struct conn_rec {
     struct ap_filter_t *output_filters;
     /** handle to scoreboard information for this connection */
     void *sbh;
+    /** The bucket allocator to use for all bucket/brigade creations */
+    struct apr_bucket_alloc_t *bucket_alloc;
 };
 
 /* Per-vhost config... */

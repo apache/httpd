@@ -80,8 +80,8 @@ APR_HOOK_STRUCT(
 	    APR_HOOK_LINK(pre_connection)
 )
 AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_connection,
-                            (apr_pool_t *p, server_rec *server, apr_socket_t *csd, long conn_id, void *sbh),
-                            (p, server, csd, conn_id, sbh), NULL)
+                            (apr_pool_t *p, server_rec *server, apr_socket_t *csd, long conn_id, void *sbh, apr_bucket_alloc_t *alloc),
+                            (p, server, csd, conn_id, sbh, alloc), NULL)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c, void *csd),(c, csd),OK,DECLINED)
 /*
@@ -113,8 +113,8 @@ AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c)
     apr_bucket_brigade *bb;
     apr_bucket *b;
 
-    bb = apr_brigade_create(c->pool);
-    b = apr_bucket_flush_create();
+    bb = apr_brigade_create(c->pool, c->bucket_alloc);
+    b = apr_bucket_flush_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(c->output_filters, bb);
 }

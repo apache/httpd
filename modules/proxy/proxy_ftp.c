@@ -315,8 +315,9 @@ typedef struct {
 apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     request_rec *r = f->r;
+    conn_rec *c = r->connection;
     apr_pool_t *p = r->pool;
-    apr_bucket_brigade *out = apr_brigade_create(p);
+    apr_bucket_brigade *out = apr_brigade_create(p, c->bucket_alloc);
     apr_status_t rv;
 
     register int n;
@@ -329,7 +330,7 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     if (!ctx) {
         f->ctx = ctx = apr_pcalloc(p, sizeof(*ctx));
-        ctx->in = apr_brigade_create(p);
+        ctx->in = apr_brigade_create(p, c->bucket_alloc);
         ctx->buffer[0] = 0;
         ctx->state = HEADER;
     }
@@ -387,7 +388,8 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
                 site, basedir, ap_escape_uri(p, path),
                 site, str);
 
-        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str), p));
+        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str),
+                                                          p, c->bucket_alloc));
 
         for (dir = path+1; (dir = strchr(dir, '/')) != NULL; )
         {
@@ -404,10 +406,14 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
             *dir = '/';
             while (*dir == '/')
               ++dir;
-            APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str), p));
+            APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str,
+                                                           strlen(str), p,
+                                                           c->bucket_alloc));
         }
         if (wildcard != NULL) {
-            APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(wildcard, strlen(wildcard), p));
+            APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(wildcard,
+                                                           strlen(wildcard), p,
+                                                           c->bucket_alloc));
         }
 
         /* If the caller has determined the current directory, and it differs */
@@ -419,18 +425,21 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
             str = apr_psprintf(p, "</h2>\n\n(%s)\n\n  <hr />\n\n<pre>",
                                ap_escape_html(p, pwd));
         }
-        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str), p));
+        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str),
+                                                           p, c->bucket_alloc));
 
         /* print README */
         if (readme) {
             str = apr_psprintf(p, "%s\n</pre>\n\n<hr />\n\n<pre>\n",
                                ap_escape_html(p, readme));
 
-            APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str), p));
+            APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str,
+                                                           strlen(str), p,
+                                                           c->bucket_alloc));
         }
 
         /* make sure page intro gets sent out */
-        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_flush_create());
+        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_flush_create(c->bucket_alloc));
         if (APR_SUCCESS != (rv = ap_pass_brigade(f->next, out))) {
             return rv;
         }
@@ -581,8 +590,9 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* erase buffer for next time around */
         ctx->buffer[0] = 0;
 
-        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str), p));
-        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_flush_create());
+        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str), p,
+                                                            c->bucket_alloc));
+        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_flush_create(c->bucket_alloc));
         if (APR_SUCCESS != (rv = ap_pass_brigade(f->next, out))) {
             return rv;
         }
@@ -592,9 +602,10 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     if (FOOTER == ctx->state) {
         str = apr_psprintf(p, "</pre>\n\n  <hr />\n\n  %s\n\n </body>\n</html>\n", ap_psignature("", r));
-        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str), p));
-        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_flush_create());
-        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_eos_create());
+        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str), p,
+                                                            c->bucket_alloc));
+        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_flush_create(c->bucket_alloc));
+        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_eos_create(c->bucket_alloc));
         if (APR_SUCCESS != (rv = ap_pass_brigade(f->next, out))) {
             return rv;
         }
@@ -619,9 +630,9 @@ proxy_ftp_command(const char *cmd, request_rec *r, conn_rec *ftp_ctrl,
 
     /* If cmd == NULL, we retrieve the next ftp response line */
     if (cmd != NULL) {
-
-        APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_pool_create(cmd, strlen(cmd), r->pool));
-        APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_flush_create());
+        conn_rec *c = r->connection;
+        APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_pool_create(cmd, strlen(cmd), r->pool, c->bucket_alloc));
+        APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_flush_create(c->bucket_alloc));
         ap_pass_brigade(ftp_ctrl->output_filters, bb);
 
         /* strip off the CRLF for logging */
@@ -768,7 +779,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     apr_status_t rv;
     conn_rec *origin, *data = NULL;
     int err;
-    apr_bucket_brigade *bb = apr_brigade_create(p);
+    apr_bucket_brigade *bb = apr_brigade_create(p, c->bucket_alloc);
     char *buf, *connectname;
     apr_port_t connectport;
     char buffer[MAX_STRING_LEN];
@@ -1013,7 +1024,8 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* the socket is now open, create a new connection */
-    origin = ap_run_create_connection(p, r->server, sock, r->connection->id, r->connection->sbh);
+    origin = ap_run_create_connection(p, r->server, sock, r->connection->id,
+                                      r->connection->sbh, c->bucket_alloc);
     if (!origin) {
         /*
          * the peer reset the connection already; ap_run_create_connection() closed
@@ -1083,7 +1095,6 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     if (rc != 220) {
         return ap_proxyerror(r, HTTP_BAD_GATEWAY, ftpmessage);
     }
-
 
     rc = proxy_ftp_command(apr_pstrcat(p, "USER ", user, CRLF, NULL),
                            r, origin, bb, &ftpmessage);
@@ -1774,7 +1785,8 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* the transfer socket is now open, create a new connection */
-    data = ap_run_create_connection(p, r->server, data_sock, r->connection->id, r->connection->sbh);
+    data = ap_run_create_connection(p, r->server, data_sock, r->connection->id,
+                                    r->connection->sbh, c->bucket_alloc);
     if (!data) {
         /*
          * the peer reset the connection already; ap_run_create_connection() closed
@@ -1849,7 +1861,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
             /* if no EOS yet, then we must flush */
             if (FALSE == finish) {
-                e = apr_bucket_flush_create();
+                e = apr_bucket_flush_create(c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(bb, e);
             }
 

@@ -532,6 +532,8 @@ static apr_status_t init_filter_instance(ap_filter_t *f)
  */
 static apr_status_t drain_available_output(ap_filter_t *f)
 {
+    request_rec *r = f->r;
+    conn_rec *c = r->connection;
     ef_ctx_t *ctx = f->ctx;
     ef_dir_t *dc = ctx->dc;
     apr_size_t len;
@@ -547,18 +549,18 @@ static apr_status_t drain_available_output(ap_filter_t *f)
                       &len);
         if ((rv && !APR_STATUS_IS_EAGAIN(rv)) ||
             dc->debug >= DBGLVL_GORY) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, f->r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
                           "apr_file_read(child output), len %" APR_SIZE_T_FMT,
                           !rv ? len : -1);
         }
         if (rv != APR_SUCCESS) {
             return rv;
         }
-        bb = apr_brigade_create(f->r->pool);
-        b = apr_bucket_transient_create(buf, len);
+        bb = apr_brigade_create(r->pool, c->bucket_alloc);
+        b = apr_bucket_transient_create(buf, len, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
         if ((rv = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "ap_pass_brigade()");
             return rv;
         }
@@ -632,6 +634,8 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
 
 static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
+    request_rec *r = f->r;
+    conn_rec *c = r->connection;
     ef_ctx_t *ctx = f->ctx;
     apr_bucket *b;
     ef_dir_t *dc;
@@ -662,7 +666,7 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
         rv = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, "apr_bucket_read()");
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "apr_bucket_read()");
             return rv;
         }
 
@@ -682,7 +686,7 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
          * that will cause the child to finish generating output
          */
         if ((rv = apr_file_close(ctx->proc->in)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "apr_file_close(child input)");
             return rv;
         }
@@ -690,9 +694,9 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
          * timeout; we don't care if we don't return from apr_file_read() for a while... 
          */
         rv = apr_file_pipe_timeout_set(ctx->proc->out, 
-                                  f->r->server->timeout * APR_USEC_PER_SEC);
+                                  r->server->timeout * APR_USEC_PER_SEC);
         if (rv) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "apr_file_pipe_timeout_set(child output)");
             return rv;
         }
@@ -705,7 +709,7 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                       &len);
         if ((rv && !APR_STATUS_IS_EOF(rv) && !APR_STATUS_IS_EAGAIN(rv)) ||
             dc->debug >= DBGLVL_GORY) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, f->r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
                           "apr_file_read(child output), len %" APR_SIZE_T_FMT,
                           !rv ? len : -1);
         }
@@ -718,11 +722,11 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         }
         
         if (rv == APR_SUCCESS) {
-            bb = apr_brigade_create(f->r->pool);
-            b = apr_bucket_transient_create(buf, len);
+            bb = apr_brigade_create(r->pool, c->bucket_alloc);
+            b = apr_bucket_transient_create(buf, len, c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
             if ((rv = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                               "ap_pass_brigade(filtered buffer) failed");
                 return rv;
             }
@@ -735,11 +739,11 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
     if (eos) {
         /* pass down eos */
-        bb = apr_brigade_create(f->r->pool);
-        b = apr_bucket_eos_create();
+        bb = apr_brigade_create(r->pool, c->bucket_alloc);
+        b = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
         if ((rv = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "ap_pass_brigade(eos) failed");
             return rv;
         }

@@ -1540,19 +1540,19 @@ static int pass_request(request_rec *r)
     struct cmsghdr *cmsg;
     int sfd;
     struct iovec iov;
-    apr_bucket_brigade *bb = apr_brigade_create(r->pool);
+    conn_rec *c = r->connection;
+    apr_bucket_brigade *bb = apr_brigade_create(r->pool, c->bucket_alloc);
     perchild_server_conf *sconf = (perchild_server_conf *)
                             ap_get_module_config(r->server->module_config, 
                                                  &mpm_perchild_module);
     char *foo;
     apr_size_t len;
 
-    apr_pool_userdata_get((void **)&foo, "PERCHILD_BUFFER",
-                          r->connection->pool);
+    apr_pool_userdata_get((void **)&foo, "PERCHILD_BUFFER", c->pool);
     len = strlen(foo);
 
     apr_pool_userdata_set(NULL, "PERCHILD_BUFFER", apr_pool_cleanup_null, 
-                          r->connection->pool);
+                          c->pool);
 
     apr_os_sock_get(&sfd, thesock);
 

@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/26 20:35:50 $]
+Last modified at [$Date: 2002/03/29 08:17:19 $]
 
 Release:
 
@@ -48,10 +48,6 @@ CURRENT RELEASE NOTES:
                  Please.
 
 FINAL RELEASE SHOWSTOPPERS:
-
-    * API changes planned for 2.0 that should happen before the
-      GA release:
-          * Free lists for bucket allocation
 
     * We do not properly substitute the prefix-variables in the configuration
       scripts or generated-configs.  (i.e. if sysconfdir is etc,
@@ -311,14 +307,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       bands, double free detection, etc. would be cool but certainly
       not a hard requirement.
 
-          Status: Cliff started to implement this using SMS as has
-                  been discussed at length for months, but since
-                  SMS is not being used anywhere else in the server,
-                  several people expressed the opinion that we should
-                  get rid of it entirely, meaning that the buckets
-                  need their own memory management (free list) functions.
-                  Cliff will implement that this weekend so we at least
-                  have something to look at/compare with.
+          Status: The necessary API changes are in... apr_buckets_alloc.c
+                  just needs to be fleshed out.
 
     * Eliminate unnecessary creation of pipes in mod_cgid
 

@@ -105,12 +105,13 @@ static apr_status_t CaseFilterInFilter(ap_filter_t *f,
                                        apr_off_t nBytes)
 {
     request_rec *r = f->r;
+    conn_rec *c = r->connection;
     CaseFilterInContext *pCtx;
     apr_status_t ret;
 
     if (!(pCtx = f->ctx)) {
         f->ctx = pCtx = apr_palloc(r->pool, sizeof *pCtx);
-        pCtx->pbbTmp = apr_brigade_create(r->pool);
+        pCtx->pbbTmp = apr_brigade_create(r->pool, c->bucket_alloc);
     }
 
     if (APR_BRIGADE_EMPTY(pCtx->pbbTmp)) {
@@ -149,7 +150,7 @@ static apr_status_t CaseFilterInFilter(ap_filter_t *f,
         for(n=0 ; n < len ; ++n)
             buf[n] = toupper(data[n]);
 
-        pbktOut = apr_bucket_heap_create(buf, len, 0);
+        pbktOut = apr_bucket_heap_create(buf, len, 0, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(pbbOut, pbktOut);
         apr_bucket_delete(pbktIn);
     }

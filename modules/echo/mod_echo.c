@@ -101,7 +101,7 @@ static int process_echo_connection(conn_rec *c)
         return DECLINED;
     }
     
-    bb = apr_brigade_create(c->pool);
+    bb = apr_brigade_create(c->pool, c->bucket_alloc);
 
     for ( ; ; ) {
         /* Get a single line of input from the client */
@@ -113,7 +113,7 @@ static int process_echo_connection(conn_rec *c)
         }
 
         /* Make sure the data is flushed to the client */
-        b = apr_bucket_flush_create();
+        b = apr_bucket_flush_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
         ap_pass_brigade(c->output_filters, bb);    
     }
