@@ -476,7 +476,7 @@
     for the access log, the same technique can be used for the
     error log.</p>
 
-    <p>A similar, but much more flexible log rotation program
+    <p>A similar but much more flexible log rotation program
     called <a href="http://www.cronolog.org/">cronolog</a>
     is available at an external site.</p>
 
