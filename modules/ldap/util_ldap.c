@@ -21,10 +21,6 @@
  * Copyright 1999-2001 Dave Carrigan
  */
 
-#include <apr_ldap.h>
-#include <apr_strings.h>
-
-#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -33,6 +29,8 @@
 #include "http_request.h"
 #include "util_ldap.h"
 #include "util_ldap_cache.h"
+
+#include <apr_strings.h>
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>

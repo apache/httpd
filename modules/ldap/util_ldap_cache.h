@@ -28,10 +28,7 @@
  * LDAP Cache Manager
  */
 
-#if APR_HAS_SHARED_MEMORY
-#include <apr_shm.h>
-#include <apr_rmm.h> /* EDD */
-#endif
+#include "util_ldap.h"
 
 typedef struct util_cache_node_t {
     void *payload;		/* Pointer to the payload */
