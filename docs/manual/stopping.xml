@@ -1,16 +1,24 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
-        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-              This file is generated from xml source: DO NOT EDIT
-        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Stopping and Restarting - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Stopping and Restarting</h1>
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<manualpage>
+<relativepath href="."/>
+
+  <title>Stopping and Restarting</title>
+
+<summary>
     <p>This document covers stopping and restarting Apache on
-    Unix-like systems. Windows users should see <a href="platform/windows.html#signal">Signalling Apache when
+    Unix-like systems. Windows users should see <a
+    href="platform/windows.html#signal">Signalling Apache when
     running</a>.</p>
-<ul><li><a href="#introduction">Introduction</a></li><li><a href="#term">Stop Now</a></li><li><a href="#graceful">Graceful Restart</a></li><li><a href="#hup">Restart Now</a></li><li><a href="#race">Appendix: signals and race conditions</a></li></ul><hr><h2><a name="introduction">Introduction</a></h2>
+</summary>
+
+<section id="introduction"><title>Introduction</title>
 
     <p>You will notice many <code>httpd</code> executables running on
     your system, but you should not send signals to any of them except
-    the parent, whose pid is in the <a href="./mod/mpm_common.html#pidfile" class="directive"><code class="directive">PidFile</code></a>. That is to say you shouldn't ever
+    the parent, whose pid is in the <directive
+    module="mpm_common">PidFile</directive>. That is to say you shouldn't ever
     need to send signals to any process except the parent. There are
     three signals that you can send the parent: <code>TERM</code>,
     <code>HUP</code>, and <code>USR1</code>, which will be described
@@ -19,18 +27,24 @@
     <p>To send a signal to the parent you should issue a command
     such as:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>kill -TERM `cat /usr/local/apache/logs/httpd.pid`</code></td></tr></table></blockquote>
+<example>kill -TERM `cat /usr/local/apache/logs/httpd.pid`</example>
 
     <p>You can read about its progress by issuing:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>tail -f /usr/local/apache/logs/error_log</code></td></tr></table></blockquote>
+<example>tail -f /usr/local/apache/logs/error_log</example>
 
-    <p>Modify those examples to match your <a href="./mod/core.html#serverroot" class="directive"><code class="directive">ServerRoot</code></a> and <a href="./mod/mpm_common.html#pidfile" class="directive"><code class="directive">PidFile</code></a> settings.</p>
+    <p>Modify those examples to match your <directive
+    module="core">ServerRoot</directive> and <directive
+    module="mpm_common">PidFile</directive> settings.</p>
 
-    <p>A shell script called <a href="programs/apachectl.html">apachectl</a> is provided which
+    <p>A shell script called <a
+    href="programs/apachectl.html">apachectl</a> is provided which
     automates the processing of signalling Apache. For details
-    about this script, see the documentation on <a href="invoking.html">starting Apache</a>.</p>
-<h2><a name="term">Stop Now</a></h2>
+    about this script, see the documentation on <a
+    href="invoking.html">starting Apache</a>.</p>
+</section>
+
+<section id="term"><title>Stop Now</title>
 
 <dl><dt>Signal: TERM</dt>
 <dd><code>apachectl stop</code></dd>
@@ -41,7 +55,9 @@
     take it several seconds to complete killing off its children.
     Then the parent itself exits. Any requests in progress are
     terminated, and no further requests are served.</p>
-<h2><a name="graceful">Graceful Restart</a></h2>
+</section>
+
+<section id="graceful"><title>Graceful Restart</title>
 
 <dl><dt>Signal: USR1</dt>
 <dd><code>apachectl graceful</code></dd>
@@ -56,23 +72,24 @@
     the configuration, which begins serving new requests
     immediately.</p>
 
-    <blockquote><table><tr><td bgcolor="#e0e5f5">On certain platforms that do not allow USR1 to be used for a
+    <note>On certain platforms that do not allow USR1 to be used for a
     graceful restart, an alternative signal may be used (such as
     WINCH). The command <code>apachectl graceful</code> will send the
-    right signal for your platform.</td></tr></table></blockquote>
+    right signal for your platform.</note>
 
     <p>This code is designed to always respect the process control
     directive of the MPMs, so the number of processes and threads
     available to serve clients will be maintained at the appropriate
     values throughout the restart process.  Furthermore, it respects
-    <a href="./mod/mpm_common.html#startservers" class="directive"><code class="directive">StartServers</code></a> in the
-    following manner: if after one second at least <a href="./mod/mpm_common.html#startservers" class="directive"><code class="directive">StartServers</code></a> new children have not
+    <directive module="mpm_common">StartServers</directive> in the
+    following manner: if after one second at least <directive
+    module="mpm_common">StartServers</directive> new children have not
     been created, then create enough to pick up the slack. Hence the
     code tries to maintain both the number of children appropriate for
     the current load on the server, and respect your wishes with the
     StartServers parameter.</p>
 
-    <p>Users of the <code><a href="./mod/mod_status.html">mod_status</a></code>
+    <p>Users of the <module>mod_status</module>
     will notice that the server statistics are <strong>not</strong>
     set to zero when a <code>USR1</code> is sent. The code was
     written to both minimize the time in which the server is unable
@@ -95,7 +112,7 @@
     low bandwidth links then you could wait 15 minutes before doing
     anything with the old log.</p>
 
-    <blockquote><table><tr><td bgcolor="#e0e5f5">If your configuration file has errors
+    <note>If your configuration file has errors
     in it when you issue a restart then your parent will not
     restart, it will exit with an error. In the case of graceful
     restarts it will also leave children running when it exits.
@@ -104,7 +121,8 @@
     attempt to restart the server -- it will not be able to bind to
     its listening ports. Before doing a restart, you can check the
     syntax of the configuration files with the <code>-t</code>
-    command line argument (see <a href="programs/httpd.html">httpd</a>). This still will not
+    command line argument (see <a
+    href="programs/httpd.html">httpd</a>). This still will not
     guarantee that the server will restart correctly. To check the
     semantics of the configuration files as well as the syntax, you
     can try starting httpd as a non-root user. If there are no
@@ -112,8 +130,10 @@
     because it's not root (or because the currently running httpd
     already has those ports bound). If it fails for any other
     reason then it's probably a config file error and the error
-    should be fixed before issuing the graceful restart.</td></tr></table></blockquote>
-<h2><a name="hup">Restart Now</a></h2>
+    should be fixed before issuing the graceful restart.</note>
+</section>
+
+<section id="hup"><title>Restart Now</title>
 
 <dl><dt>Signal: HUP</dt>
 <dd><code>apachectl restart</code></dd>
@@ -125,14 +145,16 @@
     re-opens any log files. Then it spawns a new set of children
     and continues serving hits.</p>
 
-    <p>Users of <code><a href="./mod/mod_status.html">mod_status</a></code>
+    <p>Users of <module>mod_status</module>
     will notice that the server statistics are set to zero when a
     <code>HUP</code> is sent.</p>
 
-<blockquote><table><tr><td bgcolor="#e0e5f5">If your configuration file has errors in it when you issue a
+<note>If your configuration file has errors in it when you issue a
 restart then your parent will not restart, it will exit with an
-error. See above for a method of avoiding this.</td></tr></table></blockquote>
-<h2><a name="race">Appendix: signals and race conditions</a></h2>
+error. See above for a method of avoiding this.</note>
+</section>
+
+<section id="race"><title>Appendix: signals and race conditions</title>
 
     <p>Prior to Apache 1.2b9 there were several <em>race
     conditions</em> involving the restart and die signals (a simple
@@ -143,7 +165,8 @@ error. See above for a method of avoiding this.</td></tr></table></blockquote>
     be noted that there still do exist race conditions on certain
     architectures.</p>
 
-    <p>Architectures that use an on disk <a href="./mod/mpm_common.html#scoreboardfile" class="directive"><code class="directive">ScoreBoardFile</code></a> have the potential
+    <p>Architectures that use an on disk <directive
+    module="mpm_common">ScoreBoardFile</directive> have the potential
     to corrupt their scoreboards. This can result in the "bind:
     Address already in use" (after <code>HUP</code>) or "long lost
     child came home!" (after <code>USR1</code>). The former is a fatal
@@ -151,7 +174,8 @@ error. See above for a method of avoiding this.</td></tr></table></blockquote>
     scoreboard slot. So it might be advisable to use graceful
     restarts, with an occasional hard restart. These problems are very
     difficult to work around, but fortunately most architectures do
-    not require a scoreboard file. See the <a href="./mod/mpm_common.html#scoreboardfile" class="directive"><code class="directive">ScoreBoardFile</code></a> documentation for a
+    not require a scoreboard file. See the <directive
+    module="mpm_common">ScoreBoardFile</directive> documentation for a
     architecture uses it.</p>
 
     <p>All architectures have a small race condition in each child
@@ -165,4 +189,6 @@ error. See above for a method of avoiding this.</td></tr></table></blockquote>
     -- in a test case the server was restarted twenty times per
     second and clients successfully browsed the site without
     getting broken images or empty documents. </p>
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"></a><a href="./"><img src="./images/home.gif" alt="Home"></a></body></html>
+</section>
+
+</manualpage>
