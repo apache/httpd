@@ -171,3 +171,13 @@ program | img | cite | q | dfn | var | transnote | glossary | phonetic">
 <!-- The path and title of the parent document -->
 <!ELEMENT parentdocument (#PCDATA)>
 <!ATTLIST parentdocument href CDATA #REQUIRED >
+
+<!-- The glossary element defines a special case of link. The referenced
+     target is the name of an anchor within the glossary -->
+<!ELEMENT glossary %Inline;>
+<!ATTLIST glossary ref CDATA #REQUIRED>
+
+<!-- The phonetic element should be used only within the glossary. It
+     describes a pronounciation -->
+<!ELEMENT phonetic (#PCDATA)>
+
