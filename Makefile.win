@@ -110,7 +110,7 @@ INSTDIR=\Apache2
 SERVERNAME=localhost
 !ENDIF
 !IF "$(PORT)" == ""
-PORT=8008
+PORT=80
 !ENDIF 
 
 !IF "$(LONG)" == ""
