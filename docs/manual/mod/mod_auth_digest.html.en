@@ -27,7 +27,7 @@
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_auth_digest.c</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module implements HTTP Digest Authentication.  However, it
+    <p>This module implements HTTP Digest Authentication. However, it
     has not been extensively tested and is therefore marked
     experimental.</p>
 </div>
@@ -41,6 +41,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestnonceformat">AuthDigestNonceFormat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestnoncelifetime">AuthDigestNonceLifetime</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestqop">AuthDigestQop</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestshmemsize">AuthDigestShmemSize</a></li>
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
@@ -57,14 +58,16 @@
 <h2><a name="using" id="using">Using Digest Authentication</a></h2>
 
     <p>Using MD5 Digest authentication is very simple. Simply set
-    up authentication normally, using "AuthType Digest" and
-    "AuthDigestFile" instead of the normal "AuthType Basic" and
-    "AuthUserFile"; also, replace any "AuthGroupFile" with
-    "AuthDigestGroupFile". Then add a "AuthDigestDomain" directive
-    containing at least the root URI(s) for this protection space.
-    Example:</p>
+    up authentication normally, using <code>AuthType Digest</code> and
+    <code class="directive"><a href="#authdigestfile">AuthDigestFile</a></code> instead
+    of the normal <code>AuthType Basic</code> and <code class="directive"><a href="../mod/mod_auth.html#authuserfile">AuthUserFile</a></code>; also, replace any <code class="directive"><a href="../mod/mod_auth.html#authgroupfile">AuthGroupFile</a></code> with <code class="directive"><a href="#authdigestgroupfile">AuthDigestGroupFile</a></code>. Then add a
+    <code class="directive"><a href="#authdigestdomain">AuthDigestDomain</a></code> directive
+    containing at least the root URI(s) for this protection space.</p>
 
-    <div class="example"><p><code>
+    <p>Appropriate user (text) files can be created using the
+    <a href="../programs/htdigest.html">htdigest</a> tool.</p>
+
+    <div class="example"><h3>Example:</h3><p><code>
       &lt;Location /private/&gt;<br />
       <span class="indent">
         AuthType Digest<br />
@@ -79,11 +82,11 @@
     <div class="note"><h3>Note</h3> 
     <p>Digest authentication provides a more secure password system
     than Basic authentication, but only works with supporting
-    browsers. As of July 2002, the major browsers that support digest
+    browsers. As of November 2002, the major browsers that support digest
     authentication are <a href="http://www.opera.com/">Opera</a>, <a href="http://www.microsoft.com/windows/ie/">MS Internet
     Explorer</a> (fails when used with a query string), <a href="http://www.w3.org/Amaya/">Amaya</a>, <a href="http://www.mozilla.org">Mozilla</a> and <a href="http://channels.netscape.com/ns/browsers/download.jsp">Netscape</a> since version 7. Since digest authentication is not
     as widely implemented as basic authentication, you should use it only
-    in controlled settings.</p>
+    in controlled environments.</p>
     </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -121,24 +124,23 @@ authentication</td></tr>
 </table>
     <p>The <code class="directive">AuthDigestDomain</code> directive allows
     you to specify one or more URIs which are in the same protection
-    space (i.e. use the same realm and username/password info). The
-    specified URIs are prefixes, i.e. the client will assume that all
-    URIs "below" these are also protected by the same
-    username/password. The URIs may be either absolute URIs
-    (i.e. inluding a scheme, host, port, etc) or relative URIs.</p>
+    space (<em>i.e.</em> use the same realm and username/password info).
+    The specified URIs are prefixes, <em>i.e.</em> the client will assume
+    that all URIs "below" these are also protected by the same
+    username/password. The URIs may be either absolute URIs (<em>i.e.</em>
+    inluding a scheme, host, port, etc) or relative URIs.</p>
 
     <p>This directive <em>should</em> always be specified and
     contain at least the (set of) root URI(s) for this space.
     Omitting to do so will cause the client to send the
     Authorization header for <em>every request</em> sent to this
     server. Apart from increasing the size of the request, it may
-    also have a detrimental effect on performance if
-    "AuthDigestNcCheck" is on.</p>
+    also have a detrimental effect on performance if <code class="directive"><a href="#authdigestnccheck">AuthDigestNcCheck</a></code> is on.</p>
 
     <p>The URIs specified can also point to different servers, in
     which case clients (which understand this) will then share
     username/password info across multiple servers without
-    prompting the user each time. </p>
+    prompting the user each time.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -159,7 +161,7 @@ of users and encoded passwords for digest authentication</td></tr>
 
     <p>The digest file uses a special format. Files in this format
     can be created using the <a href="../programs/htdigest.html">htdigest</a> utility found in
-    the support/ subdirectory of the Apache distribution.</p>
+    the <code>support/</code> subdirectory of the Apache distribution.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -187,10 +189,12 @@ for digest authentication</td></tr>
     <p>Note that searching large text files is <em>very</em>
     inefficient.</p>
 
-    <p>Security: make sure that the AuthGroupFile is stored outside
-    the document tree of the web-server; do <em>not</em> put it in
-    the directory that it protects. Otherwise, clients will be able
-    to download the AuthGroupFile.</p>
+    <div class="warning"><h3>Security:</h3>
+    <p>Make sure that the <code class="directive">AuthGroupFile</code> is stored
+    outside the document tree of the web-server; do <em>not</em> put it in
+    the directory that it protects. Otherwise, clients may be able
+    to download the <code class="directive">AuthGroupFile</code>.</p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -220,8 +224,8 @@ server</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
 </table>
-    <p><strong>Not implemented yet.</strong> 
-    </p>
+    <div class="note">Not implemented yet.</div>
+    
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -272,6 +276,39 @@ authentication</td></tr>
     <div class="note">
       <code>auth-int</code> is not implemented yet.
     </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthDigestShmemSize" id="AuthDigestShmemSize">AuthDigestShmemSize</a> <a name="authdigestshmemsize" id="authdigestshmemsize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The amount of shared memory to allocate for keeping track
+of clients</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDigestShmemSize <var>size</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthDigestShmemSize 1000</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
+</table>
+    <p>The <code class="directive">AuthDigestShmemSize</code> directive defines
+    the amount of shared memory, that will be allocated at the server
+    startup for keeping track of clients. Note that the shared memory
+    segment cannot be set less than the space that is neccessary for
+    tracking at least <em>one</em> client. This value is dependant on your
+    system. If you want to find out the exact value, you may simply
+    set <code class="directive">AuthDigestShmemSize</code> to the value of
+    <code>0</code> and read the error message after trying to start the
+    server.</p>
+
+    <p>The <var>size</var> is normally expressed in Bytes, but you
+    may let the number follow a <code>K</code> or an <code>M</code> to
+    express your value as KBytes or MBytes. For example, the following
+    directives are all equivalent:</p>
+
+    <div class="example"><p><code>
+      AuthDigestShmemSize 1048576<br />
+      AuthDigestShmemSize 1024K<br />
+      AuthDigestShmemSize 1M
+    </code></p></div>
 
 </div>
 </div>

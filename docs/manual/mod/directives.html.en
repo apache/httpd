@@ -80,6 +80,7 @@
 <li><a href="mod_auth_digest.html#authdigestnonceformat">AuthDigestNonceFormat</a></li>
 <li><a href="mod_auth_digest.html#authdigestnoncelifetime">AuthDigestNonceLifetime</a></li>
 <li><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop</a></li>
+<li><a href="mod_auth_digest.html#authdigestshmemsize">AuthDigestShmemSize</a></li>
 <li><a href="mod_auth.html#authgroupfile">AuthGroupFile</a></li>
 <li><a href="mod_auth_ldap.html#authldapauthoritative">AuthLDAPAuthoritative</a></li>
 <li><a href="mod_auth_ldap.html#authldapbinddn">AuthLDAPBindDN</a></li>
