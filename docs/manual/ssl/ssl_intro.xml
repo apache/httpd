@@ -27,14 +27,14 @@ point for further exploration.</p>
 
 <p>The presented content is mainly derived, with permission by the author,
 from the article <a
-href="http://www.ultranet.com/~fhirsch/Papers/wwwj/index.html">Introducing
+href="http://home.earthlink.net/~fjhirsch/Papers/wwwj/article.html">Introducing
 SSL and Certificates using SSLeay</a> from <a
-href="http://www.ultranet.com/~fhirsch/">Frederick J. Hirsch</a>, of The
+href="http://home.earthlink.net/~fjhirsch/">Frederick J. Hirsch</a>, of The
 Open Group Research Institute, which was published in <a
 href="http://www.ora.com/catalog/wjsum97/">Web Security: A Matter of
 Trust</a>, World Wide Web Journal, Volume 2, Issue 3, Summer 1997.
 Please send any postive feedback to <a
-href="mailto:fjh@alum.mit.edu">Frederick Hirsch</a> (the original
+href="mailto:hirsch@fjhirsch.com">Frederick Hirsch</a> (the original
 article author) and all negative feedback to <a
 href="mailto:rse@engelschall.com">Ralf S. Engelschall</a> (the
 <module>mod_ssl</module> author).</p>
