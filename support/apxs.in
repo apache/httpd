@@ -112,6 +112,7 @@ my $opt_a = 0;
 my $opt_A = 0;
 my $opt_q = 0;
 my $opt_h = 0;
+my $opt_p = 0;
 
 #   this subroutine is derived from Perl's getopts.pl with the enhancement of
 #   the "+" metacharacter at the format string to allow a list to be built by
@@ -182,7 +183,7 @@ sub usage {
     print STDERR "       apxs -q [-S <var>=<val>] <query> ...\n";
     print STDERR "       apxs -c [-S <var>=<val>] [-o <dsofile>] [-D <name>[=<value>]]\n";
     print STDERR "               [-I <incdir>] [-L <libdir>] [-l <libname>] [-Wc,<flags>]\n";
-    print STDERR "               [-Wl,<flags>] <files> ...\n";
+    print STDERR "               [-Wl,<flags>] [-p] <files> ...\n";
     print STDERR "       apxs -i [-S <var>=<val>] [-a] [-A] [-n <modname>] <dsofile> ...\n";
     print STDERR "       apxs -e [-S <var>=<val>] [-a] [-A] [-n <modname>] <dsofile> ...\n";
     exit(1);
@@ -190,7 +191,7 @@ sub usage {
 
 #   option handling
 my $rc;
-($rc, @ARGV) = &Getopts("qn:gco:I+D+L+l+W+S+eiaA", @ARGV);
+($rc, @ARGV) = &Getopts("qn:gco:I+D+L+l+W+S+eiaAp", @ARGV);
 &usage if ($rc == 0);
 &usage if ($#ARGV == -1 and not $opt_g);
 &usage if (not $opt_q and not ($opt_g and $opt_n) and not $opt_i and not $opt_c and not $opt_e);
@@ -448,7 +449,14 @@ if ($opt_c) {
         $opt .= " -l$opt_l";
     }
 
-    push(@cmds, "$installbuilddir/libtool $ltflags --mode=link $CFG_CC -o $dso_file -rpath $CFG_LIBEXECDIR -module -avoid-version $opt $lo");
+    if ($opt_p == 1) {
+      $opt .= " ".get_vars("EXTRA_LDFLAGS")." ".get_vars("AP_LIBS");
+    }
+    else {
+      $opt .= " -rpath $CFG_LIBEXECDIR -module -avoid-version";
+    }
+
+    push(@cmds, "$installbuilddir/libtool $ltflags --mode=link $CFG_CC -o $dso_file $opt $lo");
 
     #   execute the commands
     &execute_cmds(@cmds);
