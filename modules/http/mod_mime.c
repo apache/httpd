@@ -554,7 +554,7 @@ static content_type *analyze_ct(request_rec *r, const char *s)
 
     /* getting a type */
     cp = mp;
-    while (cp && apr_isspace(*cp)) {
+    while (apr_isspace(*cp)) {
         cp++;
     }
     if (!*cp) {
