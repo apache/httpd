@@ -1398,7 +1398,8 @@ static apr_status_t init_conn_worker(proxy_worker *worker, server_rec *s)
 PROXY_DECLARE(apr_status_t)
 ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                               proxy_server_conf *conf,
-                              proxy_module_conf *mconf,
+                              proxy_worker *worker,
+                              proxy_conn_rec *conn,
                               apr_pool_t *ppool,
                               apr_uri_t *uri,
                               char **url,
@@ -1433,11 +1434,11 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
      */
     /* are we connecting directly, or via a proxy? */
     if (proxyname) {
-        mconf->conn_rec->hostname = apr_pstrdup(ppool, proxyname);
-        mconf->conn_rec->port = proxyport;
+        conn->hostname = apr_pstrdup(ppool, proxyname);
+        conn->port = proxyport;
     } else {
-        mconf->conn_rec->hostname = apr_pstrdup(ppool, uri->hostname);
-        mconf->conn_rec->port = uri->port;
+        conn->hostname = apr_pstrdup(ppool, uri->hostname);
+        conn->port = uri->port;
         *url = apr_pstrcat(p, uri->path, uri->query ? "?" : "",
                            uri->query ? uri->query : "",
                            uri->fragment ? "#" : "",
@@ -1448,16 +1449,16 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
      * If dynamic change is needed then set the addr to NULL
      * inside dynamic config to force the lookup.
      */
-    if (!mconf->worker->cp->addr)
-        err = apr_sockaddr_info_get(&(mconf->worker->cp->addr),
-                                    mconf->conn_rec->hostname, APR_UNSPEC,
-                                    mconf->conn_rec->port, 0,
-                                    mconf->worker->cp->pool);
+    if (!worker->cp->addr)
+        err = apr_sockaddr_info_get(&(worker->cp->addr),
+                                    conn->hostname, APR_UNSPEC,
+                                    conn->port, 0,
+                                    worker->cp->pool);
 
     if (err != APR_SUCCESS) {
         return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                              apr_pstrcat(p, "DNS lookup failure for: ",
-                                         mconf->conn_rec->hostname, NULL));
+                                         conn->hostname, NULL));
     }
 
     /* Get the server port for the Via headers */
@@ -1472,7 +1473,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     }
 
     /* check if ProxyBlock directive on this host */
-    if (OK != ap_proxy_checkproxyblock(r, conf, mconf->worker->cp->addr)) {
+    if (OK != ap_proxy_checkproxyblock(r, conf, worker->cp->addr)) {
         return ap_proxyerror(r, HTTP_FORBIDDEN,
                              "Connect to remote machine blocked");
     }

@@ -175,7 +175,6 @@ typedef struct {
 
 typedef struct proxy_balancer  proxy_balancer;
 typedef struct proxy_worker    proxy_worker;
-typedef struct proxy_conn      proxy_conn;
 typedef struct proxy_conn_pool proxy_conn_pool;
 
 typedef struct {
@@ -254,16 +253,6 @@ struct proxy_balancer {
     apr_thread_mutex_t  *mutex;  /* Thread lock for updating lb params */
 #endif
 };
-
-/* per connection data structure for set/get module_config */
-typedef struct {
-    char                  *url;         /* rewtitten url */
-    struct proxy_balancer *balancer;    /* load balancer to use */
-    proxy_worker          *worker;      /* most suitable worker */
-    proxy_conn_rec        *conn_rec;
-    proxy_conn            *conn;
-    void                  *opaque;      /* module private data */
-} proxy_module_conf;
 
 /* hooks */
 
@@ -359,7 +348,7 @@ PROXY_DECLARE(struct proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p, prox
 PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer, apr_pool_t *p, proxy_server_conf *conf, const char *url);
 PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer(proxy_balancer *balancer, proxy_worker *worker);
 PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker, proxy_balancer **balancer, request_rec *r, proxy_server_conf *conf, char **url);
-PROXY_DECLARE(apr_status_t) ap_proxy_determine_connection(apr_pool_t *p, request_rec *r, proxy_server_conf *conf, proxy_module_conf *mconf,
+PROXY_DECLARE(apr_status_t) ap_proxy_determine_connection(apr_pool_t *p, request_rec *r, proxy_server_conf *conf, proxy_worker *worker, proxy_conn_rec *conn,
                                                           apr_pool_t *ppool, apr_uri_t *uri, char **url, const char *proxyname, apr_port_t proxyport,
                                                           char *server_portstr, int server_portstr_size);
 
