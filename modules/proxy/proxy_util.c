@@ -1342,7 +1342,7 @@ static apr_status_t connection_cleanup(void *theconn)
 {
     proxy_conn_rec *conn = (proxy_conn_rec *)theconn;
     proxy_worker *worker = conn->worker;
-
+    
     /* deterimine if the connection need to be closed */
     if (conn->close_on_recycle) {
         if (conn->sock)
@@ -1455,6 +1455,10 @@ static apr_status_t init_conn_worker(proxy_worker *worker, server_rec *s)
                                 worker->hmax, worker->ttl,
                                 connection_constructor, connection_destructor,
                                 s, worker->cp->pool);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                     "proxy: initialized worker for (%s) min=%d max=%d smax=%d",
+                      worker->hostname, worker->min, worker->hmax, worker->smax);
+
 #if (APR_MAJOR_VERSION > 0)
         /* Set the acquire timeout */
         if (rv == APR_SUCCESS && worker->acquire_set)
@@ -1467,7 +1471,11 @@ static apr_status_t init_conn_worker(proxy_worker *worker, server_rec *s)
         
         connection_constructor((void **)&(worker->cp->conn), s, worker->cp->pool);
         rv = APR_SUCCESS;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                     "proxy: initialized single connection worker for (%s)",
+                      worker->hostname);
     }
+
     return rv;
 }
 
@@ -1478,14 +1486,17 @@ PROXY_DECLARE(int) ap_proxy_retry_worker(const char *proxy_function,
     if (worker->status & PROXY_WORKER_IN_ERROR) {
         apr_interval_time_t diff;
         apr_time_t now = apr_time_now();
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                    "proxy: %s: retrying the worker for (%s)",
+                     proxy_function, worker->hostname);
         if (worker->retry)
             diff = worker->retry;
         else
-            diff = apr_time_from_sec(60 + 60 * worker->retries++);
+            diff = apr_time_from_sec((60 + 60 * worker->retries++));
         if (now > worker->error_time + diff) {
             worker->status &= ~PROXY_WORKER_IN_ERROR;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                         "proxy: %s: retrying the worker for (%s)",
+                         "proxy: %s: worker for (%s) has been marked for retry",
                          proxy_function, worker->hostname);
             return OK;
         }
@@ -1547,6 +1558,12 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
                      proxy_function, worker->hostname);
         return HTTP_SERVICE_UNAVAILABLE;
     }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                 "proxy: %s: has acquired connection for (%s)",
+                 proxy_function, worker->hostname);
+
+    (*conn)->worker = worker;
+
     return OK;
 }
 
@@ -1556,11 +1573,15 @@ PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
 {
     apr_status_t rv = APR_SUCCESS;
 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                 "proxy: %s: has relesed connection for (%s)",
+                 proxy_function, conn->worker->hostname);
     /* If there is a connection kill it's cleanup */
     if (conn->connection)
         apr_pool_cleanup_kill(conn->connection->pool, conn, connection_cleanup);
     connection_cleanup(conn);
     conn->connection = NULL;
+
     return OK;
 }
 
@@ -1594,7 +1615,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "proxy: HTTP connecting %s to %s:%d", *url, uri->hostname,
+                 "proxy: connecting %s to %s:%d", *url, uri->hostname,
                  uri->port);
 
     /* allocate these out of the specified connection pool 
@@ -1691,7 +1712,6 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
             conn->sock = NULL;
         }
     }
-
     while (backend_addr && !connected) {
         if ((rv = apr_socket_create(&newsock, backend_addr->family,
                                 SOCK_STREAM, APR_PROTO_TCP,
@@ -1757,7 +1777,6 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         }
         
         conn->sock   = newsock;
-        conn->worker = worker;
         connected    = 1;
     }
     /* Put the entire worker to error state
@@ -1767,6 +1786,13 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
     if (!connected && PROXY_WORKER_IS_USABLE(worker)) {
         worker->status |= PROXY_WORKER_IN_ERROR;
         worker->error_time = apr_time_now();
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            "ap_proxy_connect_backend disabling worker for (%s)",
+            worker->hostname);
+    }
+    else {
+        worker->error_time = 0;
+        worker->retries = 0;
     }
     return connected ? OK : DECLINED;
 }
