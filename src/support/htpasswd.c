@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
     if (argc == 4) {
 	if (strcmp(argv[1], "-c"))
 	    usage();
-	if (!(tfp = fopen(argv[2], "w"))) {
+      if (!(tfp = fopen(argv[2], "w+"))) {
 	    fprintf(stderr, "Could not open passwd file %s for writing.\n",
 		    argv[2]);
 	    perror("fopen");
@@ -176,12 +176,12 @@ int main(int argc, char *argv[])
 	usage();
 
     tn = tmpnam(NULL);
-    if (!(tfp = fopen(tn, "w"))) {
+    if (!(tfp = fopen(tn, "w+"))) {
 	fprintf(stderr, "Could not open temp file.\n");
 	exit(1);
     }
 
-    if (!(f = fopen(argv[1], "r"))) {
+    if (!(f = fopen(argv[1], "r+"))) {
 	fprintf(stderr,
 		"Could not open passwd file %s for reading.\n", argv[1]);
 	fprintf(stderr, "Use -c option to create new one.\n");
@@ -211,14 +211,18 @@ int main(int argc, char *argv[])
 	printf("Adding user %s\n", user);
 	add_password(user, tfp);
     }
+/*
+* make a copy from the tmp file to the actual file
+*/  
+        rewind(f);
+        rewind(tfp);
+        while ( fgets(command,MAX_STRING_LEN,tfp) != NULL)
+        {
+                fputs(command,f);
+        } 
+
     fclose(f);
     fclose(tfp);
-#if defined(__EMX__) || defined(WIN32)
-    sprintf(command, "copy \"%s\" \"%s\"", tn, argv[1]);
-#else
-    sprintf(command, "cp %s %s", tn, argv[1]);
-#endif
-    system(command);
     unlink(tn);
     exit(0);
 }
