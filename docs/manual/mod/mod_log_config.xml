@@ -346,6 +346,11 @@ host</context></contextlist>
     default. Therefore, it will not affect subsequent
     <directive>TransferLog</directive> directives.</p>
 
+    <p>For example:</p>
+
+    <example>LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b"
+    vhost_common</example>
+
 </usage>
 </directivesynopsis>
 
