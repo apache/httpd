@@ -1164,13 +1164,15 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
     server_rec *s_vhost;
     util_ldap_state_t *st_vhost;
     
-    /* initializing cache if file is here and we already don't have shm addr*/
-    if (st->cache_file && !st->cache_shm) {
+    /* initializing cache if shared memory size is not zero and we already don't have shm address */
+    if (!st->cache_shm && st->cache_bytes > 0) {
 #endif
         result = util_ldap_cache_init(p, st);
-        apr_strerror(result, buf, sizeof(buf));
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, result, s,
-                     "LDAP cache init: %s", buf);
+        if (result != APR_SUCCESS) {
+            apr_strerror(result, buf, sizeof(buf));
+            ap_log_error(APLOG_MARK, APLOG_ERR, result, s,
+                         "LDAP cache: error while creating a shared memory segment: %s", buf);
+        }
 
 #if APR_HAS_SHARED_MEMORY
         /* merge config in all vhost */
@@ -1188,7 +1190,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
         }
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0 , s, "LDAP cache: Unable to init Shared Cache: no file");
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "LDAP cache: LDAPSharedCacheSize is zero, disabling shared memory cache");
     }
 #endif
     

@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Enable the option to support anonymous shared memory in mod_ldap.
+     This makes the cache work on Linux again. [Graham Leggett]
+
   *) Allow LimitRequestBody to be reset to unlimited. PR 29106
      [André Malo]
 
