@@ -116,6 +116,13 @@ Changes with Apache 1.2b5
      count those SERVER_STARTING entries and will always report that there
      are enough idle servers. [Phillip Vandry]
 
+  *) Fixed bug in bcwrite regarding failure to account for partial writes.
+     Avoided calling bflush() when the client is pipelining requests.
+     Removed unnecessary flushes from http_protocol. [Dean Gaudet]
+ 
+  *) Added description of "." mode in server-status [Jim Jagielski]
+
+
 Changes with Apache 1.2b4:
 
   *) Fix possible race condition in accept_mutex_init() that
