@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1996-1998 The Apache Group.  All rights reserved.
  *
@@ -89,6 +88,30 @@
 **      www.engelschall.com
 */
 
+
+    /* Include from the underlaying Unix system ... */
+#include <string.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <time.h>
+#include <signal.h>
+#include <errno.h>
+#include <ctype.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#ifdef WIN32
+#include "../../os/win32/passwd.h"
+#else
+#include <netinet/in.h>
+#endif
+
+    /* Include from the Apache server ... */
+#include "httpd.h"
+#include "http_config.h"
+#include "http_request.h"
+#include "http_core.h"
+#include "http_log.h"
+#include "http_vhost.h"
 
     /* The NDBM support:
      * We support only NDBM files.
@@ -207,6 +230,11 @@
 #endif
 
 #define MAX_ENV_FLAGS 5
+
+#define MAX_NMATCH    10
+
+#define MAPFILE_PATTERN "^([^ \t]+)[ \t]+([^ \t]+).*$"
+#define MAPFILE_OUTPUT  "$1,$2"
 
 
 /*

@@ -85,35 +85,7 @@
 */
 
 
-
-
-    /* from the underlaying Unix system ... */
-#include <string.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <time.h>
-#include <signal.h>
-#include <errno.h>
-#include <ctype.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#ifdef WIN32
-#include "../../os/win32/passwd.h"
-#else
-#include <netinet/in.h>
-#endif
-
-    /* from the Apache server ... */
-#include "httpd.h"
-#include "http_config.h"
-#include "http_request.h"
-#include "http_core.h"
-#include "http_log.h"
-#include "http_vhost.h"
-
-    /* now our own stuff ... */
 #include "mod_rewrite.h"
-
 
 
 /*
@@ -231,12 +203,7 @@ static cache *cachep;
     /* whether proxy module is available or not */
 static int proxy_available;
 
-    /* maximum nmatch parameter for regexec */
-#define MAX_NMATCH (10)
-
     /* the txt mapfile parsing stuff */
-#define MAPFILE_PATTERN "^([^ \t]+)[ \t]+([^ \t]+).*$"
-#define MAPFILE_OUTPUT  "$1,$2"
 static regex_t   *lookup_map_txtfile_regexp = NULL;
 static regmatch_t lookup_map_txtfile_regmatch[MAX_NMATCH];
 
