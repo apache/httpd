@@ -65,7 +65,7 @@ extern "C" {
 #endif
 
 /**
- * @package Apache date/time handling functions
+ * @package Apache date-time handling functions
  */
 
 /* Maximum delta from the current time, in seconds, for a past time
