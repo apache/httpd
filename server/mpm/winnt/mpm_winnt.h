@@ -61,6 +61,10 @@
 
 #include "ap_listen.h"
 
+/* Till we are freed in the mpm_winnt */
+
+#include "buff.h"
+
 /* From registry.c: */
 
 apr_status_t ap_registry_create_key(const char *key);
