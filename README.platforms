@@ -54,3 +54,27 @@
    shell implementation (/bin/sh) on FreeBSD.  Be sure to use v2.13
    of autoconf.
 
+================
+  HP-UX:
+   The dlopen() system call in HP-UX has problems when loading/unloading
+   C++ modules. The problem can be resolved by using shl_load() instead
+   of dlopen(). This is fixed in the Apache 2.0.44 release.
+   To enable loading of C++ modules, the httpd binary has to be linked with
+   the following libraries :
+
+   HP-UX (11.0 / 11i):
+      When using shl_load        : "cpprt0_stub.s -lcl"
+      When using dlopen          : "cpprt0_stub.s -lcl -lCsup"
+
+   HP-UX (11i version 1.5 and greater):
+      When using dlopen/shl_load : "cpprt0_stub.s -lcl -lunwind"
+
+   The cpprt0_stub.s can be downloaded from the web site :
+      http://h21007.www2.hp.com/hpux-devtools/CXX/hpux-devtools.0107/0083.html
+
+   Compile cpprt0_stub.s with the PIC option
+     cc -c +z cpprt0_stub.s
+       - OR -
+     gcc -c -fPIC cpprt0_stub.s
+
+
