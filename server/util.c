@@ -1648,12 +1648,12 @@ API_EXPORT(char *) ap_escape_html(ap_pool_t *p, const char *s)
 
 API_EXPORT(int) ap_is_directory(const char *path)
 {
-    struct stat finfo;
+    ap_finfo_t finfo;
 
-    if (stat(path, &finfo) == -1)
+    if (ap_stat(&finfo, path, NULL) == -1)
 	return 0;		/* in error condition, just return no */
 
-    return (S_ISDIR(finfo.st_mode));
+    return (finfo.filetype == APR_DIR);
 }
 
 API_EXPORT(char *) ap_make_full_path(ap_pool_t *a, const char *src1,

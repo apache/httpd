@@ -467,7 +467,7 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
 {
     rewrite_server_conf *sconf;
     rewritemap_entry *newmap;
-    struct stat st;
+    ap_finfo_t st;
 
     sconf = (rewrite_server_conf *)
             ap_get_module_config(cmd->server->module_config, &rewrite_module);
@@ -531,7 +531,7 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
     newmap->fpout = NULL;
 
     if (newmap->checkfile && (sconf->state == ENGINE_ENABLED)
-        && (stat(newmap->checkfile, &st) == -1)) {
+        && (ap_stat(&st, newmap->checkfile, cmd->pool) != APR_SUCCESS)) {
         return ap_pstrcat(cmd->pool,
                           "RewriteMap: map file or program not found:",
                           newmap->checkfile, NULL);
@@ -2182,7 +2182,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
                               backrefinfo *briRC)
 {
     char input[MAX_STRING_LEN];
-    struct stat sb;
+    ap_finfo_t sb;
     request_rec *rsub;
     regmatch_t regmatch[MAX_NMATCH];
     int rc;
@@ -2208,31 +2208,31 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
 
     rc = 0;
     if (strcmp(p->pattern, "-f") == 0) {
-        if (stat(input, &sb) == 0) {
-            if (S_ISREG(sb.st_mode)) {
+        if (ap_stat(&sb, input, r->pool) == APR_SUCCESS) {
+            if (sb.filetype == APR_REG) {
                 rc = 1;
             }
         }
     }
     else if (strcmp(p->pattern, "-s") == 0) {
-        if (stat(input, &sb) == 0) {
-            if (S_ISREG(sb.st_mode) && sb.st_size > 0) {
+        if (ap_stat(&sb, input, r->pool) == APR_SUCCESS) {
+            if ((sb.filetype == APR_REG) && sb.size > 0) {
                 rc = 1;
             }
         }
     }
     else if (strcmp(p->pattern, "-l") == 0) {
 #if !defined(OS2) && !defined(WIN32)
-        if (lstat(input, &sb) == 0) {
-            if (S_ISLNK(sb.st_mode)) {
+        if (ap_lstat(&sb, input, r->pool) == APR_SUCCESS) {
+            if (sb.filetype == APR_LNK) {
                 rc = 1;
             }
         }
 #endif
     }
     else if (strcmp(p->pattern, "-d") == 0) {
-        if (stat(input, &sb) == 0) {
-            if (S_ISDIR(sb.st_mode)) {
+        if (ap_stat(&sb, input, r->pool) == APR_SUCCESS) {
+            if (sb.filetype == APR_DIR) {
                 rc = 1;
             }
         }
@@ -2278,7 +2278,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
             /* file exists for any result up to 2xx, no redirects */
             if (rsub->status < 300 &&
                 /* double-check that file exists since default result is 200 */
-                stat(rsub->filename, &sb) == 0) {
+                ap_stat(&sb, rsub->filename, r->pool) == APR_SUCCESS) {
                 rc = 1;
             }
 
@@ -2731,7 +2731,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
     rewritemap_entry *entries;
     rewritemap_entry *s;
     char *value;
-    struct stat st;
+    ap_finfo_t st;
     int i;
 
     /* get map configuration */
@@ -2745,7 +2745,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
         s = &entries[i];
         if (strcmp(s->name, name) == 0) {
             if (s->type == MAPTYPE_TXT) {
-                if (stat(s->checkfile, &st) == -1) {
+                if (ap_stat(&st, s->checkfile, r->pool) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                  "mod_rewrite: can't access text RewriteMap "
                                  "file %s", s->checkfile);
@@ -2754,7 +2754,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                     return NULL;
                 }
                 value = get_cache_string(cachep, s->name, CACHEMODE_TS,
-                                         st.st_mtime, key);
+                                         st.mtime, key);
                 if (value == NULL) {
                     rewritelog(r, 6, "cache lookup FAILED, forcing new "
                                "map lookup");
@@ -2763,14 +2763,14 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                         rewritelog(r, 5, "map lookup OK: map=%s key=%s[txt] "
                                    "-> val=%s", s->name, key, value);
                         set_cache_string(cachep, s->name, CACHEMODE_TS,
-                                         st.st_mtime, key, value);
+                                         st.mtime, key, value);
                         return value;
                     }
                     else {
                         rewritelog(r, 5, "map lookup FAILED: map=%s[txt] "
                                    "key=%s", s->name, key);
                         set_cache_string(cachep, s->name, CACHEMODE_TS,
-                                         st.st_mtime, key, "");
+                                         st.mtime, key, "");
                         return NULL;
                     }
                 }
@@ -2782,7 +2782,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             }
             else if (s->type == MAPTYPE_DBM) {
 #ifndef NO_DBM_REWRITEMAP
-                if (stat(s->checkfile, &st) == -1) {
+                if (ap_stat(&st, s->checkfile, r->pool) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
                                  "mod_rewrite: can't access DBM RewriteMap "
                                  "file %s", s->checkfile);
@@ -2791,7 +2791,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                     return NULL;
                 }
                 value = get_cache_string(cachep, s->name, CACHEMODE_TS,
-                                         st.st_mtime, key);
+                                         st.mtime, key);
                 if (value == NULL) {
                     rewritelog(r, 6,
                                "cache lookup FAILED, forcing new map lookup");
@@ -2800,14 +2800,14 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                         rewritelog(r, 5, "map lookup OK: map=%s[dbm] key=%s "
                                    "-> val=%s", s->name, key, value);
                         set_cache_string(cachep, s->name, CACHEMODE_TS,
-                                         st.st_mtime, key, value);
+                                         st.mtime, key, value);
                         return value;
                     }
                     else {
                         rewritelog(r, 5, "map lookup FAILED: map=%s[dbm] "
                                    "key=%s", s->name, key);
                         set_cache_string(cachep, s->name, CACHEMODE_TS,
-                                         st.st_mtime, key, "");
+                                         st.mtime, key, "");
                         return NULL;
                     }
                 }
@@ -2844,7 +2844,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                 }
             }
             else if (s->type == MAPTYPE_RND) {
-                if (stat(s->checkfile, &st) == -1) {
+                if (ap_stat(&st, s->checkfile, r->pool) == -1) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
                                  "mod_rewrite: can't access text RewriteMap "
                                  "file %s", s->checkfile);
@@ -2853,7 +2853,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                     return NULL;
                 }
                 value = get_cache_string(cachep, s->name, CACHEMODE_TS,
-                                         st.st_mtime, key);
+                                         st.mtime, key);
                 if (value == NULL) {
                     rewritelog(r, 6, "cache lookup FAILED, forcing new "
                                "map lookup");
@@ -2862,13 +2862,13 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                         rewritelog(r, 5, "map lookup OK: map=%s key=%s[txt] "
                                    "-> val=%s", s->name, key, value);
                         set_cache_string(cachep, s->name, CACHEMODE_TS,
-                                         st.st_mtime, key, value);
+                                         st.mtime, key, value);
                     }
                     else {
                         rewritelog(r, 5, "map lookup FAILED: map=%s[txt] "
                                    "key=%s", s->name, key);
                         set_cache_string(cachep, s->name, CACHEMODE_TS,
-                                         st.st_mtime, key, "");
+                                         st.mtime, key, "");
                         return NULL;
                     }
                 }
@@ -3519,7 +3519,7 @@ static char *lookup_variable(request_rec *r, char *var)
 #ifndef WIN32
     struct passwd *pw;
     struct group *gr;
-    struct stat finfo;
+    ap_finfo_t finfo;
 #endif
 
     result = NULL;
@@ -3722,8 +3722,8 @@ static char *lookup_variable(request_rec *r, char *var)
             }
         }
         else {
-            if (stat(r->filename, &finfo) == 0) {
-                if ((pw = getpwuid(finfo.st_uid)) != NULL) {
+            if (ap_stat(&finfo, r->filename, r->pool) == APR_SUCCESS) {
+                if ((pw = getpwuid(finfo.user)) != NULL) {
                     result = pw->pw_name;
                 }
             }
@@ -3737,8 +3737,8 @@ static char *lookup_variable(request_rec *r, char *var)
             }
         }
         else {
-            if (stat(r->filename, &finfo) == 0) {
-                if ((gr = getgrgid(finfo.st_gid)) != NULL) {
+            if (ap_stat(&finfo, r->filename, r->pool) == 0) {
+                if ((gr = getgrgid(finfo.group)) != NULL) {
                     result = gr->gr_name;
                 }
             }
@@ -4131,7 +4131,7 @@ static void add_env_variable(request_rec *r, char *s)
 **
 */
 
-static int prefix_stat(const char *path, struct stat *sb)
+static int prefix_stat(const char *path, ap_finfo_t *sb)
 {
     char curpath[LONG_STRING_LEN];
     char *cp;
@@ -4143,7 +4143,7 @@ static int prefix_stat(const char *path, struct stat *sb)
     if ((cp = strchr(curpath+1, '/')) != NULL) {
         *cp = '\0';
     }
-    if (stat(curpath, sb) == 0) {
+    if (ap_stat(sb, curpath, NULL) == 0) {
         return 1;
     }
     else {

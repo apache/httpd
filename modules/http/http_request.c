@@ -76,6 +76,7 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "util_charset.h"
+#include "apr_file_io.h"
 #include "apr_fnmatch.h"
 
 AP_HOOK_STRUCT(
@@ -136,13 +137,13 @@ static int check_safe_file(request_rec *r)
 }
 
 
-static int check_symlinks(char *d, int opts)
+static int check_symlinks(char *d, int opts, ap_pool_t *p)
 {
 #if defined(OS2) || defined(WIN32)
     /* OS/2 doesn't have symlinks */
     return OK;
 #else
-    struct stat lfi, fi;
+    ap_finfo_t lfi, fi;
     char *lastp;
     int res;
 
@@ -168,7 +169,7 @@ static int check_symlinks(char *d, int opts)
     else
         lastp = NULL;
 
-    res = lstat(d, &lfi);
+    res = ap_lstat(&lfi, d, p);
 
     if (lastp)
         *lastp = '/';
@@ -178,7 +179,7 @@ static int check_symlinks(char *d, int opts)
      * the like may cons up a way to run the transaction anyway)...
      */
 
-    if (!(res >= 0) || !S_ISLNK(lfi.st_mode))
+    if ((res != APR_SUCCESS) || lfi.filetype != APR_LNK)
         return OK;
 
     /* OK, it's a symlink.  May still be OK with OPT_SYM_OWNER */
@@ -186,10 +187,10 @@ static int check_symlinks(char *d, int opts)
     if (!(opts & OPT_SYM_OWNER))
         return HTTP_FORBIDDEN;
 
-    if (stat(d, &fi) < 0)
+    if (ap_stat(&fi, d, p) < 0)
         return HTTP_FORBIDDEN;
 
-    return (fi.st_uid == lfi.st_uid) ? OK : HTTP_FORBIDDEN;
+    return (fi.user == lfi.user) ? OK : HTTP_FORBIDDEN;
 
 #endif
 }
@@ -485,7 +486,7 @@ static int directory_walk(request_rec *r)
          * permissions appropriate to the *parent* directory...
          */
 
-        if ((res = check_symlinks(test_dirname, core_dir->opts))) {
+        if ((res = check_symlinks(test_dirname, core_dir->opts, r->pool))) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                         "Symbolic link not allowed: %s", test_dirname);
             return res;
@@ -582,7 +583,7 @@ static int directory_walk(request_rec *r)
      * you would *not* get the 403.
      */
     if (r->finfo.filetype != APR_DIR
-        && (res = check_symlinks(r->filename, ap_allow_options(r)))) {
+        && (res = check_symlinks(r->filename, ap_allow_options(r), r->pool))) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                     "Symbolic link not allowed: %s", r->filename);
         return res;
@@ -893,7 +894,8 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
             }
         }
         else {
-            if ((res = check_symlinks(rnew->filename, ap_allow_options(rnew)))) {
+            if ((res = check_symlinks(rnew->filename, ap_allow_options(rnew),
+                                      rnew->pool))) {
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, rnew,
                             "Symbolic link not allowed: %s", rnew->filename);
                 rnew->status = res;

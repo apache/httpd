@@ -59,7 +59,6 @@
 #include "httpd.h"
 #include "http_log.h"
 
-#include <sys/stat.h>
 #include <stdarg.h>
 #include <time.h>
 #include <stdlib.h>

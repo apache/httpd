@@ -1106,7 +1106,8 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
     }
 
     fname = ap_server_root_relative(cmd->pool, arg);
-    if ((stat(fname, &finfo) == -1) || !S_ISDIR(finfo.st_mode)) {
+    if ((ap_stat(&finfo, fname, cmd->pool) != APR_SUCCESS) || 
+        (finfo.filetype != APR_DIR)) {
 	return ap_pstrcat(cmd->pool, "CoreDumpDirectory ", fname, 
 			  " does not exist or is not a directory", NULL);
     }
