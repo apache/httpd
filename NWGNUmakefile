@@ -219,6 +219,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/pcre.o \
 	$(OBJDIR)/pcreposix.o \
 	$(OBJDIR)/protocol.o \
+	$(OBJDIR)/provider.o \
 	$(OBJDIR)/request.o \
 	$(OBJDIR)/rfc1413.o \
 	$(OBJDIR)/scoreboard.o \
