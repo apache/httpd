@@ -248,8 +248,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
          * other than text/html, so set gzip-only-text/html
          * (with browsermatch) for them
          */
-        if ((r->content_type == NULL ||
-             strncmp(r->content_type, "text/html", 9))
+        if ((r->content_type == NULL
+             || strncmp(r->content_type, "text/html", 9))
             && apr_table_get(r->subprocess_env, "gzip-only-text/html")) {
             return ap_pass_brigade(f->next, bb);
         }
@@ -288,8 +288,9 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         if (zRC != Z_OK) {
             f->ctx = NULL;
             ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-                        "unable to init Zlib: deflateInit2 returned %d: URL %s",
-                        zRC, r->uri);
+                          "unable to init Zlib: "
+                          "deflateInit2 returned %d: URL %s",
+                          zRC, r->uri);
             return ap_pass_brigade(f->next, bb);
         }
 
@@ -316,12 +317,13 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             char crc_array[4], len_array[4];
             unsigned int deflate_len;
 
-            ctx->stream.avail_in = 0;        /* should be zero already anyway */
+            ctx->stream.avail_in = 0; /* should be zero already anyway */
             for (;;) {
                 deflate_len = FILTER_BUFSIZE - ctx->stream.avail_out;
 
                 if (deflate_len != 0) {
-                    b = apr_bucket_heap_create((char *)ctx->buffer, deflate_len, 1);
+                    b = apr_bucket_heap_create((char *)ctx->buffer,
+                                               deflate_len, 1);
                     APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
                     ctx->stream.next_out = ctx->buffer;
                     ctx->stream.avail_out = FILTER_BUFSIZE;
@@ -435,7 +437,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
     return APR_SUCCESS;
 }
 
-static void register_hooks(apr_pool_t * p)
+static void register_hooks(apr_pool_t *p)
 {
     ap_register_output_filter(deflateFilterName, deflate_out_filter,
                               AP_FTYPE_CONTENT_SET);
@@ -453,10 +455,10 @@ static const command_rec deflate_filter_cmds[] = {
 
 module AP_MODULE_DECLARE_DATA deflate_module = {
     STANDARD20_MODULE_STUFF,
-    NULL,
-    NULL,
-    create_deflate_server_config,
-    NULL,
-    deflate_filter_cmds,
-    register_hooks
+    NULL,                         /* dir config creater */
+    NULL,                         /* dir merger --- default is to override */
+    create_deflate_server_config, /* server config */
+    NULL,                         /* merge server config */
+    deflate_filter_cmds,          /* command table */
+    register_hooks                /* register hooks */
 };
