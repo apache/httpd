@@ -58,9 +58,9 @@
 
 /*
  * http_log.c: Dealing with the logs and errors
- * 
+ *
  * Rob McCool
- * 
+ *
  */
 
 #include "apr.h"
@@ -197,20 +197,20 @@ static int log_child(apr_pool_t *p, const char *progname,
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
 
-    if (((rc = apr_procattr_create(&procattr, p)) == APR_SUCCESS) &&
-        ((rc = apr_procattr_io_set(procattr,
-                                   APR_FULL_BLOCK,
-                                   APR_NO_PIPE,
-                                   APR_NO_PIPE)) == APR_SUCCESS)) {
+    if (((rc = apr_procattr_create(&procattr, p)) == APR_SUCCESS)
+        && ((rc = apr_procattr_io_set(procattr,
+                                      APR_FULL_BLOCK,
+                                      APR_NO_PIPE,
+                                      APR_NO_PIPE)) == APR_SUCCESS)) {
         char **args;
         const char *pname;
-        
+
         apr_tokenize_to_argv(progname, &args, p);
         pname = apr_pstrdup(p, args[0]);
         procnew = (apr_proc_t *)apr_pcalloc(p, sizeof(*procnew));
         rc = apr_proc_create(procnew, pname, (const char * const *)args,
                              NULL, procattr, p);
-    
+
         if (rc == APR_SUCCESS) {
             apr_pool_note_subprocess(p, procnew, kill_after_timeout);
             (*fpin) = procnew->in;
@@ -231,7 +231,7 @@ static void open_error_log(server_rec *s, apr_pool_t *p)
         /* This starts a new process... */
         rc = log_child (p, s->error_fname + 1, &dummy);
         if (rc != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL, 
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
                          "Couldn't start ErrorLog process");
             exit(1);
         }
@@ -263,15 +263,16 @@ static void open_error_log(server_rec *s, apr_pool_t *p)
 #endif
     else {
         fname = ap_server_root_relative(p, s->error_fname);
-        rc = apr_file_open(&s->error_log, fname, 
+        rc = apr_file_open(&s->error_log, fname,
                            APR_APPEND | APR_READ | APR_WRITE | APR_CREATE,
                            APR_OS_DEFAULT, p);
         if (rc != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL, 
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
                          "%s: could not open error log file %s.",
             ap_server_argv0, fname);
             exit(1);
         }
+
         apr_file_set_inherit(s->error_log);
     }
 }
@@ -295,7 +296,8 @@ void ap_open_logs(server_rec *s_main, apr_pool_t *p)
         if (rc != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rc, s_main,
                          "unable to replace stderr with error_log");
-        } else {
+        }
+        else {
             replace_stderr = 0;
         }
     }
@@ -312,11 +314,12 @@ void ap_open_logs(server_rec *s_main, apr_pool_t *p)
     for (virt = s_main->next; virt; virt = virt->next) {
         if (virt->error_fname) {
             for (q=s_main; q != virt; q = q->next) {
-                if (q->error_fname != NULL &&
-                    strcmp(q->error_fname, virt->error_fname) == 0) {
-                        break;
+                if (q->error_fname != NULL
+                    && strcmp(q->error_fname, virt->error_fname) == 0) {
+                    break;
                 }
             }
+
             if (q == virt) {
                 open_error_log(virt, p);
             }
@@ -333,14 +336,14 @@ void ap_open_logs(server_rec *s_main, apr_pool_t *p)
 AP_DECLARE(void) ap_error_log2stderr(server_rec *s) {
     apr_file_t *errfile = NULL;
 
-    apr_file_open_stderr(&errfile, s->process->pool);        
+    apr_file_open_stderr(&errfile, s->process->pool);
     if (s->error_log != NULL) {
         apr_file_dup2(s->error_log, errfile, s->process->pool);
     }
 }
 
-static void log_error_core(const char *file, int line, int level, 
-                           apr_status_t status, const server_rec *s, 
+static void log_error_core(const char *file, int line, int level,
+                           apr_status_t status, const server_rec *s,
                            const request_rec *r, apr_pool_t *pool,
                            const char *fmt, va_list args)
 {
@@ -356,10 +359,11 @@ static void log_error_core(const char *file, int line, int level,
          * above the default server log level unless it is a startup/shutdown
          * notice
          */
-        if ((level_and_mask != APLOG_NOTICE) &&
-            (level_and_mask > ap_default_loglevel)) {
+        if ((level_and_mask != APLOG_NOTICE)
+            && (level_and_mask > ap_default_loglevel)) {
             return;
         }
+
         logf = stderr_log;
     }
     else if (s->error_log) {
@@ -367,10 +371,11 @@ static void log_error_core(const char *file, int line, int level,
          * If we are doing normal logging, don't log messages that are
          * above the server log level unless it is a startup/shutdown notice
          */
-        if ((level_and_mask != APLOG_NOTICE) && 
-            (level_and_mask > s->loglevel)) {
+        if ((level_and_mask != APLOG_NOTICE)
+            && (level_and_mask > s->loglevel)) {
             return;
         }
+
         logf = s->error_log;
     }
 #ifdef TPF
@@ -379,10 +384,11 @@ static void log_error_core(const char *file, int line, int level,
          * If we are doing normal logging, don't log messages that are
          * above the server log level unless it is a startup/shutdown notice
          */
-        if ((level_and_mask != APLOG_NOTICE) &&
-            (level_and_mask > s->loglevel)) {
+        if ((level_and_mask != APLOG_NOTICE)
+            && (level_and_mask > s->loglevel)) {
             return;
         }
+
         logf = stderr;
     }
 #endif /* TPF */
@@ -410,6 +416,7 @@ static void log_error_core(const char *file, int line, int level,
         len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
                             "[%s] ", priorities[level_and_mask].t_name);
     }
+
 #ifndef TPF
     if (file && level_and_mask == APLOG_DEBUG) {
 #ifdef _OSD_POSIX
@@ -435,6 +442,7 @@ static void log_error_core(const char *file, int line, int level,
                             "%s(%d): ", file, line);
     }
 #endif /* TPF */
+
     if (r && r->connection) {
         /* XXX: TODO: add a method of selecting whether logged client
          * addresses are in dotted quad or resolved form... dotted
@@ -473,11 +481,12 @@ static void log_error_core(const char *file, int line, int level,
         syslog(level_and_mask, "%s", errstr);
     }
 #endif
+
     ap_run_error_log(file, line, level, status, s, r, pool, errstr + errstrlen);
 }
-    
+
 AP_DECLARE(void) ap_log_error(const char *file, int line, int level,
-                              apr_status_t status, const server_rec *s, 
+                              apr_status_t status, const server_rec *s,
                               const char *fmt, ...)
 {
     va_list args;
@@ -488,7 +497,7 @@ AP_DECLARE(void) ap_log_error(const char *file, int line, int level,
 }
 
 AP_DECLARE(void) ap_log_perror(const char *file, int line, int level,
-                               apr_status_t status, apr_pool_t *p, 
+                               apr_status_t status, apr_pool_t *p,
                                const char *fmt, ...)
 {
     va_list args;
@@ -499,13 +508,14 @@ AP_DECLARE(void) ap_log_perror(const char *file, int line, int level,
 }
 
 AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level,
-                               apr_status_t status, const request_rec *r, 
+                               apr_status_t status, const request_rec *r,
                                const char *fmt, ...)
 {
     va_list args;
 
     va_start(args, fmt);
     log_error_core(file, line, level, status, r->server, r, NULL, fmt, args);
+
     /*
      * IF the error level is 'warning' or more severe,
      * AND there isn't already error text associated with this request,
@@ -515,11 +525,11 @@ AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level,
      * before calling this routine.
      */
     va_end(args);
-    va_start(args,fmt); 
+    va_start(args,fmt);
     if (((level & APLOG_LEVELMASK) <= APLOG_WARNING)
         && (apr_table_get(r->notes, "error-notes") == NULL)) {
         apr_table_setn(r->notes, "error-notes",
-                       ap_escape_html(r->pool, apr_pvsprintf(r->pool, fmt, 
+                       ap_escape_html(r->pool, apr_pvsprintf(r->pool, fmt,
                                                              args)));
     }
     va_end(args);
@@ -533,12 +543,12 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *fname)
     pid_t mypid;
     apr_status_t rv;
 
-    if (!fname) 
+    if (!fname)
     return;
 
     fname = ap_server_root_relative(p, fname);
     mypid = getpid();
-    if (mypid != saved_pid 
+    if (mypid != saved_pid
         && apr_stat(&finfo, fname, APR_FINFO_MTIME, p) == APR_SUCCESS) {
         /* AP_SIG_GRACEFUL and HUP call this on each restart.
          * Only warn on first time through for this pid.
@@ -557,9 +567,9 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *fname)
                             APR_WRITE | APR_CREATE | APR_TRUNCATE,
                             APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD, p))
         != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
                      "could not create %s", fname);
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, NULL,
                      "%s: could not log pid to file %s",
                      ap_server_argv0, fname);
         exit(1);
@@ -601,7 +611,7 @@ static int piped_log_spawn(piped_log *pl)
 
     if (((status = apr_procattr_create(&procattr, pl->p)) != APR_SUCCESS) ||
         ((status = apr_procattr_child_in_set(procattr,
-                                             ap_piped_log_read_fd(pl), 
+                                             ap_piped_log_read_fd(pl),
                                              ap_piped_log_write_fd(pl)))
         != APR_SUCCESS)) {
         char buf[120];
@@ -620,19 +630,19 @@ static int piped_log_spawn(piped_log *pl)
         procnew = apr_pcalloc(pl->p, sizeof(apr_proc_t));
         rc = apr_proc_create(procnew, pname, (const char * const *) args,
                              NULL, procattr, pl->p);
-    
-        if (rc == APR_SUCCESS) {            
+
+        if (rc == APR_SUCCESS) {
             /* pjr - This no longer happens inside the child, */
             /*   I am assuming that if apr_proc_create was  */
             /*   successful that the child is running.        */
-            RAISE_SIGSTOP(PIPED_LOG_SPAWN); 
+            RAISE_SIGSTOP(PIPED_LOG_SPAWN);
             pl->pid = procnew;
             ap_piped_log_write_fd(pl) = procnew->in;
-            apr_proc_other_child_register(procnew, piped_log_maintenance, pl, 
+            apr_proc_other_child_register(procnew, piped_log_maintenance, pl,
                                           ap_piped_log_write_fd(pl), pl->p);
         }
     }
-    
+
     return 0;
 }
 
@@ -667,12 +677,12 @@ static void piped_log_maintenance(int reason, void *data, apr_wait_t status)
                          pl->program, apr_strerror(stats, buf, sizeof(buf)));
         }
         break;
-    
+
     case APR_OC_REASON_UNWRITABLE:
         /* We should not kill off the pipe here, since it may only be full.
          * If it really is locked, we should kill it off manually. */
     break;
-    
+
     case APR_OC_REASON_RESTART:
         pl->program = NULL;
         if (pl->pid != NULL) {
@@ -750,7 +760,7 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
 
     rc = log_child(p, program, &dummy);
     if (rc != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
                      "Couldn't start piped log process");
         exit (1);
     }
@@ -772,9 +782,9 @@ AP_DECLARE(void) ap_close_piped_log(piped_log *pl)
 }
 
 AP_IMPLEMENT_HOOK_VOID(error_log,
-                       (const char *file, int line, int level, 
-                       apr_status_t status, const server_rec *s,
-                       const request_rec *r, apr_pool_t *pool, 
-                       const char *errstr), (file, line, level,
-                       status, s, r, pool, errstr))
+                       (const char *file, int line, int level,
+                        apr_status_t status, const server_rec *s,
+                        const request_rec *r, apr_pool_t *pool,
+                        const char *errstr), (file, line, level,
+                        status, s, r, pool, errstr))
 
