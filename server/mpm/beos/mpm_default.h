@@ -101,11 +101,6 @@
 #define DEFAULT_PIDLOG "logs/httpd.pid"
 #endif
 
-/* Scoreboard file, if there is one */
-#ifndef DEFAULT_SCOREBOARD
-#define DEFAULT_SCOREBOARD "logs/apache_runtime_status"
-#endif
-
 /*
  * Interval, in microseconds, between scoreboard maintenance.
  */

@@ -971,7 +971,6 @@ static int netware_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     ap_threads_min_free = DEFAULT_MIN_FREE_THREADS;
     ap_threads_max_free = DEFAULT_MAX_FREE_THREADS;
     ap_threads_limit = HARD_THREAD_LIMIT;
-    ap_scoreboard_fname = DEFAULT_SCOREBOARD;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_extended_status = 0;
 

@@ -58,6 +58,7 @@
 
 #ifndef APACHE_SCOREBOARD_H
 #define APACHE_SCOREBOARD_H
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -74,6 +75,11 @@ extern "C" {
 #include "apr_thread_proc.h"
 #include "apr_portable.h"
 #include "apr_shm.h"
+
+/* Scoreboard file, if there is one */
+#ifndef DEFAULT_SCOREBOARD
+#define DEFAULT_SCOREBOARD "logs/apache_runtime_status"
+#endif
 
 /* Scoreboard info on a process is, for now, kept very brief --- 
  * just status value and pid (the latter so that the caretaker process
