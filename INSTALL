@@ -246,12 +246,12 @@
      or disable a particular already distributed module from the Apache
      src/Configuration.tmpl file. The correct module names (no `mod_' prefix!)
      and defaults (yes=enabled, no=disabled) can be seen when running
-     `./configure --help'.  There are two special NAME variants: "all" for
-     enabling or disabling all modules and "most" for enabling or disabling
+     `./configure --help'.  There are two special NAME variants: `all' for
+     enabling or disabling all modules and `most' for enabling or disabling
      only these modules which are useable on all platforms (currently this is
-     "all" minus the modules auth_db, log_agent, log_referer, example, so and
-     mmap_static). For a compact overview of available modules see the
-     following list (remove the "mod_" prefix to get the NAME).
+     `all' minus the modules `auth_db', `log_agent', `log_referer', `example',
+     `so' and `mmap_static'). For a compact overview of available modules see
+     the following list (remove the `mod_' prefix to get the NAME).
 
      _________________________________________________________________________
      LIST OF AVAILABLE MODULES
@@ -288,7 +288,7 @@
       (+) mod_cgi .......... Common Gateway Interface (CGI) support
       (+) mod_actions ...... Map CGI scripts to act as internal `handlers'
      Internal Content Handlers
-      (-) mod_status ....... Content handler for server run-time status
+      (+) mod_status ....... Content handler for server run-time status
       (-) mod_info ......... Content handler for server configuration summary
      Request Logging
       (+) mod_log_config ... Customizable logging of requests
@@ -312,9 +312,10 @@
      or disable the shared object support for a particular module from the
      Apache src/Configuration.tmpl file. The defaults (yes=enabled,
      no=disabled) can be seen when running `./configure --help'. There are two
-     special NAME variants: "max" for enabling or disabling all modules except
-     the bootstrapping "so" module and "remain" for enabling or disabling only
-     these modules which are still not enabled. 
+     special NAME variants: `max' for enabling or disabling DSO on all modules
+     except the bootstrapping `so' module and `remain' for enabling or
+     disabling DSO for only those modules which are still not enabled (which
+     this way implicitly enables them itself). 
      
          Note 1: The --enable-shared option DOES NOT AUTOMATICALLY enable the
                  module because there are variants like `--enable-shared=all'
