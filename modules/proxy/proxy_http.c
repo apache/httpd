@@ -169,7 +169,6 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 		       const char *proxyname, int proxyport)
 {
     request_rec *rp;
-    apr_pool_t *p = r->connection->pool;
     const char *connectname;
     int connectport = 0;
     apr_sockaddr_t *uri_addr;
@@ -183,13 +182,29 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     char buffer[HUGE_STRING_LEN];
     char *buf;
     conn_rec *origin;
-    apr_bucket *e;
-    apr_bucket_brigade *bb = apr_brigade_create(p);
     uri_components uri;
 
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
     (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
+
+    /* Note: Memory pool allocation.
+     * A downstream keepalive connection is always connected to the existence
+     * (or not) of an upstream keepalive connection. If this is not done then
+     * load balancing against multiple backend servers breaks (one backend
+     * server ends up taking 100% of the load), and the risk is run of
+     * downstream keepalive connections being kept open unnecessarily. This
+     * keeps webservers busy and ties up resources.
+     *
+     * As a result, we allocate all sockets out of the upstream connection
+     * pool, and when we want to reuse a socket, we check first whether the
+     * connection ID of the current upstream connection is the same as that
+     * of the connection when the socket was opened.
+     */
+    apr_pool_t *p = r->pool;
+    conn_rec *c = r->connection;
+    apr_bucket *e;
+    apr_bucket_brigade *bb = apr_brigade_create(p);
 
 
     /*
@@ -211,13 +226,15 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 		 "proxy: HTTP connecting %s to %s:%d", url, uri.hostname, uri.port);
 
     /* do a DNS lookup for the destination host */
-    err = apr_sockaddr_info_get(&uri_addr, uri.hostname, APR_UNSPEC, uri.port, 0, r->server->process->pconf);
+    /* see memory note above */
+    err = apr_sockaddr_info_get(&uri_addr, uri.hostname, APR_UNSPEC, uri.port, 0, c->pool);
 
     /* are we connecting directly, or via a proxy? */
     if (proxyname) {
 	connectname = proxyname;
 	connectport = proxyport;
-        err = apr_sockaddr_info_get(&connect_addr, proxyname, APR_UNSPEC, proxyport, 0, r->server->process->pconf);
+	/* see memory note above */
+        err = apr_sockaddr_info_get(&connect_addr, proxyname, APR_UNSPEC, proxyport, 0, c->pool);
     }
     else {
 	connectname = uri.hostname;
@@ -265,8 +282,9 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     /* if a keepalive socket is already open, check whether it must stay
      * open, or whether it should be closed and a new socket created.
      */
+    /* see memory note above */
     if (conf->client_socket) {
-	if ((conf->id == r->connection->id) &&
+	if ((conf->id == c->id) &&
 	    (conf->connectport == connectport) &&
 	    (conf->connectname) &&
             (!apr_strnatcasecmp(conf->connectname,connectname))) {
@@ -283,7 +301,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 
     /* get a socket - either a keepalive one, or a new one */
     new = 1;
-    if (conf->client_socket) {
+    if ((conf->id == c->id) && (conf->client_socket)) {
 
 	/* use previous keepalive socket */
 	sock = conf->client_socket;
@@ -295,9 +313,10 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     if (new) {
 
 	/* create a new socket */
-	/* allocate this out of the process pool - if this socket gets lost then the proxy
-	 * hangs when the socket is closed...! */
-	if ((apr_socket_create(&sock, APR_INET, SOCK_STREAM, r->server->process->pconf)) != APR_SUCCESS) {
+	conf->client_socket = NULL;
+
+	/* see memory note above */
+	if ((apr_socket_create(&sock, APR_INET, SOCK_STREAM, c->pool)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
 			 "proxy: error creating socket");
 	    return HTTP_INTERNAL_SERVER_ERROR;
@@ -361,7 +380,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		 "proxy: socket is connected");
 
-    /* the socket is now open, create a new connection */
+    /* the socket is now open, create a new downstream connection */
     origin = ap_new_connection(p, r->server, sock, r->connection->id);
     if (!origin) {
 	/* the peer reset the connection already; ap_new_connection() 
@@ -529,6 +548,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     /* send the request data, if any. */
     if (ap_should_client_block(r)) {
 	while ((i = ap_get_client_block(r, buffer, sizeof buffer)) > 0) {
+/* XXX FIXME: Only sends downstream when request is fully loaded */
             e = apr_bucket_pool_create(buffer, i, p);
             APR_BRIGADE_INSERT_TAIL(bb, e);
         }
@@ -555,7 +575,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	apr_socket_close(sock);
 	conf->client_socket = NULL;
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-	     "proxy: error reading from remote server %s using ap_proxy_string_read()",
+	     "proxy: error reading status line from remote server %s",
 	     connectname);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
@@ -679,9 +699,9 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	    origin->remain = atol(buf);
 	}
 
-	/* no chunked / no length therefore read till EOF */
+	/* no chunked / no length therefore read till EOF and cancel keepalive */
 	else {
-	    origin->remain = -1;
+	    close += 1;
 	}
 
 	/* if keepalive cancelled, read to EOF */
