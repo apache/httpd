@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/24 09:26:46 $]
+Last modified at [$Date: 2003/01/24 16:29:02 $]
 
 Release:
 
@@ -57,7 +57,12 @@ Contributors looking for a mission:
     * just do an egrep on "TODO", "XXX" and see what's there
 
 PATCHES TO PORT FROM 2.1
-
+    * Port stoddard's patch to mod_file_cache to call apr_mmap_dup
+      using the request pool on the cached apr_mmap_t prior to
+      serving the response. This fixes segfault observed on
+      windows serving mmap cached files.
+      +1: stoddard
+ 
     * mod_file_cache segfault bugfix. PR 16313.
      +1: stoddard, orlikowski, striker
 
