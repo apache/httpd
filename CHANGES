@@ -35,11 +35,6 @@ Changes with Apache 2.1.0-dev
      for some third-party modules on platforms with small default 
      thread stack size.  [Jeff Trawick]
 
-  *) Win32: Tweak worker thread accounting routines to eliminate
-     server hang when number of Listen directives in httpd.conf
-     is greater than or equal to the setting of ThreadsPerChild.
-     [Bill Stoddard]
-
   *) mod_rewrite: Support for recognizing SSL variables in RewriteCond
      using the new "SSL:" format.  [Joe Orton, Madhusudan Mathihalli]
 
@@ -301,6 +296,11 @@ Changes with Apache 2.0.50
      The core per-dir config would later point to request pool data
      that would be reused for different purposes on different requests.
      [Jeff Trawick, based on an old 1.3 patch submitted by Will Lowe]
+
+  *) Win32: Tweak worker thread accounting routines to eliminate
+     server hang when number of Listen directives in httpd.conf
+     is greater than or equal to the setting of ThreadsPerChild.
+     [Bill Stoddard]
 
 Changes with Apache 2.0.49
 
