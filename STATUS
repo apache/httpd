@@ -112,18 +112,159 @@ Available Patches:
 	Status: Ken +1, Paul +1, Ben +1, Jim +1, Randy +1, Roy +1,
 		Chuck +1, MarkC +1, Ralf +1, Sameer +1
 
-Concepts:
+    * Ralf's 
+      Apache 1.3 Autoconf-*style* Interface (APACI)
+      ftp://ftp.apache.org/apache/dist/contrib/apaci/
 
-    * Ralf's [CONTRIB] AutoConf Interface Emulation
-        <199803020729.IAA20122@en1.engelschall.com>
-        (idea: GNU-style {configure,Makefile.tmpl} replaces existing 
-        but incomplete {Makefile,src/helpers/InstallApache}) 
-        Status: Ralf +1   (for 1.3.0 because either now or better never to
-                           avoid confusion later in the release cycle)
-                Jim +1    (for 1.3.1 on concept)
-                Jim -1    (for 1.3.0 because too late)
-                Randy -1  (too late for 1.3 in general)
-                Ken -1    (for 1.3.0 in general)
+      What stuff does APACI contain?
+        README          Documentation with Examples         (step 1)
+        INSTALL         Reference of Installation Options   (step 2)
+        configure       The Autoconf-style configure script (step 3)
+        Makefile.tmpl   The Makefile controlling anything   (step 4)
+        aux/fmn.sh      Auxilliary script: find module name 
+        aux/install.sh  Auxilliary script: install program 
+        aux/mkdir.sh    Auxilliary script: mkdir program   
+        aux/mkshadow.sh Auxilliary script: --shadow support
+        aux/ppl.sh      Auxilliary script: --help support
+
+      Background:
+        Currently Apache 1.3 has no real and flexible batch-configuration
+        procedure and no real out-of-the-box installation procedure although
+        the users expect one. At least the installation procedure is required.
+        For Apache 2.0 we already want something similar to this, but this is
+        too far away. Apache 1.3 will be out for a long time until Apache 2.0
+        is available and thus we should provide such a installation procedure.
+
+      Idee:
+        To fill this gap for Apache 1.3 APACI was written from scratch.  The
+        goal it addresses is an Autoconf-style(!) but _NOT_ Autoconf-based
+        batch interface for out-of-the-box configuring, building and
+        installing Apache 1.3 by providing a frontend(!) and _NOT_ a
+        replacement to the (more proprietary) src/Configure+src/Configuration
+        stuff while replacing the totally out-of-date and bogus
+        apache-1.3/Makefile+apache-1.3/src/helpers/InstallApache files. 
+
+      In short for the impatient:
+         $ cd apache-1.3
+         $ ./configure --prefix=PREFIX
+         $ make
+         $ make install
+         $ PREFIX/sbin/apachectl start        <<<<====== IMPORTANT!
+
+      Hints:
+         1. Because APACI uses a frontend which is named "configure" and
+            supports the Autoconf-style options (especially --prefix, etc.) we
+            provide an interface the users expect and already know for years
+            from the many GNU software packages. The fact that our APACI stuff
+            is not really Autoconf-based(!) is not important here and totally
+            hidden from the user.
+         2. The "make install" _really_ out-of-the-box installs Apache 1.3
+            without any user intervention. It does not only install Apache
+            with a GNU-conforming (and thus not filesystem disturbing)
+            installation layout. It additionally creates initial config files,
+            including corresponding LoadModule lines for the built shared
+            objects, etc. And it installs not only the core, it installs the
+            shared objects files, the support programs, the manpages, the
+            initial document root, etc. pp.
+         3. Because APACI also adjusts the paths in the support scripts and
+            programs the user is able to _IMMEDIATELY_ fire up Apache after
+            "make install" by just running "PREFIX/sbin/apachectl start".
+            THIS IS VERY IMPORTANT, because it gives the first success event
+            to the user. For a really good package the should love this is
+            important.
+
+      The features APACI actually provides in detail (summary):
+         - runs 100% in batch
+         - can control _any_ options of src/Configuration.tmpl file, including
+           rules, shared object support, etc.
+         - provides additional support for suEXEC, on-the-fly adding of
+           modules, mod_perl, etc.
+         - builds _and_ installs Apache out-of-the-box
+         - user can _immediately_ run Apache the first time after "make
+           install". Important for the first success even of the user!!
+         - is as portable as src/Configure (no shell functions, etc.)
+         - is well documented (README, INSTALL files plus comments)
+         - supports both GNU-conforming installation layout and proprietary
+           Apache installation layout (--compat)
+         - no license conflicts because written from scratch
+      
+      Now for the inclusion of APACI you should remember:
+         - The inclusion of APACI does _not_ change _anything_.
+         - We can only gain from providing such an interface because our
+           current top-level Makefile and src/helpers/InstallApache stuff is
+           nothing more than a bad joke.
+         - It only has one disadvantage for us: we are late in the release
+           cycle and perhaps it causes a few new PRs in the future. But the
+           advantage of having it should be more important. Because APACI
+           is not what we developers want, it is what the users want!
+           Don't forget this, please.
+
+      We have two obvious ways for APACI to be comitted (each with its own
+      advantage and disadvantage):
+
+      CV1: The recommended-way commit:
+
+         README                apache-1.3/apaci/README          
+         INSTALL               apache-1.3/apaci/INSTALL         
+         configure             apache-1.3/apaci/configure       
+         Makefile.tmpl         apache-1.3/apaci/Makefile.tmpl   
+         aux/fmn.sh       ==>  apache-1.3/apaci/src/helpers/fmn.sh      
+         aux/install.sh        apache-1.3/apaci/src/helpers/install.sh  
+         aux/mkdir.sh          apache-1.3/apaci/src/helpers/mkdir.sh    
+         aux/mkshadow.sh       apache-1.3/apaci/src/helpers/mkshadow.sh 
+         aux/ppl.sh            apache-1.3/apaci/src/helpers/ppl.sh      
+
+        Advantages:    - the user finds APACI easily because it stays
+                         where it is expected to stay: in the top-level
+                       - we show that its the official all-in-one interface
+                         for Joe Avarage and just have to add some hints to
+                         the INSTALL and README files on how to do a
+                         custom build the old way in src/.
+                       - the "make" process looks clear and obvious by
+                         displaying "==> src/xxxx" etc.
+        Disadvantages: - we bristle the source tree a little bit 
+                         with the APACI files
+
+      CV2: The closed-area commit:
+
+         README                apache-1.3/apaci/README          
+         INSTALL               apache-1.3/apaci/INSTALL         
+         configure             apache-1.3/apaci/configure       
+         Makefile.tmpl         apache-1.3/apaci/Makefile.tmpl   
+         aux/fmn.sh       ==>  apache-1.3/apaci/aux/fmn.sh      
+         aux/install.sh        apache-1.3/apaci/aux/install.sh  
+         aux/mkdir.sh          apache-1.3/apaci/aux/mkdir.sh    
+         aux/mkshadow.sh       apache-1.3/apaci/aux/mkshadow.sh 
+         aux/ppl.sh            apache-1.3/apaci/aux/ppl.sh      
+
+        Advantages:    - we no not bristle the source tree with APACI files
+                       - we mark APACI as an alternative/official interface
+        Disadvantages: - the user doesn't find APACI easily because
+                         "configure" is _ALWAYS_ searched at the top-level by
+                         the user.
+                       - the user is confused and thinks APACI is totally 
+                         inofficial and thus doesn't use it (acceptance!)
+                       - the "make" process looks a little bit ugly because
+                         it then displays "==> ../src/xxxx" etc..
+
+      To now give a fair voting, either try APACI out by grabbing the
+      distribution from ftp://ftp.apache.org/apache/dist/contrib/apaci/ or at
+      least reading the examples in
+      ftp://ftp.apache.org/apache/dist/contrib/apaci/README. You have time,
+      don't hurry.
+
+      PLEASE DO NOT QUICKLY VETO IT NOW JUST BECAUSE IT'S SUCH LATE IN THE
+      RELEASE CYCLE.  Please be really fair and decide if it is worth or not
+      worth adding it by weighting on the advantages and disadvantages.
+      
+      Votes for including APACI (in general): 
+         Ralf +1
+
+      Votes for commit variants:
+         CV1: Ralf +1
+         CV2: Ralf +0
+
+Concepts:
 
     * Dean's [PRE-PATCH] expanding ap_snprintf()
 	<Pine.LNX.3.95dg3.971023233600.4431I-100000@twinlark.arctic.org>
