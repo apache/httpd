@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2003/10/29 14:38:12 $]
+  Last modified at [$Date: 2003/10/30 09:34:17 $]
 
 Release:
 
@@ -208,7 +208,7 @@ Win32/Netware specific issues:
       cause instability - see PR#1729.
 
 
-Binaries (1.3.27):
+Binaries (1.3.29):
 
  Platform                      Avail.  Volunteer
  ------------------------------------------------------------------
@@ -258,12 +258,12 @@ Binaries (1.3.27):
  mips-siemens-reliantunix5.4   yes     Martin Kraemer
  mips-unknown-linux            no      Lars Eilebrecht
  netware                       yes     Brad Nicholes <bnicholes@novell.com>
- OS/2                          yes     Brian Havard
+ OS/2                          no      Brian Havard
  OS/390-09.00-02               no                     
  powerpc+i386-apple-darwin1.2  no      Wilfredo Sanchez
  powerpc-apple-rhapsody5.5     no      Wilfredo Sanchez
  powerpc-apple-darwin5.5       no      Aaron Bannert
- ppc-whatever-linux22          yes     Graham Leggett
+ ppc-whatever-linux22          no      Graham Leggett
  rs6000-ibm-aix3.2.5           no      Sameer Parekh
  rs6000-ibm-aix4.1             no      Lars Eilebrecht
  rs6000-ibm-aix4.3.x           no      Bill Stoddard, Randy Terbush
@@ -275,9 +275,9 @@ Binaries (1.3.27):
  sparc-unknown-linux           no      Lars Eilebrecht, Randy Terbush
  sun4u-sun-solaris2.280        no      Jeff Trawick
  TPF                           no      David McCreedy, Carolyn Weiss
- win32                         yes     William Rowe
+ win32                         no      William Rowe
  x86-bsdos-3.x                 no      Randy Terbush
  x86-bsdos-4.x                 no      Randy Terbush
  x86-openbsd-2.x               no      Randy Terbush
  x86-qnx-4.x                   no      Randy Terbush
- x86_64-whatever-linux22       yes     Aaron Bannert
+ x86_64-whatever-linux22       no      Aaron Bannert
