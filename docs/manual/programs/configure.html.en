@@ -505,10 +505,26 @@
         <dt><code>--enable-proxy</code></dt>
         <dd>Enable the proxy/gateway functionality provided by
           <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. The proxying capabilities for
-          <code>CONNECT</code>, <code>FTP</code> and <code>HTTP</code> are
-          provided by the seperate modules <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code>,
-          <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code> and <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>.
-          These three modules are also automatically enabled with
+          <code>AJP13</code>, <code>CONNECT</code>, <code>FTP</code>,
+          <code>HTTP</code> and the balancer are provided by the seperate
+          modules <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code>,
+          <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code>, <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>,
+          <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> and
+          <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>.
+          These five modules are also automatically enabled with
+          <code>--enable-proxy</code>.</dd>
+
+        <dt><code>--enable-proxy-ajp</code></dt>
+        <dd>Enable proxy support for <code>AJP13 (Apache JServ Protocol 1.3)</code>
+          request handling, which is provided by <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code>.
+          This module is an extension for the <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> module,
+          so you should also use <code>--enable-proxy</code>.</dd>
+
+        <dt><code>--enable-proxy-balancer</code></dt>
+        <dd>Enable load balancing support for the <code>AJP13</code>,
+          <code>FTP</code> and <code>HTTP</code> protocols, which is provided by
+          <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>. This module is an extension for the
+          <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> module, so you should also use
           <code>--enable-proxy</code>.</dd>
 
         <dt><code>--enable-proxy-connect</code></dt>
@@ -519,7 +535,7 @@
 
         <dt><code>--enable-proxy-ftp</code></dt>
         <dd>Enable proxy support for <code>FTP</code> requests, which is
-          provided by <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>.. This module
+          provided by <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>. This module
           is an extension for the <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> module, so you
           should also use <code>--enable-proxy</code>.</dd>
 
