@@ -21,7 +21,7 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_dav_fs</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_dav_fs.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_dav_fs.html">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/mod_dav_fs.html">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_dav_fs.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_dav_fs.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/mod_dav_fs.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>filesystem provider for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -86,7 +86,7 @@
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_dav_fs.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_dav_fs.html">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/mod_dav_fs.html">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_dav_fs.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_dav_fs.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/mod_dav_fs.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
