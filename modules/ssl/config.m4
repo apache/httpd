@@ -69,10 +69,8 @@ ssl_expr_scan.lo dnl
 ssl_scache.lo dnl
 ssl_scache_dbm.lo dnl
 ssl_scache_shmcb.lo dnl
-ssl_scache_shmht.lo dnl
 ssl_util.lo dnl
 ssl_util_ssl.lo dnl
-ssl_util_table.lo dnl
 "
 dnl #  hook module into the Autoconf mechanism (--enable-ssl option)
 APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , no, [
