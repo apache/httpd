@@ -1377,7 +1377,6 @@ static int hook_fixup(request_rec *r)
     char *cp;
     char *cp2;
     const char *ccp;
-    char *prefix;
     apr_size_t l;
     int rulestatus;
     int n;
@@ -1616,14 +1615,13 @@ static int hook_fixup(request_rec *r)
                  * document_root if it is prefix
                  */
                 if ((ccp = ap_document_root(r)) != NULL) {
-                    prefix = apr_pstrdup(r->pool, ccp);
-                    /* always NOT have a trailing slash */
-                    l = strlen(prefix);
-                    if (prefix[l-1] == '/') {
-                        prefix[l-1] = '\0';
-                        l--;
+                    /* strip trailing slash */
+                    l = strlen(ccp);
+                    if (ccp[l-1] == '/') {
+                        --l;
                     }
-                    if (strncmp(r->filename, prefix, l) == 0) {
+                    if (!strncmp(r->filename, ccp, l) &&
+                        r->filename[l] == '/') {
                         rewritelog(r, 2,
                                    "[per-dir %s] strip document_root "
                                    "prefix: %s -> %s",
