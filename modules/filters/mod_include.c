@@ -830,41 +830,42 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
                         "in parsed file %s";
                 }
                 if (error_fmt == NULL) {
-    		/* try to avoid recursive includes.  We do this by walking
-    		 * up the r->main list of subrequests, and at each level
-    		 * walking back through any internal redirects.  At each
-    		 * step, we compare the filenames and the URIs.  
-    		 *
-    		 * The filename comparison catches a recursive include
-    		 * with an ever-changing URL, eg.
-    		 * <!--#include virtual=
-    		 *      "$REQUEST_URI/$QUERY_STRING?$QUERY_STRING/x"-->
-    		 * which, although they would eventually be caught because
-    		 * we have a limit on the length of files, etc., can 
-    		 * recurse for a while.
-    		 *
-    		 * The URI comparison catches the case where the filename
-    		 * is changed while processing the request, so the 
-    		 * current name is never the same as any previous one.
-    		 * This can happen with "DocumentRoot /foo" when you
-    		 * request "/" on the server and it includes "/".
-    		 * This only applies to modules such as mod_dir that 
-    		 * (somewhat improperly) mess with r->filename outside 
-    		 * of a filename translation phase.
-    		 */
-    		int founddupe = 0;
+                    /* try to avoid recursive includes.  We do this by walking
+                     * up the r->main list of subrequests, and at each level
+                     * walking back through any internal redirects.  At each
+                     * step, we compare the filenames and the URIs.  
+                     *
+                     * The filename comparison catches a recursive include
+                     * with an ever-changing URL, eg.
+                     * <!--#include virtual=
+                     *      "$REQUEST_URI/$QUERY_STRING?$QUERY_STRING/x"-->
+                     * which, although they would eventually be caught because
+                     * we have a limit on the length of files, etc., can 
+                     * recurse for a while.
+                     *
+                     * The URI comparison catches the case where the filename
+                     * is changed while processing the request, so the 
+                     * current name is never the same as any previous one.
+                     * This can happen with "DocumentRoot /foo" when you
+                     * request "/" on the server and it includes "/".
+                     * This only applies to modules such as mod_dir that 
+                     * (somewhat improperly) mess with r->filename outside 
+                     * of a filename translation phase.
+                     */
+                    int founddupe = 0;
                     request_rec *p;
                     for (p = r; p != NULL && !founddupe; p = p->main) {
-    		    request_rec *q;
-    		    for (q = p; q != NULL; q = q->prev) {
-                        if ((q->filename && rr->filename && 
+                        request_rec *q;
+                        for (q = p; q != NULL; q = q->prev) {
+                            if ((q->filename && rr->filename && 
                                     (strcmp(q->filename, rr->filename) == 0)) ||
-                                (strcmp(q->uri, rr->uri) == 0)) {
-    			    founddupe = 1;
-    			    break;
-    			}
-    		    }
-    		}
+                                (strcmp(q->uri, rr->uri) == 0))
+                            {
+                                founddupe = 1;
+                                break;
+                            }
+                        }
+                    }
 
                     if (p != NULL) {
                         error_fmt = "Recursive include of \"%s\" "
