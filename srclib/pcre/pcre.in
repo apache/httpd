@@ -7,6 +7,9 @@
 #ifndef _PCRE_H
 #define _PCRE_H
 
+/* The file pcre.h is build by "configure". Do not edit it; instead
+make changes to pcre.in. */
+
 #define PCRE_MAJOR @PCRE_MAJOR@
 #define PCRE_MINOR @PCRE_MINOR@
 #define PCRE_DATE  @PCRE_DATE@
@@ -26,7 +29,6 @@
 /* Have to include stdlib.h in order to ensure that size_t is defined;
 it is needed here for malloc. */
 
-#include <sys/types.h>
 #include <stdlib.h>
 
 /* Allow for C++ users */

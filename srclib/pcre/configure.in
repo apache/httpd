@@ -17,22 +17,20 @@ dnl digits for minor numbers less than 10. There are unlikely to be
 dnl that many releases anyway.
 
 PCRE_MAJOR=3
-PCRE_MINOR=1
-PCRE_DATE=09-Feb-2000
+PCRE_MINOR=2
+PCRE_DATE=12-May-2000
 PCRE_VERSION=${PCRE_MAJOR}.${PCRE_MINOR}
 
 dnl Provide versioning information for libtool shared libraries that
 dnl are built by default on Unix systems.
 
-PCRE_LIB_VERSION=0:0:0
+PCRE_LIB_VERSION=0:1:0
 PCRE_POSIXLIB_VERSION=0:0:0
 
 dnl Checks for programs.
 
 AC_PROG_CC
-dnl OS/390 doesn't have ranlib and its make utility thinks RANLIB=:
-dnl is a rule, so set RANLIB to true if there is no ranlib.
-AC_CHECK_PROG(RANLIB, ranlib, ranlib, true)
+AC_PROG_RANLIB
 
 dnl Checks for header files.
 
@@ -46,27 +44,19 @@ AC_TYPE_SIZE_T
 
 dnl Checks for library functions.
 
-AC_CHECK_FUNCS(memmove strerror)
+AC_CHECK_FUNCS(bcopy memmove strerror)
 
 dnl Handle --enable-shared-libraries
 
-LIBTOOL=
-LIBSUFFIX=a
+LIBTOOL=./libtool
+LIBSUFFIX=la
 AC_ARG_ENABLE(shared,
-[  --enable-shared        build PCRE as a shared library],
-if test "$enableval" = "yes"; then
-  LIBTOOL=libtool
-  LIBSUFFIX=la
+[  --disable-shared        build PCRE as a static library],
+if test "$enableval" = "no"; then
+  LIBTOOL=
+  LIBSUFFIX=a
 fi
 )
-
-PLATFORM=`uname -s`
-
-case "$PLATFORM" in
-*OS/2*)
-  CFLAGS="$CFLAGS -Zexe"
-  ;;
-esac
 
 dnl "Export" these variables
 
