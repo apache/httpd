@@ -519,8 +519,12 @@ AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
 
     while (1) {
         if (APR_BRIGADE_EMPTY(b)) {
-            if (ap_get_brigade(c->input_filters, b, AP_MODE_BLOCKING) != APR_SUCCESS ||
+            if ((retval = ap_get_brigade(c->input_filters, b, AP_MODE_BLOCKING)) != APR_SUCCESS ||
                 APR_BRIGADE_EMPTY(b)) {
+                apr_brigade_destroy(b);
+                if (retval != APR_EOF && retval != APR_TIMEUP) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, retval, r, "ap_get_brigade() failed");
+                }
                 return -1;
             }
         }
@@ -530,10 +534,15 @@ AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
             continue;
         }
         retval = apr_bucket_read(e, &temp, &length, APR_BLOCK_READ);
-
         if (retval != APR_SUCCESS) {
-            total = ((length < 0) && (total == 0)) ? -1 : total;
-            break;
+            apr_brigade_destroy(b);
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, retval, r, "apr_bucket_read() failed");
+            if (total) {
+                break; /* report previously-read data to caller, do ap_xlate_proto_to_ascii() */
+            }
+            else {
+                return -1;
+            }
         }
 
         if ((looking_ahead) && (*temp != APR_ASCII_BLANK) && (*temp != APR_ASCII_TAB)) { 
@@ -552,12 +561,12 @@ AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
         else {
             /* input line was larger than the caller's buffer */
             apr_brigade_destroy(b); 
-            
+
             /* don't need to worry about req_cfg->bb being bogus.
              * the request is about to die, and ErrorDocument
              * redirects get a new req_cfg->bb
              */
-            
+
             return -1;
         }
         

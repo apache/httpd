@@ -1,5 +1,9 @@
 Changes with Apache 2.0.15-dev
 
+  *) Empty out the brigade shared by ap_getline()/ap_get_client_block()
+     on error exit from ap_getline().  Some other code got upset because
+     the wrong data was in the brigade.  [Greg Ames, Jeff Trawick]
+
   *) Handle ap_discard_request_body() being called more than once.
      [Greg Ames, Jeff Trawick]
 
