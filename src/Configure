@@ -23,6 +23,10 @@ while [ "x$1" != "x" ]; do
     shift 1; file=$1; shift 1
   elif [ "x$1" = "x-make" ] ; then
     shift 1; makefile_tmpl=$1; shift 1
+    if [ ! -r $makefile_tmpl ]; then
+      echo "$makefile_tmpl does not exist or is not readable."
+      exit 1
+    fi
   else
     echo "Ignoring command line option '$1'"
     shift 1
