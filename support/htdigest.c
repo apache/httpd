@@ -97,7 +97,7 @@
 
 #define MAX_STRING_LEN 256
 
-char *tn;
+apr_file_t *tfp = NULL;
 apr_pool_t *cntxt;
 #if APR_CHARSET_EBCDIC
 apr_xlate_t *to_ascii;
@@ -166,8 +166,8 @@ static void add_password(char *user, char *realm, apr_file_t *f)
     apr_password_get("Re-type new password: ", pwv, &len);
     if (strcmp(pwin, pwv) != 0) {
 	fprintf(stderr, "They don't match, sorry.\n");
-	if (tn) {
-	    apr_file_remove(tn, cntxt);
+	if (tfp) {
+	    apr_file_close(tfp);
 	}
 	exit(1);
     }
@@ -200,8 +200,9 @@ static void usage(void)
 static void interrupted(void)
 {
     fprintf(stderr, "Interrupted.\n");
-    if (tn)
-	apr_file_remove(tn, cntxt);
+    if (tfp) {
+        apr_file_close(tfp);
+    }
     exit(1);
 }
 
@@ -212,8 +213,9 @@ static void terminate(void)
 
 int main(int argc, char *argv[])
 {
-    apr_file_t *tfp = NULL, *f;
+    apr_file_t *f;
     apr_status_t rv;
+    char tn[] = "htdigest.tmp.XXXXXX";
     char user[MAX_STRING_LEN];
     char realm[MAX_STRING_LEN];
     char line[MAX_STRING_LEN];
@@ -241,12 +243,11 @@ int main(int argc, char *argv[])
     }
 #endif
     
-    tn = NULL;
     apr_signal(SIGINT, (void (*)(int)) interrupted);
     if (argc == 5) {
 	if (strcmp(argv[1], "-c"))
 	    usage();
-	rv = apr_file_open(&tfp, argv[2], APR_WRITE | APR_CREATE, -1, cntxt);
+	rv = apr_file_open(&f, argv[2], APR_WRITE | APR_CREATE, -1, cntxt);
         if (rv != APR_SUCCESS) {
             char errmsg[120];
 
@@ -256,15 +257,14 @@ int main(int argc, char *argv[])
 	    exit(1);
 	}
 	printf("Adding password for %s in realm %s.\n", argv[4], argv[3]);
-	add_password(argv[4], argv[3], tfp);
-	apr_file_close(tfp);
+	add_password(argv[4], argv[3], f);
+	apr_file_close(f);
 	exit(0);
     }
     else if (argc != 4)
 	usage();
 
-    tn = tmpnam(NULL);
-    if (apr_file_open(&tfp, tn, APR_WRITE | APR_CREATE, -1, cntxt)!= APR_SUCCESS) {
+    if (apr_file_mktemp(&tfp, tn, cntxt) != APR_SUCCESS) {
 	fprintf(stderr, "Could not open temp file.\n");
 	exit(1);
     }
@@ -302,13 +302,12 @@ int main(int argc, char *argv[])
 	add_password(user, realm, tfp);
     }
     apr_file_close(f);
-    apr_file_close(tfp);
 #if defined(OS2) || defined(WIN32)
     sprintf(command, "copy \"%s\" \"%s\"", tn, argv[1]);
 #else
     sprintf(command, "cp %s %s", tn, argv[1]);
 #endif
     system(command);
-    apr_file_remove(tn, cntxt);
+    apr_file_close(tfp);
     return 0;
 }
