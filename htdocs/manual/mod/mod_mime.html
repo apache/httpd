@@ -215,7 +215,7 @@ multiple extensions</A>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AddHandler <EM>handler-name extension extension...</EM><BR>
+><STRONG>Syntax:</STRONG></A> AddHandler <EM>handler-name extension [handler-name extension ...]</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -238,7 +238,7 @@ multiple extensions</A>
 ><STRONG>Compatibility:</STRONG></A> AddHandler is only available in Apache
 1.1 and later<P>
 
-<P>AddHandler maps the filename extensions <EM>extension</EM> to the
+<P>AddHandler maps one or more times a given filename extension <EM>extension</EM> to the
 <A HREF="../handler.html">handler</A> <EM>handler-name</EM>.  This
 mapping is added to any already in force, overriding any mappings that
 already exist for the same <EM>extension</EM>.
@@ -265,7 +265,7 @@ multiple extensions</A>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AddLanguage <EM>MIME-lang extension extension...</EM><BR>
+><STRONG>Syntax:</STRONG></A> AddLanguage <EM>MIME-lang extension [MIME-lang extension ...]</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -284,7 +284,7 @@ multiple extensions</A>
 ><STRONG>Module:</STRONG></A> mod_mime
 
 <P>
-The AddLanguage directive maps the given filename extensions to the
+The AddLanguage directive maps one or more times a given filename extension to the
 specified content language. <EM>MIME-lang</EM> is the MIME language of
 filenames containing <EM>extension</EM>.  This mapping is added to any
 already in force, overriding any mappings that already exist for the
@@ -334,7 +334,7 @@ HREF="./mod_negotiation.html">mod_negotiation</A>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AddType <EM>MIME-type extension extension...</EM><BR>
+><STRONG>Syntax:</STRONG></A> AddType <EM>MIME-type extension [MIME-type extension ...]</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -352,7 +352,7 @@ HREF="./mod_negotiation.html">mod_negotiation</A>
  REL="Help"
 ><STRONG>Module:</STRONG></A> mod_mime<P>
 
-The AddType directive maps the given filename extensions onto the
+The AddType directive maps one or more times a given filename extensions onto the
 specified content type. <EM>MIME-enc</EM> is the MIME type to use for
 filenames containing <EM>extension</EM>.  This mapping is added to any
 already in force, overriding any mappings that already exist for the
