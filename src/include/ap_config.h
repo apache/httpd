@@ -120,6 +120,7 @@ typedef int rlim_t;
 #define HAVE_SYS_SELECT_H
 #define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
+typedef int rlim_t;
 
 #elif defined(ULTRIX)
 #define HAVE_GMTOFF
