@@ -124,6 +124,17 @@ static int is_scriptaliased(request_rec *r)
 
 #define SHELL_PATH "/bin/sh"
 
+/* DEFAULT_CGID_LISTENBACKLOG controls the max depth on the unix socket's
+ * pending connection queue.  If a bunch of cgi requests arrive at about
+ * the same time, connections from httpd threads/processes will back up
+ * in the queue while the cgid process slowly forks off a child to process
+ * each connection on the unix socket.  If the queue is too short, the
+ * httpd process will get ECONNREFUSED when trying to connect.
+ */
+#ifndef DEFAULT_CGID_LISTENBACKLOG
+#define DEFAULT_CGID_LISTENBACKLOG 100
+#endif
+
 typedef struct { 
     const char *sockname;
     const char *logname; 
@@ -531,9 +542,8 @@ static int cgid_server(void *data)
                      sconf->sockname); 
         return errno;
     } 
-    /* Most implementations silently enforce a value of 5 anyway.  
-     * This way, it'll work the same everywhere. */
-    if (listen(sd, 5) < 0) {
+
+    if (listen(sd, DEFAULT_CGID_LISTENBACKLOG) < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
                      "Couldn't listen on unix domain socket"); 
         return errno;
