@@ -27,7 +27,7 @@ extern module action_module;
 extern module setenvif_module;
 extern module isapi_module;
 
-module AP_DECLARE_DATA *ap_prelinked_modules[] = {
+AP_DECLARE_DATA module *ap_prelinked_modules[] = {
   &core_module,
   &mpm_winnt_module,
   &so_module,
@@ -50,7 +50,7 @@ module AP_DECLARE_DATA *ap_prelinked_modules[] = {
   &isapi_module,
   NULL
 };
-module *ap_preloaded_modules[] = {
+AP_DECLARE_DATA module *ap_preloaded_modules[] = {
   &core_module,
   &mpm_winnt_module,
   &so_module,
