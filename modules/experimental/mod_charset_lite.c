@@ -291,6 +291,21 @@ static int find_code_page(request_rec *r)
  */
              
     if (strncasecmp(mime_type, "text/", 5) &&
+#ifdef CHARSET_EBCDIC
+        /* On an EBCDIC machine, be willing to translate mod_autoindex-
+         * generated output.  Otherwise, it doesn't look too cool.
+         *
+         * XXX This isn't a perfect fix because this doesn't trigger us
+         * to convert from the charset of the source code to ASCII.  The
+         * general solution seems to be to allow a generator to set an
+         * indicator in the r specifying that the body is coded in the
+         * implementation character set (i.e., the charset of the source
+         * code).  This would get several different types of documents
+         * translated properly: mod_autoindex output, mod_status output,
+         * mod_info output, hard-coded error documents, etc.
+         */
+        strcmp(mime_type, DIR_MAGIC_TYPE) &&
+#endif
         strncasecmp(mime_type, "message/", 8)) {
         if (dc->debug >= DBGLVL_GORY) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
