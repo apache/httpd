@@ -412,7 +412,7 @@ int main(int argc, const char * const argv[])
     apr_file_open_stderr(&errfile, pool);
 
 #if APR_CHARSET_EBCDIC
-    rv = apr_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, pool);
+    rv = apr_xlate_open(&to_ascii, "ISO-8859-1", APR_DEFAULT_CHARSET, pool);
     if (rv) {
         apr_file_printf(errfile, "apr_xlate_open(to ASCII)->%d\n", rv);
         exit(1);

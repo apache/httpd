@@ -199,7 +199,7 @@ int main(int argc, const char * const argv[])
     apr_file_open_stderr(&errfile, cntxt);
 
 #if APR_CHARSET_EBCDIC
-    rv = apr_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, cntxt);
+    rv = apr_xlate_open(&to_ascii, "ISO-8859-1", APR_DEFAULT_CHARSET, cntxt);
     if (rv) {
         apr_file_printf(errfile, "apr_xlate_open(): %s (%d)\n",
                 apr_strerror(rv, line, sizeof(line)), rv);
