@@ -331,6 +331,7 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     if (!tmp_obj) {
         apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), obj);
         sconf->object_cnt++;
+        sconf->cache_size += len;
     }
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
@@ -408,6 +409,7 @@ static int remove_entity(cache_handle_t *h)
         mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
         apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
         sconf->object_cnt--;
+        sconf->cache_size -= mobj->m_len;
         if (mobj->refcount) {
             mobj->cleanup = 1;
         }
@@ -508,6 +510,7 @@ static int remove_url(const char *type, const char *key)
         mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
         apr_hash_set(sconf->cacheht, key, APR_HASH_KEY_STRING, NULL);
         sconf->object_cnt--;
+        sconf->cache_size -= mobj->m_len;
         if (mobj->refcount) {
             mobj->cleanup = 1;
         }
