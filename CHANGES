@@ -1,5 +1,10 @@
 Changes with Apache 2.0.34-dev
 
+  *) Change configure so that Solaris 8 and above have 
+     SINGLE_LISTEN_UNSERIALIZED_ACCEPT defined by default.
+     according to sun people solaris 8+ doesn't have a thundering
+     herd problem [Ian Holsman]
+
   *) Allow URIs specifying CGI scripts to include '/' at the end
      (e.g., /cgi-bin/printenv/) on AIX and Solaris (and other OSs
      which ignore '/' at the end of the names of non-directories).
