@@ -168,11 +168,6 @@ extern "C" {
 #define SERVER_CONFIG_FILE "conf/httpd.conf"
 #endif
 
-/* Whether we should enable rfc1413 identity checking */
-#ifndef DEFAULT_RFC1413
-#define DEFAULT_RFC1413 0
-#endif
-
 /* The default path for CGI scripts if none is currently set */
 #ifndef DEFAULT_PATH
 #define DEFAULT_PATH "/bin:/usr/bin:/usr/ucb:/usr/bsd:/usr/local/bin"

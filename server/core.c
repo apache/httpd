@@ -79,7 +79,6 @@
 #include "http_vhost.h"
 #include "http_main.h"     /* For the default_handler below... */
 #include "http_log.h"
-#include "rfc1413.h"
 #include "util_md5.h"
 #include "http_connection.h"
 #include "apr_buckets.h"
@@ -144,7 +143,6 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->use_canonical_name = USE_CANONICAL_NAME_UNSET;
 
     conf->hostname_lookups = HOSTNAME_LOOKUP_UNSET;
-    conf->do_rfc1413 = DEFAULT_RFC1413 | 2; /* set bit 1 to indicate default */
     conf->satisfy = SATISFY_NOSPEC;
 
 #ifdef RLIMIT_CPU
@@ -321,10 +319,6 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 
     if (new->hostname_lookups != HOSTNAME_LOOKUP_UNSET) {
         conf->hostname_lookups = new->hostname_lookups;
-    }
-
-    if ((new->do_rfc1413 & 2) == 0) {
-        conf->do_rfc1413 = new->do_rfc1413;
     }
 
     if ((new->content_md5 & 2) == 0) {
@@ -827,24 +821,22 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
     }
 }
 
+/*
+ * Optional function coming from mod_ident, used for looking up ident user
+ */
+static APR_OPTIONAL_FN_TYPE(ap_ident_lookup) *ident_lookup;
+
 AP_DECLARE(const char *) ap_get_remote_logname(request_rec *r)
 {
-    core_dir_config *dir_conf;
-
     if (r->connection->remote_logname != NULL) {
         return r->connection->remote_logname;
     }
 
-    /* If we haven't checked the identity, and we want to */
-    dir_conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                       &core_module);
+    if (ident_lookup) {
+        return ident_lookup(r);
+    }
 
-    if (dir_conf->do_rfc1413 & 1) {
-        return ap_rfc1413(r->connection, r->server);
-    }
-    else {
-        return NULL;
-    }
+    return NULL;
 }
 
 /* There are two options regarding what the "name" of a server is.  The
@@ -2074,19 +2066,6 @@ static const char *set_timeout(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-static const char *set_idcheck(cmd_parms *cmd, void *d_, int arg)
-{
-    core_dir_config *d = d_;
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
-
-    if (err != NULL) {
-        return err;
-    }
-
-    d->do_rfc1413 = arg != 0;
-    return NULL;
-}
-
 static const char *set_hostname_lookups(cmd_parms *cmd, void *d_,
                                         const char *arg)
 {
@@ -3000,8 +2979,6 @@ AP_INIT_TAKE1("ServerPath", set_serverpath, NULL, RSRC_CONF,
   "The pathname the server can be reached at"),
 AP_INIT_TAKE1("Timeout", set_timeout, NULL, RSRC_CONF,
   "Timeout duration (sec)"),
-AP_INIT_FLAG("IdentityCheck", set_idcheck, NULL, RSRC_CONF|ACCESS_CONF,
-  "Enable identd (RFC 1413) user lookups - SLOW"),
 AP_INIT_FLAG("ContentDigest", set_content_md5, NULL, OR_OPTIONS,
   "whether or not to send a Content-MD5 header with each request"),
 AP_INIT_TAKE1("UseCanonicalName", set_use_canonical_name, NULL,
@@ -4054,6 +4031,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
+    ident_lookup = APR_RETRIEVE_OPTIONAL_FN(ap_ident_lookup);
 
     ap_set_version(pconf);
     ap_setup_make_content_type(pconf);
