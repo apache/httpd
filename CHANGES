@@ -1,5 +1,10 @@
 Changes with Apache 2.0.43
 
+  *) Fix a core dump in mod_cache when it attemtped to store uncopyable
+     buckets. This happened, for instance, when a file to be cached
+     contained SSI tags to execute a CGI script (passed as a pipe
+     bucket). [Paul J. Reder]
+
   *) Ensure that output already available is flushed to the network
      when the content-length filter realizes that no new output will
      be available for a while.  This helps some streaming CGIs as
