@@ -53,7 +53,8 @@
 <name>ScriptSock</name>
 <syntax>ScriptSock <em>file-path</em></syntax>
 <default>ScriptSock logs/cgisock</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 
 <usage>
     <p>This directive sets the name of the socket to use for
