@@ -67,7 +67,7 @@ extern "C" {
  * called before any config is read
  * @param p Pool to allocate out of
  */
-void ap_init_vhost_config(apr_pool_t *p);
+AP_DECLARE(void) ap_init_vhost_config(apr_pool_t *p);
 
 /**
  * called after the config has been read to compile the tables needed to do 
@@ -94,14 +94,14 @@ const char *ap_set_name_virtual_host (cmd_parms *cmd, void *dummy,
  * given an ip address only, give our best guess as to what vhost it is 
  * @param conn The current connection
  */
-void ap_update_vhost_given_ip(conn_rec *conn);
+AP_DECLARE(void) ap_update_vhost_given_ip(conn_rec *conn);
 
 /**
  * ap_update_vhost_given_ip is never enough, and this is always called after 
  * the headers have been read.  It may change r->server.
  * @param r The current request
  */
-void ap_update_vhost_from_headers(request_rec *r);
+AP_DECLARE(void) ap_update_vhost_from_headers(request_rec *r);
 
 /**
  * Match the host in the header with the hostname of the server for this

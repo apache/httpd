@@ -161,7 +161,7 @@ static server_addr_rec **name_vhost_list_tail;
 
 
 /* called at the beginning of the config */
-void ap_init_vhost_config(apr_pool_t *p)
+AP_DECLARE(void) ap_init_vhost_config(apr_pool_t *p)
 {
     memset(iphash_table, 0, sizeof(iphash_table));
     default_list = NULL;
@@ -997,7 +997,7 @@ static void check_serverpath(request_rec *r)
 }
 
 
-void ap_update_vhost_from_headers(request_rec *r)
+AP_DECLARE(void) ap_update_vhost_from_headers(request_rec *r)
 {
     /* must set this for HTTP/1.1 support */
     if (r->hostname || (r->hostname = apr_table_get(r->headers_in, "Host"))) {
@@ -1018,7 +1018,7 @@ void ap_update_vhost_from_headers(request_rec *r)
 /* Called for a new connection which has a known local_addr.  Note that the
  * new connection is assumed to have conn->server == main server.
  */
-void ap_update_vhost_given_ip(conn_rec *conn)
+AP_DECLARE(void) ap_update_vhost_given_ip(conn_rec *conn)
 {
     ipaddr_chain *trav;
     apr_port_t port;
