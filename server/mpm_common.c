@@ -269,6 +269,7 @@ int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
             }
         }
     }
+    return 0;
 }
 #endif /* AP_MPM_WANT_PROCESS_CHILD_STATUS */
 
