@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.26 (outdated: 1.29) -->
+<!-- English Revision: 1.29 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -215,6 +215,15 @@
     をログ収集します。
     "%!200,304,302{Referer}i" は普通のステータスを<em>返さなかった</em>
     すべてのリクエストで <code>Referer:</code> をログ収集します。</p>
+
+    <p>修飾子 "&lt;" と "&gt;" は内部リダイレクトされたリクエストのログに
+    元のリクエストか最終的なリクエストのどちらを使用するかを
+    指定するために使います。デフォルトでは、<code>%</code> ディレクティブの
+    <code>%s, %U, %T, %D, %r</code> は元のリクエストを、他は最終的なリクエストを
+    使用します。例えば、リクエストの最終ステータスを記録するには
+    <code>%&gt;s</code> を、内部的に認証されていないリソースへリダイレクトされた
+    リクエストで元のリクエストで認証されたユーザを記録するためには
+    <code>%&lt;u</code> を使うことができます。</p>
 
     <p>httpd 2.0 の 1.3.25 より前のバージョンでは、
     <code>%...r</code>, <code>%...i</code>,
