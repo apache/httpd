@@ -90,7 +90,7 @@
 
 typedef struct {
     ap_table_t *action_types;       /* Added with Action... */
-    char *scripted[METHODS];   /* Added with Script... */
+    const char *scripted[METHODS];   /* Added with Script... */
 } action_dir_config;
 
 module action_module;
@@ -124,16 +124,18 @@ static void *merge_action_dir_configs(ap_pool_t *p, void *basev, void *addv)
     return new;
 }
 
-static const char *add_action(cmd_parms *cmd, action_dir_config * m, char *type,
-			      char *script)
+static const char *add_action(cmd_parms *cmd, void *m_v, 
+                              const char *type, const char *script)
 {
+    action_dir_config *m = (action_dir_config *)m_v;
     ap_table_setn(m->action_types, type, script);
     return NULL;
 }
 
-static const char *set_script(cmd_parms *cmd, action_dir_config * m,
-                              char *method, char *script)
+static const char *set_script(cmd_parms *cmd, void *m_v,
+                              const char *method, const char *script)
 {
+    action_dir_config *m = (action_dir_config *)m_v;    
     int methnum;
 
     methnum = ap_method_number_of(method);
@@ -149,10 +151,10 @@ static const char *set_script(cmd_parms *cmd, action_dir_config * m,
 
 static const command_rec action_cmds[] =
 {
-    {"Action", add_action, NULL, OR_FILEINFO, TAKE2,
-     "a media type followed by a script name"},
-    {"Script", set_script, NULL, ACCESS_CONF | RSRC_CONF, TAKE2,
-     "a method followed by a script name"},
+    AP_INIT_TAKE2("Action", add_action, NULL, OR_FILEINFO,
+                  "a media type followed by a script name"),
+    AP_INIT_TAKE2("Script", set_script, NULL, ACCESS_CONF | RSRC_CONF,
+                  "a method followed by a script name"),
     {NULL}
 };
 
