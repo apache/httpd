@@ -326,7 +326,7 @@
      this way implicitly enables them itself). 
      
          Note 1: The --enable-shared option DOES NOT AUTOMATICALLY enable the
-                 module because there are variants like `--enable-shared=all'
+                 module because there are variants like `--enable-shared=max'
                  which should not imply `--enable-module=all'.  
 
          Note 2: Per default the DSO mechanism is globally disabled, i.e. no
