@@ -467,6 +467,7 @@ Result:
           from the following list: 
 
           <table>
+          
             <tr>
               <th>HTTP headers:</th> <th>connection &amp; request:</th> <th />
 	    </tr>

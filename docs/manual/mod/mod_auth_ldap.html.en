@@ -167,6 +167,7 @@ for HTTP Basic authentication.</td></tr>
     phase</p>
 
     <table>
+      
       <tr>
         <td><code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code></td>
 
@@ -226,6 +227,7 @@ for HTTP Basic authentication.</td></tr>
     compare phase:</p>
 
     <table>
+      
       <tr>
         <td><code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code> </td>
 

@@ -66,8 +66,9 @@
          "<code>&gt;</code>" indicates a dependency upon the previous
          non-"<code>&gt;</code>" line</td></tr>
 <tr class="odd"><td>2</td>
-        <td>type of data to match 
+        <td><p>type of data to match</p>
         <table class="bordered">
+        
         <tr><td><code>byte</code></td>
             <td>single character</td></tr>
         <tr><td><code>short</code></td>
