@@ -104,7 +104,7 @@ Changes with Apache 2.0.47
 
   *) SECURITY [CAN-2003-0253]: Fixed a bug in prefork MPM causing
      temporary denial of service when accept() on a rarely accessed port
-     returns certain errors.  Reported by Saheed Akhtar 
+     returns certain errors.  Reported by Saheed Akhtar
      <S.Akhtar@talis.com>.  [Jeff Trawick]
 
   *) SECURITY [CAN-2003-0254]: Fixed a bug in ftp proxy causing denial
@@ -117,7 +117,7 @@ Changes with Apache 2.0.47
      limits of subsequent internal redirects and nested subrequests, after
      which the request will be aborted.  PR 19753 (and probably others).
      [William Rowe, Jeff Trawick, André Malo]
-		      
+
   *) core_output_filter: don't split the brigade after a FLUSH bucket if
      it's the last bucket.  This prevents creating unneccessary empty
      brigades which may not be destroyed until the end of a keepalive
