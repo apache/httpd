@@ -6,7 +6,8 @@
 #include "http_log.h"
 
 /* Returns TRUE if the path is real, FALSE if it is PATH_INFO */
-static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon, const char *szInFile)
+static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon,
+				   const char *szInFile)
 {
     char buf[HUGE_STRING_LEN];
     int n;
@@ -27,13 +28,14 @@ static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon, const char *s
     ap_assert(n < sizeof buf);
 
     /*
-     * There is an implicit assumption that szInFile will contain a '\'.  If this 
-     * is not true (as in the case of <Directory *> or <File .htaccess>) we would 
-     * assert in some of the code below.  Therefore, if we don't get any '\' in   
-     * the file name, then use the file name we get from GetFullPathName, because 
-     * it will have at least one '\'.  If there is no '\' in szInFile, it must 
-     * just be a file name, so it should be valid to use the name from GetFullPathName.
-     * Be sure to adjust the 's' variable so the rest of the code functions normally.
+     * There is an implicit assumption that szInFile will contain a '\'.
+     * If this is not true (as in the case of <Directory *> or
+     * <File .htaccess>) we would assert in some of the code below.  Therefore,
+     * if we don't get any '\' in the file name, then use the file name we get
+     * from GetFullPathName, because it will have at least one '\'.  If there
+     * is no '\' in szInFile, it must just be a file name, so it should be
+     * valid to use the name from GetFullPathName.  Be sure to adjust the
+     * 's' variable so the rest of the code functions normally.
      */
     if (!s) {
         szFile = buf;
@@ -59,7 +61,8 @@ static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon, const char *s
     if (szFilePart < buf+3) {
 	ap_assert(strlen(buf) < nCanon);
         strcpy(szCanon, buf);
-	if(szCanon[0] != '\\') { /* a \ at the start means it is UNC, otherwise it is x: */
+	/* a \ at the start means it is UNC, otherwise it is x: */
+	if(szCanon[0] != '\\') {
 	    ap_assert(ap_isalpha(szCanon[0]));
 	    ap_assert(szCanon[1] == ':');
 	    szCanon[2] = '/';
@@ -84,7 +87,7 @@ static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon, const char *s
 	memcpy(b3,szFile,s-szFile);
 	b3[s-szFile]='\0';
 
-//        szFilePart[-1]='\0';
+/*        szFilePart[-1]='\0'; */
         sub_canonical_filename(b2, sizeof b2, b3);
 
 	ap_assert(strlen(b2)+1 < nCanon);
@@ -127,15 +130,16 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
     ap_assert(strlen(szFile) < sizeof b2);
 
     /* Eliminate directories consisting of three or more dots.
-       These act like ".." but are not detected by other machinery.
-       Also get rid of trailing .s on any path component, which are ignored by the filesystem.
-       Simultaneously, rewrite / to \.
-       This is a bit of a kludge - Ben.
-    */
+     * These act like ".." but are not detected by other machinery.
+     * Also get rid of trailing .s on any path component, which are ignored
+     * by the filesystem.  Simultaneously, rewrite / to \.
+     * This is a bit of a kludge - Ben.
+     */
     if (strlen(szFile) == 1) {
         /*
-         *  If the file is only one char (like in the case of / or .) then just pass
-         *  that through to sub_canonical_filename.  Convert a '/' to '\\' if necessary.
+         * If the file is only one char (like in the case of / or .) then
+	 * just pass that through to sub_canonical_filename.  Convert a
+	 * '/' to '\\' if necessary.
          */
         if (szFile[0] == '/')
             b2[0] = '\\';
@@ -208,7 +212,8 @@ API_EXPORT(int) os_stat(const char *szPath, struct stat *pStat)
 		*s='\\';
 		++nSlashes;
 	    }
-	if(nSlashes == 3)   /* then we need to add one more to get \\machine\share\ */
+	/* then we need to add one more to get \\machine\share\ */
+	if(nSlashes == 3)
 	    *s++='\\';
 	*s='\0';
 	return stat(buf,pStat);
@@ -234,7 +239,8 @@ API_EXPORT(int) os_stat(const char *szPath, struct stat *pStat)
  */
 
 #undef _spawnv
-API_EXPORT(int) os_spawnv(int mode, const char *cmdname, const char *const *argv)
+API_EXPORT(int) os_spawnv(int mode, const char *cmdname,
+			  const char *const *argv)
 {
     int n;
     char **aszArgs;
@@ -273,7 +279,8 @@ API_EXPORT(int) os_spawnv(int mode, const char *cmdname, const char *const *argv
 }
 
 #undef _spawnve
-API_EXPORT(int) os_spawnve(int mode, const char *cmdname, const char *const *argv, const char *const *envp)
+API_EXPORT(int) os_spawnve(int mode, const char *cmdname,
+			   const char *const *argv, const char *const *envp)
 {
     int n;
     char **aszArgs;
