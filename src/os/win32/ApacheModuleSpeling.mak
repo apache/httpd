@@ -62,9 +62,9 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\include" /D "WIN32" /D "NDEBUG" /D\
- "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleSpeling.pch" /YX /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\include" /D "NDEBUG" /D "WIN32" /D\
+ "_WINDOWS" /D "SHARED_MODULE" /Fp"$(INTDIR)\ApacheModuleSpeling.pch" /YX\
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleSpelingR/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
@@ -117,9 +117,9 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\include" /D "WIN32" /D\
- "_DEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleSpeling.pch" /YX\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\include" /D "_DEBUG" /D\
+ "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fp"$(INTDIR)\ApacheModuleSpeling.pch"\
+ /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleSpelingD/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
@@ -177,16 +177,21 @@ LINK32_OBJS= \
 !IF "$(CFG)" == "ApacheModuleSpeling - Win32 Release" || "$(CFG)" ==\
  "ApacheModuleSpeling - Win32 Debug"
 SOURCE=..\..\modules\standard\mod_speling.c
+
+!IF  "$(CFG)" == "ApacheModuleSpeling - Win32 Release"
+
 DEP_CPP_MOD_S=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
+	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\httpd.h"\
+	"..\..\include\util_uri.h"\
 	".\os.h"\
 	".\readdir.h"\
 	{$(INCLUDE)}"sys\stat.h"\
@@ -201,6 +206,30 @@ NODEP_CPP_MOD_S=\
 "$(INTDIR)\mod_speling.obj" : $(SOURCE) $(DEP_CPP_MOD_S) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
+
+!ELSEIF  "$(CFG)" == "ApacheModuleSpeling - Win32 Debug"
+
+DEP_CPP_MOD_S=\
+	"..\..\include\alloc.h"\
+	"..\..\include\ap.h"\
+	"..\..\include\buff.h"\
+	"..\..\include\conf.h"\
+	"..\..\include\hide.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\include\http_config.h"\
+	"..\..\include\http_core.h"\
+	"..\..\include\http_log.h"\
+	"..\..\include\httpd.h"\
+	"..\..\include\util_uri.h"\
+	".\os.h"\
+	".\readdir.h"\
+	
+
+"$(INTDIR)\mod_speling.obj" : $(SOURCE) $(DEP_CPP_MOD_S) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
 
 
 !ENDIF 

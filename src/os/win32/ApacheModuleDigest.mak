@@ -62,9 +62,9 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\include" /D "WIN32" /D "NDEBUG" /D\
- "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleDigest.pch" /YX /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\include" /D "NDEBUG" /D "WIN32" /D\
+ "_WINDOWS" /D "SHARED_MODULE" /Fp"$(INTDIR)\ApacheModuleDigest.pch" /YX\
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleDigestR/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
@@ -117,9 +117,9 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\include" /D "WIN32" /D\
- "_DEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleDigest.pch" /YX\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\include" /D "_DEBUG" /D\
+ "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fp"$(INTDIR)\ApacheModuleDigest.pch"\
+ /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleDigestD/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
@@ -185,6 +185,7 @@ DEP_CPP_MOD_D=\
 	"..\..\include\ap.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
+	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_core.h"\
@@ -193,8 +194,16 @@ DEP_CPP_MOD_D=\
 	"..\..\include\httpd.h"\
 	"..\..\include\md5.h"\
 	"..\..\include\util_md5.h"\
+	"..\..\include\util_uri.h"\
 	".\os.h"\
 	".\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_D=\
+	"..\..\include\ebcdic.h"\
+	"..\..\include\os.h"\
+	"..\..\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_digest.obj" : $(SOURCE) $(DEP_CPP_MOD_D) "$(INTDIR)"
@@ -208,6 +217,7 @@ DEP_CPP_MOD_D=\
 	"..\..\include\ap.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
+	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_core.h"\
@@ -216,15 +226,9 @@ DEP_CPP_MOD_D=\
 	"..\..\include\httpd.h"\
 	"..\..\include\md5.h"\
 	"..\..\include\util_md5.h"\
+	"..\..\include\util_uri.h"\
 	".\os.h"\
 	".\readdir.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_MOD_D=\
-	"..\..\include\ebcdic.h"\
-	"..\..\include\os.h"\
-	"..\..\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_digest.obj" : $(SOURCE) $(DEP_CPP_MOD_D) "$(INTDIR)"

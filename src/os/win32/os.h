@@ -40,12 +40,14 @@ Define export types. API_EXPORT_NONSTD is a nasty hack to avoid having to declar
 every configuration function as __stdcall.
 */
 
-#define API_EXPORT(type)    __declspec(dllexport) type __stdcall
-#define API_EXPORT_NONSTD(type)    __declspec(dllexport) type
-#ifdef IS_MODULE
+#ifdef SHARED_MODULE
 # define API_VAR_EXPORT		__declspec(dllimport)
+# define API_EXPORT(type)    __declspec(dllimport) type __stdcall
+# define API_EXPORT_NONSTD(type)    __declspec(dllimport) type
 #else
 # define API_VAR_EXPORT		__declspec(dllexport)
+# define API_EXPORT(type)    __declspec(dllexport) type __stdcall
+# define API_EXPORT_NONSTD(type)    __declspec(dllexport) type
 #endif
 #define MODULE_VAR_EXPORT   __declspec(dllexport)
 

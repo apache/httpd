@@ -64,8 +64,9 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\include" /D "NDEBUG" /D "WIN32" /D\
- "_WINDOWS" /D "NO_DBM_REWRITEMAP" /Fp"$(INTDIR)\ApacheModuleRewrite.pch" /YX\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+ "_WINDOWS" /D "NO_DBM_REWRITEMAP" /D "SHARED_MODULE"\
+ /Fp"$(INTDIR)\ApacheModuleRewrite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\"\
+ /FD /c 
 CPP_OBJS=.\ApacheModuleRewriteR/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
@@ -122,7 +123,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\include" /D "_DEBUG" /D\
- "WIN32" /D "_WINDOWS" /D "NO_DBM_REWRITEMAP"\
+ "WIN32" /D "_WINDOWS" /D "NO_DBM_REWRITEMAP" /D "SHARED_MODULE"\
  /Fp"$(INTDIR)\ApacheModuleRewrite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\"\
  /FD /c 
 CPP_OBJS=.\ApacheModuleRewriteD/
@@ -192,26 +193,16 @@ DEP_CPP_MOD_R=\
 	"..\..\include\ap.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
-	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_request.h"\
-	"..\..\include\http_vhost.h"\
 	"..\..\include\httpd.h"\
-	"..\..\include\util_uri.h"\
 	"..\..\modules\standard\mod_rewrite.h"\
 	".\os.h"\
+	".\passwd.h"\
 	".\readdir.h"\
-	{$(INCLUDE)}"sys\locking.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_MOD_R=\
-	"..\..\include\ebcdic.h"\
-	"..\..\include\os.h"\
-	"..\..\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_rewrite.obj" : $(SOURCE) $(DEP_CPP_MOD_R) "$(INTDIR)"
@@ -225,6 +216,7 @@ DEP_CPP_MOD_R=\
 	"..\..\include\ap.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
+	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_core.h"\

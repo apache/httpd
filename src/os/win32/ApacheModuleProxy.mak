@@ -67,9 +67,9 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\include" /D "WIN32" /D "NDEBUG" /D\
- "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleProxy.pch" /YX /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\include" /D "NDEBUG" /D "WIN32" /D\
+ "_WINDOWS" /D "SHARED_MODULE" /Fp"$(INTDIR)\ApacheModuleProxy.pch" /YX\
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
@@ -132,9 +132,9 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\include" /D "WIN32" /D\
- "_DEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleProxy.pch" /YX\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MDd /W4 /Gm /GX /Zi /Od /I "..\..\include" /D "_DEBUG" /D\
+ "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fp"$(INTDIR)\ApacheModuleProxy.pch"\
+ /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
@@ -237,6 +237,7 @@ DEP_CPP_MOD_P=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
+	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_log.h"\
@@ -299,6 +300,7 @@ DEP_CPP_PROXY=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
+	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_log.h"\
@@ -360,6 +362,7 @@ DEP_CPP_PROXY_=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
+	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_log.h"\
@@ -418,6 +421,7 @@ DEP_CPP_PROXY_F=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
+	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_main.h"\
@@ -477,6 +481,7 @@ DEP_CPP_PROXY_H=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
+	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_core.h"\
@@ -539,6 +544,7 @@ DEP_CPP_PROXY_U=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
+	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_log.h"\

@@ -1,5 +1,10 @@
 Changes with Apache 1.3b6
 
+  *) Change Win32 IS_MODULE to SHARED_MODULE to match Unix' method of
+     indicating that a module is being compiled for dynamic loading. Also
+     remove #define IS_MODULE from modules and add SHARED_MODULE define
+     to the mak/dsp files. [Alexei Kosut]
+
   *) Reduce logging level of "normal" warning messages to APLOG_INFO,
      since we are now logging APLOG_WARNING by default. [Roy Fielding]
 
