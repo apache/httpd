@@ -716,6 +716,8 @@ ServerSignature On
     AddLanguage sv .se
     AddLanguage cz .cz
     AddLanguage ru .ru
+    AddLanguage tw .tw
+    AddCharset Big5         .Big5
     AddCharset WINDOWS-1251 .cp-1251
     AddCharset CP866        .cp866
     AddCharset ISO-8859-5   .iso-ru
@@ -731,7 +733,7 @@ ServerSignature On
     # more or less alphabetized them here. You probably want to change this.
     #
     <IfModule mod_negotiation.c>
-        LanguagePriority en da nl et fr de el it ja kr no pl pt pt-br ru ltz ca es sv
+        LanguagePriority en da nl et fr de el it ja kr no pl pt pt-br ru ltz ca es sv tw
     </IfModule>
 
     #
