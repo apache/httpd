@@ -388,6 +388,11 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.50
 
+  *) SECURITY: CAN-2004-0493 (cve.mitre.org)
+     Close a denial of service vulnerability identified by Georgi
+     Guninski which could lead to memory exhaustion with certain
+     input data.  [Jeff Trawick]
+
   *) mod_alias now emits a warning if it detects overlapping *Alias*
      directives.  [André Malo]
 
