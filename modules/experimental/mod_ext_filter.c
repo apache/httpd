@@ -108,7 +108,7 @@ typedef struct ef_ctx_t {
 #endif
 } ef_ctx_t;
 
-module ext_filter_module;
+module AP_MODULE_DECLARE_DATA ext_filter_module;
 
 static apr_status_t ef_output_filter(ap_filter_t *, apr_bucket_brigade *);
 
@@ -782,7 +782,7 @@ static int ef_input_filter(ap_filter_t *f, apr_bucket_brigade *bb,
 }
 #endif
 
-module ext_filter_module =
+module AP_MODULE_DECLARE_DATA ext_filter_module =
 {
     STANDARD20_MODULE_STUFF,
     create_ef_dir_conf,

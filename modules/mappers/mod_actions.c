@@ -97,7 +97,7 @@ typedef struct {
                       */
 } action_dir_config;
 
-module actions_module;
+module AP_MODULE_DECLARE_DATA actions_module;
 
 static void *create_action_dir_config(apr_pool_t *p, char *dummy)
 {
@@ -226,7 +226,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_handler(action_handler,NULL,NULL,APR_HOOK_LAST);
 }
 
-module actions_module =
+module AP_MODULE_DECLARE_DATA actions_module =
 {
     STANDARD20_MODULE_STUFF,
     create_action_dir_config,	/* dir config creater */

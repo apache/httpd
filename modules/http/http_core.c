@@ -320,7 +320,7 @@ static void register_hooks(apr_pool_t *p)
                               AP_FTYPE_HTTP_HEADER);
 }
 
-AP_DECLARE_DATA module http_module = {
+module AP_MODULE_DECLARE_DATA http_module = {
     STANDARD20_MODULE_STUFF,
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */

@@ -143,7 +143,7 @@ static apr_pool_t *x_subpool = NULL;
  * Declare ourselves so the configuration routines can find and know us.
  * We'll fill it in at the end of the module.
  */
-AP_DECLARE_DATA module example_module;
+module AP_MODULE_DECLARE_DATA example_module;
 
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
@@ -1329,7 +1329,7 @@ static const handler_rec x_handlers[] =
  * Module definition for configuration.  If a particular callback is not
  * needed, replace its routine name below with the word NULL.
  */
-AP_DECLARE_DATA module example_module =
+AP_DECLARE_DATA AP_MODULE_DECLARE_DATA module example_module =
 {
     STANDARD20_MODULE_STUFF,
     x_create_dir_config,    /* per-directory config creator */

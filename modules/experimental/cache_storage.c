@@ -66,7 +66,7 @@ APR_HOOK_STRUCT(
 	APR_HOOK_LINK(open_entity)
 )
 
-AP_DECLARE_DATA extern module cache_module;
+extern module AP_MODULE_DECLARE_DATA cache_module;
 
 /* -------------------------------------------------------------- */
 

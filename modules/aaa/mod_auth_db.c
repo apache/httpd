@@ -164,7 +164,7 @@ static const command_rec db_auth_cmds[] =
     {NULL}
 };
 
-module auth_db_module;
+module AP_MODULE_DECLARE_DATA auth_db_module;
 
 static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile)
 {
@@ -406,7 +406,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_auth_checker(db_check_auth, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module auth_db_module =
+module AP_MODULE_DECLARE_DATA auth_db_module =
 {
     STANDARD20_MODULE_STUFF,
     create_db_auth_dir_config,	/* dir config creater */

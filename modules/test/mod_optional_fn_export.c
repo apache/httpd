@@ -74,7 +74,7 @@ static void ExportRegisterHooks(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(TestOptionalFn);
 }
 
-module optional_fn_export_module=
+module AP_MODULE_DECLARE_DATA optional_fn_export_module=
 {
     STANDARD20_MODULE_STUFF,
     NULL,

@@ -10,7 +10,7 @@
 #include <ctype.h>
 
 static const char s_szCaseFilterName[]="CaseFilter";
-module case_filter_module;
+module AP_MODULE_DECLARE_DATA case_filter_module;
 
 typedef struct
     {
@@ -103,7 +103,7 @@ static void CaseFilterRegisterHooks(apr_pool_t *p)
 			      AP_FTYPE_CONTENT);
     }
 
-module case_filter_module =
+module AP_MODULE_DECLARE_DATA case_filter_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,

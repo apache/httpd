@@ -94,7 +94,7 @@
  * Activate it with "CheckSpelling On"
  */
 
-AP_MODULE_DECLARE_DATA module speling_module;
+module AP_MODULE_DECLARE_DATA speling_module;
 
 typedef struct {
     int enabled;

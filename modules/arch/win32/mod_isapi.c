@@ -108,7 +108,7 @@
    define this to conform */
 #define RELAX_HEADER_RULE
 
-module isapi_module;
+module AP_MODULE_DECLARE_DATA isapi_module;
 
 /* Declare the ISAPI functions */
 
@@ -1279,7 +1279,7 @@ AP_INIT_ITERATE("ISAPICacheFile", isapi_cmd_cachefile, NULL, RSRC_CONF,
 { NULL }
 };
 
-module isapi_module = {
+module AP_MODULE_DECLARE_DATA isapi_module = {
    STANDARD20_MODULE_STUFF,
    NULL,                        /* create per-dir config */
    NULL,                        /* merge per-dir config */
