@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/01 18:14:44 $]
+Last modified at [$Date: 2003/11/01 22:26:47 $]
 
 Release:
 
@@ -266,6 +266,9 @@ PATCHES TO BACKPORT FROM 2.1
       +1: bnicholes
        0: nd
          nd: can the local_addr->port ever be 0?
+	 bnicholes response: I couldn't tell you for sure if local_addr->port
+	  could be 0.  But it makes sense that if it were then Apache 
+	  wouldn't be listening on any port so it wouldn't matter anyway.
 
     * mod_status: Report total CPU time accurately when using a
       threaded MPM.  PR: 23795
