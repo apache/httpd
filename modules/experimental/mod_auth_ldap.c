@@ -81,7 +81,7 @@
 #include "http_request.h"
 #include "util_ldap.h"
 
-#ifndef APU_HAS_LDAP
+#if !APR_HAS_LDAP
 #error mod_auth_ldap requires APR-util to have LDAP support built in
 #endif
 

@@ -58,7 +58,7 @@
 #include <apr_ldap.h>
 
 /* this whole thing disappears if LDAP is not enabled */
-#ifdef APU_HAS_LDAP
+#if APR_HAS_LDAP
 
 /* APR header files */
 #include <apr_thread_mutex.h>
@@ -328,5 +328,5 @@ char *util_ald_cache_display(apr_pool_t *pool, util_ldap_state_t *st);
  */
 char *util_ald_cache_display(apr_pool_t *pool, util_ldap_state_t *st);
 
-#endif /* APU_HAS_LDAP */
+#endif /* APR_HAS_LDAP */
 #endif /* UTIL_LDAP_H */

@@ -77,7 +77,7 @@
 #include <unistd.h>
 #endif
 
-#ifndef APU_HAS_LDAP
+#if !APR_HAS_LDAP
 #error mod_ldap requires APR-util to have LDAP support built in
 #endif
 
