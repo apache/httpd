@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/12/09 17:21:35 $]
+  Last modified at [$Date: 1999/12/09 18:10:30 $]
 
 Release:
 
@@ -42,9 +42,6 @@ Documentation that needs writing:
 
 
 Available Patches:
-    * Youichirou Koga's patch to add AddCharset to mod_mime.
-	Message-ID: <384E91DF.D92FABC2.Golux.Com>
-	Status: Ken +1, Martin +1(after minor fix)
 
     * Andrew Ford's patch (1999/12/05) to add absolute times to mod_expires
 	Message-ID: <m3wvqtcoqx.fsf@icarus.demon.co.uk>

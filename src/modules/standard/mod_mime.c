@@ -75,6 +75,7 @@ typedef struct handlers_info {
 typedef struct {
     table *forced_types;        /* Additional AddTyped stuff */
     table *encoding_types;      /* Added with AddEncoding... */
+    table *charset_types;	/* Added with AddCharset... */
     table *language_types;      /* Added with AddLanguage... */
     table *handlers;            /* Added with AddHandler...  */
     array_header *handlers_remove;     /* List of handlers to remove */
@@ -83,6 +84,24 @@ typedef struct {
     char *handler;              /* Handler forced with SetHandler */
     char *default_language;     /* Language if no AddLanguage ext found */
 } mime_dir_config;
+
+typedef struct param_s {
+    char *attr;
+    char *val;
+    struct param_s *next;
+} param;
+
+typedef struct {
+    char *type;
+    char *subtype;
+    param *param;
+} content_type;
+
+static char tspecial[] = {
+    '(', ')', '<', '>', '@', ',', ';', ':',
+    '\\', '"', '/', '[', ']', '?', '=',
+    '\0'
+};
 
 module MODULE_VAR_EXPORT mime_module;
 
@@ -93,6 +112,7 @@ static void *create_mime_dir_config(pool *p, char *dummy)
 
     new->forced_types = ap_make_table(p, 4);
     new->encoding_types = ap_make_table(p, 4);
+    new->charset_types = ap_make_table(p, 4);
     new->language_types = ap_make_table(p, 4);
     new->handlers = ap_make_table(p, 4);
     new->handlers_remove = ap_make_array(p, 4, sizeof(handlers_info));
@@ -119,9 +139,11 @@ static void *merge_mime_dir_configs(pool *p, void *basev, void *addv)
     }
 
     new->forced_types = ap_overlay_tables(p, add->forced_types,
-                                       base->forced_types);
+					 base->forced_types);
     new->encoding_types = ap_overlay_tables(p, add->encoding_types,
                                          base->encoding_types);
+    new->charset_types = ap_overlay_tables(p, add->charset_types,
+					   base->charset_types);
     new->language_types = ap_overlay_tables(p, add->language_types,
                                          base->language_types);
     new->handlers = ap_overlay_tables(p, add->handlers,
@@ -135,17 +157,18 @@ static void *merge_mime_dir_configs(pool *p, void *basev, void *addv)
     return new;
 }
 
-static const char *add_type(cmd_parms *cmd, mime_dir_config * m, char *ct,
+static const char *add_type(cmd_parms *cmd, mime_dir_config *m, char *ct,
                             char *ext)
 {
     if (*ext == '.')
-        ++ext;
+	++ext;
+	
     ap_str_tolower(ct);
     ap_table_setn(m->forced_types, ext, ct);
     return NULL;
 }
 
-static const char *add_encoding(cmd_parms *cmd, mime_dir_config * m, char *enc,
+static const char *add_encoding(cmd_parms *cmd, mime_dir_config *m, char *enc,
                                 char *ext)
 {
     if (*ext == '.')
@@ -155,17 +178,29 @@ static const char *add_encoding(cmd_parms *cmd, mime_dir_config * m, char *enc,
     return NULL;
 }
 
-static const char *add_language(cmd_parms *cmd, mime_dir_config * m, char *lang,
+static const char *add_charset(cmd_parms *cmd, mime_dir_config *m,
+			       char *charset, char *ext)
+{
+    if (*ext == '.') {
+	++ext;
+    }
+    ap_str_tolower(charset);
+    ap_table_setn(m->charset_types, ext, charset);
+    return NULL;
+}
+
+static const char *add_language(cmd_parms *cmd, mime_dir_config *m, char *lang,
                                 char *ext)
 {
-    if (*ext == '.')
-        ++ext;
+    if (*ext == '.') {
+	++ext;
+    }
     ap_str_tolower(lang);
     ap_table_setn(m->language_types, ext, lang);
     return NULL;
 }
 
-static const char *add_handler(cmd_parms *cmd, mime_dir_config * m, char *hdlr,
+static const char *add_handler(cmd_parms *cmd, mime_dir_config *m, char *hdlr,
                                char *ext)
 {
     if (*ext == '.')
@@ -209,6 +244,8 @@ static const command_rec mime_cmds[] =
      "a mime type followed by one or more file extensions"},
     {"AddEncoding", add_encoding, NULL, OR_FILEINFO, ITERATE2,
      "an encoding (e.g., gzip), followed by one or more file extensions"},
+    {"AddCharset", add_charset, NULL, OR_FILEINFO, ITERATE2,
+     "a charset (e.g., iso-2022-jp), followed by one or more file extensions"},
     {"AddLanguage", add_language, NULL, OR_FILEINFO, ITERATE2,
      "a language (e.g., fr), followed by one or more file extensions"},
     {"AddHandler", add_handler, NULL, OR_FILEINFO, ITERATE2,
@@ -275,6 +312,248 @@ static void init_mime(server_rec *s, pool *p)
     ap_cfg_closefile(f);
 }
 
+static char *zap_sp(char *s)
+{
+    char *tp;
+
+    if (s == NULL) {
+	return (NULL);
+    }
+    if (*s == '\0') {
+	return (s);
+    }
+
+    /* delete prefixed white space */
+    for (; *s == ' ' || *s == '\t' || *s == '\n'; s++);
+
+    /* delete postfixed white space */
+    for (tp = s; *tp != '\0'; tp++);
+    for (tp--; tp != s && (*tp == ' ' || *tp == '\t' || *tp == '\n'); tp--) {
+	*tp = '\0';
+    }
+    return (s);
+}
+
+static int is_token(char c)
+{
+    int res;
+
+    res = (isascii(c) && isgraph(c)
+	   && (strchr(tspecial, c) == NULL)) ? 1 : -1;
+    return res;
+}
+
+static int is_qtext(char c)
+{
+    int res;
+
+    res = (isascii(c) && (c != '"') && (c != '\\') && (c != '\n')) ? 1 : -1;
+    return res;
+}
+
+static int is_quoted_pair(char *s)
+{
+    int res = -1;
+    int c;
+
+    if (((s + 1) != NULL) && (*s == '\\')) {
+	c = (int) *(s + 1);
+	if (isascii(c)) {
+	    res = 1;
+	}
+    }
+    return (res);
+}
+
+static content_type *analyze_ct(pool *p, char *s)
+{
+    char *tp, *mp, *cp;
+    char *attribute, *value;
+    int quoted = 0;
+
+    content_type *ctp;
+    param *pp, *npp;
+
+    /* initialize ctp */
+    ctp = (content_type *) ap_palloc(p, sizeof(content_type));
+    ctp->type = NULL;
+    ctp->subtype = NULL;
+    ctp->param = NULL;
+
+    tp = ap_pstrdup(p, s);
+
+    mp = tp;
+    cp = mp;
+
+    /* getting a type */
+    if (!(cp = strchr(mp, '/'))) {
+	ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+		     "mod_mime: analyze_ct: cannot get media type from '%s'",
+		     mp);
+	return (NULL);
+    }
+    ctp->type = ap_pstrndup(p, mp, cp - mp);
+    ctp->type = zap_sp(ctp->type);
+    if (ctp->type == NULL || *(ctp->type) == '\0' ||
+	strchr(ctp->type, ';') || strchr(ctp->type, ' ') ||
+	strchr(ctp->type, '\t')) {
+	ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+		     "Cannot get media subtype.");
+	return (NULL);
+    }
+
+    /* getting a subtype */
+    cp++;
+    mp = cp;
+
+    for (; *cp != ';' && *cp != '\0'; cp++);
+    ctp->subtype = ap_pstrndup(p, mp, cp - mp);
+    ctp->subtype = zap_sp(ctp->subtype);
+    if ((ctp->subtype == NULL) || (*(ctp->subtype) == '\0') ||
+	strchr(ctp->subtype, ' ') || strchr(ctp->subtype, '\t')) {
+	ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+		     "Cannot get media subtype.");
+	return (NULL);
+    }
+    cp = zap_sp(cp);
+    if (cp == NULL || *cp == '\0') {
+	return (ctp);
+    }
+
+    /* getting parameters */
+    cp++;
+    cp = zap_sp(cp);
+    if (cp == NULL || *cp == '\0') {
+	ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+		     "Cannot get media parameter.");
+	return (NULL);
+    }
+    mp = cp;
+    attribute = NULL;
+    value = NULL;
+
+    while (cp != NULL && *cp != '\0') {
+	if (attribute == NULL) {
+	    if (is_token((int) *cp) > 0) {
+		cp++;
+		continue;
+	    }
+	    else if (*cp == ' ' || *cp == '\t' || *cp == '\n') {
+		cp++;
+		continue;
+	    }
+	    else if (*cp == '=') {
+		attribute = ap_pstrndup(p, mp, cp - mp);
+		attribute = zap_sp(attribute);
+		if (attribute == NULL || *attribute == '\0') {
+		    ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+				 "Cannot get media parameter.");
+		    return (NULL);
+		}
+		cp++;
+		cp = zap_sp(cp);
+		if (cp == NULL || *cp == '\0') {
+		    ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+				 "Cannot get media parameter.");
+		    return (NULL);
+		}
+		mp = cp;
+		continue;
+	    }
+	    else {
+		ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+			     "Cannot get media parameter.");
+		return (NULL);
+	    }
+	}
+	else {
+	    if (mp == cp) {
+		if (*cp == '"') {
+		    quoted = 1;
+		    cp++;
+		}
+		else {
+		    quoted = 0;
+		}
+	    }
+	    if (quoted > 0) {
+		while (quoted && *cp != '\0') {
+		    if (is_qtext((int) *cp) > 0) {
+			cp++;
+		    }
+		    else if (is_quoted_pair(cp) > 0) {
+			cp += 2;
+		    }
+		    else if (*cp == '"') {
+			cp++;
+			while (*cp == ' ' || *cp == '\t' || *cp == '\n') {
+			    cp++;
+			}
+			if (*cp != ';' && *cp != '\0') {
+			    ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+					 "Cannot get media parameter.");
+			    return(NULL);
+			}
+			quoted = 0;
+		    }
+		    else {
+			ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+				     "Cannot get media parameter.");
+			return (NULL);
+		    }
+		}
+	    }
+	    else {
+		while (1) {
+		    if (is_token((int) *cp) > 0) {
+			cp++;
+		    }
+		    else if (*cp == '\0' || *cp == ';') {
+			break;
+		    }
+		    else {
+			ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+				     "Cannot get media parameter.");
+			return (NULL);
+		    }
+		}
+	    }
+	    value = ap_pstrndup(p, mp, cp - mp);
+	    value = zap_sp(value);
+	    if (value == NULL || *value == '\0') {
+		ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+			     "Cannot get media parameter.");
+		return (NULL);
+	    }
+
+	    pp = ap_palloc(p, sizeof(param));
+	    pp->attr = attribute;
+	    pp->val = value;
+	    pp->next = NULL;
+
+	    if (ctp->param == NULL) {
+		ctp->param = pp;
+	    }
+	    else {
+		npp = ctp->param;
+		while (npp->next) {
+		    npp = npp->next;
+		}
+		npp->next = pp;
+	    }
+	    quoted = 0;
+	    attribute = NULL;
+	    value = NULL;
+	    if (*cp == '\0') {
+		break;
+	    }
+	    cp++;
+	    mp = cp;
+	}
+    }
+    return (ctp);
+}
+
 static int find_ct(request_rec *r)
 {
     const char *fn = strrchr(r->filename, '/');
@@ -283,6 +562,7 @@ static int find_ct(request_rec *r)
     char *ext;
     const char *orighandler = r->handler;
     const char *type;
+    const char *charset = NULL;
 
     if (S_ISDIR(r->finfo.st_mode)) {
         r->content_type = DIR_MAGIC_TYPE;
@@ -294,8 +574,9 @@ static int find_ct(request_rec *r)
      * pointer to getword, causing a SEGV ..
      */
 
-    if (fn == NULL)
-        fn = r->filename;
+    if (fn == NULL) {
+	fn = r->filename;
+    }
 
     /* Parse filename extensions, which can be in any order */
     while ((ext = ap_getword(r->pool, &fn, '.')) && *ext) {
@@ -307,6 +588,12 @@ static int find_ct(request_rec *r)
             r->content_type = type;
             found = 1;
         }
+
+	/* Add charset to Content-Type */
+	if ((type = ap_table_get(conf->charset_types, ext))) {
+	    charset = type;
+	    found = 1;
+	}
 
         /* Check for Content-Language */
         if ((type = ap_table_get(conf->language_types, ext))) {
@@ -347,8 +634,46 @@ static int find_ct(request_rec *r)
             r->content_languages = NULL;
             r->content_encoding = NULL;
             r->handler = orighandler;
-        }
+	    charset = NULL;
+	}
+    }
 
+    if (r->content_type) {
+	content_type *ctp;
+	char *ct;
+	int override = 0;
+
+	ct = (char *) ap_palloc(r->pool,
+				sizeof(char) * (strlen(r->content_type) + 1));
+	strcpy(ct, r->content_type);
+
+	if ((ctp = analyze_ct(r->pool, ct))) {
+	    param *pp = ctp->param;
+	    r->content_type = ap_pstrcat(r->pool, ctp->type, "/",
+					 ctp->subtype, NULL);
+	    while (pp != NULL) {
+		if (charset && !strcmp(pp->attr, "charset")) {
+		    if (!override) {
+			r->content_type = ap_pstrcat(r->pool, r->content_type,
+						     "; charset=", charset,
+						     NULL);
+			override = 1;
+		    }
+		}
+		else {
+		    r->content_type = ap_pstrcat(r->pool, r->content_type,
+						 "; ", pp->attr,
+						 "=", pp->val,
+						 NULL);
+		}
+		pp = pp->next;
+	    }
+	    if (charset && !override) {
+		r->content_type = ap_pstrcat(r->pool, r->content_type,
+					     "; charset=", charset,
+					     NULL);
+	    }
+	}
     }
 
     /* Set default language, if none was specified by the extensions
