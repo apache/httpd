@@ -281,16 +281,16 @@ for HTTP Basic authentication.</td></tr>
     is part of the just-fetched LDAP entry.  Multiple users can be
     granted access by putting multiple usernames on the line,
     separated with spaces. If a username has a space in it, then it
-    must be the only user on the line. In this case, multiple users
-    can be granted access by using multiple <code>require user</code>
+    must be surrounded with double quotes. Multiple users can also be
+    granted access by using multiple <code>require user</code>
     directives, with one user per line. For example, with a <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code> of
     <code>ldap://ldap/o=Airius?cn</code> (i.e., <code>cn</code> is
     used for searches), the following require directives could be used
     to restrict access:</p>
 <div class="example"><p><code>
-require user Barbara Jenson<br />
-require user Fred User<br />
-require user Joe Manager<br />
+require user "Barbara Jenson"<br />
+require user "Fred User"<br />
+require user "Joe Manager"<br />
 </code></p></div>
 
     <p>Because of the way that <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> handles this
@@ -321,7 +321,7 @@ uniqueMember: cn=Fred User, o=Airius<br />
 
     <p>The following directive would grant access to both Fred and
     Barbara:</p>
-<div class="example"><p><code>require group cn=Administrators, o=Airius</code></p></div>
+<div class="example"><p><code>require group "cn=Administrators, o=Airius"</code></p></div>
 
     <p>Behavior of this directive is modified by the <code class="directive"><a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></code> and
     <code class="directive"><a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></code>
@@ -339,7 +339,7 @@ uniqueMember: cn=Fred User, o=Airius<br />
 
     <p>The following directive would grant access to a specific
     DN:</p>
-<div class="example"><p><code>require dn cn=Barbara Jenson, o=Airius</code></p></div>
+<div class="example"><p><code>require dn "cn=Barbara Jenson, o=Airius"</code></p></div>
 
     <p>Behavior of this directive is modified by the <code class="directive"><a href="#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></code>
     directive.</p>
@@ -353,7 +353,7 @@ uniqueMember: cn=Fred User, o=Airius<br />
         Grant access to anyone who exists in the LDAP directory,
         using their UID for searches. 
 <div class="example"><p><code>
-AuthLDAPURL ldap://ldap1.airius.com:389/ou=People, o=Airius?uid?sub?(objectClass=*)<br />
+AuthLDAPURL "ldap://ldap1.airius.com:389/ou=People, o=Airius?uid?sub?(objectClass=*)"<br />
 require valid-user
 </code></p></div>
       </li>
@@ -362,7 +362,7 @@ require valid-user
         The next example is the same as above; but with the fields
         that have useful defaults omitted. Also, note the use of a
         redundant LDAP server. 
-<div class="example"><p><code>AuthLDAPURL ldap://ldap1.airius.com ldap2.airius.com/ou=People, o=Airius<br />
+<div class="example"><p><code>AuthLDAPURL "ldap://ldap1.airius.com ldap2.airius.com/ou=People, o=Airius"<br />
 require valid-user
 </code></p></div>
       </li>
@@ -377,7 +377,7 @@ require valid-user
         choose an attribute that is guaranteed unique in your
         directory, such as <code>uid</code>. 
 <div class="example"><p><code>
-AuthLDAPURL ldap://ldap.airius.com/ou=People, o=Airius?cn<br />
+AuthLDAPURL "ldap://ldap.airius.com/ou=People, o=Airius?cn"<br />
 require valid-user
 </code></p></div>
       </li>
@@ -386,7 +386,7 @@ require valid-user
         Grant access to anybody in the Administrators group. The
         users must authenticate using their UID. 
 <div class="example"><p><code>
-AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid<br />
+AuthLDAPURL "ldap://ldap.airius.com/o=Airius?uid"<br />
 require group cn=Administrators, o=Airius
 </code></p></div>
       </li>
@@ -398,7 +398,7 @@ require group cn=Administrators, o=Airius
         only to people (authenticated via their UID) who have
         alphanumeric pagers: 
 <div class="example"><p><code>
-AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(qpagePagerID=*)<br />
+AuthLDAPURL "ldap://ldap.airius.com/o=Airius?uid??(qpagePagerID=*)"<br />
 require valid-user
 </code></p></div>
       </li>
@@ -414,7 +414,7 @@ require valid-user
         have a pager, but does need to access the same
         resource:</p>
 <div class="example"><p><code>
-AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(|(qpagePagerID=*)(uid=jmanager))<br />
+AuthLDAPURL "ldap://ldap.airius.com/o=Airius?uid??(|(qpagePagerID=*)(uid=jmanager))"<br />
 require valid-user
 </code></p></div>
 
@@ -484,7 +484,7 @@ require valid-user
     directives to <em>every</em> <code>.htaccess</code> file
     that gets created in the web</p>
 <div class="example"><pre>
-AuthLDAPURL            the url
+AuthLDAPURL            "the url"
 AuthLDAPAuthoritative  off
 AuthLDAPFrontPageHack  on
 </pre></div>

@@ -205,7 +205,7 @@ HTTP, the MIME-type is transmitted in the <code>Content-Type</code> <a href="#he
 <dt><a name="module">Module</a></dt> <dd>An independent part of a
 program.  Much of Apache's functionality is contained in modules that
 you can choose to include or exclude.  Modules that are compiled into
-the the Apache httpd binary are called <em>static modules</em>, while
+the Apache httpd binary are called <em>static modules</em>, while
 modules that are stored seperately and can be optionally loaded at
 run-time are called <em>dynamic modules</em> or <a href="#dso">DSOs</a>.  Modules that are included by default are called
 <em>base modules</em>.  Many modules are available for Apache that are
