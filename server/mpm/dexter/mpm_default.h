@@ -58,25 +58,42 @@
 #ifndef APACHE_MPM_DEFAULT_H
 #define APACHE_MPM_DEFAULT_H
 
-/* Number of servers to spawn off by default --- also, if fewer than
+/* Number of threads to spawn off by default --- also, if fewer than
  * this free when the caretaker checks, it will spawn more.
  */
-#ifndef DEFAULT_START_DAEMON
-#define DEFAULT_START_DAEMON 5
+#ifndef DEFAULT_START_THREAD
+#define DEFAULT_START_THREAD 5
 #endif
 
-/* Maximum number of *free* server processes --- more than this, and
+/* Maximum number of *free* server threads --- more than this, and
  * they will die off.
  */
 
-#ifndef DEFAULT_MAX_FREE_DAEMON
-#define DEFAULT_MAX_FREE_DAEMON 10
+#ifndef DEFAULT_MAX_SPARE_THREAD
+#define DEFAULT_MAX_SPARE_THREAD 10
 #endif
 
 /* Minimum --- fewer than this, and more will be created */
 
-#ifndef DEFAULT_MIN_FREE_DAEMON
-#define DEFAULT_MIN_FREE_DAEMON 5
+#ifndef DEFAULT_MIN_SPARE_THREAD
+#define DEFAULT_MIN_SPARE_THREAD 5
+#endif
+
+/* Limit on the threads per process.  Clients will be locked out if more than
+ * this  * HARD_SERVER_LIMIT are needed.
+ *
+ * We keep this for one reason it keeps the size of the scoreboard file small
+ * enough that we can read the whole thing without worrying too much about
+ * the overhead.
+ */
+#ifndef HARD_THREAD_LIMIT
+#define HARD_THREAD_LIMIT 64 
+#endif
+
+/* Number of servers to spawn off by default
+ */
+#ifndef DEFAULT_NUM_DAEMON
+#define DEFAULT_NUM_DAEMON 2
 #endif
 
 /* Limit on the total --- clients will be locked out if more servers than
@@ -92,21 +109,6 @@
  */
 #ifndef HARD_SERVER_LIMIT
 #define HARD_SERVER_LIMIT 8 
-#endif
-
-/* Limit on the threads per process.  Clients will be locked out if more than
- * this  * HARD_SERVER_LIMIT are needed.
- *
- * We keep this for one reason it keeps the size of the scoreboard file small
- * enough that we can read the whole thing without worrying too much about
- * the overhead.
- */
-#ifndef HARD_THREAD_LIMIT
-#define HARD_THREAD_LIMIT 64 
-#endif
-
-#ifndef DEFAULT_THREADS_PER_CHILD
-#define DEFAULT_THREADS_PER_CHILD 50
 #endif
 
 #endif /* AP_MPM_DEFAULT_H */
