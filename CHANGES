@@ -1,5 +1,8 @@
 Changes with Apache 2.0.17-dev
 
+  *) Remove BindAddress from the default config file.
+     [giles@nemeton.com.au]
+
   *) Allow module authors to add a module to their Apache build using
      --with-module, without re-running buildconf.  The syntax is:
 	--with-module=module_type:/path/to/module.c
