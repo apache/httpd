@@ -3,7 +3,7 @@
 
                          http://www.apache.org/
 
-                               April 1998
+                               June 1998
 
 The Apache Project is a collaborative software development effort aimed
 at creating a robust, commercial-grade, featureful, and freely-available
@@ -75,6 +75,7 @@ Current Apache Group in alphabetical order as of 23 April 1998:
    Ralf S. Engelschall    Munich, Germany.
    Dean Gaudet            Transmeta Corporation, California 
    Rob Hartill            Internet Movie DB, UK 
+   Ben Hyde               Gensym, Massachusetts
    Jim Jagielski          jaguNET ISP, Maryland 
    Alexei Kosut           Stanford University, California 
    Martin Kraemer         Munich, Germany
@@ -104,7 +105,7 @@ Other major contributors
    Kevin Hughes (creator of all those nifty icons),
    Henry Spencer (author of the regex library), Garey Smiley (OS/2 port),
    Howard Fear (mod_include), Florent Guillaume (language negotiation), 
-   Ambarish Malpani (NT port), Ben Hyde (multi-platform build tests).
+   Ambarish Malpani (NT port).
 
 Many 3rd-party modules, frequently used and recommended, are also
 freely-available and linked from the related projects page:

@@ -1,13 +1,11 @@
 
- Apache 1.3.0 Released
+ Apache 1.3.1 Released
  =====================
 
- The Apache Group is pleased to announce the release of the long
- awaited 1.3.0 version of the Apache HTTP server.  A dozen months,
- hundreds of patches and over 100 code contributors helped make the
- release of 1.3.0 a reality.
+ The Apache Group is pleased to announce the release of the 1.3.1 version
+ of the Apache HTTP server. This is mainly a bugfix release.
 
- Apache 1.3.0 is the most stable version of Apache currently available;
+ Apache 1.3.1 is the most stable version of Apache currently available;
  everyone running 1.2.X servers or earlier should upgrade to 1.3, as we
  will stop providing support for the 1.2.X tree, though we may make a
  release of 1.2.7. At present, the Win95/NT port of Apache is not
