@@ -1510,12 +1510,6 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     return 0;
 }
 
-static void mpmt_pthread_hooks(void)
-{
-    INIT_SIGLIST()
-    one_process = 0;
-}
-
 static void mpmt_pthread_pre_config(pool *pconf, pool *plog, pool *ptemp)
 {
     static int restart_num = 0;
@@ -1547,6 +1541,13 @@ static void mpmt_pthread_pre_config(pool *pconf, pool *plog, pool *ptemp)
     ap_extended_status = 0;
 
     ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
+}
+
+static void mpmt_pthread_hooks(void)
+{
+    ap_hook_pre_config(mpmt_pthread_pre_config,NULL,NULL,HOOK_MIDDLE);
+    INIT_SIGLIST()
+    one_process = 0;
 }
 
 
@@ -1764,7 +1765,6 @@ LISTEN_COMMANDS
 
 module MODULE_VAR_EXPORT mpm_mpmt_pthread_module = {
     STANDARD20_MODULE_STUFF,
-    mpmt_pthread_pre_config,		/* pre_config */
     NULL,                       /* post_config */
     NULL,			/* open_logs */
     NULL, 			/* child_init */
