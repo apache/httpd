@@ -45,7 +45,7 @@ on a Unix platform such as Solaris, FreeBSD, or Linux.</b></p>
 
 <h2><a name="req">Requirements</a></h2>
 
-<p>Apache 1.3a1 requires the following:</p>
+<p>Apache 1.3b2 requires the following:</p>
 
 <ul>
   <li>Microsoft Windows NT 4.0<a href="#351">*</a>, or Windows 95.
@@ -57,13 +57,10 @@ on a Unix platform such as Solaris, FreeBSD, or Linux.</b></p>
 <p><small><a name="351">*</a> Apache may run with Windows NT 3.5.1, but
    has not been tested.</small></p>
 
-<p>Apache 1.3a1 is available only in source form. Future releases will
-   contain prebuilt binaries for use by those without compilers (which we
-   understand are the vast majority of Windows users), however the
-   current release requires Microsoft Visual C++ 5.0 or later. The Apache
-   Group is releasing 1.3a1 only as source to limit the alpha release to
-   those who have the tools and knowledge to assist with the development
-   processes.</p>
+<p>Apache 1.3b2 is currently available only in source form. Future releases 
+   will contain prebuilt binaries for use by those without compilers
+   (which are the vast majority of Windows users), however the current
+   release requires Microsoft Visual C++ 5.0 or later. <p>
 
 <p>This documentation assumes good working knowledge of Microsoft
    Windows, Microsoft Visual C++, and the Apache web server (for
@@ -77,7 +74,7 @@ HREF="http://www.apache.org/">http://www.apache.org/</A>.  This will
 list the current release, any more recent alpha or beta-test release,
 together with details of mirror web and anonymous ftp sites.</p>
 
-<p>You will be able to download Apache 1.3a1 or a later release in
+<p>You will be able to download Apache 1.3b2 or a later release in
    several forms, including a WinZip (<code>.zip</code>)
    archive. Although this contains the same files as the others (likely
    <code>.tar.gz</code> and <code>.tar.Z</code>), it is recommended for
@@ -100,8 +97,8 @@ together with details of mirror web and anonymous ftp sites.</p>
    <code>Makefile.nt</code> file. To compile Apache, simply use one of
    the following commands:
 <ul>
-<li><code>nmake /f Makefile.nt apacher</code> (release build)
-<li><code>nmake /f Makefile.nt apached</code> (debug build)
+<li><code>nmake /f Makefile.nt _apacher</code> (release build)
+<li><code>nmake /f Makefile.nt _apached</code> (debug build)
 </ul>
 
 <p>These will both compile Apache. The latter will include debugging
@@ -114,10 +111,13 @@ together with details of mirror web and anonymous ftp sites.</p>
    Apache if the command-line tools are not installed.</p>
 
 <p>Project files (<code>.DSP</code>) are included for each of the
-   portions of Apache. The two projects that are necessary for Apache to
-   run are <code>Apache.dsp</code> and <code>ApacheCore.dsp</code>. The
-   <code>src\nt</code> subdirectory also contains project files for the
-   optional modules (see below).</p>
+   portions of Apache. The three projects that are necessary for
+   Apache to run are <code>Apache.dsp</code>,
+   <code>ApacheCore.dsp</code> and
+   <code>os/win32/ApacheOS.dsp</code>. The regular expression library
+   in <code>regex</code> also need to be compiled using the supplied
+   makefile. The <code>src/win32</code> subdirectory contains project
+   files for the optional modules (see below).</p>
 
 <h2><a name="inst">Installing Apache for Windows</a></h2>
 
