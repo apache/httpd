@@ -188,9 +188,9 @@ typedef struct {
 #define SCOREBOARD_FRAMES		SCOREBOARD_SIZE/4095 + 1
 #endif
 
-API_EXPORT(int) ap_exists_scoreboard_image(void);
+AP_DECLARE(int) ap_exists_scoreboard_image(void);
 
-API_VAR_EXPORT extern scoreboard *ap_scoreboard_image;
+AP_DECLARE_DATA extern scoreboard *ap_scoreboard_image;
 
 
 /* for time_process_request() in http_main.c */

@@ -97,7 +97,7 @@ extern "C" {
  * @return The new request record
  * @deffunc request_rec * ap_sub_req_lookup_uri(const char *new_file, const request_rec *r)
  */
-API_EXPORT(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
+AP_DECLARE(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
                                              const request_rec *r);
 /**
  * Create a sub request for the given file.  This sub request can be
@@ -107,7 +107,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
  * @return The new request record
  * @deffunc request_rec * ap_sub_req_lookup_file(const char *new_file, const request_rec *r)
  */
-API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
+AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
                                               const request_rec *r);
 /**
  * Create a sub request for the given URI using a specific method.  This
@@ -118,7 +118,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
  * @return The new request record
  * @deffunc request_rec * ap_sub_req_method_uri(const char *method, const char *new_file, const request_rec *r)
  */
-API_EXPORT(request_rec *) ap_sub_req_method_uri(const char *method,
+AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
                                                 const char *new_file,
                                                 const request_rec *r);
 
@@ -128,14 +128,14 @@ API_EXPORT(request_rec *) ap_sub_req_method_uri(const char *method,
  * @return The return code for the sub request
  * @deffunc int ap_run_sub_req(request_rec *r)
  */
-API_EXPORT(int) ap_run_sub_req(request_rec *r);
+AP_DECLARE(int) ap_run_sub_req(request_rec *r);
 
 /**
  * Free the memory associated with a sub request
  * @param r The sub request to finish
  * @deffunc void ap_destroy_sub_req(request_rec *r)
  */
-API_EXPORT(void) ap_destroy_sub_req(request_rec *r);
+AP_DECLARE(void) ap_destroy_sub_req(request_rec *r);
 
 /*
  * Then there's the case that you want some other request to be served
@@ -149,7 +149,7 @@ API_EXPORT(void) ap_destroy_sub_req(request_rec *r);
  * @param r The current request
  * @deffunc void ap_internal_redirect(const char *new_uri, request_rec *r)
  */
-API_EXPORT(void) ap_internal_redirect(const char *new_uri, request_rec *r);
+AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r);
 
 /**
  * This function is designed for things like actions or CGI scripts, when
@@ -159,7 +159,7 @@ API_EXPORT(void) ap_internal_redirect(const char *new_uri, request_rec *r);
  * @param r The current request
  * @deffunc void ap_internal_redirect_handler(const char *new_uri, request_rec *r)
  */
-API_EXPORT(void) ap_internal_redirect_handler(const char *new_uri, request_rec *r);
+AP_DECLARE(void) ap_internal_redirect_handler(const char *new_uri, request_rec *r);
 
 /**
  * Can be used within any handler to determine if any authentication
@@ -168,7 +168,7 @@ API_EXPORT(void) ap_internal_redirect_handler(const char *new_uri, request_rec *
  * @return 1 if authentication is required, 0 otherwise
  * @deffunc int ap_some_auth_required(request_rec *r)
  */
-API_EXPORT(int) ap_some_auth_required(request_rec *r);
+AP_DECLARE(int) ap_some_auth_required(request_rec *r);
  
 /**
  * Determine if the current request is the main request or a sub requests
@@ -176,7 +176,7 @@ API_EXPORT(int) ap_some_auth_required(request_rec *r);
  * @retrn 1 if this is a main request, 0 otherwise
  * @deffunc int ap_is_initial_req(request_rec *r)
  */
-API_EXPORT(int) ap_is_initial_req(request_rec *r);
+AP_DECLARE(int) ap_is_initial_req(request_rec *r);
 
 /**
  * Function to set the r->mtime field to the specified value if it's later
@@ -185,7 +185,7 @@ API_EXPORT(int) ap_is_initial_req(request_rec *r);
  * @param dependency_time Time to set the mtime to
  * @deffunc void ap_update_mtime(request_rec *r, apr_time_t dependency_mtime)
  */
-API_EXPORT(void) ap_update_mtime(request_rec *r, apr_time_t dependency_mtime);
+AP_DECLARE(void) ap_update_mtime(request_rec *r, apr_time_t dependency_mtime);
 
 /**
  * Add one or more methods to the list permitted to access the resource.
@@ -203,7 +203,7 @@ API_EXPORT(void) ap_update_mtime(request_rec *r, apr_time_t dependency_mtime);
  * @return  None.
  * @deffunc void ap_allow_methods(request_rec *r, int reset, ...)
  */
-API_EXPORT(void) ap_allow_methods(request_rec *r, int reset, ...);
+AP_DECLARE(void) ap_allow_methods(request_rec *r, int reset, ...);
 
 #define MERGE_ALLOW 0
 #define REPLACE_ALLOW 1
@@ -217,7 +217,7 @@ void ap_process_request(request_rec *);
  * @param r The current request
  * @deffunc void ap_die(int type, request_rec *r)
  */
-API_EXPORT(void) ap_die(int type, request_rec *r);
+AP_DECLARE(void) ap_die(int type, request_rec *r);
 #endif
 
   /* Hooks */

@@ -331,17 +331,17 @@ void signal_parent(int type)
 
 static int volatile is_graceful = 0;
 
-API_EXPORT(int) ap_graceful_stop_signalled(void)
+AP_DECLARE(int) ap_graceful_stop_signalled(void)
 {
     return is_graceful;
 }
 
-API_EXPORT(void) ap_start_shutdown(void)
+AP_DECLARE(void) ap_start_shutdown(void)
 {
     signal_parent(0);
 }
 
-API_EXPORT(void) ap_start_restart(int gracefully)
+AP_DECLARE(void) ap_start_restart(int gracefully)
 {
     is_graceful = gracefully;
     signal_parent(1);
@@ -2182,7 +2182,7 @@ static void winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *p
     }
 }
 
-API_EXPORT(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
+AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 {
     static int restart = 0;            /* Default is "not a restart" */
 
@@ -2307,18 +2307,18 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
 
 /* Stub functions until this MPM supports the connection status API */
 
-API_EXPORT(void) ap_update_connection_status(long conn_id, const char *key, \
+AP_DECLARE(void) ap_update_connection_status(long conn_id, const char *key, \
                                              const char *value)
 {
     /* NOP */
 }
 
-API_EXPORT(void) ap_reset_connection_status(long conn_id)
+AP_DECLARE(void) ap_reset_connection_status(long conn_id)
 {
     /* NOP */
 }
 
-API_EXPORT(apr_array_header_t *) ap_get_status_table(apr_pool_t *p)
+AP_DECLARE(apr_array_header_t *) ap_get_status_table(apr_pool_t *p)
 {
     /* NOP */
     return NULL;
@@ -2337,7 +2337,7 @@ LISTEN_COMMANDS
 { NULL }
 };
 
-MODULE_VAR_EXPORT module mpm_winnt_module = {
+AP_MODULE_DECLARE_DATA module mpm_winnt_module = {
     MPM20_MODULE_STUFF,
     winnt_rewrite_args,         /* hook to run before apache parses args */
     NULL,			/* create per-directory config structure */

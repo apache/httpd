@@ -375,7 +375,7 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
  * these are part of the core server config.
  */
 
-CORE_EXPORT(void) ap_add_per_dir_conf(server_rec *s, void *dir_config)
+AP_CORE_DECLARE(void) ap_add_per_dir_conf(server_rec *s, void *dir_config)
 {
     core_server_config *sconf = ap_get_module_config(s->module_config,
 						     &core_module);
@@ -384,7 +384,7 @@ CORE_EXPORT(void) ap_add_per_dir_conf(server_rec *s, void *dir_config)
     *new_space = dir_config;
 }
 
-CORE_EXPORT(void) ap_add_per_url_conf(server_rec *s, void *url_config)
+AP_CORE_DECLARE(void) ap_add_per_url_conf(server_rec *s, void *url_config)
 {
     core_server_config *sconf = ap_get_module_config(s->module_config,
 						     &core_module);
@@ -393,7 +393,7 @@ CORE_EXPORT(void) ap_add_per_url_conf(server_rec *s, void *url_config)
     *new_space = url_config;
 }
 
-CORE_EXPORT(void) ap_add_file_conf(core_dir_config *conf, void *url_config)
+AP_CORE_DECLARE(void) ap_add_file_conf(core_dir_config *conf, void *url_config)
 {
     void **new_space = (void **)apr_push_array(conf->sec);
     
@@ -510,7 +510,7 @@ void ap_core_reorder_directories(apr_pool_t *p, server_rec *s)
  * here...
  */
 
-API_EXPORT(int) ap_allow_options(request_rec *r)
+AP_DECLARE(int) ap_allow_options(request_rec *r)
 {
     core_dir_config *conf = 
       (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module); 
@@ -518,7 +518,7 @@ API_EXPORT(int) ap_allow_options(request_rec *r)
     return conf->opts; 
 } 
 
-API_EXPORT(int) ap_allow_overrides(request_rec *r) 
+AP_DECLARE(int) ap_allow_overrides(request_rec *r) 
 { 
     core_dir_config *conf;
     conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
@@ -527,7 +527,7 @@ API_EXPORT(int) ap_allow_overrides(request_rec *r)
     return conf->override; 
 } 
 
-API_EXPORT(const char *) ap_auth_type(request_rec *r)
+AP_DECLARE(const char *) ap_auth_type(request_rec *r)
 {
     core_dir_config *conf;
 
@@ -536,7 +536,7 @@ API_EXPORT(const char *) ap_auth_type(request_rec *r)
     return conf->ap_auth_type;
 }
 
-API_EXPORT(const char *) ap_auth_name(request_rec *r)
+AP_DECLARE(const char *) ap_auth_name(request_rec *r)
 {
     core_dir_config *conf;
 
@@ -545,7 +545,7 @@ API_EXPORT(const char *) ap_auth_name(request_rec *r)
     return conf->ap_auth_name;
 }
 
-API_EXPORT(const char *) ap_default_type(request_rec *r)
+AP_DECLARE(const char *) ap_default_type(request_rec *r)
 {
     core_dir_config *conf;
 
@@ -556,7 +556,7 @@ API_EXPORT(const char *) ap_default_type(request_rec *r)
                : DEFAULT_CONTENT_TYPE;
 }
 
-API_EXPORT(const char *) ap_document_root(request_rec *r) /* Don't use this! */
+AP_DECLARE(const char *) ap_document_root(request_rec *r) /* Don't use this! */
 {
     core_server_config *conf;
 
@@ -565,7 +565,7 @@ API_EXPORT(const char *) ap_document_root(request_rec *r) /* Don't use this! */
     return conf->ap_document_root;
 }
 
-API_EXPORT(const apr_array_header_t *) ap_requires(request_rec *r)
+AP_DECLARE(const apr_array_header_t *) ap_requires(request_rec *r)
 {
     core_dir_config *conf;
 
@@ -574,7 +574,7 @@ API_EXPORT(const apr_array_header_t *) ap_requires(request_rec *r)
     return conf->ap_requires;
 }
 
-API_EXPORT(int) ap_satisfies(request_rec *r)
+AP_DECLARE(int) ap_satisfies(request_rec *r)
 {
     core_dir_config *conf;
 
@@ -632,7 +632,7 @@ static apr_inline void do_double_reverse (conn_rec *conn)
     conn->double_reverse = -1;
 }
 
-API_EXPORT(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
+AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
 					    int type)
 {
     struct in_addr *iaddr;
@@ -700,7 +700,7 @@ API_EXPORT(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
     }
 }
 
-API_EXPORT(const char *) ap_get_remote_logname(request_rec *r)
+AP_DECLARE(const char *) ap_get_remote_logname(request_rec *r)
 {
     core_dir_config *dir_conf;
 
@@ -733,7 +733,7 @@ API_EXPORT(const char *) ap_get_remote_logname(request_rec *r)
  * The assumption is that DNS lookups are sufficiently quick...
  * -- fanf 1998-10-03
  */
-API_EXPORT(const char *) ap_get_server_name(request_rec *r)
+AP_DECLARE(const char *) ap_get_server_name(request_rec *r)
 {
     conn_rec *conn = r->connection;
     core_dir_config *d;
@@ -767,7 +767,7 @@ API_EXPORT(const char *) ap_get_server_name(request_rec *r)
     return r->server->server_hostname;
 }
 
-API_EXPORT(unsigned) ap_get_server_port(const request_rec *r)
+AP_DECLARE(unsigned) ap_get_server_port(const request_rec *r)
 {
     unsigned port;
     core_dir_config *d =
@@ -784,7 +784,7 @@ API_EXPORT(unsigned) ap_get_server_port(const request_rec *r)
     return port;
 }
 
-API_EXPORT(char *) ap_construct_url(apr_pool_t *p, const char *uri,
+AP_DECLARE(char *) ap_construct_url(apr_pool_t *p, const char *uri,
 				    request_rec *r)
 {
     unsigned port = ap_get_server_port(r);
@@ -796,7 +796,7 @@ API_EXPORT(char *) ap_construct_url(apr_pool_t *p, const char *uri,
     return apr_psprintf(p, "%s://%s:%u%s", ap_http_method(r), host, port, uri);
 }
 
-API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r)
+AP_DECLARE(unsigned long) ap_get_limit_req_body(const request_rec *r)
 {
     core_dir_config *d =
       (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
@@ -968,7 +968,7 @@ static char* get_interpreter_from_win32_registry(apr_pool_t *p, const char* ext,
     return buffer;
 }
 
-API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r, 
+AP_DECLARE (file_type_e) ap_get_win32_interpreter(const  request_rec *r, 
                                                   char** interpreter,
                                                   char** arguments)
 {
@@ -1108,7 +1108,7 @@ static const ap_directive_t * find_parent(const ap_directive_t *dirp,
     return NULL;
 }
 
-API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd,
+AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd,
 					      unsigned forbidden)
 {
     const char *gt = (cmd->cmd->name[0] == '<'
@@ -1234,7 +1234,7 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-API_EXPORT(void) ap_custom_response(request_rec *r, int status, char *string)
+AP_DECLARE(void) ap_custom_response(request_rec *r, int status, char *string)
 {
     core_dir_config *conf = 
 	ap_get_module_config(r->per_dir_config, &core_module);
@@ -1460,7 +1460,7 @@ static const char *require(cmd_parms *cmd, void *c_, const char *arg)
     return NULL;
 }
 
-CORE_EXPORT_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy,
+AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy,
 						  const char *arg) {
     const char *limited_methods = ap_getword(cmd->pool, &arg, '>');
     void *tog = cmd->cmd->cmd_data;
@@ -1781,7 +1781,7 @@ static const char *start_ifmod(cmd_parms *cmd, void *mconfig, const char *arg)
     }
 }
 
-API_EXPORT(int) ap_exists_config_define(const char *name)
+AP_DECLARE(int) ap_exists_config_define(const char *name)
 {
     char **defines;
     int i;
@@ -2228,7 +2228,7 @@ static const char *set_loglevel(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-API_EXPORT(const char *) ap_psignature(const char *prefix, request_rec *r)
+AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r)
 {
     char sport[20];
     core_dir_config *conf;
@@ -2306,12 +2306,12 @@ static apr_status_t reset_version(void *dummy)
     return APR_SUCCESS;
 }
 
-API_EXPORT(const char *) ap_get_server_version(void)
+AP_DECLARE(const char *) ap_get_server_version(void)
 {
     return (server_version ? server_version : AP_SERVER_BASEVERSION);
 }
 
-API_EXPORT(void) ap_add_version_component(apr_pool_t *pconf, const char *component)
+AP_DECLARE(void) ap_add_version_component(apr_pool_t *pconf, const char *component)
 {
     if (! version_locked) {
         /*
@@ -2484,7 +2484,7 @@ static const char *set_limit_xml_req_body(cmd_parms *cmd, void *conf_,
     return NULL;
 }
 
-API_EXPORT(size_t) ap_get_limit_xml_body(const request_rec *r)
+AP_DECLARE(size_t) ap_get_limit_xml_body(const request_rec *r)
 {
     core_dir_config *conf;
 
@@ -2866,7 +2866,7 @@ AP_INIT_ITERATE("AddInputFilter", add_input_filter, NULL, ACCESS_CONF,
  * Core handlers for various phases of server operation...
  */
 
-API_EXPORT_NONSTD(int) ap_core_translate(request_rec *r)
+AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
 {
     void *sconf = r->server->module_config;
     core_server_config *conf = ap_get_module_config(sconf, &core_module);
@@ -3587,7 +3587,7 @@ static void register_hooks(void)
     ap_register_output_filter("BUFFER", buffer_filter, AP_FTYPE_CONNECTION);
 }
 
-API_VAR_EXPORT module core_module = {
+AP_DECLARE_DATA module core_module = {
     STANDARD20_MODULE_STUFF,
     create_core_dir_config,	/* create per-directory config structure */
     merge_core_dir_configs,	/* merge per-directory config structures */

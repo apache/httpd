@@ -157,7 +157,7 @@ apr_inline void ap_sync_scoreboard_image(void)
 {
 }
 
-API_EXPORT(int) ap_exists_scoreboard_image(void)
+AP_DECLARE(int) ap_exists_scoreboard_image(void)
 {
     return (ap_scoreboard_image ? 1 : 0);
 }
@@ -206,7 +206,7 @@ void increment_counts(int child_num, int thread_num, request_rec *r)
 
 }
 
-API_EXPORT(int) find_child_by_pid(apr_proc_t *pid)
+AP_DECLARE(int) find_child_by_pid(apr_proc_t *pid)
 {
     int i;
     int max_daemons_limit = ap_get_max_daemons();

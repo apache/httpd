@@ -106,7 +106,7 @@
 #include "http_request.h"
 #include "apr_strings.h"
 
-module MODULE_VAR_EXPORT usertrack_module;
+module AP_MODULE_DECLARE_DATA usertrack_module;
 
 typedef struct {
     int always;
@@ -308,7 +308,7 @@ static void register_hooks(void)
 {
     ap_hook_fixups(spot_cookie,NULL,NULL,AP_HOOK_MIDDLE);
 }
-module MODULE_VAR_EXPORT usertrack_module = {
+module AP_MODULE_DECLARE_DATA usertrack_module = {
     STANDARD20_MODULE_STUFF,
     make_cookie_dir,            /* dir config creater */
     NULL,                       /* dir merger --- default is to override */

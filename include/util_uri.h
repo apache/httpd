@@ -147,7 +147,7 @@ struct uri_components {
  * @return The default port for this scheme
  * @deffunc unsigned short ap_default_port_for_scheme(const char *scheme_str)
  */ 
-API_EXPORT(unsigned short) ap_default_port_for_scheme(const char *scheme_str);
+AP_DECLARE(unsigned short) ap_default_port_for_scheme(const char *scheme_str);
 
 /**
  * Return the default for the current request
@@ -155,7 +155,7 @@ API_EXPORT(unsigned short) ap_default_port_for_scheme(const char *scheme_str);
  * @return The default port
  * @deffunc unsigned short ap_default_port_for_request(const request_rec *r)
  */
-API_EXPORT(unsigned short) ap_default_port_for_request(const request_rec *r);
+AP_DECLARE(unsigned short) ap_default_port_for_request(const request_rec *r);
 
 /**
  * Create a copy of a "struct hostent" record; it was presumably returned
@@ -165,7 +165,7 @@ API_EXPORT(unsigned short) ap_default_port_for_request(const request_rec *r);
  * @param hp hostent to duplicate
  * @deffunc struct hostent * ap_pduphostent(apr_pool_t *p, const struct hostent *hp)
  */ 
-API_EXPORT(struct hostent *) ap_pduphostent(apr_pool_t *p, const struct hostent *hp);
+AP_DECLARE(struct hostent *) ap_pduphostent(apr_pool_t *p, const struct hostent *hp);
 
 /**
  * resolve hostname, if successful return an ALLOCATED COPY OF the hostent 
@@ -175,7 +175,7 @@ API_EXPORT(struct hostent *) ap_pduphostent(apr_pool_t *p, const struct hostent 
  * @return The allocated hostent structure
  * @deffunc struct hostent * ap_pgethostbyname(apr_pool_t *p, const char *hostname)
  */
-API_EXPORT(struct hostent *) ap_pgethostbyname(apr_pool_t *p, const char *hostname);
+AP_DECLARE(struct hostent *) ap_pgethostbyname(apr_pool_t *p, const char *hostname);
 
 /**
  * Unparse a uri_components structure to an URI string.  Optionally suppress 
@@ -195,7 +195,7 @@ API_EXPORT(struct hostent *) ap_pgethostbyname(apr_pool_t *p, const char *hostna
  * @return The uri as a string
  * @deffunc char * ap_unparse_uri_components(apr_pool_t *p, const uri_components *uptr, unsigned flags)
  */
-API_EXPORT(char *) ap_unparse_uri_components(apr_pool_t *p, const uri_components *uptr,
+AP_DECLARE(char *) ap_unparse_uri_components(apr_pool_t *p, const uri_components *uptr,
     unsigned flags);
 
 /**
@@ -208,7 +208,7 @@ API_EXPORT(char *) ap_unparse_uri_components(apr_pool_t *p, const uri_components
  * @return An HTTP status code
  * @deffunc int ap_parse_uri_components(apr_pool_t *p, const char *uri, uri_components *uptr)
  */
-API_EXPORT(int) ap_parse_uri_components(apr_pool_t *p, const char *uri, uri_components *uptr);
+AP_DECLARE(int) ap_parse_uri_components(apr_pool_t *p, const char *uri, uri_components *uptr);
 
 /**
  * Special case for CONNECT parsing: it comes with the hostinfo part only
@@ -218,13 +218,13 @@ API_EXPORT(int) ap_parse_uri_components(apr_pool_t *p, const char *uri, uri_comp
  * @return An HTTP status code
  * @deffunc int ap_parse_hostinfo_components(apr_pool_t *p, const char *hostinfo, uri_components *uptr)
  */
-API_EXPORT(int) ap_parse_hostinfo_components(apr_pool_t *p, const char *hostinfo, uri_components *uptr);
+AP_DECLARE(int) ap_parse_hostinfo_components(apr_pool_t *p, const char *hostinfo, uri_components *uptr);
 
 /**
  * Setup everything necessary to parse uri's
  * @deffunc void ap_util_uri_init(void)
  */
-API_EXPORT(void) ap_util_uri_init(void);
+AP_DECLARE(void) ap_util_uri_init(void);
 
 #ifdef __cplusplus
 }

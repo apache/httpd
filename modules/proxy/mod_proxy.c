@@ -801,7 +801,7 @@ static void register_hooks(void)
     ap_hook_post_read_request(proxy_detect, NULL, NULL, AP_HOOK_FIRST);
 }
 
-module MODULE_VAR_EXPORT proxy_module =
+module AP_MODULE_DECLARE_DATA proxy_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,                  /* create per-directory config structure */

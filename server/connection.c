@@ -204,7 +204,7 @@ void ap_lingering_close(conn_rec *c)
     ap_bclose(c->client);
 }
 
-CORE_EXPORT(void) ap_process_connection(conn_rec *c)
+AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c)
 {
     ap_update_vhost_given_ip(c);
 

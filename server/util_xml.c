@@ -358,7 +358,7 @@ static void cdata_handler(void *userdata, const char *data, int len)
     ap_text_append(ctx->p, hdr, s);
 }
 
-API_EXPORT(int) ap_xml_parse_input(request_rec * r, ap_xml_doc **pdoc)
+AP_DECLARE(int) ap_xml_parse_input(request_rec * r, ap_xml_doc **pdoc)
 {
     int result;
     ap_xml_ctx ctx =
@@ -474,7 +474,7 @@ API_EXPORT(int) ap_xml_parse_input(request_rec * r, ap_xml_doc **pdoc)
     return HTTP_BAD_REQUEST;
 }
 
-API_EXPORT(void) ap_text_append(apr_pool_t * p, ap_text_header *hdr,
+AP_DECLARE(void) ap_text_append(apr_pool_t * p, ap_text_header *hdr,
                                 const char *text)
 {
     ap_text *t = apr_palloc(p, sizeof(*t));
@@ -508,7 +508,7 @@ API_EXPORT(void) ap_text_append(apr_pool_t * p, ap_text_header *hdr,
 ** quotes is typically set to true for XML strings that will occur within
 ** double quotes -- attribute values.
 */
-API_EXPORT(const char *) ap_xml_quote_string(apr_pool_t *p, const char *s,
+AP_DECLARE(const char *) ap_xml_quote_string(apr_pool_t *p, const char *s,
                                              int quotes)
 {
     const char *scan;
@@ -781,7 +781,7 @@ static char *write_elem(char *s, const ap_xml_elem *elem, int style,
     return s;
 }
 
-API_EXPORT(void) ap_xml_quote_elem(apr_pool_t *p, ap_xml_elem *elem)
+AP_DECLARE(void) ap_xml_quote_elem(apr_pool_t *p, ap_xml_elem *elem)
 {
     ap_text *scan_txt;
     ap_xml_attr *scan_attr;
@@ -815,7 +815,7 @@ API_EXPORT(void) ap_xml_quote_elem(apr_pool_t *p, ap_xml_elem *elem)
 }
 
 /* convert an element to a text string */
-API_EXPORT(void) ap_xml_to_text(apr_pool_t * p, const ap_xml_elem *elem,
+AP_DECLARE(void) ap_xml_to_text(apr_pool_t * p, const ap_xml_elem *elem,
                                 int style, apr_array_header_t *namespaces,
                                 int *ns_map, const char **pbuf, size_t *psize)
 {
@@ -831,7 +831,7 @@ API_EXPORT(void) ap_xml_to_text(apr_pool_t * p, const ap_xml_elem *elem,
 	*psize = size;
 }
 
-API_EXPORT(const char *) ap_xml_empty_elem(apr_pool_t * p,
+AP_DECLARE(const char *) ap_xml_empty_elem(apr_pool_t * p,
                                            const ap_xml_elem *elem)
 {
     if (elem->ns == AP_XML_NS_NONE) {
@@ -846,7 +846,7 @@ API_EXPORT(const char *) ap_xml_empty_elem(apr_pool_t * p,
 }
 
 /* return the URI's (existing) index, or insert it and return a new index */
-API_EXPORT(int) ap_xml_insert_uri(apr_array_header_t *uri_array,
+AP_DECLARE(int) ap_xml_insert_uri(apr_array_header_t *uri_array,
                                   const char *uri)
 {
     int i;

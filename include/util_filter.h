@@ -255,7 +255,7 @@ struct ap_filter_t {
  * @return apr_status_t value
  * @deffunc apr_status_t ap_get_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket, apr_ssize_t length)
  */
-API_EXPORT(apr_status_t) ap_get_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket, apr_ssize_t length);
+AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket, apr_ssize_t length);
 
 /**
  * Pass the current bucket brigade down to the next filter on the filter
@@ -266,7 +266,7 @@ API_EXPORT(apr_status_t) ap_get_brigade(ap_filter_t *filter, ap_bucket_brigade *
  * @return apr_status_t value
  * @deffunc apr_status_t ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket)
  */
-API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket);
+AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket);
 
 /*
  * ap_register_input_filter():
@@ -286,7 +286,7 @@ API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade 
  * @param The type of filter function, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION
  * @deffunc void ap_register_input_filter(const char *name, ap_in_filter_func filter_func, ap_filter_type ftype)
  */
-API_EXPORT(void) ap_register_input_filter(const char *name,
+AP_DECLARE(void) ap_register_input_filter(const char *name,
                                           ap_in_filter_func filter_func,
                                           ap_filter_type ftype);
 /*
@@ -307,7 +307,7 @@ API_EXPORT(void) ap_register_input_filter(const char *name,
  * @param The type of filter function, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION
  * @deffunc void ap_register_output_filter(const char *name, ap_out_filter_func filter_func, ap_filter_type ftype)
  */
-API_EXPORT(void) ap_register_output_filter(const char *name,
+AP_DECLARE(void) ap_register_output_filter(const char *name,
                                            ap_out_filter_func filter_func,
                                            ap_filter_type ftype);
 
@@ -334,7 +334,7 @@ API_EXPORT(void) ap_register_output_filter(const char *name,
  * @param c The connection to add the fillter for
  * @deffunc void ap_add_input_filter(const char *name, void *ctx, request_rec *r, conn_rec *c)
  */
-API_EXPORT(void) ap_add_input_filter(const char *name, void *ctx, request_rec *r, conn_rec *c);
+AP_DECLARE(void) ap_add_input_filter(const char *name, void *ctx, request_rec *r, conn_rec *c);
 
 /**
  * Add a filter to the current request.  Filters are added in a FIFO manner.
@@ -345,7 +345,7 @@ API_EXPORT(void) ap_add_input_filter(const char *name, void *ctx, request_rec *r
  * @param c The connection to add this filter for
  * @deffunc void ap_add_output_filter(const char *name, void *ctx, request_rec *r, conn_rec *c)
  */
-API_EXPORT(void) ap_add_output_filter(const char *name, void *ctx, 
+AP_DECLARE(void) ap_add_output_filter(const char *name, void *ctx, 
                                       request_rec *r, conn_rec *c);
 
 /* The next two filters are for abstraction purposes only.  They could be
@@ -371,7 +371,7 @@ API_EXPORT(void) ap_add_output_filter(const char *name, void *ctx,
  *          on return
  * @deffunc void ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **save_to, ap_bucket_brigade **b)
  */
-API_EXPORT(void) ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **save_to,
+AP_DECLARE(void) ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **save_to,
                                         ap_bucket_brigade **b);    
 
 #ifdef __cplusplus

@@ -150,7 +150,7 @@ typedef struct {
     apr_array_header_t *conditionals;
 } sei_cfg_rec;
 
-module MODULE_VAR_EXPORT setenvif_module;
+module AP_MODULE_DECLARE_DATA setenvif_module;
 
 /*
  * These routines, the create- and merge-config functions, are called
@@ -458,7 +458,7 @@ static void register_hooks(void)
     ap_hook_post_read_request(match_headers, NULL, NULL, AP_HOOK_MIDDLE);
 }
 
-module MODULE_VAR_EXPORT setenvif_module =
+module AP_MODULE_DECLARE_DATA setenvif_module =
 {
     STANDARD20_MODULE_STUFF,
     create_setenvif_config_dir, /* dir config creater */

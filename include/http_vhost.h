@@ -112,7 +112,7 @@ void ap_update_vhost_from_headers(request_rec *r);
  * return 0 otherwise
  * @deffunc int ap_matches_request_vhost(request_rec *r, const char *host, unsigned port)
  */
-API_EXPORT(int) ap_matches_request_vhost(request_rec *r, const char *host,
+AP_DECLARE(int) ap_matches_request_vhost(request_rec *r, const char *host,
     unsigned port);
 
 #ifdef __cplusplus

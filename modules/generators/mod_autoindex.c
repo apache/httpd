@@ -85,7 +85,7 @@
 #include <strings.h>
 #endif
 
-module MODULE_VAR_EXPORT autoindex_module;
+module AP_MODULE_DECLARE_DATA autoindex_module;
 
 /****************************************************************
  *
@@ -1693,7 +1693,7 @@ static const handler_rec autoindex_handlers[] =
     {NULL}
 };
 
-module MODULE_VAR_EXPORT autoindex_module =
+module AP_MODULE_DECLARE_DATA autoindex_module =
 {
     STANDARD20_MODULE_STUFF,
     create_autoindex_config,	/* dir config creater */

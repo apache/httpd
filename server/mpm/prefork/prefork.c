@@ -190,7 +190,7 @@ int tpf_child = 0;
 char tpf_server_name[INETD_SERVNAME_LENGTH+1];
 #endif /* TPF */
 
-API_VAR_EXPORT scoreboard *ap_scoreboard_image = NULL;
+AP_DECLARE_DATA scoreboard *ap_scoreboard_image = NULL;
 static new_scoreboard *ap_new_scoreboard_image = NULL;
 
 #ifdef GPROF
@@ -381,12 +381,12 @@ apr_inline void ap_sync_scoreboard_image(void)
 #endif
 }
 
-API_EXPORT(int) ap_exists_scoreboard_image(void)
+AP_DECLARE(int) ap_exists_scoreboard_image(void)
 {
     return (ap_scoreboard_image ? 1 : 0);
 }
 
-API_EXPORT(int) ap_get_max_daemons(void)
+AP_DECLARE(int) ap_get_max_daemons(void)
 {
     return ap_max_daemons_limit;
 }
@@ -1855,7 +1855,7 @@ AP_INIT_TAKE1("CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF,
 { NULL }
 };
 
-module MODULE_VAR_EXPORT mpm_prefork_module = {
+module AP_MODULE_DECLARE_DATA mpm_prefork_module = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook to run before apache parses args */
     NULL,			/* create per-directory config structure */

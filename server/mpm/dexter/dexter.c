@@ -99,7 +99,7 @@ static int max_spare_threads = 0;
 static int max_threads = 0;
 static int max_requests_per_child = 0;
 static const char *ap_pid_fname=NULL;
-API_VAR_EXPORT const char *ap_scoreboard_fname=NULL;
+AP_DECLARE_DATA const char *ap_scoreboard_fname=NULL;
 static int num_daemons=0;
 static int workers_may_exit = 0;
 static int requests_this_child;
@@ -173,7 +173,7 @@ static apr_lock_t *process_accept_mutex;
 static const char *lock_fname;
 static pthread_mutex_t thread_accept_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-API_EXPORT(int) ap_get_max_daemons(void)
+AP_DECLARE(int) ap_get_max_daemons(void)
 {
     return ap_max_daemons_limit;
 }
@@ -1397,7 +1397,7 @@ AP_INIT_TAKE1("CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF,
 { NULL }
 };
 
-module MODULE_VAR_EXPORT mpm_dexter_module = {
+module AP_MODULE_DECLARE_DATA mpm_dexter_module = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook to run before apache parses args */
     NULL,			/* create per-directory config structure */

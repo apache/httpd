@@ -97,7 +97,7 @@ static int min_spare_threads=0;
 static int max_spare_threads=0;
 static int ap_thread_limit=0;
 static time_t ap_restart_time=0;
-API_VAR_EXPORT int ap_extended_status = 0;
+AP_DECLARE_DATA int ap_extended_status = 0;
 static int num_listening_sockets = 0; /* set by open_listeners in ap_mpm_run */
 static apr_socket_t ** listening_sockets;
 apr_lock_t *accept_mutex = NULL;
@@ -140,7 +140,7 @@ static int one_process = 0;
 int raise_sigstop_flags;
 #endif
 
-API_EXPORT(int) ap_get_max_daemons(void)
+AP_DECLARE(int) ap_get_max_daemons(void)
 {
     return ap_max_child_assigned;
 }
@@ -1069,7 +1069,7 @@ AP_INIT_TAKE1( "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF,
 { NULL }
 };
 
-module MODULE_VAR_EXPORT mpm_beos_module = {
+module AP_MODULE_DECLARE_DATA mpm_beos_module = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook to run before apache parses args */
     NULL,			/* create per-directory config structure */

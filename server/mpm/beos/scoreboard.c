@@ -89,7 +89,7 @@ void cleanup_scoreboard(void)
     ap_scoreboard_image = NULL;
 }
 
-API_EXPORT(int) ap_exists_scoreboard_image(void)
+AP_DECLARE(int) ap_exists_scoreboard_image(void)
 {
     return (ap_scoreboard_image ? 1 : 0);
 }

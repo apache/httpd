@@ -76,7 +76,7 @@ extern "C" {
  * @return The checksum
  * @deffunc char *ap_md5(apr_pool_t *a, const unsigned char *string)
  */
-API_EXPORT(char *) ap_md5(apr_pool_t *a, const unsigned char *string);
+AP_DECLARE(char *) ap_md5(apr_pool_t *a, const unsigned char *string);
 
 /**
  * Create an MD5 checksum of a string of binary data
@@ -86,7 +86,7 @@ API_EXPORT(char *) ap_md5(apr_pool_t *a, const unsigned char *string);
  * @return The checksum
  * @deffunc char *ap_md5_binary(apr_pool_t *a, const unsigned char *buf, int len)
  */
-API_EXPORT(char *) ap_md5_binary(apr_pool_t *a, const unsigned char *buf, int len);
+AP_DECLARE(char *) ap_md5_binary(apr_pool_t *a, const unsigned char *buf, int len);
 
 /**
  * Convert an MD5 checksum into a base64 encoding
@@ -95,7 +95,7 @@ API_EXPORT(char *) ap_md5_binary(apr_pool_t *a, const unsigned char *buf, int le
  * @return The converted encoding
  * @deffunc char *ap_md5contextTo64(apr_pool_t *p, apr_md5_ctx_t *context)
  */
-API_EXPORT(char *) ap_md5contextTo64(apr_pool_t *p, apr_md5_ctx_t *context);
+AP_DECLARE(char *) ap_md5contextTo64(apr_pool_t *p, apr_md5_ctx_t *context);
 
 #ifdef APACHE_XLATE
 /**
@@ -106,10 +106,10 @@ API_EXPORT(char *) ap_md5contextTo64(apr_pool_t *p, apr_md5_ctx_t *context);
  * @warning The xlate parameter is only available if APACHE_XLATE is defined
  * @deffunc char *ap_md5digest(apr_pool_t *p, apr_file_t *infile, apr_xlate_t *xlate)
  */
-API_EXPORT(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile,
+AP_DECLARE(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile,
                                 apr_xlate_t *xlate);
 #else
-API_EXPORT(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile);
+AP_DECLARE(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile);
 #endif
 
 #ifdef __cplusplus

@@ -251,7 +251,7 @@ static int parse_byterange(char *range, long clength, long *start, long *end)
 static int internal_byterange(int, long *, request_rec *, const char **,
 			      apr_off_t *, apr_size_t *);
 
-API_EXPORT(int) ap_set_byterange(request_rec *r)
+AP_DECLARE(int) ap_set_byterange(request_rec *r)
 {
     const char *range, *if_range, *match;
     long range_start, range_end;
@@ -324,7 +324,7 @@ API_EXPORT(int) ap_set_byterange(request_rec *r)
     return 1;
 }
 
-API_EXPORT(int) ap_each_byterange(request_rec *r, apr_off_t *offset,
+AP_DECLARE(int) ap_each_byterange(request_rec *r, apr_off_t *offset,
 				  apr_size_t *length)
 {
     return internal_byterange(1, NULL, r, &r->range, offset, length);
@@ -414,14 +414,14 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
     return 1;
 }
 
-API_EXPORT(int) ap_set_content_length(request_rec *r, long clength)
+AP_DECLARE(int) ap_set_content_length(request_rec *r, long clength)
 {
     r->clength = clength;
     apr_table_setn(r->headers_out, "Content-Length", apr_psprintf(r->pool, "%ld", clength));
     return 0;
 }
 
-API_EXPORT(int) ap_set_keepalive(request_rec *r)
+AP_DECLARE(int) ap_set_keepalive(request_rec *r)
 {
     int ka_sent = 0;
     int wimpy = ap_find_token(r->pool,
@@ -519,7 +519,7 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
  * to limit the number of calls to time().  We don't check for futurosity
  * unless the mtime is at least as new as the reference.
  */
-API_EXPORT(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
+AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
 {
     apr_time_t now;
 
@@ -536,7 +536,7 @@ API_EXPORT(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
     return (mtime > now) ? now : mtime;
 }
 
-API_EXPORT(int) ap_meets_conditions(request_rec *r)
+AP_DECLARE(int) ap_meets_conditions(request_rec *r)
 {
     const char *etag = apr_table_get(r->headers_out, "ETag");
     const char *if_match, *if_modified_since, *if_unmodified, *if_nonematch;
@@ -651,7 +651,7 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
  * could be modified again in as short an interval.  We rationalize the
  * modification time we're given to keep it from being in the future.
  */
-API_EXPORT(char *) ap_make_etag(request_rec *r, int force_weak)
+AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
 {
     char *etag;
     char *weak;
@@ -687,7 +687,7 @@ API_EXPORT(char *) ap_make_etag(request_rec *r, int force_weak)
     return etag;
 }
 
-API_EXPORT(void) ap_set_etag(request_rec *r)
+AP_DECLARE(void) ap_set_etag(request_rec *r)
 {
     char *etag;
     char *variant_etag, *vlv;
@@ -736,7 +736,7 @@ API_EXPORT(void) ap_set_etag(request_rec *r)
  * of the mtime field in the request structure - rationalized to keep it from
  * being in the future.
  */
-API_EXPORT(void) ap_set_last_modified(request_rec *r)
+AP_DECLARE(void) ap_set_last_modified(request_rec *r)
 {
     apr_time_t mod_time = ap_rationalize_mtime(r, r->mtime);
     char *datestr = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
@@ -751,7 +751,7 @@ API_EXPORT(void) ap_set_last_modified(request_rec *r)
  * list.  Hopefully it (and other routines) can eventually be moved to
  * something like a mod_http_methods.c, complete with config stuff.
  */
-API_EXPORT(int) ap_method_number_of(const char *method)
+AP_DECLARE(int) ap_method_number_of(const char *method)
 {
     switch (*method) {
         case 'H':
@@ -814,7 +814,7 @@ API_EXPORT(int) ap_method_number_of(const char *method)
  * Turn a known method number into a name.  Doesn't work for
  * extension methods, obviously.
  */
-API_EXPORT(const char *) ap_method_name_of(int methnum)
+AP_DECLARE(const char *) ap_method_name_of(int methnum)
 {
     static const char *AP_HTTP_METHODS[METHODS] = { NULL };
 
@@ -1061,7 +1061,7 @@ static int getline(char *s, int n, conn_rec *c, int fold)
  * - sets r->uri to request uri (without r->args part)
  * - sets r->hostname (if not set already) from request (scheme://host:port)
  */
-CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri)
+AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
 {
     int status = HTTP_OK;
 
@@ -1483,7 +1483,7 @@ void ap_finalize_sub_req_protocol(request_rec *sub)
  * Support for the Basic authentication protocol, and a bit for Digest.
  */
 
-API_EXPORT(void) ap_note_auth_failure(request_rec *r)
+AP_DECLARE(void) ap_note_auth_failure(request_rec *r)
 {
     if (!strcasecmp(ap_auth_type(r), "Basic"))
         ap_note_basic_auth_failure(r);
@@ -1491,7 +1491,7 @@ API_EXPORT(void) ap_note_auth_failure(request_rec *r)
         ap_note_digest_auth_failure(r);
 }
 
-API_EXPORT(void) ap_note_basic_auth_failure(request_rec *r)
+AP_DECLARE(void) ap_note_basic_auth_failure(request_rec *r)
 {
     if (strcasecmp(ap_auth_type(r), "Basic"))
         ap_note_auth_failure(r);
@@ -1502,7 +1502,7 @@ API_EXPORT(void) ap_note_basic_auth_failure(request_rec *r)
                           NULL));
 }
 
-API_EXPORT(void) ap_note_digest_auth_failure(request_rec *r)
+AP_DECLARE(void) ap_note_digest_auth_failure(request_rec *r)
 {
     apr_table_setn(r->err_headers_out,
 	    r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate",
@@ -1510,7 +1510,7 @@ API_EXPORT(void) ap_note_digest_auth_failure(request_rec *r)
 		ap_auth_name(r), r->request_time));
 }
 
-API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
+AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 {
     const char *auth_line = apr_table_get(r->headers_in,
                                       r->proxyreq ? "Proxy-Authorization"
@@ -1639,7 +1639,7 @@ static const char * const status_lines[RESPONSE_CODES] =
  * If that sad event occurs, replace the code below with a linear search
  * from status_lines[shortcut[i]] to status_lines[shortcut[i+1]-1];
  */
-API_EXPORT(int) ap_index_of_response(int status)
+AP_DECLARE(int) ap_index_of_response(int status)
 {
     static int shortcut[6] = {0, LEVEL_200, LEVEL_300, LEVEL_400,
     LEVEL_500, RESPONSE_CODES};
@@ -1663,7 +1663,7 @@ API_EXPORT(int) ap_index_of_response(int status)
     return LEVEL_500;           /* 600 or above is also illegal */
 }
 
-API_EXPORT(const char *) ap_get_status_line(int status)
+AP_DECLARE(const char *) ap_get_status_line(int status)
 {
     return status_lines[ap_index_of_response(status)];
 }
@@ -1673,13 +1673,13 @@ API_EXPORT(const char *) ap_get_status_line(int status)
  * In other words, don't change this one without checking table_do in alloc.c.
  * It returns true unless there was a write error of some kind.
  */
-API_EXPORT_NONSTD(int) ap_send_header_field(request_rec *r,
+AP_DECLARE_NONSTD(int) ap_send_header_field(request_rec *r,
     const char *fieldname, const char *fieldval)
 {
     return (0 < checked_bputstrs(r, fieldname, ": ", fieldval, CRLF, NULL));
 }
 
-API_EXPORT(void) ap_basic_http_header(request_rec *r)
+AP_DECLARE(void) ap_basic_http_header(request_rec *r)
 {
     char *protocol;
     char *date = NULL;
@@ -1757,7 +1757,7 @@ static void terminate_header(request_rec *r)
  * Create a new method list with the specified number of preallocated
  * extension slots.
  */
-API_EXPORT(ap_method_list_t *) ap_make_method_list(apr_pool_t *p, int nelts)
+AP_DECLARE(ap_method_list_t *) ap_make_method_list(apr_pool_t *p, int nelts)
 {
     ap_method_list_t *ml;
 
@@ -1771,7 +1771,7 @@ API_EXPORT(ap_method_list_t *) ap_make_method_list(apr_pool_t *p, int nelts)
  * Make a copy of a method list (primarily for subrequests that may
  * subsequently change it; don't want them changing the parent's, too!).
  */
-API_EXPORT(void) ap_copy_method_list(ap_method_list_t *dest,
+AP_DECLARE(void) ap_copy_method_list(ap_method_list_t *dest,
 				     ap_method_list_t *src)
 {
     int i;
@@ -1789,7 +1789,7 @@ API_EXPORT(void) ap_copy_method_list(ap_method_list_t *dest,
 /*
  * Invoke a callback routine for each method in the specified list.
  */
-API_EXPORT_NONSTD(void) ap_method_list_do(int (*comp) (void *urec, const char *mname,
+AP_DECLARE_NONSTD(void) ap_method_list_do(int (*comp) (void *urec, const char *mname,
 						       int mnum),
 				          void *rec,
 				          const ap_method_list_t *ml, ...)
@@ -1800,7 +1800,7 @@ API_EXPORT_NONSTD(void) ap_method_list_do(int (*comp) (void *urec, const char *m
     va_end(vp);  
 }
 
-API_EXPORT(void) ap_method_list_vdo(int (*comp) (void *mrec,
+AP_DECLARE(void) ap_method_list_vdo(int (*comp) (void *mrec,
 						 const char *mname,
 						 int mnum),
 				    void *rec, const ap_method_list_t *ml,
@@ -1813,7 +1813,7 @@ API_EXPORT(void) ap_method_list_vdo(int (*comp) (void *mrec,
  * Return true if the specified HTTP method is in the provided
  * method list.
  */
-API_EXPORT(int) ap_method_in_list(ap_method_list_t *l, const char *method)
+AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method)
 {
     int methnum;
     int i;
@@ -1844,7 +1844,7 @@ API_EXPORT(int) ap_method_in_list(ap_method_list_t *l, const char *method)
 /*
  * Add the specified method to a method list (if it isn't already there).
  */
-API_EXPORT(void) ap_method_list_add(ap_method_list_t *l, const char *method)
+AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method)
 {
     int methnum;
     int i;
@@ -1877,7 +1877,7 @@ API_EXPORT(void) ap_method_list_add(ap_method_list_t *l, const char *method)
 /*
  * Remove the specified method from a method list.
  */
-API_EXPORT(void) ap_method_list_remove(ap_method_list_t *l,
+AP_DECLARE(void) ap_method_list_remove(ap_method_list_t *l,
 				       const char *method)
 {
     int methnum;
@@ -1914,7 +1914,7 @@ API_EXPORT(void) ap_method_list_remove(ap_method_list_t *l,
 /*
  * Reset a method list to be completely empty.
  */
-API_EXPORT(void) ap_clear_method_list(ap_method_list_t *l)
+AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l)
 {
     l->method_mask = 0;
     l->method_list->nelts = 0;
@@ -1966,7 +1966,7 @@ static char *make_allow(request_rec *r)
     return list + 2;
 }
 
-API_EXPORT(int) ap_send_http_trace(request_rec *r)
+AP_DECLARE(int) ap_send_http_trace(request_rec *r)
 {
     int rv;
 
@@ -2107,7 +2107,7 @@ static void fixup_vary(request_rec *r)
     }
 }
 
-API_EXPORT(void) ap_send_http_header(request_rec *r)
+AP_DECLARE(void) ap_send_http_header(request_rec *r)
 {
     int i;
     const long int zero = 0L;
@@ -2221,7 +2221,7 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
  * information for any wrappers around the response message body
  * (i.e., transfer encodings).  It should have been named finalize_response.
  */
-API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
+AP_DECLARE(void) ap_finalize_request_protocol(request_rec *r)
 {
     /* tell the filter chain there is no more content coming */
     if (!r->eos_sent) {
@@ -2268,7 +2268,7 @@ API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
  *    If an error occurs on input, we force an end to keepalive.
  */
 
-API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
+AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
 {
     const char *tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
     const char *lenp = apr_table_get(r->headers_in, "Content-Length");
@@ -2347,7 +2347,7 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
     return OK;
 }
 
-API_EXPORT(int) ap_should_client_block(request_rec *r)
+AP_DECLARE(int) ap_should_client_block(request_rec *r)
 {
     /* First check if we have already read the request body */
 
@@ -2401,7 +2401,7 @@ static long get_chunk_size(char *b)
  * hold a chunk-size line, including any extensions. For now, we'll leave
  * that to the caller, at least until we can come up with a better solution.
  */
-API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
+AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 {
     int c;
     apr_size_t len_to_read;
@@ -2618,7 +2618,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
  *    if ((retval = ap_discard_request_body(r)) != OK)
  *        return retval;
  */
-API_EXPORT(int) ap_discard_request_body(request_rec *r)
+AP_DECLARE(int) ap_discard_request_body(request_rec *r)
 {
     int rv;
 
@@ -2650,7 +2650,7 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
 /*
  * Send the body of a response to the client.
  */
-API_EXPORT(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t offset, 
+AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t offset, 
                                     apr_size_t len, apr_size_t *nbytes) 
 {
     ap_bucket_brigade *bb = NULL;
@@ -2678,7 +2678,7 @@ API_EXPORT(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
 }
 #if 0
 /* Leave the old implementation around temporarily for reference purposes */
-API_EXPORT(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t offset, 
+AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t offset, 
                                    apr_size_t length, apr_size_t *nbytes) 
 {
     apr_status_t rv = APR_SUCCESS;
@@ -2768,7 +2768,7 @@ API_EXPORT(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
 #endif
 
 /* send data from an in-memory buffer */
-API_EXPORT(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
+AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
                              size_t length)
 {
     ap_bucket_brigade *bb = NULL;
@@ -2787,7 +2787,7 @@ API_EXPORT(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
 }
 #endif /* USE_MMAP_FILES */
 
-API_EXPORT(int) ap_rputc(int c, request_rec *r)
+AP_DECLARE(int) ap_rputc(int c, request_rec *r)
 {
     ap_bucket_brigade *bb = NULL;
     ap_bucket *b;
@@ -2805,7 +2805,7 @@ API_EXPORT(int) ap_rputc(int c, request_rec *r)
     return c;
 }
 
-API_EXPORT(int) ap_rputs(const char *str, request_rec *r)
+AP_DECLARE(int) ap_rputs(const char *str, request_rec *r)
 {
     ap_bucket_brigade *bb = NULL;
     ap_bucket *b;
@@ -2825,7 +2825,7 @@ API_EXPORT(int) ap_rputs(const char *str, request_rec *r)
     return len;
 }
 
-API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
+AP_DECLARE(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
 {
     ap_bucket_brigade *bb = NULL;
     ap_bucket *b;
@@ -2842,7 +2842,7 @@ API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
     return nbyte;
 }
 
-API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
+AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
 {
     ap_bucket_brigade *bb = NULL;
     apr_ssize_t written;
@@ -2860,7 +2860,7 @@ API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
 /* TODO:  Make ap pa_bucket_vprintf that printfs directly into a
  * bucket.
  */
-API_EXPORT_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt, ...)
+AP_DECLARE_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt, ...)
 {
     va_list va;
     int n;
@@ -2875,7 +2875,7 @@ API_EXPORT_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt, ...)
     return n;
 }
 
-API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r, ...)
+AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r, ...)
 {
     ap_bucket_brigade *bb = NULL;
     apr_ssize_t written;
@@ -2892,7 +2892,7 @@ API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r, ...)
     return written;
 }
 
-API_EXPORT(int) ap_rflush(request_rec *r)
+AP_DECLARE(int) ap_rflush(request_rec *r)
 {
     /* ### this is probably incorrect, but we have no mechanism for telling
        ### the filter chain to flush any content they may be holding.
@@ -3152,7 +3152,7 @@ static const char *get_canned_error_string(int status,
  * and 5xx (server error) messages that have not been redirected to another
  * handler via the ErrorDocument feature.
  */
-API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
+AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
 {
     int status = r->status;
     int idx = ap_index_of_response(status);

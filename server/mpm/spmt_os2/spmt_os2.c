@@ -234,12 +234,12 @@ static void accept_mutex_off(void)
 #define SAFE_ACCEPT(stmt) do {stmt;} while(0)
 #endif
 
-API_EXPORT(int) ap_exists_scoreboard_image(void)
+AP_DECLARE(int) ap_exists_scoreboard_image(void)
 {
     return (ap_scoreboard_image ? 1 : 0);
 }
 
-API_EXPORT(int) ap_get_max_daemons(void)
+AP_DECLARE(int) ap_get_max_daemons(void)
 {
     return max_daemons_limit;
 }
@@ -685,7 +685,7 @@ static void set_signals(void)
  * Child process main loop.
  */
 
-API_EXPORT(void) ap_child_terminate(request_rec *r)
+AP_DECLARE(void) ap_child_terminate(request_rec *r)
 {
     r->connection->keepalive = 0;
     ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].deferred_die = 1;
@@ -1541,13 +1541,13 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
 
 /* Stub functions until this MPM supports the connection status API */
 
-API_EXPORT(void) ap_update_connection_status(long conn_id, const char *key, \
+AP_DECLARE(void) ap_update_connection_status(long conn_id, const char *key, \
                                              const char *value)
 {
     /* NOP */
 }
 
-API_EXPORT(void) ap_reset_connection_status(long conn_id)
+AP_DECLARE(void) ap_reset_connection_status(long conn_id)
 {
     /* NOP */
 }
@@ -1571,7 +1571,7 @@ LISTEN_COMMANDS
 { NULL }
 };
 
-module MODULE_VAR_EXPORT mpm_spmt_os2_module = {
+module AP_MODULE_DECLARE_DATA mpm_spmt_os2_module = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook to run before apache parses args */
     NULL,			/* create per-directory config structure */

@@ -112,7 +112,7 @@ typedef struct {
     char *fname;
 } info_clines;
 
-module MODULE_VAR_EXPORT info_module;
+module AP_MODULE_DECLARE_DATA info_module;
 extern module *top_module;
 
 /* shamelessly lifted from http_config.c */
@@ -733,7 +733,7 @@ static const handler_rec info_handlers[] =
     {NULL}
 };
 
-module MODULE_VAR_EXPORT info_module =
+module AP_MODULE_DECLARE_DATA info_module =
 {
     STANDARD_MODULE_STUFF,
     NULL,                       /* initializer */

@@ -790,7 +790,7 @@ static int matches_aliases(server_rec *s, const char *host)
  * we just call it a match.  But here we require the host:port to match
  * the ServerName and/or ServerAliases.
  */
-API_EXPORT(int) ap_matches_request_vhost(request_rec *r, const char *host,
+AP_DECLARE(int) ap_matches_request_vhost(request_rec *r, const char *host,
     unsigned port)
 {
     server_rec *s;

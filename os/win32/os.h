@@ -125,10 +125,10 @@ __inline int ap_os_is_path_absolute(const char *file)
 }
 
 /* OS-dependent filename routines in util_win32.c */
-API_EXPORT(char *) ap_os_canonical_filename(apr_pool_t *p, const char *file);
-API_EXPORT(char *) ap_os_case_canonical_filename(apr_pool_t *pPool, const char *szFile);
-API_EXPORT(char *) ap_os_systemcase_filename(apr_pool_t *pPool, const char *szFile);
-API_EXPORT(int) ap_os_is_filename_valid(const char *file);
+AP_DECLARE(char *) ap_os_canonical_filename(apr_pool_t *p, const char *file);
+AP_DECLARE(char *) ap_os_case_canonical_filename(apr_pool_t *pPool, const char *szFile);
+AP_DECLARE(char *) ap_os_systemcase_filename(apr_pool_t *pPool, const char *szFile);
+AP_DECLARE(int) ap_os_is_filename_valid(const char *file);
 
 typedef void thread;
 typedef void event;

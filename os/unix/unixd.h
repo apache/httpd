@@ -89,7 +89,7 @@ const char *unixd_set_user(cmd_parms *cmd, void *dummy, const char *arg);
 const char *unixd_set_group(cmd_parms *cmd, void *dummy, const char *arg);
 #if defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || \
     defined(RLIMIT_NPROC) || defined(RLIMIT_AS)
-API_EXPORT(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
+AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
                            const char *arg, const char * arg2, int type);
 #endif
 

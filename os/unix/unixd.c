@@ -339,7 +339,7 @@ void unixd_siglist_init(void)
 }
 #endif /* NEED_AP_SYS_SIGLIST */
 
-API_EXPORT(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit, 
+AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit, 
                            const char *arg, const char * arg2, int type)
 {
 #if (defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_NPROC) || defined(RLIMIT_AS)) && APR_HAVE_STRUCT_RLIMIT && APR_HAVE_GETRLIMIT

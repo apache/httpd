@@ -149,7 +149,7 @@ void ap_open_logs (server_rec *s_main, apr_pool_t *p);
  * untrusted data.
  * @deffunc void ap_log_error(const char *file, int line, int level, apr_status_t status, const server_rec *s, const char *fmt, ...) 
  */
-API_EXPORT(void) ap_log_error(const char *file, int line, int level, 
+AP_DECLARE(void) ap_log_error(const char *file, int line, int level, 
                              apr_status_t status, const server_rec *s, 
                              const char *fmt, ...)
 			    __attribute__((format(printf,6,7)));
@@ -173,7 +173,7 @@ API_EXPORT(void) ap_log_error(const char *file, int line, int level,
  * untrusted data.
  * @deffunc void ap_log_error(const char *file, int line, int level, apr_status_t status, apr_pool_t *p, const char *fmt, ...) 
  */
-API_EXPORT(void) ap_log_perror(const char *file, int line, int level, 
+AP_DECLARE(void) ap_log_perror(const char *file, int line, int level, 
                              apr_status_t status, apr_pool_t *p, 
                              const char *fmt, ...)
 			    __attribute__((format(printf,6,7)));
@@ -197,7 +197,7 @@ API_EXPORT(void) ap_log_perror(const char *file, int line, int level,
  * untrusted data.
  * @deffunc void ap_log_error(const char *file, int line, int level, apr_status_t status, request_rec *s, const char *fmt, ...) 
  */
-API_EXPORT(void) ap_log_rerror(const char *file, int line, int level, 
+AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level, 
                                apr_status_t status, const request_rec *s, 
                                const char *fmt, ...)
 			    __attribute__((format(printf,6,7)));
@@ -207,7 +207,7 @@ API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
  * @param s The current server
  * @deffunc void ap_error_log2stderr(server_rec *s)
  */
-API_EXPORT(void) ap_error_log2stderr (server_rec *);
+AP_DECLARE(void) ap_error_log2stderr (server_rec *);
 
 /**
  * Log the current pid of the parent process
@@ -244,14 +244,14 @@ struct piped_log {
  * @return The piped log structure
  * @deffunc piped_log *ap_open_piped_log(apr_pool_t *p, const char *program)
  */
-API_EXPORT(piped_log *) ap_open_piped_log (apr_pool_t *p, const char *program);
+AP_DECLARE(piped_log *) ap_open_piped_log (apr_pool_t *p, const char *program);
 
 /**
  * Close the piped log and kill the logging process
  * @param pl The piped log structure
  * @deffunc void ap_close_piped_log(piped_log *pl)
  */
-API_EXPORT(void) ap_close_piped_log (piped_log *);
+AP_DECLARE(void) ap_close_piped_log (piped_log *);
 
 /**
  * A macro to access the read side of the piped log pipe

@@ -124,7 +124,7 @@ extern apr_xlate_t *ap_locale_from_ascii;
  * @param The translation handle to use for the actual work
  * @deffunc apr_status_t ap_set_content_xlate(request_rec *r, int output, apr_xlate_t *xlate)
  */
-API_EXPORT(apr_status_t) ap_set_content_xlate(request_rec *r, int output,
+AP_DECLARE(apr_status_t) ap_set_content_xlate(request_rec *r, int output,
                                              apr_xlate_t *xlate);
 
 #ifdef __cplusplus

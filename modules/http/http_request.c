@@ -817,7 +817,7 @@ static request_rec *make_sub_request(const request_rec *r)
     return rr;
 }
 
-API_EXPORT(request_rec *) ap_sub_req_method_uri(const char *method,
+AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
                                                 const char *new_file,
                                                 const request_rec *r)
 {
@@ -908,13 +908,13 @@ API_EXPORT(request_rec *) ap_sub_req_method_uri(const char *method,
     return rnew;
 }
 
-API_EXPORT(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
+AP_DECLARE(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
                                                 const request_rec *r)
 {
     return ap_sub_req_method_uri("GET", new_file, r);
 }
 
-API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
+AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
                                               const request_rec *r)
 {
     request_rec *rnew;
@@ -1039,7 +1039,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     return rnew;
 }
 
-API_EXPORT(int) ap_run_sub_req(request_rec *r)
+AP_DECLARE(int) ap_run_sub_req(request_rec *r)
 {
     int retval;
 
@@ -1050,7 +1050,7 @@ API_EXPORT(int) ap_run_sub_req(request_rec *r)
     return retval;
 }
 
-API_EXPORT(void) ap_destroy_sub_req(request_rec *r)
+AP_DECLARE(void) ap_destroy_sub_req(request_rec *r)
 {
     /* Reclaim the space */
     apr_destroy_pool(r->pool);
@@ -1061,7 +1061,7 @@ API_EXPORT(void) ap_destroy_sub_req(request_rec *r)
  * Mainline request processing...
  */
 
-API_EXPORT(void) ap_die(int type, request_rec *r)
+AP_DECLARE(void) ap_die(int type, request_rec *r)
 {
     int error_index = ap_index_of_response(type);
     char *custom_response = ap_response_code_string(r, error_index);
@@ -1176,7 +1176,7 @@ static void decl_die(int status, char *phase, request_rec *r)
         ap_die(status, r);
 }
 
-API_EXPORT(int) ap_some_auth_required(request_rec *r)
+AP_DECLARE(int) ap_some_auth_required(request_rec *r)
 {
     /* Is there a require line configured for the type of *this* req? */
 
@@ -1459,7 +1459,7 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     return new;
 }
 
-API_EXPORT(void) ap_internal_redirect(const char *new_uri, request_rec *r)
+AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r)
 {
     request_rec *new = internal_internal_redirect(new_uri, r);
     process_request_internal(new);
@@ -1469,7 +1469,7 @@ API_EXPORT(void) ap_internal_redirect(const char *new_uri, request_rec *r)
  * using AddHandler, and you want to preserve the content type across
  * an internal redirect.
  */
-API_EXPORT(void) ap_internal_redirect_handler(const char *new_uri, request_rec *r)
+AP_DECLARE(void) ap_internal_redirect_handler(const char *new_uri, request_rec *r)
 {
     request_rec *new = internal_internal_redirect(new_uri, r);
     if (r->handler)
@@ -1480,7 +1480,7 @@ API_EXPORT(void) ap_internal_redirect_handler(const char *new_uri, request_rec *
 /*
  * Is it the initial main request, which we only get *once* per HTTP request?
  */
-API_EXPORT(int) ap_is_initial_req(request_rec *r)
+AP_DECLARE(int) ap_is_initial_req(request_rec *r)
 {
     return
         (r->main == NULL)       /* otherwise, this is a sub-request */
@@ -1492,14 +1492,14 @@ API_EXPORT(int) ap_is_initial_req(request_rec *r)
  * Function to set the r->mtime field to the specified value if it's later
  * than what's already there.
  */
-API_EXPORT(void) ap_update_mtime(request_rec *r, apr_time_t dependency_mtime)
+AP_DECLARE(void) ap_update_mtime(request_rec *r, apr_time_t dependency_mtime)
 {
     if (r->mtime < dependency_mtime) {
 	r->mtime = dependency_mtime;
     }
 }
 
-API_EXPORT(void) ap_allow_methods(request_rec *r, int reset, ...) 
+AP_DECLARE(void) ap_allow_methods(request_rec *r, int reset, ...) 
 {
     const char *method;
     va_list methods;

@@ -209,26 +209,26 @@ typedef struct {
 #define SCOREBOARD_FRAMES		SCOREBOARD_SIZE/4095 + 1
 #endif
 
-API_EXPORT(int) ap_exists_scoreboard_image(void);
+AP_DECLARE(int) ap_exists_scoreboard_image(void);
 void reinit_scoreboard(apr_pool_t *p);
 apr_status_t ap_cleanup_shared_mem(void *d);
-API_EXPORT(void) ap_sync_scoreboard_image(void);
+AP_DECLARE(void) ap_sync_scoreboard_image(void);
 void ap_mpmt_pthread_force_reset_connection_status(long conn_id);
 
-API_EXPORT(void) reopen_scoreboard(apr_pool_t *p);
+AP_DECLARE(void) reopen_scoreboard(apr_pool_t *p);
 
 apr_inline void ap_sync_scoreboard_image(void);
 void increment_counts(int child_num, int thread_num, request_rec *r);
 void update_scoreboard_global(void);
-API_EXPORT(int) find_child_by_pid(apr_proc_t *pid);
+AP_DECLARE(int) find_child_by_pid(apr_proc_t *pid);
 int ap_update_child_status(int child_num, int thread_num, int status, request_rec *r);
 void ap_time_process_request(int child_num, int thread_num, int status);
 
 
-API_VAR_EXPORT extern scoreboard *ap_scoreboard_image;
-API_VAR_EXPORT extern const char *ap_scoreboard_fname;
+AP_DECLARE_DATA extern scoreboard *ap_scoreboard_image;
+AP_DECLARE_DATA extern const char *ap_scoreboard_fname;
 
-API_VAR_EXPORT extern ap_generation_t volatile ap_my_generation;
+AP_DECLARE_DATA extern ap_generation_t volatile ap_my_generation;
 
 /* for time_process_request() in http_main.c */
 #define START_PREQUEST 1

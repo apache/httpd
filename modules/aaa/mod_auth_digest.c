@@ -262,7 +262,7 @@ static long shmem_size  = DEF_SHMEM_SIZE;
 static long num_buckets = DEF_NUM_BUCKETS;
 
 
-module MODULE_VAR_EXPORT auth_digest_module;
+module AP_MODULE_DECLARE_DATA auth_digest_module;
 
 /*
  * initialization code
@@ -2061,7 +2061,7 @@ static void register_hooks(void)
     ap_hook_fixups(add_auth_info, NULL, NULL, AP_HOOK_MIDDLE);
 }
 
-module MODULE_VAR_EXPORT auth_digest_module =
+module AP_MODULE_DECLARE_DATA auth_digest_module =
 {
     STANDARD20_MODULE_STUFF,
     create_digest_dir_config,	/* dir config creater */

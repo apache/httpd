@@ -127,21 +127,21 @@ extern "C" {
  * @return the Options bitmask
  * @deffunc int ap_allow_options(request_rec *r)
  */
-API_EXPORT(int) ap_allow_options (request_rec *);
+AP_DECLARE(int) ap_allow_options (request_rec *);
 /**
  * Retrieve the value of the AllowOverride for this request
  * @param r The current request
  * @return the overrides bitmask
  * @deffunc int ap_allow_overrides(request_rec *r)
  */
-API_EXPORT(int) ap_allow_overrides (request_rec *);
+AP_DECLARE(int) ap_allow_overrides (request_rec *);
 /**
  * Retrieve the value of the DefaultType directive, or text/plain if not set
  * @param r The current request
  * @return The default type
  * @deffunc const char *ap_default_type(request_rec *r)
  */
-API_EXPORT(const char *) ap_default_type (request_rec *);     
+AP_DECLARE(const char *) ap_default_type (request_rec *);     
 /**
  * Retrieve the document root for this server
  * @param r The current request
@@ -150,7 +150,7 @@ API_EXPORT(const char *) ap_default_type (request_rec *);
  * @return The document root
  * @deffunc const char *ap_document_root(request_rec *r)
  */
-API_EXPORT(const char *) ap_document_root (request_rec *);
+AP_DECLARE(const char *) ap_document_root (request_rec *);
 /**
  * Lookup the remote client's DNS name or IP address
  * @param conn The current connection
@@ -173,7 +173,7 @@ API_EXPORT(const char *) ap_document_root (request_rec *);
  * @return The remote hostname
  * @deffunc const char *ap_get_remote_host(conn_rec *conn, void *dir_config, int type)
  */
-API_EXPORT(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config, int type);
+AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config, int type);
 /**
  * Retrieve the login name of the remote user.  Undef if it could not be
  * determined
@@ -181,7 +181,7 @@ API_EXPORT(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config, in
  * @return The user logged in to the client machine
  * @deffunc const char *ap_get_remote_logname(request_rec *r)
  */
-API_EXPORT(const char *) ap_get_remote_logname(request_rec *r);
+AP_DECLARE(const char *) ap_get_remote_logname(request_rec *r);
 
 /* Used for constructing self-referencing URLs, and things like SERVER_PORT,
  * and SERVER_NAME.
@@ -194,35 +194,35 @@ API_EXPORT(const char *) ap_get_remote_logname(request_rec *r);
  * @return A fully qualified URL
  * @deffunc char *ap_construct_url(apr_pool_t *p, const char *uri, request_rec *r)
  */
-API_EXPORT(char *) ap_construct_url(apr_pool_t *p, const char *uri, request_rec *r);
+AP_DECLARE(char *) ap_construct_url(apr_pool_t *p, const char *uri, request_rec *r);
 /**
  * Get the current server name from the request
  * @param r The current request
  * @return the server name
  * @deffunc const char *ap_get_server_name(request_rec *r)
  */
-API_EXPORT(const char *) ap_get_server_name(request_rec *r);
+AP_DECLARE(const char *) ap_get_server_name(request_rec *r);
 /**
  * Get the current server port
  * @param The current request
  * @return The server's port
  * @deffunc unsigned ap_get_server_port(const request_rec *r)
  */
-API_EXPORT(unsigned) ap_get_server_port(const request_rec *r);
+AP_DECLARE(unsigned) ap_get_server_port(const request_rec *r);
 /**
  * Return the limit on bytes in request msg body 
  * @param r The current request
  * @return the maximum number of bytes in the request msg body
  * @deffunc unsigned long ap_get_limit_req_body(const request_rec *r)
  */
-API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r);
+AP_DECLARE(unsigned long) ap_get_limit_req_body(const request_rec *r);
 /**
  * Return the limit on bytes in XML request msg body
  * @param r The current request
  * @return the maximum number of bytes in XML request msg body
  * @deffunc size_t ap_get_limit_xml_body(const request_rec *r)
  */
-API_EXPORT(size_t) ap_get_limit_xml_body(const request_rec *r);
+AP_DECLARE(size_t) ap_get_limit_xml_body(const request_rec *r);
 /**
  * Install a custom response handler for a given status
  * @param r The current request
@@ -231,16 +231,16 @@ API_EXPORT(size_t) ap_get_limit_xml_body(const request_rec *r);
  *               or a URL
  * @deffunc void ap_custom_response(request_rec *r, int status, char *string)
  */
-API_EXPORT(void) ap_custom_response(request_rec *r, int status, char *string);
+AP_DECLARE(void) ap_custom_response(request_rec *r, int status, char *string);
 /**
  * Check for a definition from the server command line
  * @param name The define to check for
  * @return 1 if defined, 0 otherwise
  * @deffunc int ap_exists_config_define(const char *name)
  */
-API_EXPORT(int) ap_exists_config_define(const char *name);
+AP_DECLARE(int) ap_exists_config_define(const char *name);
 /* FIXME! See STATUS about how */
-API_EXPORT_NONSTD(int) ap_core_translate(request_rec *r);
+AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r);
 
 /* Authentication stuff.  This is one of the places where compatibility
  * with the old config files *really* hurts; they don't discriminate at
@@ -264,14 +264,14 @@ struct require_line {
  * @return The authorization required
  * @deffunc const char *ap_auth_type(request_rec *r)
  */
-API_EXPORT(const char *) ap_auth_type (request_rec *);
+AP_DECLARE(const char *) ap_auth_type (request_rec *);
 /**
  * Return the current Authorization realm
  * @param r The current request
  * @return The current authorization realm
  * @deffunc const char *ap_auth_name(request_rec *r)
  */
-API_EXPORT(const char *) ap_auth_name (request_rec *);     
+AP_DECLARE(const char *) ap_auth_name (request_rec *);     
 /**
  * How the requires lines must be met.
  * @param r The current request
@@ -283,14 +283,14 @@ API_EXPORT(const char *) ap_auth_name (request_rec *);
  * </PRE>
  * @deffunc int ap_satisfies(request_rec *r)
  */
-API_EXPORT(int) ap_satisfies (request_rec *r);
+AP_DECLARE(int) ap_satisfies (request_rec *r);
 /**
  * Retrieve information about all of the requires directives for this request
  * @param r The current request
  * @return An array of all requires directives for this request
  * @deffunc const apr_array_header_t *ap_requires(request_rec *r)
  */
-API_EXPORT(const apr_array_header_t *) ap_requires (request_rec *);    
+AP_DECLARE(const apr_array_header_t *) ap_requires (request_rec *);    
 
 #ifdef WIN32
 /* 
@@ -301,7 +301,7 @@ typedef enum { eFileTypeUNKNOWN, eFileTypeBIN, eFileTypeEXE16, eFileTypeEXE32,
 typedef enum { INTERPRETER_SOURCE_UNSET, INTERPRETER_SOURCE_REGISTRY_STRICT, 
                INTERPRETER_SOURCE_REGISTRY, INTERPRETER_SOURCE_SHEBANG 
              } interpreter_source_e;
-API_EXPORT(file_type_e) ap_get_win32_interpreter(const request_rec *, 
+AP_DECLARE(file_type_e) ap_get_win32_interpreter(const request_rec *, 
                                                  char **interpreter,
                                                  char **arguments);
 #endif
@@ -316,7 +316,7 @@ API_EXPORT(file_type_e) ap_get_win32_interpreter(const request_rec *,
 
 char *ap_response_code_string (request_rec *r, int error_index);
 
-extern API_VAR_EXPORT module core_module;
+extern AP_DECLARE_DATA module core_module;
 
 /* Per-directory configuration */
 
@@ -451,10 +451,10 @@ typedef struct {
 void ap_core_reorder_directories(apr_pool_t *, server_rec *);
 
 /* for mod_perl */
-CORE_EXPORT(void) ap_add_per_dir_conf (server_rec *s, void *dir_config);
-CORE_EXPORT(void) ap_add_per_url_conf (server_rec *s, void *url_config);
-CORE_EXPORT(void) ap_add_file_conf(core_dir_config *conf, void *url_config);
-CORE_EXPORT_NONSTD(const char *) ap_limit_section (cmd_parms *cmd, void *dummy, const char *arg);
+AP_CORE_DECLARE(void) ap_add_per_dir_conf (server_rec *s, void *dir_config);
+AP_CORE_DECLARE(void) ap_add_per_url_conf (server_rec *s, void *url_config);
+AP_CORE_DECLARE(void) ap_add_file_conf(core_dir_config *conf, void *url_config);
+AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section (cmd_parms *cmd, void *dummy, const char *arg);
 
 #endif
 

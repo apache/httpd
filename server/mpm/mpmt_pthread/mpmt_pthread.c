@@ -94,13 +94,13 @@
 int ap_threads_per_child=0;         /* Worker threads per child */
 int ap_max_requests_per_child=0;
 static const char *ap_pid_fname=NULL;
-API_VAR_EXPORT const char *ap_scoreboard_fname=NULL;
+AP_DECLARE_DATA const char *ap_scoreboard_fname=NULL;
 static int ap_daemons_to_start=0;
 static int min_spare_threads=0;
 static int max_spare_threads=0;
 static int ap_daemons_limit=0;
 static time_t ap_restart_time=0;
-API_VAR_EXPORT int ap_extended_status = 0;
+AP_DECLARE_DATA int ap_extended_status = 0;
 static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listensocks = 0;
@@ -168,7 +168,7 @@ static const char *lock_fname;
 #define SAFE_ACCEPT(stmt) (stmt)
 #endif
 
-API_EXPORT(int) ap_get_max_daemons(void)
+AP_DECLARE(int) ap_get_max_daemons(void)
 {
     return ap_max_daemons_limit;
 }
@@ -1411,7 +1411,7 @@ AP_INIT_TAKE1("CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF,
 { NULL }
 };
 
-module MODULE_VAR_EXPORT mpm_mpmt_pthread_module = {
+module AP_MODULE_DECLARE_DATA mpm_mpmt_pthread_module = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook to run before apache parses args */
     NULL,			/* create per-directory config structure */

@@ -92,7 +92,7 @@
 #include "util_md5.h"
 #include "util_ebcdic.h"
 
-API_EXPORT(char *) ap_md5_binary(apr_pool_t *p, const unsigned char *buf, int length)
+AP_DECLARE(char *) ap_md5_binary(apr_pool_t *p, const unsigned char *buf, int length)
 {
     const char *hex = "0123456789abcdef";
     apr_md5_ctx_t my_md5;
@@ -120,7 +120,7 @@ API_EXPORT(char *) ap_md5_binary(apr_pool_t *p, const unsigned char *buf, int le
     return apr_pstrdup(p, result);
 }
 
-API_EXPORT(char *) ap_md5(apr_pool_t *p, const unsigned char *string)
+AP_DECLARE(char *) ap_md5(apr_pool_t *p, const unsigned char *string)
 {
     return ap_md5_binary(p, string, (int) strlen((char *)string));
 }
@@ -170,7 +170,7 @@ API_EXPORT(char *) ap_md5(apr_pool_t *p, const unsigned char *string)
 static char basis_64[] =
 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-API_EXPORT(char *) ap_md5contextTo64(apr_pool_t *a, apr_md5_ctx_t *context)
+AP_DECLARE(char *) ap_md5contextTo64(apr_pool_t *a, apr_md5_ctx_t *context)
 {
     unsigned char digest[18];
     char *encodedDigest;
@@ -197,7 +197,7 @@ API_EXPORT(char *) ap_md5contextTo64(apr_pool_t *a, apr_md5_ctx_t *context)
 
 #ifdef APACHE_XLATE
 
-API_EXPORT(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile,
+AP_DECLARE(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile,
                                 apr_xlate_t *xlate)
 {
     apr_md5_ctx_t context;
@@ -221,7 +221,7 @@ API_EXPORT(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile,
 
 #else
 
-API_EXPORT(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile)
+AP_DECLARE(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile)
 {
     apr_md5_ctx_t context;
     unsigned char buf[1000];

@@ -94,7 +94,7 @@ static schemes_t schemes[] =
 };
 
 
-API_EXPORT(unsigned short) ap_default_port_for_scheme(const char *scheme_str)
+AP_DECLARE(unsigned short) ap_default_port_for_scheme(const char *scheme_str)
 {
     schemes_t *scheme;
 
@@ -105,7 +105,7 @@ API_EXPORT(unsigned short) ap_default_port_for_scheme(const char *scheme_str)
     return 0;
 }
 
-API_EXPORT(unsigned short) ap_default_port_for_request(const request_rec *r)
+AP_DECLARE(unsigned short) ap_default_port_for_request(const request_rec *r)
 {
     return (r->parsed_uri.scheme)
 	? ap_default_port_for_scheme(r->parsed_uri.scheme)
@@ -116,7 +116,7 @@ API_EXPORT(unsigned short) ap_default_port_for_request(const request_rec *r)
  * from a call to gethostbyname() and lives in static storage.
  * By creating a copy we can tuck it away for later use.
  */
-API_EXPORT(struct hostent *) ap_pduphostent(apr_pool_t *p, const struct hostent *hp)
+AP_DECLARE(struct hostent *) ap_pduphostent(apr_pool_t *p, const struct hostent *hp)
 {
     struct hostent *newent;
     char	  **ptrs;
@@ -169,7 +169,7 @@ API_EXPORT(struct hostent *) ap_pduphostent(apr_pool_t *p, const struct hostent 
  * COPY OF the hostent structure, intended to be stored and used later.
  * (gethostbyname() uses static storage that would be overwritten on each call)
  */
-API_EXPORT(struct hostent *) ap_pgethostbyname(apr_pool_t *p, const char *hostname)
+AP_DECLARE(struct hostent *) ap_pgethostbyname(apr_pool_t *p, const char *hostname)
 {
     struct hostent *hp = gethostbyname(hostname);
     return (hp == NULL) ? NULL : ap_pduphostent(p, hp);
@@ -179,7 +179,7 @@ API_EXPORT(struct hostent *) ap_pgethostbyname(apr_pool_t *p, const char *hostna
 /* Unparse a uri_components structure to an URI string.
  * Optionally suppress the password for security reasons.
  */
-API_EXPORT(char *) ap_unparse_uri_components(apr_pool_t *p, const uri_components *uptr, unsigned flags)
+AP_DECLARE(char *) ap_unparse_uri_components(apr_pool_t *p, const uri_components *uptr, unsigned flags)
 {
     char *ret = "";
 
@@ -242,7 +242,7 @@ API_EXPORT(char *) ap_unparse_uri_components(apr_pool_t *p, const uri_components
 static regex_t re_uri;
 static regex_t re_hostpart;
 
-API_EXPORT(void) ap_util_uri_init(void)
+AP_DECLARE(void) ap_util_uri_init(void)
 {
     int ret;
     const char *re_str;
@@ -311,7 +311,7 @@ API_EXPORT(void) ap_util_uri_init(void)
  *  - fills in fields of uri_components *uptr
  *  - none on any of the r->* fields
  */
-API_EXPORT(int) ap_parse_uri_components(apr_pool_t *p, const char *uri, uri_components *uptr)
+AP_DECLARE(int) ap_parse_uri_components(apr_pool_t *p, const char *uri, uri_components *uptr)
 {
     int ret;
     regmatch_t match[10];	/* This must have at least as much elements
@@ -440,7 +440,7 @@ API_EXPORT(int) ap_parse_uri_components(apr_pool_t *p, const char *uri, uri_comp
 #define NOTEND_HOSTINFO	(T_SLASH | T_QUESTION | T_HASH | T_NUL)
 #define NOTEND_PATH	(T_QUESTION | T_HASH | T_NUL)
 
-API_EXPORT(void) ap_util_uri_init(void)
+AP_DECLARE(void) ap_util_uri_init(void)
 {
     /* nothing to do */
 }
@@ -453,7 +453,7 @@ API_EXPORT(void) ap_util_uri_init(void)
  *  - fills in fields of uri_components *uptr
  *  - none on any of the r->* fields
  */
-API_EXPORT(int) ap_parse_uri_components(apr_pool_t *p, const char *uri, uri_components *uptr)
+AP_DECLARE(int) ap_parse_uri_components(apr_pool_t *p, const char *uri, uri_components *uptr)
 {
     const char *s;
     const char *s1;
@@ -577,7 +577,7 @@ deal_with_host:
  * currently at http://www.mcom.com/newsref/std/tunneling_ssl.html
  * for the format of the "CONNECT host:port HTTP/1.0" request
  */
-API_EXPORT(int) ap_parse_hostinfo_components(apr_pool_t *p, const char *hostinfo, uri_components *uptr)
+AP_DECLARE(int) ap_parse_hostinfo_components(apr_pool_t *p, const char *hostinfo, uri_components *uptr)
 {
     const char *s;
     char *endstr;

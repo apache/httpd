@@ -86,7 +86,7 @@ struct ap_status_table_row_t {
  *            for the connection.
  * @deffunc const char *ap_get_connection_status(long conn_id, const char *key)
  */
-API_EXPORT(const char *) ap_get_connection_status(long conn_id, const char *key);
+AP_DECLARE(const char *) ap_get_connection_status(long conn_id, const char *key);
 
 /**
  * Get an array of current connection IDs.
@@ -94,7 +94,7 @@ API_EXPORT(const char *) ap_get_connection_status(long conn_id, const char *key)
  * @return An array of all the current connection IDs
  * @deffunc apr_array_header_t *ap_get_connections(apr_pool_t *p)
  */
-API_EXPORT(apr_array_header_t *) ap_get_connections(apr_pool_t *p);
+AP_DECLARE(apr_array_header_t *) ap_get_connections(apr_pool_t *p);
 
 /**
  * Get an array of keys from a given connection.
@@ -103,7 +103,7 @@ API_EXPORT(apr_array_header_t *) ap_get_connections(apr_pool_t *p);
  * @return an array of keys from a given connection
  * @deffunc apr_array_header_t *ap_get_connection_keys(apr_pool_t *p, long conn_id)
  */
-API_EXPORT(apr_array_header_t *) ap_get_connection_keys(apr_pool_t *p,
+AP_DECLARE(apr_array_header_t *) ap_get_connection_keys(apr_pool_t *p,
                                                        long conn_id);
 
 /**
@@ -114,7 +114,7 @@ API_EXPORT(apr_array_header_t *) ap_get_connection_keys(apr_pool_t *p,
  * @param value value to set for the key
  * @deffunc void ap_update_connection_status(long conn_id, const char *key, const char *value)
  */
-API_EXPORT(void) ap_update_connection_status(long conn_id, const char *key, const char *value);
+AP_DECLARE(void) ap_update_connection_status(long conn_id, const char *key, const char *value);
 
 /**
  * Clear out this connection's status values. Normally called when a
@@ -122,7 +122,7 @@ API_EXPORT(void) ap_update_connection_status(long conn_id, const char *key, cons
  * @param conn_id The connection ID to clear
  * @deffunc void ap_reset_connection_status(long conn_id)
  */
-API_EXPORT(void) ap_reset_connection_status(long conn_id);
+AP_DECLARE(void) ap_reset_connection_status(long conn_id);
 
 /**
  * Returns the most up-to-date status table available, in the form of an array
@@ -131,7 +131,7 @@ API_EXPORT(void) ap_reset_connection_status(long conn_id);
  * @return The table of statuses for all connections
  * @deffunc apr_array_header_t *ap_get_status_table(apr_pool_t *p)
  */
-API_EXPORT(apr_array_header_t *) ap_get_status_table(apr_pool_t *p);
+AP_DECLARE(apr_array_header_t *) ap_get_status_table(apr_pool_t *p);
 
 #endif /* APACHE_SERVER_STATS_H */
 

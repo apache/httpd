@@ -23,17 +23,17 @@ gid_t ap_group_id;
 void *ap_dummy_mutex = &ap_dummy_mutex;
 char *ap_server_argv0;
 
-API_EXPORT(void) ap_block_alarms(void)
+AP_DECLARE(void) ap_block_alarms(void)
 {
     ;
 }
 
-API_EXPORT(void) ap_unblock_alarms(void)
+AP_DECLARE(void) ap_unblock_alarms(void)
 {
     ;
 }
 
-API_EXPORT(void) ap_log_error(const char *file, int line, int level,
+AP_DECLARE(void) ap_log_error(const char *file, int line, int level,
                                const request_rec *r, const char *fmt, ...)
 {
     ;

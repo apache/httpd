@@ -128,7 +128,7 @@ typedef struct {
     apr_array_header_t *headers;
 } headers_conf;
 
-module MODULE_VAR_EXPORT headers_module;
+module AP_MODULE_DECLARE_DATA headers_module;
 
 static void *create_headers_config(apr_pool_t *p, server_rec *s)
 {
@@ -250,7 +250,7 @@ static void register_hooks(void)
 {
     ap_hook_fixups(fixup_headers,NULL,NULL,AP_HOOK_MIDDLE);
 } 
-module MODULE_VAR_EXPORT headers_module =
+module AP_MODULE_DECLARE_DATA headers_module =
 {
     STANDARD20_MODULE_STUFF,
     create_headers_dir_config,  /* dir config creater */

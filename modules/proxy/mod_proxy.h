@@ -129,7 +129,7 @@
 #include <arpa/inet.h>
 #endif
 
-extern module MODULE_VAR_EXPORT proxy_module;
+extern module AP_MODULE_DECLARE_DATA proxy_module;
 
 
 /* for proxy_canonenc() */
