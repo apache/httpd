@@ -1,5 +1,9 @@
 Changes with Apache 2.0.37
 
+  *) Fixed If-Modified-Since on Win32, which would give false positives
+     because of the sub-second resolution of file timestamps on that
+     platform.  [Cliff Woolley]
+
   *) Reverse the hook ordering for mod_userdir and mod_alias so
      that Alias/ScriptAlias will override Userdir.  PR 8841
      [Joshua Slive]
