@@ -73,9 +73,10 @@ static struct per_thread_data *get_per_thread_data(void);
 /* already called in the knowledge that the characters are hex digits */
 int ap_proxy_hex2c(const char *x)
 {
-    int i, ch;
-
+    int i;
 #ifndef CHARSET_EBCDIC
+    int ch;
+
     ch = x[0];
     if (ap_isdigit(ch))
         i = ch - '0';
