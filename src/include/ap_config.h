@@ -466,12 +466,12 @@ extern char *crypt();
 #define NET_SIZE_T size_t
 #define HAVE_SHMGET
 #define USE_SHMGET_SCOREBOARD
-#ifdef _OSD_POSIX /* BS2000-POSIX mainframe does not have syslog and needs initgroups */
+#ifdef _OSD_POSIX /* BS2000-POSIX mainframe needs initgroups */
 #define NEED_INITGROUPS
 #define NEED_HASHBANG_EMUL /* execve() doesn't start shell scripts by default */
-#undef HAVE_SYSLOG
 #undef HAVE_SHMGET
 #undef USE_SHMGET_SCOREBOARD
+#undef bzero
 #endif /*_OSD_POSIX*/
 
 #elif defined(UW)
