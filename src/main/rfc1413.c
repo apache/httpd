@@ -73,7 +73,6 @@
 
 /* Rewritten by David Robinson */
 
-#include "conf.h"
 #include "httpd.h"    /* for server_rec, conn_rec */
 #include "http_log.h" /* for log_unixerr */
 #include "rfc1413.h"
