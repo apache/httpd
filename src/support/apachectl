@@ -12,6 +12,7 @@
 #	5 - httpd could not be started during a restart
 #	6 - httpd could not be restarted during a restart
 #	7 - httpd could not be restarted during a graceful restart
+#	8 - configuration syntax error
 #
 # When multiple arguments are given, only the error from the _last_
 # one is reported.  Run "apachectl help" for usage info
@@ -97,10 +98,16 @@ do
 		ERROR=5
 	    fi
 	else
-	    if kill -HUP $PID ; then
-		echo "$0 $ARG: httpd restarted"
+	    if $HTTPD -t >/dev/null 2>&1; then
+		if kill -HUP $PID ; then
+		    echo "$0 $ARG: httpd restarted"
+		else
+		    echo "$0 $ARG: httpd could not be restarted"
+		    ERROR=6
+		fi
 	    else
-		echo "$0 $ARG: httpd could not be restarted"
+		echo "$0 $ARG: configuration broken, ignoring restart"
+		echo "$0 $ARG: (run 'apachectl configtest' for details)"
 		ERROR=6
 	    fi
 	fi
@@ -115,10 +122,16 @@ do
 		ERROR=5
 	    fi
 	else
-	    if kill -USR1 $PID ; then
-		echo "$0 $ARG: httpd gracefully restarted"
+	    if $HTTPD -t >/dev/null 2>&1; then
+		if kill -USR1 $PID ; then
+		    echo "$0 $ARG: httpd gracefully restarted"
+		else
+		    echo "$0 $ARG: httpd could not be restarted"
+		    ERROR=7
+		fi
 	    else
-		echo "$0 $ARG: httpd could not be restarted"
+		echo "$0 $ARG: configuration broken, ignoring restart"
+		echo "$0 $ARG: (run 'apachectl configtest' for details)"
 		ERROR=7
 	    fi
 	fi
@@ -129,8 +142,15 @@ do
     fullstatus)
 	$LYNX $STATUSURL
 	;;
+    configtest)
+	if $HTTPD -t; then
+	    :
+	else
+	    ERROR=8
+	fi
+	;;
     *)
-	echo "usage: $0 (start|stop|restart|fullstatus|status|graceful|help)"
+	echo "usage: $0 (start|stop|restart|fullstatus|status|graceful|configtest|help)"
 	cat <<EOF
 
 start      - start httpd
@@ -140,6 +160,7 @@ restart    - restart httpd if running by sending a SIGHUP or start if
 fullstatus - dump a full status screen; requires lynx and mod_status enabled
 status     - dump a short status screen; requires lynx and mod_status enabled
 graceful   - do a graceful restart by sending a SIGUSR1 or start if not running
+configtest - do a configuration syntax test
 help       - this screen
 
 EOF

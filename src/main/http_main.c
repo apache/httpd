@@ -877,7 +877,7 @@ static void usage(char *bin)
     fprintf(stderr, "Usage: %s [-d directory] [-f file]\n", bin);
 #endif
     fprintf(stderr, "       %s [-C \"directive\"] [-c \"directive\"]\n", pad);
-    fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-S]\n", pad);
+    fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-S] [-t]\n", pad);
     fprintf(stderr, "Options:\n");
 #ifdef SHARED_CORE
     fprintf(stderr, "  -L directory     : specify an alternate location for shared object files\n");
@@ -891,6 +891,7 @@ static void usage(char *bin)
     fprintf(stderr, "  -h               : list available configuration directives\n");
     fprintf(stderr, "  -l               : list compiled-in modules\n");
     fprintf(stderr, "  -S               : show parsed settings (currently only vhost settings)\n");
+    fprintf(stderr, "  -t               : run syntax test for configuration files only\n");
     exit(1);
 }
 
@@ -4201,6 +4202,7 @@ extern int optind;
 int REALMAIN(int argc, char *argv[])
 {
     int c;
+    int configtestonly = 0;
 
 #ifdef SecureWare
     if (set_auth_parameters(argc, argv) < 0)
@@ -4227,7 +4229,7 @@ int REALMAIN(int argc, char *argv[])
     ap_setup_prelinked_modules();
 
     while ((c = getopt(argc, argv,
-				    "C:c:Xd:f:vVhlL:S"
+				    "C:c:Xd:f:vVhlL:St"
 #ifdef DEBUG_SIGSTOP
 				    "Z:"
 #endif
@@ -4283,6 +4285,9 @@ int REALMAIN(int argc, char *argv[])
 	case 'S':
 	    ap_dump_settings = 1;
 	    break;
+	case 't':
+	    configtestonly = 1;
+	    break;
 	case '?':
 	    usage(argv[0]);
 	}
@@ -4290,6 +4295,11 @@ int REALMAIN(int argc, char *argv[])
 
     ap_suexec_enabled = init_suexec();
     server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
+
+    if (configtestonly) {
+        fprintf(stderr, "Syntax OK\n");
+        exit(0);
+    }
 
     child_timeouts = !ap_standalone || one_process;
 
@@ -5356,6 +5366,7 @@ int REALMAIN(int argc, char *argv[])
     char *cp;
     int run_as_service = 1;
     int install = 0;
+    int configtestonly = 0;
     
     common_init();
 
@@ -5380,7 +5391,7 @@ int REALMAIN(int argc, char *argv[])
 
     ap_setup_prelinked_modules();
 
-    while ((c = getopt(argc, argv, "C:c:Xd:f:vVhlZ:iusS")) != -1) {
+    while ((c = getopt(argc, argv, "C:c:Xd:f:vVhlZ:iusSt")) != -1) {
         char **new;
 	switch (c) {
 	case 'c':
@@ -5438,6 +5449,9 @@ int REALMAIN(int argc, char *argv[])
 	case 'X':
 	    ++one_process;	/* Weird debugging mode. */
 	    break;
+	case 't':
+	    configtestonly = 1;
+	    break;
 	case '?':
 	    usage(argv[0]);
 	}
@@ -5448,6 +5462,12 @@ int REALMAIN(int argc, char *argv[])
     }
 
     server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
+
+    if (configtestonly) {
+        fprintf(stderr, "Syntax OK\n");
+        exit(0);
+    }
+
     if (!child) {
 	ap_log_pid(pconf, ap_pid_fname);
     }

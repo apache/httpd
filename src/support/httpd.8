@@ -149,6 +149,11 @@ Output a list of modules compiled into the server.
 Show the settings as parsed from the config file (currently only shows the
 virtualhost settings).
 .TP
+.B \-t
+Run syntax tests for configuration files only. The program immediately exits
+after these syntax parsing with either a return code of 0 (Syntax OK) or
+return code not equal to 0 (Syntax Error).
+.TP
 .B \-X
 Run in single-process mode, for internal debugging purposes only; the daemon
 does not detach from the terminal or fork any children. Do NOT use this mode

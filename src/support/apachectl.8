@@ -92,6 +92,9 @@ Stops the Apache daemon.
 .BI restart
 Restarts the Apache daemon by sending it a SIGHUP.  If the daemon
 is not running, it is started.
+This command automatically checks the configuration files via 
+.BI configtest
+before initiating the restart to make sure Apache doesn't die.
 .TP
 .BI fullstatus
 Displays a full status report from 
@@ -111,9 +114,17 @@ Gracefully restarts the Apache daemon by sending it a SIGUSR1.  If
 the daemon is not running, it is started.  This differs from a
 normal restart in that currently open connections are not aborted.
 A side effect is that old log files will not be closed immediately.
-This means that if used in a log rotation script, a substantial
-delay may be necessary to ensure that the old log files are closed
-before processing them.
+This means that if used in a log rotation script, a substantial delay may be
+necessary to ensure that the old log files are closed before processing them.
+This command automatically checks the configuration files via 
+.BI configtest
+before initiating the restart to make sure Apache doesn't die.
+.TP
+.BI configtest
+Run a configuration file syntax test. It parses the configuration
+files and either reports 
+.B "Syntax Ok"
+or detailed information about the particular syntax error.
 .TP
 .BI help
 Displays a short help message.
