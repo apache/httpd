@@ -71,6 +71,7 @@
 typedef signed long int32;
 typedef int uid_t;
 typedef int gid_t;
+typedef int tid_t;
 
 #include "ap_config.h"
 #include <string.h>
@@ -113,6 +114,7 @@ typedef int gid_t;
 #define crypt(buf,salt)	    (buf)
 #define sleep(t) delay(t*1000)
 #define getpid GetThreadID
+#define gettid() ((tid_t)GetThreadID())
 /* Netware doesn't have symlinks so S_ISLNK is always false */
 #define S_ISLNK(m) 0
 /* Netware doesn't have isnan,isinf so they always return false */
