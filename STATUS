@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/26 22:04:58 $]
+Last modified at [$Date: 2004/04/28 18:09:59 $]
 
 Release:
 
@@ -74,7 +74,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) mod_log_forensic: Fix build on systems without unistd.h. PR 28572
          modules/loggers/mod_log_forensic.c: r1.19
-       +1: nd
+       +1: nd, trawick
 
     *) mod_actions: Regression from 1.3: the file referred to must exist.
        Solve this by introducing the "virtual" modifier to the Action
@@ -84,12 +84,12 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) htpasswd should not refuse to process files containing empty lines.
          support/htpasswd.c: r1.76
-       +1: nd
+       +1: nd, trawick
 
     *) Disable AcceptEx on Win9x systems automatically. (broken in 2.0.49)
        PR 28529
          server/mpm/winnt/mpm_winnt.c: 1.311
-       +1: nd
+       +1: nd, trawick
 
     *) export ap_set_sub_req_protocol and ap_finalize_sub_req_protocol on Win32.
        (should be a minor MMN bump). PR 28523.
@@ -193,7 +193,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) mod_dav: Fix a 2617 compliance issue
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/util.c?r1=1.53&r2=1.54
-       +1: jorton, nd
+       +1: jorton, nd, trawick
 
     *) mod_dav: Send an EOS at the end of the multistatus brigade.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.105&r2=1.106
@@ -202,7 +202,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) mod_dav_fs: Better ENOSPC handling and a remove a write(,,0) call:
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/fs/repos.c?r1=1.77&r2=1.79
-       +1: jorton, nd
+       +1: jorton, nd, trawick
 
     *) Allow Satisfy directives to be influenced by <Limit>.
        PR: 14726
