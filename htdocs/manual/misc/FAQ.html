@@ -14,7 +14,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.128 $ ($Date: 1998/09/17 12:33:01 $)
+  $Revision: 1.129 $ ($Date: 1998/09/17 14:14:52 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -1950,7 +1950,7 @@
   <P>
   If the rule starts with <SAMP>/somedir/...</SAMP> make sure that really no
   <SAMP>/somedir</SAMP> exists on the filesystem if you don't want to lead the
-  URL to match this directory, i.e. there must be no root directory named
+  URL to match this directory, <EM>i.e.</EM>, there must be no root directory named
   <SAMP>somedir</SAMP> on the filesystem. Because if there is such a
   directory, the URL will not get prefixed with DocumentRoot. This behaviour
   looks ugly, but is really important for some other aspects of URL
@@ -2001,7 +2001,7 @@
   There is only one ugly solution: You have to surround the complete flag
   argument by quotation marks (<SAMP>"[E=...]"</SAMP>). Notice: The argument
   to quote here is not the argument to the E-flag, it is the argument of the
-  Apache config file parser, i.e. the third argument of the RewriteRule here.
+  Apache config file parser, <EM>i.e.</EM>, the third argument of the RewriteRule here.
   So you have to write <SAMP>"[E=any text with whitespaces]"</SAMP>.
   </P>
   <HR>

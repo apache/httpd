@@ -95,7 +95,7 @@ client <STRONG>should do</STRONG> is periodically check its open
 socket(s) to see if they have been closed by the server, and close their
 side of the connection if the server has closed.  This check need only
 occur once every few seconds, and may even be detected by a OS signal
-on some systems (e.g., Win95 and NT clients have this capability, but
+on some systems (<EM>e.g.</EM>, Win95 and NT clients have this capability, but
 they seem to be ignoring it).<P>
 
 Apache <STRONG>cannot</STRONG> avoid these FIN_WAIT_2 states unless it
@@ -122,7 +122,7 @@ The most likely source for additional FIN_WAIT_2 states
 is a function called <CODE>lingering_close()</CODE> which was added
 between 1.1 and 1.2.  This function is necessary for the proper
 handling of persistent connections and any request which includes
-content in the message body (e.g., PUTs and POSTs).
+content in the message body (<EM>e.g.</EM>, PUTs and POSTs).
 What it does is read any data sent by the client for
 a certain time after the server closes the connection.  The exact
 reasons for doing this are somewhat complicated, but involve what

@@ -232,10 +232,10 @@ changes in third party modules not maintained by Apache.
   <LI>
    To avoid symbol clashes with third-party code compiled into the server, the
    general prefix `<CODE>ap_</CODE>' was globally applied to the following
-   classes of symbols: Apache provided general functions (e.g.,
-   <CODE>ap_cpystrn</CODE>), public API functions (e.g., <CODE>palloc</CODE>,
+   classes of symbols: Apache provided general functions (<EM>e.g.</EM>,
+   <CODE>ap_cpystrn</CODE>), public API functions (<EM>e.g.</EM>, <CODE>palloc</CODE>,
    <CODE>bgets</CODE>) and private functions which can't be made static
-   (because of cross-object usage) but should be (e.g.,
+   (because of cross-object usage) but should be (<EM>e.g.</EM>,
    <CODE>new_connection</CODE>).  For backward source compatibility with
    Apache 1.2 a new header file named <CODE>compat.h</CODE> was created which
    provides defines for the old symbol names.

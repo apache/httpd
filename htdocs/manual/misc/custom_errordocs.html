@@ -80,7 +80,7 @@ look like this:<BR>
  ALT="[Needs graphics capability to display]"><BR>
 All links in the document as well as links to the server's administrator
 mail address, and even the name and port of the serving virtual host
-are inserted in the error document at "run-time", i.e., when the error
+are inserted in the error document at "run-time", <EM>i.e.</EM>, when the error
 actually occurs.
 </P>
 
@@ -125,7 +125,7 @@ of as much server support as we can get:
      based on the language suffixes and the client's preferences.
      Any error situation with an error code <EM>not</EM> handled by a
      custom document will be dealt with by the server in the standard way
-     (i.e., a plain error message in english).
+     (<EM>i.e.</EM>, a plain error message in english).
  <LI>Finally, the <A HREF="../mod/core.html#allowoverride">AllowOverride</A>
      directive tells apache that it is not necessary to look for 
      a .htaccess file in the /errordocs directory: a minor speed 
@@ -266,7 +266,7 @@ information might get lost when the client had to choose a language
 representation first.
 <P>
 So, in this situation it appears to be easier to define a fallback language
-(by copying or linking, e.g., the english version to a language-less version).
+(by copying or linking, <EM>e.g.</EM>, the english version to a language-less version).
 Because the negotiation algorithm prefers "more specialized" variants over
 "more generic" variants, these generic alternatives will only be chosen
 when the normal negotiation did not succeed.
