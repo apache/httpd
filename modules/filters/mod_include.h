@@ -122,10 +122,10 @@ typedef struct {
     unsigned     argc;
 
     /* currently configured error string */
-    char        *error_str;
+    const char  *error_str;
 
     /* currently configured time format */
-    char        *time_str;
+    const char  *time_str;
 
     /* pointer to internal (non-public) data, don't touch */
     struct ssi_internal_ctx *intern;
