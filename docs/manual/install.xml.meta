@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<metafile>
+  <basename>install</basename>
+  <path>/</path>
+  <relpath>.</relpath>
+
+  <variants>
+    <variant>de</variant>
+    <variant>en</variant>
+    <variant>ja</variant>
+    <variant htmlonly="yes">ko</variant>
+  </variants>
+</metafile>
