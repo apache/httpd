@@ -914,7 +914,7 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
                     tmp_buck = apr_bucket_heap_create(echo_text, e_len, 1, &e_wrt);
                 }
                 else {
-                    tmp_buck = apr_bucket_immortal_create("(none)", sizeof("none"));
+                    tmp_buck = apr_bucket_immortal_create("(none)", sizeof("(none)"));
                 }
                 APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                 if (*inserted_head == NULL) {
