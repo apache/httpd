@@ -285,16 +285,13 @@ void ap_process_request(request_rec *r)
      * to enable the quick handler to make decisions based on config
      * directives in Location blocks.
      */
-    access_status = ap_run_quick_handler(r);
-    if (access_status == DECLINED) {
-        access_status = ap_process_request_internal(r);
-        if (access_status == OK) {
-            access_status = ap_invoke_handler(r);
-        }
-        else if (access_status == DONE) {
-            /* e.g., something not in storage like TRACE */
-            access_status = OK;
-        }
+    access_status = ap_process_request_internal(r);
+    if (access_status == OK) {
+        access_status = ap_invoke_handler(r);
+    }
+    else if (access_status == DONE) {
+        /* e.g., something not in storage like TRACE */
+        access_status = OK;
     }
 
     if (access_status == OK) {

@@ -143,6 +143,19 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
     int file_req = (r->main && r->filename);
     int access_status;
 
+    access_status = ap_run_quick_handler(r);
+    if (access_status != DECLINED) {
+        if ( access_status == OK )  {
+            if (!r->main)
+                return DONE;
+            else
+                return OK;
+        }
+        else  {
+            return access_status;
+        }
+    }
+
     /* Ignore embedded %2F's in path for proxy requests */
     if (!r->proxyreq && r->parsed_uri.path) {
         access_status = ap_unescape_url(r->parsed_uri.path);
