@@ -251,6 +251,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
     char *pos, *last_char = *s;
     int do_alloc = (*s == NULL), saw_eos = 0;
 
+    for (;;) {
     apr_brigade_cleanup(bb);
     rv = ap_get_brigade(r->input_filters, bb, AP_MODE_GETLINE,
                         APR_BLOCK_READ, 0);
@@ -331,68 +332,9 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
         bytes_handled += len;
     }
 
-    /* We likely aborted early before reading anything or we read no
-     * data.  Technically, this might be success condition.  But,
-     * probably means something is horribly wrong.  For now, we'll
-     * treat this as APR_SUCCESS, but it may be worth re-examining.
-     */
-    if (bytes_handled == 0) {
-        *read = 0;
-        return APR_SUCCESS;
-    }
-
-    /* If we didn't get a full line of input, try again. */
-    if (*last_char != APR_ASCII_LF) {
-        /* Do we have enough space? We may be full now. */
-        if (bytes_handled < n) {
-            apr_size_t next_size, next_len;
-            char *tmp;
-
-            /* If we're doing the allocations for them, we have to
-             * give ourselves a NULL and copy it on return.
-             */
-            if (do_alloc) {
-                tmp = NULL;
-            } else {
-                /* We're not null terminated yet. */
-                tmp = last_char + 1;
-            }
-
-            next_size = n - bytes_handled;
-
-            rv = ap_rgetline_core(&tmp, next_size, &next_len, r, fold, bb);
-
-            if (rv != APR_SUCCESS) {
-                return rv;
-            }
-
-            /* XXX this code appears to be dead because the filter chain
-             * seems to read until it sees a LF or an error.  If it ever
-             * comes back to life, we need to make sure that:
-             * - we really alloc enough space for the trailing null
-             * - we don't allow the tail trimming code to run more than
-             *   once
-             */
-            if (do_alloc && next_len > 0) {
-                char *new_buffer;
-                apr_size_t new_size = bytes_handled + next_len;
-
-                /* Again we need to alloc an extra two bytes for LF, null */
-                new_buffer = apr_palloc(r->pool, new_size);
-
-                /* Copy what we already had. */
-                memcpy(new_buffer, *s, bytes_handled);
-                memcpy(new_buffer + bytes_handled, tmp, next_len);
-                current_alloc = new_size;
-                *s = new_buffer;
-            }
-
-            bytes_handled += next_len;
-            last_char = *s + bytes_handled - 1;
-        }
-        else {
-            *read = n;
-            return APR_ENOSPC;
+        /* If we got a full line of input, stop reading */
+        if (last_char && (*last_char == APR_ASCII_LF)) {
+            break;
         }
     }
 
@@ -431,6 +373,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
      * Note that if an EOS was seen, we know we can't have another line.
      */
     if (fold && bytes_handled && !saw_eos) {
+        for (;;) {
         const char *str;
         apr_size_t len;
         char c;
@@ -447,30 +390,22 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
         }
 
         if (APR_BRIGADE_EMPTY(bb)) {
-            *read = bytes_handled;
-            return APR_SUCCESS;
+                break;
         }
 
         e = APR_BRIGADE_FIRST(bb);
 
         /* If we see an EOS, don't bother doing anything more. */
         if (APR_BUCKET_IS_EOS(e)) {
-            *read = bytes_handled;
-            return APR_SUCCESS;
+                break;
         }
 
         rv = apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
 
         if (rv != APR_SUCCESS) {
-            apr_brigade_destroy(bb);
+                apr_brigade_cleanup(bb);
             return rv;
         }
-
-        /* When we call destroy, the buckets are deleted, so save that
-         * one character we need.  This simplifies our execution paths
-         * at the cost of one character read.
-         */
-        c = *str;
 
         /* Found one, so call ourselves again to get the next line.
          *
@@ -478,9 +413,18 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
          * stop folding?  Does that require also looking at the next
          * char?
          */
+            /* When we call destroy, the buckets are deleted, so save that
+             * one character we need.  This simplifies our execution paths
+             * at the cost of one character read.
+             */
+            c = *str;
         if (c == APR_ASCII_BLANK || c == APR_ASCII_TAB) {
             /* Do we have enough space? We may be full now. */
-            if (bytes_handled < n) {
+                if (bytes_handled >= n) {
+                    *read = n;
+                    return APR_ENOSPC;
+                }
+                else {
                 apr_size_t next_size, next_len;
                 char *tmp;
 
@@ -496,7 +440,8 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
 
                 next_size = n - bytes_handled;
 
-                rv = ap_rgetline_core(&tmp, next_size, &next_len, r, fold, bb);
+                    rv = ap_rgetline_core(&tmp, next_size,
+                                          &next_len, r, 0, bb);
 
                 if (rv != APR_SUCCESS) {
                     return rv;
@@ -517,12 +462,11 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                     *s = new_buffer;
                 }
 
-                *read = bytes_handled + next_len;
-                return APR_SUCCESS;
+                    bytes_handled += next_len;
             }
-            else {
-                *read = n;
-                return APR_ENOSPC;
+            }
+            else { /* next character is not tab or space */
+                break;
             }
         }
     }
@@ -647,6 +591,12 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
     char http[5];
     apr_size_t len;
+    int num_blank_lines = 0;
+    int max_blank_lines = r->server->limit_req_fields;
+
+    if (max_blank_lines <= 0) {
+        max_blank_lines = DEFAULT_LIMIT_REQUEST_FIELDS;
+    }
 
     /* Read past empty lines until we get a real request line,
      * a read error, the connection closes (EOF), or we timeout.
@@ -677,7 +627,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
             r->request_time = apr_time_now();
             return 0;
         }
-    } while (len <= 0);
+    } while ((len <= 0) && (++num_blank_lines < max_blank_lines));
 
     /* we've probably got something to do, ignore graceful restart requests */
 
