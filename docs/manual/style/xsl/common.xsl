@@ -1036,4 +1036,14 @@
 </xsl:template>
 <!-- /helper.uri.fix -->
 
+
+<!-- ==================================================================== -->
+<!-- Ignore table hints used for latex                                    -->
+<!-- ==================================================================== -->
+<xsl:template match="columnspec">
+</xsl:template>
+
+<xsl:template match="column">
+</xsl:template>
+
 </xsl:stylesheet>

@@ -9,35 +9,6 @@ Some things that need to be done with the LaTeX transforms:
    since you can just take the existing LaTeX as an example, and combine
    it with the xslt stuff under style/xsl/.]
 
-- Fix tables
-
-  Perhaps we need to add some xml hints about the size of different
-  columns in the source files.
-
-  Here is a proposal:
-
-  xml:
-  <table>
-  <columnspec><column width=".2"/><column width=".2"/><column width=".6"/>
-  </columnspec>
-  <tr><td>1</td><td>2</td><td>3</td></tr>
-  </table>
-
-  latex:
-  \begin{tabular}{lll} % number of "l"s matches the number of <column>s.
-  \begin{minipage}{.2\linewidth}
-  1
-  \end{minipage} &
-  \begin{minipage}{.2\linewidth}
-  2
-  \end{minipage} &
-  \begin{minipage}{.6\linewidth}
-  3
-  \end{minipage} \\ % And continue in the same way if there are more rows
-  \end{tabular}
-
-  This should be enough to get an xsl expert started.
-
 - Images
 
   A quick search makes me believe that pdftex will not handle gifs.
