@@ -859,6 +859,24 @@ Name|Date|Size|Description</syntax>
     order.</p>
 </usage>
 </directivesynopsis>
+<directivesynopsis>
+<name>IndexStyleSheet</name>
+<description>Adds a CSS stylesheet to autoindexes output</description>
+<syntax>IndexStyleSheet<var>URI</var> </syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>The <directive>IndexStyleSheet</directive> directive adds a stylesheet
+    to the output of mod_authindex
+    </p>
+    <example>
+      IndexStyleSheet "/css/style.css"
+    </example>
+</usage>
+</directivesynopsis>
 
 <directivesynopsis>
 <name>ReadmeName</name>
