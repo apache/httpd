@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: scoreboard.h,v 1.16 1996/10/23 13:15:25 mjc Exp $ */
-
 #include <sys/times.h>
 
 /* Scoreboard info on a process is, for now, kept very brief --- 

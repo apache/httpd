@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: http_main.h,v 1.4 1996/08/20 11:50:48 paul Exp $ */
-
 /*
  * Routines in http_main.c which other code --- in particular modules ---
  * may want to call.  Right now, that's limited to timeout handling.

@@ -51,8 +51,6 @@
  *
  */
 
-/* $Id: alloc.h,v 1.13 1996/10/17 08:59:54 ben Exp $ */
-
 /*
  * Resource allocation routines...
  *

@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: util_md5.h,v 1.2 1996/08/20 11:51:24 paul Exp $ */
-
 #include "md5.h"
 
 char *md5(pool *a, unsigned char *string);

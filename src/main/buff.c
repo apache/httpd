@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: buff.c,v 1.7 1996/11/03 21:21:04 brian Exp $ */
-
 #include <errno.h>
 #include <stdio.h>
 #include <stdarg.h>

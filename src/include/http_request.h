@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: http_request.h,v 1.6 1996/10/20 20:45:51 ben Exp $ */
-
 /* http_request.c is the code which handles the main line of request
  * processing, once a request has been read in (finding the right per-
  * directory configuration, building it if necessary, and calling all

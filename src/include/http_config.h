@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: http_config.h,v 1.18 1996/11/03 20:29:38 brian Exp $ */
-
 /*
  * The central data structures around here...
  */

@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: http_core.h,v 1.13 1996/10/22 18:54:01 brian Exp $ */
-
 /*****************************************************************
  *
  * The most basic server code is encapsulated in a single module

@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: http_log.h,v 1.4 1996/10/20 18:03:31 ben Exp $ */
-
 void open_logs (server_rec *, pool *p);
 void error_log2stderr (server_rec *);     
 

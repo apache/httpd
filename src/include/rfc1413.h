@@ -50,6 +50,4 @@
  *
  */
 
-/* $Id: rfc1413.h,v 1.2 1996/08/20 11:51:21 paul Exp $ */
-
 extern char *rfc1413(conn_rec *conn, server_rec *srv);

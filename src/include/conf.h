@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: conf.h,v 1.41 1996/10/22 04:21:44 akosut Exp $ */
-
 /*
  * conf.h: system-dependant #defines and includes...
  * See README for a listing of what they mean

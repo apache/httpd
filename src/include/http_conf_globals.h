@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: http_conf_globals.h,v 1.6 1996/10/02 00:31:51 jim Exp $ */
-
 /* 
  * Process config --- what the process ITSELF is doing
  */
