@@ -968,11 +968,10 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
     /* Set a timeout on the socket */
     if (conf->timeout_set == 1) {
-        apr_setsocketopt(sock, APR_SO_TIMEOUT, (int)conf->timeout);
+        apr_socket_timeout_set(sock, conf->timeout);
     }
     else {
-        apr_setsocketopt(sock, 
-                         APR_SO_TIMEOUT, (int)r->server->timeout);
+        apr_socket_timeout_set(sock, r->server->timeout);
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
