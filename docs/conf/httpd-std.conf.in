@@ -1,7 +1,5 @@
 #
-# Based upon the NCSA server configuration files originally by Rob McCool.
-#
-# This is the main Apache server configuration file.  It contains the
+# This is the main Apache HTTP server configuration file.  It contains the
 # configuration directives that give the server its instructions.
 # See <URL:http://httpd.apache.org/docs-2.1/> for detailed information about
 # the directives.
@@ -17,9 +15,10 @@
 #     which responds to requests that aren't handled by a virtual host.
 #     These directives also provide default values for the settings
 #     of all virtual hosts.
-#  3. Settings for virtual hosts, which allow Web requests to be sent to
-#     different IP addresses or hostnames and have them handled by the
-#     same Apache server process.
+#  3. Supplemental configuration specific to your site, such as virtual
+#     hosts and SSL.  Examples of some possible configurations are stored
+#     in the @rel_sysconfdir@/extra/ directory and can be directly included
+#     in this file or referenced using the Include directive.
 #
 # Configuration and logfile names: If the filenames you specify for many
 # of the server's control files begin with "/" (or "drive:/" for Win32), the
@@ -599,7 +598,7 @@ ServerSignature On
 </IfModule>
 
 
-##### Supplemental configuration
+### Section 3: Supplemental configuration
 #
 # The configuration files in the @relsysconfdir@/extra/ directory can be included
 # to add extra features, or you may simply copy their contents
