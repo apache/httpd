@@ -1506,7 +1506,7 @@ static int dsortf(struct ent **e1, struct ent **e2)
         break;
     case K_DESC:
 	if (c1->version_sort)
-	    result = strnatcmp(c1->desc ? c1->desc : "", c2->desc ? c2->desc : "");
+	    result = ap_strnatcmp(c1->desc ? c1->desc : "", c2->desc ? c2->desc : "");
 	else
 	    result = strcmp(c1->desc ? c1->desc : "", c2->desc ? c2->desc : "");
         if (result) {
@@ -1515,7 +1515,7 @@ static int dsortf(struct ent **e1, struct ent **e2)
         break;
     }
     if (c1->version_sort)
-	return strnatcmp(c1->name, c2->name);
+	return ap_strnatcmp(c1->name, c2->name);
     else
 	return strcmp(c1->name, c2->name);
 }
