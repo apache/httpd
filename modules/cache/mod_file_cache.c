@@ -200,7 +200,7 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
     /* canonicalize the file name? */
     /* os_canonical... */
     /* XXX: uh... yea, or expect them to be -very- accurate typists */
-    if ((rc = apr_stat(&tmp.finfo, filename, APR_FINFO_NORM, 
+    if ((rc = apr_stat(&tmp.finfo, filename, APR_FINFO_MIN, 
                        cmd->temp_pool)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
 	    "mod_file_cache: unable to stat(%s), skipping", filename);
@@ -250,7 +250,7 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
     const char *fspec;
 
     fspec = ap_os_case_canonical_filename(cmd->pool, filename);
-    if ((rc = apr_stat(&tmp.finfo, fspec, APR_FINFO_NORM, 
+    if ((rc = apr_stat(&tmp.finfo, fspec, APR_FINFO_MIN, 
                        cmd->temp_pool)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
 	    "mod_file_cache: unable to stat(%s), skipping", filename);

@@ -521,7 +521,7 @@ void ap_log_pid(apr_pool_t *p, const char *fname)
     fname = ap_server_root_relative(p, fname);
     mypid = getpid();
     if (mypid != saved_pid 
-         && apr_stat(&finfo, fname, APR_FINFO_NORM, p) == APR_SUCCESS) {
+         && apr_stat(&finfo, fname, APR_FINFO_MTIME, p) == APR_SUCCESS) {
       /* WINCH and HUP call this on each restart.
        * Only warn on first time through for this pid.
        *
