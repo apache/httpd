@@ -202,7 +202,7 @@ static void chdir_for_gprof(void)
 	} 
 	dir = ap_server_root_relative(pconf, buf[0] ? buf : dir);
 	if(mkdir(dir, 0755) < 0 && errno != EEXIST) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+	    ap_log_error(APLOG_MARK, APLOG_ERR, errno, server_conf,
 			 "gprof: error creating directory %s", dir);
 	}
     }
@@ -603,10 +603,11 @@ static ap_status_t accept_mutex_cleanup(void *foo)
 static void accept_mutex_child_init(ap_context_t *p)
 {
     ap_file_t *tempfile;
+    ap_status_t ret;
 
-    ap_open(&tempfile, ap_lock_fname, APR_WRITE, APR_UREAD|APR_UWRITE, p);
-    if (!tempfile) {
-	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
+    ret=ap_open(&tempfile, ap_lock_fname, APR_WRITE, APR_UREAD|APR_UWRITE, p);
+    if (ret != APR_SUCCESS) {
+	ap_log_error(APLOG_MARK, APLOG_EMERG, ret, server_conf,
 		    "Child cannot open lock file: %s", ap_lock_fname);
 	clean_child_exit(APEXIT_CHILDINIT);
     }
@@ -620,13 +621,14 @@ static void accept_mutex_child_init(ap_context_t *p)
 static void accept_mutex_init(ap_context_t *p)
 {
     ap_file_t *tempfile;
+    ap_status_t ret;
 
     expand_lock_fname(p);
     unlink(ap_lock_fname);
-    ap_open(&tempfile, ap_lock_fname, APR_CREATE|APR_WRITE|APR_EXCL,
+    ret=ap_open(&tempfile, ap_lock_fname, APR_CREATE|APR_WRITE|APR_EXCL,
 	    APR_UREAD|APR_UWRITE, p);
-    if (!tempfile) {
-	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
+    if (ret != APR_SUCCESS) {
+	ap_log_error(APLOG_MARK, APLOG_EMERG, ret, server_conf,
 		    "Parent cannot open lock file: %s", ap_lock_fname);
 	exit(APEXIT_INIT);
     }
@@ -642,7 +644,7 @@ static void accept_mutex_on(void)
 	continue;
 
     if (ret < 0) {
-	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_EMERG, errno, server_conf,
 		    "flock: LOCK_EX: Error getting accept lock. Exiting!");
 	clean_child_exit(APEXIT_CHILDFATAL);
     }
@@ -651,7 +653,7 @@ static void accept_mutex_on(void)
 static void accept_mutex_off(void)
 {
     if (flock(lock_fd, LOCK_UN) < 0) {
-	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_EMERG, errno, server_conf,
 		    "flock: LOCK_UN: Error freeing accept lock. Exiting!");
 	clean_child_exit(APEXIT_CHILDFATAL);
     }
