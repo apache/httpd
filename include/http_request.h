@@ -123,6 +123,10 @@ API_EXPORT(void) ap_update_mtime(request_rec *r, apr_time_t dependency_mtime);
  * @deffunc void ap_allow_methods(request_rec *r, int reset, ...)
  */
 API_EXPORT(void) ap_allow_methods(request_rec *r, int reset, ...);
+
+#define MERGE_ALLOW 0
+#define REPLACE_ALLOW 1
+
 #ifdef CORE_PRIVATE
 /* Function called by main.c to handle first-level request */
 void ap_process_request(request_rec *);
