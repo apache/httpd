@@ -90,29 +90,43 @@ static const char *set_worker_param(apr_pool_t *p,
 
     int ival;
     if (!strcasecmp(key, "loadfactor")) {
+        /* Worker load factor. Used with BalancerMamber
+         * It is a number between 1 and 100 in percents.
+         */
         worker->lbfactor = atoi(val);
         if (worker->lbfactor < 1 || worker->lbfactor > 100)
             return "LoadFactor must be number between 1..100";
     }
     else if (!strcasecmp(key, "retry")) {
+        /* If set it will give the retry timeout for the worker
+         * The default value is 60 seconds, meaning that if
+         * in error state, it will be retried after that timeout.
+         */
         ival = atoi(val);
         if (ival < 1)
             return "Retry must be at least one second";
         worker->retry = apr_time_from_sec(ival);
     }
     else if (!strcasecmp(key, "ttl")) {
+        /* Time in seconds that will destroy all the connections
+         * that exced the smax 
+         */
         ival = atoi(val);
         if (ival < 1)
             return "TTL must be at least one second";
         worker->ttl = apr_time_from_sec(ival);
     }
     else if (!strcasecmp(key, "min")) {
+        /* Initial number of connections to remote
+         */
         ival = atoi(val);
         if (ival < 0)
             return "Min must be a positive number";
         worker->min = ival;
     }
     else if (!strcasecmp(key, "max")) {
+        /* Maximum number of connections to remote
+         */
         ival = atoi(val);
         if (ival < 0)
             return "Max must be a positive number";
@@ -120,12 +134,19 @@ static const char *set_worker_param(apr_pool_t *p,
     }
     /* XXX: More inteligent naming needed */
     else if (!strcasecmp(key, "smax")) {
+        /* Maximum number of connections to remote that
+         * will not be destroyed
+         */
         ival = atoi(val);
         if (ival < 0)
             return "Smax must be a positive number";
         worker->smax = ival;
     }
     else if (!strcasecmp(key, "acquire")) {
+        /* Acquire timeout in milliseconds.
+         * If set this will be the maximum time to
+         * wait for a free connection.
+         */
         ival = atoi(val);
         if (ival < 1)
             return "Acquire must be at least one mili second";
@@ -133,6 +154,9 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->acquire_set = 1;
     }
     else if (!strcasecmp(key, "timeout")) {
+        /* Connection timeout in seconds.
+         * Defaults to server timeout.
+         */
         ival = atoi(val);
         if (ival < 1)
             return "Timeout must be at least one second";
@@ -162,9 +186,13 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->keepalive_set = 1;
     }    
     else if (!strcasecmp(key, "route")) {
+        /* Worker route.
+         */
         worker->route = apr_pstrdup(p, val);
     }
     else if (!strcasecmp(key, "redirect")) {
+        /* Worker redirection route.
+         */
         worker->redirect = apr_pstrdup(p, val);
     }
     else {
@@ -181,9 +209,17 @@ static const char *set_balancer_param(apr_pool_t *p,
 
     int ival;
     if (!strcasecmp(key, "stickysession")) {
+        /* Balancer sticky session name.
+         * Set to something like JSESSIONID or
+         * PHPSESSIONID, etc..,
+         */
         balancer->sticky = apr_pstrdup(p, val);
     }
     else if (!strcasecmp(key, "nofailover")) {
+        /* If set to 'on' the session will break
+         * if the worker is in error state or
+         * disabled.
+         */
         if (!strcasecmp(val, "on"))
             balancer->sticky_force = 1;
         else if (!strcasecmp(val, "off"))
@@ -192,6 +228,11 @@ static const char *set_balancer_param(apr_pool_t *p,
             return "failover must be On|Off";
     }
     else if (!strcasecmp(key, "timeout")) {
+        /* Balancer timeout in seconds.
+         * If set this will be the maximum time to
+         * wait for a free worker.
+         * Default is not to wait.
+         */
         ival = atoi(val);
         if (ival < 1)
             return "timeout must be at least one second";
@@ -1602,12 +1643,13 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     proxy_ssl_enable = APR_RETRIEVE_OPTIONAL_FN(ssl_proxy_enable);
     proxy_ssl_disable = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_disable);
 
-    /* Initialize all the workers */
+    /* Initialize workers */
     worker = (proxy_worker *)conf->workers->elts;
     for (i = 0; i < conf->workers->nelts; i++) {
         ap_proxy_initialize_worker(worker, s);
         worker++;
     }
+    /* Initialize forward worker if defined */
     if (conf->forward)
         ap_proxy_initialize_worker(conf->forward, s);
 
