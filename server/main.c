@@ -62,6 +62,7 @@
 #include "http_main.h" 
 #include "http_log.h" 
 #include "http_config.h"
+#include "http_vhost.h"
 #include "util_uri.h" 
 #include "util_ebcdic.h"
 #include "apr_getopt.h"
@@ -371,6 +372,9 @@ int main(int argc, char *argv[])
     server_conf = ap_read_config(process, ptemp, confname, &conftree);
     ap_run_pre_config(pconf, plog, ptemp);
     ap_process_config_tree(server_conf, conftree, process->pconf, ptemp); 
+    ap_fixup_virtual_hosts(pconf, server_conf);
+    ap_fini_vhost_config(pconf, server_conf);
+    ap_sort_hooks();
     if (configtestonly) {
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Syntax OK\n");
 	destroy_and_exit_process(process, 0);
@@ -396,6 +400,9 @@ int main(int argc, char *argv[])
         server_conf = ap_read_config(process, ptemp, confname, &conftree);
 	ap_run_pre_config(pconf, plog, ptemp);
         ap_process_config_tree(server_conf, conftree, process->pconf, ptemp); 
+        ap_fixup_virtual_hosts(pconf, server_conf);
+        ap_fini_vhost_config(pconf, server_conf);
+        ap_sort_hooks();
 	ap_clear_pool(plog);
 	ap_run_open_logs(pconf, plog, ptemp, server_conf);
 	ap_post_config_hook(pconf, plog, ptemp, server_conf);
