@@ -74,8 +74,9 @@ static void open_log(server_rec *s, apr_pool_t *p)
 
     if (*cfg->logname == '|') {
         piped_log *pl;
+        const char *pname = ap_server_root_relative(p, cfg->logname + 1);
 
-        pl = ap_open_piped_log(p, cfg->logname+1);
+        pl = ap_open_piped_log(p, pname);
         if (pl == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                          "couldn't spawn forensic log pipe %s", cfg->logname);
@@ -84,7 +85,7 @@ static void open_log(server_rec *s, apr_pool_t *p)
         cfg->fd = ap_piped_log_write_fd(pl);
     }
     else {
-        char *fname = ap_server_root_relative(p, cfg->logname);
+        const char *fname = ap_server_root_relative(p, cfg->logname);
         apr_status_t rv;
 
         if ((rv = apr_file_open(&cfg->fd, fname,
