@@ -107,7 +107,7 @@ Changes with Apache 1.2b8
      other than the name defined in the virtualhost directive (but
      with the same IP address) failing. [Dean Gaudet]
 
-  *) Updated mod_rewrite to version 3.0.1, which: fixes compile error on
+  *) Updated mod_rewrite to version 3.0.2, which: fixes compile error on
      AIX; improves the redirection stuff to enable the users to generally
      redirect to http, https, gopher and ftp; added TIME variable for
      RewriteCond which expands to YYYYMMDDHHMMSS strings and added the

@@ -61,7 +61,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 3.0.1 (17-Mar-1997)
+**  URL Rewriting Module, Version 3.0.2 (26-Mar-1997)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -2250,9 +2250,9 @@ static void open_rewritelog(server_rec *s, pool *p)
     fname = server_root_relative(p, conf->rewritelogfile);
     
     if (*conf->rewritelogfile == '|') {
-        if (!spawn_child (p, rewritelog_child, (void *)(conf->rewritelogfile+1),
+        if (!spawn_child(p, rewritelog_child, (void *)(conf->rewritelogfile+1),
                     kill_after_timeout, &fp, NULL)) {
-	    perror ("spawn_child");
+            perror("spawn_child");
             fprintf (stderr, "mod_rewrite: could not fork child for RewriteLog process\n");
             exit (1);
         }
@@ -2405,9 +2405,9 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
         fpout = NULL;
         rc = spawn_child(p, rewritemap_program_child, (void *)map->datafile, kill_after_timeout, &fpin, &fpout);
         if (rc == 0 || fpin == NULL || fpout == NULL) {
-	    perror ("spawn_child");
-            fprintf (stderr, "mod_rewrite: could not fork child for RewriteMap process\n");
-            exit (1);
+            perror("spawn_child");
+            fprintf(stderr, "mod_rewrite: could not fork child for RewriteMap process\n");
+            exit(1);
         }
         map->fpin  = fileno(fpin);
         map->fpout = fileno(fpout);
@@ -3217,7 +3217,11 @@ static void fd_lock(int fd)
 #endif
 
     if (rc < 0) {
-	perror ("flock");
+#ifdef USE_FLOCK
+        perror("flock");
+#else
+        perror("fcntl");
+#endif
         fprintf(stderr, "Error getting lock. Exiting!");
         exit(1);
     }
@@ -3242,7 +3246,11 @@ static void fd_unlock(int fd)
 #endif 
 
     if (rc < 0) {
-	perror ("flock");
+#ifdef USE_FLOCK
+        perror("flock");
+#else
+        perror("fcntl");
+#endif
         fprintf(stderr, "Error freeing lock. Exiting!");
         exit(1);
     }
