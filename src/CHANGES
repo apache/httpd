@@ -1,23 +1,69 @@
 Changes with Apache 1.3.9
 
-  *) Fixed generated AddModule adjustments in APACI's `configure' script in
-     order to allow (new) modules like mod_vhost_alias to be handled correctly
-     (which was touched by the adjustments for mod_alias).
+  *) Translate module names to dll names for OS/2 so that they are no more
+     than 8 characters long and have an extension of "dll" instead of "so".
+     [Brian Havard]
+
+  *) Print out pointer to Rule DEV_RANDOM when truerand lib not found.
+     Fix test-compile check to check for randbyte instead of trand32.
+     Use ap_base64encode_binary/decode instead of copy in mod_auth_digest.c
+     and tweak to make Amaya happier.  [Ronald Tschalär]
+
+  *) Ensure that the installed expat include files are world readable,
+     just like the other header files.  [Martin Kraemer]
+
+  *) Fixed generated AddModule adjustments in APACI's `configure' script
+     in order to allow (new) modules like mod_vhost_alias to be handled
+     correctly (which was touched by the adjustments for mod_alias).
      [Ralf S. Engelschall]
 
-  *) For binary builds, add -R flag to apachectl to work around the
-     lack of an absolute path to the ./libexec directory where
-     libhttp.ep file is needed for SHARED_CORE architectures.
-     [Randy Terbush randy@covalent.net]
+  *) For binary builds, add -R flag to apachectl to work around the lack of
+     an absolute path to the ./libexec directory where the libhttp.ep file
+     is needed for SHARED_CORE architectures.  [Randy Terbush]
+
+  *) WIN32: Create the CGI script process as DETACHED.  This may solve the
+     problem observed by some Win95/98 users where they get CGI script
+     output sent to the console.  [Bill Stoddard]
 
   *) Roll back (re)naming in the uuencode/decode section. The ap/ap_
-     routines are now called ap_base64* and are 'plain'. I.e. no 
-     pool access or anything clever. Inside apache the routines 
-     acting like pstrdup are called ap_puuencode() and ap_uudecode().
-     The odly named ap_uuencode(), ap_uudecode() is kept around for
-     now but depricated.  [dirkx]
+     routines are now called ap_base64* and are 'plain' (i.e., no 
+     pool access or anything clever). Inside apache the routines 
+     acting like pstrdup are called ap_puuencode() and ap_puudecode().
+     The oddly named ap_uuencode(), ap_uudecode() is kept around for
+     now but deprecated.  [dirkx]
 
-Changes with Apache 1.3.8
+  *) WIN32: Migrate to InstallShield 5.5 and provide a bit more error
+     checking.  Allow compiling on VS 6.0.  [Randy Terbush]
+
+  *) Fixed assumption of absolute paths in binbuild.sh.  [Tony Finch]
+
+  *) Use TestCompile to search for the truerand library (rather than blindly
+     assuming its existence). If it is not found, complain (but do not
+     exit - yet).  [Martin Kraemer]
+
+  *) We forgot to add the new exported function names to
+     src/support/httpd.exp.  [Bill Stoddard, Randy Terbush]
+
+  *) Add description of -T command-line option to usage().
+     [Ralf S. Engelschall]
+
+  *) For "some" platforms (notably, EBCDIC based ones), libos needs to be
+     searched only AFTER libap has been searched, because libap needs
+     some symbols from libos.  [Martin Kraemer]
+
+  *) Fix conflict with original mod_digest related to the symbol of the
+     module dispatch list (which has to be unique for DSO and follow the
+     usual conventions for the installation procedure).
+     [Ralf S. Engelschall]
+
+  *) Add a dbm-library check for the "usual places" (-ldbm, -lndbm, -ldb)
+     for other platforms as well.  [Martin Kraemer]
+
+  *) Make ap_sha1.c compile for EBCDIC platforms: replace remaining LONG
+     types by AP_LONG and replace reference to renamed variable 'ubuf'
+     by 'buffer'.  [Martin Kraemer]
+
+Changes with Apache 1.3.8 [not released]
 
   *) Flush the output buffer immediately after sending an error or redirect
      response, since the result may be needed by the client to abort a
