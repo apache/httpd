@@ -160,7 +160,6 @@ void ap_lingering_close(conn_rec *c)
      */
 
     if (c->aborted || !(c->client)) {
-	ap_bsetflag(c->client, B_EOUT, 1);
 	ap_bclose(c->client);
         return;
     }
@@ -189,8 +188,8 @@ void ap_lingering_close(conn_rec *c)
     timeout = MAX_SECS_TO_LINGER * APR_USEC_PER_SEC;
     for (;;) {
         apr_setsocketopt(c->client_socket, BO_TIMEOUT, timeout);
-        rc = ap_bread(c->client, dummybuf, sizeof(dummybuf),
-                      &nbytes);
+        nbytes = sizeof(dummybuf);
+        rc = apr_recv(c->client_socket, dummybuf, &nbytes);
         if (rc != APR_SUCCESS || nbytes == 0) break;
 
         /* how much time has elapsed? */
