@@ -40,7 +40,7 @@
   <xsl:include href="synopsis.xsl"/>
   <xsl:include href="sitemap.xsl"/>
   <xsl:include href="quickreference.xsl"/>
-  
+
   <!-- make sure, we set relative anchors
        only, if we're actually transforming
        a modulefile (see <directive>) -->
@@ -94,7 +94,7 @@
 </xsl:text> <!-- insert line break -->
 
       <link title="No Sidebar - Default font size" type="text/css" media="all"
-             rel="alternate stylesheet" 
+             rel="alternate stylesheet"
              href="{$path}/style/css/manual-loose-100pc.css"/>
 
 <xsl:text>
@@ -103,7 +103,7 @@
       <link type="text/css" media="print"
              rel="stylesheet"
              href="{$path}/style/css/manual-print.css"/>
-      
+
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
@@ -268,7 +268,7 @@
         <xsl:apply-templates select="title" mode="print"/>
       </xsl:if>
     </h3>
-    
+
     <!-- Section body -->
     <xsl:apply-templates/>
 
@@ -426,7 +426,7 @@
              <xsl:apply-templates select="preceding-sibling::node()[count(preceding-sibling::*[contains($blocks,concat(' ',local-name(),' '))]) &gt;= $bb]"/>
              <xsl:apply-templates select="self::node()[not($is-block-node)]"/>
            </xsl:variable>
-           
+
            <!-- apply bare text only, if it's not only \s or empty -->
            <xsl:if test="normalize-space($content) != ''">
              <p><code>
@@ -436,7 +436,7 @@
 
            <xsl:apply-templates select="self::node()[$is-block-node]"/>
          </xsl:if>
-         
+
        </xsl:for-each>
        <!-- /node() -->
 
@@ -452,7 +452,7 @@
     <h3>
         <xsl:apply-templates/>
     </h3>
-  </xsl:template> 
+  </xsl:template>
 
   <xsl:template match="example/title">
     <!-- don't print twice -->
@@ -467,7 +467,7 @@
     <span class="indent">
       <xsl:apply-templates/>
     </span>
-  </xsl:template> 
+  </xsl:template>
   <!-- /indent -->
 
 
@@ -484,7 +484,7 @@
 
       <xsl:apply-templates/>
     </div>
-  </xsl:template>  
+  </xsl:template>
   <!-- /note -->
 
 
@@ -495,14 +495,14 @@
     <h3>
       <xsl:apply-templates/>
     </h3>
-  </xsl:template> 
+  </xsl:template>
   <!-- /note/title -->
 
 
   <!--                                                    -->
   <!-- <directive>                                        -->
   <!-- Inserts link to another directive, which might be  -->
-  <!-- in another module. References are converted into   --> 
+  <!-- in another module. References are converted into   -->
   <!-- lower case.                                        -->
   <!--                                                    -->
   <xsl:template match="directive" name="directive">
@@ -559,7 +559,7 @@
         <xsl:value-of select="."/>
       </a>
     </code>
-  </xsl:template> 
+  </xsl:template>
   <!-- /module -->
 
 
@@ -654,7 +654,7 @@
         </xsl:otherwise>
       </xsl:choose>
     </table>
-    
+
   </xsl:template>
   <!-- /table -->
 
@@ -680,7 +680,7 @@
   <!--                                                    -->
   <xsl:template match="summary">
     <xsl:apply-templates/>
-  </xsl:template> 
+  </xsl:template>
   <!-- /summary -->
 
 
@@ -690,7 +690,7 @@
   <!--                                                    -->
   <xsl:template match="description">
     <xsl:apply-templates/>
-  </xsl:template> 
+  </xsl:template>
   <!-- /description -->
 
 
@@ -700,7 +700,7 @@
   <!--                                                    -->
   <xsl:template match="hint">
     <xsl:apply-templates/>
-  </xsl:template> 
+  </xsl:template>
   <!-- /description -->
 
 
@@ -710,7 +710,7 @@
   <!--                                                    -->
   <xsl:template match="usage">
     <xsl:apply-templates/>
-  </xsl:template> 
+  </xsl:template>
   <!-- /usage -->
 
 
@@ -720,8 +720,17 @@
   <!--                                                    -->
   <xsl:template match="syntax">
     <xsl:apply-templates/>
-  </xsl:template> 
+  </xsl:template>
   <!-- /syntax -->
+
+  <!--                                                    -->
+  <!-- <default>                                          -->
+  <!-- Passes through content                             -->
+  <!--                                                    -->
+  <xsl:template match="default">
+    <xsl:apply-templates/>
+  </xsl:template>
+  <!-- /default -->
 
 
   <!--                                                    -->
@@ -731,7 +740,7 @@
     <div class="top">
       <a href="#page-header"><img src="{$path}/images/up.gif" alt="top" /></a>
     </div>
-  </xsl:template> 
+  </xsl:template>
   <!-- /toplink -->
 
 
@@ -792,7 +801,7 @@
     </xsl:call-template>
 
   </xsl:template>
-  
+
   <xsl:template name="_squeeze-letters">
   <xsl:param name="letters"/>
   <xsl:param name="lastletter"/>
@@ -802,7 +811,7 @@
     <xsl:if test="$lastletter != $current">
       <xsl:value-of select="$current"/>
     </xsl:if>
-    
+
     <xsl:if test="string-length($letters) &gt; 1">
       <xsl:call-template name="_squeeze-letters">
         <xsl:with-param name="letters" select="substring($letters,2)"/>
@@ -814,7 +823,7 @@
 
   <xsl:template name="module-translatename">
   <xsl:param name="name"/>
-  
+
     <xsl:variable name="sname" select="translate($name,$lowercase,$uppercase)"/>
 
     <xsl:choose>
