@@ -637,7 +637,7 @@ static void check_pipe_of_death(void)
 	int n=1;
 
         ret = ap_recv(listensocks[0], &pipe_read_char, &n);
-        if (ret == APR_EAGAIN) {
+        if (ap_canonical_error(ret) == APR_EAGAIN) {
             /* It lost the lottery. It must continue to suffer
              * through a life of servitude. */
         }
