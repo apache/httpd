@@ -1,5 +1,9 @@
 Changes with Apache 2.0.19-dev
 
+  *) Solve case-insensitive platforms' confusion about negotiated
+     filenames, allowing files of differnt case to match in choosing
+     the document to serve.  [William Rowe]
+
   *) Fix brokenness when ThreadsPerChild is higher than the built-in
      limit.  We left ap_threads_per_child at the higher value which
      led to segfaults when doing certain scoreboard operations.
