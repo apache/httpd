@@ -124,6 +124,9 @@
 #ifdef HAVE_TIME_H
 #include <time.h>
 #endif
+#ifdef HAVE_SYS_PROCESSOR_H
+#include <sys/processor.h> /* for bindprocessor() */
+#endif
 
 #include <signal.h>
 #include <sys/times.h>
@@ -868,11 +871,10 @@ static int make_child(server_rec *s, int slot)
     }
 
     if (!pid) {
-#ifdef HAVE_SYS_PROCESSOR_H
-/* by default AIX binds to a single processor
- * this bit unbinds children which will then bind to another cpu
- */
-#include <sys/processor.h>
+#ifdef HAVE_BINDPROCESSOR
+        /* by default AIX binds to a single processor
+         * this bit unbinds children which will then bind to another cpu
+         */
 	int status = bindprocessor(BINDPROCESS, (int)getpid(), 
 				   PROCESSOR_CLASS_ANY);
 	if (status != OK) {
