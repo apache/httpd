@@ -84,12 +84,10 @@ you've configured. Here's one way to do it...<p>
 
 In the server configuration file, put
 <blockquote><code>
-&lt;Directory&gt; <br>
+&lt;Directory /&gt; <br>
 AllowOverride None <br>
 Options None <br>
-&lt;Limit GET PUT POST&gt; <br>
 allow from all <br>
-&lt;/Limit&gt; <br>
 &lt;/Directory&gt; <br>
 </code></blockquote>
 
