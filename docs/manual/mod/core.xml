@@ -1161,14 +1161,23 @@ except the named ones</description>
 
 <usage>
     <p><directive type="section">LimitExcept</directive> and
-    <code>&lt;/LimitExcept&gt;</code> are used to enclose a group of
-    access control directives which will then apply to any HTTP access
-    method <strong>not</strong> listed in the arguments; i.e., it is
-    the opposite of a <directive type="section"
+    <code>&lt;/LimitExcept&gt;</code> are used to enclose
+    a group of access control directives which will then apply to any
+    HTTP access method <strong>not</strong> listed in the arguments; 
+    i.e., it is the opposite of a <directive type="section"
     module="core">Limit</directive> section and can be used to control
     both standard and nonstandard/unrecognized methods. See the
     documentation for <directive module="core"
     type="section">Limit</directive> for more details.</p>
+
+    <p>For example:</p>
+
+    <example>
+    &lt;LimitExcept POST GET&gt;<br />
+    Require valid-user<br />
+    &lt;LimitExcept&gt;
+    </example>
+
 </usage>
 </directivesynopsis>
 
@@ -1206,6 +1215,15 @@ from the client</description>
     control over abnormal client request behavior, which may be
     useful for avoiding some forms of denial-of-service
     attacks.</p>
+
+    <p>If, for example, you are permitting file upload to a particular
+    location, and wich to limit the size of the uploaded file to 100K,
+    you might use the following directive:</p>
+
+    <example>
+    LimitRequestBody 102400
+    </example>
+
 </usage>
 </directivesynopsis>
 
@@ -1240,6 +1258,13 @@ will be accepted from the client</description>
     The value should be increased if normal clients see an error
     response from the server that indicates too many fields were
     sent in the request.</p>
+
+    <p>For example:</p>
+
+    <example>
+    LimitRequestFields 50
+    </example>
+
 </usage>
 </directivesynopsis>
 
@@ -1270,9 +1295,17 @@ client</description>
 
     <p>This directive gives the server administrator greater
     control over abnormal client request behavior, which may be
-    useful for avoiding some forms of denial-of-service attacks.
-    Under normal conditions, the value should not be changed from
-    the default.</p>
+    useful for avoiding some forms of denial-of-service attacks.</p>
+
+    <p>For example:</p>
+
+    <example>
+    LimitRequestFieldSize 16380
+    </example>
+
+    <note>Under normal conditions, the value should not be changed from
+    the default.</note>
+
 </usage>
 </directivesynopsis>
 
@@ -1303,9 +1336,16 @@ from the client</description>
 
     <p>This directive gives the server administrator greater
     control over abnormal client request behavior, which may be
-    useful for avoiding some forms of denial-of-service attacks.
-    Under normal conditions, the value should not be changed from
-    the default.</p>
+    useful for avoiding some forms of denial-of-service attacks.</p>
+
+    <p>For example:</p>
+
+    <example>
+    LimitRequestLine 16380
+    </example>
+
+    <note>Under normal conditions, the value should not be changed from
+    the default.</note>
 </usage>
 </directivesynopsis>
 
@@ -1319,6 +1359,13 @@ from the client</description>
 <usage>
     <p>Limit (in bytes) on maximum size of an XML-based request
     body. A value of <code>0</code> will disable any checking.</p>
+
+    <p>Example:</p>
+
+    <example>
+    LimitXMLRequestBody 0
+    </example>
+
 </usage>
 </directivesynopsis>
 
@@ -1327,7 +1374,7 @@ from the client</description>
 <description>Applies the enclosed directives only to matching
 URLs</description>
 <syntax>&lt;Location
-    <em>URL-path</em>|<em>URL</em>&gt; ... &lt;/Location&gt;</syntax>
+    URL-path|URL&gt; ... &lt;/Location&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -1456,16 +1503,11 @@ matching URLs</description>
     <em>level</em>s are available, in order of decreasing
     significance:</p>
 
-    <table>
+    <table border="1">
       <tr>
         <th><strong>Level</strong> </th>
 
         <th><strong>Description</strong> </th>
-      </tr>
-
-      <tr>
-        <th>
-        </th>
 
         <th><strong>Example</strong> </th>
       </tr>
@@ -1474,11 +1516,6 @@ matching URLs</description>
         <td><code>emerg</code> </td>
 
         <td>Emergencies - system is unusable.</td>
-      </tr>
-
-      <tr>
-        <td>
-        </td>
 
         <td>"Child cannot open lock file. Exiting"</td>
       </tr>
@@ -1487,11 +1524,6 @@ matching URLs</description>
         <td><code>alert</code> </td>
 
         <td>Action must be taken immediately.</td>
-      </tr>
-
-      <tr>
-        <td>
-        </td>
 
         <td>"getpwuid: couldn't determine user name from uid"</td>
       </tr>
@@ -1500,11 +1532,6 @@ matching URLs</description>
         <td><code>crit</code> </td>
 
         <td>Critical Conditions.</td>
-      </tr>
-
-      <tr>
-        <td>
-        </td>
 
         <td>"socket: Failed to get a socket, exiting child"</td>
       </tr>
@@ -1513,11 +1540,6 @@ matching URLs</description>
         <td><code>error</code> </td>
 
         <td>Error conditions.</td>
-      </tr>
-
-      <tr>
-        <td>
-        </td>
 
         <td>"Premature end of script headers"</td>
       </tr>
@@ -1526,11 +1548,6 @@ matching URLs</description>
         <td><code>warn</code> </td>
 
         <td>Warning conditions.</td>
-      </tr>
-
-      <tr>
-        <td>
-        </td>
 
         <td>"child process 1234 did not exit, sending another
         SIGHUP"</td>
@@ -1540,11 +1557,6 @@ matching URLs</description>
         <td><code>notice</code> </td>
 
         <td>Normal but significant condition.</td>
-      </tr>
-
-      <tr>
-        <td>
-        </td>
 
         <td>"httpd: caught SIGBUS, attempting to dump core in
         ..."</td>
@@ -1554,11 +1566,6 @@ matching URLs</description>
         <td><code>info</code> </td>
 
         <td>Informational.</td>
-      </tr>
-
-      <tr>
-        <td>
-        </td>
 
         <td>"Server seems busy, (you may need to increase
         StartServers, or Min/MaxSpareServers)..."</td>
@@ -1568,11 +1575,6 @@ matching URLs</description>
         <td><code>debug</code> </td>
 
         <td>Debug-level messages</td>
-      </tr>
-
-      <tr>
-        <td>
-        </td>
 
         <td>"Opening config file ..."</td>
       </tr>
@@ -1586,6 +1588,11 @@ matching URLs</description>
 
     <p>Using a level of at least <code>crit</code> is
     recommended.</p>
+
+    <p>For example:</p>
+
+    <example>LogLevel notice</example>
+
 </usage>
 </directivesynopsis>
 
@@ -1604,6 +1611,10 @@ connection</description>
     set to "<code>0</code>", unlimited requests will be allowed. We
     recommend that this setting be kept to a high value for maximum
     server performance.</p>
+
+    <p>For example:</p>
+
+    <example>MaxKeepAliveRequests 500</example>
 </usage>
 </directivesynopsis>
 
@@ -1649,6 +1660,9 @@ hosting</description>
      in the following example:</p>
  
 <example>NameVirtualHost [fe80::a00:20ff:fea7:ccea]:8080</example>
+
+<seealso>See also: <a href="../vhosts/">Virtual Hosts
+documentation</a></seealso>
 
 </usage>
 </directivesynopsis>
@@ -1971,7 +1985,21 @@ interact</description>
     valid username and password. This can be used to password restrict
     an area, but to let clients from particular addresses in without
     prompting for a password.</p>
+
+    <p>For example, if you wanted to let people on your network have
+    unrestricted access to a portion of your website, but require that
+    people outside of your network provide a password, you could use a
+    configuration similar to the following:</p>
+
+    <example>
+    Require valid-user<br />
+    Allow from 192.168.1<br />
+    Satisfy any
+    </example>
+   
 </usage>
+   <seealso><directive module="mod_access">Allow</directive></seealso>
+   <seealso><directive module="core">Require</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>

@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/02/17 21:09:03 $
+Last modified: $Date: 2002/03/23 03:23:15 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -136,9 +136,9 @@ Documentation improvements
 
   - Every directive should have at least one example of usage, except
     those directives which list all possible usages in the Syntax
-    description. Some module docs have been reviewed for this, and
-    mod/core.html has been checked up through the <Limit> directive.
-    --rcb
+    description. And maybe some of those too. People like examples.
+    mod/core.html has been checked all the way through, as have a few
+    of the modules.
 
 * Making site-specific enhancements easier, including a documented
   and robust way for 3P module docco to be added -- and have it
