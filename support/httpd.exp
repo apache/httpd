@@ -331,7 +331,6 @@ ap_snprintf
 ap_soft_timeout
 ap_some_auth_required
 ap_spawn_child
-ap_spawnvp
 ap_sync_scoreboard_image
 ap_srm_command_loop
 ap_standalone

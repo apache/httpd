@@ -72,7 +72,6 @@
  */
 
 extern int ap_os_is_path_absolute(const char *file);
-extern int ap_spawnvp(const char *file, char *const argv[]);
 #define ap_os_is_filename_valid(f)          (1)
 #define ap_os_kill(pid, sig)                kill(pid, sig)
 
