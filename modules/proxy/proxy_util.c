@@ -1819,6 +1819,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                                               server_rec *s)
 {
     apr_sockaddr_t *backend_addr = conn->addr;
+    int rc;
 
     /* The socket is now open, create a new backend server connection 
     * 
@@ -1867,7 +1868,14 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                  proxy_function, backend_addr, conn->hostname);
 
     /* set up the connection filters */
-    ap_run_pre_connection(conn->connection, conn->sock);
+    rc = ap_run_pre_connection(conn->connection, conn->sock);
+    if (rc != OK && rc != DONE) {
+        conn->connection->aborted = 1;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                     "proxy: %s: pre_connection setup failed (%d)",
+                     proxy_function, rc);
+        return rc;
+    }
 
     return OK;
 }
