@@ -94,12 +94,13 @@ extern int fclose(FILE *);
 
 API_EXPORT(char *) ap_get_time()
 {
-    time_t t;
-    char *time_string;
+    ap_time_t *t = NULL;
+    char *time_string = NULL;
 
-    t = time(NULL);
-    time_string = ctime(&t);
-    time_string[strlen(time_string) - 1] = '\0';
+    ap_make_time(&t, NULL);
+    ap_current_time(t);
+
+    ap_timestr(&time_string, t, APR_LOCALTIME, NULL);
     return (time_string);
 }
 
@@ -173,37 +174,6 @@ API_EXPORT(char *) ap_ht_time(ap_context_t *p, ap_time_t *t, const char *fmt, in
     ts[MAX_STRING_LEN - 1] = '\0';
     return ap_pstrdup(p, ts);
 }
-
-/* What a pain in the ass. */
-#if defined(HAVE_GMTOFF)
-API_EXPORT(struct tm *) ap_get_gmtoff(int *tz)
-{
-    time_t tt = time(NULL);
-    struct tm *t;
-
-    t = localtime(&tt);
-    *tz = (int) (t->tm_gmtoff / 60);
-    return t;
-}
-#else
-API_EXPORT(struct tm *) ap_get_gmtoff(int *tz)
-{
-    time_t tt = time(NULL);
-    struct tm gmt;
-    struct tm *t;
-    int days, hours, minutes;
-
-    /* Assume we are never more than 24 hours away. */
-    gmt = *gmtime(&tt);		/* remember gmtime/localtime return ptr to static */
-    t = localtime(&tt);		/* buffer... so be careful */
-    days = t->tm_yday - gmt.tm_yday;
-    hours = ((days < -1 ? 24 : 1 < days ? -24 : days * 24)
-	     + t->tm_hour - gmt.tm_hour);
-    minutes = hours * 60 + t->tm_min - gmt.tm_min;
-    *tz = minutes;
-    return t;
-}
-#endif
 
 /* Roy owes Rob beer. */
 /* Rob owes Roy dinner. */
@@ -2044,13 +2014,6 @@ char *
 
     p = sys_errlist[err];
     return (p);
-}
-#endif
-
-#ifndef HAVE_DIFFTIME
-double difftime(time_t time1, time_t time0)
-{
-    return (time1 - time0);
 }
 #endif
 

@@ -83,7 +83,6 @@ strstr \
 strerror \
 initgroups \
 waitpid \
-difftime \
 gettimeofday \
 memmove \
 bzero \

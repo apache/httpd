@@ -914,7 +914,6 @@ struct server_rec {
  */
 
 /* Time */
-API_EXPORT(struct tm *) ap_get_gmtoff(int *tz);
 API_EXPORT(char *) ap_get_time(void);
 API_EXPORT(char *) ap_field_noparam(ap_context_t *p, const char *intype);
 API_EXPORT(char *) ap_ht_time(ap_context_t *p, ap_time_t *t, const char *fmt, int gmt);

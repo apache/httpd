@@ -126,48 +126,6 @@ API_EXPORT(int) ap_checkmask(const char *data, const char *mask)
 }
 
 /*
- * tm2sec converts a GMT tm structure into the number of seconds since
- * 1st January 1970 UT.  Note that we ignore tm_wday, tm_yday, and tm_dst.
- * 
- * The return value is always a valid time_t value -- (time_t)0 is returned
- * if the input date is outside that capable of being represented by time(),
- * i.e., before Thu, 01 Jan 1970 00:00:00 for all systems and 
- * beyond 2038 for 32bit systems.
- *
- * This routine is intended to be very fast, much faster than mktime().
- */
-API_EXPORT(time_t) ap_tm2sec(const struct tm * t)
-{
-    int year;
-    time_t days;
-    static const int dayoffset[12] =
-    {306, 337, 0, 31, 61, 92, 122, 153, 184, 214, 245, 275};
-
-    year = t->tm_year;
-
-    if (year < 70 || ((sizeof(time_t) <= 4) && (year >= 138)))
-	return BAD_DATE;
-
-    /* shift new year to 1st March in order to make leap year calc easy */
-
-    if (t->tm_mon < 2)
-	year--;
-
-    /* Find number of days since 1st March 1900 (in the Gregorian calendar). */
-
-    days = year * 365 + year / 4 - year / 100 + (year / 100 + 3) / 4;
-    days += dayoffset[t->tm_mon] + t->tm_mday - 1;
-    days -= 25508;		/* 1 jan 1970 is 25508 days since 1 mar 1900 */
-
-    days = ((days * 24 + t->tm_hour) * 60 + t->tm_min) * 60 + t->tm_sec;
-
-    if (days < 0)
-	return BAD_DATE;	/* must have overflowed */
-    else
-	return days;		/* must be a valid time */
-}
-
-/*
  * Parses an HTTP date in one of three standard forms:
  *
  *     Sun, 06 Nov 1994 08:49:37 GMT  ; RFC 822, updated by RFC 1123
