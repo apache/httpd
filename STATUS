@@ -364,3 +364,6 @@ Delayed until after 1.3.0, unless someone happens to get to it:
     * proxy module doesn't load on Win95.  Why?  Good question.
 	PR#1462.
 
+    * In ap_bclose() there's no test that (fb->fd != -1) -- so it's
+      possible that it'll do something completely bogus when it's 
+      used for read-only things. - Dean Gaudet
