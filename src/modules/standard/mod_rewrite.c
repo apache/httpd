@@ -249,7 +249,7 @@ static void *config_server_create(pool *p, server_rec *s)
     a->options         = OPTION_NONE;
     a->rewritelogfile  = NULL;
     a->rewritelogfp    = -1;
-    a->rewriteloglevel = 1;
+    a->rewriteloglevel = 0;
     a->rewritelockfile = NULL;
     a->rewritelockfp   = -1;
     a->rewritemaps     = make_array(p, 2, sizeof(rewritemap_entry));
@@ -267,30 +267,44 @@ static void *config_server_merge(pool *p, void *basev, void *overridesv)
     base      = (rewrite_server_conf *)basev;
     overrides = (rewrite_server_conf *)overridesv;
 
-    a->state           = overrides->state;
-    a->options         = overrides->options;
-    a->rewritelogfile  = base->rewritelogfile != NULL ?
-                         base->rewritelogfile : overrides->rewritelogfile;
-    a->rewritelogfp    = base->rewritelogfp != -1 ?
-                         base->rewritelogfp : overrides->rewritelogfp;
-    a->rewriteloglevel = overrides->rewriteloglevel;
-    a->rewritelockfile = base->rewritelockfile != NULL ?
-                         base->rewritelockfile : overrides->rewritelockfile;
-    a->rewritelockfp   = base->rewritelockfp != -1 ?
-                         base->rewritelockfp : overrides->rewritelockfp;
+    a->state   = overrides->state;
+    a->options = overrides->options;
 
     if (a->options & OPTION_INHERIT) {
-        a->rewritemaps  = append_arrays(p, overrides->rewritemaps,
-                                        base->rewritemaps);
-        a->rewriteconds = append_arrays(p, overrides->rewriteconds,
-                                        base->rewriteconds);
-        a->rewriterules = append_arrays(p, overrides->rewriterules,
-                                        base->rewriterules);
+        /* 
+         *  local directives override 
+         *  and anything else is inherited 
+         */
+        a->rewriteloglevel = overrides->rewriteloglevel != 0 ?
+                             overrides->rewriteloglevel : base->rewriteloglevel;
+        a->rewritelogfile  = overrides->rewritelogfile != NULL ?
+                             overrides->rewritelogfile : base->rewritelogfile;
+        a->rewritelogfp    = overrides->rewritelogfp != -1 ?
+                             overrides->rewritelogfp : base->rewritelogfp;
+        a->rewritelockfile = overrides->rewritelockfile != NULL ?
+                             overrides->rewritelockfile : base->rewritelockfile;
+        a->rewritelockfp   = overrides->rewritelockfp != -1 ?
+                             overrides->rewritelockfp : base->rewritelockfp;
+        a->rewritemaps     = append_arrays(p, overrides->rewritemaps,
+                                           base->rewritemaps);
+        a->rewriteconds    = append_arrays(p, overrides->rewriteconds,
+                                           base->rewriteconds);
+        a->rewriterules    = append_arrays(p, overrides->rewriterules,
+                                           base->rewriterules);
     }
     else {
-        a->rewritemaps  = overrides->rewritemaps;
-        a->rewriteconds = overrides->rewriteconds;
-        a->rewriterules = overrides->rewriterules;
+        /* 
+         *  local directives override 
+         *  and anything else gets defaults 
+         */
+        a->rewriteloglevel = overrides->rewriteloglevel;
+        a->rewritelogfile  = overrides->rewritelogfile;
+        a->rewritelogfp    = overrides->rewritelogfp;
+        a->rewritelockfile = overrides->rewritelockfile;
+        a->rewritelockfp   = overrides->rewritelockfp;
+        a->rewritemaps     = overrides->rewritemaps;
+        a->rewriteconds    = overrides->rewriteconds;
+        a->rewriterules    = overrides->rewriterules;
     }
 
     return (void *)a;

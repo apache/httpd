@@ -1,5 +1,11 @@
 Changes with Apache 1.3b6
 
+  *) Fix initialization of RewriteLogLevel (default now is 0 as documented 
+     and not 1) and the per-virtual-server merging of directives. Now all
+     directives except `RewriteEngine' and `RewriteOption' are either
+     completely overridden (default) or completely inherited (when
+     `RewriteOptions inherit') is used. [Ralf S. Engelschall, PR#1325]
+
   *) Fix `RewriteMap' program lookup in situations where such maps are
      defined but disabled (`RewriteEngine off') in per-server context. 
      [Ralf S. Engelschall, PR#1431]
