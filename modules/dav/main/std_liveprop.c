@@ -95,7 +95,7 @@ static const dav_liveprop_group dav_core_liveprop_group =
 
 static dav_prop_insert dav_core_insert_prop(const dav_resource *resource,
                                             int propid, dav_prop_insert what,
-                                            ap_text_header *phdr)
+                                            apr_text_header *phdr)
 {
     const char *value;
     const char *s;
@@ -172,7 +172,7 @@ static dav_prop_insert dav_core_insert_prop(const dav_resource *resource,
     else {
         s = apr_psprintf(p, "<lp%d:%s/>" DEBUG_CR, global_ns, info->name);
     }
-    ap_text_append(p, phdr, s);
+    apr_text_append(p, phdr, s);
 
     /* we inserted what was asked for */
     return what;
@@ -187,7 +187,7 @@ static int dav_core_is_writable(const dav_resource *resource, int propid)
 }
 
 static dav_error * dav_core_patch_validate(const dav_resource *resource,
-                                           const ap_xml_elem *elem,
+                                           const apr_xml_elem *elem,
                                            int operation, void **context,
                                            int *defer_to_dead)
 {
@@ -216,7 +216,7 @@ int dav_core_find_liveprop(const dav_resource *resource,
 
 void dav_core_insert_all_liveprops(request_rec *r,
                                    const dav_resource *resource,
-                                   dav_prop_insert what, ap_text_header *phdr)
+                                   dav_prop_insert what, apr_text_header *phdr)
 {
     (void) dav_core_insert_prop(resource, DAV_PROPID_resourcetype,
                                 what, phdr);

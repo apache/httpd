@@ -325,31 +325,31 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r,
 */
 
 /* validate that the root element uses a given DAV: tagname (TRUE==valid) */
-int dav_validate_root(const ap_xml_doc *doc, const char *tagname)
+int dav_validate_root(const apr_xml_doc *doc, const char *tagname)
 {
     return doc->root &&
-	doc->root->ns == AP_XML_NS_DAV_ID &&
+	doc->root->ns == APR_XML_NS_DAV_ID &&
 	strcmp(doc->root->name, tagname) == 0;
 }
 
 /* find and return the (unique) child with a given DAV: tagname */
-ap_xml_elem *dav_find_child(const ap_xml_elem *elem, const char *tagname)
+apr_xml_elem *dav_find_child(const apr_xml_elem *elem, const char *tagname)
 {
-    ap_xml_elem *child = elem->first_child;
+    apr_xml_elem *child = elem->first_child;
 
     for (; child; child = child->next)
-	if (child->ns == AP_XML_NS_DAV_ID && !strcmp(child->name, tagname))
+	if (child->ns == APR_XML_NS_DAV_ID && !strcmp(child->name, tagname))
 	    return child;
     return NULL;
 }
 
 /* gather up all the CDATA into a single string */
-DAV_DECLARE(const char *) dav_xml_get_cdata(const ap_xml_elem *elem, apr_pool_t *pool,
+DAV_DECLARE(const char *) dav_xml_get_cdata(const apr_xml_elem *elem, apr_pool_t *pool,
                               int strip_white)
 {
     apr_size_t len = 0;
-    ap_text *scan;
-    const ap_xml_elem *child;
+    apr_text *scan;
+    const apr_xml_elem *child;
     char *cdata;
     char *s;
     apr_size_t tlen;
@@ -481,7 +481,7 @@ DAV_DECLARE(void) dav_xmlns_generate(dav_xmlns_info *xi,
 
         s = apr_psprintf(xi->pool, " xmlns:%s=\"%s\"",
                          (const char *)prefix, (const char *)uri);
-        ap_text_append(xi->pool, phdr, s);
+        apr_text_append(xi->pool, phdr, s);
     }
 }
 
@@ -1580,7 +1580,7 @@ dav_error * dav_validate_request(request_rec *r, dav_resource *resource,
     ** to construct a standard 207 response.
     */
     if (err == NULL && response != NULL && *response != NULL) {
-        ap_text *propstat = NULL;
+        apr_text *propstat = NULL;
 
         if ((flags & DAV_VALIDATE_USE_424) != 0) {
             /* manufacture a 424 error to hold the multistatus response(s) */
