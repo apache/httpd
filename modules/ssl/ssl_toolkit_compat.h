@@ -55,7 +55,20 @@
  * between OpenSSL and RSA sslc
  */
 
-#ifdef OPENSSL_VERSION_NUMBER
+#ifdef HAVE_OPENSSL
+
+/* OpenSSL headers */
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#include <openssl/x509.h>
+#include <openssl/pem.h>
+#include <openssl/crypto.h>
+#include <openssl/evp.h>
+#include <openssl/rand.h>
+#include <openssl/x509v3.h>
+#ifdef SSL_EXPERIMENTAL_ENGINE
+#include <openssl/engine.h>
+#endif
 
 /*
  * rsa sslc uses incomplete types for most structures
@@ -121,7 +134,13 @@
 
 #define HAVE_SSL_X509V3_EXT_d2i
 
-#else /* RSA sslc */
+#else /* HAVE_SSLC */
+
+#include <sslc.h>
+
+#if SSLC_VERSION > 0x1FFF
+#include <x509v3.h>
+#endif
 
 /* sslc does not support this function, OpenSSL has since 9.5.1 */
 #define RAND_status() 1
@@ -171,8 +190,6 @@
 #define modssl_set_verify(ssl, verify, cb) \
     SSL_set_verify(ssl, verify)
 
-#define NO_SSL_X509V3_H
-
 #endif
 
 /* BEGIN GENERATED SECTION */
@@ -208,10 +225,6 @@
 #ifndef modssl_set_verify
 #define modssl_set_verify(ssl, verify, cb) \
     SSL_set_verify(ssl, verify, cb)
-#endif
-
-#ifndef NO_SSL_X509V3_H
-#define HAVE_SSL_X509V3_H
 #endif
 
 #endif /* SSL_TOOLKIT_COMPAT_H */
