@@ -23,7 +23,9 @@
 <P>Compiling Apache requires Microsoft Visual C++ 5.0 (or later) to be 
    properly installed. It is easiest to compile with the command-line tools
    (nmake, <EM>etc.</EM>..). Consult the VC++ manual to determine how to install
-   them.</P>
+   them.  Be especially aware that the vcvars32.bat file from the 
+   Program Files/DevStudio/VC/bin folder may be required to prepare the 
+   command-line environment for command-line builds!</P>
 
 <P>First, unpack the Apache distribution into an appropriate
    directory. Open a command-line prompt, and change to the
@@ -37,26 +39,27 @@
 <LI><CODE>nmake /f Makefile.win _apached</CODE> (debug build)
 </UL>
 
-<P>These will both compile Apache. The latter will include debugging
-   information in the resulting files, making it easier to find bugs and
-   track down problems.</P>
 
 <P>Apache can also be compiled using VC++'s Visual Studio development
-   environment. Although compiling Apache in this manner is not as
-   simple, it makes it possible to easily modify the Apache source, or
-   to compile Apache if the command-line tools are not installed.
-   Project files (<CODE>.DSP</CODE>) are included for each of the
-   portions of Apache. To build Apache from the these projects files
-   you will need to build the following projects <EM>in this order</EM>:
+   environment. To simplify this process, a Visual Studio workspace,
+   Apache.dsw, is provided in the src folder.  This workspace exposes
+   the entire list of working .dsp projects that are required for the
+   complete Apache binary release.  It includes dependencies between
+   the projects to assure that they are built in the appropriate order.</P>
 
 <OL>
-   <LI><CODE>regex\regex.dsp</CODE>
    <LI><CODE>lib\apr\aprlib.dsp</CODE>
+   <LI><CODE>lib\apr\aprlibdll.dsp <EM>requires aprlib</EM></CODE>
+   <LI><CODE>lib\pcre\dftables.dsp</CODE>
+   <LI><CODE>lib\pcre\pcre.dsp <EM>requires dftables</EM></CODE>
+   <LI><CODE>lib\pcre\pcreposix.dsp <EM>requires dftables and pcre</EM></CODE>
+   <LI><CODE>lib\expat-lite\xmltok.dsp</CODE>
+   <LI><CODE>lib\expat-lite\xmlparse.dsp <EM>requires xmltok</EM></CODE>
    <LI><CODE>ap\ap.dsp</CODE>
    <LI><CODE>main\gen_uri_delims.dsp</CODE>
    <LI><CODE>main\gen_test_char.dsp</CODE>
-   <LI><CODE>ApacheCore.dsp</CODE>
-   <LI><CODE>Apache.dsp</CODE>
+   <LI><CODE>ApacheCore.dsp <EM>requires all of the above</EM></CODE>
+   <LI><CODE>Apache.dsp <EM>requires ApacheCore and aprlibdll</EM></CODE>
 </OL>
 
    In addition, the <CODE>os\win32</CODE> subdirectory contains
@@ -64,22 +67,25 @@
 
 <OL>
   <LI><CODE>os\win32\ApacheModuleAuthAnon.dsp</CODE>
+  <LI><CODE>os\win32\ApacheModuleAuthDigest.dsp</CODE>
   <LI><CODE>os\win32\ApacheModuleCERNMeta.dsp</CODE>
-  <LI><CODE>os\win32\ApacheModuleDigest.dsp</CODE>
   <LI><CODE>os\win32\ApacheModuleExpires.dsp</CODE>
+  <LI><CODE>os\win32\ApacheModuleFileCache.dsp</CODE>
   <LI><CODE>os\win32\ApacheModuleHeaders.dsp</CODE>
   <LI><CODE>os\win32\ApacheModuleInfo.dsp</CODE>
   <LI><CODE>os\win32\ApacheModuleRewrite.dsp</CODE>
   <LI><CODE>os\win32\ApacheModuleSpeling.dsp</CODE>
   <LI><CODE>os\win32\ApacheModuleStatus.dsp</CODE>
   <LI><CODE>os\win32\ApacheModuleUserTrack.dsp</CODE>
+  <LI><CODE>modules\proxy\ApacheModuleProxy.dsp</CODE>
 </OL>
 
    The <CODE>support\</CODE> folder contains project files for additional
    programs that are not part of the apache runtime, but are used by
-   the administrator to maintain password and log files.</P>
+   the administrator to test Apache and maintain password and log files.</P>
 
 <OL>
+  <LI><CODE>support\ab.dsp</CODE>
   <LI><CODE>support\htdigest.dsp</CODE>
   <LI><CODE>support\htpasswd.dsp</CODE>
   <LI><CODE>support\logresolve.dsp</CODE>
@@ -100,8 +106,8 @@
       (for debug build)
 </UL>
 
-   The dir argument to INSTDIR gives the installation directory; it can
-   be omitted if Apache is to be installed into <SAMP>\Apache</SAMP>.</P>
+   The <EM>dir</EM> argument to INSTDIR gives the installation directory; it 
+   can be omitted if Apache is to be installed into <SAMP>\Apache</SAMP>.</P>
 
 <P>This will install the following:</P>
 
@@ -109,9 +115,9 @@
   <LI><CODE><EM>dir</EM>\Apache.exe</CODE> - Apache executable
   <LI><CODE><EM>dir</EM>\aprlib.dll</CODE> - Apache Portable Runtime shared library
   <LI><CODE><EM>dir</EM>\ApacheCore.dll</CODE> - Apache Core application
-  <LI><CODE><EM>dir</EM>\modules\ApacheModule*.dll</CODE> - Optional Apache
-      modules (7 files)
-  <LI><CODE><EM>dir</EM>\support\*.exe</CODE> - Administrator support executables
+  <LI><CODE><EM>dir</EM>\modules\ApacheModule*.dll</CODE> - Loadable Apache
+      modules
+  <LI><CODE><EM>dir</EM>\bin\*.exe</CODE> - Administrator support executables
   <LI><CODE><EM>dir</EM>\conf</CODE> - Empty configuration directory
   <LI><CODE><EM>dir</EM>\logs</CODE> - Empty logging directory
 </UL>
@@ -126,7 +132,7 @@
    src/Apache.dsw
 </PRE>
    
-   This assures that lower-level sources are rebuilt from within
+<P>This assures that lower-level sources are rebuilt from within
    VisualStudio.  The top level project is InstallBin, which invokes 
    Makefile.win to move the compiled executables and dlls.  You may 
    personalize the INSTDIR= setting by changing the Settings for
