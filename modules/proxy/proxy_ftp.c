@@ -975,7 +975,8 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
                 break;
         if (*secs_str != '\0') {
             secs = atol(secs_str);
-            ap_table_add(r->headers_out, "Retry-After", apr_psprintf(p, "%lu", 60 * secs));
+            ap_table_add(r->headers_out, "Retry-After",
+                         apr_psprintf(p, "%lu", (unsigned long)(60 * secs)));
         }
         return ap_proxyerror(r, HTTP_SERVICE_UNAVAILABLE, ftpmessage);
     }
