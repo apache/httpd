@@ -158,7 +158,7 @@ Rotation is separate from addition to prevent recomputation.
 
 /* MD5 initialization. Begins an MD5 operation, writing a new context.
  */
-API_EXPORT(void) MD5Init(MD5_CTX *context)
+API_EXPORT(void) MD5Init(AP_MD5_CTX *context)
 {
     context->count[0] = context->count[1] = 0;
   /* Load magic initialization constants. */
@@ -172,7 +172,8 @@ API_EXPORT(void) MD5Init(MD5_CTX *context)
   operation, processing another message block, and updating the
   context.
  */
-API_EXPORT(void) MD5Update(MD5_CTX *context, const unsigned char *input, unsigned int inputLen)
+API_EXPORT(void) MD5Update(AP_MD5_CTX *context, const unsigned char *input, 
+                           unsigned int inputLen)
 {
     unsigned int i, idx, partLen;
 
@@ -207,7 +208,7 @@ API_EXPORT(void) MD5Update(MD5_CTX *context, const unsigned char *input, unsigne
 /* MD5 finalization. Ends an MD5 message-digest operation, writing the
   the message digest and zeroizing the context.
  */
-API_EXPORT(void) MD5Final(unsigned char digest[16], MD5_CTX *context)
+API_EXPORT(void) MD5Final(unsigned char digest[16], AP_MD5_CTX *context)
 {
     unsigned char bits[8];
     unsigned int idx, padLen;

@@ -91,9 +91,9 @@ typedef struct {
   UINT4 state[4];                                   /* state (ABCD) */
   UINT4 count[2];        /* number of bits, modulo 2^64 (lsb first) */
   unsigned char buffer[64];                         /* input buffer */
-} MD5_CTX;
+} AP_MD5_CTX;
 
-API_EXPORT(void) MD5Init(MD5_CTX *context);
-API_EXPORT(void) MD5Update(MD5_CTX *context, const unsigned char *input,
+API_EXPORT(void) MD5Init(AP_MD5_CTX *context);
+API_EXPORT(void) MD5Update(AP_MD5_CTX *context, const unsigned char *input,
 		      unsigned int inputLen);
-API_EXPORT(void) MD5Final(unsigned char digest[16], MD5_CTX *context);
+API_EXPORT(void) MD5Final(unsigned char digest[16], AP_MD5_CTX *context);

@@ -241,10 +241,10 @@ int get_digest_rec (request_rec *r, digest_header_rec *response)
 /* The actual MD5 code... whee */
 
 char *find_digest(request_rec *r, digest_header_rec *h, char *a1) {
-  return md5(r->pool,
-	     (unsigned char *)pstrcat(r->pool, a1, ":", h->nonce, ":", 
-			  md5(r->pool,
-			      (unsigned char *)pstrcat(r->pool,r->method,":",
+  return ap_md5(r->pool,
+	        (unsigned char *)pstrcat(r->pool, a1, ":", h->nonce, ":", 
+			  ap_md5(r->pool,
+			         (unsigned char *)pstrcat(r->pool,r->method,":",
 						       h->requested_uri,NULL)),
 				      NULL));
 }

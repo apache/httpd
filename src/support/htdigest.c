@@ -74,7 +74,7 @@ void putline(FILE *f,char *l) {
 
 void add_password(char *user, char *realm, FILE *f) {
     char *pw;
-    MD5_CTX context;
+    AP_MD5_CTX context;
     unsigned char digest[16];
     char string[MAX_STRING_LEN];
     unsigned int i;

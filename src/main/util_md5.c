@@ -82,9 +82,9 @@
 #include "httpd.h"
 #include "util_md5.h"
 
-API_EXPORT(char *) md5 (pool *p, unsigned char *string)
+API_EXPORT(char *) ap_md5 (pool *p, unsigned char *string)
 {
-    MD5_CTX my_md5;
+    AP_MD5_CTX my_md5;
     unsigned char hash[16];
     char *r, result[33];
     int i;
@@ -149,7 +149,7 @@ API_EXPORT(char *) md5 (pool *p, unsigned char *string)
 static char basis_64[] =
    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-API_EXPORT(char *) md5contextTo64(pool *a, MD5_CTX *context)
+API_EXPORT(char *) ap_md5contextTo64(pool *a, AP_MD5_CTX *context)
 {
     unsigned char digest[18];
     char *encodedDigest;
@@ -174,9 +174,9 @@ API_EXPORT(char *) md5contextTo64(pool *a, MD5_CTX *context)
     return encodedDigest;
 }
 
-API_EXPORT(char *) md5digest(pool *p, FILE *infile)
+API_EXPORT(char *) ap_md5digest(pool *p, FILE *infile)
 {
-    MD5_CTX context;
+    AP_MD5_CTX context;
     unsigned char buf[1000];
     long length = 0;
     int nbytes;
@@ -187,6 +187,6 @@ API_EXPORT(char *) md5digest(pool *p, FILE *infile)
         MD5Update(&context, buf, nbytes);
     }
     rewind(infile);
-    return md5contextTo64(p, &context);
+    return ap_md5contextTo64(p, &context);
 }
 

@@ -1656,7 +1656,7 @@ int default_handler (request_rec *r)
 #endif
 
 	if (d->content_md5 & 1) {
-	    table_set (r->headers_out, "Content-MD5", md5digest(r->pool, f));
+	    table_set (r->headers_out, "Content-MD5", ap_md5digest(r->pool, f));
 	}
 
 	rangestatus = set_byterange(r);
@@ -1685,12 +1685,12 @@ int default_handler (request_rec *r)
 	unblock_alarms();
 
 	if (d->content_md5 & 1) {
-	    MD5_CTX context;
+	    AP_MD5_CTX context;
 	    
 	    MD5Init(&context);
 	    MD5Update(&context, (void *)mm, r->finfo.st_size);
 	    table_set (r->headers_out, "Content-MD5",
-		md5contextTo64(r->pool, &context));
+		ap_md5contextTo64(r->pool, &context));
 	}
 
 	rangestatus = set_byterange(r);

@@ -580,7 +580,7 @@ proxy_liststr(const char *list, const char *val)
 void
 proxy_hash(const char *it, char *val,int ndepth,int nlength)
 {
-    MD5_CTX context;
+    AP_MD5_CTX context;
     unsigned char digest[16];
     char tmp[26];
     int i, k, d;
@@ -630,7 +630,7 @@ proxy_hash(const char *it, char *val,int ndepth,int nlength)
 void
 proxy_hash(const char *it, char *val,int ndepth,int nlength)
 {
-    MD5_CTX context;
+    AP_MD5_CTX context;
     unsigned char digest[16];
     char tmp[22];
     int i, k, d;
