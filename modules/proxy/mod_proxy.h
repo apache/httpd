@@ -213,6 +213,15 @@ struct proxy_conn_pool {
     proxy_conn_rec *conn;   /* Single connection for prefork mpm's */
 };
 
+/* woker status flags */
+#define PROXY_WORKER_INITIALIZED    0x0001
+#define PROXY_WORKER_IN_SHUTDOWN    0x0010
+#define PROXY_WORKER_DISABLED       0x0020
+#define PROXY_WORKER_IN_ERROR       0x0040
+
+#define PROXY_WORKER_IS_USABLE(f)   (!((f)->status & 0x00F0))
+
+
 /* Worker configuration */
 struct proxy_worker {
     int             status;
@@ -223,6 +232,8 @@ struct proxy_worker {
     const char      *name;
     const char      *scheme;    /* scheme to use ajp|http|https */
     const char      *hostname;  /* remote backend address */
+    const char      *route;     /* balancing route */
+    const char      *redirect;  /* temporary balancing redirection route */
     apr_port_t      port;
     int             min;        /* Desired minimum number of available connections */
     int             smax;       /* Soft maximum on the total number of connections */
@@ -251,8 +262,6 @@ typedef struct {
     double          lbstatus;   /* Current lbstatus */
     apr_size_t      transfered; /* Number of bytes transfered to remote */
     apr_size_t      readed;     /* Number of bytes readed from remote */
-    const char      *route;
-    const char      *redirect;
 } proxy_runtime_worker;
 
 struct proxy_balancer {
