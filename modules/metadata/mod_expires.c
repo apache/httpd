@@ -403,7 +403,7 @@ static int add_expires(request_rec *r)
     expires_dir_config *conf;
     char *code;
     char *timestr = NULL;
-    ap_int64_t base;
+    ap_ansi_time_t base;
     time_t additional;
     time_t expires;
     ap_time_t *finaltime = NULL;
@@ -453,13 +453,13 @@ static int add_expires(request_rec *r)
 
     switch (code[0]) {
     case 'M':
-	if (r->finfo.st_mode == 0) { 
+	if (r->finfo.protection == 0) { 
 	    /* file doesn't exist on disk, so we can't do anything based on
 	     * modification time.  Note that this does _not_ log an error.
 	     */
 	    return DECLINED;
 	}
-        base = r->finfo.st_mtime;
+        ap_get_ansitime(r->finfo.mtime, &base);
         additional = atoi(&code[1]);
         break;
     case 'A':
