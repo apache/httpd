@@ -1700,7 +1700,7 @@ static apr_status_t handle_exec(include_ctx_t *ctx, ap_filter_t *f,
         if (!strcmp(tag, "cmd")) {
             apr_status_t rv;
 
-            cgid_pfn_ps(r, ctx, tag_val, parsed_string, sizeof(parsed_string),
+            cgid_pfn_ps(ctx, tag_val, parsed_string, sizeof(parsed_string),
                         SSI_EXPAND_LEAVE_NAME);
 
             rv = include_cmd(ctx, f, bb, parsed_string);
@@ -1715,7 +1715,7 @@ static apr_status_t handle_exec(include_ctx_t *ctx, ap_filter_t *f,
         else if (!strcmp(tag, "cgi")) {
             apr_status_t rv;
 
-            cgid_pfn_ps(r, ctx, tag_val, parsed_string, sizeof(parsed_string),
+            cgid_pfn_ps(ctx, tag_val, parsed_string, sizeof(parsed_string),
                         SSI_EXPAND_DROP_NAME);
 
             rv = include_cgi(ctx, f, bb, parsed_string);
