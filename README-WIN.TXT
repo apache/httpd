@@ -1,5 +1,5 @@
                                  Apache
-                             Version 1.3 (and up)
+                          Version 1.3 (and up)
 
   What is it?
   -----------
@@ -58,7 +58,7 @@
   Installation
   ------------
 
-  See the http://www.apache.org/docs/windows.html for details of how
+  See the http://httpd.apache.org/docs/windows.html for details of how
   to install, configure and run Apache.  These documents are also 
   accessable from the "Documentation" program group listed within the 
   "Apache Web Server" Start Menu programs group created by the full 
