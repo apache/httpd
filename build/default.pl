@@ -31,7 +31,7 @@ file "index.html";
     <meta http-equiv="Content-Type" content="text/html; iso-8859-1">
     <title>$project_name</title>
   </head>
-  <frameset cols="190,0%">
+  <frameset cols="190,*">
     <frame src="master.html"  name="Master Index" noresize>
     <frame src="packages.html" name="Documentation">
     <noframes>
