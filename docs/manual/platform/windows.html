@@ -26,6 +26,13 @@
    to help with development, or to track down bugs), see 
    <A HREF="win_compiling.html">Compiling Apache for Microsoft Windows</A>.
 
+<P><STRONG>At this time, support for Windows 95, 98 and ME is incomplete.
+   Apache 2.0 is not expected to work on those platforms at this time.</STRONG>
+   If you are interested in helping with that effort, please see the 
+   developer's site for information on <a href="http://dev.apache.org/">how 
+   to get involved</a>.  Support will likely be provided at some point in the
+   future, and patches to allow Apache to work on 95, 98 and ME are welcome!</P>
+
 <HR>
 
 <UL>
@@ -46,8 +53,8 @@
 
 <P>Apache 2.0 is designed to run on Windows NT 4.0 and Windows 2000. The 
    binary installer will only work with the x86 family of processors, such
-   as Intel's. Apache may also run on Windows 95 and 98, but these have not 
-   been tested, and are never recommended for production servers. In all 
+   as Intel's. Apache may also run on Windows 95, 98 and ME, but these are
+   not tested, and are never recommended for production servers. In all 
    cases TCP/IP networking must be installed.</P>
 
 <P>If running on Windows 95, the "Winsock2" upgrade MUST BE INSTALLED. 
@@ -55,40 +62,26 @@
    <A HREF="http://www.microsoft.com/windows95/downloads/">here</A>.</P>
 
 <P>If running on NT 4.0, installing Service Pack 3 or 6 is recommended, as
-   Service Pack 4 created known issues with TCPIP/WinSock integrity that
+   Service Pack 4 created known issues with TCP/IP and WinSock integrity that
    were resolved in later Service Packs.</P>
-
-<P><STRONG>Warning: as of alpha 2.0a4 Windows 95 (and possibly 98) do not
-   run at all.  Please don't let that stop you, however, from contributing
-   the fixes required to make that platform run successfully.</STRONG></P>
 
 <H2><A NAME="down">Downloading Apache for Windows</A></H2>
 
 <P>Information on the latest version of Apache can be found on the
-   Apache web server at <A HREF="http://www.apache.org/httpd">
-   http://www.apache.org/httpd</A>.  This will list the current release, 
+   Apache web server at <A HREF="http://httpd.apache.org/">
+   http://httpd.apache.org/</A>.  This will list the current release, 
    any more recent alpha or beta-test releases, together with details of 
    mirror web and anonymous ftp sites.</P>
 
 <P>You should download the version of Apache for Windows with the
-   <CODE>.exe</CODE> extension. This is a single file containing Apache,
-   ready to install and run. There may also be a <CODE>.zip</CODE> file
-   containing the source code, to compile Apache yourself.  (If there is
-   no <SAMP>.zip</SAMP> file, the source will be available in a
-   <SAMP>.tar.gz</SAMP> file but this will contain Unix line endings. You
-   will have to convert at least the <SAMP>.mak</SAMP> and
-   <SAMP>.dsp</SAMP> files to have DOS line endings before MSVC will
-   understand them).</P>
-
-<P><STRONG>Notice: alpha versions are not distributed in binary form (as
-   an .exe ready-to-run version).  You must use the Microsoft Visual C++
-   compiler version 5 or 6 (bundled in VisualStudio 97 and 98).  Read 
-   <A HREF="win_compiling.html">Compiling Apache for Microsoft Windows</A>
-   for compilation/installation instructions.</STRONG></P>
+   <CODE>.msi</CODE> extension. This is a single Microsoft Installer file
+   containing Apache, ready to install and run. There is a seperate 
+   <CODE>.zip</CODE> file containing _only_ the source code, to compile 
+   Apache yourself with the Microsoft Visual C++ (Visual Studio) tools.</P>
 
 <H2><A NAME="inst">Installing Apache for Windows</A></H2>
 
-<P>Run the Apache <SAMP>.exe</SAMP> file you downloaded above. This will
+<P>Run the Apache <SAMP>.msi</SAMP> file you downloaded above. This will
    ask for:</P>
 
 <UL>
@@ -140,7 +133,7 @@ There are two ways you can run Apache:
 
 <UL>
  <LI>As a <A HREF="win_service.html#service">"service"</A> (available on 
-    Windows NT/2000, and experimentally on Windows 95, 98 or ME).
+    Windows NT/2000, or a pseudo-service on Windows 95, 98 or ME).
     This is the best option if you want Apache to automatically start when you 
     machine boots, and to keep Apache running when you log-off.
  <LI>From a <A HREF="#cmdline">console window</A>. This MUST be used by any
