@@ -66,10 +66,18 @@ Committed Code Changes:
     * Ken's abstraction of SERVER_{BUILT,VERSION}
     * Ken's fix for os/unix/os.h and the new -DHIDE functionality
     * Ralf's Config File Line Continuation
-    * Ralf's Reanimation of DBM support for RewriteMap in mod_rewrite
+    * Ralf's Reanimation of DBM support for RewriteMap in mod_rewrite PR#1696
     * Ralf's fix for the `<VirtualHost> w/o mod_rewrite' situation. PR#1790
     * Mark's fix for ProxyPass/ProxyRequests interaction broken by uri stuff
+    * Rasmus' generation of the new src/include/ap_config.h header file
+    * Dean's fix for mod_mime_magic and files with length 0
+    * Dean's change to Location and LocationMatch semantics. PR#1440
     * Ralf's fix for the flock()<->fork() problematic for RewriteLock's
+    * Dean's Minor cleanup in http_main
+    * Ralf's Various improvements to the configuration and build support
+    * Corrections to the setup of the REMOTE_HOST variable. PR#1925 
+    * Fix for rputs() which did not calculate r->sent_bodyct properly. PR#1900
+    * Don't tweak TZ envvar if the user has specified an explicit one. PR#1888
 
 Available Patches:
 
