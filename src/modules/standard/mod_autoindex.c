@@ -110,7 +110,7 @@ typedef struct autoindex_config_struct {
   
 } autoindex_config_rec;
 
-char c_by_encoding, c_by_type, c_by_path;
+static char c_by_encoding, c_by_type, c_by_path;
 
 #define BY_ENCODING &c_by_encoding
 #define BY_TYPE &c_by_type
