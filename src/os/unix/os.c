@@ -111,8 +111,10 @@ void *ap_os_dso_load(const char *path)
     if (NSCreateObjectFileImageFromFile(path, &image) !=
         NSObjectFileImageSuccess)
         return NULL;
-#if defined(NSLINKMODULE_OPTION_RETURN_ON_ERROR)
-    handle = NSLinkModule(image, path, NSLINKMODULE_OPTION_RETURN_ON_ERROR);
+#if defined(NSLINKMODULE_OPTION_RETURN_ON_ERROR) && defined(NSLINKMODULE_OPTION_NONE)
+    handle = NSLinkModule(image, path,
+                          NSLINKMODULE_OPTION_RETURN_ON_ERROR |
+                          NSLINKMODULE_OPTION_NONE);
 #else
     handle = NSLinkModule(image, path, FALSE);
 #endif
