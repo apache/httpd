@@ -2694,8 +2694,8 @@ static int default_handler(request_rec *r)
      * have a / in the middle, which probably captures the original
      * intent, but may cause problems at first - Ben 7th Jan 01
      */
-    if(strcmp(r->handler,"default-handler")
-       && !strchr(r->handler, '/'))
+    if (strcmp(r->handler, "default-handler")
+        && !ap_strchr_c(r->handler, '/'))
 	return DECLINED;
 
     d = (core_dir_config *)ap_get_module_config(r->per_dir_config,
