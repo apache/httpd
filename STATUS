@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/21 17:39:24 $]
+Last modified at [$Date: 2003/01/21 20:48:39 $]
 
 Release:
 
@@ -59,8 +59,10 @@ Contributors looking for a mission:
 PATCHES TO PORT FROM 2.1
 
     * Allow RewriteEngine Off even if Options -FollowSymlinks. PR 12395.
+      +1: nd
 
     * Use saner default config values for suexec. PR 15713.
+      +1: nd
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
@@ -77,7 +79,7 @@ PATCHES TO PORT FROM 2.1
     * Insure that ap_get_mime_headers passes a null terminated string
       to ap_escape_html if ap_rgetline exits abnormally (e.g. header too long).
       The patch is r1.123 thru r1.125 of server/protocol.c.
-      +1: gregames, trawick, jerenkrantz
+      +1: gregames, trawick, jerenkrantz, nd
 
 CURRENT RELEASE NOTES:
 
@@ -97,13 +99,14 @@ CURRENT VOTES:
     * APACHE_2_0_BRANCH *has* to work with an official stable version 
       of APR (i.e., 1.0).
       yes:
-      no:   trawick, jerenkrantz, wrowe, stoddard, striker
+      no:   trawick, jerenkrantz, wrowe, stoddard, striker, nd
         wrowe adds it's nice if we *can* compile against it, but as
         a matter of a practical tarball or binary release, don't.
 
     * APACHE_2_0_BRANCH uses a level of apr and apr-util code branched
       from the APACHE_2_0_44 tag.
-      yes:   trawick, jerenkrantz, striker
+      yes:   trawick, jerenkrantz, striker, nd
+        (but nd doesn't branch anything in apr repos)
 
     * APACHE_2_0_BRANCH uses a level of APR code versioned 0.9.2-dev
         or later (to 0.9.9), so long it remains binary compatible.
@@ -114,7 +117,7 @@ CURRENT VOTES:
 
     * Develop in Review-Then-Commit or Commit-Then-Review mode 
       on APACHE_2_0_BRANCH (no vetoes, this is a straight vote.)
-       R-T-C:   trawick, wrowe, jerenkrantz, stoddard, rederpj, striker
+       R-T-C:   trawick, wrowe, jerenkrantz, stoddard, rederpj, striker, nd
        Abstain: 
        C-T-R:   BrianP, aaron, jim
 
@@ -122,7 +125,7 @@ CURRENT VOTES:
 
       a) httpd-std.conf should be tailored by install (from src or
          binbuild) even if user has existing httpd.conf
-         +1:   trawick, slive, gregames, ianh, Ken, wrowe, jwoolley, jim
+         +1:   trawick, slive, gregames, ianh, Ken, wrowe, jwoolley, jim, nd
            wrowe - prefer httpd.default.conf to avoid ambiguity with cvs,
                    note that win32 installer creates just that file
                    (.default.conf rather than .conf.default so that win32
@@ -134,13 +137,13 @@ CURRENT VOTES:
 
       c) tailored httpd-std.conf should be installed to
          sysconfdir/examples or manualdir/exampleconf/
-         +1:   slive, trawick, Ken
+         +1:   slive, trawick, Ken, nd (prefer the latter)
 
       d) Installing a set of default config files when upgrading a server
          doesn't make ANY sense at all.
          +1:   ianh - medium/big sites don't use 'standard config' anyway, as it
                       usually needs major customizations
-         -1:   Ken, wrowe, jwoolley, jim
+         -1:   Ken, wrowe, jwoolley, jim, nd
            wrowe - diff is wonderful when comparing old/new default configs,
                    even for customized sites that ianh mentions
            jim - it makes sense assuming that the default configs
@@ -155,11 +158,11 @@ CURRENT VOTES:
 
       Self-destruct: Ken, Martin
       Not self-destruct: BrianP, Ian, Cliff, BillS
-      Make it runtime configurable: Aaron, Justin, wrowe, rederpj, jim
+      Make it runtime configurable: Aaron, Justin, wrowe, rederpj, jim, nd
 
       /* The below was a concept on *how* to handle the problem */
       Have 2 parents: +1: jim
-                      -1: Justin, wrowe, rederpj
+                      -1: Justin, wrowe, rederpj, nd
                       +0: Martin (while standing by, could it do
                                   something useful?)
 
@@ -167,7 +170,8 @@ CURRENT VOTES:
       +1:   Justin, Ian, Cliff, BillS, striker
       +0:   BrianP, Aaron (mutex contention is looking better with the
             latest code, let's continue tuning and testing), rederpj, jim
-      -0:   Lars, wrowe (let's make this defacto for the 2.2 release.)
+      -0:   Lars, wrowe (let's make this defacto for the 2.2 release.),
+            nd (for 2.0)
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
