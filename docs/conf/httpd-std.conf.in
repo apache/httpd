@@ -192,6 +192,19 @@ MaxThreads            1000
 MaxRequestsPerChild      0
 </IfModule>
 
+# OS/2 MPM
+# StartServers ......... Number of server processes to maintain
+# MinSpareThreads ...... Minimum number of idle threads per process, 
+#                         to handle request spikes
+# MaxSpareThreads ...... Maximum number of idle threads per process
+# MaxRequestsPerChild .. Maximum number of connections per server process
+<IfModule mpmt_os2.c>
+StartServers           2
+MinSpareThreads        5
+MaxSpareThreads       10
+MaxRequestsPerChild    0
+</IfModule>
+
 #
 # Listen: Allows you to bind Apache to specific IP addresses and/or
 # ports, in addition to the default. See also the <VirtualHost>
