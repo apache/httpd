@@ -8,7 +8,12 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
+$Revision: 1.24 $ ($Date: 1997/04/15 21:17:46 $)
+</P>
+<P>
+Throughout the text of this FAQ you may find numbers enclosed in
+brackets (such as &quot;[12]&quot;).  These refer to the list of
+reference URLs to be found at the end of the document.
 </P>
 <H2>The Questions</H2>
 <!-- Stuff to Add:						    -->
@@ -92,6 +97,10 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
    </LI>
   </OL>
  </LI>
+ <LI><A
+      HREF="#References"
+     >References</A>
+ </LI>
 </UL>
 
 <HR>
@@ -119,7 +128,7 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
   the Internet, according to the
   <A
    HREF="http://www.netcraft.com/Survey/"
-  >Netcraft Survey</A>.
+  >Netcraft Survey</A><A HREF="#References">[1]</A>.
   </P>
   <HR>
  </LI>
@@ -163,7 +172,8 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
   For an independent assessment, see
   <A
    HREF="http://webcompare.iworld.com/compare/chart.html"
-  ><SAMP>http://webcompare.iworld.com/compare/chart.html</SAMP></A>.
+  >Web Compare</A><A HREF="#References">[2]</A>'s 
+  comparison chart.
   </P>
   <P>
   Apache has been shown to be substantially faster than many other
@@ -189,11 +199,10 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
   release patches and new versions as soon as they are available.
   </P>
   <P>
-  See
+  The Apache project's web site includes a page with a partial list of
   <A
    HREF="http://www.apache.org/info/apache_users.html"
-  ><SAMP>http://www.apache.org/info/apache_users.html</SAMP></A>
-  for a partial list of sites running Apache.
+  >sites running Apache</A><A HREF="#References">[3]</A>.
   </P>
   <HR>
  </LI>
@@ -205,7 +214,7 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
    <LI>to continue as a public domain HTTP server,
    </LI>
    <LI>to keep up with advances in HTTP protocol and web developments in
-    general 
+    general,
    </LI>
    <LI>to collect suggestions for fixes/improvements from its users,
    </LI>
@@ -225,11 +234,11 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
   Bug reports and suggestions should be sent <EM>via</EM>
   <A
    HREF="http://www.apache.org/bug_report.html"
-  >the bug report page</A> .
+  >the bug report page</A><A HREF="#References">[4]</A>.
   Other questions should be directed to the
   <A
    HREF="news:comp.infosystems.www.servers.unix"
-  ><SAMP>comp.infosystems.www.servers.unix</SAMP></A>
+  ><SAMP>comp.infosystems.www.servers.unix</SAMP></A><A HREF="#References">[5]</A>
   newsgroup, where some of the Apache team lurk,
   in the company of many other httpd gurus who should be able
   to help.
@@ -244,16 +253,16 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
       NAME="more"
      ><STRONG>Is there any more information available on Apache?</STRONG></A>
   <P>
-  Indeed there is.  See the main Apache Web site at
+  Indeed there is.  See the main
   <A
    HREF="http://www.apache.org/"
-  ><SAMP>http://www.apache.org/</SAMP></A>.
-  There is also a regular electronic publication called <EM>Apache
-  Week</EM> available; you can find out more about this at
+  >Apache web site</A><A HREF="#References">[6]</A>.
+  There is also a regular electronic publication called
   <A
    HREF="http://www.apacheweek.com"
    REL="Help"
-  ><SAMP>http://www.apacheweek.com/</SAMP></A>.
+  ><EM>Apache Week</EM></A><A HREF="#References">[7]</A>
+  available.
   </P>
   <HR>
  </LI>
@@ -261,10 +270,11 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
       NAME="where"
      ><STRONG>Where can I get Apache?</STRONG></A>
   <P>
-  You can find the source for Apache at the main web page,
+  You can find out how to download the source for Apache at the
+  project's
   <A
    HREF="http://www.apache.org/"
-  ><SAMP>http://www.apache.org/</SAMP></A>.
+  >main web page</A><A HREF="#References">[6]</A>.
   </P>
   <HR>
  </LI>
@@ -289,7 +299,7 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
     the server error log (see the
     <A
      HREF="http:../mod/core.html#errorlog"
-    >ErrorLog</A>
+    >ErrorLog</A><A HREF="#References">[8]</A>
     directive).  Somethimes this is enough for you to diagnose &amp;
     fix the problem yourself (such as file permissions or the like).
     </P>
@@ -297,10 +307,10 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
    <LI><STRONG>Check the Apache bug database</STRONG>
     <P>
     Most problems that get reported to The Apache Group are recorded in
-    the bug database (available at
+    the
     <A
      HREF="http://www.apache.org/bugdb.cgi"
-    ><SAMP>http://www.apache.org/bugdb.cgi</SAMP></A>).
+    >bug database</A><A HREF="#References">[9]</A>).
     <EM><STRONG>Please</STRONG> check the existing reports, open
     <STRONG>and</STRONG> closed, before adding one.</EM>  If you find
     that your issue has already been reported, please <EM>don't</EM> add
@@ -319,6 +329,7 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
     <A
      HREF="news:comp.infosystems.www.servers.unix"
     ><SAMP>comp.infosystems.www.servers.unix</SAMP></A>
+    <A HREF="#References">[5]</A>
     newsgroup.  Many Apache users, and some of the developers, can be
     found roaming its virtual halls, so it is suggested that you seek
     wisdom there.  The chances are good that you'll get a faster answer
@@ -331,10 +342,10 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
     <P>
     If you've gone through those steps above that are appropriate and
     have obtained no relief, then please <EM>do</EM> let The Apache
-    Group know about the problem by logging a bug report (see
+    Group know about the problem by
     <A
      HREF="http://www.apache.org/bugdb.cgi"
-    ><SAMP>http://www.apache.org/bugdb.cgi</SAMP></A>).
+    >logging a bug report</A><A HREF="#References">[9]</A>.
     </P>
     <P>
     If your problem involves the server crashing and generating a core
@@ -387,7 +398,7 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
   Apache recognises all files in a directory named as a
   <A
    HREF="../mod/mod_alias.html#scriptalias"
-  >ScriptAlias</A>
+  >ScriptAlias</A><A HREF="#References">[10]</A>
   as being eligible for execution rather than processing as normal
   documents.  This applies regardless of the file name, so scripts in a
   ScriptAlias directory don't need to be named
@@ -398,15 +409,18 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
   <P>
   To persuade Apache to execute scripts in other locations, such as in
   directories where normal documents may also live, you must tell it how
-  to recognise them - and also that it's okey to execute them.
+  to recognise them - and also that it's okey to execute them.  For
+  this, you need to use something like the
+  <A
+   HREF="../mod/mod_mime.html#addhandler"
+  >AddHandler</A><A HREF="#References">[11]</A>
   </P>
+  directive.
   <OL>
    <LI>In an appropriate section of your server configuration files, add
     a line such as
     <PRE>
-     <A
-      HREF="../mod/mod_mime.html#addhandler"
-     >AddHandler</A> cgi-script .cgi
+     AddHandler cgi-script .cgi
     </PRE>
     The server will then recognise that all files in that location (and
     its logical descendants) that end in &quot;<SAMP>.cgi</SAMP>&quot;
@@ -415,7 +429,7 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
    <LI>Make sure that the directory location is covered by an
     <A
      HREF="../mod/core.html#options"
-    >Options</A>
+    >Options</A><A HREF="#References">[12]</A>
     declaration that includes the <SAMP>ExecCGI</SAMP> option.
    </LI>
   </OL>
@@ -469,23 +483,25 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
    <LI>Build your server with the
     <A
      HREF="../mod/mod_include.html"
-    >mod_include</A>
+    >mod_include</A><A HREF="#References">[13]</A>
     module.  This is normally compiled in by default.
    </LI>
    <LI>Make sure your server configuration files have an
     <A
      HREF="../mod/core.html#options"
-    >Options</A>
+    >Options</A><A HREF="#References">[12]</A>
     directive which permits <SAMP>Includes</SAMP>.
    </LI>
    <LI>Make sure that the directory where you want the SSI documents to
     live is covered by the &quot;server-parsed&quot; content handler,
     either explicitly or in some ancestral location.  That can be done
-    with the following:
+    with the following
+    <A
+     HREF="../mod/mod_mime.html#addhandler"
+    >AddHandler</A><A HREF="#References">[11]</A>
+    directive:
     <PRE>
-     <A
-      HREF="../mod/mod_mime.html#addhandler"
-     >AddHandler</A> server-parsed .shtml
+     AddHandler server-parsed .shtml
     </PRE>
     This indicates that all files ending in &quot;.shtml&quot; in that
     location (or its descendants) should be parsed.  Note that using
@@ -517,12 +533,12 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
   <A
    HREF="../mod/mod_expires.html"
    REL="Help"
-  ><CODE>mod_expires</CODE></A>
+  ><CODE>mod_expires</CODE></A><A HREF="#References">[14]</A>
   documentation for more details.)  Another possibility is to use the
   <A
    HREF="../mod/mod_include.html#xbithack"
    REL="Help"
-  ><SAMP>XBitHack Full</SAMP></A>
+  ><SAMP>XBitHack Full</SAMP></A><A HREF="#References">[15]</A>
   mechanism, which tells Apache to send (under certain circumstances
   detailed in the XBitHack directive description) a
   <SAMP>Last-Modified</SAMP> header based upon the last modification
@@ -564,7 +580,7 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
   <A
    HREF="http:../content-negotiation.html"
    REL="Help"
-  >content negotiation</A>
+  >content negotiation</A><A HREF="#References">[16]</A>
   description page.
   </P>
   <HR>
@@ -587,8 +603,10 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
   Each log file requires a file descriptor, which means that if you are
   using seperate access and error logs for each virtual host each
   virtual host  needs two file descriptors.  Each 
-  <A HREF="../mod/core.html#listen">Listen</A> directive also needs 
-  a file descriptor.  
+  <A
+   HREF="../mod/core.html#listen"
+  >Listen</A><A HREF="#References">[17]</A>
+  directive also needs a file descriptor.  
   </P>
   <P>
   Typical values for &lt;<EM>n</EM>&gt; that we've seen are in
@@ -603,27 +621,37 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
   As to what you can do about this:
   </P>
   <OL>
-   <LI>Reduce the number of <A HREF="../mod/core.html#listen">Listen</A> 
+   <LI>Reduce the number of
+       <A
+        HREF="../mod/core.html#listen"
+       >Listen</A><A HREF="#References">[17]</A>
        directives.  If there are no other servers running on the machine 
        and all of them are running on the same port, you normally don't 
        need any Listen directives at all.
    </LI>
    <LI>Reduce the number of log files.  You can use 
-       <A HREF="../mod/mod_log_config.html">log_mod_config</A> to log
-       all requests to a single log file while including the name
+       <A
+        HREF="../mod/mod_log_config.html"
+       >mod_log_config</A><A HREF="#References">[18]</A>
+       to log all requests to a single log file while including the name
        of the virtual host in the log file.
    </LI>
    <LI>Increase the number of file descriptors available to the server
        (see your system's documentation on the <SAMP>limit</SAMP> or
        <SAMP>ulimit</SAMP> commands).  For some systems, information on
-       how to do this is available in the <A HREF="perf.html">performance
-       hints</A> page.
+       how to do this is available in the
+       <A
+        HREF="perf.html"
+       >performance hints</A><A HREF="#References">[19]</A>
+       page.
    </LI>
    <LI>&quot;Don't do that&quot; - try to run with fewer virtual hosts
    </LI>
    <LI>Spread your operation across multiple server processes (using
-       <A HREF="../mod/core.html#listen">Listen</A> for example,
-       but see the first point) and/or ports
+       <A
+        HREF="../mod/core.html#listen"
+       >Listen</A><A HREF="#References">[17]</A>
+       for example, but see the first point) and/or ports.
    </LI>
   </OL>
   <P>
@@ -710,8 +738,10 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
   <P>
   You need to use it with a URL in the form "/foo/bar" and not one
   with a method and hostname such as "http://host/foo/bar".  See the
-  <A HREF="../mod/core.html#errordocument">ErrorDocument</A> documentation
-  for details.  This was incorrectly documented in the past.
+  <A
+   HREF="../mod/core.html#errordocument"
+  >ErrorDocument</A><A HREF="#References">[20]</A>
+  documentation for details.  This was incorrectly documented in the past.
   </P>
   <HR>
  </LI>
@@ -723,7 +753,7 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
   Your
   <A
    HREF="../mod/core.html#group"
-  ><SAMP>Group</SAMP></A>
+  ><SAMP>Group</SAMP></A><A HREF="#References">[21]</A>
   directive (probably in <SAMP>conf/httpd.conf</SAMP>) needs to name a
   group that actually exists in the <SAMP>/etc/group</SAMP> file (or
   your system's equivalent).
@@ -731,6 +761,140 @@ $Revision: 1.23 $ ($Date: 1997/04/12 22:52:43 $)
   <HR>
  </LI>
 </OL>
+ <HR>
+ <A NAME="References">
+  <H3>
+   References
+  </H3>
+ </A>
+  <DL COMPACT>
+   <DT>[1]
+   </DT>
+   <DD><A
+        HREF="http://www.netcraft.com/Survey/"
+       >http://www.netcraft.com/Survey/</A>
+   </DD>
+   <DT>[2]
+   </DT>
+   <DD><A
+        HREF="http://webcompare.iworld.com/compare/chart.html"
+       >http://webcompare.iworld.com/compare/chart.html</A>
+   </DD>
+   <DT>[3]
+   </DT>
+   <DD><A
+        HREF="http://www.apache.org/info/apache_users.html"
+       >http://www.apache.org/info/apache_users.html</A>
+   </DD>
+   <DT>[4]
+   </DT>
+   <DD><A
+        HREF="http://www.apache.org/bug_report.html"
+       >http://www.apache.org/bug_report.html</A>
+   </DD>
+   <DT>[5]
+   </DT>
+   <DD><A
+        HREF="news:comp.infosystems.www.servers.unix"
+       >news:comp.infosystems.www.servers.unix</A>
+   </DD>
+   <DT>[6]
+   </DT>
+   <DD><A
+        HREF="http://www.apache.org/"
+       >http://www.apache.org/</A>
+   </DD>
+   <DT>[7]
+   </DT>
+   <DD><A
+        HREF="http://www.apacheweek.com/"
+       >http://www.apacheweek.com/</A>
+   </DD>
+   <DT>[8]
+   </DT>
+   <DD><A
+        HREF="http://www.apache.org/docs/mod/core.html#errorlog"
+       >http://www.apache.org/docs/mod/core.html#errorlog</A>
+   </DD>
+   <DT>[9]
+   </DT>
+   <DD><A
+        HREF="http://www.apache.org/bugdb.cgi"
+       >http://www.apache.org/bugdb.cgi</A>
+   </DD>
+   <DT>[10]
+   </DT>
+   <DD><A
+        HREF="http://www.apache.org/docs/mod/mod_alias.html#scriptalias"
+       >http://www.apache.org/docs/mod/mod_alias.html#scriptalias</A>
+   </DD>
+   <DT>[11]
+   </DT>
+   <DD><A
+        HREF="http://www.apache.org/docs/mod/mod_mime.html#addhandler"
+       >http://www.apache.org/docs/mod/mod_mime.html#addhandler</A>
+   </DD>
+   <DT>[12]
+   </DT>
+   <DD><A
+        HREF="http://www.apache.org/docs/mod/core.html#options"
+       >http://www.apache.org/docs/mod/core.html#options</A>
+   </DD>
+   <DT>[13]
+   </DT>
+   <DD><A
+        HREF="http://www.apache.org/docs/mod/mod_include.html"
+       >http://www.apache.org/docs/mod/mod_include.html</A>
+   </DD>
+   <DT>[14]
+   </DT>
+   <DD><A
+        HREF="http://www.apache.org/docs/mod/mod_expires.html"
+       >http://www.apache.org/docs/mod/mod_expires.html</A>
+   </DD>
+   <DT>[15]
+   </DT>
+   <DD><A
+        HREF="http://www.apache.org/docs/mod/mod_include.html#xbithack"
+       >http://www.apache.org/docs/mod/mod_include.html#xbithack</A>
+   </DD>
+   <DT>[16]
+   </DT>
+   <DD><A
+        HREF="http://www.apache.org/docs/content-negotiation.html"
+       >http://www.apache.org/docs/content-negotiation.html</A>
+   </DD>
+   <DT>[17]
+   </DT>
+   <DD><A
+        HREF="http://www.apache.org/docs/mod/core.html#listen"
+       >http://www.apache.org/docs/mod/core.html#listen</A>
+   </DD>
+   <DT>[18]
+   </DT>
+   <DD><A
+        HREF="http://www.apache.org/docs/mod/mod_log_config.html"
+       >http://www.apache.org/docs/mod/mod_log_config.html</A>
+   </DD>
+   <DT>[19]
+   </DT>
+   <DD><A
+        HREF="http://www.apache.org/docs/misc/perf.html"
+       >http://www.apache.org/docs/misc/perf.html</A>
+   </DD>
+   <DT>[20]
+   </DT>
+   <DD><A
+        HREF="http://www.apache.org/docs/mod/core.html#errordocument"
+       >http://www.apache.org/docs/mod/core.html#errordocument</A>
+   </DD>
+   <DT>[21]
+   </DT>
+   <DD><A
+        HREF="http://www.apache.org/docs/mod/core.html#group"
+       >http://www.apache.org/docs/mod/core.html#group</A>
+   </DD>
+  </DL>
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
