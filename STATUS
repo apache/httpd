@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/07 10:41:00 $]
+Last modified at [$Date: 2004/06/09 19:24:04 $]
 
 Release:
 
@@ -178,7 +178,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) mod_rewrite no longer turns forward proxy requests into reverse proxy
        requests. PR 28125
          modules/mappers/mod_rewrite.c: r1.255
-       +1: nd, trawick
+       +1: nd, trawick, bnicholes
 
     *) (re-)add support for RewriteRules in <Proxy> containers. PR 27985
          modules/mappers/mod_rewrite.c: r1.254
