@@ -312,7 +312,7 @@ struct cmd_parms_struct {
     const command_rec *cmd;
 
     /** per_dir_config vector passed to handle_command */
-    void *context;
+    struct ap_conf_vector_t *context;
     /** directive with syntax error */
     const ap_directive_t *err_directive;
 };
@@ -666,10 +666,10 @@ AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive);
  * @deffunc char *ap_build_cont_config(apr_pool_t *p, apr_pool_t *temp_pool, cmd_parms *parms, ap_directive_t **current, ap_directive_t **curr_parent, char *orig_directive)
 */
 const char * ap_build_cont_config(apr_pool_t *p, apr_pool_t *temp_pool,
-                                        cmd_parms *parms,
-                                        ap_directive_t **current,
-                                        ap_directive_t **curr_parent,
-                                        char *orig_directive);
+                                  cmd_parms *parms,
+                                  ap_directive_t **current,
+                                  ap_directive_t **curr_parent,
+                                  char *orig_directive);
 
 /**
  * Build a config tree from a config file
@@ -689,12 +689,13 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
  * Walk a config tree and setup the server's internal structures
  * @param conftree The config tree to walk
  * @param parms The cmd_parms to pass to all functions
- * @param config The parms context
+ * @param section_vector The per-section config vector.
  * @return Error string on error, NULL otherwise
- * @deffunc const char *ap_walk_config(ap_directive_t *conftree, cmd_parms *parms, void *config)
+ * @deffunc const char *ap_walk_config(ap_directive_t *conftree, cmd_parms *parms, ap_conf_vector_t *section_vector)
  */
 AP_DECLARE(const char *) ap_walk_config(ap_directive_t *conftree,
-					cmd_parms *parms, void *config);
+					cmd_parms *parms,
+                                        ap_conf_vector_t *section_vector);
 
 /**
  * ap_check_cmd_context() definitions: 
@@ -836,7 +837,7 @@ ap_conf_vector_t *ap_create_request_config(apr_pool_t *p);
  * Setup the config vector for per dir module configs
  * @param p The pool to allocate the config vector out of
  * @return The config vector
- * @deffunc void *ap_create_per_dir_config(apr_pool_t *p)
+ * @deffunc ap_conf_vector_t *ap_create_per_dir_config(apr_pool_t *p)
  */
 AP_CORE_DECLARE(ap_conf_vector_t *) ap_create_per_dir_config(apr_pool_t *p);
 
@@ -944,14 +945,21 @@ AP_CORE_DECLARE(const command_rec *) ap_find_command(const char *name, const com
 AP_CORE_DECLARE(const command_rec *) ap_find_command_in_modules(const char *cmd_name, module **mod);
 
 /**
- * Add a per_dir and per_server config vector to a given module
- * @param parms The command_parms to use
- * @param config The config vector
- * @param mod The module to add the vector for.
- * @return The new config vector
- * @deffunc void *ap_set_config_vectors(cmd_parms *parms, void *config, module *mod)
+ * Ask a module to create per-server and per-section (dir/loc/file) configs
+ * (if it hasn't happened already). The results are stored in the server's
+ * config, and the specified per-section config vector.
+ * @param server The server to operate upon.
+ * @param section_vector The per-section config vector.
+ * @param section Which section to create a config for.
+ * @param mod The module which is defining the config data.
+ * @param pconf A pool for all configuration allocations.
+ * @return The (new) per-section config data.
+ * @deffunc void *ap_set_config_vectors(server_rec *server, ap_conf_vector_t *section_vector, const char *dir, module *mod, apr_pool_t *pconf)
  */
-AP_CORE_DECLARE(void *) ap_set_config_vectors(cmd_parms *parms, void *config, module *mod);
+AP_CORE_DECLARE(void *) ap_set_config_vectors(server_rec *server,
+                                              ap_conf_vector_t *section_vector,
+                                              const char *section,
+                                              module *mod, apr_pool_t *pconf);
 
 #endif
 

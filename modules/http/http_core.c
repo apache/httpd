@@ -1525,7 +1525,7 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
     core_dir_config *conf;
-    void *new_dir_conf = ap_create_per_dir_config(cmd->pool);
+    ap_conf_vector_t *new_dir_conf = ap_create_per_dir_config(cmd->pool);
     regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
 
@@ -1569,8 +1569,8 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     }
 
     /* initialize our config and fetch it */
-    conf = (core_dir_config *)ap_set_config_vectors(cmd, new_dir_conf,
-						    &core_module);
+    conf = ap_set_config_vectors(cmd->server, new_dir_conf, cmd->path,
+                                 &core_module, cmd->pool);
 
     errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_dir_conf);
     if (errmsg != NULL)
@@ -1600,9 +1600,7 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
     core_dir_config *conf;
     regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
-
-    void *new_url_conf = ap_create_per_dir_config(cmd->pool);
-
+    ap_conf_vector_t *new_url_conf = ap_create_per_dir_config(cmd->pool);
     const char *err = ap_check_cmd_context(cmd,
 					   NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) {
@@ -1627,8 +1625,8 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
     }
 
     /* initialize our config and fetch it */
-    conf = (core_dir_config *)ap_set_config_vectors(cmd, new_url_conf,
-						    &core_module);
+    conf = ap_set_config_vectors(cmd->server, new_url_conf, cmd->path,
+                                 &core_module, cmd->pool);
 
     errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_url_conf);
     if (errmsg != NULL)
@@ -1661,10 +1659,9 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
     core_dir_config *c=mconfig;
-
-    void *new_file_conf = ap_create_per_dir_config(cmd->pool);
-
+    ap_conf_vector_t *new_file_conf = ap_create_per_dir_config(cmd->pool);
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT|NOT_IN_LOCATION);
+
     if (err != NULL) {
         return err;
     }
@@ -1694,8 +1691,8 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     }
 
     /* initialize our config and fetch it */
-    conf = (core_dir_config *)ap_set_config_vectors(cmd, new_file_conf,
-						    &core_module);
+    conf = ap_set_config_vectors(cmd->server, new_file_conf, cmd->path,
+                                 &core_module, cmd->pool);
 
     errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_file_conf);
     if (errmsg != NULL)
