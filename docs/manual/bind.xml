@@ -77,44 +77,58 @@
   <section id="ipv6">
     <title>Special IPv6 Considerations</title>
 
-    <p>When APR supports IPv6, Apache will create IPv6-capable listening
-    sockets by default (i.e., when no IP address is specified on the
-    Listen directive).  In other words, when APR supports IPv6,</p>
+    <p>A growing number of platforms implement IPv6, and APR supports 
+    IPv6 on most of these platforms, allowing Apache to allocate IPv6 
+    sockets and handle requests which were sent over IPv6.</p>
+
+    <p>One complicating factor for Apache administrators is whether or
+    not an IPv6 socket can handle both IPv4 connections and IPv6 
+    connections.  Handling IPv4 connections with an IPv6 socket uses 
+    IPv4-mapped IPv6 addresses, which are allowed by default on most 
+    platforms but are disallowed by default on FreeBSD, NetBSD, and 
+    OpenBSD in order to match the system-wide policy on those
+    platforms.  But even on systems where it is disallowed by default, a 
+    special configure parameter can change this behavior for Apache.</p>
+
+    <p>If you want Apache to handle IPv4 and IPv6 connections with a 
+    minimum of sockets, which requires using IPv4-mapped IPv6 addresses, 
+    specify the <code>--enable-v4-mapped</code> configure option and use 
+    generic Listen directives like the following:</p>
 
     <example>
       Listen 80
     </example>
 
-    <p>is equivalent to</p>
+    <p>With <code>--enable-v4-mapped</code>, the Listen directives in the 
+    default configuration file created by Apache will use this form.  
+    <code>--enable-v4-mapped</code> is the default on all platforms but 
+    FreeBSD, NetBSD, and OpenBSD, so this is probably how your Apache was 
+    built.</p>
 
-    <example>
-      Listen [::]:80
-    </example>
-
-    <p>When APR does not support IPv6,</p>
-
-    <example>
-      Listen 80
-    </example>
-
-    <p>is equivalent to</p>
-
-    <example>
-      Listen 0.0.0.0:80
-    </example>
-
-    <p>On some platforms, such as NetBSD, binding to the IPv6 wildcard address 
-    ("::") does not allow Apache to accept connections on IPv4 interfaces.
-    In this situation, multiple Listen directives are required, as shown
-    below:</p>
+    <p>If you want Apache to handle IPv4 connections only, regardless of 
+    what your platform and APR will support, specify an IPv4 address on all 
+    Listen directives, as in the following examples:</p>
 
     <example>
       Listen 0.0.0.0:80<br />
-      Listen [::]:0
+      Listen 192.170.2.1:80
     </example>
 
-    <p>Apache does not currently detect this, so the Listen statements must
-    be edited manually by the administrator.</p>
+    <p>If you want Apache to handle IPv4 and IPv6 connections on separate 
+    sockets (i.e., to disable IPv4-mapped addresses), specify the 
+    <code>--disable-v4-mapped</code> configure option and use specific Listen 
+    directives like the following:</p>
+
+    <example>
+      Listen [::]:80<br />
+      Listen 0.0.0.0:80
+    </example>
+
+    <p>With <code>--disable-v4-mapped</code>, the Listen directives in the 
+    default configuration file created by Apache will use this form.  
+    <code>--disable-v4-mapped</code> is the default on FreeBSD, NetBSD, and 
+    OpenBSD.</p>
+
   </section>
 
   <section id="virtualhost">
