@@ -1118,6 +1118,37 @@ void ssl_init_Child(apr_pool_t *p, server_rec *s)
         item = NULL; \
     }
 
+static void ssl_init_ctx_cleanup(modssl_ctx_t *mctx)
+{
+    MODSSL_CFG_ITEM_FREE(X509_STORE_free, mctx->crl);
+
+    MODSSL_CFG_ITEM_FREE(SSL_CTX_free, mctx->ssl_ctx);
+}
+
+static void ssl_init_ctx_cleanup_proxy(modssl_ctx_t *mctx)
+{
+    ssl_init_ctx_cleanup(mctx);
+
+    if (mctx->pkp->certs) {
+        sk_X509_INFO_pop_free(mctx->pkp->certs, X509_INFO_free);
+    }
+}
+
+static void ssl_init_ctx_cleanup_server(modssl_ctx_t *mctx)
+{
+    int i;
+
+    ssl_init_ctx_cleanup(mctx);
+
+    for (i=0; i < SSL_AIDX_MAX; i++) {
+        MODSSL_CFG_ITEM_FREE(X509_free,
+                             mctx->pks->certs[i]);
+
+        MODSSL_CFG_ITEM_FREE(EVP_PKEY_free,
+                             mctx->pks->keys[i]);
+    }
+}
+
 apr_status_t ssl_init_ModuleKill(void *data)
 {
     SSLSrvConfigRec *sc;
@@ -1139,22 +1170,11 @@ apr_status_t ssl_init_ModuleKill(void *data)
      * in the per-server configurations
      */
     for (s = base_server; s; s = s->next) {
-        int i;
         sc = mySrvConfig(s);
 
-        for (i=0; i < SSL_AIDX_MAX; i++) {
-            MODSSL_CFG_ITEM_FREE(X509_free,
-                                 sc->server->pks->certs[i]);
+        ssl_init_ctx_cleanup_proxy(sc->proxy);
 
-            MODSSL_CFG_ITEM_FREE(EVP_PKEY_free,
-                                 sc->server->pks->keys[i]);
-        }
-
-        MODSSL_CFG_ITEM_FREE(X509_STORE_free,
-                             sc->server->crl);
-
-        MODSSL_CFG_ITEM_FREE(SSL_CTX_free,
-                             sc->server->ssl_ctx);
+        ssl_init_ctx_cleanup_server(sc->server);
     }
 
     /*
