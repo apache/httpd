@@ -27,11 +27,10 @@
     directives are used to instruct clients to make a new request with
     a different URL. They are often used when a resource has moved to
     a new location.</p>
-
-    <p>A more powerful and flexible set of directives for
-    manipulating URLs is contained in the <module>mod_rewrite</module>
-    module.</p>
 </summary>
+
+<seealso><module>mod_rewrite</module></seealso> <seealso><a
+href="../urlmapping.html">Mapping URLs to the filesystem</a></seealso>
 
 <directivesynopsis>
 <name>Alias</name>
