@@ -101,6 +101,19 @@ for directives, unless they have been disabled with
 AllowOverride None<br>
 &lt;/Directory&gt;</code></blockquote><p><hr>
 
+<A name="addmodule"><h2>AddModule directive</h2></A>
+<!--%plaintext &lt;?INDEX {\tt AddModule} directive&gt; -->
+<strong>Syntax:</strong> AddModule <em>module module ...</em><br>
+<strong>Context:</strong> server config <br>
+<strong>Status:</strong> core<br>
+<strong>Compatibility:</strong> AddModule is only available in Apache 1.2 and later<p>
+
+The server can have modules compiled in which are not actively in use.
+This directive can be used to enable the use of those modules.  The
+server comes with a pre-loaded list of active modules; this list can
+be cleared with the <A HREF="#clearmodulelist">ClearModuleList</A>
+directive.<p><hr>
+
 <A name="allowoverride"><h2>AllowOverride directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt AllowOverride} directive&gt; -->
 <strong>Syntax:</strong> AllowOverride <em>override override ...</em><br>
@@ -162,14 +175,6 @@ Allow use of the directives controlling specific directory features
 <A HREF="mod_include.html#xbithack">XBitHack</A>).
 </dl><p><hr>
 
-<A name="addmodule"><h2>AddModule directive</h2></A>
-<!--%plaintext &lt;?INDEX {\tt AddModule} directive&gt; -->
-<strong>Syntax:</strong> <br>
-<strong>Default:</strong> <code></code><br>
-<strong>Context:</strong> <br>
-<strong>Status:</strong> core<br>
-<strong>Compatibility:</strong> AddModule is only available in Apache 1.2 and later<p><hr>
-
 <A name="authname"><h2>AuthName directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt AuthName} directive&gt; -->
 <strong>Syntax:</strong> AuthName <em>auth-domain</em><br>
@@ -202,11 +207,14 @@ It must be accompanied by <A HREF="#authname">AuthName</A> and
 
 <A name="clearmodulelist"><h2>ClearModuleList directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt ClearModuleList} directive&gt; -->
-<strong>Syntax:</strong> <br>
-<strong>Default:</strong> <code></code><br>
-<strong>Context:</strong> <br>
+<strong>Syntax:</strong> ClearModuleList<br>
+<strong>Context:</strong> server config<br>
 <strong>Status:</strong> core<br>
-<strong>Compatibility:</strong> ClearModuleList is only available in Apache 1.2 and later<p><hr>
+<strong>Compatibility:</strong> ClearModuleList is only available in Apache 1.2 and later<p>
+
+The server comes with a built-in list of active modules.  This
+directive clears the list.  It is assumed that the list will then be
+repopulated using the <A HREF="#addmodule">AddModule</A> directive.<p><hr>
 
 <A name="bindaddress"><h2>BindAddress directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt BindAddress} directive&gt; -->
