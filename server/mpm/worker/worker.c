@@ -70,6 +70,7 @@
 #include "apr_thread_proc.h"
 #include "apr_signal.h"
 #include "apr_thread_mutex.h"
+#include "apr_proc_mutex.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
@@ -588,7 +589,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         if ((rv = SAFE_ACCEPT(apr_proc_mutex_lock(accept_mutex)))
             != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
-                         "apr_lock_acquire failed. Attempting to shutdown "
+                         "apr_proc_mutex_lock failed. Attempting to shutdown "
                          "process gracefully.");
             signal_workers();
         }
@@ -655,8 +656,8 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             if ((rv = SAFE_ACCEPT(apr_proc_mutex_unlock(accept_mutex)))
                 != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
-                             "apr_lock_release failed. Attempting to shutdown "
-                             "process gracefully.");
+                             "apr_proc_mutex_lock failed. Attempting to "
+                             "shutdown process gracefully.");
                 signal_workers();
             }
             if (csd != NULL) {
@@ -676,8 +677,8 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             if ((rv = SAFE_ACCEPT(apr_proc_mutex_unlock(accept_mutex)))
                 != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
-                             "apr_lock_release failed. Attempting to shutdown "
-                             "process gracefully.");
+                             "apr_proc_mutex_unlock failed. Attempting to "
+                             "shutdown process gracefully.");
                 signal_workers();
             }
             break;
