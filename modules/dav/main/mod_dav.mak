@@ -41,14 +41,14 @@ ALL : "$(OUTDIR)\mod_dav.so"
 
 !ELSE 
 
-ALL : "libapr - Win32 Release" "libhttpd - Win32 Release"\
- "libaprutil - Win32 Release" "$(OUTDIR)\mod_dav.so"
+ALL : "libhttpd - Win32 Release" "libaprutil - Win32 Release"\
+ "libapr - Win32 Release" "$(OUTDIR)\mod_dav.so"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libaprutil - Win32 ReleaseCLEAN" "libhttpd - Win32 ReleaseCLEAN"\
- "libapr - Win32 ReleaseCLEAN" 
+CLEAN :"libapr - Win32 ReleaseCLEAN" "libaprutil - Win32 ReleaseCLEAN"\
+ "libhttpd - Win32 ReleaseCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -150,14 +150,14 @@ ALL : "$(OUTDIR)\mod_dav.so"
 
 !ELSE 
 
-ALL : "libapr - Win32 Debug" "libhttpd - Win32 Debug"\
- "libaprutil - Win32 Debug" "$(OUTDIR)\mod_dav.so"
+ALL : "libhttpd - Win32 Debug" "libaprutil - Win32 Debug"\
+ "libapr - Win32 Debug" "$(OUTDIR)\mod_dav.so"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libaprutil - Win32 DebugCLEAN" "libhttpd - Win32 DebugCLEAN"\
- "libapr - Win32 DebugCLEAN" 
+CLEAN :"libapr - Win32 DebugCLEAN" "libaprutil - Win32 DebugCLEAN"\
+ "libhttpd - Win32 DebugCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -180,11 +180,11 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Od /I "..\..\..\srclib\aputil" /I\
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\..\..\srclib\aputil" /I\
  "..\..\..\srclib\sdbm" /I "..\..\..\srclib\expat-lite" /I\
  "..\..\..\srclib\apr\include" /I "../../../srclib/apr-util/include" /I\
  "..\..\..\include" /I "..\..\..\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS"\
- /D "DAV_DECLARE_EXPORT" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_dav" /FD /ZI /c 
+ /D "DAV_DECLARE_EXPORT" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_dav" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 
@@ -571,14 +571,42 @@ NODEP_CPP_UTIL_L=\
 
 !IF  "$(CFG)" == "mod_dav - Win32 Release"
 
+"libapr - Win32 Release" : 
+   cd "..\../..\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F .\libapr.mak CFG="libapr - Win32 Release" 
+   cd "..\..\modules\dav\main"
+
+"libapr - Win32 ReleaseCLEAN" : 
+   cd "..\../..\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libapr.mak CFG="libapr - Win32 Release"\
+ RECURSE=1 
+   cd "..\..\modules\dav\main"
+
+!ELSEIF  "$(CFG)" == "mod_dav - Win32 Debug"
+
+"libapr - Win32 Debug" : 
+   cd "..\../..\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F .\libapr.mak CFG="libapr - Win32 Debug" 
+   cd "..\..\modules\dav\main"
+
+"libapr - Win32 DebugCLEAN" : 
+   cd "..\../..\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libapr.mak CFG="libapr - Win32 Debug"\
+ RECURSE=1 
+   cd "..\..\modules\dav\main"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "mod_dav - Win32 Release"
+
 "libaprutil - Win32 Release" : 
-   cd "\clean\httpd-2.0\srclib\apr-util"
+   cd "..\../..\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Release"\
  
    cd "..\..\modules\dav\main"
 
 "libaprutil - Win32 ReleaseCLEAN" : 
-   cd "\clean\httpd-2.0\srclib\apr-util"
+   cd "..\../..\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
  CFG="libaprutil - Win32 Release" RECURSE=1 
    cd "..\..\modules\dav\main"
@@ -586,12 +614,12 @@ NODEP_CPP_UTIL_L=\
 !ELSEIF  "$(CFG)" == "mod_dav - Win32 Debug"
 
 "libaprutil - Win32 Debug" : 
-   cd "\clean\httpd-2.0\srclib\apr-util"
+   cd "..\../..\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Debug" 
    cd "..\..\modules\dav\main"
 
 "libaprutil - Win32 DebugCLEAN" : 
-   cd "\clean\httpd-2.0\srclib\apr-util"
+   cd "..\../..\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
  CFG="libaprutil - Win32 Debug" RECURSE=1 
    cd "..\..\modules\dav\main"
@@ -601,56 +629,28 @@ NODEP_CPP_UTIL_L=\
 !IF  "$(CFG)" == "mod_dav - Win32 Release"
 
 "libhttpd - Win32 Release" : 
-   cd "\clean\httpd-2.0"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Release" 
+   cd "..\../.."
+   $(MAKE) /$(MAKEFLAGS) /F .\libhttpd.mak CFG="libhttpd - Win32 Release" 
    cd ".\modules\dav\main"
 
 "libhttpd - Win32 ReleaseCLEAN" : 
-   cd "\clean\httpd-2.0"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak"\
- CFG="libhttpd - Win32 Release" RECURSE=1 
+   cd "..\../.."
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libhttpd.mak CFG="libhttpd - Win32 Release"\
+ RECURSE=1 
    cd ".\modules\dav\main"
 
 !ELSEIF  "$(CFG)" == "mod_dav - Win32 Debug"
 
 "libhttpd - Win32 Debug" : 
-   cd "\clean\httpd-2.0"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug" 
+   cd "..\../.."
+   $(MAKE) /$(MAKEFLAGS) /F .\libhttpd.mak CFG="libhttpd - Win32 Debug" 
    cd ".\modules\dav\main"
 
 "libhttpd - Win32 DebugCLEAN" : 
-   cd "\clean\httpd-2.0"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug"\
+   cd "..\../.."
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libhttpd.mak CFG="libhttpd - Win32 Debug"\
  RECURSE=1 
    cd ".\modules\dav\main"
-
-!ENDIF 
-
-!IF  "$(CFG)" == "mod_dav - Win32 Release"
-
-"libapr - Win32 Release" : 
-   cd "\clean\httpd-2.0\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Release" 
-   cd "..\..\modules\dav\main"
-
-"libapr - Win32 ReleaseCLEAN" : 
-   cd "\clean\httpd-2.0\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Release"\
- RECURSE=1 
-   cd "..\..\modules\dav\main"
-
-!ELSEIF  "$(CFG)" == "mod_dav - Win32 Debug"
-
-"libapr - Win32 Debug" : 
-   cd "\clean\httpd-2.0\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Debug" 
-   cd "..\..\modules\dav\main"
-
-"libapr - Win32 DebugCLEAN" : 
-   cd "\clean\httpd-2.0\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Debug"\
- RECURSE=1 
-   cd "..\..\modules\dav\main"
 
 !ENDIF 
 

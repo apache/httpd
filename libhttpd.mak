@@ -41,16 +41,16 @@ ALL : "$(OUTDIR)\libhttpd.dll"
 
 !ELSE 
 
-ALL : "libapr - Win32 Release" "gen_uri_delims - Win32 Release"\
- "gen_test_char - Win32 Release" "pcreposix - Win32 Release"\
- "pcre - Win32 Release" "libaprutil - Win32 Release" "$(OUTDIR)\libhttpd.dll"
+ALL : "gen_uri_delims - Win32 Release" "gen_test_char - Win32 Release"\
+ "pcreposix - Win32 Release" "pcre - Win32 Release" "libaprutil - Win32 Release"\
+ "libapr - Win32 Release" "$(OUTDIR)\libhttpd.dll"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libaprutil - Win32 ReleaseCLEAN" "pcre - Win32 ReleaseCLEAN"\
- "pcreposix - Win32 ReleaseCLEAN" "gen_test_char - Win32 ReleaseCLEAN"\
- "gen_uri_delims - Win32 ReleaseCLEAN" "libapr - Win32 ReleaseCLEAN" 
+CLEAN :"libapr - Win32 ReleaseCLEAN" "libaprutil - Win32 ReleaseCLEAN"\
+ "pcre - Win32 ReleaseCLEAN" "pcreposix - Win32 ReleaseCLEAN"\
+ "gen_test_char - Win32 ReleaseCLEAN" "gen_uri_delims - Win32 ReleaseCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -230,16 +230,16 @@ ALL : "$(OUTDIR)\libhttpd.dll"
 
 !ELSE 
 
-ALL : "libapr - Win32 Debug" "gen_uri_delims - Win32 Debug"\
- "gen_test_char - Win32 Debug" "pcreposix - Win32 Debug" "pcre - Win32 Debug"\
- "libaprutil - Win32 Debug" "$(OUTDIR)\libhttpd.dll"
+ALL : "gen_uri_delims - Win32 Debug" "gen_test_char - Win32 Debug"\
+ "pcreposix - Win32 Debug" "pcre - Win32 Debug" "libaprutil - Win32 Debug"\
+ "libapr - Win32 Debug" "$(OUTDIR)\libhttpd.dll"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libaprutil - Win32 DebugCLEAN" "pcre - Win32 DebugCLEAN"\
- "pcreposix - Win32 DebugCLEAN" "gen_test_char - Win32 DebugCLEAN"\
- "gen_uri_delims - Win32 DebugCLEAN" "libapr - Win32 DebugCLEAN" 
+CLEAN :"libapr - Win32 DebugCLEAN" "libaprutil - Win32 DebugCLEAN"\
+ "pcre - Win32 DebugCLEAN" "pcreposix - Win32 DebugCLEAN"\
+ "gen_test_char - Win32 DebugCLEAN" "gen_uri_delims - Win32 DebugCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -300,10 +300,10 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Od /I ".\include" /I ".\srclib\apr\include" /I\
- ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I\
- "./os/win32" /I "./modules/http" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D\
- "AP_DECLARE_EXPORT" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\libhttpd" /FD /ZI /c 
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I ".\include" /I ".\srclib\apr\include"\
+ /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite"\
+ /I "./os/win32" /I "./modules/http" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D\
+ "AP_DECLARE_EXPORT" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\libhttpd" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 
@@ -2497,6 +2497,34 @@ NODEP_CPP_SERVI=\
 
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
 
+"libapr - Win32 Release" : 
+   cd ".\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F .\libapr.mak CFG="libapr - Win32 Release" 
+   cd "..\.."
+
+"libapr - Win32 ReleaseCLEAN" : 
+   cd ".\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libapr.mak CFG="libapr - Win32 Release"\
+ RECURSE=1 
+   cd "..\.."
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+"libapr - Win32 Debug" : 
+   cd ".\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F .\libapr.mak CFG="libapr - Win32 Debug" 
+   cd "..\.."
+
+"libapr - Win32 DebugCLEAN" : 
+   cd ".\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libapr.mak CFG="libapr - Win32 Debug"\
+ RECURSE=1 
+   cd "..\.."
+
+!ENDIF 
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
 "libaprutil - Win32 Release" : 
    cd ".\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Release"\
@@ -2528,12 +2556,12 @@ NODEP_CPP_SERVI=\
 
 "pcre - Win32 Release" : 
    cd ".\srclib\pcre"
-   $(MAKE) /$(MAKEFLAGS) /F ".\pcre.mak" CFG="pcre - Win32 Release" 
+   $(MAKE) /$(MAKEFLAGS) /F .\pcre.mak CFG="pcre - Win32 Release" 
    cd "..\.."
 
 "pcre - Win32 ReleaseCLEAN" : 
    cd ".\srclib\pcre"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\pcre.mak" CFG="pcre - Win32 Release"\
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\pcre.mak CFG="pcre - Win32 Release"\
  RECURSE=1 
    cd "..\.."
 
@@ -2541,13 +2569,13 @@ NODEP_CPP_SERVI=\
 
 "pcre - Win32 Debug" : 
    cd ".\srclib\pcre"
-   $(MAKE) /$(MAKEFLAGS) /F ".\pcre.mak" CFG="pcre - Win32 Debug" 
+   $(MAKE) /$(MAKEFLAGS) /F .\pcre.mak CFG="pcre - Win32 Debug" 
    cd "..\.."
 
 "pcre - Win32 DebugCLEAN" : 
    cd ".\srclib\pcre"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\pcre.mak" CFG="pcre - Win32 Debug"\
- RECURSE=1 
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\pcre.mak CFG="pcre - Win32 Debug" RECURSE=1\
+ 
    cd "..\.."
 
 !ENDIF 
@@ -2556,12 +2584,12 @@ NODEP_CPP_SERVI=\
 
 "pcreposix - Win32 Release" : 
    cd ".\srclib\pcre"
-   $(MAKE) /$(MAKEFLAGS) /F ".\pcreposix.mak" CFG="pcreposix - Win32 Release" 
+   $(MAKE) /$(MAKEFLAGS) /F .\pcreposix.mak CFG="pcreposix - Win32 Release" 
    cd "..\.."
 
 "pcreposix - Win32 ReleaseCLEAN" : 
    cd ".\srclib\pcre"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\pcreposix.mak"\
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\pcreposix.mak\
  CFG="pcreposix - Win32 Release" RECURSE=1 
    cd "..\.."
 
@@ -2569,13 +2597,13 @@ NODEP_CPP_SERVI=\
 
 "pcreposix - Win32 Debug" : 
    cd ".\srclib\pcre"
-   $(MAKE) /$(MAKEFLAGS) /F ".\pcreposix.mak" CFG="pcreposix - Win32 Debug" 
+   $(MAKE) /$(MAKEFLAGS) /F .\pcreposix.mak CFG="pcreposix - Win32 Debug" 
    cd "..\.."
 
 "pcreposix - Win32 DebugCLEAN" : 
    cd ".\srclib\pcre"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\pcreposix.mak"\
- CFG="pcreposix - Win32 Debug" RECURSE=1 
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\pcreposix.mak CFG="pcreposix - Win32 Debug"\
+ RECURSE=1 
    cd "..\.."
 
 !ENDIF 
@@ -2584,13 +2612,13 @@ NODEP_CPP_SERVI=\
 
 "gen_test_char - Win32 Release" : 
    cd ".\server"
-   $(MAKE) /$(MAKEFLAGS) /F ".\gen_test_char.mak"\
+   $(MAKE) /$(MAKEFLAGS) /F .\gen_test_char.mak\
  CFG="gen_test_char - Win32 Release" 
    cd ".."
 
 "gen_test_char - Win32 ReleaseCLEAN" : 
    cd ".\server"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\gen_test_char.mak"\
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\gen_test_char.mak\
  CFG="gen_test_char - Win32 Release" RECURSE=1 
    cd ".."
 
@@ -2598,13 +2626,13 @@ NODEP_CPP_SERVI=\
 
 "gen_test_char - Win32 Debug" : 
    cd ".\server"
-   $(MAKE) /$(MAKEFLAGS) /F ".\gen_test_char.mak"\
+   $(MAKE) /$(MAKEFLAGS) /F .\gen_test_char.mak\
  CFG="gen_test_char - Win32 Debug" 
    cd ".."
 
 "gen_test_char - Win32 DebugCLEAN" : 
    cd ".\server"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\gen_test_char.mak"\
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\gen_test_char.mak\
  CFG="gen_test_char - Win32 Debug" RECURSE=1 
    cd ".."
 
@@ -2614,13 +2642,13 @@ NODEP_CPP_SERVI=\
 
 "gen_uri_delims - Win32 Release" : 
    cd ".\server"
-   $(MAKE) /$(MAKEFLAGS) /F ".\gen_uri_delims.mak"\
+   $(MAKE) /$(MAKEFLAGS) /F .\gen_uri_delims.mak\
  CFG="gen_uri_delims - Win32 Release" 
    cd ".."
 
 "gen_uri_delims - Win32 ReleaseCLEAN" : 
    cd ".\server"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\gen_uri_delims.mak"\
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\gen_uri_delims.mak\
  CFG="gen_uri_delims - Win32 Release" RECURSE=1 
    cd ".."
 
@@ -2628,43 +2656,15 @@ NODEP_CPP_SERVI=\
 
 "gen_uri_delims - Win32 Debug" : 
    cd ".\server"
-   $(MAKE) /$(MAKEFLAGS) /F ".\gen_uri_delims.mak"\
+   $(MAKE) /$(MAKEFLAGS) /F .\gen_uri_delims.mak\
  CFG="gen_uri_delims - Win32 Debug" 
    cd ".."
 
 "gen_uri_delims - Win32 DebugCLEAN" : 
    cd ".\server"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\gen_uri_delims.mak"\
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\gen_uri_delims.mak\
  CFG="gen_uri_delims - Win32 Debug" RECURSE=1 
    cd ".."
-
-!ENDIF 
-
-!IF  "$(CFG)" == "libhttpd - Win32 Release"
-
-"libapr - Win32 Release" : 
-   cd ".\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Release" 
-   cd "..\.."
-
-"libapr - Win32 ReleaseCLEAN" : 
-   cd ".\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Release"\
- RECURSE=1 
-   cd "..\.."
-
-!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
-
-"libapr - Win32 Debug" : 
-   cd ".\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Debug" 
-   cd "..\.."
-
-"libapr - Win32 DebugCLEAN" : 
-   cd ".\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Debug"\
- RECURSE=1 
-   cd "..\.."
 
 !ENDIF 
 

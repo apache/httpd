@@ -139,10 +139,10 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Od /I "../srclib/apr/include" /I\
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "../srclib/apr/include" /I\
  "../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D\
  "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\rotatelogs" /FD /ZI /c 
+ /Fd"$(INTDIR)\rotatelogs" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 
