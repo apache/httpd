@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/11/02 23:18:28 $]
+Last modified at [$Date: 1999/11/03 07:29:02 $]
 
 Release:
 
@@ -12,14 +12,9 @@ Plan:
 
 RELEASE SHOWSTOPPERS:
 
-    * CGI programs will stop working after a little while
-        Status: Manoj is working on this
-
     * suEXEC doesn't work
-        Status: Manoj has finished an implementation, but it needs
-        polishing. Specifically, it puts a bunch of Unix stuff into
-        portable code.  Current patch will be sent to new-httpd upon
-        request.
+        Status: Manoj has posted an patch to fix this.
+        <19991103003605.A20612@samosa.mindspring.com>
 
     * Windows NT port isn't done
         Status: Bill is working on this through his MPM work, and Ryan
