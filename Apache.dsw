@@ -1,4 +1,4 @@
-Microsoft Developer Studio Workspace File, Format Version 6.00
+Microsoft Developer Studio Workspace File, Format Version 5.00
 # WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
 
 ###############################################################################
@@ -31,9 +31,6 @@ Package=<4>
 {{{
     Begin Project Dependency
     Project_Dep_Name aprlibdll
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name ap
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name gen_test_char
@@ -345,22 +342,7 @@ Package=<4>
     Project_Dep_Name aprlib
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name ap
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "ap"=".\ap\ap.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name aprlib
+    Project_Dep_Name ApacheCore
     End Project Dependency
 }}}
 
@@ -456,7 +438,7 @@ Package=<4>
     Project_Dep_Name aprlib
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name ap
+    Project_Dep_Name ApacheCore
     End Project Dependency
 }}}
 

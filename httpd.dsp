@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "API_EXPORT_SYMBOLS" /D "AP_EXPORT_SYMBOLS" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "include" /I "os/win32" /I "lib/apr/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "API_EXPORT_SYMBOLS" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -54,7 +54,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 aprlib.lib ap.lib pcreposix.lib pcre.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"regex\release" /libpath:"ap\Release" /base:@"os\win32\BaseAddr.ref",ApacheCore
-# ADD LINK32 aprlib.lib ap.lib pcre.lib pcreposix.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"lib\pcre\LibR" /libpath:"ap\Release" /base:@"os\win32\BaseAddr.ref",ApacheCore
+# ADD LINK32 kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /base:@"os\win32\BaseAddr.ref",ApacheCore
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
@@ -70,7 +70,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "_DEBUG" /D "API_EXPORT_SYMBOLS" /D "AP_EXPORT_SYMBOLS" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /FD /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "include" /I "os/win32" /I "lib/apr/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "API_EXPORT_SYMBOLS" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -93,6 +93,18 @@ LINK32=link.exe
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
+# Begin Source File
+
+SOURCE=.\ap\ap_base64.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\ap\ap_hooks.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\ap\ap_sha1.c
+# End Source File
 # Begin Source File
 
 SOURCE=.\ApacheCore.def
@@ -120,10 +132,6 @@ SOURCE=.\main\http_core.c
 # Begin Source File
 
 SOURCE=.\main\http_log.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\main\http_main.c
 # End Source File
 # Begin Source File
 
@@ -267,6 +275,18 @@ SOURCE=.\modules\mpm\winnt\winnt.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
 # Begin Source File
 
+SOURCE=.\include\ap_base64.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_config.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_ctype.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\ap_hooks.h
 # End Source File
 # Begin Source File
@@ -280,6 +300,18 @@ SOURCE=.\include\ap_listen.h
 # Begin Source File
 
 SOURCE=.\include\ap_md5.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_mmn.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_mpm.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_sha1.h
 # End Source File
 # Begin Source File
 
