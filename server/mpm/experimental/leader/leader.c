@@ -784,6 +784,9 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
                              "worker_stack_wait failed. Shutting down");
                 break;
             }
+            if (workers_may_exit) {
+                break;
+            }
             is_listener = 1;
         }
 
