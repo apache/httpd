@@ -207,7 +207,14 @@ static const command_rec ssl_config_cmds[] = {
 static void ssl_hook_pre_config(
     apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
-    ssl_ext_register(pconf);
+    /* Register us to handle mod_log_config %c/%x variables */
+    ssl_var_log_config_register(pconf);
+#if 0 /* XXX */
+    /* XXX: Register us to handle mod_proxy extensions that don't exist yet */
+    ssl_ext_mp_register(pconf);
+    /* XXX: Register us to handle mod_status extensions that don't exist yet */
+    ssl_ext_ms_register(pconf);
+#endif /* -0- */
 }
 
 static int ssl_hook_pre_connection(conn_rec *c)

@@ -61,164 +61,8 @@
                                            -- Unknown             */
 #include "mod_ssl.h"
 
-/*  _________________________________________________________________
-**
-**  SSL Extensions
-**  _________________________________________________________________
-*/
 
-#include "../../modules/loggers/mod_log_config.h"
-static void  ssl_ext_mlc_register(apr_pool_t *p);
-#if 0 /* XXX */
-static void  ssl_ext_mlc_unregister(void);
-static void  ssl_ext_mr_register(void);
-static void  ssl_ext_mr_unregister(void);
-static void  ssl_ext_mp_register(void);
-static void  ssl_ext_mp_unregister(void);
-static void  ssl_ext_ms_register(void);
-static void  ssl_ext_ms_unregister(void);
-#endif /* XXX */
-
-void ssl_ext_register(apr_pool_t *p)
-{
-    ssl_ext_mlc_register(p);
-#if 0 /* XXX */
-    ssl_ext_mr_register();
-    ssl_ext_mp_register();
-    ssl_ext_ms_register();
-#endif /* XXX */
-    return;
-}
-
-void ssl_ext_unregister(void)
-{
-#if 0 /* XXX */
-    ssl_ext_mlc_unregister();
-    ssl_ext_mr_unregister();
-    ssl_ext_mp_unregister();
-    ssl_ext_ms_unregister();
-#endif /* XXX */
-    return;
-}
-
-
-/*  _________________________________________________________________
-**
-**  SSL Extension to mod_log_config
-**  _________________________________________________________________
-*/
-
-static const char *ssl_ext_mlc_log_c(request_rec *r, char *a);
-static const char *ssl_ext_mlc_log_x(request_rec *r, char *a);
-
-/*
- * register us for the mod_log_config function registering phase
- * to establish %{...}c and to be able to expand %{...}x variables.
- */
-static void ssl_ext_mlc_register(apr_pool_t *p)
-{
-    static APR_OPTIONAL_FN_TYPE(ap_register_log_handler) *log_pfn_register;
-
-    log_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_log_handler);
-
-    if (log_pfn_register) {
-        log_pfn_register(p, "c", ssl_ext_mlc_log_c, 0);
-        log_pfn_register(p, "x", ssl_ext_mlc_log_x, 0);
-    }
-    return;
-}
-
-#if 0 /* XXX - We don't really need this (do we???) */
-static void ssl_ext_mlc_unregister(void)
-{
-    ap_hook_unregister("ap::mod_log_config::log_c",
-                       ssl_ext_mlc_log_c);
-    ap_hook_unregister("ap::mod_log_config::log_x",
-                       ssl_ext_mlc_log_x);
-    return;
-}
-#endif /* XXX */
-
-/*
- * implement the %{..}c log function
- * (we are the only function)
- */
-static const char *ssl_ext_mlc_log_c(request_rec *r, char *a)
-{
-    char *result;
-
-    if (apr_table_get(r->connection->notes, "ssl") == NULL)
-        return NULL;
-    result = NULL;
-    if (strEQ(a, "version"))
-        result = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_PROTOCOL");
-    else if (strEQ(a, "cipher"))
-        result = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_CIPHER");
-    else if (strEQ(a, "subjectdn") || strEQ(a, "clientcert"))
-        result = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_CLIENT_S_DN");
-    else if (strEQ(a, "issuerdn") || strEQ(a, "cacert"))
-        result = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_CLIENT_I_DN");
-    else if (strEQ(a, "errcode"))
-        result = "-";
-    else if (strEQ(a, "errstr"))
-        result = (char *)apr_table_get(r->connection->notes, "ssl::verify::error");
-    if (result != NULL && result[0] == NUL)
-        result = NULL;
-    return result;
-}
-
-/*
- * extend the implementation of the %{..}x log function
- * (there can be more functions)
- */
-static const char *ssl_ext_mlc_log_x(request_rec *r, char *a)
-{
-    char *result;
-
-    result = NULL;
-    if (apr_table_get(r->connection->notes, "ssl") != NULL)
-        result = ssl_var_lookup(r->pool, r->server, r->connection, r, a);
-    if (result != NULL && result[0] == NUL)
-        result = NULL;
-    return result;
-}
-
-/*  _________________________________________________________________
-**
-**  SSL Extension to mod_rewrite
-**  _________________________________________________________________
-*/
-
-#if 0 /* XXX */
-static char *ssl_ext_mr_lookup_variable(request_rec *r, char *var);
-
-/*
- * register us for the mod_rewrite lookup_variable() function
- */
-static void ssl_ext_mr_register(void)
-{
-    ap_hook_register("ap::mod_rewrite::lookup_variable",
-                     ssl_ext_mr_lookup_variable, AP_HOOK_NOCTX);
-    return;
-}
-
-static void ssl_ext_mr_unregister(void)
-{
-    ap_hook_unregister("ap::mod_rewrite::lookup_variable",
-                       ssl_ext_mr_lookup_variable);
-    return;
-}
-
-static char *ssl_ext_mr_lookup_variable(request_rec *r, char *var)
-{
-    char *val;
-
-    val = ssl_var_lookup(r->pool, r->server, r->connection, r, var);
-    if (val[0] == NUL)
-        val = NULL;
-    return val;
-}
-
+#if 0 /* XXX this is for mod_proxy hackers, which optional_fn's to create? */
 /*  _________________________________________________________________
 **
 **  SSL Extension to mod_proxy
@@ -240,7 +84,7 @@ static int   ssl_ext_mp_clientcert_cb(SSL *, X509 **, EVP_PKEY **);
 /*
  * register us ...
  */
-static void ssl_ext_mp_register(void)
+void ssl_ext_proxy_register(apr_pool_t *pconf)
 {
 #ifdef SSL_EXPERIMENTAL_PROXY
     ap_hook_register("ap::mod_proxy::init",
@@ -256,22 +100,6 @@ static void ssl_ext_mp_register(void)
                      ssl_ext_mp_new_connection, AP_HOOK_NOCTX);
     ap_hook_register("ap::mod_proxy::http::handler::write_host_header",
                      ssl_ext_mp_write_host_header, AP_HOOK_NOCTX);
-    return;
-}
-
-static void ssl_ext_mp_unregister(void)
-{
-#ifdef SSL_EXPERIMENTAL_PROXY
-    ap_hook_unregister("ap::mod_proxy::init", ssl_ext_mp_init);
-#endif
-    ap_hook_unregister("ap::mod_proxy::canon", ssl_ext_mp_canon);
-    ap_hook_unregister("ap::mod_proxy::handler", ssl_ext_mp_handler);
-    ap_hook_unregister("ap::mod_proxy::http::handler::set_destport",
-                       ssl_ext_mp_set_destport);
-    ap_hook_unregister("ap::mod_proxy::http::handler::new_connection",
-                       ssl_ext_mp_new_connection);
-    ap_hook_unregister("ap::mod_proxy::http::handler::write_host_header",
-                       ssl_ext_mp_write_host_header);
     return;
 }
 
@@ -770,53 +598,4 @@ static int ssl_ext_mp_verify_cb(int ok, X509_STORE_CTX *ctx)
 
 #endif /* SSL_EXPERIMENTAL_PROXY */
 
-/*  _________________________________________________________________
-**
-**  SSL Extension to mod_status
-**  _________________________________________________________________
-*/
-
-static void ssl_ext_ms_display(request_rec *, int, int);
-
-static void ssl_ext_ms_register(void)
-{
-    ap_hook_register("ap::mod_status::display", ssl_ext_ms_display, AP_HOOK_NOCTX);
-    return;
-}
-
-static void ssl_ext_ms_unregister(void)
-{
-    ap_hook_unregister("ap::mod_status::display", ssl_ext_ms_display);
-    return;
-}
-
-static void ssl_ext_ms_display_cb(char *str, void *_r)
-{
-    request_rec *r = (request_rec *)_r;
-    if (str != NULL)
-        ap_rputs(str, r);
-    return;
-}
-
-static void ssl_ext_ms_display(request_rec *r, int no_table_report, int short_report)
-{
-    SSLSrvConfigRec *sc = mySrvConfig(r->server);
-
-    if (sc == NULL)
-        return;
-    if (short_report)
-        return;
-    ap_rputs("<hr>\n", r);
-    ap_rputs("<table cellspacing=0 cellpadding=0>\n", r);
-    ap_rputs("<tr><td bgcolor=\"#000000\">\n", r);
-    ap_rputs("<b><font color=\"#ffffff\" face=\"Arial,Helvetica\">SSL/TLS Session Cache Status:</font></b>\r", r);
-    ap_rputs("</td></tr>\n", r);
-    ap_rputs("<tr><td bgcolor=\"#ffffff\">\n", r);
-    ssl_scache_status(r->server, r->pool, ssl_ext_ms_display_cb, r);
-    ap_rputs("</td></tr>\n", r);
-    ap_rputs("</table>\n", r);
-    return;
-}
-
 #endif /* XXX */
-
