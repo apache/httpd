@@ -1165,7 +1165,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     }
 
     if (r->assbackwards) {
-        r->bytes_sent = 0;
         r->sent_bodyct = 1;
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, b);
