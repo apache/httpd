@@ -47,6 +47,10 @@
 
       <dd>APache eXtenSion tool</dd>
 
+      <dt><a href="configure.html">configure</a></dt>
+
+      <dd>Configure the source tree</dd>
+
       <dt><a href="dbmmanage.html">dbmmanage</a></dt>
 
       <dd>Create and update user authentication files in DBM format
