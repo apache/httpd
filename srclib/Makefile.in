@@ -1,5 +1,4 @@
 
-SUBDIRS = $(AP_LIB_DIRS) pcre
 BUILD_SUBDIRS = apr apr-util
 CLEAN_SUBDIRS = apr-util apr
 

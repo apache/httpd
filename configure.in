@@ -360,13 +360,11 @@ AC_ARG_WITH(suexec-umask,
 APACHE_HELP_STRING(--with-suexec-umask,umask for suexec'd process),[
   AC_DEFINE_UNQUOTED(AP_SUEXEC_UMASK, 0$withval, [umask for suexec'd process] ) ] )
 
-dnl AP_LIB_DIRS specifies the additional libs from srclib/ that we need
 dnl AP_LIBS specifies the actual libraries. note we have some required libs.
 AP_LIBS="$abs_builddir/srclib/pcre/libpcre.la $abs_builddir/srclib/apr-util/libaprutil.la $AP_LIBS"
 
 dnl APR should go after the other libs, so the right symbols can be picked up
 AP_LIBS="$AP_LIBS $abs_builddir/srclib/apr/libapr.la"
-APACHE_SUBST(AP_LIB_DIRS)
 APACHE_SUBST(AP_LIBS)
 
 AC_DEFINE(AP_USING_AUTOCONF, 1,
@@ -398,9 +396,6 @@ APACHE_FAST_OUTPUT(Makefile modules/Makefile srclib/Makefile)
 APACHE_FAST_OUTPUT(os/beos/Makefile os/os2/Makefile os/Makefile)
 APACHE_FAST_OUTPUT(os/unix/Makefile server/Makefile)
 APACHE_FAST_OUTPUT(support/Makefile srclib/pcre/Makefile)
-for i in $AP_LIB_DIRS; do
-  APACHE_FAST_OUTPUT(srclib/$i/Makefile)
-done
 
 if test -d ./test; then
     APACHE_FAST_OUTPUT(test/Makefile)
