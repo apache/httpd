@@ -249,7 +249,7 @@ struct ap_filter_rec_t {
     const char* value;
 
     /** Providers for this filter */
-    ap_filter_provider_t* providers;
+    ap_filter_provider_t *providers;
 
     /** Trace level for this filter */
     int debug;
@@ -284,16 +284,16 @@ struct ap_filter_provider_t {
 
     /** The dispatch match itself - union member depends on match_type */
     union {
-        const char* c;
-        regex_t* r;
+        const char *c;
+        regex_t *r;
         int i;
     } match;
 
     /** The filter that implements this provider */
-    ap_filter_rec_t* frec;
+    ap_filter_rec_t *frec;
 
     /** The next provider in the list */
-    ap_filter_provider_t* next;
+    ap_filter_provider_t *next;
 };
 
 /**
