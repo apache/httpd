@@ -3,7 +3,7 @@ Changes with Apache 1.3b7
   *) Let "configure" clear out the users parameters (provided as shell
      variables) to avoid side-effects in "src/Configure" when the user
      exported them (which is not needed, but some users do it). 
-     [Ralf S. Engelschall, PR#2101]
+     [Ralf S. Engelschall] PR#2101
 
   *) Provide backward compatibility from some old src/Configuration.tmpl
      parameter names to the canonical Autoconf-style shell variable names. For
@@ -12,7 +12,7 @@ Changes with Apache 1.3b7
   
   *) Make sure that "make install" doesn't overwrite the DocumentRoot and
      CGI scripts from an existing Apache installation. 
-     [Ralf S. Engelschall, Jim Jagielski, PR#2084]
+     [Ralf S. Engelschall, Jim Jagielski] PR#2084
 
   *) Make `configure --compat' more "compatible" by first 
      let the libexecdir default to EPREFIX/libexec instead of EPREFIX/bin and
@@ -20,12 +20,12 @@ Changes with Apache 1.3b7
      appended to sysconfdir, datadir, localstatedir and includedir when
      --compat is used. [Ralf S. Engelschall, Lars Eilebrecht]
 
-  *) PR2082: Closed... NeXT required strdup() in support/logresolve.c
+  *) NeXT requires strdup() in support/logresolve.c. PR#2082
 
-  *) PR2081: Closed... AIX required sys/select.h in support/ab.c
+  *) AIX requires <sys/select.h> in support/ab.c PR#2081
 
   *) Fix the path to the MimeMagicFile in the install-config target, too.
-     [Ralf S. Engelschall, PR#2089]
+     [Ralf S. Engelschall] PR#2089
 
   *) PORT: Added HP-UX 11 patches [Jeff Earickson <jaearick@colby.edu>]
 
@@ -125,7 +125,7 @@ Changes with Apache 1.3b6
      user expects. [Ralf S. Engelschall]
 
   *) Fixed ordering of argument checks for RewriteBase directive.
-     [Todd Eigenschink <eigenstr@mixi.net>, PR#2045]
+     [Todd Eigenschink <eigenstr@mixi.net>] PR#2045
 
   *) Change Win32 IS_MODULE to SHARED_MODULE to match Unix' method of
      indicating that a module is being compiled for dynamic loading. Also
@@ -179,8 +179,8 @@ Changes with Apache 1.3b6
      first step to provide both a quick success event and to demonstrate the
      APXS mechanism to module authors. [Ralf S. Engelschall]
 
-  *) Fix core dumps in use of CONNECT in proxy.  PR#1326, #1573, #1942
-     [Rainer.Scherg@rexroth.de]
+  *) Fix core dumps in use of CONNECT in proxy.  
+     [Rainer.Scherg@rexroth.de] PR#1326, #1573, #1942
 
   *) Modify the log directives in httpd.conf-dist files to use CustomLog
      so that users have examples of how CustomLog can be used.
@@ -232,7 +232,7 @@ Changes with Apache 1.3b6
 
   *) Fix the check for symbolic links in ``RewriteCond ... -l'': stat() was
      used instead of lstat() and thus this flag didn't work as expected.
-     [Rein Tollevik <reint@sys.sol.no>, PR#2010]
+     [Rein Tollevik <reint@sys.sol.no>] PR#2010
 
   *) Fix the proxy pass-through feature of mod_rewrite for the case of
      existing QUERY_STRING now that mod_proxy was recently changed because of
@@ -275,13 +275,13 @@ Changes with Apache 1.3b6
 
   *) Now mod_proxy uses the response string (in addition to the response status
      code) from the already used FTP SIZE command to setup the Content-Length
-     header if available. [Ralf S. Engelschall, PR#1183]
+     header if available. [Ralf S. Engelschall] PR#1183
 
   *) Reanimated the (still undocumented) proxy receive buffer size directive:
      Renamed from ReceiveBufferSize to ProxyReceiveBufferSize because the old
      name was really too generic, added documentation for this directive to
      the mod_proxy.html and corrected the hyperlink to it in the
-     new_features_1.3.html document.  [Ralf S. Engelschall, PR#1348]
+     new_features_1.3.html document.  [Ralf S. Engelschall] PR#1348
 
   *) Fix a bug in the src/helpers/fp2rp script and make it a little bit
      faster [Martin Kraemer]
@@ -455,13 +455,13 @@ Changes with Apache 1.3b6
      remembering the server together with the config structure while
      configuring and later assuming there is no config when we see a
      difference between the remembered server and the one calling us. 
-     [Ralf S. Engelschall, PR#1790]
+     [Ralf S. Engelschall] PR#1790
 
   *) Fixed the DBM RewriteMap support for mod_rewrite: First the support now
      is automatically disabled under configure time when the dbm_xxx functions
      are not available. Second, two heavy source code errors in the DBM
      support code were fixed.  This makes DBM RewriteMap's usable again after
-     a long time of brokenness. [Ralf S. Engelschall, PR#1696]
+     a long time of brokenness. [Ralf S. Engelschall] PR#1696
 
   *) Now all configuration files support Unix-style line-continuation via 
      the trailing backslash ("\") character. This enables us to write down
@@ -527,7 +527,7 @@ Changes with Apache 1.3b6
   *) Make \\ behave as expected.  [Ronald.Tschalaer@psi.ch]
 
   *) Add the `%a' construct to LogFormat and CustomLog to log the client IP
-     address. [Todd Eigenschink <eigenstr@mixi.net>, PR#1885]
+     address. [Todd Eigenschink <eigenstr@mixi.net>] PR#1885
 
   *) API: A new source module main/util_uri.c; It contains a routine
      parse_uri_components() and friends which breaks a URI into its component
@@ -561,11 +561,11 @@ Changes with Apache 1.3b6
      and not 1) and the per-virtual-server merging of directives. Now all
      directives except `RewriteEngine' and `RewriteOption' are either
      completely overridden (default) or completely inherited (when
-     `RewriteOptions inherit') is used. [Ralf S. Engelschall, PR#1325]
+     `RewriteOptions inherit') is used. [Ralf S. Engelschall] PR#1325
 
   *) Fix `RewriteMap' program lookup in situations where such maps are
      defined but disabled (`RewriteEngine off') in per-server context. 
-     [Ralf S. Engelschall, PR#1431]
+     [Ralf S. Engelschall] PR#1431
 
   *) Fix bug introduced in 1.3b4-dev, config with no Port setting would cause
      server to bind to port 0 rather than 80.  [Dean Gaudet]
@@ -574,7 +574,7 @@ Changes with Apache 1.3b6
      (like SunOS and FreeBSD) which don't accept the locking of pipes
      directly.  A new directive RewriteLock is introduced which can be used to
      setup a separate locking file which then is used for synchronization.
-     [Ralf S. Engelschall, PR#1029]
+     [Ralf S. Engelschall] PR#1029
 
   *) WIN32: The server root is obtained from the registry key
      HKLM\SOFTWARE\Apache Group\Apache\<version> (version is currently
@@ -602,7 +602,7 @@ Changes with Apache 1.3b6
      essential feature to fix the case of server names when doing mass
      virtual-hosting with the help of mod_rewrite instead of using
      <VirtualHost> sections). [Ralf S. Engelschall, parts based on code from
-     Jay Soffian <jay@cimedia.com>, PR#1631]
+     Jay Soffian <jay@cimedia.com>] PR#1631
 
   *) Add a new directive to mod_proxy similar to ProxyPass: `ProxyPassReverse'.
      This directive lets Apache adjust the URL in Location-headers on HTTP
@@ -982,8 +982,8 @@ Changes with Apache 1.3b4
 
   *) WIN32: Fix the execution of CGIs that are scripts and called 
      with path info that does not have an '=' in.
-     (eg. http://server/cgi-bin/printenv?foobar)  PR#1591
-     [Marc Slemko] 
+     (eg. http://server/cgi-bin/printenv?foobar)  
+     [Marc Slemko] PR#1591
 
   *) WIN32: Fix a call to os_canonical_filename so it doesn't try to 
      mess with fake filenames.  This fixes proxy caching on 
@@ -1109,7 +1109,7 @@ Changes with Apache 1.3b4
   *) "RedirectMatch gone /" would cause a SIGSEGV. [Dean Gaudet] PR#1319
 
   *) WIN32: avoid overflows during file canonicalisations.
-     [malcolm@mgdev.demon.co.uk] #PR1378
+     [malcolm@mgdev.demon.co.uk] PR#1378
 
   *) WIN32: set_file_slot() didn't detect absolute paths. [Ben Laurie]
      PR#1511, 1508
@@ -1156,8 +1156,8 @@ Changes with Apache 1.3b3
      It is useful for debugging purposes.  [Martin Kraemer]
 
   *) Start separating the ap_*() routines into their own library, so they
-     can be used by items in src/support among other things.  PR#512, 905,
-     1252, 1308 [Ken Coar]
+     can be used by items in src/support among other things.  
+     [Ken Coar] PR#512, 905, 1252, 1308 
 
   *) Give a more informative error when no AuthType is set.
      [Lars Eilebrecht]
@@ -1187,8 +1187,8 @@ Changes with Apache 1.3b3
   *) mod_autoindex wasn't displaying the ReadmeName file at the bottom
      unless it was also doing FancyIndexes, but it displayed the
      HeaderName file at the top under all circumstances.  It now shows
-     the ReadmeName file for simple indices, too, as it should.  PR#1373
-     [Ken Coar]
+     the ReadmeName file for simple indices, too, as it should.  
+     [Ken Coar] PR#1373
 
   *) http_core was mmap()ing even in cases where it wasn't going to
      read the file.  [Ben Hyde <bhyde@gensym.com>]
@@ -1493,11 +1493,11 @@ Changes with Apache 1.3b2 (there is no 1.3b1)
      [Doug MacEachern, Alexei Kosut]
 
   *) Windows now defaults to using full status reports with mod_status.
-     [Alexei Kosut, PR #1094]
+     [Alexei Kosut] PR #1094
 
   *) *Really* disable all mod_rewrite operations if the engine is off.
      Some things (like RewriteMaps) were checked/performed even if they
-     weren't supposed to be.  [Ken Coar, PR #991]
+     weren't supposed to be.  [Ken Coar] PR #991
 
   *) Implement a new timer scheme which eliminates the need to call alarm() all
      the time.  Instead a counter in the scoreboard for each child is used to
@@ -1508,7 +1508,7 @@ Changes with Apache 1.3b2 (there is no 1.3b1)
      used by systems with memory-based scoreboards.  [Dean Gaudet]
 
   *) The proxy now properly handles CONNECT requests which are sent
-     to proxy servers when using ProxyRemote.  [Marc Slemko, PR#1024]
+     to proxy servers when using ProxyRemote.  [Marc Slemko] PR#1024
 
   *) A script called apachectl has been added to the support 
      directory.  This script allows you to do things such as 
@@ -1549,7 +1549,7 @@ Changes with Apache 1.3b2 (there is no 1.3b1)
      deny access to the directory with a HTTP_FORBIDDEN.  The previous
      behavior was to ignore the htaccess file if it could not be read.
      This change may make some setups with unreadable htaccess files
-     stop working.  PR#817  [Marc Slemko]
+     stop working.  [Marc Slemko] PR#817
 
   *) Add aplog_error() providing a mechanism to define levels of
      verbosity to the server error logging. This addition also provides
@@ -1577,7 +1577,7 @@ Changes with Apache 1.3b2 (there is no 1.3b1)
 
   *) Set r->headers_out when sending responses from the proxy.
      This fixes things such as the logging of headers sent from
-     the proxy.  PR#659  [Marc Slemko]
+     the proxy.  [Marc Slemko] PR#659
 
   *) support/httpd_monitor is no longer distributed because the 
      scoreboard should not be file based if at all possible. Use
@@ -1605,7 +1605,7 @@ Changes with Apache 1.3b2 (there is no 1.3b1)
 
   *) Proxy errors on connect() are logged to the error_log (nothing
      new); now they include the IP address and port that failed
-     (*that's* new).  PR#352  [Ken Coar, Marc Slemko]
+     (*that's* new).   [Ken Coar, Marc Slemko] PR#352
 
   *) Various architectures now define USE_MMAP_FILES which causes
      the server to use mmap() for static files.  There are two
@@ -1882,7 +1882,7 @@ Changes with Apache 1.3a1
 
   *) PORT: Allow for use of n32bit libraries under IRIX 6.x
      [derived from patch from Jeff Hayes <jhayes@aw.sgi.com>]
-     (PR#721)
+     PR#721
 
   *) PORT: Some architectures use size_t for various lengths in network
      functions such as accept(), and getsockname().  The definition
