@@ -53,7 +53,7 @@
 
 SHELL = /bin/sh
 
-INCDIR = ../../core
+INCDIR = ../../main
 
 LIB=libproxy.a
 
