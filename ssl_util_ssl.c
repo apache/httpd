@@ -416,55 +416,61 @@ BOOL SSL_X509_getCN(apr_pool_t *p, X509 *xs, char **cppCN)
 **  _________________________________________________________________
 */
 
-#ifdef SSL_EXPERIMENTAL_PROXY
-
-BOOL SSL_load_CrtAndKeyInfo_file(apr_pool_t *p, STACK_OF(X509_INFO) *sk, char *filename)
+BOOL SSL_X509_INFO_load_file(apr_pool_t *ptemp,
+                             STACK_OF(X509_INFO) *sk,
+                             const char *filename)
 {
     BIO *in;
 
-    if ((in = BIO_new(BIO_s_file())) == NULL)
+    if (!(in = BIO_new(BIO_s_file()))) {
         return FALSE;
+    }
+
     if (BIO_read_filename(in, filename) <= 0) {
         BIO_free(in);
         return FALSE;
     }
+
     ERR_clear_error();
-#if SSL_LIBRARY_VERSION < 0x00904000
-    PEM_X509_INFO_read_bio(in, sk, NULL);
-#else
-    PEM_X509_INFO_read_bio(in, sk, NULL, NULL);
-#endif
+
+    modssl_PEM_X509_INFO_read_bio(in, sk, NULL, NULL);
+
     BIO_free(in);
+
     return TRUE;
 }
 
-BOOL SSL_load_CrtAndKeyInfo_path(apr_pool_t *p, STACK_OF(X509_INFO) *sk, char *pathname)
+BOOL SSL_X509_INFO_load_path(apr_pool_t *ptemp,
+                             STACK_OF(X509_INFO) *sk,
+                             const char *pathname)
 {
-    apr_pool_t *sp;
     apr_dir_t *dir;
     apr_finfo_t dirent;
-    char *fullname;
-    BOOL ok;
+    const char *fullname;
+    BOOL ok = FALSE;
 
-    apr_pool_sub_make(&sp, p, NULL);
-    if (apr_dir_open(&dir, pathname, sp)) != APR_SUCCESS) {
-        apr_pool_destroy(sp);
+    if (apr_dir_open(&dir, pathname, ptemp) != APR_SUCCESS) {
         return FALSE;
     }
-    ok = FALSE;
+
     while ((apr_dir_read(&dirent, APR_FINFO_DIRENT, dir)) == APR_SUCCESS) {
-        fullname = apr_pstrcat(sp, pathname, "/", dirent.name, NULL);
-        if (dirent.filetype != APR_REG)
+        fullname = apr_pstrcat(ptemp,
+                               pathname, "/", dirent.name,
+                               NULL);
+
+        if (dirent.filetype != APR_REG) {
             continue;
-        if (SSL_load_CrtAndKeyInfo_file(sp, sk, fullname))
+        }
+
+        if (SSL_X509_INFO_load_file(ptemp, sk, fullname)) {
             ok = TRUE;
+        }
     }
+
     apr_dir_close(dir);
-    apr_pool_destroy(sp);
+
     return ok;
 }              
-
-#endif /* SSL_EXPERIMENTAL_PROXY */
 
 /*  _________________________________________________________________
 **
