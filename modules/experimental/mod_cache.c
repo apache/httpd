@@ -685,15 +685,12 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     }
     info->lastmod = lastmod;
 
-    /* so we now have the expiry date */
     /* if no expiry date then
      *   if lastmod
      *      expiry date = now + min((date - lastmod) * factor, maxexpire)
      *   else
      *      expire date = now + defaultexpire
      */
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
-                 "cache: Expiry date is %ld", (long)exp);
     if (exp == APR_DATE_BAD) {
         if (lastmod != APR_DATE_BAD) {
             apr_time_t x = (apr_time_t) ((date - lastmod) * conf->factor);
@@ -701,10 +698,9 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
                 x = conf->maxex;
             exp = now + x;
         }
-        else
+        else {
             exp = now + conf->defex;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
-                     "cache: Expiry date calculated %ld", (long)exp);
+        }
     }
     info->expire = exp;
 
