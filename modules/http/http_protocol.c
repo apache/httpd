@@ -1599,7 +1599,7 @@ static char *make_allow(request_rec *r)
 	 * Append all of the elements of r->allowed_xmethods
 	 */
 	for (i = 0; i < r->allowed_xmethods->nelts; ++i) {
-	    list = ap_pstrcat(r->pool, list, ", ", xmethod[i], NULL);
+	    list = apr_pstrcat(r->pool, list, ", ", xmethod[i], NULL);
 	}
     }
     /*
