@@ -107,10 +107,11 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_unique_id.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib /nologo /subsystem:windows /dll /incremental:no\
- /pdb:"$(OUTDIR)\mod_unique_id.pdb" /map:"$(INTDIR)\mod_unique_id.map"\
- /machine:I386 /out:"$(OUTDIR)\mod_unique_id.so"\
- /implib:"$(OUTDIR)\mod_unique_id.lib" /base:@"BaseAddr.ref",mod_unique_id 
+LINK32_FLAGS=kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll\
+ /incremental:no /pdb:"$(OUTDIR)\mod_unique_id.pdb"\
+ /map:"$(INTDIR)\mod_unique_id.map" /machine:I386\
+ /out:"$(OUTDIR)\mod_unique_id.so" /implib:"$(OUTDIR)\mod_unique_id.lib"\
+ /base:@"BaseAddr.ref",mod_unique_id 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_unique_id.obj" \
 	"..\..\Release\ApacheCore.lib"
@@ -199,10 +200,11 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_unique_id.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib /nologo /subsystem:windows /dll /incremental:no\
- /pdb:"$(OUTDIR)\mod_unique_id.pdb" /map:"$(INTDIR)\mod_unique_id.map" /debug\
- /machine:I386 /out:"$(OUTDIR)\mod_unique_id.so"\
- /implib:"$(OUTDIR)\mod_unique_id.lib" /base:@"BaseAddr.ref",mod_unique_id 
+LINK32_FLAGS=kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll\
+ /incremental:no /pdb:"$(OUTDIR)\mod_unique_id.pdb"\
+ /map:"$(INTDIR)\mod_unique_id.map" /debug /machine:I386\
+ /out:"$(OUTDIR)\mod_unique_id.so" /implib:"$(OUTDIR)\mod_unique_id.lib"\
+ /base:@"BaseAddr.ref",mod_unique_id 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_unique_id.obj" \
 	"..\..\Debug\ApacheCore.lib"
