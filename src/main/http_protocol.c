@@ -1491,7 +1491,7 @@ static void fixup_vary(request_rec *r)
 	return;
     }
     ap_table_do((int (*)(void *, const char *, const char *))merge_vary_fields,
-		(void *) r, r->headers_out, "Vary");
+		(void *) r, r->headers_out, "Vary", NULL);
     vary = ap_table_get(r->notes, "Vary-list");
 
     /* XXX: we could make things a lot better, by having r->vary,

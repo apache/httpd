@@ -1,6 +1,18 @@
 Changes with Apache 1.3.8
 
-Changes with Apache 1.3.7
+  *) Change for EBCDIC platforms (TPF and BS2000) to correctly deal
+     with ASCII/EBCDIC conversions in "ident" query.
+     [David McCreedy <McCreedy@us.ibm.com>]
+
+  *) Get rid of redefinition warning on MAC_OS_X_SERVER platform.
+     Change "Power Macintosh" to Power* so if uname prints "Power Book"
+     we're still happy on Rhapsody platforms.  [Wilfredo Sanchez]
+
+  *) Fix SIGSEGV on some systems because the Vary fix below included
+     a call to table_do with a variable argument list that was not
+     NULL terminated.  [Roy Fielding]
+
+Changes with Apache 1.3.7 [not released]
 
   *) The "Vary" response header field is now sanitised right before
      the header is sent back to the client.  Multiple "Vary" fields
