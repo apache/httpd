@@ -1,4 +1,7 @@
 Changes with Apache 2.0.16-dev
+  *) OS/2: Added support for building loadable modules as OS/2 DLLs. 
+     [Brian Havard]
+
   *) Get MaxRequestsPerChild working with the Windows MPM.
      [Bill Stoddard]
 
