@@ -22,10 +22,10 @@ basic controlling functions for them (like accept(), bind(), etc).
 The source for Apache is written in ANSI-C, so an ANSI-C compiler
 is required. However, Apache does not use or require ANSI-only
 functions or options (eg: the "%n" parameter in the scanf()
-family); the source basically uses ANSI funtion prototyping.
-Thus, an ANSI-to-K&R filter _may_ work, although as far as I
-know it has not yet been tried. If you attempt this, let the
-Apache team know (mailto: new-httpd@hyperreal.com).
+family); the source basically uses ANSI function prototyping but
+no other specific ANSIisms. Thus, an ANSI-to-K&R filter _may_
+work, although as far as I know it has not yet been tried. If you
+attempt this, let the Apache team know (mailto: new-httpd@hyperreal.com).
 
 -------------------
 The Starting Point:
@@ -63,6 +63,18 @@ Configure as follows:
 	;;
 
 The '|*-*-hubble' was added to the switch statement for HP-UX.
+
+Another fix may involve editing the GuessOS helper script. Let's
+say, for example, that your system is SysV4-based, but that
+GuessOS does not return that info. You could then add a switch
+to the script that does something like:
+
+	*WeirdSystem*)
+	    echo "${MACHINE}-whatever-sysv4"; exit 0
+	    ;;
+
+In this case, we force GuessOS to return a string that includes
+the "sysv4" cookie for Configure to recognize.
 
 Unfortunately, unless you are running a very generic BSD or SysV
 system, no "supported" OS will be close enough in all aspects to
