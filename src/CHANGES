@@ -291,7 +291,7 @@ Changes with Apache 1.3b4
   *) Minor cleanups to r->finfo handling in some modules.
      [Dean Gaudet]
   
-  *) Abstract read()/write() out of buff.c to the libap library.
+  *) Abstract read()/write() to ap_read()/ap_write().
      Makes it easier to add other types of IO code such as SFIO.
      [Randy Terbush]
 
