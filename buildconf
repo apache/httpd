@@ -86,8 +86,8 @@ touch .deps
 rm -f aclocal.m4
 rm -f generated_lists
 
-# Remove autoconf 2.5x's cache directory
-rm -rf autom4te*.cache
+# Remove autoconf 2.5x cache directories
+rm -rf autom4te*.cache srclib/pcre/autom4te*.cache
 
 case "`uname`" in
 *BSD/OS*)
@@ -147,8 +147,8 @@ echo rebuilding configure
 rm -f config.cache
 ${AUTOCONF:-autoconf} 2>&1 | grep -v "$cross_compile_warning"
 
-# Remove autoconf 2.5x's cache directory
-rm -rf autom4te*.cache
+# Remove autoconf 2.5x cache directories
+rm -rf autom4te*.cache srclib/pcre/autom4te*.cache
 
 if [ -f `which cut` ]; then
   echo rebuilding rpm spec file
