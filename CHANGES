@@ -1,5 +1,12 @@
 Changes with Apache 2.0.44
 
+  *) Improves the user friendliness of the CacheRoot processing
+     over my last pass. This version avoids the pool allocations
+     but doesn't avoid all of the runtime checks. It no longer
+     terminates during post-config processing. An error is logged
+     once per worker, indicating that the CacheRoot needs to be set.
+     [Paul J. Reder]
+
   *) Fix a bug where we keep files open until the end of a 
      keepalive connection, which can result in:
      (24)Too many open files: file permissions deny server access
