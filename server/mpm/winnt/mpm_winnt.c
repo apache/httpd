@@ -77,10 +77,13 @@
 /*
  * Definitions of WINNT MPM specific config globals
  */
+static int workers_may_exit = 0;
+static int shutdown_in_progress = 0;
+static unsigned int g_blocked_threads = 0;
 
 static char *ap_pid_fname = NULL;
 static int ap_threads_per_child = 0;
-static int workers_may_exit = 0;
+
 static int max_requests_per_child = 0;
 static HANDLE shutdown_event;	/* used to signal shutdown to parent */
 static HANDLE restart_event;	/* used to signal a restart to parent */
@@ -601,6 +604,7 @@ typedef struct globals_s {
     joblist *jobtail;
     ap_lock_t *jobmutex;
     int jobcount;
+
 } globals;
 
 globals allowed_globals =
@@ -658,7 +662,7 @@ static int remove_job(void)
     acquire_semaphore(allowed_globals.jobsemaphore);
     ap_lock(allowed_globals.jobmutex);
 
-    if (workers_may_exit && !allowed_globals.jobhead) {
+    if (shutdown_in_progress && !allowed_globals.jobhead) {
         ap_unlock(allowed_globals.jobmutex);
 	return (-1);
     }
@@ -687,7 +691,7 @@ static void accept_and_queue_connections(void * dummy)
     int rc;
     int clen;
 
-    while (!workers_may_exit) {
+    while (!shutdown_in_progress) {
         if (ap_max_requests_per_child && (requests_this_child > ap_max_requests_per_child)) {
             break;
 	}
@@ -711,7 +715,7 @@ static void accept_and_queue_connections(void * dummy)
                          "select failed with errno %d", h_errno);
             count_select_errors++;
             if (count_select_errors > MAX_SELECT_ERRORS) {
-                workers_may_exit = 1;
+                shutdown_in_progress = 1;
                 ap_log_error(APLOG_MARK, APLOG_ERR, h_errno, server_conf,
                              "Too many errors in select loop. Child process exiting.");
                 break;
@@ -810,23 +814,24 @@ static void drain_acceptex_complport(HANDLE hComplPort, BOOLEAN bCleanUp)
     int rc;
     DWORD BytesRead;
     DWORD CompKey;
-    int lastError;
 
     while (1) {
         context = NULL;
         rc = GetQueuedCompletionStatus(hComplPort, &BytesRead, &CompKey,
                                        &pol, 1000);
         if (!rc) {
-            lastError = GetLastError();
-            if (lastError == ERROR_OPERATION_ABORTED) {
-                ap_log_error(APLOG_MARK,APLOG_INFO,lastError, server_conf,
-                             "Child %d: - Draining a packet off the completion port.", my_pid);
+            rc = GetLastError();
+            if (rc == ERROR_OPERATION_ABORTED) {
+                ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
+                             "Child %d: - Draining an ABORTED packet off "
+                             "the AcceptEx completion port.", my_pid);
                 continue;
             }
             break;
         }
-        ap_log_error(APLOG_MARK,APLOG_INFO,APR_SUCCESS, server_conf,
-                     "Child %d: - Nuking an active connection. context = %x", my_pid, context);
+        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
+                     "Child %d: - Draining and discarding an active connection "
+                     "off the AcceptEx completion port.", my_pid);
         context = (PCOMP_CONTEXT) pol;
         if (context && bCleanUp) {
             /* It is only valid to clean-up in the process that initiated the I/O */
@@ -907,7 +912,7 @@ static ap_inline ap_status_t reset_acceptex_context(PCOMP_CONTEXT context)
 {
     DWORD BytesRead;
     SOCKET nsd;
-    int lasterror;
+    int rc;
 
     context->lr->count++;
 
@@ -916,10 +921,10 @@ static ap_inline ap_status_t reset_acceptex_context(PCOMP_CONTEXT context)
     if (context->accept_socket == INVALID_SOCKET) {
         context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
         if (context->accept_socket == INVALID_SOCKET) {
-            lasterror = WSAGetLastError();
-            ap_log_error(APLOG_MARK,APLOG_ERR, lasterror, server_conf,
+            rc = WSAGetLastError();
+            ap_log_error(APLOG_MARK,APLOG_ERR, rc, server_conf,
                          "reset_acceptex_context: socket() failed. Process will exit.");
-            return lasterror;
+            return rc;
         }
         
         /* SO_UPDATE_ACCEPT_CONTEXT is required for shutdown() to work */
@@ -945,13 +950,13 @@ static ap_inline ap_status_t reset_acceptex_context(PCOMP_CONTEXT context)
     if (!AcceptEx(nsd, context->accept_socket, context->recv_buf, 0,
                   PADDED_ADDR_SIZE, PADDED_ADDR_SIZE, &BytesRead, 
                   (LPOVERLAPPED) context)) {
-        lasterror = WSAGetLastError();
-        if (lasterror != ERROR_IO_PENDING) {
-            ap_log_error(APLOG_MARK, APLOG_INFO, lasterror, server_conf,
+        rc = WSAGetLastError();
+        if (rc != ERROR_IO_PENDING) {
+            ap_log_error(APLOG_MARK, APLOG_INFO, rc, server_conf,
                          "reset_acceptex_context: AcceptEx failed for "
                          "listening socket: %d and accept socket: %d", 
                          nsd, context->accept_socket);
-            return lasterror;
+            return rc;
         }
     }
 
@@ -965,58 +970,78 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
     DWORD CompKey;
     DWORD BytesRead;
 
-    if (workers_may_exit) {
-        /* Child shutdown has been signaled */
-        if (context != NULL)
-            CloseHandle(context->Overlapped.hEvent);
-    }
 
-    if (!workers_may_exit && (context != NULL)) {
-        /* Prepare the completion context for reuse */
-        if (reset_acceptex_context(context) != APR_SUCCESS) {
-            /* Retry once, this time requesting a new socket */
-            if (context->accept_socket != INVALID_SOCKET) {
+    if (context != NULL) {
+        if (shutdown_in_progress) {
+            /* Clean-up the AcceptEx completion context */
+            CloseHandle(context->Overlapped.hEvent);
+            if (context->accept_socket != INVALID_SOCKET)
                 closesocket(context->accept_socket);
-                context->accept_socket = INVALID_SOCKET;
-            }
-            if (reset_acceptex_context(context) != APR_SUCCESS) {
-                /* Failed again, so give up, but leave the thread up 
-                 * Should we signal a shutdown now? 
-                 */
-                if (context->accept_socket != INVALID_SOCKET)
+        }
+        else {
+            /* Prepare the completion context for reuse */
+            if ((rc = reset_acceptex_context(context)) != APR_SUCCESS) {
+                /* Retry once, this time requesting a new socket */
+                if (context->accept_socket != INVALID_SOCKET) {
                     closesocket(context->accept_socket);
-                CloseHandle(context->Overlapped.hEvent);
+                    context->accept_socket = INVALID_SOCKET;
+                }
+                if ((rc = reset_acceptex_context(context)) != APR_SUCCESS) {
+                    /* Failed again, so give up, but leave the thread up 
+                     * Should we signal a shutdown now? 
+                     */
+                    ap_log_error(APLOG_MARK, APLOG_ERR, rc, server_conf,
+                                 "Child %d: winnt_get_connection: reset_acceptex_context failed.",
+                                 my_pid); 
+                    if (context->accept_socket != INVALID_SOCKET)
+                        closesocket(context->accept_socket);
+                    CloseHandle(context->Overlapped.hEvent);
+                }
             }
         }
     }
 
+    /* May need to atomize the workers_may_exit check with the 
+     * g_blocked_threads++ */
+    if (workers_may_exit) {
+        return NULL;
+    }
+    g_blocked_threads++;
+        
     while (1) {
-        rc = GetQueuedCompletionStatus(AcceptExCompPort,
-                                       &BytesRead,
-                                       &CompKey,
-                                       &pol,
-                                       INFINITE);
-
+        rc = GetQueuedCompletionStatus(AcceptExCompPort, &BytesRead, &CompKey,
+                                       &pol, INFINITE);
         if (!rc) {
-            /* During a restart, the new child process can catch 
-             * ERROR_OPERATION_ABORTED completion packets
-             * posted by the old child process. Just continue...
-             */
-            ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
-                         "Child %d: - GetQueuedCompletionStatus() failed", my_pid);
+            rc = GetLastError();
+            if (rc != ERROR_OPERATION_ABORTED) {
+                /* Is this a deadly condition? Hummm... */
+                ap_log_error(APLOG_MARK,APLOG_ERR, rc, server_conf,
+                             "Child %d: - GetQueuedCompletionStatus() failed", 
+                             my_pid);
+            }
+            else {
+                /* Sometimes we catch ERROR_OPERATION_ABORTED completion packets
+                 * from the old child process (during a restart). Ignore them.
+                 */
+                ap_log_error(APLOG_MARK,APLOG_INFO, rc, server_conf,
+                             "Child %d: - Draining ERROR_OPERATION_ABORTED packet off "
+                             "the completion port.", my_pid);
+
+            }
             continue;
         }
 
-        /* Check the Completion Key.
-         * == my_pid indicate this process wants to exit
-         * == 0 implies valid i/o completion
-         * != 0 implies a posted completion packet by an old
-         *     process. Just ignore it.
-         */
-        if (CompKey == my_pid) {
-            return NULL;
-        }
         if (CompKey != 0) {
+            /* CompKey == my_pid means this thread was unblocked by
+             * the shutdown code (not by io completion).
+             */
+            if (CompKey == my_pid) {
+                g_blocked_threads--;
+                return NULL;
+            }
+            /* Sometimes we catch shutdown io completion packets
+             * posted by the old child process (during a restart). Ignore them.
+             */
             continue;
         }
 
@@ -1024,10 +1049,12 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
         break;
     }
 
+    g_blocked_threads--;
+
     /* Check to see if we need to create more completion contexts,
      * but only if we are not in the process of shutting down
      */
-    if (!workers_may_exit) {
+    if (!shutdown_in_progress) {
         ap_lock(allowed_globals.jobmutex);
         context->lr->count--;
         if (context->lr->count < 2) {
@@ -1271,26 +1298,26 @@ static void child_main()
      *    To do periodic maintenance on the server (check for thread exits,
      *    number of completion contexts, etc.)
      */
-    while (!workers_may_exit) {
+    while (1) {
         rv = WaitForMultipleObjects(2, (HANDLE *) child_events, FALSE, INFINITE);
         cld = rv - WAIT_OBJECT_0;
         if (rv == WAIT_FAILED) {
             /* Something serious is wrong */
-            workers_may_exit = 1;
             ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
                          "Child %d: WAIT_FAILED -- shutting down server");
+            break;
         }
         else if (rv == WAIT_TIMEOUT) {
             /* Hey, this cannot happen */
-            workers_may_exit = 1;
             ap_log_error(APLOG_MARK, APLOG_CRIT, APR_SUCCESS, server_conf,
                          "Child %d: WAIT_TIMEOUT -- shutting down server", my_pid);
+            break;
         }
         else if (cld == 0) {
             /* Exit event was signaled */
-            workers_may_exit = 1;
             ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
                          "Child %d: Exit event signaled. Child process is ending.", my_pid);
+            break;
         }
         else {
             /* Child maintenance event signaled */
@@ -1308,6 +1335,8 @@ static void child_main()
 
     /* Shutdown the worker threads */
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
+        /* workers_may_exit = 1; Not used on Win9x */
+        shutdown_in_progress = 1;
         for (i = 0; i < nthreads; i++) {
             add_job(-1);
         }
@@ -1316,41 +1345,40 @@ static void child_main()
         SOCKET nsd;
         ap_listen_rec *lr;
         /*
-         * First thing to do is to drain all the completion contexts off the
-         * AcceptEx iocp. Give a busy server the chance to drain 
-         * the port by servicing connections (workers_may_exit prevents new 
-         * AcceptEx completion contexts from being queued to the port).
+         * Setting shutdown_in_progress prevents new AcceptEx completion 
+         * contexts from being queued to the port but allows threads to 
+         * continue consuming from the port. This gives the server a 
+         * chance to handle any accepted connections.
          */
+        shutdown_in_progress = 1;
         Sleep(1000);
-
-        /* Cancel any remaining pending async i/o.
-         * This will cause io completion packets to be queued to the
-         * port for any remaining active contexts
+        
+        /* Setting workers_may_exit prevents threads from consumimg from the 
+         * completion port (especially threads that unblock off of keep-alive
+         * connections later on).
          */
+        workers_may_exit = 1;
+
+        /* Unblock threads blocked on the completion port */
+        ap_lock(allowed_globals.jobmutex);
+        while (g_blocked_threads > 0) {
+            ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
+                         "Child %d: %d threads blocked on the completion port", my_pid, g_blocked_threads);
+            for (i=g_blocked_threads; i > 0; i--) {
+                PostQueuedCompletionStatus(AcceptExCompPort, 0, my_pid, NULL);
+            }
+            Sleep(1000);
+        }
+        ap_unlock(allowed_globals.jobmutex);
+
+        /* Cancel any remaining pending AcceptEx completion contexts */
         for (lr = ap_listeners; lr != NULL; lr = lr->next) {
             ap_get_os_sock(&nsd,lr->sd);
             CancelIo((HANDLE) nsd);
         }
 
         /* Drain the canceled contexts off the port */
-        drain_acceptex_complport(AcceptExCompPort, FALSE);
-
-        /* Hopefully by now, all the completion contexts should be drained 
-         * off the port. There could still be some cancel io completion packets
-         * flying around in the kernel... We will cover this possibility later..
-         * 
-         * Consider using HasOverlappedIoCompleted()...
-         *
-         * Next task is to unblock all the threads blocked on 
-         * GetQueuedCompletionStatus()
-         *
-         */
-        for (i=0; i < nthreads*2; i++) {
-            PostQueuedCompletionStatus(AcceptExCompPort, 0, my_pid, NULL);
-        }
-
-        /* Give the worker threads time to realize they've been posted */
-        Sleep(1000);
+        drain_acceptex_complport(AcceptExCompPort, TRUE);
     }
 
     /* Release the start_mutex to let the new process (in the restart
