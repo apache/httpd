@@ -1,4 +1,3 @@
-
 Changes with Apache 1.3a2
 
   *) mod_browser has been removed, since it's replaced by mod_setenvif.
