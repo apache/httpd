@@ -105,6 +105,10 @@ SOURCE=.\main\buff.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\buildmark.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\main\explain.c
 # End Source File
 # Begin Source File

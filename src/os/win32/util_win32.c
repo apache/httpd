@@ -52,7 +52,10 @@ static void sub_canonical_filename(char *szCanon,const char *szFile)
     if(h == INVALID_HANDLE_VALUE)
 	strcat(szCanon,szFilePart);
     else
+    {
+	strlwr(d.cFileName);
 	strcat(szCanon,d.cFileName);
+    }
 }
 
 API_EXPORT(char *) os_canonical_filename(pool *pPool,const char *szFile)
@@ -60,7 +63,6 @@ API_EXPORT(char *) os_canonical_filename(pool *pPool,const char *szFile)
     char buf[_MAX_PATH];
 
     sub_canonical_filename(buf,szFile);
-    strlwr(buf);
     return pstrdup(pPool,buf);
 }
 
