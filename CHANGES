@@ -382,6 +382,9 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.50
 
+  *) util_ldap: allow relative paths for LDAPTrustedCA to be resolved
+     against ServerRoot PR#26602 [Brad Nicholes]
+       
   *) SECURITY: CAN-2004-0488 (cve.mitre.org)
      mod_ssl: Fix a buffer overflow in the FakeBasicAuth code for a
      (trusted) client certificate subject DN which exceeds 6K in length.
