@@ -15,9 +15,6 @@ Changes with Apache 2.1.0-dev
   *) Change the ulimit command used by apachectl on AIX so that it
      works in all locales.  [Jeff Trawick]
 
-  *) mod_ext_filter: Fix a problem building argument lists which 
-     occasionally caused exec to fail.  PR 15491.  [Jeff Trawick]
-
   *) Add mod_dav_lock - a generic subset of the DAV locking implementation.
      [Justin Erenkrantz]
 
@@ -74,6 +71,11 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.45
 
+  *) mod_ext_filter: Fix a problem building argument lists which 
+     occasionally caused exec to fail.  PR 15491.  [Jeff Trawick]
+
+Changes with Apache 2.0.44
+
   *) mod_autoindex: Bring forward the IndexOptions IgnoreCase option
      from Apache 1.3.  PR 14276
      [David Shane Holden <dpejesh@yahoo.com>, William Rowe]
@@ -90,8 +92,6 @@ Changes with Apache 2.0.45
   *) Fix the building of cgi command lines when the query string
      contains '='.  PR 13914  [Ville Skyttä <ville.skytta@iki.fi>,
      Jeff Trawick]
-
-Changes with Apache 2.0.44
 
   *) Rename CacheMaxStreamingBuffer to MCacheMaxStreamingBuffer. Move
      implementation of MCacheMaxStreamingBuffer from mod_cache to
