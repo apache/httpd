@@ -51,7 +51,7 @@
  */
 
 /*
- * http_dir.c: Handles the on-the-fly html index generation
+ * mod_autoindex.c: Handles the on-the-fly html index generation
  * 
  * Rob McCool
  * 3/23/93
@@ -72,7 +72,7 @@
 #include "nt/readdir.h"
 #endif
 
-module dir_module;
+module autoindex_module;
 
 /****************************************************************
  *
@@ -99,17 +99,16 @@ struct item {
     char *data;
 };
 
-typedef struct dir_config_struct {
+typedef struct autoindex_config_struct {
 
     char *default_icon;
-    char *index_names;
     int icon_width;
     int icon_height;
   
     array_header *icon_list, *alt_list, *desc_list, *ign_list;
     array_header *hdr_list, *rdme_list, *opts_list;
   
-} dir_config_rec;
+} autoindex_config_rec;
 
 char c_by_encoding, c_by_type, c_by_path;
 
@@ -117,7 +116,8 @@ char c_by_encoding, c_by_type, c_by_path;
 #define BY_TYPE &c_by_type
 #define BY_PATH &c_by_path
 
-void push_item(array_header *arr, char *type, char *to, char *path, char *data)
+static void push_item(array_header *arr, char *type, char *to, char *path,
+    char *data)
 {
     struct item *p = (struct item *)push_array(arr);
 
@@ -136,17 +136,17 @@ void push_item(array_header *arr, char *type, char *to, char *path, char *data)
         p->apply_to = NULL;
 }
 
-const char *add_alt(cmd_parms *cmd, void *d, char *alt, char *to)
+static const char *add_alt(cmd_parms *cmd, void *d, char *alt, char *to)
 {
     if (cmd->info == BY_PATH)
         if(!strcmp(to,"**DIRECTORY**"))
             to = "^^DIRECTORY^^";
 
-    push_item(((dir_config_rec *)d)->alt_list, cmd->info, to, cmd->path, alt);
+    push_item(((autoindex_config_rec *)d)->alt_list, cmd->info, to, cmd->path, alt);
     return NULL;
 }
 
-const char *add_icon(cmd_parms *cmd, void *d, char *icon, char *to)
+static const char *add_icon(cmd_parms *cmd, void *d, char *icon, char *to)
 {
     char *iconbak = pstrdup (cmd->pool, icon);
 
@@ -159,54 +159,54 @@ const char *add_icon(cmd_parms *cmd, void *d, char *icon, char *to)
         if(!strcmp(to,"**DIRECTORY**"))
             to = "^^DIRECTORY^^";
 
-    push_item(((dir_config_rec *)d)->icon_list, cmd->info, to, cmd->path,
+    push_item(((autoindex_config_rec *)d)->icon_list, cmd->info, to, cmd->path,
 	      iconbak);
     return NULL;
 }
 
-const char *add_desc(cmd_parms *cmd, void *d, char *desc, char *to)
+static const char *add_desc(cmd_parms *cmd, void *d, char *desc, char *to)
 {
-    push_item(((dir_config_rec *)d)->desc_list, cmd->info, to, cmd->path,desc);
+    push_item(((autoindex_config_rec *)d)->desc_list, cmd->info, to, cmd->path,desc);
     return NULL;
 }
 
-const char *add_ignore(cmd_parms *cmd, void *d, char *ext) {
-    push_item(((dir_config_rec *)d)->ign_list, 0, ext, cmd->path, NULL);
+static const char *add_ignore(cmd_parms *cmd, void *d, char *ext) {
+    push_item(((autoindex_config_rec *)d)->ign_list, 0, ext, cmd->path, NULL);
     return NULL;
 }
 
-const char *add_header(cmd_parms *cmd, void *d, char *name) {
+static const char *add_header(cmd_parms *cmd, void *d, char *name) {
     if (strchr (name, '/')) {
 	return "HeaderName cannot contain a /";
     }
-    push_item(((dir_config_rec *)d)->hdr_list, 0, NULL, cmd->path, name);
+    push_item(((autoindex_config_rec *)d)->hdr_list, 0, NULL, cmd->path, name);
     return NULL;
 }
 
-const char *add_readme(cmd_parms *cmd, void *d, char *name) {
+static const char *add_readme(cmd_parms *cmd, void *d, char *name) {
     if (strchr (name, '/')) {
 	return "ReadmeName cannot contain a /";
     }
-    push_item(((dir_config_rec *)d)->rdme_list, 0, NULL, cmd->path, name);
+    push_item(((autoindex_config_rec *)d)->rdme_list, 0, NULL, cmd->path, name);
     return NULL;
 }
 
 
-const char *add_opts_int(cmd_parms *cmd, void *d, int opts) {
-    push_item(((dir_config_rec *)d)->opts_list, (char*)opts, NULL,
+static const char *add_opts_int(cmd_parms *cmd, void *d, int opts) {
+    push_item(((autoindex_config_rec *)d)->opts_list, (char*)opts, NULL,
 	      cmd->path, NULL);
     return NULL;
 }
 
-const char *fancy_indexing (cmd_parms *cmd, void *d, int arg)
+static const char *fancy_indexing (cmd_parms *cmd, void *d, int arg)
 {
     return add_opts_int (cmd, d, arg? FANCY_INDEXING : 0);
 }
 
-const char *add_opts(cmd_parms *cmd, void *d, const char *optstr) {
+static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr) {
     char *w;
     int opts = 0;
-    dir_config_rec *d_cfg = (dir_config_rec *) d;
+    autoindex_config_rec *d_cfg = (autoindex_config_rec *) d;
 
     while(optstr[0]) {
         w = getword_conf(cmd->pool, &optstr);
@@ -256,7 +256,7 @@ const char *add_opts(cmd_parms *cmd, void *d, const char *optstr) {
 
 #define DIR_CMD_PERMS OR_INDEXES
 
-command_rec dir_cmds[] = {
+static command_rec autoindex_cmds[] = {
 { "AddIcon", add_icon, BY_PATH, DIR_CMD_PERMS, ITERATE2,
     "an icon URL followed by one or more filenames" },
 { "AddIconByType", add_icon, BY_TYPE, DIR_CMD_PERMS, ITERATE2,
@@ -280,21 +280,16 @@ command_rec dir_cmds[] = {
 { "FancyIndexing", fancy_indexing, NULL, DIR_CMD_PERMS, FLAG,
     "Limited to 'on' or 'off' (superseded by IndexOptions FancyIndexing)" },
 { "DefaultIcon", set_string_slot,
-    (void*)XtOffsetOf(dir_config_rec, default_icon),
+    (void*)XtOffsetOf(autoindex_config_rec, default_icon),
     DIR_CMD_PERMS, TAKE1, "an icon URL"},
-{ "DirectoryIndex", set_string_slot,
-    (void*)XtOffsetOf(dir_config_rec, index_names),
-    DIR_CMD_PERMS, RAW_ARGS,
-    "a list of file names" },
 { NULL }
 };
 
-void *create_dir_config (pool *p, char *dummy)
+static void *create_autoindex_config (pool *p, char *dummy)
 {
-    dir_config_rec *new =
-        (dir_config_rec *) pcalloc (p, sizeof(dir_config_rec));
+    autoindex_config_rec *new =
+        (autoindex_config_rec *) pcalloc (p, sizeof(autoindex_config_rec));
 
-    new->index_names = NULL;
     new->icon_width = 0;
     new->icon_height = 0;
     new->icon_list = make_array (p, 4, sizeof (struct item));
@@ -308,14 +303,13 @@ void *create_dir_config (pool *p, char *dummy)
     return (void *)new;
 }
 
-void *merge_dir_configs (pool *p, void *basev, void *addv)
+static void *merge_autoindex_configs (pool *p, void *basev, void *addv)
 {
-    dir_config_rec *new=(dir_config_rec*)pcalloc (p, sizeof(dir_config_rec));
-    dir_config_rec *base = (dir_config_rec *)basev;
-    dir_config_rec *add = (dir_config_rec *)addv;
+    autoindex_config_rec *new=(autoindex_config_rec*)pcalloc (p, sizeof(autoindex_config_rec));
+    autoindex_config_rec *base = (autoindex_config_rec *)basev;
+    autoindex_config_rec *add = (autoindex_config_rec *)addv;
 
     new->default_icon = add->default_icon?add->default_icon:base->default_icon;
-    new->index_names = add->index_names? add->index_names: base->index_names;
     new->icon_height = add->icon_height ? add->icon_height : base->icon_height;
     new->icon_width = add->icon_width ? add->icon_width : base->icon_width;
 
@@ -347,7 +341,7 @@ struct ent {
     struct ent *next;
 };
 
-char *find_item(request_rec *r, array_header *list, int path_only) {
+static char *find_item(request_rec *r, array_header *list, int path_only) {
     char *content_type = r->content_type;
     char *content_encoding = r->content_encoding;
     char *path = r->filename;
@@ -389,7 +383,7 @@ char *find_item(request_rec *r, array_header *list, int path_only) {
 #define find_header(d,p) find_item(p,d->hdr_list,0)
 #define find_readme(d,p) find_item(p,d->rdme_list,0)
 
-char *find_default_icon (dir_config_rec *d, char *bogus_name)
+static char *find_default_icon (autoindex_config_rec *d, char *bogus_name)
 {
     request_rec r;
 
@@ -404,7 +398,7 @@ char *find_default_icon (dir_config_rec *d, char *bogus_name)
     return find_item (&r, d->icon_list, 1);
 }
 
-int ignore_entry(dir_config_rec *d, char *path) {
+static int ignore_entry(autoindex_config_rec *d, char *path) {
     array_header *list = d->ign_list;
     struct item *items = (struct item *)list->elts;
     char *tt;
@@ -431,7 +425,7 @@ int ignore_entry(dir_config_rec *d, char *path) {
     return 0;
 }
 
-int find_opts(dir_config_rec *d, request_rec *r) {
+static int find_opts(autoindex_config_rec *d, request_rec *r) {
     char *path = r->filename;
     array_header *list = d->opts_list;
     struct item *items = (struct item *)list->elts;
@@ -452,7 +446,9 @@ int find_opts(dir_config_rec *d, request_rec *r) {
  */
 
 
-int insert_readme(char *name, char *readme_fname, int rule, request_rec *r) {
+static int insert_readme(char *name, char *readme_fname, int rule,
+    request_rec *r)
+{
     char *fn;
     FILE *f;
     struct stat finfo;
@@ -516,7 +512,7 @@ int insert_readme(char *name, char *readme_fname, int rule, request_rec *r) {
 }
 
 
-char *find_title(request_rec *r) {
+static char *find_title(request_rec *r) {
     char titlebuf[MAX_STRING_LEN], *find = "<TITLE>";
     FILE *thefile = NULL;
     int x,y,n,p;
@@ -548,8 +544,8 @@ char *find_title(request_rec *r) {
     return NULL;
 }
 
-struct ent *make_dir_entry(char *name, int dir_opts,
-			   dir_config_rec *d, request_rec *r)
+static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
+			   autoindex_config_rec *d, request_rec *r)
 {
     struct ent *p;
 
@@ -567,7 +563,7 @@ struct ent *make_dir_entry(char *name, int dir_opts,
     p->desc = NULL;
     p->lm = -1;
 
-    if(dir_opts & FANCY_INDEXING) {
+    if(autoindex_opts & FANCY_INDEXING) {
         request_rec *rr = sub_req_lookup_file (name, r);
 	
 	if (rr->finfo.st_mode != 0) {
@@ -589,7 +585,7 @@ struct ent *make_dir_entry(char *name, int dir_opts,
 	
         p->desc = find_desc(d, rr);
 	
-        if((!p->desc) && (dir_opts & SCAN_HTML_TITLES))
+        if((!p->desc) && (autoindex_opts & SCAN_HTML_TITLES))
             p->desc = pstrdup (r->pool, find_title(rr));
 
 	destroy_sub_req (rr);
@@ -597,12 +593,14 @@ struct ent *make_dir_entry(char *name, int dir_opts,
     return(p);
 }
 
-char *terminate_description(dir_config_rec *d, char *desc, int dir_opts) {
+static char *terminate_description(autoindex_config_rec *d, char *desc,
+    int autoindex_opts)
+{
     int maxsize = 23;
     register int x;
     
-    if(dir_opts & SUPPRESS_LAST_MOD) maxsize += 17;
-    if(dir_opts & SUPPRESS_SIZE) maxsize += 7;
+    if(autoindex_opts & SUPPRESS_LAST_MOD) maxsize += 17;
+    if(autoindex_opts & SUPPRESS_SIZE) maxsize += 7;
 
     for(x=0;desc[x] && maxsize;x++) {
         if(desc[x] == '<') {
@@ -623,8 +621,8 @@ char *terminate_description(dir_config_rec *d, char *desc, int dir_opts) {
     return desc;
 }
 
-void output_directories(struct ent **ar, int n,
-			dir_config_rec *d, request_rec *r, int dir_opts)
+static void output_directories(struct ent **ar, int n,
+    autoindex_config_rec *d, request_rec *r, int autoindex_opts)
 {
     int x, len;
     char *name = r->uri;
@@ -633,7 +631,7 @@ void output_directories(struct ent **ar, int n,
     
     if(name[0] == '\0') name = "/";
 
-    if(dir_opts & FANCY_INDEXING) {
+    if(autoindex_opts & FANCY_INDEXING) {
         rputs("<PRE>", r);
         if((tp = find_default_icon(d,"^^BLANKICON^^"))) {
             rvputs(r, "<IMG SRC=\"", escape_html(scratch, tp),
@@ -650,11 +648,11 @@ void output_directories(struct ent **ar, int n,
 	    rputs ("> ", r);
 	}
         rputs("Name                   ", r);
-        if(!(dir_opts & SUPPRESS_LAST_MOD))
+        if(!(autoindex_opts & SUPPRESS_LAST_MOD))
             rputs("Last modified     ", r);
-        if(!(dir_opts & SUPPRESS_SIZE))
+        if(!(autoindex_opts & SUPPRESS_SIZE))
             rputs("Size  ", r);
-        if(!(dir_opts & SUPPRESS_DESC))
+        if(!(autoindex_opts & SUPPRESS_DESC))
             rputs("Description", r);
         rputs("\n<HR>\n", r);
     }
@@ -698,8 +696,8 @@ void output_directories(struct ent **ar, int n,
 			      "\">", NULL);
         }
 
-        if(dir_opts & FANCY_INDEXING) {
-            if(dir_opts & ICONS_ARE_LINKS)
+        if(autoindex_opts & FANCY_INDEXING) {
+            if(autoindex_opts & ICONS_ARE_LINKS)
                 rputs(anchor, r);
             if((ar[x]->icon) || d->default_icon) {
                 rvputs(r, "<IMG SRC=\"", 
@@ -718,11 +716,11 @@ void output_directories(struct ent **ar, int n,
 		}
 		rputs (">", r);
 	    }
-            if(dir_opts & ICONS_ARE_LINKS) 
+            if(autoindex_opts & ICONS_ARE_LINKS) 
                 rputs("</A>", r);
 
             rvputs(r," ", anchor, t2, NULL);
-            if(!(dir_opts & SUPPRESS_LAST_MOD)) {
+            if(!(autoindex_opts & SUPPRESS_LAST_MOD)) {
                 if(ar[x]->lm != -1) {
 		    char time[MAX_STRING_LEN];
                     struct tm *ts = localtime(&ar[x]->lm);
@@ -733,13 +731,13 @@ void output_directories(struct ent **ar, int n,
                     rputs("                 ", r);
                 }
             }
-            if(!(dir_opts & SUPPRESS_SIZE)) {
+            if(!(autoindex_opts & SUPPRESS_SIZE)) {
                 send_size(ar[x]->size,r);
                 rputs("  ", r);
             }
-            if(!(dir_opts & SUPPRESS_DESC)) {
+            if(!(autoindex_opts & SUPPRESS_DESC)) {
                 if(ar[x]->desc) {
-                    rputs(terminate_description(d, ar[x]->desc, dir_opts), r);
+                    rputs(terminate_description(d, ar[x]->desc, autoindex_opts), r);
                 }
             }
         }
@@ -747,7 +745,7 @@ void output_directories(struct ent **ar, int n,
             rvputs(r, "<LI> ", anchor," ", t2, NULL);
         rputc('\n', r);
     }
-    if(dir_opts & FANCY_INDEXING) {
+    if(autoindex_opts & FANCY_INDEXING) {
         rputs("</PRE>", r);
     }
     else {
@@ -756,13 +754,13 @@ void output_directories(struct ent **ar, int n,
 }
 
 
-int dsortf(struct ent **s1,struct ent **s2)
+static int dsortf(struct ent **s1,struct ent **s2)
 {
     return(strcmp((*s1)->name,(*s2)->name));
 }
 
     
-int index_directory(request_rec *r, dir_config_rec *dir_conf)
+static int index_directory(request_rec *r, autoindex_config_rec *autoindex_conf)
 {
     char *title_name = escape_html(r->pool, r->uri);
     char *title_endp;
@@ -774,7 +772,7 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
     struct ent *head,*p;
     struct ent **ar = NULL;
     char *tmp;
-    int dir_opts = find_opts(dir_conf, r);
+    int autoindex_opts = find_opts(autoindex_conf, r);
 
     if(!(d=popendir(r->pool, name))) {
         log_reason ("Can't open directory for index", r->filename, r);
@@ -807,7 +805,7 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
 	    NULL
 	);
 
-    if((!(tmp = find_header(dir_conf,r))) || (!(insert_readme(name,tmp,0,r))))
+    if((!(tmp = find_header(autoindex_conf,r))) || (!(insert_readme(name,tmp,0,r))))
         rvputs(r, "<H1>Index of ", title_name, "</H1>\n", NULL);
 
     /* 
@@ -816,7 +814,7 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
      */
     head=NULL;
     while((dstruct=readdir(d))) {
-        if((p = make_dir_entry(dstruct->d_name, dir_opts, dir_conf, r))) {
+        if((p = make_autoindex_entry(dstruct->d_name, autoindex_opts, autoindex_conf, r))) {
             p->next=head;
             head=p;
             num_ent++;
@@ -838,11 +836,11 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
 	      (int (*)(const void *,const void *))dsortf);
 #endif
     }
-    output_directories(ar, num_ent, dir_conf, r, dir_opts);
+    output_directories(ar, num_ent, autoindex_conf, r, autoindex_opts);
     pclosedir(r->pool, d);
 
-    if (dir_opts & FANCY_INDEXING)
-        if((tmp = find_readme(dir_conf, r)))
+    if (autoindex_opts & FANCY_INDEXING)
+        if((tmp = find_readme(autoindex_conf, r)))
             insert_readme(name,tmp,1,r);
     else {
         rputs("</UL>", r);
@@ -856,85 +854,12 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
 
 /* The formal handler... */
 
-int handle_dir (request_rec *r)
+static int handle_autoindex (request_rec *r)
 {
-    dir_config_rec *d =
-      (dir_config_rec *)get_module_config (r->per_dir_config, &dir_module);
-    const char *names_ptr = d->index_names ? d->index_names : DEFAULT_INDEX;
+    autoindex_config_rec *d =
+      (autoindex_config_rec *)get_module_config (r->per_dir_config,
+      &autoindex_module);
     int allow_opts = allow_options (r);
-    int error_notfound = 0;
-
-    if (r->uri[0] == '\0' || r->uri[strlen(r->uri)-1] != '/') {
-	char* ifile;
-	if (r->args != NULL)
-        	ifile = pstrcat (r->pool, escape_uri(r->pool, r->uri),
-			"/", "?", r->args, NULL);
-	else
-        	ifile = pstrcat (r->pool, escape_uri(r->pool, r->uri),
-			 "/", NULL);
-
-	table_set (r->headers_out, "Location",
-		   construct_url(r->pool, ifile, r->server)); 
-	return HTTP_MOVED_PERMANENTLY;
-    }
-
-    /* KLUDGE --- make the sub_req lookups happen in the right directory.
-     * Fixing this in the sub_req_lookup functions themselves is difficult,
-     * and would probably break virtual includes...
-     */
-
-    r->filename = pstrcat (r->pool, r->filename, "/", NULL);
-    
-    while (*names_ptr) {
-          
-	char *name_ptr = getword_conf (r->pool, &names_ptr);
-	request_rec *rr = sub_req_lookup_uri (name_ptr, r);
-           
-	if (rr->status == HTTP_OK && rr->finfo.st_mode != 0) {
-	    char* new_uri = escape_uri(r->pool, rr->uri);
-
-	    if (rr->args != NULL)
-		new_uri = pstrcat(r->pool, new_uri, "?", rr->args, NULL);
-	    else if (r->args != NULL)
-		new_uri = pstrcat(r->pool, new_uri, "?", r->args, NULL);
-	
-	    destroy_sub_req (rr);
-	    internal_redirect (new_uri, r);
-	    return OK;
-	}
-
-	/* If the request returned a redirect, propagate it to the client */
-
-	if (is_HTTP_REDIRECT(rr->status) ||
-	    (rr->status == HTTP_NOT_ACCEPTABLE && *names_ptr == '\0')) {
-
-	    error_notfound = rr->status;
-	    r->notes = overlay_tables(r->pool, r->notes, rr->notes);
-	    r->headers_out = overlay_tables(r->pool, r->headers_out,
-	                                            rr->headers_out);
-	    r->err_headers_out = overlay_tables(r->pool, r->err_headers_out,
-	                                                rr->err_headers_out);
-	    destroy_sub_req(rr);
-	    return error_notfound;
-	}
-            
-	/* If the request returned something other than 404 (or 200),
-	 * it means the module encountered some sort of problem. To be
-	 * secure, we should return the error, rather than create
-	 * along a (possibly unsafe) directory index.
-	 *
-	 * So we store the error, and if none of the listed files
-	 * exist, we return the last error response we got, instead
-	 * of a directory listing.
-	 */
-	if (rr->status && rr->status != HTTP_NOT_FOUND && rr->status != HTTP_OK)
-	    error_notfound = rr->status;
-
-        destroy_sub_req (rr);
-    }
-
-    if (error_notfound)
-	return error_notfound;
 
     if (r->method_number != M_GET) return NOT_IMPLEMENTED;
     
@@ -949,20 +874,20 @@ int handle_dir (request_rec *r)
 }
 
 
-handler_rec dir_handlers[] = {
-{ DIR_MAGIC_TYPE, handle_dir },
+static handler_rec autoindex_handlers[] = {
+{ DIR_MAGIC_TYPE, handle_autoindex },
 { NULL }
 };
 
-module dir_module = {
+module autoindex_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
-   create_dir_config,		/* dir config creater */
-   merge_dir_configs,		/* dir merger --- default is to override */
+   create_autoindex_config,	/* dir config creater */
+   merge_autoindex_configs,	/* dir merger --- default is to override */
    NULL,			/* server config */
    NULL,			/* merge server config */
-   dir_cmds,			/* command table */
-   dir_handlers,		/* handlers */
+   autoindex_cmds,		/* command table */
+   autoindex_handlers,		/* handlers */
    NULL,			/* filename translation */
    NULL,			/* check_user_id */
    NULL,			/* check auth */

@@ -175,11 +175,13 @@ Module negotiation_module  mod_negotiation.o
 # Module info_module         mod_info.o
 
 ## mod_include translates server-side include (SSI) statements in text files.
-## mod_dir handles requests on directories and directory indexes.
+## mod_autoindex handles requests for directories which have no index file
+## mod_dir handles requests on directories and directory index files.
 ## mod_cgi handles CGI scripts.
 
 Module includes_module     mod_include.o
-Module dir_module          mod_dir.o
+Module autoindex_module    mod_autoindex.o
+Module dir_module	   mod_dir.o
 Module cgi_module          mod_cgi.o
 
 ## The asis module implemented ".asis" file types, which allow the embedding
