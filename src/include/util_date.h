@@ -56,7 +56,7 @@
  */
 
 #ifndef APACHE_UTIL_DATE_H
-#define APAcHE_UTIL_DATE_H
+#define APACHE_UTIL_DATE_H
 
 #ifdef __cplusplus
 extern "C" {
