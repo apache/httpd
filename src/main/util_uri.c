@@ -499,7 +499,6 @@ deal_with_path:
      * is definately not the first character of the original uri so therefore
      * &hostinfo[-1] < &hostinfo[0] ... and this loop is valid C.
      */
-    s = uri;
     do {
 	--s;
     } while (s >= hostinfo && *s != '@');
