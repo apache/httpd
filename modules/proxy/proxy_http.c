@@ -801,7 +801,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         /* Is it an HTTP/0.9 response? If so, send the extra data */
         if (backasswards) {
             apr_ssize_t cntr = len;
-            e = apr_bucket_heap_create(buffer, cntr, 0);
+            e = apr_bucket_heap_create(buffer, cntr, 1);
             APR_BRIGADE_INSERT_TAIL(bb, e);
         }
 
