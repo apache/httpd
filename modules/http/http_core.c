@@ -3177,11 +3177,11 @@ static apr_status_t buffer_filter(ap_filter_t *f, ap_bucket_brigade *b)
     if (pass_the_brigade) {
         /* Insert ctx->buf into the correct spotin the brigade */
         if (insert_first) {
-            e = ap_bucket_create_transient(ctx->buf, ctx->cnt);
+            e = ap_bucket_create_pool(ctx->buf, ctx->cnt, p);
             AP_BRIGADE_INSERT_HEAD(b, e);
         } 
         else if (insert_before) {
-            e = ap_bucket_create_transient(ctx->buf, ctx->cnt);
+            e = ap_bucket_create_pool(ctx->buf, ctx->cnt, p);
             AP_BUCKET_INSERT_BEFORE(e, insert_before);
             AP_BUCKET_REMOVE(insert_before);
             ap_bucket_destroy(insert_before);
@@ -3389,8 +3389,8 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
 
     /* Hijack any bytes in BUFF and prepend it to the brigade. */
     if (c->client->outcnt) {
-        e = ap_bucket_create_heap(c->client->outbase,
-                                  c->client->outcnt, 1, NULL);
+        e = ap_bucket_create_pool(c->client->outbase,
+                                  c->client->outcnt, c->client->pool);
         c->client->outcnt = 0;
         AP_BRIGADE_INSERT_HEAD(b, e);
     }
