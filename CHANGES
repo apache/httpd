@@ -1,5 +1,8 @@
 Changes with Apache 2.0.48
 
+  *) mod_ssl: Fix a problem setting variables that represent the
+     client certificate chain.  PR 21371  [Jeff Trawick]
+
   *) Unix: Handle permissions settings for flock-based mutexes in 
      unixd_set_global|proc_mutex_perms().  Allow the functions to be
      called for any type of mutex.  PR 20312  [Jeff Trawick]
