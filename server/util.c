@@ -1782,7 +1782,7 @@ char *ap_get_local_host(apr_pool_t *a)
     char *server_hostname = NULL;
     struct hostent *p;
 
-#ifdef BEOS
+#ifdef BEOS_R5
     if (gethostname(str, sizeof(str) - 1) == 0)
 #else
     if (gethostname(str, sizeof(str) - 1) != 0)
