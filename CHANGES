@@ -64,6 +64,12 @@ features:
        to set up anything that need to be done once per processes. For
        example, connections to databases.
 
+  *) New child_exit function for module API
+       A new phase for Apache's API is called prior to termination of
+       a server child, e.g. when max_requests_per_child is reached.
+       This allow for modules to tear down anything that need to be done 
+       once per processes. For example, connections to databases.
+
   *) Totally overhauled mod_rewrite:
        First the last officially available release of mod_rewrite (3.0.9) was
        integrated into the Apache source repository. Additionally to the fact
@@ -79,4 +85,31 @@ features:
        construction point (RewriteRule subst string, RewriteCond test string,
        ENV flag key/value, etc.) to access the parts of RewriteRule and
        RewriteCond patterns via $N and %N.
+
+  *) Simple transport and i/o hooks in place
+       It is possible to re-define the standalone_main function 
+       (with -DSTANDALONE_MAIN) so modules may plugin support for
+       transport protocols other than tcp, e.g. DCE RPC
+       A new slot in the BUFF structure `t_handle' is provided to
+       store the plugin's transport related structures.
+       Support for sfio can be enabled with -DB_SFIO, which allows
+       modules to re-define lowest-level reads and writes so i/o
+       may travel through something other than a tcp socket.
+       In addition, sfio support allows plugin modules to manipulate
+       the output of all modules, e.g. parsing the output of CGI programs.
+       
+  *) New dbmmange script
+       A new Perl5 version of dbmmange allows modification of
+       various databases, Berkley DB, ndbm and gdbm.  Security has 
+       been tightened such that passwords will no longer be echoed to
+       the terminal, the seed for srand is more random and `add' will not
+       overwrite and existing user, use the new `update' command
+       instead.  New commands include the `check' command to check a
+       users' password and the `import' command to convert existing
+       password text-files or dbm files exported with `view'. 
+
+  *) New API function: is_initial_req()
+       The function returns true only for the initial call during a
+       given HTTP request.  If the request is a sub-request or
+       internal redirect, the function will return false.
 
