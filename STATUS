@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/24 20:03:50 $]
+Last modified at [$Date: 2002/05/26 05:45:07 $]
 
 Release:
 
@@ -47,12 +47,66 @@ on related projects:
 
 CURRENT RELEASE NOTES:
 
-    * 37 status: Cliff proposes that 2.0.37 be tagged on Saturday, May 25,
-      with the aim of releasing by Friday, May 31, and volunteers to RM.
+    * 37 status: Cliff tagged JCW_PRE_2037 on Saturday as a preliminary
+      tag with the understanding that showstoppers remain and must be
+      addressed.
 
 RELEASE SHOWSTOPPERS:
 
-    * for 2.0.37: decide if the MMN bump was warranted
+    * decide if the MMN bump was warranted
+
+    * Darwin: httpd won't start.  Hangs looking up 0.0.0.0 during config
+      file processing.
+      Status: backtrace posted
+      Message-ID: <20020525201238.P27903@apache.org>
+
+    * Win32: httpd won't start.  There was a command line args problem
+      that got fixed, but now something else is wrong.
+      Message-ID: <5.1.0.14.2.20020525222410.02a629d0@pop3.rowe-clan.net>
+                  <00ca01c2033e$f1c54c10$a6271b09@sashimi>
+                  <5.1.0.14.2.20020524115533.02785e28@pop3.rowe-clan.net>
+
+    * ap_read_pid() needs cleanup w.r.t. apr_file_read_full() and EOL
+      Status: Patch proposed
+      Message-ID: <20020525200616.O27903@apache.org>
+
+    * CWD issues
+      Message-ID: <5.1.0.14.2.20020524115533.02785e28@pop3.rowe-clan.net>
+                  <COEELENBBCHBFEPPGDOPCEPPGPAA.ake@meepzor.com>
+
+    * To high-free patch or not to high-free patch?
+      Message-ID: <JLEGKKNELMHCJPNMOKHOGEIIFOAA.striker@apache.org>
+                  <1022371367.23007.13.camel@mypc1.pacbell.net>
+
+    * Need consensus and/or "fix" on mod_deflate and existing encodings
+      Status: Patch proposed
+      Message-ID: <20020520151226.K15813@lyra.org>
+                  <3CF05078.8040907@apache.org>
+
+    * Find a better name for ap_signal_server()
+      Message-ID: <m37kltilb3.fsf@rdu88-251-253.nc.rr.com>
+
+    * apr_brigade_write() is not flushing in all cases it should
+      Status: Cliff will fix this
+
+    * mod_suexec issues seem to be at critical mass
+      Status: Patches proposed
+      Message-ID: <20020526041748.A29148@prodigy.Redbrick.DCU.IE>
+
+    * need consensus on Cliff's /dev/random vs. /dev/urandom question.
+      Is there a better alternative than picking strictly one or the other?
+      Message-ID:
+      <Pine.LNX.4.44.0205251718300.31784-100000@deepthought.cs.virginia.edu>
+      <20020522202404.D27903@apache.org>
+      <20020522210345.E2800@clove.org>
+
+    * server pushed CGI's not working.  (Is this a showstopper??)
+      PR: 8482
+      Message-ID: <3CE15B85.2FF45121@apache.org>
+
+    * mod_cache content-type issues  (Is this a showstopper??)
+      Status: patch proposed
+      Message-ID: <3CECFD8B.9050303@fokus.gmd.de>
 
 CURRENT VOTES:
 
