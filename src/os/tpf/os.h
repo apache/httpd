@@ -18,6 +18,10 @@
 
 #include "ap_config.h"
 
+#ifdef HAVE_ISNAN
+#undef HAVE_ISNAN
+#endif
+
 #if !defined(INLINE) && defined(USE_GNU_INLINE)
 /* Compiler supports inline, so include the inlineable functions as
  * part of the header
