@@ -146,7 +146,12 @@
 
       <dd>The proxy module has been completely rewritten to take advantage
       of the new filter infrastructure and to implement a more
-      reliable, HTTP/1.1 compliant proxy.</dd>
+      reliable, HTTP/1.1 compliant proxy.  In addition, new
+      &lt;Proxy&gt; configuration sections provide more readable
+      (and internally faster) control of proxied sites; overloaded 
+      &lt;Directory "proxy:..."&gt; configuration are not supported.  The
+      module is now divided into specific protocol support modules 
+      including proxy_connect, proxy_ftp and proxy_http.</dd>
 
       <dt><strong>mod_negotiation</strong></dt>
 
@@ -178,7 +183,8 @@
 
       <dt><strong>mod_auth_dbm</strong></dt>
 
-      <dd>Now supports multiple DBM-like databases using the <a
+      <dd>Now supports multiple type of DBM-like databases using the
+      <a
       href="mod/mod_auth_dbm.html#authdbmtype">AuthDBMType</a>
       directive.</dd>
 
@@ -187,13 +193,6 @@
       <dd>Has been removed in favor of mod_auth_dbm with the AuthDBMType
       directive.</dd>
 
-      <dt><strong>mod_proxy</strong></dt>
-
-      <dd>New &lt;Proxy&gt; configuration sections provide more readable
-      (and internally faster) control of proxied sites; overloaded 
-      &lt;Directory "proxy:..."&gt; configuration are not supported.  The
-      module is now divided into specific protocol support modules 
-      including proxy_connect, proxy_ftp and proxy_http.</dd>
 
     </dl>
     <!--#include virtual="footer.html" -->
