@@ -24,8 +24,6 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_info.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_info.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>サーバの設定の包括的な概観を提供する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>info_module</td></tr>
@@ -48,41 +46,102 @@
     ディレクティブの中に <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code>
     節を入れるとよいかもしれません。</p>
 
-    <p>一旦設定すると、<code>http://your.host.dom/server-info</code>
+    <p>一旦設定すると、<code>http://your.host.example.com/server-info</code>
     をアクセスすることでサーバの情報を得られるようになります。</p>
-
-    <div class="note">
-      <p>このモジュールは実行時に設定ファイルを読み込みます。
-      サーバの設定ファイルが最後にサーバに読み込まれた後に変更されている
-      場合には、表示されている内容は実行されているサーバの設定を反映して
-      <em>いない</em>かもしれないことに注意してください。
-      また、設定ファイルはサーバが実行されているユーザの権限で
-      読み込み許可が与えられている必要があります
-      (<code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>
-      ディレクティブを参照してください)。
-      でなければ、ディレクティブの設定は表示されません。</p>
-
-      <p><code class="module"><a href="../mod/mod_info.html">mod_info</a></code>
-      がサーバに組み込まれている場合は、ディレクトリ毎のファイル
-      (例えば、<code>.htaccess</code>) を含むすべての設定ファイルで
-      ハンドラを使用可能であるということにも注意してください。
-      これは、あなたのサイトではセキュリティに関連した問題があるかもしれません。
-      </p>
-
-      <p>特に、このモジュールはシステムパス、ユーザ名/パスワード、
-      データベース名など、他の Apache モジュールの設定ディレクティブから
-      セキュリティ上微妙な情報を漏らす可能性があります。
-      このモジュールの動作方法のせいで、情報の流出を防ぐ方法はありません。
-      ですから、このモジュールはきちんとアクセス制御された環境で<strong>のみ</strong>、
-      注意して使ってください。</p>
-    </div>
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#addmoduleinfo">AddModuleInfo</a></li>
 </ul>
-</div>
+<h3>トピック</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#security">Security Issues</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#queries">表示される情報の選択</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#limitations">既知の制限</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="security" id="security">Security Issues</a></h2>
+    <p>一旦 <code class="module"><a href="../mod/mod_info.html">mod_info</a></code> がサーバに読み込まれると、
+    提供しているハンドラ機能はディレクトリ毎の設定ファイル (<em>例えば</em>
+    .htaccess) を含む <em>すべて</em>の設定ファイルで有効になります。
+    このモジュールを有効にするときはセキュリティの問題を考慮する必要が
+    あるでしょう。</p>
 
+    <p>特に、このモジュールはシステムパス、ユーザ名/パスワード、
+    データベース名など、他の Apache モジュールの設定ディレクティブから
+    セキュリティ上微妙な情報を漏らす可能性があります。
+    ですから、このモジュールはきちんとアクセス制御された環境で<strong>のみ</strong>、
+    注意して使ってください。</p>
+
+    <p>設定情報へのアクセスを制限するために、<code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> を
+    使うのが良いでしょう。</p>
+      
+    <div class="example"><h3>アクセス制御</h3><p><code>
+      &lt;Location /server-info&gt;<br />
+      <span class="indent">
+        SetHandler server-info<br />
+        Order allow,deny<br />
+        # Allow access from server itself<br />
+        Allow from 127.0.0.1<br />
+        # Additionally, allow access from local workstation<br />
+        Allow from 192.168.1.17<br />
+      </span>
+      &lt;/Location&gt;
+    </code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="queries" id="queries">表示される情報の選択</a></h2>
+    <p>デフォルトでは、サーバ情報はすべての有効なモジュールと、
+    各モジュールについて、モジュールが理解するディレクティブ、
+    実装している、フック、現時点での設定の関連するディレクティブに
+    なっています。</p>
+
+    <p><code>server-info</code> リクエストへクエリーを追加することで、
+    設定情報の他の表示形式を選ぶことができます。例えば、
+    <code>http://your.host.example.com/server-info?config</code> は
+    すべての設定ディレクティブを表示します。</p>
+    
+    <dl>
+        <dt><code>?&lt;module-name&gt;</code></dt>
+            <dd>指定されたモジュールに関連する情報のみ</dd>
+        <dt><code>?config</code></dt>
+            <dd>モジュールでソートせずに、設定ディレクティブのみ</dd>
+        <dt><code>?hooks</code></dt>
+            <dd>各モジュールが使用するフックのみ</dd>
+        <dt><code>?list</code></dt>
+            <dd>有効なモジュールの簡単なリストのみ</dd>
+        <dt><code>?server</code></dt>
+            <dd>基本サーバ情報のみ</dd>
+    </dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="limitations" id="limitations">既知の制限</a></h2>
+    <p><code class="module"><a href="../mod/mod_info.html">mod_info</a></code> は、元の設定ファイルを読むのではなく、
+    既にパースされた設定を読み込むことで情報を提供します。従って、
+    パース済みの設定情報の木が生成される方法による制限がいくつかあります:</p>
+    <ul>
+      <li>パースされた設定に保存されずに、すぐに実行されるディレクティブは
+          一覧に現れません。これには
+          <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>,
+          <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>,
+          <code class="directive"><a href="../mod/mod_so.html#loadfile">LoadFile</a></code> があります。</li>
+      <li><code class="directive"><a href="../mod/core.html#include">Include</a></code>,
+          <code class="directive"><a href="../mod/core.html#&lt;ifmodule&gt;">&lt;IfModule&gt;</a></code>,
+          <code class="directive"><a href="../mod/core.html#&lt;ifdefine&gt;">&lt;IfDefine&gt;</a></code>,
+          のような設定ファイル自身を制御するディレクティブは表示されません。
+          そのディレクティブの中にあり、有効になっているディレクティブは
+          表示されます。</li>
+      <li>コメントは表示されません。(これは仕様だと思ってください。)</li>
+      <li><code>.htaccess</code> ファイルの設定ディレクティブは表示されません
+          (永久的なサーバ設定の一部ではないからです)。</li>
+      <li><code class="directive"><a href="../mod/core.html#&lt;directory&gt;">&lt;Directory&gt;</a></code>
+          のようなコンテナディレクティブは普通に表示されますが、
+          <code class="module"><a href="../mod/mod_info.html">mod_info</a></code> は閉じタグの <code class="directive"><a href="../mod/core.html#&lt;/directory&gt;">&lt;/Directory&gt;</a></code> などの数を知ることはできません。</li>
+      <li><code class="module"><a href="../mod/mod_perl.html">mod_perl</a></code> のようなサードパーティモジュール
+           のディレクティブは表示されないかもしれません。</li>
+    </ul>
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AddModuleInfo" id="AddModuleInfo">AddModuleInfo</a> <a name="addmoduleinfo" id="addmoduleinfo">ディレクティブ</a></h2>
 <table class="directive">
@@ -101,8 +160,8 @@
     <div class="example"><p><code>
       AddModuleInfo mod_deflate.c 'See &lt;a \<br />
       <span class="indent">
-      href="http://www.apache.org/docs-2.1/mod/mod_deflate.html"&gt;\<br />
-      http://www.apache.org/docs-2.1/mod/mod_deflate.html&lt;/a&gt;'
+        href="http://www.apache.org/docs-2.1/mod/mod_deflate.html"&gt;\<br />
+        http://www.apache.org/docs-2.1/mod/mod_deflate.html&lt;/a&gt;'
       </span>
     </code></p></div>
 
