@@ -371,8 +371,10 @@ webserver with <CODE>-DUSE_USLOCK_SERIALIZED_ACCEPT</CODE> on the
 <DT><CODE>USE_PTHREAD_SERIALIZED_ACCEPT</CODE>
 <DD>(1.3 or later) This method uses POSIX mutexes and should work on
 any architecture implementing the full POSIX threads specification,
-however appears to only work on Solaris (2.5 or later).  This is the
-default for Solaris 2.5 or later.
+however appears to only work on Solaris (2.5 or later), and even then
+only in certain configurations.  If you experiment with this you should
+watch out for your server hanging and not responding.  Static content
+only servers may work just fine.
 </DL>
 
 <P>If your system has another method of serialization which isn't in the
