@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.31 $ ($Date: 1997/04/21 21:40:15 $)
+$Revision: 1.32 $ ($Date: 1997/04/21 22:27:57 $)
 </P>
 <P>
 If you are reading a text-only version of this FAQ, you may find numbers
@@ -746,7 +746,7 @@ do not appear, and are not needed, for the hypertext version.
     handle the requests.  Most operating systems these days include
     attack detection (such as <EM>n</EM> failed passwords for the same
     account within <EM>m</EM> seconds) and evasion (breaking the
-    connexion, disabling the account under attack, disabling
+    connection, disabling the account under attack, disabling
     <EM>all</EM> logins from that source, <EM>et cetera</EM>), but the
     Web does not.
    </LI>
@@ -921,7 +921,7 @@ do not appear, and are not needed, for the hypertext version.
   <P>
   This message almost always indicates that the client disconnected
   before Apache reached the point of calling <CODE>setsockopt()</CODE>
-  for the connexion.  It shouldn't occur for more than about 1% of the
+  for the connection.  It shouldn't occur for more than about 1% of the
   requests your server handles, and it's advisory only in any case.
   </P>
   <HR>
