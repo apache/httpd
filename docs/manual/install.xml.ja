@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage>
 <relativepath href="."/>
-<!-- English revision: 1.10 -->
+<!-- English revision: 1.11 -->
 
   <title>コンパイルとインストール</title>
 
@@ -406,7 +406,7 @@
     拡張機能は様々なモジュールの形で提供されます。
     設定プロセス中では、どんなモジュールをサーバで使うように
     コンパイルするか選ばなければなりません。このマニュアルにある<a
-    href="mod/index.html">モジュールの一覧</a>を
+    href="mod/">モジュールの一覧</a>を
     参照できます。
     "Base" <a href="mod/module-dict.html#Status">ステータス</a>の
     モジュールはデフォルトで含まれますし、

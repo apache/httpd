@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.8 -->
+<!-- English revision: 1.9 -->
 
 <sitemap>
   <relativepath href="."/>
@@ -90,7 +90,7 @@
 をサービスとして実行</page>
 <page href="platform/netware.html">Novell NetWare で Apache を使う</page>
 <page href="platform/perf-hp.html">HPUX で高性能ウェブサーバを実行する</page>
-<page href="ebcdic.html">EBCDIC 版 Apache</page>
+<page href="platform/ebcdic.html">EBCDIC 版 Apache</page>
 </category>
 
 <category id="programs">

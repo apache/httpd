@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.6 -->
+<!-- English revision: 1.8 -->
 
 <name>mod_cgi</name>
 <description>CGI スクリプトの実行</description>
@@ -11,9 +11,9 @@
 <identifier>cgi_module</identifier>
 
 <summary>
-    <!-- XXX: Should have references to CGI definition/RFC -->
-    <!-- XXX: Should mention Options ExecCGI  -->
-    <!-- XXX: Should mention AcceptPathInfo   -->
+    <!-- XXX: Should mention Options ExecCGI
+          is the link to howto/cgi not sufficient? -nd
+    -->
 
     <p>Mime タイプが <code>application/x-httpd-cgi</code> 
     であるか、ハンドラ <code>cgi-script</code> (Apache 1.1 以降)
@@ -39,11 +39,14 @@
     ユーザレベルではこの二つのモジュールは本質的には同一です。</p>
 </summary>
 
+<seealso><directive module="core">AcceptPathInfo</directive></seealso>
 <seealso><directive module="core">Options</directive></seealso>
 <seealso><directive module="mod_alias">ScriptAlias</directive></seealso>
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
+<seealso><a href="../suexec.html">CGI プログラムを別のユーザ ID で実行する</a></seealso>
+<seealso><a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI 規格書</a></seealso>
 
-<section><title>CGI 環境変数</title>
+<section id="env"><title>CGI 環境変数</title>
     <p>サーバは <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI
     規格</a> で決められている CGI
     環境変数を設定します。以下のものは、条件付きで設定されます。</p>
@@ -53,12 +56,15 @@
 
       <dd>これは <directive module="core"
       >AcceptPathInfo</directive> ディレクティブが明示的に <code>off</code>
-      に設定されている場合は設定されません。デフォルトの、AcceptPathInfo が
-      指定されていないときの振る舞いでは、mod_cgi はパス情報
-      (URI のスクリプトのファイル名の後に続く /more/path/info) を
+      に設定されている場合は設定されません。デフォルトの、
+      <directive>AcceptPathInfo</directive> が
+      指定されていないときの振る舞いでは、<module>mod_cgi</module> はパス情報
+      (URI のスクリプトのファイル名の後に続く <code>/more/path/info</code>) を
       受け付けますが、コアはサーバはパス情報のあるリクエストに
-      対して 404 NOT FOUND エラーを返します。AcceptPathInfo ディレクティブを
-      省略すると、mod_cgi へのリクエストに対して <code>on</code> を
+      対して 404 NOT FOUND エラーを返します。<directive>AcceptPathInfo</directive>
+      ディレクティブを
+      省略すると、<module>mod_cgi</module> へのリクエストに対して
+      <code>On</code> を
       設定したのと同じ効果になります。</dd>
 
       <dt>REMOTE_HOST</dt>
@@ -85,42 +91,48 @@
     </dl>
 </section>
 
-<section id="cgi_debug"><title>CGI のデバッグ</title>
+<section id="cgi-debug"><title>CGI のデバッグ</title>
     <p>CGI スクリプトのデバッグは、正しく動作していないスクリプトの出力
     (標準出力とエラー)
     を調べることができないために、難しい状態が続いていました。
     これらの Apache 1.2 以降にある
     ディレクティブはより詳細なエラーのログ収集を提供します。</p>
 
-<section><title>CGI ログファイルの書式</title>
-    <p>設定されているときには、CGI エラーログは適切に動作しないすべての
-    CGI をログ収集します。それぞれの正しく動作しない CGI
-    スクリプトは 複数の行にわたる情報がログ収集されます。最初の
-    2 行は常に以下の書式です:</p>
-<example>
-  %% [<em>time</em>] <em>request-line</em><br />
-  %% <em>HTTP-status</em> <em>CGI-script-filename</em>
-</example>
-    <p>エラーが、CGI スクリプトが実行できないというものである場合は、
-    ログファイルはさらにもう 2 行書かれます:</p>
-<example>
-  %%error<br />
-  <em>error-message</em>
-</example>
-    <p>そうではなく、エラーが正しくないヘッダ情報を返す結果である場合
-    (スクリプトのバグであることがよくあります)、
-    以下の情報がログ収集されます:</p>
-<example>
-  %request<br />
-  <em>受け取ったすべての HTTP リクエストヘッダ</em><br />
-  <em>(もしあれば) POST や PUT の中身</em><br />
-  %response<br />
-  <em>CGI スクリプトにより出力されたすべてのヘッダ</em><br />
-  %stdout<br />
-  <em>CGI 標準出力</em><br />
-  %stderr<br />
-  <em>CGI 標準エラー</em><br />
-</example>
+    <section><title>CGI ログファイルの書式</title>
+	<p>設定されているときには、CGI エラーログは適切に動作しないすべての
+	CGI をログ収集します。それぞれの正しく動作しない CGI
+	スクリプトは 複数の行にわたる情報がログ収集されます。最初の
+	2 行は常に以下の書式です:</p>
+
+      <example>
+        %% [<var>time</var>] <var>request-line</var><br />
+        %% <var>HTTP-status</var> <var>CGI-script-filename</var>
+      </example>
+
+      <p>エラーが、CGI スクリプトが実行できないというものである場合は、
+      ログファイルはさらにもう 2 行書かれます:</p>
+
+      <example>
+        %%error<br />
+        <var>error-message</var>
+      </example>
+
+      <p>そうではなく、エラーが正しくないヘッダ情報を返す結果である場合
+      (スクリプトのバグであることがよくあります)、
+      以下の情報がログ収集されます:</p>
+
+    <example>
+      %request<br />
+      <var>受け取ったすべての HTTP リクエストヘッダ</var><br />
+      <var>(もしあれば) POST や PUT の中身</var><br />
+      %response<br />
+      <var>CGI スクリプトにより出力されたすべてのヘッダ</var><br />
+      %stdout<br />
+      <var>CGI 標準出力</var><br />
+      %stderr<br />
+      <var>CGI 標準エラー</var><br />
+    </example>
+
     <p>(スクリプトが標準出力や標準エラーに何も出力しなかった場合は、
     %stdout や %stderr はありません)。</p>
 </section>
@@ -129,7 +141,7 @@
 <directivesynopsis>
 <name>ScriptLog</name>
 <description>CGI スクリプトのエラーログファイルの場所</description>
-<syntax>ScriptLog <em>file-path</em></syntax>
+<syntax>ScriptLog <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 </contextlist>
@@ -138,19 +150,21 @@
 
 <usage>
     <p><directive>ScriptLog</directive> ディレクティブは CGI スクリプトの
-    エラーログファイルを設定します。ScriptLog が設定されていないときは、
+    エラーログファイルを設定します。<directive>ScriptLog</directive> が
+    設定されていないときは、
     エラーログは作成されません。設定されているときは、CGI
     のエラーはすべて引数として与えられているファイル名にログされます。
     相対パスで指定されているときは、
-    <code>ServerRoot</code>からの相対パスとして扱われます。</p>
+    <directive module="core">ServerRoot</directive>からの相対パスとして
+    扱われます。</p>
 
     <example><title>例</title>
-    ScriptLog logs/cgi_log
+      ScriptLog logs/cgi_log
     </example>
 
     <p>このログは子プロセスが実行されているユーザとしてオープンされます。
-    すなわち、<directive module="mpm_commmon">User</directive> ディレクティブ
-    で指定された
+    <em>すなわち</em>、<directive module="mpm_commmon"
+    >User</directive> ディレクティブで指定された
     ユーザです。これは、スクリプトログが書かれるディレクトリがそのユーザで
     書き込み可能か、スクリプトファイルが手動で作成され、そのユーザで
     書き込み可能になっている必要があるということです。スクリプトログを
@@ -169,7 +183,7 @@
 <directivesynopsis>
 <name>ScriptLogLength</name>
 <description>CGI スクリプトのログファイルの大きさの上限</description>
-<syntax>ScriptLogLength <em>bytes</em></syntax>
+<syntax>ScriptLogLength <var>bytes</var></syntax>
 <default>ScriptLogLength 10385760</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
