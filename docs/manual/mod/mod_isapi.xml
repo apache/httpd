@@ -130,7 +130,7 @@ following line:</p>
 
       <dd>
         This logged message may be captured in any of the following
-        logs: 
+        logs:
 
         <ul>
           <li>in the \"%{isapi-parameter}n\" component in a
@@ -192,10 +192,11 @@ following line:</p>
 </section>
 
 <directivesynopsis>
-<name>ISAPIFileChache</name>
+<name>ISAPICacheFile</name>
 <description>ISAPI .dll files to be loaded at startup</description>
-<syntax>ISAPIFileCache <em>file-path</em> [<em>file-path</em>] ...</syntax>
-<contextlist><context>server config</context></contextlist>
+<syntax>ISAPICacheFile <em>file-path</em> [<em>file-path</em>] ...</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 
 <usage>
     <p>Specifies a space-separated list of file names to be loaded
@@ -208,11 +209,14 @@ following line:</p>
 
 <directivesynopsis>
 <name>ISAPIReadAheadBuffer</name>
-<description>Size of the Read Ahead Buffer sent to ISAPI 
+<description>Size of the Read Ahead Buffer sent to ISAPI
 extensions</description>
 <syntax>ISAPIReadAheadBuffer <em>size</em></syntax>
 <default>ISAPIReadAheadBuffer 49152</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
 
 <usage>
     <p>Defines the maximum size of the Read Ahead Buffer sent to
@@ -228,14 +232,18 @@ extensions</description>
 <description>Log unsupported feature requests from ISAPI
 extensions</description>
 <syntax>ISAPILogNotSupported on|off</syntax>
-<default>ISAPILogNotSupported on</default>
-<contextlist><context>server config</context></contextlist>
+<default>ISAPILogNotSupported off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
 
 <usage>
     <p>Logs all requests for unsupported features from ISAPI
-    extensions in the server error log. While this should be turned
-    off once all desired ISAPI modules are functioning, it defaults
-    to on to help administrators track down problems.</p>
+    extensions in the server error log. This may help administrators
+    to track down problems. Once set to on and all desired ISAPI modules
+    are functioning, it should be set back to off.</p>
 </usage>
 </directivesynopsis>
 
@@ -245,7 +253,11 @@ extensions</description>
 extensions to the error log</description>
 <syntax>ISAPIAppendLogToErrors on|off</syntax>
 <default>ISAPIAppendLogToErrors off</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
 
 <usage>
     <p>Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
@@ -258,13 +270,34 @@ extensions to the error log</description>
 <description>Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
 extensions to the query field</description>
 <syntax>ISAPIAppendLogToQuery on|off</syntax>
-<default>ISAPIAppendLogToQuery off</default>
-<contextlist><context>server config</context></contextlist>
+<default>ISAPIAppendLogToQuery on</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
 
 <usage>
     <p>Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
     extensions to the query field (appended to the CustomLog %q
     component).</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ISAPIFakeAsync</name>
+<description>Fake asynchronous support for isapi callbacks</description>
+<syntax>ISAPIFakeAsync on|off</syntax>
+<default>ISAPIFakeAsync off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>While set to on, asynchronous support for isapi callbacks is
+    simulated.</p>
 </usage>
 </directivesynopsis>
 
