@@ -291,13 +291,19 @@ static void accept_mutex_init(apr_pool_t *p)
 static void accept_mutex_on(void)
 {
     apr_status_t rv = apr_lock(accept_lock);
-    ap_assert(!rv);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "couldn't grab the accept mutex");
+        exit(APEXIT_CHILDFATAL);
+    }
 }
 
 static void accept_mutex_off(void)
 {
     apr_status_t rv = apr_unlock(accept_lock);
-    ap_assert(!rv);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "couldn't release the accept mutex");
+        exit(APEXIT_CHILDFATAL);
+    }
 }
 
 /* On some architectures it's safe to do unserialized accept()s in the single
