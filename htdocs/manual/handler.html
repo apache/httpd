@@ -28,7 +28,10 @@ separately. For example, you may use a type of
 explicitly. Either based on filename extensions or on location, these
 handlers are unrelated to file type. This is advantageous both because
 it is a more elegant solution, but it also allows for both a type
-<STRONG>and</STRONG> a handler to be associated with a file.</P>
+<STRONG>and</STRONG> a handler to be associated with a file (See also
+<A HREF="mod/mod_mime#multipleext">Files with Multiple Extensions</A>)
+
+</P>
 
 <P>Handlers can either be built into the server or to a module, or
 they can be added with the <A
@@ -78,13 +81,15 @@ handlers in the standard distribution are as follows:</P>
 <A
  HREF="mod/directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> &lt;AddHandler <EM>handler-name
- extension</EM>&gt;<BR>
+><STRONG>Syntax:</STRONG></A> AddHandler <EM>handler-name extension extension...</EM><BR>
 <A
  HREF="mod/directive-dict.html#Context"
  REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host, directory,
- .htaccess<BR>
+><STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
+<A
+ HREF="mod/directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> FileInfo<BR>
 <A
  HREF="mod/directive-dict.html#Status"
  REL="Help"
@@ -92,18 +97,32 @@ handlers in the standard distribution are as follows:</P>
 <A
  HREF="mod/directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mod_mime
+><STRONG>Module:</STRONG></A> mod_mime<BR>
+<A
+ HREF="mod/directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> AddHandler is only available in Apache
+1.1 and later<P>
 
-<P>AddHandler maps the filename extension <EM>extension</EM> to the
-handler <EM>handler-name</EM>. For example, to activate CGI scripts
+<P>AddHandler maps the filename extensions <EM>extension</EM> to the
+handler <EM>handler-name</EM>.  This mapping is added to any already
+in force, overriding any mappings that already exist for the same
+<EM>extension</EM>.
+
+For example, to activate CGI scripts
 with the file extension "<CODE>.cgi</CODE>", you might use:
 <PRE>
     AddHandler cgi-script cgi
 </PRE>
 
 <P>Once that has been put into your srm.conf or httpd.conf file, any
-file ending with "<CODE>.cgi</CODE>" will be treated as a CGI
-program.</P>
+file containing the "<CODE>.cgi</CODE>" extension will be treated as a
+CGI program.</P> 
+
+<P>
+
+<STRONG>See also</STRONG>: <A HREF="mod/mod_mime.html#multipleext">Files with
+multiple extensions</A>
 
 <HR>
 
@@ -112,7 +131,7 @@ program.</P>
 <A
  HREF="mod/directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> &lt;SetHandler <EM>handler-name</EM>&gt;<BR>
+><STRONG>Syntax:</STRONG></A> SetHandler <EM>handler-name</EM><BR>
 <A
  HREF="mod/directive-dict.html#Context"
  REL="Help"
@@ -124,28 +143,33 @@ program.</P>
 <A
  HREF="mod/directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mod_mime
+><STRONG>Module:</STRONG></A> mod_mime<BR>
+<A
+ HREF="mod/directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> SetHandler is only available in Apache
+1.1 and later.<P>
 
 <P>When placed into an <CODE>.htaccess</CODE> file or a
-<CODE>&lt;Directory&gt;</CODE> or <CODE>&lt;Location&gt;</CODE> section,
-this directive forces all matching files to be parsed through the
-handler given by <EM>handler-name</EM>. For example, if you had a
+<CODE>&lt;Directory&gt;</CODE> or <CODE>&lt;Location&gt;</CODE>
+section, this directive forces all matching files to be parsed through
+the handler given by <EM>handler-name</EM>. For example, if you had a
 directory you wanted to be parsed entirely as imagemap rule files,
 regardless of extension, you might put the following into an
-<CODE>.htaccess</CODE> file in that directory:
+<CODE>.htaccess</CODE> file in that directory: 
 <PRE>
     SetHandler imap-file
 </PRE>
+
 <P>Another example: if you wanted to have the server display a status
-report whenever a URL of <CODE>http://servername/server-status</CODE> was
+report whenever a URL of <CODE>http://servername/status</CODE> was
 called, you might put the following into access.conf:
 <PRE>
-    &lt;Location /server-status&gt;
+    &lt;Location /status&gt;
     SetHandler server-status
     &lt;/Location&gt;
 </PRE>
-
-<P><HR>
+<HR>
 
 <H2>Programmer's Note</H2>
 
