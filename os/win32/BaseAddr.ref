@@ -21,6 +21,8 @@ mod_status           0x6FE50000    0x00010000
 mod_usertrack        0x6FE40000    0x00010000
 mod_file_cache       0x6FE20000    0x00020000
 mod_auth_dbm         0x6FE10000    0x00010000
+mod_unique_id        0x6FE00000    0x00010000
+mod_vhost_alias      0x6FDF0000    0x00010000
 mod_dav_fs           0x6FDE0000    0x00010000
 mod_dav              0x6FDC0000    0x00020000
 mod_proxy            0x6FDB0000    0x00010000
