@@ -248,7 +248,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     location of your compiler, libraries, or header files.  This is
     done by passing either environment variables or command line
     options to <program>configure</program>.  For more information, see the
-    <a href="programs/configure.html">configure manual page</a>.</p>
+    <program>configure</program> manual page.</p>
 
     <p>For a short impression of what possibilities you have, here
     is a typical example which compiles Apache for the installation
@@ -268,9 +268,8 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     test for the availability of features on your system and build
     Makefiles which will later be used to compile the server.</p>
 
-    <p>Details on all the different <code>configure</code> options are
-    available on the <a href="programs/configure.html">configure
-    manual page</a>.</p>
+    <p>Details on all the different <program>configure</program> options are
+    available on the <program>configure</program> manual page.</p>
 </section>
 
 <section id="compile"><title>Build</title>

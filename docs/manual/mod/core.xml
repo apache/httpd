@@ -1783,7 +1783,7 @@ URLs</description>
     limits the scope of the enclosed directives by URL. It is similar to the
     <directive type="section" module="core">Directory</directive>
     directive, and starts a subsection which is terminated with a
-    <code>&lt;/Location&gt;</code> directive.  <directive
+    <code>&lt;/Location&gt;</code> directive. <directive
     type="section">Location</directive> sections are processed in the
     order they appear in the configuration file, after the <directive
     type="section" module="core">Directory</directive> sections and
