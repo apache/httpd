@@ -86,18 +86,16 @@
  *
  * Mark Cox, mark@ukweb.com, http://www.ukweb.com/~mark/, 6 July 95
  *
- * 6.12.95 MJC Now be more friendly.  Allow our cookies to overlap with
- *             others the site may be using.  Use a more descriptive 
- *             cookie name.
- *
- * 18.3.96 MJC Generate cookies for EVERY request no matter what the 
- *             browser.  We never know when a new browser writer will
- *             add cookie support.
- *
- * 96/03/31 -JimC Allow the log to be sent to a pipe.  Copies the relevant
- *                code from mod_log_agent.c.
- *
- * 24.5.96 MJC Improved documentation after receiving comments from users
+ * 6.12.95  MJC Now be more friendly.  Allow our cookies to overlap with
+ *              others the site may be using.  Use a more descriptive 
+ *              cookie name.
+ * 18.3.96  MJC Generate cookies for EVERY request no matter what the 
+ *              browser.  We never know when a new browser writer will
+ *              add cookie support.
+ * 31.3.95 JimC Allow the log to be sent to a pipe.  Copies the relevant
+ *              code from mod_log_agent.c.
+ * 24.5.96  MJC Improved documentation after receiving comments from users
+ *  4.7.96  MJC Bug, "else" missing since February caused logging twice
  */
 
 #include "httpd.h"
@@ -269,6 +267,7 @@ int cookie_log_transaction(request_rec *orig)
     if (r->status != -1)
 	sprintf(&tstr[strlen(tstr)], "%c%02ld%02ld] %d\n", sign, timz/3600,
 		timz%3600, r->status);
+    else
 	sprintf(&tstr[strlen(tstr)], "%c%02ld%02ld] -\n", sign, timz/3600,
 		timz%3600);
 
