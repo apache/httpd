@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.9 -->
+<!-- English revision: 1.10 -->
 <modulesynopsis>
 
 <name>mod_userdir</name>
@@ -28,8 +28,8 @@
 <description>ユーザ専用ディレクトリの位置</description>
 <syntax>UserDir <em>directory-filename</em></syntax>
 <default>UserDir public_html</default>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 
 <usage>
 
@@ -119,6 +119,23 @@ UserDir enabled user1 user2 user3
 UserDir enabled<br />
 UserDir disabled user4 user5 user6
 </example>
+
+<p>他のユーザディレクトリを指定することもできます。
+次のようなコマンドを使うと:</p>
+
+<example>
+Userdir public_html /usr/web http://www.foo.com/
+</example>
+
+<p>http://www.foo.com/~bob/one/two.html へのリクエストはまず
+~bob/public_html/one/two.html のページを調べ、その次に
+/usr/web/bob/one/two.html を調べ、最後に http://www.foo.com/bob/one/two.html
+へのリダイレクトを送ります。</p>
+
+<p>リダイレクトを加える場合は、リストの最後の選択肢でなければなりません。
+Apache はリダイレクトが成功するかどうかを決めることはできませんので、
+リストの前の方にリダイレクトを書くと、それが必ず使用される選択肢に
+なってしまいます。</p>
 
 </usage>
 
