@@ -16,7 +16,6 @@ dnl #
 sinclude(srclib/apr/build/apr_common.m4)
 sinclude(srclib/apr/build/apr_network.m4)
 sinclude(srclib/apr/build/apr_threads.m4)
-sinclude(hints.m4)
 sinclude(acinclude.m4)
 
 dnl Save user-defined environment settings for later restoration
@@ -88,6 +87,8 @@ else
   APR_ADDTO(INCLUDES, [-I. -I\$(top_srcdir)/os/\$(OS_DIR) -I\$(top_srcdir)/server/mpm/\$(MPM_NAME) -I\$(top_srcdir)/modules/http -I\$(top_srcdir)/include -I\$(top_srcdir)/srclib/apr/include -I\$(top_srcdir)/srclib/apr-util/include])
 fi
 
+echo $ac_n "${nl}Applying OS-specific hints for httpd ...${nl}"
+
 AC_CANONICAL_SYSTEM
 
 case "$host_alias" in
@@ -107,9 +108,35 @@ case "$host_alias" in
       ;;
 esac
 
-dnl
-dnl ## Preload our OS configuration
-APACHE_PRELOAD
+case "$host" in
+  *-apple-aux3*)
+      APR_SETVAR(APACHE_MPM, [prefork])
+      APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
+      ;;
+  *-beos*)
+      APR_SETVAR(APACHE_MPM, [beos])
+      APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
+      ;;
+  *os2_emx*)
+      APR_SETVAR(APACHE_MPM, [spmt_os2])
+      APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
+      ;;
+  *-linux-*)
+      case `uname -r` in
+        2.2* ) APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
+            ;;
+        * )
+            ;;
+      esac
+      ;;
+  *486-*-bsdi* | *-netbsd* | *-freebsd* | *-apple-darwin* | *-dec-osf* | *-qnx)
+      APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
+      ;;
+  *-solaris2*)
+      dnl  This is a hack -- we should be using AC_TRY_RUN instead
+      ap_platform_runtime_link_flag="-R"
+      ;;
+esac
 
 dnl
 dnl Process command line arguments. This is done early in the process so the
@@ -205,7 +232,7 @@ POST_SHARED_CMDS='echo ""'
 
 if test "$apache_need_shared" = "yes"; then
   $SHELL $ac_aux_dir/ltconfig --output=shlibtool --disable-static --srcdir=$ac_aux_dir --cache-file=./config.cache $ac_aux_dir/ltmain.sh
-  case $PLATFORM in
+  case "$host" in
     *-ibm-aix*)
       HTTPD_LDFLAGS="$HTTPD_LDFLAGS -Wl,-bE:$abs_srcdir/support/httpd.exp"
       SH_LDFLAGS="$SH_LDFLAGS -Wl,-bI:$abs_srcdir/support/httpd.exp"
