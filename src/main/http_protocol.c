@@ -547,7 +547,7 @@ void send_http_header(request_rec *r)
     if (r->content_type)
         bvputs(fd, "Content-type: ", 
 		 nuke_mime_parms (r->pool, r->content_type), "\015\012", NULL);
-    else
+    else if(default_type)
         bvputs(fd, "Content-type: ", default_type, "\015\012", NULL);
     
     if (r->content_encoding)
