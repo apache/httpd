@@ -185,12 +185,12 @@ LanguagePriority en fr de
 # meta information files. These files contain additional HTTP headers
 # to include when sending the document
 
-MetaDir .web
+#MetaDir .web
 
 # MetaSuffix: specifies the file name suffix for the file containing the
 # meta information.
 
-MetaSuffix .meta
+#MetaSuffix .meta
 
 # Customizable error response (Apache style)
 #  these come in three flavors
