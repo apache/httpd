@@ -1,5 +1,12 @@
 Changes with Apache 1.2
 
+  *) Log correct status code if we timeout before receiving a request (408)
+     or if we received a request-line that was too long to process (414).
+     [Ed Korthof and Roy Fielding] PR#601
+
+  *) Virtual hosts with the same ServerName, but on different ports, were
+     not being selected properly.  [Ed Korthof]
+
   *) Added code to return the requested IP address from proxy_host2addr()
      if gethostbyaddr() fails due to reverse DNS lookup problems. Original
      change submitted by Jozsef Hollosi <hollosi@sbcm.com>.

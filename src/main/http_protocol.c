@@ -630,9 +630,10 @@ int read_request_line (request_rec *r)
     signal (SIGUSR1, SIG_IGN);
     bsetflag( conn->client, B_SAFEREAD, 0 );
     if (len == (HUGE_STRING_LEN - 1)) {
-        log_printf(r->server, "request failed for %s, reason: header too long",
+        log_printf(r->server, "request failed for %s, reason: URI too long",
             get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME));
-        return 0;               /* Should be a 414 error status instead */
+        r->status = HTTP_REQUEST_URI_TOO_LARGE;
+        return 0;
     }
 
     r->request_time = time(NULL);
@@ -786,10 +787,7 @@ request_rec *read_request (conn_rec *conn)
     r->read_length  = 0;
     r->read_body    = REQUEST_NO_BODY;
     
-    r->status = HTTP_OK;	/* Until further notice.
-				 * Only changed by die(), or (bletch!)
-				 * scan_script_header...
-				 */
+    r->status = HTTP_REQUEST_TIME_OUT;	/* Until we get a request */
 
     /* Get the request... */
     
@@ -803,6 +801,8 @@ request_rec *read_request (conn_rec *conn)
         get_mime_headers (r);
     }
     kill_timeout(r);
+
+    r->status = HTTP_OK;                /* Until further notice. */
 
     /* handle Host header here, to get virtual server */
 
