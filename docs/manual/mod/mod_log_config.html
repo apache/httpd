@@ -264,7 +264,7 @@ as <a href="../programs/rotatelogs.html">rotatelogs</a>.</p>
 
 <H2><A NAME="cookielog">CookieLog</A> directive</H2>
 <!--%plaintext &lt;?INDEX {\tt CookieLog} directive&gt; -->
-<A
+<p><A
  HREF="directive-dict.html#Syntax"
  REL="Help"
 ><STRONG>Syntax:</STRONG></A> CookieLog <EM>filename</EM><BR>
@@ -284,12 +284,11 @@ as <a href="../programs/rotatelogs.html">rotatelogs</a>.</p>
 <p>The CookieLog directive sets the filename for logging of cookies.
 The filename is relative to the <A
 HREF="core.html#serverroot">ServerRoot</A>. This directive is included
-only for compatibility with <A
-HREF="mod_cookies.html">mod_cookies</A>, and is deprecated.</p>
+only for compatibility with mod_cookies, and is deprecated.</p>
 
 <HR>
 <H2><A NAME="customlog">CustomLog</A> 
-<a NAME="#customlogconditional">directive</a></H2>
+<a NAME="customlogconditional">directive</a></H2>
 <p><A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -387,7 +386,7 @@ separate logfile but not your main log, you can use:
  HREF="directive-dict.html#Default"
  REL="Help"
 ><STRONG>Default:</STRONG></A> <CODE>LogFormat &quot;%h %l %u %t \&quot;%r\&quot;
-%>s %b&quot;</CODE><BR>
+%&gt;s %b&quot;</CODE><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
