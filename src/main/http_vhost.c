@@ -708,6 +708,7 @@ static void fix_hostname(request_rec *r)
 
     /* check and copy the host part */
     src = ap_pstrdup(r->pool, r->hostname);
+    r->hostname = src;
     /* unescape the hostname first */
     if (ap_unescape_url(src) != OK) {
 	goto bad;
