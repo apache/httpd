@@ -1508,6 +1508,7 @@ static request_rec *make_sub_request(const request_rec *r,
     request_rec *rnew;
 
     apr_pool_create(&rrp, r->pool);
+    apr_pool_tag(rrp, "subrequest");
     rnew = apr_pcalloc(rrp, sizeof(request_rec));
     rnew->pool = rrp;
 
