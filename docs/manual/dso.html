@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML><HEAD>
-<TITLE>Apache 2.0 Dynamic Shared Object (DSO) support</TITLE>
+<TITLE>Dynamic Shared Object (DSO) support</TITLE>
 </HEAD>
 
 <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
@@ -11,23 +11,132 @@
  VLINK="#000080"
  ALINK="#FF0000"
 >
-<BLOCKQUOTE>
 <!--#include virtual="header.html" -->
 
-<DIV ALIGN=CENTER>
-
 <H1>
-Apache 2.0<BR>
-Dynamic Shared Object (DSO)<BR>
-Support
+Dynamic Shared Object (DSO) Support
 </H1>
 
-<ADDRESS>Originally written by<BR>
-Ralf S. Engelschall &lt;rse@apache.org&gt, April 1998</ADDRESS>
+<p>The Apache HTTP Server is a modular program where the administrator
+can choose the functionality to include in the server by selecting a
+set of modules.  The modules can be statically compiled into the
+<code>httpd</code> binary when the server is built.  Alternatively,
+modules can be compiled as Dynamic Shared Objects (DSOs) that exist
+separately from the main <code>httpd</code> binary file.  DSO modules
+may be compiled at the time the server is built, or they may be
+compiled and added at a later time using the Apache Extension Tool (<a
+href="programs/apxs.html">apxs</a>).</p>
 
-</DIV>
+<p>This document describes how to use DSO modules as well as the theory
+behind their use.</p>
 
-<H3>Background</H3>
+<ul>
+<li><a href="#implementation">Implementation</a></li>
+<li><a href="#usage">Usage Summary</a></li>
+<li><a href="#background">Background</a></li>
+<li><a href="#advantages">Advantages and Disadvantages</a></li>
+</ul>
+
+<hr>
+
+<table border="1">
+<tr><td valign="top">
+<strong>Related Modules</strong><br><br>
+
+<a href="mod/mod_so.html">mod_so</a><br>
+
+</td><td valign="top">
+<strong>Related Directives</strong><br><br>
+
+<A HREF="mod/mod_so.html#loadmodule">LoadModule</A><br>
+
+</td></tr></table>
+
+<H2><a name="implementation">Implementation</a></H2>
+
+<P>The DSO support for loading individual Apache modules is based on a module
+named <A HREF="mod/mod_so.html"><CODE>mod_so.c</CODE></A> which must be
+statically compiled into the Apache core. It is the only module besides
+<CODE>core.c</CODE> which cannot be put into a DSO itself.
+Practically all other distributed Apache modules then can
+then be placed into a DSO by individually enabling the DSO build for them via
+<CODE>configure</CODE>'s <CODE>--enable-<i>module</i>=shared</CODE> option 
+(see top-level <CODE>INSTALL</CODE> file).  After a module is compiled into
+a DSO named <CODE>mod_foo.so</CODE> you can use <A
+HREF="mod/mod_so.html"><CODE>mod_so</CODE></A>'s <A
+HREF="mod/mod_so.html#loadmodule"><CODE>LoadModule</CODE></A> command in your
+<CODE>httpd.conf</CODE> file to load this module at server startup or restart.
+
+<P>To simplify this creation of DSO files for Apache modules
+(especially for third-party modules) a new support program named <a
+href="programs/apxs.html">apxs</a> (<EM>APache eXtenSion</EM>) is
+available. It can be used to build DSO based modules <EM>outside
+of</EM> the Apache source tree. The idea is simple: When installing
+Apache the <CODE>configure</CODE>'s <CODE>make install</CODE>
+procedure installs the Apache C header files and puts the
+platform-dependent compiler and linker flags for building DSO files
+into the <CODE>apxs</CODE> program.  This way the user can use
+<CODE>apxs</CODE> to compile his Apache module sources without the
+Apache distribution source tree and without having to fiddle with the
+platform-dependent compiler and linker flags for DSO support.
+
+<H2><a name="usage">Usage Summary</a></H2>
+
+<P>To give you an overview of the DSO features of Apache 2.0, here is a short
+and concise summary:
+
+<OL>
+
+<LI>Build and install a <EM>distributed</EM> Apache module, say
+<CODE>mod_foo.c</CODE>, into its own DSO <CODE>mod_foo.so</CODE>:
+
+<TABLE BGCOLOR="#f0f0f0" CELLPADDING=10><TR><TD>
+<PRE>
+$ ./configure --prefix=/path/to/install
+        --enable-foo=shared
+$ make install
+</PRE>
+</TD></TR></TABLE>
+
+<LI>Build and install a <EM>third-party</EM> Apache module, say
+<CODE>mod_foo.c</CODE>, into its own DSO <CODE>mod_foo.so</CODE>:
+
+<TABLE BGCOLOR="#f0f0f0" CELLPADDING=10><TR><TD>
+<PRE>
+$ ./configure --add-module=module_type:/path/to/3rdparty/mod_foo.c 
+        --enable-foo=shared
+$ make install
+</PRE>
+</TD></TR></TABLE>
+
+<LI>Configure Apache for <EM>later installation</EM> of shared modules:
+<TABLE BGCOLOR="#f0f0f0" CELLPADDING=10><TR><TD>
+<PRE>
+$ ./configure --enable-so
+$ make install
+</PRE>
+</TD></TR></TABLE>
+
+<LI>Build and install a <EM>third-party</EM> Apache module, say
+<CODE>mod_foo.c</CODE>, into its own DSO <CODE>mod_foo.so</CODE> <EM>outside
+of</EM> the Apache source tree using <a href="programs/apxs.html">apxs</a>: 
+<TABLE BGCOLOR="#f0f0f0" CELLPADDING=10><TR><TD>
+<PRE>
+$ cd /path/to/3rdparty
+$ apxs -c mod_foo.c
+$ apxs -i -a -n foo mod_foo.so
+</PRE>
+</TD></TR></TABLE>
+
+</OL>
+
+<p>In all cases, once the shared module is compiled, you must use a <A
+HREF="mod/mod_so.html#loadmodule"><CODE>LoadModule</CODE></A> directive
+in <code>httpd.conf</code> to tell Apache to activate the module.
+
+
+
+<H2><a name="background">Background</a></H2>
 
 <P>On modern Unix derivatives there exists a nifty mechanism usually called
 dynamic linking/loading of <EM>Dynamic Shared Objects</EM> (DSO) which
@@ -95,8 +204,6 @@ not re-exported and thus not available for use in a DSO.  Finding a way to
 force the linker to export all global symbols is the main problem one has to
 solve when using DSO for extending a program at run-time.
 
-<H3>Practical Usage</H3>
-
 <P>The shared library approach is the typical one, because it is what the DSO
 mechanism was designed for, hence it is used for nearly all types of libraries
 the operating system provides. On the other hand using shared objects for
@@ -110,148 +217,10 @@ concept to extend its functionality and internally uses a dispatch-list-based
 approach to link external modules into the Apache core functionality. So,
 Apache is really predestined for using DSO to load its modules at run-time.
 
-<H3>Implementation</H3>
 
-<P>The DSO support for loading individual Apache modules is based on a module
-named <A HREF="mod/mod_so.html"><CODE>mod_so.c</CODE></A> which has to be
-statically compiled into the Apache core. It is the only module besides
-<CODE>core.c</CODE> which cannot be put into a DSO itself
-(bootstrapping!). Practically all other distributed Apache modules then can
-then be placed into a DSO by individually enabling the DSO build for them via
-<CODE>configure</CODE>'s <CODE>--enable-<i>module</i>=shared</CODE> option 
-(see top-level <CODE>INSTALL</CODE> file).  After a module is compiled into
-a DSO named <CODE>mod_foo.so</CODE> you can use <A
-HREF="mod/mod_so.html"><CODE>mod_so</CODE></A>'s <A
-HREF="mod/mod_so.html#loadmodule"><CODE>LoadModule</CODE></A> command in your
-<CODE>httpd.conf</CODE> file to load this module at server startup or restart.
+<H2><a name="advantages">Advantages and Disadvantages</a></H2>
 
-<P>To simplify this creation of DSO files for Apache modules
-(especially for third-party modules) a new support program named <a
-href="programs/apxs.html">apxs</a> (<EM>APache eXtenSion</EM>) is
-available. It can be used to build DSO based modules <EM>outside
-of</EM> the Apache source tree. The idea is simple: When installing
-Apache the <CODE>configure</CODE>'s <CODE>make install</CODE>
-procedure installs the Apache C header files and puts the
-platform-dependent compiler and linker flags for building DSO files
-into the <CODE>apxs</CODE> program.  This way the user can use
-<CODE>apxs</CODE> to compile his Apache module sources without the
-Apache distribution source tree and without having to fiddle with the
-platform-dependent compiler and linker flags for DSO support.
-
-<H3>Supported Platforms</H3>
-
-<P>Apache's <CODE>src/Configure</CODE> script currently has only limited but
-adequate built-in knowledge on how to compile DSO files, because as already
-mentioned this is heavily platform-dependent. Nevertheless all major Unix
-platforms are supported.  The definitive current state (May 1999) is this:
-
-<P>
-<UL>
-<LI>Out-of-the-box supported platforms:<BR>
-(actually tested versions in parenthesis)
-
-<PRE>
-o  FreeBSD            (2.1.5, 2.2.x, 3.x, 4.x)
-o  OpenBSD            (2.x)
-o  NetBSD             (1.3.1)
-o  BSDI               (3.x, 4.x)
-o  Linux              (Debian/1.3.1, RedHat/4.2)
-o  Solaris            (2.4, 2.5, 2.6, 2.7)
-o  SunOS              (4.1.3)
-o  Digital UNIX       (4.0)
-o  IRIX               (5.3, 6.2)
-o  HP/UX              (10.20)
-o  UnixWare           (2.01, 2.1.2)
-o  SCO                (5.0.4)
-o  AIX                (3.2, 4.1.5, 4.2, 4.3)
-o  ReliantUNIX/SINIX  (5.43)
-o  SVR4               (-)
-o  Mac OS X Server    (1.0)
-o  Mac OS             (10.0 preview 1)
-o  OpenStep/Mach      (4.2)
-o  DGUX               (??)
-o  NetWare            (5.1)
-</PRE>
-
-<P>
-<LI> Explicitly unsupported platforms:
-
-<PRE>
-o  Ultrix             (no dlopen-style interface under this platform)
-</PRE>
-
-</UL>
-
-<H3>Usage Summary</H3>
-
-<P>To give you an overview of the DSO features of Apache 2.0, here is a short
-and concise summary:
-
-<OL>
-
-<P>
-<UL>
-<LI>Build and install via <CODE>configure</CODE>:
-<TABLE BGCOLOR="#f0f0f0" CELLPADDING=10><TR><TD>
-<PRE>
-$ ./configure --prefix=/path/to/install ...
-$ make install
-</PRE>
-</TD></TR></TABLE>
-</UL>
-
-<LI>Build and install a <EM>distributed</EM> Apache module, say
-<CODE>mod_foo.c</CODE>, into its own DSO <CODE>mod_foo.so</CODE>:
-
-<P>
-<UL>
-<LI>Build and install via <CODE>configure</CODE>:
-<TABLE BGCOLOR="#f0f0f0" CELLPADDING=10><TR><TD>
-<PRE>
-$ ./configure --prefix=/path/to/install
-        --enable-foo=shared
-$ make install
-</PRE>
-</TD></TR></TABLE>
-</UL>
-
-<LI>Build and install a <EM>third-party</EM> Apache module, say
-<CODE>mod_foo.c</CODE>, into its own DSO <CODE>mod_foo.so</CODE>
-
-<P>
-<UL>
-<LI>Build and install via <CODE>configure</CODE>:
-<TABLE BGCOLOR="#f0f0f0" CELLPADDING=10><TR><TD>
-<PRE>
-$ ./configure --add-module=module_type:/path/to/3rdparty/mod_foo.c 
-        --enable-foo=shared
-$ make install
-</PRE>
-</TD></TR></TABLE>
-</UL>
-
-<P>
-<LI>Build and install a <EM>third-party</EM> Apache module, say
-<CODE>mod_foo.c</CODE>, into its own DSO <CODE>mod_foo.so</CODE> <EM>outside
-of</EM> the Apache source tree:
-
-<P>
-<UL>
-<LI>Build and install via <a href="programs/apxs.html">apxs</a>: 
-<TABLE BGCOLOR="#f0f0f0" CELLPADDING=10><TR><TD>
-<PRE>
-$ cd /path/to/3rdparty
-$ apxs -c mod_foo.c
-$ apxs -i -a -n foo mod_foo.so
-</PRE>
-</TD></TR></TABLE>
-</UL>
-
-</OL>
-
-<H3>Advantages & Disadvantages</H3>
-
-<P>The above DSO based features of Apache 2.0 have the following advantages:
+<P>The above DSO based features have the following advantages:
 
 <UL>
 <LI> The server package is more flexible at run-time because the actual server
@@ -305,6 +274,5 @@ $ apxs -i -a -n foo mod_foo.so
 </UL>
 
 <!--#include virtual="footer.html" -->
-</BLOCKQUOTE>
 </BODY>
 </HTML>
