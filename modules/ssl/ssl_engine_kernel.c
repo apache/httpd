@@ -709,6 +709,16 @@ int ssl_hook_Access(request_rec *r)
 
             cert_stack = (STACK_OF(X509) *)SSL_get_peer_cert_chain(ssl);
 
+            if (!cert_stack && (cert = SSL_get_peer_certificate(ssl))) {
+                /* client cert is in the session cache, but there is
+                 * no chain, since ssl3_get_client_certificate()
+                 * sk_X509_shift-ed the peer cert out of the chain.
+                 * we put it back here for the purpose of quick_renegotiation.
+                 */
+                cert_stack = sk_new_null();
+                sk_X509_push(cert_stack, cert);
+            }
+
             if (!cert_stack || (sk_X509_num(cert_stack) == 0)) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                              "Cannot find peer certificate chain");
@@ -745,6 +755,11 @@ int ssl_hook_Access(request_rec *r)
 
             SSL_set_verify_result(ssl, cert_store_ctx.error);
             X509_STORE_CTX_cleanup(&cert_store_ctx);
+
+            if (cert_stack != SSL_get_peer_cert_chain(ssl)) {
+                /* we created this ourselves, so free it */
+                sk_X509_pop_free(cert_stack, X509_free);
+            }
         }
         else {
             request_rec *id = r->main ? r->main : r;
