@@ -46,7 +46,7 @@ static void dumpit(ap_filter_t *f, apr_bucket *b)
 {
     conn_rec *c = f->c;
     
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, NULL, c->base_server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, c->base_server,
 	"mod_dumpio:  %s (%s-%s): %" APR_SIZE_T_FMT " bytes",
                 f->frec->name,
                 (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
@@ -62,7 +62,7 @@ static void dumpit(ap_filter_t *f, apr_bucket *b)
                 obuf = malloc(nbytes+1);    /* use pool? */
                 memcpy(obuf, buf, nbytes);
                 obuf[nbytes] = '\0';
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, NULL, c->base_server,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, c->base_server,
                      "mod_dumpio:  %s (%s-%s): %s",
                      f->frec->name,
                      (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
@@ -71,7 +71,7 @@ static void dumpit(ap_filter_t *f, apr_bucket *b)
                 free(obuf);
             }
         } else {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, NULL, c->base_server,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, c->base_server,
                  "mod_dumpio:  %s (%s-%s): %s",
                  f->frec->name,
                  (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
@@ -98,7 +98,7 @@ static int dumpio_input_filter (ap_filter_t *f, apr_bucket_brigade *bb,
     apr_status_t ret;
     conn_rec *c = f->c;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, NULL, c->base_server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, c->base_server,
 	"mod_dumpio: %s [%s-%s] %" APR_OFF_T_FMT " readbytes",
          f->frec->name,
 	 whichmode(mode),
@@ -112,7 +112,7 @@ static int dumpio_input_filter (ap_filter_t *f, apr_bucket_brigade *bb,
           dumpit(f, b);
         }
     } else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, NULL, c->base_server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, c->base_server,
 	"mod_dumpio: %s - %d", f->frec->name, ret) ;
     }
 
@@ -124,7 +124,7 @@ static int dumpio_output_filter (ap_filter_t *f, apr_bucket_brigade *bb)
     apr_bucket *b;
     conn_rec *c = f->c;
     
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, NULL, c->base_server, "mod_dumpio: %s", f->frec->name) ;
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, c->base_server, "mod_dumpio: %s", f->frec->name) ;
     
     for (b = APR_BRIGADE_FIRST(bb); b != APR_BRIGADE_SENTINEL(bb); b = APR_BUCKET_NEXT(b)) {
         /*
