@@ -195,7 +195,7 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
 
     if (!conf->logname ||
         ((apr_stat(&finfo, ap_server_root_relative(r->pool, conf->logname),
-                   APR_FINFO_NORM, r->pool) == APR_SUCCESS)
+                   APR_FINFO_SIZE, r->pool) == APR_SUCCESS)
          &&  (finfo.size > conf->logbytes)) ||
           (apr_open(&f, ap_server_root_relative(r->pool, conf->logname),
                    APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool)
@@ -247,7 +247,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
 
     if (!conf->logname ||
         ((apr_stat(&finfo, ap_server_root_relative(r->pool, conf->logname),
-                   APR_FINFO_NORM, r->pool) == APR_SUCCESS)
+                   APR_FINFO_SIZE, r->pool) == APR_SUCCESS)
          &&  (finfo.size > conf->logbytes)) ||
          (apr_open(&f, ap_server_root_relative(r->pool, conf->logname),
                   APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
