@@ -794,7 +794,11 @@ static apr_off_t get_body(char *buffer, apr_size_t *len, const char *tag,
 {
     char *endbody;
     int bodylen;
+    int taglen;
     apr_off_t pos;
+
+    taglen = strlen(tag);
+    *len -= taglen;
 
     /* We are at the first character following a body:tag\n entry 
      * Suck in the body, then backspace to the first char after the 
@@ -803,13 +807,11 @@ static apr_off_t get_body(char *buffer, apr_size_t *len, const char *tag,
      */
     if (apr_file_read(map, buffer, len) != APR_SUCCESS) {
         return -1;
-    }      
-    /* XXX next line can go beyond allocated storage and segfault,
-     *     or worse yet go beyond data read but not beyond allocated
-     *     storage and think it found the tag
-     */
+    }
+
+    strncpy(buffer + *len, tag, taglen);
     endbody = strstr(buffer, tag);
-    if (!endbody) {
+    if (endbody == buffer + *len) {
         return -1;
     }
     bodylen = endbody - buffer;
