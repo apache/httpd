@@ -192,7 +192,7 @@ SOURCE=..\..\modules\standard\mod_info.c
 !IF  "$(CFG)" == "ApacheModuleInfo - Win32 Release"
 
 DEP_CPP_MOD_I=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
@@ -219,7 +219,7 @@ DEP_CPP_MOD_I=\
 !ELSEIF  "$(CFG)" == "ApacheModuleInfo - Win32 Debug"
 
 DEP_CPP_MOD_I=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\

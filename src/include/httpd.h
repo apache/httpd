@@ -69,7 +69,7 @@ extern "C" {
 /* Headers in which EVERYONE has an interest... */
 
 #include "ap_config.h"
-#include "alloc.h"
+#include "ap_alloc.h"
 #include "buff.h"
 #include "ap.h"
 

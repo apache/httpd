@@ -193,7 +193,7 @@ SOURCE=..\..\modules\standard\mod_speling.c
 !IF  "$(CFG)" == "ApacheModuleSpeling - Win32 Release"
 
 DEP_CPP_MOD_S=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
@@ -216,7 +216,7 @@ DEP_CPP_MOD_S=\
 !ELSEIF  "$(CFG)" == "ApacheModuleSpeling - Win32 Debug"
 
 DEP_CPP_MOD_S=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\

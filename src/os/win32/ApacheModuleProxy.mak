@@ -214,7 +214,7 @@ SOURCE=.\mod_proxy.c
 !IF  "$(CFG)" == "ApacheModuleProxy - Win32 Release"
 
 DEP_CPP_MOD_P=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
@@ -240,7 +240,7 @@ DEP_CPP_MOD_P=\
 !ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
 
 DEP_CPP_MOD_P=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
@@ -270,7 +270,7 @@ SOURCE=.\proxy_cache.c
 !IF  "$(CFG)" == "ApacheModuleProxy - Win32 Release"
 
 DEP_CPP_PROXY=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
@@ -299,7 +299,7 @@ DEP_CPP_PROXY=\
 !ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
 
 DEP_CPP_PROXY=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
@@ -332,7 +332,7 @@ SOURCE=.\proxy_connect.c
 !IF  "$(CFG)" == "ApacheModuleProxy - Win32 Release"
 
 DEP_CPP_PROXY_=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
@@ -357,7 +357,7 @@ DEP_CPP_PROXY_=\
 !ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
 
 DEP_CPP_PROXY_=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
@@ -386,7 +386,7 @@ SOURCE=.\proxy_ftp.c
 !IF  "$(CFG)" == "ApacheModuleProxy - Win32 Release"
 
 DEP_CPP_PROXY_F=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
@@ -412,7 +412,7 @@ DEP_CPP_PROXY_F=\
 !ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
 
 DEP_CPP_PROXY_F=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
@@ -442,7 +442,7 @@ SOURCE=.\proxy_http.c
 !IF  "$(CFG)" == "ApacheModuleProxy - Win32 Release"
 
 DEP_CPP_PROXY_H=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
@@ -469,7 +469,7 @@ DEP_CPP_PROXY_H=\
 !ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
 
 DEP_CPP_PROXY_H=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
@@ -500,7 +500,7 @@ SOURCE=.\proxy_util.c
 !IF  "$(CFG)" == "ApacheModuleProxy - Win32 Release"
 
 DEP_CPP_PROXY_U=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
@@ -528,7 +528,7 @@ DEP_CPP_PROXY_U=\
 !ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
 
 DEP_CPP_PROXY_U=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\

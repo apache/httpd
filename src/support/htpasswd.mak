@@ -270,7 +270,7 @@ SOURCE=..\ap\ap_cpystrn.c
 !IF  "$(CFG)" == "htpasswd - Win32 Release"
 
 DEP_CPP_AP_CP=\
-	"..\include\alloc.h"\
+	"..\include\ap_alloc.h"\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
@@ -290,7 +290,7 @@ DEP_CPP_AP_CP=\
 !ELSEIF  "$(CFG)" == "htpasswd - Win32 Debug"
 
 DEP_CPP_AP_CP=\
-	"..\include\alloc.h"\
+	"..\include\ap_alloc.h"\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
@@ -420,7 +420,7 @@ SOURCE=..\ap\ap_snprintf.c
 !IF  "$(CFG)" == "htpasswd - Win32 Release"
 
 DEP_CPP_AP_SN=\
-	"..\include\alloc.h"\
+	"..\include\ap_alloc.h"\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
@@ -440,7 +440,7 @@ DEP_CPP_AP_SN=\
 !ELSEIF  "$(CFG)" == "htpasswd - Win32 Debug"
 
 DEP_CPP_AP_SN=\
-	"..\include\alloc.h"\
+	"..\include\ap_alloc.h"\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\

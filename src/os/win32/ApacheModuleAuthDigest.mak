@@ -227,7 +227,7 @@ SOURCE=..\..\modules\experimental\mod_auth_digest.c
 !IF  "$(CFG)" == "ApacheModuleAuthDigest - Win32 Release"
 
 DEP_CPP_MOD_A=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
@@ -263,7 +263,7 @@ NODEP_CPP_MOD_A=\
 !ELSEIF  "$(CFG)" == "ApacheModuleAuthDigest - Win32 Debug"
 
 DEP_CPP_MOD_A=\
-	"..\..\include\alloc.h"\
+	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\

@@ -264,7 +264,7 @@ SOURCE=.\os\win32\util_win32.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
 # Begin Source File
 
-SOURCE=.\include\alloc.h
+SOURCE=.\include\ap_alloc.h
 # End Source File
 # Begin Source File
 

@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "httpd.h"
-#include "alloc.h"
+#include "ap_alloc.h"
 
 /*
  * Dummy a bunch of stuff just to get a compile

@@ -626,7 +626,7 @@ struct pool {
 #endif
 };
 
-#include "alloc.h"
+#include "ap_alloc.h"
 #define POOL_HDR_CLICKS (1 + ((sizeof(struct pool) - 1) / CLICK_SZ))
 #define POOL_HDR_BYTES (POOL_HDR_CLICKS * CLICK_SZ)
 

@@ -42,12 +42,12 @@ depend:
 ap_cpystrn.o: ap_cpystrn.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
  $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
  $(OSDIR)/os-inline.c $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
- $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/ap_alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
  $(INCDIR)/util_uri.h
 ap_execve.o: ap_execve.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
  $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
  $(OSDIR)/os-inline.c $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
- $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/ap_alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
  $(INCDIR)/util_uri.h
 ap_fnmatch.o: ap_fnmatch.c $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
  $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h $(OSDIR)/os-inline.c \
@@ -64,15 +64,15 @@ ap_sha1.o: ap_sha1.c $(INCDIR)/ap_config.h $(INCDIR)/ap_sha1.h \
 ap_signal.o: ap_signal.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
  $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
  $(OSDIR)/os-inline.c $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
- $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/ap_alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
  $(INCDIR)/util_uri.h
 ap_slack.o: ap_slack.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
  $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
  $(OSDIR)/os-inline.c $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
- $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/ap_alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
  $(INCDIR)/util_uri.h $(INCDIR)/http_log.h
 ap_snprintf.o: ap_snprintf.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
  $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
  $(OSDIR)/os-inline.c $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
- $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/ap_alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
  $(INCDIR)/util_uri.h

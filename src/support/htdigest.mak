@@ -182,7 +182,7 @@ SOURCE=..\ap\ap_cpystrn.c
 !IF  "$(CFG)" == "htdigest - Win32 Release"
 
 DEP_CPP_AP_CP=\
-	"..\include\alloc.h"\
+	"..\include\ap_alloc.h"\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
@@ -202,7 +202,7 @@ DEP_CPP_AP_CP=\
 !ELSEIF  "$(CFG)" == "htdigest - Win32 Debug"
 
 DEP_CPP_AP_CP=\
-	"..\include\alloc.h"\
+	"..\include\ap_alloc.h"\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\

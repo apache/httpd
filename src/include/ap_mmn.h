@@ -228,6 +228,7 @@
  *                        ap_pbase64decode(), ap_pbase64encode()
  * 19990320.7           - add ap_strcasestr()
  * 19990320.8           - add request_rec.case_preserved_filename
+ * 19990320.9           - renamed ap_alloc.h to ap_alloc.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
@@ -235,7 +236,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 19990320
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 8                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 9                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
 
 /* Useful for testing for features. */

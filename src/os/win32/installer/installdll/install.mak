@@ -183,7 +183,7 @@ LINK32_OBJS= \
  "install - Win32 Debug"
 SOURCE=..\..\..\..\ap\ap_snprintf.c
 DEP_CPP_AP_SN=\
-	"..\..\..\..\include\alloc.h"\
+	"..\..\..\..\include\ap_alloc.h"\
 	"..\..\..\..\include\ap.h"\
 	"..\..\..\..\include\ap_config.h"\
 	"..\..\..\..\include\ap_ctype.h"\

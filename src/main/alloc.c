@@ -1170,7 +1170,7 @@ API_EXPORT(char *) ap_array_pstrcat(pool *p, const array_header *arr,
  */
 
 /* XXX: if you tweak this you should look at is_empty_table() and table_elts()
- * in alloc.h */
+ * in ap_alloc.h */
 struct table {
     /* This has to be first to promote backwards compatibility with
      * older modules which cast a table * to an array_header *...

@@ -195,7 +195,7 @@ SOURCE=.\gen_test_char.c
 !IF  "$(CFG)" == "gen_test_char - Win32 Release"
 
 DEP_CPP_GEN_T=\
-	"..\include\alloc.h"\
+	"..\include\ap_alloc.h"\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
@@ -214,7 +214,7 @@ DEP_CPP_GEN_T=\
 !ELSEIF  "$(CFG)" == "gen_test_char - Win32 Debug"
 
 DEP_CPP_GEN_T=\
-	"..\include\alloc.h"\
+	"..\include\ap_alloc.h"\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\

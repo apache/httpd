@@ -369,7 +369,7 @@ SOURCE=.\main\alloc.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_ALLOC=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -391,7 +391,7 @@ DEP_CPP_ALLOC=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_ALLOC=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -417,7 +417,7 @@ SOURCE=.\main\buff.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_BUFF_=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -439,7 +439,7 @@ DEP_CPP_BUFF_=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_BUFF_=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -465,7 +465,7 @@ SOURCE=.\buildmark.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_BUILD=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -484,7 +484,7 @@ DEP_CPP_BUILD=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_BUILD=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -513,7 +513,7 @@ SOURCE=.\main\http_config.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_HTTP_=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -540,7 +540,7 @@ DEP_CPP_HTTP_=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_HTTP_=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -571,7 +571,7 @@ SOURCE=.\main\http_core.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_HTTP_C=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -604,7 +604,7 @@ DEP_CPP_HTTP_C=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_HTTP_C=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -641,7 +641,7 @@ SOURCE=.\main\http_log.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_HTTP_L=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -666,7 +666,7 @@ DEP_CPP_HTTP_L=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_HTTP_L=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -695,7 +695,7 @@ SOURCE=.\main\http_main.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_HTTP_M=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -730,7 +730,7 @@ DEP_CPP_HTTP_M=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_HTTP_M=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -766,7 +766,7 @@ DEP_CPP_HTTP_M=\
 
 SOURCE=.\main\http_protocol.c
 DEP_CPP_HTTP_P=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -797,7 +797,7 @@ SOURCE=.\main\http_request.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_HTTP_R=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -826,7 +826,7 @@ DEP_CPP_HTTP_R=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_HTTP_R=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -859,7 +859,7 @@ SOURCE=.\main\http_vhost.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_HTTP_V=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -884,7 +884,7 @@ DEP_CPP_HTTP_V=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_HTTP_V=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -913,7 +913,7 @@ SOURCE=.\modules\standard\mod_access.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_A=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -937,7 +937,7 @@ DEP_CPP_MOD_A=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_A=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -965,7 +965,7 @@ SOURCE=.\modules\standard\mod_actions.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_AC=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -992,7 +992,7 @@ DEP_CPP_MOD_AC=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_AC=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1023,7 +1023,7 @@ SOURCE=.\modules\standard\mod_alias.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_AL=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1044,7 +1044,7 @@ DEP_CPP_MOD_AL=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_AL=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1069,7 +1069,7 @@ SOURCE=.\modules\standard\mod_asis.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_AS=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1095,7 +1095,7 @@ DEP_CPP_MOD_AS=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_AS=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1125,7 +1125,7 @@ SOURCE=.\modules\standard\mod_auth.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_AU=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1149,7 +1149,7 @@ DEP_CPP_MOD_AU=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_AU=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1177,7 +1177,7 @@ SOURCE=.\modules\standard\mod_autoindex.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_AUT=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1205,7 +1205,7 @@ DEP_CPP_MOD_AUT=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_AUT=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1237,7 +1237,7 @@ SOURCE=.\modules\standard\mod_cgi.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_C=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1265,7 +1265,7 @@ DEP_CPP_MOD_C=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_C=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1297,7 +1297,7 @@ SOURCE=.\modules\standard\mod_dir.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_D=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1324,7 +1324,7 @@ DEP_CPP_MOD_D=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_D=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1355,7 +1355,7 @@ SOURCE=.\modules\standard\mod_env.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_E=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1376,7 +1376,7 @@ DEP_CPP_MOD_E=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_E=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1401,7 +1401,7 @@ SOURCE=.\modules\standard\mod_imap.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_I=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1428,7 +1428,7 @@ DEP_CPP_MOD_I=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_I=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1459,7 +1459,7 @@ SOURCE=.\modules\standard\mod_include.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_IN=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1486,7 +1486,7 @@ DEP_CPP_MOD_IN=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_IN=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1517,7 +1517,7 @@ SOURCE=.\os\win32\mod_isapi.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_IS=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1543,7 +1543,7 @@ DEP_CPP_MOD_IS=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_IS=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1573,7 +1573,7 @@ SOURCE=.\modules\standard\mod_log_config.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_L=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1596,7 +1596,7 @@ DEP_CPP_MOD_L=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_L=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1623,7 +1623,7 @@ SOURCE=.\modules\standard\mod_mime.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_M=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1645,7 +1645,7 @@ DEP_CPP_MOD_M=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_M=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1671,7 +1671,7 @@ SOURCE=.\modules\standard\mod_negotiation.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_N=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1697,7 +1697,7 @@ DEP_CPP_MOD_N=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_N=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1727,7 +1727,7 @@ SOURCE=.\modules\standard\mod_setenvif.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_S=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1750,7 +1750,7 @@ DEP_CPP_MOD_S=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_S=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1777,7 +1777,7 @@ SOURCE=.\modules\standard\mod_so.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_SO=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1799,7 +1799,7 @@ DEP_CPP_MOD_SO=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_SO=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1825,7 +1825,7 @@ SOURCE=.\modules\standard\mod_userdir.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_U=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1846,7 +1846,7 @@ DEP_CPP_MOD_U=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_U=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1871,7 +1871,7 @@ SOURCE=.\os\win32\modules.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MODUL=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1892,7 +1892,7 @@ DEP_CPP_MODUL=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MODUL=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1960,7 +1960,7 @@ SOURCE=.\os\win32\registry.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_REGIS=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -1981,7 +1981,7 @@ DEP_CPP_REGIS=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_REGIS=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -2006,7 +2006,7 @@ SOURCE=.\main\rfc1413.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_RFC14=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -2029,7 +2029,7 @@ DEP_CPP_RFC14=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_RFC14=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -2056,7 +2056,7 @@ SOURCE=.\os\win32\service.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_SERVI=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -2082,7 +2082,7 @@ DEP_CPP_SERVI=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_SERVI=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -2112,7 +2112,7 @@ SOURCE=.\main\util.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_UTIL_=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -2135,7 +2135,7 @@ DEP_CPP_UTIL_=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_UTIL_=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -2196,7 +2196,7 @@ SOURCE=.\main\util_md5.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_UTIL_M=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -2218,7 +2218,7 @@ DEP_CPP_UTIL_M=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_UTIL_M=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -2244,7 +2244,7 @@ SOURCE=.\main\util_script.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_UTIL_S=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -2273,7 +2273,7 @@ DEP_CPP_UTIL_S=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_UTIL_S=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -2306,7 +2306,7 @@ SOURCE=.\main\util_uri.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_UTIL_U=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -2329,7 +2329,7 @@ DEP_CPP_UTIL_U=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_UTIL_U=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -2356,7 +2356,7 @@ SOURCE=.\os\win32\util_win32.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_UTIL_W=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
@@ -2377,7 +2377,7 @@ DEP_CPP_UTIL_W=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_UTIL_W=\
-	".\include\alloc.h"\
+	".\include\ap_alloc.h"\
 	".\include\ap.h"\
 	".\include\ap_config.h"\
 	".\include\ap_ctype.h"\
