@@ -1,5 +1,7 @@
 Changes with Apache 2.0.34-dev
 
+  *) Fix the calculation of request time in mod_status.  [Stas Bekman]
+
   *) Fix the calculation of thread_num in the worker score structure.
      [Stas Bekman]
 

@@ -570,13 +570,11 @@ static int status_handler(request_rec *r)
                 req_time = 0L;
 #endif /* HAVE_TIMES */
 #else
-                if (ws_record.start_time == 0L
-                    && ws_record.start_time == 0L)
+                if (ws_record.start_time == 0L)
                     req_time = 0L;
                 else
                     req_time = (long)
-                        (((ws_record.stop_time - ws_record.start_time) * 1000)
-                        + ((ws_record.stop_time - ws_record.start_time) / 1000));
+                        ((ws_record.stop_time - ws_record.start_time) / 1000);
 #endif
                 if (req_time < 0L)
                     req_time = 0L;
