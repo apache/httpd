@@ -598,6 +598,7 @@ API_EXPORT(void) ap_remove_module(module *m)
     if (modp == m) {
 	/* We are the top module, special case */
 	top_module = modp->next;
+	m->next = NULL;
     }
     else {
 	/* Not the top module, find use. When found modp will

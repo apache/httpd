@@ -74,20 +74,6 @@ Available Patches:
 
     * Patches for the DSO/mod_perl problem (see below for description):
 
-      Doug MacEachern's "[PATCH] fix for dso/mod_perl" 
-      <19980901004937.24670.qmail@hyperreal.org>
-      Status: Ralf -0 because it still doesn't work for me under FreeBSD.
-              We really have to find the real reason now. It's horrible
-              that only mod_perl is broken under DSO while other
-              module work. I really want to see mod_perl working
-              with DSO....
-
-              Doug says: this patch only cured Solaris, under linux and irix
-              the brokeness remains, but is a core dump in dlclose() of the
-              perl_module.dynamic_load_handle 
-              comment out mod_so.c:register_cleanup()->unload_module()
-              and mod_perl's 'make test' passes 100%
-
       Ralf's "[PATCH] Fix module init"
       This fixes the mod_so/mod_perl problems described under "FINAL RELEASE
       SHOWSTOPPERS" by doing a more correct init of the modules after loading

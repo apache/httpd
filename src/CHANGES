@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) Fix bug in ap_remove_module(), which caused problems for dso's 
+     who were the top_module.  [Doug MacEachern]
+
   *) Add support for Berkeley-DB/2.x (in addition to Berkeley-DB/1.x) to
      mod_auth_db to both be friendly to users who wants to use this version
      and to avoid problems under platforms where only version 2.x is present.
