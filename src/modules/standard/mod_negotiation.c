@@ -1457,7 +1457,6 @@ static void set_encoding_quality(negotiation_state *neg, var_rec *variant)
     int i;
     accept_rec *accept_recs = (accept_rec *) neg->accept_encodings->elts;
     char *enc = variant->content_encoding;
-    char *x_enc = NULL;
 
     if (!enc || is_identity_encoding(enc)) {
         return;
@@ -1473,29 +1472,22 @@ static void set_encoding_quality(negotiation_state *neg, var_rec *variant)
     }
 
     /* Go through each of the encodings on the Accept-Encoding: header,
-     * looking for a match with our encoding
-     * Prefer non- 'x-' prefixed token (e.g. gzip over x-gzip) */
+     * looking for a match with our encoding. x- prefixes are ignored.
+     */
     if (enc[0] == 'x' && enc[1] == '-') {
         enc += 2;
     }
     for (i = 0; i < neg->accept_encodings->nelts; ++i) {
         char *name = accept_recs[i].type_name;
 
+        if (name[0] == 'x' && name[1] == '-') {
+            name += 2;
+        }
+
         if (!strcmp(name, enc)) {
             variant->encoding_quality = 1;
-            variant->content_encoding = name;
             return;
         }
-
-        if (name[0] == 'x' && name[1] == '-' && !strcmp(name+2, enc)) {
-            x_enc = name;
-        }
-    }
-
-    if (x_enc != NULL) {
-        variant->encoding_quality = 1;
-        variant->content_encoding = x_enc;
-        return;
     }
 
     /* Encoding not found on Accept-Encoding: header, so it is
@@ -2201,9 +2193,7 @@ static int handle_multi(request_rec *r)
     r->filename = sub_req->filename;
     r->handler = sub_req->handler;
     r->content_type = sub_req->content_type;
-    /* it may have been modified, so that it would match the exact encoding
-     * requested by the client (i.e. x-gzip vs. gzip) */
-    r->content_encoding = best->content_encoding;
+    r->content_encoding = sub_req->content_encoding;
     r->content_languages = sub_req->content_languages;
     r->content_language = sub_req->content_language;
     r->finfo = sub_req->finfo;
@@ -2224,6 +2214,61 @@ static int handle_multi(request_rec *r)
         }
     }
     return OK;
+}
+
+/* There is a problem with content-encoding, as some clients send and
+ * expect an x- token (e.g. x-gzip) while others expect the plain token
+ * (i.e. gzip). To try and deal with this as best as possible we do
+ * the following: if the client sent an Accept-Encoding header and it
+ * contains a plain token corresponding to the content encoding of the
+ * response, then set content encoding using the plain token. Else if
+ * the A-E header contains the x- token use the x- token in the C-E
+ * header. Else don't do anything.
+ *
+ * Note that if no A-E header was sent, or it does not contain a token
+ * compatible with the final content encoding, then the token in the
+ * C-E header will be whatever was specified in the AddEncoding
+ * directive.
+ */
+static int fix_encoding(request_rec *r)
+{
+    char *enc = r->content_encoding;
+    char *x_enc = NULL;
+    array_header *accept_encodings;
+    accept_rec *accept_recs;
+    int i;
+
+    if (!enc || !*enc) {
+        return DECLINED;
+    }
+
+    if (enc[0] == 'x' && enc[1] == '-') {
+        enc += 2;
+    }
+
+    accept_encodings = do_header_line(r->pool,
+                                ap_table_get(r->headers_in, "Accept-encoding"));
+    accept_recs = (accept_rec *) accept_encodings->elts;
+
+    for (i = 0; i < accept_encodings->nelts; ++i) {
+        char *name = accept_recs[i].type_name;
+
+        if (!strcmp(name, enc)) {
+            r->content_encoding = name;
+            return OK;
+        }
+
+        if (name[0] == 'x' && name[1] == '-' && !strcmp(name+2, enc)) {
+            x_enc = name;
+        }
+    }
+
+    if (x_enc) {
+        r->content_encoding = x_enc;
+        return OK;
+    }
+
+    return DECLINED;
 }
 
 static const handler_rec negotiation_handlers[] =
@@ -2248,7 +2293,7 @@ module MODULE_VAR_EXPORT negotiation_module =
     NULL,                       /* check auth */
     NULL,                       /* check access */
     handle_multi,               /* type_checker */
-    NULL,                       /* fixups */
+    fix_encoding,               /* fixups */
     NULL,                       /* logger */
     NULL,                       /* header parser */
     NULL,                       /* child_init */
