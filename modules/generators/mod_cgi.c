@@ -627,7 +627,10 @@ static int cgi_handler(request_rec *r)
 	return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
 			       "attempt to invoke directory as script");
 
-    if (r->path_info && *r->path_info && !r->used_path_info) {
+    if ((r->used_path_info == AP_REQ_REJECT_PATH_INFO) &&
+        r->path_info && *r->path_info)
+    {
+        /* default to accept */
         return log_scripterror(r, conf, HTTP_NOT_FOUND, 0,
                                "AcceptPathInfo off disallows user's path");
     }

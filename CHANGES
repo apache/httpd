@@ -1,4 +1,7 @@
 Changes with Apache 2.0.36
+
+  *) Fix AcceptPathInfo. PR 8234  [Cliff Woolley]
+
   *) [Security] Added the APLOG_TOCLIENT flag to ap_log_rerror() to
      explicitly tell the server that warning messages should be sent 
      to the client in addition to being recorded in the error log. 

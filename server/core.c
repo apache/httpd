@@ -3102,11 +3102,11 @@ static int core_override_type(request_rec *r)
 
     /* Deal with the poor soul who is trying to force path_info to be
      * accepted within the core_handler, where they will let the subreq
-     * address it's contents.  This is toggled by the user in the very
+     * address its contents.  This is toggled by the user in the very
      * beginning of the fixup phase, so modules should override the user's
-     * discresion in their own module fixup phase.  It is tristate, if
+     * discretion in their own module fixup phase.  It is tristate, if
      * the user doesn't specify, the result is 2 (which the module may
-     * interpret to it's own customary behavior.)  It won't be tounched
+     * interpret to its own customary behavior.)  It won't be touched
      * if the value is no longer undefined (2), so any module changing
      * the value prior to the fixup phase OVERRIDES the user's choice.
      */
@@ -3187,7 +3187,10 @@ static int default_handler(request_rec *r)
         return HTTP_NOT_FOUND;
     }
 
-    if (!(r->used_path_info & 1) && r->path_info && *r->path_info) {
+    if ((r->used_path_info != AP_REQ_ACCEPT_PATH_INFO) &&
+        r->path_info && *r->path_info)
+    {
+        /* default to reject */
         ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
                       "File does not exist: %s",
                       apr_pstrcat(r->pool, r->filename, r->path_info, NULL));
@@ -3939,10 +3942,10 @@ static int core_create_req(request_rec *r)
 
     ap_set_module_config(r->request_config, &core_module, req_cfg);
 
-    /* Begin by presuming any module can make it's own path_info assumptions,
+    /* Begin by presuming any module can make its own path_info assumptions,
      * until some module interjects and changes the value.
      */
-    r->used_path_info = 2;
+    r->used_path_info = AP_REQ_DEFAULT_PATH_INFO;
 
     return OK;
 }
