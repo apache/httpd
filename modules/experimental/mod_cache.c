@@ -861,24 +861,8 @@ static const char
 {
     cache_server_conf *conf = ap_get_module_config(parms->server->module_config,
                                                    &cache_module);
-    double val;
 
-    if (sscanf(arg, "%lg", &val) != 1)
-        return "CacheMaxExpire value must be a float";
-    conf->maxex = (apr_time_t) (val * MSEC_ONE_HR);
-    conf->maxex_set = 1;
-    return NULL;
-}
-static const char
-*set_cache_maxex_min(cmd_parms *parms, void *dummy, const char *arg)
-{
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                   &cache_module);
-    long val;
-
-    val = atol(arg);
-
-    conf->maxex = (apr_time_t) (val * MSEC_ONE_MIN);
+    conf->maxex = (apr_time_t) (atol(arg) * MSEC_ONE_SEC);
     conf->maxex_set = 1;
     return NULL;
 }
@@ -888,24 +872,8 @@ static const char
 {
     cache_server_conf *conf = ap_get_module_config(parms->server->module_config, 
                                                    &cache_module);
-    double val;
 
-    if (sscanf(arg, "%lg", &val) != 1)
-        return "CacheDefaultExpire value must be a float";
-    conf->defex = (apr_time_t) (val * MSEC_ONE_HR);
-    conf->defex_set = 1;
-    return NULL;
-}
-static const char
-*set_cache_defex_min(cmd_parms *parms, void *dummy, const char *arg)
-{
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, 
-                                                   &cache_module);
-    long val;
-
-    val = atol(arg);
-
-    conf->defex = (apr_time_t) (val * MSEC_ONE_MIN);
+    conf->defex = (apr_time_t) (atol(arg) * MSEC_ONE_SEC);
     conf->defex_set = 1;
     return NULL;
 }
@@ -968,14 +936,9 @@ static const command_rec cache_cmds[] =
     AP_INIT_TAKE1("CacheDisable", add_cache_disable, NULL, RSRC_CONF,
      "A partial URL prefix below which caching is disabled"),
     AP_INIT_TAKE1("CacheMaxExpire", set_cache_maxex, NULL, RSRC_CONF,
-     "The maximum time in hours to cache a document"),
-    AP_INIT_TAKE1("CacheMaxExpireMin", set_cache_maxex_min, NULL, RSRC_CONF,
-     "The maximum time in Minutes to cache a document"),
-
+     "The maximum time in seconds to cache a document"),
      AP_INIT_TAKE1("CacheDefaultExpire", set_cache_defex, NULL, RSRC_CONF,
-     "The default time in hours to cache a document"),
-     AP_INIT_TAKE1("CacheDefaultExpireMin", set_cache_defex_min, NULL, RSRC_CONF,
-     "The default time in Minutes to cache a document"),
+     "The default time in seconds to cache a document"),
      AP_INIT_FLAG("CacheIgnoreNoLastMod", set_cache_ignore_no_last_mod, NULL, 
              RSRC_CONF, 
              "Ignore Responses where there is no Last Modified Header"),
