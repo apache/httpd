@@ -79,6 +79,9 @@
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
 #endif
+#ifdef HAVE_ARPA_INET_H
+#include <arpa/inet.h>
+#endif
 
 /* Allow Apache to use ap_mmap */
 #ifdef USE_MMAP_FILES
