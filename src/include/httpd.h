@@ -65,11 +65,13 @@
 /* Define this to be the default server home dir. Anything later in this
  * file with a relative pathname will have this added.
  */
+#ifndef HTTPD_ROOT
 #ifdef __EMX__
 /* Set default for OS/2 file system */ 
 #define HTTPD_ROOT "/os2httpd"
 #else
 #define HTTPD_ROOT "/usr/local/etc/httpd"
+#endif
 #endif
 
 /* Root of server */
@@ -144,7 +146,9 @@
 #endif
 
 /* The name of the server config file */
+#ifndef SERVER_CONFIG_FILE
 #define SERVER_CONFIG_FILE "conf/httpd.conf"
+#endif
 
 /* The name of the document config file */
 #define RESOURCE_CONFIG_FILE "conf/srm.conf"
@@ -161,14 +165,18 @@
 #define DEFAULT_USER_DIR "public_html"
 
 /* The default path for CGI scripts if none is currently set */
+#ifndef DEFAULT_PATH
 #define DEFAULT_PATH "/bin:/usr/bin:/usr/ucb:/usr/bsd:/usr/local/bin"
+#endif
 
 /* The path to the Bourne shell, for parsed docs */
+#ifndef SHELL_PATH
 #ifdef __EMX__
 /* Set default for OS/2 file system */ 
 #define SHELL_PATH "CMD.EXE"
 #else
 #define SHELL_PATH "/bin/sh"
+#endif
 #endif
 
 /* The path to the suExec wrapper, can be overridden in Configuration */
@@ -191,9 +199,6 @@
 
 /* The size of the server's internal read-write buffers */
 #define IOBUFSIZE 8192
-
-/* The number of header lines we will accept from a client */
-#define MAX_HEADERS 200
 
 /* Number of servers to spawn off by default --- also, if fewer than
  * this free when the caretaker checks, it will spawn more.

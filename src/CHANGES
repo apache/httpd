@@ -1,5 +1,8 @@
 Changes with Apache 1.2b10
 
+  *) Allow HTTPD_ROOT, SERVER_CONFIG_FILE, DEFAULT_PATH, and SHELL_PATH
+     to be configured via -D in Configuration.  [Dean Gaudet] PR#449
+
   *) <VirtualHost _default_:portnum> didn't work properly.  [Dean Gaudet]
 
   *) Added prototype for mktemp() for SUNOS4 [Marc Slemko]
