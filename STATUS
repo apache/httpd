@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/04/10 17:54:35 $]
+Last modified at [$Date: 2001/04/10 18:05:19 $]
 
 Release:
 
@@ -108,6 +108,10 @@ RELEASE SHOWSTOPPERS:
       directive.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Performance: Get SINGLE_LISTENER_UNSERIALIZED_ACCEPT
+      optimization working again. Bill would like to see this
+      working for the threaded MPM, then prefork.
 
     * mod_tls is very specific to OpenSSL. Make the API calls
       more generic to support other encryption libraries.
