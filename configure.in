@@ -175,7 +175,7 @@ apache_need_expat=yes
 
 dnl AP_LIB_DIRS specifies the additional libs from src/lib/ that we need
 dnl AP_LIBS specifies the actual libraries. note we have some required libs.
-AP_LIBS="lib/apr/\$(LIBPRE)apr.a lib/pcre/libpcre.la lib/aputil/libaputil.la"
+AP_LIBS="lib/pcre/libpcre.la lib/aputil/libaputil.la"
 INCLUDES="$INCLUDES -I\$(top_srcdir)/lib/aputil"
 
 if test "$apache_need_sdbm" = "yes"; then
@@ -188,6 +188,9 @@ if test "$apache_need_expat" = "yes"; then
   AP_LIBS="$AP_LIBS lib/expat-lite/libexpat.la"
   INCLUDES="$INCLUDES -I\$(top_srcdir)/lib/expat-lite"
 fi
+
+dnl APR should go after the other libs, so the right symbols can be picked up
+AP_LIBS="$AP_LIBS lib/apr/\$(LIBPRE)apr.a"
 APACHE_SUBST(AP_LIB_DIRS)
 APACHE_SUBST(AP_LIBS)
 
