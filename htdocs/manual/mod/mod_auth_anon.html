@@ -178,8 +178,7 @@ the httpd-log file
 </ul>
 <p>
 Excerpt of access.conf:
-<dl>
-<dt><code>
+<blockquote><code>
 Anonymous        anonymous guest www test welcome<p>
 Anonymous_MustGiveEmail on<br>
 Anonymous_VerifyEmail    on<br>
@@ -189,18 +188,12 @@ Anonymous_LogEmail      on<br>
 AuthName                Use 'anonymous' & Email address for guest entry<br>
 AuthType                basic<p>
 
-</code></dt>
-<dd>
-                Normal Apache/NCSA tokens for access control
-                <p>
-                <code>&lt;limit get post head&gt</code><br>
-                <code>order deny,allow          </code><br>
-                <code>allow from all            </code><br>
-                <p>
-                <code>require valid-user        </code><br>
-                <code>&lt;limit&gt              </code><br>
-</dd>
-</dl>
+</code>
+order deny,allow          <br>
+allow from all            <br>
+<p>
+require valid-user        <br>
+</code></blockquote>
 
 
 <hr>
