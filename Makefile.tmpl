@@ -188,18 +188,17 @@ install:
 		echo "+--------------------------------------------------------+"; \
 		echo "| You now have successfully built and installed the      |"; \
 		echo "| Apache 1.3 HTTP server. To verify that Apache actually |"; \
-		echo "| works correctly you can immediately try to fire it up  |"; \
-		echo "| the first time by running:                             |"; \
-		echo "|                                                        |"; \
-		echo "|   $(sbindir)/apachectl start"; \
-		echo "|                                                        |"; \
-		echo "| Then you should additionally adjust the configuration  |"; \
-		echo "| files which can be found under the following paths:    |"; \
+		echo "| works correctly you now should first check the         |"; \
+		echo "| (initially created or preserved) configuration files   |"; \
 		echo "|                                                        |"; \
 		echo "|   $(sysconfdir)/{httpd,access,srm}.conf"; \
 		echo "|                                                        |"; \
-		echo "| Thanks for running Apache.                             |"; \
-		echo "|                                The Apache Group        |"; \
+		echo "| and then you should be able to immediately fire up     |"; \
+		echo "| Apache the first time by running:                      |"; \
+		echo "|                                                        |"; \
+		echo "|   $(sbindir)/apachectl start"; \
+		echo "|                                                        |"; \
+		echo "| Thanks for using Apache.       The Apache Group        |"; \
 		echo "|                                http://www.apache.org/  |"; \
 		echo "+--------------------------------------------------------+"; \
 	fi
