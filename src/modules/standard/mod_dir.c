@@ -67,16 +67,26 @@
 module MODULE_VAR_EXPORT dir_module;
 
 typedef struct dir_config_struct {
-    char *index_names;
+    array_header *index_names;
 } dir_config_rec;
 
 #define DIR_CMD_PERMS OR_INDEXES
 
+static const char *add_index(cmd_parms *cmd, void *dummy, char *arg)
+{
+    dir_config_rec *d = dummy;
+
+    if (!d->index_names) {
+	d->index_names = make_array(cmd->pool, 2, sizeof(char *));
+    }
+    *(char **)push_array(d->index_names) = arg;
+    return NULL;
+}
+
 static command_rec dir_cmds[] =
 {
-    {"DirectoryIndex", set_string_slot,
-     (void *) XtOffsetOf(dir_config_rec, index_names),
-     DIR_CMD_PERMS, RAW_ARGS,
+    {"DirectoryIndex", add_index, NULL,
+     DIR_CMD_PERMS, ITERATE,
      "a list of file names"},
     {NULL}
 };
@@ -105,7 +115,9 @@ static int handle_dir(request_rec *r)
     dir_config_rec *d =
     (dir_config_rec *) get_module_config(r->per_dir_config,
                                          &dir_module);
-    const char *names_ptr = d->index_names ? d->index_names : DEFAULT_INDEX;
+    char *dummy_ptr[1];
+    char **names_ptr;
+    int num_names;
     int error_notfound = 0;
 
     if (r->uri[0] == '\0' || r->uri[strlen(r->uri) - 1] != '/') {
@@ -131,9 +143,18 @@ static int handle_dir(request_rec *r)
         r->filename = pstrcat(r->pool, r->filename, "/", NULL);
     }
 
-    while (*names_ptr) {
+    if (d->index_names) {
+	names_ptr = (char **)d->index_names->elts;
+	num_names = d->index_names->nelts;
+    }
+    else {
+	dummy_ptr[0] = DEFAULT_INDEX;
+	names_ptr = dummy_ptr;
+	num_names = 1;
+    }
 
-        char *name_ptr = getword_conf(r->pool, &names_ptr);
+    for (; num_names; ++names_ptr, --num_names) {
+        char *name_ptr = *names_ptr;
         request_rec *rr = sub_req_lookup_uri(name_ptr, r);
 
         if (rr->status == HTTP_OK && rr->finfo.st_mode != 0) {
@@ -152,7 +173,7 @@ static int handle_dir(request_rec *r)
         /* If the request returned a redirect, propagate it to the client */
 
         if (is_HTTP_REDIRECT(rr->status) ||
-            (rr->status == HTTP_NOT_ACCEPTABLE && *names_ptr == '\0')) {
+            (rr->status == HTTP_NOT_ACCEPTABLE && num_names == 1)) {
 
             error_notfound = rr->status;
             r->notes = overlay_tables(r->pool, r->notes, rr->notes);
