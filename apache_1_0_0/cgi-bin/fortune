@@ -1,0 +1,14 @@
+#!/bin/sh
+
+FORTUNE=/usr/games/fortune
+
+echo Content-type: text/plain
+echo
+
+if [ -x $FORTUNE ];  then
+	$FORTUNE
+else 
+	echo Cannot find fortune command on this system.
+fi
+
+

@@ -1,0 +1,131 @@
+# This is the main server configuration file. See URL http://www.apache.org/
+# for instructions.
+
+# Do NOT simply read the instructions in here without understanding
+# what they do, if you are unsure consult the online docs. You have been
+# warned.  
+
+# Originally by Rob McCool
+
+# ServerType is either inetd, or standalone.
+
+ServerType standalone
+
+# If you are running from inetd, go to "ServerAdmin".
+
+# Port: The port the standalone listens to. For ports < 1023, you will
+# need httpd to be run as root initially.
+
+Port 80
+
+# If you wish httpd to run as a different user or group, you must run
+# httpd as root initially and it will switch.  
+
+# User/Group: The name (or #number) of the user/group to run httpd as.
+#  On SCO (ODT 3) use User nouser and Group nogroup
+User nobody
+Group #-1
+
+# ServerAdmin: Your address, where problems with the server should be
+# e-mailed.
+
+ServerAdmin you@your.address
+
+# ServerRoot: The directory the server's config, error, and log files
+# are kept in
+
+ServerRoot /usr/local/etc/httpd
+
+# BindAddress: You can support virtual hosts with this option. This option
+# is used to tell the server which IP address to listen to. It can either
+# contain "*", an IP address, or a fully qualified Internet domain name.
+# See also the VirtualHost directive.
+
+#BindAddress *
+
+# ErrorLog: The location of the error log file. If this does not start
+# with /, ServerRoot is prepended to it.
+
+ErrorLog logs/error_log
+
+# TransferLog: The location of the transfer log file. If this does not
+# start with /, ServerRoot is prepended to it.
+
+TransferLog logs/access_log
+
+# PidFile: The file the server should log its pid to
+PidFile logs/httpd.pid
+
+# ServerName allows you to set a host name which is sent back to clients for
+# your server if it's different than the one the program would get (i.e. use
+# "www" instead of the host's real name).
+#
+# Note: You cannot just invent host names and hope they work. The name you 
+# define here must be a valid DNS name for your host. If you don't understand
+# this, ask your network administrator.
+
+#ServerName new.host.name
+
+# CacheNegotiatedDocs: By default, Apache sends Pragma: no-cache with each
+# document that was negotiated on the basis of content. This asks proxy
+# servers not to cache the document. Uncommenting the following line disables
+# this behavior, and proxies will be allowed to cache the documents.
+
+#CacheNegotiatedDocs
+
+# Timeout: The number of seconds before receives and sends time out
+#  n.b. the compiled default is 1200 (20 minutes !)
+
+Timeout 400
+
+# Server-pool size regulation.  Rather than making you guess how many
+# server processes you need, Apache dynamically adapts to the load it
+# sees --- that is, it tries to maintain enough server processes to
+# handle the current load, plus a few spare servers to handle transient
+# load spikes (e.g., multiple simultaneous requests from a single
+# Netscape browser).
+
+# It does this by periodically checking how many servers are waiting
+# for a request.  If there are fewer than MinSpareServers, it creates
+# a new spare.  If there are more than MaxSpareServers, some of the
+# spares die off.  These values are probably OK for most sites ---
+
+MinSpareServers 5
+MaxSpareServers 10
+
+# Number of servers to start --- should be a reasonable ballpark figure.
+
+StartServers 5
+
+# Limit on total number of servers running, i.e., limit on the number
+# of clients who can simultaneously connect --- if this limit is ever
+# reached, clients will be LOCKED OUT, so it should NOT BE SET TOO LOW.
+# It is intended mainly as a brake to keep a runaway server from taking
+# Unix with it as it spirals down...
+
+MaxClients 150
+
+# MaxRequestsPerChild: the number of requests each child process is
+#  allowed to process before the child dies.
+#  The child will exit so as to avoid problems after prolonged use when
+#  Apache (and maybe the libraries it uses) leak.  On most systems, this
+#  isn't really needed, but a few (such as Solaris) do have notable leaks
+#  in the libraries.
+
+MaxRequestsPerChild 30
+
+# VirtualHost: Allows the daemon to respond to requests for more than one
+# server address, if your server machine is configured to accept IP packets
+# for multiple addresses. This can be accomplished with the ifconfig 
+# alias flag, or through kernel patches like VIF.
+
+# Any httpd.conf or srm.conf directive may go into a VirtualHost command.
+# See alto the BindAddress entry.
+ 
+#<VirtualHost host.foo.com>
+#ServerAdmin webmaster@host.foo.com
+#DocumentRoot /www/docs/host.foo.com
+#ServerName host.foo.com
+#ErrorLog logs/host.foo.com-error_log
+#TransferLog logs/host.foo.com-access_log
+#</VirtualHost>

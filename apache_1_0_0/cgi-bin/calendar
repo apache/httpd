@@ -1,0 +1,28 @@
+#!/bin/sh
+
+CAL=/bin/cal
+
+echo Content-type: text/html
+echo
+
+if [ -x $CAL ]; then
+	if [ $# = 0 ]; then
+		cat << EOM
+<TITLE>Calendar</TITLE>
+<H1>Calendar</H1>
+
+<ISINDEX>
+
+To look up a calendar month, type the month followed by a space then the year.<P>
+Example: <code>3 1993</code> would give the calendar for March 1993.
+
+EOM
+	else 
+		echo \<PRE\>
+		$CAL $*
+	fi
+else
+	echo Cannot find cal on this system.
+fi
+
+
