@@ -2,6 +2,8 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) ab: Work over non-loopback on Unix again. PR 21495. [Jeff Trawick]
+
   *) mod_rewrite: In external rewrite maps lookup keys containing
      a newline now cause a lookup failure. PR 14453.
      [Cedric Gavage <cedric.gavage@unixtech.be>, André Malo]
