@@ -80,11 +80,6 @@
 #endif
 #endif /* SSL_EXPERIMENTAL */
 
-/* XXX: add configure check */
-#ifndef MODSSL_HAVE_SSL_SET_CERT_STORE
-#define MODSSL_HAVE_SSL_SET_CERT_STORE 0
-#endif 
-
 /*
  * Power up our brain...
  */
