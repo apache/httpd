@@ -206,7 +206,7 @@ CORE_EXPORT(void) ap_process_connection(conn_rec *c)
 
 	ap_destroy_pool(r->pool);
 
-	if (ap_mpm_graceful_stop()) {
+	if (ap_graceful_stop_signalled()) {
 	    /* XXX: hey wait, this should do a lingering_close! */
 	    ap_bclose(c->client);
 	    return;
