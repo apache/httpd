@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/01/13 13:19:44 $]
+  Last modified at [$Date: 2000/01/14 09:15:16 $]
 
 Release:
 
@@ -50,19 +50,13 @@ RELEASE SHOWSTOPPERS:
       The error message states this flag is required for "long long" types
       to be recognized by HPUX's compiler
         Ryan submitted a patch for this problem
-        STATUS:  Ryan +1, Jim, +1
+        STATUS:  Ryan +1, Jim, +1, Greg +1
 
     * DSO emulation for AIX 4.2 appears hosed. Sascha has submitted
       a patch which fixes the problems and addresses some concerns.
         Message-ID: <20000112165918.A6580@schumann.cx>
 	Message-ID: <20000112185823.A8543@schumann.cx>
 	Status: Sascha +1, Jim +1 (untested), Ryan +1 (untested)
-
-    * Namespace collision is possible with the Expat library. J.
-      Clark is aware of this, but we should not wait for an official
-      patch. We should make our own.
-        Message-ID: <20000111214226.A25440@engelschall.com>
-	Status:
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -170,6 +164,7 @@ Available Patches:
 		Jim -1 (I really don't think it makes sense to
 		add this right now this late in the release cycle
 		for 1.3.10. I am +1 for 1.3.11)
+		Greg -0 for 1.3 series.
 
     * Brian Havard's patch to remove dependency of mod_auth_dbm on mod_auth.
       (PR#2598)
@@ -193,6 +188,7 @@ Available Patches:
 		Martin +1 (on concept, but patched apache does not
 		compile successfully on pre-IPv6-SVR4,
 		and possibly others), Jim -1 (not for 1.3.10)
+		Greg -0 for 1.3 series.
 
     * Jim Patterson's patch to make mod_info work on Win32
         Message-ID: PR#1442
@@ -210,7 +206,8 @@ Available Patches:
       to mod_include's variable processing.
 	Mesage-ID: PR#3246, also available at
 		   <http://www.physics.mcgill.ca/~juan/mod_include.patch>
-	Status: Ken -0 for 1.3/+0 for 2.0, Lars -0 for 1.3
+	Status: Ken, Greg: -0 for 1.3/+0 for 2.0
+		Lars -0 for 1.3
  
     * Eric Prud'hommeaux's mod_dir mods for file-level access control.
         Message-ID: <Pine.LNX.3.96.981111213739.1364E-200000@tux.w3.org>
@@ -226,7 +223,8 @@ Available Patches:
     * Greg's XML Handling patch
         Message-ID: <3764E070.381B1B8E@lyra.org>
         Message-ID: <3760EC9C.1CB6398E@lyra.org>
-        Status: Greg +1, Martin +1 (on concept)
+        Status: Greg -0 (will integrate into 2.0 rather than 1.3)
+		Martin +1 (on concept)
 
 In progress:
 
@@ -324,12 +322,14 @@ Open issues:
 
     * Paul would like to see a 'gdbm' option because he uses
       it a lot.
-        +1: Greg (volunteers), Martin
+	-0: Greg (volunteers; will add to 2.0 series rather than 1.3)
+        +1: Martin
 
     * Many people have asked for a DBM to be distributed with Apache to
       isolate it from platform inconsistencies. SDBM (used by mod_ssl,
       mod_dav, Perl, and others) should fit the bill and is public domain.
-        +1: Greg (volunteers), Martin
+	-0: Greg (volunteers; will add to 2.0 series rather than 1.3)
+        +1: Martin
 
     * Maybe a http_paths.h file? See
 	<Pine.BSF.3.95q.971209222046.25627D-100000@valis.worldgate.com>
