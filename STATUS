@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/12/11 17:59:24 $]
+Last modified at [$Date: 2002/12/11 18:14:15 $]
 
 Release:
 
@@ -62,7 +62,7 @@ PATCHES TO PORT FROM 2.1
       This ensures that mod_ldap comes before mod_auth_ldap in the
       httpd.conf file, which is necessary for mod_auth_ldap to load.
       PR 14256  [Graham Leggett]
-      +1: trawick, wrowe
+      +1: trawick, wrowe, striker
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
@@ -72,7 +72,7 @@ PATCHES TO PORT FROM 2.1
       Due to HTTP compliance, we must either send the body T-E: chunked
       or include a C-L for the request body.  Connection: Close is not
       an option. [jerenkrantz    2002/12/08 21:37:27]
-      +1: stoddard
+      +1: stoddard, striker
 
 CURRENT RELEASE NOTES:
 
@@ -92,7 +92,7 @@ CURRENT VOTES:
 
     * Develop in Review-Then-Commit or Commit-Then-Review mode 
       on APACHE_2_0_BRANCH (no vetoes, this is a straight vote.)
-       R-T-C:   trawick, wrowe, jerenkrantz, stoddard, rederpj
+       R-T-C:   trawick, wrowe, jerenkrantz, stoddard, rederpj, striker
        Abstain: 
        C-T-R:   BrianP, aaron, jim
 
