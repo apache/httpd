@@ -71,7 +71,7 @@ int cache_create_entity(request_rec *r, char *url, apr_off_t size)
     cache_request_rec *cache = (cache_request_rec *) 
                          ap_get_module_config(r->request_config, &cache_module);
 
-    rv =  cache_generate_key(r,r->pool,&key);
+    rv = cache_generate_key(r,r->pool,&key);
     if (rv != APR_SUCCESS) {
         return rv;
     }
