@@ -10,7 +10,7 @@
     <variant>en</variant>
     <variant htmlonly="yes">fr</variant>
     <variant>ja</variant>
-    <variant htmlonly="yes">ko</variant>
+    <variant>ko</variant>
     <variant>ru</variant>
   </variants>
 </metafile>
