@@ -27,11 +27,27 @@ $(LIB): $(OBJS)
 	$(RANLIB) $@
 
 clean:
-	rm -f *.o $(LIB)
+	rm -f *.o $(LIB) uri_delims.h gen_uri_delims test_char.h gen_test_char
 
 # Work around broken compilers
 http_bprintf.o: http_bprintf.c
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(BROKEN_BPRINTF_FLAGS) http_bprintf.c
+
+uri_delims.h: gen_uri_delims
+	./gen_uri_delims >uri_delims.h
+
+util_uri.o: uri_delims.h
+
+gen_uri_delims: gen_uri_delims.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o gen_uri_delims gen_uri_delims.o $(LIBS)
+
+test_char.h: gen_test_char
+	./gen_test_char >test_char.h
+
+util.o: test_char.h
+
+gen_test_char: gen_test_char.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o gen_test_char gen_test_char.o $(LIBS)
 
 # We really don't expect end users to use this rule.  It works only with
 # gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
@@ -59,6 +75,11 @@ buff.o: buff.c $(INCDIR)/httpd.h $(INCDIR)/conf.h ../os/unix/os.h \
  $(INCDIR)/http_main.h $(INCDIR)/http_log.h
 fnmatch.o: fnmatch.c $(INCDIR)/conf.h ../os/unix/os.h \
  $(INCDIR)/hide.h $(INCDIR)/hsregex.h $(INCDIR)/fnmatch.h
+gen_test_char.o: gen_test_char.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+ ../os/unix/os.h $(INCDIR)/hide.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h
+gen_uri_delims.o: gen_uri_delims.c
 http_bprintf.o: http_bprintf.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  ../os/unix/os.h $(INCDIR)/hide.h $(INCDIR)/hsregex.h \
  $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
@@ -124,7 +145,7 @@ rfc1413.o: rfc1413.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
 util.o: util.c $(INCDIR)/httpd.h $(INCDIR)/conf.h ../os/unix/os.h \
  $(INCDIR)/hide.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
  $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
- $(INCDIR)/http_conf_globals.h $(INCDIR)/http_log.h
+ $(INCDIR)/http_conf_globals.h $(INCDIR)/http_log.h test_char.h
 util_date.o: util_date.c $(INCDIR)/conf.h ../os/unix/os.h \
  $(INCDIR)/hide.h $(INCDIR)/hsregex.h $(INCDIR)/util_date.h
 util_md5.o: util_md5.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
@@ -143,4 +164,4 @@ util_uri.o: util_uri.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  ../os/unix/os.h $(INCDIR)/hide.h $(INCDIR)/hsregex.h \
  $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
  $(INCDIR)/util_uri.h $(INCDIR)/http_log.h \
- $(INCDIR)/http_conf_globals.h
+ $(INCDIR)/http_conf_globals.h uri_delims.h

@@ -75,14 +75,10 @@ extern int fclose(FILE *);
 #endif
 
 /* A bunch of functions in util.c scan strings looking for certain characters.
- * To make that more efficient we encode a lookup table.
+ * To make that more efficient we encode a lookup table.  The test_char_table
+ * is generated automatically by gen_test_char.c.
  */
-#define T_ESCAPE_SHELL_CMD	(0x01)
-#define T_ESCAPE_PATH_SEGMENT	(0x02)
-#define T_OS_ESCAPE_PATH	(0x04)
-#define T_HTTP_TOKEN_STOP	(0x08)
-
-static unsigned char test_char_table[256];
+#include "test_char.h"
 
 /* we assume the folks using this ensure 0 <= c < 256... which means
  * you need a cast to (unsigned char) first, you can't just plug a
@@ -91,40 +87,11 @@ static unsigned char test_char_table[256];
  */
 #define TEST_CHAR(c, f)	(test_char_table[(unsigned)(c)] & (f))
 
-/* XXX: this should be compile-time initialized so that test_char_table can
- * live in read-only memory and not require backing store across fork(). 
- */
 void util_init(void)
 {
-    unsigned c;
-    unsigned char flags;
-
-    /* explicitly deal with NUL in case some strchr() do bogosity with it */
-    test_char_table[0] = 0;
-
-    for (c = 1; c < 256; ++c) {
-	flags = 0;
-
-	/* escape_shell_cmd */
-	if (strchr("&;`'\"|*?~<>^()[]{}$\\\n", c)) {
-	    flags |= T_ESCAPE_SHELL_CMD;
-	}
-
-	if (!isalnum(c) && !strchr("$-_.+!*'(),:@&=~", c)) {
-	    flags |= T_ESCAPE_PATH_SEGMENT;
-	}
-
-	if (!isalnum(c) && !strchr("$-_.+!*'(),:@&=/~", c)) {
-	    flags |= T_OS_ESCAPE_PATH;
-	}
-
-	/* these are the "tspecials" from RFC2068 */
-	if (iscntrl(c) || strchr(" \t()<>@,;:\\/[]?={}", c)) {
-	    flags |= T_HTTP_TOKEN_STOP;
-	}
-
-	test_char_table[c] = flags;
-    }
+    /* nothing to do... previously there was run-time initialization of
+     * test_char_table here
+     */
 }
 
 

@@ -85,9 +85,9 @@ updatehide:
 $(OBJS): Makefile
 
 # DO NOT REMOVE
-buildmark.o: buildmark.c $(INCDIR)/conf.h os/unix/os.h $(INCDIR)/hide.h \
- $(INCDIR)/hsregex.h $(INCDIR)/httpd.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
- $(INCDIR)/ap.h $(INCDIR)/util_uri.h
-modules.o: modules.c $(INCDIR)/httpd.h $(INCDIR)/conf.h os/unix/os.h \
- $(INCDIR)/hide.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
- $(INCDIR)/ap.h $(INCDIR)/util_uri.h $(INCDIR)/http_config.h
+buildmark.o: buildmark.c include/conf.h os/unix/os.h include/hide.h \
+ include/hsregex.h include/httpd.h include/alloc.h include/buff.h \
+ include/ap.h include/util_uri.h
+modules.o: modules.c include/httpd.h include/conf.h os/unix/os.h \
+ include/hide.h include/hsregex.h include/alloc.h include/buff.h \
+ include/ap.h include/util_uri.h include/http_config.h
