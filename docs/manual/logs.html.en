@@ -256,7 +256,7 @@
 
       <dd>This is the IP address of the client (remote host) which
       made the request to the server. If <a
-      href="mod/core.html#hostnamelookups">HostNameLookups</a> is
+      href="mod/core.html#hostnamelookups">HostnameLookups</a> is
       set to <code>On</code>, then the server will try to determine
       the hostname and log it in place of the IP address. However,
       this configuration is not recommended since it can
