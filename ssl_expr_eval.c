@@ -165,7 +165,7 @@ static BOOL ssl_expr_eval_comp(request_rec *r, ssl_expr *node)
             e2 = (ssl_expr *)node->node_arg2;
             word = ssl_expr_eval_word(r, e1);
             regex = (regex_t *)(e2->node_arg1);
-            return (regexec(regex, word, 0, NULL, 0) == 0);
+            return (ap_regexec(regex, word, 0, NULL, 0) == 0);
         }
         case op_NRE: {
             ssl_expr *e1;
@@ -177,7 +177,7 @@ static BOOL ssl_expr_eval_comp(request_rec *r, ssl_expr *node)
             e2 = (ssl_expr *)node->node_arg2;
             word = ssl_expr_eval_word(r, e1);
             regex = (regex_t *)(e2->node_arg1);
-            return !(regexec(regex, word, 0, NULL, 0) == 0);
+            return !(ap_regexec(regex, word, 0, NULL, 0) == 0);
         }
         default: {
             ssl_expr_error = "Internal evaluation error: Unknown expression node";
