@@ -1,0 +1,45 @@
+*) Random stray failures to get_local_addr --- it's returning EINVAL, of all
+   things.  Are these clients aborting really, really early or what?
+
+*) Clean up inclusion stuff --- PATH_INFO in <!--#exec cgi-->, also
+   make sure that if the response handler sets an error code, then an
+   error report winds up on the output...
+
+*) More complete scoreboard for child processes.  For each process, at least:
+   number of requests handled, start time, current request (first line and
+   client and server addresses).  Also an httpstat program to print this all
+   out readably (thereby giving you your first real shot at figuring out what
+   that CGI script which has been chewing up all your CPU for the past few
+   minutes thinks it's actually doing...).
+
+*) Assess efficiency cost of rputc() in includes.
+
+*) Varargs printf-like log_reason (would allow me to ditch most of the
+   remaining instances of MAX_STRING_LENGTH).
+
+*) Byte ranges, as per recent Netscape/Franks I-D.
+
+*) Allow modules to request their own AllowOverrides and Options bits.
+   (If nothing else, will get rid of the last bit of directory-handling
+   lint in the core --- likewise for CGI and includes lint).
+
+*) -c command line option; processed as commands, *after* config files
+   (so -c "Port ..." can override).
+
+*) multiple util_files:  util_time, util_string, util_sys, util_misc (?).
+
+*) Look at multithreading... known problem areas:
+   need to throw a mutex around free-block management in alloc.c; need to
+   adjust timeout and SIGPIPE handling (who got the SIGPIPE?); need to
+   create new per-connection pools in main.c (as subpools of pconf,
+   presumably), rather than just using one global ptrans pool, and need
+   to triple-check that no thread will want to allocate in the same pool
+   as another that is simultaneously running.  Then we get to worry about
+   all the obscure C library functions that return pointers to static
+   data (the time stuff is particularly bad about this).
+
+   Oh yeah, the rfc931 code is nowhere near thread-safe (is it leak-safe?);
+   it has a single static jmp_buf, and returns a pointer to static data.
+
+*) Possible cleanup --- feed module functions their per-directory configuration
+   as a second argument, rather than making them fish it out of r->per_dir_....
