@@ -3016,13 +3016,12 @@ static void register_hooks(void)
     ap_hook_type_checker(do_nothing,NULL,NULL,AP_HOOK_REALLY_LAST);
     ap_hook_access_checker(do_nothing,NULL,NULL,AP_HOOK_REALLY_LAST);
 
-    /* This is kind of odd, and it would be cool to clean it up a bit.
-     * The first function just registers the core's register_filter hook.
-     * The other associates a global name with the filter defined
-     * by the core module.
+    /* define the CORE filter, then register a hook to insert it at
+     * request-processing time.
      */
-    ap_hook_insert_filter(core_register_filter, NULL, NULL, AP_HOOK_MIDDLE);
     ap_register_filter("CORE", core_filter, AP_FTYPE_CONNECTION);
+    ap_hook_insert_filter(core_register_filter, NULL, NULL,
+                          AP_HOOK_REALLY_LAST);
 }
 
 API_VAR_EXPORT module core_module = {
