@@ -1,5 +1,10 @@
 Changes with Apache 2.0.17-dev
 
+  *) Add more options to the ap_mpm_query function.  This also allows MPMs to
+     report if their threads are dynamic or static.  Finally, this also
+     implements a new API, ap_show_mpm, which returns the MPM that was
+     required into the core. [Harrie Hazewinkel <harrie@covalent.net>]
+
   *) Do not install the binaries from the support directory twice.
      [jun-ichiro hagino <itojun@iijlab.net>]
 
