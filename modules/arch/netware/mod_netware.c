@@ -155,7 +155,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
         /* Run in its own address space if specified */
         detached = apr_table_get(d->file_handler_mode, ext);
         if (detached) {
-            e_info->cmd_type = APR_PROGRAM_ENV;
+            e_info->cmd_type = APR_PROGRAM_ADDRSPACE;
         }
         else {
             e_info->cmd_type = APR_PROGRAM;
