@@ -1,5 +1,10 @@
 Changes with Apache 2.0.36
 
+  *) Allow Win32 shebang scripts to follow the path (or omit the .exe
+     suffix from the shebang command), and allow ScriptInterpreterSource
+     Registry or RegistryStrict to override shebang lines, as 1.3 did.
+     [William Rowe]
+
   *) worker MPM: Fix a situation where a child exited without releasing
      the accept mutex.  Depending on the OS and mutex mechanism this 
      could result in a hang.  [Jeff Trawick]
