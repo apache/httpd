@@ -179,7 +179,7 @@ int main (int argc, const char * const argv[])
         }
         else if (sRotation) {
             apr_finfo_t finfo;
-            unsigned int current_size = -1;
+            apr_off_t current_size = -1;
 
             if ((nLogFD != NULL) && 
                 (apr_file_info_get(&finfo, APR_FINFO_SIZE, nLogFD) == APR_SUCCESS)) {
@@ -202,10 +202,10 @@ int main (int argc, const char * const argv[])
             if (tRotation)
                 tLogStart = (now / tRotation) * tRotation;
             else
-                tLogStart = apr_time_now() / APR_USEC_PER_SEC;
+                tLogStart = (int)apr_time_sec(apr_time_now());
 
             if (use_strftime) {
-		        apr_time_t tNow = tLogStart * APR_USEC_PER_SEC;
+                apr_time_t tNow = apr_time_from_sec(tLogStart);
                 apr_time_exp_t e;
                 apr_size_t rs;
 
