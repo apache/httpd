@@ -490,7 +490,7 @@ apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF 
     return resp_hdrs;
 }
 
-long int ap_proxy_send_fb(proxy_completion *completion, apr_socket_t *f, request_rec *r, ap_cache_el *c)
+long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r, ap_cache_el *c)
 {
     int  ok;
     char buf[IOBUFSIZE];
@@ -544,8 +544,7 @@ long int ap_proxy_send_fb(proxy_completion *completion, apr_socket_t *f, request
      */
     for (ok = 1; ok; cntr = 0) {
 	/* Read block from server */
-        cntr = IOBUFSIZE;
-	if (apr_recv(f, buf, &cntr) != APR_SUCCESS && !cntr)
+	if (ap_bread(f, buf, IOBUFSIZE, &cntr) != APR_SUCCESS && !cntr)
         {
             if (c != NULL) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -573,8 +572,7 @@ long int ap_proxy_send_fb(proxy_completion *completion, apr_socket_t *f, request
 
 	/* Write the block to the client, detect aborted transfers */
         while (!con->aborted && in_buffer > 0) {
-            cntr = in_buffer;
-            if (apr_send(con->client_socket, &buf[o], &cntr) != APR_SUCCESS) {
+            if ((cntr = ap_rwrite(&buf[o], in_buffer, r))) {
                 if (completion) {
                     /* when a send failure occurs, we need to decide
                      * whether to continue loading and caching the
@@ -595,11 +593,8 @@ long int ap_proxy_send_fb(proxy_completion *completion, apr_socket_t *f, request
         } /* while client alive and more data to send */
     } /* loop and ap_bread while "ok" */
 
-/* Remove this stuff, because flushing a socket doesn't make a lot of sense
- * currently.
     if (!con->aborted)
-	ap_bflush(con->client);
-*/
+	ap_rflush(r);
 
     return total_bytes_rcvd;
 }
@@ -1235,12 +1230,17 @@ static struct per_thread_data *get_per_thread_data(void)
     return NULL;
 }
 
+/* This function is completely bogus.  This should become a part of the
+ * cache filter when it is finished. RBB
+ */
 int ap_proxy_cache_send(request_rec *r, ap_cache_el *c)
 {
     apr_file_t *cachefp = NULL;
     apr_socket_t *fp = r->connection->client_socket;
     char buffer[500];
     apr_size_t len;
+    apr_off_t offset = 0;
+    apr_finfo_t finfo;
     
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                  "Sending cache file for %s", c->name);
@@ -1250,18 +1250,15 @@ int ap_proxy_cache_send(request_rec *r, ap_cache_el *c)
     if(apr_fgets(buffer, sizeof(buffer), cachefp)) {
         len = strlen(buffer);
         apr_send(fp, buffer, &len);
+        offset +=len;
     }
     /* send headers */
     ap_cache_el_header_walk(c, ap_proxy_send_hdr_line, r, NULL);
     len = 2;
     apr_send(fp, CRLF, &len);
     /* send data */
-    /* XXX I changed the ap_proxy_send_fb call to use fp instead of cachefp.
-     *     this compiles cleanly, but it is probably the completely wrong
-     *     solution.  We need to go through the proxy code, and remove all
-     *     of the BUFF's.  rbb
-     */
-    if(!r->header_only && !ap_proxy_send_fb(0, fp, r, NULL))
+    apr_getfileinfo(&finfo, cachefp);
+    if(!r->header_only && ap_send_fd(cachefp, r, offset, finfo.size, &len))
         return HTTP_INTERNAL_SERVER_ERROR;
     return OK;
 }

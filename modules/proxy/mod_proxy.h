@@ -256,7 +256,7 @@ char *ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
 			 char **passwordp, char **hostp, int *port);
 const char *ap_proxy_date_canon(apr_pool_t *p, const char *x);
 apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f);
-long int ap_proxy_send_fb(proxy_completion *, apr_socket_t *f, request_rec *r, ap_cache_el *c);
+long int ap_proxy_send_fb(proxy_completion *, BUFF *f, request_rec *r, ap_cache_el *c);
 void ap_proxy_send_headers(request_rec *r, const char *respline, apr_table_t *hdrs);
 int ap_proxy_liststr(const char *list, const char *val);
 void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength);
