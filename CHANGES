@@ -1,5 +1,7 @@
 Changes with Apache 2.0b1
 
+  *) Really fix mod_rewrite map lookups this time. [Tony Finch]
+
   *) Get the correct IP address if ServerName isn't set and we can't
      find a fully-qualified domain name at startup.
      PR#7170 [Danek Duvall <dduvall@eng.sun.com>]
