@@ -132,17 +132,18 @@ HREF="mod/mod_so.html"><CODE>mod_so</CODE></A>'s <A
 HREF="mod/mod_so.html#loadmodule"><CODE>LoadModule</CODE></A> command in your
 <CODE>httpd.conf</CODE> file to load this module at server startup or restart.
 
-<P>To simplify this creation of DSO files for Apache modules (especially for
-third-party modules) a new support program named <CODE>apxs</CODE> (<EM>APache
-eXtenSion</EM>) is available. It can be used to build DSO based modules
-<EM>outside of</EM> the Apache source tree. The idea is simple: When
-installing Apache the <CODE>configure</CODE>'s <CODE>make install</CODE>
-procedure installs the Apache C header files and puts the platform-dependent
-compiler and linker flags for building DSO files into the <CODE>apxs</CODE>
-program.  This way the user can use <CODE>apxs</CODE> to compile his Apache
-module sources without the Apache distribution source tree and without having
-to fiddle with the platform-dependent compiler and linker flags for DSO
-support.
+<P>To simplify this creation of DSO files for Apache modules
+(especially for third-party modules) a new support program named <a
+href="programs/apxs.html">apxs</a> (<EM>APache eXtenSion</EM>) is
+available. It can be used to build DSO based modules <EM>outside
+of</EM> the Apache source tree. The idea is simple: When installing
+Apache the <CODE>configure</CODE>'s <CODE>make install</CODE>
+procedure installs the Apache C header files and puts the
+platform-dependent compiler and linker flags for building DSO files
+into the <CODE>apxs</CODE> program.  This way the user can use
+<CODE>apxs</CODE> to compile his Apache module sources without the
+Apache distribution source tree and without having to fiddle with the
+platform-dependent compiler and linker flags for DSO support.
 
 <P>To place the complete Apache core program into a DSO library (only required
 on some of the supported platforms to force the linker to export the apache
@@ -309,7 +310,7 @@ of</EM> the Apache source tree:
 
 <P>
 <UL>
-<LI>Build and install via <CODE>apxs</CODE>: 
+<LI>Build and install via <a href="programs/apxs.html">apxs</a>: 
 <TABLE BGCOLOR="#f0f0f0" CELLPADDING=10><TR><TD>
 <PRE>
 $ cd /path/to/3rdparty
