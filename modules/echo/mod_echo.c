@@ -58,7 +58,7 @@ static const command_rec echo_cmds[] = {
 { NULL }
 };
 
-static void register_hooks()
+static void register_hooks(void)
 {
     ap_hook_process_connection(process_echo_connection,NULL,NULL,HOOK_MIDDLE);
 }

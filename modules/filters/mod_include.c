@@ -977,7 +977,7 @@ static int handle_echo(ap_file_t *in, request_rec *r, const char *error)
 	    else if (!strcasecmp(tag_val, "url")) encode = E_URL;
 	    else if (!strcasecmp(tag_val, "entity")) encode = E_ENTITY;
 	    else {
-		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			    "unknown value \"%s\" to parameter \"encoding\" of "
 			    "tag echo in %s",
 			    tag_val, r->filename);
