@@ -266,26 +266,21 @@ apr_status_t ap_registry_get_array(apr_pool_t *p, const char *key, const char *n
 			     pValue,        /* for value */
 			     &nSize);	/* for size of "value" */
 
-        nSize = 1;    /* Element Count */
-        tmp = pValue;
-        while (tmp[0] || tmp[1])
-        {
-            if (!tmp[0])
-                ++nSize;
-            ++tmp;
-        }
-    
-        *parray = apr_array_make(p, nSize, sizeof(char *));
-        tmp = pValue;
-        newelem = (char **) apr_array_push(*parray);
-        *newelem = tmp;
-        while (tmp[0] || tmp[1])
-        {
-            if (!tmp[0]) {
-                newelem = (char **) apr_array_push(*parray);
-                *newelem = tmp + 1;
+        nSize = 0;    /* Element Count */
+        for (tmp = pValue; *tmp; ++tmp) {
+            ++nSize;
+            while (*tmp) {
+                ++tmp;
             }
-            ++tmp;
+        }
+
+        *parray = apr_array_make(p, nSize, sizeof(char *));
+        for (tmp = pValue; *tmp; ++tmp) {
+            newelem = (char **) apr_array_push(*parray);
+            *newelem = tmp;
+            while (*tmp) {
+                ++tmp;
+            }
         }
     }    
     
