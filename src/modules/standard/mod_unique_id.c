@@ -162,6 +162,7 @@ static void unique_id_global_init(server_rec *s, pool *p)
           "gethostname: mod_unique_id requires the hostname of the server");
         exit(1);
     }
+    str[sizeof(str) - 1] = '\0';
 
     if ((hent = gethostbyname(str)) == NULL) {
         aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
