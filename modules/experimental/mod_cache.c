@@ -696,11 +696,10 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
                  "cache: Expiry date is %ld", (long)exp);
     if (exp == APR_DATE_BAD) {
         if (lastmod != APR_DATE_BAD) {
-            double x = (double) (date - lastmod) * conf->factor;
-            double maxex = (double)conf->maxex;
-            if (x > maxex)
-                x = maxex;
-            exp = now + (int) x;
+            apr_time_t x = (apr_time_t) ((date - lastmod) * conf->factor);
+            if (x > conf->maxex)
+                x = conf->maxex;
+            exp = now + x;
         }
         else
             exp = now + conf->defex;
