@@ -65,6 +65,7 @@
 #include "ap_listen.h"
 #include "apr_strings.h"
 #include "http_log.h"
+#include "mpm.h"
 #include "mpm_common.h"
 #ifdef HAVE_STRING_H
 #include <string.h>
