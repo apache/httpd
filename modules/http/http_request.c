@@ -116,7 +116,6 @@ IMPLEMENT_HOOK_RUN_FIRST(int,auth_checker,(request_rec *r),(r),DECLINED)
 static int check_safe_file(request_rec *r)
 {
 
-  /* ZZZ change to AP defines */
     if (r->finfo.st_mode == 0         /* doesn't exist */
         || S_ISDIR(r->finfo.st_mode)
         || S_ISREG(r->finfo.st_mode)
@@ -261,21 +260,18 @@ static int get_path_info(request_rec *r)
          }
          else {
              errno = 0;
-	     /* ZZZ change to AP func for File Info */
              rv = stat(path, &r->finfo);
          }
 
         if (cp != end)
             *cp = '/';
 
-        if (!rv) {    /* ZZZ AP Status check here */
-
+        if (!rv) {    
             /*
              * Aha!  Found something.  If it was a directory, we will search
              * contents of that directory for a multi_match, so the PATH_INFO
              * argument starts with the component after that.
              */
-	  /* ZZZ use AP file type checking defines */
             if (S_ISDIR(r->finfo.st_mode) && last_cp) {
                 r->finfo.st_mode = 0;   /* No such file... */
                 cp = last_cp;
@@ -290,8 +286,6 @@ static int get_path_info(request_rec *r)
 	 */
 	r->finfo.st_mode = 0;
 
-	/* ZZZ Let's throw some AP Errno checking in here and get rid of the
-	   #defines. */
 #if defined(ENOENT) && defined(ENOTDIR)
         if (errno == ENOENT || errno == ENOTDIR) {
             last_cp = cp;
@@ -303,7 +297,7 @@ static int get_path_info(request_rec *r)
                 --cp;
         }
         else {
-#if defined(EACCES)      /* ZZZ again, AP error checking. */
+#if defined(EACCES)
             if (errno != EACCES)
 #endif
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
@@ -442,8 +436,7 @@ static int directory_walk(request_rec *r)
     if (test_filename[test_filename_len - 1] == '/')
         --num_dirs;
 
-    if (S_ISDIR(r->finfo.st_mode))     /* zzz use AP funcs and defines to make
-					  this quicker */
+    if (S_ISDIR(r->finfo.st_mode))     
         ++num_dirs;
 
     /*
@@ -578,7 +571,7 @@ static int directory_walk(request_rec *r)
      * S_ISDIR test.  But if you accessed /symlink/index.html, for example,
      * you would *not* get the 403.
      */
-    if (!S_ISDIR(r->finfo.st_mode)   /* ZZZ use AP funcs and defines */
+    if (!S_ISDIR(r->finfo.st_mode) 
         && (res = check_symlinks(r->filename, ap_allow_options(r)))) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                     "Symbolic link not allowed: %s", r->filename);
@@ -867,7 +860,6 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
         rnew->filename = ap_make_full_path(rnew->pool, fdir, new_file);
         ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
 
-	/* ZZZ use AP funcs to get File Info */
         if (stat(rnew->filename, &rnew->finfo) < 0) {
             rnew->finfo.st_mode = 0;
         }
@@ -883,7 +875,6 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
          * no matter what, if it's a subdirectory, we need to re-run
          * directory_walk
          */
-	/* ZZZ use AP funcs and defines for this. */
         if (S_ISDIR(rnew->finfo.st_mode)) {  
             res = directory_walk(rnew);
             if (!res) {

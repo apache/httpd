@@ -313,7 +313,6 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
          ((r->proto_num >= HTTP_VERSION(1,1)) &&
 	  (r->chunked = 1))) && /* THIS CODE IS CORRECT, see comment above. */
         r->server->keep_alive &&
-	/* ZZZ change to APR keepalive timeout defined value */
         (r->server->keep_alive_timeout > 0) &&
         ((r->server->keep_alive_max == 0) ||
          (r->server->keep_alive_max > r->connection->keepalives)) &&
@@ -382,7 +381,6 @@ API_EXPORT(time_t) ap_rationalize_mtime(request_rec *r, time_t mtime)
      * were given a time in the future, we return the current time - the
      * Last-Modified can't be in the future.
      */
-    /* ZZZ Change time call to use time AP time thread functions. */
     now = (mtime < r->request_time) ? r->request_time : time(NULL);
     return (mtime > now) ? now : mtime;
 }
@@ -408,7 +406,6 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
         return OK;
     }
 
-    /* ZZZ We are changing time(NULL) to AP time thread functions. */
     mtime = (r->mtime != 0) ? r->mtime : time(NULL);
 
     /* If an If-Match request-header field was given

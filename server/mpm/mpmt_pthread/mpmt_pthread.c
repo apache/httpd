@@ -696,7 +696,7 @@ static int setup_listeners(server_rec *s)
  */
 
 #if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
-static void sock_disable_nagle(int s) /* ZZZ abstract */
+static void sock_disable_nagle(int s) 
 {
     /* The Nagle algorithm says that we should delay sending partial
      * packets in hopes of getting more data.  We don't want to do
@@ -1046,7 +1046,7 @@ static void child_main(int child_num_arg)
     }
 }
 
-static int make_child(server_rec *s, int slot, time_t now) /* ZZZ */
+static int make_child(server_rec *s, int slot, time_t now) 
 {
     int pid;
 
@@ -1220,7 +1220,6 @@ static void perform_idle_server_maintenance(void)
 	    idle_spawn_rate = 1;
 	}
 	else {
-	    /* ZZZZ */
 	    
 	    if (idle_spawn_rate >= 8) {
 	        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, server_conf,
@@ -1273,7 +1272,6 @@ static void server_main_loop(int remaining_children_to_start)
 		    /* we're still doing a 1-for-1 replacement of dead
                      * children with new children
                      */
-                    /* ZZZ abstract out for AP funcs. */
 		    make_child(server_conf, child_slot, time(NULL));
 		    --remaining_children_to_start;
 		}
@@ -1487,7 +1485,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 		    "SIGHUP received.  Attempting to restart");
     }
     if (!is_graceful) {
-        ap_restart_time = time(NULL); /* ZZZZZ */
+        ap_restart_time = time(NULL); 
     }
     return 0;
 }
@@ -1677,7 +1675,6 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
     }
 
     fname = ap_server_root_relative(cmd->pool, arg);
-    /* ZZZ change this to the AP func FileInfo*/
     if ((stat(fname, &finfo) == -1) || !S_ISDIR(finfo.st_mode)) {
 	return ap_pstrcat(cmd->pool, "CoreDumpDirectory ", fname, 
 			  " does not exist or is not a directory", NULL);

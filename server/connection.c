@@ -103,14 +103,14 @@ IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 #ifdef USE_SO_LINGER
 #define NO_LINGCLOSE		/* The two lingering options are exclusive */
 
-static void sock_enable_linger(int s) /* // ZZZZZ abstract the socket, s */
+static void sock_enable_linger(int s) 
 {
-    struct linger li;                 /* // ZZZZZ SocketOptions... */
+    struct linger li;                 
 
     li.l_onoff = 1;
     li.l_linger = MAX_SECS_TO_LINGER;
 
-    if (setsockopt(s, SOL_SOCKET, SO_LINGER, /* // ZZZZZ abstract, return SUCCESS or not */
+    if (setsockopt(s, SOL_SOCKET, SO_LINGER, 
 		   (char *) &li, sizeof(struct linger)) < 0) {
 	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf,
 	            "setsockopt: (SO_LINGER)");
@@ -130,10 +130,9 @@ static void sock_enable_linger(int s) /* // ZZZZZ abstract the socket, s */
  * distinguish between a dropped connection and something that might be
  * worth logging.
  */
-/*ZZZ this routine needs to be adapted for use with poll()*/
 static void lingering_close(request_rec *r)     
 {
-  /*ZZZ remove the hardwired 512. This is an IO Buffer Size */
+  /*TODO remove the hardwired 512. This is an IO Buffer Size */
     char dummybuf[512];    
     struct pollfd pd;
     int lsd;
@@ -156,7 +155,7 @@ static void lingering_close(request_rec *r)
 
     lsd = r->connection->client->fd;
 
-    if ((shutdown(lsd, 1) != 0)  /* ZZZ abstract shutdown */
+    if ((shutdown(lsd, 1) != 0)  
         || ap_is_aborted(r->connection)) {
 	ap_bclose(r->connection->client);
 	return;
@@ -184,7 +183,7 @@ static void lingering_close(request_rec *r)
         pd.revents = 0;
     } while ((poll(&pd, 1, 2) == 1)   
              && read(lsd, dummybuf, sizeof(dummybuf)));
-      /* && (time() = epoch) < max_wait); */    /* ZZZZ time function is not good... */
+      /* && (time() = epoch) < max_wait); */    
 
     /* Should now have seen final ack.  Safe to finally kill socket */
     ap_bclose(r->connection->client);
