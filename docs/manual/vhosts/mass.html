@@ -86,7 +86,7 @@ doing this is dubious anyway because it eats file descriptors. It's
 better to log to a pipe or a fifo and arrange for the process at the
 other end to distribute the logs (and perhaps accumulate statistics,
 etc.). A <CODE>LogFormat</CODE> directive that includes
-<CODE>%v</CODE> for the virtual host makes it easy to do this.</P>
+<CODE>%{SERVER_NAME}e</CODE> for the virtual host makes it easy to do this.</P>
 
 
 <HR><H2><A NAME="overview">Overview of the technique</A></H2>
@@ -156,7 +156,7 @@ care is taken to do a per-dynamic-virtual-host equivalent of
 UseCanonicalName Off
 
 # splittable logs
-LogFormat "%v %h %l %u %t \"%r\" %s %b" vcommon
+LogFormat "%{SERVER_NAME}e %h %l %u %t \"%r\" %s %b" vcommon
 CustomLog logs/access_log vcommon
 
 &lt;Directory /www/hosts&gt;
@@ -273,7 +273,7 @@ sections.</P>
 <PRE>
 UseCanonicalName Off
 
-LogFormat "%v %h %l %u %t \"%r\" %s %b" vcommon
+LogFormat "%{SERVER_NAME}e %h %l %u %t \"%r\" %s %b" vcommon
 CustomLog logs/access_log vcommon
 
 &lt;Directory /www/commercial&gt;
