@@ -185,7 +185,7 @@ static int log_before(request_rec *r)
     apr_size_t n;
     apr_status_t rv;
 
-    if (!cfg->fd) {
+    if (!cfg->fd || r->prev) {
         return DECLINED;
     }
 
