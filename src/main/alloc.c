@@ -783,11 +783,17 @@ API_EXPORT_NONSTD(char *) ap_pstrcat(pool *a,...)
     return res;
 }
 
-/* psprintf is implemented by writing directly into the current
+/* ap_psprintf is implemented by writing directly into the current
  * block of the pool, starting right at first_avail.  If there's
  * insufficient room, then a new block is allocated and the earlier
  * output is copied over.  The new block isn't linked into the pool
  * until all the output is done.
+ *
+ * Note that this is completely safe because nothing else can
+ * allocate in this pool while ap_psprintf is running.  alarms are
+ * blocked, and the only thing outside of alloc.c that's invoked
+ * is ap_vformatter -- which was purposefully written to be
+ * self-contained with no callouts.
  */
 
 struct psprintf_data {
@@ -833,6 +839,7 @@ static int psprintf_flush(ap_vformatter_buff *vbuff)
     (void) ap_release_mutex(alloc_mutex);
     memcpy(nblok->h.first_avail, blok->h.first_avail, cur_len);
     ps->vbuff.curpos = nblok->h.first_avail + cur_len;
+    /* save a byte for the NUL terminator */
     ps->vbuff.endpos = nblok->h.endp - 1;
 
     /* did we allocate the current blok? if so free it up */
@@ -845,6 +852,10 @@ static int psprintf_flush(ap_vformatter_buff *vbuff)
     }
     ps->blok = nblok;
     ps->got_a_new_block = 1;
+    /* note that we've deliberately not linked the new block onto
+     * the pool yet... because we may need to flush again later, and
+     * we'd have to spend more effort trying to unlink the block.
+     */
     return 0;
 #endif
 }

@@ -966,6 +966,9 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 
 static int snprintf_flush(ap_vformatter_buff *vbuff)
 {
+    /* if the buffer fills we have to abort immediately, there is no way
+     * to "flush" an ap_snprintf... there's nowhere to flush it to.
+     */
     return -1;
 }
 

@@ -121,6 +121,17 @@ int ap_execve(const char *, const char *argv[], const char *envp[]);
  * example, it's possible when the output exactly matches the buffer
  * space available that curpos == endpos will be true when
  * ap_vformatter returns.
+ *
+ * ap_vformatter does not call out to any other code, it is entirely
+ * self-contained.  This allows the callers to do things which are
+ * otherwise "unsafe".  For example, ap_psprintf uses the "scratch"
+ * space at the unallocated end of a block, and doesn't actually
+ * complete the allocation until ap_vformatter returns.  ap_psprintf
+ * would be completely broken if ap_vformatter were to call anything
+ * that used a pool.  Similarly http_bprintf() uses the "scratch"
+ * space at the end of its output buffer, and doesn't actually note
+ * that the space is in use until it either has to flush the buffer
+ * or until ap_vformatter returns.
  */
 
 typedef struct {
