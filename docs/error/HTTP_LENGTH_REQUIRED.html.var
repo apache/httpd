@@ -81,7 +81,9 @@ Body:----------nl--
 Content-language: pl
 Content-type: text/html; charset=ISO-8859-2
 Body:----------pl--
-<!--#set var="TITLE" value="B³êdne Content-Length!"
+<!--#set var="CONTENT_LANGUAGE" value="pl"
+--><!--#set var="TITLE" value="B³êdne Content-Length!"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
 --><!--#include virtual="include/top.html" -->
 
     ¯±danie <!--#echo var="REDIRECT_REQUEST_METHOD" -->
