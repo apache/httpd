@@ -926,7 +926,9 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
             }
             return status;
         }
-        ap_set_module_config(c->conn_config, &proxy_ftp_module, backend);
+        /* TODO: see if ftp could use determine_connection */ 
+        backend->addr = worker->cp->addr;
+        ap_set_module_config(c->conn_config, &proxy_ftp_module, backend);        
     }
 
 
