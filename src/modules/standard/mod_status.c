@@ -50,31 +50,29 @@
  *
  */
 
-/* $Id: mod_status.c,v 1.30 1996/10/01 12:05:48 mjc Exp $ */
-
-/* Status Module.  Provide a way of getting at the internal Apache
- * status information without having to worry where the scoreboard is
- * held.
+/* Status Module.  Display lots of internal data about how Apache is
+ * performing and the state of all children processes.
  *
- * To enable this, put the following in access.conf:
+ * To enable this, add the following lines into any config file:
  *
  * <Location /server-status>
  * SetHandler server-status
  * </Location>
  *
- * You may want to protect it by putting a <Limit> container directive
- * right after the SetHandler directive.  You may perform the
- * following types of queries:
+ * You may want to protect this location by password or domain so no one
+ * else can look at it.  Then you can access the statistics with a URL like:
  *
- * GET /server-status - Returns pretty page for system admin user
- * GET /server-status?refresh - Returns page with 1 second refresh
- * GET /server-status?refresh=6 - Returns page with refresh every 6 seconds
- * GET /server-status?auto - Returns page with data for automatic parsing
- * GET /server-status?notable - Returns page with no table niceties
+ * http://your_server_name/server-status
+ *
+ * /server-status - Returns page using tables
+ * /server-status?notable - Returns page for browsers without table support
+ * /server-status?refresh - Returns page with 1 second refresh
+ * /server-status?refresh=6 - Returns page with refresh every 6 seconds
+ * /server-status?auto - Returns page with data for automatic parsing
  *
  * Mark Cox, mark@ukweb.com, November 1995
  *
- * 12.11.95 Initial version for telescope.org
+ * 12.11.95 Initial version for www.telescope.org
  * 13.3.96  Updated to remove rprintf's [Mark]
  * 18.3.96  Added CPU usage, process information, and tidied [Ben Laurie]
  * 18.3.96  Make extra Scoreboard variables #definable
@@ -542,12 +540,12 @@ int status_handler (request_rec *r)
 
 #else /* !defined(STATUS) */
 
-    rputs("<hr>To obtain a full report with current status information \n",r);
-    rputs("you need to recompile Apache adding the <code>-DSTATUS</code> \n",r);
-    rputs("directive on the <code>CFLAGS</code> line in the \n",r);
-    rputs("<code>Configuration</code> file.\n",r);
-    rputs("<code>DNS</code> and <code>LOGGING</code> status \n",r);
-    rputs("also requires the <code>-DSTATUS</code> directive. \n",r);
+Rule STATUS=yes      
+
+    rputs("<hr>To obtain a full report with current status information and",r)
+    rputs(" DNS and LOGGING status codes \n",r);
+    rputs("you need to recompile Apache after adding the line <pre>",r);
+    rputs("Rule STATUS=yes</pre>into the file <code>Configuration</code>\n",r);
 
 #endif /* STATUS */
 
