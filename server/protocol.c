@@ -814,7 +814,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 /* reset the alloc_len so that we'll allocate a new
                  * buffer if we have to do any more folding: we can't
                  * use the previous buffer because its contents are
-                 * now part of tmp_headers
+                 * now part of r->headers_in
                  */
                 alloc_len = 0;
 
