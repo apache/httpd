@@ -24,64 +24,65 @@
 //PLKED.OBJ10  DD PATH='/<your-path-here>/src/ap/ap_signal.o'
 //PLKED.OBJ11  DD PATH='/<your-path-here>/src/ap/ap_slack.o'
 //PLKED.OBJ12  DD PATH='/<your-path-here>/src/ap/ap_snprintf.o'
-//PLKED.OBJ13  DD PATH='/<your-path-here>/src/buildmark.o'
-//PLKED.OBJ14  DD PATH='/<your-path-here>/src/main/alloc.o'
-//PLKED.OBJ15  DD PATH='/<your-path-here>/src/main/buff.o'
-//PLKED.OBJ16  DD PATH='/<your-path-here>/src/main/http_config.o'
-//PLKED.OBJ17  DD PATH='/<your-path-here>/src/main/http_core.o'
-//PLKED.OBJ18  DD PATH='/<your-path-here>/src/main/http_log.o'
-//PLKED.OBJ19  DD PATH='/<your-path-here>/src/main/http_main.o'
-//PLKED.OBJ20  DD PATH='/<your-path-here>/src/main/http_protocol.o'
-//PLKED.OBJ21  DD PATH='/<your-path-here>/src/main/http_request.o'
-//PLKED.OBJ22  DD PATH='/<your-path-here>/src/main/http_vhost.o'
-//PLKED.OBJ23  DD PATH='/<your-path-here>/src/main/rfc1413.o'
-//PLKED.OBJ24  DD PATH='/<your-path-here>/src/main/util.o'
-//PLKED.OBJ25  DD PATH='/<your-path-here>/src/main/util_date.o'
-//PLKED.OBJ26  DD PATH='/<your-path-here>/src/main/util_md5.o'
-//PLKED.OBJ27  DD PATH='/<your-path-here>/src/main/util_script.o'
-//PLKED.OBJ28  DD PATH='/<your-path-here>/src/main/util_uri.o'
-//PLKED.OBJ29  DD PATH='/<your-path-here>/src/modules.o'
-//PLKED.OBJ30  DD PATH='/<your-path-here>/src/modules/standard/mod_acce\
+//PLKED.OBJ13  DD PATH='/<your-path-here>/src/ap/ap_strtol.o'
+//PLKED.OBJ14  DD PATH='/<your-path-here>/src/buildmark.o'
+//PLKED.OBJ15  DD PATH='/<your-path-here>/src/main/alloc.o'
+//PLKED.OBJ16  DD PATH='/<your-path-here>/src/main/buff.o'
+//PLKED.OBJ17  DD PATH='/<your-path-here>/src/main/http_config.o'
+//PLKED.OBJ18  DD PATH='/<your-path-here>/src/main/http_core.o'
+//PLKED.OBJ19  DD PATH='/<your-path-here>/src/main/http_log.o'
+//PLKED.OBJ20  DD PATH='/<your-path-here>/src/main/http_main.o'
+//PLKED.OBJ21  DD PATH='/<your-path-here>/src/main/http_protocol.o'
+//PLKED.OBJ22  DD PATH='/<your-path-here>/src/main/http_request.o'
+//PLKED.OBJ23  DD PATH='/<your-path-here>/src/main/http_vhost.o'
+//PLKED.OBJ24  DD PATH='/<your-path-here>/src/main/rfc1413.o'
+//PLKED.OBJ25  DD PATH='/<your-path-here>/src/main/util.o'
+//PLKED.OBJ26  DD PATH='/<your-path-here>/src/main/util_date.o'
+//PLKED.OBJ27  DD PATH='/<your-path-here>/src/main/util_md5.o'
+//PLKED.OBJ28  DD PATH='/<your-path-here>/src/main/util_script.o'
+//PLKED.OBJ29  DD PATH='/<your-path-here>/src/main/util_uri.o'
+//PLKED.OBJ30  DD PATH='/<your-path-here>/src/modules.o'
+//PLKED.OBJ31  DD PATH='/<your-path-here>/src/modules/standard/mod_acce\
 //             ss.o'
-//PLKED.OBJ31  DD PATH='/<your-path-here>/src/modules/standard/mod_acti\
+//PLKED.OBJ32  DD PATH='/<your-path-here>/src/modules/standard/mod_acti\
 //             ons.o'
-//PLKED.OBJ32  DD PATH='/<your-path-here>/src/modules/standard/mod_alia\
+//PLKED.OBJ33  DD PATH='/<your-path-here>/src/modules/standard/mod_alia\
 //             s.o'
-//PLKED.OBJ33  DD PATH='/<your-path-here>/src/modules/standard/mod_asis\
+//PLKED.OBJ34  DD PATH='/<your-path-here>/src/modules/standard/mod_asis\
 //             .o'
-//PLKED.OBJ34  DD PATH='/<your-path-here>/src/modules/standard/mod_auth\
+//PLKED.OBJ35  DD PATH='/<your-path-here>/src/modules/standard/mod_auth\
 //             .o'
-//PLKED.OBJ35  DD PATH='/<your-path-here>/src/modules/standard/mod_auto\
+//PLKED.OBJ36  DD PATH='/<your-path-here>/src/modules/standard/mod_auto\
 //             index.o'
-//PLKED.OBJ36  DD PATH='/<your-path-here>/src/modules/standard/mod_cgi.\
+//PLKED.OBJ37  DD PATH='/<your-path-here>/src/modules/standard/mod_cgi.\
 //             o'
-//PLKED.OBJ37  DD PATH='/<your-path-here>/src/modules/standard/mod_dir.\
+//PLKED.OBJ38  DD PATH='/<your-path-here>/src/modules/standard/mod_dir.\
 //             o'
-//PLKED.OBJ38  DD PATH='/<your-path-here>/src/modules/standard/mod_env.\
+//PLKED.OBJ39  DD PATH='/<your-path-here>/src/modules/standard/mod_env.\
 //             o'
-//PLKED.OBJ39  DD PATH='/<your-path-here>/src/modules/standard/mod_imap\
+//PLKED.OBJ40  DD PATH='/<your-path-here>/src/modules/standard/mod_imap\
 //             .o'
-//PLKED.OBJ40  DD PATH='/<your-path-here>/src/modules/standard/mod_incl\
+//PLKED.OBJ41  DD PATH='/<your-path-here>/src/modules/standard/mod_incl\
 //             ude.o'
-//PLKED.OBJ41  DD PATH='/<your-path-here>/src/modules/standard/mod_log_\
+//PLKED.OBJ42  DD PATH='/<your-path-here>/src/modules/standard/mod_log_\
 //             config.o'
-//PLKED.OBJ42  DD PATH='/<your-path-here>/src/modules/standard/mod_mime\
+//PLKED.OBJ43  DD PATH='/<your-path-here>/src/modules/standard/mod_mime\
 //             .o'
-//PLKED.OBJ43  DD PATH='/<your-path-here>/src/modules/standard/mod_nego\
+//PLKED.OBJ44  DD PATH='/<your-path-here>/src/modules/standard/mod_nego\
 //             tiation.o'
-//PLKED.OBJ44  DD PATH='/<your-path-here>/src/modules/standard/mod_sete\
+//PLKED.OBJ45  DD PATH='/<your-path-here>/src/modules/standard/mod_sete\
 //             nvif.o'
-//PLKED.OBJ45  DD PATH='/<your-path-here>/src/modules/standard/mod_stat\
+//PLKED.OBJ46  DD PATH='/<your-path-here>/src/modules/standard/mod_stat\
 //             us.o'
-//PLKED.OBJ46  DD PATH='/<your-path-here>/src/modules/standard/mod_user\
+//PLKED.OBJ47  DD PATH='/<your-path-here>/src/modules/standard/mod_user\
 //             dir.o'
-//PLKED.OBJ47  DD PATH='/<your-path-here>/src/os/tpf/cgetop.o'
-//PLKED.OBJ48  DD PATH='/<your-path-here>/src/os/tpf/os.o'
-//PLKED.OBJ49  DD PATH='/<your-path-here>/src/os/tpf/os-inline.o'
-//PLKED.OBJ50  DD PATH='/<your-path-here>/src/regex/regcomp.o'
-//PLKED.OBJ51  DD PATH='/<your-path-here>/src/regex/regerror.o'
-//PLKED.OBJ52  DD PATH='/<your-path-here>/src/regex/regexec.o'
-//PLKED.OBJ53  DD PATH='/<your-path-here>/src/regex/regfree.o'
+//PLKED.OBJ48  DD PATH='/<your-path-here>/src/os/tpf/cgetop.o'
+//PLKED.OBJ49  DD PATH='/<your-path-here>/src/os/tpf/os.o'
+//PLKED.OBJ50  DD PATH='/<your-path-here>/src/os/tpf/os-inline.o'
+//PLKED.OBJ51  DD PATH='/<your-path-here>/src/regex/regcomp.o'
+//PLKED.OBJ52  DD PATH='/<your-path-here>/src/regex/regerror.o'
+//PLKED.OBJ53  DD PATH='/<your-path-here>/src/regex/regexec.o'
+//PLKED.OBJ54  DD PATH='/<your-path-here>/src/regex/regfree.o'
 //PLKED.SYSIN DD *
  ORDER @@DLMHDR
  INCLUDE OBJLIB(CSTRTD40)
@@ -138,6 +139,7 @@
  INCLUDE OBJ51
  INCLUDE OBJ52
  INCLUDE OBJ53
+ INCLUDE OBJ54
  INCLUDE OBJLIB(CINET640)
 /*
 //*** WARNING *** NEVER change .LK to .OB in SYSLMOD!!!
