@@ -1013,8 +1013,9 @@ char *strerror(int err);
 API_EXPORT(uid_t) ap_uname2id(const char *name);
 API_EXPORT(gid_t) ap_gname2id(const char *name);
 API_EXPORT(int) ap_is_directory(const char *name);
-API_EXPORT(int) ap_can_exec(const struct stat *);
 API_EXPORT(void) ap_chdir_file(const char *file);
+API_EXPORT(int) ap_get_max_daemons(void);
+API_EXPORT(const server_rec *) ap_get_server_conf(void);
 
 #ifndef HAVE_CANONICAL_FILENAME
 /*

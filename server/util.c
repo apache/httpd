@@ -1684,32 +1684,6 @@ API_EXPORT(int) ap_is_url(const char *u)
     return (x ? 1 : 0);		/* If the first character is ':', it's broken, too */
 }
 
-API_EXPORT(int) ap_can_exec(const struct stat *finfo)
-{
-#ifdef MULTIPLE_GROUPS
-    int cnt;
-#endif
-#if defined(OS2) || defined(WIN32)
-    /* OS/2 dosen't have Users and Groups */
-    return 1;
-#else
-    if (ap_user_id == finfo->st_uid)
-	if (finfo->st_mode & S_IXUSR)
-	    return 1;
-    if (ap_group_id == finfo->st_gid)
-	if (finfo->st_mode & S_IXGRP)
-	    return 1;
-#ifdef MULTIPLE_GROUPS
-    for (cnt = 0; cnt < NGROUPS_MAX; cnt++) {
-	if (group_id_list[cnt] == finfo->st_gid)
-	    if (finfo->st_mode & S_IXGRP)
-		return 1;
-    }
-#endif
-    return (finfo->st_mode & S_IXOTH);
-#endif
-}
-
 #ifdef NEED_STRDUP
 char *strdup(const char *str)
 {
