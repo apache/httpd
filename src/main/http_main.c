@@ -1406,7 +1406,7 @@ static void setup_shared_mem(void)
 #else
 #define SCOREBOARD_FILE
 static scoreboard _scoreboard_image;
-static int scoreboard_fd;
+static int scoreboard_fd = -1;
 
 /* XXX: things are seriously screwed if we ever have to do a partial
  * read or write ... we could get a corrupted scoreboard
@@ -3122,7 +3122,7 @@ void standalone_main(int argc, char **argv)
 	    restart_time = time(NULL);
 	}
 #ifdef SCOREBOARD_FILE
-	else {
+	else if (scoreboard_fd != -1) {
 	    kill_cleanups_for_fd(pconf, scoreboard_fd);
 	}
 #endif
@@ -3392,7 +3392,6 @@ int main(int argc, char *argv[])
     init_modules(pconf, server_conf);
 
     if (standalone) {
-	clear_pool(pconf);	/* standalone_main rereads... */
 	STANDALONE_MAIN(argc, argv);
     }
     else {
