@@ -2575,6 +2575,8 @@ API_EXPORT(int) ap_rputs(const char *str, request_rec *r)
 
     if (r->connection->aborted)
         return EOF;
+    if (*str == '\0')
+        return 0;
     
     bb = ap_brigade_create(r->pool);
     ap_brigade_append_buckets(bb, 
@@ -2591,6 +2593,8 @@ API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
 
     if (r->connection->aborted)
         return EOF;
+    if (nbyte == 0)
+        return 0;
 
     bb = ap_brigade_create(r->pool);
     ap_brigade_append_buckets(bb, ap_bucket_transient_create(buf, nbyte, &written)); 
@@ -2608,7 +2612,8 @@ API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
 
     bb = ap_brigade_create(r->pool);
     written = ap_brigade_vprintf(bb, fmt, va);
-    ap_pass_brigade(r->filters, bb);
+    if (written != 0)
+        ap_pass_brigade(r->filters, bb);
     return written;
 }
 
@@ -2642,7 +2647,8 @@ API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r, ...)
     va_start(va, r);
     written = ap_brigade_vputstrs(bb, va);
     va_end(va);
-    ap_pass_brigade(r->filters, bb);
+    if (written != 0)
+        ap_pass_brigade(r->filters, bb);
     return written;
 }
 
