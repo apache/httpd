@@ -1,4 +1,4 @@
-
+x2
 #ifdef WIN32
 
 #include <windows.h>
@@ -301,7 +301,9 @@ void RemoveService()
             }
 
             // now remove the service
-            DeleteService(schService);
+            if (DeleteService(schService) == 0)
+		ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+		    "DeleteService failed");
             CloseServiceHandle(schService);
         }
 
