@@ -1,5 +1,8 @@
 Changes with Apache 1.2b5
 
+  *) CGI scripts called as an error document resulting from failed
+     CGI execution would hang waiting for POST'ed data. [Rob Hartill]
+
   *) Log reason when mod_dir returns access HTTP_FORBIDDEN
      [Ken the Rodent]
 
