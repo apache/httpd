@@ -817,6 +817,7 @@ conf_servername="new.host.name"
 if [ ".$confadjust" = .1 ]; then
     if [ ".`egrep '^nobody:' /etc/group`" != . ]; then
         conf_group="nobody"
+    else
         if [ ".`egrep '^nogroup:' /etc/group`" != . ]; then
             conf_group="nogroup"
         fi

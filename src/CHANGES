@@ -1,4 +1,7 @@
 Changes with Apache 1.3.2
+
+  *) Fix APACI's `Group' configuration adjustment - especially for Linux
+     platforms where `nogroup' exists in /etc/group. [Ralf S. Engelschall]
  
   *) Make PrintPath work generically instead of having one version
      strictly for OS/2. [Jim Jagielski, Brian Havard]
