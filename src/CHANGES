@@ -1,5 +1,12 @@
 Changes with Apache 1.3b6
 
+  *) Various errors from select() and accept() in child_main() would
+     result in an infinite loop.  It seems these two tickle kernel
+     or library bugs occasionally, and result in log spammage and
+     a generally bad scene.  Now the child exits immediately,
+     which seems to be a good workaround.
+     [Dean Gaudet] PR#1747, 1107, 588, 1787
+
   *) Cleaned up some race conditions in unix child_main during
      initialization. [Dean Gaudet]
 

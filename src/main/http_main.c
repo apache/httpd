@@ -3032,14 +3032,14 @@ void child_main(int child_num_arg)
 		srv = ap_select(listenmaxfd + 1, &main_fds, NULL, NULL, NULL);
 
 		if (srv < 0 && errno != EINTR) {
-#ifdef LINUX
-		    if (errno == EFAULT) {
-			aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
-				    "select: (listen) fatal, child exiting");
-			clean_child_exit(1);
-		    }
-#endif
+		    /* Single Unix documents select as returning errnos
+		     * EBADF, EINTR, and EINVAL... and in none of those
+		     * cases does it make sense to continue.  In fact
+		     * on Linux 2.0.x we seem to end up with EFAULT
+		     * occasionally, and we'd loop forever due to it.
+		     */
 		    aplog_error(APLOG_MARK, APLOG_ERR, server_conf, "select: (listen)");
+		    clean_child_exit(1);
 		}
 
 		if (srv <= 0)
@@ -3075,15 +3075,62 @@ void child_main(int child_num_arg)
 		break;		/* We have a socket ready for reading */
 	    else {
 
-#if defined(EPROTO) && defined(ECONNABORTED)
-		if ((errno != EPROTO) && (errno != ECONNABORTED))
-#elif defined(EPROTO)
-		    if (errno != EPROTO)
-#elif defined(ECONNABORTED)
-			if (errno != ECONNABORTED)
+		/* Our old behaviour here was to continue after accept()
+		 * errors.  But this leads us into lots of troubles
+		 * because most of the errors are quite fatal.  For
+		 * example, EMFILE can be caused by slow descriptor
+		 * leaks (say in a 3rd party module, or libc).  It's
+		 * foolish for us to continue after an EMFILE.  We also
+		 * seem to tickle kernel bugs on some platforms which
+		 * lead to never-ending loops here.  So it seems best
+		 * to just exit in most cases.
+		 */
+                switch (errno) {
+#ifdef EPROTO
+		    /* EPROTO on certain older kernels really means
+		     * ECONNABORTED, so we need to ignore it for them.
+		     * See discussion in new-httpd archives nh.9701
+		     * search for EPROTO.
+		     *
+		     * Also see nh.9603, search for EPROTO:
+		     * There is potentially a bug in Solaris 2.x x<6,
+		     * and other boxes that implement tcp sockets in
+		     * userland (i.e. on top of STREAMS).  On these
+		     * systems, EPROTO can actually result in a fatal
+		     * loop.  But we don't deal with that.
+		     */
+                case EPROTO:
 #endif
-			    aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
-					"accept: (client socket)");
+#ifdef ECONNABORTED
+                case ECONNABORTED:
+#endif
+		    /* Linux generates the rest of these, other tcp
+		     * stacks (i.e. bsd) tend to hide them behind
+		     * getsockopt() interfaces.  They occur when
+		     * the net goes sour or the client disconnects
+		     * after the three-way handshake has been done
+		     * in the kernel but before userland has picked
+		     * up the socket.
+		     */
+#ifdef ECONNRESET
+                case ECONNRESET:
+#endif
+#ifdef ETIMEDOUT
+                case ETIMEDOUT:
+#endif
+#ifdef EHOSTUNREACH
+		case EHOSTUNREACH:
+#endif
+#ifdef ENETUNREACH
+		case ENETUNREACH:
+#endif
+                    break;
+
+		default:
+		    aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+				"accept: (client socket)");
+		    clean_child_exit(1);
+		}
 	    }
 
 	    /* go around again, safe to die */
