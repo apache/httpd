@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_rewrite: Removed the MaxRedirects option in favor of the
+     core LimitInternalRecursion directive.  [André Malo]
+
   *) SECURITY: CAN-2004-0885 (cve.mitre.org)
      mod_ssl: Fix a bug which allowed an SSLCipherSuite setting to be
      bypassed during an SSL renegotiation.  PR 31505.  
