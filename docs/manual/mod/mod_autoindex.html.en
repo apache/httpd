@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_autoindex - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_autoindex</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+      --><title>mod_autoindex - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_autoindex</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
                       </span></td><td>Generates directory indexes,
     automatically, similar to the Unix <em>ls</em> command or the
     Win32 <em>dir</em> shell command</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
@@ -141,7 +141,7 @@
 &lt;/FORM&gt;
 </code></td></tr></table></blockquote>
 
-<hr/><h2><a name="AddAlt">AddAlt</a> <a name="addalt">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AddAlt">AddAlt</a> <a name="addalt">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Alternate text to display for a file, instead of an
 icon selected by filename</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AddAlt <em>string file</em> [<em>file</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -162,7 +162,7 @@ icon selected by filename</td></tr><tr><td nowrap="nowrap"><a href="directive-di
     AddAlt "PDF" *.pdf<br>
     AddAlt "Compressed" *.gz *.zip *.Z
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Alternate text to display for a file instead of an icon
 selected by MIME-encoding</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AddAltByEncoding <em>string MIME-encoding</em>
@@ -183,7 +183,7 @@ selected by MIME-encoding</td></tr><tr><td nowrap="nowrap"><a href="directive-di
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
     AddAltByEncoding "gzip" x-gzip
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="AddAltByType">AddAltByType</a> <a name="addaltbytype">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AddAltByType">AddAltByType</a> <a name="addaltbytype">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Alternate text to display for a file, instead of an
 icon selected by MIME content-type</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AddAltByType <em>string
@@ -204,7 +204,7 @@ icon selected by MIME content-type</td></tr><tr><td nowrap="nowrap"><a href="dir
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
     AddAltByType "TXT" text/plain
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="AddDescription">AddDescription</a> <a name="adddescription">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AddDescription">AddDescription</a> <a name="adddescription">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Description to display for a file</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AddDescription
     <em>string file</em> [<em>file</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -243,7 +243,7 @@ icon selected by MIME content-type</td></tr><tr><td nowrap="nowrap"><a href="dir
       cutting off the end of a bolded phrase), the results may
       affect the rest of the directory listing.</p>
 </td></tr></table></blockquote>
-<hr/><h2><a name="AddIcon">AddIcon</a> <a name="addicon">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AddIcon">AddIcon</a> <a name="addicon">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Icon to display for a file selected by name</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AddIcon <em>icon
     name</em> [<em>name</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -272,7 +272,7 @@ icon selected by MIME content-type</td></tr><tr><td nowrap="nowrap"><a href="dir
     <p><a href="#addiconbytype" class="directive"><code class="directive">AddIconByType</code></a>
     should be used in preference to <code class="directive">AddIcon</code>,
     when possible.</p>
-<hr/><h2><a name="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Icon to display next to files selected by MIME 
 content-encoding</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AddIconByEncoding
@@ -291,7 +291,7 @@ content-encoding</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#S
     required the content-encoding. Examples:</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>AddIconByEncoding /icons/compress.xbm x-compress</code></td></tr></table></blockquote>
-<hr/><h2><a name="AddIconByType">AddIconByType</a> <a name="addiconbytype">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AddIconByType">AddIconByType</a> <a name="addiconbytype">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Icon to display next to files selected by MIME 
 content-type</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AddIconByType
@@ -311,7 +311,7 @@ content-type</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Synta
     required the mime types. Examples:</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>AddIconByType (IMG,/icons/image.xbm) image/*</code></td></tr></table></blockquote>
-<hr/><h2><a name="DefaultIcon">DefaultIcon</a> <a name="defaulticon">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="DefaultIcon">DefaultIcon</a> <a name="defaulticon">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Icon to display for files when no specific icon is
 configured</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>DefaultIcon <em>url-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -324,7 +324,7 @@ configured</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax"
     <em>Url-path</em> is a (%-escaped) relative URL to the icon.
     Examples:</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>DefaultIcon /icon/unknown.xbm</code></td></tr></table></blockquote>
-<hr/><h2><a name="HeaderName">HeaderName</a> <a name="headername">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="HeaderName">HeaderName</a> <a name="headername">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Name of the file that will be inserted at the top
 of the index listing</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>HeaderName <em>filename</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -367,7 +367,7 @@ HeaderName HEADER.html
     etc) then you will probably want to set <a href="#indexoptions:suppresshtmlpreamble"><code>IndexOptions
     +SuppressHTMLPreamble</code></a>, so that these tags are not
     repeated.</p>
-<hr/><h2><a name="IndexIgnore">IndexIgnore</a> <a name="indexignore">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="IndexIgnore">IndexIgnore</a> <a name="indexignore">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Adds to the list of files to hide when listing 
 a directory</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>IndexIgnore <em>file</em> [<em>file</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -384,7 +384,7 @@ a directory</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax
     `<code>.</code>'. Example:</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>IndexIgnore README .htaccess *~</code></td></tr></table></blockquote>
-<hr/><h2><a name="IndexOptions">IndexOptions</a> <a name="indexoptions">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="IndexOptions">IndexOptions</a> <a name="indexoptions">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Various configuration settings for directory 
 indexing</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>IndexOptions  [+|-]<em>option</em> [[+|-]<em>option</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -674,7 +674,7 @@ foo-1.04
         specify keywords without any '+' or '-' prefixes.
       </dd>
     </dl>
-<hr/><h2><a name="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sets the default ordering of the directory index</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>IndexOrderDefault
 Ascending|Descending Name|Date|Size|Description</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -701,7 +701,7 @@ Ascending|Descending Name|Date|Size|Description</td></tr><tr><td nowrap="nowrap"
     particular order by combining this directive with the <a href="#indexoptions:suppresscolumnsorting"><code>SuppressColumnSorting</code></a>
     index option; this will prevent the client from requesting the
     directory listing in a different order.</p>
-<hr/><h2><a name="ReadmeName">ReadmeName</a> <a name="readmename">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="ReadmeName">ReadmeName</a> <a name="readmename">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Name of the file that will be inserted at the end
 of the index listing</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>ReadmeName <em>filename</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -720,4 +720,4 @@ of the index listing</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.ht
 
     <p>See also <a href="#headername" class="directive"><code class="directive">HeaderName</code></a>, where this behavior
     is described in greater detail.</p>
-<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>

@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_access - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_access</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+      --><title>mod_access - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_access</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
                       </span></td><td>Provides access control based on client hostname, IP
 address, or other characteristics of the client request.</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
                       </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
@@ -29,7 +29,7 @@ address, or other characteristics of the client request.</td></tr><tr><td nowrap
     cases. However, it is possible to restrict some methods, while
     leaving other methods unrestricted, by enclosing the directives
     in a <a href="../mod/core.html#limit" class="directive"><code class="directive">&lt;Limit&gt;</code></a> section.</p>
-<h2>Directives</h2><ul><li><a href="#allow">Allow</a></li><li><a href="#deny">Deny</a></li><li><a href="#order">Order</a></li></ul><p><strong>See also </strong></p><ul><li><a href="../mod/core.html#satisfy" class="directive"><code class="directive">Satisfy</code></a></li><li><a href="../mod/core.html#require" class="directive"><code class="directive">Require</code></a></li></ul><hr/><h2><a name="Allow">Allow</a> <a name="allow">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<h2>Directives</h2><ul><li><a href="#allow">Allow</a></li><li><a href="#deny">Deny</a></li><li><a href="#order">Order</a></li></ul><p><strong>See also </strong></p><ul><li><a href="../mod/core.html#satisfy" class="directive"><code class="directive">Satisfy</code></a></li><li><a href="../mod/core.html#require" class="directive"><code class="directive">Require</code></a></li></ul><hr><h2><a name="Allow">Allow</a> <a name="allow">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Controls which hosts can access an area of the
 server</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td> Allow from
@@ -129,7 +129,7 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br>
     <p>In this case, browsers with a user-agent string beginning
     with <code>KnockKnock/2.0</code> will be allowed access, and all
     others will be denied.</p>
-<hr/><h2><a name="Deny">Deny</a> <a name="deny">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="Deny">Deny</a> <a name="deny">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Controls which hosts are denied access to the
 server</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td> Deny from
@@ -143,7 +143,7 @@ server</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cla
     based on hostname, IP address, or environment variables. The
     arguments for the <code class="directive">Deny</code> directive are
     identical to the arguments for the <a href="#allow" class="directive"><code class="directive">Allow</code></a> directive.</p>
-<hr/><h2><a name="Order">Order</a> <a name="order">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="Order">Order</a> <a name="order">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Controls the default access state and the order in which
 Allow and Deny are
 evaluated.</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
@@ -245,4 +245,4 @@ evaluated.</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax"
     <code class="directive">Order</code> directive. For details on the merging
     of configuration sections, see the documentation on <a href="../sections.html">How Directory, Location and Files sections
     work</a>.</p>
-<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>

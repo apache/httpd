@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_alias - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_alias</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+      --><title>mod_alias - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_alias</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
                       </span></td><td>Provides for mapping different parts of the host
     filesystem in the document tree and for URL redirection</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
                       </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
@@ -20,7 +20,7 @@
     directives are used to instruct clients to make a new request with
     a different URL. They are often used when a resource has moved to
     a new location.</p>
-<h2>Directives</h2><ul><li><a href="#alias">Alias</a></li><li><a href="#aliasmatch">AliasMatch</a></li><li><a href="#redirect">Redirect</a></li><li><a href="#redirectmatch">RedirectMatch</a></li><li><a href="#redirectpermanent">RedirectPermanent</a></li><li><a href="#redirecttemp">RedirectTemp</a></li><li><a href="#scriptalias">ScriptAlias</a></li><li><a href="#scriptaliasmatch">ScriptAliasMatch</a></li></ul><p><strong>See also </strong></p><ul><li><code><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li><li><a href="../urlmapping.html">Mapping URLs to the filesystem</a></li></ul><hr/><h2><a name="Alias">Alias</a> <a name="alias">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<h2>Directives</h2><ul><li><a href="#alias">Alias</a></li><li><a href="#aliasmatch">AliasMatch</a></li><li><a href="#redirect">Redirect</a></li><li><a href="#redirectmatch">RedirectMatch</a></li><li><a href="#redirectpermanent">RedirectPermanent</a></li><li><a href="#redirecttemp">RedirectTemp</a></li><li><a href="#scriptalias">ScriptAlias</a></li><li><a href="#scriptaliasmatch">ScriptAliasMatch</a></li></ul><p><strong>See also </strong></p><ul><li><code><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li><li><a href="../urlmapping.html">Mapping URLs to the filesystem</a></li></ul><hr><h2><a name="Alias">Alias</a> <a name="alias">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Maps URLs to filesystem locations</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td> Alias <em>URL-path
     file-path</em>|<em>directory-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -55,7 +55,7 @@
     sections are run through once before aliases are performed, so
     they will apply.)</p>
 
-<hr/><h2><a name="AliasMatch">AliasMatch</a> <a name="aliasmatch">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AliasMatch">AliasMatch</a> <a name="aliasmatch">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Maps URLs to filesystem locations using regular 
 expressions</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AliasMatch <em>regex
@@ -73,7 +73,7 @@ expressions</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
     AliasMatch ^/icons(.*) /usr/local/apache/icons$1
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="Redirect">Redirect</a> <a name="redirect">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="Redirect">Redirect</a> <a name="redirect">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sends an external redirect asking the client to fetch
 a different URL</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>Redirect [<em>status</em>] <em>URL-path URL</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -145,7 +145,7 @@ sections.</p></td></tr></table></blockquote>
         Redirect 303 /three http://example.com/other
     </code></td></tr></table></blockquote>
 
-<hr/><h2><a name="RedirectMatch">RedirectMatch</a> <a name="redirectmatch">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="RedirectMatch">RedirectMatch</a> <a name="redirectmatch">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sends an external redirect asking the client to fetch
 a different URL based on a regular expression match of the 
 current URL</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
@@ -164,7 +164,7 @@ current URL</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
     RedirectMatch (.*)\.gif$ http://www.anotherserver.com$1.jpg
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="RedirectPermanent">RedirectPermanent</a> <a name="redirectpermanent">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="RedirectPermanent">RedirectPermanent</a> <a name="redirectpermanent">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sends an external permanent redirect asking the client to fetch
 a different URL</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>RedirectPermanent <em>URL-path URL</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -175,7 +175,7 @@ a different URL</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Sy
     <p>This directive makes the client know that the Redirect is
     permanent (status 301). Exactly equivalent to <code>Redirect
     permanent</code>.</p>
-<hr/><h2><a name="RedirectTemp">RedirectTemp</a> <a name="redirecttemp">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="RedirectTemp">RedirectTemp</a> <a name="redirecttemp">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sends an external temporary redirect asking the client to fetch
 a different URL</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>RedirectTemp <em>URL-path URL</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -186,7 +186,7 @@ a different URL</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Sy
     <p>This directive makes the client know that the Redirect is
     only temporary (status 302). Exactly equivalent to
     <code>Redirect temp</code>.</p>
-<hr/><h2><a name="ScriptAlias">ScriptAlias</a> <a name="scriptalias">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="ScriptAlias">ScriptAlias</a> <a name="scriptalias">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Maps a URL to a filesystem location and designates the
 target as a CGI script</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>ScriptAlias 
@@ -208,7 +208,7 @@ target as a CGI script</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.
 
     <p>A request for <code>http://myserver/cgi-bin/foo</code> would cause the
     server to run the script <code>/web/cgi-bin/foo</code>.</p>
-<hr/><h2><a name="ScriptAliasMatch">ScriptAliasMatch</a> <a name="scriptaliasmatch">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="ScriptAliasMatch">ScriptAliasMatch</a> <a name="scriptaliasmatch">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Maps a URL to a filesystem location using a regular expression
 and designates the target as a CGI script</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>ScriptAliasMatch
@@ -226,4 +226,4 @@ and designates the target as a CGI script</td></tr><tr><td nowrap="nowrap"><a hr
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
     ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
 </code></td></tr></table></blockquote>
-<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>

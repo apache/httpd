@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_negotiation - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_negotiation</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+      --><title>mod_negotiation - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_negotiation</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
                       </span></td><td>Provides for <a href="../content-negotiation.html">content negotiation</a></td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
                       </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
                         </a></td><td>negotiation_module</td></tr></table></td></tr></table><h2>Summary</h2>
@@ -127,7 +127,7 @@ Body:----xyz----<br>
     content-encodings it would have if the client had asked for one
     of them by name. It then chooses the best match to the client's
     requirements, and returns that document.</p>
-<hr/><h2><a name="CacheNegotiatedDocs">CacheNegotiatedDocs</a> <a name="cachenegotiateddocs">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="CacheNegotiatedDocs">CacheNegotiatedDocs</a> <a name="cachenegotiateddocs">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Allows content-negotiated documents to be 
 cached by proxy servers</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>CacheNegotiatedDocs on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -151,7 +151,7 @@ cached by proxy servers</td></tr><tr><td nowrap="nowrap"><a href="directive-dict
     <code class="directive">CacheNegotiatedDocs</code> did not take an
     argument; it was turned on by the presence of the directive by
     itself.</p>
-<hr/><h2><a name="ForceLanguagePriority">ForceLanguagePriority</a> <a name="forcelanguagepriority">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="ForceLanguagePriority">ForceLanguagePriority</a> <a name="forcelanguagepriority">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Action to take if a single acceptable document is not 
 found</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -197,7 +197,7 @@ found</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" clas
     that one variant is acceptable, or first available document will be
     served if none of the variants matched the client's acceptable list of
     languages.</p>
-<hr/><h2><a name="LanguagePriority">LanguagePriority</a> <a name="languagepriority">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="LanguagePriority">LanguagePriority</a> <a name="languagepriority">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>The precendence of language variants for cases where
 the client does not express a preference</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>LanguagePriority <em>MIME-lang</em> [<em>MIME-lang</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -222,4 +222,4 @@ the client does not express a preference</td></tr><tr><td nowrap="nowrap"><a hre
     language cannot be determined by any other means or the <a href="#forcelanguagepriority" class="directive"><code class="directive">ForceLanguagePriority</code></a> directive
     is not <code>None</code>. Correctly implemented HTTP/1.1 requests
     will mean this directive has no effect.</p>
-<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>

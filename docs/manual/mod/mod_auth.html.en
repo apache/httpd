@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_auth - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_auth</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+      --><title>mod_auth - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_auth</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
                       </span></td><td>User authentication using text files</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
                       </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
                         </a></td><td>auth_module</td></tr></table></td></tr></table><h2>Summary</h2>
@@ -14,7 +14,7 @@
     Authentication is provided by
     <code><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>.</p>
 
-<h2>Directives</h2><ul><li><a href="#authauthoritative">AuthAuthoritative</a></li><li><a href="#authgroupfile">AuthGroupFile</a></li><li><a href="#authuserfile">AuthUserFile</a></li></ul><p><strong>See also </strong></p><ul><li><a href="../mod/core.html#require" class="directive"><code class="directive">Require</code></a></li><li><a href="../mod/core.html#satisfy" class="directive"><code class="directive">Satisfy</code></a></li><li><a href="../mod/core.html#authname" class="directive"><code class="directive">AuthName</code></a></li><li><a href="../mod/core.html#authtype" class="directive"><code class="directive">AuthType</code></a></li></ul><hr/><h2><a name="AuthAuthoritative">AuthAuthoritative</a> <a name="authauthoritative">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<h2>Directives</h2><ul><li><a href="#authauthoritative">AuthAuthoritative</a></li><li><a href="#authgroupfile">AuthGroupFile</a></li><li><a href="#authuserfile">AuthUserFile</a></li></ul><p><strong>See also </strong></p><ul><li><a href="../mod/core.html#require" class="directive"><code class="directive">Require</code></a></li><li><a href="../mod/core.html#satisfy" class="directive"><code class="directive">Satisfy</code></a></li><li><a href="../mod/core.html#authname" class="directive"><code class="directive">AuthName</code></a></li><li><a href="../mod/core.html#authtype" class="directive"><code class="directive">AuthType</code></a></li></ul><hr><h2><a name="AuthAuthoritative">AuthAuthoritative</a> <a name="authauthoritative">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sets whether authorization and authentication are
 passed to lower level modules</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AuthAuthoritative on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -64,7 +64,7 @@ uses a different system for module ordering.</td></tr></table></blockquote>
     directory that it protects. Otherwise, clients will be able to
     download the <a href="#authuserfile" class="directive"><code class="directive">AuthUserFile</code></a>.
     </td></tr></table></blockquote>
-<hr/><h2><a name="AuthGroupFile">AuthGroupFile</a> <a name="authgroupfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AuthGroupFile">AuthGroupFile</a> <a name="authgroupfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sets the name of a text file containing the list
 of user groups for authentication</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AuthGroupFile <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -94,7 +94,7 @@ of user groups for authentication</td></tr><tr><td nowrap="nowrap"><a href="dire
     the directory that it protects. Otherwise, clients will be able
     to download the AuthGroupFile.</p>
 </td></tr></table></blockquote>
-<hr/><h2><a name="AuthUserFile">AuthUserFile</a> <a name="authuserfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AuthUserFile">AuthUserFile</a> <a name="authuserfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sets the name of a text file containing the list of users and
 passwords for authentication</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AuthUserFile <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -135,4 +135,4 @@ stored outside the document tree of the web-server; do <em>not</em>
 put it in the directory that it protects. Otherwise, clients will be
 able to download the AuthUserFile.</p></td></tr></table></blockquote>
 
-<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>

@@ -160,8 +160,8 @@
           <dt><strong>cgi</strong></dt>
 
           <dd>
-            The value specifies a (%-encoded) URL relative path to
-            the CGI script. If the path does not begin with a (/),
+            The value specifies a (%-encoded) URL-path to
+            the CGI script. If the path does not begin with a slash (/),
             then it is taken to be relative to the current
             document. The document referenced by this path is
             invoked as a CGI script, even if the server would not
@@ -211,7 +211,7 @@
         <p>The use of <code><a href="#includevirtual">#include 
         virtual</a></code> is almost always
         prefered to using either <code>#exec cgi</code> or <code>#exec
-        cmd</code>. The former (<code>#include virtual</code>) used the
+        cmd</code>. The former (<code>#include virtual</code>) uses the
         standard Apache sub-request mechanism to include files or
         scripts. It is much better tested and maintained.</p>
 
@@ -245,8 +245,7 @@
 
           <dt><strong>virtual</strong></dt>
 
-          <dd>The value is a (%-encoded) URL-path relative to the
-          current document being parsed. If it does not begin with
+          <dd>The value is a (%-encoded) URL-path. If it does not begin with
           a slash (/) then it is taken to be relative to the
           current document.</dd>
         </dl>
@@ -292,8 +291,7 @@
           <dt><strong><a name="includevirtual">virtual</a></strong></dt>
 
          <dd>
-          <p>The value is a (%-encoded) URL relative to the
-          current document being parsed. The URL cannot contain a
+          <p>The value is a (%-encoded) URL-path. The URL cannot contain a
           scheme or hostname, only a path and an optional query
           string. If it does not begin with a slash (/) then it is
           taken to be relative to the current document.</p>

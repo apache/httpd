@@ -1,13 +1,13 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=iso-2022-jp"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>設定ファイル - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">設定ファイル</h1>
+      --><title>設定ファイル - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">設定ファイル</h1>
 <p>この文書では、Apache HTTP サーバを設定するのに使用するファイルについて
 記述しています。</p>
-<ul><li><a href="#main">メインの設定ファイル</a></li><li><a href="#syntax">設定ファイルの構文</a></li><li><a href="#modules">モジュール</a></li><li><a href="#scope">ディレクティブの適用範囲</a></li><li><a href="#htaccess">.htaccess ファイル</a></li></ul><hr/><h2><a name="main">メインの設定ファイル</a></h2>
+<ul><li><a href="#main">メインの設定ファイル</a></li><li><a href="#syntax">設定ファイルの構文</a></li><li><a href="#modules">モジュール</a></li><li><a href="#scope">ディレクティブの適用範囲</a></li><li><a href="#htaccess">.htaccess ファイル</a></li></ul><hr><h2><a name="main">メインの設定ファイル</a></h2>
     
-    <table border="1"><tr><td valign="top"><strong>関連モジュール</strong><br/><br/><code><a href="./mod/mod_mime.html">mod_mime</a></code><br/></td><td valign="top"><strong>関連ディレクティブ</strong><br/><br/><a href="./mod/core.html#ifdefine" class="directive"><code class="directive">&lt;IfDefine&gt;</code></a><br/><a href="./mod/core.html#include" class="directive"><code class="directive">Include</code></a><br/><a href="./mod/mod_mime.html#typesconfig" class="directive"><code class="directive">TypesConfig</code></a><br/></td></tr></table>
+    <table border="1"><tr><td valign="top"><strong>関連モジュール</strong><br><br><code><a href="./mod/mod_mime.html">mod_mime</a></code><br></td><td valign="top"><strong>関連ディレクティブ</strong><br><br><a href="./mod/core.html#ifdefine" class="directive"><code class="directive">&lt;IfDefine&gt;</code></a><br><a href="./mod/core.html#include" class="directive"><code class="directive">Include</code></a><br><a href="./mod/mod_mime.html#typesconfig" class="directive"><code class="directive">TypesConfig</code></a><br></td></tr></table>
 
     <p>Apache は <a href="mod/directives.html">ディレクティブ</a> を設定ファイルに平文で書くことにより設定します。
     メインの設定ファイルは普通は <code>httpd.conf</code> という名前です。
@@ -55,7 +55,7 @@
   <h2><a name="modules">モジュール</a></h2>
     
 
-    <table border="1"><tr><td valign="top"><strong>関連モジュール</strong><br/><br/><code><a href="./mod/mod_so.html">mod_so</a></code><br/></td><td valign="top"><strong>関連ディレクティブ</strong><br/><br/><a href="./mod/core.html#ifmodule" class="directive"><code class="directive">&lt;IfModule&gt;</code></a><br/><a href="./mod/mod_so.html#loadmodule" class="directive"><code class="directive">LoadModule</code></a><br/></td></tr></table>
+    <table border="1"><tr><td valign="top"><strong>関連モジュール</strong><br><br><code><a href="./mod/mod_so.html">mod_so</a></code><br></td><td valign="top"><strong>関連ディレクティブ</strong><br><br><a href="./mod/core.html#ifmodule" class="directive"><code class="directive">&lt;IfModule&gt;</code></a><br><a href="./mod/mod_so.html#loadmodule" class="directive"><code class="directive">LoadModule</code></a><br></td></tr></table>
 
     <p>Apache はモジュール化されたサーバです。
     コアサーバには最も基本的な機能だけが含まれています。拡張機能は
@@ -75,7 +75,7 @@
   <h2><a name="scope">ディレクティブの適用範囲</a></h2>
     
 
-    <table border="1"><tr><td valign="top"><strong>関連モジュール</strong><br/><br/></td><td valign="top"><strong>関連ディレクティブ</strong><br/><br/><a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a><br/><a href="./mod/core.html#directorymatch" class="directive"><code class="directive">&lt;DirectoryMatch&gt;</code></a><br/><a href="./mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a><br/><a href="./mod/core.html#filesmatch" class="directive"><code class="directive">&lt;FilesMatch&gt;</code></a><br/><a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a><br/><a href="./mod/core.html#locationmatch" class="directive"><code class="directive">&lt;LocationMatch&gt;</code></a><br/><a href="./mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a><br/></td></tr></table>
+    <table border="1"><tr><td valign="top"><strong>関連モジュール</strong><br><br></td><td valign="top"><strong>関連ディレクティブ</strong><br><br><a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a><br><a href="./mod/core.html#directorymatch" class="directive"><code class="directive">&lt;DirectoryMatch&gt;</code></a><br><a href="./mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a><br><a href="./mod/core.html#filesmatch" class="directive"><code class="directive">&lt;FilesMatch&gt;</code></a><br><a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a><br><a href="./mod/core.html#locationmatch" class="directive"><code class="directive">&lt;LocationMatch&gt;</code></a><br><a href="./mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a><br></td></tr></table>
 
     <p>メイン設定ファイルにあるディレクティブはサーバ全体に適用されます。
     サーバの一部分の設定だけを変更したい場合は <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a>, <a href="./mod/core.html#directorymatch" class="directive"><code class="directive">&lt;DirectoryMatch&gt;</code></a>, <a href="./mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a>, <a href="./mod/core.html#filesmatch" class="directive"><code class="directive">&lt;FilesMatch&gt;</code></a>, <a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a>, <a href="./mod/core.html#locationmatch" class="directive"><code class="directive">&lt;LocationMatch&gt;</code></a>
@@ -103,7 +103,7 @@
   <h2><a name="htaccess">.htaccess ファイル</a></h2>
     
 
-    <table border="1"><tr><td valign="top"><strong>関連モジュール</strong><br/><br/></td><td valign="top"><strong>関連ディレクティブ</strong><br/><br/><a href="./mod/core.html#accessfilename" class="directive"><code class="directive">AccessFileName</code></a><br/><a href="./mod/core.html#allowoverride" class="directive"><code class="directive">AllowOverride</code></a><br/></td></tr></table>
+    <table border="1"><tr><td valign="top"><strong>関連モジュール</strong><br><br></td><td valign="top"><strong>関連ディレクティブ</strong><br><br><a href="./mod/core.html#accessfilename" class="directive"><code class="directive">AccessFileName</code></a><br><a href="./mod/core.html#allowoverride" class="directive"><code class="directive">AllowOverride</code></a><br></td></tr></table>
 
     <p>Apache ではウェブツリーの中に置かれた特別なファイルを使って
     非中央集権的な設定管理をできます。その特別なファイルは普通は
@@ -128,4 +128,4 @@
     Ken Coar さんのチュートリアル
     <a href="http://apache-server.com/tutorials/ATusing-htaccess.html">Using .htaccess Files with Apache</a> 
     を参照してください。</p>
-  <hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="索引"/></a><a href="./"><img src="./images/home.gif" alt="ホーム"/></a></body></html>
+  <hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="索引"></a><a href="./"><img src="./images/home.gif" alt="ホーム"></a></body></html>

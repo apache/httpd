@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_auth_digest - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_auth_digest</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+      --><title>mod_auth_digest - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_auth_digest</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
                       </span></td><td>User authentication using MD5
     Digest Authentication.</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
                       </a></td><td>Experimental</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
@@ -40,7 +40,7 @@
     authentication, you should use it only in controlled settings.</p>
 
 </td></tr></table></blockquote>
-<hr/><h2><a name="AuthDigestAlgorithm">AuthDigestAlgorithm</a> <a name="authdigestalgorithm">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AuthDigestAlgorithm">AuthDigestAlgorithm</a> <a name="authdigestalgorithm">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Selects the algorithm used to calculate the challenge and
 response hases in digest authentication</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AuthDigestAlgorithm MD5|MD5-sess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -56,7 +56,7 @@ response hases in digest authentication</td></tr><tr><td nowrap="nowrap"><a href
     <p><strong><em>MD5-sess</em> is not correctly implemented
     yet</strong>. 
     </p>
-<hr/><h2><a name="AuthDigestDomain">AuthDigestDomain</a> <a name="authdigestdomain">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AuthDigestDomain">AuthDigestDomain</a> <a name="authdigestdomain">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>URIs that are in the same protection space for digest
 authentication</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AuthDigestDomain <em>URI</em> [<em>URI</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -84,7 +84,7 @@ authentication</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syn
     which case clients (which understand this) will then share
     username/password info across multiple servers without
     prompting the user each time. </p>
-<hr/><h2><a name="AuthDigestFile">AuthDigestFile</a> <a name="authdigestfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AuthDigestFile">AuthDigestFile</a> <a name="authdigestfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Location of the text file containing the list
 of users and encoded passwords for digest authentication</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AuthDigestFile <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -100,7 +100,7 @@ of users and encoded passwords for digest authentication</td></tr><tr><td nowrap
     <p>The digest file uses a special format. Files in this format
     can be created using the <a href="../programs/htdigest.html">htdigest</a> utility found in
     the support/ subdirectory of the Apache distribution.</p>
-<hr/><h2><a name="AuthDigestGroupFile">AuthDigestGroupFile</a> <a name="authdigestgroupfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AuthDigestGroupFile">AuthDigestGroupFile</a> <a name="authdigestgroupfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Name of the text file containing the list of groups
 for digest authentication</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AuthDigestGroupFile <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -126,7 +126,7 @@ for digest authentication</td></tr><tr><td nowrap="nowrap"><a href="directive-di
     the document tree of the web-server; do <em>not</em> put it in
     the directory that it protects. Otherwise, clients will be able
     to download the AuthGroupFile.</p>
-<hr/><h2><a name="AuthDigestNcCheck">AuthDigestNcCheck</a> <a name="authdigestnccheck">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AuthDigestNcCheck">AuthDigestNcCheck</a> <a name="authdigestnccheck">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Enables or disables checking of the nonce-count sent by the
 server</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AuthDigestNcCheck On|Off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -136,7 +136,7 @@ server</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cla
                   </a></td><td>mod_auth_digest</td></tr></table></td></tr></table>
     <p><strong>Not implemented yet.</strong> 
     </p>
-<hr/><h2><a name="AuthDigestNonceFormat">AuthDigestNonceFormat</a> <a name="authdigestnonceformat">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AuthDigestNonceFormat">AuthDigestNonceFormat</a> <a name="authdigestnonceformat">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Determines how the nonce is generated</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>???</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>???</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -146,7 +146,7 @@ server</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cla
                   </a></td><td>mod_auth_digest</td></tr></table></td></tr></table>
     <p><strong>Not implemented yet.</strong> 
     </p>
-<hr/><h2><a name="AuthDigestNonceLifetime">AuthDigestNonceLifetime</a> <a name="authdigestnoncelifetime">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AuthDigestNonceLifetime">AuthDigestNonceLifetime</a> <a name="authdigestnoncelifetime">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>How long the server nonce is valid</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AuthDigestNonceLifetime <em>seconds</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>AuthDigestNonceLifetime 300</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -163,7 +163,7 @@ server</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cla
     seconds. If <em>seconds</em> is less than 0 then the nonce never
     expires. 
     </p>
-<hr/><h2><a name="AuthDigestQop">AuthDigestQop</a> <a name="authdigestqop">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="AuthDigestQop">AuthDigestQop</a> <a name="authdigestqop">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Determines the quality-of-protection to use in digest
 authentication</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AuthDigestQop none|auth|auth-int [auth|auth-int]</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -185,4 +185,4 @@ authentication</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syn
 
     <p><strong><em>auth-int</em> is not implemented
     yet</strong>.</p>
-<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>
