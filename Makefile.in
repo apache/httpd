@@ -6,9 +6,9 @@ PROGRAM_NAME         = $(progname)
 PROGRAM_SOURCES      = modules.c
 PROGRAM_LDADD        = $(HTTPD_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS) $(AP_LIBS) $(LIBS)
 PROGRAM_DEPENDENCIES = \
+  server/libmain.la \
   $(BUILTIN_LIBS) \
   $(MPM_LIB) \
-  server/libmain.la \
   os/$(OS_DIR)/libos.la
 
 PROGRAMS        = $(PROGRAM_NAME)

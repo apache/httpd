@@ -382,6 +382,10 @@ SOURCE=.\server\core.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\server\core_filters.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\modules\http\http_core.c
 # End Source File
 # Begin Source File
@@ -391,6 +395,22 @@ SOURCE=.\modules\http\http_protocol.c
 # Begin Source File
 
 SOURCE=.\modules\http\http_request.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\http\byterange_filter.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\http\chunk_filter.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\http\http_etag.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\http\http_filters.c
 # End Source File
 # Begin Source File
 
