@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/17 01:21:19 $]
+Last modified at [$Date: 2004/03/17 02:11:11 $]
 
 Release:
 
@@ -70,10 +70,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
-
-    *) Add a check on apr_pollset_create() to return value to exit ab in case it fails.
-        support/ab.c: r1.139
-      +1: jjclar, bnicholes, trawick
 
     *) Fix the comment delimiter so that it correctly parses the username
         comment.  Also add a terminate function to allow NetWare to pause
