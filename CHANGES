@@ -1,5 +1,8 @@
 Changes with Apache 2.0.51
 
+  *) Use the higher performing 'httpready' Accept Filter on all platforms 
+     except FreeBSD < 4.1.1. [Paul Querna]
+
   *) mod_usertrack: Escape the cookie name before pasting into the
      regexp.  [André Malo]
 

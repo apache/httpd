@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/18 02:35:05 $]
+Last modified at [$Date: 2004/08/18 02:52:14 $]
 
 Release:
 
@@ -383,10 +383,6 @@ PATCHES TO BACKPORT FROM 2.1
       fixed up as well as putting together a patch for httpd 2.0.next
       which integrates the two rounds of changes)
       +1 concept: trawick, nd
-
-    * Use the httpready accept filter
-        server/listen.c: r1.96
-      +1: trawick, pquerna, jerenkrantz
 
     * Work around RedHat bug 82359 (openssl requires pkg-config):
         http://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=82369
