@@ -150,7 +150,6 @@ static apr_status_t churn_output(SSLFilterRec *ctx)
 {
     ap_filter_t *f = ctx->pOutputFilter;
     apr_pool_t *p = f->c->pool;
-    apr_bucket_brigade *bb = NULL;
 
     if (!ctx->pssl) {
         /* we've been shutdown */
@@ -159,9 +158,8 @@ static apr_status_t churn_output(SSLFilterRec *ctx)
 
     if (BIO_pending(ctx->pbioWrite)) {
         BUF_MEM *bm = BIO_mem(ctx->pbioWrite);
+        apr_bucket_brigade *bb = apr_brigade_create(p);
         apr_bucket *bucket; 
-
-        bb = apr_brigade_create(p);
 
         /*
          * use the BIO memory buffer that has already been allocated,
@@ -176,15 +174,13 @@ static apr_status_t churn_output(SSLFilterRec *ctx)
         bm->length = 0; /* reset */
 
         APR_BRIGADE_INSERT_TAIL(bb, bucket);
-    }
-    
-    /* XXX: check for errors */
-    if (bb) {
-	apr_bucket *bucket = apr_bucket_flush_create();
 
 	/* XXX: it may be possible to not always flush */
-	APR_BRIGADE_INSERT_TAIL(bb, bucket);
-	ap_pass_brigade(f->next, bb);
+        bucket = apr_bucket_flush_create();
+        APR_BRIGADE_INSERT_TAIL(bb, bucket);
+
+        /* XXX: check for errors */
+        ap_pass_brigade(f->next, bb);
     }
 
     return APR_SUCCESS;
