@@ -7,9 +7,39 @@
 
 F=$1
 
-all=`mktemp -t fcall.XXXXXX || tempfile --prefix=fcall` || { echo "$0: Cannot create temporary file" >&2; exit 1; }
-in=`mktemp -t fcin.XXXXXX || tempfile --prefix=fcin` || { echo "$0: Cannot create temporary file" >&2; exit 1; }
-out=`mktemp -t fcout.XXXXXX || tempfile --prefix=fcout` || { echo "$0: Cannot create temporary file" >&2; exit 1; }
+temp_create_method=file
+if test -f `which mktemp`; then
+  temp_create_method=mktemp
+elif test -f `which tempfile`; then
+  temp_create_method=tempfile
+fi
+
+create_temp()
+{
+  prefix=$1
+  case "$temp_create_method" in
+    file)
+      name="/tmp/$1.$$"
+      ;;
+    mktemp)
+      name=`mktemp -t $1.XXXXXX`
+      ;;
+    tempfile)
+      name=`tempfile --prefix=$1`
+      ;;
+    *)
+      echo "$0: Cannot create temporary file"
+      exit 1
+      ;;
+  esac
+}
+
+create_temp fcall
+all=$name
+create_temp fcin
+in=$name
+create_temp fcout
+out=$name
 trap "rm -f -- \"$all\" \"$in\" \"$out\";" 0 1 2 3 13 15
 
 cut -f 1 -d '|' $F  > $all
