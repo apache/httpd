@@ -34,18 +34,6 @@ href="http://www.apache.org/bugdb.cgi">let us know.</a>
     format allows commas between user names - Apache does not.<BR>
     <I>- added 12/1/96</I>
 
-<LI><CODE>AddType</CODE> only accepts one file extension per line, without
-any dots (<code>.</code>) in the extension, and does not take full filenames.
-If you need multiple extensions per type, use multiple lines, e.g.
-<blockquote><code>
-AddType application/foo foo<br>
-AddType application/foo bar
-</code></blockquote>
-To map <code>.foo</code> and <code>.bar</code> to <code>application/foo</code>
-<p>
-
-
-
   <LI><P>If you follow the NCSA guidelines for setting up access restrictions
   based on client domain, you may well have added entries for,
   <CODE>AuthType, AuthName, AuthUserFile</CODE> or <CODE>AuthGroupFile</CODE>.
