@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/08 19:14:41 $]
+Last modified at [$Date: 2002/04/08 19:51:12 $]
 
 Release:
 
@@ -45,18 +45,15 @@ on related projects:
 
 CURRENT RELEASE NOTES:
 
-    * 34 status: Let's get all API changes and showstoppers in this one.
-                 Please.
+    * 36 status:
 
 FINAL RELEASE SHOWSTOPPERS:
+    * Daedalus segfaults with 2.0.35
+      Greg and Cliff are working on this.
 
-    * We do not properly substitute the prefix-variables in the configuration
-      scripts or generated-configs.  (i.e. if sysconfdir is etc,
-      httpd-std.conf points to conf.)
-        Aaron says: This is not a showstopper, these problems have existed
-                    for as long as I can remember. It would be nice to fix
-                    them but they are not new.
-        Not a showstopper: Jeff, Aaron, BillS, gregames, Jim
+    * mod_autoindex does not load on AIX because symbol
+      ap_subreq_core_filter_handle is not being properly exported.
+      Jeff is working on this.
 
 CURRENT VOTES:
 
@@ -86,8 +83,9 @@ CURRENT VOTES:
       -0:   Aaron (premature decision, needs more discussion), Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
-    * ap_cache_hex2msec() and ap_cache_msec2hex() are completely
-      hosed. They do not handle apr_time_t (64 bit ints) properly.
+    * We do not properly substitute the prefix-variables in the configuration
+      scripts or generated-configs.  (i.e. if sysconfdir is etc,
+      httpd-std.conf points to conf.)
 
     * If any request gets through ap_process_request_internal() and is
       scheduled to be served by the core handler, without a flag that this 
