@@ -78,6 +78,12 @@ install-support:
 
 install-other:
 	@test -d $(logdir) || $(MKINSTALLDIRS) $(logdir)
+	@for ext in dll x; do \
+		file=apachecore.$$ext; \
+		if test -f $$file; then \
+			cp -p $$file $(bindir); \
+		fi; \
+	done;
 
 install-include:
 	@echo Installing header files
