@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='iso-2022-jp' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<manualpage>
+<relativepath href=".."/>
+<!-- English revision: 1.2 -->
+
+  <title>Apache の SSL/TLS 暗号化</title>
+
+<summary>
+<p>Apache HTTP サーバモジュール <module>mod_ssl</module> が
+<a href="http://www.openssl.org/">OpenSSL</a>
+ライブラリへのインターフェースを提供していますが、これは
+Secure Sockts Layer と Transport Layer Security
+プロトコルを用いた強力な暗号化を提供します。
+このモジュールやこの文書は Ralf S. Engelschall の mod_ssl
+プロジェクトに基づいています。</p>
+</summary>
+
+<section id="documentation"><title>Documentation</title>
+<ul>
+<li><a href="ssl_intro.html">はじめに</a></li>
+<li><a href="ssl_compat.html">互換性</a></li>
+<li><a href="ssl_howto.html">How-To</a></li>
+<li><a href="ssl_faq.html">よくある質問</a></li>
+<li><a href="../glossary.html">用語</a></li>
+</ul>
+</section>
+
+<section id="mod-ssl"><title>mod_ssl</title>
+<p>このモジュールで提供されるディレクティブや環境変数に関する
+詳しい文書は、<a href="../mod/mod_ssl.html">mod_ssl
+リファレンス</a>をご覧下さい。</p>
+</section>
+
+</manualpage>
+
+
