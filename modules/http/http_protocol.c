@@ -1022,14 +1022,13 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
  * caused by MIME folding (or broken clients) if fold != 0, and place it
  * in the buffer s, of size n bytes, without the ending newline.
  *
- * Returns -1 on error, or the length of s.
+ * Returns -1 on error, or the length of s.  
  *
- * Note: Because bgets uses 1 char for newline and 1 char for NUL,
- *       the most we can get is (n - 2) actual characters if it
- *       was ended by a newline, or (n - 1) characters if the line
- *       length exceeded (n - 1).  So, if the result == (n - 1),
- *       then the actual input line exceeded the buffer length,
- *       and it would be a good idea for the caller to puke 400 or 414.
+ * Notes: Because the buffer uses 1 char for NUL, the most we can return is 
+ *        (n - 1) actual characters.  
+ *
+ *        If no LF is detected on the last line due to a dropped connection 
+ *        or a full buffer, that's considered an error.
  */
 static int getline(char *s, int n, request_rec *r, int fold)
 {
@@ -1073,9 +1072,11 @@ static int getline(char *s, int n, request_rec *r, int fold)
         }
 
         if ((looking_ahead) && (*temp != ' ') && (*temp != '\t')) { 
-            /* just checking, but can't fold because next line isn't
-             * indented
+            /* can't fold because next line isn't indented, 
+             * so return what we have.  lookahead brigade is 
+             * stashed on req_cfg->bb
              */
+            AP_DEBUG_ASSERT(!AP_BRIGADE_EMPTY(req_cfg->bb));
             break;
         }
         last_char = pos + length - 1;
@@ -1115,23 +1116,26 @@ static int getline(char *s, int n, request_rec *r, int fold)
                 --pos;          /* trim extra trailing spaces or tabs    */
             }
             *pos = '\0';        /* zap end of string                     */
+            total = pos - s;    /* update total string length            */
 
             /* look ahead another line if line folding is desired 
-             * and the last line wasn't empty
+             * and this line isn't empty
              */
-            looking_ahead = (fold && ((pos - s) > total));
-            total = pos - s;    /* update total string length            */
-            if (!looking_ahead) {
-                AP_DEBUG_ASSERT(AP_BRIGADE_EMPTY(b));
-                break;          /* normal loop exit                      */
+            if (fold && total) {
+                looking_ahead = 1;
+            }
+            else {
+                AP_DEBUG_ASSERT(AP_BRIGADE_EMPTY(req_cfg->bb));
+                break;
             }
         }
         else {
-            /* no LF yet...keep going
+            /* no LF yet...character mode client (telnet)...keep going
              * bump past last character read,   
              * and set total in case we bail before finding a LF   
              */
             total = ++pos - s;    
+            looking_ahead = 0;  /* only appropriate right after LF       */ 
         }
     }
     return total;
