@@ -371,11 +371,9 @@ int ssl_hook_Access(request_rec *r)
     STACK_OF(SSL_CIPHER) *skCipherOld;
     STACK_OF(SSL_CIPHER) *skCipher;
     SSL_CIPHER *pCipher;
-    apr_table_t *apctx;
     int nVerifyOld;
     int nVerify;
     int n;
-    void *vp;
     int rc;
 
     dc  = myDirConfig(r);
@@ -522,13 +520,11 @@ int ssl_hook_Access(request_rec *r)
      * restriction on the certificate chain).
      */
     if (dc->nVerifyDepth != UNSET) {
-        apctx = (apr_table_t *)SSL_get_app_data2(ssl);
-        if ((vp = (void *)apr_table_get(apctx, "ssl::verify::depth")) != NULL)
-            n = (int)AP_CTX_PTR2NUM(vp);
-        else
-            n = sc->nVerifyDepth;
-        apr_table_setn(apctx, "ssl::verify::depth",
-                   (const char *)AP_CTX_NUM2PTR(dc->nVerifyDepth));
+        /* XXX: doesnt look like sslconn->verify_depth is actually used */
+        if (!(n = sslconn->verify_depth)) {
+            sslconn->verify_depth = n = sc->nVerifyDepth;
+        }
+
         /* determine whether a renegotiation has to be forced */
         if (dc->nVerifyDepth < n) {
             renegotiate = TRUE;

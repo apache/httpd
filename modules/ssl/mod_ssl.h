@@ -462,6 +462,7 @@ typedef struct {
     ssl_shutdown_type_e shutdown_type;
     const char *verify_info;
     const char *verify_error;
+    int verify_depth;
 } SSLConnRec;
 
 typedef struct {
