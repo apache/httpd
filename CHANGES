@@ -1,5 +1,7 @@
 Changes with Apache 2.0.46
 
+  *) Fix --enable-mods-shared=most and other variants.  [Aaron Bannert]
+
   *) mod_log_config: Add the ability to log the id of the thread 
      processing the request via new %P formats.  [Jeff Trawick]
 
