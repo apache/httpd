@@ -21,5 +21,5 @@ copy ..\srclib\pcre\pcre.hw ..\srclib\pcre\pcre.h
 
 @echo Generating the import lists...
 awk -f ..\srclib\apr\build\make_nw_export.awk ..\srclib\apr\include\*.h |sort > ..\srclib\apr\aprlib.imp
-awk -f ..\srclib\apr\build\make_nw_export.awk ..\srclib\apr-util\include\*.h |sort > ..\srclib\apr\aprutil.imp
-awk -f make_nw_export.awk ..\include\*.h |sort > ..\os\netware\httpd.imp
+awk -f ..\srclib\apr\build\make_nw_export.awk ..\srclib\apr-util\include\*.h |sort >> ..\srclib\apr\aprlib.imp
+awk -f make_nw_export.awk ..\include\*.h ..\modules\http\*.h |sort > ..\os\netware\httpd.imp
