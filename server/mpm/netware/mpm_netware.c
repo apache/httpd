@@ -456,7 +456,7 @@ void worker_main(void *arg)
                         quick try to pull the next request from the listen 
                         queue.  Try a few more times then return to our idle
                         listen state. */
-                    if (APR_TO_NETOS_ERROR(stat) != WSAEWOULDBLOCK) {
+                    if (!APR_STATUS_IS_EAGAIN(stat)) {
                         break;
                     }
 
@@ -479,22 +479,23 @@ void worker_main(void *arg)
                 break;		/* We have a socket ready for reading */
             }
             else {
-                switch (APR_TO_NETOS_ERROR(stat)) {
-                    
-                    case WSAEWOULDBLOCK:
 #ifdef DBINFO_ON
+                if (APR_STATUS_IS_EAGAIN(stat)) {
                         would_block++;
                         retry_fail++;
-                        break;
+                }
+                else
+#else
+                if (APR_STATUS_IS_EAGAIN(stat) ||
 #endif
-                    case WSAECONNRESET:
-                    case WSAETIMEDOUT:
-                    case WSAEHOSTUNREACH:
-                    case WSAENETUNREACH:
-                        break;
-    
-                    case WSAENETDOWN:
-                        /*
+                    APR_STATUS_IS_ECONNRESET(stat) ||
+                    APR_STATUS_IS_ETIMEDOUT(stat) ||
+                    APR_STATUS_IS_EHOSTUNREACH(stat) ||
+                    APR_STATUS_IS_ENETUNREACH(stat)) {
+                        ;
+                }
+                else if (APR_STATUS_IS_ENETDOWN(stat)) {
+                       /*
                         * When the network layer has been shut down, there
                         * is not much use in simply exiting: the parent
                         * would simply re-create us (and we'd fail again).
@@ -511,8 +512,8 @@ void worker_main(void *arg)
                         ap_log_error(APLOG_MARK, APLOG_EMERG, stat, ap_server_conf,
                             "apr_accept: giving up.");
                         clean_child_exit(APEXIT_CHILDFATAL, my_worker_num, ptrans, bucket_alloc);
-    
-                    default:
+                }
+                else {
                         ap_log_error(APLOG_MARK, APLOG_ERR, stat, ap_server_conf,
                             "apr_accept: (client socket)");
                         clean_child_exit(1, my_worker_num, ptrans, bucket_alloc);
