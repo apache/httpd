@@ -1,5 +1,8 @@
 Changes with Apache 1.3.10
 
+  *) Consistency cleanup of the complete APXS tool and corresponding manpage.
+     [Ralf S. Engelschall]
+
   *) Add %q logging format directive (logs "?" and the query string part
      of a query, or the empty string if no query).
      Can be used in combination with %m, %U and %H: "%m %U%q %H" is the

@@ -68,18 +68,18 @@ package apxs;
 ##  Configuration
 ##
 
-my $CFG_TARGET        = '@TARGET@';            # substituted via Makefile.tmpl 
-my $CFG_CC            = '@CC@';                # substituted via Makefile.tmpl
-my $CFG_CFLAGS        = '@CFLAGS@';            # substituted via Makefile.tmpl
-my $CFG_CFLAGS_SHLIB  = '@CFLAGS_SHLIB@';      # substituted via Makefile.tmpl
-my $CFG_LD_SHLIB      = '@LD_SHLIB@';          # substituted via Makefile.tmpl
-my $CFG_LDFLAGS_SHLIB = q(@LDFLAGS_MOD_SHLIB@);# substituted via Makefile.tmpl 
-my $CFG_LIBS_SHLIB    = '@LIBS_SHLIB@';        # substituted via Makefile.tmpl 
-my $CFG_PREFIX        = '@prefix@';            # substituted via APACI install
-my $CFG_SBINDIR       = '@sbindir@';           # substituted via APACI install
-my $CFG_INCLUDEDIR    = '@includedir@';        # substituted via APACI install
-my $CFG_LIBEXECDIR    = '@libexecdir@';        # substituted via APACI install
-my $CFG_SYSCONFDIR    = '@sysconfdir@';        # substituted via APACI install
+my $CFG_TARGET        = q(@TARGET@);            # substituted via Makefile.tmpl 
+my $CFG_CC            = q(@CC@);                # substituted via Makefile.tmpl
+my $CFG_CFLAGS        = q(@CFLAGS@);            # substituted via Makefile.tmpl
+my $CFG_CFLAGS_SHLIB  = q(@CFLAGS_SHLIB@);      # substituted via Makefile.tmpl
+my $CFG_LD_SHLIB      = q(@LD_SHLIB@);          # substituted via Makefile.tmpl
+my $CFG_LDFLAGS_SHLIB = q(@LDFLAGS_MOD_SHLIB@); # substituted via Makefile.tmpl 
+my $CFG_LIBS_SHLIB    = q(@LIBS_SHLIB@);        # substituted via Makefile.tmpl 
+my $CFG_PREFIX        = q(@prefix@);            # substituted via APACI install
+my $CFG_SBINDIR       = q(@sbindir@);           # substituted via APACI install
+my $CFG_INCLUDEDIR    = q(@includedir@);        # substituted via APACI install
+my $CFG_LIBEXECDIR    = q(@libexecdir@);        # substituted via APACI install
+my $CFG_SYSCONFDIR    = q(@sysconfdir@);        # substituted via APACI install
 
 ##
 ##  Cleanup the above stuff
@@ -127,10 +127,10 @@ sub Getopts {
             last;
         }
         $pos = index($argumentative,$first);
-        if($pos >= $[) {
-            if($args[$pos+1] eq ':') {
+        if ($pos >= $[) {
+            if ($args[$pos+1] eq ':') {
                 shift(@ARGV);
-                if($rest eq '') {
+                if ($rest eq '') {
                     unless (@ARGV) {
                         print STDERR "apxs:Error: Incomplete option: $first (needs an argument)\n";
                         ++$errs;
@@ -141,7 +141,7 @@ sub Getopts {
             }
             elsif ($args[$pos+1] eq '+') {
                 shift(@ARGV);
-                if($rest eq '') {
+                if ($rest eq '') {
                     unless (@ARGV) {
                         print STDERR "apxs:Error: Incomplete option: $first (needs an argument)\n";
                         ++$errs;
@@ -152,7 +152,7 @@ sub Getopts {
             }
             else {
                 eval "\$opt_$first = 1";
-                if($rest eq '') {
+                if ($rest eq '') {
                     shift(@ARGV);
                 }
                 else {
@@ -163,7 +163,7 @@ sub Getopts {
         else {
             print STDERR "apxs:Error: Unknown option: $first\n";
             ++$errs;
-            if($rest ne '') {
+            if ($rest ne '') {
                 $ARGV[0] = "-$rest";
             }
             else {
@@ -197,39 +197,37 @@ my @args = @ARGV;
 my $name = 'unknown';
 $name = $opt_n if ($opt_n ne '');
 
+#   overriding of configuration variables
 if (@opt_S) {
     my ($opt_S);
     foreach $opt_S (@opt_S) {
-	if ($opt_S =~ m/^([^=]+)=(.*)$/) {
-	    my ($var) = $1;
-	    my ($val) = $2;
-	    my $oldval = eval "\$CFG_$var";
-
-	    unless ($var and $oldval) {
-		print STDERR "apxs:Error: no config variable $var\n";
-		&usage;
-	    }
-
-	    eval "\$CFG_${var}=\"${val}\"";
-	} else {
-	    print STDERR "apxs:Error: malformatted -S option\n";
-	    &usage;
-	}	
+        if ($opt_S =~ m/^([^=]+)=(.*)$/) {
+            my ($var, $val) = ($1, $2);
+            my $oldval = eval "\$CFG_$var";
+            unless ($var and $oldval) {
+                print STDERR "apxs:Error: no config variable $var\n";
+                &usage;
+            }
+            eval "\$CFG_${var}=\"${val}\"";
+        } else {
+            print STDERR "apxs:Error: malformatted -S option\n";
+            &usage;
+        }       
     }
 }
 
 ##
-##  Initial shared object support check
+##  Initial DSO support check
 ##
 if (not -x "$CFG_SBINDIR/$CFG_TARGET") {
-	print STDERR "apxs:Error: $CFG_SBINDIR/$CFG_TARGET not found or not executable\n";
-	exit(1);
+    print STDERR "apxs:Error: $CFG_SBINDIR/$CFG_TARGET not found or not executable\n";
+    exit(1);
 }
 if (not grep(/mod_so/, `$CFG_SBINDIR/$CFG_TARGET -l`)) {
-    print STDERR "apxs:Error: Sorry, no shared object support for Apache\n";
-    print STDERR "apxs:Error: available under your platform. Make sure\n";
-    print STDERR "apxs:Error: the Apache module mod_so is compiled into\n";
-    print STDERR "apxs:Error: your server binary `$CFG_SBINDIR/$CFG_TARGET'.\n";
+    print STDERR "apxs:Error: Sorry, no DSO support for Apache available\n";
+    print STDERR "apxs:Error: under your platform. Make sure the Apache\n";
+    print STDERR "apxs:Error: module mod_so is compiled into your server\n";
+    print STDERR "apxs:Error: binary `$CFG_SBINDIR/$CFG_TARGET'.\n";
     exit(1);
 }
 
@@ -259,7 +257,7 @@ if ($opt_g) {
     ##
 
     if (-d $name) {
-        print STDERR "apxs:Error: Directory `$name' already exists. Remove first\n";
+        print STDERR "apxs:Error: Directory `$name' already exists. Remove it first\n";
         exit(1);
     }
 
@@ -282,7 +280,6 @@ if ($opt_g) {
 
     exit(0);
 }
-
 
 if ($opt_q) {
     ##
@@ -316,7 +313,7 @@ if ($opt_q) {
 
 if ($opt_c) {
     ##
-    ##  SHARED OBJECT COMPILATION
+    ##  DSO COMPILATION
     ##
 
     #   split files into sources and objects
@@ -383,11 +380,11 @@ if ($opt_c) {
     $opt = '';
     my ($opt_Wl, $opt_L, $opt_l);
     foreach $opt_Wl (@opt_W) {
-		if ($CFG_LD_SHLIB !~ m/gcc$/) {
-	        $opt .= " $1" if ($opt_Wl =~ m|^\s*l,(.*)$|);
-		} else {
-	        $opt .= " -W$opt_Wl";
-		}
+        if ($CFG_LD_SHLIB !~ m/gcc$/) {
+            $opt .= " $1" if ($opt_Wl =~ m|^\s*l,(.*)$|);
+        } else {
+            $opt .= " -W$opt_Wl";
+        }
     }
     foreach $opt_L (@opt_L) {
         $opt .= " -L$opt_L";
@@ -404,13 +401,13 @@ if ($opt_c) {
 
     #   allow one-step compilation and installation
     if ($opt_i or $opt_e) {
-        @args = ( $dso_file );
+        @args = ($dso_file);
     }
 }
 
 if ($opt_i or $opt_e) {
     ##
-    ##  SHARED OBJECT INSTALLATION
+    ##  DSO INSTALLATION
     ##
 
     #   determine installation commands
@@ -421,14 +418,14 @@ if ($opt_i or $opt_e) {
     my $f;
     foreach $f (@args) {
         if ($f !~ m|\.so$|) {
-            print STDERR "apxs:Error: file $f is not a shared object\n";
+            print STDERR "apxs:Error: file $f is not a DSO\n";
             exit(1);
         }
         my $t = $f;
         $t =~ s|^.+/([^/]+)$|$1|;
         if ($opt_i) {
-	    push(@cmds, "cp $f $CFG_LIBEXECDIR/$t");
-	    push(@cmds, "chmod 755 $CFG_LIBEXECDIR/$t");
+            push(@cmds, "cp $f $CFG_LIBEXECDIR/$t");
+            push(@cmds, "chmod 755 $CFG_LIBEXECDIR/$t");
         }
 
         #   determine module symbolname and filename
@@ -455,8 +452,8 @@ if ($opt_i or $opt_e) {
                 }
             }
             if ($name eq '') {
-                print "apxs:Error: Sorry, cannot determine bootstrap symbol name\n";
-                print "apxs:Error: Please specify one with option `-n'\n";
+                print STDERR "apxs:Error: Sorry, cannot determine bootstrap symbol name.\n";
+                print STDERR "apxs:Error: Please specify one with option `-n'.\n";
                 exit(1);
             }
         }
@@ -476,7 +473,7 @@ if ($opt_i or $opt_e) {
     #   activate module via LoadModule/AddModule directive
     if ($opt_a or $opt_A) {
         if (not -f "$CFG_SYSCONFDIR/$CFG_TARGET.conf") {
-            print "apxs:Error: Config file $CFG_SYSCONFDIR/$CFG_TARGET.conf not found\n";
+            print STDERR "apxs:Error: Config file $CFG_SYSCONFDIR/$CFG_TARGET.conf not found\n";
             exit(1);
         }
 
@@ -510,7 +507,7 @@ if ($opt_i or $opt_e) {
             } else {
                  $content =~ s|^(.*\n)#?\s*$amd[^\n]*\n|$1$c$amd\n|sg;
             }
-	}
+        }
         if (@lmd or @amd) {
             if (open(FP, ">$CFG_SYSCONFDIR/$CFG_TARGET.conf.new")) {
                 print FP $content;
@@ -519,9 +516,9 @@ if ($opt_i or $opt_e) {
                        "cp $CFG_SYSCONFDIR/$CFG_TARGET.conf.new $CFG_SYSCONFDIR/$CFG_TARGET.conf && " .
                        "rm $CFG_SYSCONFDIR/$CFG_TARGET.conf.new");
             } else {
-                print STDERR "unable to open configuration file\n";
+                print STDERR "apxs:Error: unable to open configuration file\n";
             }
-	}
+        }
     }
 }
 
@@ -536,7 +533,7 @@ __DATA__
 APXS=apxs
 APACHECTL=apachectl
 
-#   additional defines, includes and libraries
+#   additional user defines, includes and libraries
 #DEF=-Dmy_define=my_value
 #INC=-Imy/include/dir
 #LIB=-Lmy/lib/dir -lmylib
@@ -544,11 +541,12 @@ APACHECTL=apachectl
 #   the default target
 all: mod_%NAME%.so
 
-#   compile the shared object file
+#   compile the DSO file
 mod_%NAME%.so: mod_%NAME%.c
 	$(APXS) -c $(DEF) $(INC) $(LIB) mod_%NAME%.c
 
-#   install the shared object file into Apache 
+#   install the DSO file into the Apache installation
+#   and activate it in the Apache configuration
 install: all
 	$(APXS) -i -a -n '%NAME%' mod_%NAME%.so
 
@@ -560,12 +558,10 @@ clean:
 test: reload
 	lynx -mime_header http://localhost/%NAME%
 
-#   install and activate shared object by reloading Apache to
-#   force a reload of the shared object file
+#   reload the module by installing and restarting Apache
 reload: install restart
 
-#   the general Apache start/restart/stop
-#   procedures
+#   the general Apache start/restart/stop procedures
 start:
 	$(APACHECTL) start
 restart:
@@ -578,14 +574,14 @@ stop:
 **  mod_%NAME%.c -- Apache sample %NAME% module
 **  [Autogenerated via ``apxs -n %NAME% -g'']
 **
-**  To play with this sample module first compile it into a
+**  To play with this sample module, first compile it into a
 **  DSO file and install it into Apache's libexec directory 
 **  by running:
 **
 **    $ apxs -c -i mod_%NAME%.c
 **
-**  Then activate it in Apache's %TARGET%.conf file for instance
-**  for the URL /%NAME% in as follows:
+**  Then activate it in Apache's %TARGET%.conf file, for instance
+**  for the URL /%NAME%, as follows:
 **
 **    #   %TARGET%.conf
 **    LoadModule %NAME%_module libexec/mod_%NAME%.so
