@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: util.c,v 1.19 1996/09/23 20:38:53 jim Exp $ */
+/* $Id: util.c,v 1.20 1996/09/26 04:16:06 brian Exp $ */
 
 /*
  * str.c: string utility things
@@ -1044,7 +1044,7 @@ uid_t uname2id(char *name) {
         fprintf(stderr,"httpd: bad user name %s\n",name);
         exit(1);
     }
-    else return(ent->pw_uid);
+    return(ent->pw_uid);
 }
 
 gid_t gname2id(char *name) {
@@ -1057,7 +1057,7 @@ gid_t gname2id(char *name) {
         fprintf(stderr,"httpd: bad group name %s\n",name);
         exit(1);
     }
-    else return(ent->gr_gid);
+    return(ent->gr_gid);
 }
 
 #if 0
@@ -1176,7 +1176,8 @@ static char *find_fqdn(pool *a, struct hostent *p) {
                 return pstrdup(a, p->h_aliases[x]);
         }
         return NULL;
-    } else return pstrdup(a, (void *)p->h_name);
+    }
+    return pstrdup(a, (void *)p->h_name);
 }
 
 char *get_local_host(pool *a)
