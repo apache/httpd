@@ -113,11 +113,11 @@ in URLs of the form <code>http://www.abc.dom/whatever</code>) will all be
 served by the <code>def.com</code> virtual host.  To better understand why
 this happens requires a more in-depth discussion of how Apache matches
 up incoming requests with the virtual host that will serve it.  A rough
-document describing this <a href="vhosts-in-depth.html"> is available</a>.
+document describing this <a href="vhosts/details.html"> is available</a>.
 
 <h3>The "main server" Address</h3>
 
-<p>The addition of <a href="host.html">non-IP-based virtual host
+<p>The addition of <a href="vhosts/name-based.html">name-based virtual host
 support</a> in Apache 1.1 requires Apache to know the IP address(es) of
 the host that httpd is running on.  To get this address it uses either
 the global <code>ServerName</code> (if present) or calls the C function
@@ -140,18 +140,6 @@ depends on what OS and resolver libraries you are using.  It also affects
 CGIs unless you use <a href="mod/mod_env.html"><code>mod_env</code></a>
 to control the environment.  It's best to consult the man pages or FAQs
 for your OS.
-
-<h3>The _default_ Address</h3>
-
-<p>Any address that happens to go to your webserver which doesn't match
-the IP address of any of the webservers will be served from the "main" or
-"default" server configurations.  The "main" server configuration consists
-of all those definitions appearing outside of any VirtualHost section.
-You may want instead to define a <code>&lt;VirtualHost _default_:*&gt;</code>
-which returns 403 or 404 for all hits.  (The trailing <code>:*</code>
-makes it apply to all ports, which is just a safety measure should you
-begin using multiple <code><a href="mod/core.html#listen">Listen</a></code>
-directives.)
 
 <h3><a name="tips">Tips to Avoid these problems</a></h3>
 
