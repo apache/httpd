@@ -825,6 +825,7 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
 static void ssl_io_filter_disable(ap_filter_t *f)
 {
     bio_filter_in_ctx_t *inctx = f->ctx;
+    SSL_free(inctx->ssl);
     inctx->ssl = NULL;
     inctx->filter_ctx->pssl = NULL;
 }
