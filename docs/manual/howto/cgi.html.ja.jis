@@ -21,6 +21,8 @@
 <p><span>Available Languages: </span><a href="../en/howto/cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/howto/cgi.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+ English version for recent changes.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">はじめに</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#configuring">CGI を許可するように Apache を設定する</a></li>
