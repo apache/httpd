@@ -91,7 +91,7 @@ static ap_filter_rec_t *registered_filters = NULL;
 ** corresponds to a different request.
 */
 #define INSERT_BEFORE(f, before_this) ((before_this) == NULL \
-                                       || (before_this)->ftype >= (f)->ftype \
+                                       || (before_this)->ftype > (f)->ftype \
                                        || (before_this)->r != (f)->r)
 
 
