@@ -1543,6 +1543,104 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, server_rec *s)
     return ok;
 }
 
+#define SSLPROXY_CERT_CB_LOG_FMT \
+   "Proxy client certificate callback: (%s) "
+
+static void modssl_proxy_info_log(server_rec *s,
+                                  X509_INFO *info,
+                                  const char *msg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(s);
+    char name_buf[256];
+    X509_NAME *name;
+    const char *dn;
+
+    if (sc->log_level < SSL_LOG_TRACE) {
+        return;
+    }
+
+    name = X509_get_subject_name(info->x509);
+    dn = X509_NAME_oneline(name, name_buf, sizeof(name_buf));
+
+    ssl_log(s, SSL_LOG_TRACE,
+            SSLPROXY_CERT_CB_LOG_FMT "%s, sending %s", 
+            sc->vhost_id, msg, dn ? dn : "-uknown-");
+}
+
+/*
+ * caller will decrement the cert and key reference
+ * so we need to increment here to prevent them from
+ * being freed.
+ */
+#define modssl_set_cert_info(info, cert, pkey) \
+    *cert = info->x509; \
+    *pkey = info->x_pkey->dec_pkey; \
+    CRYPTO_add(&((*cert)->references), +1, CRYPTO_LOCK_X509_PKEY); \
+    CRYPTO_add(&((*pkey)->references), +1, CRYPTO_LOCK_X509_PKEY)
+
+int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey) 
+{
+    conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
+    server_rec *s = c->base_server;
+    SSLSrvConfigRec *sc = mySrvConfig(s);
+    X509_NAME *ca_name, *issuer;
+    X509_INFO *info;
+    STACK_OF(X509_NAME) *ca_list;
+    STACK_OF(X509_INFO) *certs = sc->proxy->pkp->certs;
+    int i, j;
+    
+    ssl_log(s, SSL_LOG_TRACE, 
+            SSLPROXY_CERT_CB_LOG_FMT "entered",
+            sc->vhost_id);
+
+    if (!certs || (sk_X509_INFO_num(certs) <= 0)) {
+        ssl_log(s, SSL_LOG_WARN,
+                SSLPROXY_CERT_CB_LOG_FMT
+                "downstream server wanted client certificate "
+                "but none are configured", sc->vhost_id);
+        return FALSE;
+    }                                                                     
+
+    ca_list = SSL_get_client_CA_list(ssl);
+
+    if (!ca_list || (sk_X509_NAME_num(ca_list) <= 0)) {
+        /* 
+         * downstream server didn't send us a list of acceptable CA certs, 
+         * so we send the first client cert in the list.
+         */   
+        info = sk_X509_INFO_value(certs, 0);
+        
+        modssl_proxy_info_log(s, info, "no acceptable CA list");
+
+        modssl_set_cert_info(info, x509, pkey);
+
+        return TRUE;
+    }         
+
+    for (i = 0; i < sk_X509_NAME_num(ca_list); i++) {
+        ca_name = sk_X509_NAME_value(ca_list, i);
+
+        for (j = 0; j < sk_X509_INFO_num(certs); j++) {
+            info = sk_X509_INFO_value(certs, j);
+            issuer = X509_get_issuer_name(info->x509);
+
+            if (X509_NAME_cmp(issuer, ca_name) == 0) {
+                modssl_proxy_info_log(s, info, "found acceptable cert");
+
+                modssl_set_cert_info(info, x509, pkey);
+
+                return TRUE;
+            }
+        }
+    }
+
+    ssl_log(s, SSL_LOG_TRACE,
+            SSLPROXY_CERT_CB_LOG_FMT
+            "no client certificate found!?", sc->vhost_id);
+
+    return FALSE; 
+}
+
 static void ssl_session_log(server_rec *s,
                             const char *request,
                             unsigned char *id,
