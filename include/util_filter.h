@@ -298,7 +298,8 @@ struct ap_filter_t {
  * filter doesn't read from the network, then ::AP_NOBODY_READ is returned.
  * The bucket brigade will be empty when there is nothing left to get.
  * @param filter The next filter in the chain
- * @param bucket The current bucket brigade
+ * @param bucket The current bucket brigade.  The original brigade passed
+ *               to ap_get_brigade() must be empty.
  * @param mode   The way in which the data should be read
  * @param block  How the operations should be performed
  *               ::APR_BLOCK_READ, ::APR_NONBLOCK_READ
