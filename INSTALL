@@ -1,6 +1,11 @@
 
   A P A C H E   I N S T A L L A T I O N
 
+  NOTE: Windows users please read the documents README.NT and
+        http://www.apache.org/docs/windows.html, (or the
+        htdocs/manual/windows.html file included with Apache). 
+        The following applies only to Unix users.
+
   Installing the Apache 1.3 HTTP server manually
   ==============================================
 
