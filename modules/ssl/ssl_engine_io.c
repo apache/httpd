@@ -646,6 +646,12 @@ static apr_status_t ssl_io_input_read(ssl_io_input_ctx_t *ctx,
 
     if ((bytes = char_buffer_read(&ctx->cbuf, buf, wanted))) {
         *len = bytes;
+        if (ctx->inbio.mode == AP_MODE_SPECULATIVE) {
+            /* We want to rollback this read. */
+            ctx->cbuf.value -= bytes;
+            ctx->cbuf.length += bytes;
+            return APR_SUCCESS;
+        } 
         if ((*len >= wanted) || ctx->inbio.mode == AP_MODE_GETLINE) {
             return APR_SUCCESS;
         }
@@ -655,6 +661,9 @@ static apr_status_t ssl_io_input_read(ssl_io_input_ctx_t *ctx,
 
     if (rc > 0) {
         *len += rc;
+        if (ctx->inbio.mode == AP_MODE_SPECULATIVE) {
+            char_buffer_write(&ctx->cbuf, buf, rc);
+        }
     }
 
     return ctx->inbio.rc;
@@ -736,8 +745,9 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
     apr_off_t bytes = *readbytes;
     int is_init = (mode == AP_MODE_INIT);
 
-    /* XXX: we don't currently support peek or readbytes == -1 */
-    if (mode == AP_MODE_EATCRLF || *readbytes == -1) {
+    /* XXX: we don't currently support anything other than these modes. */
+    if (mode != AP_MODE_READBYTES && mode != AP_MODE_GETLINE && 
+        mode != AP_MODE_SPECULATIVE && mode != AP_MODE_INIT) {
         return APR_ENOTIMPL;
     }
 
@@ -762,7 +772,8 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
         return APR_SUCCESS;
     }
 
-    if (ctx->inbio.mode == AP_MODE_READBYTES) {
+    if (ctx->inbio.mode == AP_MODE_READBYTES || 
+        ctx->inbio.mode == AP_MODE_SPECULATIVE) {
         /* Protected from truncation, bytes < MAX_SIZE_T */
         if (bytes < len) {
             len = (apr_size_t)bytes;
