@@ -2121,6 +2121,13 @@ regul&auml;re Ausdr&uuml;cke passen</description>
     <example>
       LogLevel notice
     </example>
+
+    <note><title>Hinweis</title>
+      <p>Beim Protokollieren in eine regul&auml;re Datei k&ouml;nnen
+      Nachrichten des Levels <code>notice</code> nicht unterdr&uuml;ckt
+      werden und werden daher immer protokolliert. Dies trifft allerdings
+      nicht zu wenn mittels <code>syslog</code> protokolliert wird.</p>
+    </note>
 </usage>
 </directivesynopsis>
 

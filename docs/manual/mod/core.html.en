@@ -2037,6 +2037,13 @@ matching URLs</td></tr>
       LogLevel notice
     </code></p></div>
 
+    <div class="note"><h3>Note</h3>
+      <p>When logging to a regular file messages of the level
+      <code>notice</code> cannot be suppressed and thus are always
+      logged. However, this doesn't apply when logging is done
+      using <code>syslog</code>.</p>
+    </div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a> <a name="maxkeepaliverequests" id="maxkeepaliverequests">Directive</a></h2>
