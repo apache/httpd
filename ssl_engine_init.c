@@ -229,20 +229,6 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
             sc->bEnabled = FALSE;
         }
 
-        if (sc->nVerifyClient == SSL_CVERIFY_UNSET) {
-            sc->nVerifyClient = SSL_CVERIFY_NONE;
-        }
-
-        if (sc->nVerifyDepth == UNSET) {
-            sc->nVerifyDepth = 1;
-        }
-
-#ifdef SSL_EXPERIMENTAL_PROXY
-        if (sc->nProxyVerifyDepth == UNSET) {
-            sc->nProxyVerifyDepth = 1;
-        }
-#endif
-
         if (sc->nSessionCacheTimeout == UNSET) {
             sc->nSessionCacheTimeout = SSL_SESSION_CACHE_TIMEOUT;
         }
@@ -385,6 +371,87 @@ void ssl_init_Engine(server_rec *s, apr_pool_t *p)
 }
 #endif
 
+static void ssl_init_verify(server_rec *s,
+                            apr_pool_t *p,
+                            apr_pool_t *ptemp,
+                            SSLSrvConfigRec *sc)
+{
+    SSL_CTX *ctx = sc->pSSLCtx;
+    const char *vhost_id = sc->szVHostID;
+
+    int verify = SSL_VERIFY_NONE;
+    STACK_OF(X509_NAME) *ca_list;
+
+    if (sc->nVerifyClient == SSL_CVERIFY_UNSET) {
+        sc->nVerifyClient = SSL_CVERIFY_NONE;
+    }
+
+    if (sc->nVerifyDepth == UNSET) {
+        sc->nVerifyDepth = 1;
+    }
+
+    /*
+     *  Configure callbacks for SSL context
+     */
+    if (sc->nVerifyClient == SSL_CVERIFY_REQUIRE) {
+        verify |= SSL_VERIFY_PEER_STRICT;
+    }
+
+    if ((sc->nVerifyClient == SSL_CVERIFY_OPTIONAL) ||
+        (sc->nVerifyClient == SSL_CVERIFY_OPTIONAL_NO_CA))
+    {
+        verify |= SSL_VERIFY_PEER;
+    }
+
+    SSL_CTX_set_verify(ctx, verify,  ssl_callback_SSLVerify);
+
+    /*
+     * Configure Client Authentication details
+     */
+    if (sc->szCACertificateFile || sc->szCACertificatePath) {
+        ssl_log(s, SSL_LOG_TRACE,
+                "Init: (%s) Configuring client authentication", vhost_id);
+
+        if (!SSL_CTX_load_verify_locations(ctx,
+                                           sc->szCACertificateFile,
+                                           sc->szCACertificatePath))
+        {
+            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                    "Init: (%s) Unable to configure verify locations "
+                    "for client authentication", vhost_id);
+            ssl_die();
+        }
+
+        ca_list = ssl_init_FindCAList(s, ptemp,
+                                      sc->szCACertificateFile,
+                                      sc->szCACertificatePath);
+        if (!ca_list) {
+            ssl_log(s, SSL_LOG_ERROR,
+                    "Init: (%s) Unable to determine list of available "
+                    "CA certificates for client authentication",
+                    vhost_id);
+            ssl_die();
+        }
+
+        SSL_CTX_set_client_CA_list(ctx, (STACK *)ca_list);
+    }
+
+    /*
+     * Give a warning when no CAs were configured but client authentication
+     * should take place. This cannot work.
+     */
+    if (sc->nVerifyClient == SSL_CVERIFY_REQUIRE) {
+        ca_list = (STACK_OF(X509_NAME) *)SSL_CTX_get_client_CA_list(ctx);
+
+        if (sk_X509_NAME_num(ca_list) == 0) {
+            ssl_log(s, SSL_LOG_WARN,
+                    "Init: Ops, you want to request client authentication, "
+                    "but no CAs are known for verification!? "
+                    "[Hint: SSLCACertificate*]");
+        }
+    }
+}
+
 /*
  * Configure a particular server
  */
@@ -394,12 +461,10 @@ void ssl_init_ConfigureServer(server_rec *s,
                               SSLSrvConfigRec *sc)
 {
     SSLModConfigRec *mc = myModConfig(s);
-    int verify = SSL_VERIFY_NONE;
     char *cp;
     const char *vhost_id, *rsa_id, *dsa_id;
     EVP_PKEY *pkey;
     SSL_CTX *ctx;
-    STACK_OF(X509_NAME) *ca_list;
     ssl_asn1_t *asn1;
     unsigned char *ptr;
     BOOL ok = FALSE;
@@ -464,6 +529,8 @@ void ssl_init_ConfigureServer(server_rec *s,
         ctx = SSL_CTX_new(SSLv23_server_method()); /* be more flexible */
     }
 
+    sc->pSSLCtx = ctx;
+
     SSL_CTX_set_options(ctx, SSL_OP_ALL);
 
     if (!(sc->nProtocol & SSL_PROTOCOL_SSLV2)) {
@@ -479,7 +546,6 @@ void ssl_init_ConfigureServer(server_rec *s,
     }
 
     SSL_CTX_set_app_data(ctx, s);
-    sc->pSSLCtx = ctx;
 
     /*
      * Configure additional context ingredients
@@ -499,20 +565,7 @@ void ssl_init_ConfigureServer(server_rec *s,
 
     SSL_CTX_set_session_cache_mode(ctx, cache_mode);
 
-    /*
-     *  Configure callbacks for SSL context
-     */
-    if (sc->nVerifyClient == SSL_CVERIFY_REQUIRE) {
-        verify |= SSL_VERIFY_PEER_STRICT;
-    }
-
-    if ((sc->nVerifyClient == SSL_CVERIFY_OPTIONAL) ||
-        (sc->nVerifyClient == SSL_CVERIFY_OPTIONAL_NO_CA))
-    {
-        verify |= SSL_VERIFY_PEER;
-    }
-
-    SSL_CTX_set_verify(ctx, verify,  ssl_callback_SSLVerify);
+    ssl_init_verify(s, p, ptemp, sc);
 
     SSL_CTX_sess_set_new_cb(ctx,      ssl_callback_NewSessionCacheEntry);
     SSL_CTX_sess_set_get_cb(ctx,      ssl_callback_GetSessionCacheEntry);
@@ -542,36 +595,6 @@ void ssl_init_ConfigureServer(server_rec *s,
         }
     }
 
-    /*
-     * Configure Client Authentication details
-     */
-    if (sc->szCACertificateFile || sc->szCACertificatePath) {
-        ssl_log(s, SSL_LOG_TRACE,
-                "Init: (%s) Configuring client authentication", vhost_id);
-
-        if (!SSL_CTX_load_verify_locations(ctx,
-                                           sc->szCACertificateFile,
-                                           sc->szCACertificatePath))
-        {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                    "Init: (%s) Unable to configure verify locations "
-                    "for client authentication", vhost_id);
-            ssl_die();
-        }
-
-        ca_list = ssl_init_FindCAList(s, ptemp,
-                                      sc->szCACertificateFile,
-                                      sc->szCACertificatePath);
-        if (!ca_list) {
-            ssl_log(s, SSL_LOG_ERROR,
-                    "Init: (%s) Unable to determine list of available "
-                    "CA certificates for client authentication",
-                    vhost_id);
-            ssl_die();
-        }
-
-        SSL_CTX_set_client_CA_list(sc->pSSLCtx, (STACK *)ca_list);
-    }
 
     /*
      * Configure Certificate Revocation List (CRL) Details
@@ -591,21 +614,6 @@ void ssl_init_ConfigureServer(server_rec *s,
                     "for certificate revocation",
                     vhost_id);
             ssl_die();
-        }
-    }
-
-    /*
-     * Give a warning when no CAs were configured but client authentication
-     * should take place. This cannot work.
-     */
-    if (sc->nVerifyClient == SSL_CVERIFY_REQUIRE) {
-        ca_list = (STACK_OF(X509_NAME) *)SSL_CTX_get_client_CA_list(ctx);
-
-        if (sk_X509_NAME_num(ca_list) == 0) {
-            ssl_log(s, SSL_LOG_WARN,
-                    "Init: Ops, you want to request client authentication, "
-                    "but no CAs are known for verification!? "
-                    "[Hint: SSLCACertificate*]");
         }
     }
 
