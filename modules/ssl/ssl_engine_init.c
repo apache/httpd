@@ -107,18 +107,6 @@ static void ssl_add_version_components(apr_pool_t *p,
 
 
 /*
- *  Initialize SSL library
- */
-static void ssl_init_SSLLibrary(server_rec *s)
-{
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
-                 "Init: Initializing %s library", SSL_LIBRARY_NAME);
-
-    SSL_load_error_strings();
-    SSL_library_init();
-}
-
-/*
  * Handle the Temporary RSA Keys and DH Params
  */
 
@@ -274,11 +262,12 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     ssl_init_Engine(base_server, p);
 #endif
 
-    ssl_init_SSLLibrary(base_server);
-
 #if APR_HAS_THREADS
     ssl_util_thread_setup(p);
 #endif
+
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+                 "Init: Initialized %s library", SSL_LIBRARY_NAME);
 
     /*
      * Seed the Pseudo Random Number Generator (PRNG)

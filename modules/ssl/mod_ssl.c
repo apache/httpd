@@ -235,8 +235,17 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
                                apr_pool_t *plog,
                                apr_pool_t *ptemp)
 {
-    /* Preregister the malloc callbacks so cmds can make library calls */
+    /* We must register the library in full, to ensure our configuration 
+     * code can successfully test the SSL environment.
+     */
     CRYPTO_malloc_init();
+    ERR_load_crypto_strings();
+    OpenSSL_add_all_algorithms();
+#if HAVE_ENGINE_LOAD_BUILTIN_ENGINES
+    ENGINE_load_builtin_engines();
+#endif
+    OPENSSL_load_builtin_modules();
+    SSL_load_error_strings();
 
     /* Register us to handle mod_log_config %c/%x variables */
     ssl_var_log_config_register(pconf);
