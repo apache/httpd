@@ -63,24 +63,23 @@
 
 #include "httpd.h"
 #include "http_log.h"
-#include "http_conf_globals.h"	/* for user_id & group_id */
+#include "http_conf_globals.h"  /* for user_id & group_id */
 #include "util_uri.h"
 
 /* Some WWW schemes and their default ports; this is basically /etc/services */
 /* This will become global when the protocol abstraction comes */
 /* As the schemes are searched by a linear search, */
 /* they are sorted by their expected frequency */
-static schemes_t schemes[] =
-{
-    {"http",   DEFAULT_HTTP_PORT},
-    {"ftp",    DEFAULT_FTP_PORT},
-    {"https",  DEFAULT_HTTPS_PORT},
+static schemes_t schemes[] = {
+    {"http", DEFAULT_HTTP_PORT},
+    {"ftp", DEFAULT_FTP_PORT},
+    {"https", DEFAULT_HTTPS_PORT},
     {"gopher", DEFAULT_GOPHER_PORT},
-    {"wais",   DEFAULT_WAIS_PORT},
-    {"nntp",   DEFAULT_NNTP_PORT},
-    {"snews",  DEFAULT_SNEWS_PORT},
+    {"wais", DEFAULT_WAIS_PORT},
+    {"nntp", DEFAULT_NNTP_PORT},
+    {"snews", DEFAULT_SNEWS_PORT},
     {"prospero", DEFAULT_PROSPERO_PORT},
-    { NULL, 0xFFFF }			/* unknown port */
+    {NULL, 0xFFFF}              /* unknown port */
 };
 
 
@@ -89,8 +88,8 @@ API_EXPORT(unsigned short) ap_default_port_for_scheme(const char *scheme_str)
     schemes_t *scheme;
 
     for (scheme = schemes; scheme->name != NULL; ++scheme)
-	if (strcasecmp(scheme_str, scheme->name) == 0)
-	    return scheme->default_port;
+        if (strcasecmp(scheme_str, scheme->name) == 0)
+            return scheme->default_port;
 
     return 0;
 }
@@ -98,8 +97,8 @@ API_EXPORT(unsigned short) ap_default_port_for_scheme(const char *scheme_str)
 API_EXPORT(unsigned short) ap_default_port_for_request(const request_rec *r)
 {
     return (r->parsed_uri.scheme)
-	? ap_default_port_for_scheme(r->parsed_uri.scheme)
-	: 0;
+        ? ap_default_port_for_scheme(r->parsed_uri.scheme)
+        : 0;
 }
 
 /* Create a copy of a "struct hostent" record; it was presumably returned
@@ -109,45 +108,45 @@ API_EXPORT(unsigned short) ap_default_port_for_request(const request_rec *r)
 API_EXPORT(struct hostent *) ap_pduphostent(pool *p, const struct hostent *hp)
 {
     struct hostent *newent;
-    char	  **ptrs;
-    char	  **aliases;
+    char **ptrs;
+    char **aliases;
     struct in_addr *addrs;
-    int		   i = 0, j = 0;
+    int i = 0, j = 0;
 
     if (hp == NULL)
-	return NULL;
+        return NULL;
 
     /* Count number of alias entries */
     if (hp->h_aliases != NULL)
-	for (; hp->h_aliases[j] != NULL; ++j)
-	    continue;
+        for (; hp->h_aliases[j] != NULL; ++j)
+            continue;
 
     /* Count number of in_addr entries */
     if (hp->h_addr_list != NULL)
-	for (; hp->h_addr_list[i] != NULL; ++i)
-	    continue;
+        for (; hp->h_addr_list[i] != NULL; ++i)
+            continue;
 
     /* Allocate hostent structure, alias ptrs, addr ptrs, addrs */
     newent = (struct hostent *) ap_palloc(p, sizeof(*hp));
-    aliases = (char **) ap_palloc(p, (j+1) * sizeof(char*));
-    ptrs = (char **) ap_palloc(p, (i+1) * sizeof(char*));
-    addrs  = (struct in_addr *) ap_palloc(p, (i+1) * sizeof(struct in_addr));
+    aliases = (char **) ap_palloc(p, (j + 1) * sizeof(char *));
+    ptrs = (char **) ap_palloc(p, (i + 1) * sizeof(char *));
+    addrs = (struct in_addr *) ap_palloc(p, (i + 1) * sizeof(struct in_addr));
 
     *newent = *hp;
     newent->h_name = ap_pstrdup(p, hp->h_name);
     newent->h_aliases = aliases;
-    newent->h_addr_list = (char**) ptrs;
+    newent->h_addr_list = (char **) ptrs;
 
     /* Copy Alias Names: */
     for (j = 0; hp->h_aliases[j] != NULL; ++j) {
-       aliases[j] = ap_pstrdup(p, hp->h_aliases[j]);
+        aliases[j] = ap_pstrdup(p, hp->h_aliases[j]);
     }
     aliases[j] = NULL;
 
     /* Copy address entries */
     for (i = 0; hp->h_addr_list[i] != NULL; ++i) {
-	ptrs[i] = (char*) &addrs[i];
-	addrs[i] = *(struct in_addr *) hp->h_addr_list[i];
+        ptrs[i] = (char *) &addrs[i];
+        addrs[i] = *(struct in_addr *) hp->h_addr_list[i];
     }
     ptrs[i] = NULL;
 
@@ -169,52 +168,58 @@ API_EXPORT(struct hostent *) ap_pgethostbyname(pool *p, const char *hostname)
 /* Unparse a uri_components structure to an URI string.
  * Optionally suppress the password for security reasons.
  */
-API_EXPORT(char *) ap_unparse_uri_components(pool *p, const uri_components *uptr, unsigned flags)
+API_EXPORT(char *) ap_unparse_uri_components(pool *p,
+                                             const uri_components * uptr,
+                                             unsigned flags)
 {
     char *ret = "";
 
     /* If suppressing the site part, omit both user name & scheme://hostname */
     if (!(flags & UNP_OMITSITEPART)) {
 
-	/* Construct a "user:password@" string, honoring the passed UNP_ flags: */
-	if (uptr->user||uptr->password)
-	    ret = ap_pstrcat (p,
-			(uptr->user     && !(flags & UNP_OMITUSER)) ? uptr->user : "",
-			(uptr->password && !(flags & UNP_OMITPASSWORD)) ? ":" : "",
-			(uptr->password && !(flags & UNP_OMITPASSWORD))
-			   ? ((flags & UNP_REVEALPASSWORD) ? uptr->password : "XXXXXXXX")
-			   : "",
-			"@", NULL);
+        /* Construct a "user:password@" string, honoring the passed UNP_ flags: */
+        if (uptr->user || uptr->password)
+            ret = ap_pstrcat(p,
+                             (uptr->user
+                              && !(flags & UNP_OMITUSER)) ? uptr->user : "",
+                             (uptr->password
+                              && !(flags & UNP_OMITPASSWORD)) ? ":" : "",
+                             (uptr->password && !(flags & UNP_OMITPASSWORD))
+                             ? ((flags & UNP_REVEALPASSWORD) ? uptr->
+                                password : "XXXXXXXX")
+                             : "", "@", NULL);
 
-	/* Construct scheme://site string */
-	if (uptr->hostname) {
-	    int is_default_port;
+        /* Construct scheme://site string */
+        if (uptr->hostname) {
+            int is_default_port;
 
-	    is_default_port =
-		(uptr->port_str == NULL ||
-		 uptr->port == 0 ||
-		 uptr->port == ap_default_port_for_scheme(uptr->scheme));
+            is_default_port =
+                (uptr->port_str == NULL ||
+                 uptr->port == 0 ||
+                 uptr->port == ap_default_port_for_scheme(uptr->scheme));
 
-	    ret = ap_pstrcat (p,
-			uptr->scheme, "://", ret, 
-			uptr->hostname ? uptr->hostname : "",
-			is_default_port ? "" : ":",
-			is_default_port ? "" : uptr->port_str,
-			NULL);
-	}
+            ret = ap_pstrcat(p,
+                             uptr->scheme, "://", ret,
+                             uptr->hostname ? uptr->hostname : "",
+                             is_default_port ? "" : ":",
+                             is_default_port ? "" : uptr->port_str, NULL);
+        }
     }
 
     /* Should we suppress all path info? */
     if (!(flags & UNP_OMITPATHINFO)) {
-	/* Append path, query and fragment strings: */
-	ret = ap_pstrcat (p,
-		ret,
-		uptr->path ? uptr->path : "",
-		(uptr->query    && !(flags & UNP_OMITQUERY)) ? "?" : "",
-		(uptr->query    && !(flags & UNP_OMITQUERY)) ? uptr->query : "",
-		(uptr->fragment && !(flags & UNP_OMITQUERY)) ? "#" : NULL,
-		(uptr->fragment && !(flags & UNP_OMITQUERY)) ? uptr->fragment : NULL,
-		NULL);
+        /* Append path, query and fragment strings: */
+        ret = ap_pstrcat(p,
+                         ret,
+                         uptr->path ? uptr->path : "",
+                         (uptr->query && !(flags & UNP_OMITQUERY)) ? "?" : "",
+                         (uptr->query
+                          && !(flags & UNP_OMITQUERY)) ? uptr->query : "",
+                         (uptr->fragment
+                          && !(flags & UNP_OMITQUERY)) ? "#" : NULL,
+                         (uptr->fragment
+                          && !(flags & UNP_OMITQUERY)) ? uptr->
+                         fragment : NULL, NULL);
     }
     return ret;
 }
@@ -243,9 +248,9 @@ void ap_util_uri_init(void)
      *
      * draft-fielding-uri-syntax-01.txt, section 4.4 tells us:
      *
-     *	    Although the BNF defines what is allowed in each component, it is
-     *	    ambiguous in terms of differentiating between a site component and
-     *	    a path component that begins with two slash characters.
+     *      Although the BNF defines what is allowed in each component, it is
+     *      ambiguous in terms of differentiating between a site component and
+     *      a path component that begins with two slash characters.
      *  
      * RFC2068 disambiguates this for the Request-URI, which may only ever be
      * the "abs_path" portion of the URI.  So a request "GET //foo/bar
@@ -259,36 +264,34 @@ void ap_util_uri_init(void)
     re_str = "^(([^:/?#]+)://([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?$";
     /*          ^scheme--^   ^site---^  ^path--^   ^query^    ^frag */
     if ((ret = regcomp(&re_uri, re_str, REG_EXTENDED)) != 0) {
-	char line[1024];
+        char line[1024];
 
-	/* Make a readable error message */
-	ret = regerror(ret, &re_uri, line, sizeof line);
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
-		"Internal error: regcomp(\"%s\") returned non-zero (%s) - "
-		"possibly due to broken regex lib! "
-		"Did you define WANTHSREGEX=yes?",
-		re_str, line);
+        /* Make a readable error message */
+        ret = regerror(ret, &re_uri, line, sizeof line);
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, NULL,
+                     "Internal error: regcomp(\"%s\") returned non-zero (%s) - "
+                     "possibly due to broken regex lib! "
+                     "Did you define WANTHSREGEX=yes?", re_str, line);
 
-	exit(1);
+        exit(1);
     }
 
     /* This is a sub-RE which will break down the hostinfo part,
      * i.e., user, password, hostname and port.
      * $          12      3 4        5       6 7    */
-    re_str    = "^(([^:]*)(:(.*))?@)?([^@:]*)(:([0-9]*))?$";
+    re_str = "^(([^:]*)(:(.*))?@)?([^@:]*)(:([0-9]*))?$";
     /*             ^^user^ :pw        ^host^ ^:[port]^ */
     if ((ret = regcomp(&re_hostpart, re_str, REG_EXTENDED)) != 0) {
-	char line[1024];
+        char line[1024];
 
-	/* Make a readable error message */
-	ret = regerror(ret, &re_hostpart, line, sizeof line);
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
-		"Internal error: regcomp(\"%s\") returned non-zero (%s) - "
-		"possibly due to broken regex lib! "
-		"Did you define WANTHSREGEX=yes?",
-		re_str, line);
+        /* Make a readable error message */
+        ret = regerror(ret, &re_hostpart, line, sizeof line);
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, NULL,
+                     "Internal error: regcomp(\"%s\") returned non-zero (%s) - "
+                     "possibly due to broken regex lib! "
+                     "Did you define WANTHSREGEX=yes?", re_str, line);
 
-	exit(1);
+        exit(1);
     }
 }
 
@@ -301,98 +304,121 @@ void ap_util_uri_init(void)
  *  - fills in fields of uri_components *uptr
  *  - none on any of the r->* fields
  */
-API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri, uri_components *uptr)
+API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri,
+                                        uri_components * uptr)
 {
     int ret;
-    regmatch_t match[10];	/* This must have at least as much elements
-				* as there are braces in the re_strings */
+    regmatch_t match[10];       /* This must have at least as much elements
+                                   * as there are braces in the re_strings */
 
-    ap_assert (uptr != NULL);
+    ap_assert(uptr != NULL);
 
     /* Initialize the structure. parse_uri() and parse_uri_components()
      * can be called more than once per request.
      */
-    memset (uptr, '\0', sizeof(*uptr));
+    memset(uptr, '\0', sizeof(*uptr));
     uptr->is_initialized = 1;
 
     ret = ap_regexec(&re_uri, uri, re_uri.re_nsub + 1, match, 0);
 
     if (ret != 0) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
-                    "ap_regexec() could not parse uri (\"%s\")",
-		    uri);
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, NULL,
+                     "ap_regexec() could not parse uri (\"%s\")", uri);
 
-	return HTTP_BAD_REQUEST;
+        return HTTP_BAD_REQUEST;
     }
 
     if (match[2].rm_so != match[2].rm_eo)
-	uptr->scheme = ap_pstrndup (p, uri+match[2].rm_so, match[2].rm_eo - match[2].rm_so);
+        uptr->scheme =
+            ap_pstrndup(p, uri + match[2].rm_so,
+                        match[2].rm_eo - match[2].rm_so);
 
     /* empty hostinfo is valid, that's why we test $1 but use $3 */
     if (match[1].rm_so != match[1].rm_eo)
-	uptr->hostinfo = ap_pstrndup (p, uri+match[3].rm_so, match[3].rm_eo - match[3].rm_so);
+        uptr->hostinfo =
+            ap_pstrndup(p, uri + match[3].rm_so,
+                        match[3].rm_eo - match[3].rm_so);
 
     if (match[4].rm_so != match[4].rm_eo)
-	uptr->path = ap_pstrndup (p, uri+match[4].rm_so, match[4].rm_eo - match[4].rm_so);
+        uptr->path =
+            ap_pstrndup(p, uri + match[4].rm_so,
+                        match[4].rm_eo - match[4].rm_so);
 
     /* empty query string is valid, that's why we test $5 but use $6 */
     if (match[5].rm_so != match[5].rm_eo)
-	uptr->query = ap_pstrndup (p, uri+match[6].rm_so, match[6].rm_eo - match[6].rm_so);
+        uptr->query =
+            ap_pstrndup(p, uri + match[6].rm_so,
+                        match[6].rm_eo - match[6].rm_so);
 
     /* empty fragment is valid, test $7 use $8 */
     if (match[7].rm_so != match[7].rm_eo)
-	uptr->fragment = ap_pstrndup (p, uri+match[8].rm_so, match[8].rm_eo - match[8].rm_so);
+        uptr->fragment =
+            ap_pstrndup(p, uri + match[8].rm_so,
+                        match[8].rm_eo - match[8].rm_so);
 
     if (uptr->hostinfo) {
-	/* Parse the hostinfo part to extract user, password, host, and port */
-	ret = ap_regexec(&re_hostpart, uptr->hostinfo, re_hostpart.re_nsub + 1, match, 0);
-	if (ret != 0) {
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
-                    "ap_regexec() could not parse (\"%s\") as host part",
-		    uptr->hostinfo);
+        /* Parse the hostinfo part to extract user, password, host, and port */
+        ret =
+            ap_regexec(&re_hostpart, uptr->hostinfo, re_hostpart.re_nsub + 1,
+                       match, 0);
+        if (ret != 0) {
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, NULL,
+                         "ap_regexec() could not parse (\"%s\") as host part",
+                         uptr->hostinfo);
 
-	    return HTTP_BAD_REQUEST;
-	}
+            return HTTP_BAD_REQUEST;
+        }
 
-	/* $      12      3 4        5       6 7            */
-	/*      "^(([^:]*)(:(.*))?@)?([^@:]*)(:([0-9]*))?$" */
-	/*         ^^user^ :pw        ^host^ ^:[port]^      */
+        /* $      12      3 4        5       6 7            */
+        /*      "^(([^:]*)(:(.*))?@)?([^@:]*)(:([0-9]*))?$" */
+        /*         ^^user^ :pw        ^host^ ^:[port]^      */
 
-	/* empty user is valid, that's why we test $1 but use $2 */
-	if (match[1].rm_so != match[1].rm_eo)
-	    uptr->user = ap_pstrndup (p, uptr->hostinfo+match[2].rm_so, match[2].rm_eo - match[2].rm_so);
+        /* empty user is valid, that's why we test $1 but use $2 */
+        if (match[1].rm_so != match[1].rm_eo)
+            uptr->user =
+                ap_pstrndup(p, uptr->hostinfo + match[2].rm_so,
+                            match[2].rm_eo - match[2].rm_so);
 
-	/* empty password is valid, test $3 but use $4 */
-	if (match[3].rm_so != match[3].rm_eo)
-	    uptr->password = ap_pstrndup (p, uptr->hostinfo+match[4].rm_so, match[4].rm_eo - match[4].rm_so);
+        /* empty password is valid, test $3 but use $4 */
+        if (match[3].rm_so != match[3].rm_eo)
+            uptr->password =
+                ap_pstrndup(p, uptr->hostinfo + match[4].rm_so,
+                            match[4].rm_eo - match[4].rm_so);
 
-	/* empty hostname is valid, and implied by the existence of hostinfo */
-	uptr->hostname = ap_pstrndup (p, uptr->hostinfo+match[5].rm_so, match[5].rm_eo - match[5].rm_so);
+        /* empty hostname is valid, and implied by the existence of hostinfo */
+        uptr->hostname =
+            ap_pstrndup(p, uptr->hostinfo + match[5].rm_so,
+                        match[5].rm_eo - match[5].rm_so);
 
-	if (match[6].rm_so != match[6].rm_eo) {
-	    /* Note that the port string can be empty.
-	     * If it is, we use the default port associated with the scheme
-	     */
-	    uptr->port_str = ap_pstrndup (p, uptr->hostinfo+match[7].rm_so, match[7].rm_eo - match[7].rm_so);
-	    if (uptr->port_str[0] != '\0') {
-		char *endstr;
-		int port;
+        if (match[6].rm_so != match[6].rm_eo) {
+            /* Note that the port string can be empty.
+             * If it is, we use the default port associated with the scheme
+             */
+            uptr->port_str =
+                ap_pstrndup(p, uptr->hostinfo + match[7].rm_so,
+                            match[7].rm_eo - match[7].rm_so);
+            if (uptr->port_str[0] != '\0') {
+                char *endstr;
+                int port;
 
-		port = strtol(uptr->port_str, &endstr, 10);
-		uptr->port = port;
-		if (*endstr != '\0') {
-		    /* Invalid characters after ':' found */
-		    return HTTP_BAD_REQUEST;
-		}
-	    }
-	    else {
-		uptr->port = uptr->scheme ? ap_default_port_for_scheme(uptr->scheme) : DEFAULT_HTTP_PORT;
-	    }
-	}
+                port = strtol(uptr->port_str, &endstr, 10);
+                uptr->port = port;
+                if (*endstr != '\0') {
+                    /* Invalid characters after ':' found */
+                    return HTTP_BAD_REQUEST;
+                }
+            }
+            else {
+                uptr->port =
+                    uptr->scheme ? ap_default_port_for_scheme(uptr->
+                                                              scheme) :
+                    DEFAULT_HTTP_PORT;
+            }
+        }
     }
 
     if (ret == 0)
-	ret = HTTP_OK;
+        ret = HTTP_OK;
     return ret;
 }
 #else
@@ -408,27 +434,27 @@ API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri, uri_components
  * compares for NUL for free -- it's just another delimiter.
  */
 
-#define T_COLON		0x01	/* ':' */
-#define T_SLASH		0x02	/* '/' */
-#define T_QUESTION	0x04	/* '?' */
-#define T_HASH		0x08	/* '#' */
-#define T_NUL		0x80	/* '\0' */
+#define T_COLON         0x01    /* ':' */
+#define T_SLASH         0x02    /* '/' */
+#define T_QUESTION      0x04    /* '?' */
+#define T_HASH          0x08    /* '#' */
+#define T_NUL           0x80    /* '\0' */
 
 /* the uri_delims.h file is autogenerated by gen_uri_delims.c */
 #include "uri_delims.h"
 
 /* it works like this:
     if (uri_delims[ch] & NOTEND_foobar) {
-	then we're not at a delimiter for foobar
+        then we're not at a delimiter for foobar
     }
 */
 
 /* Note that we optimize the scheme scanning here, we cheat and let the
  * compiler know that it doesn't have to do the & masking.
  */
-#define NOTEND_SCHEME	(0xff)
-#define NOTEND_HOSTINFO	(T_SLASH | T_QUESTION | T_HASH | T_NUL)
-#define NOTEND_PATH	(T_QUESTION | T_HASH | T_NUL)
+#define NOTEND_SCHEME   (0xff)
+#define NOTEND_HOSTINFO (T_SLASH | T_QUESTION | T_HASH | T_NUL)
+#define NOTEND_PATH     (T_QUESTION | T_HASH | T_NUL)
 
 void ap_util_uri_init(void)
 {
@@ -443,7 +469,8 @@ void ap_util_uri_init(void)
  *  - fills in fields of uri_components *uptr
  *  - none on any of the r->* fields
  */
-API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri, uri_components *uptr)
+API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri,
+                                        uri_components * uptr)
 {
     const char *s;
     const char *s1;
@@ -454,7 +481,7 @@ API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri, uri_components
     /* Initialize the structure. parse_uri() and parse_uri_components()
      * can be called more than once per request.
      */
-    memset (uptr, '\0', sizeof(*uptr));
+    memset(uptr, '\0', sizeof(*uptr));
     uptr->is_initialized = 1;
 
     /* We assume the processor has a branch predictor like most --
@@ -462,54 +489,54 @@ API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri, uri_components
      * the reason for the gotos.  -djg
      */
     if (uri[0] == '/') {
-deal_with_path:
-	/* we expect uri to point to first character of path ... remember
-	 * that the path could be empty -- http://foobar?query for example
-	 */
-	s = uri;
-	while ((uri_delims[*(unsigned char *)s] & NOTEND_PATH) == 0) {
-	    ++s;
-	}
-	if (s != uri) {
-	    uptr->path = ap_pstrndup(p, uri, s - uri);
-	}
-	if (*s == 0) {
-	    return HTTP_OK;
-	}
-	if (*s == '?') {
-	    ++s;
-	    s1 = strchr(s, '#');
-	    if (s1) {
-		uptr->fragment = ap_pstrdup(p, s1 + 1);
-		uptr->query = ap_pstrndup(p, s, s1 - s);
-	    }
-	    else {
-		uptr->query = ap_pstrdup(p, s);
-	    }
-	    return HTTP_OK;
-	}
-	/* otherwise it's a fragment */
-	uptr->fragment = ap_pstrdup(p, s + 1);
-	return HTTP_OK;
+      deal_with_path:
+        /* we expect uri to point to first character of path ... remember
+         * that the path could be empty -- http://foobar?query for example
+         */
+        s = uri;
+        while ((uri_delims[*(unsigned char *) s] & NOTEND_PATH) == 0) {
+            ++s;
+        }
+        if (s != uri) {
+            uptr->path = ap_pstrndup(p, uri, s - uri);
+        }
+        if (*s == 0) {
+            return HTTP_OK;
+        }
+        if (*s == '?') {
+            ++s;
+            s1 = strchr(s, '#');
+            if (s1) {
+                uptr->fragment = ap_pstrdup(p, s1 + 1);
+                uptr->query = ap_pstrndup(p, s, s1 - s);
+            }
+            else {
+                uptr->query = ap_pstrdup(p, s);
+            }
+            return HTTP_OK;
+        }
+        /* otherwise it's a fragment */
+        uptr->fragment = ap_pstrdup(p, s + 1);
+        return HTTP_OK;
     }
 
     /* find the scheme: */
     s = uri;
-    while ((uri_delims[*(unsigned char *)s] & NOTEND_SCHEME) == 0) {
-	++s;
+    while ((uri_delims[*(unsigned char *) s] & NOTEND_SCHEME) == 0) {
+        ++s;
     }
     /* scheme must be non-empty and followed by :// */
     if (s == uri || s[0] != ':' || s[1] != '/' || s[2] != '/') {
-	goto deal_with_path;	/* backwards predicted taken! */
+        goto deal_with_path;    /* backwards predicted taken! */
     }
 
     uptr->scheme = ap_pstrndup(p, uri, s - uri);
     s += 3;
     hostinfo = s;
-    while ((uri_delims[*(unsigned char *)s] & NOTEND_HOSTINFO) == 0) {
-	++s;
+    while ((uri_delims[*(unsigned char *) s] & NOTEND_HOSTINFO) == 0) {
+        ++s;
     }
-    uri = s;	/* whatever follows hostinfo is start of uri */
+    uri = s;                    /* whatever follows hostinfo is start of uri */
     uptr->hostinfo = ap_pstrndup(p, hostinfo, uri - hostinfo);
 
     /* If there's a username:password@host:port, the @ we want is the last @...
@@ -518,45 +545,45 @@ deal_with_path:
      * &hostinfo[-1] < &hostinfo[0] ... and this loop is valid C.
      */
     do {
-	--s;
+        --s;
     } while (s >= hostinfo && *s != '@');
     if (s < hostinfo) {
-	/* again we want the common case to be fall through */
-deal_with_host:
-	/* We expect hostinfo to point to the first character of
-	 * the hostname.  If there's a port it is the first colon.
-	 */
-	s = memchr(hostinfo, ':', uri - hostinfo);
-	if (s == NULL) {
-	    /* we expect the common case to have no port */
-	    uptr->hostname = ap_pstrndup(p, hostinfo, uri - hostinfo);
-	    goto deal_with_path;
-	}
-	uptr->hostname = ap_pstrndup(p, hostinfo, s - hostinfo);
-	++s;
-	uptr->port_str = ap_pstrndup(p, s, uri - s);
-	if (uri != s) {
-	    port = strtol(uptr->port_str, &endstr, 10);
-	    uptr->port = port;
-	    if (*endstr == '\0') {
-		goto deal_with_path;
-	    }
-	    /* Invalid characters after ':' found */
-	    return HTTP_BAD_REQUEST;
-	}
-	uptr->port = ap_default_port_for_scheme(uptr->scheme);
-	goto deal_with_path;
+        /* again we want the common case to be fall through */
+      deal_with_host:
+        /* We expect hostinfo to point to the first character of
+         * the hostname.  If there's a port it is the first colon.
+         */
+        s = memchr(hostinfo, ':', uri - hostinfo);
+        if (s == NULL) {
+            /* we expect the common case to have no port */
+            uptr->hostname = ap_pstrndup(p, hostinfo, uri - hostinfo);
+            goto deal_with_path;
+        }
+        uptr->hostname = ap_pstrndup(p, hostinfo, s - hostinfo);
+        ++s;
+        uptr->port_str = ap_pstrndup(p, s, uri - s);
+        if (uri != s) {
+            port = strtol(uptr->port_str, &endstr, 10);
+            uptr->port = port;
+            if (*endstr == '\0') {
+                goto deal_with_path;
+            }
+            /* Invalid characters after ':' found */
+            return HTTP_BAD_REQUEST;
+        }
+        uptr->port = ap_default_port_for_scheme(uptr->scheme);
+        goto deal_with_path;
     }
 
     /* first colon delimits username:password */
     s1 = memchr(hostinfo, ':', s - hostinfo);
     if (s1) {
-	uptr->user = ap_pstrndup(p, hostinfo, s1 - hostinfo);
-	++s1;
-	uptr->password = ap_pstrndup(p, s1, s - s1);
+        uptr->user = ap_pstrndup(p, hostinfo, s1 - hostinfo);
+        ++s1;
+        uptr->password = ap_pstrndup(p, s1, s - s1);
     }
     else {
-	uptr->user = ap_pstrndup(p, hostinfo, s - hostinfo);
+        uptr->user = ap_pstrndup(p, hostinfo, s - hostinfo);
     }
     hostinfo = s + 1;
     goto deal_with_host;
@@ -567,7 +594,8 @@ deal_with_host:
  * currently at http://www.mcom.com/newsref/std/tunneling_ssl.html
  * for the format of the "CONNECT host:port HTTP/1.0" request
  */
-API_EXPORT(int) ap_parse_hostinfo_components(pool *p, const char *hostinfo, uri_components *uptr)
+API_EXPORT(int) ap_parse_hostinfo_components(pool *p, const char *hostinfo,
+                                             uri_components * uptr)
 {
     const char *s;
     char *endstr;
@@ -575,7 +603,7 @@ API_EXPORT(int) ap_parse_hostinfo_components(pool *p, const char *hostinfo, uri_
     /* Initialize the structure. parse_uri() and parse_uri_components()
      * can be called more than once per request.
      */
-    memset (uptr, '\0', sizeof(*uptr));
+    memset(uptr, '\0', sizeof(*uptr));
     uptr->is_initialized = 1;
     uptr->hostinfo = ap_pstrdup(p, hostinfo);
 
@@ -584,17 +612,17 @@ API_EXPORT(int) ap_parse_hostinfo_components(pool *p, const char *hostinfo, uri_
      */
     s = strchr(hostinfo, ':');
     if (s == NULL) {
-	return HTTP_BAD_REQUEST;
+        return HTTP_BAD_REQUEST;
     }
     uptr->hostname = ap_pstrndup(p, hostinfo, s - hostinfo);
     ++s;
     uptr->port_str = ap_pstrdup(p, s);
     if (*s != '\0') {
-	uptr->port = strtol(uptr->port_str, &endstr, 10);
-	if (*endstr == '\0') {
-	    return HTTP_OK;
-	}
-	/* Invalid characters after ':' found */
+        uptr->port = strtol(uptr->port_str, &endstr, 10);
+        if (*endstr == '\0') {
+            return HTTP_OK;
+        }
+        /* Invalid characters after ':' found */
     }
     return HTTP_BAD_REQUEST;
 }
