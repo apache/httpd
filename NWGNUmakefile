@@ -332,6 +332,7 @@ install :: nlms FORCE
 	@echo xcopy docs\man $(INSTALL)\Apache2\man /E /Y >> xc.bat
 	@echo xcopy docs\manual $(INSTALL)\Apache2\manual /E /Y >> xc.bat
 	$(CMD) xc.bat
+	$(DEL) xc.bat
 
 
     
