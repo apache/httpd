@@ -2172,7 +2172,7 @@ directory</td></tr>
       <dt><code>Indexes</code></dt>
 
       <dd>
-      If a URL which maps to a directory is requested, and the there
+      If a URL which maps to a directory is requested, and there
       is no <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>
       (<em>e.g.</em>, <code>index.html</code>) in that directory, then
       <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> will return a formatted listing
