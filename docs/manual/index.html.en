@@ -110,6 +110,8 @@ href="./">Version 2.0</a></div>
 <tr>
 <th>Users' Guide</th>
 </tr>
+
+                <tr><td><a href="bind.html">Binding</a></td></tr>
               
                 <tr><td><a href="configuring.html">Configuration
                 Files</a> </td></tr>
