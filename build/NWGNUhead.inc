@@ -68,10 +68,14 @@ help :
 	@echo You can also specify RELEASE=debug, RELEASE=noopt, or RELEASE=optimized
 	@echo The default is RELEASE=optimized
 
-clobber_all :: clean clobber_install
+clobber_all :: clean clobber_install clobber_prebuild
 
 clobber_install ::
 	-$(DELTREE) $(INSTALL) 2>NUL
+        
+clobber_prebuild ::
+	$(CHK) $(PREBUILD_INST)\*.* $(DEL) $(PREBUILD_INST)\*.*
+	-$(DELTREE) $(PREBUILD_INST) 2> NUL
 
 #
 # build recursive targets
