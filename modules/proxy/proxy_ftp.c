@@ -1592,7 +1592,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	    apr_brigade_cleanup(bb);
 	}
 	ap_flush_conn(remote);
-	apr_socket_close(remote_sock);
+	apr_socket_close(remote->client_socket);
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		     "proxy: FTP: Closing Data connection.");
 	rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
@@ -1650,7 +1650,8 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                  "proxy: FTP: %d %s", rc, buffer);
-    apr_socket_close(sock);
+    ap_flush_conn(origin);
+    apr_socket_close(origin->client_socket);
     apr_brigade_destroy(bb);
     return OK;
 }
