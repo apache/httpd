@@ -344,7 +344,7 @@ do
             exit 0
             ;;
         --with-layout=*|--compat)
-	    if [ ".$apc_option" = ".--compat" ]; then
+            if [ ".$apc_option" = ".--compat" ]; then
                 apc_optarg="Apache"
             fi
             case $apc_optarg in
@@ -378,11 +378,12 @@ do
             fi
             with_layout=1
             ;;
-	*)
-	    args="$apc_option $args"
+        *)
+            args="$args $apc_option"
             ;;
     esac
 done
+IFS="$OIFS1"
 
 if [ ".$with_layout" = .0 ]; then
     echo "configure:Error: Please select an installation path layout with"
