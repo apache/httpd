@@ -476,22 +476,41 @@ AP_DECLARE(int) directory_walk(request_rec *r)
      * denied.  This is very cpu/fs intensive, we need to finish
      * auditing, and remove the paranoia trigger.
      */
+    if (r->filename == r->canonical_filename)
 #ifdef NO_LONGER_PARANOID
-    test_filename = apr_pstrdup(r->pool, r->filename);
+        test_filename = apr_pstrdup(r->pool, r->filename);
 #else
-    if (apr_filepath_merge(&test_filename, "", r->filename,
-                           APR_FILEPATH_NOTRELATIVE | APR_FILEPATH_TRUENAME,
-                           r->pool) != APR_SUCCESS
-           || strcmp(test_filename, r->filename) != 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                      "FORBIDDEN; Filepath: %s is not the canonical %s", 
-                      r->filename, test_filename);
-        return HTTP_FORBIDDEN;
+    {
+        if (apr_filepath_merge(&test_filename, "", r->filename,
+                               APR_FILEPATH_NOTRELATIVE | APR_FILEPATH_TRUENAME,
+                               r->pool) != APR_SUCCESS
+               || strcmp(test_filename, r->filename) != 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                          "Module bug?  Filepath: %s is not the canonical %s", 
+                          r->filename, test_filename);
+            return HTTP_FORBIDDEN;
+        }
     }
 #endif
+    else {
+        /* Apparently, somebody didn't know to update r->canonical_filename
+         * which is lucky, since they didn't canonicalize r->filename either.
+         */
+        if (apr_filepath_merge(&test_filename, NULL, r->filename,
+                               APR_FILEPATH_NOTRELATIVE | APR_FILEPATH_TRUENAME,
+                               r->pool) != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                          "Module bug?  Filepath: %s is not an absolute path", 
+                          r->filename);
+            return HTTP_FORBIDDEN;
+        }
+        if (strcmp(r->filename, test_filename) != 0)
+            r->filename = apr_pstrdup(test_filename);
+        r->canonical_filename = r->test_filename;
+    }
+
     num_dirs = ap_count_dirs(test_filename);
 
-    /* XXX This needs to be rolled into APR: */
     if ((res = check_safe_file(r))) {
         return res;
     }
