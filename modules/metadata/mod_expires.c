@@ -212,11 +212,6 @@ typedef struct {
     apr_table_t *expiresbytype;
 } expires_dir_config;
 
-typedef struct {
-    int defaulted;
-    apr_table_t *expfields;
-} expires_interphase_t;
-
 /* from mod_dir, why is this alias used?
  */
 #define DIR_CMD_PERMS OR_INDEXES
@@ -434,10 +429,7 @@ static int set_expiration_fields(request_rec *r, const char *code,
     apr_time_t expires;
     int additional_sec;
     char *timestr;
-    expires_interphase_t *notes;
 
-    notes = (expires_interphase_t *) ap_get_module_config(r->request_config,
-                                                          &expires_module);
     switch (code[0]) {
     case 'M':
 	if (r->finfo.filetype == 0) { 
@@ -482,131 +474,81 @@ static int set_expiration_fields(request_rec *r, const char *code,
  * according to the content-type of the response -- if it hasn't
  * already been set.
  */
-static apr_status_t expires_by_type_filter(ap_filter_t *f,
-                                           apr_bucket_brigade *b)
+static apr_status_t expires_filter(ap_filter_t *f,
+                                   apr_bucket_brigade *b)
 {
     request_rec *r;
     expires_dir_config *conf;
-    expires_interphase_t *notes;
-    const char *bytype_expiry;
+    const char *expiry;
     apr_table_t *t;
 
     r = f->r;
     conf = (expires_dir_config *) ap_get_module_config(r->per_dir_config,
                                                        &expires_module);
-    notes = (expires_interphase_t *) ap_get_module_config(r->request_config,
-                                                          &expires_module);
 
     /*
-     * If this filter is getting called, it *should* mean that
-     * the fixup-phase handler ran and set things up for us.
      * Check to see which output header table we should use;
      * mod_cgi loads script fields into r->err_headers_out,
      * for instance.
      */
-    bytype_expiry = apr_table_get(r->err_headers_out, "Expires");
-    if (bytype_expiry != NULL) {
+    expiry = apr_table_get(r->err_headers_out, "Expires");
+    if (expiry != NULL) {
         t = r->err_headers_out;
     }
     else {
-        bytype_expiry = apr_table_get(r->headers_out, "Expires");
+        expiry = apr_table_get(r->headers_out, "Expires");
         t = r->headers_out;
     }
-    if (bytype_expiry == NULL) {
+    if (expiry == NULL) {
         /*
          * No expiration has been set, so we can apply any managed by
-         * this module.  Check for one for this content type.
+         * this module.  First, check to see if there is an applicable
+         * ExpiresByType directive.
          */
-        bytype_expiry = apr_table_get(conf->expiresbytype,
-                                      ap_field_noparam(r->pool,
-                                                       r->content_type));
-        if (bytype_expiry != NULL) {
-            set_expiration_fields(r, bytype_expiry, t);
+        expiry = apr_table_get(conf->expiresbytype, 
+                               ap_field_noparam(r->pool, r->content_type));
+        if (expiry == NULL) {
+            /* Use the ExpiresDefault directive */
+            expiry = conf->expiresdefault;
         }
-        else if ((notes != NULL) && notes->defaulted) {
-            /*
-             * None for this type, but there was a default defined --
-             * so use it. Add the Expires header and add or replace the
-             * Cache-Control header.
-             */
-            apr_table_overlap(r->headers_out, notes->expfields, APR_OVERLAP_TABLES_SET);
+        if (expiry != NULL) {
+            set_expiration_fields(r, expiry, t);
         }
     }
     ap_remove_output_filter(f);
     return ap_pass_brigade(f->next, b);
 }
 
-static int add_expires(request_rec *r)
+static void expires_insert_filter(request_rec *r)
 {
     expires_dir_config *conf;
-    expires_interphase_t *notes;
-    apr_table_t *rfields;
-    char *code;
 
-    if (ap_is_HTTP_ERROR(r->status)) {/* Don't add Expires headers to errors */
-        return DECLINED;
+    /* Don't add Expires headers to errors */
+    if (ap_is_HTTP_ERROR(r->status)) {
+        return;
     }
-
-    if (r->main != NULL) {      /* Say no to subrequests */
-        return DECLINED;
+    /* Say no to subrequests */
+    if (r->main != NULL) {
+        return;
     }
-
     conf = (expires_dir_config *) ap_get_module_config(r->per_dir_config,
                                                        &expires_module);
-    if (conf == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                    "internal error: %s", r->filename);
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
 
-    if (conf->active != ACTIVE_ON) {
-        return DECLINED;
-    }
-
-    notes = apr_palloc(r->pool, sizeof(expires_interphase_t));
-    notes->defaulted = 0;
-    notes->expfields = apr_table_make(r->pool, 4);
-    ap_set_module_config(r->request_config, &expires_module, notes);
-
-    /*
-     * If there are any ExpiresByType directives for this scope,
-     * add the output filter and defer all setting to it.  We
-     * do make a note of any ExpiresDefault value for its use.
+    /* Check to see if the filter is enabled and if there are any applicable 
+     * config directives for this directory scope
      */
-    if (! apr_is_empty_table(conf->expiresbytype)) {
-        ap_add_output_filter("MOD_EXPIRES", NULL, r, r->connection);
-        rfields = notes->expfields;
+    if (conf->active != ACTIVE_ON ||
+        (apr_is_empty_table(conf->expiresbytype) && !conf->expiresdefault)) {
+        return;
     }
-    else {
-        rfields = r->headers_out;
-    }
-    /*
-     * Apply the default expiration if there is one; the filter will
-     * narrow it down later if possible.
-     */
-    code = conf->expiresdefault;
-
-    if (code[0] == '\0') {
-        return OK;
-    }
-    else {
-        /*
-         * Note that we're setting it from the default, so that
-         * the output filter (if it runs) knows it can override the
-         * value.  This allows the by-type filter to be able to
-         * tell the difference between a value set by, say, a
-         * CGI script and the one we set by default.
-         */
-        notes->defaulted = 1;
-    }
-    return set_expiration_fields(r, code, rfields);
+    ap_add_output_filter("MOD_EXPIRES", NULL, r, r->connection);
+    return;
 }
-
 static void register_hooks(apr_pool_t *p)
 {
-    ap_register_output_filter("MOD_EXPIRES", expires_by_type_filter, NULL,
+    ap_register_output_filter("MOD_EXPIRES", expires_filter, NULL,
                               AP_FTYPE_CONTENT_SET);
-    ap_hook_fixups(add_expires,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_insert_filter(expires_insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA expires_module =
