@@ -148,10 +148,15 @@ AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p,
 
 /**
  * Open the error log and replace stderr with it.
+ * @param pconf Not used
+ * @param plog  The pool to allocate the logs from
+ * @param ptemp Pool used for temporary allocations
  * @param s_main The main server
- * @param p The pool to allocate out of
+ * @tip ap_open_logs isn't expected to be used by modules, it is
+ * an internal core function 
  */
-void ap_open_logs (server_rec *s_main, apr_pool_t *p);
+int ap_open_logs(apr_pool_t *pconf, apr_pool_t *plog, 
+                 apr_pool_t *ptemp, server_rec *s_main);
 
 /* 
  * The three primary logging functions, ap_log_error, ap_log_rerror, and 

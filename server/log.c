@@ -197,7 +197,7 @@ AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p,
         ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT,
                      APR_EBADPATH, NULL, "Invalid -E error log file %s",
                      fname);
-        exit(1);
+        return APR_EBADPATH;
     }
     if ((rc = apr_file_open(&stderr_file, filename,
                             APR_APPEND | APR_READ | APR_WRITE | APR_CREATE,
@@ -254,7 +254,7 @@ static int log_child(apr_pool_t *p, const char *progname,
     return rc;
 }
 
-static void open_error_log(server_rec *s, apr_pool_t *p)
+static int open_error_log(server_rec *s, apr_pool_t *p)
 {
     const char *fname;
     int rc;
@@ -267,7 +267,7 @@ static void open_error_log(server_rec *s, apr_pool_t *p)
         if (rc != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
                          "Couldn't start ErrorLog process");
-            exit(1);
+            return DONE;
         }
 
         s->error_log = dummy;
@@ -284,7 +284,7 @@ static void open_error_log(server_rec *s, apr_pool_t *p)
                     openlog(ap_server_argv0, LOG_NDELAY|LOG_CONS|LOG_PID,
                             fac->t_val);
                     s->error_log = NULL;
-                    return;
+                    return OK;
                 }
             }
         }
@@ -301,7 +301,7 @@ static void open_error_log(server_rec *s, apr_pool_t *p)
             ap_log_error(APLOG_MARK, APLOG_STARTUP, APR_EBADPATH, NULL,
                          "%s: Invalid error log path %s.",
                          ap_server_argv0, s->error_fname);
-            exit(1);
+            return DONE;
         }
         if ((rc = apr_file_open(&s->error_log, fname,
                                APR_APPEND | APR_READ | APR_WRITE | APR_CREATE,
@@ -309,21 +309,26 @@ static void open_error_log(server_rec *s, apr_pool_t *p)
             ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
                          "%s: could not open error log file %s.",
                          ap_server_argv0, fname);
-            exit(1);
+            return DONE;
         }
 
         apr_file_inherit_set(s->error_log);
     }
+
+    return OK;
 }
 
-void ap_open_logs(server_rec *s_main, apr_pool_t *p)
+int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */, 
+                 apr_pool_t *ptemp, server_rec *s_main)
 {
     apr_status_t rc = APR_SUCCESS;
     server_rec *virt, *q;
     int replace_stderr;
     apr_file_t *errfile = NULL;
 
-    open_error_log(s_main, p);
+    if (open_error_log(s_main, p) != OK) {
+        return DONE;
+    }
 
     replace_stderr = 1;
     if (s_main->error_log) {
@@ -360,7 +365,9 @@ void ap_open_logs(server_rec *s_main, apr_pool_t *p)
             }
 
             if (q == virt) {
-                open_error_log(virt, p);
+                if (open_error_log(virt, p) != OK) {
+                    return DONE;
+                }
             }
             else {
                 virt->error_log = q->error_log;
@@ -370,6 +377,7 @@ void ap_open_logs(server_rec *s_main, apr_pool_t *p)
             virt->error_log = s_main->error_log;
         }
     }
+    return OK;
 }
 
 AP_DECLARE(void) ap_error_log2stderr(server_rec *s) {
@@ -856,7 +864,7 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
                      "Couldn't start piped log process");
-        exit (1);
+        return NULL;
     }
 
     pl = apr_palloc(p, sizeof (*pl));
