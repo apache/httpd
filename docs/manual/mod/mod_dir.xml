@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.11 $ -->
+<!-- $Revision: 1.12 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -104,7 +104,7 @@ a directory</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
-<compatibility>Available in version 2.1 and later</compatibility>
+<compatibility>Available in version 2.0.51 and later</compatibility>
 
 <usage>
     <p>The <directive>DirectorySlash</directive> directive determines, whether
