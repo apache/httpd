@@ -1,5 +1,8 @@
 Changes with Apache 1.3a2
 
+  *) PORT: some variants of DGUX require -lsocket -lnsl
+     [Alexander L Jones <alex@systems-options.co.uk>] PR#732
+
   *) mod_autoindex now allows sorting of FancyIndexed directory listings
      by the various fields (name, size, et cetera), either in ascending
      or descending order.  Just click on the column header.  [Ken Coar]

@@ -738,6 +738,17 @@ case "$PLAT" in
 	    DBM_LIB="-lndbm"
 	fi
 	;;
+
+    *-dg-dgux*)
+	# R4.11MU02 requires -lsocket -lnsl ... no idea if it's earlier or
+	# later than what we already knew about.  PR#732
+	if ./helpers/TestCompile lib socket; then
+	    LIBS="$LIBS -lsocket"
+	fi
+	if ./helpers/TestCompile lib nsl; then
+	    LIBS="$LIBS -lnsl"
+	fi
+	;;
 esac
 
 #
