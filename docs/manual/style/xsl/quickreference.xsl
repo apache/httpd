@@ -46,7 +46,7 @@
 
         <div id="directive-ref">
             <xsl:variable name="directives"
-                select="document(modulefilelist/modulefile)
+                select="document(document($allmodules)/modulefilelist/modulefile)
                         /modulesynopsis/directivesynopsis[not(@location)]" />
 
             <xsl:variable name="start-letters">
