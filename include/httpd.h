@@ -725,7 +725,7 @@ struct request_rec {
     struct ap_rr_xlate *rrx;
 #endif /*APACHE_XLATE*/
 
-    struct apr_filter_t *filters;
+    struct ap_filter_t *filters;
 
 /* Things placed at the end of the record to avoid breaking binary
  * compatibility.  It would be nice to remember to reorder the entire
