@@ -21,6 +21,10 @@ makefile_tmpl=Makefile.tmpl
 while [ "x$1" != "x" ]; do
   if [ "x$1" = "x-file" ] ; then
     shift 1; file=$1; shift 1
+    if [ ! -r $file ]; then
+      echo "$file does not exist or is not readable."
+      exit 1
+    fi
   elif [ "x$1" = "x-make" ] ; then
     shift 1; makefile_tmpl=$1; shift 1
     if [ ! -r $makefile_tmpl ]; then
