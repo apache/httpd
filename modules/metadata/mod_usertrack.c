@@ -156,6 +156,20 @@ static void make_cookie(request_rec *r)
  * which has three subexpressions, $0..$2 */
 #define NUM_SUBS 3
 
+static void set_and_comp_regexp(cookie_dir_rec *dcfg,
+                                apr_pool_t *p,
+                                const char *cookie_name)
+{
+    /* The goal is to end up with this regexp,
+     * ^cookie_name=([^;]+)|;[\t]+cookie_name=([^;]+)
+     * with cookie_name obviously substituted either
+     * with the real cookie name set by the user in httpd.conf, or with the
+     * default COOKIE_NAME. */
+    dcfg->regexp_string = apr_pstrcat(p, "^", cookie_name, "=([^;]+)|;[ \t]+", cookie_name, "=([^;]+)", NULL);
+
+    dcfg->regexp = ap_pregcomp(p, dcfg->regexp_string, REG_EXTENDED);
+}
+
 static int spot_cookie(request_rec *r)
 {
     cookie_dir_rec *dcfg = ap_get_module_config(r->per_dir_config,
@@ -214,6 +228,11 @@ static void *make_cookie_dir(apr_pool_t *p, char *d)
     dcfg->cookie_domain = NULL;
     dcfg->style = CT_UNSET;
     dcfg->enabled = 0;
+
+    /* In case the user does not use the CookieName directive,
+     * we need to compile the regexp for the default cookie name. */
+    set_and_comp_regexp(dcfg, p, COOKIE_NAME);
+
     return dcfg;
 }
 
@@ -299,18 +318,10 @@ static const char *set_cookie_name(cmd_parms *cmd, void *mconfig,
 {
     cookie_dir_rec *dcfg = (cookie_dir_rec *) mconfig;
 
-    /* The goal is to end up with this regexp,
-     * ^cookie_name=([^;]+)|;[ \t]+cookie_name=([^;]+)
-     * with cookie_name
-     * obviously substituted with the real cookie name set by the
-     * user in httpd.conf. */
-    dcfg->regexp_string = apr_pstrcat(cmd->pool, "^", name,
-                                      "=([^;]+)|;[ \t]+", name,
-                                      "=([^;]+)", NULL);
-
     dcfg->cookie_name = apr_pstrdup(cmd->pool, name);
 
-    dcfg->regexp = ap_pregcomp(cmd->pool, dcfg->regexp_string, REG_EXTENDED);
+    set_and_comp_regexp(dcfg, cmd->pool, name);
+
     if (dcfg->regexp == NULL) {
         return "Regular expression could not be compiled.";
     }
