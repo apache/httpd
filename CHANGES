@@ -1,5 +1,12 @@
 Changes with Apache 2.0.34-dev
 
+  *) Added exp_foo and rel_foo variables to config_vars.mk for
+     all Apache and Autoconf path variables (like --sysconfdir,
+     --sbindir, etc). exp_foo is the "expanded" version, which means
+     that all internal variable references have been interpolated.
+     rel_foo is the same as $exp_foo, only relative to $prefix if they
+     share a common path.  [Aaron Bannert]
+
   *) Fix some restart/terminate problems in the worker MPM.  Don't
      drop connections during graceful restart.  [Jeff Trawick]
 

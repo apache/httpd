@@ -637,3 +637,38 @@ do
 done
 
 ])dnl
+
+dnl
+dnl APACHE_EXPORT_ARGUMENTS
+dnl Export (via APACHE_SUBST) the various path-related variables that
+dnl apache will use while generating scripts like autoconf and apxs and
+dnl the default config file.
+
+AC_DEFUN(APACHE_SUBST_EXPANDED_ARG,[
+  APR_EXPAND_VAR(exp_$1, [$]$1)
+  APACHE_SUBST(exp_$1)
+  APR_PATH_RELATIVE(rel_$1, [$]exp_$1, ${prefix})
+  APACHE_SUBST(rel_$1)
+])
+
+AC_DEFUN(APACHE_EXPORT_ARGUMENTS,[
+  APACHE_SUBST_EXPANDED_ARG(exec_prefix)
+  APACHE_SUBST_EXPANDED_ARG(bindir)
+  APACHE_SUBST_EXPANDED_ARG(sbindir)
+  APACHE_SUBST_EXPANDED_ARG(libexecdir)
+  APACHE_SUBST_EXPANDED_ARG(mandir)
+  APACHE_SUBST_EXPANDED_ARG(sysconfdir)
+  APACHE_SUBST_EXPANDED_ARG(datadir)
+  APACHE_SUBST_EXPANDED_ARG(installbuilddir)
+  APACHE_SUBST_EXPANDED_ARG(errordir)
+  APACHE_SUBST_EXPANDED_ARG(iconsdir)
+  APACHE_SUBST_EXPANDED_ARG(htdocsdir)
+  APACHE_SUBST_EXPANDED_ARG(manualdir)
+  APACHE_SUBST_EXPANDED_ARG(cgidir)
+  APACHE_SUBST_EXPANDED_ARG(includedir)
+  APACHE_SUBST_EXPANDED_ARG(localstatedir)
+  APACHE_SUBST_EXPANDED_ARG(runtimedir)
+  APACHE_SUBST_EXPANDED_ARG(logfiledir)
+  APACHE_SUBST_EXPANDED_ARG(proxycachedir)
+])
+
