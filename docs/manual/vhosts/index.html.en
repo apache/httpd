@@ -16,19 +16,20 @@
     <h1 align="CENTER">Apache Virtual Host documentation</h1>
 
     <p>The term <cite>Virtual Host</cite> refers to the practice of
-    maintaining more than one server on one machine, as
-    differentiated by their apparent hostname. For example, it is
-    often desirable for companies sharing a web server to have
-    their own domains, with web servers accessible as
-    <samp>www.company1.com</samp> and
-    <samp>www.company2.com</samp>, without requiring the user to
-    know any extra path information.</p>
+    running more than one web site (such as
+    <samp>www.company1.com</samp> and <samp>www.company2.com</samp>)
+    on a single machine. Virtual hosts can be "<a 
+    href="ip-based.html">IP-based</a>," meaning that you have a 
+    different IP address for every web site, or "<a
+    href="name-based.html">name-based</a>," meaning that you have
+    multiple names running on a single IP address. The fact that they
+    are running on the same server is not apparent to the end user.</p>
 
     <p>Apache was one of the first servers to support IP-based
     virtual hosts right out of the box. Versions 1.1 and later of
-    Apache support both, IP-based and name-based virtual hosts
+    Apache support both IP-based and name-based virtual hosts
     (vhosts). The latter variant of virtual hosts is sometimes also
-    called host-based or non-IP virtual hosts.</p>
+    called <em>host-based</em> or <em>non-IP virtual hosts</em>.</p>
 
     <p>Below is a list of documentation pages which explain all
     details of virtual host support in Apache version 1.3 and
@@ -38,22 +39,23 @@
     <h2>Virtual Host Support</h2>
 
     <ul>
-      <li><a href="name-based.html">Name-based Virtual
-      Hosts</a></li>
+      <li><a href="name-based.html">Name-based Virtual Hosts</a> (One IP
+      address, multiple web sites)</li>
 
-      <li><a href="ip-based.html">IP-based Virtual Hosts</a></li>
+      <li><a href="ip-based.html">IP-based Virtual Hosts</a> (An IP
+      address for each web site)</li>
 
-      <li><a href="examples.html">Virtual Host examples for common
+      <li><a href="examples.html">Virtual Host examples for common 
       setups</a></li>
-
-      <li><a href="details.html">In-Depth Discussion of Virtual
-      Host Matching</a></li>
 
       <li><a href="fd-limits.html">File Descriptor Limits</a> (or,
       <em>Too many log files</em>)</li>
 
       <li><a href="mass.html">Dynamically Configured Mass Virtual
       Hosting</a></li>
+
+      <li><a href="details.html">In-Depth Discussion of Virtual Host 
+      Matching</a></li>
     </ul>
 
     <h2>Configuration directives</h2>
@@ -67,10 +69,12 @@
 
       <li><a href="../mod/core.html#servername">ServerName</a></li>
 
-      <li><a
-      href="../mod/core.html#serveralias">ServerAlias</a></li>
+      <li><a href="../mod/core.html#serveralias">ServerAlias</a></li>
 
       <li><a href="../mod/core.html#serverpath">ServerPath</a></li>
+
+      <li><b>See also</b> <a 
+      href="../mod/mod_vhost_alias.html">mod_vhost_alias</a>
     </ul>
 
     <p>If you are trying to debug your virtual host configuration, you
