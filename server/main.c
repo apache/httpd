@@ -254,33 +254,32 @@ static void usage(process_rec *process)
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "       %s [-n service_name]", pad);
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "       %s [-i] [-u]", pad);
 #endif
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "       %s [-v] [-V] [-h] [-l] [-L] [-S] [-t] [-T]", pad);
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "       %s [-v] [-V] [-h] [-l] [-L] [-t] [-T]", pad);
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Options:");
 #ifdef SHARED_CORE
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -R directory     : specify an alternate location for shared object files");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -R directory      : specify an alternate location for shared object files");
 #endif
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -D name          : define a name for use in <IfDefine name> directives");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -d directory     : specify an alternate initial ServerRoot");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -f file          : specify an alternate ServerConfigFile");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -C \"directive\"   : process directive before reading config files");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -c \"directive\"   : process directive after  reading config files");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -D name           : define a name for use in <IfDefine name> directives");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -d directory      : specify an alternate initial ServerRoot");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -f file           : specify an alternate ServerConfigFile");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -C \"directive\"    : process directive before reading config files");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -c \"directive\"    : process directive after  reading config files");
 #ifdef WIN32
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -n name          : set service name and use its ServerConfigFile");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -k shutdown      : tell running Apache to shutdown");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -k restart       : tell running Apache to do a graceful restart");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -k start         : tell Apache to start");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -i               : install an Apache service");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -u               : uninstall an Apache service");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -n name           : set service name and use its ServerConfigFile");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -k shutdown       : tell running Apache to shutdown");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -k restart        : tell running Apache to do a graceful restart");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -k start          : tell Apache to start");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -i                : install an Apache service");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -u                : uninstall an Apache service");
 #endif
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -v               : show version number");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -V               : show compile settings");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -h               : list available command line options (this page)");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -l               : list compiled in modules");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -L               : list available configuration directives");
-    /* TODOC: -S has been replaced by '-t -D DUMP_VHOSTS' */
-    /* ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -S               : show parsed settings (currently only vhost settings)"); */
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -t               : run syntax check for config files (with docroot check)");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -T               : run syntax check for config files (without docroot check)");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -v                : show version number");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -V                : show compile settings");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -h                : list available command line options (this page)");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -l                : list compiled in modules");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -L                : list available configuration directives");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -t -D DUMP_VHOSTS : show parsed settings (currently only vhost settings)"); 
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -t                : run syntax check for config files (with docroot check)");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -T                : run syntax check for config files (without docroot check)");
     /* TODOC: -X goes away, expect MPMs to use -D options */
     destroy_and_exit_process(process, 1);
 }

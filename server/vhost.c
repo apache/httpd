@@ -700,7 +700,7 @@ void ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
 #ifdef IPHASH_STATISTICS
     dump_iphash_statistics(main_s);
 #endif
-    if (getenv("DUMP_VHOSTS")) {
+    if (ap_exists_config_define("DUMP_VHOSTS")) {
         apr_file_t *thefile = NULL;
         apr_open_stderr(&thefile, p);
 	dump_vhost_config(thefile);
