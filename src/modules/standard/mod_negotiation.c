@@ -227,6 +227,8 @@ typedef struct {
     array_header *accept_langs; /* accept_recs */
     array_header *avail_vars;   /* available variants */
 
+    int count_multiviews_variants; /* number of variants found on disk */
+
     int ua_can_negotiate;       /* 1 if ua can do transparent negotiate */
     int use_transparent_neg;    /* 1 if we are using transparent neg */
     int short_accept_headers;   /* 1 if ua does trans neg & sent short accpt */
@@ -649,6 +651,9 @@ static int read_type_map (negotiation_state *neg, request_rec *rr)
     char buffer[MAX_STRING_LEN];
     enum header_state hstate;
     struct var_rec mime_info;
+
+    /* We are not using multiviews */
+    neg->count_multiviews_variants = 0;
     
     if (rr->status != HTTP_OK) {
 	return rr->status;
@@ -809,6 +814,8 @@ static int read_types_multi (negotiation_state *neg)
 	
 	new_var = push_array (neg->avail_vars);
 	memcpy (new_var, (void *)&mime_info, sizeof (var_rec));
+
+	neg->count_multiviews_variants++;
 	    
 	clean_var_rec(&mime_info);
     }
@@ -1994,7 +2001,8 @@ return_from_multi:
     
     /* Otherwise, use it. */
     
-    if (!do_cache_negotiated_docs(r->server) && (r->proto_num < 1001))
+    if ((!do_cache_negotiated_docs(r->server) && (r->proto_num < 1001))
+	&& neg->count_multiviews_variants != 1)
         r->no_cache = 1;
 
     if (na_result == na_not_applied)
