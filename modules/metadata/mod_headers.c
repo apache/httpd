@@ -271,7 +271,7 @@ static int echo_header(echo_do *v, const char *key, const char *val)
         apr_table_addn(v->r->headers_out, key, val);
     }
     
-    return 0;
+    return 1;
 }
 
 static void do_headers_fixup(request_rec *r, hdr_inout inout,
