@@ -1,6 +1,12 @@
-Changes with Apache 1.2b5
+Changes with Apache 1.2b6
 
   *) Allow whitespace in imagemap mapfile coordinates. [Marc Slemko]
+
+  *) Fix typo introduced in fix for potential infinite loop around
+     accept() in child_main(). This change caused the rev to 1.2b6.
+     1.2b5 was never a public beta.
+
+Changes with Apache 1.2b5
 
   *) Change KeepAlive semantics (On|Off instead of a number), add
      MaxKeepAliveRequests directive. [Alexei Kosut]
