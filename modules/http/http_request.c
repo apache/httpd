@@ -75,6 +75,7 @@
 #include "http_protocol.h"
 #include "http_log.h"
 #include "http_main.h"
+#include "util_filter.h"
 #include "util_charset.h"
 #include "apr_strings.h"
 #include "apr_file_io.h"
@@ -1386,6 +1387,8 @@ static request_rec *internal_internal_redirect(const char *new_uri,
 
     apr_table_setn(new->subprocess_env, "REDIRECT_STATUS",
 	apr_psprintf(r->pool, "%d", r->status));
+
+    ap_add_filter("CORE", NULL, new);
 
     /*
      * XXX: hmm.  This is because mod_setenvif and mod_unique_id really need
