@@ -2,9 +2,6 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
-  *) Alter mod_expires to run at a different filter priority to allow
-     proper Expires storage by mod_cache.  [Justin Erenkrantz]
-
   *) Fix a segfault in the LDAP cache purge. [Jess Holle <jessh ptc.com>]
 
   *) mod_rewrite: Handle per-location rules when r->filename is unset.
@@ -417,6 +414,9 @@ Changes with Apache 2.0.53
   *) mod_disk_cache: Fix races in saving responses.  [Justin Erenkrantz]
 
   *) Fix Expires handling in mod_cache.  [Justin Erenkrantz]
+
+  *) Alter mod_expires to run at a different filter priority to allow
+     proper Expires storage by mod_cache.  [Justin Erenkrantz]
 
 Changes with Apache 2.0.52
 
