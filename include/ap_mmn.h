@@ -95,12 +95,13 @@
  * 20020118 (2.0.31-dev) Input filtering split of blocking and mode
  * 20020127 (2.0.31-dev) bump for pre_mpm hook change
  * 20020128 (2.0.31-dev) bump for pre_config hook change
+ * 20020218 (2.0.33-dev) bump for AddOutputFilterByType directive
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20020128
+#define MODULE_MAGIC_NUMBER_MAJOR 20020218
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */

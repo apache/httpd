@@ -507,6 +507,8 @@ typedef struct {
     const char *input_filters;   /* forced with SetInputFilters */
     int accept_path_info;        /* forced with AcceptPathInfo */
 
+    apr_hash_t *ct_output_filters; /* added with AddOutputFilterByType */
+
     /*
      * What attributes/data should be included in ETag generation?
      */
