@@ -1402,9 +1402,8 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
 {
     apr_size_t total;
     apr_status_t rv;
-    apr_bucket *b, *old;
+    apr_bucket *b;
     const char *tempbuf;
-    apr_off_t len_read;
     core_request_config *req_cfg =
         (core_request_config *)ap_get_module_config(r->request_config,
                                                     &core_module);
@@ -1412,7 +1411,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
 
     /* read until we get a non-empty brigade */
     while (APR_BRIGADE_EMPTY(bb)) {
-        len_read = bufsiz;
+        apr_off_t len_read = bufsiz;
         if (ap_get_brigade(r->input_filters, bb, AP_MODE_BLOCKING,
                            &len_read) != APR_SUCCESS) {
             /* if we actually fail here, we want to just return and
@@ -1444,6 +1443,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
            && b != APR_BRIGADE_SENTINEL(bb)
            && !APR_BUCKET_IS_EOS(b)) {
         apr_size_t len_read;
+        apr_bucket *old;
 
         if ((rv = apr_bucket_read(b, &tempbuf, &len_read,
                                   APR_BLOCK_READ)) != APR_SUCCESS) {
@@ -1456,9 +1456,9 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
         memcpy(buffer, tempbuf, len_read);
         buffer += len_read;
         total += len_read;
-        /* XXX the next two fields shouldn't be mucked with here,
-         * as they are in terms of bytes in the unfiltered body;
-         * gotta see if anybody else actually uses these
+        /* XXX the next field shouldn't be mucked with here,
+         * as it is in terms of bytes in the unfiltered body;
+         * gotta see if anybody else actually uses it
          */
         r->read_length += len_read; /* XXX yank me? */
         old = b;
