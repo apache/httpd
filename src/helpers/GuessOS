@@ -201,11 +201,11 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	;;
 
     SINIX-?:* | ReliantUNIX-?:*)
-	echo "${MACHINE}-sni-sysv4"; exit 0
+	echo "${MACHINE}-siemens-sysv4"; exit 0
 	;;
 
     POSIX*BS2000)
-	echo "${MACHINE}-sni-sysv4"; exit 0
+	echo "${MACHINE}-siemens-sysv4"; exit 0
 	;;
 
     machten:*)

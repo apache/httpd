@@ -594,14 +594,6 @@ case "$PLAT" in
 	LDFLAGS_SHLIB_EXPORT="-Zlink=dynamic -Wl,-Bexport"
 	CFLAGS_SHLIB='-Zpic'
 	;;
-    BS2000*-sni-sysv4*)
-	OS='BS2000'
-	OSDIR='os/bs2000'
-	CC='c89 -XLLML -XLLMK'
-	CFLAGS="$CFLAGS -DCHARSET_EBCDIC -DSVR4 -D_XPG_IV"
-	DEF_WANTHSREGEX=yes
-	LIBS="$LIBS -lsocket -lnsl -lc"
-	;;
     TPF)
        OS='TPF'
        OSDIR='os/tpf'
@@ -611,11 +603,21 @@ case "$PLAT" in
        LIBS="$LIBS"
        SUBTARGET="target_compile_only"
        ;;
-    *-sni-sysv4*)
+    BS2000*-siemens-sysv4*)
+	OS='BS2000'
+	OSDIR='os/bs2000'
+	CC='c89 -XLLML -XLLMK'
+	CFLAGS="$CFLAGS -DCHARSET_EBCDIC -DSVR4 -D_XPG_IV"
+	DEF_WANTHSREGEX=yes
+	LIBS="$LIBS -lsocket -lnsl -lc"
+	DBM_LIB=""
+	;;
+    *-siemens-sysv4*)
 	OS='SVR4'
 	CFLAGS="$CFLAGS -DSVR4 -D_XPG_IV -DHAS_DLFCN -DUSE_MMAP_FILES -DUSE_SYSVSEM_SERIALIZED_ACCEPT -DNEED_UNION_SEMUN"
 	DEF_WANTHSREGEX=yes
 	LIBS="$LIBS -lsocket -lnsl -lc"
+	DBM_LIB=""
 	;;
     pyramid-pyramid-svr4)
 	OS='SVR4'
@@ -1078,7 +1080,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	     LDFLAGS_SHLIB_EXPORT="-Wl,-Bexport"
 	     SHLIB_SUFFIX_DEPTH=1
 	     ;;
-	RM*-sni-sysv4*)
+	RM*-siemens-sysv4*)
 	    # MIPS hosts can take advantage of the LDFLAGS_SHLIB_EXPORT switch
 	    case $CC in
 		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
@@ -1087,7 +1089,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_SHLIB="-G"
 	    LDFLAGS_SHLIB_EXPORT="-Wl,-Blargedynsym"
 	    ;;
-	*-sni-sysv4*)
+	*-siemens-sysv4*)
 	    # Older SINIX machines must be linked as "shared core"-Apache
 	    case $CC in
 		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
