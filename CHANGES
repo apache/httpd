@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Make REMOTE_PORT variable available in mod_rewrite.
+     PR 25772.  [André Malo]
+
   *) Allow unescaped error logs via compile time switch
      "-DAP_ERROR_LOG_UNESCAPED".
      [Geoffrey Young <geoff modperlcookbook.org>, André Malo]
