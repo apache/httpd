@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 1995-1999 The Apache Group.  All rights reserved.
+ * Copyright (c) 1995-2000 The Apache Software Foundation.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -15,27 +15,27 @@
  *
  * 3. All advertising materials mentioning features or use of this
  *    software must display the following acknowledgment:
- *    "This product includes software developed by the Apache Group
+ *    "This product includes software developed by the Apache Software Foundation
  *    for use in the Apache HTTP server project (http://www.apache.org/)."
  *
- * 4. The names "Apache Server" and "Apache Group" must not be used to
+ * 4. The names "Apache Server" and "Apache Software Foundation" must not be used to
  *    endorse or promote products derived from this software without
  *    prior written permission. For written permission, please contact
  *    apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache"
  *    nor may "Apache" appear in their names without prior written
- *    permission of the Apache Group.
+ *    permission of the Apache Software Foundation.
  *
  * 6. Redistributions of any form whatsoever must retain the following
  *    acknowledgment:
- *    "This product includes software developed by the Apache Group
+ *    "This product includes software developed by the Apache Software Foundation
  *    for use in the Apache HTTP server project (http://www.apache.org/)."
  *
- * THIS SOFTWARE IS PROVIDED BY THE APACHE GROUP ``AS IS'' AND ANY
+ * THIS SOFTWARE IS PROVIDED BY THE Apache Software Foundation ``AS IS'' AND ANY
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE Apache Software Foundation OR
  * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -47,10 +47,10 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the Apache Group and was originally based
+ * individuals on behalf of the Apache Software Foundation and was originally based
  * on public domain software written at the National Center for
  * Supercomputing Applications, University of Illinois, Urbana-Champaign.
- * For more information on the Apache Group and the Apache HTTP server
+ * For more information on the Apache Software Foundation and the Apache HTTP server
  * project, please see <http://www.apache.org/>.
  *
  */
@@ -65,7 +65,7 @@
  * Apache's registry information is stored in the HKEY_LOCAL_MACHINE
  * key, under
  *
- *  HKLM\SOFTWARE\Apache Group\Apache\version
+ *  HKLM\SOFTWARE\Apache Software Foundation\Apache\version
  *
  * These keys are defined in this file. The definition of the "version" part
  * will need updating each time Apache moves from beta to non-beta or from a
@@ -93,7 +93,7 @@
  * major release, but will change when the final release is made.
  */
 
-#define VENDOR   "Apache Group"
+#define VENDOR   "Apache Software Foundation"
 #define SOFTWARE "Apache"
 #define VERSION  "2.0"
 
@@ -351,7 +351,7 @@ char *ap_registry_parse_key(int index, char *key)
 
 /*
  * ap_registry_create_apache_key() creates the Apache registry key
- * (HLKM\SOFTWARE\Apache Group\Apache\version, as defined at the start
+ * (HLKM\SOFTWARE\Apache Software Foundation\Apache\version, as defined at the start
  * of this file), if it does not already exist. It will be called by
  * ap_registry_store_key_int() if it cannot open this key. This 
  * function is intended to be called by ap_registry_store_key_int() if

@@ -1,6 +1,6 @@
 === PURPOSE ===
 
-This file documents the changes made by the Apache Group to James
+This file documents the changes made by the Apache Software Foundation to James
 Clark's Expat parser. The original Expat distribution can be found at
 http://www.jclark.com/xml/expat.html.
 
@@ -38,4 +38,4 @@ time (May 31, 1999).
 
 The files, in their original state from the Expat distribution, have
 been tagged within CVS with the "EXPAT_1_1" tag. That tag may be used
-as a reference for changes made by the Apache Group.
+as a reference for changes made by the Apache Software Foundation.
