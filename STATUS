@@ -25,6 +25,11 @@ Committed Code Changes:
 
 Available Patches:
 
+    * Ralf's [PATCH] Fix RewriteMap programs 
+      (especially under SunOS and FreeBSD)
+      <199802231646.RAA14652@en1.engelschall.com>
+      Status: Ralf +1
+
     * M.D.Parker's [PATCH] mod_status/1448: Status Information have version
 	<Pine.LNX.3.95dg3.971121113953.29532D-100000@twinlark.arctic.org>
 	Status: Dean +1, Martin +0 (duplicates /server-info?server),
