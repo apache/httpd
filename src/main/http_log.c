@@ -446,16 +446,37 @@ API_EXPORT(void) ap_log_rerror (const char *file, int line, int level,
 void ap_log_pid (pool *p, char *fname)
 {
     FILE *pid_file;
+    struct stat finfo;
+    static pid_t saved_pid = -1;
+    pid_t mypid;
 
     if (!fname) return;
+
     fname = ap_server_root_relative (p, fname);
+    mypid = getpid();
+    if (mypid != saved_pid && stat(fname,&finfo) == 0) {
+      /* USR1 and HUP call this on each restart.
+       * Only warn on first time through for this pid.
+       *
+       * XXX: Could just write first time through too, although
+       *      that may screw up scripts written to do something
+       *      based on the last modification time of the pid file.
+       */
+      ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
+		   ap_psprintf(p,
+			       "pid file %s overwritten -- Unclean shutdown of previous apache run?",
+			       fname)
+		   );
+    }
+
     if(!(pid_file = fopen(fname,"w"))) {
 	perror("fopen");
         fprintf(stderr,"httpd: could not log pid to file %s\n", fname);
         exit(1);
     }
-    fprintf(pid_file,"%ld\n",(long)getpid());
+    fprintf(pid_file,"%ld\n",(long)mypid);
     fclose(pid_file);
+    saved_pid = mypid;
 }
 
 API_EXPORT(void) ap_log_error_old (const char *err, server_rec *s)
