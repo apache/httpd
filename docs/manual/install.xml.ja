@@ -141,8 +141,8 @@
 <section id="download"><title>ダウンロード</title>
 
     <p>Apache は <a
-    href="http://www.apache.org/dist/httpd/">Apache Software
-    Foundation ダウンロードサイト</a>からダウンロードできますし、
+    href="http://httpd.apache.org/download.cgi">Apache HTTP
+    サーバダウンロードサイト</a>からダウンロードできますし、
     同じ場所に幾つかのミラーサイトもリストしています。
     ここから最新の安定版が手に入ります。</p>
 
