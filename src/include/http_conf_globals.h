@@ -88,6 +88,10 @@ extern MODULE_VAR_EXPORT char *server_argv0;
 extern char server_root[MAX_STRING_LEN];
 extern char server_confname[MAX_STRING_LEN];
 
+/* for -C and -c switches */
+extern array_header *server_pre_read_config;
+extern array_header *server_post_read_config;
+
 /* We want this to have the least chance of being corrupted if there
  * is some memory corruption, so we allocate it statically.
  */

@@ -231,6 +231,9 @@ char server_root[MAX_STRING_LEN];
 char server_confname[MAX_STRING_LEN];
 char coredump_dir[MAX_STRING_LEN];
 
+array_header *server_pre_read_config;
+array_header *server_post_read_config;
+
 /* *Non*-shared http_main globals... */
 
 server_rec *server_conf;
@@ -278,6 +281,7 @@ static other_child_rec *other_children;
 static pool *pconf;		/* Pool for config stuff */
 static pool *ptrans;		/* Pool for per-transaction stuff */
 static pool *pchild;		/* Pool for httpd child stuff */
+static pool *pcommands;	/* Pool for -C and -c switches */
 
 int APACHE_TLS my_pid;		/* it seems silly to call getpid all the time */
 #ifndef MULTITHREAD
@@ -743,9 +747,11 @@ static void accept_mutex_off(void)
 
 void usage(char *bin)
 {
-    fprintf(stderr, "Usage: %s [-d directory] [-f file] [-v] [-h] [-l]\n", bin);
+    fprintf(stderr, "Usage: %s [-d directory] [-f file] [-C \"directive\"] [-c \"directive\"] [-v] [-h] [-l]\n", bin);
     fprintf(stderr, "-d directory : specify an alternate initial ServerRoot\n");
     fprintf(stderr, "-f file : specify an alternate ServerConfigFile\n");
+    fprintf(stderr, "-C \"directive\" : process directive before reading config files\n");
+    fprintf(stderr, "-c \"directive\" : process directive after reading config files\n");
     fprintf(stderr, "-v : show version number\n");
     fprintf(stderr, "-V : show compile settings\n");
     fprintf(stderr, "-h : list directives\n");
@@ -3606,14 +3612,27 @@ int main(int argc, char *argv[])
     pconf = permanent_pool;
     ptrans = make_sub_pool(pconf);
 
+    pcommands = make_sub_pool(NULL);
+    server_pre_read_config  = make_array(pcommands, 1, sizeof(char *));
+    server_post_read_config = make_array(pcommands, 1, sizeof(char *));
+    
     server_argv0 = argv[0];
     ap_cpystrn(server_root, HTTPD_ROOT, sizeof(server_root));
     ap_cpystrn(server_confname, SERVER_CONFIG_FILE, sizeof(server_confname));
 
     setup_prelinked_modules();
 
-    while ((c = getopt(argc, argv, "Xd:f:vVhlZ:")) != -1) {
+    while ((c = getopt(argc, argv, "C:c:Xd:f:vVhlZ:")) != -1) {
+	char **new;
 	switch (c) {
+	case 'c':
+	    new = (char **)push_array(server_post_read_config);
+	    *new = pstrdup(pcommands, optarg);
+	    break;
+	case 'C':
+	    new = (char **)push_array(server_pre_read_config);
+	    *new = pstrdup(pcommands, optarg);
+	    break;
 	case 'd':
 	    ap_cpystrn(server_root, optarg, sizeof(server_root));
 	    break;
@@ -4456,7 +4475,7 @@ int create_event_and_spawn(int argc, char **argv, event **ev, int *child_num, ch
 
     ap_assert(*ev);
     pass_argv[0] = argv[0];
-    pass_argv[1] = "-c";
+    pass_argv[1] = "-Z";
     pass_argv[2] = buf;
     for (i = 1; i < argc; i++) {
 	pass_argv[i + 2] = argv[i];
@@ -4731,10 +4750,10 @@ int main(int argc, char *argv[])
 
     setup_prelinked_modules();
 
-    while ((c = getopt(argc, argv, "Xd:f:vVhlc:ius")) != -1) {
+    while ((c = getopt(argc, argv, "Xd:f:vVhlZ:ius")) != -1) {
 	switch (c) {
 #ifdef WIN32
-	case 'c':
+	case 'Z':
 	    exit_event = open_event(optarg);
 	    APD2("child: opened process event %s", optarg);
 	    cp = strchr(optarg, '_');

@@ -900,6 +900,42 @@ API_EXPORT(char *) server_root_relative(pool *p, char *file)
     return make_full_path(p, server_root, file);
 }
 
+void process_command_config(server_rec *s, array_header *arr, pool *p, pool *ptemp)
+{
+    const char *errmsg;
+    cmd_parms parms;
+    int i;
+    char **lines = (char **)arr->elts;
+
+    parms = default_parms;
+    parms.pool = p;
+    parms.temp_pool = ptemp;
+    parms.server = s;
+    parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
+    parms.config_file = pcfg_openfile(p, NULL);
+
+    for (i = 0; i < arr->nelts; ++i) {
+	char *line = lines[i];
+
+#ifdef MOD_PERL
+	if(!(strncmp(line, "PerlModule ", 11))) {
+	    const char *perl_cmd_module(cmd_parms *parms, void *dummy, char *arg);
+	    line += 11;
+	    (void)perl_cmd_module(&parms, s->lookup_defaults, line);
+	    continue;
+	}
+#endif
+	    
+	errmsg = handle_command(&parms, s->lookup_defaults, line);
+
+	if (errmsg) {
+	    fprintf(stderr, "Syntax error in command: `%s'\n", lines[i]);
+	    fprintf(stderr, "%s\n", errmsg);
+	    exit(1);
+	}
+    }
+}
+
 void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp)
 {
     const char *errmsg;
@@ -910,6 +946,13 @@ void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp)
 
     if (!(strcmp(fname, server_root_relative(p, RESOURCE_CONFIG_FILE))) ||
 	!(strcmp(fname, server_root_relative(p, ACCESS_CONFIG_FILE)))) {
+	if (stat(fname, &finfo) == -1)
+	    return;
+    }
+
+    /* don't require conf/httpd.conf if we have a -C or -c switch */
+    if((server_pre_read_config->nelts || server_post_read_config->nelts) &&
+       !(strcmp(fname, server_root_relative(p, SERVER_CONFIG_FILE)))) {
 	if (stat(fname, &finfo) == -1)
 	    return;
     }
@@ -1193,9 +1236,13 @@ server_rec *read_config(pool *p, pool *ptemp, char *confname)
 
     /* All server-wide config files now have the SAME syntax... */
 
+    process_command_config(s, server_pre_read_config, p, ptemp);
+
     process_resource_config(s, confname, p, ptemp);
     process_resource_config(s, s->srm_confname, p, ptemp);
     process_resource_config(s, s->access_confname, p, ptemp);
+
+    process_command_config(s, server_post_read_config, p, ptemp);
 
     fixup_virtual_hosts(p, s);
     default_listeners(p, s);

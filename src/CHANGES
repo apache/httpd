@@ -1,5 +1,13 @@
 Changes with Apache 1.3b4
 
+  *) new -C and -c command line arguments
+     usage:
+     -C "directive" : process directive before reading config files
+     -c "directive" : process directive after reading config files
+     example:
+     httpd -C "PerlModule Apache::httpd_conf"
+     [Doug MacEachern]
+
   *) WIN32: Fix the execution of CGIs that are scripts and called 
      with path info that does not have an '=' in.
      (eg. http://server/cgi-bin/printenv?foobar)  PR#1591

@@ -672,14 +672,20 @@ void cfg_getword(char *word, char *line)
 API_EXPORT(configfile_t *) pcfg_openfile(pool *p, const char *name)
 {
     configfile_t *new_cfg;
-    FILE *file = fopen(name, "r");
+    FILE *file;
 
 #ifdef DEBUG
-    aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Opening config file %s (%s)", name, file == NULL ? strerror(errno) : "successful");
+    aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, 
+		"Opening config file %s (%s)", 
+		name ? name : "NULL", 
+		(name && (file == NULL)) ? strerror(errno) : "successful");
 #endif
 
-    if (file == NULL)
-	return NULL;
+    if (name != NULL) {
+	file = fopen(name, "r");
+	if (file == NULL)
+	    return NULL;
+    }
 
     new_cfg = palloc(p, sizeof (*new_cfg));
     new_cfg->param = file;
