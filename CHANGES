@@ -1,5 +1,8 @@
 Changes with Apache 2.0.28-dev
 
+  *) Add a '%{note-name}e' argument to mod-headers, which works in
+     the same way as mod_log_confg.  [Ian Holsman]
+
   *) Fix the spelling of the AP_MPMQ_MIN_SPARE_DAEMONS and
      AP_MPMQ_MAX_REQUESTS_DAEMON macros in ap_mpm.h and all standard
      MPMs.  [Cliff Woolley]
