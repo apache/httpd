@@ -59,8 +59,12 @@
 #include "apr_hooks.h"
 
 /**
- * @package Symbol Export Macros
+ * @file ap_config.h
+ * @brief Symbol Export Macros
  */
+
+/* Although this file doesn't declare any hooks, declare the hook group here */
+/** @defgroup hooks Apache Hooks */
 
 /**
  * AP_DECLARE_EXPORT is defined when building the Apache Core dynamic

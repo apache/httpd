@@ -67,7 +67,8 @@ extern "C" {
 #endif
 
 /**
- * @package Apache Request library
+ * @file http_request.h
+ * @brief Apache Request library
  */
 
 /* http_request.c is the code which handles the main line of request
@@ -240,14 +241,19 @@ void ap_process_request(request_rec *);
 AP_DECLARE(void) ap_die(int type, request_rec *r);
 #endif
 
-  /* Hooks */
+/* Hooks */
+
+/* XXX: doxygen grouping doesn't appear to work, but it should. Checking with
+ * doxygen (Ben).
+ */
+
 /**
  * This hook allow modules an opportunity to translate the URI into an
  * actual filename.  If no modules do anything special, the server's default
  * rules will be followed.
  * @param r The current request
  * @return OK, DECLINED, or HTTP_...
- * @deffunc int ap_run_translate_name(request_rec *r)
+ * @ingroup hooks
  */
 AP_DECLARE_HOOK(int,translate_name,(request_rec *r))
 
@@ -256,7 +262,7 @@ AP_DECLARE_HOOK(int,translate_name,(request_rec *r))
  * the request.
  * @param r The current request
  * @return OK, DECLINED, or HTTP_...
- * @deffunc int ap_run_check_user_id(request_rec *r)
+ * @ingroup hooks
  */
 AP_DECLARE_HOOK(int,check_user_id,(request_rec *r))
 
@@ -265,7 +271,7 @@ AP_DECLARE_HOOK(int,check_user_id,(request_rec *r))
  * is invoked just before any content-handler
  * @param r The current request
  * @return OK, DECLINED, or HTTP_...
- * @deffunc int ap_run_fixups(request_rec *r)
+ * @ingroup hooks
  */
 AP_DECLARE_HOOK(int,fixups,(request_rec *r))
  
@@ -275,7 +281,7 @@ AP_DECLARE_HOOK(int,fixups,(request_rec *r))
  * cetera.
  * @param r the current request
  * @return OK, DECLINED, or HTTP_...
- * @deffunc int ap_run_type_checker(request_rec *r)
+ * @ingroup hooks
  */
 AP_DECLARE_HOOK(int,type_checker,(request_rec *r))
 
@@ -284,7 +290,7 @@ AP_DECLARE_HOOK(int,type_checker,(request_rec *r))
  * upon the requested resource.
  * @param r the current request
  * @return OK, DECLINED, or HTTP_...
- * @deffunc int ap_run_access_checker(request_rec *r)
+ * @ingroup hooks
  */
 AP_DECLARE_HOOK(int,access_checker,(request_rec *r))
 
@@ -293,14 +299,14 @@ AP_DECLARE_HOOK(int,access_checker,(request_rec *r))
  * requires authorisation.
  * @param r the current request
  * @return OK, DECLINED, or HTTP_...
- * @deffunc int ap_run_auth_checker(request_rec *r)
+ * @ingroup hooks
  */
 AP_DECLARE_HOOK(int,auth_checker,(request_rec *r))
 
 /**
  * This hook allows modules to insert filters for the current request
  * @param r the current request
- * @deffunc void ap_run_insert_filter(request_rec *r)
+ * @ingroup hooks
  */
 AP_DECLARE_HOOK(void,insert_filter,(request_rec *r))
 
