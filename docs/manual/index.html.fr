@@ -81,7 +81,7 @@
 </td></tr><tr><td>
 <A HREF="invoking.html">D&eacute;marrage</A>
 </td></tr><tr><td>
-<A HREF="stopping.html">Arrêt et red&eacute;marrage</A>
+<A HREF="stopping.html">Arr&ecirc;t et red&eacute;marrage</A>
 </td></tr><tr><td>
 <A HREF="mod/directives.html">Directives de configuration de l'ex&eacute;cution</A>
 </td></tr><tr><td>
@@ -118,7 +118,7 @@ Modules <A HREF="mod/index-bytype.html">par types</A> ou
 </td></tr><tr><td>
 <a href="server-wide.html">Configuration globale du serveur</A>
 </td></tr><tr><td>
-<A HREF="vhosts/">Hôtes virtuels</A>
+<A HREF="vhosts/">H&ocirc;tes virtuels</A>
 </td></tr><tr><td>
 <A HREF="handler.html">Handlers</A>
 </td></tr><tr><td>

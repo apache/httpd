@@ -25,13 +25,13 @@ un mod&egrave;le hybride multi-processus et multi-threads,
 en employant les threads selon la norme POSIX. Ceci devrait am&eacute;liorer 
 les performances. 
 
-<DT><STRONG>Nouveau système de construction</STRONG>
-<DD>Le système de construction a &eacute;t&eacute; enti&egrave;rement 
+<DT><STRONG>Nouveau syst&egrave;me de construction</STRONG>
+<DD>Le syst&egrave;me de construction a &eacute;t&eacute; enti&egrave;rement 
 r&eacute;&eacute;crit et repose sur autoconf et libtool. Cela rend le 
 syst&egrave;me de configuration plus semblables aux autres paquetages. 
 
 <DT><STRONG>Support multiprotocole</STRONG>
-<DD>Apache possède maintenant une infrastructure afin de servir de multiples 
+<DD>Apache poss&egrave;de maintenant une infrastructure afin de servir de multiples 
 protocoles. mod_echo a &eacute;t&eacute; &eacute;crit comme exemple de ces 
 nouvelles fonctions. 
 
@@ -48,7 +48,7 @@ souvent bogu&eacute;es et peu performantes.
 <DD>L'API pour les modules de la version 2.0 a chang&eacute; de mani&egrave;re 
 importante. Beaucoup de probl&egrave;mes d'ordonnancement des modules existants
 dans la version 1.3 devraient dispara&icirc;tre. La version 2.0 g&egrave;re ceci de 
-manière automatique, et l'ordonnancement des modules s'effectue selon 
+mani&egrave;re automatique, et l'ordonnancement des modules s'effectue selon 
 une fonction d'accrochage afin de permettre une plus grande flexibilit&eacute;.   
 
 </DL>
