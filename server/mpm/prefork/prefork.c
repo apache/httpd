@@ -590,9 +590,11 @@ static void accept_mutex_off(void)
 
 static int lock_fd = -1;
 
-static void accept_mutex_cleanup(void *foo)
+static ap_status_t accept_mutex_cleanup(void *foo)
 {
     unlink(ap_lock_fname);
+
+    return APR_SUCCESS;
 }
 
 /*
@@ -601,13 +603,15 @@ static void accept_mutex_cleanup(void *foo)
  */
 static void accept_mutex_child_init(ap_context_t *p)
 {
+    ap_file_t *tempfile;
 
-    lock_fd = ap_popenf(p, ap_lock_fname, O_WRONLY, 0600);
-    if (lock_fd == -1) {
+    ap_open(p, ap_lock_fname, APR_WRITE, APR_UREAD|APR_UWRITE, &tempfile);
+    if (!tempfile) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
 		    "Child cannot open lock file: %s", ap_lock_fname);
 	clean_child_exit(APEXIT_CHILDINIT);
     }
+    ap_get_os_file(tempfile, &lock_fd);
 }
 
 /*
@@ -616,14 +620,18 @@ static void accept_mutex_child_init(ap_context_t *p)
  */
 static void accept_mutex_init(ap_context_t *p)
 {
+    ap_file_t *tempfile;
+
     expand_lock_fname(p);
     unlink(ap_lock_fname);
-    lock_fd = ap_popenf(p, ap_lock_fname, O_CREAT | O_WRONLY | O_EXCL, 0600);
-    if (lock_fd == -1) {
+    ap_open(p, ap_lock_fname, APR_CREATE|APR_WRITE|APR_EXCL,
+	    APR_UREAD|APR_UWRITE, &tempfile);
+    if (!tempfile) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
 		    "Parent cannot open lock file: %s", ap_lock_fname);
 	exit(APEXIT_INIT);
     }
+    ap_get_os_file(tempfile, &lock_fd);
     ap_register_cleanup(p, NULL, accept_mutex_cleanup, ap_null_cleanup);
 }
 
