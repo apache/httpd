@@ -182,7 +182,7 @@ static void unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *p
 #endif
     char str[MAXHOSTNAMELEN + 1];
     struct hostent *hent;
-    apr_interval_time_t pause;
+    apr_short_interval_time_t pause;
 
     /*
      * Calculate the sizes and offsets in cur_unique_id.
@@ -243,7 +243,7 @@ static void unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *p
      * But protecting against it is relatively cheap.  We just sleep into the
      * next second.
      */
-    pause = (apr_interval_time_t)(1000000 - (apr_time_now() % APR_USEC_PER_SEC));
+    pause = (apr_short_interval_time_t)(1000000 - (apr_time_now() % APR_USEC_PER_SEC));
     apr_sleep(pause);
 }
 
