@@ -687,7 +687,15 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
         apr_brigade_partition(ctx->b, *readbytes, &e);
         APR_BRIGADE_CONCAT(b, ctx->b);
         if (e != APR_BRIGADE_SENTINEL(ctx->b)) {
-            ctx->b = apr_brigade_split(b, e);
+            apr_bucket_brigade *temp;
+
+            temp = apr_brigade_split(b, e);
+
+            /* ### darn. gotta ensure the split brigade is in the proper pool.
+               ### this is a band-aid solution; we shouldn't even be doing
+               ### all of this brigade munging (per the comment above).
+               ### until then, this will get the right lifetimes. */
+            APR_BRIGADE_CONCAT(ctx->b, temp);
         }
         else {
             if (!APR_BRIGADE_EMPTY(ctx->b)) {
