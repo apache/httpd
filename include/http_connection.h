@@ -66,7 +66,7 @@ extern "C" {
 
 conn_rec *ap_new_connection(pool *p, server_rec *server, BUFF *inout,
 			    const struct sockaddr_in *remaddr,
-			    const struct sockaddr_in *saddr);
+			    const struct sockaddr_in *saddr, long id);
 CORE_EXPORT(void) ap_process_connection(conn_rec *);
 int ap_process_http_connection(conn_rec *);
 

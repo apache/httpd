@@ -145,18 +145,17 @@ static other_child_rec *other_children;
 
 static pool *pconf;		/* Pool for config stuff */
 static pool *pchild;		/* Pool for httpd child stuff */
+static pool *thread_pool_parent; /* Parent of per-thread pools */
+static pthread_mutex_t thread_pool_create_mutex;
 
-typedef struct {
-    pool *pool;
-    pthread_mutex_t mutex;
-    pthread_attr_t attr;
-} worker_thread_info;
-
+static int child_num;
 static int my_pid; /* Linux getpid() doesn't work except in main thread. Use
                       this instead */
 /* Keep track of the number of worker threads currently active */
 static int worker_thread_count;
 static pthread_mutex_t worker_thread_count_mutex;
+static int worker_thread_free_ids[HARD_THREAD_LIMIT];
+static pthread_attr_t worker_thread_attr;
 
 /* Keep track of the number of idle worker threads */
 static int idle_thread_count;
@@ -849,7 +848,8 @@ int ap_graceful_stop_signalled(void)
  * Child process main loop.
  */
 
-static void process_socket(pool *p, struct sockaddr *sa_client, int csd)
+static void process_socket(pool *p, struct sockaddr *sa_client, int csd,
+                           int conn_id)
 {
     struct sockaddr sa_server; /* ZZZZ */
     size_t len = sizeof(struct sockaddr);
@@ -886,7 +886,8 @@ static void process_socket(pool *p, struct sockaddr *sa_client, int csd)
 
     current_conn = ap_new_connection(p, server_conf, conn_io,
                                   (const struct sockaddr_in *) sa_client, 
-                                  (const struct sockaddr_in *) &sa_server);
+                                  (const struct sockaddr_in *) &sa_server,
+                                  conn_id);
 
     ap_process_connection(current_conn);
 }
@@ -895,7 +896,7 @@ static void *worker_thread(void *);
 static void *worker_thread_one_child(void *);
 
 /* Starts a thread as long as we're below max_threads */
-static int start_thread(worker_thread_info *thread_info)
+static int start_thread(void)
 {
     pthread_t thread;
     void *(*thread_function)(void *);
@@ -908,19 +909,21 @@ static int start_thread(worker_thread_info *thread_info)
         else {
             thread_function = worker_thread;
         }
-        worker_thread_count++;
-        if (pthread_create(&thread, &(thread_info->attr), thread_function, thread_info)) {
+        if (pthread_create(&thread, &worker_thread_attr, thread_function,
+	  &worker_thread_free_ids[worker_thread_count])) {
             ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
                          "pthread_create: unable to create worker thread");
             /* In case system resources are maxxed out, we don't want
                Apache running away with the CPU trying to fork over and
                over and over again if we exit. */
             sleep(10);
-            worker_thread_count--;
             workers_may_exit = 1;
             pthread_mutex_unlock(&worker_thread_count_mutex);
             return 0;
         }
+	else {
+	    worker_thread_count++;
+	}
     }
     else {
         static int reported = 0;
@@ -973,12 +976,13 @@ static void *worker_thread_one_child(void *arg)
     int poll_count = 0;
     static int curr_pollfd = 0;
     size_t len = sizeof(struct sockaddr);
-    worker_thread_info *thread_info = arg;
     int thread_just_started = 1;
+    int thread_num = *((int *) arg);
+    long conn_id = child_num * HARD_THREAD_LIMIT + thread_num;
 
-    pthread_mutex_lock(&thread_info->mutex);
-    tpool = ap_make_sub_pool(thread_info->pool);
-    pthread_mutex_unlock(&thread_info->mutex);
+    pthread_mutex_lock(&thread_pool_create_mutex);
+    tpool = ap_make_sub_pool(thread_pool_parent);
+    pthread_mutex_unlock(&thread_pool_create_mutex);
     ptrans = ap_make_sub_pool(tpool);
 
     while (!workers_may_exit) {
@@ -1054,7 +1058,7 @@ static void *worker_thread_one_child(void *arg)
                 idle_thread_count--;
             }
             else {
-                if (!start_thread(thread_info)) {
+                if (!start_thread()) {
                     idle_thread_count--;
                 }
             }
@@ -1066,7 +1070,7 @@ static void *worker_thread_one_child(void *arg)
             pthread_mutex_unlock(&idle_thread_count_mutex);
             break;
         }
-        process_socket(ptrans, &sa_client, csd);
+        process_socket(ptrans, &sa_client, csd, conn_id);
         ap_clear_pool(ptrans);
         requests_this_child--;
     }
@@ -1074,6 +1078,7 @@ static void *worker_thread_one_child(void *arg)
     ap_destroy_pool(tpool);
     pthread_mutex_lock(&worker_thread_count_mutex);
     worker_thread_count--;
+    worker_thread_free_ids[worker_thread_count] = thread_num;
     if (worker_thread_count == 0) {
         /* All the threads have exited, now finish the shutdown process
          * by signalling the sigwait thread */
@@ -1094,12 +1099,13 @@ static void *worker_thread(void *arg)
     int srv;
     int curr_pollfd, last_pollfd = 0;
     size_t len = sizeof(struct sockaddr);
-    worker_thread_info *thread_info = arg;
     int thread_just_started = 1;
+    int thread_num = *((int *) arg);
+    long conn_id = child_num * HARD_THREAD_LIMIT + thread_num;
 
-    pthread_mutex_lock(&thread_info->mutex);
-    tpool = ap_make_sub_pool(thread_info->pool);
-    pthread_mutex_unlock(&thread_info->mutex);
+    pthread_mutex_lock(&thread_pool_create_mutex);
+    tpool = ap_make_sub_pool(thread_pool_parent);
+    pthread_mutex_unlock(&thread_pool_create_mutex);
     ptrans = ap_make_sub_pool(tpool);
 
     while (!workers_may_exit) {
@@ -1179,7 +1185,7 @@ static void *worker_thread(void *arg)
                 idle_thread_count--;
             }
             else {
-                if (!start_thread(thread_info)) {
+                if (!start_thread()) {
                     idle_thread_count--;
                 }
             }
@@ -1192,7 +1198,7 @@ static void *worker_thread(void *arg)
             pthread_mutex_unlock(&idle_thread_count_mutex);
 	    break;
 	}
-        process_socket(ptrans, &sa_client, csd);
+        process_socket(ptrans, &sa_client, csd, conn_id);
         ap_clear_pool(ptrans);
         requests_this_child--;
     }
@@ -1200,6 +1206,7 @@ static void *worker_thread(void *arg)
     ap_destroy_pool(tpool);
     pthread_mutex_lock(&worker_thread_count_mutex);
     worker_thread_count--;
+    worker_thread_free_ids[worker_thread_count] = thread_num;
     if (worker_thread_count == 0) {
         /* All the threads have exited, now finish the shutdown process
          * by signalling the sigwait thread */
@@ -1210,15 +1217,15 @@ static void *worker_thread(void *arg)
     return NULL;
 }
 
-static void child_main(void)
+static void child_main(int child_num_arg)
 {
     sigset_t sig_mask;
     int signal_received;
     int i;
-    worker_thread_info thread_info;
     ap_listen_rec *lr;
 
     my_pid = getpid();
+    child_num = child_num_arg;
     pchild = ap_make_sub_pool(pconf);
 
     /*stuff to do before we switch id's, so we have permissions.*/
@@ -1261,18 +1268,21 @@ static void child_main(void)
     }
     idle_thread_count = threads_to_start;
     worker_thread_count = 0;
-    thread_info.pool = ap_make_sub_pool(pconf);
-    pthread_mutex_init(&thread_info.mutex, NULL);
+    for (i = 0; i < max_threads; i++) {
+        worker_thread_free_ids[i] = i;
+    }
+    thread_pool_parent = ap_make_sub_pool(pchild);
+    pthread_mutex_init(&thread_pool_create_mutex, NULL);
     pthread_mutex_init(&idle_thread_count_mutex, NULL);
     pthread_mutex_init(&worker_thread_count_mutex, NULL);
     pthread_mutex_init(&pipe_of_death_mutex, NULL);
-    pthread_attr_init(&thread_info.attr);
-    pthread_attr_setdetachstate(&thread_info.attr, PTHREAD_CREATE_DETACHED);
+    pthread_attr_init(&worker_thread_attr);
+    pthread_attr_setdetachstate(&worker_thread_attr, PTHREAD_CREATE_DETACHED);
 
     /* We are creating worker threads right now */
     for (i=0; i < threads_to_start; i++) {
         /* start_thread shouldn't fail here */
-        if (!start_thread(&thread_info)) {
+        if (!start_thread()) {
             break;
         }
     }
@@ -1307,7 +1317,7 @@ static int make_child(server_rec *s, int slot, time_t now) /* ZZZ */
     if (one_process) {
 	set_signals();
         ap_scoreboard_image[slot].pid = getpid();
-	child_main();
+	child_main(slot);
     }
 
     if ((pid = fork()) == -1) {
@@ -1338,7 +1348,7 @@ static int make_child(server_rec *s, int slot, time_t now) /* ZZZ */
 	/* XXX - For an unthreaded server, a signal handler will be necessary
         signal(SIGTERM, just_die);
 	*/
-        child_main();
+        child_main(slot);
 
 	return 0;
     }
