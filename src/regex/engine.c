@@ -46,6 +46,7 @@ struct match {
 };
 
 #include "engine.ih"
+#include "apctype.h"
 
 #ifdef REDEBUG
 #define	SP(t, s, c)	print(m, t, s, c, stdout)
