@@ -457,6 +457,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
  *    Worker threads block on the ThreadDispatch IOCompletionPort awaiting 
  *    connections to service.
  */
+#define MAX_ACCEPTEX_ERR_COUNT 1000
 static void winnt_accept(void *lr_) 
 {
     ap_listen_rec *lr = (ap_listen_rec *)lr_;
@@ -504,47 +505,40 @@ static void winnt_accept(void *lr_)
             rv = apr_get_netos_error();
             if ((rv == APR_FROM_OS_ERROR(WSAEINVAL)) ||
                 (rv == APR_FROM_OS_ERROR(WSAENOTSOCK))) {
-                /* Hack alert, we can get here because: 
-                 * 1) Occasionally, TransmitFile will not recycle the accept socket 
-                 *    (usually when the client disconnects early). 
-                 * 2) There is VPN or Firewall software installed with buggy AcceptEx implementation
-                 * 3) The webserver is using a dynamic address and it has changed
+                /* We can get here when:
+                 * 1) the client disconnects early
+                 * 2) TransmitFile does not properly recycle the accept socket (typically
+                 *    because the client disconnected)
+                 * 3) there is VPN or Firewall software installed with buggy AcceptEx implementation
+                 * 4) the webserver is using a dynamic address that has changed
                  */
-                Sleep(0);
-                if (++err_count > 1000) { 
-                    apr_int32_t disconnected;
-
-                    /* abitrary socket call to test if the Listening socket is still valid */
-                    apr_status_t listen_rv =  apr_socket_opt_get(lr->sd, APR_SO_DISCONNECTED, &disconnected);
-
-                    if (listen_rv == APR_SUCCESS) {
-                        ap_log_error(APLOG_MARK,APLOG_ERR, listen_rv, ap_server_conf,
-                                     "AcceptEx error: If this occurs constantly and NO requests are being served "
-                                     "try using the Win32DisableAcceptEx directive.");
-                        err_count = 0;
-                    }
-                    else {
-                        ap_log_error(APLOG_MARK,APLOG_ERR, listen_rv, ap_server_conf,
-                                     "The Listening socket is no longer valid. Dynamic address changed?");
-                        break;
-                    }
-                }
-
+                ++err_count;
                 closesocket(context->accept_socket);
                 context->accept_socket = INVALID_SOCKET;
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf,
-                       "winnt_accept: AcceptEx failed, either early client disconnect, "
-                       "dynamic address renewal, or incompatible VPN or Firewall software.");
-          
+                if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
+                    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                                 "Child %d: Encountered too many errors accepting client connections. "
+                                 "Possible causes: dynamic address renewal, or incompatible VPN or firewall software. "
+                                 "Try using the Win32DisableAcceptEx directive.", my_pid);
+                    exit(APEXIT_CHILDFATAL);
+                }          
                 continue;
             }
             else if ((rv != APR_FROM_OS_ERROR(ERROR_IO_PENDING)) &&
                      (rv != APR_FROM_OS_ERROR(WSA_IO_PENDING))) {
-                ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
-                             "winnt_accept: AcceptEx failed. Attempting to recover.");
+                ++err_count;
+                if (err_count > MAX_ACCEPTEX_ERR_COUNT) { 
+                    /* Critical error. The listening socket is not usable so we 
+                     * are going down.
+                     */
+                    ap_log_error(APLOG_MARK,APLOG_CRIT, rv, ap_server_conf,
+                                 "Child %d: Encountered too many errors accepting client connections. "
+                                 "Possible causes: Unknown. "
+                                 "Try using the Win32DisableAcceptEx directive.", my_pid);
+                    exit(APEXIT_CHILDFATAL);
+                }
                 closesocket(context->accept_socket);
                 context->accept_socket = INVALID_SOCKET;
-                Sleep(100);
                 continue;
             }
             err_count = 0;  
@@ -582,7 +576,7 @@ static void winnt_accept(void *lr_)
                 continue;
             }
         }
-
+        err_count = 0;  
         /* Inherit the listen socket settings. Required for 
          * shutdown() to work 
          */
