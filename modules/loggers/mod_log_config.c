@@ -149,7 +149,8 @@
  * %...v:  the configured name of the server (i.e. which virtual host?)
  * %...V:  the server name according to the UseCanonicalName setting
  * %...m:  the request method
- * %...h:  the request protocol
+ * %...H:  the request protocol
+ * %...q:  the query string prepended by "?", or empty if no query string
  *
  * The '...' can be nothing at all (e.g. "%h %u %r %s %b"), or it can
  * indicate conditions for inclusion of the item (which will cause it
@@ -356,6 +357,11 @@ static const char *log_request_method(request_rec *r, char *a)
 static const char *log_request_protocol(request_rec *r, char *a)
 {
     return r->protocol;
+}
+static const char *log_request_query(request_rec *r, char *a)
+{
+    return (r->args != NULL) ? apr_pstrcat(r->pool, "?", r->args, NULL)
+                             : "";
 }
 static const char *log_status(request_rec *r, char *a)
 {
@@ -583,6 +589,9 @@ static struct log_item_list {
     },
     {
         'm', log_request_method, 0
+    },
+    {
+        'q', log_request_query, 0
     },
     {
         'c', log_connection_status, 0
