@@ -2550,7 +2550,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
       #!C:/Perl/bin/perl.exe
     </code></p></div>
 
-    <p>もしくは、perl が <code>PATH</code> にある場合は単に:</p>
+    <p>もしくは、<code>perl</code> が <code>PATH</code> にある場合は単に:</p>
 
     <div class="example"><p><code>
       #!perl
