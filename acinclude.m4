@@ -141,28 +141,6 @@ AC_DEFUN(APACHE_ONCE,[
   fi
 ])
 
-dnl APACHE_CHECK_GCC_ARG(ARG, ACTION-IF-FOUND, ACTION-IF-NOT-FOUND)	
-AC_DEFUN(APACHE_CHECK_GCC_ARG,[
-  gcc_arg_name=[ac_cv_gcc_arg]translit($1,A-Z-,a-z_)
-  AC_CACHE_CHECK([whether $CC supports $1], [ac_cv_gcc_arg]translit($1,A-Z-,a-z_), [
-  echo 'void somefunc() { };' > conftest.c
-  cmd='$CC $1 -c conftest.c'
-  if eval $cmd 2>&1 | egrep -e $1 >/dev/null ; then
-    ac_result=no
-  else
-    ac_result=yes
-  fi
-  eval $gcc_arg_name=$ac_result
-  rm -f conftest.*
-  ])
-  if eval test "\$$gcc_arg_name" = "yes"; then
-    $2
-  else
-    :
-    $3
-  fi
-])
-
 dnl
 dnl APACHE_CHECK_THREADS()
 dnl
@@ -189,26 +167,35 @@ int main() {
 
 AC_DEFUN(APACHE_CHECK_THREADS,[
 
-old_CFLAGS="$CFLAGS"
-
-if test -n "$GCC"; then
-  APACHE_CHECK_GCC_ARG(-pthread, [
-    CFLAGS="$CFLAGS -pthread"
-    ],[
-    APACHE_CHECK_GCC_ARG(-pthreads, [
-        CFLAGS="$CFLAGS -pthreads"
-        ],[
-        APACHE_CHECK_GCC_ARG(-mthreads, [
-            CFLAGS="$CFLAGS -mthreads"
-        ])])])
-fi
-
 APACHE_THREAD_TEST
 
 if test "$apache_threads_working" != "yes"; then
-  CFLAGS="$old_CFLAGS"
-  AC_CHECK_LIB(pthread, pthread_kill)
-  APACHE_THREAD_TEST
+  for flag in -pthreads -pthread -mthreads; do 
+    AC_MSG_CHECKING(whether $flag enables POSIX threads)
+    ac_save="$CFLAGS"
+    CFLAGS="$CFLAGS $flag"
+    APACHE_THREAD_TEST
+    if test "$apache_threads_working" = "yes"; then
+      AC_MSG_RESULT(yes)
+      REENTRANCY_CFLAGS="$REENTRANCY_CFLAGS $flag"
+      break
+    fi
+    CFLAGS="$ac_save"
+    AC_MSG_RESULT(no)
+  done
+fi
+
+if test "$apache_threads_working" != "yes"; then
+  for lib in pthread pthreads c_r; do
+    ac_save="$LIBS"
+    LIBS="$LIBS -l$lib"
+    APACHE_THREAD_TEST
+    if test "$apache_threads_working" = "yes"; then
+      REENTRANCY_LDFLAGS="$REENTRANCY_LDFLAGS -l$lib"
+      break
+    fi
+    LIBS="$ac_save"
+  done
 fi
 
 if test "$apache_threads_working" = "yes"; then
