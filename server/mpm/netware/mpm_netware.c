@@ -124,6 +124,7 @@
 #include <netware.h>
 #include <nks/netware.h>
 #include <library.h>
+#include <screen.h>
 
 /* Limit on the total --- clients will be locked out if more servers than
  * this are needed.  It is intended solely to keep the server from crashing
@@ -1058,8 +1059,13 @@ void netware_rewrite_args(process_rec *process)
             optbuf[0] = '-';
             optbuf[2] = '\0';
             apr_getopt_init(&opt, process->pool, process->argc, (char**) process->argv);
-            while (apr_getopt(opt, AP_SERVER_BASEARGS, optbuf + 1, &opt_arg) == APR_SUCCESS) {
+            while (apr_getopt(opt, AP_SERVER_BASEARGS"n:", optbuf + 1, &opt_arg) == APR_SUCCESS) {
                 switch (optbuf[1]) {
+                case 'n':
+                    if (opt_arg) {
+                        renamescreen(opt_arg);
+                    }
+                    break;
 				case 'E':
 					/* Don't need to hold the screen open if the output is going to a file */
 					hold_screen_on_exit = -1;
