@@ -705,12 +705,8 @@ API_EXPORT(piped_log *) ap_open_piped_log(ap_pool_t *p, const char *program)
     pl->program = ap_pstrdup(p, program);
     pl->pid = NULL;
     if (ap_create_pipe(&ap_piped_log_read_fd(pl), &ap_piped_log_write_fd(pl), p) != APR_SUCCESS) {
-	int save_errno = errno;
-	errno = save_errno;
 	return NULL;
     }
-    ap_block_pipe(ap_piped_log_read_fd(pl));
-    ap_block_pipe(ap_piped_log_write_fd(pl));
     ap_register_cleanup(p, pl, piped_log_cleanup, piped_log_cleanup_for_exec);
     if (piped_log_spawn(pl) == -1) {
 	int save_errno = errno;
