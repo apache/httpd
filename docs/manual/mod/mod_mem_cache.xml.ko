@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 1.9 -->
+
+<!--
+ Copyright 2002-2004 The Apache Software Foundation
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_mem_cache.xml.meta">
+
+<name>mod_mem_cache</name>
+<description>URI를 키로 사용하여 내용을 캐쉬한다.</description>
+<status>Experimental</status>
+<sourcefile>mod_mem_cache.c</sourcefile>
+<identifier>mem_cache_module</identifier>
+
+<summary>
+    <note type="warning">
+      이 모듈은 실험적인 상태이다. 문서는 아직 작업중이다...
+    </note>
+
+    <p>이 모듈을 사용하려면 <module>mod_cache</module>가
+    <em>필요하다</em>. 이 모듈은 <module>mod_cache</module>를
+    지원하며 메모리기반 저장관리자를 제공한다.
+    <module>mod_mem_cache</module>는 파일기술자를 캐쉬에 저장하거나
+    객체를 힙 공간에 캐쉬하는 두가지 방식으로 동작한다.
+    <module>mod_mem_cache</module>는 직접 서버가 생성한 페이지를
+    캐쉬하거나 <directive module="mod_proxy">ProxyPass</directive>로
+    설정한 (<dfn>역프록시(reverse proxy)</dfn>)
+    <module>mod_proxy</module>의 뒷단 서버내용을 캐쉬할때 주로
+    사용한다.</p>
+
+    <p>내용은 URI를 키로 사용하여 캐쉬에 저장하고 가져온다.
+    접근을 제어하는 내용은 캐쉬에 저장하지 않는다.</p>
+</summary>
+<seealso><module>mod_cache</module></seealso>
+<seealso><module>mod_disk_cache</module></seealso>
+
+<directivesynopsis>
+<name>MCacheSize</name>
+<description>캐쉬에 사용할 최대 메모리량 (KByte 단위)</description>
+<syntax>MCacheSize <var>KBytes</var></syntax>
+<default>MCacheSize 100</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p><directive>MCacheSize</directive> 지시어는 캐쉬에 사용할
+    최대 메모리량을 KByte 단위로 (1024 바이트 단위) 설정한다.
+    새로운 객체을 캐쉬에 추가해야 하는데 객체의 크기가 남은
+    메모리보다 크다면 새로운 객체을 캐쉬할 수 있을때까지 다른
+    객체를 제거한다. <directive
+    module="mod_mem_cache">MCacheRemovalAlgorithm</directive>으로
+    지정한 알고리즘을 사용하여 제거할 객체를 선택한다.</p>
+
+    <example><title>예제</title>
+      MCacheSize 700000
+    </example>
+
+    <note><title>주의</title>
+      <p><directive>MCacheSize</directive> 값은 <directive
+      module="mod_mem_cache">MCacheMaxObjectSize</directive>
+      지시어로 지정한 값보다 커야 한다.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MCacheMaxObjectCount</name>
+<description>캐쉬에 저장할 수 있는 최대 객체개수</description>
+<syntax>MCacheMaxObjectCount <var>value</var></syntax>
+<default>MCacheMaxObjectCount 1009</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p><directive>MCacheMaxObjectCount</directive> 지시어는
+    캐쉬할 수 있는 최대 객체개수를 설정한다. 이 값은 해쉬테이블을
+    만들때 사용한다. 새로운 객체를 캐쉬에 추가해야 하는데 최대
+    객체개수에 도달하였다면, 새로운 객체를 캐쉬할 수 있도록
+    다른 객체를 제거한다. <directive
+    module="mod_mem_cache">MCacheRemovalAlgorithm</directive>으로
+    지정한 알고리즘을 사용하여 제거할 객체를 선택한다.</p>
+
+    <example><title>예제</title>
+      MCacheMaxObjectCount 13001
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MCacheMinObjectSize</name>
+<description>캐쉬에 저장할 문서의 최소 크기 (바이트 단위)</description>
+<syntax>MCacheMinObjectSize <var>bytes</var></syntax>
+<default>MCacheMinObjectSize 0</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p><directive>MCacheMinObjectSize</directive> 지시어는 캐쉬에
+    저장할 문서의 최소 크기를 바이트 단위로 지정한다.</p>
+
+    <example><title>예제</title>
+      MCacheMinObjectSize 10000
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MCacheMaxObjectSize</name>
+<description>캐쉬에 저장할 문서의 최대 크기 (바이트 단위)</description>
+<syntax>MCacheMaxObjectSize <var>bytes</var></syntax>
+<default>MCacheMaxObjectSize 10000</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p><directive>MCacheMaxObjectSize</directive> 지시어는 캐쉬에
+    저장할 문서의 최대 크기를 바이트 단위로 지정한다.</p>
+
+    <example><title>예제</title>
+      MCacheMaxObjectSize 6400000
+    </example>
+
+    <note><title>Note</title>
+      <p><directive>MCacheMaxObjectSize</directive> 값은 <directive
+      module="mod_mem_cache">MCacheMinObjectSize</directive>
+      지시어로 지정한 값보다 커야 한다.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MCacheRemovalAlgorithm</name>
+<description>캐쉬에서 제거할 문서를 찾는 알고리즘</description>
+<syntax>MCacheRemovalAlgorithm LRU|GDSF</syntax>
+<default>MCacheRemovalAlgorithm GDSF</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p><directive>MCacheRemovalAlgorithm</directive> 지시어는
+    캐쉬에서 제거할 문서를 찾는 알고리즘을 지정한다.</p>
+
+    <dl>
+      <dt><code>LRU</code> (Least Recently Used)</dt>
+      <dd><code>LRU</code>는 가장 오래동안 접근하지 않은 문서를
+      먼저 제거한다.</dd>
+
+      <dt><code>GDSF</code> (GreadyDual-Size)</dt>
+      <dd><code>GDSF</code>는 캐쉬 실패(cache miss) 비용과 문서의
+      크기를 가지고 캐쉬한 문서에 우선순위를 부여한다. 가장
+      우선순위가 낮은 문서를 먼저 제거한다.</dd>
+    </dl>
+
+    <example><title>예제</title>
+      MCacheRemovalAlgorithm GDSF<br />
+      MCacheRemovalAlgorithm LRU
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MCacheMaxStreamingBuffer</name>
+<description>응답을 캐쉬안한다고 결정하기 전까지 메모리 버퍼에
+저장할 스트림 응답의 최대 크기</description>
+<syntax>MCacheMaxStreamingBuffer <var>size_in_bytes</var></syntax>
+<default>MCacheMaxStreamingBuffer 100000과 MCacheMaxObjectSize
+중에 작은 값</default>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+    <p><directive>MCacheMaxStreamingBuffer</directive> 지시어는
+    응답이 너무 커서 캐쉬할 수 없을때까지 버퍼에 저장할 스트림
+    응답의 최대 바이트수를 설정한다. 스트림 응답(streamed response)은
+    전체 내용을 즉시 알 수 없고 <code>Content-Length</code>도
+    모르는 응답이다. 프록시된 응답이나 CGI 스크립트의 출력이
+    스트림 응답에 속한다. 기본적으로 <code>Content-Length</code>
+    헤더가 없다면 스트림 응답을 캐쉬에 저장하지 <em>않는다</em>.
+    이유는 캐쉬에 저장하기에 너무 큰 응답의 일부를 버퍼에
+    저장하기위해 많은 메모리를 낭비하지 않기위해서이다.
+    <directive>MCacheMaxStreamingBuffer</directive> 지시어를
+    사용하면 <code>Content-Length</code>가 없는 스트림 응답을
+    지정한 크기까지만 버퍼에 저장한다. 최대 크기를 넘어서면
+    버퍼 내용을 버리고 캐쉬하지 않는다.</p>
+
+    <note><title>주의:</title>
+      <p><directive>MCacheMaxStreamingBuffer</directive>에 0이
+      아닌 값을 설정하여도 클라이언트로 응답을 늦게 보내지 않는다.
+      <module>mod_mem_cache</module>는 스트림 응답의 일부를
+      버퍼에 복사하자마자 클라이언트로 보내기위해 다음 출력필터로
+      보낸다.</p>
+    </note>
+
+    <example>
+      # 스트림 응답을 64KB까지 캐쉬한다:<br />
+      MCacheMaxStreamingBuffer 65536
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

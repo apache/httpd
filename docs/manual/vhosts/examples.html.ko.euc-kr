@@ -21,8 +21,6 @@
 <p><span>가능한 언어: </span><a href="../en/vhosts/examples.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/vhosts/examples.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
 
     <p>이 문서는 자주 문의되는 가상호스트
@@ -58,8 +56,8 @@
     웹사이트 운영하기.</a></h2>
 
     <p>서버에 IP 주소가 한개 있고, DNS에서 여러 주소(CNAMES)가
-    이 컴퓨터를 가리킨다. 이 컴퓨터에서 <code>www.example1.com</code>과
-    <code>www.example2.org</code>의 웹서버를 실행하고 싶다.</p>
+    이 컴퓨터를 가리킨다. 이 컴퓨터에서 <code>www.example.com</code>과
+    <code>www.example.org</code>의 웹서버를 실행하고 싶다.</p>
 
     <div class="note"><h3>Note</h3><p>아파치 서버에 가상호스트 설정을
           한다고 그 호스트명에 대한 DNS 항목이 자동이로 생성되지
@@ -77,22 +75,22 @@
     Listen 80<br />
     <br />
     # 모든 IP 주소에서 가상호스트 요청을 기다린다<br />
-    NameVirtualHost *<br />
+    NameVirtualHost *:80<br />
     <br />
-    &lt;VirtualHost *&gt;<br />
+    &lt;VirtualHost *:80&gt;<br />
     <span class="indent">
       DocumentRoot /www/example1<br />
-      ServerName www.example1.com<br />
+      ServerName www.example.com<br />
       <br />
       # 다른 지시어들도 있다<br />
       <br />
     </span>
     &lt;/VirtualHost&gt;<br />
     <br />
-    &lt;VirtualHost *&gt;<br />
+    &lt;VirtualHost *:80&gt;<br />
     <span class="indent">
       DocumentRoot /www/example2<br />
-      ServerName www.example2.org<br />
+      ServerName www.example.org<br />
       <br />
       # 다른 지시어들도 있다<br />
       <br />
@@ -101,7 +99,7 @@
     </code></p></div>
 
     <p>별표는 모든 주소를 가리키므로, 주서버는 어떤 요청도
-    서비스하지 않는다. <code>www.example1.com</code>이
+    서비스하지 않는다. <code>www.example.com</code>이
     설정파일에 처음으로 나오므로 가장 높은 우선순위를 가지며,
     <cite>기본</cite>혹은 <cite>초기</cite> 서버가 된다.
     어떤 <code>ServerName</code> 지시어에도 해당되지않는 요청은
@@ -165,7 +163,7 @@
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <span class="indent">
         DocumentRoot /www/example1<br />
-        ServerName www.example1.com<br />
+        ServerName www.example.com<br />
    			<br />
         # 다른 지시어들도 있다 ...<br />
 				<br />
@@ -175,7 +173,7 @@
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <span class="indent">
         DocumentRoot /www/example2<br />
-        ServerName www.example2.org<br />
+        ServerName www.example.org<br />
 				<br />
         # 다른 지시어들도 있다 ...<br />
 				<br />
@@ -186,7 +184,7 @@
     <p><code>172.20.30.50</code>이 아닌 주소에 대한 요청은
     주서버가 서비스한다. 호스트명 없이, 즉 <code>Host:</code>
     헤더없이 <code>172.20.30.50</code>로 요청하면
-    <code>www.example1.com</code>이 서비스한다.</p>
+    <code>www.example.com</code>이 서비스한다.</p>
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -252,28 +250,28 @@
 		<br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <span class="indent">
-        ServerName www.example1.com<br />
+        ServerName www.example.com<br />
         DocumentRoot /www/domain-80<br />
     </span>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <span class="indent">
-        ServerName www.example1.com<br />
+        ServerName www.example.com<br />
         DocumentRoot /www/domain-8080<br />
     </span>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <span class="indent">
-        ServerName www.example2.org<br />
+        ServerName www.example.org<br />
         DocumentRoot /www/otherdomain-80<br />
     </span>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <span class="indent">
-        ServerName www.example2.org<br />
+        ServerName www.example.org<br />
         DocumentRoot /www/otherdomain-8080<br />
     </span>
     &lt;/VirtualHost&gt;
@@ -283,8 +281,8 @@
 <div class="section">
 <h2><a name="ip" id="ip">IP기반 가상호스트</a></h2>
 
-    <p>서버는 각각 <code>www.example1.com</code>과
-    <code>www.example2.org</code>에 해당하는 두 IP 주소를
+    <p>서버는 각각 <code>www.example.com</code>과
+    <code>www.example.org</code>에 해당하는 두 IP 주소를
     (<code>172.20.30.40</code>과 <code>172.20.30.50</code>)
     가진다.</p>
 
@@ -296,14 +294,14 @@
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <span class="indent">
         DocumentRoot /www/example1<br />
-        ServerName www.example1.com<br />
+        ServerName www.example.com<br />
     </span>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <span class="indent">
         DocumentRoot /www/example2<br />
-        ServerName www.example2.org<br />
+        ServerName www.example.org<br />
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>
@@ -317,8 +315,8 @@
 <h2><a name="ipport" id="ipport">포트기반과 ip기반이 혼합된
     가상호스트</a></h2>
 
-    <p>서버는 각각 <code>www.example1.com</code>과
-    <code>www.example2.org</code>에 해당하는 두 IP 주소를
+    <p>서버는 각각 <code>www.example.com</code>과
+    <code>www.example.org</code>에 해당하는 두 IP 주소를
     (<code>172.20.30.40</code>과 <code>172.20.30.50</code>)
     가진다. 각 IP의 80번과 8080번 포트에 가상호스트를 돌린다.</p>
 
@@ -333,28 +331,28 @@
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <span class="indent">
         DocumentRoot /www/example1-80<br />
-        ServerName www.example1.com<br />
+        ServerName www.example.com<br />
     </span>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <span class="indent">
         DocumentRoot /www/example1-8080<br />
-        ServerName www.example1.com<br />
+        ServerName www.example.com<br />
 		</span>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.50:80&gt;<br />
     <span class="indent">
         DocumentRoot /www/example2-80<br />
-        ServerName www.example1.org<br />
+        ServerName www.example.org<br />
     </span>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.50:8080&gt;<br />
     <span class="indent">
         DocumentRoot /www/example2-8080<br />
-        ServerName www.example2.org<br />
+        ServerName www.example.org<br />
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>
@@ -377,14 +375,14 @@
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <span class="indent">
         DocumentRoot /www/example1<br />
-        ServerName www.example1.com<br />
+        ServerName www.example.com<br />
     </span>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <span class="indent">
         DocumentRoot /www/example2<br />
-        ServerName www.example2.org<br />
+        ServerName www.example.org<br />
     </span>
     &lt;/VirtualHost&gt;<br />
 		<br />
@@ -503,7 +501,7 @@
     가상호스트로 옮기기</a></h2>
 
     <p>(<a href="#name">이름기반</a>의 첫번째 예에서) 호스트명
-    <code>www.example2.org</code>에 대한 이름기반 가상호스트는
+    <code>www.example.org</code>에 대한 이름기반 가상호스트는
     자신의 IP 주소를 가져야 한다. 이름기반 가상호스트의 이전
     IP 주소를 캐싱하는 네임서버나 프록시와의 문제를 피하기위해
     옮기는 동안 둘 모두를 서비스하고 싶다.<br /> 방법은
@@ -514,7 +512,7 @@
     
 
     Listen 80<br />
-    ServerName www.example1.com<br />
+    ServerName www.example.com<br />
     DocumentRoot /www/example1<br />
 		<br />
     NameVirtualHost 172.20.30.40<br />
@@ -522,7 +520,7 @@
     &lt;VirtualHost 172.20.30.40 172.20.30.50&gt;<br />
     <span class="indent">
         DocumentRoot /www/example2<br />
-        ServerName www.example2.org<br />
+        ServerName www.example.org<br />
         # ...<br />
     </span>
     &lt;/VirtualHost&gt;<br />
@@ -530,8 +528,8 @@
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <span class="indent">
         DocumentRoot /www/example3<br />
-        ServerName www.example3.net<br />
-        ServerAlias *.example3.net<br />
+        ServerName www.example.net<br />
+        ServerAlias *.example.net<br />
         # ...<br />
     </span>
     &lt;/VirtualHost&gt;

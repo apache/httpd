@@ -85,7 +85,7 @@ for HTTP Basic authentication.</dd>
 <dt><a href="mod_authz_user.html">mod_authz_user</a></dt><dd>사용자 권한부여</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>자동으로 유닉스의 <code>ls</code> 명령어나 Win32의
     <code>dir</code> 쉘명령어와 유사한 디렉토리 목록을 만든다</dd>
-<dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>Content cache keyed to URIs.</dd>
+<dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>URI를 키로 사용하여 내용을 캐쉬한다.</dd>
 <dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN 웹서버 메타파일 지원</dd>
 <dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>CGI 스크립트 실행</dd>
 <dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>외부 CGI 데몬을 사용하여 CGI 스크립트를 실행</dd>
@@ -102,8 +102,8 @@ index 파일을 서비스한다</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>CGI 스크립트나 SSI 페이지에 전달할 환경변수를
 수정한다</dd>
 <dt><a href="mod_example.html">mod_example</a></dt><dd>아파치 모듈 API를 설명한다</dd>
-<dt><a href="mod_expires.html">mod_expires</a></dt><dd>사용자가 지정한 기준에 따라 <code>Expires</code>
-HTTP 헤더를 생성한다</dd>
+<dt><a href="mod_expires.html">mod_expires</a></dt><dd>사용자가 지정한 기준에 따라 <code>Expires</code>와
+<code>Cache-Control</code> HTTP 헤더를 생성한다</dd>
 <dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>응답 내용을 외부 프로그램으로 처리한 후 클라이언트로
 보낸다</dd>
 <dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>메모리에 정적 파일들을 캐쉬</dd>
@@ -111,17 +111,17 @@ HTTP 헤더를 생성한다</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>Customization of HTTP request and response
 headers</dd>
 <dt><a href="mod_ident.html" id="I" name="I">mod_ident</a></dt><dd>RFC 1413 ident lookups</dd>
-<dt><a href="mod_imap.html">mod_imap</a></dt><dd>Server-side imagemap processing</dd>
+<dt><a href="mod_imap.html">mod_imap</a></dt><dd>서버측 이미지맵(imagemap) 처리</dd>
 <dt><a href="mod_include.html">mod_include</a></dt><dd>Server-parsed html documents (Server Side Includes)</dd>
 <dt><a href="mod_info.html">mod_info</a></dt><dd>Provides a comprehensive overview of the server
 configuration</dd>
-<dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>ISAPI Extensions within Apache for Windows</dd>
+<dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>Windows용 아파치에서 ISAPI Extension 사용</dd>
 <dt><a href="mod_ldap.html" id="L" name="L">mod_ldap</a></dt><dd>LDAP connection pooling and result caching services for use
 by other LDAP modules</dd>
-<dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Logging of the requests made to the server</dd>
+<dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>서버로의 요청을 로그에 기록한다</dd>
 <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Forensic Logging of the requests made to the server</dd>
 <dt><a href="mod_logio.html">mod_logio</a></dt><dd>요청당 입출력 바이트수를 기록</dd>
-<dt><a href="mod_mem_cache.html" id="M" name="M">mod_mem_cache</a></dt><dd>Content cache keyed to URIs</dd>
+<dt><a href="mod_mem_cache.html" id="M" name="M">mod_mem_cache</a></dt><dd>URI를 키로 사용하여 내용을 캐쉬한다.</dd>
 <dt><a href="mod_mime.html">mod_mime</a></dt><dd>Associates the requested filename's extensions
     with the file's behavior (handlers and filters)
     and content (mime-type, language, character set and

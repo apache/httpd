@@ -25,8 +25,6 @@
 <a href="./ko/upgrading.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/upgrading.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
   <p>우리는 기존 아파치 사용자가 업그레이드하는 것을 돕기위해
   중요한 정보를 알려주는 문서를 제공한다. 이 문서는 간단한
@@ -154,6 +152,16 @@
       파일 중에서만 선택한다. <code class="directive"><a href="./mod/mod_mime.html#multiviewsmatch">MultiviewsMatch</a></code> 지시어를
       사용하여 이전과 같이 동작하게 할 수 있다.</li>
 
+      <li>(<em>2.0.51 버전 이후</em>)
+      <p><code>ErrorHeader</code> 지시어는 잘못된 명칭으로,
+      이 지시어가 담당한 기능은 <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code> 지시어로도 가능하다.
+      원하는 기능을 위해,</p>
+
+      <div class="example"><p><code>
+        Header always set 어쩌고 저쩌고
+      </code></p></div>
+
+      <p>와 같이 설정한다.</p></li>
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.12 (outdated: 1.14) -->
+<!-- English Revision: 1.14 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -413,8 +413,8 @@
           Digest authentication을 사용한다. 이 모듈은 정보를
           일반 문자파일에 저장한다.</dd>
 
-        <dt><code>--enable-auth-ldap</code></dt>
-        <dd><module>mod_auth_ldap</module>이 제공하는 LDAP기반
+        <dt><code>--enable-authnz-ldap</code></dt>
+        <dd><module>mod_authnz_ldap</module>이 제공하는 LDAP기반
           인증 기능을 사용한다.</dd>
           
         <dt><code>--enable-cache</code></dt>

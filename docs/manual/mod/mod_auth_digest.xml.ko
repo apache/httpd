@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.16 (outdated: 1.20) -->
+<!-- English Revision: 1.20 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -67,20 +67,53 @@
 
     <note><title>주의</title> 
     <p>Digest authentication은 Basic authentication보다 더
-    안전한 암호시스템을 제공하지만, 브라우저가 지원해야 한다.
-    2002년 11월 현재 digest authentication을 지원하는 브라우저에는
-    <a href="http://www.opera.com/">Opera</a>, (질의문자열과
-    함께 사용할 수 없지만) <a
-    href="http://www.microsoft.com/windows/ie/">MS Internet
-    Explorer</a>, <a
+    안전하지만, 브라우저가 지원해야 한다. 2002년 11월 현재 digest
+    authentication을 지원하는 브라우저에는 <a
     href="http://www.w3.org/Amaya/">Amaya</a>, <a
-    href="http://www.mozilla.org">Mozilla</a>, 버전 7 이후의
+    href="http://konqueror.kde.org/">Konqueror</a>, (Windows용은
+    질의문자열과 함께 사용하면 안되지만 - 해결방법은 아래 "<a
+    href="#msie">MS Internet Explorer 문제 해결하기</a>"를 참고)
+    Mac OS X와 Windows용 <a
+    href="http://www.microsoft.com/windows/ie/">MS Internet
+    Explorer</a>, <a href="http://www.mozilla.org">Mozilla</a>,
     <a href="http://channels.netscape.com/ns/browsers/download.jsp"
-    >Netscape</a> 등이 있다. digest authentication이 basic
-    authentication 만큼 널리 구현되지 않았기때문에 주의해서
-    사용해야 한다.</p>
+    >Netscape</a> 버전 7, <a href="http://www.opera.com/">Opera</a>,
+    <a href="http://www.apple.com/safari/">Safari</a> 등이 있다.
+    <a href="http://lynx.isc.org/">lynx</a>는 digest authentication을
+    지원하지 <strong>않는다</strong>. digest authentication이
+    basic authentication 만큼 널리 구현되지 않았기때문에 모든
+    사용자가 지원하는 브라우저를 사용하는 경우에만 사용해야
+    한다.</p>
     </note>
 </section>
+
+<section id="msie"><title>MS Internet Explorer 문제 해결하기</title>
+    <p>현재 Windows용 Internet Explorer는 Digest authentication
+    사용시 질의문자열이 있는 <code>GET</code> 요청을 RFC와 다르게
+    처리하는 문제가 있다. 몇가지 방법으로 이 문제를 해결할 수
+    있다.</p>
+
+    <p>
+    첫번째는 프로그램에 자료를 넘겨주기위해 <code>GET</code>
+    대신 <code>POST</code> 요청을 사용하는 방법이다. 이 방법이
+    가능하다면 가장 간단한 해결책이다.
+    </p>
+
+    <p>또, 아파치 2.0.51부터 <code>AuthDigestEnableQueryStringHack</code>
+    환경변수를 제공하여 문제를 해결한다. 요청에
+    <code>AuthDigestEnableQueryStringHack</code>을 설정하면
+    아파치는 MSIE 버그를 피해갈 조치를 취하고 요청 URI를 digest
+    비교에서 제외한다. 이 방법은 다음과 같이 사용한다.</p>
+
+    <example><title>MSIE에서 Digest Authentication 사용하기:</title>
+    BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
+    </example>
+
+    <p>선택적인 환경변수 설정에 대한 자세한 내용은 <directive
+    module="mod_setenvif">BrowserMatch</directive> 지시어를
+    참고하라.</p>
+</section>
+
 
 <directivesynopsis>
 <name>AuthDigestProvider</name>

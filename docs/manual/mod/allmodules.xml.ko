@@ -39,15 +39,15 @@
   <modulefile>mod_filter.xml</modulefile>
   <modulefile>mod_headers.xml</modulefile>
   <modulefile>mod_ident.xml</modulefile>
-  <modulefile>mod_imap.xml</modulefile>
+  <modulefile>mod_imap.xml.ko</modulefile>
   <modulefile>mod_include.xml</modulefile>
   <modulefile>mod_info.xml</modulefile>
-  <modulefile>mod_isapi.xml</modulefile>
+  <modulefile>mod_isapi.xml.ko</modulefile>
   <modulefile>mod_ldap.xml</modulefile>
-  <modulefile>mod_log_config.xml</modulefile>
+  <modulefile>mod_log_config.xml.ko</modulefile>
   <modulefile>mod_log_forensic.xml</modulefile>
   <modulefile>mod_logio.xml.ko</modulefile>
-  <modulefile>mod_mem_cache.xml</modulefile>
+  <modulefile>mod_mem_cache.xml.ko</modulefile>
   <modulefile>mod_mime.xml</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml</modulefile>
