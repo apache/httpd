@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/27 22:09:17 $]
+Last modified at [$Date: 2004/09/03 02:47:19 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -701,11 +701,6 @@ put them into 'the next release':
         Status: 
 
       PR#4459: Suggestion for better handling of Last-modified headers
-        Status: 
-
-    * mod_info
-
-      PR#2415: /server-info doesn't check for the virtual host to list the info
         Status: 
 
     * mod_log-any
