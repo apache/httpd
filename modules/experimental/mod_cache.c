@@ -418,23 +418,16 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     int rv;
     request_rec *r = f->r;
+    cache_request_rec *cache;
+    cache_server_conf *conf;
     char *url = r->unparsed_uri;
     const char *cc_out;
     const char *exps, *lastmods, *dates, *etag;
     apr_time_t exp, date, lastmod, now;
     apr_off_t size;
     cache_info *info;
-    void *sconf = r->server->module_config;
-    cache_server_conf *conf =
-        (cache_server_conf *) ap_get_module_config(sconf, &cache_module);
-    void *scache = r->request_config;
-    cache_request_rec *cache =
-        (cache_request_rec *) ap_get_module_config(scache, &cache_module);
+
     apr_bucket *split_point = NULL;
-
-
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, f->r->server,
-                 "cache: running CACHE_IN filter");
 
     /* check first whether running this filter has any point or not */
     if(r->no_cache) {
@@ -442,10 +435,11 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         return ap_pass_brigade(f->next, in);
     }
 
-    /* make space for the per request config 
-     * We hit this code path when CACHE_IN has been installed by someone
-     * other than the cache handler
-     */
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "cache: running CACHE_IN filter");
+
+    /* Setup cache_request_rec */
+    cache = (cache_request_rec *) ap_get_module_config(r->request_config, &cache_module);
     if (!cache) {
         cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
         ap_set_module_config(r->request_config, &cache_module, cache);
@@ -516,6 +510,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
             lastmod = APR_DATE_BAD;
         }
 
+        conf = (cache_server_conf *) ap_get_module_config(r->server->module_config, &cache_module);
         /* read the etag and cache-control from the entity */
         etag = apr_table_get(r->headers_out, "Etag");
         cc_out = apr_table_get(r->headers_out, "Cache-Control");
