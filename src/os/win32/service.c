@@ -547,6 +547,7 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
     HANDLE hCurrentProcess;
     HANDLE hPipeRead = NULL;
     HANDLE hPipeReadDup;
+    HANDLE hNullFile;
     DWORD  threadid;
     SECURITY_ATTRIBUTES sa = {0};
     char **newargv;
@@ -601,6 +602,46 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
             CloseHandle(eventlog_pipewrite);
             eventlog_pipewrite = NULL;
         }            
+    }
+
+    /* Open a null handle to nak our stdin */
+    hNullFile = CreateFile("nul", GENERIC_READ | GENERIC_WRITE, 
+                           FILE_SHARE_READ | FILE_SHARE_WRITE, 
+                           &sa, OPEN_EXISTING, 0, NULL);
+    if (hNullFile == INVALID_HANDLE_VALUE) {
+        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, NULL,
+                     "Parent: Unable to create null stdin pipe for this service process.\n");
+    }
+    else {
+        int fh;
+        FILE *fl;
+        fflush(stdin);
+	SetStdHandle(STD_INPUT_HANDLE, hNullFile);
+        fh = _open_osfhandle((long) STD_INPUT_HANDLE, 
+                             _O_RDONLY | _O_BINARY);
+        dup2(fh, STDIN_FILENO);
+        fl = _fdopen(STDIN_FILENO, "rcb");
+        memcpy(stdin, fl, sizeof(FILE));
+    }
+
+    /* Open a null handle to soak our stdout */
+    hNullFile = CreateFile("nul", GENERIC_READ | GENERIC_WRITE, 
+                           FILE_SHARE_READ | FILE_SHARE_WRITE, 
+                           &sa, OPEN_EXISTING, 0, NULL);
+    if (hNullFile == INVALID_HANDLE_VALUE) {
+        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, NULL,
+                     "Parent: Unable to create null stdout pipe for this service process.\n");
+    }
+    else {
+        int fh;
+        FILE *fl;
+        fflush(stdout);
+	SetStdHandle(STD_OUTPUT_HANDLE, hNullFile);
+        fh = _open_osfhandle((long) STD_OUTPUT_HANDLE, 
+                             _O_WRONLY | _O_BINARY);
+        dup2(fh, STDOUT_FILENO);
+        fl = _fdopen(STDOUT_FILENO, "wcb");
+        memcpy(stdout, fl, sizeof(FILE));
     }
 
     atexit(service_main_fn_terminate);
