@@ -61,8 +61,8 @@
 # usage: dbmmanage <DBMfile> <command> <key> <value>
 
 package dbmmanage;
-#                               -ldb    -lndbm    -lgdbm
-BEGIN { @AnyDBM_File::ISA = qw(DB_File NDBM_File GDBM_File) }
+#                               -ldb    -lndbm    -lgdbm    -lsdbm
+BEGIN { @AnyDBM_File::ISA = qw(DB_File NDBM_File GDBM_File SDBM_File) }
 use strict;
 use Fcntl;
 use AnyDBM_File ();
@@ -177,7 +177,8 @@ sub dbmc::view {
 
 sub dbmc::check {
     die "Sorry, user `$key' doesn't exist!\n" unless $DB{$key};
-    print crypt(getpass(), $DB{$key}) eq $DB{$key} ? "password ok\n" : "password mismatch\n";
+    my $chkpass = (split /:/, $DB{$key})[0];
+    print crypt(getpass(), $chkpass) eq $chkpass ? "password ok\n" : "password mismatch\n";
 }
 
 sub dbmc::import {
