@@ -120,6 +120,134 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int,auth_checker,
 AP_IMPLEMENT_HOOK_VOID(insert_filter, (request_rec *r), (r))
 AP_IMPLEMENT_HOOK_RUN_ALL(int,create_request,(request_rec *r),(r),OK,DECLINED)
 
+
+static int decl_die(int status, char *phase, request_rec *r)
+{
+    if (status == DECLINED) {
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, r,
+                    "configuration error:  couldn't %s: %s", phase, r->uri);
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+    else
+        return status;
+}
+
+/* This is the master logic for processing requests.  Do NOT duplicate
+ * this logic elsewhere, or the security model will be broken by future
+ * API changes.  Each phase must be individually optimized to pick up
+ * redundant/duplicate calls by subrequests, and redirects.
+ */
+AP_DECLARE(int) ap_process_request_internal(request_rec *r)
+{
+    int access_status;
+
+    /* Ignore embedded %2F's in path for proxy requests */
+    if (!r->proxyreq && r->parsed_uri.path) {
+	access_status = ap_unescape_url(r->parsed_uri.path);
+	if (access_status) {
+	    return access_status;
+	}
+    }
+
+    ap_getparents(r->uri);     /* OK --- shrinking transformations... */
+
+    if ((access_status = ap_location_walk(r))) {
+        return access_status;
+    }
+
+    if ((access_status = ap_run_translate_name(r))) {
+        return decl_die(access_status, "translate", r);
+        return access_status;
+    }
+
+    if ((access_status = ap_run_map_to_storage(r))) {
+        /* This request wasn't in storage (e.g. TRACE) */
+        if (access_status == DONE)
+	    return OK;
+	else
+            return access_status;
+    }
+
+    if ((access_status = ap_location_walk(r))) {
+        return access_status;
+    }
+
+    /* Only on the main request! */
+    if (r->main == NULL) {
+        if ((access_status = ap_run_header_parser(r))) {
+            return access_status;
+        }
+    }
+
+    switch (ap_satisfies(r)) {
+    case SATISFY_ALL:
+    case SATISFY_NOSPEC:
+        if ((access_status = ap_run_access_checker(r)) != 0) {
+            return decl_die(access_status, "check access", r);
+        }
+        if (ap_some_auth_required(r)) {
+            if (((access_status = ap_run_check_user_id(r)) != 0) || !ap_auth_type(r)) {
+                return decl_die(access_status, ap_auth_type(r)
+		            ? "check user.  No user file?"
+		            : "perform authentication. AuthType not set!", r);
+            }
+            if (((access_status = ap_run_auth_checker(r)) != 0) || !ap_auth_type(r)) {
+                return decl_die(access_status, ap_auth_type(r)
+		            ? "check access.  No groups file?"
+		            : "perform authentication. AuthType not set!", r);
+            }
+        }
+        break;
+    case SATISFY_ANY:
+        if (((access_status = ap_run_access_checker(r)) != 0) || !ap_auth_type(r)) {
+            if (!ap_some_auth_required(r)) {
+                return decl_die(access_status, ap_auth_type(r)
+		            ? "check access"
+		            : "perform authentication. AuthType not set!", r);
+            }
+            if (((access_status = ap_run_check_user_id(r)) != 0) || !ap_auth_type(r)) {
+                return decl_die(access_status, ap_auth_type(r)
+		            ? "check user.  No user file?"
+		            : "perform authentication. AuthType not set!", r);
+            }
+            if (((access_status = ap_run_auth_checker(r)) != 0) || !ap_auth_type(r)) {
+                return decl_die(access_status, ap_auth_type(r)
+		            ? "check access.  No groups file?"
+		            : "perform authentication. AuthType not set!", r);
+            }
+        }
+        break;
+    }
+
+    /* XXX Must make certain the ap_run_type_checker short circuits mime
+     * in mod-proxy for r->proxyreq && r->parsed_uri.scheme 
+     *                              && !strcmp(r->parsed_uri.scheme, "http")
+     */
+    if ((access_status = ap_run_type_checker(r)) != 0) {
+	return decl_die(access_status, "find types", r);
+    }
+
+    if ((access_status = ap_run_fixups(r)) != 0) {
+        return access_status;
+    }
+
+    /* The new insert_filter stage makes sense here IMHO.  We are sure that
+     * we are going to run the request now, so we may as well insert filters
+     * if any are available.  Since the goal of this phase is to allow all
+     * modules to insert a filter if they want to, this filter returns
+     * void.  I just can't see any way that this filter can reasonably
+     * fail, either your modules inserts something or it doesn't.  rbb
+     */
+    ap_run_insert_filter(r);
+
+    if ((access_status = ap_invoke_handler(r)) != 0) {
+        return access_status;
+    }
+
+    return OK;
+}
+
+
 /*****************************************************************
  *
  * Getting and checking directory configuration.  Also checks the
@@ -1207,27 +1335,6 @@ static void fill_in_sub_req_vars(request_rec *rnew, const request_rec *r,
     ap_set_sub_req_protocol(rnew, r);
 }
 
-static int sub_req_common_validation(request_rec *rnew)
-{
-    int res;
-    if (((   ap_satisfies(rnew) == SATISFY_ALL
-             || ap_satisfies(rnew) == SATISFY_NOSPEC)
-            ? ((res = ap_run_access_checker(rnew))
-               || (ap_some_auth_required(rnew)
-                   && ((res = ap_run_check_user_id(rnew))
-                       || (res = ap_run_auth_checker(rnew)))))
-            : ((res = ap_run_access_checker(rnew))
-               && (!ap_some_auth_required(rnew)
-                   || ((res = ap_run_check_user_id(rnew))
-                       || (res = ap_run_auth_checker(rnew)))))
-           )
-        || (res = ap_run_type_checker(rnew))
-        || (res = ap_run_fixups(rnew)))
-        return res;
-    else
-        return 0;
-}
-
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
                                                         apr_bucket_brigade *bb)
 {
@@ -1260,6 +1367,9 @@ AP_DECLARE(int) ap_some_auth_required(request_rec *r)
     return 0;
 } 
 
+
+
+
 AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
                                                 const char *new_file,
                                                 const request_rec *r,
@@ -1291,42 +1401,10 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
         ap_parse_uri(rnew, ap_make_full_path(rnew->pool, udir, new_file));
     }
 
-    res = ap_unescape_url(rnew->uri);
-    if (res) {
-        rnew->status = res;
-        return rnew;
-    }
-
-    ap_getparents(rnew->uri);
-
-    if ((res = ap_location_walk(rnew))) {
-        rnew->status = res;
-        return rnew;
-    }
-
-    res = ap_run_translate_name(rnew);
-    if (res) {
-        rnew->status = res;
-        return rnew;
-    }
-
-    /*
-     * We could be clever at this point, and avoid calling directory_walk,
-     * etc. However, we'd need to test that the old and new filenames contain
-     * the same directory components, so it would require duplicating the
-     * start of translate_name. Instead we rely on the cache of .htaccess
-     * results.
-     *
-     * NB: directory_walk() clears the per_dir_config, so we don't inherit
-     * from location_walk() above
-     */
-
-    if ((res = ap_directory_walk(rnew))
-        || (res = ap_file_walk(rnew))
-        || (res = ap_location_walk(rnew))
-        || (res = sub_req_common_validation(rnew))) {
+    if ((res = ap_process_request_internal(rnew))) {
         rnew->status = res;
     }
+
     return rnew;
 }
 
@@ -1341,7 +1419,6 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
                                                    const request_rec *r,
                                                    ap_filter_t *next_filter)
 {
-    apr_status_t rv;
     request_rec *rnew;
     int res;
     char *fdir;
@@ -1375,6 +1452,9 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
     
     ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
 
+#if 0 /* XXX When this is reenabled, the cache triggers need to be set to faux
+       * dir_walk/file_walk values.
+       */
     rnew->per_dir_config = r->per_dir_config;
 
     if ((dirent->valid & APR_FINFO_MIN) != APR_FINFO_MIN) {
@@ -1385,6 +1465,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
          * to an APR_DIR, then we will rerun everything anyways... 
          * this should be safe.
          */
+        apr_status_t rv;
         if (ap_allow_options(rnew) & OPT_SYM_LINKS) {
             if (((rv = apr_stat(&rnew->finfo, rnew->filename,
                                  APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
@@ -1440,16 +1521,12 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
             return rnew;
         }  
     }
-    else {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, rnew,
-                      "symlink doesn't point to a file or directory: %s",
-                      r->filename);
-        res = HTTP_FORBIDDEN;
-    }
+#endif
 
-    if (res || (res = sub_req_common_validation(rnew))) {
+    if ((res = ap_process_request_internal(rnew))) {
         rnew->status = res;
     }
+
     return rnew;
 }
 
@@ -1497,10 +1574,13 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
            && ap_strchr_c(rnew->filename + fdirlen, '/') == NULL) 
     {
         char *udir = ap_make_dirstr_parent(rnew->pool, r->uri);
-        apr_status_t rv;
 
         rnew->uri = ap_make_full_path(rnew->pool, udir, new_file);
         ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
+
+#if 0 /* XXX When this is reenabled, the cache triggers need to be set to faux
+       * dir_walk/file_walk values.
+       */
 
         rnew->per_dir_config = r->per_dir_config;
 
@@ -1509,16 +1589,19 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
          * we will rerun everything anyways... this should be safe.
          */
         if (ap_allow_options(rnew) & OPT_SYM_LINKS) {
+            apr_status_t rv;
             if (((rv = apr_stat(&rnew->finfo, rnew->filename,
                                  APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
                                                       && (rv != APR_INCOMPLETE))
                 rnew->finfo.filetype = 0;
         }
-        else
+        else {
+            apr_status_t rv;
             if (((rv = apr_lstat(&rnew->finfo, rnew->filename,
                                  APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
                                                       && (rv != APR_INCOMPLETE))
                 rnew->finfo.filetype = 0;
+        }
 
         if ((res = check_safe_file(rnew))) {
             rnew->status = res;
@@ -1565,6 +1648,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
                           r->filename);
             res = HTTP_FORBIDDEN;
         }
+#endif
     }
     else {
 	/* XXX: @@@: What should be done with the parsed_uri values? */
@@ -1575,16 +1659,24 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
          * file may not have a uri associated with it -djg
          */
         rnew->uri = "INTERNALLY GENERATED file-relative req";
+
+#if 0 /* XXX When this is reenabled, the cache triggers need to be set to faux
+       * dir_walk/file_walk values.
+       */
+
         rnew->per_dir_config = r->server->lookup_defaults;
         res = ap_directory_walk(rnew);
         if (!res) {
             res = ap_file_walk(rnew);
         }
+#endif
     }
 
-    if (res || (res = sub_req_common_validation(rnew))) {
+
+    if ((res = ap_process_request_internal(rnew))) {
         rnew->status = res;
     }
+
     return rnew;
 }
 
@@ -1592,7 +1684,7 @@ AP_DECLARE(int) ap_run_sub_req(request_rec *r)
 {
     int retval;
 
-    /* see comments in process_request_internal() */
+    /* see comments in ap_process_request_internal() */
     ap_run_insert_filter(r);
     retval = ap_invoke_handler(r);
     ap_finalize_sub_req_protocol(r);
