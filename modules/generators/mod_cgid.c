@@ -188,11 +188,6 @@ typedef struct {
  * group are the first three arguments to be passed; if not, all three
  * must be NULL.  The query info is split into separate arguments, where
  * "+" is the separator between keyword arguments.
- *
- * XXXX: note that the WIN32 code uses one of the suexec strings
- * to pass an interpreter name.  Remember this if changing the way they
- * are handled in create_argv.
- *
  */
 static char **create_argv(apr_pool_t *p, char *path, char *user, char *group,
                           char *av0, const char *args)
