@@ -2,6 +2,10 @@ Changes with Apache 2.1.2-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Added the Event MPM to more efficiently handle clients during a 
+     Keep Alive request.
+     [Paul Querna, Greg Ames]
+
 Changes with Apache 2.1.1
 
   *) mod_proxy_http: Stream content better - always flush buffered data to
