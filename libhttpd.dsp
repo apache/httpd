@@ -579,6 +579,10 @@ SOURCE=.\server\mpm\winnt\mpm_winnt.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\server\mpm\winnt\nt_eventlog.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\server\mpm\winnt\registry.c
 # End Source File
 # Begin Source File
