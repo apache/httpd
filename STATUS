@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/03 02:00:34 $]
+Last modified at [$Date: 2002/02/03 03:19:41 $]
 
 Release:
 
@@ -161,7 +161,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
        0:  Aaron says "Some admins want it, some don't. Let's just make
                        it an option. Not 'SuicidalParentlessChildren'. ;)"
       -1:  BrianP (but +0 if it's a configurable option like Aaron
-           has suggested), Ian
+           has suggested), Ian, Cliff (why is the parent dying?  let's fix
+           the bug(s) rather than patching around it)
 
     * Make some modifications to the scoreboard creation routines,
       prefer anonymous shared memory, and allow a configuration
