@@ -19,16 +19,16 @@ This module is experimental. Documentation is still under development...
     mod_cache requires the services of one or more storage
     management modules. Two storage management modules are included in
     the base Apache distribution:</p>
-    <ul>
-    <li><em>mod_disk_cache</em></li><br />
-    implements a disk based storage manager for use with mod_proxy</br>
-    <li><em>mod_mem_cache</em></li><br />
-    implements an in-memory based storage manager. mod_mem_cache
+    <dl>
+    <dt><em>mod_disk_cache</em></dt>
+    <dd>implements a disk based storage manager for use with mod_proxy</dd>
+    <dt><em>mod_mem_cache</em></dt>
+    <dd>implements an in-memory based storage manager. mod_mem_cache
     can be configured to operate in two modes: caching open file
     descriptors or caching objects in heap storage. <em>mod_mem_cache</em>
     is most useful when used to cache locally generated content or to cache 
-    backend server content for mod_proxy configured for ProxyPass (aka <em>reverse proxy</em>)
-    </ul>
+    backend server content for mod_proxy configured for ProxyPass (aka <em>reverse proxy</em>)</dd>
+    </dl>
     <p>Content stored and retrived keyed to the URL. Content with
     access protections is not cached.</p>
 </summary>
