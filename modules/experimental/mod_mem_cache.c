@@ -127,10 +127,10 @@ static mem_cache_conf *sconf;
 
 /* Forward declarations */
 static int remove_entity(cache_handle_t *h);
-static int write_headers(cache_handle_t *h, request_rec *r, cache_info *i);
-static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
-static int read_headers(cache_handle_t *h, request_rec *r);
-static int read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
+static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info *i);
+static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
+static apr_status_t read_headers(cache_handle_t *h, request_rec *r);
+static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
 
 static void cleanup_cache_object(cache_object_t *obj)
 {
@@ -451,9 +451,9 @@ static int remove_entity(cache_handle_t *h)
     
     return OK;
 }
-static int serialize_table(cache_header_tbl_t **obj, 
-                           apr_ssize_t *nelts, 
-                           apr_table_t *table)
+static apr_status_t serialize_table(cache_header_tbl_t **obj, 
+                                    apr_ssize_t *nelts, 
+                                    apr_table_t *table)
 {
    apr_table_entry_t *elts = (apr_table_entry_t *) table->a.elts;
    apr_ssize_t i;
@@ -462,13 +462,13 @@ static int serialize_table(cache_header_tbl_t **obj,
    char *buf;
    
    *nelts = table->a.nelts;
-   if (*nelts ==0 ) {
+   if (*nelts == 0 ) {
        *obj=NULL;
-       return OK;
+       return APR_SUCCESS;
    }
     *obj = calloc(1, sizeof(cache_header_tbl_t) * table->a.nelts);
     if (NULL == *obj) {
-        return DECLINED;
+        return APR_ENOMEM;
     }
     for (i = 0; i < table->a.nelts; ++i) {
         len += strlen(elts[i].key);
@@ -480,7 +480,7 @@ static int serialize_table(cache_header_tbl_t **obj,
     buf = calloc(1, len);
     if (!buf) {
         *obj = NULL;
-        return DECLINED;
+        return APR_ENOMEM;
     }
 
     for (i = 0; i < *nelts; ++i) {
@@ -494,7 +494,7 @@ static int serialize_table(cache_header_tbl_t **obj,
         strncpy(&buf[idx], elts[i].val, len);
         idx+=len;
     }
-    return OK;
+    return APR_SUCCESS;
 }
 static int unserialize_table( cache_header_tbl_t *ctbl, 
                               int num_headers, 
@@ -506,7 +506,7 @@ static int unserialize_table( cache_header_tbl_t *ctbl,
         apr_table_setn(t, ctbl[i].hdr, ctbl[i].val);
     } 
 
-    return OK;
+    return APR_SUCCESS;
 }
 /* Define request processing hook handlers */
 static int remove_url(const char *type, const char *key) 
@@ -552,7 +552,7 @@ static int remove_url(const char *type, const char *key)
     return OK;
 }
 
-static int read_headers(cache_handle_t *h, request_rec *r) 
+static apr_status_t read_headers(cache_handle_t *h, request_rec *r) 
 {
     int rc;
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
@@ -570,10 +570,9 @@ static int read_headers(cache_handle_t *h, request_rec *r)
                             mobj->num_notes,
                             r->notes);
     return rc;
-
 }
 
-static int read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb) 
+static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb) 
 {
     apr_bucket *b;
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
@@ -583,11 +582,11 @@ static int read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb)
     b = apr_bucket_eos_create();
     APR_BRIGADE_INSERT_TAIL(bb, b);
 
-    return OK;
+    return APR_SUCCESS;
 }
 
 
-static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
+static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
 {
     cache_object_t *obj = h->cache_obj;
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
@@ -597,18 +596,18 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
     rc = serialize_table(&mobj->header_out, 
                          &mobj->num_header_out, 
                          r->headers_out);   
-    if (rc != OK ) {
+    if (rc != APR_SUCCESS) {
         return rc;
     }
     rc = serialize_table(&mobj->subprocess_env,
                          &mobj->num_subprocess_env, 
                          r->subprocess_env );
-    if (rc != OK ) {
+    if (rc != APR_SUCCESS) {
         return rc;
     }
 
     rc = serialize_table(&mobj->notes, &mobj->num_notes, r->notes);
-    if (rc != OK ) {
+    if (rc != APR_SUCCESS) {
         return rc;
     }
  
@@ -625,22 +624,22 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
     if (info->content_type) {
         obj->info.content_type = (char*) calloc(1, strlen(info->content_type) + 1);
         if (!obj->info.content_type) {
-            return DECLINED;
+            return APR_ENOMEM;
         }
         strcpy((char*) obj->info.content_type, info->content_type);
     }
     if ( info->filename) {
         obj->info.filename = (char*) calloc(1, strlen(info->filename) + 1);
         if (!obj->info.filename ) {
-            return DECLINED;
+            return APR_ENOMEM;
         }
         strcpy((char*) obj->info.filename, info->filename );
     }
 
-    return OK;
+    return APR_SUCCESS;
 }
 
-static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b) 
+static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b) 
 {
     apr_status_t rv;
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
@@ -655,7 +654,7 @@ static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
     if (mobj->m == NULL) {
         mobj->m = malloc(mobj->m_len);
         if (mobj->m == NULL) {
-            return DECLINED;
+            return APR_ENOMEM;
         }
         mobj->type = CACHE_TYPE_HEAP;
         h->cache_obj->count = 0;
@@ -678,7 +677,7 @@ static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
         }
         rv = apr_bucket_read(e, &s, &len, eblock);
         if (rv != APR_SUCCESS) {
-            return DECLINED;
+            return rv;
         }
         /* XXX Check for overflow */
         if (len ) {
@@ -691,7 +690,7 @@ static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
          */
         AP_DEBUG_ASSERT(h->cache_obj->count > mobj->m_len);
     }
-    return OK;
+    return APR_SUCCESS;
 }
 
 static const char 
