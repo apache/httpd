@@ -61,7 +61,6 @@ TOUCH_FILES = mkinstalldirs install-sh missing
 LT_TARGETS = ltconfig ltmain.sh config.guess config.sub
 
 config_h_in = include/ap_config_auto.h.in
-apr_private.h_in = srclib/apr/include/arch/unix/apr_private.h.in
 apr_configure = srclib/apr/configure
 mm_configure = srclib/apr/shmem/unix/mm/configure
 pcre_configure = srclib/pcre/configure
@@ -69,7 +68,7 @@ aprutil_configure = srclib/apr-util/configure
 
 APACHE_TARGETS = $(TOUCH_FILES) $(LT_TARGETS) configure $(config_h_in)
 
-APR_TARGETS = $(apr_configure) $(apr_private.h_in) $(mm_configure) $(aprutil_configure)
+APR_TARGETS = $(apr_configure) $(mm_configure) $(aprutil_configure)
 
 PCRE_TARGETS = $(pcre_configure)
 
@@ -111,11 +110,6 @@ configure: aclocal.m4 configure.in $(config_m4_files)
 	### the grep exits with (1), stopping the make... is there a way
 	### to preserve autoconf's exit across the grep?
 	-autoconf 2>&1 | grep -v $(cross_compile_warning)
-
-$(apr_private.h_in): $(apr_configure) srclib/apr/acconfig.h
-	@echo rebuilding $@
-	@rm -f $@
-	(cd srclib/apr && autoheader)
 
 $(aprutil_configure): srclib/apr-util/configure.in 
 	@echo rebuilding $@
