@@ -241,8 +241,8 @@ typedef struct {
 /**
  *
  */
-CACHE_DECLARE(apr_time_t) ap_cache_hex2msec(const char *x);
-CACHE_DECLARE(void) ap_cache_msec2hex(apr_time_t j, char *y);
+CACHE_DECLARE(apr_time_t) ap_cache_hex2usec(const char *x);
+CACHE_DECLARE(void) ap_cache_usec2hex(apr_time_t j, char *y);
 CACHE_DECLARE(char *) generate_name(apr_pool_t *p, int dirlevels, 
                                     int dirlength, 
                                     const char *name);
