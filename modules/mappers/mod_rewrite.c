@@ -3107,7 +3107,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
                                            char *key, char *val)
 {
     rewriterule_entry *cfg = _cfg;
-    int status = 0;
+    int error = 0;
 
     switch (*key++) {
     case 'c':
@@ -3133,6 +3133,9 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
             cp->next = NULL;
             cp->data = val;
         }
+        else {
+            ++error;
+        }
         break;
 
     case 'e':
@@ -3154,6 +3157,9 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
             cp->next = NULL;
             cp->data = val;
         }
+        else {
+            ++error;
+        }
         break;
 
     case 'f':
@@ -3161,6 +3167,9 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
         if (!*key || !strcasecmp(key, "orbidden")) {       /* forbidden */
             cfg->flags |= (RULEFLAG_STATUS | RULEFLAG_NOSUB);
             cfg->forced_responsecode = HTTP_FORBIDDEN;
+        }
+        else {
+            ++error;
         }
         break;
 
@@ -3170,6 +3179,9 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
             cfg->flags |= (RULEFLAG_STATUS | RULEFLAG_NOSUB);
             cfg->forced_responsecode = HTTP_GONE;
         }
+        else {
+            ++error;
+        }
         break;
 
     case 'h':
@@ -3177,12 +3189,18 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
         if (!*key || !strcasecmp(key, "andler")) {         /* handler */
             cfg->forced_handler = val;
         }
+        else {
+            ++error;
+        }
         break;
 
     case 'l':
     case 'L':
         if (!*key || !strcasecmp(key, "ast")) {            /* last */
             cfg->flags |= RULEFLAG_LASTRULE;
+        }
+        else {
+            ++error;
         }
         break;
 
@@ -3203,6 +3221,9 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
             || !strcasecmp(key, "ocase")) {                /* nocase */
             cfg->flags |= RULEFLAG_NOCASE;
         }
+        else {
+            ++error;
+        }
         break;
 
     case 'p':
@@ -3214,6 +3235,9 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
             || !strcasecmp(key, "assthrough")) {           /* passthrough */
             cfg->flags |= RULEFLAG_PASSTHROUGH;
         }
+        else {
+            ++error;
+        }
         break;
 
     case 'q':
@@ -3222,11 +3246,16 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
             || !strcasecmp(key, "qsappend")) {             /* qsappend */
             cfg->flags |= RULEFLAG_QSAPPEND;
         }
+        else {
+            ++error;
+        }
         break;
 
     case 'r':
     case 'R':
         if (!*key || !strcasecmp(key, "edirect")) {        /* redirect */
+            int status = 0;
+
             cfg->flags |= RULEFLAG_FORCEREDIRECT;
             if (strlen(val) > 0) {
                 if (strcasecmp(val, "permanent") == 0) {
@@ -3258,12 +3287,18 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
                 cfg->forced_responsecode = status;
             }
         }
+        else {
+            ++error;
+        }
         break;
 
     case 's':
     case 'S':
         if (!*key || !strcasecmp(key, "kip")) {            /* skip */
             cfg->skip = atoi(val);
+        }
+        else {
+            ++error;
         }
         break;
 
@@ -3272,10 +3307,18 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
         if (!*key || !strcasecmp(key, "ype")) {            /* type */
             cfg->forced_mimetype = val;
         }
+        else {
+            ++error;
+        }
         break;
 
     default:
-        return apr_pstrcat(p, "RewriteRule: unknown flag '", key, "'", NULL);
+        ++error;
+        break;
+    }
+
+    if (error) {
+        return apr_pstrcat(p, "RewriteRule: unknown flag '", --key, "'", NULL);
     }
 
     return NULL;
