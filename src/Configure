@@ -1046,7 +1046,7 @@ CFLAGS=\$(OPTIM) \$(CFLAGS1) \$(EXTRA_CFLAGS)
 default: all
 
 all clean :: 
-	for i in \$(MODULES); do (cd \$\$i; \$(MAKE) CC='\$(CC)' AUX_CFLAGS='\$(CFLAGS)' RANLIB='\$(RANLIB)' \$@) || exit 1; done
+	for i in \$(MODULES); do (cd \$\$i && \$(MAKE) CC='\$(CC)' AUX_CFLAGS='\$(CFLAGS)' RANLIB='\$(RANLIB)' \$@) || exit 1; done
 
 EOF
 

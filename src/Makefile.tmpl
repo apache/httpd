@@ -33,7 +33,7 @@ $(TARGET):  subdirs modules.o
 
 subdirs:
 	for i in $(SUBDIRS); do \
-		( cd $$i; $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)') || exit 1; \
+		( cd $$i && $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)') || exit 1; \
 	done
 
 support: support-dir
@@ -44,7 +44,7 @@ support-dir:
 clean:
 	rm -f $(TARGET) *.o
 	for i in $(SUBDIRS); do \
-		( cd $$i; $(MAKE) $@ ) || exit 1; \
+		( cd $$i && $(MAKE) $@ ) || exit 1; \
 	done
 
 dist.tar: 
