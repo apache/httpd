@@ -70,7 +70,7 @@
 <description>Sets the authentication provider(s) for this location</description>
 <syntax>AuthDigestProvider On|Off|<var>provider-name</var>
 [<var>provider-name</var>] ...</syntax>
-<default>AuthBasicProvider On</default>
+<default>AuthDigestProvider On</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>

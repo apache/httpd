@@ -204,7 +204,7 @@ server</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the authentication provider(s) for this location</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDigestProvider On|Off|<var>provider-name</var>
 [<var>provider-name</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthBasicProvider On</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthDigestProvider On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
