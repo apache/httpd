@@ -256,12 +256,18 @@ struct proxy_worker {
 
 /* Runtime worker status informations. Shared in scoreboard */
 typedef struct {
-    proxy_balancer  *b;         /* balancer containing this worker */
-    proxy_worker    *w;
-    double          lbfactor;   /* dynamic lbfactor */
+    int             id;         /* scoreboard id */
     double          lbstatus;   /* Current lbstatus */
+    double          lbfactor;   /* dynamic lbfactor */
     apr_size_t      transfered; /* Number of bytes transfered to remote */
     apr_size_t      readed;     /* Number of bytes readed from remote */
+} proxy_runtime_stat;
+
+/* Runtime worker. */
+typedef struct {
+    proxy_balancer     *b;         /* balancer containing this worker */
+    proxy_worker       *w;
+    proxy_runtime_stat *s;
 } proxy_runtime_worker;
 
 struct proxy_balancer {
@@ -270,6 +276,11 @@ struct proxy_balancer {
     const char *sticky;          /* sticky session identifier */
     int         sticky_force;    /* Disable failover for sticky sessions */
     apr_interval_time_t timeout; /* Timeout for waiting on free connection */
+    /* XXX: Perhaps we will need the proc mutex too.
+     * Altrough we are only using arithmetic operations
+     * it may lead to a incorrect calculations.
+     * For now use only the thread mutex.
+     */
 #if APR_HAS_THREADS
     apr_thread_mutex_t  *mutex;  /* Thread lock for updating lb params */
 #endif
@@ -368,7 +379,7 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p, proxy_server_co
 PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker, apr_pool_t *p, proxy_server_conf *conf, const char *url);
 PROXY_DECLARE(struct proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p, proxy_server_conf *conf, const char *url);
 PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer, apr_pool_t *p, proxy_server_conf *conf, const char *url);
-PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer(proxy_balancer *balancer, proxy_worker *worker);
+PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer, proxy_worker *worker);
 PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker, proxy_balancer **balancer, request_rec *r, proxy_server_conf *conf, char **url);
 PROXY_DECLARE(int) ap_proxy_determine_connection(apr_pool_t *p, request_rec *r, proxy_server_conf *conf, proxy_worker *worker, proxy_conn_rec *conn,
                                                  apr_pool_t *ppool, apr_uri_t *uri, char **url, const char *proxyname, apr_port_t proxyport,
@@ -378,6 +389,16 @@ PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function, proxy
 PROXY_DECLARE(apr_status_t) ap_proxy_close_connection(proxy_conn_rec *conn);
 PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function, proxy_conn_rec *conn, proxy_worker *worker, server_rec *s);
 PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function, proxy_conn_rec *conn, conn_rec *c, server_rec *s);
+
+/* Scoreboard */
+#if MODULE_MAGIC_NUMBER_MAJOR > 20020903
+#define PROXY_HAS_SCOREBOARD 1
+#else
+#define PROXY_HAS_SCOREBOARD 0
+#endif
+/* The number of dynamic balancers that can be added */
+#define PROXY_DYNAMIC_BALANCER_LIMIT    16
+PROXY_DECLARE(int) ap_proxy_lb_workers(void);
 
 /* For proxy_util */
 extern module PROXY_DECLARE_DATA proxy_module;
