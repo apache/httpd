@@ -135,6 +135,9 @@ static void show_compile_settings(void)
 #if APR_USE_PTHREAD_SERIALIZE
     printf(" -D APR_USE_PTHREAD_SERIALIZE\n");
 #endif
+#if APR_PROCESS_LOCK_IS_GLOBAL
+    printf(" -D APR_PROCESS_LOCK_IS_GLOBAL\n");
+#endif
 #ifdef SINGLE_LISTEN_UNSERIALIZED_ACCEPT
     printf(" -D SINGLE_LISTEN_UNSERIALIZED_ACCEPT\n");
 #endif
