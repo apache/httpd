@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
+<modulesynopsis>
+<name>threadpool</name>
+<description>Yet another experimental variant of the standard
+<module>worker</module> MPM</description>
+<status>MPM</status>
+<sourcefile>threadpool.c</sourcefile>
+<identifier>mpm_threadpool_module</identifier>
+
+<summary>
+    <note type="warning"><title>Warning</title>
+      <p>This MPM is a developer playground and highly experimental, so it
+      may or may not work as expected.</p>
+    </note>
+
+    <p>This is an experimental variant of the standard worker MPM.
+    Rather than queuing connections like the worker MPM, the
+    <module>threadpool</module> MPM queues idle worker threads and
+    hands each accepted connection to the next available worker.</p>
+
+    <p>The <module>threadpool</module> MPM can't match the performance of
+    the <module>worker</module> MPM in benchmark testing. As of 2.0.39,
+    some of the key load-throtting concepts from the <module
+    >threadpool</module> MPM have been incorporated into the <module
+    >worker</module> MPM. The <module>threadpool</module> code is useful
+    primarily as a research platform. For general-purpose use and for any
+    production environments, use <module>worker</module> instead.</p>
+</summary>
+
+<directivesynopsis location="mpm_common"><name>AcceptMutex</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>Group</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>Listen</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ListenBacklog</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>SendBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>LockFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxClients</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxMemFree</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxRequestsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxSpareThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MinSpareThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>PidFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ServerLimit</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>StartServers</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadLimit</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>User</name>
+</directivesynopsis>
+
+</modulesynopsis>
