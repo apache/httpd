@@ -39,7 +39,6 @@ XINCDIRS	+= \
 # These flags will come after CFLAGS
 #
 XCFLAGS		+= \
-			-prefix pre_nw.h \
 			$(EOLIST)
 
 #
@@ -69,7 +68,7 @@ XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "noopt"
@@ -83,7 +82,7 @@ XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "release"
@@ -123,7 +122,7 @@ NLM_THREAD_NAME	= Deflate Module
 # If this is specified, it will override VERSION value in
 # $(AP_WORK)\build\NWGNUenvironment.inc
 #
-NLM_VERSION		=
+NLM_VERSION	=
 
 #
 # If this is specified, it will override the default of 64K
@@ -149,14 +148,14 @@ NLM_CHECK_SYM	=
 #
 # If these are specified it will be used by the link '-flags' directive
 #
-NLM_FLAGS		=  AUTOUNLOAD, PSEUDOPREEMPTION
+NLM_FLAGS	= AUTOUNLOAD, PSEUDOPREEMPTION
 
 #
 # If this is specified it will be linked in with the XDCData option in the def
 # file instead of the default of $(NWOS)/apache.xdc.  XDCData can be disabled
 # by setting APACHE_UNIPROC in the environment
 #
-XDCDATA         =
+XDCDATA		=
 
 #
 # If there is an NLM target, put it here
@@ -181,21 +180,26 @@ FILES_nlm_objs = \
 	$(OBJDIR)/crc32.o \
 	$(OBJDIR)/deflate.o \
 	$(OBJDIR)/inflate.o \
-	$(OBJDIR)/infblock.o \
-	$(OBJDIR)/infcodes.o \
 	$(OBJDIR)/inffast.o \
 	$(OBJDIR)/inftrees.o \
-	$(OBJDIR)/infutil.o \
 	$(OBJDIR)/trees.o \
 	$(OBJDIR)/zutil.o \
 	$(EOLIST)
+
+ifeq "$(wildcard $(ZLIBSDK)/infblock.c)" "$(ZLIBSDK)/infblock.c"
+FILES_nlm_objs += \
+	$(OBJDIR)/infblock.o \
+	$(OBJDIR)/infcodes.o \
+	$(OBJDIR)/infutil.o \
+	$(EOLIST)
+endif
 
 #
 # These are the LIB files needed to create the NLM target above.
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
-   	libcpre.o \
+	libcpre.o \
 	$(EOLIST)
 
 #
@@ -243,7 +247,7 @@ FILES_nlm_exports = \
 # Paths must all use the '/' character
 #
 FILES_lib_objs = \
-		$(EOLIST)
+	$(EOLIST)
 
 #
 # implement targets and dependancies (leave this section alone)
@@ -264,11 +268,7 @@ install :: nlms FORCE
 # Any specialized rules here
 #
 
-ifneq "$(ZLIBSDK)" ""
-$(OBJDIR)/%.o: $(ZLIBSDK)/%.c $(OBJDIR)\$(NLM_NAME)_cc.opt
-	@echo Compiling $<
-	$(CC) $(ZLIBSDK)\$(<F) -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
-endif
+vpath %.c $(ZLIBSDK)
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
