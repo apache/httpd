@@ -180,7 +180,7 @@ In progress:
                         --disable-rule=HIDE
         - check symbols
           $ cd apache-1.3/src
-          $ nm -g httpd | egrep -v '_module$' | egrep -v 'apx?_' | grep -v '.o$'
+          $ nm -g httpd | egrep -v '_modules?$' | egrep -v 'apx?_' | grep -v '.o$'
           $ nm -g httpd | more
         - check operation of server
           $ cd apache-1.3
