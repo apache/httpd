@@ -48,7 +48,7 @@ STATUSURL="http://localhost:@PORT@/server-status"
 # number of file descriptors allowed per child process. This is
 # critical for configurations that use many file descriptors,
 # such as mass vhosting, or a multithreaded server.
-ULIMIT_MAX_FILES="@APACHECTL_ULIMIT@"
+ULIMIT_MAX_FILES=""
 # --------------------                              --------------------
 # ||||||||||||||||||||   END CONFIGURATION SECTION  ||||||||||||||||||||
 
