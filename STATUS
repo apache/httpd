@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/06/01 23:07:17 $]
+Last modified at [$Date: 2000/06/02 19:45:40 $]
 
 Release:
 
@@ -38,12 +38,8 @@ RELEASE SHOWSTOPPERS:
 	(at least) needs to be done:
 	- winnt MPM: Fix 95/98 code paths in the winnt MPM. There is some NT
 	specific code that is still not in NT only code paths
-	- APR sendfile uses TransmitFile which is not available on
-	95/98.
-	- ap_stat uses GetFileAttributeEx which is not available on
-	95/98
-
-	Status:
+	- IOL binds to APR sendfile, implemented with TransmitFile, which 
+        is not available on 95/98.
 
     * Win32: Test access logging with multiple threads. Will the 
 	native file I/O calls serialize automagically like the 
@@ -51,6 +47,17 @@ RELEASE SHOWSTOPPERS:
 	we access the logs?
 	Status: 
 
+    * Win32: Complete the revamp the service environment and relocation
+        into the WinNT MPM.  Changes ServerRoot service registry 
+        parameter into ConfigArgs for multiple service startup parameters.
+        Problems to fix in the revamp: -k shutdown/restart are broken, 
+        signals are not being acknowledged.  Close window and shutdown 
+        also seem out of sorts.
+        OtherBill is working on this
+
+    * Win32: fix build/run time environment to remove ApacheCore.dll 
+        linkage from ab.exe and htdigest.exe.
+    
     * We need a thread-safe resolver, at least on Unix.
         Status: The best known candidate would be something from
 	BIND v9.
@@ -70,8 +77,14 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Win32: Enable the winnt MPM to use the new scoreboard API
 
-    * Win32: Graceful restart of a service is broken (code does shutdown
-      then start)
+    * Win32: Implement ap_shm_ functions in APR.
+
+    * Win32: Win9x console window still won't play nice with the
+        close window, logoff and shutdown scenarios.
+
+    * Win32: Add a simple hold console open patch (wait for close or
+        the ESC key, with a nice message) if the server died a bad 
+        death (non-zero exit code) in console mode.
 
     * Platforms that do not support fork (primarily Win32 and AS/400)
       Consider introducing HAVE_FORK feature macro. Architect start-up code
