@@ -5789,7 +5789,11 @@ int main(int argc, char *argv[])
 #include "ap_config.h"
 #include "httpd.h"
 
+#if defined(HPUX) || defined(HPUX10) || defined(HPUX11)
+#define VARNAME "SHLIB_PATH"
+#else
 #define VARNAME "LD_LIBRARY_PATH"
+#endif
 
 #ifndef SHARED_CORE_DIR 
 #define SHARED_CORE_DIR HTTPD_ROOT "/libexec"

@@ -1,5 +1,11 @@
 Changes with Apache 1.3.2
 
+  *) Fix SHARED_CORE feature for HPUX platform: We now use extension `.sl'
+     instead of `.so' and `SHLIB_PATH' instead of `LD_LIBRARY_PATH' on this
+     platform to make the braindead HPUX linker happy. Notice, for the module
+     DSOs we don't have to use this, because these are loaded manually (and
+     not via HPUX' dld). [Ralf S. Engelschall] PR#2905, PR#2968
+
   *) Remove 64 thread limit on Win32.
      [Bill Stoddard <stoddard@raleigh.ibm.com>]
 

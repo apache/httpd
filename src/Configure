@@ -256,6 +256,7 @@ DB_LIB="-ldb"
 SHELL="/bin/sh"
 TARGET="httpd"
 SUBTARGET="target_static"
+SHLIB_SUFFIX_NAME=""
 SHLIB_SUFFIX_LIST=""
 CAT="cat"
 
@@ -873,6 +874,7 @@ if [ "x$using_shlib" = "x1" ] ; then
     LD_SHLIB="ld"
     DEF_SHARED_CORE=no
     DEF_SHARED_CHAIN=no
+    SHLIB_SUFFIX_NAME=so
     SHLIB_SUFFIX_DEPTH=all
     SHLIB_EXPORT_FILES=no
     case "$PLAT" in
@@ -1049,6 +1051,7 @@ if [ "x$using_shlib" = "x1" ] ; then
             esac
             LDFLAGS_SHLIB="-b"
             LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred"
+            SHLIB_SUFFIX_NAME=sl
             ;;
         *-hp-hpux10.*|*-hp-hpux11.*)
             case $CC in
@@ -1056,7 +1059,8 @@ if [ "x$using_shlib" = "x1" ] ; then
                 */cc|cc   ) CFLAGS_SHLIB="+z" ;;
             esac
             LDFLAGS_SHLIB="-b"
-            LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred"
+            LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred -Wl,+s"
+            SHLIB_SUFFIX_NAME=sl
             ;;
         *-ibm-aix*)
             case $CC in
@@ -1667,6 +1671,7 @@ echo "" >>Makefile
 echo "TARGET=$TARGET" >> Makefile
 echo "SUBDIRS=$SUBDIRS" >> Makefile
 echo "SUBTARGET=$SUBTARGET" >> Makefile
+echo "SHLIB_SUFFIX_NAME=$SHLIB_SUFFIX_NAME" >> Makefile
 echo "SHLIB_SUFFIX_LIST=$SHLIB_SUFFIX_LIST" >> Makefile
 echo "" >> Makefile
 
