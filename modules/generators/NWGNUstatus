@@ -100,7 +100,7 @@ NLM_NAME		= status
 # This is used by the link '-desc ' directive. 
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= Status Module
+NLM_DESCRIPTION	= Apache Status Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
