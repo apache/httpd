@@ -1,7 +1,7 @@
 Changes with Apache 1.2
 
   *) Inherit virtual server port from main server if none (or "*") is
-     given for VirtualHost.  [Dean Gaudet]
+     given for VirtualHost.  [Dean Gaudet] PR#576
 
   *) If the lookup for a DirectoryIndex name with content negotiation
      has found matching variants, but none are acceptable, return the
