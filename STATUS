@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/21 22:38:42 $]
+Last modified at [$Date: 2003/11/21 23:25:37 $]
 
 Release:
 
@@ -307,6 +307,8 @@ PATCHES TO BACKPORT FROM 2.1
 	 bnicholes response: I couldn't tell you for sure if local_addr->port
 	  could be 0.  But it makes sense that if it were then Apache 
 	  wouldn't be listening on any port so it wouldn't matter anyway.
+         nd replies: But if it can't be 0 the alternatives thereafter make no
+           sense anymore, right?
 
     * mod_status: Report total CPU time accurately when using a
       threaded MPM.  PR: 23795
@@ -364,7 +366,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * Fix display of empty variables via mod_include.  PR 24734.
         modules/metadata/mod_env.c r1.31
-      +1: trawick
+      +1: trawick, nd
 
 CURRENT RELEASE NOTES:
 
