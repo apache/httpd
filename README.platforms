@@ -4,6 +4,7 @@
   Platform specific notes:
   ------------------------
 
+================
   Darwin (OS X):
    Apache 2.0 relies heavily on the use of autoconf and libtool to provide
    a build environment.  Darwin provides these tools,  but they are
@@ -35,3 +36,10 @@
    errors.  Use of bash does not seem to help in this situation.  If
    this affects you, downgrading to autoconf 2.13 (which is installed
    on Darwin) will help.
+
+==========
+  FreeBSD:
+   autoconf 2.52 creates scripts that are incompatible with the Posix
+   shell implementation (/bin/sh) on FreeBSD.  Be sure to use v2.13
+   of autoconf.
+
