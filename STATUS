@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/05/20 10:17:46 $]
+  Last modified at [$Date: 1999/05/21 10:20:58 $]
 
 Release:
 
@@ -166,11 +166,10 @@ In progress:
         Status: http://www.pobox.com/~dougm/libapr-0.20_01.tar.gz
 
     * Greg's [PATCH] Expat as an option
-        Message-ID: <371848A5.4086ABFC@lyra.org>
-        Status: a few open issues remaining: 1) shift expat, regex, and
-                Ralf's MM stuff down to a new src/lib/ subdir. 2) exporting
-                Expat functions from httpd on Win32 and AIX for DSOs to use
-                (requires changes to the .def and .exp files).
+        Message-ID: <3745317B.216F2310@lyra.org>
+        Status: one open(?) issue remains: there may be some extra work to
+                export the Expat functions from httpd on Win32 and AIX for
+                DSOs to use (requires changes to the .def and .exp files).
 
 Needs patch:
 
