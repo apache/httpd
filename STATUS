@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/05 15:52:50 $]
+Last modified at [$Date: 2003/05/06 01:24:36 $]
 
 Release:
 
@@ -254,6 +254,11 @@ PATCHES TO PORT FROM 2.1
       RewriteRule [T=...] Flag should work as expected now. PR 19626.
       modules/mappers/mod_rewrite.c r1.150
       +1: nd, trawick
+
+    * mod_auth_ldap: Use generic whitespace character class when parsing
+      "require" directives, instead of literal spaces only. PR 17135.
+      modules/experimental/mod_auth_ldap.c r1.16
+      +1: nd
 
 CURRENT RELEASE NOTES:
 
