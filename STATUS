@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/14 03:20:49 $]
+Last modified at [$Date: 2003/05/14 05:17:29 $]
 
 Release:
 
@@ -234,6 +234,11 @@ PATCHES TO PORT FROM 2.1
     * If mod_mime_magic does not know the content-type, do not attempt to
       guess.  PR 16908.  [Andrew Gapon <agapon@telcordia.com>]
       +1:
+
+    * --enable-mods-shared=most and kin are currently broken. Port the
+      simple fix from modules/mappers/config9.m4: r1.988.2.97?
+      +1: aaron
+
 
 CURRENT RELEASE NOTES:
 
