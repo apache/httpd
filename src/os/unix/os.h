@@ -93,6 +93,13 @@ extern int ap_os_is_path_absolute(const char *f);
 #include <dl.h>
 #endif
 
+/*
+ * Do not use native AIX DSO support
+ */
+#ifdef AIX
+#undef HAVE_DLFCN_H
+#endif
+
 #ifdef HAVE_DLFCN_H
 #include <dlfcn.h>
 #else
