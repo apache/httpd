@@ -832,7 +832,9 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
                 ap_rputs(data, r);
 
             return TRUE;
-
+#if 0
+/* HSE_REQ_CLOSE_CONNACTION and HSE_REQ_IS_CONNECTED are not defined on
+ * my system. wgs */
         case HSE_REQ_CLOSE_CONNECTION:  /* Added after ISAPI 4.0 */
             SetLastError(ERROR_INVALID_PARAMETER);
             return FALSE;
@@ -840,6 +842,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
         case HSE_REQ_IS_CONNECTED:  /* Added after ISAPI 4.0 */
             /* Returns True if client is connected c.f. Q188346*/
             return TRUE;
+#endif
 
      /* case HSE_REQ_EXTENSION_TRIGGER:  
       *     Added after ISAPI 4.0? 
