@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) mod_status: Report total CPU time accurately when using a threaded
+     MPM.  PR 23795.  [Jeff Trawick]
+
   *) Fix memory leak in handling of request bodies during reverse
      proxy operations.  PR 24991. [Larry Toppi <larry.toppi citrix.com>]
 
