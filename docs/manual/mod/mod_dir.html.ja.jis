@@ -1,62 +1,64 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=iso-2022-jp"><!--
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_dir - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_dir</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
-                      </span></td><td>「最後のスラッシュ」のリダイレクトと、ディレクトリの
-インデックスファイルを扱う機能を提供する</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
-                      </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">モジュール識別子:
-                        </a></td><td>dir_module</td></tr></table></td></tr></table><h2>概要</h2>
-    <p>ディレクトリインデックスは、次の二つのうちどちらかが利用されます:</p>
+      --><title>mod_dir - Apache HTTP Server</title><link href="../style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="../style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="../style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="../style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="../style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="../style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="../style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="../style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_dir</h1><table class="module"><tr><th>説明:
+                </th><td>「最後のスラッシュ」のリダイレクトと、ディレクトリの
+インデックスファイルを扱う機能を提供する</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
+                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
+                  </a></th><td>dir_module</td></tr></table><h3>概要</h3>
+    <p>ディレクトリインデックスは、次の二つのうちどちらかが利用されます:</p>
 
     <ul>
       <li>一つ目は、ユーザが作成したファイルを用いるもので、通常
       <code>index.html</code> というファイル名を使います。このファイル名は、
-      <a href="#directoryindex" class="directive"><code class="directive">DirectoryIndex</code></a> ディレクティブで
-      指定することができます。この機能は <code><a href="../mod/mod_dir.html">mod_dir</a></code>
+      <code class="directive"><a href="#directoryindex">DirectoryIndex</a></code> ディレクティブで
+      指定することができます。この機能は <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>
       モジュールで提供されます。</li>
 
       <li>もう一つの方法は、
       サーバによって自動的に生成されるディレクトリリストを用いる場合です。
-      この機能は、<code><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>
-      モジュールにより提供されます。</li>
+      この機能は、<code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>
+      モジュールにより提供されます。</li>
     </ul>
 
     <p>自動的なインデックス生成機能を削除 (もしくは交換)
     できるように、この二つの機能は分離されています。</p>
 
     <p>なお <code>http://servername/foo/dirname</code> という URL
-    へのリクエストがあった際に、<code>dirname</code>
+    へのリクエストがあった際に、<code>dirname</code>
     というディレクトリがあれば、「最後にスラッシュをつけた形」の URL
     へのリダイレクトを送出します。
     ディレクトリへのアクセスはスラッシュで終わっている必要があり、
     <code>mod_dir</code> は、<code>http://servername/foo/dirname/</code>
     へのリダイレクトを送出することになります。</p>
-<h2>ディレクティブ</h2><ul><li><a href="#directoryindex">DirectoryIndex</a></li></ul><hr><h2><a name="DirectoryIndex">DirectoryIndex</a> <a name="directoryindex">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
-                  </strong></td><td>クライアントがディレクトリをリクエストしたときに調べる
-リソースのリスト</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
-                  </a></td><td>DirectoryIndex
-    <em>local-url</em> [<em>local-url</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">デフォルト: 
-                    </a></td><td><code>DirectoryIndex index.html</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
-                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
-                  </a></td><td>mod_dir</td></tr></table></td></tr></table>
+</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a> <a name="directoryindex" id="directoryindex">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
+            </th><td>クライアントがディレクトリをリクエストしたときに調べる
+リソースのリスト</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+              </a></th><td>DirectoryIndex
+    <em>local-url</em> [<em>local-url</em>] ...</td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
+              </a></th><td><code>DirectoryIndex index.html</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
+              </a></th><td>mod_dir</td></tr></table>
     <p>
     クライアントが、ディレクトリ名の最後に「/」
     を指定してディレクトリインデックスを要求する場合に探すリソースのリストを
     <code class="directive">DirectoryIndex</code> ディレクティブで設定します。
     <em>Local-url</em>
-    は、リクエストされたディレクトリに対応する、サーバ上のドキュメントの
+    は、リクエストされたディレクトリに対応する、サーバ上のドキュメントの
     (% エンコードされた) URL で、普通はディレクトリ中のファイルの名前です。
     複数の URL が設定された場合には、最初に見つかったものを返します。
     それらが見つからず、<code>Indexes</code>
     オプションがセットされている場合、ディレクトリのリストを生成します。
     </p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>例</strong></p><code>
+<div class="example"><h3>例</h3><p><code>
 DirectoryIndex index.html
-</code></td></tr></table></blockquote>
+</code></p></div>
 
     <p><code>http://myserver/docs/</code> へのアクセスがあり、
     <code>http://myserver/docs/index.html</code>
@@ -66,8 +68,8 @@ DirectoryIndex index.html
     <p>注: ドキュメントが同じディレクトリ内に存在するは必要ありません。
     </p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>DirectoryIndex index.html index.txt  /cgi-bin/index.pl</code></td></tr></table></blockquote>
+<div class="example"><p><code>DirectoryIndex index.html index.txt  /cgi-bin/index.pl</code></p></div>
     <p>とした場合、<code>index.html</code> と <code>index.txt</code>
     のどちらもディレクトリ内に存在しない場合、CGI スクリプト
-    <code>/cgi-bin/index.pl</code> が実行されます。</p>
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="索引"></a><a href="../"><img src="../images/home.gif" alt="ホーム"></a></body></html>
+    <code>/cgi-bin/index.pl</code> が実行されます。</p>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>

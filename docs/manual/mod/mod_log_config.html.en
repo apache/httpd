@@ -1,11 +1,13 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_log_config - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_log_config</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
-                      </span></td><td>Logging of the requests made to the server</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
-                      </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
-                        </a></td><td>log_config_module</td></tr></table></td></tr></table><h2>Summary</h2>
+      --><title>mod_log_config - Apache HTTP Server</title><link href="../style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="../style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="../style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="../style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="../style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="../style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="../style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="../style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_log_config</h1><table class="module"><tr><th>Description:
+                </th><td>Logging of the requests made to the server</td></tr><tr><th><a href="module-dict.html#Status">Status:
+                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
+                  </a></th><td>log_config_module</td></tr></table><h3>Summary</h3>
 
     <p>This module provides for flexible logging of client
     requests. Logs are written in a customizable format, and may be
@@ -21,7 +23,7 @@
     step. The <code>TransferLog</code> and <code>CustomLog</code>
     directives can be used multiple times in each server to cause
     each request to be logged to multiple files.</p>
-<h2>Directives</h2><ul><li><a href="#cookielog">CookieLog</a></li><li><a href="#customlog">CustomLog</a></li><li><a href="#logformat">LogFormat</a></li><li><a href="#transferlog">TransferLog</a></li></ul><p><strong>See also </strong></p><ul><li><a href="../logs.html">Apache Log Files</a></li></ul><h2><a name="formats">Custom Log Formats</a></h2>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cookielog">CookieLog</a></li><li><img alt="" src="../images/down.gif" /> <a href="#customlog">CustomLog</a></li><li><img alt="" src="../images/down.gif" /> <a href="#logformat">LogFormat</a></li><li><img alt="" src="../images/down.gif" /> <a href="#transferlog">TransferLog</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#formats">Custom Log Formats</a></li><li><img alt="" src="../images/down.gif" /> Security Considerations</li></ul><h3>See also</h3><ul class="seealso"><li><a href="../logs.html">Apache Log Files</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="formats" id="formats">Custom Log Formats</a></h2>
 
 
     <p>The format argument to the <code>LogFormat</code> and
@@ -126,13 +128,13 @@ be in strftime(3) format. (potentially localized)</td></tr>
 
 <tr><td>%...X:</td>          
 <td>Connection status when response is completed.
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-'X' = connection aborted before the response completed.<br>
-'+' = connection may be kept alive after the response is sent.<br>
+<div class="example"><p><code>
+'X' = connection aborted before the response completed.<br />
+'+' = connection may be kept alive after the response is sent.<br />
 '-' = connection will be closed after the response is sent.
-</code></td></tr></table></blockquote>
-<blockquote><table><tr><td bgcolor="#e0e5f5">(This directive was %...c in late versions of Apache 1.3, but
-this conflicted with the historical ssl %...{var}c syntax.)</td></tr></table></blockquote>
+</code></p></div>
+<div class="note">(This directive was %...c in late versions of Apache 1.3, but
+this conflicted with the historical ssl %...{var}c syntax.)</div>
 </td></tr>
 
 </table>
@@ -184,7 +186,7 @@ this conflicted with the historical ssl %...{var}c syntax.)</td></tr></table></b
     because otherwise log analysis programs would have to duplicate
     the entire vhost matching algorithm in order to decide what
     host really served the request.</p>
-    <h2>Security Considerations</h2>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>Security Considerations</h2>
 
     
 
@@ -193,31 +195,31 @@ this conflicted with the historical ssl %...{var}c syntax.)</td></tr></table></b
     if the directory where logfiles are stored is writable by
     anyone other than the user that starts the server.</p>
 
-    <hr><h2><a name="CookieLog">CookieLog</a> <a name="cookielog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Sets filename for the logging of cookies</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>CookieLog <em>filename</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual
-host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_log_config</td></tr><tr><td nowrap="nowrap" align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:
-                    </a></td><td>Only available in Apache 1.2 and above</td></tr></table></td></tr></table>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CookieLog" id="CookieLog">CookieLog</a> <a name="cookielog" id="cookielog">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Sets filename for the logging of cookies</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>CookieLog <em>filename</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual
+host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_log_config</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
+              </a></th><td>Only available in Apache 1.2 and above</td></tr></table>
 
     <p>The <code class="directive">CookieLog</code> directive sets the 
     filename for logging of cookies. The filename is relative to the
-    <a href="../mod/core.html#serverroot" class="directive"><code class="directive">serverroot</code></a>. This directive is
-    included only for compatibility with <code><a href="../mod/mod_cookies.html">mod_cookies</a></code>,
+    <code class="directive"><a href="../mod/core.html#serverroot">serverroot</a></code>. This directive is
+    included only for compatibility with <code class="module"><a href="../mod/mod_cookies.html">mod_cookies</a></code>,
     and is deprecated.</p>
-<hr><h2><a name="CustomLog">CustomLog</a> <a name="customlog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Sets filename and format of log file</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>CustomLog 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Sets filename and format of log file</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>CustomLog 
     <em>file</em>|<em>pipe</em> <em>format</em>|<em>nickname</em>
-    [env=[!]<em>environment-variable</em>]</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual
-host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_log_config</td></tr><tr><td nowrap="nowrap" align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:
-                    </a></td><td>Nickname only available in Apache 1.3 or later.
-Conditional logging available in 1.3.5 or later.</td></tr></table></td></tr></table>
+    [env=[!]<em>environment-variable</em>]</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual
+host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_log_config</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
+              </a></th><td>Nickname only available in Apache 1.3 or later.
+Conditional logging available in 1.3.5 or later.</td></tr></table>
     <p>The <code class="directive">CustomLog</code> directive is used to
     log requests to the server. A log format is specified, and the
     logging can optionally be made conditional on request
@@ -251,14 +253,14 @@ Conditional logging available in 1.3.5 or later.</td></tr></table></td></tr></ta
     <p>For example, the following two sets of directives have
     exactly the same effect:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-     # CustomLog with format nickname<br>
-     LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br>
-     CustomLog logs/access_log common<br>
-<br>
-     # CustomLog with explicit format string<br>
-     CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"<br>
-</code></td></tr></table></blockquote>
+<div class="example"><p><code>
+     # CustomLog with format nickname<br />
+     LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
+     CustomLog logs/access_log common<br />
+<br />
+     # CustomLog with explicit format string<br />
+     CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"<br />
+</code></p></div>
 
     <p>The third argument is optional and allows the decision on
     whether or not to log a particular request to be based on the
@@ -269,28 +271,28 @@ Conditional logging available in 1.3.5 or later.</td></tr></table></td></tr></ta
     request will be logged.</p>
 
     <p>Environment variables can be set on a <em>per</em>-request
-    basis using the <code><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>
-    and/or <code><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modules. For
+    basis using the <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>
+    and/or <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modules. For
     example, if you want to record requests for all GIF
     images on your server in a separate logfile but not in your main
     log, you can use:</p>
     
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-    SetEnvIf Request_URI \.gif$ gif-image<br>
-    CustomLog gif-requests.log common env=gif-image<br>
+<div class="example"><p><code>
+    SetEnvIf Request_URI \.gif$ gif-image<br />
+    CustomLog gif-requests.log common env=gif-image<br />
     CustomLog nongif-requests.log common env=!gif-image
-</code></td></tr></table></blockquote>
-<hr><h2><a name="LogFormat">LogFormat</a> <a name="logformat">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Describes a format for use in a log file</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>LogFormat
-    <em>format</em>|<em>nickname</em> [<em>nickname</em>]</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
-                    </a></td><td><code>LogFormat "%h %l %u %t \"%r\" %&gt;s %b"</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual
-host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_log_config</td></tr><tr><td nowrap="nowrap" align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:
-                    </a></td><td>Nickname only available in Apache 1.3 or later.
-</td></tr></table></td></tr></table>
+</code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Describes a format for use in a log file</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>LogFormat
+    <em>format</em>|<em>nickname</em> [<em>nickname</em>]</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>LogFormat "%h %l %u %t \"%r\" %&gt;s %b"</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual
+host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_log_config</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
+              </a></th><td>Nickname only available in Apache 1.3 or later.
+</td></tr></table>
     <p>This directive specifies the format of the access log
     file.</p>
 
@@ -322,17 +324,17 @@ host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class
 
     <p>For example:</p>
 
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b"
-    vhost_common</code></td></tr></table></blockquote>
+    <div class="example"><p><code>LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b"
+    vhost_common</code></p></div>
 
-<hr><h2><a name="TransferLog">TransferLog</a> <a name="transferlog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Specifly location of a log file</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>TransferLog <em>file</em>|<em>pipe</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual
-host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_log_config</td></tr><tr><td nowrap="nowrap" align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:
-                    </a></td><td></td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Specifly location of a log file</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>TransferLog <em>file</em>|<em>pipe</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual
+host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_log_config</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
+              </a></th><td /></tr></table>
 
     <p>This directive has exactly the same arguments and effect as
     the <code class="directive">CustomLog</code> directive, with the
@@ -344,9 +346,9 @@ host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class
     other format has been specified.</p>
 
     <p>Example:</p>
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-   LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""<br>
+<div class="example"><p><code>
+   LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""<br />
    TransferLog logs/access_log
-</code></td></tr></table></blockquote>
+</code></p></div>
 
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>

@@ -688,17 +688,14 @@ extensions</description>
     server config files. An example of its use might be:</p>
 
 
-<example>
-    <dl>
-      <dt><code>/foo/.htaccess:</code></dt>
-      <dd><code>AddEncoding x-gzip .gz</code><br />
-       <code>AddType text/plain .asc</code><br />
-       <code>&lt;Files *.gz.asc&gt;</code><br />
-       <code>&nbsp;&nbsp;&nbsp;&nbsp;RemoveEncoding
-      .gz</code><br />
-       <code>&lt;/Files&gt;</code></dd>
-    </dl>
-</example>
+<example><title>/foo/.htaccess:</title>
+<pre>
+AddEncoding x-gzip .gz
+AddType text/plain .asc
+&lt;Files *.gz.asc&gt;
+  RemoveEncoding .gz
+&lt;/Files&gt;
+</pre></example>
 
     <p>This will cause <code>foo.gz</code> to be marked as being
     encoded with the gzip method, but <code>foo.gz.asc</code> as an
@@ -736,16 +733,12 @@ extensions</description>
     associations inherited from parent directories or the server
     config files. An example of its use might be:</p>
 
-<example>
-    <dl>
-      <dt><code>/foo/.htaccess:</code></dt>
+<example><title>/foo/.htaccess:</title>
+AddHandler server-parsed .html
+</example>
 
-      <dd><code>AddHandler server-parsed .html</code></dd>
-
-      <dt><code>/foo/bar/.htaccess:</code></dt>
-
-      <dd><code>RemoveHandler .html</code></dd>
-    </dl>
+<example><title>/foo/bar/.htaccess:</title>
+RemoveHandler .html
 </example>
 
     <p>This has the effect of returning <code>.html</code> files in
@@ -869,12 +862,8 @@ extensions</description>
     associations inherited from parent directories or the server
     config files. An example of its use might be:</p>
 
-<example>
-    <dl>
-      <dt><code>/foo/.htaccess:</code></dt>
-
-      <dd><code>RemoveType .cgi</code></dd>
-    </dl>
+<example><title>/foo/.htaccess:</title>
+RemoveType .cgi
 </example>
 
     <p>This will remove any special handling of <code>.cgi</code>

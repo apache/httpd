@@ -1,17 +1,19 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>perchild - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module perchild</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
-                      </span></td><td>Multi-Processing Module allowing for daemon processes
+      --><title>perchild - Apache HTTP Server</title><link href="../style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="../style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="../style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="../style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="../style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="../style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="../style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="../style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module perchild</h1><table class="module"><tr><th>Description:
+                </th><td>Multi-Processing Module allowing for daemon processes
     serving requests to be assigned a variety of different
-    userids</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
-                      </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
-                        </a></td><td>mpm_perchild_module</td></tr></table></td></tr></table><h2>Summary</h2>
-<blockquote><table><tr><td bgcolor="#ffe5f5">
+    userids</td></tr><tr><th><a href="module-dict.html#Status">Status:
+                  </a></th><td>MPM</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
+                  </a></th><td>mpm_perchild_module</td></tr></table><h3>Summary</h3>
+<div class="warning">
 This MPM does not currently work on most platforms.  Work is ongoing to
 make it functional.
-</td></tr></table></blockquote>
+</div>
 
     <p>This Multi-Processing Module (MPM) implements a hybrid
     multi-process, multi-threaded web server. A fixed number of
@@ -20,9 +22,9 @@ make it functional.
     threads in each process.</p>
 
     <p>A single control process launches the number of child processes
-    indicated by the <a href="../mod/mpm_common.html#numservers" class="directive"><code class="directive">NumServers</code></a> directive at server
+    indicated by the <code class="directive"><a href="../mod/mpm_common.html#numservers">NumServers</a></code> directive at server
     startup. Each child process creates threads as specified in the
-    <a href="../mod/mpm_common.html#startthreads" class="directive"><code class="directive">StartThreads</code></a> directive.
+    <code class="directive"><a href="../mod/mpm_common.html#startthreads">StartThreads</a></code> directive.
     The individual threads then
     listen for connections and serve them when they arrive.</p>
 
@@ -32,27 +34,27 @@ make it functional.
     threads to be created. For each child process, Apache assesses
     the number of idle threads and creates or destroys threads to
     keep this number within the boundaries specified by
-    <a href="../mod/mpm_common.html#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a>
-    and <a href="../mod/mpm_common.html#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a>.
+    <code class="directive"><a href="../mod/mpm_common.html#minsparethreads">MinSpareThreads</a></code>
+    and <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code>.
     Since this process is very self-regulating, it is rarely
     necessary to modify these directives from their default values.
     The maximum number of clients that may be served simultaneously
     is determined by multiplying the number of server processes
-    that will be created (<a href="../mod/mpm_common.html#numservers" class="directive"><code class="directive">NumServers</code></a>) by the maximum
+    that will be created (<code class="directive"><a href="../mod/mpm_common.html#numservers">NumServers</a></code>) by the maximum
     number of threads created in each process
-    (<a href="../mod/mpm_common.html#maxthreadsperchild" class="directive"><code class="directive">MaxThreadsPerChild</code></a>).</p>
+    (<code class="directive"><a href="../mod/mpm_common.html#maxthreadsperchild">MaxThreadsPerChild</a></code>).</p>
 
     <p>While the parent process is usually started as root under
     Unix in order to bind to port 80, the child processes and
     threads are launched by Apache as a less-privileged user. The
-    <a href="../mod/mpm_common.html#user" class="directive"><code class="directive">User</code></a> and <a href="../mod/mpm_common.html#group" class="directive"><code class="directive">Group</code></a> directives are used to
+    <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> and <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> directives are used to
     set the privileges of the Apache child processes. The child
     processes must be able to read all the content that will be
     served, but should have as few privileges beyond that as
     possible. In addition, unless <a href="../suexec.html">suexec</a> is used, these directives also
     set the privileges which will be inherited by CGI scripts.</p>
 
-    <p><a href="../mod/mpm_common.html#maxrequestsperchild" class="directive"><code class="directive">MaxRequestsPerChild</code></a>
+    <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
     controls how frequently the
     server recycles processes by killing old ones and launching new
     ones.</p>
@@ -65,25 +67,25 @@ make it functional.
     userids. These processes can then be associated with specific
     virtual hosts.</p>
     
-<h2>Directives</h2><ul><li><a href="#assignuserid">AssignUserId</a></li><li><a href="#childperuserid">ChildPerUserId</a></li><li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li><li><a href="mpm_common.html#group">Group</a></li><li><a href="mpm_common.html#listen">Listen</a></li><li><a href="mpm_common.html#listenbacklog">ListenBacklog</a></li><li><a href="mpm_common.html#lockfile">LockFile</a></li><li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li><li><a href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild</a></li><li><a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li><li><a href="mpm_common.html#numservers">NumServers</a></li><li><a href="mpm_common.html#pidfile">PidFile</a></li><li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li><li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li><li><a href="mpm_common.html#startthreads">StartThreads</a></li><li><a href="mpm_common.html#user">User</a></li></ul><hr><h2><a name="AssignUserId">AssignUserId</a> <a name="assignuserid">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>AssignUserID <em>user_id</em> <em>group_id</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>perchild</td></tr></table></td></tr></table>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#assignuserid">AssignUserId</a></li><li><img alt="" src="../images/down.gif" /> <a href="#childperuserid">ChildPerUserId</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#group">Group</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#lockfile">LockFile</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#numservers">NumServers</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#pidfile">PidFile</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startthreads">StartThreads</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AssignUserId" id="AssignUserId">AssignUserId</a> <a name="assignuserid" id="assignuserid">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>AssignUserID <em>user_id</em> <em>group_id</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>perchild</td></tr></table>
     <p>Tie a virtual host to a specific child process. Requests addressed to
 the virtual host where this directive appears will be served by the process
 running with the specified user and group id.</p>
-<hr><h2><a name="ChildPerUserId">ChildPerUserId</a> <a name="childperuserid">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>ChildPerUserID <em>user_id</em>
-<em>group_id</em> <em>child_id</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>perchild</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ChildPerUserId" id="ChildPerUserId">ChildPerUserId</a> <a name="childperuserid" id="childperuserid">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>ChildPerUserID <em>user_id</em>
+<em>group_id</em> <em>child_id</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>perchild</td></tr></table>
 <p>Specify a user id and group id for a specific child process. The number of
-children is set by the <a href="../mod/mpm_common.html#numservers" class="directive"><code class="directive">NumServers</code></a>
-directive. For example, the default value for <a href="../mod/mpm_common.html#numservers" class="directive"><code class="directive">NumServers</code></a> is 5 and that means
+children is set by the <code class="directive"><a href="../mod/mpm_common.html#numservers">NumServers</a></code>
+directive. For example, the default value for <code class="directive"><a href="../mod/mpm_common.html#numservers">NumServers</a></code> is 5 and that means
 children ids 1,2,3,4 and 5 are available for assigment. If a child does not
-have an associated ChildPerUserID, it inherits the <a href="../mod/mpm_common.html#user" class="directive"><code class="directive">User</code></a> and <a href="../mod/mpm_common.html#group" class="directive"><code class="directive">Group</code></a> settings from the main server </p> 
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>
+have an associated ChildPerUserID, it inherits the <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> and <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> settings from the main server </p> 
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>

@@ -1,20 +1,22 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_usertrack - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_usertrack</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
-                      </span></td><td>
+      --><title>mod_usertrack - Apache HTTP Server</title><link href="../style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="../style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="../style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="../style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="../style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="../style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="../style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="../style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_usertrack</h1><table class="module"><tr><th>Description:
+                </th><td>
 <em>Clickstream</em> logging of user activity on a site
-</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
-                      </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
-                        </a></td><td>usertrack_module</td></tr></table></td></tr></table><h2>Summary</h2>
+</td></tr><tr><th><a href="module-dict.html#Status">Status:
+                  </a></th><td>Extension</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
+                  </a></th><td>usertrack_module</td></tr></table><h3>Summary</h3>
     <p>Previous releases of Apache have included a module which
     generates a 'clickstream' log of user activity on a site using
     cookies. This was called the "cookies" module, mod_cookies. In
     Apache 1.2 and later this module has been renamed the "user
     tracking" module, mod_usertrack. This module has been
     simplified and new directives added.</p>
-<h2>Directives</h2><ul><li><a href="#cookiedomain">CookieDomain</a></li><li><a href="#cookieexpires">CookieExpires</a></li><li><a href="#cookiename">CookieName</a></li><li><a href="#cookiestyle">CookieStyle</a></li><li><a href="#cookietracking">CookieTracking</a></li></ul><h2>Logging</h2>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cookiedomain">CookieDomain</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cookieexpires">CookieExpires</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cookiename">CookieName</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cookiestyle">CookieStyle</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cookietracking">CookieTracking</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> Logging</li><li><img alt="" src="../images/down.gif" /> 2-digit or 4-digit dates for cookies?</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>Logging</h2>
 
 
     <p>Previously, the cookies module (now the user tracking
@@ -25,14 +27,14 @@
     now allows multiple log files. The cookie itself is logged by
     using the text <code>%{cookie}n</code> in the log file format. For
     example:</p>
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
 CustomLog logs/clickstream "%{cookie}n %r %t"
-</code></td></tr></table></blockquote>
+</code></p></div>
 
     <p>For backward compatibility the configurable log module
-    implements the old <a href="../mod/mod_log_config.html#cookielog" class="directive"><code class="directive">CookieLog</code></a> directive, but this
-    should be upgraded to the above <a href="../mod/mod_log_config.html#customlog" class="directive"><code class="directive">CustomLog</code></a> directive. </p>
-<h2>2-digit or 4-digit dates for cookies?</h2>
+    implements the old <code class="directive"><a href="../mod/mod_log_config.html#cookielog">CookieLog</a></code> directive, but this
+    should be upgraded to the above <code class="directive"><a href="../mod/mod_log_config.html#customlog">CustomLog</a></code> directive. </p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>2-digit or 4-digit dates for cookies?</h2>
 
 
     <p>(the following is from message
@@ -71,13 +73,13 @@ form, but also understands 4-digit years, which can probably reach up until
 time late in the year "37".
 </pre>
 
-<hr><h2><a name="CookieDomain">CookieDomain</a> <a name="cookiedomain">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>The domain to which the tracking cookie applies</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>CookieDomain <em>domain</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
-                    </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_usertrack</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CookieDomain" id="CookieDomain">CookieDomain</a> <a name="cookiedomain" id="cookiedomain">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>The domain to which the tracking cookie applies</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>CookieDomain <em>domain</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_usertrack</td></tr></table>
 
     <p>This directive controls the setting of the domain to which
     the tracking cookie applies. If not present, no domain is
@@ -86,13 +88,13 @@ time late in the year "37".
     <p>The domain string <strong>must</strong> begin with a dot, and
     <strong>must</strong> include at least one embedded dot. That is,
     ".foo.com" is legal, but "foo.bar.com" and ".com" are not.</p>
-<hr><h2><a name="CookieExpires">CookieExpires</a> <a name="cookieexpires">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Expiry time for the tracking cookie</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>CookieExpires <em>expiry-period</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
-                    </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_usertrack</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CookieExpires" id="CookieExpires">CookieExpires</a> <a name="cookieexpires" id="cookieexpires">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Expiry time for the tracking cookie</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>CookieExpires <em>expiry-period</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_usertrack</td></tr></table>
     <p>When used, this directive sets an expiry time on the cookie
     generated by the usertrack module. The <em>expiry-period</em>
     can be given either as a number of seconds, or in the format
@@ -103,14 +105,14 @@ time late in the year "37".
 
     <p>If this directive is not used, cookies last only for the
     current browser session.</p>
-<hr><h2><a name="CookieName">CookieName</a> <a name="cookiename">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Name of the tracking cookie</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>CookieName <em>token</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
-                    </a></td><td><code>CookieName Apache</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
-                    </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_usertrack</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CookieName" id="CookieName">CookieName</a> <a name="cookiename" id="cookiename">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Name of the tracking cookie</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>CookieName <em>token</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>CookieName Apache</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_usertrack</td></tr></table>
     <p>This directive allows you to change the name of the cookie
     this module uses for its tracking purposes. By default the
     cookie is named "<code>Apache</code>".</p>
@@ -118,15 +120,15 @@ time late in the year "37".
     <p>You must specify a valid cookie name; results are
     unpredictable if you use a name containing unusual characters.
     Valid characters include A-Z, a-z, 0-9, "_", and "-".</p>
-<hr><h2><a name="CookieStyle">CookieStyle</a> <a name="cookiestyle">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Format of the cookie header field</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>CookieStyle
-    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
-                    </a></td><td><code>CookieStyle Netscape</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
-                    </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_usertrack</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CookieStyle" id="CookieStyle">CookieStyle</a> <a name="cookiestyle" id="cookiestyle">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Format of the cookie header field</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>CookieStyle
+    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>CookieStyle Netscape</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_usertrack</td></tr></table>
     <p>This directive controls the format of the cookie header
     field. The three formats allowed are:</p>
 
@@ -145,14 +147,14 @@ time late in the year "37".
     <p>Not all clients can understand all of these formats. but you
     should use the newest one that is generally acceptable to your
     users' browsers.</p>
-<hr><h2><a name="CookieTracking">CookieTracking</a> <a name="cookietracking">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Enables tracking cookie</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>CookieTracking on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
-                    </a></td><td><code>CookieTracking off</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
-                    </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_usertrack</td></tr></table></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CookieTracking" id="CookieTracking">CookieTracking</a> <a name="cookietracking" id="cookietracking">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Enables tracking cookie</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>CookieTracking on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>CookieTracking off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_usertrack</td></tr></table>
     <p>When the user track module is compiled in, and
     "CookieTracking on" is set, Apache will start sending a
     user-tracking cookie for all new requests. This directive can
@@ -160,4 +162,4 @@ time late in the year "37".
     per-directory basis. By default, compiling mod_usertrack will
     not activate cookies. </p>
 
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>

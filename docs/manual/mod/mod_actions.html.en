@@ -1,45 +1,47 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_actions - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_actions</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
-                      </span></td><td>This module provides for executing CGI scripts based on
-media type or request method.</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
-                      </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
-                        </a></td><td>actions_module</td></tr></table></td></tr></table><h2>Summary</h2>
-    <p>This module has two directives. The <a href="#action" class="directive"><code class="directive">Action</code></a> directive lets you run CGI
+      --><title>mod_actions - Apache HTTP Server</title><link href="../style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="../style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="../style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="../style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="../style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="../style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="../style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="../style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_actions</h1><table class="module"><tr><th>Description:
+                </th><td>This module provides for executing CGI scripts based on
+media type or request method.</td></tr><tr><th><a href="module-dict.html#Status">Status:
+                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
+                  </a></th><td>actions_module</td></tr></table><h3>Summary</h3>
+    <p>This module has two directives. The <code class="directive"><a href="#action">Action</a></code> directive lets you run CGI
     scripts whenever a file of a certain type is requested. The
-    <a href="#script" class="directive"><code class="directive">Script</code></a> directive lets
+    <code class="directive"><a href="#script">Script</a></code> directive lets
     you run CGI scripts whenever a particular method is used in a
     request. This makes it much easier to execute scripts that process
     files.</p>
-<h2>Directives</h2><ul><li><a href="#action">Action</a></li><li><a href="#script">Script</a></li></ul><hr><h2><a name="Action">Action</a> <a name="action">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Activates a CGI script for a particular handler or
-content-type</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>Action <em>action-type cgi-script</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
-                    </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_actions</td></tr></table></td></tr></table>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#action">Action</a></li><li><img alt="" src="../images/down.gif" /> <a href="#script">Script</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Action" id="Action">Action</a> <a name="action" id="action">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Activates a CGI script for a particular handler or
+content-type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>Action <em>action-type cgi-script</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_actions</td></tr></table>
     <p>This directive adds an action, which will activate
     <em>cgi-script</em> when <em>action-type</em> is triggered by the
     request.  The <em>cgi-script</em> is the URL-path to a resource
-    that has been designated as a CGI script using <a href="../mod/mod_alias.html#scriptalias" class="directive"><code class="directive">ScriptAlias</code></a> or <a href="../mod/mod_mime.html#addhandler" class="directive"><code class="directive">AddHandler</code></a>.  The
+    that has been designated as a CGI script using <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>.  The
     <em>action-type</em> can be either a <a href="../handler.html">handler</a> or a MIME content type. It
     sends the URL and file path of the requested document using the
     standard CGI PATH_INFO and PATH_TRANSLATED environment
     variables.</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Examples</strong></p><code>
+<div class="example"><h3>Examples</h3><p><code>
 
 
-    # Requests for files of a particular type:<br>
-    Action image/gif /cgi-bin/images.cgi<br>
-<br>
-    # Files of a particular file extension<br>
-    AddHandler my-file-type .xyz<br>
-    Action my-file-type /cgi-bin/program.cgi<br>
-</code></td></tr></table></blockquote>
+    # Requests for files of a particular type:<br />
+    Action image/gif /cgi-bin/images.cgi<br />
+<br />
+    # Files of a particular file extension<br />
+    AddHandler my-file-type .xyz<br />
+    Action my-file-type /cgi-bin/program.cgi<br />
+</code></p></div>
 
     <p>In the first example, requests for files with a MIME content
     type of <code>image/gif</code> will instead be handled by the
@@ -48,26 +50,26 @@ content-type</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Synta
     <p>In the second example, requests for files with a file extension of
     <code>.xyz</code> are handled instead by the specified cgi script 
     <code>/cgi-bin/program.cgi</code>.</p>
-<p><strong>See also </strong></p><ul><li><a href="../mod/mod_mime.html#addhandler" class="directive"><code class="directive">AddHandler</code></a></li></ul><hr><h2><a name="Script">Script</a> <a name="script">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td>Activates a CGI script for a particular request
-method.</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td> Script <em>method cgi-script</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual host, directory</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_actions</td></tr></table></td></tr></table>
+<h3>See also</h3><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Script" id="Script">Script</a> <a name="script" id="script">Directive</a></h2><table class="directive"><tr><th>Description: 
+            </th><td>Activates a CGI script for a particular request
+method.</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td> Script <em>method cgi-script</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual host, directory</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>mod_actions</td></tr></table>
     <p>This directive adds an action, which will activate
     <em>cgi-script</em> when a file is requested using the method of
     <em>method</em>. The <em>cgi-script</em> is the URL-path to a
-    resource that has been designated as a CGI script using <a href="../mod/mod_alias.html#scriptaliase" class="directive"><code class="directive">ScriptAliase</code></a> or <a href="../mod/mod_mime.html#addhandler" class="directive"><code class="directive">AddHandler</code></a>.  The URL and
+    resource that has been designated as a CGI script using <code class="directive"><a href="../mod/mod_alias.html#scriptaliase">ScriptAliase</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>.  The URL and
     file path of the requested document is sent using the standard CGI
     PATH_INFO and PATH_TRANSLATED environment variables.</p>
 
-<blockquote><table><tr><td bgcolor="#e0e5f5">
+<div class="note">
       Any arbitrary method name may be used. <strong>Method names are
-      case-sensitive</strong>, so <code>Script&nbsp;PUT</code> and
-      <code>Script&nbsp;put</code> have two entirely different
+      case-sensitive</strong>, so <code>Script PUT</code> and
+      <code>Script put</code> have two entirely different
       effects.
-</td></tr></table></blockquote>
+</div>
 
     <p>Note that the Script command defines default actions only.
     If a CGI script is called, or some other resource that is
@@ -77,11 +79,11 @@ method.</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cl
     (<em>e.g.</em>, foo.html?hi). Otherwise, the request will
     proceed normally.</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Examples</strong></p><code>
+<div class="example"><h3>Examples</h3><p><code>
 
-    # For &lt;ISINDEX&gt;-style searching<br>
-    Script GET /cgi-bin/search<br>
-    # A CGI PUT handler<br>
-    Script PUT /~bob/put.cgi<br>
-</code></td></tr></table></blockquote>
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>
+    # For &lt;ISINDEX&gt;-style searching<br />
+    Script GET /cgi-bin/search<br />
+    # A CGI PUT handler<br />
+    Script PUT /~bob/put.cgi<br />
+</code></p></div>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>

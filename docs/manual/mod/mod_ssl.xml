@@ -31,16 +31,11 @@ be made available under different names, too. Look in the <a
 href="../ssl/ssl_compat.html">Compatibility</a> chapter for details on the
 compatibility variables.</p>
 
-<table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
-<!-- <caption align="bottom">SSI/CGI Environment Variables</caption> -->
-<tr><td bgcolor="#cccccc">
-<table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
-<tr><td bgcolor="#ffffff">
-<table border="0" cellspacing="0" cellpadding="2" width="598" summary="">
+<table border="1">
 <tr>
- <td><strong>Variable Name:</strong></td>
- <td><strong>Value Type:</strong></td>
- <td><strong>Description:</strong></td>
+ <th>Variable Name:</th>
+ <th>Value Type:</th>
+ <th>Description:</th>
 </tr>
 <tr><td><code>HTTPS</code></td>                         <td>flag</td>      <td>HTTPS is being used.</td></tr>
 <tr><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv2, SSLv3, TLSv1)</td></tr>
@@ -75,12 +70,9 @@ compatibility variables.</p>
 <tr><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of server's certificate</td></tr>
 <tr><td><code>SSL_SERVER_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of server's certificate</td></tr>
 <tr><td><code>SSL_SERVER_CERT</code></td>               <td>string</td>    <td>PEM-encoded server certificate</td></tr>
+<tr><td colspan="3">[ where <em>x509</em> is a component of a X.509 DN:
+  <code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code> ]</td></tr>
 </table>
-[ where <em>x509</em> is a component of a X.509 DN:
-  <code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code> ]
-</td>
-</tr></table>
-</td></tr></table>
 </section>
 
 <section><title>Custom Log Formats</title>
@@ -506,13 +498,8 @@ one can either specify all the Ciphers, one at a time, or use aliases to
 specify the preference and order for the ciphers (see <a href="#table1">Table
 1</a>).</p>
 
-<table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
-<!-- <caption align="bottom">Table 1: OpenSSL Cipher Specification Tags</caption> -->
-<tr><td bgcolor="#cccccc">
-<table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
-<tr><td bgcolor="#ffffff">
-<table border="0" cellspacing="0" cellpadding="2" width="598" summary="">
-<tr><td><strong>Tag</strong></td> <td><strong>Description</strong></td></tr>
+<table border="1">
+<tr><th>Tag</th> <th>Description</th></tr>
 <tr><td colspan="2"><em>Key Exchange Algorithm:</em></td></tr>
 <tr><td><code>kRSA</code></td>   <td>RSA key exchange</td></tr>
 <tr><td><code>kDHr</code></td>   <td>Diffie-Hellman key exchange with RSA key</td></tr>
@@ -551,9 +538,6 @@ specify the preference and order for the ciphers (see <a href="#table1">Table
 <tr><td><code>DSS</code></td>    <td>all ciphers using DSS authentication</td> </tr>
 <tr><td><code>NULL</code></td>   <td>all ciphers using no encryption</td> </tr>
 </table>
-</td>
-</tr></table>
-</td></tr></table>
 <p>
 Now where this becomes interesting is that these can be put together
 to specify the order and ciphers you wish to use. To speed this up
@@ -593,48 +577,40 @@ href="#table2">Table 2</a>.</p>
 <example><title>Example</title>
 SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 </example>
-<table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
-<!-- <caption align="bottom">Table 2: Particular SSL Ciphers</caption> -->
-<tr><td bgcolor="#cccccc">
-<table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
-<tr><td bgcolor="#ffffff">
-<table border="0" cellspacing="0" cellpadding="2" width="598" summary="">
-<tr><td><strong>Cipher-Tag</strong></td> <td><strong>Protocol</strong></td> <td><strong>Key Ex.</strong></td> <td><strong>Auth.</strong></td> <td><strong>Enc.</strong></td> <td><strong>MAC</strong></td> <td><strong>Type</strong></td> </tr>
+<table border="1">
+<tr><th>Cipher-Tag</th> <th>Protocol</th> <th>Key Ex.</th> <th>Auth.</th> <th>Enc.</th> <th>MAC</th> <th>Type</th> </tr>
 <tr><td colspan="7"><em>RSA Ciphers:</em></td></tr>
-<tr><td><code>DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr><td><code>DES-CBC3-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
-<tr><td><code>IDEA-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>IDEA(128)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr><td><code>RC4-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr><td><code>RC4-MD5</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
-<tr><td><code>IDEA-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>IDEA(128)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
-<tr><td><code>RC2-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC2(128)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
-<tr><td><code>RC4-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
-<tr><td><code>DES-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>DES(56)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr><td><code>RC4-64-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC4(64)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
-<tr><td><code>DES-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>DES(56)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
+<tr><td><code>DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>DES-CBC3-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>MD5</td> <td></td> </tr>
+<tr><td><code>IDEA-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>IDEA(128)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>RC4-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>RC4-MD5</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>MD5</td> <td></td> </tr>
+<tr><td><code>IDEA-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>IDEA(128)</td> <td>MD5</td> <td></td> </tr>
+<tr><td><code>RC2-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC2(128)</td> <td>MD5</td> <td></td> </tr>
+<tr><td><code>RC4-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>MD5</td> <td></td> </tr>
+<tr><td><code>DES-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>DES(56)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>RC4-64-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC4(64)</td> <td>MD5</td> <td></td> </tr>
+<tr><td><code>DES-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>DES(56)</td> <td>MD5</td> <td></td> </tr>
 <tr><td><code>EXP-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
 <tr><td><code>EXP-RC2-CBC-MD5</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>RC2(40)</td> <td>MD5</td> <td>  export</td> </tr>
 <tr><td><code>EXP-RC4-MD5</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>RC4(40)</td> <td>MD5</td> <td>  export</td> </tr>
 <tr><td><code>EXP-RC2-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA(512)</td> <td>RSA</td> <td>RC2(40)</td> <td>MD5</td> <td>  export</td> </tr>
 <tr><td><code>EXP-RC4-MD5</code></td> <td>SSLv2</td> <td>RSA(512)</td> <td>RSA</td> <td>RC4(40)</td> <td>MD5</td> <td>  export</td> </tr>
-<tr><td><code>NULL-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>None</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr><td><code>NULL-MD5</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>None</td> <td>MD5</td> <td>&nbsp; </td> </tr>
+<tr><td><code>NULL-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>None</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>NULL-MD5</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>None</td> <td>MD5</td> <td></td> </tr>
 <tr><td colspan="7"><em>Diffie-Hellman Ciphers:</em></td></tr>
-<tr><td><code>ADH-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>3DES(168)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr><td><code>ADH-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>DES(56)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr><td><code>ADH-RC4-MD5</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>RC4(128)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
-<tr><td><code>EDH-RSA-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr><td><code>EDH-DSS-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>DSS</td> <td>3DES(168)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr><td><code>EDH-RSA-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>RSA</td> <td>DES(56)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
-<tr><td><code>EDH-DSS-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>DSS</td> <td>DES(56)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
+<tr><td><code>ADH-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>3DES(168)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>ADH-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>DES(56)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>ADH-RC4-MD5</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>RC4(128)</td> <td>MD5</td> <td></td> </tr>
+<tr><td><code>EDH-RSA-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>EDH-DSS-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>DSS</td> <td>3DES(168)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>EDH-RSA-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>RSA</td> <td>DES(56)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>EDH-DSS-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>DSS</td> <td>DES(56)</td> <td>SHA1</td> <td></td> </tr>
 <tr><td><code>EXP-EDH-RSA-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>RSA</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
 <tr><td><code>EXP-EDH-DSS-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>DSS</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
 <tr><td><code>EXP-ADH-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>None</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
 <tr><td><code>EXP-ADH-RC4-MD5</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>None</td> <td>RC4(40)</td> <td>MD5</td> <td>  export</td> </tr>
 </table>
-</td>
-</tr></table>
-</td></tr></table>
 </usage>
 </directivesynopsis>
 
@@ -1100,12 +1076,7 @@ SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/ \<br />
             and %{TIME_HOUR} &gt;= 8 and %{TIME_HOUR} &lt;= 20       ) \<br />
            or %{REMOTE_ADDR} =~ m/^192\.76\.162\.[0-9]+$/
 </example>
-<table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
-<!-- <caption align="bottom">Table 3: Available Variables for SSLRequire</caption> -->
-<tr><td bgcolor="#cccccc">
-<table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
-<tr><td bgcolor="#ffffff">
-<table summary=""><tr><td>
+<table border="1"><tr><td>
 <em>Standard CGI/1.0 and Apache variables:</em>
 <pre>
 HTTP_USER_AGENT        PATH_INFO             AUTH_TYPE
@@ -1162,9 +1133,6 @@ SSL_VERSION_INTERFACE  SSL_CLIENT_S_DN_OU     SSL_SERVER_S_DN_OU
                        SSL_CLIENT_CERT_CHAIN<strong>n</strong>
                        SSL_CLIENT_VERIFY
 </pre>
-</td></tr></table>
-</td>
-</tr></table>
 </td></tr></table>
 </usage>
 </directivesynopsis>
