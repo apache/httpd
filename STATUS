@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/15 21:11:14 $]
+Last modified at [$Date: 2004/03/16 20:04:07 $]
 
 Release:
 
@@ -70,6 +70,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) Add a check on apr_pollset_create() to return value to exit ab in case it fails.
+        support/ab.c: r1.138
+      +1: jjclar
 
     *) mod_cgid: Fix storage corruption caused by use of incorrect pool.
          modules/generators/mod_cgid.c: r1.425
