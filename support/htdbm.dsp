@@ -101,7 +101,7 @@ SOURCE=..\build\win32\win32ver.awk
 InputPath=..\build\win32\win32ver.awk
 
 ".\htdbm.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../build/win32/win32ver.awk htdbm "htdbm Utility"  ../include/ap_release.h > .\htdbm.rc
+	awk -f ../build/win32/win32ver.awk htdbm.exe "htdbm Utility"  ../include/ap_release.h > .\htdbm.rc
 
 # End Custom Build
 
@@ -112,7 +112,7 @@ InputPath=..\build\win32\win32ver.awk
 InputPath=..\build\win32\win32ver.awk
 
 ".\htdbm.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../build/win32/win32ver.awk htdbm "htdbm Utility"  ../include/ap_release.h > .\htdbm.rc
+	awk -f ../build/win32/win32ver.awk htdbm.exe "htdbm Utility"  ../include/ap_release.h > .\htdbm.rc
 
 # End Custom Build
 

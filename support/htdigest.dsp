@@ -101,7 +101,7 @@ SOURCE=..\build\win32\win32ver.awk
 InputPath=..\build\win32\win32ver.awk
 
 ".\htdigest.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../build/win32/win32ver.awk htdigest "htdigest Utility"  ../include/ap_release.h > .\htdigest.rc
+	awk -f ../build/win32/win32ver.awk htdigest.exe "htdigest Utility"  ../include/ap_release.h > .\htdigest.rc
 
 # End Custom Build
 
@@ -112,7 +112,7 @@ InputPath=..\build\win32\win32ver.awk
 InputPath=..\build\win32\win32ver.awk
 
 ".\htdigest.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../build/win32/win32ver.awk htdigest "htdigest Utility"  ../include/ap_release.h > .\htdigest.rc
+	awk -f ../build/win32/win32ver.awk htdigest.exe "htdigest Utility"  ../include/ap_release.h > .\htdigest.rc
 
 # End Custom Build
 

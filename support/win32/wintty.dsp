@@ -93,7 +93,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\wintty.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk wintty  "wintty Console Utility" ../../include/ap_release.h > .\wintty.rc
+	awk -f ../../build/win32/win32ver.awk wintty.exe "wintty Console Utility" ../../include/ap_release.h > .\wintty.rc
 
 # End Custom Build
 
@@ -104,7 +104,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\wintty.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk wintty  "wintty Console Utility" ../../include/ap_release.h > .\wintty.rc
+	awk -f ../../build/win32/win32ver.awk wintty.exe "wintty Console Utility" ../../include/ap_release.h > .\wintty.rc
 
 # End Custom Build
 
