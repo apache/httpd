@@ -331,7 +331,7 @@ static void help_proxy_garbage_coll(request_rec *r)
     if (cmp_long61(&curbytes, &cachesize) < 0L) {
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server,
 			 "proxy GC: Cache is %ld%% full (nothing deleted)",
-			 (long)((curbytes.upper<<20)|(curbytes.lower>>10))*100/conf->space);
+			 (long)(((curbytes.upper<<20)|(curbytes.lower>>10))*100/conf->space));
 	ap_unblock_alarms();
 	return;
     }
@@ -362,7 +362,7 @@ static void help_proxy_garbage_coll(request_rec *r)
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server,
 			 "proxy GC: Cache is %ld%% full (%d deleted)",
-			 (long)((curbytes.upper<<20)|(curbytes.lower>>10))*100/conf->space, i);
+			 (long)(((curbytes.upper<<20)|(curbytes.lower>>10))*100/conf->space), i);
     ap_unblock_alarms();
 }
 
