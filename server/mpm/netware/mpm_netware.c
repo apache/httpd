@@ -1096,10 +1096,12 @@ static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
 
         /* If we got an instance id but it doesn't match this 
             instance of the nlm, pass it on. */
-        pID = &pID[2];
-        while (*pID && (*pID == ' '))
-            pID++;
-        if (*pID && ap_my_addrspace && strnicmp(pID, ap_my_addrspace, strlen(ap_my_addrspace)))
+        if (pID) {
+            pID = &pID[2];
+            while (*pID && (*pID == ' '))
+                pID++;
+        }
+        if (pID && ap_my_addrspace && strnicmp(pID, ap_my_addrspace, strlen(ap_my_addrspace)))
             return NOTMYCOMMAND;
 
         /* If we have determined that this command belongs to this
