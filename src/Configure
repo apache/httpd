@@ -586,7 +586,7 @@ case "$PLAT" in
     	PLATOSVERS=`echo $PLAT | sed 's/^.*solaris2.//'`
 	OS="Solaris $PLATOSVERS"
 	CFLAGS="$CFLAGS -DSOLARIS2=$PLATOSVERS"
-	LIBS="$LIBS -lsocket -lnsl"
+	LIBS="$LIBS -lsocket -lnsl -lpthread"
 	DBM_LIB=""
 	case "$PLATOSVERS" in
 	    2[01234]*)

@@ -1,5 +1,13 @@
 Changes with Apache 1.3.24
 
+  *) Link with -lpthread on Solaris since we reference pthread
+     functions for the accept mutex.  Previously, the link step
+     would succeed but we would link to bogus versions of the
+     pthread functions in libc, apparently breaking accept mutex 
+     serialization when "AcceptMutex pthread" was used and 
+     apparently breaking some third-party modules whether
+     or not "AcceptMutex pthread" was used.  [Jeff Trawick]
+
   *) The Location: response header field, used for external
      redirect, *must* be an absoluteURI.  The Redirect directive
      tested for that, but RedirectMatch didn't -- it would allow
