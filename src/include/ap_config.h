@@ -529,7 +529,9 @@ typedef int pid_t;
  */
 #define USE_SYSVSEM_SERIALIZED_ACCEPT
 #define SINGLE_LISTEN_UNSERIALIZED_ACCEPT 
+#if _SEM_SEMUN_UNDEFINED
 #define NEED_UNION_SEMUN
+#endif
 #else
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #endif
