@@ -271,7 +271,7 @@
       (-) mod_speling ...... Correction of misspelled URLs
      Directory Handling
       (+) mod_dir .......... Directory and directory default file handling
-      (+) mod_auto_index ... Automated directory index file generation
+      (+) mod_autoindex .... Automated directory index file generation
      Access Control
       (+) mod_access ....... Access Control (user, host, network)
       (+) mod_auth ......... HTTP Basic Authentication (user, passwd)
