@@ -296,6 +296,15 @@
      prefix _only_, i.e. no other stuff from your system is touched. Even if
      you upgrade an existing installation your configuration files in
      PREFIX/etc/ are preserved.
+
+     Note for package authors:
+
+     To simplify rolling a package tarball from the installed files APACI
+     provides a way to override the installation root for the install step.
+     Additionally you can get rid of the user message at the end of the
+     installation process by using the `install-quiet' target. Example:
+
+         $ make install-quiet root=/tmp/apache-root
  
   6. Testing the package
      -------------------
