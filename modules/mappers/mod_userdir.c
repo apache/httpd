@@ -135,7 +135,7 @@ static void *create_userdir_config(ap_pool_t *p, server_rec *s)
 #define O_ENABLE 1
 #define O_DISABLE 2
 
-static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_user_dir(cmd_parms *cmd, void *dummy, const char *arg)
 {
     userdir_config
     * s_cfg = (userdir_config *) ap_get_module_config
@@ -270,7 +270,7 @@ static int translate_userdir(request_rec *r)
         const char *userdir = ap_getword_conf(r->pool, &userdirs);
         char *filename = NULL;
 
-        if (strchr(userdir, '*'))
+        if (ap_strchr_c(userdir, '*'))
             x = ap_getword(r->pool, &userdir, '*');
 
 	if (userdir[0] == '\0' || ap_os_is_path_absolute(userdir)) {
@@ -297,7 +297,7 @@ static int translate_userdir(request_rec *r)
             else
                 filename = ap_pstrcat(r->pool, userdir, "/", w, NULL);
         }
-        else if (strchr(userdir, ':')) {
+        else if (ap_strchr_c(userdir, ':')) {
             redirect = ap_pstrcat(r->pool, userdir, "/", w, dname, NULL);
             ap_table_setn(r->headers_out, "Location", redirect);
             return REDIRECT;
