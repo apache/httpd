@@ -514,11 +514,11 @@ static dav_error *dav_really_open_db(dav_propdb *propdb, int ro)
     return NULL;
 }
 
-dav_error *dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
-                           const dav_resource *resource,
-                           int ro,
-                           apr_array_header_t * ns_xlate,
-                           dav_propdb **p_propdb)
+DAV_DECLARE(dav_error *)dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
+                                        const dav_resource *resource,
+                                        int ro,
+                                        apr_array_header_t * ns_xlate,
+                                        dav_propdb **p_propdb)
 {
     dav_propdb *propdb = apr_pcalloc(r->pool, sizeof(*propdb));
 
@@ -552,7 +552,7 @@ dav_error *dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
     return NULL;
 }
 
-void dav_close_propdb(dav_propdb *propdb)
+DAV_DECLARE(void) dav_close_propdb(dav_propdb *propdb)
 {
     if (propdb->db == NULL)
         return;
@@ -560,7 +560,8 @@ void dav_close_propdb(dav_propdb *propdb)
     (*propdb->db_hooks->close)(propdb->db);
 }
 
-dav_get_props_result dav_get_allprops(dav_propdb *propdb, dav_prop_insert what)
+DAV_DECLARE(dav_get_props_result) dav_get_allprops(dav_propdb *propdb,
+                                                   dav_prop_insert what)
 {
     const dav_hooks_db *db_hooks = propdb->db_hooks;
     apr_text_header hdr = { 0 };
@@ -687,7 +688,8 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, dav_prop_insert what)
     return result;
 }
 
-dav_get_props_result dav_get_props(dav_propdb *propdb, apr_xml_doc *doc)
+DAV_DECLARE(dav_get_props_result) dav_get_props(dav_propdb *propdb,
+                                                apr_xml_doc *doc)
 {
     const dav_hooks_db *db_hooks = propdb->db_hooks;
     apr_xml_elem *elem = dav_find_child(doc->root, "prop");
@@ -874,10 +876,10 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, apr_xml_doc *doc)
     return result;
 }
 
-void dav_get_liveprop_supported(dav_propdb *propdb,
-                                const char *ns_uri,
-                                const char *propname,
-                                apr_text_header *body)
+DAV_DECLARE(void) dav_get_liveprop_supported(dav_propdb *propdb,
+                                             const char *ns_uri,
+                                             const char *propname,
+                                             apr_text_header *body)
 {
     int propid;
     const dav_hooks_liveprop *hooks;
@@ -898,7 +900,7 @@ void dav_get_liveprop_supported(dav_propdb *propdb,
     }
 }
 
-void dav_prop_validate(dav_prop_ctx *ctx)
+DAV_DECLARE_NONSTD(void) dav_prop_validate(dav_prop_ctx *ctx)
 {
     dav_propdb *propdb = ctx->propdb;
     apr_xml_elem *prop = ctx->prop;
@@ -989,7 +991,7 @@ void dav_prop_validate(dav_prop_ctx *ctx)
     }
 }
 
-void dav_prop_exec(dav_prop_ctx *ctx)
+DAV_DECLARE_NONSTD(void) dav_prop_exec(dav_prop_ctx *ctx)
 {
     dav_propdb *propdb = ctx->propdb;
     dav_error *err = NULL;
@@ -1055,7 +1057,7 @@ void dav_prop_exec(dav_prop_ctx *ctx)
     }
 }
 
-void dav_prop_commit(dav_prop_ctx *ctx)
+DAV_DECLARE_NONSTD(void) dav_prop_commit(dav_prop_ctx *ctx)
 {
     dav_elem_private *priv = ctx->prop->priv;
 
@@ -1072,7 +1074,7 @@ void dav_prop_commit(dav_prop_ctx *ctx)
     }
 }
 
-void dav_prop_rollback(dav_prop_ctx *ctx)
+DAV_DECLARE_NONSTD(void) dav_prop_rollback(dav_prop_ctx *ctx)
 {
     dav_error *err = NULL;
     dav_elem_private *priv = ctx->prop->priv;

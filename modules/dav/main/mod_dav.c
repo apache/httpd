@@ -212,27 +212,27 @@ static const dav_provider *dav_get_provider(request_rec *r)
     return conf->provider;
 }
 
-const dav_hooks_locks *dav_get_lock_hooks(request_rec *r)
+DAV_DECLARE(const dav_hooks_locks *) dav_get_lock_hooks(request_rec *r)
 {
     return dav_get_provider(r)->locks;
 }
 
-const dav_hooks_propdb *dav_get_propdb_hooks(request_rec *r)
+DAV_DECLARE(const dav_hooks_propdb *) dav_get_propdb_hooks(request_rec *r)
 {
     return dav_get_provider(r)->propdb;
 }
 
-const dav_hooks_vsn *dav_get_vsn_hooks(request_rec *r)
+DAV_DECLARE(const dav_hooks_vsn *) dav_get_vsn_hooks(request_rec *r)
 {
     return dav_get_provider(r)->vsn;
 }
 
-const dav_hooks_binding *dav_get_binding_hooks(request_rec *r)
+DAV_DECLARE(const dav_hooks_binding *) dav_get_binding_hooks(request_rec *r)
 {
     return dav_get_provider(r)->binding;
 }
 
-const dav_hooks_search *dav_get_search_hooks(request_rec *r)
+DAV_DECLARE(const dav_hooks_search *) dav_get_search_hooks(request_rec *r)
 {
     return dav_get_provider(r)->search;
 }
@@ -634,7 +634,7 @@ static int dav_created(request_rec *r, const char *locn, const char *what,
 }
 
 /* ### move to dav_util? */
-int dav_get_depth(request_rec *r, int def_depth)
+DAV_DECLARE(int) dav_get_depth(request_rec *r, int def_depth)
 {
     const char *depth = apr_table_get(r->headers_in, "Depth");
 

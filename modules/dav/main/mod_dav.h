@@ -464,8 +464,8 @@ typedef struct
 } dav_lookup_result;
 
 
-dav_lookup_result dav_lookup_uri(const char *uri, request_rec *r,
-                                 int must_be_absolute);
+DAV_DECLARE(dav_lookup_result) dav_lookup_uri(const char *uri, request_rec *r,
+                                              int must_be_absolute);
 
 /* defines type of property info a provider is to return */
 typedef enum {
@@ -492,10 +492,12 @@ typedef enum {
 #define DAV_STYLE_RFC822        2
 #define DAV_TIMEBUF_SIZE        30
 
-int dav_get_depth(request_rec *r, int def_depth);
+DAV_DECLARE(int) dav_get_depth(request_rec *r, int def_depth);
 
-int dav_validate_root(const apr_xml_doc *doc, const char *tagname);
-apr_xml_elem *dav_find_child(const apr_xml_elem *elem, const char *tagname);
+DAV_DECLARE(int) dav_validate_root(const apr_xml_doc *doc,
+                                   const char *tagname);
+DAV_DECLARE(apr_xml_elem *) dav_find_child(const apr_xml_elem *elem,
+                                           const char *tagname);
 
 /* gather up all the CDATA into a single string */
 DAV_DECLARE(const char *) dav_xml_get_cdata(const apr_xml_elem *elem, apr_pool_t *pool,
@@ -631,15 +633,15 @@ APR_DECLARE_EXTERNAL_HOOK(dav, DAV, void, insert_all_liveprops,
                          (request_rec *r, const dav_resource *resource,
                           dav_prop_insert what, apr_text_header *phdr))
 
-const dav_hooks_locks *dav_get_lock_hooks(request_rec *r);
-const dav_hooks_propdb *dav_get_propdb_hooks(request_rec *r);
-const dav_hooks_vsn *dav_get_vsn_hooks(request_rec *r);
-const dav_hooks_binding *dav_get_binding_hooks(request_rec *r);
-const dav_hooks_search *dav_get_search_hooks(request_rec *r);
+DAV_DECLARE(const dav_hooks_locks *) dav_get_lock_hooks(request_rec *r);
+DAV_DECLARE(const dav_hooks_propdb *) dav_get_propdb_hooks(request_rec *r);
+DAV_DECLARE(const dav_hooks_vsn *) dav_get_vsn_hooks(request_rec *r);
+DAV_DECLARE(const dav_hooks_binding *) dav_get_binding_hooks(request_rec *r);
+DAV_DECLARE(const dav_hooks_search *) dav_get_search_hooks(request_rec *r);
 
 DAV_DECLARE(void) dav_register_provider(apr_pool_t *p, const char *name,
                                         const dav_provider *hooks);
-const dav_provider * dav_lookup_provider(const char *name);
+DAV_DECLARE(const dav_provider *) dav_lookup_provider(const char *name);
 
 
 /* ### deprecated */
@@ -712,7 +714,8 @@ typedef struct dav_locktoken_list
     struct dav_locktoken_list *next;
 } dav_locktoken_list;
 
-dav_error * dav_get_locktoken_list(request_rec *r, dav_locktoken_list **ltl);
+DAV_DECLARE(dav_error *) dav_get_locktoken_list(request_rec *r,
+                                                dav_locktoken_list **ltl);
 
 
 /* --------------------------------------------------------------------
@@ -885,22 +888,27 @@ DAV_DECLARE(void) dav_register_liveprop_group(apr_pool_t *pool,
 DAV_DECLARE(int) dav_get_liveprop_ns_index(const char *uri);
 
 /* ### docco */
-int dav_get_liveprop_ns_count(void);
+DAV_DECLARE(int) dav_get_liveprop_ns_count(void);
 
 /* ### docco */
-void dav_add_all_liveprop_xmlns(apr_pool_t *p, apr_text_header *phdr);
+DAV_DECLARE(void) dav_add_all_liveprop_xmlns(apr_pool_t *p,
+                                             apr_text_header *phdr);
 
 /*
 ** The following three functions are part of mod_dav's internal handling
 ** for the core WebDAV properties. They are not part of mod_dav's API.
 */
-int dav_core_find_liveprop(const dav_resource *resource,
-                           const char *ns_uri, const char *name,
-                           const dav_hooks_liveprop **hooks);
-void dav_core_insert_all_liveprops(request_rec *r,
-                                   const dav_resource *resource,
-                                   dav_prop_insert what, apr_text_header *phdr);
-void dav_core_register_uris(apr_pool_t *p);
+DAV_DECLARE_NONSTD(int) dav_core_find_liveprop(
+    const dav_resource *resource,
+    const char *ns_uri,
+    const char *name,
+    const dav_hooks_liveprop **hooks);
+DAV_DECLARE_NONSTD(void) dav_core_insert_all_liveprops(
+    request_rec *r,
+    const dav_resource *resource,
+    dav_prop_insert what,
+    apr_text_header *phdr);
+DAV_DECLARE_NONSTD(void) dav_core_register_uris(apr_pool_t *p);
 
 
 /*
@@ -1126,7 +1134,7 @@ struct dav_hooks_propdb
 /* Used to represent a Timeout header of "Infinity" */
 #define DAV_TIMEOUT_INFINITE 0
 
-time_t dav_get_timeout(request_rec *r);
+DAV_DECLARE(time_t) dav_get_timeout(request_rec *r);
 
 /*
 ** Opaque, provider-specific information for a lock database.
@@ -1221,34 +1229,40 @@ typedef struct dav_lock
 } dav_lock;
 
 /* Property-related public lock functions */
-const char *dav_lock_get_activelock(request_rec *r, dav_lock *locks,
-                                    dav_buffer *pbuf);
+DAV_DECLARE(const char *)dav_lock_get_activelock(request_rec *r,
+                                                 dav_lock *locks,
+                                                 dav_buffer *pbuf);
 
 /* LockDB-related public lock functions */
-dav_error * dav_lock_parse_lockinfo(request_rec *r,
-                                    const dav_resource *resrouce,
-                                    dav_lockdb *lockdb,
-                                    const apr_xml_doc *doc,
-                                    dav_lock **lock_request);
-int dav_unlock(request_rec *r, const dav_resource *resource,
-               const dav_locktoken *locktoken);
-dav_error * dav_add_lock(request_rec *r, const dav_resource *resource,
-                         dav_lockdb *lockdb, dav_lock *request,
-                         dav_response **response);
-dav_error * dav_notify_created(request_rec *r,
-                               dav_lockdb *lockdb,
-                               const dav_resource *resource,
-                               int resource_state,
-                               int depth);
+DAV_DECLARE(dav_error *) dav_lock_parse_lockinfo(request_rec *r,
+                                                 const dav_resource *resrouce,
+                                                 dav_lockdb *lockdb,
+                                                 const apr_xml_doc *doc,
+                                                 dav_lock **lock_request);
+DAV_DECLARE(int) dav_unlock(request_rec *r,
+                            const dav_resource *resource,
+                            const dav_locktoken *locktoken);
+DAV_DECLARE(dav_error *) dav_add_lock(request_rec *r,
+                                      const dav_resource *resource,
+                                      dav_lockdb *lockdb, dav_lock *request,
+                                      dav_response **response);
+DAV_DECLARE(dav_error *) dav_notify_created(request_rec *r,
+                                            dav_lockdb *lockdb,
+                                            const dav_resource *resource,
+                                            int resource_state,
+                                            int depth);
 
 DAV_DECLARE(dav_error*) dav_lock_query(dav_lockdb *lockdb, 
                                        const dav_resource *resource,
                                        dav_lock **locks);
 
-dav_error * dav_validate_request(request_rec *r, dav_resource *resource,
-                                 int depth, dav_locktoken *locktoken,
-                                 dav_response **response, int flags,
-                                 dav_lockdb *lockdb);
+DAV_DECLARE(dav_error *) dav_validate_request(request_rec *r,
+                                              dav_resource *resource,
+                                              int depth,
+                                              dav_locktoken *locktoken,
+                                              dav_response **response,
+                                              int flags,
+                                              dav_lockdb *lockdb);
 /*
 ** flags:
 **    0x0F -- reserved for <dav_lock_scope> values
@@ -1263,7 +1277,8 @@ dav_error * dav_validate_request(request_rec *r, dav_resource *resource,
 #define DAV_VALIDATE_IS_PARENT  0x0100  /* for internal use */
 
 /* Lock-null related public lock functions */
-int dav_get_resource_state(request_rec *r, const dav_resource *resource);
+DAV_DECLARE(int) dav_get_resource_state(request_rec *r,
+                                        const dav_resource *resource);
 
 /* Lock provider hooks. Locking is optional, so there may be no
  * lock provider for a given repository.
@@ -1484,7 +1499,7 @@ struct dav_hooks_locks
 typedef struct dav_propdb dav_propdb;
 
 
-dav_error *dav_open_propdb(
+DAV_DECLARE(dav_error *) dav_open_propdb(
     request_rec *r,
     dav_lockdb *lockdb,
     const dav_resource *resource,
@@ -1492,17 +1507,17 @@ dav_error *dav_open_propdb(
     apr_array_header_t *ns_xlate,
     dav_propdb **propdb);
 
-void dav_close_propdb(dav_propdb *db);
+DAV_DECLARE(void) dav_close_propdb(dav_propdb *db);
 
-dav_get_props_result dav_get_props(
+DAV_DECLARE(dav_get_props_result) dav_get_props(
     dav_propdb *db,
     apr_xml_doc *doc);
 
-dav_get_props_result dav_get_allprops(
+DAV_DECLARE(dav_get_props_result) dav_get_allprops(
     dav_propdb *db,
     dav_prop_insert what);
 
-void dav_get_liveprop_supported(
+DAV_DECLARE(void) dav_get_liveprop_supported(
     dav_propdb *propdb,
     const char *ns_uri,
     const char *propname,
@@ -1567,10 +1582,10 @@ typedef struct dav_prop_ctx
 
 } dav_prop_ctx;
 
-void dav_prop_validate(dav_prop_ctx *ctx);
-void dav_prop_exec(dav_prop_ctx *ctx);
-void dav_prop_commit(dav_prop_ctx *ctx);
-void dav_prop_rollback(dav_prop_ctx *ctx);
+DAV_DECLARE_NONSTD(void) dav_prop_validate(dav_prop_ctx *ctx);
+DAV_DECLARE_NONSTD(void) dav_prop_exec(dav_prop_ctx *ctx);
+DAV_DECLARE_NONSTD(void) dav_prop_commit(dav_prop_ctx *ctx);
+DAV_DECLARE_NONSTD(void) dav_prop_rollback(dav_prop_ctx *ctx);
 
 #define DAV_PROP_CTX_HAS_ERR(dpc)  ((dpc).err && (dpc).err->status >= 300)
 
@@ -1933,9 +1948,9 @@ struct dav_hooks_repository
  * If there were any headers in the request which require a Vary header
  * in the response, add it.
  */
-void dav_add_vary_header(request_rec *in_req,
-                         request_rec *out_req,
-                         const dav_resource *resource);
+DAV_DECLARE(void) dav_add_vary_header(request_rec *in_req,
+                                      request_rec *out_req,
+                                      const dav_resource *resource);
 
 /*
 ** Flags specifying auto-versioning behavior, returned by
@@ -1994,7 +2009,7 @@ typedef struct {
  * to restore both parent and child resources to the state they were in
  * before the auto-versioning operations occurred.
  */
-dav_error *dav_auto_checkout(
+DAV_DECLARE(dav_error *) dav_auto_checkout(
     request_rec *r,
     dav_resource *resource,
     int parent_only,
@@ -2015,7 +2030,7 @@ dav_error *dav_auto_checkout(
  * was checked out (i.e. the parent_only was != 0 in the
  * dav_auto_checkout call).
  */
-dav_error *dav_auto_checkin(
+DAV_DECLARE(dav_error *) dav_auto_checkin(
     request_rec *r,
     dav_resource *resource,
     int undo,
@@ -2391,7 +2406,7 @@ struct dav_hooks_search {
 */
 
 /* fetch the "LimitXMLRequestBody" in force for this resource */
-apr_size_t dav_get_limit_xml_body(const request_rec *r);
+DAV_DECLARE(apr_size_t) dav_get_limit_xml_body(const request_rec *r);
 
 typedef struct {
     int propid;                          /* live property ID */

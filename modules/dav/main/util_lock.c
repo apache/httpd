@@ -42,8 +42,9 @@
 ** dav_lock_get_activelock:  Returns a <lockdiscovery> containing
 **    an activelock element for every item in the lock_discovery tree
 */
-const char *dav_lock_get_activelock(request_rec *r, dav_lock *lock,
-                                    dav_buffer *pbuf)
+DAV_DECLARE(const char *) dav_lock_get_activelock(request_rec *r,
+                                                  dav_lock *lock,
+                                                  dav_buffer *pbuf)
 {
     dav_lock *lock_scan;
     const dav_hooks_locks *hooks = DAV_GET_HOOKS_LOCKS(r);
@@ -159,11 +160,11 @@ const char *dav_lock_get_activelock(request_rec *r, dav_lock *lock,
 **    lockinfo XML element, then populates a dav_lock structure
 **    with its contents.
 */
-dav_error * dav_lock_parse_lockinfo(request_rec *r,
-                                    const dav_resource *resource,
-                                    dav_lockdb *lockdb,
-                                    const apr_xml_doc *doc,
-                                    dav_lock **lock_request)
+DAV_DECLARE(dav_error *) dav_lock_parse_lockinfo(request_rec *r,
+                                                 const dav_resource *resource,
+                                                 dav_lockdb *lockdb,
+                                                 const apr_xml_doc *doc,
+                                                 dav_lock **lock_request)
 {
     apr_pool_t *p = r->pool;
     dav_error *err;
@@ -285,9 +286,10 @@ static dav_error * dav_lock_walker(dav_walk_resource *wres, int calltype)
 **    all children, bounded by depth.
 **    ### assume request only contains one lock
 */
-dav_error * dav_add_lock(request_rec *r, const dav_resource *resource,
-                         dav_lockdb *lockdb, dav_lock *lock,
-                         dav_response **response)
+DAV_DECLARE(dav_error *) dav_add_lock(request_rec *r,
+                                      const dav_resource *resource,
+                                      dav_lockdb *lockdb, dav_lock *lock,
+                                      dav_response **response)
 {
     dav_error *err;
     int depth = lock->depth;
@@ -485,8 +487,8 @@ static dav_error * dav_get_direct_resource(apr_pool_t *p,
 ** ### We've already crawled the tree to ensure everything was locked
 **     by us; there should be no need to incorporate a rollback.
 */
-int dav_unlock(request_rec *r, const dav_resource *resource,
-               const dav_locktoken *locktoken)
+DAV_DECLARE(int) dav_unlock(request_rec *r, const dav_resource *resource,
+                            const dav_locktoken *locktoken)
 {
     int result;
     dav_lockdb *lockdb;
@@ -674,7 +676,8 @@ static dav_error * dav_inherit_locks(request_rec *r, dav_lockdb *lockdb,
 **
 **    Returns DAV_RESOURCE_ERROR if an error occurs.
 */
-int dav_get_resource_state(request_rec *r, const dav_resource *resource)
+DAV_DECLARE(int) dav_get_resource_state(request_rec *r,
+                                        const dav_resource *resource)
 {
     const dav_hooks_locks *hooks = DAV_GET_HOOKS_LOCKS(r);
 
@@ -732,11 +735,11 @@ int dav_get_resource_state(request_rec *r, const dav_resource *resource)
     return DAV_RESOURCE_NULL;
 }
 
-dav_error * dav_notify_created(request_rec *r,
-                               dav_lockdb *lockdb,
-                               const dav_resource *resource,
-                               int resource_state,
-                               int depth)
+DAV_DECLARE(dav_error *) dav_notify_created(request_rec *r,
+                                            dav_lockdb *lockdb,
+                                            const dav_resource *resource,
+                                            int resource_state,
+                                            int depth)
 {
     dav_error *err;
 

@@ -159,8 +159,9 @@ DAV_DECLARE(void) dav_buffer_place_mem(apr_pool_t *p, dav_buffer *pbuf,
 ** If NULL is returned, then an error occurred with parsing the URI or
 ** the URI does not match the current server.
 */
-dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r,
-                                 int must_be_absolute)
+DAV_DECLARE(dav_lookup_result) dav_lookup_uri(const char *uri,
+                                              request_rec * r,
+                                              int must_be_absolute)
 {
     dav_lookup_result result = { 0 };
     const char *scheme;
@@ -287,7 +288,8 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r,
 */
 
 /* validate that the root element uses a given DAV: tagname (TRUE==valid) */
-int dav_validate_root(const apr_xml_doc *doc, const char *tagname)
+DAV_DECLARE(int) dav_validate_root(const apr_xml_doc *doc,
+                                   const char *tagname)
 {
     return doc->root &&
         doc->root->ns == APR_XML_NS_DAV_ID &&
@@ -295,7 +297,8 @@ int dav_validate_root(const apr_xml_doc *doc, const char *tagname)
 }
 
 /* find and return the (unique) child with a given DAV: tagname */
-apr_xml_elem *dav_find_child(const apr_xml_elem *elem, const char *tagname)
+DAV_DECLARE(apr_xml_elem *) dav_find_child(const apr_xml_elem *elem, 
+                                           const char *tagname)
 {
     apr_xml_elem *child = elem->first_child;
 
@@ -461,7 +464,7 @@ DAV_DECLARE(void) dav_xmlns_generate(dav_xmlns_info *xi,
  *    Seconds-xxx and Infinity time values.  We assume that they do.
  *    In addition, for now, that's all we understand, too.
  */
-time_t dav_get_timeout(request_rec *r)
+DAV_DECLARE(time_t) dav_get_timeout(request_rec *r)
 {
     time_t now, expires = DAV_TIMEOUT_INFINITE;
 
@@ -1381,10 +1384,13 @@ static dav_error * dav_validate_walker(dav_walk_resource *wres, int calltype)
 ** On error, return appropriate HTTP_* code, and log error. If a multi-stat
 ** error is necessary, response will point to it, else NULL.
 */
-dav_error * dav_validate_request(request_rec *r, dav_resource *resource,
-                                 int depth, dav_locktoken *locktoken,
-                                 dav_response **response, int flags,
-                                 dav_lockdb *lockdb)
+DAV_DECLARE(dav_error *) dav_validate_request(request_rec *r, 
+                                              dav_resource *resource,
+                                              int depth,
+                                              dav_locktoken *locktoken,
+                                              dav_response **response,
+                                              int flags,
+                                              dav_lockdb *lockdb)
 {
     dav_error *err;
     int result;
@@ -1602,7 +1608,8 @@ dav_error * dav_validate_request(request_rec *r, dav_resource *resource,
  * Sets ltl to a locktoken_list of all positive locktokens in header,
  * else NULL if no If-header, or no positive locktokens.
  */
-dav_error * dav_get_locktoken_list(request_rec *r, dav_locktoken_list **ltl) 
+DAV_DECLARE(dav_error *) dav_get_locktoken_list(request_rec *r,
+                                                dav_locktoken_list **ltl) 
 {
     dav_error *err;
     dav_if_header *if_header;
@@ -1672,9 +1679,9 @@ static const char *strip_white(const char *s, apr_pool_t *pool)
  * If there were any headers in the request which require a Vary header
  * in the response, add it.
  */
-void dav_add_vary_header(request_rec *in_req,
-                         request_rec *out_req,
-                         const dav_resource *resource)
+DAV_DECLARE(void) dav_add_vary_header(request_rec *in_req,
+                                      request_rec *out_req,
+                                      const dav_resource *resource)
 {
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(in_req);
 
@@ -1758,7 +1765,7 @@ static dav_error * dav_can_auto_checkout(
 }
 
 /* see mod_dav.h for docco */
-dav_error *dav_auto_checkout(
+DAV_DECLARE(dav_error *) dav_auto_checkout(
     request_rec *r,
     dav_resource *resource,
     int parent_only,
@@ -1904,7 +1911,7 @@ done:
 }
 
 /* see mod_dav.h for docco */
-dav_error *dav_auto_checkin(
+DAV_DECLARE(dav_error *) dav_auto_checkin(
     request_rec *r,
     dav_resource *resource,
     int undo,

@@ -27,7 +27,7 @@ DAV_DECLARE(void) dav_register_provider(apr_pool_t *p, const char *name,
     ap_register_provider(p, DAV_PROVIDER_GROUP, name, "0", provider);
 }
 
-const dav_provider * dav_lookup_provider(const char *name)
+DAV_DECLARE(const dav_provider *) dav_lookup_provider(const char *name)
 {
     return ap_lookup_provider(DAV_PROVIDER_GROUP, name, "0");
 }

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.54
 
+  *) Correctly export all mod_dav public functions.
+     [Branko Èibej <brane xbc.nu>]
+
   *) Add a build script to create a solaris package. [Graham Leggett]
 
   *) worker MPM: Fix a problem which could cause httpd processes to
