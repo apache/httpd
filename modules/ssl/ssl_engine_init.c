@@ -136,7 +136,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      */
     apr_pool_cleanup_register(p, base_server,
                               ssl_init_ModuleKill,
-                              ssl_init_ChildKill);
+                              apr_pool_cleanup_null);
 
     /*
      * Any init round fixes the global config
@@ -1127,13 +1127,6 @@ void ssl_init_Child(apr_pool_t *p, server_rec *s)
 
     /* open the mutex lockfile */
     ssl_mutex_reinit(s, p);
-}
-
-apr_status_t ssl_init_ChildKill(void *data)
-{
-    /* server_rec *s = (server_rec *)data; */
-    /* currently nothing to do */
-    return APR_SUCCESS;
 }
 
 #define MODSSL_CFG_ITEM_FREE(func, item) \
