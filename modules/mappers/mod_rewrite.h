@@ -231,8 +231,13 @@
 #endif
 
 #define MAX_ENV_FLAGS 15
+#define MAX_COOKIE_FLAGS 15
+/*** max cookie size in rfc 2109 ***/
+#define MAX_COOKIE_LEN 4096
 
 #define MAX_NMATCH    10
+
+
 
 /*
 **
@@ -272,6 +277,7 @@ typedef struct {
     char    *forced_mimetype;      /* forced MIME type of substitution */
     int      forced_responsecode;  /* forced HTTP redirect response status */
     char    *env[MAX_ENV_FLAGS+1]; /* added environment variables */
+    char    *cookie[MAX_COOKIE_FLAGS+1]; /* added cookies */
     int      skip;                 /* number of next rules to skip */
 } rewriterule_entry;
 
@@ -414,6 +420,8 @@ static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
 		      backrefinfo *briRR, backrefinfo *briRC);
 static void do_expand_env(request_rec *r, char *env[],
 			  backrefinfo *briRR, backrefinfo *briRC);
+static void do_expand_cookie(request_rec *r, char *cookie[],
+			  backrefinfo *briRR, backrefinfo *briRC);
 
     /* URI transformation function */
 static void  splitout_queryargs(request_rec *r, int qsappend);
@@ -481,6 +489,7 @@ static char  *subst_prefix_path(request_rec *r, char *input, char *match,
 static int    parseargline(char *str, char **a1, char **a2, char **a3);
 static int    prefix_stat(const char *path, apr_finfo_t *sb);
 static void   add_env_variable(request_rec *r, char *s);
+static void   add_cookie(request_rec *r, char *s);
 static int    subreq_ok(request_rec *r);
 
     /* Lexicographic Comparison */

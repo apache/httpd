@@ -1605,6 +1605,16 @@ There is a special feature:
         it in a following RewriteCond pattern via
         <code>%{ENV:VAR}</code>. Use this to strip but remember
         information from URLs.</li>
+
+        <li>
+        '<strong><code>cookie|CO=</code></strong><em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>]'
+        (set <strong>co</strong>cookie)<br>
+        This sets a cookie on the client's browser.  The cookie's name
+        is specified by <em>NAME</em> and the value is
+        <em>VAL</em>. The <em>domain</em> field is the domain of the
+        cookie, such as '.apache.org' and the optional <em>lifetime</em>
+        is the lifetime of the cookie in minutes.</li>
+ 
       </ul>
 
 <note><title>Note</title> Never forget that <em>Pattern</em> is

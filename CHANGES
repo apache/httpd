@@ -1,6 +1,9 @@
 
 Changes with Apache 2.0.40
 
+  *) mod_rewrite can now set cookies  (RewriteRule (.*) - [CO=name:$1:.domain])
+     [Brian Degenhardt <bmd@mp3.com>, Ian Holsman]
+
   *) Fix perchild to work with apachectl by adding -k support to perchild.
      PR 10074  [Jeff Trawick]
 
