@@ -224,10 +224,9 @@
                                             args_use,ok,decline)
 
 /**
- * Implement a hook that runs until the first function that returns
- * something other than decline. If all functions return decline, the
- * hook runner returns decline. The implementation is called
- * ap_run_<i>name</i>.
+ * Implement a hook that runs until a function returns something other than 
+ * decline. If all functions return decline, the hook runner returns decline. 
+ * The implementation is called ap_run_<i>name</i>.
  *
  * @param ret The return type of the hook (and the hook runner)
  * @param name The name of the hook
