@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/08 14:00:46 $]
+Last modified at [$Date: 2002/04/08 14:04:16 $]
 
 Release:
 
@@ -117,11 +117,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Convert all instances of the old apr_lock_t type to the new
       types.
-        Status: Aaron has converted all but the perchild MPM to
-                use the new lock API. Since perchild has been put
-                on the back burner, this is no longer a showstopper.
-                Aaron will patch perchild as soon as it becomes
-                buildable again.
 
     * With AP_MODE_EXHAUSTIVE in the core, it is finally clear to me
       how the Perchild MPM should be re-written.  It hasn't worked
