@@ -213,7 +213,7 @@
                whether these paths contain ``apache'' or not. Although the
                defaults were defined with experience in mind you always should
                make sure the paths fit your situation by checking the finally
-               chosen paths via the --layout option.
+               chosen paths via the --show-layout option.
 
      Use the --with-layout=[F:]ID option to select a particular installation
      path base-layout. There are many layouts pre-defined in the file
@@ -243,9 +243,9 @@
      outside the Apache source tree, for instance /path/to/mod_foo.c, or a
      path to an already existing C source code file in src/modules/extra/, such
      as src/modules/extra/mod_foo.c, in which case no copying will be done.
-     The added module this is way is automatically activated and enabled. Use
-     this option to automatically include a simple third-party module to the
-     Apache build process.
+     The added module is automatically activated and enabled. Use this option
+     to automatically include a simple third-party module to the Apache build
+     process.
 
      Use the --activate-module=FILE option to add an entry for an existing
      module object or library file into the configuration file on-the-fly.
@@ -522,7 +522,7 @@
      o If you want to be informed about new code releases, bug fixes, 
        security fixes, general news and information about the Apache server
        subscribe to the apache-announce mailing list as described under
-       http://www.apache.org/announcelist.html
+       http://httpd.apache.org/lists.html#http-announce
 
      o If you want freely available support for running Apache please join the
        Apache user community by subscribing at least to the following USENET
@@ -535,7 +535,7 @@
 
      o If you have a concrete bug report for Apache please go to the
        Apache Group Bug Database and submit your report:
-       http://www.apache.org/bug_report.html
+       http://httpd.apache.org/bug_report.html
 
      o If you want to participate in actively developing Apache please
        subscribe to the `dev@httpd.apache.org' mailing list as described at
