@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/06/19 01:41:01 $]
+  Last modified at [$Date: 2002/06/19 01:46:48 $]
 
 Release:
 
@@ -282,6 +282,7 @@ Binaries (1.3.26):
  sparc-sun-solaris2.5          no      Lars Eilebrecht, Randy Terbush
  sparc-sun-solaris2.6          no      Lars Eilebrecht
  sparc-sun-solaris2.7          no      Cliff Skolnick
+ sparc-sun-solaris2.8          no      Jim Jagielski
  sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
  sparc-unknown-linux           no      Lars Eilebrecht, Randy Terbush
  sun4u-sun-solaris2.280        no      Jeff Trawick
