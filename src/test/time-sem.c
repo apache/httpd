@@ -403,22 +403,15 @@ void accept_mutex_off()
 #ifndef HAVE_SHMGET
 static void *get_shared_mem(size_t size)
 {
-    int fd;
     void *result;
 
     /* allocate shared memory for the shared_counter */
-    fd = open ("/dev/zero", O_RDWR);
-    if (fd == -1) {
-	perror ("open");
-	exit (1);
-    }
     result = (unsigned long *)mmap ((caddr_t)0, size,
-		    PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+		    PROT_READ|PROT_WRITE, MAP_ANON|MAP_SHARED, -1, 0);
     if (result == (void *)(caddr_t)-1) {
 	perror ("mmap");
 	exit (1);
     }
-    close (fd);
     return result;
 }
 #else
@@ -486,7 +479,7 @@ static void *get_shared_mem(size_t size)
 #include <sched.h>
 #define YIELD	sched_yield()
 #else
-#define YIELD	select(0,0,0,0,0)
+#define YIELD	do { struct timeval zero; zero.tv_sec = zero.tv_usec = 0; select(0,0,0,0,&zero); } while(0)
 #endif
 
 void main (int argc, char **argv)
@@ -557,7 +550,10 @@ void main (int argc, char **argv)
     gettimeofday (&last, NULL);
 
     if (*shared_counter != num_child * num_iter) {
-	puts ("WTF! shared_counter != num_child * num_iter!");
+	printf ("WTF! shared_counter != num_child * num_iter!\n"
+		"shared_counter = %lu\nnum_child = %d\nnum_iter=%d\n",
+		*shared_counter,
+		num_child, num_iter);
     }
 
     last.tv_sec -= first.tv_sec;
