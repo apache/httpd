@@ -2397,37 +2397,42 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     long max_body;
     apr_status_t rv;
     apr_int32_t timeout;
+    ap_bucket *b;
+    ap_bucket_brigade *bb = ap_brigade_create(r->pool);
 
 
     if (!r->read_chunked) {     /* Content-length read */
-        ap_bucket *b;
         const char *tempbuf;
 
         len_to_read = (r->remaining > bufsiz) ? bufsiz : r->remaining;
 
+        if (len_to_read == 0) {
+            return 0;
+        }
         do {
-            if (AP_BRIGADE_EMPTY(r->connection->input_data)) {
+            if (AP_BRIGADE_EMPTY(bb)) {
                 apr_getsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, &timeout);
                 apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, 0);
-                rv = ap_get_brigade(r->connection->input_filters, r->connection->input_data); 
+                r->connection->remaining = len_to_read;
+                rv = ap_get_brigade(r->input_filters, bb); 
                 apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, timeout);
             }
-            if (AP_BRIGADE_EMPTY(r->connection->input_data)) {
+            if (AP_BRIGADE_EMPTY(bb)) {
                 if (rv != APR_SUCCESS) {
                     r->connection->keepalive = -1;
                     return -1;
                 }
                 return 0;
             }
-            b = AP_BRIGADE_FIRST(r->connection->input_data);
+            b = AP_BRIGADE_FIRST(bb);
             
-            while (b->length == 0 && b != AP_BRIGADE_SENTINEL(r->connection->input_data)) {
+            while (b->length == 0 && b != AP_BRIGADE_SENTINEL(bb)) {
                 ap_bucket *e = b;
                 b = AP_BUCKET_NEXT(e);
                 AP_BUCKET_REMOVE(e);
                 ap_bucket_destroy(e);
             }
-        } while (AP_BRIGADE_EMPTY(r->connection->input_data));
+        } while (AP_BRIGADE_EMPTY(bb));
 
         rv = b->read(b, &tempbuf, &len_read, 0);
         if (len_to_read < b->length) {
