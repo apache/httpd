@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/05 00:29:48 $]
+Last modified at [$Date: 2004/10/10 22:02:46 $]
 
 Release:
 
@@ -74,6 +74,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) Allow for the use of --with-module=foo:bar where the ./modules/foo
+       directory is a local addition to the ./modules directory.
+       Assumes, of course, that the required files are in ./modules/foo,
+       but makes it easier to statically build "external" modules by
+       simply adding them to ./modules.
+         modules/config5.m4: 1.4
+       +1: jim
 
     *) mod_auth_ldap: Handle the inconsistent way in which the MS LDAP
        library handles special characters.
