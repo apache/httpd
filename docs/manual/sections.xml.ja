@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.3 -->
+<!-- English revision: 1.8 -->
 
 <manualpage metafile="sections.xml.meta">
 
@@ -200,7 +200,7 @@ shell スタイルのワイルドカードキャラクタが使用できます。
 "/" 文字はどのワイルドカードでもマッチされません。
 明示的に指定する必要があります。</p>
 
-<p>これより柔軟なマッチングが必要な場合は、これらのコンテナの正規表現
+<p>これより柔軟なマッチングが必要な場合は、これらのコンテナに正規表現
 (regex) 版である
 <directive type="section" module="core">DirectoryMatch</directive>, 
 <directive type="section" module="core">FilesMatch</directive>, 
@@ -280,8 +280,7 @@ Deny from all<br />
 ですからできる限りファイルシステムコンテナを使用してください。
 しかしながら一つだけ例外があります。
 <code>&lt;Location /&gt;</code> セクションはどんな URL 
-にも関わらず適用されるので、そこにアクセスを制限するディレクティブを
-居れることは完全に安全です。</p>
+にも関わらず適用されるので、完全に安全です。</p>
 </section>
 
 </section>
@@ -299,11 +298,11 @@ Deny from all<br />
 
 <p><directive type="section" module="mod_proxy">Proxy</directive>
 と <directive type="section" module="mod_proxy">ProxyMatch</directive>
-コンテナは、<module>mod_proxy</module>
-プロクシサーバを経由してアクセスされる特定の URL にマッチするサイトに
-対してのみ適用される
-設定ディレクティブを格納します。例えば次の設定は、プロキシサーバが
-<code>cnn.com</code> ウェブサイトをアクセスするためには使えないようにします。</p>
+コンテナは、特定の URL にマッチする <module>mod_proxy</module>
+プロクシサーバを経由してアクセスしたサイトに対してのみ適用される
+設定ディレクティブを格納します。例えば次の設定は、<code>cnn.com</code> 
+ウェブサイトにアクセスするために用いられるプロクシサーバを
+制限します。</p>
 
 <example>
 &lt;Proxy http://cnn.com/*&gt;<br />
@@ -353,7 +352,7 @@ Deny from all<br />
     <ol>
       <li><directive
       type="section" module="core">Directory</directive> (正規表現無し) と
-      .htaccess を同時に (.htaccess が許可されていれば、それが
+      <code>.htaccess</code> を同時に (<code>.htaccess</code> が許可されていれば、それが
       <directive type="section" module="core">Directory</directive> を上書きします)
       </li>
 
@@ -387,6 +386,12 @@ Deny from all<br />
     バーチャルホストの定義の外側の対応するセクションの
     <em>後</em>に適用されます。これによりバーチャルホストが
     メインのサーバ設定を上書きできるようなります。</p>
+
+    <p><module>mod_proxy</module> でリクエストが処理される場合は、
+    処理順番のうち、<directive module="core" 
+    type="section">Directory</directive> コンテナの部分が
+    <directive module="mod_proxy" type="section">Proxy</directive>
+    コンテナに取って代わられます。</p>
 
     <p>後のセクションのディレクティブが前のセクションのものを上書きします。</p>
 
@@ -435,7 +440,7 @@ A<br />
 セクションに設置されたアクセス制限に関わらず、
 <directive module="core" type="section">Location</directive>
 セクションが最後に評価されて、サーバへのアクセスは制限されません。
-つまり、マージの順番は重要ですので、注意して使用してください!</p>
+言い換えれば、マージの順番は重要で、注意して使用してください!</p>
 
 <example>
 &lt;Location /&gt;<br />

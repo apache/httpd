@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.8 -->
+<!-- English revision: 1.9 -->
 
 <manualpage metafile="bind.xml.meta">
 
@@ -92,21 +92,13 @@
     これらのデフォルトで使用不可のプラットホームであっても、
     特別な設定パラメータで Apache の挙動を変化させることができます。</p>
 
-    <p>IPv4 と IPv6 のコネクションを最小限のソケットで扱いたいのであれば、
+    <p>一方で、Linux や Tru64 といったプラットホームで IPv4 と IPv6
+    の両方を扱うには、マップトアドレスを使用する<strong>以外の方法はありません</strong>。
+    IPv4 と IPv6 のコネクションを最小限のソケットで扱いたいのであれば、
     IPv4 マップの IPv6 アドレスを使用する必要があり、
-    <code>--enable-v4-mapped</code> configure オプションを指定して、単純に
-    <directive module="mpm_common">Listen</directive> 
-    ディレクティブで次のように設定します。</p>
+    <code>--enable-v4-mapped</code> configure オプションを指定します。</p>
 
-    <example>
-      Listen 80
-    </example>
-
-    <p><code>--enable-v4-mapped</code> では、Apache
-    の生成するデフォルトの設定ファイル中の
-    <directive module="mpm_common">Listen</directive>
-    ディレクティブはこの形式を使用しています。
-    <code>--enable-v4-mapped</code> は、
+    <p><code>--enable-v4-mapped</code> は、
     FreeBSD, NetBSD, OpenBSD 以外の全てのプラットホームでのデフォルトです。
     ですから、おそらくお手元の Apache はこの設定でビルドされているでしょう。</p>
 
@@ -121,25 +113,15 @@
       Listen 192.170.2.1:80
     </example>
 
-    <p>IPv4 と IPv6 のコネクションを個別のソケットで扱うようにしたい場合
+    <p>条件を満たすプラットホームで、Apache が
+    IPv4 と IPv6 のコネクションを個別のソケットで扱うようにしたい場合
     (つまり IPv4 マップのアドレスを無効にしたい場合)
     は、<code>--disable-v4-mapped</code> configure
     オプションを指定して、次のように個別指定の
     <directive module="mpm_common">Listen</directive>
-    ディレクティブを使用してください。</p>
-
-    <example>
-       Listen [::]:80<br />
-       Listen 0.0.0.0:80
-    </example>
-
-    <p><code>--disable-v4-mapped</code> では、Apache
-    の生成するデフォルトの設定ファイル中の
-    <directive module="mpm_common">Listen</directive>
-    ディレクティブはこの形式を使用しています。
+    ディレクティブを使用してください。
     <code>--disable-v4-mapped</code> は、
     FreeBSD, NetBSD, OpenBSD プラットホームでのデフォルトです。</p>
-
   </section>
 
   <section id="virtualhost">
