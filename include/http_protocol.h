@@ -561,10 +561,10 @@ typedef struct ap_bucket_error ap_bucket_error;
  * first brigade to be sent from a given filter.
  */
 struct ap_bucket_error {
-    /** The start of the data actually allocated.  This should never be
-     * modified, it is only used to free the bucket.
-     */
-    char    *start;
+    /** The error code */
+    int status;
+    /** The error string */
+    const char    *start;
 };
 
 AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_error;
