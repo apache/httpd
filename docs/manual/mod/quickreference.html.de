@@ -115,7 +115,7 @@ server</td></tr>
 the proxy</td></tr>
 <tr class="odd"><td><a href="core.html#allowoverride">AllowOverride All|None|<var>directive-type</var>
 [<var>directive-type</var>] ...</a></td><td> All </td><td>d</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Types of directives that are allowed in
-.htaccess files</td></tr>
+<code>.htaccess</code> files</td></tr>
 <tr><td><a href="mod_auth_anon.html#anonymous">Anonymous <var>user</var> [<var>user</var>] ...</a></td><td /><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies userIDs that areallowed access without
 password verification</td></tr>
 <tr class="odd"><td><a href="mod_auth_anon.html#anonymous_authoritative">Anonymous_Authoritative On|Off</a></td><td> Off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configures if authorization will fall-through
@@ -232,7 +232,7 @@ module</td></tr>
 <tr><td><a href="perchild.html#childperuserid">ChildPerUserID <var>user-id</var> <var>group-id</var>
 <var>num-children</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Specify user ID and group ID for a number of child
 processes</td></tr>
-<tr class="odd"><td><a href="core.html#contentdigest">ContentDigest On|Off</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables the generation of Content-MD5 HTTP Response
+<tr class="odd"><td><a href="core.html#contentdigest">ContentDigest On|Off</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables the generation of <code>Content-MD5</code> HTTP Response
 headers</td></tr>
 <tr><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domain</em></a></td><td /><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The domain to which the tracking cookie applies</td></tr>
 <tr class="odd"><td><a href="mod_usertrack.html#cookieexpires">CookieExpires <em>expiry-period</em></a></td><td /><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Expiry time for the tracking cookie</td></tr>
@@ -371,7 +371,7 @@ will be accepted from the client</td></tr>
 client</td></tr>
 <tr><td><a href="core.html#limitrequestline">LimitRequestLine <var>bytes</var></a></td><td> 8190 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Limit the size of the HTTP request line that will be accepted
 from the client</td></tr>
-<tr class="odd"><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>number</var></a></td><td> 1000000 </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limits the size of an XML-based request body</td></tr>
+<tr class="odd"><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>bytes</var></a></td><td> 1000000 </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limits the size of an XML-based request body</td></tr>
 <tr><td><a href="mpm_common.html#listen">Listen [<var>IP-address</var>:]<var>portnumber</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">IP addresses and ports that the server
 listens to</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>backlog</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum length of the queue of pending connections</td></tr>
