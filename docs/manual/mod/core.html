@@ -1477,15 +1477,17 @@ about log file placement and
 
 Apache 1.2 and above:<p>
 
-Linux 1.x users might be able to add <code>-DUSE_SHMGET_SCOREBOARD</code> to
+Linux 1.x users might be able to add
+<code>-DHAVE_SHMGET -DUSE_SHMGET_SCOREBOARD</code> to
 the <code>EXTRA_CFLAGS</code> in your <code>Configuration</code>.  This
 might work with some 1.x installations, but won't work with all of
-them. (Prior to 1.3b4 this define was named <code>HAVE_SHMGET</code>.)<p>
+them. (Prior to 1.3b4, <code>HAVE_SHMGET</code> would have sufficed.)<p>
 
-SVR4 users should consider adding <code>-DUSE_SHMGET_SCOREBOARD</code> to the
+SVR4 users should consider adding
+<code>-DHAVE_SHMGET -DUSE_SHMGET_SCOREBOARD</code> to the
 <code>EXTRA_CFLAGS</code> in your <code>Configuration</code>.  This
 is believed to work, but we were unable to test it in time for 1.2
-release. (Prior to 1.3b4 this define was named <code>HAVE_SHMGET</code>.)<p>
+release. (Prior to 1.3b4, <code>HAVE_SHMGET</code> would have sufficed.)<p>
 
 <strong>See Also</strong>:
 <a href="../stopping.html">Stopping and Restarting Apache</a></p>
