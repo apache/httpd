@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Fix mod_deflate corruption when using multiple buckets.  PR 9014.
+     [Asada Kazuhisa <kaz@asada.sytes.net>]
+
   *) Performance enhancements for access logger when using
      default timestamp formatting  [Brian Pane]
 
