@@ -1,6 +1,6 @@
-APACHE 2.1+ ROADMAP:
+APACHE 2.x ROADMAP:
 
-Last modified at [$Date: 2002/09/10 08:24:09 $]
+Last modified at [$Date: 2002/09/28 17:33:31 $]
 
 DEFERRRED FOR APACHE 2.1
 
@@ -16,19 +16,28 @@ DEFERRRED FOR APACHE 2.1
 
       David says:
         The style guide needs to be reviewed before this can be done.
-        http://www.apache.org/dev/styleguide.html
+        http://httpd.apache.org/dev/styleguide.html
         The current file is dated April 20th 1998!
-        Q: should APR have it's own copy as well?
+
+        OtherBill offers:
+          It's survived since '98 because it's welldone :-)  Suggest we
+          simply follow whatever is documented in styleguide.html as we
+          branch the next tree.  Really sort of straightforward, if you
+          dislike a bit within that doc, bring it up on the dev@httpd
+          list prior to the next branch.
+
+WORKS IN PROGRESS (PERHAPS DEFERRED FOR 2.1 or 3.0)
 
     * revamp the input filter syntax to provide for ordering of
       filters created with the Set{Input|Output}Filter and the
       Add{Input|Output}Filter directives.  A 'relative to filterx' 
-      syntax is definately preferable, but not realistic for 2.0.
+      syntax is definately preferable.
 
     * Platforms that do not support fork (primarily Win32 and AS/400)
       Architect start-up code that avoids initializing all the modules 
       in the parent process on platforms that do not support fork.
-      Better yet - not only inform the startup of which phase it's in,
+
+    . Better yet - not only inform the startup of which phase it's in,
       but allow the parent 'process' to initialize shared memory, etc,
       and create a module-by-module stream to pass to the child, so the
       parent can actually arbitrate the important stuff.
@@ -39,14 +48,26 @@ DEFERRRED FOR APACHE 2.1
       that file, and allow the cleanup to close it [if it isn't a shared,
       cached file handle.]
 
-DEFERRRED FOR APACHE 3.0
-
     * The Async Apache Server implemented in terms of APR.
       [Bill Stoddard's pet project.]
       Message-ID: <008301c17d42$9b446970$01000100@sashimi> (dev@apr)
+
+        OtherBill notes that this can proceed in two parts...
+
+           Async accept, setup, and tear-down of the request 
+           e.g. dealing with the incoming request headers, prior to
+           dispatching the request to a thread for processing.
+           This doesn't need to wait for a 2.x/3.0 bump.
+
+           Async delegation of the entire request processing chain
+           Too many handlers use stack storage and presume it is 
+           available for the life of the request, so a complete 
+           async implementation would need to happen 3.0 release.
 
     * Add a string "class" that combines a char* with a length
       and a reference count.  This will help reduce the number
       of strlen and strdup operations during request processing.
       Including both the length and allocation will save us a ton 
       of reallocation we do today, in terms of string manipulation.
+
+        OtherBill asks if this is really an APR issue, not an HTTPD issue?
