@@ -90,7 +90,6 @@
           <ul>
             <xsl:for-each select="document(modulefilelist/modulefile)/modulesynopsis/directivesynopsis">
               <xsl:sort select="name"/>
-<li><xsl:value-of select="name"/>: <xsl:value-of select="@location"/></li>
               <xsl:if test="not(@location)">
                 <li><a href="{/modulesynopsis/name}.html#{translate(name,$uppercase,$lowercase)}"><xsl:value-of select="name"/></a></li>
               </xsl:if>
