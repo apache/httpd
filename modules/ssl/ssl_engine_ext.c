@@ -136,9 +136,9 @@ static void ssl_ext_mp_init(server_rec *s, pool *p)
                     cpVHostID);
             ssl_die();
         }
-        cp = ap_pstrcat(p, (sc->nProxyProtocol & SSL_PROTOCOL_SSLV2 ? "SSLv2, " : ""), 
-                           (sc->nProxyProtocol & SSL_PROTOCOL_SSLV3 ? "SSLv3, " : ""), 
-                           (sc->nProxyProtocol & SSL_PROTOCOL_TLSV1 ? "TLSv1, " : ""), NULL);
+        cp = apr_pstrcat(p, (sc->nProxyProtocol & SSL_PROTOCOL_SSLV2 ? "SSLv2, " : ""), 
+                            (sc->nProxyProtocol & SSL_PROTOCOL_SSLV3 ? "SSLv3, " : ""), 
+                            (sc->nProxyProtocol & SSL_PROTOCOL_TLSV1 ? "TLSv1, " : ""), NULL);
         cp[strlen(cp)-2] = NUL;
         ssl_log(s, SSL_LOG_TRACE, 
                 "Init: (%s) Creating new proxy SSL context (protocols: %s)", 
