@@ -754,12 +754,11 @@ static int find_ct(request_rec *r)
                 found = 1;
             }
             if (exinfo->language_type) {
-                r->content_language = exinfo->language_type; /* back compat. */
                 if (!r->content_languages)
                     r->content_languages = apr_array_make(r->pool, 2,
                                                           sizeof(char *));
-                *((const char **) apr_array_push(r->content_languages)) =
-                    exinfo->language_type;
+                    *((const char **) apr_array_push(r->content_languages))
+                                          = exinfo->language_type;
                 found = 1;
             }
             if (exinfo->encoding_type) {
@@ -863,7 +862,6 @@ static int find_ct(request_rec *r)
     if (!r->content_languages && conf->default_language) {
         const char **new;
 
-        r->content_language = conf->default_language; /* back compat. only */
         if (!r->content_languages)
             r->content_languages = apr_array_make(r->pool, 2, sizeof(char *));
         new = (const char **) apr_array_push(r->content_languages);

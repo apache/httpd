@@ -2370,9 +2370,15 @@ static int revision_suffix(request_rec *r)
 	if (sub->content_encoding)
 	    r->content_encoding =
 		apr_pstrdup(r->pool, sub->content_encoding);
-	if (sub->content_language)
-	    r->content_language =
-		apr_pstrdup(r->pool, sub->content_language);
+        if (sub->content_languages) {
+            int n;
+	    r->content_languages = apr_array_copy(r->pool, 
+                                                  sub->content_languages);
+            for (n = 0; n < r->content_languages->nelts; ++n) {
+                char **lang = ((char **)r->content_languages->elts) + n;
+                *lang = apr_pstrdup(r->pool, *lang);
+            }
+        }
 	result = 1;
     }
 
