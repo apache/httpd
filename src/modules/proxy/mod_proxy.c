@@ -432,8 +432,8 @@ static void *
     ps->cache.defaultexpire_set = 0;
     ps->cache.lmfactor = DEFAULT_CACHE_LMFACTOR;
     ps->cache.lmfactor_set = 0;
-    ps->cache.gcinterval = -1;
-    ps->cache.gcinterval_set = 0;
+    ps->cache.gcinterval = DEFAULT_CACHE_GCINTERVAL;
+    ps->cache.gcinterval_set = 1;
     /* at these levels, the cache can have 2^18 directories (256,000)  */
     ps->cache.dirlevels = 3;
     ps->cache.dirlevels_set = 0;

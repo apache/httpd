@@ -181,6 +181,7 @@ struct nocache_entry {
 #define DEFAULT_CACHE_EXPIRE    SEC_ONE_HR
 #define DEFAULT_CACHE_LMFACTOR (0.1)
 #define DEFAULT_CACHE_COMPLETION (0.9)
+#define DEFAULT_CACHE_GCINTERVAL SEC_ONE_HR
 
 /* static information about the local cache */
 struct cache_conf {
