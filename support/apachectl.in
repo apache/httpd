@@ -20,6 +20,7 @@
 # When multiple arguments are given, only the error from the _last_
 # one is reported.  Run "apachectl help" for usage info
 #
+ARGV="$@"
 #
 # |||||||||||||||||||| START CONFIGURATION SECTION  ||||||||||||||||||||
 # --------------------                              --------------------
@@ -30,10 +31,10 @@ PIDFILE=@prefix@/logs/@progname@.pid
 # the path to your httpd binary, including options if necessary
 HTTPD='@prefix@/bin/@progname@'
 #
-# the following lines are automatically uncommented for
-# binary builds
-#binbuild @SHLIBPATH_VAR@='@prefix@/lib/:$@SHLIBPATH_VAR@'
-#binbuild export @SHLIBPATH_VAR@
+# pick up any necessary environment variables
+if test -f @prefix@/bin/envvars; then
+  . @prefix@/bin/envvars
+fi
 #
 # a command that outputs a formatted text version of the HTML at the
 # url given on the command line.  Designed for lynx, however other
@@ -48,12 +49,11 @@ STATUSURL="http://localhost:@PORT@/server-status"
 # ||||||||||||||||||||   END CONFIGURATION SECTION  ||||||||||||||||||||
 
 ERROR=0
-ARGV="$@"
 if [ "x$ARGV" = "x" ] ; then 
     ARGS="help"
 fi
 
-for ARG in $@ $ARGS
+for ARG in $ARGV $ARGS
 do
     # check for pidfile
     if [ -f $PIDFILE ] ; then

@@ -21,6 +21,12 @@ install:
 	        chmod 755 $(sbindir)/$$i; \
 	    fi ; \
 	done
+	@if test -f "$(builddir)/envvars-std"; then \
+	    cp -p envvars-std $(sbindir); \
+	    if test ! -f $(sbindir)/envvars; then \
+	        cp -p envvars-std $(sbindir)/envvars ; \
+	    fi ; \
+	fi
 
 htpasswd_OBJECTS = htpasswd.lo
 htpasswd: $(htpasswd_OBJECTS)

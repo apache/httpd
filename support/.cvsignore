@@ -18,6 +18,7 @@ Release
 apachectl
 checkgid
 dbmmanage
+envvars-std
 log_server_status
 logresolve.pl
 split-logfile

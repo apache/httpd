@@ -1,0 +1,10 @@
+# envvars-std - default environment variables for apachectl
+#
+# This file is generated from envvars-std.in
+#
+# the following lines are automatically uncommented for
+# binary builds
+#binbuild @SHLIBPATH_VAR@='@prefix@/lib/:$@SHLIBPATH_VAR@'
+#binbuild export @SHLIBPATH_VAR@
+#
+@OS_SPECIFIC_VARS@
