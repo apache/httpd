@@ -451,6 +451,7 @@ Open issues:
       were previously log_reason(), which included the client address,
       but now using aplog_error() they're without the client address, and
       that sucks
+    - bump mmn and make it official (wanna make sure the api is right first)
 
 Win32 specific issues:
 
