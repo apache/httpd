@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- $Revision: 1.12 $ -->
+<!-- $Revision: 1.13 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -49,6 +49,8 @@
 <directive module="core">Options</directive>
 <directive module="mod_proxy">ProxyPass</directive>
 <directive module="mod_proxy">ProxyPassReverse</directive>
+<directive module="mod_proxy">ProxyPassReverseCookieDomain</directive>
+<directive module="mod_proxy">ProxyPassReverseCookiePath</directive>
 <directive module="mod_alias">Redirect</directive>
 <directive module="mod_alias">RedirectMatch</directive>
 <directive module="mod_rewrite">RewriteCond</directive>
@@ -223,6 +225,8 @@ server.</p>
 <example>
 ProxyPass /foo/ http://internal.example.com/bar/<br />
 ProxyPassReverse /foo/ http://internal.example.com/bar/
+ProxyPassReverseCookieDomain internal.example.com public.example.com
+ProxyPassReverseCookiePath /foo/ /bar/
 </example>
 
 <p>The <directive module="mod_proxy">ProxyPass</directive> configures
@@ -230,11 +234,17 @@ the server to fetch the appropriate documents, while the
 <directive module="mod_proxy">ProxyPassReverse</directive>
 directive rewrites redirects originating at
 <code>internal.example.com</code> so that they target the appropriate
-directory on the local server.  It is important to note, however, that
+directory on the local server.  Similarly, the
+<directive module="mod_proxy">ProxyPassReverseCookieDomain</directive>
+and <directive module="mod_proxy">ProxyPassReverseCookieDomain</directive>
+rewrite cookies set by the backend server.</p>
+<p>It is important to note, however, that
 links inside the documents will not be rewritten.  So any absolute
 links on <code>internal.example.com</code> will result in the client
 breaking out of the proxy server and requesting directly from
-<code>internal.example.com</code>.</p>
+<code>internal.example.com</code>.  A third-party module
+<a href="http://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a>
+is available to rewrite links in HTML and XHTML.</p>
 </section>
 
 <section id="rewrite"><title>Rewriting Engine</title>
