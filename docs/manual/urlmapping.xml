@@ -97,7 +97,7 @@
     directives to do powerful regular-expression based matching and
     substitution. For example,</p>
 
-<example>ScriptAliasMatch ^/~([a-zA-Z0-9]*)/cgi-bin/(.*)
+<example>ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)
       /home/$1/cgi-bin/$2</example>
 
     <p>will map a request to
@@ -144,7 +144,7 @@
     <code>/home/user/public_html/file.html</code>, use the following
     <code>AliasMatch</code> directive:</p>
 
-<example>AliasMatch ^/upages/([a-zA-Z0-9]*)/?(.*)
+<example>AliasMatch ^/upages/([a-zA-Z0-9]+)/?(.*)
       /home/$1/public_html/$2</example>
 </section>
 
