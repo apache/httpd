@@ -319,14 +319,22 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                  * are used to give a better idea as to what failed.
                  */
                 if (pkey_mtime) {
-                    char *key_id = apr_psprintf(p, "%s:%s", cpVHostID, "RSA"); /* XXX: check for DSA key too? */
-                    ssl_asn1_t *asn1 = ssl_asn1_table_get(mc->tPrivateKey, key_id);
+                    const char *key_types[] = {"RSA", "DSA", NULL};
+                    int i;
+
+                    for (i=0; key_types[i]; i++) {
+                        char *key_id =
+                            apr_psprintf(p, "%s:%s", cpVHostID, key_types[i]);
+                        ssl_asn1_t *asn1 = 
+                            ssl_asn1_table_get(mc->tPrivateKey, key_id);
                     
-                    if (asn1 && (asn1->source_mtime == pkey_mtime)) {
-                        ssl_log(pServ, SSL_LOG_INFO,
-                                "%s reusing existing private key on restart",
-                                cpVHostID);
-                        return;
+                        if (asn1 && (asn1->source_mtime == pkey_mtime)) {
+                            ssl_log(pServ, SSL_LOG_INFO,
+                                    "%s reusing existing "
+                                    "%s private key on restart",
+                                    cpVHostID, key_types[i]);
+                            return;
+                        }
                     }
                 }
 
