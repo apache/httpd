@@ -6146,6 +6146,8 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
     HANDLE hPipeRead = NULL;
     HANDLE hPipeWrite = NULL;
     HANDLE hPipeWriteDup;
+    HANDLE hNullOutput = NULL;
+    HANDLE hNullError = NULL;
     HANDLE hCurrentProcess;
     SECURITY_ATTRIBUTES sa = {0};  
 
@@ -6195,6 +6197,26 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
         return -1;
     }
 
+    /* Open a null handle to soak info from the child */
+    hNullOutput = CreateFile("null", GENERIC_READ | GENERIC_WRITE, 
+                             FILE_SHARE_READ | FILE_SHARE_WRITE, 
+                             &sa, OPEN_EXISTING, 0, NULL);
+    if (hNullOutput == INVALID_HANDLE_VALUE) {
+        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                     "Parent: Unable to create null output pipe for child process.\n");
+        return -1;
+    }
+
+    /* Open a null handle to soak info from the child */
+    hNullError = CreateFile("null", GENERIC_READ | GENERIC_WRITE, 
+                            FILE_SHARE_READ | FILE_SHARE_WRITE, 
+                            &sa, OPEN_EXISTING, 0, NULL);
+    if (hNullError == INVALID_HANDLE_VALUE) {
+        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                     "Parent: Unable to create null error pipe for child process.\n");
+        return -1;
+    }
+
     hCurrentProcess = GetCurrentProcess();
     if (DuplicateHandle(hCurrentProcess, hPipeWrite, hCurrentProcess,
                         &hPipeWriteDup, 0, FALSE, DUPLICATE_SAME_ACCESS))
@@ -6209,9 +6231,11 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
     memset(&si, 0, sizeof(si));
     memset(&pi, 0, sizeof(pi));
     si.cb = sizeof(si);
-    si.dwFlags     = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+    si.dwFlags     = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
     si.wShowWindow = SW_HIDE;
     si.hStdInput   = hPipeRead;
+    si.hStdOutput  = hNullOutput;
+    si.hStdError   = hNullError;
 
     if (!CreateProcess(NULL, pCommand, NULL, NULL, 
                        TRUE,      /* Inherit handles */
@@ -6226,6 +6250,10 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
          */ 
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
+        CloseHandle(hPipeRead);
+        CloseHandle(hPipeWrite);        
+        CloseHandle(hNullOutput);
+        CloseHandle(hNullError);        
 
         return -1;
     }
@@ -6272,6 +6300,8 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
     }
     CloseHandle(hPipeRead);
     CloseHandle(hPipeWrite);        
+    CloseHandle(hNullOutput);
+    CloseHandle(hNullError);        
 
     return 0;
 }
@@ -6875,7 +6905,6 @@ int REALMAIN(int argc, char *argv[])
         }
     }
 
-
     if (!ap_os_is_path_absolute(ap_server_confname)) {
         char *full_conf_path;
 
@@ -6987,8 +7016,8 @@ int REALMAIN(int argc, char *argv[])
 	if (!exit_event || !start_mutex)
 	    exit(-1);
 #ifdef WIN32
-	if (child)
-	    FreeConsole();
+    if (child && isWindowsNT())
+        FreeConsole();
 #endif
 	worker_main();
 	ap_destroy_mutex(start_mutex);
