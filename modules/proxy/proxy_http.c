@@ -849,7 +849,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             apr_table_do(addit_dammit, save_table, r->headers_out,
                          "Set-Cookie", NULL);
 
-	    /* shove the headers direct into r->headers_out */
+        /* shove the headers direct into r->headers_out */
             ap_proxy_read_headers(r, rp, buffer, sizeof(buffer), origin);
 
             if (r->headers_out == NULL) {
@@ -873,7 +873,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
                 /* Now, add in the just read cookies */
                 apr_table_do(addit_dammit, save_table, r->headers_out,
-        	             "Set-Cookie", NULL);
+                         "Set-Cookie", NULL);
 
                 /* and now load 'em all in */
                 if (!apr_is_empty_table(save_table)) {
@@ -1115,7 +1115,6 @@ int ap_proxy_http_handler(request_rec *r, proxy_worker *worker,
     int status;
     char server_portstr[32];
     char *scheme;
-    char *ch;
     const char *proxy_function;
     const char *u;
     proxy_conn_rec *backend = NULL;
@@ -1146,11 +1145,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_worker *worker,
         return HTTP_BAD_REQUEST;
     scheme = apr_pstrndup(c->pool, url, u - url);
     /* scheme is lowercase */
-    ch = scheme;
-    while (*ch) {
-        *ch = apr_tolower(*ch);
-        ++ch;
-    }
+    ap_str_tolower(scheme);
     /* is it for us? */
     if (strcmp(scheme, "https") == 0) {
         if (!ap_proxy_ssl_enable(NULL)) {
