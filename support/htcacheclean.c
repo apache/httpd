@@ -473,7 +473,11 @@ static int process_dir(char *path, apr_pool_t *pool)
     path[baselen] = '\0';
 
     for (i = apr_hash_first(p, h); i && !interrupted; i = apr_hash_next(i)) {
-         apr_hash_this(i, NULL, NULL, (void **)(&d));
+        void *hvalue;
+
+        apr_hash_this(i, NULL, NULL, &hvalue);
+        d = hvalue;
+
         switch(d->type) {
         case HEADERDATA:
             nextpath = apr_pstrcat(p, path, "/", d->basename,
