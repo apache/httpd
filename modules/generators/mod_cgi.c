@@ -739,6 +739,19 @@ static int cgi_handler(request_rec *r)
     }
 
     if (script_in && nph) {
+        struct ap_filter_t *cur;
+        
+        /* get rid of all filters up through protocol...  since we
+         * haven't parsed off the headers, there is no way they can
+         * work
+         */
+
+        cur = r->proto_output_filters;
+        while (cur && cur->frec->ftype < AP_FTYPE_CONNECTION) {
+            cur = cur->next;
+        }
+        r->output_filters = r->proto_output_filters = cur;
+
         bb = apr_brigade_create(r->pool);
 	b = apr_bucket_pipe_create(script_in);
 	APR_BRIGADE_INSERT_TAIL(bb, b);

@@ -1159,11 +1159,24 @@ static int cgid_handler(request_rec *r)
     } 
 
     if (nph) {
+        struct ap_filter_t *cur;
+        
         /* Passing our socket down the filter chain in a pipe bucket
          * gives up the responsibility of closing the socket, so
          * get rid of the cleanup.
          */
         apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
+
+        /* get rid of all filters up through protocol...  since we
+         * haven't parsed off the headers, there is no way they can
+         * work
+         */
+
+        cur = r->proto_output_filters;
+        while (cur && cur->frec->ftype < AP_FTYPE_CONNECTION) {
+            cur = cur->next;
+        }
+        r->output_filters = r->proto_output_filters = cur;
 
         bb = apr_brigade_create(r->pool);
         b = apr_bucket_pipe_create(tempsock);

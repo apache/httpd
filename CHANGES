@@ -1,5 +1,8 @@
 Changes with Apache 2.0.34-dev
 
+  *) Get nph- CGI scripts working again.  PRs 8902, 8907, 9983
+     [Jeff Trawick]
+
   *) Upgraded PCRE library to latest version 3.9 [Brian Pane]
 
   *) Add accessor function to set r->content_type. From now on,
