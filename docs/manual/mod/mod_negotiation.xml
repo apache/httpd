@@ -22,7 +22,7 @@
       containing the variants.</li>
 
       <li>A MultiViews search (enabled by the MultiViews <directive
-      module="core.html">Options</directive>, where the server does an
+      module="core">Options</directive>, where the server does an
       implicit filename pattern match, and choose from amongst the
       results.</li>
     </ul>
