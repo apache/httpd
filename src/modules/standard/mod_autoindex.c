@@ -923,20 +923,20 @@ static int dsortf(struct ent **e1, struct ent **e2)
      */
     switch ((*e1)->key) {
     case K_LAST_MOD:
-	    s1 = (*e1)->lm_cmp;
+	s1 = (*e1)->lm_cmp;
 	s2 = (*e2)->lm_cmp;
 	break;
     case K_SIZE:
-	    s1 = (*e1)->size_cmp;
+	s1 = (*e1)->size_cmp;
 	s2 = (*e2)->size_cmp;
 	break;
     case K_DESC:
-	    s1 = (*e1)->desc;
+	s1 = (*e1)->desc;
 	s2 = (*e2)->desc;
 	break;
     case K_NAME:
-	    default:
-	    s1 = (*e1)->name;
+    default:
+	s1 = (*e1)->name;
 	s2 = (*e2)->name;
 	break;
     }
