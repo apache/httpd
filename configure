@@ -567,13 +567,15 @@ if [ ".$PERL" = .no-perl-on-this-system ]; then
 fi
 
 ##
-##  expand path variables
+##  expand path variables and make sure
+##  they do not end with a backslash
 ##
 IFS=' '
-for var in exec_prefix bindir sbindir \
+for var in prefix exec_prefix bindir sbindir \
            libexecdir mandir sysconfdir datadir localstatedir; do
     eval "val=\$$var";
-    eval "$var=\"$val$subdir\""
+    val=`echo $val | sed -e 's:/*$::'`
+    eval "$var=\"$val\""
     case $var in
        sysconfdir|datadir|localstatedir ) 
            eval "val=\$$var"
@@ -586,12 +588,17 @@ for var in exec_prefix bindir sbindir \
 done
 
 ##
-##  determine the compile-time defaults for the config files
-##  under sysconfdir where Apache supports prefix-relative paths
-##  for maximum flexibility (e.g. to use the -d option with -f)
+##  determine prefix-relative paths for directories
+##  because Apache supports them for the -d and -f 
+##  options, the LoadModule directive, etc.
 ##
-localstatedir_compile=`echo $localstatedir | sed -e "s:^$prefix/*::" -e 's:\(.\)$:\1/:'`
-sysconfdir_compile=`echo $sysconfdir | sed -e "s:^$prefix/*::" -e 's:\(.\)$:\1/:'`
+##  [we have to make sure that it ends with a slash
+##   or we cannot support the case where the relative
+##   path is just the emtpy one, i.e. ""]
+##
+localstatedir_relative=`echo $localstatedir | sed -e "s:^$prefix/*::" -e 's:\(.\)$:\1/:'`
+sysconfdir_relative=`echo $sysconfdir | sed -e "s:^$prefix/*::" -e 's:\(.\)$:\1/:'`
+libexecdir_relative=`echo $libexecdir | sed -e "s:^$prefix/*::" -e 's:\(.\)$:\1/:'`
 
 ##
 ##  check and debug
@@ -612,15 +619,15 @@ if [ ".$layout" = .1 ]; then
     echo "Compilation paths:"
     echo "           HTTPD_ROOT: $prefix"
     echo "           SUEXEC_BIN: $sbindir/suexec"
-    echo "       DEFAULT_PIDLOG: ${localstatedir_compile}${localstatesubdir_run}/httpd.pid"
-    echo "   DEFAULT_SCOREBOARD: ${localstatedir_compile}${localstatesubdir_run}/httpd.scoreboard"
-    echo "     DEFAULT_LOCKFILE: ${localstatedir_compile}${localstatesubdir_run}/httpd.lock"
-    echo "      DEFAULT_XFERLOG: ${localstatedir_compile}${localstatesubdir_logs}/access_log"
-    echo "     DEFAULT_ERRORLOG: ${localstatedir_compile}${localstatesubdir_logs}/error_log"
-    echo "    TYPES_CONFIG_FILE: ${sysconfdir_compile}mime.types"
-    echo "   SERVER_CONFIG_FILE: ${sysconfdir_compile}httpd.conf"
-    echo "   ACCESS_CONFIG_FILE: ${sysconfdir_compile}access.conf"
-    echo " RESOURCE_CONFIG_FILE: ${sysconfdir_compile}srm.conf"
+    echo "       DEFAULT_PIDLOG: ${localstatedir_relative}${localstatesubdir_run}/httpd.pid"
+    echo "   DEFAULT_SCOREBOARD: ${localstatedir_relative}${localstatesubdir_run}/httpd.scoreboard"
+    echo "     DEFAULT_LOCKFILE: ${localstatedir_relative}${localstatesubdir_run}/httpd.lock"
+    echo "      DEFAULT_XFERLOG: ${localstatedir_relative}${localstatesubdir_logs}/access_log"
+    echo "     DEFAULT_ERRORLOG: ${localstatedir_relative}${localstatesubdir_logs}/error_log"
+    echo "    TYPES_CONFIG_FILE: ${sysconfdir_relative}mime.types"
+    echo "   SERVER_CONFIG_FILE: ${sysconfdir_relative}httpd.conf"
+    echo "   ACCESS_CONFIG_FILE: ${sysconfdir_relative}access.conf"
+    echo " RESOURCE_CONFIG_FILE: ${sysconfdir_relative}srm.conf"
     echo ""
     exit 0
 fi
@@ -642,6 +649,7 @@ sed <Makefile.tmpl >$mkf \
 -e "s%@bindir@%$bindir%g" \
 -e "s%@sbindir@%$sbindir%g" \
 -e "s%@libexecdir@%$libexecdir%g" \
+-e "s%@libexecdir_relative@%$libexecdir_relative%g" \
 -e "s%@mandir@%$mandir%g" \
 -e "s%@sysconfdir@%$sysconfdir%g" \
 -e "s%@datadir@%$datadir%g" \
@@ -662,15 +670,15 @@ echo "## USED AS A COMMAND LINE EXPANDER TO OVERRIDE PATHS" >>$src/apaci
 echo "## WITHOUT DISTURBING THE KNOWN MAKE BUILD PROCESS DISPLAY" >>$src/apaci
 echo "echo '-DHTTPD_ROOT=\"$prefix\"'" >>$src/apaci
 echo "echo '-DSUEXEC_BIN=\"$sbindir/suexec\"'" >>$src/apaci
-echo "echo '-DDEFAULT_PIDLOG=\"${localstatedir_compile}${localstatesubdir_run}/httpd.pid\"'" >>$src/apaci
-echo "echo '-DDEFAULT_SCOREBOARD=\"${localstatedir_compile}${localstatesubdir_run}/httpd.scoreboard\"'" >>$src/apaci
-echo "echo '-DDEFAULT_LOCKFILE=\"${localstatedir_compile}${localstatesubdir_run}/httpd.lock\"'" >>$src/apaci
-echo "echo '-DDEFAULT_XFERLOG=\"${localstatedir_compile}${localstatesubdir_logs}/access_log\"'" >>$src/apaci
-echo "echo '-DDEFAULT_ERRORLOG=\"${localstatedir_compile}${localstatesubdir_logs}/error_log\"'" >>$src/apaci
-echo "echo '-DTYPES_CONFIG_FILE=\"${sysconfdir_compile}mime.types\"'" >>$src/apaci
-echo "echo '-DSERVER_CONFIG_FILE=\"${sysconfdir_compile}httpd.conf\"'" >>$src/apaci
-echo "echo '-DACCESS_CONFIG_FILE=\"${sysconfdir_compile}access.conf\"'" >>$src/apaci
-echo "echo '-DRESOURCE_CONFIG_FILE=\"${sysconfdir_compile}srm.conf\"'" >>$src/apaci
+echo "echo '-DDEFAULT_PIDLOG=\"${localstatedir_relative}${localstatesubdir_run}/httpd.pid\"'" >>$src/apaci
+echo "echo '-DDEFAULT_SCOREBOARD=\"${localstatedir_relative}${localstatesubdir_run}/httpd.scoreboard\"'" >>$src/apaci
+echo "echo '-DDEFAULT_LOCKFILE=\"${localstatedir_relative}${localstatesubdir_run}/httpd.lock\"'" >>$src/apaci
+echo "echo '-DDEFAULT_XFERLOG=\"${localstatedir_relative}${localstatesubdir_logs}/access_log\"'" >>$src/apaci
+echo "echo '-DDEFAULT_ERRORLOG=\"${localstatedir_relative}${localstatesubdir_logs}/error_log\"'" >>$src/apaci
+echo "echo '-DTYPES_CONFIG_FILE=\"${sysconfdir_relative}mime.types\"'" >>$src/apaci
+echo "echo '-DSERVER_CONFIG_FILE=\"${sysconfdir_relative}httpd.conf\"'" >>$src/apaci
+echo "echo '-DACCESS_CONFIG_FILE=\"${sysconfdir_relative}access.conf\"'" >>$src/apaci
+echo "echo '-DRESOURCE_CONFIG_FILE=\"${sysconfdir_relative}srm.conf\"'" >>$src/apaci
 chmod a+x $src/apaci
 CFLAGS="$CFLAGS \\\`\$(SRCDIR)/apaci\\\`"
 

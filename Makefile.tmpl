@@ -91,6 +91,7 @@ sysconfdir      = @sysconfdir@
 datadir         = @datadir@
 localstatedir   = @localstatedir@
 
+libexecdir_relative   = @libexecdir_relative@
 localstatesubdir_run  = @localstatesubdir_run@
 localstatesubdir_logs = @localstatesubdir_logs@
 
@@ -215,7 +216,7 @@ install-programs:
 			echo dummy | awk '{ printf("%sLoadModule %-18s %s\n", \
 			    prefix, modname, modpath); }' \
 			    prefix="$$prefix" modname="$$name" \
-				modpath="$(libexecdir)/$$file" >>.install.conf; \
+				modpath="$(libexecdir_relative)$$file" >>.install.conf; \
         done; \
 	fi
 	@echo "<=== [programs]"
