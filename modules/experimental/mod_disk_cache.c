@@ -338,7 +338,8 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     obj->vobj = dobj = apr_pcalloc(r->pool, sizeof(*dobj));
 
     obj->key = apr_pstrdup(r->pool, key);
-    obj->info.len = len;
+    /* XXX Bad Temporary Cast - see cache_object_t notes */
+    obj->info.len = (apr_size_t) len;
     obj->complete = 0;   /* Cache object is not complete */
 
     dobj->name = obj->key;

@@ -206,6 +206,13 @@ struct cache_info {
 };
 
 /* cache handle information */
+
+/* XXX TODO On the next structure change/MMN bump, 
+ * count must become an apr_off_t, representing
+ * the potential size of disk cached objects.
+ * Then dig for
+ * "XXX Bad Temporary Cast - see cache_object_t notes" 
+ */
 typedef struct cache_object cache_object_t;
 struct cache_object {
     char *key;
