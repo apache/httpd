@@ -4,6 +4,15 @@ BEGIN {
     
     A["ServerRoot"] = "SYS:/APACHE2"
     A["Port"] = "80"
+    A["cgidir"] = "cgi-bin"
+    A["logfiledir"] = "logs"
+    A["htdocsdir"] = "htdocs"
+    A["sysconfdir"] = "conf"
+    A["iconsdir"] = "icons"
+    A["manualdir"] = "manual"
+    A["runtimedir"] = "logs"
+    A["errordir"] = "error"
+    A["proxycachedir"] = "proxy"
     
 }
 
@@ -38,6 +47,10 @@ match ($0,/@@.*@@/) {
     sub(/@@.*@@/,A[s],$0)
 }
 
+match ($0,/@rel_.*@/) {
+    s=substr($0,RSTART+5,RLENGTH-6)
+    sub(/@rel_.*@/,A[s],$0)
+}
 
 {
     print
