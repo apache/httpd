@@ -54,7 +54,7 @@
 # The build environment was originally provided by Sascha Schumann.
 #
 
-include $(top_builddir)/build/config_vars.mk
+@ap_make_include@ @ap_make_delimiter@$(top_builddir)/build/config_vars.mk@ap_make_delimiter@
 
 # Combine all of the flags together in the proper order so that
 # the user-defined flags can always override the configure ones, if needed.
@@ -252,7 +252,7 @@ SHLIB_SUFFIX = so
 #
 # Dependencies
 #
-include $(builddir)/.deps
+@ap_make_include@ @ap_make_delimiter@$(builddir)/.deps@ap_make_delimiter@
 
 .PHONY: all all-recursive install-recursive local-all $(PHONY_TARGETS) \
 	shared-build shared-build-recursive local-shared-build \

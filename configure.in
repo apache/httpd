@@ -489,6 +489,8 @@ AC_SUBST(perlbin)
 dnl If we are running on BSD/OS, we need to use the BSD .include syntax.
 
 BSD_MAKEFILE=no
+ap_make_include=include
+ap_make_delimiter=' '
 case $host in
 *bsdi*)
     # Check whether they've installed GNU make
@@ -496,9 +498,13 @@ case $host in
         true
     else
         BSD_MAKEFILE=yes
+        ap_make_include=.include
+        ap_make_delimiter='"'
     fi
     ;;
 esac
+AC_SUBST(ap_make_include)
+AC_SUBST(ap_make_delimiter)
 
 dnl Ensure that docs/conf is created.
 test -d docs/conf||$mkdir_p docs/conf
