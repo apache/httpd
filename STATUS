@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/05 04:38:18 $]
+Last modified at [$Date: 2002/02/05 06:16:03 $]
 
 Release:
 
@@ -91,11 +91,6 @@ RELEASE SHOWSTOPPERS:
 
             * anon shared memory not allocating enough 
                 (fix is apr/shm/unix/shm.c 1.14)
-
-    * Win32 allows multiple processes to attach to the same port.  This
-      means that I can open three DOS prompts, and run the same Apache
-      binary with the same config file three different times, and the
-      server won't complain.
 
     * ap_directory_walk skips some per-dir config merge functions
       if there is no "<Directory />" block in the configuration
