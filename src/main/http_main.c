@@ -320,6 +320,18 @@ static int my_child_num;
 
 scoreboard *scoreboard_image = NULL;
 
+static APACHE_TLS int volatile exit_after_unblock = 0;
+
+/* a clean exit from a child with proper cleanup */
+static void __attribute__((noreturn)) clean_child_exit(int code)
+{
+    if (pchild) {
+	child_exit_modules(pchild, server_conf);
+	destroy_pool(pchild);
+    }
+    exit(code);
+}
+
 #if defined(USE_FCNTL_SERIALIZED_ACCEPT) || defined(USE_FLOCK_SERIALIZED_ACCEPT)
 static void expand_lock_fname(pool *p)
 {
@@ -472,12 +484,12 @@ static void accept_mutex_on()
 
     if (sigprocmask(SIG_BLOCK, &accept_block_mask, &accept_previous_mask)) {
 	perror("sigprocmask(SIG_BLOCK)");
-	exit (1);
+	clean_child_exit(1);
     }
     if ((err = pthread_mutex_lock(accept_mutex))) {
 	errno = err;
 	perror("pthread_mutex_lock");
-	exit(1);
+	clean_child_exit(1);
     }
     have_accept_mutex = 1;
 }
@@ -489,7 +501,7 @@ static void accept_mutex_off()
     if ((err = pthread_mutex_unlock(accept_mutex))) {
 	errno = err;
 	perror("pthread_mutex_unlock");
-	exit(1);
+	clean_child_exit(1);
     }
     /* There is a slight race condition right here... if we were to die right
      * now, we'd do another pthread_mutex_unlock.  Now, doing that would let
@@ -507,7 +519,7 @@ static void accept_mutex_off()
     have_accept_mutex = 0;
     if (sigprocmask(SIG_SETMASK, &accept_previous_mask, NULL)) {
 	perror("sigprocmask(SIG_SETMASK)");
-	exit (1);
+	clean_child_exit(1);
     }
 }
 
@@ -592,7 +604,7 @@ static void accept_mutex_on()
 {
     if (semop(sem_id, &op_on, 1) < 0) {
 	perror("accept_mutex_on");
-	exit(1);
+	clean_child_exit(1);
     }
 }
 
@@ -600,7 +612,7 @@ static void accept_mutex_off()
 {
     if (semop(sem_id, &op_off, 1) < 0) {
 	perror("accept_mutex_off");
-	exit(1);
+	clean_child_exit(1);
     }
 }
 
@@ -653,7 +665,7 @@ static void accept_mutex_on(void)
 		    "fcntl: F_SETLKW: Error getting accept lock, exiting!  "
 		    "Perhaps you need to use the LockFile directive to place "
 		    "your lock file on a local disk!");
-	exit(1);
+	clean_child_exit(1);
     }
 }
 
@@ -669,7 +681,7 @@ static void accept_mutex_off(void)
 		    "fcntl: F_SETLKW: Error freeing accept lock, exiting!  "
 		    "Perhaps you need to use the LockFile directive to place "
 		    "your lock file on a local disk!");
-	exit(1);
+	clean_child_exit(1);
     }
 }
 
@@ -693,7 +705,7 @@ static void accept_mutex_child_init(pool *p)
     if (lock_fd == -1) {
 	aplog_error(APLOG_MARK, APLOG_EMERG, server_conf,
 		    "Child cannot open lock file: %s\n", lock_fname);
-	exit(1);
+	clean_child_exit(1);
     }
 }
 
@@ -724,7 +736,7 @@ static void accept_mutex_on(void)
     if (ret < 0) {
 	aplog_error(APLOG_MARK, APLOG_EMERG, server_conf,
 		    "flock: LOCK_EX: Error getting accept lock. Exiting!");
-	exit(1);
+	clean_child_exit(1);
     }
 }
 
@@ -733,7 +745,7 @@ static void accept_mutex_off(void)
     if (flock(lock_fd, LOCK_UN) < 0) {
 	aplog_error(APLOG_MARK, APLOG_EMERG, server_conf,
 		    "flock: LOCK_UN: Error freeing accept lock. Exiting!");
-	exit(1);
+	clean_child_exit(1);
     }
 }
 
@@ -789,15 +801,6 @@ static APACHE_TLS request_rec *volatile timeout_req;
 static APACHE_TLS const char *volatile timeout_name = NULL;
 static APACHE_TLS int volatile alarms_blocked = 0;
 static APACHE_TLS int volatile alarm_pending = 0;
-static APACHE_TLS int volatile exit_after_unblock = 0;
-
-/* a clean exit from a child with proper cleanup */
-static void __attribute__((noreturn)) clean_child_exit(int code)
-{
-    child_exit_modules(pchild, server_conf);
-    destroy_pool(pchild);
-    exit(code);
-}
 
 void timeout(int sig)
 {				/* Also called on SIGPIPE */
@@ -1641,7 +1644,7 @@ void reopen_scoreboard(pool *p)
     if (scoreboard_fd == -1) {
 	perror(scoreboard_fname);
 	fprintf(stderr, "Cannot open scoreboard file:\n");
-	exit(1);
+	clean_child_exit(1);
     }
 #else
 #ifdef __EMX__
@@ -2905,6 +2908,18 @@ void child_main(int child_num_arg)
     struct sockaddr sa_client;
     listen_rec *lr;
 
+    /* All of initialization is a critical section, we don't care if we're
+     * told to HUP or USR1 before we're done initializing.  For example,
+     * we could be half way through child_init_modules() when a restart
+     * signal arrives, and we'd have no real way to recover gracefully
+     * and exit properly.
+     *
+     * I suppose a module could take forever to initialize, but that would
+     * be either a broken module, or a broken configuration (i.e. network
+     * problems, file locking problems, whatever). -djg
+     */
+    block_alarms();
+
     my_pid = getpid();
     csd = -1;
     dupped_csd = -1;
@@ -2938,7 +2953,7 @@ void child_main(int child_num_arg)
     if (!geteuid() && setuid(user_id) == -1) {
 	aplog_error(APLOG_MARK, APLOG_ALERT, server_conf,
 		    "setuid: unable to change uid");
-	exit(1);
+	clean_child_exit(1);
     }
 #endif
 
@@ -2966,6 +2981,9 @@ void child_main(int child_num_arg)
         DosSetSignalExceptionFocus(0, &ulTimes);
     }
 #endif
+
+    /* done with the initialization critical section */
+    unblock_alarms();
 
     while (1) {
 	BUFF *conn_io;

@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) Cleaned up some race conditions in unix child_main during
+     initialization. [Dean Gaudet]
+
   *) SECURITY: "UserDir /abspath" without a * in the path would allow
      remote users to access "/~.." and bypass access restrictions
      (but note /~../.. was handled properly).
