@@ -410,8 +410,8 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 	    else {
 		int width = atoi(&w[10]);
 
-		if (width < 1) {
-		    return "NameWidth value must be greater than 1";
+		if (width < 5) {
+		    return "NameWidth value must be greater than 5";
 		}
 		d_cfg->name_width = width;
 		d_cfg->name_adjust = K_NOADJUST;
@@ -1042,41 +1042,6 @@ static void emit_link(request_rec *r, char *anchor, char fname, char curkey,
     }
 }
 
-/*
- * Fit a string into a specified buffer width, marking any
- * truncation.  The size argument is the actual buffer size, including
- * the \0 termination byte.  The buffer will be prefilled with blanks.
- * If the pad argument is false, any extra spaces at the end of the
- * buffer are omitted.  (Used when constructing anchors.)
- */
-static ap_inline char *widthify(const char *s, char *buff, int size, int pad)
-{
-    int s_len;
-
-    memset(buff, ' ', size);
-    buff[size - 1] = '\0';
-    s_len = strlen(s);
-    if (s_len > (size - 1)) {
-	ap_cpystrn(buff, s, size);
-	if (size > 1) {
-	    buff[size - 2] = '>';
-	}
-	if (size > 2) {
-	    buff[size - 3] = '.';
-	}
-	if (size > 3) {
-	    buff[size - 4] = '.';
-	}
-    }
-    else {
-	ap_cpystrn(buff, s, s_len + 1);
-	if (pad) {
-	    buff[s_len] = ' ';
-	}
-    }
-    return buff;
-}
-
 static void output_directories(struct ent **ar, int n,
 			       autoindex_config_rec *d, request_rec *r,
 			       int autoindex_opts, char keyid, char direction)
@@ -1088,6 +1053,7 @@ static void output_directories(struct ent **ar, int n,
     pool *scratch = ap_make_sub_pool(r->pool);
     int name_width;
     char *name_scratch;
+    char *pad_scratch;
 
     if (name[0] == '\0') {
 	name = "/";
@@ -1102,10 +1068,10 @@ static void output_directories(struct ent **ar, int n,
 	    }
 	}
     }
-    ++name_width;
     name_scratch = ap_palloc(r->pool, name_width + 1);
-    memset(name_scratch, ' ', name_width);
-    name_scratch[name_width] = '\0';
+    pad_scratch = ap_palloc(r->pool, name_width + 1);
+    memset(pad_scratch, ' ', name_width);
+    pad_scratch[name_width] = '\0';
 
     if (autoindex_opts & FANCY_INDEXING) {
 	ap_rputs("<PRE>", r);
@@ -1123,14 +1089,8 @@ static void output_directories(struct ent **ar, int n,
 	    }
 	    ap_rputs("> ", r);
 	}
-        emit_link(r, widthify("Name", name_scratch,
-			      (name_width > 5) ? 5 : name_width, K_NOPAD),
-		  K_NAME, keyid, direction, static_columns);
-	if (name_width > 5) {
-	    memset(name_scratch, ' ', name_width);
-	    name_scratch[name_width] = '\0';
-	    ap_rputs(&name_scratch[5], r);
-	}
+        emit_link(r, "Name", K_NAME, keyid, direction, static_columns);
+	ap_rputs(pad_scratch + 4, r);
 	/*
 	 * Emit the guaranteed-at-least-one-space-between-columns byte.
 	 */
@@ -1156,7 +1116,6 @@ static void output_directories(struct ent **ar, int n,
 
     for (x = 0; x < n; x++) {
 	char *anchor, *t, *t2;
-	char *pad;
 	int nwidth;
 
 	ap_clear_pool(scratch);
@@ -1167,15 +1126,12 @@ static void output_directories(struct ent **ar, int n,
 	    if (t[0] == '\0') {
 		t = "/";
 	    }
-	       /* 1234567890123456 */
 	    t2 = "Parent Directory";
-	    pad = name_scratch + 16;
 	    anchor = ap_escape_html(scratch, ap_os_escape_path(scratch, t, 0));
 	}
 	else {
 	    t = ar[x]->name;
-	    pad = name_scratch + strlen(t);
-	    t2 = ap_escape_html(scratch, t);
+	    t2 = t;
 	    anchor = ap_escape_html(scratch, ap_os_escape_path(scratch, t, 0));
 	}
 
@@ -1200,18 +1156,19 @@ static void output_directories(struct ent **ar, int n,
 		ap_rputs("</A>", r);
 	    }
 
-	    ap_rvputs(r, " <A HREF=\"", anchor, "\">",
-		      widthify(t2, name_scratch, name_width, K_NOPAD),
-		      "</A>", NULL);
-	    /*
-	     * We know that widthify() prefilled the buffer with spaces
-	     * before doing its thing, so use them.
-	     */
 	    nwidth = strlen(t2);
-	    if (nwidth < (name_width - 1)) {
-		name_scratch[nwidth] = ' ';
-		ap_rputs(&name_scratch[nwidth], r);
+	    if (nwidth > name_width) {
+	      memcpy(name_scratch, t2, name_width - 3);
+	      name_scratch[name_width - 3] = '.';
+	      name_scratch[name_width - 2] = '.';
+	      name_scratch[name_width - 1] = '>';
+	      name_scratch[name_width] = 0;
+	      t2 = name_scratch;
+	      nwidth = name_width;
 	    }
+	    ap_rvputs(r, " <A HREF=\"", anchor, "\">",
+	      ap_escape_html(scratch, t2), pad_scratch + nwidth,
+	      "</A>", NULL);
 	    /*
 	     * The blank before the storm.. er, before the next field.
 	     */
@@ -1241,7 +1198,7 @@ static void output_directories(struct ent **ar, int n,
 	}
 	else {
 	    ap_rvputs(r, "<LI><A HREF=\"", anchor, "\"> ", t2,
-		      "</A>", pad, NULL);
+		      "</A>", pad_scratch + strlen(t2), NULL);
 	}
 	ap_rputc('\n', r);
     }
