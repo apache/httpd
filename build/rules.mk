@@ -173,8 +173,10 @@ all-p: $(targets)
 install-p: $(targets) $(install_targets)
 	@if test -n '$(PROGRAMS)'; then \
 		test -d $(bindir) || $(MKINSTALLDIRS) $(bindir); \
-		for i in $(PROGRAMS); do \
+		for i in $(PROGRAMS) ""; do \
+		    if test "x$$i" != "x"; then \
 			$(INSTALL_PROGRAM) $$i $(bindir); \
+		    fi; \
 		done; \
 	fi
 
