@@ -1,5 +1,9 @@
 Changes with Apache 1.3.7
 
+  *) Add 'Request_Protocol' special keyword to mod_setenvif so that
+     environment variables can be set according to the protocol version
+     (e.g., HTTP/0.9 or HTTP/1.1) of the request.  [Ken Coar]
+
   *) Add DSO support for OpenStep (Mach 4.2) platform.
      [Ralf S. Engelschall, Rex Dieter <rdieter@math.unl.edu>] PR#3997
 

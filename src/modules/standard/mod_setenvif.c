@@ -125,7 +125,8 @@ enum special {
     SPECIAL_REMOTE_HOST,
     SPECIAL_REMOTE_USER,
     SPECIAL_REQUEST_URI,
-    SPECIAL_REQUEST_METHOD
+    SPECIAL_REQUEST_METHOD,
+    SPECIAL_REQUEST_PROTOCOL
 };
 typedef struct {
     char *name;                 /* header name */
@@ -241,6 +242,9 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 	else if (!strcasecmp(fname, "request_method")) {
 	    new->special_type = SPECIAL_REQUEST_METHOD;
 	}
+	else if (!strcasecmp(fname, "request_protocol")) {
+	    new->special_type = SPECIAL_REQUEST_PROTOCOL;
+	}
 	else {
 	    new->special_type = SPECIAL_NOT;
 	}
@@ -354,6 +358,9 @@ static int match_headers(request_rec *r)
 		break;
 	    case SPECIAL_REQUEST_METHOD:
 		val = r->method;
+		break;
+	    case SPECIAL_REQUEST_PROTOCOL:
+		val = r->protocol;
 		break;
 	    case SPECIAL_NOT:
 		val = ap_table_get(r->headers_in, b->name);

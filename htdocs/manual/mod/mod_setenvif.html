@@ -260,7 +260,8 @@
   <A
    HREF="directive-dict.html#Compatibility"
    REL="Help"
-  ><STRONG>Compatibility:</STRONG></A> Apache 1.3 and above
+  ><STRONG>Compatibility:</STRONG></A> Apache 1.3 and above; the
+  Request_Protocol keyword is only available with 1.3.7 and later
   </P>
   <P>
   The <SAMP>SetEnvIf</SAMP> directive defines environment variables
@@ -284,6 +285,10 @@
    </LI>
    <LI><SAMP>Request_Method</SAMP> - the name of the method being used
     (<SAMP>GET</SAMP>, <SAMP>POST</SAMP>, <EM>et cetera</EM>)
+   </LI>
+   <LI><SAMP>Request_Protocol</SAMP> - the name and version of the protocol
+    with which the request was made (<EM>e.g.</EM>, "HTTP/0.9", "HTTP/1.1",
+    <EM>etc.</EM>)
    </LI>
    <LI><SAMP>Request_URI</SAMP> - the portion of the URL following the
     scheme and host portion

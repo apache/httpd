@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/05/17 18:02:51 $]
+  Last modified at [$Date: 1999/05/19 13:26:03 $]
 
 Release:
 
@@ -132,10 +132,6 @@ Available Patches:
     * Ronald Tschalär's major update of mod_digest
         Message-ID: <199901050917.KAA10860@chill.innovation.ch>
         Status: Big change -- needs review.
-
-    * Ken's patch to add the request protocol to things mod_setenvif can test
-	Message-ID: <37405705.3EE83375@Golux.Com>
-	Status: Ken +1
 
 In progress:
 
