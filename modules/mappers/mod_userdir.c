@@ -199,7 +199,7 @@ static int translate_userdir(request_rec *r)
     const char *w, *dname;
     char *redirect;
     char *x = NULL;
-    struct stat statbuf;
+    ap_finfo_t statbuf;
 
     /*
      * If the URI doesn't match our basic pattern, we've nothing to do with
@@ -313,7 +313,8 @@ static int translate_userdir(request_rec *r)
          * anyway, in the hope that some handler might handle it. This can be
          * used, for example, to run a CGI script for the user.
          */
-        if (filename && (!*userdirs || stat(filename, &statbuf) != -1)) {
+        if (filename && (!*userdirs || 
+            ap_stat(&statbuf, filename, r->pool) == APR_SUCCESS)) {
             r->filename = ap_pstrcat(r->pool, filename, dname, NULL);
 	    /* when statbuf contains info on r->filename we can save a syscall
 	     * by copying it to r->finfo

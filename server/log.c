@@ -514,6 +514,7 @@ API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
 void ap_log_pid(ap_context_t *p, const char *fname)
 {
     ap_file_t *pid_file = NULL;
+    ap_finfo_t finfo;
     static pid_t saved_pid = -1;
     pid_t mypid;
 
@@ -522,7 +523,7 @@ void ap_log_pid(ap_context_t *p, const char *fname)
 
     fname = ap_server_root_relative(p, fname);
     mypid = getpid();
-    if (mypid != saved_pid && ap_stat(&pid_file, fname, p) == 0) {
+    if (mypid != saved_pid && ap_stat(&finfo, fname, p) == APR_SUCCESS) {
       /* WINCH and HUP call this on each restart.
        * Only warn on first time through for this pid.
        *

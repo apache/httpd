@@ -537,11 +537,11 @@ API_EXPORT(char *) ap_make_etag(request_rec *r, int force_weak)
     ap_timediff(r->request_time, r->mtime, &diff);
     weak = ((diff > 1) && !force_weak) ? "" : "W/";
 
-    if (r->finfo.st_mode != 0) {
+    if (r->finfo.protection != 0) {
         etag = ap_psprintf(r->pool,
                     "%s\"%lx-%lx-%lx\"", weak,
-                    (unsigned long) r->finfo.st_ino,
-                    (unsigned long) r->finfo.st_size,
+                    (unsigned long) r->finfo.inode,
+                    (unsigned long) r->finfo.size,
                     (unsigned long) r->mtime);
     }
     else {

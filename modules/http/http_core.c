@@ -2491,7 +2491,7 @@ static int default_handler(request_rec *r)
     if (r->method_number == M_PUT) {
         return METHOD_NOT_ALLOWED;
     }
-    if (r->finfo.st_mode == 0 || (r->path_info && *r->path_info)) {
+    if (r->finfo.protection == 0 || (r->path_info && *r->path_info)) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
 		      "File does not exist: %s",r->path_info ?
 		      ap_pstrcat(r->pool, r->filename, r->path_info, NULL)
@@ -2507,25 +2507,23 @@ static int default_handler(request_rec *r)
 		     "file permissions deny server access: %s", r->filename);
         return FORBIDDEN;
     }
-    ap_make_time(&temp, r->pool);	
-    ap_set_curtime(temp, r->finfo.st_mtime);
-    ap_update_mtime(r, temp);
+    ap_update_mtime(r, r->finfo.mtime);
     ap_set_last_modified(r);
     ap_set_etag(r);
     ap_table_setn(r->headers_out, "Accept-Ranges", "bytes");
     if (((errstatus = ap_meets_conditions(r)) != OK)
-	|| (errstatus = ap_set_content_length(r, r->finfo.st_size))) {
+	|| (errstatus = ap_set_content_length(r, r->finfo.size))) {
         ap_close(fd);
         return errstatus;
     }
 
 #ifdef USE_MMAP_FILES
-    if ((r->finfo.st_size >= MMAP_THRESHOLD)
-	&& (r->finfo.st_size < MMAP_LIMIT)
+    if ((r->finfo.size >= MMAP_THRESHOLD)
+	&& (r->finfo.size < MMAP_LIMIT)
 	&& (!r->header_only || (d->content_md5 & 1))) {
 	/* we need to protect ourselves in case we die while we've got the
  	 * file mmapped */
-    if (ap_mmap_create(&mm, fd, 0, r->finfo.st_size, r->pool) != APR_SUCCESS){
+    if (ap_mmap_create(&mm, fd, 0, r->finfo.size, r->pool) != APR_SUCCESS){
 	    ap_log_rerror(APLOG_MARK, APLOG_CRIT, errno, r,
 			 "default_handler: mmap failed: %s", r->filename);
 	    mm = NULL;
@@ -2584,7 +2582,7 @@ static int default_handler(request_rec *r)
 	    AP_MD5_CTX context;
 	    
 	    ap_MD5Init(&context);
-	    ap_MD5Update(&context, addr, (unsigned int)r->finfo.st_size);
+	    ap_MD5Update(&context, addr, (unsigned int)r->finfo.size);
 	    ap_table_setn(r->headers_out, "Content-MD5",
 			  ap_md5contextTo64(r->pool, &context));
 	}
@@ -2594,7 +2592,7 @@ static int default_handler(request_rec *r)
 	
 	if (!r->header_only) {
 	    if (!rangestatus) {
-		ap_send_mmap(mm, r, 0, r->finfo.st_size);
+		ap_send_mmap(mm, r, 0, r->finfo.size);
 	    }
 	    else {
 		ap_off_t offset;
