@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English revision: 1.6 -->
+
+<manualpage metafile="ip-based.xml.meta">
+<parentdocument href="./">가상호스트</parentdocument>
+   <title>아파치 IP기반 가상호스트 지원</title>
+
+<seealso>
+<a href="name-based.html">이름기반 가상호스트 지원</a>
+</seealso>
+
+<section id="requirements"><title>시스템 요구사항</title>
+
+    <p><cite>IP기반</cite>이란 말이 의미하듯이 서버는
+    <strong>IP기반 가상호스트 각각에 대해 다른 IP 주소를
+    가져야한다</strong>. 이는 컴퓨터를 물리적으로 여러 네트웍에
+    연결하거나, 최근 운영체제에서 지원하는 가상 인터페이스를
+    (자세한 내용은 시스템 문서를 참고하라. 흔히 "ip aliases"라고
+    하며, 보통 "ifconfig" 명령어로 만든다) 사용하여 가능하다.</p>
+
+</section>
+
+<section id="howto"><title>아파치 설정방법</title>
+
+    <p>여러 호스트를 지원하도록 아파치를 설정하는 방법은 두가지다.
+    하나는 각 호스트마다 별도의 웹서버를 실행하는
+    법이고, 다른 하나는 모든 가상호스트를 지원하는 서버 한개를
+    실행하는 방법이다.</p>
+
+    <p>언제 여러 서버를 사용하나:</p>
+
+    <ul>
+      <li>회사2의 사용자가 웹이외의 방법으로 회사1의 자료를 읽을
+      수 없게 하는 등 보안상 구분이 필요한 경우. 이 경우
+      두 서버를 각각 다른 <directive
+      module="mpm_common">User</directive>, <directive
+      module="mpm_common">Group</directive>, <directive
+      module="mpm_common">Listen</directive>, <directive
+      module="core">ServerRoot</directive> 설정으로 실행해야 한다.</li>
+
+      <li>충분한 메모리가 있고, 컴퓨터의 모든 IP를 기다리기위한
+      파일기술자(file descriptor) 요구사항도 만족한다. "와일드카드"나
+      특정 주소를 <directive
+      module="mpm_common">Listen</directive>할 수만 있다. 그래서
+      어떤 이유에서건 특정 주소를 기다릴 필요가 있다면, (한
+      웹서버가 한 주소를 제외한 모든 주소를 기다리고 다른 한
+      웹서버가 제외한 주소를 기다릴 수 있지만) 지정한 주소
+      모두를 기다려야 한다.</li>
+    </ul>
+
+    <p>언제 서버 한개를 사용하나:</p>
+
+    <ul>
+      <li>가상호스트들의 웹서버 설정을 공유할 수 있는 경우.</li>
+
+      <li>컴퓨터가 매우 많은 요청을 서비스한다면 여러 서버를
+      실행하기에 속도 손실이 클 수 있다.</li>
+    </ul>
+
+</section>
+
+<section id="multiple"><title>여러 서버를 실행하기</title>
+
+    <p>각 가상호스트별로 웹서버를 설치한다. 설정파일의
+    <directive module="mpm_common">Listen</directive> 지시어에
+    서버가 서비스할 IP 주소(혹은 가상호스트)를 적어준다. 예를
+    들면,</p>
+
+    <example>
+    Listen www.smallco.com:80
+    </example>
+
+    <p>호스트명 보다는 IP 주소를 사용하길 바란다.
+    (<a href="../dns-caveats.html">DNS 문제</a> 참고)</p>
+
+</section>
+
+<section id="single"><title>서버 하나로 가상호스트 실행하기</title>
+
+    <p>이 경우 웹서버 한개로 주서버와 모든 가상호스트에 대한
+    요청을 서비스한다. 설정파일의 <directive
+    module="core">VirtualHost</directive> 지시어에 가상호스트마다
+    다른 <directive module="core">ServerAdmin</directive>,
+    <directive module="core">ServerName</directive>, <directive
+    module="core">DocumentRoot</directive>, <directive
+    module="core">ErrorLog</directive>, <directive
+    module="mod_log_config">TransferLog</directive>,
+    <directive module="mod_log_config">CustomLog</directive>
+    지시어 값을 설정한다. 예를 들면,</p>
+
+    <example>
+    &lt;VirtualHost www.smallco.com&gt;<br />
+    ServerAdmin webmaster@mail.smallco.com<br />
+    DocumentRoot /groups/smallco/www<br />
+    ServerName www.smallco.com<br />
+    ErrorLog /groups/smallco/logs/error_log<br />
+    TransferLog /groups/smallco/logs/access_log<br />
+    &lt;/VirtualHost&gt;<br />
+		<br />
+    &lt;VirtualHost www.baygroup.org&gt;<br />
+    ServerAdmin webmaster@mail.baygroup.org<br />
+    DocumentRoot /groups/baygroup/www<br />
+    ServerName www.baygroup.org<br />
+    ErrorLog /groups/baygroup/logs/error_log<br />
+    TransferLog /groups/baygroup/logs/access_log<br />
+    &lt;/VirtualHost&gt;
+		</example>
+
+    <p>호스트명 보다는 IP 주소를 사용하길 바란다.
+    (<a href="../dns-caveats.html">DNS 문제</a> 참고)</p>
+
+    <p>VirtualHost 지시어 안에서는 프로세스 생성과 기타 몇몇 지시어를
+    제외하고 거의 <strong>모든</strong> 설정지시어를 사용할
+    수 있다. VirtualHost 지시어 안에서 지시어를 사용할 수 있는지
+    알려면 <a href="../mod/directives.html">지시어 목록</a>에서
+    <a href="../mod/directive-dict.html#Context">사용장소</a>를
+    확인하라.</p>
+
+    <p><a href="../suexec.html">suEXEC 프로그램</a>을
+    사용한다면 VirtualHost 지시어 안에 <directive
+    module="mpm_common">User</directive>와 <directive
+    module="mpm_common">Group</directive>을 사용할 수 있다.</p>
+
+    <p><em>보안:</em> 서버를 실행하는 사용자외에 다른 사람에게
+    로그파일이 있는 디렉토리의 쓰기권한이 있다면 보안
+    문제를 조심하라. 자세한 내용은 <a
+    href="../misc/security_tips.html">보안 팁</a>을 참고하라.</p>
+
+</section>
+</manualpage>

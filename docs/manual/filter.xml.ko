@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
+<!-- English revision: 1.6 -->
+
+<manualpage metafile="filter.xml.meta">
+
+  <title>필터</title>
+
+  <summary>
+    <p>이 문서는 아파치에서 필터를 사용하는 방법을 설명한다.</p>
+  </summary>
+
+  <section id="filters">
+    <title>필터</title>
+    <related>
+      <modulelist>
+        <module>mod_deflate</module>
+        <module>mod_ext_filter</module>
+        <module>mod_include</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_mime">AddInputFilter</directive>
+        <directive module="mod_mime">AddOutputFilter</directive>
+        <directive module="mod_mime">RemoveInputFilter</directive>
+        <directive module="mod_mime">RemoveOutputFilter</directive>
+        <directive module="mod_ext_filter">ExtFilterDefine</directive>
+        <directive module="mod_ext_filter">ExtFilterOptions</directive>
+        <directive module="core">SetInputFilter</directive>
+        <directive module="core">SetOutputFilter</directive>
+      </directivelist>
+    </related>
+    
+    <p><em>필터(filter)</em>는 서버가 보내거나 받는 자료에
+    적용되는 작업이다. 클라이언트가 서버에게 보내는 자료는
+    <em>입력필터(input filter)</em>가 처리하고, 서버가
+    클라이언트에게 보내는 자료는 <em>출력필터(output filter)</em>가
+    처리한다. 자료에 여러 필터를 사용할 수 있고, 직접 필터의
+    순서를 지정할 수 있다.</p>
+
+    <p>아파치는 이어받기(byte-range) 요청 등을 처리하기위해
+    내부적으로 필터를 사용한다. 또, 설정 지시어를
+    사용하여 선택가능한 필터를 제공하는 모듈도 있다.
+    <directive module="core">SetInputFilter</directive>,
+    <directive module="core">SetOutputFilter</directive>,
+    <directive module="mod_mime">AddInputFilter</directive>,
+    <directive module="mod_mime">AddOutputFilter</directive>,
+    <directive module="mod_mime">RemoveInputFilter</directive>,
+    <directive module="mod_mime">RemoveOutputFilter</directive>
+    지시어로 자료를 처리하는 필터를 조절한다.</p>
+
+    <p>현재 아파치 웹서버 배포본은 사용자가 선택할 수 있는 다음과
+    같은 필터를 제공한다.</p>
+
+    <dl>
+      <dt>INCLUDES</dt>
+      <dd><module>mod_include</module>가 처리하는 Server-Side Includes</dd>
+      <dt>DEFLATE</dt>
+      <dd><module>mod_deflate</module>를 사용하여 출력을
+          클라이언트로 보내기 전에 압축
+      </dd>
+    </dl>
+
+    <p>또, <module>mod_ext_filter</module> 모듈을 사용하여
+    외부 프로그램을 필터로 사용할 수도 있다.</p>
+  </section>
+</manualpage>
