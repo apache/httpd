@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/22 20:37:34 $]
+Last modified at [$Date: 2002/04/25 17:05:56 $]
 
 Release:
 
@@ -49,10 +49,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-    * Incorrect Content-Range headers or invalid 416 HTTP responses
-      if a filter such as INCLUDES changes the content length.  It may
-      happen only when there are multiple output brigades.
-
     * worker MPM segfaults because the apr_bucket_alloc_t is cleaned
       up twice.
 
@@ -84,6 +80,10 @@ CURRENT VOTES:
       -0:   Aaron (premature decision, needs more discussion), Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Incorrect Content-Range headers or invalid 416 HTTP responses
+      if a filter such as INCLUDES changes the content length.  It may
+      happen only when there are multiple output brigades.
 
     * --enable-mods-shared="foo1 foo2" is busted on Darwin.  Pier
         posted a patch (Message-ID: <B8DBBE8D.575A%pier@betaversion.org>).
