@@ -85,11 +85,6 @@ Available Patches:
 	Status: Marc +1, Jim +1 (concept)
 	* Needs more in-depth review *
 
-    * Manoj and Ken Parzygnat's PATCH to support %-expandos from Unix
-      on Win32
-        Message-ID: <19981027170221.A6663@raleigh.ibm.com>
-        Status:  Umm, wasn't this committed and/or reversed last week?
-
     * Ron Record's patch to port Apache to UnixWare 7 (forwarded by
       Randy).
 	Message-ID: <x767dg3476.fsf@montana.covalent.net>
