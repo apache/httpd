@@ -265,7 +265,7 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
 {
     server_rec *virt, *q;
     int replace_stderr;
-    ap_os_file_t errfile;
+    ap_file_t *errfile = NULL;
 
     open_error_log(s_main, p);
 
@@ -273,8 +273,8 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
     if (s_main->error_log) {
 	/* replace stderr with this new log */
 	fflush(stderr);
-        ap_get_os_file(&errfile, s_main->error_log);
-	if (dup2(errfile, STDERR_FILENO) == -1) {
+        ap_open_stderr(&errfile, p);        
+	if (ap_dupfile(&errfile, s_main->error_log) != APR_SUCCESS) {
 	    ap_log_error(APLOG_MARK, APLOG_CRIT, errno, s_main,
 		"unable to replace stderr with error_log");
 	} else {
@@ -307,12 +307,12 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
 }
 
 API_EXPORT(void) ap_error_log2stderr(server_rec *s) {
-    ap_os_file_t errfile;
+    ap_file_t *errfile;
 
-    ap_get_os_file(&errfile, s->error_log);
-    if (   s->error_log != NULL
-        && errfile != STDERR_FILENO)
-        dup2(errfile, STDERR_FILENO);
+    ap_open_stderr(&errfile, s->process->pool);        
+    if (   s->error_log != NULL) {
+        ap_dupfile(&(s->error_log), errfile);
+    }
 }
 
 static void log_error_core(const char *file, int line, int level, 
@@ -322,7 +322,6 @@ static void log_error_core(const char *file, int line, int level,
     char errstr[MAX_STRING_LEN + 1];    /* + 1 to have room for '\n' */
     size_t len;
     ap_file_t *logf = NULL;
-    ap_os_file_t errfileno = STDERR_FILENO;
 
     if (s == NULL) {
 	/*
@@ -333,11 +332,7 @@ static void log_error_core(const char *file, int line, int level,
 	if (((level & APLOG_LEVELMASK) != APLOG_NOTICE) &&
 	    ((level & APLOG_LEVELMASK) > DEFAULT_LOGLEVEL))
 	    return;
-#ifdef WIN32
-        /* This is where the different ap_put_os_file's belong */
-#else
-	ap_put_os_file(&logf, &errfileno, NULL);
-#endif
+	ap_open_stderr(&logf, NULL);
     }
     else if (s->error_log) {
 	/*

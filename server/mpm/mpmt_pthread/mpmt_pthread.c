@@ -1502,7 +1502,6 @@ static void mpmt_pthread_pre_config(ap_context_t *pconf, ap_context_t *plog, ap_
 	if (!one_process) {
 	    unixd_detach();
 	}
-
 	my_pid = getpid();
     }
 
