@@ -1397,7 +1397,6 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, server_rec *s)
     X509_NAME *subject, *issuer;
     X509 *cert;
     X509_CRL *crl;
-    BIO *bio;
     int i, n, rc;
 
     /*
@@ -1461,28 +1460,24 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, server_rec *s)
          * (A little bit complicated because of ASN.1 and BIOs...)
          */
         if (sc->nLogLevel >= SSL_LOG_TRACE) {
-            char *cp;
-            char *cp2;
+            char buff[512]; /* should be plenty */
+            BIO *bio = BIO_new(BIO_s_mem());
 
-            bio = BIO_new(BIO_s_mem());
-            BIO_printf(bio, "lastUpdate: ");
+            BIO_printf(bio, "CA CRL: Issuer: ");
+            X509_NAME_print(bio, issuer, 0);
+
+            BIO_printf(bio, ", lastUpdate: ");
             ASN1_UTCTIME_print(bio, X509_CRL_get_lastUpdate(crl));
 
             BIO_printf(bio, ", nextUpdate: ");
             ASN1_UTCTIME_print(bio, X509_CRL_get_nextUpdate(crl));
 
-            n = BIO_pending(bio);
-            cp = malloc(n+1);
-            n = BIO_read(bio, cp, n);
-            cp[n] = NUL;
+            n = BIO_read(bio, buff, sizeof(buff));
+            buff[n] = '\0';
+
             BIO_free(bio);
 
-            cp2 = X509_NAME_oneline(subject, NULL, 0);
-
-            ssl_log(s, SSL_LOG_TRACE, "CA CRL: Issuer: %s, %s", cp2, cp);
-
-            free(cp2);
-            free(cp);
+            ssl_log(s, SSL_LOG_TRACE, buff);
         }
 
         /*
