@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/07/09 16:26:07 $]
+Last modified at [$Date: 2000/07/09 17:28:16 $]
 
 Release:
 
@@ -176,7 +176,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
       Ryan's patch:
         MsgID: <Pine.LNX.4.21.0007072059120.18877-100000@koj.rkbloom.net>
-	Status: Dirk +1
+	Status: Dirk +1, Ryan +1
 	note: alternate patch will be sent, which replaces hooks with
 	      an alternative solution
 
