@@ -190,12 +190,6 @@
 
 #define strIsEmpty(s)    (s == NULL || s[0] == NUL)
 
-#define cfgMerge(el,unset)  mrg->el = (add->el == (unset)) ? base->el : add->el
-#define cfgMergeArray(el)   mrg->el = apr_array_append(p, add->el, base->el)
-#define cfgMergeString(el)  cfgMerge(el, NULL)
-#define cfgMergeBool(el)    cfgMerge(el, UNSET)
-#define cfgMergeInt(el)     cfgMerge(el, UNSET)
-
 #define myConnConfig(c) \
 (SSLConnRec *)ap_get_module_config(c->conn_config, &ssl_module)
 #define myConnConfigSet(c, val) \
