@@ -891,14 +891,8 @@ cmd_parms default_parms =
 
 API_EXPORT(char *) server_root_relative(pool *p, char *file)
 {
-#ifdef __EMX__
-    /* Add support for OS/2 drive names */
-    if ((file[0] == '/') || (file[1] == ':'))
+    if(os_is_path_absolute(file))
 	return file;
-#else
-    if (file[0] == '/')
-	return file;
-#endif
     return make_full_path(p, server_root, file);
 }
 
