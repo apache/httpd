@@ -1506,6 +1506,7 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
             }
             else {
                 new->left = current->right;
+                new->left->parent = new;
                 current->right = new;
                 new->parent = current;
             }
@@ -1609,6 +1610,7 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
             }
             else {
                 new->left = current->right;
+                new->left->parent = new;
                 current->right = new;
                 new->parent = current;
             }
