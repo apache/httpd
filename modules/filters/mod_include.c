@@ -706,15 +706,17 @@ static const char *get_include_var(const char *var, include_ctx_t *ctx)
          * v.s. empty strings on an empty match is deliberate.
          */
         if (!re) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, "regex capture $%d "
-                          "refers to no regex in %s", idx, r->filename);
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                "regex capture $%" APR_SIZE_T_FMT " refers to no regex in %s",
+                idx, r->filename);
             return NULL;
         }
         else {
             if (re->nsub < idx) {
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
-                              "regex capture $%d is out of range (last regex "
-                              "was: '%s') in %s", idx, re->rexp, r->filename);
+                              "regex capture $%" APR_SIZE_T_FMT
+                              " is out of range (last regex was: '%s') in %s",
+                              idx, re->rexp, r->filename);
                 return NULL;
             }
 
