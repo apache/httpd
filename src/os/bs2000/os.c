@@ -61,12 +61,14 @@
  */
 
 #include "httpd.h"
+#include "http_core.h"
 #include "os.h"
 
 /* Check the Content-Type to decide if conversion is needed */
 int ap_checkconv(struct request_rec *r)
 {
     int convert_to_ascii;
+    const char *type;
 
     /* To make serving of "raw ASCII text" files easy (they serve faster 
      * since they don't have to be converted from EBCDIC), a new
@@ -76,21 +78,24 @@ int ap_checkconv(struct request_rec *r)
      * set a flag that translation is required later on.
      */
 
+    type = (r->content_type == NULL) ? ap_default_type(r) : r->content_type;
+
     /* If no content type is set then treat it as (ebcdic) text/plain */
-    convert_to_ascii = (r->content_type == NULL);
+    convert_to_ascii = (type == NULL);
 
     /* Conversion is applied to text/ files only, if ever. */
-    if (r->content_type &&
-	(strncmp(r->content_type, "text/", 5) == 0
-	|| strncmp(r->content_type, "message/", 8) == 0)) {
-        if (strncmp(r->content_type, ASCIITEXT_MAGIC_TYPE_PREFIX, 
-        sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1) == 0)
-        r->content_type = ap_pstrcat(r->pool, "text/",
-        r->content_type+sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1, NULL);
+    if (type && (strncasecmp(type, "text/", 5) == 0 ||
+		 strncasecmp(type, "message/", 8) == 0)) {
+	if (strncasecmp(type, ASCIITEXT_MAGIC_TYPE_PREFIX,
+			sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1) == 0)
+	    r->content_type = ap_pstrcat(r->pool, "text/",
+					 type+sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1,
+					 NULL);
         else
-        /* translate EBCDIC to ASCII */
-        convert_to_ascii = 1;
+	    /* translate EBCDIC to ASCII */
+	    convert_to_ascii = 1;
     }
+    /* Enable conversion if it's a text document */
     ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, convert_to_ascii);
 
     return convert_to_ascii;
