@@ -47,7 +47,7 @@ function add_symbol (sym_name) {
 	}
 }
 
-/^[ \t]*AP[RU]?_DECLARE_DATA .*;$/ {
+/^[ \t]*(extern[ \t]+)?AP[RU]?_DECLARE_DATA .*;$/ {
        varname = $NF;
        gsub( /[*;]/, "", varname);
        gsub( /\[.*\]/, "", varname);
