@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
 <modulesynopsis>
-
 <name>mod_dir</name>
 <description>Provides for "trailing slash" redirects and
-    serving directory index files.</description>
+    serving directory index files</description>
 <status>Base</status>
 <sourcefile>mod_dir.c</sourcefile>
 <identifier>dir_module</identifier>
@@ -35,9 +35,9 @@
 </summary>
 
 <directivesynopsis>
+<name>DirectoryIndex</name>
 <description>List of resources to look for when the client requests
 a directory</description>
-<name>DirectoryIndex</name>
 <syntax>DirectoryIndex
     <em>local-url</em> [<em>local-url</em>] ...</syntax>
 <default>DirectoryIndex index.html</default>

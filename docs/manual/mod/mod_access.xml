@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE xml:manual [ <!ENTITY nbsp "&#160;"> ]>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
 <modulesynopsis>
 
@@ -14,9 +14,9 @@ address, or other characteristics of the client request.</description>
 
 <summary>
     <p>The directives provided by mod_access are used in <directive
-    module="core">&lt;Directory&gt;</directive>, <directive
-    module="core">&lt;Files&gt;</directive>, and <directive
-    module="core">&lt;Location&gt;</directive> sections as well as
+    module="core" type="section">Directory</directive>, <directive
+    module="core" type="section">Files</directive>, and <directive
+    module="core" type="section">Location</directive> sections as well as
     <code><a href="core.html#accessfilename">.htaccess</a></code>
     files to control access to particular parts of the server. Access
     can be controlled based on the client hostname, IP address, or
@@ -41,7 +41,7 @@ address, or other characteristics of the client request.</description>
     <code>POST</code>, etc). This is the desired behavior in most
     cases. However, it is possible to restrict some methods, while
     leaving other methods unrestricted, by enclosing the directives
-    in a <directive module="core">&lt;Limit&gt;</directive> section.</p>
+    in a <directive module="core" type="section">Limit</directive> section.</p>
 </summary>
 
 <seealso><directive module="core">Satisfy</directive></seealso>
@@ -291,11 +291,11 @@ evaluated.</description>
     configuration processing. This implies, for example, that an
     <directive module="mod_access">Allow</directive> or <directive
     module="mod_access">Deny</directive> directive occurring in a
-    <directive module="core">&lt;Location&gt;</directive> section will
+    <directive module="core" type="section">Location</directive> section will
     always be evaluated after an <directive
     module="mod_access">Allow</directive> or <directive
     module="mod_access">Deny</directive> directive occurring in a
-    <directive module="core">&lt;Directory&gt;</directive> section or
+    <directive module="core" type="section">Directory</directive> section or
     <code>.htaccess</code> file, regardless of the setting of the
     <directive>Order</directive> directive. For details on the merging
     of configuration sections, see the documentation on <a
