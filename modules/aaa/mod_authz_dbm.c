@@ -120,9 +120,7 @@ static apr_status_t get_dbm_entry_as_str(request_rec *r, char *user,
     *str = NULL;
 
     if (apr_dbm_fetch(f, q, &d) == APR_SUCCESS && d.dptr) {
-        *str = apr_palloc(r->pool, d.dsize + 1);
-        strncpy(pw, d.dptr, d.dsize);
-        *str[d.dsize] = '\0'; /* Terminate the string */
+        *str = apr_pstrmemdup(r->pool, d.dptr, d.dsize);
     }
 
     apr_dbm_close(f);
@@ -209,7 +207,6 @@ static int dbm_check_auth(request_rec *r)
                                                       &authz_dbm_module);
     char *user = r->user;
     int m = r->method_number;
-    int required = 0;
     const apr_array_header_t *reqs_arr = ap_requires(r);
     require_line *reqs = reqs_arr ? (require_line *) reqs_arr->elts : NULL;
     register int x;
@@ -227,8 +224,6 @@ static int dbm_check_auth(request_rec *r)
 
     for (x = 0; x < reqs_arr->nelts; x++) {
 
-        required |= 1;
-
         if (!(reqs[x].method_mask & (AP_METHOD_BIT << m))) {
             continue;
         }
@@ -239,8 +234,6 @@ static int dbm_check_auth(request_rec *r)
         if (!strcmp(w, "group")) {
             const char *orig_groups, *groups;
             char *v;
-
-            required |= 2;
 
             status = get_dbm_grp(r, user, conf->grpfile, conf->dbmtype,
                                  &groups);
