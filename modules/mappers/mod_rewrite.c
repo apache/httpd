@@ -192,12 +192,6 @@
 #define OPTION_NONE                 1<<0
 #define OPTION_INHERIT              1<<1
 
-#define CACHEMODE_TS                1<<0
-#define CACHEMODE_TTL               1<<1
-
-#define CACHE_TLB_ROWS 1024
-#define CACHE_TLB_COLS 4
-
 #ifndef RAND_MAX
 #define RAND_MAX 32767
 #endif
@@ -293,32 +287,24 @@ typedef struct {
 } rewrite_request_conf;
 
 
-/* the cache structures,
- * a 4-way hash apr_table_t with LRU functionality
+/* the (per-child) cache structures.
  */
-typedef struct cacheentry {
-    apr_time_t time;
-    char  *key;
-    char  *value;
-} cacheentry;
-
-typedef struct tlbentry {
-    int t[CACHE_TLB_COLS];
-} cachetlbentry;
-
-typedef struct cachelist {
-    char         *resource;
-    apr_array_header_t *entries;
-    apr_array_header_t *tlb;
-} cachelist;
-
 typedef struct cache {
     apr_pool_t         *pool;
-    apr_array_header_t *lists;
+    apr_hash_t         *maps;
 #if APR_HAS_THREADS
     apr_thread_mutex_t *lock;
 #endif
 } cache;
+
+/* cached maps contain an mtime for the whole map and live in a subpool
+ * of the cachep->pool. That makes it easy to forget them if necessary.
+ */
+typedef struct {
+    apr_time_t mtime;
+    apr_pool_t *pool;
+    apr_hash_t *entries;
+} cachedmap;
 
 /* the regex structure for the
  * substitution of backreferences
@@ -933,223 +919,110 @@ static char *subst_prefix_path(request_rec *r, char *input, char *match,
  * +-------------------------------------------------------+
  */
 
-static int cache_tlb_hash(char *key)
+static void set_cache_value(const char *name, apr_time_t t, char *key,
+                            char *val)
 {
-    unsigned long n;
-    char *p;
+    cachedmap *map;
 
-    n = 0;
-    for (p = key; *p != '\0'; p++) {
-        n = ((n << 5) + n) ^ (unsigned long)(*p++);
-    }
-
-    return n % CACHE_TLB_ROWS;
-}
-
-static cacheentry *cache_tlb_lookup(cachetlbentry *tlb, cacheentry *elt,
-                                    char *key)
-{
-    int ix = cache_tlb_hash(key);
-    int i;
-    int j;
-
-    for (i=0; i < CACHE_TLB_COLS; ++i) {
-        j = tlb[ix].t[i];
-        if (j < 0)
-            return NULL;
-        if (strcmp(elt[j].key, key) == 0)
-            return &elt[j];
-    }
-    return NULL;
-}
-
-static void cache_tlb_replace(cachetlbentry *tlb, cacheentry *elt,
-                              cacheentry *e)
-{
-    int ix = cache_tlb_hash(e->key);
-    int i;
-
-    tlb = &tlb[ix];
-
-    for (i=1; i < CACHE_TLB_COLS; ++i)
-        tlb->t[i] = tlb->t[i-1];
-
-    tlb->t[0] = e - elt;
-}
-
-static cacheentry *retrieve_cache_string(cache *c, const char *res, char *key)
-{
-    int i;
-    int j;
-    cachelist *l;
-    cacheentry *e;
-
+    if (cachep) {
 #if APR_HAS_THREADS
-    apr_thread_mutex_lock(c->lock);
+        apr_thread_mutex_lock(cachep->lock);
 #endif
+        map = apr_hash_get(cachep->maps, name, APR_HASH_KEY_STRING);
 
-    for (i = 0; i < c->lists->nelts; i++) {
-        l = &(((cachelist *)c->lists->elts)[i]);
-        if (strcmp(l->resource, res) == 0) {
+        if (!map) {
+            apr_pool_t *p;
 
-            e = cache_tlb_lookup((cachetlbentry *)l->tlb->elts,
-                                 (cacheentry *)l->entries->elts, key);
-            if (e != NULL) {
+            if (apr_pool_create(&p, cachep->pool) != APR_SUCCESS) {
 #if APR_HAS_THREADS
-                apr_thread_mutex_unlock(c->lock);
-#endif
-                return e;
-            }
-
-            for (j = 0; j < l->entries->nelts; j++) {
-                e = &(((cacheentry *)l->entries->elts)[j]);
-                if (strcmp(e->key, key) == 0) {
-#if APR_HAS_THREADS
-                    apr_thread_mutex_unlock(c->lock);
-#endif
-                    return e;
-                }
-            }
-        }
-    }
-#if APR_HAS_THREADS
-    apr_thread_mutex_unlock(c->lock);
-#endif
-    return NULL;
-}
-
-static void store_cache_string(cache *c, const char *res, cacheentry *ce)
-{
-    int i;
-    int j;
-    cachelist *l;
-    cacheentry *e;
-    cachetlbentry *t;
-    int found_list;
-
-#if APR_HAS_THREADS
-    apr_thread_mutex_lock(c->lock);
-#endif
-
-    found_list = 0;
-    /* first try to edit an existing entry */
-    for (i = 0; i < c->lists->nelts; i++) {
-        l = &(((cachelist *)c->lists->elts)[i]);
-        if (strcmp(l->resource, res) == 0) {
-            found_list = 1;
-
-            e = cache_tlb_lookup((cachetlbentry *)l->tlb->elts,
-                                 (cacheentry *)l->entries->elts, ce->key);
-            if (e != NULL) {
-                e->time  = ce->time;
-                e->value = apr_pstrdup(c->pool, ce->value);
-#if APR_HAS_THREADS
-                apr_thread_mutex_unlock(c->lock);
+                apr_thread_mutex_unlock(cachep->lock);
 #endif
                 return;
             }
 
-            for (j = 0; j < l->entries->nelts; j++) {
-                e = &(((cacheentry *)l->entries->elts)[j]);
-                if (strcmp(e->key, ce->key) == 0) {
-                    e->time  = ce->time;
-                    e->value = apr_pstrdup(c->pool, ce->value);
-                    cache_tlb_replace((cachetlbentry *)l->tlb->elts,
-                                      (cacheentry *)l->entries->elts, e);
+            map = apr_palloc(cachep->pool, sizeof(cachedmap));
+            map->pool = p;
+            map->entries = apr_hash_make(map->pool);
+            map->mtime = t;
+
+            apr_hash_set(cachep->maps, name, APR_HASH_KEY_STRING, map);
+        }
+        else if (map->mtime != t) {
+            apr_pool_clear(map->pool);
+            map->entries = apr_hash_make(map->pool);
+            map->mtime = t;
+        }
+
+        /* Now we should have a valid map->entries hash, where we
+         * can store our value.
+         *
+         * We need to copy the key and the value into OUR pool,
+         * so that we don't leave it during the r->pool cleanup.
+         */
+        apr_hash_set(map->entries,
+                     apr_pstrdup(map->pool, key), APR_HASH_KEY_STRING,
+                     apr_pstrdup(map->pool, val));
+
 #if APR_HAS_THREADS
-                    apr_thread_mutex_unlock(c->lock);
+        apr_thread_mutex_unlock(cachep->lock);
 #endif
-                    return;
+    }
+
+    return;
+}
+
+static char *get_cache_value(const char *name, apr_time_t t, char *key,
+                             apr_pool_t *p)
+{
+    cachedmap *map;
+    char *val = NULL;
+
+    if (cachep) {
+#if APR_HAS_THREADS
+        apr_thread_mutex_lock(cachep->lock);
+#endif
+        map = apr_hash_get(cachep->maps, name, APR_HASH_KEY_STRING);
+
+        if (map) {
+            /* if this map is outdated, forget it. */
+            if (map->mtime != t) {
+                apr_pool_clear(map->pool);
+                map->entries = apr_hash_make(map->pool);
+                map->mtime = t;
+            }
+            else {
+                val = apr_hash_get(map->entries, key, APR_HASH_KEY_STRING);
+                if (val) {
+                    /* copy the cached value into the supplied pool,
+                     * where it belongs (r->pool usually)
+                     */
+                    val = apr_pstrdup(p, val);
                 }
             }
         }
-    }
 
-    /* create a needed new list */
-    if (!found_list) {
-        l = apr_array_push(c->lists);
-        l->resource = apr_pstrdup(c->pool, res);
-        l->entries  = apr_array_make(c->pool, 2, sizeof(cacheentry));
-        l->tlb      = apr_array_make(c->pool, CACHE_TLB_ROWS,
-                                    sizeof(cachetlbentry));
-        for (i=0; i<CACHE_TLB_ROWS; ++i) {
-            t = &((cachetlbentry *)l->tlb->elts)[i];
-                for (j=0; j<CACHE_TLB_COLS; ++j)
-                    t->t[j] = -1;
-        }
-    }
-
-    /* create the new entry */
-    for (i = 0; i < c->lists->nelts; i++) {
-        l = &(((cachelist *)c->lists->elts)[i]);
-        if (strcmp(l->resource, res) == 0) {
-            e = apr_array_push(l->entries);
-            e->time  = ce->time;
-            e->key   = apr_pstrdup(c->pool, ce->key);
-            e->value = apr_pstrdup(c->pool, ce->value);
-            cache_tlb_replace((cachetlbentry *)l->tlb->elts,
-                              (cacheentry *)l->entries->elts, e);
 #if APR_HAS_THREADS
-            apr_thread_mutex_unlock(c->lock);
+        apr_thread_mutex_unlock(cachep->lock);
 #endif
-            return;
-        }
     }
 
-    /* not reached, but when it is no problem... */
-#if APR_HAS_THREADS
-    apr_thread_mutex_unlock(c->lock);
-#endif
-    return;
+    return val;
 }
 
-static void set_cache_string(cache *c, const char *res, int mode, apr_time_t t,
-                             char *key, char *value)
+static int init_cache(apr_pool_t *p)
 {
-    cacheentry ce;
-
-    ce.time  = t;
-    ce.key   = key;
-    ce.value = value;
-    store_cache_string(c, res, &ce);
-    return;
-}
-
-static char *get_cache_string(cache *c, const char *res, int mode,
-                              apr_time_t t, char *key)
-{
-    cacheentry *ce;
-
-    ce = retrieve_cache_string(c, res, key);
-    if (ce == NULL) {
-        return NULL;
+    cachep = apr_palloc(p, sizeof(cache));
+    if (apr_pool_create(&cachep->pool, p) != APR_SUCCESS) {
+        cachep = NULL; /* turns off cache */
+        return 0;
     }
-    if (mode & CACHEMODE_TS) {
-        if (t != ce->time) {
-            return NULL;
-        }
-    }
-    else if (mode & CACHEMODE_TTL) {
-        if (t > ce->time) {
-            return NULL;
-        }
-    }
-    return apr_pstrdup(c->pool, ce->value);
-}
 
-static cache *init_cache(apr_pool_t *p)
-{
-    cache *c;
-
-    c = (cache *)apr_palloc(p, sizeof(cache));
-    if (apr_pool_create(&c->pool, p) != APR_SUCCESS) {
-        return NULL;
-    }
-    c->lists = apr_array_make(c->pool, 2, sizeof(cachelist));
+    cachep->maps = apr_hash_make(cachep->pool);
 #if APR_HAS_THREADS
-    (void)apr_thread_mutex_create(&(c->lock), APR_THREAD_MUTEX_DEFAULT, p);
+    (void)apr_thread_mutex_create(&(cachep->lock), APR_THREAD_MUTEX_DEFAULT, p);
 #endif
-    return c;
+
+    return 1;
 }
 
 
@@ -1563,7 +1436,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             return NULL;
         }
 
-        value = get_cache_string(cachep, name, CACHEMODE_TS, st.mtime, key);
+        value = get_cache_value(name, st.mtime, key, r->pool);
         if (!value) {
             rewritelog(r, 6, "cache lookup FAILED, forcing new map lookup");
 
@@ -1571,13 +1444,13 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             if (!value) {
                 rewritelog(r, 5, "map lookup FAILED: map=%s[txt] key=%s",
                            name, key);
-                set_cache_string(cachep, name, CACHEMODE_TS, st.mtime, key, "");
+                set_cache_value(name, st.mtime, key, "");
                 return NULL;
             }
 
-            rewritelog(r, 5, "map lookup OK: map=%s key=%s[txt] -> val=%s",
+            rewritelog(r, 5, "map lookup OK: map=%s[txt] key=%s -> val=%s",
                        name, key, value);
-            set_cache_string(cachep, name, CACHEMODE_TS, st.mtime, key, value);
+            set_cache_value(name, st.mtime, key, value);
         }
         else {
             rewritelog(r, 5, "cache lookup OK: map=%s[txt] key=%s -> val=%s",
@@ -1604,7 +1477,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             return NULL;
         }
 
-        value = get_cache_string(cachep, name, CACHEMODE_TS, st.mtime, key);
+        value = get_cache_value(name, st.mtime, key, r->pool);
         if (!value) {
             rewritelog(r, 6, "cache lookup FAILED, forcing new map lookup");
 
@@ -1612,13 +1485,13 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             if (!value) {
                 rewritelog(r, 5, "map lookup FAILED: map=%s[dbm] key=%s",
                            name, key);
-                set_cache_string(cachep, name, CACHEMODE_TS, st.mtime, key, "");
+                set_cache_value(name, st.mtime, key, "");
                 return NULL;
             }
 
             rewritelog(r, 5, "map lookup OK: map=%s[dbm] key=%s -> val=%s",
                        name, key, value);
-            set_cache_string(cachep, name, CACHEMODE_TS, st.mtime, key, value);
+            set_cache_value(name, st.mtime, key, value);
             return value;
         }
 
@@ -3945,7 +3818,10 @@ static void init_child(apr_pool_t *p, server_rec *s)
     }
 
     /* create the lookup cache */
-    cachep = init_cache(p);
+    if (!init_cache(p)) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                     "mod_rewrite: could not init map cache in child");
+    }
 }
 
 
