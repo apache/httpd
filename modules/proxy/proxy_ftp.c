@@ -1821,7 +1821,8 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
             }
 
             /* try send what we read */
-            if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS) {
+            if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS
+                || c->aborted) {
                 /* Ack! Phbtt! Die! User aborted! */
                 finish = TRUE;
             }
