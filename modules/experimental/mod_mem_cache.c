@@ -248,7 +248,7 @@ static apr_status_t cleanup_cache_mem(void *sconfv)
         apr_thread_mutex_lock(sconf->lock);
     }
     /* Iterate over the cache and clean up each entry */
-    while ((hi = cache_hash_first(NULL, co->cacheht)) != NULL) {
+    while ((hi = cache_hash_first(co->cacheht)) != NULL) {
         /* Fetch the object from the cache */
         cache_hash_this(hi, NULL, NULL, (void **)&obj);
         if (obj) {
