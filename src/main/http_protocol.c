@@ -880,9 +880,29 @@ void send_error_response (request_rec *r, int recursive_error)
 
     if (r->header_only) return;
     
-    if ((custom_response = response_code_string (r, idx)))
-        bputs(custom_response, c->client);
-    else {
+    if ((custom_response = response_code_string (r, idx))) {
+        /*
+	 * We have a custom response output. This should only be
+	 * a text-string to write back. But if the ErrorDocument
+	 * was a local redirect and the requested resource failed
+	 * for any reason, the custom_response will still hold the
+	 * redirect URL. We don't really want to output this URL
+	 * as a text message, so first check the custom response 
+	 * string to ensure that it is a text-string (using the
+	 * same test used in die(), i.e. does it start with a
+	 * "). If it doesn't, we've got a recursive error, so find
+	 * the original error and output that as well.
+	 */
+        if (custom_response[0] == '\"') { 
+            bputs(custom_response+1, c->client);
+	      return;
+	}
+	/* Redirect failed, so get back the original error
+	 */
+	while (r->prev && r->prev->status != 200)
+          r = r->prev;
+    }
+    {
 	char *title = response_titles[idx];
 	BUFF *fd = c->client;
 	

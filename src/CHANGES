@@ -1,5 +1,8 @@
 Changes with Apache 1.2b1:
 
+  *) Fix ErrorDocument handling.  When ErrorDocument failed it used to 
+     display filename instead of error message. [Paul Sutton]
+
   *) Graceful restart code added. This allows the server to restart without
      losing current connections on receipt of signal 2 (SIGINT). [Ben Laurie]
 
