@@ -80,17 +80,6 @@ typedef struct {
 
 module MODULE_VAR_EXPORT negotiation_module;
 
-static char *merge_string_array(pool *p, array_header *arr, char *sep)
-{
-    int i;
-    char *t = "";
-
-    for (i = 0; i < arr->nelts; i++) {
-        t = ap_pstrcat(p, t, (i ? sep : ""), ((char **) arr->elts)[i], NULL);
-    }
-    return t;
-}
-
 static void *create_neg_dir_config(pool *p, char *dummy)
 {
     neg_dir_config *new = (neg_dir_config *) ap_palloc(p, sizeof(neg_dir_config));
@@ -1653,59 +1642,40 @@ static int is_identity_encoding(const char *enc)
 
 /*
  * set_encoding_quality determines whether the encoding for a particular
- * variant is acceptable for the user-agent. There are no q-values on
- * encodings, so this is set as an integer value variant->encoding_quality.
+ * variant is acceptable for the user-agent.
  *
  * The rules for encoding are that if the user-agent does not supply
- * any Accept-Encoding header, then all encodings are allowed. If
- * there is an empty Accept-Encoding header, then no encodings are 
+ * any Accept-Encoding header, then all encodings are allowed but a
+ * variant with no encoding should be preferred.
+ * If there is an empty Accept-Encoding header, then no encodings are 
  * acceptable. If there is a non-empty Accept-Encoding header, then
- * any of the listed encodings are acceptable, as well as no encoding.
- *
- * In the later case, we assume that it is preferable to return a
- * suitable encoded variant in preference to an unencoded variant.
- *
- * The variant with the higher value should be preferred over variants
- * with lower values. The values used are 0 if this variant is
- * unacceptable (if it is encoded but the user-agent does not accept
- * this encoding or any encodings), 1 if this variant is acceptable to
- * the user-agent either because this variant is unencoded or the
- * user-agent does not give an Accept-Encoding header, or 2 if this
- * variant is encoding and the user-agent specifically asks for this
- * encoding on its Accept-Encoding header. The effect of this is to
- * prefer encoded variants when they user-agent explicitly says that
- * the encoding is acceptable, otherwise encoded and unencoded
- * variants get the same encoding_quality. 
+ * any of the listed encodings are acceptable, as well as no encoding
+ * unless the "identity" encoding is specifically excluded.
  */
-
-/* For a given variant, find the encoding quality using the
- * Accept-Encoding header.
- */
-
 static void set_encoding_quality(negotiation_state *neg, var_rec *variant)
 {
-    int i;
     accept_rec *accept_recs;
     const char *enc = variant->content_encoding;
     accept_rec *star = NULL;
-
-    if (!enc || is_identity_encoding(enc)) {
-        return;
-    }
+    float value_if_not_found = 0.0f;
+    int i;
 
     if (!neg->accept_encodings) {
         /* We had no Accept-Encoding header, assume that all
-         * encodings are acceptable with a quality of 1.
-         *
-         * XXX: This assumption is unsafe, and the only thing which
-         * prevents it from causing serious harm is that the Apache
-         * negotiation algorithm (currently) always prefers unencoded
-         * variants over encoded ones, while the RVSA/1.0 algorithm
-         * (currently) ignores encoded variants entirely. -kh 
+         * encodings are acceptable with a low quality,
+         * but we prefer no encoding if available.
          */
+        if (!enc || is_identity_encoding(enc))
+            variant->encoding_quality = 1.0f;
+        else
+            variant->encoding_quality = 0.5f;
 
-        variant->encoding_quality = 1;
         return;
+    }
+
+    if (!enc || is_identity_encoding(enc)) {
+        enc = "identity";
+        value_if_not_found = 0.0001f;
     }
 
     accept_recs = (accept_rec *) neg->accept_encodings->elts;
@@ -1741,9 +1711,9 @@ static void set_encoding_quality(negotiation_state *neg, var_rec *variant)
     }
 
     /* Encoding not found on Accept-Encoding: header, so it is
-     * _not_ acceptable
+     * _not_ acceptable unless it is the identity (no encoding)
      */
-    variant->encoding_quality = 0;
+    variant->encoding_quality = value_if_not_found;
 }
 
 /************************************************************* 
@@ -1783,14 +1753,10 @@ static int is_variant_better_rvsa(negotiation_state *neg, var_rec *variant,
     float bestq = *p_bestq, q;
 
     /* TCN does not cover negotiation on content-encoding.  For now,
-     * we ignore all variants which have a content-encoding, i.e. we
-     * return 0 for them to signify that they are never better than
-     * anything.
-     *
-     * XXX Todo: improve on this, e.g. by adding a second negotiation
-     * phase on content encoding if the RVSA is used.
+     * we ignore the encoding unless it was explicitly excluded.
      */
-    if (variant->content_encoding) return 0;
+    if (variant->encoding_quality == 0.0f)
+        return 0;
     
     q = variant->mime_type_quality *
         variant->source_quality *
@@ -1812,7 +1778,7 @@ static int is_variant_better_rvsa(negotiation_state *neg, var_rec *variant,
             (variant->file_name ? variant->file_name : ""),
             (variant->mime_name ? variant->mime_name : ""),
             (variant->content_languages
-             ? merge_string_array(neg->pool, variant->content_languages, ",")
+             ? ap_array_pstrcat(neg->pool, variant->content_languages, ',')
              : ""),
             variant->source_quality,
             variant->mime_type_quality,
@@ -1830,6 +1796,13 @@ static int is_variant_better_rvsa(negotiation_state *neg, var_rec *variant,
         return 1;
     }
     if (q == bestq) {
+        /* If the best variant's encoding is of lesser quality than
+         * this variant, then we prefer this variant
+         */
+        if (variant->encoding_quality > best->encoding_quality) {
+            *p_bestq = q;
+            return 1;
+        }
         /* If the best variant's charset is ISO-8859-1 and this variant has
          * the same charset quality, then we prefer this variant
          */
@@ -1880,11 +1853,11 @@ static int is_variant_better(negotiation_state *neg, var_rec *variant,
      * acceptable by type, charset, encoding or language.
      */
 
-    if (variant->encoding_quality == 0 ||
-        variant->lang_quality == 0 ||
-        variant->source_quality == 0 ||
-        variant->charset_quality == 0 ||
-        variant->mime_type_quality == 0) {
+    if (variant->encoding_quality == 0.0f ||
+        variant->lang_quality == 0.0f ||
+        variant->source_quality == 0.0f ||
+        variant->charset_quality == 0.0f ||
+        variant->mime_type_quality == 0.0f) {
         return 0;               /* don't consider unacceptables */
     }
 
@@ -1933,30 +1906,6 @@ static int is_variant_better(negotiation_state *neg, var_rec *variant,
         return 1;
     }
 
-    /* XXX: The encoding negotiation code below knows about
-     * Accept-Encoding q values, but has the same strange tie-breaking
-     * as the version above if the qualities are equal.  
-     */
-
-    /* Prefer the highest value for encoding_quality. If they are 
-     * equal, prefer the variant without any encoding.
-     */
-    if (variant->encoding_quality < best->encoding_quality) {
-       return 0;
-    }
-    if (variant->encoding_quality > best->encoding_quality) {
-       *p_bestq = q;
-       return 1;
-    }
-
-    if (best->content_encoding == NULL && variant->content_encoding) {
-        return 0;
-    }
-    if (best->content_encoding && variant->content_encoding == NULL) {
-        *p_bestq = q;
-        return 1;
-    }
-
     /* charset */
     if (variant->charset_quality < best->charset_quality) {
         return 0;
@@ -1977,6 +1926,16 @@ static int is_variant_better(negotiation_state *neg, var_rec *variant,
           strcmp(best->content_charset, "iso-8859-1") == 0))) {
         *p_bestq = q;
         return 1;
+    }
+
+    /* Prefer the highest value for encoding_quality.
+     */
+    if (variant->encoding_quality < best->encoding_quality) {
+       return 0;
+    }
+    if (variant->encoding_quality > best->encoding_quality) {
+       *p_bestq = q;
+       return 1;
     }
 
     /* content length if all else equal */
@@ -2093,10 +2052,16 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
 {
     table *hdrs;
     var_rec *avail_recs = (var_rec *) neg->avail_vars->elts;
-    char *sample_type = NULL;
-    char *sample_language = NULL;
+    const char *sample_type = NULL;
+    const char *sample_language = NULL;
     const char *sample_encoding = NULL;
-    char *sample_charset = NULL;
+    const char *sample_charset = NULL;
+    char *lang;
+    char *qstr;
+    char *lenstr;
+    long len;
+    array_header *arr;
+    int max_vlist_array = (neg->avail_vars->nelts * 21);
     int first_variant = 1;
     int vary_by_type = 0;
     int vary_by_language = 0;
@@ -2104,25 +2069,77 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
     int vary_by_encoding = 0;
     int j;
 
-    /* Put headers into err_headers_out, new send_http_header()
+    /* In order to avoid O(n^2) memory copies in building Alternates,
+     * we preallocate a table with the maximum substrings possible,
+     * fill it with the variant list, and then concatenate the entire array.
+     * Note that if you change the number of substrings pushed, you also
+     * need to change the calculation of max_vlist_array above.
+     */
+    if (neg->send_alternates && neg->avail_vars->nelts)
+        arr = ap_make_array(r->pool, max_vlist_array, sizeof(char *));
+    else
+        arr = NULL;
+
+    /* Put headers into err_headers_out, since send_http_header()
      * outputs both headers_out and err_headers_out.
      */
-
-    /* NB that we merge the headers in case some other module
-     * negotiates on something else.
-     */
-
     hdrs = r->err_headers_out;
 
     for (j = 0; j < neg->avail_vars->nelts; ++j) {
         var_rec *variant = &avail_recs[j];
-        char *rec;
-        char qstr[6];
-        long len;
-        char lenstr[22];        /* enough for 2^64 */
-        char *lang;
 
-        ap_snprintf(qstr, sizeof(qstr), "%1.3f", variant->source_quality);
+        if (variant->content_languages && variant->content_languages->nelts) {
+            lang = ap_array_pstrcat(r->pool, variant->content_languages, ',');
+        }
+        else {
+            lang = NULL;
+        }
+
+        /* Calculate Vary by looking for any difference between variants */
+
+        if (first_variant) {
+            sample_type     = variant->mime_type;
+            sample_charset  = variant->content_charset;
+            sample_language = lang;
+            sample_encoding = variant->content_encoding;
+        }
+        else {
+            if (!vary_by_type &&
+                strcmp(sample_type ? sample_type : "", 
+                       variant->mime_type ? variant->mime_type : "")) {
+                vary_by_type = 1;
+            }
+            if (!vary_by_charset &&
+                strcmp(sample_charset ? sample_charset : "",
+                       variant->content_charset ?
+                       variant->content_charset : "")) {
+                vary_by_charset = 1;
+            }
+            if (!vary_by_language &&
+                strcmp(sample_language ? sample_language : "", 
+                       lang ? lang : "")) {
+                vary_by_language = 1;
+            }
+            if (!vary_by_encoding &&
+                strcmp(sample_encoding ? sample_encoding : "",
+                       variant->content_encoding ? 
+                       variant->content_encoding : "")) {
+                vary_by_encoding = 1;
+            }
+        }
+        first_variant = 0;
+
+        if (!neg->send_alternates)
+            continue;
+
+        /* Generate the string components for this Alternates entry */
+
+        *((const char **) ap_push_array(arr)) = "{\"";
+        *((const char **) ap_push_array(arr)) = variant->file_name;
+        *((const char **) ap_push_array(arr)) = "\" ";
+
+        qstr = (char *) ap_palloc(r->pool, 6);
+        ap_snprintf(qstr, 6, "%1.3f", variant->source_quality);
 
         /* Strip trailing zeros (saves those valuable network bytes) */
         if (qstr[4] == '0') {
@@ -2134,65 +2151,35 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
                 }
             }
         }
+        *((const char **) ap_push_array(arr)) = qstr;
 
-        /* XXX: iteratively concatenating rec is a poor design, O(n^2) mem! */
-
-        rec = ap_pstrcat(r->pool, "{\"", variant->file_name, "\" ", qstr, NULL);
-
-        if (first_variant) {
-            sample_type = variant->mime_type;
-        }
-        else if (strcmp(sample_type ? sample_type : "", 
-                        variant->mime_type ? variant->mime_type : "")) {
-            vary_by_type = 1;
-        }
         if (variant->mime_type && *variant->mime_type) {
-            rec = ap_pstrcat(r->pool, rec, " {type ",
-                             variant->mime_type, "}", NULL);
-        }
-
-        if (variant->content_languages && variant->content_languages->nelts) {
-            lang = merge_string_array(r->pool,
-                                      variant->content_languages, ",");
-            rec = ap_pstrcat(r->pool, rec, " {language ", lang, "}", NULL);
-        }
-        else {
-            lang = NULL;
-        }
-        if (first_variant) {
-            sample_language = lang;
-        }
-        else if (strcmp(sample_language ? sample_language : "", 
-                        lang ? lang : "")) {
-            vary_by_language = 1;
-        }
-
-        if (first_variant) {
-            sample_encoding = variant->content_encoding;
-        }
-        else if (strcmp(sample_encoding ? sample_encoding : "",
-                        variant->content_encoding ? 
-                        variant->content_encoding : "")) {
-            vary_by_encoding = 1;
-        }
-
-        if (first_variant) {
-            sample_charset = variant->content_charset;
-        }
-        else if (strcmp(sample_charset ? sample_charset : "",
-                        variant->content_charset ?
-                        variant->content_charset : "")) {
-            vary_by_charset = 1;
+            *((const char **) ap_push_array(arr)) = " {type ";
+            *((const char **) ap_push_array(arr)) = variant->mime_type;
+            *((const char **) ap_push_array(arr)) = "}";
         }
         if (variant->content_charset && *variant->content_charset) {
-            rec = ap_pstrcat(r->pool, rec, " {charset ",
-                             variant->content_charset, "}", NULL);
+            *((const char **) ap_push_array(arr)) = " {charset ";
+            *((const char **) ap_push_array(arr)) = variant->content_charset;
+            *((const char **) ap_push_array(arr)) = "}";
+        }
+        if (lang) {
+            *((const char **) ap_push_array(arr)) = " {language ";
+            *((const char **) ap_push_array(arr)) = lang;
+            *((const char **) ap_push_array(arr)) = "}";
+        }
+        if (variant->content_encoding && *variant->content_encoding) {
+            /* Strictly speaking, this is non-standard, but so is TCN */
+
+            *((const char **) ap_push_array(arr)) = " {encoding ";
+            *((const char **) ap_push_array(arr)) = variant->content_encoding;
+            *((const char **) ap_push_array(arr)) = "}";
         }
 
         /* Note that the Alternates specification (in rfc2295) does
          * not require that we include {length x}, so we could omit it
          * if determining the length is too expensive.  We currently
-         * always include it though.
+         * always include it though.  22 bytes is enough for 2^64.
          *
          * If the variant is a CGI script, find_content_length would
          * return the length of the script, not the output it
@@ -2204,29 +2191,25 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
          * (without breaking things if the type map specifies a
          * content-length, which currently leads to the correct result).
          */
-        if (neg->send_alternates
-            && !(variant->sub_req && variant->sub_req->handler)
+        if (!(variant->sub_req && variant->sub_req->handler)
             && (len = find_content_length(neg, variant)) != 0) {
 
-            ap_snprintf(lenstr, sizeof(lenstr), "%ld", len);
-            rec = ap_pstrcat(r->pool, rec, " {length ", lenstr, "}", NULL);
+            lenstr = (char *) ap_palloc(r->pool, 22);
+            ap_snprintf(lenstr, 22, "%ld", len);
+            *((const char **) ap_push_array(arr)) = " {length ";
+            *((const char **) ap_push_array(arr)) = lenstr;
+            *((const char **) ap_push_array(arr)) = "}";
         }
       
-        rec = ap_pstrcat(r->pool, rec, "}", NULL);
-
-      if (neg->send_alternates) {
-
-          /* We only list the variant in the Alternates header if it
-           * has no content encoding, as there is no standard way of
-           * saying in the Alternates header that a variant is
-           * available in a content-encoded form (only).
-           */
-          if (!variant->content_encoding)
-              ap_table_mergen(hdrs, "Alternates", rec); 
-      } 
-      
-      first_variant = 0;
+        *((const char **) ap_push_array(arr)) = "}";
+        *((const char **) ap_push_array(arr)) = ", "; /* trimmed below */
     }
+
+    if (neg->send_alternates && neg->avail_vars->nelts) {
+        arr->nelts--;                                 /* remove last comma */
+        ap_table_mergen(hdrs, "Alternates",
+                        ap_array_pstrcat(r->pool, arr, '\0'));
+    } 
 
     /* Theoretically the negotiation result _always_ has a dependence on
      * the contents of the Accept header because we do 'mxb='
@@ -2259,14 +2242,20 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
  * choice response or 406 status body.
  */
 
-/* XXX: this is disgusting, this has O(n^2) behaviour! -djg */
-
 static char *make_variant_list(request_rec *r, negotiation_state *neg)
 {
+    array_header *arr;
     int i;
-    char *t;
+    int max_vlist_array = (neg->avail_vars->nelts * 15) + 2;
 
-    t = ap_pstrdup(r->pool, "Available variants:\n<ul>\n");
+    /* In order to avoid O(n^2) memory copies in building the list,
+     * we preallocate a table with the maximum substrings possible,
+     * fill it with the variant list, and then concatenate the entire array.
+     */
+    arr = ap_make_array(r->pool, max_vlist_array, sizeof(char *));
+
+    *((const char **) ap_push_array(arr)) = "Available variants:\n<ul>\n";
+
     for (i = 0; i < neg->avail_vars->nelts; ++i) {
         var_rec *variant = &((var_rec *) neg->avail_vars->elts)[i];
         char *filename = variant->file_name ? variant->file_name : "";
@@ -2274,32 +2263,39 @@ static char *make_variant_list(request_rec *r, negotiation_state *neg)
         char *description = variant->description ? variant->description : "";
 
         /* The format isn't very neat, and it would be nice to make
-         * the tags human readable (eg replace 'language en' with
-         * 'English').
+         * the tags human readable (eg replace 'language en' with 'English').
+         * Note that if you change the number of substrings pushed, you also
+         * need to change the calculation of max_vlist_array above.
          */
-        t = ap_pstrcat(r->pool, t, "<li><a href=\"", filename, "\">",
-                    filename, "</a> ", description, NULL);
+        *((const char **) ap_push_array(arr)) = "<li><a href=\"";
+        *((const char **) ap_push_array(arr)) = filename;
+        *((const char **) ap_push_array(arr)) = "\">";
+        *((const char **) ap_push_array(arr)) = filename;
+        *((const char **) ap_push_array(arr)) = "</a> ";
+        *((const char **) ap_push_array(arr)) = description;
+
         if (variant->mime_type && *variant->mime_type) {
-            t = ap_pstrcat(r->pool, t, ", type ", variant->mime_type, NULL);
+            *((const char **) ap_push_array(arr)) = ", type ";
+            *((const char **) ap_push_array(arr)) = variant->mime_type;
         }
         if (languages && languages->nelts) {
-            t = ap_pstrcat(r->pool, t, ", language ",
-                        merge_string_array(r->pool, languages, ", "),
-                        NULL);
+            *((const char **) ap_push_array(arr)) = ", language ";
+            *((const char **) ap_push_array(arr)) = ap_array_pstrcat(r->pool,
+                                                       languages, ',');
         }
         if (variant->content_charset && *variant->content_charset) {
-            t = ap_pstrcat(r->pool, t, ", charset ", variant->content_charset,
-                        NULL);
+            *((const char **) ap_push_array(arr)) = ", charset ";
+            *((const char **) ap_push_array(arr)) = variant->content_charset;
         }
         if (variant->content_encoding) {
-            t = ap_pstrcat(r->pool, t, ", encoding ", 
-                           variant->content_encoding, NULL);
+            *((const char **) ap_push_array(arr)) = ", encoding ";
+            *((const char **) ap_push_array(arr)) = variant->content_encoding;
         }
-        t = ap_pstrcat(r->pool, t, "\n", NULL);
+        *((const char **) ap_push_array(arr)) = "\n";
     }
-    t = ap_pstrcat(r->pool, t, "</ul>\n", NULL);
+    *((const char **) ap_push_array(arr)) = "</ul>\n";
 
-    return t;
+    return ap_array_pstrcat(r->pool, arr, '\0');
 }
 
 static void store_variant_list(request_rec *r, negotiation_state *neg)

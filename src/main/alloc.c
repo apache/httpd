@@ -1047,6 +1047,60 @@ API_EXPORT(array_header *) ap_append_arrays(pool *p,
     return res;
 }
 
+/* ap_array_pstrcat generates a new string from the pool containing
+ * the concatenated sequence of substrings referenced as elements within
+ * the array.  The string will be empty if all substrings are empty or null,
+ * or if there are no elements in the array.
+ * If sep is non-NUL, it will be inserted between elements as a separator.
+ */
+API_EXPORT(char *) ap_array_pstrcat(pool *p, const array_header *arr,
+                                    const char sep)
+{
+    char *cp, *res, **strpp;
+    int i, len;
+
+    if (arr->nelts <= 0 || arr->elts == NULL)      /* Empty table? */
+        return (char *) ap_pcalloc(p, 1);
+
+    /* Pass one --- find length of required string */
+
+    len = 0;
+    for (i = 0, strpp = (char **) arr->elts; ; ++strpp) {
+        if (strpp && *strpp != NULL) {
+            len += strlen(*strpp);
+        }
+        if (++i >= arr->nelts)
+            break;
+        if (sep)
+            ++len;
+    }
+
+    /* Allocate the required string */
+
+    res = (char *) ap_palloc(p, len + 1);
+    cp = res;
+
+    /* Pass two --- copy the argument strings into the result space */
+
+    for (i = 0, strpp = (char **) arr->elts; ; ++strpp) {
+        if (strpp && *strpp != NULL) {
+            len = strlen(*strpp);
+            memcpy(cp, *strpp, len);
+            cp += len;
+        }
+        if (++i >= arr->nelts)
+            break;
+        if (sep)
+            *cp++ = sep;
+    }
+
+    *cp = '\0';
+
+    /* Return the result string */
+
+    return res;
+}
+
 
 /*****************************************************************
  *

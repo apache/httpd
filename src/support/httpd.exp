@@ -13,6 +13,7 @@ ap_allow_options
 ap_allow_overrides
 ap_append_arrays
 ap_array_cat
+ap_array_pstrcat
 ap_auth_name
 ap_auth_type
 ap_basic_http_header

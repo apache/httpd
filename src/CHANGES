@@ -50,7 +50,19 @@ Changes with Apache 1.3.4
      module's token was being added first before the Apache token. This
      has been fixed. [Jim Jagielski]
 
-  *) Major overhaul of mod_negotiation.c.
+  *) Major overhaul of mod_negotiation.c, part 2.
+     - properly handle "identity" within Accept-Encoding.
+     - allow encoded variants in RVSA negotiation and let them appear in
+       the Alternates field using the non-standard "encoding" tag-list.
+     - fixed both negotiation algorithms so that an explicitly accepted
+       encoding is preferred over no encoding if "identity" is not
+       included within Accept-Encoding.
+     - added ap_array_pstrcat() to alloc.c for efficient concatenation
+       of large substring sequences.
+     - replaced O(n^2) memory hogs in mod_negotiation with ap_array_pstrcat.
+     [Roy Fielding]
+
+  *) Major overhaul of mod_negotiation.c, part 1.
      - cleanups to mod_negotiation comments and code structure
      - made compliant with HTTP/1.1 proposed standard (rfc2068) and added
        support for everything in the upcoming HTTP/1.1

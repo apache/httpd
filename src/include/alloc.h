@@ -149,6 +149,15 @@ API_EXPORT(void) ap_array_cat(array_header *dst, const array_header *src);
 API_EXPORT(array_header *) ap_append_arrays(pool *, const array_header *,
 					 const array_header *);
 
+/* ap_array_pstrcat generates a new string from the pool containing
+ * the concatenated sequence of substrings referenced as elements within
+ * the array.  The string will be empty if all substrings are empty or null,
+ * or if there are no elements in the array.
+ * If sep is non-NUL, it will be inserted between elements as a separator.
+ */
+API_EXPORT(char *) ap_array_pstrcat(pool *p, const array_header *arr,
+                                    const char sep);
+
 /* copy_array copies the *entire* array.  copy_array_hdr just copies
  * the header, and arranges for the elements to be copied if (and only
  * if) the code subsequently does a push or arraycat.

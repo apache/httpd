@@ -322,4 +322,5 @@ EXPORTS
 	ap_single_module_configure   @315
 	ap_single_module_init   @316
 	ap_make_etag   @317
+	ap_array_pstrcat   @318
 
