@@ -231,6 +231,8 @@ struct proxy_conn_pool {
 
 #define PROXY_WORKER_IS_USABLE(f)   (!((f)->status & 0x00F0))
 
+/* default worker retry timeout in seconds */
+#define PROXY_WORKER_DEFAULT_RETRY  60
 
 /* Worker configuration */
 struct proxy_worker {

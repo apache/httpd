@@ -1429,6 +1429,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     }
     if (rv == APR_SUCCESS)
         worker->status |= PROXY_WORKER_INITIALIZED;
+    /* Set default parameters */
+    if (!worker->retry)
+        worker->retry = apr_time_from_sec(PROXY_WORKER_DEFAULT_RETRY);
     return rv;
 }
 
@@ -1437,21 +1440,11 @@ PROXY_DECLARE(int) ap_proxy_retry_worker(const char *proxy_function,
                                          server_rec *s)
 {
     if (worker->status & PROXY_WORKER_IN_ERROR) {
-        apr_interval_time_t diff;
-        apr_time_t now = apr_time_now();
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                     "proxy: %s: retrying the worker for (%s)",
                      proxy_function, worker->hostname);
-        if (worker->retry)
-            diff = worker->retry;
-        else {
-            /* Increase the time by 1 minute on each retry */
-            diff = apr_time_from_sec((60 + 60 * worker->retries));
-            /* Use 10 minutes as maximum value for retry */
-            if (worker->retries < 8)
-                ++worker->retries;
-        }
-        if (now > worker->error_time + diff) {
+        if (apr_time_now() > worker->error_time + worker->retry) {
+            ++worker->retries;
             worker->status &= ~PROXY_WORKER_IN_ERROR;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "proxy: %s: worker for (%s) has been marked for retry",
