@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) Remove bad reference to non-existing SERVER_VERSION in mod_rewrite.html
+     [Youichirou Koga <y-koga@jp.FreeBSD.ORG>] PR#2895
+
   *) Dynamically size the filename column of mod_autoindex output.
      [Dean Gaudet]
 
