@@ -133,9 +133,9 @@ client</description>
       >AddInputFilter</directive>, for example:</p>
 
       <example>
-        &lt;Location /dav-area&gt;
+        &lt;Location /dav-area&gt;<br />
         <indent>
-          SetInputFilter DEFLATE
+          SetInputFilter DEFLATE<br />
         </indent>
         &lt;/Location&gt;
       </example>
