@@ -55,7 +55,7 @@
 <li><a href="content-negotiation.html">Negociação de Conteúdo</a></li>
 <li><a href="dso.html">Objetos Dinâmicos Compartilhados (DSO)</a></li>
 <li><a href="env.html">Variáveis de Ambiente</a></li>
-<li><a href="logs.html">Arquivos de Log</a></li>
+<li><a href="logs.html">Arquivos de Registro</a></li>
 <li><a href="urlmapping.html">Mapeando URLs para o Sistema de Arquivos</a></li>
 <li><a href="misc/perf-tuning.html">Ajustes de Performance</a></li>
 <li><a href="misc/security_tips.html">Dicas de Segurança</a></li>
