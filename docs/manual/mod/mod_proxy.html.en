@@ -48,7 +48,6 @@ dangerous both to your network and to the Internet at large.</p></div>
 <ul>
 <li><a href="#forwardreverse">Forward and Reverse Proxies</a></li>
 <li><a href="#access">Controlling access to your proxy</a></li>
-<li><a href="#shortname">Using Netscape hostname shortcuts</a></li>
 <li><a href="#mimetypes">Why doesn't file type <em>xxx</em> download via FTP?</a></li>
 <li><a href="#type">How can I force an FTP ASCII download of File <em>xxx</em>?</a></li>
 <li><a href="#percent2fhack">How can I access FTP files outside of my home directory?</a></li>
@@ -112,10 +111,6 @@ Allow from 192.168.0<br />
 
 <p>When configuring a reverse proxy, access control takes on the
 attributes of the normal server <code class="directive"><a href="../mod/core.html#directory">&lt;directory&gt;</a></code> configuration.</p>
-
-
-
-
 
 
 <h3><a name="mimetypes" id="mimetypes">Why doesn't file type <em>xxx</em>
