@@ -924,15 +924,16 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
  *    Worker threads block on the ThreadDispatch IOCompletionPort awaiting 
  *    connections to service.
  */
-static void winnt_accept(void *listen_socket) 
+static void winnt_accept(void *lr_) 
 {
+    ap_listen_rec *lr = (ap_listen_rec *)lr_;
     apr_os_sock_info_t sockinfo;
     PCOMP_CONTEXT context = NULL;
     DWORD BytesRead;
     SOCKET nlsd;
     int rv;
 
-    nlsd = (SOCKET) listen_socket;
+    apr_os_sock_get(&nlsd, lr->sd);
 
     while (!shutdown_in_progress) {
         if (!context) {
@@ -1190,14 +1191,14 @@ static void create_listener_thread()
         _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) win9x_accept,
                        NULL, 0, &tid);
     } else {
-        /* Start an accept thread per listener */
-        SOCKET nlsd; /* native listening sock descriptor */
+        /* Start an accept thread per listener 
+         * XXX: Why would we have a NULL sd in our listeners?
+         */
         ap_listen_rec *lr;
         for (lr = ap_listeners; lr; lr = lr->next) {
             if (lr->sd != NULL) {
-                apr_os_sock_get(&nlsd, lr->sd);
                 _beginthreadex(NULL, 1000, (LPTHREAD_START_ROUTINE) winnt_accept,
-                               (void *) nlsd, 0, &tid);
+                               (void *) lr, 0, &tid);
             }
         }
     }
