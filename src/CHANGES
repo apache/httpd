@@ -1,4 +1,10 @@
 Changes with Apache 1.3b7
+  
+  *) Make `configure --compat' more "compatible" by first 
+     let the libexecdir default to EPREFIX/libexec instead of EPREFIX/bin and
+     second by making sure the "avoid-bristling-suffix" /apache is not
+     appended to sysconfdir, datadir, localstatedir and includedir when
+     --compat is used. [Ralf S. Engelschall, Lars Eilebrecht]
 
   *) PR2082: Closed... NeXT required strdup() in support/logresolve.c
 

@@ -349,7 +349,7 @@ do
             exec_prefix='$prefix'
             bindir='$exec_prefix/bin'
             sbindir='$exec_prefix/bin'
-            libexecdir='$exec_prefix/bin'
+            libexecdir='$exec_prefix/libexec'
             mandir='$prefix/man'
             sysconfdir='$prefix/conf'
             datadir='$prefix'
@@ -357,6 +357,10 @@ do
             localstatesubdir_run='logs'
             localstatesubdir_logs='logs'
             includedir='$prefix/include'
+            customized_sysconfdir=1
+            customized_datadir=1
+            customized_localstatedir=1
+            customized_includedir=1
             ;;
         --add-module=*) 
             file="$apc_optarg"
