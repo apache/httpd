@@ -105,6 +105,7 @@
 #define HAVE_CANONICAL_FILENAME
 #define HAVE_DRIVE_LETTERS
 #define HAVE_SENDFILE
+
 typedef int uid_t;
 typedef int gid_t;
 typedef int pid_t;
@@ -138,9 +139,13 @@ every configuration function as __stdcall.
 #ifndef S_ISDIR
 #define S_ISDIR(m) (((m) & S_IFDIR) == S_IFDIR)
 #endif
+
+#if 0
 #ifndef S_ISREG
 #define S_ISREG(m)      (((m)&(S_IFREG)) == (S_IFREG))
 #endif
+#endif
+
 #define STDIN_FILENO  0
 #define STDOUT_FILENO 1
 #define STDERR_FILENO 2
